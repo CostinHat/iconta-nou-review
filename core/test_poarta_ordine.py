@@ -10,12 +10,19 @@ poarta din hook-ul commit-msg pe mutarea lui main [...]”): suita a ieșit din 
     închiderea lotului: scripts/poarta_lot.sh -> poarta-suita (prospețime, pytest, verificator, cifre, plasa) -> verdictul
     mutarea lui main: reference-transaction cere `VERDE <sha>` (core/test_garda_main.py)
 
+23.10.2026 (CLAUDE.md §5: „Dacă poarta pică: se repară cauza, apoi se rulează testele căzute și tot ce depinde de reparație.” și
+„Durata fiecărei părți a porții se măsoară și se raportează.”; DECIZII 23.10.2026 „Comanda 12.1”): poarta nu se mai oprește la prima
+parte roșie — rulează toate părțile, în aceeași ordine, și scrie înregistrarea rulării (`<git-common-dir>/poarta_rulari/<sha>.json`).
+
 CE FACE IMPOSIBIL:
   * ca un commit să pornească suita (structural: nici `pre-commit`, nici `commit-msg` nu cheamă pytest / `poarta-suita`; funcțional,
     pe hook-ul adevărat: un mesaj bun trece fără „[poarta] pytest”);
   * o a doua pornire a porții complete: în tot depozitul, `poarta-suita` e chemată NUMAI de `scripts/poarta_lot.sh`;
-  * ca poarta să judece altceva decât commitul (arborele ≠ indexul -> respins înainte de pytest).
+  * ca poarta să judece altceva decât commitul (arborele ≠ indexul -> respins înainte de pytest);
+  * ca o parte roșie să ascundă căzutele celorlalte (funcțional, pe `poarta-suita` adevărată, cu uneltele imitate: oricare parte roșie,
+    toate cinci rulează, iar JSON-ul are rc, durata și căzutele fiecăreia).
 """
+import json
 import os
 import shlex
 import subprocess
@@ -195,3 +202,54 @@ def test_defectul_nereparat_poate_trimite_la_deficiente_cu_numarul():
     for fara in ("", " (DEFICIENTE)"):
         cod, iesire, _dur = _ruleaza((baza % fara).encode("utf-8"))
         assert cod == 1 and iesire.count("nu spune UNDE") == 1, iesire
+
+
+import pytest  # noqa: E402
+
+from core.test_poarta_lot import depozit_poarta  # noqa: E402,F401 — fixtura depozitului cu poarta adevărată
+
+#: chemările celor cinci părți, cum le înregistrează pythonul de probă
+PARTILE = {"proaspat": "-m pytest -q -k proaspat core/", "pytest": "-m pytest -q -n 3 --dist loadfile",
+           "verificator": "verificator_conformitate.py", "cifre": "scripts/cifre_referinta.py --productie --verifica",
+           "plasa": "scripts/e2e_poarta.py "}
+ROSII = {"proaspat": {"proaspat": "core/test_c.py::test_artefact_proaspat"}, "pytest": {"pytest": "core/test_c.py::test_trei"},
+         "verificator": {"verificator": "3"}, "cifre": {"cifre": "1"}, "plasa": {"plasa": "e2e_x.py::test_e"}}
+
+
+@pytest.mark.parametrize("rosie", [None] + sorted(ROSII))
+def test_poarta_suita_ruleaza_toate_partile_dupa_una_rosie_si_scrie_rularea(depozit_poarta, rosie):
+    """[23.10.2026] Oricare parte e roșie (sau niciuna), poarta rulează TOATE cinci, o dată fiecare, în ordine (prospețimea, pytest
+    pornit înaintea verificatorului și a cifrelor, plasa după), iese 1 dacă vreuna e roșie, și scrie JSON-ul: per parte rc, durata și
+    căzutele (complete față de rezumatul pytest), plus linia `DURATE` (VERDE / ROSU cu partea) în `.poarta_jurnal.log`.
+    MUTAȚII: `exit 1` pus înapoi după verificatorul roșu -> cifrele și plasa nu mai rulează -> pică; `incheie` scos -> fără JSON -> pică."""
+    dp = depozit_poarta
+    sha = dp.git("rev-parse", "HEAD")
+    cod, iesire = dp.suita(**(ROSII[rosie] if rosie else {}))
+    assert cod == (1 if rosie else 0), iesire
+    chem = dp.chemari()
+    rulate = [next(n for n, c in PARTILE.items() if x.startswith(c)) for x in chem]
+    assert sorted(rulate) == sorted(PARTILE) and rulate.index("proaspat") == 0 and rulate.index("plasa") == 4, chem
+    r = dp.rulare(sha)
+    assert (r["sha"], r["ramura"], r["tip"], r["verde"]) == (sha, "lucru/lot9", "completa", not rosie), r
+    assert sorted(r["parti"]) == sorted(list(PARTILE) + ["arbore"]), r
+    assert {n for n, p in r["parti"].items() if p["rc"]} == ({rosie} if rosie else set()), r["parti"]
+    assert all(isinstance(p["durata_s"], int) and p["durata_s"] >= 0 for p in r["parti"].values()), r["parti"]
+    # căzutele pe noduri (prospețime, pytest, plasa) sunt complete față de rezumatul pytest; verificatorul și cifrele n-au noduri
+    assert all(r["parti"][n]["cazute_complete"] for n in ("proaspat", "pytest", "plasa")), r["parti"]
+    if rosie in ("proaspat", "pytest", "plasa"):
+        assert r["parti"][rosie]["cazute"] == [ROSII[rosie][rosie]], r["parti"][rosie]
+    durate = [x for x in dp.jurnal().splitlines() if x.startswith("    DURATE: ")]
+    assert len(durate) == 1 and durate[0].count(" ROSU " if rosie else " VERDE ") == 1, durate
+    assert all(durate[0].count("%s " % n) >= 1 for n in ("proaspat", "pytest", "verificator", "cifre", "plasa", "poarta")), durate
+
+
+def test_poarta_suita_cu_toate_partile_rosii_le_consemneaza_pe_toate(depozit_poarta):
+    """Toate cinci roșii: cinci respingeri consemnate în jurnal, cinci rc nenule în JSON — nicio parte nu o ascunde pe alta."""
+    dp = depozit_poarta
+    toate = {k: v for d in ROSII.values() for k, v in d.items()}
+    cod, iesire = dp.suita(**toate)
+    assert cod == 1 and iesire.count("[poarta] ROSU: ") == 5, iesire
+    assert dp.jurnal().count("=== ") == 5
+    parti = dp.rulare(dp.git("rev-parse", "HEAD"))["parti"]
+    assert sorted(n for n, p in parti.items() if p["rc"]) == sorted(PARTILE), parti
+    assert json.dumps(parti, ensure_ascii=False).count("FAILED") == 0     # nodurile, nu rândurile brute

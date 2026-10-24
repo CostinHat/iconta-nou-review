@@ -112,7 +112,7 @@ def test_def_456_incasarea_facturii_din_casa_emite_chitanta_cu_seria_firmei(patr
     """456. Pașii: firma fără serie de chitanțe -> „Emite factură” -> Casă -> „+ Dispoziție nouă”: încasare de la client, factura bifată
     -> „Adaugă” -> refuz numit, cu „Deschide Date firmă”, nimic scris -> seria scrisă în Date firmă -> aceeași încasare -> „Chitanța E2ECH
     nr. 1 a fost emisă”; rândul are „PDF chitanță”, iar PDF-ul e chitanța E2ECH nr. 1, cu clientul și suma -> încasarea fără factură
-    (avansul de la client) rămâne „fără chitanță”, numită pe rând (decizie cerută pentru partea fără factură)."""
+    (avansul de la client) primește și ea chitanța, E2ECH nr. 2 (lotul 12, decizia 456 (a); înainte rămânea „fără chitanță”)."""
     f = firma_a455_ch
     s, tid = f["schema"], f["tenant_id"]
     pregateste_firma(patron, f)
@@ -140,7 +140,10 @@ def test_def_456_incasarea_facturii_din_casa_emite_chitanta_cu_seria_firmei(patr
     import pypdf
     text = "".join(p.extract_text() for p in pypdf.PdfReader(io.BytesIO(_pdf(patron, "/tenants/%d/chitante/%d/pdf" % (tid, cid)))).pages)
     assert "CHITANȚĂ seria E2ECH nr. 1" in text and _bani(total) in text and "DANTE INTERNATIONAL SA" in text, text
-    # încasarea fără factură: fără chitanță automată, numită pe rând
+    # [lotul 12, decizia Costin 12.1 pct.3: 456 (a)] și încasarea fără factură (avansul de la client) primește chitanța ei, următoarea din
+    # serie; înainte rămânea „fără chitanță”, numită pe rând
     _dispozitie(pg, "incasare_client", "50", cui=CLIENT["#em-cui"])
-    pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('fără chitanță')", timeout=20000)
-    patron.captura("avans_fara_chitanta")
+    pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('Chitanța E2ECH nr. 2 a fost emisă')",
+                         timeout=20000)
+    patron.captura("avans_cu_chitanta")
+    assert sql('SELECT numar, factura_id FROM "%s".chitante WHERE suma = 50' % s) == [(2, None)]

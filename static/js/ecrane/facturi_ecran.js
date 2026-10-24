@@ -3,12 +3,14 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=31460b24f2";  /* esc_nc27 */
-import { randeazaStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6: 273, 275] */
+import { api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv } from "../api.js?v=309f4d66ae";  /* esc_nc27 */
+import { randeazaStareSpv } from "./spv_stare.js?v=39617786af";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaEmitere, intrebarePleacaMarfa, textDescarcare, textTvaIncasare, tvaDocument } from "./emitere_ecran.js?v=9b689f0a32";
+import { permis } from "../drepturi.js?v=34d0fb0afd";
+import { randeazaEmitere, intrebarePleacaMarfa, textDescarcare, textTvaIncasare, tvaDocument } from "./emitere_ecran.js?v=ee4898fed1";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
+import { optiuniTara, taraDinCui } from "./tari_partener.js?v=43a0fddc7d";   // [lotul 12, C160] țara clientului pe șablonul facturii recurente
 
 // [deficiența 418c, clasa 410, DS cap.27] după un act reușit, confirmarea rămâne pe ecran și drumul înapoi e un buton — nu o navigare
 // temporizată, care ștergea confirmarea înainte de a fi citită
@@ -20,6 +22,9 @@ function butonInapoi(zona, nav) {
   b.addEventListener("click", () => nav.inapoi());
   zona.appendChild(b);
 }
+
+// [lotul 12, 468] moneda unei sume, scrisă: RON -> „lei”, altfel codul ei (EUR, USD…)
+const monedaScrisa = (m) => (!m || String(m).toUpperCase() === "RON") ? "lei" : String(m).toUpperCase();
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -114,6 +119,7 @@ async function primiteSPV(corp, nav, tenantId, opt, mesaj = null) {
       <button class="buton-secundar" id="fp-verifica" data-actiune="POST /tenants/{tenant_id}/spv/verifica-acum">Verifică acum în SPV</button>
       <label class="buton-secundar" style="margin-left:6px" data-actiune="POST /tenants/{tenant_id}/facturi-primite/import-xml">Importă XML UBL
         <input type="file" id="fp-xml" accept=".xml,.zip" multiple hidden aria-label="Fișier XML UBL al facturii primite"></label>
+      <button class="buton-secundar" id="fp-manual" style="margin-left:6px" data-actiune="POST /tenants/{tenant_id}/facturi-primite/manual">Introdu factura de mână</button>
     </p>
     <div id="fp-mesaj"></div>
     <div id="fp-lista"></div>`;
@@ -126,10 +132,13 @@ async function primiteSPV(corp, nav, tenantId, opt, mesaj = null) {
     try {
       const r = await api.post(`/tenants/${tenantId}/spv/verifica-acum`, {});
       const c = r.citire || {};
-      const txt = c.eroare ? `ANAF a răspuns: „${c.eroare}”.` : `Citit din SPV: ${cate(c.mesaje || 0, "factură primită", "facturi primite")} în ultimele ${cate(c.zile, "zi", "zile")}; cele noi sunt în listă.`;
+      const txt = c.eroare ? (c.de_la_anaf === false ? c.eroare : `ANAF a răspuns: „${c.eroare}”.`) :   // [lotul 12, clasa 598] motivul aplicației nu e pus pe seama ANAF
+         `Citit din SPV: ${cate(c.mesaje || 0, "factură primită", "facturi primite")} în ultimele ${cate(c.zile, "zi", "zile")}; cele noi sunt în listă.`;
       primiteSPV(corp, nav, tenantId, opt, { txt, tip: c.eroare ? "avert" : "ok" });
     } catch (e) { arataMesaj(zMsg, e.mesaj || "Citirea din SPV n-a mers.", "eroare"); b.disabled = false; }
   });
+  // [lotul 12, 477] factura primită pe hârtie / PDF (fără XML): formularul ei, validat pe același drum ca factura din XML
+  corp.querySelector("#fp-manual").addEventListener("click", () => nav.mergi("Factură primită de mână", (c) => primitaManuala(c, nav, tenantId, opt)));
   corp.querySelector("#fp-xml").addEventListener("change", async (ev) => {
     const fs = [...ev.target.files];
     if (!fs.length) return;
@@ -177,9 +186,10 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
     <div class="grila-doc" style="grid-template-columns:2fr 1fr 1fr 1fr">
       <label class="camp"><span class="camp-eticheta">Furnizor</span><input class="camp-input" value="${esc((p.furnizor || "") + (p.cif_emitent ? " · " + p.cif_emitent : ""))}" readonly aria-label="Furnizor"></label>
       <label class="camp"><span class="camp-eticheta">Data</span><input class="camp-input" value="${p.data ? dataRo(p.data) : ""}" readonly aria-label="Data"></label>
-      <label class="camp"><span class="camp-eticheta">TVA</span><input class="camp-input" value="${esc(p.tva || "")}" readonly aria-label="TVA"></label>
-      <label class="camp"><span class="camp-eticheta">Total</span><input class="camp-input" value="${esc(p.total || "")}" readonly aria-label="Total"></label>
+      <label class="camp"><span class="camp-eticheta">TVA</span><input class="camp-input" id="pr-tva" value="${esc(sumaCuMoneda(p.tva, p.moneda))}" readonly aria-label="TVA"></label>
+      <label class="camp"><span class="camp-eticheta">Total</span><input class="camp-input" id="pr-total" value="${esc(sumaCuMoneda(p.total, p.moneda))}" readonly aria-label="Total"></label>
     </div>
+    <div class="fd-valuta" id="pr-valuta" aria-live="polite" hidden></div>
     <div style="margin-top:10px"><div class="camp-eticheta">Linii</div>
       <span class="camp-ajutor">Clasifică destinația TVA a fiecărei linii importate: <b>taxabilă</b> (deducere integrală, implicit), <b>scutită</b> (fără deducere), <b>mixtă</b> (intră în pro-rata, art. 300 alin. (5)). Faptul importat rămâne neschimbat — doar îl clasifici.</span>
       ${linii.map((l, i) => `<div class="pf-linie-clasif" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px">
@@ -216,6 +226,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
     <div id="pr-zona" style="margin-top:10px"></div>
     <div id="pr-xml-zona" style="margin-top:10px"></div>`;
   const zona = corp.querySelector("#pr-zona");
+  arataCursulValidarii(corp.querySelector("#pr-valuta"), tenantId, p.moneda, p.data);   // [lotul 12, cursul vechi la validare (a)]
   propuneNumeAnaf(corp.querySelector("#pr-zona"), p.fisa_vs_anaf, tenantId, { fel: "furnizori", pre: "pr" });   // [lotul 11, 444] numele ANAF vs fișa furnizorului
   corp.querySelector("#pr-valideaza").addEventListener("click", () => {
     curataEroriCamp(corp);
@@ -236,6 +247,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
             destinatii: _dest, conturi: Array.from(corp.querySelectorAll(".pr-cont-linie")).map((x) => x.value.trim()),   // [418b] contul liniei
             ...alegere }));
         arataMesaj(zona, "Validată. Cheltuiala creată din factura " + (p.numar || "fără număr") + (p.data ? " din " + dataRo(p.data) : "") + ".", "ok");   // [258] factura cum o arată lista, nu id-ul ei
+        anuntaCursulValidat(zona, r);   // [lotul 12, cursul vechi la validare (a)]
         butonInapoi(zona, nav);   // [418c / 410, DS cap.27] confirmarea rămâne; înapoi la cererea omului
       } catch (e) { arataRefuzul(corp, e, zona); }   // [lotul 11, 440] câmpurile refuzului lângă ele, restul în zonă
     }, { textOk: "Validează" });
@@ -261,6 +273,212 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
       // [lotul 10, 421 / 424] cutia XML-ului canonică (`.dec-xml-pre`: rândurile se rup, deci nu derulează lateral), nu una scrisă inline
       xz.innerHTML = `<pre class="dec-xml-pre">${esc(r.xml || "")}</pre>`;
     } catch (e) { arataMesaj(xz, e.mesaj || "nu s-a putut încărca XML-ul", "eroare"); }
+  });
+}
+
+// [lotul 12, C105, DS cap.4 „Sumele: format românesc”] o sumă afișată într-un câmp readonly: cu `bani` (1.694,00) și cu moneda ei, nu
+// textul brut din XML („1694.00”)
+function sumaCuMoneda(x, moneda) {
+  if (x == null || x === "") return "";
+  return `${bani(x)} ${monedaScrisa(moneda)}`;
+}
+
+// [lotul 12, decizia Costin „cursul vechi la validare (a)”: „anunțul la validare, ca la emitere”] cursul cu care se va valida factura primită
+// în valută — ACEEAȘI rută ca formularul de emitere (`POST /tenants/{tenant_id}/facturi/previzualizare-lei`, `facturi_api.curs_automat`), iar când cursul zilei
+// lipsește și se folosește unul mai vechi, ACELAȘI anunț (`curs_bnr.cursul_zilei_lipsa`, act „validare”; DS cap.6: avert)
+async function arataCursulValidarii(zona, tenantId, moneda, data) {
+  if (!zona) return;
+  const actuala = ultimaCerere(zona)();   // [C103] moneda / data schimbate în șir: numai ultimul curs cerut ajunge pe ecran
+  const m = String(moneda || "RON").toUpperCase();
+  if (m === "RON" || !data) { zona.hidden = true; zona.innerHTML = ""; return; }
+  // [lotul 12] fără dreptul previzualizării (al pregătirii): nici cererea, nici refuzul ei — cursul îl scrie oricum validarea
+  if (!permis("POST /tenants/{tenant_id}/facturi/previzualizare-lei")) { zona.hidden = true; zona.innerHTML = ""; return; }
+  const titlu = `<div class="fd-valuta-titlu">Conversie în lei (art. 319 Cod fiscal), cum o va scrie validarea</div>`;
+  zona.hidden = false;
+  zona.innerHTML = `${titlu}<div class="fd-valuta-sub">Se citește cursul BNR…</div>`;
+  let r;
+  try { r = await api.post(`/tenants/${tenantId}/facturi/previzualizare-lei`, { moneda: m, data_emitere: String(data).slice(0, 10), act: "validare" }); }
+  catch (e) { if (!actuala()) return; zona.innerHTML = `${titlu}<div class="pr-curs-mesaj"></div>`; arataMesaj(zona.querySelector(".pr-curs-mesaj"), (e && e.mesaj) || "Cursul BNR nu s-a putut citi acum.", "eroare"); return; }
+  if (!actuala() || !zona.isConnected) return;
+  if (!r || !r.ok) { zona.innerHTML = `${titlu}<div class="pr-curs-mesaj"></div>`; arataMesaj(zona.querySelector(".pr-curs-mesaj"), (r && r.mesaj) || "Cursul BNR nu e disponibil acum.", "eroare"); return; }
+  zona.innerHTML = `${titlu}
+    <div class="fd-tot-rand"><span>Curs BNR ${esc(m)}</span><span class="pr-curs"><b>${cursValutar(r.curs)}</b> din ${esc(dataRo(r.data_curs))}</span></div>
+    ${r.curs_zilei_lipsa ? `<div class="pr-curs-lipsa"></div>`
+      : `<div class="fd-valuta-sub">Ultimul curs comunicat de BNR înaintea datei facturii (${esc(dataRo(String(data).slice(0, 10)))}); se fixează la validare.</div>`}`;
+  if (r.curs_zilei_lipsa) arataMesaj(zona.querySelector(".pr-curs-lipsa"), r.curs_zilei_lipsa.mesaj, "avert");
+}
+
+// după validare: cursul mai vechi folosit (serverul îl spune în răspuns) rămâne anunțat lângă confirmare
+function anuntaCursulValidat(zona, r) {
+  if (!(r && r.curs_zilei_lipsa && r.curs_zilei_lipsa.mesaj)) return;
+  const d = document.createElement("div");
+  d.className = "pr-curs-validat";
+  zona.appendChild(d);
+  arataMesaj(d, r.curs_zilei_lipsa.mesaj, "avert");
+}
+
+// ---------- FACTURĂ PRIMITĂ INTRODUSĂ DE MÂNĂ (lotul 12, deficiența 477) ----------
+// Factura de la un furnizor pe hârtie / PDF, fără XML: furnizorul (CUI verificat la ANAF — `verifica-cui`, ca la NIR), seria / numărul,
+// data, scadența, moneda (cursul BNR ca la validarea facturii din XML), liniile cu cotele în vigoare la data facturii (registrul de
+// parametri fiscali, `GET /tenants/{tenant_id}/facturi/numerotare`), contul facturii și al fiecărei linii, destinația TVA a liniei. Validarea e ACEEAȘI ca la
+// factura din XML (`uc_factura_primita.valideaza`): nota, gestiunea pe un cont de stoc, alegerea NIR-ului „fără factură”.
+const linieManuala = () => ({ descriere: "", cantitate: "", um: "buc", pret_unitar: "", cota_tva: "", dest: "taxabil", cont: "" });
+
+function primitaManuala(corp, nav, tenantId, opt) {
+  const linii = [linieManuala()];
+  let COTE = [];
+  const tara = () => ((corp.querySelector("#pm-tara") || {}).value || "").trim().toUpperCase();
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Factură primită · introdusă de mână</h2>
+    <p class="pf-intro">De pe factura furnizorului (hârtie sau PDF). Se validează la fel ca o factură venită din SPV: nota pe contul ales și, la un cont de stoc, intrarea în gestiune.</p>
+    <div class="grila-doc" style="grid-template-columns:1fr 2fr 2fr">
+      <label class="camp"><span class="camp-eticheta">Țara furnizorului (ISO)<span class="oblig">*</span></span><input class="camp-input" id="pm-tara" value="RO" maxlength="2" aria-label="Țara furnizorului"></label>
+      <label class="camp"><span class="camp-eticheta">Codul fiscal al furnizorului<span class="oblig">*</span></span>
+        <span style="display:flex;gap:6px;align-items:center"><input class="camp-input" id="pm-cui" aria-label="Codul fiscal al furnizorului" placeholder="ex. 14399840">
+        <button class="buton-secundar" type="button" id="pm-verifica" data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}">Verifică la ANAF</button></span>
+        <span class="em-cui-stare" id="pm-cui-stare"></span></label>
+      <label class="camp"><span class="camp-eticheta">Furnizor<span class="oblig">*</span></span><input class="camp-input" id="pm-furnizor" aria-label="Furnizor"></label>
+    </div>
+    <div class="grila-doc" style="grid-template-columns:1fr 1fr 1fr 1fr 1fr;margin-top:8px">
+      <label class="camp"><span class="camp-eticheta">Seria</span><input class="camp-input" id="pm-serie" aria-label="Seria facturii"></label>
+      <label class="camp"><span class="camp-eticheta">Numărul<span class="oblig">*</span></span><input class="camp-input" id="pm-numar" aria-label="Numărul facturii"></label>
+      <label class="camp"><span class="camp-eticheta">Data facturii<span class="oblig">*</span></span><input class="camp-input" type="date" id="pm-data" aria-label="Data facturii"></label>
+      <label class="camp"><span class="camp-eticheta">Scadența</span><input class="camp-input" type="date" id="pm-scadenta" aria-label="Scadența"></label>
+      <label class="camp"><span class="camp-eticheta">Moneda<span class="oblig">*</span></span>
+        <select class="camp-input" id="pm-moneda" aria-label="Moneda facturii" data-actiune-camp="POST /tenants/{tenant_id}/facturi/previzualizare-lei">
+          <option value="RON" selected>RON (lei)</option><option value="EUR">EUR</option><option value="USD">USD</option><option value="GBP">GBP</option>
+          <option value="CHF">CHF</option><option value="HUF">HUF</option><option value="PLN">PLN</option></select></label>
+    </div>
+    <div style="margin-top:12px"><div class="camp-eticheta">Liniile facturii</div>
+      <span class="camp-ajutor">Unitatea de măsură, prețul unitar fără TVA și cota de pe factură (cotele în vigoare la data facturii). Contul liniei: gol = contul facturii de mai jos; numai liniile pe un cont de stoc (371 / 301–303) intră în stoc. Destinația TVA: <b>taxabilă</b> (deducere integrală), <b>scutită</b> (fără deducere), <b>mixtă</b> (intră în pro-rata, art. 300 alin. (5)).</span>
+      <div id="pm-linii"></div>
+      <button class="buton-secundar" type="button" id="pm-add-linie" style="margin-top:6px" data-fara-actiune="adaugă o linie în formular, fără scriere">+ linie</button>
+      <div class="fd-tot-rand" id="pm-total" style="margin-top:8px"></div>
+    </div>
+    <div class="fd-valuta" id="pr-valuta" aria-live="polite" hidden></div>
+    <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:12px">
+      <label class="camp"><span class="camp-eticheta">Contul facturii: cheltuială, sau 371 / 301–303 la marfă și materiale<span class="oblig">*</span></span><input class="camp-input" id="pr-cont" placeholder="ex. 628 sau 371" aria-label="Contul facturii"></label>
+    </div>
+    <div class="grila-doc" id="pm-statut" style="grid-template-columns:2fr 2fr;margin-top:8px" hidden></div>
+    <div style="margin-top:14px">
+      <button class="buton-verde" id="pm-valideaza" data-actiune="POST /tenants/{tenant_id}/facturi-primite/manual">Validează (scrie nota pe contul ales)</button>
+    </div>
+    <div id="pr-zona" style="margin-top:10px"></div>`;
+  const zona = corp.querySelector("#pr-zona");
+  // tipul furnizorului (D394) și TVA la încasare: aflate din ANAF la validare; cerute numai când ANAF nu le poate spune (furnizor din altă
+  // țară — de la început —, sau ANAF fără răspuns — la refuzul serverului). DS cap.17: Da/Nu situațional, ales de om
+  const arataStatutul = () => {
+    const z = corp.querySelector("#pm-statut");
+    if (!z.hidden) return;
+    z.hidden = false;
+    z.innerHTML = `
+      <label class="camp"><span class="camp-eticheta">Furnizorul e înregistrat în scopuri de TVA (D394 îl declară după tip)<span class="oblig">*</span></span>
+        ${selectDaNu('id="pr-platitor"', null, "Furnizorul e înregistrat în scopuri de TVA")}</label>
+      ${tara() === "RO" ? `<label class="camp"><span class="camp-eticheta">Furnizorul aplică TVA la încasare (deducere amânată până la plată, art. 297 alin. (2))<span class="oblig">*</span></span>
+        ${selectDaNu('id="pr-furnizor-incasare"', null, "Furnizor cu TVA la încasare")}</label>` : ""}`;
+  };
+  const stergeStatutul = () => { const z = corp.querySelector("#pm-statut"); z.hidden = true; z.innerHTML = ""; };
+  const valuta = () => arataCursulValidarii(corp.querySelector("#pr-valuta"), tenantId, corp.querySelector("#pm-moneda").value,
+                                            corp.querySelector("#pm-data").value);
+  const cuCota = (l) => l.cota_tva !== "" && l.cota_tva != null;
+  const totaluri = () => {
+    const z = corp.querySelector("#pm-total");
+    const complete = linii.every((l) => l.cantitate !== "" && l.pret_unitar !== "" && cuCota(l));
+    if (!complete) { z.innerHTML = ""; return; }
+    const t = tvaDocument(linii.map((l) => ({ cantitate: Number(l.cantitate), pret_unitar: Number(l.pret_unitar), cota_tva: Number(l.cota_tva) })));
+    const m = monedaScrisa(corp.querySelector("#pm-moneda").value);
+    z.innerHTML = `<span>Total fără TVA <b>${bani(t.baza)} ${m}</b> · TVA <b>${bani(t.tva)} ${m}</b></span><span id="pm-total-cu-tva">Total <b>${bani(t.baza + t.tva)} ${m}</b></span>`;
+  };
+  const deseneazaLinii = () => {
+    const z = corp.querySelector("#pm-linii");
+    z.innerHTML = linii.map((l, k) => {
+      const i = k + 1;
+      return `<div class="pf-linie-clasif" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px" data-k="${k}">
+        <input class="camp-input pm-camp" data-c="descriere" id="pm-l${i}-descriere" value="${esc(l.descriere)}" placeholder="denumirea de pe factură" aria-label="Denumirea liniei ${i}" style="flex:1 1 220px">
+        <input class="camp-input pm-camp" data-c="cantitate" id="pm-l${i}-cantitate" value="${esc(l.cantitate)}" inputmode="decimal" placeholder="cantitate" aria-label="Cantitatea liniei ${i}" style="flex:0 0 100px;width:100px">
+        <input class="camp-input pm-camp" data-c="um" id="pm-l${i}-um" value="${esc(l.um)}" placeholder="UM" aria-label="Unitatea de măsură a liniei ${i}" style="flex:0 0 70px;width:70px">
+        <input class="camp-input pm-camp" data-c="pret_unitar" id="pm-l${i}-pret" value="${esc(l.pret_unitar)}" inputmode="decimal" placeholder="preț fără TVA" aria-label="Prețul unitar fără TVA al liniei ${i}" style="flex:0 0 120px;width:120px">
+        <select class="camp-input pm-cota pm-camp" data-c="cota_tva" id="pm-l${i}-cota" aria-label="Cota de TVA a liniei ${i}" style="flex:0 0 auto;width:auto">${ALEGE}${COTE.map((c) => `<option value="${c}"${String(l.cota_tva) === String(c) ? " selected" : ""}>${c}%</option>`).join("")}</select>
+        <select class="camp-input pr-dest pm-camp" data-c="dest" aria-label="Destinație TVA linie ${i}" style="flex:0 0 auto;width:auto">
+          <option value="taxabil"${l.dest === "taxabil" ? " selected" : ""}>Taxabilă</option><option value="scutit"${l.dest === "scutit" ? " selected" : ""}>Scutită</option><option value="mixt"${l.dest === "mixt" ? " selected" : ""}>Mixtă</option></select>
+        <input class="camp-input pm-camp pr-cont-linie" data-c="cont" id="pm-l${i}-cont" value="${esc(l.cont)}" placeholder="contul facturii" aria-label="Contul liniei ${i}" style="flex:0 0 130px;width:130px">
+        ${linii.length > 1 ? `<button class="buton-sters buton-mic pm-sterge" type="button" data-k="${k}" data-fara-actiune="scoate linia din formular, fără scriere" aria-label="Șterge linia ${i}">Șterge</button>` : ""}
+      </div>`;
+    }).join("");
+    z.querySelectorAll(".pm-camp").forEach((el) => el.addEventListener(el.tagName === "SELECT" ? "change" : "input", () => {
+      linii[Number(el.closest("[data-k]").dataset.k)][el.dataset.c] = el.value;
+      totaluri();
+    }));
+    z.querySelectorAll(".pm-sterge").forEach((b) => b.addEventListener("click", () => { linii.splice(Number(b.dataset.k), 1); deseneazaLinii(); }));
+    if (!COTE.length) {
+      z.querySelectorAll(".pm-cota").forEach((sel) => { sel.disabled = true; sel.title = "Alege întâi data facturii: cotele sunt cele în vigoare atunci."; });
+    }
+    totaluri();
+  };
+  const cerereCote = ultimaCerere();
+  const incarcaCotele = async () => {
+    const actuala = cerereCote();
+    const d = corp.querySelector("#pm-data").value;
+    if (!d) { COTE = []; deseneazaLinii(); return; }
+    try {
+      const n = await api.get(`/tenants/${tenantId}/facturi/numerotare?data=${encodeURIComponent(d)}`);
+      if (!actuala()) return;
+      COTE = (n.cote_permise && n.cote_permise.length) ? n.cote_permise : [];
+      linii.forEach((l) => { if (cuCota(l) && !COTE.map(String).includes(String(l.cota_tva))) l.cota_tva = ""; });   // cota altei perioade nu rămâne aleasă
+      pastreazaCampulActiv(corp, deseneazaLinii);
+    } catch (e) {
+      if (!actuala()) return;
+      eroareCamp(corp, "pm-data", `Cotele de TVA în vigoare la data aleasă nu s-au putut citi${e && e.mesaj ? ": " + e.mesaj : ""} — alege data din nou.`);
+    }
+  };
+  deseneazaLinii();
+  corp.querySelector("#pm-add-linie").addEventListener("click", () => { linii.push(linieManuala()); deseneazaLinii(); });
+  corp.querySelector("#pm-data").addEventListener("change", () => { incarcaCotele(); valuta(); });
+  corp.querySelector("#pm-moneda").addEventListener("change", () => { valuta(); totaluri(); });
+  corp.querySelector("#pm-tara").addEventListener("change", () => { stergeStatutul(); if (tara() && tara() !== "RO") arataStatutul(); });
+  const bV = corp.querySelector("#pm-verifica");
+  bV.addEventListener("click", async () => {
+    const cui = corp.querySelector("#pm-cui").value.trim(), st = corp.querySelector("#pm-cui-stare");
+    curataEroriCamp(corp);
+    if (!cui) { eroareCamp(corp, "pm-cui", "Scrie codul fiscal al furnizorului."); return; }
+    st.textContent = "se verifică la ANAF…"; st.className = "em-cui-stare";
+    try {
+      const r = await api.get(`/tenants/${tenantId}/verifica-cui/${encodeURIComponent(cui)}?nume=${encodeURIComponent(corp.querySelector("#pm-furnizor").value.trim())}`);
+      if (r && r.gasit) {
+        corp.querySelector("#pm-furnizor").value = r.denumire || "";
+        st.innerHTML = `<span class="em-cui-info">${esc(r.denumire || "")} · ${r.platitor_tva ? "plătitor TVA" : "neplătitor TVA"}</span>`;
+        propuneNumeAnaf(st, r, tenantId, { fel: "furnizori", pre: "pm" });   // [lotul 11, 444] fișa furnizorului cu alt nume decât ANAF
+      } else { st.textContent = "CUI negăsit la ANAF"; st.className = "em-cui-stare em-cui-rau"; }
+    } catch (e) { st.textContent = (e && e.mesaj) || "Verificarea nu s-a putut face — reîncearcă."; st.className = "em-cui-stare em-cui-rau pe-randuri"; }
+  });
+  const cerere = () => {
+    const v = (id) => (corp.querySelector("#" + id) || {}).value || "";
+    return {
+      tert_tara: tara(), tert_cui: v("pm-cui").trim(), tert_nume: v("pm-furnizor").trim(), serie: v("pm-serie").trim(), numar: v("pm-numar").trim(),
+      data_emitere: v("pm-data"), data_scadenta: v("pm-scadenta"), moneda: v("pm-moneda"), cont: v("pr-cont").trim(),
+      linii: linii.map((l) => ({ descriere: l.descriere.trim(), cantitate: l.cantitate, um: (l.um || "").trim(), pret_unitar: l.pret_unitar, cota_tva: l.cota_tva })),
+      destinatii: linii.map((l) => l.dest), conturi: linii.map((l) => (l.cont || "").trim()),
+      tert_platitor_tva: daNu(corp.querySelector("#pr-platitor")), furnizor_tva_incasare: daNu(corp.querySelector("#pr-furnizor-incasare")),
+    };
+  };
+  corp.querySelector("#pm-valideaza").addEventListener("click", () => {
+    curataEroriCamp(corp);
+    if (cereAlegerile(corp, [...linii.map((_l, k) => `#pm-l${k + 1}-cota`), "#pr-platitor", "#pr-furnizor-incasare"])) return;   // [FAPT_FISCAL_NECERUT]
+    confirmaCaseta(zona, "Validezi factura? Nota se scrie pe contul ales (la un cont de stoc, cu intrarea în stoc) și intră în evidența contabilă.", async () => {
+      const c = cerere();
+      try {
+        // [decizia 08.10 pct.2] factura de marfă cu NIR „fără factură” nelegat la același furnizor: serverul cere alegerea
+        const r = await cuLegareaNir(zona, "POST /tenants/{tenant_id}/facturi-primite/manual", (alegere) =>
+          api.post(`/tenants/${tenantId}/facturi-primite/manual`, { ...c, ...alegere }));
+        arataMesaj(zona, `Validată. Cheltuiala creată din factura ${numarCuSerie(c.serie, c.numar)} din ${dataRo(c.data_emitere)}.`, "ok");
+        anuntaCursulValidat(zona, r);
+        corp.querySelector("#pm-valideaza").disabled = true;   // aceeași factură nu se validează a doua oară din formularul ăsta
+        butonInapoi(zona, nav);   // [418c / 410, DS cap.27] confirmarea rămâne; înapoi la cererea omului
+      } catch (e) {
+        if (e && e.detaliu && e.detaliu.cod === "TERT_PLATITOR_DE_COMPLETAT") arataStatutul();   // ANAF n-a spus tipul furnizorului
+        arataRefuzul(corp, e, zona);   // [lotul 11, 440] câmpurile refuzului lângă ele, restul în zonă
+      }
+    }, { textOk: "Validează" });
   });
 }
 
@@ -371,7 +589,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         // [R45] POST, acelasi motiv ca la SAGA.
         await descarca(`/tenants/${tenantId}/facturi/export-winmentor?an=${an}&luna=${luna}`,
                        `export_winmentor_${an}_${String(luna).padStart(2, "0")}.zip`, { metoda: "POST" });
-        arataMesaj(zona, "Arhivă WinMentor descărcată (Facturi.txt + Articole.txt). În WinMentor: MENTOR → INTERNE → Import date din alte aplicații → Facturi ieșire.", "ok");
+        arataMesaj(zona, "Arhivă WinMentor descărcată (Facturi.txt + Articole.txt). În WinMentor: meniul „MENTOR → INTERNE → Import date din alte aplicații → Facturi ieșire”.", "ok");
       } catch (e) { arataMesaj(zona, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
       finally { btn.disabled = false; btn.textContent = _t; }
     });
@@ -426,47 +644,60 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
   let vedere = "facturi";
 
   const aziISO = dataIso();
-  const randFacturi = () => {
-    if (!(d.linii || []).length) return `<div class="stare-goala">Nicio factură emisă neîncasată.</div>`;
-    return d.linii.map((l) => {
-      const s = SEM[l.stare] || SEM.fara_scadenta;
-      const sub = l.stare === "restanta" ? `${cate(-l.zile, "zi de întârziere", "zile de întârziere")}`
-        : l.stare === "scade_curand" ? `scade în ${cate(l.zile, "zi", "zile")}`
-        : l.stare === "fara_scadenta" ? "fără scadență în sistem"
-        : `scadență ${dataRo(l.data_scadenta)}`;
-      // supapa per factura - doar cand notificarile sunt active (altfel n-ar avea efect)
-      let valva = "";
-      if (d.optin) {
-        const amanat = l.notificare_amanata_pana && l.notificare_amanata_pana >= aziISO;
-        valva = l.notificare_stop ? ` · <b>notificări oprite</b> <span class="btn-link" data-reia="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">reia</span>`
-          : amanat ? ` · amânat până ${dataRo(l.notificare_amanata_pana)} <span class="btn-link" data-reia="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">reia</span>`
-          : ` · <span class="btn-link" data-stop="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">nu notifica</span> <span class="btn-link" data-amana="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">amână 30 zile</span>`;
-      }
-      return `
-      <div class="mig-frand" style="cursor:default">
+  // [lotul 12, 468] suma cu moneda ei scrisă: lei (RON) separat de euro; nicio sumă fără monedă
+  const cuMoneda = (suma, m) => `${bani(suma)} ${monedaScrisa(m)}`;
+  const solduriText = (sl, camp) => (sl || []).filter((x) => Number(x[camp]) > 0).map((x) => cuMoneda(x[camp], x.moneda)).join(" + ");
+  const randFactura = (l) => {
+    const s = SEM[l.stare] || SEM.fara_scadenta;
+    const sub = l.stare === "restanta" ? `${cate(-l.zile, "zi de întârziere", "zile de întârziere")}`
+      : l.stare === "scade_curand" ? `scade în ${cate(l.zile, "zi", "zile")}`
+      : l.stare === "fara_scadenta" ? "fără scadență în sistem"
+      : `scadență ${dataRo(l.data_scadenta)}`;
+    // [lotul 12, 252] factura deschisă adusă la preluare (din programul vechi) se spune pe rând
+    const preluata = l.tip === "preluata" ? " · preluată din programul vechi" : "";
+    // [lotul 12, 466] încasată parțial: restul e suma rândului, iar totalul facturii se spune lângă
+    const partial = l.stare_incasare && l.stare_incasare.stare === "partial"
+      ? ` · încasată parțial, rest din ${cuMoneda(l.total_valuta, l.moneda)}` : "";
+    // supapa per factura - doar cand notificarile sunt active (altfel n-ar avea efect)
+    let valva = "";
+    if (d.optin) {
+      const amanat = l.notificare_amanata_pana && l.notificare_amanata_pana >= aziISO;
+      valva = l.notificare_stop ? ` · <b>notificări oprite</b> <span class="btn-link" data-reia="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">reia</span>`
+        : amanat ? ` · amânat până ${dataRo(l.notificare_amanata_pana)} <span class="btn-link" data-reia="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">reia</span>`
+        : ` · <span class="btn-link" data-stop="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">nu notifica</span> <span class="btn-link" data-amana="${l.id}" data-actiune="PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare">amână 30 zile</span>`;
+    }
+    // [lotul 12, 467] rândul deschide factura (ca în „Istoric facturi”)
+    return `
+      <button class="buton-secundar pf-frand sc-fact-btn" data-id="${l.id}">
         <span class="cf-dot" style="background:${s.dot};flex-shrink:0"></span>
-        <div class="mig-frand-text">
-          <div class="mig-frand-nume">${l.numar || "—"}${l.tert_nume ? " · " + esc(l.tert_nume) : ""}</div>
-          <div class="mig-frand-sub">${sub}${valva}</div>
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${l.numar ? esc(numarCuSerie(l.serie, l.numar)) : "—"}${l.tert_nume ? " · " + esc(l.tert_nume) : ""}</div>
+          <div class="pf-frand-sub">${sub}${preluata}${partial}${valva}</div>
         </div>
-        <span class="pf-frand-suma">${bani(l.suma)} ${l.moneda || "lei"}</span>
-      </div>`;
-    }).join("");
+        <span class="pf-frand-suma">${cuMoneda(l.suma, l.moneda)}</span>
+      </button>`;
+  };
+  const randFacturi = (linii) => {
+    if (!(linii || []).length) return `<div class="stare-goala">Nicio factură emisă neîncasată.</div>`;
+    return linii.map(randFactura).join("");
   };
 
   const randClienti = () => {
     if (!(d.clienti || []).length) return `<div class="stare-goala">Niciun client cu facturi neîncasate.</div>`;
     return d.clienti.map((c) => {
-      const rest = Number(c.restant) > 0 ? `<span style="color:var(--rosu)">${bani(c.restant)} restant</span> · ` : "";
+      // [lotul 12, 468] soldul și restanța PE MONEDĂ (serverul nu le mai adună): „1.210,00 lei + 500,00 EUR”
+      const restant = solduriText(c.solduri, "restant");
+      const rest = restant ? `<span style="color:var(--rosu)">${restant} restant</span> · ` : "";
       const fara = c.email ? "" : " · fără email";
+      // [lotul 12, 467] rândul clientului deschide fișa lui
       return `
-      <div class="mig-frand" style="cursor:default">
-        <div class="mig-frand-text">
-          <div class="mig-frand-nume">${esc(c.nume || c.cui || "—")}</div>
-          <div class="mig-frand-sub">${cate(c.nr, "factură neîncasată", "facturi neîncasate")}${fara}</div>
+      <button class="buton-secundar pf-frand sc-client-btn" data-cheie="${esc(c.cheie)}">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(c.nume || c.cui || "—")}</div>
+          <div class="pf-frand-sub">${cate(c.nr, "factură neîncasată", "facturi neîncasate")}${fara}</div>
         </div>
-        <span class="pf-frand-suma">${rest}${bani(c.sold)} lei</span>
-      </div>`;
+        <span class="pf-frand-suma">${rest}${solduriText(c.solduri, "sold")}</span>
+      </button>`;
     }).join("");
   };
 
@@ -475,8 +706,39 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
     try { await api.put(`/tenants/${tenantId}/facturi/${fid}/notificare`, body); await reincarca(); }
     catch (e) { arataRefuzul(corp, e, corp.querySelector("#sc-msg")); }   // [lotul 11, 440]
   };
+  // supapa și deschiderea facturii, pe rândurile din `zona` (lista scadențarului sau fișa clientului)
+  const leagaRanduri = (zona) => {
+    zona.querySelectorAll("[data-stop]").forEach((b) => b.addEventListener("click", (ev) => { ev.stopPropagation(); supapa(b.dataset.stop, { stop: true }); }));
+    zona.querySelectorAll("[data-reia]").forEach((b) => b.addEventListener("click", (ev) => { ev.stopPropagation(); supapa(b.dataset.reia, { stop: false, amanata_pana: null }); }));
+    zona.querySelectorAll("[data-amana]").forEach((b) => b.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const pana = dataIso(new Date(Date.now() + 30 * 864e5));
+      supapa(b.dataset.amana, { stop: false, amanata_pana: pana });
+    }));
+    zona.querySelectorAll(".sc-fact-btn").forEach((b) => b.addEventListener("click", () =>
+      nav.mergi("Factură", (c) => detaliiFactura(c, nav, tenantId, b.dataset.id, opt))));
+  };
+  // [lotul 12, 467] „Fișă client”: facturile neîncasate ale clientului, cu soldul pe monedă; fiecare deschide factura
+  const fisaClient = (c, cheie) => {
+    const cl = (d.clienti || []).find((x) => x.cheie === cheie);
+    const aleClientului = (d.linii || []).filter((l) => l.client_cheie === cheie);   // facturile clientului din Scadențar (afișare, nu un formular)
+    if (!cl) { c.innerHTML = `<div class="stare-goala">Clientul nu mai are facturi neîncasate.</div>`; return; }
+    const restant = solduriText(cl.solduri, "restant");
+    c.innerHTML = `
+      <h2 class="pf-titlu">Fișă client</h2>
+      <p class="pf-intro"><b id="sc-fisa-client">${esc(cl.nume || cl.cui || "—")}</b> · ${cl.cui ? "Cod fiscal " + esc(cl.cui) + " · " : ""}${cate(cl.nr, "factură neîncasată", "facturi neîncasate")}${cl.email ? " · " + esc(cl.email) : " · fără email"}</p>
+      <div class="cf-sumar" id="sc-fisa-sold">
+        <span class="cf-pastila">De încasat: <b>${solduriText(cl.solduri, "sold")}</b></span>
+        ${restant ? `<span class="cf-pastila"><span class="cf-dot" style="background:${SEM.restanta.dot}"></span>Restant: <b>${restant}</b></span>` : ""}
+      </div>
+      <div class="pf-lista zebra-lista" id="sc-fisa-lista">${randFacturi(aleClientului)}</div>`;
+    leagaRanduri(c);
+  };
 
   const deseneaza = () => {
+    // [lotul 12, 469, DS cap.1 `.buton-activ`] vederea aleasă e marcată activă (albastru închis, apăsată), nu dezactivată: cea aleasă
+    // arăta gri, ca un buton care nu merge, iar cealaltă părea cea activă
+    const vb = (id, v, text) => `<button class="buton-secundar${vedere === v ? " buton-activ" : ""}" id="${id}" aria-pressed="${vedere === v}">${text}</button>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Scadențar</h2>
       <label class="set-bifa" style="margin:0 0 10px"><input type="checkbox" id="sc-optin" data-actiune="PUT /tenants/{tenant_id}/scadentar/opt-in"${d.optin ? " checked" : ""}> <span>Trimite automat notificări de plată clienților, în numele firmei</span></label>
@@ -487,10 +749,10 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
         <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.in_termen.dot}"></span>${rez.in_termen || 0} în termen</span>
       </div>
       <p class="pf-intro">
-        <button class="buton-secundar" id="sc-facturi"${vedere === "facturi" ? " disabled" : ""}>Facturi neîncasate</button>
-        <button class="buton-secundar" id="sc-clienti"${vedere === "clienti" ? " disabled" : ""}>Fișă client</button>
+        ${vb("sc-facturi", "facturi", "Facturi neîncasate")}
+        ${vb("sc-clienti", "clienti", "Fișă client")}
       </p>
-      <div class="mig-lista zebra-lista">${vedere === "facturi" ? randFacturi() : randClienti()}</div>`;
+      <div class="pf-lista zebra-lista" id="sc-lista">${vedere === "facturi" ? randFacturi(d.linii) : randClienti()}</div>`;
     const chk = corp.querySelector("#sc-optin");
     chk.addEventListener("change", async () => {
       try {
@@ -502,12 +764,9 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
     });
     corp.querySelector("#sc-facturi").addEventListener("click", () => { vedere = "facturi"; deseneaza(); });
     corp.querySelector("#sc-clienti").addEventListener("click", () => { vedere = "clienti"; deseneaza(); });
-    corp.querySelectorAll("[data-stop]").forEach((b) => b.addEventListener("click", () => supapa(b.dataset.stop, { stop: true })));
-    corp.querySelectorAll("[data-reia]").forEach((b) => b.addEventListener("click", () => supapa(b.dataset.reia, { stop: false, amanata_pana: null })));
-    corp.querySelectorAll("[data-amana]").forEach((b) => b.addEventListener("click", () => {
-      const pana = dataIso(new Date(Date.now() + 30 * 864e5));
-      supapa(b.dataset.amana, { stop: false, amanata_pana: pana });
-    }));
+    leagaRanduri(corp);
+    corp.querySelectorAll(".sc-client-btn").forEach((b) => b.addEventListener("click", () =>
+      nav.mergi("Fișă client", (c) => fisaClient(c, b.dataset.cheie))));
   };
   deseneaza();
 }
@@ -525,6 +784,27 @@ const _bani = (x, mon) => {
   return mon ? `${bani(x)} ${mon}` : bani(x);
 };
 
+// [lotul 12, 252] detaliul facturii deschise preluate: numărul, starea încasării, data și scadența, partenerul, restul de la preluare
+const TEXT_FACTURA_PRELUATA = "Factură deschisă adusă la preluarea firmei, cu restul ei de la data preluării. Soldul ei e în balanța de deschidere: nu se contează și nu intră în declarații. Se stinge din Bancă, Casă sau Compensări.";
+function detaliuFacturaPreluata(f) {
+  const dir = dirEticheta(f.directie);
+  const partener = f.tert_nume ? `${esc(f.tert_nume)}${f.tert_cui ? " \u00b7 CUI " + esc(f.tert_cui) : ""}` : "";
+  return `
+    <div class="fd-antet rezumat-fix">
+      <div class="fd-antet-sus">
+        <h2 class="pf-titlu">${esc(numarCuSerie(f.serie, f.numar))}</h2>
+        <span class="fd-stare">preluată din programul vechi</span>
+        ${f.stare_incasare ? `<span class="fd-stare${f.stare_incasare.stare === "incasata" ? " fd-stare-verde" : ""}">${esc(etichetaIncasare(f))}</span>` : ""}
+      </div>
+      <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${dataRo(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + dataRo(f.data_scadenta) : " \u00b7 f\u0103r\u0103 scaden\u021b\u0103"}</div>
+      ${partener ? `<div class="fd-antet-linie">${dir === "primit\u0103" ? "De la" : "C\u0103tre"}: ${partener}</div>` : ""}
+      <div class="fd-antet-linie" id="fd-preluata">${TEXT_FACTURA_PRELUATA}</div>
+    </div>
+    <div class="bara-fixa"><div class="fd-totaluri">
+      <div class="fd-tot-rand fd-tot-final"><span>Rest la preluare</span><span>${_bani(f.total, f.moneda || "RON")}</span></div>
+    </div></div>`;
+}
+
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
 
@@ -536,6 +816,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     return;
   }
 
+  // [lotul 12, deficiența 252] factura deschisă preluată: e a programului vechi, cu restul ei de la preluare — fără acțiuni de document
+  // fiscal (serverul le refuză și el: `facturi_api.refuza_sold_preluat`)
+  if (f.tip === "preluata") { corp.innerHTML = detaliuFacturaPreluata(f); return; }
   const mon = f.moneda || "RON";
   const esteValuta = mon.toUpperCase() !== "RON";
   const linii = f.linii || [];
@@ -620,7 +903,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.stare_incasare ? `<span class="fd-stare${f.stare_incasare.stare === "incasata" ? " fd-stare-verde" : ""}">${esc(etichetaIncasare(f))}</span>` : ""}
         ${f.stare_spv ? `<span class="fd-stare${f.stare_spv.stare === "acceptata" ? " fd-stare-verde" : ""}" id="fd-stare-spv">${esc(etichetaSpv(f))}</span>` : ""}
-        ${f.platita_la && f.plata_confirmata_de === "mock" ? '<span class="fd-stare fd-stare-galben" title="Confirmare de simulare, nu de la un procesator de pl\u0103\u021bi. Nu dovede\u0219te c\u0103 au intrat bani.">pl\u0103tit\u0103 prin SIMULARE</span>' : ""}
+        ${f.platita_la && f.plata_confirmata_de === "mock" ? '<span class="fd-stare fd-stare-galben" title="Confirmare de simulare, nu de la un procesator de pl\u0103\u021bi. Nu dovede\u0219te c\u0103 au intrat bani.">pl\u0103tit\u0103 prin simulare</span>' : ""}
         <!-- [06.09.2026] Butonul «Link plata» a fost SCOS: calea de plata online e inchisa prin
              decizie — incasarea se face prin transfer bancar, confirmat din extras. Eticheta
              «platita prin SIMULARE» de mai sus RAMANE: nicio factura n-o poarta azi, dar daca
@@ -703,7 +986,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
           try {
             const r = await api.post(`/tenants/${tenantId}/facturi/${facturaId}/trimite-spv`, {});
             if (r.stare === "nevalidat") {
-              arataMesaj(zonaSpv, "Structură invalidă — NU s-a trimis. ANAF:\n" + (r.erori || []).join("\n"), "avert");
+              arataMesaj(zonaSpv, "Structură invalidă — nu s-a trimis. ANAF:\n" + (r.erori || []).join("\n"), "avert");
             } else {
               // [lotul 10, 10.2 pct.7f — clasa lui 419: starea veche rămâne pe detaliu după act] trimiterea schimbă starea SPV a facturii:
               // detaliul se reface ACUM (eticheta „netrimisă în SPV · termen …” din antet nu mai rămâne lângă „în prelucrare”), iar
@@ -712,7 +995,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
               await detaliiFactura(corp, nav, tenantId, facturaId, opt);
               arataMesaj(corp.querySelector("#fd-act-rez") || corp, trimisa
                 ? "Trimisă în SPV (index " + (r.index_incarcare || "—") + "). ANAF o prelucrează; recipișa se preia separat."
-                : "Răspuns ANAF:\n" + (r.erori || [r.mesaj || "eroare"]).join("\n"), trimisa ? "ok" : "avert");
+                : (r.stare === "eroare_upload" ? (r.erori || []).join("\n")   // [lotul 12, clasa 598] eroarea trimiterii e a aplicației, nu răspuns ANAF
+                  : "Răspuns ANAF:\n" + (r.erori || [r.mesaj || "eroare"]).join("\n")), trimisa ? "ok" : "avert");
             }
           } catch (e) {
             arataMesaj(zonaSpv, e.mesaj || e.message || "eroare la trimitere", "eroare");
@@ -860,9 +1144,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=67a0f7dd2f");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=1c7b806a57");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
-    nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna }), { lat: "tabel" });   // [394]
+    nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
   });
   // [lotul 10, 10.2 pct.7e, deficiența 417] „pe ecranul de detaliu al facturii de stornare nu apare trimiterea la factura inițială (pe
   // PDF apare)”: sub client, aceeași mențiune ca pe PDF („Stornare factura F1A nr. 8 din 19.10.2026”, de la server — `facturi.
@@ -1166,7 +1450,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
       <div class="pf-frand" data-id="${s.id}">
         <div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(s.tert_nume) || "\u2014"}</div>
-          <div class="pf-frand-sub">ziua ${s.zi_emitere} \u00b7 ultima: ${dataRo(s.ultima_emitere) || "\u2014"} \u00b7 ${stare}</div>
+          <div class="pf-frand-sub">ziua ${s.zi_emitere} \u00b7 ultima: ${dataRo(s.ultima_emitere) || "\u2014"} \u00b7 ${stare}${s.tert_tara && s.tert_tara !== "RO" ? ` \u00b7 client din ${esc(s.tert_tara)}` : ""}</div>
         </div>
         <span class="pf-frand-suma">${sumaTxt}</span>
         <span class="btn-link fr-toggle" data-actiune="PUT /tenants/{tenant_id}/facturi-recurente/{sid}" data-id="${s.id}" data-activ="${s.activ}" style="margin-left:8px">${s.activ ? "Dezactiveaz\u0103" : "Activeaz\u0103"}</span>
@@ -1213,6 +1497,8 @@ export function formSablon(corp, nav, tenantId, opt) {
       <div class="em-eticheta">Beneficiar</div>
       <label class="camp-eticheta" for="fr-cui">CUI beneficiar</label>
       <input class="camp-input" id="fr-cui" placeholder="ex: RO12345678" autocomplete="off">
+      <label class="camp-eticheta" for="fr-tara">Țara beneficiarului</label>
+      <select class="camp-input" id="fr-tara">${optiuniTara()}</select>
       <label class="camp-eticheta" for="fr-nume">Denumire beneficiar</label>
       <input class="camp-input" id="fr-nume" autocomplete="off">
     </div>
@@ -1306,6 +1592,11 @@ export function formSablon(corp, nav, tenantId, opt) {
   }
 
   corp.querySelector("#fr-add-linie").addEventListener("click", () => { linii.push(linieNoua()); deseneazaLinii(); });
+  // [lotul 12, C160] țara clientului DEDUSĂ din codul fiscal, ca la „Emite factură” (DS cap.17): vizibilă și modificabilă din listă
+  corp.querySelector("#fr-cui").addEventListener("change", (ev) => {
+    const t = taraDinCui(ev.target.value), sel = corp.querySelector("#fr-tara");
+    if (t && sel.value !== t) sel.value = t;
+  });
   linii.push(linieNoua());  // prima linie
   deseneazaLinii();
 
@@ -1319,6 +1610,7 @@ export function formSablon(corp, nav, tenantId, opt) {
     const corpCerere = {
       tert_cui: corp.querySelector("#fr-cui").value.trim() || null,
       tert_nume: corp.querySelector("#fr-nume").value.trim(),
+      tert_tara: corp.querySelector("#fr-tara").value,   // [C160] țara clientului, până la emitere
       zi_emitere: Number(corp.querySelector("#fr-zi").value) || 1,
       moneda: corp.querySelector("#fr-moneda").value,
       linii: linii.map((l) => ({ descriere: l.descriere, cantitate: l.cantitate,

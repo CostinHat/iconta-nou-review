@@ -22,16 +22,20 @@ import sys
 from core import db
 
 _NUME_INDEX = "facturi_numar_emisa_uniq"
+#: [lotul 12, 252] fără facturile deschise preluate (`nomenclator_status_factura.TIP_SOLD_PRELUAT`): numerele lor sunt ale programului
+#: vechi (și „Sold la <data>”, același pe toți clienții), nu ale numerotării din iConta.eu. Firmele cu indexul vechi:
+#: `core/migrare_documente_preluate.py` (îl reface).
+CONDITIE = "directie = 'emisa' AND COALESCE(tip, 'factura') <> 'preluata'"
 _DDL = ('CREATE UNIQUE INDEX IF NOT EXISTS %s ON "{s}".facturi '
-        "(COALESCE(serie, ''), numar) WHERE directie = 'emisa';" % _NUME_INDEX)
+        "(COALESCE(serie, ''), numar) WHERE %s;" % (_NUME_INDEX, CONDITIE))
 
 
 def duplicate(conn, schema):
     """Listă de (serie, numar, count) duplicate pe emise — trebuie goală înainte de index."""
     with conn.cursor() as cur:
-        cur.execute('SELECT COALESCE(serie, \'\') AS s, numar, count(*) AS n FROM "{s}".facturi '
-                    "WHERE directie = 'emisa' GROUP BY COALESCE(serie, ''), numar "
-                    "HAVING count(*) > 1 ORDER BY n DESC".format(s=schema))
+        cur.execute(('SELECT COALESCE(serie, \'\') AS s, numar, count(*) AS n FROM "{s}".facturi '
+                     "WHERE " + CONDITIE + " GROUP BY COALESCE(serie, ''), numar "
+                     "HAVING count(*) > 1 ORDER BY n DESC").format(s=schema))
         return cur.fetchall()
 
 

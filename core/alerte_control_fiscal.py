@@ -125,11 +125,14 @@ def emite_pentru_firma(tenant_id, nume, schema, cabinet_id, an, luna):
 
 
 def ruleaza(azi=None):
-    """Cron: itereaza firmele de cabinet active, push in-app pe rosu nou/reaparut. Perioada = luna
-    curenta (ca ecranul de control). Firme standalone (fara cabinet) sar (n-au contabili de notificat)."""
+    """Cron: itereaza firmele de cabinet active, push in-app pe rosu nou/reaparut. Perioada = luna confruntată în Control fiscal
+    (`control_fiscal_api.luna_confruntata`: ultima lună încheiată, a cărei declarație e datorată — deficiența 484; înainte, luna în curs,
+    pe care nu există încă nimic de confruntat, deci alerta nu pornea niciodată pe luna care se declară). Firme standalone (fara cabinet)
+    sar (n-au contabili de notificat)."""
     from core.common import azi_ro
+    from core.control_fiscal_api import luna_confruntata
     azi = azi or azi_ro()   # [fus] cronul decide ce declaratii sunt datorate = zi RO, robust la OS TZ
-    an, luna = azi.year, azi.month
+    an, luna = luna_confruntata(azi.year, azi.month)
     with db.get_conn() as cp:
         with cp.cursor() as cur:
             cur.execute("SELECT id, nume, schema_name, accounting_firm_id FROM public.tenants "

@@ -1,0 +1,62 @@
+[
+ {
+  "fisier": "core/tenant_stergere.py",
+  "ancora": "        asistenti = asistenti_ramasi_fara_firma(conn, tenant_id)   # [C123]",
+  "inlocuire": "        asistenti = []   # [C123]",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_c123_scoate_firma_dezactiveaza_asistentul_ramas_fara_firme"
+ },
+ {
+  "fisier": "core/tenant_stergere.py",
+  "ancora": "\"asistenti_de_dezactivat\": asistenti_ramasi_fara_firma(conn, tenant_id),",
+  "inlocuire": "\"asistenti_de_dezactivat\": [],",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_c123_scoate_firma_dezactiveaza_asistentul_ramas_fara_firme"
+ },
+ {
+  "fisier": "static/js/ecrane/asistenti.js",
+  "ancora": "await api.post(`/asistenti/${uid}/finalizeaza-firme`);",
+  "inlocuire": "/* finalizarea scoasă */",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_c123_ultima_firma_scoasa_din_ecranul_colegului_dezactiveaza_contul"
+ },
+ {
+  "fisier": "core/tenant_stergere.py",
+  "ancora": "(\"inregistrari\", (\"notă contabilă\", \"note contabile\")),",
+  "inlocuire": "(\"inregistrari\", (\"note contabile\", \"note contabile\")),",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_263_scoate_firma_numara_evidenta_acordat"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "C(\"valoare\", \"Valoare\", \"numar\", { cond: { camp: \"operatie\", val: [\"plus\", \"plus_mf\", \"minus\"] } }),",
+  "inlocuire": "C(\"valoare\", \"Valoare\"),",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_c117_casarea_nu_cere_valoarea_mijlocului_fix"
+ },
+ {
+  "fisier": "core/ciorne_depasite.py",
+  "ancora": "return Acum(_uc.ultima_zi_a_lunii(an, luna), None, None,",
+  "inlocuire": "return Acum(None, None, None,",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_214_ciorna_veche_de_amortizare_datata_28_se_reface_in_ultima_zi"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "cur, schema, _uc_comun.ultima_zi_a_lunii(an, luna), numar, f\"Amortizare",
+  "inlocuire": "cur, schema, _date(an, luna, 28), numar, f\"Amortizare",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_214_ciorna_veche_de_amortizare_datata_28_se_reface_in_ultima_zi"
+ },
+ {
+  "fisier": "core/intracomunitar.py",
+  "ancora": "        raise ValueError(MESAJ_AIC_RO)",
+  "inlocuire": "        pass",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_c128_achizitia_intracomunitara_refuza_furnizorul_din_romania"
+ },
+ {
+  "fisier": "core/amortizare_lunii.py",
+  "ancora": "    if lipsa:",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_c129_reevaluarea_refuza_fisa_fara_cont_de_imobilizare"
+ },
+ {
+  "fisier": "core/tenant_stergere.py",
+  "ancora": "    return [cate(randuri[k], *ETICHETE_RANDURI[k]) for k in ordine if randuri.get(k)]",
+  "inlocuire": "    return [\"%d × %s\" % (randuri[k], k) for k in ordine if randuri.get(k)]",
+  "test": "frontend_test/e2e/e2e_lot12_diverse.py::test_def_c136_scoate_firma_spune_ce_dispare_in_cuvintele_contabilului"
+ }
+]

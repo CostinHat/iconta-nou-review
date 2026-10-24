@@ -59,14 +59,14 @@ def _prag_pentru(_nume, temei):
 def _mesaj(x):
     et = ETICHETE.get(x["nume"], x["nume"].replace("_", " "))
     if x["verificat_la"] is None:
-        vech = "NU are data de confirmare la sursa (verificat_la lipsa)"
+        vech = "NU are data de confirmare la sursă (verificat_la lipsă)"
     else:
-        vech = ("confirmata ultima data la %s (acum ~%d luni)"
+        vech = ("confirmată ultima dată la %s (acum ~%d luni)"
                 % (x["verificat_la"].isoformat(), x["luni_de_la_confirmare"]))
     vech += " · prag %d luni (%s)" % (x.get("prag_luni", 0), x.get("prag_sursa", "global"))
-    return ("%s (%s, %s, in vigoare din %s) %s. Verifica in Monitorul Oficial daca a aparut un act "
-            "normativ nou; daca valoarea e neschimbata, actualizeaza verificat_la in core/common.py, "
-            "daca s-a schimbat, adauga valoarea noua (data_out se deriva automat)."
+    return ("%s (%s, %s, în vigoare din %s) %s. Verifică în Monitorul Oficial dacă a apărut un act "   # [317, lotul 12] cu diacritice
+            "normativ nou; dacă valoarea e neschimbată, actualizează verificat_la în core/common.py; "
+            "dacă s-a schimbat, adaugă valoarea nouă (data_out se derivă automat)."
             % (et, x["valoare"], x["temei"], x["din"].isoformat(), vech))
 
 
@@ -83,8 +83,8 @@ def ruleaza(prag_luni=None, la_data=None, alerteaza=None):
     # O SINGURA alerta pe rulare, toate valorile grupate (un paragraf fiecare, in ordinea vechimii).
     corp = (chr(10) + chr(10)).join(_mesaj(x) for x in care)
     n = len(care)
-    subiect = ("O valoare fiscala n-a mai fost confirmata in pragul ei" if n == 1
-               else "%d valori fiscale n-au mai fost confirmate in pragul lor" % n)
+    subiect = ("O valoare fiscală n-a mai fost confirmată în pragul ei" if n == 1
+               else "%d valori fiscale n-au mai fost confirmate în pragul lor" % n)
     cheie = "confirmare_cote:" + ",".join(
         "%s@%s" % (x["nume"], x["verificat_la"].isoformat() if x["verificat_la"] else "nicicand") for x in care)
     print(corp)

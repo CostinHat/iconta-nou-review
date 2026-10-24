@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "core/luna_preluare.py",
+  "ancora": "        return _luna(prima_nota)\n",
+  "inlocuire": "        return _luna(salvata)\n",
+  "test": "frontend_test/e2e/e2e_lot12_datefirma.py::test_def_147_luna_aleasa_dupa_o_nota_mai_veche_arata_luna_notei"
+ },
+ {
+  "fisier": "static/js/ecrane/date_firma.js",
+  "ancora": "if (_lp.value !== _lp.dataset.initiala) date.luna_preluare =",
+  "inlocuire": "date.luna_preluare =",
+  "test": "frontend_test/e2e/e2e_lot12_datefirma.py::test_def_147_luna_aleasa_dupa_o_nota_mai_veche_arata_luna_notei"
+ },
+ {
+  "fisier": "static/js/ecrane/date_firma.js",
+  "ancora": "_lpIn.value = _lpIn.dataset.propunere;",
+  "inlocuire": "void 0;",
+  "test": "frontend_test/e2e/e2e_lot12_datefirma.py::test_def_169_luna_golita_revine_la_propunere"
+ },
+ {
+  "fisier": "core/casa_api.py",
+  "ancora": "        cur.execute(f\"UPDATE {schema}.inregistrari SET descriere = %s WHERE id = %s AND status = 'ciorna'\", (nou, nid))\n",
+  "inlocuire": "        pass\n",
+  "test": "frontend_test/e2e/e2e_lot12_datefirma.py::test_def_168_incasarea_facturii_din_casa_numeste_chitanta_in_nota"
+ }
+]

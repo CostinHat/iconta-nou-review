@@ -1,0 +1,777 @@
+[
+ {
+  "nr": "C150",
+  "firma": "tenant_9049",
+  "descriere": "F1: Bancă -> extrasul cu două comisioane din aceeași zi (0,15 și 0,07 lei, probă) -> „Contează 627=5121” pe fiecare: confirmarea numește linia contată („Linia din 23.10.2026, −0,07 lei (…): notă 627=5121 creată…”), deci cele două mesaje diferă",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-fisier",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#bk-fisier",
+    "generator": "e2e_lot12_cx1:fisier_csv_c150",
+    "argumente": [
+     "2026-10-23"
+    ],
+    "nume": "proba_c150.csv"
+   },
+   {
+    "asteapta_text": "linii importate"
+   },
+   {
+    "asteapta": "#bk-lista .pf-frand:has-text('Proba C150 Comision administrare') [data-cont]"
+   },
+   {
+    "click": "#bk-lista .pf-frand:has-text('Proba C150 Comision administrare') [data-cont]"
+   },
+   {
+    "asteapta_text": "Proba C150 Comision administrare cont): notă"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "captura": "c150_f1_prima_confirmare.png"
+   },
+   {
+    "asteapta": "#bk-lista .pf-frand:has-text('Proba C150 Comision mentenanta') [data-cont]"
+   },
+   {
+    "click": "#bk-lista .pf-frand:has-text('Proba C150 Comision mentenanta') [data-cont]"
+   },
+   {
+    "asteapta_text": "Proba C150 Comision mentenanta card): notă"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Linia din 23.10.2026, −0,07 lei (Proba C150 Comision mentenanta card): notă 627=5121 creată",
+    "zona": "#bk-mesaj"
+   },
+   {
+    "nu_contine": "Comision administrare",
+    "zona": "#bk-mesaj"
+   }
+  ],
+  "captura": "c150_f1_a_doua_confirmare.png"
+ },
+ {
+  "nr": "C151",
+  "firma": "tenant_9049",
+  "descriere": "F1: Casă -> încasare de la client fără factură (IE6388047V, 1,51 lei, probă; chitanța CHF1 emisă automat) -> „Leagă de factură” -> F1A6: operațiunea e legată de factură (chitanța ei se leagă de aceeași factură, iar nota o numește)",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": "#c-toggle"
+   },
+   {
+    "click": "#c-toggle"
+   },
+   {
+    "completeaza": "#c-data",
+    "valoare": "2026-10-23"
+   },
+   {
+    "alege": "#c-cat",
+    "valoare": "incasare_client"
+   },
+   {
+    "completeaza": "#c-suma",
+    "valoare": "1.51"
+   },
+   {
+    "completeaza": "#c-cui",
+    "valoare": "IE6388047V"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#c-adauga"
+   },
+   {
+    "asteapta_text": "a fost emisă"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "asteapta": "[data-leaga][data-cui='IE6388047V']"
+   },
+   {
+    "click": "[data-leaga][data-cui='IE6388047V']"
+   },
+   {
+    "asteapta": "[data-leaga-f='52']"
+   },
+   {
+    "click": "[data-leaga-f='52']"
+   },
+   {
+    "asteapta_text": "Operațiunea e legată de factura"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Operațiunea e legată de factura"
+   }
+  ],
+  "captura": "c151_f1_incasarea_legata_de_f1a6.png"
+ },
+ {
+  "nr": "C121",
+  "firma": "tenant_9049",
+  "descriere": "F1 (contul firmei RO49AAAA1B31007593840000): Bancă -> extrasul MT940 al contului RO66BACX0000001234567890 -> avertismentul numește ambele conturi și cere „Da, e extrasul acestei firme” înainte de import; nimic nu se confirmă (nimic scris)",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-fisier",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#bk-fisier",
+    "generator": "e2e_lot12_cx1:fisier_mt940_c121",
+    "argumente": [
+     "2026-10-23"
+    ],
+    "nume": "proba_c121.sta",
+    "tip": "text/plain"
+   },
+   {
+    "asteapta": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#caseta-atentie-activa #ca-ok",
+    "text": "Da, e extrasul acestei firme"
+   },
+   {
+    "contine": "RO66BACX0000001234567890",
+    "zona": "#bk-mesaj"
+   },
+   {
+    "contine": "RO49AAAA1B31007593840000",
+    "zona": "#bk-mesaj"
+   }
+  ],
+  "captura": "c121_f1_extras_alt_cont_cere_confirmarea.png"
+ },
+ {
+  "nr": "C104",
+  "firma": "tenant_9049",
+  "descriere": "F1: Istoric facturi -> DNT-TEST-1019 (factura primită din XML, importată pe 19.10.2026, înainte de reparație): liniile au UM-ul din XML (H87 = „buc”); migrarea um_linii_xml n-avea ce schimba pe ea (XML-ul e numai în H87)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fac-frand-btn",
+    "text": "DNT-TEST-1019"
+   },
+   {
+    "asteapta": ".fd-td-um"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "buc",
+    "zona": ".fd-td-um"
+   },
+   {
+    "exista": ".fd-td-um"
+   }
+  ],
+  "captura": "c104_f1_vechi_dnt_test_1019_um.png"
+ },
+ {
+  "nr": "C104",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite -> „Importă XML UBL” cu fișierul de probă DANTE (20 H87, 50 MTR, 12,5 KGM, 1 C62; numărul PROBA-C104) -> contul 371, transportul pe 624, «Furnizorul aplică TVA la încasare» = Nu (pe copie ANAF nu răspunde, deci se cere de mână, ca în dovezile C79–C83) -> „Validează” -> Istoric facturi -> factura: liniile au „buc”, „m”, „kg”, „buc” (nu toate „buc”)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "e2e_lot12_cx1:fisier_xml_c104",
+    "nume": "proba_c104.xml",
+    "tip": "text/xml"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "PROBA-C104"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "PROBA-C104"
+   },
+   {
+    "asteapta": "#pr-cont"
+   },
+   {
+    "completeaza": "#pr-cont",
+    "valoare": "371"
+   },
+   {
+    "completeaza": "#pr-cont-l3",
+    "valoare": "624"
+   },
+   {
+    "alege": "#pr-furnizor-incasare",
+    "valoare": "false"
+   },
+   {
+    "click": "#pr-valideaza"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "click": "#ca-ok"
+   },
+   {
+    "pauza": 3000
+   },
+   {
+    "click": "#nir-alta",
+    "daca_exista": true
+   },
+   {
+    "asteapta_text": "Validată"
+   },
+   {
+    "captura": "c104_f1_proba_validata.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fac-frand-btn",
+    "text": "PROBA-C104"
+   },
+   {
+    "asteapta": ".fd-td-um"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "buc m kg buc",
+    "zona": ".fd-td-um"
+   }
+  ],
+  "captura": "c104_f1_proba_c104_um_din_xml.png"
+ },
+ {
+  "nr": "C107",
+  "firma": "tenant_9049",
+  "descriere": "F1: Registru jurnal -> „Validează” pe contarea facturii F1A12 (nota 159, ciornă de dinainte de reparație): trece împreună cu ieșirea din stoc a aceleiași facturi (nota 160) — pe niciuna nu mai rămâne „Validează”",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "asteapta": "[data-val='159']"
+   },
+   {
+    "deruleaza": "[data-val='159']"
+   },
+   {
+    "captura": "c107_f1_vechi_inainte_de_validare.png"
+   },
+   {
+    "click": "[data-val='159']"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "asteapta": "[data-nota-id='160']"
+   },
+   {
+    "deruleaza": "[data-nota-id='160']"
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Validează",
+    "zona": "[data-nota-id='159']"
+   },
+   {
+    "nu_contine": "Validează",
+    "zona": "[data-nota-id='160']"
+   },
+   {
+    "exista": "[data-nota-id='160']"
+   }
+  ],
+  "captura": "c107_f1_vechi_contare_si_iesire_impreuna.png"
+ },
+ {
+  "nr": "474",
+  "firma": "tenant_9049",
+  "descriere": "F1: Raport Z -> raportul Z din 20.10.2026 (ciornă, descărcat parțial: o ieșire, 102,74 lei) -> „Validează raportul Z”: caseta spune cifrele descărcării și cere confirmarea; nu se confirmă",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   },
+   {
+    "asteapta": "#zd-val-162"
+   },
+   {
+    "deruleaza": "#zd-val-162"
+   },
+   {
+    "click": "#zd-val-162"
+   },
+   {
+    "asteapta": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Ai descărcat din stoc 1 ieșire la cost 102,74 lei, pentru vânzări de",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "exista": "#caseta-atentie-activa #ca-nu"
+   }
+  ],
+  "captura": "474_f1_vechi_z_confirmarea_cu_cifrele.png"
+ },
+ {
+  "nr": "476",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri -> NIR 5 din 22.10.2026 (scris înainte de reparație, transport 100,00 lei cu factura transportatorului pe 401) -> „Deschide NIR-ul”: TVA-ul transportului e 4426 = 401 · 21,00 (după migrarea nir_tva_transport), nu 4428.01 = 401",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": ".nir-deschide[data-numar='5']"
+   },
+   {
+    "click": ".nir-deschide[data-numar='5']"
+   },
+   {
+    "asteapta": "#nir-detaliu-linii"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4426 401 21,00"
+   },
+   {
+    "nu_contine": "4428.01 401"
+   }
+  ],
+  "captura": "476_f1_vechi_nir_5_tva_transport_4426.png"
+ },
+ {
+  "nr": "C120",
+  "firma": "tenant_9050",
+  "descriere": "F2: Facturi primite -> „Importă XML UBL” cu factura DANTE -> F1 Comert Stoc SRL (numărul PROBA-C120): refuzată — factura nu e a firmei (emitentul, cumpărătorul și CUI-ul F2 numite); nimic în lista de validat",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "e2e_lot12_cx1:fisier_xml_c120",
+    "nume": "proba_c120.xml",
+    "tip": "text/xml"
+   },
+   {
+    "asteapta_text": "nu e a firmei"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu e a firmei",
+    "zona": "#fp-mesaj"
+   },
+   {
+    "nu_contine": "PROBA-C120",
+    "zona": "#fp-lista"
+   }
+  ],
+  "captura": "c120_f2_xml_altei_firme_refuzat.png"
+ },
+ {
+  "nr": "C124",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei nu e conectat la SPV): Facturi primite -> „Verifică acum în SPV”: mesajul e motivul aplicației, fără „ANAF a răspuns: …” în față",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-verifica"
+   },
+   {
+    "click": "#fp-verifica"
+   },
+   {
+    "asteapta_text": "Cabinetul nu e conectat la SPV."
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Cabinetul nu e conectat la SPV.",
+    "zona": "#fp-mesaj"
+   },
+   {
+    "nu_contine": "ANAF a răspuns",
+    "zona": "#fp-mesaj"
+   }
+  ],
+  "captura": "c124_f1_verifica_spv_motivul_aplicatiei.png"
+ },
+ {
+  "nr": "C135",
+  "firma": "tenant_9049",
+  "descriere": "F1: Registru jurnal -> nota de casă 175 (ciornă din 22.10.2026, scrisă înainte de reparație „… factura F1A12 din 20.10.2026 …”): rândul spune „factura F1A nr. 12 din 20.10.2026”",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "asteapta": "[data-nota-id='175']"
+   },
+   {
+    "deruleaza": "[data-nota-id='175']"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "factura F1A nr. 12 din 20.10.2026",
+    "zona": "[data-nota-id='175']"
+   },
+   {
+    "nu_contine": "F1A12",
+    "zona": "[data-nota-id='175']"
+   }
+  ],
+  "captura": "c135_f1_vechi_nota_casa_175.png"
+ },
+ {
+  "nr": "C135",
+  "firma": "tenant_9050",
+  "descriere": "F2: Registru jurnal -> nota de casă 79 (VALIDATĂ, 22.10.2026, salvată „… factura F2T2 din 22.10.2026 …”; nota validată nu se rescrie): rândul o arată „factura F2T nr. 2 din 22.10.2026”",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "asteapta": "[data-nota-id='79']"
+   },
+   {
+    "deruleaza": "[data-nota-id='79']"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "factura F2T nr. 2 din 22.10.2026",
+    "zona": "[data-nota-id='79']"
+   },
+   {
+    "nu_contine": "F2T2",
+    "zona": "[data-nota-id='79']"
+   }
+  ],
+  "captura": "c135_f2_vechi_nota_casa_validata_79.png"
+ },
+ {
+  "nr": "C115",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri -> „Borderou de achiziție” -> articolul „grau” ALES din nomenclator (UM „kg”), 1 kg, 1,15 lei (probă) -> „Generează nota” -> Istoric facturi -> borderoul: linia are UM-ul articolului, „kg” (nu „buc”)",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#s-borderou"
+   },
+   {
+    "click": "#s-borderou"
+   },
+   {
+    "asteapta": "#op-furnizor_nume"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-23"
+   },
+   {
+    "completeaza": "#op-furnizor_nume",
+    "valoare": "Proba C115 Vanzator"
+   },
+   {
+    "completeaza": "#op-furnizor_adresa",
+    "valoare": "Str. Mare 2, Cluj-Napoca"
+   },
+   {
+    "completeaza": "#op-furnizor_act",
+    "valoare": "CJ 115115"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "1.15"
+   },
+   {
+    "completeaza": "#op-cont_cheltuiala",
+    "valoare": "371"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "alege": "#op-articol",
+    "valoare": "5"
+   },
+   {
+    "completeaza": "#op-cantitate",
+    "valoare": "1"
+   },
+   {
+    "alege": "#op-categorie",
+    "valoare": "1001"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj .caseta-ok"
+   },
+   {
+    "captura": "c115_f1_borderou_generat.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": "#fa-facturi"
+   },
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": ".fac-frand-btn",
+    "text": "Proba C115 Vanzator"
+   },
+   {
+    "asteapta": ".fd-td-um"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "kg",
+    "zona": ".fd-td-um"
+   },
+   {
+    "nu_contine": "buc",
+    "zona": ".fd-td-um"
+   }
+  ],
+  "captura": "c115_f1_borderou_articol_ales_kg.png"
+ },
+ {
+  "nr": "C115",
+  "firma": "tenant_9049",
+  "descriere": "F1: Istoric facturi -> borderoul BA-2 din 20.10.2026 (scris înainte de reparație: „grau”, 200, articolul în „kg”): linia ar trebui să poarte „kg”. ÎNDEPLINITĂ numai dacă datele existente se corectează (migrare); fără ea rămâne „buc”",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fac-frand-btn",
+    "text": "Maria Ionescu"
+   },
+   {
+    "asteapta": ".fd-td-um"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "kg",
+    "zona": ".fd-td-um"
+   }
+  ],
+  "captura": "c115_f1_vechi_borderou_ba_2_um.png"
+ }
+]

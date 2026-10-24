@@ -23253,3 +23253,194 @@ conftest → ROȘU, iar reproducerea iese din nou roșie; `get_conn` în `_trimi
 scrie notificări peste firma efemeră a altui test rămâne nedeterminist; (c) rularea din nou a porții „că a fost noroc” — interzis de regula 3d.
 Garda de conservare a apelurilor din P7 (`core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum`) a văzut mutarea (`raportari_creeaza`: `Thread` + `start` pierdute din corp) și primește intrarea `raportari_creeaza` -> `db.fir_de_fundal` în `APELURI_EXTRASE_IN_AJUTOR`: apelurile sunt creditate numai dacă ajutorul chiar le face.
 **Limita:** garda vede `core/` și `main.py`; `scripts/` sunt unelte de linie de comandă, fără cereri.
+
+
+## 23.10.2026 — Comanda 12.1 (lotul 12): noul CLAUDE.md, pilotul și toate deficiențele deschise — verbatim
+
+Costin, verbatim (chat, 23.10.2026, după publicarea lotului 11):
+
+> 12.1
+> 1. Pune ~/ghid_incoming/CLAUDE.md în locul CLAUDE.md al proiectului; cel vechi se radiază. Citește-l acum și aplică-l în tot lotul 12. Scoate din celelalte fișiere și din memoria ta permanentă orice regulă de proces care îl contrazice, și adaptează poarta la secțiunea 5.
+> 2. Execută comanda din ~/ghid_incoming/comanda_12_1.txt.
+> 3. Deciziile la §6 din raportul 11.4: needrestart pe varianta „doar listează” — pregătește comanda exactă pe care o rulez eu cu sudo; C97 (b) acum, (a) după pilot; 456 (a); cursul vechi la validare (a); B1_4 (a); C84 (b); C70 și C86 (a).
+> 4. Deficiențe noi, cu textul complet în documentul de deficiențe:
+>    561 — Portal client, „Înainte de a începe”: „Salvează numărul” nu salvează niciun număr, deci clientul nu poate intra în portal; pagina nu derulează.
+>    596 — Aceeași pagină, la cabinet nou: iese din ecran; motivul lui „NU s-a salvat” e scris mărunt, sub ecran; cardurile „Primii pași” au prea mult text (cardul 1 e tăiat).
+>    597 — WhatsApp nu trimite nimic: Meta răspunde „Account not registered” (133010) pentru numărul iConta. Fă înregistrarea la Meta; ce cere acțiunea mea în Meta Business îmi spui exact. Numărul nu se pune în aplicația WhatsApp de pe telefon.
+>    598 — La eșecul WhatsApp, mesajul îi cere contabilului să-și verifice numărul și arată termeni tehnici; trebuie spus că WhatsApp nu e disponibil și notificările vin pe email.
+>    599 — Importul de migrare primește fără întrebare balanța altei firme (antet „SC Firmă Probă Rulaje SRL” încărcat pe DANTE INTERNATIONAL); compară firma din fișier cu firma aleasă și cere confirmare când diferă, la toate importurile.
+>    600 — Conectarea SPV a eșuat de trei ori cu certificatul DigiSign care a mers pe 16.10 (sesiune ANAF invalidă, apoi pagina de ieșire ANAF); află cauza, iar la orice eșec contabilul se întoarce în iConta cu un mesaj clar.
+> 5. Începe scenariul automat al lunii pilot (CLAUDE.md, secțiunea 2).
+> 6. Test automat pentru „Primii pași”: fiecare card devine verde la pasul lui, toate dispar când sunt gata și rămân accesibile din „?”.
+> 7. Curăță datele de test: cabinetul „Cabinet Test Inregistrare” (costin.hateganu+cab2), contul 731 „Test cont nelegal” de pe F6, iar pe F2 MF-001, MF-PLUS și cele două facturi TI-1 din 20.10.2026.
+> 8. La final: poarta, publicarea și raportul după CLAUDE.md secțiunea 8, apoi te oprești.
+
+`~/ghid_incoming/comanda_12_1.txt` (22.10.2026), verbatim, fără lista celor 182 de deficiențe (lista, cu textul fiecăreia, e în
+`DEFICIENTE.md`, rândurile cu numerele ei; numerele 461–503 au intrat în registru acum, cu textul din comandă):
+
+> 12.1 — lotul 12: pilotul și toate deficiențele deschise
+>
+> Ținta lotului: pilotul — o lună completă de contabil, cap-coadă, pe o firmă de comerț cu salariați (F1, F5), fără deficiențe grave. Pozițiile pilotului: F018, F023, F025, F045, F046, F070, F126, F131, F172, F017, F003, F252, F254, F043, F176, F179, F089, F139, F011, F012, F073, F015, F078, F080, F087, F122, F134, F019, F054, F061, F118, F022, F081, F162, F169, F026, F028, F031, F034, F035, F084, F085, F183 și fereastra de bun venit („Primii pași”).
+>
+> 1. Repară toate deficiențele din lista de mai jos, în ordinea grupelor: grupa 1 întâi, grupa 4 la final. La cele vechi verifică întâi pe ecran dacă mai apar.
+> 2. Răspunde pe fiecare număr: rezolvat, nerezolvat sau nu se mai reproduce, cu dovada pe ecran (captură sau pașii exacți și ce s-a văzut), inclusiv pe documentele vechi de pe F1–F5. Fără dovadă pe ecran, numărul nu e rezolvat.
+> 3. 321 și 322: dovada pe un cabinet nou, creat de la zero.
+> 4. 483: după reparație, deblochează luna 09/2026 la F1 (blocată la testul din 22.10), cu motiv.
+> 5. 476, 482, 486 și 378: verifică regula la sursa oficială și citeaz-o în răspuns.
+> 6. Pune pe F1 fișierele de probă pentru retest: un fișier AMEF pentru Raport Z și un XML e-Factura (UBL) de la un furnizor. Spune unde sunt.
+> 7. Pentru fiecare poziție de pilot deja validată (F019, F026, F028, F073, F080, F081, F087, F134, F183, F252, F254) adaugă test automat în poartă, dacă nu există.
+> 8. Fără funcții noi în afara celor cerute aici (461 lista de parteneri și 477 introducerea manuală a facturilor primite sunt cerute).
+> 9. Lucrează cu subagenți în paralel unde fișierele sunt diferite, fără teste grele în paralel (rulezi pe producție).
+> 10. Duci lotul până la capăt fără oprire: repari până trece poarta, fără să slăbești sau să scoți teste, faci backup, publici și verifici că producția rulează exact codul nou. Publicarea nu mai așteaptă confirmarea noastră: când poarta e trecută, publici imediat. Dacă verificarea de după publicare pică, afli cauza, repari, treci din nou poarta și publici din nou, până când verificarea trece, fără să revii la versiunea de dinainte. Nu te oprești pentru NICIUN motiv și nu aștepți nimic: ce nu poți face singur (un pas pe care îl poate face doar un om, o cifră pe care nu o poți explica) notezi în raport și continui cu restul. Scrii tot în raport. Regula înlocuiește permanent regula veche de publicare doar cu acordul nostru; o scrii în CLAUDE.md.
+> 11. La final, raport detaliat: răspunsul pe fiecare număr cu dovada; testele adăugate; rezultatul porții; publicarea (backup, commit, repornire, verificarea codului care rulează); durata măsurată a fiecărei operații; ce a rămas nerezolvat și de ce; ZIP cu tot ce s-a schimbat, cu calea exactă.
+> 12. Compară registrul tău de deficiențe (DEFICIENTE.md) cu lista de mai jos: orice deficiență deschisă la tine care nu e aici (inclusiv cele găsite de tine, 189–199 și C) o adaugi la lot cu numărul ei și o raportezi.
+> 13. Deficiențele C pe care le-ai declarat rezolvate doar în raport, fără să le fi confirmat noi la retest: le dovedești pe ecran în acest lot pe cele care ating o cifră (notă, sold, declarație), iar pe celelalte le listezi cu starea lor.
+> 14. Dovedește pe ecran și aceste numere, închise de noi prin echivalență cu altele: 5, 62, 96, 119, 122, 124, 127, 135, 170, 202, 215, 216, 241, 254, 280, 283, 290.
+> 15. Regulă permanentă, de la acest lot încolo: orice deficiență pe care o găsești tu intră în raport, cu un număr din aceeași numerotare comună (continuă de la ultimul număr din listă), cu ce ai găsit, ce ai făcut și dovada. Nimic nu rămâne doar în registrul tău. Scrie regula în CLAUDE.md.
+> 16. După raport te oprești.
+>
+> Rămân amânate, nu le atingi: 464, 465 (exporturi SAGA/WinMentor, după pilot); 239, 240, 247, 248, 249 (ghidurile, publicarea e oprită); 501–503 (funcții noi: hotărâre AGA dividende, optimizare fiscală, răspuns la solicitările ANAF).
+>
+> Rămân amânate, nu le atingi: 464, 465 (exporturi SAGA/WinMentor, după pilot); 239, 240, 247, 248, 249 (ghidurile, publicarea e oprită); 501–503 (funcții noi: hotărâre AGA dividende, optimizare fiscală, răspuns la solicitările ANAF).
+
+**Consecințe (executor):**
+- **CLAUDE.md** e acum `~/ghid_incoming/CLAUDE.md` (versiunea 23.10.2026); vechiul (1051 de rânduri, §2.2–§8) e radiat — rămâne în istoria git
+  (`git show d850db00:CLAUDE.md`). Singura completare: §4 primește partea din pct.15 compatibilă cu prefixul C („cu numărul ei, cu ce a
+  găsit, ce a făcut și dovada”). **Nepotrivire de numerotare, rezolvată în favoarea CLAUDE.md:** pct.15 din comandă (22.10) cere „un număr din
+  aceeași numerotare comună (continuă de la ultimul număr din listă)”, iar CLAUDE.md §4 (23.10, mai nou, declarat singura sursă) păstrează
+  prefixul C. Am păstrat C: numerele simple ale lui Costin ajung deja la 600 (561, 596–600 din chat), deci „de la ultimul număr din listă”
+  (500) s-ar ciocni cu ale lui. Raportat la §5 al raportului lotului.
+- **Publicarea** (pct.10 din comandă = CLAUDE.md §6): după poarta verde, imediat, fără confirmare; backup chiar înainte. Garda pe `main`
+  (`scripts/githooks/reference-transaction`) nu mai cere aprobarea scrisă `APROBARE_MAIN`, numai verdictul VERDE al porții.
+- **Poarta** adaptată la CLAUDE.md §5: poarta completă rulează toate părțile (pytest, verificator, cifre, plasă) chiar după o parte roșie, ca
+  rerularea să știe tot ce a căzut; pe roșu, verdictul commitului reparat se compune din rularea completă anterioară plus rerularea țintită
+  (testele căzute + perimetrul reparației); poarta completă se reia numai când perimetrul nu e sigur.
+- **Deciziile din pct.3** (variantele, din raportul 11.4 pct.3): C97 (b) acum — calitatea de pensionar din motivul de excepție, (a) câmpul
+  „pensionar” după pilot; 456 (a) — chitanța se emite și pentru încasarea în numerar fără factură (avansul); cursul vechi la validarea facturii
+  primite în valută (a) — anunțul la validare, ca la emitere; B1_4 (a) — B1_4 = 8, interpretare cu temei; C84 (b) — livrarea intracomunitară
+  de bunuri trece pe „Emite factură”, Operațiuni rămân pentru servicii; C70 și C86 (a) — dovada = testul de capăt la capăt + mutația +
+  validatorul DUK. needrestart: „doar listează” (`$nrconf{restart} = 'l'`), comanda cu `sudo` o rulează Costin.
+- **Numerele fără text:** 504–560 și 562–595 (din retestul lotului 11, netrimise) au rânduri „neverificat” în DEFICIENTE, ca numerotarea să
+  rămână continuă (`core/test_deficiente.py`); textul lor e cerut în raport.
+
+
+## 23–24.10.2026 — Lotul 12: implementarea — interpretările și deciziile de produs luate de Code (CLAUDE.md §8 pct.5: „pentru o decizie de produs, Code alege între timp varianta cea mai sigură pentru contabil și continuă”), cu temeiul și alternativa respinsă
+
+Fiecare rând: ce s-a ales · de ce e varianta cea mai sigură · alternativa respinsă. Cele marcate **[cere confirmare]** sunt și în §5 al
+raportului lotului.
+
+**Poarta (CLAUDE.md §5–§6).** Garda pe `main` cere numai `VERDE <sha>` (aprobarea scrisă `APROBARE_MAIN` radiată). Poarta rulează toate
+părțile chiar după una roșie și scrie `poarta_rulari/<sha>.json`; `poarta_lot.sh --compus` compune verdictul din rularea completă ROSU
+anterioară + testele căzute + perimetrul reparației (`poarta_scurta.py --compus=X`), refuzat pe perimetru nesigur (motivele `incerte`, plasa
+atinsă integral, perimetrul ≥ ½ din teste). Respins: compusul fără refuz pe perimetru nesigur (ar fi transformat „verde” în ghicit).
+
+**494 (DUK).** Validatoarele nu expiră; expira comparația cu ANAF (30 de zile). Mod nou `verifica_duk_publicat.py --zilnic` (numai-citire,
+starea în `~/.cache/iconta_duk/verificare_anaf.json`, alertă la validator în urmă); garda ia data cea mai nouă dintre manifest și starea
+zilnică. Instalarea D112 J27.0.7 și rândul de crontab: Costin (clasificatorul a refuzat scrierea în `~/duk` și în crontab). C106:
+`--scrie` refuză o versiune nouă pe un jar neînlocuit. Respins: instalarea automată a jarurilor (scriere în resursa producției).
+
+**C84 (decizia (b)), 456 (a), cursul vechi la validare (a), C97 (b), B1_4 (a), C70/C86 (a)** — aplicate cum a decis Costin (pct.3).
+
+**461 / 477** (funcții cerute): lista partenerilor pe `/tenants/{id}/parteneri-firma` (`/parteneri` era deja rezumatul soldurilor din
+migrare — ar fi înghițit ruta nouă); soldul partenerului = preluare + note validate pe grupele 40/41 (ciornele separat); factura primită de
+mână pe drumul comun al facturii din XML (`uc_factura_primita.valideaza`), TVA calculat, nu tastat.
+
+**252.** Facturile deschise preluate intră în `facturi` cu `tip='preluata'` (fără notă, fără TVA, excluse din declarații, Istoric, Intrastat,
+SAGA, controlul încrucișat), stinse de bancă / casă / compensări; forma pe solduri -> un document „Sold la <data>” fără scadență; migrarea
+sare contul cu plăți nelegate după preluare. Respins: tabel propriu (ar fi dublat toată stingerea). **[cere confirmare]** firmele cu TVA la
+încasare: coloana TVA în fișierul de preluare.
+
+**C119 / C143 (cifra de afaceri fără TVA-ul din Z).** Baza D100 / D101 / reconcilierile / centrele de cost / bilanțul (F20, F30, S1003) pe
+RULAJUL NET al conturilor 6/7 (credit − debit, fără închiderea în 121). Temei: CF art.53 alin.(1); OMFP 1802/2014 pct.8 pct.5 („după
+deducerea … taxei pe valoarea adăugată”); DUK S1005 F10_F20_3. Notele Z validate NU se rescriu (OMFP pct.69). Respins: nota Z pe bază netă
+(ar fi atins notele validate și cifrele de referință).
+
+**C19 (D394 E/F).** D394 declară numai ce cere OPANAF 2194/2025 anexa 2 pct.10. **[cere confirmare]** rectificativele pentru perioadele deja
+depuse cu LS pe E/F.
+
+**C127 (notele de salarii / amortizare scrise înainte de încheierea lunii).** Ciornele se scot printr-o migrare (se refac din stat după
+încheiere); notele VALIDATE se semnalează pe rând în Registrul jurnal, nu se ating. Respins: ștergerea notei validate „Stat de plata
+11/2026” de pe F5 (evidență validată).
+
+**C123 (asistentul rămas fără firme).** Se dezactivează (competențele golite, contul în istoric), ca pe ecranul colegului; migrarea face la
+fel pe producție, numai pe angajații activi fără nicio firmă.
+
+**C139 (Raport Z ciornă).** „Șterge raportul Z” numai cât nota e ciornă, luna deschisă, nimic la validare și costul ieșirilor de după
+neschimbat; altfel refuz numit, corecția prin stornare.
+
+**474.** Z-ul se validează după o confirmare cu cifrele descărcării (nu blocaj: Z-ul poate conține servicii).
+
+**475.** Articolele dublate se unesc automat numai când nu se schimbă nicio sumă scrisă; altfel se numesc.
+
+**C133.** D112 se oprește la un salariat scutit fără motivul scutirii (nu-l declară tăcut neexceptat).
+
+**C109 (refuzurile cronului facturilor recurente)** — **[cere confirmare]**: coloană / notificare către contabil (schimbare de schemă).
+**C137 (marca reevaluării pe notă)** — **[cere confirmare]**: sursă proprie pentru notele de reevaluare (schimbare de schemă).
+**Coada: „N note de validat” numără documentele** — **[cere confirmare]**: numărul notelor sau eticheta „documente”.
+**Livrarea IC de bunuri din „Emite factură” nu cere „dovada transportului”** — **[cere confirmare]**.
+**482**: reținerile din CM se văd în „Compoziția netului” de pe rândul statului; **[cere confirmare]** dacă trebuie și în fereastra „Concediu”.
+
+**Numerotarea deficiențelor găsite de Code (pct.15 din comandă vs. CLAUDE.md §4).** Păstrat prefixul C (CLAUDE.md, mai nou, declarat
+singura sursă): numerele simple ale lui Costin ajung deja la 600. Rândurile 504–560 și 562–595 (fără text) stau „neverificat”.
+
+**Repararea suitei (24.10.2026: 90 de teste picate la prima rulare completă, 10909 trecute).** Cauzele au fost reparate, nu ocolite; unde o
+gardă cere o listă / un plafon actualizat pentru un element nou legitim, s-a actualizat cu motivul lângă (lista e în raport, §3):
+- **Plafoane / liste actualizate:** `MIGRARE_UNICA` 127 -> 140 (cele 13 migrări SQL ale lotului, numite); `test_p7_v2_scrieri` 381 -> 385
+  (cursul_fixat, nume_si_cui_spatiat, caen, rezerva_si_pierderea); `test_refuzuri` BASELINE +23 `uc_comun` (modulul a reintrat în domeniu
+  prin `TEMEI_TERMEN_SPV`, 463 — refuzuri vechi, de formă/stare) și +4 `z_descarcare` (`TEMEI_STERGERE`, C139); `test_constante_nesursate`
+  +1 `import_tabel` (`RANDURI_CAUTATE_ANTET`, operațional, vizibil printr-o lărgire de domeniu, precedentul `declaratii_componente`);
+  a treia cale de naștere a unei facturi = preluarea (252, garda o ține numai pe `tip='preluata'`); copia de dovadă 48765 declarată
+  separat (`_COPII_DE_DOVADA`); `fa-parteneri` în harta ecranelor; cardul „Parteneri” (37/27); „Înainte de a începe” în ferestrele
+  deschise de aplicație (561/596); excepții motivate (IBAN „RO”, `sterge_z` pe un index parțial, `notele_documentului` cu SET LOCAL).
+  Respins: ridicarea clichetelor de clasă (text în teste, ancore, 440, afirmații netipate) — locurile noi s-au reparat.
+- **Calibrări ale verificatorului** (fals-pozitive dovedite, cu exemplele care rămân prinse): numărul unei deficiențe („deficiența 21”)
+  nu e cotă; `value="${esc(l.cantitate)}"` e câmp numeric (excepția exista pentru `value="${…}"`); scanerul text_ecran nu judecă
+  numărul de document de după „nr.” („COER nr. T1”, „B1 nr. AVANS”). Respins: rescrierea textului ca să ocolească regula.
+- **Validarea facturii primite** (XML și de mână) confruntă contul cu planul firmei (`cont_valid.cere_cont`), lângă `#pr-cont`; ordinea
+  „cont, apoi XML” de dinainte de 477 refăcută.
+- **C151** (găsit la reparare): legarea în Casă a încasării fără factură leagă și chitanța ei automată de factură, iar nota o numește;
+  textul „reprezentând” al chitanței emise NU se rescrie (document emis). Date existente: neafectate (pe producție chitanța automată se
+  emitea numai pe încasarea cu factură).
+- **C152**: mesajele D394 (încasare fără chitanță, Z incomplet, Î2 neclasificat) cu data în forma pentru om și felul operațiunii în cuvinte.
+- **Titlul fișei de partener / fișei clientului** e fix („Fișa partenerului”, „Fișă client”), numele stă în antetul fișei (verificatorul
+  `ENTITATE_IN_TITLU`).
+- **Previzualizarea salariului** nu mai trimite motivul scutirii (netul nu depinde de el; îl primește salvarea, pentru D112) — în loc să
+  adauge în model un câmp nefolosit.
+- **Ciorna formularului** (495): PUT/DELETE cer „Poate pregăti” (cine nu poate salva documentul nu începe formularul pe firmă); SQL-ul
+  în `core/repo_ciorne_formular.py`.
+
+- **C154–C162 (găsite de Code în lot, la C110 / C155):** axa „servicii” a facturii emise de neplătitorul art.317 se naște în
+  `facturi_api.creeaza_factura` (`categorii_tva.axa_neplatitor`, din contul de venit al liniei și țara clientului; CF art.325 alin.(1) lit.c);
+  calendarul D390 al neplătitorului = lunile D301 + lunile cu operațiuni intracomunitare (`control_incrucisat.d390_luni_neplatitor`, aceeași
+  sursă în Control fiscal și în Declarații / Termene — C162); șablonul facturii recurente poartă țara clientului (C160, migrarea
+  `migrare_tara_sablon_recurent`, lista țărilor într-o singură sursă `tari_partener.js`); importul XML al facturii emise ia țara, axa și
+  categoria din XML (C161), iar ce nu se poate deduce sigur se numește, nu se ghicește. **Respins:** repararea facturilor emise importate
+  înainte și a facturilor neplătitorilor cu axa goală (ar schimba D390 / D300 / D394 deja depuse) — decizie cerută lui Costin.
+  **[cere confirmare]** șablonul recurent al plătitorului către un client din altă țară e refuzat (ecranul șablonului n-are cota și categoria
+  pe linie) — se adaugă cota și categoria în șablon?
+- **C156 / C157 / C163 (decizii fiscale, nereparate):** categoria, mențiunea „taxare inversă” și codul RO la prestarea IC a neplătitorului
+  art.317 (C156); avertismentul la prestarea IC fără înregistrarea art.317 (C157); D301 cu serviciile primite (C163) — analiza cu temeiul în
+  raportul lotului 12, de validat de arhitect înainte de cod.
+- **C159 (golul din registrul de cote):** golul dintre două valori verificate e blocajul motivat al perioadei (`PerioadaIndisponibila` cu
+  `gol`, 423, nume pentru om), iar o valoare se cere numai de calculul care are nevoie de ea (plafonul tichetului numai cu tichete); un
+  refuz de perioadă împachetat ca text de un use-case iese tot 423 (`main._http_din`, un singur loc pentru 52 de use-case-uri). Statul de
+  plată se calculează pe firmă: un salariat cu tichete în luna golului oprește statul lunii, motivat.
+- **479 (date existente):** migrarea dublurilor de trezorerie curăță și liniile IGNORATE (nota 5121 = 5121, motivul dublurii), iar „readu”
+  nu mai aduce înapoi o notă propusă pe același cont la debit și la credit.
+- **Dovezile:** pe copia firmelor de test (`scripts/dovada_firme_test.py --cloneaza`, copia păstrată în baza de test peste poartă, ca
+  registrele generate să descrie aceeași bază); dovezile pe care datele copiei nu le mai pot arăta (35, C140 „vechi”, 280 pe cartele: datele
+  s-au schimbat pe producție după reparație) s-au scos, cu motivul în raport.
+
+## 24.10.2026 — Comenzile 12.1 și 12.2 în același lot: poarta o singură dată pe tot lotul 12, publicarea după confirmarea lui Costin
+
+**Verbatim (chat, 24.10.2026):** „Coadă: după ce termini 12.1 și scrii raportul ei, nu te opri. Continuă direct cu 12.2 din
+~/ghid_incoming/comanda_12_2.txt. La final, oprește-te și raportează 12.2.”
+**Verbatim (comanda 12.2, preambul):** „Se execută după ce termini 12.1. […] După fiecare punct doar teste țintite; poarta rulează o singură
+dată, pe tot lotul 12, înainte de publicare, iar publicarea o faci după confirmarea mea.”
+
+**Consecințe (executor):** comanda 12.1 pct.8 („La final: poarta, publicarea și raportul după CLAUDE.md secțiunea 8, apoi te oprești”) și
+pct.10 (publicarea fără confirmare) sunt SUPERSEDATE de 12.2, mai nouă, pentru lotul 12: 12.1 se încheie cu commitul pe ramura lotului și
+raportul ei, fără poartă și fără publicare; poarta completă rulează o singură dată, la închiderea lotului 12 (după 12.2); publicarea pe
+producție se face numai după confirmarea lui Costin. Regula din CLAUDE.md §6 („după poarta verde se publică imediat”) rămâne pentru loturile
+care nu spun altfel; aici comanda o înlocuiește explicit. Deblocarea lunii 09/2026 la F1 (12.1 pct.4) se face pe producție odată cu
+publicarea, după confirmare.

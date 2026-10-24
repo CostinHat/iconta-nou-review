@@ -71,6 +71,18 @@ NEURMARITE = ("tenants", "accounting_firms")
 
 CURENT, INVALIDAT, LIPSESTE = "curent", "invalidat", "lipseste"
 
+#: [lotul 12, C132] **VERSIUNEA REGULILOR.** Contorul de mai sus urmărește DATELE; codul care face constatările (textul lor, regula) se
+#: schimba la o publicare fără ca vreun rezultat persistat să devină `invalidat` — deci o firmă fără scrieri noi arăta, „curent”, textul
+#: de dinaintea reparației („Nu ma pronunt inca: D101 declara…”) oricât timp. Aceeași clasă ca la rezumatele portofoliului (deficiențele
+#: 156/173), reparată acolo cu amprenta codului (`firma_rezumat.COD`, sha256 peste `core/*.py` și `main.py`): se refolosește aceeași
+#: amprentă, nu una a doua. Rezultatul o poartă (`versiune_reguli`); alta decât a codului de acum = `invalidat`, recalculat de lucrător.
+def _versiune_reguli():
+    from core import firma_rezumat as _fr   # import târziu: `firma_rezumat` citește `TABELE_TENANT` de aici
+    return _fr.COD
+
+
+VERSIUNE_REGULI = _versiune_reguli()
+
 DDL = """
 CREATE TABLE IF NOT EXISTS public.supervizor_sursa (
     tenant_id    integer PRIMARY KEY,
@@ -181,7 +193,8 @@ def scrie_rezultat(conn, tenant_id, an, luna, rezultat, versiune):
             "ON CONFLICT (tenant_id, an, luna) DO UPDATE "
             "SET rezultat = EXCLUDED.rezultat, versiune_sursa = EXCLUDED.versiune_sursa, "
             "    calculat_la = EXCLUDED.calculat_la",
-            (tenant_id, an, luna, json.dumps(rezultat, ensure_ascii=False, default=str), versiune))
+            (tenant_id, an, luna, json.dumps(dict(rezultat, versiune_reguli=VERSIUNE_REGULI), ensure_ascii=False, default=str),
+             versiune))
 
 
 def citeste(conn, tenant_ids, an, luna):
@@ -211,7 +224,7 @@ def citeste(conn, tenant_ids, an, luna):
             out[tid] = {"rezultat": None, "stare": LIPSESTE, "calculat_la": None,
                         "versiune_sursa": None, "versiune_curenta": v_acum}
             continue
-        stare = CURENT if v_calc == v_acum else INVALIDAT
+        stare = CURENT if (v_calc == v_acum and (rez or {}).get("versiune_reguli") == VERSIUNE_REGULI) else INVALIDAT
         out[tid] = {"rezultat": rez, "stare": stare, "calculat_la": calculat_la,
                     "versiune_sursa": v_calc, "versiune_curenta": v_acum}
     return out
@@ -234,8 +247,9 @@ def de_recalculat(conn, an, luna, limita=LOT_RECALCULARE):
             "  LEFT JOIN public.supervizor_rezultat r "
             "         ON r.tenant_id = s.tenant_id AND r.an = %s AND r.luna = %s "
             " WHERE r.tenant_id IS NULL OR r.versiune_sursa <> s.versiune "
+            "    OR r.rezultat->>'versiune_reguli' IS DISTINCT FROM %s "   # [C132] codul regulilor s-a schimbat de la calcul
             " ORDER BY s.schimbat_la ASC LIMIT %s",
-            (an, luna, limita))
+            (an, luna, VERSIUNE_REGULI, limita))
         return [r[0] for r in cur.fetchall()]
 
 # ============================================================================

@@ -12,8 +12,8 @@
 // ca butoanele. Asistentului fără firme i se spune asta, nu i se arată un fir pe care nu-l poate parcurge.
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
-import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=31460b24f2";
-import { STRATURI } from "./migrare.js?v=2e03f197ba";
+import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=309f4d66ae";
+import { STRATURI } from "./migrare.js?v=7b068b81ef";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
@@ -110,7 +110,7 @@ async function _corpAnsamblu(corp, primaLogare) {
         ? `<div class="ans-actiuni"><button type="button" class="buton-primar" id="ans-intra">Am înțeles, intru în aplicație</button></div>`
         : "") +
     `</div>`;
-  import("./inceput.js?v=cf800c466e").then((m) => m.ghidulDeInceput(corp.querySelector("#ans-inceput"))).catch(() => {});
+  import("./inceput.js?v=9a8b26bf4b").then((m) => m.ghidulDeInceput(corp.querySelector("#ans-inceput"))).catch(() => {});
 }
 
 // semnul "?" GENERAL din bara de stare -> modalul de ansamblu (oricand)

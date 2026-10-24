@@ -162,12 +162,13 @@ def test_stergerea_operatiunii_anuleaza_chitanta(conn):
 
 def test_incasarea_veche_fara_chitanta_se_vede_pe_rand(conn):
     """Datele de dinainte (3a): încasarea de la client salvată fără chitanță (drumul vechi, `casa_api.adauga` direct) e numită pe rândul
-    registrului — „fără chitanță”; încasarea fără factură (avans) nu primește chitanță automată (decizie cerută)."""
+    registrului — „fără chitanță”. [lotul 12, decizia Costin 456 (a)] încasarea fără factură (avans) primește și ea chitanța
+    (`core/test_lot12_firme1_casa.py`)."""
     fid = _factura(conn)
     vechi = _ca.adauga(conn, _SCH, {"data": "2026-10-22", "categorie": "incasare_client", "suma": "64.46", "cui": CUI_CLIENT,
                                     "facturi": [{"factura_id": fid, "suma": "64.46"}]})
     avans = _incaseaza(None, suma="100", avans=True)
-    assert avans.get("chitante") is None
+    assert [c["factura_id"] for c in avans["chitante"]] == [None]   # [lotul 12, 456 (a)] avansul are chitanța lui
     reg = {o["id"]: o for o in _ca.registru(conn, _SCH, 2026, 10)["operatiuni"]}
     assert (reg[vechi["id"]]["fara_chitanta"], reg[vechi["id"]]["chitanta_id"]) == (True, None)
 

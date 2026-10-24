@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "_rele = _ct.verifica_linii(linii, None if _pft is None else _pft[0], tert_tara)",
+  "inlocuire": "_rele = _ct.verifica_linii(linii, True, tert_tara)",
+  "test": "frontend_test/e2e/e2e_lot12_cx3.py::test_def_c110_prestarea_ic_a_neplatitorului_art317_poarta_regimul_firmei"
+ },
+ {
+  "fisier": "core/notificari_scadenta.py",
+  "ancora": "return \"scade în %s\" % common.cate(-prag, \"zi\", \"zile\")",
+  "inlocuire": "return \"scade in %s zile\" % -prag",
+  "test": "frontend_test/e2e/e2e_lot12_cx3.py::test_def_c122_amintirea_scadentei_spune_starea_ca_scadentarul"
+ },
+ {
+  "fisier": "core/compensari_api.py",
+  "ancora": "return (\"({i}.factura_id = {f} OR ({i}.factura_id IS NULL AND EXISTS (SELECT 1 FROM {p}chitante cc WHERE cc.inregistrare_id = {i}.id \"",
+  "inlocuire": "return (\"({i}.factura_id = {f} OR (false AND EXISTS (SELECT 1 FROM {p}chitante cc WHERE cc.inregistrare_id = {i}.id \"",
+  "test": "frontend_test/e2e/e2e_lot12_cx3.py::test_def_c45_chitanta_de_dinainte_stinge_factura_si_la_banca"
+ }
+]

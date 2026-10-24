@@ -62,6 +62,7 @@ import logging as _logging
 from core import raport_z as _raport_z
 from core import common as _common
 from core.common import stare_din_nivel
+from core import perioada as _perioada   # [lotul 12] textul pentru om al mesajului unei excepții (`text_exceptie`)
 
 
 def _cere_perioada(an=None, luna=None, exercitiu=None, camp_an="an"):
@@ -112,7 +113,7 @@ def _campuri_lipsa(corp, obligatorii, prefix="op-", er=None):
     lipsa = [k for k in harta if corp.get(k) is None or (isinstance(corp.get(k), str) and not corp.get(k).strip())]
     colector = er if er is not None else _erori.ErorileFormularului("Lipsesc câmpuri din cerere")
     for k in lipsa:
-        colector.camp(harta[k], "Lipsește câmpul `%s` din cererea trimisă. Operațiunea nu se poate consemna fără el." % k)
+        colector.camp(harta[k], "Completează câmpul: operațiunea nu se poate consemna fără el.")
     if er is None:
         colector.refuza()
     return lipsa
@@ -395,7 +396,7 @@ def declaratii_nedepuse_cu_termen_in_luna(schema, an, luna, azi=None):
             with db.get_conn(schema) as cs:
                 ev = _cf.evalueaza_firma(cs, cp, r[0], schema, azi or azi_ro(), cu_reconciliere=False)
     except Exception as e:  # noqa: BLE001 — se spune, nu se tace (CLAUDE.md: try/except tăcut e mai grav decât o cădere)
-        return [("?", "nu se pot verifica declarațiile cu termen în %02d/%04d: %s" % (luna, an, str(e).split("\n")[0][:160]))]
+        return [("?", "nu se pot verifica declarațiile cu termen în %02d/%04d: %s" % (luna, an, _perioada.text_exceptie(e).split("\n")[0][:160]))]
     out = []
     for d in sorted(list(ev.get("lipsa") or []) + list(ev.get("urmarit") or []), key=lambda x: (x.get("termen") or "", x.get("tip") or "")):
         t = _dt.date.fromisoformat(str(d.get("termen"))[:10]) if d.get("termen") else None
@@ -920,8 +921,8 @@ def _constatare_esuata(eticheta, nume, e, an, luna):
     SISTEMATIC). Vezi DECIZII 23.07. Intoarce constatarea (apelantul o pune unde e vizibila)."""
     _LOG_VERDICT.warning("verificator esuat pe cale de verdict: %s -> gri (%r)", nume, e)
     return _flag_constatare("gri", eticheta, "Nu s-a putut verifica %s." % nume,
-        "Verificarea a eșuat (%s). GRI înseamnă 'nu s-a putut verifica', NU 'curat' — o constatare reală "
-        "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e, an, luna)
+        "Verificarea a eșuat (%s). Semnul gri înseamnă „nu s-a putut verifica”, nu „totul e în regulă”: o constatare reală "
+        "poate lipsi. Reîncarcă pagina; dacă se repetă, semnalează." % _perioada.text_exceptie(e).rstrip("."), an, luna)
 
 
 def _platitor_tva_tert(cui, tara="RO", adresa=None):
@@ -1062,8 +1063,8 @@ def _interval_cerut(valoare, nume, minim, maxim, unitate):
         raise _erori.DateInvalide("%s trebuie să fie un număr întreg de %s. S-a primit %r."
                             % (nume, unitate, valoare))
     if v < minim or v > maxim:
-        raise _erori.DateInvalide("%s se cere între %d și %d %s. S-a primit %d."
-                            % (nume, minim, maxim, unitate, v))
+        raise _erori.DateInvalide("%s se cere între %d și %s. S-a primit %d."
+                            % (nume, minim, _common.cate(maxim, unitate, unitate), v))
     return v
 
 
@@ -1124,7 +1125,10 @@ def _tva_balanta_sau_nu_se_aplica(schema, bal):
     return _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0))
 
 
-def _verificari_contabile(schema, an, luna):
+def _verificari_contabile(schema, an, luna, confruntare=None):
+    """Verificările contabile ale lunii (an, luna). `confruntare` = (an, luna) pe care rulează punțile declarație–contabilitate
+    (D300 / D112 / D390 / cota TVA); implicit aceeași lună. [deficiența 484] Control fiscal o dă pe cea din
+    `control_fiscal_api.luna_confruntata` — luna încheiată, a cărei declarație e datorată —, nu luna în curs."""
     from core import verificatoare as _vf
     from datetime import date as _date
     sfarsit = _date(an + (luna == 12), (luna % 12) + 1, 1)
@@ -1157,10 +1161,12 @@ def _verificari_contabile(schema, an, luna):
     # remediu). NU se atinge engine-ul. Fiecare pe conexiune proprie pe schema; esec izolat -> gri cu cauza
     # (gri e informatie, nu absenta - filozofia control_incrucisat), nu doboara ceilalti verificatori.
     from core import control_incrucisat as _ci
+    an_c, luna_c = confruntare or (an, luna)
+
     def _incrucisat(fn, eticheta):
         try:
             with db.get_conn(schema) as _c:
-                return fn(_c, schema, an, luna)
+                return fn(_c, schema, an_c, luna_c)
         except Exception as _e:
             # [P8] VERIFICARE RUPTA: motorul a crapat, nu datele lipsesc. Pe ecran ramane gri, in
             # date se DEOSEBESTE - cine numara „cate nu pot fi verificate" nu mai inghite si rupturile.
@@ -1168,15 +1174,15 @@ def _verificari_contabile(schema, an, luna):
             # verificator (VERDICT_COLAPSAT, stare-literal), si pe drept - un verdict carpit dupa
             # constructie are doua surse. A doua oara azi cand fac asta.
             _c = dict(_af.afirmatie("verificare_rupta", eticheta,
-                                    "Nu se poate verifica %s: %s" % (eticheta, str(_e).replace("PERIOADA_BLOCATA: ", "")),
+                                    "Nu se poate verifica %s: %s" % (eticheta, _perioada.text_exceptie(_e)),
                                     eroare="%s: %s" % (type(_e).__name__, _e)),
                       stare="gri", eticheta=eticheta, temei="Verificarea nu a rulat.",
                       remediu={"fel": "investigatie", "cauza": "Eroare la verificare.",
                                "actiune": "Reîncearcă; dacă persistă, verifică datele firmei.",
                                "facturi": []})
             _c["mesaj"] = _c["motiv"]
-            return {"stare": "gri", "constatari": [_c],
-                    "limita": "Verificarea %s nu a rulat: %s" % (eticheta, _e)}
+            return {"an": an_c, "luna": luna_c, "stare": "gri", "constatari": [_c],
+                    "limita": "Verificarea %s nu a rulat: %s" % (eticheta, _perioada.text_exceptie(_e))}
     tva_incr = _incrucisat(_ci.verifica_tva, "TVA")
     d112_incr = _incrucisat(_ci.verifica_d112, "salarii (D112)")
     d390_incr = _incrucisat(_ci.verifica_d390, "operatiuni intracomunitare (D390)")
@@ -1353,11 +1359,105 @@ def _refuz_import_numar(cur, schema, f):
         valoare=f["numar"])
 
 
+#: [lotul 12, C161] categoria de TVA a liniei din XML (BT-151) care spune singură operațiunea, la factura EMISĂ: inversul hărții de la
+#: emitere (`categorii_tva.CATEGORII[...]["ubl"]`, `efactura_send`): K = livrare intracomunitară scutită, G = export. „AE” depinde de
+#: țara clientului (`_categoria_emisei_din_xml`); „E” acoperă mai multe categorii, deci nu se deduce.
+_UBL_EMISA = {"K": "livrare_ic", "G": "export"}
+
+
+def _categoria_emisei_din_xml(ubl, cota, tara):
+    """PURĂ. [lotul 12, C161] (categoria iConta, motivul pentru care nu se poate deduce | None) pentru o linie a facturii EMISE din XML:
+    categoria liniei (BT-151), cota ei și țara clientului (cod de TVA, `_tara_cumparatorului`). Aceeași regulă ca factura emisă din ecran
+    (`categorii_tva.verifica_linii`): livrarea intracomunitară cere un client dintr-un alt stat membru, exportul unul din afara UE, taxarea
+    inversă art.331 un client din România; „AE” către clientul din UE e prestarea cu locul în afara României (art.278 alin.(2)), cum o
+    scrie emiterea (`categorii_tva.CATEGORII["serviciu_extern"]`). Ce nu se poate ști sigur -> (None, motivul), nimic ghicit."""
+    from decimal import Decimal, InvalidOperation
+    from core import categorii_tva as _ct
+    from core.d390 import TARI_UE
+    try:
+        zero = Decimal(str(cota or 0)) == 0
+    except (InvalidOperation, ValueError):
+        zero = False
+    if ubl == _ct.NEPLATITOR["ubl"]:
+        return _ct.NEPLATITOR["cod"], None
+    if not zero:
+        return None, None   # linia taxabilă (S): fără categorie, ca la emitere
+    ue = tara != "RO" and tara in TARI_UE
+    cat = _UBL_EMISA.get(ubl)
+    if cat == "livrare_ic" and not ue:
+        return None, "categoria din fișier e livrare intracomunitară, dar clientul nu e dintr-un alt stat membru (țara %s)" % tara
+    if cat == "export" and (tara == "RO" or ue):
+        return None, "categoria din fișier e export, dar clientul nu e din afara Uniunii Europene (țara %s)" % tara
+    if cat:
+        return cat, None
+    if ubl == "AE" and tara == "RO":
+        return "taxare_inversa", None
+    if ubl == "AE" and ue:
+        return "serviciu_extern", None
+    return None, ("din fișier nu se poate ști categoria de TVA a liniei cu cota 0%% (codul %s acoperă scutirea cu sau fără drept de "
+                  "deducere, operațiunile în afara sferei TVA sau prestările cu locul în afara României)" % (ubl or "lipsă"))
+
+
+def _tara_cumparatorului(f):
+    """PURĂ. [lotul 12, C161] Țara clientului facturii emise, din adresa lui din XML (BT-55, ISO 3166-1), în codul de TVA pe care îl ține
+    `facturi.tert_tara` (Grecia: ISO „GR” -> „EL”, ca `d406._ISO_TO_VAT`); None dacă XML-ul n-o are."""
+    from core.d406 import _ISO_TO_VAT
+    iso = (f.get("cumparator_tara") or "").strip().upper()
+    return _ISO_TO_VAT.get(iso, iso) or None
+
+
+def _clasificarea_emisei_din_xml(f):
+    """PURĂ. [lotul 12, C161] Ce pune emiterea din ecran pe factură și nu stă în XML-ul importat ca atare: țara clientului, categoria de
+    TVA a fiecărei linii, axa (bunuri / servicii) și taxarea inversă — {tert_tara, categorii, axa_ic, taxare_inversa, avertismente}.
+    Axa și taxarea inversă vin din categorii, ca în `facturi_api.creeaza_factura` (`categorii_tva.axa_facturii`). Ce nu se poate deduce
+    sigur rămâne gol și se NUMEȘTE în `avertismente` (text pentru contabil), nu se pune tăcut."""
+    from core import categorii_tva as _ct
+    numar = f.get("numar") or ""
+    av = []
+    tara = _tara_cumparatorului(f)
+    if not tara:
+        av.append("Factura emisă %s: fișierul nu spune țara clientului, deci rămâne România. Dacă clientul e din alt stat, factura nu "
+                  "intră în D390 până nu se corectează." % numar)
+        tara = "RO"
+    categorii = []
+    for i, ln in enumerate(f.get("linii") or []):
+        cat, motiv = _categoria_emisei_din_xml((ln.get("categorie_tva") or "").strip().upper() or None, ln.get("cota_tva"), tara)
+        if motiv:
+            av.append("Factura emisă %s, linia %d („%s”): %s; linia rămâne fără categorie, iar rândul ei din D300 nu se stabilește "
+                      "automat." % (numar, i + 1, ln.get("descriere") or "", motiv))
+        categorii.append(cat)
+    linii_cat = [{"categorie_tva": c} for c in categorii]
+    try:
+        axa = _ct.axa_facturii(linii_cat)
+    except ValueError:
+        axa = None
+        av.append("Factura emisă %s are și bunuri, și servicii către clientul din altă țară: D390 ia natura operațiunii de pe document, "
+                  "deci clasifică factura în D390, la „Clasificare intracomunitară”." % numar)
+    else:
+        if axa is None and tara != "RO":
+            av.append("Factura emisă %s: din fișier nu se poate ști dacă e livrare de bunuri sau prestare de servicii; în D390 intră ca "
+                      "livrare de bunuri (L). Verific-o în D390, la „Clasificare intracomunitară”." % numar)
+    taxare_inversa = "taxare_inversa" in categorii
+    if taxare_inversa:
+        av.append("Factura emisă %s are linii cu taxare inversă (art.331): categoria produsului (codul din D394) nu se poate deduce din "
+                  "fișier." % numar)
+    return {"tert_tara": tara, "categorii": categorii, "axa_ic": axa, "taxare_inversa": taxare_inversa, "avertismente": av}
+
+
 def _factura_din_parsat(cur, schema, f):
     """Insereaza o factura parsata (dict de la efactura_import.parseaza_xml) in facturi + linii.
     Idempotent pe (numar, tert_cui, data_emitere). Intoarce (factura_id, creat_nou): daca exista
     deja, intoarce id-ul EXISTENT + False (nu insereaza). Sursa UNICA a inserarii - folosit de
-    /import-efactura (upload manual) SI de validarea four-eyes a facturilor primite (nu doua conducte)."""
+    /import-efactura (upload manual) SI de validarea four-eyes a facturilor primite (nu doua conducte).
+
+    [lotul 12, C161] Factura EMISĂ primește și ce îi pune emiterea din ecran: țara clientului, categoria de TVA a liniilor, axa și
+    taxarea inversă (`_clasificarea_emisei_din_xml`). Înainte intra cu țara „RO”, fără axă și fără categorie: o livrare / prestare
+    intracomunitară importată intra în D390 ca livrare de bunuri (L). Ce nu se poate deduce sigur din XML se numește în
+    `f["avertismente"]` (apelantul îl arată). TEMEI: CF art.325 alin.(1) lit.a („livrările intracomunitare scutite de taxă în condițiile
+    prevăzute la art. 294 alin. (2) lit. a) și d)”) și lit.c („prestările de servicii prevăzute la art. 278 alin. (2) efectuate în
+    beneficiul unor persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană”); CF art.278 alin.(2) (locul prestării
+    către o persoană impozabilă e locul unde ea își are sediul); CF art.307 alin.(1) (taxa o datorează furnizorul, „cu excepția cazurilor
+    pentru care beneficiarul este obligat la plata taxei conform alin. (2)-(6) și art. 331” — de unde „AE”, taxarea inversă)."""
     ex = _repo.select_facturi_3(cur, schema, f)
     if ex:
         return ex[0], False
@@ -1376,6 +1476,13 @@ def _factura_din_parsat(cur, schema, f):
         fid = _repo.insert_facturi(cur, schema, _stare, f)[0]
     for ln in f["linii"]:
         _repo.insert_factura_linii(cur, schema, fid, ln)
+    if f["directie"] == "emisa":
+        from core import repo_factura_importata as _rfi, repo_facturi as _rf
+        cl = _clasificarea_emisei_din_xml(f)
+        _rf.actualizeaza_clasificarea(cur, schema, ["tert_tara=%s", "axa_ic=%s", "taxare_inversa=%s"],
+                                      [cl["tert_tara"], cl["axa_ic"], cl["taxare_inversa"], fid])
+        _rfi.actualizeaza_categorii_linii(cur, schema, fid, cl["categorii"])
+        f["avertismente"] = cl["avertismente"]
     return fid, True
 
 
@@ -1457,6 +1564,61 @@ ETICHETE_INCRUCISAT = {
 }
 
 
+#: [deficiența 463] Constatările e-Factura din «Verificări contabile» (rândul firmei din listă le arată); în detaliu au secțiunea lor,
+#: «e-Factura — transmiterea în SPV», deci `control_verdict.js` (DEJA_IN_EFACTURA) le scoate din «Verificări contabile». Gard:
+#: `core/test_lot12_ctrl_463.py`.
+ETICHETA_SPV_DEPASIT = "Facturi netransmise în SPV după termen"
+ETICHETA_SPV_FARA_DREPT = "SPV fără drept pe firmă"
+
+
+def efactura_spv_firma(schema, azi=None):
+    """[deficiența 463] (facturile emise netransmise în SPV de la luna preluării, luna preluării) — `control_fiscal_api.facturi_spv_
+    netransmise` pe firma `schema`, cu luna preluării efectivă (`luna_preluare.efectiva`, aceeași ca restanțele). Pentru
+    `_construieste_contabil` (lista și detaliul) și pentru secțiunea e-Factura a detaliului: o singură definiție."""
+    from core import control_fiscal_api as _cf, luna_preluare as _lp, repo_firma_profil as _rfp
+    from core.common import azi_ro as _azi_ro
+    with db.get_conn(schema) as cs:
+        with cs.cursor() as cur:
+            fp = _rfp.fapte_preluare(cur)
+        preluare = _lp.efectiva(fp["salvata"], fp["creat_la"], fp["data_solduri"], fp["prima_nota"])
+        return _cf.facturi_spv_netransmise(cs, preluare, azi or _azi_ro()), preluare
+
+
+def constatari_efactura(facturi, stare_spv, an, luna):
+    """[deficiența 463] Constatările e-Factura ale firmei, din lista `efactura_spv_firma` și starea SPV a firmei
+    (`uc_tenants.spv_stare_firma`, ce arată și fereastra firmei). Galben: o constatare urcă firma cel mult la galben (deficiența 220,
+    „Roșu înseamnă termen depășit” e al restanțelor de declarații — vezi decizia cerută în raport). (an, luna) = luna zilei, domeniul
+    constatării despre drept; cea despre termen e datată cu luna celei mai vechi facturi. Pur."""
+    from core.control_fiscal_api import TEMEI_TERMEN_SPV
+    from core.pdf_util import data_ro
+    out = []
+    dep = [f for f in facturi if f.get("depasit")]
+    if dep:
+        v = dep[0]
+        cap = ("%s n-a fost transmisă" % _common.cate(1, "factură emisă", "facturi emise")) if len(dep) == 1 else \
+              ("%s n-au fost transmise" % _common.cate(len(dep), "factură emisă", "facturi emise"))
+        out.append(_flag_constatare(
+            "galben", ETICHETA_SPV_DEPASIT,
+            "%s în SPV în 5 zile lucrătoare (cea mai veche: %s din %s, către %s, termen %s)."
+            % (cap, v["numar"], data_ro(v["data_emitere"]), v["client"] or "—", data_ro(v["termen"])),
+            TEMEI_TERMEN_SPV, int(v["data_emitere"][:4]), int(v["data_emitere"][5:7]),
+            {"fel": "investigatie", "cauza": "Factura nu e în SPV: clientul n-o primește, iar termenul legal a trecut.",
+             "actiune": "Transmite-le din Facturi → Istoric facturi → factura → «Trimite în SPV».", "facturi": []}))
+    st = stare_spv or {}
+    if facturi and (not st.get("conectat") or st.get("are_drept") is False):
+        motiv = (st.get("mesaj") or "ANAF a răspuns că acest cont SPV n-are drept pe CUI-ul firmei.") if st.get("conectat") else \
+            "cabinetul nu e conectat la SPV."
+        out.append(_flag_constatare(
+            "galben", ETICHETA_SPV_FARA_DREPT,
+            "%s de transmis în SPV, dar facturile nu pot pleca din aplicație: %s"
+            % (_common.cate(len(facturi), "factură", "facturi"), motiv),
+            TEMEI_TERMEN_SPV, an, luna,
+            {"fel": "investigatie", "cauza": "Fără drept SPV pe firmă, transmiterea se oprește la fiecare factură.",
+             "actiune": "Setări cont → Conectare SPV: conectează cabinetul cu un certificat care are drept pe CUI-ul firmei.",
+             "facturi": []}))
+    return out
+
+
 def eticheta_incrucisat(cheie, constatare):
     """Eticheta după ce s-a comparat: „declarat … diferă” numai când există o declarație DEPUSĂ (`sursa_declarat == 'depus'`).
     Constatările care nu compară o declarație (cota TVA) n-au `sursa_declarat` și își păstrează eticheta."""
@@ -1473,8 +1635,12 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
     Intoarce (contabil, vc)."""
     contabil = []
     vc = None
+    # [deficiența 484] punțile declarație–contabilitate confruntă luna ÎNCHEIATĂ (a cărei declarație e datorată), nu luna în curs;
+    # echilibrul, trezoreria, stocurile și pragurile Intrastat rămân pe luna zilei (an, luna)
+    from core.control_fiscal_api import luna_confruntata as _luna_confruntata
+    an_c, luna_c = _luna_confruntata(an, luna)
     try:
-        vc = _verificari_contabile(schema, an, luna)
+        vc = _verificari_contabile(schema, an, luna, confruntare=(an_c, luna_c))
         ech = vc.get("echilibru") or {}
         if not ech.get("ok", True):
             contabil.append(_flag_constatare(stare_din_nivel(ech.get("nivel")), "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei"), an, luna))
@@ -1489,7 +1655,7 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
             if vd.get("stare") == "rosu":
                 prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
                 contabil.append(_flag_constatare(prima.get("stare"), eticheta_incrucisat(cheie, prima), prima.get("mesaj"),
-                                                 prima.get("temei"), an, luna, prima.get("remediu")))
+                                                 prima.get("temei"), an_c, luna_c, prima.get("remediu")))
     except Exception as e:
         _verificator_esuat(contabil, "Verificări contabile — eșuate",
                            "verificările contabile (echilibru, trezorerie, declarație vs contabilitate)",
@@ -1521,6 +1687,11 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
                                              ip.get("nota"), an, luna))
     except Exception as e:
         _verificator_esuat(contabil, "Verificare Intrastat — eșuată", "pragurile Intrastat", e, an, luna)
+    try:  # [deficiența 463] e-Factura: facturile netransmise în SPV după termen + dreptul SPV al firmei, aflat ÎNAINTE de trimitere
+        _fspv, _pre = efactura_spv_firma(schema)
+        contabil += constatari_efactura(_fspv, _uc_tenants.spv_stare_firma(tid, ctx) if _fspv else None, an, luna)
+    except Exception as e:
+        _verificator_esuat(contabil, "Verificare e-Factura — eșuată", "transmiterea facturilor în SPV", e, an, luna)
     # [F180] regim TVA local vs snapshot ANAF (constatare structurata deja produsa de evalueaza_firma)
     rta = regim_tva_anaf or {}
     if rta.get("stare") == "rosu":

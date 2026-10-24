@@ -37,7 +37,7 @@ def reset_parola_seteaza(date):
             r = _rp.seteaza(conn, date.token, date.parola)
             conn.commit()
         except ValueError:
-            raise _erori.CerereGresita("Link invalid, expirat sau deja folosit. Cere alt link din sectiunea Am uitat parola.")
+            raise _erori.CerereGresita("Linkul nu mai e valabil: a expirat sau a fost folosit deja. Cere alt link din „Am uitat parola”.")
     try:
         with db.get_conn() as c, c.cursor() as cur:
             repo_admin.scrie_audit_reset_schimbat(cur, r["user_id"])

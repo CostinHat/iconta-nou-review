@@ -57,8 +57,8 @@ def test_crearea_numeste_data_si_liniile_deodata():
     assert not r.get("ok") and _campuri(r) == ["je-data"] + _CAMPURI_RELE, r
     # primul rând al refuzului e data, întreagă (core/test_garzi_pe_text.py), urmată de liniile greșite
     assert r["eroare"].split("\n— ")[:2] == [
-        "Nota nu s-a salvat:", "data 'ieri' nu e in formatul AAAA-LL-ZZ. Se cere o data calendaristica, fiindca inregistrarea se face la "
-        "momentul operatiunii, iar ordinea cronologica a registrului-jurnal atarna de ea"], r["eroare"]
+        "Nota nu s-a salvat:", "data 'ieri' nu e în formatul AAAA-LL-ZZ. Se cere o dată calendaristică, fiindcă înregistrarea se face la "
+        "momentul operațiunii, iar ordinea cronologică a registrului-jurnal atârnă de ea"], r["eroare"]
 
 
 def test_o_singura_problema_pastreaza_textul_ei_exact():

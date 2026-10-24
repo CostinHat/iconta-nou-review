@@ -18,6 +18,11 @@ def bani(x, mon=""):
     return f"{s} {mon}".strip()
 
 
+def moneda_scrisa(m):
+    """[lotul 12, C158] Moneda pentru om: „lei” pentru RON (sau fără monedă), codul altfel — oglinda `monedaScrisa` din facturi_ecran.js."""
+    return "lei" if not m or str(m).strip().upper() == "RON" else str(m).strip().upper()
+
+
 def sold(v):
     """[lotul 11, C100] Soldul unui cont pentru om: „debitor 1.234,56 lei” / „creditor 500,00 lei” — nu „-500,00 lei” (semnul e al
     calculului, nu al contabilului). Sursa unică: refuzul importului soldurilor pe parteneri și auditul de preluare."""

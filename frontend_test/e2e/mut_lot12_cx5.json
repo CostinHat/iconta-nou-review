@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "            axa_ic = _ct.axa_neplatitor(linii, tert_tara)",
+  "inlocuire": "            axa_ic = None",
+  "test": "frontend_test/e2e/e2e_lot12_cx5.py::test_def_c154_serviciul_ic_al_neplatitorului_art317_intra_in_d390_ca_prestare"
+ },
+ {
+  "fisier": "core/control_fiscal_api.py",
+  "ancora": "_d390_luni_neplat = lambda a: _ci_sal.d390_luni_neplatitor(conn_schema, schema, a, azi)",
+  "inlocuire": "_d390_luni_neplat = lambda a: (_ci_sal.d301_luni_operatiuni(conn_schema, schema, a) | _ci_sal.d301_luni_facturi_ic(conn_schema, schema, a))",
+  "test": "frontend_test/e2e/e2e_lot12_cx5.py::test_def_c155_luna_cu_prestarea_ic_e_d390_datorat_in_control_fiscal"
+ }
+]

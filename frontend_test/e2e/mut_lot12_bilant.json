@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/bilant.py",
+  "ancora": "    if rulaj:\n",
+  "inlocuire": "    if False:\n",
+  "test": "frontend_test/e2e/e2e_lot12_bilant.py::test_def_c143_cifra_de_afaceri_din_bilant_fara_tva_ul_din_raportul_z"
+ },
+ {
+  "fisier": "core/declaratii_api.py",
+  "ancora": "    \"s1005\": (\"anual\", _s1005),   # bilanțul microentităților\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_bilant.py::test_def_72_bilantul_trece_prin_coada_pana_la_depus"
+ },
+ {
+  "fisier": "core/bilant.py",
+  "ancora": "sold = solduri if rand == tva_stoc_la else _fara_tva_stoc(solduri)",
+  "inlocuire": "sold = solduri",
+  "test": "frontend_test/e2e/e2e_lot12_bilant.py::test_def_187_proba_pe_ecran_pentru_151"
+ }
+]

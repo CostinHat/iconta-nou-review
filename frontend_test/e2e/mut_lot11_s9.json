@@ -1,8 +1,8 @@
 [
  {
   "fisier": "core/salarizare.py",
-  "ancora": "    ded = _deducere_acordata(ded, baza_contrib - cas - cass)",
-  "inlocuire": "    ded = ded",
+  "ancora": "    ded = _deducere_acordata(ded, baza_contrib - cas - cass + _cm_n)\n",
+  "inlocuire": "    ded = ded\n",
   "test": "frontend_test/e2e/e2e_lot11_s9.py::test_def_c91_deducerea_plafonata_la_venitul_net"
  },
  {

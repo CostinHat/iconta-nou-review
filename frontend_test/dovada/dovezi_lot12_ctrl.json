@@ -1,0 +1,642 @@
+[
+ {
+  "nr": "484",
+  "firma": "tenant_9049",
+  "descriere": "F1: Control fiscal -> «Declarație vs contabilitate». Confruntarea rulează pe luna ÎNCHEIATĂ, a cărei declarație se depune acum (rulat pe 10/2026 -> «Luna confruntată: 09/2026»), pe documentele din septembrie introduse înainte de reparație, iar sub ea apar «Declarațiile recalculate din documente», fiecare cu numele ei (D300, D394, D406, D100, D112 — cele datorate de firmă). Înainte: confruntarea rula pe luna în curs (10/2026, încă fără decont: „coincid” pe 0 cu 0), iar reconcilierea pe declarații nu se arăta deloc. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Luna confruntată: 09/2026",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "contine": "Declarațiile recalculate din documente",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "contine": "D300 (decont TVA):",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "nu_contine": "Luna confruntată: 10/2026",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "nu_contine": "VERIFICARE INTRERUPTA",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   }
+  ],
+  "captura": "484_f1_vechi_declaratie_vs_contabilitate_09_2026.png"
+ },
+ {
+  "nr": "484",
+  "firma": "tenant_9053",
+  "descriere": "F5: Control fiscal -> «Declarație vs contabilitate». Confruntarea rulează pe luna ÎNCHEIATĂ, a cărei declarație se depune acum (rulat pe 10/2026 -> «Luna confruntată: 09/2026»), pe documentele din septembrie introduse înainte de reparație, iar sub ea apar «Declarațiile recalculate din documente», fiecare cu numele ei (D300, D394, D406, D100, D112 — cele datorate de firmă). Înainte: confruntarea rula pe luna în curs (10/2026, încă fără decont: „coincid” pe 0 cu 0), iar reconcilierea pe declarații nu se arăta deloc. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Luna confruntată: 09/2026",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "contine": "Declarațiile recalculate din documente",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "contine": "D112 (salarii):",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "nu_contine": "Luna confruntată: 10/2026",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "nu_contine": "VERIFICARE INTRERUPTA",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   }
+  ],
+  "captura": "484_f5_vechi_declaratie_vs_contabilitate_09_2026.png"
+ },
+ {
+  "nr": "463",
+  "firma": "tenant_9049",
+  "descriere": "F1: Control fiscal -> secțiunea «e-Factura — transmiterea în SPV»: starea dreptului SPV al firmei (aceeași frază ca în fereastra firmei, cu butonul spre Conectare SPV când lipsește) și facturile emise de la luna preluării care trebuie transmise și nu sunt, fiecare cu termenul de 5 zile lucrătoare (OUG 120/2021 art.10 alin.(7)) și «(depășit)» când a trecut. Facturile sunt cele emise înainte de reparație. Înainte: termenele SPV nu apăreau în Control fiscal, iar lipsa dreptului se afla abia la «Trimite în SPV». Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #cf-efactura"
+   },
+   {
+    "pauza": 1200
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "E-FACTURA — TRANSMITEREA ÎN SPV"
+   },
+   {
+    "exista": ".fereastra:last-of-type #cf-spv-stare .spv-stare-text"
+   },
+   {
+    "contine_oricare": [
+     "termen ",
+     "nu așteaptă transmiterea în SPV"
+    ],
+    "zona": ".fereastra:last-of-type #cf-efactura"
+   },
+   {
+    "contine": "OUG 120/2021 art.10 alin.(7)",
+    "zona": ".fereastra:last-of-type #cf-efactura"
+   }
+  ],
+  "captura": "463_f1_vechi_efactura_termene_si_drept_spv.png"
+ },
+ {
+  "nr": "121",
+  "firma": "tenant_9049",
+  "descriere": "F1 (în iConta.eu din 09/2026): Control fiscal -> «Restanțe» nu are nicio declarație pe o perioadă dinaintea lunii preluării (ianuarie–august 2026, 2025); acelea stau în grupul pliat «Înainte de preluare în iConta.eu — până la 08/2026 (…, nu se numără la restanțe)», cu luna preluării și de unde vine. Datele sunt ale firmei, de dinainte de lot. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type details.cf-inainte > summary",
+    "daca_exista": true
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu se numără la restanțe"
+   },
+   {
+    "contine": "Luna preluării în iConta.eu e"
+   },
+   {
+    "nu_contine": "01/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "02/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "03/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "04/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "05/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "06/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "07/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "08/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "T1/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "T2/2026",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   },
+   {
+    "nu_contine": "2025",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl "
+   }
+  ],
+  "captura": "121_f1_vechi_restante_de_la_luna_preluarii.png"
+ },
+ {
+  "nr": "123",
+  "firma": "tenant_9049",
+  "descriere": "F1: Control fiscal -> «Declarație vs contabilitate» (luna confruntată 09/2026): unde nu s-a depus nimic prin iConta.eu pe lună, rândul spune „D300 nedeclarat (generat azi) ar avea …” / „D112 nedeclarat (generat azi) ar avea …”, iar rândurile reconcilierii spun „declarația generată are …”, nu „declarat …” (o declarație nedepusă nu „declară” nimic). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": " declarat ",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "contine_oricare": [
+     "nedeclarat (generat azi) ar avea",
+     "D300 declară",
+     "coincid"
+    ],
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   }
+  ],
+  "captura": "123_f1_vechi_nedeclarat.png"
+ },
+ {
+  "nr": "157",
+  "firma": "tenant_9049",
+  "descriere": "F1 (preluată în 09/2026): D100 și D205 pe 2025 (necunoaștere pe un an dinaintea preluării) stau în «Înainte de preluare în iConta.eu», fiecare cu perioada și termenul, nu la «Nu se poate verifica»; o necunoaștere deschisă (toată fereastra, „din 12/2025”) se spune de la luna preluării. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type details.cf-inainte > summary",
+    "daca_exista": true
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D100",
+    "zona": ".fereastra:last-of-type details.cf-inainte"
+   },
+   {
+    "contine": "2025",
+    "zona": ".fereastra:last-of-type details.cf-inainte"
+   },
+   {
+    "nu_contine": "din 12/2025"
+   }
+  ],
+  "captura": "157_f1_vechi_d100_d205_2025_inainte_de_preluare.png"
+ },
+ {
+  "nr": "148",
+  "firma": "tenant_9049",
+  "descriere": "F1: Control fiscal -> «Înainte de preluare» -> D100 T4/2025 -> «Marchează depusă în afara iConta.eu»: formularul are data depunerii (obligatorie) și „nr. recipisă (opțional)”, fără fișier (decizia U2, 08.10.2026: recipisa = numărul ei); data 20.01.2026, recipisa R-148 -> «Salvează»: rândul spune „Depusă în afara iConta.eu 20.01.2026 · recipisă R-148” și are «Modifică marcarea» / «Anulează marcarea». SCRIE pe copie o marcare (o anulează dovada 213).",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type details.cf-inainte > summary"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "click": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-btn"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-form input[type=date]",
+    "valoare": "2026-01-20"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-form input[type=text]",
+    "valoare": "R-148"
+   },
+   {
+    "click": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-salveaza"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-anuleaza"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "recipisă R-148",
+    "zona": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12']"
+   },
+   {
+    "contine": "Depusă în afara iConta.eu 20.01.2026",
+    "zona": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12']"
+   },
+   {
+    "nu_contine": "necunoscut declarat",
+    "zona": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12']"
+   }
+  ],
+  "captura": "148_f1_vechi_recipisa_numar.png"
+ },
+ {
+  "nr": "213",
+  "firma": "tenant_9049",
+  "descriere": "F1: după dovada 148 (D100 T4/2025 marcată), «Anulează marcarea»: confirmarea spune perioada rândului — „Anulezi marcarea D100 T4/2025? Declarația redevine nedepusă.” —, nu luna de ancoră („12/2025”). «Da» -> rândul redevine nemarcat. SCRIE pe copie (anulează marcarea din 148).",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type details.cf-inainte > summary"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "click": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-anuleaza"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "captura": "213_f1_vechi_confirmarea_anularii.png"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Anulezi marcarea D100 T4/2025?",
+    "zona": ".fereastra:last-of-type #caseta-atentie-activa .ca-mesaj"
+   },
+   {
+    "nu_contine": "Anulezi marcarea D100 12/2025",
+    "zona": ".fereastra:last-of-type #caseta-atentie-activa .ca-mesaj"
+   }
+  ],
+  "captura": "213_f1_vechi_confirmarea_anularii_final.png"
+ },
+ {
+  "nr": "213",
+  "firma": "tenant_9049",
+  "descriere": "F1: a doua parte a lui 213 — «Anulează marcarea» -> «Confirm»: rândul D100 T4/2025 redevine nemarcat («Marchează depusă în afara iConta.eu», fără recipisa R-148). SCRIE pe copie: anulează marcarea pusă de dovada 148, ca firma să revină la starea clonată (altfel „Scoate firma” din dovada 263 numără o declarație depusă în plus).",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type details.cf-inainte > summary"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "click": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-anuleaza"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #caseta-atentie-activa #ca-ok"
+   },
+   {
+    "click": ".fereastra:last-of-type #caseta-atentie-activa #ca-ok"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-btn",
+    "stare": "attached",
+    "text": "Marchează depusă"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12'] .cf-extern-btn",
+    "text": "Marchează depusă"
+   },
+   {
+    "nu_contine": "R-148",
+    "zona": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12']"
+   },
+   {
+    "nu_contine": "Anulează marcarea",
+    "zona": ".fereastra:last-of-type .cf-decl-item[data-cheie='d100-2025-12']"
+   }
+  ],
+  "captura": "213_f1_vechi_anularea_confirmata.png"
+ },
+ {
+  "nr": "491",
+  "firma": "tenant_9053",
+  "descriere": "F5: fereastra firmei -> Control fiscal: starea firmei în antet și constatările ei («Declarație vs contabilitate», «Verificări contabile»), citite rând cu rând în «văzut». Explicația din cod a lui „alertele au urcat de la 3 la 4 după statul F5” (06.10.2026): „alertele” erau cifra cardului Control fiscal de pe pagina principală — numărul firmelor în ROȘU (`cabinet.js`, „N alerte fiscale”, versiunea de dinainte de 10.10). Statul de plată face D112 generabil pe lună (salariat activ, `control_incrucisat.verifica_d112`), iar D112 se confruntă cu rulajul VALIDAT al conturilor 444 / 4315 / 4316 / 436; cât notele salariilor sunt ciornă, iese constatarea roșie „Salarii nedeclarate” (remediu: validarea notelor), iar pe 06.10 o constatare roșie urca firma la roșu (`common.pastila_firma`) — F5 a devenit a patra firmă roșie. De la 10.10 (deficiența 220, „Roșu înseamnă termen depășit”) o constatare urcă firma cel mult la galben: statul nu mai poate face o firmă roșie; roșul vine numai dintr-o restanță. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "VERIFICĂRI CONTABILE (",
+     "DECLARAȚIE VS CONTABILITATE"
+    ]
+   },
+   {
+    "contine_oricare": [
+     "Salarii",
+     "D112"
+    ]
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-decl .cf-incr-rand:nth-of-type(1)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-decl .cf-incr-rand:nth-of-type(2)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-decl .cf-incr-rand:nth-of-type(3)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-decl .cf-incr-rand:nth-of-type(4)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-decl .cf-incr-rand:nth-of-type(5)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-decl .cf-incr-rand:nth-of-type(6)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-decl .cf-incr-rand:nth-of-type(7)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-decl .cf-incr-rand:nth-of-type(8)"
+   }
+  ],
+  "captura": "491_f5_vechi_constatarile_firmei.png"
+ },
+ {
+  "nr": "497",
+  "firma": "tenant_9050",
+  "descriere": "F2: Control fiscal -> «Restanțe (…)» (la retest: 7) — fiecare rând citit în «văzut»: tipul, perioada, termenul. Explicația din cod: o restanță = o obligație din vectorul fiscal (`control_fiscal_api.obligatii_datorate`: D300/D394 după perioada TVA, D112 pe lunile cu salariat activ, D100 pe trimestrele cu venituri, D406 după perioada SAF-T, D390 pe lunile cu operațiuni intracomunitare) cu termenul trecut (`core/scadente.py`), nedepusă prin iConta.eu și nemarcată „depusă în afara iConta.eu”, pe o perioadă de la luna preluării încolo (`luna_preluare.efectiva`); e-Factura nu intră aici (are secțiunea ei). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "RESTANȚE ("
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(1)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(2)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(3)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(4)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(5)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(6)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(7)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(8)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(9)"
+   }
+  ],
+  "captura": "497_f2_vechi_restante_detaliu.png"
+ },
+ {
+  "nr": "497",
+  "firma": "tenant_9051",
+  "descriere": "F3: Control fiscal -> «Restanțe (…)» (la retest: 12) — fiecare rând citit în «văzut»: tipul, perioada, termenul. Explicația din cod: o restanță = o obligație din vectorul fiscal (`control_fiscal_api.obligatii_datorate`: D300/D394 după perioada TVA, D112 pe lunile cu salariat activ, D100 pe trimestrele cu venituri, D406 după perioada SAF-T, D390 pe lunile cu operațiuni intracomunitare) cu termenul trecut (`core/scadente.py`), nedepusă prin iConta.eu și nemarcată „depusă în afara iConta.eu”, pe o perioadă de la luna preluării încolo (`luna_preluare.efectiva`); e-Factura nu intră aici (are secțiunea ei). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "RESTANȚE ("
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(1)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(2)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(3)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(4)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(5)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(6)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(7)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(8)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(9)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(10)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(11)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(12)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(13)"
+   },
+   {
+    "nu_contine": "§§ rândul se citește în «văzut» §§",
+    "zona": ".fereastra:last-of-type .cf-grup-titlu.cf-rosu + .cf-decl .cf-decl-item:nth-child(14)"
+   }
+  ],
+  "captura": "497_f3_vechi_restante_detaliu.png"
+ }
+]

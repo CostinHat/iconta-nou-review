@@ -1878,8 +1878,10 @@ ALTER TABLE ONLY TENANT_PLACEHOLDER.facturi
 -- [C1, 17.09.2026] numerotare secventiala UNICA pe emise (art. 319 CF): plasa a doua
 -- peste rezervarea atomica din facturi_api._rezerva_numar. Partial pe emise; primite pot
 -- repeta numarul furnizorului. Oglinda in core/migrare_unic_numar_factura.py.
+-- [lotul 12, 252] fara facturile deschise PRELUATE (tip preluata): numerele lor sunt ale programului vechi, nu ale numerotarii
+-- din iConta.eu. Firmele existente: core/migrare_documente_preluate.py.
 --
-CREATE UNIQUE INDEX IF NOT EXISTS facturi_numar_emisa_uniq ON TENANT_PLACEHOLDER.facturi (COALESCE(serie, ''), numar) WHERE directie = 'emisa';
+CREATE UNIQUE INDEX IF NOT EXISTS facturi_numar_emisa_uniq ON TENANT_PLACEHOLDER.facturi (COALESCE(serie, ''), numar) WHERE directie = 'emisa' AND COALESCE(tip, 'factura') <> 'preluata';
 
 
 --
@@ -3783,3 +3785,21 @@ CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cui_detectat ON TENANT
 DROP TRIGGER IF EXISTS trg_cui_fara_ro ON TENANT_PLACEHOLDER.asociati;
 CREATE TRIGGER trg_cui_fara_ro BEFORE INSERT OR UPDATE OF cnp ON TENANT_PLACEHOLDER.asociati FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('cnp');
 -- [cui_fara_ro_v1] sfârșit
+
+-- [produse_cota_jurnal_v1, lotul 12, 472] corectura cotei TVA a produsului, consemnată — SURSA: core/migrare_produse_cota_jurnal.py
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.produse_cota_jurnal (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    produs_id integer NOT NULL,
+    denumire text NOT NULL,
+    cota_veche numeric(5,2),
+    categorie_veche text,
+    cota_noua numeric(5,2) NOT NULL,
+    categorie_noua text,
+    user_id integer NOT NULL,
+    la timestamp with time zone NOT NULL DEFAULT now()
+);
+-- [produse_cota_jurnal_v1] sfârșit
+
+-- [tara_sablon_recurent_v1, lotul 12, C160] țara clientului pe șablonul facturii recurente — SURSA: core/migrare_tara_sablon_recurent.py
+ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente ADD COLUMN IF NOT EXISTS tert_tara text DEFAULT 'RO'::text NOT NULL;
+-- [tara_sablon_recurent_v1] sfârșit

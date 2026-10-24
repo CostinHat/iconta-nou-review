@@ -45,8 +45,9 @@ def select_public(cur, tenant_id):
 
 
 def select_facturi(cur, inc, sf):
+    from core import nomenclator_status_factura as _nsf   # [lotul 12, 252] numai documentele fiscale (nu proforme, avize, facturi preluate)
     cur.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
-                "AND data_emitere >= %s AND data_emitere < %s", (inc.isoformat(), sf.isoformat()))
+                "AND data_emitere >= %s AND data_emitere < %s AND " + _nsf.clauza_tip_document(None), (inc.isoformat(), sf.isoformat()))
     return cur.fetchone()
 
 
@@ -99,3 +100,13 @@ def delete_marcari(cur, tenant_id, an, luna, tip):
     cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s AND tip = %s "
                 "AND sursa IN ('extern', 'contabil_anterior')", (tenant_id, an, luna, tip))
     return cur.rowcount
+
+
+def select_facturi_emise_spv(cur, de_la):
+    """[deficiența 463] Facturile EMISE (tip factură, nu proforma / aviz; fără ciorne și anulate) de la `de_la` (inclusiv; None = toate),
+    cu câmpurile din care `facturi_api._cu_stare_spv` le calculează starea în SPV și termenul de transmitere."""
+    cur.execute("SELECT id, numar, serie, data_emitere, directie, tip, tert_nume, tert_cui, tert_tara, data_faptului_generator "
+                "FROM facturi WHERE directie = 'emisa' AND COALESCE(tip, 'factura') = 'factura' "
+                "  AND COALESCE(status, 'emisa') NOT IN ('ciorna', 'anulata') "
+                "  AND (%s::date IS NULL OR data_emitere >= %s::date) ORDER BY data_emitere, id", (de_la, de_la))
+    return cur.fetchall()

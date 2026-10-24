@@ -18,6 +18,10 @@ CE PAZESTE, si de ce fiecare proba e aici:
 
   ANTI-VACUU. Daca `perimetru()` ar intoarce liste goale din orice motiv, toate probele de mai sus
   ar trece degeaba. De-aia se cere si ca perimetrul unui modul cunoscut sa NU fie gol.
+
+  [23.10.2026, CLAUDE.md §5 — poarta compusa] BAZA DIFF-ULUI: `--fata-de=<X>` / `--compus=<X>` numesc un COMMIT, nu fisiere; lista
+  atinselor vine tot din `git diff` (fata de X). Si CITIREA CAZUTELOR din rezumatul pytest: nodurile (inclusiv parametri cu „ - ”) si
+  completitudinea (o lista trunchiata nu se poate compune). Compusul insusi: `core/test_poarta_lot.py`.
 """
 import os
 import sys
@@ -130,8 +134,9 @@ def test_js_atins_nu_porneste_suita_ci_verificatorul_e2e_si_garzile_statice(monk
     # [lotul 6, 16.10.2026] + e2e_lot6.py: testul 290 (eroarea dispare după corectare) folosește formularul de autentificare
     #   (`#login-email`, `#login-eroare`)
     # [lotul 11, 11.2 pct.4] + e2e_pozitii_validate.py: F008 (autentificarea) folosește formularul de intrare; + e2e_lot11_w2.py (440 / 445)
-    assert e2e == ["--doar=e2e_inregistrare_libera.py", "--doar=e2e_invitatii.py", "--doar=e2e_lot11_w2.py", "--doar=e2e_lot5_c3.py",
-                   "--doar=e2e_lot6.py", "--doar=e2e_pozitii_validate.py"], e2e
+    # [lotul 12, 561] + e2e_lot12_start.py: clientul intră în portal prin formularul de autentificare (`#login-parola`, `#login-buton`)
+    assert e2e == ["--doar=e2e_inregistrare_libera.py", "--doar=e2e_invitatii.py", "--doar=e2e_lot11_w2.py", "--doar=e2e_lot12_start.py",
+                   "--doar=e2e_lot5_c3.py", "--doar=e2e_lot6.py", "--doar=e2e_pozitii_validate.py"], e2e
 
 
 def test_registrul_langa_python_nu_porneste_suita(monkeypatch):
@@ -219,3 +224,51 @@ def test_lansatorul_ruleaza_suita_cand_s_a_adaugat_un_py(monkeypatch):
     monkeypatch.setattr(PS.P, "populatie_schimbata", lambda: None)
     cod, rulate = _lanseaza(monkeypatch, ["core/plati.py"], rc=6)
     assert (cod, rulate) == (6, [PS.SUITA_INTREAGA])
+
+
+
+# ── [23.10.2026] baza diff-ului si citirea cazutelor ─────────────────────────────────────────────────────────
+from core.test_poarta_lot import depozit_poarta  # noqa: E402,F401 — fixtura depozitului cu poarta adevărată
+
+
+def test_fata_de_un_commit_ia_atinsele_din_diff_fata_de_el(depozit_poarta):
+    """Arbore curat pe HEAD: fără bază, „niciunul”; `--fata-de=<X>` vede ce s-a comis de la X (`core/a.py`) și rulează perimetrul lui
+    (`core/test_a.py`); un commit inexistent e refuzat (3), iar un fișier tot nu e primit. MUTAȚIE: `P.BAZA = …` scos din `main` ->
+    „niciunul” și cu `--fata-de` -> pică."""
+    dp = depozit_poarta
+    x = dp.git("rev-parse", "HEAD")
+    dp.comite("core/a.py", "X = 2\n")
+
+    def ruleaza(*a):
+        r = __import__("subprocess").run([str(dp.d / "venv" / "bin" / "python"), "scripts/poarta_scurta.py"] + list(a), cwd=dp.d,
+                                         capture_output=True, text=True, timeout=120, env=dp._env({}))
+        return r.returncode, r.stdout + r.stderr
+    cod, iesire = ruleaza()
+    assert (cod, iesire.count("ATINSE: niciunul")) == (0, 1), iesire
+    cod, iesire = ruleaza("--fata-de=" + x)
+    assert cod == 0 and iesire.count("ATINSE (1):") == 1 and iesire.count("    core/a.py") == 1, iesire
+    assert [c for c in dp.chemari() if c.startswith("-m pytest")] == ["-m pytest -q --no-header core/test_a.py"], dp.chemari()
+    assert ruleaza("--fata-de=nu-exista")[0] == 3 and ruleaza("--compus=nu-exista")[0] == 3
+    assert ruleaza("--fata-de=" + x, "core/a.py")[0] == 3
+
+
+def test_cazutele_se_citesc_pe_noduri_din_rezumatul_pytest(tmp_path):
+    """`FAILED` / `ERROR` din rezumatul scurt -> noduri (fără dubluri; parametrul cu „ - ” rămâne întreg; un rând de log `ERROR    …`
+    nu e nod). Lista e completă numai dacă are atâtea rânduri câte căzute numără rezumatul. MUTAȚIE: `numar_cazute(text) == randuri`
+    înlocuit cu `True` -> lista trunchiată trece drept completă -> pică."""
+    text = ("ERROR    core.db:db.py:12 conexiune\n"
+            "FAILED core/test_a.py::test_x[a - b] - AssertionError: 1 - 2\n"
+            "FAILED core/test_a.py::test_y - assert 0\n"
+            "ERROR core/test_a.py::test_y - teardown\n"
+            "ERROR core/test_b.py\n"
+            "3 failed, 120 passed, 2 errors in 3.21s\n")
+    assert PS.cazute_din_text(text) == (["core/test_a.py::test_x[a - b]", "core/test_a.py::test_y", "core/test_b.py"], 4)
+    log = tmp_path / "p.log"
+    log.write_text(text.replace("3 failed", "2 failed"))
+    p = PS.parte(1, 7, [str(tmp_path / "lipsa.log"), str(log)])
+    assert (p["rc"], p["durata_s"], p["cazute_complete"], len(p["cazute"])) == (1, 7, True, 3), p
+    log.write_text(text)                                            # rezumatul numără 5, lista are 4 rânduri: trunchiată
+    assert PS.parte(1, 7, [str(log)])["cazute_complete"] is False
+    log.write_text("[e2e] aplicatia n-a pornit\n")                 # căzută fără rezumat
+    assert PS.parte(3, 1, [str(log)])["cazute_complete"] is False
+    assert PS.parte(0, 1, [str(tmp_path / "lipsa.log")])["cazute_complete"] is True

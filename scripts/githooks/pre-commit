@@ -18,11 +18,11 @@ ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
 # [15.10.2026] jurnalele porții: `POARTA_JURNALE` (testele îl mută într-un director al lor — conftest.py), implicit /tmp
 J=${POARTA_JURNALE:-/tmp}
-# [14.10.2026, regim pilot — garda pe main] Un commit DIRECT pe `main` nu poate fi aprobat dinainte (SHA-ul lui nu există încă), deci
-# `reference-transaction` l-ar refuza oricum — dar abia DUPĂ poarta de ~70 de minute. Se refuză aici, din prima secundă.
+# [14.10.2026 — garda pe main; 23.10.2026, CLAUDE.md §6] Un commit DIRECT pe `main` nu poate avea dinainte verdictul VERDE al porții
+# lotului (SHA-ul lui nu există încă), deci `reference-transaction` l-ar refuza oricum. Se refuză aici, din prima secundă.
 if [ "$(git symbolic-ref --short HEAD 2>/dev/null)" = "main" ]; then
-    echo "[pre-commit] REFUZAT: commit direct pe main. main = versiunea publicată (regim pilot): lucrează pe o ramură, în worktree;"
-    echo "[pre-commit]   main se mută numai prin fast-forward la un SHA aprobat (scripts/githooks/reference-transaction)."
+    echo "[pre-commit] REFUZAT: commit direct pe main. main = versiunea publicată: lucrează pe ramura lotului, în worktree;"
+    echo "[pre-commit]   main se mută numai prin fast-forward la un SHA cu poarta VERDE (scripts/githooks/reference-transaction)."
     exit 1
 fi
 PY=./venv/bin/python

@@ -1,0 +1,38 @@
+[
+ {
+  "fisier": "core/control_fiscal_api.py",
+  "ancora": "    return (an - 1, 12) if luna == 1 else (an, luna - 1)",
+  "inlocuire": "    return (an, luna)",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl.py::test_def_484_confruntarea_ruleaza_pe_luna_incheiata_si_arata_reconcilierea"
+ },
+ {
+  "fisier": "core/uc_comun.py",
+  "ancora": "vc = _verificari_contabile(schema, an, luna, confruntare=(an_c, luna_c))",
+  "inlocuire": "vc = _verificari_contabile(schema, an, luna, confruntare=None)",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl.py::test_def_484_confruntarea_ruleaza_pe_luna_incheiata_si_arata_reconcilierea"
+ },
+ {
+  "fisier": "static/js/ecrane/control_verdict.js",
+  "ancora": "id=\"cf-incrucisat\">${antet}${blocuri}${reconBloc}</div>",
+  "inlocuire": "id=\"cf-incrucisat\">${antet}${blocuri}</div>",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl.py::test_def_484_confruntarea_ruleaza_pe_luna_incheiata_si_arata_reconcilierea"
+ },
+ {
+  "fisier": "static/js/ecrane/control_verdict.js",
+  "ancora": "+ sectContabil + sectEfactura + gata",
+  "inlocuire": "+ sectContabil + gata",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl.py::test_def_463_control_fiscal_arata_termenele_spv_si_dreptul"
+ },
+ {
+  "fisier": "core/control_fiscal_api.py",
+  "ancora": "        if not st.get(\"obligatorie\") or st.get(\"stare\") not in (\"netrimisa\", \"respinsa\") or not st.get(\"termen\"):",
+  "inlocuire": "        if True:",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl.py::test_def_463_control_fiscal_arata_termenele_spv_si_dreptul"
+ },
+ {
+  "fisier": "static/js/ecrane/control_verdict.js",
+  "ancora": "  if (zonaSpv) randeazaStareSpv(zonaSpv, nav, firma.tenant_id);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl.py::test_def_463_control_fiscal_arata_termenele_spv_si_dreptul"
+ }
+]

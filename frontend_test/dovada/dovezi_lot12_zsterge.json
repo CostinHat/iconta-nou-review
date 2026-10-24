@@ -1,0 +1,118 @@
+[
+ {
+  "nr": "C139",
+  "firma": "tenant_9049",
+  "descriere": "F1 (stoc cantitativ-valoric), Raport Z, luna curentă: cele două Z-uri vechi ciornă (Z-8000000001-0042, nota 162 și Z-8000000001-0043, nota 173, create înainte de reparație) au pe rândul lor „Șterge raportul Z”. Numai citire: nu se apasă.",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #z-descarcare .pf-frand[data-z]"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #z-descarcare"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #z-descarcare #zd-sterge-162",
+    "text": "Șterge raportul Z"
+   },
+   {
+    "exista": ".fereastra:last-of-type #z-descarcare #zd-sterge-173",
+    "text": "Șterge raportul Z"
+   },
+   {
+    "contine": "nevalidat",
+    "zona": ".fereastra:last-of-type #z-descarcare .pf-frand[data-z='162']"
+   }
+  ],
+  "captura": "c139_f1_vechi_buton_pe_ciorna.png"
+ },
+ {
+  "nr": "C139",
+  "firma": "tenant_9049",
+  "descriere": "F1, Raport Z: Z-ul vechi validat al lunii stă în listă marcat „validat”, FĂRĂ „Șterge raportul Z”, cu motivul (corectura e stornarea, OMFP 1802/2014 pct.69). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #z-descarcare .pf-frand[data-z-validat]"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #z-descarcare .pf-frand[data-z-validat]"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #z-descarcare .pf-frand[data-z-validat]"
+   },
+   {
+    "contine": "validat",
+    "zona": ".fereastra:last-of-type #z-descarcare .pf-frand[data-z-validat]"
+   },
+   {
+    "contine": "stornare (OMFP 1802/2014 pct.69)",
+    "zona": ".fereastra:last-of-type #z-descarcare .pf-frand[data-z-validat]"
+   },
+   {
+    "nu_contine": "Șterge raportul Z",
+    "zona": ".fereastra:last-of-type #z-descarcare .pf-frand[data-z-validat]"
+   }
+  ],
+  "captura": "c139_f1_vechi_validat_fara_buton.png"
+ },
+ {
+  "nr": "C139",
+  "firma": "tenant_9049",
+  "descriere": "F1, Raport Z: „Șterge raportul Z” pe Z-ul vechi ciornă 0043 (nota 173, ieșirea din stoc legată = nota 174, ciornă) deschide ÎNTÂI întrebarea, cu ce se șterge și cifrele (încasatul, TVA-ul, nota ciornă, ieșirea din stoc legată, în valoare de 51,37 lei la cost). Nu Z-ul 0042: ieșirea lui din stoc (nota 187) a fost validată pe producție pe 23.10.2026, deci „Șterge” spune refuzul fără întrebare (descărcare validată — OMFP 1802/2014 pct.69), cum cere C139. Nu se confirmă: nimic nu se șterge (numai citire).",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #z-descarcare #zd-sterge-173"
+   },
+   {
+    "click": ".fereastra:last-of-type #z-descarcare #zd-sterge-173"
+   },
+   {
+    "asteapta": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Ștergi raportul Z",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "contine": "încasat",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "contine": "51,37 lei la cost",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "contine": "Ștergerea nu se poate anula.",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "exista": "#caseta-atentie-activa #ca-ok",
+    "text": "Da, șterge raportul Z"
+   }
+  ],
+  "captura": "c139_f1_vechi_intrebarea_cu_cifrele.png"
+ }
+]

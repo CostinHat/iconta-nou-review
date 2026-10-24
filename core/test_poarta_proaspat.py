@@ -79,12 +79,15 @@ def test_poarta_ruleaza_prospetimea_inaintea_suitei_si_respinge():
     assert pas[0] < suita[0], "probele de prospețime rulează după suită"
     intre = [t for i, t in cod if pas[0] < i < suita[0]]
     assert sum(1 for t in intre if t[:5] == ["if", "[", "$RC_PROASPAT", "-ne", "0"]) == 1, intre
-    assert sum(1 for t in intre if t == ["exit", "1"]) == 1, intre
+    # [23.10.2026, CLAUDE.md §5 — DECIZII „Comanda 12.1”] poarta nu mai iese la prima parte roșie: partea roșie se consemnează (`rosu`)
+    # și poarta rulează și restul, ca să se știe toate testele căzute; ieșirea nenulă o dă `incheie`, la final
+    assert sum(1 for t in intre if t[:3] == ["rosu", "probe de prospetime", "$RC_PROASPAT"]) == 1, intre
 
 
 def test_artefactul_vechi_e_respins_inainte_de_suita():
     """Pe hook-ul adevărat, într-un depozit de probă cu un singur test de prospețime roșu, cu jurnalele într-un director al lui:
-    pasul de prospețime și-a scris jurnalul, suita nu (n-a pornit), iar respingerea consemnată numește testul picat."""
+    poarta iese roșie, iar PRIMA respingere consemnată e a probelor de prospețime (rulate înaintea suitei) și numește testul picat.
+    [23.10.2026, CLAUDE.md §5] Suita rulează și ea după prospețimea roșie (poarta nu se mai oprește la prima parte roșie)."""
     with tempfile.TemporaryDirectory() as d, tempfile.TemporaryDirectory() as jurnale:
         subprocess.run(["git", "init", "-q", "."], cwd=d, check=True, capture_output=True)
         os.makedirs(os.path.join(d, "core"))
@@ -98,7 +101,8 @@ def test_artefactul_vechi_e_respins_inainte_de_suita():
                            env=dict(os.environ, POARTA_JURNALE=jurnale))
         assert r.returncode == 1, r.stdout + r.stderr
         # [15.10.2026] fără `precommit_curatenie.log`: ocolirea de curățenie a ieșit din poartă (DECIZII „Poarta o dată pe lot”)
-        assert sorted(os.listdir(jurnale)) == ["precommit_proaspat.log"], os.listdir(jurnale)
-        consemnate = [l.split()[1] for l in open(os.path.join(d, ".poarta_jurnal.log"), encoding="utf-8")
-                      if l.startswith("    FAILED ")]
+        assert "precommit_proaspat.log" in os.listdir(jurnale), os.listdir(jurnale)
+        blocuri = open(os.path.join(d, ".poarta_jurnal.log"), encoding="utf-8").read().split("=== ")[1:]
+        assert blocuri and "RESPINS probe de prospetime exit 1" in blocuri[0].splitlines()[0], blocuri[:1]
+        consemnate = [l.split()[1] for l in blocuri[0].splitlines() if l.startswith("    FAILED ")]
         assert consemnate == ["core/test_artefact.py::test_artefactul_e_proaspat"], consemnate

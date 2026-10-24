@@ -1,6 +1,6 @@
 {
  "asteptat": 50,
- "ui_hash": "6ffb2656f252b6e7",
+ "ui_hash": "80cae173b23119de",
  "celule": 50,
  "coduri": [
   "D100",
@@ -58,7 +58,7 @@
  "derulare": {
   "grila": false,
   "corp": false,
-  "pagina": true
+  "pagina": false
  },
  "invizibile": [],
  "explicatii": [

@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, dupaGenerare, noteGenerate, stareNota, pasNota } from "../api.js?v=31460b24f2";
+import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, dupaGenerare, noteGenerate, stareNota, pasNota } from "../api.js?v=309f4d66ae";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {
@@ -54,7 +54,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
     ${m.catalog ? `<div class="tip-desc">${esc(m.catalog.denumire)} · ${m.catalog.ani_min}–${cate(m.catalog.ani_max, "an", "ani")}</div>` : ""}`;
   const planLunar = (m) => !(m.plan_lunar || []).length ? "" : `<tr><td colspan="${simpla ? 11 : 13}"><details><summary>Planul lunar de amortizare — ${esc(m.cod || m.denumire || "")} (${cate(m.plan_lunar.length, "lună", "luni")})</summary>
       <table class="fd-tabel"><thead><tr><th>Luna</th><th class="fd-td-num">Rata</th>${simpla ? "" : "<th>Înregistrare</th>"}</tr></thead><tbody>
-      ${m.plan_lunar.map((p) => `<tr><td>${String(p.luna).padStart(2, "0")}/${p.an}</td><td class="fd-td-num">${bani(p.rata)}</td>${simpla ? "" : `<td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td>`}</tr>`).join("")}
+      ${m.plan_lunar.map((p) => `<tr><td>${dataRo(new Date(p.an, p.luna - 1, 1), "luna_an_numeric")}</td><td class="fd-td-num">${bani(p.rata)}</td>${simpla ? "" : `<td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td>`}</tr>`).join("")}
       </tbody></table></details></td></tr>`;
 
   function randeaza(lista, pana) {

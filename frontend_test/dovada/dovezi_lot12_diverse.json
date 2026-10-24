@@ -1,0 +1,414 @@
+[
+ {
+  "nr": "263",
+  "firma": "tenant_9055",
+  "descriere": "F6: „Scoate firma” refuză scoaterea și numără evidența acordat: „6 facturi” (cele 2 emise F61, F62 + cele 4 deschise preluate, scrise pe copie de `migrare_documente_preluate`), „3 note contabile”, „1 artefact păstrat” (nu „1 artefacte”). Cifrele sunt ale copiei la clonare; „1 declarație în coadă” nu se cere — o pune acolo dovada 493 (cx2), deci depinde de ordinea rulării",
+  "pasi": [
+   {
+    "deruleaza": "#firma-scoate"
+   },
+   {
+    "click": "#firma-scoate"
+   },
+   {
+    "asteapta": "#sf-corp .caseta-atentie"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu se poate șterge",
+    "zona": "#sf-corp"
+   },
+   {
+    "contine": "6 facturi",
+    "zona": "#sf-corp"
+   },
+   {
+    "contine": "3 note contabile",
+    "zona": "#sf-corp"
+   },
+   {
+    "contine": "1 artefact păstrat",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "1 facturi",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "1 artefacte",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "1 declarații",
+    "zona": "#sf-corp"
+   }
+  ],
+  "captura": "263_f6_scoate_firma.png"
+ },
+ {
+  "nr": "263",
+  "firma": "tenant_9050",
+  "descriere": "F2: „Scoate firma” — „19 note contabile”, „5 facturi”, „1 chitanță”, „2 declarații depuse” (fiecare acordat cu numărul)",
+  "pasi": [
+   {
+    "deruleaza": "#firma-scoate"
+   },
+   {
+    "click": "#firma-scoate"
+   },
+   {
+    "asteapta": "#sf-corp .caseta-atentie"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "1 chitanță",
+    "zona": "#sf-corp"
+   },
+   {
+    "contine": "5 facturi",
+    "zona": "#sf-corp"
+   },
+   {
+    "contine": "2 declarații depuse",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "1 chitanțe",
+    "zona": "#sf-corp"
+   }
+  ],
+  "captura": "263_f2_scoate_firma.png"
+ },
+ {
+  "nr": "263",
+  "firma": "tenant_9049",
+  "descriere": "F1: „Scoate firma” — „1 declarație depusă” (nu „1 declarații depuse”) și „de” de la 20: „37 de declarații în coadă”",
+  "pasi": [
+   {
+    "deruleaza": "#firma-scoate"
+   },
+   {
+    "click": "#firma-scoate"
+   },
+   {
+    "asteapta": "#sf-corp .caseta-atentie"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "1 declarație depusă",
+    "zona": "#sf-corp"
+   },
+   {
+    "contine": "37 de declarații în coadă",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "1 declarații",
+    "zona": "#sf-corp"
+   }
+  ],
+  "captura": "263_f1_scoate_firma.png"
+ },
+ {
+  "nr": "C117",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni → Inventariere anuală → Casare: se cere mijlocul fix din registru, „Valoare” nu se mai arată",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='inventariere']"
+   },
+   {
+    "click": "button[data-op='inventariere']"
+   },
+   {
+    "asteapta": "#op-operatie"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "casare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Mijlocul fix",
+    "zona": ".fereastra:last-of-type .grila-campuri"
+   },
+   {
+    "nu_contine": "Valoare",
+    "zona": ".fereastra:last-of-type .grila-campuri"
+   }
+  ],
+  "captura": "c117_f1_casare.png"
+ },
+ {
+  "nr": "C117",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni → Inventariere anuală → Plus stoc: „Valoare” se cere în continuare (are efect)",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='inventariere']"
+   },
+   {
+    "click": "button[data-op='inventariere']"
+   },
+   {
+    "asteapta": "#op-operatie"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "plus"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Valoare",
+    "zona": ".fereastra:last-of-type .grila-campuri"
+   },
+   {
+    "nu_contine": "Mijlocul fix",
+    "zona": ".fereastra:last-of-type .grila-campuri"
+   }
+  ],
+  "captura": "c117_f1_plus_stoc.png"
+ },
+ {
+  "nr": "214",
+  "firma": "tenant_9050",
+  "descriere": "F2, documentul vechi: nota 5 „Amortizare 09/2026”, VALIDATĂ pe 28.09.2026 de codul de dinainte de reparație — Registrul jurnal îi arată documentul justificativ (Tabloul de amortizare AMORT-2026-09), nu „nederivat”; data rămâne cea validată (o notă validată nu se rescrie)",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-prev"
+   },
+   {
+    "asteapta_text": "Luna 10/2026"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#j-prev"
+   },
+   {
+    "asteapta_text": "Luna 09/2026"
+   },
+   {
+    "asteapta": "[data-nota-id='5']"
+   },
+   {
+    "deruleaza": "[data-nota-id='5']"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Tabloul de amortizare AMORT-2026-09",
+    "zona": "[data-nota-id='5']"
+   },
+   {
+    "nu_contine": "nederivat",
+    "zona": "[data-nota-id='5']"
+   },
+   {
+    "contine": "28.09.2026",
+    "zona": "[data-nota-id='5']"
+   }
+  ],
+  "captura": "214_f2_vechi_nota_amortizare_09.png"
+ },
+ {
+  "nr": "214",
+  "firma": "tenant_9050",
+  "descriere": "F2: notele de amortizare generate după reparație (08/2026) sunt datate în ultima zi a lunii (31.08.2026), cu tabloul lor",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-prev"
+   },
+   {
+    "asteapta_text": "Luna 10/2026"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#j-prev"
+   },
+   {
+    "asteapta_text": "Luna 09/2026"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#j-prev"
+   },
+   {
+    "asteapta_text": "Luna 08/2026"
+   },
+   {
+    "asteapta": "[data-nota-id='32']"
+   },
+   {
+    "deruleaza": "[data-nota-id='32']"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "31.08.2026",
+    "zona": "[data-nota-id='32']"
+   },
+   {
+    "contine": "Tablou de amortizare nr 8 din 31.08.2026",
+    "zona": "[data-nota-id='32']"
+   }
+  ],
+  "captura": "214_f2_nota_amortizare_08.png"
+ },
+ {
+  "nr": "C128",
+  "firma": "tenant_9051",
+  "descriere": "F3: Operațiuni → Achiziție intracomunitară cu furnizorul RO14399840 (cod românesc): refuzul stă sub câmpul codului — nu e achiziție intracomunitară, se înregistrează ca factură primită obișnuită (CF art.273 alin.(1), art.307 alin.(2)); nimic scris",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='achizitie_ic']"
+   },
+   {
+    "click": "button[data-op='achizitie_ic']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-15"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-cod_tva_furnizor",
+    "valoare": "RO14399840"
+   },
+   {
+    "completeaza": "#op-numar",
+    "valoare": "DOVADA-C128"
+   },
+   {
+    "completeaza": "#op-cont_destinatie",
+    "valoare": "371"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "completeaza": "#op-data_faptului_generator",
+    "valoare": "2026-10-15"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "bunuri"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": ".msg-eroare[data-camp='op-cod_tva_furnizor']"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu e achiziție intracomunitară",
+    "zona": ".msg-eroare[data-camp='op-cod_tva_furnizor']"
+   },
+   {
+    "nu_contine": "Notă generată",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "c128_f3_aic_furnizor_ro.png"
+ },
+ {
+  "nr": "C136",
+  "firma": "tenant_9052",
+  "descriere": "F4 (fără niciun document): „Scoate firma” spune ce mai dispare în cuvintele contabilului, nu numele tabelelor din bază (fără „× audit_log”, „user_tenants”, „schema”); nimic nu se șterge (numai previzualizarea)",
+  "pasi": [
+   {
+    "deruleaza": "#firma-scoate"
+   },
+   {
+    "click": "#firma-scoate"
+   },
+   {
+    "asteapta": "#sf-corp .caseta-atentie"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Act ireversibil",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "audit_log",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "user_tenants",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "×",
+    "zona": "#sf-corp"
+   },
+   {
+    "nu_contine": "schema",
+    "zona": "#sf-corp"
+   }
+  ],
+  "captura": "c136_f4_scoate_firma.png"
+ }
+]

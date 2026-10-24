@@ -38,7 +38,7 @@ def test_cota_cu_data_out_expirat_ridica(monkeypatch):
     assert cota("_proba_expira", date(2020, 6, 1))[0] == 5      # inainte de data_out: ok
     with pytest.raises(ValueError) as e:
         cota("_proba_expira", date(2021, 6, 1))                 # dupa data_out: RIDICA
-    assert "2020-12-31" in str(e.value), "mesajul nu spune data_out expirata"
+    assert "31.12.2020" in str(e.value), "mesajul nu spune data_out expirata (ZZ.LL.AAAA, DS cap.4 — deficiența 184)"
 
 
 def test_cota_data_out_None_nu_expira(monkeypatch):

@@ -159,7 +159,11 @@ def _mijloace_fixe(conn, schema):
 #: (rezolvarea numelui firmei și a contextului de acces), dar poartă DENUMIREA și cabinetul, nu
 #: faptele din care iese verdictul. O redenumire de firmă n-are voie să invalideze 1000 de rezumate.
 #: *Se scrie aici ca să fie o alegere, nu o omisiune.*
-NEURMARITE_PUBLIC = ("tenants", "users", "accounting_firms")
+#: [lotul 12, deficiența 463] `spv_token` / `spv_cui_acoperit` (dreptul SPV al cabinetului pe CUI-ul firmei) — citite de constatarea
+#: „SPV fără drept pe firmă” — nu poartă `tenant_id` (rândul e al cabinetului, nu al firmei), deci nu pot avea trigger pe firmă; o
+#: schimbare de conexiune SPV ajunge în rezumat la următoarea recalculare a zilei (`timp: "zi"`), iar detaliul Control fiscal le citește
+#: live. Alegere, nu omisiune.
+NEURMARITE_PUBLIC = ("tenants", "users", "accounting_firms", "spv_token", "spv_cui_acoperit")
 
 _T_CONTROL_FISCAL = (
     "articole", "asociati", "beneficii_lunare", "bonuri", "casa_operatiuni", "chitante",
@@ -183,7 +187,9 @@ _T_CONTROL_FISCAL = (
     # prin compensare face exigibilă partea compensată — CF art.282 alin.(3), (8))
     "tva_incasare_perioade", "compensari",
     # [lotul 11, C79] D300 / D394 / D406 citesc TVA-ul de pe factura furnizorului, pe cote (BG-23, `factura_tva_cote`)
-    "factura_tva_cote")
+    "factura_tva_cote",
+    # [lotul 12, 463] Control fiscal spune facturile emise netransmise în SPV, din ultima lor trimitere (triggerul există deja, al supervizorului)
+    "efactura_trimiteri")
 
 #: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
 #: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite
@@ -286,8 +292,8 @@ def tabele_publice_urmarite():
 def tabele_cu_trigger():
     """Tabelele pe care se pune trigger — REUNIUNEA surselor modelului cu cele ale supervizorului.
 
-    Nu e același lucru cu `tabele_urmarite()`: `efactura_trimiteri` nu e sursă pentru niciun aspect
-    al modelului, dar e sursă pentru supervizor (P1). O singură funcție de trigger le servește pe
+    Nu e același lucru cu `tabele_urmarite()`: un tabel poate fi sursă numai pentru supervizor (P1) — `efactura_trimiteri` a fost așa
+    până la lotul 12, când a devenit și sursă a lui `control_fiscal` (463). O singură funcție de trigger le servește pe
     amândouă, deci un tabel are un singur trigger indiferent câți consumatori are. *Două triggere
     pe același tabel ar fi două mecanisme care pot diverge.*"""
     from core import supervizor_cache as _sc
@@ -1102,7 +1108,9 @@ def _termene_una_firma(f, ctx, azi):
             _fapt = lambda a, l: _d390.d390_are_operatiuni(cs, schema, a, l, azi)
             from core import control_incrucisat as _ci_sal
             _f112 = lambda a, l: _ci_sal.are_salariat_activ_luna(cs, schema, a, l)   # [300] D112 din fapt, ca semaforul
-            term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt, d112_fapt=_f112)
+            # [lotul 12, C162] la neplătitorul art.317, lunile D390 din aceeași sursă ca Control fiscal (`d390_luni_neplatitor`)
+            term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt, d112_fapt=_f112,
+                                             d390_luni_neplatitor=lambda a: _ci_sal.d390_luni_neplatitor(cs, schema, a, azi))
             for _t in term:   # [432] predicatul unic, `luna_preluare.inainte`
                 _t["inainte_de_preluare"] = _lp.inainte(_t["an"], _t.get("luna"), preluare)
             # [P2] deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} + [regim_card] regim_contabil
@@ -1562,6 +1570,23 @@ def main():
           "p2_worker_firms=%(firme)d p2_pending_never_computed=%(fara_calcul)d "
           "p2_pending_in_error=%(in_eroare)d p2_worker_stopped=%(oprit)s "
           "p2_worker_orphan_counters=%(fara_firma)s" % r)
+    # [deficiența 484, lotul 12] SUPERVIZORUL își calculează aici rezultatul persistat (`supervizor_cache`), pe aceeași tură de 5 minute.
+    # De la P1 (08.09.2026) ecranul /supervizor CITEȘTE `public.supervizor_rezultat`, dar `supervizor_cache.recalculeaza_lot` — lucrătorul
+    # lui — nu-l chema nimeni: fiecare firmă stătea la „rezultatul nu a fost calculat încă”, adică confruntarea dintre declarații nu rula
+    # niciodată pentru contabil. Luna e cea confruntată în Control fiscal (`control_fiscal_api.luna_confruntata`), aceeași pe care o
+    # citește ecranul (`uc_supervizor`). Un eșec aici nu oprește modelul de portofoliu: se scrie, iar tura următoare reia firmele rămase.
+    if not stop["cerut"]:
+        try:
+            from core import supervizor_cache as _sc
+            from core.common import azi_ro as _azi_ro
+            from core.control_fiscal_api import luna_confruntata as _luna_confruntata
+            _azi = _azi_ro()
+            _an_s, _luna_s = _luna_confruntata(_azi.year, _azi.month)
+            _rs = _sc.recalculeaza_lot(_an_s, _luna_s)
+            print("supervizor_perioada=%04d-%02d supervizor_invalidate=%d supervizor_recalculate=%d supervizor_fara_firma=%d"
+                  % (_an_s, _luna_s, _rs["invalidate"], _rs["recalculate"], len(_rs["fara_firma"])))
+        except Exception as e:      # noqa: BLE001 — eroarea se scrie; tura următoare o reia
+            print("supervizor_eroare=%s: %s" % (type(e).__name__, e))
     return 0
 
 

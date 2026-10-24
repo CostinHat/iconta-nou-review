@@ -68,6 +68,7 @@ def _env_test():
     # [lotul 11, deficiența 444] ANAF simulat pe server (`anaf_api.CHEIE_SIMULAT`, `<dir>/anaf.json`): nicio cerere spre ANAF real;
     # un CUI nepregătit = „negăsit”, ca un CUI sintetic al plasei la ANAF real
     env["ICONTA_ANAF_SIMULAT"] = os.path.join(TEMP, "anaf_simulat")
+    env["ICONTA_WHATSAPP_SIMULAT"] = os.path.join(TEMP, "whatsapp_simulat")   # [lotul 12, 598] Meta simulat; pornit numai de whatsapp.json pus de test
     env["ICONTA_BON_DIR"] = os.path.join(TEMP, "bonuri")   # [pct.7, deficiența 9] pozele bonurilor de probă nu stau lângă cele reale
     # [C36, 15.10.2026] depozitul privat al probei (capturi, exporturi trimise la Suport), separat de ~/iconta_date/fisiere
     env["ICONTA_FISIERE_DIR"] = os.path.join(TEMP, "fisiere")
@@ -182,6 +183,10 @@ def _main(argv):
     env = _env_test()
     os.makedirs(env["ICONTA_AI_SIMULAT"], exist_ok=True)
     os.makedirs(env["ICONTA_ANAF_SIMULAT"], exist_ok=True)
+    os.makedirs(env["ICONTA_WHATSAPP_SIMULAT"], exist_ok=True)   # [598] fără răspunsul simulat al unei rulări vechi
+    _wa = os.path.join(env["ICONTA_WHATSAPP_SIMULAT"], "whatsapp.json")
+    if os.path.exists(_wa):
+        os.remove(_wa)
     # [lotul 11] răspunsurile reale ale ANAF pentru firmele din teste (baza simulatorului; testele pun peste ea `anaf.json`)
     shutil.copy(os.path.join(arb, "frontend_test", "e2e", "anaf_baza.json"), os.path.join(env["ICONTA_ANAF_SIMULAT"], "anaf_baza.json"))
     os.makedirs(env["ICONTA_BON_DIR"], exist_ok=True)

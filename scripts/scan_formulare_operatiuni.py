@@ -11,6 +11,8 @@ Ce măsoară, pe fiecare formular din `REGISTRU` (`static/js/ecrane/operatiuni_e
   - `ascunse_pe_ramura`   — o cheie citită pe ramura `select=opțiune`, al cărei câmp e ascuns pe acea ramură;
   - `optionale`           — un câmp marcat opțional (golul lui = implicitul serverului);
   - `bife_nerespectate`   — un DA/NU citit prin `bifa` care nu e select Da/Nu obligatoriu, fără preselecție.
+  - `cerute_fara_efect`   — [C117, lotul 12] invers lui `lipsuri`: un câmp OBLIGATORIU arătat pe ramura `select=opțiune`, pe care serverul
+                            nu-l citește deloc pe ramura aceea (nici în restul rutei). Câmpul se arată numai când are efect.
 Cheile care rămân în afara ecranului / câmpurile care rămân opționale stau mai jos, FIECARE cu motivul ei (ratchet în ambele sensuri).
 LIMITE, declarate: ramurile se văd scrise `if/elif var == "v"` (nu dispecere prin dicționare); vizibilitatea pe ramură se judecă pe
 condiția directă a câmpului (un câmp condiționat de alt select se socotește vizibil).
@@ -188,6 +190,69 @@ def lipsuri(js, main, uc):
     return out
 
 
+#: (rută, select=opțiune, câmp) arătat obligatoriu pe o ramură care nu-l citește, care rămâne așa — cu motivul. Gol: niciunul.
+FARA_EFECT_PERMISE = {}
+
+#: ajutoarele care primesc tot `corp`, dar citesc din el exact cheile pe care le vede deja `cerute_in` / `citite_optional`
+_AJUTOARE_CU_CORP = {"cota_ceruta", "bifa", "_campuri_lipsa", "_cere_luna_deschisa"}
+
+
+def _vizibil_pe(c, dupa_nume, sel, val, adanc=0):
+    """Câmpul `c` se vede pe ramura `sel=val`? În LANȚ, ca motorul ecranului (`actualizeazaCond`): un câmp condiționat de alt select se vede
+    numai dacă și acela se vede pe ramură."""
+    if c["cond"] is None or adanc > 8:
+        return True
+    camp, vals = c["cond"]
+    if camp == sel:
+        return val in vals
+    p = dupa_nume.get(camp)
+    return True if p is None else _vizibil_pe(p, dupa_nume, sel, val, adanc + 1)
+
+
+def _corp_intreg(cod):
+    """Blocul dă TOT `corp` unei funcții (`f(corp)`, `f(conn, schema, corp)`, `dict(corp, …)`, `**corp`), alta decât ajutoarele știute:
+    ce citește ea nu se vede de aici, deci ramura nu se judecă (limita declarată)."""
+    if re.search(r"\*\*corp\b|\bdict\(corp\b", cod):
+        return True
+    return any(f.split(".")[-1] not in _AJUTOARE_CU_CORP
+               for f in re.findall(r"([\w.]+)\((?:[^()]*?,\s*)?corp\s*[,)]", cod))
+
+
+def cerute_fara_efect(js, main, uc):
+    """[(rută, select, opțiune, câmp)] — câmp obligatoriu, vizibil pe ramura `select=opțiune`, necitit de server pe ea (C117: „Valoare” la
+    Inventariere › Casare, unde ecranul cere mijlocul fix din registru, iar valoarea vine de acolo). Nu se judecă: câmpurile opționale,
+    „Descriere”, selectul ramurii, un select care condiționează alte câmpuri (are efect pe ecran), ramurile care dau tot `corp` mai departe."""
+    out = []
+    for _cheie, ruta, campuri in formulare(js):
+        src = functie_uc(ruta, main, uc)
+        if not src:
+            continue
+        dupa_nume = {c["nume"]: c for c in campuri}
+        parinti = {c["cond"][0] for c in campuri if c["cond"]}
+        for sel in (c for c in campuri if c["optiuni"]):
+            vm = re.search(r'(\w+) = corp\.get\("%s"' % sel["nume"], src)
+            if not vm:
+                continue
+            ramuri = {v: ramura(src, vm.group(1), v) for v in sel["optiuni"]}
+            rest = src
+            for b in ramuri.values():
+                if b:
+                    rest = rest.replace(b, "")
+            citit_rest = cerute_in(rest) | citite_optional(rest) | {"data"}
+            for val, br in ramuri.items():
+                if br is None or _corp_intreg(br):
+                    continue
+                citit = cerute_in(br) | citite_optional(br) | citit_rest
+                for c in campuri:
+                    if c is sel or c["optional"] or c["nume"] == "descriere" or c["nume"] in parinti:
+                        continue
+                    if not _vizibil_pe(c, dupa_nume, sel["nume"], val) or c["cheie"] in citit:
+                        continue
+                    if (ruta, "%s=%s" % (sel["nume"], val), c["cheie"]) not in FARA_EFECT_PERMISE:
+                        out.append((ruta, sel["nume"], val, c["cheie"]))
+    return out
+
+
 def chei_fara_camp(js, main, uc):
     out = set()
     for _cheie, ruta, campuri in formulare(js):
@@ -293,6 +358,8 @@ def masoara():
         out.append((k, "câmp opțional: golul lui = implicitul serverului"))
     for r, b, ce in bife_nerespectate(js, main, uc):
         out.append(("%s:%s" % (r, b), ce))
+    for r, sel, val, x in cerute_fara_efect(js, main, uc):
+        out.append(("%s:%s=%s:%s" % (r, sel, val, x), "câmp obligatoriu pe ramură, necitit de server pe ea (C117)"))
     if not motor_conturi_precompletate(js):
         out.append(("motor:CONT_PRECOMPLETAT", "motorul nu mai pune sugestia standard ca valoare pe câmpurile-cont (DS cap.17 corectat)"))
     for k in sorted(conturi_fara_sugestie(js) - set(CONTURI_NEPRECOMPLETATE)):

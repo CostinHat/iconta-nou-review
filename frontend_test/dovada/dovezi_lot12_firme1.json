@@ -1,0 +1,322 @@
+[
+ {
+  "nr": "489",
+  "firma": "tenant_9049",
+  "descriere": "F1: ecranul Bancă spune formatele acceptate, MT940 (.sta, .940, .txt), ING și alt tabel",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-formate"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "MT940 (formatul SWIFT al extrasului, fișier .sta, .940 sau .txt)",
+    "zona": "#bk-formate"
+   }
+  ],
+  "captura": "489_f1_banca_formate.png"
+ },
+ {
+  "nr": "479",
+  "firma": "tenant_9049",
+  "descriere": "F1, liniile vechi (după core/migrare_extras_dubluri_trezorerie.py): nicio notă propusă 5121=5121; dublura încasării din 16.10 e «Ignorată», cu motivul și «readu»",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-lista .pf-frand"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "5121=5121",
+    "zona": "#bk-lista"
+   },
+   {
+    "contine": "pare aceeași mișcare ca linia din",
+    "zona": "#bk-lista"
+   }
+  ],
+  "captura": "479_f1_vechi_banca_dublura_deoparte.png"
+ },
+ {
+  "nr": "478",
+  "firma": "tenant_9049",
+  "descriere": "F1: extrasul .xlsx cu data ca dată Excel se importă (2 linii de probă, 4,78 / 0,47)",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-fisier",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#bk-fisier",
+    "generator": "e2e_lot12_firme1:fisier_xlsx_478",
+    "argumente": [
+     "2026-10-22"
+    ],
+    "nume": "proba_478.xlsx",
+    "tip": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+   },
+   {
+    "asteapta_text": "linii importate"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "2 linii importate",
+    "zona": "#bk-mesaj"
+   },
+   {
+    "nu_contine": "nu s-a putut citi",
+    "zona": "#bk-mesaj"
+   }
+  ],
+  "captura": "478_f1_extras_xlsx.png"
+ },
+ {
+  "nr": "480",
+  "firma": "tenant_9049",
+  "descriere": "F1: încasarea de 1,00 leu cu codul de TVA ATU13585627 (al niciunui partener) și „factura F1A5” în descriere se potrivește pe factura F1A nr. 5 (GOOGLE IRELAND, 1.000,00 lei, neîncasată; parțial: suma e mai mică decât soldul). Pe copie F1A7 e încasată integral (linia de extras din 21.10, 1.000,00 lei, contată), deci nu mai e deschisă — potrivirea caută numai facturile cu sold (`reconciliere.facturi_dupa_numar`). SCRIE pe copie o linie de extras necontată.",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-fisier",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#bk-fisier",
+    "generator": "e2e_lot12_firme1:fisier_csv_480",
+    "argumente": [
+     "2026-10-22",
+     "F1A5",
+     "1.00"
+    ],
+    "nume": "proba_480.csv"
+   },
+   {
+    "asteapta_text": "linie importată"
+   },
+   {
+    "asteapta": "#bk-lista .pf-frand",
+    "text": "factura F1A5"
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "numărul facturii din descriere (F1A 5)"
+    ],
+    "zona": "#bk-lista"
+   }
+  ],
+  "captura": "480_f1_potrivire_dupa_numarul_facturii.png"
+ },
+ {
+  "nr": "481",
+  "firma": "tenant_9049",
+  "descriere": "F1, rapoartele Z vechi (20–21.10.2026): rândurile lor sunt în registrul de casă din octombrie (citire din note, 455 — fără migrare)",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": "#c-sold-final"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "notă din raportul Z"
+   }
+  ],
+  "captura": "481_f1_vechi_registrul_casa_z.png"
+ },
+ {
+  "nr": "483",
+  "firma": "tenant_9049",
+  "descriere": "F1: luna 09/2026 (blocată la testul din 22.10) se deblochează din „Închidere lună”, cu motivul scris; motivul rămâne în istoric",
+  "pasi": [
+   {
+    "click": "#fa-inchidere"
+   },
+   {
+    "asteapta": "#il-prev"
+   },
+   {
+    "click": "#il-prev"
+   },
+   {
+    "asteapta_text": "Luna e blocată"
+   },
+   {
+    "click": "#il-lock"
+   },
+   {
+    "asteapta": "#bl-motiv"
+   },
+   {
+    "captura": "483_f1_motivul_cerut.png"
+   },
+   {
+    "completeaza": "#bl-motiv",
+    "valoare": "retest lotul 12: deblocare cerută de Costin (comanda 12.1 pct.4)"
+   },
+   {
+    "click": "#bl-deblocheaza"
+   },
+   {
+    "asteapta_text": "e deblocată"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Luna 09/2026 e deblocată",
+    "zona": "#il-mesaj"
+   },
+   {
+    "contine": "Blochează luna",
+    "zona": "#il-lock"
+   }
+  ],
+  "captura": "483_f1_09_2026_deblocata.png"
+ },
+ {
+  "nr": "473",
+  "firma": "tenant_9049",
+  "descriere": "F1 (comerț): pe Raport Z cotele sunt „Total 11%” și „Total 21%”, fără „mâncare” / „alcool, sucuri”",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   },
+   {
+    "asteapta": "#z-salveaza"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "mâncare",
+    "zona": "#z-et-11"
+   },
+   {
+    "nu_contine": "alcool",
+    "zona": "#z-et-21"
+   }
+  ],
+  "captura": "473_f1_raport_z_cote.png"
+ },
+ {
+  "nr": "456",
+  "firma": "tenant_9049",
+  "descriere": "F1: încasarea în numerar de 4,56 lei de la DANTE INTERNATIONAL SA fără factură (avans) primește chitanța, cu seria firmei și „PDF chitanță”",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": "#c-toggle"
+   },
+   {
+    "click": "#c-toggle"
+   },
+   {
+    "completeaza": "#c-data",
+    "valoare": "2026-10-22"
+   },
+   {
+    "alege": "#c-cat",
+    "valoare": "incasare_client"
+   },
+   {
+    "completeaza": "#c-suma",
+    "valoare": "4.56"
+   },
+   {
+    "completeaza": "#c-cui",
+    "valoare": "14399840"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#c-adauga"
+   },
+   {
+    "asteapta_text": "a fost emisă"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a fost emisă"
+   },
+   {
+    "exista": "[data-chpdf]"
+   }
+  ],
+  "captura": "456_f1_chitanta_avans.png"
+ },
+ {
+  "nr": "251",
+  "firma": "tenant_9049",
+  "descriere": "F1: extrasul CSV în Windows-1250 se importă cu diacriticele păstrate („Încasare Ştefănescu şi fiii”)",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-fisier",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#bk-fisier",
+    "generator": "e2e_lot12_firme1:fisier_csv_251",
+    "argumente": [
+     "2026-10-22"
+    ],
+    "nume": "proba_251.csv"
+   },
+   {
+    "asteapta_text": "linie importată"
+   },
+   {
+    "asteapta": "#bk-lista .pf-frand",
+    "text": "Proba 251"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Proba 251 Încasare Ştefănescu şi fiii",
+    "zona": "#bk-lista"
+   }
+  ],
+  "captura": "251_f1_extras_cp1250.png"
+ }
+]

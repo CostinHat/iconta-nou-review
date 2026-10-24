@@ -1,0 +1,110 @@
+[
+ {
+  "nr": "45",
+  "firma": "tenant_9049",
+  "inaltime": 520,
+  "descriere": "F1, fereastră de 520 px înălțime: Facturi -> «Istoric facturi» -> cea mai nouă factură emisă -> «Trimite pe email» -> adresa ștearsă -> «Trimite»: refuzul «Introdu o adresă validă.» (scris direct în zona existentă `#fd-email-rez`, fără `arataMesaj`) e adus în zona vizibilă de mecanismul unic din api.js. Numai citire: refuzul e al ecranului, nicio cerere nu pleacă.",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn",
+    "stare": "attached"
+   },
+   {
+    "click": ".fac-frand-btn"
+   },
+   {
+    "asteapta": "#fd-pdf"
+   },
+   {
+    "click": "#fd-email"
+   },
+   {
+    "asteapta": "#fd-email-send"
+   },
+   {
+    "completeaza": "#fd-email-input",
+    "valoare": ""
+   },
+   {
+    "click": "#fd-email-send"
+   },
+   {
+    "asteapta": "#fd-email-rez.em-rau"
+   },
+   {
+    "pauza": 1200
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Introdu o adresă validă.",
+    "zona": "#fd-email-rez"
+   },
+   {
+    "exista": "#fd-email-rez.em-rau"
+   }
+  ],
+  "captura": "45_f1_refuzul_emailului_facturii_in_vedere.png"
+ },
+ {
+  "nr": "C123",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei: Asistenți -> «Asist Test» (lucrează numai F1) -> «Editează» -> F1 debifată -> «Salvează»: caseta spune, înainte de orice scriere, că asistentul rămâne fără nicio firmă, că i se golesc competențele și că i se dezactivează contul (regula „zero firme”, aceeași ca la «Scoate firma»). Caseta nu se confirmă: nimic nu se salvează (fereastra se închide cu dovada).",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='asistenti'])"
+   },
+   {
+    "asteapta": "#asi-lista .val-card"
+   },
+   {
+    "click": "#asi-lista .val-card:has-text('Asist Test') [data-act='edit']"
+   },
+   {
+    "asteapta": "input[data-tid]",
+    "stare": "attached"
+   },
+   {
+    "click": "input[data-tid]:checked"
+   },
+   {
+    "click": "#asi-salveaza"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "rămâne fără nicio firmă",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "contine": "contul se dezactivează",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "exista": "#ca-ok"
+   }
+  ],
+  "captura": "c123_f1_caseta_ultimei_firme_a_asistentului.png"
+ }
+]

@@ -137,13 +137,14 @@ def test_d406_numeste_contul_exclus_numai_cand_e_folosit():
                             "declarant_functie, platitor_tva, tip_decont, regim_fiscal) VALUES (1, 'TEST SRL', '14399840', 'Str. Testul 1', "
                             "'Bucuresti', 'B', '6920', 'BCR', 'RO49BCRA0000000000000000', '0212223344', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
             _xml, res = d406.genereaza(conn, schema, 2026, 6)
-            assert not [x for x in res.avertismente if x.startswith("Atenție: ") and x.find(" exclus(e) din D406") > 0], res.avertismente
+            assert not [x for x in res.avertismente if " din planul firmei " in x and " exclus din D406" in x], res.avertismente
             with conn.cursor() as cur:
                 cur.execute("UPDATE plan_conturi SET sold_debitor = 100 WHERE simbol = '6122'")
             _xml, res = d406.genereaza(conn, schema, 2026, 6)
             # numai 6122 (cu sold, străin de norma declarată) e exclus și numit; 6121 nu
-            assert [x for x in res.avertismente if x.startswith("Atenție: ") and x.find(" exclus(e) din D406") > 0] == [
-                "Atenție: 1 cont(uri) exclus(e) din D406 - nu aparțin normei contabile declarate (A), ANAF le-ar respinge: 6122. Verifică "
-                "planul de conturi / baza contabilă a firmei."], res.avertismente
+            # [390, lotul 12] textul în limba contabilului (fără „cont(uri) exclus(e)”)
+            assert [x for x in res.avertismente if " din planul firmei " in x and " exclus din D406" in x] == [
+                "Atenție (D406): 1 cont din planul firmei e exclus din D406 — nu e în planul de conturi al bazei contabile declarate (A), iar "
+                "ANAF l-ar respinge: 6122. Verifică planul de conturi sau baza contabilă din Date firmă."], res.avertismente
         finally:
             conn.rollback()

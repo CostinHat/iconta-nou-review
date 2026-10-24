@@ -228,6 +228,10 @@ def extrage(continut, nume_fisier=""):
         scutit = _da_nu(cel(i_scut)) if i_scut >= 0 else None
         if scutit is None:
             de_verificat.append("scutit_contrib_minim")
+        elif scutit:
+            # [lotul 12, C133] fișierul spune „scutit”, dar nu și motivul (D112 `motivExc`, OPANAF 605/2026 anexa 2, pct.12): salariatul intră
+            # scutit și marcat de verificat — motivul îl alege contabilul în Stat de plată („De verificat”), nu se presupune
+            de_verificat.append("motiv_exceptare")
         out.append({
             "rand_fisier": nr,
             "nume": nume_v,
@@ -386,6 +390,10 @@ def semnale_randuri(randuri):
                                   if "scutit_contrib_minim" in din else
                                   "%s: scutirea de contribuția minimă lipsește din fișier — intră „nescutit” și salariatul e marcat de "
                                   "verificat" % nume))
+        if "motiv_exceptare" in dv:   # [C133]
+            out.append(semnaleaza("salariat", i, "motiv_scutire_lipsa",
+                                  "%s: e scutit de contribuția minimă, dar fișierul nu spune motivul scutirii (D112 îl declară) — salariatul "
+                                  "e marcat de verificat; motivul îl alegi în Stat de plată, la „De verificat”" % nume))
         # [420] propunerile editabile: ce se propune și că se poate schimba pe rând, înainte de salvare
         if "tip_norma" in dv:
             norma = ("normă întreagă (8 ore)" if r.get("tip_norma") == "intreaga"
@@ -574,8 +582,13 @@ def importa(conn, randuri, inlocuieste=False):
                                     THEN salariati.functie_baza ELSE EXCLUDED.functie_baza END,
                   -- [14.10.2026 pct.4] persoanele și scutirea confirmate rămân confirmate la reimport (intersecția cu marcajul vechi);
                   -- [lotul 11, 420] norma și funcția de bază propuse rămân marcate (F6: puse tăcut de un import vechi, fără marcaj)
+                  -- [lotul 12, C133] motivul scutirii rămâne de verificat cât timp fișa nu-l are; scutirea pusă pe „nescutit” îl golește
                   de_verificat=ARRAY(SELECT x FROM unnest(EXCLUDED.de_verificat) AS x
-                                     WHERE x IN ('tip_norma', 'functie_baza') OR x = ANY(salariati.de_verificat)),
+                                     WHERE x IN ('tip_norma', 'functie_baza') OR x = ANY(salariati.de_verificat)
+                                        OR (x = 'motiv_exceptare' AND salariati.motiv_exceptare IS NULL)),
+                  motiv_exceptare=CASE WHEN (CASE WHEN 'scutit_contrib_minim' = ANY(EXCLUDED.de_verificat)
+                                                  THEN salariati.scutit_contrib_minim ELSE EXCLUDED.scutit_contrib_minim END)
+                                       THEN salariati.motiv_exceptare END,
                   nume=EXCLUDED.nume, prenume=EXCLUDED.prenume,
                   data_angajare=EXCLUDED.data_angajare,
                   part_time=CASE WHEN 'tip_norma' = ANY(EXCLUDED.de_verificat) THEN salariati.part_time ELSE EXCLUDED.part_time END,
@@ -609,7 +622,7 @@ def importa(conn, randuri, inlocuieste=False):
 
 #: Câmpurile care pot intra „de verificat” (sursa unică: importul le marchează, salvarea din Stat de plată le confirmă —
 #: `salariati_api.actualizeaza_salariat`). [lotul 10, 420] + norma și funcția de bază propuse la import.
-DE_VERIFICAT = ("persoane_intretinere", "scutit_contrib_minim", "tip_norma", "functie_baza")
+DE_VERIFICAT = ("persoane_intretinere", "scutit_contrib_minim", "tip_norma", "functie_baza", "motiv_exceptare")   # [C133] + motivul scutirii
 
 
 def _de_verificat(r):

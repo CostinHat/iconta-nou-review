@@ -71,7 +71,7 @@ def seteaza(conn, schema, salariat_id, zi, stare, tenant_id=None):
             cur.execute("SELECT 1 FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s "
                         "AND tip = 'd112' LIMIT 1", (tenant_id, an, luna))
             if cur.fetchone():
-                return {"ok": False, "mesaj": "Pontajul lunii %02d.%04d nu se poate modifica: D112 e deja depusă "
+                return {"ok": False, "mesaj": "Pontajul lunii %02d/%d nu se poate modifica: D112 e deja depusă "
                         "la ANAF. Corectează prin rectificativă (nu prin editare liberă)." % (luna, an)}
     if not stare or stare == "prezent":
         with conn.cursor() as cur:

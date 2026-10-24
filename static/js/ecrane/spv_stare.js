@@ -2,7 +2,7 @@
 // emisă): conexiunea cabinetului, ultima citire a CUI-ului firmei și răspunsul ANAF (`GET /tenants/{id}/spv/stare`,
 // `spv_conector.stare_firma`). Când lipsește ceva ce se repară în Setări cont → Conectare SPV, mesajul are butonul spre acolo
 // (`ecran_destinatie.butonSpreEcran`). O singură sursă a textului — nu câte o frază pe ecran.
-import { api, arataMesaj, cate, dataRo } from "../api.js?v=31460b24f2";
+import { api, arataMesaj, cate, dataRo } from "../api.js?v=309f4d66ae";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";
 
 const _ora = (iso) => { const d = new Date(iso); return `${dataRo(iso)}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
@@ -23,7 +23,10 @@ export function textStareSpv(st) {
       text: "SPV: conectat. Firma n-a fost încă verificată în SPV — citirea automată rulează de două ori pe oră (la :17 și :47)." };
   }
   if (st.eroare) {
-    return { tip: "avert", spreConectare: false, text: `SPV: conectat; ultima verificare (${_ora(st.verificat_la)}) a primit de la ANAF: „${st.eroare}”.` };
+    // [598, lotul 12] numai răspunsul ANAF se citează; motivul aplicației (ANAF n-a răspuns, accesul expirat) se spune ca atare
+    return { tip: "avert", spreConectare: false, text: st.eroare_de_la_anaf === false
+      ? `SPV: ultima verificare (${_ora(st.verificat_la)}) nu s-a încheiat. ${st.eroare}`
+      : `SPV: conectat; ultima verificare (${_ora(st.verificat_la)}) a primit de la ANAF: „${st.eroare}”.` };
   }
   return { tip: "ok", spreConectare: false,
     text: `SPV: conectat · verificat ultima dată ${_ora(st.verificat_la)}${st.mesaje != null ? ` · ${cate(st.mesaje, "factură primită", "facturi primite")} la ultima citire` : ""}.` };

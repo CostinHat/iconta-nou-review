@@ -43,28 +43,36 @@ def prag_curent(scadenta, azi, deja_trimise, praguri=PRAGURI):
 
 
 def _eticheta(prag):
+    """Starea facturii, în subiectul și în corpul emailului către clientul firmei. [C122, lotul 12] textul pleacă la client: diacritice
+    complete (DS cap.1), pluralul prin `common.cate` — înainte „scade in 3 zile”, „a devenit restanta”, „restanta de 7 zile”."""
     if prag < 0:
-        return "scade in %s" % common.cate(-prag, "zi", "zile")
+        return "scade în %s" % common.cate(-prag, "zi", "zile")
     if prag == 1:
-        return "a devenit restanta"
-    return "restanta de %s" % common.cate(prag, "zi", "zile")
+        return "a devenit restantă"
+    return "restantă de %s" % common.cate(prag, "zi", "zile")
+
+
+def _subiect(f, prag):
+    """[C122] „Factura F1A3 — scade în 3 zile” (subiectul emailului; liniuța lungă, ca în restul textelor aplicației)."""
+    return "Factura %s — %s" % (f.get("numar") or "", _eticheta(prag))
 
 
 def _email_corp(firma_nume, f, prag):
     """HTML minimal, in numele firmei. f = dict factura."""
     from decimal import Decimal
+    from core.pdf_util import bani, data_ro, moneda_scrisa   # [C122] suma „1.210,00” și data „01.10.2026” — formatele aplicației (DS cap.4, cap.7)
     suma = Decimal(str(f.get("suma") or 0))
     return (
         "<p>Bună ziua,</p>"
         "<p>Vă reamintim că factura <b>%s</b> emisă de <b>%s</b>, "
-        "în valoare de <b>%s %s</b>, cu scadența <b>%s</b>, %s.</p>"
+        "în valoare de <b>%s</b>, cu scadența <b>%s</b>, %s.</p>"
         "<p>Vă rugăm să efectuați plata sau să ne contactați "
         "dacă aveți întrebări.</p>"
         "<hr><p style='font-size:12px;color:#667'>Acest mesaj vă este trimis "
         "în numele <b>%s</b> prin platforma iConta.eu. Răspundeți la acest "
         "email pentru a contacta direct firma.</p>"
-        % (_esc_html(f.get("numar") or "—"), _esc_html(firma_nume), _esc_html(suma), _esc_html(f.get("moneda") or "lei"),
-           _esc_html(f.get("data_scadenta")), _esc_html(_eticheta(prag)), _esc_html(firma_nume))   # [C39] numele firmei e scris de om
+        % (_esc_html(f.get("numar") or "—"), _esc_html(firma_nume), _esc_html(bani(suma, moneda_scrisa(f.get("moneda")))),
+           _esc_html(data_ro(f.get("data_scadenta"))), _esc_html(_eticheta(prag)), _esc_html(firma_nume))   # [C39] numele firmei e scris de om
     )
 
 
@@ -161,7 +169,7 @@ def emite_pentru_firma(schema, azi=None):
                 continue          # rezervat de altcineva intre citire si acum
             ok = observare.trimite_email_html(
                 f["client_email"],
-                "Factura %s - %s" % (f["numar"] or "", _eticheta(prag)),
+                _subiect(f, prag),
                 _email_corp(firma_nume, f, prag),
                 reply_to=firma_email, expeditor_nume="%s prin iConta.eu" % firma_nume)
             stare = "trimis" if ok else "fara_reply_to"  # esec Brevo -> nu bloca pragul
@@ -222,7 +230,8 @@ def _main():
         from core.common import azi_ro as _azi_ro
         # [fus] perioada evaluata = zi RO, ca in `alerte_control_fiscal.ruleaza` — robust la OS TZ.
         _azi = _azi_ro()
-        an, luna = _azi.year, _azi.month
+        from core.control_fiscal_api import luna_confruntata as _luna_confruntata
+        an, luna = _luna_confruntata(_azi.year, _azi.month)   # [deficiența 484] luna încheiată, aceeași ca ecranul supervizorului
         _r = _sv.ruleaza_portofoliu(an, luna)
         _z = _r["rezumat"]
         print("Supervizor (%04d-%02d): constatari=%d pe %d firme · fara subiect=%d · NEVERIFICATE=%d "

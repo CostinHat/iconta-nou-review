@@ -10,7 +10,14 @@ FIECARE FUNCȚIE PRIMEȘTE CURSORUL APELANTULUI. Nu deschide conexiuni, nu comit
 nu construiește `HTTPException` și nu decide niciun cod HTTP. *Așa rămâne întreagă tranzacția pe
 care o deține apelantul — contractul P4, care nu se redeschide aici.*
 """
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
+
+
+def tip_document(cur, schema, factura_id):
+    """[lotul 12, 252] `facturi.tip` al documentului (None dacă nu există), pe schema dată."""
+    cur.execute(f"SELECT tip FROM {(schema + '.') if schema else ''}facturi WHERE id = %s", (factura_id,))
+    r = cur.fetchone()
+    return (r["tip"] if isinstance(r, dict) else r[0]) if r else None
 
 
 def tip_si_transformare(cur, factura_id):
@@ -21,19 +28,17 @@ def tip_si_transformare(cur, factura_id):
 
 def candidate_pentru_bon(cur, schema, cui, total):
     """`cui` în forma păstrată (`cui_forma.stocare`); factura comparată în aceeași formă (`cui_forma.SQL`) — rândurile vechi au „RO”.
-    [lotul 11, decizia Costin 10.3 pct.4] Înainte: un `replace` SQL al lui „RO”, un al doilea dialect (scotea „RO” de oriunde din text)."""
-    from core import cui_forma as _forma_cui
-    k = _forma_cui.SQL.format(c="tert_cui")
-    cur.execute(f"""
-                SELECT id, numar, serie, data_emitere, total, tert_nume, tert_cui
-                FROM {schema}.facturi
-                WHERE directie='primita' AND COALESCE(status,'') <> 'anulata' AND platita_la IS NULL
-                ORDER BY ({k} = %s) DESC,
-                         abs(total - %s) ASC, data_emitere DESC
-                LIMIT 10
-            """,
-                (cui, total))
-    return cur.fetchall()
+    [lotul 11, decizia Costin 10.3 pct.4] Înainte: un `replace` SQL al lui „RO”, un al doilea dialect (scotea „RO” de oriunde din text).
+    [lotul 12, 466, clasa „plătită = `platita_la`”] candidatele sunt facturile primite care MAI AU de plătit, după starea de plată unică
+    (`de_incasat`): una plătită prin bancă nu se mai oferă bonului (o a doua plată). Rândul: (id, numar, serie, data_emitere, restul de
+    plată în lei, tert_nume, tert_cui), cel mai potrivit întâi (același cod, apoi suma cea mai apropiată, apoi cea mai nouă)."""
+    from core import cui_forma as _forma_cui, repo_contabilitate as _rc
+    _rc.search_path_firma(cur, schema)
+    total = Decimal(str(total or 0))
+    fs = de_incasat(cur, "primita")
+    fs.sort(key=lambda f: ((_forma_cui.stocare(f["tert_cui"]) or "") != cui, abs(f["rest_lei"] - total), -f["data_emitere"].toordinal()
+                           if f["data_emitere"] else 0))
+    return [(f["id"], f["numar"], f["serie"], f["data_emitere"], f["rest_lei"], f["tert_nume"], f["tert_cui"]) for f in fs[:10]]
 
 
 def factura_pentru_chitanta(cur, schema, factura_id):
@@ -60,12 +65,78 @@ def seteaza_act_identitate(cur, schema, factura_id, act):
     cur.execute(f"UPDATE {schema}.facturi SET tert_act_identitate = %s WHERE id = %s", (act, factura_id))
 
 
+#: [lotul 12, 468] aceeași sumă a stornărilor, în LEI (`total_lei` al stornării; RON fără `total_lei` = totalul) — pentru cititorii care
+#: adună facturi în monede diferite (cashflow-ul se alocă din soldul balanței, care e în lei)
+SQL_STORNARI_LEI = "COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total)) FROM {s}facturi st WHERE st.storno_din_id = {a}.id), 0)"
+
+
 def pentru_cashflow(cur):
     # [deficiența 416] totalul de după stornări (`repo_facturi.SQL_STORNARI`); factura stornată integral nu mai intră
-    st = SQL_STORNARI.format(s="", a="facturi")
-    cur.execute("SELECT directie, data_emitere, data_scadenta, total + " + st + " AS total "
-                "FROM facturi WHERE tip='factura' AND storno_din_id IS NULL AND total + " + st + " > %s", (TOLERANTA_STORNATA,))
+    # [lotul 12, 468, clasa „lei adunați cu euro”] totalul în LEI (`total_lei`): `cashflow.aloca_sold` îl împarte din soldul balanței (în
+    # lei), iar o factură de 1.000 EUR intra ca 1.000 lei
+    st = SQL_STORNARI_LEI.format(s="", a="facturi")
+    cur.execute("SELECT directie, data_emitere, data_scadenta, COALESCE(total_lei, total) + " + st + " AS total "
+                "FROM facturi WHERE tip='factura' AND storno_din_id IS NULL AND COALESCE(total_lei, total) + " + st + " > %s",
+                (TOLERANTA_STORNATA,))
     return cur.fetchall()
+
+
+#: [lotul 12, 466] stările de încasare ale unei facturi care mai are ceva de încasat / de plătit (`facturi_api._cu_stare_incasare`)
+STARI_DE_INCASAT = ("neincasata", "partial")
+
+
+def de_incasat(cur, directie, conditii="", parametri=()):
+    """[lotul 12, deficiența 466 — „Scadențar: facturi încasate apar neîncasate”] Facturile `directie` (emisa / primita) care mai au ceva de
+    încasat / de plătit, după definiția UNICĂ a stării de încasare (`facturi_api._cu_stare_incasare`: chitanțele, plățile legate de factură
+    — banca, casa —, compensările, stornările, `platita_la`), cu restul lor. Înainte scadențarul, notificările de scadență și potrivirea
+    bonului cu factura primită socoteau „neîncasată” orice factură fără `platita_la` — pe care o pune numai chitanța integrală sau bonul
+    stins; factura încasată prin bancă rămânea „restantă” (iar notificarea pleca la client).
+
+    `conditii` = condiții SQL în plus pe `f` (încep cu „ AND”), cu `parametri`. Fiecare rând: coloanele facturii (`f.*` cele de mai jos,
+    `email` al clientului) + `stare_incasare` + `rest` (Decimal, în MONEDA facturii) + `rest_lei` (Decimal). Restul în valută = totalul
+    în valută (după stornări) × restul în lei / totalul în lei: plata (în lei, din notele pe 4111 / 401) stinge creanța la valoarea ei din
+    evidență — aceeași regulă ca reevaluarea (`reevaluare_valuta`, OMFP 1802/2014 pct.322 alin.(1)). Se întorc dict-uri, oricare ar fi
+    cursorul apelantului."""
+    from core import facturi_api as _fa
+    from core import nomenclator_status_factura as _nsf
+    st = SQL_STORNARI.format(s="", a="f")
+    cur.execute("SELECT f.id, f.numar, f.serie, f.data_emitere, f.data_scadenta, f.total, f.tva, f.total_lei, f.tva_lei, f.curs_bnr, "
+                "       COALESCE(f.moneda, 'RON') AS moneda, f.tip, f.storno_din_id, f.platita_la, f.tert_nume, f.tert_cui, f.client_id, "
+                "       c.email, COALESCE(f.notificare_stop, false) AS notificare_stop, f.notificare_amanata_pana, "
+                "       " + st + " AS storno_valuta "
+                "  FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
+                # [lotul 12, 252] și facturile deschise preluate (`TIPURI_CU_INCASARE`): restul lor e de încasat / de plătit ca al oricărei facturi
+                " WHERE f.directie = %s AND " + _nsf.clauza_tip_cu_incasare("f") + " AND f.storno_din_id IS NULL "
+                "   AND COALESCE(f.status, '') NOT IN ('anulata', 'storno')" + conditii + " ORDER BY f.id",
+                (directie,) + tuple(parametri))
+    cols = [d[0] for d in cur.description]
+    facturi = [dict(r) if isinstance(r, dict) else dict(zip(cols, r)) for r in cur.fetchall()]
+    _fa._cu_stare_incasare(cur, facturi)
+    out = []
+    for f in facturi:
+        s = f["stare_incasare"]
+        if not s or s["stare"] not in STARI_DE_INCASAT:
+            continue
+        total_lei, rest_lei = Decimal(s["total"]), Decimal(s["total"]) - Decimal(s["incasat"])
+        valuta = Decimal(str(f["total"] or 0)) + Decimal(str(f["storno_valuta"] or 0))
+        if s["stare"] == "neincasata" or total_lei <= 0:
+            rest = valuta
+        else:
+            rest = (valuta * rest_lei / total_lei).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        if rest <= TOLERANTA_STORNATA:
+            continue
+        out.append(dict(f, rest=rest, rest_lei=rest_lei, total_valuta=valuta))
+    return out
+
+
+def cursul_fixat(cur, schema, factura_id):
+    """[lotul 12, decizia „cursul vechi la validare (a)”] {moneda, data_emitere, curs_bnr, data_curs} ale facturii, sau None."""
+    cur.execute(f"SELECT moneda, data_emitere, curs_bnr, data_curs FROM {(schema + '.') if schema else ''}facturi WHERE id = %s",
+                (factura_id,))
+    r = cur.fetchone()
+    if not r:
+        return None
+    return dict(r) if isinstance(r, dict) else dict(zip(("moneda", "data_emitere", "curs_bnr", "data_curs"), r))
 
 
 def stare_pentru_recunoastere(cur, schema, factura_id):
@@ -76,11 +147,14 @@ def stare_pentru_recunoastere(cur, schema, factura_id):
 
 
 def emise_pe_luni_pentru_intrastat(cur, schema, an):
+    # [lotul 12, 252 / C145] numai documentele fiscale: factura preluată (soldul ei e în soldurile inițiale) și proforma / avizul nu sunt
+    # livrări facturate ale anului (avizul e urmat de factură — s-ar număra de două ori)
+    from core import nomenclator_status_factura as _nsf
     cur.execute(f"""SELECT directie, tert_cui,
                                    EXTRACT(MONTH FROM data_emitere)::int AS luna,
                                    COALESCE(total,0) - COALESCE(tva,0) AS baza
                             FROM {schema}.facturi
-                            WHERE EXTRACT(YEAR FROM data_emitere) = %s""",
+                            WHERE EXTRACT(YEAR FROM data_emitere) = %s AND {_nsf.clauza_tip_document(None)}""",   # [lotul 12, C145] numai facturile
                 (an,))
     return cur.fetchall()
 

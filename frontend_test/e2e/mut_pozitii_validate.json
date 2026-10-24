@@ -76,5 +76,29 @@
   "ancora": "const cine = m.rol_autor === \"admin\" ? \"iConta.eu\"",
   "inlocuire": "const cine = m.rol_autor === \"nimeni\" ? \"iConta.eu\"",
   "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei"
+ },
+ {
+  "fisier": "core/d100.py",
+  "ancora": "suma = _i(Decimal(str(venituri)) * c / Decimal(100))",
+  "inlocuire": "suma = _i(Decimal(str(venituri)) * c / Decimal(50))",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f026_d100_micro_e_1_la_suta_din_veniturile_trimestrului"
+ },
+ {
+  "fisier": "core/stat_plata_api.py",
+  "ancora": "(\"Salariu net\", _n(\"net\"), FEL_TOTAL),",
+  "inlocuire": "(\"Salariu net\", _n(\"brut\"), FEL_TOTAL),",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f087_fluturasul_si_nota_statului_au_netul_statului"
+ },
+ {
+  "fisier": "core/d300.py",
+  "ancora": "R[\"R3_1\"] = _r3",
+  "inlocuire": "R[\"R3_1\"] = 0",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f252_tara_partenerului_duce_factura_pe_randul_ei_din_d300"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "m[\"total\"] -= b + t",
+  "inlocuire": "m[\"total\"] -= 0",
+  "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f254_factura_pe_bon_nu_se_numara_a_doua_oara"
  }
 ]

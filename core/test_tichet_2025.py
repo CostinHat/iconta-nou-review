@@ -28,8 +28,15 @@ def test_octombrie_2025_gol_motivat_nu_valoare_tacuta():
     # de cuvinte pică la fiecare rescriere corectă și împinge spre a NU repara mesajul. Se leagă acum
     # de FAPTELE pe care mesajul trebuie să le poarte ca să fie „motivat", indiferent de formulare:
     # numele cotei și data cerută.
+    # [lotul 12] data cerută apare în forma pentru om (DS cap.4, `pdf_util.data_ro` — aceeași sursă ca mesajul), nu ISO
+    # [lotul 12, C159] golul e blocajul MOTIVAT al perioadei (`PerioadaIndisponibila`, eticheta PERIOADA_BLOCATA -> 423, nu 500),
+    # cu cota numită prin numele ei pentru om (`ETICHETE_COTE`), nu prin cheia tehnică
+    from core.common import ETICHETE_COTE, PerioadaIndisponibila
+    from core.pdf_util import data_ro
+    assert isinstance(ei.value, PerioadaIndisponibila) and ei.value.nume == "tichet_masa_plafon", ei.value
+    assert ei.value.gol == (date(2025, 9, 30), date(2025, 11, 1)), ei.value.gol
     _msg = str(ei.value)
-    assert "tichet_masa_plafon" in _msg and "2025-10-01" in _msg,         "octombrie 2025 trebuie gol MOTIVAT (mesajul numește cota și data cerută), nu 40,18 tacit: %s" % _msg
+    assert ETICHETE_COTE["tichet_masa_plafon"] in _msg and data_ro(date(2025, 10, 1)) in _msg and "tichet_masa_plafon" not in _msg,         "octombrie 2025 trebuie gol MOTIVAT (mesajul numește cota și data cerută), nu 40,18 tacit: %s" % _msg
     assert cota("tichet_masa_plafon", date(2025, 9, 1))[0] == Decimal("40.18"), "septembrie ramane 40,18"
 
 

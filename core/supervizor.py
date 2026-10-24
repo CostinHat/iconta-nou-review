@@ -408,7 +408,7 @@ def _neverificat(firma, eroare, felul):
     from core import afirmatii as _af
     return _af.afirmatie(
         "verificare_rupta", "supervizor",
-        "Supervizorul NU a verificat firma «%s»: %s" % (firma.get("nume") or firma.get("schema"),
+        "Supervizorul nu a putut verifica firma «%s»: %s" % (firma.get("nume") or firma.get("schema"),
                                                         eroare),
         eroare=str(eroare), felul_neverificarii=felul, schema=firma.get("schema"))
 

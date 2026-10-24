@@ -14,6 +14,26 @@ contul de amortizare al mijlocului (implicit 2813), cheltuiala pe 6811.
 CONT_CHELTUIALA = "6811"
 
 
+#: [C129, lotul 12] unde se completează contul lipsă al unei fișe (registrul nu are editare de conturi; importul îl înlocuiește)
+UNDE_SE_COMPLETEAZA = "Migrare → Mijloace fixe (reîncarcă registrul cu contul pe rândul lui)"
+
+
+def conturile_fisei(denumire, cont_imobilizare, cont_amortizare, cu_amortizare=True, cu_imobilizare=True):
+    """(cont_imobilizare, cont_amortizare) ale fișei din registru, curățate, sau ValueError cu motivul pentru contabil.
+
+    [C129, lotul 12] Importul registrului păstrează golul („neclasificat”, `mijloace_fixe_import_api`), deci o fișă poate avea contul de
+    imobilizare (sau de amortizare) gol. Reevaluarea, casarea și amortizarea lunii scriau atunci nota cu un cont gol (reevaluarea: „ = 105”,
+    contul activului reevaluat lipsă) sau cu 2813 pus tăcut. Orice notă scrisă din fișă ia conturile de aici: fără cont, nu se scrie nota.
+    `cu_amortizare=False`: nota nu atinge contul de amortizare (nimic amortizat); `cu_imobilizare=False`: nota nu atinge contul activului
+    (amortizarea lunii, 6811 = 28xx) — fiecare cont se cere numai unde nota îl scrie."""
+    ci, ca = str(cont_imobilizare or "").strip(), str(cont_amortizare or "").strip()
+    lipsa = ([] if ci or not cu_imobilizare else ["contul de imobilizare"]) + ([] if ca or not cu_amortizare else ["contul de amortizare"])
+    if lipsa:   # refuz de FORMĂ, fără temei normativ: un rând de notă fără cont nu e o înregistrare
+        raise ValueError("Mijlocul fix %s nu are %s în registru, deci nota n-ar avea contul. Completează ce lipsește din %s, "
+                         "apoi reia operația." % (denumire, " și ".join(lipsa), UNDE_SE_COMPLETEAZA))
+    return ci, ca
+
+
 def numar(an, luna):
     """Numărul notei de amortizare a lunii (cheia ei: `repo_contabilitate.nota_de_amortizare`)."""
     return "AMORT-%d-%02d" % (int(an), int(luna))
@@ -26,6 +46,9 @@ def linii(cur, schema, an, luna):
     with cur.connection.cursor() as c:   # rândurile de tuplu ale depozitului, oricare ar fi cursorul apelantului
         mf = repo_mijloace_fixe.de_amortizat(c, schema)
     out = []
+    # [lotul 12, clasa 440] toate fișele de corectat deodată, fiecare cu motivul ei (nu numai prima), într-un singur refuz
+    from core.erori import ErorileFormularului
+    er = ErorileFormularului("Amortizarea lunii nu se poate genera")
     for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met, reev, dcd, prel, dprel in mf:
         if not pif or not dnf:
             continue
@@ -36,7 +59,16 @@ def linii(cur, schema, an, luna):
         try:
             rata = _d406.amortizare_luna(mf_d, an, luna)   # metoda reala (CF art.28), nu liniar
         except ValueError as e:
-            raise ValueError(f"Amortizarea nu se poate genera pentru {den} până nu corectezi fișa lui: {e}")
+            er.fara_camp(f"Amortizarea nu se poate genera pentru {den} până nu corectezi fișa lui: {e}")
+            continue
         if rata > 0:
-            out.append((cont_am or "2813", float(rata), den))
+            # [C129, clasa] contul de amortizare al fișei, nu 2813 pus tăcut: o fișă de 205 sau 2131 cu contul gol ar fi amortizat pe alt cont
+            try:
+                _ci, cont_am = conturile_fisei(den, cont_imob, cont_am, cu_imobilizare=False)
+            except ValueError as e:
+                er.fara_camp(f"Amortizarea lunii nu poate fi generată: {e}")
+                continue
+            out.append((cont_am, float(rata), den))
+    if er:
+        raise ValueError(er.detaliu()["mesaj"])   # ValueError, ca înainte: apelanții (generarea notei, regenerarea ciornei) îl prind așa
     return out

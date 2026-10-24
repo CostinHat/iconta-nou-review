@@ -1,0 +1,248 @@
+[
+ {
+  "nr": "C132",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): Supervizor — rezultatele persistate înainte de reparație (calculate de codul vechi) sunt invalidate de amprenta codului și recalculate de lucrător; pe ecran, axa D101 nu mai spune „Nu ma pronunt inca: D101 declara…”, ci „Verificarea așteaptă: D101 declară…”, cu diacritice. Cere lucrătorul supervizorului rulat pe copie după pornirea codului nou (`supervizor_cache.recalculeaza_lot`, la 5 minute)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='supervizor'])"
+   },
+   {
+    "asteapta": ".sv-antet"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "captura": "c132_f1_vechi_supervizor.png",
+  "verifica": [
+   {
+    "nu_contine": "Nu ma pronunt"
+   },
+   {
+    "nu_contine": "Nu mă pronunț"
+   },
+   {
+    "nu_contine": "note in CIORNA"
+   },
+   {
+    "nu_contine": "Exista note NEVALIDATE"
+   }
+  ]
+ },
+ {
+  "nr": "172",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): Supervizor — textele axei D101 fără săgeți, „GRI” și persoana întâi: „-> comparația devine posibilă”, „GRI, nu roșu”, „nu am ce confrunta” nu mai apar (rezultatele vechi, recalculate cu codul nou)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='supervizor'])"
+   },
+   {
+    "asteapta": ".sv-antet"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "captura": "172_f1_vechi_supervizor.png",
+  "verifica": [
+   {
+    "nu_contine": "-> comparația"
+   },
+   {
+    "nu_contine": "GRI, nu roșu"
+   },
+   {
+    "nu_contine": "nu am ce confrunta"
+   },
+   {
+    "nu_contine": "nu am cu ce compara"
+   }
+  ]
+ },
+ {
+  "nr": "C132",
+  "firma": "tenant_9053",
+  "descriere": "F5 (cabinetul copiei): Supervizor — rezultatele persistate înainte de reparație (calculate de codul vechi) sunt invalidate de amprenta codului și recalculate de lucrător; pe ecran, axa D101 nu mai spune „Nu ma pronunt inca: D101 declara…”, ci „Verificarea așteaptă: D101 declară…”, cu diacritice. Cere lucrătorul supervizorului rulat pe copie după pornirea codului nou (`supervizor_cache.recalculeaza_lot`, la 5 minute)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='supervizor'])"
+   },
+   {
+    "asteapta": ".sv-antet"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "captura": "c132_f5_vechi_supervizor.png",
+  "verifica": [
+   {
+    "nu_contine": "Nu ma pronunt"
+   },
+   {
+    "nu_contine": "Nu mă pronunț"
+   },
+   {
+    "nu_contine": "note in CIORNA"
+   },
+   {
+    "nu_contine": "Exista note NEVALIDATE"
+   }
+  ]
+ },
+ {
+  "nr": "172",
+  "firma": "tenant_9053",
+  "descriere": "F5 (cabinetul copiei): Supervizor — textele axei D101 fără săgeți, „GRI” și persoana întâi: „-> comparația devine posibilă”, „GRI, nu roșu”, „nu am ce confrunta” nu mai apar (rezultatele vechi, recalculate cu codul nou)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='supervizor'])"
+   },
+   {
+    "asteapta": ".sv-antet"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "captura": "172_f5_vechi_supervizor.png",
+  "verifica": [
+   {
+    "nu_contine": "-> comparația"
+   },
+   {
+    "nu_contine": "GRI, nu roșu"
+   },
+   {
+    "nu_contine": "nu am ce confrunta"
+   },
+   {
+    "nu_contine": "nu am cu ce compara"
+   }
+  ]
+ },
+ {
+  "nr": "184",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): Supervizor — perioada evaluată în forma LL/AAAA, din formatorul unic (`dataRo(…, \"luna_an_numeric\")`)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='supervizor'])"
+   },
+   {
+    "asteapta": ".sv-antet"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "captura": "184_f1_supervizor_perioada.png",
+  "verifica": [
+   {
+    "contine_oricare": [
+     "Perioada evaluată: 09/2026",
+     "Perioada evaluată: 10/2026",
+     "Perioada evaluată: 11/2026"
+    ]
+   }
+  ]
+ },
+ {
+  "nr": "163",
+  "firma": "tenant_9049",
+  "descriere": "F1: Control fiscal al firmei — textele verdictului fără majuscule de accent și fără persoana întâi: „NU se poate recalcula”, „nu am nicio înregistrare de operațiune intracomunitară”, „nu am cu ce compara” nu mai apar",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".cf-stare-mare"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "captura": "163_f1_vechi_control_fiscal.png",
+  "verifica": [
+   {
+    "nu_contine": "NU se poate recalcula"
+   },
+   {
+    "nu_contine": "nu am nicio înregistrare"
+   },
+   {
+    "nu_contine": "nu am cu ce compara"
+   },
+   {
+    "nu_contine": "GRI înseamnă"
+   }
+  ]
+ }
+]

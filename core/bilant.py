@@ -99,8 +99,9 @@ F10_NOMENCLATOR = (
     (41, "c", "117"), (42, "d", "117"), (43, "c", "121"), (44, "d", "121"), (45, "d", "129"),
     (47, "c", "1016"), (48, "c", "1017"),
 )
-#: F20 S1005 — (rând, latura, conturile din formular). Latura „c”: +cont = rulajul creditor, −cont = rulajul debitor (veniturile);
-#: „d”: invers (cheltuielile). „+/-” = rulajul net (711, 712: soldul, ca la S1003 rd.07 / rd.08).
+#: F20 S1005 — (rând, latura, conturile din formular). Latura „c”: +cont = rulajul net creditor (credit − debit), −cont = rulajul net
+#: debitor, scăzut (veniturile); „d”: invers (cheltuielile) — [C143] `_valoare_termen(rulaj=True)`. „+/-” = soldul (711, 712, ca la S1003
+#: rd.07 / rd.08).
 F20_S1005_NOMENCLATOR = (
     (1, "c", "701+702+703+704+705+706+708+707-709+7411"),
     (2, "c", "+/-711+/-712+721+722+725+7412+7413+7414+7415+7416+7417+7418+7419+751+755+758+761+762+764+765+766+767+768+7815"),
@@ -177,12 +178,23 @@ NOMENCLATOR_ABATERI_FORMULAR = {
 }
 
 
-def _valoare_termen(solduri, latura, semn, cont, cal, tva_stoc=False):
-    """Contribuția unui termen al formularului (sold sau rulaj). `tva_stoc`: „din 4428” la stocuri = numai `CONT_TVA_STOC`."""
+def _valoare_termen(solduri, latura, semn, cont, cal, tva_stoc=False, rulaj=False):
+    """Contribuția unui termen al formularului (sold sau rulaj). `tva_stoc`: „din 4428” la stocuri = numai `CONT_TVA_STOC`.
+
+    `rulaj` (F20 / F30, din `bilant_api.rulaje_67` — fără închiderea în 121, C15): RULAJUL NET al contului, pe latura pe care îl cere
+    termenul — „+cont” pe un rând de venituri = credit − debit, „−cont” = debit − credit, scăzut (invers pe un rând de cheltuieli).
+    [C143, lotul 12] Până azi se citea numai creditul conturilor 7x (numai debitul conturilor 6x): nota Raportului Z trece brutul pe 707
+    (5311 = 707) și scoate TVA-ul cu 707 = 4427 — un debit pe 707 care nu se scădea, deci cifra de afaceri din bilanț includea TVA-ul.
+    TEMEI: OMFP 1802/2014 pct.8 pct.5 — „cifră de afaceri netă înseamnă sumele obținute din vânzarea de produse și prestarea de servicii
+    după deducerea reducerilor comerciale și a taxei pe valoarea adăugată”; DUK regula F10_0432 = F20_0082 (S1005 v13: profitul din
+    bilanț, soldul lui 121 după închiderea pe sold — `motor.inchidere_din_solduri` — e profitul din contul de profit și pierdere)."""
     pref = (CONT_TVA_STOC,) if tva_stoc else (cont,)
     d, c = _pe_prefix(solduri, pref, 0), _pe_prefix(solduri, pref, 1)
     if cal == "+/-":
         return (d - c) if latura == "d" else (c - d)
+    if rulaj:
+        v = (d - c) if (latura == "d") == (semn == "+") else (c - d)
+        return v if semn == "+" else -v
     if cal.endswith("***"):
         v = c
     elif cal.endswith("**"):
@@ -203,11 +215,11 @@ def _acopera(latura, semn, cal):
     return {"d" if (latura == "d") == (semn == "+") else "c"}
 
 
-def _randuri_din_nomenclator(nomenclator, solduri, tva_stoc_la=None):
+def _randuri_din_nomenclator(nomenclator, solduri, tva_stoc_la=None, rulaj=False):
     v = {}
     for rand, latura, lista in nomenclator:
         sold = solduri if rand == tva_stoc_la else _fara_tva_stoc(solduri)
-        v[rand] = sum((_valoare_termen(sold, latura, s, c, q, tva_stoc=(rand == tva_stoc_la and c == "4428" and "din" in q))
+        v[rand] = sum((_valoare_termen(sold, latura, s, c, q, tva_stoc=(rand == tva_stoc_la and c == "4428" and "din" in q), rulaj=rulaj)
                        for s, c, q in termeni(lista)), Decimal("0"))
     return v
 
@@ -585,8 +597,8 @@ def f20_din_rulaje(rl):
     if fara:
         raise ValueError("Bilanțul S1005: contul %s nu are rând în contul prescurtat de profit și pierdere al formularului ANAF 2025 — "
                          "rulajul lui nu se poate depune; reclasează-l pe un cont al planului OMFP 1802/2014." % ", ".join(fara))
-    v = _randuri_din_nomenclator(F20_S1005_NOMENCLATOR, rl)
-    v.update(_randuri_din_nomenclator(F20_S1005_NOMENCLATOR_DIN_CARE, rl))
+    v = _randuri_din_nomenclator(F20_S1005_NOMENCLATOR, rl, rulaj=True)          # [C143] rulajul net
+    v.update(_randuri_din_nomenclator(F20_S1005_NOMENCLATOR_DIN_CARE, rl, rulaj=True))
     return {k: _i(x) for k, x in cu_totaluri("s1005", "F20", v).items()}
 
 
@@ -614,11 +626,11 @@ def f30_din_rulaje(rl):
     `rl` = {cont: (rulaj debitor, rulaj creditor)} pe anul bilanțului. Refuzurile sunt ale lui `f20_din_rulaje` (cont fără rând, sintetic
     cu analitice pe rânduri diferite) — aceleași conturi, aceeași generare."""
     rl = rl or {}
-    v = _randuri_din_nomenclator(F30_S1005_NOMENCLATOR, rl)
+    v = _randuri_din_nomenclator(F30_S1005_NOMENCLATOR, rl, rulaj=True)          # [C143] rulajul net
     net = sum(((Decimal(str(c or 0)) - Decimal(str(d or 0))) for k, (d, c) in rl.items()
                if str(k).split(".")[0].startswith(F30_S1005_VARIATIA_STOCURILOR)), Decimal("0"))
     v[173], v[174] = (net, Decimal("0")) if net > 0 else (Decimal("0"), -net)
-    v.update(_randuri_din_nomenclator(F30_S1005_NOMENCLATOR_DIN_CARE, rl))
+    v.update(_randuri_din_nomenclator(F30_S1005_NOMENCLATOR_DIN_CARE, rl, rulaj=True))
     return {k: _i(x) for k, x in cu_totaluri("s1005", "F30", v).items()}
 
 
@@ -842,7 +854,8 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c, f30p=None, f30c=None, rezultat=N
 # diferite (F20_S1003_NOMENCLATOR_SINTETICE, derivat din planul OMFP 1802/2014) — 658, 681, 741, 761, 781.
 # Rândurile „=null” ale formularului (rd.05, rd.38, rd.67, rd.318) nu se scriu; „din care … afiliate” și rd.301 (activitatea
 # preponderentă) nu se pot ști din rulaje — nu se scriu (ANAF le acceptă absente).
-#: (rând, latura, prefixe) — latura: "c" rulajul creditor, "d" rulajul debitor, "n" soldul net creditor (711, 712 -> rd.07 / rd.08)
+#: (rând, latura, prefixe) — latura: "c" rulajul net creditor (credit − debit), "d" rulajul net debitor (debit − credit) — [C143] —, "n"
+#: soldul net creditor (711, 712 -> rd.07 / rd.08)
 F20_S1003_NOMENCLATOR = (
     (2, "c", ("701", "702", "703", "704", "705", "706", "708")),
     (3, "c", ("707",)),
@@ -953,20 +966,17 @@ def f20_complet_din_rulaje(rl):
             fara_rand.append(str(cont))
             continue
         rand, lat = rr
-        if lat == "c":
-            v[rand] += D(str(cred))
-        elif lat == "d":
-            v[rand] += D(str(deb))
-        else:
-            v[rand] += D(str(cred)) - D(str(deb))
+        # [C143, lotul 12] rulajul NET pe latura rândului (venituri / „n”: credit − debit; cheltuieli: debit − credit) — ca S1005
+        # (`_valoare_termen`, `rulaj=True`, cu temeiul): un debit pe 707 (TVA-ul scos din nota Raportului Z) scade cifra de afaceri
+        v[rand] += (D(str(deb)) - D(str(cred))) if lat == "d" else (D(str(cred)) - D(str(deb)))
     if fara_rand:
         raise ValueError("Bilanțul S1003: contul %s nu are rând în contul de profit și pierdere al formularului ANAF 2025 — rulajul lui "
                          "nu se poate depune; reclasează-l pe un cont al planului OMFP 1802/2014." % ", ".join(sorted(fara_rand)))
     sold = v.pop(7)
     v[7], v[8] = (sold, D("0")) if sold > 0 else (D("0"), -sold)
     for rand, lat, prefixe in F20_S1003_NOMENCLATOR_DIN_CARE:
-        v[rand] = sum((D(str(cred if lat == "c" else deb)) for cont, (deb, cred) in (rl or {}).items()
-                       if str(cont).split(".")[0].startswith(prefixe)), D("0"))
+        v[rand] = sum(((D(str(cred)) - D(str(deb))) if lat == "c" else (D(str(deb)) - D(str(cred)))   # [C143] net
+                       for cont, (deb, cred) in (rl or {}).items() if str(cont).split(".")[0].startswith(prefixe)), D("0"))
     # totalurile = calculele formularului (`NOMENCLATOR_TOTALURI`, păzit de core/test_bilant_formular.py); rândurile „din care … afiliate”
     # (46, 48, 57) nu se pot ști din rulaje și nu se scriu; R67 („=null”) nu intră în R69 / R70
     return {k: _i(x) for k, x in cu_totaluri("s1003", "F20", v).items()}

@@ -4,6 +4,12 @@ core/solduri_parteneri_api.py — import solduri parteneri (defalcare 4111/401 p
 Citeste un fisier (.xlsx/.csv) cu coloanele: Cont, CUI, Denumire, Sold debitor, Sold creditor.
 Un rand = un partener pe un cont. Se salveaza in schema tenantului (tabel solduri_parteneri).
 
+[lotul 12, deficiența 252] Și forma PE FACTURI a situației clienților / furnizorilor (SAGA: Nr. factură, Data, Scadență, Sumă neachitată):
+un rând = o factură deschisă; rândurile partenerului se adună în soldul lui (`grupeaza_pe_parteneri`), cu facturile în `documente`. La
+salvare, facturile deschise intră în `facturi` cu `tip = 'preluata'` (`nomenclator_status_factura.TIP_SOLD_PRELUAT`) — din forma pe
+solduri, soldul întreg al partenerului de pe 4111 / 401, ca un document „Sold la <data preluării>” (`documente_din_randuri`). Scadențarul
+le arată, banca / casa / compensările le sting; nu se contează și nu intră în declarații (soldul lor e deja în soldurile inițiale).
+
 Coerenta cu stratul 2 (solduri_initiale): suma soldurilor partenerilor pe contul sintetic
 (4111, 401) se compara cu soldul sintetic din balanta (analiticele 4111.X grupate pe radacina).
 Informativ, NU blocant — contabilul decide.
@@ -21,6 +27,7 @@ from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu re
 from core.common import cate as _cate
 from core import chei_unice as _chei   # [lotul 10, C73] cheia naturală dublată -> refuz numit, nu 500
 from core import cui_forma as _forma_cui   # [lotul 11, decizia Costin 10.3 pct.4] CUI-ul în forma păstrată: fără „RO”, fără spații
+from core.nomenclator_status_factura import TIP_SOLD_PRELUAT as _TIP_PRELUAT   # [lotul 12, 252] facturile deschise preluate
 
 
 def _radacina(cont):
@@ -40,7 +47,12 @@ CAMPURI = {
     "denumire": ("denumire partener", "denumire tert", "denumire", "partener", "tert", "client", "furnizor", "nume"),
     "debit": ("debit*",),
     "credit": ("credit*",),
-    "sold": ("neachitat final", "sold final", "sold", "rest de plata", "rest de incasat"),
+    "sold": ("neachitat final", "suma neachitata", "rest neachitat", "neachitat", "sold final", "sold", "rest de plata", "rest de incasat"),
+    # [lotul 12, deficiența 252] forma PE FACTURI a situației clienților / furnizorilor (SAGA: Nr. factură, Data, Scadență, Sumă neachitată):
+    # un rând = o factură deschisă a partenerului, cu restul ei neîncasat / neplătit la data preluării
+    "numar_doc": ("nr factura", "numar factura", "nr document", "numar document", "nr doc", "=factura", "=document"),
+    "scadenta": ("data scadenta", "data scadentei", "scadenta", "termen de plata", "termen plata"),
+    "data_doc": ("data factura", "data facturii", "data document", "data documentului", "data emiterii", "data emitere", "=data"),
 }
 
 # Natura contului de parteneri: pe ce parte stă soldul lui obișnuit. Folosită numai când fișierul are O SINGURĂ coloană de sold
@@ -84,6 +96,13 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
             raise _it.FisierNecitit("Fișierul %s n-are nici coloane debit / credit, nici o coloană de sold („Neachitat "
                                     "final”, „Sold final”) — nu se poate citi soldul partenerilor."
                                     % ("«%s»" % nume_fisier if nume_fisier else "trimis"))
+    # [252] coloana „Nr. factură” face din fiecare rând o factură deschisă; data ei e obligatorie, scadența nu
+    i_nr = _it.coloana(antet, CAMPURI["numar_doc"], exclus=(i_cont, i_cui, i_den), camp="nr. factură")
+    i_scad = _it.coloana(antet, CAMPURI["scadenta"], exclus=(i_cont, i_cui, i_den, i_nr), camp="scadență") if i_nr >= 0 else -1
+    i_data = _it.coloana(antet, CAMPURI["data_doc"], exclus=(i_cont, i_cui, i_den, i_nr, i_scad), camp="data facturii") if i_nr >= 0 else -1
+    if i_nr >= 0 and i_data < 0:
+        raise _it.FisierNecitit("Fișierul %s are coloana numărului facturii, dar nu și coloana „Data” a facturii. Adaugă data fiecărei "
+                                "facturi și încarcă-l din nou." % ("«%s»" % nume_fisier if nume_fisier else "trimis"))
     cont_ales = str(cont_implicit or "").strip()
     if i_cont < 0 and cont_ales not in CONTURI_ALESE:
         raise _it.FisierNecitit("Fișierul %s n-are coloana „Cont”. Alege din listă contul partenerilor din fișier (4111 — "
@@ -120,12 +139,167 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
                 ignorate.append(_ignorat(nr, "%s: sold 0 — nu intră în soldurile inițiale" % (den or cui),
                                          "debitul și creditul citite din rând sunt amândouă 0"))
             continue
-        out.append({"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre, "rand_fisier": nr})
+        rand = {"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre, "rand_fisier": nr}
+        if i_nr >= 0:
+            doc = _document_din_rand(r, nr, den or cui, cont, deb, cre, i_nr, i_data, i_scad, ignorate)
+            if doc is None:
+                continue
+            rand["document"] = doc
+        out.append(rand)
+    if i_nr >= 0:
+        out = grupeaza_pe_parteneri(out)
     # același partener pe același cont de două ori: baza are UNIQUE(cont, cui) (GARZI cat.1) — refuz numit, nu eroare de bază
     dubluri = parteneri_dublati(out)
     if dubluri:
         raise _it.FisierNecitit(MESAJ_PARTENER_DUBLAT % "; ".join(dubluri[:6]))
     return out
+
+
+def _document_din_rand(r, nr, cine, cont, deb, cre, i_nr, i_data, i_scad, ignorate):
+    """[252] Factura deschisă a rândului din forma pe facturi: {numar, data, scadenta, suma, rand_fisier}, sau None când rândul n-are
+    numărul facturii (un subtotal al partenerului: spus în `ignorate`; dacă era o factură, suma partenerilor nu mai dă soldul contului,
+    iar confruntarea cu balanța — `coerenta` — oprește contul). `suma` = restul de încasat (4111) / de plătit (401), pe natura contului:
+    pozitivă = document deschis; zero sau negativă (avans, plată în plus) rămâne în soldul partenerului, dar nu devine document."""
+    numar = _it.celula(r, i_nr)
+    if not numar:
+        if ignorate is not None:
+            ignorate.append(_ignorat(nr, "%s: rând fără numărul facturii — nu e o factură (subtotal?), nu intră" % cine,
+                                     "forma pe facturi: fiecare factură are numărul ei în coloana „Nr. factură”"))
+        return None
+    zi = _it.data(_it.valoare(r, i_data))
+    if not zi:
+        raise _it.FisierNecitit("Rândul %d (%s, factura %s): data facturii %s. Corectează celula și încarcă fișierul din nou."
+                                % (nr, cine, numar, "lipsește" if not _it.celula(r, i_data) else "nu e o dată din calendar"))
+    scad = _it.data(_it.valoare(r, i_scad)) if i_scad >= 0 else None
+    if i_scad >= 0 and _it.celula(r, i_scad) and not scad:
+        raise _it.FisierNecitit("Rândul %d (%s, factura %s): scadența nu e o dată din calendar. Corectează celula și încarcă fișierul din nou."
+                                % (nr, cine, numar))
+    from decimal import Decimal as _D
+    net = _D(str(deb)) - _D(str(cre))
+    suma = net if _radacina(cont) not in _CREDITOARE else -net
+    return {"numar": numar, "data": zi, "scadenta": scad, "suma": float(suma), "rand_fisier": nr}
+
+
+def grupeaza_pe_parteneri(randuri):
+    """PURĂ. [252] Forma pe facturi: rândurile aceluiași partener pe același cont (CUI, altfel denumirea) devin UN rând de sold — suma
+    netă a facturilor lui — cu facturile în `documente`; rândul partenerului e primul lui rând din fișier."""
+    from decimal import Decimal as _D
+    grup, ordine = {}, []
+    for x in randuri:
+        k = (x["cont"], x["cui"] or "~" + _it.norm(x["denumire"]))
+        g = grup.get(k)
+        if g is None:
+            g = grup[k] = {"cont": x["cont"], "cui": x["cui"], "denumire": x["denumire"], "_net": _D(0), "rand_fisier": x["rand_fisier"],
+                           "documente": []}
+            ordine.append(k)
+        g["_net"] += _D(str(x["debit"])) - _D(str(x["credit"]))
+        g["documente"].append(x["document"])
+    out = []
+    for k in ordine:
+        g = grup[k]
+        net = g.pop("_net")
+        g["debit"], g["credit"] = (float(net), 0.0) if net >= 0 else (0.0, float(-net))
+        out.append(g)
+    return out
+
+
+#: [252] contul partenerului -> direcția facturii lui deschise (4111 clienți: emisă, de încasat; 401 furnizori: primită, de plătit). Pe
+#: celelalte conturi de terți (409, 419, 4118…) soldul nu e o factură de stins prin bancă: rămâne numai sold pe partener.
+DIRECTIE_DOCUMENT = {"4111": "emisa", "401": "primita"}
+
+
+def documente_din_randuri(randuri, data_referinta=None):
+    """PURĂ. [252] Facturile deschise pe care le scrie salvarea, din rândurile care intră: forma pe facturi -> facturile rândului
+    (`documente`); forma pe solduri -> soldul partenerului întreg, ca un document „Sold la <data preluării>”, fără scadență (nu se
+    inventează una). Numai pe 4111 / 401 și numai suma pozitivă (de încasat / de plătit).
+    -> (documente, neconvertite): documente = [{directie, tert_cui, tert_nume, numar, data, scadenta, suma, cont}] (suma în Decimal),
+    neconvertite = [text] — ce nu devine document și de ce (spus, nu sărit)."""
+    from decimal import Decimal as _D, ROUND_HALF_UP as _SUS
+    from core.pdf_util import bani as _b, data_ro as _dro
+    import datetime as _dt
+    docs, nec = [], []
+    for r in randuri or []:
+        rad = _radacina(r.get("cont"))
+        cine = r.get("denumire") or r.get("cui") or "?"
+        dir_ = DIRECTIE_DOCUMENT.get(rad)
+        net = _D(str(r.get("debit") or 0)) - _D(str(r.get("credit") or 0))
+        if dir_ is None:
+            if net:
+                nec.append("%s, contul %s: soldul rămâne pe partener — pe %s nu se țin facturi de încasat / de plătit" % (cine, r.get("cont"), rad))
+            continue
+        baza = {"directie": dir_, "tert_cui": r.get("cui") or "", "tert_nume": r.get("denumire") or "", "cont": r.get("cont")}
+        if r.get("documente") is not None:
+            for d in r["documente"]:
+                suma = _D(str(d.get("suma") or 0)).quantize(_D("0.01"), rounding=_SUS)
+                if suma <= 0:
+                    nec.append("%s, factura %s: %s — nu e de %s, rămâne numai în soldul partenerului"
+                               % (cine, d.get("numar"), _b(suma, "lei"), "încasat" if dir_ == "emisa" else "plătit"))
+                    continue
+                docs.append(dict(baza, numar=str(d.get("numar")), data=d.get("data"), scadenta=d.get("scadenta") or None, suma=suma))
+            continue
+        suma = (net if dir_ == "emisa" else -net).quantize(_D("0.01"), rounding=_SUS)
+        if suma <= 0:
+            if suma:
+                nec.append("%s, contul %s: sold %s — nu e de %s, nu devine document deschis"
+                           % (cine, r.get("cont"), "creditor" if dir_ == "emisa" else "debitor", "încasat" if dir_ == "emisa" else "plătit"))
+            continue
+        zi = str(data_referinta)[:10] if data_referinta else None
+        # fără data preluării documentul n-are dată (nici număr): îl numără previzualizarea, iar salvarea îl spune și nu-l scrie
+        docs.append(dict(baza, numar=("Sold la %s" % _dro(_dt.date.fromisoformat(zi))) if zi else None, data=zi, scadenta=None, suma=suma))
+    return docs, nec
+
+
+def documente_nepotrivite(randuri):
+    """PURĂ. [252] Rândurile cu facturi (`documente`) a căror sumă nu dă soldul partenerului (pe natura contului), sau cu o factură fără
+    număr / cu o dată care nu e din calendar: [text]. `extrage` le scrie mereu potrivite; rândurile trimise direct pe rută, nu neapărat."""
+    from decimal import Decimal as _D
+    from core.pdf_util import bani as _b
+    out = []
+    for r in randuri or []:
+        if r.get("documente") is None:
+            continue
+        cine = r.get("denumire") or r.get("cui") or "?"
+        rau = [d for d in r["documente"] if not str(d.get("numar") or "").strip() or not _it.data(d.get("data"))
+               or (d.get("scadenta") and not _it.data(d.get("scadenta")))]
+        if rau:
+            out.append("%s: factura %s n-are număr sau dată din calendar" % (cine, rau[0].get("numar") or "fără număr"))
+            continue
+        net = _D(str(r.get("debit") or 0)) - _D(str(r.get("credit") or 0))
+        sold = net if _radacina(r.get("cont")) not in _CREDITOARE else -net
+        suma = sum((_D(str(d.get("suma") or 0)) for d in r["documente"]), _D(0))
+        if abs(suma - sold) > _D("0.005"):
+            out.append("%s: facturile dau %s, soldul e %s" % (cine, _b(suma, "lei"), _b(sold, "lei")))
+    return out
+
+
+def documente_legate(cur):
+    """[252] Facturile deschise preluate pe care le leagă deja ceva — o notă (bancă, casă), o chitanță, o compensare, o linie de extras
+    potrivită pe ele: [text]. Înlocuirea soldurilor pe parteneri le-ar șterge, deci nu se face până nu se desfac legăturile."""
+    from core.pdf_util import bani as _b
+    cur.execute("SELECT f.id, COALESCE(f.serie, ''), f.numar, f.tert_nume, f.total FROM facturi f WHERE f.tip = %s "
+                "AND (EXISTS (SELECT 1 FROM inregistrari i WHERE i.factura_id = f.id) "
+                "  OR EXISTS (SELECT 1 FROM chitante c WHERE c.factura_id = f.id) "
+                "  OR EXISTS (SELECT 1 FROM compensari z WHERE f.id IN (z.factura_emisa_id, z.factura_primita_id)) "
+                "  OR EXISTS (SELECT 1 FROM extras_linii e WHERE e.alocari -> 'alocari' @> jsonb_build_array(jsonb_build_object('factura_id', f.id)))) "
+                "ORDER BY f.id", (_TIP_PRELUAT,))
+    return ["%s (%s, %s)" % ((sr + " " + nr).strip(), tn or "—", _b(t, "lei")) for _id, sr, nr, tn, t in cur.fetchall()]
+
+
+def _scrie_documente(cur, docs):
+    """[252] Facturile deschise preluate, în `facturi` (tip `preluata`, starea „importată”): totalul = restul de la preluare, fără
+    TVA și fără linii (soldul e deja în balanța de deschidere, cu TVA-ul lui) — nicio notă, nicio declarație nu le citește."""
+    for d in docs:
+        cur.execute("INSERT INTO facturi (numar, data_emitere, data_scadenta, total, tva, moneda, directie, status, tert_nume, tert_cui, tip, "
+                    "total_lei, tva_lei, sursa_externa) VALUES (%s, %s, %s, %s, 0, 'RON', %s, 'importata', %s, %s, %s, %s, 0, 'preluare')",
+                    (d["numar"], d["data"], d["scadenta"], d["suma"], d["directie"], d["tert_nume"], d["tert_cui"], _TIP_PRELUAT, d["suma"]))
+
+
+def rezumat_documente(docs):
+    """PURĂ. [252] {n, emise, total_emise, primite, total_primite} (totalurile în float, la ban)."""
+    from decimal import Decimal as _D
+    e = [d["suma"] for d in docs if d["directie"] == "emisa"]
+    p = [d["suma"] for d in docs if d["directie"] == "primita"]
+    return {"n": len(docs), "emise": len(e), "total_emise": float(sum(e, _D(0))), "primite": len(p), "total_primite": float(sum(p, _D(0)))}
 
 
 #: [lotul 10, C73] același partener pe același cont — la citirea fișierului ȘI la scriere (rândurile pot veni și direct, prin API)
@@ -322,22 +496,27 @@ def verifica_randuri(randuri):
 def existent(conn):
     """[lotul 10, deficiența 426 — clasa] Soldurile pe parteneri deja salvate ale firmei: {randuri, total_debit, total_credit,
     data_referinta} (data = cea mai recentă a rândurilor, 'YYYY-MM-DD' sau None). Înlocuirea lor se confirmă cu cifrele astea.
-    Numai citire (o cheamă și previzualizarea): fără tabel, firma n-are solduri pe parteneri."""
+    Numai citire (o cheamă și previzualizarea): fără tabel, firma n-are solduri pe parteneri.
+    [lotul 12, 252] + `documente`: câte facturi deschise preluate are firma (aceeași salvare le înlocuiește)."""
     with conn.cursor() as cur:
+        cur.execute("SELECT count(*) FROM facturi WHERE tip = %s", (_TIP_PRELUAT,))
+        nd = int(cur.fetchone()[0])
+        legate = documente_legate(cur) if nd else []
         cur.execute("SELECT to_regclass('solduri_parteneri')")
         if cur.fetchone()[0] is None:
-            return {"randuri": 0, "total_debit": 0.0, "total_credit": 0.0, "data_referinta": None}
+            return {"randuri": 0, "total_debit": 0.0, "total_credit": 0.0, "data_referinta": None, "documente": nd, "legate": legate}
         cur.execute("SELECT count(*), COALESCE(sum(sold_debitor),0), COALESCE(sum(sold_creditor),0), max(data_referinta) "
                     "FROM solduri_parteneri")
         n, td, tc, dr = cur.fetchone()
-    return {"randuri": int(n), "total_debit": float(td), "total_credit": float(tc),
+    return {"randuri": int(n), "total_debit": float(td), "total_credit": float(tc), "documente": nd, "legate": legate,
             "data_referinta": dr.isoformat() if hasattr(dr, "isoformat") else (str(dr)[:10] if dr else None)}
 
 
 def totaluri(randuri):
-    """[426] Ce aduce fișierul: {randuri, total_debit, total_credit} pe rândurile care intră (sume în Decimal, fără zgomot float)."""
+    """[426] Ce aduce fișierul: {randuri, total_debit, total_credit} pe rândurile care intră (sume în Decimal, fără zgomot float).
+    [lotul 12, 252] + `documente`: câte facturi deschise preluate scrie salvarea (`documente_din_randuri`)."""
     from decimal import Decimal as _D
-    return {"randuri": len(randuri or []),
+    return {"randuri": len(randuri or []), "documente": len(documente_din_randuri(randuri)[0]),
             "total_debit": float(sum((_D(str(r.get("debit") or 0)) for r in randuri or []), _D(0))),
             "total_credit": float(sum((_D(str(r.get("credit") or 0)) for r in randuri or []), _D(0)))}
 
@@ -345,14 +524,28 @@ def totaluri(randuri):
 def text_inlocuire(vechi, nou):
     """[426] „spune că există deja […], arată totalurile vechi și noi” — textul comun avertismentului din previzualizare și refuzului
     de la salvare. Soldurile pe parteneri nu stau sub nicio cifră calculată (le citesc numai confruntarea cu balanța și auditul de
-    preluare), deci n-au date dependente de numit."""
+    preluare), deci n-au date dependente de numit.
+    [lotul 12, 252] Cu ele se înlocuiesc și facturile deschise preluate (`documente`); cele pe care le leagă deja o încasare / plată
+    (`legate`, `documente_legate`) opresc înlocuirea, iar textul le numește."""
     from core.pdf_util import bani as _b
 
-    def _parte(x):
-        return "%s, debit %s, credit %s" % (_cate(x["randuri"], "partener", "parteneri"), _b(x["total_debit"], "lei"),
-                                            _b(x["total_credit"], "lei"))
-    return ("Firma are deja solduri pe parteneri%s: %s. Fișierul nou: %s. Salvarea le înlocuiește pe cele vechi."
-            % ((" la %s" % _data_ro_iso(vechi["data_referinta"])) if vechi.get("data_referinta") else "", _parte(vechi), _parte(nou)))
+    def _parte(x, cu_documente=False):
+        doc = (x.get("documente") or 0) if cu_documente else 0
+        return "%s, debit %s, credit %s%s" % (_cate(x["randuri"], "partener", "parteneri"), _b(x["total_debit"], "lei"),
+                                              _b(x["total_credit"], "lei"),
+                                              (", cu %s" % _cate(doc, "factură deschisă preluată", "facturi deschise preluate")) if doc else "")
+    # ce se ȘTERGE se numește întreg (și facturile deschise vechi); ce aduce fișierul, pe solduri (facturile lui le arată tabelul)
+    t = ("Firma are deja solduri pe parteneri%s: %s. Fișierul nou: %s. Salvarea le înlocuiește pe cele vechi."
+         % ((" la %s" % _data_ro_iso(vechi["data_referinta"])) if vechi.get("data_referinta") else "", _parte(vechi, True), _parte(nou)))
+    if vechi.get("legate"):
+        t += " " + MESAJ_DOCUMENTE_LEGATE % "; ".join(vechi["legate"][:6])
+    return t
+
+
+#: [252] înlocuirea ar șterge facturi deschise preluate pe care le stinge deja o încasare / plată
+MESAJ_DOCUMENTE_LEGATE = ("Înlocuirea nu se poate face: facturile deschise preluate %s au deja încasări, plăți, chitanțe, compensări sau "
+                          "linii de extras potrivite pe ele, iar înlocuirea le-ar șterge. Desfă întâi legăturile (nota din Bancă sau Casă, "
+                          "chitanța, compensarea), apoi încarcă fișierul din nou.")
 
 
 def importa(conn, randuri, data_referinta=None, schema=None, inlocuieste=False):
@@ -390,10 +583,21 @@ def importa(conn, randuri, data_referinta=None, schema=None, inlocuieste=False):
     dubluri = parteneri_dublati(bune)   # [lotul 10, C73] înaintea scrierii: refuzul numit, nu `UniqueViolation` -> 500
     if dubluri:
         raise ValueError(MESAJ_PARTENER_DUBLAT % "; ".join(dubluri[:6]))
+    nepotrivite = documente_nepotrivite(bune)   # [252] facturile trimise pe rută (nu din `extrage`) trebuie să dea soldul partenerului
+    if nepotrivite:
+        raise ValueError("Facturile deschise nu dau soldul partenerului: %s. Niciun sold n-a fost scris; corectează fișierul și încarcă-l "
+                         "din nou." % "; ".join(nepotrivite[:6]))
     asigura_tabel(conn)
     vechi, nou = existent(conn), totaluri(bune)
     from core import migrare_api as _mig
-    _mig.cere_confirmarea_inlocuirii(vechi["randuri"] > 0, inlocuieste, text_inlocuire(vechi, nou), vechi, nou)   # [426] poarta comună
+    if vechi["legate"]:   # [252] nicio scriere: o încasare / plată stinge deja o factură deschisă pe care înlocuirea ar șterge-o
+        raise ValueError(MESAJ_DOCUMENTE_LEGATE % "; ".join(vechi["legate"][:6]))
+    _mig.cere_confirmarea_inlocuirii(vechi["randuri"] > 0 or vechi["documente"] > 0, inlocuieste, text_inlocuire(vechi, nou), vechi,
+                                     nou)   # [426] poarta comună
+    docs, neconvertite = documente_din_randuri(bune, data_referinta)   # [252]
+    neconvertite += ["%s, contul %s: firma n-are data preluării (balanța de deschidere), deci soldul nu devine document deschis"
+                     % (d["tert_nume"] or d["tert_cui"], d["cont"]) for d in docs if not d["data"]]
+    docs = [d for d in docs if d["data"]]
     td = tc = 0.0
     with conn.cursor() as cur:
         cur.execute("DELETE FROM solduri_parteneri")
@@ -406,8 +610,35 @@ def importa(conn, randuri, data_referinta=None, schema=None, inlocuieste=False):
                      r.get("debit", 0), r.get("credit", 0), data_referinta))
                 td += float(r.get("debit", 0) or 0)
                 tc += float(r.get("credit", 0) or 0)
+        _inlocuieste_documentele(cur, docs)
     return {"randuri": len(bune), "total_debit": round(td, 2), "total_credit": round(tc, 2), "respinse": erori,  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-            "inlocuita": vechi if vechi["randuri"] else None}
+            "inlocuita": vechi if (vechi["randuri"] or vechi["documente"]) else None,
+            "documente": dict(rezumat_documente(docs), neconvertite=neconvertite)}
+
+
+def _inlocuieste_documentele(cur, docs):
+    """[252] Facturile deschise preluate vechi se șterg (nu le leagă nimic: `documente_legate`, verificat înainte) și se scriu cele noi.
+    O lună închisă (triggerul perioadei blocate) sau o legătură apărută între timp opresc tot, cu refuzul numit (nimic scris)."""
+    import psycopg2
+    try:
+        # pragurile de notificare ale facturilor șterse (fără cheie străină): nu rămân orfane
+        cur.execute("SELECT to_regclass('notificari_scadenta') IS NOT NULL")
+        if cur.fetchone()[0]:
+            cur.execute("DELETE FROM notificari_scadenta WHERE factura_id IN (SELECT id FROM facturi WHERE tip = %s)", (_TIP_PRELUAT,))
+        cur.execute("DELETE FROM facturi WHERE tip = %s", (_TIP_PRELUAT,))
+        _scrie_documente(cur, docs)
+    except psycopg2.errors.RaiseException as e:   # PERIOADA_BLOCATA: luna %/% este inchisa (trg_perioada_blocata_facturi)
+        from core import perioada as _per   # [lotul 12] textul triggerului de perioadă, compus într-un singur loc (`text_exceptie`)
+        motiv = _per.text_exceptie(e.diag.message_primary or e).rstrip(".")
+        refuz = ("Facturile deschise preluate nu s-au putut scrie: %s. Soldurile pe parteneri nu s-au salvat; deschide luna sau "
+                 "corectează data facturii în fișier și încarcă-l din nou." % motiv)
+    except psycopg2.errors.ForeignKeyViolation:
+        refuz = ("În timpul salvării, o încasare sau o plată s-a legat de o factură deschisă preluată: nimic nu s-a salvat. "
+                 "Reîncarcă pagina, verifică facturile partenerului și încarcă fișierul din nou.")
+    else:
+        return
+    # [lotul 12, clasa 440] un singur refuz, de STARE: cele două cauze se exclud (scrierea s-a oprit la prima)
+    raise ValueError(refuz)
 
 
 def rezumat(conn):

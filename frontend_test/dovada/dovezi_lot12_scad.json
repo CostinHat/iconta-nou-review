@@ -1,0 +1,557 @@
+[
+ {
+  "nr": "469",
+  "firma": "tenant_9049",
+  "descriere": "F1: Scadențar — „Facturi neîncasate” (ales) și „Fișă client” sunt amândouă active; cea aleasă e marcată albastru închis, nu gri",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "activ": "#sc-facturi"
+   },
+   {
+    "activ": "#sc-clienti"
+   },
+   {
+    "contine": "Facturi neîncasate"
+   }
+  ],
+  "captura": "469_f1_vechi_scadentar_vederea_aleasa.png"
+ },
+ {
+  "nr": "466",
+  "firma": "tenant_9049",
+  "descriere": "F1: Scadențar pe facturile de dinainte de reparație — numai facturile cu ceva de încasat (starea din „Istoric facturi”), fiecare cu restul și moneda; o factură încasată prin bancă sau chitanță nu mai apare",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "NaN",
+    "zona": "#sc-lista"
+   },
+   {
+    "contine": "lei",
+    "zona": "#sc-lista"
+   }
+  ],
+  "captura": "466_f1_vechi_scadentar_fara_incasate.png"
+ },
+ {
+  "nr": "468",
+  "firma": "tenant_9049",
+  "descriere": "F1: „Fișă client” — soldul fiecărui client pe moneda lui („… lei + … EUR”), fără sume în valută adunate la lei",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "click": "#sc-clienti"
+   },
+   {
+    "asteapta": ".sc-client-btn"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "NaN",
+    "zona": "#sc-lista"
+   },
+   {
+    "contine": "lei",
+    "zona": "#sc-lista"
+   }
+  ],
+  "captura": "468_f1_vechi_fisa_client_pe_moneda.png"
+ },
+ {
+  "nr": "467",
+  "firma": "tenant_9049",
+  "descriere": "F1: clic pe primul client din „Fișă client” deschide fișa lui, cu soldul pe monedă și facturile neîncasate",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "click": "#sc-clienti"
+   },
+   {
+    "asteapta": ".sc-client-btn"
+   },
+   {
+    "click": ".sc-client-btn"
+   },
+   {
+    "asteapta": "#sc-fisa-lista"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Fișă client"
+   },
+   {
+    "exista": "#sc-fisa-client"
+   },
+   {
+    "contine": "De încasat:",
+    "zona": "#sc-fisa-sold"
+   }
+  ],
+  "captura": "467_f1_vechi_fisa_client_deschisa.png"
+ },
+ {
+  "nr": "467",
+  "firma": "tenant_9049",
+  "descriere": "F1: din fișa clientului GOOGLE IRELAND LIMITED, clic pe factura F1A nr. 5 (emisă 17.10.2026, neîncasată) deschide factura (detaliul cu „Descarcă PDF”). Primul client din fișă e Client Test SRL, al cărui singur document deschis e „Sold la 31.08.2026” — factura deschisă preluată (scrisă de `migrare_documente_preluate`), al cărei detaliu nu are PDF: nu e o factură emisă din iConta.eu",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "click": "#sc-clienti"
+   },
+   {
+    "asteapta": ".sc-client-btn"
+   },
+   {
+    "click": ".sc-client-btn",
+    "text": "GOOGLE IRELAND"
+   },
+   {
+    "asteapta": "#sc-fisa-lista .sc-fact-btn"
+   },
+   {
+    "click": "#sc-fisa-lista .sc-fact-btn",
+    "text": "F1A nr. 5"
+   },
+   {
+    "asteapta": "#fd-pdf"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#fd-pdf"
+   }
+  ],
+  "captura": "467_f1_vechi_factura_din_fisa.png"
+ },
+ {
+  "nr": "477",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite — „Introdu factura de mână” deschide formularul: furnizor (cu „Verifică la ANAF”), serie, număr, dată, scadență, monedă, liniile cu UM și cota, contul, „Validează”",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-manual"
+   },
+   {
+    "click": "#fp-manual"
+   },
+   {
+    "asteapta": "#pm-cui"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "introdusă de mână"
+   },
+   {
+    "exista": "#pm-verifica"
+   },
+   {
+    "exista": "#pm-l1-um"
+   },
+   {
+    "exista": "#pm-valideaza"
+   }
+  ],
+  "captura": "477_f1_formular_factura_de_mana.png"
+ },
+ {
+  "nr": "469",
+  "firma": "tenant_9053",
+  "descriere": "F5: Scadențar — „Facturi neîncasate” (ales) și „Fișă client” sunt amândouă active; cea aleasă e marcată albastru închis, nu gri",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "activ": "#sc-facturi"
+   },
+   {
+    "activ": "#sc-clienti"
+   },
+   {
+    "contine": "Facturi neîncasate"
+   }
+  ],
+  "captura": "469_f5_vechi_scadentar_vederea_aleasa.png"
+ },
+ {
+  "nr": "466",
+  "firma": "tenant_9050",
+  "descriere": "F2 (facturile emise 1 / 21.09.2026, F2T2 încasată parțial prin chitanța F2C-1 — 605,00 din 1.210,00 —, F2T3; F5 nu are nicio factură, deci Scadențarul e gol): Scadențar pe facturile de dinainte de reparație — numai facturile cu ceva de încasat (starea din „Istoric facturi”), fiecare cu restul și moneda; o factură încasată prin bancă sau chitanță nu mai apare",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "NaN",
+    "zona": "#sc-lista"
+   },
+   {
+    "contine": "lei",
+    "zona": "#sc-lista"
+   }
+  ],
+  "captura": "466_f2_vechi_scadentar_fara_incasate.png"
+ },
+ {
+  "nr": "468",
+  "firma": "tenant_9050",
+  "descriere": "F2 (facturile emise 1 / 21.09.2026, F2T2 încasată parțial prin chitanța F2C-1 — 605,00 din 1.210,00 —, F2T3; F5 nu are nicio factură, deci Scadențarul e gol): „Fișă client” — soldul fiecărui client pe moneda lui („… lei + … EUR”), fără sume în valută adunate la lei",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "click": "#sc-clienti"
+   },
+   {
+    "asteapta": ".sc-client-btn"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "NaN",
+    "zona": "#sc-lista"
+   },
+   {
+    "contine": "lei",
+    "zona": "#sc-lista"
+   }
+  ],
+  "captura": "468_f2_vechi_fisa_client_pe_moneda.png"
+ },
+ {
+  "nr": "467",
+  "firma": "tenant_9050",
+  "descriere": "F2 (facturile emise 1 / 21.09.2026, F2T2 încasată parțial prin chitanța F2C-1 — 605,00 din 1.210,00 —, F2T3; F5 nu are nicio factură, deci Scadențarul e gol): clic pe primul client din „Fișă client” deschide fișa lui, cu soldul pe monedă și facturile neîncasate",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "click": "#sc-clienti"
+   },
+   {
+    "asteapta": ".sc-client-btn"
+   },
+   {
+    "click": ".sc-client-btn"
+   },
+   {
+    "asteapta": "#sc-fisa-lista"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Fișă client"
+   },
+   {
+    "exista": "#sc-fisa-client"
+   },
+   {
+    "contine": "De încasat:",
+    "zona": "#sc-fisa-sold"
+   }
+  ],
+  "captura": "467_f2_vechi_fisa_client_deschisa.png"
+ },
+ {
+  "nr": "467",
+  "firma": "tenant_9050",
+  "descriere": "F2 (facturile emise 1 / 21.09.2026, F2T2 încasată parțial prin chitanța F2C-1 — 605,00 din 1.210,00 —, F2T3; F5 nu are nicio factură, deci Scadențarul e gol): din fișa clientului, clic pe o factură deschide factura (detaliul cu „Descarcă PDF”)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "click": "#sc-clienti"
+   },
+   {
+    "asteapta": ".sc-client-btn"
+   },
+   {
+    "click": ".sc-client-btn"
+   },
+   {
+    "asteapta": "#sc-fisa-lista .sc-fact-btn"
+   },
+   {
+    "click": "#sc-fisa-lista .sc-fact-btn"
+   },
+   {
+    "asteapta": "#fd-pdf"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#fd-pdf"
+   }
+  ],
+  "captura": "467_f2_vechi_factura_din_fisa.png"
+ },
+ {
+  "nr": "477",
+  "firma": "tenant_9053",
+  "descriere": "F5: Facturi primite — „Introdu factura de mână” deschide formularul: furnizor (cu „Verifică la ANAF”), serie, număr, dată, scadență, monedă, liniile cu UM și cota, contul, „Validează”",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-manual"
+   },
+   {
+    "click": "#fp-manual"
+   },
+   {
+    "asteapta": "#pm-cui"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "introdusă de mână"
+   },
+   {
+    "exista": "#pm-verifica"
+   },
+   {
+    "exista": "#pm-l1-um"
+   },
+   {
+    "exista": "#pm-valideaza"
+   }
+  ],
+  "captura": "477_f5_formular_factura_de_mana.png"
+ },
+ {
+  "nr": "C105",
+  "firma": "tenant_9049",
+  "descriere": "F1: „Validare factură” pe fișierul de probă DANTE (același XML ca DNT-RT-1020, cu numărul PROBA-C120 și F1 cumpărător): TVA „294,00 lei”, Total „1.694,00 lei”. DNT-RT-1020 nu e pe copie (în efactura_primite a F1 clonate sunt numai FURN-2026-001 și DNT-TEST-1019, ambele validate), deci nu există o factură primită veche nevalidată; datele existente nu sunt atinse de C105 (numai formatarea câmpurilor). SCRIE pe copie o factură primită importată, nevalidată.",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "e2e_lot12_cx1:fisier_xml_c120",
+    "nume": "proba_c105.xml",
+    "tip": "text/xml"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "PROBA-C120"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "PROBA-C120"
+   },
+   {
+    "asteapta": "#pr-total"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#pr-tva",
+    "egal": "294,00 lei"
+   },
+   {
+    "valoare": "#pr-total",
+    "egal": "1.694,00 lei"
+   }
+  ],
+  "captura": "c105_f1_validare_sume.png"
+ }
+]

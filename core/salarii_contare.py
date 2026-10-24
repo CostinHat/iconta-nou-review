@@ -217,7 +217,9 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             cadou_taxabil=float(s.get("cadou_taxabil") or 0),
             # [S1] elementele variabile și indemnizația CM, din `pull` (o singură citire) — fără ele 641=421 ar ieși fără prime
             elemente_variabile=float(s.get("elemente_variabile") or 0),
-            venit_cm=float(s.get("venit_cm") or 0))
+            venit_cm=float(s.get("venit_cm") or 0),
+            # [482] ca `pull` și statul: indemnizația CM impozabilă în deducerea personală (CF art.76 alin.(1), art.77)
+            cm_impozabil=_sz.cm_impozabil_luna(s.get("cm") if int(s.get("zile_cm") or 0) else None, ref))
         ret_salariu["4315"] += _d(calc["cas"])
         ret_salariu["4316"] += _d(calc["cass"]) + _d(calc.get("cass_tichete", 0))
         ret_salariu["444"] += _d(calc["impozit"])

@@ -1,23 +1,23 @@
 #!/bin/sh
-# reference-transaction — GARDA PE `main` (comanda Costin 14.10.2026, regim pilot, pct.2: „Garda pe main în ~/iconta_nou (commit refuzat
-# fără aprobare scrisă): da.”; verbatim în DECIZII). Din 14.10.2026 producția are datele unui cabinet real, iar `main` din `~/iconta_nou`
-# e versiunea publicată: orice mutare a lui `refs/heads/main` (commit, fast-forward, reset, pull, ștergere) PUBLICĂ (post-commit) sau
-# schimbă ce e pe disc lângă procesul viu.
+# reference-transaction — GARDA PE `main`. `main` din `~/iconta_nou` e versiunea publicată: orice mutare a lui `refs/heads/main` (commit,
+# fast-forward, reset, pull, ștergere) PUBLICĂ (post-commit) sau schimbă ce e pe disc lângă procesul viu (regim pilot, 14.10.2026).
 #
-# REGULA: `refs/heads/main` se mută NUMAI la SHA-ul numit în aprobarea scrisă `<git-common-dir>/APROBARE_MAIN`:
-#     sha: <SHA complet, 40 de caractere>
-#     aprobat: <textul aprobării lui Costin, verbatim>
-# Fără fișier, cu alt SHA, fără text sau spre ștergerea ramurii -> tranzacția e REFUZATĂ (git o anulează, nimic nu se mută).
-# ȘI (15.10.2026, comanda Costin, verbatim în DECIZII „Poarta o dată pe lot”: „main acceptă un commit doar dacă jurnalul porții îl arată
-# verde.”): SHA-ul țintă are rândul `VERDE <sha> …` în `<git-common-dir>/poarta_verdicte.log`, scris de `scripts/poarta_lot.sh` (poarta
-# completă a lotului). Fără verdict VERDE -> REFUZAT, oricare ar fi aprobarea.
-# La reușită aprobarea se CONSUMĂ (se mută în APROBARE_MAIN.folosita-<sha>): o aprobare acoperă o singură mutare.
-# Lucrul se face pe ramuri, în worktree (`/home/costin/iconta_lucru`); publicarea = fast-forward aprobat + post-commit.
-# Gard: core/test_garda_main.py (depozit temporar; mutațiile „hook-ul trece tot” și „verdictul nu se cere” -> ROȘU).
+# REGULA (23.10.2026, CLAUDE.md §6: „După poarta verde, Code publică imediat, fără să aștepte confirmare”; DECIZII 23.10.2026
+# „Comanda 12.1”): `refs/heads/main` se mută la un SHA NUMAI dacă `<git-common-dir>/poarta_verdicte.log` are rândul `VERDE <sha> …`,
+# scris de `scripts/poarta_lot.sh` — verdictul rulării complete (`VERDE <sha> <ramura> <data>`) SAU cel compus din rularea completă
+# anterioară plus rerularea țintită (`VERDE <sha> <ramura> <data> compus:<X>`, CLAUDE.md §5). Fără verdict VERDE pentru acel SHA ->
+# tranzacția e REFUZATĂ (git o anulează, nimic nu se mută). Ștergerea lui `main` e refuzată mereu.
+#
+# RADIAT 23.10.2026: aprobarea scrisă `<git-common-dir>/APROBARE_MAIN` (`sha:` + `aprobat:`, comanda Costin 14.10.2026 pct.2) și
+# consumarea ei la reușită (`APROBARE_MAIN.folosita-<sha>`). Verdictul VERDE e singura condiție; un fișier `APROBARE_MAIN` rămas pe disc
+# nu mai e citit, nici mutat. (Istoric: 14.10 aprobarea; 15.10 „main acceptă un commit doar dacă jurnalul porții îl arată verde” s-a
+# adăugat lângă ea; 23.10 aprobarea a ieșit.)
+# Lucrul se face pe ramuri, în worktree; publicarea = fast-forward la SHA-ul verde + post-commit.
+# Gard: core/test_garda_main.py (depozit temporar; mutațiile „verdictul nu se cere”, „ștergerea trece”, „aprobarea scrisă cerută înapoi”
+# -> ROȘU).
 STARE="$1"
-case "$STARE" in prepared|committed) ;; *) exit 0 ;; esac
+[ "$STARE" = "prepared" ] || exit 0
 COMUN=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || exit 0
-APR="$COMUN/APROBARE_MAIN"
 JV="$COMUN/poarta_verdicte.log"
 ZERO=0000000000000000000000000000000000000000
 COD=0
@@ -25,28 +25,20 @@ while read -r VECHI NOU REF; do
     [ "$REF" = "refs/heads/main" ] || continue
     # la ștergere git poate trimite vechiul SHA ca zero (nu-l verifică): „vechi = nou” ar sări-o — se tratează înainte
     [ "$NOU" != "$ZERO" ] && [ "$VECHI" = "$NOU" ] && continue
-    SHA=$(sed -n 's/^sha:[[:space:]]*//p' "$APR" 2>/dev/null | head -1 | tr -d '[:space:]')
-    TXT=$(sed -n 's/^aprobat:[[:space:]]*//p' "$APR" 2>/dev/null | head -1)
-    if [ "$STARE" = "prepared" ]; then
-        if [ "$NOU" = "$ZERO" ] || [ -z "$TXT" ] || [ "$SHA" != "$NOU" ]; then
-            echo "" >&2
-            echo "############################################################" >&2
-            echo "## [garda main] REFUZAT: refs/heads/main -> ${NOU} fără aprobare scrisă pentru acest SHA." >&2
-            echo "## main = versiunea publicată (regim pilot). Lucrează pe o ramură; publicarea cere aprobarea lui Costin," >&2
-            echo "## scrisă în $APR:  'sha: <SHA complet>'  și  'aprobat: <textul aprobării>'." >&2
-            echo "############################################################" >&2
-            COD=1
-        elif ! grep -q "^VERDE $NOU " "$JV" 2>/dev/null; then
-            echo "" >&2
-            echo "############################################################" >&2
-            echo "## [garda main] REFUZAT: refs/heads/main -> ${NOU} fără poarta VERDE a lotului pentru acest SHA." >&2
-            echo "## Poarta completă rulează o dată pe lot, la închidere: sh scripts/poarta_lot.sh (verdictul în $JV)." >&2
-            echo "############################################################" >&2
-            COD=1
-        fi
-    elif [ "$SHA" = "$NOU" ] && [ -f "$APR" ]; then
-        mv -f "$APR" "$APR.folosita-$NOU" 2>/dev/null || rm -f "$APR"
-        echo "[garda main] aprobarea pentru ${NOU} folosită și consumată" >&2
+    if [ "$NOU" = "$ZERO" ]; then
+        echo "" >&2
+        echo "############################################################" >&2
+        echo "## [garda main] REFUZAT: ștergerea lui refs/heads/main (versiunea publicată)." >&2
+        echo "############################################################" >&2
+        COD=1
+    elif ! grep -q "^VERDE $NOU " "$JV" 2>/dev/null; then
+        echo "" >&2
+        echo "############################################################" >&2
+        echo "## [garda main] REFUZAT: refs/heads/main -> ${NOU} fără poarta VERDE a lotului pentru acest SHA." >&2
+        echo "## main = versiunea publicată. Lucrează pe o ramură; la închiderea lotului: sh scripts/poarta_lot.sh" >&2
+        echo "## (sau --compus, după o rulare completă roșie). Verdictul în $JV." >&2
+        echo "############################################################" >&2
+        COD=1
     fi
 done
 exit $COD

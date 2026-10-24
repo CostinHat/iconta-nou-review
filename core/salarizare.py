@@ -138,9 +138,8 @@ def _deducere_acordata(ded, venit_net):
     - la plafonare, partea acordată se ia întâi din deducerea de bază, apoi din suplimentară (alin.(10) lit.a, apoi lit.b) — ordinea
       din alin.(2) și din alin.(10). Alternativa respinsă: împărțirea proporțională (resturi de rotunjire între componente, fără temei).
       DUKIntegrator verifică numai sumele (E3_12 = E3_121 + E3_122, E3_122 = E3_1221 + E3_1222).
-    De reconfirmat dacă apare o normă care transează repartizarea. Indemnizația de concediu medical nu intră aici: deducerea pe
-    indemnizație e GRI (DECIZII, „DEDUCERE PE INDEMNIZATIE: NEconfirmat prin text explicit”) — indemnizația se impozitează separat
-    (`taxe_cm`), fără deducere."""
+    De reconfirmat dacă apare o normă care transează repartizarea. [482, lotul 12 — supersedează nota „deducerea pe indemnizație e GRI”]
+    Venitul net primit aici cuprinde și netul indemnizației CM impozabile (CF art.76 alin.(1), vezi `_calcul_salariu_2018`)."""
     total = _dec(ded["total"])
     vn = max(_dec(venit_net), Decimal(0))
     if total <= vn:
@@ -224,7 +223,8 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0, zile_cm=0):
+                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0, zile_cm=0,
+                   cm_impozabil=None):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -345,10 +345,22 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     cas = baza_contrib * cota_cas
     cass = baza_contrib * cota_cass
 
-    ded = deducere_personala(b_imp, persoane, sub_26, copii_scoala, functie_baza,
+    # [482, lotul 12] În luna cu concediu medical, indemnizația IMPOZABILĂ e venit din salarii (CF art.76 alin.(1): „inclusiv
+    # indemnizațiile pentru incapacitate temporară de muncă”), deci intră în venitul brut după care se stabilește deducerea (CF art.77
+    # alin.(4): „Pentru contribuabilii care realizează venituri brute lunare din salarii de până la nivelul prevăzut la alin. (3)
+    # inclusiv […]”) și în limita ei (alin.(2): „se acordă în limita venitului impozabil lunar realizat”); impozitul lunii se calculează
+    # „asupra veniturilor totale din luna respectivă” (HG 1/2016 Titlul IV pct.16 alin.(3)) — cum face deja D112 (baza impozitului =
+    # salariu + indemnizația impozabilă − contribuțiile lor − deducerea). Până la 23.10.2026 deducerea se judeca numai pe salariul
+    # lucrat. `cm_impozabil` = (brutul, netul de contribuții) indemnizației impozabile, din `cm_impozabil_luna`. INTERPRETARE CU TEMEI:
+    # indemnizațiile neimpozabile (CF art.62 lit.c — maternitate, îngrijire copil, risc maternal, oncologic) nu intră nici în venitul
+    # brut al deducerii, nici în limita ei (alternativa respinsă: brutul lor în pragul deducerii — ar micșora o deducere pe un venit pe
+    # care nu se calculează impozit); de reconfirmat dacă apare o normă care transează.
+    _cm_b, _cm_n = (_dec(cm_impozabil[0]), _dec(cm_impozabil[1])) if cm_impozabil else (Decimal(0), Decimal(0))
+    ded = deducere_personala(b_imp + _cm_b, persoane, sub_26, copii_scoala, functie_baza,
                              la_data=la_data, declaratie_copii=declaratie_copii)
-    # [lotul 11, C91] deducerea ACORDATĂ = cea calculată, în limita venitului net (salariul realizat minus contribuții)
-    ded = _deducere_acordata(ded, baza_contrib - cas - cass)
+    # [lotul 11, C91] deducerea ACORDATĂ = cea calculată, în limita venitului net (salariul realizat minus contribuții, plus netul
+    # indemnizației impozabile — 482)
+    ded = _deducere_acordata(ded, baza_contrib - cas - cass + _cm_n)
 
     baza_imp = baza_contrib - cas - cass - _dec(ded["total"])
     if baza_imp < 0:
@@ -362,9 +374,10 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # impozitului (regula Cod fiscal: impozit pe venit-contributii) -> impozit pe (nominal-cass).
     # Nr tichete = zile efectiv lucrate (0 fara pontaj - decis 20.07). Valoarea plafonata la
     # maximul legal (siguranta; inputul e deja validat 0..plafon in salariati_api).
-    tichet_val, _ = c.cota("tichet_masa_plafon", la_data)
     tv = _dec(tichet_valoare)
-    tv = min(tv, tichet_val) if tv > 0 else Decimal(0)
+    # [lotul 12, C159] plafonul se cere numai când salariatul are tichete: o lună fără plafon verificat în registru (10/2025) nu mai
+    # blochează statul unei firme care nu dă tichete
+    tv = min(tv, c.cota("tichet_masa_plafon", la_data)[0]) if tv > 0 else Decimal(0)
     tichete_nominal = tv * _dec(tichet_zile)                      # tichete de masa
     # [F133 Faza 2a] tichete de vacanta: suma one-off, ACELASI tratament fiscal ca masa
     # (CASS 10% + impozit 10%, fara CAS/CAM/deducere). Plafonul anual (6 sal.minime) se
@@ -501,7 +514,8 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0, zile_cm=0):
+                   cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0, zile_cm=0,
+                   cm_impozabil=None):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -517,7 +531,8 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata,
               tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural,
               tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil, declaratie_copii=declaratie_copii,
-              suspendari=suspendari, elemente_variabile=elemente_variabile, venit_cm=venit_cm, zile_cm=zile_cm)
+              suspendari=suspendari, elemente_variabile=elemente_variabile, venit_cm=venit_cm, zile_cm=zile_cm,
+              cm_impozabil=cm_impozabil)
 
 
 # ============================================================
@@ -833,6 +848,23 @@ _CM_COD_CU_CASS = ("01", "07", "10")
 # maternal=15 (l.5695 "D_9=15,D_23=RM"). Cod 10 (reducere timp munca) e FNUASS-integral DAR IMPOZABIL
 # (inlocuitor de salariu, NU e in art.62 lit.c) -> EXCLUS din set. nivel_sursa: MO (CF art.62) + REDARE (D112 struct).
 _CM_COD_NEIMPOZABIL = ("08", "09", "15", "17", "91", "92")
+
+
+def cm_impozabil_luna(certificate, la_data=None):
+    """[482, lotul 12] (brutul, netul de contribuții) indemnizațiilor CM IMPOZABILE ale lunii unui salariat — intrarea `cm_impozabil` a
+    lui `calcul_salariu`. Pe certificat, ca D112 (`d112.calcul_d112`, ramura CM): brutul = partea angajatorului + partea FNUASS, fiecare la
+    leu; contribuțiile din `taxe_cm` (funcția unică); codurile neimpozabile (CF art.62 lit.c, `_CM_COD_NEIMPOZABIL`) nu intră.
+    `certificate` = [{"cod", "brut_ang", "brut_fnuass"}]."""
+    brut = net = Decimal(0)
+    for x in certificate or ():
+        cod = str(x.get("cod") or "01").zfill(2)
+        if cod in _CM_COD_NEIMPOZABIL:
+            continue
+        xb = leu_aritmetic(_dec(x.get("brut_ang") or 0)) + leu_aritmetic(_dec(x.get("brut_fnuass") or 0))
+        t = taxe_cm(xb, cod, la_data)
+        brut += xb
+        net += xb - _dec(t["cas"]) - _dec(t["cass"])
+    return (brut, net) if brut > 0 else None
 
 
 def _taxe_cm_2018(brut, cod="01", la_data=None):

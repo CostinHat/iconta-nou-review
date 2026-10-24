@@ -352,7 +352,7 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
         if len(cod) > 12:
             diag.append(dict(_af.afirmatie(
                 "neconformitate", "d390",
-                "codO manual are %s (max 12) - trunchierea ar CORUPE numărul de TVA" % c.cate(len(cod), "caracter", "caractere"),
+                "Codul de TVA scris manual are %s (D390 primește cel mult 12): tăiat, ar deveni alt număr de TVA" % c.cate(len(cod), "caracter", "caractere"),
                 unde="partenerul %s (%s%s)" % (den or "(fără denumire)", tara, cod),
                 regula="cod_tva_peste_12_caractere"),
                 categorie="codO_lung", den=den, cui=(tara + cod), directie="manual", tara=tara,
@@ -684,14 +684,14 @@ def excluse_d301(conn, schema, an, luna):
             elif tip == 4:
                 if temei in _T307:
                     out.append(dict(_af.afirmatie(
-                        "fapt", "d390", "exclusa din D390: %s" % _T307[temei]["eticheta"],
+                        "fapt", "d390", "exclusă din D390: %s" % _T307[temei]["eticheta"],
                         an=an, luna=luna, temei_completitudine=_T307[temei]["temei"]),
                         semnal=False, id=_id, temei=_T307[temei]["temei"]))
                 else:
                     out.append(dict(_af.necunoastere_pe_luna(
                         "d390",
-                        "tip 4 (art. 307 alin. 3/5/6) cu TEMEI NECONFIRMAT — confirmă alineatul "
-                        "în ecranul D301 ca excluderea din D390 să fie auditabilă", an, luna),
+                        "tip 4 (art. 307 alin. 3/5/6) cu temeiul neconfirmat — confirmă alineatul "
+                        "în ecranul D301, ca excluderea din D390 să poată fi verificată", an, luna),
                         semnal=True, id=_id, temei="Cod fiscal art. 307 alin. (3)/(5)/(6)"))
     return out
 

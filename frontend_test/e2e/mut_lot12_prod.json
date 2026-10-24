@@ -1,0 +1,74 @@
+[
+ {
+  "fisier": "static/js/ecrane/clienti_ecran.js",
+  "ancora": "const da = !q || norm(p.nume).includes(q) || norm(p.cui).includes(q);",
+  "inlocuire": "const da = true;",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_461_lista_partenerilor_din_toate_documentele_cu_cautare"
+ },
+ {
+  "fisier": "core/clienti_api.py",
+  "ancora": "if not r[\"pe_linie\"]:",
+  "inlocuire": "if True:",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_461_lista_partenerilor_din_toate_documentele_cu_cautare"
+ },
+ {
+  "fisier": "core/clienti_api.py",
+  "ancora": "for cont, semn in ((r[\"cont_debit\"], 1), (r[\"cont_credit\"], -1)):",
+  "inlocuire": "for cont, semn in ((r[\"cont_debit\"], 1),):",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_461_fisa_partenerului_date_anaf_documente_si_sold"
+ },
+ {
+  "fisier": "static/js/ecrane/clienti_ecran.js",
+  "ancora": "await api.put(x.fel === \"clienti\"",
+  "inlocuire": "await api.get(x.fel === \"clienti\"",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_461_fisa_partenerului_date_anaf_documente_si_sold"
+ },
+ {
+  "fisier": "core/produse_api.py",
+  "ancora": "din_nir = propunere_din_nir(cur)",
+  "inlocuire": "din_nir = {}",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_471_articolul_din_nir_vine_cu_cota_propusa_si_justificarea_fara_nume_interne"
+ },
+ {
+  "fisier": "core/cote_tva.py",
+  "ancora": "for k, v in NUME_INTERNE.items():",
+  "inlocuire": "for k, v in {}.items():",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_471_articolul_din_nir_vine_cu_cota_propusa_si_justificarea_fara_nume_interne"
+ },
+ {
+  "fisier": "core/cote_tva.py",
+  "ancora": "\"exceptii\": \"cu exceptia: bauturilor alcoolice;",
+  "inlocuire": "\"exceptii\": \"vezi EXCEPTII_21; cu exceptia: bauturilor alcoolice;",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_471_articolul_din_nir_vine_cu_cota_propusa_si_justificarea_fara_nume_interne"
+ },
+ {
+  "fisier": "static/js/ecrane/produse_ecran.js",
+  "ancora": "legaAlege(p, valCota(cat, p.propunere.cota_tva, null)); return;",
+  "inlocuire": "legaAlege(p, valCota(cat, p.propunere.cota_tva, null)); zona.querySelector(`#pr-cota-${cheieRand(p)}`).value = valCota(cat, p.propunere.cota_tva, null); return;",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_471_articolul_din_nir_vine_cu_cota_propusa_si_justificarea_fara_nume_interne"
+ },
+ {
+  "fisier": "static/js/ecrane/produse_ecran.js",
+  "ancora": "z.hidden = false; b.hidden = true;",
+  "inlocuire": "z.hidden = true;",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_472_cota_salvata_se_corecteaza_pe_rand_si_corectura_e_consemnata"
+ },
+ {
+  "fisier": "core/produse_api.py",
+  "ancora": "_consemneaza_corectura(cur, produs_id, inainte, cota_noua, cat, uid)",
+  "inlocuire": "None",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_472_cota_salvata_se_corecteaza_pe_rand_si_corectura_e_consemnata"
+ },
+ {
+  "fisier": "static/js/ecrane/mijloace_ecran.js",
+  "ancora": "<td style=\"white-space:nowrap\">${m.data_pif",
+  "inlocuire": "<td style=\"white-space:nowrap;max-width:30px;overflow:hidden\">${m.data_pif",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_162_pif_intreg_si_actiunile_in_vedere_la_1700"
+ },
+ {
+  "fisier": "static/js/ecrane/mijloace_ecran.js",
+  "ancora": "display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:6px",
+  "inlocuire": "display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:6px;position:fixed;left:4000px",
+  "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_162_pif_intreg_si_actiunile_in_vedere_la_1700"
+ }
+]

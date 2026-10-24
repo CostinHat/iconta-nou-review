@@ -93,7 +93,7 @@ def _seteaza(schema, tid, stare, err=None, id_desc=None, zip_path=None, xml_sha=
                         WHERE id=%s""", (stare, err, id_desc, zip_path, xml_sha, finalizat, tid))
             except _chei.CheieDublata as e:
                 cur.execute(f"UPDATE {schema}.efactura_trimiteri SET error_message=%s, actualizat_la=now() WHERE id=%s",
-                            ("ANAF: %s. %s" % (stare, e), tid))
+                            (str(e), tid))   # [598] textul refuzului numește dublura; fără codul stării („ANAF: ok.”) în față
 
 
 def _descarca_recipisa(schema, tid, principal, id_desc, mediu):

@@ -43,6 +43,7 @@ Separare strictă: construcție pură / validare / XML / DB / orchestrare.
 DENUMIRE_OFICIALA = 'Fișierul Standard de Control Fiscal (SAF-T) pentru România'
 import re
 from core import common as c
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică
 from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM, Temei as _Tm  # limite text SAF-T din XSD (03.08.2026)
 from core.identitate import valideaza_cui as _vcui, valideaza_cif as _vcif  # T1/E3 (CATALOG_INVALIDITATE.md): checksum CUI/CNP + tip 03 CNP pre-DUK, sursa canonica read-only (LEAF, fara db)
 from dataclasses import dataclass, field
@@ -133,7 +134,7 @@ class IntinderNerecunoscuta(ValueError):
         return ("D406: perioada raportată se întinde pe %s (%s – %s), iar nomenclatorul "
                 "ANAF are tipuri de depunere doar pentru %s. Verifică perioada fiscală TVA a "
                 "firmei, la Date firmă → Vector fiscal. Temei: %s."
-                % (c.cate(self.luni, "lună", "luni"), self.di.isoformat(), self.ds.isoformat(),
+                % (c.cate(self.luni, "lună", "luni"), _data_ro(self.di), _data_ro(self.ds),
                    ", ".join("%s (%s)" % (c.cate(k, "lună", "luni"), v)
                              for k, v in sorted(HEADER_COMMENT_PER.items())),
                    self.temei))
@@ -397,6 +398,19 @@ def parteneri_fara_localitate(clienti, furnizori, facturi):
         if f.partener_id in lipsa and f.nr not in lipsa[f.partener_id][1]:
             lipsa[f.partener_id][1].append(f.nr)
     return [(v[0], pid, v[1]) for pid, v in lipsa.items()]
+
+
+def parteneri_perioadei_master(nomenclator, ai_perioadei):
+    """[deficiența 486] Customers / Suppliers din MasterFiles = partenerii care apar în datele PERIOADEI declarate (facturile ei, liniile
+    notelor ei pe 4111 / 401), cu datele lor din nomenclator (ordinea nomenclatorului, apoi cei care lipsesc din el, luați de pe document).
+    Până azi: TOT nomenclatorul, deci un partener adăugat în octombrie, fără localitate, oprea D406 pe septembrie.
+    Temei: OPANAF 1783/2021 anexa 3 pct.11 („până când toate informaţiile aferente perioadei de raportat sunt transmise”) și pct.27
+    („în cazul în care într-o perioadă de raportare, pentru o anumită secţiune sau subsecţiune, contribuabilul/plătitorul nu are date noi
+    de raportat, prin comparaţie cu ce a raportat deja în perioada anterioară, secţiunea sau subsecţiunea respectivă poate fi lăsată
+    vidă”); d406_schema_anaf.xlsx, „2. MasterFiles”, MF.C.1 / MF.S.1 Customer / Supplier cardinalitate 0..*."""
+    din_nom = [p for p in nomenclator if p.id in ai_perioadei]
+    avem = {p.id for p in din_nom}
+    return din_nom + [Partener(id=pid, nume=nume, cui=cui, oras="") for pid, (nume, cui) in ai_perioadei.items() if pid not in avem]
 
 
 def tinta_fisa_partener(fara_loc, clienti, furnizori, facturi_vanzare):
@@ -1467,7 +1481,10 @@ def pull(conn, schema, an, luna):
             _repo.select_clienti(cur)
             vazut_cl = set()
             for r in cur.fetchall():
-                pid = _partener_id_saft(r["cui"], r["nume"], eticheta=r["nume"])
+                try:
+                    pid = _partener_id_saft(r["cui"], r["nume"], eticheta=r["nume"])
+                except ValueError:
+                    continue   # [486] un cod greșit în nomenclator nu identifică niciun partener al perioadei; documentul cu el e refuzat
                 if pid and pid not in vazut_cl:
                     vazut_cl.add(pid)
                     clienti.append(Partener(id=pid, nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
@@ -1489,7 +1506,10 @@ def pull(conn, schema, an, luna):
             _repo.select_furnizori(cur)
             vazut_fu = set()
             for r in cur.fetchall():
-                pid = _partener_id_saft(r["cui"], r["nume"], eticheta=r["nume"])
+                try:
+                    pid = _partener_id_saft(r["cui"], r["nume"], eticheta=r["nume"])
+                except ValueError:
+                    continue   # [486] un cod greșit în nomenclator nu identifică niciun partener al perioadei; documentul cu el e refuzat
                 if pid and pid not in vazut_fu:
                     vazut_fu.add(pid)
                     furnizori.append(Partener(id=pid, nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
@@ -1501,58 +1521,6 @@ def pull(conn, schema, an, luna):
             # blocul urmator, cu mesaj gresit ('citirea notelor a esuat' cand de fapt
             # picase nomenclatorul de furnizori). Dovedit pe tenant_002 prin redenumirea tabelei.
             raise RuntimeError("D406: citirea nomenclatorului de furnizori a eșuat - %s" % e) from e
-        # FALLBACK: daca nomenclatoarele clienti/furnizori sunt goale (dovedit
-        # 16.07.2026: facturile create direct NU populeaza automat clienti/
-        # furnizori - limitare cunoscuta, nereparata inca la sursa), derivam
-        # macar un partener minimal din facturi, ca SAF-T sa aiba CustomerID/
-        # SupplierID valabil (obligatoriu pe liniile 4111/401). De inlocuit cu
-        # nomenclatorul real cand facturile vor popula clienti/furnizori automat.
-        try:
-            # FALLBACK: nomenclatoarele clienti/furnizori sunt goale (dovedit
-            # 16.07.2026: facturile create direct NU le populeaza automat -
-            # limitare cunoscuta, de reparat la sursa in facturi_api.py). Derivam
-            # TOTI partenerii distincti din facturi, cu formatul oficial S.C.1
-            # (00/01/02 + cod), ca fiecare linie 4111/401 sa aiba un CustomerID/
-            # SupplierID valabil - nu doar primul partener (LIMIT 1 lasa restul
-            # tranzactiilor fara CustomerID, cum s-a dovedit cu factura UE).
-            # ROOT FIX (tip-04): derivarea partenerilor din facturi trebuie sa
-            # foloseasca ACEEASI identitate ca referinta de pe factura
-            # (_partener_id_saft, folosit la construirea Invoice mai jos): cu cod
-            # fiscal -> 00/01/02, iar PF FARA cod fiscal declarat -> tipul 04 + cod
-            # din nume. Vechiul cod folosea _partener_registration_number (doar
-            # 00/01/02) SI filtra tert_cui != '' -> partenerul PF (tip 04) referit
-            # de factura (SupplierID/CustomerID=04...) NU aparea in <Customers>/
-            # <Suppliers> (neconformitate: referit pe factura, absent din master).
-            # Dedup pe identitatea SAF-T (pid), NU pe tert_cui: toti PF au tert_cui=''
-            # -> DISTINCT ON (tert_cui) i-ar fi colapsat pe toti intr-un singur rand.
-            if not clienti:
-                _repo.select_facturi(cur)
-                vazut = set()
-                for r in cur.fetchall():
-                    pid = _partener_id_saft(r["tert_cui"], r["tert_nume"], eticheta=r["tert_nume"])
-                    if pid and pid not in vazut:
-                        vazut.add(pid)
-                        clienti.append(Partener(id=pid, nume=r["tert_nume"] or "",
-                                                cui=r["tert_cui"] or "", oras=""))
-            if not furnizori:
-                _repo.select_facturi_2(cur)
-                vazut = set()
-                for r in cur.fetchall():
-                    pid = _partener_id_saft(r["tert_cui"], r["tert_nume"], eticheta=r["tert_nume"])
-                    if pid and pid not in vazut:
-                        vazut.add(pid)
-                        furnizori.append(Partener(id=pid, nume=r["tert_nume"] or "",
-                                                  cui=r["tert_cui"] or "", oras=""))
-        except ValueError:
-            # Eroare de CONTINUT (checksum CUI/CNP partener, T1): trece nemodificata,
-            # nu se mascheaza in RuntimeError (cauza reala ar fi ascunsa).
-            raise
-        except Exception as e:
-            # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
-            # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in
-            # blocul urmator, cu mesaj gresit ('citirea notelor a esuat' cand de fapt
-            # picase derivarea partenerilor din facturi). Dovedit pe tenant_002 prin redenumirea tabelei.
-            raise RuntimeError("D406: derivarea partenerilor din facturi a eșuat - %s" % e) from e
         try:
             # COLOANE REALE (dovedit 16.07.2026 prin \d tenant_002.inregistrari_linii):
             # cont_debit, cont_credit, suma - NU cont/debit/credit cum interoga codul
@@ -1574,7 +1542,8 @@ def pull(conn, schema, an, luna):
             _repo.select_inregistrari(cur, di, ds)
             nmap = {}
             contare = {}   # [380] factura_id -> {"debit": set, "credit": set} din nota ei de CONTARE (sursa „facturi”), validată
-            gl_parteneri = {}          # [381] "4111"/"401" -> {pid: (nume, cui)} — partenerii liniilor de terți, aduși și în MasterFiles
+            # [381] "4111"/"401" -> {pid: (nume, cui)} — partenerii liniilor de terți; [486] și ai facturilor perioadei (mai jos): MasterFiles
+            parteneri_perioadei = {"4111": {}, "401": {}}
             plati_map = {}             # [381] nota -> Plata: plata unui furnizor (401 = 512x / 531x) sau încasarea unui client (512x / 531x = 4111)
             terti_fara_partener = []   # [381] (nota, cont, suma) — linie pe 401 / 4111 fără partener: codul firmei în locul lui
             surse_necunoscute = []   # R22: sursa nemapata -> DIVERSE, dar NUMITA in avertisment
@@ -1601,7 +1570,7 @@ def pull(conn, schema, an, luna):
                 for _ct in (_deb, _cre):
                     if _ct in ("4111", "401"):
                         if pid:
-                            gl_parteneri.setdefault(_ct, {}).setdefault(pid, (r["tert_nume"] or "", r["tert_cui"] or ""))
+                            parteneri_perioadei[_ct].setdefault(pid, (r["tert_nume"] or "", r["tert_cui"] or ""))
                         else:
                             terti_fara_partener.append((str(r["id"]), _ct, suma))
                 # [381] Payments (schema ANAF, „4. SourceDocuments” rd.18: secțiunea 4.3 Payments „Mandatory”, raportare lunară /
@@ -1623,13 +1592,6 @@ def pull(conn, schema, an, luna):
                                          descriere="", debit=Decimal("0"), credit=suma,
                                          cont_partener_id=pid))
             note = list(nmap.values())
-            # [381] fiecare partener referit în GeneralLedgerEntries trebuie să existe în MasterFiles (Customers / Suppliers)
-            for _ct, _lista in (("4111", clienti), ("401", furnizori)):
-                _avem = {p.id for p in _lista}
-                for _pid, (_nume, _cui) in gl_parteneri.get(_ct, {}).items():
-                    if _pid not in _avem:
-                        _lista.append(Partener(id=_pid, nume=_nume, cui=_cui, oras=""))
-                        _avem.add(_pid)
         except ValueError:
             # Eroare de CONTINUT (checksum CUI/CNP partener, T1): trece nemodificata,
             # nu se mascheaza in RuntimeError (cauza reala ar fi ascunsa).
@@ -1789,6 +1751,7 @@ def pull(conn, schema, an, luna):
                 _in_nota = sorted((_nota_f or {}).get("credit" if este_v else "debit", set()) - _fara_tva) if _nota_f else None
                 if _in_nota != _in_linii:
                     nepotriviri_jurnal.append((r["numar"] or str(r["id"]), _in_linii, _in_nota))
+                parteneri_perioadei["4111" if este_v else "401"].setdefault(pid, (r["tert_nume"] or "", r["tert_cui"] or ""))   # [486]
                 f = Factura(nr=r["numar"] or str(r["id"]), data=r["data_emitere"],
                             partener_id=pid, partener_nume=r["tert_nume"] or "",
                             tip=itype, cont=("4111" if este_v else "401"), linii=linii,
@@ -1810,6 +1773,9 @@ def pull(conn, schema, an, luna):
     # conturile introduse după el (6121–6123 OMFP 2649/2023, 6351 OMFP 981/2024). Se exclud din MasterFiles ca până acum; avertismentul
     # le NUMEȘTE numai când pierderea contează: contul are sold sau apare pe o notă / factură a perioadei. Un cont neatins al planului
     # n-are ce pierde, iar numit pe fiecare D406 ar fi un avertisment fără acțiune.
+    # [486] MasterFiles Customers / Suppliers = partenerii PERIOADEI (facturile și notele ei), cu datele lor din nomenclator
+    clienti = parteneri_perioadei_master(clienti, parteneri_perioadei["4111"])
+    furnizori = parteneri_perioadei_master(furnizori, parteneri_perioadei["401"])
     # [lotul 10, C69] localitatea partenerilor și a facturilor: scrisă de contabil, apoi ANAF (cache); lipsa o numește `genereaza`
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         _locale = localitati_locale(_repo.parteneri_si_localitati(cur))
@@ -2016,10 +1982,14 @@ def genereaza(conn, schema, an, luna):
         # respinge: "ID-ul contului trebuie sa se gaseasca in planul de conturi"). NU tacit - le NUMIM in
         # avertisment, ca sa nu dispara un cont cu sold fara ca contabilul sa stie (aceeasi regula ca la N
         # in d394 - decizie Costin 04.08: exclus, dar vizibil). Verifica norma firmei / planul de conturi.
-        lista = ", ".join(strain[:30]) + (" ... (+%d)" % (len(strain) - 30) if len(strain) > 30 else "")
-        res.avertismente.insert(0, "Atenție: %d cont(uri) exclus(e) din D406 - nu aparțin normei contabile "
-                                   "declarate (%s), ANAF le-ar respinge: %s. Verifică planul de conturi / baza "
-                                   "contabilă a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
+        # [390, lotul 12 — clasa „avertismentul D406 în termeni tehnici”] în limba contabilului, cu acordul numărului (`cate`)
+        from core.common import cate as _cate_x
+        lista = ", ".join(strain[:30]) + (" … (+%d)" % (len(strain) - 30) if len(strain) > 30 else "")
+        _unul = len(strain) == 1
+        res.avertismente.insert(0, "Atenție (D406): %s din planul firmei %s din D406 — nu %s în planul de conturi al bazei contabile "
+                                   "declarate (%s), iar ANAF %s respinge: %s. Verifică planul de conturi sau baza contabilă din Date "
+                                   "firmă." % (_cate_x(len(strain), "cont", "conturi"), "e exclus" if _unul else "sunt excluse", "e" if _unul else "sunt",
+                                               prof.get("baza_contabila") or "A", "l-ar" if _unul else "le-ar", lista))
     # [390, retestul 19.10.2026: avertismentele trimiteau la „nota 3” și „nota 48” (id-ul intern), nu la Nr. crt. din Registrul jurnal]
     # notele se numesc cum le vede contabilul (`eticheta_nota`: „nr. crt. N din ZZ.LL.AAAA”), o singură dată pentru toate avertismentele
     from core import eticheta_nota as _et
@@ -2034,22 +2004,19 @@ def genereaza(conn, schema, an, luna):
                                    "jurnalul „Diverse”: %s. Verifică-le în Registrul jurnal." % (
                                        _cate_s(len(surse_necunoscute), "notă", "note"), _dets))
     if um_necunoscute:
-        _detu = "; ".join("factura %s: UM %r" % (nrf, um) for nrf, um in um_necunoscute)
-        res.avertismente.insert(0, "Atenție (D406): unitate(i) de masura necunoscută(e) înlocuită(e) "
-                                   "cu H87 (bucată) - nu tacit: o unitate greșită e eronată/respinsă la "
-                                   "ANAF. %s. Mapează unitățile în nomenclatorul UN/ECE Rec.20." % _detu)
+        _detu = "; ".join("factura %s: „%s”" % (nrf, um) for nrf, um in um_necunoscute)
+        res.avertismente.insert(0, "Atenție (D406): unitatea de măsură nu e una pe care ANAF o cunoaște, deci se declară „bucată”: %s. "
+                                   "Corectează unitatea de măsură pe factură (de exemplu kg, l, m, oră), apoi generează din nou." % _detu)
     if cote_necunoscute:
         _detc = "; ".join("factura %s: cota %s%%" % (nrf, ct) for nrf, ct in cote_necunoscute)
-        res.avertismente.insert(0, "Atenție (D406): cota(e) de TVA fără cod TaxCode de livrare în "
-                                   "nomenclator, înlocuită(e) tacit cu 310312 (taxare inversă) - date "
-                                   "greșite la ANAF. %s. Verifică cota facturii / actualizează "
-                                   "nomenclatorul de coduri de taxa." % _detc)
+        res.avertismente.insert(0, "Atenție (D406): cota de TVA nu există în lista ANAF pentru livrări, deci factura se declară cu codul "
+                                   "taxării inverse (310312) — o cifră greșită la ANAF: %s. Verifică cota pe factură." % _detc)
     if facturi_fara_curs:
+        from core.common import cate as _cate_c
         _detfc = ", ".join(facturi_fara_curs)
-        res.avertismente.insert(0, "Atenție (D406): %d factură(i) în valută fără curs BNR excluse din "
-                                   "SalesInvoices/PurchaseInvoices (SAF-T declară CurrencyCode=RON — "
-                                   "nu se poate raporta valuta drept lei): %s. Completează cursul pe "
-                                   "factură (A1)." % (len(facturi_fara_curs), _detfc))
+        res.avertismente.insert(0, "Atenție (D406): %s în valută fără cursul BNR nu intră în D406 — D406 declară sumele în lei: %s. "
+                                   "Completează cursul pe factură, apoi generează din nou." % (
+                                       _cate_c(len(facturi_fara_curs), "factură", "facturi"), _detfc))
     if terti_fara_partener:
         # [deficiența 381: „D406 semnalează liniile de terți fără partener”] fără partener, linia pe 401 / 4111 poartă codul firmei în
         # SupplierID / CustomerID (schema ANAF, GL.28 / GL.29, cere codul partenerului din MasterFiles)

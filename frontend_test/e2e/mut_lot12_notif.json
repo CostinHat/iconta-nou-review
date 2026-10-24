@@ -1,0 +1,38 @@
+[
+ {
+  "fisier": "core/uc_cont_notificari.py",
+  "ancora": "raise _erori.Conflict({\"mesaj\": MESAJ_WA_ESUAT, \"cod\": COD_WA_INDISPONIBIL})",
+  "inlocuire": "raise _erori.Conflict({\"mesaj\": \"Codul nu a putut pleca pe WhatsApp (%s). Verifică numărul și încearcă din nou.\" % e, \"cod\": COD_WA_INDISPONIBIL})",
+  "test": "frontend_test/e2e/e2e_lot12_notif.py::test_def_598_whatsapp_cazut_spune_ca_notificarile_vin_pe_email"
+ },
+ {
+  "fisier": "core/spv_rute.py",
+  "ancora": "urllib.parse.urlencode([(\"motiv\", motiv)])",
+  "inlocuire": "urllib.parse.urlencode([(\"eroare\", motiv)])",
+  "test": "frontend_test/e2e/e2e_lot12_notif.py::test_def_600_orice_esec_la_anaf_se_intoarce_in_iconta_cu_mesaj_clar"
+ },
+ {
+  "fisier": "static/js/ecrane/setari.js",
+  "ancora": "        asteaptaIntoarcerea(zona, st);\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_notif.py::test_def_600_fila_iconta_afla_la_intoarcere_ca_anaf_nu_a_trimis_autorizarea"
+ },
+ {
+  "fisier": "core/uc_asistenti.py",
+  "ancora": "        if not (date.firme or []):",
+  "inlocuire": "        if False:",
+  "test": "frontend_test/e2e/e2e_lot12_notif.py::test_def_487_asistentul_nu_se_invita_fara_nicio_firma"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "  window.addEventListener(\"iconta:schimbare\", laSchimbare);\n  citeste();\n  return citeste;",
+  "inlocuire": "  citeste();\n  return citeste;",
+  "test": "frontend_test/e2e/e2e_lot12_notif.py::test_def_492_contorul_pregatite_se_actualizeaza_fara_reincarcare"
+ },
+ {
+  "fisier": "core/repo_admin.py",
+  "ancora": "_REUSITA = \"(%s.detalii->>'status') ~ '^2[0-9][0-9]$'\"",
+  "inlocuire": "_REUSITA = \"(%s.id IS NOT NULL)\"",
+  "test": "frontend_test/e2e/e2e_lot12_notif.py::test_def_c101_panou_admin_nu_numara_refuzurile_ca_facturi_emise"
+ }
+]

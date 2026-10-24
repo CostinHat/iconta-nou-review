@@ -19,6 +19,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică (pdf_util nu importă nimic din core)
 from core.text_structurat import TextStructurat  # [C1, 07.10.2026] copierea păstrează structura
 
 VERSIUNE_COMMON = "2026.1"
@@ -527,7 +528,7 @@ def cota_ceruta(corp):
                     "Cota de TVA %s%% nu există în legea română (art. 291 Cod fiscal) la data "
                     "operațiunii (%s). Cotele "
                     "de atunci: %s. Temei: %s."
-                    % (c, _dd.isoformat(), ", ".join("%s%%" % x for x in sorted(_permise)),
+                    % (c, _data_ro(_dd), ", ".join("%s%%" % x for x in sorted(_permise)),
                        "; ".join(sorted({str(t) for t in _temeiuri}))))
     return c
 
@@ -936,15 +937,25 @@ class PerioadaIndisponibila(ValueError):
     ce se poate face / cine decide) + tag-ul PERIOADA_BLOCATA, ca handler-ul global (main.py) sa-l arate
     utilizatorului ca mesaj (423), nu ca traceback (500). Subclasa de ValueError -> `except ValueError`
     existent ramane valabil."""
-    def __init__(self, nume, la_data, prima_data):
+    def __init__(self, nume, la_data, prima_data, gol=None):
         self.nume = nume
         self.la_data = _ca_data(la_data)
         self.prima_data = _ca_data(prima_data)
-        det = ("%s nu poate fi calculată: valoarea „%s” nu e definită înainte de %s (nu a fost verificată "
-               "la sursă pentru perioade anterioare - nu se inventează retroactiv). Calculul e disponibil de "
-               "la %s; pentru perioade anterioare valoarea se adaugă în registrul de parametri fiscali, "
-               "verificată la sursă (decizie de dezvoltator)." % (self.la_data.isoformat(), ETICHETE_COTE.get(nume, nume),   # [retest 08.10 pct.14] eticheta omului, nu cheia
-                                                                  self.prima_data.isoformat(), self.prima_data.isoformat()))
+        self.gol = gol
+        if gol:
+            # [lotul 12, C159] GOLUL dintre două valori (`gol` = (valabilă până la, următoarea de la)): același blocaj motivat, cu
+            # aceeași etichetă (423, nu 500) — până azi un `ValueError` simplu, cu cheia tehnică și o instrucțiune de programator
+            pana, urm = gol
+            det = ("Calculul pentru %s nu se poate face: valoarea „%s” e verificată la sursă până la %s și din nou de la %s, iar "
+                   "pentru perioada dintre ele registrul de parametri fiscali n-are nicio valoare (nu se inventează). Pentru "
+                   "perioada aceasta, valoarea se adaugă în registru, după verificarea la sursă."
+                   % (_data_ro(self.la_data), ETICHETE_COTE.get(nume, nume), _data_ro(pana), _data_ro(urm)))
+        else:
+            det = ("Calculul pentru %s nu se poate face: valoarea „%s” nu e definită înainte de %s (nu a fost verificată "
+                   "la sursă pentru perioadele anterioare, deci nu se inventează retroactiv). Calculul e disponibil de "
+                   "la %s; pentru o perioadă anterioară, valoarea se adaugă în registrul de parametri fiscali, după "
+                   "verificarea la sursă." % (_data_ro(self.la_data), ETICHETE_COTE.get(nume, nume),   # [retest 08.10 pct.14] eticheta omului, nu cheia
+                                                                      _data_ro(self.prima_data), _data_ro(self.prima_data)))
         super().__init__("PERIOADA_BLOCATA: " + det)
 
 
@@ -961,7 +972,7 @@ class PlafonCulturalIndisponibil(ValueError):
     def __init__(self, la_data, motiv):
         self.la_data = _ca_data(la_data)
         super().__init__("PERIOADA_BLOCATA: Tichete culturale - plafon indisponibil pentru %s: %s"
-                         % (self.la_data.isoformat(), motiv))
+                         % (_data_ro(self.la_data), motiv))
 
 
 # (start, end_inclusiv, lunar, eveniment, sursa) - valori CONFIRMATE la sursa primara (anaf_surse/).
@@ -1135,17 +1146,14 @@ def cota(nume, la_data=None, strict=True):
         raise ValueError(f"cotă necunoscută: {nume!r}")
     la_data = la_data or date.today()
     intrari = sorted(COTE[nume], key=lambda r: r[0], reverse=True)
+    urmatoarea = None   # data de început a valorii de după (intrările merg de la cea mai nouă la cea mai veche)
     for din, valoare, temei in intrari:
         if la_data >= din:
             _out = getattr(temei, "data_out", None)
             if strict and _out is not None and la_data > _out:
-                raise ValueError(
-                    f"{nume}: valoarea din {din.isoformat()} ({temei}) a fost valabilă până la "
-                    f"{_out.isoformat()} — succesorul a intrat în vigoare după această dată. "
-                    f"S-a cerut pentru {la_data.isoformat()}, iar registrul de cote nu are nicio "
-                    f"valoare pentru atunci. Completează valoarea valabilă în registru."
-                )
+                raise PerioadaIndisponibila(nume, la_data, din, gol=(_out, urmatoarea))   # [lotul 12, C159] gol motivat, nu 500
             return valoare, temei
+        urmatoarea = din
     # la_data e inainte de PRIMA valoare cunoscuta (intrari sortate descrescator -> ultima = cea mai veche).
     # NU exceptie bruta: blocaj MOTIVAT (valoarea nu e verificata la sursa pentru perioade anterioare).
     raise PerioadaIndisponibila(nume, la_data, intrari[-1][0])
@@ -1248,7 +1256,7 @@ def alege_varianta(variante, la_data=None):
     # aceea aplicația nu cunoaște regula de calcul — nu că a greșit el ceva.
     raise ValueError("Pentru data %s nu există nicio regulă de calcul cunoscută de aplicație. "
                      "Verifică data operațiunii: cel mai des e o dată din afara perioadelor "
-                     "pentru care regula e scrisă." % la_data)
+                     "pentru care regula e scrisă." % _data_ro(la_data))
 
 
 def _adauga_luni(d, luni):

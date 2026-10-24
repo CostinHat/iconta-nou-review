@@ -58,6 +58,36 @@ def descriere_nota(op):
     return " — ".join(p for p in parti if p)[:200]
 
 
+def nota_numeste_chitanta(cur, schema, op_id, chitanta, scrie=True):
+    """[lotul 12, deficiența 168 — „descrierea notei chitanței doar numele clientului”; retest 08.10 pct.19: „trebuie să conțină chitanța
+    și factura stinsă”] Nota operațiunii de casă `op_id` pe care s-a emis chitanța `chitanta` („SERIE-NR”) o numește în descriere, cu ce
+    stinge: „Încasare de la client — chitanța CHF1-2 — factura F1A nr. 4 din 06.10.2026 — Client”. Drumul care avea nevoie: chitanța emisă
+    automat la încasarea facturii din Casă (456, `uc_tenants.chitante_pe_incasare`) — nota se scria înainte de chitanță, deci fără ea. Aceeași
+    formulă ca la scriere (`descriere_nota`), aceeași factură ca nota (`inregistrari.factura_id`, seria separat — 443).
+    Numai pe CIORNĂ (nota validată nu se modifică — OMFP 1802/2014 pct.69, triggerul `regula_nota`; decizia Costin 09.10: nota 118 rămâne).
+    Numai încasarea de la client (factura stinsă sau avansul): la vânzarea fără factură (D394 Î2) descrierea poartă textul „reprezentând”
+    al chitanței, scris de om la emitere, pe care nota nu-l mai are de unde reface — acolo nota numea deja chitanța (`chitanta_emite`).
+    Întoarce (nota, starea, descrierea de acum, descrierea care numește chitanța, data notei), sau None (fără operațiune / altă categorie);
+    scrie numai cu `scrie`, dacă diferă și nota e ciornă (`scrie=False`: planul migrării datelor existente,
+    `core/migrare_descriere_nota_chitanta.py`). Cursorul: oricare (tuplu sau dicționar)."""
+    cur.execute(f"""SELECT o.categorie, o.partener, o.avans, i.id, i.status, i.descriere, i.data, f.serie, f.numar, f.data_emitere
+                      FROM {schema}.casa_operatiuni o JOIN {schema}.inregistrari i ON i.id = o.inregistrare_id
+                      LEFT JOIN {schema}.facturi f ON f.id = i.factura_id
+                     WHERE o.id = %s""", (op_id,))
+    r = cur.fetchone()
+    if not r:
+        return None
+    cat, partener, avans, nid, status, vechi, data_n, serie, numar, data_f = tuple(r.values()) if isinstance(r, dict) else tuple(r)
+    if cat != "incasare_client":
+        return None
+    stinge = (("factura %s din %s" % (_ncs(serie, numar), _data_ro(data_f))) if numar is not None
+              else ("avans de la client" if avans else None))
+    nou = descriere_nota({"categorie": cat, "document": chitanta, "fel_document": "chitanța", "stinge": stinge, "partener": partener})
+    if scrie and nou != vechi and status == "ciorna":
+        cur.execute(f"UPDATE {schema}.inregistrari SET descriere = %s WHERE id = %s AND status = 'ciorna'", (nou, nid))
+    return nid, status, vechi, nou, data_n
+
+
 #: [lotul 6 pct.3a, 278] categoriile care sting facturi: încasarea stinge facturi EMISE, plata — PRIMITE
 CATEGORII_CU_FACTURI = {"incasare_client": "emisa", "plata_furnizor": "primita"}
 COD_AVANS_DESTINATIE = "AVANS_DESTINATIE"   # [407] avansul acordat furnizorului cere destinația (4091 / 4092 / 4093 / 4094)
@@ -498,6 +528,15 @@ def leaga(conn, schema, op_id, factura_id):
         for d, c, v in _tvi.linii_la_incasare(cur, schema, fid, op["suma"]):
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
                             VALUES (%s,%s,%s,%s)""", (op["inregistrare_id"], d, c, v))
+        # [lotul 12, C151] chitanța emisă automat pe încasare (456 a) stinge acum factura: o leagă de ea (D394 Î2 n-o mai cere
+        # „de clasificat”, starea de încasare o vede pe factură), iar nota o numește, ca la încasarea facturii din Casă (168).
+        # Textul „reprezentând” al chitanței emise nu se rescrie: documentul e emis.
+        if op["categorie"] == "incasare_client":
+            cur.execute(f"""UPDATE {schema}.chitante SET factura_id = %s WHERE casa_operatiune_id = %s AND NOT anulata
+                            AND factura_id IS NULL RETURNING serie, numar""", (fid, op_id))
+            chit = cur.fetchone()
+            if chit:
+                nota_numeste_chitanta(cur, schema, op_id, "%s-%s" % chit)
     return {"ok": True, "factura": f["numar"]}
 
 

@@ -98,7 +98,9 @@ def test_navigatorul_pastreaza_ecranul_in_care_s_a_tastat():
     t = _js("navigator.js")
     # [lotul 11, 445] definiția primește `oricum` (deschiderea dintr-un refuz păstrează și formularul netastat), iar `deschide` îi dă `dinRefuz`
     assert len(re.findall(r"_dePastrat\((?:oricum = false|dinRefuz)?\)", t)) == 3, "păstrarea la deschide + mergi (+ definiția)"
-    assert len(re.findall(r"sus\.pastrat = p\.pastrat \|\| null;", t)) == 3, "revenirea pe pas (buton, inapoiPas, fir)"
+    # [lotul 12, C140] întoarcerea la un pas (săgeata, inapoiPas, firul) trece printr-un singur loc, `_laPas` — aceeași strictețe: toate trei
+    assert len(re.findall(r"sus\.pastrat = p\.pastrat \|\| null;", t)) == 1 and len(re.findall(r"(?<!function )_laPas\(sus, ", t)) == 3, \
+        "revenirea pe pas (buton, inapoiPas, fir) trece prin _laPas"
     assert re.search(r"replaceWith\(pastrat\.corp\)", t) and re.search(r'new CustomEvent\("nav:revenire"\)', t)
     assert re.search(r'addEventListener\("input", murdar, true\)', t)
 

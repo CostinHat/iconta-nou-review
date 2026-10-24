@@ -16,6 +16,7 @@ referinta, iar EXCEPTII_21 marcheaza produsele care par sa fie in lista redusa
 dar raman la 21% (alcool, bauturi NC 2202, alimente cu zahar >10g, suplimente).
 """
 
+import re
 from datetime import date
 
 from core import common as _c
@@ -49,7 +50,11 @@ CATEGORII_11 = [
                      "pasari vii din specii domestice",
         "exemple": ["paine", "lapte", "carne", "legume", "fructe", "oua",
                     "faina", "ulei", "apa plata", "furaje", "gaini vii"],
-        "exceptii": "vezi EXCEPTII_21 (alcool, NC 2202, zahar >10g/100g, suplimente)",
+        # [lotul 12, deficiența 471] textul intră în promptul modelului: numai cuvintele legii, niciun nume intern (înainte „vezi EXCEPTII_21”,
+        # pe care modelul îl copia în justificarea afișată contabilului). CF art.291 alin.(2) lit.b) pct.1-4.
+        "exceptii": "cu exceptia: bauturilor alcoolice; bauturilor nealcoolice cod NC 2202; alimentelor cu zahar adaugat, cu "
+                    "minimum 10 g zahar total/100 g produs, altele decat laptele praf pentru nou-nascuti, sugari si copii de varsta "
+                    "mica; suplimentelor alimentare (Legea 56/2021) -> cota standard",
     },
     {
         "cheie": "apa_canalizare",
@@ -76,7 +81,7 @@ CATEGORII_11 = [
         "descriere": "Manuale scolare, carti, ziare si reviste (fizic sau electronic)",
         "exemple": ["carte", "manual scolar", "ziar", "revista"],
         "exceptii": "cu exceptia celor cu continut predominant video/muzical audio "
-                    "sau destinate exclusiv publicitatii -> 21%",
+                    "sau destinate exclusiv publicitatii -> cota standard",
     },
     {
         "cheie": "acces_cultural",
@@ -112,7 +117,7 @@ CATEGORII_11 = [
         "descriere": "Servicii de restaurant si de catering",
         "exemple": ["meniu restaurant", "catering eveniment", "servire masa"],
         "exceptii": "cu exceptia bauturilor alcoolice si a bauturilor nealcoolice "
-                    "cod NC 2202 -> 21%",
+                    "cod NC 2202 -> cota standard",
     },
 ]
 
@@ -175,6 +180,24 @@ def rezumat_pentru_ai():
     linii.append("Serviciile obisnuite (consultanta, IT, transport, chirii comerciale, "
                  "constructii etc.) -> %d%%." % std)
     return "\n".join(linii)
+
+
+#: [lotul 12, deficiența 471] Numele interne ale modulului, cu textul pe care îl vede contabilul în locul lor. Justificarea modelului se
+#: arată în Produse (și se păstrează în `produse.justificare`): „EXCEPTII_21” ajungea acolo din prompt („vezi EXCEPTII_21”).
+NUME_INTERNE = {"EXCEPTII_21": "excepțiile de la cota redusă", "CATEGORII_11": "categoriile cotei reduse"}
+_NUME_INTERN = re.compile(r"\b[A-Z][A-Z0-9]*_[A-Z0-9_]*[A-Z0-9]\b")
+
+
+def justificare_afisabila(text):
+    """Justificarea fără niciun nume intern de program (`NUME_INTERNE` -> textul lor; orice alt `NUME_MARE_CU_LINIUTA` -> scos), cu
+    spațiile strânse. Se aplică răspunsului modelului (`potriveste_cota`) și justificărilor deja păstrate (migrarea
+    `core/migrare_produse_justificare.py`). None rămâne None."""
+    if text is None:
+        return None
+    t = str(text)
+    for k, v in NUME_INTERNE.items():
+        t = t.replace(k, v)
+    return re.sub(r"\s+([.,;:)])", r"\1", " ".join(_NUME_INTERN.sub("", t).split()))
 
 
 def _nedeterminat(motiv):
@@ -281,8 +304,8 @@ def potriveste_cota(denumire, platitor_tva=True):
         raspuns = ai_client.genereaza_text(prompt, sistem=sistem,
                                            max_tokens=300, temperatura=0)
     except Exception as e:
-        return _nedeterminat("AI a esuat (%s); cota TVA nu s-a putut determina. "
-                             "Declara cota explicit pe linie." % e)
+        return _nedeterminat("Asistentul AI n-a răspuns (%s); cota TVA nu s-a putut determina. "
+                             "Alege cota pe linie." % e)
 
     # extrag JSON-ul (poate veni cu text in jur)
     txt = raspuns.strip()
@@ -292,17 +315,17 @@ def potriveste_cota(denumire, platitor_tva=True):
         a = int(txt.find("{")); b = int(txt.rfind("}"))
         obj = json.loads(txt[a:b+1])
     except Exception:
-        return _nedeterminat("Raspuns AI neinterpretabil; cota TVA nu s-a putut determina. "
-                             "Declara cota explicit pe linie.")
+        return _nedeterminat("Răspunsul asistentului AI nu s-a putut citi; cota TVA nu s-a putut determina. "
+                             "Alege cota pe linie.")
 
     cota = obj.get("cota")
     if cota not in cote_regim():
-        return _nedeterminat("AI a intors o cota neacceptata (%r); cota TVA nu s-a putut "
-                             "determina. Declara cota explicit." % cota)
+        return _nedeterminat("Asistentul AI a propus o cotă care nu există în lege (%r); cota TVA nu s-a putut "
+                             "determina. Alege cota pe linie." % cota)
     return {"ok": True, "cota": int(cota),
             "categorie": obj.get("categorie") or "standard",
             "tip": obj.get("tip") or "marfa",  # #11 cont venit pe linie (marfa/produse/servicii)
-            "justificare": obj.get("justificare") or "",
+            "justificare": justificare_afisabila(obj.get("justificare") or ""),   # [471] fără nume interne în textul arătat
             "incredere": obj.get("incredere") or "medie",
             "sursa": "ai"}
 

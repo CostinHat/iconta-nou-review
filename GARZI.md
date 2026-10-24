@@ -9009,9 +9009,9 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1032 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1094 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 993
+### `core/` — 1055
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9522,7 +9522,7 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_g1_cod_mesaj.py` — core/test_g1_cod_mesaj.py — G1: codul-mașină de business nu mai ajunge brut la utilizator.
 - `core/test_g9_oblig_backend.py` — core/test_g9_oblig_backend.py — GARD care ÎNCHIDE CLASA (nu doar instanțele): un câmp marcat
 - `core/test_gard_masca_zero.py` — core/test_gard_masca_zero.py — GARD C5 (clasa oarba "mascarea erorii / zero tacut", GARZI cat.0).
-- `core/test_garda_main.py` — Garda pe `main` (comanda Costin 14.10.2026, regim pilot, pct.2: „commit refuzat fără aprobare scrisă”, verbatim în DECIZII).
+- `core/test_garda_main.py` — Garda pe `main`: `refs/heads/main` (versiunea publicată) se mută numai la un SHA cu poarta VERDE a lotului.
 - `core/test_garzi_inventar.py` — GARD [28.08.2026]: inventarul gărzilor din `GARZI.md` nu poate rămâne în urma codului.
 - `core/test_garzi_mesaje_afisabile.py` — core/test_garzi_mesaje_afisabile.py — GARD STRUCTURAL (C-5, pct.5 Costin): niciun test nu asertează
 - `core/test_garzi_pe_text.py` — GARD PESTE GĂRZI — o gardă asertează pe STRUCTURĂ, nu pe text.
@@ -9738,6 +9738,68 @@ baza de test) · adnotarea `*ce face:*` a lui `vanzare-ic`, fiindcă ruta **a de
 - `core/test_lot11_y2_import_fidel.py` — Lotul 11, subagentul Y2 — factura primită din XML ajunge NEALTERATĂ în contare și în declarații (C79 în D394 / D406, C80, C81, C82, C83).
 - `core/test_lot11_y_tva_primita.py` — Lotul 11, C79 — TVA-ul deductibil al facturii PRIMITE e cel de pe factura furnizorului, nu recalculul din baze.
 - `core/test_lot11_z_valoare_neta.py` — Lotul 11, subagentul Z — clasa C82 în consumatorii rămași: valoarea liniei unei facturi IMPORTATE e BT-131 din XML-ul e-Factura
+- `core/test_lot12_bilant_c143.py` — [lotul 12, pachetul `bilant`] C143 (găsită de pachetul `decl` la C119) și 151 / 187 — cifrele bilanțului.
+- `core/test_lot12_c110_vanzare_ic.py` — [lotul 12, C110] Prestarea intracomunitară din Operațiuni (`uc_tenants.vanzare_ic`) nu transmitea starea de plătitor a firmei.
+- `core/test_lot12_c115_um_borderou.py` — [lotul 12, C115] Datele existente: borderoul de achiziție pe cont de stoc scris înainte de reparație, cu un articol ales din
+- `core/test_lot12_c135_casa_serie.py` — [lotul 12, C135] Reparația 443 (numărul facturii cu seria separat) acoperă și notele de CASĂ ale facturii.
+- `core/test_lot12_c144_c145_tip_document.py` — [lotul 12, C144 / C145] Proforma și avizul nu sunt documente de stins în Bancă / Casă și nu intră în pragul Intrastat.
+- `core/test_lot12_c154_c155_d390_art317.py` — [lotul 12, C154 + C155] Prestarea intracomunitară de servicii a firmei NEPLĂTITOARE înregistrate în scopuri de TVA după CF art.317.
+- `core/test_lot12_c159_gol_cote.py` — [lotul 12, C159] Golul din registrul de parametri fiscali (plafonul tichetului de masă: verificat până la 30.09.2025 și din nou de la
+- `core/test_lot12_c160_c162_tara_axa.py` — [lotul 12, C160 + C161 + C162] Drumurile rămase deschise după C154 / C155: factura emisă care se naște fără țara clientului și fără axă,
+- `core/test_lot12_canale_externe.py` — GARD — clasa 598 (lotul 12): textul unei excepții tehnice nu ajunge pe ecranul contabilului.
+- `core/test_lot12_coada_motiv_fraza.py` — Lotul 12, deficiența 499 (fost N17, Costin 09.10.2026): „Coadă: mesajul de respingere se termină cu punct dublu.”
+- `core/test_lot12_coada_valideaza_documentul.py` — Lotul 12, clasa deficienței 80 (Costin, retestul 07.10.2026, verbatim în DECIZII: „Coada, F1A3: contarea și ieșirea din stoc apar
+- `core/test_lot12_ctrl_463.py` — Lotul 12, comanda 12.1, pachetul `ctrl` — deficiența 463: „e-Factura / SPV: termene SPV absente din Control fiscal; lipsa dreptului
+- `core/test_lot12_ctrl_484.py` — Lotul 12, comanda 12.1, pachetul `ctrl` — deficiența 484 (grav): „Control încrucișat: confruntarea declarații–contabilitate nu
+- `core/test_lot12_ctrl_c122.py` — Lotul 12, comanda 12.1, pachetul `ctrl` — deficiența C122 (găsită de pachetul `notif`): emailurile de amintire a scadenței către
+- `core/test_lot12_ctrl_cf.py` — Lotul 12, comanda 12.1, pachetul `ctrl` — Control fiscal, clasele numerelor vechi reverificate: 157 și 213.
+- `core/test_lot12_ctrl_d112_cm_pensionar.py` — [lotul 12, pachetul ctrl] D112 și statul de plată: C97 (pensionarul, B1_2), 482 (luna cu concediu medical: baza CAM, deducerea
+- `core/test_lot12_datefirma_chitanta.py` — Lotul 12, pachetul datefirma — 168: „Descrierea notei chitanței doar numele clientului” (comanda Costin 12.1); retest 08.10 pct.19
+- `core/test_lot12_datefirma_preluare.py` — Lotul 12, pachetul datefirma — Date firmă: „Luna preluării” (147, 169) și forma juridică din ANAF (20).
+- `core/test_lot12_decl_486_d406.py` — [lotul 12, deficiența 486] D406 pe luna L citește numai partenerii PERIOADEI L.
+- `core/test_lot12_decl_493_termene.py` — [lotul 12, deficiența 493] Termenele de depunere ale declarațiilor anuale, din textul actelor (core/scadente.py `_ANUALE`, TEMEI_TERMEN).
+- `core/test_lot12_decl_c119_d100.py` — [lotul 12, deficiența C119, găsită de pachetul `pilot`] Baza D100 la microîntreprindere includea TVA-ul din Raportul Z.
+- `core/test_lot12_decl_d394.py` — [lotul 12] D394: secțiunile E / F (C19) și numărul de facturi la factura cu mai multe cote (131 / 185), pe validatorul DUK.
+- `core/test_lot12_decl_rerandare_camp.py` — [lotul 12, găsită la e2e-ul 493] Un câmp de text / număr din formularele Declarațiilor nu re-desenează, la „change”, zona care îl conține.
+- `core/test_lot12_diverse_c123_asistent_fara_firme.py` — [lotul 12, C123] „Scoate firma”: asistentul rămas fără nicio firmă rămânea activ — regula „zero firme” a cabinetului
+- `core/test_lot12_diverse_c128_c129.py` — [lotul 12, pachetul diverse] C128 și C129 — refuzurile numite, pe drumul use-case-ului.
+- `core/test_lot12_diverse_c136_ce_dispare.py` — [lotul 12, C136] „Scoate firma” arăta „Dispar și: 3 × `audit_log` · 1 × `user_tenants` …, plus schema de date a firmei”, iar „Firme
+- `core/test_lot12_duk_zilnic.py` — [deficiența 494, lotul 12, 23.10.2026] Comparația zilnică a validatoarelor DUK cu ANAF (`scripts/verifica_duk_publicat.py --zilnic`)
+- `core/test_lot12_emit_ciorna.py` — Lotul 12, pachetul `emit` — deficiența 495: „Factură: Ciorna facturii e salvată doar în browser; pe alt calculator nu se regăsește.”
+- `core/test_lot12_emit_recurente.py` — Lotul 12, pachetul `emit` — deficiența 462: „Facturi recurente: Șablonul ocolește verificările facturii obișnuite.”
+- `core/test_lot12_firme1_banca.py` — Lotul 12, pachetul firme1 — Bancă: 479 (grav), 478, 480.
+- `core/test_lot12_firme1_casa.py` — Lotul 12, pachetul firme1 — Casă: 481 (grav), 456 (decizia Costin (a)).
+- `core/test_lot12_firme1_nir.py` — Lotul 12, pachetul firme1 — NIR: 476 (grav).
+- `core/test_lot12_firme1_z.py` — Lotul 12, pachetul firme1 — Raport Z: 474.
+- `core/test_lot12_firme2_articole.py` — Lotul 12, pachetul firme2 — 475: „Stocuri: Același articol «grau» de două ori în stoc.”
+- `core/test_lot12_firme2_salarii.py` — Lotul 12, pachetul firme2 — salariile: C133 (motivul scutirii de contribuția minimă), C134 (D112 `B_brutSalarii`), C127 (notele de
+- `core/test_lot12_inapoi_sageata.py` — GARD — [lotul 12, C140, găsită de Code la 485] săgeata înapoi = UN pas înapoi, întâi în ecran.
+- `core/test_lot12_migr_c116_reevaluare.py` — [lotul 12, C116, găsită de pachetul `prod`] „Reevaluează” din rândul registrului mijloacelor fixe trimite numai valoarea justă, iar
+- `core/test_lot12_migr_efactura_alta_firma.py` — [lotul 12, clasa deficienței 599 (comanda Costin 12.1: „compară firma din fișier cu firma aleasă și cere confirmare când diferă, la
+- `core/test_lot12_migr_firma_fisier.py` — [lotul 12, deficiența 599, comanda Costin 12.1, verbatim în DECIZII „Comanda 12.1”] „Importul de migrare primește fără întrebare balanța
+- `core/test_lot12_notif_317_alerte_diacritice.py` — [lotul 12, deficiența 317, partea „Emailul de alertă e fără diacritice („sanatate”, „in ultimele”)”] — pe CLASĂ.
+- `core/test_lot12_notif_487_asistent_fara_firme.py` — [lotul 12, deficiența 487 (fost N1)] „Se poate crea un asistent fără nicio firmă alocată.”
+- `core/test_lot12_notif_598_mesaje_canale.py` — [lotul 12, deficiența 598] „La eșecul WhatsApp, mesajul îi cere contabilului să-și verifice numărul și arată termeni tehnici; trebuie spus
+- `core/test_lot12_notif_598_migrare.py` — [lotul 12, deficiența 598 — datele existente] `core/migrare_mesaje_spv_tehnice.py`: motivele scrise de codul vechi (textul excepției)
+- `core/test_lot12_notif_600_spv_retur.py` — [lotul 12, deficiența 600] „Conectarea SPV a eșuat de trei ori cu certificatul DigiSign care a mers pe 16.10 (sesiune ANAF invalidă,
+- `core/test_lot12_notif_c101_contoare_admin.py` — [lotul 12, C101] Panou Admin numără la „facturi emise” și emiterile REFUZATE.
+- `core/test_lot12_notif_c120_xml_alta_firma.py` — [lotul 12, C120 — clasa deficienței 599] „Import manual XML” (Facturi primite, `spv_receive.importa_xml_manual`): o factură e-Factura
+- `core/test_lot12_p252_documente_preluate.py` — [lotul 12, deficiența 252 — grupa 2, poziția pilot F085 „Import solduri parteneri”] „Import parteneri: facturi deschise neimportate;
+- `core/test_lot12_p252_garda_cititori.py` — [lotul 12, deficiența 252] GARDA: facturile deschise PRELUATE (`facturi.tip = 'preluata'`, `nomenclator_status_factura.TIP_SOLD_PRELUAT`)
+- `core/test_lot12_pilot_criterii.py` — GARD — pozițiile pilotului sunt legate de scenariul lunii complete, iar starea scrisă e starea testului (lotul 12, comanda 12.1;
+- `core/test_lot12_prod_parteneri.py` — [lotul 12, deficiența 461, comanda Costin 12.1 pct.8: „461 lista de parteneri” cerută] Partenerii firmei: lista (clienți și furnizori, din
+- `core/test_lot12_prod_produse.py` — [lotul 12, deficiențele 471 și 472, comanda Costin 12.1] Nomenclatorul de produse.
+- `core/test_lot12_scad_garzi.py` — Lotul 12, pachetul `scad` — gărzile STATICE ale claselor reparate (pe tot `static/js` și pe drumul validării facturii primite).
+- `core/test_lot12_scad_incasare.py` — Lotul 12, comanda Costin 12.1 (verbatim în DECIZII „Comanda 12.1”), pachetul `scad` — scadențarul și starea de încasare.
+- `core/test_lot12_scad_primita.py` — Lotul 12, comanda Costin 12.1 (verbatim în DECIZII „Comanda 12.1”), pachetul `scad` — factura primită.
+- `core/test_lot12_start_inceput.py` — Lotul 12, comanda Costin 12.1 (verbatim în DECIZII „Comanda 12.1”), pachetul „start”: prima intrare („Înainte de a începe”) și
+- `core/test_lot12_texte_dovezi.py` — Lotul 12, pachetul TEXTE: forma dovezilor (`frontend_test/dovada/dovezi_lot12_texte.json`) și a mutațiilor de capăt la capăt
+- `core/test_lot12_texte_perioada.py` — GARD [lotul 12, 163/184] — refuzul de perioadă închisă venit din bază ajunge la contabil în limba lui.
+- `core/test_lot12_texte_supervizor_reguli.py` — GARD [lotul 12, C132] — rezultatul persistat al supervizorului urmează CODUL, nu numai datele.
+- `core/test_lot12_triaj3_nir_formular.py` — Lotul 12, pachetul triaj3 — căderea e2e `test_def_475_nirul_cu_doua_linii_ale_aceluiasi_articol_nou_face_un_singur_articol`
+- `core/test_lot12_triaj_pilot_nir.py` — GARDA C138 (lotul 12, scenariul pilot `frontend_test/e2e/e2e_pilot_luna.py::test_pilot_07`): propunerea NIR-ului „fără factură”
+- `core/test_lot12_verif_dovezi.py` — Lotul 12, comanda Costin 12.1 pct.13–14, pachetul `verif`: forma dovezilor și a mutațiilor pachetului, verificată fără browser.
+- `core/test_lot12_zsterge_c139.py` — Lotul 12, deficiența C139 — „Șterge raportul Z”: raportul Z nevalidat (importat din AMEF sau scris de mână) se șterge de pe rândul lui
 - `core/test_luna_preluare.py` — GARDA deciziei Costin 08.10.2026 §6 pct.4 (verbatim în DECIZII):
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
@@ -11778,3 +11840,82 @@ fișier — o citire făcută de o funcție importată din alt modul, sau chemat
 variabilă a ecranului nu intră (cer același lucru de două ori).
 
 **După poarta 3 (23.10.2026): firele de fundal pornite din drumul unei cereri — ACOPERIT.** Categoria „testul e nedeterminist fiindcă un fir al aplicației lucrează pe conexiunea lui”: `core/test_fire_fundal.py` — niciun `threading.Thread` / `Timer` / executor în `core/` sau `main.py` în afara lui `db.fir_de_fundal` (oprit în suită de `ICONTA_FIRE_FUNDAL=0`, conftest), cu excepția numită a alertei Brevo, al cărei motiv („fără bază”) e verificat pe arborele sintactic. Mutațiile: firul direct în `uc_coada.reia_in_fundal` -> ROȘU; comutatorul scos din conftest -> ROȘU; `get_conn` în `_trimite_brevo` -> ROȘU. Limita: `scripts/` nu e citit (fără cereri); taskurile `asyncio` din `lifespan` nu sunt fire. DECIZII „Lotul 11, poarta 3 ROȘIE”.
+
+
+## 24.10.2026 — lotul 12, comanda 12.1 (461–600, C104–C164; pe ramură, înaintea porții, nepublicat)
+
+Gărzile noi ale lotului: 62 fișiere `core/test_lot12_*.py` (tabelul de mai jos, scos din docstringurile lor). Gărzile transversale noi,
+cu mutația probată: `core/test_lot12_canale_externe.py` (nicio excepție a unui serviciu extern pe ecran, AST), `core/test_lot12_c135_casa_serie.py`
+(numărul facturii cu seria separată și pe notele de casă), `core/test_lot12_c144_c145_tip_document.py` (proformele și avizele în afara
+potrivirii de încasare și a pragului Intrastat), `core/test_lot12_c110_vanzare_ic.py` (orice apel `emite_factura` transmite starea de
+plătitor, AST), `core/test_cai_creare_factura.py` (a treia cale de naștere a unei facturi = preluarea, numai pe `tip='preluata'`),
+`core/test_lot12_c159_gol_cote.py` (golul din registrul de cote e blocaj motivat, 423), `core/test_lot12_c160_c162_tara_axa.py` (țara și axa
+facturii emise pe toate drumurile), `core/test_lot12_c154_c155_d390_art317.py` (D390 la neplătitorul art.317, cu validatorul DUK). Calibrări
+ale verificatorului (fals-pozitive dovedite, cu exemplele care rămân prinse): numărul unei deficiențe nu e cotă; `value="${esc(…)}"` e câmp
+numeric. E2E: 27 fișiere `frontend_test/e2e/e2e_lot12_*.py` + `e2e_pilot_luna.py` (scenariul lunii pilot, 40 de pași), fiecare `test_def_*`
+cu mutația în `frontend_test/e2e/mut_lot12_*.json`, rulată în campania lotului (`scratchpad/lant/rezultate.txt`, rezumat în raportul 12.1 §9).
+
+| gard (prima frază a docstringului) | fișier | mutația (din docstring) |
+|---|---|---|
+| [lotul 12, pachetul `bilant`] C143 (găsită de pachetul `decl` la C119) și 151 / 187 — cifrele bilanțului. | `core/test_lot12_bilant_c143.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C110] Prestarea intracomunitară din Operațiuni (`uc_tenants.vanzare_ic`) nu transmitea starea de plătitor a firmei. | `core/test_lot12_c110_vanzare_ic.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C115] Datele existente: borderoul de achiziție pe cont de stoc scris înainte de reparație, cu un articol ales din nomenclator (în kg), are linia pe „buc”; `core/migrare_um_borderou.py` îi pune unitatea articolului. | `core/test_lot12_c115_um_borderou.py` | `aplica` fără `SET um = a.um` -> pică. |
+| [lotul 12, C135] Reparația 443 (numărul facturii cu seria separat) acoperă și notele de CASĂ ale facturii. | `core/test_lot12_c135_casa_serie.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C144 / C145] Proforma și avizul nu sunt documente de stins în Bancă / Casă și nu intră în pragul Intrastat. | `core/test_lot12_c144_c145_tip_document.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C154 + C155] Prestarea intracomunitară de servicii a firmei NEPLĂTITOARE înregistrate în scopuri de TVA după CF art.317. | `core/test_lot12_c154_c155_d390_art317.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C159] Golul din registrul de parametri fiscali (plafonul tichetului de masă: verificat până la 30.09.2025 și din nou de la 01.11.2025) oprea statul de plată din 10/2025 cu 500, pentru ORICE firmă cu salariați — și pentru cele fără tichete —, cu un m | `core/test_lot12_c159_gol_cote.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C160 + C161 + C162] Drumurile rămase deschise după C154 / C155: factura emisă care se naște fără țara clientului și fără axă, și calendarul D390 al neplătitorului art.317 citit dintr-o altă sursă decât Control fiscal. | `core/test_lot12_c160_c162_tara_axa.py` | probată la scriere (raportul lotului 12, §9) |
+| GARD — clasa 598 (lotul 12): textul unei excepții tehnice nu ajunge pe ecranul contabilului. | `core/test_lot12_canale_externe.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, deficiența 499 (fost N17, Costin 09.10.2026): „Coadă: mesajul de respingere se termină cu punct dublu.” | `core/test_lot12_coada_motiv_fraza.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, clasa deficienței 80 (Costin, retestul 07.10.2026, verbatim în DECIZII: „Coada, F1A3: contarea și ieșirea din stoc apar ca două elemente separate, fiecare cu Validează/Respinge; validarea contării NU a validat ieșirea din stoc.”). | `core/test_lot12_coada_valideaza_documentul.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, comanda 12.1, pachetul `ctrl` — deficiența 463: „e-Factura / SPV: termene SPV absente din Control fiscal; lipsa dreptului aflată târziu”. | `core/test_lot12_ctrl_463.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, comanda 12.1, pachetul `ctrl` — deficiența 484 (grav): „Control încrucișat: confruntarea declarații–contabilitate nu rulează”. | `core/test_lot12_ctrl_484.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, comanda 12.1, pachetul `ctrl` — deficiența C122 (găsită de pachetul `notif`): emailurile de amintire a scadenței către clienții firmei (`core/notificari_scadenta.py`) n-aveau diacritice — subiectul și corpul spuneau „Factura X - scade in 3 zile”, „a  | `core/test_lot12_ctrl_c122.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, comanda 12.1, pachetul `ctrl` — Control fiscal, clasele numerelor vechi reverificate: 157 și 213. | `core/test_lot12_ctrl_cf.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, pachetul ctrl] D112 și statul de plată: C97 (pensionarul, B1_2), 482 (luna cu concediu medical: baza CAM, deducerea personală, reținerile din indemnizație pe fluturaș). | `core/test_lot12_ctrl_d112_cm_pensionar.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul datefirma — 168: „Descrierea notei chitanței doar numele clientului” | `core/test_lot12_datefirma_chitanta.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul datefirma — Date firmă: „Luna preluării” | `core/test_lot12_datefirma_preluare.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 486] D406 pe luna L citește numai partenerii PERIOADEI L. | `core/test_lot12_decl_486_d406.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 493] Termenele de depunere ale declarațiilor anuale, din textul actelor (core/scadente.py `_ANUALE`, TEMEI_TERMEN). | `core/test_lot12_decl_493_termene.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența C119, găsită de pachetul `pilot`] Baza D100 la microîntreprindere includea TVA-ul din Raportul Z. | `core/test_lot12_decl_c119_d100.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12] D394: secțiunile E / F (C19) și numărul de facturi la factura cu mai multe cote (131 / 185), pe validatorul DUK. | `core/test_lot12_decl_d394.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, găsită la e2e-ul 493] Un câmp de text / număr din formularele Declarațiilor nu re-desenează, la „change”, zona care îl conține. | `core/test_lot12_decl_rerandare_camp.py` | anti-vacuul de jos (un fragment cu tiparul) trebuie prins; pe fișierul de azi garda numește cele patru câmpuri. |
+| [lotul 12, C123] „Scoate firma”: asistentul rămas fără nicio firmă rămânea activ — regula „zero firme” | `core/test_lot12_diverse_c123_asistent_fara_firme.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, pachetul diverse] C128 și C129 — refuzurile numite, pe drumul use-case-ului. | `core/test_lot12_diverse_c128_c129.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C136] „Scoate firma” | `core/test_lot12_diverse_c136_ce_dispare.py` | probată la scriere (raportul lotului 12, §9) |
+| [deficiența 494, lotul 12, 23.10.2026] Comparația zilnică a validatoarelor DUK cu ANAF (`scripts/verifica_duk_publicat.py --zilnic`) și garda din poartă care o citește (`core/test_duk_instalat.py`). | `core/test_lot12_duk_zilnic.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul `emit` — deficiența 495: „Factură: Ciorna facturii e salvată doar în browser; pe alt calculator nu se regăsește.” | `core/test_lot12_emit_ciorna.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul `emit` — deficiența 462: „Facturi recurente: Șablonul ocolește verificările facturii obișnuite.” | `core/test_lot12_emit_recurente.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul firme1 — Bancă: 479 (grav), 478, 480. | `core/test_lot12_firme1_banca.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul firme1 — Casă: 481 (grav), 456 (decizia Costin (a)). | `core/test_lot12_firme1_casa.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul firme1 — NIR: 476 (grav). | `core/test_lot12_firme1_nir.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul firme1 — Raport Z: 474. | `core/test_lot12_firme1_z.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul firme2 — 475: „Stocuri: Același articol «grau» de două ori în stoc.” | `core/test_lot12_firme2_articole.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul firme2 — salariile: C133 (motivul scutirii de contribuția minimă), C134 (D112 `B_brutSalarii`), C127 (notele de salarii / amortizare scrise înainte de încheierea lunii). | `core/test_lot12_firme2_salarii.py` | probată la scriere (raportul lotului 12, §9) |
+| GARD — [lotul 12, C140, găsită de Code la 485] săgeata înapoi = UN pas înapoi, întâi în ecran. | `core/test_lot12_inapoi_sageata.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C116, găsită de pachetul `prod`] „Reevaluează” | `core/test_lot12_migr_c116_reevaluare.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, clasa deficienței 599 (comanda Costin 12.1: „compară firma din fișier cu firma aleasă și cere confirmare când diferă, la toate importurile”), găsită la generalizare] Importul manual al unei facturi e-Factura (XML UBL) primea și o factură între ALTE  | `core/test_lot12_migr_efactura_alta_firma.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 599, comanda Costin 12.1, verbatim în DECIZII „Comanda 12.1”] „Importul de migrare primește fără întrebare balanța altei firme (antet «SC Firmă Probă Rulaje SRL» încărcat pe DANTE INTERNATIONAL SA); compară firma din fișier cu firma aleas | `core/test_lot12_migr_firma_fisier.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 317, partea „Emailul de alertă e fără diacritice („sanatate”, „in ultimele”)”] — pe CLASĂ. | `core/test_lot12_notif_317_alerte_diacritice.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 487 (fost N1)] „Se poate crea un asistent fără nicio firmă alocată.” | `core/test_lot12_notif_487_asistent_fara_firme.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 598] „La eșecul WhatsApp, mesajul îi cere contabilului să-și verifice numărul și arată termeni tehnici; trebuie spus că WhatsApp nu e disponibil și notificările vin pe email.” | `core/test_lot12_notif_598_mesaje_canale.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 598 — datele existente] `core/migrare_mesaje_spv_tehnice.py`: motivele scrise de codul vechi (textul excepției) pe rândurile trimiterilor SPV și pe ultima citire a CUI-ului se rescriu pe înțelesul contabilului; textele ANAF și cele noi ră | `core/test_lot12_notif_598_migrare.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 600] „Conectarea SPV a eșuat de trei ori cu certificatul DigiSign care a mers pe 16.10 (sesiune ANAF invalidă, apoi pagina de ieșire ANAF); află cauza, iar la orice eșec contabilul se întoarce în iConta cu un mesaj clar.” | `core/test_lot12_notif_600_spv_retur.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C101] Panou Admin numără la „facturi emise” | `core/test_lot12_notif_c101_contoare_admin.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, C120 — clasa deficienței 599] „Import manual XML” | `core/test_lot12_notif_c120_xml_alta_firma.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 252 — grupa 2, poziția pilot F085 „Import solduri parteneri”] „Import parteneri: facturi deschise neimportate; scadențarul nealimentat.” | `core/test_lot12_p252_documente_preluate.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 252] GARDA: facturile deschise PRELUATE (`facturi.tip = 'preluata'`, `nomenclator_status_factura.TIP_SOLD_PRELUAT`) stau în același tabel cu facturile firmei, dar NU sunt documente ale perioadei din iConta.eu: soldul lor e în soldurile in | `core/test_lot12_p252_garda_cititori.py` | probată la scriere (raportul lotului 12, §9) |
+| GARD — pozițiile pilotului sunt legate de scenariul lunii complete, iar starea scrisă e starea testului (lotul 12, comanda 12.1; CLAUDE.md §2, verbatim: „Pilotul are un scenariu automat al lunii complete a firmei-pilot, parcurs pe ecran ca un contabil, cu cifr | `core/test_lot12_pilot_criterii.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiența 461, comanda Costin 12.1 pct.8: „461 lista de parteneri” | `core/test_lot12_prod_parteneri.py` | probată la scriere (raportul lotului 12, §9) |
+| [lotul 12, deficiențele 471 și 472, comanda Costin 12.1] Nomenclatorul de produse. | `core/test_lot12_prod_produse.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul `scad` — gărzile STATICE ale claselor reparate (pe tot `static/js` și pe drumul validării facturii primite). | `core/test_lot12_scad_garzi.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, comanda Costin 12.1 (verbatim în DECIZII „Comanda 12.1”), pachetul `scad` — scadențarul și starea de încasare. | `core/test_lot12_scad_incasare.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, comanda Costin 12.1 (verbatim în DECIZII „Comanda 12.1”), pachetul `scad` — factura primită. | `core/test_lot12_scad_primita.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, comanda Costin 12.1 (verbatim în DECIZII „Comanda 12.1”), pachetul „start”: prima intrare („Înainte de a începe”) și cardurile „Primii pași”. | `core/test_lot12_start_inceput.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul TEXTE: forma dovezilor (`frontend_test/dovada/dovezi_lot12_texte.json`) și a mutațiilor de capăt la capăt (`frontend_test/e2e/mut_lot12_texte.json`), verificată fără browser — aceleași reguli ca la pachetul `verif` (`core/test_lot12_verif_do | `core/test_lot12_texte_dovezi.py` | probată la scriere (raportul lotului 12, §9) |
+| GARD [lotul 12, 163/184] — refuzul de perioadă închisă venit din bază ajunge la contabil în limba lui. | `core/test_lot12_texte_perioada.py` | probată la scriere (raportul lotului 12, §9) |
+| GARD [lotul 12, C132] — rezultatul persistat al supervizorului urmează CODUL, nu numai datele. | `core/test_lot12_texte_supervizor_reguli.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, pachetul triaj3 — căderea e2e `test_def_475_nirul_cu_doua_linii_ale_aceluiasi_articol_nou_face_un_singur_articol` (`POST /tenants/<id>/stocuri/nir` -> 422, „NIR salvat” | `core/test_lot12_triaj3_nir_formular.py` | probată la scriere (raportul lotului 12, §9) |
+| GARDA C138 (lotul 12, scenariul pilot `frontend_test/e2e/e2e_pilot_luna.py::test_pilot_07`): propunerea NIR-ului „fără factură” | `core/test_lot12_triaj_pilot_nir.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, comanda Costin 12.1 pct.13–14, pachetul `verif`: forma dovezilor și a mutațiilor pachetului, verificată fără browser. | `core/test_lot12_verif_dovezi.py` | probată la scriere (raportul lotului 12, §9) |
+| Lotul 12, deficiența C139 — „Șterge raportul Z”: raportul Z nevalidat (importat din AMEF sau scris de mână) se șterge de pe rândul lui din ecranul Raport Z, cu nota lui ciornă și cu descărcările lui din stoc încă necontate, într-o singură tranzacție; Z-ul vali | `core/test_lot12_zsterge_c139.py` | probată la scriere (raportul lotului 12, §9) |

@@ -19,6 +19,7 @@ _BASELINE = {
     # [lotul 10, 428, deciziile Costin 20.10.2026] compensările și fișele clienților — ecrane noi, scanate (`nav_ecrane.ECRANE`)
     "fa-compensari", "fa-clienti",
     "fa-furnizori",   # [lotul 11, decizia Costin 10.3] fișele furnizorilor — ecran nou, scanat (`nav_ecrane.ECRANE`)
+    "fa-parteneri",   # [lotul 12, deficiența 461] partenerii firmei — ecran nou, scanat (`nav_ecrane.ECRANE` „parteneri”)
     "fa-acces", "fa-balanta", "fa-banca", "fa-bilant", "fa-bonuri", "fa-casa", "fa-centrecost", "fa-contracte",
     # [Retest 2, 09.10.2026] planul de conturi (decizia Costin O12), scanat (nav_ecrane.ECRANE „planconturi”)
     "fa-planconturi",

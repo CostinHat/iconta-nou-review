@@ -10,8 +10,13 @@ dar niciodată după luna primei note. Recalculează propunerea pentru F3 (are n
   * PROPUNEREA = dedusa, dar niciodată după luna PRIMEI NOTE: o notă scrisă în iConta dovedește că evidența era deja aici (F3: adăugată
     în octombrie, note din iunie -> 06/2026). „Prima notă” = cea mai veche notă din jurnal, oricare i-ar fi starea — și ciorna e scrisă
     în iConta.
-  * EFECTIVĂ = luna salvată în Date firmă (`firma_profil.luna_preluare`), altfel propunerea.
+  * EFECTIVĂ = luna salvată în Date firmă (`firma_profil.luna_preluare`), altfel propunerea — dar NICIODATĂ după luna primei note.
   * Luna salvată nu poate fi după luna primei note (refuz lângă câmp, `eroare`). Jurnalul: `firma_profil_api.CAMPURI_JURNAL`.
+  * [lotul 12, deficiența 147: „«Luna preluării» editabilă, cu propunere și limită”] Refuzul de la salvare nu ajunge: o notă mai veche
+    scrisă DUPĂ salvare (luna salvată 08/2026, apoi o notă din 06/2026) lăsa luna efectivă după prima notă — Control fiscal număra
+    restanțele abia din 08/2026, deși jurnalul arăta evidența în iConta.eu din 06/2026. Limita se aplică și la citire: luna efectivă e cea
+    salvată, plafonată la luna primei note (`efectiva`, `de_unde`); luna salvată rămâne în bază cum a scris-o omul, iar Date firmă spune
+    că s-a plafonat (`plafonata`).
 """
 import datetime
 
@@ -37,8 +42,15 @@ def propunere(creat_la, data_solduri=None, prima_nota=None):
     return d or p
 
 
+def plafonata(salvata, prima_nota):
+    """[147] Luna salvată e după luna primei note (nota mai veche a fost scrisă după salvare): luna efectivă e a primei note."""
+    return bool(_luna(salvata) and _luna(prima_nota) and _luna(salvata) > _luna(prima_nota))
+
+
 def efectiva(salvata, creat_la, data_solduri=None, prima_nota=None):
-    """Luna salvată în Date firmă, altfel propunerea."""
+    """Luna salvată în Date firmă, altfel propunerea — niciodată după luna primei note (`plafonata`)."""
+    if plafonata(salvata, prima_nota):
+        return _luna(prima_nota)
     return _luna(salvata) or propunere(creat_la, data_solduri, prima_nota)
 
 
@@ -65,6 +77,9 @@ def de_unde(salvata, creat_la, data_solduri=None, prima_nota=None):
     """[deficiența 232, comanda Costin 12.10.2026: „Stabilește din datele firmei care e luna preluării și fă cele două locuri
     consecvente.”] Faptul din care vine luna EFECTIVĂ, ca text pentru ecran — aceeași ordine ca `efectiva` / `propunere`."""
     zi = (lambda d: "%02d.%02d.%d" % (d.day, d.month, d.year))
+    if plafonata(salvata, prima_nota):   # [147] luna aleasă e după prima notă: se socotește luna notei
+        return "luna primei note din jurnal, %s (luna aleasă în Date firmă, %02d/%d, e după ea)" % (zi(prima_nota), salvata.month,
+                                                                                                    salvata.year)
     if _luna(salvata):
         return "aleasă în Date firmă"
     d, p = deduse(creat_la, data_solduri), _luna(prima_nota)
@@ -91,8 +106,9 @@ def luna_dinainte(luna):
 
 
 def stare(fapte):
-    """`fapte` = `repo_firma_profil.fapte_preluare` -> {salvata, propunere, efectiva, prima_nota} ca „AAAA-LL” (pentru ecran)."""
+    """`fapte` = `repo_firma_profil.fapte_preluare` -> {salvata, propunere, efectiva, prima_nota} ca „AAAA-LL” (pentru ecran) și
+    `plafonata` (147: luna salvată e după prima notă, deci efectiva e luna primei note)."""
     s, c, d, p = fapte.get("salvata"), fapte.get("creat_la"), fapte.get("data_solduri"), fapte.get("prima_nota")
     t = (lambda x: "%04d-%02d" % x if x else None)
     return {"salvata": t(_luna(s)), "propunere": t(propunere(c, d, p)), "efectiva": t(efectiva(s, c, d, p)),
-            "prima_nota": t(_luna(p))}
+            "prima_nota": t(_luna(p)), "plafonata": plafonata(s, p)}

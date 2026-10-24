@@ -1,0 +1,5990 @@
+[
+  {
+    "nr": "19",
+    "firma": "tenant_9051",
+    "descriere": "F3 (fără formă juridică: „Emite factură” are butonul „Deschide Date firmă” sus): factura completată (client + linie) -> „Deschide Date firmă” -> Date firmă PESTE factură -> „←”: clientul și linia sunt cum au fost lăsate. Pe copia proaspătă F3 n-are numerotarea facturilor configurată: dovada o configurează întâi pe copie („Nu, încep acum”, seria PRB-). Date firmă nu se salvează (forma lui F3 rămâne necompletată). Partea a doua a lui 19 (sesiunea expirată) nu se poate arăta cu pașii dovezii: e2e test_def_19. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-nu"
+      },
+      {
+        "click": "#em-nu"
+      },
+      {
+        "completeaza": "#em-serie2",
+        "valoare": "PRB-"
+      },
+      {
+        "click": "#em-salveaza-config2"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": "#em-date-firma-sus"
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "Client Proba 19 SRL"
+      },
+      {
+        "completeaza": "#em-adresa",
+        "valoare": "Str. Probei 19, București"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Servicii de consultanță contabilă"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "2"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "150"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "captura": "19_f3_factura_inceputa.png"
+      },
+      {
+        "click": "#em-date-firma-sus"
+      },
+      {
+        "asteapta": "#df-forma_juridica"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "captura": "19_f3_date_firma_peste_factura.png"
+      },
+      {
+        "click": ".fereastra .nav-inapoi"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-cui",
+        "egal": "14399840"
+      },
+      {
+        "valoare": "#em-nume",
+        "egal": "Client Proba 19 SRL"
+      },
+      {
+        "valoare": "#em-adresa",
+        "egal": "Str. Probei 19, București"
+      },
+      {
+        "valoare": "#em-l0-descriere",
+        "egal": "Servicii de consultanță contabilă"
+      },
+      {
+        "valoare": "#em-l0-cantitate",
+        "egal": "2"
+      },
+      {
+        "valoare": "#em-l0-pret_unitar",
+        "egal": "150"
+      }
+    ],
+    "captura": "19_f3_factura_intacta_dupa_date_firma.png"
+  },
+  {
+    "nr": "22",
+    "firma": "tenant_9049",
+    "descriere": "F1: „Emite factură” arată seria cu următorul număr („F1A · următorul număr: N”, „Seria F1A · nr. N”), data emiterii (azi, captura intermediară) și scadența propusă la 30 de zile; data schimbată în 01.10.2026 -> scadența 31.10.2026. Nimic nu se scrie (formular fără client sau linie: nicio ciornă)",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "captura": "22_f1_formular_deschis_data_scadenta_serie.png"
+      },
+      {
+        "completeaza": "#em-data",
+        "valoare": "2026-10-01"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "F1A · următorul număr:",
+        "zona": "#em-serie-nr"
+      },
+      {
+        "contine": "Seria F1A · nr.",
+        "zona": "#em-numar"
+      },
+      {
+        "valoare": "#em-data",
+        "egal": "2026-10-01"
+      },
+      {
+        "valoare": "#em-scadenta",
+        "egal": "2026-10-31"
+      },
+      {
+        "contine": "Propusă la 30 de zile de la emitere",
+        "zona": "#em-scadenta-ajutor"
+      }
+    ],
+    "captura": "22_f1_scadenta_urmeaza_data.png"
+  },
+  {
+    "nr": "25",
+    "firma": "tenant_9049",
+    "descriere": "F1: factura F1A nr. 7 (19.10.2026), cu nota de contare 131 ciornă: detaliul din „Istoric facturi” spune „notă propusă, de validat”, nu „contabilizată”, și are butonul „nota …”. Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-istoric"
+      },
+      {
+        "click": "#fac-istoric"
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "deruleaza": ".fac-frand-btn[data-id='53']"
+      },
+      {
+        "click": ".fac-frand-btn[data-id='53']"
+      },
+      {
+        "asteapta": "#fd-pdf"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "notă propusă, de validat",
+        "zona": ".fd-antet .fd-stare"
+      },
+      {
+        "nu_contine": "contabilizată",
+        "zona": ".fd-antet"
+      },
+      {
+        "exista": "#fd-vezi-nota"
+      },
+      {
+        "contine": "Factură F1A nr. 7",
+        "zona": ".fd-antet"
+      }
+    ],
+    "captura": "25_f1_factura_f1a7_nota_propusa.png"
+  },
+  {
+    "nr": "25",
+    "firma": "tenant_9049",
+    "descriere": "F1: factura F1A nr. 7 -> butonul „nota …” deschide Registrul jurnal pe luna notei, cu nota 131 (ciornă, a facturii) pe ecran. Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-istoric"
+      },
+      {
+        "click": "#fac-istoric"
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "deruleaza": ".fac-frand-btn[data-id='53']"
+      },
+      {
+        "click": ".fac-frand-btn[data-id='53']"
+      },
+      {
+        "asteapta": "#fd-pdf"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "captura": "25_f1_factura_f1a7_buton_nota.png"
+      },
+      {
+        "click": "#fd-vezi-nota"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type [data-nota-id='131']"
+      },
+      {
+        "deruleaza": "[data-nota-id='131']"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "[data-nota-id='131']"
+      },
+      {
+        "contine": "Registru jurnal"
+      },
+      {
+        "contine_oricare": [
+          "F1A nr. 7",
+          "F1A7"
+        ],
+        "zona": "[data-nota-id='131']"
+      }
+    ],
+    "captura": "25_f1_nota_131_deschisa_din_factura.png"
+  },
+  {
+    "nr": "25",
+    "firma": "tenant_9049",
+    "descriere": "F1, document VECHI: factura nr. 2 (emisă 05.10.2026 11:51, înainte de reparația d582e083 din 05.10.2026 21:16), nota 104 validată: detaliul spune „contabilizată” (nota e validată — captura intermediară) și „nota …” duce la nota 104 în Registrul jurnal. Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-istoric"
+      },
+      {
+        "click": "#fac-istoric"
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "deruleaza": ".fac-frand-btn[data-id='48']"
+      },
+      {
+        "click": ".fac-frand-btn[data-id='48']"
+      },
+      {
+        "asteapta": "#fd-pdf"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "captura": "25_f1_vechi_factura_nr2_detaliu.png"
+      },
+      {
+        "click": "#fd-vezi-nota"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type [data-nota-id='104']"
+      },
+      {
+        "deruleaza": "[data-nota-id='104']"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "[data-nota-id='104']"
+      },
+      {
+        "contine": "Registru jurnal"
+      }
+    ],
+    "captura": "25_f1_vechi_nota_104_deschisa_din_factura.png"
+  },
+  {
+    "nr": "27",
+    "firma": "tenant_9049",
+    "descriere": "F1 (cantitativ-valoric): lista articolelor de pe linia facturii arată stocul cu unitatea de măsură, fără zecimale în exces („Marfa A · stoc N buc”, „grau · stoc N kg”, nu „.000”). Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "nu_contine": ".000",
+        "zona": "#em-l0-articol"
+      },
+      {
+        "contine": "Marfa A · stoc",
+        "zona": "#em-l0-articol"
+      },
+      {
+        "contine": "grau · stoc",
+        "zona": "#em-l0-articol"
+      },
+      {
+        "contine": " kg",
+        "zona": "#em-l0-articol"
+      }
+    ],
+    "captura": "27_f1_articole_stoc_cu_um.png"
+  },
+  {
+    "nr": "27",
+    "firma": "tenant_9049",
+    "descriere": "F1: denumirea unui produs din nomenclator („grau”, UM kg) scrisă de mână pe linie, fără alegerea articolului de stoc: UM vine din nomenclator („kg”, nu implicitul „buc”), iar sub linie apare „Linie fără articol de stoc: marfa de pe ea nu se descarcă din gestiune…”. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "grau"
+      },
+      {
+        "pauza": 2500
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-l0-um",
+        "egal": "kg"
+      },
+      {
+        "exista": "#em-l0-fara-articol:not([hidden])"
+      },
+      {
+        "contine": "Linie fără articol de stoc: marfa de pe ea nu se descarcă din gestiune",
+        "zona": "#em-l0-fara-articol"
+      }
+    ],
+    "captura": "27_f1_um_din_nomenclator_fara_articol.png"
+  },
+  {
+    "nr": "27",
+    "firma": "tenant_9049",
+    "descriere": "F1: „Marfa A” scrisă de mână -> prețul 100 din nomenclator și semnul „fără articol” (captura intermediară); ales apoi articolul de stoc „Marfa A”: UM „buc”, prețul 100, semnul „Linie fără articol de stoc” dispare. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Marfa A"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "captura": "27_f1_pret_din_nomenclator_fara_articol.png"
+      },
+      {
+        "alege": "#em-l0-articol",
+        "valoare": "1"
+      },
+      {
+        "pauza": 2500
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-l0-articol",
+        "egal": "1"
+      },
+      {
+        "valoare": "#em-l0-um",
+        "egal": "buc"
+      },
+      {
+        "valoare": "#em-l0-pret_unitar",
+        "egal": "100"
+      },
+      {
+        "exista": "#em-l0-fara-articol[hidden]"
+      }
+    ],
+    "captura": "27_f1_articol_ales_semnul_dispare.png"
+  },
+  {
+    "nr": "34",
+    "firma": "tenant_9054",
+    "descriere": "FISCALOS (numerotare neconfigurată, fără serie): „Emite factură” -> „Configurare emitere” -> „Nu, încep acum” -> „Continuă” fără serie: refuzul pe câmp „Completează seria: numărul facturii se dă într-o serie (CF art.319 alin.(20) lit.a).” — nimic nu se salvează (emitere_ecran.js:124-128: `if (lipsa) return;` înainte de `salveazaConfig`). Partea „refuzul la «Emite» pe o firmă configurată fără serie, seria stabilită din refuz” nu se poate arăta: nicio firmă a copiei nu e în starea de dinainte de 06.10 (numerotare configurată, serie goală), iar aplicația n-o mai poate produce — e2e test_def_34",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-nu"
+      },
+      {
+        "click": "#em-nu"
+      },
+      {
+        "asteapta": "#em-serie2"
+      },
+      {
+        "click": "#em-salveaza-config2"
+      },
+      {
+        "asteapta": "#em-serie2[aria-invalid='true']"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Completează seria: numărul facturii se dă într-o serie (CF art.319 alin.(20) lit.a)."
+      },
+      {
+        "exista": "#em-serie2[aria-invalid='true']"
+      },
+      {
+        "contine": "Configurare emitere"
+      }
+    ],
+    "captura": "34_f7_serie_obligatorie_la_configurare.png"
+  },
+  {
+    "nr": "36",
+    "firma": "tenant_9055",
+    "descriere": "F6 (metoda de stoc nedeclarată): factura cu o linie de marfă („Vânzare marfă: făină”, cont 707) -> „Emite factură”: refuzul „Factura nu s-a emis: are marfă, iar metoda de stoc a firmei nu e declarată…” cu „Deschide Date firmă”, formularul păstrat. Refuzul nu scrie nimic: excepția din `facturi_api.verifica_marfa_si_metoda` vine înainte de `cere_serie` / `_rezerva_numar`, iar `db.get_conn` face rollback la excepție. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "Client Proba 36 SRL"
+      },
+      {
+        "completeaza": "#em-adresa",
+        "valoare": "Str. Probei 36, București"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Vânzare marfă: făină"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "2"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "150"
+      },
+      {
+        "alege": "#em-l0-cota",
+        "valoare": "21"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta": "#em-deschide-date-firma"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "metoda de stoc a firmei nu e declarată",
+        "zona": "#em-rezultat"
+      },
+      {
+        "exista": "#em-deschide-date-firma"
+      },
+      {
+        "valoare": "#em-nume",
+        "egal": "Client Proba 36 SRL"
+      },
+      {
+        "nu_contine": "✓ Factura",
+        "zona": "#em-rezultat"
+      }
+    ],
+    "captura": "36_f6_refuz_metoda_stoc_nedeclarata.png"
+  },
+  {
+    "nr": "36",
+    "firma": "tenant_9055",
+    "descriere": "F6: din refuzul metodei de stoc -> „Deschide Date firmă”: „Metoda de stoc” arată „— nedeclarată —”, valoare goală (nicio metodă aleasă în locul omului). Nu se salvează nimic. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "Client Proba 36 SRL"
+      },
+      {
+        "completeaza": "#em-adresa",
+        "valoare": "Str. Probei 36, București"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Vânzare marfă: făină"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "2"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "150"
+      },
+      {
+        "alege": "#em-l0-cota",
+        "valoare": "21"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta": "#em-deschide-date-firma"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "click": "#em-deschide-date-firma"
+      },
+      {
+        "asteapta": "#df-metoda_stoc"
+      },
+      {
+        "deruleaza": "#df-metoda_stoc"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#df-metoda_stoc",
+        "egal": ""
+      },
+      {
+        "contine": "— nedeclarată —",
+        "zona": "#df-metoda_stoc"
+      }
+    ],
+    "captura": "36_f6_date_firma_metoda_nedeclarata.png"
+  },
+  {
+    "nr": "44",
+    "firma": "tenant_9049",
+    "descriere": "F1: factura începută (client + 3 × 250, cota 21%) -> „←” până la fereastra firmei -> „Date firmă” -> „←” -> Facturi -> „Emite factură”: câmpurile sunt cum au fost lăsate, total 907,50, anunțul „Factura începută … a fost păstrată”. Date firmă nu se salvează. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "Client Proba 44 SRL"
+      },
+      {
+        "completeaza": "#em-adresa",
+        "valoare": "Str. Probei 44, București"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Servicii de consultanță fiscală"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "3"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "250"
+      },
+      {
+        "alege": "#em-l0-cota",
+        "valoare": "21"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "captura": "44_f1_factura_inceputa.png"
+      },
+      {
+        "click": ".fereastra .nav-inapoi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": ".fereastra .nav-inapoi"
+      },
+      {
+        "asteapta": "#fa-datefirma"
+      },
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#df-salveaza"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "captura": "44_f1_date_firma.png"
+      },
+      {
+        "click": ".fereastra .nav-inapoi"
+      },
+      {
+        "asteapta": "#fa-facturi"
+      },
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-ciorna .caseta-info"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-nume",
+        "egal": "Client Proba 44 SRL"
+      },
+      {
+        "valoare": "#em-l0-descriere",
+        "egal": "Servicii de consultanță fiscală"
+      },
+      {
+        "valoare": "#em-l0-cantitate",
+        "egal": "3"
+      },
+      {
+        "valoare": "#em-l0-pret_unitar",
+        "egal": "250"
+      },
+      {
+        "contine": "a fost păstrată",
+        "zona": "#em-ciorna"
+      },
+      {
+        "contine": "907,50",
+        "zona": "#em-total"
+      }
+    ],
+    "captura": "44_f1_factura_pastrata_dupa_date_firma.png"
+  },
+  {
+    "nr": "65",
+    "firma": "tenant_9049",
+    "descriere": "Ciorna nu trece la ALTĂ FIRMĂ: pe F1 se scrie clientul „Client Ciorna 65 SRL” -> X -> Firme -> F2 -> Facturi -> „Emite factură”: formularul e gol, fără „a fost păstrată”. Partea „alt utilizator” nu se poate arăta: pasi.py șterge la începutul fiecărei dovezi ciornele TUTUROR utilizatorilor copiei, iar o dovadă are un singur utilizator — e2e test_def_65. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "Client Ciorna 65 SRL"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "captura": "65_f1_ciorna_inceputa.png"
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "asteapta": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#opt-existente",
+        "daca_exista": true
+      },
+      {
+        "asteapta": "#firme-lista button.firme-rand"
+      },
+      {
+        "click": "#firme-lista button.firme-rand",
+        "text": "F2 Profit Amortizare SRL"
+      },
+      {
+        "asteapta": "#fa-facturi"
+      },
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 1000
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-nume",
+        "egal": ""
+      },
+      {
+        "nu_contine": "a fost păstrată",
+        "zona": "#em-ciorna"
+      },
+      {
+        "contine": "F2 Profit Amortizare SRL"
+      }
+    ],
+    "captura": "65_f2_alta_firma_formular_gol.png"
+  },
+  {
+    "nr": "65",
+    "firma": "tenant_9049",
+    "descriere": "Martorul lui 65: același drum (F1 scrie clientul -> F2 „Emite factură” gol, captura intermediară) -> X -> Firme -> F1 -> „Emite factură”: ciorna lui F1 e regăsită („Client Ciorna 65 SRL”, „a fost păstrată”). Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "Client Ciorna 65 SRL"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "captura": "65_f1_ciorna_inceputa_martor.png"
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "asteapta": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#opt-existente",
+        "daca_exista": true
+      },
+      {
+        "asteapta": "#firme-lista button.firme-rand"
+      },
+      {
+        "click": "#firme-lista button.firme-rand",
+        "text": "F2 Profit Amortizare SRL"
+      },
+      {
+        "asteapta": "#fa-facturi"
+      },
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 1000
+      },
+      {
+        "captura": "65_f2_formular_gol_martor.png"
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "asteapta": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#opt-existente",
+        "daca_exista": true
+      },
+      {
+        "asteapta": "#firme-lista button.firme-rand"
+      },
+      {
+        "click": "#firme-lista button.firme-rand",
+        "text": "F1 Comert Stoc SRL"
+      },
+      {
+        "asteapta": "#fa-facturi"
+      },
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-ciorna .caseta-info"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-nume",
+        "egal": "Client Ciorna 65 SRL"
+      },
+      {
+        "contine": "a fost păstrată",
+        "zona": "#em-ciorna"
+      },
+      {
+        "contine": "F1 Comert Stoc SRL"
+      }
+    ],
+    "captura": "65_f1_martor_ciorna_regasita.png"
+  },
+  {
+    "nr": "66",
+    "firma": "tenant_9049",
+    "descriere": "F1: „Marfa A” scrisă pe linie -> prețul 100 vine ca PROPUNERE din nomenclator (produsul Marfa A, 100,00 lei). Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Marfa A"
+      },
+      {
+        "pauza": 2500
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-l0-pret_unitar",
+        "egal": "100"
+      }
+    ],
+    "captura": "66_f1_pret_propus_din_nomenclator.png"
+  },
+  {
+    "nr": "66",
+    "firma": "tenant_9049",
+    "descriere": "F1: „Marfa A” (preț propus 100, captura intermediară) -> denumirea rescrisă „Serviciu consultanta”: prețul propus pleacă (câmp gol, nu 100, nu 0) -> „+ Adaugă linie”: rândul nou are prețul gol. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Marfa A"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "captura": "66_f1_pret_propus_inainte_de_rescriere.png"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Serviciu consultanta"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "click": "#em-add-linie"
+      },
+      {
+        "asteapta": "#em-l1-pret_unitar"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-l0-pret_unitar",
+        "egal": ""
+      },
+      {
+        "valoare": "#em-l1-pret_unitar",
+        "egal": ""
+      },
+      {
+        "valoare": "#em-l1-descriere",
+        "egal": ""
+      }
+    ],
+    "captura": "66_f1_pret_gol_dupa_rescriere_si_rand_nou.png"
+  },
+  {
+    "nr": "67",
+    "firma": "tenant_9049",
+    "descriere": "F1: pe linie se alege articolul „Marfa A” (captura intermediară: legat) -> denumirea rescrisă „Carte – Ghid contabil 2026”: lista arată „— fără articol (serviciu) —” (valoare goală) și apare „Linie fără articol de stoc”. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "alege": "#em-l0-articol",
+        "valoare": "1"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "captura": "67_f1_rand_legat_de_marfa_a.png"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Carte – Ghid contabil 2026"
+      },
+      {
+        "pauza": 1500
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-l0-articol",
+        "egal": ""
+      },
+      {
+        "valoare": "#em-l0-descriere",
+        "egal": "Carte – Ghid contabil 2026"
+      },
+      {
+        "exista": "#em-l0-fara-articol:not([hidden])"
+      }
+    ],
+    "captura": "67_f1_rand_dezlegat_fara_articol.png"
+  },
+  {
+    "nr": "68",
+    "firma": "tenant_9049",
+    "descriere": "F1, formular nou: scadența e PROPUSĂ (data emiterii + 30 de zile, nu „zz.ll.aaaa” — captura intermediară la deschidere) și urmărește data emiterii: 01.09.2026 -> 01.10.2026. Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "captura": "68_f1_formular_nou_scadenta_propusa.png"
+      },
+      {
+        "completeaza": "#em-data",
+        "valoare": "2026-09-01"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-data",
+        "egal": "2026-09-01"
+      },
+      {
+        "valoare": "#em-scadenta",
+        "egal": "2026-10-01"
+      }
+    ],
+    "captura": "68_f1_scadenta_urmeaza_data_emiterii.png"
+  },
+  {
+    "nr": "68",
+    "firma": "tenant_9049",
+    "descriere": "F1: scadența scrisă de om (15.12.2026) rămâne când se schimbă apoi data emiterii (05.09.2026). Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-data",
+        "valoare": "2026-09-01"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "completeaza": "#em-scadenta",
+        "valoare": "2026-12-15"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "completeaza": "#em-data",
+        "valoare": "2026-09-05"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-data",
+        "egal": "2026-09-05"
+      },
+      {
+        "valoare": "#em-scadenta",
+        "egal": "2026-12-15"
+      }
+    ],
+    "captura": "68_f1_scadenta_scrisa_de_om_ramane.png"
+  },
+  {
+    "nr": "77",
+    "firma": "tenant_9049",
+    "descriere": "F1, „Emite factură”: RON, „Operațiune normală” și „Factură” preselectate (vizibile, schimbabile); CUI „DE123456789” -> țara dedusă „DE”. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "DE123456789"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-moneda",
+        "egal": "RON"
+      },
+      {
+        "valoare": "#em-tipop",
+        "egal": "normal"
+      },
+      {
+        "valoare": "#em-tip",
+        "egal": "factura"
+      },
+      {
+        "valoare": "#em-tara",
+        "egal": "DE"
+      }
+    ],
+    "captura": "77_f1_preselectie_si_tara_dedusa_de.png"
+  },
+  {
+    "nr": "77",
+    "firma": "tenant_9049",
+    "descriere": "F1: țara dedusă din CUI („DE”) se schimbă din listă în „AT” (alegerea omului rămâne, CUI-ul nu se schimbă). Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "DE123456789"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "alege": "#em-tara",
+        "valoare": "AT"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-tara",
+        "egal": "AT"
+      },
+      {
+        "valoare": "#em-cui",
+        "egal": "DE123456789"
+      },
+      {
+        "valoare": "#em-moneda",
+        "egal": "RON"
+      }
+    ],
+    "captura": "77_f1_tara_schimbata_din_lista_at.png"
+  },
+  {
+    "nr": "88",
+    "firma": "tenant_9049",
+    "descriere": "F1: CUI 14399840 -> „Verifică” (ANAF simulat al copiei: „CUI negăsit la ANAF”; cu --anaf-real: „plătitor TVA”) -> adresa completată -> „←” la Facturi -> „Emite factură”: ciorna e restaurată ȘI arată în continuare răspunsul ANAF sub CUI. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "click": "#em-verifica"
+      },
+      {
+        "asteapta": "#em-cui-stare.em-cui-rau, #em-cui-stare .em-cui-info"
+      },
+      {
+        "completeaza": "#em-adresa",
+        "valoare": "Str. Probei 88, București"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "captura": "88_f1_raspuns_anaf_inainte_de_iesire.png"
+      },
+      {
+        "click": ".fereastra .nav-inapoi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-ciorna .caseta-info"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "a fost păstrată",
+        "zona": "#em-ciorna"
+      },
+      {
+        "valoare": "#em-cui",
+        "egal": "14399840"
+      },
+      {
+        "contine_oricare": [
+          "plătitor TVA",
+          "neplătitor TVA",
+          "CUI negăsit la ANAF"
+        ],
+        "zona": "#em-cui-stare"
+      }
+    ],
+    "captura": "88_f1_raspuns_anaf_dupa_restaurare.png"
+  },
+  {
+    "nr": "89",
+    "firma": "tenant_9049",
+    "descriere": "F1 (cu stoc): linie fără articol („Consultanta contabila”) -> „Linie fără articol de stoc…” e în caseta informativă (.caseta-info, textul .ci-mesaj în var(--ardezie), stil.css:2318), nu în .msg-eroare. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Consultanta contabila"
+      },
+      {
+        "pauza": 1500
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#em-l0-fara-articol.caseta-info:not([hidden])"
+      },
+      {
+        "contine": "Linie fără articol de stoc",
+        "zona": "#em-l0-fara-articol .ci-mesaj"
+      },
+      {
+        "nu_contine": "Linie fără articol de stoc",
+        "zona": ".msg-eroare"
+      }
+    ],
+    "captura": "89_f1_fara_articol_informare_nu_eroare.png"
+  },
+  {
+    "nr": "303",
+    "firma": "tenant_9049",
+    "descriere": "F1: CUI 14399840 -> „Verifică”: după răspuns (ANAF simulat al copiei: „CUI negăsit la ANAF”) mesajul e sub câmp, fără „a eșuat”, iar butonul revine la „Verifică”, activ. Starea „Se verifică…” cu butonul blocat nu se poate arăta cu pașii dovezii (ANAF trebuie întârziat cu page.route) — e2e test_def_303. Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "click": "#em-verifica"
+      },
+      {
+        "asteapta": "#em-cui-stare.em-cui-rau, #em-cui-stare .em-cui-info"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine_oricare": [
+          "plătitor TVA",
+          "neplătitor TVA",
+          "CUI negăsit la ANAF"
+        ],
+        "zona": "#em-cui-stare"
+      },
+      {
+        "nu_contine": "a eșuat",
+        "zona": "#em-cui-stare"
+      },
+      {
+        "activ": "#em-verifica"
+      },
+      {
+        "contine": "Verifică",
+        "zona": "#em-verifica"
+      },
+      {
+        "nu_contine": "Se verifică",
+        "zona": "#em-verifica"
+      }
+    ],
+    "captura": "303_f1_verifica_cui_raspuns_buton_revenit.png"
+  },
+  {
+    "nr": "304",
+    "firma": "tenant_9049",
+    "descriere": "F1: client român (14399840), articolul Marfa A, cota 0%, „livrare intracomunitară” -> „Emite”: refuzul „…(țara clientului: RO)” vine fără „Pleacă marfa acum?” (captura intermediară); CUI schimbat în IE9999999ZZ -> țara IE, refuzul clientului vechi dispare. Nicio factură nu se emite (refuzul liniilor, 422, rollback; întrebarea nu primește răspuns). Ciorna formularului se scrie pe server (public.ciorne_formular, ștearsă de pasi.py la începutul dovezii următoare); nicio factură nu se emite.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "DANTE INTERNATIONAL SA"
+      },
+      {
+        "alege": "#em-l0-articol",
+        "valoare": "1"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "10"
+      },
+      {
+        "alege": "#em-l0-cota",
+        "valoare": "0"
+      },
+      {
+        "asteapta": "#em-l0-categorie"
+      },
+      {
+        "alege": "#em-l0-categorie",
+        "valoare": "livrare_ic"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta_text": "țara clientului: RO"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "captura": "304_f1_refuz_tara_ro_fara_intrebare.png"
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "IE9999999ZZ"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "nu_contine": "țara clientului: RO"
+      },
+      {
+        "nu_contine": "Pleacă marfa acum?"
+      },
+      {
+        "valoare": "#em-tara",
+        "egal": "IE"
+      },
+      {
+        "activ": "#em-emite"
+      }
+    ],
+    "captura": "304_f1_refuz_disparut_la_alt_client.png"
+  },
+  {
+    "nr": "207",
+    "firma": "tenant_9049",
+    "descriere": "F1 deschisă (firma în lucru) -> X -> pagina principală -> „Pachete lunare”: câmpul „Firmă” vine cu F1 (105779), „Continuă →” activ. Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "asteapta": "button.cab-card:has([data-cheie='pachete'])"
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='pachete'])"
+      },
+      {
+        "asteapta": "#pac-firma"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#pac-firma",
+        "egal": "105779"
+      },
+      {
+        "activ": "#pac-continua"
+      }
+    ],
+    "captura": "207_f1_pachete_pornesc_pe_firma_in_lucru.png"
+  },
+  {
+    "nr": "207",
+    "firma": "tenant_9049",
+    "utilizator": 71508,
+    "descriere": "Ana (asistent, F1/F2/F5): F1 deschisă -> X -> pagina principală -> „Declarații”: câmpul „Firmă” vine cu F1 (105779). Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "asteapta": "button.cab-card:has([data-cheie='declaratii'])"
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='declaratii'])"
+      },
+      {
+        "asteapta": "#dec-firma"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#dec-firma",
+        "egal": "105779"
+      }
+    ],
+    "captura": "207_f1_declaratii_asistent_pe_firma_in_lucru.png"
+  },
+  {
+    "nr": "80",
+    "firma": "tenant_9049",
+    "descriere": "Cabinet, „De validat”: NIR nr 3 din 19.10.2026 al Anei (3 note la validare: 132, 133, 134, clonate din producție) e UN SINGUR card, care poartă toate trei notele în data-coada-ids, cu „3 note” în titlu și „Vezi notele →”. Numai citire.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+      },
+      {
+        "deruleaza": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#val-note .val-card[data-coada-ids*='11417'][data-coada-ids*='11418'][data-coada-ids*='11419']"
+      },
+      {
+        "contine": "3 note",
+        "zona": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026') .val-titlu"
+      },
+      {
+        "contine": "Vezi notele",
+        "zona": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+      }
+    ],
+    "captura": "80_f1_nir_3_un_singur_card.png"
+  },
+  {
+    "nr": "101",
+    "firma": "tenant_9049",
+    "descriere": "Cabinet, „De validat”: titlul cardului NIR-ului nr 3 al Anei e scurt — „NIR nr 3 din 19.10.2026 · DANTE INTERNATIONAL SA · 3 note” —, fără descrierea notei („NIR 3 DANTE INTERNATIONAL SA”) repetată pe fiecare notă. Numai citire.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+      },
+      {
+        "deruleaza": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "NIR nr 3 din 19.10.2026 · DANTE INTERNATIONAL SA · 3 note",
+        "zona": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026') .val-titlu"
+      },
+      {
+        "nu_contine": "NIR 3 DANTE INTERNATIONAL SA",
+        "zona": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+      }
+    ],
+    "captura": "101_f1_titlul_scurt_al_nir_3.png"
+  },
+  {
+    "nr": "58",
+    "firma": "tenant_9049",
+    "utilizator": 71508,
+    "descriere": "F1, ca Ana (71508, „Poate pregăti”): Registru jurnal 10/2026 — ciornele contabilului-șef din afara cozii (ex. nota 123, plata DP-1 din 09.10.2026, clonată) sunt numărate în antet ca „netrimise la validare” (nu „de validat”), iar rândul ciornei șefului spune de ce Ana n-o trimite (motivul regulii 246), fără „Trimite la validare”. Numai citire. Ana nu are pe copie nicio ciornă proprie în afara cozii, deci butonul „Trimite la validare” pe ciorna ei nu se poate arăta fără o scriere (îl acoperă e2e).",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "[data-nota-id='123']"
+      },
+      {
+        "deruleaza": "[data-nota-id='123']"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine_oricare": [
+          "netrimise la validare",
+          "netrimisă la validare"
+        ],
+        "zona": ".fereastra:last-of-type p.pf-intro"
+      },
+      {
+        "nu_contine": "de validat",
+        "zona": ".fereastra:last-of-type p.pf-intro"
+      },
+      {
+        "exista": "[data-nota-id='123'] .jn-a-altuia"
+      },
+      {
+        "nu_contine": "Trimite la validare",
+        "zona": "[data-nota-id='123']"
+      }
+    ],
+    "captura": "58_f1_ana_ciorna_sefului_in_afara_cozii.png"
+  },
+  {
+    "nr": "16",
+    "firma": "tenant_9049",
+    "utilizator": 71508,
+    "descriere": "Pagina principală a Anei (asistent): banda „Suport” (fostul „Raportează”) are iconița desenată (svg cu cerc și traseu). Numai citire.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "asteapta": "[data-banda='raport'] svg"
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "[data-banda='raport'] svg circle"
+      },
+      {
+        "exista": "[data-banda='raport'] svg path"
+      },
+      {
+        "contine": "Suport",
+        "zona": "[data-banda='raport']"
+      }
+    ],
+    "captura": "16_f1_ana_suport_cu_iconita.png"
+  },
+  {
+    "nr": "114",
+    "firma": "tenant_9049",
+    "descriere": "Pagina principală a contabilului-șef: clopoțelul are pictograma (svg); apăsat, deschide panoul „Notificări” (care le marchează citite); după aceea butonul rămâne cu pictogramă și activ, iar a doua apăsare închide panoul. Numai citire (marcarea „citit” a notificărilor contabilului copiei).",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "asteapta": "#nav-clopot svg"
+      },
+      {
+        "click": "#nav-clopot"
+      },
+      {
+        "asteapta": "#nav-clopot-panou #clopot-lista"
+      },
+      {
+        "pauza": 1000
+      },
+      {
+        "captura": "114_f1_panoul_deschis.png"
+      },
+      {
+        "click": "#nav-clopot"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#nav-clopot svg path"
+      },
+      {
+        "activ": "#nav-clopot"
+      },
+      {
+        "nu_contine": "Notificări",
+        "zona": "#nav-clopot-panou"
+      }
+    ],
+    "captura": "114_f1_clopotelul_dupa_citire.png"
+  },
+  {
+    "nr": "323",
+    "firma": "tenant_9049",
+    "descriere": "Cabinet, „De depus”/„De validat”: D300 al lui F1 pe 10/2026 (în coadă din 19.10.2026, clonat; după generare F1 a primit alte note în octombrie, deci e depășit) stă în grupul „Depășite — de generat din nou”, cu eticheta „depășită — de generat din nou”, fără „n-a trecut prin validatorul oficial”; textul de sus nu mai spune „notele pe care asistenții le trimit la validare”. Numai citire. Cazul „fără note de validat” al textului de sus nu se poate arăta pe copie: cabinetul are note la validare (îl acoperă e2e_lot91).",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-depasite .val-card"
+      },
+      {
+        "deruleaza": "#val-depasite"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine_oricare": [
+          "DEPĂȘITE — DE GENERAT DIN NOU (",
+          "Depășite — de generat din nou ("
+        ],
+        "zona": "#val-depasite .cf-grup-titlu"
+      },
+      {
+        "contine": "depășită — de generat din nou",
+        "zona": "#val-depasite .val-card"
+      },
+      {
+        "nu_contine": "n-a trecut prin validatorul oficial",
+        "zona": "#val-depasite"
+      },
+      {
+        "nu_contine": "notele pe care asistenții le trimit la validare"
+      }
+    ],
+    "captura": "323_f1_grupul_depasite.png"
+  },
+  {
+    "nr": "39",
+    "firma": "tenant_9053",
+    "descriere": "F5, statul 09/2026 (salariații Ionescu Vasile și Popescu Elena, introduși pe 22.09.2026, înainte de reparația 27335044 din 06.10.2026; nota SAL 09/2026 validată): Salariați -> „← luna” -> „Contabilizează statul”: caseta spune ce s-a verificat — „Contul 421 se soldează exact cu netul fluturașilor (… lei)” —, fără „toleranță” și fără „coincide”. Numai citire (propunerea calculează, nu scrie).",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona table"
+      },
+      {
+        "pauza": 1200
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Contul 421 se soldează exact cu netul fluturașilor (",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "nu_contine": "toleranț",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "nu_contine": "coincide",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "captura": "39_f5_vechi_stat_09_2026_421_exact_fara_toleranta.png"
+  },
+  {
+    "nr": "39",
+    "firma": "tenant_9049",
+    "descriere": "F1, statul 09/2026 cu nota „Stat de plata 09/2026” scrisă și validată pe 20.09.2026, înainte de reparația 27335044: Salariați -> „← luna” -> „Contabilizează statul”: mesajul vechi „coincide în limita de toleranță” nu mai apare; caseta e ori „Contul 421 se soldează exact cu netul fluturașilor”, ori tabelul diferențelor cu „Contul 421 se compară fără toleranță”. Numai citire.",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona table"
+      },
+      {
+        "pauza": 1200
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "verifica": [
+      {
+        "contine_oricare": [
+          "Contul 421 se soldează exact cu netul fluturașilor (",
+          "Contul 421 se compară fără toleranță"
+        ],
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "nu_contine": "în limita de toleranță",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "nu_contine": "coincide",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "captura": "39_f1_vechi_stat_09_2026_fara_limita_de_toleranta.png"
+  },
+  {
+    "nr": "63",
+    "firma": "tenant_9053",
+    "descriere": "F5, statul 09/2026 (salariați din 22.09.2026) cu nota SAL 09/2026 validată: Salariați -> „← luna” -> „Contabilizează statul”: nota și D112 au aceleași cifre, deci sub notă scrie numai „Nota … e validată.”, fără „Diferențele de mai sus…”, fără „Semnalul…”, fără „diferă”. Numai citire.",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona table"
+      },
+      {
+        "pauza": 1200
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "e validată.",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "nu_contine": "Diferențele de mai sus",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "nu_contine": "Semnalul",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "nu_contine": "diferă",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "captura": "63_f5_vechi_stat_09_2026_fara_fraza_despre_diferente.png"
+  },
+  {
+    "nr": "55",
+    "firma": "tenant_9053",
+    "descriere": "Cabinet -> Activitate -> „Activitatea echipei” -> „Tot”: notele de salarii VECHI ale F5 au titlul fără repetiție. Nota „Stat de plata 11/2026” (id 2, pregătită de Ana pe 06.10.2026 12:14, înainte de reparația b8a5d0ce din 06.10.2026 16:13; documentul ei „Stat de plată 11/2026 din 30.11.2026”) apare „Notă · Stat de plata 11/2026” — nu „Stat de plata 11/2026 · Stat de plată 11/2026”; nota 4 apare „Notă · Salariile lunii 09/2026 · Stat de plată nr SAL 09/2026 din 30.09.2026”. Numai citire.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='activitate'])"
+      },
+      {
+        "asteapta": "#opt-jurnal"
+      },
+      {
+        "click": "#opt-jurnal"
+      },
+      {
+        "asteapta": ".ac-per[data-per='tot']"
+      },
+      {
+        "click": ".ac-per[data-per='tot']"
+      },
+      {
+        "asteapta": ".ac-per-on[data-per='tot']"
+      },
+      {
+        "asteapta": ".ac-tabel .ac-rand"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "deruleaza": ".ac-tabel .ac-rand",
+        "text": "Stat de plata 11/2026"
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Notă · Stat de plata 11/2026",
+        "zona": ".ac-tabel"
+      },
+      {
+        "nu_contine": "Stat de plata 11/2026 · Stat de plată",
+        "zona": ".ac-tabel"
+      },
+      {
+        "contine": "Notă · Salariile lunii 09/2026 · Stat de plată nr SAL 09/2026 din 30.09.2026",
+        "zona": ".ac-tabel"
+      }
+    ],
+    "captura": "55_f5_vechi_activitate_titlul_notei_fara_repetitie.png"
+  },
+  {
+    "nr": "81",
+    "firma": "tenant_9053",
+    "descriere": "F5, Registrul jurnal 09/2026: nota de salarii a Anei respinsă pe 07.10.2026 09:50 („Lipsește prima de performanță la Popescu”, nota 3) nu a rămas în jurnal de corectat — a fost refăcută din statul de plată (nota 4, „Salariile lunii 09/2026”, scrisă pe 07.10.2026 22:13, după reparația b572089b din 19:03, validată 22:17). Luna are numai nota refăcută, validată; niciun „notă respinsă la validare”. Numai citire.",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #j-prev"
+      },
+      {
+        "asteapta_text": "Luna 10/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #j-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type [data-nota-id='4']"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Salariile lunii 09/2026"
+      },
+      {
+        "nu_contine": "Lipsește prima de performanță la Popescu"
+      },
+      {
+        "nu_contine": "notă respinsă la validare"
+      }
+    ],
+    "captura": "81_f5_vechi_jurnal_09_2026_nota_refacuta_din_stat.png"
+  },
+  {
+    "nr": "103",
+    "firma": "tenant_9053",
+    "descriere": "F5, Salariați -> „← luna” (09/2026) -> „Salariu” pe Ionescu Vasile (fișa din 22.09.2026, înainte de reparația 876e87a2 din 08.10.2026): câmpul „de la” e 2026-09-01, prima zi a lunii afișate, nu data de azi (24.10.2026). Nu se salvează nimic (formularul rămâne deschis). Cifra datei e a lunii 10/2026: rulată în 11/2026, „← luna” duce în 10/2026.",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') [data-salariu]"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #salariu-data"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type #salariu-data"
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": ".fereastra:last-of-type #salariu-data",
+        "egal": "2026-09-01"
+      }
+    ],
+    "captura": "103_f5_vechi_salariu_de_la_prima_zi_a_lunii.png"
+  },
+  {
+    "nr": "97",
+    "firma": "tenant_9053",
+    "descriere": "F5, Salariați -> „+ Salariat nou” -> „Salvează” fără nimic ales: lângă „Tip normă”, „Funcția de bază” și „Scutit contribuție minimă” apare „Alege o valoare — aplicația nu alege în locul tău.” — ecranul nu le ia din oficiu. Cererea se oprește în ecran (nimic trimis, nimic scris). Ruta API (fără ecran) e probată de e2e_bloc_c.py::test_def_97_api_cere_norma_functia_de_baza_si_scutirea, importul de test_def_97_importul_….",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": "#sp-salariat-nou"
+      },
+      {
+        "click": "#sp-salariat-nou"
+      },
+      {
+        "asteapta": "#sn-salveaza"
+      },
+      {
+        "click": "#sn-salveaza"
+      },
+      {
+        "asteapta": ".msg-eroare[data-camp='sn-tip_norma']"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "deruleaza": "#sn-tip_norma"
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Alege o valoare — aplicația nu alege în locul tău.",
+        "zona": ".msg-eroare[data-camp='sn-tip_norma']"
+      },
+      {
+        "contine": "Alege o valoare — aplicația nu alege în locul tău.",
+        "zona": ".msg-eroare[data-camp='sn-functie_baza']"
+      },
+      {
+        "contine": "Alege o valoare — aplicația nu alege în locul tău.",
+        "zona": ".msg-eroare[data-camp='sn-scutit_contrib_minim']"
+      }
+    ],
+    "captura": "97_f5_salariat_nou_cere_norma_functia_scutirea.png"
+  },
+  {
+    "nr": "46",
+    "firma": "tenant_9049",
+    "utilizator": 71508,
+    "descriere": "F1, ca Ana (71508, „Poate pregăti”): bara realizărilor numără PREGĂTIRI, nu rânduri din coadă. Pe datele clonate (24.10.2026 11:29) Ana are în octombrie 20 de pregătiri, 15 cu decizie, 10 acceptate fără respingere -> „20 de lucrări pregătite luna aceasta · 67% acceptate din prima” (văzut la dovada 492). Între ele nota de salarii F5 „Stat de plata 11/2026” (06.10.2026: pregătită 12:14, respinsă 12:21, retrimisă 12:30, validată 12:32 — înainte de reparația b8a5d0ce din 16:13) e o singură pregătire, neacceptată din prima — forma veche ar fi numărat-o de două ori (2 pregătite, 50%). Cifrele exacte le poate schimba o dovadă care scrie în coadă înaintea acesteia; se verifică etichetele, cifrele se citesc pe captură. Numai citire.",
+    "pasi": [
+      {
+        "asteapta": ".bara3 .bara3-item"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine_oricare": [
+          "lucrări pregătite luna aceasta",
+          "lucrare pregătită luna aceasta"
+        ],
+        "zona": ".bara3"
+      },
+      {
+        "contine": "acceptate din prima",
+        "zona": ".bara3"
+      }
+    ],
+    "captura": "46_f1_vechi_bara_anei_pregatiri_nu_retrimiteri.png"
+  },
+  {
+    "nr": "83",
+    "firma": "tenant_9050",
+    "descriere": "F2 (global-valoric): Stocuri -> «+ NIR nou» -> «fără factură — NIR complet», articol 10 × 5,00, cota 21%, prețul de raft LĂSAT GOL -> «Salvează»: refuzul serverului stă lângă câmpul «preț raft (cu TVA)», cu diacritice („Articolul 1: scrie prețul de raft (cu TVA)…”), câmpul e marcat aria-invalid, nu apare „NIR salvat”. Înainte golul era luat drept 0 și refuzul era fără diacritice, departe de câmp. Refuzat: nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "click": "#sn-toggle"
+      },
+      {
+        "asteapta": "#sn-numar"
+      },
+      {
+        "completeaza": "#sn-numar",
+        "valoare": "DOV83"
+      },
+      {
+        "alege": "#sn-factura",
+        "valoare": "fara"
+      },
+      {
+        "completeaza": "#nir-l0-denumire",
+        "valoare": "Marfa raft gol DOV83"
+      },
+      {
+        "completeaza": "#nir-l0-cantitate",
+        "valoare": "10"
+      },
+      {
+        "completeaza": "#nir-l0-pret_achizitie",
+        "valoare": "5"
+      },
+      {
+        "alege": "#nir-l0-cota_tva",
+        "valoare": "21"
+      },
+      {
+        "click": "#sn-salveaza"
+      },
+      {
+        "asteapta": ".msg-eroare[data-camp='nir-l0-pret_vanzare']"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "prețul de raft (cu TVA)",
+        "zona": ".msg-eroare[data-camp='nir-l0-pret_vanzare']"
+      },
+      {
+        "exista": "#nir-l0-pret_vanzare[aria-invalid='true']"
+      },
+      {
+        "nu_contine": "NIR salvat"
+      }
+    ],
+    "captura": "83_f2_raft_gol_refuz_langa_camp.png"
+  },
+  {
+    "nr": "85",
+    "firma": "tenant_9049",
+    "descriere": "F1 (cantitativ-valoric): Stocuri -> «+ NIR nou»: articolul e o LISTĂ («— alege articolul —», articolele firmei, «+ articol nou…»), nu text liber; «+ articol nou…» cu denumirea «Marfa  A» (două spații) peste «Marfa A» existent -> «Salvează»: refuz lângă câmp „Articolul «Marfa A» există deja în listă: alege-l de acolo…”. Refuzat: niciun NIR, niciun articol nou",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "click": "#sn-toggle"
+      },
+      {
+        "asteapta": "#sn-numar"
+      },
+      {
+        "asteapta": "#nir-l0-articol"
+      },
+      {
+        "captura": "85_f1_articolul_nir_e_lista.png"
+      },
+      {
+        "completeaza": "#sn-numar",
+        "valoare": "DOV85"
+      },
+      {
+        "alege": "#nir-l0-articol",
+        "valoare": "nou"
+      },
+      {
+        "asteapta": "#nir-l0-denumire"
+      },
+      {
+        "completeaza": "#nir-l0-denumire",
+        "valoare": "Marfa  A"
+      },
+      {
+        "completeaza": "#nir-l0-cantitate",
+        "valoare": "2"
+      },
+      {
+        "completeaza": "#nir-l0-pret_achizitie",
+        "valoare": "4"
+      },
+      {
+        "alege": "#nir-l0-cota_tva",
+        "valoare": "21"
+      },
+      {
+        "alege": "#sn-factura-sosita",
+        "valoare": "false"
+      },
+      {
+        "click": "#sn-salveaza"
+      },
+      {
+        "asteapta": ".msg-eroare[data-camp='nir-l0-denumire']"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "select#nir-l0-articol"
+      },
+      {
+        "exista": "#nir-l0-articol option",
+        "text": "+ articol nou…"
+      },
+      {
+        "exista": "#nir-l0-articol option",
+        "text": "Marfa A"
+      },
+      {
+        "contine": "Articolul «Marfa A» există deja în listă",
+        "zona": ".msg-eroare[data-camp='nir-l0-denumire']"
+      },
+      {
+        "nu_contine": "NIR salvat"
+      }
+    ],
+    "captura": "85_f1_articol_nou_dublat_refuzat.png"
+  },
+  {
+    "nr": "94",
+    "firma": "tenant_9049",
+    "descriere": "F1, Date firmă › Stoc: lista metodelor arată și cele două combinații nesuportate („cantitativ-valoric la preț de vânzare … — nesuportat încă”, „cantitativ-valoric la cost FIFO — nesuportat încă”); FIFO ales + «Salvează» -> refuz clar „Metoda de stoc aleasă nu e suportată încă: …”. Refuzul nu scrie: `firma_profil_api.salveaza_date` întoarce refuzul (`if er: return _refuz_formular`) înaintea oricărui UPDATE",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#df-salveaza"
+      },
+      {
+        "asteapta": ".dec-avert, .dec-ok"
+      },
+      {
+        "asteapta": "#df-metoda_stoc"
+      },
+      {
+        "alege": "#df-metoda_stoc",
+        "valoare": "cantitativ_valoric_fifo"
+      },
+      {
+        "click": "#df-salveaza"
+      },
+      {
+        "asteapta_text": "nu e suportată încă"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#df-metoda_stoc option",
+        "text": "cantitativ-valoric la cost FIFO — nesuportat încă"
+      },
+      {
+        "exista": "#df-metoda_stoc option",
+        "text": "cantitativ-valoric la preț de vânzare (371/378/4428 pe articol) — nesuportat încă"
+      },
+      {
+        "contine": "Metoda de stoc aleasă nu e suportată încă: cantitativ-valoric la cost FIFO — nesuportat încă."
+      }
+    ],
+    "captura": "94_f1_metoda_fifo_refuzata_clar.png"
+  },
+  {
+    "nr": "94",
+    "firma": "tenant_9049",
+    "descriere": "F1, Date firmă redeschis DUPĂ refuzul FIFO de mai sus: metoda de stoc a rămas cantitativ-valoric (refuzul n-a scris nimic). Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#df-salveaza"
+      },
+      {
+        "asteapta": ".dec-avert, .dec-ok"
+      },
+      {
+        "asteapta": "#df-metoda_stoc"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#df-metoda_stoc",
+        "egal": "cantitativ_valoric"
+      }
+    ],
+    "captura": "94_f1_metoda_ramasa_cantitativ_valoric.png"
+  },
+  {
+    "nr": "100",
+    "firma": "tenant_9049",
+    "descriere": "F1, NIR 1 din 07.10.2026 (NIR-ul scris cu logica veche, respins la validare pe 07.10, înainte de reparație): Stocuri -> «NIR-urile lunii» -> rândul „NIR 1 din 07.10.2026 · Respins · înlocuit de NIR nr 1” -> «Deschide →»: NIR-ul spune starea și motivul — „Respins la validare: NIR făcut cu logica veche (preț de raft); se reface la cost. Refăcut în NIR-ul 1.” Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".nir-inlocuit .nir-deschide[data-nir='1']"
+      },
+      {
+        "click": ".nir-inlocuit .nir-deschide[data-nir='1']"
+      },
+      {
+        "asteapta": "#nir-detaliu-linii"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Respins la validare: NIR făcut cu logica veche (preț de raft); se reface la cost. Refăcut în NIR-ul 1."
+      }
+    ],
+    "captura": "100_f1_vechi_nir_1_respins_cu_motivul.png"
+  },
+  {
+    "nr": "113",
+    "firma": "tenant_9049",
+    "descriere": "F1, NIR 1 respins (07.10.2026) și refăcut cu același număr (08.10.2026, `refacut_din_id` = 1) — înainte de reparația 0d89286f: Stocuri -> «NIR-urile lunii»: cardul NIR-ului valabil („NIR 1 · 07.10.2026”) fără „Respins”, iar cel respins e o singură linie sub el, „NIR 1 din 07.10.2026 · Respins · înlocuit de NIR nr 1 din 07.10.2026”. Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".nir-inlocuit .nir-deschide[data-nir='1']"
+      },
+      {
+        "deruleaza": ".nir-inlocuit .nir-deschide[data-nir='1']"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "NIR 1 din 07.10.2026 · Respins · înlocuit de NIR nr 1 din 07.10.2026",
+        "zona": ".nir-inlocuit:has(.nir-deschide[data-nir='1'])"
+      },
+      {
+        "contine": "NIR 1 · 07.10.2026",
+        "zona": ".pf-frand:has(.nir-deschide[data-nir='3'])"
+      },
+      {
+        "nu_contine": "Respins",
+        "zona": ".pf-frand:has(.nir-deschide[data-nir='3'])"
+      }
+    ],
+    "captura": "113_f1_vechi_nir_1_o_linie_langa_cel_valabil.png"
+  },
+  {
+    "nr": "146",
+    "firma": "tenant_9049",
+    "descriere": "F1, Registru jurnal 10/2026: NIR 1 fără factură din 07.10.2026 (scris pe 401/4426 înainte de reparație) — nota de refacere REFACERE-NIR-3 (id 122) stornează 4426 = 401 și ține TVA-ul neexigibil până la factură: 4428.01 = 408 · 115,50. Numai citire (a doua jumătate, 4426 = 4428.01 la factura legată, e dovada 146 din partea care scrie)",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "#j-nota-noua"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fereastra:last-of-type [data-nota-id='122']"
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type [data-nota-id='122']"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "4428.01 = 408 · 115,50",
+        "zona": ".fereastra:last-of-type [data-nota-id='122']"
+      },
+      {
+        "contine": "4426 = 401 · -115,50",
+        "zona": ".fereastra:last-of-type [data-nota-id='122']"
+      }
+    ],
+    "captura": "146_f1_vechi_nir_1_tva_pe_4428_01.png"
+  },
+  {
+    "nr": "149",
+    "firma": "tenant_9050",
+    "descriere": "F2 (global-valoric), Registru jurnal 09/2026: amortizarea lunii e generată și VALIDATĂ (nota AMORT-2026-09, scrisă 21.09.2026, înainte de reparație) -> «Generează amortizarea» e inactiv, cu motivul „… validată — o corectură se face printr-o altă notă.”: validatul nu se atinge. Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "#j-nota-noua"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": "#j-prev"
+      },
+      {
+        "click": "#j-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "asteapta": "#j-amort-motiv"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "inactiv": "#j-amort"
+      },
+      {
+        "contine": "validată — o corectură se face printr-o altă notă.",
+        "zona": "#j-amort-motiv"
+      }
+    ],
+    "captura": "149_f2_vechi_amortizarea_validata_neatinsa.png"
+  },
+  {
+    "nr": "310",
+    "firma": "tenant_9049",
+    "descriere": "F1: Casă -> «+ Dispoziție nouă» -> încasare de la client, 1.000 lei, CUI IE6388047V: factura F1A nr. 7 din 19.10.2026 (stinsă de nota bancară ciornă din 21.10.2026, extrasul din 22.10) nu e printre facturile de ales, iar rândul spune de ce: „… nu e în listă: e încasată printr-o notă care așteaptă validarea (din 21.10.2026). Dacă nota se respinge, factura apare din nou aici.” Nu se salvează nimic",
+    "pasi": [
+      {
+        "click": "#fa-casa"
+      },
+      {
+        "asteapta": "#c-toggle"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#c-toggle"
+      },
+      {
+        "asteapta": "#c-data"
+      },
+      {
+        "alege": "#c-cat",
+        "valoare": "incasare_client"
+      },
+      {
+        "completeaza": "#c-suma",
+        "valoare": "1000"
+      },
+      {
+        "completeaza": "#c-cui",
+        "valoare": "IE6388047V"
+      },
+      {
+        "asteapta": ".c-fact-asteptare",
+        "text": "F1A nr. 7"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "F1A nr. 7 din 19.10.2026 (1.000,00 lei) nu e în listă: e încasată printr-o notă care așteaptă validarea (din 21.10.2026). Dacă nota se respinge, factura apare din nou aici.",
+        "zona": ".c-fact-asteptare"
+      },
+      {
+        "nu_contine": "F1A nr. 7 din 19.10.2026 ·",
+        "zona": "#c-facturi"
+      }
+    ],
+    "captura": "310_f1_factura_incasata_la_validare_spusa.png"
+  },
+  {
+    "nr": "310",
+    "firma": "tenant_9049",
+    "descriere": "F1: Casă -> «+ Dispoziție nouă» (formularul deschis are «Renunță») -> «Renunță»: formularul se închide (pe ecran nu mai e nimic din el), fără scriere",
+    "pasi": [
+      {
+        "click": "#fa-casa"
+      },
+      {
+        "asteapta": "#c-toggle"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#c-toggle"
+      },
+      {
+        "asteapta": "#c-renunta"
+      },
+      {
+        "captura": "310_f1_dispozitie_noua_cu_renunta.png"
+      },
+      {
+        "click": "#c-renunta"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#c-renunta",
+        "text": "Renunță"
+      },
+      {
+        "nu_contine": "Renunță"
+      },
+      {
+        "activ": "#c-toggle"
+      }
+    ],
+    "captura": "310_f1_renunta_inchide_formularul.png"
+  },
+  {
+    "nr": "75",
+    "firma": "tenant_9049",
+    "descriere": "F1: Operațiuni speciale -> «Achiziție de la agricultor (compensare 8%)» deschide formularul ACHIZIȚIEI: titlul ei, «Agricultor în registru» (Da/Nu), «Cont cheltuială/stoc» precompletat 301; nicio «Vânzare către agricultor» (formularul de vânzare pe care îl deschidea înainte). Nu se generează nimic",
+    "pasi": [
+      {
+        "click": "#fa-operatiuni"
+      },
+      {
+        "asteapta": "button[data-op='agricultor_achizitie']"
+      },
+      {
+        "click": "button[data-op='agricultor_achizitie']"
+      },
+      {
+        "asteapta": "#op-trimite"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Achiziție de la agricultor (compensare 8%)"
+      },
+      {
+        "nu_contine": "Vânzare către agricultor"
+      },
+      {
+        "exista": "#op-agricultor_in_registru"
+      },
+      {
+        "valoare": "#op-cont_cheltuiala",
+        "egal": "301"
+      }
+    ],
+    "captura": "75_f1_achizitie_agricultor_formularul_ei.png"
+  },
+  {
+    "nr": "76",
+    "firma": "tenant_9050",
+    "descriere": "F2: Operațiuni speciale -> «Credite bancare» -> Operație «Plată rată» (cazul probat la reparație): formularul cere pe ecran, vizibile, Data, Dobânda, Rata (capital), Comisionul bancar (627) și «Dobânda a fost înregistrată deja pe 666» (Da/Nu, fără preselecție) — cheile pe care le citește serverul. Restul formularelor (fiecare câmp pe ramura lui) îl parcurge e2e test_def_76_fiecare_cheie_citita_de_server_are_campul_pe_ecran. Nu se generează nimic",
+    "pasi": [
+      {
+        "click": "#fa-operatiuni"
+      },
+      {
+        "asteapta": "button[data-op='credit']"
+      },
+      {
+        "click": "button[data-op='credit']"
+      },
+      {
+        "asteapta": "#op-trimite"
+      },
+      {
+        "alege": "#op-operatie",
+        "valoare": "plata"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Data*",
+        "zona": ".fereastra:last-of-type .grila-campuri"
+      },
+      {
+        "contine": "Dobândă*",
+        "zona": ".fereastra:last-of-type .grila-campuri"
+      },
+      {
+        "contine": "Rata (capital)*",
+        "zona": ".fereastra:last-of-type .grila-campuri"
+      },
+      {
+        "contine": "Comision bancar (627)*",
+        "zona": ".fereastra:last-of-type .grila-campuri"
+      },
+      {
+        "contine": "Dobânda a fost înregistrată deja pe 666*",
+        "zona": ".fereastra:last-of-type .grila-campuri"
+      },
+      {
+        "valoare": "#op-dobanda_angajata",
+        "egal": ""
+      }
+    ],
+    "captura": "76_f2_credit_plata_rata_campurile_cerute.png"
+  },
+  {
+    "nr": "78",
+    "firma": "tenant_9049",
+    "descriere": "F1: Operațiuni speciale -> «Lichidare / radiere firmă» -> «Vânzare activ la lichidare»: «Cont imobilizare» vine 2131 și «Cont amortizare» 2813, precompletate și vizibile înainte de generare (înainte trebuiau tastate). Nu se generează nimic",
+    "pasi": [
+      {
+        "click": "#fa-operatiuni"
+      },
+      {
+        "asteapta": "button[data-op='lichidare']"
+      },
+      {
+        "click": "button[data-op='lichidare']"
+      },
+      {
+        "asteapta": "#op-trimite"
+      },
+      {
+        "alege": "#op-operatie",
+        "valoare": "vanzare_activ"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#op-cont_imobilizare",
+        "egal": "2131"
+      },
+      {
+        "valoare": "#op-cont_amortizare",
+        "egal": "2813"
+      },
+      {
+        "contine": "Cont imobilizare*",
+        "zona": ".fereastra:last-of-type .grila-campuri"
+      },
+      {
+        "contine": "Cont amortizare*",
+        "zona": ".fereastra:last-of-type .grila-campuri"
+      }
+    ],
+    "captura": "78_f1_lichidare_conturi_precompletate.png"
+  },
+  {
+    "nr": "78",
+    "firma": "tenant_9049",
+    "descriere": "F1: «Lichidare / radiere firmă» -> «Vânzare activ la lichidare»: «Cont imobilizare» schimbat în 2133 (rămâne 2133), «Cont amortizare» golit -> «Generează nota»: refuzul stă lângă câmpul golit («Completează: Cont amortizare.»), nicio notă generată. Refuzul e în ecran (lipsesc câmpuri obligatorii), nu pleacă nicio cerere — nu se scrie nimic",
+    "pasi": [
+      {
+        "click": "#fa-operatiuni"
+      },
+      {
+        "asteapta": "button[data-op='lichidare']"
+      },
+      {
+        "click": "button[data-op='lichidare']"
+      },
+      {
+        "asteapta": "#op-trimite"
+      },
+      {
+        "alege": "#op-operatie",
+        "valoare": "vanzare_activ"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#op-cont_imobilizare",
+        "valoare": "2133"
+      },
+      {
+        "completeaza": "#op-cont_amortizare",
+        "valoare": ""
+      },
+      {
+        "click": "#op-trimite"
+      },
+      {
+        "asteapta": ".msg-eroare[data-camp='op-cont_amortizare']"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#op-cont_imobilizare",
+        "egal": "2133"
+      },
+      {
+        "contine": "Completează: Cont amortizare.",
+        "zona": ".msg-eroare[data-camp='op-cont_amortizare']"
+      },
+      {
+        "exista": "#op-cont_amortizare[aria-invalid='true']"
+      },
+      {
+        "nu_contine": "Notă generată",
+        "zona": "#op-mesaj"
+      }
+    ],
+    "captura": "78_f1_lichidare_cont_schimbat_si_golit_refuzat.png"
+  },
+  {
+    "nr": "131",
+    "firma": "tenant_9049",
+    "descriere": "F1: D394 10/2026 pe factura emisă nr. 2 din 05.10.2026 (DANTE INTERNATIONAL SA, linii la 21% și 11%; scrisă pe 05.10.2026, înainte de reparația d0abd48f din 09.10.2026): „Rezumat” spune că factura are operațiuni pe cotele 11%, 21% și se numără o singură dată, la cota cu TVA-ul cel mai mare (21%); la 11% apare cu 0 facturi (OPANAF 2194/2025, instrucțiuni, secțiunea a 2-a pct.5). Luna 09/2026 n-are nicio factură cu două cote, iar 10/2026 se generează abia după încheierea lunii (383). Numai citire",
+    "pasi": [
+      {
+        "declaratie": "d394",
+        "an": 2026,
+        "luna": 10
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "are operațiuni pe cotele 11%, 21%"
+      },
+      {
+        "contine": "se numără o singură dată, la cota cu TVA-ul cel mai mare (21%); la 11% apare cu 0 facturi"
+      }
+    ],
+    "posibila_de_la": "2026-11-01",
+    "captura": "131_f1_vechi_d394_10_2026_factura_doua_cote.png"
+  },
+  {
+    "nr": "378",
+    "firma": "tenant_9050",
+    "descriere": "F2 (impozit pe profit): D100 T3/2026 pe nota 48 din 30.09.2026 (6581 = 5311 100,00 lei, amenda din retestul 19.10, validată înainte de reparația din 20.10.2026): „Rezumat” trece amenda la cheltuielile nedeductibile, rândul 25, luat din contul 6581 (CF art.25 alin.(4) lit.b) — nu mai calculează pe profitul contabil (înainte: nedeductibile 0). Numai citire",
+    "pasi": [
+      {
+        "declaratie": "d100",
+        "an": 2026,
+        "trim": 3
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "cheltuieli nedeductibile: 100,00 lei (din care rd.25"
+      },
+      {
+        "contine": "din contul 6581"
+      },
+      {
+        "contine": "profitul impozabil cumulat"
+      }
+    ],
+    "captura": "378_f2_vechi_d100_t3_amenda_6581_nedeductibila.png"
+  },
+  {
+    "nr": "378",
+    "firma": "tenant_9050",
+    "descriere": "F2: Registrul de evidență fiscală, anul 2026 (impozit pe profit), sub „Ajustări fiscale pe 2026”: „Din conturi, fără să le scrii: rd.25 — amenzi, majorări și penalități …: 100,00 lei, din contul 6581 …” — rândul luat din cont pe nota 48 (30.09.2026), scrisă înainte de reparație. Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-regfiscal"
+      },
+      {
+        "asteapta": "#rf-an"
+      },
+      {
+        "completeaza": "#rf-an",
+        "valoare": 2026
+      },
+      {
+        "asteapta": "#aj-din-conturi"
+      },
+      {
+        "deruleaza": "#aj-din-conturi"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "rd.25 — amenzi, majorări și penalități",
+        "zona": "#aj-din-conturi"
+      },
+      {
+        "contine": "100,00 lei, din contul 6581",
+        "zona": "#aj-din-conturi"
+      }
+    ],
+    "captura": "378_f2_vechi_registru_fiscal_rd25_din_6581.png"
+  },
+  {
+    "nr": "431",
+    "firma": "tenant_9055",
+    "descriere": "F6: Date firmă -> Asociați: asociații stau în Date firmă (un singur flux: asociații și cesiunile aici, nota împarte, D205 din notele validate): Popescu Andrei 60%, Ionescu Maria 40%, «Total cote: 100%», câmpul «Data cesiunii» și «Istoricul cesiunilor» (nicio cesiune). Nu se salvează nimic",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#as-tabel"
+      },
+      {
+        "deruleaza": "#as-tabel"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#as-1-nume",
+        "egal": "Popescu Andrei"
+      },
+      {
+        "valoare": "#as-2-nume",
+        "egal": "Ionescu Maria"
+      },
+      {
+        "contine": "Total cote: 100%",
+        "zona": "#as-total"
+      },
+      {
+        "exista": "#as-data-cesiune"
+      },
+      {
+        "exista": "#as-istoric-gol"
+      }
+    ],
+    "captura": "431_f6_date_firma_asociati_cote_cesiune.png"
+  },
+  {
+    "nr": "431",
+    "firma": "tenant_9055",
+    "descriere": "F6: D205 pe 2026 cu nota de dividende din 21.10.2026 validată (117 = 457 6.000 / 4.000, 457 = 446 960 / 640; asociații din Date firmă): declarația se generează cu beneficiarii (POPESCU ANDREI, IONESCU MARIA), nu „fără niciun beneficiar”, iar dividendele distribuite neplătite intră pe anul distribuirii (OPANAF 179/2022 anexa 1 cap.II pct.9). D205 pe 2026 se generează abia după încheierea anului (383). Numai citire",
+    "pasi": [
+      {
+        "declaratie": "d205",
+        "an": 2026
+      },
+      {
+        "click": ".fereastra:last-of-type details.dec-xml summary",
+        "text": "Vezi XML-ul generat",
+        "daca_exista": true
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Vezi XML-ul generat"
+      },
+      {
+        "contine_oricare": [
+          "POPESCU ANDREI",
+          "Popescu Andrei"
+        ]
+      },
+      {
+        "contine_oricare": [
+          "IONESCU MARIA",
+          "Ionescu Maria"
+        ]
+      },
+      {
+        "nu_contine": "fără niciun beneficiar"
+      },
+      {
+        "nu_contine": "e ciornă"
+      }
+    ],
+    "posibila_de_la": "2027-01-01",
+    "captura": "431_f6_d205_2026_beneficiarii_din_nota_validata.png"
+  },
+  {
+    "nr": "10",
+    "firma": "tenant_9055",
+    "descriere": "F6: Date firmă -> «Istoricul modificărilor»: schimbările regimului de TVA sunt jurnalizate cu cine, când, vechi -> nou: «Plătitor de TVA — -> da» (19.10.2026) și «Periodicitatea decontului Lunar -> Trimestrial» (21.10.2026). Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#df-jurnal",
+        "stare": "attached"
+      },
+      {
+        "deruleaza": "#df-jurnal"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Periodicitatea decontului Lunar Trimestrial",
+        "zona": "#df-jurnal"
+      },
+      {
+        "contine": "Plătitor de TVA — da",
+        "zona": "#df-jurnal"
+      },
+      {
+        "contine": "21.10.2026",
+        "zona": "#df-jurnal"
+      }
+    ],
+    "captura": "10_f6_istoric_modificari_regim_tva.png"
+  },
+  {
+    "nr": "10",
+    "firma": "tenant_9050",
+    "descriere": "F2: Date firmă -> «Istoricul modificărilor»: regimul TVA la încasare scris pe 22.10.2026 e jurnalizat, vechi -> nou: «Aplică TVA la încasare azi: nu -> da» și «TVA la încasare (perioadele): — -> de la 01.10.2026». Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#df-jurnal",
+        "stare": "attached"
+      },
+      {
+        "deruleaza": "#df-jurnal"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Aplică TVA la încasare azi nu da",
+        "zona": "#df-jurnal"
+      },
+      {
+        "contine": "TVA la încasare (perioadele) — de la 01.10.2026",
+        "zona": "#df-jurnal"
+      }
+    ],
+    "captura": "10_f2_istoric_modificari_tva_la_incasare.png"
+  },
+  {
+    "nr": "10",
+    "firma": "tenant_9049",
+    "descriere": "F1: Date firmă -> «Istoricul modificărilor»: modificările făcute de asistentul cu „Poate pregăti” (Ana Asistent, 06.10 metoda de stoc și 08.10.2026 seria chitanțelor CHF1) apar cu numele lui — cine, când, vechi -> nou. Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#df-jurnal",
+        "stare": "attached"
+      },
+      {
+        "deruleaza": "#df-jurnal"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Ana Asistent",
+        "zona": "#df-jurnal"
+      },
+      {
+        "contine": "Seria chitanțelor — CHF1",
+        "zona": "#df-jurnal"
+      },
+      {
+        "contine": "08.10.2026",
+        "zona": "#df-jurnal"
+      }
+    ],
+    "captura": "10_f1_istoric_modificari_de_asistent.png"
+  },
+  {
+    "nr": "393",
+    "firma": "tenant_9049",
+    "descriere": "Cabinetul copiei: Firme -> Migrare cabinet -> Firme -> lipite CUI-ul lui F1 (401002001, în portofoliu) și 14399841 (cifra de control greșită) -> „Validează la ANAF” (ANAF simulat pe copie): „S-au verificat 1 CUI la ANAF. Un cod are cifra de control greșită și nu a fost trimis”; rândul greșit spune „corectează-l în lista lipită”, nu „în fișier”. Nu se importă nimic (butonul de import nu se apasă)",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "asteapta": "#opt-migrare"
+      },
+      {
+        "click": "#opt-migrare"
+      },
+      {
+        "asteapta": "#mig-meniu .mig-op"
+      },
+      {
+        "click": "#mig-meniu .mig-op",
+        "text": "Firme"
+      },
+      {
+        "asteapta": "#mig-text"
+      },
+      {
+        "completeaza": "#mig-text",
+        "valoare": "401002001\n14399841"
+      },
+      {
+        "click": "#mig-valideaza"
+      },
+      {
+        "asteapta": "#mig-lista .mig-rand"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "S-au verificat 1 CUI la ANAF.",
+        "zona": ".mig-intro"
+      },
+      {
+        "contine": "Un cod are cifra de control greșită și nu a fost trimis",
+        "zona": ".mig-intro"
+      },
+      {
+        "contine": "corectează-l în lista lipită",
+        "zona": "#mig-lista"
+      },
+      {
+        "nu_contine": "în fișier",
+        "zona": "#mig-lista"
+      }
+    ],
+    "captura": "393_f1_cui_lipit_cifra_control_gresita.png"
+  },
+  {
+    "nr": "320",
+    "firma": "tenant_9049",
+    "descriere": "Administratorul cabinetului copiei, pagina principală: „Primii pași” — cardurile lui (preluarea, ANAF + notificări, echipa), fiecare spunând că se bifează singur când pasul e făcut în ecranul real; cardul ANAF nu e făcut (certificatul nu e conectat pe copie), deci cardurile nu dispar. Numai citire",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "asteapta": "#inceput-carduri .inceput-card"
+      },
+      {
+        "deruleaza": "#inceput-carduri"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#inceput-carduri .inceput-card[data-card='preluare']"
+      },
+      {
+        "exista": "#inceput-carduri .inceput-card[data-card='anaf']"
+      },
+      {
+        "exista": "#inceput-carduri .inceput-card[data-card='echipa']"
+      },
+      {
+        "contine": "se bifează singur când ai făcut pasul acolo",
+        "zona": "#inceput-carduri"
+      }
+    ],
+    "captura": "320_f1_carduri_primii_pasi_administrator.png"
+  },
+  {
+    "nr": "320",
+    "firma": "tenant_9049",
+    "descriere": "Administratorul cabinetului copiei: Setări cont -> Notificări: toate tipurile care îl privesc, grupate (Termene și declarații, Facturi și SPV, Validări, Clienți, Cont și echipă), fiecare cu rândul despre ce face aplicația; emailurile contului în afara listei („pleacă mereu, pe email”). Contul există deja (scutit de prima intrare), deci „Înainte de a începe” nu se mai poate arăta pe copie. Nu se salvează nimic",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='setari'])"
+      },
+      {
+        "asteapta": "button.meniu-card",
+        "text": "Notificări"
+      },
+      {
+        "click": "button.meniu-card",
+        "text": "Notificări"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #not-tipuri .not-grup"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine_oricare": [
+          "TERMENE ȘI DECLARAȚII",
+          "Termene și declarații"
+        ],
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "contine_oricare": [
+          "FACTURI ȘI SPV",
+          "Facturi și SPV"
+        ],
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "contine_oricare": [
+          "VALIDĂRI",
+          "Validări"
+        ],
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "contine_oricare": [
+          "CLIENȚI",
+          "Clienți"
+        ],
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "contine_oricare": [
+          "CONT ȘI ECHIPĂ",
+          "Cont și echipă"
+        ],
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "contine": "Cu trei zile înainte de termenul unei declarații încă nedepuse, pe firmele tale.",
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "contine": "Când un coleg trimite la validare o notă sau o declarație.",
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "contine": "nu sunt în listă: pleacă mereu, pe email",
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      }
+    ],
+    "captura": "320_f1_notificari_grupate_administrator.png"
+  },
+  {
+    "nr": "320",
+    "firma": "tenant_9049",
+    "utilizator": 71508,
+    "descriere": "Asistentul copiei (Ana Asistent, numai „Poate pregăti”): Setări cont -> Notificări: tipurile filtrate după drepturi — are „un element pregătit de tine a fost validat”, dar nu „un element nou de validat” (cere „Poate valida”), nici alerta Control fiscal, nici „un coleg și-a activat contul” (administratorul). Nu se salvează nimic",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='setari'])"
+      },
+      {
+        "asteapta": "button.meniu-card",
+        "text": "Notificări"
+      },
+      {
+        "click": "button.meniu-card",
+        "text": "Notificări"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #not-tipuri .not-grup"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Când o notă sau o declarație pregătită de tine a fost validată.",
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "nu_contine": "Când un coleg trimite la validare o notă sau o declarație.",
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "nu_contine": "Când Control fiscal găsește o constatare roșie nouă",
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "nu_contine": "Când un coleg invitat în Asistenți își activează contul.",
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      }
+    ],
+    "captura": "320_f1_notificari_asistent_fara_de_validat.png"
+  },
+  {
+    "nr": "3",
+    "firma": "tenant_9049",
+    "descriere": "Cabinetul copiei: Firme -> Firme existente -> „+ Adaugă firmă”: CUI sintetic 98715030 (cifra de control verificată, absent din bază; ANAF simulat: negăsit), denumirea, SRL, iar la „Email client” adresa asistentului copiei dovada.71508@sesiuneab.test (cont cu rolul „angajat”) -> „Adaugă firma”: refuzul stă pe câmp («… aparține deja unui cont cu alt rol …», aria-invalid) și sub buton «Firma nu s-a creat». Serverul judecă emailul ÎNAINTE de orice scriere (core/uc_tenants.py tenant_creeaza), deci nu se scrie nimic — SCRIE pe copie (firma 98715030) numai dacă deficiența ar reapărea",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#opt-existente",
+        "daca_exista": true
+      },
+      {
+        "asteapta": "#firme-adauga"
+      },
+      {
+        "click": "#firme-adauga"
+      },
+      {
+        "asteapta": "#fn-cui"
+      },
+      {
+        "completeaza": "#fn-cui",
+        "valoare": "98715030"
+      },
+      {
+        "pauza": 2500
+      },
+      {
+        "completeaza": "#fn-nume",
+        "valoare": "Dovada 3 Email Rol SRL"
+      },
+      {
+        "alege": "#fn-tip",
+        "valoare": "srl"
+      },
+      {
+        "completeaza": "#fn-email",
+        "valoare": "dovada.71508@sesiuneab.test"
+      },
+      {
+        "click": "#fn-salveaza"
+      },
+      {
+        "asteapta": ".msg-eroare[data-camp='fn-email']"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "aparține deja unui cont cu alt rol",
+        "zona": ".msg-eroare[data-camp='fn-email']"
+      },
+      {
+        "exista": "#fn-email[aria-invalid='true']"
+      },
+      {
+        "contine": "Firma nu s-a creat",
+        "zona": "#fn-msg"
+      }
+    ],
+    "captura": "3_f1_email_client_alt_rol_refuzat.png"
+  },
+  {
+    "nr": "73",
+    "firma": "tenant_9051",
+    "descriere": "F3 (înregistrată art.317, achizițiile intracomunitare DE-A-001 bunuri și DE-B-001 servicii din 15.06.2026, scrise pe 22.09.2026, înainte de reparația 815619dd din 07.10.2026): Declarații -> D390, iunie 2026 -> Continuă -> „Trimite în coadă →”: serverul răspunde fără nicio cerere 5xx (înainte: POST /coada = 500) — intră în coadă („Trimisă în coad…”) sau, dacă o poartă o oprește, refuzul structurat „nu intră în coadă”. SCRIE pe copie: D390 06/2026 a lui F3 în coada de validare",
+    "pasi": [
+      {
+        "declaratie": "d390",
+        "an": 2026,
+        "luna": 6
+      },
+      {
+        "asteapta": "#dec-trimite, #dec-gol-da"
+      },
+      {
+        "click": "#dec-trimite, #dec-gol-da"
+      },
+      {
+        "asteapta": "#dec-gata-ok, #dec-coada-mesaj.msg-eroare, #dec-coada-mesaj .msg-eroare, #dec-coada-mesaj .caseta-atentie"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine_oricare": [
+          "Trimisă în coad",
+          "nu intră în coadă"
+        ]
+      },
+      {
+        "nu_contine": "Internal Server Error"
+      }
+    ],
+    "captura": "73_f3_vechi_d390_06_2026_trimisa_in_coada.png"
+  },
+  {
+    "nr": "74",
+    "firma": "tenant_9049",
+    "descriere": "F1 (microîntreprindere): Declarații -> D710 (rectificativa D100), T3/2026 -> Continuă (prima generare: „D710 cere cel puțin o obligație corectată.”) -> în formular obligația 121 (impozit micro) declarată inițial 100, corect 150, cotă 1% -> „+ adaugă” -> „Regenerează D710” -> „Trimite în coadă →”: „Trimisă în coad…”, fără eroarea primei generări (înainte: refuz „nu are ce genera”, pasul 3 nu trimitea formularul). SCRIE pe copie: D710 T3/2026 a lui F1 în coada de validare",
+    "pasi": [
+      {
+        "declaratie": "d710",
+        "an": 2026,
+        "luna": 9,
+        "trim": 3
+      },
+      {
+        "asteapta": "#d710-cod"
+      },
+      {
+        "alege": "#d710-cod",
+        "valoare": "121"
+      },
+      {
+        "completeaza": "#d710-i",
+        "valoare": 100
+      },
+      {
+        "completeaza": "#d710-c",
+        "valoare": 150
+      },
+      {
+        "completeaza": "#d710-cota",
+        "valoare": 1
+      },
+      {
+        "click": "#d710-add"
+      },
+      {
+        "asteapta": ".dec-d710-del"
+      },
+      {
+        "click": "#d710-regen"
+      },
+      {
+        "pauza": 3000
+      },
+      {
+        "asteapta": "#dec-trimite"
+      },
+      {
+        "click": "#dec-trimite"
+      },
+      {
+        "asteapta_text": "Trimisă în coad"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Trimisă în coad"
+      },
+      {
+        "nu_contine": "cel puțin o obligație corectată"
+      }
+    ],
+    "captura": "74_f1_d710_t3_2026_formular_manual_in_coada.png"
+  },
+  {
+    "nr": "244",
+    "firma": "tenant_9050",
+    "descriere": "F2: Bilanț 2026, S1005 -> refuzul cu clasele 6/7 neînchise -> „Propune nota de închidere la 31.12.2026” -> refuzul se recitește: „Notele de închidere propuse așteaptă validarea …”, fără „închide clasele 6/7” și fără „Jurnal — notele de validat”, cu legătura „Deschide notele de închidere în Registrul jurnal — decembrie 2026”. Pe copie niciun an nu e încheiat (prima notă: 31.01.2026), iar propunerea pe 2026 se face abia după 31.12.2026 (243). SCRIE pe copie (după 31.12.2026): cele două note de închidere propuse, ciornă",
+    "pasi": [
+      {
+        "click": "#fa-bilant"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #bl-an"
+      },
+      {
+        "completeaza": ".fereastra:last-of-type #bl-an",
+        "valoare": 2026
+      },
+      {
+        "pauza": 4000
+      },
+      {
+        "alege": ".fereastra:last-of-type #bl-tip",
+        "valoare": "s1005"
+      },
+      {
+        "pauza": 4000
+      },
+      {
+        "click": ".fereastra:last-of-type .bl-inchidere-propune[data-an='2026']"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type .bl-inchidere-jurnal"
+      },
+      {
+        "pauza": 1500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Notele de închidere propuse așteaptă validarea",
+        "zona": ".fereastra:last-of-type #bl-precedent"
+      },
+      {
+        "nu_contine": "închide clasele 6/7",
+        "zona": ".fereastra:last-of-type #bl-precedent"
+      },
+      {
+        "nu_contine": "notele de validat",
+        "zona": ".fereastra:last-of-type #bl-precedent"
+      },
+      {
+        "contine": "Deschide notele de închidere în Registrul jurnal — decembrie 2026",
+        "zona": ".fereastra:last-of-type .bl-inchidere-jurnal"
+      }
+    ],
+    "posibila_de_la": "2027-01-01",
+    "captura": "244_f2_bilant_2026_propunere_legatura_note.png"
+  },
+  {
+    "nr": "99",
+    "firma": "tenant_9049",
+    "utilizator": 71508,
+    "descriere": "SCRIE pe copie (1/6, ca Ana Asistent, „Poate pregăti” pe F1): Stocuri -> «+ NIR nou» DOV99, articol nou «Marfa DOV99», 10 × 55,00, cota 21%, factura nesosită -> «Salvează»: NIR salvat, notele intră în coada cabinetului (middleware-ul, `uc_coada.note_in_coada`); situația stocului: Marfa DOV99 10 buc / 550,00 lei (starea „înainte” a deficienței 99)",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "click": "#sn-toggle"
+      },
+      {
+        "asteapta": "#sn-numar"
+      },
+      {
+        "completeaza": "#sn-numar",
+        "valoare": "DOV99"
+      },
+      {
+        "alege": "#nir-l0-articol",
+        "valoare": "nou"
+      },
+      {
+        "asteapta": "#nir-l0-denumire"
+      },
+      {
+        "completeaza": "#nir-l0-denumire",
+        "valoare": "Marfa DOV99"
+      },
+      {
+        "completeaza": "#nir-l0-cantitate",
+        "valoare": "10"
+      },
+      {
+        "completeaza": "#nir-l0-pret_achizitie",
+        "valoare": "55"
+      },
+      {
+        "alege": "#nir-l0-cota_tva",
+        "valoare": "21"
+      },
+      {
+        "alege": "#sn-factura-sosita",
+        "valoare": "false"
+      },
+      {
+        "click": "#sn-salveaza"
+      },
+      {
+        "asteapta_text": "NIR salvat"
+      },
+      {
+        "asteapta": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99')"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "NIR salvat",
+        "zona": "#s-mesaj"
+      },
+      {
+        "exista": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99')"
+      },
+      {
+        "contine": "10",
+        "zona": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99') td:nth-child(3)"
+      },
+      {
+        "contine": "550,00",
+        "zona": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99') td:nth-child(5)"
+      }
+    ],
+    "captura": "99_f1_nir_asistent_stoc_10_550.png"
+  },
+  {
+    "nr": "99",
+    "firma": "tenant_9049",
+    "descriere": "SCRIE pe copie (2/6, contabilul-șef): pagina principală -> «De validat» -> cardul „NIR nr DOV99” -> «Respinge», motivul „NIR greșit DOV99” -> „Ai respins …”; cardul nu mai e în coadă",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-titlu"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": "#val-note .val-card:has-text('NIR nr DOV99') .val-respinge"
+      },
+      {
+        "click": "#val-note .val-card:has-text('NIR nr DOV99') .val-respinge"
+      },
+      {
+        "asteapta": "#dlg-input"
+      },
+      {
+        "completeaza": "#dlg-input",
+        "valoare": "NIR greșit DOV99"
+      },
+      {
+        "click": "#dlg-ok"
+      },
+      {
+        "asteapta_text": "Ai respins"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Ai respins"
+      },
+      {
+        "nu_contine": "NIR nr DOV99",
+        "zona": "#val-note"
+      }
+    ],
+    "captura": "99_f1_nir_dov99_respins_in_coada.png"
+  },
+  {
+    "nr": "99",
+    "firma": "tenant_9049",
+    "descriere": "3/6, după respingere (numai citire): Stocuri -> situația stocului: Marfa DOV99 a ieșit din stoc — cantitatea 0, valoarea 0,00 (intrarea NIR-ului respins e stornată). Înainte marfa NIR-ului respins rămânea în stoc",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99')"
+      },
+      {
+        "deruleaza": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99')"
+      },
+      {
+        "nu_contine": "10",
+        "zona": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99') td:nth-child(3)"
+      },
+      {
+        "contine": "0",
+        "zona": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99') td:nth-child(3)"
+      },
+      {
+        "contine": "0,00",
+        "zona": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99') td:nth-child(5)"
+      },
+      {
+        "nu_contine": "550",
+        "zona": "#s-situatie-tabel tbody tr:has-text('Marfa DOV99') td:nth-child(5)"
+      }
+    ],
+    "captura": "99_f1_nir_respins_scos_din_stoc.png"
+  },
+  {
+    "nr": "100",
+    "firma": "tenant_9049",
+    "descriere": "4/6 (numai citire; «Refă NIR-ul» doar deschide formularul): Stocuri -> «NIR-urile lunii»: cardul NIR DOV99 spune „Respins la validare: NIR greșit DOV99. Intrarea lui în stoc a fost stornată.” și are «Refă NIR-ul»; apăsat, formularul spune „Refaci NIR-ul DOV99, respins la validare (NIR greșit DOV99)” și are numărul DOV99",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ')"
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ')"
+      },
+      {
+        "captura": "100_f1_nir_dov99_respins_cu_motivul.png"
+      },
+      {
+        "click": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ') .nir-reface"
+      },
+      {
+        "asteapta_text": "Refaci NIR-ul DOV99"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Respins la validare: NIR greșit DOV99. Intrarea lui în stoc a fost stornată.",
+        "zona": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ')"
+      },
+      {
+        "exista": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ') .nir-reface",
+        "text": "Refă NIR-ul"
+      },
+      {
+        "contine": "Refaci NIR-ul DOV99, respins la validare (NIR greșit DOV99)"
+      },
+      {
+        "valoare": "#sn-numar",
+        "egal": "DOV99"
+      }
+    ],
+    "captura": "100_f1_refa_nir_dov99_formular.png"
+  },
+  {
+    "nr": "112",
+    "firma": "tenant_9049",
+    "descriere": "5/6 (numai citire): Stocuri -> «Refă NIR-ul» pe NIR DOV99: rândul formularului are articolul ales «Marfa DOV99», cantitatea „10” și prețul „55.00” (nu „10.000” / „55.0000”)",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ') .nir-reface"
+      },
+      {
+        "click": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ') .nir-reface"
+      },
+      {
+        "asteapta_text": "Refaci NIR-ul DOV99"
+      },
+      {
+        "asteapta": "#nir-l0-cantitate"
+      },
+      {
+        "deruleaza": "#nir-l0-cantitate"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#nir-l0-articol option:checked",
+        "text": "Marfa DOV99"
+      },
+      {
+        "valoare": "#nir-l0-cantitate",
+        "egal": "10"
+      },
+      {
+        "valoare": "#nir-l0-pret_achizitie",
+        "egal": "55.00"
+      }
+    ],
+    "captura": "112_f1_refa_nir_precompletat.png"
+  },
+  {
+    "nr": "113",
+    "firma": "tenant_9049",
+    "descriere": "SCRIE pe copie (6/6): Stocuri -> «Refă NIR-ul» pe NIR DOV99 -> cantitatea 12, factura nesosită -> «Salvează»: în «NIR-urile lunii» un singur card „NIR DOV99” (cel valabil), fără „Respins”, iar cel respins e linia „NIR DOV99 din … · Respins · înlocuit de NIR nr DOV99 din …”",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ') .nir-reface"
+      },
+      {
+        "click": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ') .nir-reface"
+      },
+      {
+        "asteapta_text": "Refaci NIR-ul DOV99"
+      },
+      {
+        "asteapta": "#nir-l0-cantitate"
+      },
+      {
+        "completeaza": "#nir-l0-cantitate",
+        "valoare": "12"
+      },
+      {
+        "alege": "#sn-factura-sosita",
+        "valoare": "false"
+      },
+      {
+        "click": "#sn-salveaza"
+      },
+      {
+        "asteapta_text": "NIR salvat"
+      },
+      {
+        "asteapta": ".nir-inlocuit:has-text('NIR DOV99 ')"
+      },
+      {
+        "deruleaza": ".nir-inlocuit:has-text('NIR DOV99 ')"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "· Respins · înlocuit de NIR nr DOV99 din",
+        "zona": ".nir-inlocuit:has-text('NIR DOV99 ')"
+      },
+      {
+        "exista": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ')"
+      },
+      {
+        "nu_contine": "Respins",
+        "zona": ".fereastra:last-of-type .pf-lista .pf-frand:has-text('NIR DOV99 ')"
+      }
+    ],
+    "captura": "113_f1_nir_dov99_refacut_o_linie.png"
+  },
+  {
+    "nr": "95",
+    "firma": "tenant_9050",
+    "descriere": "SCRIE pe copie: F2 (global-valoric) -> Stocuri -> «+ NIR nou» DOV95 legat de factura primită TI-1 din 20.10.2026 (id 3; 30.000,00 lei fără TVA, contată pe 371 = 401) -> 1 × 30.000,00, raft 48.400,00 cu TVA 21% -> «Salvează»: „NIR salvat, legat de factura TI-1 … Costul (30.000,00 lei) e în factură.”",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "click": "#sn-toggle"
+      },
+      {
+        "asteapta": "#sn-numar"
+      },
+      {
+        "completeaza": "#sn-numar",
+        "valoare": "DOV95"
+      },
+      {
+        "alege": "#sn-factura",
+        "valoare": "3"
+      },
+      {
+        "completeaza": "#nir-l0-denumire",
+        "valoare": "Marfa DOV95"
+      },
+      {
+        "completeaza": "#nir-l0-cantitate",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#nir-l0-pret_achizitie",
+        "valoare": "30000"
+      },
+      {
+        "completeaza": "#nir-l0-pret_vanzare",
+        "valoare": "48400"
+      },
+      {
+        "alege": "#nir-l0-cota_tva",
+        "valoare": "21"
+      },
+      {
+        "click": "#sn-salveaza"
+      },
+      {
+        "asteapta_text": "NIR salvat"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "legat de factura TI-1",
+        "zona": "#s-mesaj"
+      },
+      {
+        "contine": "Costul (30.000,00 lei) e în factură.",
+        "zona": "#s-mesaj"
+      }
+    ],
+    "captura": "95_f2_nir_legat_de_factura_salvat.png"
+  },
+  {
+    "nr": "95",
+    "firma": "tenant_9050",
+    "descriere": "După NIR-ul DOV95 de mai sus (numai citire): Stocuri -> NIR DOV95 -> «Deschide NIR-ul»: notele NIR-ului legat sunt NUMAI adaosul (371 = 378 · 10.000,00) și TVA neexigibilă (371 = 4428.02 · 8.400,00); niciun 371 = 401 (costul e în factură)",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".nir-deschide[data-numar='DOV95']"
+      },
+      {
+        "click": ".nir-deschide[data-numar='DOV95']"
+      },
+      {
+        "asteapta": "#nir-detaliu-linii"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "legat de factura TI-1 (costul e în factură)"
+      },
+      {
+        "contine": "371 378 10.000,00",
+        "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+      },
+      {
+        "contine": "371 4428.02 8.400,00",
+        "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+      },
+      {
+        "nu_contine": " 401 ",
+        "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+      }
+    ],
+    "captura": "95_f2_nir_legat_doar_adaos_si_tva_neexigibila.png"
+  },
+  {
+    "nr": "144",
+    "firma": "tenant_9049",
+    "descriere": "SCRIE pe copie (1/2): F1 -> Facturi primite -> «Importă XML UBL» DOVD144-1 din 23.10.2026 (DANTE INTERNATIONAL SA: Marfa A 10 × 55,00 = 550,00 + TVA 115,50) -> contul 371 -> «Validează»: caseta „NIR-ul acestei livrări” propune NIR nr 1 din 07.10.2026 (NIR fără factură scris înainte de reparație, refăcut pe 408 / 4428.01; același furnizor, același cost) — „— propus”. Factura rămâne nevalidată (se leagă în pasul următor)",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-primite"
+      },
+      {
+        "click": "#fac-primite"
+      },
+      {
+        "asteapta": "#fp-xml",
+        "stare": "attached"
+      },
+      {
+        "incarca": "#fp-xml",
+        "generator": "builtins:bytes",
+        "argumente": [
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"><cbc:ID>DOVD144-1</cbc:ID><cbc:IssueDate>2026-10-23</cbc:IssueDate><cbc:DocumentCurrencyCode>RON</cbc:DocumentCurrencyCode><cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO14399840</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>DANTE INTERNATIONAL SA</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO401002001</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>F1 Comert Stoc SRL</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty><cac:TaxTotal><cbc:TaxAmount currencyID=\"RON\">115.50</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"RON\">550.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"RON\">115.50</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID=\"RON\">550.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID=\"RON\">665.50</cbc:TaxInclusiveAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">10</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">550.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Marfa A</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">55.0000</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>",
+          "utf-8"
+        ],
+        "nume": "DOVD144-1.xml",
+        "tip": "text/xml"
+      },
+      {
+        "asteapta": ".fac-primita-btn",
+        "text": "DOVD144-1"
+      },
+      {
+        "click": ".fac-primita-btn",
+        "text": "DOVD144-1"
+      },
+      {
+        "asteapta": "#pr-cont"
+      },
+      {
+        "completeaza": "#pr-cont",
+        "valoare": "371"
+      },
+      {
+        "alege": "#pr-furnizor-incasare",
+        "valoare": "false"
+      },
+      {
+        "click": "#pr-valideaza"
+      },
+      {
+        "asteapta": "#ca-ok"
+      },
+      {
+        "click": "#ca-ok"
+      },
+      {
+        "asteapta": "#nir-legat"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#nir-legat option:checked",
+        "text": "NIR nr 1 din 07.10.2026"
+      },
+      {
+        "exista": "#nir-legat option:checked",
+        "text": "— propus"
+      },
+      {
+        "contine": "NIR „fără factură” nelegat",
+        "zona": "#pr-zona"
+      }
+    ],
+    "captura": "144_f1_vechi_factura_propune_nir_1.png"
+  },
+  {
+    "nr": "144",
+    "firma": "tenant_9049",
+    "descriere": "SCRIE pe copie (2/2): Facturi primite -> DOVD144-1 -> contul 371 -> «Validează» -> «Leagă de NIR-ul ales» (NIR nr 1 din 07.10.2026, propus): factura e validată, legată de NIR (nota ei: dovezile 107 și 146 de mai jos)",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-primite"
+      },
+      {
+        "click": "#fac-primite"
+      },
+      {
+        "asteapta": ".fac-primita-btn",
+        "text": "DOVD144-1"
+      },
+      {
+        "click": ".fac-primita-btn",
+        "text": "DOVD144-1"
+      },
+      {
+        "asteapta": "#pr-cont"
+      },
+      {
+        "completeaza": "#pr-cont",
+        "valoare": "371"
+      },
+      {
+        "alege": "#pr-furnizor-incasare",
+        "valoare": "false"
+      },
+      {
+        "click": "#pr-valideaza"
+      },
+      {
+        "asteapta": "#ca-ok"
+      },
+      {
+        "click": "#ca-ok"
+      },
+      {
+        "asteapta": "#nir-legat"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "captura": "144_f1_vechi_caseta_nir_de_legat.png"
+      },
+      {
+        "click": "#nir-leaga"
+      },
+      {
+        "asteapta": "#pr-zona",
+        "text": "Validată"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Validată",
+        "zona": "#pr-zona"
+      }
+    ],
+    "captura": "144_f1_vechi_factura_legata_de_nir_1.png"
+  },
+  {
+    "nr": "144",
+    "firma": "tenant_9049",
+    "descriere": "După legare (numai citire): Stocuri -> NIR 1 (07.10.2026) -> «Deschide NIR-ul»: „legat de factura DOVD144-1 (costul e în factură)”; notele NIR-ului rămân cele vechi (371 = 408 · 550,00 din refacere) — factura n-a adus o a doua intrare a mărfii",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".nir-deschide[data-nir='3']"
+      },
+      {
+        "click": ".nir-deschide[data-nir='3']"
+      },
+      {
+        "asteapta": "#nir-detaliu-linii"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "legat de factura DOVD144-1 (costul e în factură)"
+      },
+      {
+        "contine": "371 408 550,00",
+        "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+      }
+    ],
+    "captura": "144_f1_vechi_nir_1_legat_de_factura.png"
+  },
+  {
+    "nr": "107",
+    "firma": "tenant_9049",
+    "descriere": "După legarea facturii DOVD144-1 de NIR-ul 1 fără factură din 07.10.2026 (numai citire): Registru jurnal 10/2026 -> nota facturii închide 408: 408 = 401 · 665,50 și 4426 = 4428.01 · 115,50, fără niciun 371 = 401 (371 nu se încarcă a doua oară)",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "#j-nota-noua"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      },
+      {
+        "deruleaza": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "408 = 401 · 665,50",
+        "zona": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      },
+      {
+        "nu_contine": "371 = 401",
+        "zona": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      }
+    ],
+    "captura": "107_f1_vechi_nota_facturii_408_401_fara_371.png"
+  },
+  {
+    "nr": "146",
+    "firma": "tenant_9049",
+    "descriere": "După legare (numai citire): Registru jurnal 10/2026 -> TVA-ul NIR-ului 1 stă pe 4428.01 = 408 (nota de refacere 122), iar nota facturii DOVD144-1 îl trece în deductibil: 4426 = 4428.01 · 115,50, fără 4426 = 401",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "#j-nota-noua"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      },
+      {
+        "deruleaza": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "4426 = 4428.01 · 115,50",
+        "zona": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      },
+      {
+        "nu_contine": "4426 = 401",
+        "zona": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      },
+      {
+        "contine": "4428.01 = 408 · 115,50",
+        "zona": ".fereastra:last-of-type [data-nota-id='122']"
+      }
+    ],
+    "captura": "146_f1_vechi_factura_4426_din_4428_01.png"
+  },
+  {
+    "nr": "418",
+    "firma": "tenant_9049",
+    "descriere": "SCRIE pe copie: F1 -> Facturi primite -> «Importă XML UBL» DOVD418-1 (DANTE, cod TVA RO14399840 în PartyTaxScheme: Marfa D418 2 × 41,50 la 21% și Carte D418 1 × 100,00 la 11%) -> detaliul: „Furnizorul e înregistrat în scopuri de TVA” AFLAT (din XML-ul facturii / ANAF), fără alegere; contul facturii 371, contul liniei 2 = 6028 -> «Validează» -> «Altă livrare — nu e niciunul» -> „Validată …” RĂMÂNE pe ecran, cu «← Înapoi» (nu sare singur). TVA la încasare se alege numai pentru că ANAF nu răspunde pe mediul copiei („ANAF nu a răspuns: alege.”)",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-primite"
+      },
+      {
+        "click": "#fac-primite"
+      },
+      {
+        "asteapta": "#fp-xml",
+        "stare": "attached"
+      },
+      {
+        "incarca": "#fp-xml",
+        "generator": "builtins:bytes",
+        "argumente": [
+          "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\" xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\" xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"><cbc:ID>DOVD418-1</cbc:ID><cbc:IssueDate>2026-10-23</cbc:IssueDate><cbc:DocumentCurrencyCode>RON</cbc:DocumentCurrencyCode><cac:AccountingSupplierParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO14399840</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>DANTE INTERNATIONAL SA</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingSupplierParty><cac:AccountingCustomerParty><cac:Party><cac:PartyTaxScheme><cbc:CompanyID>RO401002001</cbc:CompanyID><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:PartyTaxScheme><cac:PartyLegalEntity><cbc:RegistrationName>F1 Comert Stoc SRL</cbc:RegistrationName></cac:PartyLegalEntity></cac:Party></cac:AccountingCustomerParty><cac:TaxTotal><cbc:TaxAmount currencyID=\"RON\">28.43</cbc:TaxAmount><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"RON\">83.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"RON\">17.43</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal><cac:TaxSubtotal><cbc:TaxableAmount currencyID=\"RON\">100.00</cbc:TaxableAmount><cbc:TaxAmount currencyID=\"RON\">11.00</cbc:TaxAmount><cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:TaxCategory></cac:TaxSubtotal></cac:TaxTotal><cac:LegalMonetaryTotal><cbc:TaxExclusiveAmount currencyID=\"RON\">183.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID=\"RON\">211.43</cbc:TaxInclusiveAmount></cac:LegalMonetaryTotal><cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">2</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">83.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Marfa D418</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>21</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">41.5000</cbc:PriceAmount></cac:Price></cac:InvoiceLine><cac:InvoiceLine><cbc:ID>2</cbc:ID><cbc:InvoicedQuantity unitCode=\"H87\">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID=\"RON\">100.00</cbc:LineExtensionAmount><cac:Item><cbc:Name>Carte D418</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>11</cbc:Percent><cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item><cac:Price><cbc:PriceAmount currencyID=\"RON\">100.0000</cbc:PriceAmount></cac:Price></cac:InvoiceLine></Invoice>",
+          "utf-8"
+        ],
+        "nume": "DOVD418-1.xml",
+        "tip": "text/xml"
+      },
+      {
+        "asteapta": ".fac-primita-btn",
+        "text": "DOVD418-1"
+      },
+      {
+        "click": ".fac-primita-btn",
+        "text": "DOVD418-1"
+      },
+      {
+        "asteapta": "#pr-cont"
+      },
+      {
+        "completeaza": "#pr-cont",
+        "valoare": "371"
+      },
+      {
+        "completeaza": "#pr-cont-l1",
+        "valoare": "6028"
+      },
+      {
+        "alege": "#pr-furnizor-incasare",
+        "valoare": "false"
+      },
+      {
+        "click": "#pr-valideaza"
+      },
+      {
+        "asteapta": "#ca-ok"
+      },
+      {
+        "click": "#ca-ok"
+      },
+      {
+        "asteapta": "#nir-legat"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "captura": "418_f1_caseta_alta_livrare.png"
+      },
+      {
+        "click": "#nir-alta"
+      },
+      {
+        "asteapta": "#pr-zona",
+        "text": "Validată"
+      },
+      {
+        "pauza": 2000
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Validată",
+        "zona": "#pr-zona"
+      },
+      {
+        "exista": "#pr-zona button",
+        "text": "Înapoi"
+      },
+      {
+        "contine_oricare": [
+          "Aflat din XML-ul facturii: codul de TVA RO14399840",
+          "Aflat din ANAF, registrul contribuabililor"
+        ]
+      },
+      {
+        "nu_contine": "iar XML-ul n-are codul de TVA al furnizorului"
+      }
+    ],
+    "captura": "418_f1_validata_confirmarea_ramane.png"
+  },
+  {
+    "nr": "418",
+    "firma": "tenant_9049",
+    "descriere": "După DOVD418-1 (numai citire): Registru jurnal 10/2026 -> nota facturii are contul fiecărei linii: marfa 371 = 401 · 83,00, cartea 6028 = 401 · 100,00 (nu un singur cont pe factură) și „altă livrare decât NIR-urile nelegate (confirmat)”",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "#j-nota-noua"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
+      },
+      {
+        "deruleaza": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "371 = 401 · 83,00",
+        "zona": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
+      },
+      {
+        "contine": "6028 = 401 · 100,00",
+        "zona": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
+      },
+      {
+        "contine": "altă livrare decât NIR-urile nelegate (confirmat)",
+        "zona": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
+      }
+    ],
+    "captura": "418_f1_nota_contul_pe_linie.png"
+  },
+  {
+    "nr": "418",
+    "firma": "tenant_9049",
+    "descriere": "După DOVD418-1 (numai citire): Stocuri -> situația stocului are «Marfa D418» (linia pe 371), dar nu «Carte D418» (linia pe 6028 nu intră în stoc)",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": "#s-situatie-tabel"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Marfa D418",
+        "zona": "#s-situatie-tabel"
+      },
+      {
+        "nu_contine": "Carte D418",
+        "zona": "#s-situatie-tabel"
+      }
+    ],
+    "captura": "418_f1_in_stoc_numai_marfa.png"
+  },
+  {
+    "nr": "57",
+    "firma": "tenant_9053",
+    "utilizator": 71508,
+    "descriere": "SCRIE pe copie (1/7 al șirului 57–81–109, F5 07/2026). Ana -> Salariați -> statul 07/2026 (lună încheiată, fără notă de salarii) -> „Contabilizează statul” -> „Scrie nota ciornă”: nota intră la validare în cabinet.",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 08/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 07/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona table"
+      },
+      {
+        "pauza": 1200
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona #sp-contare-scrie",
+        "text": "Scrie nota ciornă"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare-zona #sp-contare-scrie"
+      },
+      {
+        "asteapta_text": "e la validare în cabinet"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "e la validare în cabinet",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "captura": "57_f5_l12_ana_scrie_nota_07_2026.png"
+  },
+  {
+    "nr": "55",
+    "firma": "tenant_9053",
+    "descriere": "După dovada precedentă (nota de salarii 07/2026 a Anei, la validare), contabilul-șef închide fereastra firmei -> „De validat”: titlul notei e „Notă · Salariile lunii 07/2026 · Stat de plată nr SAL 07/2026 din 31.07.2026” — statul de plată o singură dată, fără „Stat de plata” fără diacritice. Numai citire (pe nota scrisă de dovada precedentă).",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-titlu"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Notă · Salariile lunii 07/2026 · Stat de plată nr SAL 07/2026 din 31.07.2026",
+        "zona": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-titlu"
+      },
+      {
+        "nu_contine": "Stat de plata",
+        "zona": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-titlu"
+      }
+    ],
+    "captura": "55_f5_l12_de_validat_titlul_notei_de_salarii.png"
+  },
+  {
+    "nr": "57",
+    "firma": "tenant_9053",
+    "descriere": "SCRIE pe copie (2/7). Contabilul-șef -> „De validat” -> nota de salarii 07/2026 a F5 -> „Respinge” cu motivul „Lipsește pontajul lunii 07/2026” -> confirmarea „Ai respins …”.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-titlu"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+      },
+      {
+        "click": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-respinge"
+      },
+      {
+        "asteapta": "#dlg-input"
+      },
+      {
+        "completeaza": "#dlg-input",
+        "valoare": "Lipsește pontajul lunii 07/2026"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "click": "#dlg-ok"
+      },
+      {
+        "asteapta_text": "Ai respins"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Ai respins"
+      }
+    ],
+    "captura": "57_f5_l12_contabilul_respinge_nota_07_2026.png"
+  },
+  {
+    "nr": "57",
+    "firma": "tenant_9053",
+    "utilizator": 71508,
+    "descriere": "Ana deschide Salariați -> statul 07/2026, FĂRĂ niciun clic pe „Contabilizează statul”: statul arată deja „Nota de salarii … a fost respinsă la validare: Lipsește pontajul lunii 07/2026. Se corectează din statul de plată, nu din Registrul-jurnal …”. Numai citire.",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 08/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 07/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona .caseta-atentie"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "a fost respinsă la validare: Lipsește pontajul lunii 07/2026.",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "contine": "Se corectează din statul de plată, nu din Registrul-jurnal",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "exista": ".fereastra:last-of-type #sp-contare-zona .caseta-atentie"
+      }
+    ],
+    "captura": "57_f5_l12_respingerea_pe_stat_la_deschidere.png"
+  },
+  {
+    "nr": "81",
+    "firma": "tenant_9053",
+    "utilizator": 71508,
+    "descriere": "SCRIE pe copie (4/7). Ana -> statul 07/2026 (nota respinsă) -> „Contabilizează statul” -> „Recontabilizează statul” -> confirmă „Retrimite fără schimbări” -> „Nota respinsă a fost înlocuită cu nota …, fără schimbări (confirmat), și trimisă la validare.”; nota nouă e la validare în cabinet. Nota se reface din stat, nu din Registrul jurnal.",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 08/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 07/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona table"
+      },
+      {
+        "pauza": 1200
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona #sp-contare-scrie",
+        "text": "Recontabilizează statul"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare-zona #sp-contare-scrie"
+      },
+      {
+        "asteapta": "#caseta-atentie-activa #ca-ok"
+      },
+      {
+        "captura": "81_f5_l12_confirmarea_retrimite_fara_schimbari.png"
+      },
+      {
+        "click": "#caseta-atentie-activa #ca-ok"
+      },
+      {
+        "asteapta_text": "a fost înlocuită cu nota"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Nota respinsă a fost înlocuită cu nota",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "contine": "fără schimbări (confirmat), și trimisă la validare.",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "contine": "e la validare în cabinet",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "captura": "81_f5_l12_nota_refacuta_din_stat_la_validare.png"
+  },
+  {
+    "nr": "109",
+    "firma": "tenant_9053",
+    "utilizator": 71508,
+    "descriere": "SCRIE pe copie (5/7). Ana -> statul 07/2026 (ciorna de salarii la validare, din dovada precedentă) -> „Prime, sporuri, ore supl.” pe Ionescu Vasile -> Primă „prima D109 dovada” 1.000 lei -> Adaugă -> „Contabilizează statul”: „Ciorna … din jurnal are alte sume decât statul afișat” și „Înlocuiește ciorna cu nota din statul de acum” -> apăsat: „Ciorna cu sumele statului de dinainte a fost înlocuită cu nota …, scrisă din statul de acum”.",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 09/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 08/2026"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-prev"
+      },
+      {
+        "asteapta_text": "Luna 07/2026"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') [data-elem]"
+      },
+      {
+        "asteapta": "#el-tip"
+      },
+      {
+        "alege": "#el-tip",
+        "valoare": "prima"
+      },
+      {
+        "completeaza": "#el-denumire",
+        "valoare": "prima D109 dovada"
+      },
+      {
+        "completeaza": "#el-suma",
+        "valoare": "1000"
+      },
+      {
+        "click": "#el-adauga"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') [data-elem]",
+        "text": "(1)"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona table"
+      },
+      {
+        "pauza": 1200
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #sp-contare-zona #sp-contare-scrie",
+        "text": "Înlocuiește ciorna"
+      },
+      {
+        "captura": "109_f5_l12_ciorna_are_alte_sume_decat_statul.png"
+      },
+      {
+        "click": ".fereastra:last-of-type #sp-contare-zona #sp-contare-scrie"
+      },
+      {
+        "asteapta_text": "Ciorna cu sumele statului de dinainte a fost înlocuită cu nota"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Ciorna cu sumele statului de dinainte a fost înlocuită cu nota",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      },
+      {
+        "contine": "scrisă din statul de acum",
+        "zona": ".fereastra:last-of-type #sp-contare-zona"
+      }
+    ],
+    "captura": "109_f5_l12_ciorna_inlocuita_cu_nota_din_stat.png"
+  },
+  {
+    "nr": "109",
+    "firma": "tenant_9053",
+    "descriere": "După dovada precedentă: contabilul-șef -> „De validat”: nota de salarii 07/2026 a F5 (cea nouă, cu prima) e în coadă, cu „Validează” și „Respinge”; ciorna veche a ieșit odată cu înlocuirea (numărul cardurilor îl probează e2e_bloc_d.py::test_def_109_…). Numai citire.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-titlu"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "asteapta": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+      },
+      {
+        "deruleaza": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-aproba"
+      },
+      {
+        "exista": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-respinge"
+      }
+    ],
+    "captura": "109_f5_l12_de_validat_nota_noua_cu_prima.png"
+  },
+  {
+    "nr": "8",
+    "firma": "tenant_9049",
+    "utilizator": 71508,
+    "descriere": "SCRIE pe copie. F1, ca Ana (71508, numai „Poate pregăti”): Registru jurnal -> „+ Notă nouă” -> 23.10.2026, „Consumabile birou dovada 8”, document „Bon fiscal nr 8 din 23.10.2026”, 6022 = 5311 · 45,00 -> „Salvează”: serverul nu refuză (operație zilnică a asistentului), nota e ciornă și „La validare în cabinet”. Nota rămâne la validare (ciornă, nu intră în balanță); contabilul-șef primește notificarea (54).",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "#j-nota-noua"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#j-nota-noua"
+      },
+      {
+        "asteapta": "#je-salveaza"
+      },
+      {
+        "completeaza": "#je-data",
+        "valoare": "2026-10-23"
+      },
+      {
+        "completeaza": "#je-desc",
+        "valoare": "Consumabile birou dovada 8"
+      },
+      {
+        "completeaza": "#je-doc",
+        "valoare": "Bon fiscal nr 8 din 23.10.2026"
+      },
+      {
+        "completeaza": ".je-deb",
+        "valoare": "6022"
+      },
+      {
+        "completeaza": ".je-cre",
+        "valoare": "5311"
+      },
+      {
+        "completeaza": ".je-sum",
+        "valoare": "45.00"
+      },
+      {
+        "click": "#je-salveaza"
+      },
+      {
+        "asteapta": "[data-nota-id]:has-text('Consumabile birou dovada 8')"
+      },
+      {
+        "deruleaza": "[data-nota-id]:has-text('Consumabile birou dovada 8')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "La validare în cabinet",
+        "zona": "[data-nota-id]:has-text('Consumabile birou dovada 8')"
+      },
+      {
+        "contine": "6022 = 5311 · 45,00",
+        "zona": "[data-nota-id]:has-text('Consumabile birou dovada 8')"
+      }
+    ],
+    "captura": "8_f1_ana_nota_manuala_la_validare.png"
+  },
+  {
+    "nr": "104",
+    "firma": "tenant_9049",
+    "utilizator": 71512,
+    "descriere": "F1, ca Asist Test (71512, autorul notei 186 „Comision test asistent”, respinsă pe 22.10.2026 cu „Lipsește extrasul atașat”, clonată): Registru jurnal -> „Trimite din nou la validare” pe nota 186, neschimbată -> avertismentul „Nimic nu s-a schimbat de la respingere…”, cu motivul alături, și butonul „Retrimite fără schimbări”. Nu se confirmă: prima cerere (fără confirmare) nu scrie nimic.",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "[data-nota-id='186'] [data-retrimite]"
+      },
+      {
+        "deruleaza": "[data-nota-id='186']"
+      },
+      {
+        "click": "[data-nota-id='186'] [data-retrimite]"
+      },
+      {
+        "asteapta": "#caseta-atentie-activa #ca-ok"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Nimic nu s-a schimbat de la respingere",
+        "zona": "#caseta-atentie-activa"
+      },
+      {
+        "contine": "motivul respingerii: „Lipsește extrasul atașat”",
+        "zona": "#caseta-atentie-activa"
+      },
+      {
+        "exista": "#caseta-atentie-activa #ca-ok",
+        "text": "Retrimite fără schimbări"
+      }
+    ],
+    "captura": "104_f1_avertisment_nota_neschimbata.png"
+  },
+  {
+    "nr": "104",
+    "firma": "tenant_9049",
+    "utilizator": 71512,
+    "descriere": "SCRIE pe copie. F1, ca Asist Test: aceeași retrimitere a notei 186, confirmată cu „Retrimite fără schimbări” -> rândul notei spune „La validare în cabinet…”, fără „Respinsă la validare”. Nota intră din nou în coadă (contabilul-șef o respinge din nou, cu același motiv, la dovada 91 — starea clonată se reface).",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "[data-nota-id='186'] [data-retrimite]"
+      },
+      {
+        "deruleaza": "[data-nota-id='186']"
+      },
+      {
+        "click": "[data-nota-id='186'] [data-retrimite]"
+      },
+      {
+        "asteapta": "#caseta-atentie-activa #ca-ok"
+      },
+      {
+        "click": "#caseta-atentie-activa #ca-ok"
+      },
+      {
+        "asteapta": "[data-nota-id='186']",
+        "text": "La validare în cabinet"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "La validare în cabinet: nu se modifică până nu e validată sau respinsă.",
+        "zona": "[data-nota-id='186']"
+      },
+      {
+        "nu_contine": "Respinsă la validare",
+        "zona": "[data-nota-id='186']"
+      }
+    ],
+    "captura": "104_f1_nota_retrimisa_la_validare.png"
+  },
+  {
+    "nr": "93",
+    "firma": "tenant_9049",
+    "descriere": "Pagina principală a contabilului-șef, cu notificări necitite (nota Anei de la dovada 8, retrimiterea notei 186): în antet clopoțelul are pictograma, iar cifra stă în insignă, în colț (de privit pe captură; măsurarea acoperirii sub 10% o face e2e). Nu deschide panoul (care ar marca notificările citite).",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "asteapta": "#nav-clopot-badge"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#nav-clopot svg path"
+      },
+      {
+        "contine_oricare": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "zona": "#nav-clopot-badge"
+      }
+    ],
+    "captura": "93_f1_clopotelul_cu_insigna.png"
+  },
+  {
+    "nr": "54",
+    "firma": "tenant_9049",
+    "descriere": "Contabilul-șef: clopoțel -> notificarea notei Anei (dovada 8) numește firma: „F1 Comert Stoc SRL: Notă pregătită, de validat: Notă · Consumabile birou dovada 8 …”. Deschiderea panoului marchează notificările citite.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#nav-clopot"
+      },
+      {
+        "asteapta": ".clopot-item:has-text('Consumabile birou dovada 8')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "F1 Comert Stoc SRL: Notă pregătită, de validat: Notă · Consumabile birou dovada 8",
+        "zona": ".clopot-item:has-text('Consumabile birou dovada 8')"
+      }
+    ],
+    "captura": "54_f1_notificarea_numeste_firma.png"
+  },
+  {
+    "nr": "50",
+    "firma": "tenant_9049",
+    "descriere": "Contabilul-șef: clopoțel -> clic pe „Notă pregătită, de validat: Notă · Comision test asistent …” (retrimiterea notei 186) -> se deschide „De validat” cu cardul acelei note marcat (val-evidentiat), nu doar închiderea listei.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#nav-clopot"
+      },
+      {
+        "asteapta": ".clopot-item:has-text('Comision test asistent')"
+      },
+      {
+        "click": ".clopot-item:has-text('Comision test asistent')"
+      },
+      {
+        "asteapta": ".val-card.val-evidentiat"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Comision test asistent",
+        "zona": ".val-card.val-evidentiat"
+      },
+      {
+        "nu_contine": "Elementul din notificare nu mai așteaptă validarea"
+      }
+    ],
+    "captura": "50_f1_notificarea_duce_la_card.png"
+  },
+  {
+    "nr": "105",
+    "firma": "tenant_9049",
+    "descriere": "Cabinet, „De validat”: cardul notei 186 retrimise neschimbate spune „Retrimisă după respingere · motivul anterior: „Lipsește extrasul atașat” · nota nu s-a schimbat față de cea respinsă”. Numai citire (după retrimiterea de la 104).",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-note .val-card:has-text('Comision test asistent')"
+      },
+      {
+        "deruleaza": "#val-note .val-card:has-text('Comision test asistent')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Retrimisă după respingere · motivul anterior: „Lipsește extrasul atașat” · nota nu s-a schimbat față de cea respinsă",
+        "zona": "#val-note .val-card:has-text('Comision test asistent')"
+      }
+    ],
+    "captura": "105_f1_card_retrimisa_cu_motivul.png"
+  },
+  {
+    "nr": "91",
+    "firma": "tenant_9049",
+    "descriere": "SCRIE pe copie. Cabinet, „De validat” -> „Respinge” pe cardul notei 186 -> motivul „Lipsește extrasul atașat” (același ca la respingerea clonată, ca nota să revină la starea din producție) -> „Respinge”: ecranul confirmă „Ai respins nota (Extras de cont nr. 22 din 22.10.2026). Motivul („Lipsește extrasul atașat”) apare lângă notă la cel care a pregătit-o.”, iar cardul notei dispare.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-note .val-card:has-text('Comision test asistent')"
+      },
+      {
+        "click": "#val-note .val-card:has-text('Comision test asistent') .val-respinge"
+      },
+      {
+        "asteapta": "#dlg-input"
+      },
+      {
+        "completeaza": "#dlg-input",
+        "valoare": "Lipsește extrasul atașat"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "click": "#dlg-ok"
+      },
+      {
+        "asteapta_text": "Ai respins"
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Ai respins nota (Extras de cont nr. 22 din 22.10.2026)."
+      },
+      {
+        "contine": "Motivul („Lipsește extrasul atașat”) apare lângă notă la cel care a pregătit-o."
+      },
+      {
+        "nu_contine": "Comision test asistent",
+        "zona": "#val-note"
+      }
+    ],
+    "captura": "91_f1_respingerea_confirmata.png",
+    "pauza_finala": 300
+  },
+  {
+    "nr": "106",
+    "firma": "tenant_9049",
+    "descriere": "Contabilul-șef, după respingerea de la 91: clopoțel -> notificarea notei 186 („Notă pregătită, de validat: Notă · Comision test asistent …”) spune „rezolvată: respinsă” (nu mai e de făcut). Ramura „rezolvată: validată” cere validarea unei note pe copie — n-o fac (ar intra în evidență); o acoperă e2e.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#nav-clopot"
+      },
+      {
+        "asteapta": ".clopot-item:has-text('Comision test asistent')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "rezolvată: respinsă",
+        "zona": ".clopot-item:has-text('Comision test asistent')"
+      }
+    ],
+    "captura": "106_f1_notificarea_rezolvata_respinsa.png"
+  },
+  {
+    "nr": "90",
+    "firma": "tenant_9053",
+    "utilizator": 71508,
+    "descriere": "SCRIE pe copie. F5, ca Ana: Salariați -> „← luna” de 7 ori (din 10/2026 în 03/2026, lună încheiată fără notă de salarii) -> „Contabilizează statul” -> „Scrie nota ciornă”: confirmarea „Nota … e la validare în cabinet.” stă într-o casetă informativă (.caseta-info), nu în text mic gri. Nota de salarii 03/2026 rămâne ciornă la validare (o folosește 40). Numărul de clicuri e al lunii 10/2026 (în 11/2026: 8).",
+    "pasi": [
+      {
+        "click": "#fa-salariati"
+      },
+      {
+        "asteapta": "#sp-prev"
+      },
+      {
+        "click": "#sp-prev"
+      },
+      {
+        "asteapta": "#sp-prev"
+      },
+      {
+        "click": "#sp-prev"
+      },
+      {
+        "asteapta": "#sp-prev"
+      },
+      {
+        "click": "#sp-prev"
+      },
+      {
+        "asteapta": "#sp-prev"
+      },
+      {
+        "click": "#sp-prev"
+      },
+      {
+        "asteapta": "#sp-prev"
+      },
+      {
+        "click": "#sp-prev"
+      },
+      {
+        "asteapta": "#sp-prev"
+      },
+      {
+        "click": "#sp-prev"
+      },
+      {
+        "asteapta": "#sp-prev"
+      },
+      {
+        "click": "#sp-prev"
+      },
+      {
+        "asteapta": "#sp-contare"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#sp-contare"
+      },
+      {
+        "asteapta": "#sp-contare-scrie"
+      },
+      {
+        "click": "#sp-contare-scrie"
+      },
+      {
+        "asteapta_text": "e la validare în cabinet"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#sp-contare-zona .caseta-info .ci-mesaj",
+        "text": "e la validare în cabinet"
+      },
+      {
+        "contine": "03/2026"
+      }
+    ],
+    "captura": "90_f5_ana_confirmarea_notei_la_validare.png"
+  },
+  {
+    "nr": "40",
+    "firma": "tenant_9053",
+    "descriere": "Contabilul-șef, după nota de salarii 03/2026 a Anei (90): clopoțelul are „F5 SRL Salariati SRL: Notă pregătită, de validat: Notă · Salariile lunii 03/2026 …”. Numai citire (deschiderea panoului marchează citit).",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#nav-clopot"
+      },
+      {
+        "asteapta": ".clopot-item:has-text('Salariile lunii 03/2026')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "F5 SRL Salariati SRL: Notă pregătită, de validat: Notă · Salariile lunii 03/2026",
+        "zona": ".clopot-item:has-text('Salariile lunii 03/2026')"
+      }
+    ],
+    "captura": "40_f5_clopotelul_nota_de_salarii.png"
+  },
+  {
+    "nr": "40",
+    "firma": "tenant_9053",
+    "descriere": "Contabilul-șef: cardul „De validat” de pe pagina principală numără „note de validat”; deschis, nota de salarii 03/2026 a Anei (F5) are cardul ei, cu „Validează” și „Respinge”. Nimic nu se apasă pe card.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "asteapta": ".cab-card-sinteza[data-cheie=validat]"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "captura": "40_f5_cardul_numara_notele.png"
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-note .val-card:has-text('Salariile lunii 03/2026')"
+      },
+      {
+        "deruleaza": "#val-note .val-card:has-text('Salariile lunii 03/2026')"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "F5 SRL Salariati SRL",
+        "zona": "#val-note .val-card:has-text('Salariile lunii 03/2026')"
+      },
+      {
+        "exista": "#val-note .val-card:has-text('Salariile lunii 03/2026') .val-aproba",
+        "text": "Validează"
+      },
+      {
+        "exista": "#val-note .val-card:has-text('Salariile lunii 03/2026') .val-respinge",
+        "text": "Respinge"
+      }
+    ],
+    "captura": "40_f5_de_validat_nota_de_salarii.png"
+  },
+  {
+    "nr": "323",
+    "firma": "tenant_9049",
+    "descriere": "SCRIE pe copie (deschiderea conținutului rulează validatorul și păstrează verdictul pe elementul din coadă). Cabinet, „De validat” -> „Vezi declarația, XML și verdictul DUK →” pe D300 depășit al lui F1: fereastra începe cu „Depășită — Declarația e depășită: …”, înaintea verdictului.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-depasite .val-card .val-vezi"
+      },
+      {
+        "click": "#val-depasite .val-card .val-vezi"
+      },
+      {
+        "asteapta": ".caseta-atentie.val-depasita"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Depășită — Declarația e depășită"
+      }
+    ],
+    "captura": "323_f1_fereastra_spune_depasita.png"
+  }
+]

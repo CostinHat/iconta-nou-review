@@ -34,7 +34,7 @@ UNDE = {
     "chitanta": ("chitanța %s", "în Casă: anulezi chitanța și o emiți din nou"),
     "extras": ("linia de extras %s", "în Bancă: reconcilierea extrasului"),
     "salarii": ("statul de plată %s", "în Salarizare: corectezi statul (salariați, pontaj, contracte) și apeși «Contabilizează statul»"),
-    "raport_z": ("raportul Z %s", "în Casa de marcat: raportul Z"),
+    "raport_z": ("raportul Z %s", "în Raport Z: cât e nevalidat, «Șterge raportul Z» pe rândul lui (cu descărcările lui necontate); validat, se corectează prin stornare"),   # [lotul 12, C139]
     "amortizare": ("amortizarea %s", "în Mijloace fixe: amortizarea lunii"),
     # [lotul 10, 428] nota compensării derivă din ordinul de compensare (HG 685/1999 anexa 2 art.11: „Ordinul de compensare se anexeaza la
     # nota contabila”) și din rândul `compensari`: editată în jurnal, suma notei s-ar despărți de compensare. Ștergerea (ciornă) rămâne:

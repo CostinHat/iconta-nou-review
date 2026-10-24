@@ -36,19 +36,21 @@ def select_firma_profil(cur):
 
 
 def select_facturi(cur, azi):
-    # [deficiența 416] factura stornată integral nu primește notificare; cea stornată parțial, cu rămasul ei (`repo_facturi.SQL_STORNARI`)
+    """Facturile emise de notificat: cu scadență, cu ceva de încasat, fără notificările oprite / amânate după `azi`.
+    [deficiența 416] factura stornată integral nu primește notificare; cea stornată parțial, cu rămasul ei.
+    [lotul 12, 466] starea de încasare e cea UNICĂ (`repo_facturi.de_incasat`), nu `platita_la IS NULL`: o factură încasată prin bancă
+    primea notificare de plată (emailul pleacă la CLIENT). Rândurile au forma cursorului: dict (id, numar, data_scadenta, suma, moneda,
+    client_email) pe un cursor de dict-uri, tuplu în aceeași ordine altfel (`notificari_scadenta._plan_notificari`)."""
     from core import repo_facturi as _rf
-    st = _rf.SQL_STORNARI.format(s="", a="f")
-    cur.execute("SELECT f.id, f.numar, f.data_scadenta, COALESCE(f.total,0) + " + st + " AS suma, f.moneda, "
-                "       c.email AS client_email "
-                "  FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
-                " WHERE f.directie='emisa' AND f.platita_la IS NULL "
-                "   AND COALESCE(f.tip,'factura')='factura' AND f.storno_din_id IS NULL "
-                "   AND COALESCE(f.notificare_stop, false) = false "
-                "   AND (f.notificare_amanata_pana IS NULL OR f.notificare_amanata_pana < %s) "
-                "   AND f.data_scadenta IS NOT NULL "
-                "   AND COALESCE(f.total,0) + " + st + " > %s", (azi, _rf.TOLERANTA_STORNATA))
-    return cur.fetchall()
+    rand = ("id", "numar", "data_scadenta", "suma", "moneda", "client_email")
+    out = []
+    for f in _rf.de_incasat(cur, "emisa", " AND COALESCE(f.notificare_stop, false) = false"
+                                         " AND (f.notificare_amanata_pana IS NULL OR f.notificare_amanata_pana < %s)"
+                                         " AND f.data_scadenta IS NOT NULL", (azi,)):
+        v = dict(f, suma=f["rest"], client_email=f["email"])
+        out.append({k: v[k] for k in rand})
+    import psycopg2.extras as _E
+    return out if isinstance(cur, _E.RealDictCursor) else [tuple(r[k] for k in rand) for r in out]
 
 
 def select_notificari_scadenta(cur, f):

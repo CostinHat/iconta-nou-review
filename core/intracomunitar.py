@@ -115,6 +115,22 @@ def valideaza_lic(cod_tva_client, cod_valid_vies, are_dovada_transport):
                          "aplică (art. 294(2)a) - facturează cu TVA")
     return True, "scutit cu drept de deducere - art. 294 alin. (2) lit. a) Cod fiscal (LIC)"
 
+#: [C128, lotul 12] refuzul achiziției intracomunitare de la un furnizor cu cod de TVA românesc
+MESAJ_AIC_RO = ("Codul de TVA al furnizorului începe cu RO, deci furnizorul e înregistrat în România: cumpărarea de la el nu e achiziție "
+                "intracomunitară (fără taxare inversă, fără D390) — înregistreaz-o ca factură primită obișnuită. Dacă furnizorul e "
+                "dintr-un alt stat membru, scrie codul lui de TVA de acolo (ex. DE123456789).")
+
+
+def valideaza_aic(cod_tva_furnizor):
+    """Achiziția intracomunitară (bunuri: CF art.273 alin.(1) — bunurile ajung „către un stat membru, altul decât cel de plecare”; servicii:
+    CF art.307 alin.(2) — prestatorul „nu este stabilit[ă] pe teritoriul României”) cere un furnizor dintr-un ALT stat membru: codul lui
+    de TVA nu poate fi românesc. -> (țara, număr) sau ValueError (`MESAJ_AIC_RO`). Oglinda lui `valideaza_lic` (clientul din RO)."""
+    tara, nr = desparte_cod_tva(cod_tva_furnizor)
+    if tara == "RO":
+        raise ValueError(MESAJ_AIC_RO)
+    return tara, nr
+
+
 def valideaza_prestare_ic(cod_tva_client, cod_valid_vies):
     """Prestare servicii B2B catre PI din alt SM (art. 278 al. 2): neimpozabila
     in RO, locul = beneficiarul; se declara in D390 (S)."""

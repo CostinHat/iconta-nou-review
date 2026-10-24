@@ -491,11 +491,18 @@ export function aduInVedere(el) {
     t.scrollIntoView({ block: "nearest", behavior: "smooth" });
   });
 }
+// [lotul 12, deficiența 45 — clasa „mesajul scris direct”] o zonă de mesaj care EXISTĂ deja și primește textul după buton
+// (`rez.textContent = …; rez.className = "em-rezultat em-rau"`, `eroare.textContent = …`) nu e un nod adăugat: observatorul vede acum și
+// textul schimbat (`characterData`, `childList` pe zonă) și clasa pusă după (`attributes: class`), cât timp zona are clasa unui mesaj.
 if (typeof MutationObserver !== "undefined") {
   new MutationObserver((lista) => {
     if (Date.now() - _ultimaActiuneOm > FEREASTRA_ACTIUNE_MS) return;
-    for (const m of lista) for (const n of m.addedNodes) if (n.nodeType === 1 && n.matches(SELECTOR_MESAJ)) aduInVedere(n);
-  }).observe(document.documentElement, { childList: true, subtree: true });
+    for (const m of lista) {
+      if (m.type === "childList") for (const n of m.addedNodes) if (n.nodeType === 1 && n.matches(SELECTOR_MESAJ)) aduInVedere(n);
+      const t = m.target && (m.target.nodeType === 1 ? m.target : m.target.parentElement);
+      if (t && t.matches(SELECTOR_MESAJ) && (t.textContent || "").trim()) aduInVedere(t);
+    }
+  }).observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["class"] });
 }
 
 // [msg_conventie_v1] helper global mesaje: tip = "eroare" | "avert" | "info"

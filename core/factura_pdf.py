@@ -213,9 +213,12 @@ def serie_si_numar(serie, numar):
 
 def genereaza_pdf(profil, factura):
     """profil, factura = dict-uri. Intoarce bytes (PDF)."""
-    _init_fonturi()
     profil = profil or {}
     factura = factura or {}
+    # [lotul 12, 252] factura deschisă preluată n-are document în iConta.eu (originalul e în programul vechi): niciun PDF, niciun e-mail
+    from core import facturi_api as _fa
+    _fa.refuza_sold_preluat(factura.get("tip"))
+    _init_fonturi()
     ac = _culoare(profil.get("culoare_factura"))
     font, font_b = _FONTURI.get(profil.get("font_factura"), _FONTURI["sans"])
     mon = factura.get("moneda") or "RON"

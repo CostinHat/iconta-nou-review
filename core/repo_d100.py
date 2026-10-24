@@ -26,10 +26,15 @@ def select_inregistrari_linii(cur, _inc, _sf):
     # Până azi baza micro (cod 121) lua doar `cont_credit LIKE '70%'`, deci un venit financiar 766 sau
     # o dobândă 766 nu intrau, iar reducerile 709 nu se scădeau. `71x` (variația stocurilor) rămâne în
     # afară, deliberat: e o corecție de producție, nu venit din sursă (art. 53 nu o include în micro).
+    # [C119, lotul 12] veniturile = RULAJUL NET al conturilor 70x / 75x / 76x (credit − debit, fără închiderea în 121): nota Raportului Z
+    # trece brutul pe 707 și scoate TVA-ul cu 707 = 4427 — un debit pe 707 care până azi nu se scădea (baza micro cu TVA-ul în ea).
+    # 709 (reducerile acordate, cont 70x cu sold debitor) se scade tot pe aici; cheltuielile, la fel, pe rulajul net al clasei 6.
     cur.execute("SELECT COALESCE(SUM(CASE WHEN (l.cont_credit LIKE '70%%' OR l.cont_credit LIKE '75%%' "
                 "        OR l.cont_credit LIKE '76%%') THEN l.suma ELSE 0 END),0) "
-                "     - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '709%%' THEN l.suma ELSE 0 END),0) AS venituri, "
-                "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' THEN l.suma ELSE 0 END),0) AS cheltuieli "
+                "     - COALESCE(SUM(CASE WHEN (l.cont_debit LIKE '70%%' OR l.cont_debit LIKE '75%%' "
+                "        OR l.cont_debit LIKE '76%%') THEN l.suma ELSE 0 END),0) AS venituri, "
+                "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' THEN l.suma ELSE 0 END),0) "
+                "     - COALESCE(SUM(CASE WHEN l.cont_credit LIKE '6%%' THEN l.suma ELSE 0 END),0) AS cheltuieli "
                 "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
                 "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
                 "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'", (_inc.isoformat(), _sf.isoformat()))   # [C15] fără închiderea în 121
@@ -37,22 +42,26 @@ def select_inregistrari_linii(cur, _inc, _sf):
 
 
 def select_facturi(cur, _inc, _sf):
+    from core import nomenclator_status_factura as _nsf   # [lotul 12, 252] numai documentele fiscale (nu proforme, avize, facturi preluate)
     cur.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
-                "AND data_emitere >= %s AND data_emitere < %s", (_inc.isoformat(), _sf.isoformat()))
+                "AND data_emitere >= %s AND data_emitere < %s AND " + _nsf.clauza_tip_document(None), (_inc.isoformat(), _sf.isoformat()))
     return cur.fetchone()
 
 
 def venituri_pe_conturi(cur, _inc, _sf):
-    """[deficiența 295] Baza micro pe conturi: aceleași note și aceleași conturi ca `select_inregistrari_linii` (70x/75x/76x creditate,
-    709 debitat — se scade; note validate; fără închiderea în 121). [(cont, suma)] — 709 cu semnul minus."""
-    cur.execute("SELECT l.cont_credit, SUM(l.suma) FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+    """[deficiența 295] Baza micro pe conturi: aceleași note și aceleași conturi ca `select_inregistrari_linii` — rulajul NET al fiecărui
+    cont 70x / 75x / 76x (credit − debit; [C119] debitul 707 = 4427 al notei Z se scade), note validate, fără închiderea în 121.
+    [(cont, suma)] — 709 cu semnul minus."""
+    cur.execute("SELECT cont, SUM(s) FROM ("
+                "SELECT l.cont_credit AS cont, l.suma AS s FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
                 "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
                 "AND (l.cont_credit LIKE '70%%' OR l.cont_credit LIKE '75%%' OR l.cont_credit LIKE '76%%') "
-                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%' GROUP BY l.cont_credit "
+                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%' "
                 "UNION ALL "
-                "SELECT l.cont_debit, -SUM(l.suma) FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
-                "WHERE i.status='validata' AND i.data >= %s AND i.data < %s AND l.cont_debit LIKE '709%%' "
-                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%' GROUP BY l.cont_debit ORDER BY 1",
+                "SELECT l.cont_debit, -l.suma FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+                "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
+                "AND (l.cont_debit LIKE '70%%' OR l.cont_debit LIKE '75%%' OR l.cont_debit LIKE '76%%') "
+                "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%') x GROUP BY cont HAVING SUM(s) <> 0 ORDER BY 1",
                 (_inc.isoformat(), _sf.isoformat(), _inc.isoformat(), _sf.isoformat()))
     return cur.fetchall()
 

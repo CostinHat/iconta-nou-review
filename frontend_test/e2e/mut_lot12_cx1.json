@@ -1,0 +1,86 @@
+[
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "            total = _D(str(f[\"total_lei\"])) if f.get(\"total_lei\") is not None else _sl.antet_lei(f)[0]",
+  "inlocuire": "            total = _sl.antet_lei(f)[0]",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c112_istoricul_compara_incasarile_in_lei_cu_totalul_in_lei"
+ },
+ {
+  "fisier": "core/repo_facturi.py",
+  "ancora": "    cur.execute(\"SELECT directie, data_emitere, data_scadenta, COALESCE(total_lei, total) + \" + st + \" AS total \"",
+  "inlocuire": "    cur.execute(\"SELECT directie, data_emitere, data_scadenta, total + \" + st + \" AS total \"",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c113_cashflow_portalului_ia_totalul_facturii_in_lei"
+ },
+ {
+  "fisier": "core/repo_facturi.py",
+  "ancora": "    fs = de_incasat(cur, \"primita\")",
+  "inlocuire": "    cur.execute(\"SELECT id, numar, serie, data_emitere, total, tert_nume, tert_cui FROM facturi WHERE directie = 'primita' AND COALESCE(status, '') <> 'anulata' AND platita_la IS NULL\"); fs = [dict(r, rest_lei=r[\"total\"]) if isinstance(r, dict) else dict(zip((\"id\", \"numar\", \"serie\", \"data_emitere\", \"rest_lei\", \"tert_nume\", \"tert_cui\"), r)) for r in cur.fetchall()]",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c114_chitanta_pozata_nu_ofera_factura_platita_prin_banca"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "um_stoc = (articol_ales[2] if articol_ales else None) or str(corp.get(\"um\") or \"\").strip() or \"buc\"",
+  "inlocuire": "um_stoc = \"buc\"",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c115_borderoul_scrie_um_ul_articolului"
+ },
+ {
+  "fisier": "core/spv_receive.py",
+  "ancora": "        _alta = efi.alta_firma(f, cif)",
+  "inlocuire": "        _alta = None",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c120_xml_intre_alte_doua_firme_e_refuzat_la_import"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "                refuz = _ef.alta_firma(f, _rand_cui[0] if _rand_cui else None)",
+  "inlocuire": "                refuz = None",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c120_xml_intre_alte_doua_firme_ajuns_in_lista_nu_se_valideaza"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "(c.de_la_anaf === false ? c.eroare : `ANAF a răspuns: „${c.eroare}”.`)",
+  "inlocuire": "`ANAF a răspuns: „${c.eroare}”.`",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c124_verifica_acum_in_spv_nu_pune_motivul_aplicatiei_pe_seama_anaf"
+ },
+ {
+  "fisier": "core/reconciliere_api.py",
+  "ancora": "                        \"tip\": ln[\"tip\"], \"cui\": ln[\"cui\"], \"status\": status})",
+  "inlocuire": "                        \"tip\": ln[\"tip\"], \"cui\": ln[\"cui\"], \"status\": status, **aloc})",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c125_raspunsul_importului_pastreaza_sensul_liniei"
+ },
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "SCRISE_DE_APLICATIE = (\"Contare factura \", \"Factură \", \"Retur la Factură \", \"Diferență de preț NIR \", \"Compensare \",\n                       \"Încasare de la client — \", \"Plată către furnizor — \")",
+  "inlocuire": "SCRISE_DE_APLICATIE = (\"Contare factura \", \"Factură \", \"Retur la Factură \", \"Diferență de preț NIR \", \"Compensare \")",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c135_nota_de_casa_a_facturii_arata_seria_separat"
+ },
+ {
+  "fisier": "core/reconciliere_api.py",
+  "ancora": "              AND {_nsf.clauza_tip_cu_incasare(\"f\")}\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c144_banca_si_casa_nu_ofera_proforma"
+ },
+ {
+  "fisier": "core/repo_facturi.py",
+  "ancora": "WHERE EXTRACT(YEAR FROM data_emitere) = %s AND {_nsf.clauza_tip_document(None)}\"\"\",",
+  "inlocuire": "WHERE EXTRACT(YEAR FROM data_emitere) = %s\"\"\",",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c145_pragul_intrastat_numara_numai_facturile"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "(\" din \" + _data_ro(z[\"data\"])) if z[\"data\"]",
+  "inlocuire": "(\" din \" + z[\"data\"]) if z[\"data\"]",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_factura_din_bon_fara_z_numeste_data_zz_ll_aaaa"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "\"%s din %s\" % (x[\"numar\"], _data_ro(x[\"data\"]))",
+  "inlocuire": "\"%s din %s\" % (x[\"numar\"], x[\"data\"])",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_chitanta_fara_cota_numeste_data_zz_ll_aaaa"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "                         _eticheta_categorie_casa(o[\"categorie\"])))",
+  "inlocuire": "                         o[\"categorie\"]))",
+  "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_incasarea_fara_chitanta_numeste_felul_in_cuvinte"
+ }
+]

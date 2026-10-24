@@ -445,6 +445,26 @@ def test_validarea_CU_cont_trece_de_verificarea_de_cont(conn, monkeypatch):
         "cu cont ales, refuzul de cont nu mai are voie să se aprindă — s-a ajuns mai departe")
 
 
+def test_validarea_cu_cont_din_afara_planului_refuza_langa_camp(conn, monkeypatch):
+    """[lotul 12, 477] Contul facturii se confruntă cu planul firmei (`cont_valid.cere_cont`; decizia Costin 26.08.2026: „o intrare din
+    afara unui nomenclator de registru se REFUZA”), înaintea citirii XML-ului: refuzul spune contul și unde se creează, lângă câmpul
+    „Contul facturii” (`pr-cont`), nu „XML-ul nu se poate citi”."""
+    import main
+    from fastapi import HTTPException
+    pid = _primita_de_validat(conn)
+    conn.commit()
+    monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
+    with pytest.raises(HTTPException) as e:
+        main.factura_primita_valideaza(1, pid, {"cont": "9999", "tert_platitor_tva": True}, {"uid": 1})
+    assert e.value.status_code == 422
+    # mesajul e randarea canonică a refuzului (`cont_valid.randeaza`: contul, câmpul, vecinii din plan, locul unde se creează), nu o frază
+    # căutată în text
+    from core import cont_valid as _cv
+    asteptat = _cv.randeaza({"fel": "necunoscut", "cont": "9999", "camp": "Contul facturii", "unde": _cv.UNDE_SE_CREEAZA,
+                             "apropiate": _cv.apropiate(conn, _SCH, "9999")})
+    assert e.value.detail["erori_campuri"] == [{"camp": "pr-cont", "mesaj": asteptat}], e.value.detail
+
+
 # ═══════════════════════════════════════════════ CABLAJUL, citit ca AST (METODA §23)
 def _apeluri(cale, nume_functie):
     """Numele apelate în corpul unei funcții — noduri de AST, nu șiruri căutate în text.
@@ -484,7 +504,11 @@ def test_creeaza_factura_chiar_cheama_contarea():
 
 
 def test_valideaza_chiar_cheama_contarea():
-    assert _apeluri("main.py", "factura_primita_valideaza") >= {"contabilizeaza"}
+    # [lotul 12, 477] actul validării a plecat din rută în `uc_factura_primita.valideaza`, drumul comun cu factura primită introdusă de
+    # mână: ambele rute îl cheamă, iar el cheamă contarea
+    assert _apeluri("main.py", "factura_primita_valideaza") >= {"valideaza"}
+    assert _apeluri("main.py", "factura_primita_manuala") >= {"valideaza"}
+    assert _apeluri("core/uc_factura_primita.py", "valideaza") >= {"contabilizeaza"}
 
 
 def test_jurnalul_chiar_cheama_legarea():

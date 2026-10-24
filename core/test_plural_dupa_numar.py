@@ -18,6 +18,7 @@ Ce prinde gardul pe sursă (calibrat pe codul din 15.10.2026; ieșirea `python -
   Python (`core/**/*.py` fără teste, și `main.py`), pe arborele sintactic, numai în textele care pot ajunge la om (nu în print,
   jurnal, assert, docstring):
     P1 f-string `{expr} [de ]cuvânt`; P2 `%d`/`%s`/`%(x)d` + ` [de ]cuvânt`; P3 `str(n) + " cuvânt"`.
+    P5 [263, lotul 12] `"%d %s" % (n, eticheta)` — întregul urmat de un substantiv venit dintr-o variabilă („1 facturi” în „Scoate firma”).
 Cuvântul NU e o listă scrisă de mână de substantive: e orice cuvânt cu terminație de plural, minus o listă ÎNCHISĂ de cuvinte care
 nu sunt substantive numărabile (`NU_SUBSTANTIV`: verbe, prepoziții, conjuncții, unitatea monetară). Ce rămâne după aceste reguli
 e numit structural în `EXCEPTII` (fișier, fragment, motiv) — clichet la zero pentru tot restul.
@@ -45,7 +46,7 @@ TABELA = [(0, "0 parteneri"), (1, "1 partener"), (2, "2 parteneri"), (19, "19 pa
 NU_SUBSTANTIV = {
     "e", "este", "sunt", "fi", "si", "și", "pe", "de", "se", "ce", "care", "mai", "nici", "decât", "dacă", "ori", "sau", "fie",
     "rămâne", "rămân", "trebuie", "poate", "pare", "apare", "apar", "intră", "deci", "aici", "acolo", "acestei", "către", "le", "îi",
-    "lei", "peste", "ale", "are", "cere", "cuprinde", "începe", "vine", "duce", "trece", "aparține", "depune", "face", "spune", "arată", "oricare",
+    "lei", "peste", "ale", "are", "cere", "cuprinde", "începe", "vine", "duce", "trece", "aparține", "depune", "face", "spune", "arată", "oricare", "respinge",
 }
 
 
@@ -129,6 +130,9 @@ _LOG = {"print", "debug", "info", "warning", "warn", "error", "exception", "crit
 _P2 = re.compile(r"%(?:\([a-z_]+\))?[ds](?:\s|&nbsp;)+" + _CUV + r"(?![\w=-])")   # „cui=” e atribut XML, nu cuvânt
 _P_FMT = re.compile(r"\{[a-z_0-9]*\}(?:\s)+" + _CUV + r"(?![\w=-])")
 _P_LIPIT = re.compile(r"^(?:\s|&nbsp;)+" + _CUV + r"(?![\w-])")
+#: [263, lotul 12] P5 `"%d %s" % (n, eticheta)` — numărul întreg urmat de un substantiv dintr-o VARIABILĂ (o etichetă dintr-un tabel,
+#: scrisă o dată, la plural): „1 facturi” în „Scoate firma” (`tenant_stergere.evidenta`). P2 vedea numai cuvântul scris în șir.
+_P5 = re.compile(r"%(?:\([a-z_]+\))?d(?:\s|&nbsp;)+%(?:\([a-z_]+\))?s")
 
 
 def _fisiere_py():
@@ -201,6 +205,8 @@ def gaseste_py():
                         if m and _plural(m.group("w"), m.group("de")) and not (m.group("de") and not _intreg(a.value)):
                             out.append((rel, b.lineno, "P1", "{%s}%s" % (ast.unparse(a.value)[:50], b.value[:40])))
             elif isinstance(nod, ast.Constant) and isinstance(nod.value, str):
+                if _P5.search(nod.value):
+                    out.append((rel, nod.lineno, "P5", nod.value[:90]))
                 for rx, reg in ((_P2, "P2"), (_P_FMT, "P2")):
                     for m in rx.finditer(nod.value):
                         # „%s de livrare” e complement, nu numeralul cu „de”; „%d de zile” e numeralul
@@ -228,6 +234,7 @@ EXCEPTII_PY_MODULE = {
     "core/observare.py": "stratul de observare (timpi, pool) — alertă operațională către operator",
     "core/p4_clasificare.py": "clasificarea operațiilor compuse din cod — unealtă de dezvoltator, verdicte în teste",
     "core/p5_clasificare.py": "verdictele I/O blocant din cod — unealtă de dezvoltator",
+    "core/scan_valori_afisate.py": "[263, P5] scaner de dezvoltator: `fișier:linie  valori` pe ieșirea standard, în terminal",
 }
 #: (fișier, fragment din ce raportează scanerul, motiv)
 EXCEPTII = [
@@ -253,6 +260,8 @@ EXCEPTII = [
     ("core/d205.py", "'valideaz-o' if",
      "[lotul 10, 431] pronumele clitic acordat cu notele ENUMERATE înaintea lui („nota … e ciornă. … valideaz-o” / „validează-le”): niciun "
      "numeral afișat, deci nici „de” — aceeași clasă cu „notei” din `uc_coada`"),
+    ("core/common.py", "%d %s%s", "[263] chiar `cate`: numărul, „de” (de la 20) și pluralul ales după număr"),
+    ("core/pdf_util.py", "%d %s %d", "[263] data în litere („5 octombrie 2026”): ziua, numele lunii, anul — nu un număr urmat de substantivul lui"),
     ("core/istoric_declaratii_import_api.py", "'anul' if",
      "[lotul 10, 426] „În anul 2025” / „În anii 2024, 2025”: anii se ENUMERĂ, nu se numără — niciun numeral afișat, deci nici „de”; "
      "numărul declarațiilor din aceeași frază trece prin `cate`"),
@@ -289,6 +298,34 @@ def test_js_niciun_numar_cu_forma_scrisa_fix():
     `${note.length} note` -> pică cu „firme.js:… [R1] ${note.length} note”."""
     rele = [g for g in gaseste_js() if not _exceptat(g)]
     assert not rele, "număr urmat de o formă scrisă fix (folosește `cate` din api.js):\n  " + "\n  ".join("%s:%d [%s] %s" % g for g in rele)
+
+
+def test_def_263_scoate_firma_numara_evidenta_acordat():
+    """263. „Scoate firma” spunea „1 facturi” / „1 note contabile”: motivele refuzului erau `"%d %s" % (n, eticheta)`, cu eticheta la
+    plural. Acum fiecare etichetă e perechea (singular, plural) dată lui `common.cate`. MUTAȚIE: în `tenant_stergere.evidenta`
+    `cate(n, *eticheta)` -> `"%d %s" % (n, eticheta[1])` -> „1 facturi” -> pică (și P5 de mai jos)."""
+    from core import tenant_stergere as ts
+    from core.common import cate
+    etichete = dict(ts.EVIDENTA_PUBLIC + ts.EVIDENTA_SCHEMA)
+    assert all(isinstance(v, tuple) and len(v) == 2 for v in etichete.values()), etichete
+    assert [cate(n, *etichete["facturi"]) for n in (1, 3, 20, 101)] == ["1 factură", "3 facturi", "20 de facturi", "101 facturi"]
+    assert cate(1, *etichete["inregistrari"]) == "1 notă contabilă" and cate(1, *etichete["declaratii_depuse"]) == "1 declarație depusă"
+    sursa = io.open(os.path.join(RAD, "core", "tenant_stergere.py"), encoding="utf-8").read()
+    assert sursa.count("motive.append(cate(n, *eticheta))") == 2, "motivele refuzului nu mai trec prin `cate`"
+
+
+def test_CALIBRARE_P5_prinde_eticheta_din_variabila(tmp_path, monkeypatch):
+    """P5 prinde `"%d %s" % (n, eticheta)` și `"%(n)d %(e)s"`, dar nu `cate(n, *eticheta)` (pe un depozit sintetic)."""
+    import sys
+    (tmp_path / "core").mkdir()
+    (tmp_path / "core" / "proba_p5.py").write_text(
+        'from core.common import cate\n'
+        'def f(n, e):\n'
+        '    return ["%d %s" % (n, e), "%(n)d %(e)s" % {"n": n, "e": e}, cate(n, *e)]\n', encoding="utf-8")
+    (tmp_path / "main.py").write_text("", encoding="utf-8")
+    monkeypatch.setattr(sys.modules[__name__], "RAD", str(tmp_path))
+    gasite = [(g[0], g[1], g[2]) for g in gaseste_py()]
+    assert gasite == [("core/proba_p5.py", 3, "P5"), ("core/proba_p5.py", 3, "P5")], gasite
 
 
 def test_py_niciun_numar_cu_forma_scrisa_fix():

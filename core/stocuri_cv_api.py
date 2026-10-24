@@ -101,6 +101,25 @@ def fisa(conn, schema, articol_id):
                       for l in linii]}
 
 
+def articol_pentru_intrare(cur, schema, denumire, um=None, cont_stoc=None, cont_cheltuiala=None):
+    """[lotul 12, 475] SINGURUL loc care scrie un articol nou în nomenclatorul de stoc. Întoarce id-ul articolului cu aceeași cheie de
+    denumire (`produse_api.cheie_denumire`: fără deosebire de majuscule, spații și diacritice — „grau” = „Grâu”), iar numai dacă nu există
+    niciunul îl creează. Deficiența 475 („Același articol «grau» de două ori în stoc”): fiecare drum care crea articole hotăra singur dacă
+    denumirea e nouă, iar două linii cu aceeași marfă pe același document (factura primită, NIR-ul) vedeau amândouă „nu există” și creau
+    două articole. Refuzul cererii EXPLICITE de articol nou cu o denumire existentă rămâne la apelant (NIR, borderou, intrarea manuală),
+    cu mesajul lui; aici nu se mai poate dubla nimic, oricine ar chema. Gard: `core/test_lot12_firme2_articole.py`."""
+    from core import produse_api as _pa
+    _ex = _pa.articol_dupa_denumire(cur, schema, denumire)
+    if _ex:
+        return _ex[0]
+    cur.execute(f"""INSERT INTO {schema}.articole (denumire, um, cont_stoc, cont_cheltuiala)
+                    VALUES (%s,%s,%s,%s) RETURNING id""",
+                (" ".join(str(denumire).split()), (str(um or "").strip() or "buc"),
+                 (str(cont_stoc or "").strip() or "371"), (str(cont_cheltuiala or "").strip() or "607")))
+    r = cur.fetchone()
+    return r["id"] if isinstance(r, dict) else r[0]
+
+
 def intrare(conn, schema, corp, factura_id=None):
     """corp: {articol_id | denumire+um+cont_stoc+cont_cheltuiala, data, cantitate,
     pret_unitar, document?}. Nota de intrare vine din NIR/factură — aici doar mișcarea."""
@@ -115,12 +134,9 @@ def intrare(conn, schema, corp, factura_id=None):
         return {"eroare": "cantitate/preț invalide"}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         aid = corp.get("articol_id")
-        if not aid:
-            cur.execute(f"""INSERT INTO {schema}.articole (denumire, um, cont_stoc, cont_cheltuiala)
-                            VALUES (%s,%s,%s,%s) RETURNING id""",
-                        (corp["denumire"], corp.get("um", "buc"),
-                         (str(corp.get("cont_stoc") or "").strip() or "371"), (str(corp.get("cont_cheltuiala") or "").strip() or "607")))
-            aid = cur.fetchone()["id"]
+        if not aid:   # [lotul 12, 475] articolul cu aceeași denumire, dacă există; altfel unul nou — niciodată al doilea
+            aid = articol_pentru_intrare(cur, schema, corp["denumire"], corp.get("um"), str(corp.get("cont_stoc") or "").strip(),
+                                         str(corp.get("cont_cheltuiala") or "").strip())
         # [415] articolul creat de un document (factura primită) își ia cota de pe linia lui, în nomenclator. [lotul 10, 435] și articolul
         # EXISTENT fără produs (creat înaintea lui 415): un produs existent nu se schimbă
         if corp.get("cota_tva") is not None:
@@ -161,7 +177,8 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
         _nir = cur.fetchone()
         if _nir:
             return {"stare": "intrat_prin_nir", "factura_id": factura_id, "nir_id": _nir["id"], "linii": 0}
-        cur.execute(f"""SELECT descriere, cantitate, pret_unitar, cont_cheltuiala, cota_tva, valoare_neta, nivel_document
+        # [lotul 12, C104] și unitatea de măsură a liniei: articolul nou intră în unitatea facturii (m, kg), nu în „buc”
+        cur.execute(f"""SELECT descriere, cantitate, pret_unitar, cont_cheltuiala, cota_tva, valoare_neta, nivel_document, um
                         FROM {schema}.factura_linii WHERE factura_id=%s ORDER BY id""", (factura_id,))
         brute, document_linii = [], []
         from core import contare_facturi as _cf
@@ -186,7 +203,8 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
             from core import produse_api as _pa
             _ex = _pa.articol_dupa_denumire(cur, schema, den)
             row = {"id": _ex[0]} if _ex else None
-            brute.append([row["id"] if row else None, den, cant, val, cont_l, l["cota_tva"], pret, l.get("valoare_neta") is not None])
+            brute.append([row["id"] if row else None, den, cant, val, cont_l, l["cota_tva"], pret, l.get("valoare_neta") is not None,
+                          (l.get("um") or "").strip() or None])
         document = _et.factura(cur, schema, factura_id)   # [258] documentul mișcării: factura cum o vede omul, nu id-ul ei
     # [lotul 11, C80] Reducerile / taxele la nivelul FACTURII (BG-20 / BG-21, linii `nivel_document`) intră în costul articolelor.
     # OMFP 1802/2014 pct.76 alin.(1): „Reducerile comerciale acordate de furnizor și înscrise pe factura de achiziție ajustează în sensul
@@ -211,14 +229,14 @@ def intrare_din_factura(conn, schema, factura_id, cont_stoc, data, cont_cheltuia
             b[7] = b[7] or bool(parte)
             ramas -= parte
     n = 0
-    for aid, den, cant, val, cont_l, cota, pret, din_valoare in brute:
+    for aid, den, cant, val, cont_l, cota, pret, din_valoare, um in brute:
         if din_valoare:   # valoarea liniei (BT-131 / ajustată cu reducerile de document) / cantitate: `intrare` reface valoarea la ban
             pret = val / cant
         # [lotul 10, 435] cota 0 de pe factura PRIMITĂ nu spune cota vânzării (furnizor neplătitor, taxare inversă, scutire): articolul
         # intră în nomenclator „cotă lipsă”, de ales pe rând în Produse, nu „fără TVA” din presupunere
         cota = cota if cota is not None and Decimal(str(cota)) > 0 else None
         intrare(conn, schema, {"articol_id": aid, "denumire": den, "cantitate": str(cant), "cota_tva": cota,
-                               "pret_unitar": str(pret), "cont_stoc": cont_l,
+                               "pret_unitar": str(pret), "cont_stoc": cont_l, **({"um": um} if um else {}),
                                "cont_cheltuiala": cont_cheltuiala, "data": str(data),
                                "document": document}, factura_id=factura_id)
         n += 1

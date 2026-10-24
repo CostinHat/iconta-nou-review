@@ -101,6 +101,30 @@ def axa_facturii(linii):
     return axe.pop() if axe else None
 
 
+#: [lotul 12, C154] felul venitului liniei (cheile din `facturi.VENIT`, OMFP 1802/2014: 701 / 703 / 707 bunuri, 704 servicii) -> axa
+_AXA_FEL = {"marfa": "bunuri", "produse": "bunuri", "reziduale": "bunuri", "servicii": "servicii", "prestari": "servicii"}
+
+
+def axa_neplatitor(linii, tert_tara):
+    """[lotul 12, C154] Axa facturii emise de firma NEPLĂTITOARE către un client din altă țară (None: nu se poate spune).
+
+    Liniile neplătitorului poartă toate „neplatitor” (O), categorie fără axă, deci `axa_facturii` nu găsea nimic și D390 lua implicitul
+    „bunuri” (`d390._tip_din_axa` -> L): un serviciu emis din „Emite factură” către un client din DE ieșea livrare intracomunitară de
+    bunuri, nu prestare (P). Felul liniei e cel din contul ei de venit, pus la emitere în aceeași ordine ca la plătitor (contul ales de
+    contabil, apoi cuvântul-cheie din denumire, apoi modelul — `facturi_api._potriveste_linii`; ecranul plătitorului propune din același
+    fel categoria art.278 alin.(2), deficiența 326). Contul fără fel cunoscut (706, 708 …), liniile cu feluri diferite sau clientul din
+    România: None, ca înainte (nimic ghicit).
+    TEMEI: CF art.325 alin.(1) lit.c — înregistratul art.317 declară „prestările de servicii prevăzute la art. 278 alin. (2) efectuate în
+    beneficiul unor persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană”."""
+    tara = (tert_tara or "RO").strip().upper() or "RO"
+    if tara == "RO" or not linii or any(l.get("categorie_tva") != NEPLATITOR["cod"] for l in linii):
+        return None
+    from core import facturi as _fc
+    fel = {cont: tip for tip, cont in _fc.VENIT.items()}
+    axe = {_AXA_FEL.get(fel.get(str(l.get("cont_venit") or "").strip()[:3])) for l in linii}
+    return axe.pop() if len(axe) == 1 and None not in axe else None
+
+
 def verifica_linii(linii, platitor, tert_tara="RO", prefix="em-l"):
     """Pune `categorie_tva` pe fiecare linie și întoarce refuzurile pe câmp ([{camp, eticheta, mesaj}], ca `linii_campuri_lipsa`).
 

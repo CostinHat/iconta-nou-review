@@ -45,11 +45,16 @@ def _baza_contabila_independenta(conn, an, schema):
     121), adunate AICI pe aceeași regulă 76/66 — nu prin `bilant_api.rulaje_67` / `d101.baza_contabila` (calea generatorului). Intrarea
     (balanța preluată) e partajată, ca notele (§8); agregarea rămâne a acestei căi."""
     inc, sf = date(an, 1, 1).isoformat(), date(an + 1, 1, 1).isoformat()
+    # [C119, lotul 12] rulajul NET al fiecărei clase (venituri: credit − debit; cheltuieli: debit − credit), ca generatorul
     q = ("SELECT "
-         "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_fin, "
-         "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_expl, "
-         "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_fin, "
-         "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl "
+         "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0) "
+         "  - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_fin, "
+         "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0) "
+         "  - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '7%%' AND l.cont_debit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_expl, "
+         "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) "
+         "  - COALESCE(SUM(CASE WHEN l.cont_credit LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_fin, "
+         "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) "
+         "  - COALESCE(SUM(CASE WHEN l.cont_credit LIKE '6%%' AND l.cont_credit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl "
          "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
          "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
          "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")   # [C15] fără închiderea în 121
@@ -59,14 +64,14 @@ def _baza_contabila_independenta(conn, an, schema):
         prel = _rp.rulaje(cur, schema, date(an, 1, 1), date(an + 1, 1, 1), fara_inchidere_121=True)
     for cont, (d, c) in prel.items():
         k = str(cont)
-        if k.startswith("76"):
-            ven_fin = (ven_fin or 0) + c
+        if k.startswith("76"):          # [C119] net, ca notele
+            ven_fin = (ven_fin or 0) + c - d
         elif k.startswith("7"):
-            ven_expl = (ven_expl or 0) + c
+            ven_expl = (ven_expl or 0) + c - d
         elif k.startswith("66"):
-            chelt_fin = (chelt_fin or 0) + d
+            chelt_fin = (chelt_fin or 0) + d - c
         elif k.startswith("6"):
-            chelt_expl = (chelt_expl or 0) + d
+            chelt_expl = (chelt_expl or 0) + d - c
     return {"P1": _q(ven_expl or 0), "P2": _q(chelt_expl or 0),
             "P4": _q(ven_fin or 0), "P5": _q(chelt_fin or 0)}
 

@@ -41,7 +41,9 @@ def test_clasificarea_acopera_cele_82_si_fiecare_are_motiv():
     # 82 de selecturi (81 de chei: `je-centru` de două ori) + lotul 07.10 B: D204 forma, D208 modalitatea, helperul `selectDaNu`;
     # 6 fapte trecute la PRESELECTAT_PERMIS (emiterea ×4, factura recurentă, D318 tipul cererii) + destinația pe linie (fost CONFLICT)
     # [lotul 10, 428] + `date_firma.js:vf-tva_incasare` (PRESELECTAT: „Nu” dedus din CF art.282 alin.(3) — sistemul e opțiune)
-    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 8 and sum(clase.values()) == 86   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
+    # [lotul 12, 477] + `facturi_ecran.js:pm-moneda` (PRESELECTAT: RON, ca la emitere — factura primită introdusă de mână)
+    # [lotul 12, C160] + `facturi_ecran.js:fr-tara` (PRESELECTAT: țara dedusă din CUI, ca la emitere — șablonul facturii recurente)
+    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 10 and sum(clase.values()) == 88   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
     assert all(len(m) > 40 for _c, m in S.CLASIFICARE.values())
     assert set(S.HELPERE) <= set(S.CLASIFICARE)
 
@@ -79,7 +81,8 @@ def test_preselectiile_permise_isi_scriu_criteriile():
     """DS cap.17 corectat: o preselecție e permisă numai cu (a) uzual/dedus, (b) vizibil, (c) schimbabil — scrise în motiv."""
     pres = {k: m for k, (c, m) in S.CLASIFICARE.items() if c == S.PRESELECTAT}
     assert sorted(pres) == ["date_firma.js:vf-tva_incasare", "declaratii.js:d318-drec", "emitere_ecran.js:em-moneda", "emitere_ecran.js:em-tara", "emitere_ecran.js:em-tip",
-                            "emitere_ecran.js:em-tipop", "facturi_ecran.js:fr-moneda", "facturi_ecran.js:pr-dest"]
+                            "emitere_ecran.js:em-tipop", "facturi_ecran.js:fr-moneda", "facturi_ecran.js:fr-tara", "facturi_ecran.js:pm-moneda",
+                            "facturi_ecran.js:pr-dest"]
     assert [k for k, m in pres.items() if not all(x in m for x in ("(a)", "(b)", "(c)"))] == []
 
 
@@ -94,8 +97,11 @@ def test_CALIBRARE_preselectat_cu_alege_e_prins():
 
 def test_tara_la_emitere_e_dedusa_din_cui():
     """(a) „se deduce din date (țara din CUI-ul partenerului)”: schimbarea CUI-ului pune țara, vizibil."""
+    # [lotul 12, C160] deducerea stă în `tari_partener.js` (sursa unică, și pentru șablonul facturii recurente); emiterea o importă
     s = _js("static/js/ecrane/emitere_ecran.js")
-    assert re.search(r'const taraDinCui = \(cui\) =>', s) and re.search(r'querySelector\("#em-cui"\)\.addEventListener\("change"', s)
+    assert re.search(r'export function taraDinCui\(cui\)', _js("static/js/ecrane/tari_partener.js"))
+    assert re.search(r'import \{[^}]*\btaraDinCui\b[^}]*\} from "\./tari_partener\.js', s)
+    assert re.search(r'querySelector\("#em-cui"\)\.addEventListener\("change"', s)
 
 
 def test_CALIBRARE_casuta_noua_neclasificata_e_prinsa():

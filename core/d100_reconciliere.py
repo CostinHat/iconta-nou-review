@@ -84,9 +84,11 @@ def _venituri_independent(conn, perioada, fereastra=None):
     `fereastra=(inc, sf)` suprascrie perioada.interval() (folosit de reconcilierea PROFIT pentru
     ferestrele CUMULATIVE de la 01.01, art.41 - vezi reconciliaza)."""
     inc, sf = fereastra if fereastra is not None else perioada.interval()
+    # [C119] rulajul NET al veniturilor (credit − debit pe 70x / 75x / 76x; 709 și debitul 707 = 4427 al notei Z se scad)
     q = ("SELECT COALESCE(SUM(CASE WHEN (l.cont_credit LIKE '70%%' OR l.cont_credit LIKE '75%%' "
          "        OR l.cont_credit LIKE '76%%') THEN l.suma ELSE 0 END),0) "
-         "     - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '709%%' THEN l.suma ELSE 0 END),0) "
+         "     - COALESCE(SUM(CASE WHEN (l.cont_debit LIKE '70%%' OR l.cont_debit LIKE '75%%' "
+         "        OR l.cont_debit LIKE '76%%') THEN l.suma ELSE 0 END),0) "
          "FROM inregistrari_linii l "
          "JOIN inregistrari i ON i.id = l.inregistrare_id "
          "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
@@ -100,9 +102,10 @@ def _cheltuieli_independent(conn, perioada, fereastra=None):
     Pentru regim PROFIT: profit contabil = venituri(70x) - cheltuieli(6xx) (baza impozitului pe profit).
     `fereastra=(inc, sf)` suprascrie perioada.interval() (ferestrele CUMULATIVE ale reconcilierii profit)."""
     inc, sf = fereastra if fereastra is not None else perioada.interval()
-    q = ("SELECT COALESCE(SUM(l.suma),0) FROM inregistrari_linii l "
+    q = ("SELECT COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' THEN l.suma ELSE 0 END),0) "   # [C119] rulajul net: debit − credit
+         "  - COALESCE(SUM(CASE WHEN l.cont_credit LIKE '6%%' THEN l.suma ELSE 0 END),0) FROM inregistrari_linii l "
          "JOIN inregistrari i ON i.id = l.inregistrare_id "
-         "WHERE i.status='validata' AND l.cont_debit LIKE '6%%' "
+         "WHERE i.status='validata' "
          "AND i.data >= %s AND i.data < %s AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")   # [C15] fără închiderea în 121
     with conn.cursor() as cur:
         return Decimal(str(_repo.sql_2(cur, q, inc, sf)[0] or 0))
@@ -117,10 +120,15 @@ def _rezultat_contabil_independent(conn, fereastra):
     închiderea în 121), adunate aici pe aceeași regulă 76/66 — intrarea e partajată (§8), agregarea e a acestei căi."""
     from core import rulaje_preluate as _rp
     inc, sf = fereastra
-    q = ("SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0), "
-         "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0), "
-         "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0), "
+    # [C119] fiecare componentă pe rulajul NET al clasei ei (venituri: credit − debit; cheltuieli: debit − credit)
+    q = ("SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0) "
+         "  - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '7%%' AND l.cont_debit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0), "
+         "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) "
+         "  - COALESCE(SUM(CASE WHEN l.cont_credit LIKE '6%%' AND l.cont_credit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0), "
+         "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0) "
+         "  - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '76%%' THEN l.suma ELSE 0 END),0), "
          "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) "
+         "  - COALESCE(SUM(CASE WHEN l.cont_credit LIKE '66%%' THEN l.suma ELSE 0 END),0) "
          "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
          "WHERE i.status='validata' AND i.data >= %s AND i.data < %s "
          "AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'")
@@ -130,8 +138,8 @@ def _rezultat_contabil_independent(conn, fereastra):
     r = list(r.values()) if isinstance(r, dict) else list(r)
     for cont, (d, c) in prel.items():
         k = str(cont)
-        i, v = ((2, c) if k.startswith("76") else (0, c) if k.startswith("7") else (3, d) if k.startswith("66") else (1, d)
-                if k.startswith("6") else (None, None))
+        i, v = ((2, c - d) if k.startswith("76") else (0, c - d) if k.startswith("7") else (3, d - c) if k.startswith("66") else (1, d - c)
+                if k.startswith("6") else (None, None))   # [C119] net (balanța preluată fără închidere are oricum numai latura funcțiunii)
         if i is not None:
             r[i] = (r[i] or 0) + v
     ve, ce, vf, cf = (_q(x or 0) for x in r)

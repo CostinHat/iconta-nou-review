@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/facturi_recurente.py",
+  "ancora": "tert_cui=s.get(\"tert_cui\"), tert_tara=tara_sablonului(s),   # [C160]",
+  "inlocuire": "tert_cui=s.get(\"tert_cui\"),",
+  "test": "frontend_test/e2e/e2e_lot12_cx6.py::test_def_c160_factura_recurenta_catre_clientul_ue_poarta_tara_clientului"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "      tert_tara: corp.querySelector(\"#fr-tara\").value,   // [C160] țara clientului, până la emitere",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_cx6.py::test_def_c160_factura_recurenta_catre_clientul_ue_poarta_tara_clientului"
+ },
+ {
+  "fisier": "core/termene_api.py",
+  "ancora": "d390_fapt=d390_fapt, d112_fapt=d112_fapt,\n                                d390_luni_neplatitor=d390_luni_neplatitor)",
+  "inlocuire": "d390_fapt=d390_fapt, d112_fapt=d112_fapt)",
+  "test": "frontend_test/e2e/e2e_lot12_cx6.py::test_def_c162_declaratii_arata_d390_numai_pe_luna_cu_prestarea"
+ }
+]

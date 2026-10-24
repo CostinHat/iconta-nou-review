@@ -1,0 +1,658 @@
+[
+ {
+  "nr": "C148",
+  "firma": "tenant_9055",
+  "descriere": "F6 (salariați fără tichete de masă, angajați din 2019–2025): Salariați -> statul de plată -> „← luna” de 22 de ori, de la 10/2026 la 12/2024 (luna dinaintea primei valori a salariului minim din registrul de parametri fiscali, 01.01.2025): ecranul spune „Nu s-a putut încărca statul de plată. Calculul pentru 01.12.2024 nu se poate face: valoarea … nu e definită înainte de 01.01.2025 …”, cu datele ZZ.LL.AAAA, fără dată ISO și fără „decizie de dezvoltator”. Numărul de clicuri e al lunii 10/2026 (în 11/2026: 23). Golul plafonului tichetului de masă (10/2025) nu oprește F6: niciun salariat nu are tichete (C159). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "#sp-prev"
+   },
+   {
+    "click": "#sp-prev"
+   },
+   {
+    "asteapta": "p.ecran-nota",
+    "text": "statul de plat"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Calculul pentru 01.12.2024 nu se poate face"
+   },
+   {
+    "contine": "înainte de 01.01.2025"
+   },
+   {
+    "nu_contine": "2024-12-01"
+   },
+   {
+    "nu_contine": "2025-01-01"
+   },
+   {
+    "nu_contine": "dezvoltator"
+   }
+  ],
+  "captura": "c148_f6_stat_12_2024_perioada_indisponibila.png"
+ },
+ {
+  "nr": "C149",
+  "firma": "tenant_9055",
+  "descriere": "F6 (plătitor de impozit pe profit): Declarații -> D177, anul 2025 -> Continuă -> suma maximă 1.000, beneficiarul (sponsorizare, CUI 1590082, ASOCIATIA PROBA, IBAN, 500 lei, contract, acord „Da”), APOI „Rămasă de redirecționat” 500 (ieșirea din câmp) -> „+ adaugă” o dată: beneficiarul intră în listă („1 beneficiar”, cu „șterge”). Înainte de C149 ieșirea din câmpul sumei re-desena formularul, golea câmpurile beneficiarului și pierdea clicul. Formularul e în memoria ecranului; nimic nu se scrie.",
+  "pasi": [
+   {
+    "declaratie": "d177",
+    "an": 2025
+   },
+   {
+    "asteapta": "#d177-smax"
+   },
+   {
+    "completeaza": "#d177-smax",
+    "valoare": "1000"
+   },
+   {
+    "alege": "#d177-tip",
+    "valoare": "1"
+   },
+   {
+    "completeaza": "#d177-cui",
+    "valoare": "1590082"
+   },
+   {
+    "completeaza": "#d177-den",
+    "valoare": "ASOCIATIA PROBA"
+   },
+   {
+    "completeaza": "#d177-iban",
+    "valoare": "RO59BTRLRONCRT0C69TEST01"
+   },
+   {
+    "completeaza": "#d177-suma",
+    "valoare": "500"
+   },
+   {
+    "completeaza": "#d177-contract",
+    "valoare": "1/10.01.2025"
+   },
+   {
+    "alege": "#d177-acord",
+    "valoare": "true"
+   },
+   {
+    "completeaza": "#d177-srest",
+    "valoare": "500"
+   },
+   {
+    "click": "#d177-add"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#dec-d177-form .dec-d177-del"
+   },
+   {
+    "contine": "1 beneficiar",
+    "zona": "#dec-d177-form summary"
+   },
+   {
+    "valoare": "#d177-srest",
+    "egal": "500"
+   }
+  ],
+  "captura": "c149_f6_d177_beneficiar_adaugat_din_primul_clic.png"
+ },
+ {
+  "nr": "493",
+  "firma": "tenant_9055",
+  "descriere": "F6: Declarații -> D177 (anuală), anul 2025 -> formularul (suma maximă 1.000, rămasă 500, un beneficiar) -> „+ adaugă” -> „Regenerează D177” -> „Trimite în coadă →” -> „Gata” -> „De depus”: cardul D177 arată „termen (scadență): 25.06.2026” (CF art.42 alin.(4) -> alin.(1): „până la data de 25 iunie inclusiv a anului următor”), nu „anul 2025”. Scrie în copie: D177 intră în coada firmei (se poate retrage cu „Renunță”). Pe copie nu există o declarație anuală în coadă de dinainte de reparație, deci nu e captură `vechi` (migrarea `core/migrare_termene_anuale.py` n-are ce rescrie aici).",
+  "pasi": [
+   {
+    "declaratie": "d177",
+    "an": 2025
+   },
+   {
+    "asteapta": "#d177-smax"
+   },
+   {
+    "completeaza": "#d177-smax",
+    "valoare": "1000"
+   },
+   {
+    "alege": "#d177-tip",
+    "valoare": "1"
+   },
+   {
+    "completeaza": "#d177-cui",
+    "valoare": "1590082"
+   },
+   {
+    "completeaza": "#d177-den",
+    "valoare": "ASOCIATIA PROBA"
+   },
+   {
+    "completeaza": "#d177-iban",
+    "valoare": "RO59BTRLRONCRT0C69TEST01"
+   },
+   {
+    "completeaza": "#d177-suma",
+    "valoare": "500"
+   },
+   {
+    "completeaza": "#d177-contract",
+    "valoare": "1/10.01.2025"
+   },
+   {
+    "alege": "#d177-acord",
+    "valoare": "true"
+   },
+   {
+    "completeaza": "#d177-srest",
+    "valoare": "500"
+   },
+   {
+    "click": "#d177-add"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#d177-regen"
+   },
+   {
+    "asteapta": "#dec-trimite"
+   },
+   {
+    "click": "#dec-trimite"
+   },
+   {
+    "asteapta_text": "Trimisă în coad"
+   },
+   {
+    "click": "#dec-gata-ok"
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": ".val-card",
+    "text": "D177"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "termen (scadență): 25.06.2026",
+    "zona": ".val-card"
+   },
+   {
+    "nu_contine": "termen (scadență): anul 2025",
+    "zona": ".val-card"
+   }
+  ],
+  "captura": "493_f6_de_depus_d177_termen_25_06_2026.png"
+ },
+ {
+  "nr": "C119",
+  "firma": "tenant_9049",
+  "descriere": "F1 (microîntreprindere): Raportul Z din 22.10.2026, validat înainte de reparație (nota 177: 5311 = 707 200,00, 5125 = 707 152,00, 707 = 4427 52,90) -> Declarații -> D100, T4/2026 -> Continuă: „Rezumat” arată contul 707 cu rulajul net 6.499,10 lei (cu TVA-ul Z-ului scos), nu creditul brut 6.552,00 lei — cifrele din notele validate ale lui F1 la 24.10.2026 (704: 1.500,00; 707: 6.552,00 credit − 52,90 debit). D100 pe T4 se poate genera abia după încheierea trimestrului (refuzul perioadei neîncheiate, 383); dacă F1 primește alte note validate în T4 până atunci, cifra se recitește din bază. Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d100",
+    "an": 2026,
+    "trim": 4
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "cont 707: 6.499,10 lei"
+   },
+   {
+    "nu_contine": "cont 707: 6.552,00 lei"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "c119_f1_vechi_d100_t4_z_validat.png"
+ },
+ {
+  "nr": "C146",
+  "firma": "tenant_9049",
+  "descriere": "F1: Registru jurnal 10/2026 -> nota raportului Z nr. 0042 din 20.10.2026 (casa 8000000001, importat AMEF înainte de reparație, ciornă): sub notă, motivul trimite la cardul care există — „… se corectează numai de acolo — în Raport Z: cât e nevalidat, «Șterge raportul Z» pe rândul lui …” —, nu la „Casa de marcat: raportul Z” (ecran inexistent). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": ".pf-frand[data-nota-id='162'] .jn-derivata"
+   },
+   {
+    "deruleaza": ".pf-frand[data-nota-id='162']"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "în Raport Z:",
+    "zona": ".pf-frand[data-nota-id='162'] .jn-derivata"
+   },
+   {
+    "contine": "«Șterge raportul Z»",
+    "zona": ".pf-frand[data-nota-id='162'] .jn-derivata"
+   },
+   {
+    "nu_contine": "Casa de marcat",
+    "zona": ".pf-frand[data-nota-id='162'] .jn-derivata"
+   }
+  ],
+  "captura": "c146_f1_vechi_jurnal_nota_z_trimite_la_raport_z.png"
+ },
+ {
+  "nr": "C131",
+  "firma": "tenant_9053",
+  "descriere": "F5 (salariați, documentele lunii introduse înainte de reparație): fereastra firmei -> Control fiscal -> «Declarație vs contabilitate» -> „Declarațiile recalculate din documente”: câte un rând pe fiecare declarație datorată, cu numele ei în față (între ele „D112 (salarii): …”). Înainte: reconcilierea se calcula și nu se arăta. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Declarațiile recalculate din documente",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "contine": "D112 (salarii):",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   }
+  ],
+  "captura": "c131_f5_vechi_reconcilierea_pe_declaratii.png"
+ },
+ {
+  "nr": "C118",
+  "firma": "tenant_9051",
+  "descriere": "F3: „Raport Z” -> „Import fișier AMEF” cu un raport Z din 22.08.2026 (lună trecută; fișierul: `e2e_lot12_cx2.fisier_amef_c118`, număr nou la fiecare rulare): după „Importat”, secțiunea rapoartelor Z trece pe luna Z-ului („Rapoartele Z din 08/2026”), cu rândul lui, deci se poate descărca și valida din ecran. Înainte: secțiunea rămânea pe luna curentă, fără Z-ul importat. SCRIE pe copie un Z ciornă în august (luna nu e blocată pe F3).",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   },
+   {
+    "asteapta": "#z-salveaza"
+   },
+   {
+    "incarca": "#z-amef",
+    "generator": "e2e_lot12_cx2:fisier_amef_c118",
+    "argumente": [
+     "2026-08-22"
+    ],
+    "nume": "Z_AMEF_c118_dovada.xml",
+    "tip": "application/xml"
+   },
+   {
+    "asteapta_text": "Importat"
+   },
+   {
+    "asteapta": "#z-descarcare [data-z]"
+   },
+   {
+    "deruleaza": "#z-descarcare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "08/2026",
+    "zona": "#z-descarcare h3"
+   },
+   {
+    "exista": "#z-descarcare [data-z]"
+   }
+  ],
+  "captura": "c118_f3_import_amef_august_descarcarea_pe_luna_z.png"
+ },
+ {
+  "nr": "C126",
+  "firma": "tenant_9049",
+  "descriere": "F1, NIR 5 din 22.10.2026 (scris înainte de reparație: TVA-ul transportului facturat de transportator, 21,00, ieșea 4428.01 = 401; nota e ciornă, deci migrarea publicării `migrare_nir_tva_transport` a mutat rândul): Stocuri -> NIR 5 -> „Notele NIR-ului”: 4426 = 401 · 21,00 (TVA-ul transportului, deductibil), marfa 4428.01 = 408 · 105,00 (neexigibilă până la factura mărfii), niciun 4428.01 = 401 — la legarea facturii DANTE, 4428.01 se închide întreg. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": ".nir-deschide[data-nir='6']"
+   },
+   {
+    "click": ".nir-deschide[data-nir='6']"
+   },
+   {
+    "asteapta": "#nir-detaliu-linii"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4426 401 21,00",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   },
+   {
+    "contine": "4428.01 408 105,00",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   },
+   {
+    "nu_contine": "4428.01 401",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   }
+  ],
+  "captura": "c126_f1_vechi_nir_5_tva_transport_pe_4426.png"
+ },
+ {
+  "nr": "153",
+  "firma": "tenant_9049",
+  "descriere": "F1, NIR 2 din 07.10.2026 (scris pe 401/4426 înainte de 08.10): Stocuri -> NIR 2 -> „Notele NIR-ului”: rândurile vechi 371 = 401 · 600,00 și 4426 = 401 · 126,00, iar nota de refacere REFACERE-NIR-2 (validată) le stornează în roșu și scrie forma nouă 371 = 408 · 600,00 și 4428.01 = 408 · 126,00 — aceeași stare ca un NIR fără factură de azi. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": ".nir-deschide[data-nir='2']"
+   },
+   {
+    "click": ".nir-deschide[data-nir='2']"
+   },
+   {
+    "asteapta": "#nir-detaliu-linii"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "371 408 600,00",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   },
+   {
+    "contine": "4428.01 408 126,00",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   },
+   {
+    "contine": "4426 401 126,00",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   }
+  ],
+  "captura": "153_f1_vechi_nir_2_detaliu_refacut_pe_408.png"
+ },
+ {
+  "nr": "153",
+  "firma": "tenant_9049",
+  "descriere": "F1, NIR 1 din 07.10.2026 (NIR-ul refăcut după respingere, pe 401/4426 înainte de 08.10): Stocuri -> NIR 1 -> „Notele NIR-ului”: rândurile vechi 371 = 401 · 550,00 și 4426 = 401 · 115,50, plus nota de refacere REFACERE-NIR-3 (validată): stornarea în roșu de pe 401/4426 și forma nouă 371 = 408 · 550,00, 4428.01 = 408 · 115,50. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": ".nir-deschide[data-nir='3']"
+   },
+   {
+    "click": ".nir-deschide[data-nir='3']"
+   },
+   {
+    "asteapta": "#nir-detaliu-linii"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "371 408 550,00",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   },
+   {
+    "contine": "4428.01 408 115,50",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   },
+   {
+    "contine": "4426 401 115,50",
+    "zona": "#nir-detaliu-linii ~ table.fd-tabel"
+   }
+  ],
+  "captura": "153_f1_vechi_nir_1_detaliu_refacut_pe_408.png"
+ },
+ {
+  "nr": "C133",
+  "firma": "tenant_9053",
+  "descriere": "F5: Salariați -> „+ Salariat nou” -> „Scutit contribuție minimă” = Da: apare „Motivul scutirii” (obligatoriu, cu cele 5 motive ale D112), fără nimic ales. Numai formularul; nu se salvează nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": "#sp-salariat-nou"
+   },
+   {
+    "click": "#sp-salariat-nou"
+   },
+   {
+    "asteapta": "#sn-salveaza"
+   },
+   {
+    "alege": "#sn-scutit_contrib_minim",
+    "valoare": "true"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "deruleaza": "#sn-motiv_exceptare-camp"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Motivul scutirii",
+    "zona": "#sn-motiv_exceptare-camp"
+   },
+   {
+    "valoare": "#sn-motiv_exceptare",
+    "egal": ""
+   }
+  ],
+  "captura": "c133_f5_salariat_nou_motivul_scutirii.png"
+ },
+ {
+  "nr": "C133",
+  "firma": "tenant_9053",
+  "descriere": "F5, salariații de dinainte de reparație (Ionescu Vasile, Popescu Elena; amândoi nescutiți): după migrarea publicării `migrare_motiv_scutire` niciunul nu e marcat „motivul scutirii de ales” — migrarea marchează numai fișele scutite fără motiv, iar pe F1–F6 nu există niciuna. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": "#sp-salariat-nou"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Ionescu"
+   },
+   {
+    "nu_contine": "motivul scutirii de contribuția minimă de ales"
+   }
+  ],
+  "captura": "c133_f5_vechi_salariati_niciun_motiv_de_ales.png"
+ },
+ {
+  "nr": "492",
+  "firma": "tenant_9049",
+  "utilizator": 71508,
+  "descriere": "F1, ca asistentul copiei (utilizatorul 71508, „Poate pregăti”): bara realizărilor de sus arată „N lucrări pregătite luna aceasta”, citită din `/eu/calitate` pe luna curentă. Numai citire: recitirea la o schimbare (fără reîncărcare) cere o scriere — nota pregătită —, pe care o face testul `test_def_492_contorul_pregatite_se_actualizeaza_fara_reincarcare` pe o firmă nouă, nu copia.",
+  "pasi": [
+   {
+    "asteapta": ".bara3 .bara3-item"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "lucrări pregătite luna aceasta",
+     "lucrare pregătită luna aceasta"
+    ],
+    "zona": ".bara3"
+   }
+  ],
+  "captura": "492_f1_bara_asistentului_pregatite.png"
+ }
+]

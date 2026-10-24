@@ -1,0 +1,220 @@
+[
+ {
+  "nr": "470",
+  "firma": "tenant_9049",
+  "descriere": "F1: factura emisă înainte de reparație -> «nota …» din detaliu deschide Registrul jurnal cu nota FACTURII evidențiată și adusă pe ecran, nu începutul lunii",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": ".fac-frand-btn"
+   },
+   {
+    "asteapta": "#fd-vezi-nota"
+   },
+   {
+    "click": "#fd-vezi-nota"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .val-evidentiat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type .val-evidentiat"
+   },
+   {
+    "contine": "Registru jurnal"
+   }
+  ],
+  "captura": "470_f1_vechi_nota_facturii.png"
+ },
+ {
+  "nr": "488",
+  "firma": "tenant_9049",
+  "descriere": "F1 (stoc cantitativ-valoric): pe linia facturii, deasupra listei de articole, «Caută articolul în stoc»; un text care nu se potrivește spune că niciun articol nu-l conține",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-l0-cauta-articol"
+   },
+   {
+    "completeaza": "#em-l0-cauta-articol",
+    "valoare": "zzzz"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#em-l0-cauta-articol"
+   },
+   {
+    "contine": "Nimic din listă nu conține „zzzz”",
+    "zona": "#em-l0-articol"
+   }
+  ],
+  "captura": "488_f1_cautare_articol.png"
+ },
+ {
+  "nr": "C84",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni › Livrare/prestare intracomunitară › Tip: Bunuri -> textul spre «Emite factură» și butonul ei; «Generează nota» nu se oferă",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "[data-op]"
+   },
+   {
+    "click": "button[data-op]",
+    "text": "Livrare/prestare intracomunitară"
+   },
+   {
+    "asteapta": "#op-tip"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "bunuri"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Livrarea intracomunitară de bunuri se face din «Emite factură»",
+    "zona": "#op-spre-emitere"
+   },
+   {
+    "exista": "#op-spre-emitere-buton"
+   }
+  ],
+  "captura": "c84_f1_operatiuni_bunuri.png"
+ },
+ {
+  "nr": "C84",
+  "firma": "tenant_9049",
+  "descriere": "F1: butonul «Deschide «Emite factură»» din Operațiuni deschide formularul facturii, cu lista articolelor din stoc pe linie",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "[data-op]"
+   },
+   {
+    "click": "button[data-op]",
+    "text": "Livrare/prestare intracomunitară"
+   },
+   {
+    "asteapta": "#op-tip"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "bunuri"
+   },
+   {
+    "click": "#op-spre-emitere-buton"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #em-l0-articol"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Emite factură"
+   },
+   {
+    "exista": ".fereastra:last-of-type #em-l0-articol"
+   }
+  ],
+  "captura": "c84_f1_emite_factura_din_operatiuni.png"
+ },
+ {
+  "nr": "462",
+  "firma": "tenant_9049",
+  "descriere": "F1: șablon recurent pentru un client din alt stat (DE123456789) -> refuzat la salvare, lângă «CUI beneficiar», ca factura obișnuită (nimic salvat)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-recurente"
+   },
+   {
+    "click": "#fac-recurente"
+   },
+   {
+    "asteapta": "#fr-add"
+   },
+   {
+    "click": "#fr-add"
+   },
+   {
+    "asteapta": "#fr-l0-descriere"
+   },
+   {
+    "completeaza": "#fr-cui",
+    "valoare": "DE123456789"
+   },
+   {
+    "completeaza": "#fr-nume",
+    "valoare": "Proba 462 GmbH"
+   },
+   {
+    "completeaza": "#fr-l0-descriere",
+    "valoare": "Servicii de consultanță"
+   },
+   {
+    "completeaza": "#fr-l0-cantitate",
+    "valoare": "1"
+   },
+   {
+    "completeaza": "#fr-l0-pret_unitar",
+    "valoare": "100"
+   },
+   {
+    "click": "#fr-salveaza"
+   },
+   {
+    "asteapta_text": "client din alt stat"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "client din alt stat"
+   },
+   {
+    "exista": "#fr-cui[aria-invalid='true']"
+   }
+  ],
+  "captura": "462_f1_sablon_client_strain.png"
+ }
+]

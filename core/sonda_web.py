@@ -191,7 +191,7 @@ def verifica():
             "sonda_web_repornire", "Serverul iConta a repornit (mașina, nu numai procesul)",
             "Mașina a pornit la %s; procesul %s a pornit odată cu ea, pe același commit (%s).\n\n  înainte: %s\n  acum:    %s\n\n"
             "Nu e o cădere a aplicației și nici un deploy: serverul a fost repornit — cerut de cineva cu acces (de exemplu ca să "
-            "activeze un kernel nou) sau de furnizor. Cine a cerut-o se vede în jurnalul sistemului (`journalctl -b -1`)."
+            "activeze un kernel nou) sau de furnizor. Cine a cerut-o se vede în jurnalul sistemului (comanda journalctl -b -1)."
             % ("%s %s" % (_pu.data_ro(boot), boot.strftime("%H:%M:%S")), UNITATE, commit, pornit_inainte, pornit))
     elif fel in ("cadere", "necunoscut"):
         from core import observare
@@ -204,7 +204,7 @@ def verifica():
             "Sonda spune CĂ a repornit, nu cât a fost jos: între două rulări la 15 minute, o "
             "cădere de trei secunde și una de paisprezece minute arată la fel."
             % (UNITATE, pornit_inainte, commit_inainte, pornit, commit,
-               "Commitul e ACELAȘI, deci n-a fost un deploy — procesul a căzut și s-a ridicat singur."
+               "Commitul e același, deci n-a fost un deploy — procesul a căzut și s-a ridicat singur."
                if fel == "cadere" else
                "Nu s-a putut citi unul din commituri, deci nu se poate deosebi un deploy de o cădere."))
     if pornit:

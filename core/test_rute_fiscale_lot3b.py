@@ -285,6 +285,14 @@ def test_INCASAREA_DE_CASA_legata_de_factura_ajunge_in_rulajul_clientului(lume):
                     "VALUES ('F1A','F1A4',%%s,'emisa',242,42,'CLIENT PROBA','14399840','emisa') RETURNING id" % SCH, (ZI,))
         fid = cur.fetchone()[0]
     cl = _client()
+    # [lotul 12, deficiența 456 decizia (a)] orice încasare în numerar de la client, și cea fără factură, se face cu chitanța emisă de
+    # aplicație — deci cu seria chitanțelor din Date firmă, aleasă de firmă pe ecranul ei (aici, pe ruta lui). Schema fixturii e făcută
+    # din șablon, fără rândul de Date firmă pe care îl scrie crearea firmei (`tenant_provisioning`, același INSERT): se pune întâi.
+    with lume["conn"].cursor() as cur:
+        cur.execute('INSERT INTO "%s".firma_profil (id, nume, cui, serie_factura, urmator_numar_factura, tip_firma) '
+                    "VALUES (1, 'TENANT RUTE 3B', %%s, '', 1, 'srl') ON CONFLICT (id) DO NOTHING" % SCH, (CUI_EXISTENT,))
+    r = cl.post("/tenants/%d/firma-profil/date" % lume["tid"], headers=_H(lume), json={"serie_chitanta": "ZC"})
+    assert r.status_code == 200, r.text[:300]
     r = cl.post("/tenants/%d/casa/operatiuni" % lume["tid"], headers=_H(lume),
                 json={"data": ZI, "categorie": "incasare_client", "suma": 242, "partener": "CLIENT PROBA", "cui": "14399840",
                       "document": "DI-278"})
@@ -295,6 +303,14 @@ def test_INCASAREA_DE_CASA_legata_de_factura_ajunge_in_rulajul_clientului(lume):
     with lume["conn"].cursor() as cur:
         cur.execute('SELECT factura_id, status FROM "%s".inregistrari' % SCH)
         assert cur.fetchall() == [(fid, "ciorna")]
+        # [lotul 12, C151] chitanța emisă pe încasare se leagă de factura stinsă, iar nota o numește (descrierea de acum = cea care
+        # numește chitanța și factura). MUTAȚIA: fără blocul C151 din `casa_api.leaga` -> factura_id NULL, descrierea „document ZC-1”.
+        from core import casa_api
+        cur.execute('SELECT serie, numar, factura_id FROM "%s".chitante WHERE casa_operatiune_id = %%s' % SCH, (op,))
+        ((serie_c, nr_c, fid_c),) = cur.fetchall()
+        assert fid_c == fid, (serie_c, nr_c, fid_c)
+        _nid, _st, acum, cuvenita, _d = casa_api.nota_numeste_chitanta(cur, SCH, op, "%s-%s" % (serie_c, nr_c), scrie=False)
+        assert acum == cuvenita, (acum, cuvenita)
     assert _rulaj(lume, "4111")["credit"] == Decimal("0")
     assert _valideaza_notele(lume, cl) == 1
     assert _rulaj(lume, "4111")["credit"] == Decimal("242.00")

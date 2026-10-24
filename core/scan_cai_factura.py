@@ -11,6 +11,9 @@ DE CE EXISTĂ. R87 a legat nota contabilă de **actul** care creează factura, p
 *„unic"* e adevărată doar cât timp nimeni nu mai deschide o a doua ușă. Întrebarea lui Costin (HHH1)
 a fost exact asta: **`_factura_din_parsat` e singura cale prin care o factură poate intra fără să
 treacă prin `creeaza_factura`?** Răspunsul de azi e DA — iar gardul ăsta îl ține adevărat.
+[lotul 12, 252] A treia cale, declarată: `solduri_parteneri_api._scrie_documente` scrie documentele deschise PRELUATE la migrare
+(`tip='preluata'`, fără notă — soldul lor e deja în balanța de deschidere); garda o ține numai pe acest tip
+(`core/test_cai_creare_factura.py::test_calea_preluarii_scrie_numai_facturi_preluate`).
 
 CUM MĂSOARĂ, și de ce pe AST și nu pe text: se caută nodurile `Call` către `execute` al căror prim
 argument e un literal (sau o concatenare de literali) care conține `INSERT INTO` și numele tabelei
@@ -18,7 +21,7 @@ argument e un literal (sau o concatenare de literali) care conține `INSERT INTO
 și comentariile care le pomenesc. **Calibrarea o dovedește în ambele direcții**, mai jos.
 
 CELE TREI DOMENII, numărate separat, fiindcă înseamnă lucruri diferite:
-  * **PRODUCȚIE** (`core/`, `main.py`) — aici e regula. Clichet: **2**.
+  * **PRODUCȚIE** (`core/`, `main.py`) — aici e regula. Clichet: **3** (a treia: preluarea, 252).
   * **SEED** (`date_test/seed/`) — fixturi care scriu direct în tabele. Ele sunt chiar motivul pentru
     care 19 note din 34 n-au `sursa` (măsurat la R36). Nu sunt un defect, dar nu sunt nici aplicația.
   * **TESTE** — schele. Nu se numără: un test care inserează o factură ca să verifice altceva n-are

@@ -13,6 +13,7 @@ redeschide aici.*
 """
 
 from core import facturi as _fc   # [decizia A 02.10] definiția „factură din bon fiscal”
+from core import nomenclator_status_factura as _nsf   # [lotul 12, 252] factura deschisă preluată nu e o factură a perioadei
 
 def select_inregistrari_linii(cur, schema, data_de, data_pana, conturi):
     cur.execute(f"""
@@ -89,7 +90,8 @@ def select_3(cur, schema):
 
 
 def select_facturi(cur, schema, an):
-    cur.execute(f"SELECT 1 FROM {schema}.facturi WHERE EXTRACT(year FROM data_emitere)=%s LIMIT 1", (an,))
+    cur.execute(f"SELECT 1 FROM {schema}.facturi WHERE EXTRACT(year FROM data_emitere)=%s AND {_nsf.clauza_fara_sold_preluat(None)} LIMIT 1",
+                (an,))
     return cur.fetchone()
 
 
@@ -129,6 +131,7 @@ def select_inregistrari_3(cur, schema, inceput, sfarsit):
                                    WHERE ic.factura_id = f.id AND ic.status = 'ciorna') AS are_ciorna
                     FROM {schema}.facturi f
                     WHERE f.data_emitere >= %s AND f.data_emitere < %s
+                      AND {_nsf.clauza_fara_sold_preluat("f")}   -- [252] soldul ei e în soldurile inițiale: n-are și nu cere notă
                       AND {_fc.clauza_nu_din_bon("f")}   -- [decizia A 02.10] factura din bon nu are notă de vânzare, prin definiție
                       AND NOT EXISTS (
                             SELECT 1 FROM {schema}.inregistrari i
@@ -192,7 +195,7 @@ def select_inregistrari_6(cur, schema, data_de, data_pana):
                                    WHERE ic.factura_id = f.id AND ic.status = 'ciorna') AS are_ciorna
                     FROM {schema}.facturi f
                     LEFT JOIN {schema}.clienti c ON c.id = f.client_id
-                    WHERE f.data_emitere >= %s AND f.data_emitere < %s
+                    WHERE f.data_emitere >= %s AND f.data_emitere < %s AND {_nsf.clauza_fara_sold_preluat("f")}
                     ORDER BY f.id
                 """, (data_de, data_pana))
     return cur.fetchall()
@@ -230,7 +233,7 @@ def select_facturi_2(cur, schema, inceput, sfarsit):
                     SELECT f.id, f.numar, f.data_emitere, l.cantitate, l.pret_unitar, l.cota_tva
                     FROM {schema}.facturi f
                     JOIN {schema}.factura_linii l ON l.factura_id = f.id
-                    WHERE f.directie = 'emisa' AND f.data_emitere >= %s AND f.data_emitere < %s
+                    WHERE f.directie = 'emisa' AND f.data_emitere >= %s AND f.data_emitere < %s AND {_nsf.clauza_fara_sold_preluat("f")}
                     ORDER BY f.id
                 """, (inceput, sfarsit))
     return cur.fetchall()

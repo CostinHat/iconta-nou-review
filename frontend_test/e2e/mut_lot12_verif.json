@@ -1,0 +1,56 @@
+[
+ {
+  "fisier": "core/migrare_retest_0810.py",
+  "ancora": "            if c not in folosite:\n",
+  "inlocuire": "            if False:\n",
+  "test": "frontend_test/e2e/e2e_lot12_verif.py::test_def_135_firma_veche_cu_731_738_ramane_fara_ele_dupa_migrare"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "${c.in_afara_planului ? \" \\u00b7 în afara planului legal al normei firmei\" : \"\"}",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_verif.py::test_def_135_firma_veche_cu_731_738_ramane_fara_ele_dupa_migrare"
+ },
+ {
+  "fisier": "core/stat_plata_api.py",
+  "ancora": "    parti = [int(x) for x in brute]   # partea intreaga (valori >= 0)\n",
+  "inlocuire": "    parti = [int(leu_aritmetic(x)) for x in brute]   # partea intreaga (valori >= 0)\n",
+  "test": "frontend_test/e2e/e2e_lot12_verif.py::test_def_280_cam_pe_cartele_insumeaza_cam_ul_declarat"
+ },
+ {
+  "fisier": "core/d300.py",
+  "ancora": "    _r31 = _int(ic_prest_serv)\n",
+  "inlocuire": "    _r31 = _int(ic_prest_serv + prest_serv_non_ue)\n",
+  "test": "frontend_test/e2e/e2e_lot12_verif.py::test_def_c43_serviciul_catre_client_din_afara_ue_numai_la_rd3"
+ },
+ {
+  "fisier": "core/casa_sold.py",
+  "ancora": "return sold + sum((v for d, v in mis.items() if d < zi), Decimal(0))",
+  "inlocuire": "return sum((v for d, v in mis.items() if d < zi), Decimal(0))",
+  "test": "frontend_test/e2e/e2e_lot12_verif.py::test_def_c60_registrul_de_casa_porneste_de_la_preluare_si_de_la_notele_lunii_trecute"
+ },
+ {
+  "fisier": "core/casa_sold.py",
+  "ancora": "return sold + sum((v for d, v in mis.items() if d < zi), Decimal(0))",
+  "inlocuire": "return sold",
+  "test": "frontend_test/e2e/e2e_lot12_verif.py::test_def_c60_registrul_de_casa_porneste_de_la_preluare_si_de_la_notele_lunii_trecute"
+ },
+ {
+  "fisier": "core/casa_sold.py",
+  "ancora": "return sold + sum((v for d, v in mis.items() if d < zi), Decimal(0))",
+  "inlocuire": "return sold",
+  "test": "frontend_test/e2e/e2e_lot92.py::test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "if (orig.get(\"stare_incasare\") or {}).get(\"stare\") == \"stornata\":",
+  "inlocuire": "if False:",
+  "test": "frontend_test/e2e/e2e_lot10b_facturi.py::test_def_c74_factura_stornata_nu_se_mai_storneaza"
+ },
+ {
+  "fisier": "core/z_descarcare.py",
+  "ancora": "    _ac.reincearca_interna(zid)",
+  "inlocuire": "    pass",
+  "test": "frontend_test/e2e/e2e_lot93d.py::test_def_c65_z_la_pfa_validat_intern_intra_in_d300"
+ }
+]

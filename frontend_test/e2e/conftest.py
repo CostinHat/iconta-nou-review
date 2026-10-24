@@ -104,6 +104,15 @@ def nr_crt(schema, nid):
     return "nr. crt. %d din %s" % (nr, data.strftime("%d.%m.%Y"))
 
 
+@pytest.fixture(autouse=True)
+def _fara_ciorne_ramase():
+    """[495, lotul 12] Ciornele formularelor stau pe server, pe utilizator + firmă: fiecare test pornește fără ciornele conturilor de test
+    (înainte, fiecare test pornea cu un browser gol, deci fără ciornă)."""
+    if sql("SELECT to_regclass('public.ciorne_formular') IS NOT NULL")[0][0]:
+        sql("DELETE FROM public.ciorne_formular c USING public.users u WHERE u.id = c.user_id AND u.email LIKE %s", ("%@prisma-cont.test",))
+    yield
+
+
 @pytest.fixture(scope="session")
 def browser():
     from playwright.sync_api import sync_playwright

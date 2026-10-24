@@ -1,8 +1,8 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand, arataRefuzul } from "../api.js?v=31460b24f2";
-import { ciornaFormular } from "../ciorna_formular.js?v=f59e00811a";  // [267, clasa] ciorna formularelor lungi de creare
+import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand, arataRefuzul } from "../api.js?v=309f4d66ae";
+import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267, clasa] ciorna formularelor lungi de creare
 // [lotul 11, 440] numele câmpurilor din refuzul serverului (`salariati_api.salveaza_concediu`, corpul cererii) -> id-ul de pe ecran
 const CAMPURI_CONCEDIU = { serie: "cm-serie", numar: "cm-numar", cod: "cm-cod", cod_urgenta: "cm-urgenta", cnp_ingrijit: "cm-cnp-ingrijit",
   venit_realizat: "cm-venit", data_acordare: "cm-acord", data_inceput: "cm-inceput", data_sfarsit: "cm-sfarsit", diagnostic: "cm-diag",
@@ -153,11 +153,14 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
 
 
     // [267, clasa „formularele lungi”] certificatul început rămâne la închidere / ieșirea din pagină și revine la redeschidere;
-    // ciorna se șterge la salvare și la „Renunță”
+    // ciorna se șterge la salvare și la „Renunță”. [495, clasa] ciorna stă pe server (utilizator + firmă): se regăsește și pe alt calculator
     const ciorna = ciornaFormular(zona, "iconta_ciorna_cm:" + t.id + ":" + sal.id,
       ["cm-serie", "cm-numar", "cm-cod", "cm-venit", "cm-urgenta", "cm-cnp-ingrijit", "cm-acord", "cm-inceput", "cm-sfarsit", "cm-zile",
-       "cm-continuare", "cm-serie-ini", "cm-numar-ini", "cm-ven6", "cm-zile6", "cm-diag", "cm-spital", "cm-program-national"]);
-    if (ciorna.refacuta) { selCod.dispatchEvent(new Event("change")); chkCont.dispatchEvent(new Event("change")); }
+       "cm-continuare", "cm-serie-ini", "cm-numar-ini", "cm-ven6", "cm-zile6", "cm-diag", "cm-spital", "cm-program-national"],
+      { tenantId: t.id, formular: "concediu_medical:" + sal.id });
+    const refacute = () => { selCod.dispatchEvent(new Event("change")); chkCont.dispatchEvent(new Event("change")); };
+    if (ciorna.refacuta) refacute();
+    ciorna.gata.then((deLaServer) => { if (deLaServer && zona.isConnected) refacute(); });
     zona.querySelector("#cm-renunta").addEventListener("click", () => { ciorna.sterge(); zona.innerHTML = ""; });
 
     // Auto-calcul zile lucratoare (FARA sarbatori legale, OUG 158/2005 art.10) intre inceput

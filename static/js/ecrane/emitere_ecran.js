@@ -7,11 +7,13 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=31460b24f2";
-import { textStareSpv } from "./spv_stare.js?v=1f2821106d";  /* [lotul 6, 275c] */
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=309f4d66ae";
+import { textStareSpv } from "./spv_stare.js?v=39617786af";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { optiuniTara as _optiuniTara, taraDinCui } from "./tari_partener.js?v=43a0fddc7d";   // [lotul 12, C160] sursa unică
 import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444] numele ANAF vs fișa clientului
+import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -43,6 +45,7 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
     }
     opt.tvaProfil = tvaProfil;   // [lot 19 pct.4d] neplatitor -> liniile nu poarta TVA (CF art.310 alin.(10) lit.b))
     opt.tvaIncasare = tvaIncasare;   // [lotul 11, C85] „Schimbă seria” deschide aceeași Configurare emitere: și ea arată sistemul TVA la încasare
+    await incarcaCiorna(tenantId);   // [495] ciorna de pe server (sau copia netrimisă din browser), înainte de prima desenare
     formularEmitere(corp, nav, tenantId, num, opt);
   }
 }
@@ -223,23 +226,63 @@ export function tvaDocument(linii) {
 
 // ---------- CIORNA FACTURII ----------
 // [lotul 07.10 pct.2, comanda Costin 06.10.2026 — GRAV, factura pierdută a treia oară] „O factură începută rămâne păstrată
-// oricum ar naviga contabilul în aplicație, până o emite sau o abandonează explicit.” Navigatorul păstra formularul numai pe
-// drumul „deschide peste / înapoi”; orice alt drum (← de pe pas, firma din bara de sus, X, reîncărcarea paginii) îl construia
-// gol. Acum ce s-a scris e o CIORNĂ a utilizatorului pe firmă, în acest browser (nu pleacă pe server): scrisă la fiecare
-// modificare, citită la deschiderea formularului, ștearsă NUMAI la emitere sau la „Renunță la factură”.
-// Gard: `core/test_ciorna_factura.py` (drumurile de ștergere și cheia pe utilizator + firmă).
+// oricum ar naviga contabilul în aplicație, până o emite sau o abandonează explicit.” Ce s-a scris e o CIORNĂ a utilizatorului pe
+// firmă: scrisă la fiecare modificare, citită la deschiderea formularului, ștearsă NUMAI la emitere, la „Renunță la factură” sau
+// când omul golește formularul.
+// [deficiența 495, lotul 12] „Ciorna facturii e salvată doar în browser; pe alt calculator nu se regăsește.” Locul ciornei e acum
+// SERVERUL (`core/ciorne_formular.py`, pe utilizator + firmă). Browserul ține doar copia NETRIMISĂ: fiecare modificare se scrie întâi
+// aici (o reîncărcare imediată nu pierde ultima tastă), apoi pleacă la server; după ce serverul a primit-o, copia locală se șterge.
+// La deschidere (`incarcaCiorna`), o copie rămasă în browser — netrimisă, sau ciorna veche de dinainte de 495 — se urcă întâi pe
+// server și e cea refăcută; altfel se reface ciorna de pe server (scrisă de pe orice calculator).
+// Gard: `core/test_lot0710_ui.py` (drumurile de ștergere, cheia pe utilizator + firmă), `core/test_lot12_emit_ciorna.py`.
 function cheieCiorna(tenantId) {
   const u = sesiune.user();
   return `iconta_ciorna_factura:${u && u.id != null ? u.id : "anonim"}:${tenantId}`;
 }
+// [495] transportul ciornei spre server e cel comun al ciornelor de formular (`ciorna_formular.js`, `ciornaPeServer`): copia netrimisă
+// în browser, trimisă după o pauză de tastare, ștearsă din browser după ce serverul a primit-o; cererile pleacă pe rând
+const _transport = (tenantId) => ciornaPeServer(cheieCiorna(tenantId), `/tenants/${tenantId}/ciorne-formular/factura`);
+const _ciorne = {};          // tenantId -> ciorna citită la deschidere (`incarcaCiorna`) și ținută la zi de `scrieCiorna`
+// La deschiderea formularului: ciorna serverului (scrisă de pe orice calculator); copia netrimisă din browser, dacă e mai nouă (sau
+// serverul n-are nimic — ciorna veche, de dinainte de 495), urcă pe server și e ea cea refăcută. Una mai veche decât a serverului
+// (lăsată pe calculatorul ăsta, între timp continuată pe altul) se aruncă: rămâne factura continuată.
+export async function incarcaCiorna(tenantId) {
+  _ciorne[tenantId] = await _transport(tenantId).incarca();
+  return _ciorne[tenantId];
+}
 export function citesteCiorna(tenantId) {
-  try { const v = localStorage.getItem(cheieCiorna(tenantId)); return v ? JSON.parse(v) : null; } catch { return null; }
+  return _ciorne[tenantId] || null;
 }
 function scrieCiorna(tenantId, c) {
-  try { localStorage.setItem(cheieCiorna(tenantId), JSON.stringify(c)); } catch { /* stocare blocată: rămâne doar păstrarea navigatorului */ }
+  _ciorne[tenantId] = c;
+  _transport(tenantId).scrie(c);
 }
 export function stergeCiorna(tenantId) {
-  try { localStorage.removeItem(cheieCiorna(tenantId)); } catch {}
+  const t = _transport(tenantId);
+  const exista = _ciorne[tenantId] != null;   // formularul gol, tastat din nou: nicio cerere la server
+  _ciorne[tenantId] = null;
+  t.sterge(exista);
+}
+
+// [deficiența 488, lotul 12] „lista de articole fără căutare, greu de folosit la sute de articole”. Căutarea într-o listă derulantă:
+// la fiecare tastă în `intrare`, lista păstrează numai opțiunile care conțin textul (în eticheta lor sau în `data-cauta`, ex. codul de
+// bare), fără diacritice și majuscule; opțiunea goală („— fără articol —”, „— alege —”) și cea deja aleasă rămân mereu, deci căutarea nu
+// schimbă alegerea. Nimic potrivit: o linie inactivă spune asta. Generică — orice listă lungă a aplicației o poate primi.
+function _faraDiacritice(t) {
+  return String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+}
+export function cautaInLista(intrare, lista) {
+  const toate = [...lista.options].map((o) => ({ html: o.outerHTML, valoare: o.value,
+    text: _faraDiacritice(o.textContent + " " + (o.dataset.cauta || "")) }));
+  intrare.addEventListener("input", () => {
+    const q = _faraDiacritice(intrare.value), ales = lista.value;
+    const pastrate = toate.filter((o) => o.valoare === "" || o.valoare === ales || !q || o.text.includes(q));
+    const nimic = q && !pastrate.some((o) => o.valoare !== "" && o.valoare !== ales)
+      ? `<option value="" disabled>Nimic din listă nu conține „${esc(intrare.value.trim())}”</option>` : "";
+    const goale = pastrate.filter((o) => o.valoare === "").map((o) => o.html).join("");
+    lista.innerHTML = goale + nimic + pastrate.filter((o) => o.valoare !== "").map((o) => o.html).join("");
+    lista.value = ales;
+  });
 }
 
 // ---------- FORMULAR EMITERE ----------
@@ -247,15 +290,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || undefined);  // emitere_inapoi_v1
   // [lotul 07.10 B, DS cap.17 corectat] PRESELECȚIE PERMISĂ: moneda RON e cazul uzual, se vede înainte de emitere și se schimbă
   let monedaSel = "RON";
-  // [B1 D300] Tara partenerului decide ruta in generator (RO->intern, UE->livrare IC/taxare inversa,
-  // non-UE->export). Grupul UE OGLINDESTE core/d390.TARI_UE ca incadrarea sa coincida cu backendul.
-  const TARI_UE_JS = { AT:"Austria", BE:"Belgia", BG:"Bulgaria", CY:"Cipru", CZ:"Cehia",
-    DE:"Germania", DK:"Danemarca", EE:"Estonia", EL:"Grecia", ES:"Spania", FI:"Finlanda",
-    FR:"Franța", HR:"Croația", HU:"Ungaria", IE:"Irlanda", IT:"Italia", LT:"Lituania",
-    LU:"Luxemburg", LV:"Letonia", MT:"Malta", NL:"Țările de Jos", PL:"Polonia", PT:"Portugalia",
-    SE:"Suedia", SI:"Slovenia", SK:"Slovacia", GB:"Regatul Unit", XI:"Irlanda de Nord" };
-  const TARI_NONUE_JS = { US:"Statele Unite", CH:"Elveția", TR:"Turcia", CN:"China",
-    MD:"Republica Moldova", NO:"Norvegia", RS:"Serbia", UA:"Ucraina" };
+  // [B1 D300] Tara partenerului decide ruta in generator (RO->intern, UE->livrare IC/taxare inversa, non-UE->export): lista țărilor și
+  // deducerea din CUI stau în `tari_partener.js` (sursa unică, și pentru șablonul facturii recurente — lotul 12, C160)
   // [C61, decizia Costin 19.10.2026 „Da, câmpuri și la român”] județul clientului român: codul (ISO 3166-2:RO, ca `dcod_JudetAuto` din
   // ANAF și `efactura_send._JUD`), afișat cu numele; aceeași listă ca `factura_pdf.JUDETE_NUME` (paritatea: core/test_c61_adresa_client_ro.py)
   const JUDETE_RO = [["AB","Alba"],["AR","Arad"],["AG","Argeș"],["BC","Bacău"],["BH","Bihor"],["BN","Bistrița-Năsăud"],["BT","Botoșani"],
@@ -268,12 +304,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // [274b] categoria de TVA a liniei cu 0% (core/categorii_tva, de la server): obligatorie la plătitor; la neplătitor e „O”, automat
   const CATEG = num.categorii_tva || [];
   const C331 = num.categorii_331 || [];
-  const optiuniTara = `<option value="RO" selected>România (RO)</option>`
-    + `<optgroup label="Uniunea Europeană">`
-    + Object.keys(TARI_UE_JS).sort().map((c) => `<option value="${c}">${esc(TARI_UE_JS[c])} (${c})</option>`).join("")
-    + `</optgroup><optgroup label="În afara UE (export)">`
-    + Object.keys(TARI_NONUE_JS).sort().map((c) => `<option value="${c}">${esc(TARI_NONUE_JS[c])} (${c})</option>`).join("")
-    + `</optgroup>`;
+  const optiuniTara = _optiuniTara();
   const inapoi = opt.inapoi || (() => nav.inapoi());
   const numarProxim = numarCuSerie(num.serie, String(num.urmator_numar));   // [lotul 11, 443] „F6 nr. 1”, nu „F61”
 
@@ -368,7 +399,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <option value="aviz">Aviz de însoțire</option>
       </select>
       <button class="buton-primar em-emite" id="em-emite" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite factură</button>
-      <button class="buton-secundar" id="em-renunta" data-fara-actiune="ciorna facturii stă în browser; renunțarea n-are cerere la server" style="margin-left:8px">Renunță la factură</button>
+      <button class="buton-secundar" id="em-renunta" data-fara-actiune="ciorna e a celui care o scrie: oricine vede formularul poate renunța la ciorna lui, fără un drept anume" style="margin-left:8px">Renunță la factură</button>
     </div></div>`;
 
   // [comanda Costin 05.10.2026 pct.2] „Datele firmei care blochează emiterea se verifică la deschiderea «Emite factură», nu după
@@ -476,10 +507,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
              ${CATEG.map((c) => `<option value="${esc(c.cod)}"${l.categorie_tva === c.cod ? " selected" : ""}>${esc(c.eticheta)}</option>`).join("")}
            </select>` : ""}`;
     if (articole.length) {
+      // [deficiența 488, lotul 12] deasupra listei, căutarea după denumire sau cod de bare (`cautaInLista`); alegerea rămâne a omului
       const selArticol = `
+        <input type="text" class="camp-input em-l-cauta-articol" id="em-l${i}-cauta-articol" aria-label="Caută articolul în stoc" placeholder="Caută articolul în stoc (denumire sau cod de bare)…" autocomplete="off" style="margin-bottom:4px">
         <select class="camp-input em-l-articol" id="em-l${i}-articol" aria-label="Articol de stoc" style="margin-bottom:6px">
           <option value="">— fără articol (serviciu) —</option>
-          ${articole.map((a) => `<option value="${a.id}"${String(a.id) === String(l.articol_id) ? " selected" : ""} data-den="${esc(a.denumire)}" data-um="${esc(a.um || "")}">${esc(a.denumire)} · stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("")}
+          ${articole.map((a) => `<option value="${a.id}"${String(a.id) === String(l.articol_id) ? " selected" : ""} data-den="${esc(a.denumire)}" data-um="${esc(a.um || "")}" data-cauta="${esc(a.barcode || "")}">${esc(a.denumire)} · stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("")}
         </select>`;
       // [05.10.2026, comanda Costin pct.9] pe o firmă cu stoc, linia fără articol spune că marfa nu se descarcă din gestiune
       // [lotul 07.10 B, C12b] o atenționare, nu o eroare: casetă informativă (DS cap.5 — roșul rămâne pentru ce blochează)
@@ -648,6 +681,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     um.addEventListener("input", () => { l.um = um.value.trim(); l.umScris = true; l.umPropus = false; });
     // [pct.1b] prețul golit rămâne GOL (era `|| 0`: un câmp șters pleca drept preț 0, pe care nu-l scrisese nimeni)
     pret.addEventListener("input", () => { const v = parseFloat(pret.value); l.pret_unitar = Number.isFinite(v) ? v : ""; l.pretPropus = false; recalc(); });
+    const cautaArt = zonaLinii.querySelector("#em-l" + i + "-cauta-articol");
+    if (cautaArt && selArt) cautaInLista(cautaArt, selArt);   // [488] lista se strânge; articolul ales rămâne în ea
     if (selArt) selArt.addEventListener("change", () => {  // [punte_stoc_v1] F172
       l.articol_id = selArt.value ? parseInt(selArt.value, 10) : null;
       const o = selArt.selectedOptions[0];
@@ -817,14 +852,6 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     }, { textOk: "Da, renunț la factură", textNu: "Continui factura" });   // [330] nu două „Renunță” alăturate
   });
 
-  // [lotul 07.10 B, DS cap.17 corectat] țara partenerului DEDUSĂ din CUI: prefixul unui stat (DE…, EL…, XI…) -> acel stat; CUI
-  // numeric sau „RO…” -> România. Fără prefix recunoscut, rămâne ce era — omul o schimbă din listă. Se vede înainte de emitere.
-  const taraDinCui = (cui) => {
-    const c = (cui || "").replace(/\s+/g, "").toUpperCase();
-    if (/^(RO)?\d{2,10}$/.test(c)) return "RO";
-    const pfx = c.slice(0, 2);
-    return /^[A-Z]{2}/.test(c) && (TARI_UE_JS[pfx] || TARI_NONUE_JS[pfx]) ? pfx : null;
-  };
   // [274b] clientul din afara României: localitatea și regiunea lui (adresa de livrare a livrării intracomunitare în e-Factura)
   // [C61] clientul român: localitatea și județul (lista), precompletate din ANAF la „Verifică”; aceeași localitate, alt nume la străin
   const aratăStrain = () => {

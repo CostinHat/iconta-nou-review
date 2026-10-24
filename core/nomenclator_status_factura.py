@@ -107,6 +107,36 @@ TIP_IMPLICIT = "factura"
 #: documentele fiscale: factura și [deficiențele 401–402, 19.10.2026] borderoul de achiziție de la persoana fizică (OMFP 2634/2015, cod
 #: 14-4-13: „document justificativ de înregistrare în contabilitate a valorii bunurilor cumpărate”) — numai la achiziție
 TIPURI_FISCALE = (TIP_IMPLICIT, "borderou")
+#: [lotul 12, deficiența 252] factura DESCHISĂ adusă la preluarea firmei (soldurile pe parteneri: o factură a programului vechi cu restul ei
+#: neîncasat / neplătit la data preluării, sau soldul întreg al partenerului când fișierul n-are facturile). NU e document fiscal al
+#: perioadei din iConta.eu: soldul ei stă DEJA în soldurile inițiale (balanța de deschidere) — nu se contează, nu intră în D300 / D394 /
+#: D390 / D406 / D100 / balanță (lipsește din `TIPURI_FISCALE`). E o creanță / datorie deschisă: scadențarul o arată cu restul ei, iar
+#: banca, casa și compensările o sting prin aceeași legătură notă–factură ca pe orice factură (`TIPURI_CU_INCASARE`).
+TIP_SOLD_PRELUAT = "preluata"
+#: documentele care au o stare de încasare (încasată / parțial / neîncasată): factura și factura deschisă preluată (252)
+TIPURI_CU_INCASARE = (TIP_IMPLICIT, TIP_SOLD_PRELUAT)
+#: [252] refuzul oricărei acțiuni de document fiscal (stornare, transformare, PDF, e-mail, SPV, ștergere, contare) pe o factură preluată
+MESAJ_SOLD_PRELUAT = ("E o factură deschisă preluată din programul vechi, cu soldul ei din soldurile inițiale: nu e o factură emisă în "
+                      "iConta.eu, deci nu se stornează, nu se transformă, nu se trimite și nu se contează. Se stinge din Bancă, Casă sau "
+                      "Compensări; dacă e greșită, corectează fișierul soldurilor pe parteneri și încarcă-l din nou.")
+
+
+def e_sold_preluat(tip):
+    """[252] Documentul e o factură deschisă preluată (`TIP_SOLD_PRELUAT`)."""
+    return (tip or TIP_IMPLICIT) == TIP_SOLD_PRELUAT
+
+
+def clauza_fara_sold_preluat(alias="f", coloana="tip"):
+    """[252] Fragmentul SQL care scoate facturile deschise preluate — pentru cititorii care nu filtrează documentul fiscal
+    (`clauza_tip_document`) dar n-au ce face cu ele: lista „Istoric facturi”, controlul încrucișat al facturilor fără notă."""
+    pref = ("%s." % alias) if alias else ""
+    return "COALESCE(%s%s, '%s') <> '%s'" % (pref, coloana, TIP_IMPLICIT, TIP_SOLD_PRELUAT)
+
+
+def clauza_tip_cu_incasare(alias="f", coloana="tip"):
+    """[252] Fragmentul SQL al documentelor cu stare de încasare (`TIPURI_CU_INCASARE`): scadențarul, potrivirea bonului."""
+    pref = ("%s." % alias) if alias else ""
+    return "COALESCE(%s%s, '%s') IN (%s)" % (pref, coloana, TIP_IMPLICIT, ", ".join("'%s'" % t for t in TIPURI_CU_INCASARE))
 
 
 def nedeclarabile():

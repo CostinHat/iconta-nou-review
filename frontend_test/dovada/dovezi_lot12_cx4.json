@@ -1,0 +1,245 @@
+[
+ {
+  "nr": "269",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei), contul VECHI al contabilului-șef: „Contabil Sesiunea B”, înregistrat pe 20.09.2026 prin formularul „Înregistrează cabinetul tău” (frontend_test/proba_f1_etape12.py, commit 3dbeb987), care împărțea numele (nume „Contabil Sesiunea”, prenume „B”). Numele și prenumele copiei vin din producție, după `core/migrare_nume_conturi_vechi.py` (lotul 5): nume „Contabil Sesiunea B”, prenume gol. Pagina principală: salutul e numele întreg, nu ultimul cuvânt. Numai citire.",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "asteapta": "h1.cab-salut-nume"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Salut, Contabil Sesiunea B",
+    "zona": "h1.cab-salut-nume"
+   }
+  ],
+  "captura": "269_f1_vechi_salut_cont_din_20_09_2026.png"
+ },
+ {
+  "nr": "490",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei), contul VECHI pe care s-a văzut „Salut, B” (N4, 05.10.2026): „Contabil Sesiunea B”, înregistrat pe 20.09.2026 cu formularul care punea ultimul cuvânt în prenume; numele lipit la loc de `core/migrare_nume_conturi_vechi.py` (lotul 5, rulată pe producție, de unde vine contul copiei), iar salutul trece prin `numeDeSalut` (static/js/ecrane/salut.js). Pagina principală: „Salut, Contabil Sesiunea B”, nu „Salut, B”. Numai citire.",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "asteapta": "h1.cab-salut-nume"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Salut, Contabil Sesiunea B",
+    "zona": "h1.cab-salut-nume"
+   }
+  ],
+  "captura": "490_f1_vechi_salut_cont_din_20_09_2026.png"
+ },
+ {
+  "nr": "216",
+  "firma": "tenant_9053",
+  "descriere": "F5, nota VECHI validată „Stat de plata 11/2026” (id 2, SAL 11/2026, datată 28.11.2026, scrisă pe 06.10.2026, înainte de reparația 216 din 10.10.2026): rămâne în Registrul jurnal (evidență: nota validată nu se șterge și nu se modifică, OMFP 1802/2014 pct.69; corectura se face prin notă de corecție), dar pe rândul ei stă acum semnalul C127 (`inchidere_luna.note_contate_inainte`, caseta `#jn-inainte-2`): „Nota a fost scrisă pe 06.10.2026, înainte ca luna 11/2026 să se încheie…”. Înlocuiește dovada `216_f5_vechi_nota_salarii_11_2026` (dovezi_lot12_verif.json), care cerea ca nota să lipsească. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #j-next"
+   },
+   {
+    "asteapta_text": "Luna 10/2026"
+   },
+   {
+    "click": ".fereastra:last-of-type #j-next"
+   },
+   {
+    "asteapta_text": "Luna 11/2026"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type [data-nota-id='2']"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Stat de plata 11/2026"
+   },
+   {
+    "exista": ".fereastra:last-of-type #jn-inainte-2"
+   },
+   {
+    "contine": "Nota a fost scrisă pe 06.10.2026, înainte ca luna 11/2026 să se încheie",
+    "zona": ".fereastra:last-of-type #jn-inainte-2"
+   }
+  ],
+  "captura": "216_f5_vechi_stat_11_2026_semnalat.png"
+ },
+ {
+  "nr": "216",
+  "firma": "tenant_9053",
+  "descriere": "F5, ciorna VECHE „Salariile lunii 10/2026” (id 5, SAL 10/2026, scrisă pe 08.10.2026, înainte de reparația 216): scoasă de `core/migrare_note_luna_neincheiata.py` (C127; urma în public.audit_log, acțiunea stergere_ciorna_luna_neincheiata, cu liniile ei). Registrul jurnal, luna în curs 10/2026: nicio notă de salarii; nota se scrie din nou din statul de plată după ce luna se încheie. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #j-next"
+   },
+   {
+    "asteapta_text": "Luna 10/2026"
+   },
+   {
+    "pauza": 1200
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Luna 10/2026"
+   },
+   {
+    "nu_contine": "Salariile lunii 10/2026"
+   },
+   {
+    "nu_contine": "SAL 10/2026"
+   }
+  ],
+  "captura": "216_f5_vechi_ciorna_sal_10_2026_scoasa.png"
+ },
+ {
+  "nr": "480",
+  "firma": "tenant_9049",
+  "descriere": "F1, linia VECHE de extras id 8 (21.10.2026, „Incasare GOOGLE IRELAND LIMITED IE6388047V factura F1A7”, 1.000,00 lei, importată pe 22.10.2026, înainte de reparația 480): potrivirea se calculează o singură dată, la import, și stă pe linie (`extras_linii.alocari`); reparația nu repotrivește liniile importate. Linia rămâne cu motivul de atunci („fără CUI în descriere”) și cu alocarea făcută de contabil pe F1A 7 (contată, nota 184). Date existente neafectate. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-lista .pf-frand",
+    "text": "IE6388047V factura F1A7"
+   },
+   {
+    "deruleaza": "#bk-lista .pf-frand",
+    "text": "IE6388047V factura F1A7"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Incasare GOOGLE IRELAND LIMITED IE6388047V factura F1A7",
+    "zona": "#bk-lista"
+   },
+   {
+    "contine": "fără CUI în descriere",
+    "zona": "#bk-lista"
+   },
+   {
+    "exista": "#bk-lista .pf-frand",
+    "text": "IE6388047V factura F1A7"
+   }
+  ],
+  "captura": "480_f1_vechi_linia_f1a7_contata_manual.png"
+ },
+ {
+  "nr": "C84",
+  "firma": "tenant_9050",
+  "descriere": "F2 (fără stoc: 0 articole), factura VECHE F2T3 din 20.10.2026 (livrare intracomunitară de bunuri către LU, scrisă din Operațiuni pe 22.10.2026, înainte de reparația C84): rămâne în Istoric facturi, neatinsă. Reparația C84 e numai un refuz la intrare în Operațiuni (`uc_tenants.vanzare_ic`, tip „bunuri”); pe o firmă cu stoc (F1) livrarea de bunuri din Operațiuni era refuzată și înainte, deci nu există livrări vechi nedescărcate din gestiune. Date existente neafectate. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn",
+    "stare": "attached"
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "asteapta": ".fac-frand-btn[data-id='5']"
+   },
+   {
+    "click": ".fac-frand-btn[data-id='5']"
+   },
+   {
+    "asteapta": "#fd-pdf"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Factură F2T nr. 3"
+   }
+  ],
+  "captura": "c84_f2_vechi_f2t3_livrare_ic_neatinsa.png"
+ },
+ {
+  "nr": "487",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): Asistenți — cei doi asistenți VECHI ai cabinetului (Ana Asistent, 3 firme; Asist Test, 1 firmă; conturi copiate din producție) au firme, deci `core/migrare_asistenti_fara_firme.py` (rulată pe baza de test pe 23.10.2026) nu i-a atins: rămân activi. Pe copie NU există un asistent invitat înainte fără nicio firmă, deci partea dezactivată de migrare nu se poate arăta aici. Numai citire.",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='asistenti'])"
+   },
+   {
+    "asteapta": "#asi-lista .asi-nume"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Ana Asistent",
+    "zona": "#asi-lista"
+   },
+   {
+    "contine": "Asist Test",
+    "zona": "#asi-lista"
+   },
+   {
+    "nu_contine": "Niciun asistent activ.",
+    "zona": "#asi-lista"
+   }
+  ],
+  "captura": "487_f1_vechi_asistentii_cu_firme_raman_activi.png"
+ }
+]

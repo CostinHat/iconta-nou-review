@@ -491,8 +491,8 @@ def sinteza_d100(conn, prof, perioada, venituri, cheltuieli, obligatii, cota=Non
         with conn.cursor() as cur:
             conturi = _repo.venituri_pe_conturi(cur, _inc, _sf)
         c = Decimal(str(cota)) if cota is not None else _rata_impozit_default("micro", perioada.an, perioada.trim * 3)
-        out = ["Baza de calcul %s: veniturile trimestrului din notele validate (conturile 70x, 75x, 76x; reducerile acordate 709 se "
-               "scad)." % per]
+        out = ["Baza de calcul %s: veniturile trimestrului din notele validate (rulajul conturilor 70x, 75x, 76x: creditul minus debitul — "
+               "TVA-ul scos din 707 și reducerile acordate 709 se scad)." % per]   # [C119]
         out += ["cont %s%s: %s lei" % (cont, " (se scade)" if str(cont).startswith("709") else "", _bani(suma)) for cont, suma in conturi]
         scazute = [s_ for cont, s_ in conturi if str(cont).startswith("709")]
         out.append("Deduceri din bază: %s." % (("709, %s lei" % _bani(-sum(scazute))) if scazute else "niciuna"))

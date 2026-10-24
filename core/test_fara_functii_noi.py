@@ -37,7 +37,18 @@ CRITERII = os.path.join(_RAD, "PILOT_CRITERII.md")
 METODE = ("get", "post", "put", "delete", "patch", "head", "options", "api_route", "websocket")
 STARI_IN_APLICATIE = ("LIVE", "PARTIAL", "API", "INTERN")
 #: [11.2 pct.5] excepția: {"METODĂ /cale" sau "F<id>" sau "LIVE F<id>": "<nr deficiență>"} — reparația care cere ruta / funcționalitatea
-EXCEPTII = {}
+EXCEPTII = {
+    # [lotul 12] funcții CERUTE explicit de Costin (comanda 12.1 pct.8: „461 lista de parteneri și 477 introducerea manuală a facturilor
+    # primite sunt cerute”) și ruta reparației 495 (ciorna facturii pe server, ca să se regăsească pe alt calculator)
+    "GET /tenants/{tenant_id}/parteneri-firma": "461",
+    "GET /tenants/{tenant_id}/parteneri-firma/fisa": "461",
+    "POST /tenants/{tenant_id}/facturi-primite/manual": "477",
+    "GET /tenants/{tenant_id}/ciorne-formular/{formular}": "495",
+    "PUT /tenants/{tenant_id}/ciorne-formular/{formular}": "495",
+    "DELETE /tenants/{tenant_id}/ciorne-formular/{formular}": "495",
+    # [lotul 12, C139] raportul Z importat greșit (ciornă) n-avea niciun drum de ștergere: jurnalul trimite nota Z-ului la ecranul Raport Z
+    "DELETE /tenants/{tenant_id}/horeca/raport-z/{nota_id}": "C139",
+}
 #: sha256 al conținutului referinței (fără liniile de comentariu); se schimbă numai împreună cu referința (vezi docstring)
 AMPRENTA_REFERINTA = "4b107c8b92b3c82d40c152d5d91c664cac035d20549e7cd630574180bfd54e7d"
 DOMENII_PILOT = ("facturi", "bancă", "casă", "stoc", "salarii", "închidere", "D300", "D394", "D112", "D100", "balanță")

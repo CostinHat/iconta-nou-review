@@ -374,6 +374,6 @@ def esec_secundar(eticheta, eroare, alerta=False):
         # Brevo are termen de 10 s. Nimeni nu citește rezultatul de aici, deci nu se pierde nimic
         # în afară de așteptare.
         alerteaza_in_fundal("secundar_%s" % eticheta,
-                            "Esec pe cale secundara: %s" % eticheta,
-                            "Operatia principala a continuat, dar '%s' a esuat:\n\n%s"
+                            "Eșec pe cale secundară: %s" % eticheta,   # [317, lotul 12] alertele operatorului, cu diacritice
+                            "Operația principală a continuat, dar „%s” a eșuat:\n\n%s"
                             % (eticheta, traceback.format_exc()))

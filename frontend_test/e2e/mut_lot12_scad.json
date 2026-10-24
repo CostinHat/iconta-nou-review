@@ -1,0 +1,98 @@
+[
+ {
+  "fisier": "core/repo_facturi.py",
+  "ancora": "total_lei, rest_lei = Decimal(s[\"total\"]), Decimal(s[\"total\"]) - Decimal(s[\"incasat\"])",
+  "inlocuire": "total_lei, rest_lei = Decimal(s[\"total\"]), Decimal(s[\"total\"])",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_466_factura_incasata_prin_banca_nu_apare_in_scadentar"
+ },
+ {
+  "fisier": "core/repo_scadentar.py",
+  "ancora": "return [dict(f, suma=f[\"rest\"]) for f in _rf.de_incasat(cur, \"emisa\")]",
+  "inlocuire": "return [dict(f, suma=f[\"total\"]) for f in _rf.de_incasat(cur, \"emisa\")]",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_466_factura_incasata_prin_banca_nu_apare_in_scadentar"
+ },
+ {
+  "fisier": "core/scadentar.py",
+  "ancora": "m = c[\"pe_moneda\"].setdefault(_moneda(f), {\"moneda\": _moneda(f),",
+  "inlocuire": "m = c[\"pe_moneda\"].setdefault(\"RON\", {\"moneda\": \"RON\",",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_468_fisa_client_tine_leii_separat_de_euro"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "const cuMoneda = (suma, m) => `${bani(suma)} ${monedaScrisa(m)}`;",
+  "inlocuire": "const cuMoneda = (suma, m) => `${bani(suma)} lei`;",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_468_fisa_client_tine_leii_separat_de_euro"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "corp.querySelectorAll(\".sc-client-btn\").forEach((b) => b.addEventListener(\"click\", () =>",
+  "inlocuire": "corp.querySelectorAll(\".sc-client-btn-dezlegat\").forEach((b) => b.addEventListener(\"click\", () =>",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_467_fisa_client_deschide_fisa_si_factura"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "zona.querySelectorAll(\".sc-fact-btn\").forEach((b) => b.addEventListener(\"click\", () =>",
+  "inlocuire": "zona.querySelectorAll(\".sc-fact-btn-dezlegat\").forEach((b) => b.addEventListener(\"click\", () =>",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_467_fisa_client_deschide_fisa_si_factura"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "<button class=\"buton-secundar${vedere === v ? \" buton-activ\" : \"\"}\" id=\"${id}\"",
+  "inlocuire": "<button class=\"buton-secundar\" id=\"${id}\"${vedere === v ? \" disabled\" : \"\"}",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_469_vederea_aleasa_e_activa_nu_dezactivata"
+ },
+ {
+  "fisier": "core/uc_factura_primita.py",
+  "ancora": "contare = _cf.contabilizeaza(cur2, schema, fid_final, automat=True,",
+  "inlocuire": "contare = {\"stare\": \"mutatie\"} if True else _cf.contabilizeaza(cur2, schema, fid_final, automat=True,",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_477_factura_primita_introdusa_de_mana"
+ },
+ {
+  "fisier": "core/uc_factura_primita.py",
+  "ancora": "            if not nou:   # [477] aceeași factură introdusă a doua oară",
+  "inlocuire": "            if False:   # [477] aceeași factură introdusă a doua oară",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_477_factura_primita_introdusa_de_mana"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "    z.innerHTML = `<span>Total fără TVA <b>${bani(t.baza)} ${m}</b>",
+  "inlocuire": "    z.innerHTML = `<span>Total fără TVA <b>${bani(t.baza + t.tva)} ${m}</b>",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_477_factura_primita_introdusa_de_mana"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "value=\"${esc(sumaCuMoneda(p.tva, p.moneda))}\"",
+  "inlocuire": "value=\"${esc(p.tva || \"\")}\"",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_c105_validarea_arata_sumele_formatate"
+ },
+ {
+  "fisier": "core/repo_main.py",
+  "ancora": "bool(ln.get(\"nivel_document\")), ln.get(\"um\") or None))",
+  "inlocuire": "bool(ln.get(\"nivel_document\")), None))",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_c104_importul_xml_pastreaza_unitatea_de_masura"
+ },
+ {
+  "fisier": "core/stocuri_cv_api.py",
+  "ancora": "\"pret_unitar\": str(pret), \"cont_stoc\": cont_l, **({\"um\": um} if um else {}),",
+  "inlocuire": "\"pret_unitar\": str(pret), \"cont_stoc\": cont_l,",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_c104_importul_xml_pastreaza_unitatea_de_masura"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "        anuntaCursulValidat(zona, r);   // [lotul 12, cursul vechi la validare (a)]\n        butonInapoi(zona, nav);   // [418c / 410, DS cap.27] confirmarea rămâne; înapoi la cererea omului",
+  "inlocuire": "        anuntaCursulValidat(zona, r);   // [lotul 12, cursul vechi la validare (a)]\n        setTimeout(() => nav.inapoi(), 900);",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_418_dupa_alta_livrare_confirmarea_ramane"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "  if (r.curs_zilei_lipsa) arataMesaj(zona.querySelector(\".pr-curs-lipsa\"), r.curs_zilei_lipsa.mesaj, \"avert\");\n}",
+  "inlocuire": "}",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_decizia_curs_vechi_la_validare_anuntul_ca_la_emitere"
+ },
+ {
+  "fisier": "core/uc_factura_primita.py",
+  "ancora": "    return _cb.cursul_zilei_lipsa(r[\"data_emitere\"], r[\"data_curs\"], act=\"validare\")",
+  "inlocuire": "    return None",
+  "test": "frontend_test/e2e/e2e_lot12_scad.py::test_decizia_curs_vechi_la_validare_anuntul_ca_la_emitere"
+ }
+]

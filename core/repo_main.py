@@ -231,35 +231,44 @@ def select_facturi_3(cur, schema, f):
     triggerul `trg_cui_fara_ro` scrie „14399840”, XML-ul aduce „RO14399840”, iar documentele de dinainte au rămas cu „RO” — comparat
     brut, al doilea import nu-și găsea factura și cădea în cheia unică a numărului (500 / refuz fals)."""
     from core import cui_forma as _cf
+    # [lotul 12, 477] și aceeași SERIE: factura introdusă de mână o poartă separat (două facturi ale aceluiași furnizor, din aceeași zi, cu
+    # același număr în serii diferite sunt două facturi); cea din XML n-o are (numărul BT-1 o cuprinde) — gol pe ambele părți
     cur.execute(f"""SELECT id FROM {schema}.facturi
-                WHERE numar=%s AND {_cf.SQL.format(c="tert_cui")}=%s AND data_emitere=%s AND directie=%s""",
-                (f["numar"], _cf.stocare(f["tert_cui"]) or "", f["data_emitere"], f["directie"]))
+                WHERE numar=%s AND {_cf.SQL.format(c="tert_cui")}=%s AND data_emitere=%s AND directie=%s
+                  AND COALESCE(serie, '') = %s""",
+                (f["numar"], _cf.stocare(f["tert_cui"]) or "", f["data_emitere"], f["directie"], f.get("serie") or ""))
     return cur.fetchone()
 
 
 def factura_emisa_cu_numarul(cur, schema, numar):
     """[lotul 10, C73 / U2] Factura emisă fără serie care poartă deja `numar` (cheia `facturi_numar_emisa_uniq`, pe care o lovește
     importul): (data_emitere, tert_nume), sau None."""
+    # [lotul 12, 252] aceeași mulțime ca cheia: fără facturile deschise preluate (numerele programului vechi)
+    from core import nomenclator_status_factura as _nsf
     cur.execute(f"""SELECT data_emitere, tert_nume FROM {schema}.facturi
-                WHERE directie='emisa' AND COALESCE(serie,'')='' AND numar=%s LIMIT 1""", (numar,))
+                WHERE directie='emisa' AND COALESCE(serie,'')='' AND numar=%s AND {_nsf.clauza_fara_sold_preluat(None)} LIMIT 1""",
+                (numar,))
     return cur.fetchone()
 
 
 def insert_facturi(cur, schema, _stare, f):
+    # [lotul 12, 477] `serie`: factura primită introdusă de mână are seria separat (cea din XML n-o are: None)
     cur.execute(f"""INSERT INTO {schema}.facturi
                 (numar, data_emitere, data_scadenta, total, tva, moneda, directie, status,
-                 xml, tert_nume, tert_cui)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""", (f["numar"], f["data_emitere"], f["data_scadenta"], f["total"], f["tva"],
+                 xml, tert_nume, tert_cui, serie)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""", (f["numar"], f["data_emitere"], f["data_scadenta"], f["total"], f["tva"],
                  f["moneda"], f["directie"], _stare, f["xml"], (f["tert_nume"] or "")[:255],
-                 (f["tert_cui"] or "")[:30]))
+                 (f["tert_cui"] or "")[:30], f.get("serie") or None))
     return cur.fetchone()
 
 
 def insert_factura_linii(cur, schema, fid, ln):
+    # [lotul 12, C104] unitatea de măsură a liniei (BT-130 din XML, `efactura_send.um_din_unece`; la factura de mână, cea scrisă); lipsă ->
+    # implicitul coloanei. Înainte nu se scria: 50 m de cablu și 12,5 kg de detergent intrau în „buc”
     cur.execute(f"""INSERT INTO {schema}.factura_linii
-                (factura_id, descriere, cantitate, pret_unitar, cota_tva, valoare_neta, nivel_document)
-                VALUES (%s,%s,%s,%s,%s,%s,%s)""", (fid, ln["descriere"][:255], ln["cantitate"], ln["pret_unitar"], ln["cota_tva"],
+                (factura_id, descriere, cantitate, pret_unitar, cota_tva, valoare_neta, nivel_document, um)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,COALESCE(%s, 'buc'))""", (fid, ln["descriere"][:255], ln["cantitate"], ln["pret_unitar"], ln["cota_tva"],
                                                    # [lotul 11, C82] BT-131 din XML, exact (`tva_calcul.net_linie`)
                                                    ln.get("valoare_neta"),
                                                    # [lotul 11, C80] reducerea / taxa la nivelul facturii (BG-20 / BG-21), nu un articol
-                                                   bool(ln.get("nivel_document"))))
+                                                   bool(ln.get("nivel_document")), ln.get("um") or None))

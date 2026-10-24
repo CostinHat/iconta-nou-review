@@ -43,6 +43,13 @@ _MOTIV_440 = ("Lotul 11, deficiența 440 (comanda Costin 11.1 pct.16): toate ero
 
 #: abaterile acceptate de la „mesaj neschimbat", fiecare cu motivul ei. Orice alta abatere pica.
 ABATERI = {
+    # [lotul 12, clasa 598] două mesaje noi, câte unul pe fiecare drum REGES (trimiterea / citirea răspunsurilor) — deci abatere pe funcție
+    ("reges_trimite_salariat", "f'REGES: {e}'"): (
+        "Lotul 12, clasa 598 (eșecul canalului extern spus contabilului, fără textul excepției): același 502 — „REGES nu a răspuns, deci "
+        "nu se știe dacă salariatul a ajuns acolo. Verifică în REGES înainte să-l trimiți din nou.”; detaliul în jurnal (`esec_secundar`)."),
+    ("reges_poll", "f'REGES: {e}'"): (
+        "Lotul 12, clasa 598 (eșecul canalului extern spus contabilului, fără textul excepției): același 502 — „REGES nu a răspuns acum la "
+        "citirea răspunsurilor. Încearcă din nou peste câteva minute.”; detaliul în jurnal (`esec_secundar`)."),
     ("asistent_creeaza", "EMAIL_INVALID"): _MOTIV_440,
     ("coada_adauga", "str(e)"): (
         "Lotul 11, deficiența 445 (comanda Costin 11.1): refuzul generării cu trimitere (`RefuzGenerare`: ecranul / câmpul / notele de "
@@ -160,6 +167,15 @@ _MOTIV_102_8B = ("Comanda Costin 10.2 pct.8b (lotul 10, verbatim în DECIZII „
                   "dă cifrele (total 231,00, încasat 200,00, diferență 31,00).” Același 400, cu cifrele (`raport_z.mesaj_plata_diferita`); "
                   "comparația pe lei în Decimal, nu în float cu toleranța 0,01.")
 PERECHI_ADAUGATE = {
+    ("factura_primita_valideaza", "refuz"): (
+        "Deficiența C120 (lotul 12, clasa 599, comanda Costin 12.1: „compară firma din fișier cu firma aleasă și cere confirmare când "
+        "diferă, la toate importurile”): factura primită aflată deja în lista „de validat” (din SPV sau dintr-un import de dinainte) în "
+        "care firma nu e nici furnizor, nici cumpărător se refuză (422) la validare, cu `efactura_import.alta_firma`. Un singur refuz: "
+        "refuzul vechi „XML-ul nu se poate citi: …” trece prin aceeași variabilă (XML-ul necitibil nu mai are ce confrunta)."),
+    ("asistent_creeaza", "{'mesaj': MESAJ_ASISTENT_FARA_FIRME, 'cod': COD_ASISTENT_FARA_FIRME, 'erori_campuri': [{'camp': 'firme', 'mesaj': "
+                         "MESAJ_ASISTENT_FARA_FIRME}]}"): (
+        "Deficiența 487 (lotul 12, comanda Costin 12.1): „Se poate crea un asistent fără nicio firmă alocată.” Invitația fără firme se "
+        "refuză (422, pe lista firmelor), în tranzacția contului — nimic scris; aceeași regulă ca la scoaterea ultimei firme."),
     ('casa_adauga', "{'mesaj': rez['eroare'], 'erori_campuri': rez['erori_campuri'], 'cod': rez.get('cod')}"): _MOTIV_440_W3A,
     ('chitanta_emite', '_amef.detaliu(_amef_e) if _amef_e is not None and len(er.campuri) == 1 else er.detaliu()'): _MOTIV_440_W3A,
     ('chitanta_emite', '_amef.detaliu(_amef.refuz_nedeclarata())'): _MOTIV_440_W3A,
@@ -234,6 +250,10 @@ PERECHI_ADAUGATE = {
         "C63 (decizia Costin 19.10.2026, DECIZII „Închiderea lotului 9” pct.2): „la transformarea în factură se pune aceeași întrebare ca "
         "la orice factură, «Pleacă marfa acum?»”. Factura născută din proformă / aviz cu articol de stoc cere răspunsul ca emiterea din "
         "formular — 422 structurat cu codul `INTREABA_PLEACA_MARFA`, nimic scris; ecranul pune întrebarea și retrimite."),
+    ("proforma_transforma", "_nsf.MESAJ_SOLD_PRELUAT"): (
+        "Lotul 12, deficiența 252: factura deschisă preluată (din soldurile pe parteneri) a fost emisă de programul vechi și are soldul "
+        "în soldurile inițiale — nu se transformă, nu se stornează, nu se trimite, nu se contează. Același 422 ca „documentul e deja "
+        "factură”, cu mesajul din punctul unic `nomenclator_status_factura.MESAJ_SOLD_PRELUAT`."),
     ("proforma_transforma", "_cs.detaliu_metoda_stoc(e)"): (
         "C63 (decizia Costin 19.10.2026, DECIZII „Închiderea lotului 9” pct.2): cu articolul trecut pe factură, refuzul metodei de stoc "
         "(nedeclarată / global-valoric cu ieșire pe articol) poate apărea și aici: 422 structurat spre Date firmă, ca la emitere."),
@@ -270,15 +290,18 @@ PERECHI_ADAUGATE = {
     ("registru_fiscal_citeste", "str(e)"): (
         "C41 (lotul 6, găsit de garda 285): registrul pe profit trece prin `d101.genereaza` pe conexiunea firmei; refuzul motivat al "
         "generatorului (date de firmă lipsă, `ValueError`) e 422, ca la S1005 — nu cădere. Gardul: `core/test_registru_fiscal_conexiune.py`."),
-    ("factura_primita_valideaza", "REFUZ_TERT_PLATITOR"): (
+    ("factura_primita_valideaza", "REFUZ_TERT_PLATITOR_MANUALA if f.get('manuala') else _uct.REFUZ_TERT_PLATITOR"): (
         "Deficiența 273c (lotul 6, comanda Costin 16.10.2026): „Câmpurile pe care importul nu le preia (terț plătitor, categorie) se "
-        "semnalează pe factură ca «de completat»; terțul plătitor intră în D394.” Validarea cere tipul furnizorului (422 numit)."),
+        "semnalează pe factură ca «de completat»; terțul plătitor intră în D394.” Validarea cere tipul furnizorului (422 numit). "
+        "[Lotul 12, 477] ridicat din `uc_factura_primita.valideaza` (APELURI_EXTRASE_IN_AJUTOARE); pe ruta din XML, același "
+        "`uc_tenants.REFUZ_TERT_PLATITOR` (factura de mână are varianta ei, cu câmpul formularului)."),
     ("factura_trimite_spv", "refuz_spre_ecran(r.get('mesaj'), COD_SPV_FARA_DREPT, 'conectare_spv')"): (
         "Deficiența 289 (lotul 6, comanda Costin 17.10.2026, verbatim în DECIZII): „SPV fără drept: fereastra firmei și refuzul «Trimite "
         "în SPV» spun exact asta, cu ce e de făcut.” Certificatul fără drept pe CUI-ul firmei e alt refuz decât „neconectat” (409, "
         "`COD_SPV_FARA_DREPT`, același buton spre Conectare SPV). Gardul: `core/test_spv_lot6.py`."),
-    ("factura_primita_valideaza", "REFUZ_CATEGORIE_331"): (
-        "Deficiența 273c: la factura primită cu taxare inversă (linii „AE”), validarea cere categoria produsului art.331 (codul D394)."),
+    ("factura_primita_valideaza", "_uct.REFUZ_CATEGORIE_331"): (
+        "Deficiența 273c: la factura primită cu taxare inversă (linii „AE”), validarea cere categoria produsului art.331 (codul D394). "
+        "[Lotul 12, 477] ridicat din `uc_factura_primita.valideaza`, cu aceeași constantă din `uc_tenants`."),
     ("raportari_imagine", "str(e)"): (
         "C36 (15.10.2026): refuzul tipului (415) și al mărimii (413) vine din `fisiere_private.verifica`, cu numele fișierului și "
         "tipurile permise în cuvinte (`FisierRefuzat`), tradus în aceeași clasă de domeniu. Gardul: `core/test_fisiere_private.py`."),
@@ -311,7 +334,8 @@ PERECHI_ADAUGATE = {
         "când omul alege NIR-ul sau „altă livrare”; înainte se conta tăcut și 371 se încărca de două ori."),
     ("factura_primita_valideaza", "_nl.detaliu_refuz(e)"): (
         "Decizia Costin 08.10.2026, pct.2 (aceeași ca la `factura_contabilizeaza`), pe calea SPV: alegerea NIR-ului se cere ÎNAINTE "
-        "de validare — refuzul (422, structurat) anulează tot actul, ca factura să nu rămână validată fără notă."),
+        "de validare — refuzul (422, structurat) anulează tot actul, ca factura să nu rămână validată fără notă. [Lotul 12, 477] "
+        "ridicat din `uc_factura_primita.valideaza`."),
     # [lotul 11, 456] refuzul seriei lipsă a plecat din `chitanta_emite` în ajutorul comun cu Casa (`chitanta_serie_sau_refuz`)
     ("chitanta_serie_sau_refuz", 'refuz_spre_ecran(prefix + MESAJ_SERIE_CHITANTA_LIPSA, COD_SERIE_CHITANTA_LIPSA, "date_firma", "OMFP 2634/2015 anexa 1 pct.24")'): (
         "Comanda Costin 07.10.2026 („Deciziile 07.10”, pct.5): „Seria chitanței: cerută la prima folosire, ca seria facturii; fără "
@@ -405,7 +429,6 @@ BIFA_INLOCUIRI = {
     "nota_obiect_inventar": (_BOOL_GET, {}, "durata_sub_1_an"),
     "nota_perisabilitati": (_BOOL_GET, {}, "degradare_dovedita_distrusa"),
     "nota_provizion_ep": (_BOOL_GET, {}, "garantata, afiliata, faliment"),
-    "vanzare_ic": ({"bool": 1}, {}, "dovada_transport"),
     "achizitie_taxare_inversa": ({"get": 1, "strip": 1, "lower": 1}, {"get": 1},
                                  "furnizor_platitor_tva; al doilea `corp.get` (sirul trimis la se_aplica) inlocuit "
                                  "de verdictul ANAF/bifa `_tert_pl`"),
@@ -424,6 +447,18 @@ CODURI_ADAUGATE = {
 }
 
 
+#: [lotul 12, 477] validarea facturii primite, comună facturii din XML și celei introduse de mână
+_MOTIV_477 = ("Lotul 12, deficiența 477 (comanda Costin 12.1 pct.8, verbatim în DECIZII „Comanda 12.1”: „(461 lista de parteneri și 477 "
+              "introducerea manuală a facturilor primite sunt cerute)”): factura primită de mână trece prin ACEEAȘI validare ca factura din "
+              "XML. Actul de validare (tipul furnizorului [273], categoria art.331, `_factura_importata` [C79], clasificarea, nota contabilă "
+              "cu NIR-ul, intrarea în gestiune, `commit`) a plecat din `factura_primita_valideaza` în `uc_factura_primita.valideaza`, drumul "
+              "comun cu `factura_primita_manuala`; contul obligatoriu [FFF1], acum și confruntat cu planul firmei (`cont_valid.cere_cont`), "
+              "e în `uc_factura_primita.cont_facturii`, chemat de rută înaintea citirii XML-ului. În rută a rămas citirea facturii din XML "
+              "(`parseaza_xml`, statutul ANAF, refuzurile „inexistentă” / „respinsă” / „XML-ul nu se poate citi”). Gardurile: "
+              "`core/test_lot11_y_tva_primita.py::test_importul_trece_numai_prin_factura_importata`, "
+              "`core/test_contare_automata.py::test_valideaza_chiar_cheama_contarea`.")
+
+
 #: Refuzuri MUTATE într-un ajutor comun, cu motivul: aceeași stare, același cod HTTP, ridicate acum de ajutorul pe
 #: care funcția îl cheamă (o singură formulare pentru „adresa invitată are deja cont”, în loc de trei).
 _MOTIV_EMAIL_OCUPAT = (
@@ -438,6 +473,12 @@ _MOTIV_C36 = ("C36 / 270d (comanda Costin 15.10.2026, verbatim în DECIZII „Lo
               "`salveaza` verifică tipul DUPĂ CONȚINUT și limita (`verifica`), scrie fișierul și rândul lui din `public.fisiere_private` "
               "(în locul lui `raportari_api.adauga_atasament` și al tabelei `raportari_atasamente`). Gardul: `core/test_fisiere_private.py`.")
 PERECHI_MUTATE_IN_AJUTOR = {
+    ("factura_primita_valideaza", "dict(_af.afirmatie('neconformitate', 'CONT_CHELTUIALA_OBLIGATORIU', 'Alege contul de cheltuială "
+                                  "înainte de a valida: validarea recunoaște cheltuiala și îi scrie nota contabilă în același act, iar "
+                                  "nota nu poate ghici contul.', unde='factura primită #%s' % primita_id, regula='validarea unei facturi "
+                                  "primite cere contul de cheltuială'), cod='CONT_CHELTUIALA_OBLIGATORIU')"): ("cont_facturii", _MOTIV_477 + (
+        " Același refuz (422, aceeași afirmație CONT_CHELTUIALA_OBLIGATORIU); `unde` numește „factura primită introdusă de mână” "
+        "când nu există rândul din SPV.")),
     ("raportari_imagine", "'Doar capturi de ecran (PNG, JPG, WEBP).'"): ("salveaza", _MOTIV_C36),
     ("raportari_imagine", "'Imaginea e prea mare (max 8MB).'"): ("salveaza", _MOTIV_C36),
     ("raportari_imagine", "mesaj_din_cod(r.get('cod'))"): ("salveaza", _MOTIV_C36 + " Refuzul `MESAJ_INEXISTENT` al lui "
@@ -459,6 +500,9 @@ PERECHI_MUTATE_IN_AJUTOR = {
 #: Perechi (cod, mesaj) SCOASE deliberat din funcție — refuzul nu mai are ce refuza acolo (operația lui a plecat în altă rută). Anti-vacuu:
 #: `test_SCOASELE_perechi_chiar_lipsesc`.
 PERECHI_SCOASE = {
+    ("factura_primita_valideaza", "'XML neparsabil: %s' % str(e)[:200]"): (
+        "Deficiența C120 (lotul 12): refuzul XML-ului necitibil (rescris la 172 „XML-ul nu se poate citi: …”) trece acum prin variabila "
+        "`refuz`, aceeași cu refuzul facturii altei firme — perechea nouă e în PERECHI_ADAUGATE, același 422."),
     ("registratura_creeaza", "mesaje.get(rez.get('cod'), 'eroare')"): _MOTIV_440 + " Refuzurile de date ale înregistrării se adună în "
                                                                        "colector (`ErorileFormularului`), fiecare lângă câmpul ei.",
     ('achizitie_necorporala', "nomenclator_cerut('tip', TIPURI)"): _MOTIV_440_W3A + " Înlocuită de colector (ErorileFormularului).",
@@ -524,6 +568,8 @@ _MOTIV_430D = (
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
 APELURI_INLOCUITE = {
+    ("jurnal_valideaza", "valideaza"): ("valideaza_documentul", "C107, lotul 12: notele documentului se validează împreună, ca în coada de validare (toate "
+                                                           "notele aceluiași document, o singură dată)"),
     ("achizitie_agricultor", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
     ("decontare_valuta", "nota_banca_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
     ("nota_tva_incasare", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
@@ -653,7 +699,6 @@ APELURI_EXTRASE_IN_AJUTOR = {
         'Lotul 11, poarta 3 (DECIZII „Lotul 11, poarta 3 ROȘIE”): firul triajului AI al sesizării (`threading.Thread(...).start()`) pornește '
         'acum prin `db.fir_de_fundal`, singurul loc care pornește fire cu bază din drumul unei cereri, oprit în suită. Gardul: '
         '`core/test_fire_fundal.py::test_niciun_fir_pornit_in_afara_portii_unice`.')),
-    "factura_primita_valideaza": (("core/uc_tenants.py", "_factura_importata"), "Lotul 11, C79 (subagentul Y): importul facturii din XML trece numai prin `uc_tenants._factura_importata` — `_factura_din_parsat` (facturi + linii, dedup) ȘI TVA-ul pe cote al facturii (BG-23, `factura_tva_cote`), de pe care se contează și se declară TVA-ul (CF art.299 alin.(1) lit.a). Gardul: `core/test_lot11_y_tva_primita.py::test_importul_trece_numai_prin_factura_importata`."),
     "import_efactura": (("core/uc_tenants.py", "_factura_importata"), "Lotul 11, C79 (subagentul Y): importul facturii din XML trece numai prin `uc_tenants._factura_importata` — `_factura_din_parsat` (facturi + linii, dedup) ȘI TVA-ul pe cote al facturii (BG-23, `factura_tva_cote`), de pe care se contează și se declară TVA-ul (CF art.299 alin.(1) lit.a). Gardul: `core/test_lot11_y_tva_primita.py::test_importul_trece_numai_prin_factura_importata`."),
     'tenant_amortizare': (("core/amortizare_lunii.py", "linii"), (
         "Lotul 11, deficiența 451 (comanda Costin 11.1 pct.6): corpul buclei rândurilor amortizării (`repo_mijloace_fixe.de_amortizat`, "
@@ -730,6 +775,8 @@ _MOTIV_LOTUL_4 = ('Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „L
                   'contul nou (`_dupa_cont_nou`, `_anunta_cabinet_nou`) sunt ajutoare comune cu confirmarea (`confirma_inregistrarea`). '
                   'Trimiterea emailului: `observare.trimite_email_html_sau_semnaleaza` (C34).')
 APELURI_EXTRASE_IN_AJUTOARE = {
+    "factura_primita_valideaza": ((("core/uc_factura_primita.py", "cont_facturii"), ("core/uc_factura_primita.py", "valideaza"),
+                                   ("core/uc_tenants.py", "_factura_importata")), _MOTIV_477),
     "chitanta_emite": ((("core/uc_tenants.py", "chitanta_serie_sau_refuz"), ("core/uc_tenants.py", "chitanta_scrie")), (
         "Lotul 11, deficiența 456 (comanda Costin 11.3 pct.3, verbatim în DECIZII): „încasarea în numerar de la o firmă se salvează fără "
         "chitanță. Emite automat chitanța, cu seria firmei și PDF.” Seria firmei (cu refuzul numit spre Date firmă) și scrierea chitanței "
@@ -756,7 +803,10 @@ APELURI_EXTRASE_IN_AJUTOARE = {
 #: APELURI_SCOASE (apelul rămâne, numai numărul scade cu exact cât e declarat). Anti-vacuu: `test_REDUCERILE_declarate_chiar_sunt_in_cod`.
 _MOTIV_CF_CUI = ("Lotul 11, decizia Costin 10.3 pct.4 (CUI-ul fără „RO” și fără spații): normalizarea locală a codului fiscal a trecut în "
                  "`cui_forma.stocare` (o singură formă, cu paritatea Python–SQL); gardul core/test_lot11_cf_cui_forma_unica.py.")
+_MOTIV_C84 = ("C84 (b), decizia Costin 23.10.2026: livrarea intracomunitară de bunuri trece pe „Emite factură”; Operațiuni rămân "
+              "pentru servicii, deci verificarea dovezii transportului și contul bunurilor ies din `vanzare_ic`.")
 APELURI_REDUSE = {
+    ("vanzare_ic", "cere_cont"): (2, _MOTIV_C84),
     ("cv_barcode_set", "get"): (1, _MOTIV_C73_U2 + " `rez.get(\"eroare\")` a ieșit cu verificarea prealabilă: `set_barcode` nu mai "
                                 "întoarce refuzul ca valoare, ridică `CheieDublata`; rămâne `corp.get(\"barcode\")`."),
     ("rip_import_incarca", "str"): (1, _MOTIV_82 + " Deficiența 372: mesajul „import eșuat: …” (din eșecul scrierii) a ieșit odată cu "
@@ -777,6 +827,12 @@ APELURI_REDUSE = {
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    ("d406_stocuri_xml", "isoformat"): (
+        "Lotul 12, deficiența 184 (datele ISO pe ecran; DS cap.4): refuzul intervalului inversat („Sfârșitul perioadei (%s) e înaintea "
+        "începutului (%s)”) arată datele prin formatorul unic `data_ro` (ZZ.LL.AAAA), nu `de.isoformat()` / `ds.isoformat()` — "
+        "aceeași pereche e scutită de `FRAGMENTE_RESCRISE`; ambele `isoformat` au ieșit, înlocuite de două `data_ro`."),
+    ("vanzare_ic", "valideaza_lic"): _MOTIV_C84,
+    ("vanzare_ic", "bool"): _MOTIV_C84,
     # [lotul 11, subagentul CF; decizia Costin 10.3 pct.4: „CUI-ul se păstrează fără «RO» și fără spații”] normalizarea locală a codului
     # fiscal (`.strip().upper().replace("RO", "")`, un dialect care scotea „RO” de oriunde din text) a trecut în forma unică
     # `cui_forma.stocare`; gardul: `core/test_lot11_cf_cui_forma_unica.py`
@@ -930,12 +986,21 @@ def test_INLOCUIRILE_declarate_chiar_exista():
             "%s: apelul vechi (%s) mai e chemat, deci nu s-a inlocuit nimic" % (fn_nume, vechi))
 
 
+def _ajutoare_uc(fn_nume, uc):
+    """Nodurile ajutoarelor DECLARATE ale funcției (APELURI_EXTRASE_IN_AJUTOR / APELURI_EXTRASE_IN_AJUTOARE) care stau în stratul
+    use-case; un ajutor din afara stratului (`db.fir_de_fundal`) nu ridică refuzuri de domeniu și nu intră."""
+    perechi = list(APELURI_EXTRASE_IN_AJUTOARE.get(fn_nume, ((), ""))[0])
+    if fn_nume in APELURI_EXTRASE_IN_AJUTOR:
+        perechi.append(APELURI_EXTRASE_IN_AJUTOR[fn_nume][0])
+    return [uc[k] for k in ((os.path.basename(c)[:-3], a) for c, a in perechi) if k in uc]
+
+
 def test_ADAUGARILE_declarate_chiar_exista():
     """ANTI-VACUU pe PERECHI_ADAUGATE: o adaugare declarata care nu e in cod ar scuza o schimbare de
     contract nedeclarata. Se cere ca perechea (cod, mesaj) declarata sa fie chiar ridicata de functia
     numita, in stratul use-case."""
-    harta = _harta_cod()
-    uc_dupa_nume = {nume: nod for (_mod, nume), nod in _module_uc().items()}
+    harta, uc = _harta_cod(), _module_uc()
+    uc_dupa_nume = {nume: nod for (_mod, nume), nod in uc.items()}
     for (fn_nume, msg_repr), motiv in PERECHI_ADAUGATE.items():
         assert len(motiv) > 80, "%s: motivul adaugarii e prea scurt ca sa fie util" % fn_nume
         corp = uc_dupa_nume.get(fn_nume)
@@ -943,7 +1008,9 @@ def test_ADAUGARILE_declarate_chiar_exista():
             "%s: functia declarata nu exista in stratul use-case — adaugarea ar scuza o schimbare "
             "fantoma" % fn_nume)
         forme = _forme_mesaj(msg_repr)
-        mesaje = {p[1] for p in perechi_noi(corp, harta)}
+        # [lotul 12, 477] și din ajutoarele DECLARATE ale funcției din stratul use-case (APELURI_EXTRASE_IN_AJUTOR / _AJUTOARE, a căror
+        # chemare o cere `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`): refuzul ridicat de ajutor e tot contractul rutei
+        mesaje = {p[1] for n in [corp] + _ajutoare_uc(fn_nume, uc) for p in perechi_noi(n, harta)}
         assert forme & mesaje, (
             "%s: adaugarea declarata (%s) NU e in cod — tabelul ar scuza o schimbare de contract reala"
             % (fn_nume, msg_repr))
@@ -1208,7 +1275,15 @@ def _forme_mesaj(msg_repr):
 #: [deficiența 172, retestul Costin 09.10.2026 — limbajul de programator în textul afișat] o frază rescrisă PESTE TOT unde apare: același
 #: refuz, același cod, în toate funcțiile care îl ridicau; mesajul vechi -> (mesajul nou, motivul). Se aplică numai perechilor
 #: (cod, mesaj vechi) care au, pe ACELAȘI cod, perechea (cod, mesaj nou).
+_MOTIV_598 = ("Lotul 12, clasa 598 (comanda Costin 12.1 pct.4, verbatim în DECIZII „Comanda 12.1”: „La eșecul WhatsApp, mesajul îi "
+              "cere contabilului să-și verifice numărul și arată termeni tehnici”), generalizată la canalele externe (email, REGES, VIES): "
+              "același 502, fără textul excepției pe ecran — spune ce s-a întâmplat și ce face contabilul; detaliul tehnic merge în jurnal "
+              "(`observare.esec_secundar`).")
 MESAJE_RESCRISE = {
+    "f'VIES indisponibil: {e}'": ("'Serviciul VIES al Comisiei Europene nu răspunde acum, deci codul de TVA nu s-a putut verifica. "
+                                  "Încearcă din nou peste câteva minute.'", _MOTIV_598),
+    "'trimiterea email a eșuat'": ("'Emailul cu factura nu a plecat acum: serviciul de email nu a răspuns. Factura rămâne emisă; încearcă "
+                                   "din nou peste câteva minute sau descarcă PDF-ul și trimite-l tu.'", _MOTIV_598),
     'f"ANAF indisponibil sau a refuzat cererea: {e}"': ("anaf_api.mesaj_indisponibil(e)",
         "Deficiența 317 (comanda Costin 17.10.2026 7.2): același 502, fără textul bibliotecii HTTP pe ecran — ANAF a refuzat (cu codul "
         "lui) sau n-a răspuns. Gardul: `core/test_317_320_alerta_notificari.py`."),
@@ -1220,6 +1295,9 @@ MESAJE_RESCRISE = {
         "Deficiența 172: același refuz, aceeași clasă de eroare, fără „template tenant”."),
     "'XML neparsabil: %s' % str(e)[:200]": ("'XML-ul nu se poate citi: %s' % str(e)[:200]",
         "Deficiența 172: același 422, fără „neparsabil”."),
+    "'Link invalid, expirat sau deja folosit. Cere alt link din sectiunea Am uitat parola.'": (
+        "'Linkul nu mai e valabil: a expirat sau a fost folosit deja. Cere alt link din „Am uitat parola”.'",
+        "Lotul 12, deficiența 163 (texte fără diacritice: „sectiunea”): același refuz, același 400."),
 }
 
 
@@ -1245,17 +1323,39 @@ FRAGMENTE_RESCRISE = {
         "Deficiența 402, clasa 410 (comanda Costin 10.2 pct.7b): mesajul de câmp e o frază întreagă; același 400."),
     "Constant(value='cerut de normă, nu poate lipsi')": ("Constant(value='Completează câmpul cu o valoare validă: registrul o cere.')",
         "Deficiența 402, clasa 410 (comanda Costin 10.2 pct.7b): mesajul de câmp e o frază întreagă; același 400."),
+    # [lotul 12, deficiențele 163/C — vocea la persoana a treia] „Rândul nu s-a înscris”, nu „Nu am înscris rândul”; același refuz, același 400
+    "Nu am înscris rândul: ": ("Rândul nu s-a înscris: ", "Lotul 12: vocea aplicației la persoana a treia (comanda 10.10.2026 pct.5); același 400."),
+    "registrul cere un câmp pe care nu l-am primit.": ("registrul cere un câmp care lipsește din cerere.",
+        "Lotul 12: vocea aplicației la persoana a treia (comanda 10.10.2026 pct.5); același 400."),
+    # [lotul 12, deficiența 184 — pluralul după număr, gardul `test_plural_dupa_numar` P5] „între 1 și 168 de ore”, nu „168 ore”;
+    # (plus vocea, „S-a primit”, comanda 10.10.2026 pct.5). Același refuz, același cod (422).
+    # [lotul 12, deficiența 184] data în refuz prin formatorul unic (`data_ro`, ZZ.LL.AAAA), nu `isoformat()`; același refuz, același 422
+    "Call(func=Attribute(value=Name(id='de', ctx=Load()), attr='isoformat', ctx=Load()), args=[], keywords=[])": (
+        "Call(func=Name(id='data_ro', ctx=Load()), args=[Name(id='de', ctx=Load())], keywords=[])",
+        "Deficiența 184: data afișată prin `data_ro` (DS cap.4); același 422."),
+    "Call(func=Attribute(value=Name(id='ds', ctx=Load()), attr='isoformat', ctx=Load()), args=[], keywords=[])": (
+        "Call(func=Name(id='data_ro', ctx=Load()), args=[Name(id='ds', ctx=Load())], keywords=[])",
+        "Deficiența 184: data afișată prin `data_ro` (DS cap.4); același 422."),
+    "%s se cere între %d și %d %s.": ("%s se cere între %d și %s.", "Deficiența 184 (pluralul după număr, `common.cate`): același 422."),
+    "Name(id='minim', ctx=Load()), Name(id='maxim', ctx=Load()), Name(id='unitate', ctx=Load()), Name(id='v'": (
+        "Name(id='minim', ctx=Load()), Call(func=Attribute(value=Name(id='_common', ctx=Load()), attr='cate', ctx=Load()), "
+        "args=[Name(id='maxim', ctx=Load()), Name(id='unitate', ctx=Load()), Name(id='unitate', ctx=Load())], keywords=[]), Name(id='v'",
+        "Deficiența 184: „168 de ore” prin `common.cate` (aceleași argumente); același 422."),
 }
 
 
 def _fara_abateri(nume, ramase_v, ramase_n):
     """Scoate abaterile DECLARATE — fiecare cu motivul ei, sus in fisier."""
-    for vechi, (nou, _motiv) in FRAGMENTE_RESCRISE.items():
-        for p in [p for p in ramase_v if vechi in p[1]]:
-            pereche = [q for q in ramase_n if q[0] == p[0] and q[1] == p[1].replace(vechi, nou)]
-            if pereche:
-                ramase_v = [x for x in ramase_v if x != p]
-                ramase_n = [x for x in ramase_n if x != pereche[0]]
+    # [lotul 12] fragmentele DECLARATE se aplică împreună: un refuz în care s-au rescris două fragmente declarate (vocea „Nu am înscris” +
+    # mesajul de câmp 402) e perechea celui vechi cu AMBELE înlocuite; un fragment nedeclarat tot lasă perechea fără potrivire
+    for p in [p for p in ramase_v if any(v in p[1] for v in FRAGMENTE_RESCRISE)]:
+        tinta = p[1]
+        for vechi, (nou, _motiv) in FRAGMENTE_RESCRISE.items():
+            tinta = tinta.replace(vechi, nou)
+        pereche = [q for q in ramase_n if q[0] == p[0] and q[1] == tinta]
+        if pereche:
+            ramase_v = [x for x in ramase_v if x != p]
+            ramase_n = [x for x in ramase_n if x != pereche[0]]
     for vechi, (nou, _motiv) in MESAJE_RESCRISE.items():
         fv, fn = _forme_mesaj(vechi), _forme_mesaj(nou)
         for p in [p for p in ramase_v if p[1] in fv]:

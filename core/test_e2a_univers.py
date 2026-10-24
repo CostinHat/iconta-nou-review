@@ -130,7 +130,18 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # număr rescrise cu `pdf_util.serie_nr`) — rulată o dată, idempotentă.
     # [22.10.2026, lotul 11, C88] 126 -> 127: `migrare_curs_precizie` (cursul BNR cu precizia lui; cache-ul refăcut din arhivă) — rulată
     # o dată, idempotentă.
-    assert 40 <= len(mg) <= 127, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [23–24.10.2026, lotul 12] 127 -> 140: datele existente ale reparațiilor lotului (regula 11.2 pct.3a: „Orice reparație acoperă și
+    # datele existente”) și tabelele noi — `migrare_articole_dublate` (475), `migrare_ciorne_formular` (`public.ciorne_formular`, 495),
+    # `migrare_descriere_nota_chitanta` (168), `migrare_documente_preluate` (252),
+    # `migrare_extras_dubluri_trezorerie` (479), `migrare_mesaje_spv_tehnice` (598), `migrare_motiv_scutire` (C133), `migrare_nir_tva_transport`
+    # (476), `migrare_note_luna_neincheiata` (C127), `migrare_produse_cota_jurnal` (472), `migrare_produse_justificare` (471),
+    # `migrare_termene_anuale` (493), `migrare_um_linii_xml` (C104) — fiecare rulată o dată prin `core.migrari_registru`, idempotentă.
+    # (`migrare_asistenti_fara_firme`, C123, nu intră: n-are SQL propriu, deci nu e în universul măsurat aici.)
+    # [24.10.2026, lotul 12] 140 -> 141: `migrare_um_borderou` (C115, UM-ul articolului pe liniile borderourilor vechi) — rulată o dată,
+    # idempotentă.
+    # [24.10.2026, lotul 12] 141 -> 142: `migrare_tara_sablon_recurent` (C160, țara clientului pe șablonul facturii recurente — coloana
+    # `facturi_recurente.tert_tara`) — DDL idempotent, rulat o dată.
+    assert 40 <= len(mg) <= 142, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

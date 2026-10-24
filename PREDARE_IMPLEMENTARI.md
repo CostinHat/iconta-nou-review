@@ -1,3 +1,7 @@
+> **RADIAT CA NORMĂ DE PROCES (23.10.2026, comanda 12.1 pct.1 a lui Costin):** regulile de lucru din acest fișier nu mai sunt în vigoare;
+> singura sursă de reguli de lucru e `CLAUDE.md` (versiunea 23.10.2026). Fișierul rămâne ca istoric al metodei; unde o unealtă îl citează
+> (de ex. „regula 4/5” din `scripts/poarta_scurta.py`), sensul în vigoare e cel din `CLAUDE.md` §5.
+
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
 # PREDARE — Campania "IMPLEMENTARILE RAMASE" (04.08.2026)

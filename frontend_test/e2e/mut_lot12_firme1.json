@@ -1,0 +1,80 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "<b>MT940</b> (formatul SWIFT al extrasului, fișier .sta, .940 sau .txt)",
+  "inlocuire": "<b>alt format</b>",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_489_ecranul_banca_spune_ca_accepta_mt940"
+ },
+ {
+  "fisier": "core/reconciliere_api.py",
+  "ancora": "return (_c(noua) is None) != (_c(veche) is None)",
+  "inlocuire": "return False",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_479_extrasul_in_tabel_dupa_mt940_nu_dubleaza_linia_si_nu_propune_5121_5121"
+ },
+ {
+  "fisier": "core/banca_parser.py",
+  "ancora": "randuri = [[_celula_text(c) for c in rand] for rand in sh.iter_rows(values_only=True)]",
+  "inlocuire": "randuri = [[c for c in rand] for rand in sh.iter_rows(values_only=True)]",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_478_extrasul_xlsx_cu_date_excel_se_importa"
+ },
+ {
+  "fisier": "core/reconciliere.py",
+  "ancora": "dupa_nr = facturi_dupa_numar(facturi_deschise, linie.get(\"descriere\"), linie.get(\"tip\"))",
+  "inlocuire": "dupa_nr = []",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_480_incasarea_cu_cod_tva_strain_si_numarul_facturii_se_potriveste"
+ },
+ {
+  "fisier": "core/casa_api.py",
+  "ancora": "elif v:",
+  "inlocuire": "elif False:",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_481_numerarul_din_z_intra_in_registrul_de_casa"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "if (corp or {}).get(\"categorie\") == \"incasare_client\":",
+  "inlocuire": "if (corp or {}).get(\"categorie\") == \"incasare_client\" and (corp or {}).get(\"facturi\"):",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "if (lunaBlocata) { cereMotivDeblocare(bLock, zonaMesaj, t, an, luna, dupa); return; }",
+  "inlocuire": "if (lunaBlocata) { try { await api.del(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`); dupa(); } catch (e) { arataMesaj(zonaMesaj, (e && e.mesaj) || \"eroare\", \"eroare\"); } return; }",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_483_deblocarea_lunii_cere_motivul_si_se_face"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": ".alimentatie_publica === true;",
+  "inlocuire": ".retete_vizibile === true;",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_473_z_la_comert_cotele_neutre_chiar_cu_retete"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "if (!z.avertisment) { valideaza(); return; }",
+  "inlocuire": "if (true) { valideaza(); return; }",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_474_z_descarcat_partial_cere_confirmarea_cu_cifrele"
+ },
+ {
+  "fisier": "core/stocuri.py",
+  "ancora": "return CONT_TVA_NIR if ct.split(\".\")[0] == CONT_NESOSITE else (\"4426\" if ct else cont_tva)",
+  "inlocuire": "return cont_tva",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_476_tva_transportului_facturat_e_pe_4426"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "        mergiPeLunaZ(r.data);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_c118_z_importat_din_amef_pe_luna_trecuta_se_descarca_din_ecran"
+ },
+ {
+  "fisier": "core/banca_parser.py",
+  "ancora": "text = _it.decodeaza(continut, nume_fisier)[0] if isinstance(continut, bytes) else continut",
+  "inlocuire": "text = continut.decode(\"utf-8\", errors=\"replace\") if isinstance(continut, bytes) else continut",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_251_extrasul_csv_windows_1250_pastreaza_diacriticele"
+ },
+ {
+  "fisier": "core/reconciliere_api.py",
+  "ancora": "    if not ce or not cf or ce == cf:\n        return None",
+  "inlocuire": "    return None",
+  "test": "frontend_test/e2e/e2e_lot12_firme1.py::test_def_c121_extrasul_altui_cont_cere_confirmarea_inainte_de_import"
+ }
+]

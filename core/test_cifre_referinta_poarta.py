@@ -25,8 +25,10 @@ def test_poarta_ruleaza_verificarea_si_respinge_la_orice_iesire_nenula():
     assert m, "poarta nu mai confruntă cifrele cu referința aprobată"
     dupa = t[m.end():m.end() + 900]
     linii_dupa = [x.strip() for x in dupa.splitlines()]   # liniile scriptului, nu un sub-șir oarecare din el
-    assert 'if [ "$RC" -ne 0 ]; then' in linii_dupa and "exit 1" in linii_dupa[linii_dupa.index('if [ "$RC" -ne 0 ]; then'):], (
-        "o diferență (sau o măsurătoare eșuată) nu oprește poarta")
+    # [23.10.2026, CLAUDE.md §5] partea roșie se consemnează (`rosu`) și poarta rulează și restul; ieșirea nenulă o dă `incheie`
+    assert 'if [ "$RC" -ne 0 ]; then' in linii_dupa and any(x.startswith('rosu "cifre de referinta" "$RC"') for x in
+                                                           linii_dupa[linii_dupa.index('if [ "$RC" -ne 0 ]; then'):]), (
+        "o diferență (sau o măsurătoare eșuată) nu face poarta roșie")
     assert m.start() < t.find('scripts/e2e_poarta.py'), "cifrele se confruntă înaintea plasei"
 
 

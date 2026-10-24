@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp } from "../api.js?v=31460b24f2";
+import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere } from "../api.js?v=309f4d66ae";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";   // [lotul 11, decizia 10.3] întocmitorul bilanțului, sub Date cabinet
 
@@ -273,7 +273,7 @@ export async function randeazaSetari(corp, nav) {
       const pc = corp.querySelector("#set-pc").value;
       if (pn.length < 8) { arataMesaj(msg, "Parola nouă trebuie să aibă minim 8 caractere.", "eroare"); return; }
       if (pn !== pc) { arataMesaj(msg, "Parolele nu coincid.", "eroare"); return; }
-      msg.textContent = "Se schimba...";
+      arataMesaj(msg, "Se schimbă parola…", "info");
       try {
         await api.post("/eu/schimba-parola", { parola_veche: pv, parola_noua: pn });
         arataMesaj(msg, "Parolă schimbată cu succes.", "ok");
@@ -301,7 +301,7 @@ async function _incarcaChei(corp) {
         <div class="pf-frand-nume">${esc(c.nume) || "—"} · <code>${c.prefix}…</code></div>
         <div class="pf-frand-sub">${c.activ ? "activă" : "revocată"}${c.ultima_folosire ? " · folosită: " + c.ultima_folosire.slice(0, 16) : ""}</div>
       </div>
-      ${c.activ ? `<span class="btn-link set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}" style="color:var(--rosu)">Revoca</span>` : ""}
+      ${c.activ ? `<span class="btn-link set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}" style="color:var(--rosu)">Revocă</span>` : ""}
     </div>`).join("");
   zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", () => {
     confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicațiile care o folosesc nu vor mai avea acces.", async () => {
@@ -309,7 +309,7 @@ async function _incarcaChei(corp) {
       catch (e) {
         refuzPeRand(b, e.mesaj || "Nu s-a putut revoca cheia.");
       }
-    }, { textOk: "Revoca" });
+    }, { textOk: "Revocă" });
   }));
 }
 
@@ -322,9 +322,15 @@ function _initChei(corp) {
     const nume = corp.querySelector("#set-cheie-nume").value.trim() || null;
     try {
       const r = await api.post("/cabinet/api-chei", { nume });
-      msg.innerHTML = `Cheia ta (copiaz-o ACUM, nu se mai afiseaza):<br><code style="user-select:all;word-break:break-all">${r.cheie}</code>`;
+      // [lotul 12, 45] mesajul cu cheia (HTML: cheia se copiază din <code>) e un mesaj de după buton: zonă de mesaj + adus în vedere,
+      // ca orice mesaj din `arataMesaj` (o zonă fără clasă, scrisă direct, rămânea sub marginea ecranului)
+      msg.className = "msg-ok";
+      msg.innerHTML = `Cheia ta (copiaz-o acum: nu se mai afișează):<br><code style="user-select:all;word-break:break-all">${esc(r.cheie)}</code>`;
       corp.querySelector("#set-cheie-nume").value = "";
-      _incarcaChei(corp);
+      // [lotul 12, 45] lista cheilor (deasupra mesajului) se reîncarcă ÎNTÂI: altfel rândul cheii noi împingea mesajul sub margine după ce
+      // fusese adus în vedere (cu multe chei, cu zeci de pixeli)
+      await _incarcaChei(corp);
+      aduInVedere(msg);
     } catch (e) {
       arataMesaj(msg, e.mesaj || e.message || "eroare", "eroare");
     }
@@ -365,7 +371,8 @@ export async function panouNotificari(zona, opt = {}) {
         <span class="camp-ajutor">Cu prefixul țării (+40 7xx xxx xxx) sau ca număr românesc (07xx xxx xxx).</span>
         <input id="not-telefon" class="camp-input" type="tel" autocomplete="tel" value="${esc(st.telefon || "")}">
       </label>
-      <button class="buton-secundar" id="not-salveaza-telefon">Salvează numărul</button>
+      <div><button class="buton-secundar" id="not-salveaza-telefon">Salvează numărul</button></div>
+      <div id="not-msg-telefon"></div>
       <div id="not-stare-telefon" class="ecran-nota"></div>
       <div id="not-avert-telefon" class="caseta-atentie" hidden><div class="ca-mesaj"></div></div>
       <div id="not-confirmare">
@@ -416,8 +423,10 @@ export async function panouNotificari(zona, opt = {}) {
   }
   arata(st);
   $("#not-salveaza-telefon").addEventListener("click", async () => {
-    try { arata(await api.put("/eu/telefon", { telefon: $("#not-telefon").value.trim() })); arataMesaj(msg, "Numărul a fost salvat.", "ok"); }
-    catch (e) { arataMesaj(msg, e.mesaj || "Numărul nu s-a putut salva.", "eroare"); }
+    // [596, lotul 12] mesajul salvării numărului stă lângă butonul lui (înainte cădea sub tot panoul); refuzul, lângă câmp
+    const zm = $("#not-msg-telefon");
+    try { arata(await api.put("/eu/telefon", { telefon: $("#not-telefon").value.trim() })); arataMesaj(zm, st.telefon ? `Numărul ${st.telefon} a fost salvat.` : "Numărul a fost șters.", "ok"); }
+    catch (e) { arataRefuzul(zona, e, zm); }
   });
   $("#not-cere-cod").addEventListener("click", async () => {
     try { const r = await api.post("/eu/telefon/cod", { acord: $("#not-acord").checked }); arataMesaj(msg, `Codul a plecat pe WhatsApp. E valabil ${cate(r.minute, "minut", "minute")}.`, "ok"); }
@@ -495,8 +504,41 @@ export async function panouConectareSPV(zona) {
       if (r && r.url) {
         window.open(r.url, "_blank");
         arataMesaj(msg, "S-a deschis autorizarea ANAF în altă filă. După ce alegi certificatul și confirmi, revino în această filă: dacă ai venit dintr-un formular, „← Înapoi” te duce la el.", "info");
+        asteaptaIntoarcerea(zona, st);
       } else { arataMesaj(msg, "Nu s-a putut porni autorizarea.", "eroare"); }
     } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la pornirea autorizării.", "eroare"); }
     btn.disabled = false; btn.textContent = text;
   });
+}
+
+// [deficiența 600, lotul 12] „la orice eșec contabilul se întoarce în iConta cu un mesaj clar”: când ANAF nu-l trimite înapoi (fila ANAF
+// rămâne pe „sesiune invalidă” sau pe pagina de ieșire, iar pagina de retur a aplicației nu se deschide deloc), fila iConta.eu află singură,
+// la întoarcerea în ea, că nu s-a conectat nimic și spune ce face. Conexiunea nouă = alt acces decât cel de la apăsarea butonului.
+export const MESAJ_SPV_NEINCHEIAT = "Conectarea la SPV nu s-a încheiat: ANAF nu a trimis încă înapoi autorizarea. Dacă pagina deschisă de ANAF a rămas pe o eroare (de exemplu „sesiune invalidă”) sau pe pagina de ieșire ANAF, închide-o și apasă din nou „Conectează SPV”. Dacă se repetă, închide toate ferestrele browserului (browserul ține minte certificatul ales) și încearcă din nou.";
+export const MESAJ_SPV_INCHEIAT = "Gata: iConta.eu e conectat la SPV pentru cabinetul tău.";
+
+function asteaptaIntoarcerea(zona, inainte) {
+  let verific = false;
+  const opreste = () => { document.removeEventListener("visibilitychange", laIntoarcere); window.removeEventListener("focus", laIntoarcere); };
+  async function laIntoarcere() {
+    if (!zona.isConnected) { opreste(); return; }
+    if (document.visibilityState === "hidden" || verific) return;
+    verific = true;
+    try {
+      const s = await api.get("/spv/stare");
+      if (!zona.isConnected) { opreste(); return; }
+      const nou = s && s.conectat && (!inainte.conectat || s.access_expira !== inainte.access_expira);
+      if (nou) {
+        opreste();
+        await panouConectareSPV(zona);
+        const m = zona.querySelector("#spv-stare");
+        if (m) { const z = document.createElement("div"); z.id = "spv-intors"; m.before(z); arataMesaj(z, MESAJ_SPV_INCHEIAT, "ok"); }
+      } else {
+        arataMesaj(zona.querySelector("#spv-stare"), MESAJ_SPV_NEINCHEIAT, "info");
+      }
+    } catch { /* starea nu s-a putut citi: rămâne mesajul de dinainte, următoarea întoarcere o citește din nou */ }
+    verific = false;
+  }
+  document.addEventListener("visibilitychange", laIntoarcere);
+  window.addEventListener("focus", laIntoarcere);
 }

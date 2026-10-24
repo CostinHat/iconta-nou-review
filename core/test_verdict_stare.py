@@ -75,7 +75,11 @@ def test_audit_regim_nedeterminat_e_gri_cu_straturi_sarite():
     from core import audit_preluare as ap
     r = ap._audit_regim_nedeterminat()   # [comanda Costin 8.2 pct.4] excepția merge în jurnal, nu în constatare
     assert r["stare"] == "gri"
-    assert "INCOMPLET" in r["constatari"][0]["mesaj"] and r["neverificat"] == 1
+    # pe structură, nu pe cuvântul din mesaj (textul a trecut în limba contabilului în lotul 12): o singură constatare, o absență de
+    # observație gri pe regim, nimic numărat coerent / divergent — auditul nu se dă drept rulat
+    (c,) = r["constatari"]
+    assert (c["fel"], c["stare"], c["tip"]) == ("absenta_observatie", "gri", "regim nedeterminabil")
+    assert (r["coerent"], r["divergent"], r["neverificat"]) == (0, 0, 1)
     assert "Straturi nerulate" in r["limita"] and "balanță" in r["limita"]
 
 

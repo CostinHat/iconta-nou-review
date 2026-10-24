@@ -476,8 +476,11 @@ def capturi(argv):
                 raise Refuz("APLICATIA", "n-a răspuns pe %d (vezi %s/uvicorn.log)" % (port, STARE_DIR))
             t0 = _ceas(etape, "aplicația din arbore pornită (port %d)" % port, t0)
             sys.path.insert(0, os.path.join(RAD, "frontend_test", "dovada"))
+            # [495, lotul 12] pașii curăță ciornele formularelor în baza copiei: procesul lor citește aceeași bază de TEST ca aplicația
+            os.environ.update(env)
             import pasi
-            rez = pasi.ruleaza(dovezi, "http://127.0.0.1:%d" % port, stare["utilizator"]["email"], parola, stare["firme"], iesire)
+            rez = pasi.ruleaza(dovezi, "http://127.0.0.1:%d" % port, stare["utilizator"]["email"], parola, stare["firme"], iesire,
+                              emailuri=stare.get("utilizatori"))
             t0 = _ceas(etape, "dovezi parcurse (%d)" % len(rez), t0)
         finally:
             e2e_poarta._opreste(app)

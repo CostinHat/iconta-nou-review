@@ -53,14 +53,15 @@ def _f(v):
 
 def raport_realizat(conn, schema, de, pana):
     """Realizat pe centru de cost, perioada [de, pana], din note VALIDATE (nu ciorne).
-    cheltuieli = SUM linii cu cont_debit clasa 6; venituri = SUM linii cu cont_credit clasa 7 — fără închiderea în 121 (C15).
+    cheltuieli = rulajul net al clasei 6 (debit − credit); venituri = rulajul net al clasei 7 (credit − debit; [C119] debitul 707 = 4427
+    al notei Raportului Z se scade) — fără închiderea în 121 (C15).
     Include si centrele fara activitate (0). Liniile fara centru nu intra pe centre, dar se
     raporteaza separat ca 'nealocat' (cat din cheltuieli/venituri nu e atribuit niciunui centru)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             SELECT cc.id, cc.nume, cc.activ,
-                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) AS cheltuieli,
-                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) AS venituri
+                   (COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) - COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '6%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0)) AS cheltuieli,
+                   (COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) - COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '7%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0)) AS venituri
             FROM {schema}.centre_cost cc
             LEFT JOIN {schema}.inregistrari_linii l ON l.centru_cost_id = cc.id
             LEFT JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
@@ -75,8 +76,8 @@ def raport_realizat(conn, schema, de, pana):
                            "cheltuieli": ch, "venituri": ve, "net": round(ve - ch, 2)})  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
         # nealocat: linii de clasa 6/7 din note validate FARA centru (coverage)
         cur.execute(f"""
-            SELECT COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) AS cheltuieli,
-                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%' AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) AS venituri
+            SELECT (COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) - COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '6%%' AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0)) AS cheltuieli,
+                   (COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%' AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) - COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '7%%' AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0)) AS venituri
             FROM {schema}.inregistrari_linii l
             JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
             WHERE l.centru_cost_id IS NULL AND i.status = 'validata' AND i.data BETWEEN %s AND %s
@@ -121,8 +122,8 @@ def raport_varianta(conn, schema, an):
             SELECT cc.id, cc.nume, cc.activ,
                    COALESCE(b.buget_cheltuieli, 0) AS buget_cheltuieli,
                    COALESCE(b.buget_venituri, 0) AS buget_venituri,
-                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) AS realizat_cheltuieli,
-                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) AS realizat_venituri
+                   (COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) - COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '6%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0)) AS realizat_cheltuieli,
+                   (COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0) - COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '7%%' AND i.id IS NOT NULL AND l.cont_debit NOT LIKE '121%%' AND l.cont_credit NOT LIKE '121%%'), 0)) AS realizat_venituri
             FROM {schema}.centre_cost cc
             LEFT JOIN {schema}.bugete b ON b.centru_cost_id = cc.id AND b.an = %s
             LEFT JOIN {schema}.inregistrari_linii l ON l.centru_cost_id = cc.id

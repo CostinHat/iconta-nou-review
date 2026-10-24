@@ -251,3 +251,22 @@ def terti_in_balanta_firme(firme):
             # [lotul 10] firma ștearsă între timp: rămâne fără terți (ca firma fără schemă), nu 500
             x["terti_in_balanta"] = db.pe_firma_existenta(sch, solduri_parteneri_api.terti_in_balanta)[1] or []
     return firme
+
+
+def firma_fisier(tenant_id, continut, nume_fisier):
+    """[deficiența 599, comanda Costin 12.1: „compară firma din fișier cu firma aleasă și cere confirmare când diferă, la toate
+    importurile”] `{"firma_fisier": None | {denumire, cui, difera, mesaj, intrebare}}` — se adaugă la previzualizarea FIECĂRUI import de
+    migrare (balanță, parteneri, salariați, asociați, mijloace fixe, istoric declarații, articole, rețete, RIP), ca ecranul să ceară
+    confirmarea înainte de salvare. Accesul la firmă l-a verificat deja apelantul (`_schema_sau_404`). Fișierul l-a citit deja parserul
+    importului, cu aceeași funcție (`import_tabel.citeste`, la toate importurile de mai sus), deci aici se citește la fel; o cădere a
+    citirii nu se înghite într-un „nimic de comparat” (gard `core/test_gard_masca_zero.py`)."""
+    from core import import_tabel
+    randuri = import_tabel.citeste(continut, nume_fisier or "")
+    din_fisier = import_tabel.firma_din_antet(randuri)
+    if not din_fisier:
+        return {"firma_fisier": None}
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            rand = repo_tenants.nume_si_cui_spatiat(cur, tenant_id)
+    nume, cui = rand if rand else (None, None)
+    return {"firma_fisier": import_tabel.confrunta_firma(din_fisier, nume, cui)}

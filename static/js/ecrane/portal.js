@@ -1,9 +1,9 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
 import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand } from "../api.js?v=31460b24f2";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand } from "../api.js?v=309f4d66ae";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi } from "./facturi_ecran.js?v=674264b947";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=9d55850a8c";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -41,7 +41,7 @@ export function desktopPortal(continut, nav) {
   const carduriVizibile = CARDURI;
 
   continut.innerHTML = `
-    ${sesiune.estePreview() ? '<div class="caseta-atentie" style="margin-bottom:12px"><span class="ca-mesaj"><b>PREVIZUALIZARE — doar vizualizare.</b> Vezi portalul exact ca acest client. Acțiunile (trimitere solicitări, pozare bon, orice input) sunt dezactivate în acest mod.</span></div>' : ""}
+    ${sesiune.estePreview() ? '<div class="caseta-atentie" style="margin-bottom:12px"><span class="ca-mesaj"><b>Previzualizare — doar vizualizare.</b> Vezi portalul exact ca acest client. Acțiunile (trimitere solicitări, pozare bon, orice input) sunt dezactivate în acest mod.</span></div>' : ""}
     <div class="cab-salut portal-sus" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
       <div>
         <div class="cab-salut-nume">${esc(firma)}</div>
@@ -60,7 +60,7 @@ export function desktopPortal(continut, nav) {
 
   const grila = continut.querySelector(".cab-grila");
   // [deficiența 320] clientul din portal: cardul lui de început (telefonul, canalul, ce primește); nu în previzualizare
-  if (!sesiune.estePreview()) import("./inceput.js?v=cf800c466e").then((m) => m.cardurileDeInceput(continut.querySelector("#inceput-carduri"), nav)).catch(() => {});
+  if (!sesiune.estePreview()) import("./inceput.js?v=9a8b26bf4b").then((m) => m.cardurileDeInceput(continut.querySelector("#inceput-carduri"), nav)).catch(() => {});
   {
     const c = CARD_BON;
     const card = document.createElement("button");
@@ -455,7 +455,7 @@ async function ecranRecomanda(corp, nav) {
       const rez = (r && r.rezultate) || [];
       bTr.disabled = false; bTr.textContent = "Trimite recomandarea";
       zona.innerHTML = rez.map((x) =>
-        `<div class="pf-frand"><div class="pf-frand-text ${x.stare === "trimis" ? "msg-ok" : "msg-eroare"}">${esc(x.email)} — ${x.stare === "trimis" ? "trimis" : x.stare === "dezabonat" ? "nu am scris: adresa s-a dezabonat de la recomandări" : "eșuat"}</div></div>`
+        `<div class="pf-frand"><div class="pf-frand-text ${x.stare === "trimis" ? "msg-ok" : "msg-eroare"}">${esc(x.email)} — ${x.stare === "trimis" ? "trimis" : x.stare === "dezabonat" ? "nu s-a trimis: adresa s-a dezabonat de la recomandări" : "eșuat"}</div></div>`
       ).join("");
     } catch {
       bTr.disabled = false; bTr.textContent = "Trimite recomandarea";
@@ -564,7 +564,7 @@ async function ecranBon(corp, nav) {
       if (!fs.length) return;
       corp.querySelectorAll("#bon-butoane button").forEach((b) => { b.disabled = true; });
       const zona = corp.querySelector("#bon-rezultat");
-      zona.innerHTML = `<p class="ecran-nota">Citesc documentul...</p>`;
+      zona.innerHTML = `<p class="ecran-nota">Se citește documentul…</p>`;
       const fd = new FormData();
       fs.forEach((f) => fd.append("fisiere", f));
       try {

@@ -63,8 +63,38 @@ class Refuzat(RuntimeError):
     """Meta a refuzat cererea (cod HTTP + mesajul ei)."""
 
 
+#: [lotul 12, deficiența 598] plasa e2e (`scripts/e2e_poarta.py`) nu are tokenul (`CHEI_TRIMITERE`) și nu trimite nimic la Meta; un test
+#: care probează ce vede contabilul când Meta refuză pune răspunsul Meta în `<director>/whatsapp.json` — {"http": 400, "error": {...}}, în
+#: forma răspunsului Graph — iar aplicația îl primește în locul cererii reale. Fără fișier, simulatorul e oprit (WhatsApp „neconfigurat”,
+#: ca până acum). Ca la `anaf_api.CHEIE_SIMULAT`: pe un mediu care nu se dovedește de test (`mediu_test.motive`), cheia e REFUZATĂ.
+CHEIE_SIMULAT = "ICONTA_WHATSAPP_SIMULAT"
+
+
+def _raspuns_simulat():
+    """Răspunsul Meta pregătit de test ({"http", "error"} / {"messages"}), sau None dacă simulatorul nu e pornit."""
+    import os
+    d = os.environ.get(CHEIE_SIMULAT)
+    if not d or not os.path.exists(os.path.join(d, "whatsapp.json")):
+        return None
+    from core import mediu_test
+    m = mediu_test.motive()
+    if m:
+        raise RuntimeError("%s e setat pe un mediu care nu e de test (%s) — refuz răspunsurile pregătite"
+                           % (CHEIE_SIMULAT, ", ".join(x.cod for x in m)))
+    return json.load(open(os.path.join(d, "whatsapp.json"), encoding="utf-8"))
+
+
 def configurat():
-    return bool(cfg("WHATSAPP_TOKEN"))
+    return bool(cfg("WHATSAPP_TOKEN")) or _raspuns_simulat() is not None
+
+
+def _refuz(http, err):
+    """`Refuzat` din răspunsul de eroare Graph (`error`): `message` e generic („Invalid parameter”); cauza o spun `error_user_title` /
+    `error_user_msg` și subcodul (lotul 9 D1: înregistrarea numărului refuzată cu 2388001 — „Nu pot crea certificatul”, politica WhatsApp)."""
+    cauza = " — ".join(x for x in (err.get("error_user_title"), err.get("error_user_msg")) if x)
+    return Refuzat("Meta a refuzat cererea (HTTP %d, cod %s%s): %s" % (
+        http, err.get("code", "?"), "/%s" % err["error_subcode"] if err.get("error_subcode") else "",
+        (err.get("message", "") + (" | " + cauza if cauza else ""))[:600]))
 
 
 def _pnid():
@@ -72,6 +102,11 @@ def _pnid():
 
 
 def _cere(cale, corp):
+    sim = _raspuns_simulat()
+    if sim is not None:
+        if sim.get("error"):
+            raise _refuz(int(sim.get("http") or 400), sim["error"])
+        return sim
     token = cfg("WHATSAPP_TOKEN")
     if not token:
         raise Neconfigurat("Trimiterea pe WhatsApp nu e configurată pe server.")
@@ -85,12 +120,7 @@ def _cere(cale, corp):
             err = json.load(e).get("error", {})
         except ValueError:
             err = {}
-        # `message` e generic („Invalid parameter”); cauza o spun `error_user_title` / `error_user_msg` și subcodul (lotul 9 D1: înregistrarea
-        # numărului refuzată cu 2388001 — „Nu pot crea certificatul”, politica WhatsApp)
-        cauza = " — ".join(x for x in (err.get("error_user_title"), err.get("error_user_msg")) if x)
-        raise Refuzat("Meta a refuzat cererea (HTTP %d, cod %s%s): %s" % (
-            e.code, err.get("code", "?"), "/%s" % err["error_subcode"] if err.get("error_subcode") else "",
-            (err.get("message", "") + (" | " + cauza if cauza else ""))[:600]))
+        raise _refuz(e.code, err)
 
 
 def normalizeaza(telefon):

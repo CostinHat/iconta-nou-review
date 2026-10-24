@@ -133,8 +133,8 @@ def _valideaza_saft(xml, tip, an=None, luna=None, timeout=300):
     if not os.path.exists(JAR_SAFT):
         return _gri("D406", "Validatorul SAF-T (DUKIntegrator_AnLunaUI.jar) nu e instalat.")
     if not an or not luna:
-        return _gri("D406", "Validarea D406 cere an si luna (validatorul SAF-T le "
-                            "primeste ca parametri).")
+        return _gri("D406", "Validarea D406 cere anul și luna (validatorul SAF-T le "
+                            "primește ca parametri).")
     td = tempfile.mkdtemp(prefix="duk_d406_")
     xp = os.path.join(td, "d.xml")
     lp = os.path.join(td, "r.txt")
@@ -166,8 +166,8 @@ def _valideaza_saft(xml, tip, an=None, luna=None, timeout=300):
             if os.path.exists(lp) or (os.path.exists(pp) and os.path.getsize(pp) > 0):
                 return {"stare": "valid", "erori": "", "severitate": None, "cheie": "D406", "temei": temei,
                         "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
-            return _gri("D406", "Validatorul SAF-T nu a produs nici rezultat, nici erori - "
-                                "nu putem confirma ca declaratia e valida.")
+            return _gri("D406", "Validatorul SAF-T nu a produs nici rezultat, nici erori — "
+                                "nu se poate confirma că declarația e validă.")
         return {"stare": "erori", "erori": rez, "severitate": severitate(rez), "cheie": "D406",
                 "temei": temei, "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
     finally:
@@ -183,8 +183,8 @@ def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
         return _valideaza_saft(xml, tip, an=an, luna=luna, timeout=max(timeout, 300))
     if cheie not in validatoare_instalate(dist):
         return _gri(cheie, "Validatorul %s nu e instalat în pachetul DUKIntegrator." % cheie,
-                    "XML generat, nevalidat. Instalează validatorul de la ANAF "
-                    "(config/config.properties -> urlVersiuni).")
+                    "XML generat, nevalidat: validatorul ANAF pentru această declarație lipsește de pe "
+                    "server — anunță administratorul platformei.")
     td = tempfile.mkdtemp(prefix="duk_%s_" % tip)
     xp = os.path.join(td, "d.xml")
     lp = os.path.join(td, "r.txt")

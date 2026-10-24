@@ -6,8 +6,8 @@
 // fără meniu lateral. Un singur loc o scrie (aici), deci cele două pagini nu mai pot diverge; gard `PAGINA_PRINCIPALA_UNA`
 // (verificator) + `frontend_test/e2e/e2e_comanda_1210.py`.
 
-import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=31460b24f2";
-import { randeazaRecomanda } from "./recomanda.js?v=62f148fa2b"; // [p31_recomanda]
+import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=309f4d66ae";
+import { randeazaRecomanda } from "./recomanda.js?v=e5354ffd52"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=c8012ff8c2"; // [p34_raporteaza]
 
 function svg(nume, culoare) {
@@ -51,7 +51,7 @@ export function paginaPrincipala(u) {
 // Leagă benzile (`nivel` = nivelul ferestrei, ca la cardurile paginii) și ține la zi numărul sesizărilor necitite pe „Suport”.
 export function legaBenzile(continut, nav, nivel) {
   // [deficiențele 319 + 320] cardurile de început, sub banda de salut, la ambele roluri (pagina principală e una — 225 / 231)
-  import("./inceput.js?v=cf800c466e").then((m) => m.cardurileDeInceput(continut.querySelector("#inceput-carduri"), nav)).catch(() => {});
+  import("./inceput.js?v=9a8b26bf4b").then((m) => m.cardurileDeInceput(continut.querySelector("#inceput-carduri"), nav)).catch(() => {});
   BENZI.forEach((b) => continut.querySelector(`[data-banda="${b.cheie}"]`)
     .addEventListener("click", () => nav.deschide(b.titlu, (corp) => b.deschide(corp, nav), nivel ? { nivel } : undefined)));
   const suport = continut.querySelector('[data-banda="raport"]');

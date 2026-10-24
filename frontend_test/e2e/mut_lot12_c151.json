@@ -1,0 +1,3 @@
+[
+ {"fisier": "core/casa_api.py", "ancora": "        if op[\"categorie\"] == \"incasare_client\":\n            cur.execute(f\"\"\"UPDATE {schema}.chitante SET factura_id", "inlocuire": "        if False:\n            cur.execute(f\"\"\"UPDATE {schema}.chitante SET factura_id", "test": "frontend_test/e2e/e2e_lot12_c151.py::test_def_c151_chitanta_incasarii_legate_de_factura_numeste_factura"}
+]

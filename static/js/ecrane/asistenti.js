@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=31460b24f2";  /* audit_cab_lot2_v1 */
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=309f4d66ae";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina
@@ -75,7 +75,7 @@ export async function randeazaAsistenti(corp, nav) {
     try {
       const t = ((await api.get("/tenants")).tenants || []);
       z.innerHTML = t.length ? t.map((x) => `<label class="set-bifa" style="display:block"><input type="checkbox" class="asi-firma-noua" value="${x.id}"> <span>${esc(x.nume || "Firma " + x.id)}</span></label>`).join("")
-        : `<span class="ecran-nota">Cabinetul n-are încă firme: le aloci după ce le adaugi, din ecranul colegului.</span>`;
+        : `<span class="ecran-nota">Cabinetul n-are încă firme: adaugă întâi firma (Firme → Adaugă firmă), apoi invită colegul și bifează-i firmele.</span>`;   // [487] fără firme nu se invită
       z.dataset.incarcat = "1";
     } catch (e) { z.innerHTML = `<span class="ecran-nota pe-randuri">${esc((e && e.mesaj) || "Firmele nu s-au putut încărca: le aloci după invitație, din ecranul colegului.")}</span>`; }
   }
@@ -87,7 +87,7 @@ export async function randeazaAsistenti(corp, nav) {
     try {
       // [drepturi_rol 04.10.2026] „Poate pregăti” e trimis explicit: până azi invitația nu-l dădea niciodată, iar
       // asistentul nou ieșea fără niciun drept (ecranul îi spunea totuși „Nivel 1”)
-      await api.post("/asistenti", { email, nume: corp.querySelector("#asi-nume").value.trim(),
+      const r = await api.post("/asistenti", { email, nume: corp.querySelector("#asi-nume").value.trim(),
         poate_pregati: corp.querySelector("#asi-pregati").checked,
         poate_valida: corp.querySelector("#asi-valida").checked,
         poate_depune: corp.querySelector("#asi-depune").checked,
@@ -97,11 +97,15 @@ export async function randeazaAsistenti(corp, nav) {
       const conf = document.createElement("p");
       conf.id = "asi-confirmare";
       (corp.querySelector(".pf-titlu") || corp.firstElementChild || corp).insertAdjacentElement("afterend", conf);
-      arataMesaj(conf, "Invita\u021bie trimis\u0103 pe " + email + ".", "ok");
+      // [598] emailul invitației n-a plecat: spus, cu ce face administratorul (nu „Invitație trimisă”)
+      if (r && r.email_trimis === false) arataMesaj(conf, r.mesaj, "avert");
+      else arataMesaj(conf, "Invita\u021bie trimis\u0103 pe " + email + ".", "ok");
     } catch (e) {
       // [comanda Costin 04.10.2026 pct.3] adresa cu alt rol: refuzul numit stă pe câmpul de email
       let peCamp = false;
-      (e.erori_campuri || []).forEach((c) => { if (c.camp === "email" && eroareCamp(corp, "asi-email", c.mesaj)) peCamp = true; });
+      // [487] invitația fără firme: refuzul stă sub lista firmelor (`camp` = `firme`)
+      const CAMPURI = { email: "asi-email", firme: "asi-firme-noi" };
+      (e.erori_campuri || []).forEach((c) => { if (CAMPURI[c.camp] && eroareCamp(corp, CAMPURI[c.camp], c.mesaj)) peCamp = true; });
       // motivul o singură dată: pe câmp; aici doar ce s-a întâmplat
       arataMesaj(msg, peCamp ? "Invitația nu s-a trimis: " + ((e.erori_campuri || []).map((c) => c.mesaj).join(" ") || e.mesaj) : (e.mesaj || e.message), "eroare");
     }
@@ -287,7 +291,7 @@ async function deschideEditare(uid, corp, nav) {
         const bifate = [...box.querySelectorAll("[data-tid]")].filter((cb) => cb.checked).length;
         if (bifate === 0) {
           intrebari.push(a.rol === "angajat"
-            ? `${esc(nume)} rămâne fără nicio firmă. Competențele se șterg și contul se DEZACTIVEAZĂ (rămâne în istoric).`
+            ? `${esc(nume)} rămâne fără nicio firmă. Competențele se șterg și contul se dezactivează (rămâne în istoric).`
             : `${esc(nume)} rămâne fără nicio firmă. Competențele se șterg și iese din lista de procesatori (contul de administrator rămâne).`);
         }
       }

@@ -113,7 +113,7 @@ BASELINE = {
     # [18.10.2026, comanda 8.2, deficiența 378] `adauga` refuză ajustarea pe care `valideaza` o respinge — refuz de FORMĂ (rândul în afara
     # listei, anul / trimestrul lipsă sau implauzibil, suma ne-numerică sau ≤ 0); temeiul rândurilor e pe `RANDURI` (D101, OPANAF 206/2025).
     "core/ajustari_fiscale.py": 1,
-    "core/common.py": 17,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3)
+    "core/common.py": 16,   # +1 01.10.2026: plafon_cresa(None) - refuz de FORMA (luna lipsa; interdictia 3); -1 24.10.2026 (lotul 12, C159): golul din registrul de cote = `PerioadaIndisponibila`
     "core/contracte_speciale.py": 4,
     "core/d406.py": 6,
     "core/deconturi.py": 4,
@@ -166,6 +166,20 @@ BASELINE = {
     # ale `reface_factura_emisa` sunt de STARE: nota nu mai e o ciornă de contare, contarea facturii refuzată acum (mesajul motorului de
     # contare, cu temeiul lui), factura are deja altă notă. Niciunul nu aplică o normă proprie.
     "core/ciorne_depasite.py": 3,
+    # [lotul 12, deficiența 463] `uc_comun.py` INTRAT DIN NOU ÎN DOMENIU, nu refuzuri noi: `constatari_efactura` (constatările e-Factura
+    # din «Verificări contabile») pune pe constatarea „facturi netransmise în SPV după termen” temeiul termenului, `TEMEI_TERMEN_SPV`
+    # (OUG 120/2021 art.10 alin.(7), definit în `control_fiscal_api`), deci modulul „citează legea”. Cele 23 de refuzuri numărate sunt
+    # EXACT cele 23 din lista lotului 10 de mai sus (aceleași funcții: bifa, _cere_perioada ×3, _tenant_client, _link_element,
+    # _adresa_e_libera, _cere_acelasi_cabinet, _cere_luna_incheiata, _cere_luna_deschisa ×2, _cere_perioada_deschisa, _interval_cerut ×2,
+    # _cere_an_luna ×2, _cere_z_unic, _tenant_pentru_documente, _trimite_recomandari ×3, _jurnal_rez ×2), toate de FORMĂ sau de stare a
+    # aplicației; lotul 12 n-a adăugat niciun refuz (a schimbat doar textul lui `_interval_cerut`, cu `common.cate`). Temeiul nu se mută
+    # din constatare ca să iasă modulul din numărătoare: constatarea are nevoie de el.
+    "core/uc_comun.py": 23,
+    # [lotul 12, C139] `z_descarcare.py` INTRAT ÎN DOMENIU, nu refuzuri noi: ștergerea raportului Z nevalidat citează `TEMEI_STERGERE`
+    # (OMFP 1802/2014 pct.69 — un Z validat se corectează prin stornare; refuzul lui îl poartă în `uc_raport_z`). Cele 4 numărate sunt
+    # de dinainte de lot, de FORMĂ sau de STARE: în `cere_z` — id-ul Z-ului nenumeric, Z-ul inexistent, Z-ul deja validat (descărcarea se
+    # leagă numai de un Z nevalidat); în `marcheaza_fara_marfa` — Z-ul are deja ieșiri legate, deci nu poate fi „fără marfă”.
+    "core/z_descarcare.py": 4,
 }
 
 #: Cele două cifre care NU se gardează, dar se scriu ca să nu se piardă. Dacă vreuna scade mult,

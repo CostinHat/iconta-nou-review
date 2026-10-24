@@ -402,3 +402,240 @@ def sql_camp_fisa(camp, f="f"):
             "OR %(m)s ORDER BY (p.id = %(f)s.client_id) DESC NULLS LAST, p.id LIMIT 1) "
             "ELSE (SELECT NULLIF(btrim(p.%(c)s), '') FROM furnizori p WHERE %(m)s ORDER BY p.id LIMIT 1) END)"
             % {"f": f, "c": camp, "m": potrivire})
+
+
+# ============================================================
+#  [lotul 12, deficiența 461, comanda Costin 12.1: „lista de parteneri” cerută] PARTENERII FIRMEI: lista (clienți și furnizori, din toate
+#  documentele firmei) și fișa partenerului (datele, documentele lui, soldul din contabilitate).
+# ============================================================
+def _rol_cont(cont):
+    """Rolul partenerului după contul de terți: grupa 40 „Furnizori și conturi asimilate” -> furnizor, grupa 41 „Clienți și conturi
+    asimilate” -> client (OMFP 1802/2014 pct.594, planul de conturi); orice alt cont -> None."""
+    sint = str(cont or "").strip().split(".")[0]
+    return "furnizor" if sint[:2] == "40" else ("client" if sint[:2] == "41" else None)
+
+
+def _q(schema):
+    from core import db as _db
+    if not _db.schema_valida(schema):
+        raise ValueError("Firma cerută nu poate fi deschisă: numele ei intern nu e valid (%r)." % schema)
+    return '"%s"' % schema
+
+
+def _bani(x):
+    from decimal import Decimal, ROUND_HALF_UP
+    return float(Decimal(str(x or 0)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+
+
+def _fel_factura(directie, tip, storno):
+    em = directie == "emisa"
+    if storno:
+        return "Factură de stornare " + ("emisă" if em else "primită")
+    return {"factura": "Factură emisă" if em else "Factură primită", "borderou": "Borderou de achiziție",
+            "proforma": "Proformă emisă" if em else "Proformă primită",
+            # [lotul 12, 252] factura deschisă adusă la preluarea firmei (din programul vechi)
+            "preluata": "Factură preluată, de încasat" if em else "Factură preluată, de plătit"}.get(tip or "factura",
+                                                                          "%s %s" % (str(tip).capitalize(), "emisă" if em else "primită"))
+
+
+def _surse(cur, schema):
+    """Toate locurile din care firma își cunoaște partenerii, ca rânduri (cheie, cui, nume, rol, fisa, document) — `cheie` =
+    `cheie_partener` (CUI-ul păstrat, altfel numele): fișele de clienți și de furnizori; facturile emise / primite (și borderourile,
+    proformele); operațiunile de casă; liniile de extras bancar (CUI-ul detectat sau facturile alocate); notele cu partenerul scris pe linie
+    (nota manuală pe 401 / 4111, compensarea); soldurile de preluare pe parteneri. `document` = rândul pentru fișa partenerului, sau None."""
+    import psycopg2.extras as _E
+    s = _q(schema)
+    out = []
+    c = cur.connection.cursor(cursor_factory=_E.RealDictCursor)
+    for fel, rol in (("clienti", "client"), ("furnizori", "furnizor")):
+        c.execute(f"SELECT id, nume, cui, adresa, oras, judet, email, telefon"
+                  + (", afiliat" if fel == "clienti" else "") + f" FROM {s}.{fel} ORDER BY id")
+        for r in c.fetchall():
+            out.append((cheie_partener(r["cui"], r["nume"]), r["cui"], r["nume"], rol, dict(r, fel=fel), None))
+    facturi = {}
+    c.execute(f"SELECT id, serie, numar, data_emitere, directie, COALESCE(tip, 'factura') AS tip, status, storno_din_id, "
+              f"COALESCE(total_lei, total) AS total_lei, total, COALESCE(moneda, 'RON') AS moneda, tert_cui, tert_nume "
+              f"FROM {s}.facturi ORDER BY data_emitere DESC, id DESC")
+    for r in c.fetchall():
+        k = cheie_partener(r["tert_cui"], r["tert_nume"])
+        facturi[r["id"]] = k
+        doc = {"data": r["data_emitere"].isoformat() if r["data_emitere"] else None,
+               "fel": _fel_factura(r["directie"], r["tip"], r["storno_din_id"]),
+               "document": " ".join(x for x in (r["serie"] or "", r["numar"] or "") if x).strip(),
+               "suma": _bani(r["total_lei"]), "moneda": r["moneda"],
+               "suma_valuta": _bani(r["total"]) if r["moneda"] != "RON" else None,
+               "stare": "anulată" if r["status"] == "anulata" else None}
+        out.append((k, r["tert_cui"], r["tert_nume"], "client" if r["directie"] == "emisa" else "furnizor", None, doc))
+    c.execute(f"SELECT data, tip, document, partener, cui, suma FROM {s}.casa_operatiuni "
+              f"WHERE COALESCE(btrim(cui), '') <> '' OR COALESCE(btrim(partener), '') <> '' ORDER BY data DESC, id DESC")
+    for r in c.fetchall():
+        out.append((cheie_partener(r["cui"], r["partener"]), r["cui"], r["partener"], None, None,
+                    {"data": r["data"].isoformat(), "fel": "Încasare în numerar" if r["tip"] == "incasare" else "Plată în numerar",
+                     "document": r["document"] or "", "suma": _bani(r["suma"]), "moneda": "RON", "suma_valuta": None, "stare": None}))
+    c.execute(f"SELECT data, tip, descriere, suma, valuta, cui_detectat, status, alocari FROM {s}.extras_linii ORDER BY data DESC, id DESC")
+    for r in c.fetchall():
+        aloc = [a.get("factura_id") for a in ((r["alocari"] or {}).get("alocari") or []) if isinstance(a, dict)]
+        chei = {facturi[f] for f in aloc if facturi.get(f)} or ({cheie_partener(r["cui_detectat"], None)} if r["cui_detectat"] else set())
+        for k in chei - {None}:
+            out.append((k, r["cui_detectat"] if k == cheie_partener(r["cui_detectat"], None) else None, None, None, None,
+                        {"data": r["data"].isoformat(), "fel": "Încasare prin bancă" if r["tip"] == "incasare" else "Plată prin bancă",
+                         "document": " ".join(str(r["descriere"] or "").split())[:120], "suma": _bani(r["suma"]),
+                         "moneda": "valută" if r["valuta"] else "RON", "suma_valuta": None,
+                         "stare": "contată" if r["status"] == "contat" else "necontată"}))
+    note = {}
+    for r in linii_partener(cur, schema):
+        if not r["pe_linie"]:
+            continue   # partenerul vine din factura / operațiunea de casă a notei: documentul e acela, nu nota
+        k = cheie_partener(r["p_cui"], r["p_nume"])
+        n = note.setdefault((k, r["id"]), {"cui": r["p_cui"], "nume": r["p_nume"], "rol": None, "suma": 0,
+                                           "doc": {"data": r["data"].isoformat(), "fel": "Notă contabilă",
+                                                   "document": ("nr %s · " % r["numar"] if r["numar"] else "") + (r["descriere"] or ""),
+                                                   "moneda": "RON", "suma_valuta": None,
+                                                   "stare": None if r["status"] == "validata" else "ciornă"}})
+        n["rol"] = n["rol"] or _rol_cont(r["cont_debit"]) or _rol_cont(r["cont_credit"])
+        n["suma"] += r["suma"]
+    for (k, _nid), n in note.items():
+        out.append((k, n["cui"], n["nume"], n["rol"], None, dict(n["doc"], suma=_bani(n["suma"]))))
+    c.execute("SELECT to_regclass(%s) IS NOT NULL AS e", ("%s.solduri_parteneri" % s,))
+    if c.fetchone()["e"]:
+        c.execute(f"SELECT cont, cui, denumire FROM {s}.solduri_parteneri WHERE sold_debitor <> 0 OR sold_creditor <> 0")
+        for r in c.fetchall():
+            out.append((cheie_partener(r["cui"], r["denumire"]), r["cui"], r["denumire"], _rol_cont(r["cont"]), None, None))
+    c.close()
+    return [x for x in out if x[0]]
+
+
+#: [461] Partenerul unei linii de notă, ca expresii SQL pe aliasurile `l` (linia), `f` (factura notei), `co` (prima operațiune de casă a notei):
+#: cel scris pe linie, altfel al facturii, altfel al casei — regula deficienței 381, a doua oară scrisă în `repo_d406.select_inregistrari`
+#: (de mutat acolo pe aceste constante: cerut în raportul lotului 12, pachetul PROD).
+SQL_PARTENER_CUI = "COALESCE(NULLIF(l.partener_cui, ''), f.tert_cui, co.cui)"
+SQL_PARTENER_NUME = "COALESCE(NULLIF(l.partener_nume, ''), f.tert_nume, co.partener)"
+
+
+def linii_partener(cur, schema, cheie=None):
+    """Liniile notelor pe conturile de terți (grupele 40 / 41), fiecare cu partenerul ei: cel scris pe linie (nota manuală pe 401 / 4111,
+    compensarea), altfel al facturii legate, altfel al operațiunii de casă din care vine nota — aceeași regulă ca D406
+    (`repo_d406.select_inregistrari`, deficiența 381). Toate stările (`status`); `cheie` = numai ale acestui partener (`cheie_partener`)."""
+    import psycopg2.extras as _E
+    s = _q(schema)
+    with cur.connection.cursor(cursor_factory=_E.RealDictCursor) as c:
+        c.execute(f"SELECT i.id, i.data, i.numar, i.descriere, i.status, l.cont_debit, l.cont_credit, l.suma, "
+                  f"(COALESCE(btrim(l.partener_cui), '') <> '' OR COALESCE(btrim(l.partener_nume), '') <> '') AS pe_linie, "
+                  f"{SQL_PARTENER_CUI} AS p_cui, {SQL_PARTENER_NUME} AS p_nume "
+                  f"FROM {s}.inregistrari i JOIN {s}.inregistrari_linii l ON l.inregistrare_id = i.id "
+                  f"LEFT JOIN {s}.facturi f ON f.id = i.factura_id "
+                  f"LEFT JOIN LATERAL (SELECT x.cui, x.partener FROM {s}.casa_operatiuni x WHERE x.inregistrare_id = i.id "
+                  f"ORDER BY x.id LIMIT 1) co ON true "
+                  f"WHERE substr(split_part(l.cont_debit, '.', 1), 1, 2) IN ('40', '41') "
+                  f"OR substr(split_part(l.cont_credit, '.', 1), 1, 2) IN ('40', '41') ORDER BY i.data, i.id, l.id")
+        rows = [dict(r) for r in c.fetchall()]
+    return [r for r in rows if cheie is None or cheie_partener(r["p_cui"], r["p_nume"]) == cheie]
+
+
+def _eticheta_rol(roluri):
+    return {frozenset(): None, frozenset({"client"}): "client", frozenset({"furnizor"}): "furnizor"}.get(frozenset(roluri),
+                                                                                                        "client și furnizor")
+
+
+def parteneri_firmei(conn, schema):
+    """Lista partenerilor firmei: [{cheie, nume, cui, rol, documente, fisa}] — un rând pe partener (`cheie_partener`), din toate sursele
+    (`_surse`), cu numele din fișă (altfel de pe cel mai nou document), rolul (client / furnizor / amândouă, din fișă, documente și
+    conturile de terți), câte documente are și dacă are fișă. Ordonată după nume."""
+    with conn.cursor() as cur:
+        surse = _surse(cur, schema)
+    acc = {}
+    for k, cui, nume, rol, fisa, doc in surse:
+        p = acc.setdefault(k, {"cheie": k, "nume": None, "cui": None, "roluri": set(), "documente": 0, "fisa": False})
+        p["cui"] = p["cui"] or _cf.stocare(cui)
+        nume = " ".join(str(nume or "").split()) or None
+        if fisa:
+            p["fisa"] = True
+            p["nume_fisa"] = p.get("nume_fisa") or nume
+        p["nume"] = p["nume"] or nume
+        if rol:
+            p["roluri"].add(rol)
+        if doc:
+            p["documente"] += 1
+    out = []
+    for p in acc.values():
+        out.append({"cheie": p["cheie"], "nume": p.get("nume_fisa") or p["nume"] or p["cui"], "cui": p["cui"],
+                    "rol": _eticheta_rol(p["roluri"]), "documente": p["documente"], "fisa": p["fisa"]})
+    return sorted(out, key=lambda x: (str(x["nume"] or "").casefold(), x["cheie"]))
+
+
+def sold_partener(cur, schema, cheie, linii=None):
+    """Soldul partenerului din contabilitate, pe fiecare cont de terți (grupele 40 / 41), la zi — ACEEAȘI regulă ca balanța / bilanțul
+    (`bilant_api.sold_la`: soldurile de preluare + mișcările din notele VALIDATE de după data lor, `bilant_api.data_soldurilor`), aplicată
+    partenerului: soldul de preluare = rândurile lui din soldurile pe parteneri (`solduri_parteneri`, coerente cu balanța de deschidere —
+    deficiența 346), mișcările = liniile atribuite lui (`linii_partener`). Ciornele nu sunt evidență (R36): se numără separat.
+    -> {la, preluare, conturi: [{cont, denumire, debitor, creditor}], nedefalcat: [conturi cu sold de preluare nedefalcat pe parteneri],
+    ciorne: câte note în ciornă ating partenerul, note_fara_partener: câte note validate au linii de terți fără partener (nu sunt în
+    soldul niciunui partener)}. `linii` = toate liniile de terți ale firmei (`linii_partener` fără cheie), dacă apelantul le are."""
+    import datetime as _dt
+    from decimal import Decimal
+    import psycopg2.extras as _E
+    from core import bilant_api as _bil
+    from core.common import azi_ro
+    from core.plan_omfp import denumire_omfp
+    s = _q(schema)
+    azi = azi_ro()
+    # toate liniile de terți ale firmei (`cheie=None` cu bună știință): din ele se numără și notele fără niciun partener, apoi se aleg ale lui
+    toate = linii_partener(cur, schema, cheie=None) if linii is None else linii
+    linii = [r for r in toate if cheie_partener(r["p_cui"], r["p_nume"]) == cheie]
+    # liniile validate pe conturi de terți fără niciun partener (note manuale de dinainte de 381): nu sunt în soldul NICIUNUI partener
+    fara_partener = len({r["id"] for r in toate if r["status"] == "validata" and not cheie_partener(r["p_cui"], r["p_nume"])})
+    net = {}
+    nedefalcat = []
+    with cur.connection.cursor(cursor_factory=_E.RealDictCursor) as c:
+        ref = _bil.data_soldurilor(c, schema)
+        c.execute("SELECT to_regclass(%s) IS NOT NULL AS e", ("%s.solduri_parteneri" % s,))
+        defalcate = set()
+        if c.fetchone()["e"]:
+            c.execute(f"SELECT cont, cui, denumire, sold_debitor, sold_creditor FROM {s}.solduri_parteneri")
+            for r in c.fetchall():
+                defalcate.add(str(r["cont"]).split(".")[0])
+                if cheie_partener(r["cui"], r["denumire"]) == cheie:
+                    net[r["cont"]] = net.get(r["cont"], Decimal("0")) + Decimal(str(r["sold_debitor"])) - Decimal(str(r["sold_creditor"]))
+        c.execute(f"SELECT cont, sold_debitor, sold_creditor FROM {s}.solduri_initiale "
+                  f"WHERE substr(split_part(cont, '.', 1), 1, 2) IN ('40', '41') AND (sold_debitor <> 0 OR sold_creditor <> 0)")
+        for r in c.fetchall():
+            sint = str(r["cont"]).split(".")[0]
+            if sint not in defalcate and sint not in nedefalcat:
+                nedefalcat.append(sint)
+        ciorne = set()
+        for r in linii:
+            if r["status"] != "validata":
+                ciorne.add(r["id"])
+                continue
+            d = r["data"]
+            if (ref is not None and d <= ref) or d > azi:
+                continue
+            for cont, semn in ((r["cont_debit"], 1), (r["cont_credit"], -1)):
+                if _rol_cont(cont):
+                    net[cont] = net.get(cont, Decimal("0")) + semn * Decimal(str(r["suma"]))
+        conturi = sorted(k for k, v in net.items() if v != 0)
+        den = {}
+        if conturi:
+            c.execute(f"SELECT simbol, denumire FROM {s}.plan_conturi WHERE simbol = ANY(%s)", (conturi,))
+            den = {r["simbol"]: r["denumire"] for r in c.fetchall()}
+    return {"la": azi.isoformat() if isinstance(azi, _dt.date) else str(azi), "preluare": ref.isoformat() if ref else None,
+            "conturi": [{"cont": k, "denumire": den.get(k) or denumire_omfp(k), "debitor": _bani(net[k]) if net[k] > 0 else 0.0,
+                         "creditor": _bani(-net[k]) if net[k] < 0 else 0.0} for k in conturi],
+            "nedefalcat": sorted(nedefalcat), "ciorne": len(ciorne), "note_fara_partener": fara_partener}
+
+
+def fisa_partenerului(conn, schema, cheie):
+    """Fișa unui partener (`cheie` din `parteneri_firmei`): {cheie, nume, cui, rol, fise: [fișele lui de client / furnizor, cu datele],
+    documente: [{data, fel, document, suma, moneda, suma_valuta, stare}] (cele mai noi întâi), sold: `sold_partener`}. None dacă partenerul
+    nu apare în datele firmei. Verificarea la ANAF o face ecranul, pe ruta existentă (`GET /verifica-cui/{cui}`, deficiența 444)."""
+    with conn.cursor() as cur:
+        surse = [x for x in _surse(cur, schema) if x[0] == cheie]
+        if not surse:
+            return None
+        sold = sold_partener(cur, schema, cheie)
+    fise = [x[4] for x in surse if x[4]]
+    nume = next((x[2] for x in surse if x[4] and x[2]), None) or next((x[2] for x in surse if x[2]), None)
+    cui = next((_cf.stocare(x[1]) for x in surse if _cf.stocare(x[1])), None)
+    documente = sorted((x[5] for x in surse if x[5]), key=lambda d: d["data"] or "", reverse=True)
+    return {"cheie": cheie, "nume": " ".join(str(nume or "").split()) or cui, "cui": cui,
+            "rol": _eticheta_rol({x[3] for x in surse if x[3]}), "fise": fise, "documente": documente, "sold": sold}

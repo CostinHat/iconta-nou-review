@@ -88,7 +88,7 @@ def ruleaza(acum=None):
 def _alerteaza_esecuri(esecuri):
     """Email pe canalul comun (Brevo, core.observare). Nu construi canal paralel."""
     linii = "\n".join("token %s (%s): %s — %s" % e for e in esecuri)
-    subiect = "Refresh token SPV esuat (%d)" % len(esecuri)
+    subiect = "Reîmprospătarea accesului SPV a eșuat (%d)" % len(esecuri)   # [317, lotul 12] cu diacritice
     mesaj = ("Reîmprospătarea automată a eșuat pentru %d token-uri SPV. Cabinetele afectate "
              "riscă să se deconecteze de la SPV și să fie nevoite să se reconecteze din aplicație "
              "(Setări › Conectare SPV). Detaliu:\n\n%s" % (len(esecuri), linii))

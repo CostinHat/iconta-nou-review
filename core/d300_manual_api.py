@@ -151,7 +151,7 @@ def adauga(conn, schema, an, luna, d):
     with conn.cursor() as _cur:
         _pr = _repo.select_firma_profil(_cur, schema)
     if _pr and _pr[0] is False:
-        _t = ("Firma NU e înregistrată în scopuri de TVA — D300 (decontul de TVA) se "
+        _t = ("Firma nu e înregistrată în scopuri de TVA — D300 (decontul de TVA) se "
               "depune doar de plătitori. Dacă firma e de fapt plătitoare, corectează "
               "înregistrarea în scopuri de TVA în Vectorul fiscal.")
         return dict(_af.afirmatie("statut", "d300", _t,

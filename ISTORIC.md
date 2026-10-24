@@ -3077,3 +3077,22 @@ declarațiile în așteptare; în suită, unde testul are o singură conexiune c
 Recalcularea rezumatelor avea comutator de oprire în suită din 08.10, firul reluării (16.10) și triajul sesizărilor nu. Acum toate trei trec
 printr-un singur loc, `db.fir_de_fundal`, oprit în suită, cu gardă care nu lasă alt fir să pornească pe lângă el. Pe producție nimic nu se
 schimbă. Detalii: DECIZII „Lotul 11, poarta 3 ROȘIE”.
+
+### 23–24.10.2026 — Lotul 12, comanda 12.1: deficiențele deschise, scenariul lunii pilot, noul CLAUDE.md; închisă pe ramură, înaintea porții (poarta, o dată pe lotul 12, după 12.2)
+
+Noul CLAUDE.md (23.10.2026) a înlocuit regulile vechi; regulile de proces care îl contraziceau au fost scoase din celelalte fișiere și din
+memoria executorului, iar poarta a fost adaptată (rulează toate părțile chiar după una roșie; verdict compus pe roșu). Cele 182 de numere ale
+comenzii, plus deficiențele deschise din registru și C-urile găsite pe drum (C104–C164), au fost lucrate de pachete de subagenți pe fișiere
+disjuncte, cu testele grele rulate numai de sesiunea principală, una după alta. Scenariul automat al lunii pilot (40 de pași, cifrele exacte
+la fiecare pas, până la D300 / D394 / D112 / D100 / balanță) rulează cap-coadă verde și stă în plasă. Suita întreagă a ieșit întâi cu 90 de
+picături (gărzi rămase în urma codului nou și câteva defecte reale: o verificare de acces făcută după un refuz, un câmp trimis de ecran și
+ignorat de server, rotunjiri fără mod, un cod tehnic pe Control fiscal) — toate reparate pe cauză, fără clichete ridicate pe clasele de
+defect. Fiecare test de capăt la capăt al lotului are mutația lui (peste 230 rulate; cele care nu înroșeau testul au fost refăcute pe
+reparația reală), iar dovezile au rulat pe copia firmelor de test F1–F6 (414 capturi, manifestul `dovezi/lot12/AMPRENTE.json`). Numerele vechi
+(69, 107 dovezi pe copia proaspătă) au fost reverificate pe ecran: 103 dovezi arată că nu se mai reproduc, 304 se reproduce (redeschisă), 3
+nu se pot arăta înainte de încheierea perioadei (131, 244, 431 partea a doua) — tabelul în `dovezi/lot12/RETEST_NUMERE_VECHI.md`.
+Pe drum s-au găsit și reparat C151–C155, C158–C162 (chitanța încasării legate, mesajele D394, rapoartele comerciale cu chitanța veche,
+D390 la neplătitorul art.317, golul din registrul de cote, țara facturii recurente și a celei importate, calendarul D390); C156, C157, C163,
+C164 așteaptă decizii. Comanda 12.2 (în același lot) a mutat poarta și publicarea: poarta rulează o singură dată pe tot lotul 12, iar
+publicarea se face după confirmarea lui Costin (DECIZII „Comenzile 12.1 și 12.2 în același lot”). Detaliile deciziilor: DECIZII „Comanda
+12.1” și „Lotul 12: implementarea”; starea fiecărui număr: DEFICIENTE.md.

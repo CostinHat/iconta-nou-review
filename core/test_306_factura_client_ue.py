@@ -23,8 +23,9 @@ def test_306_clientul_ue_are_cod_tva_cu_prefixul_statului_si_tara_in_adresa():
 
 def test_306_numele_tarilor_sunt_cele_din_emitere():
     """Paritatea cu lista din „Emite factură” (aceleași coduri și nume)."""
-    js = io.open("static/js/ecrane/emitere_ecran.js", encoding="utf-8").read()
-    a = js.index("const TARI_UE_JS")
-    corp = js[a:js.index("const CATEG", a)]
+    # [lotul 12, C160] lista țărilor stă în `tari_partener.js` (sursa unică a emiterii și a șablonului recurent)
+    js = io.open("static/js/ecrane/tari_partener.js", encoding="utf-8").read()
+    a = js.index("export const TARI_UE_JS")
+    corp = js[a:js.index("export function optiuniTara", a)]
     din_js = dict(re.findall(r'([A-Z]{2}):"([^"]+)"', corp))
     assert din_js == fp.TARI_NUME

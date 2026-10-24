@@ -491,9 +491,14 @@ def baza_contabila(rl):
     def _s(lat, pref, fara=None):
         i = 0 if lat == "d" else 1
         return sum((v[i] for k, v in rl.items() if str(k).startswith(pref) and not (fara and str(k).startswith(fara))), Decimal("0"))
-    return {"ven_fin": _s("c", "76"), "ven_expl": _s("c", "7", "76"), "cifra_afaceri": _s("c", "70"),
-            "chelt_fin": _s("d", "66"), "chelt_expl": _s("d", "6", "66"),
-            "amenzi": _s("d", "6581") - _s("c", "6581"), "chelt_impozit": _s("d", "691")}
+
+    def _net(lat, pref, fara=None):
+        """[C119, lotul 12] rulajul NET pe latura funcțiunii (venituri: credit − debit; cheltuieli: debit − credit) — închiderea în 121 e
+        deja scoasă din `rl`; un debit pe 707 (TVA-ul scos din nota Raportului Z, 707 = 4427) sau pe 709 scade venitul."""
+        return _s(lat, pref, fara) - _s("d" if lat == "c" else "c", pref, fara)
+    return {"ven_fin": _net("c", "76"), "ven_expl": _net("c", "7", "76"), "cifra_afaceri": _net("c", "70"),
+            "chelt_fin": _net("d", "66"), "chelt_expl": _net("d", "6", "66"),
+            "amenzi": _net("d", "6581"), "chelt_impozit": _net("d", "691")}
 
 
 def rulaje_fereastra(cur, schema, _inc, _sf):

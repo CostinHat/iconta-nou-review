@@ -113,7 +113,8 @@ for nume, t in fisiere.items():
         # loc de dataRo(..., "luna_an_numeric"). Garda DATA_DIALECT nu prindea forma asta (cauta
         # luni[...]/toLocaleDateString/split("-")). Gasita in firme.js x12 + facturi_ecran.js x2.
         # Forma AFISATA ramane numerica (07/2026, decis 27.07) - se schimba doar CINE o produce.
-        if re.search(r'String\(\w+\)\.padStart\(2, ?"0"\)\}/\$\{', lin):
+        # [lotul 12, 184] și cu argument cu punct / indice (`String(r.luna)`, `String(b.dataset.luna)`), nu numai un nume simplu
+        if re.search(r'String\([\w.\[\]"]+\)\.padStart\(2, ?"0"\)\}/\$\{', lin):
             rap["data_dialect"].append((nume, i, "", lin.strip()[:66]))
 
         # POARTA_INLINE (cap.5 v2.14): caseta-poarta (#fbf7ee) reprodusa ad-hoc inline in loc de .caseta-poarta
@@ -630,8 +631,14 @@ _TVA_TEMEI = {
     "0.19": ("cota standard istorica 19%", "Legea 227/2015"),
 }
 _re_param_cota = re.compile(r'''cota\w*\s*=\s*21\b|\.get\(\s*["']cota["']\s*,\s*21\s*\)''')
+_re_ref_deficienta = re.compile(r"deficien\w*\s+(?:nr\.\s*)?(?:21|19|11)(?![\w.%])", re.I)
 def _clasa_cota(_fis, _lin):
     if "alin" in _lin.lower():          # referinta legala in docstring ("alin. 11") - nu e o cota
+        return None
+    # [lotul 12] numarul unei deficiente din registru („ca la cota de pe linia facturii (deficiența 21, …)”) - nu e o cota;
+    # o cota 21 adevarata pe acelasi rand ramane prinsa doar daca apare a doua oara (vezi `_re_tva_int` pe restul randului)
+    if _re_ref_deficienta.search(_lin) and not _re_tva_int.search(_re_ref_deficienta.sub("", _lin)) \
+            and not _re_tva_dec.search(_lin):
         return None
     if "test" in _fis:
         return "ACCEPTAT"               # etalon golden/fixture (regula ETALON)
@@ -662,7 +669,7 @@ for _r2, _d2, _f2 in os.walk(BAZA_PY):
             _val = _md.group(0) if _md else _mi.group(0)
             _clasa = _clasa_cota(_rel, _st)
             if _clasa is None:
-                _gri_reg["EXCLUS"].append((_rel, _i, _val, "referinta legala (alin.), nu cota"))
+                _gri_reg["EXCLUS"].append((_rel, _i, _val, "referinta (alin. / nr. deficientei), nu cota"))
                 continue
             _sem, _temei = _TVA_TEMEI.get(_val, ("necunoscut", "???"))
             if _temei == "???":
@@ -1476,6 +1483,12 @@ try:
     _sel = (re.search(r'SELECTOR_MESAJ\s*=\s*"([^"]+)"', _api) or [None, ""])[1]
     if "MutationObserver" not in _api or "SELECTOR_MESAJ" not in _api.split("MutationObserver", 1)[-1][:600]:
         rap["mesaj_fara_aducere_in_vedere"].append(("api.js", 0, "observator", "observatorul pe SELECTOR_MESAJ lipsește (DS cap.6 v2.74)"))
+    # [lotul 12, deficiența 45] textul scris DIRECT într-o zonă de mesaj existentă (`rez.textContent = …`, clasa pusă după) — observatorul
+    # trebuie să vadă și textul schimbat și clasa, nu numai nodurile adăugate. Mutația: `characterData: true` scos din `.observe(` -> TOTAL > 0.
+    _obs = (re.search(r"new MutationObserver\(.*?\.observe\(document\.documentElement,\s*\{([^}]*)\}", _api, re.S) or [None, ""])[1]
+    if not all(k in _obs for k in ("characterData: true", "attributes: true", "childList: true")):
+        rap["mesaj_fara_aducere_in_vedere"].append(("api.js", 0, "observator", "observatorul nu vede textul scris direct într-o zonă de mesaj "
+                                                    "(characterData / attributes) (DS cap.6 v2.74, deficiența 45)"))
     for _cls in ("caseta-poarta", "em-curs-box", "msg-eroare", "msg-avert"):
         if any(re.search(r'class="[^"]*\b%s\b' % _cls, _t) for _n, _t in fisiere.items() if _n != "api.js") and "." + _cls not in _sel:
             rap["mesaj_fara_aducere_in_vedere"].append(("api.js", 0, _cls, "clasa de casetă .%s lipsește din SELECTOR_MESAJ (DS cap.6 v2.74)" % _cls))
@@ -1737,7 +1750,8 @@ for _fis, _txt in sorted(fisiere.items()):
 #     (`${a.stoc}`, `esc(l.cantitate)`, `" + a.cmp`). EXCEPTAT: `value="${…}"` (câmp numeric) și payload-ul. Mutația care o
 #     probează: `${a.stoc}` repus în opțiunea articolului din firme.js -> TOTAL > 0.
 _CAMPURI_CANT = r"(?:stoc|cantitate|cmp|sold_cantitate|faptic|scriptic|nivel_minim|necesar|cant|pret_unitar)"
-_RX_CANT = re.compile(r"(?<!value=\")(?:\$\{\s*|esc\(\s*|[\"'`]\s*\+\s*)[A-Za-z_]\w*\." + _CAMPURI_CANT + r"\s*(?:\}|\))")
+# [lotul 12] excepția câmpului numeric acoperă și forma scăpată `value="${esc(l.cantitate)}"` (formularul facturii introduse manual, 477)
+_RX_CANT = re.compile(r"(?<!value=\")(?<!value=\"\$\{)(?:\$\{\s*|esc\(\s*|[\"'`]\s*\+\s*)[A-Za-z_]\w*\." + _CAMPURI_CANT + r"\s*(?:\}|\))")
 rap["cantitate_bruta"] = []
 for _fis, _txt in sorted(fisiere.items()):
     if _fis == "api.js":
@@ -2626,6 +2640,31 @@ def analiza_lot11_u0(fisiere, css=""):
 
 
 rap["lot11_u0"] = analiza_lot11_u0(fisiere, open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read())
+
+
+def analiza_lot12(fisiere, css=""):
+    """[lotul 12] (469) vederea aleasă nu e `disabled`; (561 / 596 / C111) tot ce stă pe ecranul întreg derulează. [(fișier, linie, COD, text)]."""
+    import re as _re
+    out = []
+    ales = _re.compile(r"\$\{\s*[\w.\[\]\"']+\s*===?\s*[^?}]+\?\s*[\"'`]\s*disabled\s*[\"'`]\s*:\s*[\"'`]{2}\s*\}")
+    for nume, t in sorted(fisiere.items()):
+        for i, lin in enumerate(t.split("\n"), 1):
+            if lin.strip().startswith(("//", "/*", "*")):
+                continue
+            if ales.search(lin):
+                out.append((nume, i, "ALEGERE_DEZACTIVATA", "vederea aleasă marcată `disabled` (DS cap.1, 469): " + lin.strip()[:80]))
+    if css and _re.search(r"html\s*,\s*body\s*\{[^}]*overflow-y\s*:\s*hidden", css):
+        app = " ".join(m.group(1) for m in _re.finditer(r"(?m)^#app\s*\{([^}]*)\}", css))
+        if not (_re.search(r"(?<![-\w])height\s*:\s*100dvh", app) and _re.search(r"overflow-y\s*:\s*auto", app)):
+            out.append(("stil.css", 0, "SCROLL_APP", "#app fără height:100dvh + overflow-y:auto: ecranele puse direct în el nu derulează (DS cap.22 §7, C111)"))
+        for sel in (".acces-modal", ".reaut"):
+            dec = " ".join(m.group(1) for m in _re.finditer(r"(?m)^%s\s*\{([^}]*)\}" % _re.escape(sel), css))
+            if not (_re.search(r"max-height\s*:", dec) and _re.search(r"overflow-y\s*:\s*auto", dec)):
+                out.append(("stil.css", 0, "STRAT_INCAPE", "%s fără max-height + overflow-y:auto: fereastra iese din ecran (DS cap.22 §7, C111)" % sel))
+    return out
+
+
+rap["lot12"] = analiza_lot12(fisiere, open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read())
 
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))

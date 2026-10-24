@@ -180,8 +180,9 @@ def test_invitatia_de_asistent_refuza_numit(cab):
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_invitatia_da_poate_pregati_implicit_si_pune_cabinetul_corect(cab):
     """Decizia Costin 04.10: „Poate pregăti” (orice asistent). Și funcția de creare scrie cabinetul în
-    `accounting_firm_id` și bifa în `poate_valida` — nu le mai inversează din poziție."""
-    r = _cl().post("/asistenti", headers=_H(cab["tok"]), json={"email": "zt_ta_nou@invalid.ro"})
+    `accounting_firm_id` și bifa în `poate_valida` — nu le mai inversează din poziție.
+    [lotul 12, deficiența 487] Invitația cere cel puțin o firmă (un asistent fără firme se refuză): se bifează firma cabinetului."""
+    r = _cl().post("/asistenti", headers=_H(cab["tok"]), json={"email": "zt_ta_nou@invalid.ro", "firme": [cab["tid"]]})
     assert r.status_code == 200, r.text
     with cab["conn"].cursor() as c:
         c.execute("SET search_path TO public")

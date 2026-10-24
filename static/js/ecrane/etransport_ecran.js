@@ -1,7 +1,7 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=31460b24f2";
+import { api, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile } from "../api.js?v=309f4d66ae";
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -210,13 +210,13 @@ export async function ecranEtransport(corp, nav, t) {
       if (cereAlegerile(corp, ["#et-tip", "#s-judet", "#f-judet", ...bunuri.map((_b, i) => `#b${i}-cod_scop`)])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
       const f = _fereastraUit(v("t-data"), ["10", "60", "80"].includes(v("et-tip")));
       if (!f.ok) { arataMesaj(zona, f.mesaj, "eroare"); return; }   // poarta de timp (backend re-verifica)
-      confirmaCaseta(zona, `Trimiți notificarea UIT în SPV? Se validează întâi pe TEST. ${f.mesaj}`, async () => {
+      confirmaCaseta(zona, `Trimiți notificarea UIT în SPV? Se validează întâi în mediul de test al ANAF. ${f.mesaj}`, async () => {
         curataEroriCamp(corp);
-        arataMesaj(zona, "Se validează pe TEST și se trimite…", "info");
+        arataMesaj(zona, "Se validează în mediul de test al ANAF și se trimite…", "info");
         try {
           const r = await api.post(`/tenants/${t.id}/etransport/trimite`, construiesteCorp());
           if (r.stare === "blocat_timp") arataMesaj(zona, "Blocat (fereastră): " + (r.mesaj || ""), "avert");
-          else if (r.stare === "nevalidat") arataMesaj(zona, "Structură invalidă — NU s-a trimis:\n" + (r.erori || []).join("\n"), "avert");
+          else if (r.stare === "nevalidat") arataMesaj(zona, "Structură invalidă — nu s-a trimis:\n" + (r.erori || []).join("\n"), "avert");
           else if (r.stare === "deja_trimisa") arataMesaj(zona, "Deja trimisă (UIT " + (r.uit || "") + ").", "info");
           else if (r.stare === "incarcat") { arataMesaj(zona, "Trimisă. UIT: " + (r.uit || "—") + ".", "ok"); incarcaTrimiteri(); }
           else { arataMesaj(zona, "Răspuns ANAF:\n" + (r.errors || [r.raspuns || "eroare"]).join("\n"), "avert"); incarcaTrimiteri(); }

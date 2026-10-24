@@ -26,6 +26,15 @@ from core import repo_utilizatori
 import psycopg2.extras as _E_audit
 from core.common import esc as _esc_html   # [C39] text scris de om în HTML-ul emailurilor
 
+#: [deficiența 487, lotul 12: „Se poate crea un asistent fără nicio firmă alocată.”]
+COD_ASISTENT_FARA_FIRME = "ASISTENT_FARA_FIRME"
+#: [598, lotul 12] emailul invitației n-a plecat (serviciul de email nu a răspuns): ce face administratorul ca să ajungă linkul la coleg
+MESAJ_INVITATIE_NETRIMISA = ("Contul colegului e creat, dar emailul cu linkul de activare nu a plecat acum (serviciul de email nu a răspuns). "
+                             "Spune-i colegului să deschidă iConta.eu și să aleagă „Am uitat parola” cu adresa %s: primește pe email un "
+                             "link nou.")
+MESAJ_ASISTENT_FARA_FIRME = ("Bifează cel puțin o firmă pe care o lucrează colegul: un asistent fără firme nu are nimic de lucrat în "
+                             "aplicație (la fel, când îi scoți ultima firmă, contul lui se dezactivează).")
+
 
 def asistenti_lista(ctx):
     """[P7 · use-case] Corpul rutei `/asistenti`; docstringul ei a ramas in stratul HTTP."""
@@ -196,6 +205,12 @@ def asistent_creeaza(date, ctx):
         # [deficiența 319, comanda Costin 17.10.2026 7.2] „Bifează ce poate face [...] Poate depune [...] Bifează firmele pe care le
         # lucrează”: din aceeași invitație, cu verificările ecranului colegului (`set_permisiuni`, `atribuie_firma`) — în ACEEAȘI
         # tranzacție cu contul: o firmă din alt cabinet refuză invitația întreagă, nu lasă un cont fără link și fără firme
+        if not (date.firme or []):
+            # [487, lotul 12] un asistent fără firme nu vede nimic de lucru, iar contul lui stă activ degeaba; aceeași regulă ca la
+            # scoaterea ultimei firme din ecranul colegului (`asistenti_api.aplica_regula_zero_firme`: contul se dezactivează). Refuzul
+            # stă pe lista firmelor; ridicat în tranzacția contului (după verificarea adresei, ca ea să fie spusă întâi) -> nimic scris.
+            raise _erori.DateInvalide({"mesaj": MESAJ_ASISTENT_FARA_FIRME, "cod": COD_ASISTENT_FARA_FIRME,
+                                       "erori_campuri": [{"camp": "firme", "mesaj": MESAJ_ASISTENT_FARA_FIRME}]})
         if date.poate_depune:
             _r = _asist.set_permisiuni(conn, _uc_comun._cer_admin_cabinet(ctx), uid, date.poate_pregati, date.poate_valida, True)
             if not _r.get("ok"):
@@ -213,6 +228,9 @@ def asistent_creeaza(date, ctx):
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activează contul</a></p>"
             "<p>După activare, intră cu emailul <b>%s</b> și parola setată. Linkul e valabil 48 de ore.</p>") % (link, _esc_html(email))
     # [R73] ALERTA: fara linkul de activare, asistentul nu are cont.
-    _obs.trimite_email_html_sau_semnaleaza("email invitatie asistent", email, "Acces asistent iConta.eu", html, alerta=True)
-    return {"ok": True, "user_id": uid}
+    if _obs.trimite_email_html_sau_semnaleaza("email invitatie asistent", email, "Acces asistent iConta.eu", html, alerta=True):
+        return {"ok": True, "user_id": uid}
+    # [598, lotul 12 — clasa: eșecul unui canal extern spus contabilului, cu ce face aplicația în loc] ecranul spunea „Invitație trimisă”
+    # și când emailul n-a plecat: contul e creat, linkul nu a ajuns la coleg
+    return {"ok": True, "user_id": uid, "email_trimis": False, "mesaj": MESAJ_INVITATIE_NETRIMISA % email}
 

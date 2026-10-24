@@ -49,9 +49,10 @@ def test_fisa_client_agrega_sold_si_restant():
           _f(3, date(2026, 6, 5), 500, cui="14837428", nume="ORANGE")]  # restant
     r = scadentar(fs, AZI)
     cl = {c["cui"]: c for c in r["clienti"]}
-    assert cl["4221306"]["nr"] == 2 and cl["4221306"]["sold"] == Decimal(300)
-    assert cl["4221306"]["restant"] == Decimal(200)
-    assert cl["14837428"]["restant"] == Decimal(500)
+    # [lotul 12, deficiența 468] soldul și restanța clientului se țin pe monedă (`solduri`), nu într-o sumă care adună lei cu euro
+    assert cl["4221306"]["nr"] == 2
+    assert cl["4221306"]["solduri"] == [{"moneda": "RON", "sold": Decimal(300), "restant": Decimal(200)}]
+    assert cl["14837428"]["solduri"] == [{"moneda": "RON", "sold": Decimal(500), "restant": Decimal(500)}]
     # clientii sortati dupa restant descrescator: ORANGE (500) inaintea ALTEX (200)
     assert r["clienti"][0]["cui"] == "14837428"
 

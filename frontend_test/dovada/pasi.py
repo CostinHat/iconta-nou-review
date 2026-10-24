@@ -155,28 +155,47 @@ def _verifica(e, v):
             if not loc.count():
                 return {"cerut": v, "ok": False, "vazut": "elementul nu există pe ecran"}
             info = loc.evaluate("(el) => ({dez: !!(el.disabled || el.getAttribute('aria-disabled') === 'true'), "
-                                "text: (el.innerText || el.value || '').trim(), titlu: el.title || '', "
-                                "motiv: (el.closest('*') && el.parentElement ? el.parentElement.innerText : '').trim().slice(0, 400)})")
+                                "text: (el.innerText || el.textContent || el.value || '').trim(), titlu: (typeof el.title === 'string' ? el.title : ''), "
+                                "motiv: ((el.parentElement && (el.parentElement.innerText || el.parentElement.textContent)) || '').trim().slice(0, 400)})")
             ok = {"inactiv": info["dez"], "activ": not info["dez"], "exista": True}[cheie]
             return {"cerut": v, "ok": ok, "vazut": "%s | dezactivat=%s | title=%s | lângă: %s" % (
                 info["text"][:120], info["dez"], info["titlu"][:200], _norm(info["motiv"])[:300])}
     raise ValueError("verificare necunoscută: %r" % (v,))
 
 
-def ruleaza(dovezi, baza, email, parola, firme, iesire, lat=1700, inalt=1000):
-    """Parcurge dovezile pe aplicația de la `baza`, cu utilizatorul copiei. `firme` = {schema copiei: {nume, sursa, …}}."""
+def ruleaza(dovezi, baza, email, parola, firme, iesire, lat=1700, inalt=1000, emailuri=None):
+    """Parcurge dovezile pe aplicația de la `baza`, cu utilizatorul copiei. `firme` = {schema copiei: {nume, sursa, …}}.
+    [lotul 12, pct.14] o dovadă cu `"utilizator": <id>` se autentifică ca acel utilizator al copiei (`emailuri` = {id: email}, aceeași
+    parolă), ca partea asistentului (5, 170, C26) să se poată arăta; fără câmp, primul utilizator."""
     from playwright.sync_api import sync_playwright
     c = _e2e(baza, iesire)
     sesiune = autentifica(baza, email, parola)
     dupa_sursa = {v["sursa"]: k for k, v in firme.items()}
     rez = []
+    # [495, lotul 12] curățarea ciornelor (mai jos) scrie în baza copiei: numai pe o bază de TEST (`mediu_test`), cu pool-ul pornit aici —
+    # procesul uneltei de dovezi nu trece prin fixturile e2e care îl pornesc
+    from core import db as _db, mediu_test as _mt
+    _m = _mt.motive()
+    if _m:
+        raise RuntimeError("dovezile scriu numai pe o bază de test: %s" % ", ".join(x.cod for x in _m))
+    _db.init_pool()
     with sync_playwright() as pw:
         b = pw.chromium.launch(headless=True)
         for d in dovezi:
             t0 = time.time()
+            # [495, lotul 12] ciornele formularelor stau pe server: fiecare dovadă pornește fără ciornele utilizatorului copiei
+            if c.sql("SELECT to_regclass('public.ciorne_formular') IS NOT NULL")[0][0]:
+                c.sql("DELETE FROM public.ciorne_formular cf USING public.users u WHERE u.id = cf.user_id AND u.email = ANY(%s)",
+                      ([email] + [e for e in (emailuri or {}).values() if e],))
             schema = d["firma"] if d["firma"] in firme else dupa_sursa.get(d["firma"])
             ctx = b.new_context(viewport={"width": d.get("latime", lat), "height": d.get("inaltime", inalt)})
-            ctx.add_init_script(sesiune)
+            if d.get("utilizator") is not None:
+                em = (emailuri or {}).get(str(d["utilizator"])) or (emailuri or {}).get(d["utilizator"])
+                if not em:
+                    raise ValueError("dovada %s cere utilizatorul %s, care nu e în copie" % (d["nr"], d["utilizator"]))
+                ctx.add_init_script(autentifica(baza, em, parola))
+            else:
+                ctx.add_init_script(sesiune)
             ctx.add_init_script(c.GARDA_DESCHIDERI)
             e = c.Ecran(ctx.new_page(), "dovada_%s" % d["nr"])
             r = {"nr": d["nr"], "firma": schema, "nume_firma": (firme.get(schema) or {}).get("nume"), "descriere": d.get("descriere"),

@@ -33,10 +33,22 @@ def stat_plata(conn, schema, an, luna):
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT salariat_id, COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0),
-                   COALESCE(SUM(brut_ang),0)
+                   COALESCE(SUM(brut_ang),0), COALESCE(SUM(ROUND(COALESCE(brut_ang,0))),0),
+                   COALESCE(SUM(cas),0), COALESCE(SUM(cass),0), COALESCE(SUM(impozit),0)
             FROM {schema}.concedii_medicale WHERE an = %s AND luna = %s GROUP BY salariat_id
         """, (an, luna))
-        cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3]), "brut_ang": float(r[4])} for r in cur.fetchall()}
+        # [482] `brut_ang_leu`: partea angajatorului, la leu PE CERTIFICAT (ROUND pe numeric pozitiv = rotunjire aritmetică), ca în D112
+        # (`cm_ang = Σ _d112int(brut_ang)`) — intră în baza CAM a salariatului (CF art.220^4 alin.(1) + art.220^5, vezi `d112`)
+        cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3]), "brut_ang": float(r[4]), "brut_ang_leu": int(r[5]),
+                  "cas": float(r[6]), "cass": float(r[7]), "impozit": float(r[8])}
+              for r in cur.fetchall()}
+    # [482] certificatele lunii, pe salariat (cod + părțile indemnizației): indemnizația impozabilă intră în deducerea personală
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT salariat_id, cod, brut_ang, brut_fnuass FROM {schema}.concedii_medicale WHERE an = %s AND luna = %s "
+                    f"ORDER BY id", (an, luna))
+        cm_cert = {}
+        for _sid, _cod, _ba, _bf in cur.fetchall():
+            cm_cert.setdefault(_sid, []).append({"cod": _cod, "brut_ang": _ba, "brut_fnuass": _bf})
     # [lot 19 pct.4c] suspendările (CFP / suspendare) ale fiecărui salariat — afișate și editate din rândul statului
     with conn.cursor() as cur:
         cur.execute(f"SELECT salariat_id, data_inceput, data_sfarsit, tip, temei FROM {schema}.suspendari_contract "
@@ -127,7 +139,9 @@ def stat_plata(conn, schema, an, luna):
                                          venit_cm=(c_cm["brut"] if c_cm else 0),
                                          # [lotul 11, C99] zilele de CM nu sunt zile active pentru contribuția minimă (Codul muncii
                                          # art.50 lit.b), iar salariatul scutit nu o datorează — aceleași intrări ca `d112.pull`
-                                         zile_cm=cm_zile, exceptat_suprataxare=bool(scutit))
+                                         zile_cm=cm_zile, exceptat_suprataxare=bool(scutit),
+                                         # [482] indemnizația CM impozabilă în deducerea personală (CF art.76 alin.(1), art.77)
+                                         cm_impozabil=salarizare.cm_impozabil_luna(cm_cert.get(sid) if cm_zile > 0 else None, ref))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
@@ -199,6 +213,11 @@ def stat_plata(conn, schema, an, luna):
             # intrari. Acum le ia de aici: statul e sursa unica a cifrelor de pe fluturas.
             "facilitate": float(calc.get("facilitate", 0)),
             "cm_net": float(c_cm["net"]) if c_cm else 0.0,
+            # [482, lotul 12: „rețineri din CM neafișate”] reținerile din indemnizația CM, pe fel — ale certificatului (`taxe_cm`), iar după
+            # `stat_final`, cele DECLARATE (D112). Indemnizația netă = brută − ele, iar compoziția le arată pe rând.
+            "cm_cas": c_cm["cas"] if c_cm else 0.0,
+            "cm_cass": c_cm["cass"] if c_cm else 0.0,
+            "cm_impozit": c_cm["impozit"] if c_cm else 0.0,
             # baza CAM a salariatului, exact ca D112: bazac = brut realizat + veniturile adăugate - facilitate, fiecare la leu -
             # cheie interna, consumata de `_imparte_cam` mai jos. [retest 08.10 pct.2] Veniturile adăugate vin din definiția
             # UNICĂ a D112 (`d112._venituri_adaugate`: exces de tichete de vacanță, cadou taxabil, elemente variabile); forma
@@ -207,7 +226,9 @@ def stat_plata(conn, schema, an, luna):
             "_bazac": max(int(_leu(brut_lucrat)) + _d112._venituri_adaugate({
                               "exces_vacanta": calc.get("tichete_vacanta_exces", 0), "e83_cadou": calc.get("tichete_cadou", 0),
                               "elemente_variabile": calc.get("elemente_variabile", 0)})
-                          - int(_leu(calc.get("facilitate", 0))), 0),
+                          - int(_leu(calc.get("facilitate", 0))), 0)
+                      # [482, lotul 12] + indemnizația CM suportată de angajator (OUG 158/2005 art.12 lit.A): baza CAM din D112 (B4_14)
+                      + (c_cm["brut_ang_leu"] if (c_cm and cm_zile > 0) else 0),
         })
     _cs_sal.close()
     _imparte_cam(stat, ref)
@@ -308,7 +329,12 @@ def stat_final(conn, schema, an, luna):
         ret_sal = _D(str(r["cas"])) + _D(str(r["cass"])) + _D(str(r.get("cass_tichete") or 0)) + _D(str(r["impozit"]))
         ret_cm = _D(a.cas + a.cass + a.impozit) - ret_sal
         r["cm_retineri"] = float(ret_cm)
+        # [482] aceeași reținere, pe fel: ce a declarat D112 pe salariat minus ce s-a reținut din salariu (sumele dau `ret_cm`)
+        r["cm_cas"] = float(_D(a.cas) - _D(str(r["cas"])))
+        r["cm_cass"] = float(_D(a.cass) - _D(str(r["cass"])) - _D(str(r.get("cass_tichete") or 0)))
+        r["cm_impozit"] = float(_D(a.impozit) - _D(str(r["impozit"])))
         r["cm_brut_declarat"] = float(brut_cm.get(r["id"], 0))
+        r["cm_brut"] = r["cm_brut_declarat"]   # [482] brutul declarat (la leu pe certificat): brut − reținerile de mai jos = netul
         r["cm_net"] = float(brut_cm.get(r["id"], _D(0)) - ret_cm)
         r["cm_retineri_sursa"] = "D112"
         _cu_de_plata(r)   # [411] netul de plată cu indemnizația declarată
@@ -414,7 +440,7 @@ FEL_DETALIU = "detaliu"      # [S1] defalcarea randului de deasupra (brutul), cu
 # bunavointa: `core/test_compozitie_fluturas.py` pune in fiecare o valoare-martor unica si cere
 # s-o REGASEASCA in iesire. Un camp scos din compozitie si uitat aici pica testul.
 CAMPURI_COMPUSE = ("brut", "facilitate", "cas", "cass", "deducere_baza", "deducere_tineri",
-                   "deducere_copii", "impozit_salariu", "net", "cm_zile", "cm_net", "cm_brut",
+                   "deducere_copii", "impozit_salariu", "net", "cm_zile", "cm_net", "cm_brut", "cm_cas", "cm_cass", "cm_impozit",
                    "cass_tichete", "impozit_tichete", "tichete_nominal", "tichete_vacanta",
                    "cadou", "tichete_cultural", "tichete_cresa", "valoare_tichete",
                    "total_disponibil", "cost_total", "cam", "cas_suprataxa", "cass_suprataxa", "net_de_plata",
@@ -504,6 +530,15 @@ def compozitie_fluturas(r):
         linii.insert(1, ("Zile de concediu medical: %d" % cm_zile, None, FEL_MENTIUNE))
         linii[-1] = ("Salariu net", _n("net"), FEL_LINIE)
         linii.append(("Indemnizație CM (netă)", _n("cm_net"), FEL_LINIE))
+        # [482, lotul 12: „rețineri din CM neafișate”] din ce se compune netul indemnizației: brutul ei și reținerile din ea, pe fel
+        # (CF art.76 alin.(1): indemnizația e venit din salarii — CAS, CASS la codurile 01/07/10 și impozit, ca la salariu; `taxe_cm`).
+        # Un exemplar înghețat de dinaintea câmpurilor nu le are: rândurile lipsesc, nu arată reținere 0.
+        if all(k in r for k in ("cm_cas", "cm_cass", "cm_impozit")):
+            linii.extend([
+                ("  din indemnizația CM brută", _n("cm_brut"), FEL_DETALIU),
+                ("  reținut din indemnizație: CAS (25%)", -_n("cm_cas"), FEL_DETALIU),
+                ("  reținut din indemnizație: CASS (10%)", -_n("cm_cass"), FEL_DETALIU),
+                ("  reținut din indemnizație: impozit pe venit", -_n("cm_impozit"), FEL_DETALIU)])
         linii.append(("Net de plată (salariu + indemnizație CM)",
                       float(r["net_de_plata"]) if r.get("net_de_plata") is not None else float(de_plata(r)), FEL_TOTAL))
     # [F133] tichete: doar TAXA (CASS+impozit) se retine din salariul CASH -> reduce NET-ul, deci

@@ -139,6 +139,13 @@ BASELINE = {
     # l.122 `limita=200` = cate randuri din jurnalul Date firma intoarce ecranul. Niciuna nu e valoare fiscala; amandoua
     # fisierele intra in domeniu fiindca vorbesc despre fiscal (temele ghidurilor; campurile firmei).
     "ghid_teme.py": 1, "repo_firma_profil.py": 1,
+    # [lotul 12, deficiența 599] 0 -> 1, LARGIREA DOMENIULUI, aceeași clasă cu `declaratii_componente.py` (Retest 08.10) — și aceeași
+    # cauză: `NF` caută „tichet” fără graniță de cuvânt, deci „e-TICHET-a” se numără drept vocabular fiscal. Citirea firmei din antetul
+    # fișierului (`firma_din_antet`, `_eticheta_firma`, `_identitate_cu_eticheta`) a urcat `import_tabel.py` de la 16 la 38 de potriviri
+    # `NF` (29 sunt „eticheta”), peste `PRAG_SEMNAL`. Ce a devenit vizibil e `RANDURI_CAUTATE_ANTET = 20` — câte rânduri de la începutul
+    # fișierului se cercetează după antet (exista neschimbată înainte de lot, d850db00:core/import_tabel.py:273). OPERAȚIONAL, nu fiscal; nimic de citat,
+    # iar un nume din `NOM` ar minți despre ce e. Drumul de coborâre: granița de cuvânt în `NF` (scoate și `declaratii_componente.py`).
+    "import_tabel.py": 1,
 }
 
 

@@ -1,8 +1,10 @@
 // produse_ecran.js  // [p123_scot_butoane] — nomenclator de produse, reutilizabil (portal, cabinet, gratuit).
 // Scrii denumirea -> AI potriveste cota TVA din regula oficiala (preview live) ->
-// vezi cota + justificarea -> salvezi. Cota se poate corecta manual.
+// vezi cota + justificarea -> salvezi. Cota se poate corecta manual: [lotul 12, 472] pe rândul produsului salvat, „Corectează cota”
+// (PUT /produse/{id}, consemnat în `produse_cota_jurnal`); [471] articolele din stoc fără produs vin cu cota propusă (NIR / potrivire).
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=31460b24f2";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { api, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=309f4d66ae";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [lotul 12, 471] propunerea automată a cotei, numai cu dreptul ei */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
 
@@ -94,6 +96,24 @@ const dinCota = (v) => { const [c, categ] = String(v).split(":"); return { cota_
 /** Selectul bunului cu taxare inversă se vede numai la „0% — taxare inversă”. */
 const legaC331 = (selCota, selC331) => { if (!selCota || !selC331) return; const f = () => { selC331.hidden = selCota.value !== "0:taxare_inversa"; if (selC331.hidden) selC331.value = ""; }; selCota.addEventListener("change", f); f(); };
 const cheieRand = (p) => (p.din_stoc ? "s" + p.articol_id : String(p.id));
+/** [lotul 12, 472] Cota spusă omului: „21%”, „0% (taxare inversă)” — categoria cotei 0% cu eticheta ei de la server. */
+const etCota = (cota, categorie, cat) => {
+  if (cota === null || cota === undefined) return "fără cotă";
+  const c = Number(cota);
+  const categ = c === 0 && categorie ? ((cat && cat.tva) || []).find((x) => x.cod === categorie) : null;
+  return c + "%" + (categ ? ` (${categ.eticheta})` : "");
+};
+/** [471] Textul propunerii (deja cu sursa ei) și butonul care o pune în listă; la 0% fără categorie, numai textul (categoria o alege omul). */
+const textPropunere = (text, v, cheie) => `${esc(text)}.${v
+  ? ` <button type="button" class="buton-secundar buton-mic" id="pr-propunere-alege-${cheie}" data-fara-actiune="pune cota propusă în listă">Alege cota propusă</button>`
+  : " Alege categoria cotei 0% în listă."}`;
+/** [471] Valoarea selectului pentru o cotă propusă — numai dacă lista o are (cotele listei sunt cele de mai sus, `optCota`; 0% cere
+ *  categoria, deci numai cu ea). "" = cota nu se poate alege din listă așa cum vine. */
+const valCota = (cat, cota, categorie) => {
+  if (cota === null || cota === undefined || cota === "") return "";
+  const v = Number(cota) === 0 ? (categorie ? "0:" + categorie : "") : String(Number(cota));
+  return v && [...optCota(cat, "").matchAll(/value="([^"]*)"/g)].some((m) => m[1] === v) ? v : "";
+};
 
 function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu, cat) {
   const zona = corp.querySelector("#pr-lista");
@@ -107,15 +127,95 @@ function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu, cat) {
       <div class="pr-rand-text">
         <div class="pr-rand-nume">${esc(p.denumire)}</div>
         <div class="pr-rand-sub">${p.din_stoc ? `în stoc, ${esc(p.um || "buc")} \u00b7 alege cota de TVA a vânzării, ca factura să o ia de aici` : (p.pret_unitar ? bani(p.pret_unitar) + " lei / " + (p.um || "buc") : (p.um || "buc")) + (p.justificare ? " \u00b7 " + esc(p.justificare) : "")}</div>
+        ${p.din_stoc ? `<div class="pr-rand-sub pr-propunere" id="pr-propunere-${cheieRand(p)}">${p.propunere
+          ? textPropunere(`Cota propusă: ${etCota(p.propunere.cota_tva, null, cat)}, de pe rândul din ${p.propunere.document}`,
+            valCota(cat, p.propunere.cota_tva, null), cheieRand(p))
+          : "Se caută cota propusă\u2026"}</div>` : ""}
+        ${p.ultima_corectare ? `<div class="pr-rand-sub" id="pr-corectat-${cheieRand(p)}">cota corectată pe ${esc(p.ultima_corectare.la)}: ${esc(etCota(p.ultima_corectare.cota_veche, p.ultima_corectare.categorie_veche, cat))} \u2192 ${esc(etCota(p.ultima_corectare.cota_noua, p.ultima_corectare.categorie_noua, cat))} (consemnată)</div>` : ""}
       </div>
       <div class="pr-rand-drept">
         ${badgeCota(p.cota_tva, p.sursa, p.categorie_tva, cat)}
         ${p.din_stoc ? `<select class="camp-input pr-mic pr-cota-rand" id="pr-cota-${cheieRand(p)}" aria-label="Cota TVA ${esc(p.denumire)}">${optCota(cat, "— alege cota —")}</select>
         <select class="camp-input pr-mic" id="pr-c331-${cheieRand(p)}" aria-label="Bunul cu taxare inversă ${esc(p.denumire)}" hidden>${optC331(cat)}</select>
         <button class="buton-primar pr-cota-salveaza" id="pr-cota-salveaza-${cheieRand(p)}" data-cheie="${cheieRand(p)}" data-actiune="POST /tenants/{tenant_id}/produse">Salveaz\u0103 cota</button>`
-        : `<button class="buton-sters pr-sterge" data-id="${p.id}" data-actiune="DELETE /tenants/{tenant_id}/produse/{produs_id}" title="\u0218terge" aria-label="\u0218terge">\u00d7</button>`}
+        : `<button class="buton-secundar pr-corecteaza" id="pr-corecteaza-${p.id}" data-id="${p.id}" data-fara-actiune="deschide corectura cotei pe rând">Corectează cota</button>
+        <span class="pr-corectura" id="pr-corectura-${p.id}" hidden>
+          <select class="camp-input pr-mic" id="pr-cota-${p.id}" aria-label="Cota TVA corectată ${esc(p.denumire)}">${optCota(cat, "— alege cota corectă —")}</select>
+          <select class="camp-input pr-mic" id="pr-c331-${p.id}" aria-label="Bunul cu taxare inversă ${esc(p.denumire)}" hidden>${optC331(cat)}</select>
+          <button class="buton-primar pr-corectura-salveaza" id="pr-corectura-salveaza-${p.id}" data-id="${p.id}" data-actiune="PUT /tenants/{tenant_id}/produse/{produs_id}">Salvează cota</button>
+          <button class="buton-secundar pr-corectura-renunta" data-id="${p.id}" data-fara-actiune="închide corectura cotei">Renunță</button>
+        </span>
+        <button class="buton-sters pr-sterge" data-id="${p.id}" data-actiune="DELETE /tenants/{tenant_id}/produse/{produs_id}" title="\u0218terge" aria-label="\u0218terge">\u00d7</button>`}
       </div>
     </div>`).join("");
+  // [lotul 12, deficiența 471] rândul din stoc vine cu cota propusă: din NIR-ul articolului (server, `propunere_din_nir` — aceeași regulă ca
+  // NIR-ul salvat de acum, 415) sau, fără NIR, potrivirea automată din regula oficială (`/produse/potriveste`, ca la „+ Adaugă produs”).
+  // Propunerea se spune, cu sursa ei, iar „Alege cota propusă” o pune în listă; lista NU vine aleasă (cota o alege omul — 435: „Cota nu
+  // se ghicește”), iar în nomenclator intră numai la „Salvează cota”.
+  const legaAlege = (p, v) => {
+    const b = zona.querySelector(`#pr-propunere-alege-${cheieRand(p)}`);
+    const sel = zona.querySelector(`#pr-cota-${cheieRand(p)}`);
+    if (b && sel) b.addEventListener("click", () => { sel.value = v; sel.dispatchEvent(new Event("change")); curataEroriCamp(zona); focusFaraSalt(sel); });
+  };
+  // [C103] căutarea redesenează lista cât propunerea e în zbor: numai desenul cel nou o primește (răspunsul e ținut pe articol)
+  const actuala = ultimaCerere(zona)();
+  lista.filter((p) => p.din_stoc).forEach((p) => {
+    const txt = zona.querySelector(`#pr-propunere-${cheieRand(p)}`);
+    if (p.propunere) { legaAlege(p, valCota(cat, p.propunere.cota_tva, null)); return; }
+    // fără dreptul potrivirii (cel al pregătirii), nici întrebarea, nici refuzul ei pe rând: cota se alege din listă
+    if (!permis("POST /tenants/{tenant_id}/produse/potriveste")) { if (txt) txt.remove(); return; }
+    // o singură întrebare pe articol: căutarea redesenează lista, iar răspunsul rămâne pe rândul lui
+    p.cerereCota = p.cerereCota || api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: p.denumire });
+    p.cerereCota.then((r) => {
+      if (!actuala() || !txt || !txt.isConnected) return;
+      if (r && r.ok && r.cota !== null && r.cota !== undefined) {
+        const v = valCota(cat, r.cota, r.categorie_tva);
+        txt.innerHTML = textPropunere(`Cota propusă automat: ${etCota(r.cota, r.categorie_tva, cat)}${r.justificare ? " — " + r.justificare : ""}`,
+          v, cheieRand(p));
+        legaAlege(p, v);
+      } else {
+        txt.textContent = "Nicio cotă propusă pentru această denumire: alege cota de TVA a vânzării.";
+      }
+    }).catch(() => {
+      if (!actuala() || !txt || !txt.isConnected) return;
+      txt.textContent = "Cota propusă nu s-a putut afla: alege cota de TVA a vânzării.";
+    });
+  });
+  // [lotul 12, deficiența 472] corectura cotei unui produs salvat: pe rând, la cerere; schimbarea se consemnează pe server (cine, când)
+  zona.querySelectorAll(".pr-corecteaza").forEach((b) => b.addEventListener("click", () => {
+    const z = zona.querySelector(`#pr-corectura-${b.dataset.id}`);
+    z.hidden = false; b.hidden = true;
+    legaC331(zona.querySelector(`#pr-cota-${b.dataset.id}`), zona.querySelector(`#pr-c331-${b.dataset.id}`));
+    focusFaraSalt(zona.querySelector(`#pr-cota-${b.dataset.id}`));
+  }));
+  zona.querySelectorAll(".pr-corectura-renunta").forEach((b) => b.addEventListener("click", () => {
+    curataEroriCamp(zona);
+    zona.querySelector(`#pr-corectura-${b.dataset.id}`).hidden = true;
+    zona.querySelector(`#pr-corecteaza-${b.dataset.id}`).hidden = false;
+  }));
+  zona.querySelectorAll(".pr-corectura-salveaza").forEach((b) => b.addEventListener("click", async () => {
+    const p = lista.find((x) => String(x.id) === b.dataset.id);
+    const sel = zona.querySelector(`#pr-cota-${b.dataset.id}`);
+    const sel331 = zona.querySelector(`#pr-c331-${b.dataset.id}`);
+    curataEroriCamp(zona);
+    if (!p || !sel) return;
+    if (sel.value === "") { eroareCamp(zona, sel.id, `Alege cota corectă pentru ${p.denumire}.`); return; }
+    const { cota_tva: cota, categorie_tva } = dinCota(sel.value);
+    if (categorie_tva === "taxare_inversa" && sel331 && !sel331.value) {
+      eroareCamp(zona, sel331.id, `Alege bunul cu taxare inversă (art.331) pentru ${p.denumire}: D394 îl declară cu codul lui.`); return;
+    }
+    if (cota === Number(p.cota_tva) && (categorie_tva || null) === (p.categorie_tva || null)) {
+      eroareCamp(zona, sel.id, `${p.denumire} are deja cota ${etCota(cota, categorie_tva, cat)}: alege cota corectă, dacă e alta.`); return;
+    }
+    try {
+      await api.put(`/tenants/${tenantId}/produse/${p.id}`, { cota_tva: cota, categorie_tva: categorie_tva || "",
+        categorie_331: categorie_tva === "taxare_inversa" && sel331 ? sel331.value : "" });
+      reincarcaCu(`Cota corectată: ${p.denumire}, din ${etCota(p.cota_tva, p.categorie_tva, cat)} în ${etCota(cota, categorie_tva, cat)}. `
+        + "Facturile emise rămân cu cota lor; cele emise de acum înainte o iau pe cea nouă. Corectura e consemnată (cine și când).");
+    } catch (e) {
+      eroareCamp(zona, sel.id, (e && e.mesaj) || `Cota pentru ${p.denumire} nu s-a corectat. Încearcă din nou.`);
+    }
+  }));
   zona.querySelectorAll(".pr-cota-rand").forEach((s) => legaC331(s, zona.querySelector("#" + s.id.replace("pr-cota-", "pr-c331-"))));
   zona.querySelectorAll(".pr-cota-salveaza").forEach((b) => {
     b.addEventListener("click", async () => {

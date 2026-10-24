@@ -1,5 +1,5 @@
 {
- "ui_hash": "6ffb2656f252b6e7",
+ "ui_hash": "80cae173b23119de",
  "roluri": {
   "cabinet": {
    "structura": [
@@ -22,7 +22,7 @@
      "h": 58
     }
    ],
-   "grila_top": 1289,
+   "grila_top": 586,
    "inaltimi_carduri": [
     125,
     125,
@@ -53,7 +53,7 @@
    ],
    "control": {
     "h": 100,
-    "text": "7 6 0 1",
+    "text": "0 0 0 14",
     "lumini": [
      "rosu",
      "galben",
@@ -117,7 +117,7 @@
    ],
    "control": {
     "h": 100,
-    "text": "2 1 0 0",
+    "text": "0 0 0 3",
     "lumini": [
      "rosu",
      "galben",

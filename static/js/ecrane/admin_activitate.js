@@ -1,6 +1,6 @@
 // admin_activitate.js — Admin iConta: activitate + business cabinete (doar superadmin).
 // Sumar + lista cu firme/angajati/recomandari/actiuni, suspenda/reactiveaza, click -> timeline.
-import { api, dataRo, confirmaCaseta, esc, cate } from "../api.js?v=31460b24f2";  /* audit_cab_lot2_v1 + esc_nc27 */
+import { api, dataRo, confirmaCaseta, esc, cate } from "../api.js?v=309f4d66ae";  /* audit_cab_lot2_v1 + esc_nc27 */
 
 
 export async function randeazaAdminActivitate(corp, nav) {
@@ -94,7 +94,7 @@ function actiuneRo(a) {  // [aa_ro] jurnalul pe romaneste; necunoscutele raman b
     ["declaratii", "A lucrat în Declarații"], ["salariati", "A lucrat în Salariați"],
     ["migrare", "A lucrat în Migrare"], ["stocuri", "A lucrat în Stocuri"],
     ["banca", "A lucrat în Bancă"], ["portal", "A folosit portalul"],
-    ["raportari", "A folosit Raportează"], ["termene", "A deschis Termene"],
+    ["raportari", "A folosit Suport"], ["termene", "A deschis Termene"],
     ["anunturi", "A citit anunțurile"], ["notificari", "A citit notificările"],
     ["educatie", "A deschis Educație pe tipare"], ["patru-ochi", "A deschis patru-ochi"],
     ["asistenti", "A deschis echipa"], ["coada", "A lucrat în coada de validare"],

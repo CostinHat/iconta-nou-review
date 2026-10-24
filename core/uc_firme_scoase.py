@@ -22,4 +22,9 @@ import psycopg2.extras as _E_audit
 def firme_scoase(ctx):
     """[P7 · use-case] Corpul rutei `/firme-scoase`; docstringul ei a ramas in stratul HTTP."""
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        return {"firme": [dict(r) for r in repo_utilizatori.firme_scoase_din_portofoliu(cur, ctx["firm"])]}
+        firme = [dict(r) for r in repo_utilizatori.firme_scoase_din_portofoliu(cur, ctx["firm"])]
+    # [C136, lotul 12] ce s-a curățat, în cuvintele contabilului (nu numele tabelelor din bază) — aceleași etichete ca previzualizarea
+    from core import tenant_stergere as _ts
+    for f in firme:
+        f["curatate"] = _ts.ce_dispare({k: v for k, v in (f.get("randuri_sterse") or {}).items() if k in _ts.ETICHETE_RANDURI})
+    return {"firme": firme}

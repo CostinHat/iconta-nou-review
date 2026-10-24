@@ -85,6 +85,8 @@ class _Conn:
 def din_xml(monkeypatch):
     from core import repo_facturi as _rf
     monkeypatch.setattr(_rf, "stare_pentru_recunoastere", lambda cur, schema, fid: ("emisa", "emisa", True))
+    # [lotul 12, 252] refuzul citește și tipul documentului (factura deschisă preluată nu pleacă în SPV): aici, o factură obișnuită
+    monkeypatch.setattr(_rf, "tip_document", lambda cur, schema, fid: "factura")
 
 
 def test_refuzul_din_efactura_e_un_fapt_despre_factura(din_xml):
@@ -95,6 +97,19 @@ def test_refuzul_din_efactura_e_un_fapt_despre_factura(din_xml):
     # ce citesc `trimite` (stare), ruta și ecranul (cod, mesaj) rămâne
     assert (r["stare"], r["cod"], r["mesaj"]) == ("din_efactura", _eft.COD_DIN_EFACTURA, _eft.MESAJ_DIN_EFACTURA), r
     assert r["motiv"] == r["mesaj"]
+
+
+def test_factura_preluata_e_acelasi_refuz_cu_codul_ei(din_xml, monkeypatch):
+    """[lotul 12, 252] Factura deschisă preluată (din soldurile pe parteneri) primește ACELAȘI refuz (aceeași stare, deci aceeași cale în
+    `trimite` și în rută), cu codul și mesajul ei — chiar dacă nu are XML-ul importat."""
+    from core import nomenclator_status_factura as _nsf
+    from core import repo_facturi as _rf
+    monkeypatch.setattr(_rf, "tip_document", lambda cur, schema, fid: _nsf.TIP_SOLD_PRELUAT)
+    monkeypatch.setattr(_rf, "stare_pentru_recunoastere", lambda cur, schema, fid: ("emisa", "emisa", False))
+    r = _eft.refuz_din_efactura(_Conn(), "tenant_x", 77)
+    _valida(r)
+    assert (r["stare"], r["cod"], r["mesaj"]) == ("din_efactura", "SOLD_PRELUAT", _nsf.MESAJ_SOLD_PRELUAT), r
+    assert r["unde"].fel == "factura" and r["unde"].id == 77, r["unde"]
 
 
 def test_ruta_trimite_spv_trimite_afirmatia_intreaga_in_409(din_xml, monkeypatch):

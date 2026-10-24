@@ -28,6 +28,13 @@ def seria_chitantei(cur, schema):
     return cur.fetchone()
 
 
+def caen(cur, schema):
+    """[lotul 12, deficiența 473] Codul CAEN principal din Date firmă (None dacă lipsește) — HoReCa sau nu (`core/horeca.py`)."""
+    cur.execute(f"SELECT caen FROM {schema}.firma_profil LIMIT 1")
+    r = cur.fetchone()
+    return (r["caen"] if isinstance(r, dict) else r[0]) if r else None
+
+
 def amef_si_cont_venit(cur, schema):
     """[D394 Î2] (exceptată de la AMEF, contul de venit implicit) — chitanța de vânzare fără factură."""
     cur.execute(f"SELECT activitate_exceptata_amef, COALESCE(NULLIF(TRIM(cont_venit_implicit), ''), '707') "

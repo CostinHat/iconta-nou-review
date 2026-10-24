@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "<p style=\"margin:8px 0 0\"><button class=\"buton-sters buton-mic zd-sterge\" id=\"zd-sterge-${z.id}\"",
+  "inlocuire": "<p style=\"margin:8px 0 0\" hidden><button class=\"buton-sters buton-mic zd-sterge-x\" id=\"zd-sterge-x-${z.id}\"",
+  "test": "frontend_test/e2e/e2e_lot12_zsterge.py::test_def_c139_z_importat_din_amef_se_sterge_cu_descarcarea_lui"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "confirmaCaseta(b.parentElement || b, esc(st.confirmare || \"Ștergi raportul Z?\"), async () => {",
+  "inlocuire": "confirmaCaseta(b.parentElement || b, esc(\"Ștergi raportul Z?\"), async () => {",
+  "test": "frontend_test/e2e/e2e_lot12_zsterge.py::test_def_c139_z_importat_din_amef_se_sterge_cu_descarcarea_lui"
+ },
+ {
+  "fisier": "core/z_descarcare.py",
+  "ancora": "plan.update(note_iesiri=note, miscari=[x[\"id\"] for x in mis])",
+  "inlocuire": "plan.update(note_iesiri=note, miscari=[])",
+  "test": "frontend_test/e2e/e2e_lot12_zsterge.py::test_def_c139_z_importat_din_amef_se_sterge_cu_descarcarea_lui"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "rapoarte.map((z) => z.status !== \"ciorna\" ? randValidat(z) : `",
+  "inlocuire": "rapoarte.map((z) => false ? randValidat(z) : `",
+  "test": "frontend_test/e2e/e2e_lot12_zsterge.py::test_def_c139_z_validat_n_are_buton_iar_luna_blocata_refuza"
+ },
+ {
+  "fisier": "core/z_descarcare.py",
+  "ancora": "        if _cf.luna_blocata(cur, str(schema).strip('\"'), d):",
+  "inlocuire": "        if False and _cf.luna_blocata(cur, str(schema).strip('\"'), d):",
+  "test": "frontend_test/e2e/e2e_lot12_zsterge.py::test_def_c139_z_validat_n_are_buton_iar_luna_blocata_refuza"
+ }
+]

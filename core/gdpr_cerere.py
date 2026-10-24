@@ -22,7 +22,7 @@ def _nume_cabinet(conn, cabinet_id):
 #: Subiectul anuntului. Constanta, nu literal repetat: o proba care asserteaza pe el nu
 #: trebuie sa-l poarte a doua oara — un literal repetat e a doua definitie a aceleiasi
 #: propozitii, si prima care ramane in urma.
-SUBIECT_ANUNT = "Cerere de stergere cont (GDPR art.17)"
+SUBIECT_ANUNT = "Cerere de ștergere cont (GDPR art.17)"   # [317, lotul 12] cu diacritice
 
 
 def corp_anunt(cabinet_id, nume, cerere_id, user_id, cerut_la, motiv=None):
@@ -32,10 +32,10 @@ def corp_anunt(cabinet_id, nume, cerere_id, user_id, cerut_la, motiv=None):
     functiei care si scria in baza, singurul fel de a-l verifica era un `in` pe text — adica
     exact ce interzice clichetul 50. Cu nume, proba compara valoarea intreaga, iar o
     reformulare de maine cade acolo unde trebuie, nu tacut."""
-    return ("Cabinet #%s \"%s\" a depus o cerere de stergere.\n"
-            "Cerere #%s, user #%s, la %s.\n"
+    return ("Cabinetul #%s „%s” a depus o cerere de ștergere.\n"
+            "Cererea #%s, utilizatorul #%s, la %s.\n"
             "Motiv: %s\n\n"
-            "Executie MANUALA (superadmin, dupa verificare):\n"
+            "Execuție MANUALĂ (superadmin, după verificare):\n"
             "  POST /gdpr/sterge-cabinet/%s/executa"
             % (cabinet_id, nume, cerere_id, user_id, cerut_la, motiv or "(nespecificat)", cabinet_id))
 
@@ -50,7 +50,7 @@ def depune_cerere(conn, cabinet_id, user_id, confirmare_nume, motiv=None):
     if not nume:
         raise ValueError("cabinet inexistent")
     if (confirmare_nume or "").strip() != (nume or "").strip():
-        raise ValueError("Denumirea retastata nu se potriveste cu numele cabinetului.")
+        raise ValueError("Denumirea scrisă nu se potrivește cu numele cabinetului.")
     motiv = (motiv or "").strip() or None
     with conn.cursor() as cur:
         cur.execute(

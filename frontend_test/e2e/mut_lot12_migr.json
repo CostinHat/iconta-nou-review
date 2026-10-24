@@ -1,0 +1,56 @@
+[
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "  return !!(date && date.firma_fisier && date.firma_fisier.difera);",
+  "inlocuire": "  return false;",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_599_balanta_altei_firme_cere_confirmare_si_intra_cu_cifrele_425"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "_cuFirmaConfirmata(eroare, date, () => _confirmaInlocuirea(eroare, date, \"Înlocuiesc soldurile pe parteneri\"",
+  "inlocuire": "((z, d, c) => c())(eroare, date, () => _confirmaInlocuirea(eroare, date, \"Înlocuiesc soldurile pe parteneri\"",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_599_partenerii_altei_firme_cer_confirmarea"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "\"avertisment_inlocuire\": solduri_api.text_inlocuire(existenta,",
+  "inlocuire": "\"avertisment_inlocuire\": None and solduri_api.text_inlocuire(existenta,",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_426_a_doua_balanta_a_altei_firme_cere_ambele_confirmari"
+ },
+ {
+  "fisier": "core/import_tabel.py",
+  "ancora": "        difera = nume_firma_comparabil(den) != nume_firma_comparabil(nume_firma)",
+  "inlocuire": "        difera = True",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_599_fisierul_firmei_alese_nu_cere_confirmarea"
+ },
+ {
+  "fisier": "core/import_tabel.py",
+  "ancora": "        text = b.decode(\"cp1250\")",
+  "inlocuire": "        return b.decode(\"utf-8\", errors=\"replace\"), \"utf-8\"",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_251_csv_windows_1250_pastreaza_diacriticele"
+ },
+ {
+  "fisier": "core/asociati_import_api.py",
+  "ancora": "                    (r[\"nume\"], r.get(\"cnp\", \"\"), r.get(\"cota\", 0)))",
+  "inlocuire": "                    (r[\"nume\"], r.get(\"cnp\", \"\"), 50))",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_384_cotele_valide_intra_cu_cifrele_exacte"
+ },
+ {
+  "fisier": "core/mijloace_fixe_import_api.py",
+  "ancora": "                      r.get(\"amortizat_preluat\"), r.get(\"data_preluare\")))",
+  "inlocuire": "                      None, r.get(\"data_preluare\")))",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_359_amortizarea_cumulata_intra_cu_cifrele_exacte"
+ },
+ {
+  "fisier": "core/d205.py",
+  "ancora": "if total_platit <= 0 and total_distribuit <= 0:",
+  "inlocuire": "if total_platit <= 0:",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_431_asociatii_importati_nota_validata_d205_valida_pe_duk"
+ },
+ {
+  "fisier": "core/repo_reevaluari.py",
+  "ancora": "    return max(s105 or 0, 0), max(p655 or 0, 0)",
+  "inlocuire": "    return 0, 0",
+  "test": "frontend_test/e2e/e2e_lot12_migr.py::test_def_c116_a_doua_reevaluare_scade_intai_rezerva_activului"
+ }
+]

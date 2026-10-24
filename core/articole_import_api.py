@@ -254,10 +254,8 @@ def importa(conn, schema, articole, data_sold=None):
                                        "„%s” există deja în nomenclator - nu s-a dublat" % a["denumire"],
                                        denumire=a["denumire"]))
                 continue
-            cur.execute(f"""INSERT INTO {schema}.articole (denumire, um, cont_stoc, cont_cheltuiala)
-                            VALUES (%s,%s,%s,%s) RETURNING id""",
-                        (a["denumire"], a["um"], a["cont_stoc"], a["cont_cheltuiala"]))
-            aid = cur.fetchone()[0]
+            from core import stocuri_cv_api as _cv   # [lotul 12, 475] singurul loc care scrie un articol nou
+            aid = _cv.articol_pentru_intrare(cur, schema, a["denumire"], a["um"], a["cont_stoc"], a["cont_cheltuiala"])
             if (a["cantitate"] or 0) > 0:
                 cur.execute(f"""INSERT INTO {schema}.miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document)
                                 VALUES (%s,%s,'intrare',%s,%s,%s,'sold initial (import)')""",

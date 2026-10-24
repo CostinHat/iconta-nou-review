@@ -110,12 +110,23 @@ def test_fiecare_test_al_plasei_e_al_unei_deficiente_din_registru():
     assert plasa_e2e(), "anti-vacuu: plasa n-are niciun test de capăt la capăt"
 
 
-def test_poarta_ruleaza_plasa():
-    """MUTAȚIE: pasul plasei scos din poartă -> pică."""
+def test_poarta_ruleaza_plasa(tmp_path):
+    """Plasa e în poartă și un eșec al ei face poarta ROȘIE. [23.10.2026, CLAUDE.md §5; DECIZII 23.10.2026 „Comanda 12.1”] Poarta nu
+    se mai oprește la prima parte roșie: codul plasei se ține (`RC_PLASA=$?`, rândul imediat următor), plasa roșie intră în părțile roșii
+    și poarta iese 1 la final (`exit 1` după plasă). Funcțional, pe `poarta-suita` adevărată cu uneltele imitate
+    (`core/test_poarta_lot.DepozitPoarta`): numai plasa roșie -> exit 1, iar înregistrarea rulării o arată, cu nodul căzut.
+    MUTAȚII: pasul plasei scos din poartă -> pică; `[ "$RC_PLASA" -ne 0 ] && rosu …` scos -> poarta verde pe plasa roșie -> pică."""
     t = io.open(os.path.join(_RAD, "scripts", "githooks", "poarta-suita"), encoding="utf-8").read()
     assert re.search(r'^"\$PY" scripts/e2e_poarta\.py ', t, re.M), "poarta nu mai rulează plasa de capăt la capăt"
     i = t.index('"$PY" scripts/e2e_poarta.py ')
-    assert re.search(r"^\s*exit 1$", t[i:i + 900], re.M), "un eșec al plasei trebuie să respingă commitul"
+    assert t[i:].splitlines()[1].strip() == "RC_PLASA=$?", "codul plasei nu mai e ținut imediat după rularea ei"
+    assert re.search(r"^\s*exit 1$", t[i:i + 900], re.M), "un eșec al plasei trebuie să respingă poarta"
+    from core.test_poarta_lot import DepozitPoarta
+    dp = DepozitPoarta(tmp_path)
+    cod, iesire = dp.suita(plasa="e2e_x.py::test_e")
+    assert cod == 1 and iesire.count("[poarta] ROSU: plasa e2e") == 1, iesire
+    parti = dp.rulare(dp.git("rev-parse", "HEAD"))["parti"]
+    assert {n for n, p in parti.items() if p["rc"]} == {"plasa"} and parti["plasa"]["cazute"] == ["e2e_x.py::test_e"], parti
 
 
 # ===================================================================================================================================

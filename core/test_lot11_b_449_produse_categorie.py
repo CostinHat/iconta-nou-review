@@ -55,7 +55,13 @@ def conn():
                             "declarant_nume,declarant_prenume,declarant_functie,forma_juridica,capital_subscris,serie_factura) VALUES (1,'CAT SRL',"
                             "'14399840','Str 1','Cluj-Napoca','CJ','4621','BCR','RO49RNCB0000000000000001','0700000000',true,'lunar','Popescu',"
                             "'Ion','ADMINISTRATOR','SRL',200,'CAT')")
-            yield c
+            # [lotul 12, 472] corectura cotei se consemnează cu utilizatorul cererii (`produse_api._corectura`): testul o face ca un om
+            from core import autor_cerere
+            tok = autor_cerere.seteaza(990449)
+            try:
+                yield c
+            finally:
+                autor_cerere.reseteaza(tok)
         finally:
             c.rollback()
 

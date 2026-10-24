@@ -1,0 +1,160 @@
+[
+ {
+  "nr": "C140",
+  "firma": "tenant_9049",
+  "descriere": "F1: Contracte -> „+ Șablon nou” -> „←” întoarce la lista șabloanelor, tot în fereastra Contracte (DS cap.3: un pas înapoi), nu la fereastra firmei",
+  "pasi": [
+   {
+    "click": "#fa-contracte"
+   },
+   {
+    "asteapta": "#c-nou"
+   },
+   {
+    "click": "#c-nou"
+   },
+   {
+    "asteapta": "#c-salveaza"
+   },
+   {
+    "captura": "c140_f1_contracte_editor.png"
+   },
+   {
+    "click": ".fereastra .nav-inapoi"
+   },
+   {
+    "asteapta": "#c-nou"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#c-nou"
+   },
+   {
+    "nu_contine": "Text contract"
+   },
+   {
+    "contine": "Șabloane proprii"
+   }
+  ],
+  "captura": "c140_f1_contracte_inapoi_lista.png"
+ },
+ {
+  "nr": "C140",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Solduri inițiale -> balanța -> previzualizarea -> „←” întoarce la alegerea fișierului, în pasul Solduri inițiale (nu la meniul Import date). Balanța nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri inițiale"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_inapoi:balanta",
+    "nume": "balanta_c140.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sold"
+   },
+   {
+    "captura": "c140_f1_import_previzualizare.png"
+   },
+   {
+    "click": ".fereastra .nav-inapoi"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Încarcă balanța"
+   },
+   {
+    "nu_contine": "Salvează soldurile"
+   },
+   {
+    "exista": "#mig-file"
+   }
+  ],
+  "captura": "c140_f1_import_inapoi_alegere_fisier.png"
+ },
+ {
+  "nr": "C140",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Solduri inițiale -> balanța -> previzualizarea -> „←” (alegerea fișierului) -> „←” = meniul Import date al firmei, nu lista firmelor din Migrare cabinet. Balanța nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri inițiale"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_inapoi:balanta",
+    "nume": "balanta_c140.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sold"
+   },
+   {
+    "captura": "c140_f1_import_previzualizare.png"
+   },
+   {
+    "click": ".fereastra .nav-inapoi"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "click": ".fereastra .nav-inapoi"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Alege ce vrei să aduci pentru această firmă."
+   },
+   {
+    "exista": ".mig-frand",
+    "text": "Solduri inițiale"
+   }
+  ],
+  "captura": "c140_f1_import_inapoi_meniu.png"
+ }
+]

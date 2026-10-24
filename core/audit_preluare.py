@@ -63,6 +63,8 @@ _VERIFICARI = (
     (("solduri",),                  "verifica_balanta",        "echilibru balanță"),
     (("solduri",),                  "verifica_parte_sold",     "soldul fiecărui cont pe partea funcțiunii lui (A / P, planul OMFP)"),  # [369]
     (("solduri",),                  "verifica_parteneri",      "defalcare parteneri vs sintetic"),
+    (("solduri",),                  "verifica_documente_preluate",
+     "facturile deschise preluate vs soldul fiecărui partener (4111 / 401)"),   # [lotul 12, 252]
     (("solduri",),                  "verifica_istoric_fiscal", "solduri fiscale vs istoric declarații"),
     (("mijloace_fixe", "solduri"),  "verifica_mijloace_fixe",
      "mijloace fixe vs balanță (valoarea de intrare pe 2xx, amortizarea preluată pe 28xx)"),   # [359]
@@ -314,6 +316,67 @@ def verifica_parteneri(conn, schema):
     return constatare_parteneri(coerenta(conn, schema, randuri))   # [346] aceeași referință ca la import: soldul la data preluării
 
 
+def verifica_documente_preluate(conn, schema):
+    """[lotul 12, deficiența 252] Facturile deschise preluate (`facturi.tip = 'preluata'`, scrise de importul soldurilor pe parteneri)
+    față de soldul preluat al fiecărui partener de pe 4111 / 401: suma lor TOTALĂ (cea de la preluare, nu restul de azi) trebuie să dea
+    soldul partenerului, altfel scadențarul și potrivirea băncii lucrează pe alte cifre decât balanța de deschidere. Fără solduri pe
+    parteneri, verificarea de defalcare spune deja ce lipsește (aici nimic)."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".solduri_parteneri",))
+        if cur.fetchone()[0] is None:
+            return []
+        cur.execute(f"SELECT cont, cui, denumire, sold_debitor, sold_creditor FROM {schema}.solduri_parteneri ORDER BY id")
+        parteneri = [{"cont": c, "cui": u, "denumire": d, "debit": sd, "credit": sc} for c, u, d, sd, sc in cur.fetchall()]
+        cur.execute(f"SELECT directie, tert_cui, tert_nume, total FROM {schema}.facturi WHERE tip = 'preluata'")
+        documente = [{"directie": d, "tert_cui": u, "tert_nume": n, "total": t} for d, u, n, t in cur.fetchall()]
+    if not parteneri:
+        return []
+    return constatare_documente_preluate(parteneri, documente)
+
+
+def constatare_documente_preluate(parteneri, documente):
+    """PURĂ. [252] Pe fiecare partener de pe 4111 / 401: soldul lui preluat (de încasat / de plătit) față de Σ facturilor lui deschise
+    preluate. Diferența se spune pe partener (roșu); fără diferențe, o constatare verde cu numărul partenerilor."""
+    from core import cui_forma as _cf
+    from core.solduri_parteneri_api import DIRECTIE_DOCUMENT, _radacina
+    et = "Facturi deschise preluate vs soldul partenerului"
+    temei = ("Facturile deschise aduse la preluare (scadențarul, potrivirea din Bancă, Casă și Compensări) trebuie să dea, pe fiecare "
+             "partener, soldul lui din soldurile pe parteneri — altfel încasările și plățile de după preluare sting alte sume decât cele "
+             "din balanța de deschidere.")
+    pe_doc = {}
+    for d in documente:
+        k = (d["directie"], _cf.stocare(d["tert_cui"]) or "~" + str(d["tert_nume"] or "").strip().upper())
+        pe_doc[k] = pe_doc.get(k, Decimal(0)) + _d(d["total"])
+    out, verzi, vazute = [], 0, set()
+    for p in parteneri:
+        dir_ = DIRECTIE_DOCUMENT.get(_radacina(p["cont"]))
+        if dir_ is None:
+            continue
+        net = _d(p["debit"]) - _d(p["credit"])
+        sold = max(net if dir_ == "emisa" else -net, Decimal(0))
+        k = (dir_, _cf.stocare(p["cui"]) or "~" + str(p["denumire"] or "").strip().upper())
+        vazute.add(k)
+        doc = pe_doc.get(k, Decimal(0))
+        if abs(doc - sold) <= TOLERANTA:
+            verzi += 1
+            continue
+        out.append(_rosu(et, temei, "Contul %s, %s: facturile deschise preluate dau %s, iar soldul preluat al partenerului e %s (diferență %s)."
+                         % (_radacina(p["cont"]), p["denumire"] or p["cui"], _lei(doc), _lei(sold), _lei(abs(doc - sold))),
+                         cauza="Facturile deschise ale partenerului nu dau soldul lui de la preluare.",
+                         actiune="Încarcă din nou soldurile pe parteneri (Import date › Solduri parteneri), cu facturile deschise ale "
+                                 "partenerului (nr. factură, data, scadența, suma neachitată) sau cu soldul lui întreg."))
+    for k, doc in pe_doc.items():
+        if k not in vazute and doc > TOLERANTA:
+            out.append(_rosu(et, temei, "Facturi deschise preluate de %s (%s) pentru un partener care nu e în soldurile pe parteneri."
+                             % (_lei(doc), k[1].lstrip("~")),
+                             cauza="Facturile deschise preluate și soldurile pe parteneri nu vin din același import.",
+                             actiune="Încarcă din nou soldurile pe parteneri (Import date › Solduri parteneri)."))
+    if not out and verzi:
+        out.append(_verde(et, temei, "Facturile deschise preluate dau soldul fiecărui partener (%s pe 4111 / 401)."
+                          % _cate(verzi, "partener", "parteneri")))
+    return out
+
+
 def constatare_parteneri(rez_coerenta):
     """PURA (fara DB): din rezultatul solduri_parteneri_api.coerenta [{cont, suma_parteneri,
     sold_balanta, diferenta, coincide}], produce constatari. coincide=None -> gri (balanta nu are
@@ -484,7 +547,7 @@ def _audit_regim_nedeterminat():
             "constatari": [_gri("regim nedeterminabil",
                 "Auditul aplică straturi diferite după regim (SRL partidă dublă / PFA partidă simplă); fără "
                 "regim nu se știe care se aplică, deci nu se poate rula auditul complet.",
-                "Nu s-a putut determina regimul firmei (SRL/PFA) — audit INCOMPLET, %s." % _cate(len(sarite), "strat nerulat", "straturi nerulate"),
+                "Nu s-a putut determina regimul firmei (SRL/PFA) — verificarea e incompletă, %s." % _cate(len(sarite), "strat nerulat", "straturi nerulate"),
                 "Verifică tipul firmei (SRL/PFA) în Date firmă, apoi reia auditul.",
                 cauza="Nu se poate citi tipul firmei din Date firmă (eroare internă, consemnată în jurnalul aplicației).")],
             "coerent": 0, "divergent": 0, "neverificat": 1,
@@ -522,7 +585,7 @@ def audit(conn, schema, tenant_id, conn_public):
             # [comanda Costin 8.2 pct.4: „erorile interne nu ajung la utilizator”] textul excepției merge în jurnal, nu pe ecran
             __import__("logging").getLogger("iconta.audit_preluare").exception("verificarea %s a cazut", fn.__name__)
             constatari.append(_gri(fn.__name__, "Verificarea nu a rulat.",
-                                    "NU se poate rula verificarea (eroare internă, consemnată în jurnalul aplicației).",
+                                    "Nu se poate rula verificarea (eroare internă, consemnată în jurnalul aplicației).",
                                     "Reîncearcă; dacă persistă, verifică datele preluate ale firmei.",
                                     cauza="Eroare la verificare."))
     coerent = [c for c in constatari if c["stare"] == "verde"]

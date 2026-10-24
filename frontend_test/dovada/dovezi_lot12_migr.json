@@ -1,0 +1,619 @@
+[
+ {
+  "nr": "599",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Solduri inițiale -> balanța lui Costin (date_test/import_saga/balanta_saga_completa.xlsx, antetul «SC Firmă Probă Rulaje SRL») -> sus, galben, înainte de orice salvare: «Fișierul pare al altei firme: în antetul lui scrie „SC Firmă Probă Rulaje SRL”, iar firma aleasă e <F1>…». Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri ini"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:fisier_costin",
+    "nume": "balanta_saga_completa.xlsx"
+   },
+   {
+    "asteapta": "#mig-salveaza-sold"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Fișierul pare al altei firme: în antetul lui scrie „SC Firmă Probă Rulaje SRL”",
+    "zona": "#mig-firma-fisier"
+   },
+   {
+    "exista": "#mig-firma-fisier.msg-avert"
+   }
+  ],
+  "captura": "599_f1_balanta_altei_firme.png"
+ },
+ {
+  "nr": "599",
+  "firma": "tenant_9050",
+  "descriere": "F2 (clasa, al doilea import): Import date -> Solduri parteneri -> situația partenerilor altei firme («Firma: SC Firmă Probă Rulaje SRL», «CUI: RO4221306» deasupra tabelului) -> «Fișierul pare al altei firme: în antetul lui scrie CUI 4221306 („SC Firmă Probă Rulaje SRL”)…». Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:parteneri_altei_firme",
+    "nume": "parteneri_alta_firma.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Fișierul pare al altei firme: în antetul lui scrie CUI 4221306 („SC Firmă Probă Rulaje SRL”)",
+    "zona": "#mig-firma-fisier"
+   }
+  ],
+  "captura": "599_f2_parteneri_altei_firme.png"
+ },
+ {
+  "nr": "425",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Solduri inițiale -> balanța completă a lui Costin -> 19 conturi, echilibrată, cu soldurile la 1 ianuarie și rulajele anului citite din fișier (nota «ce s-a citit» deschisă). Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri ini"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:fisier_costin",
+    "nume": "balanta_saga_completa.xlsx"
+   },
+   {
+    "asteapta": "#mig-salveaza-sold"
+   },
+   {
+    "click": "#mig-citit summary"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "19 conturi · debit 79.525,00 · credit 79.525,00"
+   },
+   {
+    "contine": "echilibrat"
+   },
+   {
+    "contine": "Din aceeași balanță s-au citit soldurile la 1 ianuarie"
+   }
+  ],
+  "captura": "425_f1_balanta_completa_costin.png"
+ },
+ {
+  "nr": "426",
+  "firma": "tenant_9055",
+  "descriere": "F6 (balanța de deschidere importată pe 19.10.2026, înainte de reparație): Import date -> Solduri inițiale -> balanța lui Costin -> sus, ambele avertismente: firma din fișier și «Firma are deja o balanță de deschidere …» cu totalurile vechi și noi; butonul spune «Înlocuiește balanța». Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri ini"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:fisier_costin",
+    "nume": "balanta_saga_completa.xlsx"
+   },
+   {
+    "asteapta": "#mig-salveaza-sold"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Firma are deja o balanță de deschidere",
+    "zona": "#mig-inlocuire"
+   },
+   {
+    "contine": "Fișierul pare al altei firme",
+    "zona": "#mig-firma-fisier"
+   },
+   {
+    "exista": "#mig-salveaza-sold",
+    "text": "Înlocuiește balanța"
+   }
+  ],
+  "captura": "426_f6_vechi_a_doua_balanta_alta_firma.png"
+ },
+ {
+  "nr": "251",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Solduri parteneri -> CSV salvat de Excel în Windows-1250 -> previzualizarea arată «Brutăria Ştefan Ţară Pâine Înaltă SRL» întreg (fără «�»). Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:parteneri_cp1250",
+    "nume": "parteneri_windows1250.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Brutăria Ştefan Ţară Pâine Înaltă SRL",
+    "zona": ".mig-prev"
+   },
+   {
+    "nu_contine": "�",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "251_f1_csv_windows1250.png"
+ },
+ {
+  "nr": "384",
+  "firma": "tenant_9050",
+  "descriere": "F2: Import date -> Asociați -> Pop Ion 30% (CNP valid) + Ion Pop 70% (CNP greșit) -> «total cote: ⚠ 30%», rândul 3 respins, salvarea oprită. Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Asocia"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:asociati_cu_respins",
+    "nume": "asociati.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-asoc"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "total cote: ⚠ 30%",
+    "zona": ".mig-coer"
+   },
+   {
+    "nu_contine": "✓ 100%",
+    "zona": ".mig-coer"
+   },
+   {
+    "inactiv": "#mig-salveaza-asoc"
+   }
+  ],
+  "captura": "384_f2_cote_fara_respinse.png"
+ },
+ {
+  "nr": "366",
+  "firma": "tenant_9050",
+  "descriere": "F2: Import date -> Asociați -> opt asociați care dau 90% -> «cotele asociaților care intră însumează 90%», fără «undefined». Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Asocia"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:asociati_90",
+    "nume": "asociati_90.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-asoc"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "cotele asociaților care intră însumează 90"
+   },
+   {
+    "nu_contine": "undefined"
+   }
+  ],
+  "captura": "366_f2_cote_90_fara_undefined.png"
+ },
+ {
+  "nr": "359",
+  "firma": "tenant_9050",
+  "descriere": "F2: Import date -> Mijloace fixe -> fișierul cu coloana «Amortizare» (3.300 și 1.800) -> «Amortizare preluată»: 3.300,00 lei și 1.800,00 lei. Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Mijloace fixe"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:mijloace_cu_amortizare",
+    "nume": "mf.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-mf"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "3.300,00 lei",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "1.800,00 lei",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "359_f2_amortizare_preluata.png"
+ },
+ {
+  "nr": "362",
+  "firma": "tenant_9050",
+  "descriere": "F2: Import date -> Mijloace fixe -> conturi inversate (2813 / 2131) respinse «par inversate», terenul 2111 cu durată respins, amenajarea de teren 2112 pe 120 de luni intră, pe 60 de luni respinsă «liniar pe 10 ani». Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Mijloace fixe"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:mijloace_conturi_gresite",
+    "nume": "mf.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-mf"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "par inversate",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "terenul (contul 2111) nu se amortizează",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "liniar pe 10 ani",
+    "zona": ".mig-prev"
+   },
+   {
+    "nu_contine": "C&D",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "362_f2_conturi_mijloace_fixe.png"
+ },
+ {
+  "nr": "385",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Articole și stoc inițial -> «Marfa valida» pe două rânduri -> rândul 3 respins: «apare și pe rândul 2 — un articol se trece o singură dată, cu stocul lui total». Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Articole"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:articole_dublate",
+    "nume": "articole.csv"
+   },
+   {
+    "asteapta": "#mig-importa"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "apare și pe rândul 2 — un articol se trece o singură dată, cu stocul lui total",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "385_f1_articol_dublat.png"
+ },
+ {
+  "nr": "388",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Salariați -> CNP-ul «2,90022E+12» -> rândul respins spune cauza și remediul: «Excel l-a transformat în număr … Formatează coloana CNP ca Text». Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Salaria"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:salariat_cnp_excel",
+    "nume": "salariati.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sal"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Excel l-a transformat în număr",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "Formatează coloana CNP ca Text",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "388_f1_cnp_excel.png"
+ },
+ {
+  "nr": "349",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Salariați -> salariatul cu COR 214441 (denumire lungă) -> «Normă» scurtă, denumirea COR pe cel mult două rânduri (captura arată înălțimea rândului). Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Salaria"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:salariat_cor_lung",
+    "nume": "salariati.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sal"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "214441",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "349_f1_norma_cor_lung.png"
+ },
+ {
+  "nr": "392",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> Solduri inițiale -> textul ferestrei spune că un cont inexistent «e respins, cu motivul»; balanța cu 5121 creditor 20.000 -> «intră, cu observație»: «5121 (activ) are sold creditor 20.000,00 lei: soldul stă pe partea opusă funcțiunii contului». Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri ini"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr:balanta_5121_creditor",
+    "nume": "balanta.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sold"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "5121 (activ) are sold creditor 20.000,00 lei: soldul stă pe partea opusă funcțiunii contului",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "392_f1_5121_creditor.png"
+ },
+ {
+  "nr": "368",
+  "firma": "tenant_9052",
+  "descriere": "F4 (PFA): Import date -> meniul are «Mijloace fixe» și «Import RIP (PFA)», fără straturile partidei duble (Solduri inițiale, Solduri parteneri, Asociați, Plan de conturi)",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".mig-frand",
+    "text": "Mijloace fixe"
+   },
+   {
+    "exista": ".mig-frand",
+    "text": "Import RIP"
+   },
+   {
+    "nu_contine": "Solduri inițiale"
+   },
+   {
+    "nu_contine": "Solduri parteneri"
+   },
+   {
+    "nu_contine": "Plan de conturi"
+   }
+  ],
+  "captura": "368_f4_pfa_import_date.png"
+ },
+ {
+  "nr": "371",
+  "firma": "tenant_9049",
+  "descriere": "F1 (comerț, nu HoReCa): Import date -> meniul nu oferă «Rețete (HoReCa)»",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Rețete (HoReCa)"
+   }
+  ],
+  "captura": "371_f1_fara_retete.png"
+ }
+]

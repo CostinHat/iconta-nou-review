@@ -4,12 +4,13 @@ core/scadentar.py — scadentar facturi emise neincasate + fisa client. Calcul P
 F131 (Notificari de plata si alerte neplatnici), componentele 1-4 (fara notificare email,
 care cere schema si e amanata). Se aplica facturilor EMISE ale firmei catre clientii ei.
 
-Stare per factura neincasata (facturi.platita_la IS NULL):
+Stare per factura cu ceva de incasat (starea de incasare unica, `repo_facturi.de_incasat`; lotul 12, 466):
   restanta     : data_scadenta < azi (intarziere)
   scade_curand : azi <= data_scadenta <= azi + prag_zile
   in_termen    : data_scadenta > azi + prag_zile
   fara_scadenta: data_scadenta lipseste (nu se poate clasifica; se raporteaza separat)
-Facturile achitate (platita_la != NULL) NU intra in scadentar - nu mai sunt de urmarit.
+Facturile incasate (chitanta, banca, casa, compensare, stornare) NU intra in scadentar - nu mai sunt de urmarit; cea incasata
+partial intra cu restul ei, in moneda ei.
 
 Ordinea de urgenta (ca la semafoare, cap.8 DS): restanta -> scade_curand -> in_termen.
 """
@@ -35,29 +36,51 @@ def clasifica(data_scadenta, azi, prag_zile=PRAG_ZILE):
     return ("in_termen", zile)
 
 
+def cheie_client(f):
+    """Clientul facturii, în scadențar: codul fiscal, altfel numele (`?` fără niciunul)."""
+    return (f.get("tert_cui") or "").strip() or (f.get("tert_nume") or "").strip() or "?"
+
+
+def _moneda(f):
+    return (f.get("moneda") or "RON").strip().upper() or "RON"
+
+
 def scadentar(facturi, azi, prag_zile=PRAG_ZILE):
-    """facturi: NEINCASATE (apelantul filtreaza platita_la IS NULL). Fiecare:
-    {id, numar, data_emitere, data_scadenta, suma, tert_nume, tert_cui, client_id, email}.
-    Intoarce {linii (sortate pe urgenta), rezumat (nr pe stare), clienti (fisa agregata)}."""
+    """facturi: cele care MAI AU CEVA DE ÎNCASAT (apelantul le alege: `repo_scadentar.select_facturi`), fiecare cu `suma` = restul de
+    încasat în moneda ei. Fiecare: {id, numar, data_emitere, data_scadenta, suma, moneda, tert_nume, tert_cui, client_id, email}.
+    Intoarce {linii (sortate pe urgenta), rezumat (nr pe stare), clienti (fisa agregata)}.
+
+    [lotul 12, deficiența 468 — „Scadențar: totalul pe client adună lei cu euro”] Soldul și restanța clientului se țin PE MONEDĂ
+    (`solduri`: [{moneda, sold, restant}], în ordinea monedelor: RON întâi, apoi alfabetic): o sumă în lei și una în euro nu se adună.
+    Ordinea clienților rămâne „cel mai restant întâi”, pe echivalentul în lei din evidență (`rest_lei`, când apelantul îl are)."""
     linii = []
     rezumat = {"restanta": 0, "scade_curand": 0, "in_termen": 0, "fara_scadenta": 0}
     per_client = {}
     for f in facturi:
         stare, zile = clasifica(f.get("data_scadenta"), azi, prag_zile)
         suma = Decimal(str(f.get("suma") or 0))
-        linii.append({**f, "stare": stare, "zile": zile})
+        lei = Decimal(str(f.get("rest_lei") if f.get("rest_lei") is not None else suma))
+        k = cheie_client(f)
+        linii.append({**f, "stare": stare, "zile": zile, "client_cheie": k})
         rezumat[stare] += 1
-        k = (f.get("tert_cui") or "").strip() or (f.get("tert_nume") or "").strip() or "?"
         c = per_client.setdefault(k, {
-            "nume": f.get("tert_nume"), "cui": f.get("tert_cui"), "email": f.get("email"),
-            "client_id": f.get("client_id"), "nr": 0, "sold": Decimal(0), "restant": Decimal(0)})
+            "cheie": k, "nume": f.get("tert_nume"), "cui": f.get("tert_cui"), "email": f.get("email"),
+            "client_id": f.get("client_id"), "nr": 0, "pe_moneda": {}, "_ord": [Decimal(0), Decimal(0)]})
         c["nr"] += 1
-        c["sold"] += suma
+        m = c["pe_moneda"].setdefault(_moneda(f), {"moneda": _moneda(f), "sold": Decimal(0), "restant": Decimal(0)})
+        m["sold"] += suma
+        c["_ord"][1] += lei
         if stare == "restanta":
-            c["restant"] += suma
+            m["restant"] += suma
+            c["_ord"][0] += lei
     # sortare pe urgenta, apoi cele mai intarziate intai (zile crescator: -30 inaintea -1)
     linii.sort(key=lambda l: (_ORD[l["stare"]], l["zile"] if l["zile"] is not None else 0))
-    clienti = sorted(per_client.values(), key=lambda c: (-c["restant"], -c["sold"]))
+    clienti = []
+    for c in sorted(per_client.values(), key=lambda c: (-c["_ord"][0], -c["_ord"][1])):
+        pm = c.pop("pe_moneda")
+        c.pop("_ord")
+        c["solduri"] = [pm[m] for m in sorted(pm, key=lambda m: (m != "RON", m))]
+        clienti.append(c)
     return {"linii": linii, "rezumat": rezumat, "clienti": clienti}
 
 
@@ -67,9 +90,9 @@ def total_restant(rez):
 
 
 def pull(conn, schema, azi=None, prag_zile=PRAG_ZILE):
-    """Citeste facturile EMISE neincasate si intoarce scadentarul. Conexiunea trebuie
-    pozitionata pe schema (get_conn(schema)). Exclude storno-urile si proformele/avizele
-    (v1: storno-ul care neteste o factura nu e modelat inca - de reluat cand apare cazul).
+    """Citeste facturile EMISE cu ceva de incasat si intoarce scadentarul. Conexiunea trebuie
+    pozitionata pe schema (get_conn(schema)). Exclude storno-urile si proformele/avizele; factura
+    stornata partial intra cu rămasul ei (416), cea incasata partial cu restul ei (466).
     Email-ul clientului via LEFT JOIN clienti (facturile create direct, client_id NULL,
     apar in scadentar dar fara email -> nu pot fi notificate automat)."""
     import psycopg2.extras as _E

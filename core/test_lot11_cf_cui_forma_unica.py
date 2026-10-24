@@ -167,6 +167,9 @@ EXCEPTATE = {
     ("core/anaf_api.py", "statut_furnizori", "startswith_RO"):
         "detectare, nu normalizare: codul „RO…” din XML-ul e-Factura (BT-31) e codul de TVA, deci furnizorul e înregistrat în scopuri "
         "de TVA (CF art.318 alin.(1)) — se citește starea, codul nu se rescrie",
+    ("core/banca_parser.py", "iban_din_antet", "startswith_RO"):
+        "nu e un cod fiscal: IBAN-ul contului din antetul extrasului ([lotul 12, C121]); „RO” e codul țării din IBAN, iar lungimea "
+        "IBAN-ului românesc (24 de caractere) taie cuvântul lipit după el („… 0000 SOLD”) — IBAN-ul se decupează, nu se rescrie",
     ("core/d318.py", "erori_generare", "startswith_RO"):
         "nu e un cod fiscal: `reference_number` al cererii de rambursare (DUK regula R9.2: începe cu „RO”)",
     ("core/d394.py", "cui_ro", "startswith_RO"):

@@ -384,7 +384,21 @@ def test_numarul_de_instructiuni_se_conserva():
     #   + repo_casa.data_si_documentul_operatiunii (citire NOUĂ), + repo_casa.documentul_chitantei (scriere NOUĂ: documentul operațiunii
     #   și al notei = numărul chitanței). Neutre: repo_firma_profil.seria_chitantei, repo_casa.adauga_chitanta,
     #   repo_facturi.marcheaza_platita mutate din `chitanta_emite` în ajutoarele comune `chitanta_serie_sau_refuz` / `chitanta_scrie`.
-    assert _apeluri_catre_repository() == 381
+    # [lotul 12, comanda 12.1] 381 -> 386, cu apelurile numite (diferența față de d850db00, apel cu apel):
+    #   + repo_facturi.cursul_fixat (uc_factura_primita._anunt_curs) — decizia Costin „cursul vechi la validare (a)”: factura primită în
+    #     valută validată cu un curs mai vechi decât cel al zilei primește anunțul, ca la emitere; citire NOUĂ;
+    #   + repo_tenants.nume_si_cui_spatiat (uc_migrare.firma_fisier) — 599, firma din antetul fișierului de migrare, față de firma
+    #     aleasă; citire NOUĂ;
+    #   + repo_firma_profil.caen (uc_tenants.cv_articole) — 473, etichetele „alimentație publică” ale ecranului Stocuri numai la CAEN-ul
+    #     HoReCa; citire NOUĂ;
+    #   + repo_reevaluari.rezerva_si_pierderea (uc_tenants.reevaluare_imobilizare) — C116, rezerva 105 și descreșterea trecută pe 655 ale
+    #     activului, din reevaluările lui aplicate (OMFP 1802/2014 pct.111 alin.(1)-(2)), când cererea nu le dă; citire NOUĂ;
+    #   + repo_firma_profil.cui_firma_3 (uc_tenants.factura_primita_valideaza) — C120, factura primită între alte două firme refuzată și
+    #     la validare (CUI-ul din Date firmă, ca la import); citire NOUĂ;
+    #   neutre: repo_efactura.marcheaza_primita_validata, repo_facturi.actualizeaza_clasificarea ×2 / actualizeaza_destinatii_linii /
+    #     actualizeaza_conturi_linii mutate din `uc_tenants.factura_primita_valideaza` în `uc_factura_primita.valideaza` (477, drumul
+    #     comun cu factura primită introdusă de mână).
+    assert _apeluri_catre_repository() == 386
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

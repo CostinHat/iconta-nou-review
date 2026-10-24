@@ -84,10 +84,17 @@ def populatie_din(name_status):
     return out
 
 
+#: [23.10.2026, CLAUDE.md §5: „Verdictul pentru commitul reparat se compune din rularea completă anterioară plus rerularea țintită.”]
+#: COMMITUL FATA DE CARE se deriva ce s-a atins (`atinse_din_git`, `populatie_schimbata`). Implicit `HEAD` (bucla din tura); poarta
+#: COMPUSA (`scripts/poarta_scurta.py --compus=<X>`) il pune pe commitul X al rularii complete ROSII, ca perimetrul sa fie al
+#: REPARATIEI (`git diff X`, pe arborele curat = `X..HEAD`). Tot din git, nu din argumente de fisier.
+BAZA = "HEAD"
+
+
 def populatie_schimbata():
-    """`populatie_din(git diff --name-status HEAD)`; `None` daca git nu raspunde (atunci derivarea nu stie, deci incert)."""
+    """`populatie_din(git diff --name-status BAZA)`; `None` daca git nu raspunde (atunci derivarea nu stie, deci incert)."""
     try:
-        r = subprocess.run(["git", "diff", "--name-status", "HEAD"], cwd=RAD, capture_output=True, text=True, timeout=60)
+        r = subprocess.run(["git", "diff", "--name-status", BAZA], cwd=RAD, capture_output=True, text=True, timeout=60)
     except Exception:
         return None
     return populatie_din(r.stdout) if r.returncode == 0 else None
@@ -181,7 +188,8 @@ def graf_invers():
 
 
 def atinse_din_git():
-    """**CE S-A MODIFICAT FATA DE HEAD** — exact `git diff --name-only HEAD`, nimic altceva.
+    """**CE S-A MODIFICAT FATA DE HEAD** — exact `git diff --name-only HEAD`, nimic altceva. (`HEAD` = `BAZA`; poarta compusa o
+    pune pe commitul rularii complete rosii — v. `BAZA`.)
 
     **[03.09.2026] Forma dinainte adauga si fisierele NETRACKED, si asta facea regula 5 inaplicabila
     pe arborele asta.** Masurat: `git status` arata permanent **299** de fisiere neurmarite — **217
@@ -201,7 +209,7 @@ def atinse_din_git():
     Costin, 03.09: *„nu-l suprascrie cu judecata ta — o exceptie luata o data face regula o
     formalitate."* Daca instrumentul spune ca nu poate scurta, se ruleaza tot."""
     try:
-        r = subprocess.run(["git", "diff", "--name-only", "HEAD"], cwd=RAD,
+        r = subprocess.run(["git", "diff", "--name-only", BAZA], cwd=RAD,
                            capture_output=True, text=True, timeout=60)
     except Exception:
         return []

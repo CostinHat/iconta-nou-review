@@ -26,7 +26,11 @@ CE VERIFICĂ (fiecare punct pică poarta):
   (e) un rând al unui număr din `DEFICIENTE.md` numește TOATE testele de capăt la capăt din coloana „test” a registrului deficiențelor, iar
       numărul e „rezolvată” (o poziție validată nu poate sta pe un număr redeschis fără ca registrul să o spună);
   (f) fiecare `test_pozitie_*` din `frontend_test/e2e/e2e_pozitii_validate.py` are mutația lui în `mut_pozitii_validate.json` (cu ancora
-      prezentă o dată în fișierul numit), și e numit de un rând al registrului.
+      prezentă o dată în fișierul numit), și e numit de un rând al registrului;
+  (g) [comanda Costin 12.1 pct.7, verbatim: „Pentru fiecare poziție de pilot deja validată (F019, F026, F028, F073, F080, F081, F087, F134,
+      F183, F252, F254) adaugă test automat în poartă, dacă nu există.”] fiecare din aceste poziții e în registru (lista fixă
+      `POZITII_PILOT_VALIDATE`) și rândul ei numește un test propriu `test_pozitie_<f>_…` din `e2e_pozitii_validate.py` — fluxul principal
+      al funcționalității, nu doar teste de deficiențe vecine.
 
 LIMITĂ DECLARATĂ: garda dovedește că testul RULEAZĂ în poartă și NU e oprit; dacă testul reface exact ce a verificat Costin pe ecran se
 judecă la scrierea lui (docstringul numește pașii) și se probează prin mutație (`--mutatie=`), nu de aici. Un test care se oprește singur
@@ -50,6 +54,8 @@ CONFTEST = {"e2e": ("frontend_test/e2e/conftest.py",), "pytest": ("conftest.py",
 POZITII_CERUTE = ("F004", "F006", "F008", "F017", "F019", "F025", "F028", "F072", "F073", "F078", "F080", "F081", "F087", "F134", "F183",
                   "383", "386", "401", "404", "415", "417", "419", "421", "423", "427", "430", "431", "432", "433", "434", "435", "436",
                   "438", "7h", "pct.9")
+#: comanda Costin 12.1 pct.7, verbatim în docstring (g): pozițiile pilot validate, fiecare cu testul ei `test_pozitie_<f>_…`
+POZITII_PILOT_VALIDATE = ("F019", "F026", "F028", "F073", "F080", "F081", "F087", "F134", "F183", "F252", "F254")
 _OPRIRI = {"skip", "skipif", "xfail"}
 _APELURI_OPRIRE = {"skip", "xfail", "importorskip"}
 _FISIER_POZITII = "frontend_test/e2e/e2e_pozitii_validate.py"
@@ -195,9 +201,9 @@ def _teste_deficienta(nr):
     return _DEFICIENTE.get(nr)
 
 
-def probleme(text_csv=None, surse=None, cerute=POZITII_CERUTE, cu_deficiente=True):
+def probleme(text_csv=None, surse=None, cerute=POZITII_CERUTE, cu_deficiente=True, pilot=POZITII_PILOT_VALIDATE):
     """Toate abaterile registrului (listă goală = registrul e în regulă)."""
-    rele, vazute = [], set()
+    rele, vazute, proprii = [], set(), {}
     for r in randuri(text_csv):
         poz = (r.get("pozitie") or "").strip()
         if not poz:
@@ -207,6 +213,7 @@ def probleme(text_csv=None, surse=None, cerute=POZITII_CERUTE, cu_deficiente=Tru
             rele.append("%s: poziția apare de două ori" % poz)
         vazute.add(poz)
         ts = nodeid_uri(r)
+        proprii[poz] = [t for t in ts if t.startswith("%s::test_pozitie_%s_" % (_FISIER_POZITII, poz.lower()))]
         if not ts:
             rele.append("%s: niciun test" % poz)
         for t in ts:
@@ -225,6 +232,9 @@ def probleme(text_csv=None, surse=None, cerute=POZITII_CERUTE, cu_deficiente=Tru
     lipsa = [p for p in cerute if p not in vazute]
     if lipsa:
         rele.append("pozițiile cerute de Costin (11.2 pct.4) lipsesc din registru: %s" % lipsa)
+    fara = [p for p in pilot if not proprii.get(p)]
+    if fara:
+        rele.append("pozițiile pilot validate (12.1 pct.7) fără testul lor `test_pozitie_<f>_…` în %s: %s" % (_FISIER_POZITII, fara))
     return rele
 
 
@@ -335,15 +345,15 @@ _CSV_PROBA = "pozitie,sursa,ce_s_a_validat,test,fel\nF999,proba,proba,%s,%s\n"
 def test_garda_prinde_un_nodeid_inexistent():
     s = {"frontend_test/e2e/e2e_proba_garda.py": "def test_altceva():\n    pass\n"}
     # lista EXACTĂ a abaterilor (nu „un mesaj care conține…”): o listă goală sau un mesaj străin pică
-    rele = probleme(_CSV_PROBA % ("frontend_test/e2e/e2e_proba_garda.py::test_ce_nu_exista", "e2e"), s, cerute=())
+    rele = probleme(_CSV_PROBA % ("frontend_test/e2e/e2e_proba_garda.py::test_ce_nu_exista", "e2e"), s, cerute=(), pilot=())
     assert rele == ["F999: frontend_test/e2e/e2e_proba_garda.py::test_ce_nu_exista nu există "
                     "(nicio funcție `test_ce_nu_exista` la nivelul modulului)"], rele
-    rele = probleme(_CSV_PROBA % ("frontend_test/e2e/e2e_lipsa_garda.py::test_x", "e2e"), s, cerute=())
+    rele = probleme(_CSV_PROBA % ("frontend_test/e2e/e2e_lipsa_garda.py::test_x", "e2e"), s, cerute=(), pilot=())
     assert rele == ["F999: fișierul frontend_test/e2e/e2e_lipsa_garda.py nu există"], rele
-    rele = probleme(_CSV_PROBA % ("frontend_test/altundeva/e2e_proba_garda.py::test_altceva", "e2e"), s, cerute=())
+    rele = probleme(_CSV_PROBA % ("frontend_test/altundeva/e2e_proba_garda.py::test_altceva", "e2e"), s, cerute=(), pilot=())
     assert rele == ["F999: frontend_test/altundeva/e2e_proba_garda.py::test_altceva are fel=e2e, dar fișierul nu e în locul pe care "
                     "îl rulează poarta pentru felul ăsta (%s)" % FELURI["e2e"].pattern], rele
-    assert probleme(_CSV_PROBA % ("frontend_test/e2e/e2e_proba_garda.py::test_altceva", "e2e"), s, cerute=()) == []
+    assert probleme(_CSV_PROBA % ("frontend_test/e2e/e2e_proba_garda.py::test_altceva", "e2e"), s, cerute=(), pilot=()) == []
 
 
 def test_garda_prinde_testul_oprit():
@@ -360,11 +370,11 @@ def test_garda_prinde_testul_oprit():
                                 "    return g\n\n\ndef test_t(f):\n    pass\n"),
     }
     for caz, text in cazuri.items():
-        rele = probleme(_CSV_PROBA % (cale + "::test_t", "e2e"), {cale: text}, cerute=())
+        rele = probleme(_CSV_PROBA % (cale + "::test_t", "e2e"), {cale: text}, cerute=(), pilot=())
         assert rele, "garda n-a prins testul oprit (%s)" % caz
     s = {cale: "from vecin_garda import f\n\n\ndef test_t(f):\n    pass\n",
          "frontend_test/e2e/vecin_garda.py": "import pytest\n\n\n@pytest.fixture\ndef f():\n    pytest.skip('x')\n"}
-    assert probleme(_CSV_PROBA % (cale + "::test_t", "e2e"), s, cerute=()), "garda n-a prins fixtura importată care oprește testul"
+    assert probleme(_CSV_PROBA % (cale + "::test_t", "e2e"), s, cerute=(), pilot=()), "garda n-a prins fixtura importată care oprește testul"
 
 
 def test_garda_prinde_pozitia_ceruta_scoasa_din_registru():
@@ -384,7 +394,7 @@ def test_garda_prinde_testul_de_deficienta_lipsa_din_rand():
     rand = next(ln for ln in text.splitlines() if ln.startswith("383,"))
     scurtat = rand.replace(" ; frontend_test/e2e/e2e_lot10b_declaratii.py::test_def_383_d300_pe_luna_in_curs_se_refuza_la_generare", "")
     assert scurtat != rand, "rândul 383 nu mai are forma presupusă de autoprobă"
-    rele = probleme(text.replace(rand, scurtat), cerute=())
+    rele = probleme(text.replace(rand, scurtat), cerute=(), pilot=())
     assert any(r.startswith("383: testele din DEFICIENTE.md lipsesc din rând") for r in rele), rele
 
 
@@ -400,3 +410,17 @@ def test_garda_prinde_plasa_sau_suita_care_nu_ruleaza_tot():
     rs = '"$PY" -m pytest -q -n "$NW" --dist loadfile'
     assert probleme_suita({"scripts/githooks/poarta-suita": poarta.replace(rs, rs + " -k proaspat", 1)}), "-k pe suită"
     assert probleme_suita({"pytest.ini": "[pytest]\ntestpaths = frontend_test\n"}), "pytest.ini în rădăcină"
+
+
+def test_garda_prinde_pozitia_pilot_fara_testul_ei():
+    """(g). MUTAȚIE permanentă: rândul F026 fără `test_pozitie_f026_…` (numai cu un test vecin) / rândul scos -> ROȘU, cu lista exactă."""
+    text = _citeste(REGISTRU)
+    rand = next(ln for ln in text.splitlines() if ln.startswith("F026,"))
+    vecin = rand.replace("e2e_pozitii_validate.py::test_pozitie_f026_", "e2e_pozitii_validate.py::test_pozitie_f028_")
+    assert vecin != rand, "rândul F026 nu mai are forma presupusă de autoprobă"
+    rele = [r for r in probleme(text.replace(rand, vecin), cu_deficiente=False) if r.startswith("pozițiile pilot validate")]
+    assert rele == ["pozițiile pilot validate (12.1 pct.7) fără testul lor `test_pozitie_<f>_…` în %s: ['F026']" % _FISIER_POZITII], rele
+    fara = "\n".join(ln for ln in text.splitlines() if not ln.startswith("F254,")) + "\n"
+    rele = [r for r in probleme(fara, cu_deficiente=False) if r.startswith("pozițiile pilot validate")]
+    assert rele == ["pozițiile pilot validate (12.1 pct.7) fără testul lor `test_pozitie_<f>_…` în %s: ['F254']" % _FISIER_POZITII], rele
+

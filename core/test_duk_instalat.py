@@ -4,8 +4,10 @@
 Instanța: D112 instalat J27.0.1, publicat J27.0.6 (14.09.2026) — regula salariului minim se corectase în J27.0.2, iar validatorul
 vechi semnala un D112 corect (B4_5P 4.125 pe 09/2026, OUG 89/2025 art.III alin.(5) lit.b); încă 4 validatoare erau în urmă.
 CE FACE IMPOSIBIL: (1) un jar de validator schimbat sau înlocuit fără manifest; (2) un manifest care spune altă versiune decât
-copia oficială `anaf_surse/versiuni.xml`; (3) o comparație cu ANAF mai veche de `ZILE_MAX` zile. LIMITA: poarta n-are rețea — un
-validator publicat AZI poate rămâne neinstalat cel mult `ZILE_MAX` zile, până când garda (3) cere `verifica_duk_publicat.py`.
+copia oficială `anaf_surse/versiuni.xml`; (3) o comparație cu ANAF mai veche de `ZILE_MAX` zile; (4) [deficiența 494] o poartă verde
+după ce comparația zilnică (`verifica_duk_publicat.py --zilnic`, fișierul local `V.cale_stare()`) a găsit un validator în urmă.
+Data comparației = cea mai nouă dintre manifest și starea zilnică. LIMITA: poarta n-are rețea — fără jobul zilnic, un validator
+publicat AZI poate rămâne neinstalat cel mult `ZILE_MAX` zile; cu jobul zilnic, cel mult o zi (garda (4)).
 """
 import datetime
 import io
@@ -41,7 +43,17 @@ def test_manifestul_spune_versiunile_din_copia_oficiala():
 
 
 def test_comparatia_cu_anaf_nu_e_mai_veche_de_o_luna():
-    """Pică singur după ZILE_MAX zile fără `scripts/verifica_duk_publicat.py --scrie` — asta e chiar garda."""
-    zile = (datetime.date.today() - datetime.date.fromisoformat(MAN["verificat_la"])).days
-    assert zile <= V.ZILE_MAX, ("comparația validatoarelor DUK cu ANAF are %d zile — rulează scripts/verifica_duk_publicat.py, "
-                                "instalează ce e în urmă, apoi --scrie" % zile)
+    """Pică singur după ZILE_MAX zile în care nici `--scrie`, nici `--zilnic` n-au comparat cu ANAF — asta e chiar garda.
+    MUTAȚIE (core/test_lot12_duk_zilnic.py): data luată numai din manifest -> o stare zilnică proaspătă nu mai contează -> pică."""
+    data, _in_urma = V.comparatia_curenta(MAN, V.citeste_stare())
+    zile = (datetime.date.today() - data).days
+    assert zile <= V.ZILE_MAX, ("comparația validatoarelor DUK cu ANAF are %d zile (manifest %s, stare zilnică %s) — rulează "
+                                "scripts/verifica_duk_publicat.py --zilnic (sau leagă-l de crontab), instalează ce e în urmă, apoi "
+                                "--scrie" % (zile, MAN["verificat_la"], V.cale_stare()))
+
+
+def test_comparatia_zilnica_n_a_gasit_niciun_validator_in_urma():
+    """[deficiența 494] Starea scrisă de `--zilnic` spune ce e în urmă; poarta pică numind validatorul și pașii care repară.
+    MUTAȚIE (core/test_lot12_duk_zilnic.py): intrările din stare ignorate -> un D112 găsit în urmă -> poarta verde -> pică."""
+    _data, in_urma = V.comparatia_curenta(MAN, V.citeste_stare())
+    assert not in_urma, V.mesaj_in_urma(in_urma)

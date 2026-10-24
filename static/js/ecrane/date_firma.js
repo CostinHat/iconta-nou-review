@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie } from "../api.js?v=31460b24f2";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie } from "../api.js?v=309f4d66ae";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -159,18 +159,24 @@ function _blocStoc(d) {
 // [08.10.2026, decizia Costin §6 pct.4] „Luna preluării: editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată după
 // luna primei note.” Nesalvată = propunerea (core/luna_preluare.py); de la ea se numără restanțele în Control fiscal.
 // [retest 08.10 pct.20] „câmpul arată «---------- ----»; vine completat cu propunerea (06/2026), fără textul «Gol = propunerea»”.
-// Câmpul arată luna efectivă (salvată, altfel propunerea); cât timp nu e schimbat, la salvare rămâne propunere (null), deci se
-// recalculează dacă se schimbă soldurile de preluare — completarea nu fixează tacit o valoare pe care omul n-a ales-o.
+// Câmpul arată luna efectivă (salvată, altfel propunerea); cât timp nu e schimbat, la salvare nu se trimite (rămâne ce era: propunerea
+// rămâne propunere, deci se recalculează dacă se schimbă soldurile de preluare) — completarea nu fixează tacit o valoare pe care omul
+// n-a ales-o. Luna aleasă egală cu propunerea, sau câmpul golit, = propunerea (null).
+// [lotul 12, 169] Câmpul golit nu rămâne „---------- ----” (așa arată Chromium o lună goală): la ieșirea din câmp revine propunerea.
+// [lotul 12, 147] Luna salvată e după prima notă (o notă mai veche, scrisă după alegere): câmpul arată luna efectivă, a primei note
+// (`luna_preluare.efectiva`, plafonată), și spune de ce — limita „niciodată după prima notă” ține și după salvare.
 function _blocPreluare(d) {
   const lp = (d.profil || {}).luna_preluare || {};
   const ro = (x) => (x ? `${x.slice(5, 7)}/${x.slice(0, 4)}` : "");
+  const plafonata = lp.plafonata
+    ? ` Luna aleasă, ${ro(lp.salvata)}, e după prima notă din jurnal (${ro(lp.prima_nota)}, scrisă după alegere): luna preluării se socotește ${ro(lp.efectiva)}.` : "";
   return `
     <h2 class="pf-titlu" style="margin-top:26px">Preluarea în iConta.eu</h2>
     <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Luna preluării</span>
-        <span class="camp-ajutor">De la ea se numără restanțele în Control fiscal.${lp.propunere ? ` ${lp.salvata ? "Propunerea iConta.eu" : "Completată cu propunerea"}: ${ro(lp.propunere)} — din soldurile de preluare sau data adăugării firmei, cel mult luna primei note.` : ""}${lp.prima_nota ? ` Nu poate fi după ${ro(lp.prima_nota)} (prima notă).` : ""}</span>
-        <input type="month" class="camp-input" id="df-luna_preluare" value="${esc(lp.salvata || lp.propunere || "")}" data-propunere="${esc(lp.salvata ? "" : (lp.propunere || ""))}"${lp.prima_nota ? ` max="${esc(lp.prima_nota)}"` : ""}>
+        <span class="camp-ajutor">De la ea se numără restanțele în Control fiscal.${lp.propunere ? ` ${lp.salvata ? "Propunerea iConta.eu" : "Completată cu propunerea"}: ${ro(lp.propunere)} — din soldurile de preluare sau data adăugării firmei, cel mult luna primei note.` : ""}${lp.prima_nota ? ` Nu poate fi după ${ro(lp.prima_nota)} (prima notă).` : ""}${plafonata}</span>
+        <input type="month" class="camp-input" id="df-luna_preluare" value="${esc(lp.efectiva || "")}" data-initiala="${esc(lp.efectiva || "")}" data-propunere="${esc(lp.propunere || "")}"${lp.prima_nota ? ` max="${esc(lp.prima_nota)}"` : ""}>
       </label>
       <label class="camp">
         <span class="camp-eticheta">Data înființării</span>
@@ -546,6 +552,9 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   _tvaToggle();
   _legaTvaIncasare(corp, nav, tenantId, opt);
   const asoc = _legaAsociati(corp, a);
+  // [lotul 12, 169] „Luna preluării” golită revine, la ieșirea din câmp, la propunere — nu rămâne „---------- ----” (luna goală în Chromium)
+  const _lpIn = corp.querySelector("#df-luna_preluare");
+  _lpIn.addEventListener("blur", () => { if (!_lpIn.value && _lpIn.dataset.propunere) _lpIn.value = _lpIn.dataset.propunere; });
 
   // [BLOC R, 28.08.2026] Legarea celor două casete de denumire a fost scoasă odată cu a doua
   // casetă. Era reparația corectă cât timp duplicatul exista; nu mai are ce lega.
@@ -650,7 +659,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       }
       // [LOTUL 11] Mesajul spune CE a apucat să intre: restul datelor e înregistrat și a căzut DOAR redenumirea.
       await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });
-      arataMesaj(corp.querySelector("#df-msg"), "Restul datelor s-au salvat, dar DENUMIREA nu: " + ((e && e.mesaj) || "a fost refuzată")
+      arataMesaj(corp.querySelector("#df-msg"), "Restul datelor s-au salvat, dar denumirea nu: " + ((e && e.mesaj) || "a fost refuzată")
         + " Ecranul de mai jos arată ce e înregistrat acum.", "eroare");
     }
   });
@@ -862,9 +871,10 @@ function _dateDinFormular(corp) {
   date.activitate_amef = corp.querySelector("#df-activitate_amef").value || null;
   date.metoda_stoc = corp.querySelector("#df-metoda_stoc").value || null;   // [06.10.2026 §6.3]
   date.serie_chitanta = corp.querySelector("#df-serie_chitanta").value.trim() || null;   // [decizii 07.10 pct.5]
-  // [08.10 §6 pct.4 + retest 08.10 pct.20] propunerea neschimbată (sau câmpul golit) rămâne propunere: null, nu o valoare fixată
+  // [08.10 §6 pct.4 + retest 08.10 pct.20] luna neschimbată nu se trimite (rămâne ce era); golită sau egală cu propunerea = propunerea
+  // (null), nu o valoare fixată; [lotul 12, 147] luna efectivă plafonată la prima notă, nemișcată, nu rescrie tacit luna aleasă
   const _lp = corp.querySelector("#df-luna_preluare");
-  date.luna_preluare = (_lp.value && _lp.value !== _lp.dataset.propunere) ? _lp.value : null;
+  if (_lp.value !== _lp.dataset.initiala) date.luna_preluare = (_lp.value && _lp.value !== _lp.dataset.propunere) ? _lp.value : null;
   date.data_infiintare = corp.querySelector("#df-data_infiintare").value || null;   // [deficiența 229]
   if (corp.querySelector("#df-forma_juridica")) {
     date.forma_juridica = corp.querySelector("#df-forma_juridica").value || null;

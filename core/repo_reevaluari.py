@@ -53,3 +53,18 @@ def aplicate_pentru_mijloc(cur, schema, mijloc_fix_id):
                 (mijloc_fix_id,))
     return [{"data": r[0], "valoare_bruta_veche": r[1],
              "amortizare_eliminata": r[2], "valoare_justa": r[3]} for r in cur.fetchall()]
+
+
+def rezerva_si_pierderea(cur, schema, mijloc_fix_id):
+    """[lotul 12, C116] (sold 105, pierdere 655 necompensată) ale ACTIVULUI, din notele reevaluărilor lui APLICATE: rezerva = creditele
+    lui 105 minus debitele lui 105; pierderea = debitele lui 655 minus creditele lui 755 (compensarea din pct.111 alin.(1)). Fiecare,
+    cel puțin 0. Numai reevaluările aplicate (nota validată): o ciornă n-a schimbat nici rezerva, nici cheltuiala."""
+    cur.execute(f"""SELECT COALESCE(sum(CASE WHEN split_part(l.cont_credit, '.', 1) = '105' THEN l.suma ELSE 0 END), 0)
+                         - COALESCE(sum(CASE WHEN split_part(l.cont_debit, '.', 1) = '105' THEN l.suma ELSE 0 END), 0),
+                           COALESCE(sum(CASE WHEN split_part(l.cont_debit, '.', 1) = '655' THEN l.suma ELSE 0 END), 0)
+                         - COALESCE(sum(CASE WHEN split_part(l.cont_credit, '.', 1) = '755' THEN l.suma ELSE 0 END), 0)
+                    FROM {schema}.reevaluari r JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = r.inregistrare_id
+                    WHERE r.mijloc_fix_id = %s AND r.aplicata_la IS NOT NULL""",
+                (mijloc_fix_id,))
+    s105, p655 = cur.fetchone()
+    return max(s105 or 0, 0), max(p655 or 0, 0)

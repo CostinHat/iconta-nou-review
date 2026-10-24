@@ -161,7 +161,7 @@ def test_319_invitatia_cu_drepturi_si_firme_e_o_singura_tranzactie(monkeypatch, 
     monkeypatch.setattr(ua._asist, "atribuie_firma", lambda conn, cab, uid, tid: jurnal.append(("firma", tid))
                         or ({"ok": False, "cod": "firma_alt_cabinet"} if tid == firma_refuzata else {"ok": True}))
     monkeypatch.setattr(ua._uc_comun, "_pune_token", lambda cur, tok, uid, ttl: jurnal.append("link"))
-    monkeypatch.setattr(ua._obs, "trimite_email_html_sau_semnaleaza", lambda *a, **k: jurnal.append("email"))
+    monkeypatch.setattr(ua._obs, "trimite_email_html_sau_semnaleaza", lambda *a, **k: jurnal.append("email") or True)   # [598] a plecat
     date = types.SimpleNamespace(email="zt.319@exemplu.ro", nume="ZT", poate_pregati=True, poate_valida=False, poate_depune=True,
                                  firme=[1, 2])
     ctx = {"rol": "admin_firma", "firm": 7, "uid": 1}

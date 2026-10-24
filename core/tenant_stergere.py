@@ -53,6 +53,7 @@ import shutil
 import psycopg2.extras as _E
 
 from core import db
+from core.common import cate
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # rădăcina depozitului, din fișierul însuși (C35)
 
 EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.join(_RAD, "efactura_zip"))
@@ -68,6 +69,10 @@ TABELE_TENANT = (
     "alerte_control_emise",
     "anunturi_cabinet",
     "audit_log",
+    # [lotul 12, 495] Ciornele formularelor începute (factura, salariatul nou, concediul medical), pe utilizator + firmă. SE ȘTERG:
+    # sunt formulare nesalvate ale firmei; fără firmă n-au unde se mai deschide (cheia străină le-ar lua oricum, ON DELETE CASCADE —
+    # lista le numește, ca garda de mai sus să le vadă clasificate).
+    "ciorne_formular",
     "declaratii_coada",
     "declaratii_depuse",
     # [lotul 6, 284, 16.10.2026] Cererile de trimitere în coadă care așteaptă nota explicativă. SE ȘTERG: sunt cereri despre
@@ -114,6 +119,45 @@ TABELE_TENANT = (
 CONTOARE_DERIVATE = ("firma_rezumat", "firma_sursa_versiune", "firma_tip", "supervizor_sursa")
 
 
+#: [C136, lotul 12] Ce dispare, în cuvintele contabilului: „Scoate firma” și „Firme scoase” arătau „3 × `audit_log`” — numele tabelelor din
+#: bază. Fiecare tabelă din `TABELE_TENANT` (și cheile urmei: `tenants`, conturile dezactivate) are aici perechea (singular, plural) dată
+#: lui `common.cate`; garda (`core/test_tenant_stergere.py` / `test_lot12_diverse_c136_*`) cere o etichetă pentru fiecare, fără „_”.
+ETICHETE_RANDURI = {
+    "alerte_control_emise": ("alertă de control fiscal trimisă", "alerte de control fiscal trimise"),
+    "anunturi_cabinet": ("anunț al cabinetului", "anunțuri ale cabinetului"),
+    "audit_log": ("rând din jurnalul de activitate", "rânduri din jurnalul de activitate"),
+    "ciorne_formular": ("ciornă de formular nesalvată", "ciorne de formular nesalvate"),
+    "declaratii_coada": ("declarație în coadă", "declarații în coadă"),
+    "declaratii_depuse": ("declarație depusă", "declarații depuse"),
+    "declaratii_in_asteptare": ("declarație care aștepta nota explicativă", "declarații care așteptau nota explicativă"),
+    "pachet_povestea": ("rând din istoricul pachetelor lunare", "rânduri din istoricul pachetelor lunare"),
+    "plata_referinte": ("link de plată al facturilor", "linkuri de plată ale facturilor"),
+    "reges_chei": ("cheie de acces REGES", "chei de acces REGES"),
+    "reges_mesaje": ("mesaj REGES", "mesaje REGES"),
+    "schimbari_email": ("schimbare de adresă de email", "schimbări de adresă de email"),
+    "solicitari_client": ("solicitare de la client", "solicitări de la client"),
+    "spv_token": ("conectare SPV", "conectări SPV"),
+    "supervizor_confirmari": ("confirmare a verificărilor", "confirmări ale verificărilor"),
+    "supervizor_rezultat": ("rezultat al verificărilor", "rezultate ale verificărilor"),
+    "firma_rezumat": ("rezumat al firmei", "rezumate ale firmei"),
+    "firma_sursa_versiune": ("contor intern al rezumatului", "contoare interne ale rezumatului"),
+    "firma_tip": ("tip de firmă memorat", "tipuri de firmă memorate"),
+    "supervizor_sursa": ("contor intern al verificărilor", "contoare interne ale verificărilor"),
+    "urme_portal": ("urmă din portalul clientului", "urme din portalul clientului"),
+    "user_tenants": ("acces al unui utilizator la firmă", "accese ale utilizatorilor la firmă"),
+    # cheile urmei (`sterge` -> `firme_scoase.randuri_sterse`), arătate la „Firme scoase” (rândul firmei, `tenants`, nu: e chiar firma)
+    "clienti_dezactivati": ("cont de client dezactivat", "conturi de client dezactivate"),
+    "asistenti_dezactivati": ("cont de asistent dezactivat", "conturi de asistent dezactivate"),
+}
+
+
+def ce_dispare(randuri):
+    """[C136] {tabelă: n} -> [„3 rânduri din jurnalul de activitate”, …], în ordinea lui `TABELE_TENANT` (apoi cheile urmei), fără cele
+    zero. O cheie fără etichetă e o eroare de program (garda o prinde înainte), nu se arată ca nume de tabelă."""
+    ordine = list(TABELE_TENANT) + [k for k in ETICHETE_RANDURI if k not in TABELE_TENANT]
+    return [cate(randuri[k], *ETICHETE_RANDURI[k]) for k in ordine if randuri.get(k)]
+
+
 def ordinea_stergerii(tabele):
     """Tabelele în ordinea ștergerii: sursele întâi, contoarele derivate la urmă (`CONTOARE_DERIVATE`)."""
     return [t for t in tabele if t not in CONTOARE_DERIVATE] + [t for t in tabele if t in CONTOARE_DERIVATE]
@@ -128,22 +172,24 @@ NU_SE_STERG = {
 
 # ── CE ÎNSEAMNĂ „ARE EVIDENȚĂ" ───────────────────────────────────────────────
 # Definiția lui Costin, 27.08.2026. În `public`, cheiate pe `tenant_id`:
+# [263, lotul 12] Eticheta e PERECHEA (singular, plural), dată lui `common.cate`: „1 factură”, „3 facturi”, „20 de facturi” — nu
+# „1 facturi” (`"%d %s" % (n, plural)`, clasa gardată de `core/test_plural_dupa_numar.py`, tiparul P5 al gărzii).
 EVIDENTA_PUBLIC = (
-    ("declaratii_depuse", "declarații depuse"),
-    ("declaratii_coada", "declarații în coadă"),
+    ("declaratii_depuse", ("declarație depusă", "declarații depuse")),
+    ("declaratii_coada", ("declarație în coadă", "declarații în coadă")),
 )
 # În schema firmei — documente care au ieșit din firmă către cineva:
 EVIDENTA_SCHEMA = (
-    ("inregistrari", "note contabile"),
-    ("facturi", "facturi"),
-    ("state_plata", "state de plată emise"),
-    ("artefacte_produse", "artefacte păstrate"),
+    ("inregistrari", ("notă contabilă", "note contabile")),
+    ("facturi", ("factură", "facturi")),
+    ("state_plata", ("stat de plată emis", "state de plată emise")),
+    ("artefacte_produse", ("artefact păstrat", "artefacte păstrate")),
     # Ultimele trei nu sunt în enumerarea lui, și le adaug cu motivul: au plecat din firmă la fel
     # de tare ca o factură. O chitanță e la un om; e-Factura și e-Transport sunt deja la ANAF.
     # Adăugarea împinge în direcția PRUDENTĂ: mai multe firme refuzate, niciuna ștearsă din greșeală.
-    ("chitante", "chitanțe"),
-    ("efactura_trimiteri", "trimiteri e-Factura către SPV"),
-    ("etransport_trimiteri", "notificări e-Transport"),
+    ("chitante", ("chitanță", "chitanțe")),
+    ("efactura_trimiteri", ("trimitere e-Factura către SPV", "trimiteri e-Factura către SPV")),
+    ("etransport_trimiteri", ("notificare e-Transport", "notificări e-Transport")),
 )
 
 MOTIVE = {
@@ -180,7 +226,7 @@ def evidenta(conn, tenant_id, schema=None):
             n = cur.fetchone()["n"]
             detalii[tabel] = n
             if n:
-                motive.append("%d %s" % (n, eticheta))
+                motive.append(cate(n, *eticheta))
         if not db.schema_valida(schema):
             raise _SchemaInvalida(schema)
         cur.execute("""SELECT table_name FROM information_schema.tables
@@ -194,7 +240,7 @@ def evidenta(conn, tenant_id, schema=None):
             n = cur.fetchone()["n"]
             detalii[tabel] = n
             if n:
-                motive.append("%d %s" % (n, eticheta))
+                motive.append(cate(n, *eticheta))
     if nedecis:
         motive.append("nu se poate decide: în evidența firmei (%s) lipsesc tabelele %s"
                       % (schema, ", ".join(nedecis)))
@@ -242,6 +288,27 @@ def clienti_ramasi_fara_firma(conn, tenant_id):
         return [dict(r) for r in cur.fetchall()]
 
 
+def asistenti_ramasi_fara_firma(conn, tenant_id):
+    """Asistenții ACTIVI ai cabinetului (`rol='angajat'`) legați de firma asta și de niciuna alta. [{id, email, nume}]
+
+    [C123, lotul 12] Ștergerea ia rândurile din `user_tenants`, deci un asistent care lucra numai firma asta rămânea activ, fără nicio
+    firmă — cont deschis, cu drepturi, pe nimic. Regula „zero firme” a cabinetului (`asistenti_api.aplica_regula_zero_firme`: drepturile
+    se golesc, contul se dezactivează, rămâne în istoric) se aplica numai când administratorul scotea firmele din ecranul colegului.
+    Acum se aplică pe orice drum care rupe legătura (`sterge`, deci și GDPR, care trece pe aici). Contul NU se șterge: îl reactivează
+    administratorul din Asistenți, cu firmele și drepturile alese din nou. Administratorul (`admin_firma`) nu intră aici: regula îl
+    lasă activ, iar ștergerea nu-i atinge contul."""
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(
+            "SELECT u.id, u.email, NULLIF(trim(concat_ws(' ', u.prenume, u.nume)), '') AS nume FROM public.users u "
+            "JOIN public.user_tenants ut ON ut.user_id = u.id "
+            "WHERE ut.tenant_id = %s AND u.rol = 'angajat' AND u.activ "
+            "  AND u.accounting_firm_id = (SELECT t.accounting_firm_id FROM public.tenants t WHERE t.id = %s) "
+            "  AND NOT EXISTS (SELECT 1 FROM public.user_tenants x "
+            "                  WHERE x.user_id = u.id AND x.tenant_id <> %s) "
+            "ORDER BY u.id", (tenant_id, tenant_id, tenant_id))
+        return [dict(r) for r in cur.fetchall()]
+
+
 # Ce se COPIAZĂ înainte de ștergere, ca să supraviețuiască. Fiecare intrare: (tabelă, coloane).
 # NU e o listă de „tot ce ține de firmă" — sunt exact urmele care spun **cine a primit acces la
 # datele firmei și când**, adică evidența cabinetului despre portal. Restul dispare.
@@ -275,6 +342,7 @@ def previzualizare(conn, tenant_id):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         f = _firma(cur, tenant_id)
     ev = evidenta(conn, tenant_id, f["schema_name"])
+    rd = randuri_de_sters(conn, tenant_id)
     return {
         "tenant_id": f["id"], "nume": f["nume"], "cui": f["cui"],
         "schema": f["schema_name"], "activ": f["activ"],
@@ -285,8 +353,10 @@ def previzualizare(conn, tenant_id):
         # confirmare pe nume ar fi acceptat ștergerea celeilalte.
         "confirmare_ceruta": f["cui"],
         "tabele_curatate": list(TABELE_TENANT),
-        "randuri_de_sters": randuri_de_sters(conn, tenant_id),   # R50 (c)
+        "randuri_de_sters": rd,   # R50 (c)
+        "ce_dispare": ce_dispare(rd),   # [C136] aceleași cifre, în cuvintele contabilului
         "clienti_de_dezactivat": clienti_ramasi_fara_firma(conn, tenant_id),
+        "asistenti_de_dezactivat": asistenti_ramasi_fara_firma(conn, tenant_id),   # [C123]
         "urme_de_pastrat": {k: len(v) for k, v in urme_de_pastrat(conn, tenant_id).items()},
     }
 
@@ -320,6 +390,7 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
         sters = {}
         # ÎNAINTE de a rupe legăturile: cine rămâne fără nicio firmă.
         clienti = clienti_ramasi_fara_firma(conn, tenant_id)
+        asistenti = asistenti_ramasi_fara_firma(conn, tenant_id)   # [C123]
         # ȘI ÎNAINTE de a șterge: urmele portalului, copiate ca să supraviețuiască.
         # NUMAI pe `scoatere_firma`. La GDPR nu se copiază nimic — acolo scopul actului e chiar
         # dispariția datelor, iar ele conțin adrese de email. Un log care le-ar păstra ar anula
@@ -346,11 +417,20 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
             cur.execute("UPDATE public.users SET activ=false WHERE id=ANY(%s)",
                         ([c["id"] for c in clienti],))
             sters["clienti_dezactivati"] = cur.rowcount
+        # 5. [C123] asistenții rămași fără nicio firmă: regula „zero firme” a cabinetului, aceeași cu a ecranului colegului.
+        if asistenti:
+            from core import asistenti_api as _asist
+            for a in asistenti:
+                r = _asist.aplica_regula_zero_firme(conn, f["accounting_firm_id"], a["id"])
+                if not (r.get("ok") and r.get("dezactivat")):
+                    raise RuntimeError("regula „zero firme” nu s-a aplicat asistentului %s: %r" % (a["id"], r))
+            sters["asistenti_dezactivati"] = len(asistenti)
         cur.execute("UPDATE public.firme_scoase SET randuri_sterse=%s WHERE id=%s",
                     (_E.Json(sters), urma["id"]))
     return {"tenant_id": tenant_id, "nume": f["nume"], "cui": f["cui"], "schema": schema,
             "motiv": motiv, "randuri_sterse": sters, "urma_id": urma["id"],
             "clienti_dezactivati": clienti,
+            "asistenti_dezactivati": asistenti,
             "urme_pastrate": {k: len(v) for k, v in urme.items()},
             "scos_la": str(urma["scos_la"])}
 

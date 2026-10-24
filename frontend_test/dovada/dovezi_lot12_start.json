@@ -1,0 +1,84 @@
+[
+ {
+  "nr": "596",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): „?” (Prezentarea aplicației) -> „Primii pași”: fiecare card arată titlul, „Ce faci aici”, „Cardul devine verde când …”; pașii și nota stau pliați în „Cum se face”, închis (DS cap.6 v2.95) — cardul 1 nu mai e tăiat",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "#nav-ghid"
+   },
+   {
+    "asteapta": "#ans-inceput .inceput-card"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#ans-inceput .inceput-card details.dec-xml"
+   },
+   {
+    "contine": "Cum se face",
+    "zona": "#ans-inceput"
+   },
+   {
+    "contine": "Cardul devine verde când",
+    "zona": "#ans-inceput"
+   }
+  ],
+  "captura": "596_f1_primii_pasi_in_ajutor.png"
+ },
+ {
+  "nr": "269",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): pagina principală — salutul numește omul cu numele scris (prenumele numai dacă a fost scris separat, altfel numele întreg), nu ultimul cuvânt din nume; numele exact al contului copiei îl pune sesiunea principală în verificare",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "asteapta": "h1.cab-salut-nume"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Salut,",
+    "zona": "h1.cab-salut-nume"
+   }
+  ],
+  "captura": "269_f1_salut.png"
+ },
+ {
+  "nr": "490",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): pagina principală — salutul e numele scris al omului (numele întreg, sau prenumele scris separat), nu o literă rămasă din nume („Salut, B”); numele exact al contului copiei îl pune sesiunea principală în verificare",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "asteapta": "h1.cab-salut-nume"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Salut,",
+    "zona": "h1.cab-salut-nume"
+   }
+  ],
+  "captura": "490_f1_salut.png"
+ }
+]

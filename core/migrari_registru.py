@@ -89,6 +89,18 @@ def inregistreaza(cur, fisier, amp, fel, commit=None, motiv=None):
 #: `core/test_migrari_registru.py::test_ordinea_numeste_tot_ce_creeaza_alta_migrare`; `nerulate` le pune în ordine, iar
 #: `ruleaza` refuză o migrare cât timp una din cele de dinaintea ei e nerulată pe aceeași bază.
 DUPA = {
+    # [lotul 12] migrările noi, după cele ale tabelelor pe care le citesc
+    "core/migrare_mesaje_spv_tehnice.py": ("core/migrare_efactura_trimiteri.py", "core/migrare_etransport_trimiteri.py", "core/migrare_spv_citiri.py"),
+    "core/migrare_um_linii_xml.py": ("core/migrare_punte_stoc.py",),
+    "core/migrare_um_borderou.py": ("core/migrare_punte_stoc.py",),   # [lotul 12, C115] citește `miscari_stoc.factura_id`
+    "core/migrare_nir_tva_transport.py": ("core/migrare_stoc_lot4.py",),
+    "core/migrare_extras_dubluri_trezorerie.py": ("core/migrare_extras_miscare.py",),
+    # [lotul 12, 252] facturile deschise preluate: legăturile lor citesc `compensari` (refacerea indexului numerotării e a ei)
+    "core/migrare_documente_preluate.py": ("core/migrare_compensari_afiliat.py",),
+    # [lotul 12, firme2] 475 (articolele dublate) și C133 (motivul scutirii), după tabelele / coloanele pe care le citesc
+    "core/migrare_articole_dublate.py": ("core/migrare_cont_linie_primita.py", "core/migrare_nir_cost.py", "core/migrare_punte_stoc.py",
+                                         "core/migrare_stoc_lot4.py"),
+    "core/migrare_motiv_scutire.py": ("core/migrare_salariati_de_verificat.py",),
     "core/migrare_2b_coloana.py": ("core/migrare_salariu_istoric.py",),
     "core/migrare_avans_nir_ajustare_nota.py": ("core/migrare_ajustari_fiscale.py",),
     "core/migrare_borderou_tip_vechi.py": ("core/migrare_punte_stoc.py", "core/migrare_reguli_fond.py", "core/migrare_tert_platitor_tva.py"),

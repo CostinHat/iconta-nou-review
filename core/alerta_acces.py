@@ -58,7 +58,7 @@ def ruleaza(trimite=None, **override):
         for u in flagged:
             cheie = "acces_anormal_user_%s" % u["user_id"]
             if _poate_trimite(cheie, p["dedup_min"]):
-                subiect = "Acces anormal: user %s (%s tenanti, %s actiuni / %s min)" % (
+                subiect = "Acces anormal: utilizatorul %s (%s firme, %s acțiuni în %s min)" % (   # [317, lotul 12] cu diacritice
                     u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"])
                 mesaj = ("Semnal automat (art.33): utilizatorul %s a atins %s firme distincte și %s acțiuni "
                          "în ultimele %s min (praguri %s firme / %s acțiuni). Nu s-a blocat nimic. Verifică manual."

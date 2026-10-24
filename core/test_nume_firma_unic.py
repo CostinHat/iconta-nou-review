@@ -206,6 +206,12 @@ _CABINETE_DE_TEST_CUNOSCUTE = {
     9776: "Proba Test SRL",
     9777: "Proba Valid SRL",
 }
+# [lotul 12, comanda Costin 11.2 pct.3a] Copia de dovadă a cabinetului de test „Cabinet Test Sesiunea B SRL” (același id ca pe producție),
+# scrisă în baza de TEST de `scripts/dovada_firme_test.py --cloneaza`, cu numele marcat `MARCAJ_CABINET`, și scoasă de `--sterge`. E de
+# test prin construcție (unealta refuză orice schemă care nu e a cabinetului de test); poate lipsi — atunci a fost ștearsă, nu redenumită.
+_COPII_DE_DOVADA = {
+    48765: "Cabinet Test Sesiunea B SRL — copie de dovadă",
+}
 
 
 def _cabinete_de_test(conn):
@@ -274,15 +280,16 @@ def test_cabinetele_excluse_sunt_cele_declarate():
     db.init_pool()
     with db.get_conn() as conn:
         gasite = _cabinete_de_test(conn)
-    assert set(gasite) == set(_CABINETE_DE_TEST_CUNOSCUTE), (
+    declarate = {**_CABINETE_DE_TEST_CUNOSCUTE, **{i: n for i, n in _COPII_DE_DOVADA.items() if i in gasite}}
+    assert set(gasite) == set(declarate), (
         "mulțimea cabinetelor pe care tiparul le declară «de test» s-a schimbat.\n"
         "  acum:      %s\n  declarate: %s\n"
         "Un cabinet NOU în clasă e exclus din măsurătorile despre firme reale — uită-te o dată "
         "dacă e chiar de test, apoi adaugă-l în `_CABINETE_DE_TEST_CUNOSCUTE`. Un cabinet care a "
         "IEȘIT din clasă a fost redenumit: firmele lui intră de-acum în cifră."
-        % (sorted(gasite.items()), sorted(_CABINETE_DE_TEST_CUNOSCUTE.items())))
-    difera = {i: (gasite[i], _CABINETE_DE_TEST_CUNOSCUTE[i]) for i in gasite
-              if _nrm(gasite[i]) != _nrm(_CABINETE_DE_TEST_CUNOSCUTE[i])}
+        % (sorted(gasite.items()), sorted(declarate.items())))
+    difera = {i: (gasite[i], declarate[i]) for i in gasite
+              if _nrm(gasite[i]) != _nrm(declarate[i])}
     assert not difera, (
         "cabinete excluse care se numesc altfel decât la declarare: %s — un identificator "
         "refolosit ar scoate din măsurătoare alt cabinet decât cel declarat" % difera)

@@ -29,6 +29,13 @@ from core import efactura_send as efs
 from core import efactura_import as efi
 from core.common import cate
 
+#: [598 / 600, lotul 12] ce nu s-a întâmplat când citirea din SPV a căzut (`spv_conector.mesaj_pentru_contabil`)
+MESAJ_NECITITE = "Facturile de la furnizori nu s-au citit acum din SPV."
+#: [C42 + 598] ANAF n-a răspuns la citire: se spune ce face aplicația (reia singură), fără numele excepției
+MESAJ_ANAF_FARA_RASPUNS = spv_conector.MESAJ_CITIRE_ANAF_TACE
+#: [598] arhiva încărcată la „Import manual XML” nu se deschide (era textul bibliotecii, în engleză: „File is not a zip file”)
+MESAJ_ARHIVA_STRICATA = "%s: arhiva nu se poate deschide. Încarcă XML-ul facturii sau arhiva ZIP descărcată din SPV, așa cum a venit."
+
 MEDIU = os.environ.get("EFACTURA_MEDIU", "prod")
 ZILE = int(os.environ.get("SPV_RECEIVE_ZILE", "3"))            # fereastra suprapusa, < 60 oficial
 INTERVAL_SEC = float(os.environ.get("SPV_RECEIVE_INTERVAL_SEC", "1.0"))
@@ -138,11 +145,13 @@ def citeste_firma(schema, stat=None, _dormi=None):
         cif = _digits(row[0]) if row and row[0] else ""
         if not cif:
             stat["tenanti_fara_cif"] += 1
-            return {"cif": "", "zile": 0, "mesaje": 0, "eroare": "Firma n-are CUI în Date firmă."}
+            return {"cif": "", "zile": 0, "mesaje": 0, "eroare": "Firma n-are CUI în Date firmă.", "de_la_anaf": False}
         if not token:
             stat["skip_auth"] += 1
-            return {"cif": cif, "zile": 0, "mesaje": 0, "eroare": "Cabinetul nu e conectat la SPV."}
+            return {"cif": cif, "zile": 0, "mesaje": 0, "eroare": spv_conector.MESAJ_CITIRE_NECONECTAT, "de_la_anaf": False}
         zile = ZILE if _citire_anterioara(conn, token["id"], cif) else ZILE_PRIMA_CITIRE
+    # [598, lotul 12] `de_la_anaf`: textul e răspunsul ANAF (ecranul îl citează „ANAF a răspuns: …”) sau motivul spus de aplicație
+    de_la_anaf = True
     try:
         mesaje, eroare = efs.lista_mesaje(principal, cif, MEDIU, zile=zile, filtru="P")
     except spv_conector.EroareSpvFaraDrept:
@@ -152,20 +161,21 @@ def citeste_firma(schema, stat=None, _dormi=None):
     except spv_conector.EroareSpv as e:
         stat["skip_auth"] += 1
         print("  SKIP auth lista %s: %s" % (schema, e), file=sys.stderr)
-        mesaje, eroare = [], str(e)
+        # [598 / 600, lotul 12] `eroare` ajunge pe ecran („ANAF a răspuns: …”, Conectare SPV): motivul pe înțelesul omului, nu excepția
+        mesaje, eroare, de_la_anaf = [], spv_conector.mesaj_pentru_contabil(e, MESAJ_NECITITE), False
     except requests.exceptions.RequestException as e:
         # [C42, 16.10.2026] ANAF n-a răspuns (16.10 19:47: ReadTimeout după 60 s): se spune pe firma ei și se trece la următoarea —
         # înainte, excepția oprea citirea TUTUROR firmelor și trimitea alerta „job eșuat” pentru un lucru care trece singur (296)
         stat["anaf_fara_raspuns"] += 1
         print("  %s: ANAF n-a răspuns: %s" % (schema, e), file=sys.stderr)
-        mesaje, eroare = [], "ANAF n-a răspuns la timp (%s); citirea se reia la următoarea rulare." % type(e).__name__
+        mesaje, eroare, de_la_anaf = [], MESAJ_ANAF_FARA_RASPUNS, False   # [598] fără numele excepției („ReadTimeout”) pe ecran
     with db.get_conn() as conn:
         # „Nu exista mesaje in ultimele N zile” e un răspuns reușit (zero facturi), nu o eroare
         fara_mesaje = bool(eroare) and eroare.lower().startswith("nu exista mesaje")
         _inregistreaza_citire(conn, token["id"], cif, None if fara_mesaje else eroare, len(mesaje))
     if eroare and not fara_mesaje:
         print("  %s: lista fara mesaje/eroare: %s" % (schema, eroare))
-        return {"cif": cif, "zile": zile, "mesaje": 0, "eroare": eroare}
+        return {"cif": cif, "zile": zile, "mesaje": 0, "eroare": eroare, "de_la_anaf": de_la_anaf}
     for msg in mesaje:
         try:
             importa_mesaj(schema, principal, cif, msg, stat)
@@ -194,8 +204,9 @@ def importa_xml_manual(schema, continut, nume_fisier=""):
         return dict(rez, erori=["Firma n-are CUI în Date firmă: factura nu se poate verifica."])
     try:
         perechi = efi.extrage_fisiere(nume_fisier or "f.xml", continut)
-    except Exception as e:
-        return dict(rez, erori=["%s: %s" % (nume_fisier or "fișier", e)])
+    except Exception as e:  # noqa: BLE001 — arhiva stricată: refuzul pe înțelesul omului, excepția în jurnal
+        print("  import manual XML %s: arhiva nu se deschide: %s" % (schema, e), file=sys.stderr)
+        return dict(rez, erori=[MESAJ_ARHIVA_STRICATA % (nume_fisier or "fișierul")])
     for nume, xml in perechi:
         try:
             f = efi.parseaza_xml(xml, cif)
@@ -204,6 +215,10 @@ def importa_xml_manual(schema, continut, nume_fisier=""):
             continue
         if f["directie"] != "primita":
             rez["erori"].append("%s: factura e emisă de firmă, nu primită — se încarcă la facturile emise." % nume)
+            continue
+        _alta = efi.alta_firma(f, cif)   # [lotul 12, C120, clasa 599] factura între alte două firme nu intră
+        if _alta:
+            rez["erori"].append("%s: %s" % (nume, _alta))
             continue
         xml_txt = xml.decode("utf-8", "replace") if isinstance(xml, (bytes, bytearray)) else xml
         sha = hashlib.sha256(xml_txt.encode("utf-8")).hexdigest()

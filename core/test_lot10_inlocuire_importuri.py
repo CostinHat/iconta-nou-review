@@ -102,7 +102,9 @@ def test_def_426_parteneri_al_doilea_import_cere_confirmare(conn):
     with pytest.raises(migrare_api.InlocuireNeconfirmata) as e:
         sp.importa(conn, P2, "2025-12-31")
     # comanda 10.1: „spune că există deja […], arată totalurile vechi și noi, cere confirmare”
-    assert str(e.value) == ("Firma are deja solduri pe parteneri la 31.12.2025: 2 parteneri, debit 1.000,00 lei, credit 400,00 lei. "
+    # [lotul 12, 252] ce se șterge se numește întreg: și facturile deschise preluate ale primului import (DEDEMAN 1.000, FURNIZOR 400)
+    assert str(e.value) == ("Firma are deja solduri pe parteneri la 31.12.2025: 2 parteneri, debit 1.000,00 lei, credit 400,00 lei, cu 2 "
+                            "facturi deschise preluate. "
                             "Fișierul nou: 1 partener, debit 2.500,00 lei, credit 0,00 lei. Salvarea le înlocuiește pe cele vechi. "
                             "Confirmă înlocuirea și salvează din nou."), str(e.value)
     assert _unu(conn, "SELECT count(*), sum(sold_debitor) FROM solduri_parteneri") == (2, 1000)     # cele vechi, neatinse

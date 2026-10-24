@@ -16,7 +16,10 @@ def ignora_linia_de_extras(cur, schema, id_):
 
 
 def readuce_linia_de_extras(cur, schema, id_):
-    cur.execute(f"""UPDATE {schema}.extras_linii SET status='nou'
+    # [lotul 12, 479] o notă propusă pe același cont la debit și la credit (5121=5121, de dinainte de reparație) nu se readuce cu linia
+    cur.execute(f"""UPDATE {schema}.extras_linii SET status='nou',
+                            nota_propusa = CASE WHEN split_part(nota_propusa->>'debit', '.', 1) = split_part(nota_propusa->>'credit', '.', 1)
+                                                THEN NULL ELSE nota_propusa END
                             WHERE id=%s AND status='ignorat' RETURNING id""",
                 (id_,))
     return cur.fetchone()

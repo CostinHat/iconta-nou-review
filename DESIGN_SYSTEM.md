@@ -53,6 +53,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 **Feedback obligatoriu:**
 - Butoane cu zonă toggle: primesc `.buton-activ` cât timp zona e deschisă; deschiderea unei zone închide zonele-frate.
+- **Vederea aleasă e activă, nu dezactivată (lotul 12, deficiența 469).** Între două sau mai multe vederi ale aceluiași ecran, butonul ales poartă `.buton-activ` și `aria-pressed="true"`; niciunul nu e `disabled` — un buton ales care arată gri pare că nu merge, iar cel neales pare cel activ. Verificatorul îl prinde (`lot12`, `ALEGERE_DEZACTIVATA`).
 - Acțiuni asincrone: butonul se dezactivează + text "Se salvează…" / "Se trimite…" pe durata cererii.
 
 **INTERZIS**: clase de buton în afara setului (ex. `buton-ingust` — folosește margin/width inline pentru dimensionare, nu clasă nouă). Prins de regula BUTOANE din verificator (v2.5 — `buton-ingust` scos și din lista albă a verificatorului, era o excepție greșită).
@@ -98,6 +99,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 - Săgeata portocalie (`.btn-nav`) duce MEREU exact un pas înapoi în ierarhia ecranului.
 - Mecanismul: `nav.setInapoi(fn)` — obligatoriu apelat la începutul FIECĂRUI sub-ecran: rădăcina cu undefined/null, sub-ecranele cu funcția părinte.
+- Ordinea la „←” (lotul 12, C140): (1) pasul intern declarat de ecran cu `setInapoi(fn)`, o singură dată; (2) pasul de pe traseu (`nav.mergi`); (3) fereastra. Rădăcina = ecranul dat lui `nav.deschide` / `nav.mergi`; ea NU declară ca pas intern ecranul altei ferestre (gard `core/test_lot12_inapoi_sageata.py`). Un ecran redesenat de la început pornește fără pas intern; `nav.reiaPasul()` redesenează pasul curent de la început.
 - X-ul închide fereastra de oriunde. Săgeata nu ține locul lui X.
 - Ecranele-poartă (configurare obligatorie) primesc `setInapoi(undefined)` ca să evite bucla.
 - **Ce s-a tastat nu se pierde (v2.67, comanda Costin 05.10.2026).** Gard `PASTRARE_FORMULAR`. O fereastră sau un pas în care omul a
@@ -500,6 +502,11 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   clientului, deasupra grilei. Nu sunt carduri-hub (`.cab-card`): sunt `.inceput-card`, panouri albe cu marginea stângă albastră.
 - **Ce conțin:** titlul pasului, „Ce faci aici”, pașii numerotați, nota (când există), rândul „Cardul devine verde când …” și butoanele spre
   ecranele REALE (fereastră, ca orice card — cap.2a).
+- **Pașii și nota stau pliați (lotul 12, deficiența 596):** la vedere rămân titlul, „Ce faci aici”, rândul „Cardul devine verde când …” și
+  butoanele; pașii numerotați și nota stau în `<details class="dec-xml"><summary>Cum se face</summary>`, închis (nimic nu se deschide singur,
+  CLAUDE.md §9) — cardul încape pe ecran, textul aprobat la 319 rămâne întreg.
+- **Prima intrare („Înainte de a începe”, lotul 12, 561 / 596):** o fereastră (`.fereastra`, corpul derulează), cu „Continuă în aplicație” și
+  rândul „ce mai lipsește” în `.bara-fixa`; „NU s-a salvat” stă lângă butonul apăsat (cap.6 v2.93), nu sub panou.
 - **Starea:** verde (`.inceput-facut`, marginea și bifa `--verde`) numai când pasul e făcut în ecranul lui — citit de server
   (`GET /eu/inceput`), niciodată la apăsarea cardului.
 - **Fără „închide”:** un `.inceput-card` nefăcut nu are buton de închidere și nu se ascunde; nu blochează lucrul (grila de dedesubt rămâne).
@@ -743,6 +750,8 @@ Shell-ul care randează leagă foaia de stil canonică și folosește clase și 
 **Scroll de document.** Paginile publice folosesc scroll normal de document. Ele **NU** moștenesc regula globală `html, body { overflow-y: hidden }` — aceea aparține shell-ului aplicației/landing-ului (care are scroll intern propriu). Shell-ul public marchează `<html>` **și** `<body>` cu clasa `.pagina-publica`, iar foaia de stil readuce `overflow-y: auto` pe ea. Un shell public fără această clasă se taie la primul ecran (conținutul de sub fold devine invizibil, iar componentele par „text simplu"). Verificatorul îl prinde.
 
 **Scroll-ul intern al aplicației (18.10.2026, deficiența 321).** Shell-ul aplicației e `.desktop` (navigator.js): are înălțimea ecranului (`height: 100dvh`) și derulează el însuși (`overflow-y: auto`). Cu `html, body { overflow-y: hidden }`, un desktop cu `min-height` în loc de `height` crește peste ecran și nu se mai derulează cu rotița — ce e sub cardurile „Primii pași” („De depus”, „Firme”) se ajungea doar cu Tab. Verificatorul îl prinde (`scroll_desktop`).
+
+**Tot ce stă pe ecranul întreg derulează (lotul 12, deficiențele 561, 596, C111).** Sub `html, body { overflow-y: hidden }`, `#app` derulează el însuși (`height: 100dvh; overflow-y: auto`): ecranele puse direct în el (intrarea în cont, activarea, parola nouă) se ajung cu rotița până la capăt. Orice strat pe tot ecranul (`.acces-modal`, `.reaut`, `.fereastra`) are panoul cu `max-height` cât ecranul și derulare proprie, ca acțiunea principală și mesajele de eroare să se vadă mereu (CLAUDE.md §9). Verificatorul îl prinde (`lot12`, `SCROLL_APP` / `STRAT_INCAPE`).
 
 ---
 

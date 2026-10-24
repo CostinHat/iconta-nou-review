@@ -42,6 +42,65 @@ def spv_principal(ctx):
     raise HTTPException(403, "contul nu poate conecta SPV (fără cabinet)")
 
 
+#: [deficiența 600, lotul 12] motivele cu care contabilul se întoarce din ANAF pe pagina de retur — mulțime ÎNCHISĂ; textul fiecăruia
+#: (pe înțelesul lui, cu ce face mai departe) stă în `static/spv_callback.html` (`MESAJE`), gard `core/test_lot12_notif_600_spv_retur.py`.
+#: Înainte: `?eroare=<textul excepției>` („state invalid: token expirat”, „HTTP 400 la /token: …”), iar o cădere din afara lui
+#: `EroareSpv` (rețeaua spre ANAF, baza) ieșea 500 — contabilul rămânea pe o pagină de eroare a serverului, nu în iConta.
+#:   ok         — conectat;
+#:   anulata    — ANAF s-a întors cu `error` (autorizarea n-a fost dată);
+#:   fara_cod   — ANAF s-a întors fără cod de autorizare;
+#:   expirata   — drumul la ANAF a durat peste `spv_conector.STATE_DURATA_SEC`;
+#:   nelegata   — întoarcerea nu poartă semnătura cererii plecate din iConta.eu (state lipsă / modificat / ilizibil);
+#:   refuz_anaf — ANAF a refuzat schimbul codului pe acces (cod folosit deja, expirat) sau a răspuns fără cheile de acces;
+#:   anaf_tace  — ANAF nu a răspuns la schimbul codului;
+#:   nesalvata  — orice altă cădere (salvarea conexiunii, configurarea serverului).
+MOTIVE_RETUR = ("ok", "anulata", "fara_cod", "expirata", "nelegata", "refuz_anaf", "anaf_tace", "nesalvata")
+
+
+def _semnaleaza(motiv, detaliu):
+    """Detaliul tehnic al unei întoarceri nereușite: în jurnalul serverului (nu pe ecran, nu în URL). Fără cod, fără state."""
+    from core import observare as _obs
+    _obs.esec_secundar("conectare SPV: %s" % motiv, detaliu)
+
+
+def rezultat_callback(code, state, error="", error_description=""):
+    """[600] Întoarcerea din ANAF -> motivul (din `MOTIVE_RETUR`). Nu ridică niciodată: orice cădere devine un motiv."""
+    import requests
+    if error:
+        _semnaleaza("anulata", RuntimeError("ANAF a întors error=%r, error_description=%r" % (error[:200], (error_description or "")[:300])))
+        return "anulata"
+    if not code:
+        _semnaleaza("fara_cod", RuntimeError("ANAF a întors fără `code` (state %s)" % ("prezent" if state else "lipsă")))
+        return "fara_cod"
+    try:
+        principal = spv_conector.verifica_state(state)
+    except spv_conector.EroareStateExpirat as e:
+        _semnaleaza("expirata", e)
+        return "expirata"
+    except spv_conector.EroareSpv as e:
+        _semnaleaza("nelegata", e)
+        return "nelegata"
+    except Exception as e:  # noqa: BLE001 — secretul de semnare lipsă din configurare: tot o întoarcere cu mesaj, nu 500
+        _semnaleaza("nesalvata", e)
+        return "nesalvata"
+    try:
+        # [P5 val 3, 11.09.2026] FARA conexiune in mana. Schimbul `code -> token` are termen de
+        # 30 s si fereastra ANAF de 60 s; baza se atinge abia dupa raspuns, iar
+        # `finalizeaza_autorizare` isi deschide singura tranzactia scurta in care persista si
+        # COMITE — deci tokenul e salvat inainte ca ruta sa se intoarca.
+        spv_conector.finalizeaza_autorizare(principal, code)  # APEL REAL ANAF
+    except spv_conector.EroareSpv as e:
+        _semnaleaza("refuz_anaf", e)
+        return "refuz_anaf"
+    except requests.exceptions.RequestException as e:
+        _semnaleaza("anaf_tace", e)
+        return "anaf_tace"
+    except Exception as e:  # noqa: BLE001 — baza / decriptarea / orice altceva: contabilul se întoarce în iConta cu motivul
+        _semnaleaza("nesalvata", e)
+        return "nesalvata"
+    return "ok"
+
+
 def monteaza(app, dep_context):
     """Inregistreaza rutele SPV. dep_context = dependenta de context autentificat (cere_context);
     proprietatea principalului o impune spv_principal, nu dependenta (cabinet)."""
@@ -67,26 +126,14 @@ def monteaza(app, dep_context):
             return st
 
     @app.get("/anaf/oauth/callback")
-    def anaf_oauth_callback(code: str = "", state: str = "", error: str = ""):
+    def anaf_oauth_callback(code: str = "", state: str = "", error: str = "", error_description: str = ""):
         """
         Callback OAuth (URL inregistrat la ANAF, exact). Fara auth de sesiune: identitatea
         PRINCIPALULUI vine din state-ul semnat. State invalid => iesire INAINTE de orice apel ANAF.
-        Redirecteaza (303) catre pagina prietenoasa de retur (succes/eroare), nu JSON.
+        Redirecteaza (303) catre pagina de retur cu un MOTIV dintr-o multime inchisa (`MOTIVE_RETUR`),
+        niciodata cu textul unei exceptii (deficienta 600).
         """
-        def _retur(params):
-            return RedirectResponse(_PAGINA_RETUR + "?" + urllib.parse.urlencode(params), status_code=303)
-        if error or not code:
-            return _retur({"eroare": error or "cod lipsă"})
-        try:
-            principal = spv_conector.verifica_state(state)
-        except spv_conector.EroareSpv as e:
-            return _retur({"eroare": str(e)})
-        try:
-            # [P5 val 3, 11.09.2026] FARA conexiune in mana. Schimbul `code -> token` are termen de
-            # 30 s si fereastra ANAF de 60 s; baza se atinge abia dupa raspuns, iar
-            # `finalizeaza_autorizare` isi deschide singura tranzactia scurta in care persista si
-            # COMITE — deci tokenul e salvat inainte ca ruta sa se intoarca.
-            spv_conector.finalizeaza_autorizare(principal, code)  # APEL REAL ANAF
-        except spv_conector.EroareSpv as e:
-            return _retur({"eroare": str(e)})
-        return _retur({"ok": "1"})
+        motiv = rezultat_callback(code, state, error, error_description)
+        # parametrul `motiv` al adresei de retur e un COD din `MOTIVE_RETUR` (mulțime închisă), nu o afirmație despre datele firmei:
+        # textul pentru om îl alege pagina de retur (`static/spv_callback.html`, `MESAJE`), iar conexiunea SPV e a cabinetului
+        return RedirectResponse(_PAGINA_RETUR + "?" + urllib.parse.urlencode([("motiv", motiv)]), status_code=303)

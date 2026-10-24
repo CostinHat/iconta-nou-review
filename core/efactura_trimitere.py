@@ -25,8 +25,11 @@ import psycopg2.extras as _E
 from core import db
 from core import efactura_send as _ef
 from core import repo_efactura as _repo
+from core import observare as _obs
 from core import spv_conector
 
+#: [598 / 600, lotul 12] ce nu s-a întâmplat când drumul spre ANAF a căzut la încărcare (`spv_conector.mesaj_pentru_contabil`)
+MESAJ_NETRIMISA = "Factura nu a plecat în SPV și rămâne netrimisă."
 
 
 #: [deficiența 289b] cabinetul neconectat la SPV — sursa unică a textului (ruta `facturi/{id}/trimite-spv` îl afișează cu butonul spre conectare)
@@ -56,10 +59,22 @@ def refuz_din_efactura(conn, schema, factura_id):
 
     [lotul 11, AT] Refuzul e o AFIRMAȚIE TIPATĂ (`afirmatii.afirmatie`, decizia 21.08.2026): `fapt` despre factură (`unde` = factura) — a
     venit din e-Factura —, cu `temei_completitudine` = discriminatorul de mai sus. `motiv` = același text ca `mesaj` (ecranul citește
-    `mesaj`, `api.js`); `stare` și `cod` rămân, pentru `trimite` și pentru ruta care îl întoarce întreg în 409."""
-    from core import repo_facturi as _rf
+    `mesaj`, `api.js`); `stare` și `cod` rămân, pentru `trimite` și pentru ruta care îl întoarce întreg în 409.
+
+    [lotul 12, 252] Același refuz (aceeași stare, deci aceeași cale în `trimite` și în rută) și pentru factura deschisă PRELUATĂ
+    (`cod` = „SOLD_PRELUAT”): a emis-o programul vechi, iar soldul ei e în soldurile inițiale."""
+    from core import repo_facturi as _rf, nomenclator_status_factura as _nsf
     with conn.cursor() as cur:
+        tip = _rf.tip_document(cur, schema, factura_id)
         r = _rf.stare_pentru_recunoastere(cur, schema, factura_id)   # (status, directie, din_import)
+    if _nsf.e_sold_preluat(tip):
+        # [lotul 12, 252] factura deschisă preluată a fost emisă (și transmisă, dacă era cazul) de programul vechi: nu pleacă din iConta.eu
+        from core import afirmatii as _af
+        from core.unde import Unde as _Unde
+        return _af.afirmatie("fapt", "factura preluată", _nsf.MESAJ_SOLD_PRELUAT, unde=_Unde("factura", factura_id),
+                             temei_completitudine="documentul e o factură deschisă preluată, scrisă numai de "
+                                                  "importul soldurilor pe parteneri",
+                             stare="din_efactura", cod="SOLD_PRELUAT", mesaj=_nsf.MESAJ_SOLD_PRELUAT)
     if r and r[1] == "emisa" and r[2]:
         from core import afirmatii as _af
         from core.unde import Unde as _Unde
@@ -231,14 +246,18 @@ def trimite(schema, factura_id, principal, mediu="test"):
                 rez.update({"fara_drept": True, "mesaj": spv_conector.mesaj_fara_drept(cif, errmsg)})
     except spv_conector.EroareSpvFaraDrept as e:
         # 403 = certificatul nu are drept (CIF/serviciu) - NU e eroare de structura
+        # [598 / 600, lotul 12] pe ecran („vezi mesajul”, răspunsul trimiterii) ajunge textul pentru contabil; excepția, în jurnal
+        _obs.esec_secundar("SPV: încărcarea facturii %s" % factura_id, e)
+        mesaj = spv_conector.mesaj_fara_drept(cif, None)   # [17.10.2026] același text ca starea firmei
         rez.update({"http": 403, "execution_status": None, "index_incarcare": None,
-                    "errors": [], "raspuns": str(e), "fara_drept": True,
-                    "mesaj": spv_conector.mesaj_fara_drept(cif, str(e))})   # [17.10.2026] același text ca starea firmei
-        stare, errmsg, index, ex = "eroare_upload", "403 fara drept SPV: %s" % e, None, None
-    except Exception as e:
+                    "errors": [], "raspuns": mesaj, "fara_drept": True, "mesaj": mesaj})
+        stare, errmsg, index, ex = "eroare_upload", mesaj, None, None
+    except Exception as e:  # noqa: BLE001 — conectorul, rețeaua spre ANAF: rândul se scrie oricum, cu motivul spus pe înțelesul omului
+        _obs.esec_secundar("SPV: încărcarea facturii %s" % factura_id, e)
+        mesaj = spv_conector.mesaj_pentru_contabil(e, MESAJ_NETRIMISA)
         rez.update({"http": None, "execution_status": None, "index_incarcare": None,
-                    "errors": [], "raspuns": str(e)})
-        stare, errmsg, index, ex = "eroare_upload", "exceptie upload: %s" % str(e)[:2000], None, None
+                    "errors": [], "raspuns": mesaj})
+        stare, errmsg, index, ex = "eroare_upload", mesaj, None, None
 
     # 3) scrie rezultatul complet (commit) - INDIFERENT de rezultat
     with db.get_conn() as conn:

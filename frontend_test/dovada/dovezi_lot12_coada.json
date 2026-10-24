@@ -1,0 +1,546 @@
+[
+ {
+  "nr": "499",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registru jurnal (luna curentă): notele asistentei respinse înainte de reparație (06–09.10.2026, motivele scrise atunci) spun „Respinsă la validare: <motiv>. Corecteaz-o…” cu un singur punct — motivul vechi nu se rescrie în bază, afișarea îl încheie o dată (`motivInFraza`). Dacă luna afișată nu are nicio notă respinsă, verificarea „exista” iese neîndeplinită și luna se alege cu ← (de spus în raport)",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "deruleaza": ".jn-respinsa",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".jn-respinsa"
+   },
+   {
+    "contine": "Respinsă la validare:",
+    "zona": ".jn-respinsa"
+   },
+   {
+    "nu_contine": "..",
+    "zona": ".jn-respinsa"
+   }
+  ],
+  "captura": "499_f1_vechi_nota_respinsa_un_punct.png"
+ },
+ {
+  "nr": "500",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registru jurnal: bara de totaluri de jos nu mai spune „Fără document justificativ derivabil”; când luna are note fără document, rândul e „Note fără document justificativ (nici document scris, nici factură legată)”",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "asteapta": ".fd-totaluri"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fd-totaluri"
+   },
+   {
+    "nu_contine": "derivabil"
+   }
+  ],
+  "captura": "500_f1_vechi_totaluri_jurnal.png"
+ },
+ {
+  "nr": "24",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registru jurnal (10/2026): notele automate scrise înainte de reparație poartă documentul justificativ — ieșirea din stoc a facturii F1A3 („Factură F1A nr. 3 din 06.10.2026”) și comisionul din extras (16.10.2026)",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Document justificativ: Factură F1A nr. 3 din 06.10.2026"
+   },
+   {
+    "contine": "Comision administrare cont"
+   },
+   {
+    "nu_contine": "nederivat"
+   }
+  ],
+  "captura": "24_f1_vechi_note_automate_cu_document.png"
+ },
+ {
+  "nr": "47",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registru jurnal -> „+ Notă nouă”: formularul notei are câmpul „Data notei” (#je-data). Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": "#j-nota-noua"
+   },
+   {
+    "asteapta": "#je-data"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#je-data"
+   },
+   {
+    "contine": "Data notei"
+   }
+  ],
+  "captura": "47_f1_editor_cu_data.png"
+ },
+ {
+  "nr": "48",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registru jurnal: notele trimise la validare de asistentă înainte de reparație (nr. 132–137) spun „La validare în cabinet: nu se modifică până nu e validată sau respinsă.”, fără „Editează” / „Șterge” pe rândul lor",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "asteapta": "[data-nota-id='132']"
+   },
+   {
+    "deruleaza": "[data-nota-id='132']"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "La validare în cabinet: nu se modifică până nu e validată sau respinsă.",
+    "zona": "[data-nota-id='132']"
+   },
+   {
+    "nu_contine": "Editează",
+    "zona": "[data-nota-id='132']"
+   }
+  ],
+  "captura": "48_f1_vechi_nota_la_validare_fara_editare.png"
+ },
+ {
+  "nr": "52",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul de test, pagina principală: cardul „De validat” spune „N note de validat”; deschis, fereastra spune „Note de validat (N)” — aceeași cifră (captura cardului, apoi a ferestrei; cifra exactă o probează e2e_lot12_coada.py::test_def_52_… pe un cabinet nou)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "asteapta": ".cab-card-sinteza[data-cheie=validat]"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "deruleaza": ".cab-card-sinteza[data-cheie=validat]"
+   },
+   {
+    "captura": "52_f1_card_de_validat.png"
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-note .cf-grup-titlu"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "NOTE DE VALIDAT (",
+    "zona": "#val-note .cf-grup-titlu"
+   }
+  ],
+  "captura": "52_f1_fereastra_de_validat.png"
+ },
+ {
+  "nr": "53",
+  "firma": "tenant_9049",
+  "descriere": "Cabinet, „De validat”: „Note de validat (N)” e primul grup, deasupra textului despre declarații; fereastra nu folosește „Patru-ochi”",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-titlu"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#val-note .cf-grup-titlu"
+   },
+   {
+    "nu_contine": "Patru-ochi"
+   },
+   {
+    "nu_contine": "patru-ochi"
+   }
+  ],
+  "captura": "53_f1_note_deasupra_declaratiilor.png"
+ },
+ {
+  "nr": "217",
+  "firma": "tenant_9049",
+  "descriere": "Cabinet, „De validat”, cu note de validat pe ecran: textul nu spune că „validarea în doi nu e pornită” pentru note — validarea în doi privește declarațiile",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-titlu"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#val-note .val-card"
+   },
+   {
+    "nu_contine": "validarea în doi nu e pornită."
+   }
+  ],
+  "captura": "217_f1_text_validare_in_doi.png"
+ },
+ {
+  "nr": "51",
+  "firma": "tenant_9049",
+  "descriere": "Cabinet, „De validat”: fiecare document e un singur card; un document cu mai multe note (factura cu ieșirea din stoc, NIR-ul) are „Vezi notele →”, iar data-coada-ids poartă toate notele lui (elementele vechi regrupate de core/migrare_grup_coada.py). Dacă coada copiei n-are niciun document cu mai multe note, verificarea „Vezi notele” iese neîndeplinită (de spus în raport)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-titlu"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#val-note .val-card"
+   },
+   {
+    "contine": "Vezi notele",
+    "zona": "#val-note"
+   }
+  ],
+  "captura": "51_f1_vechi_un_card_pe_document.png"
+ },
+ {
+  "nr": "129",
+  "firma": "tenant_9049",
+  "descriere": "Cabinet, „De validat” -> „Vezi nota →” pe primul card: detaliul notei are „Validează” și „Respinge”. Nimic nu se apasă în detaliu",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#val-note .val-vezi-nota"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type .val-aproba",
+    "text": "Validează"
+   },
+   {
+    "exista": ".fereastra:last-of-type .val-respinge",
+    "text": "Respinge"
+   }
+  ],
+  "captura": "129_f1_vechi_detaliul_notei.png"
+ },
+ {
+  "nr": "92",
+  "firma": "tenant_9049",
+  "descriere": "Cabinet, „De validat” -> „Respinge” pe primul card -> motivul scris în dialog: butonul „Respinge” al dialogului e activ (roșu plin, ca pe card). Dialogul se închide cu „Anulează” — nimic nu se respinge",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#val-note .val-respinge"
+   },
+   {
+    "asteapta": "#dlg-input"
+   },
+   {
+    "completeaza": "#dlg-input",
+    "valoare": "motiv de probă, nu se trimite"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "captura": "92_f1_respinge_cu_motivul_completat.png"
+   }
+  ],
+  "verifica": [
+   {
+    "activ": "#dlg-ok",
+    "text": "Respinge"
+   }
+  ],
+  "captura": "92_f1_respinge_activ.png"
+ },
+ {
+  "nr": "182",
+  "firma": "tenant_9049",
+  "descriere": "Cabinet, „De validat”: ciornele contabilului (scrise înainte de reparație, netrimise) sunt la capătul ferestrei, „Notele tale în ciornă”, pe firme",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-titlu"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "asteapta": "#val-ciorne .val-ciorne-firma"
+   },
+   {
+    "deruleaza": "#val-ciorne"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Notele scrise de tine care nu sunt încă în evidență",
+    "zona": "#val-ciorne"
+   },
+   {
+    "exista": "#val-ciorne li [data-deschide-ciorna]"
+   }
+  ],
+  "captura": "182_f1_vechi_ciornele_contabilului.png"
+ },
+ {
+  "nr": "56",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registru jurnal (luna cu notele asistentei respinse înainte de reparație): antetul numără nota respinsă la „respinsă, de corectat”, nu „de validat”; rândul arată motivul",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "respinsă, de corectat",
+     "respinse, de corectat"
+    ],
+    "zona": ".fereastra:last-of-type p.pf-intro"
+   },
+   {
+    "exista": ".jn-respinsa"
+   }
+  ],
+  "captura": "56_f1_vechi_antet_respinse.png"
+ },
+ {
+  "nr": "150",
+  "firma": "tenant_9049",
+  "descriere": "F1, Balanța (luna afișată): ciornele nu intră în balanță și sunt numărate separat, în caseta „N ciorne nevalidate nu intră în balanță (… în luna asta …)”",
+  "pasi": [
+   {
+    "click": "#fa-balanta"
+   },
+   {
+    "asteapta": "#b-prev"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#b-ciorne"
+   },
+   {
+    "contine": "nu intră în balanță",
+    "zona": "#b-ciorne"
+   }
+  ],
+  "captura": "150_f1_vechi_balanta_ciornele_separat.png"
+ },
+ {
+  "nr": "259",
+  "firma": "tenant_9049",
+  "descriere": "F1, Registru jurnal: pe nota respinsă, motivul stă sub textul notei (caseta .jn-respinsa în coloana textului), iar butoanele își păstrează coloana — de privit pe captură",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "deruleaza": ".jn-respinsa",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".pf-frand .jn-respinsa"
+   }
+  ],
+  "captura": "259_f1_vechi_motivul_sub_text.png"
+ }
+]

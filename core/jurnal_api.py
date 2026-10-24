@@ -125,15 +125,15 @@ def _erori_data(data, er):
     import datetime
     s = str(data or "").strip()
     if not s:
-        er.adauga("nota are nevoie de data operatiunii: fiecare operatiune se consemneaza in momentul "
-                  "efectuarii ei", TEMEI_CONSEMNARE, camp=CAMP_DATA)
+        er.adauga("nota are nevoie de data operațiunii: fiecare operațiune se consemnează în momentul "
+                  "efectuării ei", TEMEI_CONSEMNARE, camp=CAMP_DATA)
         return None
     try:
         return datetime.date.fromisoformat(s)
     except ValueError:
-        er.adauga("data %r nu e in formatul AAAA-LL-ZZ. Se cere o data calendaristica, fiindca "
-                  "inregistrarea se face la momentul operatiunii, iar ordinea cronologica a "
-                  "registrului-jurnal atarna de ea" % s, TEMEI_CONSEMNARE, camp=CAMP_DATA)
+        er.adauga("data %r nu e în formatul AAAA-LL-ZZ. Se cere o dată calendaristică, fiindcă "
+                  "înregistrarea se face la momentul operațiunii, iar ordinea cronologică a "
+                  "registrului-jurnal atârnă de ea" % s, TEMEI_CONSEMNARE, camp=CAMP_DATA)
         return None
 
 
@@ -163,8 +163,8 @@ def _erori_linii(conn, schema, linii, er):
     from decimal import InvalidOperation
     from core import cont_valid as _cv
     if not linii:
-        er.adauga("nota trebuie sa aiba cel putin o linie: o inregistrare in partida dubla are "
-                  "cel putin un cont debitor si unul creditor", TEMEI_PARTIDA_DUBLA)
+        er.adauga("nota trebuie să aibă cel puțin o linie: o înregistrare în partidă dublă are "
+                  "cel puțin un cont debitor și unul creditor", TEMEI_PARTIDA_DUBLA)
         return
     for i, l in enumerate(linii, 1):
         if not isinstance(l, dict):   # [440] refuz numit, nu 500 din `l.get`
@@ -173,7 +173,7 @@ def _erori_linii(conn, schema, linii, er):
         for cheie, eticheta in (("debit", "contul debitor"), ("credit", "contul creditor")):
             if not str(l.get(cheie, "")).strip():
                 er.adauga(
-                    "linia %d n-are %s. Partida dubla cere ambele conturi pe fiecare inregistrare"
+                    "linia %d n-are %s. Partida dublă cere ambele conturi pe fiecare înregistrare"
                     % (i, eticheta), TEMEI_PARTIDA_DUBLA, camp=camp_linie(cheie, i), linia=i)
                 continue
             try:
@@ -198,8 +198,8 @@ def _erori_linii(conn, schema, linii, er):
         except (InvalidOperation, ValueError):
             suma = None
         if suma is None or not suma.is_finite() or suma <= 0:
-            er.adauga("linia %d are suma %s: o inregistrare consemneaza o operatiune efectuata, "
-                      "deci suma ei e strict pozitiva" % (i, l.get("suma")),
+            er.adauga("linia %d are suma %s: o înregistrare consemnează o operațiune efectuată, "
+                      "deci suma ei e strict pozitivă" % (i, l.get("suma")),
                       TEMEI_CONSEMNARE, camp=camp_linie("suma", i), linia=i)
         # [deficiența 381, comanda Costin 8.2, 18.10.2026: „Nota pe 401/4111 cere partenerul la introducere”] o datorie / creanță se ține
         # pe fiecare partener (D406, nota la GL.28/GL.29: „în câmpurile SupplierID, respectiv CustomerID se va completa codul [...]”)
@@ -305,11 +305,13 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, docum
         if er:
             return er.refuz()
         if linii is not None:
-            # ai_corectie_v1: memoreaza contul debit dinainte de edit (propunerea AI)
-            cur.execute(f"""SELECT cont_debit FROM {schema}.inregistrari_linii
+            # ai_corectie_v1: memoreaza contul dinainte de edit (propunerea AI) — [479] contrapartida trezoreriei (`ai_incredere.cont_de_invatat`)
+            from core import ai_incredere as _ai
+            cur.execute(f"""SELECT cont_debit, cont_credit FROM {schema}.inregistrari_linii
                             WHERE inregistrare_id=%s ORDER BY id LIMIT 1""", (nota_id,))
             _vechi = cur.fetchone()
-            _cont_vechi = (_vechi["cont_debit"] if isinstance(_vechi, dict) else _vechi[0]) if _vechi else None
+            _cont_vechi = (_ai.cont_de_invatat(*((_vechi["cont_debit"], _vechi["cont_credit"]) if isinstance(_vechi, dict) else _vechi))
+                           if _vechi else None)
             cur.execute(f"DELETE FROM {schema}.inregistrari_linii WHERE inregistrare_id=%s", (nota_id,))
             for l in linii:
                 cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
@@ -319,9 +321,8 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None, docum
                      Decimal(str(l["suma"])), _centru(l), *_partener(l)))
             # ai_corectie_v2: cont schimbat de contabil => corectie invatata
             try:
-                _cont_nou = str(linii[0]["debit"]).strip()
+                _cont_nou = _ai.cont_de_invatat(str(linii[0]["debit"]).strip(), str(linii[0]["credit"]).strip())
                 if _cont_vechi and _cont_nou and _cont_vechi != _cont_nou and n.get("descriere"):
-                    from core import ai_incredere as _ai
                     _ctx = _ai.normalizeaza(n["descriere"])
                     if _ctx:
                         cur.execute(f"""INSERT INTO {schema}.ai_corectii
@@ -423,15 +424,16 @@ def valideaza(conn, schema, nota_id):
             if _r:
                 return {**_refuz(_r, _cs.TEMEI), "cod": _cs.COD}
         cur.execute(f"UPDATE {schema}.inregistrari SET status='validata' WHERE id=%s", (nota_id,))
-        # ai_invatare_v1: invatare din validare (context = descriere, cont = debitul primei linii)
+        # ai_invatare_v1: invatare din validare (context = descriere, cont = contrapartida trezoreriei pe prima linie — [479] pe o
+        # încasare 5121 = 4111 se învață 4111, nu 5121: `ai_incredere.cont_de_invatat`)
         try:
-            cur.execute(f"""SELECT cont_debit FROM {schema}.inregistrari_linii
+            cur.execute(f"""SELECT cont_debit, cont_credit FROM {schema}.inregistrari_linii
                             WHERE inregistrare_id=%s ORDER BY id LIMIT 1""", (nota_id,))
             ld = cur.fetchone()
             if ld and n.get("descriere"):
                 from core import ai_incredere as _ai
                 ctx_t = _ai.normalizeaza(n["descriere"])
-                cont_f = ld["cont_debit"] if isinstance(ld, dict) else ld[0]
+                cont_f = _ai.cont_de_invatat(*((ld["cont_debit"], ld["cont_credit"]) if isinstance(ld, dict) else ld))
                 if ctx_t and cont_f:
                     cur.execute(f"""INSERT INTO {schema}.ai_corectii
                                     (context, cont_propus, cont_final, corectat)
@@ -457,7 +459,10 @@ def _motiv_din_baza(exc):
     for et in _REFUZURI_BAZA:
         if et in msg:
             t = msg.split(et)[1].split("\n")[0].strip()
-            return ("Perioada %s." % t) if et == "PERIOADA_BLOCATA:" else t
+            if et == "PERIOADA_BLOCATA:":
+                from core import perioada as _per   # [lotul 12] „Luna 10/2026 e închisă.”, nu „Perioada luna 10/2026 este inchisa.”
+                return _per.text_blocare(t)
+            return t
     return None
 
 
@@ -628,7 +633,8 @@ def eticheta_factura(fel, serie, numar, data):
 #: mișcării de stoc (`eticheta_factura`, `stocuri_cv_api.document_retur`), diferența de preț a NIR-ului (`contare_facturi.contabilizeaza`),
 #: compensarea (`compensari_api.scrie`). Numai în ele numărul lipit de dinainte de 443 e al aplicației; textul tastat de om (documentul de
 #: la casă, „Încasare factura F1A4”) și cel venit din afară (extrasul băncii) nu se ating — CLAUDE.md §8: datele omului, NEALTERATE.
-SCRISE_DE_APLICATIE = ("Contare factura ", "Factură ", "Retur la Factură ", "Diferență de preț NIR ", "Compensare ")
+SCRISE_DE_APLICATIE = ("Contare factura ", "Factură ", "Retur la Factură ", "Diferență de preț NIR ", "Compensare ",
+                       "Încasare de la client — ", "Plată către furnizor — ")   # [lotul 12, C135] și notele de casă ale facturii
 
 
 def fara_serie_lipita(text, serie, numar):
@@ -680,8 +686,14 @@ def note_cu_serie_lipita(cur, schema, nota_ids=None):
                       FROM {p}inregistrari i JOIN {p}compensari c ON c.inregistrare_id = i.id
                       JOIN {p}facturi f ON f.id IN (c.factura_emisa_id, c.factura_primita_id)
                      WHERE i.descriere LIKE %s AND COALESCE(btrim(f.serie), '') <> ''{filtru}
+                    UNION
+                    SELECT i.id, i.status, i.data, 'descriere', i.descriere, f.serie, f.numar
+                      FROM {p}inregistrari i JOIN {p}facturi f ON f.id = i.factura_id
+                     WHERE i.sursa = 'casa' AND (i.descriere LIKE %s OR i.descriere LIKE %s)
+                       AND COALESCE(btrim(f.serie), '') <> ''{filtru}
                     ORDER BY 1, 4""",
-                ["Contare factura %"] + par + par + ["Compensare %"] + par)
+                ["Contare factura %"] + par + par + ["Compensare %"] + par
+                + ["Încasare de la client — %", "Plată către furnizor — %"] + par)   # [lotul 12, C135] notele de casă ale facturii
     grupe = {}
     for r in cur.fetchall():
         v = tuple(r.values()) if isinstance(r, dict) else tuple(r)

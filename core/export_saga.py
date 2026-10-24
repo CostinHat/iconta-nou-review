@@ -160,7 +160,9 @@ def date_factura(conn, schema, factura_id):
                         bon_fiscal_nr, bon_fiscal_data, storno_din_id
                         FROM {schema}.facturi WHERE id=%s""", (factura_id,))
         f = cur.fetchone()
-        if not f or f[9] != "emisa":
+        # [lotul 12, 252] factura deschisă preluată e a programului vechi (deja în SAGA, dacă de acolo vine): nu se exportă
+        from core import nomenclator_status_factura as _nsf
+        if not f or f[9] != "emisa" or _nsf.e_sold_preluat(f[10]):
             return None
         # [lotul 11, C82] + `valoare_neta` (BT-131 de pe factura importată, exact): valoarea liniei în SAGA și în WinMentor
         cur.execute(f"""SELECT descriere, um, cantitate, pret_unitar, cota_tva, valoare_neta

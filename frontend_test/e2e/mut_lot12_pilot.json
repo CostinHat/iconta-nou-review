@@ -1,0 +1,140 @@
+[
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "${cate(rez.randuri, \"cont salvat\", \"conturi salvate\")}, cu soldurile la ${dataRo(data_referinta)}.",
+  "inlocuire": "${cate(rez.randuri, \"cont salvat\", \"conturi salvate\")}, la ${dataRo(data_referinta)}.",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_01_preluarea_luna_si_balanta_de_deschidere"
+ },
+ {
+  "fisier": "core/audit_preluare.py",
+  "ancora": "f\"coincide cu balanța.\"))",
+  "inlocuire": "f\"se potrivește cu balanța.\"))",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_03_auditul_de_preluare"
+ },
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "(d[\"numar\"], d[\"data\"], d[\"scadenta\"], d[\"suma\"], d[\"directie\"], d[\"tert_nume\"]",
+  "inlocuire": "(d[\"numar\"], d[\"data\"], d[\"scadenta\"], d[\"suma\"], \"emisa\", d[\"tert_nume\"]",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_04_soldul_preluat_e_document_deschis"
+ },
+ {
+  "fisier": "core/stocuri.py",
+  "ancora": "return _q(_d(transport) * _d(cota_tva_transport) / 100)",
+  "inlocuire": "return _q(_d(transport) * _d(cota_tva_transport) / 50)",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_06_nir_cu_transport"
+ },
+ {
+  "fisier": "core/nir_legare.py",
+  "ancora": "acelasi = cost == net or (bool(n[\"forma_noua\"]) and accesorii > 0 and cost + accesorii == net)",
+  "inlocuire": "acelasi = cost == net",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_07_facturile_primite_din_e_factura"
+ },
+ {
+  "fisier": "static/js/ecrane/clienti_ecran.js",
+  "ancora": "<td class=\"fd-td-num\">${c.debitor ? bani(c.debitor) : \"\"}</td><td class=\"fd-td-num\">${c.creditor ? bani(c.creditor) : \"\"}</td></tr>",
+  "inlocuire": "<td class=\"fd-td-num\">${c.creditor ? bani(c.creditor) : \"\"}</td><td class=\"fd-td-num\">${c.debitor ? bani(c.debitor) : \"\"}</td></tr>",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_09_lista_partenerilor_cu_soldurile"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "r[\"descarcare\"] = _cv.descarca_factura(conn, schema, r[\"factura_id\"],",
+  "inlocuire": "r[\"descarcare_mutata\"] = _cv.descarca_factura(conn, schema, r[\"factura_id\"],",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_10_factura_cu_descarcarea_stocului"
+ },
+ {
+  "fisier": "core/chitante.py",
+  "ancora": "def suma_in_litere(suma):",
+  "inlocuire": "def suma_in_litere(suma):\n    suma = float(suma) + 1",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_11_incasarea_in_casa_cu_chitanta"
+ },
+ {
+  "fisier": "core/z_descarcare.py",
+  "ancora": "adaos = ((v - c) * 100 / c).quantize(Decimal(\"1\"), rounding=ROUND_HALF_UP)",
+  "inlocuire": "adaos = ((v - c) * 100 / v).quantize(Decimal(\"1\"), rounding=ROUND_HALF_UP)",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_12_raportul_z_si_descarcarea_lui"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "mergiPeLunaZ(r.data);",
+  "inlocuire": "void r.data;",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_13_raportul_z_din_fisierul_amef"
+ },
+ {
+  "fisier": "core/banca.py",
+  "ancora": "\"comision\":       (\"627\",  None),",
+  "inlocuire": "\"comision\":       (\"628\",  None),",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_18_extrasul_de_banca_si_potrivirea"
+ },
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "if zile_episod <= 7: return Decimal(\"0.55\")",
+  "inlocuire": "if zile_episod <= 7: return Decimal(\"0.65\")",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_20_statul_de_plata_cu_concediul_medical"
+ },
+ {
+  "fisier": "core/stat_plata_api.py",
+  "ancora": "(\"  reținut din indemnizație: CAS (25%)\", -_n(\"cm_cas\"), FEL_DETALIU)",
+  "inlocuire": "(\"  reținut din indemnizație: CAS (25%)\", -_n(\"cm_cass\"), FEL_DETALIU)",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_21_concediul_medical_arata_cas_ul"
+ },
+ {
+  "fisier": "core/stat_plata_api.py",
+  "ancora": "Paragraph(f\"Fluturaș de salariu — {luna:02d}/{an}\", st_titlu),",
+  "inlocuire": "Paragraph(f\"Fluturas de salariu — {luna:02d}/{an}\", st_titlu),",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_22_contabilizarea_statului_si_fluturasul"
+ },
+ {
+  "fisier": "core/repo_scadentar.py",
+  "ancora": "    return [dict(f, suma=f[\"rest\"]) for f in _rf.de_incasat(cur, \"emisa\")]",
+  "inlocuire": "    st = _rf.SQL_STORNARI.format(s=\"\", a=\"f\")\n    cur.execute(\"SELECT f.id, f.numar, f.serie, f.data_emitere, f.data_scadenta, \"\n                \"       COALESCE(f.total,0) + \" + st + \" AS suma, f.moneda, f.tert_nume, f.tert_cui, \"\n                \"       f.client_id, c.email, \"\n                \"       COALESCE(f.notificare_stop, false) AS notificare_stop, f.notificare_amanata_pana \"\n                \"  FROM facturi f \"\n                \"  LEFT JOIN clienti c ON c.id = f.client_id \"\n                \" WHERE f.directie = 'emisa' \"\n                \"   AND COALESCE(f.tip, 'factura') = 'factura' \"\n                \"   AND f.storno_din_id IS NULL \"\n                \"   AND COALESCE(f.total,0) + \" + st + \" > %s\", (_rf.TOLERANTA_STORNATA,))\n    return cur.fetchall()",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_26_scadentarul"
+ },
+ {
+  "fisier": "core/repo_scadentar.py",
+  "ancora": "    return [dict(f, suma=f[\"rest\"]) for f in _rf.de_incasat(cur, \"emisa\")]",
+  "inlocuire": "    st = _rf.SQL_STORNARI.format(s=\"\", a=\"f\")\n    cur.execute(\"SELECT f.id, f.numar, f.serie, f.data_emitere, f.data_scadenta, \"\n                \"       COALESCE(f.total,0) + \" + st + \" AS suma, f.moneda, f.tert_nume, f.tert_cui, \"\n                \"       f.client_id, c.email, \"\n                \"       COALESCE(f.notificare_stop, false) AS notificare_stop, f.notificare_amanata_pana \"\n                \"  FROM facturi f \"\n                \"  LEFT JOIN clienti c ON c.id = f.client_id \"\n                \" WHERE f.directie = 'emisa' AND f.platita_la IS NULL \"\n                \"   AND COALESCE(f.tip, 'factura') = 'factura' \"\n                \"   AND f.storno_din_id IS NULL \"\n                \"   AND COALESCE(f.total,0) + \" + st + \" > %s\", (_rf.TOLERANTA_STORNATA,))\n    return cur.fetchall()",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_27_scadentarul_stie_incasarea_prin_banca"
+ },
+ {
+  "fisier": "core/d300.py",
+  "ancora": "setr(\"R9_1\", col[21][0]);  setr(\"R9_2\", col[21][1])",
+  "inlocuire": "setr(\"R9_1\", col[21][1]);  setr(\"R9_2\", col[21][0])",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_30_d300"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "m[\"total\"] -= b + t",
+  "inlocuire": "m[\"total\"] -= 0",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_31_d394"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "cam_total = _d112int(sum_baza_cam * _cota_cam)",
+  "inlocuire": "cam_total = _d112int(sum_bazac * _cota_cam)",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_32_d112"
+ },
+ {
+  "fisier": "core/repo_d100.py",
+  "ancora": "\"     - COALESCE(SUM(CASE WHEN (l.cont_debit LIKE '70%%' OR l.cont_debit LIKE '75%%' \"",
+  "inlocuire": "\"     - 0 * COALESCE(SUM(CASE WHEN (l.cont_debit LIKE '70%%' OR l.cont_debit LIKE '75%%' \"",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_34_d100"
+ },
+ {
+  "fisier": "core/control_incrucisat.py",
+  "ancora": "mesaj=f\"{eticheta}: D300 și contul {cont} coincid ({_lei(decl)}).\",",
+  "inlocuire": "mesaj=f\"{eticheta}: D300 și contul {cont} se potrivesc ({_lei(decl)}).\",",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_35_controlul_fiscal_si_incrucisat"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "moneda: v(\"pm-moneda\"), cont: v(\"pr-cont\").trim(),",
+  "inlocuire": "moneda: v(\"pm-moneda\"), cont: \"628\",",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_38_factura_primita_introdusa_manual"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "perioade-blocate?an=${an}&luna=${luna}&motiv=${encodeURIComponent(motiv)}`",
+  "inlocuire": "perioade-blocate?an=${an}&luna=${luna}`",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_39_deblocarea_lunii_cu_motiv"
+ }
+]

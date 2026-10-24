@@ -19,8 +19,8 @@
  },
  {
   "fisier": "core/salariati_import_api.py",
-  "ancora": "WHERE x IN ('tip_norma', 'functie_baza') OR x = ANY(salariati.de_verificat)),",
-  "inlocuire": "WHERE x = ANY(salariati.de_verificat)),",
+  "ancora": "WHERE x IN ('tip_norma', 'functie_baza') OR x = ANY(salariati.de_verificat)\n",
+  "inlocuire": "WHERE x = ANY(salariati.de_verificat)\n",
   "test": "frontend_test/e2e/e2e_lot11_m.py::test_def_420_norma_si_functia_lipsa_arata_fisa_editabile_si_marcate"
  },
  {

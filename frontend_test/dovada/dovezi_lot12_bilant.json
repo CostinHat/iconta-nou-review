@@ -1,0 +1,890 @@
+[
+ {
+  "nr": "C143",
+  "firma": "tenant_9049",
+  "descriere": "F1: Bilanț 2026, S1005, pe notele existente (inclusiv rapoartele Z validate înainte de reparație: 5311 = 707 brutul, 707 = 4427 TVA-ul) -> „Validează”: fără erori — cifra de afaceri din F20 / F30 e rulajul net (fără TVA), deci profitul din F20 = profitul din 121 (DUK regula F10_0432 = F20_0082; OMFP 1802/2014 pct.8 pct.5)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 01"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "Cifra de afaceri netă"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "c143_f1_vechi_bilant_2026_f20.png"
+ },
+ {
+  "nr": "187",
+  "firma": "tenant_9049",
+  "descriere": "F1 (151 / 187): Bilanț 2026, S1005 -> „Validează” -> „Ce se depune”, pe ecran: rândul 05 (stocuri) și rândul 13 (datorii); TVA-ul din prețul de raft (4428.02) numai la stocuri, deci bilanțul e egal (fără erori la DUK, regula F10_64)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 05"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "rândul 05",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   },
+   {
+    "contine": "rândul 13",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "187_f1_vechi_bilant_2026_randuri.png"
+ },
+ {
+  "nr": "72",
+  "firma": "tenant_9049",
+  "descriere": "F1: Bilanț 2026, S1005 -> „Trimite în coadă →”: bilanțul intră în coada pregătit → validat → depus („a intrat în coada de validare”)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-coada"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-coada-mesaj",
+    "stare": "visible"
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a intrat în coada de validare",
+    "zona": ".fereastra:last-of-type #bl-coada-mesaj"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "72_f1_bilant_2026_coada.png"
+ },
+ {
+  "nr": "C143",
+  "firma": "tenant_9050",
+  "descriere": "F2: Bilanț 2026, S1005, pe notele existente (inclusiv rapoartele Z validate înainte de reparație: 5311 = 707 brutul, 707 = 4427 TVA-ul) -> „Validează”: fără erori — cifra de afaceri din F20 / F30 e rulajul net (fără TVA), deci profitul din F20 = profitul din 121 (DUK regula F10_0432 = F20_0082; OMFP 1802/2014 pct.8 pct.5)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 01"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "Cifra de afaceri netă"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "c143_f2_vechi_bilant_2026_f20.png"
+ },
+ {
+  "nr": "187",
+  "firma": "tenant_9050",
+  "descriere": "F2 (151 / 187): Bilanț 2026, S1005 -> „Validează” -> „Ce se depune”, pe ecran: rândul 05 (stocuri) și rândul 13 (datorii); TVA-ul din prețul de raft (4428.02) numai la stocuri, deci bilanțul e egal (fără erori la DUK, regula F10_64)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 05"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "rândul 05",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   },
+   {
+    "contine": "rândul 13",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "187_f2_vechi_bilant_2026_randuri.png"
+ },
+ {
+  "nr": "72",
+  "firma": "tenant_9050",
+  "descriere": "F2: Bilanț 2026, S1005 -> „Trimite în coadă →”: bilanțul intră în coada pregătit → validat → depus („a intrat în coada de validare”)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-coada"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-coada-mesaj",
+    "stare": "visible"
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a intrat în coada de validare",
+    "zona": ".fereastra:last-of-type #bl-coada-mesaj"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "72_f2_bilant_2026_coada.png"
+ },
+ {
+  "nr": "C143",
+  "firma": "tenant_9051",
+  "descriere": "F3: Bilanț 2026, S1005, pe notele existente (inclusiv rapoartele Z validate înainte de reparație: 5311 = 707 brutul, 707 = 4427 TVA-ul) -> „Validează”: fără erori — cifra de afaceri din F20 / F30 e rulajul net (fără TVA), deci profitul din F20 = profitul din 121 (DUK regula F10_0432 = F20_0082; OMFP 1802/2014 pct.8 pct.5)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 01"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "Cifra de afaceri netă"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "c143_f3_vechi_bilant_2026_f20.png"
+ },
+ {
+  "nr": "187",
+  "firma": "tenant_9051",
+  "descriere": "F3 (151 / 187): Bilanț 2026, S1005 -> „Validează” -> „Ce se depune”, pe ecran: rândul 05 (stocuri) și rândul 13 (datorii); TVA-ul din prețul de raft (4428.02) numai la stocuri, deci bilanțul e egal (fără erori la DUK, regula F10_64)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 05"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "rândul 05",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   },
+   {
+    "contine": "rândul 13",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "187_f3_vechi_bilant_2026_randuri.png"
+ },
+ {
+  "nr": "72",
+  "firma": "tenant_9051",
+  "descriere": "F3: Bilanț 2026, S1005 -> „Trimite în coadă →”: bilanțul intră în coada pregătit → validat → depus („a intrat în coada de validare”)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-coada"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-coada-mesaj",
+    "stare": "visible"
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a intrat în coada de validare",
+    "zona": ".fereastra:last-of-type #bl-coada-mesaj"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "72_f3_bilant_2026_coada.png"
+ },
+ {
+  "nr": "C143",
+  "firma": "tenant_9052",
+  "descriere": "F4: Bilanț 2026, S1005, pe notele existente (inclusiv rapoartele Z validate înainte de reparație: 5311 = 707 brutul, 707 = 4427 TVA-ul) -> „Validează”: fără erori — cifra de afaceri din F20 / F30 e rulajul net (fără TVA), deci profitul din F20 = profitul din 121 (DUK regula F10_0432 = F20_0082; OMFP 1802/2014 pct.8 pct.5)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 01"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "Cifra de afaceri netă"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "c143_f4_vechi_bilant_2026_f20.png"
+ },
+ {
+  "nr": "187",
+  "firma": "tenant_9052",
+  "descriere": "F4 (151 / 187): Bilanț 2026, S1005 -> „Validează” -> „Ce se depune”, pe ecran: rândul 05 (stocuri) și rândul 13 (datorii); TVA-ul din prețul de raft (4428.02) numai la stocuri, deci bilanțul e egal (fără erori la DUK, regula F10_64)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 05"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "rândul 05",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   },
+   {
+    "contine": "rândul 13",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "187_f4_vechi_bilant_2026_randuri.png"
+ },
+ {
+  "nr": "72",
+  "firma": "tenant_9052",
+  "descriere": "F4: Bilanț 2026, S1005 -> „Trimite în coadă →”: bilanțul intră în coada pregătit → validat → depus („a intrat în coada de validare”)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-coada"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-coada-mesaj",
+    "stare": "visible"
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a intrat în coada de validare",
+    "zona": ".fereastra:last-of-type #bl-coada-mesaj"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "72_f4_bilant_2026_coada.png"
+ },
+ {
+  "nr": "C143",
+  "firma": "tenant_9053",
+  "descriere": "F5: Bilanț 2026, S1005, pe notele existente (inclusiv rapoartele Z validate înainte de reparație: 5311 = 707 brutul, 707 = 4427 TVA-ul) -> „Validează”: fără erori — cifra de afaceri din F20 / F30 e rulajul net (fără TVA), deci profitul din F20 = profitul din 121 (DUK regula F10_0432 = F20_0082; OMFP 1802/2014 pct.8 pct.5)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 01"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "Cifra de afaceri netă"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "c143_f5_vechi_bilant_2026_f20.png"
+ },
+ {
+  "nr": "187",
+  "firma": "tenant_9053",
+  "descriere": "F5 (151 / 187): Bilanț 2026, S1005 -> „Validează” -> „Ce se depune”, pe ecran: rândul 05 (stocuri) și rândul 13 (datorii); TVA-ul din prețul de raft (4428.02) numai la stocuri, deci bilanțul e egal (fără erori la DUK, regula F10_64)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 05"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "rândul 05",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   },
+   {
+    "contine": "rândul 13",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "187_f5_vechi_bilant_2026_randuri.png"
+ },
+ {
+  "nr": "72",
+  "firma": "tenant_9053",
+  "descriere": "F5: Bilanț 2026, S1005 -> „Trimite în coadă →”: bilanțul intră în coada pregătit → validat → depus („a intrat în coada de validare”)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-coada"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-coada-mesaj",
+    "stare": "visible"
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a intrat în coada de validare",
+    "zona": ".fereastra:last-of-type #bl-coada-mesaj"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "72_f5_bilant_2026_coada.png"
+ },
+ {
+  "nr": "C143",
+  "firma": "tenant_9055",
+  "descriere": "F6: Bilanț 2026, S1005, pe notele existente (inclusiv rapoartele Z validate înainte de reparație: 5311 = 707 brutul, 707 = 4427 TVA-ul) -> „Validează”: fără erori — cifra de afaceri din F20 / F30 e rulajul net (fără TVA), deci profitul din F20 = profitul din 121 (DUK regula F10_0432 = F20_0082; OMFP 1802/2014 pct.8 pct.5)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 01"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "Cifra de afaceri netă"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "c143_f6_vechi_bilant_2026_f20.png"
+ },
+ {
+  "nr": "187",
+  "firma": "tenant_9055",
+  "descriere": "F6 (151 / 187): Bilanț 2026, S1005 -> „Validează” -> „Ce se depune”, pe ecran: rândul 05 (stocuri) și rândul 13 (datorii); TVA-ul din prețul de raft (4428.02) numai la stocuri, deci bilanțul e egal (fără erori la DUK, regula F10_64)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-val"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #bl-randuri tbody tr",
+    "text": "rândul 05"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validare fără erori",
+    "zona": ".fereastra:last-of-type #bl-rez"
+   },
+   {
+    "contine": "rândul 05",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   },
+   {
+    "contine": "rândul 13",
+    "zona": ".fereastra:last-of-type #bl-randuri"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "187_f6_vechi_bilant_2026_randuri.png"
+ },
+ {
+  "nr": "72",
+  "firma": "tenant_9055",
+  "descriere": "F6: Bilanț 2026, S1005 -> „Trimite în coadă →”: bilanțul intră în coada pregătit → validat → depus („a intrat în coada de validare”)",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".fereastra:last-of-type #bl-coada"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-coada-mesaj",
+    "stare": "visible"
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a intrat în coada de validare",
+    "zona": ".fereastra:last-of-type #bl-coada-mesaj"
+   }
+  ],
+  "posibila_de_la": "2027-01-01",
+  "captura": "72_f6_bilant_2026_coada.png"
+ }
+]

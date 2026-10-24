@@ -1,0 +1,38 @@
+[
+ {
+  "fisier": "static/js/ciorna_formular.js",
+  "ancora": "try { server = ((await api.get(url)) || {}).ciorna || null; } catch { server = null; }",
+  "inlocuire": "try { server = null; } catch { server = null; }",
+  "test": "frontend_test/e2e/e2e_lot12_emit.py::test_def_495_factura_inceputa_se_regaseste_pe_alt_calculator"
+ },
+ {
+  "fisier": "static/js/ciorna_formular.js",
+  "ancora": "{ await trimite(); return local; }",
+  "inlocuire": "{ return local; }",
+  "test": "frontend_test/e2e/e2e_lot12_emit.py::test_def_495_ciorna_veche_din_browser_urca_pe_server"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "const pastrate = toate.filter((o) => o.valoare === \"\" || o.valoare === ales || !q || o.text.includes(q));",
+  "inlocuire": "const pastrate = toate.filter((o) => o.valoare === \"\" || o.valoare === ales || !q || true);",
+  "test": "frontend_test/e2e/e2e_lot12_emit.py::test_def_488_articolul_din_stoc_se_cauta_in_lista"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id })",
+  "inlocuire": "ecranJurnal(c2, nav, { id: tenantId }, { an, luna })",
+  "test": "frontend_test/e2e/e2e_lot12_emit.py::test_def_470_nota_din_factura_se_deschide_pe_nota_ei"
+ },
+ {
+  "fisier": "core/facturi_recurente.py",
+  "ancora": "for camp, mesaj in _proba_emiterii(conn, schema, corp, raspunsuri_ai, azi):",
+  "inlocuire": "for camp, mesaj in []:",
+  "test": "frontend_test/e2e/e2e_lot12_emit.py::test_def_462_sablonul_trece_prin_verificarile_facturii_obisnuite"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "    spreEmitere: { camp: \"tip\", val: \"bunuri\",",
+  "inlocuire": "    spreEmitereScos: { camp: \"tip\", val: \"bunuri\",",
+  "test": "frontend_test/e2e/e2e_lot12_emit.py::test_def_c84_livrarea_ic_de_bunuri_se_face_din_emite_factura_si_descarca_stocul"
+ }
+]

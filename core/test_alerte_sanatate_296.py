@@ -94,7 +94,8 @@ def test_c42_anaf_fara_raspuns_la_o_firma_nu_opreste_citirea(monkeypatch):
     monkeypatch.setattr(sr.efs, "lista_mesaje", lista)
     stat = sr._stat_nou()
     r = sr.citeste_firma("tenant_x", stat)
-    assert (r["mesaje"], stat["anaf_fara_raspuns"]) == (0, 1) and r["eroare"].startswith("ANAF n-a răspuns la timp (ReadTimeout)"), r
+    assert (r["mesaje"], stat["anaf_fara_raspuns"]) == (0, 1) and r["eroare"] == sr.MESAJ_ANAF_FARA_RASPUNS, r
+    assert "ReadTimeout" not in r["eroare"] and "HTTPSConnectionPool" not in r["eroare"], "[598] fără numele excepției pe ecran"
     assert scrise == [("55229657", r["eroare"], 0)], "răspunsul (lipsa lui) se ține minte pe firmă"
 
 

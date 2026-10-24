@@ -1,0 +1,283 @@
+[
+ {
+  "nr": "475",
+  "firma": "tenant_9049",
+  "descriere": "F1, după migrarea core/migrare_articole_dublate.py: Stocuri -> situația stocului arată „grau” o singură dată (210 kg: cele 200 kg din BA-2 și cele 10 kg din BA-3, care stăteau pe articolele nr. 5 și 6, create tacit de borderou înainte de 450). Pe copie: 210 kg pe datele clonate; 211 kg când dovada C115 (dovezi_lot12_cx1.json, borderoul BA-4 de 1 kg «grau», scris pe copie) a rulat înainte pe aceeași copie. Nicio linie „grau” de 200 kg sau de 10 kg (articolele rămase separate)",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#s-situatie-tabel"
+   },
+   {
+    "deruleaza": "#s-situatie-tabel tbody tr",
+    "text": "grau"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "grau",
+    "zona": "#s-situatie-tabel"
+   },
+   {
+    "contine_oricare": [
+     "grau kg 210 ",
+     "grau kg 211 "
+    ],
+    "zona": "#s-situatie-tabel"
+   },
+   {
+    "nu_contine": "grau kg 200 ",
+    "zona": "#s-situatie-tabel"
+   },
+   {
+    "nu_contine": "grau kg 10 ",
+    "zona": "#s-situatie-tabel"
+   }
+  ],
+  "captura": "475_f1_vechi_situatia_stocului.png"
+ },
+ {
+  "nr": "498",
+  "firma": "tenant_9049",
+  "descriere": "F1: Balanță de verificare — antetul spune numai luna, conturile și notele validate ale lunii; explicația „de unde vin cifrele” e pliată, închisă",
+  "pasi": [
+   {
+    "click": "#fa-balanta"
+   },
+   {
+    "asteapta": "#b-intro"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "în luna asta",
+    "zona": "#b-intro"
+   },
+   {
+    "nu_contine": "Registrul jurnal",
+    "zona": "#b-intro"
+   },
+   {
+    "nu_contine": "sume precedente",
+    "zona": "#b-intro"
+   },
+   {
+    "exista": "#b-surse summary",
+    "text": "De unde vin cifrele"
+   }
+  ],
+  "captura": "498_f1_balanta_antet.png"
+ },
+ {
+  "nr": "498",
+  "firma": "tenant_9049",
+  "descriere": "F1: Balanță de verificare -> „De unde vin cifrele” -> explicația întreagă: rulajele lunii sunt notele validate (ca în Registrul jurnal), ciornele nu intră, lunile anterioare stau în „Sume precedente”",
+  "pasi": [
+   {
+    "click": "#fa-balanta"
+   },
+   {
+    "asteapta": "#b-surse summary"
+   },
+   {
+    "click": "#b-surse summary"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "ciornele nu intră",
+    "zona": "#b-surse"
+   },
+   {
+    "contine": "Sume precedente",
+    "zona": "#b-surse"
+   }
+  ],
+  "captura": "498_f1_balanta_de_unde_vin_cifrele.png"
+ },
+ {
+  "nr": "143",
+  "firma": "tenant_9049",
+  "latime": 1366,
+  "inaltime": 768,
+  "descriere": "F1, la 1366×768: Balanță de verificare — tabelul cu cele 12 coloane de cifre încape în fereastră, fără derulare laterală (captura arată ultima coloană, „Sold final C”)",
+  "pasi": [
+   {
+    "click": "#fa-balanta"
+   },
+   {
+    "asteapta": "#b-intro"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "th",
+    "text": "Sold final C"
+   }
+  ],
+  "captura": "143_f1_balanta_1366.png"
+ },
+ {
+  "nr": "143",
+  "firma": "tenant_9049",
+  "latime": 1920,
+  "inaltime": 1080,
+  "descriere": "F1, la 1920×1080: Balanță de verificare — fără derulare laterală",
+  "pasi": [
+   {
+    "click": "#fa-balanta"
+   },
+   {
+    "asteapta": "#b-intro"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "th",
+    "text": "Sold final C"
+   }
+  ],
+  "captura": "143_f1_balanta_1920.png"
+ },
+ {
+  "nr": "143",
+  "firma": "tenant_9050",
+  "latime": 1366,
+  "inaltime": 768,
+  "descriere": "F2, la 1366×768: Mijloace fixe — registrul încape în fereastră, acțiunile rândului în „Acțiuni”, fără derulare laterală",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "table"
+   }
+  ],
+  "captura": "143_f2_mijloace_1366.png"
+ },
+ {
+  "nr": "143",
+  "firma": "tenant_9050",
+  "latime": 1920,
+  "inaltime": 1080,
+  "descriere": "F2, la 1920×1080: Mijloace fixe — fără derulare laterală",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "table"
+   }
+  ],
+  "captura": "143_f2_mijloace_1920.png"
+ },
+ {
+  "nr": "126",
+  "firma": "tenant_9049",
+  "descriere": "F1: fereastra firmei — cardul „Închidere lună” stă în grupul „Zilnic” (decizia Costin U3, 08.10.2026: „închiderea lunii devine card separat, «Închidere lună», în grupul Zilnic al ferestrei firmei”)",
+  "pasi": [
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#fa-inchidere"
+   },
+   {
+    "contine": "Zilnic"
+   },
+   {
+    "contine": "Închidere lună"
+   }
+  ],
+  "captura": "126_f1_card_inchidere_in_zilnic.png"
+ },
+ {
+  "nr": "C127",
+  "firma": "tenant_9053",
+  "descriere": "F5, după migrarea core/migrare_note_luna_neincheiata.py: Registru jurnal -> 11/2026: nota VALIDATĂ „Stat de plata 11/2026” (scrisă pe 06.10.2026, înainte de încheierea lunii) rămâne, cu caseta „Nota a fost scrisă pe 06.10.2026, înainte ca luna 11/2026 să se încheie …” (nota validată nu se modifică)",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "click": "#j-next"
+   },
+   {
+    "asteapta_text": "Luna 11/2026"
+   },
+   {
+    "asteapta": ".jn-inainte"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Stat de plata 11/2026"
+   },
+   {
+    "contine": "înainte ca luna 11/2026 să se încheie",
+    "zona": ".jn-inainte"
+   }
+  ],
+  "captura": "c127_f5_vechi_nota_validata_semnalata.png"
+ },
+ {
+  "nr": "C127",
+  "firma": "tenant_9053",
+  "descriere": "F5, după migrare: Registru jurnal -> 10/2026: ciorna „Salariile lunii 10/2026” (scrisă pe 08.10.2026, înainte de încheierea lunii) nu mai e; nota se scrie din statul de plată după 31.10.2026",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Luna 10/2026"
+   },
+   {
+    "nu_contine": "Salariile lunii 10/2026"
+   }
+  ],
+  "captura": "c127_f5_vechi_ciorna_scoasa.png"
+ }
+]

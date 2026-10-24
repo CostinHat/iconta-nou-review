@@ -1,0 +1,276 @@
+[
+ {
+  "nr": "461",
+  "firma": "tenant_9049",
+  "descriere": "F1: fereastra firmei -> «Parteneri»: lista clienților și furnizorilor din fișe și din documentele de dinainte de reparație (facturi, casă, bancă, note), cu căutare",
+  "pasi": [
+   {
+    "click": "#fa-parteneri"
+   },
+   {
+    "asteapta": "#pt-tabel"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#pt-cauta"
+   },
+   {
+    "contine": "Fișa partenerului",
+    "zona": "#pt-tabel"
+   }
+  ],
+  "captura": "461_f1_vechi_lista_parteneri.png"
+ },
+ {
+  "nr": "461",
+  "firma": "tenant_9049",
+  "descriere": "F1: «Parteneri» -> «Fișa partenerului» (primul din listă): datele, soldul din contabilitate (ca balanța) și documentele lui, create înainte de reparație",
+  "pasi": [
+   {
+    "click": "#fa-parteneri"
+   },
+   {
+    "asteapta": "#pt-tabel"
+   },
+   {
+    "click": ".pt-deschide"
+   },
+   {
+    "asteapta": "#pp-rezumat"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Documentele partenerului"
+   },
+   {
+    "contine_oricare": [
+     "Soldul din contabilitate",
+     "partidă simplă"
+    ]
+   }
+  ],
+  "captura": "461_f1_vechi_fisa_partener.png"
+ },
+ {
+  "nr": "461",
+  "firma": "tenant_9050",
+  "descriere": "F2 (facturi emise și primite din 09–10/2026; F5 nu are niciun partener — 0 facturi, 0 linii de bancă/casă, 0 solduri de parteneri, deci lista e goală): fereastra firmei -> «Parteneri»: lista clienților și furnizorilor din fișe și din documentele de dinainte de reparație (facturi, casă, bancă, note), cu căutare",
+  "pasi": [
+   {
+    "click": "#fa-parteneri"
+   },
+   {
+    "asteapta": "#pt-tabel"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#pt-cauta"
+   },
+   {
+    "contine": "Fișa partenerului",
+    "zona": "#pt-tabel"
+   }
+  ],
+  "captura": "461_f2_vechi_lista_parteneri.png"
+ },
+ {
+  "nr": "461",
+  "firma": "tenant_9050",
+  "descriere": "F2 (facturi emise și primite din 09–10/2026; F5 nu are niciun partener — 0 facturi, 0 linii de bancă/casă, 0 solduri de parteneri, deci lista e goală): «Parteneri» -> «Fișa partenerului» (primul din listă): datele, soldul din contabilitate (ca balanța) și documentele lui, create înainte de reparație",
+  "pasi": [
+   {
+    "click": "#fa-parteneri"
+   },
+   {
+    "asteapta": "#pt-tabel"
+   },
+   {
+    "click": ".pt-deschide"
+   },
+   {
+    "asteapta": "#pp-rezumat"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Documentele partenerului"
+   },
+   {
+    "contine_oricare": [
+     "Soldul din contabilitate",
+     "partidă simplă"
+    ]
+   }
+  ],
+  "captura": "461_f2_vechi_fisa_partener.png"
+ },
+ {
+  "nr": "471",
+  "firma": "tenant_9049",
+  "descriere": "F1: Produse — articolele din stoc fără produs (NIR-urile de dinainte de 415) vin cu cota propusă și sursa ei; nicio justificare nu mai arată «EXCEPTII_21» (după migrarea core/migrare_produse_justificare.py)",
+  "pasi": [
+   {
+    "click": "#fa-produse"
+   },
+   {
+    "asteapta": ".pr-lista"
+   },
+   {
+    "pauza": 2500
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "EXCEPTII_21"
+   },
+   {
+    "nu_contine": "Se caută cota propusă"
+   }
+  ],
+  "captura": "471_f1_vechi_produse.png"
+ },
+ {
+  "nr": "472",
+  "firma": "tenant_9049",
+  "descriere": "F1: Produse — pe rândul unui produs salvat înainte de reparație, «Corectează cota» deschide lista cotelor și «Salvează cota» (corectura se consemnează)",
+  "pasi": [
+   {
+    "click": "#fa-produse"
+   },
+   {
+    "asteapta": ".pr-corecteaza"
+   },
+   {
+    "click": ".pr-corecteaza"
+   },
+   {
+    "asteapta": ".pr-corectura-salveaza"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".pr-corectura-salveaza"
+   },
+   {
+    "contine": "Salvează cota"
+   }
+  ],
+  "captura": "472_f1_vechi_corectura_cotei.png"
+ },
+ {
+  "nr": "162",
+  "firma": "tenant_9050",
+  "descriere": "F2 (2 mijloace fixe preluate; F1 nu are niciun mijloc fix, deci tabelul nu apare): Mijloace fixe la 1700 px — tabelul fără derulare laterală, data PIF întreagă, «Acțiuni» deschis cu butoanele în vedere",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": "table.fd-tabel"
+   },
+   {
+    "click": "summary",
+    "text": "Acțiuni"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "PIF"
+   },
+   {
+    "contine": "Acțiuni"
+   }
+  ],
+  "captura": "162_f2_vechi_mijloace_1700.png"
+ },
+ {
+  "nr": "71",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> «Reevaluare imobilizări» -> Reevaluare MF: mijlocul fix se alege din registrul activelor (listă), nu se tastează un ID",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op]"
+   },
+   {
+    "click": "button[data-op]",
+    "text": "Reevaluare imobilizări"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "reevaluare"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "select#op-mijloc_fix_id"
+   },
+   {
+    "nu_contine": "ID mijloc fix"
+   }
+  ],
+  "captura": "71_f1_vechi_reevaluare_lista_mf.png"
+ },
+ {
+  "nr": "71",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> «Inventariere anuală» -> Casare: mijlocul fix se alege din registrul activelor (listă)",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op]"
+   },
+   {
+    "click": "button[data-op]",
+    "text": "Inventariere anuală"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "casare"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "select#op-mijloc_fix_id"
+   },
+   {
+    "nu_contine": "ID mijloc fix"
+   }
+  ],
+  "captura": "71_f1_vechi_casare_lista_mf.png"
+ }
+]

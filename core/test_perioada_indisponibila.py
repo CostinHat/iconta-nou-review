@@ -26,8 +26,10 @@ def test_cota_pre_data_ridica_blocaj_motivat():
 def test_calcul_salariu_pre_2026_blocaj_2026_ok():
     """calcul_salariu propaga blocajul motivat pentru OCTOMBRIE 2025 (tichet_masa_plafon neverificat la
     sursa - gol intre 40,18 sep si 45 nov, B1); pentru restul 2025 (ex. mai) si pentru 2026 merge."""
-    with pytest.raises(ValueError):
-        sz.calcul_salariu(4050, la_data=date(2025, 10, 1), norma_intreaga=True, venit_brut_total=4050)
+    # [lotul 12, C159] golul blochează numai calculul care are nevoie de plafon: salariatul CU tichete; fără tichete, luna se calculează
+    with pytest.raises(c.PerioadaIndisponibila):
+        sz.calcul_salariu(4050, la_data=date(2025, 10, 1), norma_intreaga=True, venit_brut_total=4050, tichet_valoare=40, tichet_zile=20)
+    assert sz.calcul_salariu(4050, la_data=date(2025, 10, 1), norma_intreaga=True, venit_brut_total=4050)["net"] > 0
     r = sz.calcul_salariu(4050, la_data=date(2026, 8, 1), norma_intreaga=True, venit_brut_total=4050)
     assert r["net"] > 0
     r2 = sz.calcul_salariu(4050, la_data=date(2025, 5, 1), norma_intreaga=True, venit_brut_total=4050)
@@ -43,9 +45,9 @@ def test_mesaj_blocaj_ajunge_la_user():
     assert "PERIOADA_BLOCATA:" in msg
     detaliu = msg.split("PERIOADA_BLOCATA:")[1].split("\n")[0].strip()
     user = "Perioada %s." % detaliu
-    assert "2025-06-01 nu poate fi calculată" in user      # ce s-a oprit
-    assert "nu e definită înainte de 2026-01-01" in user    # de ce (valoare neverificata la sursa)
-    assert "disponibil de la 2026-01-01" in user            # ce se poate face
+    assert "Calculul pentru 01.06.2025 nu se poate face" in user      # ce s-a oprit (data ZZ.LL.AAAA, DS cap.4 — deficiența 184)
+    assert "nu e definită înainte de 01.01.2026" in user    # de ce (valoare neverificata la sursa)
+    assert "disponibil de la 01.01.2026" in user            # ce se poate face
     assert "registrul de parametri fiscali" in user           # cine decide (dezvoltator)
 
 
@@ -64,7 +66,7 @@ def _db_ok():
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_adeverinta_2025_blocaj_2026_ok():
-    """adeverinta pentru o luna 2025 -> blocaj motivat (nu traceback); pentru 2026 -> merge (net)."""
+    """adeverinta pentru o luna fara valorile calculului in registru -> blocaj motivat (nu traceback); pentru 2026 -> merge (net)."""
     _db.init_pool()
     with _db.get_conn() as conn:
         try:
@@ -79,10 +81,13 @@ def test_adeverinta_2025_blocaj_2026_ok():
                 cur.execute("INSERT INTO firma_profil (id, nume, cui, patron_nume) "
                             "VALUES (1, 'PROBA SRL', '14399840', 'POPESCU ION')")
             sid = sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
-                                      data_angajare="2025-01-01", salariu_brut=4050,
+                                      data_angajare="2024-01-01", salariu_brut=4050,
                                       tip_norma="intreaga", functie_baza=True, scutit_contrib_minim=False, cor="522101")["salariat_id"]
-            with pytest.raises(ValueError):
-                adeverinta.date_auto(conn, SCHEMA_T, sid, 2025, 10)  # gol tichet octombrie 2025 (B1)
+            # [lotul 12, C159] adeverința nu folosește tichetele, deci golul plafonului tichetului (10/2025) nu o mai oprește; blocajul
+            # motivat rămâne pe luna pe care o valoare a calculului chiar n-o are: 12/2024, înaintea salariului minim din registru
+            with pytest.raises(c.PerioadaIndisponibila):
+                adeverinta.date_auto(conn, SCHEMA_T, sid, 2024, 12)
+            assert adeverinta.date_auto(conn, SCHEMA_T, sid, 2025, 10)["net"] > 0
             d2026 = adeverinta.date_auto(conn, SCHEMA_T, sid, 2026, 8)
             assert d2026 is not None and d2026["net"] > 0
         finally:

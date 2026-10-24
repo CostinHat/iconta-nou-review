@@ -12,6 +12,15 @@ care o deține apelantul — contractul P4, care nu se redeschide aici.*
 """
 
 
+#: [C101, lotul 12] contoarele de REZULTAT ale Panoului Admin (facturi emise, declarații depuse, recomandări) numără numai cererile
+#: reușite: rândul de audit al unei cereri (`main._inregistreaza_activitate`) se scrie pentru orice răspuns, cu statusul în
+#: `detalii.status`, deci o emitere refuzată (422) apărea „factură emisă”. Numai 2xx; un rând fără status nu e o reușită dovedită.
+#: Activitatea (ultima acțiune, acțiunile, autentificările) rămâne numărată pe toate rândurile: o cerere refuzată tot e o acțiune.
+#: Condiția e un fragment de SQL cu aliasul rândului de audit (`_REUSITA % "a2"`), nu o funcție: funcțiile unui repository primesc
+#: cursorul apelantului (`core/test_p7_v1_citiri.py::test_fiecare_functie_de_repository_primeste_cursorul`).
+_REUSITA = "(%s.detalii->>'status') ~ '^2[0-9][0-9]$'"
+
+
 def activitate_pe_cabinete(cur):
     cur.execute("""
                 SELECT f.id, f.nume, f.activ, f.creat_la,
@@ -23,11 +32,11 @@ def activitate_pe_cabinete(cur):
                        (SELECT COUNT(*) FROM public.users u2 WHERE u2.accounting_firm_id = f.id
                           AND u2.activ = true AND u2.rol IN ('admin_firma','angajat')) AS nr_angajati,
                        (SELECT COUNT(*) FROM public.audit_log a2 JOIN public.users u3 ON u3.id = a2.user_id
-                          WHERE u3.accounting_firm_id = f.id AND a2.actiune LIKE 'POST /recomanda%%') AS nr_recomandari,
+                          WHERE u3.accounting_firm_id = f.id AND a2.actiune LIKE 'POST /recomanda%%' AND """ + _REUSITA % "a2" + """) AS nr_recomandari,
                        (SELECT COUNT(*) FROM public.audit_log a5 JOIN public.users u6 ON u6.id = a5.user_id
-                          WHERE u6.accounting_firm_id = f.id AND a5.actiune LIKE '%%/facturi/emite%%') AS nr_facturi,
+                          WHERE u6.accounting_firm_id = f.id AND a5.actiune LIKE '%%/facturi/emite%%' AND """ + _REUSITA % "a5" + """) AS nr_facturi,
                        (SELECT COUNT(*) FROM public.audit_log a6 JOIN public.users u7 ON u7.id = a6.user_id
-                          WHERE u7.accounting_firm_id = f.id AND a6.actiune LIKE '%%/depune%%') AS nr_declaratii,  -- ICRD_CABINETE_CATEGORII_V1
+                          WHERE u7.accounting_firm_id = f.id AND a6.actiune LIKE '%%/depune%%' AND """ + _REUSITA % "a6" + """) AS nr_declaratii,  -- ICRD_CABINETE_CATEGORII_V1
                        MAX(a.created_at) AS ultima_activitate,
                        MAX(a.created_at) FILTER (WHERE a.actiune = 'login') AS ultim_login,
                        COUNT(a.id) AS nr_actiuni,

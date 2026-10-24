@@ -29,7 +29,15 @@ ASTEPTATE = {
     # [P7 · valul use-case, 13.09.2026] `_factura_din_parsat` a plecat din `main.py` in stratul
     # use-case, cu corpul neatins. Calea e ACEEASI — se schimba numai fisierul in care locuieste.
     ("core/uc_comun.py", "_factura_din_parsat"),
+    # [lotul 12, deficiența 252] A treia ușă, DECISĂ: facturile deschise preluate din programul vechi (situația clienților /
+    # furnizorilor). Nu e o emitere și nu e un import de document: rândul e `tip = 'preluata'`, fără linii și fără TVA, iar soldul
+    # lui e deja în balanța de deschidere — o notă l-ar înregistra a doua oară, deci contarea îl refuză (`contare_facturi`,
+    # `SOLD_PRELUAT`). Prin `_factura_din_parsat` n-ar putea trece: acolo o emisă devine `de_recunoscut`, iar recunoașterea scrie
+    # notă. Că rândul chiar e `preluata` o verifică `test_calea_preluarii_scrie_numai_facturi_preluate`.
+    ("core/solduri_parteneri_api.py", "_scrie_documente"),
 }
+#: [252] calea care scrie numai facturi deschise preluate (nu documente fiscale) — nu ocolește actul de emitere, n-are ce emite
+CALEA_PRELUARII = ("core/solduri_parteneri_api.py", "_scrie_documente")
 # Clichetul l-a dat INSTRUMENTUL, nu numărătoarea mea de dinainte: numărasem 4 (fișiere), el numără
 # 5 (funcții) — `firma_grea_audit.py` are trei locuri care inserează facturi.
 CLICHET_SEED = 5
@@ -52,10 +60,10 @@ def test_cititorul_chiar_distinge_tabelele():
     assert nu == len(_s.MOSTRE_NU), "instrumentul confundă `facturi` cu tabelele vecine"
 
 
-def test_o_factura_se_naste_din_EXACT_doua_locuri_in_productie(productie):
+def test_o_factura_se_naste_din_EXACT_trei_locuri_in_productie(productie):
     """Miezul, și răspunsul la HHH1. `creeaza_factura` e actul care produce nota automat (R87);
-    `_factura_din_parsat` e calea de import, declarată ca excepție lângă cod. **A treia ușă cere o
-    decizie, nu o completare** — vezi R91."""
+    `_factura_din_parsat` e calea de import, declarată ca excepție lângă cod; `_scrie_documente` scrie numai facturi deschise
+    preluate (252, decizie — vezi `ASTEPTATE`). **A patra ușă cere o decizie, nu o completare** — vezi R91."""
     gasite = set(productie)
     assert gasite == ASTEPTATE, (
         "căile prin care se naște o factură în PRODUCȚIE s-au schimbat."
@@ -68,8 +76,30 @@ def test_o_factura_se_naste_din_EXACT_doua_locuri_in_productie(productie):
 def test_calea_de_import_e_singura_care_ocoleste_actul_de_emitere(productie):
     """Formularea exactă a întrebării HHH1, citită din inventar, nu din memorie."""
     ocolesc = {(f, fn) for (f, fn) in productie
-               if (f, fn) != ("core/facturi_api.py", "creeaza_factura")}
+               if (f, fn) not in {("core/facturi_api.py", "creeaza_factura"), CALEA_PRELUARII}}
     assert ocolesc == {("core/uc_comun.py", "_factura_din_parsat")}, ocolesc
+
+
+def test_calea_preluarii_scrie_numai_facturi_preluate():
+    """[lotul 12, 252] Calea preluării iese din întrebarea HHH1 numai fiindcă nu naște un document fiscal. Se verifică pe AST, nu pe
+    proză: singurul INSERT în `facturi` din `_scrie_documente` pune coloana `tip` pe `_TIP_PRELUAT`, iar constanta e chiar
+    `TIP_SOLD_PRELUAT` din nomenclator — pe care contarea, stornarea, trimiterea o refuză. Altă valoare pe `tip` (o factură obișnuită
+    scrisă pe aici) pică."""
+    import ast
+    from core import nomenclator_status_factura as _nsf, solduri_parteneri_api as _sp
+    arb = ast.parse(open(os.path.join(_RAD, CALEA_PRELUARII[0]), encoding="utf-8").read())
+    fn = next(n for n in ast.walk(arb) if isinstance(n, ast.FunctionDef) and n.name == CALEA_PRELUARII[1])
+    inserturi = [c for c in ast.walk(fn) if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
+                 and c.func.attr == "execute" and c.args and _s.e_insert_in_facturi(_s._literal(c.args[0]))]
+    assert len(inserturi) == 1, "calea preluării are %d INSERT-uri în `facturi`, nu unul" % len(inserturi)
+    sql, valori = _s._literal(inserturi[0].args[0]), inserturi[0].args[1]
+    coloane = [c.strip().lower() for c in sql.split("(", 1)[1].split(")", 1)[0].split(",")]
+    expresii = sql.split("VALUES", 1)[1].split("(", 1)[1].rsplit(")", 1)[0].split(",")
+    poz = [i for i, e in enumerate(expresii) if e.strip() == "%s"]   # al câtelea parametru e fiecare coloană cu %s
+    assert isinstance(valori, ast.Tuple)
+    param_tip = valori.elts[poz.index(coloane.index("tip"))]
+    assert isinstance(param_tip, ast.Name) and param_tip.id == "_TIP_PRELUAT", ast.dump(param_tip)
+    assert _sp._TIP_PRELUAT == _nsf.TIP_SOLD_PRELUAT == "preluata"
 
 
 def test_calea_de_import_are_ACUM_actul_ei_de_recunoastere():

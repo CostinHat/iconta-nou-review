@@ -584,11 +584,16 @@ def test_pct19_chitanta_emisa_trimite_factura_stinsa():
 # ── pct.20 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_pct20_luna_preluarii_vine_completata_cu_propunerea():
     """„câmpul arată «---------- ----»; vine completat cu propunerea (06/2026), fără textul «Gol = propunerea»”. Iar propunerea
-    neschimbată nu se fixează la salvare (rămâne propunere). MUTAȚIE: `|| lp.propunere` scos din `value` -> pică."""
+    neschimbată nu se fixează la salvare (rămâne propunere). MUTAȚIE: `lp.efectiva` scos din `value` -> pică.
+    [lotul 12, 147 / 169] Câmpul arată luna EFECTIVĂ (`luna_preluare.stare`: salvată, altfel propunerea, plafonată la prima notă), luna
+    neschimbată nu se trimite, iar golită sau egală cu propunerea pleacă `null` (propunerea). Comportamentul îl probează
+    `frontend_test/e2e/e2e_lot12_datefirma.py`; aici rămâne forma, ca gardă statică."""
     import re
     js = io.open("static/js/ecrane/date_firma.js", encoding="utf-8").read()
-    camp = re.search(r'<input type="month" class="camp-input" id="df-luna_preluare" value="\$\{esc\(([^)]*)\)\}"', js)
-    assert camp and camp.group(1) == 'lp.salvata || lp.propunere || ""'
+    camp = re.search(r'<input type="month" class="camp-input" id="df-luna_preluare" value="\$\{esc\(([^)]*)\)\}" '
+                     r'data-initiala="\$\{esc\(([^)]*)\)\}" data-propunere="\$\{esc\(([^)]*)\)\}"', js)
+    assert camp and camp.groups() == ('lp.efectiva || ""', 'lp.efectiva || ""', 'lp.propunere || ""'), camp and camp.groups()
     ajutor = re.search(r'<span class="camp-ajutor">De la ea se numără restanțele[^\n]*</span>', js).group(0)
     assert re.findall(r"Gol = propunerea", ajutor) == []
-    assert re.search(r"date\.luna_preluare = \(_lp\.value && _lp\.value !== _lp\.dataset\.propunere\) \? _lp\.value : null;", js)
+    assert re.search(r"if \(_lp\.value !== _lp\.dataset\.initiala\) date\.luna_preluare = \(_lp\.value && _lp\.value !== "
+                     r"_lp\.dataset\.propunere\) \? _lp\.value : null;", js)

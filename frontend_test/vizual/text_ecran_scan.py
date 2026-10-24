@@ -89,12 +89,23 @@ def date_excluse():
     return out
 
 
+#: [lotul 12] numărul unui document, după „nr.” („COER nr. T1”, „B1 nr. AVANS”): îl scrie omul (sau numerotarea lui), ca numerele din
+#: `date_excluse` — dar nu toate tabelele cu documente sunt acolo. Se scoate numai cuvântul de imediat după „nr.”; același „T1” / „AVANS”
+#: în altă parte a rândului („T1 2026”, „AVANS de plătit”) rămâne judecat.
+_NUMAR_DOCUMENT = re.compile(r"\bnr\.\s*[^\s,;:()„”]+")
+
+
+def text_judecat(ln):
+    """Rândul de pe ecran, fără numărul de document de după „nr.” (`_NUMAR_DOCUMENT`)."""
+    return _NUMAR_DOCUMENT.sub("nr. ", ln)
+
+
 def _citeste(pg, cheie, out_dir, excl, rez):
     pg.wait_for_timeout(1500)
     linii = pg.evaluate(TEXT_VIZIBIL)
     gasite = []
     for ln in dict.fromkeys(linii):
-        for fel, frag in defecte(ln, excl):
+        for fel, frag in defecte(text_judecat(ln), excl):
             gasite.append({"fel": fel, "fragment": frag, "rand": ln[:160]})
     nume = re.sub(r"[^a-z0-9_]+", "_", cheie.lower())[:80]
     pg.screenshot(path=os.path.join(out_dir, nume + ".png"), full_page=True)

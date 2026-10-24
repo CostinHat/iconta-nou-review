@@ -101,6 +101,24 @@ _UM = {
 }
 
 
+#: [lotul 12, C104] DRUMUL INVERS, pentru factura PRIMITĂ: codul UN/ECE Rec 20 de pe linie (BT-130, `cbc:InvoicedQuantity/@unitCode`) ->
+#: unitatea iConta. Din aceeași hartă `_UM` (sursa unică), prima unitate a fiecărui cod („H87” -> „buc”, „MTR” -> „m”, „KGM” -> „kg”).
+#: C62 („one”, unitatea) -> „buc”: INTERPRETARE — e codul pe care emiterea îl pune unei unități necunoscute (`_UM` … or "C62"), deci
+#: bucata, unitatea generică. Un cod din afara hărții rămâne CODUL (nu se ghicește „buc”): se vede și se corectează în Produse.
+UM_DIN_UNECE = {}
+for _u, _c in _UM.items():
+    UM_DIN_UNECE.setdefault(_c, _u)
+UM_DIN_UNECE.setdefault("C62", "buc")
+
+
+def um_din_unece(cod):
+    """[lotul 12, C104] BT-130 -> unitatea iConta (`UM_DIN_UNECE`); fără cod -> None (linia rămâne cu unitatea implicită a tabelului)."""
+    c = str(cod or "").strip().upper()
+    if not c:
+        return None
+    return UM_DIN_UNECE.get(c, c)
+
+
 def _norm(s):
     if not s:
         return ""

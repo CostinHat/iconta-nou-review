@@ -41,7 +41,7 @@ _BASELINE_DIACRITICE = {
     # bacsis BRUT de distribuit). Rescrise deosebit, cu diacritice. La fel `core/tva_incasare.py`:
     # 1 -> 0. Amandoua au iesit la iveala proband cele 32 de operatiuni speciale.
     "core/facturi_api.py": 1,
-    "core/gdpr_cerere.py": 2, "core/gdpr_sterge.py": 2,
+    "core/gdpr_cerere.py": 1, "core/gdpr_sterge.py": 2,   # [lotul 12, 317] gdpr_cerere: „Denumirea scrisă nu se potrivește…”, cu diacritice
     "core/intracomunitar.py": 1, "core/inventariere.py": 2, "core/migrare_api.py": 1,
     "core/productie.py": 1, "core/provizioane.py": 1,
     "core/reset_parola.py": 1, "core/retete_api.py": 1,

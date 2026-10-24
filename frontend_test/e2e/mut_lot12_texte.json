@@ -1,0 +1,45 @@
+[
+ {
+  "fisier": "core/control_incrucisat.py",
+  "ancora": "\"depuneri nu e o divergență, deci nu e semnalată cu roșu.\"),",
+  "inlocuire": "\"depuneri nu e o divergență. GRI, nu roșu.\"),",
+  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_172_supervizorul_fara_d101_depus_vorbeste_limba_contabilului"
+ },
+ {
+  "fisier": "core/control_incrucisat.py",
+  "ancora": "\"Verificarea așteaptă: D101 declară %s, contul 691 are %s validat, dar există note în \"",
+  "inlocuire": "\"Nu ma pronunt inca: D101 declara %s, contul 691 are %s validat, dar exista note in \"",
+  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_c132_supervizorul_spune_axa_d101_in_limba_contabilului"
+ },
+ {
+  "fisier": "static/js/ecrane/setari.js",
+  "ancora": "Cheia ta (copiaz-o acum: nu se mai afișează):<br>",
+  "inlocuire": "Cheia ta (copiaz-o ACUM, nu se mai afiseaza):<br>",
+  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_163_mesajul_cheii_api_fara_majuscule_si_cu_diacritice"
+ },
+ {
+  "fisier": "static/js/ecrane/setari.js",
+  "ancora": "      msg.className = \"msg-ok\";\n      msg.innerHTML = `Cheia ta (copiaz-o acum: nu se mai afișează):<br><code style=\"user-select:all;word-break:break-all\">${esc(r.cheie)}</code>`;\n      corp.querySelector(\"#set-cheie-nume\").value = \"\";\n      // [lotul 12, 45] lista cheilor (deasupra mesajului) se reîncarcă ÎNTÂI: altfel rândul cheii noi împingea mesajul sub margine după ce\n      // fusese adus în vedere (cu multe chei, cu zeci de pixeli)\n      await _incarcaChei(corp);\n      aduInVedere(msg);",
+  "inlocuire": "      msg.className = \"\";\n      msg.innerHTML = `Cheia ta (copiaz-o acum: nu se mai afișează):<br><code style=\"user-select:all;word-break:break-all\">${esc(r.cheie)}</code>`;\n      corp.querySelector(\"#set-cheie-nume\").value = \"\";\n      // [lotul 12, 45] lista cheilor (deasupra mesajului) se reîncarcă ÎNTÂI: altfel rândul cheii noi împingea mesajul sub margine după ce\n      // fusese adus în vedere (cu multe chei, cu zeci de pixeli)\n      await _incarcaChei(corp);\n      void msg;",
+  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_45_mesajul_cheii_api_vine_in_vedere",
+  "motiv": "45: zona mesajului fără clasă de mesaj și fără aducere în vedere (forma de dinainte de reparație) -> mesajul rămâne sub margine"
+ },
+ {
+  "fisier": "core/pontaj.py",
+  "ancora": "\"Pontajul lunii %02d/%d nu se poate modifica",
+  "inlocuire": "\"Pontajul lunii %02d.%04d nu se poate modifica",
+  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_184_refuzul_pontajului_scrie_luna_ca_LL_AAAA"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "      const t = m.target && (m.target.nodeType === 1 ? m.target : m.target.parentElement);\n      if (t && t.matches(SELECTOR_MESAJ) && (t.textContent || \"\").trim()) aduInVedere(t);\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_45_refuzul_emailului_facturii_vine_in_vedere"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "      const t = m.target && (m.target.nodeType === 1 ? m.target : m.target.parentElement);\n      if (t && t.matches(SELECTOR_MESAJ) && (t.textContent || \"\").trim()) aduInVedere(t);\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_45_confirmarea_modelului_de_factura_vine_in_vedere"
+ }
+]

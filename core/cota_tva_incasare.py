@@ -21,6 +21,7 @@ TVA la încasare și documentul care a produs-o oricum nu există azi.
 from collections import namedtuple
 
 from core import common as _c
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică
 
 #: Verbatim din `anaf_surse/cod_fiscal_227_2015_consolidat.txt`, l. 18154 (citit la sursă 05.09.2026).
 TEMEI_291_5 = _c.Temei(
@@ -87,7 +88,7 @@ def alegerea(corp):
     dfg = (corp or {}).get("data_fapt_generator")
     if not dfg:
         _cere("fara_fapt_generator", "Data faptului generator (livrarea sau prestarea) e obligatorie: la TVA la încasare "
-              "cota se ia din legea în vigoare ATUNCI, nu la data încasării")
+              "cota se ia din legea în vigoare la data aceea, nu la data încasării")
 
     ramura = (corp or {}).get("ramura_291_5")
     if ramura not in RAMURI:
@@ -103,12 +104,12 @@ def alegerea(corp):
     doc = (corp or {}).get("data_factura_avans")
     if not doc:
         _cere("fara_data_document", "Ai ales situația în care factura ori avansul au precedat livrarea. Atunci cota e cea "
-              "în vigoare la data ACELUI document, deci data lui e obligatorie: fără ea nu există "
+              "în vigoare la data acelui document, deci data lui e obligatorie: fără ea nu există "
               "cotă de verificat")
     if str(doc) >= str(dfg):
-        _cere("document_dupa_livrare", "Excepția se aplică numai dacă factura ori avansul au fost ÎNAINTE de livrare, iar "
+        _cere("document_dupa_livrare", "Excepția se aplică numai dacă factura ori avansul au fost emise înainte de livrare, iar "
               "aici documentul e din %s și livrarea din %s. Ori corectezi una din date, ori "
-              "operațiunea e în situația generală, cu cota de la data livrării" % (doc, dfg))
+              "operațiunea e în situația generală, cu cota de la data livrării" % (_data_ro(doc), _data_ro(dfg)))
     return Alegere(ramura, doc, dfg, doc)
 
 

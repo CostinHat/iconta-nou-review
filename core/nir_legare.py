@@ -39,6 +39,7 @@ from core import cui_forma as _forma_cui
 from core import facturi as _fc
 from core import metoda_stoc as _ms
 from core import sume_lei as _sl
+from core.stocuri import CONT_NESOSITE, CONT_TVA_NIR  # noqa: F401 — reexportate (vezi mai jos)
 
 #: valoarea care confirmă explicit „altă livrare” (factura nu e a niciunuia din NIR-urile nelegate)
 ALTA_LIVRARE = "alta_livrare"
@@ -49,11 +50,9 @@ COD_COST = "COST_DIFERIT_DE_FACTURA"
 CODURI = (COD_DE_ALES, COD_NELEGABIL, COD_COST)
 #: contul pe care factura primită de marfă îl încarcă (`facturi.ACHIZITIE["marfa"]`)
 CONT_MARFA = _fc.ACHIZITIE["marfa"]
-#: [08.10, §6 pct.1] datoria NIR-ului fără factură — „Furnizori - facturi nesosite” (OMFP 1802/2014, funcțiunea contului 408)
-CONT_NESOSITE = "408"
-#: [08.10, §6 pct.3] TVA-ul NIR-ului fără factură, neexigibil până la factură — analiticul de ACHIZIȚIE al lui 4428, ca să nu se
-#: amestece cu TVA-ul din prețul de raft (pe 4428 sintetic, citit de K-ul global-valoric pe cont exact)
-CONT_TVA_NIR = "4428.01"
+#: [08.10, §6 pct.1 + pct.3] datoria NIR-ului fără factură (408) și TVA-ul lui neexigibil (4428.01) — definite în motorul NIR-ului
+#: (`stocuri.CONT_NESOSITE` / `stocuri.CONT_TVA_NIR`, [476] de acolo le citește și TVA-ul transportului); aici, aceleași nume
+#: (importate sus, cu celelalte; `nir_legare.CONT_NESOSITE` / `nir_legare.CONT_TVA_NIR` rămân numele folosite de apelanți)
 #: metodele pe care se leagă (decizia §6 pct.1: „aceeași alegere ca la celelalte metode”)
 METODE = (_ms.GV, _ms.CV)
 TEMEI = "OMFP 1802/2014 pct.69"
@@ -141,10 +140,18 @@ def candidati(cur, schema, f, data_nota):
         if any((stari.get(i) or {}).get("stare_coada") == "respinsa" for i in _sa.note_nir(n)):
             continue   # NIR respins: se reface, iar NIR-ul refăcut e cel care se leagă
         cost = _q2(Decimal(str(n["cost_total"] or 0)) - Decimal(str(n["transport"] or 0)) - Decimal(str(n["taxe"] or 0)))
+        # [lotul 12, scenariul pilot] transportul / taxele facturate de ACELAȘI furnizor, pe factura mărfii: netul facturii e costul
+        # complet al NIR-ului (marfa + accesoriul, cât a intrat pe 408). La forma nouă și acesta e „același cost” — factura închide 408
+        # întreg (`note_factura_legata`). La forma veche NU: stornarea în roșu scoate numai costul de bază (`leaga`), iar o factură cu
+        # accesoriul ar încărca transportul a doua oară pe 371 — acolo rămâne numai costul fără accesorii.
+        accesorii = _q2(Decimal(str(n["cost_total"] or 0))) - cost
+        acelasi = cost == net or (bool(n["forma_noua"]) and accesorii > 0 and cost + accesorii == net)
         from core import pdf_util as _pu
         out.append({"id": n["id"], "numar": n["numar"], "data": str(n["data"])[:10], "cost": str(cost),
-                    "acelasi_cost": cost == net, "forma_noua": n["forma_noua"],
-                    "eticheta": "NIR nr %s din %s · cost %s lei" % (n["numar"], _pu.data_ro(n["data"]), cost)})
+                    "acelasi_cost": acelasi, "forma_noua": n["forma_noua"],
+                    "eticheta": "NIR nr %s din %s · cost %s lei%s" % (
+                        n["numar"], _pu.data_ro(n["data"]), cost,
+                        " (+ transport și taxe %s lei)" % accesorii if accesorii > 0 else "")})
     return out
 
 

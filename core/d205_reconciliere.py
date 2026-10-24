@@ -101,9 +101,9 @@ def reconciliaza(conn, schema, perioada, res, manual=None):
         return {"acoperit": False, "divergente": _consistenta_interna(perioada, res),
                 "neacoperit": _af.necunoastere_pe_luna(
                     "d205",
-                    "beneficiari introdusi manual de contabil (§8) - recalculul din 457 nu se "
-                    "aplica; verificata DOAR consistenta interna "
-                    "imp1=round(cota dividendului x baza1).", perioada.an)}
+                    "Beneficiarii sunt introduși manual de contabil: recalculul din contul 457 nu se "
+                    "aplică; se verifică doar că impozitul fiecăruia e cota dividendului "
+                    "înmulțită cu baza, rotunjită.", perioada.an)}
     an = perioada.an
     parti = _dividende_independent(conn, an)
     gen = {str(b.cif): b for b in res.beneficiari}

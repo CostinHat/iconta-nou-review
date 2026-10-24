@@ -39,6 +39,18 @@ PRAG_URMARIT_ZILE = 30   # termen in <= 30 zile, nedepus -> galben
 _PERIODICITATE_NECLAR = {"d205": "an", "d101": "an", "d100": "trim", "d406": "trim"}
 
 
+def luna_confruntata(an, luna):
+    """[deficiența 484, lotul 12: „Control încrucișat: confruntarea declarații–contabilitate nu rulează”] Luna pe care se confruntă
+    declarațiile cu evidența, pentru ziua din luna (an, luna): ULTIMA LUNĂ ÎNCHEIATĂ — luna a cărei declarație e datorată acum
+    (D300 / D112 / D390 pe luna trecută se depun până pe 25 a lunii curente, `core/scadente.py`). Confruntarea pe luna în curs,
+    neîncheiată, compara un decont care încă nu există cu o evidență pe jumătate: 0 cu 0, „coincid”, pe orice firmă, adică o
+    confirmare fără subiect, în timp ce luna care chiar se declară nu se confrunta nicăieri pe ecran. SURSA UNICĂ a perioadei, pentru
+    toți cei care confruntă: reconcilierea surse–declarații (de mai jos), „Declarație vs contabilitate” (`uc_comun._construieste_contabil`),
+    alertele zilnice (`alerte_control_fiscal.ruleaza`) și supervizorul (cronul de 08:00 și ecranul). Gard:
+    `core/test_lot12_ctrl_484.py`."""
+    return (an - 1, 12) if luna == 1 else (an, luna - 1)
+
+
 def perioada_canonica(an, luna, fel):
     """Perioada unei declarații, în forma ecranelor (DS cap.4 v2.85): luna „LL/AAAA”, trimestrul „T3/2026”, anul „2026”.
     [Retest 2, pct.14] „perioade în trei formate («iun», «T3», «03.2026», «04/2026»)” — una, produsă aici."""
@@ -47,6 +59,51 @@ def perioada_canonica(an, luna, fel):
     if fel == "trim":
         return "T%d/%d" % ((int(luna) + 2) // 3, an)
     return "%02d/%d" % (int(luna), an)
+
+
+def perioada_declaratiei(conn_schema, tip, an, luna):
+    """[deficiența 213, clasa: „confirmarea anulării scrie «D406 03/2026» pentru T1/2026”] Perioada unei declarații marcate (tip + luna
+    de ancoră, cum o ține jurnalul depunerilor) în forma ecranului: „T1/2026”, „2025”, „09/2026” — după periodicitatea REALĂ a firmei
+    (`declaratii_api.periodicitate_firma`, sursa unică a selectorului și a dispecerului). Pentru mesajele serverului despre marcări; o
+    lună de ancoră care nu e a periodicității (ex. luna 5 la trimestrial) rămâne „LL/AAAA”, nu se inventează un trimestru."""
+    from core.declaratii_api import periodicitate_firma
+    with conn_schema.cursor() as cur:
+        row = _repo.select_firma_profil(cur)
+    prof = {"platitor_tva": row[1], "tip_decont": row[2]} if row else None
+    fel = {"trimestrial": "trim", "anual": "an"}.get(periodicitate_firma(tip, prof), "luna")
+    if (fel == "trim" and int(luna) % 3) or (fel == "an" and int(luna) != 12):
+        fel = "luna"
+    return perioada_canonica(an, luna, fel)
+
+
+#: [deficiența 463] temeiul termenului de transmitere în SPV, citat (anaf_surse/oug_120_2021.txt) — același cu `facturi_api.termen_spv`
+TEMEI_TERMEN_SPV = ("OUG 120/2021 art.10 alin.(7): „Termenul-limită pentru transmiterea facturilor în sistemul național privind factura "
+                    "electronică RO e-Factura este de 5 zile lucrătoare de la data emiterii facturii”.")
+
+
+def facturi_spv_netransmise(conn_schema, preluare, azi):
+    """[deficiența 463, lotul 12: „Termene SPV absente din Control fiscal; lipsa dreptului aflată târziu”] Facturile emise care TREBUIE
+    transmise în RO e-Factura (`facturi_api.spv_obligatorie`) și nu sunt (netrimise, sau respinse de ANAF), de la luna preluării — ce e
+    dinainte s-a emis de contabilul anterior, deci nu e treaba iConta.eu (ca restanțele declarațiilor). Starea și termenul vin din
+    `facturi_api._cu_stare_spv` (sursa unică a istoricului facturilor și a detaliului): o factură venită din XML-ul e-Factura e deja
+    transmisă, deci nu apare. [{id, numar, data_emitere, client, termen, depasit, stare, eroare}], cele mai vechi întâi."""
+    from core import facturi_api as _fa
+    from core.pdf_util import serie_nr
+    import psycopg2.extras as _ex
+    de_la = datetime.date(preluare[0], preluare[1], 1) if preluare else None
+    with conn_schema.cursor(cursor_factory=_ex.RealDictCursor) as cur:
+        rows = [dict(r) for r in _repo.select_facturi_emise_spv(cur, de_la)]
+        _fa._cu_stare_spv(cur, rows)
+    out = []
+    for f in rows:
+        st = f.get("stare_spv") or {}
+        if not st.get("obligatorie") or st.get("stare") not in ("netrimisa", "respinsa") or not st.get("termen"):
+            continue
+        termen = datetime.date.fromisoformat(st["termen"])
+        out.append({"id": f["id"], "numar": serie_nr(f.get("serie"), f.get("numar")),   # „F6 nr. 1” (deficiența 443)
+                    "data_emitere": f["data_emitere"].isoformat(), "client": f.get("tert_nume") or "",
+                    "termen": termen.isoformat(), "depasit": azi > termen, "stare": st["stare"], "eroare": st.get("eroare")})
+    return out
 
 
 def _fel_din_text(txt):
@@ -90,6 +147,11 @@ def separa_neclar_inainte_de_preluare(neclar, preluare):
                     a, m = a + 1, m - 12
             if dp >= prag:
                 ramase.append(dict(x, domeniu_de=prag))
+        elif not dp and dd and dd < prag:
+            # [deficiența 157, clasa] o necunoaștere DESCHISĂ (toată fereastra, „din 12/2025”: vector incomplet, periodicitate
+            # necunoscută) care începe înaintea preluării: partea dinainte nu e a iConta.eu — rândul rămâne „Nu se poate verifica”,
+            # dar de la luna preluării; perioadele dinainte nu se pot desface (tocmai periodicitatea lipsește)
+            ramase.append(dict(x, domeniu_de=prag))
         else:
             ramase.append(x)
     return ramase, inainte
@@ -626,8 +688,9 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         elif operatiuni_ic:                      # flag True -> art. 317: datorat daca inregistrat (pe lunile cu fapt), altfel gri
             if inreg_art317 and d390_luni_neplatitor:
                 # [Retest 2, pct.9] „Restanțele D390 arată pe ce se bazează (lunile cu operațiuni intracomunitare), ca D301.”
-                # Pe FAPT, din aceleași surse ca D301 (d301_operatiuni + facturile IC primite): D390 se depune numai pentru lunile în
-                # care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF 705/2020 anexa 2 pct.1.2).
+                # Pe FAPT (d301_operatiuni + faptul D390 al lunii, [lotul 12, C155] — `control_incrucisat.d390_luni_neplatitor`): D390
+                # se depune numai pentru lunile în care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF 705/2020 anexa 2
+                # pct.1.2).
                 _luni = {}
                 for a, m in per_luni:
                     if m in _luni.setdefault(a, d390_luni_neplatitor(a)):
@@ -769,7 +832,7 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
                 "absenta_observatie", "d301",
                 surse_consultate="tabelul d301_operatiuni + facturile intracomunitare primite, pe "
                                  "anul curent și cel precedent",
-                motiv="nu am nicio înregistrare de operațiune intracomunitară — "
+                motiv="nu există nicio înregistrare de operațiune intracomunitară — "
                                     "verifică dacă firma a avut achiziții de la furnizori din UE "
                                     "(facturi primite, e-facturi, extrase). Absența înregistrărilor "
                                     "nu dovedește absența operațiunilor."))
@@ -1053,9 +1116,9 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     # [21.08.2026] Inainte de a AFIRMA ca o luna n-a avut operatiuni IC, intrebam daca evidenta lunii
     # e completa cat putem sti (e-Facturi descarcate si neinregistrate). Poarta intarita, nu convertita.
     _d390_incomplet = lambda a, l: _d390.evidenta_incompleta_sau_neinchisa(conn_schema, schema, a, l)
-    # [Retest 2 pct.9] neplătitorul înregistrat art.317: lunile cu operațiuni IC, din aceleași surse ca D301
-    _d390_luni_neplat = lambda a: (_ci_sal.d301_luni_operatiuni(conn_schema, schema, a)   # noqa: E731
-                                   | _ci_sal.d301_luni_facturi_ic(conn_schema, schema, a))
+    # [Retest 2 pct.9] neplătitorul înregistrat art.317: lunile cu operațiuni IC. [lotul 12, C155] faptul pe facturi e al D390 (și
+    # prestările de servicii emise, CF art.325 alin.(1) lit.c), nu al D301 (numai achizițiile de bunuri primite)
+    _d390_luni_neplat = lambda a: _ci_sal.d390_luni_neplatitor(conn_schema, schema, a, azi)   # noqa: E731
     rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt,
                               existenta_fapt=_existenta_fapt, d100_fapt=_d100_fapt,
                               d390_incomplet=_d390_incomplet, d390_luni_neplatitor=_d390_luni_neplat)
@@ -1143,15 +1206,18 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     # tacit -> constatare ROSIE zgomotoasa (nu gri). cu_reconciliere=False dezactiveaza (consumatori usori).
     reconciliere = None
     if cu_reconciliere:
-        an_r, luna_r = (azi.year - 1, 12) if azi.month == 1 else (azi.year, azi.month - 1)
+        an_r, luna_r = luna_confruntata(azi.year, azi.month)
         from core import control_incrucisat as _ci_rec
         try:
             reconciliere = _ci_rec.reconciliaza_declaratii(conn_schema, schema, an_r, luna_r)
         except Exception as _e:
+            # [lotul 12] textul pentru contabil, fără numele excepției și fără codul ei (`perioada.text_exceptie`); detaliul tehnic
+            # rămâne în `eroare` (anti-D300 mort: ruptura se arată, nu se ascunde)
+            from core import perioada as _per
             _rupt = dict(_af.afirmatie(
                 "verificare_rupta", "reconciliere",
-                "Reconcilierea nu a putut fi apelata (%s: %s) - semnalat, nu ascuns "
-                "(anti-D300 mort)." % (type(_e).__name__, _e),
+                "Reconcilierea declarațiilor cu contabilitatea nu a rulat (%s). Reîncarcă pagina; dacă se repetă, semnalează."
+                % _per.text_exceptie(_e).rstrip("."),
                 eroare="%s: %s" % (type(_e).__name__, _e)))
             reconciliere = {"an": an_r, "luna": luna_r, "stare": "rosu", "constatari": [dict(
                 _rupt,

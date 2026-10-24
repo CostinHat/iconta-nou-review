@@ -280,6 +280,7 @@ REGULI = {
     "cor_lipsa":        {"fel": "semnal", "inseamna": "salariatul n-are cod COR în fișier: intră fără cod, se alege în fișa lui"},
     "persoane_lipsa":   {"fel": "semnal", "inseamna": "persoanele în întreținere lipsesc: intră cu 0, salariatul e marcat de verificat"},
     "scutire_lipsa":    {"fel": "semnal", "inseamna": "scutirea de contribuția minimă lipsește: intră nescutit, marcat de verificat"},
+    "motiv_scutire_lipsa": {"fel": "semnal", "inseamna": "scutit de contribuția minimă, fără motivul scutirii (D112): marcat de verificat"},   # [C133]
     # [lotul 10, deficiența 420] norma și funcția de bază lipsă din fișier: propuse pe ecran (editabile), intră marcate de verificat
     "norma_propusa":    {"fel": "semnal", "inseamna": "norma lipsește din fișier: propusă (întreagă, 8 ore), editabilă, marcată de verificat"},
     "functie_baza_propusa": {"fel": "semnal", "inseamna": "funcția de bază lipsește din fișier: propusă „Da”, editabilă, marcată de verificat"},

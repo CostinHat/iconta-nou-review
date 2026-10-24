@@ -11,6 +11,45 @@ FORMAT_ASTEPTAT = (
 )
 
 
+def _celula_text(v, data_excel=False, datemode=0):
+    """[lotul 12, deficiența 478 — „Extras .xlsx valid refuzat”] Celula unui tabel Excel, cum o citește parserul: o DATĂ (openpyxl dă
+    `datetime` / `date`; xlrd dă numărul de serie Excel, cu tipul celulei „dată”) devine textul „zz.ll.aaaa”, ca în extrasele CSV. Înainte
+    data rămânea obiect (`2026-10-16 00:00:00`), `_e_data` nu-l recunoștea, deci niciun rând nu era tranzacție: „Nu s-au găsit tranzacții
+    în extras”. Celelalte valori trec neschimbate."""
+    import datetime as _dt
+    if data_excel and isinstance(v, (int, float)):
+        import xlrd
+        v = xlrd.xldate_as_datetime(v, datemode)
+    if isinstance(v, (_dt.datetime, _dt.date)):
+        return "%02d.%02d.%04d" % (v.day, v.month, v.year)
+    return v
+
+
+#: [lotul 12, C121] un IBAN scris în antetul unui extras în tabel (deasupra rândului Data / Detalii / …): codul țării, 2 cifre de control
+#: și restul alfanumeric — forma generală a IBAN-ului; spațiile dintre grupările de câte 4 sunt permise și se scot
+_IBAN = re.compile(r"\b([A-Z]{2}[0-9]{2}(?: ?[A-Z0-9]){11,30})\b")
+
+
+def iban_din_antet(randuri):
+    """PURĂ. [C121] IBAN-ul contului din antetul tabelului (rândurile de DEASUPRA capului de tabel cu „Data”), sau None. Rândurile
+    tranzacțiilor nu se citesc: acolo IBAN-ul e al partenerului, nu al contului extrasului. Fără cap de tabel, primele 10 rânduri."""
+    for i, r in enumerate(randuri[:30]):
+        jos = [str(c or "").lower() for c in r]
+        if any("data" in c for c in jos) and any(("debit" in c or "suma" in c or "valoare" in c or "amount" in c) for c in jos):
+            randuri = randuri[:i]
+            break
+    else:
+        randuri = randuri[:10]
+    for r in randuri:
+        for c in r:
+            m = _IBAN.search(str(c or "").upper())
+            if m:
+                v = m.group(1).replace(" ", "")
+                # grupările cu spațiu pot înghiți cuvântul de după („… 0000 SOLD”): IBAN-ul românesc are 24 de caractere (RO + 2 + 4 + 16)
+                return v[:24] if v.startswith("RO") else v
+    return None
+
+
 def _e_data(v):
     return bool(re.match(r"^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}", str(v or "").strip()))
 
@@ -191,7 +230,8 @@ def _parse_mt940(text):
 
 def citeste_extras(continut, nume_fisier=""):
     """Detecteaza formatul dupa primii octeti si intoarce `{tranzactii, cont, sold_initial, sold_final}`. Contul si soldurile vin
-    numai din MT940; din tabele (xls / xlsx / csv) raman `None` — ecranul spune ca extrasul nu le contine.
+    din MT940; din tabele (xls / xlsx / csv) soldurile raman `None` — ecranul spune ca extrasul nu le contine —, iar contul e IBAN-ul
+    din antetul tabelului, cand il are ([lotul 12, C121] `iban_din_antet`; comparat cu contul firmei inainte de import).
     Ridica ValueError (cu FORMAT_ASTEPTAT) daca parsarea esueaza sau da 0 tranzactii."""
     rez = {"cont": None, "sold_initial": None, "sold_final": None}
     try:
@@ -199,16 +239,22 @@ def citeste_extras(continut, nume_fisier=""):
             import xlrd
             wb = xlrd.open_workbook(file_contents=continut)
             sh = wb.sheet_by_index(0)
-            randuri = [[sh.cell_value(r, c) for c in range(sh.ncols)] for r in range(sh.nrows)]
+            randuri = [[_celula_text(sh.cell_value(r, c), sh.cell_type(r, c) == xlrd.XL_CELL_DATE, wb.datemode)
+                        for c in range(sh.ncols)] for r in range(sh.nrows)]
             tranzactii = _parse_grid(randuri) or _fara_antet(randuri)
+            rez["cont"] = iban_din_antet(randuri)
         elif continut[:2] == b"PK":  # zip = .xlsx
             from openpyxl import load_workbook
             wb = load_workbook(BytesIO(continut), read_only=True)
             sh = wb.active
-            randuri = [[c for c in rand] for rand in sh.iter_rows(values_only=True)]
+            randuri = [[_celula_text(c) for c in rand] for rand in sh.iter_rows(values_only=True)]
             tranzactii = _parse_grid(randuri) or _fara_antet(randuri)
+            rez["cont"] = iban_din_antet(randuri)
         else:  # text: MT940 sau csv
-            text = continut.decode("utf-8", errors="replace") if isinstance(continut, bytes) else continut
+            # [lotul 12, clasa 251] codarea prin mecanismul unic al importurilor (BOM, UTF-8, Windows-1250 cu verificarea literelor);
+            # înainte UTF-8 cu `errors="replace"`: diacriticele unui CSV Windows-1250 deveneau „�”
+            from core import import_tabel as _it
+            text = _it.decodeaza(continut, nume_fisier)[0] if isinstance(continut, bytes) else continut
             if ":61:" in text or ":20:" in text:  # marker MT940
                 rez = _parse_mt940(text)
                 tranzactii = rez.pop("tranzactii")
@@ -217,6 +263,7 @@ def citeste_extras(continut, nume_fisier=""):
                 delim = _detecteaza_delimitator(text)
                 randuri = list(csv.reader(text.splitlines(), delimiter=delim)) if text.strip() else []
                 tranzactii = _parse_grid(randuri) or _fara_antet(randuri)
+                rez["cont"] = iban_din_antet(randuri)
     except ValueError:
         raise
     except Exception as e:

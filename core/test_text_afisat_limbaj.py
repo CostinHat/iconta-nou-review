@@ -35,6 +35,8 @@ import json
 import os
 import re
 
+import pytest
+
 from core.test_diacritice_afisate import _DIAC, _DISPLAY_KEYS, _TRIGGERE, _candidati, _cuvinte
 
 CHEI = set(_DISPLAY_KEYS) | {"temei_completitudine"}
@@ -82,10 +84,11 @@ def _nume_apel(f):
 
 def _roluri_noi():
     out = []
+    semnaturi = semnaturi_afisate()   # [C132] o singură citire a tuturor modulelor, nu una pe fișier
     for fn in sorted(glob.glob("core/*.py")) + ["main.py"]:
         if fn.split("/")[-1].startswith("test_") or fn in FARA_ECRAN:
             continue
-        out += roluri_din(open(fn, encoding="utf-8").read(), fn)
+        out += roluri_din(open(fn, encoding="utf-8").read(), fn, semnaturi)
     return out
 
 
@@ -116,12 +119,61 @@ def _lit_cu_sabloane(node, sabloane):
     return _lit(node) + [x for nm in ast.walk(node) if isinstance(nm, ast.Name) for x in sabloane.get(nm.id, [])]
 
 
-def roluri_din(src, fn="<sursa>"):
+def _pozitii_afisate(arb):
+    """{funcție: pozițiile parametrilor ei numiți ca un text afișat (`mesaj`, `temei`, `motiv`, …)} pentru funcțiile din `arb`.
+    Un nume definit de mai multe ori cu pozițiile diferite e ambiguu și nu intră."""
+    vazute = {}
+    for n in ast.walk(arb):
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            p = [a.arg for a in n.args.posonlyargs + n.args.args]
+            p = p[1:] if p[:1] in (["self"], ["cls"]) else p
+            vazute.setdefault(n.name, set()).add(tuple(i for i, a in enumerate(p) if a in CHEI))
+    return {k: next(iter(v)) for k, v in vazute.items() if len(v) == 1 and next(iter(v))}
+
+
+def semnaturi_afisate():
+    """[C132, lotul 12] Pozițiile din TOATE modulele aplicației (o funcție de construcție a constatării e chemată și din alt modul:
+    `_af.afirmatie(fel, tip, mesaj)`, `observare.alerteaza(cheie, titlu, mesaj)`). Fără cache de modul: `core/limba_ecran.py` importă
+    modulul ăsta, deci un dicționar umplut la rulare ar fi stare în procesul care servește (P6, `core/test_stare_proces.py`) — cine
+    citește multe fișiere o cere o dată și o dă mai departe (`_roluri_noi`)."""
+    vazute = {}
+    for fn in sorted(glob.glob("core/*.py")) + ["main.py"]:
+        if not fn.split("/")[-1].startswith("test_"):
+            for k, v in _pozitii_afisate(ast.parse(open(fn, encoding="utf-8").read())).items():
+                vazute.setdefault(k, set()).add(v)
+    return {k: next(iter(v)) for k, v in vazute.items() if len(v) == 1}
+
+
+def _e_text(a, sabloane):
+    """Argumentul e un TEXT (literal, f-string, `"…" % x`, `"…".format()`, ternar între texte, un șablon numit), nu un obiect construit
+    dintr-un apel (`Temei(...)` dat parametrului `temei` al lui `ancoreaza` e metadată, nu text)."""
+    if isinstance(a, ast.Constant):
+        return isinstance(a.value, str)
+    if isinstance(a, ast.JoinedStr):
+        return True
+    if isinstance(a, ast.BinOp):
+        return _e_text(a.left, sabloane) or _e_text(a.right, sabloane)
+    if isinstance(a, ast.IfExp):
+        return _e_text(a.body, sabloane) or _e_text(a.orelse, sabloane)
+    if isinstance(a, ast.Name):
+        return a.id in sabloane
+    return (isinstance(a, ast.Call) and isinstance(a.func, ast.Attribute) and a.func.attr in ("format", "join", "strip")
+            and _e_text(a.func.value, sabloane))
+
+
+def roluri_din(src, fn="<sursa>", semnaturi=None):
     out = []
     arb = ast.parse(src)
     linii = src.splitlines()
     sabloane = _sabloane(arb)
+    #: [C132, lotul 12: „Nu ma pronunt inca: D101 declara…” pe ecranul Supervizor] rolul ARGUMENTULUI POZIȚIONAL: textul dat unei
+    #: funcții pe poziția unui parametru numit ca text afișat (`_gri_liber(tip, eticheta, temei, mesaj, …)`) — până azi se citea numai
+    #: forma cu nume (`mesaj="…"`), deci toată axa D101 / D406 a controlului încrucișat trecea nevăzută.
+    pozitii = dict(semnaturi_afisate() if semnaturi is None else semnaturi, **_pozitii_afisate(arb))
     for n in ast.walk(arb):
+        if isinstance(n, ast.Call) and _nume_apel(n.func) not in DECLARATII_CACHE:
+            out += [(fn, ln, s) for i in pozitii.get(_nume_apel(n.func), ()) if i < len(n.args) and _e_text(n.args[i], sabloane)
+                    for ln, s in _lit_cu_sabloane(n.args[i], sabloane)]
         if (isinstance(n, ast.Raise) and isinstance(n.exc, ast.Call) and n.exc.args
                 and _nume_apel(n.exc.func) not in EXCEPTII_DEV and not _intern(linii, n)):
             out += [(fn, ln, s) for ln, s in _lit_cu_sabloane(n.exc.args[0], sabloane)]
@@ -159,6 +211,13 @@ def texte_generatoare():
 
 def texte_afisate():
     return sorted({c for c in _candidati() if c[0] not in FARA_ECRAN} | set(_roluri_noi()))
+
+
+@pytest.fixture(scope="module")
+def texte():
+    """Textele afișate, adunate o dată pe modul (patru gărzi le citesc) — în fixture, nu într-un `lru_cache` de modul: `core/limba_ecran.py`
+    importă modulul ăsta, deci memoizarea ar fi stare în procesul care servește (P6, `core/test_stare_proces.py`)."""
+    return texte_afisate()
 
 
 def _e_proza(s):
@@ -244,9 +303,9 @@ def _e_migrare(fn):
     return os.path.basename(fn).startswith("migrare_")
 
 
-def defecte():
+def defecte(toate=None):
     out = []
-    toate = texte_afisate()
+    toate = texte_afisate() if toate is None else toate
     for fn, ln, s in toate:
         for fel, f in (("diacritice", fara_diacritice), ("cod", limbaj_de_cod), ("majuscule", majuscule), ("jargon", jargon)):
             if fel == "jargon" and _e_migrare(fn):
@@ -291,6 +350,10 @@ def test_rolurile_noi_vad_limitele_verdictului():
            "d = {'temei_completitudine': 'r5'}\nLIMITA = 'r6'\nDeclaratie(motiv='x1')\nraise ValueError('r7')\n"
            "raise RuntimeError('x2')\n")
     assert sorted(s for _fn, _ln, s in roluri_din(src)) == ["r1", "r2", "r3", "r4", "r5", "r6", "r7"]
+    # [C132] argumentul pozițional pe locul unui parametru numit ca text (și f-string / `%`); un obiect `Temei(...)` nu e text
+    src = ("def _gri(tip, eticheta, temei, mesaj, an=None):\n    pass\n"
+           "_gri('d101', 'x0', 'p1', 'p2 %s' % 3, 2026)\n_gri('d101', 'x0', T('x3'), f'p3 {a}')\n")
+    assert sorted(s for _fn, _ln, s in roluri_din(src)) == ["p1", "p2 %s", "p3 "]
 
 
 def test_marcajul_intern_are_motiv_si_plafon():
@@ -344,8 +407,8 @@ def test_ecranele_fara_majuscule_de_accent():
         "  %s:%d [%s] %s <- %r" % (fn, ln, rol, ",".join(h), s[:100]) for fn, ln, rol, s, h in gasite)
 
 
-def test_textul_afisat_e_limba_romana():
-    gasite = defecte()
+def test_textul_afisat_e_limba_romana(texte):
+    gasite = defecte(texte)
     raport = "\n".join("  %s:%d  [%s] %s  <- %r" % (fn, ln, fel, ",".join(g), s[:110]) for fn, ln, fel, g, s in gasite)
     assert not gasite, "Text afișat contabilului în limbaj de programator / fără diacritice / cu majuscule:\n" + raport
 
@@ -524,11 +587,176 @@ def test_detectorul_de_voce_are_dinti():
     from core import limba_ecran as _le
     for s in ('<div class="cf-grup-titlu">Nu pot verifica (3)</div>', "D300 depus fără rândurile salvate — nu pot compara.",
               "Nu am putut încărca registrul.", "n-am putut verifica", "Ți-am trimis un link", "Am scos din textul generat",
-              "se așteaptă ZZ.LL.AAAA; aștept forma corectă", "nu găsesc coloana cu denumirea"):
+              "se așteaptă ZZ.LL.AAAA; aștept forma corectă", "nu găsesc coloana cu denumirea",
+              "Nu mă pronunț încă: D101 declară", "Nu ma pronunt inca: D101 declara",   # [C132]
+              "deci nu am ce confrunta", "Nu am înscris rândul", "nu putem confirma", "Citesc balanța…", "<p>Citesc documentul</p>"):
         assert _le.VOCE.search(s), s
     for s in ("Nu se poate verifica (3)", "Două firme nu pot avea același CUI", "rânduri nu pot fi salvate", "Nu s-a putut încărca",
-              "Un link de confirmare a fost trimis"):
+              "Un link de confirmare a fost trimis", "liniile se citesc automat", "nu ameliorează", "Am uitat parola"):
         assert not _le.VOCE.search(s), s
     src_js = 'const a = `x ${b ? `<p>Nu pot verifica</p>` : ""}`; // nu pot în comentariu\n'
     assert [fr for _f, _l, fr, _s in voce_in_sursa("x.js", src_js)] == ["Nu pot"], "șablonul imbricat se vede, comentariul nu"
     assert [fr for _f, _l, fr, _s in voce_in_sursa("x.py", '"""nu pot în docstring"""\nM = "Nu am putut citi"\n')] == ["Nu am putut"]
+
+
+# ── Formatele (deficiența 184): data prin `data_ro`, perioada într-o singură formă ────────────────────────────────────────────────────
+#: [deficiența 184, Costin: „Formate: date ISO, jurnale majuscule, perioade în patru formate, «1 parteneri»”; comanda 12.1: clasa =
+#: „data afișată prin funcția unică (dataRo / data_ro), perioada într-un singur format, pluralul după număr”] Ecranul o judecă din browser
+#: (`limba_ecran`: `data`, `perioada`, `acord`), dar numai pe textele pe care datele de test le aduc pe ecran: un refuz al serverului
+#: („la data operațiunii (2026-10-01)”, „Concediul se sfârșește (2026-10-03)…”) apare numai pe ramura lui. Aici, pe sursă: în orice text
+#: afișat (rolurile de mai sus), o valoare de tip dată pusă în text — `x.isoformat()`, `str(data)` sau o variabilă numită ca o dată
+#: (`data_*`, `*_la`, `zi`) — fără `data_ro` (DS cap.4, sursa unică, `core/pdf_util.py`). Un `%r` (ecoul unei intrări greșite) nu e o dată.
+#: LIMITĂ declarată: o dată ținută într-o variabilă cu alt nume („doc”, „d”) se vede numai la `.isoformat()`; o dată ISO trimisă de
+#: server ca valoare și pusă în text de JS e păzită de verificator (DATA_BRUTA / DATA_DIALECT).
+_DATA_NUME = re.compile(r"(?:^|_)(?:data|date|zi|ziua|dfg|scadenta|termen)(?:_|$)|_la$")
+_SPEC = re.compile(r"%(?:\([^)]*\))?[-+ #0]*\d*(?:\.\d+)?([a-zA-Z%])")
+
+
+def _nume_val(e):
+    if isinstance(e, ast.Name):
+        return e.id
+    if isinstance(e, ast.Attribute):
+        return e.attr
+    if isinstance(e, ast.Subscript) and isinstance(e.slice, ast.Constant) and isinstance(e.slice.value, str):
+        return e.slice.value
+    return None
+
+
+def _data_bruta(v, formatate):
+    if isinstance(v, ast.Call):
+        nm = _nume_apel(v.func)
+        if nm == "isoformat":
+            return True
+        return nm == "str" and bool(v.args) and _data_bruta(v.args[0], formatate)
+    nm = _nume_val(v)
+    return bool(nm and nm not in formatate and _DATA_NUME.search(nm.lower()))
+
+
+def date_brute_din(src, linii_text):
+    """[(linie, valoare)] — datele puse fără `data_ro` în textele afișate de pe `linii_text` (numerele de linie ale literalelor)."""
+    arb = ast.parse(src)
+    # o variabilă primită chiar din formator (`zi = data_ro(d)`) e deja în forma omului
+    formatate = {t.id for n in ast.walk(arb) if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call)
+                 and "data_ro" in _nume_apel(n.value.func).lower() for t in n.targets if isinstance(t, ast.Name)}
+    out = []
+    for n in ast.walk(arb):
+        if (isinstance(n, ast.BinOp) and isinstance(n.op, ast.Mod) and isinstance(n.left, ast.Constant)
+                and isinstance(n.left.value, str) and n.left.lineno in linii_text):
+            arg = n.right.elts if isinstance(n.right, ast.Tuple) else [n.right]
+            spec = [c for c in _SPEC.findall(n.left.value) if c != "%"]
+            out += [(n.lineno, ast.unparse(a)) for k, a in enumerate(arg)
+                    if not (k < len(spec) and spec[k] == "r") and _data_bruta(a, formatate)]
+        if isinstance(n, ast.JoinedStr) and n.lineno in linii_text:
+            out += [(n.lineno, ast.unparse(v.value)) for v in n.values
+                    if isinstance(v, ast.FormattedValue) and v.conversion != ord("r") and _data_bruta(v.value, formatate)]
+    return out
+
+
+def date_brute(texte=None):
+    pe_fisier = {}
+    for fn, ln, _s in (texte_afisate() if texte is None else texte):
+        pe_fisier.setdefault(fn, set()).add(ln)
+    return [(fn, ln, v) for fn in sorted(pe_fisier) for ln, v in date_brute_din(open(fn, encoding="utf-8").read(), pe_fisier[fn])]
+
+
+def test_datele_din_textul_afisat_trec_prin_data_ro(texte):
+    """MUTAȚIE: `_data_ro(_dd)` -> `_dd.isoformat()` în refuzul cotei de TVA (`core/common.py`) -> pică."""
+    rele = date_brute(texte)
+    assert not rele, "Dată pusă în textul afișat fără `data_ro` (DS cap.4: ZZ.LL.AAAA):\n" + "\n".join("  %s:%d  %s" % r for r in rele)
+
+
+#: Perioada afișată: „LL/AAAA” (luna), „T3/2026” (trimestrul) — aceeași formă ca ecranul (`limba_ecran`: `_PER_*`) și ca
+#: `uc_coada.perioada_text`. Aici: șablonul unui text afișat care compune luna și anul în altă formă („%02d.%04d”, „%d-%02d”).
+_PER_SABLON = re.compile(r"%0?2d[.\-]%0?4?d|%0?4?d[\-.]%0?2d|\{luna:02d?\}[.\-]|T%d %d|\btrim(?:\.|estrul) %[sd]\b")
+
+
+def perioade_necanonice(texte=None):
+    return [(fn, ln, m.group(0), s[:90]) for fn, ln, s in (texte_afisate() if texte is None else texte) if _e_proza(s) for m in [_PER_SABLON.search(s)] if m]
+
+
+def test_perioada_afisata_are_o_singura_forma(texte):
+    """MUTAȚIE: „Luna %02d/%d nu se poate declara închisă” -> „Luna %02d.%04d …” (`core/inchidere_luna.py`) -> pică."""
+    rele = perioade_necanonice(texte)
+    assert not rele, "Perioadă afișată în altă formă decât LL/AAAA sau T3/2026:\n" + "\n".join("  %s:%d  %s <- %r" % r for r in rele)
+
+
+def test_detectoarele_de_format_au_dinti():
+    src = ("from core.pdf_util import data_ro\n"
+           "def f(d, data_doc, zi_x):\n"
+           "    zi = data_ro(d)\n"
+           "    a = 'Cota la data operațiunii (%s).' % d.isoformat()\n"
+           "    b = 'Concediul se sfârșește (%s), început %s.' % (data_doc, zi)\n"
+           "    c = f'Cursul la data {data_doc} lipsește.'\n"
+           "    e = 'data %r nu e o dată' % data_doc\n"
+           "    g = 'Factura din %s.' % data_ro(data_doc)\n")
+    assert [v for _ln, v in date_brute_din(src, {4, 5, 6, 7, 8})] == ["d.isoformat()", "data_doc", "data_doc"]
+    for s in ("Luna %02d.%04d nu se poate închide", "stat emis pe %d-%02d — nu există", "trimestrul T%d %d declarat"):
+        assert _PER_SABLON.search(s), s
+    for s in ("Luna %02d/%d nu se poate închide", "T%d/%d", "anul %d"):
+        assert not _PER_SABLON.search(s), s
+
+
+#: [deficiența 184, „pluralul după număr”] forma cu paranteză („%d notă(e) nevalidată(e)”, „3 document(e)”, „beneficiar(i)”) ocolește
+#: acordul: `common.cate` / `plural.js::cate` aleg forma după număr. Pe textele afișate din Python și pe literalele JS.
+_PLURAL_PARANTEZA = re.compile(r"[a-zăâîșț]{2,}\((?:e|i|uri|le|ii|ele|lor)\)")
+
+
+def plurale_in_paranteza(texte=None):
+    from core.test_diacritice_afisate import _decode_js   # „not\u0103(e)” scris cu escape-uri JS e tot „notă(e)”
+    out = [(fn, ln, m.group(0), s[:90]) for fn, ln, s in (texte_afisate() if texte is None else texte)
+           for m in _PLURAL_PARANTEZA.finditer(s)]
+    for fn in sorted(glob.glob("static/js/**/*.js", recursive=True)):
+        src = io.open(fn, encoding="utf-8").read()
+        out += [(fn, src.count("\n", 0, p) + 1, m.group(0), d[:90]) for p, s in literale_js(src) for d in [_decode_js(s)]
+                for m in _PLURAL_PARANTEZA.finditer(d)]
+    return out
+
+
+def test_pluralul_nu_se_scrie_cu_paranteza(texte):
+    """MUTAȚIE: `_cate(ciorne, "notă nevalidată", "note nevalidate")` -> „%d notă(e) nevalidată(e)” în poarta D406 (`core/uc_coada.py`)
+    -> pică."""
+    assert _PLURAL_PARANTEZA.search("sunt 3 notă(e) nevalidată(e)") and not _PLURAL_PARANTEZA.search("refuzLegareNir (e) sau (i)")
+    rele = plurale_in_paranteza(texte)
+    assert not rele, "Plural scris cu paranteză (se folosește `cate`):\n" + "\n".join("  %s:%d  %s <- %r" % r for r in rele)
+
+
+#: [deficiența 163, „majuscule”; lotul 12] gardul JS de mai sus (`test_ecranele_fara_majuscule_de_accent`) citește textul din
+#: șabloanele de ecran; un text compus din bucăți (`"…: " + e.mesaj + ". Constatările NU sunt «zero»"`, `confirmaCaseta(zona, "… NU va
+#: reintra …")`) nu trecea prin el. Aici: ORICE literal JS care, fără etichetele HTML, e proză românească. Excepțiile: o denumire oficială
+#: sau un nume de meniu al altui program (scris cum îl scrie el); fiecare cu motivul, și trebuie să mai existe.
+MAJUSCULE_JS_PERMISE = {
+    ("static/js/ecrane/login.js", "CONSOLIDATĂ"): "denumirea oficială a D101G (`core/d101g.py::DENUMIRE_OFICIALA`), generată în DECLARATII_AUTO",
+    ("static/js/ecrane/login.js", "GRUPUL"): "aceeași denumire oficială a D101G",
+    ("static/js/ecrane/login.js", "FISCAL"): "aceeași denumire oficială a D101G",
+    ("static/js/ecrane/firme.js", "IGNORAT"): "`VC_VERIFICARI`: declarația de paritate a cheilor citită de verificator (VERDICT_PARITATE), "
+                                              "nu se afișează",
+    ("static/js/ecrane/facturi_ecran.js", "FACTURĂ"): "titlul modelului de factură (previzualizarea documentului), scris ca pe document — "
+                                                      "ca „CHITANȚĂ” la `TITLURI_FORMULAR`",
+}
+_TAG = re.compile(r"<[^>]*>")
+
+
+def majuscule_js():
+    from core.test_diacritice_afisate import _decode_js
+    out = []
+    for fn in sorted(glob.glob("static/js/**/*.js", recursive=True)):
+        src = io.open(fn, encoding="utf-8").read()
+        for p, s in literale_js(src):
+            # caseta „NU s-a salvat” de lângă buton e convenția DS cap.6 v2.93 (deficiența 410, `api.js::refuzSalvare`), aceeași peste tot;
+            # o rută `POST /tenants/…` (atributul `data-actiune`) nu e text
+            t = _TAG.sub(" ", _decode_js(s)).replace("NU s-a salvat", "nu s-a salvat")
+            t = re.sub(r"„[^”]*”", "„…”", t)   # între ghilimele: un nume citat (meniul altui program, o valoare emisă), nu accent
+            if re.search(r"\b(?:GET|POST|PUT|DELETE|PATCH) /", t):
+                continue
+            if _e_proza(t) and len(re.findall(r"(?<![\w-])[a-zăâîșț]{2,}(?![\w-])", t)) >= 2:   # proză: măcar două cuvinte mici
+                out += [(fn, src.count("\n", 0, p) + 1, m, t.strip()[:100]) for m in majuscule(t)]
+    return out
+
+
+def test_textul_js_compus_din_bucati_fara_majuscule_de_accent():
+    """MUTAȚIE: „Constatările nu sunt «zero», ci necunoscute.” -> „Constatările NU sunt «zero» …” în `supervizor.js` -> pică."""
+    gasite = majuscule_js()
+    rele = [g for g in gasite if (g[0], g[2]) not in MAJUSCULE_JS_PERMISE]
+    assert not rele, "Text JS cu majuscule de accent (accentul se pune prin formulare):\n" + "\n".join("  %s:%d  %s <- %r" % r for r in rele)
+    fara_obiect = set(MAJUSCULE_JS_PERMISE) - {(g[0], g[2]) for g in gasite}
+    assert not fara_obiect, "excepții fără obiect (textul s-a schimbat — scoate-le): %s" % sorted(fara_obiect)

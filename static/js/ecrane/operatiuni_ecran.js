@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=31460b24f2";
+import { api, ultimaCerere, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=309f4d66ae";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -137,7 +137,8 @@ const REGISTRU = [
   { cat: "Imobilizări și capital", cheie: "inventariere", titlu: "Inventariere anuală", ruta: "nota-inventariere", frecventa: "rar", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["plus","Plus stoc"],["plus_mf","Plus mijloc fix"],["minus","Minus"],["casare","Casare"]] }),
-    C("valoare", "Valoare"),
+    // [C117, lotul 12] la Casare valoarea vine din registrul activelor (mijlocul fix ales, cu amortizarea lui): câmpul nu se mai cere
+    C("valoare", "Valoare", "numar", { cond: { camp: "operatie", val: ["plus", "plus_mf", "minus"] } }),
     C("cont_stoc", "Cont stoc", "text", { cond: { camp: "operatie", val: ["plus", "minus"] }, sugestie: "371" }),
     DN("imputabil", "Imputabil", { cond: { camp: "operatie", val: "minus" } }),
     C("valoare_imputare", "Valoare imputare", "numar", { cond: { camp: "imputabil", val: "true" } }),
@@ -169,7 +170,7 @@ const REGISTRU = [
         optiuni: [["fapt_generator", "Livrarea sau prestarea a fost prima \u2014 cota de la data livr\u0103rii"],
                   ["factura_avans", "Factura ori avansul au fost \u00eenainte de livrare \u2014 cota de la data lor"]],
         ajutor: "Art. 291 alin. (5): la TVA la \u00eencasare cota e cea de la faptul generator, "
-          + "DAR dac\u0103 factura ori avansul au fost emise \u00eenainte de livrare, se aplic\u0103 cota de la "
+          + "Dar dac\u0103 factura ori avansul au fost emise \u00eenainte de livrare, se aplic\u0103 cota de la "
           + "data acelui document. Alegerea nu se poate deduce din datele opera\u021biunii, de aceea "
           + "se cere aici." }),
     C("data_factura_avans", "Data facturii ori a avansului", "data",
@@ -248,12 +249,17 @@ const REGISTRU = [
     C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
     C("data_faptului_generator", "Data faptului generator", "data", { ajutor: "Exigibilitatea = MIN(data facturii, ziua 15 a lunii următoare faptului generator) — art. 284. Dacă e aceeași cu a facturii, scrie data facturii." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Extern", cheie: "vanzare_ic", titlu: "Livrare/prestare intracomunitară (VIES live)", ruta: "vanzare-ic", frecventa: "lunar", faraPropunere: "e documentul operațiunii (factura, borderoul, declarația vamală) — nu vine din alt ecran al aplicației, se introduce la fiecare operațiune", campuri: [
+  // [C84, decizia Costin (b), lotul 12] „livrarea intracomunitară de BUNURI trece pe «Emite factură» (care descarcă stocul), iar Operațiuni
+  // rămân pentru servicii”. Până acum, pe o firmă cu stocul cantitativ-valoric, livrarea de bunuri de aici era imposibilă (refuzul cerea
+  // articolul din stoc pe linia 707, iar formularul n-avea câmp de articol) și oricum nu descărca stocul. Alegerea „Bunuri” arată acum
+  // drumul (`spreEmitere`): textul și butonul spre «Emite factură»; „Generează nota” nu se oferă pentru bunuri.
+  { cat: "Extern", cheie: "vanzare_ic", titlu: "Livrare/prestare intracomunitară (VIES live)", ruta: "vanzare-ic", frecventa: "lunar", faraPropunere: "e documentul operațiunii (factura, borderoul, declarația vamală) — nu vine din alt ecran al aplicației, se introduce la fiecare operațiune",
+    spreEmitere: { camp: "tip", val: "bunuri", text: "Livrarea intracomunitară de bunuri se face din «Emite factură»: acolo scrii codul de TVA al clientului (se verifică în VIES), alegi articolul din stoc și categoria „livrare intracomunitară”, iar marfa se descarcă din gestiune odată cu factura. Aici rămân prestările de servicii intracomunitare." },
+    campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare"),
     C("cod_tva_client", "Cod TVA client (ex. DE123456789)", "text"),
     C("tip", "Tip", "select", { optiuni: [["bunuri","Bunuri"],["servicii","Servicii"]] }),
-    C("cont_venit", "Cont venit", "text", { sugestie: "707", ajutor: "Bunuri: de regulă 707; servicii: 704." }),
-    DN("dovada_transport", "Ai dovada transportului în alt stat membru", { cond: { camp: "tip", val: "bunuri" }, ajutor: "Fără ea scutirea nu se aplică (art. 294 alin. (2) lit. a)) — se facturează cu TVA." }),
+    C("cont_venit", "Cont venit", "text", { sugestie: "704", cond: { camp: "tip", val: "servicii" }, ajutor: "Prestările de servicii: de regulă 704." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Extern", cheie: "import_ec", titlu: "Import extracomunitar (DVI)", ruta: "import-extracomunitar", frecventa: "lunar", faraPropunere: "e documentul operațiunii (factura, borderoul, declarația vamală) — nu vine din alt ecran al aplicației, se introduce la fiecare operațiune", campuri: [
     C("data", "Data", "data"), C("valoare_vamala", "Valoare vamală (RON)"),
@@ -482,6 +488,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         </div>
         ${opCurenta.multi ? `<div class="op-multi-bloc"${opCurenta.multiCond ? ` data-cond-camp="${opCurenta.multiCond.camp}" data-cond-val="${[].concat(opCurenta.multiCond.val).join("|")}"` : ""}><div class="pf-frand-nume" style="margin:12px 0 6px">${esc(opCurenta.multiTitlu || "Solduri")}</div><div id="op-multi"></div></div>` : ""}
         ${opCurenta.cheie === "asociati" ? '<div id="op-propunere"></div>' : ""}
+        ${opCurenta.spreEmitere ? `<div class="caseta-info op-spre-emitere" id="op-spre-emitere" data-cond-camp="${opCurenta.spreEmitere.camp}" data-cond-val="${opCurenta.spreEmitere.val}" style="display:none"><span class="ci-mesaj">${esc(opCurenta.spreEmitere.text)}</span><p style="margin:8px 0 0"><button type="button" class="buton-secundar" id="op-spre-emitere-buton" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Deschide «Emite factură»</button></p></div>` : ""}
         <div class="bara-fixa">
           <p style="margin-top:12px"><button class="buton-primar" id="op-trimite" data-genereaza-nota data-actiune="${actiuneOp(opCurenta)}">Genereaz\u0103 nota (ciorn\u0103)</button></p>
           <div id="op-mesaj"></div>
@@ -529,7 +536,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=67a0f7dd2f");
+      const { ecranJurnal } = await import("./firme.js?v=1c7b806a57");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };
@@ -571,7 +578,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // [07.10.2026] În LANȚ: un câmp se vede numai dacă și câmpul de care depinde se vede (vinovatul cere „Imputabil: Da”, iar
     // „Imputabil” cere „Minus”) — altfel o valoare rămasă într-un select ascuns ar arăta (și ar cere) un câmp fără sens.
     const actualizeazaCond = () => {
-      const deps = [...corp.querySelectorAll(".camp[data-cond-camp], .op-multi-bloc[data-cond-camp]")];
+      const deps = [...corp.querySelectorAll(".camp[data-cond-camp], .op-multi-bloc[data-cond-camp], .op-spre-emitere[data-cond-camp]")];
       for (let tura = 0; tura < 4; tura++) {
         deps.forEach((l) => {
           const sel = corp.querySelector(`#op-${l.dataset.condCamp}`);
@@ -580,7 +587,15 @@ export async function ecranOperatiuni(corp, nav, t) {
           l.style.display = sel && vizibil && l.dataset.condVal.split("|").includes(sel.value) ? "" : "none";
         });
       }
+      // [C84] operațiunea care se face din «Emite factură» nu se generează de aici: butonul notei nu se oferă cât e aleasă
+      const spre = corp.querySelector(".op-spre-emitere");
+      corp.querySelector("#op-trimite").style.display = spre && spre.style.display !== "none" ? "none" : "";
     };
+    const btnSpre = corp.querySelector("#op-spre-emitere-buton");
+    if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
+      const { randeazaEmitere } = await import("./emitere_ecran.js?v=ee4898fed1");
+      nav.deschide("Emite factură", (c2) => randeazaEmitere(c2, nav, t.id, { inapoi: () => nav.inapoi() }));
+    });
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
       corp.querySelector(`#op-${c.nume}`).addEventListener("change", actualizeazaCond));
     actualizeazaCond();

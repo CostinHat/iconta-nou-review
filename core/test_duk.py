@@ -64,7 +64,7 @@ def test_d406_nu_accepta_gunoi_si_cere_an_luna():
     r = valideaza(GUNOI, "d406", an=2026, luna=6)
     assert r["stare"] != "valid"
     fara = valideaza(GUNOI, "d406")
-    assert fara["stare"] == "gri" and "an si luna" in fara["temei"]
+    assert fara["stare"] == "gri" and "anul și luna" in fara["temei"]   # [lotul 12] cu diacritice
 
 
 def test_saft_are_jar_propriu():

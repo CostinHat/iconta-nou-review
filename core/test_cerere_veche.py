@@ -29,7 +29,8 @@ SCRIERI_DIN_EDITARE = {
     "static/js/ecrane/facturi_ecran.js::primiteSPV›anonim": "importul XML UBL al facturilor primite — salvare",
     "static/js/ecrane/facturi_ecran.js::deseneaza›anonim": "PUT opțiunea scadențarului — salvare",
     "static/js/ecrane/firme.js::deseneaza›anonim›anonim": "PUT starea zilei în pontaj — salvare",
-    "static/js/ecrane/firme.js::ecranBanca›anonim": "importul extrasului bancar — salvare",
+    "static/js/ecrane/firme.js::importa": "importul extrasului bancar — salvare (lotul 12, C121: mutat în `importa`, reluat după "
+                                          "confirmarea contului)",
     "static/js/ecrane/firme.js::ecranRaportZ›anonim": "importul raportului Z (AMEF) și nota lui — salvare",
     "static/js/ecrane/firme.js::randeazaLista›anonim": "bonul încărcat intră ciornă și se confirmă — salvare",
     "static/js/ecrane/portal.js::laSelectie": "bonul clientului salvat ca ciornă — salvare",

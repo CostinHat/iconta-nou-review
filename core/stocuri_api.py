@@ -357,9 +357,9 @@ def adauga_nir(conn, schema, nir, cere_decizia=False):
             if metoda == _ms.CV:
                 aid = articole[i]
                 if aid is None:          # articol nou, creat EXPLICIT (C11c)
-                    cur.execute(f"INSERT INTO {schema}.articole (denumire, um) VALUES (%s, %s) RETURNING id",
-                                (" ".join(str(den).split()), l.get("um") or "buc"))
-                    aid = cur.fetchone()["id"]
+                    # [lotul 12, 475] două linii ale aceluiași NIR cu același articol nou: a doua îl găsește pe cel creat de prima
+                    from core import stocuri_cv_api as _cv
+                    aid = _cv.articol_pentru_intrare(cur, schema, den, l.get("um"))
                 else:
                     cur.execute(f"SELECT denumire FROM {schema}.articole WHERE id = %s", (aid,))
                     den = cur.fetchone()["denumire"]

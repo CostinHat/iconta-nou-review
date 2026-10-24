@@ -901,9 +901,9 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     if fara_curs:
         _ids = ", ".join(fara_curs)
         res.avertismente.append(
-            "%d factură(i) în valută fără curs BNR — excluse din decont (nu se pot exprima în lei): %s. "
+            "%s în valută fără curs BNR — în afara decontului (nu se pot exprima în lei): %s. "
             "Completează cursul pe fiecare (ultimul curs comunicat până la data facturii); altfel suma nu "
-            "intră în declarație (A1, Cod fiscal art. 290)." % (len(fara_curs), _ids))
+            "intră în declarație (A1, Cod fiscal art. 290)." % (_cate(len(fara_curs), "factură", "facturi"), _ids))
     # Livrări TAXABILE fără rând valid pentru perioadă (19/5% etc): TVA-ul lor DISPARE din decont
     # (sub-declarare). ANAF (DUK v12, 2026) RESPINGE rândurile 19/5% (colectat R69/R71) — probat —
     # deci NU sunt auto-emise si NU trebuie adaugate manual acolo (ar invalida declaratia).

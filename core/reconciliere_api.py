@@ -6,9 +6,12 @@ Motorul de matching e în core/reconciliere.py (pur, testat)."""
 # `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
 # deschide, nu comite.
 import json
+import re
 from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
+from core import afirmatii as _af
 from core import reconciliere as _m
+from core.unde import Unde as _Unde
 from core.common import cate as _cate
 
 CONT_CLIENTI, CONT_FURNIZORI = "4111", "401"
@@ -42,6 +45,31 @@ def _cont_banca(valuta):
     return "5124" if valuta else "5121"
 
 
+def probabil_aceeasi_miscare(noua, veche):
+    """PURĂ. [lotul 12, deficiența 479 (grav), Costin: „Linie dublă importată; notă 5121=5121 propusă”] Limita declarată la 277 (DECIZII
+    „Lotul 6, comanda 1”): „aceeași mișcare venită o dată din tabel (fără cont) și o dată din MT940 (cu cont) nu se recunoaște ca aceeași”
+    — linia se adăuga a doua oară și se propunea la contat. `noua` / `veche` = {data, suma, tip, cont}. Aceeași dată, sumă și sens, iar
+    contul e cunoscut pe EXACT una din ele (extrasul în tabel nu-l are) -> probabil aceeași mișcare. Regula lui 277 rămâne neatinsă: cu
+    contul cunoscut pe amândouă (egal sau nu) ori necunoscut pe amândouă, numai cheia întreagă (`cheie_miscare`) hotărăște."""
+    def _c(x):
+        return (x.get("cont") or "").strip() or None
+    if (str(noua["data"]), noua["tip"]) != (str(veche["data"]), veche["tip"]):
+        return False
+    if Decimal(str(noua["suma"])).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) != \
+            Decimal(str(veche["suma"])).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP):
+        return False
+    return (_c(noua) is None) != (_c(veche) is None)
+
+
+def motiv_dublura(veche):
+    """Textul de pe rândul liniei puse deoparte (479): ce linie pare, de unde și ce poate face contabilul."""
+    from core import pdf_util as _pu
+    fis = (" din «%s»" % veche["fisier_sursa"]) if veche.get("fisier_sursa") else ""
+    return ("pare aceeași mișcare ca linia din %s importată deja%s (aceeași dată, sumă și sens; un extras are contul băncii, celălalt nu): "
+            "n-am pus-o la contat, ca să nu se înregistreze de două ori. Dacă e altă mișcare, apasă «readu»."
+            % (_pu.data_ro(veche["data"]), fis))
+
+
 def facturi_deschise(conn, schema, cu_asteptare=False):
     """Facturi cu sold > 0. Sold = total_lei(±total) - sume decontate prin
     inregistrari legate cu factura_id (credit 4111 la emise / debit 401 la primite).
@@ -51,31 +79,27 @@ def facturi_deschise(conn, schema, cu_asteptare=False):
     [lotul 10, 428, decizia Costin „Construiesc acum”] „fiecare compensare stinge cele două facturi”: nota compensării (401 = 4111, fără
     `factura_id`) stinge ambele facturi prin `compensari` (`compensari_api.nota_de_compensare`) — altfel banca și casa ar mai încasa o dată
     partea compensată."""
-    from core import compensari_api as _cz
-    cz = _cz.nota_de_compensare("i", "f.id", f"{schema}.")
+    from core import compensari_api as _cz, nomenclator_status_factura as _nsf
+    stinge = _cz.nota_stinge_factura("i", "f.id", f"{schema}.")   # [lotul 12, C153] condiția unică: nota legată, chitanța veche, compensarea
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
-            SELECT f.id, f.tert_cui, f.directie, f.data_emitere,
+            SELECT f.id, f.tert_cui, f.directie, f.data_emitere, f.serie, f.numar,
                    COALESCE(f.total_lei, f.total) AS total,
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                             WHERE (i.factura_id = f.id
-                                    OR (i.factura_id IS NULL AND EXISTS (
-                                        SELECT 1 FROM {schema}.chitante c
-                                         WHERE c.inregistrare_id = i.id AND c.factura_id = f.id AND NOT c.anulata))
-                                    OR {cz})
+                             WHERE {stinge}
                                AND ((f.directie='emisa'   AND l.cont_credit=%s)
                                  OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat,
                    (SELECT array_agg(DISTINCT i.id ORDER BY i.id)
                       FROM {schema}.inregistrari i
                       JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                     WHERE (i.factura_id = f.id OR {cz}) AND i.status <> 'validata'
+                     WHERE {stinge} AND i.status <> 'validata'
                        AND ((f.directie='emisa' AND l.cont_credit=%s) OR (f.directie='primita' AND l.cont_debit=%s))) AS note_nevalidate,
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                             WHERE (i.factura_id = f.id OR {cz}) AND i.status <> 'validata'
+                             WHERE {stinge} AND i.status <> 'validata'
                                AND ((f.directie='emisa'   AND l.cont_credit=%s)
                                  OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat_nevalidat,
                    COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))
@@ -84,14 +108,16 @@ def facturi_deschise(conn, schema, cu_asteptare=False):
             FROM {schema}.facturi f
             WHERE f.status NOT IN ('anulata','storno')
               AND f.storno_din_id IS NULL
-        """, (CONT_CLIENTI, CONT_FURNIZORI) * 3)
+              AND {_nsf.clauza_tip_cu_incasare("f")}
+        """, (CONT_CLIENTI, CONT_FURNIZORI) * 3)   # [lotul 12, C144] numai documentele cu încasare (nu proforme, avize)
         rez = []
         for r in cur.fetchall():
             sold = Decimal(r["total"] or 0) - Decimal(r["decontat"] or 0) + Decimal(r["storno"] or 0)
             if sold > Decimal("0.01"):
+                # [480] seria și numărul: potrivirea după numărul facturii scris în descrierea liniei (`reconciliere.facturi_dupa_numar`)
                 rez.append({"id": r["id"], "tert_cui": r["tert_cui"],
                             "directie": r["directie"],
-                            "data_emitere": r["data_emitere"], "sold": sold})
+                            "data_emitere": r["data_emitere"], "sold": sold, "serie": r["serie"], "numar": r["numar"]})
             elif cu_asteptare and sold + Decimal(r["decontat_nevalidat"] or 0) > Decimal("0.01"):
                 # [deficiența 310] stinsă numai de o încasare / plată a cărei notă e încă la validare: nu e deschisă, dar se spune de ce
                 rez.append({"id": r["id"], "tert_cui": r["tert_cui"], "directie": r["directie"], "data_emitere": r["data_emitere"],
@@ -100,7 +126,34 @@ def facturi_deschise(conn, schema, cu_asteptare=False):
         return rez
 
 
-def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None):
+def _cont_norm(v):
+    return re.sub(r"\s+", "", str(v or "")).upper() or None
+
+
+def cont_alta_firma(conn, schema, cont):
+    """[lotul 12, deficiența C121 (găsită de pachetul migr): „extrasul altei firme intră fără întrebare”] Contul extrasului (MT940 `:25:`,
+    IBAN-ul din antetul tabelului) față de contul bancar al firmei (Date firmă, IBAN). None când se potrivesc sau când unul din ele nu e
+    cunoscut (nimic de comparat); altfel contradicția celor două conturi (`core/afirmatii.py`, cu ambele surse), cu `cod`, `mesaj`,
+    `intrebare`, `cont_extras`, `cont_firma` pentru ecran — importul nu scrie nimic până nu confirmă contabilul (aceeași formă ca 599,
+    firma din fișier la importurile de migrare)."""
+    ce = _cont_norm(cont)
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT iban FROM {schema}.firma_profil LIMIT 1")
+        r = cur.fetchone()
+    cf = _cont_norm(r[0] if r else None)
+    if not ce or not cf or ce == cf:
+        return None
+    mesaj = ("Extrasul pare al altui cont: în el scrie contul %s, iar contul firmei (Date firmă) e %s. Verifică dacă ai încărcat "
+             "extrasul firmei potrivite; liniile intră numai după ce confirmi." % (ce, cf))
+    return _af.afirmatie("contradictie", "cont_extras", mesaj, sursele=["extrasul: contul %s" % ce, "Date firmă: IBAN %s" % cf],
+                         cod=COD_CONT_ALTA_FIRMA, cont_extras=ce, cont_firma=cf, mesaj=mesaj,
+                         intrebare="Liniile extrasului contului %s intră la această firmă. Confirmi că e extrasul ei?" % ce)
+
+
+COD_CONT_ALTA_FIRMA = "EXTRAS_ALT_CONT"
+
+
+def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None, cont_confirmat=False):
     """Persistă liniile NOI ale extrasului + rulează matching-ul pe ele. Întoarce `{"linii": [noi], "deja": [găsite], "rezumat"}`.
 
     [16.10.2026, lotul 6 pct.1, 277 — PIVOT peste C5 (DECIZII „Lotul 6, comanda 1”)] Duplicatul e MIȘCAREA, nu fișierul:
@@ -112,8 +165,12 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None
     `extras_import` rămâne registrul fișierelor (hash, nume, număr de linii), nu mai decide nimic.
     """
     import hashlib
-    from collections import Counter
     from core import repo_banca
+    if not cont_confirmat:   # [C121] contul altei firme: nimic scris până la confirmarea contabilului
+        alt = cont_alta_firma(conn, schema, cont)
+        if alt:
+            return {"linii": [], "deja": [], "cere_confirmare": alt,
+                    "rezumat": {"total": len(tranzactii), "noi": 0, "deja": 0, "potrivite": 0, "fara_potrivire": 0}}
     linii = [{"suma": Decimal(str(abs(t.get("suma", 0)))).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP),
               "tip": "incasare" if t.get("suma", 0) > 0 else "plata",
               "cui": t.get("cui"), "descriere": t.get("detalii", ""),
@@ -122,18 +179,34 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None
     rezumat = {"total": len(tranzactii), "noi": 0, "deja": 0, "potrivite": 0, "fara_potrivire": 0}
     with conn.cursor() as cur:
         cur.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", ("extras_import:" + schema,))
-        cur.execute(f"SELECT data, suma, tip, cont_extras, referinta, descriere FROM {schema}.extras_linii "
-                    f"WHERE data = ANY(%s::date[])", (sorted({str(ln["data"]) for ln in linii}),))
-        existente = Counter(cheie_miscare(*r) for r in cur.fetchall())
+        cur.execute(f"SELECT id, data, suma, tip, cont_extras, referinta, descriere, fisier_sursa FROM {schema}.extras_linii "
+                    f"WHERE data = ANY(%s::date[]) ORDER BY id", (sorted({str(ln["data"]) for ln in linii}),))
+        vechi = [{"id": r[0], "data": r[1], "suma": r[2], "tip": r[3], "cont": r[4], "fisier_sursa": r[7],
+                  "cheie": cheie_miscare(*r[1:7])} for r in cur.fetchall()]
+        folosite = set()   # liniile vechi găsite deja (o linie veche răspunde pentru o singură linie nouă: multiplicitatea)
         noi, deja = [], []
         for t, ln in zip(tranzactii, linii):
             k = cheie_miscare(ln["data"], ln["suma"], ln["tip"], cont, ln["referinta"], ln["descriere"])
-            if existente[k] > 0:
-                existente[k] -= 1
+            v = next((x for x in vechi if x["id"] not in folosite and x["cheie"] == k), None)
+            if v is not None:
+                folosite.add(v["id"])
                 deja.append({"data": str(ln["data"]), "suma": str(ln["suma"]), "tip": ln["tip"], "descriere": ln["descriere"]})
             else:
                 noi.append((t, ln))
+        # [479] a doua trecere, după ce cheia întreagă și-a luat liniile: mișcarea venită din alt format (tabel <-> MT940) se adaugă
+        # VIZIBIL, dar deoparte („Ignorată”, cu motivul și «readu»), fără potrivire și fără notă propusă — nici pierdută, nici dublată
+        dubluri = {}
+        for i, (t, ln) in enumerate(noi):
+            v = next((x for x in vechi if x["id"] not in folosite
+                      and probabil_aceeasi_miscare(dict(ln, cont=cont), x)), None)
+            if v is not None:
+                folosite.add(v["id"])
+                dubluri[i] = v
+        probabile = [noi[i] for i in sorted(dubluri)]
+        noi = [x for i, x in enumerate(noi) if i not in dubluri]
         rezumat["noi"], rezumat["deja"] = len(noi), len(deja)
+        if probabile:   # [479] numai când există (forma rezumatului de până azi rămâne aceeași pentru importurile fără dubluri)
+            rezumat["probabil_deja"] = len(probabile)
         if continut is not None:
             h = hashlib.sha256(continut if isinstance(continut, bytes)
                                else str(continut).encode("utf-8")).hexdigest()
@@ -156,8 +229,9 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None
                 try:
                     from core import ai_incredere as _ai
                     sug = _ai.sugestie(conn, schema, ln.get("descriere") or "")
-                    if sug:
-                        cont_banca = "5121"
+                    # [479] o sugestie pe contul de trezorerie ar da nota 5121 = 5121: nu se propune (`ai_incredere.sugestie` le sare deja)
+                    if sug and not _ai.e_trezorerie(sug["cont"]):
+                        cont_banca = _cont_banca(t.get("valuta"))
                         if ln["tip"] == "plata":
                             t["nota"] = {"debit": sug["cont"], "credit": cont_banca}
                         else:
@@ -178,10 +252,31 @@ def importa_extras(conn, schema, tranzactii, fisier="", continut=None, cont=None
                   ln["tip"], ln["cui"], status, json.dumps(aloc),
                   json.dumps(t.get("nota"), default=str) if t.get("nota") else None, fisier,
                   (cont or "").strip() or None, ln["referinta"]))
-            out.append({"id": cur.fetchone()[0], "data": str(ln["data"]),
+            # [lotul 12, găsit la 479] câmpurile liniei DUPĂ afirmația potrivirii: afirmația are și ea o cheie „tip” („reconciliere extras”),
+            # care suprascria sensul liniei (încasare / plată) în răspunsul importului
+            out.append({**aloc, "id": cur.fetchone()[0], "data": str(ln["data"]),
                         "descriere": ln["descriere"], "suma": str(ln["suma"]),
-                        "tip": ln["tip"], "cui": ln["cui"], "status": status, **aloc})
-    return {"linii": out, "deja": deja, "rezumat": rezumat}
+                        "tip": ln["tip"], "cui": ln["cui"], "status": status})
+        puse_deoparte = []
+        for i in sorted(dubluri):
+            t, ln = probabile.pop(0)
+            v = dubluri[i]
+            # afirmația potrivirii, ca la liniile de mai sus (`reconciliere.potriveste_linie`): aici, linia pare una importată deja
+            aloc = dict(_af.afirmatie("fapt", "reconciliere extras", motiv_dublura(v),
+                                      unde=_Unde("linie_extras", v["id"], "importată deja, suma %s" % ln["suma"]),
+                                      temei_completitudine="liniile extraselor importate în aceeași zi, cu aceeași sumă și același "
+                                                           "sens, iar contul băncii cunoscut pe exact una din ele"),   # `probabil_aceeasi_miscare`
+                        status_match="rosu", alocari=[], dublura_de=v["id"])
+            cur.execute(f"""
+                INSERT INTO {schema}.extras_linii
+                  (data, descriere, suma, valuta, tip, cui_detectat, status,
+                   alocari, nota_propusa, fisier_sursa, cont_extras, referinta)
+                VALUES (%s,%s,%s,%s,%s,%s,'ignorat',%s,NULL,%s,%s,%s) RETURNING id
+            """, (ln["data"], ln["descriere"], ln["suma"], bool(t.get("valuta")), ln["tip"], ln["cui"], json.dumps(aloc), fisier,
+                  (cont or "").strip() or None, ln["referinta"]))
+            puse_deoparte.append({"id": cur.fetchone()[0], "data": str(ln["data"]), "suma": str(ln["suma"]), "tip": ln["tip"],
+                                  "descriere": ln["descriere"], "dublura_de": v["id"]})
+    return {"linii": out, "deja": deja, "probabil_deja": puse_deoparte, "rezumat": rezumat}
 
 
 def compara_solduri(conn, schema, sold_initial, sold_final):
@@ -316,6 +411,10 @@ def conteaza(conn, schema, linie_id, alocari=None):
             np = l.get("nota_propusa") or {}
             if not (np.get("debit") and np.get("credit")):
                 return {"eroare": "fără alocări și fără notă propusă; alege facturile"}
+            if str(np["debit"]).split(".")[0] == str(np["credit"]).split(".")[0]:
+                # [479] o notă cu același cont pe debit și pe credit nu mișcă nimic (propusă înainte de reparație: 5121 = 5121)
+                return {"eroare": "Nota propusă are același cont pe debit și pe credit (%s = %s): nu înregistrează nimic. Alege facturile "
+                                  "sau scrie nota în Registru jurnal." % (np["debit"], np["credit"])}
             cur.execute(f"""
                 INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
                 VALUES (%s,%s,'banca','ciorna',%s) RETURNING id

@@ -169,6 +169,12 @@ def tva_cote_din_xml(continut):
     return []
 
 
+def _um_linie(ln):
+    from core import efactura_send as _es
+    q = ln.find("cbc:InvoicedQuantity", NS)
+    return _es.um_din_unece(q.get("unitCode") if q is not None else None)
+
+
 def parseaza_xml(continut, cui_firma):
     """continut: bytes/str XML UBL. Returneaza dict factura sau ValueError."""
     if isinstance(continut, bytes):
@@ -200,6 +206,8 @@ def parseaza_xml(continut, cui_firma):
         linii.append({
             "descriere": _txt(ln, "cac:Item/cbc:Name"),
             "cantitate": cant,
+            # [lotul 12, C104] BT-130 (UN/ECE Rec 20) -> unitatea iConta (`efactura_send.um_din_unece`, inversul hărții e-Factura)
+            "um": _um_linie(ln),
             # [A10] pret EFECTIV: baza = LineExtensionAmount (net dupa AllowanceCharge/BaseQuantity),
             # nu cantitate x PriceAmount brut. Vezi `_pret_efectiv`.
             "pret_unitar": _pret_efectiv(
@@ -226,6 +234,11 @@ def parseaza_xml(continut, cui_firma):
         "furnizor_cod_tva": furn_cod_tva,
         "directie": "emisa" if emisa else "primita",
         "tert_nume": tert[0], "tert_cui": tert[1],
+        # [C, clasa 599] ambele părți, cum le scrie XML-ul: o factură în care firma nu e nici furnizor, nici cumpărător nu e a ei
+        "furnizor_nume": furn_nume, "furnizor_cui": furn_cui, "cumparator_nume": cli_nume, "cumparator_cui": cli_cui,
+        # [lotul 12, C161] BT-55, codul țării din adresa cumpărătorului (ISO 3166-1 alpha-2), cum îl scrie XML-ul; None dacă lipsește
+        "cumparator_tara": (_txt(root, "cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode")
+                            or "").strip().upper() or None,
         "total": total, "tva": tva, "moneda": moneda,
         # [lotul 11, C79] TVA-ul FACTURII pe cote (BG-23), cum l-a scris furnizorul — sursa TVA-ului deductibil (`tva_cote_din_xml`)
         "tva_cote": tva_cote_din_xml(root),
@@ -235,6 +248,22 @@ def parseaza_xml(continut, cui_firma):
         "taxare_inversa": any(l["categorie_tva"] == "AE" for l in linii),
         "linii": linii, "xml": continut,
     }
+
+def alta_firma(f, cui_firma):
+    """[clasa deficienței 599, comanda Costin 12.1: „compară firma din fișier cu firma aleasă […] la toate importurile”] Refuzul facturii
+    încărcate de mână (`parseaza_xml`) în care firma aleasă nu e nici furnizor, nici cumpărător — o factură între alte două firme, care ar
+    intra ca factură primită (cu TVA-ul ei de dedus), sau None. Cumpărătorul fără cod fiscal în XML nu se poate confrunta: nu se refuză."""
+    cui = _forma_cui.stocare(cui_firma) or ""
+    if not cui or f.get("directie") == "emisa":
+        return None
+    cumparator = _forma_cui.stocare(f.get("cumparator_cui")) or ""
+    if not cumparator or cumparator == cui:
+        return None
+    return ("Factura %s nu e a firmei: e emisă de %s (CUI %s) către %s (CUI %s), iar firma aleasă are CUI %s. Încarcă numai facturile "
+            "emise sau primite de firmă." % (f.get("numar") or "", f.get("furnizor_nume") or "?",
+                                              _forma_cui.stocare(f.get("furnizor_cui")) or "?", f.get("cumparator_nume") or "?",
+                                              cumparator, cui))
+
 
 def extrage_fisiere(nume, continut):
     """Un upload: .xml -> [continut]; .zip -> toate .xml din arhiva (fara semnatura)."""

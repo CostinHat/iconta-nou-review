@@ -28,10 +28,10 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand } from "../api.js?v=31460b24f2";
-import { randA as randConstatare } from "./control_verdict.js?v=2daa29640d";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand } from "../api.js?v=309f4d66ae";
+import { randA as randConstatare } from "./control_verdict.js?v=9c09077067";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=67a0f7dd2f";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=1c7b806a57";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
@@ -722,7 +722,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav, corp));
   // [298 + 313] notele nevalidate pe care se sprijină declarația, fiecare cu butonul ei spre Registrul jurnal
   const zSurse = div.querySelector(".val-surse-note");
-  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=c05f894cb8").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
+  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=a6ea6eafbc").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
   return div;
 }
 
@@ -732,7 +732,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=35da6a9650");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=d42038494a");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

@@ -24,6 +24,7 @@ from __future__ import annotations
 import calendar
 from datetime import date, timedelta
 from core.cache_declarat import Declaratie as _Dec
+from core.common import Temei as _Tm   # [493] temeiul termenelor anuale, ca obiect (`_ANUALE`)
 
 REGULI = "2026.1"
 MODUL = "scadente"
@@ -62,6 +63,8 @@ _cache_sarb_DECLARATIE = _Dec(
 #
 # Fiecare intrare: (act, fișier din corpus, citat VERBATIM). Citatul se verifică mecanic — vezi
 # `core/test_temei_termene.py`, care caută fragmentul în fișier, nu se mulțumește cu referința.
+_CF = "anaf_surse/cod_fiscal_227_2015_consolidat.html"
+_CPF = "anaf_surse/legea_207_2015_consolidat.txt"
 TEMEI_TERMEN = {
     "d300": ("CF art. 323 alin.(1)", "anaf_surse/cod_fiscal_227_2015_consolidat.html",
              "până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală"),
@@ -72,6 +75,31 @@ TEMEI_TERMEN = {
     "d208": ("CF art.113", "anaf_surse/cod_fiscal_227_2015_consolidat.html",
              "au obligația să depună lunar, până la data de 25 inclusiv a lunii următoare celei în care a avut loc "
              "autentificarea actelor privind transferul proprietăților imobiliare"),
+    # [deficiența 493, lotul 12] termenele declarațiilor anuale, fiecare cu textul actului (verificat cu `core/test_temei_termene.py`)
+    'd101g': ('CF art.42^9 alin.(4)', _CF,
+             'Declarația anuală privind impozitul pe profit se depune la organul fiscal competent, împreună cu declarația anuală privind impozitul pe profit a fiecărui membru, până la termenul prevăzut la art. 41 și 42'),
+    'd107': ('CF art.42 alin.(3)', _CF,
+             'au obligația de a depune declarația informativă privind beneficiarii bunurilor/serviciilor/sponsorizărilor/mecenatului aferentă anului în care au înregistrat cheltuielile respective, precum și, după caz, aferentă anului în care se aplică prevederile art. 25 alin. (4) lit. i) , până la termenele prevăzute la alin. (1) și (2)'),
+    'd108': ('CF art.237 alin.(1)', _CF,
+             'Reprezentanța unei/unor persoane juridice străine are obligația să declare și să plătească impozitul pe reprezentanță la bugetul de stat până în ultima zi a lunii februarie inclusiv a anului de impunere.'),
+    'd120': ('CF art.346 alin.(4)', _CF,
+             'Orice plătitor de accize are obligația de a depune anual la autoritatea competentă decontul privind accizele, conform dispozițiilor legale privind obligațiile de plată la bugetul de stat, până la data de 30 aprilie a anului următor celui de raportare.'),
+    'd177': ('CF art.42 alin.(4)', _CF,
+             'contribuabilii pot dispune redirecționarea impozitului pe profit, în limita valorii astfel calculate, pentru efectuarea de sponsorizări și/sau acte de mecenat până la termenele de depunere a declarației anuale de impozit pe profit'),
+    'd204': ('CF art.125 alin.(4)', _CF,
+             'Asocierile au obligația să depună la organul fiscal competent, până în ultima zi a lunii februarie inclusiv a anului următor celui de realizare a venitului, declarația anuală de venit'),
+    'd207': ('CF art.231 alin.(1)', _CF,
+             'Plătitorii de venituri cu regim de reținere la sursă a impozitelor, cu excepția plătitorilor de venituri din salarii, conform prezentului titlu, au obligația să depună o declarație privind calcularea și reținerea impozitului pentru fiecare beneficiar de venit la organul fiscal competent, până în ultima zi a lunii februarie inclusiv a anului curent pentru anul expirat.'),
+    'd212': ('CF art.122 alin.(3)', _CF,
+             'Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice se completează și se depune la organul fiscal competent, pentru fiecare an fiscal, până la data de 25 mai inclusiv a anului următor celui de realizare a veniturilor.'),
+    'd230': ('CF art.123^1 alin.(3)', _CF,
+             'obligația calculării și plății sumei prevăzute la alin. (1) revine organului fiscal competent, pe baza cererii depuse de aceștia până la termenul prevăzut la art. 122 alin. (3) , sub sancțiunea decăderii'),
+    'd318': ('HG 1/2016 pct.73 alin.(11)', 'anaf_surse/hg_1_2016_norme_cod_fiscal.html',
+             'Cererea de rambursare este transmisă electronic organului fiscal competent din România prin intermediul portalului electronic pus la dispoziție de acesta, cel târziu până la data de 30 septembrie a anului calendaristic care urmează perioadei de rambursare.'),
+    'd401': ('CPF art.60 alin.(4)', _CPF,
+             'organul fiscal local are obligația de a transmite, anual, până la data de 10 aprilie a anului curent, pentru anul anterior, organului fiscal central informații cu privire la bunurile imobile deținute în proprietate de rezidenți ai altor state membre ale Uniunii Europene'),
+    'd402': ('CPF art.60 alin.(1)', _CPF,
+             'Plătitorii de venituri de natura celor prevăzute la art. 291 alin. (1) lit. a)-d) au obligația să depună la organul fiscal central o declarație privind veniturile plătite fiecărui beneficiar care este rezident al altor state membre ale Uniunii Europene, până în ultima zi a lunii februarie a anului curent, pentru anul expirat.'),
 }
 # NESURSATE ÎNCĂ (clichetul le numără): d100, d101, d112, d205, d394, d406. Unde se caută, ca
 # următorul să nu reia de la zero: d112 → CF art. 147; d100 → CF art. 56 (micro) și art. 41 (plăți
@@ -91,6 +119,32 @@ TEMEI_21_DECEMBRIE = ("CPF art.155 alin.(2)", "anaf_surse/legea_207_2015_consoli
 # ziua nominală a scadenței per tip (în luna următoare perioadei)
 _ZIUA = {"d394": 30}          # restul: 25 ; d406: ultima zi (tratat separat)
 _ULTIMA_ZI = {"d406"}          # scadența = ultima zi a lunii
+# [493] declarațiile ANUALE cu termen sursat: tip -> (anul față de anul declarat, luna, ziua; None = ultima zi a lunii, Temei). Temeiul
+# fiecăruia e obiect `Temei` (act, fișier din corpus, citatul VERBATIM din TEMEI_TERMEN, verificat de `core/test_temei_termene.py`) —
+# o singură sursă a citatului; pe fiecare rând, data din textul actului și cifrele care o scriu aici.
+_ANUALE = {tip: (da, ll, zi, _Tm(text=TEMEI_TERMEN[tip][0], url=TEMEI_TERMEN[tip][1], nivel_sursa="MO", text_citat=TEMEI_TERMEN[tip][2]))
+           for tip, (da, ll, zi) in {
+        "d101g": (1, 6, 25),   # CF art.42^9 alin.(4) -> art.42 alin.(1): „până la data de 25 iunie inclusiv a anului următor” (anul +1, luna 6, ziua 25)
+        "d107": (1, 6, 25),    # CF art.42 alin.(3) -> alin.(1): „până la data de 25 iunie inclusiv a anului următor” (anul +1, luna 6, ziua 25)
+        "d177": (1, 6, 25),    # CF art.42 alin.(4) -> alin.(1): „până la data de 25 iunie inclusiv a anului următor” (anul +1, luna 6, ziua 25)
+        "d212": (1, 5, 25),    # CF art.122 alin.(3): „până la data de 25 mai inclusiv a anului următor” (anul +1, luna 5, ziua 25)
+        "d230": (1, 5, 25),    # CF art.123^1 alin.(3) -> art.122 alin.(3): „până la data de 25 mai inclusiv” (anul +1, luna 5, ziua 25)
+        "d204": (1, 2, None),  # CF art.125 alin.(4): „până în ultima zi a lunii februarie inclusiv a anului următor” (anul +1, luna 2)
+        "d207": (1, 2, None),  # CF art.231 alin.(1): „până în ultima zi a lunii februarie inclusiv a anului curent pentru anul expirat” (anul +1, luna 2)
+        "d402": (1, 2, None),  # CPF art.60 alin.(1): „până în ultima zi a lunii februarie a anului curent, pentru anul expirat” (anul +1, luna 2)
+        "d108": (0, 2, None),  # CF art.237 alin.(1): „până în ultima zi a lunii februarie inclusiv a anului de impunere” (anul +0, luna 2)
+        "d120": (1, 4, 30),    # CF art.346 alin.(4): „până la data de 30 aprilie a anului următor” (anul +1, luna 4, ziua 30)
+        "d318": (1, 9, 30),    # HG 1/2016 pct.73 alin.(11): „până la data de 30 septembrie a anului calendaristic care urmează” (anul +1, luna 9, ziua 30)
+        "d401": (1, 4, 10),    # CPF art.60 alin.(4): „până la data de 10 aprilie a anului curent, pentru anul anterior” (anul +1, luna 4, ziua 10)
+           }.items()}
+# [493] tipuri cu perioadă (lună de sfârșit) dar FĂRĂ termen sursat: nu primesc „ziua 25 a lunii următoare” ghicită. Fiecare cu
+# actul care trimite termenul în altă parte (act, fișier din corpus, citat VERBATIM) — refuzul îl numește. D407: ordinul comun
+# ANAF–ASF nu e în corpus.
+TEMEI_FARA_TERMEN = {
+    "d407": ("CPF art.61^2 alin.(2)", _CPF,
+             "termenele-limită ale raportării se aprobă prin ordin comun al președintelui Agenției Naționale de Administrare Fiscală "
+             "și al președintelui Autorității de Supraveghere Financiară"),
+}
 
 
 def paste_ortodox(an):
@@ -182,6 +236,10 @@ def _data_nominala(tip, an, luna=None, trim=None):
         # (Era 25.03 hardcodat "PROVIZORIU" -> marca fals restanțieri firmele care depuneau apr-iun.)
         return date(an + 1, 6, 25)
 
+    if tip in _ANUALE:
+        da, ll, zi, _temei = _ANUALE[tip]
+        return date(an + da, ll, zi or _ultima_zi_luna(an + da, ll))
+
     if tip in ("s1005", "s1003"):
         # [C11, 07.10.2026] Bilanțul (situațiile financiare anuale ale societăților). Legea 82/1991 art.36 alin.(1) lit.a), forma
         # OUG 138/2024 (anaf_surse/legea_82_1991_consolidat.txt): „societățile reglementate de Legea nr. 31/1990 … până la data de
@@ -190,16 +248,22 @@ def _data_nominala(tip, an, luna=None, trim=None):
         # modelat: firmele aplicației au exercițiul = anul calendaristic.
         return date(an + 1, 5, 31)
 
+    # [493] un singur refuz pentru „nu există o dată de calculat”: tipul n-are termen sursat (TEMEI_FARA_TERMEN, fără zi ghicită) sau
+    # perioada lipsește. `are_termen` îl citește ca „fără termen”.
+    if tip in TEMEI_FARA_TERMEN:
+        fara = "termenul %r nu e sursat — %s îl trimite la un ordin absent din corpus (fără zi ghicită)" % (tip, TEMEI_FARA_TERMEN[tip][0])
+    else:
+        fara = None if (trim is not None or luna is not None) else "lipsește luna sau trim pentru %r" % tip
+    if fara:
+        raise ValueError("scadență: " + fara)
     if trim is not None:
         # luna următoare trimestrului: T1->4, T2->7, T3->10, T4->1(an+1)
         if trim == 4:
             an_s, luna_s = an + 1, 1
         else:
             an_s, luna_s = an, trim * 3 + 1
-    elif luna is not None:
-        an_s, luna_s = _luna_urmatoare(an, luna)
     else:
-        raise ValueError("scadență: lipsește luna sau trim pentru %r" % tip)
+        an_s, luna_s = _luna_urmatoare(an, luna)
 
     if tip in _ULTIMA_ZI:
         zi = _ultima_zi_luna(an_s, luna_s)

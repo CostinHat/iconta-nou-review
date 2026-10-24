@@ -40,6 +40,11 @@ MESAJ_TELEFON_LIPSA = "Scrie întâi numărul de telefon și salvează-l."
 MESAJ_PREA_DES = "Un cod a plecat acum mai puțin de un minut. Așteaptă-l pe WhatsApp sau cere altul peste un minut."
 MESAJ_WA_INACTIV = ("Trimiterea pe WhatsApp nu e încă activă pe iConta.eu. Acordul tău a fost salvat; notificările rămân pe email până se "
                     "activează.")
+#: [deficiența 598, lotul 12: „La eșecul WhatsApp, mesajul îi cere contabilului să-și verifice numărul și arată termeni tehnici; trebuie
+#: spus că WhatsApp nu e disponibil și notificările vin pe email.”] Meta a refuzat sau n-a primit cererea: nu se știe că ar fi de vină
+#: numărul (pe 22.10 era contul iConta.eu, neînregistrat la Meta), deci nu i se cere omului să-l verifice; i se spune ce face aplicația
+MESAJ_WA_ESUAT = ("WhatsApp nu e disponibil acum, deci codul de confirmare nu a plecat. Notificările îți vin în continuare pe email; "
+                  "poți cere codul din nou mai târziu.")
 #: [deficiența 335 + 336, 18.10.2026] motivul, spus pe ecran înainte de orice clic (codul pe WhatsApp nu se mai oferă cât WhatsApp nu
 #: trimite) și în mesajul de după salvare („vin pe email” fără motiv)
 MOTIV_WA_INACTIV = "Trimiterea pe WhatsApp nu e încă activă pe iConta.eu, deci notificările vin pe email până se activează."
@@ -128,8 +133,10 @@ def cere_cod(date, ctx):
     try:
         _wa.trimite_cod(tel, cod)
     except (_wa.Neconfigurat, _wa.Refuzat, OSError) as e:
-        raise _erori.Conflict({"mesaj": "Codul nu a putut pleca pe WhatsApp (%s). Verifică numărul și încearcă din nou." % e,
-                               "cod": COD_WA_INDISPONIBIL})
+        # [598] răspunsul Meta (HTTP, cod, „Account not registered”) e pentru echipa iConta.eu: în jurnal și în alertă, nu pe ecran
+        from core import observare as _obs
+        _obs.esec_secundar("whatsapp: codul de confirmare", e, alerta=True)
+        raise _erori.Conflict({"mesaj": MESAJ_WA_ESUAT, "cod": COD_WA_INDISPONIBIL})
     return {"ok": True, "minute": _wa.COD_MINUTE}
 
 

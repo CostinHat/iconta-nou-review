@@ -1,0 +1,531 @@
+[
+ {
+  "nr": "147",
+  "firma": "tenant_9051",
+  "descriere": "F3 (note din 15.06.2026, luna preluării nealeasă — profil și note scrise înainte de reparație): Date firmă -> «Luna preluării» arată propunerea 06/2026, cu limita «Nu poate fi după 06/2026 (prima notă)» și pragul câmpului (max 2026-06). Decizia Costin 08.10 §6 pct.4: „editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată după luna primei note”. Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-luna_preluare"
+   },
+   {
+    "asteapta": ".dec-avert, .dec-ok"
+   },
+   {
+    "deruleaza": "#df-luna_preluare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#df-luna_preluare",
+    "egal": "2026-06"
+   },
+   {
+    "contine": "Completată cu propunerea: 06/2026",
+    "zona": "label.camp:has(#df-luna_preluare)"
+   },
+   {
+    "contine": "Nu poate fi după 06/2026 (prima notă).",
+    "zona": "label.camp:has(#df-luna_preluare)"
+   },
+   {
+    "exista": "#df-luna_preluare[max='2026-06']"
+   }
+  ],
+  "captura": "147_f3_vechi_luna_preluarii_propunere_si_limita.png"
+ },
+ {
+  "nr": "147",
+  "firma": "tenant_9049",
+  "descriere": "F1 (prima notă 20.09.2026): Date firmă -> «Luna preluării» 09/2026 (propunerea, plafonată la prima notă), limita «Nu poate fi după 09/2026 (prima notă)». Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-luna_preluare"
+   },
+   {
+    "asteapta": ".dec-avert, .dec-ok"
+   },
+   {
+    "deruleaza": "#df-luna_preluare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#df-luna_preluare",
+    "egal": "2026-09"
+   },
+   {
+    "contine": "Nu poate fi după 09/2026 (prima notă).",
+    "zona": "label.camp:has(#df-luna_preluare)"
+   },
+   {
+    "exista": "#df-luna_preluare[max='2026-09']"
+   }
+  ],
+  "captura": "147_f1_vechi_luna_preluarii_limita.png"
+ },
+ {
+  "nr": "169",
+  "firma": "tenant_9051",
+  "descriere": "F3: Date firmă -> «Luna preluării» vine completată cu propunerea (06/2026), fără «Gol = propunerea»; golită de contabil și părăsită (clic pe «Data înființării»), revine la 06/2026 — nu rămâne «---------- ----» (luna goală în Chromium). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-luna_preluare"
+   },
+   {
+    "asteapta": ".dec-avert, .dec-ok"
+   },
+   {
+    "deruleaza": "#df-luna_preluare"
+   },
+   {
+    "completeaza": "#df-luna_preluare",
+    "valoare": ""
+   },
+   {
+    "click": "#df-data_infiintare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#df-luna_preluare",
+    "egal": "2026-06"
+   },
+   {
+    "nu_contine": "Gol = propunerea"
+   },
+   {
+    "contine": "Completată cu propunerea: 06/2026",
+    "zona": "label.camp:has(#df-luna_preluare)"
+   }
+  ],
+  "captura": "169_f3_vechi_luna_golita_revine_la_propunere.png"
+ },
+ {
+  "nr": "169",
+  "firma": "tenant_9053",
+  "descriere": "F5 (soldurile de preluare la 31.08.2026, prima notă 30.09.2026): Date firmă -> «Luna preluării» arată 09/2026, completată cu propunerea, nu «---------- ----». Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-luna_preluare"
+   },
+   {
+    "asteapta": ".dec-avert, .dec-ok"
+   },
+   {
+    "deruleaza": "#df-luna_preluare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#df-luna_preluare",
+    "egal": "2026-09"
+   },
+   {
+    "contine": "Completată cu propunerea: 09/2026",
+    "zona": "label.camp:has(#df-luna_preluare)"
+   },
+   {
+    "nu_contine": "Gol = propunerea"
+   }
+  ],
+  "captura": "169_f5_vechi_luna_preluarii_completata.png"
+ },
+ {
+  "nr": "20",
+  "firma": "tenant_9051",
+  "descriere": "F3 (fără formă juridică, firmă adăugată înainte de precompletarea din ANAF): «Emite factură» spune, LA DESCHIDERE, înainte de orice completare, că lipsește forma juridică, iar «Emite factură» e inactiv cu motivul. Nu se emite nimic. F3 n-a emis niciodată (numerotarea neconfigurată), deci «Emite factură» deschide întâi «Configurare emitere», pasul de o singură dată: «Nu, încep acum», seria F3T — SCRIE pe copie numai numerotarea; forma juridică rămâne necompletată",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-nu"
+   },
+   {
+    "click": "#em-nu"
+   },
+   {
+    "asteapta": "#em-serie2"
+   },
+   {
+    "completeaza": "#em-serie2",
+    "valoare": "F3T"
+   },
+   {
+    "click": "#em-salveaza-config2"
+   },
+   {
+    "asteapta": "#em-pregatire .ca-mesaj"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "forma juridică",
+    "zona": "#em-pregatire"
+   },
+   {
+    "inactiv": "#em-emite"
+   },
+   {
+    "exista": "#em-date-firma-sus"
+   }
+  ],
+  "captura": "20_f3_vechi_emite_factura_la_deschidere.png"
+ },
+ {
+  "nr": "20",
+  "firma": "tenant_9051",
+  "descriere": "F3: Date firmă -> forma juridică preselectată SRL, cu sursa scrisă («Propusă din denumirea firmei: SRL — verifică și salvează»); nu e scrisă tacit în profil (se confirmă salvând). La firmele adăugate de acum, forma vine din ANAF la adăugare (core/test_lot12_datefirma_preluare.py::test_def_20_…). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-luna_preluare"
+   },
+   {
+    "asteapta": ".dec-avert, .dec-ok"
+   },
+   {
+    "deruleaza": "#df-forma_juridica"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#df-forma_juridica",
+    "egal": "SRL"
+   },
+   {
+    "contine": "Propusă din denumirea firmei: SRL",
+    "zona": "#df-forma-propusa"
+   }
+  ],
+  "captura": "20_f3_vechi_date_firma_forma_propusa.png"
+ },
+ {
+  "nr": "79",
+  "firma": "tenant_9049",
+  "descriere": "F1 (profil scris înainte de reparație, Da/Nu nedeclarate): Date firmă -> «Exceptată de la casa de marcat», «Înregistrată art. 317», «Mare contribuabil», «Entitate de interes public» stau pe «— alege —», nu pe «Nu» pus de schemă. Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-luna_preluare"
+   },
+   {
+    "asteapta": ".dec-avert, .dec-ok"
+   },
+   {
+    "deruleaza": "#df-activitate_exceptata_amef"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#df-activitate_exceptata_amef",
+    "egal": ""
+   },
+   {
+    "valoare": "#vf-inreg_art317",
+    "egal": ""
+   },
+   {
+    "valoare": "#df-mare_contribuabil",
+    "egal": ""
+   },
+   {
+    "valoare": "#df-interes_public",
+    "egal": ""
+   }
+  ],
+  "captura": "79_f1_vechi_da_nu_nealese.png"
+ },
+ {
+  "nr": "79",
+  "firma": "tenant_9052",
+  "descriere": "F4 (neplătitor de TVA, «Înregistrată art. 317» necompletată — nu i s-a pus «Nu» din schemă; F1 e plătitoare, deci D301 nu i se datorează și refuzul vine înaintea profilului): prima folosire a lui «Înregistrată art. 317» — D301 09/2026 cere răspunsul («Nedeclarat în Date firmă: firma e înregistrată în scopuri de TVA conform art. 317 CF?»), nu presupune «Nu». Nu se generează nimic",
+  "pasi": [
+   {
+    "declaratie": "d301",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "art. 317 CF?"
+   }
+  ],
+  "captura": "79_f4_vechi_d301_cere_art317.png"
+ },
+ {
+  "nr": "98",
+  "firma": "tenant_9055",
+  "descriere": "F6 (fără serie de chitanțe; factura F6 nr. 1 emisă înainte de reparație): detaliul facturii -> «Emite chitanță» -> «Emite» -> refuz «…n-are serie pentru chitanțe…», cu «Deschide Date firmă»; nicio chitanță «CH» din oficiu. Refuzat: nimic nu se scrie",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "asteapta_text": "F6 nr. 1"
+   },
+   {
+    "click": ".fac-frand-btn",
+    "text": "F6 nr. 1"
+   },
+   {
+    "asteapta": "#fd-chitanta"
+   },
+   {
+    "click": "#fd-chitanta"
+   },
+   {
+    "asteapta": "#fd-chit-ok"
+   },
+   {
+    "click": "#fd-chit-ok"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type [data-ecran-destinatie='date_firma']"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "n-are serie pentru chitanțe"
+   },
+   {
+    "exista": ".fereastra:last-of-type [data-ecran-destinatie='date_firma']"
+   },
+   {
+    "nu_contine": "CH-1"
+   }
+  ],
+  "captura": "98_f6_vechi_refuz_fara_serie.png"
+ },
+ {
+  "nr": "116",
+  "firma": "tenant_9055",
+  "descriere": "F6: refuzul chitanței fără serie -> «Deschide Date firmă» -> Date firmă se deschide cu «Seria chitanțelor» în focus și în vedere (secțiunea Chitanțe), goală — nu «CH». Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": "#fac-mai-multe",
+    "daca_exista": true
+   },
+   {
+    "asteapta_text": "F6 nr. 1"
+   },
+   {
+    "click": ".fac-frand-btn",
+    "text": "F6 nr. 1"
+   },
+   {
+    "asteapta": "#fd-chitanta"
+   },
+   {
+    "click": "#fd-chitanta"
+   },
+   {
+    "asteapta": "#fd-chit-ok"
+   },
+   {
+    "click": "#fd-chit-ok"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type [data-ecran-destinatie='date_firma']"
+   },
+   {
+    "click": ".fereastra:last-of-type [data-ecran-destinatie='date_firma']"
+   },
+   {
+    "asteapta": "#df-serie_chitanta"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#df-serie_chitanta:focus"
+   },
+   {
+    "valoare": "#df-serie_chitanta",
+    "egal": ""
+   },
+   {
+    "contine": "Seria chitanțelor"
+   }
+  ],
+  "captura": "116_f6_vechi_date_firma_seria_in_focus.png"
+ },
+ {
+  "nr": "128",
+  "firma": "tenant_9049",
+  "descriere": "F1: Registru jurnal (octombrie 2026) — nota chitanței CHF1-1 (nota 118, validată pe 08.10.2026, înainte de reparație) arată factura pe care o stinge, derivat din chitanță: «CHF1-1 · stinge factura F1A nr. 3 din 06.10.2026»",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id='118']"
+   },
+   {
+    "deruleaza": "[data-nota-id='118']"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "stinge factura F1A nr. 3 din 06.10.2026",
+    "zona": "[data-nota-id='118']"
+   },
+   {
+    "contine": "CHF1-1",
+    "zona": "[data-nota-id='118']"
+   }
+  ],
+  "captura": "128_f1_vechi_nota_chitantei_stinge_factura.png"
+ },
+ {
+  "nr": "168",
+  "firma": "tenant_9050",
+  "descriere": "F2: Registru jurnal (octombrie 2026) — nota chitanței F2C-1 (nota 79, validată pe 22.10.2026, înainte de lotul 12): descrierea numește chitanța și factura stinsă, nu doar clientul",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id='79']"
+   },
+   {
+    "deruleaza": "[data-nota-id='79']"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Încasare de la client — chitanța F2C-1",
+    "zona": "[data-nota-id='79']"
+   },
+   {
+    "contine_oricare": [
+     "factura F2T nr. 2 din 22.10.2026",
+     "factura F2T2 din 22.10.2026"
+    ],
+    "zona": "[data-nota-id='79']"
+   },
+   {
+    "contine": "DANTE INTERNATIONAL SA",
+    "zona": "[data-nota-id='79']"
+   }
+  ],
+  "captura": "168_f2_vechi_nota_chitantei_numeste_chitanta_si_factura.png"
+ },
+ {
+  "nr": "168",
+  "firma": "tenant_9049",
+  "descriere": "F1: nota 118 (chitanța CHF1-1, validată pe 08.10.2026): descrierea rămâne cea scrisă atunci («DANTE INTERNATIONAL SA») — nota validată nu se modifică (OMFP 1802/2014 pct.69) și decizia Costin 09.10.2026 «Nota 118 rămâne neschimbată» —, iar rândul ei arată chitanța ca document și factura stinsă",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "[data-nota-id='118']"
+   },
+   {
+    "deruleaza": "[data-nota-id='118']"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "DANTE INTERNATIONAL SA",
+    "zona": "[data-nota-id='118']"
+   },
+   {
+    "contine": "CHF1-1",
+    "zona": "[data-nota-id='118']"
+   },
+   {
+    "contine": "stinge factura F1A nr. 3 din 06.10.2026",
+    "zona": "[data-nota-id='118']"
+   }
+  ],
+  "captura": "168_f1_vechi_nota118_decizia_0910.png"
+ }
+]

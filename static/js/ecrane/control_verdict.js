@@ -6,8 +6,9 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=31460b24f2";
+import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=309f4d66ae";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
+import { randeazaStareSpv } from "./spv_stare.js?v=39617786af";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {
@@ -120,7 +121,7 @@ function randDecl(arr, clasa, marcabil = false) {
 const _luniAn = (s) => (/^\d{4}-\d{2}$/.test(s || "") ? `${s.slice(5)}/${s.slice(0, 4)}` : (s || ""));
 
 function domeniuAfirmatie(x) {
-  if (x.fel === "fapt") return x.perioada || (x.luna ? `${String(x.luna).padStart(2, "0")}/${x.an}` : String(x.an || ""));
+  if (x.fel === "fapt") return x.perioada || (x.luna ? dataRo(new Date(x.an, x.luna - 1, 1), "luna_an_numeric") : String(x.an || ""));
   if (x.fel === "necunoastere") {
     const dd = x.domeniu_de || "", dp = x.domeniu_pana || "";
     if (/^\d{4}-01$/.test(dd) && dp === `${dd.slice(0, 4)}-12`) return dd.slice(0, 4);   // un an întreg
@@ -165,6 +166,8 @@ const RANG = { rosu: 3, galben: 2, gri: 1, verde: 0 };
 // etichetele constatarilor incrucisate care apar deja in «Declaratie vs contabilitate» -> filtrate din
 // «Verificari contabile» ca sa nu se dubleze (sumarul lor e in contabil, constatarea intreaga e in incrucisat).
 // [08.10, decizia Costin U2] și variantele „nedeclarat” (nimic depus pe perioadă) — oglinda lui uc_comun.ETICHETE_INCRUCISAT
+// [deficiența 463] constatările e-Factura stau în secțiunea lor («e-Factura — transmiterea în SPV»); oglinda lui uc_comun.ETICHETA_SPV_*
+const DEJA_IN_EFACTURA = ["Facturi netransmise în SPV după termen", "SPV fără drept pe firmă"];
 const DEJA_IN_INCRUCISAT = ["TVA declarat diferă de contabilitate", "Salarii declarate diferă de contabilitate",
   "Operațiuni intracomunitare declarate diferă de evidență", "Facturi emise cu cotă TVA greșită pentru perioadă",
   "TVA nedeclarat", "Salarii nedeclarate", "Operațiuni intracomunitare nedeclarate"];
@@ -207,19 +210,35 @@ export function randeazaCorpVerdict(d, opt = {}) {
           data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'>Marchează toate ca depuse de contabilul anterior</button></div>` : ""}
         <div class="cf-decl">${randDecl(inainte, "", true)}</div></details>` : ""}`;
 
-  // «Declaratie vs contabilitate» — vc.tva_incrucisat/d112_incrucisat/d390_incrucisat (aceeasi anatomie).
+  // «Declaratie vs contabilitate» — vc.tva_incrucisat/d112_incrucisat/d390_incrucisat (aceeasi anatomie) + d.reconciliere_surse.
+  // [deficiența 484, lotul 12: „Control încrucișat: confruntarea declarații–contabilitate nu rulează”] (1) confruntarea rula pe luna în
+  // curs, unde nu e nimic de comparat („coincid” pe 0 cu 0), iar luna care chiar se declară nu apărea nicăieri — acum serverul confruntă
+  // luna încheiată (`control_fiscal_api.luna_confruntata`) și ecranul o SPUNE; (2) reconcilierea fiecărei declarații datorate cu
+  // documentele perioadei (D300, D394, D390, D301, D112, D406, D100, D101, D205: `reconciliere_surse`) se calcula și nu se arăta
+  // deloc — acum are rândurile ei, fiecare cu numele declarației.
+  const recon = d.reconciliere_surse || null;
   const sectIncrucisat = (() => {
     const verificatori = [vc.tva_incrucisat, vc.d112_incrucisat, vc.d390_incrucisat].filter(Boolean);
     const cuFinding = verificatori.filter((v) => (v.constatari || []).length);
     // [Retest 2, pct.9] ce nu se aplică firmei (D390 față de D300 la un neplătitor) se spune explicit, nu se tace
     const neaplic = verificatori.flatMap((v) => v.nu_se_aplica || []);
-    if (!cuFinding.length && !neaplic.length) return "";
-    const worst = cuFinding.reduce((m, v) => ((RANG[v.stare] || 0) > (RANG[m] || 0) ? v.stare : m), "verde");
+    const reconRand = (recon && recon.constatari) || [];
+    if (!cuFinding.length && !neaplic.length && !reconRand.length) return "";
+    const stari = cuFinding.map((v) => v.stare).concat(reconRand.map((c) => c.stare));
+    const worst = stari.reduce((m, x) => ((RANG[x] || 0) > (RANG[m] || 0) ? x : m), "verde");
     const cls = (worst === "rosu" || worst === "galben") ? "cf-galben" : "";
+    const sursa = verificatori.find((v) => v.luna) || recon;
+    const luna = sursa && sursa.luna ? dataRo(new Date(sursa.an, sursa.luna - 1, 1), "luna_an_numeric") : "";
+    const antet = luna ? `<div class="cf-incr-temei">Luna confruntată: <b>${esc(luna)}</b> — ultima lună încheiată, a cărei declarație se depune acum.</div>` : "";
     const blocuri = cuFinding.map((v) => (v.constatari || []).map(randConst).join("")
       + (v.limita ? `<div class="cf-incr-temei">${esc(v.limita)}</div>` : "")).join("")
       + neaplic.map((t) => `<div class="cf-incr-temei">${esc(t)}</div>`).join("");
-    return `<div class="cf-grup-titlu ${cls}">Declarație vs contabilitate</div><div class="cf-decl">${blocuri}</div>`;
+    // fiecare rând al reconcilierii poartă numele declarației: „D300 (decont TVA): Recalculul … confirmă cifrele declarației.”
+    const cuNume = (c) => (c.eticheta && !String(c.mesaj || "").startsWith(c.eticheta)
+      ? Object.assign({}, c, { mesaj: `${c.eticheta}: ${c.mesaj || ""}` }) : c);
+    const reconBloc = reconRand.length ? `<div class="cf-incr-temei"><b>Declarațiile recalculate din documente</b></div>`
+      + reconRand.map((c) => randConst(cuNume(c))).join("") + (recon.limita ? `<div class="cf-incr-temei">${esc(recon.limita)}</div>` : "") : "";
+    return `<div class="cf-grup-titlu ${cls}">Declarație vs contabilitate</div><div class="cf-decl" id="cf-incrucisat">${antet}${blocuri}${reconBloc}</div>`;
   })();
 
   // «Conformitate facturi emise» — vc.cota_tva_conformitate.
@@ -253,11 +272,32 @@ export function randeazaCorpVerdict(d, opt = {}) {
 
   // «Verificari contabile» — d.contabil (echilibru, trezorerie, stocuri, Intrastat, regim TVA + sumar incrucisat).
   const sectContabil = (() => {
-    const items = (d.contabil || []).filter((c) => c && typeof c === "object" && !DEJA_IN_INCRUCISAT.includes(c.eticheta));
+    const items = (d.contabil || []).filter((c) => c && typeof c === "object" && !DEJA_IN_INCRUCISAT.includes(c.eticheta)
+      && !DEJA_IN_EFACTURA.includes(c.eticheta));
     if (!items.length) return "";
     const worst = items.reduce((m, c) => ((RANG[c.stare] || 0) > (RANG[m] || 0) ? c.stare : m), "verde");
     const cls = (worst === "rosu" || worst === "galben") ? "cf-galben" : "";
     return `<div class="cf-grup-titlu ${cls}">Verificări contabile (${items.length})</div><div class="cf-decl">${items.map((c) => randA(Object.assign({}, c, { stare: stareAfisata(c.stare) }))).join("")}</div>`;
+  })();
+
+  // «e-Factura — transmiterea în SPV» — d.efactura_spv. [deficiența 463, lotul 12: „Termene SPV absente din Control fiscal; lipsa
+  // dreptului aflată târziu”] facturile emise de la luna preluării care trebuie transmise și nu sunt, fiecare cu termenul de 5 zile
+  // lucrătoare (`facturi_api.termen_spv`), plus starea dreptului SPV al firmei (aceeași ca în fereastra firmei, `spv_stare.js`) —
+  // aflată aici, înainte de prima trimitere refuzată
+  const sectEfactura = (() => {
+    const e = d.efactura_spv;
+    if (!e) return "";
+    const fs = e.facturi || [];
+    const cls = fs.some((f) => f.depasit) ? "cf-galben" : "";
+    const rand = (f) => `<div class="cf-decl-item"><div class="mig-sold-rand cf-rand-decl">
+        <span class="mig-sold-cont">${esc(f.numar || "")}</span><span class="cf-perioada">din ${dataRo(f.data_emitere)} · ${esc(f.client || "")}</span>
+        <span class="cf-termen ${f.depasit ? "cf-termen-galben" : ""}">termen ${dataRo(f.termen)}${f.depasit ? " (depășit)" : ""}</span></div>
+        ${f.stare === "respinsa" ? `<div class="cf-incr-temei">Respinsă de ANAF${f.eroare ? `: ${esc(f.eroare)}` : ""} — se corectează și se transmite din nou.</div>` : ""}</div>`;
+    const lista = fs.length ? fs.map(rand).join("")
+      : `<div class="cf-incr-temei">Nicio factură emisă${e.de_la ? ` din ${esc(e.de_la)}` : ""} nu așteaptă transmiterea în SPV.</div>`;
+    return `<div class="cf-grup-titlu ${cls}">e-Factura — transmiterea în SPV${fs.length ? ` (${fs.length})` : ""}</div>
+      <div class="cf-decl" id="cf-efactura"><div id="cf-spv-stare"></div>${e.eroare ? `<div class="cf-incr-temei">${esc(e.eroare)}</div>` : ""}${lista}
+      <div class="cf-incr-temei">Termenul: 5 zile lucrătoare de la emitere (OUG 120/2021 art.10 alin.(7)). Facturile dinaintea lunii preluării${e.de_la ? ` (${esc(e.de_la)})` : ""} nu se urmăresc aici.</div></div>`;
   })();
 
   const gata = d.stare === "verde" ? `
@@ -292,7 +332,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
       </details></div>`;
   })();
 
-  return declaratii + sectIncrucisat + sectCota + sectTva + sectDocumente + sectContabil + gata
+  return declaratii + sectIncrucisat + sectCota + sectTva + sectDocumente + sectContabil + sectEfactura + gata
        + sectLimite + audit;
 }
 
@@ -320,7 +360,7 @@ async function reincarcaPePozitie(corp, firma, atins) {
 // [deficiența 213, retestul Costin 09.10: „confirmarea anulării marcării scrie «D406 03/2026» pentru T1/2026”] perioada rândului, așa cum
 // o scrie rândul („T1/2026”, „2025”, „08/2026” — DS v2.85 cap.4), nu luna de ancoră a declarației
 function perioadaButonului(b) {
-  return b.dataset.perioada || `${String(b.dataset.luna).padStart(2, "0")}/${b.dataset.an}`;
+  return b.dataset.perioada || dataRo(new Date(+b.dataset.an, +b.dataset.luna - 1, 1), "luna_an_numeric");
 }
 
 export function legaVerdict(corp, nav, firma) {
@@ -453,6 +493,8 @@ export function legaVerdict(corp, nav, firma) {
     await arataIstoricAudit();
   }
   arataIstoricAudit();
+  const zonaSpv = corp.querySelector("#cf-spv-stare");   // [deficiența 463] dreptul SPV, cu drumul spre Conectare SPV când lipsește
+  if (zonaSpv) randeazaStareSpv(zonaSpv, nav, firma.tenant_id);
   const auditBtn = corp.querySelector("#cf-audit-run");
   if (auditBtn) auditBtn.addEventListener("click", ruleazaAudit);
 }

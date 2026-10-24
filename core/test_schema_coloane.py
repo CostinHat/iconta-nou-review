@@ -222,11 +222,17 @@ def _coloane_candidate(sql, tabel):
     return cands
 
 
+#: [lotul 12, 252] un sir care e COD PYTHON (proba de calibrare a unei garzi: `'def f(cur):\n    cur.execute("SELECT ...")'`) nu e un
+#: literal SQL: SQL-ul lui e un literal in interiorul codului, iar cuvintele Python de dupa el (`def`, `cur`, `n` din `\n`) ar trece
+#: drept coloane. SQL-ul real nu contine niciodata o definitie de functie sau un apel `.execute(`.
+_COD_PYTHON = re.compile(r"\bdef\s+\w+\s*\(|\.execute(?:many)?\s*\(")
+
+
 def _violari(fragmente_provider):
     """Ruleaza euristica; intoarce lista de (fisier, tabel, coloana, extras)."""
     viol = []
     for fp, frag in fragmente_provider():
-        if not re.search(r"\b(SELECT|INSERT|UPDATE|DELETE)\b", frag, re.I):
+        if not re.search(r"\b(SELECT|INSERT|UPDATE|DELETE)\b", frag, re.I) or _COD_PYTHON.search(frag):
             continue
         refs = _referinte_tabele(frag)
         if not any(r[1] for r in refs):
@@ -288,3 +294,19 @@ def test_garda_prinde_coloana_inexistenta():
         yield "ok", "SELECT nume, cui FROM firma_profil WHERE id = 1"
 
     assert not _violari(prov_ok)
+
+
+def test_proba_de_cod_python_nu_e_citita_drept_sql():
+    """[lotul 12, 252] Calibrarea lui `_COD_PYTHON`: proba unei garzi (cod Python intr-un sir, cu SQL-ul ei inauntru) nu e un literal SQL,
+    deci cuvintele Python (`def`, `cur`, `n`) nu devin coloane; acelasi SQL scris direct, cu o coloana inexistenta, ramane prins."""
+    proba = 'def f(cur):\n    cur.execute("SELECT count(*) FROM facturi WHERE directie = \'emisa\'")\n'
+
+    def prov_proba():
+        yield "proba", proba
+
+    assert not _violari(prov_proba)
+
+    def prov_sql():
+        yield "sql", "SELECT count(*) FROM facturi WHERE directie_gresita = 'emisa'"
+
+    assert {(t, c) for _, t, c, _ in _violari(prov_sql)} == {("facturi", "directie_gresita")}

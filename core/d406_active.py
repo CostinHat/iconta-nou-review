@@ -27,6 +27,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 from xml.sax.saxutils import escape
 from core.common import cate as _cate
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică
 
 B = Decimal("0.01")
 _MIN_LUNI_NELINIAR = 24   # metodele ne-liniare presupun durata >= 2 ani (alin.7 "intre 2 si 5 ani")
@@ -306,7 +307,7 @@ def _mf_la(mf, la_data):
             "MF %s: reevaluare la %s peste o durată normală deja epuizată (%s de la %s). "
             "Durata rămasă după reevaluare se ia din raportul evaluatorului (OMFP 1802/2014 "
             "pct.113); registrul nu o poate deriva."
-            % (mf.get("cod"), start.isoformat(), _cate(dnf, "lună", "luni"), pif.isoformat()))
+            % (mf.get("cod"), _data_ro(start), _cate(dnf, "lună", "luni"), _data_ro(pif)))
     ef = dict(mf)
     ef["valoare"], ef["data_pif"], ef["dnf_luni"] = valoare, start, ramase
     return ef, pif

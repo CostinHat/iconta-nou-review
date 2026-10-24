@@ -1,0 +1,270 @@
+[
+ {
+  "nr": "486",
+  "firma": "tenant_9049",
+  "descriere": "F1: D406 09/2026 pe documentele existente — partenerii adăugați după septembrie (clienți, furnizori, facturi din octombrie) nu mai opresc luna: XML-ul se generează, sau refuzul numește numai partenerii documentelor din septembrie (OPANAF 1783/2021 anexa 3 pct.11)",
+  "pasi": [
+   {
+    "declaratie": "d406",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "Vezi XML-ul generat",
+     "facturile"
+    ]
+   },
+   {
+    "nu_contine": "<City>-</City>"
+   }
+  ],
+  "captura": "486_f1_vechi_d406_09_2026.png"
+ },
+ {
+  "nr": "486",
+  "firma": "tenant_9053",
+  "descriere": "F5: D406 09/2026 pe documentele existente — partenerii adăugați după septembrie (clienți, furnizori, facturi din octombrie) nu mai opresc luna: XML-ul se generează, sau refuzul numește numai partenerii documentelor din septembrie (OPANAF 1783/2021 anexa 3 pct.11)",
+  "pasi": [
+   {
+    "declaratie": "d406",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "Vezi XML-ul generat",
+     "facturile"
+    ]
+   },
+   {
+    "nu_contine": "<City>-</City>"
+   }
+  ],
+  "captura": "486_f5_vechi_d406_09_2026.png"
+ },
+ {
+  "nr": "390",
+  "firma": "tenant_9050",
+  "descriere": "F2: D406 T3/2026 (cazul retestului) — avertismentele numesc nota după Nr. crt. din Registrul jurnal și nu au termeni tehnici (sursa, jurnal auxiliar, maparea, H87, UN/ECE, TaxCode, CurrencyCode)",
+  "pasi": [
+   {
+    "declaratie": "d406",
+    "an": 2026,
+    "trim": 3
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "nota 3 "
+   },
+   {
+    "nu_contine": "nota 48"
+   },
+   {
+    "nu_contine": "jurnal auxiliar"
+   },
+   {
+    "nu_contine": "maparea"
+   },
+   {
+    "nu_contine": "sursa 'manual'"
+   },
+   {
+    "nu_contine": "UN/ECE"
+   },
+   {
+    "nu_contine": "H87"
+   },
+   {
+    "nu_contine": "TaxCode"
+   },
+   {
+    "nu_contine": "CurrencyCode"
+   },
+   {
+    "nu_contine": "cont(uri) exclus(e)"
+   }
+  ],
+  "captura": "390_f2_vechi_d406_t3_2026.png"
+ },
+ {
+  "nr": "C48",
+  "firma": "tenant_9049",
+  "descriere": "F1 (firmă creată înainte de C48): D406 09/2026 — planul de conturi declarat are 4092, 4093, 4094 (migrare_plan_avansuri), iar validatorul ANAF nu le respinge",
+  "pasi": [
+   {
+    "declaratie": "d406",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "<AccountID>4092</AccountID>"
+   },
+   {
+    "contine": "<AccountID>4093</AccountID>"
+   },
+   {
+    "contine": "<AccountID>4094</AccountID>"
+   }
+  ],
+  "captura": "c48_f1_vechi_d406_09_2026.png"
+ },
+ {
+  "nr": "485",
+  "firma": "tenant_9049",
+  "descriere": "F1: fereastra firmei -> Declarații -> D406 09/2026 -> Continuă (pasul 2) -> săgeata înapoi: pasul 1 al Declarațiilor (alegerea tipului), nu fereastra firmei",
+  "pasi": [
+   {
+    "declaratie": "d406",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta_text": "Pasul 1 din 3"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "contine": "Pasul 1 din 3"
+   }
+  ],
+  "captura": "485_f1_inapoi_pasul1.png"
+ },
+ {
+  "nr": "C19",
+  "firma": "tenant_9049",
+  "descriere": "F1: D394 09/2026 pe documentele existente — nicio livrare intracomunitară sau export (fără TVA, către UE / din afara UE) în secțiunile E / F (OPANAF 2194/2025 anexa 2 lit.E / F pct.10); XML valid la DUK",
+  "pasi": [
+   {
+    "declaratie": "d394",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "Vezi XML-ul generat",
+     "D394 nu se poate genera"
+    ]
+   },
+   {
+    "nu_contine": "tip=\"LS\" tip_partener=\"3\""
+   },
+   {
+    "nu_contine": "tip=\"LS\" tip_partener=\"4\""
+   }
+  ],
+  "captura": "c19_f1_vechi_d394_09_2026.png"
+ },
+ {
+  "nr": "185",
+  "firma": "tenant_9049",
+  "descriere": "F1: D394 09/2026 — o factură cu mai multe cote se numără o dată, la operațiunea cu TVA-ul cel mai mare, iar „Rezumat” o spune (OPANAF 2194/2025 anexa 2 secțiunea a 2-a pct.5)",
+  "pasi": [
+   {
+    "declaratie": "d394",
+    "an": 2026,
+    "luna": 9
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "se numără o singură dată, la cota cu TVA-ul cel mai mare",
+     "Validat cu DUKIntegrator"
+    ]
+   }
+  ],
+  "captura": "185_f1_vechi_d394_09_2026.png"
+ },
+ {
+  "nr": "C19",
+  "firma": "tenant_9050",
+  "descriere": "F2 (plătitor de TVA trimestrial; F5 nu e plătitor de TVA și nu are facturi, deci nu datorează D394): D394 T3/2026 (selectorul de lună 09 alege trimestrul 3) pe documentele existente — nicio livrare intracomunitară sau export (fără TVA, către UE / din afara UE) în secțiunile E / F (OPANAF 2194/2025 anexa 2 lit.E / F pct.10); XML valid la DUK",
+  "pasi": [
+   {
+    "declaratie": "d394",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "Vezi XML-ul generat",
+     "D394 nu se poate genera"
+    ]
+   },
+   {
+    "nu_contine": "tip=\"LS\" tip_partener=\"3\""
+   },
+   {
+    "nu_contine": "tip=\"LS\" tip_partener=\"4\""
+   }
+  ],
+  "captura": "c19_f2_vechi_d394_t3_2026.png"
+ },
+ {
+  "nr": "185",
+  "firma": "tenant_9050",
+  "descriere": "F2 (plătitor de TVA trimestrial; F5 nu e plătitor de TVA și nu are facturi, deci nu datorează D394): D394 T3/2026, pe factura 1 din 21.09.2026 — o factură cu mai multe cote se numără o dată, la operațiunea cu TVA-ul cel mai mare, iar „Rezumat” o spune (OPANAF 2194/2025 anexa 2 secțiunea a 2-a pct.5)",
+  "pasi": [
+   {
+    "declaratie": "d394",
+    "an": 2026,
+    "luna": 9
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "se numără o singură dată, la cota cu TVA-ul cel mai mare",
+     "Validat cu DUKIntegrator"
+    ]
+   }
+  ],
+  "captura": "185_f2_vechi_d394_t3_2026.png"
+ }
+]

@@ -38,27 +38,23 @@ _SLABIRI = {"skip", "skipif", "xfail", "importorskip"}
 _ASERTIUNI = {"raises", "fail", "warns"}
 #: [regula 3d] excepțiile motivate: {"<fișier>::<test>": "<motiv, cu decizia / deficiența numită>"}
 MOTIVATE = {
-    "core/test_a7_deducere_transe.py::test_205_suma_deducerii_nu_se_rotunjeste":
-        "453 (comanda Costin 11.3 pct.8): testul păzea un verdict greșit (deducerea nerotunjită; structura D112 cere valori întregi); "
-        "înlocuit de core/test_lot11_a453_deducere.py::test_453_suma_deducerii_se_rotunjeste_la_leu (DEFICIENTE 205 -> 453)",
-    "core/test_datorie.py::test_fiecare_datorie_are_data_si_motiv":
-        "întărit, nu slăbit (lotul 11, garda pe text): cele trei aserțiuni au trecut în `_lipsuri_motiv` (eticheta DATORIE ca PRIM cuvânt, "
-        "nu „apare undeva”), cu calibrarea test_CALIBRARE_igiena_motivului_prinde_fiecare_lipsa — limita (a) din antet",
-    "core/test_poarta_lot.py::test_maximum_doua_rulari_pe_lot": "regula 3d (comanda Costin 11.2, forma a doua, 22.10.2026) supersedează CLAUDE.md §2.3 pct.13 b; înlocuit de test_rularile_continua_pana_la_verde + test_acelasi_sha_rosu_nu_se_reia",
-    # lotul 11 — măsurat la scrierea gărzii (22.10.2026), fiecare citit în diff:
-    "core/test_aritmetica_in_prezentare.py::test_rotunjirea_pe_linie_e_CHIAR_in_sursa_JS":
-        "decizia Costin 10.3 „o singură regulă de rotunjire TVA” (C79, lotul 11): rotunjirea pe linie nu mai e a aplicației; înlocuit de "
-        "test_ecranele_calculeaza_tva_cu_regula_unica (același parametrize pe cele două ecrane, cu apelul ca nod acorn)",
-    "core/test_lot10_operatiuni_frecventa.py::test_toate_cele_34_au_frecventa":
-        "redenumit test_toate_cele_32_au_frecventa: 429 (formularul manual de reevaluare scos, comanda 11.1 pct.11) și 450 / pct.23 "
-        "(borderoul în Stocuri) scot două operațiuni; aserțiunile rămân",
-    "core/test_lot10_reevaluare_manuala.py::test_formularul_manual_refuza_contul_ale_carui_facturi_le_reevalueaza_propunerea":
-        "429, comanda 11.1 pct.11 („Fără formular manual paralel”): ruta POST /tenants/{id}/reevaluare-valuta nu mai există; garda "
-        "test_ruta_formularului_manual_nu_mai_exista + ajustarea manuală în același formular (testele noi din același fișier)",
-    "core/test_lot10_reevaluare_manuala.py::test_reevaluarea_manuala_a_disponibilitatilor_e_vazuta_de_propunere":
-        "429, comanda 11.1 pct.11: formularul manual separat scos; disponibilitățile se propun în formularul unic",
-    "core/test_lot10_reevaluare_manuala.py::test_generarea_propunerii_nu_sterge_reevaluarea_manuala":
-        "429, comanda 11.1 pct.11: nota manuală separată nu mai există; ajustarea manuală e în propunere (marcată „adăugat de tine”)",
+    "core/test_cai_creare_factura.py::test_o_factura_se_naste_din_EXACT_doua_locuri_in_productie":
+        "redenumit, nu scos: a treia cale declarată, preluarea documentelor deschise (252, `solduri_parteneri_api._scrie_documente`, "
+        "numai `tip='preluata'`); aceeași aserțiune, pe trei căi: core/test_cai_creare_factura.py::"
+        "test_o_factura_se_naste_din_EXACT_trei_locuri_in_productie, plus test_calea_preluarii_scrie_numai_facturi_preluate",
+    "frontend_test/e2e/e2e_lot11_x.py::test_def_c78_vanzarea_intracomunitara_are_o_singura_nota":
+        "funcție scoasă: livrarea intracomunitară de BUNURI din Operațiuni (decizia Costin C84 (b), 23.10.2026, DECIZII „Comanda 12.1”); "
+        "testul păstrează nota unică pe servicii, iar bunurile sunt acoperite de frontend_test/e2e/e2e_lot12_emit.py::test_def_c84_…",
+    "core/test_lot11_x_c78_vanzare_ic.py::test_def_c78_vanzarea_ic_de_bunuri_are_o_singura_nota":
+        "funcție scoasă: livrarea intracomunitară de BUNURI din Operațiuni (decizia Costin C84 (b), 23.10.2026); înlocuit de "
+        "core/test_lot11_x_c78_vanzare_ic.py::test_def_c84_livrarea_ic_de_bunuri_se_face_din_emite_factura (refuzul numit) și "
+        "test_def_c78_prestarea_ic_de_servicii_are_o_singura_nota (nota unică)",
+    "core/test_garda_main.py::test_cu_aprobarea_sha_ului_trece_si_se_consuma":
+        "funcție scoasă: aprobarea scrisă APROBARE_MAIN radiată (CLAUDE.md §6, 23.10.2026; DECIZII „Comanda 12.1”); înlocuit de "
+        "core/test_garda_main.py::test_cu_poarta_verde_main_se_muta_fara_aprobare_scrisa",
+    "core/test_garda_main.py::test_aprobarea_fara_text_nu_ajunge":
+        "funcție scoasă: aprobarea scrisă APROBARE_MAIN radiată (CLAUDE.md §6, 23.10.2026; DECIZII „Comanda 12.1”); verdictul cerut de "
+        "garda pe main rămâne păzit de core/test_garda_main.py::test_aprobarea_fara_poarta_verde_a_sha_ului_nu_ajunge",
 }
 
 

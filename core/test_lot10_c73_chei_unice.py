@@ -45,6 +45,14 @@ TID = 991073
 
 #: scrieri pe o cheie unică care NU pot dubla, fiecare cu motivul. (fișier, funcție, tabel) -> motiv
 EXCEPTII = {
+    # [lotul 12, 252] facturile deschise preluate (`tip = 'preluata'`) nu cad sub nicio cheie unică a `facturi`: numerotarea emise
+    # (`facturi_numar_emisa_uniq`) le scoate (`migrare_unic_numar_factura.CONDITIE`), iar cheile borderoului sunt parțiale pe `tip = 'borderou'`
+    ("core/solduri_parteneri_api.py", "_scrie_documente", "facturi"):
+        "factura deschisă preluată (`tip = 'preluata'`): nicio cheie unică a `facturi` nu o cuprinde (indexurile parțiale `WHERE … tip`)",
+    # [lotul 12, C139] ștergerea raportului Z nevalidat desface întâi legătura stornărilor de ieșirile lui, apoi le șterge pe amândouă
+    ("core/z_descarcare.py", "sterge_z", "miscari_stoc"):
+        "scrie numai `anuleaza_id = NULL`: indexul `miscari_stoc_anuleaza_uq` e parțial pe `anuleaza_id IS NOT NULL`, deci rândul iese "
+        "din cheie — NULL nu poate dubla",
     ("core/scan_cai_factura.py", "<modul>", "facturi"):
         "nu e scriere: exemplele de SQL ale scanerului căilor de creare a facturii (`scan_cai_factura`), text analizat, neexecutat",
     # [lotul 11, 443] `emite_factura` nu mai scrie seria după `creeaza_factura` (seria intră la INSERT, înaintea contării), deci intrarea ei a

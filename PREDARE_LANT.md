@@ -1,22 +1,35 @@
-Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
+Citește CLAUDE.md (versiunea din 23.10.2026 — singura sursă a regulilor de lucru: §3 lotul, §4 deficiențele, §5 testarea, §6 publicarea, §7 datele cabinetului real, §8 raportul), apoi acest PREDARE_LANT.md, înainte de a începe.
 
-# PREDARE LANȚ — **15.10.2026: REGIM PILOT (DECIZII 14.10.2026 „Regim pilot”). Lucrul NUMAI în worktree `/home/costin/iconta_lucru` (ramura `lucru/pilot-2026-10-14`); `~/iconta_nou` = versiunea publicată, `main` păzit de `reference-transaction` (aprobarea scrisă în `.git/APROBARE_MAIN`). Lotul 1 (importul din SAGA) publicat `fdb20bd6`; lotul 2 (garda pe main, invitația, backup-ul + proba de restaurare, C34) publicat `38adb1bb`; lotul 3 (246 + C26; lucrat în `/home/costin/iconta_lot3`, ramura `lucru/lot3-2026-10-15`) = commitul care conține această predare, publicat cu acordul lui Costin până la 07:00. După 07:00 nimic nu se publică fără acordul lui**
+# PREDARE LANȚ — **24.10.2026: lotul 12 (comenzile 12.1 și 12.2), pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`); `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe tot lotul 12, publicarea după confirmarea lui Costin (DECIZII „Comenzile 12.1 și 12.2 în același lot”)**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-22** (noaptea, lotul 11 închis pe ramură, înaintea porții), pe ramura `lucru/lot11-2026-10-21` (worktree
-  `/home/costin/iconta_lot9`), în commitul lotului 11 — nepublicat; producția rămâne pe `22c71846`; pe secțiunile de stare (lecțiile și
-  CIFRE INVALIDATE se poartă neschimbate).
-- **pe commit**: `22c71846` (producția, ultimul four-way; commitul lotului 11 e cel care conține această predare) (lotul 10: 10.1, 10.2 și cauzele porții 1) — **four-way închis 21.10.2026 16:24**: HEAD = origin/main =
-  backup/lant-2026-10-21 = RUNNING = `22c71846` (2 din 2 procese, pornite 16:24:12, după commitul de 13:43:11); nicio sentinelă; backup
-  înainte `~/backups_db/iconta_v2_pre_lot10_20261021_1621.dump`; cele 6 migrări rulate pe producție (7 scheme fiecare, 0 eșecuri). Poarta
-  lotului 10: rularea 1 ROȘIE (`3118774c`: 5 gărzi + 221 de diferențe la cifre, explicate), rularea 2 VERDE (`22c71846`, 16:18; pytest
-  9567 / 10 / 15, plasa 553 passed, verificator 0, cifre identice).
-  (Anterior: `5907e639`, lotul 9 — four-way 20.10.2026 05:06; `27f4fab3`, lotul 8, 8.2 — 19.10.2026 07:32; `fcfa3b3a`, lotul 8, 8.1 — 18.10.2026 21:52.)
-- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire** (CLAUDE.md §2.3 pct.10, pasul 5). E fișier de STARE CURENTĂ, nu
-  jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, gărzile în `GARZI.md`, firele în `TESTE.md`.
+- **ultima rescriere**: **2026-10-24**, la închiderea comenzii 12.1 pe ramură (înaintea comenzii 12.2, a porții și a publicării), în commitul
+  12.1 — nepublicat; producția rămâne pe `d850db00`.
+- **pe commit**: `d850db00` (producția, lotul 11 publicat; ultimul four-way al lotului 11 — DECIZII „Lotul 11, poarta 3”); commitul 12.1 e cel
+  care conține această predare (SHA-ul în raportul 12.1).
+- **cine o rescrie și când**: se rescrie înainte de fiecare oprire (CLAUDE.md §8: registrele obligatorii DEFICIENTE, DECIZII, PREDARE_LANT).
+  E fișier de STARE CURENTĂ, nu jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, starea fiecărui număr în `DEFICIENTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**24.10.2026 — COMANDA 12.1 ÎNCHISĂ PE RAMURĂ, ÎNAINTEA PORȚII; NEPUBLICATĂ.** Lucrul 12.1 (deficiențele comenzii, C104–C164, scenariul lunii
+pilot, testele de capăt la capăt cu mutațiile lor, dovezile pe copia firmelor de test F1–F6) e comis pe ramura lotului; starea fiecărui număr
+e în `DEFICIENTE.md`, deciziile în DECIZII „Comanda 12.1”, „Lotul 12: implementarea” și „Comenzile 12.1 și 12.2 în același lot”. Urmează
+comanda 12.2 (`~/ghid_incoming/comanda_12_2.txt`, 20 de numere), apoi poarta completă pe tot lotul 12 (`sh scripts/poarta_lot.sh`, în fundal,
+timeout 7200000), raportul 12.2 și oprirea; publicarea pe producție (backup, ff pe `main`, post-commit, migrările `--productie`, four-way,
+deblocarea lunii 09/2026 la F1 cu motiv) numai după confirmarea lui Costin.
+
+**Copia firmelor de test** (`scripts/dovada_firme_test.py --cloneaza`, tenant_9049…9055, cabinetul 48765 „copie de dovadă”) e în baza de
+test și rămâne acolo peste poartă: registrele generate (PREDARE cifre, CONFORMITATE lista 3, TRASEE antete) o numără (27 de firme).
+Capturile de dovadă NU sunt în repo: manifestul `dovezi/lot12/AMPRENTE.json` e în commit, imaginile intră în ZIP-ul lotului.
+
+**Rămase la Costin (nu le poate face executorul):** comanda needrestart cu `sudo` („doar listează”); instalarea D112 J27.0.7 și rândul de
+crontab pentru `scripts/verifica_duk_publicat.py --zilnic` (494); revizuirea contului WhatsApp Business în Meta (597); curățenia datelor de test
+de pe producție (12.1 pct.7: cabinetul de test din 23.10, contul 731 de pe F6, MF-001 / MF-PLUS și facturile TI-1 de pe F2 — scriptul e gata,
+clasificatorul refuză scrierea pe producție); deciziile cerute în raportul 12.1 §6.
+
+### Anterior (lotul 11, păstrat ca istorie scurtă)
 
 **22.10.2026 noaptea — LOTUL 11 (11.1, 11.2 forma a doua, 11.3) COMIS PE RAMURĂ, ÎNAINTEA PORȚII; NEPUBLICAT.** Ramura
 `lucru/lot11-2026-10-21` (worktree `/home/costin/iconta_lot9`), un singur commit pe lot (registrele în el). 67 de rânduri din DEFICIENTE
@@ -580,9 +593,9 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **160** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **1268** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1202** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77** | **186** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **1292** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1216** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -600,18 +613,18 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 
 | cifra | ce e |
 |---|---|
-| **20** | firme în portofoliu |
-| **20** | din care active |
+| **27** | firme în portofoliu |
+| **27** | din care active |
 | **15** | la cabinete reale |
-| **5** | la cabinete de test |
+| **12** | la cabinete de test |
 | **0** | perechi de firme cu același nume în același cabinet |
 
 **Cabinete**
 
 | cifra | ce e |
 |---|---|
-| **7** | cabinete |
-| **4** | din care declarate de test (tipar pe nume: TEST / PROBA) |
+| **8** | cabinete |
+| **5** | din care declarate de test (tipar pe nume: TEST / PROBA) |
 
 **Denumirea firmei (R81)**
 
@@ -619,7 +632,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 |---|---|
 | **0** | divergențe portofoliu ↔ fiscal, pe populația declarată |
 | **0** | divergențe pe TOATĂ populația, fără nicio excludere |
-| **2** | firme cu instantaneu ANAF (`nume_anaf`) |
+| **3** | firme cu instantaneu ANAF (`nume_anaf`) |
 | **2** | din care cu denumirea DIFERITĂ de cea de la ANAF |
 | **1** | din care cu alegerea deja consemnată (deci caseta nu apare) |
 
@@ -629,9 +642,9 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 |---|---|
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
-| **20** | scheme `tenant_NNN` în bază |
-| **363** | contorul `tenant_schema_seq` |
-| **48** | maximul istoric de nume de schemă |
+| **27** | scheme `tenant_NNN` în bază |
+| **9057** | contorul `tenant_schema_seq` |
+| **9055** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**
 
@@ -645,7 +658,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | cifra | ce e |
 |---|---|
 | **0** | rânduri care trimit la o firmă inexistentă |
-| **21** | tabele din `public` cu `tenant_id`, numărate |
+| **22** | tabele din `public` cu `tenant_id`, numărate |
 
 <!-- CIFRE-DATE:STOP -->
 

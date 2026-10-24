@@ -486,11 +486,12 @@ def curs_factura_importate(cur, schema, f):
     are; altfel TVA × curs, ca la emitere (`facturi_api.sume_lei`). Totalul în lei = baza × curs + TVA-ul în lei.
 
     Cursul se ADUCE (descărcarea BNR) înaintea tranzacției, de apelant (`uc_comun._preincalzeste_cursul`); aici se decide pe cache.
-    Întoarce None (RON, are deja curs, nu e din XML), {"curs": …} (scris) sau refuzul cursului (dict cu `ok` False, `cod`, `mesaj`,
+    Întoarce None (RON, are deja curs, nu e din XML și nici introdusă de mână — `manuala`, lotul 12, 477), {"curs": …} (scris) sau refuzul cursului (dict cu `ok` False, `cod`, `mesaj`,
     nimic scris) — factura rămâne fără curs, iar contarea o refuză cu ieșirea numită (`contabilizeaza`, LIPSA_CURS_LEI)."""
     import datetime as _dt
     from core import sume_lei as _sl, tva_calcul as _tc, facturi_api as _fa, efactura_import as _ef, repo_efactura as _re
-    if _sl.e_ron(f.get("moneda")) or f.get("curs_bnr") is not None or not str(f.get("xml") or "").strip():
+    # [lotul 12, 477] și factura primită introdusă de mână (`manuala`, fără XML), chemată de validarea ei (`uc_factura_primita.valideaza`)
+    if _sl.e_ron(f.get("moneda")) or f.get("curs_bnr") is not None or not (str(f.get("xml") or "").strip() or f.get("manuala")):
         return None
     zi = f["data_emitere"]
     zi = zi if isinstance(zi, _dt.date) else _dt.date.fromisoformat(str(zi)[:10])
@@ -499,8 +500,10 @@ def curs_factura_importate(cur, schema, f):
         return ca
     curs, data_curs, sursa = ca
     import xml.etree.ElementTree as _ET
-    _x = f["xml"].encode("utf-8") if isinstance(f["xml"], str) else f["xml"]
-    bt111 = _ef.tva_lei_din_xml(_ET.fromstring(_x), f["moneda"])
+    bt111 = None
+    if str(f.get("xml") or "").strip():
+        _x = f["xml"].encode("utf-8") if isinstance(f["xml"], str) else f["xml"]
+        bt111 = _ef.tva_lei_din_xml(_ET.fromstring(_x), f["moneda"])
     tot, tva = Decimal(str(f.get("total") or 0)), Decimal(str(f.get("tva") or 0))
     if bt111 is not None:
         tva_lei = _tc.q2(bt111)
@@ -694,6 +697,8 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
         raise RefuzContare("INEXISTENTA", "factură inexistentă")
     f = dict(f)
 
+    if _nsf.e_sold_preluat(f.get("tip")):   # [lotul 12, 252] soldul ei e deja în soldurile inițiale: o notă l-ar înregistra a doua oară
+        raise RefuzContare("SOLD_PRELUAT", _nsf.MESAJ_SOLD_PRELUAT)
     if (f.get("tip") or "factura") != "factura":
         raise RefuzContare("NU_E_DOCUMENT_FISCAL",
                            "proforma/avizul nu se contabilizează (nu e document fiscal)")

@@ -80,6 +80,7 @@ def select_facturi(cur, inceput, sfarsit):
                            f.moneda, f.curs_bnr, f.total_lei, f.tva_lei,
                            COALESCE(f.furnizor_tva_incasare, false) AS furnizor_tva_incasare,
                            f.categorie_331, f.tert_nume, f.tert_cui, f.tert_platitor_tva,
+                           f.axa_ic,   -- [C19] axa bunuri / servicii a documentului: serviciul primit din afara UE intră în D394 secțiunea F (tip C)
                            COALESCE(NULLIF(btrim(f.tert_judet), ''), """ + _clienti_api.sql_camp_fisa("judet") + """) AS tert_judet,   -- [C69] + [lotul 11, decizia 10.3] fișa partenerului când factura nu are județul
                            c.nume AS c_nume, c.cui AS c_cui,
                            COALESCE(json_agg(json_build_object(

@@ -136,11 +136,11 @@ def test_def_439_balanta_dezechilibrata_se_refuza_cu_motivul(patron, firma_m):
                 r[j] = _ro(float(r[j].replace(".", "").replace(",", ".")) + d)
     _pas(patron, firma_m, "Solduri ini")
     pg.set_input_files("#mig-file", files=[{"name": "dezechilibrata.csv", "mimeType": "text/csv", "buffer": fisier(rr=rr)}])
-    # starea FINALĂ a încărcării: `#mig-eroare` arată întâi „Citesc balanța…” (migrare.js, cât așteaptă serverul) — de așteptat refuzul
+    # starea FINALĂ a încărcării: `#mig-eroare` arată întâi „Se citește balanța…” (migrare.js, cât așteaptă serverul) — de așteptat refuzul
     # sau previzualizarea, nu primul text
     pg.wait_for_function("() => { const e = document.querySelector('#mig-eroare'); const p = document.querySelector('#mig-preview');"
                          " const t = ((e && e.innerText) || '').trim();"
-                         " return (t && t !== 'Citesc balanța…') || !!(p && p.innerHTML.trim()); }", timeout=30000)
+                         " return (t && t !== 'Se citește balanța…') || !!(p && p.innerHTML.trim()); }", timeout=30000)
     m = " ".join(pg.inner_text("#mig-eroare").split())
     patron.captura()
     assert m.startswith("Coloanele „Rulaje precedente Debit” / „Rulaje precedente Credit” nu se echilibrează: debit 276.340,00 lei, "

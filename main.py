@@ -56,6 +56,9 @@ from core import aplicatii_migrare, fisiere_private   # [270 / C36, 15.10.2026] 
 # aplicatie (masurat: zero `except HTTPException`), deci rolul ei e exclusiv de iesire. Codul si
 # mesajul ies literă cu literă cum ieseau.
 from core import erori as _erori
+from core import ciorne_formular as _ciorne_formular   # [lotul 12, 495] ciornele formularelor, pe server
+from core import uc_factura_primita as _uc_factura_primita   # [lotul 12, 477] factura primită introdusă de mână
+from core import uc_raport_z as _uc_raport_z   # [lotul 12, C139] ștergerea raportului Z nevalidat
 from core import uc_comun as _uc_comun
 from core import uc_auth as _uc_auth
 from core import uc_recomanda as _uc_recomanda
@@ -116,7 +119,14 @@ def _http_din(e):
     orice analiza statica de graf. Masurat: candidatii P5 au scazut 54 -> 48, nu fiindca s-ar fi
     reparat ceva, ci fiindca patru rute nu mai erau vizibile de la punctul de intrare.
 
-    Ce nu e in vocabular nu se traduce: se re-ridica neatins, ca sa nu inventam niciun cod."""
+    Ce nu e in vocabular nu se traduce: se re-ridica neatins, ca sa nu inventam niciun cod.
+
+    [lotul 12, C159] Un refuz de PERIOADĂ împachetat ca text (52 de use-case-uri fac `DateInvalide(str(e))` pe orice `ValueError`) își
+    păstrează sensul: 423, cu textul pentru contabil (`perioada.text_exceptie`), ca prin handlerul global — nu 422 cu eticheta
+    „PERIOADA_BLOCATA:” pe ecran."""
+    from core import perioada as _per
+    if isinstance(e, _erori.EroareDeDomeniu) and isinstance(e.detaliu, str) and _per.ETICHETA in e.detaliu:
+        return HTTPException(423, _per.text_exceptie(e.detaliu))
     for _clasa, _cod in _COD_EROARE:
         if isinstance(e, _clasa):
             return HTTPException(_cod, e.detaliu)
@@ -362,9 +372,8 @@ async def _handler_perioada_blocata(request: Request, exc: Exception):
     from fastapi.responses import JSONResponse as _JR
     msg = str(exc)
     if "PERIOADA_BLOCATA" in msg:
-        detaliu = msg.split("PERIOADA_BLOCATA:")[1].split("\n")[0].strip() \
-            if "PERIOADA_BLOCATA:" in msg else "perioada este blocată"
-        return _JR(status_code=423, content={"detail": f"Perioada {detaliu}."})
+        from core import perioada as _per   # [lotul 12] același text ca în Registrul jurnal: „Luna 10/2026 e închisă.” (sursa unică)
+        return _JR(status_code=423, content={"detail": _per.text_exceptie(exc) if _per.ETICHETA in msg else "Perioada este blocată."})
     # [reguli_fond_v1, 09.10.2026] regulile de fond din bază (core/migrare_reguli_fond.py) refuză cu textul pentru contabil, după eticheta
     # `REGULA_CONTABILA:` — 409 (conflict cu starea evidenței), nu traceback 500
     if "REGULA_CONTABILA:" in msg:
@@ -1480,6 +1489,12 @@ class SolduriIn(BaseModel):
     data_referinta: Optional[str] = None     # [C22] cerută la scriere (`solduri_api.data_balantei`); lipsa -> 422 numit
     inlocuieste: bool = False                # [426] confirmarea înlocuirii balanței existente; fără ea -> 409 cu totalurile
     metoda_stoc: Optional[str] = None        # [425] cerută când balanța are sold pe 371 și firma n-are metoda declarată
+class DocumentPreluatRand(BaseModel):          # [lotul 12, 252] factura deschisă a partenerului, din forma pe facturi
+    numar: str
+    data: str
+    scadenta: Optional[str] = None
+    suma: float
+    rand_fisier: Optional[int] = None
 class PartenerRand(BaseModel):
     cont: str
     cui: str = ""
@@ -1487,6 +1502,7 @@ class PartenerRand(BaseModel):
     debit: float = 0
     credit: float = 0
     rand_fisier: Optional[int] = None
+    documente: Optional[list[DocumentPreluatRand]] = None   # [252] None = forma pe solduri (soldul întreg devine documentul)
 class ParteneriIn(BaseModel):
     randuri: list[PartenerRand]
     data_referinta: Optional[str] = None
@@ -2592,7 +2608,8 @@ def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=D
     return _raspuns({"randuri": randuri, "total": len(randuri), "erori": erori,
                      "respinse": sum(1 for r in randuri if r["stare"] == "respins"),
                      "semnalate": sum(1 for r in randuri if r["stare"] == "semnalat"),
-                     **_uc_tenants.istoric_inlocuire(tenant_id, randuri, erori, ctx)})   # [426, clasa] istoricul preluat existent
+                     **_uc_tenants.istoric_inlocuire(tenant_id, randuri, erori, ctx),   # [426, clasa] istoricul preluat existent
+                     **_uc_migrare.firma_fisier(tenant_id, continut, fisier.filename or "")})   # [599] firma din fișier vs firma aleasă
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import")
@@ -3254,6 +3271,35 @@ def asociati_cesiune(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_dr
         raise _http_din(e)
 
 
+@app.get("/tenants/{tenant_id}/ciorne-formular/{formular}")
+def ciorna_formular_get(tenant_id: int, formular: str, ctx=Depends(cere_context)):
+    """[lotul 12, 495] Ciorna formularului început (factura, salariatul nou, concediul medical) a utilizatorului, la firma asta —
+    core/ciorne_formular.py (pe server, ca să se regăsească pe alt calculator)."""
+    try:
+        return _ciorne_formular.ciorna_citeste(tenant_id, formular, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.put("/tenants/{tenant_id}/ciorne-formular/{formular}")
+def ciorna_formular_put(tenant_id: int, formular: str, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 12, 495] Scrie ciorna formularului (utilizator + firmă + formular) — core/ciorne_formular.py. «Poate pregăti», ca salvarea
+    formularelor care își păstrează ciorna (emiterea facturii, salariatul nou, concediul medical)."""
+    try:
+        return _ciorne_formular.ciorna_scrie(tenant_id, formular, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.delete("/tenants/{tenant_id}/ciorne-formular/{formular}")
+def ciorna_formular_del(tenant_id: int, formular: str, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 12, 495] Șterge ciorna formularului (după emitere / renunțare) — core/ciorne_formular.py. «Poate pregăti», ca scrierea."""
+    try:
+        return _ciorne_formular.ciorna_sterge(tenant_id, formular, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.get("/tenants/{tenant_id}/facturi")  # [p117_facturi_lista_acces] acces client+gratuit+cabinet
 def facturi_lista(tenant_id: int, an: Optional[int] = None,                   luna: Optional[int] = None, directie: Optional[str] = None,                   limit: Optional[int] = None, offset: int = 0,                   ctx=Depends(cere_context)):
     try:
@@ -3362,6 +3408,26 @@ def client_sterge(tenant_id: int, client_id: int,                   ctx=Depends(
 
 
 # [lotul 11, decizia Costin 10.3 pct.4] FURNIZORI — fișele lor (localitatea și județul, citite de D406 / D394 când factura nu le are)
+# [lotul 12, deficiența 461, comanda Costin 12.1 pct.8] PARTENERII FIRMEI — lista (clienți și furnizori, din toate documentele) și fișa
+# `/parteneri` (GET / POST) e al soldurilor de preluare (migrarea); lista partenerilor firmei stă pe `/parteneri-firma`
+@app.get("/tenants/{tenant_id}/parteneri-firma")
+def parteneri_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """[461] Partenerii firmei din toate documentele (`clienti_api.parteneri_firmei`), cu căutare pe ecran."""
+    try:
+        return _uc_tenants.parteneri_lista(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/tenants/{tenant_id}/parteneri-firma/fisa")
+def parteneri_fisa(tenant_id: int, cheie: str, ctx=Depends(cere_cabinet)):
+    """[461] Fișa partenerului: datele, documentele, soldul din contabilitate (`clienti_api.fisa_partenerului`)."""
+    try:
+        return _uc_tenants.parteneri_fisa(tenant_id, cheie, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.get("/tenants/{tenant_id}/furnizori")
 def furnizori_lista(tenant_id: int, status: Optional[str] = None, ctx=Depends(cere_cabinet)):
     try:
@@ -4153,6 +4219,16 @@ def horeca_rapoarte_z(tenant_id: int, an: int, luna: int, ctx=Depends(cere_conte
 def horeca_z_fara_marfa(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.horeca_z_fara_marfa(tenant_id, nota_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.delete("/tenants/{tenant_id}/horeca/raport-z/{nota_id}")
+# [lotul 12, C139] „Șterge raportul Z”: numai Z-ul nevalidat (nota ciornă, luna deschisă), cu descărcările lui din stoc necontate, într-o
+# tranzacție, cu urma în audit — Registrul jurnal trimite nota Z-ului aici (`note_derivate.UNDE["raport_z"]`). Același drept ca importul.
+def horeca_z_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_raport_z.horeca_z_sterge(tenant_id, nota_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 @app.post("/tenants/{tenant_id}/banca/parse-extras")  # [api_intern_v1] parsare extras la upload - fara UI inca, pastrat deliberat
@@ -5671,9 +5747,11 @@ def eu_permisiuni(ctx=Depends(cere_cabinet)):
 
 # --- reconciliere bancara ---
 @app.post("/tenants/{tenant_id}/banca/reconciliere/import")
-def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), confirma_cont: bool = Form(False),
+                     ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    # [lotul 12, C121] `confirma_cont`: contabilul a confirmat că extrasul altui cont decât al firmei e totuși al ei
     try:
-        return _uc_tenants.banca_rec_import(tenant_id, _octetii(fisier), fisier.filename, ctx)
+        return _uc_tenants.banca_rec_import(tenant_id, _octetii(fisier), fisier.filename, ctx, confirma_cont=confirma_cont)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -6708,6 +6786,16 @@ def facturi_primite_import_xml(tenant_id: int, fisiere: list[UploadFile] = File(
     """[lotul 6 pct.7b, 273] Import manual XML UBL (sau ZIP) al facturilor primite: intră în lista de validat, ca cele din SPV."""
     try:
         return _uc_tenants.facturi_primite_import_xml(tenant_id, [(_octetii(_f), _f.filename) for _f in fisiere], ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/tenants/{tenant_id}/facturi-primite/manual")
+def factura_primita_manuala(tenant_id: int, corp: dict = Body(default={}), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 12, 477] Factura primită de pe hârtie / PDF, introdusă de mână: validată pe același drum ca factura din XML
+    (`uc_factura_primita.valideaza`)."""
+    try:
+        return _uc_factura_primita.factura_primita_manuala(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

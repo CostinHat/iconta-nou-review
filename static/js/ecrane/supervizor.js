@@ -3,10 +3,9 @@
 // [01.09.2026, Costin, verbatim] „Ce vede contabilul: constatările deschise pe firmele lui, cu
 // temei, în ecran propriu. Clopoțelul rămâne roșu agregat, nu o notificare pe constatare."
 //
-// «CONSTATĂRI DESCHISE» = ce produce rularea CURENTĂ. Ecranul recalculează la fiecare deschidere,
-// exact ca /control-fiscal — fără tabel propriu și fără ciclu de viață. Un ciclu de viață (apărut
-// la · încă deschisă · rămas netratat) își capătă contractul când va avea consumator — stratul
-// asistentului și urmărirea performanței —, nu înainte.
+// «CONSTATĂRI DESCHISE» = ce a produs ultima rulare a lucrătorului (P1: rezultatul persistat, `supervizor_cache`, recalculat de
+// `firma_rezumat.main` la 5 minute pe firmele schimbate — deficiența 484: lucrătorul nu era chemat de nimeni). Ecranul CITEȘTE; fără
+// ciclu de viață. Un ciclu de viață (apărut la · încă deschisă · rămas netratat) își capătă contractul când va avea consumator.
 //
 // CE NU FACE, și e cerut explicit: nu împinge nimic în clopoțel. Clopoțelul e cablat deja, prin
 // verifica_d390 -> alerte_control_fiscal, AGREGAT PE FIRMĂ. Un push de aici ar fi al doilea mecanism.
@@ -18,11 +17,11 @@
 // însemna că n-a fost ce compara, sau că verificarea n-a rulat deloc. Ecranul le ține despărțite,
 // fiindcă exact aici se naște cifra validă și falsă.
 
-import { api, esc, dupaNumar } from "../api.js?v=31460b24f2";
-import { randA as randConstatare } from "./control_verdict.js?v=2daa29640d";
+import { api, esc, dupaNumar, dataRo } from "../api.js?v=309f4d66ae";
+import { randA as randConstatare } from "./control_verdict.js?v=9c09077067";
 
 function perioada(r) {
-  return `${String(r.luna).padStart(2, "0")}/${r.an}`;
+  return dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric");   // DS cap.4: „10/2026”, din formatorul unic
 }
 
 function antet(r) {
@@ -35,15 +34,24 @@ function antet(r) {
       <span class="sv-cifra sv-cifra--sec">din <b>${z.firme_in_domeniu || 0}</b> ${dupaNumar(z.firme_in_domeniu || 0, "firmă", "firme")}</span>
     </div>
     <div class="cf-incr-temei">Perioada evaluată: ${esc(perioada(r))}. Domeniu: ${esc(r.domeniu || "")}</div>
-    <div class="cf-incr-temei">Confruntare între declarații (axa orizontală). Recalculată acum, la
-      deschiderea ecranului — nu e o listă păstrată. Supervizorul <b>nu blochează</b> nimic.</div>
+    <div class="cf-incr-temei">Confruntare între declarații, pe ultima lună încheiată. Se recalculează în câteva minute după
+      fiecare schimbare a datelor firmei. Supervizorul <b>nu blochează</b> nimic.</div>
   </div>`;
+}
+
+// [lotul 12, C147] rezultatul calculat înaintea ultimei schimbări (a datelor firmei sau a regulilor de verificare) se arată, dar
+// ETICHETAT (`uc_supervizor`: „se arată, dar etichetat”) — până azi arăta ca unul curent până la tura următoare
+function etichetaVechi(f) {
+  const p = f.prospetime || {};
+  if (p.stare !== "invalidat") return "";
+  return `<div class="cf-incr-temei" data-prospetime="invalidat">Rezultat calculat${p.calculat_la ? " la " + esc(dataRo(p.calculat_la, "cu_ora")) : ""}, înaintea ultimei schimbări a datelor firmei sau a regulilor de verificare: se recalculează în câteva minute.</div>`;
 }
 
 function blocFirma(f) {
   const cs = (f.constatari || []).map(randConstatare).join("");
   return `<section class="sv-firma">
     <h3 class="sv-firma-nume">${esc(f.nume || "Firmă")}</h3>
+    ${etichetaVechi(f)}
     ${cs}
   </section>`;
 }
@@ -54,6 +62,7 @@ function blocNeverificate(firme) {
       <div class="cf-incr-cap"><span class="cf-dot" style="background:var(--gri-dot, #9aa0a6)"></span>
         <span>${esc(f.nume || "Firmă")}</span></div>
       <div class="cf-incr-temei">${esc((f.neverificat && f.neverificat.eroare) || "")}</div>
+      ${etichetaVechi(f)}
     </div>`).join("");
   return `<section class="sv-firma sv-firma--neverif">
     <h3 class="sv-firma-nume">Firme pe care verificarea nu a rulat</h3>
@@ -83,7 +92,7 @@ function blocGol(r) {
 }
 
 export async function randeazaSupervizor(corp, nav) {
-  corp.innerHTML = `<p class="ecran-nota">Se rulează confruntarea…</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă confruntarea…</p>`;
   let r;
   try {
     r = await api.get("/supervizor");
@@ -92,8 +101,7 @@ export async function randeazaSupervizor(corp, nav) {
     // aceea e o listă cu zero rânduri, care spune ce lipsește și pe unde se iese. Aici n-am
     // aflat nimic, deci n-am cum să afirm că e gol. Verificatorul păzește exact confuzia asta.
     corp.innerHTML = `<p class="ecran-nota">Nu s-a putut rula supervizorul: `
-      + `${esc((e && e.mesaj) || "eroare necunoscută")}. Constatările NU sunt «zero» — sunt `
-      + `necunoscute.</p>`;
+      + `${esc((e && e.mesaj) || "eroare necunoscută")}. Constatările nu sunt «zero», ci necunoscute.</p>`;
     return;
   }
   const firme = r.firme || [];

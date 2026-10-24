@@ -1,0 +1,75 @@
+[
+ {
+  "fisier": "core/stocuri_api.py",
+  "ancora": "aid = _cv.articol_pentru_intrare(cur, schema, den, l.get(\"um\"))",
+  "inlocuire": "cur.execute(f\"INSERT INTO {schema}.articole (denumire, um) VALUES (%s, %s) RETURNING id\", (den, l.get(\"um\") or \"buc\")); aid = cur.fetchone()[\"id\"]",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_475_nirul_cu_doua_linii_ale_aceluiasi_articol_nou_face_un_singur_articol"
+ },
+ {
+  "fisier": "core/migrare_articole_dublate.py",
+  "ancora": "            motiv = motiv_neunibil(g)",
+  "inlocuire": "            motiv = \"mutație: nicio unire\"",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_475_vechi_doua_articole_grau_dublate_se_unesc"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "${cate(b.note_lunii, \"notă validată\", \"note validate\")} în luna asta",
+  "inlocuire": "rulajele lunii vin din ${cate(b.note_lunii, \"notă validată\", \"note validate\")} — aceleași pe care le arată Registrul jurnal pe luna asta, în afară de ciorne; notele lunilor anterioare stau în „sume precedente”",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_498_antetul_balantei_spune_luna_si_cifrele_iar_sursa_lor_e_pliata"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "for (const treapta of [\"fer-strans\", \"fer-rupt\"])",
+  "inlocuire": "for (const treapta of [])",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_143_nicio_fereastra_a_firmei_nu_deruleaza_lateral_la_1366"
+ },
+ {
+  "fisier": "static/stil.css",
+  "ancora": ".fereastra.fer-tabel { width: calc(100vw - 48px); max-width: calc(100vw - 48px);",
+  "inlocuire": ".fereastra.fer-tabel { width: 100%; max-width: 680px;",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_143_nicio_fereastra_a_firmei_nu_deruleaza_lateral_la_1920"
+ },
+ {
+  "fisier": "static/stil.css",
+  "ancora": ".fereastra {\n  width: 100%; max-width: 680px; ",
+  "inlocuire": ".fereastra {\n  width: 2400px; min-width: 2400px; max-width: 2400px; ",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_143_nicio_fereastra_a_cabinetului_nu_deruleaza_lateral",
+  "motiv": "143, clasa pe ferestrele cabinetului: tabelele lor încap (nici fer-tabel, nici fer-larg), deci se strică limita ferestrei de bază — fereastra iese din ecran -> MASOARA o numește"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "motiv_exceptare: motivAles(corp, \"sn-motiv_exceptare\"),   // [C133] numai cu scutirea „Da”",
+  "inlocuire": "motiv_exceptare: null,",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_c133_salariatul_scutit_cere_motivul_scutirii"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "legaMotivScutire(corp, \"sn-scutit_contrib_minim\", \"sn-motiv_exceptare\");",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_c133_salariatul_scutit_cere_motivul_scutirii"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "${dv.includes(\"scutit_contrib_minim\") || dv.includes(\"motiv_exceptare\") ? campMotivScutire(\"dv-motiv\") : \"\"}",
+  "inlocuire": "${\"\"}",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_c133_vechi_salariatul_scutit_fara_motiv_se_completeaza_din_de_verificat"
+ },
+ {
+  "fisier": "core/migrare_motiv_scutire.py",
+  "ancora": "WHERE scutit_contrib_minim AND motiv_exceptare IS NULL AND NOT ('motiv_exceptare' = ANY(de_verificat)) RETURNING id",
+  "inlocuire": "WHERE false RETURNING id",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_c133_vechi_salariatul_scutit_fara_motiv_se_completeaza_din_de_verificat"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "${n.contata_inainte ? `<div class=\"caseta-atentie jn-inainte\"",
+  "inlocuire": "${false ? `<div class=\"caseta-atentie jn-inainte\"",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_c127_vechi_nota_validata_scrisa_inainte_de_incheierea_lunii_e_semnalata"
+ },
+ {
+  "fisier": "core/migrare_note_luna_neincheiata.py",
+  "ancora": "            if info[\"status\"] != \"ciorna\":",
+  "inlocuire": "            if True:",
+  "test": "frontend_test/e2e/e2e_lot12_firme2.py::test_def_c127_vechi_nota_validata_scrisa_inainte_de_incheierea_lunii_e_semnalata"
+ }
+]

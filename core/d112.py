@@ -224,6 +224,11 @@ def _d112_casa(judet):
     return _D112_CASA.get(j, "_B")
 # [lotul 11, C92] codul certificatului -> (atributul D112, ce e, eticheta câmpului de pe ecran). Câmpul e `concedii_medicale.cod_urgenta`
 # (`flux_concediu.js`, `CAMP_URGENTA`, aceleași coduri); structura D112: D_11 „D_9 =06”, D_12 „D_9= (05,51)”, D_13 „D_9 = 10”.
+#: [C97] motivul exceptării de la contribuția minimă (secțiunea E, pct.12 din instrucțiunile D112, OPANAF 605/2026 anexa 2): „"4" - pentru
+#: persoana fizică prevăzută la art.146 alin. (5^7) lit.d) din Codul fiscal, respectiv, pentru salariaţii care au calitatea de pensionari
+#: pentru limită de vârstă în sistemul public de pensii” — de aici se deduce B1_2 „Pensionar”.
+MOTIV_EXCEPTARE_PENSIONAR = 4
+
 _CAMP_COD_CM = {
     "06": ("D_11", "codul de urgență medico-chirurgicală", "Cod urgență medico-chirurgicală"),
     "05": ("D_12", "codul bolii infecto-contagioase", "Cod boală infecto-contagioasă"),
@@ -371,7 +376,7 @@ def calcul_d112(prof, salariati, an, luna):
             raise ValueError(
                 "Codul CAEN al firmei, '%s', nu e în nomenclatorul CAEN pe care îl acceptă D112. "
                 "Corectează-l în Profil firmă — un D112 trimis cu el ar fi respins de ANAF." % caen_f)
-    sum_imp = sum_cas = sum_cass = sum_bazac = 0
+    sum_imp = sum_cas = sum_cass = sum_bazac = sum_baza_cam = 0
     cas_ang_dif = cass_ang_dif = 0  # d112_b4p_v2
     _c2_cazuri = []  # [D112 C2 pe rand] (cod, d16, d14=za, d15=zf, d20, d21) per certificat
     c1_12 = 0
@@ -422,6 +427,13 @@ def calcul_d112(prof, salariati, an, luna):
         # i<B1_4”, „daca B1_3= ‘Pi ‘atunci B1_6 <= NZL* i”, „B1_7<= NZL* i - B1_6”. Până la 22.10.2026 B1_3 era „N” fix și orele lucrate
         # (B1_6) se socoteau cu 8 ore pe zi și la normă parțială. INTERPRETARE CU TEMEI: la normă parțială, B1_4 = 8 — programul normal din
         # Codul muncii art.112 alin.(1); aplicația nu ține un program al locului de muncă mai scurt pentru salariatul cu normă parțială.
+        # [lotul 12, decizia Costin (a)] Textele, recitite la sursă: Legea 53/2003 art.112 alin.(1) „Pentru salariații angajați cu normă
+        # întreagă durata normală a timpului de muncă este de 8 ore pe zi și de 40 de ore pe săptămână.” (anaf_surse/
+        # legea_53_2003_codul_muncii.txt); OPANAF 605/2026 anexa 2, B.1 rândul 4 „Ore normă zilnică a locului de muncă […] Prin program normal
+        # de lucru se înţelege programul prevăzut la art. 112 alin. (1) din Legea nr. 53/2003 […] Norma zilnică poate să fie de 8, 7 sau 6
+        # ore.” Alternativa respinsă: B1_4 = orele contractului parțial (4) — B1_4 e norma LOCULUI DE MUNCĂ, nu a contractului, iar
+        # structura cere „i<B1_4” la Pi (cu B1_4 = i, orice Pi ar fi respins). De reconfirmat dacă apare o normă care transează programul
+        # locului de muncă al salariatului cu timp parțial (sau dacă aplicația ajunge să țină programul de 7 / 6 ore, Legea 31/1991).
         _part = bool(s.get("part_time"))
         _ore_c = float(s.get("ore_zi") or 0) if _part else float(s.get("ore_zi") or 8)
         if _part:
@@ -665,6 +677,19 @@ def calcul_d112(prof, salariati, an, luna):
         # incapacitate temporară de muncă şi plata indemnizaţiei se suportă de angajator potrivit legii şi sunt considerate ore efectiv
         # lucrate)”. Zilele angajatorului = D_14 (`zile_ang` al certificatului); ziua de diminuare nu e plătită, deci nu intră.
         _zile_cm_ang = sum(int(x.get("zile_ang") or 0) for x in cms) if (cms and zile_cm > 0) else 0
+        # [482, lotul 12] baza CAM a salariatului (B1_5 / B4_14) = salariul realizat + indemnizația CM SUPORTATĂ DE ANGAJATOR. CF art.220^4
+        # alin.(1): „Baza lunară de calcul al contribuției asiguratorii pentru muncă o reprezintă suma câștigurilor brute realizate din
+        # salarii și venituri asimilate salariilor”; CF art.76 alin.(1): veniturile din salarii, „inclusiv indemnizațiile pentru
+        # incapacitate temporară de muncă”; CF art.220^5: „Contribuția asiguratorie pentru muncă nu se datorează pentru prestațiile
+        # suportate din bugetul asigurărilor sociale de stat, bugetul asigurărilor pentru șomaj, precum și din Fondul național unic de
+        # asigurări sociale de sănătate.” — excepția e NUMAI partea FNUASS; partea angajatorului (OUG 158/2005 art.12 lit.A: „de către
+        # angajator, din prima zi până în a 5-a zi de incapacitate temporară de muncă”) intră. Instrucțiunile D112 (OPANAF 605/2026 anexa
+        # 2, secțiunea B, rândul 4) o spun pe nume: „sumele suportate de angajator, primele 5 zile de incapacitate temporară de muncă, pentru
+        # concedii medicale conform prevederilor O.U.G. nr. 158/2005 […] pentru care angajatorul datorează contribuţia asiguratorie pentru
+        # muncă”. Până la 23.10.2026 baza CAM excludea toată indemnizația (și partea angajatorului), citând art.220^5.
+        _cam_cm = cm_ang if (cms and zile_cm > 0) else 0
+        baza_cam = bazac + _cam_cm
+        sum_baza_cam += baza_cam
         ore_lucr = (zile + _zile_cm_ang) * ore_contract
         casa_sn = _d112_casa(s.get("judet_casa") or prof.get("judet"))
         dataang = _d112_data(s.get("data_angajare"))
@@ -724,7 +749,8 @@ def calcul_d112(prof, salariati, an, luna):
             "idx": idx, "cnp": s.get("cnp"), "nume": s.get("nume"), "prenume": s.get("prenume"),
             "dataang": dataang, "casa_sn": casa_sn, "asigexc": asigexc,
             "motiv_exc": _d112int(s.get("motiv_exceptare")) if asigexc == 1 else None,   # d112_motivexc_v1
-            "imp": imp, "ore": ore, "b1_3": b1_3, "bazac": bazac, "ore_lucr": ore_lucr, "b1_7": _b1_7, "brut": brut, "zile": zile,
+            "pensionar": asigexc == 1 and _d112int(s.get("motiv_exceptare")) == MOTIV_EXCEPTARE_PENSIONAR,   # [C97] B1_2
+            "imp": imp, "ore": ore, "b1_3": b1_3, "bazac": bazac, "baza_cam": baza_cam, "ore_lucr": ore_lucr, "b1_7": _b1_7, "brut": brut, "zile": zile,
             "b1_sal1": _b1_sal1, "b3": _b3, "baza_cass": baza_cass, "cass": cass, "b4base": b4base, "cas": cas,
             "b4_5p": b4_5p, "b4_6p": b4_6p, "b4_7p": b4_7p, "b4_8p": b4_8p, "b4_8d": b4_8d, "b4_6d": b4_6d,
             "d": _dl, "brute": brute, "tip_asig": tip_asig, "s51": facil if tip_asig == 51 else 0,
@@ -735,10 +761,12 @@ def calcul_d112(prof, salariati, an, luna):
     # round() Python (bancar) se aplica ICI, INAINTE ca _d112int() sa poata
     # rotunji aritmetic - 112.5 devenea deja 112 prin round() inainte sa ajunga
     # la _d112int. Eliminat round() exterior, _d112int face rotunjirea corecta.
+    # [482, 23.10.2026 — SUPERSEDEAZĂ nota de mai jos] baza CAM = Σ baza_cam (salariul realizat + indemnizația CM a angajatorului; partea
+    # FNUASS rămâne afară, CF art.220^5). Nota veche, păstrată ca istoric al citării:
     # [CAM baza, citare corectata 05.08.2026] sum_bazac = DOAR salariul REALIZAT (bazac), EXCLUDE indemnizatia
     # CM (cm_base): CAM nu se datoreaza pe prestatiile suportate din FNUASS - CF art.220^5 (Exceptii specifice
     # contributiei asiguratorii pentru munca), NU art.220^3 (=cota 2.25%). Valoarea nu se schimba, doar temeiul.
-    cam_total = _d112int(sum_bazac * _cota_cam)
+    cam_total = _d112int(sum_baza_cam * _cota_cam)
     obligatii = []   # [R105] randurile angajatorA, in forma citibila de om
     def add_oblig(cod, cb, val):
         # [d112 v1.03-072026] sectiunea angajatorA ("Creante") e OBLIGATORIE minim 1 (XSD d112_06082026.xsd:
@@ -774,7 +802,7 @@ def calcul_d112(prof, salariati, an, luna):
                               total_plata_a=int(total_plata), avertismente=av, sinteza=sinteza),
         antet={"nume_declar": nume_d, "prenume_declar": pren_d, "functie_declar": func_d, "cif": cui_f,
                "caen": caen_f, "den": den_f, "casa_ang": casa_ang, "perioada": perioada, "n": n,
-               "sum_bazac": sum_bazac, "c1_12": c1_12, "cam_total": cam_total,
+               "sum_bazac": sum_bazac, "sum_baza_cam": sum_baza_cam, "c1_12": c1_12, "cam_total": cam_total,
                # [lotul 11, C93] structura D112: „C1_11= ΣA_13 + ΣB2_5 + ΣB1_16 + ΣA_13S + ΣB2_5S”, „C1_T1=C1_11+ C1_21+ C1_31”
                "c1_11": sum_bazac + sum_s51},
         asigurati_xml=AS, c2=c2)
@@ -787,7 +815,7 @@ def build_xml(calc):
     erau impletite in aceeasi bucla (dovada: XML identic byte cu byte pe toate testele care genereaza D112,
     vezi DECIZII 06.10.2026, lotul 07.10)."""
     res, h = calc.rezultat, calc.antet
-    an, luna, n, sum_bazac = res.an, res.luna, h["n"], h["sum_bazac"]
+    an, luna, n = res.an, res.luna, h["n"]
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     # [lotul 11, C77] d_rec=1 (tip_rec absent = „null”) dacă pe lună e înregistrată o depunere — structura D112: „d_rec=1 pt. tip_rec>0
     # sau null”; OPANAF 605/2026 anexa 2 pct.2.3-2.4 (rectificativa se completează integral, ca aici)
@@ -807,8 +835,18 @@ def build_xml(calc):
     for o in res.obligatii:
         H.append('    <angajatorA A_codOblig="%s" A_codBugetar="%s" A_datorat="%d" '
                  'A_deductibil="0" A_scutit="0" A_plata="%d"/>' % (o.cod_oblig, o.cod_bugetar, o.datorat, o.datorat))
+    # [C97] rândul 1 „Număr de asigurați șomaj” (B_cnp) = asigurații cu baza_AJS (structura D112: „B_cnp = … COUNT(asiguratB(cnp_asig))
+    # cu baza_AJS=true”, „baza_AJS=true daca asigSO=1 si B1_2=0 si B1_1=(1,…,51,…)”): pensionarul (B1_2 = 1) nu intră
+    n_somaj = sum(1 for x in calc.asigurati_xml if not x["pensionar"])
+    # [lotul 12, C134] rândul 4 „Total fond de salarii brute” = baza CAM a asiguraților (salariul realizat + indemnizația CM suportată de
+    # angajator), nu numai salariul. OPANAF 605/2026 anexa 2, secțiunea B: „Rândul 4 «Total fond de salarii brute» - se completează cu suma
+    # câştigurilor brute realizate de asiguraţii înscrişi la «Rândul 2» (venituri de natură salarială, venituri asimilate salariilor, precum
+    # şi sumele suportate de angajator, primele 5 zile de incapacitate temporară de muncă, pentru concedii medicale conform prevederilor
+    # O.U.G. nr. 158/2005 şi sumele suportate de angajator, primele 3 zile, pentru concediile medicale conform Legii nr. 346/2002 […]),
+    # pentru care angajatorul datorează contribuţia asiguratorie pentru muncă.” Aceeași sumă ca baza CAM (`sum_baza_cam`, 482): o singură
+    # sursă. Până la 23.10.2026 rândul lua `sum_bazac` (fără indemnizația angajatorului).
     H.append('    <angajatorB B_cnp="%d" B_sanatate="%d" B_pensie="%d" B_brutSalarii="%d" B_sal="%d"/>'
-             % (n, n, n, sum_bazac, n))
+             % (n_somaj, n, n, h["sum_baza_cam"], n))
     H.append('    <angajatorC1 C1_11="%d" C1_12="%d" C1_T1="%d" C1_T2="%d" C1_T="0"/>'
              % (h["c1_11"], h["c1_12"], h["c1_11"], h["c1_12"]))
     c2 = calc.c2
@@ -835,7 +873,7 @@ def build_xml(calc):
                         % (_r07[0], _r07[1], _r07[2], _r07[3], _r07[4], _r07[5]))
         _c2a.append('C2_T6="%d" C2_10="%d" C2_140="%d"' % (c2["t6"], c2["t6"], c2["t6"]))
         H.append('    <angajatorC2 %s/>' % " ".join(_c2a))
-    H.append('    <angajatorC4 C4_baza="%d" C4_ct="%d"/>' % (sum_bazac, h["cam_total"]))
+    H.append('    <angajatorC4 C4_baza="%d" C4_ct="%d"/>' % (h["sum_baza_cam"], h["cam_total"]))
     H.append('  </angajator>')
     for x in calc.asigurati_xml:
         a = []
@@ -845,10 +883,20 @@ def build_xml(calc):
                  % (x["idx"], _d112esc(x["cnp"]), _d112esc(_t(x["nume"], _LIM["d112"]["numeAsig"])),
                     _d112esc(_t(x["prenume"], _LIM["d112"]["prenAsig"])),   # C(75)
                     _d112esc(x["dataang"]), x["casa_sn"], x["asigexc"], _mx, x["imp"]))
-        a.append('    <asiguratB1 B1_1="%d" B1_2="0" B1_3="%s" B1_4="%d" B1_5="%d" B1_6="%d"%s '
+        # [C97, decizia Costin (b), lotul 12] B1_2 „Pensionar”: OPANAF 605/2026 anexa 2, B.1 rândul 2 — „se completează cu "1" în cazul
+        # asiguraţilor care au şi statutul de pensionar şi "0" pentru celelalte situaţii”. Aplicația nu ține calitatea de pensionar pe
+        # salariat (câmpul vine după pilot, decizia (a)); o deduce din motivul exceptării 4 (pct.12 al secțiunii E: „"4" - pentru persoana
+        # fizică prevăzută la art.146 alin. (5^7) lit.d) din Codul fiscal, respectiv, pentru salariaţii care au calitatea de pensionari
+        # pentru limită de vârstă în sistemul public de pensii”). INTERPRETARE CU TEMEI: pensionarul care nu e exceptat de la contribuția
+        # minimă (alt fel de pensie, sau fără motivul 4) rămâne declarat „0” — aplicația n-are de unde ști; alternativa respinsă: „1” la orice
+        # salariat scutit (motivele 1–3 și 5 nu sunt pensionari). De reconfirmat când există câmpul „pensionar” pe salariat.
+        # Pensionarul nu are baza_AJS (structura: „baza_AJS=true daca asigSO=1 si B1_2=0 si …”), deci B1_10 = 0 („daca baza_AJS = false
+        # atunci B1_10=0”, ERR) și B4_3 = ΣB1_10 = 0.
+        _somaj = 0 if x["pensionar"] else x["brut"]
+        a.append('    <asiguratB1 B1_1="%d" B1_2="%d" B1_3="%s" B1_4="%d" B1_5="%d" B1_6="%d"%s '
                  'B1_10="%d" B1_15="%d" B1_sal1="%d" B1_sal2="%d"/>'
-                 % (x["tip_asig"], x["b1_3"], x["ore"], x["bazac"], x["ore_lucr"], (' B1_7="%d"' % x["b1_7"]) if x["b1_7"] else "", x["brut"],
-                    x["zile"], x["b1_sal1"], x["brut"]))
+                 % (x["tip_asig"], 1 if x["pensionar"] else 0, x["b1_3"], x["ore"], x["baza_cam"], x["ore_lucr"],
+                    (' B1_7="%d"' % x["b1_7"]) if x["b1_7"] else "", _somaj, x["zile"], x["b1_sal1"], x["brut"]))
         # [lotul 11, C93] tipul 1.11.2 (51): rândul 5.2 „Suma de 200 lei/lună, netaxabilă …” (B2_5S) și rândul 5.3 „Câştig brut realizat” =
         # rândul 5 + rândul 5.2 (B2_5C) — OPANAF 605/2026 anexa 2, secțiunea B.2; structura: „0<=B2_5S<=300 pt.B1_1=51 / Altfel B2_5S=0”,
         # „B2_5C= B2_5+ B2_5S pt.B1_1=51” (DUK regula S2b)
@@ -863,7 +911,7 @@ def build_xml(calc):
                      % (b3["b3_zile"], b3["b3_zile"], b3["b3_7"], b3["b3_12"], b3["b3_13"], _s51b3))
         a.append('    <asiguratB4 B4_1="%d" B4_3="%d" B4_5="%d" B4_6="%d" B4_7="%d" B4_8="%d" B4_14="%d" '
                  'B4_5P="%d" B4_6P="%d" B4_7P="%d" B4_8P="%d" B4_7S="%d" B4_7C="%d" B4_8D="%d" B4_6D="%d"/>'
-                 % (x["zile"], x["brut"], x["baza_cass"], x["cass"], x["b4base"], x["cas"], x["bazac"], x["b4_5p"],
+                 % (x["zile"], _somaj, x["baza_cass"], x["cass"], x["b4base"], x["cas"], x["baza_cam"], x["b4_5p"],
                     x["b4_6p"], x["b4_7p"], x["b4_8p"],
                     # [lotul 11, C93] rândul 5.4 (B4_7S = B2_5S + B2_6S + B2_7S + B3_7S) și rândul 5.5 „Câştig brut realizat” (structura:
                     # „Daca B4_7S>0 atunci B4_7C = B4_7 + B4_7S / Altfel B4_7C=0”, DUK regula SB4_7S.2)
@@ -1093,7 +1141,9 @@ def pull(conn, schema, perioada):
                                suspendari=_susp,
                                elemente_variabile=_var, venit_cm=_venit_cm,
                                # [lotul 11, C99] zilele de CM (zile active pentru contribuția minimă) și excepția de la ea, ca statul
-                               zile_cm=zile_cm_s, exceptat_suprataxare=bool(s.get("scutit_pt")))
+                               zile_cm=zile_cm_s, exceptat_suprataxare=bool(s.get("scutit_pt")),
+                               # [482] aceeași intrare ca statul de plată: indemnizația CM impozabilă în deducerea personală
+                               cm_impozabil=_sz.cm_impozabil_luna(s.get("cm") if zile_cm_s else None, ref))
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         s["elemente_variabile"] = float(_var)   # [S1] în brutul declarat și în bază (`_venituri_adaugate`); și pentru contare
         s["elemente"] = _elem.get(s["id"], [])
@@ -1238,6 +1288,16 @@ def genereaza(conn, schema, perioada):
                          "Completează-l cu „Corectează datele”, în Stat de plată: %s." % (
                              "un salariat e" if len(_fara_pren) == 1 else _cate(len(_fara_pren), "salariat", "salariați") + " sunt",
                              ", ".join("%s (CNP %s)" % (x.get("nume") or "?", x.get("cnp") or "?") for x in _fara_pren)))
+    # [lotul 12, C133] OPANAF 605/2026 anexa 2, secțiunea „Date de identificare ale asiguratului”, pct.12: „Motivul exceptării - se
+    # completează în cazul în care caseta de la pct.11 a fost completată cu valoarea «1»”. Salariatul scutit fără motiv ieșea cu `asigExc`
+    # 0 (neexceptat), deși statul nu-i calcula contribuția minimă — declarația contrazicea statul, tăcut. Lipsa oprește D112 și numește
+    # salariatul (fișele vechi și cele importate fără motiv; motivul se alege în Stat de plată, la „De verificat”).
+    _fara_motiv = [s for s in salariati if s.get("scutit") and str(s.get("motiv_exceptare") or "").strip() not in ("1", "2", "3", "4", "5")]
+    if _fara_motiv:
+        raise ValueError("D112 nu se poate genera: %s scutit de contribuția minimă fără motivul scutirii (D112 îl declară, OPANAF 605/2026 "
+                         "anexa 2, pct.12). Alege-l în Stat de plată, la „De verificat”: %s." % (
+                             "un salariat e" if len(_fara_motiv) == 1 else _cate(len(_fara_motiv), "salariat", "salariați") + " sunt",
+                             ", ".join("%s (CNP %s)" % (x.get("nume") or "?", x.get("cnp") or "?") for x in _fara_motiv)))
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D112 nu se poate genera: " + " ".join(_er))

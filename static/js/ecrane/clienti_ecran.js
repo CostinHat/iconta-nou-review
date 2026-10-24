@@ -13,7 +13,12 @@
 // DS: fereastra cu tabel (cap.9 v2.96) — rezumatul și zona de mesaj a acțiunilor de pe rânduri lipite sus (`.rezumat-fix`), acțiunea pe rând
 // stă în celula ei; cifrele în `.fd-td-num`; rândul adus în vedere de un refuz poartă `.val-evidentiat` (aceeași evidențiere ca nota adusă
 // în vedere din „De validat”).
-import { api, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt } from "../api.js?v=31460b24f2";
+// [lotul 12, deficiența 461, comanda Costin 12.1 pct.8: „461 lista de parteneri” cerută] PARTENERII FIRMEI (`ecranParteneriFirmei`): clienții
+// și furnizorii, din fișe și din toate documentele (facturi emise / primite, casă, bancă, note, soldurile de preluare — `clienti_api.
+// parteneri_firmei`), cu căutare după nume sau cod fiscal; fișa partenerului (`ecranFisaPartener`): datele (verificarea la ANAF, ruta
+// existentă `verifica-cui`, cu propunerea numelui de la ANAF — 444), documentele lui și soldul din contabilitate, cu aceeași regulă ca balanța
+// (`clienti_api.sold_partener`: soldul de preluare + notele validate; ciornele separat). Nimic nu se recalculează în ecran.
+import { api, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate } from "../api.js?v=309f4d66ae";
 
 const FEL = {
   clienti: {
@@ -200,4 +205,151 @@ async function ecranParteneri(corp, nav, t, fel, opt) {
     }
   };
   await deseneaza();
+}
+
+
+const ROL = { client: "client", furnizor: "furnizor", "client și furnizor": "client și furnizor" };
+
+export async function ecranParteneriFirmei(corp, nav, t) {
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
+  let r;
+  try {
+    r = await api.get(`/tenants/${t.id}/parteneri-firma`);   // [461] lista; `/parteneri` e rezumatul soldurilor din migrare
+  } catch (e) {
+    corp.innerHTML = `<h2 class="pf-titlu">Parteneri</h2><div id="pt-mesaj"></div>`;
+    arataMesaj(corp.querySelector("#pt-mesaj"), "Partenerii nu s-au putut citi" + (e && e.mesaj ? ": " + e.mesaj : "") + ".", "eroare");
+    return;
+  }
+  const lista = (r && r.parteneri) || [];
+  const rand = (p) => `<tr data-cheie="${esc(p.cheie)}">
+      <td>${esc(p.nume || "—")}</td>
+      <td>${esc(p.cui || "—")}</td>
+      <td>${esc(ROL[p.rol] || "—")}</td>
+      <td class="fd-td-num">${p.documente}</td>
+      <td>${p.fisa ? "da" : "—"}</td>
+      <td><button type="button" class="buton-secundar pt-deschide" id="pt-fisa-${esc(p.cheie)}" data-cheie="${esc(p.cheie)}"
+        data-actiune="GET /tenants/{tenant_id}/parteneri-firma/fisa">Fișa partenerului</button></td>
+    </tr>`;
+  corp.innerHTML = `
+    <div class="rezumat-fix" id="pt-rezumat">
+      <h2 class="pf-titlu">Parteneri</h2>
+      <p class="pf-intro">Clienții și furnizorii firmei, din fișe și din toate documentele: facturi emise și primite, casă, bancă, note
+        contabile, soldurile de preluare. Deschide fișa unui partener ca să-i vezi datele, documentele și soldul din contabilitate.</p>
+      ${lista.length ? `<input id="pt-cauta" class="camp-input" style="max-width:420px" placeholder="Caută după nume sau cod fiscal"
+        aria-label="Caută partenerul după nume sau cod fiscal" autocomplete="off">
+      <span class="tip-desc" id="pt-numar" style="margin-left:8px">${esc(cate(lista.length, "partener", "parteneri"))}</span>` : ""}
+      <div id="pt-mesaj"></div>
+    </div>
+    ${lista.length ? `<table class="fd-tabel" id="pt-tabel"><thead><tr><th>Partener</th><th>Cod fiscal</th><th>Rol</th>
+      <th class="fd-td-num">Documente</th><th>Are fișă</th><th>Acțiune</th></tr></thead><tbody>${lista.map(rand).join("")}</tbody></table>`
+      : `<div class="stare-goala" id="pt-gol">Niciun partener încă: partenerii apar aici din fișele de clienți și furnizori și din documentele
+        firmei (facturi, casă, bancă, note).</div>`}`;
+  const norm = (x) => String(x || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const cauta = corp.querySelector("#pt-cauta");
+  if (cauta) cauta.addEventListener("input", () => {
+    const q = norm(cauta.value.trim());
+    let vazute = 0;
+    lista.forEach((p) => {
+      const tr = corp.querySelector(`tr[data-cheie="${CSS.escape(p.cheie)}"]`);
+      const da = !q || norm(p.nume).includes(q) || norm(p.cui).includes(q);
+      tr.hidden = !da;
+      vazute += da ? 1 : 0;
+    });
+    corp.querySelector("#pt-numar").textContent = q ? `${vazute} din ${cate(lista.length, "partener", "parteneri")}` : cate(lista.length, "partener", "parteneri");
+    const zm = corp.querySelector("#pt-mesaj");
+    if (!vazute) arataMesaj(zm, "Niciun partener cu acest nume sau cod fiscal.", "info"); else zm.innerHTML = "";
+  });
+  corp.querySelectorAll(".pt-deschide").forEach((b) => b.addEventListener("click", () => {
+    const p = lista.find((x) => x.cheie === b.dataset.cheie);
+    nav.deschide("Fișa partenerului", (c2) => ecranFisaPartener(c2, nav, t, p.cheie), { lat: "tabel" });
+  }));
+}
+
+export async function ecranFisaPartener(corp, nav, t, cheie) {
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
+  let f;
+  try {
+    f = await api.get(`/tenants/${t.id}/parteneri-firma/fisa?cheie=${encodeURIComponent(cheie)}`);
+  } catch (e) {
+    corp.innerHTML = `<h2 class="pf-titlu">Fișa partenerului</h2><div id="pp-mesaj"></div>`;
+    arataMesaj(corp.querySelector("#pp-mesaj"), "Fișa nu s-a putut citi" + (e && e.mesaj ? ": " + e.mesaj : "") + ".", "eroare");
+    return;
+  }
+  const s = f.sold || { conturi: [] };
+  const fisaText = (x) => {
+    const parti = [x.adresa, x.oras, x.judet].filter(Boolean).map(esc).join(", ");
+    return `<div class="pf-frand" id="pp-fisa-${esc(x.fel)}-${x.id}"><div class="pf-frand-text">
+      <div class="pf-frand-nume">Fișa de ${x.fel === "clienti" ? "client" : "furnizor"}: ${esc(x.nume || "")}</div>
+      <div class="pf-frand-sub">${parti || "adresa necompletată"}${x.email ? " · " + esc(x.email) : ""}${x.telefon ? " · " + esc(x.telefon) : ""}${
+        x.fel === "clienti" ? " · persoană afiliată (Cod fiscal art.7 pct.26): " + (x.afiliat ? "da" : "nu") : ""}</div></div></div>`;
+  };
+  const randSold = (c) => `<tr><td>${esc(c.cont)}</td><td>${esc(c.denumire || "")}</td>
+      <td class="fd-td-num">${c.debitor ? bani(c.debitor) : ""}</td><td class="fd-td-num">${c.creditor ? bani(c.creditor) : ""}</td></tr>`;
+  const randDoc = (d) => `<tr><td>${dataRo(d.data)}</td><td>${esc(d.fel)}</td><td>${esc(d.document || "—")}</td>
+      <td class="fd-td-num">${bani(d.suma)} ${d.moneda === "RON" ? "lei" : esc(d.moneda)}${d.suma_valuta != null ? ` <div class="tip-desc">${bani(d.suma_valuta)} ${esc(d.moneda)}</div>` : ""}</td>
+      <td>${esc(d.stare || "")}</td></tr>`;
+  corp.innerHTML = `
+    <div class="rezumat-fix" id="pp-rezumat">
+      <h2 class="pf-titlu">Fișa partenerului</h2>
+      <p class="pf-intro" id="pp-antet"><b id="pp-nume">${esc(f.nume || "Partener")}</b> · Cod fiscal: ${esc(f.cui || "fără cod (persoană fizică sau firmă neînregistrată)")}${f.rol ? " · " + esc(f.rol) : ""}
+        ${f.cui ? `<button type="button" class="buton-secundar" id="pp-anaf" style="margin-left:10px"
+          data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}">Verifică la ANAF</button>` : ""}</p>
+      <div id="pp-anaf-stare"></div>
+      <div id="pp-mesaj"></div>
+    </div>
+    <h3 class="pf-subtitlu">Datele partenerului</h3>
+    ${(f.fise || []).length ? `<div class="pf-lista">${f.fise.map(fisaText).join("")}</div>`
+      : `<p class="pf-intro" id="pp-fara-fisa">Partenerul n-are fișă: datele lui vin din documente. Fișa se face din Clienți sau Furnizori.</p>`}
+    ${t.regim_contabil === "simpla" ? `<p class="pf-intro" id="pp-sold-simpla">Firma ține contabilitatea în partidă simplă: nu are conturi de
+      clienți și furnizori, deci nici sold pe partener.</p>` : `
+    <h3 class="pf-subtitlu">Soldul din contabilitate la ${dataRo(s.la)}</h3>
+    <p class="pf-intro" id="pp-sold-sursa">Ca în balanța de verificare: ${s.preluare ? `soldul de preluare de la ${dataRo(s.preluare)}, pe parteneri, și
+      notele validate de după el` : "notele validate (evidența firmei e întreagă în aplicație)"}, pe conturile de clienți și furnizori.</p>
+    ${(s.nedefalcat || []).length ? `<div id="pp-nedefalcat"></div>` : ""}
+    ${s.conturi.length ? `<table class="fd-tabel" id="pp-sold"><thead><tr><th>Cont</th><th>Denumire</th><th class="fd-td-num">Sold debitor</th>
+      <th class="fd-td-num">Sold creditor</th></tr></thead><tbody>${s.conturi.map(randSold).join("")}</tbody></table>`
+      : `<div class="stare-goala" id="pp-sold-gol">Niciun sold pe conturile de clienți și furnizori ale partenerului.</div>`}
+    ${s.ciorne ? `<p class="tip-desc" id="pp-ciorne">${esc(cate(s.ciorne, "notă", "note"))} în ciornă ${s.ciorne === 1 ? "atinge" : "ating"} partenerul: nu intră în sold până la validare.</p>` : ""}
+    ${s.note_fara_partener ? `<p class="tip-desc" id="pp-fara-partener">Pe conturile de clienți și furnizori ale firmei sunt și note validate fără
+      partener (${esc(cate(s.note_fara_partener, "notă", "note"))}): ele nu intră în soldul niciunui partener (în balanță sunt).</p>` : ""}`}
+    <h3 class="pf-subtitlu">Documentele partenerului</h3>
+    ${(f.documente || []).length ? `<table class="fd-tabel" id="pp-documente"><thead><tr><th>Data</th><th>Document</th><th>Număr</th>
+      <th class="fd-td-num">Sumă</th><th>Stare</th></tr></thead><tbody>${f.documente.map(randDoc).join("")}</tbody></table>`
+      : `<div class="stare-goala" id="pp-documente-gol">Niciun document cu acest partener.</div>`}`;
+  if ((s.nedefalcat || []).length) {
+    arataMesaj(corp.querySelector("#pp-nedefalcat"), `Soldul de preluare al ${s.nedefalcat.length === 1 ? "contului" : "conturilor"} `
+      + `${s.nedefalcat.join(", ")} nu e defalcat pe parteneri: partea partenerului din soldul de la ${dataRo(s.preluare)} nu se cunoaște, `
+      + "deci soldul de mai jos cuprinde numai notele de după preluare. Importă soldurile pe parteneri (Import date).", "avert");
+  }
+  // [444] verificarea la ANAF, pe ruta existentă: numele de la ANAF față de fișă — dacă diferă, se spune și se propune actualizarea
+  const bA = corp.querySelector("#pp-anaf");
+  if (bA) bA.addEventListener("click", async () => {
+    const st = corp.querySelector("#pp-anaf-stare");
+    if (bA.disabled) return;
+    const textB = bA.textContent;
+    bA.disabled = true; bA.setAttribute("aria-busy", "true"); bA.textContent = "Se verifică…";
+    try {
+      const r2 = await api.get(`/tenants/${t.id}/verifica-cui/${encodeURIComponent(f.cui)}?nume=${encodeURIComponent(f.nume || "")}`);
+      if (!(r2 && r2.gasit)) { st.innerHTML = `<span class="em-cui-info">CUI-ul ${esc(f.cui)} nu e găsit la ANAF.</span>`; return; }
+      const dif = (r2.fise || []).filter((x) => x.diferit);
+      st.innerHTML = `<span class="em-cui-info">La ANAF: „${esc(r2.denumire)}” · ${r2.platitor_tva ? "plătitor de TVA" : "neplătitor de TVA"}${
+        dif.length ? "" : (f.fise || []).length ? " — numele din fișă e același." : ""}</span>${dif.length ? `
+        <div class="em-cui-info pe-randuri">${esc(r2.mesaj_nume || "")}</div>
+        <button type="button" class="buton-primar" id="pp-anaf-aplica" data-actiune="PUT /tenants/{tenant_id}/clienti/{client_id}">Actualizează fișa cu numele de la ANAF</button>` : ""}`;
+      const ba = st.querySelector("#pp-anaf-aplica");
+      if (ba) ba.addEventListener("click", async () => {
+        try {
+          for (const x of dif) {
+            await api.put(x.fel === "clienti" ? `/tenants/${t.id}/clienti/${x.id}` : `/tenants/${t.id}/furnizori/${x.id}`, { nume: r2.denumire });
+          }
+          await ecranFisaPartener(corp, nav, t, cheie);
+          arataMesaj(corp.querySelector("#pp-mesaj"), `Fișa are acum numele de la ANAF: „${r2.denumire}”.`, "ok");
+        } catch (e) {
+          arataMesaj(corp.querySelector("#pp-mesaj"), "Fișa NU s-a actualizat — " + ((e && e.mesaj) || "eroare."), "eroare");
+        }
+      });
+    } catch (e) {
+      st.innerHTML = `<span class="pe-randuri">${esc((e && e.mesaj) || "Verificarea nu s-a putut face — reîncearcă.")}</span>`;
+    } finally { bA.disabled = false; bA.removeAttribute("aria-busy"); bA.textContent = textB; }
+  });
 }

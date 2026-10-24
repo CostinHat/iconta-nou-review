@@ -44,6 +44,7 @@ LIMITA DECLARATA (GARZI cat.4):
 PRECONDITIE: conn pozitionat pe schema tenantului (acelasi contract ca d394.pull).
 """
 
+from core.common import cate as _cate   # [lotul 12, 184] pluralul după număr
 from core.pdf_util import diferenta as _dif   # [Retest 2 pct.2] diferența în cuvinte
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 import re
@@ -81,6 +82,14 @@ def _partener(cui_brut, platitor_tva):
     return "RO_TVA"
 
 
+def _serviciu_din_afara_ue(cui_brut, axa):
+    """[C19] Partener străin din afara UE (prefixul codului nu e al unui stat membru — `intracomunitar.TARI_UE`, nu clasificarea
+    generatorului) și documentul cu axa „servicii”."""
+    from core.intracomunitar import TARI_UE
+    pref = (cui_brut or "").strip().upper().replace(" ", "")[:2]
+    return pref not in TARI_UE and (axa or "").strip().lower() == "servicii"
+
+
 def _cota_standard(an, luna):
     """Cota standard a perioadei din common.cota (infra partajata de citire a ratei la data,
     NU functia de agregare a generatorului). Pentru taxare inversa primita fara linii."""
@@ -99,6 +108,7 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
     q = ("SELECT f.id AS fid, f.directie AS directie, f.total AS total, f.tva AS tva, "
          "f.moneda AS moneda, f.curs_bnr AS curs_bnr, f.total_lei AS total_lei, f.tva_lei AS tva_lei, "  # [A1] a doua cale IN LEI
          "f.taxare_inversa AS ti, f.tert_cui AS tert_cui, f.tert_platitor_tva AS tert_ptva, "
+         "f.axa_ic AS axa, "   # [C19] serviciul primit din afara UE: D394 secțiunea F (tip C, pliat pe A)
          "COALESCE(f.furnizor_tva_incasare, false) AS furnizor_tvai, "   # [lotul 10, 428] achiziția AI (art.297 alin.(2))
          "c.cui AS c_cui, "
          "COALESCE(json_agg(json_build_object('cota', l.cota_tva, "
@@ -156,8 +166,20 @@ def _agrega_independent(conn, perioada, inceput, sfarsit):
                 continue                 # V (livrare taxare inversa) - cota 0, nu e in rezumat2
             bucket = "L"                 # livrare taxabila catre oricine
         else:
+            if p == "STRAIN" and _serviciu_din_afara_ue(cui, r["axa"]):
+                # [C19] OPANAF 2194/2025, anexa 2, lit.F pct.8–10: serviciul din afara UE, cu TVA-ul plătit de beneficiar (CF art.307
+                # alin.(2)), la cota standard a perioadei, pe baza în lei a tuturor liniilor
+                _valide = [l for l in (r["linii"] or []) if l.get("cota") is not None and l.get("baza") is not None]
+                if _valide:
+                    _baza = sum((Decimal(str(l["baza"])) for l in _valide), Decimal(0)) * _curs
+                else:
+                    _tot, _tv = _sl.antet_lei(r)
+                    _baza = _tot - _tv
+                _cs = _cota_standard(an, luna)
+                add("A", _cs, _baza, _baza * Decimal(_cs) / Decimal(100))
+                continue
             if p in ("NEINREG", "STRAIN"):
-                continue                 # N (persoane fizice, cota 0) / intracom (D390) - excluse
+                continue                 # N (persoane fizice, cota 0) / intracom (D390) / import de bunuri - excluse
             bucket = "A"                 # achizitie RO (A) sau taxare inversa RO (C) -> pliate pe A
             if r["furnizor_tvai"] and not ti:
                 # [lotul 10, deficienta 428] achizitia de la un furnizor in sistemul TVA la incasare are rubrica ei (op1 tip AI ->
@@ -352,9 +374,8 @@ def reconciliaza(conn, perioada, res, manual=None):
     if ops:
         return {"acoperit": False, "divergente": [], "neacoperit": _af.necunoastere_pe_luna(
             "d394",
-            "operatiuni introduse manual (%d) - ne-deductibile din facturi "
-            "(bonuri/borderouri/AI/AS/LS); calea 2 reconstruieste doar din facturi "
-            "(limita 2, GARZI cat.4)." % len(ops), perioada.an, perioada.luna)}
+            "Operațiuni introduse manual, care nu vin din facturi (bonuri, borderouri, AI/AS/LS): %s; "
+            "reconstituirea din facturi nu le cuprinde." % _cate(len(ops), "operațiune", "operațiuni"), perioada.an, perioada.luna)}
     from core import common as _c  # [fix trim 06.08.2026]
     _inc, _sf = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))
     cale2 = _agrega_independent(conn, perioada, _inc, _sf)

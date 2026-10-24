@@ -1,0 +1,61 @@
+[
+ {
+  "nr": "487",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): Asistenți → „Adaugă asistent” → emailul, nicio firmă bifată → „Trimite invitația”: refuzul stă sub lista firmelor, nu se creează niciun cont",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='asistenti'])"
+   },
+   {
+    "asteapta": "#asi-adauga"
+   },
+   {
+    "click": "#asi-adauga"
+   },
+   {
+    "asteapta": ".asi-firma-noua"
+   },
+   {
+    "completeaza": "#asi-email",
+    "valoare": "dovada-487@exemplu.ro"
+   },
+   {
+    "completeaza": "#asi-nume",
+    "valoare": "Dovadă 487"
+   },
+   {
+    "click": "#asi-trimite"
+   },
+   {
+    "asteapta": "#asi-firme-noi + .msg-eroare"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Bifează cel puțin o firmă pe care o lucrează colegul",
+    "zona": "#asi-adauga-form"
+   },
+   {
+    "nu_contine": "Invitație trimisă"
+   }
+  ],
+  "captura": "487_f1_invitatie_fara_firme.png"
+ }
+]

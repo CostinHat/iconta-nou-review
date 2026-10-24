@@ -1,0 +1,180 @@
+[
+ {
+  "nr": "252",
+  "firma": "tenant_9055",
+  "descriere": "F6 (soldurile pe parteneri salvate înainte de reparație, fără facturile deschise; după `core/migrare_documente_preluate.py`): Facturi -> Scadențar: soldul preluat al clientului Alfa Distribuție SRL e factura deschisă «Sold la 30.09.2026», 7.140,00 lei, fără scadență, «preluată din programul vechi» (la fel Beta Construct SRL, 4.760,00 lei)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sold la 30.09.2026 · Alfa Distribuție SRL"
+   },
+   {
+    "contine": "fără scadență în sistem · preluată din programul vechi"
+   },
+   {
+    "contine": "7.140,00 lei"
+   },
+   {
+    "contine": "Sold la 30.09.2026 · Beta Construct SRL"
+   },
+   {
+    "contine": "4.760,00 lei"
+   }
+  ],
+  "captura": "252_f6_vechi_scadentar.png"
+ },
+ {
+  "nr": "252",
+  "firma": "tenant_9055",
+  "descriere": "F6, documentul vechi: Scadențar -> rândul Alfa Distribuție SRL -> detaliul facturii preluate: «preluată din programul vechi», «neîncasată», «Soldul ei e în balanța de deschidere: nu se contează și nu intră în declarații.», «Rest la preluare 7.140,00 RON»; fără «PDF factură», «Stornează», «Trimite în SPV»",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "click": ".sc-fact-btn",
+    "text": "Alfa Distribuție SRL"
+   },
+   {
+    "asteapta": "#fd-preluata"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "preluată din programul vechi"
+   },
+   {
+    "contine": "neîncasată"
+   },
+   {
+    "contine": "Soldul ei e în balanța de deschidere: nu se contează și nu intră în declarații.",
+    "zona": "#fd-preluata"
+   },
+   {
+    "contine": "7.140,00 RON"
+   },
+   {
+    "nu_contine": "PDF factură"
+   },
+   {
+    "nu_contine": "Stornează"
+   },
+   {
+    "nu_contine": "Trimite în SPV"
+   }
+  ],
+  "captura": "252_f6_vechi_detaliu.png"
+ },
+ {
+  "nr": "252",
+  "firma": "tenant_9049",
+  "descriere": "F1 (soldurile pe parteneri salvate înainte de reparație, fără dată pe rânduri; după `core/migrare_documente_preluate.py`): Facturi -> Scadențar: soldul clientului Client Test SRL e factura deschisă «Sold la 31.08.2026», 2.000,00 lei. Furnizorul (401) a rămas fără document: pe 401 sunt plăți de numerar nelegate de facturi după preluare (net 100,00 lei), iar migrarea o spune — documentul cu soldul întreg ar fi arătat o datorie deja plătită",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-scadentar"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": "#sc-facturi"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sold la 31.08.2026 · Client Test SRL"
+   },
+   {
+    "contine": "preluată din programul vechi"
+   },
+   {
+    "contine": "2.000,00 lei"
+   }
+  ],
+  "captura": "252_f1_vechi_scadentar.png"
+ },
+ {
+  "nr": "252",
+  "firma": "tenant_9055",
+  "descriere": "F6: Import date -> Solduri parteneri -> situația pe facturi a programului vechi (Nr. factură, Data, Scadență, Sumă neachitată; generatorul testului) -> previzualizarea: Alfa Distribuție SRL e UN partener de 7.140,00 cu facturile «F6-A1, F6-A2» în coloana «Facturi deschise»; caseta înlocuirii (426) numește și facturile deschise vechi. Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_p252:fisier_f6_pe_facturi",
+    "nume": "situatie_clienti_furnizori_f6.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4111 401006100 Alfa Distribuție SRL 7.140,00 0,00 F6-A1, F6-A2",
+    "zona": ".mig-prev tbody tr[data-rand=\"2\"]"
+   },
+   {
+    "contine": "Facturi deschise",
+    "zona": ".mig-prev thead"
+   },
+   {
+    "contine": "cu 4 facturi deschise preluate",
+    "zona": "#mig-inlocuire"
+   },
+   {
+    "contine": "intră în scadențar și se sting din Bancă, Casă sau Compensări"
+   }
+  ],
+  "captura": "252_f6_import_pe_facturi.png"
+ }
+]

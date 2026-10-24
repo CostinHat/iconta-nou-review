@@ -74,7 +74,7 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `asociati` | `asociati` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `mijloace_fixe` | `mijloace_fixe` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `termene` | `clienti`, `d390_manual`, `facturi`, `firma_profil`, `inregistrari`, `salariati`, `solduri_initiale` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 8 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
-| `control_fiscal` | `ajustari_fiscale`, `articole`, `asociati`, `beneficii_lunare`, `bonuri`, `casa_operatiuni`, `chitante`, `clienti`, `compensari`, `concedii_medicale`, `d300_manual`, `d301_operatiuni`, `d390_manual`, `d390_reclasificare`, `efactura_primite`, `elemente_salariale`, `extras_linii`, `factura_linii`, `factura_tva_cote`, `facturi`, `firma_profil`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `perioada_confirmata`, `plan_conturi`, `pontaj`, `rapoarte_z_amef`, `rapoarte_z_cote`, `reevaluari`, `salariati`, `salariu_istoric`, `solduri_initiale`, `suspendari_contract`, `tva_incasare_perioade` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 38 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
+| `control_fiscal` | `ajustari_fiscale`, `articole`, `asociati`, `beneficii_lunare`, `bonuri`, `casa_operatiuni`, `chitante`, `clienti`, `compensari`, `concedii_medicale`, `d300_manual`, `d301_operatiuni`, `d390_manual`, `d390_reclasificare`, `efactura_primite`, `efactura_trimiteri`, `elemente_salariale`, `extras_linii`, `factura_linii`, `factura_tva_cote`, `facturi`, `firma_profil`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `perioada_confirmata`, `plan_conturi`, `pontaj`, `rapoarte_z_amef`, `rapoarte_z_cote`, `reevaluari`, `salariati`, `salariu_istoric`, `solduri_initiale`, `suspendari_contract`, `tva_incasare_perioade` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 39 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
 
 **Inversa** — ce invalidează o scriere într-un tabel:
 
@@ -95,6 +95,7 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `d390_manual` | `control_fiscal`, `termene` |
 | `d390_reclasificare` | `control_fiscal` |
 | `efactura_primite` | `control_fiscal` |
+| `efactura_trimiteri` | `control_fiscal` |
 | `elemente_salariale` | `control_fiscal` |
 | `extras_linii` | `control_fiscal` |
 | `factura_linii` | `control_fiscal` |
@@ -120,9 +121,9 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `tva_incasare_perioade` | `control_fiscal`, `vector` |
 | `public.declaratii_depuse` | `control_fiscal`, `termene` |
 
-**Citite, dar DELIBERAT neurmărite:** `public.tenants`, `public.users`, `public.accounting_firms` — poartă denumirea și cabinetul, nu faptele din care iese verdictul. O redenumire de firmă n-are voie să invalideze 1000 de rezumate.
+**Citite, dar DELIBERAT neurmărite:** `public.tenants`, `public.users`, `public.accounting_firms`, `public.spv_token`, `public.spv_cui_acoperit` — poartă denumirea și cabinetul, nu faptele din care iese verdictul. O redenumire de firmă n-are voie să invalideze 1000 de rezumate.
 
-**Trigger, dar nu sursă a niciunui aspect:** `efactura_trimiteri` — sursă a supervizorului (P1), care are contorul lui agregat. Un singur trigger servește amândoi consumatorii.
+**Trigger, dar nu sursă a niciunui aspect:**  — sursă a supervizorului (P1), care are contorul lui agregat. Un singur trigger servește amândoi consumatorii.
 
 ### ACOPERIRE RAMURI
 

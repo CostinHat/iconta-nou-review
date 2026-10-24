@@ -61,8 +61,6 @@ def _livrare(patron, firma, tip, valoare, cont):
     pg.fill("#op-cod_tva_client", COD_CLIENT)
     pg.select_option("#op-tip", tip)
     pg.fill("#op-cont_venit", cont)
-    if tip == "bunuri":
-        pg.select_option("#op-dovada_transport", label="Da")
     pg.fill("#op-descriere", "Marfa IC E2E")
     pg.click("#op-trimite")
     pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=30000)
@@ -79,17 +77,15 @@ def _notele_facturii(firma, fid):
 
 
 def test_def_c78_vanzarea_intracomunitara_are_o_singura_nota(patron, firma_x):
-    """C78. Pașii: Operațiuni speciale -> „Livrare/prestare intracomunitară” -> Bunuri, 1.000 lei, client DE811907980 (VIES valid), cont
-    707, dovada transportului: Da -> „Generează nota” -> confirmarea arată nota 4111 = 707 · 1.000,00 lei, iar factura emisă are O SINGURĂ
-    notă (înainte: două, 4111 = 707 de două ori — venitul 2.000). Apoi Servicii, 704: tot o notă.
+    """C78. Pașii: Operațiuni speciale -> „Livrare/prestare intracomunitară” -> Servicii, 1.000 lei, client DE811907980 (VIES valid),
+    cont 704 -> „Generează nota” -> confirmarea arată nota 4111 = 704 · 1.000,00 lei, iar factura emisă are O SINGURĂ notă (înainte: două,
+    venitul dublat). [lotul 12, C84, decizia Costin (b)] livrarea de BUNURI nu mai trece pe aici — „Emite factură”, cu descărcarea stocului
+    (`e2e_lot12_emit.py::test_def_c84_…`); de aceea pasul „Bunuri, 707” a ieșit din acest test.
     MUTAȚIA: core/uc_tenants.py, nota proprie pusă la loc în `vanzare_ic` -> factura cu două note -> ROȘU."""
-    pg, fid = _livrare(patron, firma_x, "bunuri", "1000", "707")
+    pg, fid = _livrare(patron, firma_x, "servicii", "1000", "704")
     t = pg.inner_text("#op-mesaj")
-    assert "4111 = 707 · 1.000,00 lei" in t, t
+    assert "4111 = 704 · 1.000,00 lei" in t, t
     note = _notele_facturii(firma_x, fid)
     # OMFP 2634/2015 pct.58 lit.c: „fiecare dată înregistrată în contabilitate trebuie să se regăsească în conținutul unui document”
     assert len({n[0] for n in note}) == 1, note
-    assert [(d, c, s) for _i, d, c, s in note if s != "0.00"] == [("4111", "707", "1000.00")], note
-    _pg2, fid2 = _livrare(patron, firma_x, "servicii", "1000", "704")
-    note2 = _notele_facturii(firma_x, fid2)
-    assert len({n[0] for n in note2}) == 1 and [(d, c, s) for _i, d, c, s in note2 if s != "0.00"] == [("4111", "704", "1000.00")], note2
+    assert [(d, c, s) for _i, d, c, s in note if s != "0.00"] == [("4111", "704", "1000.00")], note

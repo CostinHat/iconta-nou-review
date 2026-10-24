@@ -293,6 +293,41 @@ def ciornele_documentului(cur, schema, grup):
     return [(x[0] if not isinstance(x, dict) else x["id"]) for x in cur.fetchall()]
 
 
+def notele_documentului(cur, schema, nota_id):
+    """[lotul 12, clasa deficienței 80: „validarea contării NU a validat ieșirea din stoc”] Nota și celelalte ciorne ale documentului
+    ei (cheia `_GRUP_DOC`: contarea facturii + ieșirile din stoc făcute de pe ea; notele unui NIR), nota cerută întâi. O notă care nu e
+    a unui document cu mai multe note e singură în listă."""
+    cur.execute('SET LOCAL search_path TO "%s", public' % str(schema).strip('"'))
+    cur.execute("SELECT (" + _GRUP_DOC + ") FROM " + _q(schema) + "inregistrari i WHERE i.id = %s", (int(nota_id),))
+    r = cur.fetchone()
+    grup = (list(r.values())[0] if isinstance(r, dict) else r[0]) if r else None
+    frati = ciornele_documentului(cur, schema, grup) if grup else []
+    return [int(nota_id)] + [i for i in frati if i != int(nota_id)]
+
+
+def valideaza_documentul(conn, schema, nota_id):
+    """[lotul 12, clasa 80] Validarea unei note din Registrul jurnal validează DOCUMENTUL: aceeași regulă ca în coadă (`aproba`:
+    „documentul se validează o dată, cu toate notele lui”). Pe drumul unic al validării (`jurnal_api.valideaza`), în tranzacția
+    apelantului: la primul refuz se întoarce refuzul (cu nota numită, dacă e alta decât cea cerută), iar apelantul anulează tot — ori
+    toate notele documentului intră în evidență, ori niciuna. Întoarce rezultatul notei cerute, cu `validate` = notele validate."""
+    from core import eticheta_nota as _et
+    from core import jurnal_api as _jurnal
+    with conn.cursor() as cur:
+        ids = notele_documentului(cur, schema, nota_id)
+    rez = None
+    for nid in ids:
+        r = _jurnal.valideaza(conn, schema, nid)
+        if nid != int(nota_id) and r and r.get("eroare"):
+            with conn.cursor() as cur:
+                et = _et.nota(cur, schema, nid)
+            r = {**r, "eroare": "Nota %s a aceluiași document nu se poate valida, iar notele unui document se validează împreună: %s"
+                 % (et, r["eroare"])}
+        if not r or r.get("eroare"):
+            return r
+        rez = rez or r
+    return {**rez, "validate": ids}
+
+
 def amprente_note(cur, nota_ids, schema=None):
     """[S3] Amprentele notelor (lista sortată). `schema` gol = schema din calea conexiunii."""
     ids = [int(i) for i in nota_ids or []]
@@ -1271,6 +1306,7 @@ def fereastra_perioadei(cur, schema, tip, an, luna, trim):
 def amprenta_surse(cur, schema, de_la, pana_la):
     """md5 al documentelor din [de_la, pana_la) pe care se sprijină o declarație: notele (id, stare, data, liniile) și facturile (id,
     stare, sumele, partenerul, categoria IC, liniile). Starea SPV a facturii NU intră: ea nu schimbă cifrele declarației."""
+    from core import nomenclator_status_factura as _nsf_sp
     q = _q(schema)
     cur.execute(
         "SELECT md5(COALESCE((SELECT string_agg(concat_ws(':', i.id, i.status, i.data, (SELECT string_agg(concat_ws('/', l.cont_debit, "
@@ -1279,7 +1315,9 @@ def amprenta_surse(cur, schema, de_la, pana_la):
         "f.status, f.data_emitere, f.data_faptului_generator, f.directie, f.tip, f.total, f.tva, f.total_lei, f.tva_lei, f.tert_cui, "
         "f.tert_tara, f.taxare_inversa, f.axa_ic, f.tip_operatiune, f.categorie_331, (SELECT string_agg(md5(fl::text), ',' ORDER BY fl.id) "
         "FROM " + q + "factura_linii fl WHERE fl.factura_id = f.id)), ';' ORDER BY f.id) FROM " + q + "facturi f "
-        "WHERE f.data_emitere >= %s AND f.data_emitere < %s), ''))", (de_la, pana_la, de_la, pana_la))
+        # [lotul 12, 252] factura deschisă preluată nu e o sursă a declarațiilor perioadei (soldul ei e în soldurile inițiale)
+        "WHERE f.data_emitere >= %s AND f.data_emitere < %s AND " + _nsf_sp.clauza_fara_sold_preluat("f") + "), ''))",
+        (de_la, pana_la, de_la, pana_la))
     r = cur.fetchone()
     return list(r.values())[0] if isinstance(r, dict) else r[0]
 

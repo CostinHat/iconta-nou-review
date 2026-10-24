@@ -316,6 +316,16 @@ CLASIFICARE = {
             "nota nouă, liniile și rândurile `reevaluari_valuta` — e într-o singură tranzacție, tot-sau-nimic. Un curs scris și o notă "
             "neînregistrată lasă numai cache-ul mai bogat, care nu e stare a firmei.",
     },
+    "POST /tenants/{tenant_id}/facturi-primite/manual": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR al facturii în cache (public.alerte_cooldown + public.curs_bnr_zilnic, înaintea tranzacției) <-> validarea: "
+                  "factura (facturi + factura_tva_cote + cursul ei), clasificarea, nota contării, recepția în stoc",
+        "de_ce":
+            "[lotul 12, 477] `uc_factura_primita.factura_primita_manuala`: aceeași formă ca validarea facturii din XML (intrarea de mai "
+            "jos) — pre-încălzirea cursului și statutul ANAF ÎNAINTEA tranzacției (cache public, eșecul înghițit deliberat), apoi ACTUL "
+            "într-o singură tranzacție, pe drumul comun `uc_factura_primita.valideaza` (factura, clasificarea, `contabilizeaza`, "
+            "`intrare_din_factura`); orice refuz (lună închisă, dublură, cotă) anulează tot actul.",
+    },
     "POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza": {
         "clasa": NECRITIC,
         "efecte": "cursul BNR al facturii în cache (public.alerte_cooldown + public.curs_bnr_zilnic, înaintea tranzacției) <-> validarea: "

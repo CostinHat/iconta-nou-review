@@ -252,9 +252,11 @@ def test_VIES_revalidarea_respinge_accesul_pierdut_in_timpul_apelului(monkeypatc
     monkeypatch.setattr(_ic, "verifica_vies",
                         lambda cod: {"valid": True, "nume": "X", "adresa": "", "tara": "DE",
                                      "numar": "1", "eroare": None})
+    # [C84, decizia Costin (b), 23.10.2026] ruta înregistrează numai prestări de servicii: bunurile se refuză înainte de VIES (din
+    # „Emite factură”), deci n-ar mai ajunge la apelul extern pe care îl probează testul
     with pytest.raises(HTTPException) as exc:
         main.vanzare_ic(1, {"data": "2026-06-01", "valoare": "100",
-                            "cod_tva_client": "DE123456789", "tip": "bunuri"},
+                            "cod_tva_client": "DE123456789", "tip": "servicii"},
                         ctx={"uid": 1, "firm": 1})
     assert exc.value.status_code == 404
     assert c2._c.executate == [], "s-a scris pe o stare devenită incompatibilă: %r" % c2._c.executate

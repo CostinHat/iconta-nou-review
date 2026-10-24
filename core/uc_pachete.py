@@ -161,6 +161,8 @@ def pachet_trimite(tenant_id, an, luna, ctx):
                "NEAPROBATA": "Aprobă povestea înainte de trimitere.",
                "DEPASITA": _pachete.MESAJ_DEPASITA,
                "POVESTE_GOALA": "Povestea lunii e goală — scrie sau generează povestea, apoi aprob-o.",
-               "EMAIL_ESUAT": "Emailul nu a putut fi trimis."}.get(cod, cod or "eroare")
+               # [598, lotul 12] eșecul emailului spus cu ce face contabilul; povestea rămâne aprobată
+               "EMAIL_ESUAT": ("Emailul cu raportul lunar nu a plecat acum: serviciul de email nu a răspuns. Raportul rămâne aprobat; "
+                               "apasă din nou „Trimite” peste câteva minute.")}.get(cod, cod or "eroare")
         raise _erori.CerereGresita(msg)
     return r

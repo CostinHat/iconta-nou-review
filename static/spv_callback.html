@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conectare SPV — iConta.eu</title>
   <link rel="icon" href="/static/favicon.svg?v=1">
-  <link rel="stylesheet" href="/static/stil.css?v=ca9feb7924">
+  <link rel="stylesheet" href="/static/stil.css?v=3094c2a188">
 </head>
 <body>
   <!-- pagina de retur dupa autorizarea ANAF (fila deschisa din Setari -> Conectare SPV).
@@ -16,20 +16,30 @@
       <div class="cap-titlu">Conectare SPV</div>
       <div id="spv-cb-mesaj" style="margin:16px 0"></div>
       <a class="buton-primar" href="/" style="display:inline-block;text-decoration:none">Deschide iConta.eu</a>
-      <div class="camp-ajutor" style="margin-top:12px">Poți închide această filă.</div>
+      <div class="camp-ajutor" style="margin-top:12px">Conexiunea se vede în iConta.eu, la Setări cont → Conectare SPV. Poți închide această filă.</div>
     </div>
   </div>
   <script type="module">
-    const p = new URLSearchParams(location.search);
+    // [deficiența 600, lotul 12] Serverul (`core/spv_rute.py::rezultat_callback`) trimite numai un MOTIV dintr-o mulțime închisă
+    // (`MOTIVE_RETUR`); textul fiecăruia stă aici, o singură dată (gard `core/test_lot12_notif_600_spv_retur.py`: aceleași chei ca
+    // `MOTIVE_RETUR`, fără termeni tehnici). Înainte pagina afișa `?eroare=` — textul unei excepții („state invalid: token expirat”) —
+    // și oricine putea scrie în ea orice text printr-un link.
+    const MESAJE = {
+      ok: "Gata: iConta.eu e conectat la SPV pentru cabinetul tău. Dacă iConta.eu îți cere să intri din nou în cont, conexiunea rămâne salvată.",
+      anulata: "ANAF a încheiat autorizarea fără să dea acces pentru iConta.eu, deci SPV nu s-a conectat. Apasă din nou „Conectează SPV” în iConta.eu și confirmă accesul la ANAF.",
+      fara_cod: "ANAF nu a trimis înapoi autorizarea, deci SPV nu s-a conectat. Apasă din nou „Conectează SPV” în iConta.eu.",
+      expirata: "Autorizarea a durat mai mult de 10 minute, iar din motive de siguranță iConta.eu n-o mai poate primi, deci SPV nu s-a conectat. Apasă din nou „Conectează SPV” în iConta.eu și încheie pașii de la ANAF în 10 minute.",
+      nelegata: "Întoarcerea de la ANAF nu se potrivește cu o cerere plecată din iConta.eu, deci n-a fost primită și SPV nu s-a conectat. Apasă din nou „Conectează SPV” în iConta.eu (nu folosi un link vechi sau salvat).",
+      refuz_anaf: "ANAF nu a dat accesul la încheierea autorizării (autorizarea primită de la ANAF e valabilă un singur minut și se folosește o singură dată), deci SPV nu s-a conectat. Apasă din nou „Conectează SPV” în iConta.eu.",
+      anaf_tace: "ANAF nu a răspuns la încheierea autorizării, deci SPV nu s-a conectat. Încearcă din nou peste câteva minute: apasă „Conectează SPV” în iConta.eu.",
+      nesalvata: "Autorizarea s-a întors de la ANAF, dar iConta.eu nu a putut salva conexiunea (o eroare a aplicației, înregistrată pentru echipa iConta.eu), deci SPV nu s-a conectat. Încearcă din nou; dacă se repetă, scrie-ne din Suport.",
+    };
+    const NECUNOSCUT = "Nu se știe cum s-a încheiat autorizarea la ANAF. Deschide iConta.eu și verifică la Setări cont → Conectare SPV dacă SPV e conectat; dacă nu, apasă din nou „Conectează SPV”.";
+    const motiv = new URLSearchParams(location.search).get("motiv") || "";
     const el = document.getElementById("spv-cb-mesaj");
-    if (p.get("ok")) {
-      el.className = "msg-ok";
-      el.textContent = "✓ Autorizare reușită. iConta.eu e conectat la SPV pentru cabinetul tău.";
-    } else {
-      el.className = "msg-eroare";
-      el.textContent = "Autorizarea nu a reușit: " + (p.get("eroare") || "eroare necunoscută") +
-                       ". Poți încerca din nou din Setări → Conectare SPV.";
-    }
+    el.dataset.motiv = Object.prototype.hasOwnProperty.call(MESAJE, motiv) ? motiv : "necunoscut";
+    el.className = motiv === "ok" ? "msg-ok" : "msg-eroare";
+    el.textContent = MESAJE[el.dataset.motiv] || NECUNOSCUT;
   </script>
 </body>
 </html>

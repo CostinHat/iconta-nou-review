@@ -26,9 +26,14 @@ import hashlib
 from datetime import date, datetime, timedelta
 
 from core import db
+from core import observare as _obs
 from core import spv_conector
 from core import chei_unice as _chei   # [lotul 10, C73 / U2] a doua trimitere vie a notificării -> numită, nu 500
 from core.common import cfg, azi_ro, cate as _cate
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică
+
+#: [598 / 600, lotul 12] ce nu s-a întâmplat când drumul spre ANAF a căzut (`spv_conector.mesaj_pentru_contabil`)
+MESAJ_NETRIMISA = "Notificarea e-Transport nu a plecat la ANAF, deci nu are încă cod UIT."
 
 # Config din env — citită LA APEL prin cfg() (nu înghețată la import, item 5).
 # ETRANSPORT_BASE (host OAuth, webserviceapl = cert), ETRANSPORT_VERSIUNE (int,
@@ -76,11 +81,11 @@ def fereastra_uit(data_transport, intracom=False, acum=None):
     expirat = acum > valabil_pana
     poate_trimite = not prea_devreme and not expirat
     if prea_devreme:
-        mesaj = "Prea devreme: transportul se declară cu cel mult 3 zile înainte (transport %s)." % dt.isoformat()
+        mesaj = "Prea devreme: transportul se declară cu cel mult 3 zile înainte (transport %s)." % _data_ro(dt)
     elif expirat:
-        mesaj = "UIT expirat: valabilitatea (%s) a trecut." % valabil_pana.isoformat()
+        mesaj = "UIT expirat: valabilitatea (%s) a trecut." % _data_ro(valabil_pana)
     else:
-        mesaj = "Codul UIT e valabil până la %s (%s)." % (valabil_pana.isoformat(), _cate(zile_val, "zi", "zile"))
+        mesaj = "Codul UIT e valabil până la %s (%s)." % (_data_ro(valabil_pana), _cate(zile_val, "zi", "zile"))
     return {"poate_trimite": poate_trimite, "prea_devreme": prea_devreme, "expirat": expirat,
             "zile_valabilitate": zile_val, "uit_valabil_pana": valabil_pana,
             "data_transport": dt, "mesaj": mesaj}
@@ -133,7 +138,9 @@ def valideaza_pe_test(principal, cif, xml):
     try:
         r = upload_uit(principal, cif, xml, mediu="test")
     except spv_conector.EroareSpv as e:
-        return False, None, ["auth/drept TEST: %s" % e]
+        # [598 / 600, lotul 12] motivul pe înțelesul contabilului; excepția, în jurnal
+        _obs.esec_secundar("SPV: validarea e-Transport pe mediul de test", e)
+        return False, None, [spv_conector.mesaj_pentru_contabil(e, MESAJ_NETRIMISA)]
     ex, idx, _uit, errs = _parse_upload(r.text or "")
     ok = (getattr(r, "status_code", None) == 200 and ex == 0 and not errs)
     return ok, idx, (errs or ([] if ok else [(r.text or "")[:400]]))
@@ -189,12 +196,11 @@ def trimite(schema, principal, cif, xml, data_transport, intracom=False, mediu="
             stare, errmsg = "incarcat", None
         else:
             stare, errmsg = "nok", ("\n".join(errs) if errs else (r.text or "")[:4000])
-    except spv_conector.EroareSpvFaraDrept as e:
-        rez.update({"fara_drept": True, "raspuns": str(e)})
-        stare, errmsg, index, ex, uit = "eroare_upload", "403 fara drept e-Transport: %s" % e, None, None, None
-    except Exception as e:
-        rez.update({"raspuns": str(e)})
-        stare, errmsg, index, ex, uit = "eroare_upload", "exceptie upload: %s" % str(e)[:2000], None, None, None
+    except Exception as e:  # noqa: BLE001 — 403 fără drept, conectorul, rețeaua: rândul se scrie oricum, cu motivul spus pe înțelesul omului
+        _obs.esec_secundar("SPV: încărcarea e-Transport", e)
+        mesaj = spv_conector.mesaj_pentru_contabil(e, MESAJ_NETRIMISA)
+        rez.update({"fara_drept": isinstance(e, spv_conector.EroareSpvFaraDrept), "raspuns": mesaj})
+        stare, errmsg, index, ex, uit = "eroare_upload", mesaj, None, None, None
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             # [lotul 10, C73 / U2] rândul ar deveni al doilea viu al notificării (numai peste o încărcare mai lungă decât fereastra porții):

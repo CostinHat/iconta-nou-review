@@ -297,8 +297,8 @@ def reconciliaza(conn, perioada, res, manual=None):
         return {"acoperit": False, "divergente": aj_div, "sarite": [],
                 "neacoperit": _af.necunoastere_pe_luna(
                     "d300",
-                    "TVA la încasare: exigibilitate pe decontari, nu pe emitere - "
-                    "reconcilierea pe emitere nu se aplica (limita 3, GARZI cat.4).",
+                    "TVA la încasare: TVA-ul devine exigibil la încasare, nu la emitere, deci "
+                    "reconcilierea pe facturile emise nu se aplică.",
                     perioada.an, perioada.luna)}
     inceput, sfarsit = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))  # fereastra pe perioada TVA (trimestrial -> tot trimestrul), ca generatorul
     aj_div = _confrunta_ajustari(conn, inceput, sfarsit, res)   # [lotul 11, C76]

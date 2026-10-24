@@ -5,7 +5,7 @@
 // exporturi (CSV, XLS/XLSX, ZIP). [C36] Fisierele firului stau in depozitul privat: se arata si se descarca numai prin ruta
 // autentificata `/raportari/fisiere/{id}` (echipa iConta si autorul), iar autorul le poate sterge.
 
-import { api, ultimaCerere, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand } from "../api.js?v=31460b24f2";
+import { api, ultimaCerere, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand } from "../api.js?v=309f4d66ae";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");

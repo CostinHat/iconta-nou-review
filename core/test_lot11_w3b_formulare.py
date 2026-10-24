@@ -175,7 +175,7 @@ def test_b29_transferul_refuza_locatia_cantitatea_si_data_deodata(conn):
         'Transferul nu s-a făcut:',
         'Locația destinație e aceeași cu locația sursă: alege altă locație.',
         'Cantitatea transferată trebuie să fie mai mare ca zero (are 0 buc).',
-        "data '31.10.2099' nu e in formatul AAAA-LL-ZZ. Se cere o data calendaristica, fiindca inregistrarea se face la momentul operatiunii, iar ordinea cronologica a registrului-jurnal atarna de ea",
+        "data '31.10.2099' nu e în formatul AAAA-LL-ZZ. Se cere o dată calendaristică, fiindcă înregistrarea se face la momentul operațiunii, iar ordinea cronologică a registrului-jurnal atârnă de ea",
     ], r["eroare"]     # cantitatea cu unitatea articolului, în formatul românesc
     with conn.cursor() as cur:
         cur.execute("SELECT count(*) FROM miscari_stoc WHERE articol_id = %s", (a["articol_id"],))

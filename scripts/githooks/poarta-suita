@@ -3,15 +3,31 @@
 # [15.10.2026, comanda Costin, verbatim in DECIZII „Poarta o dată pe lot”] Chemata NUMAI de `scripts/poarta_lot.sh`, o data pe lot, la
 # inchiderea lui, pe commitul lotului (arbore curat); verdictul il scrie lansatorul, iar `reference-transaction` il cere la mutarea lui
 # `main`. Pana pe 15.10 o chema `commit-msg` la fiecare commit (din 08.10, dupa verificarile mesajului); inainte, `pre-commit`.
-# Gard: `core/test_poarta_ordine.py` (numai `poarta_lot.sh` o cheama).
+# Gard: `core/test_poarta_ordine.py` (numai `poarta_lot.sh` o cheama; toate partile ruleaza si dupa una rosie; inregistrarea JSON).
 #
-# Respinge daca pytest nu iese 0, verificatorul nu da "TOTAL: 0", cifrele difera sau plasa pica.
+# ── TOATE PARTILE, SI DUPA UNA ROSIE (23.10.2026, CLAUDE.md §5; DECIZII 23.10.2026 „Comanda 12.1”) ─────────────────────────────────
+# „Dacă poarta pică: se repară cauza, apoi se rulează testele căzute și tot ce depinde de reparație. [...] Verdictul pentru commitul
+# reparat se compune din rularea completă anterioară plus rerularea țintită.” Ca sa se stie TOATE testele cazute, poarta nu se mai
+# opreste la prima parte rosie (pana azi: verificator / cifre / pytest / plasa -> `exit 1` pe loc, iar ce venea dupa nu rula deloc).
+# Ruleaza fiecare parte, in aceeasi ordine, cu aceeasi restrictie (pytest si plasa NU se suprapun pe baza de test; verificatorul si
+# cifrele ruleaza cat ruleaza pytest), si iese nenul daca oricare e rosie. Ramane refuz IMEDIAT numai arborele ≠ indexul, la pornire
+# (o rulare care n-ar fi despre commit nu are ce consemna).
+# La final scrie inregistrarea rularii, citibila de masina: `<git-common-dir>/poarta_rulari/<sha>.json` (sha, ramura, data; per parte rc,
+# durata in secunde, nodurile cazute — `FAILED`/`ERROR` din pytest si din plasa — si daca lista lor e completa fata de rezumatul lui
+# pytest). Din ea porneste poarta COMPUSA (`scripts/poarta_lot.sh --compus` -> `scripts/poarta_scurta.py --compus=<sha>`). Scrierea o
+# face `poarta_scurta.scrie_rulare_din_argv` — un singur cititor si un singur scriitor al formatului. „Durata fiecărei părți a porții
+# se măsoară și se raportează”: linia `DURATE` din `.poarta_jurnal.log` + JSON-ul.
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
 # [15.10.2026] jurnalele porții: `POARTA_JURNALE` (testele îl mută într-un director al lor — conftest.py), implicit /tmp
 J=${POARTA_JURNALE:-/tmp}
+# [23.10.2026] capturile plasei, langa jurnale (implicit /tmp/e2e_poarta_capturi, ca pana azi): JSON-ul citeste de acolo `pytest.log`-ul
+# INTREG al plasei (iesirea lui `e2e_poarta.py` tipareste numai ultimii 3000 de octeti din cazute), iar o rulare din teste nu-l citeste pe
+# al portii reale
+CAPTURI="$J/e2e_poarta_capturi"
 PY=./venv/bin/python
 [ -x "$PY" ] || PY=python3
+JURNAL="$ROOT/.poarta_jurnal.log"
 # ── VERDICTUL PRIVESTE COMMITUL (15.10.2026, prins dupa lotul 1 al regimului pilot) ──────────────────────────────────────
 # pytest si verificatorul citesc ARBORELE DE LUCRU; commitul inregistreaza INDEXUL. Daca difera — un fisier modificat si nepus,
 # unul nou neadaugat, sau o editare facuta CAT RULEAZA poarta (~70 de minute) — verdictul e despre altceva decat ce se comite:
@@ -25,6 +41,33 @@ if [ -n "$NEPUS" ]; then
     echo "[poarta]   Pune la index pe NUME ce intra in commit; restul mutat in afara depozitului sau in .gitignore."
     exit 1
 fi
+SHA=$(git rev-parse HEAD 2>/dev/null)
+RAM=$(git symbolic-ref --short HEAD 2>/dev/null)
+COMUN=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)
+ROSII=""
+# o parte rosie: consemnata in jurnalul portii (cu nodurile cazute din logul ei) si numarata; poarta merge mai departe
+rosu() {   # $1 = partea, $2 = exit, $3 = logul (optional)
+    {
+        echo "=== $(date -Is) RESPINS $1 exit $2"
+        echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $RAM"
+        [ -n "$3" ] && grep -E "^(FAILED|ERROR) " "$3" 2>/dev/null | sed "s/^/    /" | head -40
+        [ -n "$3" ] && tail -1 "$3" 2>/dev/null | sed "s/^/    /"
+    } >> "$JURNAL"
+    ROSII="$ROSII $1"
+    echo "[poarta] ROSU: $1 (exit $2) — poarta continua cu celelalte parti, ca sa se stie toate testele cazute."
+}
+# la sfarsit, dupa toate partile: inregistrarea rularii (JSON) si linia `DURATE` din jurnal — pe verde si pe rosu
+incheie() {
+    DATA=$(date -Is)
+    "$PY" -c 'import sys; sys.path.insert(0, "scripts"); import poarta_scurta as S; sys.exit(S.scrie_rulare_din_argv(sys.argv[1:]))' \
+        "$COMUN/poarta_rulari/${SHA:-fara-commit}.json" "$SHA" "$RAM" "$DATA" \
+        "proaspat|$RC_PROASPAT|$T_PROASPAT|$J/precommit_proaspat.log" "pytest|$RC_PYTEST|$T_PYTEST|$J/precommit_pytest.log" \
+        "verificator|$RC_VERIF|$T_VERIF|$J/precommit_verificator.log" "cifre|$RC_CIFRE|$T_CIFRE|$J/precommit_cifre.log" \
+        "plasa|$RC_PLASA|$T_E2E|$CAPTURI/pytest.log|$J/precommit_e2e.log" "arbore|$RC_ARBORE|0" || rosu "inregistrarea rularii (JSON)" 1
+    DURATE="proaspat ${T_PROASPAT}s · pytest ${T_PYTEST}s (verificator ${T_VERIF}s + cifre ${T_CIFRE}s simultan) · plasa ${T_E2E}s (dupa pytest) · poarta $(( $(date +%s) - T0 ))s"
+    echo "[poarta] durata: $DURATE"
+    if [ -n "$ROSII" ]; then echo "    DURATE: $DATA ROSU ·$ROSII · $DURATE" >> "$JURNAL"; else echo "    DURATE: $DATA VERDE · $DURATE" >> "$JURNAL"; fi
+}
 # [15.10.2026] Ocolirea de curatenie (03.09.2026, `scripts/curatenie.py`) a iesit de aici: poarta ruleaza acum pe commitul lotului,
 # cu arborele curat si indexul gol, iar pe index gol instrumentul raspunde mereu „nu e curatenie” — ramura ar fi fost cod mort. Marturia
 # `# doar-curatenie:` din mesaj o cere in continuare `verifica-mesaj`, la commit.
@@ -38,32 +81,31 @@ fi
 #     ordinea lor (fixture-urile de modul si starea dintre testele unui fisier nu se impart intre procese);
 #  2. pytest porneste INTAI, in fundal; verificatorul si cifrele de referinta (productie, read-only) ruleaza IN ACELASI TIMP cu el, apoi
 #     poarta asteapta pytest, si abia dupa verdictul lui porneste plasa e2e (aceeasi baza de test — v. mai jos de ce nu se suprapun).
-#     O treapta rosie respinge commitul, ca inainte; numai asteptarea se suprapune.
-#     Pe o treapta rosie poarta ASTEAPTA pytest inainte de a iesi (nu-l omoara): un test oprit la jumatate isi lasa datele.
-# Fiecare durata se scrie in .poarta_jurnal.log (`DURATE`), si la verde, ca masuratoarea sa nu depinda de memoria cuiva.
+# Fiecare durata se scrie in .poarta_jurnal.log (`DURATE`) si in JSON, ca masuratoarea sa nu depinda de memoria cuiva.
+T0=$(date +%s)
 # ── PROBELE DE PROSPETIME, INAINTEA SUITEI (15.10.2026, decizia Costin pct.1, verbatim in DECIZII „Lotul 3 — C35”: „Plus gard
 # mecanic: poarta rulează probele de prospețime (pytest -k proaspat) înainte de suită.”). Poarta lotului 3 a fost respinsa dupa 50 de
 # minute de doua artefacte de proba din browser ramase pe UI-ul vechi (`proba_pagina_principala.json`, `proba_decl50.json`) — un
 # verdict care costa ~10 secunde. Testele care compara un artefact cu arborele (`ui_hash()` / `instrument_hash()`) poarta „proaspat”
-# in nume — `core/test_poarta_proaspat.py` o cere —, deci le prinde selectia de mai jos. Rosu aici = commit respins INAINTEA suitei.
+# in nume — `core/test_poarta_proaspat.py` o cere —, deci le prinde selectia de mai jos. [23.10.2026] Rosu aici nu mai opreste poarta
+# (CLAUDE.md §5: se afla toate testele cazute); raman primele, ca verdictul lor sa se vada in secunde.
 # (Fara `core/` — depozitele de proba ale testelor hook-urilor — nu e nimic de verificat.)
+RC_PROASPAT=0
+T_PROASPAT=0
 if [ -d core ]; then
     echo "[poarta] probele de prospetime (pytest -k proaspat), inaintea suitei..."
     "$PY" -m pytest -q -k proaspat core/ > $J/precommit_proaspat.log 2>&1
     RC_PROASPAT=$?
+    T_PROASPAT=$(( $(date +%s) - T0 ))
     tail -1 $J/precommit_proaspat.log
     if [ "$RC_PROASPAT" -ne 0 ]; then
-        { echo "=== $(date -Is) RESPINS probe de prospetime exit $RC_PROASPAT"
-          echo "    HEAD : $(git rev-parse --short HEAD 2>/dev/null)"
-          grep -E "^(FAILED|ERROR) " $J/precommit_proaspat.log 2>/dev/null | sed "s/^/    /" | head -20
-        } >> "$ROOT/.poarta_jurnal.log"
-        echo "[poarta] RESPINS: un artefact de proba nu corespunde UI-ului / instrumentului de acum — regenereaza-l si pune-l la index."
+        echo "[poarta]   un artefact de proba nu corespunde UI-ului / instrumentului de acum — regenereaza-l si pune-l la index."
         echo "[poarta]   Log: $J/precommit_proaspat.log"
-        exit 1
+        rosu "probe de prospetime" "$RC_PROASPAT" $J/precommit_proaspat.log
     fi
 fi
 NW=${POARTA_PROCESE:-3}
-T0=$(date +%s)
+T_PYTEST0=$(date +%s)
 echo "[poarta] pytest (suita intreaga, $NW procese in paralel; verificatorul si cifrele ruleaza in acelasi timp, plasa dupa)..."
 "$PY" -m pytest -q -n "$NW" --dist loadfile > $J/precommit_pytest.log 2>&1 &
 PID_PYTEST=$!
@@ -72,43 +114,38 @@ asteapta_pytest() {
     if [ -z "$RC_PYTEST" ]; then
         wait "$PID_PYTEST"
         RC_PYTEST=$?
-        T_PYTEST=$(( $(date +%s) - T0 ))
+        T_PYTEST=$(( $(date +%s) - T_PYTEST0 ))
     fi
 }
-inainte_de_respingere() {   # $1 = treapta; pytest se asteapta inainte de iesire (nu ramane orfan, nu-si lasa datele la jumatate)
-    asteapta_pytest
-    echo "    DURATE: pytest ${T_PYTEST}s (rc $RC_PYTEST) · poarta $(( $(date +%s) - T0 ))s · respinsa la: $1" >> "$ROOT/.poarta_jurnal.log"
-}
 
-TOT=$("$PY" verificator_conformitate.py 2>&1 | grep -i "TOTAL")
+T_VERIF0=$(date +%s)
+"$PY" verificator_conformitate.py > $J/precommit_verificator.log 2>&1
+TOT=$(grep -i "TOTAL" $J/precommit_verificator.log)
+T_VERIF=$(( $(date +%s) - T_VERIF0 ))
 echo "[poarta] verificator: $TOT"
 case "$TOT" in
-    *"TOTAL: 0"*) : ;;
-    *) echo "[poarta] RESPINS: verificatorul nu da TOTAL 0." ;
-       { echo "=== $(date -Is) RESPINS verificator"; echo "    $TOT";
-         echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $(git symbolic-ref --short HEAD 2>/dev/null)";
-       } >> "$ROOT/.poarta_jurnal.log" ;
-       inainte_de_respingere "verificator" ;
-       exit 1 ;;
+    *"TOTAL: 0"*) RC_VERIF=0 ;;
+    *) RC_VERIF=1 ;
+       echo "[poarta]   verificatorul nu da TOTAL 0. Log: $J/precommit_verificator.log" ;
+       rosu "verificator" "$RC_VERIF" $J/precommit_verificator.log ;;
 esac
 
 # ── CIFRELE DE REFERINTA ALE FIRMELOR F1–F5 (10.10.2026, comanda Costin pct.1) ────────────────────────────────────────
 # „Cifrele de referință [...] aprobate integral [...] Leagă gardul «orice diferență față de referință oprește publicarea». O schimbare
 # voită se face doar cu aprobarea mea, consemnată în DECIZII.” Codul care se comite calculează balanța, D300, D394, D406 și D112 ale
 # firmelor de test din producție (sesiune READ-ONLY, pe drumul aplicației) și le confruntă cu `scripts/cifre_referinta_aprobate.json`.
-# Orice diferență -> RESPINS; orice eșec al măsurătorii -> RESPINS (fail-closed). Schimbarea voită a referinței: `verifica-mesaj`.
+# Orice diferență -> ROSU; orice eșec al măsurătorii -> ROSU (fail-closed). Schimbarea voită a referinței: `verifica-mesaj`.
 echo "[poarta] cifrele de referinta F1–F5 (productie, read-only) fata de referinta aprobata..."
+T_CIFRE0=$(date +%s)
 "$PY" scripts/cifre_referinta.py --productie --verifica > $J/precommit_cifre.log 2>&1
 RC=$?
+RC_CIFRE=$RC
+T_CIFRE=$(( $(date +%s) - T_CIFRE0 ))
 tail -1 $J/precommit_cifre.log
 if [ "$RC" -ne 0 ]; then
-    { echo "=== $(date -Is) RESPINS cifre de referinta exit $RC"
-      echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $(git symbolic-ref --short HEAD 2>/dev/null)"
-      head -20 $J/precommit_cifre.log | sed "s/^/    /"
-    } >> "$ROOT/.poarta_jurnal.log"
-    echo "[poarta] RESPINS: cifrele de referinta difera sau nu s-au putut calcula. Log: $J/precommit_cifre.log"
-    inainte_de_respingere "cifre"
-    exit 1
+    echo "[poarta]   cifrele de referinta difera sau nu s-au putut calcula. Log: $J/precommit_cifre.log"
+    rosu "cifre de referinta" "$RC" $J/precommit_cifre.log
+    head -20 $J/precommit_cifre.log | sed "s/^/    /" >> "$JURNAL"
 fi
 
 # ── pytest se ASTEAPTA AICI, INAINTEA plasei (11.10.2026, masurat): plasa porneste aplicatia pe ACEEASI baza de test pe care o folosesc
@@ -119,53 +156,37 @@ asteapta_pytest
 tail -1 $J/precommit_pytest.log
 RC=$RC_PYTEST
 if [ "$RC" -ne 0 ]; then
-    # JURNALUL PORTII (23.08.2026). Un test rosu OPRESTE commitul, omul repara, si ce ajunge in
-    # istorie e deja verde - deci, PRIN CONSTRUCTIE, o garda care prinde o regresie nu lasa nicio
-    # urma. Masurat: in 1.725 de commituri, patru citeaza un test, si toate patru repara TESTUL, nu
-    # ceva prins de el. Intrebarea „a prins vreodata garda X o regresie reala?" n-avea cum sa aiba
-    # raspuns. De aici incolo are: fiecare respingere se scrie, cu data, testele picate si CE ERA
-    # IN STAGE (mesajul nu: suita nu-l primeste — l-a verificat deja `verifica-mesaj`). Jurnalul NU intra in istoric (e in .gitignore) - nu e un artefact de
-    # versionat, e o urma care exista.
-    JURNAL="$ROOT/.poarta_jurnal.log"
-    {
-        echo "=== $(date -Is) RESPINS pytest exit $RC"
-        echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $(git symbolic-ref --short HEAD 2>/dev/null)"
-        # NU se scrie mesajul commitului (pana pe 08.10 suita rula in pre-commit, unde .git/COMMIT_EDITMSG
-        # purta mesajul commitului PRECEDENT — dovedit pe prima respingere reala, 23.08).
-        echo "    HEAD : $(git rev-parse --short HEAD 2>/dev/null)"
-        grep -E "^(FAILED|ERROR) " $J/precommit_pytest.log 2>/dev/null | sed "s/^/    /" | head -40
-        tail -1 $J/precommit_pytest.log | sed "s/^/    /"
-    } >> "$JURNAL"
-    echo "[poarta] RESPINS: pytest exit $RC (suita rosie). Log complet: $J/precommit_pytest.log"
-    echo "[poarta] consemnat in .poarta_jurnal.log ($(grep -c '^=== ' "$JURNAL" 2>/dev/null) respingeri)"
-    inainte_de_respingere "pytest"
-    exit 1
+    # JURNALUL PORTII (23.08.2026). Pana pe 23.10 un test rosu OPREA poarta, omul repara, si ce ajungea in istorie era deja verde -
+    # deci, PRIN CONSTRUCTIE, o garda care prinde o regresie nu lasa nicio urma. Masurat: in 1.725 de commituri, patru citeaza un test,
+    # si toate patru repara TESTUL, nu ceva prins de el. De aici incolo fiecare respingere se scrie, cu data si testele picate (mesajul
+    # commitului nu: suita nu-l primeste — l-a verificat deja `verifica-mesaj`). Jurnalul NU intra in istoric (e in .gitignore).
+    echo "[poarta]   pytest exit $RC (suita rosie). Log complet: $J/precommit_pytest.log"
+    rosu "pytest" "$RC" $J/precommit_pytest.log
 fi
 # ── PLASA: testele de capat la capat ale deficientelor rezolvate (09.10.2026, comanda Costin pct.8) ──────────────
 # „Proba unei deficiente «rezolvate» e un test de capat la capat in browser [...] Testul ramane permanent in poarta.” si regula
 # de directie: „orice publicare la care pica o verificare a plasei nu se face”. Aplicatia porneste din INDEX (exact ce se
-# comite), pe baza de test, port 8019; testele sunt `frontend_test/e2e/e2e_*.py`. Rosu = commit respins, ca pytest-ul.
+# comite), pe baza de test, port 8019; testele sunt `frontend_test/e2e/e2e_*.py`. Rosu = poarta rosie, ca pytest-ul.
 echo "[poarta] plasa: testele de capat la capat ale deficientelor (browser, aplicatia din index)..."
+rm -f "$CAPTURI/pytest.log"
 T_E2E0=$(date +%s)
-"$PY" scripts/e2e_poarta.py /tmp/e2e_poarta_capturi > $J/precommit_e2e.log 2>&1
-RC=$?
-tail -1 $J/precommit_e2e.log
-if [ "$RC" -ne 0 ]; then
-    { echo "=== $(date -Is) RESPINS plasa e2e exit $RC"
-      echo "    commit: $(git rev-parse --short HEAD 2>/dev/null) pe $(git symbolic-ref --short HEAD 2>/dev/null)"
-      grep -E "^(FAILED|ERROR) " $J/precommit_e2e.log | sed "s/^/    /" | head -40
-    } >> "$ROOT/.poarta_jurnal.log"
-    echo "[poarta] RESPINS: plasa e2e exit $RC. Log: $J/precommit_e2e.log, capturi: /tmp/e2e_poarta_capturi"
-    inainte_de_respingere "plasa e2e"
-    exit 1
-fi
+"$PY" scripts/e2e_poarta.py "$CAPTURI" > $J/precommit_e2e.log 2>&1
+RC_PLASA=$?
 T_E2E=$(( $(date +%s) - T_E2E0 ))
-
+tail -1 $J/precommit_e2e.log
+[ "$RC_PLASA" -ne 0 ] && rosu "plasa e2e" "$RC_PLASA" $J/precommit_e2e.log
 # [15.10.2026] arborele urmarit, neschimbat cat a rulat poarta (v. „VERDICTUL PRIVESTE COMMITUL” sus)
+RC_ARBORE=0
 NEPUS=$(git diff --name-only)
 if [ -n "$NEPUS" ]; then
-    echo "[poarta] RESPINS: fisiere urmarite schimbate CAT a rulat poarta — verdictul nu mai e despre ce se comite:"
+    echo "[poarta] fisiere urmarite schimbate CAT a rulat poarta — verdictul nu mai e despre ce se comite:"
     echo "$NEPUS" | head -20 | sed 's/^/    /'
+    RC_ARBORE=1
+    rosu "arbore schimbat in timpul portii" 1
+fi
+incheie
+if [ -n "$ROSII" ]; then
+    echo "[poarta] RESPINS — parti rosii:$ROSII. Consemnat in .poarta_jurnal.log ($(grep -c '^=== ' "$JURNAL" 2>/dev/null) respingeri)."
     exit 1
 fi
 
@@ -189,7 +210,5 @@ else
     fi
 fi
 
-echo "    DURATE: $(date -Is) VERDE · pytest ${T_PYTEST}s (verificator+cifre simultan) · plasa ${T_E2E}s (dupa pytest) · poarta $(( $(date +%s) - T0 ))s" >> "$ROOT/.poarta_jurnal.log"
-echo "[poarta] durata: pytest ${T_PYTEST}s · plasa ${T_E2E}s · poarta $(( $(date +%s) - T0 ))s"
 echo "[poarta] OK - poarta verde (verdictul il scrie scripts/poarta_lot.sh)."
 exit 0

@@ -74,7 +74,7 @@ def durata_medie_incasare(conn, schema, de, pana):
     [lotul 10, 428, decizia Costin „Construiesc acum”] decontarea = și compensarea (nota 401 = 4111 legată de factură prin `compensari`,
     `compensari_api.nota_de_compensare`): HG 1/2016 pct.26 alin.(7) — încasarea se face și prin „compensarea”."""
     from core import compensari_api as _cz
-    cz = _cz.nota_de_compensare("i", "f.id", f"{schema}.")
+    stinge = _cz.nota_stinge_factura("i", "f.id", f"{schema}.")   # [lotul 12, C153] și chitanța veche, nu numai nota legată / compensarea
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             WITH e AS (
@@ -83,14 +83,14 @@ def durata_medie_incasare(conn, schema, de, pana):
                        - COALESCE((SELECT SUM(l.suma)
                                    FROM {schema}.inregistrari i
                                    JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                                   WHERE (i.factura_id = f.id OR {cz}) AND l.cont_credit = %s), 0)
+                                   WHERE {stinge} AND l.cont_credit = %s), 0)
                        + COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))
                                    FROM {schema}.facturi st
                                    WHERE st.storno_din_id = f.id), 0) AS sold,
                      (SELECT MAX(i.data)
                         FROM {schema}.inregistrari i
                         JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                        WHERE (i.factura_id = f.id OR {cz}) AND l.cont_credit = %s) AS data_incasare
+                        WHERE {stinge} AND l.cont_credit = %s) AS data_incasare
               FROM {schema}.facturi f
               WHERE f.directie = 'emisa' AND f.tip = 'factura'
                 AND f.status NOT IN ('anulata', 'storno')
@@ -111,13 +111,14 @@ def lista_parteneri(conn, schema):
     """Partenerii distincti din facturi (ambele directii), pentru selectorul de fisa.
     [lotul 11, decizia 10.3 pct.4] un partener = CUI-ul în forma păstrată (`cui_forma`): „RO14399840” de pe o factură veche și
     „14399840” de pe una nouă sunt același partener, nu două rânduri în selector."""
-    from core import cui_forma as _cf
+    from core import cui_forma as _cf, nomenclator_status_factura as _nsf
     k = _cf.SQL.format(c="tert_cui")
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        # [lotul 12, 252] ca rapoartele: fără facturile preluate (`clauza_fara_sold_preluat`)
         cur.execute(f"""
             SELECT {k} AS cui, MAX(tert_nume) AS nume
             FROM {schema}.facturi
-            WHERE {k} <> ''
+            WHERE {k} <> '' AND {_nsf.clauza_fara_sold_preluat(None)}
             GROUP BY {k}
             ORDER BY MAX(tert_nume)
         """)
@@ -129,7 +130,7 @@ def fisa_partener(conn, schema, cui, de, pana):
     fiecare cu decontat si sold (conventia reconciliere), + sumar. Read-only.
     [lotul 10, 428] decontat = și compensarea (ca `reconciliere_api.facturi_deschise`, `compensari_api.nota_de_compensare`)."""
     from core import compensari_api as _cz, cui_forma as _cf   # [lotul 11, 10.3 pct.4] partenerul în forma păstrată a CUI-ului
-    cz = _cz.nota_de_compensare("i", "f.id", f"{schema}.")
+    stinge = _cz.nota_stinge_factura("i", "f.id", f"{schema}.")   # [lotul 12, C153] și chitanța veche, nu numai nota legată / compensarea
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             SELECT f.id, f.numar, f.data_emitere, f.directie, f.tert_nume,
@@ -137,7 +138,7 @@ def fisa_partener(conn, schema, cui, de, pana):
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
-                             WHERE (i.factura_id = f.id OR {cz})
+                             WHERE {stinge}
                                AND ((f.directie = 'emisa'   AND l.cont_credit = %s)
                                  OR (f.directie = 'primita' AND l.cont_debit  = %s))), 0) AS decontat,
                    COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))

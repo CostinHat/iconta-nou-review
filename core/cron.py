@@ -65,8 +65,8 @@ def ruleaza(nume, fn):
             from core import observare
             observare.alerteaza(
                 "cron_esec_%s" % nume,
-                "Job de fundal esuat: %s" % nume,
-                "Jobul '%s' a esuat la %s, dupa %.1f secunde.\n\n%s" % (nume, inceput, durata, tb))
+                "Job de fundal eșuat: %s" % nume,   # [317, lotul 12] alertele operatorului, cu diacritice
+                "Jobul „%s” a eșuat la %s, după %.1f secunde.\n\n%s" % (nume, inceput, durata, tb))
         except BaseException:
             print("%s ALERTA NETRIMISA pentru %s:\n%s"
                   % (inceput, nume, traceback.format_exc()), flush=True)
@@ -339,9 +339,9 @@ def _main_verificare():
         from core import observare
         observare.alerteaza("cron_heartbeat",
                             "Joburi de fundal care nu au mai rulat",
-                            "Urmatoarele joburi n-au mai raportat o rulare reusita:\n\n%s\n\n"
-                            "Verifica: crontab -l, systemctl status cron, "
-                            "si logurile din %s/*.log" % (corp, _RAD))
+                            "Următoarele joburi n-au mai raportat o rulare reușită:\n\n%s\n\n"
+                            "Verifică: crontab -l, systemctl status cron, "
+                            "și jurnalele din %s/*.log" % (corp, _RAD))
     except Exception as e:
         print("%s ALERTA NETRIMISA: %s" % (marca, e), flush=True)
     return len(intarziate)

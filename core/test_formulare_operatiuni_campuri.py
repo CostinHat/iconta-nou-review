@@ -249,3 +249,26 @@ def test_motorul_onoreaza_trimiteCa_lista_multiCond_si_lantul():
     turismul normal trimite `componente` și `locuri` ca listă; „Cui se impută” apare numai la Minus + Imputabil: Da.
     MUTAȚIE: oricare din cele cinci scoasă din motor -> pică."""
     assert motorul_onoreaza_registrul(_surse_()[0]) == []
+
+
+def test_def_c117_niciun_camp_obligatoriu_fara_efect_pe_ramura():
+    """[C117, lotul 12] Inventariere › Casare cerea „Valoare” (obligatoriu), dar ruta, cu mijlocul fix ales din registru, ia valoarea și
+    amortizarea de acolo și nu citește `valoare`. Clasa: orice câmp obligatoriu arătat pe o ramură `select=opțiune` care nu-l citește
+    (`scan_formulare_operatiuni.cerute_fara_efect`), pe toate formularele ecranului Operațiuni. Clichet la zero (`FARA_EFECT_PERMISE`
+    gol). MUTAȚIE: în ecran `valoare` fără `cond` -> („nota-inventariere”, „operatie”, „casare”, „valoare”) -> pică.
+    Temei: N/A — regulă de produs (CLAUDE.md §9: nimic afișat care poate induce în eroare), nu fiscală."""
+    from scan_formulare_operatiuni import FARA_EFECT_PERMISE, cerute_fara_efect
+    assert FARA_EFECT_PERMISE == {}
+    rele = cerute_fara_efect(_citeste("static/js/ecrane/operatiuni_ecran.js"), _citeste("main.py"), _citeste("core/uc_tenants.py"))
+    assert rele == [], "câmpuri obligatorii pe ramuri care nu le citesc:\n  " + "\n  ".join("%s › %s=%s: %s" % r for r in rele)
+
+
+def test_CALIBRARE_c117_campul_fara_efect_e_prins_si_lantul_respectat():
+    """Calibrare pe sursa reală, stricată în memorie: (1) „Valoare” la Inventariere fără `cond` -> prins pe casare (și numai acolo);
+    (2) „Valoare imputare” (cond `imputabil`, care la rândul lui cere `operatie=minus`) NU e prins pe plus/casare — vizibilitatea în lanț."""
+    from scan_formulare_operatiuni import cerute_fara_efect
+    js = _citeste("static/js/ecrane/operatiuni_ecran.js")
+    vechi = 'C("valoare", "Valoare", "numar", { cond: { camp: "operatie", val: ["plus", "plus_mf", "minus"] } }),'
+    assert js.count(vechi) == 1, "ancora câmpului „Valoare” din Inventariere s-a schimbat"
+    rele = cerute_fara_efect(js.replace(vechi, 'C("valoare", "Valoare"),'), _citeste("main.py"), _citeste("core/uc_tenants.py"))
+    assert rele == [("nota-inventariere", "operatie", "casare", "valoare")], rele

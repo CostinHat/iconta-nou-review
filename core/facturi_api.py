@@ -280,7 +280,10 @@ def _refuz_numar_dublat(cur, numar, directie, tip, data_emitere):
     cursa dintre două salvări (chemat după întoarcerea la savepoint). `CheieDublata` (deci `ValueError`) sau None (nimic găsit)."""
     from core import pdf_util as _pu   # [258] documentul existent numit prin numărul și data lui, nu prin id
     if directie == "emisa":
-        cur.execute("SELECT data_emitere FROM facturi WHERE numar=%s AND directie='emisa' LIMIT 1", (numar,))
+        # [lotul 12, 252] aceeași mulțime ca cheia `facturi_numar_emisa_uniq`: fără facturile deschise preluate (numerele programului vechi)
+        from core import nomenclator_status_factura as _nsf
+        cur.execute("SELECT data_emitere FROM facturi WHERE numar=%s AND directie='emisa' AND " + _nsf.clauza_fara_sold_preluat(None)
+                    + " LIMIT 1", (numar,))
         r = cur.fetchone()
         if r:
             return _chei.CheieDublata(
@@ -450,6 +453,11 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                 _e.cod = "AXA_CATEGORIE"
                 raise _e
             axa_ic = _axa_cat
+        elif not axa_ic:
+            # [lotul 12, C154] la neplătitor categoria liniilor („neplatitor”, O) n-are axă: axa vine din felul liniilor (contul de venit),
+            # altfel serviciul către clientul din UE intra în D390 ca livrare de bunuri (L), nu ca prestare (P). Axa dată de apelant
+            # (prestarea din Operațiuni, `uc_tenants.vanzare_ic`; stornarea, cu axa originalului) rămâne a lui.
+            axa_ic = _ct.axa_neplatitor(linii, tert_tara)
         if any(_l.get("categorie_tva") == "taxare_inversa" for _l in linii):
             taxare_inversa = True
             from core import produse_api as _pa   # [lotul 11, 449, patch B/P4] categoriile D394, cu cerealele pe codul NC
@@ -619,8 +627,8 @@ def _conteaza_la_creare(conn, factura_id, directie, tip):
     if directie != "emisa" or tip != "factura":
         return {"stare": "neaplicabil", "afirmatie": _af.afirmatie(
             "absenta_observatie", "CONTARE_NEAPLICABILA",
-            "nota automată se scrie doar pentru facturi EMISE de tip factură; documentul ăsta e "
-            "%s / %s" % (directie, tip),
+            "nota automată se scrie doar pentru facturile emise; documentul acesta nu e o factură emisă "
+            "(%s / %s)" % (directie, tip),
             surse_consultate=["facturi.directie", "facturi.tip"])}
     try:
         with _cf.cursor_dict(conn) as cur:
@@ -671,6 +679,10 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
         val += ["%04d-01-01" % an, "%04d-01-01" % (an + 1)]
     if directie is not None:
         cond.append("directie = %s"); val.append(directie)
+    # [lotul 12, 252] facturile deschise preluate nu sunt facturi ale firmei din iConta.eu: stau în scadențar, în potrivirea băncii /
+    # casei / compensărilor, nu în „Istoric facturi” (și nici la cititorii interni ai listei: verificatoare, D390)
+    from core import nomenclator_status_factura as _nsf
+    cond.append(_nsf.clauza_fara_sold_preluat(None))
     where = (" WHERE " + " AND ".join(cond)) if cond else ""
     limitclause = ""
     if limit is not None:
@@ -785,7 +797,9 @@ def _cu_stare_incasare(cur, facturi):
     `stare_incasare` = {stare: incasata | partial | neincasata | stornata, incasat, total[, stornat]}; None la proformă / aviz / storno."""
     from decimal import Decimal as _D
     from core import sume_lei as _sl
-    ids = [f["id"] for f in facturi if (f.get("tip") or "factura") == "factura" and not f.get("storno_din_id")]
+    from core import nomenclator_status_factura as _nsf
+    # [lotul 12, 252] și factura deschisă preluată are stare de încasare (`TIPURI_CU_INCASARE`): banca, casa, compensarea o sting
+    ids = [f["id"] for f in facturi if (f.get("tip") or "factura") in _nsf.TIPURI_CU_INCASARE and not f.get("storno_din_id")]
     for f in facturi:
         f["stare_incasare"] = None
     if not ids:
@@ -818,8 +832,11 @@ def _cu_stare_incasare(cur, facturi):
     for f in facturi:
         if f["id"] not in ids:
             continue
+        # [lotul 12, 468, clasa „lei comparați cu euro”] totalul în LEI: `total_lei` (scris la creare) când factura îl are — lista „Istoric
+        # facturi” nu citește `tva_lei` / `curs_bnr`, iar `antet_lei` cădea atunci pe totalul în valută, comparat cu încasările în lei
+        # (o factură de 1.000 EUR cu 2.000 lei încasați ieșea „încasată”)
         try:
-            total = _sl.antet_lei(f)[0]
+            total = _D(str(f["total_lei"])) if f.get("total_lei") is not None else _sl.antet_lei(f)[0]
         except _sl.LipsaCurs:
             total = _D(str(f.get("total") or 0))
         st = stornat.get(f["id"], _D(0))
@@ -938,6 +955,16 @@ def _luna_facturii(conn, factura_id):
     return r[0] if r else None
 
 
+def refuza_sold_preluat(tip):
+    """[lotul 12, deficiența 252] PUNCTUL UNIC al refuzului: o acțiune de document fiscal (stornare, ștergere, PDF, e-mail, SPV, contare,
+    transformare) pe o factură deschisă preluată -> ValueError cu `nomenclator_status_factura.MESAJ_SOLD_PRELUAT`."""
+    from core import nomenclator_status_factura as _nsf
+    if _nsf.e_sold_preluat(tip):
+        e = ValueError(_nsf.MESAJ_SOLD_PRELUAT)
+        e.cod = "SOLD_PRELUAT"
+        raise e
+
+
 def sterge_factura(conn, factura_id):
     """Șterge factura (liniile cad automat prin ON DELETE CASCADE).
 
@@ -955,8 +982,13 @@ def sterge_factura(conn, factura_id):
     ștergerea notei odată cu factura — *o notă ștearsă e o gaură în evidență, nu o corecție* —, și
     (iii) ștergerea condiționată de starea ciornă, care ar face comportamentul să depindă de un pas
     de validare pe care omul nu-l are în minte când apasă „șterge"."""
-    from core import contare_facturi as _cf
+    from core import contare_facturi as _cf, nomenclator_status_factura as _nsf_sp
     with _cf.cursor_dict(conn) as cur:
+        # [lotul 12, 252] factura deschisă preluată se schimbă numai prin reimportul soldurilor pe parteneri (totalul ei e al partenerului)
+        cur.execute("SELECT tip FROM facturi WHERE id = %s", (factura_id,))
+        _t = cur.fetchone()
+        if _t and _nsf_sp.e_sold_preluat(_t["tip"]):
+            raise _cf.RefuzContare("SOLD_PRELUAT", _nsf_sp.MESAJ_SOLD_PRELUAT)
         # [05.10.2026] Aceeași clasă ca nota legată: `efactura_trimiteri` / `efactura_primite` țin factura printr-o cheie
         # fără `ON DELETE`, deci ștergerea cădea cu o eroare brută de bază. Factura legată de SPV tot nu se șterge — istoricul
         # cu ANAF rămâne —, dar refuzul e numit și spune ieșirea.
@@ -1435,11 +1467,12 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
             raise ValueError(
                 "Cursul introdus manual are nevoie de data la care a fost comunicat. Fără ea, "
                 "factura ar spune că e cursul zilei de emitere, ceea ce nu se știe.")
+        from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om
         if _dcm > _d:
             raise ValueError(
                 "Data cursului (%s) e după data facturii (%s). Se folosește ultimul curs comunicat "
                 "până la data facturii — unul de după ea n-avea cum să fie cunoscut atunci."
-                % (_dcm.isoformat(), _d.isoformat()))
+                % (_data_ro(_dcm), _data_ro(_d)))
         if not (curs_manual_de or "").strip():
             raise ValueError(
                 "Cursul introdus manual se consemnează cu autorul lui. Fără el, peste șase luni "
@@ -1515,6 +1548,7 @@ def storneaza(conn, factura_id, retur=None):
     orig = detalii_factura(conn, factura_id)
     if not orig:
         raise ValueError("factura de stornat nu există")
+    refuza_sold_preluat(orig.get("tip"))   # [lotul 12, 252] factura deschisă preluată nu se stornează
     if orig.get("directie") != "emisa":
         raise ValueError("se storneaza doar facturi emise")
     # [lotul 10, 10.2 pct.7f (419): după stornare detaliul se redesenează, deci „Stornează” ar fi oferit din nou pe factura stornată] O

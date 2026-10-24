@@ -1,0 +1,3 @@
+[
+ {"fisier": "static/js/ecrane/firme.js", "ancora": "    const l = liniiAfisate.find((x) => x.id === id);\n    return l ?", "inlocuire": "    const l = null;\n    return l ?", "test": "frontend_test/e2e/e2e_lot12_c150.py::test_def_c150_doua_contari_din_aceeasi_zi_au_confirmari_diferite"}
+]

@@ -1,0 +1,158 @@
+[
+ {
+  "fisier": "core/d112.py",
+  "ancora": "             % (n_somaj, n, n, h[\"sum_baza_cam\"], n))",
+  "inlocuire": "             % (n_somaj, n, n, h[\"sum_bazac\"], n))",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c134_d112_fondul_de_salarii_brute_cuprinde_indemnizatia_cm_a_angajatorului"
+ },
+ {
+  "fisier": "core/scadente.py",
+  "ancora": "    \"d407\": (\"CPF art.61^2 alin.(2)\", _CPF,",
+  "inlocuire": "    \"d407_fara\": (\"CPF art.61^2 alin.(2)\", _CPF,",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c141_d407_in_coada_fara_termen_ghicit"
+ },
+ {
+  "fisier": "core/d406.py",
+  "ancora": "    return din_nom + [Partener(id=pid, nume=nume, cui=cui, oras=\"\") for pid, (nume, cui) in ai_perioadei.items() if pid not in avem]",
+  "inlocuire": "    return din_nom if nomenclator else [Partener(id=pid, nume=nume, cui=cui, oras=\"\") for pid, (nume, cui) in ai_perioadei.items() if pid not in avem]",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c142_d406_clientul_facturii_lipsa_din_nomenclator_apare_in_masterfiles"
+ },
+ {
+  "fisier": "core/common.py",
+  "ancora": "\"verificarea la sursă.\" % (_data_ro(self.la_data), ETICHETE_COTE.get(nume, nume),",
+  "inlocuire": "\"verificarea la sursă.\" % (self.la_data.isoformat(), ETICHETE_COTE.get(nume, nume),",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c148_perioada_indisponibila_spune_data_ca_zz_ll_aaaa"
+ },
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "tv = min(tv, c.cota(\"tichet_masa_plafon\", la_data)[0]) if tv > 0 else Decimal(0)",
+  "inlocuire": "tv = min(tv, c.cota(\"tichet_masa_plafon\", la_data)[0])",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c159_statul_din_10_2025_se_calculeaza_fara_tichete_si_se_opreste_motivat_cu_tichete"
+ },
+ {
+  "fisier": "core/common.py",
+  "ancora": "% (_data_ro(self.la_data), ETICHETE_COTE.get(nume, nume), _data_ro(pana), _data_ro(urm)))",
+  "inlocuire": "% (self.la_data.isoformat(), ETICHETE_COTE.get(nume, nume), _data_ro(pana), _data_ro(urm)))",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c159_statul_din_10_2025_se_calculeaza_fara_tichete_si_se_opreste_motivat_cu_tichete"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "gv(\"#d177-srest\").addEventListener(\"change\", (e) => { S.d177.suma_rest = e.target.value; gv(\"#d177-totaluri\").innerHTML = totaluri(); });",
+  "inlocuire": "gv(\"#d177-srest\").addEventListener(\"change\", (e) => { S.d177.suma_rest = e.target.value; randeazaFormularD177(corp, nav); });",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c149_d177_adauga_dupa_suma_ramasa_merge_din_primul_clic"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "gv(\"#d107-val3ni\").addEventListener(\"change\", (e) => { S.d107.val3_ni = e.target.value; gv(\"#d107-totaluri\").innerHTML = totaluri(); });",
+  "inlocuire": "gv(\"#d107-val3ni\").addEventListener(\"change\", (e) => { S.d107.val3_ni = e.target.value; randeazaFormularD107(corp, nav); });",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c149_d107_regenereaza_dupa_suma_neindividualizata_merge_din_primul_clic"
+ },
+ {
+  "fisier": "core/firma_rezumat.py",
+  "ancora": "            _rs = _sc.recalculeaza_lot(_an_s, _luna_s)\n",
+  "inlocuire": "            _rs = {\"invalidate\": 0, \"recalculate\": 0, \"fara_firma\": []}\n",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c130_tura_de_5_minute_calculeaza_supervizorul"
+ },
+ {
+  "fisier": "core/supervizor_cache.py",
+  "ancora": "stare = CURENT if (v_calc == v_acum and (rez or {}).get(\"versiune_reguli\") == VERSIUNE_REGULI) else INVALIDAT",
+  "inlocuire": "stare = CURENT if v_calc == v_acum else INVALIDAT",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c147_rezultatul_calculat_cu_regulile_vechi_nu_ramane_curent"
+ },
+ {
+  "fisier": "core/supervizor_cache.py",
+  "ancora": "\"    OR r.rezultat->>'versiune_reguli' IS DISTINCT FROM %s \"",
+  "inlocuire": "\"    OR %s IS NULL \"",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c147_rezultatul_calculat_cu_regulile_vechi_nu_ramane_curent"
+ },
+ {
+  "fisier": "static/js/ecrane/control_verdict.js",
+  "ancora": "    const cuNume = (c) => (c.eticheta && !String(c.mesaj || \"\").startsWith(c.eticheta)",
+  "inlocuire": "    const cuNume = (c) => (false && c.eticheta && !String(c.mesaj || \"\").startsWith(c.eticheta)",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c131_fiecare_declaratie_datorata_are_randul_reconcilierii_cu_numele_ei"
+ },
+ {
+  "fisier": "core/control_fiscal_api.py",
+  "ancora": "    if cu_reconciliere:\n        an_r, luna_r = luna_confruntata(azi.year, azi.month)",
+  "inlocuire": "    if False:\n        an_r, luna_r = luna_confruntata(azi.year, azi.month)",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c131_fiecare_declaratie_datorata_are_randul_reconcilierii_cu_numele_ei"
+ },
+ {
+  "fisier": "core/note_derivate.py",
+  "ancora": "\"raport_z\": (\"raportul Z %s\", \"în Raport Z: cât e nevalidat, «Șterge raportul Z» pe rândul lui (cu descărcările lui necontate); validat, se corectează prin stornare\"),",
+  "inlocuire": "\"raport_z\": (\"raportul Z %s\", \"în Casa de marcat: raportul Z\"),",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c146_refuzul_stergerii_notei_z_trimite_la_raport_z"
+ },
+ {
+  "fisier": "core/common.py",
+  "ancora": "min(_RANG_STARE.get((c or {}).get(\"stare\"), 0), _RANG_STARE[\"galben\"])",
+  "inlocuire": "_RANG_STARE.get((c or {}).get(\"stare\"), 0)",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_491_constatarea_salarii_nedeclarate_urca_firma_cel_mult_la_galben"
+ },
+ {
+  "fisier": "static/js/ecrane/control_verdict.js",
+  "ancora": "export function stareAfisata(s) { return s === \"rosu\" ? \"galben\" : s; }",
+  "inlocuire": "export function stareAfisata(s) { return s; }",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_491_constatarea_salarii_nedeclarate_urca_firma_cel_mult_la_galben"
+ },
+ {
+  "fisier": "core/control_fiscal_api.py",
+  "ancora": "        elif term < azi:\n            e[\"motiv\"] = fapt                 # restanta",
+  "inlocuire": "        elif False:\n            e[\"motiv\"] = fapt                 # restanta",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_497_restanta_e_obligatia_cu_termenul_trecut_nedepusa_nemarcata_de_la_preluare"
+ },
+ {
+  "fisier": "core/control_fiscal_api.py",
+  "ancora": "    if not preluare:\n        return lipsa, urmarit, []",
+  "inlocuire": "    if True:\n        return lipsa, urmarit, []",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_497_restanta_e_obligatia_cu_termenul_trecut_nedepusa_nemarcata_de_la_preluare"
+ },
+ {
+  "fisier": "core/repo_control_fiscal_api.py",
+  "ancora": "\"FROM public.declaratii_depuse_curente WHERE tenant_id=%s\", (tenant_id,))",
+  "inlocuire": "\"FROM public.declaratii_depuse_curente WHERE tenant_id=%s AND sursa NOT IN ('extern', 'contabil_anterior')\", (tenant_id,))",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_497_restanta_e_obligatia_cu_termenul_trecut_nedepusa_nemarcata_de_la_preluare"
+ },
+ {
+  "fisier": "core/stocuri.py",
+  "ancora": "    return CONT_TVA_NIR if ct.split(\".\")[0] == CONT_NESOSITE else (\"4426\" if ct else cont_tva)",
+  "inlocuire": "    return cont_tva",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c126_tva_transportului_facturat_nu_ramane_pe_4428_dupa_legarea_facturii"
+ },
+ {
+  "fisier": "core/migrare_nir_tva_transport.py",
+  "ancora": "cur.execute(\"UPDATE %s.inregistrari_linii SET cont_debit = '4426' WHERE id = %%s\" % s, (lid,))",
+  "inlocuire": "cur.execute(\"UPDATE %s.inregistrari_linii SET cont_debit = cont_debit WHERE id = %%s\" % s, (lid,))",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c126_vechi_nir_cu_tva_transportului_pe_4428_trece_pe_4426"
+ },
+ {
+  "fisier": "core/nir_legare.py",
+  "ancora": "        acelasi = cost == net or (bool(n[\"forma_noua\"]) and accesorii > 0 and cost + accesorii == net)",
+  "inlocuire": "        acelasi = cost == net",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c138_nir_cu_transportul_pe_factura_marfii_e_propus_la_validare"
+ },
+ {
+  "fisier": "core/migrare_retest_0810.py",
+  "ancora": "(_nl.CONT_TVA_NIR, _nl.CONT_NESOSITE, tva)):",
+  "inlocuire": "(\"4426\", \"401\", tva)):",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_153_nir_fara_factura_in_forma_veche_se_reface_pe_408_si_4428"
+ },
+ {
+  "fisier": "static/js/ciorna_formular.js",
+  "ancora": "cheie = `${cheie}:u${u && u.id != null ? u.id : \"anonim\"}`;",
+  "inlocuire": "cheie = `${cheie}:u${\"toti\"}`;",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c108_ciorna_netrimisa_a_patronului_nu_apare_la_asistent_in_acelasi_browser"
+ },
+ {
+  "fisier": "core/repo_ciorne_formular.py",
+  "ancora": "cur.execute(\"SELECT continut FROM public.ciorne_formular WHERE user_id = %s AND tenant_id = %s AND formular = %s\",\n                (user_id, tenant_id, formular))",
+  "inlocuire": "cur.execute(\"SELECT continut FROM public.ciorne_formular WHERE tenant_id = %s AND formular = %s\",\n                (tenant_id, formular))",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c108_ciorna_de_pe_server_e_a_utilizatorului_care_a_scris_o"
+ },
+ {
+  "fisier": "static/js/ecrane/supervizor.js",
+  "ancora": "  if (p.stare !== \"invalidat\") return \"\";",
+  "inlocuire": "  if (p.stare !== \"invalidat\" || true) return \"\";",
+  "test": "frontend_test/e2e/e2e_lot12_cx2.py::test_def_c147_rezultatul_calculat_cu_regulile_vechi_nu_ramane_curent"
+ }
+]

@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "        _inlocuieste_documentele(cur, docs)",
+  "inlocuire": "        pass",
+  "test": "frontend_test/e2e/e2e_lot12_p252.py::test_def_252_facturile_preluate_intra_in_scadentar_si_le_stinge_banca"
+ },
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "        out = grupeaza_pe_parteneri(out)",
+  "inlocuire": "        pass",
+  "test": "frontend_test/e2e/e2e_lot12_p252.py::test_def_252_facturile_preluate_intra_in_scadentar_si_le_stinge_banca"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "      { titlu: \"Facturi deschise\", celula: facturiDeschise },",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_p252.py::test_def_252_facturile_preluate_intra_in_scadentar_si_le_stinge_banca"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "    const preluata = l.tip === \"preluata\" ? \" · preluată din programul vechi\" : \"\";",
+  "inlocuire": "    const preluata = \"\";",
+  "test": "frontend_test/e2e/e2e_lot12_p252.py::test_def_252_facturile_preluate_intra_in_scadentar_si_le_stinge_banca"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "  if (f.tip === \"preluata\") { corp.innerHTML = detaliuFacturaPreluata(f); return; }",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_p252.py::test_def_252_factura_preluata_n_are_actiuni_de_document_fiscal"
+ }
+]

@@ -17,6 +17,7 @@ import re
 from decimal import ROUND_HALF_UP
 
 from core.common import cate as _cate
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică
 
 REGULI = "2026.1"
 MODUL = "salariati_api"
@@ -91,6 +92,32 @@ def _verifica_cor(conn, cod):
         raise ValueError("cod COR inexistent în nomenclator: %s (alege din lista)" % cod)
 
 
+#: [lotul 12, C133] Motivul scutirii de contribuția minimă (D112 `motivExc`), după OPANAF 605/2026 anexa 2, secțiunea „Date de identificare
+#: ale asiguratului”, pct.12: „se completează în cazul în care caseta de la pct.11 a fost completată cu valoarea «1»” — „1” elevi și
+#: studenți până la 26 de ani (CF art.146 alin.(5^7) lit.a), „2” ucenici până la 18 ani (lit.b), „3” persoane cu dizabilități sau cărora
+#: prin lege li se recunoaște lucrul mai puțin de 8 ore pe zi (lit.c), „4” pensionari pentru limită de vârstă (lit.d), „5” două sau mai
+#: multe contracte cu baza cumulată cel puțin salariul minim (lit.e). Etichetele le arată ecranul (`firme.js`, `MOTIVE_EXCEPTARE`).
+MOTIVE_EXCEPTARE = (1, 2, 3, 4, 5)
+
+
+def _erori_motiv_exceptare(date, la_creare):
+    """[C133] Scutit = Da cere motivul (altfel D112 nu-l poate declara exceptat: `asigExc` = 1 numai cu `motivExc` 1–5); motivul fără
+    scutire nu are sens. La editare se verifică numai ce s-a trimis."""
+    sc, me = date.get("scutit_contrib_minim"), date.get("motiv_exceptare")
+    if me is not None:
+        try:
+            ok = int(me) in MOTIVE_EXCEPTARE and str(me).strip() == str(int(me))
+        except (TypeError, ValueError):
+            ok = False
+        if not ok:
+            return [("motiv_exceptare", "Motivul scutirii e unul din cele cinci din listă (OPANAF 605/2026, D112 pct.12).")]
+        if sc is False:
+            return [("motiv_exceptare", "Motivul scutirii se alege numai când salariatul e scutit de contribuția minimă.")]
+    elif sc is True and ("motiv_exceptare" in date or la_creare):
+        return [("motiv_exceptare", "Alege motivul scutirii de contribuția minimă — D112 îl declară (CF art.146 alin.(5^7)).")]
+    return []
+
+
 def valideaza_salariat(date, la_creare=False):
     """Verifică datele unui salariat. Întoarce listă erori (gol = ok).
     la_creare=True -> câmpuri OBLIGATORII la creare: salariu brut (>0, #8) și COR (#7). La editare
@@ -142,6 +169,7 @@ def valideaza_salariat(date, la_creare=False):
                                           "personală (CF art. 77 alin. (1))."))
         if date.get("scutit_contrib_minim") is None:
             erori.append(("scutit_contrib_minim", "Scutirea de contribuția minimă (Da/Nu) e obligatorie — intră în D112."))
+    erori += _erori_motiv_exceptare(date, la_creare)
     # [F133] valoarea tichetului de masa: 0..plafon legal (nu poate depasi maximul legal/tichet)
     tmv = date.get("tichet_masa_valoare")
     if tmv is not None:
@@ -455,6 +483,16 @@ def actualizeaza_salariat(conn, salariat_id, _golite=(), **date):
     _sb = date.get("salariu_brut")
     if not campuri_api and _sb is None:
         return {"ok": True, "neschimbat": True}
+    # [C133] scutirea pusă pe „Nu” golește motivul ei; pusă pe „Da”, motivul se cere (trimis acum sau deja în fișă)
+    if campuri_api.get("scutit_contrib_minim") is False and "motiv_exceptare" not in campuri_api:
+        campuri_api["motiv_exceptare"] = None
+    if campuri_api.get("scutit_contrib_minim") is True and campuri_api.get("motiv_exceptare") is None:
+        with conn.cursor() as cur:
+            cur.execute("SELECT motiv_exceptare FROM salariati WHERE id = %s", (salariat_id,))
+            _r = cur.fetchone()
+        if not (_r and _r[0] in MOTIVE_EXCEPTARE):
+            campuri_api.pop("motiv_exceptare", None)
+            raise _eroare_campuri(_erori_motiv_exceptare({"scutit_contrib_minim": True}, True))
     erori = valideaza_salariat({**campuri_api, "salariu_brut": _sb,
                                 "data_angajare": date.get("data_angajare"),
                                 "data_incetare": date.get("data_incetare"),
@@ -690,7 +728,7 @@ def salveaza_concediu(conn, salariat_id, date):
             and _dati["data_sfarsit"] < _dati["data_inceput"]):
         _er.camp("cm-sfarsit", "Concediul se sfârșește (%s) înaintea zilei în care începe (%s). "
                                "Verifică cele două date de pe certificat."
-                               % (_dati["data_sfarsit"].isoformat(), _dati["data_inceput"].isoformat()))
+                               % (_data_ro(_dati["data_sfarsit"]), _data_ro(_dati["data_inceput"])))
     # Validare: baza de calcul trebuie sa fie reala (altfel brut 0 dar net pozitiv = imposibil)
     if _dec_pos(ven6) <= 0:
         _er.camp("cm-ven6", "Veniturile brute pe 6 luni lipsesc sau sunt 0 - completează baza de calcul din statele de plata.")

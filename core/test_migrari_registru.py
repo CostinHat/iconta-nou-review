@@ -153,6 +153,8 @@ _SCRIU_IN_NOTE_ISTORIC = {
 #: fără DELETE / INSERT și fără rândurile notei. Nota validată rămâne neatinsă (OMFP 1802/2014 pct.69).
 _SCRIU_NUMAI_IN_CIORNE = {
     "core/migrare_serie_nr_descrieri.py": "descrierea / documentul ciornelor scrise înainte de 443 cu seria lipită („Contare factura F61”)",
+    # [lotul 12, 168] descrierea ciornei notei chitanței emise automat la încasarea din Casă (456), scrisă fără chitanță
+    "core/migrare_descriere_nota_chitanta.py": "descrierea ciornelor notelor de chitanță scrise fără chitanță (168)",
 }
 
 

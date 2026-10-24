@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "core/d112.py",
+  "ancora": "            \"pensionar\": asigexc == 1 and _d112int(s.get(\"motiv_exceptare\")) == MOTIV_EXCEPTARE_PENSIONAR,   # [C97] B1_2",
+  "inlocuire": "            \"pensionar\": False,",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl_d112.py::test_def_c97_pensionarul_declarat_cu_b1_2"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "            \"zile_cm\": sum(x[\"zile\"] for x in cm),",
+  "inlocuire": "            \"zile_cm\": sum(int(x.get(\"zile_ang\") or 0) + int(x.get(\"zile_fnuass\") or 0) for x in cm),",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl_d112.py::test_def_43_proratare_pe_zilele_certificatului_initial_cu_zi_de_diminuare"
+ },
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "    return leu_aritmetic((_dec(sm) - _dec(fac)) * _dec(zile_activ) / _dec(nzl))",
+  "inlocuire": "    return leu_aritmetic(_dec(sm) * _dec(zile_activ) / _dec(nzl))",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl_d112.py::test_def_69_pragul_part_time_validat_fara_atentionare"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "        _cam_cm = cm_ang if (cms and zile_cm > 0) else 0",
+  "inlocuire": "        _cam_cm = 0",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl_d112.py::test_def_482_cam_si_retinerile_din_indemnizatie"
+ },
+ {
+  "fisier": "core/stat_plata_api.py",
+  "ancora": "        if all(k in r for k in (\"cm_cas\", \"cm_cass\", \"cm_impozit\")):",
+  "inlocuire": "        if False:",
+  "test": "frontend_test/e2e/e2e_lot12_ctrl_d112.py::test_def_482_cam_si_retinerile_din_indemnizatie"
+ }
+]

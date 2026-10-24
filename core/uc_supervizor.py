@@ -21,6 +21,10 @@ from core.common import azi_ro
 def supervizor_la_cerere(ctx):
     """[P7 · use-case] Corpul rutei `/supervizor`; docstringul ei a ramas in stratul HTTP."""
     azi = azi_ro()   # [fus] perioada evaluată = zi RO, ca la /control-fiscal și ca în cronul de 08:00
+    # [deficiența 484] luna confruntată = ultima lună încheiată (sursa unică, `control_fiscal_api.luna_confruntata`), aceeași pe care
+    # o calculează lucrătorul (`firma_rezumat.main` -> `supervizor_cache.recalculeaza_lot`)
+    from core.control_fiscal_api import luna_confruntata
+    an_c, luna_c = luna_confruntata(azi.year, azi.month)
     with db.get_conn() as conn:
         ale_mele = auth_api.tenantii_userului(conn, ctx["uid"])
     # [P3, 09.09.2026] SCHEMA VINE DIN LISTA DEJA CITITĂ, nu se recere firmă cu firmă.
@@ -56,7 +60,7 @@ def supervizor_la_cerere(ctx):
     from core import supervizor_cache as _sc
     ids = [f["tenant_id"] for f in firme]
     with db.get_conn() as conn:
-        stari = _sc.citeste(conn, ids, azi.year, azi.month)
+        stari = _sc.citeste(conn, ids, an_c, luna_c)
 
     randuri = []
     for f in firme:
@@ -83,7 +87,7 @@ def supervizor_la_cerere(ctx):
 
     nerecalculate = sum(1 for x in randuri if x["prospetime"]["stare"] != _sc.CURENT)
     return {
-        "an": azi.year, "luna": azi.month,
+        "an": an_c, "luna": luna_c,
         "domeniu": ("firmele la care ai acces (%d), nu tot portofoliul cabinetului; "
                     "supervizorul rulează zilnic pe portofoliu, ecranul arată partea ta" % len(firme)),
         "firme": randuri,

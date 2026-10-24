@@ -1,0 +1,38 @@
+[
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "        if (typeof sus.inapoi === \"function\") { const f = sus.inapoi; sus.inapoi = null; f(); _arataSageata(); return; }\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_inapoi.py::test_def_c140_contracte_sageata_din_editor_intoarce_la_lista_sabloanelor"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "        if (typeof sus.inapoi === \"function\") { const f = sus.inapoi; sus.inapoi = null; f(); _arataSageata(); return; }\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_inapoi.py::test_def_c140_migrare_firme_sageata_din_rezultate_intoarce_la_lista_lipita"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "        if (typeof sus.inapoi === \"function\") { const f = sus.inapoi; sus.inapoi = null; f(); _arataSageata(); return; }\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_inapoi.py::test_def_c140_acces_client_si_magazin_sageata_din_formular_intoarce_la_ecranul_ferestrei"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "      stiva[stiva.length - 1].scrollY = 0;\n      randeazaFerestre();\n    },",
+  "inlocuire": "      return;\n    },",
+  "test": "frontend_test/e2e/e2e_lot12_inapoi.py::test_def_c140_migrare_pe_firma_sageata_din_previzualizare_intoarce_la_alegerea_fisierului"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "Salvează soldurile\"}</button>`);\n  nav.setInapoi(() => nav.reiaPasul());",
+  "inlocuire": "Salvează soldurile\"}</button>`);\n  nav.setInapoi(() => wizardSolduri(corp, nav));",
+  "test": "frontend_test/e2e/e2e_lot12_inapoi.py::test_def_c140_migrare_pe_firma_sageata_din_previzualizare_intoarce_la_alegerea_fisierului"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "function pasInput(corp, nav) {\n  nav.setInapoi(undefined);",
+  "inlocuire": "function pasInput(corp, nav) {\n  nav.setInapoi(() => meniuMigrare(corp, nav));",
+  "test": "frontend_test/e2e/e2e_lot12_inapoi.py::test_def_c140_migrare_firme_sageata_din_rezultate_intoarce_la_lista_lipita"
+ }
+]

@@ -313,16 +313,25 @@ def test_clasificarea_refuza_nota_validata(conn_i2):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_incasarea_din_casa_fara_chitanta_e_semnalata_ridicarea_nu(conn_i2):
-    from core import uc_tenants
+    """[lotul 12, deficiența 456 decizia (a)] Încasarea de la client salvată din Casă primește acum chitanța ei, și fără factură
+    (`uc_tenants.chitante_pe_incasare`); o încasare FĂRĂ chitanță rămâne numai în datele de dinainte. Ea se scrie aici cu
+    `casa_api.adauga` — dispoziția de casă fără chitanță, exact ce scria Casa până la 456 (a) — iar semnalul ei trebuie să rămână."""
+    from core import casa_api, uc_tenants
     _exceptata(conn_i2)
     _emite(data="2026-09-12", suma=121, cota_tva=21)
-    uc_tenants.casa_adauga(1, {"data": "2026-09-22", "categorie": "incasare_client", "suma": 400, "document": "DI-7"},
-                           {"uid": 1})
+    casa_api.adauga(conn_i2, _SCHEMA, {"data": "2026-09-22", "categorie": "incasare_client", "suma": 400, "document": "DI-7"})
     uc_tenants.casa_adauga(1, {"data": "2026-09-23", "categorie": "ridicare_banca", "suma": 1000}, {"uid": 1})
     xml, res = _d394.genereaza(conn_i2, _SCHEMA, Perioada(2026, luna=9))
     # decizia Costin: ridicarea de numerar din bancă e cunoscută fără caracter de vânzare; încasarea fără chitanță nu
     assert [(x["data"], x["document"], x["suma"], x["categorie"]) for x in res.casa_nelegate] == \
         [("2026-09-22", "DI-7", D("400.00"), "incasare_client")]
+    # drumul de azi: aceeași încasare salvată din Casă are chitanța ei (fără cotă) — nu mai e „fără chitanță”, iar la firma exceptată
+    # D394 cere cota ei (chitanța fără factură și fără cotă e de clasificat, `d394._op2_din_chitante`)
+    r = uc_tenants.casa_adauga(1, {"data": "2026-09-24", "categorie": "incasare_client", "suma": 50, "document": "DI-8"}, {"uid": 1})
+    (ch,) = r["chitante"]
+    with pytest.raises(ValueError) as e:
+        _d394.genereaza(conn_i2, _SCHEMA, Perioada(2026, luna=9))
+    assert (e.value.cod, e.value.chitante) == ("D394_I2_NECLASIFICAT", ["%s-%s" % (ch["serie"], ch["numar"])])
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

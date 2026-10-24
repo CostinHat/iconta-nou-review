@@ -1,0 +1,80 @@
+[
+ {
+  "fisier": "static/stil.css",
+  "ancora": ".desktop { height: 100dvh; overflow-y: auto;",
+  "inlocuire": ".desktop { height: 100dvh; overflow-y: hidden;",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_321_rotita_deruleaza_pagina_cabinetului_nou_la_rezolutiile_uzuale"
+ },
+ {
+  "fisier": "core/uc_inceput.py",
+  "ancora": "BUTOANE_CARE_BIFEAZA = (\"lucrez_singur\",)",
+  "inlocuire": "BUTOANE_CARE_BIFEAZA = ()",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_322_lucrez_singur_pe_cabinetul_nou_bifeaza_pasul_si_dispare"
+ },
+ {
+  "fisier": "static/js/ecrane/inceput.js",
+  "ancora": "<div class=\"bara-fixa\">",
+  "inlocuire": "<div class=\"pi-bara\">",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_596_inainte_de_a_incepe_incape_pe_ecran_iar_refuzul_numarului_sta_langa_buton"
+ },
+ {
+  "fisier": "static/js/ecrane/inceput.js",
+  "ancora": "<details class=\"dec-xml\"><summary>Cum se face</summary>",
+  "inlocuire": "<details class=\"dec-xml\" open><summary>Cum se face</summary>",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_596_inainte_de_a_incepe_incape_pe_ecran_iar_refuzul_numarului_sta_langa_buton"
+ },
+ {
+  "fisier": "static/js/ecrane/inceput.js",
+  "ancora": "window.addEventListener(\"iconta:schimbare\", laSchimbare);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_596_inainte_de_a_incepe_incape_pe_ecran_iar_refuzul_numarului_sta_langa_buton"
+ },
+ {
+  "fisier": "core/repo_cont_notificari.py",
+  "ancora": "\"telefon = %s WHERE id = %s\", (tel, tel, tel, uid))",
+  "inlocuire": "\"telefon = %s WHERE id = %s\", (tel, tel, None, uid))",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_561_clientul_salveaza_numarul_si_intra_in_portal"
+ },
+ {
+  "fisier": "static/js/ecrane/inceput.js",
+  "ancora": "<div class=\"bara-fixa\">",
+  "inlocuire": "<div>",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_561_clientul_salveaza_numarul_si_intra_in_portal"
+ },
+ {
+  "fisier": "static/js/ecrane/salut.js",
+  "ancora": "return String(x.prenume || \"\").trim() || String(x.nume || \"\").trim();",
+  "inlocuire": "return String(x.prenume || \"\").trim() || String(x.nume || \"\").trim().split(\" \").pop();",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_269_salutul_cabinetului_nou_numeste_omul_cu_numele_scris"
+ },
+ {
+  "fisier": "static/js/ecrane/salut.js",
+  "ancora": "return String(x.prenume || \"\").trim() || String(x.nume || \"\").trim();",
+  "inlocuire": "return String(x.prenume || \"\").trim() || String(x.nume || \"\").trim().split(\" \").pop();",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_490_salutul_nu_e_ultima_litera_din_nume"
+ },
+ {
+  "fisier": "core/uc_inceput.py",
+  "ancora": "if sold and audit:",
+  "inlocuire": "if sold:",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_320_primii_pasi_pe_cabinetul_nou_pas_cu_pas_verzi_dispar_si_raman_in_ajutor"
+ },
+ {
+  "fisier": "static/js/ecrane/inceput.js",
+  "ancora": "if (!r || r.toate_facute || !(r.carduri || []).length)",
+  "inlocuire": "if (!r || !(r.carduri || []).length)",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_320_primii_pasi_pe_cabinetul_nou_pas_cu_pas_verzi_dispar_si_raman_in_ajutor"
+ },
+ {
+  "fisier": "static/js/ecrane/inceput.js",
+  "ancora": "r.carduri.map((c) => htmlCard(c, true)).join(\"\")",
+  "inlocuire": "r.carduri.map((c) => htmlCard(c, false)).join(\"\")",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_320_primii_pasi_pe_cabinetul_nou_pas_cu_pas_verzi_dispar_si_raman_in_ajutor"
+ },
+ {
+  "fisier": "static/stil.css",
+  "ancora": "max-height: calc(100dvh - 48px); overflow-y: auto; }   /* [C111] încape pe ecran */",
+  "inlocuire": "}",
+  "test": "frontend_test/e2e/e2e_lot12_start.py::test_def_c111_inregistrarea_cabinetului_incape_pe_ecran"
+ }
+]

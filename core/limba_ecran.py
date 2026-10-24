@@ -67,10 +67,10 @@ PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "
 _ACORD = re.compile(r"(?<![\w.,])(?:1|\d*(?:[2-9]\d|00)) (?:%s)(?![\wăâîșț-])" % "|".join(map(re.escape, PLURALE)))
 #: [comanda Costin 10.10.2026 pct.5: „Vocea «nu pot …» din Control fiscal: se rescrie la persoana a treia («nu se poate verifica …»), pe
 #: toată clasa.”] Persoana întâi a aplicației. „nu pot fi …” e persoana a treia plural („două firme nu pot avea”) — nu intră.
-VOCE = re.compile(r"(?i)(?:(?:^|[.:;—–(,«„“\x22'>\n]\s*|\b(?:deci|dar|iar|că|încă|atunci|ea|el)\s+)nu pot(?!\s+fi\b)(?=\s+[a-zăâîșț])"
+VOCE = re.compile(r"(?i)(?:(?:^|[.:;—–(,«„“\x22'>\n]\s*|\b(?:deci|dar|iar|că|încă|atunci|ea|el)\s+)(?:nu pot(?!\s+fi\b)(?=\s+[a-zăâîșț])|citesc(?=\s))"
                   r"|(?<![\w-])(?:nu (?:le|o|-l) pot|n-am putut|nu am putut|nu văd|nu știu|nu stiu|nu reușesc|măsurătorii mele|verificarea mea|"
                   r"am scos|am găsit|am verificat|am calculat|am refuzat|am citit|am numărat|am primit|am notat|am trimis|ți-am|nu acuz|"
-                  r"nu găsesc|nu am găsit|n-am ce|n-am verificat|pot doar|aștept)(?![\w]))")
+                  r"nu găsesc|nu am găsit|n-am ce|n-am verificat|pot doar|aștept|nu mă pronunț|nu ma pronunt|nu am(?=\s)|nu putem|nu l-am|nu le-am)(?![\w]))")   # [C132] „Nu mă pronunț încă”
 EXCEPTII_ACRONIM = {"RO", "UE", "CF", "MF", "PF", "PJ", "IC", "ID", "OK", "TVA", "CNP", "CUI", "CIF", "IBAN", "PDF", "XML", "BNR", "SPV",
                     "ANAF", "DUK", "SAGA", "CAEN", "OMFP", "OPANAF", "CASS", "CAS", "CAM", "UIT", "COR", "REGES", "NIR", "SRL", "SA",
                     "PFA", "II", "IF", "ONG", "C&D", "CD", "ZIP", "CSV", "GDPR", "HG", "OUG", "MO", "AMEF", "HORECA", "SAF", "SAFT",

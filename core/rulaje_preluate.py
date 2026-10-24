@@ -30,9 +30,10 @@ cheltuieli pe CREDIT. Pe notele din iConta.eu închiderea se scoate după contra
 contului (OMFP 1802/2014 pct.594, `core/plan_functiune.py`: A = debit, P = credit; bifuncționalul rămâne cu ambele).
 *INTERPRETARE CU TEMEI:* latura opusă a unui cont de venituri / cheltuieli din balanța preluată se socotește închidere în 121. Alternativa
 respinsă: rulajul net (credit − debit) — la închiderea lunară dă 0 pe 707, exact pierderea cifrei de afaceri din comandă. Limita: o
-stornare „în negru” pe latura opusă (nu „în roșu”) s-ar număra ca închidere; D101 și F20 citeau deja numai latura funcțiunii pe note,
-deci se schimbă numai rândurile cu rulaj net (amenzile 6581 la D101 rd.25, variația stocurilor 711 / 712 la F20 / F30). De reconfirmat dacă
-importul ajunge să aducă închiderea separat.
+stornare „în negru” pe latura opusă (nu „în roșu”) s-ar număra ca închidere. De reconfirmat dacă importul ajunge să aducă închiderea
+separat. [lotul 12, C119 / C143] Pe NOTE (unde închiderea se scoate după contrapartida 121), D100, D101 și bilanțul (F20 / F30) citesc
+rulajul NET al contului (credit − debit la venituri, debit − credit la cheltuieli): debitul 707 = 4427 al notei Raportului Z scade
+venitul; aici, după `fara_inchidere`, latura opusă e deja 0, deci rulajul net al rândurilor preluate e chiar latura funcțiunii.
 """
 import datetime as _dt
 from decimal import Decimal

@@ -160,12 +160,8 @@ def test_pinul_e_gol_sau_motivat():
 
 # Citiri de cont care inca nu trec prin `cere_cont`, cu motivul fiecareia.
 NELEGATE = {
-    # [P7 · valul use-case] Cheia purta `main.py`; corpul rutei a plecat in stratul use-case, cu
-    # citirea neatinsa. Se rescrie numai LOCUL, nu si motivul.
-    "core/uc_tenants.py::factura_primita_valideaza::corp.get('cont')":
-        "citirea e INAINTE de `with db.get_conn()`, deci nu exista nici conn, nici schema in acel "
-        "punct, si nu e intr-un `try` care prinde ValueError — un refuz de acolo ar iesi 500. "
-        "Se leaga mutand citirea in interiorul blocului, ca la /export-extracomunitar",
+    # [lotul 12, 477] scoasă: contul facturii primite se citește acum în `uc_factura_primita.cont_facturii`, cu conn și schema,
+    # prin `cont_valid.cere_cont` (motivul vechi — citirea înainte de `with db.get_conn()` — nu mai există)
     "core/firma_profil_api.py::salveaza_date::date.get('cont_venit_implicit')":
         "e o PREFERINTA de profil, nu un cont dintr-o nota, iar `salveaza_date(conn, date)` n-are "
         "`schema` in semnatura. Confruntarea are sens la FOLOSIRE, acolo unde preferinta ajunge "

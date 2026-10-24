@@ -56,6 +56,16 @@ EXCEPTII = {
         "fragmentul comun `_GRUP_DOC` (o singură definiție a cheii documentului, folosită și de elementele cozii și de "
         "migrarea publicată `migrare_grup_coada`) nu poartă schemă; funcția face `SET LOCAL search_path` pe schema "
         "firmei înaintea lui, iar tabelul principal (`inregistrari`) e prefixat",
+    # [lotul 12, clasa deficienței 80] `notele_documentului` (validarea din Registrul jurnal validează documentul întreg) citește cheia
+    # documentului prin același fragment comun, exact ca `ciornele_documentului` de deasupra
+    "coada_api.py:notele_documentului.miscari_stoc":
+        "fragmentul comun `_GRUP_DOC` (o singură definiție a cheii documentului, folosită și de elementele cozii și de "
+        "migrarea publicată `migrare_grup_coada`) nu poartă schemă; funcția face `SET LOCAL search_path` pe schema "
+        "firmei înaintea lui, iar tabelul principal (`inregistrari`) e prefixat",
+    "coada_api.py:notele_documentului.nir":
+        "fragmentul comun `_GRUP_DOC` (o singură definiție a cheii documentului, folosită și de elementele cozii și de "
+        "migrarea publicată `migrare_grup_coada`) nu poartă schemă; funcția face `SET LOCAL search_path` pe schema "
+        "firmei înaintea lui, iar tabelul principal (`inregistrari`) e prefixat",
     "solduri_parteneri_api.py:importa.solduri_parteneri":
         "`schema` e opțional (None = schema conexiunii) și tot modulul e construit pe search_path: `asigura_tabel(conn)`, "
         "`existent(conn)`, `rezumat(conn)` n-au schemă; prefixarea numai a DELETE/INSERT ar despărți scrierea de "

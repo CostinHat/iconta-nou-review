@@ -17,14 +17,14 @@ import json
 import os
 import re
 import time
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 
 import pytest
 
 from conftest import BAZA, INALT, LAT, PREFIX_FIRMA, TELEFON_TEST, _scoate_firmele_e2e, ai_pregateste, cui_cu_control, firma_noua
-from conftest import perioada_incheiata, sql
-from e2e_bloc_a import (T_COMERT, _api, _card, _deschide_factura, _deschide_firme, _ok, _pdf_ok, _pdf_text, _scoate_cont, cont_asistent,
-                        ecran_cont, emite_api, pregateste_firma, PRODUS)
+from conftest import alege_perioada, alege_tipul, perioada_incheiata, sql
+from e2e_bloc_a import (CLIENT, T_COMERT, _api, _card, _deschide_emiterea, _deschide_factura, _deschide_firme, _ok, _pdf_ok, _pdf_text,
+                        _scoate_cont, cont_asistent, ecran_cont, emite_api, pregateste_firma, PRODUS)
 from e2e_bloc_b import _cnp
 from e2e_bloc_c import _declaratie_pas1, _trimite_si_asteapta
 from e2e_bloc_d import LUNA_TRECUTA, _control_firma, _coada, _genereaza, _rand_salariat, firma_sal  # noqa: F401 — firma_sal: fixtura
@@ -651,4 +651,184 @@ def test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei(browser, r
             break
         time.sleep(0.5)
     assert sql("SELECT citit FROM public.raportari_mesaje WHERE raportare_id = %s AND text = %s", (rid, raspuns)) == [(True,)]
+
+
+# ── comanda 12.1 pct.7 — pozițiile pilot validate fără test propriu: F026, F087, F252, F254 ────────────────────────────────────────
+def _valideaza_notele(e, f, inceput, sfarsit):
+    """Date de PORNIRE: notele în ciornă ale perioadei, validate de contabilul-șef pe ruta butonului „Validează” din Registrul jurnal
+    (validarea are pasul ei în scenariul pilotului, `e2e_pilot_luna.py::test_pilot_24_notele_lunii_validate`)."""
+    for (nid,) in sql('SELECT id FROM "%s".inregistrari WHERE status <> \'validata\' AND data >= %%s AND data <= %%s ORDER BY data, id'
+                      % f["schema"], (inceput, sfarsit)):
+        _ok(_api(e, "POST", "/tenants/%d/jurnal/%d/valideaza" % (f["tenant_id"], nid), {}), "validarea notei %s" % nid)
+
+
+def _pas2(e, f, tip, an, luna=None, trim=None):
+    """Firma -> Declarații -> tipul -> perioada -> „Continuă →”: pasul 2, fără refuz."""
+    pg = e.pg
+    e.firma(f["nume"])
+    pg.click("#fa-declaratii")
+    pg.wait_for_selector(_F + "#dec-tip", timeout=30000)
+    alege_tipul(pg, tip, zona=_F)
+    alege_perioada(pg, an, luna, trim, zona=_F)
+    pg.click(_F + "#dec-continua")
+    pg.wait_for_function("() => { const t = [...document.querySelectorAll('.fereastra')].pop().innerText; "
+                         "return t.includes('Pasul 2 din 3 — verifică') || !!document.querySelector('.fereastra:last-of-type .dec-eroare'); }",
+                         timeout=120000)
+    e.captura("%s_pas2" % tip)
+    assert not pg.locator(_F + ".dec-eroare").count(), e.fereastra()[:3000]
+    ok = pg.locator(_F + ".dec-ok")
+    assert ok.count() == 1 and "fără erori" in ok.inner_text(), e.fereastra()[:3000]   # validatorul oficial DUKIntegrator
+    return pg.locator(_F + "details.dec-xml:has(summary:text('Vezi XML-ul generat')) pre").first.text_content()
+
+
+def _atr(xml, nume):
+    m = re.search(r'\b%s="([^"]*)"' % nume, xml)
+    return m.group(1) if m else None
+
+
+# ── F026 — Declarația D100 (impozitul micro) ─────────────────────────────────────────────────────────────────────────────────────
+def test_pozitie_f026_d100_micro_e_1_la_suta_din_veniturile_trimestrului(patron, firma_proaspata):
+    """F026. Pașii: microîntreprinderea (vectorul fiscal: micro) cu două facturi de servicii în trimestrul încheiat (25.000,00 și 12.300,00
+    lei pe 704, emise pe ruta formularului, notele validate) -> Declarații -> D100 -> trimestrul -> „Continuă”: validat cu DUKIntegrator,
+    fără erori; rezumatul „cont 704: 37.300,00 lei” și „Baza impozabilă: 37.300,00 lei × cota 1% = cod 121: 373 lei (rotunjit la leu).”;
+    XML-ul are obligația 121 cu suma 373 și cota 1."""
+    f = firma_proaspata
+    pregateste_firma(patron, f)
+    p = perioada_incheiata("trimestrial")
+    for zi, pret in ((p.inceput + _dt.timedelta(days=9), 25000.0), (p.sfarsit - _dt.timedelta(days=4), 12300.0)):
+        emite_api(patron, f, linii=[{"descriere": PRODUS, "cantitate": 1, "um": "ora", "pret_unitar": pret, "cota_tva": 21, "cota_propusa": 21,
+                                     "articol_id": None}], data_emitere=zi)
+    _valideaza_notele(patron, f, p.inceput, p.sfarsit)
+    xml = _pas2(patron, f, "d100", p.an, trim=p.trim)
+    t = " ".join(patron.fereastra().split())
+    baza = Decimal("37300.00")
+    # CF art.51 alin.(1): „Cota de impozit pe veniturile microîntreprinderilor este de 1%” (la 01-01-2026, OUG 89/2025 art.I pct.4);
+    # CF art.53 alin.(1): baza = veniturile; CF art.56 alin.(1): calculul și plata trimestrial; D100 suma_dat N(15) (d100_struct_anaf.txt)
+    impozit = (baza * Decimal("0.01")).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+    assert "cont 704: 37.300,00 lei" in t, t[:3000]
+    assert "Baza impozabilă: 37.300,00 lei × cota 1%% = cod 121: %s lei (rotunjit la leu)." % impozit in t, t[:3000]
+    assert re.search(r'cod_oblig="121"[^>]*suma_dat="%s"' % impozit, xml) and 'cota="1"' in xml, xml[:3000]
+
+
+# ── F087 — Statul de plată și fluturașii ─────────────────────────────────────────────────────────────────────────────────────────
+def test_pozitie_f087_fluturasul_si_nota_statului_au_netul_statului(patron, firma_sal):
+    """F087. Pașii: Salariați -> statul lunii trecute (salariatul cu 5.000 lei brut) -> „Fluturaș”: PDF-ul „Fluturaș de salariu — LL/AAAA”,
+    cu „Salariu brut” = brutul și „Salariu net” = netul de pe rândul statului, CAS (25%) -> „Contabilizează statul”: „Contul 421 se
+    soldează exact cu netul fluturașilor (<netul> lei).”"""
+    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    s = _sume_rand(_rand_salariat(patron))
+    pg = patron.pg
+    with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
+        pg.click(_F + "[data-flut] >> nth=0")
+    text, _titlu = _pdf_text(_pdf_ok(patron, rr))
+    patron.captura("fluturas")
+    assert "Fluturaș de salariu — %02d/%d" % (LUNA_TRECUTA.month, LUNA_TRECUTA.year) in text, text[:1500]
+    # CF art.138 lit.a: CAS 25%; netul fluturașului = netul statului (aceeași sumă ca nota și D112)
+    assert re.search(r"Salariu brut\s+%s" % re.escape(s["brut"][1]), text) and "CAS (25%)" in text, text[:2000]
+    assert re.search(r"Salariu net\s+%s" % re.escape(s["net"][1]), text), text[:2000]
+    with pg.expect_response(lambda x: "/salarii-contare/propunere" in x.url, timeout=90000):
+        pg.click(_F + "#sp-contare")
+    pg.wait_for_selector("#sp-contare-zona table", timeout=30000)
+    patron.captura("propunerea")
+    assert "Contul 421 se soldează exact cu netul fluturașilor (%s lei)." % s["net"][1] in patron.fereastra(), patron.fereastra()[:3000]
+
+
+# ── F252 — Clasificare TVA pe factură ────────────────────────────────────────────────────────────────────────────────────────────
+def test_pozitie_f252_tara_partenerului_duce_factura_pe_randul_ei_din_d300(patron, firma_proaspata):
+    """F252. Pașii: Emite factură -> o zi din luna încheiată -> CUI-ul clientului din Irlanda (IE…): țara se pune singură „IE” -> operațiunea
+    „normal” -> serviciul, 1 × 1.000,00, cota 0% -> categoria „serviciu_extern” (prestare cu locul în afara României, CF art.278 alin.(2))
+    -> „Emite” -> nota validată -> Declarații -> D300 pe luna: validat cu DUKIntegrator; factura e pe rd.3 (R3_1 = 1.000) și rd.3.1
+    (R3_1_1 = 1.000, din care servicii intracomunitare), nu pe rd.9 (21%)."""
+    f = firma_proaspata
+    pregateste_firma(patron, f)
+    L = perioada_incheiata("lunar")
+    zi = L.inceput.replace(day=12)
+    _deschide_emiterea(patron, f["nume"])
+    pg = patron.pg
+    pg.fill("#em-data", zi.isoformat())
+    pg.dispatch_event("#em-data", "change")
+    pg.fill("#em-cui", "IE9999999ZZ")
+    pg.dispatch_event("#em-cui", "change")
+    pg.wait_for_function("() => document.querySelector('#em-tara').value === 'IE'", timeout=10000)
+    pg.fill("#em-nume", "Client Irlanda F252 Ltd")
+    pg.fill("#em-adresa", "1 Grand Canal Square")
+    pg.fill("#em-oras", "Dublin")
+    assert pg.input_value("#em-tipop") == "normal"
+    pg.fill("#em-l0-descriere", PRODUS)
+    pg.wait_for_function("() => document.querySelector('#em-l0-cota').value !== ''", timeout=20000)
+    pg.fill("#em-l0-cantitate", "1")
+    pg.fill("#em-l0-pret_unitar", "1000")
+    pg.select_option("#em-l0-cota", "0")
+    pg.wait_for_selector("#em-l0-categorie", state="visible", timeout=10000)
+    pg.select_option("#em-l0-categorie", "serviciu_extern")
+    with pg.expect_response(lambda r: r.url.endswith("/facturi/emite"), timeout=60000) as rr:
+        pg.click("#em-emite")
+    assert rr.value.status == 200, rr.value.text()[:300]
+    fid = rr.value.json()["factura_id"]
+    pg.wait_for_selector("#em-rezultat.em-bun", timeout=30000)
+    patron.captura("emisa")
+    assert sql('SELECT tert_tara, tip_operatiune FROM "%s".facturi WHERE id = %%s' % f["schema"], (fid,)) == [("IE", "normal")]
+    _valideaza_notele(patron, f, L.inceput, L.sfarsit)
+    xml = _pas2(patron, f, "d300", L.an, luna=L.luna)
+    # CF art.278 alin.(2) (locul prestării la beneficiarul persoană impozabilă din UE) -> D300 rd.3 / rd.3.1 (OPANAF 174/2026)
+    assert (_atr(xml, "R3_1"), _atr(xml, "R3_1_1"), _atr(xml, "R9_1")) == ("1000", "1000", None), xml[:3000]
+
+
+# ── F254 — Factură emisă pe baza bonului fiscal ──────────────────────────────────────────────────────────────────────────────────
+def test_pozitie_f254_factura_pe_bon_nu_se_numara_a_doua_oara(patron, firma_proaspata):
+    """F254. Pașii: Raport Z -> o zi din luna încheiată, casa 8000000001, raportul 0254, total 21% 242,00 numerar, 3 bonuri -> „Generează
+    notă” -> „Fără marfă din stoc” -> „Da, fără marfă” -> „Validează” -> Emite factură -> aceeași zi, DANTE -> serviciul, 1 × 100,00, 21% -> „Emisă pe baza
+    bonului fiscal”: bonul 0002 din ziua Z-ului -> „Emite”: fără „Pleacă marfa acum?”, total 121,00 RON; factura n-are notă -> Declarații ->
+    D394 pe luna: validat cu DUKIntegrator; factura e în op1 (L, DANTE, baza 100, TVA 21), iar Î1 (op2) are 1 casă, 3 bonuri și totalul
+    242 − 121 = 121 (baza 100, TVA 21)."""
+    f = firma_proaspata
+    pregateste_firma(patron, f)
+    L = perioada_incheiata("lunar")
+    zi = L.inceput.replace(day=15)
+    pg = patron.pg
+    patron.firma(f["nume"])
+    pg.click("#fa-raportz")
+    pg.wait_for_selector("#z-salveaza", timeout=30000)
+    for sel, v in (("#z-data", zi.isoformat()), ("#z-nui", "8000000001"), ("#z-nr", "0254"), ("#z-21", "242"), ("#z-num", "242"),
+                   ("#z-card", "0"), ("#z-bonuri", "3")):
+        pg.fill(sel, v)
+    pg.click("#z-salveaza")
+    pg.wait_for_function("() => (document.querySelector('#z-rezultat') || {innerText: ''}).innerText.includes('Notă generată')", timeout=30000)
+    (zid,) = [r[0] for r in sql('SELECT id FROM "%s".inregistrari WHERE numar = %%s' % f["schema"], ("Z-8000000001-0254",))]
+    pg.wait_for_selector(".zd-fara[data-z='%d']" % zid, timeout=20000)
+    pg.click(".zd-fara[data-z='%d']" % zid)
+    pg.click("#ca-ok")   # „Declari că în acest raport Z nu s-a vândut nicio marfă din stoc…?” -> „Da, fără marfă”
+    pg.wait_for_selector("#zd-val-%d" % zid, timeout=20000)
+    pg.click("#zd-val-%d" % zid)
+    pg.wait_for_function("(z) => !document.querySelector('#zd-val-' + z)", arg=zid, timeout=30000)
+    assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (zid,)) == [("validata",)]
+    _deschide_emiterea(patron, f["nume"])
+    pg.fill("#em-data", zi.isoformat())
+    pg.dispatch_event("#em-data", "change")
+    for sel, v in CLIENT.items():
+        pg.fill(sel, v)
+    pg.fill("#em-l0-descriere", PRODUS)
+    pg.wait_for_function("() => document.querySelector('#em-l0-cota').value === '21'", timeout=20000)
+    pg.fill("#em-l0-cantitate", "1")
+    pg.fill("#em-l0-pret_unitar", "100")
+    pg.fill("#em-bon-nr", "0002")
+    pg.fill("#em-bon-data", zi.isoformat())
+    with pg.expect_response(lambda r: r.url.endswith("/facturi/emite"), timeout=60000) as rr:
+        pg.click("#em-emite")
+    assert rr.value.status == 200, rr.value.text()[:300]
+    fid = rr.value.json()["factura_id"]
+    pg.wait_for_selector("#em-rezultat.em-bun", timeout=30000)
+    patron.captura("emisa")
+    assert pg.locator("#em-poarta-da").count() == 0, "factura pe bon a întrebat „Pleacă marfa acum?”"
+    assert "total 121,00 RON" in pg.inner_text("#em-rezultat"), pg.inner_text("#em-rezultat")
+    # HG 1/2016 pct.97 alin.(1): factura „conform bon fiscal” — vânzarea e deja în raportul Z, deci nu primește notă de vânzare
+    assert sql('SELECT count(*) FROM "%s".inregistrari WHERE factura_id = %%s' % f["schema"], (fid,)) == [(0,)]
+    xml = _pas2(patron, f, "d394", L.an, luna=L.luna)
+    op1 = [dict(re.findall(r'(\w+)="([^"]*)"', m)) for m in re.findall(r"<op1 ([^>]*?)/?>", xml)]
+    assert [(o.get("tip"), o.get("cuiP"), o.get("baza"), o.get("tva")) for o in op1] == [("L", "14399840", "100", "21")], op1
+    m = re.search(r"<op2 ([^>]*?)/?>", xml)
+    a = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1))) if m else {}
+    # OPANAF 2194/2025 anexa D394 lit.G: Î1 = încasările prin AMEF „cu excepția celor pentru care s-au emis facturi”
+    assert (a.get("tip_op2"), a.get("nrAMEF"), a.get("nrBF"), a.get("total"), a.get("baza21"), a.get("TVA21")) == (
+        "I1", "1", "3", "121", "100", "21"), a
 

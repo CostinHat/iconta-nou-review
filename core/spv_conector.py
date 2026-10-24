@@ -72,6 +72,49 @@ class EroareSpvRefreshEsuat(EroareSpv):
     """Refresh-ul a esuat (refresh_token invalid/expirat)."""
 
 
+#: [598 / 600, lotul 12] Ce i se spune contabilului când drumul spre ANAF nu reușește: pe înțelesul lui, fără coduri HTTP, fără numele
+#: excepțiilor, fără „state” / „token”, și cu ce face aplicația în loc. Textul excepției (detaliul tehnic) rămâne în jurnalul serverului,
+#: nu pe ecran. `{ce}` = ce nu s-a întâmplat din cauza asta, spus de apelant („Factura nu a plecat în SPV și rămâne netrimisă.”).
+MESAJ_SPV_NECONECTAT = ("Cabinetul nu e conectat la SPV. {ce} Conectează SPV din Setări cont → Conectare SPV (cu certificatul), apoi "
+                        "încearcă din nou.")
+MESAJ_SPV_ACCES_EXPIRAT = ("Accesul cabinetului la SPV a expirat și nu s-a putut reînnoi singur. {ce} Reconectează SPV din Setări cont → "
+                           "Conectare SPV (cu certificatul), apoi încearcă din nou.")
+MESAJ_SPV_FARA_DREPT = ("ANAF a refuzat accesul: certificatul conectat al cabinetului nu are drept pentru această operație. {ce} Verifică "
+                        "în Setări cont → Conectare SPV pe ce firme are drept certificatul.")
+MESAJ_ANAF_FARA_RASPUNS = "ANAF nu a răspuns la timp. {ce} Încearcă din nou peste câteva minute."
+MESAJ_SPV_NEREUSIT = ("Legătura cu ANAF nu a reușit dintr-o eroare a aplicației, înregistrată pentru echipa iConta.eu. {ce} Încearcă din "
+                      "nou; dacă se repetă, scrie-ne din Suport.")
+
+
+#: [C42 + 598] citirea automată din SPV: ANAF n-a răspuns (se reia singură) / cabinetul fără conexiune — motivele aplicației pe citire
+MESAJ_CITIRE_ANAF_TACE = "ANAF n-a răspuns la timp; citirea se reia singură la următoarea rulare."
+MESAJ_CITIRE_NECONECTAT = "Cabinetul nu e conectat la SPV."
+
+
+def e_motivul_aplicatiei(text):
+    """PURĂ. [598] Textul scris pe o citire / trimitere e motivul spus de aplicație (șabloanele de aici), nu răspunsul ANAF — pe acela
+    ecranul îl citează („a primit de la ANAF: …”), pe al aplicației nu."""
+    t = (text or "").strip()
+    inceputuri = [s.split("{ce}")[0].strip() for s in (MESAJ_SPV_NECONECTAT, MESAJ_SPV_ACCES_EXPIRAT, MESAJ_SPV_FARA_DREPT,
+                                                       MESAJ_ANAF_FARA_RASPUNS, MESAJ_SPV_NEREUSIT)]
+    return bool(t) and (t in (MESAJ_CITIRE_ANAF_TACE, MESAJ_CITIRE_NECONECTAT) or any(t.startswith(i) for i in inceputuri))
+
+
+def mesaj_pentru_contabil(eroare, ce):
+    """PURĂ. Mesajul de pe ecran pentru o eroare pe drumul spre ANAF (conector, rețea, răspuns neașteptat). Nu conține textul excepției."""
+    if isinstance(eroare, EroareSpvRefreshEsuat):
+        sablon = MESAJ_SPV_ACCES_EXPIRAT
+    elif isinstance(eroare, EroareSpvNeconectat):
+        sablon = MESAJ_SPV_NECONECTAT
+    elif isinstance(eroare, EroareSpvFaraDrept):
+        sablon = MESAJ_SPV_FARA_DREPT
+    elif isinstance(eroare, (requests.exceptions.RequestException, OSError)):
+        sablon = MESAJ_ANAF_FARA_RASPUNS
+    else:
+        sablon = MESAJ_SPV_NEREUSIT
+    return " ".join(sablon.format(ce=(ce or "").strip()).split())
+
+
 # ============================================================
 #  PRINCIPAL — cabinet XOR firma gratuita (F160, DECIZII 18.07)
 #  Tokenul apartine unui PRINCIPAL, nu unei tabele de firme. Aici e SURSA UNICA a
@@ -190,10 +233,20 @@ def genereaza_state(principal, acum=None):
         cfg_secret("JWT_SECRET"), durata_sec=STATE_DURATA_SEC, acum=acum)
 
 
+class EroareStateExpirat(EroareSpv):
+    """[600] State-ul e al nostru, dar a trecut de `STATE_DURATA_SEC`: drumul la ANAF a durat prea mult."""
+
+
 def verifica_state(state, acum=None):
-    """Verifica state-ul, intoarce Principal. Ridica EroareSpv la invalid/expirat."""
-    r = nucleu.verifica_token(state, cfg_secret("JWT_SECRET"), acum=acum)
+    """Verifica state-ul, intoarce Principal. Ridica EroareStateExpirat la expirat, EroareSpv la invalid / ilizibil."""
+    secret = cfg_secret("JWT_SECRET")
+    try:
+        r = nucleu.verifica_token(state, secret, acum=acum)
+    except (ValueError, TypeError, UnicodeDecodeError) as e:   # [600] base64 / JSON stricat: tot „state invalid”, nu 500
+        raise EroareSpv("state ilizibil: %s" % type(e).__name__)
     if not r["ok"]:
+        if r.get("cod") == "TOKEN_EXPIRAT":
+            raise EroareStateExpirat("state expirat")
         raise EroareSpv("state invalid: %s" % r.get("mesaj", r.get("cod")))
     p = r["payload"]
     if p.get("scop") != "spv_state" or "pk" not in p or "pi" not in p:
@@ -410,7 +463,9 @@ def stare_firma(conn, principal, cui, acum_dt=None):
                         (cui,) + tuple(params))
             r = cur.fetchone()
         if r:
-            st.update({"verificat_la": r[0].isoformat() if r[0] else None, "are_drept": r[1], "eroare": r[2], "mesaje": r[3]})
+            st.update({"verificat_la": r[0].isoformat() if r[0] else None, "are_drept": r[1], "eroare": r[2], "mesaje": r[3],
+                       # [598] ecranul citează numai răspunsul ANAF; motivul aplicației (ANAF n-a răspuns, acces expirat) îl spune ca atare
+                       "eroare_de_la_anaf": bool(r[2]) and not e_motivul_aplicatiei(r[2])})
             if r[1] is False:
                 st["mesaj"] = mesaj_fara_drept(cui, r[2])   # [17.10.2026] spus la fel peste tot (spv_stare.js, refuzul trimiterii)
     return st

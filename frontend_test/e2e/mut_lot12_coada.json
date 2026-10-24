@@ -1,0 +1,38 @@
+[
+ {
+  "fisier": "static/js/ecrane/coada_trimite.js",
+  "ancora": "return /[.!?…]$/.test(t) ? t : t + \".\";",
+  "inlocuire": "return t + \".\";",
+  "test": "frontend_test/e2e/e2e_lot12_coada.py::test_def_499_motivul_incheiat_de_om_nu_primeste_al_doilea_punct_pe_nota"
+ },
+ {
+  "fisier": "static/js/ecrane/coada_trimite.js",
+  "ancora": "return /[.!?…]$/.test(t) ? t : t + \".\";",
+  "inlocuire": "return t + \".\";",
+  "test": "frontend_test/e2e/e2e_lot12_coada.py::test_def_499_motivul_incheiat_de_om_nu_primeste_al_doilea_punct_pe_nir"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "Note f\\u0103r\\u0103 document justificativ (nici document scris, nici factur\\u0103 legat\\u0103)",
+  "inlocuire": "F\\u0103r\\u0103 document justificativ derivabil",
+  "test": "frontend_test/e2e/e2e_lot12_coada.py::test_def_500_totalizarea_jurnalului_numeste_notele_fara_document_fara_derivabil"
+ },
+ {
+  "fisier": "static/js/ecrane/validat.js",
+  "ancora": "    focusFaraSalt(input);\n    const confirma = async () => {",
+  "inlocuire": "    focusFaraSalt(input);\n    input.addEventListener(\"input\", () => { corp.querySelector(\"#dlg-ok\").style.opacity = \"0.55\"; });\n    const confirma = async () => {",
+  "test": "frontend_test/e2e/e2e_lot12_coada.py::test_def_92_respinge_ramane_rosu_plin_si_activ_cu_motivul_completat"
+ },
+ {
+  "fisier": "static/js/ecrane/cabinet.js",
+  "ancora": "const noteDeValidat = coada.filter((c) => c.fel === \"nota\" && c.stare === \"la_senior\").length;",
+  "inlocuire": "const noteDeValidat = coada.filter((c) => c.fel === \"nota\" && (c.stare === \"la_senior\" || c.stare === \"aprobata\")).length;",
+  "test": "frontend_test/e2e/e2e_lot12_coada.py::test_def_52_cardul_si_fereastra_numara_exact_notele_de_validat"
+ },
+ {
+  "fisier": "core/coada_api.py",
+  "ancora": "    return [int(nota_id)] + [i for i in frati if i != int(nota_id)]",
+  "inlocuire": "    return [int(nota_id)]",
+  "test": "frontend_test/e2e/e2e_lot12_coada.py::test_def_c107_validarea_contarii_din_jurnal_valideaza_si_iesirea_din_stoc"
+ }
+]

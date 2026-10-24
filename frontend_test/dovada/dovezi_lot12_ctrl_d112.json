@@ -1,0 +1,289 @@
+[
+ {
+  "nr": "482",
+  "firma": "tenant_9053",
+  "descriere": "F5: Popescu Elena -> «Concediu» -> certificat cod 01 INIȚIAL, 01–10.10.2026, 7 zile lucrătoare -> statul 10/2026, «Compoziția netului»: sub «Indemnizație CM (netă)» stau brutul indemnizației și reținerile din ea (CAS, CASS, impozit), cu temeiul CF art.76 alin.(1); înainte numai netul. SCRIE pe copie un certificat (îl folosesc și dovezile 43 de mai jos)",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-serie",
+    "valoare": "AB"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-numar",
+    "valoare": "4821"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-cod",
+    "valoare": "01"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-acord",
+    "valoare": "2026-10-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-inceput",
+    "valoare": "2026-10-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-10-10"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": "7"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-continuare",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-spital",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-program-national",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-ven6",
+    "valoare": "30000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile6",
+    "valoare": "125"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-rezultat .panou"
+   },
+   {
+    "captura": "482_f5_certificat_cod01.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .fir-veriga",
+    "text": "F5 SRL Salariati SRL"
+   },
+   {
+    "asteapta": "#fa-salariati"
+   },
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena')"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') details.dec-xml summary"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "din indemnizația CM brută",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') details.dec-xml"
+   },
+   {
+    "contine": "reținut din indemnizație: CAS (25%)",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') details.dec-xml"
+   },
+   {
+    "contine": "reținut din indemnizație: CASS (10%)",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') details.dec-xml"
+   },
+   {
+    "contine": "reținut din indemnizație: impozit pe venit",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') details.dec-xml"
+   }
+  ],
+  "captura": "482_f5_retinerile_din_indemnizatie.png"
+ },
+ {
+  "nr": "43",
+  "firma": "tenant_9053",
+  "descriere": "F5: statul 10/2026 al Popescu Elena, cu certificatul cod 01 inițial (01–10.10.2026, 7 zile, ziua de diminuare prima) scris de dovada 482: «Zile de concediu medical: 7» — salariul se proratează pe zilele certificatului, nu pe cele 6 plătite (OUG 91/2025 art.II alin.(1))",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena')"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') details.dec-xml summary"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Zile de concediu medical: 7",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Popescu Elena') details.dec-xml"
+   }
+  ],
+  "captura": "43_f5_stat_zilele_certificatului.png"
+ },
+ {
+  "nr": "43",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 10/2026 cu certificatul de mai sus: secțiunea D a certificatului (zilele plătite = zilele certificatului − ziua de diminuare) și zilele lucrate fără cele 7 ale certificatului; fără erori (posibilă după încheierea lunii, deficiența 383)",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "<asiguratD"
+   }
+  ],
+  "captura": "43_f5_d112_10_2026_zile_certificat.png",
+  "posibila_de_la": "2026-11-01"
+ },
+ {
+  "nr": "482",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 10/2026 cu certificatul de mai sus: baza CAM (B1_5 / B4_14 / C4_baza) cuprinde indemnizația suportată de angajator (CF art.220^4 alin.(1), art.220^5; OUG 158/2005 art.12 lit.A); fără erori la DUKIntegrator",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "<angajatorC4"
+   }
+  ],
+  "captura": "482_f5_d112_10_2026_baza_cam.png",
+  "posibila_de_la": "2026-11-01"
+ },
+ {
+  "nr": "482",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026, pe statul vechi (contat și validat înainte de reparație), regenerat cu codul nou: fără erori la DUKIntegrator; fără concediu medical în lună, baza CAM e neschimbată (datele vechi neafectate)",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "<angajatorC4"
+   }
+  ],
+  "captura": "482_f5_vechi_d112_09_2026.png"
+ },
+ {
+  "nr": "C97",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 (statul vechi) regenerat: niciun salariat al copiei n-are motivul de exceptare 4, deci toți rămân B1_2=\"0\" și au bază de șomaj (date existente neafectate); fără erori",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "B1_2=\"0\""
+   },
+   {
+    "nu_contine": "B1_2=\"1\""
+   }
+  ],
+  "captura": "c97_f5_vechi_d112_09_2026_b1_2.png"
+ },
+ {
+  "nr": "69",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 (statul vechi) validat de DUKIntegrator-ul instalat (J27.0.6, cu corecția regulii salmin din J27.0.2): «fără erori», nicio atenționare SP1B4_1 pe suma limită a contribuției minime",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "nu_contine": "a semnalat atenționări"
+   },
+   {
+    "nu_contine": "SP1B4_1"
+   }
+  ],
+  "captura": "69_f5_vechi_d112_09_2026_fara_atentionare.png"
+ }
+]

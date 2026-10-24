@@ -469,3 +469,186 @@ def eticheta(antet, j):
     orig = getattr(antet, "original", ()) or ()
     return orig[j].strip() if j < len(orig) and orig[j].strip() else (antet[j] if j < len(antet) else "")
 
+
+
+# ── firma din antetul fișierului (deficiența 599, comanda Costin 12.1) ─────────────────────────────────────────────────────────────────
+# Verbatim: „Importul de migrare primește fără întrebare balanța altei firme (antet «SC Firmă Probă Rulaje SRL» încărcat pe DANTE
+# INTERNATIONAL SA); compară firma din fișier cu firma aleasă și cere confirmare când diferă, la toate importurile.” Exporturile au
+# deasupra antetului titlul raportului, firma și perioada (balanța SAGA: „Balanță de verificare analitică” / „SC … SRL” / „Perioada: …”).
+# Un singur mecanism pentru toate importurile de migrare: `firma_din_antet` citește denumirea și CUI-ul din rândurile de DEASUPRA
+# antetului, `confrunta_firma` le compară cu firma aleasă. Comparația denumirilor nu ține seama de forma juridică („SC”, „SRL”,
+# „S.R.L.”, „SA”, „PFA” …), de diacritice, de majuscule și de punctuație; când fișierul are CUI, CUI-ul decide. Ce nu se poate citi
+# sigur (niciun antet de tabel în primele rânduri, nicio denumire sau CUI deasupra lui) nu se compară: fișierul fără firmă în antet intră
+# ca până acum. Temei: N/A — regulă de produs (comanda 12.1).
+_ETICHETE_FIRMA = tuple(norm(e) for e in (
+    "denumirea firmei", "denumire firmă", "denumirea societății", "denumire societate", "denumirea unității", "agent economic",
+    "societatea", "societate", "firma", "unitatea", "unitate", "entitatea", "entitate", "contribuabil", "angajator"))
+_RX_CUI = re.compile(r"(?i)(?<![a-z])(?:c\.?\s?u\.?\s?i|c\.?\s?i\.?\s?f|cod(?:ul)?\s+(?:de\s+identificare\s+)?fiscal|"
+                     r"cod\s+unic\s+de\s+(?:[îi]nregistrare|identificare))(?![a-z])\.?\s*[:\-]?\s*(?:ro\s?)?([0-9]{2,10})(?![0-9])")
+_RX_ETICHETA_CUI = re.compile(r"(?i)^\s*(?:c\.?\s?u\.?\s?i|c\.?\s?i\.?\s?f|cod(?:ul)?\s+(?:de\s+identificare\s+)?fiscal|"
+                              r"cod\s+unic\s+de\s+(?:[îi]nregistrare|identificare))\.?\s*:?\s*$")
+_RX_RO_CUI = re.compile(r"(?i)^\s*ro\s?([0-9]{2,10})\s*$")
+_RX_CIFRE_CUI = re.compile(r"^\s*(?:ro\s?)?([0-9]{2,10})\s*$", re.I)
+#: formele juridice scoase la comparație (cuvintele din `norm`; literele izolate „s r l” se lipesc întâi: „srl”)
+_FORME_JURIDICE = tuple(norm(f) for f in ("persoană fizică autorizată", "întreprindere individuală", "întreprindere familială", "srl d",
+                                           "srld", "srl", "sa", "snc", "scs", "sca", "pfa", "ii", "if", "ra"))
+
+
+def _text(c):
+    return " ".join(str(c if c is not None else "").split())
+
+
+def _eticheta_firma(c):
+    """(eticheta recunoscută, restul celulei după ea) sau (None, None). „Firma: X SRL” -> („firma”, „X SRL”)."""
+    t = _text(c)
+    n = norm(t)
+    for e in _ETICHETE_FIRMA:
+        if n == e:
+            return e, ""
+        if n.startswith(e + " ") and ":" in t:
+            return e, t.split(":", 1)[1].strip()
+    return None, None
+
+
+#: formele după care o celulă de titlu se recunoaște ca denumire de firmă (fără „II” / „IF”: „Trimestrul II” e un titlu, nu o firmă —
+#: întreprinderea individuală se recunoaște numai după etichetă, „Firma: …”, sau după forma scrisă întreg)
+_FORME_RECUNOSCUTE = tuple(norm(f) for f in ("persoană fizică autorizată", "întreprindere individuală", "întreprindere familială",
+                                              "srl d", "srld", "srl", "sa", "snc", "scs", "sca", "pfa"))
+
+
+def _cuvinte_lipite(nume):
+    """Cuvintele lui `norm`, cu literele izolate lipite: „S.C. X S.R.L.” -> [„sc”, „x”, „srl”]."""
+    out, lit = [], ""
+    for w in norm(nume).split():
+        if len(w) == 1 and w.isalpha():
+            lit += w
+            continue
+        if lit:
+            out.append(lit)
+            lit = ""
+        out.append(w)
+    if lit:
+        out.append(lit)
+    return out
+
+
+def _se_termina_cu(cuv, forme):
+    return next((f for f in forme if len(cuv) > len(f.split()) and cuv[-len(f.split()):] == f.split()), None)
+
+
+def _pare_denumire_firma(t):
+    """O celulă de titlu e o denumire de firmă când poartă forma juridică: prefixul „SC” sau sufixul SRL / SA / PFA …"""
+    w = _cuvinte_lipite(t)
+    return len(w) > 1 and (w[0] == "sc" or _se_termina_cu(w, _FORME_RECUNOSCUTE) is not None)
+
+
+def _identitate_cu_eticheta(cel):
+    """Rândul poartă o identitate SCRISĂ cu eticheta ei: „Firma: X” / „Firma” + „X”, „CUI: 123” / „CUI” + „123”. Un antet de tabel
+    („Cont | CUI | Denumire”) are eticheta fără valoare, deci nu e o identitate; un rând de date („4111 | RO14399840 | DANTE”) n-are
+    etichetă."""
+    for k, c in enumerate(cel):
+        urm = cel[k + 1] if k + 1 < len(cel) else ""
+        if _RX_CUI.search(c) or (_RX_ETICHETA_CUI.match(c) and _RX_CIFRE_CUI.match(urm)):
+            return True
+        et, rest = _eticheta_firma(c)
+        if et and (rest or (urm and not _eticheta_firma(urm)[0] and not _RX_ETICHETA_CUI.match(urm))):
+            return True
+    return False
+
+
+def firma_din_antet(randuri, cauta=RANDURI_CAUTATE_ANTET):
+    """`{"denumire", "cui"}` citite din rândurile de DEASUPRA antetului tabelului, sau None.
+
+    Antetul tabelului (sau primul rând de date) = primul rând cu cel puțin trei celule completate care nu poartă o identitate cu
+    eticheta ei („Firma: …”, „CUI: …”, `_identitate_cu_eticheta`). Fără un asemenea rând în primele `cauta` rânduri, zona titlului nu se poate
+    delimita, deci nu se citește nimic (nu ghicesc printre datele tabelului: un rând de parteneri are și el denumiri și CUI-uri)."""
+    zona = None
+    titlu = []
+    for rand in (randuri or [])[:cauta]:
+        cel = [_text(c) for c in rand if _text(c)]
+        if not cel:
+            continue
+        if len(cel) >= 3 and not _identitate_cu_eticheta(cel):
+            zona = titlu
+            break
+        titlu.append(cel)
+    if not zona:
+        return None
+    denumire = cui = None
+    for cel in zona:
+        for k, c in enumerate(cel):
+            urm = cel[k + 1] if k + 1 < len(cel) else ""
+            if cui is None:
+                m = _RX_CUI.search(c) or _RX_RO_CUI.match(c)
+                if m:
+                    cui = m.group(1)
+                elif _RX_ETICHETA_CUI.match(c) and _RX_CIFRE_CUI.match(urm):
+                    cui = _RX_CIFRE_CUI.match(urm).group(1)
+            if denumire is None:
+                et, rest = _eticheta_firma(c)
+                val = (rest or (urm if not (_eticheta_firma(urm)[0] or _RX_ETICHETA_CUI.match(urm) or _RX_CUI.search(urm)) else "")) if et else ""
+                if not et and _pare_denumire_firma(_RX_CUI.split(c)[0] if _RX_CUI.search(c) else c):
+                    val = c
+                if val:
+                    m = _RX_CUI.search(val)
+                    val = (val[:m.start()] if m else val).strip(" ,;-–")
+                    denumire = val or None
+    if not denumire and not cui:
+        return None
+    return {"denumire": denumire, "cui": cui}
+
+
+def nume_firma_cuvinte(nume):
+    """Cuvintele denumirii, fără formă juridică: „S.C. Firmă Probă S.R.L.” -> [„firma”, „proba”]. Literele izolate se lipesc
+    („s r l” -> „srl”), „SC” din față și forma de la sfârșit se scot (numai cât rămâne măcar un cuvânt)."""
+    out = _cuvinte_lipite(nume)
+    if len(out) > 1 and out[0] == "sc":
+        out = out[1:]
+    f = _se_termina_cu(out, _FORME_JURIDICE)
+    while f:
+        out = out[:-len(f.split())]
+        f = _se_termina_cu(out, _FORME_JURIDICE)
+    return out
+
+
+def nume_firma_comparabil(nume):
+    """Denumirea pentru comparație: fără formă juridică, diacritice, majuscule, punctuație și spații. „DANTE INTERNATIONAL S.A.” =
+    „Dante International SA” = „dante international”."""
+    return "".join(nume_firma_cuvinte(nume))
+
+
+def confrunta_firma(din_fisier, nume_firma, cui_firma):
+    """[599] Firma din antetul fișierului (`firma_din_antet`) față de firma aleasă -> None (nimic de comparat) sau afirmația comparației
+    (`core/afirmatii.py`), cu `denumire`, `cui`, `difera`, `mesaj`, `intrebare` pentru ecran: un `fapt` când e aceeași firmă (`mesaj` și
+    `intrebare` None: nimic de spus), o `contradictie` cu cele două surse când diferă. CUI-ul decide când îl au amândouă; altfel
+    denumirea (`nume_firma_comparabil`)."""
+    if not din_fisier:
+        return None
+    from core import afirmatii as _af, cui_forma as _cf
+    from core.unde import Unde as _Unde
+    den, cui = din_fisier.get("denumire"), _cf.stocare(din_fisier.get("cui"))
+    cui_ales = _cf.stocare(cui_firma)
+    if cui and cui_ales:
+        difera, dupa = cui != cui_ales, "CUI-ul din antetul fișierului, față de CUI-ul firmei alese"
+    elif den and nume_firma_comparabil(nume_firma):
+        difera = nume_firma_comparabil(den) != nume_firma_comparabil(nume_firma)
+        dupa = "denumirea din antetul fișierului (fără formă juridică), față de denumirea firmei alese; fișierul n-are CUI"
+    else:
+        return None
+    ales = _text(nume_firma) or "firma aleasă"
+    if not difera:
+        return _af.afirmatie("fapt", "firma_din_fisier", "Antetul fișierului numește firma aleasă (%s)." % ales,
+                             unde=_Unde("firma", ales), temei_completitudine=dupa,
+                             denumire=den, cui=cui, difera=False, mesaj=None, intrebare=None)
+    if cui and cui_ales:
+        din = "CUI %s%s" % (cui, " („%s”)" % den if den else "")
+        aici = "firma aleasă, %s, are CUI %s" % (ales, cui_ales)
+    else:
+        din = "„%s”" % den
+        aici = "firma aleasă e %s" % ales
+    mesaj = ("Fișierul pare al altei firme: în antetul lui scrie %s, iar %s. Verifică dacă ai încărcat fișierul firmei potrivite; "
+             "datele intră numai după ce confirmi." % (din, aici))
+    return _af.afirmatie("contradictie", "firma_din_fisier", mesaj,
+                         sursele=["antetul fișierului: %s" % din, "firma aleasă: %s%s" % (ales, " (CUI %s)" % cui_ales if cui_ales else "")],
+                         denumire=den, cui=cui, difera=True, mesaj=mesaj,
+                         intrebare="Datele din fișierul cu %s intră la %s. Confirmi că sunt ale acestei firme?" % (din, ales))

@@ -91,7 +91,9 @@ def cabinet_cu_cate_unul():
                      "RETURNING id", (EMAIL_ANGAJAT, cab))[0]
         sql("UPDATE public.tenants SET accounting_firm_id = %s WHERE id = %s", (cab, firma["tenant_id"]))
         for act in ("POST /tenants/%d/facturi/emite" % firma["tenant_id"], "POST /coada/1/depune", "POST /recomanda"):
-            sql("INSERT INTO public.audit_log (actiune, user_id, tenant_id) VALUES (%s, %s, %s)", (act, uid, firma["tenant_id"]))
+            # [C101, lotul 12] rândul middleware-ului poartă statusul răspunsului; contoarele numără numai reușitele (2xx)
+            sql("INSERT INTO public.audit_log (actiune, user_id, tenant_id, detalii) VALUES (%s, %s, %s, '{\"status\": 200}')",
+                (act, uid, firma["tenant_id"]))
         yield {"id": cab, "tenant_id": firma["tenant_id"]}
     finally:
         sql("UPDATE public.tenants SET accounting_firm_id = %s WHERE id = %s", (patron_cab, firma["tenant_id"]))

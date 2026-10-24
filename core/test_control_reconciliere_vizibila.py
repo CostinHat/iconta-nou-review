@@ -144,7 +144,8 @@ def test_c_reconciliator_rupt_nu_devine_gri_tacut(monkeypatch):
         assert d300 is not None
         assert d300["stare"] == "rosu", "apel rupt trebuie ROSU (zgomotos), nu %r" % d300["stare"]
         assert d300["stare"] != "gri", "REGRESIE D300 mort: apelul rupt a devenit gri tacut"
-        assert "INTRERUPTA" in d300["eticheta"].upper(), "eticheta trebuie sa spuna ca verificarea s-a rupt"
+        # [484] eticheta ajunge pe ecran, deci e scrisă cu diacritice („— verificare întreruptă”)
+        assert "verificare întreruptă" in d300["eticheta"], "eticheta trebuie sa spuna ca verificarea s-a rupt: %r" % d300["eticheta"]
         assert rez["stare"] == "rosu"
         # OLD-vs-NEW: apelul chiar ridica TypeError (dovada rupturii). Vechiul `except Exception -> gri`
         # (main._incrucisat, verifica_tva) l-ar fi transformat in gri; suprafata noua il face rosu.

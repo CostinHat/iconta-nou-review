@@ -47,6 +47,7 @@ _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen", "activitate_exceptata_amef")
 
 from core.common import cate as _cate   # [Retest 2 pct.14]
 from core.pdf_util import serie_nr as _serie_nr   # [lotul 11, 443] seria și numărul separat în avertismente
+from core.pdf_util import data_ro as _data_ro   # [lotul 12, C152] data în mesaje, în forma pentru om (DS cap.4)
 import re
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
@@ -612,6 +613,12 @@ def judete_partener(op1, judete_p, cuiuri_p):
     return out
 
 
+
+def _eticheta_categorie_casa(categorie):
+    """[lotul 12, C152] Felul operațiunii de casă, în cuvinte (`casa_api.ETICHETE_CATEGORIE`), nu codul intern."""
+    from core.casa_api import ETICHETE_CATEGORIE as _ET
+    return _ET.get(categorie, categorie).lower()
+
 def calcul_d394(prof, perioada, date, manual=None):
     """PUR. facturi: [{cui, nume, directie, taxare_inversa, cota, baza, tva, tip_N?}].
     manual: [{tip, tip_partener, cota, cuiP, denP, nrFact, baza, tva}] pentru
@@ -622,6 +629,9 @@ def calcul_d394(prof, perioada, date, manual=None):
     serii_emise = date.get("serii") or {}
     ops = (manual or {}).get("operatiuni") or []
     intracom = 0
+    # [C19] secțiunile E / F: ce nu se declară în D394 (OPANAF 2194/2025, anexa 2, lit.E / F pct.10) — numit, nu tăcut
+    excluse_import = []   # facturi primite din afara UE care nu sunt servicii (import de bunuri) sau fără axa bunuri / servicii
+    excluse_ef_emise = []   # (document, tip_partener) facturi emise cu cota 0 către UE / din afara UE: livrări intracomunitare, export
     op1 = {}
     categorii = {}     # cheie op1 -> {categorii art.331} pentru op11
     # [R119, 02.09.2026] cheie op1 -> {id-uri de facturi}. Se curata la aceleasi `del op1[k]` ca
@@ -679,9 +689,30 @@ def calcul_d394(prof, perioada, date, manual=None):
         # pentru care exista obligativitatea inscrierii in declaratia 390."
         # D394 e declaratie NATIONALA: partenerii 3/4 apar doar la LIVRARI (si la
         # achizitii cu taxare inversa efectuate pe teritoriul national de nestabiliti).
-        if tp in (P_UE, P_NONUE) and f.get("directie") == "primita":
-            intracom += 1
-            continue
+        if tp in (P_UE, P_NONUE):
+            # [C19] OPANAF 2194/2025, anexa 2, lit.E / F pct.10: „se vor declara numai operaţiunile taxabile pentru care locul
+            # livrării/prestării este în România conform art. 275, respectiv art. 278 din Codul fiscal şi, în cazul achiziţiilor de
+            # bunuri/servicii, beneficiarul este obligat la plata TVA conform art. 307 alin. (2), (3), (5) şi (6) din Codul fiscal”; la F:
+            # „Nu vor fi declarate operaţiunile de export şi import de bunuri […], precum şi operaţiunile care se înscriu în declaraţia
+            # recapitulativă […] (formular 390)”. Până azi: emisele cu cota 0 intrau ca LS, iar serviciile primite din afara UE lipseau.
+            doc = f.get("document") or "factura fără număr"
+            if f.get("directie") == "primita":
+                if tp == P_UE:
+                    intracom += 1   # achiziția intracomunitară de bunuri / servicii: D390
+                    continue
+                if f.get("axa") != "servicii":
+                    excluse_import.append(doc)   # importul de bunuri (TVA în vamă) sau factura fără axa bunuri / servicii
+                    continue
+                # serviciul primit din afara UE: beneficiarul plătește TVA (CF art.307 alin.(2)), la cota standard (ca D300 rd.7 / rd.20)
+                cota_c = cota_standard(an, luna)
+                baza_c = _d(f.get("baza"))
+                from core.tva_calcul import tva_din_baza as _tva_din_baza   # regula unică a TVA-ului din cotă (core/tva_calcul.py)
+                _adauga("C", tp, cota_c, cui, f.get("nume"), f.get("nrFact", 1), baza_c, _tva_din_baza(baza_c, cota_c),
+                        f.get("categorie_331"), fid=f.get("factura_id"))
+                continue
+            if not int(f.get("cota") or 0):
+                excluse_ef_emise.append((doc, tp))   # livrare intracomunitară (D390) / export, prestare cu locul în afara României
+                continue
         tip = tip_operatiune(f.get("directie"), f.get("taxare_inversa"), tp, f.get("furnizor_tva_incasare"))
         if tip == "N":
             # [approach a, 04.08.2026] N (achizitii de la parteneri NEINREGISTRATI, tip_partener=2). DESCOPERIRE
@@ -965,8 +996,9 @@ def calcul_d394(prof, perioada, date, manual=None):
         avert.append("Încasare din registrul de casă fără chitanță și fără factură: %s, %s lei%s%s (%s). Firma e "
                      "exceptată de la casa de marcat — dacă e o vânzare, emite pentru ea o chitanță fără factură, cu "
                      "cota, ca să intre în D394 la încasările din activități exceptate (Î2)." % (
-                         o["data"], o["suma"], (", doc " + o["document"]) if o.get("document") else "",
-                         (", " + o["partener"]) if o.get("partener") else "", o["categorie"]))
+                         _data_ro(o["data"]), o["suma"], (", doc " + o["document"]) if o.get("document") else "",
+                         (", " + o["partener"]) if o.get("partener") else "",
+                         _eticheta_categorie_casa(o["categorie"])))
 
     # pct. 17 / validator: totalPlata_A = Suma(informatii.nrCui<i>) + Suma(rezumat2.baza[L+A+AI])
     total_plata = (inf["nrCui1"] + inf["nrCui2"] + inf["nrCui3"] + inf["nrCui4"]
@@ -1061,8 +1093,26 @@ def calcul_d394(prof, perioada, date, manual=None):
     res.avertismente = avert
     if intracom:
         res.avertismente.append(
-            "%s de la parteneri din UE sau din afara UE — nu intră în D394 "
-            "(se declară în D390 - VIES)." % _cate(intracom, "achiziție", "achiziții"))
+            "%s de la parteneri din UE — nu intră în D394 (se declară în D390 - VIES)." % _cate(intracom, "achiziție", "achiziții"))
+    if excluse_import:
+        # [C19] F pct.10: importul de bunuri nu se declară; serviciul din afara UE se declară (tip C) numai cu axa „servicii” pe document
+        _ex = list(dict.fromkeys(excluse_import))
+        res.avertismente.append(
+            "%s de la parteneri din afara UE nu intră în D394: %s. Importul de bunuri nu se declară aici (OPANAF 2194/2025, anexa 2, lit.F "
+            "pct.10); dacă e un serviciu, alege „servicii” pe factură și generează din nou — serviciul intră în D394 la achiziții cu taxare "
+            "inversă (CF art.307 alin.(2))." % (_cate(len(_ex), "factură primită", "facturi primite"), ", ".join(_ex)))
+    if excluse_ef_emise:
+        # [C19] E / F pct.10: livrarea intracomunitară (D390) și exportul nu se declară în D394
+        _ue = list(dict.fromkeys(d for d, t in excluse_ef_emise if t == P_UE))
+        _nu = list(dict.fromkeys(d for d, t in excluse_ef_emise if t == P_NONUE))
+        if _ue:
+            res.avertismente.append("%s fără TVA către parteneri din UE nu intră în D394 — livrările și prestările intracomunitare se declară "
+                                    "în D390 (OPANAF 2194/2025, anexa 2, lit.E pct.10): %s." % (
+                                        _cate(len(_ue), "factură emisă", "facturi emise"), ", ".join(_ue)))
+        if _nu:
+            res.avertismente.append("%s fără TVA către parteneri din afara UE nu intră în D394 — exportul și prestările cu locul în afara "
+                                    "României nu se declară aici (OPANAF 2194/2025, anexa 2, lit.F pct.10): %s." % (
+                                        _cate(len(_nu), "factură emisă", "facturi emise"), ", ".join(_nu)))
     if nefacturabile:
         # [lotul 11, 440, comanda Costin 11.1 pct.16] „fiecare cu textul ei” — nu „(vezi mai sus)”: se numesc facturile excluse
         _excl = list(dict.fromkeys(nefacturabile))   # o factură cu două cote nedeclarabile, o dată
@@ -1346,6 +1396,7 @@ def pull(conn, schema, perioada):
                  # când selecția facturilor îl aduce (`repo_d394.select_facturi`)
                  "judet": (r.get("tert_judet") or "").strip(),
                  "taxare_inversa": bool(r["ti"]), "categorie_331": r["categorie_331"],
+                 "axa": (r.get("axa_ic") or "").strip().lower() or None,   # [C19] bunuri / servicii (D390, D300), None pe factura veche
                  "platitor_tva": r["tert_platitor_tva"],
                  # [A9 art.297 alin.2] furnizor RO cu TVA la incasare -> op1.tip = AI (deducere amanata)
                  "furnizor_tva_incasare": bool(r["furnizor_tva_incasare"]),
@@ -1530,7 +1581,7 @@ def genereaza(conn, schema, perioada, manual=None):
         _e = ValueError("D394 nu se poate genera: încasările prin casa de marcat (secțiunea Î1) cer, pentru fiecare "
                         "raport Z validat din perioadă, NUI-ul casei, numărul de bonuri fiscale și defalcarea pe cote, "
                         "iar facturile emise pe baza bonurilor trebuie să se poată scădea dintr-un raport Z al lunii lor. "
-                        "Lipsesc: " + "; ".join("%s%s — %s" % (z["numar"], (" din " + z["data"]) if z["data"] else "",
+                        "Lipsesc: " + "; ".join("%s%s — %s" % (z["numar"], (" din " + _data_ro(z["data"])) if z["data"] else "",
                                                                ", ".join(z["lipsa"])) for z in res.z_incomplete) + ".")
         # motivul ca DATĂ (cod + rapoartele), ca refuzul să se poată verifica fără a citi fraza
         _e.cod, _e.rapoarte = "D394_Z_INCOMPLET", [z["numar"] for z in res.z_incomplete]
@@ -1539,7 +1590,7 @@ def genereaza(conn, schema, perioada, manual=None):
         # [D394 Î2, decizia Costin 03.10] firmă exceptată cu încasări neclasificate -> refuz NUMIT, nu Î2 pe zero
         _e = ValueError("D394 nu se poate genera: firma e marcată exceptată de la casa de marcat, iar încasările din "
                         "activitatea exceptată (secțiunea Î2) se declară pe cote de TVA. Chitanțele fără factură de mai "
-                        "jos nu au cota: " + "; ".join("%s din %s" % (x["numar"], x["data"])
+                        "jos nu au cota: " + "; ".join("%s din %s" % (x["numar"], _data_ro(x["data"]))
                                                         for x in res.i2_neclasificate)
                         + ". Stabilește cota fiecăreia în Casă (chitanța rămâne aceeași, nota ei se reface pe venit și "
                           "TVA) și generează din nou.")

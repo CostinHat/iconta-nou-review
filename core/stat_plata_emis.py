@@ -227,8 +227,8 @@ def corectie(conn, schema, salariat_id, an, luna, de_cine):
         raise ValueError("corecția cere autorul")
     ex = citeste(conn, schema, an, luna, salariat_id=salariat_id)
     if not ex:
-        raise ValueError("salariatul %r nu are stat emis pe %d-%02d — nu există ce corecta"
-                         % (salariat_id, an, luna))
+        raise ValueError("salariatul %r nu are stat emis pe %02d/%d — nu există ce corecta"
+                         % (salariat_id, luna, an))
     ultim = max(ex, key=lambda x: x["exemplar"])
     r = next((x for x in _randuri(conn, schema, an, luna) if int(x.get("id") or 0) == salariat_id),
              None)

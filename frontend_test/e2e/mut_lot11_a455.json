@@ -7,8 +7,8 @@
  },
  {
   "fisier": "core/uc_tenants.py",
-  "ancora": "        if serie and not rez.get(\"eroare\"):\n            with conn.cursor() as cur:\n                rez[\"chitante\"] = chitante_pe_incasare(cur, schema, serie, rez)",
-  "inlocuire": "        if False:\n            with conn.cursor() as cur:\n                rez[\"chitante\"] = chitante_pe_incasare(cur, schema, serie, rez)",
+  "ancora": "        if serie and not rez.get(\"eroare\"):\n            with conn.cursor() as cur:\n                rez[\"chitante\"] = chitante_pe_incasare(cur, schema, serie, rez, corp)",
+  "inlocuire": "        if False:\n            with conn.cursor() as cur:\n                rez[\"chitante\"] = chitante_pe_incasare(cur, schema, serie, rez, corp)",
   "test": "frontend_test/e2e/e2e_lot11_a455.py::test_def_456_incasarea_facturii_din_casa_emite_chitanta_cu_seria_firmei"
  }
 ]

@@ -81,6 +81,8 @@ def test_def_319_cardurile_administratorului_cu_textul_aprobat_se_bifeaza_din_ec
         pg.wait_for_selector(_card(pg, "echipa"), timeout=30000)
         titluri = pg.eval_on_selector_all("#inceput-carduri .inceput-titlu", "hs => hs.map((h) => h.innerText.trim())")
         assert titluri == [c["titlu"] for c in ui.CARDURI_ADMIN], titluri
+        for s in pg.locator("#inceput-carduri .inceput-card > details.dec-xml > summary").all():   # [lotul 12, 596] pașii stau pliați în „Cum se face”
+            s.click()
         text = pg.inner_text("#inceput-carduri")
         for c in ui.CARDURI_ADMIN:
             for p in c["pasi"]:

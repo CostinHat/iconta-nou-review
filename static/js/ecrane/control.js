@@ -3,9 +3,9 @@
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc, cate } from "../api.js?v=31460b24f2";  /* esc_nc27 */
+import { api, esc, cate } from "../api.js?v=309f4d66ae";  /* esc_nc27 */
 import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2daa29640d";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=9c09077067";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {

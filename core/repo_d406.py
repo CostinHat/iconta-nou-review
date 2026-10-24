@@ -41,16 +41,6 @@ def select_furnizori(cur):
     cur.execute("SELECT id, nume, cui, oras FROM furnizori ORDER BY id")
 
 
-def select_facturi(cur):
-    cur.execute("SELECT tert_cui, tert_nume FROM facturi "
-                "WHERE directie='emisa' ORDER BY id")
-
-
-def select_facturi_2(cur):
-    cur.execute("SELECT tert_cui, tert_nume FROM facturi "
-                "WHERE directie='primita' ORDER BY id")
-
-
 def parteneri_si_localitati(cur):
     """[lotul 10, deficiența C69, decizia Costin „Completez din ANAF”] Toți partenerii cunoscuți firmei, cu localitatea scrisă de
     contabil unde există: nomenclatorul de clienți / furnizori, facturile (`tert_oras`, cea mai nouă întâi), liniile notelor și
@@ -70,9 +60,11 @@ def parteneri_si_localitati(cur):
 def select_inregistrari(cur, di, ds):
     # [deficiența 381, 18.10.2026] partenerul liniei: cel scris pe linie (nota manuală pe 401 / 4111), altfel al facturii legate, altfel al
     # operațiunii de casă din care vine nota — până azi numai factura, deci o plată fără factură n-avea furnizor
+    # [lotul 12] regula partenerului liniei are o singură sursă: `clienti_api.SQL_PARTENER_CUI` / `SQL_PARTENER_NUME` (aliasurile l / f / co)
+    from core.clienti_api import SQL_PARTENER_CUI, SQL_PARTENER_NUME
     cur.execute("SELECT i.id, i.data, i.descriere, i.sursa, i.factura_id, l.cont_debit, l.cont_credit, "
-                "l.suma, COALESCE(NULLIF(l.partener_cui, ''), f.tert_cui, co.cui) AS tert_cui, "
-                "COALESCE(NULLIF(l.partener_nume, ''), f.tert_nume, co.partener) AS tert_nume "
+                "l.suma, " + SQL_PARTENER_CUI + " AS tert_cui, "
+                + SQL_PARTENER_NUME + " AS tert_nume "
                 "FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
                 "LEFT JOIN facturi f ON f.id = i.factura_id "
                 "LEFT JOIN LATERAL (SELECT c.cui, c.partener FROM casa_operatiuni c WHERE c.inregistrare_id = i.id ORDER BY c.id LIMIT 1) co "
@@ -107,7 +99,6 @@ def select_facturi_3(cur, di, ds):
                 "AND " + _doc_fiscal(None) + " AND " + _status_declarabil(None) + " "
                 "ORDER BY id", (di, ds))
     return cur.fetchall()
-
 
 
 def cont_venit_implicit(cur):

@@ -13,8 +13,8 @@ from decimal import Decimal, ROUND_HALF_UP
 
 MODUL = "stocuri"
 REGULI = "2026.1"
-TEMEI_GV = "OMFP 1802/2014 - metoda pretului cu amanuntul"
-TEMEI_COST = "OMFP 1802/2014 pct.286 alin.(1), pct.287 alin.(1)-(2) - evaluare la cost, aplicata cu consecventa"
+TEMEI_GV = "OMFP 1802/2014 - metoda prețului cu amănuntul"
+TEMEI_COST = "OMFP 1802/2014 pct.286 alin.(1), pct.287 alin.(1)-(2) - evaluare la cost, aplicată cu consecvență"
 
 
 def _d(v):
@@ -72,6 +72,27 @@ def _tva_transport(transport, cota_tva_transport):
     return _q(_d(transport) * _d(cota_tva_transport) / 100)
 
 
+#: [08.10, §6 pct.1] datoria NIR-ului fără factură — „Furnizori - facturi nesosite” (OMFP 1802/2014, funcțiunea contului 408)
+CONT_NESOSITE = "408"
+#: [08.10, §6 pct.3] TVA-ul NIR-ului fără factură, neexigibil până la factură — analiticul de ACHIZIȚIE al lui 4428, ca să nu se
+#: amestece cu TVA-ul din prețul de raft (pe 4428 sintetic, citit de K-ul global-valoric pe cont exact). Reexportate de `nir_legare`.
+CONT_TVA_NIR = "4428.01"
+
+
+def cont_tva_transport(cont_transport, cont_tva):
+    """[lotul 12, deficiența 476 (grav), Costin: „NIR: TVA transport cu factură pe 4428 în loc de 4426”] Contul TVA-ului transportului
+    urmează DATORIA transportului, nu pe a mărfii. Transportul cu factură (datoria pe 401 la transportator, sau pe orice alt cont decât
+    408) are TVA deductibil: 4426 — CF art.299 alin.(1) lit.a: pentru deducere persoana impozabilă trebuie „să dețină o factură emisă în
+    conformitate cu prevederile art. 319”; OMFP 1802/2014, funcțiunea contului 4426: „În debitul contului 4426 [...] se înregistrează: –
+    sumele reprezentând taxa pe valoarea adăugată deductibilă potrivit legii (401, 404, ...)”. Transportul fără factură (408) are TVA-ul
+    neexigibil până la factură: 4428.01 — funcțiunea contului 408: „În creditul contului 408 «Furnizori - facturi nesosite» se
+    înregistrează: – valoarea bunurilor aprovizionate sau a serviciilor prestate de către furnizori [...] (..., 4428, ...)”.
+    Înainte, TVA-ul transportului lua contul mărfii (`cont_tva`): la NIR-ul fără factură al mărfii, transportul facturat (401) ieșea
+    4428.01 = 401 — neexigibil, deși factura transportului exista, și rămânea acolo (legarea facturii mărfii mută numai 4428.01 = 408)."""
+    ct = str(cont_transport or "").strip()
+    return CONT_TVA_NIR if ct.split(".")[0] == CONT_NESOSITE else ("4426" if ct else cont_tva)
+
+
 def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446", cont_furnizor="401", cont_tva="4426",
              cota_tva_transport=None):
     """[lotul 07.10 B, C10] NIR la firma cu stocul la COST (cantitativ-valoric, CMP — `core.metoda_stoc`): marfa intră la costul
@@ -94,8 +115,8 @@ def nir_cost(linii, transport=0, taxe=0, cont_transport="401", cont_taxe="446", 
     tva_tr = _tva_transport(transport, cota_tva_transport)
     if transport > 0:
         note.append({"debit": "371", "credit": cont_transport, "suma": transport, **_urma(TEMEI_COST)})
-        if tva_tr:   # [399] TVA-ul transportului, pe aceeași regulă ca TVA-ul mărfii (4426 cu factură / 4428 fără)
-            note.append({"debit": cont_tva, "credit": cont_transport, "suma": tva_tr, **_urma(TEMEI_COST)})
+        if tva_tr:   # [399] TVA-ul transportului: [476] contul după datoria transportului (4426 cu factură / 4428.01 pe 408)
+            note.append({"debit": cont_tva_transport(cont_transport, cont_tva), "credit": cont_transport, "suma": tva_tr, **_urma(TEMEI_COST)})
     if taxe > 0:
         note.append({"debit": "371", "credit": cont_taxe, "suma": taxe, **_urma(TEMEI_COST)})
     return {"linii": linii_out, "cost_total": _q(cost_baza_total + transport + taxe), "cost_baza_total": cost_baza_total,
@@ -167,8 +188,8 @@ def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
     tva_tr = _tva_transport(transport, cota_tva_transport)
     if transport > 0:
         note.append({"debit": "371", "credit": cont_transport, "suma": transport, **_urma()})
-        if tva_tr:   # [399] TVA-ul transportului (vezi `nir_cost`)
-            note.append({"debit": cont_tva, "credit": cont_transport, "suma": tva_tr, **_urma()})
+        if tva_tr:   # [399] TVA-ul transportului, [476] pe contul datoriei lui (`cont_tva_transport`)
+            note.append({"debit": cont_tva_transport(cont_transport, cont_tva), "credit": cont_transport, "suma": tva_tr, **_urma()})
     if taxe > 0:
         note.append({"debit": "371", "credit": cont_taxe, "suma": taxe, **_urma()})
     note += [

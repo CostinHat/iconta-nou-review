@@ -88,7 +88,7 @@ def conn(monkeypatch):
             c.rollback()
 
 
-def _vanzare(tip="bunuri", valoare=1000, data="2099-10-10"):
+def _vanzare(tip="servicii", valoare=1000, data="2099-10-10"):
     from core import uc_tenants
     return uc_tenants.vanzare_ic(1, {"data": data, "valoare": valoare, "cod_tva_client": COD_CLIENT, "tip": tip,
                                      "dovada_transport": True, "descriere": "Marfa IC"}, {"uid": 1})
@@ -109,15 +109,25 @@ def _facturi_cu_mai_multe_note(c):
         return cur.fetchall()
 
 
-def test_def_c78_vanzarea_ic_de_bunuri_are_o_singura_nota(conn):
-    """Roșu înainte: 2 note (contarea emiterii + nota proprie), 4111 = 707 de două ori, 2.000 lei. Acum: 1 notă, cea a contării.
-    MUTAȚIE: nota proprie pusă la loc (`nota_facturi_cu_factura` + `adauga_linie_client` după `fid`) -> pică."""
-    r = _vanzare("bunuri")
-    note = _note_facturii(conn, r["factura_id"])
-    # OMFP 2634/2015 pct.58 lit.c: „fiecare dată înregistrată în contabilitate trebuie să se regăsească în conținutul unui document”
-    assert {n[0] for n in note} == {r["inregistrare_id"]}, note
-    assert [(d, cr, s) for _i, d, cr, s in note if s] == [("4111", "707", Decimal("1000.00"))], note
-    assert _facturi_cu_mai_multe_note(conn) == []
+def test_def_c84_livrarea_ic_de_bunuri_se_face_din_emite_factura(conn):
+    """[C84, decizia Costin (b)] Operațiunea „Vânzare intracomunitară” nu mai livrează BUNURI (fără articolul din stoc și fără descărcarea
+    din gestiune): refuz numit lângă câmpul „tip”, înainte de VIES, și nimic scris — nici factură, nici notă. Bunurile se livrează din
+    „Emite factură”. MUTAȚIE: ramura `tip == "bunuri"` scoasă din `uc_tenants.vanzare_ic` -> pică."""
+    with conn.cursor() as cur:
+        cur.execute("SET LOCAL search_path TO %s, public" % SCH)
+        cur.execute("SELECT count(*) FROM facturi")
+        inainte = cur.fetchone()[0]
+    with pytest.raises(erori.DateInvalide) as e:
+        _vanzare("bunuri")
+    campuri = {c["camp"]: c["mesaj"] for c in e.value.args[0]["erori_campuri"]}
+    assert campuri == {"op-tip": "Livrarea intracomunitară de bunuri se face din «Emite factură»: acolo alegi articolul din stoc și "
+                                 "categoria „livrare intracomunitară”, iar marfa se descarcă din gestiune odată cu factura. Aici rămân "
+                                 "prestările de servicii intracomunitare."}, campuri
+    with conn.cursor() as cur:
+        cur.execute("SELECT count(*) FROM facturi")
+        assert cur.fetchone()[0] == inainte
+        cur.execute("SELECT count(*) FROM inregistrari")
+        assert cur.fetchone()[0] == 0
 
 
 def test_def_c78_prestarea_ic_de_servicii_are_o_singura_nota(conn):
@@ -133,34 +143,35 @@ def test_c78_baza_d390_si_d300_ramane_1000(conn):
     """D390 și D300 citesc `facturi`, nu notele: baza livrării (L, 1.000) și a prestării (P, 1.000) e aceeași înainte și după reparație."""
     from core import d300, d390
     from core.common import Perioada
-    _vanzare("bunuri")
     _vanzare("servicii")
+    _vanzare("servicii", data="2099-10-11")
     with conn.cursor() as cur:
         cur.execute("SET LOCAL search_path TO %s, public" % SCH)
     prof, facturi = d390.pull(conn, SCH, 2099, 10)
     res = d390.calcul_d390(prof, 2099, 10, facturi)
-    # D390: o operațiune L și una P pe client, fiecare cu baza 1.000 (axa de pe factură, R186), totalul 2.000
-    assert sorted((k[0], v) for k, v in res.ops.items()) == [("L", 1000), ("P", 1000)], res.ops
+    # D390: două prestări P către același client, cumulate pe client (axa de pe factură, R186): baza 2.000; nicio livrare L (C84: bunurile
+    # nu mai trec pe aici)
+    assert sorted((k[0], v) for k, v in res.ops.items()) == [("P", 2000)], res.ops
     assert res.total_baza == 2000, res.total_baza
     prof3, facturi3 = d300.pull(conn, SCH, Perioada(2099, luna=10))
     r3 = d300.calcul_d300(prof3, Perioada(2099, luna=10), facturi3)
-    # D300 rd.1 (livrarea IC) și rd.3 (prestarea IC), rutarea din `d300.calcul_d300` pe categoria liniei / axa facturii: câte 1.000
-    assert (r3.R["R1_1"], r3.R["R3_1"]) == (1000, 1000), {k: r3.R.get(k) for k in ("R1_1", "R3_1")}
+    # D300 rd.3 (prestarea IC), rutarea din `d300.calcul_d300` pe categoria liniei / axa facturii: 2.000; rd.1 (livrarea IC de bunuri) 0
+    assert (r3.R.get("R1_1", 0), r3.R["R3_1"]) == (0, 2000), {k: r3.R.get(k) for k in ("R1_1", "R3_1")}
 
 
 def test_def_c78_contarea_refuzata_refuz_numit_nimic_scris(conn):
-    """O notă manuală fără factură, 4111 = 707 1.000 în aceeași lună, oprește contarea automată (`POSIBILA_DUBLARE`): livrarea se refuză
+    """O notă manuală fără factură, 4111 = 704 1.000 în aceeași lună, oprește contarea automată (`POSIBILA_DUBLARE`): livrarea se refuză
     numit, iar nici factura, nici vreo notă pe ea nu rămân. Roșu înainte: factura emisă, nota proprie scrisă fără contare."""
     with conn.cursor() as cur:
         cur.execute("SET LOCAL search_path TO %s, public" % SCH)
         cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status) VALUES ('2099-10-05', 'Livrare DE (manual)', 'manual', 'ciorna') "
                     "RETURNING id")
         nid = cur.fetchone()[0]
-        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '4111', '707', 1000)", (nid,))
+        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '4111', '704', 1000)", (nid,))
         cur.execute("SELECT count(*) FROM facturi")
         inainte = cur.fetchone()[0]
     with pytest.raises(erori.DateInvalide) as e:
-        _vanzare("bunuri")
+        _vanzare("servicii")
     msg = e.value.args[0]   # mesajul refuzului (câmpul lui), nu reprezentarea excepției
     assert msg.startswith("Livrarea intracomunitară nu s-a înregistrat: nota contabilă a facturii nu s-a putut scrie (") and \
         msg.endswith("Nimic nu s-a scris."), msg

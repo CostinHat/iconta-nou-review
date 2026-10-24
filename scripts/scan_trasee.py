@@ -239,6 +239,9 @@ NEDOCUMENTARE = [
     (r"^/raportari|^/recomanda|^/api/eveniment-public|^/ajutor/", "suport și telemetrie"),
     (r"^/notificari|^/deschide/|^/whatsapp/webhook$", "notificări"),   # [17.10.2026, lotul 7] + linkul din notificările trimise afară și webhook-ul WhatsApp (starea mesajelor)
     (r"^/api/v1/firme$", "cheia de integrare"),
+    # [lotul 12, 495] ciorna formularului început (factura, salariatul nou, concediul medical), pe utilizator + firmă, în
+    # `public.ciorne_formular`: nu e un document al firmei și nu intră în evidență — documentul îl scrie salvarea lui, pe traseul lui
+    (r"^/tenants/\{\}/ciorne-formular/\{\}$", "ciorna formularului început"),
 ]
 
 METODE = {"get", "post", "put", "patch", "delete"}

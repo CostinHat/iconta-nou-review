@@ -96,6 +96,11 @@ CLASIFICARE = {
     "etransport_ecran.js:${id}": (FISCAL, "helperul `sel` al eTransport (tipul operațiunii, județele de încărcare/descărcare, scopul bunului — venea „101”) — notificarea către ANAF"),
     "facturi_ecran.js:pr-dest": (PRESELECTAT, "(a) uzual: „taxabilă” (deducere integrală) — DS cap.28 pct.2, acum în acord cu cap.17; (b) vizibil pe fiecare linie; (c) se schimbă pe scutită / mixtă"),
     "facturi_ecran.js:fr-moneda": (PRESELECTAT, "(a) uzual: RON — ca la emitere; (b) vizibil; (c) se schimbă din listă"),
+    # [lotul 12, C160] țara beneficiarului pe șablonul facturii recurente: aceeași regulă ca la emitere (`tari_partener.taraDinCui`)
+    "facturi_ecran.js:fr-tara": (PRESELECTAT, "(a) DEDUS din CUI-ul beneficiarului (`taraDinCui`, ca la emitere: prefixul statului, CUI numeric -> RO); (b) vizibil sub CUI, iar rândul șablonului spune „client din XX”; (c) se schimbă din listă"),
+    # [lotul 12, 477] factura primită introdusă de mână: moneda ca la emitere și ca la factura recurentă
+    "facturi_ecran.js:pm-moneda": (PRESELECTAT, "(a) uzual: RON — ca la emitere; (b) vizibil lângă total, iar în valută cursul BNR apare "
+                                   "dedesubt; (c) se schimbă din listă"),
     "firme.js:fn-tip": (FISCAL, "tipul firmei SRL / PFA (venea „SRL”) — partida dublă / simplă; DS cap.17 îl numește între faptele decisive"),
     "firme.js:sn-${id}": (FISCAL, "helperul formularului «Salariat nou» (tipul normei; DA/NU-urile declarația pentru copii, funcția de bază, scutirea de contribuția minimă — prin `selectDaNu`) — D112"),
     "firme.js:pj-sel": (EXISTENTA, "pontajul e INFORMATIV (DECIZII 17.07, F135): „prezent” = lipsa unei excepții, prin modelul de date; selectul arată starea reală a zilei"),
@@ -310,6 +315,9 @@ INPUTURI = {
     "declaratii.js:d318-ls": "idem — luna 12",
     "produse_ecran.js:pr-um": "(a) uzual: unitatea „buc”; (b) vizibilă; (c) se schimbă — unitatea nu schimbă nota, baza sau impozitul",
     "firme.js:sn-cont-taxe": "cont contabil sugerat (446) la NIR, vizibil și modificabil — idem",
+    # [lotul 12, 477] factura primită de mână: țara furnizorului, ca la validarea facturii din XML (`pr-tara`, dedusă din CIF, implicit RO)
+    "facturi_ecran.js:pm-tara": "(a) uzual: furnizorul din România („RO”), ca la factura din XML fără prefix de țară în CIF; (b) vizibil lângă "
+                                "codul fiscal; (c) se scrie alt cod de țară — atunci se cer tipul furnizorului (D394)",
     "declaratii.js:d398-cur": "VALOARE FIXĂ, nu alegere: CF art.314 alin.(10) / art.315 alin.(12) / art.315^2 alin.(22) — „Declarația specială de TVA se întocmește în euro” (readonly)",
 }
 

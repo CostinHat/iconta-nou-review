@@ -148,7 +148,7 @@ def test_c15_inchiderea_in_121_nu_e_rulaj_in_nicio_interogare_pe_clasele_6_7():
 
 
 def test_c15_d101_fara_inchiderea_in_121(cur):
-    """C15 pe D101: veniturile din exploatare ale anului = 704 1.000 + 711 50 + 7812 10 = 1.060 — nimic din închidere (nota 121 = 709
+    """C15 pe D101: veniturile din exploatare ale anului = 704 1.000 + 711 50 + 7812 10 − 709 100 = 960 (C119: rulajul net) — nimic din închidere (nota 121 = 709
     creditează 709 cu 100 și s-ar fi adunat la venituri). MUTAȚIE: excluderea scoasă -> 1.160 -> pică.
     [lotul 10, deficiența 425] baza D101 se citește acum din `bilant_api.rulaje_67` (note + rulajele preluate), prin
     `d101.rulaje_fereastra` — aceeași excludere a închiderii ca F20, o singură sursă (fostul `repo_d101.select_inregistrari_linii`)."""
@@ -156,4 +156,4 @@ def test_c15_d101_fara_inchiderea_in_121(cur):
     _anul_2025(cur)
     _inchide(cur)
     r = d101.rulaje_fereastra(cur, _SCHEMA, datetime.date(2025, 1, 1), datetime.date(2026, 1, 1))
-    assert (r["ven_expl"], r["chelt_expl"]) == (1060, 270), r
+    assert (r["ven_expl"], r["chelt_expl"]) == (960, 270), r   # [lotul 12, C119] rulajul net: 709 (debit 100) se scade (OMFP 1802/2014 pct.8 pct.5)

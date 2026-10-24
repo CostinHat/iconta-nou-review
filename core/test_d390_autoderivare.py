@@ -118,7 +118,7 @@ def test_excluse_d301_tip4_neconfirmat_semnaleaza(schema_d301):
     _ins(db, 1, 100, 5, "DE", "136695976", "Bunuri")                        # tip 1 cu tara -> derivata (nu exclusa)
     with db.get_conn() as conn:
         ex = {e["id"].split(" (")[0]: e for e in excluse_d301(conn, SCH, 2026, 6)}
-    assert "Gaz X" in ex and ex["Gaz X"]["semnal"] is True and "NECONFIRMAT" in ex["Gaz X"]["motiv"], ex
+    assert "Gaz X" in ex and ex["Gaz X"]["semnal"] is True and "temeiul neconfirmat" in ex["Gaz X"]["motiv"], ex   # [lotul 12] fără majuscule de accent
     assert "Gaz confirmat" in ex and ex["Gaz confirmat"]["semnal"] is False and "307" in ex["Gaz confirmat"]["temei"], ex
     assert "Bunuri" not in ex, "tip 1 cu tara se deriveaza in D390, nu e exclusa"
 

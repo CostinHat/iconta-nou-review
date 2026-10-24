@@ -101,7 +101,7 @@ class CursPreaVechi(ValueError):
             "Cel mai recent curs BNR pentru %s la data cerută e din %s — mai vechi cu %s decât "
             "pragul de %d. Peste atât nu mai e pauză de publicare, e flux întrerupt, iar TVA-ul în "
             "lei s-ar calcula cu o cifră care nu mai e a zilei. Cursul găsit: %s."
-            % (moneda, data_curs.isoformat(), _cate(vechime_zile, "zi", "zile"), prag_zile, curs))
+            % (moneda, _data_ro(data_curs), _cate(vechime_zile, "zi", "zile"), prag_zile, curs))
 
 
 class FormatNecunoscut(ValueError):
@@ -211,13 +211,22 @@ def ziua_bancara_asteptata(zi: date, regula: str = REGULA_OPERATIUNE):
     return None
 
 
-def cursul_zilei_lipsa(zi: date, data_curs: date, azi: date = None):
+#: [lotul 12, decizia Costin „cursul vechi la validare (a)”] actul care fixează cursul facturii, cum îl spune anunțul: emiterea (factura emisă
+#: în aplicație) sau validarea (factura primită, din XML sau introdusă de mână)
+ACT_FIXARE = {"emitere": ("factura emisă acum", "se fixează la emitere"),
+              "validare": ("factura validată acum", "se fixează la validare")}
+
+
+def cursul_zilei_lipsa(zi: date, data_curs: date, azi: date = None, act: str = "emitere"):
     """PUR. [460] Pentru operatiunea (factura) din `zi`: `None` daca `data_curs` e chiar ultimul curs comunicat inaintea ei (sau nu se
     poate sti); altfel ce lipseste si ce se foloseste, cu mesajul pentru contabil: {"asteptat", "folosit", "mesaj"} (datele ISO).
 
     [lotul 11, AT] Lipsa e o AFIRMATIE TIPATA (`afirmatii.afirmatie`, decizia 21.08.2026): `absenta_observatie` — cursul nu e intr-o sursa
     NUMITA (cursurile BNR preluate in aplicatie), ca refuzul reevaluarii fara cursul lunii (`uc_reevaluare`). `motiv` = acelasi text ca
-    `mesaj` (pe care il citeste ecranul, `emitere_ecran.js`)."""
+    `mesaj` (pe care il citeste ecranul, `emitere_ecran.js`).
+
+    [lotul 12, decizia Costin „cursul vechi la validare (a)”: „anunțul la validare, ca la emitere”] `act` = „emitere” sau „validare”
+    (`ACT_FIXARE`): la factura primită în valută cursul se fixează la validare, iar anunțul o spune."""
     asteptata = ziua_bancara_asteptata(zi, REGULA_OPERATIUNE)
     if asteptata is None or data_curs is None or data_curs >= asteptata:
         return None
@@ -225,8 +234,9 @@ def cursul_zilei_lipsa(zi: date, data_curs: date, azi: date = None):
     de_ce = ("BNR îl comunică abia azi" if asteptata == azi else
              "BNR nu l-a comunicat încă" if asteptata > azi else
              "preluarea lui de la BNR n-a reușit încă; aplicația reîncearcă singură")
+    cine, cand = ACT_FIXARE[act]
     m = ("Cursul BNR comunicat pe %s (ultimul înaintea datei facturii, %s) lipsește din aplicație: %s. Până atunci se folosește cursul "
-         "din %s, iar factura emisă acum îl păstrează (se fixează la emitere)." % (_data_ro(asteptata), _data_ro(zi), de_ce, _data_ro(data_curs)))
+         "din %s, iar %s îl păstrează (%s)." % (_data_ro(asteptata), _data_ro(zi), de_ce, _data_ro(data_curs), cine, cand))
     from core import afirmatii as _af
     return _af.afirmatie("absenta_observatie", "curs BNR al zilei", m,
                          surse_consultate="cursurile BNR preluate în aplicație, pentru ziua bancară dinaintea datei facturii",
@@ -463,7 +473,7 @@ def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VEC
         raise MonedaNecotata(moneda, cotate)
 
     raise CursIndisponibil(
-        f"Cursul BNR pentru {moneda} la data {data_factura} nu e disponibil momentan."
+        f"Cursul BNR pentru {moneda} la data {_data_ro(data_factura)} nu e disponibil momentan."
         + (f" ({ultima_eroare})" if ultima_eroare else ""))
 
 

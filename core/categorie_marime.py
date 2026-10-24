@@ -31,6 +31,7 @@ from decimal import Decimal
 from core import bilant as _b
 from core.afirmatii import afirmatie
 from core.common import Temei
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică
 from core import repo_categorie_marime as _repo
 
 MODUL = "categorie_marime"
@@ -266,7 +267,7 @@ def categorie(conn, schema, an):
         # [deficiența 235] primul exercițiu: regula entităților nou-înființate (pct.22 alin.(1)), nu cele două exerciții consecutive
         return afirmatie(
             "fapt", tip="categorie_marime", motiv=motiv_primul_exercitiu(infiintare),
-            temei_completitudine="data înființării din Date firmă (%s); OMFP 1802/2014 pct.22 alin.(1)" % infiintare.isoformat(),
+            temei_completitudine="data înființării din Date firmă (%s); OMFP 1802/2014 pct.22 alin.(1)" % _data_ro(infiintare),
             an=an, luna=None,
             **{"categorie": "primul_exercitiu", "cod_motiv": "primul_exercitiu",
                "temei_primul_exercitiu": str(_TEMEI_PRIMUL_EXERCITIU),

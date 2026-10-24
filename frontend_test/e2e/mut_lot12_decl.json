@@ -1,0 +1,52 @@
+[
+ {
+  "fisier": "core/d406.py",
+  "ancora": "    clienti = parteneri_perioadei_master(clienti, parteneri_perioadei[\"4111\"])",
+  "inlocuire": "    clienti = clienti + [p for p in parteneri_perioadei_master([], parteneri_perioadei[\"4111\"]) if p.id not in {q.id for q in clienti}]",
+  "test": "frontend_test/e2e/e2e_lot12_decl.py::test_def_486_d406_septembrie_nu_e_oprit_de_partenerul_din_octombrie"
+ },
+ {
+  "fisier": "tenant_template.sql",
+  "ancora": "('4092', 'Furnizori - debitori pentru prestări de servicii', 'Bifunctional'),\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_decl.py::test_def_c48_d406_cu_avansul_pe_4092_trece_validatorul",
+  "motiv": "C48: planul firmei noi fără 4092 (cauza deficienței) -> nota 4092 = 5121 nu se mai poate scrie / D406 n-o declară"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "cont.addEventListener(\"click\", () => nav.mergi(\"Declarații\", (c) => pas2(c, nav)));",
+  "inlocuire": "cont.addEventListener(\"click\", () => pas2(corp, nav));",
+  "test": "frontend_test/e2e/e2e_lot12_decl.py::test_def_485_sageata_inapoi_din_pasul_2_duce_la_alegerea_declaratiei"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "                if f.get(\"axa\") != \"servicii\":",
+  "inlocuire": "                if True:",
+  "test": "frontend_test/e2e/e2e_lot12_decl.py::test_def_c19_d394_sectiunile_e_f"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "            if not int(f.get(\"cota\") or 0):\n                excluse_ef_emise.append((doc, tp))",
+  "inlocuire": "            if False:\n                excluse_ef_emise.append((doc, tp))",
+  "test": "frontend_test/e2e/e2e_lot12_decl.py::test_def_c19_d394_sectiunile_e_f"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "_cota_nrfact = max(_tva_cota, key=lambda c: (_tva_cota[c], c))",
+  "inlocuire": "_cota_nrfact = max(_tva_cota)",
+  "test": "frontend_test/e2e/e2e_lot12_decl.py::test_def_185_d394_factura_cu_doua_cote_se_numara_la_tva_ul_cel_mai_mare"
+ },
+ {
+  "fisier": "core/scadente.py",
+  "ancora": "        \"d177\": (1, 6, 25),    # CF art.42 alin.(4) -> alin.(1): „până la data de 25 iunie inclusiv a anului următor” (anul +1, luna 6, ziua 25)\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_decl.py::test_def_493_d177_intra_in_coada_cu_termenul_de_depunere",
+  "motiv": "493: D177 fără termenul din textul actului (CF art.42 alin.(1)) -> coada n-o mai poartă la 25.06"
+ },
+ {
+  "fisier": "core/repo_d100.py",
+  "ancora": "                \"     - COALESCE(SUM(CASE WHEN (l.cont_debit LIKE '70%%' OR l.cont_debit LIKE '75%%' \"\n                \"        OR l.cont_debit LIKE '76%%') THEN l.suma ELSE 0 END),0) AS venituri, \"",
+  "inlocuire": "                \"     - COALESCE(SUM(CASE WHEN l.cont_debit LIKE '709%%' THEN l.suma ELSE 0 END),0) AS venituri, \"",
+  "test": "frontend_test/e2e/e2e_lot12_decl.py::test_def_c119_d100_micro_baza_fara_tva_ul_din_raportul_z"
+ }
+]

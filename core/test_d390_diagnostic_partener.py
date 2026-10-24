@@ -116,7 +116,7 @@ def test_codO_manual_peste_12_blocheaza():
     man = [{"tip": "S", "tara": "DE", "cod": "1234567890123456", "den": "SERVICE LANG", "baza": 100}]
     res = calcul_d390(_prof(), 2026, 8, [], manual=man)
     assert any(d["categorie"] == "codO_lung" for d in res.diag)
-    assert any("codO manual" in e for e in valideaza(res))
+    assert any("Codul de TVA scris manual are" in e for e in valideaza(res))   # [lotul 12] fără „codO”, cu diacritice
 
 
 # ── T6: telefon > 15 (clamp + avertisment) / cui firma > 10 (blocant) ─────────────

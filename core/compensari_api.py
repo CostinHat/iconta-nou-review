@@ -88,6 +88,17 @@ def nota_de_compensare(alias_i, expr_factura, p=""):
             "AND {f} IN (cz.factura_emisa_id, cz.factura_primita_id))").format(p=p, i=alias_i, f=expr_factura)
 
 
+def nota_stinge_factura(alias_i, expr_factura, p=""):
+    """[lotul 12, C153] Condiția SQL unică „nota `alias_i` stinge factura `expr_factura`”: nota legată de factură (`factura_id`), nota unei
+    chitanțe de dinainte de 278 (fără `factura_id`, cu chitanța neanulată a facturii — nota validată nu se mai modifică, `regula_nota`) și
+    compensarea (`nota_de_compensare`, 428). Până azi o aveau întreagă numai reconcilierea (`reconciliere_api.facturi_deschise`) și
+    Registrul jurnal; rapoartele comerciale (fișa partenerului, durata medie de încasare) n-o vedeau pe a doua, deci o factură încasată cu
+    chitanță veche apărea nedecontată."""
+    return ("({i}.factura_id = {f} OR ({i}.factura_id IS NULL AND EXISTS (SELECT 1 FROM {p}chitante cc WHERE cc.inregistrare_id = {i}.id "
+            "AND cc.factura_id = {f} AND NOT cc.anulata)) OR {cz})").format(i=alias_i, f=expr_factura, p=p,
+                                                                          cz=nota_de_compensare(alias_i, expr_factura, p))
+
+
 def cui_partener(cui):
     """CUI-ul partenerului în forma păstrată (`cui_forma.stocare`: fără spații, fără „RO” în fața cifrelor; codul de TVA al unui
     partener din alt stat rămâne cu prefixul lui) — același partener pe factura emisă și pe cea primită; "" fără cod. [lotul 11,

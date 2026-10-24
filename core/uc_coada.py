@@ -163,12 +163,15 @@ def poarta_d406_balanta(schema, an, luna, res):
     if gl == bal:
         return None
     from core import afirmatii as _af
-    mesaj = ("D406 nu intră în coadă: totalul notelor din GeneralLedgerEntries (%s lei) nu e rulajul balanței pe perioadă "
-                      "(%s lei), diferență %s lei.%s" % (
-                          "%.2f" % gl, "%.2f" % bal, "%.2f" % (gl - bal),
-                          (" În perioadă sunt %d notă(e) nevalidată(e): nici balanța, nici D406 nu le cuprind până nu le validează "
-                           "un om." % ciorne) if ciorne else ""))
-    return dict(_af.afirmatie("neconformitate", "declaratie_d406", mesaj, unde="perioada %s – %s" % (di.isoformat(), ds.isoformat()),
+    from datetime import timedelta as _td   # `ds` e capătul deschis al ferestrei (`data < ds`): ultima zi e ds - 1
+    from core.pdf_util import bani as _bani, data_ro as _data_ro   # DS cap.4 / cap.7: suma și data ca pe ecran
+    # [lotul 12, 184] suma „1.234,50”, nu „1234.50”; „2 note nevalidate”, nu „2 notă(e) nevalidată(e)”; perioada în ZZ.LL.AAAA
+    mesaj = ("D406 nu intră în coadă: totalul notelor declarate în D406 (%s lei) nu e rulajul balanței pe perioadă "
+             "(%s lei), diferență %s lei.%s" % (
+                 _bani(gl), _bani(bal), _bani(gl - bal),
+                 (" În perioadă sunt %s: nici balanța, nici D406 nu le cuprind până nu le validează un om."
+                  % _cate(ciorne, "notă nevalidată", "note nevalidate")) if ciorne else ""))
+    return dict(_af.afirmatie("neconformitate", "declaratie_d406", mesaj, unde="perioada %s – %s" % (_data_ro(di), _data_ro(ds - _td(days=1))),
                               regula="totalul GeneralLedgerEntries = rulajul balanței pe fereastra D406"),
                 cod=COD_D406_BALANTA, d406="%.2f" % gl, balanta="%.2f" % bal, diferenta="%.2f" % (gl - bal), ciorne=ciorne, mesaj=mesaj)
 

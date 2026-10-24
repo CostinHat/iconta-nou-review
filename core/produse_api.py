@@ -155,6 +155,7 @@ def lista(conn, doar_confirmate=False):
     import psycopg2.extras as _E
     cond = " WHERE confirmat = true" if doar_confirmate else ""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        corectari = ultimele_corectari(cur)
         cur.execute(
             "SELECT id, denumire, um, pret_unitar, cota_tva, categorie, categorie_tva, categorie_331, "
             "justificare, sursa, confirmat "
@@ -167,6 +168,7 @@ def lista(conn, doar_confirmate=False):
             # era prezentat ca 21%, pe o cale VIE (main.py:2513). Aceeasi clasa cu defaultul
             # din ecranul de NIR, dar in Python - clasa pe care R26 o declarase golita.
             d["cota_tva"] = float(d["cota_tva"]) if d["cota_tva"] is not None else None
+            d["ultima_corectare"] = corectari.get(d["id"])   # [472] corectura cotei, consemnată
             out.append(d)
         if not doar_confirmate:
             out = sorted(out + _din_stoc_fara_produs(cur), key=lambda x: (x["denumire"] or "").lower())
@@ -181,9 +183,14 @@ def _din_stoc_fara_produs(cur):
     un NIR / import de dinainte de 415, importul de articole) articolul rămânea numai în stoc. Reparația ține de CITIRE, deci acoperă orice
     drum, de azi și de mâine: fiecare articol din stoc (`articole`) fără produs cu aceeași denumire apare în listă „cotă lipsă”, iar cota
     aleasă pe rând îl scrie în nomenclator (POST /produse, cu cota). Cota nu se ghicește: rândul vine fără cotă (`cota_tva` None).
-    [lotul 11, 450] „aceeași denumire” = aceeași `cheie_denumire` (și fără diacritice), ca la borderou și la intrarea în stoc."""
+    [lotul 11, 450] „aceeași denumire” = aceeași `cheie_denumire` (și fără diacritice), ca la borderou și la intrarea în stoc.
+    [lotul 12, deficiența 471, comanda Costin 12.1: „Produsele venite din NIR au «cotă lipsă» fără propunere”] Rândul vine cu PROPUNEREA
+    cotei din NIR-ul articolului (`propunere_din_nir`) — aceeași regulă ca la NIR-ul salvat de acum (415: „preia cota de pe rândul NIR”):
+    NIR-urile de dinainte de 415 nu trecuseră cota în nomenclator. E o propunere, nu o scriere: cota intră în nomenclator numai la
+    „Salvează cota”. Articolul fără NIR (borderou, import) primește pe ecran propunerea automată (`/produse/potriveste`)."""
     cur.execute("SELECT denumire FROM produse")
     vazute = {cheie_denumire(r["denumire"]) for r in cur.fetchall()}
+    din_nir = propunere_din_nir(cur)
     cur.execute("SELECT a.id AS articol_id, a.denumire, a.um FROM articole a ORDER BY lower(a.denumire), a.id")
     out = []
     for r in cur.fetchall():
@@ -193,7 +200,22 @@ def _din_stoc_fara_produs(cur):
         vazute.add(cheie)
         out.append({"id": None, "articol_id": r["articol_id"], "denumire": " ".join(str(r["denumire"]).split()), "um": r["um"] or "buc",
                     "pret_unitar": 0.0, "cota_tva": None, "categorie": None, "categorie_tva": None, "categorie_331": None,
-                    "justificare": None, "sursa": "stoc", "confirmat": False, "din_stoc": True})
+                    "justificare": None, "sursa": "stoc", "confirmat": False, "din_stoc": True, "propunere": din_nir.get(cheie)})
+    return out
+
+
+def propunere_din_nir(cur):
+    """[471] {cheia denumirii: {cota_tva, document}} — cota de pe rândul celui mai nou NIR al fiecărei denumiri (`nir_linii.cota_tva`, cota
+    aleasă de om pe NIR), cu NIR-ul din care vine („NIR nr 3 din 12.10.2026”, `jurnal_api.eticheta_document`)."""
+    from core import jurnal_api as _j
+    cur.execute("SELECT nl.denumire, nl.cota_tva, n.numar, n.data FROM nir_linii nl JOIN nir n ON n.id = nl.nir_id "
+                "ORDER BY n.data DESC, n.id DESC, nl.id DESC")
+    out = {}
+    for r in cur.fetchall():
+        r = r if isinstance(r, dict) else dict(zip(("denumire", "cota_tva", "numar", "data"), r))
+        k = cheie_denumire(r["denumire"])
+        if k and k not in out and r["cota_tva"] is not None:
+            out[k] = {"cota_tva": float(r["cota_tva"]), "document": _j.eticheta_document("NIR", r["numar"], r["data"])}
     return out
 
 
@@ -330,6 +352,48 @@ def asigura_din_document(cur, schema, denumire, um, cota_tva, document):
     return (r["id"] if isinstance(r, dict) else r[0]) if r else None
 
 
+def ultimele_corectari(cur):
+    """[lotul 12, deficiența 472] {produs_id: ultima corectură a cotei} din `produse_cota_jurnal`: {cota_veche, cota_noua, categorie_veche,
+    categorie_noua, la (zz.ll.aaaa)} — ce arată rândul produsului după corectură. Fără tabel (firmă nemigrată încă), nimic."""
+    from core.pdf_util import data_ro
+    cur.execute("SELECT to_regclass('produse_cota_jurnal') IS NOT NULL AS e")
+    r = cur.fetchone()
+    if not (r["e"] if isinstance(r, dict) else r[0]):
+        return {}
+    cur.execute("SELECT DISTINCT ON (produs_id) produs_id, cota_veche, cota_noua, categorie_veche, categorie_noua, la "
+                "FROM produse_cota_jurnal ORDER BY produs_id, la DESC, id DESC")
+    out = {}
+    for r in cur.fetchall():
+        r = r if isinstance(r, dict) else dict(zip(("produs_id", "cota_veche", "cota_noua", "categorie_veche", "categorie_noua", "la"), r))
+        out[r["produs_id"]] = {"cota_veche": float(r["cota_veche"]) if r["cota_veche"] is not None else None,
+                               "cota_noua": float(r["cota_noua"]), "categorie_veche": r["categorie_veche"],
+                               "categorie_noua": r["categorie_noua"], "la": data_ro(r["la"].date() if hasattr(r["la"], "date") else r["la"])}
+    return out
+
+
+def _corectura(vechi, cota_noua, categorie_noua):
+    """[472] Utilizatorul care corectează cota, când cota (sau categoria cotei 0%) se schimbă; None când nu se schimbă nimic. Fără
+    utilizatorul cererii (`autor_cerere`, pus de middleware pe orice PUT) corectura se refuză ÎNAINTE de scriere: o corectură fără autor
+    n-ar fi consemnată."""
+    from decimal import Decimal
+    from core import autor_cerere as _autor
+    _den, cota_v, cat_v = vechi
+    if cota_v is not None and Decimal(str(cota_v)) == Decimal(str(cota_noua)) and (cat_v or None) == (categorie_noua or None):
+        return None
+    uid = _autor.uid()
+    if uid is None:
+        raise ValueError("corectura cotei TVA se consemnează cu utilizatorul care o face — lipsește (cerere fără autor)")
+    return uid
+
+
+def _consemneaza_corectura(cur, produs_id, vechi, cota_noua, categorie_noua, uid):
+    """[472] Un rând în `produse_cota_jurnal` pentru corectura cotei — ca la cota de pe linia facturii (deficiența 21, decizia Costin
+    05.10.2026: „contabilul poate corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când)”)."""
+    den, cota_v, cat_v = vechi
+    cur.execute("INSERT INTO produse_cota_jurnal (produs_id, denumire, cota_veche, categorie_veche, cota_noua, categorie_noua, user_id) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s)", (produs_id, den, cota_v, cat_v, cota_noua, categorie_noua, uid))
+
+
 def actualizeaza(conn, produs_id, denumire=None, um=None, pret_unitar=None,
                  cota_tva=None, categorie=None, confirmat=None, categorie_tva=None, categorie_331=None):
     """Actualizeaza campurile date ale unui produs. Daca se schimba cota manual,
@@ -337,7 +401,7 @@ def actualizeaza(conn, produs_id, denumire=None, um=None, pret_unitar=None,
     [lotul 11, 449] `categorie_tva` / `categorie_331`: None = neschimbat, "" = golit. Se verifică pe starea REZULTATĂ
     (cota nouă sau cea existentă): o cotă nenulă golește categoria cotei 0%, dacă nu s-a cerut alta (care atunci se refuză)."""
     with conn.cursor() as cur:
-        cur.execute("SELECT cota_tva, categorie_tva, categorie_331 FROM produse WHERE id = %s", (produs_id,))
+        cur.execute("SELECT cota_tva, categorie_tva, categorie_331, denumire FROM produse WHERE id = %s", (produs_id,))
         vechi = cur.fetchone()
     if not vechi:
         return {"ok": False, "id": produs_id}
@@ -376,10 +440,15 @@ def actualizeaza(conn, produs_id, denumire=None, um=None, pret_unitar=None,
     if not seturi:
         return {"ok": False, "cod": "NIMIC", "mesaj": "nimic de actualizat"}
     val.append(produs_id)
+    # [472] cota sau categoria ei schimbată -> consemnată (cine, când, din ce în ce), în aceeași tranzacție cu schimbarea
+    inainte = (vechi[3], vechi[0], vechi[1])
+    uid = _corectura(inainte, cota_noua, cat) if (cota_tva is not None or categorie_tva is not None) else None
     with conn.cursor() as cur:
         cur.execute("UPDATE produse SET " + ", ".join(seturi) + " WHERE id = %s", val)
         afectate = cur.rowcount
-    return {"ok": afectate > 0, "id": produs_id}
+        if afectate and uid is not None:
+            _consemneaza_corectura(cur, produs_id, inainte, cota_noua, cat, uid)
+    return {"ok": afectate > 0, "id": produs_id, "consemnata": bool(afectate and uid is not None)}
 
 
 def sterge(conn, produs_id):
