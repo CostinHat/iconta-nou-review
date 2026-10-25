@@ -1,0 +1,45 @@
+[
+ {
+  "nr": "C173",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 10/2026, Ionescu (certificatul cod 01 din 13–15.10.2026, introdus înainte de reparație): baza indemnizației de șomaj B1_10 = B4_3 = baza CAM B1_5 = 5077 (salariul zilelor lucrate 4815 + indemnizația angajatorului 262; HG 174/2002 norme art.19^1 alin.(1)), venitul brut realizat B1_sal2 = E3_8 = 5077 (fără salariul zilelor de concediu, Legea 53/2003 art.49 alin.(2)); înainte 5497; fără erori la DUKIntegrator",
+  "captura": "c173_f5_vechi_d112_10_2026_baza_somaj.png",
+  "posibila_de_la": "2026-11-01",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "B1_10=\"5077\"",
+    "zona": ".fereastra:last-of-type details.dec-xml:has(summary:text('Vezi XML-ul generat')) pre.dec-xml-pre"
+   },
+   {
+    "contine": "B1_sal2=\"5077\"",
+    "zona": ".fereastra:last-of-type details.dec-xml:has(summary:text('Vezi XML-ul generat')) pre.dec-xml-pre"
+   },
+   {
+    "contine": "B4_3=\"5077\"",
+    "zona": ".fereastra:last-of-type details.dec-xml:has(summary:text('Vezi XML-ul generat')) pre.dec-xml-pre"
+   },
+   {
+    "nu_contine": "5497",
+    "zona": ".fereastra:last-of-type details.dec-xml:has(summary:text('Vezi XML-ul generat')) pre.dec-xml-pre"
+   }
+  ]
+ }
+]

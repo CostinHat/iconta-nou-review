@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "core/coada_api.py",
+  "ancora": "    d = documentul_stornat_in_ciorna(cur, schema, nota_ids)",
+  "inlocuire": "    d = None",
+  "test": "frontend_test/e2e/e2e_lot12_stoc2.py::test_def_619_jurnalul_refuza_stornarea_inaintea_facturii_stornate"
+ },
+ {
+  "fisier": "core/coada_api.py",
+  "ancora": "                rv = valideaza_documentul(conn, schema_nota, nid)",
+  "inlocuire": "                from core import jurnal_api as _jurnal\n                rv = _jurnal.valideaza(conn, schema_nota, nid)",
+  "test": "frontend_test/e2e/e2e_lot12_stoc2.py::test_def_619_coada_refuza_stornarea_inaintea_facturii_stornate"
+ },
+ {
+  "fisier": "scripts/stoc2_409_1_dubluri_corectie.py",
+  "ancora": "if len(stornari) < 2 or len(stornari) != len(inlocuiri):",
+  "inlocuire": "if len(stornari) < 3 or len(stornari) != len(inlocuiri):",
+  "test": "frontend_test/e2e/e2e_lot12_stoc2.py::test_def_409_1_corectia_dublata_se_scoate_iar_stornarea_ramasa_are_titlul_corect"
+ },
+ {
+  "fisier": "core/migrare_articole_dublate.py",
+  "ancora": "return [g for g in pe_cheie.values() if len(g) > 1]",
+  "inlocuire": "return [g for g in pe_cheie.values() if len(g) > 2]",
+  "test": "frontend_test/e2e/e2e_lot12_stoc2.py::test_def_450_1_stocuri_arata_un_rand_grau_si_borderourile_kg"
+ }
+]

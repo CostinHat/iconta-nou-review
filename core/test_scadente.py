@@ -38,7 +38,7 @@ def test_scadenta_muta_in_zi_lucratoare():
 
 def test_25_decembrie_devine_21_decembrie():
     """[Lot 19 defect 7] Inainte: 25.12.2026 (Craciun) -> 26 -> 27 duminica -> 28.12 — o zi DUPA termenul legal."""
-    for tip in ("d300", "d112", "d100", "d301", "d390"):
+    for tip in ("d300", "d112", "d100", "d301", "d710"):
         # CPF art.155 alin.(2): „scadența și/sau termenul de declarare se împlinesc la 25 decembrie, sunt scadente
         # și/sau se declară până la data de 21 decembrie”
         assert scadente.scadenta_data(tip, 2026, luna=11) == date(2026, 12, 21), tip
@@ -46,6 +46,23 @@ def test_25_decembrie_devine_21_decembrie():
     # lucrătoare anterioară datei de 21 decembrie” — 21.12.2025 duminica, 20 sambata -> 19 vineri
     assert scadente.scadenta_data("d300", 2025, luna=11) == date(2025, 12, 19)
     assert scadente.scadenta("d112", 2031, luna=11) == "19.12.2031"
+
+
+def test_def_639_declaratia_informativa_de_25_decembrie_se_muta_dupa():
+    """[deficiența 639, lotul 12] D390 pentru 11/2026 arăta termen 21.12.2026: excepția de 21 decembrie se aplica oricărui tip.
+    CPF art.155 alin.(2): „Creanțele fiscale administrate de organul fiscal central pentru care […] scadența și/sau termenul de declarare se
+    împlinesc la 25 decembrie, sunt scadente și/sau se declară până la data de 21 decembrie” — privește creanțele; D390 și D208 nu declară o
+    creanță (CPF art.1 pct.19, declarație informativă), deci termenul lor se mută DUPĂ."""
+    # CPF art.75 -> Legea 134/2010 art.181 alin.(2): „Când ultima zi a unui termen cade într-o zi nelucrătoare, termenul se prelungește până în
+    # prima zi lucrătoare care urmează.” 25.12.2026 vineri (Crăciunul), 26 sâmbătă (a doua zi de Crăciun), 27 duminică -> luni 28.12.2026
+    assert scadente.scadenta_data("d390", 2026, luna=11) == date(2026, 12, 28)
+    assert scadente.scadenta("d208", 2026, luna=11) == "28.12.2026"
+    # 25.12.2025 joi, 26 vineri (sărbători), 27-28 weekend -> luni 29.12.2025 (D300 pe aceeași lună: 19.12.2025, înapoi)
+    assert scadente.scadenta_data("d390", 2025, luna=11) == date(2025, 12, 29)
+    assert scadente.scadenta_data("d300", 2025, luna=11) == date(2025, 12, 19)
+    # o lună obișnuită nu se schimbă: OPANAF 705/2020 „până la data de 25 inclusiv a lunii următoare” (25.10.2026 duminică -> luni 26)
+    assert scadente.scadenta_data("d390", 2026, luna=9) == date(2026, 10, 26)
+    assert scadente.declara_creanta("D300") and not scadente.declara_creanta("D390")
 
 
 def test_ce_nu_cade_pe_25_decembrie_nu_se_muta_inapoi():

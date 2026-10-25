@@ -1,8 +1,8 @@
 [
  {
   "fisier": "core/facturi_api.py",
-  "ancora": "_rele = _ct.verifica_linii(linii, None if _pft is None else _pft[0], tert_tara)",
-  "inlocuire": "_rele = _ct.verifica_linii(linii, True, tert_tara)",
+  "ancora": "_rele = _ct.verifica_linii(linii, None if _pft is None else _pft[0], tert_tara, art317=None if _pft is None else _pft[1],",
+  "inlocuire": "_rele = _ct.verifica_linii(linii, None if _pft is None else _pft[0], tert_tara, art317=None,",
   "test": "frontend_test/e2e/e2e_lot12_cx3.py::test_def_c110_prestarea_ic_a_neplatitorului_art317_poarta_regimul_firmei"
  },
  {

@@ -817,6 +817,12 @@
     "deruleaza": "[data-nota-id='5']"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id='5'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='5'] #jn-depasita-5"
+   },
+   {
     "captura": "448_f5_vechi_nota5_inainte_de_refacere.png"
    },
    {
@@ -837,7 +843,8 @@
     "contine": "Salariile lunii 10/2026 se contează după ce luna se încheie"
    },
    {
-    "contine": "641 = 421 · 12.045,45"
+    "contine": "641 421 12.045,45",
+    "zona": "tbody.tn-nota[data-nota-id='5'] table.tn-linii"
    },
    {
     "contine": "11.860,79",

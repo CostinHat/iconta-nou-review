@@ -106,6 +106,7 @@ CLASIFICARE = {
     "firme.js:pj-sel": (EXISTENTA, "pontajul e INFORMATIV (DECIZII 17.07, F135): „prezent” = lipsa unei excepții, prin modelul de date; selectul arată starea reală a zilei"),
     "firme.js:ad-tip": (FISCAL, "tipul contractului pe adeverință (venea „nedeterminată”)"),
     "setari.js:not-canal": (NEFISCAL, "canalul notificărilor utilizatorului (lotul 7, 2.2: „implicit email”) — setare a contului, nu fapt fiscal; se schimbă cu «Salvează canalul»"),
+    "tabel_note.js:${pre}-stare": (NEFISCAL, "filtrul de stare al tabelului de note (lotul 12, 617: Registru jurnal) — ce note se ARATĂ (toate / validate / ciorne), nu un fapt scris; pornește pe „toate”, se schimbă oricând, nu se trimite nicăieri"),
     "firme.js:rg-mediu": (NEFISCAL, "mediul REGES (test / producție) — setare tehnică a conexiunii, nu fapt fiscal"),
     "firme.js:cadou-ev": (FISCAL, "evenimentul tichetelor cadou (venea „Paște”) — decide neimpozabilul de 300 lei"),
     "firme.js:ed-norma": (FISCAL, "tipul normei la corectarea salariatului (venea „întreagă” și când lipsea) — D112"),

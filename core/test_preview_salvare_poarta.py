@@ -111,6 +111,8 @@ def test_preview_intoarce_verdictul_salvarii(monkeypatch, nume, endpoint, modul,
     elif cu_conn:
         monkeypatch.setattr(main.db, "get_conn", _fake_conn)
         monkeypatch.setattr(_part, "coerenta", lambda conn, schema, r: [])
+        # [lotul 12, 252] previzualizarea dă și refuzul coloanei „TVA la încasare” (citește profilul firmei); fără bază aici, niciun refuz
+        monkeypatch.setattr(_part, "refuz_tva_incasare", lambda conn, schema, r, data_referinta=None: None)
     if nume == "istoric":   # [389, lotul 9] perioada „T1/2026” se scrie după profilul firmei: aici fără bază, profil necunoscut (lunar)
         from core import uc_tenants as _uct
         monkeypatch.setattr(_uct, "istoric_cu_perioada", lambda tid, randuri, ctx: _ist.cu_perioada(randuri, {}))

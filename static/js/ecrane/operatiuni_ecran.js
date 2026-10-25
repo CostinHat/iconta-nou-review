@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=309f4d66ae";
+import { api, ultimaCerere, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=e38843b1ec";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -257,7 +257,8 @@ const REGISTRU = [
     spreEmitere: { camp: "tip", val: "bunuri", text: "Livrarea intracomunitară de bunuri se face din «Emite factură»: acolo scrii codul de TVA al clientului (se verifică în VIES), alegi articolul din stoc și categoria „livrare intracomunitară”, iar marfa se descarcă din gestiune odată cu factura. Aici rămân prestările de servicii intracomunitare." },
     campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare"),
-    C("cod_tva_client", "Cod TVA client (ex. DE123456789)", "text"),
+    // [lotul 12, C78.1] `vies`: rezultatul VIES (cod valid sau nu, numele firmei) se vede sub câmp înainte de „Generează nota”
+    C("cod_tva_client", "Cod TVA client (ex. DE123456789)", "text", { vies: true }),
     C("tip", "Tip", "select", { optiuni: [["bunuri","Bunuri"],["servicii","Servicii"]] }),
     C("cont_venit", "Cont venit", "text", { sugestie: "704", cond: { camp: "tip", val: "servicii" }, ajutor: "Prestările de servicii: de regulă 704." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
@@ -478,7 +479,9 @@ export async function ecranOperatiuni(corp, nav, t) {
         input = `<input type="text" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" placeholder="${c.sugestie || ""}">`;
       }
       const ajutor = c.ajutor ? `<span class="camp-ajutor">${esc(c.ajutor)}</span>` : "";
-      return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : '<span class="oblig">*</span>'}</label>${input}${ajutor}</div>`;
+      // [lotul 12, C78.1] răspunsul VIES sub câmp: aceeași linie de stare ca la CUI-ul din „Emite factură” (`.em-cui-stare`; textul serverului cu `.pe-randuri`, DS cap.6 v2.100)
+      const vies = c.vies ? `<div class="em-cui-stare" id="op-${c.nume}-vies" aria-live="polite"></div>` : "";
+      return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : '<span class="oblig">*</span>'}</label>${input}${ajutor}${vies}</div>`;
     };
     corp.innerHTML = `
       <h2 class="pf-titlu">${esc(opCurenta.titlu)}${_OP_AJUTOR[opCurenta.cheie] ? " " + semnAjutor(_OP_AJUTOR[opCurenta.cheie]) : ""}</h2>
@@ -536,7 +539,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=1c7b806a57");
+      const { ecranJurnal } = await import("./firme.js?v=2b27eebcaf");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };
@@ -593,12 +596,53 @@ export async function ecranOperatiuni(corp, nav, t) {
     };
     const btnSpre = corp.querySelector("#op-spre-emitere-buton");
     if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
-      const { randeazaEmitere } = await import("./emitere_ecran.js?v=ee4898fed1");
+      const { randeazaEmitere } = await import("./emitere_ecran.js?v=8d3aa3015f");
       nav.deschide("Emite factură", (c2) => randeazaEmitere(c2, nav, t.id, { inapoi: () => nav.inapoi() }));
     });
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
       corp.querySelector(`#op-${c.nume}`).addEventListener("change", actualizeazaCond));
     actualizeazaCond();
+    // [lotul 12, C78.1, comanda Costin 12.2 pct.7: „ecranul nu arată rezultatul VIES (cod valid sau nu, numele firmei) înainte de
+    // generare”] la ieșirea din câmpul codului de TVA, verificarea VIES (aceeași rută ca „Emite factură”, `GET …/verifica-vies`): valid, cu
+    // statul și numele firmei; invalid; VIES căzut — înainte de „Generează nota”. Tastarea șterge răspunsul codului vechi, iar un răspuns
+    // întârziat al codului vechi nu se mai scrie peste cel nou (`ultimaCerere`, C103).
+    // codul verificat valid și numele firmei din VIES: confirmarea notei îl numește (răspunsul rutei notei nu-l întoarce pe toate rutele)
+    let viesVerificat = null;
+    opCurenta.campuri.filter((c) => c.vies).forEach((c) => {
+      const inp = corp.querySelector(`#op-${c.nume}`), st = corp.querySelector(`#op-${c.nume}-vies`);
+      const cerereVies = ultimaCerere();
+      const arata = (text, rau) => { st.textContent = text; st.className = "em-cui-stare" + (rau ? " em-cui-rau pe-randuri" : ""); };
+      inp.addEventListener("input", () => { cerereVies(); viesVerificat = null; arata("", false); });
+      inp.addEventListener("change", async () => {
+        const actuala = cerereVies();
+        const cod = inp.value.trim().toUpperCase();
+        if (!cod) { arata("", false); return; }
+        if (/^(RO)?\d+$/.test(cod)) {
+          arata("Codul e românesc: livrarea / prestarea intracomunitară cere un client înregistrat în scopuri de TVA în alt stat membru "
+                + "(codul începe cu prefixul statului, ex. DE, IE).", true);
+          return;
+        }
+        arata("se verifică în VIES…", false);
+        try {
+          const v = await api.get(`/tenants/${t.id}/verifica-vies?cod_tva=${encodeURIComponent(cod)}`);
+          if (!actuala()) return;
+          if (v && v.valid) {
+            // unele state (ex. DE) nu publică numele: VIES întoarce „---”
+            const nume = v.nume && v.nume.trim() !== "---" ? v.nume.trim() : "statul clientului nu publică numele în VIES";
+            viesVerificat = { cod, nume: v.nume && v.nume.trim() !== "---" ? v.nume.trim() : "" };
+            st.className = "em-cui-stare";
+            st.innerHTML = `<span class="em-cui-info">valid în VIES · ${esc(v.tara || cod.slice(0, 2))} · ${esc(nume)}</span>`;
+          } else {
+            arata("Cod TVA invalid în VIES: clientul nu e persoană impozabilă dovedită, deci serviciul nu se înregistrează aici ca "
+                  + "prestare intracomunitară — se facturează cu TVA românesc (art. 278 alin.(3) Cod fiscal).", true);
+          }
+        } catch (e) {
+          if (!actuala()) return;
+          st.textContent = (e && e.mesaj) || "VIES nu răspunde acum — încearcă din nou peste un minut.";
+          st.className = "em-cui-stare em-cui-rau pe-randuri";
+        }
+      });
+    });
     // [C4] lista mijloacelor fixe ACTIVE ale firmei (registrul activelor, aceeași rută ca ecranul Mijloace fixe)
     const selMf = [...corp.querySelectorAll(".op-mijloc-fix")];
     if (selMf.length) {
@@ -650,16 +694,23 @@ export async function ecranOperatiuni(corp, nav, t) {
         // [258] notele se numesc cum le arată Registrul jurnal (`nota_eticheta` / `note_etichete`, „nr. crt. 5 din 12.03.2026”), nu prin id
         const note = r ? (r.note_etichete || (r.nota_eticheta ? [r.nota_eticheta] : [])) : [];
         const ids = r ? (r.inregistrari || (r.inregistrare_id ? [r.inregistrare_id] : [])) : [];
-        // [401] nota se arată după generare (conturile și suma), nu doar numărul ei
-        const nota = r && r.nota ? ` Nota: ${r.nota}.` : "";
         if (note.length) {
           // [lotul 11, 8c — decizia 10.3 „reparația centrală”; P1b] drumul unic al confirmării: caseta verde cu conturile și sumele
           // fiecărei note (citite din Registrul jurnal după id), „Generează nota” inactiv cu motivul, reactivat la o modificare a câmpurilor
           const citite = await noteGenerate(t.id, ids, corpReq.data);
+          // [401] nota se arată după generare (conturile și suma). [lotul 12, C78.1: „mesajul de confirmare repetă nota de trei ori”] când
+          // rândurile notei s-au citit din Registrul jurnal, „Nota: 4111 = 704 1.000,00 lei.” le repeta: rămâne numai textul operațiunii
+          // care spune altceva decât conturile și sumele (o mențiune, o explicație), sau conturile când rândurile n-au putut fi citite
+          const doarConturi = (x) => !String(x || "").replace(/lei/gi, "").replace(/[\d\s.,=+;:\-−]/g, "");
+          const nota = r && r.nota && !(citite.length && doarConturi(r.nota)) ? ` Nota: ${r.nota}.` : "";
+          // [C78.1] partenerul din VIES, pe care s-a scris factura (livrarea / prestarea intracomunitară)
+          const codTrimis = String(corpReq.cod_tva_client || "").trim().toUpperCase();
+          const vies = viesVerificat && codTrimis && viesVerificat.cod === codTrimis
+            ? `Client: ${viesVerificat.nume ? viesVerificat.nume + ", " : ""}cod ${codTrimis} valid în VIES.` : "";
           dupaGenerare(zona, corp.querySelector("#op-trimite"), {
             note: (citite.length ? citite : note.map(() => ({ linii: [] }))).map((n, i) => ({ linii: n.linii,
               eticheta: `${note[i] || n.eticheta || ""} — ${stareNota(r)}` })),
-            detalii: [nota.trim()], pas: pasNota(r, note.length > 1),
+            detalii: [vies, nota.trim()], pas: pasNota(r, note.length > 1),
             reactiveazaLa: [...opCurenta.campuri.map((c) => corp.querySelector(`#op-${c.nume}`)),
                             ...corp.querySelectorAll("#op-multi input, #op-multi select, #op-multi textarea")] });
           if (r.avertisment) mesajIn(zona, r.avertisment, "avert");

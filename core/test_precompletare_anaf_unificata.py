@@ -16,10 +16,17 @@ def test_toate_caile_folosesc_helperul():
     # [P7 · valul use-case] Cele trei cai sunt corpuri de ruta, iar corpurile au plecat in
     # `core/uc_*.py`. Se numara in SURSA stratului de aplicatie — intrebarea („toate trei cheama
     # helperul unic?") nu se schimba cu fisierul.
+    # [lotul 12, 642] cele trei căi cheamă helperul unic prin `precompleteaza_sau_semnaleaza` (același helper, sub un punct de revenire,
+    # în tranzacția creării firmei); acela îl cheamă pe `precompleteaza_din_anaf` — verificat pe AST, nu pe text
+    import ast
     from core import scan_sql_efectiv as _efectiv
     aplicatie = _efectiv.sursa_aplicatie()
-    assert aplicatie.count("precompleteaza_din_anaf(") >= 3, \
+    assert aplicatie.count("precompleteaza_sau_semnaleaza(") >= 3, \
         "nu toate cele 3 cai de creare firma (register/add-firm/import) cheama helperul unic"
+    prov = ast.parse(io.open("core/tenant_provisioning.py", encoding="utf-8").read())
+    fn = next(n for n in prov.body if isinstance(n, ast.FunctionDef) and n.name == "precompleteaza_sau_semnaleaza")
+    assert [c.func.id for c in ast.walk(fn) if isinstance(c, ast.Call) and isinstance(c.func, ast.Name)
+            and c.func.id == "precompleteaza_din_anaf"] == ["precompleteaza_din_anaf"], "ajutorul nu cheamă helperul unic"
 
 
 def test_niciun_snapshot_anaf_inline_in_main():

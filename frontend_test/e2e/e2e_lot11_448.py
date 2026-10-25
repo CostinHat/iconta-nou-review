@@ -8,10 +8,10 @@ Date de pornire scrise direct: niciuna. Firma și salariatul (5.000 lei brut, no
 (ruta salariaților, `POST /tenants/{id}/salariati`); statul, nota, schimbarea salariului, refacerea și validarea sunt pe ecrane. Luna e
 ultima lună ÎNCHEIATĂ (`perioada_incheiata`): nota salariilor se scrie după ce luna s-a încheiat (deficiența 216)."""
 from conftest import perioada_incheiata, sql
-from e2e_bloc_b import _mergi_la_luna
+from e2e_bloc_b import _deschide_rand, _linii_detaliu, _mergi_la_luna, _nota_jn
 from e2e_bloc_d import firma_sal  # noqa: F401 — fixtura modulului (firma cu salariatul de 5.000 lei)
 from e2e_bloc_d import _stat
-from e2e_lot11_s import _jurnal, _rand
+from e2e_lot11_s import _jurnal
 
 _F = ".fereastra:last-of-type "
 P = perioada_incheiata()
@@ -58,6 +58,8 @@ def test_def_448_ciorna_salariilor_depasita_se_reface_din_stat_si_se_valideaza(p
     # 3. Registrul jurnal al lunii: ciorna e depășită, cu sumele statului de acum și cele de pe ciornă; „Validează” inactiv
     pg = _jurnal(patron, firma_sal)
     _mergi_la_luna(patron, P.an, P.luna)
+    # [lotul 12, 617] caseta depășirii stă în detaliul notei: rândul se deschide întâi (clic pe rând), ca la contabil
+    _deschide_rand(patron, _nota_jn(patron, nid))
     pg.wait_for_selector("#jn-depasita-%d" % nid, timeout=30000)
     t = " ".join(pg.inner_text("#jn-depasita-%d" % nid).split())
     patron.captura("depasita")
@@ -75,7 +77,9 @@ def test_def_448_ciorna_salariilor_depasita_se_reface_din_stat_si_se_valideaza(p
     assert sql('SELECT count(*) FROM "%s".inregistrari WHERE id = %%s' % s, (nid,)) == [(0,)]
     pg.wait_for_selector("[data-nota-id='%d']" % nou, timeout=20000)
     assert pg.locator("#jn-depasita-%d" % nou).count() == 0
-    assert "641 = 421 · 6.000,00" in _rand(pg, nou), _rand(pg, nou)
+    # [lotul 12, 617] liniile notei stau în detaliul ei (tabelul Debit / Credit / Sumă), nu pe rând ca „641 = 421 · 6.000,00”
+    linii = _linii_detaliu(_deschide_rand(patron, _nota_jn(patron, nou)))
+    assert ["641", "421", "6.000,00"] in [l[:3] for l in linii], linii
     assert pg.is_enabled("[data-val='%d']" % nou)
     patron.captura("refacuta")
     # 5. validarea: nota din statul de acum intră în evidență

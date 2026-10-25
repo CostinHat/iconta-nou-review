@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
-"""core/migrare_note_luna_neincheiata.py — ciornele de salarii / amortizare scrise înainte ca luna lor să se încheie (lotul 12, C127).
+"""core/migrare_note_luna_neincheiata.py — ciornele de salarii / amortizare / reevaluare în valută / descărcare a gestiunii global-valorice
+scrise înainte ca luna lor să se încheie (lotul 12, C127, C137, C187).
 
 DEFECTUL (C127, găsit la 216). Reparația 216 (10.10.2026, `uc_comun._cere_luna_incheiata`) oprește numai notele NOI ale unei luni
 neîncheiate; notele scrise înainte au rămas. Pe F5: ciorna „Salariile lunii 10/2026” (scrisă pe 08.10.2026) și nota VALIDATĂ „Stat de
 plata 11/2026” (scrisă pe 06.10.2026).
 
-CE FACE, pe notele de salarii și de amortizare scrise înainte de încheierea lunii lor (`inchidere_luna.note_contate_inainte`, aceeași
-regulă ca semnalul de pe ecran):
+CE FACE, pe notele de salarii, de amortizare, de reevaluare în valută (C137, aceeași clasă: `uc_reevaluare` cere și ea luna încheiată) și
+de descărcare a gestiunii global-valorice (C187, aceeași clasă: `uc_tenants.stocuri_descarcare` cere acum luna încheiată; nota „Descarcare
+gestiune LL/AAAA”, `numar` „DESC-GV-AAAA-LL”) scrise înainte de încheierea lunii lor (`inchidere_luna.note_contate_inainte`, aceeași regulă ca semnalul de pe ecran):
   * CIORNA se scoate (`note_derivate.sterge_ciorna_inlocuita`: liniile cad cu ea, elementul ei din coadă la fel). Nu era evidență: o
     ciornă nevalidată e o propunere, iar propunerea făcută pe o lună neîncheiată poate să nu cuprindă tot. După ce luna se încheie, nota
-    se scrie din nou din statul de plată / registrul mijloacelor fixe, cu cifrele întregi.
+    se scrie din nou din statul de plată / registrul mijloacelor fixe / propunerea de reevaluare (cursul BNR din ultima zi bancară a
+    lunii) / rulajele lunii întregi („Descarcă gestiunea lunii”, OMFP 1802/2014 pct.286 alin.(4)), cu cifrele întregi. Rândurile ciornei de reevaluare din `reevaluari_valuta` cad cu ea (ON DELETE CASCADE).
   * Nota VALIDATĂ NU se atinge: e evidență (o notă validată nu se șterge și nu se modifică — se corectează printr-o notă de corecție).
     Ecranul o semnalează cu mesajul lui `note_contate_inainte`, iar migrarea o numește la rulare.
   * Luna blocată se respectă: regula de fond a bazei refuză ștergerea, iar ciorna rămâne și se numește.
@@ -20,7 +23,8 @@ import json
 
 from core import db
 
-MOTIV = "lotul 12, C127 — ciornă de salarii / amortizare scrisă înainte de încheierea lunii ei (216)"
+MOTIV = ("lotul 12, C127 / C137 / C187 — ciornă de salarii / amortizare / reevaluare în valută / descărcare a gestiunii scrisă înainte de "
+         "încheierea lunii ei (216)")
 
 
 def aplica(conn, schema):

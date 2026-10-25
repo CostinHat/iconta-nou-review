@@ -23,8 +23,8 @@ import pytest
 
 from conftest import _ecran, cui_cu_control, sql
 from e2e_bloc_a import cabinet_separat, cont_asistent
-from e2e_bloc_b import (_articol_cu_stoc, _asigura_serie, _client, _coada_nota, _de_validat, _emitere, _firma_gata, _jurnal, _linie,
-                        _nota_prin_ecran, _respinge_din_coada, ana, ana_cont)  # noqa: F401 — fixture (ana, ana_cont)
+from e2e_bloc_b import (_articol_cu_stoc, _asigura_serie, _client, _coada_nota, _de_validat, _deschide_rand, _emitere, _firma_gata, _jurnal,
+                        _linie, _nota_jn, _nota_prin_ecran, _respinge_din_coada, ana, ana_cont)  # noqa: F401 — fixture (ana, ana_cont)
 from e2e_bloc_d import _nir_lista, _nir_respins, _stocuri, firma_cv  # noqa: F401 — fixture (firma_cv)
 
 AZI = _dt.date.today()
@@ -49,7 +49,7 @@ def test_def_499_motivul_incheiat_de_om_nu_primeste_al_doilea_punct_pe_nota(ana,
     assert (_coada_nota(firma_e2e, nid) or (None, None))[1] == "la_senior"
     _respinge_din_coada(patron, firma_e2e, desc, motiv)
     _jurnal(ana, firma_e2e, LUNA)
-    rand = ana.pg.locator(".pf-frand[data-nota-id='%d']" % nid)
+    rand = _deschide_rand(ana, _nota_jn(ana, nid))     # [617] motivul respingerii stă în detaliul rândului (clic pe rând)
     rand.scroll_into_view_if_needed()
     txt = " ".join(rand.inner_text().split())
     ana.captura("nota_respinsa")
@@ -104,7 +104,7 @@ def test_def_92_respinge_ramane_rosu_plin_si_activ_cu_motivul_completat(ana, pat
     _nota_prin_ecran(ana, firma_e2e, desc, AZI.isoformat(), luna=LUNA)
     pg = patron.pg
     _de_validat(patron)
-    card = pg.locator("#val-note .val-card").filter(has_text=firma_e2e["nume"]).filter(has_text=desc).first
+    card = pg.locator("#val-note tbody.tn-nota").filter(has_text=firma_e2e["nume"]).filter(has_text=desc).first   # [622] rândul notei
     card.wait_for(timeout=20000)
     stil = "(e) => { const s = getComputedStyle(e); return [s.backgroundColor, s.color, s.opacity]; }"
     pe_card = card.locator(".val-respinge").evaluate(stil)
@@ -160,7 +160,7 @@ def _cifre_fereastra(e):
     titlu_el = pg.locator("#val-note .cf-grup-titlu", has_text="Note de validat (")
     titlu_el.wait_for(timeout=20000)
     titlu = titlu_el.text_content()   # textul, nu majusculele CSS (.cf-grup-titlu are text-transform: uppercase)
-    return int(re.search(r"Note de validat \((\d+)\)", titlu).group(1)), pg.locator("#val-note .val-card").count()
+    return int(re.search(r"Note de validat \((\d+)\)", titlu).group(1)), pg.locator("#val-note tbody.tn-nota").count()   # [622] rândurile
 
 
 def test_def_52_cardul_si_fereastra_numara_exact_notele_de_validat(browser, request):
@@ -181,14 +181,14 @@ def test_def_52_cardul_si_fereastra_numara_exact_notele_de_validat(browser, requ
             assert n == 3 and "3 note de validat" in t, t
             assert _cifre_fereastra(sef) == (3, 3)
             sef.captura("fereastra_3")
-            card = pg.locator("#val-note .val-card", has_text=desc[0]).first
+            card = pg.locator("#val-note tbody.tn-nota", has_text=desc[0]).first
             card.locator(".val-aproba").click()
             pg.wait_for_function("() => document.body.innerText.includes('Ai validat')", timeout=20000)
             n, t = _cifra_card(sef)
             assert n == 2 and "2 note de validat" in t, t
             assert _cifre_fereastra(sef) == (2, 2)
             sef.captura("fereastra_2")
-            card = pg.locator("#val-note .val-card", has_text=desc[1]).first
+            card = pg.locator("#val-note tbody.tn-nota", has_text=desc[1]).first
             card.locator(".val-respinge").click()
             pg.fill("#dlg-input", "lipsește documentul 52")
             pg.click("#dlg-ok")

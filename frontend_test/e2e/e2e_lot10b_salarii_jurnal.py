@@ -135,7 +135,12 @@ def test_def_386_nota_fara_document_are_un_singur_mesaj(patron, firma_jurnal):
     assert pg.is_disabled(sel + " [data-val]")
     pg.eval_on_selector(sel + " [data-val]", "b => b.click()")
     pg.wait_for_timeout(500)
-    rand = " ".join(pg.inner_text(sel).split())
+    # [lotul 12, comanda 12.2 pct.9, deficiența 617] „explicațiile o singură dată”: fraza generală stă o dată, deasupra tabelului
+    # (`#jn-expl-fara_doc`), iar pasul notei („Scrie referința cu «Editează»”) în detaliul rândului ei — deschis întâi, ca omul
+    from e2e_bloc_b import _deschide_rand, _nota_jn   # e2e_bloc_b nu importă din acest fișier
+    rand = " ".join(_deschide_rand(patron, _nota_jn(patron, nid)).inner_text().split())
+    fer = " ".join(pg.evaluate("() => [...document.querySelectorAll('.fereastra')].pop().innerText").split())
     patron.captura()
-    assert rand.count("nu se validează fără documentul din care provine") == 1 and "Scrie referința cu „Editează”" in rand, rand
+    assert fer.count("nu se validează fără documentul din care provine") == 1 and "Scrie referința cu „Editează”" in rand, (fer, rand)
+    assert "nu se validează fără documentul din care provine" in pg.inner_text("#jn-expl-fara_doc"), fer
     assert pg.locator("#caseta-atentie-activa").count() == 0

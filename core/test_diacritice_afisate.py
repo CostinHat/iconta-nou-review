@@ -111,6 +111,10 @@ def flag(s):
     if any(c in _DIAC for c in s):
         return None
     hit = set(_cuvinte(s)) & _TRIGGERE
+    # [lotul 12, integrarea I3] „din afara” (locuțiunea prepozițională „din afara UE”, ca „în afara”) se scrie FĂRĂ ă; numai adverbul
+    # („afară”) cere diacritica. Excepția e îngustă: fiecare „afara” din șir stă după „din”.
+    if "afara" in hit and all(s.lower()[max(0, m.start() - 4):m.start()] == "din " for m in re.finditer(r"\bafara\b", s.lower())):
+        hit.discard("afara")
     return sorted(hit) if hit else None
 
 
@@ -170,12 +174,14 @@ def test_autotest_criteriu_are_dinti():
     assert flag("factura inexistenta"), "regresie: 2 cuvinte (primul/ultimul) NU trebuie sarite"
     assert flag("nota trebuie sa aiba cel putin o linie")
     assert flag("pana atunci calculul e blocat")
+    assert flag("ramane afara din calcul") == ["afara"], "adverbul „afară” fără diacritică"
     # NU trebuie flagate:
     assert flag("lună invalidă") is None, "are diacritice -> corect"
     assert flag("cannot open socket, retrying now") is None, "engleza / log ASCII"
     assert flag("PERIOADA_BLOCATA") is None, "marker un-cuvant, nu proza"
     assert flag("D300") is None, "cod"
     assert flag("platitor_tva vs snapshot") is None, "trigger lipit de identificator -> ignorat"
+    assert flag("Servicii primite de la un prestator din afara UE") is None, "locuțiunea „din afara” se scrie fără ă"
 
 
 def test_niciun_mesaj_user_facing_fara_diacritice():

@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "if (_det.cod === \"RECTIFICATIVA_DE_CONFIRMAT\" || _det.cod === \"RECTIFICATIVA_FARA_DIFERENTE\") { randeazaDiferenteRectificativa(corp, nav, _det); return; }",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_decl3.py::test_def_c19_rectificativa_d394_numai_la_cerere_dupa_diferente"
+ },
+ {
+  "fisier": "core/uc_declaratii.py",
+  "ancora": "    if tip == \"d394\":\n        from core import rectificativa as _rect\n        _rect.poarta_d394(conn, schema, body, xml, res)",
+  "inlocuire": "    if False:\n        from core import rectificativa as _rect\n        _rect.poarta_d394(conn, schema, body, xml, res)",
+  "test": "frontend_test/e2e/e2e_lot12_decl3.py::test_def_c19_rectificativa_d394_numai_la_cerere_dupa_diferente"
+ },
+ {
+  "fisier": "core/rectificativa.py",
+  "ancora": "    if pastrat and not dif:",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot12_decl3.py::test_def_c19_rectificativa_d394_numai_la_cerere_dupa_diferente"
+ },
+ {
+  "fisier": "core/d394.py",
+  "ancora": "            if not _egale(vd, vn):",
+  "inlocuire": "            if False:",
+  "test": "frontend_test/e2e/e2e_lot12_decl3.py::test_def_c19_rectificativa_d394_numai_la_cerere_dupa_diferente"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "if (S.rectConfirmata && S.rectConfirmata.cheie === _cheieRect()) body.date_extra",
+  "inlocuire": "if (false) body.date_extra",
+  "test": "frontend_test/e2e/e2e_lot12_decl3.py::test_def_c19_rectificativa_d394_numai_la_cerere_dupa_diferente"
+ }
+]

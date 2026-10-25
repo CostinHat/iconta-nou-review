@@ -2,7 +2,7 @@
 // emisă): conexiunea cabinetului, ultima citire a CUI-ului firmei și răspunsul ANAF (`GET /tenants/{id}/spv/stare`,
 // `spv_conector.stare_firma`). Când lipsește ceva ce se repară în Setări cont → Conectare SPV, mesajul are butonul spre acolo
 // (`ecran_destinatie.butonSpreEcran`). O singură sursă a textului — nu câte o frază pe ecran.
-import { api, arataMesaj, cate, dataRo } from "../api.js?v=309f4d66ae";
+import { api, arataMesaj, cate, dataRo } from "../api.js?v=e38843b1ec";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";
 
 const _ora = (iso) => { const d = new Date(iso); return `${dataRo(iso)}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
@@ -34,6 +34,8 @@ export function textStareSpv(st) {
 
 /** Citește starea și o scrie în `zona` (mesajul + butonul spre Conectare SPV, când e cazul); întoarce starea (sau null). */
 export async function randeazaStareSpv(zona, nav, tenantId) {
+  if (!zona) return null;
+  zona.dataset.stareEcran = "1";   // linie de stare, nu rezultatul unui buton: nu se aduce în vedere (`api.aduInVedere`, DS cap.6)
   let st = null;
   try { st = await api.get(`/tenants/${tenantId}/spv/stare`); } catch (e) {
     zona.innerHTML = '<div class="spv-stare-text"></div>';

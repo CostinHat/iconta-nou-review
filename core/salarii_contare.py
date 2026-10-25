@@ -81,7 +81,7 @@ CREDITE_DIN_D112 = frozenset(c for _cod, _dt, c in CONT_D112)
 # Iar D112 **nu are niciun camp care sa insemne „brutul realizat"**. Cele trei marimi apropiate sunt,
 # fiecare, altceva, din motive STRUCTURALE, nu din lipsa de acuratete:
 #   * `B2_5` / `B_brutSalarii` — baza contributiva, FARA facilitate;
-#   * `B4_3` — brutul CONTRACTUAL: pe o luna cu concediu medical difera prin constructie;
+#   * `B4_3` — baza indemnizatiei de somaj (= baza CAM, HG 174/2002 norme art.19^1 alin.(1)), fara suma netaxabila si fara salariul zilelor de concediu medical;
 #   * `E1_1` — venitul brut TOTAL, care include tichetele.
 # Costin: *„a compara fortat ar fi precizie falsa, nu verificare."* Deci 641/421 nu se compara cu
 # D112 deloc, iar motivul se scrie - nu se ascunde intr-o toleranta largita.
@@ -399,7 +399,14 @@ def propunere(conn, schema, an, luna):
     d423 = control_423(note, net_cm)
     if d423:
         div.append(d423)
+    # [lotul 12, C165] starea notei lunii se citește din NOTĂ (`inregistrari.status`: ciornă / validată), nu din coada de validare: o notă
+    # validată direct (fără element în coadă) se afișa „Nota există deja în jurnal (…, ciornă).” Coada spune în plus unde e o ciornă
+    # trimisă la validare (`validare`, adăugat de `uc_tenants.salarii_contare_propunere`).
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT id, status FROM {schema}.inregistrari WHERE numar = %s ORDER BY id LIMIT 1", (document_ref(an, luna),))
+        _nota = cur.fetchone()
     return {
+        "nota_status": (_nota[1] if not isinstance(_nota, dict) else _nota["status"]) if _nota else None,
         "net_fluturasi": _bani(net),
         "net_cm_fluturasi": _bani(net_cm) if any(c == "423" for _d1, c, _s in note) else None,
         "an": an, "luna": luna,

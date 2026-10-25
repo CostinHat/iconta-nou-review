@@ -223,22 +223,16 @@ def factura_e2e(patron, firma_e2e):
     return dict(firma_e2e, factura_id=r.get("id") or r.get("factura_id"))
 
 
-@pytest.mark.xfail(strict=True, reason="deficiența C164: zona e-mailului stă în antetul lipit al detaliului facturii (urcă la derulare ~24 px), "
-                   "deci pe un ecran mai scund decât antetul refuzul nu poate intra în vedere; decizie de design cerută — XPASS când se repară")
 def test_def_45_refuzul_emailului_facturii_vine_in_vedere(patron, factura_e2e):
     """45, a doua zonă: zona de rezultat scrisă direct (`rez.textContent = …; rez.className = "em-rezultat em-rau"`), fără `arataMesaj`.
-    Pașii: Facturi -> „Istoric facturi” -> factura -> „Trimite pe email” -> adresa ștearsă -> fereastra browserului micșorată până când
-    zona refuzului începe chiar sub marginea de jos, cu „Trimite” vizibil deasupra ei -> apăsat: „Introdu o adresă validă.” intră în zona
-    vizibilă (corpul se derulează). Înainte: observatorul din `api.js` vedea numai nodurile ADĂUGATE, iar zona exista deja — mesajul
-    rămânea sub marginea ecranului.
-    Geometria, citită din cod: zona e-mailului stă în antetul detaliului (`.fd-antet.rezumat-fix`, `facturi_ecran.js`), lipit sus
-    (`position: sticky; top: -24px`, `stil.css`) ca rezultatul unei acțiuni să se vadă și de la capătul tabelului. Antetul se derulează
-    deci numai până se lipește (24 px), apoi stă pe loc: o zonă împinsă mai adânc sub margine nu mai poate intra în vedere prin derulare,
-    iar „Trimite” adus la marginea de jos prin derulare nu se mișcă decât cei 24 px (rularea din 24.10: derulat 42, „Trimite” urcat 24).
-    De aceea înălțimea ecranului se calculează din așezarea antetului (fereastra: `max-height: calc(100vh - 48px)`), cu corpul nederulat:
-    marginea de jos cade la 2 px deasupra zonei refuzului. Precondițiile, verificate ÎNAINTE de clic: „Trimite” e vizibil, zona refuzului
-    e SUB marginea de jos, iar distanța până o încape întreagă e cel mult cât se poate derula antetul (măsurat, nu presupus). Deci testul
-    dovedește „vine în vedere”, nu „era deja în vedere” (la 520 px zona încăpea întreagă, iar mutația nu-l putea face roșu)."""
+    Pașii: fereastra browserului de 1280 × 520 -> Facturi -> „Istoric facturi” -> factura -> „Trimite pe email” -> adresa ștearsă ->
+    „Trimite”: „Introdu o adresă validă.” e în zona vizibilă, lângă „Trimite”, în bara lipită jos a ferestrei.
+    [lotul 12, C164 — comanda Costin 12.3 pct.4, verbatim: „pe ecranele scunde, antetul detaliului facturii se strânge pe un rând (număr,
+    client, total, stare SPV); acțiunea principală rămâne fixă jos (clasa 285).”] Până la C164 (aici un `xfail(strict=True)`), zona
+    e-mailului stătea în antetul lipit sus, care pe un ecran mai scund decât el nu se derula: un refuz scris mai jos de marginea ecranului
+    nu mai putea intra în vedere. Acum, pe ecranul scund (DS cap.9 v2.103), butoanele detaliului și zonele lor de rezultat stau în bara
+    lipită jos — zona refuzului e mereu în vedere, oricât s-ar derula tabelul. Mutația (`mut_lot12_fe3.json`: media query-ul ecranului scund
+    scos din stil.css) o pune înapoi în antet -> ROȘU (zona nu mai e în bară)."""
     from e2e_bloc_a import _deschide_factura
     pg = patron.pg
     pg.set_viewport_size({"width": 1280, "height": 520})
@@ -246,41 +240,15 @@ def test_def_45_refuzul_emailului_facturii_vine_in_vedere(patron, factura_e2e):
     pg.click(_F + "#fd-email")
     pg.wait_for_selector(_F + "#fd-email-send", timeout=20000)
     pg.fill(_F + "#fd-email-input", "")
-    masura = ("() => { const q = (s) => document.querySelector('.fereastra:last-of-type ' + s); "
-              "const z = q('#fd-email-rez'), c = z.closest('.fereastra-corp'), f = c.closest('.fereastra'), a = z.closest('.rezumat-fix'); "
-              "const rc = c.getBoundingClientRect(), rz = z.getBoundingClientRect(), b = q('#fd-email-send').getBoundingClientRect(); "
-              "const jos = Math.min(window.innerHeight, rc.bottom); "
-              "return {antet: rc.top - f.getBoundingClientRect().top, zona_in_corp: rz.top - rc.top + c.scrollTop, "
-              "buton_jos: b.bottom, zona_sus: rz.top, zona_jos: rz.bottom, limita: jos, derulat: c.scrollTop, "
-              "antet_sus: a ? a.getBoundingClientRect().top : null}; }")
-    # înălțimea ecranului: antetul ferestrei + 48 px (marginile din `max-height`) + un corp vizibil care se oprește la 2 px deasupra zonei
-    pg.evaluate("() => { document.querySelector('.fereastra:last-of-type .fereastra-corp').scrollTop = 0; }")
-    asezare = pg.evaluate(masura)
-    inaltime = int(asezare["antet"] + 48 + asezare["zona_in_corp"] - 2)
-    pg.set_viewport_size({"width": 1280, "height": inaltime})
-    pg.wait_for_timeout(300)
-    # cât se poate derula antetul lipit (măsurat: corpul derulat 60 px, cât a urcat antetul), apoi corpul înapoi sus
-    corp = "document.querySelector('.fereastra:last-of-type .fereastra-corp')"
-    pg.evaluate("() => { %s.scrollTop = 0; }" % corp)
-    sus0 = pg.evaluate(masura)["antet_sus"]
-    pg.evaluate("() => { %s.scrollTop = 60; }" % corp)
-    sus60 = pg.evaluate(masura)["antet_sus"]
-    pg.evaluate("() => { %s.scrollTop = 0; }" % corp)
-    inainte = pg.evaluate(masura)
-    inainte.update(inaltime=inaltime, antet_se_deruleaza=sus0 - sus60)
-    patron.captura("email_factura_inainte_de_clic")
-    assert inainte["derulat"] == 0, inainte
-    assert inainte["buton_jos"] <= inainte["limita"] + 1, inainte   # „Trimite” e vizibil: clicul nu derulează nimic
-    assert inainte["zona_sus"] >= inainte["limita"], inainte        # zona refuzului începe SUB marginea de jos a zonei vizibile
-    # zona întreagă poate intra în vedere: antetul lipit se derulează cel puțin cât lipsește (altfel nicio reparație n-ar aduce-o)
-    assert inainte["zona_jos"] - inainte["limita"] <= inainte["antet_se_deruleaza"], inainte
+    pg.evaluate("() => { const c = document.querySelector('.fereastra:last-of-type .fereastra-corp'); c.scrollTop = c.scrollHeight; }")
     pg.click(_F + "#fd-email-send")
     pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #fd-email-rez') || {}).innerText", timeout=20000)
-    pg.wait_for_timeout(1200)   # derularea lină a lui `aduInVedere`
+    pg.wait_for_timeout(1200)   # derularea lină a lui `aduInVedere`, dacă ar fi fost nevoie de ea
     patron.captura("email_factura_in_vedere")
     assert pg.inner_text(_F + "#fd-email-rez").strip() == "Introdu o adresă validă."
     v = _in_vedere(pg, "#fd-email-rez")
     assert v["ok"], v
+    assert pg.eval_on_selector(_F + "#fd-email-rez", "z => !!z.closest('.bara-fixa')"), "zona refuzului nu e în bara lipită jos (C164)"
 
 
 def test_def_45_confirmarea_modelului_de_factura_vine_in_vedere(patron, firma_e2e):

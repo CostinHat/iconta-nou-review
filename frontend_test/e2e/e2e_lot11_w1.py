@@ -9,6 +9,7 @@ import pytest
 
 from conftest import firma_noua, sql
 from e2e_bloc_a import _api, _card, _octeti, _ok, _pdf_text, emite_api, pregateste_firma
+from e2e_bloc_b import _deschide_rand
 
 
 @pytest.fixture(scope="module")
@@ -88,8 +89,9 @@ def test_def_443_nota_chitantei_din_registru_jurnal_spune_f6_nr_1(patron, firma_
     nid = sql('SELECT inregistrare_id FROM "%s".chitante WHERE factura_id = %%s AND NOT anulata' % s, (f["factura_id"],))[0][0]
     patron.firma(firma_w1["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
-    sel = ".fereastra:last-of-type [data-nota-id='%s']" % nid
+    sel = ".fereastra:last-of-type tbody.tn-nota[data-nota-id='%s']" % nid   # [lotul 12, 617] rândul notei în tabelul de note
     pg.wait_for_selector(sel, timeout=30000)
+    _deschide_rand(patron, sel)        # [617] documentul justificativ („… · stinge …”) și liniile notei, în detaliul rândului: deschis
     rand = " ".join(pg.inner_text(sel).split())
     patron.captura()
     assert "stinge factura F6 nr. 1 din" in rand, rand             # 443: „F6 nr. 1”

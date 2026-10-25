@@ -1,0 +1,293 @@
+[
+ {
+  "nr": "C187",
+  "firma": "tenant_9050",
+  "descriere": "F2: Stocuri pe luna în curs — «Descarcă gestiunea lunii» e inactiv, cu motivul lângă el (C198); descărcarea, care închide luna, se scrie după încheierea ei (C187, OMFP 1802/2014 pct.286 alin.(4))",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#s-desc"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": "#s-desc"
+   },
+   {
+    "contine": "Descărcarea gestiunii lunii se face după ce luna se încheie.",
+    "zona": "#s-desc-motiv"
+   }
+  ],
+  "captura": "c187_f2_luna_in_curs_descarcarea_inactiva.png"
+ },
+ {
+  "nr": "C84",
+  "firma": "tenant_9050",
+  "descriere": "F2: proforma unei livrări intracomunitare de bunuri (client DE811907980, 2 × 100,00, cota 0%, «livrare intracomunitară»), emisă din «Emite factură» (documentul de plecare al transformării)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "alege": "#em-tip",
+    "valoare": "proforma"
+   },
+   {
+    "completeaza": "#em-cui",
+    "valoare": "DE811907980"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "completeaza": "#em-nume",
+    "valoare": "KUNDE DOVADA C84 GMBH"
+   },
+   {
+    "completeaza": "#em-adresa",
+    "valoare": "Unter den Linden 1"
+   },
+   {
+    "completeaza": "#em-oras",
+    "valoare": "Berlin"
+   },
+   {
+    "completeaza": "#em-l0-descriere",
+    "valoare": "Marfa livrare IC dovada C84"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "completeaza": "#em-l0-cantitate",
+    "valoare": "2"
+   },
+   {
+    "completeaza": "#em-l0-pret_unitar",
+    "valoare": "100"
+   },
+   {
+    "alege": "#em-l0-cota",
+    "valoare": "0"
+   },
+   {
+    "asteapta": "#em-l0-categorie"
+   },
+   {
+    "alege": "#em-l0-categorie",
+    "valoare": "livrare_ic"
+   },
+   {
+    "click": "#em-emite"
+   },
+   {
+    "asteapta": "#em-rezultat.em-emisa"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "emisă",
+    "zona": "#em-rezultat"
+   }
+  ],
+  "captura": "c84_f2_proforma_livrare_ic.png"
+ },
+ {
+  "nr": "C84",
+  "firma": "tenant_9050",
+  "descriere": "F2: proforma -> «Transformă în factură»: caseta «Ai dovada transportului bunurilor în alt stat membru?»; «Nu încă, emite factura» -> «Factura … a fost emisă.» cu avertismentul (CF art.294 alin.(3); HG 1/2016 pct.65); «transformată în <serie> nr. <număr>» (C196)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": ".fac-frand-btn",
+    "text": "KUNDE DOVADA C84 GMBH"
+   },
+   {
+    "asteapta": "#fd-transforma"
+   },
+   {
+    "click": "#fd-transforma"
+   },
+   {
+    "asteapta": "#fd-dovada-nu"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "captura": "c84_f2_transforma_intreaba_dovada.png"
+   },
+   {
+    "click": "#fd-dovada-nu"
+   },
+   {
+    "asteapta": "#fd-act-rez .em-avertisment-emitere"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a fost emisă",
+    "zona": "#fd-act-rez"
+   },
+   {
+    "contine": "nu ai încă dovada transportului bunurilor în alt stat membru",
+    "zona": "#fd-act-rez .em-avertisment-emitere"
+   },
+   {
+    "contine": " nr. ",
+    "zona": "#fd-vezi-transformata"
+   }
+  ],
+  "captura": "c84_f2_transformata_cu_avertisment.png"
+ },
+ {
+  "nr": "C157",
+  "firma": "tenant_9053",
+  "descriere": "F5 (neplătitor, neînregistrat art.317): proforma unui serviciu către clientul DE811907980 (500,00), emisă din «Emite factură» (documentul de plecare al transformării)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "alege": "#em-tip",
+    "valoare": "proforma"
+   },
+   {
+    "completeaza": "#em-cui",
+    "valoare": "DE811907980"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "completeaza": "#em-nume",
+    "valoare": "KUNDE DOVADA C157 GMBH"
+   },
+   {
+    "completeaza": "#em-adresa",
+    "valoare": "Unter den Linden 1"
+   },
+   {
+    "completeaza": "#em-oras",
+    "valoare": "Berlin"
+   },
+   {
+    "completeaza": "#em-l0-descriere",
+    "valoare": "Servicii de consultanta IT dovada C157"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "completeaza": "#em-l0-cantitate",
+    "valoare": "1"
+   },
+   {
+    "completeaza": "#em-l0-pret_unitar",
+    "valoare": "500"
+   },
+   {
+    "click": "#em-emite"
+   },
+   {
+    "asteapta": "#em-rezultat.em-emisa"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "emisă",
+    "zona": "#em-rezultat"
+   }
+  ],
+  "captura": "c157_f5_proforma_serviciu_ue.png"
+ },
+ {
+  "nr": "C157",
+  "firma": "tenant_9053",
+  "descriere": "F5: proforma -> «Transformă în factură»: «Factura … a fost emisă.» și sub ea avertismentul «Firma nu e înregistrată în scopuri de TVA conform art.317…» (CF art.317 alin.(1) lit.b), nu un refuz",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn"
+   },
+   {
+    "click": ".fac-frand-btn",
+    "text": "KUNDE DOVADA C157 GMBH"
+   },
+   {
+    "asteapta": "#fd-transforma"
+   },
+   {
+    "click": "#fd-transforma"
+   },
+   {
+    "asteapta": "#fd-act-rez .em-avertisment-emitere"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "a fost emisă",
+    "zona": "#fd-act-rez"
+   },
+   {
+    "contine": "Firma nu e înregistrată în scopuri de TVA conform art.317",
+    "zona": "#fd-act-rez .em-avertisment-emitere"
+   }
+  ],
+  "captura": "c157_f5_transformata_cu_avertisment.png"
+ }
+]

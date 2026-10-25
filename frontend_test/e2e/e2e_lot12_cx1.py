@@ -44,6 +44,7 @@ import pytest
 
 from conftest import BAZA, _ecran, ai_pregateste, alege_perioada, alege_tipul, firma_noua, sql
 from e2e_bloc_a import AZI, CLIENT, _api, _card, _ok, _profil as _profil_bloc_a, emite_api, pregateste_firma
+from e2e_bloc_b import _deschide_rand, _nota_jn
 
 ecran_cont = contextlib.contextmanager(_ecran)
 PROBA_XML = "/home/costin/ghid_incoming/lot12_fisiere_proba/F1_efactura_DANTE_DNT-RT-1020.xml"
@@ -467,7 +468,9 @@ def test_def_c135_nota_de_casa_a_facturii_arata_seria_separat(patron, firma_e2e)
     sql('UPDATE "%s".inregistrari SET descriere = %%s WHERE id = %%s' % s, (vechi, nid))
     patron.firma(firma_e2e["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
-    rand = pg.locator(".pf-frand[data-nota-id='%d']" % nid)
+    # [lotul 12, 617] rândul notei în tabelul de note: descrierea pe rând (celula „Explicație”), liniile și documentul în detaliu —
+    # deschis, ca textul citit să cuprindă tot ce cuprindea rândul vechi (antetul și liniile notei)
+    rand = _deschide_rand(patron, _nota_jn(patron, nid))
     rand.scroll_into_view_if_needed()
     text = " ".join(rand.inner_text().split())
     patron.captura("nota_casa_serie_separat")

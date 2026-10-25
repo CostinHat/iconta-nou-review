@@ -1873,7 +1873,7 @@
   {
     "nr": "80",
     "firma": "tenant_9049",
-    "descriere": "Cabinet, „De validat”: NIR nr 3 din 19.10.2026 al Anei (3 note la validare: 132, 133, 134, clonate din producție) e UN SINGUR card, care poartă toate trei notele în data-coada-ids, cu „3 note” în titlu și „Vezi notele →”. Numai citire.",
+    "descriere": "Cabinet, „De validat”: NIR nr 3 din 19.10.2026 al Anei (3 note la validare: 132, 133, 134, clonate din producție) e UN SINGUR rând, care poartă toate trei notele în data-coada-ids, cu „3 note” în titlul documentului (prima linie a detaliului rândului) și semnul „3 note ale documentului” pe rând (fostul „Vezi notele →”). Numai citire.",
     "pasi": [
       {
         "click": ".fereastra:last-of-type .nav-x"
@@ -1892,10 +1892,16 @@
         "click": "button.cab-card:has([data-cheie='validat'])"
       },
       {
-        "asteapta": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+        "asteapta": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026')"
       },
       {
-        "deruleaza": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+        "deruleaza": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026')"
+      },
+      {
+        "click": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026') .tn-deschide"
+      },
+      {
+        "asteapta": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026') table.tn-linii"
       },
       {
         "pauza": 400
@@ -1903,15 +1909,15 @@
     ],
     "verifica": [
       {
-        "exista": "#val-note .val-card[data-coada-ids*='11417'][data-coada-ids*='11418'][data-coada-ids*='11419']"
+        "exista": "#val-note tbody.tn-nota[data-coada-ids*='11417'][data-coada-ids*='11418'][data-coada-ids*='11419']"
       },
       {
         "contine": "3 note",
-        "zona": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026') .val-titlu"
+        "zona": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026') tr.tn-detaliu p.pf-frand-sub:first-of-type"
       },
       {
-        "contine": "Vezi notele",
-        "zona": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+        "contine": "3 note ale documentului",
+        "zona": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026') .tn-rand"
       }
     ],
     "captura": "80_f1_nir_3_un_singur_card.png"
@@ -1919,7 +1925,7 @@
   {
     "nr": "101",
     "firma": "tenant_9049",
-    "descriere": "Cabinet, „De validat”: titlul cardului NIR-ului nr 3 al Anei e scurt — „NIR nr 3 din 19.10.2026 · DANTE INTERNATIONAL SA · 3 note” —, fără descrierea notei („NIR 3 DANTE INTERNATIONAL SA”) repetată pe fiecare notă. Numai citire.",
+    "descriere": "Cabinet, „De validat”: titlul documentului NIR-ului nr 3 (prima linie a detaliului rândului) al Anei e scurt — „NIR nr 3 din 19.10.2026 · DANTE INTERNATIONAL SA · 3 note” —, fără descrierea notei („NIR 3 DANTE INTERNATIONAL SA”) repetată pe fiecare notă (descrierea stă o dată, în coloana „Explicație”). Numai citire.",
     "pasi": [
       {
         "click": ".fereastra:last-of-type .nav-x"
@@ -1938,10 +1944,16 @@
         "click": "button.cab-card:has([data-cheie='validat'])"
       },
       {
-        "asteapta": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+        "asteapta": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026')"
       },
       {
-        "deruleaza": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+        "deruleaza": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026')"
+      },
+      {
+        "click": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026') .tn-deschide"
+      },
+      {
+        "asteapta": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026') table.tn-linii"
       },
       {
         "pauza": 400
@@ -1950,11 +1962,15 @@
     "verifica": [
       {
         "contine": "NIR nr 3 din 19.10.2026 · DANTE INTERNATIONAL SA · 3 note",
-        "zona": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026') .val-titlu"
+        "zona": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026') tr.tn-detaliu p.pf-frand-sub:first-of-type"
       },
       {
         "nu_contine": "NIR 3 DANTE INTERNATIONAL SA",
-        "zona": "#val-note .val-card:has-text('NIR nr 3 din 19.10.2026')"
+        "zona": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026') tr.tn-detaliu p.pf-frand-sub:first-of-type"
+      },
+      {
+        "nu_contine": "NIR 3 DANTE INTERNATIONAL SA · NIR 3 DANTE INTERNATIONAL SA",
+        "zona": "#val-note tbody.tn-nota:has-text('NIR nr 3 din 19.10.2026')"
       }
     ],
     "captura": "101_f1_titlul_scurt_al_nir_3.png"
@@ -1973,6 +1989,12 @@
       },
       {
         "deruleaza": "[data-nota-id='123']"
+      },
+      {
+        "click": "tbody.tn-nota[data-nota-id='123'] .tn-deschide"
+      },
+      {
+        "asteapta": "tbody.tn-nota[data-nota-id='123'] .jn-a-altuia"
       },
       {
         "pauza": 400
@@ -2140,6 +2162,10 @@
       },
       {
         "nu_contine": "notele pe care asistenții le trimit la validare"
+      },
+      {
+        "nu_contine": "notele pe care asistenții le trimit la validare",
+        "zona": ".fereastra:last-of-type tr.tn-detaliu"
       }
     ],
     "captura": "323_f1_grupul_depasite.png"
@@ -2405,7 +2431,15 @@
         "nu_contine": "Lipsește prima de performanță la Popescu"
       },
       {
+        "nu_contine": "Lipsește prima de performanță la Popescu",
+        "zona": ".fereastra:last-of-type tr.tn-detaliu"
+      },
+      {
         "nu_contine": "notă respinsă la validare"
+      },
+      {
+        "nu_contine": "notă respinsă la validare",
+        "zona": ".fereastra:last-of-type tr.tn-detaliu"
       }
     ],
     "captura": "81_f5_vechi_jurnal_09_2026_nota_refacuta_din_stat.png"
@@ -2855,17 +2889,23 @@
         "deruleaza": ".fereastra:last-of-type [data-nota-id='122']"
       },
       {
+        "click": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='122'] .tn-deschide"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='122'] table.tn-linii"
+      },
+      {
         "pauza": 400
       }
     ],
     "verifica": [
       {
-        "contine": "4428.01 = 408 · 115,50",
-        "zona": ".fereastra:last-of-type [data-nota-id='122']"
+        "contine": "4428.01 408 115,50",
+        "zona": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='122'] table.tn-linii"
       },
       {
-        "contine": "4426 = 401 · -115,50",
-        "zona": ".fereastra:last-of-type [data-nota-id='122']"
+        "contine": "4426 401 -115,50",
+        "zona": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='122'] table.tn-linii"
       }
     ],
     "captura": "146_f1_vechi_nir_1_tva_pe_4428_01.png"
@@ -4079,10 +4119,10 @@
         "pauza": 800
       },
       {
-        "asteapta": "#val-note .val-card:has-text('NIR nr DOV99') .val-respinge"
+        "asteapta": "#val-note tbody.tn-nota:has-text('NIR nr DOV99') .val-respinge"
       },
       {
-        "click": "#val-note .val-card:has-text('NIR nr DOV99') .val-respinge"
+        "click": "#val-note tbody.tn-nota:has-text('NIR nr DOV99') .val-respinge"
       },
       {
         "asteapta": "#dlg-input"
@@ -4649,17 +4689,27 @@
         "deruleaza": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
       },
       {
+        "click": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD144-1') .tn-deschide"
+      },
+      {
+        "asteapta": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD144-1') table.tn-linii"
+      },
+      {
         "pauza": 400
       }
     ],
     "verifica": [
       {
-        "contine": "408 = 401 · 665,50",
-        "zona": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+        "contine": "408 401 665,50",
+        "zona": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD144-1') table.tn-linii"
       },
       {
         "nu_contine": "371 = 401",
         "zona": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+      },
+      {
+        "nu_contine": "371 401",
+        "zona": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD144-1') table.tn-linii"
       }
     ],
     "captura": "107_f1_vechi_nota_facturii_408_401_fara_371.png"
@@ -4685,21 +4735,37 @@
         "deruleaza": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
       },
       {
+        "click": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD144-1') .tn-deschide"
+      },
+      {
+        "asteapta": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD144-1') table.tn-linii"
+      },
+      {
+        "click": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='122'] .tn-deschide"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='122'] table.tn-linii"
+      },
+      {
         "pauza": 400
       }
     ],
     "verifica": [
       {
-        "contine": "4426 = 4428.01 · 115,50",
-        "zona": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
+        "contine": "4426 4428.01 115,50",
+        "zona": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD144-1') table.tn-linii"
       },
       {
         "nu_contine": "4426 = 401",
         "zona": "[data-nota-id]:has-text('Contare factura DOVD144-1')"
       },
       {
-        "contine": "4428.01 = 408 · 115,50",
-        "zona": ".fereastra:last-of-type [data-nota-id='122']"
+        "nu_contine": "4426 401",
+        "zona": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD144-1') table.tn-linii"
+      },
+      {
+        "contine": "4428.01 408 115,50",
+        "zona": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='122'] table.tn-linii"
       }
     ],
     "captura": "146_f1_vechi_factura_4426_din_4428_01.png"
@@ -4826,17 +4892,23 @@
         "deruleaza": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
       },
       {
+        "click": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD418-1') .tn-deschide"
+      },
+      {
+        "asteapta": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD418-1') table.tn-linii"
+      },
+      {
         "pauza": 400
       }
     ],
     "verifica": [
       {
-        "contine": "371 = 401 · 83,00",
-        "zona": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
+        "contine": "371 401 83,00",
+        "zona": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD418-1') table.tn-linii"
       },
       {
-        "contine": "6028 = 401 · 100,00",
-        "zona": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
+        "contine": "6028 401 100,00",
+        "zona": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD418-1') table.tn-linii"
       },
       {
         "contine": "altă livrare decât NIR-urile nelegate (confirmat)",
@@ -4951,7 +5023,7 @@
   {
     "nr": "55",
     "firma": "tenant_9053",
-    "descriere": "După dovada precedentă (nota de salarii 07/2026 a Anei, la validare), contabilul-șef închide fereastra firmei -> „De validat”: titlul notei e „Notă · Salariile lunii 07/2026 · Stat de plată nr SAL 07/2026 din 31.07.2026” — statul de plată o singură dată, fără „Stat de plata” fără diacritice. Numai citire (pe nota scrisă de dovada precedentă).",
+    "descriere": "După dovada precedentă (nota de salarii 07/2026 a Anei, la validare), contabilul-șef închide fereastra firmei -> „De validat”: titlul notei (prima linie a detaliului rândului) e „Notă · Salariile lunii 07/2026 · Stat de plată nr SAL 07/2026 din 31.07.2026” — statul de plată o singură dată, fără „Stat de plata” fără diacritice. Numai citire (pe nota scrisă de dovada precedentă).",
     "pasi": [
       {
         "click": ".fereastra:last-of-type .nav-x"
@@ -4976,10 +5048,16 @@
         "pauza": 800
       },
       {
-        "asteapta": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+        "asteapta": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
       },
       {
-        "deruleaza": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+        "deruleaza": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+      },
+      {
+        "click": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .tn-deschide"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') table.tn-linii"
       },
       {
         "pauza": 400
@@ -4988,11 +5066,11 @@
     "verifica": [
       {
         "contine": "Notă · Salariile lunii 07/2026 · Stat de plată nr SAL 07/2026 din 31.07.2026",
-        "zona": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-titlu"
+        "zona": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') tr.tn-detaliu p.pf-frand-sub:first-of-type"
       },
       {
         "nu_contine": "Stat de plata",
-        "zona": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-titlu"
+        "zona": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') tr.tn-detaliu p.pf-frand-sub:first-of-type"
       }
     ],
     "captura": "55_f5_l12_de_validat_titlul_notei_de_salarii.png"
@@ -5025,10 +5103,10 @@
         "pauza": 800
       },
       {
-        "asteapta": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+        "asteapta": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
       },
       {
-        "click": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-respinge"
+        "click": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-respinge"
       },
       {
         "asteapta": "#dlg-input"
@@ -5335,10 +5413,10 @@
         "pauza": 800
       },
       {
-        "asteapta": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+        "asteapta": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
       },
       {
-        "deruleaza": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
+        "deruleaza": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026')"
       },
       {
         "pauza": 400
@@ -5346,10 +5424,10 @@
     ],
     "verifica": [
       {
-        "exista": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-aproba"
+        "exista": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-aproba"
       },
       {
-        "exista": ".fereastra:last-of-type .val-card:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-respinge"
+        "exista": ".fereastra:last-of-type #val-note tbody.tn-nota:has-text('F5 SRL Salariati SRL'):has-text('Salariile lunii 07/2026') .val-respinge"
       }
     ],
     "captura": "109_f5_l12_de_validat_nota_noua_cu_prima.png"
@@ -5409,6 +5487,12 @@
         "deruleaza": "[data-nota-id]:has-text('Consumabile birou dovada 8')"
       },
       {
+        "click": "tbody.tn-nota[data-nota-id]:has-text('Consumabile birou dovada 8') .tn-deschide"
+      },
+      {
+        "asteapta": "tbody.tn-nota[data-nota-id]:has-text('Consumabile birou dovada 8') table.tn-linii"
+      },
+      {
         "pauza": 400
       }
     ],
@@ -5418,8 +5502,8 @@
         "zona": "[data-nota-id]:has-text('Consumabile birou dovada 8')"
       },
       {
-        "contine": "6022 = 5311 · 45,00",
-        "zona": "[data-nota-id]:has-text('Consumabile birou dovada 8')"
+        "contine": "6022 5311 45,00",
+        "zona": "tbody.tn-nota[data-nota-id]:has-text('Consumabile birou dovada 8') table.tn-linii"
       }
     ],
     "captura": "8_f1_ana_nota_manuala_la_validare.png"
@@ -5492,6 +5576,15 @@
       {
         "asteapta": "[data-nota-id='186']",
         "text": "La validare în cabinet"
+      },
+      {
+        "asteapta": "tbody.tn-nota[data-nota-id='186'].val-evidentiat"
+      },
+      {
+        "click": "tbody.tn-nota[data-nota-id='186'] .tn-deschide"
+      },
+      {
+        "asteapta": "tbody.tn-nota[data-nota-id='186'] tr.tn-detaliu"
       },
       {
         "pauza": 400
@@ -5619,7 +5712,7 @@
         "click": ".clopot-item:has-text('Comision test asistent')"
       },
       {
-        "asteapta": ".val-card.val-evidentiat"
+        "asteapta": "#val-note tbody.tn-nota.val-evidentiat"
       },
       {
         "pauza": 600
@@ -5628,10 +5721,14 @@
     "verifica": [
       {
         "contine": "Comision test asistent",
-        "zona": ".val-card.val-evidentiat"
+        "zona": "#val-note tbody.tn-nota.val-evidentiat"
       },
       {
         "nu_contine": "Elementul din notificare nu mai așteaptă validarea"
+      },
+      {
+        "nu_contine": "Elementul din notificare nu mai așteaptă validarea",
+        "zona": ".fereastra:last-of-type tr.tn-detaliu"
       }
     ],
     "captura": "50_f1_notificarea_duce_la_card.png"
@@ -5639,7 +5736,7 @@
   {
     "nr": "105",
     "firma": "tenant_9049",
-    "descriere": "Cabinet, „De validat”: cardul notei 186 retrimise neschimbate spune „Retrimisă după respingere · motivul anterior: „Lipsește extrasul atașat” · nota nu s-a schimbat față de cea respinsă”. Numai citire (după retrimiterea de la 104).",
+    "descriere": "Cabinet, „De validat”: rândul notei 186 retrimise neschimbate, deschis, spune în detaliu „Retrimisă după respingere · motivul anterior: „Lipsește extrasul atașat” · nota nu s-a schimbat față de cea respinsă”. Numai citire (după retrimiterea de la 104).",
     "pasi": [
       {
         "click": ".fereastra:last-of-type .nav-x"
@@ -5658,10 +5755,16 @@
         "click": "button.cab-card:has([data-cheie='validat'])"
       },
       {
-        "asteapta": "#val-note .val-card:has-text('Comision test asistent')"
+        "asteapta": "#val-note tbody.tn-nota:has-text('Comision test asistent')"
       },
       {
-        "deruleaza": "#val-note .val-card:has-text('Comision test asistent')"
+        "deruleaza": "#val-note tbody.tn-nota:has-text('Comision test asistent')"
+      },
+      {
+        "click": "#val-note tbody.tn-nota:has-text('Comision test asistent') .tn-deschide"
+      },
+      {
+        "asteapta": "#val-note tbody.tn-nota:has-text('Comision test asistent') table.tn-linii"
       },
       {
         "pauza": 400
@@ -5670,7 +5773,7 @@
     "verifica": [
       {
         "contine": "Retrimisă după respingere · motivul anterior: „Lipsește extrasul atașat” · nota nu s-a schimbat față de cea respinsă",
-        "zona": "#val-note .val-card:has-text('Comision test asistent')"
+        "zona": "#val-note tbody.tn-nota:has-text('Comision test asistent')"
       }
     ],
     "captura": "105_f1_card_retrimisa_cu_motivul.png"
@@ -5697,10 +5800,10 @@
         "click": "button.cab-card:has([data-cheie='validat'])"
       },
       {
-        "asteapta": "#val-note .val-card:has-text('Comision test asistent')"
+        "asteapta": "#val-note tbody.tn-nota:has-text('Comision test asistent')"
       },
       {
-        "click": "#val-note .val-card:has-text('Comision test asistent') .val-respinge"
+        "click": "#val-note tbody.tn-nota:has-text('Comision test asistent') .val-respinge"
       },
       {
         "asteapta": "#dlg-input"
@@ -5921,10 +6024,10 @@
         "click": "button.cab-card:has([data-cheie='validat'])"
       },
       {
-        "asteapta": "#val-note .val-card:has-text('Salariile lunii 03/2026')"
+        "asteapta": "#val-note tbody.tn-nota:has-text('Salariile lunii 03/2026')"
       },
       {
-        "deruleaza": "#val-note .val-card:has-text('Salariile lunii 03/2026')"
+        "deruleaza": "#val-note tbody.tn-nota:has-text('Salariile lunii 03/2026')"
       },
       {
         "pauza": 400
@@ -5933,14 +6036,14 @@
     "verifica": [
       {
         "contine": "F5 SRL Salariati SRL",
-        "zona": "#val-note .val-card:has-text('Salariile lunii 03/2026')"
+        "zona": "#val-note tbody.tn-nota:has-text('Salariile lunii 03/2026')"
       },
       {
-        "exista": "#val-note .val-card:has-text('Salariile lunii 03/2026') .val-aproba",
+        "exista": "#val-note tbody.tn-nota:has-text('Salariile lunii 03/2026') .val-aproba",
         "text": "Validează"
       },
       {
-        "exista": "#val-note .val-card:has-text('Salariile lunii 03/2026') .val-respinge",
+        "exista": "#val-note tbody.tn-nota:has-text('Salariile lunii 03/2026') .val-respinge",
         "text": "Respinge"
       }
     ],

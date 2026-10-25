@@ -87,7 +87,8 @@ def test_def_c68_ciornele_tale_nu_cad_cand_o_firma_dispare(patron, doua_firme):
     print("C68 card:", card)
     assert "1 notă a ta în ciornă" in " ".join(card.split()), card
     pg.click("button.cab-card:has([data-cheie='validat'])")
-    pg.wait_for_selector(".val-ciorne-firma", timeout=20000)
+    # [lotul 12, comanda 12.2 pct.12, deficiența 622] „Notele tale în ciornă” e tabelul de note: un rând pe ciornă, cu firma și explicația pe rând
+    pg.wait_for_selector("#val-ciorne tbody.tn-nota[data-ciorna]", timeout=20000)
     lista = pg.inner_text(".fereastra:last-of-type")
     patron.captura()
     # titlul grupului e afișat cu majuscule de CSS (`inner_text` dă textul afișat): comparația nu ține seama de majuscule

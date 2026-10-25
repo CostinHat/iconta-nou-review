@@ -65,8 +65,13 @@ def test_importa_scrie_iban():
             # [lotul 10, 426 — clasa] statele de plată ale salariaților existenți (`existent`): niciunul, firma n-are salariați
             # tabela citită (după FROM), nu un sub-șir al instrucțiunii
             if _insert_salariati(self.ultim) is not None:
-                return (1, True)                      # [lotul 11, 447] `RETURNING id, (xmax = 0)`: salariat nou
-            return (0, None) if self.ultim.upper().partition(" FROM ")[2].split()[:1] == ["STATE_PLATA"] else (1,)
+                # [lotul 11, 447] `RETURNING id, (xmax = 0)`: salariat nou; [lotul 12, C133] + scutirea scrisă (nescutit, fără motiv)
+                return (1, True, False, None)
+            coloane, _f, rest = self.ultim.upper().partition(" FROM ")
+            tabela = rest.split()[:1]
+            if tabela == ["SALARIATI"] and [c.strip() for c in coloane.replace("SELECT", "", 1).split(",")] == ["SCUTIT_CONTRIB_MINIM", "MOTIV_EXCEPTARE"]:
+                return None                           # [lotul 12, C133] fișa de dinainte (scutirea, pentru jurnal): nu există, salariat nou
+            return (0, None) if tabela == ["STATE_PLATA"] else (1,)
 
         def fetchall(self):
             return []                                 # [426] niciun salariat cu același CNP: importul nu actualizează nicio fișă

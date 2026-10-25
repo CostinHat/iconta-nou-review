@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "core/facturi_recurente.py",
+  "ancora": "                _consemneaza_refuzul(conn, schema, s, motiv_refuzului(e) if isinstance(e, ValueError) else MESAJ_NEPREVAZUT, azi)",
+  "inlocuire": "                pass",
+  "test": "frontend_test/e2e/e2e_lot12_fe3.py::test_def_c109_refuzul_cronului_ajunge_in_clopotel_pe_email_si_pe_sablon"
+ },
+ {
+  "fisier": "core/notificari.py",
+  "ancora": "\"e în clopoțel și pe șablon.\", \"cine\": \"pregatire\", \"implicit\": True},",
+  "inlocuire": "\"e în clopoțel și pe șablon.\", \"cine\": \"pregatire\"},",
+  "test": "frontend_test/e2e/e2e_lot12_fe3.py::test_def_c109_refuzul_cronului_ajunge_in_clopotel_pe_email_si_pe_sablon"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "          ${refuz}\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_fe3.py::test_def_c109_refuzul_cronului_ajunge_in_clopotel_pe_email_si_pe_sablon"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "        ...(l.cota_tva === 0 && l.categorie_tva ? { categorie_tva: l.categorie_tva } : {}) })),   // [12.3 pct.9] categoria liniei cu 0%, ca la emitere (lipsa ei = linia fără categorie)",
+  "inlocuire": "        })),",
+  "test": "frontend_test/e2e/e2e_lot12_fe3.py::test_def_c160_sablonul_platitorului_alege_cota_si_categoria_pe_linie"
+ },
+ {
+  "fisier": "static/stil.css",
+  "ancora": "@media (max-height: 700px), (max-width: 560px) { :root { --antet-scund: 1; } }",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_fe3.py::test_def_c164_pe_ecranul_scund_antetul_facturii_e_un_rand_iar_actiunile_raman_jos"
+ }
+]

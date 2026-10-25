@@ -3803,3 +3803,19 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.produse_cota_jurnal (
 -- [tara_sablon_recurent_v1, lotul 12, C160] țara clientului pe șablonul facturii recurente — SURSA: core/migrare_tara_sablon_recurent.py
 ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente ADD COLUMN IF NOT EXISTS tert_tara text DEFAULT 'RO'::text NOT NULL;
 -- [tara_sablon_recurent_v1] sfârșit
+
+-- [salariati_jurnal_v1, lotul 12, C133] corectura scutirii de contribuția minimă pe fișa salariatului, consemnată — SURSA: core/migrare_salariati_jurnal.py
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.salariati_jurnal (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    salariat_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.salariati(id) ON DELETE CASCADE,
+    camp character varying(40) NOT NULL,
+    valoare_veche text,
+    valoare_noua text,
+    user_id integer NOT NULL,
+    la timestamp with time zone NOT NULL DEFAULT now()
+);
+-- [salariati_jurnal_v1] sfârșit
+
+-- [sablon_recurent_stare_v1, lotul 12, C109 + 12.3 pct.9] starea ultimei emiteri și categoria produsului pe șablonul facturii recurente — SURSA: core/migrare_sablon_recurent_stare.py
+ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente ADD COLUMN IF NOT EXISTS ultimul_refuz text, ADD COLUMN IF NOT EXISTS ultimul_refuz_la date, ADD COLUMN IF NOT EXISTS categorie_331 text;
+-- [sablon_recurent_stare_v1] sfârșit

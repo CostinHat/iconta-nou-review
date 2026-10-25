@@ -119,7 +119,10 @@ def test_def_c69_d406_localitatea_partenerului_nu_e_liniuta(patron, firma_c69):
     pg = _declaratie(patron, firma_c69, "d406", 2026, 9)
     err = pg.inner_text(".dec-eroare")
     assert "lipsește localitatea" in err and "IONESCU MARIA (facturile C69-L1)" in err, err
-    assert not pg.query_selector("details.dec-xml"), "D406 refuzat nu arată niciun XML"
+    # [lotul 12, 596] pagina principală de dedesubt are acum și ea `details.dec-xml` („Cum se face” pe cardurile „Primii pași”): XML-ul se
+    # caută în fereastra declarației, cea din față
+    assert not pg.evaluate("() => !![...document.querySelectorAll('.fereastra')].pop().querySelector('details.dec-xml')"), \
+        "D406 refuzat nu arată niciun XML"
     patron.captura("refuz")
     sql('UPDATE "%s".facturi SET tert_oras = %%s WHERE id = %%s' % s, ("Sibiu", fid))
     pg = _declaratie(patron, firma_c69, "d406", 2026, 9)

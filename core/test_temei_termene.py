@@ -34,7 +34,7 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TIPURI = ["d100", "d101", "d112", "d205", "d300", "d301", "d390", "d394", "d406"]
 
 # Instalat 21.08.2026: D300, D301, D390 sursate verbatim. Se RIDICĂ pe măsură ce se sursează restul.
-SURSATE_BASELINE = 16   # +1 03.10.2026: D208 (CF art.113, lot 19 defect 8); +12 23.10.2026: deficiența 493 (declarațiile anuale)
+SURSATE_BASELINE = 22   # +1 03.10.2026: D208 (CF art.113, lot 19 defect 8); +12 23.10.2026: deficiența 493 (declarațiile anuale); +6 24.10.2026: deficiența 639 (D100, D101, D112, D205, D394, D406)
 
 
 def _norm(s):
@@ -98,12 +98,27 @@ def test_clichetul_nu_e_stat():
         "pierde tăcut." % (n, SURSATE_BASELINE))
 
 
-def test_datoria_ramasa_e_numita():
-    """Ce NU e sursat trebuie să se vadă, nu să se topească într-un procent."""
-    lipsa = [t for t in TIPURI if t not in _sursate()]
-    assert lipsa, "toate tipurile sunt sursate — ridică pragul și șterge testul ăsta"
-    assert set(lipsa) == {"d100", "d101", "d112", "d205", "d394", "d406"}, (
-        "s-a schimbat lista datoriei rămase: %s. Actualizeaz-o odată cu pragul." % sorted(lipsa))
+def test_toate_tipurile_cu_termen_calculat_sunt_sursate():
+    """[deficiența 639, lotul 12] Datoria R4 s-a închis: fiecare tip din `TIPURI` își poartă actul, verificat în corpus. (Înainte testul
+    număra datoria rămasă — D100, D101, D112, D205, D394, D406 — și cerea să fie înlocuit când lista se golește.)"""
+    assert [t for t in TIPURI if t not in _sursate()] == []
+
+
+def _temeiuri_639():
+    """Citatele deficienței 639: mutarea după zi nelucrătoare, definiția declarației informative și tipurile fără creanță."""
+    return ([("zi nelucrătoare", t) for t in scadente.TEMEI_ZI_NELUCRATOARE] + [("informativă", scadente.TEMEI_INFORMATIVA)]
+            + [("fără creanță " + tip, t) for tip, t in sorted(scadente.TEMEI_FARA_CREANTA.items())]
+            + [("21 decembrie", scadente.TEMEI_21_DECEMBRIE)])
+
+
+@pytest.mark.parametrize("nume,temei", _temeiuri_639(), ids=[n for n, _t in _temeiuri_639()])
+def test_temeiurile_mutarii_termenului_sunt_verbatim_in_corpus(nume, temei):
+    """[deficiența 639] CPF art.155 alin.(2) (21 decembrie) privește creanțele; o declarație informativă (CPF art.1 pct.19) se mută DUPĂ
+    (CPF art.75 -> Legea 134/2010 art.181 alin.(2)). Fiecare citat se găsește în fișierul lui, normalizat ca restul registrului."""
+    act, url, citat = temei
+    assert act and url.startswith("anaf_surse/") and len(_norm(citat)) > 25, (nume, temei)
+    doc = _norm(open(os.path.join(_RAD, url), encoding="utf-8", errors="replace").read())
+    assert _norm(citat) in doc, "%s: citatul %s nu se găsește în %s" % (nume, act, url)
 
 
 def test_potrivirea_nu_e_permisiva():

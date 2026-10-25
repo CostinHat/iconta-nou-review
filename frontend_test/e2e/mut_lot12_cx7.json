@@ -1,0 +1,86 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "zona.querySelectorAll(\"[data-aj-sterge]\").forEach((b) => b.addEventListener(\"click\", () => {\n      confirmaCaseta(b.parentElement || b, ",
+  "inlocuire": "zona.querySelectorAll(\"[data-aj-sterge]\").forEach((b) => b.addEventListener(\"click\", async () => {\n      await confirmaCaseta(",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c176_stergerea_ajustarii_fiscale_intreaba_si_sterge"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "legaDateAnaf(corp.querySelector(\"#sn-cui\"), ",
+  "inlocuire": "legaDateAnaf(document.createElement(\"input\"), ",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c179_nir_denumirea_furnizorului_de_la_anaf_dispare_la_alt_cui"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "legaDateAnaf(corp.querySelector(\"#c-cui\"), ",
+  "inlocuire": "legaDateAnaf(document.createElement(\"input\"), ",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c179_casa_partenerul_de_la_anaf_dispare_la_alt_cui"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "const anaf = legaDateAnaf(corp.querySelector(\"#em-cui\"),",
+  "inlocuire": "const anaf = legaDateAnaf(document.createElement(\"input\"),",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c179_emiterea_datele_clientului_de_la_anaf_dispar_la_alt_cui"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "legaDateAnaf(corp.querySelector(\"#pm-cui\"), ",
+  "inlocuire": "legaDateAnaf(document.createElement(\"input\"), ",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c179_factura_primita_furnizorul_de_la_anaf_dispare_la_alt_cui"
+ },
+ {
+  "fisier": "static/js/ecrane/login.js",
+  "ancora": "const anaf = legaDateAnaf(cui, [cabinet], cuiInfo);",
+  "inlocuire": "const anaf = legaDateAnaf(document.createElement(\"input\"), [cabinet], cuiInfo);",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c179_inregistrarea_denumirea_cabinetului_dispare_la_alt_cui"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "if (_susDeRefacut != null) { const v = _susDeRefacut; _susDeRefacut = null; _corp.scrollTop = v; }",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c180_dupa_dezactivarea_unui_centru_fereastra_ramane_unde_era"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "fc = [{\"id\": x[0], \"numar\": _serie_nr(x[2], x[1]),",
+  "inlocuire": "fc = [{\"id\": x[0], \"numar\": ((x[2] or \"\") + str(x[1] or \"\")).strip(),",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c181_facturile_candidate_ale_chitantei_au_seria_separat"
+ },
+ {
+  "fisier": "core/rapoarte_comerciale_api.py",
+  "ancora": "\"id\": r[\"id\"], \"serie\": r[\"serie\"], \"numar\": r[\"numar\"],",
+  "inlocuire": "\"id\": r[\"id\"], \"numar\": r[\"numar\"],",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c181_fisa_partenerului_arata_seria_separat"
+ },
+ {
+  "fisier": "static/js/ecrane/tabel_note.js",
+  "ancora": "if (deschide) deschide(); else det.hidden = false;",
+  "inlocuire": "det.hidden = false;",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c182_validarea_notei_fara_document_arata_liniile_si_le_tine_la_redesenare"
+ },
+ {
+  "fisier": "static/js/ecrane/validat.js",
+  "ancora": "<p class=\"pf-frand-sub\">${rulajNota(n)}</p>`,",
+  "inlocuire": "<p class=\"pf-frand-sub\">Rulaj: ${rulajNota(n)}</p>`,",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c183_detaliul_notei_de_validat_scrie_rulajul_o_data"
+ },
+ {
+  "fisier": "static/js/ecrane/validat.js",
+  "ancora": "tabele.forEach(({ zona, t }) => { if (el.dataset.tn && zona.contains(el)) t.deschide(el.dataset.tn); });",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c184_de_validat_din_notificare_deschide_detaliul_notei"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "(${stareNota(rs)}).${rs && rs.mesaj",
+  "inlocuire": "(ciornă).${rs && rs.mesaj",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c185_confirmarea_salvarii_spune_ca_nota_a_plecat_la_validare"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "if (text.indexOf(_faraSpatii(m)) >= 0 || (campuri.length && campuri.every((c) => text.indexOf(c) >= 0))) return;",
+  "inlocuire": "if (text.indexOf(_faraSpatii(m)) >= 0) return;",
+  "test": "frontend_test/e2e/e2e_lot12_cx7.py::test_def_c186_refuzul_numai_pe_campuri_nu_mai_vine_si_in_fereastra"
+ }
+]

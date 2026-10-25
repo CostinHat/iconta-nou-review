@@ -30,6 +30,18 @@ ANTET_COSTIN = "SC Firmă Probă Rulaje SRL"
 MESAJ_599 = "Fișierul pare al altei firme: în antetul lui scrie „SC Firmă Probă Rulaje SRL”, iar firma aleasă e %s."
 
 
+def confirma_firma_fisierului(pg, antet):
+    """[599] Pasul contabilului după „Salvează …” pe un fișier al cărui antet numește ALTĂ firmă decât cea aleasă (fișierele de probă au
+    antetul lor, „SC Firmă Probă SRL” / „SC Firmă Probă Rulaje SRL”, iar firma de test e „E2E Probă …”): întrebarea numește firma din
+    fișier și cere „Da, sunt ale acestei firme”; abia după ea pornește salvarea (și, dacă firma are deja datele, întrebarea înlocuirii).
+    Sursa unică a pasului pentru testele importurilor care nu probează 599 însuși (599 are pașii lui, cu „Renunță”, mai jos)."""
+    pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=10000)
+    intrebare = " ".join(pg.inner_text("#caseta-atentie-activa .ca-mesaj").split())
+    assert pg.inner_text("#ca-ok").strip() == "Da, sunt ale acestei firme", intrebare
+    assert intrebare.startswith("Datele din fișierul cu „%s” intră la " % antet), intrebare
+    pg.click("#ca-ok")
+
+
 # ── fișierele (și pentru dovezile pe firmele de test: `frontend_test/dovada/dovezi_lot12_migr.json`) ─────────────────────────────
 def fisier_costin():
     """Balanța lui Costin, exact cum a încărcat-o (antetul „SC Firmă Probă Rulaje SRL”, 19 conturi la 30.09.2026)."""

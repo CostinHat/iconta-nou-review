@@ -1,0 +1,202 @@
+[
+  {
+    "nr": "C109",
+    "firma": "tenant_9049",
+    "descriere": "Administratorul cabinetului copiei: Setări cont -> Notificări -> grupa „Facturi și SPV”: rândul nou „Când emiterea automată a unei facturi recurente e refuzată: factura lunii nu pleacă, iar motivul e în clopoțel și pe șablon.”, bifat din oficiu (pleacă și pe email). Refuzul însuși vine din tura cronului (nu e un pas de ecran), iar pe copie nu există șabloane recurente: proba lui e e2e. Nu se salvează nimic",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='setari'])"
+      },
+      {
+        "asteapta": "button.meniu-card",
+        "text": "Notificări"
+      },
+      {
+        "click": "button.meniu-card",
+        "text": "Notificări"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #not-tipuri .not-grup"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Când emiterea automată a unei facturi recurente e refuzată: factura lunii nu pleacă, iar motivul e în clopoțel și pe șablon.",
+        "zona": ".fereastra:last-of-type #not-tipuri"
+      },
+      {
+        "exista": ".fereastra:last-of-type #not-tipuri input[data-tip='factura_recurenta_refuzata']:checked"
+      }
+    ],
+    "captura": "c109_f1_notificari_refuz_factura_recurenta_bifat.png"
+  },
+  {
+    "nr": "C160",
+    "firma": "tenant_9049",
+    "descriere": "F1 (plătitoare): Facturi -> Facturi recurente -> „+ Șablon nou” -> linia „Servicii de consultanta IT”: cota se alege din lista cotelor în vigoare (ca la „Emite factură”); aleasă 0% -> apare categoria de TVA a liniei, aleasă „Prestare … în afara României”. 12.3 pct.9: „Da: cota și categoria pe linia șablonului recurent, ca la factură.” Nu se salvează nimic",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-recurente"
+      },
+      {
+        "click": "#fac-recurente"
+      },
+      {
+        "asteapta": "#fr-add"
+      },
+      {
+        "click": "#fr-add"
+      },
+      {
+        "asteapta": "#fr-l0-descriere"
+      },
+      {
+        "completeaza": "#fr-l0-descriere",
+        "valoare": "Servicii de consultanta IT"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "alege": "#fr-l0-cota",
+        "valoare": "0"
+      },
+      {
+        "asteapta": "#fr-l0-categorie",
+        "stare": "visible"
+      },
+      {
+        "alege": "#fr-l0-categorie",
+        "valoare": "serviciu_extern"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": ".fereastra:last-of-type select#fr-l0-cota"
+      },
+      {
+        "exista": ".fereastra:last-of-type select#fr-l0-categorie:not([hidden])"
+      },
+      {
+        "valoare": ".fereastra:last-of-type #fr-l0-categorie",
+        "egal": "serviciu_extern"
+      },
+      {
+        "valoare": ".fereastra:last-of-type #fr-l0-cota",
+        "egal": "0"
+      }
+    ],
+    "captura": "c160_f1_sablon_cota_si_categoria_pe_linie.png"
+  },
+  {
+    "nr": "C164",
+    "firma": "tenant_9049",
+    "latime": 1280,
+    "inaltime": 600,
+    "descriere": "F1, fereastra de 1280 × 600: Facturi -> „Istoric facturi” -> o factură emisă înainte de reparație: sus UN rând (numărul, clientul, totalul, starea SPV), iar „PDF factură”, „Trimite pe email” și celelalte acțiuni stau în bara lipită jos, deasupra totalurilor. Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-istoric"
+      },
+      {
+        "click": "#fac-istoric"
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": ".fac-frand-btn"
+      },
+      {
+        "asteapta": "#fd-pdf"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "exista": ".fereastra:last-of-type #fd-antet-scurt.rezumat-fix:not([hidden])"
+      },
+      {
+        "contine": " nr. ",
+        "zona": ".fereastra:last-of-type #fd-antet-scurt"
+      },
+      {
+        "exista": ".fereastra:last-of-type .bara-fixa #fd-pdf"
+      },
+      {
+        "exista": ".fereastra:last-of-type .bara-fixa #fd-email"
+      }
+    ],
+    "captura": "c164_f1_vechi_antet_un_rand_actiuni_jos_1280x600.png"
+  },
+  {
+    "nr": "C164",
+    "firma": "tenant_9049",
+    "latime": 390,
+    "inaltime": 844,
+    "descriere": "F1, telefon (390 × 844): aceeași factură emisă înainte de reparație — rândul scurt sus, acțiunile în bara de jos, fără derulare laterală. Numai citire",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-istoric"
+      },
+      {
+        "click": "#fac-istoric"
+      },
+      {
+        "asteapta": ".fac-frand-btn"
+      },
+      {
+        "click": ".fac-frand-btn"
+      },
+      {
+        "asteapta": "#fd-pdf"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "exista": ".fereastra:last-of-type #fd-antet-scurt.rezumat-fix:not([hidden])"
+      },
+      {
+        "exista": ".fereastra:last-of-type .bara-fixa #fd-pdf"
+      },
+      {
+        "exista": ".fereastra:last-of-type .bara-fixa #fd-email"
+      }
+    ],
+    "captura": "c164_f1_vechi_antet_un_rand_actiuni_jos_telefon.png"
+  }
+]

@@ -134,6 +134,10 @@ def apiv1_factura_emite(tenant_id, corp, actx):
                 curs_manual_de="cheie API a cabinetului %s" % actx["firm"],
                 tip=_tip,
                 raspunsuri_ai=_ai,
+                # [lotul 12, C84, decizia Costin 12.3 pct.7: „livrarea intracomunitară de bunuri fără dovada transportului primește
+                # avertisment la emitere, nu refuz”] pe calea de API nu e nimeni de întrebat: livrarea intracomunitară de bunuri se emite,
+                # iar fără `dovada_transport: true` în corp răspunsul poartă avertismentul (`avertismente`), ca „Nu” din ecran
+                dovada_transport=corp.get("dovada_transport") is True,
             )
         except facturi_api.LiniiIncomplete as e:
             raise _erori.DateInvalide({"cod": "LINII_INCOMPLETE",

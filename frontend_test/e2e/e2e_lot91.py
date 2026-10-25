@@ -163,7 +163,8 @@ def test_def_323_textul_de_depus_nu_vorbeste_de_note_care_nu_sunt(patron, firma_
         intro = " ".join(" ".join(pg.eval_on_selector_all(
             ".fereastra:last-of-type .mig-intro",
             "es => es.filter(x => !x.closest('#val-note') && !x.closest('#val-ciorne')).map(x => x.innerText)")).split())
-        note = pg.locator(".fereastra:last-of-type .val-card[data-fel='nota'], .fereastra:last-of-type #val-note .val-card").count()
+        # [lotul 12, 622] notele de validat stau în tabelul de note al secțiunii lor (`#val-note tbody.tn-nota`), nu în carduri
+        note = pg.locator(".fereastra:last-of-type #val-note tbody.tn-nota").count()
         patron.captura()
         assert "trimit la validare" not in intro and "Declarațiile" in intro, intro
         if not note:
@@ -319,6 +320,7 @@ def test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare(patron, firma
     10.2 pct.7k: mesajul nu se mai repetă în dreapta) -> „Editează” -> editorul notei ->
     documentul „Proces-verbal ITM nr. 12 din <azi>” -> „Salvează” -> „Validează” -> nota e validată."""
     from e2e_bloc_a import _api, _ok
+    from e2e_bloc_b import _deschide_rand, _nota_jn
     from e2e_bloc_e import _nota
     tid, s = firma_srl["tenant_id"], firma_srl["schema"]
     # numerarul din care se plătește amenda (406: casa nu ajunge sub zero la validare)
@@ -330,10 +332,16 @@ def test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare(patron, firma
     pg = patron.pg
     pg.click("#fa-jurnal")
     pg.wait_for_selector("[data-nota-id='%s'] [data-val]" % nid, timeout=30000)
-    # [lotul 10, 10.2 pct.7k] un singur mesaj, pe rând; „Validează” inactiv, legat de el (nu mai e și caseta de confirmare din dreapta)
+    # [lotul 10, 10.2 pct.7k] un singur mesaj; „Validează” inactiv, legat de el (nu mai e și caseta de confirmare din dreapta)
+    # [lotul 12, 617] tabelul de note: de ce nu se validează stă O DATĂ, deasupra tabelului (`#jn-expl-fara_doc`); pasul notei („Scrie
+    # referința cu «Editează»”) și „Editează” stau în detaliul ei, deschis cum îl deschide contabilul (clic pe rând)
+    _deschide_rand(patron, _nota_jn(patron, nid))
     rand = " ".join(pg.inner_text("[data-nota-id='%s']" % nid).split())
+    fer = " ".join(patron.fereastra().split())
     patron.captura("caseta")
-    assert rand.count("nu se validează fără documentul din care provine") == 1 and "Editează" in rand, rand
+    assert fer.count("nu se validează fără documentul din care provine") == 1, fer[:1500]
+    assert " ".join(pg.inner_text("#jn-expl-fara_doc").split()).count("nu se validează fără documentul din care provine") == 1
+    assert rand.count("Notă fără document justificativ.") == 1 and "Scrie referința cu \u201eEditează\u201d" in rand and "Editează" in rand, rand
     assert pg.is_disabled("[data-nota-id='%s'] [data-val]" % nid)
     assert "Validează fără document" not in rand, rand
     pg.click("[data-nota-id='%s'] [data-edit]" % nid)

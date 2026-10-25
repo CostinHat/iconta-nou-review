@@ -8,9 +8,14 @@ import sys
 import pytest
 
 from conftest import firma_noua, sql
+from e2e_lot12_migr import confirma_firma_fisierului
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from core.test_import_saga import BALANTA_SAGA, CNP_GRESIT, ISTORIC, MF_SAGA, SALARIATI_SAGA, _cp1250   # noqa: E402
+
+#: [lotul 12, 599] antetul fișierelor de probă SAGA (a doua linie a balanței; titlurile registrului de imobilizări din C31): numește ALTĂ
+#: firmă decât firma de test, deci salvarea cere întâi „Da, sunt ale acestei firme”
+ANTET_PROBA = "SC Firmă Probă SRL"
 
 
 @pytest.fixture(scope="module")
@@ -87,6 +92,7 @@ def test_def_c22_data_balantei_e_ceruta_si_salvata(patron, firma_import):
     patron.captura("fara_data")
     pg.fill("#mig-data-bal", "2026-09-30")
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_PROBA)   # [599] antetul balanței numește altă firmă: confirmarea, apoi salvarea
     pg.wait_for_function("() => document.body.innerText.includes('4 conturi salvate, cu soldurile la 30.09.2026.')", timeout=20000)
     patron.captura("salvat")
     assert sql('SELECT cont, sold_debitor, sold_creditor, data_referinta::text FROM "%s".solduri_initiale ORDER BY cont'
@@ -104,6 +110,7 @@ def test_def_c27_csv_windows_1250_cu_diacriticele_intacte(patron, firma_import):
     patron.captura()
     pg.fill("#mig-data-bal", "2026-09-30")
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_PROBA)   # [599] întâi firma din antet, apoi (426) înlocuirea
     # [lotul 10, deficiența 426] după C22 firma are deja balanța: înlocuirea se confirmă explicit („Înlocuiesc balanța”)
     pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('4 conturi salvate')", timeout=20000)
     if pg.locator("#ca-ok").count():
@@ -170,13 +177,16 @@ def test_def_c30_salvarea_nu_crede_indicatorii_trimisi_de_ecran(patron, firma_im
 
 
 # ── mijloace fixe ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def _mijloace(patron, firma, nume="mijloace_fixe_saga.csv", continut=None):
+def _mijloace(patron, firma, nume="mijloace_fixe_saga.csv", continut=None, antet=None):
+    """`antet`: firma numită de titlurile fișierului (C31), alta decât firma de test — [599] salvarea cere întâi confirmarea ei."""
     pg = patron.pg
     _pas(patron, firma, "Mijloace fixe")
     _incarca(patron, nume, continut or _cp1250(MF_SAGA), "#mig-salveaza-mf")
     t = patron.fereastra()
     patron.captura("previzualizare")
     pg.click("#mig-salveaza-mf")
+    if antet:
+        confirma_firma_fisierului(pg, antet)
     # [lotul 10, deficiența 426] firma modulului are deja datele (alt test le-a importat): înlocuirea se confirmă explicit
     pg.wait_for_function("() => document.querySelector('#ca-ok') || document.body.innerText.includes('Un mijloc fix importat.')", timeout=20000)
     if pg.locator("#ca-ok").count():
@@ -204,7 +214,7 @@ def test_def_c31_randul_numit_e_cel_din_fisier_sub_titluri(patron, firma_import)
     refuzul număra rândurile de la antet = rândul 1, deci numea alt rând decât cel greșit.
     Pașii: registrul SAGA cu 3 rânduri de titlu deasupra antetului -> autoturismul e numit „rândul 6” (rândul lui din fișier)."""
     titluri = "Registrul imobilizărilor;;;\nSC Firmă Probă SRL;;;\nla 30.09.2026;;;\n"
-    inainte, _ = _mijloace(patron, firma_import, "registru_cu_titluri.csv", _cp1250(titluri + MF_SAGA))
+    inainte, _ = _mijloace(patron, firma_import, "registru_cu_titluri.csv", _cp1250(titluri + MF_SAGA), antet=ANTET_PROBA)
     assert "rândul 6: Autoturism: amortizarea nu se poate calcula" in inainte, inainte[:2000]
 
 

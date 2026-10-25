@@ -71,9 +71,9 @@ def test_297_amprenta_se_schimba_la_validarea_unei_note_din_perioada_si_numai_at
             assert ca.amprenta_surse(cur, lume, "2099-10-01", "2099-11-01") == a0, "aceleași documente -> aceeași amprentă"
             payload = {"_surse": {"de_la": "2099-10-01", "pana_la": "2099-11-01", "amprenta": a0,
                                   "note": [{"nota_id": nid, "eticheta": "nr. crt. 1 din 17.10.2099 (F1A5, 1.000,00 lei)"}]}}
-            assert ca.depasire(cur, lume, payload) is None
+            assert ca.depasire(cur, lume, payload, "d300") is None
             cur.execute("UPDATE inregistrari SET status = 'validata' WHERE id = %s", (nid,))
-            dep = ca.depasire(cur, lume, payload)
+            dep = ca.depasire(cur, lume, payload, "d300")
             assert dep and dep["mesaj"] == ("Declarația e depășită: după generare s-a validat nr. crt. 1 din 17.10.2099 (F1A5, 1.000,00 lei). "
                                             "Cifrele ei nu mai sunt cele din evidență; generează-o din nou."), dep
             assert [n["nota_id"] for n in dep["note_validate"]] == [nid]
@@ -81,7 +81,7 @@ def test_297_amprenta_se_schimba_la_validarea_unei_note_din_perioada_si_numai_at
             # o notă din afara ferestrei nu face declarația depășită
             cur.execute("UPDATE inregistrari SET status = 'validata' WHERE data = '2099-11-03'")
             payload["_surse"]["amprenta"] = ca.amprenta_surse(cur, lume, "2099-10-01", "2099-11-01")
-            assert ca.depasire(cur, lume, payload) is None
+            assert ca.depasire(cur, lume, payload, "d300") is None
         c.rollback()
 
 
@@ -91,7 +91,7 @@ def test_297_declaratia_fara_amprenta_e_depasita_fail_closed(lume):
     from core import coada_api as ca
     with _db.get_conn(lume) as c:
         with c.cursor() as cur:
-            dep = ca.depasire(cur, lume, {"_an": 2099, "_luna": 10})
+            dep = ca.depasire(cur, lume, {"_an": 2099, "_luna": 10}, "d300")
         c.rollback()
     assert dep and dep["mesaj"] == ("Declarația a intrat în coadă înainte ca aplicația să-i păstreze datele-sursă, deci nu se poate ști dacă "
                                     "cifrele ei mai sunt cele din evidență. Generează-o din nou."), dep

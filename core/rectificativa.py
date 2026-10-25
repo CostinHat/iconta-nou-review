@@ -28,6 +28,8 @@ from __future__ import annotations
 import re
 from collections import namedtuple
 
+from core.erori import RefuzGenerare   # modul fără importuri: nu face ciclu
+
 #: Starea rectificativei pentru o generare: `d_rec` 0/1, `mentiune` (textul de pe ecran, sau None la inițială), `nr` = nr_depunere
 #: al depunerii curente pe care s-a sprijinit generarea (None = nicio depunere), `dep` = depunerea curentă (dict) sau None.
 Stare = namedtuple("Stare", "d_rec mentiune nr dep")
@@ -211,14 +213,97 @@ def refuz_la_depunere(cur, tenant_id, tip, an, luna, payload):
     rand = p.get("randuri") if isinstance(p.get("randuri"), dict) else {}
     if "depunere_anterioara_nr" in rand:
         if rand.get("depunere_anterioara_nr") == dep["nr_depunere"]:
-            return None
+            return _refuz_d394_neconfirmata(tip, an, luna, dep, p)
     elif marcaj_xml(tip, p.get("xml")) is not False:
-        return None
+        return _refuz_d394_neconfirmata(tip, an, luna, dep, p)
     return {"ok": False, "cod": "RECTIFICATIVA_NECESARA",
             "mesaj": ("Pe %s %s e înregistrată %s, după ce declarația aceasta a fost generată: plecată acum, ar ajunge la ANAF a doua "
                       "oară ca inițială. Generează-o din nou: iese rectificativă." % (
                           str(tip).upper(), "%02d/%d" % (int(luna), int(an)),
                           descriere_depunere(dep)))}
+
+
+# ============================================================
+#  [lotul 12, C19 — comanda Costin 12.3 pct.6, verbatim în DECIZII] „rectificativa D394 pentru o perioadă deja depusă se generează doar
+#  la cererea contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.”
+#  D394 n-are marcaj de rectificativă în XML (`FARA_MARCAJ_IN_XML`; D394Validator v5: rădăcina fără `d_rec`) — a doua declarație pe
+#  perioadă o ÎNLOCUIEȘTE pe prima (OPANAF 2194/2025 anexa nr.2 pct.3, `TEMEI_PE_TIP["d394"]`). Ce le deosebește e numai conținutul, deci
+#  contabilul îl vede înainte (`d394.diferente`, față de XML-ul depus păstrat în `declaratii_depuse.xml`) și cere rectificativa pentru
+#  EXACT acel conținut: confirmarea e amprenta XML-ului văzut (`date_extra.rectificativa_confirmata` în cerere, păstrată în coadă).
+# ============================================================
+class RefuzRectificativa(RefuzGenerare):
+    """Refuzul generării D394 peste o depunere: codul și datele diferențelor în `detaliu()` (ecranul le desenează), fraza în `mesaj`
+    (coada, reluarea declarației care aștepta notele, notificarea)."""
+    TIP = "rectificativa D394"
+
+    def __init__(self, cod, mesaj, **campuri):
+        super().__init__(mesaj)
+        self.cod, self.campuri = cod, campuri
+
+    def detaliu(self):
+        return dict(super().detaliu(), cod=self.cod, **self.campuri)
+
+
+def confirmarea(cerere):
+    """Amprenta pe care contabilul a confirmat-o în cerere (`date_extra.rectificativa_confirmata`), sau „” fără confirmare."""
+    extra = cerere.get("date_extra") if isinstance(cerere, dict) else None
+    return str(extra.get("rectificativa_confirmata") or "") if isinstance(extra, dict) else ""
+
+
+def poarta_d394(conn, schema, body, xml, res):
+    """D394 pe o perioadă cu declarația depusă: trece numai cu confirmarea contabilului pentru EXACT acest XML. Altfel refuz:
+      RECTIFICATIVA_FARA_DIFERENTE — XML-ul nou e identic cu cel depus: nimic de rectificat, nu se generează nimic (oricum ar fi cerut);
+      RECTIFICATIVA_DE_CONFIRMAT  — diferențele (fără XML depus păstrat: tot conținutul, cu „necunoscut” pe partea depusă) și amprenta
+                                    de confirmat; cu o confirmare veche (datele s-au schimbat după ce le-a văzut) -> `schimbata`.
+    Fără depunere pe perioadă -> None (inițiala trece neschimbată)."""
+    from core import coada_api as _coada, d394 as _d394
+    an, luna = int(getattr(res, "an", None) or body["an"]), int(getattr(res, "luna", None) or body["luna"])
+    with conn.cursor() as cur:
+        deps = depuneri(cur, schema, "d394", an, luna)
+    if not deps:
+        return None
+    dep = deps[-1]
+    per, descriere = "%02d/%d" % (luna, an), descriere_depunere(dep)
+    dif = _d394.diferente(dep.get("xml"), xml)
+    pastrat = dif is not None
+    campuri = {"perioada": per, "depunere": descriere, "depunere_nr": dep["nr_depunere"], "xml_depus_pastrat": pastrat}
+    if pastrat and not dif:
+        raise RefuzRectificativa(
+            "RECTIFICATIVA_FARA_DIFERENTE",
+            "D394 pe %s: declarația generată acum din datele firmei e identică cu %s. Nu e nimic de rectificat, deci nu se generează "
+            "nicio declarație." % (per, descriere), diferente=[], amprenta=None, schimbata=False, **campuri)
+    amprenta, cerut = _coada.amprenta_xml(xml), confirmarea(body)
+    if cerut == amprenta:
+        return None
+    raise RefuzRectificativa(
+        "RECTIFICATIVA_DE_CONFIRMAT",
+        "D394 pe %s e deja depusă (%s). %sO rectificativă o înlocuiește integral (OPANAF 2194/2025 anexa nr.2 pct.3) și se generează numai "
+        "la cererea ta, din Declarații, după ce vezi diferențele față de cea depusă." % (
+            per, descriere, "Datele perioadei s-au schimbat după ce ai văzut diferențele; uită-te din nou la ele. " if cerut else ""),
+        diferente=dif if pastrat else _d394.continut(xml), amprenta=amprenta, schimbata=bool(cerut), **campuri)
+
+
+def d394_confirmata(payload):
+    """Declarația D394 din coadă poartă confirmarea contabilului pentru exact XML-ul ei (cererea păstrată în `_cerere`)."""
+    from core import coada_api as _coada
+    p = payload or {}
+    return bool(p.get("xml")) and confirmarea(p.get("_cerere")) == _coada.amprenta_xml(p.get("xml"))
+
+
+def _refuz_d394_neconfirmata(tip, an, luna, dep, payload):
+    """[lotul 12, C19, comanda Costin 12.3 pct.6] „rectificativa D394 pentru o perioadă deja depusă se generează doar la cererea
+    contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.” La „Confirmă depunerea”: o D394 peste o depunere
+    pleacă numai cu confirmarea contabilului pentru exact XML-ul ei (`d394_confirmata`). Prinde declarațiile intrate în coadă
+    înainte de reparație (generate fără diferențe arătate) — nu se rescriu, se generează din nou din Declarații. None la celelalte."""
+    if str(tip).lower() != "d394":
+        return None
+    if d394_confirmata(payload):
+        return None
+    per = "%02d/%d" % (int(luna), int(an))
+    return {"ok": False, "cod": "RECTIFICATIVA_NECONFIRMATA",
+            "mesaj": ("D394 pe %s e deja depusă (%s), iar declarația aceasta o înlocuiește fără ca diferențele față de ea să-ți fi fost "
+                      "arătate. O declarație rectificativă se depune numai la cererea ta: Declarații → D394 → %s → „Continuă”, uită-te la diferențe, "
+                      "apoi „Generează declarația rectificativă” și trimite-o în coadă în locul acesteia." % (per, descriere_depunere(dep), per))}
 
 
 def aplica(res, st):
@@ -256,7 +341,6 @@ NU_ADMIT_RECTIFICATIVA = {
 
 def refuz_fara_rectificativa(tip, an, luna, st):
     """`RefuzGenerare` pentru un formular din `NU_ADMIT_RECTIFICATIVA` cerut peste o depunere înregistrată (sau bifat rectificativ)."""
-    from core.erori import RefuzGenerare
     t = str(tip).lower()
     ce = descriere_depunere(st.dep) if st.dep is not None else "rectificativa bifată în formular"
     return RefuzGenerare(

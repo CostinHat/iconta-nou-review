@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=309f4d66ae";
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=e38843b1ec";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=a6ea6eafbc";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
@@ -50,6 +50,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa, preset = null) {
     luna: acum.getMonth() + 1,
     trim: Math.floor(acum.getMonth()/3) + 1,
     rezultat: null,                          // {xml, avertismente}
+    rectConfirmata: null,                    // [lotul 12, C19] {cheie: tip|an|perioadă, amprenta}: rectificativa D394 cerută după diferențe
     d710_obligatii: [],                      // [formular_manual_d710] obligatii corectate (in memorie, pt body)
     // [formular_manual_d311] situatiile fiscale dupa anularea codului de TVA (in memorie, pt body.manual).
     // Persista intre randari (Regenereaza reface pas2 -> re-randeaza formularul cu valorile pastrate).
@@ -395,8 +396,13 @@ function corpGenerare() {
   if (S.tip === "d110") body.manual = _d110Manual();              // [formular_manual_d110] d_temei + IBAN/banca + obligatii
   if (S.tip === "d398") body.manual = _d398Manual();              // [formular_manual_d398] OSS: regim + linii pe stat de consum
   if (S.tip === "d318") body.manual = _d318Manual();              // [formular_manual_d318] rambursare TVA alt stat UE: perioada + solicitant + facturi
+  // [lotul 12, C19] rectificativa D394 cerută de contabil după ce a văzut diferențele: confirmarea poartă amprenta conținutului văzut, numai
+  // pentru aceeași declarație și perioadă (altă perioadă / alt tip -> nicio confirmare; serverul o cere din nou dacă datele s-au schimbat)
+  if (S.rectConfirmata && S.rectConfirmata.cheie === _cheieRect()) body.date_extra = { rectificativa_confirmata: S.rectConfirmata.amprenta };
   return body;
 }
+
+function _cheieRect() { return [S.tenant_id, S.tip, S.an, S.periodicitate[S.tip] === "trimestrial" ? "T" + S.trim : S.luna].join("|"); }
 
 // ---------- PAS 2: genereaza + verifica ----------
 async function pas2(corp, nav) {
@@ -446,6 +452,7 @@ async function pas2(corp, nav) {
     // [lotul 10, deficiența 431] „mesajul de refuz trimite la ce lipsește”: refuzul generatorului (`RefuzGenerare`) poartă notele de
     // deschis (nota de dividende în ciornă -> Registrul jurnal, în luna ei) și / sau ecranul (Date firmă → Asociați)
     const _det = (e && e.detaliu && typeof e.detaliu === "object") ? e.detaliu : {};
+    if (_det.cod === "RECTIFICATIVA_DE_CONFIRMAT" || _det.cod === "RECTIFICATIVA_FARA_DIFERENTE") { randeazaDiferenteRectificativa(corp, nav, _det); return; }
     const _zEr = corp.querySelector(".dec-eroare");
     if (_zEr && (_det.note || []).length) legaturiNote(_zEr, S.tenant_id, _det.note);
     if (_zEr && _det.ecran) butonSpreEcran(_zEr, _det.ecran, nav, S.tenant_id, { clasa: "buton-secundar", inapoiLa: "declarație", camp: _det.camp_ecran || null });
@@ -601,6 +608,37 @@ async function pas2(corp, nav) {
   if (S.tip === "d110") randeazaFormularD110(corp, nav);
   if (S.tip === "d398") randeazaFormularD398(corp, nav);
   if (S.tip === "d318") randeazaFormularD318(corp, nav);
+}
+
+// [lotul 12, C19, comanda Costin 12.3 pct.6, verbatim în DECIZII] „rectificativa D394 pentru o perioadă deja depusă se generează doar la
+// cererea contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.” Serverul (`rectificativa.poarta_d394`) nu
+// generează peste o depunere fără confirmare și trimite diferențele (secțiune / rând / câmp: depus → nou). Ecranul le arată; „Generează
+// rectificativa” trimite confirmarea pentru exact conținutul văzut. Fără diferențe: o spune, fără buton. Propozițiile le scrie ecranul
+// (DS cap.25.5); serverul dă faptele. Fereastră cu tabel (DS cap.9): rezumatul sus (`.rezumat-fix`, fără casete — v2.102, „Rezumatul nu
+// mănâncă tabelul”: caseta stă sub el), acțiunea jos (`.bara-fixa`).
+function randeazaDiferenteRectificativa(corp, nav, d) {
+  const dif = d.diferente || [];
+  const fara = d.cod === "RECTIFICATIVA_FARA_DIFERENTE";
+  const per = etPerioada();
+  // fraza serverului (`mesaj`) stă pe ecran întocmai — e și cea din coadă / notificare; ecranul adaugă numai ce ține de tabel
+  const ce = esc(d.mesaj || "") + (fara ? "" : " " + (d.xml_depus_pastrat
+    ? `Diferențele față de declarația depusă: ${esc(cate(dif.length, "rând", "rânduri"))}.`
+    : "XML-ul declarației depuse nu e păstrat în iConta.eu, deci diferențele nu se pot calcula: mai jos e tot ce ar conține declarația rectificativă. Compară-l cu declarația depusă (recipisa din SPV) înainte s-o generezi."));
+  corp.innerHTML = `
+    <div class="rezumat-fix"><p class="mig-intro">Pasul 2 din 3 — <b>${esc(S.tip.toUpperCase())}</b> · ${esc(per)} e deja depusă</p></div>
+    <div class="caseta-info" id="dec-rect-depusa" role="status"><div class="ci-mesaj">${ce}</div></div>   <!-- DS cap.9 v2.102: caseta sub rezumat, nu în el -->
+    ${dif.length ? `<table class="fd-tabel" id="dec-rect-diferente">
+        <thead><tr><th>Secțiune</th><th>Rând</th><th>Câmp</th><th>În declarația depusă</th><th>În rectificativă</th></tr></thead>
+        <tbody>${dif.map((r) => `<tr><td>${esc(r.sectiune)}</td><td>${esc(r.rand)}</td><td>${esc(r.camp)}</td><td>${esc(String(r.depus))}</td><td>${esc(String(r.nou))}</td></tr>`).join("")}</tbody>
+      </table>` : ""}
+    <div class="bara-fixa"><div class="dec-bara">
+      <button class="buton-secundar" id="dec-rect-inapoi" data-fara-actiune="navigare: înapoi la alegerea declarației">← Înapoi la alegerea declarației</button>
+      ${fara ? "" : `<button class="buton-primar" id="dec-rect-genereaza" data-actiune="POST /declaratii/{tip}/valideaza">Generează declarația rectificativă →</button>`}
+    </div></div>
+  `;
+  corp.querySelector("#dec-rect-inapoi").addEventListener("click", () => nav.inapoiPas());   // [485] înapoi la alegerea declarației, pe traseu
+  const bG = corp.querySelector("#dec-rect-genereaza");
+  if (bG) bG.addEventListener("click", () => { S.rectConfirmata = { cheie: _cheieRect(), amprenta: d.amprenta }; pas2(corp, nav); });
 }
 
 // [lotul 11, deficiența 436 afișare] „paragraful repetă notele pe care le arată butoanele”: lângă butoanele „Deschide nota …”

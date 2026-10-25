@@ -167,6 +167,16 @@ _MOTIV_102_8B = ("Comanda Costin 10.2 pct.8b (lotul 10, verbatim în DECIZII „
                   "dă cifrele (total 231,00, încasat 200,00, diferență 31,00).” Același 400, cu cifrele (`raport_z.mesaj_plata_diferita`); "
                   "comparația pe lei în Decimal, nu în float cu toleranța 0,01.")
 PERECHI_ADAUGATE = {
+    ("facturi_emite", "{'ok': False, 'cod': e.cod, 'mesaj': str(e), 'intrebare': e.intrebare}"): (
+        "Deficiența C84 (lotul 12, decizia Costin 12.3 pct.7: „livrarea intracomunitară de bunuri fără dovada transportului primește "
+        "avertisment la emitere, nu refuz”): după linii și după „Pleacă marfa acum?”, emiterea unei livrări intracomunitare de bunuri "
+        "întreabă „Ai dovada transportului?” (422 structurat `INTREABA_DOVADA_TRANSPORT`, cu întrebarea, nimic scris) — aceeași formă ca "
+        "întrebarea mărfii; „Nu” emite factura, cu avertismentul în răspuns."),
+    ("proforma_transforma", "{'ok': False, 'cod': e.cod, 'mesaj': str(e), 'intrebare': e.intrebare}"): (
+        "Deficiența C84 pe „Transformă în factură” (lotul 12, pachetul fx3; decizia Costin 12.3 pct.7: „livrarea intracomunitară de bunuri "
+        "fără dovada transportului primește avertisment la emitere, nu refuz”): factura născută dintr-o proformă / un aviz cu o livrare "
+        "intracomunitară de bunuri întreabă „Ai dovada transportului?” (422 structurat `INTREABA_DOVADA_TRANSPORT`, cu întrebarea, nimic "
+        "scris) — aceeași formă ca la `facturi_emite`; „Nu” emite factura, cu avertismentul în răspuns."),
     ("factura_primita_valideaza", "refuz"): (
         "Deficiența C120 (lotul 12, clasa 599, comanda Costin 12.1: „compară firma din fișier cu firma aleasă și cere confirmare când "
         "diferă, la toate importurile”): factura primită aflată deja în lista „de validat” (din SPV sau dintr-un import de dinainte) în "
@@ -567,7 +577,12 @@ _MOTIV_430D = (
 
 #: Apeluri INLOCUITE deliberat, cu motivul. Nu sunt pierderi: numele s-a schimbat, iar inlocuitorul
 #: face STRICT MAI MULT decat cel vechi. Orice alt apel dispărut pica in continuare.
+_MOTIV_642_PRECOMPLETARE = ("Lotul 12, deficiența 642 (clasa): precompletarea ANAF a unei firme abia create trece prin "
+                            "`tenant_provisioning.precompleteaza_sau_semnaleaza` — `precompleteaza_din_anaf` sub un punct de revenire, cu "
+                            "căderea consemnată; fără el, o eroare de bază strica tranzacția creării, iar `commit`-ul o anula tăcut. Gardul: "
+                            "core/test_lot12_form2_register.py")
 APELURI_INLOCUITE = {
+    ("migrare_importa", "precompleteaza_din_anaf"): ("precompleteaza_sau_semnaleaza", _MOTIV_642_PRECOMPLETARE),
     ("jurnal_valideaza", "valideaza"): ("valideaza_documentul", "C107, lotul 12: notele documentului se validează împreună, ca în coada de validare (toate "
                                                            "notele aceluiași document, o singură dată)"),
     ("achizitie_agricultor", "nota_facturi_ciorna"): ("nota_operatiune_ciorna", _MOTIV_430D),
@@ -695,6 +710,8 @@ APELURI_INLOCUITE = {
 #: Creditul NU se dă orb: se numără apelurile din corpul ajutorului (plus funcțiile modulului lui pe care le cheamă direct), deci
 #: un apel care nu există nici acolo rămâne pierdut. Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
 APELURI_EXTRASE_IN_AJUTOR = {
+    # [lotul 12, 642 — clasa] `try: precompleteaza_din_anaf … except: esec_secundar` din `tenant_creeaza` a devenit ajutorul cu punct de revenire
+    'tenant_creeaza': (("core/tenant_provisioning.py", "precompleteaza_sau_semnaleaza"), _MOTIV_642_PRECOMPLETARE),
     'raportari_creeaza': (("core/db.py", "fir_de_fundal"), (
         'Lotul 11, poarta 3 (DECIZII „Lotul 11, poarta 3 ROȘIE”): firul triajului AI al sesizării (`threading.Thread(...).start()`) pornește '
         'acum prin `db.fir_de_fundal`, singurul loc care pornește fire cu bază din drumul unei cereri, oprit în suită. Gardul: '
@@ -793,7 +810,10 @@ APELURI_EXTRASE_IN_AJUTOARE = {
         "`uc_tenants.linii_din_proforma` / `antet_din_proforma` (cele 8 `.get` au plecat acolo, cu adresa, localitatea, județul, "
         "unitatea, contul de venit și articolul). Gardul: `core/test_c63_proforma_transformata.py`.")),
     "raportari_imagine": ((("core/fisiere_private.py", "salveaza"),), _MOTIV_C36),
+    # [lotul 12, deficiența 642] firma proprie în tranzacția contului: datele ANAF (`_anaf_firma_proprie`, înaintea tranzacției) și
+    # provizionarea (`_firma_proprie`) au plecat din `_dupa_cont_nou` în două ajutoare chemate de `_register_cu_invitatie`
     "register": ((("core/uc_auth.py", "_valideaza_formularul"), ("core/uc_auth.py", "_register_cu_invitatie"),
+                  ("core/uc_auth.py", "_anaf_firma_proprie"), ("core/uc_auth.py", "_firma_proprie"),
                   ("core/uc_auth.py", "_dupa_cont_nou"), ("core/uc_auth.py", "_anunta_cabinet_nou"),
                   ("core/observare.py", "trimite_email_html_sau_semnaleaza")),
                  _MOTIV_LOTUL_4),
@@ -822,11 +842,17 @@ APELURI_REDUSE = {
     # [lotul 11, W3a] („chitanta_emite”, „str”) scos: `str` a revenit la 3 apeluri (colectorul 440 refolosește conversia)
     ('achizitie_neinregistrat', 'ValueError'): (2, _MOTIV_440_W3A + " Refuzurile de date nu mai ridică unul câte unul: se adună în colector."),
     ('tenant_plan_conturi_adauga', 'HTTPException'): (3, _MOTIV_440_W3A + " Refuzurile de date nu mai ridică unul câte unul: se adună în colector."),
-    ("bon_facturi_candidate", "strip"): (2, _MOTIV_CF_CUI),   # [lotul 11, CF] 3 -> 1: rămâne un `strip`
 }
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    ("register", "precompleteaza_din_anaf"): (
+        "Lotul 12, deficiența 642: precompletarea firmei proprii trece prin `tenant_provisioning.precompleteaza_sau_semnaleaza` (chemat "
+        "din ajutorul `uc_auth._firma_proprie`), care cheamă `precompleteaza_din_anaf` sub un punct de revenire. " + _MOTIV_642_PRECOMPLETARE),
+    ("register", "commit"): (
+        "Lotul 12, deficiența 642 (comanda Costin 12.2 pct.19: „contul și firma lui se creează împreună sau deloc”): firma proprie nu "
+        "mai are tranzacția ei (`conn.commit()` din `_dupa_cont_nou`), ci intră în tranzacția contului (`uc_auth._firma_proprie`), "
+        "comisă de `db.get_conn` la ieșirea din bloc; gardul: core/test_lot12_form2_register.py."),
     ("d406_stocuri_xml", "isoformat"): (
         "Lotul 12, deficiența 184 (datele ISO pe ecran; DS cap.4): refuzul intervalului inversat („Sfârșitul perioadei (%s) e înaintea "
         "începutului (%s)”) arată datele prin formatorul unic `data_ro` (ZZ.LL.AAAA), nu `de.isoformat()` / `ds.isoformat()` — "
@@ -840,6 +866,12 @@ APELURI_SCOASE = {
     ("_anaf_tva_check", "replace"): _MOTIV_CF_CUI,
     ("bon_facturi_candidate", "replace"): _MOTIV_CF_CUI,
     ("bon_facturi_candidate", "upper"): _MOTIV_CF_CUI,
+    # [lotul 11, CF] 3 -> 1 `strip` (normalizarea CUI-ului, `_MOTIV_CF_CUI`); [lotul 12, C181, clasa 443.1] 1 -> 0, odată cu `str`: numărul
+    # facturii candidate se scrie cu `pdf_util.serie_nr` („F1A nr. 3”), nu lipit (`((serie or "") + str(numar or "")).strip()` -> „F1A3”)
+    ("bon_facturi_candidate", "strip"): _MOTIV_CF_CUI + " [lotul 12, C181] Ultimul `strip` (al lipirii seriei de număr) a plecat în `pdf_util.serie_nr`.",
+    ("bon_facturi_candidate", "str"): ("Lotul 12, C181 (clasa 443.1, comanda Costin 11.1 pct.19: „seria și numărul se afișează separat peste "
+                                       "tot”): `str(numar)` din lipirea seriei de număr a plecat în `pdf_util.serie_nr`; gardul "
+                                       "core/test_lot12_int1_serie_raspuns.py."),
     ("register", "replace"): _MOTIV_CF_CUI,
     # [lotul 11, 440 / W3a, K] scoase de tot (nu reduse): toate `ValueError`-urile de date ale funcției au trecut în colector
     ("achizitie_ic", "ValueError"): _MOTIV_440_W3A + " Toate cele 3 refuzuri de date se adună în colector (`ErorileFormularului`).",

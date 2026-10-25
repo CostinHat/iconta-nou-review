@@ -64,7 +64,9 @@ def test_def_c154_serviciul_ic_al_neplatitorului_art317_intra_in_d390_ca_prestar
     „Servicii de consultanta IT …”, 500 lei, 0% -> „Emite factură” -> Declarații -> D390, luna facturii -> „Continuă”: în „Clasificare
     intracomunitară” operațiunea din factură e „Servicii prestate (P)”, 500 lei; în bază factura are axa „servicii”, linia contul 704.
     Înainte: „Livrare bunuri (L)” (factura fără axă, D390 lua implicitul bunuri).
-    MUTAȚIA (`mut_lot12_cx5.json`): axa derivată din felul liniilor scoasă din `facturi_api.creeaza_factura` -> operațiunea iese L -> ROȘU."""
+    MUTAȚIA (`mut_lot12_cx5.json`): felul liniei din contul de venit stricat (`categorii_tva._axa_linie` -> None): de la C156 axa
+    neplătitorului art.317 vine din categoria prestării (`PRESTARE_IC_317`, pusă după felul liniei), iar pentru neînregistrat din
+    `axa_neplatitor` (același fel) -> fără fel, nicio axă -> operațiunea iese L -> ROȘU."""
     from e2e_bloc_c import _deschide
     from e2e_lot12_cx3 import _neplatitor_art317
     f = firma_cx5

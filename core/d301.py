@@ -397,7 +397,9 @@ def genereaza(conn, schema, perioada, manual=None):
         from core.control_incrucisat import facturi_ic as _fic
         _prima = _dt.date(perioada.an, perioada.luna, 1)
         _urm = _dt.date(perioada.an + (perioada.luna // 12), (perioada.luna % 12) + 1, 1)
-        _ic_prim = _fic(conn, schema, _prima, _urm).get("primita", [])
+        # [lotul 12, C163] și serviciile primite din UE (CF art.307 alin.(2), art.324 alin.(1) lit.d) — aceeași sursă ca calendarul D301
+        # (`control_incrucisat.d301_luni_facturi_ic`): o lună datorată în calendar nu se mai poate genera „pe zero” fără să le numească
+        _ic_prim = _fic(conn, schema, _prima, _urm, cu_servicii=True).get("primita", [])
     except Exception:
         _ic_prim = []
     if not ops:
@@ -407,9 +409,9 @@ def genereaza(conn, schema, perioada, manual=None):
                         bani(_r0(float(f.get("total") or 0) - float(f.get("tva") or 0)), "lei"))
                     for f in _ic_prim[:10])
             raise ValueError(
-                "D301 pe zero, dar în perioadă există achiziții intracomunitare înregistrate ca facturi și "
+                "D301 pe zero, dar în perioadă există achiziții intracomunitare (bunuri sau servicii) înregistrate ca facturi și "
                 "neintroduse în operațiunile D301 (%d): %s. Introdu-le în ecranul D301 înainte de "
-                "generare: obligația D301 se naște din achiziția intracomunitară." %
+                "generare (serviciile la tipul 5): obligația D301 se naște din achiziția intracomunitară." %
                 (len(_ic_prim), _lst))
         raise ValueError(
             "D301 nu se generează pe zero: nicio operațiune cu exigibilitate în perioada. OPANAF 592/2016 - "

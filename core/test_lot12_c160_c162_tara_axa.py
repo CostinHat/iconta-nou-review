@@ -200,20 +200,24 @@ def _pe_campuri(r):
 
 def test_c160_refuzurile_raman_numai_unde_sablonul_nu_poate_spune_operatiunea(conn):
     """Codul unui stat UE cu țara „România” (ce trimitea orice șablon de dinainte de C160) rămâne refuzat lângă „CUI beneficiar”; o țară
-    care nu e cod de țară, lângă „Țara beneficiarului”. Plătitorul, clientul din DE, linia 21% fără categorie: refuzat (ecranul șablonului
-    nu alege cota și categoria, deci factura lunară ar ieși cu TVA-ul din România); neplătitorul, aceeași linie: salvat (categoria o pune
-    regimul firmei, axa felul liniei). Nimic salvat din refuzuri.
-    MUTAȚIE: ramura `elif tara != "RO" and platitor is True …` scoasă din `verificari_drum` -> plătitorul își salvează șablonul cu 21% ->
-    ROȘU."""
+    care nu e cod de țară, lângă „Țara beneficiarului”. Plătitorul, clientul din DE, linia FĂRĂ cotă aleasă: refuzat lângă cota liniei (cota
+    s-ar lua lunar din nomenclator, ca la o vânzare în România); [lotul 12, comanda Costin 12.3 pct.9: „Da: cota și categoria pe linia
+    șablonului recurent, ca la factură.”] linia cu cota ALEASĂ (21%) se salvează — refuzul C160 se ridică acolo unde linia are cota;
+    neplătitorul, linia fără cotă: salvat (cota 0 prin lege, CF art.310 alin.(10) lit.b; categoria o pune regimul firmei). Nimic salvat din
+    refuzuri.
+    MUTAȚIE: ramura `elif tara != "RO" and platitor is True …` scoasă din `verificari_drum` -> plătitorul își salvează șablonul cu linia fără
+    cotă -> ROȘU."""
     from core import facturi_recurente as fr
     r = _adauga(conn, tert_tara=None)
     assert _pe_campuri(r) == [("fr-cui", fr.MESAJ_CLIENT_STRAIN % COD_CLIENT)], r
     r = _adauga(conn, tert_tara="Germania")
     assert ("fr-tara", fr.MESAJ_TARA % "Germania") in _pe_campuri(r), r
-    r = _adauga(conn, linii=[{"descriere": SERVICIU, "cantitate": 1, "pret_unitar": 500, "cota_tva": 21 if conn.platitor else 0}])
+    r = _adauga(conn, linii=[{"descriere": SERVICIU, "cantitate": 1, "pret_unitar": 500, "cota_tva": None}])
     if conn.platitor:
-        assert _pe_campuri(r) == [("fr-cui", fr.MESAJ_STRAIN_FARA_CATEGORIE % "DE")], r
+        assert _pe_campuri(r) == [("fr-l0-cota", fr.MESAJ_STRAIN_FARA_COTA % (1, "DE"))], r
         assert _sql(conn, "SELECT count(*) FROM facturi_recurente")[0][0] == 0
+        r = _adauga(conn, linii=[{"descriere": SERVICIU, "cantitate": 1, "pret_unitar": 500, "cota_tva": 21}])
+        assert set(r) == {"id"}, r   # 12.3 pct.9: cota aleasă pe linie = alegerea contabilului (CLAUDE.md §8), ca la „Emite factură”
     else:
         assert set(r) == {"id"}, r
 

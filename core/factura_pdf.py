@@ -85,6 +85,31 @@ MENTIUNE_NEPLATITOR = ("Scutit de TVA — regim special de scutire pentru între
                        "art. 310 din Codul fiscal (Legea nr. 227/2015).")
 
 
+def mentiuni_tva(platitor_emitent, linii, tara=None):
+    """[lotul 12, C156] Mențiunile TVA ale facturii — aceleași pe PDF și pe detaliul de pe ecran (clasa 417: ce apare pe PDF apare și pe
+    ecran). Neplătitorul: trimiterea la scutirea art.310 (CF art.319 alin.(20) lit.l) pe liniile lui; prestarea neplătitorului înregistrat
+    art.317 către clientul din alt stat membru nu e scutită art.310 (locul ei e la client, CF art.278 alin.(2)), deci poartă mențiunea
+    categoriei ei: „taxare inversă” (CF art.319 alin.(20) lit.m: „în cazul în care clientul este persoana obligată la plata TVA, mențiunea
+    «taxare inversă»”). Plătitorul: motivele categoriilor liniilor cu 0% (`mentiuni_categorii`)."""
+    from core import categorii_tva as _ct
+    out = []
+    if platitor_emitent is False and (not linii or any(l.get("categorie_tva") != _ct.PRESTARE_IC_317 for l in linii)):
+        out.append(MENTIUNE_NEPLATITOR)
+    return out + mentiuni_categorii(linii, tara)
+
+
+def cod_emitent(profil, linii):
+    """(eticheta, cod) al firmei emitente pe factură: [lotul 12, C156] la prestarea neplătitorului înregistrat art.317 către clientul din alt
+    stat membru, codul de TVA RO atribuit după art.317 (`categorii_tva.cod_tva_art317`, temeiul acolo); altfel `cod_fiscal_pe_factura`."""
+    from core import categorii_tva as _ct
+    profil = profil or {}
+    if _ct.cod_tva_art317(profil.get("platitor_tva"), linii):
+        cifre = "".join(ch for ch in str(profil.get("cui") or "") if ch.isdigit())
+        if cifre:
+            return "Cod TVA (art.317)", "RO" + cifre
+    return cod_fiscal_pe_factura(profil.get("cui"), profil.get("platitor_tva"))
+
+
 # [comanda Costin 05.10.2026 pct.5] CF art.319 alin.(20) lit.d) și f): pe factură stă „codul de înregistrare în scopuri de TVA
 # sau, după caz, codul de identificare fiscală”; CF art.318 alin.(1): „Codul de înregistrare în scopuri de TVA, atribuit conform
 # art. 316 și 317, are prefixul RO”. Deci: plătitor -> „Cod TVA: RO…”; neplătitor -> „CIF: …”; stare necunoscută -> codul așa cum
@@ -252,7 +277,7 @@ def genereaza_pdf(profil, factura):
     adr = ", ".join([x for x in (profil.get("adresa"), profil.get("oras"),
                                  profil.get("judet")) if x])
     firma_txt = [Paragraph(profil.get("nume") or "Firma mea SRL", st_nume)]
-    _et, _cod = cod_fiscal_pe_factura(profil.get("cui"), profil.get("platitor_tva"))
+    _et, _cod = cod_emitent(profil, factura.get("linii"))   # [lotul 12, C156] codul RO art.317 la prestarea IC a neplătitorului
     det = ("%s: %s" % (_et, _cod)) if _cod else "CIF: -"   # [pct.5] art.319 lit.d) + art.318 alin.(1)
     if profil.get("reg_com"):
         det += " · " + profil["reg_com"]
@@ -398,16 +423,14 @@ def genereaza_pdf(profil, factura):
         ("FONTSIZE", (0, n_last), (-1, n_last), 11),
     ]))
     el.append(tot_tab)
-    if neplatitor:
-        el.append(Spacer(1, 8))
-        el.append(Paragraph(MENTIUNE_NEPLATITOR, st_cell))
-    else:
-        # [274b] liniile cu 0% poartă trimiterea la scutire (CF art.319 alin.(20) lit.l) „trimiterea la dispozițiile aplicabile [...] din
-        # care să rezulte că livrarea [...] face obiectul unei scutiri”) și, la taxarea inversă, mențiunea „taxare inversă” (lit.m) — motivul
-        # categoriei din `core/categorii_tva` (același text ca BT-120 din e-Factura)
-        for _m in mentiuni_categorii(linii, factura.get("tert_tara")):
-            el.append(Spacer(1, 4))
-            el.append(Paragraph(_m, st_cell))   # motivele din categorii_tva n-au caractere de marcaj
+    # [274b] liniile cu 0% poartă trimiterea la scutire (CF art.319 alin.(20) lit.l) „trimiterea la dispozițiile aplicabile [...] din care
+    # să rezulte că livrarea [...] face obiectul unei scutiri”) și, la taxarea inversă, mențiunea „taxare inversă” (lit.m) — motivul
+    # categoriei din `core/categorii_tva` (același text ca BT-120 din e-Factura); neplătitorul, scutirea art.310 — [lotul 12, C156] mai puțin
+    # prestarea lui art.317 către clientul din alt stat membru, care poartă „taxare inversă” (`mentiuni_tva`, aceeași listă pe ecran)
+    for _m in mentiuni_tva(False if neplatitor else None, linii, factura.get("tert_tara")):
+        el.append(Spacer(1, 8 if _m == MENTIUNE_NEPLATITOR else 4))
+        el.append(Paragraph(_m, st_cell))   # motivele din categorii_tva n-au caractere de marcaj
+    if not neplatitor:
         if factura.get("tva_la_incasare"):
             # [lotul 10, deficiența 428] CF art.319 alin.(20) lit.p): „în cazul în care exigibilitatea TVA intervine la data încasării
             # contravalorii integrale sau parțiale [...], mențiunea «TVA la încasare»” — regimul facturii la data ei (`tva_incasare.regim`)

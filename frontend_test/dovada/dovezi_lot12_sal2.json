@@ -1,0 +1,387 @@
+[
+ {
+  "nr": "C102.1",
+  "firma": "tenant_9053",
+  "descriere": "F5: Salariați -> «Concediu» pe Ionescu Vasile -> «+ Certificat nou» -> «Început» 05.10.2026, «Sfârșit» 09.10.2026 -> «Zile lucrătoare CM» = 3, apoi golit -> «Sfârșit» 11.10.2026 -> câmpul gol primește propunerea: 5 (luni–vineri; sâmbăta și duminica nu se numără). Înainte (lotul 11): după o tastă în câmp, chiar golit, propunerea nu mai venea, la orice interval. NU salvează nimic (rămâne ciorna formularului, ștearsă de ultima dovadă C102.1).",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-inceput",
+    "valoare": "2026-10-05"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-10-09"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": "3"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": ""
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-10-11"
+   },
+   {
+    "pauza": 2000
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": ".fereastra:last-of-type #cm-zile",
+    "egal": "5"
+   }
+  ],
+  "captura": "c102.1_f5_propunerea_revine_in_campul_gol.png"
+ },
+ {
+  "nr": "C102.1",
+  "firma": "tenant_9053",
+  "descriere": "F5: același formular, 05–11.10.2026 (5 zile lucrătoare) -> «Zile lucrătoare CM» = 10 -> lângă câmp: „Între 05.10.2026 și 11.10.2026 sunt 5 zile lucrătoare (fără weekend și sărbători legale), iar aici scrie 10 zile. Verifică cifra de pe certificat.” Înainte: niciun avertisment. NU salvează nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-inceput",
+    "valoare": "2026-10-05"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-10-11"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": "10"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "sunt 5 zile lucrătoare (fără weekend și sărbători legale), iar aici scrie 10 zile. Verifică cifra de pe certificat.",
+    "zona": ".fereastra:last-of-type #cm-zile-avert"
+   }
+  ],
+  "captura": "c102.1_f5_avertisment_10_zile_pe_5.png"
+ },
+ {
+  "nr": "C102.1",
+  "firma": "tenant_9053",
+  "descriere": "F5: același formular completat (cod 01, AB 1021, 05–11.10.2026, 10 zile, baza 30.000 / 125) -> «Calculează și salvează»: serverul nu salvează, întreabă „Ai scris 10 zile lucrătoare de concediu medical, dar între 05.10.2026 și 11.10.2026 sunt 5 zile lucrătoare (fără weekend și sărbători legale). Verifică cifra de pe certificat. Salvezi certificatul cu 10 zile?”, cu «Salvează cu 10 zile» / «Corectez zilele». Înainte: certificatul se salva cu 10 zile, fără niciun cuvânt. NU salvează nimic (nu se confirmă).",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-serie",
+    "valoare": "AB"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-numar",
+    "valoare": "1021"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-cod",
+    "valoare": "01"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-acord",
+    "valoare": "2026-10-05"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-inceput",
+    "valoare": "2026-10-05"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-10-11"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": "10"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-continuare",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-spital",
+    "valoare": "false"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-program-national",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-ven6",
+    "valoare": "30000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile6",
+    "valoare": "125"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "asteapta": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Ai scris 10 zile lucrătoare de concediu medical, dar între 05.10.2026 și 11.10.2026 sunt 5 zile lucrătoare",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "contine": "Salvezi certificatul cu 10 zile?",
+    "zona": "#caseta-atentie-activa"
+   },
+   {
+    "exista": "#caseta-atentie-activa #ca-ok",
+    "text": "Salvează cu 10 zile"
+   },
+   {
+    "nu_contine": "Concediu salvat"
+   }
+  ],
+  "captura": "c102.1_f5_intrebarea_la_salvare.png"
+ },
+ {
+  "nr": "C102.1",
+  "firma": "tenant_9053",
+  "descriere": "F5: curățenia dovezilor C102.1 — «+ Certificat nou» (ciorna formularului se reface) -> «Renunță»: ciorna se șterge, formularul se închide; certificatele salvate ale lui Ionescu rămân cu zilele lor (date existente neafectate: certificatul 13–15.10.2026, 3 zile).",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-renunta"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "contine": "3 zile"
+   }
+  ],
+  "captura": "c102.1_f5_vechi_certificatul_salvat_neschimbat.png"
+ },
+ {
+  "nr": "629",
+  "firma": "tenant_9053",
+  "descriere": "F5, statul 10/2026 al lui Ionescu Vasile (certificatul cod 01, 13–15.10.2026, introdus înainte de reparație): «Compoziția netului» -> deducerea personală 519,00 lei — treapta lui 4.815,34 + 262 (indemnizația CM brută) = 5.077,34: CF art.76 alin.(1) („inclusiv indemnizațiile pentru incapacitate temporară de muncă”), CF art.77 alin.(4), HG 1/2016 Titlul IV pct.13 alin.(1). Înainte (codul lotului 11): 649,00, treapta lui 4.815,34. Numai citire (statul se calculează la deschidere).",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .pf-lista .pf-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') details.dec-xml summary"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') details.dec-xml"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "deducere personală",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') details.dec-xml"
+   },
+   {
+    "contine": "519,00",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') details.dec-xml"
+   },
+   {
+    "nu_contine": "649,00",
+    "zona": ".fereastra:last-of-type .pf-frand:has-text('Ionescu') details.dec-xml"
+   }
+  ],
+  "captura": "629_f5_vechi_deducerea_cu_indemnizatia_cm.png"
+ },
+ {
+  "nr": "629",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 10/2026 (statul de mai sus): fără erori la DUKIntegrator; Ionescu: E3_121 = 519 (deducerea treptei cu indemnizația), E3_8 = 5.077 = salariul realizat 4.815 + indemnizația 262 (OPANAF 605/2026 anexa 2, E.3 rândul 8 „Total venit brut”), E3_14 = 2.780. Înainte: E3_121 = 649 și E3_8 = 5.497 (salariul întreg al prezenței, cu zilele de CM, plus indemnizația). Luna se încheie la 31.10.2026: D112 se poate genera de la 01.11.2026.",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat",
+    "daca_exista": true
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "E3_121=\"519\""
+   },
+   {
+    "contine": "E3_8=\"5077\""
+   }
+  ],
+  "captura": "629_f5_vechi_d112_10_2026.png",
+  "posibila_de_la": "2026-11-01"
+ },
+ {
+  "nr": "C165",
+  "firma": "tenant_9049",
+  "descriere": "F1, statul 09/2026 cu nota 6 „SAL 09/2026” validată direct (fără element în coada de validare): Salariați -> „← luna” -> „Contabilizează statul”: „Nota … e validată.” Înainte: „Nota există deja în jurnal (…, ciornă).” — starea venea numai din coadă. Numai citire (propunerea calculează, nu scrie).",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-prev"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-prev"
+   },
+   {
+    "asteapta_text": "Luna 09/2026"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-contare"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-contare"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-contare-zona table"
+   },
+   {
+    "pauza": 1200
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #sp-contare-zona"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "e validată.",
+    "zona": ".fereastra:last-of-type #sp-contare-zona"
+   },
+   {
+    "nu_contine": "ciornă",
+    "zona": ".fereastra:last-of-type #sp-contare-zona"
+   },
+   {
+    "nu_contine": "Nota există deja în jurnal",
+    "zona": ".fereastra:last-of-type #sp-contare-zona"
+   }
+  ],
+  "captura": "c165_f1_vechi_nota_6_validata.png"
+ }
+]

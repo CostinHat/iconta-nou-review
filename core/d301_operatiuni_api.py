@@ -36,7 +36,7 @@ TIPURI_ETICHETE = {
     5: "Achiziții de SERVICII intracomunitare, taxare inversă art. 307 alin. (2) — secțiunea 4.1",
 }
 
-# [temei_307, audit tenant_006] Tip 4 = Sectiunea 4 (art. 307 alin. (3)/(5)/(6)) - NU intra in D390.
+# [temei_307, audit tenant_006] Tip 4 = Sectiunea 4 (art. 307 alin. (2) din afara UE, (3)/(5)/(6)) - NU intra in D390.
 # Fiecare tip 4 poarta CARE alineat, ca excluderea din D390 sa fie AUDITABILA (motiv + temei citat),
 # nu dedusa. NULL = NECONFIRMAT (semnal, nu verde). Inlocuieste euristica "tip 4 + cod -> serviciu".
 TEMEI_307 = {
@@ -48,6 +48,16 @@ TEMEI_307 = {
                            "operațiune internă"},
     "nestabilit": {"eticheta": "Furnizor nestabilit neînregistrat în RO (art. 307 alin. 6)",
                    "temei": "Cod fiscal art. 307 alin. (6) — taxare inversă generală, nu operațiune intracomunitară"},
+    # [lotul 12, clasa C163: serviciile primite pentru care beneficiarul datorează taxa intră în D301] prestatorul din AFARA UE: secțiunea
+    # 4 a decontului cuprinde și art.307 alin.(2) (OPANAF 592/2016, instrucțiunile: „Secţiunea 4 «Operaţiuni prevăzute la art. 307 alin.
+    # (2), (3), (5) şi (6) din Codul fiscal» se completează de către: - persoanele impozabile obligate la plata taxei conform art. 307
+    # alin. (2) [...] care sunt beneficiare ale serviciilor care au locul prestării în România conform art. 278 alin. (2) din Codul fiscal
+    # şi care sunt furnizate de către persoane impozabile care nu sunt stabilite pe teritoriul României”); numai cele din UE se preiau în
+    # 4.1 (tipul 5) și în D390 (CF art.325 alin.(1) lit.e: „de la persoane impozabile nestabilite în România, dar stabilite în Uniunea
+    # Europeană”). Până azi tipul 4 nu admitea alin.(2): serviciul primit de la un prestator din afara UE nu se putea introduce.
+    "servicii_extra_ue": {"eticheta": "Servicii primite de la un prestator din afara UE (art. 307 alin. 2)",
+                          "temei": "Cod fiscal art. 307 alin. (2) coroborat cu art. 278 alin. (2) — prestator nestabilit în România și "
+                                   "în afara Uniunii Europene, deci nu achiziție intracomunitară (CF art. 325 alin. (1) lit. e)"},
 }
 
 
@@ -187,10 +197,10 @@ def adauga(conn, schema, an, luna, d):
         erori.append(("partener_tara", "Ai completat codul de TVA al furnizorului — completează și țara (2 litere)."))
     if len(partener_cod) > 20:
         erori.append(("partener_cod", "Codul de TVA al furnizorului e prea lung (max 20 caractere)."))
-    # [temei_307] tip 4 cere CARE alineat art. 307 (3/5/6) - aceeasi regula la introducere si la preview.
+    # [temei_307] tip 4 cere CARE alineat art. 307 (2 din afara UE / 3 / 5 / 6) - aceeasi regula la introducere si la preview.
     temei_307 = (d.get("temei_307") or "").strip() or None
     if tip == 4 and temei_307 not in TEMEI_307:
-        erori.append(("temei_307", "Pentru tip 4 (art. 307 alin. 3/5/6) alege temeiul: %s." %
+        erori.append(("temei_307", "Pentru tip 4 (art. 307 alin. 2, 3, 5 sau 6) alege temeiul: %s." %
                       "; ".join("%s = %s" % (k, v["eticheta"]) for k, v in TEMEI_307.items())))
     if tip != 4:
         temei_307 = None  # temeiul e doar pentru tip 4

@@ -62,7 +62,10 @@ def date_auto(conn, schema, salariat_id, an, luna):
                                      norma_intreaga=not s[5], venit_brut_total=brut,
                                      sub_26=salarizare.sub_26_la(s[7], date(an, luna, 1)),   # [deducere suplimentara]
                                      copii_scoala=(int(s[8] or 0) if s[9] else 0),
-                                     declaratie_copii=bool(s[9]))
+                                     declaratie_copii=bool(s[9]),
+                                     # [lotul 12, 629] adeverința arată salariul din contract al lunii (`salariu_la`), nu luna realizată
+                                     # din statul de plată: fără indemnizație CM, deci nici în treapta deducerii
+                                     cm_impozabil=None)
     return {
         "firma_nume": f[0] or "", "firma_cui": f[1] or "", "firma_adresa": f[2] or "",
         "reprezentant": f[3] or f[4] or "Administrator", "repr_functie": f[5] or "Administrator",

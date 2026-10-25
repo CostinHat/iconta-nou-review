@@ -3096,3 +3096,20 @@ D390 la neplătitorul art.317, golul din registrul de cote, țara facturii recur
 C164 așteaptă decizii. Comanda 12.2 (în același lot) a mutat poarta și publicarea: poarta rulează o singură dată pe tot lotul 12, iar
 publicarea se face după confirmarea lui Costin (DECIZII „Comenzile 12.1 și 12.2 în același lot”). Detaliile deciziilor: DECIZII „Comanda
 12.1” și „Lotul 12: implementarea”; starea fiecărui număr: DEFICIENTE.md.
+
+### 24–25.10.2026 — Lotul 12, comenzile 12.2 și 12.3: închise pe ramură, fără poartă și fără publicare (poarta comună cu lotul 13)
+
+Comanda 12.2 (20 de numere din retestul lotului 11 și testarea din 24.10: 409.1, 443.1, 446.1, 450.1, 459.1, 617, 619, 621, 622, 626–630,
+639, 642, C73.1, C78.1, C102.1, 268.1) și răspunsurile lui Costin la raportul 12.1 (comanda 12.3: C109, C137, C156 / C157 / C163, C164,
+252, C19, C84, C133, cota și categoria pe șablonul recurent, neplătitorii fără migrare, Postmark) au fost lucrate de pachete de subagenți
+pe fișiere disjuncte, cu trei integrări (I1–I3) și cu testele grele rulate numai de sesiunea principală, una după alta. Pe drum s-au găsit
+C167–C202. Prima plasă e2e completă (după 12.2) a dat 34 de picături: 24 erau schimbări voite neprinse de poartă, aliniate; restul, teste
+greșite și o cascadă. La închidere, după decizia lui Costin din 25.10 („fără plasa e2e completă și fără mutații acum”), au rulat numai
+testele țintite: pytest pe fișierele atinse (817 fișiere, câte unul), e2e-ul pachetelor și al picăturilor vechi, uneltele vizuale,
+verificatorul și dovezile pe copia firmelor de test. Rularea țintită a prins trei defecte reale înaintea porții: amprenta salariilor din
+C194 cuprindea un singur tabel pe cursorul-dicționar al cozii (orice D112 ieșea „depășită” imediat), linia de stare SPV trăgea Control
+fiscal după fiecare „Salvează” (171 redeschisă, C202) și un blocaj fără ieșire între o cerere cu mai multe conexiuni și o operație de
+structură (C201, nereparat, trecut în lotul 13). Emailurile tranzacționale trec pe Postmark când Costin pune tokenul pe server. Plasa
+completă și mutațiile rulează o singură dată, în poarta comună a loturilor 12 + 13, la finalul comenzii 13.1. Detalii: DECIZII „Lotul 12,
+comanda 12.2: implementarea”, „Lotul 12, comanda 12.3: implementarea”, „25.10.2026 — Postmark…” și „12.2 se închide fără plasa e2e
+completă”; starea fiecărui număr: DEFICIENTE.md.

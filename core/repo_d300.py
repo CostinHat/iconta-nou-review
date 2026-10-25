@@ -13,6 +13,7 @@ redeschide aici.*
 """
 
 from core.nomenclator_status_factura import clauza_tip_document as _doc_fiscal
+from core.nomenclator_status_factura import TIP_SOLD_PRELUAT as _TIP_PRELUAT   # [lotul 12, 252, 12.3 pct.5]
 from core.facturi import clauza_nu_din_bon as _nu_din_bon   # [decizia A 02.10] definiția unică
 
 
@@ -37,7 +38,11 @@ def select_inregistrari(cur, _STATUS_FINAL, inceput, sfarsit):
                 "WHERE i.status = 'validata' "
                 "AND COALESCE(f.taxare_inversa, false) = false "  # art.282(6)/297(3): taxare inversa = regim general, nu la incasare
                 "AND " + _STATUS_FINAL + " "  # [B1] doar facturi contabilizabile
-                "AND " + _doc_fiscal("f") + " "   # [DECIZII 46] proforma/avizul nu sunt documente fiscale
+                # [DECIZII 46] proforma/avizul nu sunt documente fiscale. [lotul 12, 252, decizia Costin 12.3 pct.5] + factura deschisă
+                # PRELUATĂ: nu e document al perioadei, dar TVA-ul ei rămas neexigibil la preluare devine exigibil / deductibil la
+                # încasarea / plata din iConta.eu (CF art.282 alin.(3), (8); art.297 alin.(2)-(3)). Trece mai departe numai cea cu TVA
+                # (`tva_incasare.regim`, în `d300._pull_la_incasare`); cea pe regulile generale (TVA 0) iese acolo.
+                "AND (" + _doc_fiscal("f") + " OR f.tip = '" + _TIP_PRELUAT + "') "
                 "AND " + _nu_din_bon("f") + " "   # [decizia A 02.10] factura din bon: vânzarea e în raportul Z
                 "AND i.data >= %s AND i.data < %s "
                 "AND ((f.directie = 'emisa' AND l.cont_credit = '4111') "

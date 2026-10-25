@@ -352,6 +352,30 @@ def propunere_anaf(acum, d):
     return out
 
 
+def precompleteaza_sau_semnaleaza(conn, schema_name, d, eticheta, seteaza_nume=False):
+    """[lotul 12, deficiența 642 — CLASA: precompletarea ANAF a unei firme abia create, în tranzacția creării] `precompleteaza_din_anaf`
+    sub un PUNCT DE REVENIRE: o cădere (o eroare de bază, o valoare ANAF pe care scrierea n-o primește) anulează numai precompletarea și
+    se consemnează (`esec_secundar`) — firma rămâne, cu profilul de completat manual în Date firmă. Fără punctul de revenire, o eroare de
+    bază lăsa tranzacția stricată, iar `commit`-ul de la capăt (`db.get_conn`) o anula TĂCUT — psycopg2 nu ridică la `commit` pe o
+    tranzacție stricată (probat pe Postgres, 24.10.2026) —, deci firma raportată „creată” nu exista. Folosită de toate căile care creează
+    o firmă și o precompletează: înregistrarea (firma proprie), „Adaugă firmă”, importul firmelor din Migrare cabinet. Gard:
+    core/test_lot12_form2_register.py::test_def_642_precompletarea_anaf_cazuta_nu_strica_tranzactia. Întoarce rezultatul precompletării
+    sau None la cădere."""
+    from core import observare as _obs
+    with conn.cursor() as cur:
+        cur.execute("SAVEPOINT precompletare_anaf")
+    try:
+        r = precompleteaza_din_anaf(conn, schema_name, d, seteaza_nume=seteaza_nume)
+    except Exception as e:  # noqa: BLE001 — căderea se consemnează; firma rămâne (punctul de revenire)
+        with conn.cursor() as cur:
+            cur.execute("ROLLBACK TO SAVEPOINT precompletare_anaf")
+        _obs.esec_secundar(eticheta, e)
+        return None
+    with conn.cursor() as cur:
+        cur.execute("RELEASE SAVEPOINT precompletare_anaf")
+    return r
+
+
 def inlocuieste_din_anaf(conn, schema_name, d):
     """[459, comanda Costin 11.3 pct.5: „la schimbarea CUI-ului rămân datele celui vechi”] După corectura CUI-ului, ce venise de la ANAF
     pentru CUI-ul vechi nu mai rămâne tacit. Cu datele ANAF ale CUI-ului nou (`d`): câmpurile `CAMPURI_ANAF` se ÎNLOCUIESC (un gol de la

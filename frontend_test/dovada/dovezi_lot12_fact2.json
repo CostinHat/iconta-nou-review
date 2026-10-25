@@ -1,0 +1,407 @@
+[
+  {
+    "nr": "C73.1",
+    "firma": "tenant_9049",
+    "descriere": "F1: Operațiuni -> «Achiziție necorporală» -> licența cu factura LIC-73 de la 14399840 (1.000 + 21%), a TREIA oară: refuzul spune că factura e deja înregistrată de 2 ori (cele două ciorne LIC-73 din 24.10.2026, scrise înainte de reparație) și nu scrie nimic (OMFP 2634/2015 anexa 1 pct.58 lit.c)",
+    "pasi": [
+      {
+        "click": "#fa-operatiuni"
+      },
+      {
+        "asteapta": "[data-op]"
+      },
+      {
+        "click": "button[data-op='necorporala']"
+      },
+      {
+        "asteapta": "#op-trimite"
+      },
+      {
+        "completeaza": "#op-data",
+        "valoare": "2026-10-24"
+      },
+      {
+        "completeaza": "#op-denumire",
+        "valoare": "Licență LIC-73 (a treia introducere, dovadă C73.1)"
+      },
+      {
+        "completeaza": "#op-valoare",
+        "valoare": "1000"
+      },
+      {
+        "alege": "#op-tip",
+        "valoare": "licenta"
+      },
+      {
+        "completeaza": "#op-dnf_luni",
+        "valoare": "12"
+      },
+      {
+        "completeaza": "#op-furnizor_nume",
+        "valoare": "DANTE INTERNATIONAL SA"
+      },
+      {
+        "completeaza": "#op-furnizor_cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#op-numar",
+        "valoare": "LIC-73"
+      },
+      {
+        "completeaza": "#op-cota",
+        "valoare": "21"
+      },
+      {
+        "click": "#op-trimite"
+      },
+      {
+        "asteapta_text": "e deja înregistrată"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Factura LIC-73 de la DANTE INTERNATIONAL SA e deja înregistrată de 2 ori",
+        "zona": "#op-mesaj"
+      },
+      {
+        "contine": "factura LIC-73 din 24.10.2026, 1.210,00 lei; factura LIC-73 din 24.10.2026, 1.210,00 lei",
+        "zona": "#op-mesaj"
+      }
+    ],
+    "captura": "c73_1_f1_vechi_a_treia_introducere_refuzata.png"
+  },
+  {
+    "nr": "443.1",
+    "firma": "tenant_9049",
+    "descriere": "F1: Emite factură -> client DANTE, 1 × 100 lei, 21% -> «Emite factură»: mesajul spune «Factura F1A nr. … emisă», seria și numărul separat, ca în Istoric (nu «F1A16»)",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "DANTE INTERNATIONAL SA"
+      },
+      {
+        "completeaza": "#em-oras",
+        "valoare": "Sector 1"
+      },
+      {
+        "alege": "#em-judet",
+        "valoare": "B"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Servicii de consultanță dovadă 443.1"
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "100"
+      },
+      {
+        "alege": "#em-l0-cota",
+        "valoare": "21"
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta": "#em-rezultat.em-emisa"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Factura F1A nr.",
+        "zona": "#em-rezultat"
+      },
+      {
+        "nu_contine": "Factura F1A1",
+        "zona": "#em-rezultat"
+      }
+    ],
+    "captura": "443_1_f1_mesajul_dupa_emitere.png"
+  },
+  {
+    "nr": "C78.1",
+    "firma": "tenant_9049",
+    "descriere": "F1: Operațiuni -> «Livrare/prestare intracomunitară (VIES live)» -> codul IE6388047V, ieșire din câmp: sub câmp «valid în VIES · IE · GOOGLE IRELAND LIMITED», ÎNAINTE de «Generează nota»",
+    "pasi": [
+      {
+        "click": "#fa-operatiuni"
+      },
+      {
+        "asteapta": "[data-op]"
+      },
+      {
+        "click": "button[data-op='vanzare_ic']"
+      },
+      {
+        "asteapta": "#op-trimite"
+      },
+      {
+        "completeaza": "#op-cod_tva_client",
+        "valoare": "IE6388047V"
+      },
+      {
+        "click": "#op-valoare"
+      },
+      {
+        "asteapta_text": "valid în VIES"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "valid în VIES · IE · GOOGLE IRELAND LIMITED",
+        "zona": "#op-cod_tva_client-vies"
+      }
+    ],
+    "captura": "c78_1_f1_vies_inainte_de_generare.png",
+    "anaf_real": true
+  },
+  {
+    "nr": "C78.1",
+    "firma": "tenant_9049",
+    "descriere": "F1: aceeași livrare -> Servicii, 1.000 lei, 24.10.2026, cont 704 -> «Generează nota»: confirmarea arată nota 4111 = 704 · 1.000,00 lei o singură dată (fără «Nota: 4111 = 704 …» repetat) și clientul din VIES",
+    "pasi": [
+      {
+        "click": "#fa-operatiuni"
+      },
+      {
+        "asteapta": "[data-op]"
+      },
+      {
+        "click": "button[data-op='vanzare_ic']"
+      },
+      {
+        "asteapta": "#op-trimite"
+      },
+      {
+        "completeaza": "#op-cod_tva_client",
+        "valoare": "IE6388047V"
+      },
+      {
+        "click": "#op-valoare"
+      },
+      {
+        "asteapta_text": "valid în VIES"
+      },
+      {
+        "completeaza": "#op-data",
+        "valoare": "2026-10-24"
+      },
+      {
+        "completeaza": "#op-valoare",
+        "valoare": "1000"
+      },
+      {
+        "alege": "#op-tip",
+        "valoare": "servicii"
+      },
+      {
+        "completeaza": "#op-cont_venit",
+        "valoare": "704"
+      },
+      {
+        "completeaza": "#op-descriere",
+        "valoare": "Servicii dovadă C78.1"
+      },
+      {
+        "click": "#op-trimite"
+      },
+      {
+        "asteapta": "#op-mesaj .caseta-ok"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "4111 = 704 · 1.000,00 lei",
+        "zona": "#op-mesaj"
+      },
+      {
+        "nu_contine": "Nota: 4111",
+        "zona": "#op-mesaj"
+      },
+      {
+        "contine": "Client: GOOGLE IRELAND LIMITED, cod IE6388047V valid în VIES.",
+        "zona": "#op-mesaj"
+      }
+    ],
+    "captura": "c78_1_f1_confirmarea_nota_o_data.png",
+    "anaf_real": true
+  },
+  {
+    "nr": "304",
+    "firma": "tenant_9049",
+    "descriere": "F1: Emite factură -> DANTE (RO), Marfa A din stoc, 0%, «livrare intracomunitară» -> «Emite»: refuzul «țara clientului: RO» -> se TASTEAZĂ IE9999999ZZ în CUI, fără ieșire din câmp: refuzul nu mai e pe ecran (nici eroarea liniei, nici caseta «NU s-a salvat.», nici fereastra «Am înțeles»)",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "DANTE INTERNATIONAL SA"
+      },
+      {
+        "alege": "#em-l0-articol",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "10"
+      },
+      {
+        "alege": "#em-l0-cota",
+        "valoare": "0"
+      },
+      {
+        "asteapta": "#em-l0-categorie"
+      },
+      {
+        "alege": "#em-l0-categorie",
+        "valoare": "livrare_ic"
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta_text": "țara clientului: RO"
+      },
+      {
+        "pauza": 1200
+      },
+      {
+        "captura": "304_f1_refuzul_inainte.png"
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "IE9999999ZZ"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "nu_contine": "țara clientului: RO"
+      },
+      {
+        "nu_contine": "NU s-a salvat"
+      }
+    ],
+    "captura": "304_f1_refuz_disparut_la_tastarea_altui_cui.png"
+  },
+  {
+    "nr": "C166",
+    "firma": "tenant_9049",
+    "descriere": "F1: Emite factură -> CUI IE9999999ZZ -> «Verifică»: VIES răspunde «cod TVA invalid» -> «←» (pleacă din formular) -> «Emite factură» din nou: factura începută e păstrată, iar sub CUI scrie tot răspunsul VIES",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "IE9999999ZZ"
+      },
+      {
+        "click": "#em-verifica"
+      },
+      {
+        "asteapta_text": "cod TVA invalid în VIES"
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-inapoi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "pauza": 500
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-ciorna .caseta-info"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "cod TVA invalid în VIES",
+        "zona": "#em-cui-stare"
+      },
+      {
+        "contine": "a fost păstrată",
+        "zona": "#em-ciorna"
+      }
+    ],
+    "captura": "c166_f1_raspunsul_vies_ramane_la_revenire.png"
+  }
+]

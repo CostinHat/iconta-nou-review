@@ -353,10 +353,16 @@
     "click": "#fa-jurnal"
    },
    {
-    "asteapta": ".pf-frand[data-nota-id='162'] .jn-derivata"
+    "asteapta": "tbody.tn-nota[data-nota-id='162']"
    },
    {
-    "deruleaza": ".pf-frand[data-nota-id='162']"
+    "deruleaza": "tbody.tn-nota[data-nota-id='162']"
+   },
+   {
+    "click": "tbody.tn-nota[data-nota-id='162'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='162'] .jn-derivata"
    },
    {
     "pauza": 400
@@ -365,15 +371,15 @@
   "verifica": [
    {
     "contine": "în Raport Z:",
-    "zona": ".pf-frand[data-nota-id='162'] .jn-derivata"
+    "zona": "tbody.tn-nota[data-nota-id='162'] .jn-derivata"
    },
    {
     "contine": "«Șterge raportul Z»",
-    "zona": ".pf-frand[data-nota-id='162'] .jn-derivata"
+    "zona": "tbody.tn-nota[data-nota-id='162'] .jn-derivata"
    },
    {
     "nu_contine": "Casa de marcat",
-    "zona": ".pf-frand[data-nota-id='162'] .jn-derivata"
+    "zona": "tbody.tn-nota[data-nota-id='162'] .jn-derivata"
    }
   ],
   "captura": "c146_f1_vechi_jurnal_nota_z_trimite_la_raport_z.png"

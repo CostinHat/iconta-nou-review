@@ -44,10 +44,10 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { api, arataMesaj, esc } from "./api.js?v=309f4d66ae";
+import { api, arataMesaj, esc } from "./api.js?v=e38843b1ec";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=1be335b472";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=42acc12bf3";
-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=633feb4381";
+import { ecranLogin } from "./ecrane/login.js?v=08c99f75e7";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=baaf8c4bb6";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=b6de86b3c6";
 import { desktopAsistent } from "./ecrane/asistent.js?v=a2fd8c40cd";
 import { desktopPortal } from "./ecrane/portal.js?v=ae0fb8176b";

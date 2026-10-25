@@ -186,7 +186,7 @@ def test_def_99_nir_respins_scade_marfa_din_stoc(patron, firma_cv):
     assert (rand[2], rand[4]) == ("10", "550,00"), rand
     patron.captura("inainte")
     _coada(patron)
-    card = pg.locator(".fereastra:last-of-type .val-card", has_text=firma_cv["nume"]).filter(has_text="NIR nr D99 ")
+    card = _card_coada(patron, firma_cv, "NIR nr D99 ")   # [lotul 12, 622] rândul NIR-ului în „Note de validat”, „Respinge” pe rând
     card.locator(".val-respinge").click()
     pg.fill("#dlg-input", "NIR greșit D99")
     pg.click("#dlg-ok")
@@ -198,7 +198,17 @@ def test_def_99_nir_respins_scade_marfa_din_stoc(patron, firma_cv):
 
 
 def _card_coada(ecran, firma, text):
-    return ecran.pg.locator(".fereastra:last-of-type .val-card", has_text=firma["nume"]).filter(has_text=text)
+    """[lotul 12, comanda 12.2 pct.12, deficiența 622] Rândul notei (sau al documentului cu notele lui) din „Note de validat”: un
+    `<tbody class="tn-nota">` al tabelului de note (`static/js/ecrane/tabel_note.js`), nu un `.val-card`. `has_text` vede și detaliul
+    închis (eticheta documentului, „pregătită de”, „Retrimisă după respingere”); ce vede contabilul se citește după `_deschis`.
+    Aceeași formă ca `e2e_bloc_b._card_nota`."""
+    return ecran.pg.locator(".fereastra:last-of-type #val-note tbody.tn-nota", has_text=firma["nume"]).filter(has_text=text)
+
+
+def _deschis(ecran, card):
+    """[622] Detaliul rândului din coadă deschis (liniile notei încărcate), cum îl deschide contabilul; întoarce rândul."""
+    from e2e_bloc_b import _deschide_rand   # e2e_bloc_b nu importă din e2e_bloc_d
+    return _deschide_rand(ecran, card)
 
 
 def _nir_lista(ecran):
@@ -277,7 +287,7 @@ def test_def_111_cardul_nir_refacut_spune_retrimis_dupa_respingere(patron, firma
     _nir_cv(firma_cv, "D111", None, cant=8, refacut_din=vechi, articol_id=aid)
     _in_coada(firma_cv)
     _coada(patron)
-    card = _card_coada(patron, firma_cv, "NIR nr D111 ")
+    card = _deschis(patron, _card_coada(patron, firma_cv, "NIR nr D111 "))   # [622] motivul anterior stă în detaliul rândului
     text = card.inner_text()
     patron.captura()
     assert card.count() == 1, text
@@ -304,7 +314,7 @@ def test_def_199_nir_refacut_identic_nu_apare_schimbat(patron, firma_cv):
     assert len(ids) >= 2, ids
     sql("UPDATE public.declaratii_coada SET creat_la = now() + interval '1 second' WHERE id = %s", (ids[-1],))
     _coada(patron)
-    card = _card_coada(patron, firma_cv, "NIR nr D199 ")
+    card = _deschis(patron, _card_coada(patron, firma_cv, "NIR nr D199 "))   # [622] „nota nu s-a schimbat” stă în detaliul rândului
     text = card.inner_text()
     membri = card.get_attribute("data-coada-ids").split(",")
     patron.captura()
@@ -323,8 +333,9 @@ def test_def_101_titlul_documentului_in_coada_e_scurt(patron, firma_gv):
     assert st == 200 and len(r["inregistrari"]) == 4, (st, r)
     _in_coada(firma_gv)
     _coada(patron)
-    card = _card_coada(patron, firma_gv, "NIR nr D101 ")
-    titlu = card.locator(".val-titlu").inner_text().strip()
+    # [lotul 12, 622] titlul cardului (`.val-titlu`) -> eticheta documentului, primul rând din detaliul rândului: „<eticheta> · pregătită de …”
+    card = _deschis(patron, _card_coada(patron, firma_gv, "NIR nr D101 "))
+    titlu = card.locator("tr.tn-detaliu p.pf-frand-sub").first.inner_text().strip().split(" · pregătită de ")[0]
     patron.captura()
     assert titlu == "NIR nr D101 din %s · Furnizor Proba E2E SRL · 4 note" % AZI.strftime("%d.%m.%Y"), titlu   # AZI-dat-de-test
 
@@ -474,11 +485,13 @@ def test_def_128_nota_chitantei_arata_factura_stinsa(patron, firma_gv):
     _coada(patron)
     card = _card_coada(patron, firma_gv, "%s-%s" % (ch["serie"], ch["numar"]))
     asteptat = "stinge factura %s din %s" % (numar, AZI.strftime("%d.%m.%Y"))
+    assert card.count() == 1, card.count()
+    # [lotul 12, 622] „Vezi nota →” (fereastra notei) -> detaliul rândului: liniile notei și „… · stinge <factura>”, pe același ecran
+    _deschis(patron, card)
     text = card.inner_text()
     patron.captura("card")
-    assert card.count() == 1 and asteptat in text, text
-    card.locator(".val-vezi-nota").click()
-    pg.wait_for_selector(".fereastra:last-of-type .fd-tabel", timeout=20000)
+    assert asteptat in text, text
+    assert pg.locator(".fereastra:last-of-type #val-note tr.tn-detaliu table.tn-linii").count() >= 1
     patron.captura("detaliu")
     assert asteptat in patron.fereastra(), patron.fereastra()
 
@@ -495,13 +508,14 @@ def test_def_129_detaliul_notei_are_valideaza_si_respinge(patron, firma_gv):
     _in_coada(firma_gv)
     pg = patron.pg
     _coada(patron)
-    _card_coada(patron, firma_gv, "Telefon D129").locator(".val-vezi-nota").click()
-    pg.wait_for_selector(".fereastra:last-of-type #val-nota-actiuni", timeout=20000)
-    f = ".fereastra:last-of-type #val-nota-actiuni "
-    assert pg.locator(f + ".val-aproba").inner_text().strip() == "Validează"
-    assert pg.locator(f + ".val-respinge").inner_text().strip() == "Respinge"
+    # [lotul 12, 622] „Vezi nota →” -> detaliul rândului (liniile notei); „Validează” / „Respinge” stau pe rândul notei („pe rând”),
+    # deasupra detaliului deschis, nu într-o fereastră separată (`#val-nota-actiuni` nu mai există)
+    card = _deschis(patron, _card_coada(patron, firma_gv, "Telefon D129"))
+    f = card.locator("tr.tn-rand")
+    assert f.locator(".val-aproba").inner_text().strip() == "Validează"
+    assert f.locator(".val-respinge").inner_text().strip() == "Respinge"
     patron.captura("detaliu")
-    pg.click(f + ".val-aproba")
+    f.locator(".val-aproba").click()
     _asteapta_text(patron, "Ai validat")
     patron.captura("validata")
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % firma_gv["schema"], (nid,)) == [("validata",)]
@@ -635,7 +649,8 @@ def test_def_109_dupa_prima_ciorna_veche_se_inlocuieste_si_merge_la_validare(asi
         in asistent.fereastra(), asistent.fereastra()
     _in_coada(firma_sal)
     _coada(patron)
-    carduri = patron.pg.locator(".fereastra:last-of-type .val-card", has_text=firma_sal["nume"])
+    # [lotul 12, 622] elementele cozii ale firmei: rândurile din „Note de validat” (tabelul de note) și cardurile declarațiilor (`.val-card`)
+    carduri = patron.pg.locator(".fereastra:last-of-type #val-note tbody.tn-nota, .fereastra:last-of-type .val-card", has_text=firma_sal["nume"])
     texte = [carduri.nth(i).inner_text() for i in range(carduri.count())]
     patron.captura("coada")
     assert len(texte) == 1, texte
@@ -932,7 +947,9 @@ def test_def_138_balanta_lunii_are_numai_notele_lunii(asistent, firma_mf):
     asistent.captura("jurnal")
     asistent.firma(firma_mf["nume"])
     _deschide(asistent, "#fa-balanta", "Balanță de verificare")
-    pg.wait_for_selector(".fereastra:last-of-type .fd-tabel tbody tr", timeout=30000)
+    # [lotul 12, 621] verdictul închiderii („se închide pe toate cinci”) e o notă pliată (`details#b-inchidere`), cu tabelul perechilor în
+    # ea: primul `.fd-tabel` din fereastră nu se mai vede. Rândurile pe care le vede contabilul sunt cele ale balanței.
+    pg.wait_for_selector(".fereastra:last-of-type .fd-tabel tbody tr >> visible=true", timeout=30000)
     out = pg.evaluate("() => { const f = [...document.querySelectorAll('.fereastra')].pop();"
                         " const rows = [...f.querySelectorAll('.fd-tabel')].find((x) => x.innerText.includes('Rulaj lun'));"
                         " const tr = rows.querySelector('tfoot tr'); const ult = [...rows.querySelectorAll('tbody tr')].pop();"
@@ -963,7 +980,8 @@ def test_def_143_ferestrele_cu_tabele_fara_derulare_laterala_la_1920(patron, fir
     patron.firma(firma_mf["nume"])
     _deschide(patron, "#fa-balanta", "Balanță de verificare")
     pg.click(".fereastra:last-of-type #b-prev")
-    pg.wait_for_selector(".fereastra:last-of-type .fd-tabel tbody tr", timeout=30000)
+    # [lotul 12, 621] tabelul perechilor închiderii stă pliat în `details#b-inchidere`: se așteaptă rândurile balanței, cele vizibile
+    pg.wait_for_selector(".fereastra:last-of-type .fd-tabel tbody tr >> visible=true", timeout=30000)
     rez["balanta"] = pg.evaluate(lat)
     patron.captura("balanta")
     patron.firma(firma_mf["nume"])
@@ -1077,6 +1095,9 @@ def test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza(patron, firma_gv):
     assert st == 200 and m.get("id"), (st, m)
     pg = patron.pg
     _jurnal(patron, firma_gv)
+    from e2e_bloc_b import _deschide_rand, _nota_jn   # [lotul 12, 617]; e2e_bloc_b nu importă din e2e_bloc_d
+    for i in nir_ids + [m["id"]]:   # [617] „Editează” / „Șterge” și locul corecturii stau în detaliul notei: se deschide rândul
+        _deschide_rand(patron, _nota_jn(patron, i))
     stare = pg.evaluate("""(ids) => ids.map(i => { const r = document.querySelector(`.fereastra:last-of-type [data-nota-id='${i}']`);
         return r ? {id: i, edit: !!r.querySelector('[data-edit]'), del: !!r.querySelector('[data-del]'), text: r.innerText} : {id: i, lipsa: true}; })""",
                         nir_ids + [m["id"]])
@@ -1117,7 +1138,7 @@ def test_def_105_cardul_notei_retrimise_spune_retrimisa_si_motivul(patron, firma
     st, r = _api(ASISTENT, "POST", "/tenants/%d/jurnal/%d/retrimite?confirma=true" % (firma_gv["tenant_id"], nid), {})
     assert st == 200 and r.get("ok") is not False, (st, r)
     _coada(patron)
-    card = _card_coada(patron, firma_gv, "Telefon D105")
+    card = _deschis(patron, _card_coada(patron, firma_gv, "Telefon D105"))   # [622] motivul anterior stă în detaliul rândului
     text = card.inner_text()
     patron.captura()
     assert "Retrimisă după respingere · motivul anterior: „suma greșită D105” · nota nu s-a schimbat față de cea respinsă" in text, text
@@ -1254,9 +1275,12 @@ def test_def_119_tva_din_nir_fara_factura_nu_e_pe_4426_deci_d300_se_potriveste(a
                  {"factura_sosita": False, "numar": "D119", "data": data, "furnizor": "Furnizor Proba E2E SRL", "factura_id": None,
                   "linii": [{"denumire": "Marfa D119", "cantitate": 10, "pret_achizitie": 215, "pret_vanzare": 330, "cota_tva": 21}]})
     assert st == 200 and "eroare" not in r, (st, r)
-    for nid in r["inregistrari"]:
-        st, r2 = _api(PATRON, "POST", "/tenants/%d/jurnal/%d/valideaza" % (firma_tva["tenant_id"], nid), {})
-        assert st == 200, (st, r2)
+    # [lotul 12, clasa 80 / 619] „Validează” pe o notă validează DOCUMENTUL: notele NIR-ului intră în evidență împreună, la prima validare
+    # (`coada_api.valideaza_documentul`); a doua cerere pe nota-soră ar spune „nota nu e ciorna”
+    st, r2 = _api(PATRON, "POST", "/tenants/%d/jurnal/%d/valideaza" % (firma_tva["tenant_id"], r["inregistrari"][0]), {})
+    assert st == 200, (st, r2)
+    assert sql('SELECT DISTINCT status FROM "%s".inregistrari WHERE id = ANY(%%s)' % firma_tva["schema"], (r["inregistrari"],)) == \
+        [("validata",)], "notele NIR-ului nu s-au validat împreună"
     linii = sql('SELECT l.cont_debit, l.suma::text FROM "%s".inregistrari_linii l WHERE l.inregistrare_id = ANY(%%s) AND '
                 "l.cont_debit LIKE '442%%%%'" % firma_tva["schema"], (r["inregistrari"],))
     assert linii == [("4428.01", "451.50")], linii

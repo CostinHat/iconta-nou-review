@@ -101,19 +101,31 @@ def note_taxare_inversa(cont, val, tva, beneficiar_platitor):
                                         "achizitiei (CF art.297: deducerea cere art.316)")
 
 
-def valideaza_lic(cod_tva_client, cod_valid_vies, are_dovada_transport):
-    """Livrare IC scutita (art. 294 al. 2 lit. a): cod TVA valid din alt SM
-    + dovada transportului. Altfel -> regim normal cu TVA."""
-    tara, _ = desparte_cod_tva(cod_tva_client)
-    if tara == "RO":
-        raise ValueError("clientul e din RO - nu e livrare intracomunitară")
-    if not cod_valid_vies:
-        raise ValueError("codul de TVA al clientului e invalid în VIES - scutirea de la art. 294 alin.(2) lit.a nu se "
-                         "aplică, facturează cu TVA românesc")
-    if not are_dovada_transport:
-        raise ValueError("fără dovada transportului în alt stat membru scutirea nu se "
-                         "aplică (art. 294(2)a) - facturează cu TVA")
-    return True, "scutit cu drept de deducere - art. 294 alin. (2) lit. a) Cod fiscal (LIC)"
+# [lotul 12, C84, decizia Costin 12.3 pct.7] „livrarea intracomunitară de bunuri fără dovada transportului primește avertisment la
+# emitere, nu refuz”. Livrarea de bunuri se emite din „Emite factură” (decizia C84 (b), 23.10.2026); întrebarea vine acolo, după ce
+# liniile au trecut (`facturi_api.emite_factura`, `COD_INTREABA_DOVADA`). Fosta `valideaza_lic` (refuzul „fără dovada transportului [...]
+# facturează cu TVA”) n-avea niciun apelant de la C84 (b): Operațiuni nu mai livrează bunuri — s-a scos, odată cu refuzul.
+# TEMEI: CF art.294 alin.(2) lit.a (scutirea livrării intracomunitare, cu bunurile expediate sau transportate în alt stat membru);
+# CF art.294 alin.(3) — „Prin ordin al ministrului finanțelor publice se stabilesc, acolo unde este cazul, documentele necesare pentru a
+# justifica scutirea de taxă pentru operațiunile prevăzute la alin. (1) și (2)”; HG 1/2016 pct.65 — „Scutirile cu drept de deducere
+# prevăzute la art. 294, 295 și 296 din Codul fiscal sunt aplicate în măsura în care persoanele impozabile pot justifica scutirea cu
+# documentele prevăzute de instrucțiuni aprobate de ministrul finanțelor publice.”
+INTREBARE_DOVADA_TRANSPORT = ("Ai dovada transportului bunurilor în alt stat membru? Scutirea livrării intracomunitare se aplică numai "
+                              "dacă o poți justifica cu documentele de transport.")
+AVERTISMENT_LIC_FARA_DOVADA = (
+    "Factura s-a emis cu scutirea livrării intracomunitare (art.294 alin.(2) lit.a din Codul fiscal), dar nu ai încă dovada transportului "
+    "bunurilor în alt stat membru. Scutirea se aplică numai dacă o justifici cu documentele de transport (art.294 alin.(3) din Codul "
+    "fiscal; HG 1/2016 pct.65): păstrează-le la dosar când le primești. Fără ele scutirea nu se aplică, iar livrarea se facturează cu TVA "
+    "(stornezi factura și emiți una cu TVA).")
+#: [lotul 12, C197] livrarea intracomunitară de bunuri emisă pe un drum care nu poate întreba (factura recurentă, emisă automat de cron):
+#: aplicația nu știe dacă dovada există, deci nu spune „nu ai dovada” (ar fi o afirmație pe care n-o poate face), ci ce trebuie verificat.
+#: Temeiul, ca mai sus: CF art.294 alin.(2) lit.a (scutirea) și CF art.294 alin.(3) („Prin ordin al ministrului finanțelor publice se
+#: stabilesc, acolo unde este cazul, documentele necesare pentru a justifica scutirea”).
+AVERTISMENT_LIC_NEINTREBAT = (
+    "Factura s-a emis automat cu scutirea livrării intracomunitare (art.294 alin.(2) lit.a din Codul fiscal), fără ca aplicația să te poată "
+    "întreba dacă ai dovada transportului bunurilor în alt stat membru. Scutirea se aplică numai dacă o justifici cu documentele de "
+    "transport (art.294 alin.(3) din Codul fiscal): verifică-le și păstrează-le la dosar. Fără ele scutirea nu se aplică, iar livrarea se "
+    "facturează cu TVA (stornezi factura și emiți una cu TVA).")
 
 #: [C128, lotul 12] refuzul achiziției intracomunitare de la un furnizor cu cod de TVA românesc
 MESAJ_AIC_RO = ("Codul de TVA al furnizorului începe cu RO, deci furnizorul e înregistrat în România: cumpărarea de la el nu e achiziție "
@@ -124,7 +136,7 @@ MESAJ_AIC_RO = ("Codul de TVA al furnizorului începe cu RO, deci furnizorul e �
 def valideaza_aic(cod_tva_furnizor):
     """Achiziția intracomunitară (bunuri: CF art.273 alin.(1) — bunurile ajung „către un stat membru, altul decât cel de plecare”; servicii:
     CF art.307 alin.(2) — prestatorul „nu este stabilit[ă] pe teritoriul României”) cere un furnizor dintr-un ALT stat membru: codul lui
-    de TVA nu poate fi românesc. -> (țara, număr) sau ValueError (`MESAJ_AIC_RO`). Oglinda lui `valideaza_lic` (clientul din RO)."""
+    de TVA nu poate fi românesc. -> (țara, număr) sau ValueError (`MESAJ_AIC_RO`). Oglinda refuzului clientului din RO la livrare (`categorii_tva.verifica_linii`, livrare_ic)."""
     tara, nr = desparte_cod_tva(cod_tva_furnizor)
     if tara == "RO":
         raise ValueError(MESAJ_AIC_RO)

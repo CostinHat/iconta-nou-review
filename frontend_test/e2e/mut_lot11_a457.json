@@ -1,8 +1,8 @@
 [
  {
   "fisier": "static/js/ecrane/validat.js",
-  "ancora": "    if (n.in_coada !== \"la_senior\" && valideaza)\n",
-  "inlocuire": "    if (false)\n",
+  "ancora": "  if (n.in_coada !== \"la_senior\" && valideaza)\n",
+  "inlocuire": "  if (false)\n",
   "test": "frontend_test/e2e/e2e_lot11_a457.py::test_def_457_ciorna_contabilului_e_in_coada_lui_si_se_valideaza_de_acolo"
  },
  {

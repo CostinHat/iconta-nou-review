@@ -11,6 +11,7 @@ from conftest import _scoate_firmele_e2e, firma_noua, nr_crt, sql
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from e2e_bloc_d import ASISTENT, PATRON, _api, _firma_noua, _jurnal, _uid   # noqa: E402
+from e2e_bloc_b import _deschide_rand, _nota_jn   # noqa: E402
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from core import drepturi as _dr   # noqa: E402
@@ -39,13 +40,15 @@ def _nota(email, tid, descriere):
 
 def test_def_246_ciorna_altui_utilizator_se_vede_dar_nu_se_schimba(asistent, firma_246):
     """246. Registru jurnal (F2), ca Ana Asistent: nota-ciornă scrisă de contabilul-șef se vede, fără „Editează”, „Șterge”, „Trimite la
-    validare”, cu motivul scris pe rând; nota ei proprie nu poartă motivul. Cererile directe (editare, ștergere, trimitere la validare)
+    validare”, cu motivul scris pe rând (în detaliul lui, lotul 12, 617); nota ei proprie nu poartă motivul. Cererile directe (editare, ștergere, trimitere la validare)
     sunt refuzate de server cu același text, iar nota rămâne neatinsă."""
     tid = firma_246["tenant_id"]
     a_patronului = _nota(PATRON, tid, "Ciorna contabilului-șef D246")
     a_ei = _nota(ASISTENT, tid, "Ciorna Anei D246")
     _jurnal(asistent, firma_246)
     pg = asistent.pg
+    for i in (a_patronului, a_ei):   # [617] motivul și „Editează” / „Șterge” stau în detaliul rândului: deschis, cum îl deschide omul
+        _deschide_rand(asistent, _nota_jn(asistent, i))
     stare = pg.evaluate("""(ids) => ids.map(i => { const r = document.querySelector(`.fereastra:last-of-type [data-nota-id='${i}']`);
         const m = r && r.querySelector('.jn-a-altuia');
         return r ? {edit: !!r.querySelector('[data-edit]'), del: !!r.querySelector('[data-del]'), trimite: !!r.querySelector('[data-retrimite]'),

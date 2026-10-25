@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/inchidere_luna.py",
+  "ancora": "reev = (\"(EXISTS (SELECT 1 FROM %sreevaluari_valuta r WHERE r.inregistrare_id = i.id) \"",
+  "inlocuire": "reev = (\"(false AND EXISTS (SELECT 1 FROM %sreevaluari_valuta r WHERE r.inregistrare_id = i.id) \"",
+  "test": "frontend_test/e2e/e2e_lot12_reev3.py::test_def_c137_vechi_nota_de_reevaluare_scrisa_inainte_de_incheierea_lunii_e_semnalata"
+ },
+ {
+  "fisier": "core/inchidere_luna.py",
+  "ancora": "reev = (\"(EXISTS (SELECT 1 FROM %sreevaluari_valuta r WHERE r.inregistrare_id = i.id) \"",
+  "inlocuire": "reev = (\"(EXISTS (SELECT 1 FROM %sinregistrari d WHERE d.id = i.id AND d.document_ref LIKE 'Notă de calcul%%%%') \"",
+  "test": "frontend_test/e2e/e2e_lot12_reev3.py::test_def_c137_vechi_nota_de_reevaluare_scrisa_inainte_de_incheierea_lunii_e_semnalata"
+ },
+ {
+  "fisier": "core/inchidere_luna.py",
+  "ancora": "_DOCUMENTUL_LUNII[bool(reevaluare)]",
+  "inlocuire": "_DOCUMENTUL_LUNII[False]",
+  "test": "frontend_test/e2e/e2e_lot12_reev3.py::test_def_c137_vechi_nota_de_reevaluare_scrisa_inainte_de_incheierea_lunii_e_semnalata"
+ }
+]

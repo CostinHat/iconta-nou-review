@@ -8,7 +8,7 @@
 // și `propus`), iar `cuLegareaNir` arată caseta-poartă (DS cap.5 v2.14: două alegeri care merg amândouă înainte) și retrimite
 // cu alegerea. Preselecția = `propus` (DS cap.17 v2.79: dedusă din date — același furnizor, același cost —, vizibilă, schimbabilă);
 // fără propunere, „— alege —”.
-import { esc, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=309f4d66ae";
+import { esc, ALEGE, cereAlegerile, curataEroriCamp } from "../api.js?v=e38843b1ec";
 
 // Refuzul care cere alegerea NIR-ului (oricare din codurile alegerii: de ales, nelegabil, cost diferit) — poartă candidații.
 export function refuzLegareNir(e) {

@@ -50,7 +50,12 @@ CE PROPUNE (fiecare element cu ce se știe din date; ce nu se știe se CERE pe e
     `manual`, iar luna următoare contul revine singur în propunere (moneda știută, soldul în valută cerut din nou). Un cont deja propus
     (partener, disponibilitate) sau un cont de avansuri se refuză lângă câmp.
   · cursul BNR: `curs_bnr.curs_sfarsit_luna(…, ultima zi a lunii)` = ultimul curs comunicat cu data <= ultima zi a lunii, adică cel
-    din ultima zi bancară a lunii (pct.325 alin.(2) lit.b); data lui se arată.
+    din ultima zi bancară a lunii (pct.325 alin.(2) lit.b); data lui se arată. [lotul 12, 630] Cât timp cursul ULTIMEI ZILE BANCARE nu e
+    în aplicație (luna e în curs, BNR îl publică azi, preluarea întârzie), diferența se arată PROVIZORIU la ultimul curs publicat, marcată
+    (`curs_provizoriu`), și nu se înregistrează: generarea o refuză, iar închiderea rămâne oprită. Un curs mai vechi de
+    `curs_bnr.PRAG_VECHIME_ZILE` față de azi nu se folosește nici provizoriu (fluxul BNR e întrerupt, `CursPreaVechi`).
+  · [lotul 12, 630] suma în lei a fiecărei facturi (și a STORNĂRII ei, document cu nota lui) e cea din nota de contare validată, pe contul
+    de terț — la ban cu 4111 / 401 (`_cont_tert`); o stornare cu nota în ciornă se spune la „nu intră”, numită lângă factura stornată.
 
 TOATE REFUZURILE COMPLETĂRILOR DEODATĂ (deficiența 440, aceeași clasă): `RefuzReevaluare` poartă lista {camp, mesaj} — câmpul de pe
 ecran (`rv-<câmp>-<cheie>`, `rv-m<i>-<câmp>`) —, ridicată o singură dată, după ce s-au citit toate.
@@ -139,19 +144,16 @@ def reevaluari(cur, schema, pana_la):
 
 
 def facturi_in_valuta(cur, schema, sfarsit):
-    """Facturile în valută emise până la `sfarsit`, nestornări, nu proforme / avize: [{id, directie, tip, serie, numar, data_emitere,
-    moneda, total, total_lei, curs_bnr, tert_nume, tert_cui, platita_la, storno_valuta, storno_lei}]."""
-    s = _q(schema)
+    """Facturile în valută emise până la `sfarsit`, nu proforme / avize, CU stornările lor (`storno_din_id` = factura stornată): [{id,
+    directie, tip, serie, numar, data_emitere, moneda, total, total_lei, curs_bnr, tert_nume, tert_cui, platita_la, storno_din_id}].
+    [lotul 12, 630] Stornarea e un document cu nota ei de contare, deci intră în sold ca orice factură (cu suma ei în lei din notă), iar
+    pe ecran apare lângă factura stornată — înainte se scădea din factură pe totalurile ei, fără să fie numită și fără să se uite la nota ei."""
     cur.execute("SELECT f.id, f.directie, f.tip, f.serie, f.numar, f.data_emitere, upper(f.moneda) AS moneda, f.total, f.total_lei, f.curs_bnr, "
-                "f.tert_nume, f.tert_cui, f.platita_la, "
-                "(SELECT COALESCE(SUM(st.total), 0) FROM %sfacturi st WHERE st.storno_din_id = f.id AND st.data_emitere <= %%s) AS storno_valuta, "
-                "(SELECT COALESCE(SUM(COALESCE(st.total_lei, st.total * st.curs_bnr)), 0) FROM %sfacturi st "
-                " WHERE st.storno_din_id = f.id AND st.data_emitere <= %%s) AS storno_lei "
+                "f.tert_nume, f.tert_cui, f.platita_la, f.storno_din_id "
                 "FROM %sfacturi f WHERE upper(COALESCE(f.moneda, 'RON')) <> 'RON' AND COALESCE(f.tip, 'factura') = 'factura' "
-                "AND f.storno_din_id IS NULL AND f.data_emitere <= %%s ORDER BY f.data_emitere, f.id" % (s, s, s),
-                (sfarsit, sfarsit, sfarsit))
+                "AND f.data_emitere <= %%s ORDER BY f.data_emitere, f.id" % _q(schema), (sfarsit,))
     chei = ("id", "directie", "tip", "serie", "numar", "data_emitere", "moneda", "total", "total_lei", "curs_bnr", "tert_nume", "tert_cui",
-            "platita_la", "storno_valuta", "storno_lei")
+            "platita_la", "storno_din_id")
     return [_rand(r, chei) for r in cur.fetchall()]
 
 
@@ -229,17 +231,32 @@ def solduri_conturi(cur, schema, sfarsit):
 
 
 # ── propunerea ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+def _e_cont_tert(cont, directie):
+    return str(cont).startswith("411") if directie == "emisa" else (str(cont).startswith("401") or str(cont).startswith("404"))
+
+
 def _cont_tert(note, directie):
-    """Contul de terț din nota de CONTARE validată (debit 411… la emisă, credit 401… / 404… la primită)."""
+    """Contul de terț din nota de CONTARE validată (411… la emisă, 401… / 404… la primită), data notei și suma ei în lei pe cont: (cont,
+    data, lei) sau (None, None, None). Contul stă pe debit la emisă și pe credit la primită; o stornare scrisă inversat îl are pe
+    cealaltă parte, deci se caută pe amândouă.
+    [lotul 12, 630] Suma în lei e cea din NOTĂ (pe contul de terț, cu semn: crește creanța / datoria), nu `facturi.total_lei`: nota rotunjește
+    baza și TVA-ul separat (F1A nr. 14: 267,48 + 56,17 = 323,65 pe 4111), totalul facturii o dată (60,50 × 5,3495 = 323,64). Soldul
+    reevaluat e cel din 4111 / 401 al partenerului, la ban (OMFP 1802/2014 pct.325 alin.(1): „creanțele și datoriile în valută se
+    evaluează”, adică soldul lor din evidență)."""
     for n in note:
         if not n["e_contare"] or n["status"] != "validata":
             continue
         for cd, cc, _s in n["linii"]:
-            if directie == "emisa" and str(cd).startswith("411"):
-                return cd, n["data"]
-            if directie != "emisa" and (str(cc).startswith("401") or str(cc).startswith("404")):
-                return cc, n["data"]
-    return None, None
+            cont = cd if _e_cont_tert(cd, directie) else cc if _e_cont_tert(cc, directie) else None
+            if cont:
+                return cont, n["data"], _lei_pe_cont(n, cont, directie)
+    return None, None, None
+
+
+def _lei_pe_cont(nota, cont, directie):
+    """Cât adaugă nota la soldul contului de terț: debit − credit la creanță (411…), credit − debit la datorie (401… / 404…)."""
+    semn = 1 if directie == "emisa" else -1
+    return sum((semn * (s if cd == cont else -s) for cd, cc, s in nota["linii"] if cont in (cd, cc) and cd != cc), Decimal("0"))
 
 
 def _plati_din_note(note, cont, directie, sfarsit):
@@ -255,27 +272,53 @@ def _plati_din_note(note, cont, directie, sfarsit):
     return out
 
 
+def curs_provizoriu(sfarsit, data_curs, curs, azi):
+    """PUR. [lotul 12, 630] None dacă `data_curs` e chiar ultima zi bancară a lunii care se încheie la `sfarsit` (sau nu se poate ști);
+    altfel textul pentru contabil: cursul cerut de lege nu e încă în aplicație, iar diferența se arată PROVIZORIU la ultimul curs publicat.
+    OMFP 1802/2014 pct.325 alin.(2) lit.b cere cursul „comunicat de Banca Națională a României, din ultima zi bancară a lunii în cauză” —
+    până la publicarea lui, orice alt curs dă o diferență provizorie, care nu se înregistrează (`uc_reevaluare` refuză generarea)."""
+    from core.pdf_util import data_ro
+    asteptata = _cb.ziua_bancara_asteptata(sfarsit, _cb.REGULA_SFARSIT_LUNA)
+    if asteptata is None or data_curs is None or data_curs >= asteptata:
+        return None
+    de_ce = ("se publică abia azi" if asteptata == azi else "nu e publicat încă" if asteptata > azi else
+             "nu e încă în aplicație (preluarea de la BNR n-a reușit; aplicația reîncearcă singură)")
+    return ("Cursul BNR din ultima zi bancară a lunii (%s) %s. Diferența e provizorie, la ultimul curs publicat: %s din %s; nota se "
+            "generează cu cursul din %s." % (data_ro(asteptata), de_ce, _cb.curs_text(curs), data_ro(data_curs), data_ro(asteptata)))
+
+
 def _curs_fn(cur, sfarsit):
-    """Cursul BNR al lunii, pe monedă (memorat): (curs, data_curs) sau excepția `curs_bnr` (necotată / indisponibil / prea vechi)."""
+    """Cursul BNR al lunii, pe monedă (memorat): (curs, data_curs, motiv, provizoriu). `provizoriu` = textul lui `curs_provizoriu` când
+    cursul ultimei zile bancare nu e încă în aplicație și se folosește ultimul curs publicat — fie că ultima zi bancară n-a venit (luna e
+    în curs), fie că BNR încă n-a publicat-o, fie că preluarea ei întârzie. Un curs mai vechi de `PRAG_VECHIME_ZILE` față de AZI nu se
+    folosește nici provizoriu: atunci fluxul BNR e întrerupt și se spune asta (`CursPreaVechi`), fără cifră."""
+    from core import common as _common
+    azi = _common.azi_ro()
     memo = {}
 
     def f(moneda):
         if moneda not in memo:
             try:
                 c, dc, _s = _cb.curs_sfarsit_luna(cur.connection, moneda, sfarsit)
-                memo[moneda] = (c, dc, None)
-            except (_cb.CursIndisponibil, _cb.CursPreaVechi) as e:
-                memo[moneda] = (None, None, str(e))
+                memo[moneda] = (c, dc, None, curs_provizoriu(sfarsit, dc, c, azi))
+            except _cb.CursPreaVechi as e:
+                prov = curs_provizoriu(sfarsit, e.data_curs, e.curs, azi) if (azi - e.data_curs).days <= _cb.PRAG_VECHIME_ZILE else None
+                memo[moneda] = (e.curs, e.data_curs, None, prov) if prov else (None, None, str(e), None)
+            except _cb.CursIndisponibil as e:
+                memo[moneda] = (None, None, str(e), None)
         return memo[moneda]
     return f
 
 
 def _cu_curs(el, curs_fn, tip):
-    """Completează elementul cu cursul BNR și diferența (motorul pur), dacă se știu soldul și moneda."""
+    """Completează elementul cu cursul BNR și diferența (motorul pur), dacă se știu soldul și moneda. Cu cursul provizoriu (`_curs_fn`),
+    diferența e calculată la el și marcată (`curs_provizoriu` = textul)."""
     if not el.get("moneda"):
         return el
-    c, dc, motiv = curs_fn(el["moneda"])
+    c, dc, motiv, prov = curs_fn(el["moneda"])
     el["curs_bnr"], el["data_curs"] = (str(c) if c is not None else None), (str(dc) if dc else None)
+    if prov:
+        el["curs_provizoriu"] = prov
     if c is None:
         el["motiv_curs"] = motiv
         return el
@@ -339,31 +382,41 @@ def _elemente_parteneri(cur, schema, sfarsit, rev, completari, curs_fn, erori, n
     """Creanțele și datoriile în valută, pe partener (decizia 10.3)."""
     from core import contare_facturi as _cf
     from core import eticheta_nota as _et
+    from core.pdf_util import serie_nr
     fact = facturi_in_valuta(cur, schema, sfarsit)
     note = _cf.note_pe_facturi(cur, schema, [f["id"] for f in fact])
     chit = chitante_nelegate(cur, schema, [f["id"] for f in fact], sfarsit)
     grupuri = {}
-    for f in fact:
+    intrate = {}   # factura (nestornare) intrată în sold -> eticheta ei scurtă („F1A nr. 8”), pentru stornarea ei
+    # facturile întâi, stornările după: o stornare intră numai lângă factura ei (`intrate`)
+    for f in sorted(fact, key=lambda x: (x["storno_din_id"] is not None, x["data_emitere"], x["id"])):
         nf = note.get(f["id"], [])
         doc = _et.factura_din_rand(f)
-        cont, data_contare = _cont_tert(nf, f["directie"])
+        stornata = f["storno_din_id"]
+        if stornata is not None:
+            orig = next((x for x in fact if x["id"] == stornata), None)
+            doc = "%s (stornarea %s)" % (doc, serie_nr(orig["serie"], orig["numar"]) if orig else "unei facturi")
+        cont, data_contare, lei = _cont_tert(nf, f["directie"])
         if f["curs_bnr"] is None:
             neincluse.append(_neinclusa(f["id"], doc, f["tert_nume"], "factura n-are cursul BNR — nu se poate exprima în lei", sfarsit))
             continue
+        if stornata is not None and stornata not in intrate:
+            continue   # factura stornată nu e în sold (încasată, sau neinclusă — spusă la ea), deci nici stornarea ei
         if not cont or data_contare > sfarsit:
             ciorna = any(n["e_contare"] for n in nf)
             neincluse.append(_neinclusa(f["id"], doc, f["tert_nume"],
                                         ("nota ei de contare e ciornă — valideaz-o în Registrul jurnal, apoi reevaluarea o cuprinde" if ciorna
                                          else "nu e contată — contează factura, apoi reevaluarea o cuprinde"), sfarsit))
             continue
-        if f["platita_la"] is not None and f["platita_la"].date() <= sfarsit:
+        if stornata is None and f["platita_la"] is not None and f["platita_la"].date() <= sfarsit:
             continue
+        if stornata is None:
+            intrate[f["id"]] = True
         pk = cheie_partener(f["tert_cui"], f["tert_nume"])
         g = grupuri.setdefault((cont, pk, f["moneda"]), {"nume": f["tert_nume"], "directie": f["directie"], "facturi": [], "ev": []})
-        g["facturi"].append((f["id"], doc))
-        valuta = _dec(f["total"]) + _dec(f["storno_valuta"])
-        lei = _lei(_dec(f["total_lei"] if f["total_lei"] is not None else _dec(f["total"]) * _dec(f["curs_bnr"])) + _dec(f["storno_lei"]))
-        g["ev"].append((f["data_emitere"], 0, "factura", (valuta, lei, _dec(f["curs_bnr"]))))
+        g["facturi"].append((f["id"], doc, f["data_emitere"]))   # stornarea lângă factura ei, în ordinea datei (la etichetă)
+        g["ev"].append((f["data_emitere"], 0, "storno" if stornata is not None else "factura",
+                        (_dec(f["total"]), _lei(lei), _dec(f["curs_bnr"]))))
         for d, x in _plati_din_note(nf, cont, f["directie"], sfarsit) + chit.get(f["id"], []):
             g["ev"].append((d, 1, "plata", x))
     # plățile nelegate, pe partener (decizia 10.3)
@@ -389,7 +442,8 @@ def _elemente_parteneri(cur, schema, sfarsit, rev, completari, curs_fn, erori, n
     elemente = []
     for (cont, pk, m), g in sorted(grupuri.items(), key=lambda kv: (kv[1]["nume"] or "", kv[0][0], kv[0][1] or "", kv[0][2])):
         tip = "creanta" if g["directie"] == "emisa" else "datorie"
-        ids = {fid for fid, _d in g["facturi"]}
+        g["facturi"].sort(key=lambda x: (x[2], x[0]))
+        ids = {fid for fid, _d, _z in g["facturi"]}
         for r in rev:   # reevaluările anterioare: pe partener (lotul 11) sau, cele dinainte, pe factură
             if (r["factura_id"] is None and r["partener"] == pk and r["cont"] == cont and r["moneda"] == m) or r["factura_id"] in ids:
                 g["ev"].append((r["data"], 2, "reevaluare", r))
@@ -399,6 +453,9 @@ def _elemente_parteneri(cur, schema, sfarsit, rev, completari, curs_fn, erori, n
             if fel == "factura":
                 valuta, lei = valuta + x[0], lei + x[1]
                 curs_ev, sursa_ev = x[2], ("factura" if sursa_ev is None else "medie")
+            elif fel == "storno":   # suma ei (negativă) din nota ei; cursul din evidență rămâne cel al facturilor
+                valuta, lei = valuta + x[0], lei + x[1]
+                sursa_ev = "medie" if sursa_ev == "factura" else sursa_ev
             elif fel == "plata":    # plata stinge creanța / datoria la cursul din evidență al partenerului (pct.322 alin.(1))
                 c = (lei / valuta) if valuta > 0 else curs_ev
                 valuta -= x / c
@@ -410,7 +467,7 @@ def _elemente_parteneri(cur, schema, sfarsit, rev, completari, curs_fn, erori, n
                     valuta = _dec(x["sold_valuta"])
                 sursa_ev = str(d)
         valuta, lei = valuta.quantize(B, rounding=ROUND_HALF_UP), _lei(lei)
-        documente = ", ".join(dd for _i, dd in g["facturi"] if dd)
+        documente = ", ".join(dd for _i, dd, _z in g["facturi"] if dd)
         if valuta <= _TOL and not g.get("de_legat"):
             if valuta < -_TOL:
                 neincluse.append(_neinclusa(None, documente, g["nume"],
@@ -546,7 +603,8 @@ def propunere(cur, schema, an, luna, completari=None, cu_ciorna_lunii=False, cur
         el["de_completat"] = [c for c in ("moneda", "sold_valuta") if el.get(c) in (None, "")] + (
             ["clauza"] if el.get("manual") and el.get("clauza") is None else [])
     return {"an": int(an), "luna": int(luna), "data": str(sfarsit), "elemente": elemente, "neincluse": neincluse,
-            "totaluri": totaluri(elemente), "ciorna_lunii": ciorna_lunii, "temei": TEMEI}
+            "totaluri": totaluri(elemente), "ciorna_lunii": ciorna_lunii, "temei": TEMEI,
+            "curs_provizoriu": sorted({e["curs_provizoriu"] for e in elemente if e.get("curs_provizoriu")})}
 
 
 def _moneda_din_cont(cont, denumire, cotate):
@@ -555,19 +613,34 @@ def _moneda_din_cont(cont, denumire, cotate):
     return gasite.pop() if len(gasite) == 1 else None
 
 
+_CE_SE_COMPLETEAZA = {"sold_valuta": "soldul în valută", "moneda": "moneda", "clauza": "dacă soldul e în lei cu clauză valutară (Da / Nu)"}
+
+
+def de_completat_text(e):
+    """[lotul 12, 630] Ce scrie contabilul pe element, numit: „soldul în valută pe contul 5124.EUR (Cont BT EUR)” — pentru rezumatul de
+    sus („De completat: 1” nu spunea ce) și pentru refuzul generării (`uc_reevaluare._ce_lipseste`)."""
+    nume = e.get("document") or e.get("partener") or ""
+    return "%s pe contul %s%s" % (" și ".join(_CE_SE_COMPLETEAZA[c] for c in e["de_completat"]), e["cont"], (" (%s)" % nume) if nume else "")
+
+
 def totaluri(elemente):
+    """Sumele 765 / 665 ale propunerii; `de_completat` = câte elemente cer o completare, `de_completat_ce` = ce anume (textul lui
+    `de_completat_text`, element cu element); `provizoriu` = sumele stau pe un curs provizoriu (`curs_provizoriu`)."""
     t765 = sum((_dec(e["linie"][2]) for e in elemente if e.get("linie") and e["sens"] == "favorabila"), Decimal("0"))
     t665 = sum((_dec(e["linie"][2]) for e in elemente if e.get("linie") and e["sens"] == "nefavorabila"), Decimal("0"))
+    de_completat = [e for e in elemente if e["de_completat"]]
     return {"venit": str(_lei(t765)), "cheltuiala": str(_lei(t665)), "net": str(_lei(t765 - t665)),
-            "de_completat": sum(1 for e in elemente if e["de_completat"] or (e.get("moneda") and e.get("curs_bnr") is None)),
-            "de_legat": sum(len(e.get("plati_de_legat") or []) for e in elemente)}
+            "de_completat": len(de_completat), "de_completat_ce": [de_completat_text(e) for e in de_completat],
+            "de_legat": sum(len(e.get("plati_de_legat") or []) for e in elemente),
+            "provizoriu": any(e.get("curs_provizoriu") for e in elemente)}
 
 
 def de_reevaluat(prop):
     """Elementele care opresc închiderea: cu diferență nenulă neînregistrată, fără ce trebuie ca să se calculeze (soldul în valută,
-    moneda, cursul BNR) sau cu o plată nelegată pe care n-o pot atribui unei monede."""
+    moneda, cursul BNR din ultima zi bancară — un curs provizoriu nu ține loc de el) sau cu o plată nelegată pe care n-o pot atribui
+    unei monede."""
     return [e for e in prop["elemente"]
-            if e["de_completat"] or e.get("curs_bnr") is None or e.get("plati_de_legat")
+            if e["de_completat"] or e.get("curs_bnr") is None or e.get("curs_provizoriu") or e.get("plati_de_legat")
             or (e.get("diferenta") and _dec(e["diferenta"]) != 0)]
 
 

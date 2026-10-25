@@ -57,7 +57,9 @@ def test_def_321_rotita_deruleaza_pagina_principala_sub_cardurile_primii_pasi(br
         inalt = pg.evaluate("() => [document.querySelector('.desktop').scrollHeight, innerHeight]")
         assert inalt[0] > inalt[1], "cazul nu se reproduce: conținutul încape în ecran %s" % inalt
         firme = "button.cab-card:has([data-cheie='firme'])"
-        assert pg.evaluate("(s) => document.querySelector(s).getBoundingClientRect().top", firme) > 720, "„Firme” e deja în ecran"
+        # [lotul 12, 596] cardurile „Primii pași” au pașii pliați în „Cum se face”, deci sunt mai scunde: „Firme” începe acum chiar deasupra
+        # marginii de jos (697 px din 720), dar nu încape — cazul 321 e cardul care nu se poate aduce întreg în ecran fără derulare
+        assert pg.evaluate("(s) => document.querySelector(s).getBoundingClientRect().bottom", firme) > 720, "„Firme” e deja întreg în ecran"
         e.captura("inainte")
         bb = pg.locator("#inceput-carduri .inceput-card").first.bounding_box()
         pg.mouse.move(bb["x"] + bb["width"] / 2, bb["y"] + 40)
@@ -415,9 +417,12 @@ def test_def_328_nota_din_factura_nu_se_sterge_iar_mesajul_spune_ciorna(patron, 
         assert "nota ei e ciornă, nevalidată" in av and "nota ei e la validare" not in av, av
         patron.firma(firma_e2e["nume"])
         _card(patron, "jurnal", "#j-nota-noua")
-        from e2e_bloc_b import _mergi_la_luna
+        from e2e_bloc_b import _deschide_rand, _mergi_la_luna, _nota_jn
         _mergi_la_luna(patron, LUNA.an, LUNA.luna)   # nota facturii e în luna declarației (încheiată); jurnalul se deschide pe luna curentă
         pg.wait_for_selector("[data-nota-id='%d']" % nid, timeout=20000)
+        # [lotul 12, 617] „Șterge” stă în detaliul notei (`[data-del]` din `p.tn-detaliu-actiuni`): rândul se deschide, ca la contabil; numărarea
+        # de mai jos vede rândul și detaliul
+        _deschide_rand(patron, _nota_jn(patron, nid))
         patron.captura("jurnal")
         assert pg.locator("[data-nota-id='%d'] [data-del]" % nid).count() == 0, "„Șterge” oferit pe nota facturii"
         d = _api(patron, "DELETE", "/tenants/%d/jurnal/%d" % (firma_e2e["tenant_id"], nid))

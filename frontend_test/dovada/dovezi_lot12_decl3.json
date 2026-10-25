@@ -1,0 +1,92 @@
+[
+  {
+    "nr": "C19",
+    "firma": "tenant_9049",
+    "descriere": "F1 (plătitoare de TVA lunar; vânzările din 09/2026 sunt documente de dinainte de reparație; pe copie luna 08/2026 nu e evaluată, 25.10.2026): Control fiscal -> Restanțe -> D394 09/2026 -> „Marchează depusă în afara iConta.eu”, data 20.10.2026 (pe copie; XML-ul depunerii nu există în iConta.eu) -> Declarații -> D394 09/2026 -> „Continuă”: ecranul spune că perioada e depusă și NU generează nimic — fiindcă XML-ul depus nu e păstrat, arată tot ce ar conține rectificativa, cu „necunoscut” pe partea depusă -> „Generează declarația rectificativă →”: declarația se generează („Rectificativă: înlocuiește declarația depusă în afara iConta.eu pe 20.10.2026.”), validată de DUK. Nimic nu intră în coadă (nu se apasă „Trimite în coadă”). Marcarea rămâne pe copie (copia se reface la fiecare dovadă). [25.10.2026] Pe copie nu există nicio D394 depusă pe F1–F6, iar „Marchează depusă în afara iConta.eu” se oferă numai după termen (D394 09/2026: 30.10.2026) — dovada se poate face de la 31.10.2026.",
+    "pasi": [
+      {
+        "click": "#fa-control"
+      },
+      {
+        "asteapta": ".cf-decl-item[data-cheie='d394-2026-9']"
+      },
+      {
+        "click": "details:not([open]):has(.cf-decl-item[data-cheie='d394-2026-9']) > summary",
+        "daca_exista": true
+      },
+      {
+        "asteapta": ".cf-decl-item[data-cheie='d394-2026-9'] .cf-extern-btn"
+      },
+      {
+        "click": ".cf-decl-item[data-cheie='d394-2026-9'] .cf-extern-btn"
+      },
+      {
+        "asteapta": ".cf-decl-item[data-cheie='d394-2026-9'] .cf-extern-form input[type=date]"
+      },
+      {
+        "completeaza": ".cf-decl-item[data-cheie='d394-2026-9'] .cf-extern-form input[type=date]",
+        "valoare": "2026-10-20"
+      },
+      {
+        "click": ".cf-decl-item[data-cheie='d394-2026-9'] .cf-extern-salveaza"
+      },
+      {
+        "asteapta": ".cf-decl-item[data-cheie='d394-2026-9'] .cf-extern-anuleaza"
+      },
+      {
+        "captura": "c19_f1_vechi_d394_09_marcata_depusa.png"
+      },
+      {
+        "click": ".fereastra .nav-inapoi"
+      },
+      {
+        "asteapta": "#fa-declaratii"
+      },
+      {
+        "declaratie": "d394",
+        "an": 2026,
+        "luna": 9
+      },
+      {
+        "asteapta": "#dec-rect-depusa"
+      },
+      {
+        "asteapta_text": "D394 pe 09/2026 e deja depusă (declarația depusă în afara iConta.eu pe 20.10.2026)."
+      },
+      {
+        "asteapta_text": "XML-ul declarației depuse nu e păstrat în iConta.eu, deci diferențele nu se pot calcula"
+      },
+      {
+        "asteapta": "#dec-rect-diferente"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "captura": "c19_f1_vechi_d394_09_diferente_inainte.png"
+      },
+      {
+        "click": "#dec-rect-genereaza"
+      },
+      {
+        "asteapta": "#dec-rectificativa"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Rectificativă: înlocuiește declarația depusă în afara iConta.eu pe 20.10.2026."
+      },
+      {
+        "contine": "Validat cu DUKIntegrator"
+      },
+      {
+        "exista": "#dec-trimite"
+      }
+    ],
+    "captura": "c19_f1_vechi_d394_09_rectificativa_la_cerere.png",
+    "posibila_de_la": "2026-10-31"
+  }
+]

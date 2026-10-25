@@ -1,0 +1,58 @@
+[
+ {
+  "nr": "C198",
+  "firma": "tenant_9050",
+  "descriere": "F2 (global-valoric): Raport Z de azi (casa 8000000001, nr. 1980, 121,00 lei la 21%, numerar) -> «Generează notă»: sub nota Z, «Descarcă gestiunea GV <luna curentă> (notă ciornă)» e inactiv, cu motivul «Descărcarea gestiunii lunii se face după ce luna se încheie.» (înainte: activ, iar clicul primea refuzul C187)",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   },
+   {
+    "asteapta": "#z-salveaza"
+   },
+   {
+    "completeaza": "#z-nui",
+    "valoare": "8000000001"
+   },
+   {
+    "completeaza": "#z-nr",
+    "valoare": "1980"
+   },
+   {
+    "completeaza": "#z-21",
+    "valoare": "121"
+   },
+   {
+    "completeaza": "#z-num",
+    "valoare": "121"
+   },
+   {
+    "completeaza": "#z-card",
+    "valoare": "0"
+   },
+   {
+    "completeaza": "#z-bonuri",
+    "valoare": "3"
+   },
+   {
+    "click": "#z-salveaza"
+   },
+   {
+    "asteapta": "#z-desc-gv"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": "#z-desc-gv"
+   },
+   {
+    "contine": "Descărcarea gestiunii lunii se face după ce luna se încheie.",
+    "zona": "#z-desc-gv-motiv"
+   }
+  ],
+  "captura": "c198_f2_z_descarcarea_gv_inactiva.png"
+ }
+]

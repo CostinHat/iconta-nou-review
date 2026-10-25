@@ -106,9 +106,13 @@ def anulat_prin_stornari(cur, schema, factura_id, directie, pana_la=None, fara=N
 
 def facturi_candidate(cur, schema, pana_la, clauza_status):
     """Facturile (emise și primite) cu TVA, emise până la `pana_la` inclusiv, declarabile (`clauza_status` = nomenclatorul de status),
-    documente fiscale, fără taxare inversă: candidatele la TVA rămas neexigibil (D300 secțiunea A/B, lista de la ieșirea din sistem)."""
+    documente fiscale, fără taxare inversă: candidatele la TVA rămas neexigibil (D300 secțiunea A/B, lista de la ieșirea din sistem).
+    [lotul 12, 252, decizia Costin 12.3 pct.5] + facturile deschise PRELUATE cu TVA încă neexigibil / nededus la preluare
+    (`clauza_tip_cu_incasare`): TVA-ul lor stă pe 4428 până la încasare / plată, deci e „existent în sold la sfârșitul perioadei”."""
+    from core import nomenclator_status_factura as _nsf
     with _dict(cur) as c:
-        c.execute("SELECT f.id FROM %sfacturi f WHERE f.data_emitere <= %%s AND COALESCE(f.tip, 'factura') = 'factura' "
+        c.execute("SELECT f.id FROM %sfacturi f WHERE f.data_emitere <= %%s AND %s "
                   "AND COALESCE(f.taxare_inversa, false) = false AND f.storno_din_id IS NULL AND COALESCE(f.tva_lei, f.tva, 0) > 0 "
-                  "AND %s AND %s ORDER BY f.data_emitere, f.id" % (_p(schema), _fc.clauza_nu_din_bon("f"), clauza_status), (pana_la,))
+                  "AND %s AND %s ORDER BY f.data_emitere, f.id" % (_p(schema), _nsf.clauza_tip_cu_incasare("f"), _fc.clauza_nu_din_bon("f"), clauza_status),
+                  (pana_la,))
         return [r["id"] for r in c.fetchall()]

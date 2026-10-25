@@ -10,7 +10,7 @@
 // validarea pe server, erorile lângă câmp — toate deodată, `erori_campuri`).
 // DS: tabelul `.fd-tabel` cu cifrele în `.fd-td-num` (cap.9), rezumatul lipit sus `.rezumat-fix`, acțiunea și mesajul ei lipite jos
 // `.bara-fixa` (cap.6, v2.92), confirmarea care numește nota și consecința rămâne pe ecran (cap.27).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=309f4d66ae";
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=e38843b1ec";
 
 const FEL = { creanta: "Creanță", datorie: "Datorie", disponibil: "Disponibil" };
 
@@ -82,8 +82,8 @@ export async function ecranReevaluareValuta(corp, nav, t, an, luna, opt = {}) {
         <td class="fd-td-num">${camp(e, "sold_valuta", `Sold în valută, ${nume(e)}`)}${e.estimat ? `<div class="tip-desc">estimat din plățile în lei — verifică</div>` : ""}${e.sold_anterior && e.sold_valuta === null ? `<div class="tip-desc">luna trecută: ${bani(e.sold_anterior)}</div>` : ""}${plati(e)}</td>
         <td class="fd-td-num">${curs(e.curs_evidenta)}<div class="tip-desc">${esc(dinEvidenta(e))}</div></td>
         <td class="fd-td-num">${bani(e.lei_evidenta)}</td>
-        <td class="fd-td-num">${curs(e.curs_bnr)}${e.data_curs ? `<div class="tip-desc">din ${dataRo(e.data_curs)}</div>` : ""}</td>
-        <td class="fd-td-num">${e.diferenta === undefined || e.diferenta === null ? "—" : bani(e.diferenta)}</td>
+        <td class="fd-td-num">${curs(e.curs_bnr)}${e.data_curs ? `<div class="tip-desc">din ${dataRo(e.data_curs)}${e.curs_provizoriu ? " — provizoriu" : ""}</div>` : ""}</td>
+        <td class="fd-td-num">${e.diferenta === undefined || e.diferenta === null ? "—" : bani(e.diferenta)}${e.curs_provizoriu && e.diferenta !== undefined && e.diferenta !== null ? `<div class="tip-desc rv-provizoriu">provizorie</div>` : ""}</td>
         <td>${e.cont_diferenta ? esc(e.cont_diferenta) : (e.motiv_curs ? `<span class="tip-desc">${esc(e.motiv_curs)}</span>`
           : ((e.de_completat || []).length || (e.plati_de_legat || []).length ? `<span class="tip-desc">de completat</span>` : "—"))}</td>
       </tr>`;
@@ -109,10 +109,11 @@ export async function ecranReevaluareValuta(corp, nav, t, an, luna, opt = {}) {
           pe 765 (favorabilă) sau 665 (nefavorabilă). Avansurile (409, 419) nu se reevaluează (pct.316 alin.(2)). Verifică propunerea,
           completează ce lipsește și generează nota.</p>
         <p id="rv-totaluri"><b>Venituri:</b> ${bani(tot.venit)} lei · <b>Cheltuieli:</b> ${bani(tot.cheltuiala)} lei ·
-          <b>Net:</b> ${bani(tot.net)} lei${tot.de_completat ? ` · <b>De completat:</b> ${tot.de_completat}` : ""}${tot.de_legat ? ` · <b>Plăți de legat:</b> ${tot.de_legat}` : ""}</p>
+          <b>Net:</b> ${bani(tot.net)} lei${tot.provizoriu ? " (provizoriu)" : ""}${tot.de_completat ? ` · <b>De completat:</b> ${esc((tot.de_completat_ce || []).join("; "))}` : ""}${tot.de_legat ? ` · <b>Plăți de legat:</b> ${tot.de_legat}` : ""}</p>
       </div>
       ${p.luna_in_curs ? `<div class="caseta-info" id="rv-luna-in-curs"><span class="ci-mesaj">${esc(p.luna_in_curs)} Propunerea e informativă:
         nota se generează după sfârșitul lunii.</span></div>` : ""}
+      ${(p.curs_provizoriu || []).length ? `<div class="caseta-info" id="rv-curs-provizoriu"><span class="ci-mesaj">${p.curs_provizoriu.map(esc).join(" ")}</span></div>` : ""}
       ${(p.ciorna_lunii || []).length ? `<div class="caseta-info"><span class="ci-mesaj">Luna are deja nota de reevaluare în ciornă;
         „Generează nota” o înlocuiește cu propunerea de acum.</span></div>` : ""}
       ${el.length ? `<table class="fd-tabel" id="rv-tabel"><thead><tr><th>Element</th><th>Partener / cont</th><th>Cont</th><th>Moneda</th>
@@ -133,7 +134,7 @@ export async function ecranReevaluareValuta(corp, nav, t, an, luna, opt = {}) {
       <div class="bara-fixa">
         <div id="rv-mesaj"></div>
         <p class="dec-bara"><button class="buton-primar" id="rv-genereaza" data-genereaza-nota data-actiune="POST /tenants/{tenant_id}/reevaluare-valuta/nota"
-          ${(el.length || manuale.length) && !p.luna_in_curs ? "" : "disabled"}>Generează nota</button></p>
+          ${(el.length || manuale.length) && !p.luna_in_curs && !(p.curs_provizoriu || []).length ? "" : "disabled"}>Generează nota</button></p>
       </div>`;
     const zm = corp.querySelector("#rv-mesaj");
     if (refuz) {

@@ -159,7 +159,8 @@ def test_def_268_dezabonarea_numai_pe_emailurile_informative(superadmin, patron,
     finally:
         ctx.close()
 
-    assert _recomanda(patron) == "Nu am scris la %s: adresa s-a dezabonat de la recomandări." % EMAIL
+    # [lotul 12, 163 — texte fără persoana întâi a aplicației] „Nu am scris la …” -> „Nu s-a trimis la …” (`recomanda.js`)
+    assert _recomanda(patron) == "Nu s-a trimis la %s: adresa s-a dezabonat de la recomandări." % EMAIL
     assert len(_scrisori(EMAIL)) == inainte + 2                                  # recomandarea n-a plecat
     patron.captura("a_doua_recomandare")
     sql("DELETE FROM public.invitatii_cabinet WHERE email = %s", (EMAIL,))

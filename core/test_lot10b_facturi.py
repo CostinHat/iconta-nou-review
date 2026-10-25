@@ -198,14 +198,16 @@ def test_419_factura_stornata_nu_se_mai_storneaza(conn_schema):
     with pytest.raises(ValueError) as e:
         facturi_api.storneaza(conn_schema, r["factura_id"])
     # CF art.330 alin.(1) lit.b): stornarea anulează valorile facturii corectate — temeiul e scris în refuz
+    # [lotul 12, 443.1] factura și stornarea ei numite ca în Istoric („ZT nr. 1”, nu „ZT1”: `pdf_util.serie_nr`)
+    from core.pdf_util import serie_nr
     assert str(e.value) == ("Factura %s e deja stornată integral (prin %s): nu mai rămâne nimic de stornat (CF art.330 alin.(1) lit.b))."
-                            % (r["numar"], s["numar"]))
+                            % (serie_nr(r["serie"], r["numar"]), serie_nr(s["serie"], s["numar"])))
     with pytest.raises(ValueError) as e2:
         facturi_api.storneaza(conn_schema, s["factura_id"])
     # refuzul numește stornarea și factura pe care o stornează (mențiunea ei din detaliu), cu temeiul — din datele facturilor
     mentiune = facturi_api.detalii_factura(conn_schema, s["factura_id"])["mentiune_storno"]
     assert str(e2.value) == ("Factura %s e ea însăși o stornare (%s): o stornare nu se stornează la rândul ei (%s)."
-                             % (s["numar"], mentiune, facturi_api.TEMEI_STORNARE)), e2.value
+                             % (serie_nr(s["serie"], s["numar"]), mentiune, facturi_api.TEMEI_STORNARE)), e2.value
     with conn_schema.cursor() as cur:
         cur.execute("SELECT count(*) FROM facturi")
         assert cur.fetchone()[0] == n0   # refuzul nu rezervă număr și nu scrie factură

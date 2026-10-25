@@ -188,7 +188,7 @@ def test_def_477_factura_primita_introdusa_de_mana(patron, firma_scad):
     """477. Pașii: Facturi -> „Facturi primite (SPV)” -> „Introdu factura de mână” -> CUI 14399840 -> „Verifică la ANAF” (numele vine de
     la ANAF) -> seria DNT, numărul, data de azi -> linia „Servicii curierat”, 2 buc × 50,00, 21% (totalul arată 100,00 + TVA 21,00 = 121,00
     lei) -> contul 628 -> „Validează” -> „Validează”: „Validată.”, cu „← Înapoi”; în evidență: factura primită DNT, nota 628 = 401 100,00 și
-    4426 = 401 21,00; a doua oară, aceeași factură e refuzată („e deja în evidență”)."""
+    4426 = 401 21,00; a doua oară, aceeași factură e refuzată („e deja înregistrată”, refuzul comun al dublurii, lotul 12 C73.1)."""
     s = firma_scad["schema"]
     nr = "M%d" % (time.time() % 1000000)
     _primite(patron, firma_scad)
@@ -227,7 +227,7 @@ def test_def_477_factura_primita_introdusa_de_mana(patron, firma_scad):
              {"tert_tara": "RO", "tert_cui": "14399840", "tert_nume": "DANTE INTERNATIONAL SA", "serie": "DNT", "numar": nr,
               "data_emitere": AZI.isoformat(), "moneda": "RON", "cont": "628",
               "linii": [{"descriere": "Servicii curierat", "cantitate": "2", "um": "buc", "pret_unitar": "50", "cota_tva": "21"}]})
-    assert r["status"] == 409 and "e deja în evidență" in str(r["json"]), r
+    assert r["status"] == 409 and r["json"]["detail"]["cod"] == "CHEIE_DUBLATA", r   # [lotul 12, C73.1] refuzul comun al dublurii
     assert sql('SELECT count(*) FROM "%s".facturi WHERE numar = %%s' % s, (nr,))[0][0] == 1
 
 

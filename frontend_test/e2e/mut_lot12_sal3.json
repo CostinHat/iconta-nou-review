@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/salariati_api.py",
+  "ancora": "            consemnate = jurnalizeaza_scutirea(cur, salariat_id, scutire_veche, campuri_api)",
+  "inlocuire": "            consemnate = 0",
+  "test": "frontend_test/e2e/e2e_lot12_sal3.py::test_def_c133_scutirea_se_corecteaza_din_corecteaza_datele_cu_jurnal"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "corp.querySelector(\"#ed-jurnal-scutire\").innerHTML = blocJurnalScutire(d.jurnal_scutire);",
+  "inlocuire": "corp.querySelector(\"#ed-jurnal-scutire\").innerHTML = \"\";",
+  "test": "frontend_test/e2e/e2e_lot12_sal3.py::test_def_c133_scutirea_se_corecteaza_din_corecteaza_datele_cu_jurnal"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "if (typeof d.scutit_contrib_minim === \"boolean\" && !sc.value && !dvs.includes(\"scutit_contrib_minim\")) sc.value = String(d.scutit_contrib_minim);",
+  "inlocuire": "if (false) sc.value = String(d.scutit_contrib_minim);",
+  "test": "frontend_test/e2e/e2e_lot12_sal3.py::test_def_c133_scutirea_se_corecteaza_din_corecteaza_datele_cu_jurnal"
+ }
+]

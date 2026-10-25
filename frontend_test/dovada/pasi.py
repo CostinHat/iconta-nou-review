@@ -9,7 +9,7 @@ Forma unei dovezi (JSON):
    "intreaga": false}
   - `firma`: schema copiei (`tenant_9049` …) sau a sursei (`tenant_049` …); firma se deschide din cabinet, ca în plasă (`Ecran.firma`).
   - `pasi` (în ordine; fiecare un obiect cu O acțiune):
-      {"click": CSS, ["text": T], ["daca_exista": true]}   clic pe primul element CSS (cu textul T, dacă e dat); cu `daca_exista`,
+      {"click": CSS, ["text": T], ["daca_exista": true]}   (`daca_exista` și la „completeaza”: câmpul unui pas care apare numai uneori)   clic pe primul element CSS (cu textul T, dacă e dat); cu `daca_exista`,
                                             un element absent nu e o eroare (ex. „Vezi XML-ul generat” numai când declarația s-a generat)
       {"asteapta": CSS, ["text": T], ["stare": "visible"|"attached"]}
       {"asteapta_text": T}                  textul apare în pagină
@@ -88,6 +88,8 @@ def _pas(e, pas):
         pg.wait_for_function("(t) => document.body.innerText.replace(/\\s+/g, ' ').includes(t)", arg=_norm(pas["asteapta_text"]),
                              timeout=40000)
     elif "completeaza" in pas:
+        if pas.get("daca_exista") and not pg.locator(pas["completeaza"]).count():
+            return
         pg.fill(pas["completeaza"], str(pas["valoare"]))
         pg.dispatch_event(pas["completeaza"], "change")
     elif "alege" in pas:

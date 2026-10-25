@@ -57,7 +57,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_drept` · **fara rol** · drept:poate_valida*
 
-*ce face: [08.10.2026, decizia Costin pct.3 la §6 S6] Validarea mai multor note deodată: fiecare element pe drumul unei aprobări (aceleași porți, aceeași tranzacție pe element); ră — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `repo_main`*
+*ce face: [08.10.2026, decizia Costin pct.3 la §6 S6] Validarea mai multor note deodată: fiecare element pe drumul unei aprobări (aceleași porți, aceeași tranzacție pe element); ră — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · factura_linii (INSERT) · facturi (INSERT) · metrici_sanatate (INSERT) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `coada_api`, `repo_main`*
 
 - [x] [retest 08.10 pct.3] fiecare notă selectată trece prin `coada_aproba` — aceleași porți (patru ochi, verdict, perioadă) ca aprobarea uneia singure; o notă refuzată se întoarce în `refuzate`, numită, cu mesajul ei, iar celelalte rămân aprobate — `core/test_retest_0810_s6.py::test_pct3_mai_multe_note_fiecare_pe_drumul_aprobarii`
 - [x] utilizatorul fără «Poate valida» nu validează nimic (refuz înainte de prima notă) — `test_pct3_fara_drept_nu_se_valideaza_nimic`
@@ -155,7 +155,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T02 — Factura emisă — creare, contabilizare, ieșiri
 
-*clasa MECANIC · 21 rute · 15 schimba date · 17 firme il pot exercita azi*
+*clasa MECANIC · 21 rute · 15 schimba date · 18 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi-recurente`, `/tenants/{tenant_id}/facturi/numerotare`, `/tenants/{tenant_id}/facturi/{factura_id:int}`, `/tenants/{tenant_id}/facturi/{factura_id}/pdf`*
 
@@ -163,7 +163,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_api_key` · **fara rol***
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_main`, `stocuri_cv_api`*
+*ce face: [lotul 12, C84] Câmp opțional al corpului: `dovada_transport: true` = „am dovada transportului” (livrarea intracomunitară de bunuri) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_main`, `stocuri_cv_api`*
 
 - [x] ruta cu cheie de API aplică **aceleași reguli** ca ruta din interfață: numerotare, cod fiscal obligatoriu, notă cu conturi valide
 - o cheie de API nu are rol, deci nu poate face ce cere admin_firma pe ruta echivalentă — verifică dacă asta e adevărat sau dacă cheia ocolește restricția
@@ -268,7 +268,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_cota_jurnal (INSERT) · factura_linii (UPDATE) · facturi (UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) — prin `contare_facturi`, `repo_facturi`*
+*ce face: RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_cota_jurnal (INSERT) · factura_linii (UPDATE) · inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) — prin `contare_facturi`, `repo_facturi`*
 
 - [x] înainte de act, factura adusă prin import stă în starea `de_recunoscut` și **n-are nicio notă** — sosirea documentului nu e faptul economic
 - [x] **și totuși e DECLARABILĂ**: apare în D300 pe luna emiterii chiar nerecunoscută, fiindcă TVA-ul e datorat la emitere (art. 281 CF). *Verificarea asta e cea care apără defectul 1.1 din 22.08.2026*
@@ -417,7 +417,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · reges_chei (INSERT) · reges_mesaje (INSERT/UPDATE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) · suspendari_contract (DELETE/INSERT) — prin `repo_salariati`, `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · reges_chei (INSERT) · reges_mesaje (INSERT/UPDATE) · salariati (DELETE/INSERT/UPDATE) · salariati_jurnal (INSERT) · salariu_istoric (DELETE) · suspendari_contract (DELETE/INSERT) — prin `repo_salariati`, `salariati_api`*
 
 - [x] codul de indemnizație e din nomenclatorul oficial; unul din afară se refuză
 - pentru codurile care cer CNP-ul persoanei îngrijite — 09, 17, 91, 92 — câmpul e obligatoriu la introducere, nu la generarea D112
@@ -430,7 +430,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariati_jurnal (INSERT) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [x] **un certificat care a intrat într-un stat de plată emis nu se șterge** — se corectează prin exemplar nou
 - ștergerea recalculează episodul: dacă certificatul șters era inițial, procentul celorlalte din episod se schimbă
@@ -811,7 +811,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in efactura_primite, factur, validata*
 
-*ce face: Respinge o factura primita: status=respinsa + motiv — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · factura_tva_cote (INSERT) · facturi (UPDATE) — prin `repo_efactura`*
+*ce face: Respinge o factura primita: status=respinsa + motiv — scrie efactura_primite (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_trimiteri (INSERT/UPDATE) · factura_tva_cote (INSERT) · facturi (UPDATE) — prin `repo_efactura`*
 
 - [x] respingerea poartă motivul, obligatoriu
 - ciorna rămâne, cu starea „respinsă" — nu se șterge; e o urmă a ceea ce a sosit
@@ -1226,7 +1226,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_context` · **fara rol** · scrie in firma_profil*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · firma_profil (UPDATE) · firma_profil_jurnal (INSERT) — prin `firma_profil_api`, `repo_firma_profil`, `repo_tenants`*
+*ce face: scrie firma_profil (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): accounting_firms (UPDATE) · firma_profil_jurnal (INSERT) — prin `firma_profil_api`, `repo_firma_profil`, `repo_tenants`*
 
 - [x] schimbarea regimului are **dată de la care se aplică**, nu se aplică retroactiv tăcut
 - perioadele închise sub regimul vechi rămân sub el — recalcularea lor produce contradicție, nu rescriere
@@ -1565,7 +1565,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariati_jurnal (INSERT) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [x] CNP-ul trece cifra de control; unul care nu trece se refuză cu motivul, nu se salvează
 - un CNP care există deja în firmă se refuză — nu se creează al doilea salariat cu același CNP
@@ -1576,7 +1576,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariati_jurnal (INSERT) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [x] **un salariat cu stat de plată emis nu se șterge.** Se marchează încetat, cu data. Ștergerea ar rupe lanțul către documentele emise
 - dacă ștergerea e permisă, verifică ce rămâne în urmă: fluturași, note contabile, rânduri în D112 deja depuse
@@ -1586,7 +1586,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · concedii_medicale (DELETE/INSERT/UPDATE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) · pontaj (DELETE) · reges_chei (INSERT) · reges_mesaje (INSERT/UPDATE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) · suspendari_contract (DELETE/INSERT) — prin `jurnal_api`, `repo_salariati`, `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · concedii_medicale (DELETE/INSERT/UPDATE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) · pontaj (DELETE) · reges_chei (INSERT) · reges_mesaje (INSERT/UPDATE) · salariati (DELETE/INSERT/UPDATE) · salariati_jurnal (INSERT) · salariu_istoric (DELETE) · suspendari_contract (DELETE/INSERT) — prin `jurnal_api`, `repo_salariati`, `salariati_api`*
 
 - [x] o modificare de salariu produce **istoric**, nu suprascriere: valoarea veche rămâne, cu perioada în care a fost valabilă
 - modificarea nu atinge lunile pentru care s-a emis deja stat de plată — sau, dacă le atinge, produce contradicție vizibilă
@@ -1934,7 +1934,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in mijloace_fixe*
 
-*ce face: corp: {destinatie_cd: da/nu} — scrie mijloace_fixe_jurnal (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): mijloace_fixe (INSERT/UPDATE) — prin `repo_mijloace_fixe`*
+*ce face: corp: {destinatie_cd: da/nu} — scrie mijloace_fixe (UPDATE) · mijloace_fixe_jurnal (INSERT) — prin `repo_mijloace_fixe`*
 
 - [x] cu bifa = da, un echipament pe alt cont decât 2131 se poate amortiza accelerat (CF art.20 alin.(1) lit.b)); D406 Assets îl declară cu `DepreciationMethod` accelerata — probat prin HTTP în `core/test_rute_stoc_pana_in_declaratie.py::test_BIFA_CD_deschide_accelerata_si_activul_ajunge_in_D406_Assets` (fără bifă: 422)
 - bifa nu deschide accelerata la construcții, terenuri, animale/plantații (nu sunt „aparatură și echipamente”) — `core/test_mf_destinatie_cd.py`

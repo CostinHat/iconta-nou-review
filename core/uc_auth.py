@@ -160,25 +160,37 @@ def _register_cu_invitatie(date, _versiune_termeni):
     # [14.10.2026, comanda Costin pct.3, verbatim în DECIZII „Lotul 2”] Invitația se verifică ÎNAINTE de orice scriere (fără ea,
     # nicio urmă), iar consumarea ei stă în ACEEAȘI tranzacție cu contul: un cont fără invitația lui consumată nu există, și nici o
     # invitație consumată fără cont.
+    # [lotul 12, deficiența 642] firma proprie (din CUI) intră în ACEEAȘI tranzacție cu contul (`_firma_proprie`); datele ANAF ale
+    # precompletării se iau ÎNAINTE, fără conexiune ținută (P5 val 3), și numai pentru o invitație valabilă
     from core import invitatii as _inv
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            _s = _inv.stare(cur, date.invitatie)
+
+    def _verifica_invitatia(cur):
+        _s = _inv.stare(cur, date.invitatie)
         if not _s["valida"]:
             raise _erori.FaraDrept(_s["refuz"]["motiv"])
         if _s["email"] != date.email.strip().lower():
             raise _erori.FaraDrept("Invitația e pentru %s. Contul se creează numai cu emailul invitat." % _s["email"])
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            _verifica_invitatia(cur)
+        conn.rollback()
+    d_anaf = _anaf_firma_proprie(date.cui)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            _verifica_invitatia(cur)   # din nou, în tranzacția contului: invitația poate fi folosită între timp
         r = auth_api.inregistreaza_cabinet(
             conn, date.email, date.parola, date.nume_cabinet,
             nume=date.nume, prenume=date.prenume)
-        if r["ok"]:  # [termeni_v1] dovada de consimtamant: cine, cand, ce versiune
-            with conn.cursor() as cur:
-                repo_utilizatori.scrie_acordul_termenilor(cur, r.get("user_id"), r.get("firm_id"), date.email.strip().lower(), _versiune_termeni)
-                _inv.consuma(cur, date.invitatie, date.email, r.get("firm_id"))
-                _scrie_telefonul(cur, r.get("user_id"), _telefon(date))
-    if not r["ok"]:
-        raise _erori.CerereGresita(r["mesaj"])
-    return _dupa_cont_nou(r, date.nume_cabinet, date.email.strip().lower(), date.cui, "invitație")
+        if not r["ok"]:
+            conn.rollback()
+            raise _erori.CerereGresita(r["mesaj"])
+        with conn.cursor() as cur:  # [termeni_v1] dovada de consimtamant: cine, cand, ce versiune
+            repo_utilizatori.scrie_acordul_termenilor(cur, r.get("user_id"), r.get("firm_id"), date.email.strip().lower(), _versiune_termeni)
+            _inv.consuma(cur, date.invitatie, date.email, r.get("firm_id"))
+            _scrie_telefonul(cur, r.get("user_id"), _telefon(date))
+        firma = _firma_proprie(conn, r, date.nume_cabinet, date.cui, d_anaf, camp="reg-cui",
+                               din_nou="apoi apasă din nou „Creează cont”")
+    return _dupa_cont_nou(r, date.nume_cabinet, date.email.strip().lower(), firma, "invitație")
 
 
 def _register_liber(date, _versiune_termeni, ip):
@@ -290,6 +302,13 @@ def confirma_inregistrarea(token, ip=None):
         conn.commit()
     if not incape:
         raise _erori.PreaDes("Prea multe confirmări în ultima oră de la această adresă. Încearcă din nou peste o oră.")
+    # [lotul 12, 642] datele ANAF ale firmei proprii, ÎNAINTEA tranzacției contului (fără conexiune ținută, P5 val 3): CUI-ul se citește
+    # din cerere, fără s-o folosească; în tranzacție cererea se blochează și se verifică din nou
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            s0 = _il.ia_pentru_confirmare(cur, token)
+        conn.rollback()
+    d_anaf = _anaf_firma_proprie(s0["cerere"]["cui"]) if s0["valida"] else None
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             s = _il.ia_pentru_confirmare(cur, token)
@@ -309,7 +328,9 @@ def confirma_inregistrarea(token, ip=None):
             repo_utilizatori.scrie_acordul_termenilor(cur, r["user_id"], r["firm_id"], c["email"], c["termeni_versiune"])
             _il.marcheaza_confirmata(cur, c["id"], r["firm_id"])
             _scrie_telefonul(cur, r["user_id"], c.get("telefon"))
-    raspuns = _dupa_cont_nou(r, c["nume_cabinet"], c["email"], c["cui"], "înregistrare liberă")
+        firma = _firma_proprie(conn, r, c["nume_cabinet"], c["cui"], d_anaf,
+                               din_nou="apoi înregistrează-te din nou, cu CUI-ul corect sau fără CUI")
+    raspuns = _dupa_cont_nou(r, c["nume_cabinet"], c["email"], firma, "înregistrare liberă")
     raspuns.update({"ok": True, "email": c["email"], "nume_cabinet": c["nume_cabinet"]})
     return raspuns
 
@@ -341,90 +362,79 @@ def _anunta_cabinet_nou(nume_cabinet, email, cale):
                                                   html)
 
 
-def _dupa_cont_nou(r, nume_cabinet, email, cui, cale):
-    """Ce urmează oricărui cont nou de cabinet (invitație sau confirmare): bun venit, anunțul către superadmin, firma din CUI."""
+def _anaf_firma_proprie(cui):
+    """Datele ANAF pentru precompletarea firmei proprii, luate ÎNAINTEA tranzacției contului (apelul are termen 20 s; P5 val 3: nu cu
+    o conexiune ținută). None fără CUI sau cu ANAF căzut — atunci profilul firmei rămâne de completat manual, firma se creează."""
+    if not str(cui or "").strip() or not _uc_comun._TENANT_TEMPLATE:
+        return None
+    try:
+        return tenant_provisioning.date_din_anaf(cui)
+    except Exception as _e:
+        _obs.esec_secundar("precompletare ANAF la register", _e)
+        return None
+
+
+#: [642] începutul refuzului: contul nu se creează fără firma lui
+_FARA_CONT = "Contul nu s-a creat: firma proprie a cabinetului (CUI %s) nu se poate adăuga. %s"
+
+
+def _firma_proprie(conn, r, nume_cabinet, cui, d_anaf, camp=None, din_nou=""):
+    """[lotul 12, deficiența 642 — comanda Costin 12.2 pct.19: „contul s-a creat, firma proprie a cabinetului nu (emailul «Eșec pe cale
+    secundară: provisionare tenant la register»), iar emailul de bun venit spune că firma există”] Firma proprie a cabinetului, din CUI-ul
+    scris la înregistrare, în TRANZACȚIA CONTULUI (`conn`, încă necomisă): contul și firma lui se creează împreună sau deloc.
+
+    CAUZA: contul (cu acordul și invitația / cererea folosită) se comitea întâi, apoi `_dupa_cont_nou` trimitea bun venitul — cu fraza
+    fixă „Firma proprie a cabinetului este deja adăugată în portofoliu.”, înainte de a încerca firma — și abia apoi crea firma într-o
+    a doua tranzacție; o cădere (CUI-ul cu cifra de control greșită dintr-o cerere scrisă înainte de verificarea 459, un CUI al altui
+    cabinet, o eroare tehnică) se înghițea în `esec_secundar` și contul rămânea fără firmă. În plus, o cădere a precompletării ANAF în
+    aceeași tranzacție (fără punct de revenire) lăsa tranzacția stricată, iar `commit` o anula tăcut, cu „firma creată” în răspuns.
+
+    Fără CUI: nicio firmă (None). Cu CUI: {cui, schema_name} sau ridică — refuzul numit (`CerereGresita`, cu câmpul `camp` când
+    formularul îl are), ori `EsecIntern` (cu alertă) la o cădere tehnică; apelantul nu prinde, deci tranzacția contului cade cu tot.
+    Precompletarea din ANAF stă sub un punct de revenire: lipsa ei nu e lipsa firmei (profilul se completează manual)."""
+    if not str(cui or "").strip():
+        return None
+    _cui = _forma_cui.stocare(cui) or ""
+    try:
+        if not _uc_comun._TENANT_TEMPLATE:
+            raise RuntimeError("șablonul firmei (tenant_template.sql) nu e încărcat")
+        _t = tenant_provisioning.provision_tenant(conn, nume_cabinet, _cui, r["firm_id"], r["user_id"], _uc_comun._TENANT_TEMPLATE)
+        # [register_cabinet_cui_v1] CUI-ul a trecut cifra de control în provision_tenant -> descrie entitatea proprie a cabinetului; se
+        # păstrează ȘI pe accounting_firms.cui, altfel Setări cabinet îl citește NULL
+        auth_api.actualizeaza_cabinet(conn, r["firm_id"], cui=_cui)
+    except ValueError as _e:   # refuzul numit: CUI greșit (`CuiInvalid`), CUI al altui cabinet (`CheieDublata`), firmă dublată
+        motiv = str(_e).strip()
+        indemn = "Corectează CUI-ul (sau lasă-l gol și adaugă firma după intrarea în cont), %s." % din_nou if din_nou else ""
+        mesaj = _FARA_CONT % (cui.strip(), (motiv + " " + indemn).strip())
+        if not camp:
+            raise _erori.CerereGresita(mesaj)
+        raise _erori.CerereGresita({"mesaj": mesaj, "erori_campuri": [{"camp": camp, "mesaj": motiv}]})
+    except Exception as _e:
+        _obs.esec_secundar("provisionare tenant la register (contul NU s-a creat)", _e, alerta=True)
+        raise _erori.EsecIntern(_FARA_CONT % (cui.strip(), "A apărut o eroare tehnică; nimic nu s-a scris. Încearcă din nou peste "
+                                              "câteva minute."))
+    # [register_profil_anaf_v2] precompletarea din ANAF (sursa unică), sub punct de revenire: căderea ei nu strică tranzacția contului
+    tenant_provisioning.precompleteaza_sau_semnaleaza(conn, _t["schema_name"], d_anaf, "precompletare ANAF la register", seteaza_nume=True)
+    return {"cui": _cui, "schema_name": _t["schema_name"]}
+
+
+def text_bun_venit(nume_cabinet, email, firma):
+    """[642] Emailul de bun venit spune ce s-a întâmplat: firma proprie numai când s-a creat (`_firma_proprie`), altfel unde se adaugă."""
+    rand_firma = ("<p>Firma proprie a cabinetului (CUI %s) a fost adăugată în portofoliu.</p>" % _esc(firma["cui"]) if firma else
+                  "<p>Firmele (și firma proprie a cabinetului) le adaugi după intrarea în cont, din ecranul Firme.</p>")
+    return ("<p>Bună,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
+            "<p>Te poți autentifica oricând cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>%s") % (
+                _esc(nume_cabinet), _esc(email), rand_firma)
+
+
+def _dupa_cont_nou(r, nume_cabinet, email, firma, cale):
+    """Ce urmează oricărui cont nou de cabinet (invitație sau confirmare), DUPĂ commitul contului și al firmei lui (`_firma_proprie`):
+    bun venit (cu ce s-a creat), anunțul către superadmin."""
     # register_email_v1: email de bun venit — [R73] fara alerta: bun venit nu e cale de ACCES, doar politete
-    html = ("<p>Bună,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
-            "<p>Te poți autentifica oricând cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
-            "<p>Firma proprie a cabinetului este deja adăugată în portofoliu.</p>") % (_esc(nume_cabinet), _esc(email))
-    _obs.trimite_email_html_sau_semnaleaza("email bun venit cabinet", email, "Bine ai venit pe iConta.eu", html)
+    _obs.trimite_email_html_sau_semnaleaza("email bun venit cabinet", email, "Bine ai venit pe iConta.eu",
+                                           text_bun_venit(nume_cabinet, email, firma))
     _anunta_cabinet_nou(nume_cabinet, email, cale)
-    # [register_firma_v2 27.07.2026] Provisionarea primei firme poate esua (ANAF jos, schema
-    # incompleta, DB). Inainte, esecul era INGHITIT si raspunsul spunea SUCCES - userul ramanea
-    # cu cont valid si FARA firma, fara sa stie. Contul NU se anuleaza (e valid si util), dar
-    # raspunsul poarta adevarul, iar ecranul il arata.
-    _firma_ok = None                       # None = nu s-a incercat (fara CUI la inregistrare)
-    _firma_motiv = ""
-    if cui and _uc_comun._TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
-        _firma_ok = False
-        # [P5 val 3, 11.09.2026] ANAF ÎNAINTE de conexiune: apelul are termen 20 s, iar forma
-        # dinainte îl făcea cu tranzacția de creare a cabinetului deschisă. Eșecul se înghite și
-        # se consemnează, exact ca înainte — firma rămâne creată, profilul completabil manual.
-        try:
-            _d_anaf = tenant_provisioning.date_din_anaf(cui)
-        except Exception as _e:
-            _obs.esec_secundar("precompletare ANAF la register", _e)
-            _d_anaf = None
-        try:
-            with db.get_conn() as conn:
-                # [lotul 11, decizia Costin 10.3 pct.4] forma păstrată, unică (`cui_forma.stocare`); înainte `.replace("RO", "")`, sensibil
-                # la majuscule („ro 18547290” rămânea cu „ro”) și care scotea „RO” de oriunde din text
-                _cui = _forma_cui.stocare(cui) or ""
-                _t = tenant_provisioning.provision_tenant(
-                    conn, nume_cabinet, _cui,
-                    r["firm_id"], r["user_id"], _uc_comun._TENANT_TEMPLATE)
-                # [register_cabinet_cui_v1] CUI-ul a trecut cifra de control in provision_tenant
-                # -> descrie entitatea proprie a cabinetului. Se persista SI pe accounting_firms.cui
-                # (nu doar pe firma-tenant): altfel get_cabinet il citeste NULL si ecranul Setari
-                # cabinet ramane gol desi userul l-a tastat si verificat la ANAF la inregistrare.
-                auth_api.actualizeaza_cabinet(conn, r["firm_id"], cui=_cui)
-                # [register_profil_anaf_v1] Datele de la ANAF se SALVEAZA in profil, nu
-                # doar se afiseaza pe ecran la inregistrare. Fara ele firma noua se naste
-                # cu caen gol si platitor_tva necunoscut -> D394 blocat (caen e obligatoriu),
-                # iar TVA-ul ramane pe valoarea din template in loc de realitate.
-                # Acelasi tipar ca [gratuit_tva_anaf_v1] la contul gratuit (DS: aceeasi
-                # situatie = aceeasi rezolvare), extins la toate campurile pe care ANAF
-                # le da: denumire, cod_caen, adresa, platitor_tva.
-                try:
-                    # [register_profil_anaf_v2] SURSA UNICA de precompletare ANAF
-                    # (tenant_provisioning.precompleteaza_din_anaf), aceeasi ca la add-firm/import.
-                    # seteaza_nume=True: firma proprie preia si denumirea de la ANAF.
-                    # [P5 val 3] datele ANAF s-au luat INAINTE de bloc (`_d_anaf`); aici doar scrie.
-                    if _t and _t.get("schema_name"):
-                        tenant_provisioning.precompleteaza_din_anaf(conn, _t["schema_name"], _d_anaf, seteaza_nume=True)
-                except Exception as _e:
-                    # ANAF jos -> profilul ramane de completat manual. Firma EXISTA, doar
-                    # datele preluate lipsesc - deci NU e esec de provisionare.
-                    _obs.esec_secundar("precompletare ANAF la register", _e)
-                conn.commit()
-                _firma_ok = True
-        except Exception as _e:
-            # Contul RAMANE valid: userul se poate loga si adauga firma manual din ecranul
-            # Firme. Dar raspunsul NU mai minte cu succes - vezi register_firma_v2 mai sus.
-            # [register_motiv_real_v1] Raspunsul poarta MOTIVUL real, nu un generic. Modelul e mesajul
-            # de la numerotarea facturilor ("nu putem presupune numarul 1") - spune DE CE. Contul + cabinetul
-            # SUNT create si userul e logat automat -> mesajul il indruma spre ecranul Firme, nu "te poti loga".
-            _obs.esec_secundar("provisionare tenant la register", _e, alerta=True)
-            _txt = str(_e).lower()
-            _cui_afis = (cui or "").strip()
-            from core import chei_unice as _chei
-            if isinstance(_e, _chei.CheieDublata):   # [lotul 10, C73 / U3] CUI-ul e al altui cabinet: refuzul numit, nu „eroare tehnică”
-                _motiv = str(_e)
-            elif "cifra de control" in _txt or "cui invalid" in _txt:
-                _motiv = ("CUI-ul introdus (%s) nu este valid \u2014 cifra de control nu corespunde. "
-                          "Verific\u0103 cifrele (f\u0103r\u0103 spa\u021bii sau litere)." % _cui_afis)
-            elif "exist" in _txt and "deja" in _txt:
-                _motiv = "exist\u0103 deja o firm\u0103 cu acest CUI \u00een portofoliul cabinetului."
-            else:
-                _motiv = "a ap\u0103rut o eroare tehnic\u0103 la ad\u0103ugarea firmei."
-            _firma_motiv = ("Contul \u0219i cabinetul au fost create. Firma proprie NU a putut fi ad\u0103ugat\u0103 "
-                            "automat: %s O po\u021bi ad\u0103uga oric\u00e2nd din ecranul Firme." % _motiv)
-    raspuns = {"user_id": r["user_id"], "firm_id": r["firm_id"]}
-    if _firma_ok is not None:
-        raspuns["firma_creata"] = _firma_ok
-        if _firma_motiv:
-            raspuns["avertisment"] = _firma_motiv
-    return raspuns
+    return {"user_id": r["user_id"], "firm_id": r["firm_id"]}
 
 
 # ── INVITAȚIILE (14.10.2026, comanda Costin pct.3: conturile noi de cabinet numai prin invitație) ─────────────────────────────

@@ -1,0 +1,38 @@
+[
+ {
+  "fisier": "static/js/ecrane/flux_concediu.js",
+  "ancora": "const scrisaDeOm = () => { const v = (inpZile.value || \"\").trim(); return v !== \"\" && v !== propusa; };",
+  "inlocuire": "let _atins = false; inpZile.addEventListener(\"input\", () => { _atins = true; }); const scrisaDeOm = () => _atins;",
+  "test": "frontend_test/e2e/e2e_lot12_sal2.py::test_def_c102_1_propunerea_revine_cand_campul_e_gol"
+ },
+ {
+  "fisier": "static/js/ecrane/flux_concediu.js",
+  "ancora": "Number.isInteger(z) && z > zileInterval",
+  "inlocuire": "Number.isInteger(z) && z > zileInterval + 100",
+  "test": "frontend_test/e2e/e2e_lot12_sal2.py::test_def_c102_1_zile_peste_interval_avertisment_si_confirmare"
+ },
+ {
+  "fisier": "core/salariati_api.py",
+  "ancora": "    if zile_interval is not None and zile_cm > zile_interval and not date.get(\"confirma_zile_peste_interval\"):",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot12_sal2.py::test_def_c102_1_zile_peste_interval_avertisment_si_confirmare"
+ },
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "    ded = deducere_personala(b_imp + _cm_b, persoane, sub_26, copii_scoala, functie_baza,",
+  "inlocuire": "    ded = deducere_personala(b_imp, persoane, sub_26, copii_scoala, functie_baza,",
+  "test": "frontend_test/e2e/e2e_lot12_sal2.py::test_def_629_treapta_deducerii_cu_indemnizatia_cm"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "            brute = _d112int(s.get(\"brut_lucrat\", s.get(\"brut\"))) + _venituri_adaugate(s) + cm_base",
+  "inlocuire": "            brute = brut + cm_base",
+  "test": "frontend_test/e2e/e2e_lot12_sal2.py::test_def_629_treapta_deducerii_cu_indemnizatia_cm"
+ },
+ {
+  "fisier": "core/salarii_contare.py",
+  "ancora": "        \"nota_status\": (_nota[1] if not isinstance(_nota, dict) else _nota[\"status\"]) if _nota else None,",
+  "inlocuire": "        \"nota_status\": None,",
+  "test": "frontend_test/e2e/e2e_lot12_sal2.py::test_def_c165_nota_validata_direct_nu_e_aratata_ciorna"
+ }
+]

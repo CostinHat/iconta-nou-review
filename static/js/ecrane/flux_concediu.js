@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand, arataRefuzul } from "../api.js?v=309f4d66ae";
+import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, selectDaNu, daNu, refuzPeRand, arataRefuzul, arataMesaj } from "../api.js?v=e38843b1ec";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267, clasa] ciorna formularelor lungi de creare
 // [lotul 11, 440] numele câmpurilor din refuzul serverului (`salariati_api.salveaza_concediu`, corpul cererii) -> id-ul de pe ecran
 const CAMPURI_CONCEDIU = { serie: "cm-serie", numar: "cm-numar", cod: "cm-cod", cod_urgenta: "cm-urgenta", cnp_ingrijit: "cm-cnp-ingrijit",
@@ -97,7 +97,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Data acord\u0103rii</span><input type="date" id="cm-acord" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data \u00eenceput<span class="oblig">*</span></span><input type="date" id="cm-inceput" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data sf\u00e2r\u0219it <span class="oblig">*</span></span><input type="date" id="cm-sfarsit" class="camp-input"></label>
-          <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare CM<span class="oblig">*</span></span><input type="number" id="cm-zile" class="camp-input" min="0" placeholder="ex. 8"></label>
+          <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare CM<span class="oblig">*</span></span><input type="number" id="cm-zile" class="camp-input" min="0" placeholder="ex. 8"><span id="cm-zile-avert" role="status"></span></label>
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Episod de boală</div>
         <label class="camp" style="max-width:420px"><span class="camp-eticheta">Certificat de continuare (același episod de boală)<span class="oblig">*</span></span>${selectDaNu('id="cm-continuare"', null, "Certificat de continuare")}</label>
@@ -166,26 +166,43 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     // Auto-calcul zile lucratoare (FARA sarbatori legale, OUG 158/2005 art.10) intre inceput
     // si sfarsit; contabilul poate suprascrie. Calendarul e pe backend (sursa unica), NU
     // reimplementat in JS cu getDay() - vechiul cod ignora sarbatorile -> zile CM gresite in D112.
-    // [C102] Raspunsul vine dupa `await`: daca intre timp contabilul a scris zilele sau a schimbat iar datele, propunerea
-    // nu se mai scrie (altfel cifra lui era inlocuita cu una veche, iar in D112 ajungeau alte zile decat cele tastate).
-    let zileEditateManual = false;
+    // [C102] Raspunsul vine dupa `await`: un raspuns depasit (datele s-au schimbat intre timp) nu se scrie, iar cifra scrisa de
+    // contabil nu se inlocuieste. [C102.1, lotul 12] Propunerea se scrie cat timp campul e GOL sau are inca propunerea ecranului
+    // (neatins de om) — pana la 24.10.2026 orice tasta in camp, chiar golit dupa, oprea propunerea pentru totdeauna. Nu se scrie in
+    // campul in care omul are cursorul (ar lipi cifrele, „1010 zile”); cand il paraseste gol, propunerea vine. Peste zilele lucratoare
+    // ale intervalului: avertisment langa camp (iar la salvare serverul cere confirmarea, `salariati_api.salveaza_concediu`).
     const cerereZile = ultimaCerere();   // [C103] mecanismul unic
     const inpZile = zona.querySelector("#cm-zile");
-    inpZile.addEventListener("input", () => { zileEditateManual = true; });
+    const avertZile = zona.querySelector("#cm-zile-avert");
+    let propusa = null;        // ultima propunere scrisă de ecran (text), ca să se știe dacă cifra din câmp e a omului
+    let zileInterval = null;   // zilele lucrătoare ale intervalului ales, după calendarul serverului
+    const scrisaDeOm = () => { const v = (inpZile.value || "").trim(); return v !== "" && v !== propusa; };
+    const avertizeazaZile = () => {
+      const z = parseInt(inpZile.value, 10);
+      arataMesaj(avertZile, zileInterval != null && Number.isInteger(z) && z > zileInterval
+        ? `Între ${dataRo(zona.querySelector("#cm-inceput").value)} și ${dataRo(zona.querySelector("#cm-sfarsit").value)} sunt ${cate(zileInterval, "zi lucrătoare", "zile lucrătoare")} (fără weekend și sărbători legale), iar aici scrie ${cate(z, "zi", "zile")}. Verifică cifra de pe certificat.`
+        : "", "avert");
+    };
     const recalcZile = async () => {
-      if (zileEditateManual) return;
       const di = zona.querySelector("#cm-inceput").value;
       const ds = zona.querySelector("#cm-sfarsit").value;
-      if (!di || !ds || ds < di) return;
       const actuala = cerereZile();
+      if (!di || !ds || ds < di) { zileInterval = null; avertizeazaZile(); return; }
       try {
         const r = await api.get(`/util/zile-lucratoare?start=${di}&end=${ds}`);
-        if (zileEditateManual || !actuala()) return;
-        if (r && typeof r.zile === "number") inpZile.value = r.zile;
+        if (!actuala() || !r || typeof r.zile !== "number") return;
+        zileInterval = r.zile;
+        if (!scrisaDeOm() && document.activeElement !== inpZile) { inpZile.value = r.zile; propusa = String(r.zile); }
+        avertizeazaZile();
       } catch { /* auto-calcul best-effort; contabilul poate completa manual */ }
     };
     zona.querySelector("#cm-inceput").addEventListener("change", recalcZile);
     zona.querySelector("#cm-sfarsit").addEventListener("change", recalcZile);
+    inpZile.addEventListener("input", avertizeazaZile);
+    inpZile.addEventListener("blur", () => { if (!(inpZile.value || "").trim()) recalcZile(); });
+    // ciorna refăcută cu date, dar fără zile: propunerea vine din intervalul ei (cifra din ciornă, dacă e, rămâne a omului)
+    if (ciorna.refacuta) recalcZile();
+    ciorna.gata.then((deLaServer) => { if (deLaServer && zona.isConnected) recalcZile(); });
 
     zona.querySelector("#cm-calc").addEventListener("click", async () => {
       const rez = zona.querySelector("#cm-rezultat");
@@ -245,9 +262,26 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         luna: inc.getMonth() + 1,
       };
       const btn = zona.querySelector("#cm-calc");
-      btn.disabled = true; btn.textContent = "Se salveaz\u0103\u2026";
-      try {
-        const r = await api.post(`/tenants/${t.id}/salariati/${sal.id}/concedii`, payload);
+      // [C102.1] zilele peste cele lucrătoare ale intervalului: serverul nu salvează, întreabă (`cod` CONFIRMA_ZILE_PESTE_INTERVAL);
+      // întrebarea stă lângă buton, iar „Salvează cu N zile” retrimite certificatul cu confirmarea
+      const salveaza = async (corpCerere) => {
+        btn.disabled = true; btn.textContent = "Se salveaz\u0103\u2026";
+        try {
+          const r = await api.post(`/tenants/${t.id}/salariati/${sal.id}/concedii`, corpCerere);
+          if (r && r.cod === "CONFIRMA_ZILE_PESTE_INTERVAL") {
+            btn.disabled = false; btn.textContent = "Calculeaz\u0103 \u0219i salveaz\u0103";
+            confirmaCaseta(btn.parentElement || btn, esc(r.mesaj), () => salveaza({ ...corpCerere, confirma_zile_peste_interval: true }),
+              { textOk: `Salvează cu ${cate(r.zile_cm, "zi", "zile")}`, textNu: "Corectez zilele" });
+            return;
+          }
+          await dupaSalvareCertificat(r);
+        } catch (e) {
+          btn.disabled = false; btn.textContent = "Calculeaz\u0103 \u0219i salveaz\u0103";
+          // [lotul 11, 440] refuzul serverului: fiecare eroare lângă câmpul ei, textul în zona rezultatului (și în caseta „NU s-a salvat.”)
+          arataRefuzul(zona, e && e.mesaj ? e : { ...(e || {}), mesaj: "Nu s-a putut salva concediul." }, rez, { campuri: CAMPURI_CONCEDIU });
+        }
+      };
+      const dupaSalvareCertificat = async (r) => {
         ciorna.sterge();
         const c = r.calcul || {};
         rez.innerHTML = `
@@ -269,11 +303,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         await randeaza(corp);
         corp.querySelector("#cm-form-zona").innerHTML = `<div id="cm-rezultat">${rezultat}</div>`;
         if (dupaSalvare) dupaSalvare();
-      } catch (e) {
-        btn.disabled = false; btn.textContent = "Calculeaz\u0103 \u0219i salveaz\u0103";
-        // [lotul 11, 440] refuzul serverului: fiecare eroare lângă câmpul ei, textul în zona rezultatului (și în caseta „NU s-a salvat.”)
-        arataRefuzul(zona, e && e.mesaj ? e : { ...(e || {}), mesaj: "Nu s-a putut salva concediul." }, rez, { campuri: CAMPURI_CONCEDIU });
-      }
+      };
+      await salveaza(payload);
     });
   }
 }

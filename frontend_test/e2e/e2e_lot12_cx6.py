@@ -77,7 +77,8 @@ def test_def_c160_factura_recurenta_catre_clientul_ue_poarta_tara_clientului(pat
     pg.fill("#fr-nume", "KUNDE E2E GMBH")
     pg.fill("#fr-l0-descriere", SERVICIU)
     pg.dispatch_event("#fr-l0-descriere", "input")
-    pg.wait_for_function("() => (document.querySelector('#fr-l0-cota') || {textContent: ''}).textContent.includes('scutit')", timeout=20000)
+    # [lotul 12, 12.3 pct.9] cota liniei ca la „Emite factură”: la neplătitor „0%” fix (CF art.310 alin.(10) lit.b), nu „scutit”
+    pg.wait_for_function("() => (document.querySelector('#fr-l0-cota') || {textContent: ''}).textContent.trim() === '0%'", timeout=20000)
     pg.fill("#fr-l0-cantitate", "1")
     pg.dispatch_event("#fr-l0-cantitate", "input")
     pg.fill("#fr-l0-pret_unitar", "500")

@@ -6,7 +6,7 @@
 // fără meniu lateral. Un singur loc o scrie (aici), deci cele două pagini nu mai pot diverge; gard `PAGINA_PRINCIPALA_UNA`
 // (verificator) + `frontend_test/e2e/e2e_comanda_1210.py`.
 
-import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=309f4d66ae";
+import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=e38843b1ec";
 import { randeazaRecomanda } from "./recomanda.js?v=e5354ffd52"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=c8012ff8c2"; // [p34_raporteaza]
 

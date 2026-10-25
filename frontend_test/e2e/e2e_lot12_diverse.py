@@ -28,7 +28,7 @@ import pytest
 from conftest import firma_noua, sql
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from e2e_bloc_b import _cont_asistent, _firma_gata, _nota_prin_ecran, _scoate_cont   # noqa: E402
+from e2e_bloc_b import _cont_asistent, _deschide_rand, _firma_gata, _nota_jn, _nota_prin_ecran, _scoate_cont   # noqa: E402
 from e2e_bloc_e import _asteapta_text, _card, _la_luna, _mf   # noqa: E402
 
 AZI = _dt.date.today()
@@ -217,8 +217,11 @@ def test_def_214_ciorna_veche_de_amortizare_datata_28_se_reface_in_ultima_zi(pat
     pg = patron.pg
     _card(patron, f, "jurnal", "#j-amort")
     _la_luna(patron, "#j-prev", 2026, 6)
+    # [lotul 12, 617] caseta „depășită” stă în detaliul rândului: rândul ciornei, deschis
+    pg.wait_for_selector("tbody.tn-nota[data-nota-id='%d']" % veche, timeout=30000)
+    _deschide_rand(patron, _nota_jn(patron, veche))
     pg.wait_for_selector("#jn-depasita-%d" % veche, timeout=30000)
-    t = " ".join(pg.inner_text("[data-nota-id='%d']" % veche).split())
+    t = " ".join(pg.inner_text("tbody.tn-nota[data-nota-id='%d']" % veche).split())
     patron.captura("vechi_ciorna_28")
     assert "după o regulă care s-a schimbat" in t and "30.06.2026" in t and "28.06.2026" in t, t
     assert pg.is_disabled("[data-val='%d']" % veche)
@@ -227,8 +230,10 @@ def test_def_214_ciorna_veche_de_amortizare_datata_28_se_reface_in_ultima_zi(pat
     noi = sql('SELECT id, data FROM "%s".inregistrari WHERE numar = \'AMORT-2026-06\' ORDER BY id' % s)
     assert len(noi) == 1 and noi[0][0] != veche and str(noi[0][1]) == "2026-06-30", noi
     nou = noi[0][0]
-    pg.wait_for_selector("[data-nota-id='%d']" % nou, timeout=30000)
-    rand = " ".join(pg.inner_text("[data-nota-id='%d']" % nou).split())
+    pg.wait_for_selector("tbody.tn-nota[data-nota-id='%d']" % nou, timeout=30000)
+    # [lotul 12, 617] „Document justificativ: …” stă în detaliul rândului: rândul notei refăcute, deschis
+    _deschide_rand(patron, _nota_jn(patron, nou))
+    rand = " ".join(pg.inner_text("tbody.tn-nota[data-nota-id='%d']" % nou).split())
     patron.captura("vechi_refacuta")
     # documentul notei refăcute: tabloul de amortizare intern, numerotat și datat în ultima zi (ca notele noi de pe F2: „Tablou de amortizare
     # nr 8 din 31.08.2026”) — nu „nederivat”

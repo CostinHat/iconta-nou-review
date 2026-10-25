@@ -165,8 +165,13 @@ def test_salariat_edit_corecteaza_datele_trimite_campurile_deducerilor():
     arb_fir, cod_fir = arbore_js("firme.js")
     conf = [c["arguments"][1] for c in noduri(arb_fir, "CallExpression") if cod_fir(c["callee"]) == "arataMesaj"
             and [cod_fir(a) for a in c["arguments"][0:3:2]] == ['corp.querySelector("#sp-date-zona")', '"ok"']]
-    assert [[q["value"]["cooked"] for q in a["quasis"]][-1] for a in conf] == [
+    # [lotul 12, C133] textul e urmat de efectul corecturii scutirii în D112 (`șablon + (rez.efect_d112 ? " " + … : "")`): partea șablon
+    # e operandul stâng, efectul — operandul drept, condiționat de răspunsul serverului
+    sabl = [a["left"] if a["type"] == "BinaryExpression" else a for a in conf]
+    assert [[q["value"]["cooked"] for q in a["quasis"]][-1] for a in sabl] == [
         ": datele corectate s-au salvat; statul se calculează cu ele."], [cod_fir(a) for a in conf]
+    assert [(a["right"]["type"], cod_fir(a["right"]["test"])) for a in conf] == [
+        ("ConditionalExpression", "rez && rez.scutire_corectata && rez.efect_d112")], [cod_fir(a) for a in conf]
     import main
     for camp in ("data_nastere", "copii_scolarizati", "declaratie_copii", "functie_baza"):
         assert camp in main.SalariatEdit.model_fields, camp

@@ -221,7 +221,7 @@ def test_def_492_contorul_pregatite_se_actualizeaza_fara_reincarcare(ana492, fir
     pg.fill("#je-linii .je-pnume", "Furnizor E2E SRL")   # [381] nota pe 401 cere partenerul la introducere
     pg.fill("#je-linii .je-sum", "100")
     pg.click("#je-salveaza")
-    pg.wait_for_selector(".pf-frand:has-text('%s')" % desc, timeout=20000)
+    pg.wait_for_selector("tbody.tn-nota:has-text('%s')" % desc, timeout=20000)   # [lotul 12, 617] rândul notei în tabelul de note
     pg.wait_for_function("() => /\\b1\\s+lucrare pregătită luna aceasta/.test((document.querySelector('.bara3') || {}).innerText || '')",
                          timeout=20000)
     ana492.captura("pregatita")

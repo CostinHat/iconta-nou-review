@@ -21,7 +21,12 @@ CE FACE:
        chitanță sau compensare legată), cu suma netă nenulă: acelea au stins deja, de mână, o parte din soldurile preluate, iar un document
        cu soldul întreg ar apărea în scadențar ca neîncasat (exact defectul 466). Contabilul reîncarcă atunci soldurile pe parteneri din
        ecran (Import date › Solduri parteneri), după ce leagă încasările.
-Notele, balanța și declarațiile NU se ating: documentele n-au notă și nu intră în nicio declarație (`nomenclator_status_factura`).
+   [lotul 12, decizia Costin 12.3 pct.5: „dacă [coloana TVA la încasare] lipsește, se ia regimul firmei la data facturii”] Fișierul vechi
+   n-avea coloana, deci documentul primește regimul firmei la data preluării (`solduri_parteneri_api.cu_regimul_tva`, ca la import):
+   firma în sistemul TVA la încasare -> TVA-ul cuprins în sold e încă neexigibil / nededus și îl mută încasarea / plata. NU se pune (și se
+   numește) când firma are deja un D300 depus pe o perioadă care se termină la data preluării sau după ea: secțiunea „TVA neexigibilă” a
+   unui D300 regenerat pe acea perioadă n-ar mai fi cea depusă. Contabilul reîncarcă atunci soldurile din ecran, cu coloana.
+Notele, balanța și declarațiile depuse NU se ating: documentele n-au notă și nu intră în nicio declarație ca documente ale perioadei.
 Rulare: `python -m core.migrari_registru ruleaza [--productie] core/migrare_documente_preluate.py`.
 """
 from core import db
@@ -52,6 +57,16 @@ def stinse_nelegate(cur, schema, cont, dupa):
                        AND NOT EXISTS (SELECT 1 FROM "{schema}".chitante c WHERE c.inregistrare_id = i.id AND c.factura_id IS NOT NULL)
                        AND NOT EXISTS (SELECT 1 FROM "{schema}".compensari z WHERE z.inregistrare_id = i.id)''', (cont + "%", dupa))
     return cur.fetchone()[0]
+
+
+def d300_depus_dupa(cur, schema, zi):
+    """[12.3 pct.5] Perioada (an, luna) celui mai recent D300 depus al firmei care se termină la `zi` sau după, ori None. `luna` =
+    ultima lună a perioadei (`declaratii_depuse_curente`; prin aplicație „d300”, din istoricul importat „D300”)."""
+    cur.execute("SELECT d.an, d.luna FROM public.declaratii_depuse_curente d JOIN public.tenants t ON t.id = d.tenant_id "
+                "WHERE t.schema_name = %s AND lower(d.tip) = 'd300' AND d.an * 100 + d.luna >= %s ORDER BY d.an DESC, d.luna DESC LIMIT 1",
+                (schema, zi.year * 100 + zi.month))
+    r = cur.fetchone()
+    return (r[0], r[1]) if r else None
 
 
 def aplica(conn, schema):
@@ -88,6 +103,14 @@ def aplica(conn, schema):
                                      "nu devin documente; se reîncarcă din ecran după legarea lor" % (cont, zi.isoformat(), n))
                 docs = [d for d in docs if _sp._radacina(d["cont"]) != cont]
         cur.execute('SET LOCAL search_path TO "%s", public' % schema)
+        _sp.cu_regimul_tva(cur, docs)   # [12.3 pct.5] regimul firmei la data preluării (fișierul vechi n-avea coloana)
+        depus = d300_depus_dupa(cur, schema, zi) if any(d["tva"] for d in docs) else None
+        if depus:
+            for d in docs:
+                d["tva"], d["furnizor_tva_incasare"] = 0, False
+            rez["sarite"].append("firma aplica sistemul TVA la încasare la %s, dar are D300 depus pe %02d/%d: documentele se scriu fără TVA "
+                                 "neexigibil (declarația depusă rămâne neatinsă); reîncarcă soldurile pe parteneri din ecran, cu coloana "
+                                 "„TVA la încasare”, dacă TVA-ul lor trebuie să devină exigibil la încasare" % (zi.isoformat(), depus[1], depus[0]))
         cur.execute("SAVEPOINT documente_preluate")
         try:
             _sp._scrie_documente(cur, docs)

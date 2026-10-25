@@ -58,6 +58,7 @@ def _net(brut, el, la_data):
         norma_intreaga=(el.get("tip_norma") or "intreaga") == "intreaga",
         exceptat_suprataxare=bool(el.get("scutit_contrib_minim")),
         data_angajare=el.get("data_angajare"),
+        cm_impozabil=None,   # [lotul 12, 629] simularea de la angajare e „fără concedii” (antetul modulului): nicio indemnizație CM
     )
     return float(r["net"] if isinstance(r, dict) else getattr(r, "net"))
 

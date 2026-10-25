@@ -22,9 +22,14 @@ import sys
 import pytest
 
 from conftest import firma_noua, sql
+from e2e_lot12_migr import confirma_firma_fisierului
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from core.test_lot11_m_balanta_saga import fisier, randuri, _ro   # noqa: E402
+
+#: [lotul 12, 599] antetul balanțelor SAGA de probă (`core/test_lot11_m_balanta_saga.fisier`, a doua linie): altă firmă decât firma de test,
+#: deci salvarea cere întâi „Da, sunt ale acestei firme”
+ANTET_MIGRARE = "SC Firmă Probă Migrare SRL"
 
 LAPTOP = {"width": 1280, "height": 720}
 CNP1 = "1900101410011"      # cifra de control verificată (core/test_412_cim_salariat.py)
@@ -97,6 +102,7 @@ def test_def_439_balanta_saga_cu_sold_initial_intra_si_a_doua_cere_confirmare(pa
     pg.fill("#mig-data-bal", "2026-09-30")
     pg.select_option("#mig-metoda-stoc", "cantitativ_valoric")
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_MIGRARE)   # [lotul 12, 599] antetul balanței SAGA numește altă firmă: confirmarea, apoi salvarea
     pg.wait_for_function("() => document.body.innerText.includes('21 de conturi salvate, cu soldurile la 30.09.2026. Soldurile de la 1 "
                          "ianuarie și rulajele anului au intrat ca sold inițial și sume precedente.')", timeout=30000)
     patron.captura("salvat")
@@ -110,12 +116,15 @@ def test_def_439_balanta_saga_cu_sold_initial_intra_si_a_doua_cere_confirmare(pa
     assert av.get_attribute("class") == "msg-avert" and av.inner_text().startswith(
         "Firma are deja o balanță de deschidere la 30.09.2026: 21 de conturi"), av.inner_text()
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_MIGRARE)   # [599] întâi firma din antet, apoi întrebarea înlocuirii (426)
     pg.wait_for_selector("#ca-ok", timeout=10000)
     assert pg.inner_text("#ca-ok").strip() == "Înlocuiesc balanța" and not pg.is_visible("#mig-salveaza-sold")
     patron.captura("confirmare")
     pg.click("#ca-nu")
     assert pg.is_visible("#mig-salveaza-sold") and sql('SELECT count(*) FROM "%s".solduri_initiale' % s)[0][0] == 21
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_MIGRARE)
+    pg.wait_for_function("() => (document.querySelector('#ca-ok') || {}).textContent === 'Înlocuiesc balanța'", timeout=10000)
     pg.click("#ca-ok")
     pg.wait_for_function("() => document.body.innerText.includes('a fost înlocuită.')", timeout=30000)
     assert _sold(s, "5121.1") == [(5000.0, 0.0, 45000.0, 41200.0, 8800.0, 0.0)]

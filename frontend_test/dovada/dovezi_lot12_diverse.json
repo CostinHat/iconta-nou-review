@@ -225,6 +225,12 @@
     "deruleaza": "[data-nota-id='5']"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id='5'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='5'] tr.tn-detaliu"
+   },
+   {
     "pauza": 500
    }
   ],

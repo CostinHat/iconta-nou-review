@@ -28,10 +28,11 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand } from "../api.js?v=309f4d66ae";
-import { randA as randConstatare } from "./control_verdict.js?v=9c09077067";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=e38843b1ec";
+import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
+import { randA as randConstatare } from "./control_verdict.js?v=3fb2042f33";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=1c7b806a57";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=2b27eebcaf";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
@@ -165,6 +166,22 @@ export function introCoada({ poateValida = false, poateDepune = false, admin = f
   return fraze.join(" ");
 }
 
+// [lotul 12, comanda Costin 12.2 pct.12, deficiența 622, verbatim] „De validat: trei forme diferite, note afișate de două ori. Trei secțiuni
+// cu număr, același tabel ca la 617, Validează/Respinge pe rând, căutare.” Fereastra are TREI secțiuni, fiecare cu numărul ei: „Note de
+// validat”, „Declarații”, „Notele tale în ciornă”. Notele (prima și a treia) stau în tabelul Registrului jurnal (`tabel_note.js`), cu
+// Validează / Respinge pe rând și liniile în detaliul de la clic; o notă apare O DATĂ: ciorna ta trimisă la validare e în „Note de validat”
+// (cu „ai pregătit-o tu”), nu și în „Notele tale în ciornă”. Căutarea (sus, în rezumatul lipit) caută în toate trei. După o validare /
+// respingere fereastra rămâne derulată unde era, iar confirmarea stă în rezumat.
+// Explicațiile semnelor din coloana Stare, o singură dată, deasupra tabelului (aceleași cuvinte ca în Registrul jurnal).
+const EXPLICATII_COADA = {
+  fara_doc: { atentie: true, titlu: "Fără document justificativ",
+    text: "o notă nu se validează fără documentul din care provine (Registrul-jurnal, col.3: felul, numărul și data). Respinge-o cu motivul, ca cel care a pregătit-o să scrie referința." },
+  document: { atentie: false, titlu: "Document cu mai multe note",
+    text: "notele aceleiași facturi (contarea și ieșirea din stoc) se validează împreună: un rând, o validare; liniile fiecărei note sunt în detaliu." },
+  respinsa: { atentie: false, titlu: "Respinsă la validare",
+    text: "motivul e în detaliul notei; după corectură, nota se trimite din nou la validare." },
+};
+
 export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 pct.8] opt.evidentiaza = id-ul din notificare
   // [265] drepturile schimbate în sesiunea deschisă: coada își alege butoanele și textele la desenare, deci se redesenează la semnalul
   // din drepturi.js; un singur ascultător pe fereastră, scos când fereastra s-a închis
@@ -177,20 +194,27 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   }
   // [292] titlul cardului se ține pe fereastră: redesenările de după o aprobare / respingere / drepturi nu-l mai primesc ca argument
   if (opt.titlu) corp.dataset.titluCard = opt.titlu;
-  // `peLoc` (redesenarea la drepturi): coada rămâne pe ecran cât se citește, fără „Se încarcă” intermediar
+  // [622] căutarea și rândurile deschise se țin pe fereastră: redesenarea de după o acțiune le păstrează
+  if (!corp._val) corp._val = { text: "", deschise: new Set() };
+  // `peLoc` (redesenarea la drepturi, după o acțiune): coada rămâne pe ecran cât se citește, fără „Se încarcă” intermediar, deci
+  // fereastra rămâne derulată unde era ([622] / [617]: „pagina sare sus”)
   if (!opt.peLoc) corp.innerHTML = `<p class="ecran-nota">Se încarcă coada…</p>`;
+  const actualaC = ultimaCerere(corp)();   // [C103] două redesenări în șir (acțiune + întoarcerea din dialog): numai ultima ajunge pe ecran
   let coada = [];
   let firme = [];
   let perm = { poate_valida: false, poate_depune: false, rol: null };
   let patruOchi = false;          // efectiv = politica AND aplicabilitate
   let patruOchiPolitica = false;  // politica bruta a patronului (pentru a distinge „oprit" de „suspendat")
+  let ciorne = null, eroareCiorne = "";
   try {
-    const [rc, rf, rp, rpo] = await Promise.all([
+    const [rc, rf, rp, rpo, rci] = await Promise.all([
       api.get("/coada"),
       api.get("/tenants"),
       api.get("/eu/permisiuni"),
       api.get("/eu/patru-ochi"),
+      api.get("/eu/ciorne").catch((e) => { eroareCiorne = (e && e.mesaj) || ""; return null; }),
     ]);
+    if (!actualaC()) return;
     coada = (rc && rc.coada) || [];
     firme = (rf && rf.tenants) || [];
     if (rp) perm = rp;
@@ -199,7 +223,9 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     // butoanele de aprobare lipseau desi backendul permitea aprobarea.
     patruOchi = !!(rpo && rpo.efectiv);
     patruOchiPolitica = !!(rpo && rpo.activ);
+    ciorne = rci;
   } catch {
+    if (!actualaC()) return;
     corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca coada.</p>`;
     return;
   }
@@ -210,85 +236,265 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   const declaratii = coada.filter((c) => c.fel !== "nota");
   const laSenior = declaratii.filter((c) => c.stare === "la_senior");
   const aprobate = declaratii.filter((c) => c.stare === "aprobata");
+  // [622] „note afișate de două ori”: ciorna ta trimisă la validare stătea și în „Note de validat”, și în „Notele tale în ciornă”. Rămâne
+  // în prima (acolo se validează); în a treia stau ciornele tale netrimise și cele respinse
+  const inCoada = new Set();
+  noteDeValidat.forEach((c) => { const p = c.nota || {}; (p.note || [p]).forEach((x) => { if (x && x.inregistrare_id) inCoada.add(`${c.tenant_id}:${x.inregistrare_id}`); }); });
+  const ciorneMele = [];
+  ((ciorne && ciorne.firme) || []).forEach((f) => f.note.forEach((n) => {
+    if (n.in_coada === "la_senior" && inCoada.has(`${f.tenant_id}:${n.id}`)) return;
+    ciorneMele.push({ f, n });
+  }));
 
   // [po_efectiv_v1] TREI texte, nu doua: „oprit" si „suspendat" nu sunt acelasi lucru. Pe un cabinet
   // solo cu politica PORNITA, „Patru-ochi e dezactivat" contrazicea indicatorul din subbara
   // („suspendata") si il lasa pe patron sa creada ca i s-a stins setarea. Politica persista; ce
   // lipseste e al doilea validator - si se spune, cu iesirea (DS cap.6, stare goala: gol + cauza + iesire).
   // [lotul 07.10 pct.11, comanda Costin 06.10.2026] „Contabilul vede o etichetă pentru ce are de validat și un text fără termeni
-  // interni.” Notele au eticheta lor și propoziția lor (le-a pregătit un asistent; le validezi sau le respingi); textul despre
-  // declarații vorbește despre declarații, fără „patru-ochi” — „validarea în doi” e numele pe care îl vede omul în Asistenți.
-  // [deficiența 217, retestul Costin 09.10: „textul «validarea în doi nu e pornită» contrazice notele de validat de pe același ecran”]
-  // validarea în doi privește DECLARAȚIILE; notele pregătite de asistenți se validează întotdeauna — textul o spune. [266] `introCoada`.
+  // interni.” [deficiența 217] validarea în doi privește DECLARAȚIILE; notele pregătite de asistenți se validează întotdeauna. [266]
   const intro = introCoada({ poateValida: !!perm.poate_valida, poateDepune: !!perm.poate_depune,
                              admin: perm.rol === "admin_firma" || perm.rol === "superadmin",
                              patruOchi, politica: patruOchiPolitica, note: noteDeValidat.length });
-  // [08.10.2026, decizia Costin U4] „Fereastra cu note de validat se numește «De depus». Titlul trebuie să spună ce conține.” Titlul
-  // venea din cardul de pe desktop (calculat o dată, fără note), iar navigatorul îl punea ca <h2>. Acum ecranul își scrie titlul din
-  // ce are în el: părțile nevide, în ordinea în care apar (`titluCoada`).
-  // [deficiența 292, comanda Costin 16.10.2026, verbatim în DECIZII] „Titlul ferestrei urmează cardul din care a fost deschisă (rest din
-  // 266; aceeași clasă cu 127).” Cardul își dă titlul (`opt.titlu`); fără card (din notificare) titlul spune ce conține (127, U4).
-  if (corp.dataset.titluCard) corp.dataset.titluCard = titluCardCoada({ patruOchi, note: noteDeValidat.length });   // [313] urmează cardul
+  // [08.10.2026, decizia Costin U4] titlul spune ce conține; [292] urmează cardul din care a fost deschisă; [313]
+  if (corp.dataset.titluCard) corp.dataset.titluCard = titluCardCoada({ patruOchi, note: noteDeValidat.length });
   const titlu = corp.dataset.titluCard || titluCoada({ note: noteDeValidat.length, deValidat: patruOchi ? laSenior.length : 0,
                              deDepus: patruOchi ? aprobate.length : declaratii.filter((c) => c.stare === "la_senior" || c.stare === "aprobata").length,
                              poateDepune: !!perm.poate_depune });
+  const nDecl = laSenior.length + aprobate.length;
+  // rândurile tabelelor de note: „Note de validat” (elementele cozii) și „Notele tale în ciornă” (ciornele tale din Registrul jurnal)
+  const randuriCoada = noteDeValidat.map((c) => randNotaCoada(c, firme, perm));
+  const valideaza = permis("POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza");
+  const randuriCiorne = ciorneMele.map(({ f, n }) => randCiornaMea(f, n, valideaza));
   corp.innerHTML = `
-    <h2 class="pf-titlu" id="val-titlu">${esc(titlu)}</h2>
-    <div id="val-note"></div>
-    <p class="mig-intro">${intro}</p>
-    <div id="val-deValidat"></div>
-    <div id="val-deDepus"></div>
-    <div id="val-nevalidate"></div>
-    <div id="val-depasite"></div>
-    <div class="mig-eroare" id="val-eroare"></div>
-    <div id="val-ciorne"></div>
+    <div class="rezumat-fix" id="val-rezumat">
+      <h2 class="pf-titlu" id="val-titlu">${esc(titlu)}</h2>
+      <p class="pf-intro" id="val-cautare">${htmlCautare("val", { valoare: corp._val.text, eticheta: "Caută: firmă, cont, document, partener, sumă, declarație" })}</p>
+      <div id="val-confirmare"></div>
+      <div class="mig-eroare" id="val-eroare"></div>
+    </div>
+    <section id="val-note">
+      <div class="cf-grup-titlu cf-galben" id="val-note-titlu">Note de validat (${noteDeValidat.length})</div>
+      ${noteDeValidat.length ? htmlTabelNote({ pre: "val-n", randuri: randuriCoada, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })
+        : `<div class="stare-goala" id="val-note-gol">Nicio notă nu așteaptă validarea.</div>`}
+    </section>
+    <p class="mig-intro" id="val-intro">${intro}</p>
+    <section id="val-declaratii">
+      <div class="cf-grup-titlu" id="val-decl-titlu">Declarații (${nDecl})</div>
+      <div id="val-deValidat"></div>
+      <div id="val-deDepus"></div>
+      <div id="val-nevalidate"></div>
+      <div id="val-depasite"></div>
+    </section>
+    <section id="val-ciorne">
+      <div class="cf-grup-titlu" id="val-ciorne-titlu">Notele tale în ciornă (${ciorneMele.length})</div>
+      ${ciorne == null ? `<div class="msg-eroare" id="val-ciorne-eroare">Nu s-au putut încărca notele tale în ciornă${eroareCiorne ? " (" + esc(eroareCiorne) + ")" : ""}.</div>`
+        : ciorneMele.length ? `<p class="mig-intro">Notele scrise de tine care nu sunt încă în evidență și nici în „Note de validat”. ${valideaza ? "Le validezi de aici" : "Le trimiți la validare de aici"} sau din Registrul jurnal al firmei; acolo se și șterg.</p>
+          ${htmlTabelNote({ pre: "val-c", randuri: randuriCiorne, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })}`
+        : `<div class="stare-goala" id="val-ciorne-gol">Nicio notă de-a ta în ciornă.</div>`}
+    </section>
   `;
-  ciorneleMele(corp.querySelector("#val-ciorne"), firme, nav, corp);
-  const z1 = corp.querySelector("#val-deValidat");
-  const z2 = corp.querySelector("#val-deDepus");
-  const z3 = corp.querySelector("#val-nevalidate");
-
-  const zN = corp.querySelector("#val-note");
+  const tabele = [];
   if (noteDeValidat.length) {
-    zN.innerHTML = `<div class="cf-grup-titlu cf-galben">Note de validat (${noteDeValidat.length})</div>
-      <p class="mig-intro">${perm.poate_valida
-        ? "Notele pregătite de asistenți: le validezi (intră în evidență) sau le respingi cu motivul, pe care asistentul îl vede lângă notă."
-        : `Notele pregătite de asistenți: le validează (intră în evidență) sau le respinge cu motivul ${CINE_VALIDEAZA}; asistentul vede motivul lângă notă.`} Notele aceleiași facturi (contarea și ieșirea din stoc) se validează împreună.</p>`;
-    noteDeValidat.forEach((c) => zN.appendChild(randNota(c, firme, corp, nav, perm)));
-    barMaiMulte(zN, corp, nav);
+    tabele.push({ titlu: corp.querySelector("#val-note-titlu"), nume: "Note de validat", zona: corp.querySelector("#val-note"), t: legaTabelNote(corp.querySelector("#val-note"),
+      { pre: "val-n", randuri: randuriCoada, firma: true, deschise: corp._val.deschise, incarcaLinii: liniiElementCoada }) });
+    corp.querySelectorAll("#val-note tbody.tn-nota").forEach((tb) => {
+      const c = noteDeValidat.find((x) => String(x.id) === tb.dataset.tn);
+      if (c) legaActiuniNota(tb, c, corp, nav, corp.querySelector("#val-eroare"));
+    });
+    barMaiMulte(corp.querySelector("#val-note"), corp, nav);
+  }
+  if (ciorneMele.length) {
+    const zc = corp.querySelector("#val-ciorne");
+    tabele.push({ titlu: corp.querySelector("#val-ciorne-titlu"), nume: "Notele tale în ciornă", zona: zc, t: legaTabelNote(zc,
+      { pre: "val-c", randuri: randuriCiorne, firma: true, deschise: corp._val.deschise, incarcaLinii: liniiCiornei }) });
+    legaCiorneleMele(zc, ciorneMele, firme, nav, corp);
   }
   // [lotul 07.10 pct.8] din notificare: elementul ei, adus în vedere și marcat (și când e un membru al unui document)
   const evid = Number(opt.evidentiaza);
   // valabilă câteva secunde, nu „consumată”: întoarcerea din dialog poate redesena ecranul de două ori (o dată din navigator, cu
   // opțiunile notificării, o dată explicit) — ambele desene arată confirmarea, niciunul nu spune „deja validat sau respins”
   const actiune = _ultimaActiune && Date.now() - _ultimaActiune.la < 10000 ? _ultimaActiune : null;
-  if (actiune) {
-    const p = document.createElement("div");
-    p.className = "caseta-info";
-    p.innerHTML = `<span class="ci-mesaj">${esc(actiune.text)}</span>`;
-    corp.prepend(p);
+  const zConf = corp.querySelector("#val-confirmare");
+  if (actiune) {   // [622] confirmarea în rezumatul lipit sus: se vede oriunde ar fi derulată fereastra
+    zConf.innerHTML = `<div class="caseta-info"><span class="ci-mesaj">${esc(actiune.text)}</span></div>`;
   }
   const _arataEvidentiat = () => {
     if (!Number.isFinite(evid)) return;
     if (actiune && actiune.ids.includes(evid)) return;          // acțiunea pe elementul din notificare e confirmată mai sus
     const el = [...corp.querySelectorAll("[data-coada-ids]")].find((x) => x.dataset.coadaIds.split(",").map(Number).includes(evid));
-    if (el) { el.classList.add("val-evidentiat"); el.scrollIntoView({ block: "center" }); }
+    if (el) {
+      el.classList.add("val-evidentiat"); el.hidden = false;
+      // [lotul 12, găsită la integrare] ca în Registrul jurnal (situații identice, soluții identice): rândul notei din notificare, cu
+      // detaliul deschis (liniile ei) — pe drumul clicului pe rând (`deschide` al tabelului care îl conține)
+      tabele.forEach(({ zona, t }) => { if (el.dataset.tn && zona.contains(el)) t.deschide(el.dataset.tn); });
+      el.scrollIntoView({ block: "center" });
+    }
     else {
       const p = document.createElement("p");
       p.className = "ecran-nota";
       p.textContent = "Elementul din notificare nu mai așteaptă validarea: a fost deja validat sau respins.";
-      corp.prepend(p);
+      zConf.appendChild(p);
     }
   };
   setTimeout(_arataEvidentiat, 0);
+  declaratiiCoada(corp, firme, nav, perm, patruOchi, laSenior, aprobate, noteDeValidat.length);
+  // [622] căutarea, în pagină (coada e citită întreagă): notele (după ce arată rândul și liniile lor — încărcate la prima căutare) și
+  // declarațiile (după textul cardului); numărul fiecărei secțiuni spune câte se văd din câte are
+  const campC = corp.querySelector("#val-cauta"), elVazute = corp.querySelector("#val-numar");
+  const filtreaza = () => {
+    const text = corp._val.text;
+    let vazute = 0, total = 0;
+    tabele.forEach(({ titlu: el, nume, t }) => {
+      const r = t.filtreaza(text, "");
+      vazute += r.vazute; total += r.total;
+      if (el) el.textContent = `${nume} (${text ? `${r.vazute} din ${r.total}` : r.total})`;
+    });
+    const carduri = [...corp.querySelectorAll("#val-declaratii .val-card")];
+    let vd = 0;
+    carduri.forEach((c) => { const da = potrivesteText(c.innerText || c.textContent, text); c.hidden = !da; if (da) vd++; });
+    const td = corp.querySelector("#val-decl-titlu");
+    if (td) td.textContent = `Declarații (${text ? `${vd} din ${carduri.length}` : nDecl})`;
+    vazute += vd; total += carduri.length;
+    if (elVazute) elVazute.textContent = text ? `se văd: ${vazute} din ${total}` : "";
+  };
+  if (campC) campC.addEventListener("input", () => {
+    corp._val.text = campC.value;
+    filtreaza();
+    // contul se caută în liniile notelor: se încarcă o dată, la prima căutare, apoi filtrul se reface
+    if (campC.value.trim()) Promise.all(tabele.map(({ t }) => t.incarcaToateLiniile())).then(() => { if (corp.isConnected) filtreaza(); });
+  });
+  if (corp._val.text) Promise.all(tabele.map(({ t }) => t.incarcaToateLiniile())).then(() => { if (corp.isConnected) filtreaza(); });
+  filtreaza();
+}
+
+// textul unui card de declarație se potrivește cu căutarea? (aceeași regulă ca rândurile tabelului: textul scris, întreg, fără diacritice)
+function potrivesteText(text, cautat) {
+  const t = normalizeaza(cautat).replace(/\s+/g, " ").trim();
+  return !t || normalizeaza(text).replace(/\s+/g, " ").includes(t);
+}
+
+// [622] liniile unui element din coadă, pentru detaliu și pentru căutarea după cont: conținutul lui (`GET /coada/{id}/continut`); la un
+// document cu mai multe note, fiecare linie poartă nota ei
+async function liniiElementCoada(r) {
+  const d = await api.get(`/coada/${r.cheie}/continut`);
+  const note = d.note || [{ nota: d.nota || {}, linii: d.linii || [] }];
+  return note.flatMap(({ nota, linii }) => (linii || []).map((l) => ({ ...l, nota: note.length > 1 ? (nota.eticheta || dataRo(nota.data)) : "" })));
+}
+
+// [622] liniile unei ciorne proprii: din Registrul jurnal al firmei, pe luna notei (aceeași sursă ca registrul); o lună citită o dată
+const _jurnalLuna = new Map();
+async function liniiCiornei(r) {
+  const [an, luna] = String(r.data).split("-").map((x) => parseInt(x, 10));
+  const k = `${r.tenant}:${an}:${luna}`;
+  if (!_jurnalLuna.has(k)) _jurnalLuna.set(k, api.get(`/tenants/${r.tenant}/jurnal?an=${an}&luna=${luna}`).catch((e) => { _jurnalLuna.delete(k); throw e; }));
+  const j = await _jurnalLuna.get(k);
+  _jurnalLuna.delete(k);   // citirea servește căutarea curentă; o redesenare citește din nou (nota s-a putut schimba)
+  const n = ((j && j.note) || []).find((x) => Number(x.id) === Number(r.notaId));
+  return n ? n.linii : [];
+}
+
+// [622] Rândul unui element-notă din coadă (o notă, sau documentul cu notele lui) pentru tabelul comun
+function randNotaCoada(c, firme, perm) {
+  const n = c.nota || {};
+  const uid = uidCurent();
+  const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
+  const nrNote = (c.membri_ids || []).length;
+  let actiuni = "", selectabila = false;
+  if (!perm.poate_valida) {
+    actiuni = `<span class="val-nota-perm">nu ai dreptul de validare</span>`;
+  } else if (euAmPregatit) {
+    actiuni = `<span class="val-nota-perm">ai pregătit-o tu — o validează altcineva</span>`;
+  } else {
+    actiuni = `<button class="buton-primar val-btn val-aproba" data-act="valideaza-nota" data-actiune="POST /coada/{coada_id}/aproba">Validează</button>
+      <button class="buton-sters val-btn val-respinge" data-act="respinge-nota" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`;
+    selectabila = true;
+  }
+  const descr = (n.descrieri && n.descrieri.length > 1) ? [...new Set(n.descrieri.filter(Boolean))].join(" · ") : n.descriere;
+  return {
+    cheie: c.id, atribute: { "coada-ids": (c.membri_ids || [c.id]).join(",") },   // [lotul 07.10 pct.8-9] documentul, cu toate notele lui
+    data: n.data, firma: numeFirma(firme, c.tenant_id), explicatie: descr || c.eticheta, document: n.document_ref || "",
+    partener: n.partener || "", rulaj: Number(n.rulaj != null ? n.rulaj : n.total) || 0, storno: Number(n.rulaj_storno || 0), linii: null,
+    stare: c.retrimisa ? { fel: "la_validare", text: "Retrimisă după respingere", culoare: "var(--galben-text)" }
+      : { fel: "la_validare", text: "De validat", culoare: "var(--galben-text)" },
+    semne: [!n.document_ref && { fel: "fara_doc", text: "fără document" }, nrNote > 1 && { fel: "document", text: cate(nrNote, "notă", "note") + " ale documentului" }].filter(Boolean),
+    cautaInPlus: `${c.eticheta || ""} ${c.creat_de_nume || ""} ${n.stinge || ""}`,
+    inainte: selectabila ? `<input type="checkbox" class="val-sel" data-nota="${c.id}" aria-label="Selectează ${esc(c.eticheta || "nota")}" data-actiune="POST /coada/aproba-mai-multe"> ` : "",
+    actiuni,
+    detaliu: `<p class="pf-frand-sub">${esc(c.eticheta || "Notă")} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</p>
+      ${c.retrimisa ? `<p class="pf-frand-sub">Retrimisă după respingere · motivul anterior: „${esc(c.retrimisa.motiv_respingere || "fără motiv")}” · ${c.retrimisa.schimbata === true ? "nota s-a schimbat față de cea respinsă" : c.retrimisa.schimbata === false ? "nota nu s-a schimbat față de cea respinsă" : "nu se poate spune dacă nota s-a schimbat: cea respinsă e mai veche decât compararea notelor"}</p>` : ""}
+      <p class="pf-frand-sub">${rulajNota(n)}</p>`,   // [lotul 12] „rulaj X lei” o dată (era „Rulaj: rulaj X lei”)
+  };
+}
+
+// [622] Rândul unei ciorne proprii (Registrul jurnal al firmei ei), pentru tabelul comun
+function randCiornaMea(f, n, valideaza) {
+  const respinsa = n.in_coada === "respinsa";
+  const b = [];
+  if (n.in_coada !== "la_senior" && valideaza)
+    b.push(`<button class="buton-primar val-ciorna-valideaza" data-val-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Validează</button>`);
+  else if (n.in_coada !== "la_senior" && !valideaza)
+    b.push(`<button class="buton-secundar val-ciorna-trimite" data-trimite-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">${respinsa ? "Trimite din nou la validare" : "Trimite la validare"}</button>`);
+  return {
+    cheie: `c${f.tenant_id}-${n.id}`, atribute: { ciorna: n.id, tenant: f.tenant_id }, tenant: f.tenant_id, notaId: n.id,
+    data: n.data, firma: f.firma, explicatie: n.descriere, document: n.document_ref || "", rulaj: n.rulaj, storno: n.rulaj_storno, linii: null,
+    stare: n.in_coada === "la_senior" ? { fel: "la_validare", text: "Trimisă la validare", culoare: "var(--galben-text)" }
+      : respinsa ? { fel: "respinsa", text: "Respinsă la validare", culoare: "var(--rosu)" }
+      : { fel: "ciorna", text: "Nevalidată, netrimisă", culoare: "var(--galben-text)" },
+    semne: [!n.document_ref && { fel: "fara_doc", text: "fără document" }, respinsa && { fel: "respinsa", text: "motivul în detaliu" }].filter(Boolean),
+    actiuni: b.join(" "),
+    detaliu: `${respinsa ? `<div class="caseta-atentie"><div class="ca-mesaj">Respinsă la validare: ${esc(n.motiv_respingere || "fără motiv")}</div></div>` : ""}
+      <p class="tn-detaliu-actiuni"><button class="buton-secundar val-ciorna-deschide" data-deschide-ciorna="${n.id}" data-tenant="${f.tenant_id}">Deschide nota în Registrul jurnal</button>
+        <button class="btn-link" data-firma="${f.tenant_id}">Deschide firma</button></p>`,
+  };
+}
+
+// [Retest 2 pct.12] + [lotul 11, 457] ciornele proprii: „Validează” (cine are dreptul; serverul aplică aceleași reguli ca în Registrul
+// jurnal, iar refuzul stă pe rând), „Trimite la validare” (cine nu validează) și „Deschide nota” (Registrul jurnal, pe luna notei, cu
+// nota evidențiată).
+function legaCiorneleMele(zona, lista, firme, nav, corp) {
+  const nota = (b) => (lista.find(({ f, n }) => String(f.tenant_id) === b.dataset.tenant
+    && String(n.id) === (b.dataset.valCiorna || b.dataset.trimiteCiorna || b.dataset.deschideCiorna)) || {}).n || {};
+  const numeNota = (n) => `nota din ${dataRo(n.data)}${n.descriere ? " („" + n.descriere + "”)" : ""}`;
+  zona.querySelectorAll("[data-firma]").forEach((b) => b.addEventListener("click", () => {
+    const t = firme.find((x) => String(x.id) === b.dataset.firma);
+    if (t) deschideFirma(t, nav);
+  }));
+  const dupaAct = (text) => { _confirma([], text); randeazaValidat(corp, nav, { peLoc: true }); };
+  zona.querySelectorAll("[data-val-ciorna]").forEach((b) => b.addEventListener("click", async () => {
+    const n = nota(b);
+    b.disabled = true;
+    try {
+      await api.post(`/tenants/${b.dataset.tenant}/jurnal/${b.dataset.valCiorna}/valideaza`, {});
+      dupaAct(`Ai validat ${numeNota(n)}: a intrat în evidență.`);
+    } catch (e) { b.disabled = false; refuzPeRand(b, (e && e.mesaj) || "Nota nu s-a putut valida."); }
+  }));
+  zona.querySelectorAll("[data-trimite-ciorna]").forEach((b) => b.addEventListener("click", async () => {
+    const n = nota(b);
+    b.disabled = true;
+    try {
+      await api.post(`/tenants/${b.dataset.tenant}/jurnal/${b.dataset.trimiteCiorna}/retrimite`, {});
+      dupaAct(`Ai trimis la validare ${numeNota(n)}.`);
+    } catch (e) { b.disabled = false; refuzPeRand(b, (e && e.mesaj) || "Nota nu s-a putut trimite la validare."); }
+  }));
+  zona.querySelectorAll("[data-deschide-ciorna]").forEach((b) => b.addEventListener("click", () => {
+    const n = nota(b);
+    const t = firme.find((x) => String(x.id) === b.dataset.tenant);
+    if (!n.data || !t) return;
+    const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
+    nav.deschide(`Registru jurnal · ${t.nume}`, (c, nn) => ecranJurnal(c, nn, t, { evidentiaza: n.id, an, luna }), { lat: "tabel" });
+  }));
+}
+
+// [622] secțiunea „Declarații”: grupurile de până acum (de validat / de depus / nevalidate / depășite), cu cardurile lor
+function declaratiiCoada(corp, firme, nav, perm, patruOchi, laSenior, aprobate, nrNote) {
+  const z1 = corp.querySelector("#val-deValidat");
+  const z2 = corp.querySelector("#val-deDepus");
+  const z3 = corp.querySelector("#val-nevalidate");
   if (laSenior.length === 0 && aprobate.length === 0) {
-    if (!noteDeValidat.length) {
-      // [266] coada goală spune ce n-a venit — note și declarații —, nu „nimic de depus” celui care nu depune
-      z1.innerHTML = `<div class="stare-goala">Coada e goală: nicio notă contabilă și nicio declarație nu așteaptă acum.</div>`;
-    }
+    // [266] coada goală spune ce n-a venit — note și declarații —, nu „nimic de depus” celui care nu depune
+    z1.innerHTML = `<div class="stare-goala">${nrNote ? "Nicio declarație nu așteaptă acum." : "Coada e goală: nicio notă contabilă și nicio declarație nu așteaptă acum."}</div>`;
     return;
   }
-
   // [R41 partea II] «gata de depus» vine de la server, per element. Nu se recalculează aici.
   const gata = (c) => !!c.gata_de_depus;
   // [deficiența 323, 18.10.2026] declarațiile DEPĂȘITE au grupul lor: nu sunt „nevalidate” (validatorul le poate da valide), ci
@@ -336,68 +542,6 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
 
 // [08.10.2026, decizia Costin pct.3 la §6 S6] „Coada de validare permite validarea mai multor note deodată (Z-urile vin zilnic).”
 // Bara apare numai când există note pe care le poți valida; serverul trece fiecare notă prin aceeași aprobare și spune ce a refuzat.
-// [Retest 2 pct.12, comanda Costin 09.10.2026] „Ciornele proprii ale contabilului trebuie să fie vizibile undeva fără căutare.”
-// La capătul ferestrei: notele tale încă în ciornă, pe firme, cu starea lor (trimisă la validare / respinsă cu motivul / netrimisă).
-// [lotul 11, deficiența 457] „ciornele făcute de contabil nu ajung în nicio coadă (182 nerezolvată)”: lista era numai de citit, deci ciorna
-// netrimisă (a celui care validează: n-o trimite nimeni în coadă) nu aștepta nicăieri unde să se lucreze. Acum lista e coada ta: pe rând,
-// „Validează” (cine are dreptul; serverul aplică aceleași reguli ca în Registrul jurnal, iar refuzul stă sub rând), „Trimite la validare”
-// (cine nu validează, pentru ciorna încă netrimisă) și „Deschide nota” (Registrul jurnal, pe luna notei, cu nota evidențiată).
-async function ciorneleMele(zona, firme, nav, corp) {
-  if (!zona) return;
-  let r;
-  try { r = await api.get("/eu/ciorne"); } catch (e) { arataMesaj(zona, "Nu s-au putut încărca notele tale în ciornă" + (e && e.mesaj ? " (" + e.mesaj + ")" : "") + ".", "eroare"); return; }
-  if (!r || !r.total) return;
-  const stare = (n) => n.in_coada === "la_senior" ? "trimisă la validare"
-    : (n.in_coada === "respinsa" ? `respinsă${n.motiv_respingere ? ": " + n.motiv_respingere : ""}` : "nevalidată, netrimisă");
-  const valideaza = permis("POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza");
-  const actiuni = (f, n) => {
-    const b = [];
-    if (n.in_coada !== "la_senior" && valideaza)
-      b.push(`<button class="buton-primar val-ciorna-valideaza" data-val-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza">Validează</button>`);
-    else if (!n.in_coada && !valideaza)
-      b.push(`<button class="buton-secundar val-ciorna-trimite" data-trimite-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">Trimite la validare</button>`);
-    b.push(`<button class="btn-link val-ciorna-deschide" data-deschide-ciorna="${n.id}" data-tenant="${f.tenant_id}">Deschide nota</button>`);
-    return b.join(" ");
-  };
-  zona.innerHTML = `<div class="cf-grup-titlu">Notele tale în ciornă (${r.total})</div>
-    <p class="mig-intro">Notele scrise de tine care nu sunt încă în evidență. ${valideaza ? "Le validezi de aici" : "Le trimiți la validare de aici"} sau din Registrul jurnal al firmei; acolo se și șterg.</p>
-    ${r.firme.map((f) => `<div class="val-ciorne-firma">
-      <div class="pf-frand-nume">${esc(f.firma)} <button class="btn-link" data-firma="${f.tenant_id}">Deschide firma</button></div>
-      <ul class="sa-jurnal">${f.note.map((n) => `<li data-ciorna="${n.id}">${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${rulajNota(n)} · ${esc(stare(n))} ${actiuni(f, n)}</li>`).join("")}</ul>
-    </div>`).join("")}`;
-  const nota = (b) => (r.firme.find((f) => String(f.tenant_id) === b.dataset.tenant) || { note: [] }).note
-    .find((n) => String(n.id) === (b.dataset.valCiorna || b.dataset.trimiteCiorna || b.dataset.deschideCiorna)) || {};
-  const numeNota = (n) => `nota din ${dataRo(n.data)}${n.descriere ? " („" + n.descriere + "”)" : ""}`;
-  zona.querySelectorAll("[data-firma]").forEach((b) => b.addEventListener("click", () => {
-    const t = firme.find((x) => String(x.id) === b.dataset.firma);
-    if (t) deschideFirma(t, nav);
-  }));
-  const dupaAct = (text) => { _confirma([], text); if (corp) randeazaValidat(corp, nav); else ciorneleMele(zona, firme, nav, corp); };
-  zona.querySelectorAll("[data-val-ciorna]").forEach((b) => b.addEventListener("click", async () => {
-    const n = nota(b);
-    b.disabled = true;
-    try {
-      await api.post(`/tenants/${b.dataset.tenant}/jurnal/${b.dataset.valCiorna}/valideaza`, {});
-      dupaAct(`Ai validat ${numeNota(n)}: a intrat în evidență.`);
-    } catch (e) { b.disabled = false; refuzPeRand(b, (e && e.mesaj) || "Nota nu s-a putut valida."); }
-  }));
-  zona.querySelectorAll("[data-trimite-ciorna]").forEach((b) => b.addEventListener("click", async () => {
-    const n = nota(b);
-    b.disabled = true;
-    try {
-      await api.post(`/tenants/${b.dataset.tenant}/jurnal/${b.dataset.trimiteCiorna}/retrimite`, {});
-      dupaAct(`Ai trimis la validare ${numeNota(n)}.`);
-    } catch (e) { b.disabled = false; refuzPeRand(b, (e && e.mesaj) || "Nota nu s-a putut trimite la validare."); }
-  }));
-  zona.querySelectorAll("[data-deschide-ciorna]").forEach((b) => b.addEventListener("click", () => {
-    const n = nota(b);
-    const t = firme.find((x) => String(x.id) === b.dataset.tenant);
-    if (!n.data || !t) return;
-    const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    nav.deschide(`Registru jurnal · ${t.nume}`, (c, nn) => ecranJurnal(c, nn, t, { evidentiaza: n.id, an, luna }), { lat: "tabel" });
-  }));
-}
-
 function barMaiMulte(zN, corp, nav) {
   const bife = [...zN.querySelectorAll(".val-sel")];
   if (bife.length < 2) return;
@@ -406,12 +550,15 @@ function barMaiMulte(zN, corp, nav) {
   bara.innerHTML = `<label class="set-bifa"><input type="checkbox" id="val-sel-toate"> <span>Selectează toate (${bife.length})</span></label>
     <button class="buton-primar" id="val-aproba-selectate" data-actiune="POST /coada/aproba-mai-multe" disabled>Validează selectate</button>
     <div id="val-mai-multe-msg"></div>`;
-  zN.insertBefore(bara, zN.querySelector(".val-card"));
+  const ref = zN.querySelector(".tn-explicatii") || zN.querySelector(".tn-tabel");
+  zN.insertBefore(bara, ref);
   const btn = bara.querySelector("#val-aproba-selectate"), toate = bara.querySelector("#val-sel-toate");
-  const alese = () => bife.filter((b) => b.checked).map((b) => Number(b.dataset.nota));
+  // „Selectează toate” = cele care se văd (căutarea poate ascunde rânduri)
+  const vazute = () => bife.filter((b) => !b.closest("tbody").hidden);
+  const alese = () => bife.filter((b) => b.checked && !b.closest("tbody").hidden).map((b) => Number(b.dataset.nota));
   const actualizeaza = () => { const n = alese().length; btn.disabled = !n; btn.textContent = n ? `Validează selectate (${n})` : "Validează selectate"; };
   bife.forEach((b) => b.addEventListener("change", actualizeaza));
-  toate.addEventListener("change", () => { bife.forEach((b) => { b.checked = toate.checked; }); actualizeaza(); });
+  toate.addEventListener("change", () => { vazute().forEach((b) => { b.checked = toate.checked; }); actualizeaza(); });
   btn.addEventListener("click", async () => {
     const ids = alese();
     btn.disabled = true;
@@ -420,7 +567,7 @@ function barMaiMulte(zN, corp, nav) {
       const refuz = r.refuzate || [];
       _confirma(r.validate || [], `Ai validat ${cate((r.validate || []).length, "notă", "note")}.`
         + (refuz.length ? ` Nu s-au validat ${refuz.length}: ${refuz.map((x) => x.mesaj).join(" · ")}` : ""));
-      randeazaValidat(corp, nav);
+      randeazaValidat(corp, nav, { peLoc: true });
     } catch (e) {
       arataMesaj(bara.querySelector("#val-mai-multe-msg"), (e && e.mesaj) || "Nu s-au putut valida notele selectate.", "eroare");
       actualizeaza();
@@ -433,41 +580,9 @@ function aprobaElement(c) {
   return api.post(`/coada/${c.id}/aproba`, {});
 }
 
-// [validare_note] Rândul unei note din coadă: ce e, cine a pregătit-o, documentul și totalul; „Vezi nota” arată liniile.
-function randNota(c, firme, corp, nav, perm) {
-  const n = c.nota || {};
-  const div = document.createElement("div");
-  div.className = "val-card";
-  div.dataset.coadaIds = (c.membri_ids || [c.id]).join(",");   // [lotul 07.10 pct.8-9] documentul, cu toate notele lui
-  const uid = uidCurent();
-  const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
-  let actiuni = "", selectabila = false;
-  if (!perm.poate_valida) {
-    actiuni = `<span class="val-nota-perm">nu ai dreptul de validare</span>`;
-  } else if (euAmPregatit) {
-    actiuni = `<span class="val-nota-perm">ai pregătit-o tu — o validează altcineva</span>`;
-  } else {
-    actiuni = `<button class="buton-primar val-btn val-aproba" data-act="valideaza-nota" data-actiune="POST /coada/{coada_id}/aproba">Validează</button>
-      <button class="buton-sters val-btn val-respinge" data-act="respinge-nota" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`;
-    selectabila = true;
-  }
-  div.innerHTML = `
-    <div class="val-info">
-      <div class="val-titlu">${selectabila ? `<input type="checkbox" class="val-sel" data-nota="${c.id}" aria-label="Selectează ${esc(c.eticheta || "nota")}" data-actiune="POST /coada/aproba-mai-multe"> ` : ""}<b>${esc(c.eticheta || "Notă")}</b></div>
-      <div class="val-sub">${esc(numeFirma(firme, c.tenant_id))} · pregătită de ${esc(c.creat_de_nume || c.creat_de || "—")}</div>
-      ${c.retrimisa ? `<div class="val-sub">Retrimisă după respingere · motivul anterior: „${esc(c.retrimisa.motiv_respingere || "fără motiv")}” · ${c.retrimisa.schimbata === true ? "nota s-a schimbat față de cea respinsă" : c.retrimisa.schimbata === false ? "nota nu s-a schimbat față de cea respinsă" : "nu se poate spune dacă nota s-a schimbat: cea respinsă e mai veche decât compararea notelor"}</div>` : ""}
-      <div class="val-termen">${n.data ? esc(dataRo(n.data)) : ""} · ${rulajNota(n)}${n.document_ref ? "" : " · fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</div>
-      <button type="button" class="btn-link val-vezi-nota">${(c.membri_ids || []).length > 1 ? "Vezi notele →" : "Vezi nota →"}</button>
-    </div>
-    <div class="val-actiuni">${actiuni}</div>`;
-  div.querySelector(".val-vezi-nota").addEventListener("click", () => deschideNota(c, nav, { actiuni, corpLista: corp }));
-  legaActiuniNota(div, c, corp, nav, corp.querySelector("#val-eroare"), false);
-  return div;
-}
-
-// [08.10.2026, decizia Costin U5] Validează / Respinge ale unei note — o singură definiție, pentru cardul din coadă și pentru detaliul
-// notei („Detaliul notei are direct Validează și Respinge”). `dinDetaliu`: după act se închide detaliul și se reîncarcă lista.
-function legaActiuniNota(zona, c, corpLista, nav, eroare, dinDetaliu) {
+// [08.10.2026, decizia Costin U5] Validează / Respinge ale unei note — pe rândul ei din tabel ([622]: „Validează/Respinge pe rând”);
+// liniile notei sunt în detaliul rândului, deci fereastra separată a notei nu mai e nevoie. După act: lista se redesenează pe loc.
+function legaActiuniNota(zona, c, corpLista, nav, eroare) {
   const n = c.nota || {};
   const bResp = zona.querySelector(".val-respinge");
   if (bResp) bResp.addEventListener("click", () => {
@@ -480,29 +595,29 @@ function legaActiuniNota(zona, c, corpLista, nav, eroare, dinDetaliu) {
       onConfirm: async (motiv) => {
         await api.post(`/coada/${c.id}/respinge`, { motiv });
         _confirma(c.membri_ids || [c.id], `Ai respins ${numeScurt(c)}. Motivul („${motiv}”) apare lângă notă la cel care a pregătit-o.`);
-        nav.inapoi(); if (dinDetaliu) nav.inapoi();
-        randeazaValidat(corpLista, nav);
+        nav.inapoi();
+        randeazaValidat(corpLista, nav, { peLoc: true });
       },
     });
   });
   const bVal = zona.querySelector(".val-aproba");
   if (bVal) bVal.addEventListener("click", () => {
-    const btn = bVal;
     const valideaza = async () => {
+      bVal.disabled = true;
       try {
         await aprobaElement(c);
         _confirma(c.membri_ids || [c.id], `Ai validat ${numeScurt(c)}: a intrat în evidență.`);
-        if (dinDetaliu) nav.inapoi();
-        randeazaValidat(corpLista, nav);
+        randeazaValidat(corpLista, nav, { peLoc: true });
       }
       catch (e) {
+        bVal.disabled = false;
         if (eroare) { arataMesaj(eroare, (e && e.mesaj) || "Eroare la validare.", "eroare"); ofertaRefacere(eroare, c, corpLista, nav); }
       }
     };
     // [386, lotul 9] ca în Registrul-jurnal: regula de fond R3 din bază refuză validarea fără document justificativ — caseta spune de ce
-    // și duce la pasul posibil (respingerea cu motivul, ca cel care a pregătit nota să scrie referința)
+    // și duce la pasul posibil (respingerea cu motivul, ca cel care a pregătit nota să scrie referința); în detaliul rândului
     if (!n.document_ref) {
-      confirmaCaseta(btn.parentElement || btn, "Nota nu are document justificativ, iar o notă nu se validează fără documentul din care provine (Registrul-jurnal, col.3: felul, numărul și data). Respinge-o cu motivul, ca cel care a pregătit-o să scrie referința.",
+      confirmaCaseta(locInDetaliu(bVal), "Nota nu are document justificativ, iar o notă nu se validează fără documentul din care provine (Registrul-jurnal, col.3: felul, numărul și data). Respinge-o cu motivul, ca cel care a pregătit-o să scrie referința.",
         () => { const r = zona.querySelector(".val-respinge"); if (r) r.click(); }, { textOk: "Respinge nota" });
       return;
     }
@@ -530,29 +645,10 @@ async function ofertaRefacere(zona, c, corpLista, nav) {
       try {
         const r = await api.post(`/tenants/${c.tenant_id}/jurnal/${nid}/reface`, {});
         _confirma([], `${r.mesaj} O găsești în Registrul jurnal al firmei.`);
-        randeazaValidat(corpLista, nav);
+        randeazaValidat(corpLista, nav, { peLoc: true });
       } catch (e) { b.disabled = false; arataMesaj(zona, (e && e.mesaj) || "Nota nu s-a putut reface din sursă.", "eroare"); }
     });
   }
-}
-
-async function deschideNota(c, nav, ctx = {}) {
-  nav.deschide(c.eticheta || "Notă", async (corp) => {
-    corp.innerHTML = `<p class="ecran-nota">Se încarcă nota…</p>`;
-    let d;
-    try { d = await api.get(`/coada/${c.id}/continut`); }
-    catch (e) { corp.innerHTML = `<div class="dec-eroare">${esc((e && e.mesaj) || "Nu s-a putut încărca nota.")}</div>`; return; }
-    // [lotul 07.10 pct.9] un document cu mai multe note (contarea + ieșirea din stoc a aceleiași facturi): toate, una sub alta
-    const note = d.note || [{ nota: d.nota || {}, linii: d.linii || [] }];
-    corp.innerHTML = note.map(({ nota: n, linii }) => `
-      <div class="rezumat-fix"><p class="mig-intro">Nota ${esc(n.eticheta || "")} · ${esc(dataRo(n.data))} · ${esc(n.descriere || "")} · ${n.document_ref ? "document: " + esc(n.document_ref) : "fără document justificativ"}${n.stinge ? " · stinge " + esc(n.stinge) : ""}</p></div>   <!-- [lotul 10, 421 / 424, DS cap.9 v2.97 pct.5] antetul notei rămâne sus -->
-      <table class="fd-tabel"><thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
-        <tbody>${(linii || []).map((l) => `<tr><td>${esc(l.debit)}</td><td>${esc(l.credit)}</td><td>${bani(l.suma)}</td></tr>`).join("")}</tbody>
-      </table>`).join("") + (ctx.actiuni   // [lotul 10, 421 / 424, DS cap.9 v2.96] „acțiunea principală fix jos”: validarea și refuzul ei, lipite jos
-      ? `<div class="bara-fixa"><div class="val-actiuni" id="val-nota-actiuni" style="margin-top:12px">${ctx.actiuni}</div><div id="val-nota-eroare"></div></div>`
-      : "");
-    if (ctx.actiuni && ctx.corpLista) legaActiuniNota(corp, c, ctx.corpLista, nav, corp.querySelector("#val-nota-eroare"), true);
-  }, { nivel: "cabinet" });
 }
 
 // [R41 partea II] Lista separată. Titlul nu spune „de depus" — fiindcă nu sunt.
@@ -621,7 +717,7 @@ async function deschideContinut(c, nav, corpLista) {
       ${avert}
       <details open><summary>XML generat</summary><pre class="dec-xml-pre">${esc(xml)}</pre></details>
     `;
-    if (corpLista) randeazaValidat(corpLista, nav);
+    if (corpLista) randeazaValidat(corpLista, nav, { peLoc: true });
   }, { nivel: "cabinet" });
 }
 
@@ -732,7 +828,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=d42038494a");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=cb3b13150a");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;
@@ -741,7 +837,7 @@ async function actioneaza(c, act, firme, corp, nav) {
     try {
       const r = await api.post(`/coada/${c.id}/regenereaza`, {});
       _confirma([r.coada_id], `${(c.tip || "").toUpperCase()} (${perDecl}) s-a generat din nou din documentele de acum; cea veche a ieșit din coadă.`);
-      randeazaValidat(corp, nav);
+      randeazaValidat(corp, nav, { peLoc: true });
     } catch (e) {
       if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Declarația nu s-a putut genera din nou.", "eroare");
     }
@@ -759,7 +855,7 @@ async function actioneaza(c, act, firme, corp, nav) {
         await api.post(`/coada/${c.id}/respinge`, { motiv: motiv || "" });
         _confirma([c.id], `Ai retras din coadă ${(c.tip || "").toUpperCase()} (${perDecl}).`);
         nav.inapoi();
-        randeazaValidat(corp, nav);
+        randeazaValidat(corp, nav, { peLoc: true });
       },
     });
     return;
@@ -776,7 +872,7 @@ async function actioneaza(c, act, firme, corp, nav) {
         await api.post(`/coada/${c.id}/respinge`, { motiv });
         _confirma([c.id], `Ai respins ${(c.tip || "").toUpperCase()} (${perDecl}). Motivul („${motiv}”) apare la cel care a pregătit-o.`);
         nav.inapoi();
-        randeazaValidat(corp, nav);
+        randeazaValidat(corp, nav, { peLoc: true });
       },
     });
     return;
@@ -822,10 +918,11 @@ async function actioneaza(c, act, firme, corp, nav) {
     });
     return;
   }
-  // aproba — fara dialog, direct
+  // aproba — fara dialog, direct; [622] lista se redesenează pe loc (fereastra nu sare sus), cu confirmarea în rezumat
   try {
     await aprobaElement(c);
-    randeazaValidat(corp, nav);
+    _confirma([c.id], `Ai aprobat ${(c.tip || "").toUpperCase()} (${perDecl}).`);
+    randeazaValidat(corp, nav, { peLoc: true });
   } catch (e) {
     if (eroare) arataMesaj(eroare, (e && e.mesaj) || "Eroare la aprobare.", "eroare");
   }
@@ -860,7 +957,7 @@ function casetaDepusa(fc, nav, corpLista, c, firme, perDecl, n) {
     </div>`;
   fc.querySelector("#val-conf-gata").addEventListener("click", () => {
     nav.inapoi();
-    randeazaValidat(corpLista, nav);
+    randeazaValidat(corpLista, nav, { peLoc: true });
   });
 }
 

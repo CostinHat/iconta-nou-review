@@ -746,7 +746,7 @@ def test_pilot_09_lista_partenerilor_cu_soldurile(patron, firma_pilot):
 def test_pilot_10_factura_cu_descarcarea_stocului(patron, firma_pilot):
     """F172, F045, F046, F252, F126. Pașii: Facturi -> „Emite factură” -> data 10.09.2026, clientul Alfa (CUI, localitate) -> linia 1:
     articolul „Marfă scaun ergonomic pilot”, 10 × 300,00, 21% -> linia 2: „Servicii de montaj mobilier pilot”, 1 × 300,00 -> țara RO,
-    operațiune normală -> „Emite” -> „Pleacă marfa acum?” -> „Da, pleacă marfa”: „✓ Factura E2EA1 emisă · total 3.993,00 RON · 1 articol
+    operațiune normală -> „Emite” -> „Pleacă marfa acum?” -> „Da, pleacă marfa”: „✓ Factura E2EA nr. 1 emisă · total 3.993,00 RON · 1 articol
     descărcat din gestiune.” -> notele: 4111 = 707 3.000,00, 4111 = 704 300,00, 4111 = 4427 693,00 și descărcarea 607 = 371 1.600,00 (10 ×
     CMP 160,00) -> Istoric -> factura -> PDF: „Seria E2EA nr. 1”, totalul 3.993,00 -> „Trimite în SPV”: cabinetul nu e conectat la SPV,
     cu drumul spre Conectare SPV."""
@@ -754,7 +754,8 @@ def test_pilot_10_factura_cu_descarcarea_stocului(patron, firma_pilot):
     rez = _emite_pe_ecran(patron, f, zi(10), ALFA, [(MARFA, 10, 300, True), (SERVICIU, 1, 300, False)], pleaca=True)
     patron.captura("emisa")
     total = _q(sum(E1) * (1 + COTA))                                   # CF art.286 alin.(1) + art.291 alin.(1): 3.300 + 693
-    assert rez.startswith("✓ Factura E2EA1 emisă · total %s RON" % _bani(total)) and "1 articol descărcat din gestiune" in rez, rez
+    # [lotul 12, 443.1] seria și numărul separat, ca în Istoric („E2EA nr. 1”), nu lipite („E2EA1”)
+    assert rez.startswith("✓ Factura E2EA nr. 1 emisă · total %s RON" % _bani(total)) and "1 articol descărcat din gestiune" in rez, rez
     fid, numar = _factura(f, "1")
     f["e1"] = fid
     note = [(_sintetic(d), c, s) for d, c, s in _note(f, "i.factura_id = %s", (fid,)) if d != "607"]
@@ -886,12 +887,12 @@ def test_pilot_13_raportul_z_din_fisierul_amef(patron, firma_pilot):
 @pozitii("F254")
 def test_pilot_14_factura_pe_baza_bonului_fiscal(patron, firma_pilot):
     """F254. Pașii: Emite factură -> 15.09.2026, clientul Gamma -> articolul, 1 × 300,00, 21% -> „Emisă pe baza bonului fiscal”: bonul 0002
-    din 15.09.2026 -> „Emite”: fără „Pleacă marfa acum?” (marfa a plecat pe bon), „✓ Factura E2EA2 emisă · total 363,00 RON”, fără descărcare
+    din 15.09.2026 -> „Emite”: fără „Pleacă marfa acum?” (marfa a plecat pe bon), „✓ Factura E2EA nr. 2 emisă · total 363,00 RON”, fără descărcare
     -> factura nu are notă (vânzarea e în raportul Z: HG 1/2016 pct.97 alin.(1) — factura se emite „conform bon fiscal”)."""
     f = firma_pilot
     rez = _emite_pe_ecran(patron, f, zi(15), GAMMA, [(MARFA, 1, 300, True)], bon=("0002", zi(15)))
     patron.captura()
-    assert rez.startswith("✓ Factura E2EA2 emisă · total %s RON" % _bani(sum(BON))) and "descărcat" not in rez, rez
+    assert rez.startswith("✓ Factura E2EA nr. 2 emisă · total %s RON" % _bani(sum(BON))) and "descărcat" not in rez, rez   # [443.1]
     fid, _n = _factura(f, "2")
     f["e2"] = fid
     assert sql('SELECT count(*) FROM "%s".inregistrari WHERE factura_id = %%s' % f["schema"], (fid,)) == [(0,)], "factura pe bon are notă"
@@ -920,12 +921,12 @@ def test_pilot_15_depunerea_numerarului(patron, firma_pilot):
 @pozitii("F172", "F046")
 def test_pilot_16_a_doua_factura_cu_marfa(patron, firma_pilot):
     """F172, F046. Pașii: Emite factură -> 20.09.2026, clientul Beta -> articolul, 5 × 300,00, 21% -> „Emite” -> „Da, pleacă marfa”:
-    „✓ Factura E2EA3 emisă · total 1.815,00 RON · 1 articol descărcat din gestiune.” -> notele 4111 = 707 1.500,00, 4111 = 4427 315,00,
+    „✓ Factura E2EA nr. 3 emisă · total 1.815,00 RON · 1 articol descărcat din gestiune.” -> notele 4111 = 707 1.500,00, 4111 = 4427 315,00,
     607 = 371 800,00 (5 × CMP 160,00)."""
     f = firma_pilot
     rez = _emite_pe_ecran(patron, f, zi(20), BETA, [(MARFA, 5, 300, True)], pleaca=True)
     patron.captura()
-    assert rez.startswith("✓ Factura E2EA3 emisă · total %s RON" % _bani(sum(E3) * (1 + COTA))) and "descărcat" in rez, rez
+    assert rez.startswith("✓ Factura E2EA nr. 3 emisă · total %s RON" % _bani(sum(E3) * (1 + COTA))) and "descărcat" in rez, rez   # [443.1]
     fid, _n = _factura(f, "3")
     f["e3"] = fid
     note = [(_sintetic(d), c, s) for d, c, s in _note(f, "i.factura_id = %s", (fid,)) if d != "607"]
@@ -936,11 +937,11 @@ def test_pilot_16_a_doua_factura_cu_marfa(patron, firma_pilot):
 @pozitii("F046", "F131")
 def test_pilot_17_factura_de_servicii_neincasata(patron, firma_pilot):
     """F046. Pașii: Emite factură -> 29.09.2026, clientul Alfa -> „Servicii de montaj mobilier pilot”, 1 × 300,00 -> „Emite” (fără poartă:
-    serviciu): „✓ Factura E2EA4 emisă · total 363,00 RON” -> notele 4111 = 704 300,00, 4111 = 4427 63,00; scadența 29.10.2026."""
+    serviciu): „✓ Factura E2EA nr. 4 emisă · total 363,00 RON” -> notele 4111 = 704 300,00, 4111 = 4427 63,00; scadența 29.10.2026."""
     f = firma_pilot
     rez = _emite_pe_ecran(patron, f, zi(29), ALFA, [(SERVICIU, 1, 300, False)])
     patron.captura()
-    assert rez.startswith("✓ Factura E2EA4 emisă · total 363,00 RON"), rez
+    assert rez.startswith("✓ Factura E2EA nr. 4 emisă · total 363,00 RON"), rez   # [443.1]
     fid, _n = _factura(f, "4")
     f["e4"] = fid
     note = [(_sintetic(d), c, s) for d, c, s in _note(f, "i.factura_id = %s", (fid,))]
@@ -1192,7 +1193,7 @@ def test_pilot_24_notele_lunii_validate(patron, firma_pilot):
         (stare,), = sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (nid,))
         if stare == "validata":      # validată între timp pe alt drum (de spus în raport: n-ar trebui să se întâmple)
             continue
-        rand = "[data-nota-id='%s']" % nid
+        rand = "tbody.tn-nota[data-nota-id='%s']" % nid   # [lotul 12, 617] rândul notei în tabelul de note („Validează” e pe rând)
         buton = "%s [data-val='%s']" % (rand, nid)
         try:
             pg.wait_for_selector(buton, timeout=30000)
@@ -1207,7 +1208,7 @@ def test_pilot_24_notele_lunii_validate(patron, firma_pilot):
         assert pg.is_enabled(buton), " ".join(pg.inner_text(rand).split())
         pg.locator(buton).scroll_into_view_if_needed()
         pg.click(buton)
-        pg.wait_for_function("(id) => { const r = document.querySelector(`[data-nota-id='${id}']`); "
+        pg.wait_for_function("(id) => { const r = document.querySelector(`tbody.tn-nota[data-nota-id='${id}']`); "
                              "return r && !r.querySelector('[data-val]') && r.innerText.includes('Validată'); }", arg=str(nid), timeout=30000)
     patron.captura()
     assert sql('SELECT count(*) FROM "%s".inregistrari WHERE status <> \'validata\' AND data >= %%s AND data <= %%s' % f["schema"],
@@ -1282,10 +1283,10 @@ def test_pilot_28_inchiderea_lunii(patron, firma_pilot):
         pg.click("#je-salveaza")
     assert rr.value.status < 400, rr.value.text()
     (nid,) = [r[0] for r in sql('SELECT id FROM "%s".inregistrari WHERE descriere = %%s' % f["schema"], ("Regularizarea TVA 09/2026",))]
-    buton = "[data-nota-id='%s'] [data-val='%s']" % (nid, nid)     # după id, ca la pasul 24
+    buton = "tbody.tn-nota[data-nota-id='%s'] [data-val='%s']" % (nid, nid)     # după id, ca la pasul 24
     pg.wait_for_selector(buton, timeout=20000)
     pg.click(buton)
-    pg.wait_for_function("(id) => { const r = document.querySelector(`[data-nota-id='${id}']`); "
+    pg.wait_for_function("(id) => { const r = document.querySelector(`tbody.tn-nota[data-nota-id='${id}']`); "
                          "return r && !r.querySelector('[data-val]') && r.innerText.includes('Validată'); }", arg=str(nid), timeout=30000)
     patron.captura("regularizare")
     _inchidere(patron, f)

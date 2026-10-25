@@ -42,7 +42,7 @@ import pytest
 from conftest import (GARDA_DESCHIDERI, INALT, LAT, Ecran, _db, _ecran, _scoate_firmele_e2e, firma_noua, perioada_incheiata, sesiune,
                       sql)
 from e2e_bloc_a import AZI, _api, _card, _ok, cont_asistent, pregateste_firma
-from e2e_bloc_b import _cnp
+from e2e_bloc_b import _cnp, _deschide_rand, _nota_jn
 from e2e_bloc_d import PATRON, _firma_noua
 from e2e_bloc_d import _api as _api_cont
 from e2e_comanda_1010 import _lista_control
@@ -638,8 +638,9 @@ def test_def_c146_refuzul_stergerii_notei_z_trimite_la_raport_z(patron, firma_cx
     buton = " ".join(pg.inner_text("#zd-sterge-%d" % zid).split())
     assert buton and titlu_card, (buton, titlu_card)
     patron.firma(f["nume"])
-    _card(patron, "jurnal", ".pf-frand[data-nota-id='%d'] .jn-derivata" % zid)
-    rand = pg.locator(".pf-frand[data-nota-id='%d']" % zid)
+    # [lotul 12, 617] rândul notei în tabelul de note; motivul notei derivate și „Editează” / „Șterge” stau în detaliul rândului, deschis
+    _card(patron, "jurnal", "tbody.tn-nota[data-nota-id='%d']" % zid)
+    rand = _deschide_rand(patron, _nota_jn(patron, zid))
     motiv = " ".join(rand.locator(".jn-derivata").inner_text().split())
     patron.captura("motivul_din_jurnal")
     assert rand.locator("[data-del]").count() == 0 and rand.locator("[data-edit]").count() == 0

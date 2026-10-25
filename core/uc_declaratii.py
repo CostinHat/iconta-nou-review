@@ -91,6 +91,20 @@ def _datorate_firmei(tenant_id, ctx):
     return sorted((ev or {}).get("termene") or [], key=lambda d: (d["termen"], d["tip"]))
 
 
+def poarta_cererii(conn, schema, tip, body, xml, res):
+    """Porțile care țin de CERERE, nu de calcul, chemate după dispecer (`declaratii_api.genereaza`) pe fiecare drum al generării cerute de om:
+    pasul 2 al Declarațiilor (`declaratie_valideaza`), generarea (`declaratie_genereaza`) și intrarea în coadă (`uc_coada.coada_adauga`, care
+    servește și „Generează din nou” și reluarea declarației care aștepta validarea notelor). Scripturile de citire (cifrele de referință,
+    amprentele) cheamă dispecerul fără ea: nu produc ceva de depus.
+    [lotul 12, C19, comanda Costin 12.3 pct.6, verbatim în DECIZII] „rectificativa D394 pentru o perioadă deja depusă se generează doar la
+    cererea contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.” -> `rectificativa.poarta_d394`: peste o
+    depunere, D394 iese numai cu confirmarea contabilului pentru exact conținutul văzut ca diferențe; fără diferențe, nu iese deloc.
+    Garda: `core/test_lot12_decl3_c19.py` (orice funcție a use-case-urilor care cheamă dispecerul cheamă și poarta)."""
+    if tip == "d394":
+        from core import rectificativa as _rect
+        _rect.poarta_d394(conn, schema, body, xml, res)
+
+
 def declaratie_valideaza(tip, date, ctx):
     """[P7 · use-case] Corpul rutei `/declaratii/{tip}/valideaza`; docstringul ei a ramas in stratul HTTP."""
     import base64 as _b64
@@ -105,6 +119,7 @@ def declaratie_valideaza(tip, date, ctx):
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
+            poarta_cererii(conn, schema, tip, body, xml, res)   # [lotul 12, C19] rectificativa D394 numai confirmată
             blocaj = blocaj_depunere(conn, schema, tip, body)
     except ValueError as e:   # [lotul 10, 431] refuzul cu trimitere (`RefuzGenerare`) ajunge la ecran ca obiect, celelalte ca text
         raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))
@@ -176,6 +191,7 @@ def declaratie_genereaza(tip, date, ctx):
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
+            poarta_cererii(conn, schema, tip, body, xml, res)   # [lotul 12, C19] rectificativa D394 numai confirmată
             blocaj = blocaj_depunere(conn, schema, tip, body)
     except ValueError as e:   # [lotul 10, 431] refuzul cu trimitere (`RefuzGenerare`) ajunge la ecran ca obiect, celelalte ca text
         raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))

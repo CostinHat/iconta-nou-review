@@ -128,12 +128,13 @@ def lista_parteneri(conn, schema):
 def fisa_partener(conn, schema, cui, de, pana):
     """Fisa unui partener (dupa CUI): facturile lui (ambele directii) din perioada,
     fiecare cu decontat si sold (conventia reconciliere), + sumar. Read-only.
-    [lotul 10, 428] decontat = și compensarea (ca `reconciliere_api.facturi_deschise`, `compensari_api.nota_de_compensare`)."""
+    [lotul 10, 428] decontat = și compensarea (ca `reconciliere_api.facturi_deschise`, `compensari_api.nota_de_compensare`).
+    [lotul 12, C181, clasa 443.1] fiecare factură poartă și `serie`: ecranul afișează „F1A nr. 3” (`numarCuSerie(r.serie, r.numar)`)."""
     from core import compensari_api as _cz, cui_forma as _cf   # [lotul 11, 10.3 pct.4] partenerul în forma păstrată a CUI-ului
     stinge = _cz.nota_stinge_factura("i", "f.id", f"{schema}.")   # [lotul 12, C153] și chitanța veche, nu numai nota legată / compensarea
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
-            SELECT f.id, f.numar, f.data_emitere, f.directie, f.tert_nume,
+            SELECT f.id, f.serie, f.numar, f.data_emitere, f.directie, f.tert_nume,
                    COALESCE(f.total_lei, f.total) AS total,
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
@@ -161,7 +162,7 @@ def fisa_partener(conn, schema, cui, de, pana):
             sold = total - dec + Decimal(r["storno"] or 0)
             s_fact += total; s_dec += dec; s_sold += sold
             facturi.append({
-                "id": r["id"], "numar": r["numar"],
+                "id": r["id"], "serie": r["serie"], "numar": r["numar"],
                 "data": r["data_emitere"].isoformat() if r["data_emitere"] else None,
                 "directie": r["directie"], "total": _f(total),
                 "decontat": _f(dec), "sold": _f(sold),

@@ -141,7 +141,12 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # idempotentă.
     # [24.10.2026, lotul 12] 141 -> 142: `migrare_tara_sablon_recurent` (C160, țara clientului pe șablonul facturii recurente — coloana
     # `facturi_recurente.tert_tara`) — DDL idempotent, rulat o dată.
-    assert 40 <= len(mg) <= 142, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [24.10.2026, lotul 12, comanda 12.2] 142 -> 143: `migrare_termen_informative_decembrie` (639, termenul declarațiilor informative de
+    # 25 decembrie în coadă — CPF art.155 alin.(2) numai pentru creanțe) — rulată o dată, idempotentă.
+    # [24.10.2026, lotul 12, comanda 12.3] 143 -> 145: `migrare_salariati_jurnal` (C133, pachetul sal3 — jurnalul corecturii scutirii pe fișa
+    # salariatului) și `migrare_sablon_recurent_stare` (C109, alt pachet al aceleiași comenzi; numită aici fiindcă fișierul era revendicat
+    # de sal3) — DDL idempotent, rulate o dată prin `core.migrari_registru`.
+    assert 40 <= len(mg) <= 145, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

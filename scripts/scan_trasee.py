@@ -679,7 +679,9 @@ def citeste_rute():
 #: [lotul 11, 22.10.2026] Prefixul de schemă e `%s` / `%(nume)s` EXACT: forma veche `%\(?\w*\)?s` era lacomă și tăia numele tabelului
 #: lipit de prefix la ULTIMUL „s” („UPDATE %sstoc” -> „toc”, „INSERT INTO %sinregistrari” -> „trari”), iar „DO UPDATE SET” / „FOR UPDATE”
 #: dădeau tabelul „SET” / „SELECT”. Calibrarea: core/test_lot11_re_w_tabele.py.
-RE_W = re.compile(r'\b(INSERT\s+INTO|UPDATE|DELETE\s+FROM)\s+'
+#: [lotul 12, integrarea I3] „FOR UPDATE” / „DO UPDATE” nu sunt scrieri: șirurile modulului se citesc lipite („\n”), iar un
+#: „… FOR UPDATE” urmat de „INSERT INTO salariati” (`salariati_import_api.importa`, C133) dădea tabelul „INSERT” și înghițea scrierea reală.
+RE_W = re.compile(r'\b(INSERT\s+INTO|(?<!FOR )(?<!DO )UPDATE|DELETE\s+FROM)\s+'
                   r'(?:"?\{[^}]*\}"?\.|"?%(?:\(\w+\))?s"?\.?|"?[a-z_]+"?\.)?'
                   r'(?!(?:SET|SELECT|OF|NOWAIT|SKIP)\b)"?([a-zA-Z_][a-zA-Z0-9_]*)"?', re.I)
 RE_STARE = re.compile(r"\b(status|stare)\s*=\s*['\"]([a-z_]+)['\"]", re.I)

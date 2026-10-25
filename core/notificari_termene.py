@@ -67,18 +67,25 @@ def ruleaza(acum=None):
     return n
 
 
-def notifica_firma(schema, tip, text_fn):
+def notifica_pe_conexiune(conn, schema, tip, text_fn):
     """[320] O notificare `tip` pentru cei care pregătesc pe firma din `schema` (administratorul cabinetului, asistenții cu „Poate pregăti”
-    cărora le e alocată); `text_fn(nume_firma)` dă textul. Întoarce câte s-au scris."""
+    cărora le e alocată); `text_fn(nume_firma)` dă textul. Întoarce câte s-au scris.
+    [lotul 12, C109] În tranzacția apelantului (nu deschide, nu comite): notificarea refuzului unei facturi recurente intră ODATĂ cu starea
+    refuzului scrisă pe șablon — amândouă sau niciuna. O firmă fără cabinet n-are pe cine anunța (ca la termene și la SPV)."""
     from core import notificari_api as _notif
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            f = _repo.firma_din_schema(cur, schema)
-            if not f or not f[2]:
-                conn.rollback()
-                return 0
-            uids = _repo.destinatarii_firmei(cur, f[2], f[0])
-        for uid in uids:
-            _notif.adauga(conn, uid, tip, text_fn(f[1]))
-        conn.commit()
+    with conn.cursor() as cur:
+        f = _repo.firma_din_schema(cur, schema)
+        if not f or not f[2]:
+            return 0
+        uids = _repo.destinatarii_firmei(cur, f[2], f[0])
+    for uid in uids:
+        _notif.adauga(conn, uid, tip, text_fn(f[1]))
     return len(uids)
+
+
+def notifica_firma(schema, tip, text_fn):
+    """`notifica_pe_conexiune` pe o conexiune proprie, comisă (citirea din SPV, după ce a adus facturile noi)."""
+    with db.get_conn() as conn:
+        n = notifica_pe_conexiune(conn, schema, tip, text_fn)
+        conn.commit()
+    return n

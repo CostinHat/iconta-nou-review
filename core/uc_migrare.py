@@ -138,11 +138,10 @@ def migrare_importa(date, ctx):
             _obs.esec_secundar("precompletare ANAF la import firma", _ea)  # firma creata; ANAF completabil manual
     if _anaf:
         with db.get_conn() as conn:          # tranzacție scurtă, doar scrierea
+            # [lotul 12, 642 — clasa] fiecare firmă sub punctul ei de revenire: o cădere nu mai strică tranzacția (și precompletarea
+            # celorlalte firme, anulată tăcut la `commit`)
             for _schema_n, _d in _anaf:
-                try:
-                    tenant_provisioning.precompleteaza_din_anaf(conn, _schema_n, _d, seteaza_nume=False)
-                except Exception as _ea:
-                    _obs.esec_secundar("precompletare ANAF la import firma", _ea)
+                tenant_provisioning.precompleteaza_sau_semnaleaza(conn, _schema_n, _d, "precompletare ANAF la import firma")
     return {"creat": creat, "erori": erori, "total": len(creat)}
 
 

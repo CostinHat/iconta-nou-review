@@ -243,8 +243,8 @@ def _dec_pt(x):
 
 
 def _venituri_adaugate(s):
-    """[retest 07.10 seara, S1] Veniturile din salarii PESTE salariul lucrat, declarate în brut (B1_sal2, B4_3) și în baza
-    contributivă (B2_5 / B4_7): excesul de tichete de vacanță [D3], partea taxabilă a cadoului, elementele variabile (prime,
+    """[retest 07.10 seara, S1] Veniturile din salarii PESTE salariul lucrat, declarate în brut (B1_sal2, E3_8) și în baza
+    contributivă (B2_5 / B4_7, deci și B1_5 / B1_10 / B4_3): excesul de tichete de vacanță [D3], partea taxabilă a cadoului, elementele variabile (prime,
     sporuri, ore suplimentare — CF art.76 alin.(1)). O SINGURĂ definiție pentru ambele (înainte, două rânduri care adunau
     aceleași componente separat), aceeași cu `salarizare.calcul_salariu` (`b_imp`)."""
     return _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0)) + _d112int(s.get("elemente_variabile", 0))
@@ -459,7 +459,7 @@ def calcul_d112(prof, salariati, an, luna):
         if cms and zile_cm > 0:
             # [d112_cm_baza_realizata_v1, 05.08.2026] CF art.139(1): baza CAS/CASS = castigul brut REALIZAT din
             # salarii; in luna cu concediu medical salariul realizat = zile LUCRATE (brut_lucrat), NU brutul
-            # contractual (care ramane informativ in B1_sal1/B4_3). Structura D112: B4_7=B2_5+B3_7 (baza salariala
+            # contractual (care ramane informativ in B1_sal1). Structura D112: B4_7=B2_5+B3_7 (baza salariala
             # REALIZATA + baza indemnizatiei CM, aditive; B4_8=ROUND(B4_7*25%)). Fara asta B2_5/B4_7/B4_5/B4_14
             # emiteau brutul INTREG = supra-declarare CAS/CASS/CAM la ANAF + divergenta fata de fluturas
             # (calcul_salariu pe brut_lucrat). Gard: test_pull_declaratii.
@@ -545,7 +545,13 @@ def calcul_d112(prof, salariati, an, luna):
             if bimp < 0:
                 bimp = 0
             imp = _d112int(bimp * _cota_imp)
-            brute = brut + cm_base
+            # [lotul 12, venitul brut al lunii cu concediu medical] E3_8 / E1_1 = salariul REALIZAT (zilele lucrate, ca B2_5) + indemnizația
+            # CM. Până la 24.10.2026: `brut` (salariul întreg al prezenței, cu zilele de CM) + indemnizația — zilele de CM numărate de două
+            # ori (7.000 + 1.092 = 8.092 în loc de 4.455 + 1.092 = 5.547), deși deducerea și baza impozitului (E3_14) erau pe 5.547.
+            # OPANAF 605/2026 anexa 2, E.3 rândul 8 „Total venit brut”: „venitul brut realizat […] suma totală a veniturilor din salarii şi
+            # asimilate salariilor, prevăzute la art. 76 alin. (1) - (41) din Codul fiscal”; CF art.76 alin.(1): „inclusiv indemnizațiile
+            # pentru incapacitate temporară de muncă”.
+            brute = _d112int(s.get("brut_lucrat", s.get("brut"))) + _venituri_adaugate(s) + cm_base
             b4base = total_base
             _b3.append({"b3_zile": b3z, "b3_7": cm_base, "b3_12": cm_ang, "b3_13": cm_fnuass})
             for x in cms:
@@ -727,6 +733,16 @@ def calcul_d112(prof, salariati, an, luna):
             cas_ang_dif += b4_8d
         # [lot 19 pct.4c] B1_sal1 = salariul de bază din CONTRACT (câmpul 29a); B1_sal2 = venitul brut REALIZAT (29b);
         # B1_7 = „Ore suspendate/libere în lună” (câmpul 35) — CFP/suspendare, emis doar când există.
+        # [lotul 12, d112b] B1_sal2 = `brute`, aceeași cifră cu E3_8 „Total venit brut” (build_xml). Până la 24.10.2026 B1_sal2 era
+        # brutul PREZENȚEI: în luna cu concediu medical purta și salariul zilelor de concediu, pe care angajatorul nu-l plătește —
+        # Legea 53/2003 art.49 alin.(2): „Suspendarea contractului individual de muncă are ca efect suspendarea prestării muncii de către
+        # salariat și a plății drepturilor de natură salarială de către angajator”, art.50 lit.b) (se suspendă de drept la „concediu pentru
+        # incapacitate temporară de muncă”). INTERPRETARE CU TEMEI pentru indemnizația CM din B1_sal2: OPANAF 605/2026 anexa 2 descrie
+        # A_sal2 și B1_sal2 cu același text („venitul brut realizat de persoana fizică în baza contractului individual de muncă”), iar
+        # structura D112 îl formalizează la A_sal2: „A_sal2=E3_8-E3_69” (E3_69 = venituri neimpozabile art.76 alin.(4), neemise de
+        # aplicație); E3_8 cuprinde veniturile art.76 alin.(1), „inclusiv indemnizațiile pentru incapacitate temporară de muncă”.
+        # Alternativa respinsă: numai salariul zilelor lucrate (B2_5 fără suma netaxabilă) — indemnizația are temei OUG 158/2005 și stă
+        # în B.3, dar textul nu o scoate din „venitul brut din salarii”. De reconfirmat dacă ANAF dă o regulă pentru B1_sal2.
         _b1_sal1 = _d112int(s.get("brut_contractual", s.get("brut")))
         _b1_7 = int(s.get("zile_suspendate") or 0) * ore_contract   # [lotul 11, C96] „B1_7<= NZL* i - B1_6” la Pi
         # [8.3 avantaje] bilete de valoare defalcate pe tip: E3_10 masa / E3_75 vacanta / E3_74 cultural /
@@ -892,11 +908,18 @@ def build_xml(calc):
         # salariat scutit (motivele 1–3 și 5 nu sunt pensionari). De reconfirmat când există câmpul „pensionar” pe salariat.
         # Pensionarul nu are baza_AJS (structura: „baza_AJS=true daca asigSO=1 si B1_2=0 si …”), deci B1_10 = 0 („daca baza_AJS = false
         # atunci B1_10=0”, ERR) și B4_3 = ΣB1_10 = 0.
-        _somaj = 0 if x["pensionar"] else x["brut"]
+        # [lotul 12, d112b] B1_10 / B4_3 „Baza de calcul al indemnizaţiei de şomaj” = baza CAM a salariatului (B1_5 / B4_14), nu brutul
+        # prezenței. OPANAF 605/2026 anexa 2, B.1 rândul 11: „veniturile care constituie baza de calcul al indemnizaţiei de şomaj, conform
+        # art. 39 alin. (21) din Legea nr. 76/2002”; Legea 76/2002 art.39 alin.(2^1): „se stabilesc prin normele metodologice”; HG 174/2002
+        # (normele) art.19^1 alin.(1): „Veniturile care constituie baza de calcul al indemnizației de șomaj prevăzute la art. 39 alin.
+        # (2^1) din lege sunt veniturile care constituie baza de calcul al contribuției asiguratorii pentru muncă.” Tot rândul 11: la
+        # tipul 1.11.2 „nu este inclusă suma de 200 lei”. Până la 24.10.2026: brutul prezenței — în luna cu concediu medical cu salariul
+        # zilelor de concediu (F5, Ionescu 10/2026: 5.497 în loc de 5.077), la 1.11.2 cu suma netaxabilă.
+        _somaj = 0 if x["pensionar"] else x["baza_cam"]
         a.append('    <asiguratB1 B1_1="%d" B1_2="%d" B1_3="%s" B1_4="%d" B1_5="%d" B1_6="%d"%s '
                  'B1_10="%d" B1_15="%d" B1_sal1="%d" B1_sal2="%d"/>'
                  % (x["tip_asig"], 1 if x["pensionar"] else 0, x["b1_3"], x["ore"], x["baza_cam"], x["ore_lucr"],
-                    (' B1_7="%d"' % x["b1_7"]) if x["b1_7"] else "", _somaj, x["zile"], x["b1_sal1"], x["brut"]))
+                    (' B1_7="%d"' % x["b1_7"]) if x["b1_7"] else "", _somaj, x["zile"], x["b1_sal1"], x["brute"]))
         # [lotul 11, C93] tipul 1.11.2 (51): rândul 5.2 „Suma de 200 lei/lună, netaxabilă …” (B2_5S) și rândul 5.3 „Câştig brut realizat” =
         # rândul 5 + rândul 5.2 (B2_5C) — OPANAF 605/2026 anexa 2, secțiunea B.2; structura: „0<=B2_5S<=300 pt.B1_1=51 / Altfel B2_5S=0”,
         # „B2_5C= B2_5+ B2_5S pt.B1_1=51” (DUK regula S2b)

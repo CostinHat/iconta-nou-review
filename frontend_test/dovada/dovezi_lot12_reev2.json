@@ -1,0 +1,82 @@
+[
+  {
+    "nr": "630",
+    "firma": "tenant_9049",
+    "descriere": "F1, 10/2026 (luna neîncheiată): Închidere lună -> „Reevaluare valută”: rândul DANTE INTERNATIONAL SA are Curs BNR și Diferență completate, marcate provizoriu, cu caseta „Cursul BNR din ultima zi bancară a lunii (30.10.2026) nu e publicat încă” (nu „mai vechi cu 8 zile… flux întrerupt”); soldul în lei 323,65 = 4111 al partenerului din notele validate (F1A nr. 8 644,59 − stornarea F1A nr. 9 644,59 + F1A nr. 14 323,65 pe cote, nu 323,64; nota stornării a fost validată pe copie de scriptul 619, 24.10.2026); F1A nr. 9 apare numită ca stornarea lui F1A nr. 8, în sold; „Generează nota” inactiv. Documentele sunt de dinainte de reparație (OMFP 1802/2014 pct.325 alin.(1) și alin.(2) lit.b). Numai citire.",
+    "pasi": [
+      {
+        "click": "#fa-inchidere"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #il-reevaluare"
+      },
+      {
+        "click": ".fereastra:last-of-type #il-reevaluare"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #rv-tabel"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "provizoriu",
+        "zona": ".fereastra:last-of-type #rv-tabel"
+      },
+      {
+        "contine": "provizorie",
+        "zona": ".fereastra:last-of-type #rv-tabel"
+      },
+      {
+        "contine_oricare": [
+          "nu e publicat încă",
+          "se publică abia azi"
+        ],
+        "zona": ".fereastra:last-of-type #rv-curs-provizoriu"
+      },
+      {
+        "nu_contine": "flux întrerupt"
+      },
+      {
+        "contine": "323,65",
+        "zona": ".fereastra:last-of-type #rv-tabel"
+      },
+      {
+        "contine": "(stornarea F1A nr. 8)",
+        "zona": ".fereastra:last-of-type #rv-tabel"
+      },
+      {
+        "inactiv": ".fereastra:last-of-type #rv-genereaza"
+      }
+    ],
+    "captura": "630_f1_vechi_reevaluare_10_2026.png"
+  },
+  {
+    "nr": "639",
+    "firma": "tenant_9051",
+    "descriere": "F3: Declarații -> lista „Datorate de firmă”: niciun D390 cu termenul 21.12.2026 (D390 pentru 11/2026 are termenul 28.12.2026: 25.12 vineri și 26.12 sărbători, 27.12 duminică — CPF art.75 -> Legea 134/2010 art.181 alin.(2); excepția de 21 decembrie din CPF art.155 alin.(2) e a creanțelor fiscale). Până la 29.10.2026 termenul de 28.12 e în afara ferestrei de 60 de zile, deci D390 11/2026 nu apare încă în listă. Numai citire.",
+    "pasi": [
+      {
+        "click": "#fa-declaratii"
+      },
+      {
+        "asteapta": ".fereastra:last-of-type #dec-tip"
+      },
+      {
+        "pauza": 1200
+      }
+    ],
+    "verifica": [
+      {
+        "nu_contine": "termen de depunere 21.12.2026",
+        "zona": ".fereastra:last-of-type #dec-tip option[value='d390']"
+      },
+      {
+        "exista": ".fereastra:last-of-type #dec-tip"
+      }
+    ],
+    "captura": "639_f3_declaratii_termene.png"
+  }
+]

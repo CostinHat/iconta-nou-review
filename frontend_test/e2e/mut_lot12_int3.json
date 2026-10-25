@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/coada_api.py",
+  "ancora": "amprenta_salarii(cur, schema, s[\"de_la\"], s[\"pana_la\"]) == s[\"amprenta_salarii\"]",
+  "inlocuire": "True",
+  "test": "frontend_test/e2e/e2e_lot12_int3.py::test_def_c194_d112_din_coada_devine_depasita_dupa_corectarea_fisei_salariatului"
+ },
+ {
+  "fisier": "core/facturi_recurente.py",
+  "ancora": "                if _avert:   # [C197]",
+  "inlocuire": "                if False:   # [C197]",
+  "test": "frontend_test/e2e/e2e_lot12_int3.py::test_def_c197_recurenta_cu_livrare_ic_se_emite_cu_avertismentul_in_clopotel"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      const zInCurs = lunaNeincheiata(anz, lz);",
+  "inlocuire": "      const zInCurs = false;",
+  "test": "frontend_test/e2e/e2e_lot12_int3.py::test_def_c198_descarcarea_gv_dupa_z_e_inactiva_pe_luna_in_curs"
+ }
+]

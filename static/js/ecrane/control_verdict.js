@@ -6,9 +6,9 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt } from "../api.js?v=309f4d66ae";
+import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand } from "../api.js?v=e38843b1ec";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
-import { randeazaStareSpv } from "./spv_stare.js?v=39617786af";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
+import { randeazaStareSpv } from "./spv_stare.js?v=a12ccba975";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {
@@ -398,7 +398,7 @@ export function legaVerdict(corp, nav, firma) {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depusa-extern/anuleaza`, { tip: b.dataset.tip, an: Number(b.dataset.an), luna: Number(b.dataset.luna) });
         await reincarcaPePozitie(corp, firma, b);
-      } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu s-a putut anula marcarea.", "eroare"); }
+      } catch (e) { refuzPeRand(b, e.mesaj || "Nu s-a putut anula marcarea."); }   // [lotul 12, C188] nu rescrie tot rândul
     });
   }));
   corp.querySelectorAll(".cf-anterior-toate").forEach((b) => b.addEventListener("click", () => {
@@ -407,7 +407,7 @@ export function legaVerdict(corp, nav, firma) {
       try {
         await api.post(`/control-fiscal/${firma.tenant_id}/depuse-anterior`, { perioade });
         await reincarcaPePozitie(corp, firma, b);
-      } catch (e) { arataMesaj(b.parentElement, e.mesaj || "Nu s-au putut marca declarațiile.", "eroare"); }
+      } catch (e) { refuzPeRand(b, e.mesaj || "Nu s-au putut marca declarațiile."); }
     });
   }));
 
@@ -437,7 +437,7 @@ export function legaVerdict(corp, nav, firma) {
       if (err.length) {
         b.disabled = false;
         b.textContent = "Contabilizează facturile";
-        arataMesaj(b.parentElement, `${cate(ok, "factură contabilizată", "facturi contabilizate")}. Erori: ${err.join("; ")}`, "avert");
+        { const z = document.createElement("div"); b.after(z); arataMesaj(z, `${cate(ok, "factură contabilizată", "facturi contabilizate")}. Erori: ${err.join("; ")}`, "avert"); }
       } else if (typeof firma.reincarca === "function") {
         firma.reincarca();
       } else {   // [327, clasa] fără reîncărcare ecranul rămâne: butonul nu rămâne „Se contabilizează…”

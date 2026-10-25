@@ -31,10 +31,11 @@
   "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_184_refuzul_pontajului_scrie_luna_ca_LL_AAAA"
  },
  {
-  "fisier": "static/js/api.js",
-  "ancora": "      const t = m.target && (m.target.nodeType === 1 ? m.target : m.target.parentElement);\n      if (t && t.matches(SELECTOR_MESAJ) && (t.textContent || \"\").trim()) aduInVedere(t);\n",
+  "fisier": "static/stil.css",
+  "ancora": "@media (max-height: 700px), (max-width: 560px) { :root { --antet-scund: 1; } }",
   "inlocuire": "",
-  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_45_refuzul_emailului_facturii_vine_in_vedere"
+  "test": "frontend_test/e2e/e2e_lot12_texte.py::test_def_45_refuzul_emailului_facturii_vine_in_vedere",
+  "motiv": "45 / C164: fără ecranul scund, zona e-mailului stă înapoi în antetul lipit sus (nu derulează) -> refuzul nu e în bara de jos"
  },
  {
   "fisier": "static/js/api.js",

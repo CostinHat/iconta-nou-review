@@ -69,6 +69,12 @@
     "asteapta": ".fereastra:last-of-type [data-nota-id='2']"
    },
    {
+    "click": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='2'] .tn-deschide"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type tbody.tn-nota[data-nota-id='2'] #jn-inainte-2"
+   },
+   {
     "pauza": 500
    }
   ],
@@ -112,7 +118,15 @@
     "nu_contine": "Salariile lunii 10/2026"
    },
    {
+    "nu_contine": "Salariile lunii 10/2026",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
+   },
+   {
     "nu_contine": "SAL 10/2026"
+   },
+   {
+    "nu_contine": "SAL 10/2026",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "216_f5_vechi_ciorna_sal_10_2026_scoasa.png"

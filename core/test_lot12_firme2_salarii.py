@@ -23,7 +23,7 @@ import re
 
 import pytest
 
-from core import db as _db, salariati_api as sa, salariati_import_api as si, tenant_provisioning as _tprov
+from core import autor_cerere, db as _db, salariati_api as sa, salariati_import_api as si, tenant_provisioning as _tprov
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCH = "efemer_l12_firme2_sal"
@@ -127,7 +127,12 @@ def test_c133_migrarea_marcheaza_scutitii_fara_motiv_iar_salvarea_motivului_ii_s
     with conn_sal.cursor() as cur:
         cur.execute("SELECT cnp, de_verificat FROM salariati ORDER BY id")
         assert cur.fetchall() == [(CNP1, ["motiv_exceptare"]), ("1960101078916", []), ("2900101410012", [])]
-    assert sa.actualizeaza_salariat(conn_sal, sid, motiv_exceptare=4) == {"ok": True}
+    # [lotul 12, sal3 — comanda 12.3 pct.8] corectura scutirii se consemnează cu utilizatorul cererii (`salariati_jurnal`)
+    tok = autor_cerere.seteaza(990133)
+    try:
+        assert sa.actualizeaza_salariat(conn_sal, sid, motiv_exceptare=4)["scutire_corectata"] is True
+    finally:
+        autor_cerere.reseteaza(tok)
     with conn_sal.cursor() as cur:
         cur.execute("SELECT motiv_exceptare, de_verificat FROM salariati WHERE id = %s", (sid,))
         assert cur.fetchone() == (4, [])
@@ -141,8 +146,13 @@ def test_c133_scutirea_pusa_pe_da_cere_motivul_iar_pe_nu_il_goleste(conn_sal):
         sa.actualizeaza_salariat(conn_sal, sid, scutit_contrib_minim=True)
     # refuzul stă pe câmpul motivului (contractul {detail, erori_campuri}), singurul câmp refuzat
     assert [e["camp"] for e in getattr(ei.value, "erori_campuri", [])] == ["motiv_exceptare"], ei.value
-    sa.actualizeaza_salariat(conn_sal, sid, scutit_contrib_minim=True, motiv_exceptare=2)
-    sa.actualizeaza_salariat(conn_sal, sid, scutit_contrib_minim=False)
+    # [lotul 12, sal3 — comanda 12.3 pct.8] corectura scutirii se consemnează cu utilizatorul cererii (`salariati_jurnal`)
+    tok = autor_cerere.seteaza(990133)
+    try:
+        sa.actualizeaza_salariat(conn_sal, sid, scutit_contrib_minim=True, motiv_exceptare=2)
+        sa.actualizeaza_salariat(conn_sal, sid, scutit_contrib_minim=False)
+    finally:
+        autor_cerere.reseteaza(tok)
     with conn_sal.cursor() as cur:
         cur.execute("SELECT scutit_contrib_minim, motiv_exceptare FROM salariati WHERE id = %s", (sid,))
         assert cur.fetchone() == (False, None)

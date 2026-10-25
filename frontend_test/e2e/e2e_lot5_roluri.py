@@ -174,7 +174,7 @@ def test_def_266_coada_spune_dreptul_real_si_vorbeste_de_note(browser, request, 
             e.acasa()
             pg.click("button.cab-card:has([data-cheie='validat'])")
             pg.wait_for_selector(".fereastra:last-of-type #val-titlu", timeout=60000)
-            pg.wait_for_selector(".fereastra:last-of-type .val-card", timeout=30000)
+            pg.wait_for_selector(".fereastra:last-of-type #val-note tbody.tn-nota", timeout=30000)   # [lotul 12, 622] rândul notei
             pg.wait_for_timeout(600)
             text = e.fereastra()
             intro = pg.eval_on_selector_all(".fereastra:last-of-type .mig-intro", "es => es.map(x => x.innerText)")

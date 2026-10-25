@@ -49,7 +49,7 @@ def conn():
             cur.execute(_tp.parametrizeaza_template(io.open("tenant_template.sql", encoding="utf-8").read(), SCH))
             cur.execute("SET search_path TO %s, public" % SCH)
             cur.execute("INSERT INTO firma_profil (id, nume, cui, platitor_tva, metoda_stoc) "
-                        "VALUES (1, 'NIR LEGARE SRL', 'RO14399840', true, 'global_valoric')")
+                        "VALUES (1, 'NIR LEGARE SRL', 'RO40372003', true, 'global_valoric')")   # [lotul 12, C120] firma = beneficiarul din XML-ul de mai jos (RO40372003); înainte purta CUI-ul furnizorului, iar refuzul „factura nu e a firmei” (C120) o prindea
         c.commit()
     with _db.get_conn(SCH) as c:
         yield c

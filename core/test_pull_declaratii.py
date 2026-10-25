@@ -458,7 +458,7 @@ def test_d112_cm_baza_salariala_realizata_nu_brut_intreg(schema):
     """[d112_cm_baza_realizata_v1] NECONFORMITATE FISCALA reparata 05.08.2026: in luna cu concediu medical,
     baza CAS/CASS/CAM (B2_5/B4_7/B4_5/B4_14) = castigul brut REALIZAT pe zile LUCRATE (CF art.139(1) "castigul
     brut REALIZAT din salarii"; structura D112 B4_7=B2_5+B3_7 aditiv - baza salariala realizata + baza
-    indemnizatiei CM), NU brutul contractual. Brutul contractual ramane doar in B1_sal1/B4_3 (informativ).
+    indemnizatiei CM), NU brutul contractual. Brutul contractual ramane doar in B1_sal1 (informativ).
     Inainte de fix, emisia pe brut INTREG supra-declara CAS/CASS/CAM la ANAF si diverga de fluturas (calcul_salariu
     pe brut_lucrat). MUTATIE (probata): reasignarea bazac in ramura CM readusa la brutul intreg -> B4_8=3100 -> pica.
     Fixtura: brut 8400, iunie 2026 (nzl=21 zile lucratoare), 5 zile CM cod 01 (brut_ang=4000, cm_base=4000).
@@ -597,10 +597,12 @@ def test_d112_brut_si_baza_pe_salariul_lunii_nu_contractual_curent(schema):
     m = re.search(r'<asiguratB4\b([^>]*)/>', xml)
     assert m, "randul asiguratB4 nu s-a gasit in XML"
     at = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
-    b3, b7, b8 = int(at["B4_3"]), int(at["B4_7"]), int(at["B4_8"])
+    # [lotul 12, C173] B4_3 e baza indemnizației de șomaj (HG 174/2002 norme art.19^1 alin.(1)), nu brutul; brutul realizat e B1_sal2
+    b1 = dict(re.findall(r'(\w+)="([^"]*)"', re.search(r'<asiguratB1\b([^>]*)/>', xml).group(1)))
+    b3, b7, b8 = int(b1["B1_sal2"]), int(at["B4_7"]), int(at["B4_8"])
     # 1) brutul DECLARAT = salariul LUNII (4050), NU contractualul curent (5000)
     assert b3 == 4050, (
-        "B4_3=%d: brutul declarat trebuie sa fie salariul LUNII (4050), nu contractualul curent (5000) - "
+        "B1_sal2=%d: brutul declarat trebuie sa fie salariul LUNII (4050), nu contractualul curent (5000) - "
         "consumator de salariu care citeste valoarea curenta acolo unde regula e 'la data lunii'" % b3)
     # 2) INVARIANT DE CLASA: baza CAS (B4_7) consistenta cu contributia CAS (B4_8 = ROUND(B4_7*25%%), DUK S74d)
     assert abs(b8 - round(b7 * 0.25)) <= 1, (

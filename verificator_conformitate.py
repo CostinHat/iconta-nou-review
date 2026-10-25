@@ -1267,7 +1267,9 @@ except Exception as _e_ser:
 #
 # CLICHET, nu prag: 45 e orbirea de azi, iar (a) si (b) din R80 sunt DEFERATE. Blocheaza numai
 # cresterea, si orice ROSU.
-RUTE_GRI_CLICHET = 7    # 45 -> 49 -> 7 in aceeasi zi (30.08.2026): a doua mutare e REPARATIA R80 —
+# [lotul 12, 12.2, 24.10.2026] 7 -> 11: segmentul `facturi` a trecut pragul de 40 (41 de referinte de ruta, ultima din emitere_ecran.js, 304);
+# au orbit GET/POST /tenants/{id}/facturi si GET/DELETE /tenants/{id}/facturi/{factura_id}. Cauza, la `_CLICHET` in core/test_ancore_rute.py.
+RUTE_GRI_CLICHET = 11   # 45 -> 49 -> 7 in aceeasi zi (30.08.2026): a doua mutare e REPARATIA R80 —
                         # ancora a devenit SEGMENT DE CALE, nu cuvant. Cauza, la `_CLICHET` in
                         # core/test_ancore_rute.py.
 rap["rute_verdict"] = []
@@ -2446,6 +2448,31 @@ def analiza_fereastra_tabel(css, nav, fisiere):
                 out.append((nume, 0, "REZUMAT_TABEL_LIPSA", "excepția „%s” nu mai are obiect: funcția nu mai desenează un tabel în fereastră" % n0))
             elif _acoperit(n0, set(), cu_exceptii=False):
                 out.append((nume, _linie(t, fn[n0]["s0"]), "REZUMAT_TABEL_LIPSA", "excepția „%s” nu mai are obiect: are acum rezumatul lipit sus" % n0))
+
+    # (f) REZUMAT_CASETA — [lotul 12, comanda Costin 12.2 pct.11, deficiența 621, verbatim: „Balanța: casetele de sus ocupă jumătate din
+    #     fereastră, se văd 2–3 rânduri de tabel”; cerința: „Casetele nu mănâncă tabelul (regulă globală, nu doar pe balanță)”] DS cap.9
+    #     v2.102: în rezumatul lipit sus (`.rezumat-fix`) stă numai ce trebuie văzut cât derulezi — titlul, perioada, cifrele, butoanele,
+    #     zona lor de mesaj, o concluzie pe un rând. O casetă (`.caseta-info` / `.caseta-atentie` / `.caseta-poarta`, sau `${caseta…}` — o
+    #     funcție / variabilă care o produce) pusă în rezumat se lipește și ea și ia din fereastră cât ține: stă SUB rezumat (se citește la
+    #     deschidere, iar tabelul primește fereastra cât derulezi) sau, ca notă informativă, pliată (`<details class="dec-xml">`, concluzia
+    #     în titlu). Mutația care o probează (`core/test_lot12_ui2_rezumat.py`): caseta rulajelor pusă înapoi în rezumatul Balanței -> prinsă.
+    #     LIMITĂ: vede șabloanele scrise literal; o casetă ajunsă în rezumat printr-o variabilă cu alt nume (`${sus}` din `_cadruPrev`) nu
+    #     se vede — pe aceea o măsoară testul în browser (înălțimea rezumatului, `core/test_lot12_ui2_rezumat.py`).
+    re_caseta = _re.compile(r'class="(?:caseta-info|caseta-atentie|caseta-poarta)\b|\$\{\s*caseta\w*')
+    for nume, t in sorted(fisiere.items()):
+        for a, z, fel in _sabloane(t):
+            s = t[a:z]
+            if fel != "sablon" or "rezumat-fix" not in s:
+                continue
+            for mc in re_caseta.finditer(s):
+                p = mc.start()
+                if not _in_zona(s, p, "rezumat-fix"):
+                    continue
+                seg = s[s.rfind("rezumat-fix", 0, p):p]
+                if seg.rfind("<details") > seg.rfind("</details>"):
+                    continue                                  # notă pliată: în rezumat stă numai titlul ei
+                out.append((nume, _linie(t, a + p), "REZUMAT_CASETA",
+                            "casetă în rezumatul lipit sus: stă sub rezumat sau pliată (`details.dec-xml`) — DS cap.9 v2.102 (621): " + s[p:p + 50].replace("\n", " ")))
     return out
 
 rap["fereastra_tabel"] = analiza_fereastra_tabel(_surse_css["stil.css"], _nav_l6, fisiere)
@@ -2643,7 +2670,8 @@ rap["lot11_u0"] = analiza_lot11_u0(fisiere, open(os.path.join(BAZA_PY, "static",
 
 
 def analiza_lot12(fisiere, css=""):
-    """[lotul 12] (469) vederea aleasă nu e `disabled`; (561 / 596 / C111) tot ce stă pe ecranul întreg derulează. [(fișier, linie, COD, text)]."""
+    """[lotul 12] (469) vederea aleasă nu e `disabled`; (617 / 622) notele numai prin tabelul comun; (561 / 596 / C111) tot ce stă pe
+    ecranul întreg derulează. [(fișier, linie, COD, text)]."""
     import re as _re
     out = []
     ales = _re.compile(r"\$\{\s*[\w.\[\]\"']+\s*===?\s*[^?}]+\?\s*[\"'`]\s*disabled\s*[\"'`]\s*:\s*[\"'`]{2}\s*\}")
@@ -2653,6 +2681,24 @@ def analiza_lot12(fisiere, css=""):
                 continue
             if ales.search(lin):
                 out.append((nume, i, "ALEGERE_DEZACTIVATA", "vederea aleasă marcată `disabled` (DS cap.1, 469): " + lin.strip()[:80]))
+    # [lotul 12, comanda Costin 12.2 pct.9 și 12, deficiențele 617 / 622] TABEL_NOTE — notele (Registrul jurnal, „De validat”) se arată
+    # NUMAI prin tabelul comun (`ecrane/tabel_note.js`, DS cap.9 v2.102 „Tabelul de note”): CLAUDE.md §9 „situații identice, soluții
+    # identice”. Prinde: un rând de notă scris de mână într-un alt fișier (`<… data-nota-id="…">`, forma cardurilor `.pf-frand` de
+    # dinainte), cardul de notă din coadă (`randNota`, `ul.sa-jurnal` al ciornelor) și ecranele care nu mai cheamă componenta.
+    # Mutația care o probează (`core/test_lot12_ui2_verificator.py`): rândul `.pf-frand data-nota-id` pus înapoi -> prins.
+    for nume, t in sorted(fisiere.items()):
+        if nume == "tabel_note.js":
+            continue
+        for i, lin in enumerate(t.split("\n"), 1):
+            if lin.strip().startswith(("//", "/*", "*")):
+                continue
+            if _re.search(r"<\w+\b[^>`]*\sdata-nota-id=", lin):
+                out.append((nume, i, "TABEL_NOTE", "rândul unei note scris de mână: notele se arată prin `tabel_note.js` (DS cap.9 v2.102): " + lin.strip()[:80]))
+    for nume, cere in (("firme.js", "htmlTabelNote({ pre: \"jn\""), ("validat.js", "htmlTabelNote({ pre: \"val-n\"")):
+        if nume in fisiere and cere not in fisiere[nume]:
+            out.append((nume, 0, "TABEL_NOTE", "ecranul notelor nu mai folosește tabelul comun (`%s`) — DS cap.9 v2.102" % cere))
+    if "validat.js" in fisiere and _re.search(r"function randNota\(|class=\"sa-jurnal\"", fisiere["validat.js"]):
+        out.append(("validat.js", 0, "TABEL_NOTE", "„De validat” arată notele altfel decât în tabelul comun (cardul `randNota` / lista `sa-jurnal`) — 622"))
     if css and _re.search(r"html\s*,\s*body\s*\{[^}]*overflow-y\s*:\s*hidden", css):
         app = " ".join(m.group(1) for m in _re.finditer(r"(?m)^#app\s*\{([^}]*)\}", css))
         if not (_re.search(r"(?<![-\w])height\s*:\s*100dvh", app) and _re.search(r"overflow-y\s*:\s*auto", app)):
@@ -2661,6 +2707,46 @@ def analiza_lot12(fisiere, css=""):
             dec = " ".join(m.group(1) for m in _re.finditer(r"(?m)^%s\s*\{([^}]*)\}" % _re.escape(sel), css))
             if not (_re.search(r"max-height\s*:", dec) and _re.search(r"overflow-y\s*:\s*auto", dec)):
                 out.append(("stil.css", 0, "STRAT_INCAPE", "%s fără max-height + overflow-y:auto: fereastra iese din ecran (DS cap.22 §7, C111)" % sel))
+    # [lotul 12, C164 — comanda Costin 12.3 pct.4, verbatim: „pe ecranele scunde, antetul detaliului facturii se strânge pe un rând (număr,
+    # client, total, stare SPV); acțiunea principală rămâne fixă jos (clasa 285).”] ANTET_SCUND (DS cap.9 v2.103 „Antetul documentului pe
+    # ecranul scund”). Prinde: (1) pragul ecranului scund scris în JS (`matchMedia` cu `max-height`) — pragul stă numai în `stil.css`, ca
+    # `--antet-scund`; (2) `stil.css` fără media query-ul care pune `--antet-scund: 1`, fără valoarea de bază `0`, sau cu rândul scurt
+    # `.fd-antet-scurt` care se poate rupe (fără `flex-wrap: nowrap` + `white-space: nowrap`); (3) un antet de document lipit sus
+    # (`fd-antet rezumat-fix`) cu butoane, într-un fișier fără rândul scurt (`fd-antet-scurt`), fără bara acțiunilor (`fd-bara-actiuni`) sau
+    # fără `aseazaAntetul(`. Mutațiile care o probează: `core/test_lot12_fe3_verificator.py`.
+    for nume, t in sorted(fisiere.items()):
+        for i, lin in enumerate(t.split("\n"), 1):
+            if lin.strip().startswith(("//", "/*", "*")):
+                continue
+            if _re.search(r"matchMedia\(\s*[\"'`][^\"'`]*max-height", lin):
+                out.append((nume, i, "ANTET_SCUND", "pragul ecranului scund scris în JS: se citește `--antet-scund` din stil.css (DS cap.9 v2.103): "
+                            + lin.strip()[:80]))
+        for m in _re.finditer(r"fd-antet rezumat-fix", t):
+            # șablonul care conține antetul (de la `innerHTML = \`` până la `\`;`) și corpul funcției de după el (până la următoarea funcție)
+            st = t.rfind("innerHTML = `", 0, m.start())
+            sf = t.find("`;", m.start())
+            if st < 0 or sf < 0:
+                continue
+            sablon = t[st:sf]
+            rest = _re.split(r"\n(?:async )?function ", t[sf:], maxsplit=1)[0]
+            if "buton-secundar" not in sablon[sablon.find("fd-antet rezumat-fix"):sablon.find("</table>") if "</table>" in sablon else None]:
+                continue   # antet fără acțiuni (factura preluată): încape oricum, nu se cere
+            lipsa = [x for x, ok in (("rândul scurt `fd-antet-scurt`", "fd-antet-scurt" in sablon),
+                                     ("bara acțiunilor `fd-bara-actiuni`", "fd-bara-actiuni" in sablon),
+                                     ("așezarea `aseazaAntetul(corp);` după desenare", _re.search(r"(?m)^\s*aseazaAntetul\(corp\);", rest)))
+                     if not ok]
+            if lipsa:
+                out.append((nume, t.count("\n", 0, m.start()) + 1, "ANTET_SCUND",
+                            "antetul lipit al documentului, cu acțiuni, fără forma ecranului scund (lipsește %s) — DS cap.9 v2.103"
+                            % "; ".join(lipsa)))
+    if css:
+        if not _re.search(r"@media\s*\(\s*max-height\s*:\s*\d+px\s*\)[^{]*\{\s*:root\s*\{\s*--antet-scund\s*:\s*1\s*;?\s*\}", css):
+            out.append(("stil.css", 0, "ANTET_SCUND", "lipsește media query-ul pe înălțime care pune `--antet-scund: 1` (pragul ecranului scund, DS cap.9 v2.103)"))
+        if not _re.search(r"(?m)^:root\s*\{\s*--antet-scund\s*:\s*0\s*;?\s*\}", css):
+            out.append(("stil.css", 0, "ANTET_SCUND", "lipsește valoarea de bază `:root { --antet-scund: 0; }` (DS cap.9 v2.103)"))
+        dec = " ".join(m.group(1) for m in _re.finditer(r"(?m)^\.fd-antet-scurt\s*\{([^}]*)\}", css))
+        if not (_re.search(r"flex-wrap\s*:\s*nowrap", dec) and _re.search(r"white-space\s*:\s*nowrap", dec)):
+            out.append(("stil.css", 0, "ANTET_SCUND", "rândul scurt `.fd-antet-scurt` se poate rupe pe mai multe rânduri (DS cap.9 v2.103: un rând)"))
     return out
 
 

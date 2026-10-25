@@ -10,6 +10,7 @@ import pytest
 
 from conftest import firma_noua, sql
 from e2e_bloc_a import _api, _card, _ok, emite_api, pregateste_firma
+from e2e_bloc_b import _deschide_rand
 
 
 @pytest.fixture(scope="module")
@@ -35,11 +36,12 @@ def test_def_443_nota_veche_din_registru_jurnal_arata_seria_separat(patron, firm
     pg = patron.pg
     patron.firma(firma_n["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
-    sel = ".fereastra:last-of-type [data-nota-id='%s']" % nid
+    sel = ".fereastra:last-of-type tbody.tn-nota[data-nota-id='%s']" % nid   # [lotul 12, 617] rândul notei în tabelul de note
     pg.wait_for_selector(sel, timeout=30000)
     pg.click("%s [data-val='%s']" % (sel, nid))
     pg.wait_for_function("(s) => { const r = document.querySelector(s); return r && !r.querySelector('[data-val]'); }", arg=sel, timeout=30000)
     assert sql('SELECT status, descriere FROM "%s".inregistrari WHERE id = %%s' % s, (nid,))[0] == ("validata", "Contare factura F61")
+    _deschide_rand(patron, sel)        # [617] documentul justificativ și liniile notei stau în detaliul rândului: deschis, ca înainte
     rand = " ".join(pg.inner_text(sel).split())
     patron.captura()
     assert "Contare factura F6 nr. 1" in rand, rand                # 443: „F6 nr. 1”, derivat din factura notei

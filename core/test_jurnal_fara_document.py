@@ -70,10 +70,12 @@ def pagina():
 
 def test_lipsa_documentului_se_vede_pe_rand_inainte_de_validare(pagina):
     pg, _ = pagina
-    # exact o casetă de avertizare, pe rândul notei fără document (nota 8 are extrasul)
+    # exact o casetă de avertizare, în detaliul notei fără document (nota 8 are extrasul) — [lotul 12, 617] tabelul de note: rândul e
+    # `tbody[data-nota-id]`, explicația stă o dată deasupra tabelului (`#jn-expl-fara_doc`), iar pe rând semnul „fără document”
     assert pg.eval_on_selector_all(".jn-fara-doc", "e => e.length") == 1
-    assert pg.eval_on_selector('[data-val="7"]', "b => !!b.closest('.pf-frand').querySelector('.jn-fara-doc')")
-    assert not pg.eval_on_selector('[data-val="8"]', "b => !!b.closest('.pf-frand').querySelector('.jn-fara-doc')")
+    assert pg.eval_on_selector('[data-val="7"]', "b => !!b.closest('[data-nota-id]').querySelector('.jn-fara-doc')")
+    assert not pg.eval_on_selector('[data-val="8"]', "b => !!b.closest('[data-nota-id]').querySelector('.jn-fara-doc')")
+    assert pg.eval_on_selector_all("#jn-expl-fara_doc", "e => e.length") == 1
 
 
 def test_validarea_fara_document_nu_se_ofera_iar_cu_document_pleaca(pagina):
@@ -86,16 +88,21 @@ def test_validarea_fara_document_nu_se_ofera_iar_cu_document_pleaca(pagina):
     b = '[data-val="7"]'
     assert pg.eval_on_selector(b, "b => b.disabled"), "„Validează” se oferă pe nota fără document (R3 o refuză)"
     leg = pg.eval_on_selector(b, "b => b.getAttribute('aria-describedby')")
-    mesaj = pg.eval_on_selector("#" + leg, "e => e.textContent") if leg else ""
-    assert "nu se validează fără documentul din care provine" in mesaj, mesaj
+    # [lotul 12, 617] legat de pasul notei (din detaliul ei) și de explicația de deasupra tabelului
+    # (că explicația poartă mesajul „nu se validează fără documentul din care provine” o arată, pe elemente, verificarea de mai jos)
+    assert (leg or "").split() == ["jn-fara-doc-7", "jn-expl-fara_doc"], leg
+    mesaj = " ".join(pg.eval_on_selector("#" + i, "e => e.textContent") for i in leg.split())
     # pasul numit în mesaj e chiar butonul de pe rândul notei: eticheta citată („…”) = textul butonului „Editează” al aceleiași note
-    buton = pg.eval_on_selector(b, "b => { const e = b.closest('.pf-frand').querySelector('[data-edit=\"7\"]'); return e ? e.textContent.trim() : null; }")
+    buton = pg.eval_on_selector(b, "b => { const e = b.closest('[data-nota-id]').querySelector('[data-edit=\"7\"]'); return e ? e.textContent.trim() : null; }")
     assert buton is not None and re.findall(r"\u201e([^\u201d]+)\u201d", mesaj) == [buton], (mesaj, buton)
     pg.eval_on_selector(b, "b => b.click()")   # clicul pe butonul inactiv: nimic nu se deschide, nimic nu pleacă
     pg.wait_for_timeout(300)
     # 10.2 pct.7k: „același mesaj apare de două ori (stânga și dreapta)” — pe rând e un singur mesaj, iar caseta de confirmare nu apare
-    rand = pg.eval_on_selector(b, "b => b.closest('.pf-frand').innerText")
-    assert rand.count("nu se validează fără documentul") == 1, rand
+    # [lotul 12, 617] „explicațiile o singură dată”: în toată fereastra, nu numai pe rând — mesajul stă, VIZIBIL, într-un singur element,
+    # explicația de deasupra tabelului (se compară elementele care-l poartă, nu numărul de apariții în textul randat)
+    locuri = pg.eval_on_selector_all("#mount *", """es => es.filter((e) => e.getClientRects().length && [...e.childNodes].some((n) =>
+        n.nodeType === 3 && n.textContent.includes('nu se validează fără documentul'))).map((e) => e.id)""")
+    assert locuri == ["jn-expl-fara_doc"], locuri
     assert pg.query_selector("#caseta-atentie-activa") is None
     assert validari == [], "validarea notei fără document a plecat (regula de fond R3 din bază o refuză)"
     pg.click('[data-val="8"]')

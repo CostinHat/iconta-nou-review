@@ -69,10 +69,12 @@ def test_317_emailul_de_alerta_are_diacritice(monkeypatch):
     monkeypatch.setattr(main.db, "get_conn", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("fără bază în test")))
     monkeypatch.setattr(main._obs, "esec_secundar", lambda *a, **k: None)
     monkeypatch.setattr(main._alerta_load, "rand", lambda cod, text: randuri.append((cod, text)) or text)
-    monkeypatch.setattr(main._obs, "trimite_email_html_sau_semnaleaza", lambda ce, email, subiect, html: plecate.append((email, subiect)))
+    # [lotul 12, 12.2] alerta pleacă pe Postmark (`postmark=True`, canalul tranzacțional al lui `observare`), nu pe Brevo
+    monkeypatch.setattr(main._obs, "trimite_email_html_sau_semnaleaza",
+                        lambda ce, email, subiect, html, **k: plecate.append((email, subiect, k)))
     main._verifica_si_alerta()
     assert randuri == [("erori", "2 erori ale aplicației (500) în ultimele 10 minute")], randuri
-    assert plecate == [("alerta@exemplu.test", "Alertă iConta.eu — sănătate server")], plecate
+    assert plecate == [("alerta@exemplu.test", "Alertă iConta.eu — sănătate server", {"postmark": True})], plecate
 
 
 def test_320_bifele_decid_canalul_clopotelul_ramane(monkeypatch):

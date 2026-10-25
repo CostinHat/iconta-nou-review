@@ -377,10 +377,25 @@
     "pauza": 2500
    },
    {
+    "asteapta": "tbody.tn-nota[data-nota-id='159'].val-evidentiat"
+   },
+   {
     "asteapta": "[data-nota-id='160']"
    },
    {
     "deruleaza": "[data-nota-id='160']"
+   },
+   {
+    "click": "tbody.tn-nota[data-nota-id='159'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='159'] tr.tn-detaliu"
+   },
+   {
+    "click": "tbody.tn-nota[data-nota-id='160'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='160'] tr.tn-detaliu"
    }
   ],
   "verifica": [
@@ -565,6 +580,12 @@
    },
    {
     "deruleaza": "[data-nota-id='175']"
+   },
+   {
+    "click": "tbody.tn-nota[data-nota-id='175'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='175'] tr.tn-detaliu"
    }
   ],
   "verifica": [
@@ -598,6 +619,12 @@
    },
    {
     "deruleaza": "[data-nota-id='79']"
+   },
+   {
+    "click": "tbody.tn-nota[data-nota-id='79'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='79'] tr.tn-detaliu"
    }
   ],
   "verifica": [

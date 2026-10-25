@@ -771,6 +771,12 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .fereastra-corp .rezumat-fix { position: sticky; top: -24px; z-index: 3; background: #e9edf3; margin: 0 -24px; padding: 8px 24px;
   border-bottom: 1px solid var(--linie); }
 .fereastra-corp .rezumat-fix:empty { display: none; }
+/* [lotul 12, comanda Costin 12.2 pct.11, deficiența 621 — DS cap.9 v2.102 „Rezumatul nu mănâncă tabelul”, clasă: toate ferestrele] „casetele de
+   sus ocupă jumătate din fereastră, se văd 2–3 rânduri de tabel”: rezumatul lipit sus stă strâns — blocurile lui fără marginile de pagină
+   (titlul 6 + 16 px, fiecare rând 16 px: la 1280×720 Balanța lua 178 px din 613, Registrul jurnal 194); casetele nu intră în el (stau sub
+   el sau pliate — verificator REZUMAT_CASETA). Măsurat: `core/test_lot12_ui2_ecrane.py` (rezumatul ≤ un sfert din fereastră). */
+.fereastra-corp .rezumat-fix > * { margin-top: 0; margin-bottom: 4px; }
+.fereastra-corp .rezumat-fix > :last-child { margin-bottom: 0; }
 /* antetul tabelului canonic rămâne în vedere sub rezumat (`--rezumat-h` = înălțimea rezumatului, pusă de navigator pe corp); `clip`, nu
    `hidden`: colțurile rotunjite rămân tăiate, dar tabelul nu devine el însuși cutie de derulare (lipirea antetului s-ar raporta la el) */
 .fereastra.fer-tabel .fereastra-corp .fd-tabel { overflow: clip; }
@@ -800,8 +806,11 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   .fereastra-corp .rezumat-fix { top: -16px; margin: 0 -16px; padding: 8px 16px; }
   .fereastra.fer-tabel .fereastra-corp .fd-tabel thead th { top: calc(var(--rezumat-h, 0px) - 16px); }
   .fereastra.fer-tabel .fereastra-corp .mig-sold-tabel .ac-cap { top: calc(var(--rezumat-h, 0px) - 16px); }
-  /* fără bară: marginea corpului e de 16 px; cu bară, ea (lipită la −24 px, ca pe desktop) dă locul totalului */
-  .fereastra.fer-tabel .fereastra-corp .fd-tabel tfoot td, .fereastra.fer-tabel .fereastra-corp .fd-tabel tfoot th { bottom: calc(var(--bara-h, 8px) - 24px); }
+  /* [lotul 12, C164] bara de jos are marginile corpului de telefon (16 px), ca rezumatul de sus: cu cele de desktop (−24 px) ieșea 8 px
+     peste marginea dreaptă (fereastra cu tabel o tăia: derulare laterală ascunsă, DS cap.9 285) și 8 px sub marginea de jos */
+  .fereastra-corp .bara-fixa { bottom: -16px; margin: 0 -16px -16px; padding: 4px 16px 16px; }
+  /* fără bară: marginea corpului e de 16 px; cu bară, totalul stă deasupra ei */
+  .fereastra.fer-tabel .fereastra-corp .fd-tabel tfoot td, .fereastra.fer-tabel .fereastra-corp .fd-tabel tfoot th { bottom: calc(var(--bara-h, 0px) - 16px); }
 }
 
 
@@ -2013,6 +2022,24 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 /* [deficiența 275a / 285] butoanele și stările facturii se rup pe rânduri, nu împing fereastra în lateral (măsurat: 1475px > 1000) */
 .fd-antet-sus { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .fd-antet-linie { font-size: var(--text-mic); color: var(--gri); margin-top: 4px; }
+/* [lotul 12, C164 — comanda Costin 12.3 pct.4, verbatim: „pe ecranele scunde, antetul detaliului facturii se strânge pe un rând (număr,
+   client, total, stare SPV); acțiunea principală rămâne fixă jos (clasa 285).” — DS cap.9 „Antetul documentului pe ecranul scund”]
+   Ecranul scund = mai scund de 700 px sau îngust ca un telefon: AICI e singura definiție a pragului; ecranul o citește din `--antet-scund`
+   (`facturi_ecran.aseazaAntetul`), nu își scrie propriul prag. Pe el, rezumatul lipit sus e rândul scurt (un rând, fără rupere: clientul și
+   starea SPV se taie cu „…”, întregi în titlu), iar butoanele detaliului și zonele lor de rezultat stau în bara lipită jos. */
+:root { --antet-scund: 0; }
+@media (max-height: 700px), (max-width: 560px) { :root { --antet-scund: 1; } }
+.fd-antet-scurt { display: flex; align-items: baseline; gap: 12px; flex-wrap: nowrap; white-space: nowrap; overflow: hidden; }
+.fereastra-corp .fd-antet-scurt > * { margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fd-antet-scurt .pf-titlu { flex: none; font-size: var(--text); }
+.fd-scurt-client { flex: 1 1 auto; color: var(--ardezie); }
+.fd-scurt-total { flex: none; font-weight: 600; }
+.fd-antet-scurt .fd-stare { flex: 0 1 auto; }
+.fd-bara-actiuni:empty { display: none; }
+.fd-bara-butoane { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; padding-top: 8px; }
+/* zona de rezultat a unei acțiuni, în bară: cel mult 30vh, derulează ea (precedentul zonelor de mesaj ale barei, 436) — bara nu urcă peste
+   rândul scurt */
+.fereastra-corp .bara-fixa .fd-bara-actiuni > div:not(.fd-bara-butoane) { max-height: 30vh; overflow-y: auto; }
 .fd-tabel { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: var(--text-mic);
   background: #fff; border: 1px solid var(--linie); border-radius: var(--raza); overflow: hidden; }
 .fd-tabel thead th { text-align: left; font-weight: 600; color: var(--ardezie);
@@ -2030,6 +2057,27 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .fd-tabel thead th.fd-td-num, .fd-td-num .tip-desc { white-space: normal; }
 .fd-td-um { color: var(--gri); }
 .fd-td-den { font-weight: 500; }
+/* ---------- TABELUL DE NOTE (DS cap.9 „Tabelul de note”, v2.102; lotul 12, deficiențele 617 și 622 — `ecrane/tabel_note.js`) ----------
+   Comanda Costin 12.2 pct.9 / 12: „tabel cu un rând pe notă, detaliul la clic, explicațiile o singură dată” — Registrul jurnal și „De
+   validat”, aceeași componentă. Fiecare notă e un `<tbody class="tn-nota">`: rândul (`.tn-rand`, clic = detaliul) și detaliul lui
+   (`.tn-detaliu`, ascuns până la clic: liniile notei, documentul, mesajele, restul acțiunilor). Cifrele la dreapta (`.fd-td-num`). */
+.tn-tabel .tn-rand { cursor: pointer; }
+.tn-tabel .tn-rand:hover > td, .tn-tabel .tn-rand.tn-deschis > td { background: #f3f6fa; }
+.tn-tabel .tn-nota .tn-rand.tn-deschis > td { border-bottom-color: transparent; }
+.tn-tabel .tn-detaliu > td { background: #f8fafc; padding: 4px 14px 12px 28px; }
+.tn-tabel .tn-semn { margin-top: 2px; }
+.tn-tabel .tn-actiuni { white-space: nowrap; }
+.tn-tabel .tn-actiuni .buton-primar, .tn-tabel .tn-actiuni .buton-secundar, .tn-tabel .tn-actiuni .buton-sters { margin: 2px 0; }
+/* tabelul liniilor din detaliu: antetul lui nu se lipește sub rezumat (se lipește numai antetul tabelului de note) */
+.fereastra.fer-tabel .fereastra-corp .tn-tabel .tn-linii thead th { position: static; }
+.tn-tabel .tn-linii { margin: 6px 0 8px; max-width: 900px; }
+.tn-detaliu-actiuni { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
+/* rândul evidențiat (deschis dintr-o notificare, tocmai validat): conturul pe celulele rândului — un `<tbody>` nu-și desenează conturul */
+.tn-nota.val-evidentiat { outline: none; }
+.tn-nota.val-evidentiat > .tn-rand > td { background: var(--galben-fundal); }
+.tn-explicatii .caseta-atentie, .tn-explicatii .caseta-info { margin: 6px 0; }
+.tn-explicatie + .tn-explicatie { margin-top: 4px; }
+.tn-cautare { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .fd-totaluri { max-width: 320px; margin-left: auto; background: #fff; border: 1px solid var(--linie);
   border-radius: var(--raza); padding: 12px 9px; }
 .fd-totaluri .fd-tot-rand span:last-child, .fd-totaluri .fd-tot-final span:last-child { text-align: right; min-width: 130px; }
@@ -2289,6 +2337,13 @@ input[type=file] { min-height: 24px; }  /* a11y tinta atingere >=24px (AA 2.5.8)
   background: #fdf3f3; border: 2px solid #d98c8c; border-radius: var(--raza);
   padding: 14px 16px; margin: 14px 0; max-width: 560px;
 }
+/* [lotul 12, 446.1 — DS cap.5] Întrebarea de confirmare (`api.confirmaCaseta`) nu e o eroare: casetă neutră, nu roșul refuzului;
+   întrebarea și butoanele pe un rând (se rup pe ecran îngust). Gard: core/test_lot12_form2_confirmare.py */
+.caseta-intrebare { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; background: var(--alb); border: 1px solid #c9d1dc;
+  border-left: 4px solid var(--albastru); border-radius: var(--raza); padding: 6px 12px; margin: 8px 0 12px; max-width: 880px; }
+.caseta-intrebare .ca-mesaj { flex: 1 1 320px; min-width: 0; font-size: var(--text-mic); color: var(--ardezie); line-height: 1.4; }
+.caseta-intrebare .ca-actiuni { display: flex; flex-wrap: wrap; gap: 8px; }
+.fereastra-corp .bara-fixa .caseta-intrebare { margin-bottom: 0; }
 .caseta-atentie .ca-mesaj { font-size: var(--text-mic); color: #7a2020; line-height: 1.4; margin-bottom: 12px; }
 .caseta-atentie .ca-actiuni { display: flex; gap: 8px; }
 /* [drepturi_rol 04.10.2026] Acțiune refuzată rolului (drepturi.js, decizia Costin: „orice acțiune refuzată rolului
@@ -2417,7 +2472,15 @@ select.camp-invalid, textarea.camp-invalid { border-color: #a3231c !important; }
    clasele cu un singur fel de conținut, pe clasă; în clasele de proză (`.ecran-nota`, `.ca-mesaj`, `.tip-desc`, `.em-cui-stare`),
    scrise pe mai multe rânduri în sursă, caseta refuzului poartă și `.pe-randuri`. DS cap.6 v2.89; gard core/test_lot11_g2_pre_line.py */
 .dec-avert-cap, .pacm-mail, .cp-mesaj, .val-lipsa, .anunt-text, .mig-eroare, .cf-semnal, .rn-mesaj, .pe-randuri { white-space: pre-line; }
-.acces-modal-inreg { background: #eaf2fc; }
+/* [lotul 12, 642 — CLAUDE.md §9] „Înregistrează cabinetul tău”: câmpurile pe două coloane, sigla mai mică, bifa + refuzul + „Creează cont”
+   lipite jos: la 1280×720, cu refuzul arătat, 622 px în 672 (era 967). Gard: core/test_lot12_form2_inregistrare.py */
+.acces-modal-inreg { background: #eaf2fc; max-width: 680px; padding: 20px 28px 16px; padding-top: 20px !important; }
+.acces-modal-inreg .login-brand { gap: 0; margin-bottom: 4px; }
+.acces-modal-inreg .login-logo-img { height: 44px; }
+.acces-modal-inreg .reg-grila { gap: 8px 16px; align-items: start; }
+.acces-modal-inreg .reg-actiune { position: sticky; bottom: -16px; z-index: 1; background: inherit; margin: 8px -28px -16px;
+  padding: 6px 28px 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+.acces-modal-inreg .reg-actiune .login-eroare { align-self: stretch; }
 /* meniu_card_v2: alias pe acces-card, latime plina */
 .meniu-card { width: 100%; margin-bottom: 12px; }
 

@@ -58,7 +58,10 @@ def test_def_c69_d406_cere_telefonul_si_nu_inventeaza_antetul(patron, firma_d406
     pg = _d406(patron, firma_d406, 2026, 9)
     err = pg.inner_text(".dec-eroare")
     assert "Lipsă telefonul firmei" in err and "„Telefon” în Date firmă" in err, err
-    assert not pg.query_selector("details.dec-xml"), "D406 refuzat nu arată niciun XML"
+    # [lotul 12, 596] pagina principală de dedesubt are acum și ea `details.dec-xml` („Cum se face” pe cardurile „Primii pași”): XML-ul se
+    # caută în fereastra declarației, cea din față
+    assert not pg.evaluate("() => !![...document.querySelectorAll('.fereastra')].pop().querySelector('details.dec-xml')"), \
+        "D406 refuzat nu arată niciun XML"
     patron.captura("refuz")
     buton = pg.locator(".dec-eroare button[data-ecran-destinatie='date_firma']")
     assert buton.count() == 1, "refuzul trimite la Date firmă"

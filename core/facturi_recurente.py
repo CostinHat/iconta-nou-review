@@ -24,10 +24,23 @@ zi) și ajungea la emitere abia la cron, unde un refuz rămânea în jurnalul jo
 liniilor se refuzau față de „RO”. Acum șablonul poartă țara (`facturi_recurente.tert_tara`, `core/migrare_tara_sablon_recurent.py`), aleasă
 pe ecran (dedusă din codul fiscal, ca la „Emite factură”), de la salvare până la emitere: proba, cronul și plătitorul beneficiarului o
 primesc pe toate. Refuzul „clientului din alt stat” rămâne numai unde șablonul nu poate spune ce trebuie (`verificari_drum`): codul fiscal
-al altui stat cu țara „România” (și șabloanele vechi, fără țară) și, la plătitor, clientul din altă țară fără nicio linie cu categoria
-operațiunii (ecranul șablonului nu alege cota și categoria liniei, deci factura lunară ar ieși cu TVA-ul din România).
+al altui stat cu țara „România” (și șabloanele vechi, fără țară) și, la plătitor, clientul din altă țară pe o linie fără cotă aleasă.
 TEMEI: CF art.325 alin.(1) lit.a și c (D390: livrările intracomunitare de bunuri și prestările art.278 alin.(2) către persoane impozabile
 stabilite în alt stat membru); CF art.278 alin.(2) (locul prestării, la beneficiarul persoană impozabilă).
+
+[lotul 12, comanda Costin 12.3 pct.9, verbatim: „Da: cota și categoria pe linia șablonului recurent, ca la factură.”] Ecranul șablonului
+alege cota fiecărei linii (cotele în vigoare, propunerea din nomenclator preselectată) și, la cota 0 a plătitorului, categoria de TVA — aceleași
+liste ca „Emite factură” (`facturi_api.pregatire_emitere`); la taxarea inversă, și categoria produsului (`categorie_331`, a documentului).
+Proba de la salvare și cronul le dau emiterii (`emite_factura` le verifică: `categorii_tva.verifica_linii`). De aici, refuzul C160 al
+clientului din alt stat la plătitor („ecranul șablonului nu alege cota și categoria liniei”) se ridică acolo unde linia are cota aleasă:
+rămâne numai pe linia FĂRĂ cotă (`MESAJ_STRAIN_FARA_COTA`), a cărei cotă s-ar lua lunar din nomenclator, ca la o vânzare în România.
+
+[lotul 12, comanda Costin 12.3 pct.1, verbatim: „C109: refuzul cronului ajunge la contabil prin notificare (clopoțel și email); pe șablon
+se vede și starea ultimei emiteri.”] Un refuz al emiterii automate se scrie pe șablon (`ultimul_refuz`, `ultimul_refuz_la`; golite la
+emiterea reușită — `core/migrare_sablon_recurent_stare.py`) și intră, în ACEEAȘI tranzacție, în clopoțelul celor care pregătesc pe firmă
+(tipul `factura_recurenta_refuzata`, bifat din oficiu, deci pleacă și pe email — mecanismul comun, `core/notificari.py`). Cronul reîncearcă
+zilnic un șablon refuzat (`de_emis`), deci același refuz se anunță o dată pe lună, nu în fiecare zi (`refuz_de_anuntat`). Tot aici: cursul
+BNR refuzat la emitere (`emite_factura` întoarce `{"ok": False}`, fără factură) trecea șablonul drept emis în luna aceea.
 """
 import json
 import datetime
@@ -40,14 +53,22 @@ MESAJ_ARTICOL_STOC = ("Linia %d are un articol de stoc: factura lunară se emite
                       "„Emite factură”; în șablon rămân serviciile și ce nu se descarcă din stoc.")
 MESAJ_CLIENT_STRAIN = ("Codul %s e al unui client din alt stat, dar țara clientului din șablon e România: alege țara clientului. Altfel "
                        "factura lunară ar ieși ca o vânzare în România.")
-#: [C160] plătitorul, clientul din altă țară, nicio linie cu categoria operațiunii (livrare intracomunitară, prestare cu locul în afara
-#: României, export): pe ecranul șablonului cota și categoria liniei nu se aleg
-MESAJ_STRAIN_FARA_CATEGORIE = ("Clientul e din alt stat (%s): factura lunară ar ieși cu TVA-ul din România, fiindcă în șablon nu se alege "
-                               "categoria de TVA a liniei (livrare intracomunitară, prestare de servicii cu locul în afara României, "
-                               "export). Factura către un client din alt stat se emite din „Emite factură”.")
+#: [C160, 12.3 pct.9] plătitorul, clientul din altă țară, linia FĂRĂ cotă aleasă: cota ei s-ar lua lunar din nomenclator (cea a unei
+#: vânzări în România); pe linia cu cota aleasă (și categoria, la 0%) refuzul nu se mai cere
+MESAJ_STRAIN_FARA_COTA = ("Linia %d: clientul e din alt stat (%s), deci alege cota de TVA a liniei (iar la 0%%, categoria: livrare "
+                          "intracomunitară, prestare de servicii cu locul în afara României, export). Fără ea, cota s-ar lua în fiecare "
+                          "lună din nomenclator, ca la o vânzare în România.")
 MESAJ_TARA = "Țara clientului: %r nu e un cod de țară. Alege țara din listă."
 PREFIX_PROBA = "Factura lunară ar fi refuzată la emitere: "
 _REFUZ_EMITERE = "Factura nu s-a emis: "   # începutul refuzurilor emiterii; sub PREFIX_PROBA nu se mai spune a doua oară
+#: [C109] refuzul care nu vine din verificările emiterii (o cădere a aplicației): contabilul nu primește textul tehnic, operatorul îl
+#: primește prin alertă (`observare.esec_secundar`), iar jurnalul jobului îl păstrează întreg
+MESAJ_NEPREVAZUT = "a apărut o eroare neprevăzută la emitere; echipa iConta.eu a fost anunțată și o verifică."
+#: [C109] tipul notificării (`notificari.TIPURI`)
+TIP_REFUZ = "factura_recurenta_refuzata"
+#: [lotul 12, C197] factura emisă de cron cu avertismentele emiterii (`emite_factura` -> `avertismente`: C84 livrarea intracomunitară
+#: neîntrebată, C157 prestarea art.317 neînregistrată): ajung la contabil prin clopoțel + email, ca refuzul C109 — nu se pierd în cron
+TIP_AVERTISMENT = "factura_recurenta_avertisment"
 
 
 def tara_sablonului(s):
@@ -60,7 +81,6 @@ def verificari_drum(s, platitor=None):
     `uc_tenants.facturi_emite`, și calea neinteractivă `uc_api`), pentru un șablon `{tert_nume, tert_cui, tert_tara, linii}`: [(câmp,
     mesaj)]. Le cer și salvarea șablonului, și cronul — un șablon salvat înainte de 462 nu scapă de ele la emitere.
     `platitor` = statutul firmei (`uc_comun._platitor_tva_firma`); None = verificarea plătitorului nu se cere (numai beneficiarul)."""
-    from core import categorii_tva as _ct
     out = []
     if not str(s.get("tert_nume") or "").strip():
         out.append(("fr-nume", MESAJ_BENEFICIAR))
@@ -69,9 +89,12 @@ def verificari_drum(s, platitor=None):
     if cui[:2].isalpha() and cui[:2] != "RO" and tara == "RO":
         # [C160] codul altui stat cu țara „România” (și orice șablon de dinainte de C160, fără țară): factura ar ieși vânzare în România
         out.append(("fr-cui", MESAJ_CLIENT_STRAIN % cui))
-    elif tara != "RO" and platitor is True and not any(
-            isinstance(l, dict) and l.get("categorie_tva") in _ct.CATEGORII for l in s.get("linii") or []):
-        out.append(("fr-cui", MESAJ_STRAIN_FARA_CATEGORIE % tara))
+    elif tara != "RO" and platitor is True:
+        # [12.3 pct.9] linia cu cota aleasă (și, la 0%, categoria, cerută de `categorii_tva.verifica_linii`) spune operațiunea; cea fără
+        # cotă și-ar lua-o lunar din nomenclator — cota unei vânzări în România
+        for i, l in enumerate(s.get("linii") or []):
+            if isinstance(l, dict) and l.get("cota_tva") is None:
+                out.append(("fr-l%d-cota" % i, MESAJ_STRAIN_FARA_COTA % (i + 1, tara)))
     for i, l in enumerate(s.get("linii") or []):
         if isinstance(l, dict) and l.get("articol_id"):
             out.append(("fr-l%d-descriere" % i, MESAJ_ARTICOL_STOC % (i + 1)))
@@ -79,9 +102,26 @@ def verificari_drum(s, platitor=None):
 
 
 def _camp_sablon(camp):
-    """Câmpul formularului de emitere (`em-l{i}-…`) -> câmpul formularului șablonului (`fr-l{i}-…`); restul rămân cum sunt (fără câmp
-    pe ecranul șablonului, ecranul le arată în caseta formularului)."""
-    return "fr-l" + camp[len("em-l"):] if str(camp).startswith("em-l") else camp
+    """Câmpul formularului de emitere (`em-l{i}-…`, `em-c331`) -> câmpul formularului șablonului (`fr-l{i}-…`, `fr-c331`); restul rămân
+    cum sunt (fără câmp pe ecranul șablonului, ecranul le arată în caseta formularului)."""
+    camp = str(camp)
+    if camp.startswith("em-l"):
+        return "fr-l" + camp[len("em-l"):]
+    return "fr-c331" if camp == "em-c331" else camp
+
+
+def motiv_refuzului(e):
+    """[C109] Textul pentru contabil al unui refuz al emiterii (`ValueError` din `emite_factura`): liniile refuzate („Linia 1: categoria de
+    TVA — …”), altfel mesajul, fără începutul „Factura nu s-a emis: ” (îl spune cine îl arată)."""
+    if isinstance(e, facturi_api.LiniiIncomplete):
+        return " ".join("%s — %s" % (x["eticheta"], x.get("mesaj") or "completează câmpul.") for x in e.campuri)
+    m = str(e)
+    return m[len(_REFUZ_EMITERE):] if m.startswith(_REFUZ_EMITERE) else m
+
+
+def _motiv_curs(r):
+    """Refuzul cursului BNR întors de `emite_factura` (`{"ok": False, "mesaj", "cod"}`)."""
+    return str(r.get("mesaj") or r.get("cod") or "cursul BNR nu s-a putut stabili")
 
 
 def _proba_emiterii(conn, schema, corp, raspunsuri_ai=None, azi=None):
@@ -100,16 +140,16 @@ def _proba_emiterii(conn, schema, corp, raspunsuri_ai=None, azi=None):
                                       tert_nume=corp.get("tert_nume"), tert_cui=corp.get("tert_cui"),
                                       tert_tara=tara_sablonului(corp),   # [C160] țara clientului, ca la factura obișnuită
                                       data_emitere=azi.isoformat(), moneda=corp.get("moneda") or "RON",
-                                      platitor_tva=_uc._platitor_tva_firma(conn), raspunsuri_ai=raspunsuri_ai)
+                                      platitor_tva=_uc._platitor_tva_firma(conn), raspunsuri_ai=raspunsuri_ai,
+                                      categorie_331=corp.get("categorie_331"))   # [12.3 pct.9] categoria produsului, ca la factură
         if isinstance(r, dict) and r.get("ok") is False:   # cursul BNR (prea vechi / necotat / indisponibil): tranzacția e anulată
             vie = False
-            rele.append((None, PREFIX_PROBA + str(r.get("mesaj") or r.get("cod") or "cursul BNR nu s-a putut stabili")))
+            rele.append((None, PREFIX_PROBA + _motiv_curs(r)))
     except facturi_api.LiniiIncomplete as e:
         for x in e.campuri:
             rele.append((_camp_sablon(x["camp"]), "%s — %s" % (x["eticheta"], x.get("mesaj") or "completează câmpul.")))
     except ValueError as e:
-        m = str(e)
-        rele.append((None, PREFIX_PROBA + (m[len(_REFUZ_EMITERE):] if m.startswith(_REFUZ_EMITERE) else m)))
+        rele.append((None, PREFIX_PROBA + motiv_refuzului(e)))
     finally:
         if vie:
             with conn.cursor() as cur:
@@ -121,15 +161,23 @@ def _proba_emiterii(conn, schema, corp, raspunsuri_ai=None, azi=None):
 def lista(conn, schema):
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""SELECT id, client_id, tert_nume, tert_cui, tert_tara, linii, zi_emitere,
-                               moneda, activ, ultima_emitere
+                               moneda, activ, ultima_emitere, ultimul_refuz, ultimul_refuz_la, categorie_331
                         FROM {schema}.facturi_recurente ORDER BY id""")
         rows = [dict(r) for r in cur.fetchall()]
     for r in rows:
         if isinstance(r["linii"], str):
             r["linii"] = json.loads(r["linii"])
-        if r["ultima_emitere"]:
-            r["ultima_emitere"] = str(r["ultima_emitere"])
+        for k in ("ultima_emitere", "ultimul_refuz_la"):
+            if r[k]:
+                r[k] = str(r[k])
     return rows
+
+
+def _categorie_331(corp):
+    """[12.3 pct.9] Categoria produsului cu taxare inversă (codul D394), numai cât o linie are categoria „taxare_inversa” (ca la „Emite
+    factură”, unde câmpul apare numai atunci)."""
+    are = any(isinstance(l, dict) and l.get("categorie_tva") == "taxare_inversa" for l in corp.get("linii") or [])
+    return (str(corp.get("categorie_331") or "").strip() or None) if are else None
 
 
 def adauga(conn, schema, corp, raspunsuri_ai=None, azi=None):
@@ -180,8 +228,9 @@ def adauga(conn, schema, corp, raspunsuri_ai=None, azi=None):
             facturi_api.cere_cod_partener(corp.get("tert_cui"), False, corp.get("tert_nume"))
         except ValueError as e:
             er.camp("fr-cui", str(e))
+    c331 = _categorie_331(corp)
     if not er:
-        for camp, mesaj in _proba_emiterii(conn, schema, corp, raspunsuri_ai, azi):
+        for camp, mesaj in _proba_emiterii(conn, schema, dict(corp, categorie_331=c331), raspunsuri_ai, azi):
             if camp:
                 er.camp(camp, mesaj)
             else:
@@ -191,10 +240,10 @@ def adauga(conn, schema, corp, raspunsuri_ai=None, azi=None):
         return {"eroare": d["mesaj"], "erori_campuri": d["erori_campuri"]}
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.facturi_recurente
-            (client_id, tert_nume, tert_cui, tert_tara, linii, zi_emitere, moneda)
-            VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+            (client_id, tert_nume, tert_cui, tert_tara, linii, zi_emitere, moneda, categorie_331)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
             (corp.get("client_id"), corp.get("tert_nume"), corp.get("tert_cui"), tara,
-             json.dumps(linii), zi, corp.get("moneda", "RON")))
+             json.dumps(linii), zi, corp.get("moneda", "RON"), c331))
         rid = cur.fetchone()[0]
     conn.commit()
     return {"id": rid}
@@ -239,6 +288,53 @@ def de_emis(sabloane, azi=None):
     return rezultat
 
 
+def refuz_de_anuntat(s, motiv, azi):
+    """PURĂ. [C109] Refuzul de azi se anunță? Da, dacă e altul decât cel consemnat pe șablon, sau dacă cel consemnat e dintr-o lună de
+    dinainte (factura altei luni). Același refuz, în aceeași lună, nu se mai anunță: cronul reîncearcă zilnic șablonul refuzat."""
+    la = s.get("ultimul_refuz_la")
+    if not la or (s.get("ultimul_refuz") or "") != motiv:
+        return True
+    d = datetime.date.fromisoformat(str(la)[:10])
+    return (d.year, d.month) != (azi.year, azi.month)
+
+
+def text_refuz(nume_firma, s, motiv, azi):
+    """[C109] Textul din clopoțel (în aplicație: cu firma, clientul și motivul; pe email / WhatsApp pleacă numai eticheta tipului)."""
+    from core.pdf_util import data_ro
+    return ("%s: factura recurentă pentru %s nu s-a emis (%s). Motivul: %s Aplicația o încearcă din nou zilnic, până la sfârșitul lunii; "
+            "motivul e și pe șablon, în Facturi → Facturi recurente." % (
+                nume_firma, str(s.get("tert_nume") or "").strip() or "clientul șablonului", data_ro(azi.isoformat()),
+                motiv.rstrip() if motiv.rstrip().endswith(".") else motiv.rstrip() + "."))
+
+
+def text_avertisment(nume_firma, s, numar, avertismente, azi):
+    """[C197] Textul din clopoțel pentru factura recurentă emisă cu avertismente: firma, clientul, numărul, data și fiecare avertisment."""
+    from core.common import cate
+    from core.pdf_util import data_ro
+    return "%s: factura recurentă pentru %s s-a emis (%s, %s), cu %s: %s" % (
+        nume_firma, str(s.get("tert_nume") or "").strip() or "clientul șablonului", numar or "fără număr", data_ro(azi.isoformat()),
+        cate(len(avertismente), "avertisment", "avertismente"), " ".join(
+            a.rstrip() if a.rstrip().endswith(".") else a.rstrip() + "." for a in avertismente))
+
+
+def _consemneaza_refuzul(conn, schema, s, motiv, azi):
+    """[C109] Refuzul de azi: pe șablon (`ultimul_refuz`, `ultimul_refuz_la`) și, dacă e nou (`refuz_de_anuntat`), în clopoțelul celor care
+    pregătesc pe firmă — în aceeași tranzacție, comisă aici. O cădere aici nu oprește cronul (celelalte șabloane, celelalte firme): se
+    semnalează operatorului."""
+    from core import notificari_termene as _nt, observare as _obs
+    try:
+        anunt = refuz_de_anuntat(s, motiv, azi)
+        with conn.cursor() as cur:
+            cur.execute(f"UPDATE {schema}.facturi_recurente SET ultimul_refuz=%s, ultimul_refuz_la=%s WHERE id=%s",
+                        (motiv, azi, s["id"]))
+        if anunt:
+            _nt.notifica_pe_conexiune(conn, schema, TIP_REFUZ, lambda nume: text_refuz(nume, s, motiv, azi))
+        conn.commit()
+    except Exception as e:  # noqa: BLE001 — starea și anunțul refuzului nu opresc cronul; eșecul nu e tăcut
+        conn.rollback()
+        _obs.esec_secundar("consemnarea refuzului facturii recurente %s/%s" % (schema, s.get("id")), e)
+
+
 def emite_scadente(schema, azi=None):
     """Emite facturile scadente pentru un tenant. Intoarce lista emisa.
 
@@ -247,8 +343,10 @@ def emite_scadente(schema, azi=None):
     pe o conexiune noua, care RECITESTE abonamentele (unul emis intre timp de alta rulare nu se mai emite). Pana azi functia primea
     conexiunea de la apelant si intreba modelul cu ea in mana; iar statutul de platitor cadea tacit pe `True` daca citirea lui esua
     (`except: rollback`) — o firma neplatitoare ar fi facturat cu TVA. Acum citirea e cea a rutelor (`_platitor_tva_firma`), fara
-    plasa: daca nu se poate citi, nu se emite."""
-    from core import cote_tva, db, uc_comun as _uc
+    plasa: daca nu se poate citi, nu se emite.
+    [C109] Orice refuz — verificările drumului, cursul BNR, refuzul emiterii — se consemnează pe șablon și se anunță
+    (`_consemneaza_refuzul`); emiterea reușită golește refuzul consemnat."""
+    from core import cote_tva, db, observare as _obs, uc_comun as _uc
     from core import uc_curs_bnr as _uc_cb
     azi = azi or datetime.date.today()
     with db.get_conn(schema) as conn:
@@ -277,7 +375,9 @@ def emite_scadente(schema, azi=None):
         for s in de_emis(lista(conn, schema), azi):   # REVALIDARE: scadente si acum
             rele = verificari_drum(s, platitor)   # [462] și pe șabloanele salvate înainte de 462: aceleași verificări ca drumul obișnuit
             if rele:
-                emise.append({"sablon": s["id"], "eroare": " ".join(m for _c, m in rele)})
+                motiv = " ".join(m for _c, m in rele)
+                emise.append({"sablon": s["id"], "eroare": motiv})
+                _consemneaza_refuzul(conn, schema, s, motiv, azi)
                 continue
             try:
                 with conn.cursor() as cur:   # un rollback de mai jos anuleaza si SET-ul facut in tranzactia lui
@@ -286,15 +386,31 @@ def emite_scadente(schema, azi=None):
                         tert_nume=s.get("tert_nume"), tert_cui=s.get("tert_cui"), tert_tara=tara_sablonului(s),   # [C160]
                         data_emitere=azi.isoformat(), moneda=s.get("moneda") or "RON",
                         platitor_tva=platitor, raspunsuri_ai=raspunsuri_ai,
-                        tert_platitor_tva=platitori_tert.get(s["id"]))
+                        tert_platitor_tva=platitori_tert.get(s["id"]),
+                        categorie_331=s.get("categorie_331"))   # [12.3 pct.9] categoria produsului, ca la factură
+                if isinstance(r, dict) and r.get("ok") is False:
+                    # [C109] cursul BNR refuzat: `emite_factura` a anulat tranzacția, nicio factură. Înainte se trecea `ultima_emitere`
+                    # și șablonul nu se mai încerca în luna aceea — factura lunii lipsea fără niciun semn
+                    motiv = _motiv_curs(r)
+                    emise.append({"sablon": s["id"], "eroare": motiv})
+                    _consemneaza_refuzul(conn, schema, s, motiv, azi)
+                    continue
                 with conn.cursor() as cur:
-                    cur.execute(f"UPDATE {schema}.facturi_recurente SET ultima_emitere=%s WHERE id=%s",
-                                (azi, s["id"]))
+                    cur.execute(f"UPDATE {schema}.facturi_recurente SET ultima_emitere=%s, ultimul_refuz=NULL, ultimul_refuz_la=NULL "
+                                f"WHERE id=%s", (azi, s["id"]))
+                _avert = list(r.get("avertismente") or [])
+                if _avert:   # [C197] în ACEEAȘI tranzacție cu factura: emisă și anunțată, sau niciuna
+                    from core import notificari_termene as _nt
+                    _nt.notifica_pe_conexiune(conn, schema, TIP_AVERTISMENT,
+                                              lambda nume, _s=s, _n=r.get("numar"), _a=_avert: text_avertisment(nume, _s, _n, _a, azi))
                 conn.commit()
-                emise.append({"sablon": s["id"], "factura": r.get("numar")})
-            except Exception as e:
+                emise.append({"sablon": s["id"], "factura": r.get("numar"), **({"avertismente": _avert} if _avert else {})})
+            except Exception as e:  # noqa: BLE001 — refuzul unui șablon nu le oprește pe celelalte; se consemnează și se anunță
                 conn.rollback()
-                emise.append({"sablon": s["id"], "eroare": str(e)})
+                emise.append({"sablon": s["id"], "eroare": str(e)})   # jurnalul jobului: textul întreg
+                if not isinstance(e, ValueError):   # o cădere a aplicației, nu un refuz al emiterii: operatorul e anunțat
+                    _obs.esec_secundar("emiterea facturii recurente %s/%s" % (schema, s["id"]), e)
+                _consemneaza_refuzul(conn, schema, s, motiv_refuzului(e) if isinstance(e, ValueError) else MESAJ_NEPREVAZUT, azi)
     if any("eroare" not in e for e in emise):
         _note_interne(schema, de_la, emise)
     return emise

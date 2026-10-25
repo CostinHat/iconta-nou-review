@@ -85,8 +85,19 @@ def evalueaza_durata(eticheta, durata_sec, prag_sec=None):
 #  CANAL ALERTĂ — Brevo (substituibil). Se dovedește pe server.
 # ============================================================
 def _trimite_brevo(subiect, mesaj):
-    """Trimite email via Brevo. Întoarce True/False. Izolat — singurul loc
-    care știe de Brevo; schimbi aici pt Slack/alt canal."""
+    """Trimite alerta internă (text) către `ICONTA_ALERTA_EMAIL`. Întoarce True/False. Izolat — singurul loc al canalului; schimbi aici pt
+    Slack/alt canal.
+
+    [lotul 12, 268.1] Alerta e tranzacțională (268: fără „Dezabonează-te”), dar Brevo pune singur antetul List-Unsubscribe pe orice email,
+    iar Gmail îl arată ca „Dezabonează-te” (DEFICIENTE 268; LANSARE „Lotul 9, comanda 9.1 D3”). Cu tokenul serverului Postmark configurat
+    (`POSTMARK_SERVER_TOKEN`, decizia Costin 17.10.2026 7.2 pct.2.5: tranzacționalele „trec pe Postmark”), alerta pleacă pe fluxul
+    tranzacțional Postmark, care nu adaugă antetul; fără token, pe Brevo, ca înainte."""
+    pm = cfg("POSTMARK_SERVER_TOKEN")
+    if pm:
+        import html as _h
+        catre = cfg("ICONTA_ALERTA_EMAIL", _EMAIL_IMPLICIT)
+        return _trimite_postmark(pm, catre, "[iConta.eu] " + subiect,
+                                 "<pre style='font-family:sans-serif;white-space:pre-wrap'>%s</pre>" % _h.escape(mesaj), "iConta.eu Alerte")
     brevo_key = cfg("BREVO_API_KEY")
     if not brevo_key:
         # fără cheie (ex. local): doar log, nu crăpa aplicația

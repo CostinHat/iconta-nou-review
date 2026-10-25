@@ -243,3 +243,55 @@ def actualizeaza_destinatii_linii(cur, schema, fid, destinatii):
                              % (d, ", ".join(DESTINATII)))
         cur.execute(f"UPDATE {schema}.factura_linii SET destinatie_tva=%s WHERE id=%s",
                     (d, lid))
+
+
+# ── [lotul 12, C73.1] DUBLURA FACTURII DE FURNIZOR: aceeași factură (furnizor + număr) o singură dată în evidență ──────────────────────
+# Cheia și refuzul: `core/factura_primita_dublura.py`. Aici, citirea — chemată de cele trei căi prin care se naște o factură.
+_COLOANE_DUBLURA = "id, serie, numar, data_emitere, total, moneda, tert_nume, tert_cui, tip"
+
+
+def primite_cu_aceeasi_cheie(cur, schema, tert_cui, tert_nume, serie, numar, negativ=False, xml=None):
+    """Facturile de furnizor deja în evidență cu aceeași cheie (furnizor + număr, `factura_primita_dublura`) și același semn (stornarea,
+    cu minus, nu se ciocnește de factura pozitivă): [dict cu `_COLOANE_DUBLURA` + `acelasi_xml` (rândul poartă exact XML-ul `xml` — același
+    document e-Factura)], cele mai vechi întâi; [] fără număr sau fără furnizor. Factura preluată la migrare (`tip = 'preluata'`) intră:
+    soldul ei e în soldurile inițiale, deci aceeași factură introdusă din nou ar dubla datoria.
+    Ia întâi lacătul tranzacției pe cheie (`pg_advisory_xact_lock`): o a doua salvare simultană a aceleiași facturi așteaptă commitul
+    primei și o vede, în loc să treacă și ea (verificarea și scrierea nu sunt atomice altfel). `schema` None = schema curentă."""
+    from core import factura_primita_dublura as _fd
+    nr = _fd.numar(serie, numar)
+    este_cui, cheie = _fd.furnizor(tert_cui, tert_nume)
+    if not nr or not cheie:
+        return []
+    s = (schema + ".") if schema else ""
+    pc, pn, nn = _fd.expresii_facturi()
+    partener = f"{pc} = %s" if este_cui else f"{pc} = '' AND {pn} = %s"
+    # cheia lacătului poartă schema firmei (dată sau cea curentă), aceeași pe toate căile, ca două căi diferite să se aștepte una pe alta
+    cur.execute("SELECT pg_advisory_xact_lock(hashtext(COALESCE(%s, current_schema()) || %s))",
+                ((schema or "").strip('"') or None, "|factura_primita|%s|%s" % (cheie, nr)))
+    cur.execute(f"""SELECT {_COLOANE_DUBLURA}, (COALESCE(xml, '') <> '' AND xml = %s) AS acelasi_xml FROM {s}facturi
+                WHERE directie = 'primita' AND COALESCE(tip, 'factura') IN %s AND COALESCE(status, '') <> 'anulata'
+                  AND {nn} = %s AND {partener} AND (COALESCE(total, 0) < 0) = %s ORDER BY data_emitere, id""",
+                (xml or "", _fd.TIPURI, nr, cheie, bool(negativ)))
+    cols = [c.strip() for c in _COLOANE_DUBLURA.split(",")] + ["acelasi_xml"]
+    return [dict(r) if isinstance(r, dict) else dict(zip(cols, r)) for r in cur.fetchall()]
+
+
+def dubluri_primite(cur, schema):
+    """Dublurile DEJA în evidență (scrise înainte de C73.1): grupurile de facturi de furnizor cu aceeași cheie și același semn, fiecare
+    [dict cu `_COLOANE_DUBLURA`] (cel puțin două), în ordinea datei. Numai citire — ce se păstrează decide contabilul."""
+    from core import factura_primita_dublura as _fd
+    s = (schema + ".") if schema else ""
+    pc, pn, nn = _fd.expresii_facturi()
+    cheie_p = f"CASE WHEN {pc} <> '' THEN 'c:' || {pc} ELSE 'n:' || {pn} END"
+    cur.execute(f"""SELECT {_COLOANE_DUBLURA}, grup FROM (
+                  SELECT {_COLOANE_DUBLURA}, {cheie_p} || '|' || {nn} || '|' || (COALESCE(total, 0) < 0)::text AS grup,
+                         count(*) OVER (PARTITION BY {cheie_p}, {nn}, COALESCE(total, 0) < 0) AS n
+                  FROM {s}facturi WHERE directie = 'primita' AND COALESCE(tip, 'factura') IN %s AND COALESCE(status, '') <> 'anulata'
+                    AND {nn} <> '' AND {cheie_p} NOT IN ('c:', 'n:')) x
+                WHERE n > 1 ORDER BY grup, data_emitere, id""", (_fd.TIPURI,))
+    cols = [c.strip() for c in _COLOANE_DUBLURA.split(",")] + ["grup"]
+    grupuri = {}
+    for r in cur.fetchall():
+        d = dict(r) if isinstance(r, dict) else dict(zip(cols, r))
+        grupuri.setdefault(d.pop("grup"), []).append(d)
+    return list(grupuri.values())

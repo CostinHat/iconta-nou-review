@@ -297,13 +297,19 @@ function _butonSpreEcran(eroare, cale) {
   setTimeout(async () => { if (!(await pune())) setTimeout(pune, _REFUZ_ASTEPTARE_MS + 50); }, 30);
 }
 
+// [lotul 12, deficiența 642 — „mesajul de refuz apare de două ori”, formularul de înregistrare] „arătat deja” se citește pe text cu
+// spațiile strânse (un refuz pe mai multe rânduri, scris într-o zonă fără `pre-line`, ajunge în pagină pe un rând), iar un refuz cu
+// erori de câmp e arătat când FIECARE eroare a lui e în pagină (lângă câmp / în „NU s-a salvat.”), chiar dacă fraza lui întreagă nu
+// e — altfel bannerul o repeta. Gard: core/test_lot12_form2_inregistrare.py.
+function _faraSpatii(t) { return String(t || "").replace(/\s+/g, " ").trim(); }
 function _refuzNevazut(eroare, metoda, cale) {
   if (metoda === "GET") return;
   const m = String((eroare && eroare.mesaj) || "").trim();
   if (!m) return;
   setTimeout(() => {
-    const text = document.body ? (document.body.innerText || "") : "";
-    if (text.indexOf(m) >= 0) return;   // cineva l-a arătat deja — nu dublăm
+    const text = _faraSpatii(document.body ? document.body.innerText : "");
+    const campuri = ((eroare && eroare.erori_campuri) || []).map((c) => _faraSpatii(c && c.mesaj)).filter(Boolean);
+    if (text.indexOf(_faraSpatii(m)) >= 0 || (campuri.length && campuri.every((c) => text.indexOf(c) >= 0))) return;   // arătat — nu dublăm
     _bannerRefuz(m, cale);
   }, _REFUZ_ASTEPTARE_MS);
 }
@@ -475,6 +481,10 @@ document.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key ===
 let _deAdus = [];
 export function aduInVedere(el) {
   if (!el || !el.isConnected) return;
+  // [lotul 12, 171 redeschisă la e2e 25.10.2026] o linie de STARE a ecranului (citită la deschidere și la fiecare redesenare, ex. starea
+  // SPV a firmei) nu e rezultatul butonului apăsat: în cele 3 s de după clic ea trăgea fereastra după ea (Control fiscal sărea la
+  // „Salvează”). Zona ei poartă `data-stare-ecran`. DS cap.6.
+  if (el.closest("[data-stare-ecran]")) return;
   if (Date.now() - _ultimaActiuneOm > FEREASTRA_ACTIUNE_MS) return;
   _deAdus.push(el);
   if (_deAdus.length > 1) return;   // același cadru: se alege cel mai de sus, o singură derulare
@@ -554,7 +564,12 @@ export function eroareCamp(root, idCamp, txt) {
   return true;
 }
 
-function _ancoraCamp(inp) { return (inp.parentElement && inp.parentElement.classList.contains("data-golibila")) ? inp.parentElement : inp; }
+// [lotul 12, 642] la fel câmpul cu un buton pe rândul lui (`.camp-cu-buton`: CUI + „Verifică la ANAF”): eroarea vine sub rând, nu între
+// câmp și buton
+function _ancoraCamp(inp) {
+  const p = inp.parentElement;
+  return (p && (p.classList.contains("data-golibila") || p.classList.contains("camp-cu-buton"))) ? p : inp;
+}
 
 // [deficiența 410, retestul Costin 19.10.2026, PRIORITAR — clasă, TOATE formularele] „La orice Salvează refuzat: «NU s-a salvat» lângă
 // buton + lista tuturor câmpurilor lipsă cu trimitere; nu se pierde ce s-a scris.” Instanța: Date firmă, câmpurile marcate erau în afara
@@ -962,16 +977,24 @@ export function textScurt(t, n) {
 // [deficiența 330, 18.10.2026] `optiuni.textNu`: refuzul își poate spune numele. Confirmarea unei RENUNȚĂRI („Renunță la factură”) lângă
 // refuzul implicit „Renunță” punea două „Renunță” alăturate, cu sensuri opuse; garda `core/test_330_confirmari.py` cere `textNu` oricând
 // `textOk` începe cu „Renunț”.
+// [lotul 12, deficiența 446.1 — comanda Costin 12.2 pct.3: „tabelul se strânge la un rând tăiat, iar întrebarea stă într-o casetă
+// roșie”] CLASA: toate apelurile `confirmaCaseta(` din static/js. Întrebarea nu e o eroare: stă într-o casetă NEUTRĂ (`.caseta-intrebare`,
+// DS cap.5), nu în roșul refuzului (`.caseta-atentie`); ireversibilitatea o spune textul întrebării. Întrebarea și cele două butoane stau
+// într-o singură casetă, pe un rând (se rup pe ecran îngust): pusă în locul butonului principal (previzualizările importurilor,
+// `migrare._confirmaInLoculButonului`), bara de jos crește cu câțiva pixeli, nu cu o casetă plus un rând de butoane, deci tabelul de
+// deasupra își păstrează locul. Id-urile (`#caseta-atentie-activa`, `#ca-ok`, `#ca-nu`, `.ca-mesaj`) rămân. Gard:
+// core/test_lot12_form2_confirmare.py.
 export function confirmaCaseta(zona, mesajHtml, laConfirm, optiuni = {}) {
   const vechi = document.getElementById("caseta-atentie-activa");
   if (vechi) vechi.remove();
   const div = document.createElement("div");
   div.id = "caseta-atentie-activa";
   div.innerHTML = `
-    <div class="caseta-atentie"><div class="ca-mesaj" style="margin-bottom:0">${mesajHtml}</div></div>
-    <div class="ca-actiuni" style="margin:10px 0 14px;display:flex;gap:8px">
-      <button class="buton-primar" id="ca-ok">${optiuni.textOk || "Confirm"}</button>
-      <button class="buton-secundar" id="ca-nu">${optiuni.textNu || "Renun\u021b\u0103"}</button>
+    <div class="caseta-intrebare"><div class="ca-mesaj">${mesajHtml}</div>
+      <div class="ca-actiuni">
+        <button class="buton-primar" id="ca-ok">${optiuni.textOk || "Confirm"}</button>
+        <button class="buton-secundar" id="ca-nu">${optiuni.textNu || "Renun\u021b\u0103"}</button>
+      </div>
     </div>`;
   zona.parentNode.insertBefore(div, zona.nextSibling);
   div.querySelector("#ca-nu").addEventListener("click", () => div.remove());

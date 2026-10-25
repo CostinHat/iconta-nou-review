@@ -116,12 +116,15 @@ def _d390(c, an=2097, luna=9):
 # ── C154 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_c154_serviciul_emis_catre_client_ue_intra_in_d390_ca_prestare(conn):
     """Emite factură: serviciu (500 lei) către clientul din DE. Pe ambele firme: axa „servicii” pe document și D390 = P 500 (CF art.325
-    alin.(1) lit.c), niciun L. La neplătitor linia rămâne 0% cu categoria regimului special (CF art.310 alin.(10) lit.b), contul 704.
-    MUTAȚIE: ramura `elif not axa_ic: axa_ic = _ct.axa_neplatitor(...)` scoasă din `facturi_api.creeaza_factura` -> pe neplătitor axa
-    NULL și D390 = L 500 -> ROȘU (plătitorul rămâne verde: el are axa din categorie)."""
+    alin.(1) lit.c), niciun L. La neplătitor linia rămâne 0% (CF art.310 alin.(10) lit.b), contul 704 — [C156] cu categoria prestării art.317.
+    MUTAȚIE: felul liniei din contul de venit stricat (`categorii_tva._axa_linie` -> None) -> pe neplătitor nici categoria art.317, nici
+    axa din felul liniilor: axa NULL și D390 = L 500 -> ROȘU. (De la C156 axa neplătitorului art.317 vine din categoria liniei; ramura
+    `axa_neplatitor` rămâne pentru neplătitorul neînregistrat — vezi `test_c154_axa_neplatitor_nu_ghiceste`.)"""
     from core import categorii_tva
     fid = _emite(conn)
-    asteptat = "serviciu_extern" if conn.platitor else categorii_tva.NEPLATITOR["cod"]
+    # [lotul 12, C156, decizia Costin 12.3 pct.3] la neplătitorul înregistrat art.317 prestarea către clientul din UE e AE („taxare inversă”,
+    # codul RO art.317) — `categorii_tva.PRESTARE_IC_317`, aceeași ca la plătitor; înainte `NEPLATITOR` (O)
+    asteptat = "serviciu_extern" if conn.platitor else categorii_tva.PRESTARE_IC_317
     assert _sql(conn, "SELECT categorie_tva, cota_tva::text, cont_venit FROM factura_linii WHERE factura_id = %s", (fid,)) == [
         (asteptat, "0.00", "704")]
     assert _sql(conn, "SELECT axa_ic, tert_tara FROM facturi WHERE id = %s", (fid,)) == [("servicii", "DE")]

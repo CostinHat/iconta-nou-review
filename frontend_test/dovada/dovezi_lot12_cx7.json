@@ -1,0 +1,695 @@
+[
+  {
+    "nr": "C176",
+    "firma": "tenant_9050",
+    "descriere": "SCRIE pe copie și șterge ce a scris. F2 (impozit pe profit): Registrul de evidență fiscală (anul implicit, cel trecut) -> o ajustare fiscală (rd.25 amenzi, T1, 100 lei, „Dovadă C176 ajustare de șters”) -> „Adaugă ajustarea” -> „Șterge” pe rândul ei: întrebarea „Ștergi ajustarea? D100 și D101 se calculează din nou fără ea.” (captura intermediară) -> „Da, șterge ajustarea”: rândul dispare și lista spune iar că nu e nicio ajustare. Înainte de reparație „Șterge” nu făcea nimic. Datele existente: neafectate (pe copie nu e nicio ajustare fiscală; defectul era al butonului, nu al datelor).",
+    "pasi": [
+      {
+        "click": "#fa-regfiscal"
+      },
+      {
+        "asteapta": "#aj-adauga"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "alege": "#aj-rand",
+        "valoare": "P25"
+      },
+      {
+        "alege": "#aj-trim",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#aj-suma",
+        "valoare": "100"
+      },
+      {
+        "completeaza": "#aj-descriere",
+        "valoare": "Dovadă C176 ajustare de șters"
+      },
+      {
+        "completeaza": "#aj-document",
+        "valoare": "PV dovadă C176"
+      },
+      {
+        "click": "#aj-adauga"
+      },
+      {
+        "asteapta": "#rf-ajustari td",
+        "text": "Dovadă C176 ajustare de șters"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "[data-aj-sterge]"
+      },
+      {
+        "asteapta": "#caseta-atentie-activa .caseta-intrebare"
+      },
+      {
+        "asteapta_text": "Ștergi ajustarea? D100 și D101 se calculează din nou fără ea."
+      },
+      {
+        "captura": "c176_f2_intrebarea_stergerii.png"
+      },
+      {
+        "click": "#caseta-atentie-activa #ca-ok"
+      },
+      {
+        "asteapta": "#rf-ajustari .stare-goala"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "nu_contine": "Dovadă C176 ajustare de șters",
+        "zona": "#rf-ajustari"
+      },
+      {
+        "contine": "Nicio ajustare fiscală pe",
+        "zona": "#rf-ajustari"
+      }
+    ],
+    "captura": "c176_f2_ajustarea_stearsa.png"
+  },
+  {
+    "nr": "C179",
+    "firma": "tenant_9049",
+    "descriere": "F1, Stocuri -> „+ NIR nou” -> CUI 14399840 -> „Verifică”: furnizorul DANTE INTERNATIONAL SA (captura intermediară) -> CUI-ul tastat 1439984: furnizorul și linia de sub CUI se golesc. Nimic nu se salvează. Datele existente: neafectate (datele de la ANAF stau numai în formular, nesalvate).",
+    "pasi": [
+      {
+        "click": "#fa-stocuri"
+      },
+      {
+        "asteapta": "#sn-toggle"
+      },
+      {
+        "click": "#sn-toggle"
+      },
+      {
+        "asteapta": "#sn-cui"
+      },
+      {
+        "completeaza": "#sn-cui",
+        "valoare": "14399840"
+      },
+      {
+        "click": "#sn-verifica"
+      },
+      {
+        "asteapta_text": "DANTE INTERNATIONAL SA · plătitor TVA"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "captura": "c179_f1_nir_denumirea_de_la_anaf.png"
+      },
+      {
+        "completeaza": "#sn-cui",
+        "valoare": "1439984"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#sn-cui",
+        "egal": "1439984"
+      },
+      {
+        "valoare": "#sn-furn",
+        "egal": ""
+      },
+      {
+        "nu_contine": "DANTE INTERNATIONAL SA",
+        "zona": "#sn-cui-stare"
+      }
+    ],
+    "captura": "c179_f1_nir_denumirea_golita.png",
+    "anaf_real": true
+  },
+  {
+    "nr": "C179",
+    "firma": "tenant_9049",
+    "descriere": "F1, Casă -> „+ Dispoziție nouă” -> CUI 14399840 -> „Verifică”: partenerul DANTE INTERNATIONAL SA, „plătitor TVA” (captura intermediară) -> CUI-ul tastat 1439984: partenerul și linia de sub CUI se golesc. Nimic nu se salvează.",
+    "pasi": [
+      {
+        "click": "#fa-casa"
+      },
+      {
+        "asteapta": "#c-toggle"
+      },
+      {
+        "click": "#c-toggle"
+      },
+      {
+        "asteapta": "#c-cui"
+      },
+      {
+        "completeaza": "#c-cui",
+        "valoare": "14399840"
+      },
+      {
+        "click": "#c-cui-verif"
+      },
+      {
+        "asteapta": "#c-cui-stare .em-cui-info"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "captura": "c179_f1_casa_partenerul_de_la_anaf.png"
+      },
+      {
+        "completeaza": "#c-cui",
+        "valoare": "1439984"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#c-cui",
+        "egal": "1439984"
+      },
+      {
+        "valoare": "#c-part",
+        "egal": ""
+      },
+      {
+        "nu_contine": "plătitor TVA",
+        "zona": "#c-cui-stare"
+      }
+    ],
+    "captura": "c179_f1_casa_partenerul_golit.png",
+    "anaf_real": true
+  },
+  {
+    "nr": "C179",
+    "firma": "tenant_9049",
+    "descriere": "F1, Emite factură -> CUI 14399840 -> „Verifică”: denumirea, adresa, localitatea și județul clientului de la ANAF (captura intermediară) -> CUI-ul tastat 1439984: denumirea, adresa și localitatea se golesc, iar linia de sub CUI la fel. Nicio factură nu se emite (ciorna formularului se scrie pe server și o șterge pasi.py la dovada următoare).",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "click": "#em-verifica"
+      },
+      {
+        "asteapta_text": "plătitor TVA"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "captura": "c179_f1_emitere_clientul_de_la_anaf.png"
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "1439984"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#em-cui",
+        "egal": "1439984"
+      },
+      {
+        "valoare": "#em-nume",
+        "egal": ""
+      },
+      {
+        "valoare": "#em-adresa",
+        "egal": ""
+      },
+      {
+        "valoare": "#em-oras",
+        "egal": ""
+      },
+      {
+        "nu_contine": "plătitor TVA",
+        "zona": "#em-cui-stare"
+      }
+    ],
+    "captura": "c179_f1_emitere_clientul_golit.png",
+    "anaf_real": true
+  },
+  {
+    "nr": "C179",
+    "firma": "tenant_9049",
+    "descriere": "F1, Facturi -> „Facturi primite” -> „Introdu factura de mână” -> CUI 14399840 -> „Verifică la ANAF”: furnizorul DANTE INTERNATIONAL SA (captura intermediară) -> CUI-ul tastat 1439984: furnizorul și linia de sub CUI se golesc. Nimic nu se validează.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-primite"
+      },
+      {
+        "click": "#fac-primite"
+      },
+      {
+        "asteapta": "#fp-manual"
+      },
+      {
+        "click": "#fp-manual"
+      },
+      {
+        "asteapta": "#pm-cui"
+      },
+      {
+        "completeaza": "#pm-cui",
+        "valoare": "14399840"
+      },
+      {
+        "click": "#pm-verifica"
+      },
+      {
+        "asteapta_text": "DANTE INTERNATIONAL SA · plătitor TVA"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "captura": "c179_f1_primita_furnizorul_de_la_anaf.png"
+      },
+      {
+        "completeaza": "#pm-cui",
+        "valoare": "1439984"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#pm-cui",
+        "egal": "1439984"
+      },
+      {
+        "valoare": "#pm-furnizor",
+        "egal": ""
+      },
+      {
+        "nu_contine": "plătitor TVA",
+        "zona": "#pm-cui-stare"
+      }
+    ],
+    "captura": "c179_f1_primita_furnizorul_golit.png",
+    "anaf_real": true
+  },
+  {
+    "nr": "C181",
+    "firma": "tenant_9049",
+    "descriere": "F1, document creat înainte de reparație: Rapoarte comerciale -> „Fișă client/furnizor”: DANTE INTERNATIONAL SA (14399840) -> factura emisă F1A3 din 06.10.2026 (seria F1A, numărul păstrat „F1A3”) apare în coloana „Număr” ca „F1A nr. 3”, nu „F1A3” (CF art.319 alin.(20) lit.a). Numai citire. Datele existente: neafectate (seria și numărul erau păstrate corect; lipsea seria din răspunsul fișei).",
+    "pasi": [
+      {
+        "click": "#fa-rapoarte"
+      },
+      {
+        "asteapta": "#r-fisa-sel"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "alege": "#r-fisa-sel",
+        "valoare": "14399840"
+      },
+      {
+        "asteapta": "#r-fisa table.fd-tabel"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "F1A nr. 3",
+        "zona": "#r-fisa"
+      },
+      {
+        "nu_contine": "F1A3",
+        "zona": "#r-fisa"
+      }
+    ],
+    "captura": "c181_f1_vechi_fisa_partenerului.png"
+  },
+  {
+    "nr": "C185",
+    "firma": "tenant_9049",
+    "utilizator": 71508,
+    "descriere": "SCRIE pe copie. F1, ca Ana (71508, numai „Poate pregăti”): Registru jurnal -> „+ Notă nouă” -> 24.10.2026, „Dovadă C185 comision fără extras”, FĂRĂ document, 627 = 5121 · 25,00 -> „Salvează”: sus, „Ai salvat nota din 24.10.2026 („Dovadă C185 comision fără extras”) (trimisă la validare în cabinet).”, nu „(ciornă)”. Nota rămâne în coada cabinetului: o folosesc dovezile C183, C184 și C182 de după.",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "#j-nota-noua"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "click": "#j-nota-noua"
+      },
+      {
+        "asteapta": "#je-salveaza"
+      },
+      {
+        "completeaza": "#je-data",
+        "valoare": "2026-10-24"
+      },
+      {
+        "completeaza": "#je-desc",
+        "valoare": "Dovadă C185 comision fără extras"
+      },
+      {
+        "completeaza": ".je-deb",
+        "valoare": "627"
+      },
+      {
+        "completeaza": ".je-cre",
+        "valoare": "5121"
+      },
+      {
+        "completeaza": ".je-sum",
+        "valoare": "25.00"
+      },
+      {
+        "click": "#je-salveaza"
+      },
+      {
+        "asteapta_text": "Ai salvat nota"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "(trimisă la validare în cabinet).",
+        "zona": "#j-mesaj"
+      },
+      {
+        "contine": "Dovadă C185 comision fără extras",
+        "zona": "#j-mesaj"
+      },
+      {
+        "nu_contine": "(ciornă)",
+        "zona": "#j-mesaj"
+      }
+    ],
+    "captura": "c185_f1_confirmarea_salvarii.png"
+  },
+  {
+    "nr": "C183",
+    "firma": "tenant_9049",
+    "descriere": "F1, contabilul-șef: pagina principală -> „De validat” -> clic pe rândul notei Anei „Dovadă C185 comision fără extras” (scrisă de dovada C185): detaliul scrie „rulaj 25,00 lei” o singură dată, nu „Rulaj: rulaj 25,00 lei”. Numai citire.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-titlu"
+      },
+      {
+        "asteapta": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras')"
+      },
+      {
+        "deruleaza": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras')"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-deschide"
+      },
+      {
+        "asteapta": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-detaliu table.tn-linii"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "rulaj 25,00 lei",
+        "zona": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-detaliu"
+      },
+      {
+        "nu_contine": "Rulaj: rulaj",
+        "zona": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-detaliu"
+      },
+      {
+        "contine": "5121",
+        "zona": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-detaliu table.tn-linii"
+      }
+    ],
+    "captura": "c183_f1_rulajul_o_data.png"
+  },
+  {
+    "nr": "C184",
+    "firma": "tenant_9049",
+    "descriere": "F1, contabilul-șef: clopoțel -> notificarea „Notă pregătită, de validat” a notei „Dovadă C185 comision fără extras” -> „De validat”: rândul notei e marcat și are detaliul deschis, cu liniile ei (627 = 5121 · 25,00), ca Registrul jurnal deschis dintr-o notificare. Deschiderea panoului marchează notificările citite; nimic altceva nu se scrie.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#nav-clopot"
+      },
+      {
+        "asteapta": ".clopot-item:has-text('Dovadă C185 comision fără extras')"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "click": ".clopot-item:has-text('Dovadă C185 comision fără extras')"
+      },
+      {
+        "asteapta": "#val-note tbody.tn-nota.val-evidentiat"
+      },
+      {
+        "asteapta": "#val-note tbody.val-evidentiat .tn-detaliu table.tn-linii"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#val-note tbody.val-evidentiat .tn-detaliu table.tn-linii"
+      },
+      {
+        "contine": "Dovadă C185 comision fără extras",
+        "zona": "#val-note tbody.val-evidentiat"
+      },
+      {
+        "contine": "rulaj 25,00 lei",
+        "zona": "#val-note tbody.val-evidentiat .tn-detaliu"
+      }
+    ],
+    "captura": "c184_f1_din_notificare_detaliul_deschis.png"
+  },
+  {
+    "nr": "C182",
+    "firma": "tenant_9049",
+    "descriere": "F1, contabilul-șef: „De validat” -> „Validează” pe nota Anei fără document („Dovadă C185 comision fără extras”): întrebarea „Nota nu are document justificativ…” stă în detaliul rândului, iar detaliul arată liniile notei (627 = 5121 · 25,00), nu „Se încarcă liniile notei…”. Întrebarea rămâne fără răspuns: nimic nu se scrie.",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-titlu"
+      },
+      {
+        "asteapta": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras')"
+      },
+      {
+        "deruleaza": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras')"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .val-aproba"
+      },
+      {
+        "asteapta": "#caseta-atentie-activa"
+      },
+      {
+        "asteapta": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-detaliu table.tn-linii"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Nota nu are document justificativ",
+        "zona": "#caseta-atentie-activa"
+      },
+      {
+        "exista": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-detaliu #caseta-atentie-activa"
+      },
+      {
+        "nu_contine": "Se încarcă liniile notei",
+        "zona": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-detaliu"
+      },
+      {
+        "contine": "5121",
+        "zona": "#val-note tbody.tn-nota:has-text('Dovadă C185 comision fără extras') .tn-detaliu table.tn-linii"
+      }
+    ],
+    "captura": "c182_f1_intrebarea_cu_liniile_notei.png"
+  },
+  {
+    "nr": "C186",
+    "firma": "tenant_9049",
+    "descriere": "F1: Emite factură -> DANTE (RO), articolul din stoc, 0%, „livrare intracomunitară” -> „Emite”: eroarea liniei („…(țara clientului: RO).”) lângă câmp și caseta „NU s-a salvat.” lângă buton; după 1,5 s fereastra „Am înțeles” nu apare (înainte apărea, cu același refuz). Nicio factură nu se emite (refuzul liniilor, 422); ciorna formularului o șterge pasi.py la dovada următoare.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "14399840"
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "DANTE INTERNATIONAL SA"
+      },
+      {
+        "alege": "#em-l0-articol",
+        "valoare": "1"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "10"
+      },
+      {
+        "alege": "#em-l0-cota",
+        "valoare": "0"
+      },
+      {
+        "asteapta": "#em-l0-categorie"
+      },
+      {
+        "alege": "#em-l0-categorie",
+        "valoare": "livrare_ic"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta_text": "țara clientului: RO"
+      },
+      {
+        "pauza": 1500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "(țara clientului: RO)",
+        "zona": ".msg-eroare[data-camp]"
+      },
+      {
+        "contine": "NU s-a salvat",
+        "zona": ".refuz-salvare"
+      },
+      {
+        "nu_contine": "Liniile facturii nu sunt bune",
+        "zona": "#refuz-nevazut"
+      }
+    ],
+    "captura": "c186_f1_refuzul_fara_fereastra.png"
+  }
+]

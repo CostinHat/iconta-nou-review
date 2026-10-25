@@ -215,6 +215,8 @@ def test_coada_cere_poarta_pentru_toate_declaratiile_de_tva(monkeypatch):
     monkeypatch.setattr(uq.db, "get_conn", lambda schema=None: __import__("contextlib").nullcontext(None))
     from core import uc_declaratii   # [lotul 10, C69] localitatea partenerilor din ANAF înaintea generării: baza e simulată aici
     monkeypatch.setattr(uc_declaratii, "aduce_localitati_parteneri", lambda schema, tip: None)
+    # [lotul 12, C19] poarta rectificativei D394 citește depunerile din bază (simulată aici cu None); o păzește core/test_lot12_decl3_c19.py
+    monkeypatch.setattr(uc_declaratii, "poarta_cererii", lambda *a, **k: None)
     monkeypatch.setattr(uq, "poarta_tva_balanta", lambda s, an, luna, trim=None: chemat.append(an) or {"cod": uq.COD_TVA_BALANTA,
                                                                                                     "mesaj": "m", "diferente": []})
     monkeypatch.setattr(uq, "ciorne_in_perioada", lambda s, an, luna: 0)   # fără ciorne: diferența blochează (R36)

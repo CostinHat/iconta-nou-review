@@ -108,9 +108,11 @@ def test_c89_cod10_fluturas_si_d112_aceeasi_indemnizatie(conn):
         _setup(cur, [{"cnp": "1800101410013", "nume": "COD10", "dn": "1980-06-01", "brut": 5000}], schema=_SCHEMA)
         cur.execute("SELECT id FROM salariati")
         sid = cur.fetchone()[0]
+    # [lotul 12, C102.1] 01–15.06.2026 = 10 zile lucrătoare (1 iunie e sărbătoare legală, Rusalii și Ziua Copilului, Legea 53/2003
+    # art.139 alin.(1)); până la 24.10.2026 fixtura scria 10 zile pe 01–12.06 (9 zile lucrătoare), pe care serverul o salva tăcut
     r = salariati_api.salveaza_concediu(conn, sid, {
         "serie": "AB", "numar": "77", "cod": "10", "data_acordare": "2026-06-01", "data_inceput": "2026-06-01",
-        "data_sfarsit": "2026-06-12", "loc_prescriere": 1, "zile_cm": 10, "venituri_6_luni": 30000, "zile_6_luni": 125,
+        "data_sfarsit": "2026-06-15", "loc_prescriere": 1, "zile_cm": 10, "venituri_6_luni": 30000, "zile_6_luni": 125,
         "venit_realizat": "1900.41", "an": 2026, "luna": 6,
         # numărul avizului medicului expert (D112 D_13, „D_13#null pentru D_9 = 10”, DUK regula S102) — pe același câmp ca `d112`
         "cod_urgenta": 4321})

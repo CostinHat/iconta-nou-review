@@ -11,6 +11,7 @@ import pytest
 from conftest import BAZA, INALT, LAT, Ecran, _scoate_firmele_e2e, sql
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from e2e_bloc_b import _deschide_rand   # noqa: E402
 from e2e_bloc_d import ASISTENT, PATRON, _firma_noua, _jurnal   # noqa: E402
 from e2e_ciorne_proprii import _nota   # noqa: E402
 from e2e_invitatii import _client_nou, mod_inregistrare   # noqa: E402
@@ -31,13 +32,21 @@ def test_def_259_motivul_sta_sub_textul_notei_nu_in_coloana_butoanelor(asistent,
     butoanelor; textul notei ocupă cel puțin jumătate din rând (înainte, motivul lărgea coloana butoanelor și strângea textul)."""
     nid = _nota(PATRON, firma_c3["tenant_id"], "Ciorna contabilului-șef 259, cu o descriere destul de lungă cât să se vadă strângerea")
     _jurnal(asistent, firma_c3)
-    m = asistent.pg.evaluate("""(i) => { const r = document.querySelector(`.fereastra:last-of-type [data-nota-id='${i}']`);
-        const mot = r.querySelector('.jn-a-altuia'), txt = r.querySelector('.pf-frand-text'), but = r.querySelector('.pf-frand-butoane');
-        return {in_text: !!(mot && mot.closest('.pf-frand-text')), w_text: txt.getBoundingClientRect().width,
-                w_but: but.getBoundingClientRect().width, w_rand: r.getBoundingClientRect().width}; }""", nid)
+    # [lotul 12, 617] tabelul de note: motivul stă în detaliul notei (sub rândul ei, pe toată lățimea), deschis cum îl deschide omul (clic
+    # pe rând); coloana butoanelor e `td.tn-actiuni`. Aceeași verificare: motivul e în zona textului notei, vizibil, nu în coloana
+    # butoanelor; zona lui e mai lată decât coloana butoanelor și ocupă cel puțin jumătate din rând; explicația notei (celula ei) nu e
+    # strânsă de coloana butoanelor.
+    _deschide_rand(asistent, ".fereastra:last-of-type tbody.tn-nota[data-nota-id='%d']" % nid)
+    m = asistent.pg.evaluate("""(i) => { const r = document.querySelector(`.fereastra:last-of-type tbody.tn-nota[data-nota-id='${i}']`);
+        const mot = r.querySelector('.jn-a-altuia'), txt = mot && mot.closest('tr.tn-detaliu > td');
+        const but = r.querySelector('tr.tn-rand > td.tn-actiuni'), expl = r.querySelector('tr.tn-rand > td:nth-child(3)');
+        return {in_text: !!(txt && mot.offsetParent !== null && !mot.closest('td.tn-actiuni')), w_text: txt ? txt.getBoundingClientRect().width : 0,
+                w_but: but.getBoundingClientRect().width, w_expl: expl.getBoundingClientRect().width,
+                w_rand: r.querySelector('tr.tn-rand').getBoundingClientRect().width}; }""", nid)
     asistent.captura()
     assert m["in_text"] is True, m
     assert m["w_text"] > m["w_but"] and m["w_text"] >= 0.5 * m["w_rand"], m
+    assert m["w_expl"] > m["w_but"], m
 
 
 def test_def_260_titlul_notei_noi_urmeaza_data_aleasa(patron, firma_c3):

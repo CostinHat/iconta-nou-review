@@ -99,6 +99,9 @@ rapoarte, ZIP-uri, probe sau chat.
 Registre obligatorii la fiecare lot: DEFICIENTE.md, DECIZII.md (adăugare, nu rescriere), PREDARE_LANT.md
 (starea curentă). Celelalte registre se ating doar când lotul schimbă ce descriu.
 
+La orice oprire (25.10.2026, regulă permanentă a lui Costin): ultimul rând scris e unul singur,
+„OPRIT — aștept: <ce anume>” sau „OPRIT — gata: <ce s-a terminat>”, fără nimic după el.
+
 ## 9. Reguli de produs
 
 - Fereastra încape pe ecran fără derulare; acțiunea principală și mesajele de eroare se văd mereu.

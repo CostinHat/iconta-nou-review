@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "<div class=\"caseta-intrebare\"><div class=\"ca-mesaj\">${mesajHtml}</div>",
+  "inlocuire": "<div class=\"caseta-atentie\"><div class=\"ca-mesaj\">${mesajHtml}</div>",
+  "test": "frontend_test/e2e/e2e_lot12_form2.py::test_def_446_1_intrebarea_inlocuirii_nu_e_rosie_iar_tabelul_ramane_citibil"
+ },
+ {
+  "fisier": "static/js/ecrane/date_firma.js",
+  "ancora": "(corp.querySelector(\"#vf-tva_incasare_de_la\").value || c.de_la || null)",
+  "inlocuire": "(corp.querySelector(\"#vf-tva_incasare_de_la\").value || null)",
+  "test": "frontend_test/e2e/e2e_lot12_form2.py::test_def_626_aplica_de_la_golit_nu_cere_perioada_noua"
+ },
+ {
+  "fisier": "static/js/ecrane/date_firma.js",
+  "ancora": "        try { zp.innerHTML = _blocProfil(await api.get(`/tenants/${tenantId}/firma-profil/date`)); }",
+  "inlocuire": "        try { void zp; }",
+  "test": "frontend_test/e2e/e2e_lot12_form2.py::test_def_627_salvarea_partiala_actualizeaza_profil_incomplet"
+ },
+ {
+  "fisier": "static/js/ecrane/login.js",
+  "ancora": "        if (cuiInfo.textContent.trim() && String((e && e.mesaj) || \"\").includes(cuiInfo.textContent.trim())) cuiInfo.textContent = \"\";",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_form2.py::test_def_642_refuzul_cui_apare_o_data_iar_formularul_incape"
+ },
+ {
+  "fisier": "core/uc_auth.py",
+  "ancora": "            raise _erori.CerereGresita(mesaj)",
+  "inlocuire": "            return None",
+  "test": "frontend_test/e2e/e2e_lot12_form2.py::test_def_642_confirmarea_cu_cui_gresit_nu_lasa_cont_fara_firma"
+ }
+]

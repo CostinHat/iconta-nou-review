@@ -1,10 +1,11 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=309f4d66ae";
+import { api, arataMesaj, arataRefuzul, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=e38843b1ec";
 import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267] ciorna formularului de înregistrare
+import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
 
 function svgIcon(paths, w = 24) {
   return `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
@@ -424,36 +425,6 @@ export function ecranLogin(radacina) {
     modal.querySelector("#fi-inapoi").addEventListener("click", randeazaAlegere);
   }
 
-  // ---------- ecran 2c: cont creat dar firma proprie neadaugata (ex. CUI invalid) ---------- [register_ecran_esec_v1]
-  function randeazaContCreatFirmaLipsa(motiv, em, pw) {
-    modal.classList.remove("acces-modal-inreg");
-    modal.innerHTML = `
-      <button class="acces-x" id="acces-x" aria-label="\u00cenchide">\u2715</button>
-      <div class="login-brand">
-        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
-        <span class="login-tagline">Contabilitatea cu control fiscal</span>
-      </div>
-      <div class="ecran-nota" style="text-align:left;margin:4px 0 14px">
-        <p style="margin:0 0 8px"><b>Contul t\u0103u a fost creat.</b></p>
-        <p style="margin:0">${esc(motiv)}</p>
-      </div>
-      <button class="buton-primar" id="cc-intra">Intr\u0103 \u00een cont</button>
-      <p id="cc-msg" style="margin:8px 0 0"></p>
-    `;
-    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
-    const b = modal.querySelector("#cc-intra");
-    b.addEventListener("click", async () => {
-      b.disabled = true;
-      try {
-        const r = await api.post("/auth/login", { email: em, parola: pw });
-        sesiune.intra(r.token, r.user);
-      } catch (e) {
-        b.disabled = false;
-        arataMesaj(modal.querySelector("#cc-msg"), e.mesaj || "Nu s-a putut intra \u00een cont. \u00cencearc\u0103 autentificarea.", "eroare");
-      }
-    });
-  }
-
   // ---------- [15.10.2026, lotul 4] după formularul liber: contul nu există până la clicul pe linkul din email ----------
   function randeazaVerificaEmail(em, ore) {
     modal.classList.remove("acces-modal-inreg");
@@ -492,7 +463,6 @@ export function ecranLogin(radacina) {
     history.replaceState(null, "", location.pathname);   // tokenul nu rămâne în bara adresei
     {
       modal.innerHTML = `${brand}<div class="caseta-info" id="conf-rezultat"><div class="ci-mesaj">Contul cabinetului <b>${esc(r.nume_cabinet)}</b> e activ. Intră cu emailul <b>${esc(r.email)}</b> și parola aleasă la înregistrare.</div></div>
-        ${r.firma_creata === false && r.avertisment ? `<div class="caseta-atentie" style="margin-top:8px"><div class="ca-mesaj">${esc(r.avertisment)}</div></div>` : ""}
         <button class="buton-primar" id="conf-intra" style="margin-top:12px">Intră în cont</button>`;
       modal.querySelector("#conf-intra").addEventListener("click", () => {
         formCabinet();
@@ -526,21 +496,18 @@ export function ecranLogin(radacina) {
         <div class="login-subtagline">Înregistrează cabinetul tău ${semnAjutor("F108")}</div>
       </div>
       <p class="ecran-nota" id="reg-ciorna" hidden></p>
+      <div class="grila-doc reg-grila" style="grid-template-columns:repeat(auto-fit, minmax(240px, 1fr))">
       <label class="camp">
         <span class="camp-eticheta">CUI</span>
-        <div style="display:flex; gap:8px;">
-          <input type="text" class="camp-input" id="reg-cui" autofocus style="flex:1">
+        <div class="camp-cu-buton" style="display:flex; gap:8px;">
+          <input type="text" class="camp-input" id="reg-cui" autofocus style="flex:1 1 90px; min-width:0">
           <button type="button" class="buton-primar acces-verifica-btn" id="reg-cui-verifica">Verifică la ANAF</button>
         </div>
-        <div id="reg-cui-info" class="tip-micut" style="margin-top:6px"></div>
+        <div id="reg-cui-info" class="tip-micut"></div>
       </label>
       <label class="camp">
         <span class="camp-eticheta">Denumire cabinet de contabilitate/contabil<span class="oblig">*</span></span>
         <input type="text" class="camp-input" id="reg-cabinet">
-      </label>
-      <label class="camp">
-        <span class="camp-eticheta">Nume administrator</span>
-        <input type="text" class="camp-input" id="reg-nume-admin">
       </label>
       <label class="camp">
         <span class="camp-eticheta">Email<span class="oblig">*</span></span>
@@ -550,7 +517,7 @@ export function ecranLogin(radacina) {
       <label class="camp">
         <span class="camp-eticheta">Telefon</span>
         <input type="tel" class="camp-input" id="reg-telefon" autocomplete="tel" placeholder="07xx xxx xxx">
-        <span class="camp-ajutor">Opțional. După intrarea în cont îl poți folosi pentru notificări pe WhatsApp (Setări cont → Notificări).</span>
+        <span class="camp-ajutor">Opțional: pentru notificări pe WhatsApp, după intrarea în cont (Setări cont → Notificări).</span>
       </label>
       <label class="camp">
         <span class="camp-eticheta">Parol\u0103<span class="oblig">*</span></span>
@@ -560,10 +527,17 @@ export function ecranLogin(radacina) {
         <span class="camp-eticheta">Confirm\u0103 parola<span class="oblig">*</span></span>
         <input type="password" class="camp-input" id="reg-parola2" autocomplete="off">
       </label>
+      <label class="camp">
+        <span class="camp-eticheta">Nume administrator</span>
+        <input type="text" class="camp-input" id="reg-nume-admin">
+      </label>
       ${liber ? '<div class="camp" id="reg-robot"></div>' : ""}
-      <div class="login-eroare" id="reg-eroare" hidden></div>
-      <label class="set-bifa" style="margin:4px 0 12px"><input type="checkbox" id="reg-termeni"> <span>Am citit și accept <a href="/public/termeni" target="_blank" rel="noopener">Termenii și condițiile</a><span class="oblig">*</span></span></label>
-      <button class="buton-primar" id="reg-buton">Creează cont</button>
+      </div>
+      <div class="reg-actiune">
+        <label class="set-bifa"><input type="checkbox" id="reg-termeni"> <span>Am citit și accept <a href="/public/termeni" target="_blank" rel="noopener">Termenii și condițiile</a><span class="oblig">*</span></span></label>
+        <div class="login-eroare pe-randuri" id="reg-eroare" hidden></div>
+        <button class="buton-primar" id="reg-buton">Creează cont</button>
+      </div>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
 
@@ -602,6 +576,10 @@ export function ecranLogin(radacina) {
       }).catch(() => arataEroare("Verificarea anti-roboți nu s-a putut încărca (Cloudflare nu răspunde). Încearcă din nou peste câteva minute."));
     }
 
+    // [lotul 12, 642] verdictul „Verifică la ANAF” e al CUI-ului verificat: la orice schimbare a CUI-ului dispare (ca la Date firmă,
+    // corectura CUI-ului), altfel ar sta lângă un alt CUI — sau, la refuzul de la „Creează cont”, ar repeta textul refuzului.
+    // [lotul 12, 459.1, comanda Costin 12.2 pct.5] la fel denumirea cabinetului adusă de ANAF, dacă omul n-a schimbat-o (`date_anaf.js`, F188)
+    const anaf = legaDateAnaf(cui, [cabinet], cuiInfo);
     cuiBtn.addEventListener("click", async () => {
       const val = (cui.value || "").trim();
       if (!val) { cuiInfo.textContent = "Introdu CUI-ul mai întâi."; cuiInfo.style.color = "#a32d2d"; return; }
@@ -617,7 +595,7 @@ export function ecranLogin(radacina) {
           cuiInfo.textContent = "Nu apare la ANAF prin acest CUI (posibil înregistrat ca PFI, direct la ANAF, fără ONRC). Completează denumirea manual mai jos.";
           cuiInfo.style.color = "#92500a";
         } else {
-          cabinet.value = r.denumire || cabinet.value;
+          anaf.pune([r.denumire], { suprascrie: true });   // „Verifică la ANAF” e cerut de om: denumirea ANAF intră și peste ce era scris
           if (r.cod_caen && r.cod_caen !== "6920") {
             cuiInfo.textContent = `Găsit: ${r.denumire}. Atenție — CAEN ${r.cod_caen}, nu 6920 (contabilitate).`;
             cuiInfo.style.color = "#92500a";
@@ -661,10 +639,8 @@ export function ecranLogin(radacina) {
       // [269] numele administratorului se trimite așa cum l-a scris omul — nu se mai împarte („Test 253” dădea prenumele „253”)
       const nume = ((numeAdmin && numeAdmin.value) || "").trim() || null;
       try {
-        /* [register_firma_v2 27.07.2026] Raspunsul de la register poarta `firma_creata`.
-           Inainte era ARUNCAT: daca provisionarea primei firme esua, userul intra in
-           aplicatie si gasea zero firme, fara nicio explicatie. Contul e valid, deci NU
-           blocam intrarea - dar avertismentul se pastreaza si se arata dupa logare. */
+        /* [lotul 12, 642] contul și firma proprie (din CUI) se creează împreună sau deloc (`uc_auth._firma_proprie`): un refuz al
+           firmei e refuzul contului (mai jos, în `catch`), deci nu mai există „cont creat, firma lipsă” */
         const _reg = await api.post("/auth/register", {
             email: email.value.trim(),
             parola: parola.value,
@@ -680,21 +656,21 @@ export function ecranLogin(radacina) {
         ciorna.sterge();   // [267] contul (sau cererea lui) s-a creat: ciorna nu mai are rost
         if (_reg && _reg.confirmare_trimisa) { randeazaVerificaEmail(_reg.email, _reg.valabila_ore); return; }
         history.replaceState(null, "", location.pathname);   // invitația s-a consumat: linkul nu mai rămâne în bară
-        const _avertReg = (_reg && _reg.firma_creata === false) ? (_reg.avertisment || "") : "";
-        if (_avertReg) {
-          /* [register_ecran_esec_v1] Firma proprie nu s-a putut adauga (ex. CUI invalid). NU intram tacit
-             intr-un dashboard gol cu un toast (pagina alba, fara identitate); aratam un ecran propriu cu
-             logo, motivul REAL si calea mai departe (Intra in cont). */
-          randeazaContCreatFirmaLipsa(_avertReg, email.value.trim(), parola.value);
-          return;
-        }
         const r = await api.post("/auth/login", {
           email: email.value.trim(),
           parola: parola.value,
         });
         sesiune.intra(r.token, r.user);
       } catch (e) {
-        arataEroare(e.mesaj || "Nu s-a putut crea contul.");
+        // [lotul 12, deficiența 642 — comanda Costin 12.2 pct.19: „mesajul de refuz apare de două ori”] refuzul serverului, O DATĂ:
+        // erorile de câmp lângă câmpurile lor (`arataRefuzul`, și în caseta „NU s-a salvat.” de lângă buton, api.js 410/440), iar în zona
+        // de lângă „Creează cont” numai refuzul fără câmp; verdictul „Verifică la ANAF” cu același text pleacă (refuzul îl spune acum)
+        if (cuiInfo.textContent.trim() && String((e && e.mesaj) || "").includes(cuiInfo.textContent.trim())) cuiInfo.textContent = "";
+        const ec = (e && e.erori_campuri) || [];
+        arataRefuzul(modal, e, null);
+        const nepuse = ec.filter((c) => !modal.querySelector("#" + CSS.escape(String(c.camp || "")))).map((c) => c.mesaj);
+        if (!ec.length) arataEroare((e && e.mesaj) || "Nu s-a putut crea contul.");
+        else if (nepuse.length) arataEroare(nepuse.join("\n"));
         buton.disabled = false;
         buton.textContent = "Creează cont";
         if (widgetRobot !== null) { tokenRobot = null; window.turnstile.reset(widgetRobot); }   // [257] tokenul s-a consumat

@@ -23,7 +23,7 @@ import pytest
 
 from conftest import firma_noua, sql
 from e2e_bloc_a import AZI, CLIENT, emite_api, pregateste_firma
-from e2e_bloc_e import _asteapta_text, _nota, _randuri_jurnal, _sterge_note
+from e2e_bloc_e import _asteapta_text, _nota, _sterge_note
 from e2e_lot11_a455 import _casa, _dispozitie
 
 
@@ -31,6 +31,14 @@ from e2e_lot11_a455 import _casa, _dispozitie
 def firma_df():
     for f in firma_noua():
         yield f
+
+
+def _explicatii_jurnal(e):
+    """[lotul 12, 617] Explicația fiecărei note din Registrul jurnal de pe ecran: celula „Explicație” a rândului (`tbody.tn-nota >
+    tr.tn-rand`, a treia: Nr. crt., Data, Explicație) — locul unde antetul vechi al notei (`.pf-frand-nume`, citit de
+    `e2e_bloc_e._randuri_jurnal`) arăta descrierea ei."""
+    return e.pg.evaluate("() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('tbody.tn-nota[data-nota-id] > tr.tn-rand')]"
+                         ".map((r) => r.cells[2].innerText)")
 
 
 def _date_firma(e, f):
@@ -137,10 +145,10 @@ def test_def_168_incasarea_facturii_din_casa_numeste_chitanta_in_nota(patron, fi
     patron.firma(f["nume"])
     pg.click("#fa-jurnal")
     _asteapta_text(patron, eticheta)
-    nota = [n for n in _randuri_jurnal(patron) if eticheta in n[0]]
-    assert len(nota) == 1, _randuri_jurnal(patron)
+    nota = [n for n in _explicatii_jurnal(patron) if eticheta in n]
+    assert len(nota) == 1, _explicatii_jurnal(patron)
     # retest 08.10 pct.19: „trebuie să conțină chitanța și factura stinsă”
-    assert "Încasare de la client — %s — %s" % (eticheta, factura) in nota[0][0], nota[0][0]
-    assert "DANTE INTERNATIONAL SA" in nota[0][0], nota[0][0]
+    assert "Încasare de la client — %s — %s" % (eticheta, factura) in nota[0], nota[0]
+    assert "DANTE INTERNATIONAL SA" in nota[0], nota[0]
     pg.locator(".fereastra:last-of-type [data-nota-id]", has_text=eticheta).first.scroll_into_view_if_needed()
     patron.captura("nota_incasarii_din_casa")

@@ -13,6 +13,7 @@ import sys
 import pytest
 
 from conftest import firma_noua, sql
+from e2e_lot12_migr import ANTET_COSTIN, confirma_firma_fisierului
 from e2e_lot92 import _stat, firma_cv, firma_cv_noua  # noqa: F401 — fixturile modulului (Stat de plată)
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -102,6 +103,7 @@ def test_def_425_balanta_completa_intra_cu_rulajele_si_cere_metoda_de_stoc(patro
     patron.captura("fara_metoda")
     pg.select_option("#mig-metoda-stoc", "cantitativ_valoric")
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_COSTIN)   # [lotul 12, 599] antetul balanței („SC Firmă Probă Rulaje SRL”) numește altă firmă
     pg.wait_for_function("() => document.body.innerText.includes('19 conturi salvate, cu soldurile la 30.09.2026. Soldurile de la 1 "
                          "ianuarie și rulajele anului au intrat ca sold inițial și sume precedente.')", timeout=30000)
     patron.captura("salvat")
@@ -134,11 +136,14 @@ def test_def_426_a_doua_balanta_arata_totalurile_si_cere_confirmare(patron, firm
     assert "Firma are o notă contabilă după data balanței (prima la 05.10.2026): soldurile lor se recalculează pe balanța nouă." in caseta
     assert pg.inner_text("#mig-salveaza-sold").strip() == "Înlocuiește balanța"
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_COSTIN)   # [lotul 12, 599] întâi firma din antetul fișierului, apoi înlocuirea
     pg.wait_for_selector("#ca-ok", timeout=10000)
     assert pg.inner_text("#ca-ok").strip() == "Înlocuiesc balanța"
     pg.click("#ca-nu")
     assert sql('SELECT count(*) FROM "%s".solduri_initiale' % s)[0][0] == 19
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_COSTIN)
+    pg.wait_for_function("() => (document.querySelector('#ca-ok') || {}).textContent === 'Înlocuiesc balanța'", timeout=10000)
     pg.click("#ca-ok")
     pg.wait_for_function("() => document.body.innerText.includes('a fost înlocuită.')", timeout=30000)
     t = " ".join(patron.fereastra().split())

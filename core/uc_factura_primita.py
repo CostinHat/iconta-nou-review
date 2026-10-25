@@ -27,6 +27,7 @@ import datetime as _dt
 from decimal import Decimal, InvalidOperation
 
 from core import auth_api, db
+from core import chei_unice as _chei
 from core import erori as _erori
 from core import uc_comun as _uc_comun
 from core.pdf_util import data_ro as _data_ro   # data pentru om, sursa unică (DS cap.4)
@@ -43,9 +44,6 @@ _MESAJ_PLATITOR = ("Spune dacă furnizorul e înregistrat în scopuri de TVA: AN
                    "România), iar D394 îl declară după tipul lui.")
 REFUZ_TERT_PLATITOR_MANUALA = {"cod": "TERT_PLATITOR_DE_COMPLETAT", "camp": "pr-platitor", "mesaj": _MESAJ_PLATITOR,
                                "erori_campuri": [{"camp": "pr-platitor", "mesaj": _MESAJ_PLATITOR}]}
-
-DUBLURA = "Factura %s de la %s din %s e deja în evidență — n-o introduce a doua oară; o găsești în „Istoric facturi”."
-
 
 def camp_linie(i, cheie):
     return "pm-l%d-%s" % (i, CAMP_LINIE[cheie])
@@ -184,8 +182,8 @@ def cont_facturii(conn, schema, corp, primita_id=None):
 def valideaza(conn, schema, f, corp, statut, primita_id=None):
     """Actul de VALIDARE al facturii primite citite (`f`, forma lui `parseaza_xml`), în tranzacția lui `conn` (aici se comite):
     intrarea în evidență, clasificarea aleasă, nota contabilă și, pe un cont de stoc, intrarea în gestiune. `primita_id` = rândul din
-    `efactura_primite` (factura din XML); None = factura introdusă de mână (`f["manuala"]`): o dublură (același număr, furnizor, dată) se
-    refuză, iar cursul BNR se pune pe factură aici (la XML îl pune `_factura_importata`). Întoarce {stare, factura_id, contare, stoc,
+    `efactura_primite` (factura din XML); None = factura introdusă de mână (`f["manuala"]`). Aceeași factură de furnizor deja în evidență
+    (furnizor + număr, `factura_primita_dublura`, lotul 12 C73.1) se refuză pe ambele drumuri; cursul BNR se pune pe factură aici (la XML îl pune `_factura_importata`). Întoarce {stare, factura_id, contare, stoc,
     curs_zilei_lipsa}."""
     from core import afirmatii as _af
     from core import contare_facturi as _cf
@@ -202,11 +200,15 @@ def valideaza(conn, schema, f, corp, statut, primita_id=None):
             raise _erori.DateInvalide(REFUZ_TERT_PLATITOR_MANUALA if f.get("manuala") else _uct.REFUZ_TERT_PLATITOR)
         if f.get("taxare_inversa") and not (_c331 in _d394.CODPR or _c331 in _d394.CODPR_CEREALE):
             raise _erori.DateInvalide(_uct.REFUZ_CATEGORIE_331)
-        fid, nou = _uct._factura_importata(cur, schema, f)   # leaga si factura existenta (dedup)
+        try:   # leagă numai același document e-Factura (același XML); altă factură cu același furnizor + număr: refuz, nimic scris
+            fid, _nou = _uct._factura_importata(cur, schema, f)
+        except _chei.CheieDublata as e:
+            # [lotul 12, C73.1] aceeași factură de furnizor deja în evidență (oricare ar fi data și calea pe care a intrat): refuzul numit,
+            # lângă numărul facturii la factura de mână; excepția anulează tranzacția
+            if f.get("manuala"):
+                e.camp = CAMP["numar"]
+            raise _erori.Conflict(e.detaliu())
         if f.get("manuala"):
-            if not nou:   # [477] aceeași factură introdusă a doua oară: nimic scris (excepția anulează tranzacția)
-                raise _erori.Conflict(DUBLURA % (_numar_afisat(f), f.get("tert_nume") or f.get("tert_cui"),
-                                                 _data_ro(f["data_emitere"])))
             # [477] cursul BNR al facturii de mână în valută, pe aceeași regulă ca factura din XML (CF art.290 alin.(2), HG 1/2016 pct.35
             # alin.(1)); fără curs (BNR indisponibil, curs prea vechi) factura nu intră — refuzul spune de ce, nimic scris
             _rc = _cf.curs_factura_importate(cur, schema, {"id": fid, "moneda": f.get("moneda"), "curs_bnr": None, "xml": None,
@@ -272,11 +274,6 @@ def valideaza(conn, schema, f, corp, statut, primita_id=None):
     curs_lipsa = _anunt_curs(conn, schema, fid_final)
     conn.commit()
     return {"stare": "validata", "factura_id": fid_final, "contare": contare, "stoc": stoc, "curs_zilei_lipsa": curs_lipsa}
-
-
-def _numar_afisat(f):
-    from core import pdf_util as _pu
-    return _pu.serie_nr(f.get("serie"), f.get("numar")) if f.get("serie") else (f.get("numar") or "")
 
 
 def _anunt_curs(conn, schema, fid):

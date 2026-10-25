@@ -973,7 +973,7 @@ def _verifica_si_alerta():
             "</ul><p>Fiecare rând spune ce faci. Vârfurile trecătoare (RAM, conexiuni, încărcare care scad singure) nu se trimit: le vezi "
             "în panoul „Sănătate server” din Panou Admin.</p></div>")
     # fara alerta: chiar asta e alerta (acelasi canal, Brevo) — esecul ramane in jurnal
-    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alertă iConta.eu — sănătate server", html)
+    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alertă iConta.eu — sănătate server", html, postmark=True)
 
 def _ciclu_sanatate():
     """Un ciclu al buclei de sanatate, cu mai multe procese in minte.
@@ -1038,7 +1038,7 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
     if not email:
         raise HTTPException(500, "email superadmin negăsit")
     r = _obs.trimite_email_html(email, "TEST Alertă iConta.eu — sănătate server",   # [317] diacritice, ca alerta reală
-        "<p>Test manual al alertei de sănătate. Dacă ai primit acest email, livrarea funcționează.</p>")
+        "<p>Test manual al alertei de sănătate. Dacă ai primit acest email, livrarea funcționează.</p>", postmark=True)
     return {"trimis_catre": email, "rezultat": str(r)}
 
 @app.get("/admin/sanatate/istoric")
@@ -1459,6 +1459,7 @@ class EmitereIn(BaseModel):
     categorie_331: Optional[str] = None  # [274b] categoria produsului cu taxare inversă (codul D394), cerută când o linie e „AE”
     tert_oras: Optional[str] = None      # [274b] localitatea clientului din afara României (BT-77 la livrarea intracomunitară)
     tert_judet: Optional[str] = None     # [274b] regiunea clientului din afara României (BT-79)
+    dovada_transport: Optional[bool] = None  # [lotul 12, C84] răspunsul la „Ai dovada transportului?” (livrarea intracomunitară de bunuri)
 
 class NumerotareIn(BaseModel):
     serie: Optional[str] = None
@@ -1495,6 +1496,7 @@ class DocumentPreluatRand(BaseModel):          # [lotul 12, 252] factura deschis
     scadenta: Optional[str] = None
     suma: float
     rand_fisier: Optional[int] = None
+    tva_la_incasare: Optional[bool] = None   # [252, 12.3 pct.5] coloana „TVA la încasare”; None = nespus -> regimul firmei la data facturii
 class PartenerRand(BaseModel):
     cont: str
     cui: str = ""
@@ -1503,6 +1505,7 @@ class PartenerRand(BaseModel):
     credit: float = 0
     rand_fisier: Optional[int] = None
     documente: Optional[list[DocumentPreluatRand]] = None   # [252] None = forma pe solduri (soldul întreg devine documentul)
+    tva_la_incasare: Optional[bool] = None   # [252, 12.3 pct.5] forma pe solduri: pe documentul „Sold la <data>”
 class ParteneriIn(BaseModel):
     randuri: list[PartenerRand]
     data_referinta: Optional[str] = None
@@ -3331,13 +3334,15 @@ class TransformaIn(BaseModel):
     """[C63] Răspunsul la „Pleacă marfa acum?” la factura născută din proformă / aviz cu articol de stoc (ca `EmitereIn.pleaca_marfa`):
     lipsă -> refuzul `INTREABA_PLEACA_MARFA`, nimic scris; Da -> se descarcă gestiunea; Nu -> numai evidența fiscală."""
     pleaca_marfa: Optional[bool] = None
+    dovada_transport: Optional[bool] = None  # [lotul 12, C84] ca `EmitereIn.dovada_transport`, la factura născută din proformă / aviz
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/transforma")
 def proforma_transforma(tenant_id: int, factura_id: int, date: Optional[TransformaIn] = None,
                         ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal)."""
     try:
-        return _uc_tenants.proforma_transforma(tenant_id, factura_id, ctx, pleaca_marfa=(date.pleaca_marfa if date else None))
+        return _uc_tenants.proforma_transforma(tenant_id, factura_id, ctx, pleaca_marfa=(date.pleaca_marfa if date else None),
+                                               dovada_transport=(date.dovada_transport if date else None))
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -4977,6 +4982,8 @@ def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)
 
 @app.post("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
 def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cere_api_key)):
+    """[lotul 12, C84] Câmp opțional al corpului: `dovada_transport: true` = „am dovada transportului” (livrarea intracomunitară de bunuri).
+    Fără el, factura se emite cu `avertismente: [AVERTISMENT_LIC_FARA_DOVADA]` (avertisment, nu refuz — decizia Costin 12.3 pct.7)."""
     try:
         return _uc_api.apiv1_factura_emite(tenant_id, corp, actx)
     except _erori.EroareDeDomeniu as e:
@@ -6949,7 +6956,7 @@ def borderou_storneaza(tenant_id: int, factura_id: int, corp: dict = Body(defaul
 @app.post("/tenants/{tenant_id}/vanzare-ic")
 def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """LIC bunuri (art. 294(2)a) sau prestare servicii IC (art. 278(2)).
-    corp: {data, valoare, cod_tva_client, tip bunuri|servicii, dovada_transport?,
+    corp: {data, valoare, cod_tva_client, tip bunuri|servicii,
     cont_venit?, descriere?}. Verifica VIES LIVE. Nota: 4111=70x fara TVA."""
     try:
         return _uc_tenants.vanzare_ic(tenant_id, corp, ctx)

@@ -1,0 +1,133 @@
+[
+ {
+  "nr": "619",
+  "firma": "tenant_9049",
+  "descriere": "F1, document scris înainte de reparație: Registru jurnal 10/2026 -> «Validează» pe returul F1A nr. 11 (stornarea facturii F1A nr. 10, ale cărei note sunt încă ciorne): refuzul spune că stornarea intră în evidența validată numai după factura stornată și o numește; nimic nu se scrie (OMFP 1802/2014 pct.69)",
+  "pasi": [
+   {"click": "#fa-jurnal"},
+   {"asteapta": "#j-nota-noua"},
+   {"deruleaza": "[data-val='152']"},
+   {"click": "[data-val='152']"},
+   {"asteapta_text": "validează întâi Factură F1A nr. 10 din 20.10.2026, apoi stornarea"},
+   {"pauza": 500}
+  ],
+  "verifica": [
+   {"contine": "Factură F1A nr. 11 din 20.10.2026 stornează Factură F1A nr. 10 din 20.10.2026"},
+   {"contine": "validează întâi Factură F1A nr. 10 din 20.10.2026, apoi stornarea"}
+  ],
+  "captura": "619_f1_vechi_refuz_stornarea_f1a11.png"
+ },
+ {
+  "nr": "619",
+  "firma": "tenant_9049",
+  "descriere": "F1, după scripts/stoc2_619_documente_pe_jumatate.py rulat pe copie (--scrie --schema tenant_9049): Registru jurnal 10/2026 -> ieșirea din stoc a facturii F1A nr. 8 (nota 141, rămasă ciornă când contarea a fost validată singură) e validată, fără «Validează»",
+  "pasi": [
+   {"click": "#fa-jurnal"},
+   {"asteapta": "#j-nota-noua"},
+   {"deruleaza": "tbody[data-nota-id='141']"},
+   {"click": "tbody.tn-nota[data-nota-id='141'] .tn-deschide"},
+   {"asteapta": "tbody.tn-nota[data-nota-id='141'] tr.tn-detaliu"},
+   {"pauza": 500}
+  ],
+  "verifica": [
+   {"contine": "Validată", "zona": "tbody[data-nota-id='141']"},
+   {"nu_contine": "Validează", "zona": "tbody[data-nota-id='141']"}
+  ],
+  "captura": "619_f1_vechi_f1a8_iesirea_validata.png"
+ },
+ {
+  "nr": "619",
+  "firma": "tenant_9049",
+  "descriere": "F1, după scripts/stoc2_619_documente_pe_jumatate.py rulat pe copie: Registru jurnal 10/2026 -> ieșirea din stoc a facturii F1A nr. 14 (nota 190) e validată, ca și contarea ei, fără «Validează»",
+  "pasi": [
+   {"click": "#fa-jurnal"},
+   {"asteapta": "#j-nota-noua"},
+   {"deruleaza": "tbody[data-nota-id='190']"},
+   {"click": "tbody.tn-nota[data-nota-id='190'] .tn-deschide"},
+   {"asteapta": "tbody.tn-nota[data-nota-id='190'] tr.tn-detaliu"},
+   {"pauza": 500}
+  ],
+  "verifica": [
+   {"contine": "Validată", "zona": "tbody[data-nota-id='190']"},
+   {"nu_contine": "Validează", "zona": "tbody[data-nota-id='190']"}
+  ],
+  "captura": "619_f1_vechi_f1a14_iesirea_validata.png"
+ },
+ {
+  "nr": "409.1",
+  "firma": "tenant_9049",
+  "descriere": "F1, după scripts/stoc2_409_1_dubluri_corectie.py rulat pe copie (--scrie --schema tenant_9049): Registru jurnal 10/2026 -> la 05.10.2026 rămân nota nr. crt. 8 (+100), o stornare (nr. crt. 30, cu titlul corect) și o ieșire pe Factura 2 (nr. crt. 31); stornarea și ieșirea dublate (nr. crt. 32 și 33) nu mai sunt",
+  "pasi": [
+   {"click": "#fa-jurnal"},
+   {"asteapta": "#j-nota-noua"},
+   {"deruleaza": "tbody[data-nota-id='146']"},
+   {"pauza": 500}
+  ],
+  "verifica": [
+   {"contine": "Stornare: nota nr. crt. 8 din 05.10.2026 (Iesire stoc Marfa A x2.000) — descărcarea facturii, scrisă fără document"},
+   {"nu_contine": "Stornare: n ("},
+   {"nu_contine": "Stornare: n (", "zona": ".fereastra:last-of-type tr.tn-detaliu"},
+   {"nu_contine": "Stornare: nota din 05.10.2026 (Iesire stoc Marfa A x2.000)"},
+   {"nu_contine": "Stornare: nota din 05.10.2026 (Iesire stoc Marfa A x2.000)", "zona": ".fereastra:last-of-type tr.tn-detaliu"}
+  ],
+  "captura": "409.1_f1_vechi_registru_jurnal.png"
+ },
+ {
+  "nr": "450.1",
+  "firma": "tenant_9049",
+  "descriere": "F1, după migrarea core/migrare_articole_dublate.py (lotul 12, la publicare): Stocuri -> situația stocului arată «grau» o singură dată, kg, 210 (200 din BA-2 + 10 din BA-3, de pe articolele nr. 5 și 6 create tacit înainte de 450); 211 dacă dovada C115 a scris înainte borderoul ei de 1 kg pe copie",
+  "pasi": [
+   {"click": "#fa-stocuri"},
+   {"asteapta": "#s-situatie-tabel"},
+   {"deruleaza": "#s-situatie-tabel tbody tr", "text": "grau"},
+   {"pauza": 500}
+  ],
+  "verifica": [
+   {"contine_oricare": ["grau kg 210 ", "grau kg 211 "], "zona": "#s-situatie-tabel"},
+   {"nu_contine": "grau kg 200 ", "zona": "#s-situatie-tabel"},
+   {"nu_contine": "grau kg 10 ", "zona": "#s-situatie-tabel"}
+  ],
+  "captura": "450.1_f1_vechi_situatia_stocului.png"
+ },
+ {
+  "nr": "628",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri deschis, închis și deschis din nou -> a doua deschidere arată toate articolele firmei (aceeași listă din GET stocuri/articole), cu «grau» o singură dată",
+  "pasi": [
+   {"click": "#fa-stocuri"},
+   {"asteapta": "#s-situatie-tabel"},
+   {"click": ".fereastra:last-of-type .nav-inapoi"},
+   {"asteapta": "#fa-stocuri"},
+   {"click": "#fa-stocuri"},
+   {"asteapta": "#s-situatie-tabel"},
+   {"pauza": 800}
+  ],
+  "verifica": [
+   {"contine": "Marfa A", "zona": "#s-situatie-tabel"},
+   {"contine": "Marfa B", "zona": "#s-situatie-tabel"},
+   {"contine": "Marfa C", "zona": "#s-situatie-tabel"},
+   {"contine": "Carte tehnica", "zona": "#s-situatie-tabel"},
+   {"contine": "Cafea boabe", "zona": "#s-situatie-tabel"},
+   {"contine_oricare": ["grau kg 210 ", "grau kg 211 "], "zona": "#s-situatie-tabel"}
+  ],
+  "captura": "628_f1_a_doua_deschidere_stocuri.png"
+ },
+ {
+  "nr": "628",
+  "firma": "tenant_9049",
+  "descriere": "F1, după migrarea core/migrare_um_borderou.py (lotul 12, C115, la publicare): Stocuri -> «Borderou de achiziție» -> BA-2 (200) și BA-3 (10), scrise înainte de reparație, au «kg» la grâu, nu «buc»",
+  "pasi": [
+   {"click": "#fa-stocuri"},
+   {"asteapta": "#s-borderou"},
+   {"click": "#s-borderou"},
+   {"asteapta": "#ba-lista .pf-frand"},
+   {"pauza": 500}
+  ],
+  "verifica": [
+   {"contine": "200 kg", "zona": "#ba-lista"},
+   {"contine": "10 kg", "zona": "#ba-lista"},
+   {"nu_contine": "grau · 200 buc", "zona": "#ba-lista"}
+  ],
+  "captura": "628_f1_vechi_borderouri_kg.png"
+ }
+]

@@ -238,7 +238,13 @@
     "asteapta_text": "Luna 11/2026"
    },
    {
-    "asteapta": ".jn-inainte"
+    "asteapta": "tbody.tn-nota[data-nota-id]"
+   },
+   {
+    "click": "tbody.tn-nota:has(.jn-inainte) .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota:has(.jn-inainte) .jn-inainte"
    },
    {
     "pauza": 500
@@ -276,6 +282,10 @@
    },
    {
     "nu_contine": "Salariile lunii 10/2026"
+   },
+   {
+    "nu_contine": "Salariile lunii 10/2026",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "c127_f5_vechi_ciorna_scoasa.png"

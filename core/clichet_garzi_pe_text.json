@@ -132,7 +132,10 @@
  },
  "_pe_fel": {
   "mesaj_de_rau": 119,
-  "apare_oricum": 1222
+  "apare_oricum": 1228
  },
- "_pe_fel_de_ce": "PROPRIETATE, nu procent: o aserțiune pe text trece pe date goale, exceptand cele care cauta un mesaj de eroare. `mesaj_de_rau` e plafon SUPERIOR (clasificatorul supraevalueaza), `apare_oricum` plafon INFERIOR."
+ "_pe_fel_de_ce": "PROPRIETATE, nu procent: o aserțiune pe text trece pe date goale, exceptand cele care cauta un mesaj de eroare. `mesaj_de_rau` e plafon SUPERIOR (clasificatorul supraevalueaza), `apare_oricum` plafon INFERIOR.",
+ "_pe_fel_ridicari": [
+  "24.10.2026, lotul 12 (comanda 12.2, integrarea I1): 1222 -> 1228. Înainte s-au scos 22 de ancore noi ale lotului (rutarea harness-urilor pe `u.path.startswith`, mesaje întregi comparate cu `==`, apeluri citite din AST, proprietățile CSS ca dicționar). Rămân, numite, ancore care apar NUMAI după comportamentul testat (clasificatorul le vede ca „apare oricum”): test_lot12_ui2_ecrane.py:222 „Ai validat nota nr. crt. 99” (confirmarea validării), :223 „Validată” (starea nouă a rândului), :295 „Validează”/„Respinge” (butoanele pe rândul notei), :387 „Solduri inițiale” (butonul spre import); test_lot12_ui2_verificator.py:89 „casetaRulaje” (locul mutației prinse); test_lot12_form2_date_firma.py:134/:160/:170 (confirmarea salvării, câmpul lipsă, „Profil complet” după salvare); test_lot12_form2_register.py:198 (textul emailului de bun venit fără firmă); test_lot12_form2_confirmare.py:79/:103 (clasa casetei de întrebare)."
+ ]
 }

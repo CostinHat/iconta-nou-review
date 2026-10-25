@@ -56,5 +56,6 @@ def test_inregistrarea_isi_sterge_ciorna_inainte_de_orice_iesire_reusita():
     corp = src[src.index("async function creeaza()"):]
     corp = corp[:corp.index('buton.addEventListener("click", creeaza)')]
     sterge = corp.index("ciorna.sterge()")
-    for iesire in ("randeazaVerificaEmail(", "randeazaContCreatFirmaLipsa(", "sesiune.intra("):
+    # [lotul 12, 642] „cont creat, firma lipsă” nu mai există: contul și firma proprie se creează împreună sau deloc
+    for iesire in ("randeazaVerificaEmail(", "sesiune.intra("):
         assert sterge < corp.index(iesire), "ciorna rămâne după %s" % iesire

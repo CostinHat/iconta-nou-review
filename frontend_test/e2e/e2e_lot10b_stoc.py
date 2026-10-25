@@ -154,7 +154,11 @@ def test_def_401_sub_nota_borderoului_scrie_borderoul_nu_factura(patron, firma_c
     patron.firma(firma_cv["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
     pg = patron.pg
-    sub = pg.locator("[data-nota-id='%s'] .jn-derivata" % r["inregistrare_id"]).first
+    # [lotul 12, comanda 12.2 pct.9, deficiența 617] textul de sub notă (unde se corectează) stă în detaliul rândului ei din tabelul de
+    # note: rândul se deschide întâi, ca omul (clic pe butonul din prima celulă)
+    from e2e_bloc_b import _deschide_rand, _nota_jn   # e2e_bloc_b nu importă din acest fișier
+    _deschide_rand(patron, _nota_jn(patron, r["inregistrare_id"]))
+    sub = pg.locator("tbody.tn-nota[data-nota-id='%s'] tr.tn-detaliu .jn-derivata" % r["inregistrare_id"]).first
     sub.wait_for(timeout=30000)
     t = " ".join(sub.inner_text().split())
     patron.captura()

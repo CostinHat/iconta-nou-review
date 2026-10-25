@@ -70,7 +70,9 @@ def test_def_425_balanta_preluata_arata_sold_initial_an_si_sume_precedente(patro
     _scrie_balanta(firma_preluata["schema"], True)
     pg = patron.pg
     _balanta(patron, firma_preluata, AN, 10)
-    pg.wait_for_selector("table.fd-tabel", timeout=30000)
+    # [lotul 12, 621] tabelul perechilor închiderii stă pliat în verdictul „Balanța se închide pe toate cinci” (`details#b-inchidere`):
+    # primul `table.fd-tabel` nu se mai vede; se așteaptă tabelul balanței, cel vizibil
+    pg.wait_for_selector("table.fd-tabel >> visible=true", timeout=30000)
     patron.captura("balanta_10_cu_rulaje")
     assert _celule(pg, "707")[2:] == ["0,00", "0,00", "180.000,00", "180.000,00", "0,00", "10.000,00", "180.000,00", "190.000,00",
                                       "0,00", "10.000,00"], _celule(pg, "707")

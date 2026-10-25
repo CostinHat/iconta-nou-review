@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.101 · 22 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.103 · 24 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -153,7 +153,12 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 ## 5. Casete de atenționare, confirmări și INPUT
 
-- Stil unic: `.caseta-atentie` — fundal #fdf3f3, bordură 2px #d98c8c, mesaj în `.ca-mesaj`. Butoanele stau SUB casetă, pe clase canonice.
+- Stil unic pentru atenționare și refuz: `.caseta-atentie` — fundal #fdf3f3, bordură 2px #d98c8c, mesaj în `.ca-mesaj`. Butoanele stau SUB casetă, pe clase canonice.
+- **Întrebarea de confirmare (v2.102, lotul 12, 446.1):** `confirmaCaseta` o desenează în `.caseta-intrebare` — casetă NEUTRĂ (fundal alb,
+  bordură gri, margine stângă albastră), cu întrebarea și cele două butoane pe un rând (se rup pe ecran îngust); niciodată `.caseta-atentie`:
+  roșul rămâne al refuzului și al erorii. Ireversibilitatea se spune în text, nu prin culoare. Pusă în locul butonului principal, bara de jos
+  crește cu cel mult 32 px. Aceeași casetă la întrebările scrise în ecran (motivul deblocării lunii, `cereMotivDeblocare`). Gard:
+  `core/test_lot12_form2_confirmare.py`.
 - **Casetă informativă standing (v2.12)**: `.caseta-info` — fundal albastru-pal #eef4fd, bordură 1px #b9c2cf, mesaj în `.ci-mesaj`. Pentru o notă IMPORTANTĂ, PERMANENTĂ, informativă (nu o confirmare, nu un mesaj de stare tranzitoriu prin `arataMesaj`). Distinctă semantic de `.caseta-atentie`: roșul rămâne EXCLUSIV pentru atenționare/acțiune distructivă; informația neutră NU se colorează roșu. INTERZIS o notă informativă ad-hoc cu fundal albastru-pal inline (`style="background:#eef4fd…"`) — se folosește `.caseta-info`. Prins de regula CASETA_INFO în verificator.
 - **Casetă-poartă la o acțiune (v2.14)**: `.caseta-poarta` — o întrebare OBLIGATORIE înainte de o acțiune consecventă, cu DOUĂ alegeri care merg AMÂNDOUĂ înainte (nu confirmă/anulează — pentru acela e `confirmaCaseta`). Cazul canonic: emiterea unei facturi cu linii de stoc la o firmă cu gestiune cantitativă — „Pleacă marfa acum? DA (descarcă gestiunea) / NU (doar fiscal)". Structura: `.caseta-poarta` > `.cp-mesaj` (întrebarea + consecința) + `.cp-butoane` (butoanele canonice). Fundal neutru chihlimbar-pal #fbf7ee — distinct de `.caseta-atentie` (roșu, distructiv) și `.caseta-info` (albastru, informativ standing). Răspunsul e cerut ÎNAINTE de acțiune și NU se poate sări (nu bifă opțională, care se uită). INTERZISĂ reproducerea ad-hoc cu fundal inline (`style="background:#fbf7ee…"`) — se folosește `.caseta-poarta`. Prinsă de regula POARTA_INLINE în verificator.
 - **`confirm()`, `alert()` și `prompt()` native de browser sunt INTERZISE** (v2.0 — include prompt). Confirmări via `confirmaCaseta(zona, mesaj, laConfirm, {textOk})`. Input via formular în-ecran (câmp + buton), niciodată prompt nativ.
@@ -166,6 +171,15 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 ## 6. Mesaje de stare, câmpuri obligatorii și ghidaj
 
+- **Câmpul cu un buton pe rândul lui (v2.102, lotul 12, 642):** `.camp-cu-buton` (ex. CUI + „Verifică la ANAF”): eroarea vine sub rând
+  (`api._ancoraCamp`), ca la `.data-golibila`. Plasa „refuz nevăzut” socotește arătat un refuz când textul lui (cu spațiile strânse) sau
+  FIECARE eroare de câmp a lui e în pagină: un refuz, un singur loc vizibil.
+- **Datele aduse de la ANAF țin de CUI-ul lor (v2.102, lotul 12, 459.1; comanda Costin 12.2 pct.5: „la schimbarea CUI-ului denumirea adusă
+  de la CUI-ul anterior rămâne completată”):** un formular în care ANAF completează câmpuri din CUI (denumirea; la factură și adresa,
+  localitatea, județul) le leagă prin `legaDateAnaf` (`ecrane/date_anaf.js`): la schimbarea CUI-ului, valoarea pusă de ANAF și neatinsă de
+  om dispare, iar rândul de stare de sub CUI se golește; ce a scris omul rămâne (F188). Completarea automată (fără apăsare) nu scrie peste
+  ce a scris omul; „Verifică la ANAF” (cerere explicită) scrie. Primele: Adaugă firmă, NIR, casa. Rândul de sub CUI spune ce a dat ANAF
+  și ce se preia la creare, fără „— verifică.”. Gard: `core/test_lot12_ui2_ecrane.py::test_def_459_1_*`.
 - **Alegerea firmei într-un formular = UN control (v2.66, comanda Costin 05.10.2026):** `<select>` cu „— alege firma —”, forma de la Declarații. Nu un câmp „Caută firma” plus o listă derulantă pentru aceeași alegere (instanța: Pachete lunare). Lista de bife a firmelor unui asistent (o alegere multiplă) nu e în regulă. Gard: verificator `ALEGERE_FIRMA_DUBLA`.
 
 - Succes: text verde #1d7a4d, weight 600, afișat pe ecranul principal DUPĂ revenirea din formular.
@@ -185,7 +199,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   `select`, `textarea`) scrie mesajul într-un copil propriu (`.msg-in-formular`, la capătul containerului), nu peste conținut — omul nu
   pierde ce a tastat. O zonă de mesaj fără câmpuri se rescrie ca înainte. Regula stă în mecanismul unic (`api.js`), nu în fiecare ecran;
   gard în browser `core/test_mesaj_in_formular.py` (găsit la proba „depusă în afara iConta”: „Salvează” fără dată ștergea formularul).
-- **Mesajul de după un buton se aduce în vedere (v2.74, lotul 07.10 pct.3):** un refuz, o întrebare sau o confirmare apărute după apăsarea unui buton se derulează în zona vizibilă — prin `aduInVedere` din `api.js`, chemat de `arataMesaj`, `eroareCamp`, `confirmaCaseta`, iar casetele scrise direct de un ecran (`.caseta-poarta`, `.em-curs-box`, `.msg-*`, `[role=alert]`) le prinde observatorul după clasă (`SELECTOR_MESAJ`). Fără apăsare recentă nu se derulează nimic. O casetă nouă de după-buton cu altă clasă intră în `SELECTOR_MESAJ`. Gard: verificator `MESAJ_FARA_ADUCERE_IN_VEDERE`.
+- **Mesajul de după un buton se aduce în vedere (v2.74, lotul 07.10 pct.3):** un refuz, o întrebare sau o confirmare apărute după apăsarea unui buton se derulează în zona vizibilă — prin `aduInVedere` din `api.js`, chemat de `arataMesaj`, `eroareCamp`, `confirmaCaseta`, iar casetele scrise direct de un ecran (`.caseta-poarta`, `.em-curs-box`, `.msg-*`, `[role=alert]`) le prinde observatorul după clasă (`SELECTOR_MESAJ`). Fără apăsare recentă nu se derulează nimic. O casetă nouă de după-buton cu altă clasă intră în `SELECTOR_MESAJ`. Gard: verificator `MESAJ_FARA_ADUCERE_IN_VEDERE`. **Linia de stare a ecranului nu se aduce în vedere (lotul 12, 171):** o zonă care spune starea citită la deschiderea ecranului și la fiecare redesenare (starea SPV a firmei, `spv_stare.randeazaStareSpv`) poartă `data-stare-ecran`; `aduInVedere` n-o derulează, oricât de aproape de un clic s-ar scrie — altfel ecranul sare după fiecare acțiune care îl redesenează. Gard: e2e `test_def_171_*`, `core/test_lot12_stare_ecran.py`.
 - **Refuzul care trimite în alt ecran are buton spre el (v2.74, lotul 07.10 pct.2):** serverul pune ținta în refuz (`detail.ecran`); butonul „Deschide <ecran>” se adaugă lângă mesaj de `api.js`, oriunde e afișat, iar ecranul se deschide PESTE formular (← îl readuce; după salvare, „Înapoi la <formular>”). Ecranele-destinație stau în `ecrane/ecran_destinatie.js` (`ECRANE`). INTERZIS un refuz cu ținta numai în frază („Declar-o în Date firmă”) fără `ecran`. Gard: verificator `REFUZ_ECRAN_FARA_BUTON`.
 - Validări preventive cu mesaj explicativ, nu doar refuz.
 - **Câmpul care se citește, nu se scrie (v2.92, lotul 6, deficiența 272):** e `<input class="camp-input" readonly aria-readonly="true">`,
@@ -419,6 +433,54 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   Chromium) + e2e `test_def_421_*` / `test_def_424_*` (Balanța, Registrul-inventar, statul de plată și importul salariaților la 1366×768);
   rezumatul pe toate ecranele cu tabel: `core/test_lot10_rezumat_fix.py` (v2.97).
 - Nicio fereastră nu iese din ecran.
+- **Rezumatul nu mănâncă tabelul (v2.102, lotul 12, 621; comanda Costin 12.2 pct.11, verbatim: „Balanța: casetele de sus ocupă jumătate
+  din fereastră, se văd 2–3 rânduri de tabel; caseta «Importă…» nu are buton spre import.”; cerința: „Casetele nu mănâncă tabelul — regulă
+  globală”).** (1) În rezumatul lipit sus (`.rezumat-fix`) stă numai ce trebuie văzut cât derulezi: titlul, perioada, cifrele, butoanele, zona
+  lor de mesaj, o concluzie pe un rând. O casetă (`.caseta-info`, `.caseta-atentie`, `.caseta-poarta`) NU stă în rezumat: stă sub el (se
+  citește la deschidere, iar tabelul primește fereastra cât derulezi) sau, ca notă informativă, pliată (`details.dec-xml`, concluzia în
+  titlu — verdictul bun al Balanței „se închide pe toate cinci”). (2) Rezumatul e strâns: blocurile lui fără marginile de pagină (4 px între
+  ele). (3) La 1280×720 rezumatul are cel mult un sfert din corpul ferestrei (Balanța cu ciorne + rulaje lipsă + închidere nereușită,
+  Registrul jurnal cu căutare și motivul amortizării, Stocuri, Fișa de cont). (4) O casetă care cere un import / o corectură în alt ecran
+  are butonul spre el sub text (Balanța: „Deschide Import date › Solduri inițiale”). Gărzi: verificator `REZUMAT_CASETA` (șabloanele
+  literale, inclusiv `${caseta…}` în rezumat) + `core/test_lot12_ui2_ecrane.py::test_def_621_*` (înălțimea, în Chromium) +
+  `core/test_lot12_ui2_verificator.py`.
+- **Antetul documentului pe ecranul scund (v2.103, lotul 12, C164; comanda Costin 12.3 pct.4, verbatim: „C164: pe ecranele scunde,
+  antetul detaliului facturii se strânge pe un rând (număr, client, total, stare SPV); acțiunea principală rămâne fixă jos (clasa 285).”).**
+  Antetul lipit sus al unui document cu acțiuni (detaliul facturii: numărul, stările, butoanele, zonele lor de rezultat, data, partenerul)
+  poate fi mai înalt decât fereastra unui ecran scund — iar un rezultat scris în el nu mai intră în vedere (antetul lipit nu derulează).
+  (1) **Ecranul scund** = mai scund de 700 px sau îngust ca un telefon (≤ 560 px). Pragul stă într-un singur loc, `stil.css`
+  (`@media (max-height: 700px), (max-width: 560px) { :root { --antet-scund: 1; } }`); ecranul îl citește din `--antet-scund`, nu își scrie
+  propriul `matchMedia`. (2) Pe ecranul scund rezumatul lipit sus e **rândul scurt** `.fd-antet-scurt`: numărul, clientul, totalul, starea
+  SPV, pe UN rând (fără rupere; clientul și starea se taie cu „…”, întregi în `title`). (3) **Acțiunile coboară în bara lipită jos**
+  (`.bara-fixa` › `.fd-bara-actiuni`: rândul butoanelor `.fd-bara-butoane` și zonele lor de rezultat, fiecare cel mult 30vh), deasupra
+  totalurilor — acțiunea principală și mesajul ei se văd mereu (cap.6, 285). (4) Restul antetului (stările, data, partenerul, mențiunile)
+  rămâne deasupra tabelului și derulează. (5) Se mută aceleași noduri (cu ascultătorii și ce s-a scris în ele) și se pun înapoi exact în
+  locul lor când fereastra crește (`facturi_ecran.aseazaAntetul`, la desenare și la redimensionare); pe ecranul înalt antetul rămâne cel
+  de până acum (pct.5 de mai sus). Gărzi: verificator `ANTET_SCUND` (pragul numai în `stil.css`, rândul scurt pe un rând, detaliul cu
+  acțiuni are rândul scurt și bara lui) + `core/test_lot12_fe3_ecrane.py::test_def_c164_*` (1280×600 și 390×844, în Chromium) +
+  `core/test_lot12_fe3_verificator.py` + e2e `frontend_test/e2e/e2e_lot12_fe3.py::test_def_c164_*`.
+- **Tabelul de note (v2.102, lotul 12, 617 / 622; comanda Costin 12.2 pct.9: „Registru jurnal: fără căutare. Un câmp (cont, document,
+  partener, sumă, nr. crt.) și filtru de stare; tabel cu un rând pe notă, detaliul la clic, explicațiile o singură dată.”; pct.12: „De
+  validat: … Trei secțiuni cu număr, același tabel ca la 617, Validează/Respinge pe rând, căutare.”).** O singură componentă,
+  `ecrane/tabel_note.js` (`htmlTabelNote` + `legaTabelNote`), pentru Registrul jurnal și pentru „De validat” (note de validat, notele tale în
+  ciornă): `table.fd-tabel.tn-tabel`, fiecare notă un `tbody.tn-nota` (`data-nota-id` / `data-coada-ids`) cu rândul `.tn-rand` — Nr. crt.
+  (sau data), data, [firma], explicația, documentul, conturile pe scurt, suma (`.fd-td-num`, stornarea sub ea), starea (cu semnele scurte:
+  „fără document”, „depășită față de sursă” …), acțiunea principală a stării (cel mult două butoane: „Validează” + refacerea din sursă /
+  trimiterea la validare; în coadă „Validează” / „Respinge”) — și detaliul `.tn-detaliu`, ascuns până la clic pe rând (sau pe butonul din
+  prima celulă, `aria-expanded`): liniile notei (`table.tn-linii`, cu partenerul și centrul), documentul justificativ, mesajele notei și
+  restul acțiunilor (Editează, Șterge). Explicația unui semn stă O DATĂ, deasupra tabelului (`.tn-explicatii`: `.caseta-atentie` pentru ce
+  oprește validarea, `.caseta-info` pentru rest), cu numărul notelor; butonul inactiv e legat de ea (`aria-describedby`). Căutarea
+  (`htmlCautare`, în rezumat) caută textul scris, întreg, în fiecare câmp al rândului și al liniilor (cont, document, partener, sumă scrisă
+  „1.234,56” / „1234,56” / „1234.56”, nr. crt., firmă), lângă ea câte note se văd din câte; filtrul de stare (jurnalul): ciorne, validate, la
+  validare, respinse, fără document. O întrebare de confirmare pentru un rând stă în detaliul lui (`locInDetaliu`), nu între celule. „De
+  validat” are trei secțiuni cu număr — „Note de validat (n)”, „Declarații (n)”, „Notele tale în ciornă (n)” — iar o notă apare o dată
+  (ciorna ta trimisă la validare stă numai în prima). Gărzi: verificator `TABEL_NOTE` + `core/test_lot12_ui2_ecrane.py::test_def_617_*` /
+  `test_def_622_*`.
+- **După o acțiune pe un rând, fereastra rămâne pe loc, cu confirmarea în vedere (v2.102, lotul 12, 617: „După «Validează» pagina sare sus
+  fără confirmare.”).** Lista se redesenează pe loc (`peLoc`: fără „Se încarcă…”, deci conținutul nu scade și derularea rămâne), rândul arată
+  starea nouă (evidențiat, `.val-evidentiat`), iar confirmarea („Ai validat nota nr. crt. 12 …”) stă în zona de mesaj din rezumatul lipit
+  sus. Un ecran care trece totuși prin „Se încarcă…” după un clic într-un rând își regăsește derularea prin navigator (mecanismul de la
+  observatorul ferestrei). Gard: `core/test_lot12_ui2_ecrane.py` (jurnal, coadă) + `core/test_lot12_ui2_derulare.py` (navigatorul).
 - **Acțiunile unui rând de tabel stau într-un meniu (v2.83, 08.10.2026, comanda Costin „Retest 08.10” pct.13).** O celulă cu trei
   sau mai multe butoane le ține într-un `<details class="dec-xml"><summary>Acțiuni</summary>` (butoanele unul sub altul la deschidere),
   nu libere pe rând: butoanele libere lățesc coloana până când fereastra derulează lateral și acțiunile ies din vedere (Mijloace fixe
@@ -752,6 +814,10 @@ Shell-ul care randează leagă foaia de stil canonică și folosește clase și 
 **Scroll-ul intern al aplicației (18.10.2026, deficiența 321).** Shell-ul aplicației e `.desktop` (navigator.js): are înălțimea ecranului (`height: 100dvh`) și derulează el însuși (`overflow-y: auto`). Cu `html, body { overflow-y: hidden }`, un desktop cu `min-height` în loc de `height` crește peste ecran și nu se mai derulează cu rotița — ce e sub cardurile „Primii pași” („De depus”, „Firme”) se ajungea doar cu Tab. Verificatorul îl prinde (`scroll_desktop`).
 
 **Tot ce stă pe ecranul întreg derulează (lotul 12, deficiențele 561, 596, C111).** Sub `html, body { overflow-y: hidden }`, `#app` derulează el însuși (`height: 100dvh; overflow-y: auto`): ecranele puse direct în el (intrarea în cont, activarea, parola nouă) se ajung cu rotița până la capăt. Orice strat pe tot ecranul (`.acces-modal`, `.reaut`, `.fereastra`) are panoul cu `max-height` cât ecranul și derulare proprie, ca acțiunea principală și mesajele de eroare să se vadă mereu (CLAUDE.md §9). Verificatorul îl prinde (`lot12`, `SCROLL_APP` / `STRAT_INCAPE`).
+
+**Formularul de înregistrare încape (v2.102, lotul 12, 642).** „Înregistrează cabinetul tău” (`.acces-modal-inreg`) are câmpurile pe două
+coloane (`.reg-grila`), sigla mai mică, iar bifa termenilor, refuzul și „Creează cont” stau lipite jos (`.reg-actiune`, `position: sticky`):
+la 1280×720, cu refuzul arătat, formularul încape. Gard: `core/test_lot12_form2_inregistrare.py`.
 
 ---
 
@@ -1117,6 +1183,19 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.103 (24.10.2026)** — lotul 12, comanda Costin 12.3 pct.4: **cap.9 — „Antetul documentului pe ecranul scund”** (C164: pe ecranul mai
+scund de 700 px sau îngust ca un telefon, detaliul facturii are sus un rând — numărul, clientul, totalul, starea SPV — iar butoanele și
+zonele lor de rezultat stau în bara lipită jos; pragul numai în `stil.css`, `--antet-scund`). Gărzi: verificator `ANTET_SCUND`;
+`core/test_lot12_fe3_ecrane.py`, `core/test_lot12_fe3_verificator.py`.
+
+**v2.102 (24.10.2026)** — lotul 12, comanda Costin 12.2: **cap.9 — „Tabelul de note”** (617 / 622: o componentă, `ecrane/tabel_note.js`, pentru
+Registrul jurnal și „De validat”; un rând pe notă, detaliul la clic, explicațiile o dată, căutare și filtru de stare; „De validat” în trei
+secțiuni cu număr), **„Rezumatul nu mănâncă tabelul”** (621: casetele sub rezumat sau pliate, rezumatul strâns, ≤ un sfert din fereastră la
+1280×720; butonul spre import sub caseta rulajelor), **„După o acțiune pe un rând, fereastra rămâne pe loc”** (617). **Cap.5** — întrebarea de
+confirmare `.caseta-intrebare` (446.1). **Cap.6** — câmpul cu buton (642) și datele aduse de la ANAF legate de CUI (459.1). **Cap.22 §7** —
+formularul de înregistrare încape (642). Gărzi: verificator `REZUMAT_CASETA`, `TABEL_NOTE`; `core/test_lot12_ui2_ecrane.py`,
+`core/test_lot12_ui2_verificator.py`, `core/test_lot12_ui2_derulare.py`.
+
 **v2.101 (22.10.2026)** — lotul 11, C88: **cap.4 — cursul valutar prin `cursValutar(v)`** (4–6 zecimale, cum îl dă BNR, pe unitate). Trei formatări locale cu `minimumFractionDigits: 4` (emitere, facturi, reevaluare) înlocuite. Gard: `CURS_FORMAT_LOCAL` (verificator) + `core/test_lot11_c88_curs_precizie.py::test_garda_cursul_se_afiseaza_numai_prin_cursvalutar`.
 
 **v2.100 (22.10.2026)** — lotul 11, decizia Costin 10.3 (verbatim în DECIZII „Comanda 10.3” pct.4: „Totalurile și rezumatul fix,

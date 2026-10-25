@@ -617,7 +617,8 @@ def test_CONCEDIUL_salvat_si_STERS_urmeaza_in_tabelul_citit_de_D112(firma):
     r = cl.post(_U(firma, "/tenants/{tenant_id}/salariati/{salariat_id}/concedii",
                    salariat_id=sid), headers=_H(firma), json={
         "serie": "ZT", "numar": "1", "cod": "01", "data_acordare": "2026-06-01",
-        "data_inceput": "2026-06-01", "data_sfarsit": "2026-06-05", "zile_cm": 5,
+        "data_inceput": "2026-06-01", "data_sfarsit": "2026-06-05", "zile_cm": 4,   # [lotul 12, C102.1] 1 iunie e sărbătoare legală:
+        # 4 zile lucrătoare în interval (`scadente.zile_lucratoare_interval`); cu 5, salvarea cere întâi confirmarea
         "venituri_6_luni": 30000, "zile_6_luni": 120, "an": AN, "luna": LUNA,
         "loc_prescriere": 1, "diagnostic": "proba"})
     assert r.status_code == 200, r.text[:400]

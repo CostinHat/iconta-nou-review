@@ -70,7 +70,13 @@ def test_def_430_dividendul_se_imparte_pe_asociati_din_profitul_preluat_pe_117(p
     pg.click("#op-trimite")
     pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=20000)
     msg = pg.inner_text("#op-mesaj .caseta-ok")
-    assert "Notă generată" in msg and "117 = 457 10.000,00 lei; 457 = 446 1.600,00 lei" in msg, msg
+    # [lotul 12, C78.1: „mesajul de confirmare repetă nota de trei ori”] confirmarea arată rândurile notei citite din Registrul jurnal, câte
+    # unul pe asociat (analiticul lui), fără să le repete într-o frază „Nota: …”; aceleași conturi și sume: 117 = 457 6.000 + 4.000 =
+    # 10.000,00 lei (dividendul brut), 457 = 446 960 + 640 = 1.600,00 lei (impozitul de 16% din tabelul împărțirii, verificat mai sus)
+    linii_msg = [" ".join(x.split()) for x in msg.splitlines()]
+    assert "Notă generată" in msg and sorted(x for x in linii_msg if " = " in x) == sorted([
+        "117 = 457 · 6.000,00 lei", "457 = 446 · 960,00 lei", "117 = 457 · 4.000,00 lei", "457 = 446 · 640,00 lei"]), msg
+    assert "Nota:" not in msg, msg
     assert sql('SELECT sursa, document_ref FROM "%s".inregistrari' % s) == [
         ("operatiuni", "Hotărârea adunării generale a asociaților nr 3 din 15.05.%d" % _AN)]
     assert sql('SELECT count(*) FROM "%s".inregistrari_linii WHERE partener_nume IS NOT NULL' % s) == [(4,)]

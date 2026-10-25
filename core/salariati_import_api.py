@@ -561,6 +561,10 @@ def importa(conn, randuri, inlocuieste=False):
         for r in bune:
             # rândurile respinse au rămas pe dinafară (`respinse`, întoarse numite) — aici numai rândurile bune
             part_time = (r.get("tip_norma") == "partiala")   # norma e cerută mai sus (norma_lipsa): fără „intreaga” implicit
+            # [lotul 12, C133 — comanda Costin 12.3 pct.8] scutirea fișei existente de dinainte (rândul blocat): reimportul care o schimbă
+            # se consemnează în `salariati_jurnal` ca orice corectură (`salariati_api.jurnalizeaza_scutirea`, cine, când, vechi -> nou)
+            cur.execute("SELECT scutit_contrib_minim, motiv_exceptare FROM salariati WHERE cnp = %s FOR UPDATE", (r["cnp"],))
+            _fisa = cur.fetchone()
             # upsert-ok: re-import salariat pe CNP (cheie naturala) - actualizeaza fisa existenta NUMAI dupa confirmarea inlocuirii
             # (poarta [426] de mai sus, `inlocuieste=True`); campurile absente / propunerile nu strica fisa, IBAN pazit separat
             cur.execute("""
@@ -599,7 +603,7 @@ def importa(conn, randuri, inlocuieste=False):
                   -- [iban_import] la re-import fara coloana IBAN (EXCLUDED.iban NULL) NU sterge IBAN-ul deja
                   -- introdus manual pe ecran: pastreaza valoarea existenta (COALESCE), nu o goleste tacit.
                   iban=COALESCE(EXCLUDED.iban, salariati.iban)
-                RETURNING id, (xmax = 0)
+                RETURNING id, (xmax = 0), scutit_contrib_minim, motiv_exceptare
             """, (r["cnp"], r["nume"], r["prenume"], r.get("data_angajare"),
                   part_time, r.get("ore_zi"),   # validat mai sus (norma + orele normei parțiale): fără „8” implicit
                   r.get("persoane_intretinere", 0),
@@ -608,8 +612,12 @@ def importa(conn, randuri, inlocuieste=False):
                   r.get("functie_baza"), bool(r.get("scutit_contrib_minim")),   # [decizii 07.10 pct.4; PIVOT 14.10 pct.4]
                   _de_verificat(r)))
             # [PASUL 2b] salariul de baza pe salariu_istoric (sursa unica); reparat si activ (coloana retrasa PASUL 1)
-            _sid, _nou = cur.fetchone()   # [447] xmax = 0: rândul a fost INSERAT (salariat nou), altfel fișa a fost actualizată
+            _sid, _nou, _sc, _me = cur.fetchone()   # [447] xmax = 0: rândul a fost INSERAT (salariat nou), altfel fișa a fost actualizată
             noi += 1 if _nou else 0
+            if _fisa is not None:
+                from core import salariati_api as _sa
+                _sa.jurnalizeaza_scutirea(cur, _sid, dict(zip(_sa.CAMPURI_JURNAL_SCUTIRE, _fisa)),
+                                          {"scutit_contrib_minim": _sc, "motiv_exceptare": _me})
             from core import salariu_istoric as _si
             from datetime import date as _dm
             _si.seteaza(cur, _sid, r.get("salariu_brut", 0), r.get("data_angajare") or _dm.today().isoformat())

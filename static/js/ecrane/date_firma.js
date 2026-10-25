@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie } from "../api.js?v=309f4d66ae";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie } from "../api.js?v=e38843b1ec";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -452,6 +452,24 @@ function _blocDenumire(t, profil) {
     </div>`;
 }
 
+// [lotul 12, deficiența 627 — comanda Costin 12.2 pct.14: „după o salvare parțială, «Profil incomplet» nu se actualizează”] lista
+// câmpurilor obligatorii lipsă (sau a blocajelor declarațiilor), din `GET …/firma-profil/date`; stă în `#df-profil-stare`, ca salvarea
+// parțială s-o poată reface din bază fără să redeseneze formularul (ce n-a intrat rămâne scris pe ecran, lângă refuzul lui).
+function _blocProfil(d) {
+  const lipsa = d.lipsuri || [];
+  const blocaje = d.blocaje || [];
+  return lipsa.length
+    ? `<div class="dec-avert">
+         <div class="dec-avert-cap">Profil incomplet \u2014 ${cate(lipsa.length, "c\u00e2mp obligatoriu", "c\u00e2mpuri obligatorii")} ${lipsa.length === 1 ? "lipse\u0219te" : "lipsesc"}</div>
+         <ul>${lipsa.map((l) => `<li><b>${esc(eticheta(l.camp))}</b> \u2014 blocheaz\u0103 ${esc(l.declaratii.join(", "))}</li>`).join("")}</ul>
+       </div>`
+    : blocaje.length
+    ? `<div class="dec-avert">
+         <div class="dec-avert-cap">C\u00e2mpurile obligatorii sunt completate, dar unele declara\u021bii nu se pot genera \u00eenc\u0103</div>
+         <ul>${blocaje.map((b) => `<li><b>${esc(b.declaratie)}</b> \u2014 ${esc(b.motiv)}</li>`).join("")}</ul>
+       </div>`
+    : `<div class="dec-ok">Profil complet. C\u00e2mpurile obligatorii sunt completate.</div>`;
+}
 
 export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || null);
@@ -475,24 +493,10 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     return;
   }
 
-  const lipsa = d.lipsuri || [];
-  const blocaje = d.blocaje || [];
-  const avert = lipsa.length
-    ? `<div class="dec-avert">
-         <div class="dec-avert-cap">Profil incomplet \u2014 ${cate(lipsa.length, "c\u00e2mp obligatoriu", "c\u00e2mpuri obligatorii")} ${lipsa.length === 1 ? "lipse\u0219te" : "lipsesc"}</div>
-         <ul>${lipsa.map((l) => `<li><b>${esc(eticheta(l.camp))}</b> \u2014 blocheaz\u0103 ${esc(l.declaratii.join(", "))}</li>`).join("")}</ul>
-       </div>`
-    : blocaje.length
-    ? `<div class="dec-avert">
-         <div class="dec-avert-cap">C\u00e2mpurile obligatorii sunt completate, dar unele declara\u021bii nu se pot genera \u00eenc\u0103</div>
-         <ul>${blocaje.map((b) => `<li><b>${esc(b.declaratie)}</b> \u2014 ${esc(b.motiv)}</li>`).join("")}</ul>
-       </div>`
-    : `<div class="dec-ok">Profil complet. C\u00e2mpurile obligatorii sunt completate.</div>`;
-
   corp.innerHTML = `
     <h2 class="pf-titlu">Date firm\u0103</h2>
     <p class="pf-intro">Datele pe care ANAF le cere în declarații. Câmpurile cu <span class="oblig">*</span> sunt obligatorii pentru declarații — ce lipsește nu oprește salvarea, ci declarațiile care îl cer (lista de mai jos).</p>
-    ${avert}
+    <div id="df-profil-stare">${_blocProfil(d)}</div>
     ${_blocDenumire(t, d.profil)}
     <div class="grila-doc">${CAMPURI.map((c) => camp(c, d.profil[c.k], d)).join("")}</div>
 
@@ -630,6 +634,13 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       btn.textContent = "Salveaz\u0103";
       const linii = salvate.length ? ["S-au salvat: " + salvate.join(", ") + ". Restul NU — " + (faraCamp.length ? "motivele:" : "vezi câmpurile marcate.")] : [];
       linii.push(...faraCamp);
+      // [627] ce a intrat schimbă lista „Profil incomplet”: se recitește din bază (numai blocul ei; formularul rămâne cum l-a scris omul);
+      // dacă recitirea cade, lista veche nu rămâne (ar spune lipsă un câmp tocmai salvat): în locul ei, de ce nu e la zi
+      if (salvate.length) {
+        const zp = corp.querySelector("#df-profil-stare");
+        try { zp.innerHTML = _blocProfil(await api.get(`/tenants/${tenantId}/firma-profil/date`)); }
+        catch (e) { arataMesaj(zp, "Lista câmpurilor obligatorii lipsă nu s-a putut reciti după salvare: " + ((e && e.mesaj) || "redeschide Date firmă."), "avert"); }
+      }
       if (faraCamp.length || salvate.length) arataMesaj(msg, linii.join("\n"), "eroare");   // [410] nu tot s-a salvat = refuz, nu avertisment
       return;
     }
@@ -715,7 +726,11 @@ function _tvaiDinFormular(corp, v, platitor) {
   const t = (v && v.tva_incasare) || {};
   const c = t.curenta || {};
   const aplica = sel.value === "da";
-  const de_la = aplica ? (corp.querySelector("#vf-tva_incasare_de_la").value || null) : null;
+  // [lotul 12, deficiența 626 — comanda Costin 12.2 pct.13: „după ce scrii și golești «Aplică de la», perioada nouă rămâne obligatorie și
+  // oprește salvarea. Perioadă nouă doar la cerere.”] pe o firmă cu perioada înregistrată, „Aplică de la” golit nu cere nimic: rămâne data
+  // înregistrată (câmpul o și reia la ieșire, `_legaTvaIncasare`); o perioadă nouă se cere scriind data ei. Fără perioadă înregistrată,
+  // „Da” e cererea, deci data rămâne de scris.
+  const de_la = aplica ? (corp.querySelector("#vf-tva_incasare_de_la").value || c.de_la || null) : null;
   const pana_la = aplica ? (corp.querySelector("#vf-tva_incasare_pana_la").value || null) : null;
   const eraDa = !!t.curenta || !!t.fara_data;
   if (aplica === eraDa && (!aplica || (de_la === (c.de_la || null) && pana_la === (c.pana_la || null)))) return null;
@@ -724,6 +739,9 @@ function _tvaiDinFormular(corp, v, platitor) {
 
 // [lotul 10, 428] „Verifică în registrul ANAF” (citire: propune datele, spune dacă diferă; nu scrie) și ștergerea unei perioade scrise greșit.
 function _legaTvaIncasare(corp, nav, tenantId, opt) {
+  // [626] „Aplică de la” golit revine, la ieșirea din câmp, la data înregistrată (ca „Luna preluării”, 169): golirea nu e o perioadă nouă
+  const deLa = corp.querySelector("#vf-tva_incasare_de_la");
+  if (deLa && deLa.defaultValue) deLa.addEventListener("blur", () => { if (!deLa.value) deLa.value = deLa.defaultValue; });
   const btn = corp.querySelector("#vf-tva-incasare-anaf");
   const rez = corp.querySelector("#vf-tva-incasare-anaf-rez");
   if (btn) btn.addEventListener("click", async () => {

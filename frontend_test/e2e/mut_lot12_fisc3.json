@@ -1,0 +1,56 @@
+[
+ {
+  "fisier": "core/categorii_tva.py",
+  "ancora": "    prestare_317 = platitor is False and art317 is True and client_ic(tara, tert_cui)",
+  "inlocuire": "    prestare_317 = False",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c156_prestarea_ic_a_neplatitorului_art317_poarta_taxare_inversa_si_codul_ro"
+ },
+ {
+  "fisier": "core/factura_pdf.py",
+  "ancora": "    if _ct.cod_tva_art317(profil.get(\"platitor_tva\"), linii):",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c156_prestarea_ic_a_neplatitorului_art317_poarta_taxare_inversa_si_codul_ro"
+ },
+ {
+  "fisier": "core/categorii_tva.py",
+  "ancora": "    return [AVERTISMENT_ART317_NEALES if art317 is None else AVERTISMENT_FARA_ART317]",
+  "inlocuire": "    return []",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c157_prestarea_ic_fara_inregistrare_art317_primeste_avertisment_nu_refuz"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "      arataAvertismenteEmitere(rez2, r.avertismente);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c157_prestarea_ic_fara_inregistrare_art317_primeste_avertisment_nu_refuz"
+ },
+ {
+  "fisier": "core/control_incrucisat.py",
+  "ancora": "    fic = facturi_ic(conn, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1), cu_servicii=True)",
+  "inlocuire": "    fic = facturi_ic(conn, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1))",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c163_serviciul_primit_din_ue_face_d301_datorat_si_e_numit_la_generare"
+ },
+ {
+  "fisier": "core/d301.py",
+  "ancora": "        _ic_prim = _fic(conn, schema, _prima, _urm, cu_servicii=True).get(\"primita\", [])",
+  "inlocuire": "        _ic_prim = _fic(conn, schema, _prima, _urm).get(\"primita\", [])",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c163_serviciul_primit_din_ue_face_d301_datorat_si_e_numit_la_generare"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "    if intreaba_dovada and _lic and dovada_transport is None:",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c84_livrarea_ic_fara_dovada_transportului_se_emite_cu_avertisment"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "    if _lic and dovada_transport is False:",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c84_livrarea_ic_fara_dovada_transportului_se_emite_cu_avertisment"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "            if (l.cotaAleasa) { setCota(l, \"\", l.cota_tva); recalc(); return; }",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_fisc3.py::test_def_c189_propunerea_cotei_sosita_dupa_alegere_nu_inlocuieste_cota_aleasa"
+ }
+]

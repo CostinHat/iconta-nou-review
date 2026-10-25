@@ -1,0 +1,44 @@
+[
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "        if (e && e.detaliu && e.detaliu.cod === \"INTREABA_DOVADA_TRANSPORT\") {",
+  "inlocuire": "        if (false) {",
+  "test": "frontend_test/e2e/e2e_lot12_fx3.py::test_def_c84_transforma_in_factura_livrarea_ic_intreaba_dovada_si_avertizeaza"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "                                            intreaba_dovada=True, dovada_transport=dovada_transport,\n                                            intreaba_marfa=poarta_ceruta",
+  "inlocuire": "                                            intreaba_dovada=False, dovada_transport=dovada_transport,\n                                            intreaba_marfa=poarta_ceruta",
+  "test": "frontend_test/e2e/e2e_lot12_fx3.py::test_def_c84_transforma_in_factura_livrarea_ic_intreaba_dovada_si_avertizeaza"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "        arataAvertismenteEmitere(zonaRez, r.avertismente);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_fx3.py::test_def_c157_transforma_in_factura_prestarea_ic_a_neinregistratului_art317_avertizeaza"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "        arataAvertismenteEmitere(zonaRez, r.avertismente);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_fx3.py::test_def_c84_transforma_in_factura_livrarea_ic_intreaba_dovada_si_avertizeaza"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "numarCuSerie(f.transformat_in_serie, f.transformat_in_numar)",
+  "inlocuire": "f.transformat_in_numar",
+  "test": "frontend_test/e2e/e2e_lot12_fx3.py::test_def_c196_transformata_in_arata_seria_separat"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "    _uc_comun._cere_luna_incheiata(an, luna, \"Descărcarea gestiunii lunii\")   # [lotul 12, C187, clasa 216]\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_fx3.py::test_def_c187_descarcarea_gestiunii_pe_luna_in_curs_nu_se_scrie"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "${lunaNeincheiata(an, luna) ? ' disabled aria-describedby=\"s-desc-motiv\"' : \"\"}",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_fx3.py::test_def_c187_descarcarea_gestiunii_pe_luna_in_curs_nu_se_scrie"
+ }
+]

@@ -39,7 +39,7 @@ _CU_REZUMAT = {
     ("migrare.js", "previzualizeazaParteneri"), ("migrare.js", "previzualizeazaSalariati"), ("migrare.js", "previzualizeazaAsociati"),
     ("migrare.js", "previzualizeazaMijloace"), ("migrare.js", "previzualizeazaIstoric"), ("migrare.js", "previzualizeazaRetete"),
     ("migrare.js", "previzualizeazaArticole"), ("migrare.js", "previzualizeazaRip"), ("mijloace_ecran.js", "ecranMijloace"),
-    ("reevaluare_ecran.js", "ecranReevaluareValuta"), ("validat.js", "deschideNota"),
+    ("reevaluare_ecran.js", "ecranReevaluareValuta"),
     # [lotul 11, decizia Costin 10.3: „rezumatul fix […]: da, reorganizezi ecranele”] cele trei excepții „de decis de Costin”, decise
     ("firme.js", "randeazaSituatiaStocului"), ("tipare.js", "randeazaTipare"), ("admin.js", "cereriNeconfirmate"),
 }

@@ -180,11 +180,15 @@ def _fara_apelant(rute, js):
 # Costin: *„un gard care spune «nicio rută fără apelant» trebuie să spună și «despre 88% din
 # suprafață»."* Verdele unui test e **numele** lui — de aceea numele de mai jos poartă
 # `DINTRE_CELE_VIZIBILE`, nu o cifră care ar îmbătrâni în el. Cifra stă aici și se recalculează.
-_OARBE = 6           # 27.08.2026: 51 · 30.08.2026 dimineața: 55 · **30.08.2026, după R80: 6**.
+_OARBE = 10          # 27.08.2026: 51 · 30.08.2026 dimineața: 55 · **30.08.2026, după R80: 6**.
                      # Ancora e acum SEGMENT DE CALE, nu cuvânt. Cele 6 rămase sunt exact rutele al
                      # căror singur segment literal e `tenants` (238 apariții — e în fiecare cale),
                      # plus `GET /`, care n-are niciun segment literal. Adică EXACT instanța
                      # fondatoare a lui R80 — `PUT /tenants/{id}` — rămâne oarbă, onest.
+                     # [lotul 12, 12.2, 24.10.2026] 6 -> 10: segmentul `facturi` a trecut pragul de 40 (41 de referințe de rută,
+                     # ultima: ștergerea refuzului emiterii, 304, `emitere_ecran.js`); au orbit GET/POST `/tenants/{id}/facturi` și
+                     # GET/DELETE `/tenants/{id}/facturi/{factura_id}` — au apelanți, detectorul nu-i mai poate dovedi
+                     # (cauza, la `_CLICHET` în core/test_ancore_rute.py).
 _TOTAL_LA_MASURARE = 411
 
 

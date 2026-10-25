@@ -48,9 +48,9 @@
   "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_477_factura_primita_introdusa_de_mana"
  },
  {
-  "fisier": "core/uc_factura_primita.py",
-  "ancora": "            if not nou:   # [477] aceeași factură introdusă a doua oară",
-  "inlocuire": "            if False:   # [477] aceeași factură introdusă a doua oară",
+  "fisier": "core/uc_comun.py",
+  "ancora": "            raise _fpd.refuz(ex, sfat=(\"Dacă ai primit-o din SPV",
+  "inlocuire": "            if False: raise _fpd.refuz(ex, sfat=(\"Dacă ai primit-o din SPV",
   "test": "frontend_test/e2e/e2e_lot12_scad.py::test_def_477_factura_primita_introdusa_de_mana"
  },
  {

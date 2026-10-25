@@ -152,7 +152,10 @@ def test_storno_livrare_ic_scade_rd1(firma):
     r = cl.post(_U(firma, "/tenants/{tenant_id}/facturi/emite"), headers=_H(firma), json={
         "linii": [{"descriere": "Marfa", "cantitate": 1, "pret_unitar": 5000, "cota_tva": 0, "categorie_tva": "livrare_ic"}],   # [274b]
         "tert_nume": "KUNDE GMBH", "tert_cui": "DE811569869", "tert_tara": "DE",
-        "data_emitere": ZI, "moneda": "RON", "tip_operatiune": "normal"})
+        "data_emitere": ZI, "moneda": "RON", "tip_operatiune": "normal",
+        # [lotul 12, C84 — decizia Costin 12.3 pct.7] livrarea intracomunitară de bunuri întreabă „Ai dovada transportului?”; răspunsul
+        # „Da” (ce trimite ecranul) emite fără avertisment — testul e despre rd.1 după storno, nu despre întrebare
+        "dovada_transport": True})
     assert r.status_code == 200, r.text
     fid = r.json()["factura_id"]
     d = declaratie(firma, "d300")

@@ -1282,9 +1282,13 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
                    "WHERE l.cont_debit = '627' AND l.cont_credit = '5121' AND i.descriere LIKE %%s" % (s, s), ("%E2E 24%",))
     assert stoc and comision, (stoc, comision)
 
-    def rand(nid):
-        return pg.inner_text("[data-nota-id='%s']" % nid)
+    from e2e_bloc_b import _deschide_rand, _nota_jn   # [lotul 12, 617] rândul notei în tabelul de note (e2e_bloc_b nu importă din e2e_bloc_a)
+
+    def rand(nid):   # [617] documentul justificativ și mesajul notei stau în detaliul rândului: se deschide cum îl deschide contabilul
+        return _deschide_rand(patron, _nota_jn(patron, nid)).inner_text()
     r_stoc, r_com, r_man = rand(stoc[0][0]), rand(comision[0][0]), rand(nota_manuala)
+    # [617] „explicațiile o singură dată”: fraza generală a notei fără document stă o dată în fereastră, deasupra tabelului (`#jn-expl-fara_doc`)
+    fer = pg.evaluate("() => [...document.querySelectorAll('.fereastra')].pop().innerText")
     patron.captura("jurnal", intreaga=True)
     # [lotul 11, 443] seria și numărul separat („E2EA nr. 1”, nu „E2EA1”)
     assert "Document justificativ: Factură %s nr. %s din %s" % (SERIE, str(f["numar"])[len(SERIE):], AZI.strftime("%d.%m.%Y")) in r_stoc, \
@@ -1294,7 +1298,10 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
     assert "Notă fără document justificativ" in r_man, r_man
     # [386, lotul 9] regula de fond R3 refuză validarea fără document; [lotul 10, 10.2 pct.7k] un singur mesaj, pe rând (nu și o casetă de
     # confirmare în dreapta), cu pasul care o face validabilă, iar „Validează” e inactiv
-    assert r_man.count("nu se validează fără documentul din care provine") == 1 and "Scrie referința cu „Editează”" in r_man, r_man
+    # [lotul 12, 617] același „un singur mesaj”: fraza generală o dată în fereastră (cu detaliile celor trei note deschise), deasupra
+    # tabelului; pe rândul notei (în detaliul ei) pasul care o face validabilă
+    assert fer.count("nu se validează fără documentul din care provine") == 1 and "Scrie referința cu „Editează”" in r_man, (fer, r_man)
+    assert "nu se validează fără documentul din care provine" in pg.inner_text("#jn-expl-fara_doc"), fer
     assert pg.is_disabled("[data-nota-id='%s'] [data-val]" % nota_manuala)
     assert "Validează fără document" not in r_man, r_man
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % s, (nota_manuala,)) == [("ciorna",)]

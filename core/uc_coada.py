@@ -209,14 +209,15 @@ def surse_declaratiei(schema, tip, an, luna, trim):
     validate sau numesc explicit notele nevalidate pe care se bazează; garda nu se limitează la TVA”. Pentru ORICE declarație:
     amprenta documentelor perioadei (din ea, mai târziu, „depășită”), notele nevalidate ale perioadei și — la D300 / D394 / D390, care
     se fac din facturi — facturile fără notă validată (inclusiv cele cu TVA 0, `control_incrucisat.facturi_necontabilizate`).
-    {de_la, pana_la, amprenta, note: [{nota_id, data, eticheta, suma}], facturi: [{factura_id, eticheta}], documente_nevalidate: afirmație „fapt” | None}."""
+    {de_la, pana_la, amprenta[, amprenta_salarii — C194, la D112], note: [{nota_id, data, eticheta, suma}], facturi: [{factura_id, eticheta}],
+    documente_nevalidate: afirmație „fapt” | None}."""
     de_la, pana_la = fereastra_declaratie(schema, tip, an, luna, trim)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            amp = coada_api.amprenta_surse(cur, schema, de_la, pana_la)
+            amp = coada_api.amprente(cur, schema, tip, de_la, pana_la)
             note, facturi, nevalidate = coada_api.nevalidate_acum(cur, schema, tip, de_la, pana_la)
         conn.rollback()
-    return {"de_la": de_la, "pana_la": pana_la, "amprenta": amp, "note": note, "facturi": facturi, "documente_nevalidate": nevalidate}
+    return {"de_la": de_la, "pana_la": pana_la, **amp, "note": note, "facturi": facturi, "documente_nevalidate": nevalidate}
 
 
 #: [313, 17.10.2026] notele nu se mai numără („1 notă(e) nevalidată(e)”), se numesc: `%s` = notele, ca în Registrul jurnal
@@ -286,11 +287,13 @@ def coada_adauga(date, ctx):
     for k in ("tenant_id", "tip", "inceput_la", "inlocuieste"):  # [p15] inceput_la nu merge la generator; [297] nici înlocuirea
         body.pop(k, None)
     # 1) generează declarația pe schema tenantului — [lotul 10, C69] localitatea partenerilor din ANAF, înaintea tranzacției
-    from core.uc_declaratii import aduce_localitati_parteneri
+    from core.uc_declaratii import aduce_localitati_parteneri, poarta_cererii
     aduce_localitati_parteneri(schema, date.tip)
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, date.tip, body)
+            # [lotul 12, C19] porțile cererii, ca la pasul 2 al Declarațiilor: rectificativa D394 numai confirmată (și la reluarea automată)
+            poarta_cererii(conn, schema, date.tip, body, xml, res)
     except ValueError as e:   # [lotul 11, 445] refuzul cu trimitere (`RefuzGenerare`: ecranul / câmpul / notele de reparat) ajunge la ecran ca obiect, ca în uc_declaratii
         raise _erori.DateInvalide(e.detaliu() if isinstance(e, _erori.RefuzGenerare) else str(e))
     # [F163v2] păstrăm și `res` întreg (serializat) în payload, nu doar avertismente: e singura
@@ -314,7 +317,7 @@ def coada_adauga(date, ctx):
     # [deficiențele 297 + 298] datele-sursă ale declarației: amprenta (pentru „depășită”), notele nevalidate și facturile fără notă
     # validată ale perioadei, NUMITE — la orice declarație, nu numai la TVA
     _surse = surse_declaratiei(schema, date.tip, date.an, date.luna, date.trim)
-    payload["_surse"] = {k: _surse[k] for k in ("de_la", "pana_la", "amprenta")}
+    payload["_surse"] = {k: _surse[k] for k in ("de_la", "pana_la", "amprenta", "amprenta_salarii") if k in _surse}
     # [329, 18.10.2026] avertismentul documentelor nevalidate NU se mai îngheață aici: lista cozii îl calculează la fiecare citire
     # (`coada_api.nevalidate_acum`); notele numite rămân, pentru motivul lui „depășită” (`coada_api.depasire`)
     payload["_surse"]["note"] = [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in _surse["note"]]
@@ -748,13 +751,17 @@ def coada_aproba_mai_multe(ids, ctx):
         raise _erori.DateInvalide("Alege cel puțin o notă de validat.")
     if len(ids) > MAX_APROBARI_DEODATA:
         raise _erori.DateInvalide("Se validează cel mult %s deodată; ai ales %d." % (_cate(MAX_APROBARI_DEODATA, "notă", "note"), len(ids)))
+    from core import afirmatii as _af
+    # [lotul 12, 619] o stornare aleasă înaintea documentului ei stornat ar fi refuzată cât acela e ciornă (`coada_api.valideaza_documentul`);
+    # cu amândouă alese, ordinea alegerii nu contează: documentele stornate se validează întâi, stornările după (`ordinea_validarii`)
+    with db.get_conn() as conn:
+        ids = coada_api.ordinea_validarii(conn, ids)
     validate, refuzate = [], []
     for i in ids:
         try:
             coada_aproba(i, {}, ctx)
             validate.append(i)
         except _erori.EroareDeDomeniu as e:
-            from core import afirmatii as _af
             d = e.args[0] if e.args else str(e)
             mesaj = d.get("mesaj", str(d)) if isinstance(d, dict) else str(d)
             # [258] `unde` fără id-ul intern (elementul îl poartă în `id`)

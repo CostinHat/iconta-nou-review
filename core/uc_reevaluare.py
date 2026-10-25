@@ -99,7 +99,6 @@ def reevaluare_valuta_propunere(tenant_id, an, luna, ctx, completari=None, manua
 
 def _ce_lipseste(e):
     """Ce cere un element înainte de generare, în limba contabilului (refuzul generării, lângă câmpul lui)."""
-    nume = e.get("document") or e.get("partener") or ""
     if e.get("plati_de_legat"):
         # [lotul 11, F] suma și data în forma românească (`bani` / `data_ro`, DS cap.4), iar partenerul numit cu NUMELE lui — nu prin
         # facturile lui („partenerul Factură EX nr. 3 …”); fără nume, prin codul fiscal (cheia partenerului)
@@ -108,9 +107,7 @@ def _ce_lipseste(e):
         return ("leagă de factura pe care o stinge plata nelegată de %s (%s): partenerul %s are facturi în mai multe monede, deci nu se "
                 "poate afla în ce monedă e plata" % (", ".join("%s din %s" % (bani(p["lei"], "lei"), data_ro(p["data"]))
                                                                for p in e["plati_de_legat"]), e["cont"], cine))
-    return "completează %s pe contul %s%s" % (" și ".join({"sold_valuta": "soldul în valută", "moneda": "moneda",
-                                                          "clauza": "dacă soldul e în lei cu clauză valutară (Da / Nu)"}[c]
-                                                          for c in e["de_completat"]), e["cont"], (" (%s)" % nume) if nume else "")
+    return "completează " + _rv.de_completat_text(e)
 
 
 def _camp_lipsa(e):
@@ -150,12 +147,14 @@ def reevaluare_valuta_genereaza(tenant_id, corp, ctx):
             if lipsa:   # FORMĂ: un câmp lipsă (soldul în valută / moneda) sau o plată nelegată, pe care aplicația nu le ghicește (DS cap.17)
                 raise _erori.DateInvalide({"mesaj": "Înainte de a genera nota, %s." % "; ".join(_ce_lipseste(e) for e in lipsa),
                                            "erori_campuri": [{"camp": _camp_lipsa(e), "mesaj": _ce_lipseste(e)} for e in lipsa]})
-            fara_curs = [e for e in prop["elemente"] if e.get("curs_bnr") is None]
+            fara_curs = [e for e in prop["elemente"] if e.get("curs_bnr") is None or e.get("curs_provizoriu")]
             if fara_curs:
                 # normativ: OMFP 1802/2014 pct.325 alin.(1) cere cursul BNR din ultima zi bancară a lunii — fără el nota nu se scrie
-                # cu alt curs. Refuzul e o afirmație tipată (decizia 21.08: lipsa cursului într-o sursă NUMITĂ), cu temeiul ca dată
+                # cu alt curs, deci nici cu cel provizoriu (lotul 12, 630). Refuzul e o afirmație tipată (decizia 21.08: lipsa cursului
+                # într-o sursă NUMITĂ), cu temeiul ca dată
                 from core import afirmatii as _af
-                m = fara_curs[0].get("motiv_curs") or "Cursul BNR al lunii nu e disponibil — reîncearcă."
+                m = (fara_curs[0].get("motiv_curs") or fara_curs[0].get("curs_provizoriu")
+                     or "Cursul BNR al lunii nu e disponibil — reîncearcă.")
                 raise _erori.Conflict(dict(_af.afirmatie("absenta_observatie", "reevaluare valută", m,
                                                          surse_consultate="cursurile BNR, pentru ultima zi bancară a lunii"),
                                            mesaj=m, temei=_rv.TEMEI))

@@ -260,6 +260,9 @@ EXCEPTII = [
     ("core/d205.py", "'valideaz-o' if",
      "[lotul 10, 431] pronumele clitic acordat cu notele ENUMERATE înaintea lui („nota … e ciornă. … valideaz-o” / „validează-le”): niciun "
      "numeral afișat, deci nici „de” — aceeași clasă cu „notei” din `uc_coada`"),
+    ("core/coada_api.py", "'nota ' if",
+     "[lotul 12, 619] substantivul articulat urmat de notele ENUMERATE („care are încă în ciornă nota din 19.10.2099 (…)” / „notele din …, "
+     "din …”): niciun numeral afișat, deci nici „de” — aceeași clasă cu „notei” din `uc_coada` și „valideaz-o” din `d205`"),
     ("core/common.py", "%d %s%s", "[263] chiar `cate`: numărul, „de” (de la 20) și pluralul ales după număr"),
     ("core/pdf_util.py", "%d %s %d", "[263] data în litere („5 octombrie 2026”): ziua, numele lunii, anul — nu un număr urmat de substantivul lui"),
     ("core/istoric_declaratii_import_api.py", "'anul' if",

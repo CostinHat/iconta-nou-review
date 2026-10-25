@@ -79,7 +79,7 @@ def test_stornarea_intreaba_daca_marfa_se_intoarce(conn):
     with pytest.raises(ValueError) as e:
         _fa.storneaza(conn, fid)
     assert getattr(e.value, "cod", None) == _fa.COD_CERE_RETUR and str(e.value) == (
-        "Factura F1A8 a descărcat din stoc: Marfa B × 1 buc. Marfa se întoarce în stoc (retur) sau rămâne la client (numai corecția "
+        "Factura F1A nr. 8 a descărcat din stoc: Marfa B × 1 buc. Marfa se întoarce în stoc (retur) sau rămâne la client (numai corecția "
         "valorii)? Alege, apoi confirmă stornarea.")
     with conn.cursor() as cur:
         cur.execute("SELECT count(*) FROM facturi WHERE storno_din_id = %s", (fid,))

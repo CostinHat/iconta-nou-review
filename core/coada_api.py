@@ -155,7 +155,7 @@ def adauga_in_coada(conn, cabinet_id, tenant_id, tip, an, payload,
                 _schema = _schema if _cur.fetchone()[0] else None   # firma fără tabele (o schemă goală): nimic de amprentat
             if _schema:
                 de_la, pana_la = fereastra_perioadei(_cur, _schema, tip, an, luna, trim)
-                payload["_surse"] = {"de_la": de_la, "pana_la": pana_la, "amprenta": amprenta_surse(_cur, _schema, de_la, pana_la),
+                payload["_surse"] = {"de_la": de_la, "pana_la": pana_la, **amprente(_cur, _schema, tip, de_la, pana_la),
                                      "note": [], "mesaj": None}
     h = calcul_hash(payload)
     try:
@@ -305,27 +305,127 @@ def notele_documentului(cur, schema, nota_id):
     return [int(nota_id)] + [i for i in frati if i != int(nota_id)]
 
 
+#: [lotul 12, deficiența 619, comanda Costin 12.2 pct.10, verbatim] „Validarea unui document se face împreună cu notele lui (contare, ieșire
+#: din stoc, stornare, retur). Azi: stornarea/returul (−27,50) s-a validat înaintea documentului stornat, aflat în ciornă, deci 607 e
+#: negativ în evidența validată”. Stornarea corectează cu minus operațiunea inițială (OMFP 1802/2014 pct.69: „corectarea cu semnul minus a
+#: operațiunii inițiale (stornare în roșu)”), deci intră în evidența validată numai după ea. *INTERPRETARE CU TEMEI:* pct.69 nu spune
+#: ordinea validării; o stornare validată peste o operațiune inițială încă ciornă face evidența validată să arate corecția fără ce corectează
+#: (pe F1: returul 607 = 371 −27,50 validat, ieșirea F1A nr. 8 de +27,50 ciornă). Alternativa respinsă: stornarea aduce cu ea, validate
+#: tacit, notele documentului stornat — validatorul ar valida un document pe care nu l-a deschis. De reconfirmat dacă apare o normă care
+#: transează ordinea.
+COD_STORNAT_IN_CIORNA = "DOCUMENT_STORNAT_IN_CIORNA"
+MESAJ_STORNAT_IN_CIORNA = ("%s stornează %s, care are încă în ciornă %s. Stornarea intră în evidența validată numai după documentul "
+                           "stornat: validează întâi %s, apoi stornarea.")
+TEMEI_STORNAT_IN_CIORNA = "OMFP 1802/2014 pct.69"
+
+
+def documentul_stornat_in_ciorna(cur, schema, nota_ids):
+    """[619] Notele `nota_ids` (un document) stornează un document care are încă note în ciornă? -> {"stornare": eticheta documentului
+    de stornare, "stornat": eticheta documentului stornat, "ciorne": [id]} sau None. Două legături, aceleași în toată aplicația:
+      · factura / borderoul de stornare (`facturi.storno_din_id`) -> ciornele documentului stornat (cheia `_GRUP_DOC`, `factura-<id>`);
+      · returul / stornarea unei mișcări de stoc (`miscari_stoc.anuleaza_id`) -> nota mișcării stornate, încă ciornă — în afară de
+        stornarea la respingere (`stocuri_anulare.STORNARE_LA_RESPINGERE`, pe aceeași notă: aceea nu e o notă de corecție)."""
+    from core import eticheta_nota as _et
+    from core import stocuri_anulare as _sa
+    ids = [int(i) for i in nota_ids or []]
+    if not ids:
+        return None
+    # factura / borderoul de stornare al notelor: al contării lor (`factura_id`) sau al mișcării lor de stoc (returul) — ca `_GRUP_DOC`
+    cur.execute(("SELECT DISTINCT f.id, f.storno_din_id FROM {s}facturi f WHERE f.storno_din_id IS NOT NULL AND f.id IN ("
+                 "SELECT i.factura_id FROM {s}inregistrari i WHERE i.id = ANY(%s) AND i.sursa IN ('facturi', 'stocuri') UNION "
+                 "SELECT m.factura_id FROM {s}miscari_stoc m JOIN {s}inregistrari i ON i.id = m.inregistrare_id "
+                 "WHERE m.inregistrare_id = ANY(%s) AND i.sursa IN ('facturi', 'stocuri')) ORDER BY 1").format(s=_q(schema)), (ids, ids))
+    for fid, orig in [tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()]:
+        ciorne = [i for i in ciornele_documentului(cur, schema, "factura-%d" % int(orig)) if i not in ids]
+        if ciorne:
+            return {"stornare": _et.factura(cur, schema, fid), "stornat": _et.factura(cur, schema, orig), "ciorne": ciorne}
+    cur.execute(("SELECT DISTINCT o.inregistrare_id FROM {s}miscari_stoc r JOIN {s}miscari_stoc o ON o.id = r.anuleaza_id "
+                 "JOIN {s}inregistrari io ON io.id = o.inregistrare_id WHERE r.inregistrare_id = ANY(%s) AND io.status = 'ciorna' "
+                 "AND NOT (" + _sa.STORNARE_LA_RESPINGERE + ") AND NOT (o.inregistrare_id = ANY(%s)) ORDER BY 1").format(s=_q(schema)),
+                (ids, ids))
+    ciorne = [(list(x.values())[0] if isinstance(x, dict) else x[0]) for x in cur.fetchall()]
+    if ciorne:
+        return {"stornare": _et.nota(cur, schema, ids[0]), "stornat": _et.nota(cur, schema, ciorne[0]), "ciorne": ciorne}
+    return None
+
+
+def refuz_stornare_inaintea_documentului(cur, schema, nota_ids):
+    """[619] Refuzul validării (afirmația `jurnal_api._refuz` + cod) sau None — sursa unică a regulii, pentru toate drumurile validării
+    unui document (`valideaza_documentul`: Registrul jurnal, coada „De validat”, validarea în masă)."""
+    from core import eticheta_nota as _et
+    from core import jurnal_api as _jurnal
+    d = documentul_stornat_in_ciorna(cur, schema, nota_ids)
+    if not d:
+        return None
+    cur.execute("SELECT id, descriere FROM " + _q(schema) + "inregistrari WHERE id = ANY(%s)", (d["ciorne"],))
+    descr = {(x["id"] if isinstance(x, dict) else x[0]): (x["descriere"] if isinstance(x, dict) else x[1]) for x in cur.fetchall()}
+    note = ", ".join("%s (%s)" % (e, descr.get(i) or "fără descriere") for i, e in _et.note(cur, schema, d["ciorne"]))
+    mesaj = MESAJ_STORNAT_IN_CIORNA % (d["stornare"][:1].upper() + d["stornare"][1:], d["stornat"],
+                                       ("nota " if len(d["ciorne"]) == 1 else "notele ") + note, d["stornat"])
+    return {**_jurnal._refuz(mesaj, TEMEI_STORNAT_IN_CIORNA), "cod": COD_STORNAT_IN_CIORNA, "ciorne_stornate": d["ciorne"]}
+
+
 def valideaza_documentul(conn, schema, nota_id):
     """[lotul 12, clasa 80] Validarea unei note din Registrul jurnal validează DOCUMENTUL: aceeași regulă ca în coadă (`aproba`:
     „documentul se validează o dată, cu toate notele lui”). Pe drumul unic al validării (`jurnal_api.valideaza`), în tranzacția
-    apelantului: la primul refuz se întoarce refuzul (cu nota numită, dacă e alta decât cea cerută), iar apelantul anulează tot — ori
-    toate notele documentului intră în evidență, ori niciuna. Întoarce rezultatul notei cerute, cu `validate` = notele validate."""
+    apelantului: la primul refuz se întoarce refuzul (cu nota numită, dacă e alta decât cea cerută) — ori toate notele documentului intră
+    în evidență, ori niciuna. Întoarce rezultatul notei cerute, cu `validate` = notele validate.
+    [lotul 12, 619] Drumul tuturor validărilor unui document: Registrul jurnal (`uc_tenants.jurnal_valideaza`), coada „De validat”
+    (`aproba`, cu notele documentului regrupate ACUM, nu cele înghețate la intrarea în coadă) și validarea în masă (`uc_coada`, prin
+    `aproba`). (a) Documentul de stornare (factura de stornare, returul în stoc) nu se validează înaintea documentului stornat aflat încă
+    în ciornă (`refuz_stornare_inaintea_documentului`); (b) „ori toate, ori niciuna” e al funcției, nu al apelantului: un punct de
+    salvare în jurul validărilor — coada se întoarce cu refuzul fără excepție, deci tranzacția ei se comitea cu notele validate până
+    la refuz."""
     from core import eticheta_nota as _et
     from core import jurnal_api as _jurnal
     with conn.cursor() as cur:
         ids = notele_documentului(cur, schema, nota_id)
+        refuz = refuz_stornare_inaintea_documentului(cur, schema, ids)
+        if refuz:
+            return refuz
+        cur.execute("SAVEPOINT valideaza_documentul")
     rez = None
-    for nid in ids:
-        r = _jurnal.valideaza(conn, schema, nid)
-        if nid != int(nota_id) and r and r.get("eroare"):
-            with conn.cursor() as cur:
-                et = _et.nota(cur, schema, nid)
-            r = {**r, "eroare": "Nota %s a aceluiași document nu se poate valida, iar notele unui document se validează împreună: %s"
-                 % (et, r["eroare"])}
-        if not r or r.get("eroare"):
-            return r
-        rez = rez or r
+    try:
+        for nid in ids:
+            r = _jurnal.valideaza(conn, schema, nid)
+            if nid != int(nota_id) and r and r.get("eroare"):
+                with conn.cursor() as cur:
+                    et = _et.nota(cur, schema, nid)
+                r = {**r, "eroare": "Nota %s a aceluiași document nu se poate valida, iar notele unui document se validează împreună: %s"
+                     % (et, r["eroare"])}
+            if not r or r.get("eroare"):
+                with conn.cursor() as cur:
+                    cur.execute("ROLLBACK TO SAVEPOINT valideaza_documentul")
+                return r
+            rez = rez or r
+    except Exception:
+        with conn.cursor() as cur:
+            cur.execute("ROLLBACK TO SAVEPOINT valideaza_documentul")
+        raise
+    with conn.cursor() as cur:
+        cur.execute("RELEASE SAVEPOINT valideaza_documentul")
     return {**rez, "validate": ids}
+
+
+def ordinea_validarii(conn, coada_ids):
+    """[lotul 12, 619] Elementele cozii alese pentru validarea în masă, în ordinea în care se pot valida: documentele de stornare (factura /
+    borderoul de stornare, `facturi.storno_din_id`, cu returul lor) după celelalte — stornarea intră în evidență numai după documentul
+    stornat (`valideaza_documentul`), deci aleasă înaintea lui ar fi refuzată. În rest, ordinea alegerii. Numai citire."""
+    from core import db
+    ids = [int(i) for i in coada_ids or []]
+    stornari = set()
+    with conn.cursor() as cur:
+        cur.execute("SELECT c.id, c.payload->>'grup', t.schema_name FROM public.declaratii_coada c JOIN public.tenants t ON t.id = c.tenant_id "
+                    "WHERE c.id = ANY(%s) AND c.fel = 'nota' AND c.payload->>'grup' LIKE 'factura-%%'", (ids,))
+        for cid, grup, sch in [tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()]:
+            fid = grup.split("-", 1)[1]
+            if not (sch and db.schema_valida(sch) and fid.isdigit()):
+                continue
+            cur.execute('SELECT storno_din_id IS NOT NULL FROM "%s".facturi WHERE id = %%s' % sch, (int(fid),))
+            r = cur.fetchone()
+            if r and (list(r.values())[0] if isinstance(r, dict) else r[0]):
+                stornari.add(cid)
+    return [i for i in ids if i not in stornari] + [i for i in ids if i in stornari]
 
 
 def amprente_note(cur, nota_ids, schema=None):
@@ -677,7 +777,7 @@ def lista_coada(conn, cabinet_id, stare=None):
             if d["fel"] != "nota":
                 # [297 + 298] declarația activă: depășită dacă documentele perioadei s-au schimbat după generare; sursele nevalidate numite
                 activa = d["stare"] in STARI_ACTIVE and _schema
-                d["depasita"] = depasire(cur, _schema, {"_surse": _surse}) if activa else None
+                d["depasita"] = depasire(cur, _schema, {"_surse": _surse}, d["tip"]) if activa else None
                 # [329, 18.10.2026] documentele nevalidate ale perioadei ACUM, nu cele înghețate la intrare: după validarea notei,
                 # avertismentul ei dispare (declarația rămâne „depășită”, cu motivul ei)
                 if activa and (_surse or {}).get("de_la"):
@@ -972,13 +1072,23 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None, c
             # trecut mai jos și nu-l mai atinge.
             if not schema_nota:
                 return {"ok": False, "cod": "INEXISTENT", "mesaj": "firma notei nu e accesibilă"}
-            from core import jurnal_api as _jurnal
             membri = membri_grup(cur, coada_id)   # [lotul 07.10 pct.9] documentul se validează o dată, cu toate notele lui
+            # [lotul 12, 619] „la F1A nr. 8 și F1A nr. 14 validarea contării lasă ieșirea de stoc în ciornă”: grupul din coadă e cel
+            # înghețat la intrarea în ea, iar ieșirea scrisă de altcineva / altă dată nu era în el. Notele documentului se regrupează ACUM
+            # (`valideaza_documentul`, același drum ca Registrul jurnal), cu regula stornării (619) și cu „ori toate, ori niciuna”.
+            cur.execute("SAVEPOINT aproba_documentul")
+            validate = set()
             for _mid, _pl in membri:
-                rv = _jurnal.valideaza(conn, schema_nota, int((_pl or {}).get("inregistrare_id") or 0))
+                nid = int((_pl or {}).get("inregistrare_id") or 0)
+                if nid in validate:
+                    continue
+                rv = valideaza_documentul(conn, schema_nota, nid)
                 if not rv or rv.get("eroare"):
-                    return {"ok": False, "cod": "STARE_GRESITA",
+                    cur.execute("ROLLBACK TO SAVEPOINT aproba_documentul")
+                    return {"ok": False, "cod": "STARE_GRESITA", "motiv_cod": (rv or {}).get("cod"),
                             "mesaj": "nota nu se poate valida: %s" % ((rv or {}).get("eroare") or "nu mai există în jurnal")}
+                validate.update(int(i) for i in rv.get("validate") or [nid])
+            cur.execute("RELEASE SAVEPOINT aproba_documentul")
             cur.execute(
                 "UPDATE public.declaratii_coada SET stare='aprobata', "
                 "aprobat_de=%s, aprobat_de_id=%s, aprobat_la=now() WHERE id = ANY(%s)",
@@ -1322,6 +1432,57 @@ def amprenta_surse(cur, schema, de_la, pana_la):
     return list(r.values())[0] if isinstance(r, dict) else r[0]
 
 
+#: [lotul 12, C194] declarațiile făcute din datele salariaților (fișa, salariul, concediile, pontajul), nu din note și facturi: la ele
+#: amprenta perioadei are și componenta `amprenta_salarii`. Până la 25.10.2026 o D112 din coadă rămânea „proaspătă” după corectarea fișei
+#: salariatului (ex. „Scutit” / „Motiv”, C133), fiindcă `amprenta_surse` cuprinde numai notele și facturile.
+DECLARATII_DIN_SALARII = ("d112",)
+
+#: [C194] tabelele firmei pe care D112 le citește la generare (`d112.pull`), cu fereastra lunii pe fiecare; `%(de_la)s` / `%(pana_la)s` /
+#: `%(an)s` / `%(luna)s` sunt parametrii lunii. `firma_profil` lipsește cu intenție: e profilul firmei, nu al salariaților, și se schimbă
+#: din motive care nu ating D112 (adresa, setările). Gard: `core/test_lot12_int3_c194_d112_depasita.py` citește din statisticile
+#: tranzacției (`pg_stat_xact_user_tables`) ce tabele citește `d112.pull` și pică dacă apare unul care nu e aici.
+SURSE_SALARII = (
+    ("salariati", "(t.data_incetare IS NULL OR t.data_incetare >= %(de_la)s) AND (t.data_angajare IS NULL OR t.data_angajare < %(pana_la)s)"),
+    ("salariu_istoric", "TRUE"),
+    ("suspendari_contract", "t.data_inceput < %(pana_la)s AND t.data_sfarsit >= %(de_la)s"),
+    ("concedii_medicale", "t.an = %(an)s AND t.luna = %(luna)s"),
+    ("pontaj", "t.zi >= %(de_la)s AND t.zi < %(pana_la)s"),
+    ("perioada_confirmata", "t.an = %(an)s AND t.luna = %(luna)s"),
+    ("elemente_salariale", "t.an = %(an)s AND t.luna = %(luna)s"),
+    ("beneficii_lunare", "t.an = %(an)s AND t.luna <= %(luna)s"),   # plafonul anual al tichetelor de vacanță se cumulează pe an
+)
+
+
+def amprenta_salarii(cur, schema, de_la, pana_la):
+    """[C194] md5 al rândurilor întregi din `SURSE_SALARII` pentru luna [de_la, pana_la): orice corectură a fișei salariatului, a salariului,
+    a unui concediu medical, a pontajului sau a elementelor lunii o schimbă. Un tabel care lipsește din schemă intră ca „lipsă” (nu crapă
+    și nu dispare tăcut din amprentă)."""
+    from datetime import date as _d
+    q = _q(schema)
+    d0 = de_la if isinstance(de_la, _d) else _d.fromisoformat(str(de_la)[:10])
+    # coloanele au NUME: pe cursorul-dicționar al listei cozii opt expresii fără alias se numesc toate „?column?”, cheia se suprascrie și
+    # amprenta ar cuprinde un singur tabel (D112 „depășită” imediat după intrarea în coadă — găsit de e2e-ul C194, 25.10.2026)
+    cur.execute("SELECT " + ", ".join("to_regclass(%%s) IS NOT NULL AS e%d" % i for i in range(len(SURSE_SALARII))),
+                [q + t for t, _ in SURSE_SALARII])
+    r = cur.fetchone()
+    exista = list(r.values()) if isinstance(r, dict) else list(r)
+    parti = [("COALESCE((SELECT md5(string_agg(t::text, ';' ORDER BY t::text)) FROM " + q + tab + " t WHERE " + cond + "), '')")
+             if e else "'%s lipsă'" % tab for (tab, cond), e in zip(SURSE_SALARII, exista)]
+    cur.execute("SELECT md5(" + " || '#' || ".join(parti) + ")",
+                {"de_la": str(de_la)[:10], "pana_la": str(pana_la)[:10], "an": d0.year, "luna": d0.month})
+    r = cur.fetchone()
+    return list(r.values())[0] if isinstance(r, dict) else r[0]
+
+
+def amprente(cur, schema, tip, de_la, pana_la):
+    """{amprenta[, amprenta_salarii]} ale declarației `tip` pe [de_la, pana_la) — ce păstrează `_surse` la intrarea în coadă (o singură
+    definiție, pentru `uc_coada.surse_declaratiei` și pentru drumurile care intră direct în coadă)."""
+    a = {"amprenta": amprenta_surse(cur, schema, de_la, pana_la)}
+    if tip in DECLARATII_DIN_SALARII:
+        a["amprenta_salarii"] = amprenta_salarii(cur, schema, de_la, pana_la)
+    return a
+
+
 def note_nevalidate(cur, schema, de_la, pana_la):
     """[{nota_id, data, eticheta, suma}] — notele NEvalidate din [de_la, pana_la), numite ca în Registrul jurnal (`eticheta_nota`)."""
     q = _q(schema)
@@ -1483,18 +1644,29 @@ def inlocuieste(cur, coada_id, cabinet_id, uid, motiv):
     return cur.rowcount == 1
 
 
-def depasire(cur, schema, payload):
-    """None dacă datele-sursă ale declarației sunt cele de la generare; altfel {mesaj, note_validate} — DEPĂȘITĂ. Fail-closed: o
-    declarație intrată în coadă fără amprentă (înainte de 17.10.2026) nu se poate confrunta, deci e depășită."""
+#: [C194] motivul „depășită” când s-au schimbat datele salariaților (`amprenta_salarii`), nu documentele perioadei
+MOTIV_SALARII_SCHIMBATE = ("după generare s-au schimbat datele salariaților lunii (fișa unui salariat, salariul, un concediu medical, o "
+                           "suspendare, pontajul, elementele variabile sau tichetele)")
+
+
+def depasire(cur, schema, payload, tip):
+    """None dacă datele-sursă ale declarației `tip` sunt cele de la generare; altfel {mesaj, note_validate} — DEPĂȘITĂ. Fail-closed: o
+    declarație intrată în coadă fără amprentă (înainte de 17.10.2026) nu se poate confrunta, deci e depășită; la fel [C194] o declarație
+    din `DECLARATII_DIN_SALARII` intrată fără `amprenta_salarii` (înainte de 25.10.2026)."""
     from core import afirmatii as _af
     s = (payload or {}).get("_surse")
-    if not s:
+    if not s or (tip in DECLARATII_DIN_SALARII and not s.get("amprenta_salarii")):
         _m = ("Declarația a intrat în coadă înainte ca aplicația să-i păstreze datele-sursă, deci nu se poate ști dacă cifrele ei mai sunt "
               "cele din evidență. Generează-o din nou.")
         return dict(_af.afirmatie("verificare_rupta", "declaratie_depasita", _m, eroare="declarația nu păstrează documentele din care s-a generat",
                                   mesaj=_m, note_validate=[]))
     if amprenta_surse(cur, schema, s["de_la"], s["pana_la"]) == s["amprenta"]:
-        return None
+        if tip not in DECLARATII_DIN_SALARII or amprenta_salarii(cur, schema, s["de_la"], s["pana_la"]) == s["amprenta_salarii"]:
+            return None
+        _m = "Declarația e depășită: %s. Cifrele ei nu mai sunt cele din evidență; generează-o din nou." % MOTIV_SALARII_SCHIMBATE
+        return dict(_af.afirmatie("contradictie", "declaratie_depasita", _m, mesaj=_m, note_validate=[],
+                                  sursele=["datele salariaților lunii %s – %s la generare (amprenta %s)" % (
+                                      s["de_la"], s["pana_la"], s["amprenta_salarii"]), "datele salariaților lunii acum, în evidență"]))
     numite = [n for n in (s.get("note") or [])]
     stari = stari_note_numite(cur, schema, [n["nota_id"] for n in numite])
     validate = [n for n in numite if stari.get(n["nota_id"]) == "validata"]
@@ -1509,13 +1681,13 @@ def depasire(cur, schema, payload):
 def depasire_element(cur, coada_id):
     """[323, 18.10.2026] `depasire` pentru un element din coadă (declarația activă), citit după id; None dacă nu e activă sau nu e
     depășită. Fereastra conținutului o arată (cuvântul „depășită” lipsea din ea)."""
-    cur.execute("SELECT t.schema_name, c.payload->'_surse', c.stare FROM public.declaratii_coada c JOIN public.tenants t ON t.id = c.tenant_id "
+    cur.execute("SELECT t.schema_name, c.payload->'_surse', c.stare, c.tip FROM public.declaratii_coada c JOIN public.tenants t ON t.id = c.tenant_id "
                 "WHERE c.id = %s AND c.fel IS DISTINCT FROM 'nota'", (coada_id,))
     r = cur.fetchone()
     r = tuple(r.values()) if isinstance(r, dict) else r
     if not r or r[2] not in STARI_ACTIVE:
         return None
-    return depasire(cur, r[0], {"_surse": r[1]})
+    return depasire(cur, r[0], {"_surse": r[1]}, r[3])
 
 
 def refuz_depasita(cur, coada_id):
@@ -1524,5 +1696,5 @@ def refuz_depasita(cur, coada_id):
     if not el or el[5] == "nota" or el[3] not in STARI_ACTIVE:
         return None
     schema = schema_firmei(cur, el[1])
-    dep = depasire(cur, schema, el[4]) if schema else None
+    dep = depasire(cur, schema, el[4], el[2]) if schema else None
     return {"ok": False, "cod": "DEPASITA", "mesaj": dep["mesaj"], "coada_id": coada_id} if dep else None

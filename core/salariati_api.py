@@ -99,23 +99,96 @@ def _verifica_cor(conn, cod):
 #: multe contracte cu baza cumulată cel puțin salariul minim (lit.e). Etichetele le arată ecranul (`firme.js`, `MOTIVE_EXCEPTARE`).
 MOTIVE_EXCEPTARE = (1, 2, 3, 4, 5)
 
+MESAJ_MOTIV_LIPSA = "Alege motivul scutirii de contribuția minimă — D112 îl declară (CF art.146 alin.(5^7))."
+MESAJ_MOTIV_FARA_SCUTIRE = "Motivul scutirii se alege numai când salariatul e scutit de contribuția minimă."
+
+
+def _motiv_valid(me):
+    try:
+        return me is not None and int(me) in MOTIVE_EXCEPTARE and str(me).strip() == str(int(me))
+    except (TypeError, ValueError):
+        return False
+
 
 def _erori_motiv_exceptare(date, la_creare):
     """[C133] Scutit = Da cere motivul (altfel D112 nu-l poate declara exceptat: `asigExc` = 1 numai cu `motivExc` 1–5); motivul fără
     scutire nu are sens. La editare se verifică numai ce s-a trimis."""
     sc, me = date.get("scutit_contrib_minim"), date.get("motiv_exceptare")
     if me is not None:
-        try:
-            ok = int(me) in MOTIVE_EXCEPTARE and str(me).strip() == str(int(me))
-        except (TypeError, ValueError):
-            ok = False
-        if not ok:
+        if not _motiv_valid(me):
             return [("motiv_exceptare", "Motivul scutirii e unul din cele cinci din listă (OPANAF 605/2026, D112 pct.12).")]
         if sc is False:
-            return [("motiv_exceptare", "Motivul scutirii se alege numai când salariatul e scutit de contribuția minimă.")]
+            return [("motiv_exceptare", MESAJ_MOTIV_FARA_SCUTIRE)]
     elif sc is True and ("motiv_exceptare" in date or la_creare):
-        return [("motiv_exceptare", "Alege motivul scutirii de contribuția minimă — D112 îl declară (CF art.146 alin.(5^7)).")]
+        return [("motiv_exceptare", MESAJ_MOTIV_LIPSA)]
     return []
+
+
+#: [lotul 12, C133 — comanda Costin 12.3 pct.8, verbatim în DECIZII: „«Scutit» și «Motiv» se pot corecta, cu jurnal (cine, când, vechi →
+#: nou); motivul e obligatoriu când e bifat «Scutit».”] Câmpurile fișei a căror schimbare se consemnează în `salariati_jurnal`
+#: (`core/migrare_salariati_jurnal.py`), pe ORICE drum care schimbă o fișă existentă: „Corectează datele” / „De verificat” / API
+#: (`actualizeaza_salariat`) și reimportul (`salariati_import_api.importa`). Crearea nu e o corectură: nu se consemnează.
+CAMPURI_JURNAL_SCUTIRE = ("scutit_contrib_minim", "motiv_exceptare")
+
+
+def _text_jurnal(v):
+    """Valoarea în jurnal: text, „true”/„false” pentru Da/Nu, None pentru gol (ca `firma_profil_jurnal`)."""
+    return None if v is None else (str(v).lower() if isinstance(v, bool) else str(v))
+
+
+def jurnalizeaza_scutirea(cur, salariat_id, vechi, nou):
+    """[C133] Un rând în `salariati_jurnal` pentru fiecare câmp al scutirii (`CAMPURI_JURNAL_SCUTIRE`) prezent în `nou` care chiar s-a
+    schimbat față de `vechi` (fișa de dinainte). Cine = utilizatorul cererii (`autor_cerere`, pus de middleware pe orice cerere); fără el,
+    corectura se REFUZĂ înainte de scriere — o schimbare fără autor n-ar fi consemnată (ca la cota produsului, 472). Întoarce câte rânduri
+    a scris."""
+    schimbate = [(c, _text_jurnal((vechi or {}).get(c)), _text_jurnal(nou[c])) for c in CAMPURI_JURNAL_SCUTIRE
+                 if c in nou and _text_jurnal((vechi or {}).get(c)) != _text_jurnal(nou[c])]
+    if not schimbate:
+        return 0
+    from core import autor_cerere as _autor
+    uid = _autor.uid()
+    if uid is None:
+        raise ValueError("Corectura scutirii de contribuția minimă se consemnează cu utilizatorul care o face — lipsește (cerere fără autor).")
+    for camp, v, n in schimbate:
+        cur.execute("INSERT INTO salariati_jurnal (salariat_id, camp, valoare_veche, valoare_noua, user_id) VALUES (%s, %s, %s, %s, %s)",
+                    (salariat_id, camp, v, n, uid))
+    return len(schimbate)
+
+
+def jurnal_scutire(cur, salariat_id):
+    """[C133] Toate corecturile scutirii salariatului (ecranul arată ultimele și numără restul), cea mai nouă prima: {camp, vechi, nou, cine, la}. „Cine” = numele persoanei (prenume
+    nume), emailul numai dacă numele lipsește — ca jurnalul Date firmă (`repo_firma_profil.jurnal_firma`). Fără tabel (migrarea
+    nerulată) -> []."""
+    cur.execute("SELECT to_regclass('salariati_jurnal') IS NOT NULL")
+    r = cur.fetchone()
+    if not (list(r.values())[0] if isinstance(r, dict) else r[0]):
+        return []
+    cur.execute("SELECT j.camp, j.valoare_veche, j.valoare_noua, "
+                "COALESCE(NULLIF(TRIM(CONCAT_WS(' ', u.prenume, u.nume)), ''), u.email) AS cine, j.la FROM salariati_jurnal j "
+                "LEFT JOIN public.users u ON u.id = j.user_id WHERE j.salariat_id = %s ORDER BY j.la DESC, j.id DESC", (salariat_id,))
+    out = []
+    for x in cur.fetchall():
+        x = tuple(x.values()) if isinstance(x, dict) else x
+        out.append({"camp": x[0], "vechi": x[1], "nou": x[2], "cine": x[3], "la": x[4].isoformat() if x[4] else None})
+    return out
+
+
+def efect_corectura_d112(cur):
+    """[C133] Ce face corectura scutirii cu D112, spus contabilului la salvare. D112 citește scutirea de pe fișă la generare
+    (`d112.pull`), deci corectura intră în prima D112 generată după ea — cea a lunii de după ultima D112 depusă. Nimic deja depus sau emis
+    nu se rescrie: D112 depusă rămâne cea depusă (o lună depusă se corectează numai prin rectificativă, generată de contabil — C77), iar
+    fluturașul emis e exemplarul înghețat (`stat_plata_api.exemplar_curent`)."""
+    cur.execute("SELECT max(make_date(d.an, d.luna, 1)) FROM public.declaratii_depuse d JOIN public.tenants t ON t.id = d.tenant_id "
+                "WHERE t.schema_name = current_schema() AND d.tip = 'd112'")
+    r = cur.fetchone()
+    ult = (list(r.values())[0] if isinstance(r, dict) else r[0]) if r else None
+    emise = "Fluturașii deja emiși rămân cum au fost tipăriți."
+    if ult is None:
+        return "Corectura scutirii intră în statul de plată și în D112 calculate de acum înainte. " + emise
+    urm_an, urm_luna = (ult.year + 1, 1) if ult.month == 12 else (ult.year, ult.month + 1)
+    return ("Corectura scutirii intră în D112 de la luna %02d/%d (ultima D112 depusă e pe luna %02d/%d). D112 deja depuse nu se rescriu: "
+            "o lună depusă se corectează numai printr-o rectificativă, pe care o generezi tu din Declarații. %s"
+            % (urm_luna, urm_an, ult.month, ult.year, emise))
 
 
 def valideaza_salariat(date, la_creare=False):
@@ -342,6 +415,8 @@ def detalii_salariat(conn, salariat_id):
             # [salariul în timp] istoricul vizibil în ecranul de schimbare (ce date sunt deja ocupate)
             r["istoric_salariu"] = [{"valabil_din": v.isoformat(), "salariu_brut": float(s)}
                                     for v, s in _si.intrari(cur, None, salariat_id)]
+            # [C133] corecturile scutirii (cine, când, vechi -> nou), vizibile în „Corectează datele”
+            r["jurnal_scutire"] = jurnal_scutire(cur, salariat_id)
     return _db_spre_api(r) if r else None
 
 
@@ -486,23 +561,36 @@ def actualizeaza_salariat(conn, salariat_id, _golite=(), **date):
     # [C133] scutirea pusă pe „Nu” golește motivul ei; pusă pe „Da”, motivul se cere (trimis acum sau deja în fișă)
     if campuri_api.get("scutit_contrib_minim") is False and "motiv_exceptare" not in campuri_api:
         campuri_api["motiv_exceptare"] = None
-    if campuri_api.get("scutit_contrib_minim") is True and campuri_api.get("motiv_exceptare") is None:
+    scutire_veche = None
+    if any(c in campuri_api for c in CAMPURI_JURNAL_SCUTIRE):
+        # [C133, comanda Costin 12.3 pct.8] fișa de dinainte, cu rândul BLOCAT (două salvări simultane nu scriu același „vechi” în jurnal)
         with conn.cursor() as cur:
-            cur.execute("SELECT motiv_exceptare FROM salariati WHERE id = %s", (salariat_id,))
+            cur.execute("SELECT scutit_contrib_minim, motiv_exceptare FROM salariati WHERE id = %s FOR UPDATE", (salariat_id,))
             _r = cur.fetchone()
-        if not (_r and _r[0] in MOTIVE_EXCEPTARE):
-            campuri_api.pop("motiv_exceptare", None)
-            raise _eroare_campuri(_erori_motiv_exceptare({"scutit_contrib_minim": True}, True))
+        scutire_veche = dict(zip(CAMPURI_JURNAL_SCUTIRE, (tuple(_r.values()) if isinstance(_r, dict) else _r) if _r else (None, None)))
     erori = valideaza_salariat({**campuri_api, "salariu_brut": _sb,
                                 "data_angajare": date.get("data_angajare"),
                                 "data_incetare": date.get("data_incetare"),
                                 "nume": campuri_api.get("nume", "x")})
     erori = [(c, m) for (c, m) in erori if c != "nume"]
+    if scutire_veche is not None and "motiv_exceptare" not in {c for c, _m in erori}:
+        # [C133] starea REZULTATĂ (fișa + ce s-a trimis), nu numai ce s-a trimis: „Scutit” = Da rămas fără motiv (motivul golit, sau
+        # scutirea pusă pe Da peste o fișă fără motiv) și motivul ales pe o fișă nescutită se refuză pe câmpul motivului
+        sc = campuri_api.get("scutit_contrib_minim", scutire_veche["scutit_contrib_minim"])
+        me = campuri_api.get("motiv_exceptare", scutire_veche["motiv_exceptare"])
+        if sc is True and not _motiv_valid(me):
+            erori.append(("motiv_exceptare", MESAJ_MOTIV_LIPSA))
+        elif not sc and me is not None:
+            erori.append(("motiv_exceptare", MESAJ_MOTIV_FARA_SCUTIRE))
     # [lotul 11, 454 — aceeași clasă la „Corectează datele”] COR-ul și CNP-ul dublat în același refuz cu restul
     _erori_din_baza(conn, campuri_api, erori, verifica_cor="cor" in campuri_api, salariat_id=salariat_id)
     if erori:
         raise _eroare_campuri(erori)
+    consemnate = 0
     with conn.cursor() as cur:
+        if scutire_veche is not None:
+            # [C133] jurnalul (cine, când, vechi -> nou) ÎNAINTEA scrierii: fără autorul cererii corectura se refuză, nu se scrie neconsemnată
+            consemnate = jurnalizeaza_scutirea(cur, salariat_id, scutire_veche, campuri_api)
         if campuri_api:
             campuri = _api_spre_db(campuri_api)
             seturi = ", ".join("%s = %%s" % k for k in campuri)
@@ -520,6 +608,9 @@ def actualizeaza_salariat(conn, salariat_id, _golite=(), **date):
                             "WHERE x <> ALL(%s::text[])) WHERE id = %s", (_confirmate, salariat_id))
         if _sb is not None:
             _si.seteaza(cur, salariat_id, _sb, date.get("valabil_din") or _dm.today().isoformat())
+        if consemnate:
+            # [C133] ce face corectura cu D112: intră de la luna de după ultima D112 depusă; ce e depus sau emis nu se rescrie
+            return {"ok": True, "scutire_corectata": True, "efect_d112": efect_corectura_d112(cur)}
     return {"ok": True}
 
 
@@ -751,6 +842,25 @@ def salveaza_concediu(conn, salariat_id, date):
                                      "certificatul de continuare) - fără el episodul nu se leagă.")
     # [lotul 11, deficiența 440] toate refuzurile de formă ale certificatului, deodată, fiecare lângă câmpul ei din Concediu medical
     _er.refuza()
+    # [lotul 12, C102.1] Zilele lucrătoare CM peste zilele lucrătoare ale intervalului certificatului (L–V, fără sărbătorile legale:
+    # `scadente.zile_lucratoare_interval`, același calendar ca propunerea din ecran) = de regulă o greșeală de introducere („10 zile” pe un
+    # interval cu 5), care ar merge mai departe în indemnizație și în D112. Nu se refuză (programul de lucru al salariatului poate avea
+    # zile lucrătoare în weekend — atunci cifra e corectă), dar nici nu se salvează tăcut: răspunsul cere confirmarea, iar „Salvează cu N
+    # zile” retrimite certificatul cu `confirma_zile_peste_interval`. Același tipar ca nota neschimbată (`cod` + `mesaj`, ecranul întreabă).
+    zile_interval = None
+    if "data_inceput" in _dati and "data_sfarsit" in _dati:
+        from core import scadente as _scad
+        try:
+            zile_interval = _scad.zile_lucratoare_interval(_dati["data_inceput"], _dati["data_sfarsit"])
+        except ValueError:   # an în afara calendarului de sărbători (`scadente.sarbatori_legale`): intervalul nu se poate număra
+            zile_interval = None
+    if zile_interval is not None and zile_cm > zile_interval and not date.get("confirma_zile_peste_interval"):
+        return {"ok": False, "cod": "CONFIRMA_ZILE_PESTE_INTERVAL", "zile_cm": zile_cm, "zile_interval": zile_interval,
+                "mesaj": "Ai scris %s de concediu medical, dar între %s și %s sunt %s (fără weekend și sărbători legale). Verifică "
+                         "cifra de pe certificat. Salvezi certificatul cu %s?"
+                         % (_cate(zile_cm, "zi lucrătoare", "zile lucrătoare"), _data_ro(_dati["data_inceput"]),
+                            _data_ro(_dati["data_sfarsit"]), _cate(zile_interval, "zi lucrătoare", "zile lucrătoare"),
+                            _cate(zile_cm, "zi", "zile"))}
     if este_continuare:
         with conn.cursor() as cur:
             cur.execute("SELECT data_inceput FROM concedii_medicale WHERE salariat_id=%s AND serie=%s "

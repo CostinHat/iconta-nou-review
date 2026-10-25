@@ -1,0 +1,56 @@
+[
+ {
+  "nr": "252",
+  "firma": "tenant_9055",
+  "descriere": "F6 (aplică sistemul TVA la încasare de la 01.10.2026): Import date -> Solduri parteneri -> situația pe facturi cu coloana opțională «TVA la încasare» (F6-A1 «da», F6-A2 «nu», celelalte goale; generatorul testului) -> previzualizarea: coloana «TVA la încasare» pe rândul Alfa Distribuție SRL «da: F6-A1; nu: F6-A2», pe Beta «după Date firmă»; F6-A1 e din 05.09.2026, înaintea intrării în sistem, deci caseta spune că «da» contrazice Date firmă și salvarea nu e permisă. Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot12_migr3:fisier_f6_tvai",
+    "nume": "situatie_f6_tva_la_incasare.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "TVA la încasare",
+    "zona": ".mig-prev thead"
+   },
+   {
+    "contine": "F6-A1, F6-A2 da: F6-A1; nu: F6-A2",
+    "zona": ".mig-prev tbody tr[data-rand=\"2\"]"
+   },
+   {
+    "contine": "F6-B1 după Date firmă",
+    "zona": ".mig-prev tbody tr[data-rand=\"4\"]"
+   },
+   {
+    "contine": "Coloana opțională „TVA la încasare” (da / nu)"
+   },
+   {
+    "contine": "Alfa Distribuție SRL, factura F6-A1 din 05.09.2026: «TVA la încasare: da», dar în Date firmă firma nu aplica sistemul TVA la încasare la această dată",
+    "zona": "#mig-refuz-tvai"
+   }
+  ],
+  "captura": "252_f6_tva_la_incasare_previzualizare.png"
+ }
+]

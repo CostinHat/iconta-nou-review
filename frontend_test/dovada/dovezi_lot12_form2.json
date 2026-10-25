@@ -1,0 +1,187 @@
+[
+  {
+    "nr": "446.1",
+    "firma": "tenant_9055",
+    "latime": 1280,
+    "inaltime": 720,
+    "descriere": "F6, la 1280×720 (balanța de deschidere la 30.09.2026, scrisă înainte de reparație): Import date -> Solduri inițiale -> balanța SAGA (fișierul lui 439, forma «total rulaje») -> avertismentul înlocuirii o dată -> «Înlocuiește balanța» -> întrebarea (a firmei din fișier, 599, sau a înlocuirii) stă într-o casetă NEUTRĂ (.caseta-intrebare), cu butoanele pe rândul ei, nu în roșul refuzului; tabelul rămâne citibil deasupra. Nu se apasă confirmarea: nimic nu se salvează",
+    "pasi": [
+      {
+        "click": "#fa-import"
+      },
+      {
+        "asteapta": ".mig-frand"
+      },
+      {
+        "click": ".mig-frand",
+        "text": "Solduri ini"
+      },
+      {
+        "asteapta": "#mig-file",
+        "stare": "attached"
+      },
+      {
+        "incarca": "#mig-file",
+        "generator": "core.test_lot11_m_balanta_saga:fisier",
+        "argumente": [
+          "total_rulaje"
+        ],
+        "nume": "balanta_saga_total_rulaje.csv"
+      },
+      {
+        "asteapta": "#mig-salveaza-sold"
+      },
+      {
+        "completeaza": "#mig-data-bal",
+        "valoare": "2026-09-30"
+      },
+      {
+        "alege": "#mig-metoda-stoc",
+        "valoare": "cantitativ_valoric"
+      },
+      {
+        "click": "#mig-salveaza-sold"
+      },
+      {
+        "asteapta": "#ca-ok"
+      },
+      {
+        "deruleaza": ".mig-prev tbody tr:last-child"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#caseta-atentie-activa > .caseta-intrebare"
+      },
+      {
+        "contine_oricare": [
+          "Înlocuiești balanța de deschidere a firmei cu cea din fișier?",
+          "Confirmi că sunt ale acestei firme?"
+        ]
+      },
+      {
+        "exista": ".bara-fixa #ca-ok"
+      }
+    ],
+    "captura": "446_1_f6_vechi_intrebarea_inlocuirii_1280x720.png"
+  },
+  {
+    "nr": "626",
+    "firma": "tenant_9050",
+    "descriere": "F2 (TVA la încasare de la 01.10.2026, perioada scrisă înainte de reparație): Date firmă -> «Aplică de la»: 01.11.2026, apoi golit -> la ieșirea din câmp revine 01.10.2026 -> «Salvează»: salvat, fără «Scrie data de la care firma aplică sistemul TVA la încasare» și fără «NU s-a salvat»; perioada rămâne cea de la 01.10.2026 (CF art.282 alin.(3^1))",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#vf-tva_incasare_de_la"
+      },
+      {
+        "asteapta": ".dec-avert, .dec-ok"
+      },
+      {
+        "deruleaza": "#vf-tva_incasare_de_la"
+      },
+      {
+        "completeaza": "#vf-tva_incasare_de_la",
+        "valoare": "2026-11-01"
+      },
+      {
+        "completeaza": "#vf-tva_incasare_de_la",
+        "valoare": ""
+      },
+      {
+        "click": "#df-telefon"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "captura": "626_f2_vechi_aplica_de_la_golit_revine.png"
+      },
+      {
+        "click": "#df-salveaza"
+      },
+      {
+        "asteapta_text": "alvat"
+      },
+      {
+        "asteapta": "#df-salveaza:not([disabled])"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#vf-tva_incasare_de_la",
+        "egal": "2026-10-01"
+      },
+      {
+        "nu_contine": "Scrie data de la care"
+      },
+      {
+        "nu_contine": "NU s-a salvat"
+      },
+      {
+        "contine": "01.10.2026",
+        "zona": "#vf-tva-incasare-perioade"
+      }
+    ],
+    "captura": "626_f2_vechi_salvat_fara_perioada_noua.png"
+  },
+  {
+    "nr": "627",
+    "firma": "tenant_9050",
+    "descriere": "F2 («Profil incomplet» de la deschidere: Cod CAEN, declarantul, bifele bilanțului): Date firmă -> Cod CAEN 6920 -> «Data cesiunii» fără o structură nouă a asociaților (refuzată pe ecran: salvare parțială) -> «Salvează» -> «S-au salvat: datele firmei…», iar «Profil incomplet» nu mai numește Cod CAEN (celelalte lipsuri rămân). Se scrie numai CAEN-ul pe copia F2",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#df-profil-stare"
+      },
+      {
+        "completeaza": "#df-caen",
+        "valoare": "6920"
+      },
+      {
+        "completeaza": "#as-data-cesiune",
+        "valoare": "2026-10-01"
+      },
+      {
+        "click": "#df-salveaza"
+      },
+      {
+        "asteapta_text": "S-au salvat:"
+      },
+      {
+        "asteapta": "#df-salveaza:not([disabled])"
+      },
+      {
+        "deruleaza": "#df-profil-stare"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "nu_contine": "Cod CAEN",
+        "zona": "#df-profil-stare"
+      },
+      {
+        "contine": "Profil incomplet",
+        "zona": "#df-profil-stare"
+      },
+      {
+        "valoare": "#df-caen",
+        "egal": "6920"
+      }
+    ],
+    "captura": "627_f2_vechi_profil_actualizat_dupa_salvarea_partiala.png"
+  }
+]

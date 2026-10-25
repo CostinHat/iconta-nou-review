@@ -10,6 +10,7 @@ import time
 
 from conftest import linie_nota, sql
 from e2e_bloc_a import AZI, _api, _card, _ok, pregateste_firma
+from e2e_bloc_b import _deschide_rand
 
 
 def _fata(pg):
@@ -17,11 +18,11 @@ def _fata(pg):
 
 
 def _de_validat(e):
-    """Pagina principală -> cardul „De validat” -> fereastra, cu lista „Notele tale în ciornă” încărcată."""
+    """Pagina principală -> cardul „De validat” -> fereastra, cu lista „Notele tale în ciornă” încărcată ([622] tabelul de note)."""
     pg = e.pg
     e.acasa()
     pg.click("button.cab-card:has([data-cheie='validat'])")
-    pg.wait_for_selector(_fata(pg) + " #val-ciorne .val-ciorne-firma", timeout=30000)
+    pg.wait_for_selector(_fata(pg) + " #val-ciorne tbody.tn-nota", timeout=30000)
 
 
 def _status(firma, nid):
@@ -41,14 +42,18 @@ def test_def_457_ciorna_contabilului_e_in_coada_lui_si_se_valideaza_de_acolo(pat
     assert _status(firma_e2e, nid) == "ciorna"
     pg = patron.pg
     _de_validat(patron)
-    rand = _fata(pg) + " #val-ciorne li[data-ciorna='%d']" % nid
+    # [622] rândul ciornei în tabelul de note: descrierea, suma (coloana „Sumă (lei)”) și starea pe rând; „Validează” pe rând;
+    # „Deschide nota în Registrul jurnal” în detaliul rândului
+    rand = _fata(pg) + " #val-ciorne tbody.tn-nota[data-ciorna='%d']" % nid
     pg.wait_for_selector(rand, timeout=20000)
     pg.eval_on_selector(rand, "e => e.scrollIntoView({block: 'center'})")
-    t = pg.inner_text(rand)
+    t = pg.inner_text(rand + " tr.tn-rand")
+    suma = pg.inner_text(rand + " tr.tn-rand td.fd-td-num").strip()
     patron.captura("in_coada")
-    assert desc in t and "rulaj 75,00 lei" in t and "nevalidată, netrimisă" in t, t
-    assert pg.locator(rand + " [data-val-ciorna]").count() == 1, "rândul ciornei n-are „Validează”: %s" % t
+    assert desc in t and suma == "75,00" and "Nevalidată, netrimisă" in t, (t, suma)
+    assert pg.locator(rand + " tr.tn-rand [data-val-ciorna]").count() == 1, "rândul ciornei n-are „Validează”: %s" % t
     # „Deschide nota” -> Registrul jurnal, pe luna notei, cu nota evidențiată
+    _deschide_rand(patron, rand)
     pg.click(rand + " [data-deschide-ciorna]")
     pg.wait_for_selector(_fata(pg) + " [data-nota-id='%d']" % nid, timeout=30000)
     assert desc in pg.inner_text(_fata(pg) + " [data-nota-id='%d']" % nid)
@@ -90,9 +95,9 @@ def test_def_457_contarea_din_banca_spune_ciorna_nu_la_validare(patron, firma_e2
     nid = sql('SELECT i.id FROM "%s".inregistrari i WHERE i.descriere LIKE %%s ORDER BY i.id DESC LIMIT 1' % firma_e2e["schema"],
               ("%" + tag + "%",))[0][0]
     _de_validat(patron)
-    rv = _fata(pg) + " #val-ciorne li[data-ciorna='%d']" % nid
+    rv = _fata(pg) + " #val-ciorne tbody.tn-nota[data-ciorna='%d']" % nid   # [622] rândul ciornei în tabelul de note
     pg.wait_for_selector(rv, timeout=20000)
-    assert "nevalidată, netrimisă" in pg.inner_text(rv), pg.inner_text(rv)
+    assert "Nevalidată, netrimisă" in pg.inner_text(rv), pg.inner_text(rv)
     pg.click(rv + " [data-val-ciorna]")
     pg.wait_for_selector(rv, state="detached", timeout=30000)
     assert _status(firma_e2e, nid) == "validata"

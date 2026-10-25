@@ -40,17 +40,24 @@ def test_def_302_numarul_notei_validate_nu_se_schimba(patron, firma_e2e):
     _card(patron, "jurnal", "#j-nota-noua")
     pg = patron.pg
     pg.wait_for_selector("[data-nota-id='%d']" % b, timeout=20000)
-    assert ("Nr. crt. %d" % n) in pg.inner_text("[data-nota-id='%d'] .pf-frand-nume" % a)
-    assert "Nr. crt." not in pg.inner_text("[data-nota-id='%d'] .pf-frand-nume" % b), "ciorna n-are număr"
+    # [lotul 12, comanda 12.2 pct.9, deficiența 617] „Nr. crt. N · …” din antetul rândului -> prima celulă a rândului din tabelul de note
+    # (coloana „Nr. crt.”, butonul care deschide detaliul); ciorna fără număr arată „—”
+    assert _nr_crt_pe_rand(pg, a) == str(n), _nr_crt_pe_rand(pg, a)
+    assert _nr_crt_pe_rand(pg, b) == "—", "ciorna n-are număr: %r" % _nr_crt_pe_rand(pg, b)
     patron.captura("ciorna_fara_numar")
     _valideaza(patron, firma_e2e, b)
     assert (_nr(firma_e2e, a), _nr(firma_e2e, b)) == (n, n + 1)
     patron.firma(firma_e2e["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
     pg.wait_for_selector("[data-nota-id='%d']" % b, timeout=20000)
-    assert ("Nr. crt. %d" % (n + 1)) in pg.inner_text("[data-nota-id='%d'] .pf-frand-nume" % b)
-    assert ("Nr. crt. %d" % n) in pg.inner_text("[data-nota-id='%d'] .pf-frand-nume" % a)
+    assert _nr_crt_pe_rand(pg, b) == str(n + 1), _nr_crt_pe_rand(pg, b)
+    assert _nr_crt_pe_rand(pg, a) == str(n), _nr_crt_pe_rand(pg, a)
     patron.captura("numerele_pastrate")
+
+
+def _nr_crt_pe_rand(pg, nid):
+    """[lotul 12, 617] Numărul curent al notei cum îl arată Registrul jurnal: prima celulă a rândului ei (`tbody.tn-nota`), „—” la ciornă."""
+    return pg.inner_text("tbody.tn-nota[data-nota-id='%d'] tr.tn-rand > td:first-child .tn-deschide" % nid).strip()
 
 
 def test_def_c48_avansul_pentru_servicii_se_inregistreaza_pe_4092(patron, firma_e2e):
@@ -66,7 +73,8 @@ def test_def_c48_avansul_pentru_servicii_se_inregistreaza_pe_4092(patron, firma_
     _card(patron, "jurnal", "#j-nota-noua")
     pg = patron.pg
     pg.wait_for_selector("[data-nota-id='%d']" % nid, timeout=20000)
-    rand = pg.inner_text("[data-nota-id='%d']" % nid)
+    from e2e_bloc_b import _deschide_rand, _nota_jn   # [lotul 12, 617] linia notei stă în detaliul rândului; e2e_bloc_b nu importă de aici
+    rand = _deschide_rand(patron, _nota_jn(patron, nid)).inner_text()
     patron.captura("nota_pe_4092")
     assert "4092" in rand and "5311" in rand, rand
 

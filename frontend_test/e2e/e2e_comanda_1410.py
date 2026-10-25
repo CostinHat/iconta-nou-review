@@ -7,10 +7,19 @@ import re
 import pytest
 
 from conftest import firma_noua, nr_crt, sql
+from e2e_bloc_b import _deschide_rand
 from e2e_bloc_d import PATRON, _api, _date_firma, _deschide, _nota_validata
 from e2e_comanda_1010 import _alege_bilant, _solduri
 
 _F = ".fereastra:last-of-type"
+
+
+def _deschide_notele_lunii(patron):
+    """[lotul 12, 617] Registrul jurnal e un tabel cu un rând pe notă; documentul justificativ și sursa notei („· sursa: …”) stau în detaliul
+    ei. Se deschide detaliul fiecărei note a lunii, cum le citește contabilul, ca sursa TUTUROR notelor să fie pe ecran (ca în lista veche)."""
+    rr = patron.pg.locator("%s tbody.tn-nota" % _F)
+    for i in range(rr.count()):
+        _deschide_rand(patron, rr.nth(i))
 
 
 def _bilant(patron, f, an):
@@ -177,6 +186,7 @@ def test_def_245_sursa_notei_se_scrie_in_cuvinte(patron, firma_2025):
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
                          "return f && f.querySelectorAll('.val-evidentiat').length === 2 && !document.getAnimations().length; }",
                          timeout=30000)
+    _deschide_notele_lunii(patron)
     patron.captura("decembrie")
     surse = lambda: re.findall(r"sursa: ([^\n·]+?)(?:\n|$| ·)", pg.inner_text(_F))   # noqa: E731
     assert surse() == ["închiderea anului", "închiderea anului"], surse()
@@ -184,6 +194,7 @@ def test_def_245_sursa_notei_se_scrie_in_cuvinte(patron, firma_2025):
         pg.click("%s #j-prev" % _F)
         pg.wait_for_function("(l) => { const p = document.querySelector('.fereastra:last-of-type .pf-intro'); "
                              "return p && p.innerText.startsWith(l); }", arg="Luna %02d/2025" % (11 - _), timeout=30000)
+    _deschide_notele_lunii(patron)
     patron.captura("martie")
     assert set(surse()) == {"introducere manuală"} and len(surse()) == 6, surse()
     assert "inchidere_an" not in pg.inner_text(_F) and "sursa: manual" not in pg.inner_text(_F)

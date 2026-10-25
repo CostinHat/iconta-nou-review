@@ -1201,7 +1201,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T02 — Factura emisă — creare, contabilizare, ieșiri
 
-**Clasa:** MECANIC · **rute:** 21 (din care schimba date: 15) · **refuzuri explicite:** 95
+**Clasa:** MECANIC · **rute:** 21 (din care schimba date: 15) · **refuzuri explicite:** 97
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 1 din 15.**
 
@@ -1264,7 +1264,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T04 — Concediul medical
 
-**Clasa:** MECANIC · **rute:** 5 (din care schimba date: 3) · **refuzuri explicite:** 28
+**Clasa:** MECANIC · **rute:** 5 (din care schimba date: 3) · **refuzuri explicite:** 29
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 3.**
 
@@ -1278,7 +1278,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `baza_cm`, `coduri_cm_api`, `repo_salariati`, `salariati_api`, `salarizare`, `scadente`, `uc_comun`
 
-**Scrie in:** `concedii_medicale` (DELETE/INSERT/UPDATE) · `pontaj` (DELETE) · `reges_chei` (INSERT) · `reges_mesaje` (INSERT/UPDATE) · `salariati` (DELETE/INSERT/UPDATE) · `salariu_istoric` (DELETE) · `suspendari_contract` (DELETE/INSERT)
+**Scrie in:** `concedii_medicale` (DELETE/INSERT/UPDATE) · `pontaj` (DELETE) · `reges_chei` (INSERT) · `reges_mesaje` (INSERT/UPDATE) · `salariati` (DELETE/INSERT/UPDATE) · `salariati_jurnal` (INSERT) · `salariu_istoric` (DELETE) · `suspendari_contract` (DELETE/INSERT)
 
 **Stari puse:** `raspuns`
 
@@ -1542,7 +1542,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T14 — Preluarea unei firme
 
-**Clasa:** MECANIC · **rute:** 38 (din care schimba date: 22) · **refuzuri explicite:** 113
+**Clasa:** MECANIC · **rute:** 38 (din care schimba date: 22) · **refuzuri explicite:** 115
 
 **Cine:** rol cerut: `admin_firma` · drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 22.**
 
@@ -1597,7 +1597,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T15 — Salariatul — angajare, contract, adeverință, REGES
 
-**Clasa:** MANUAL · **rute:** 20 (din care schimba date: 14) · **refuzuri explicite:** 52
+**Clasa:** MANUAL · **rute:** 20 (din care schimba date: 14) · **refuzuri explicite:** 53
 
 **Cine:** rol cerut: `admin_firma` · drept fin: `poate_depune`, `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 14.**
 
@@ -1626,7 +1626,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `adeverinta`, `beneficii_api`, `contracte_api`, `cor_api`, `drepturi`, `elemente_salariale`, `jurnal_api`, `observare`, `prapastie_salariu`, `reges_client`, `repo_salariati`, `salariati_api`, `uc_comun`
 
-**Scrie in:** `ai_corectii` (INSERT) · `beneficii_lunare` (DELETE/INSERT) · `casa_operatiuni` (DELETE) · `concedii_medicale` (DELETE/INSERT/UPDATE) · `contracte_sabloane` (DELETE/INSERT/UPDATE) · `elemente_salariale` (DELETE/INSERT) · `extras_linii` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `pontaj` (DELETE) · `reges_chei` (INSERT) · `reges_mesaje` (INSERT/UPDATE) · `salariati` (DELETE/INSERT/UPDATE) · `salariu_istoric` (DELETE) · `suspendari_contract` (DELETE/INSERT)
+**Scrie in:** `ai_corectii` (INSERT) · `beneficii_lunare` (DELETE/INSERT) · `casa_operatiuni` (DELETE) · `concedii_medicale` (DELETE/INSERT/UPDATE) · `contracte_sabloane` (DELETE/INSERT/UPDATE) · `elemente_salariale` (DELETE/INSERT) · `extras_linii` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `pontaj` (DELETE) · `reges_chei` (INSERT) · `reges_mesaje` (INSERT/UPDATE) · `salariati` (DELETE/INSERT/UPDATE) · `salariati_jurnal` (INSERT) · `salariu_istoric` (DELETE) · `suspendari_contract` (DELETE/INSERT)
 
 **Stari puse:** `contat`, `potrivit`, `raspuns`, `validata`
 
@@ -1712,7 +1712,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T20 — Mișcarea de stoc — intrare, ieșire, transfer, reclasificare
 
-**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 7) · **refuzuri explicite:** 42
+**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 7) · **refuzuri explicite:** 43
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 7.**
 
@@ -1731,7 +1731,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/stocuri/reclasificare` — garda `cere_drept` drept:poate_pregati
 - `POST /tenants/{tenant_id}/stocuri/transfer` — garda `cere_drept` drept:poate_pregati
 
-**Module:** `afirmatii`, `chei_unice`, `horeca`, `produse_api`, `repo_firma_profil`, `repo_stocuri`, `stocuri_api`, `stocuri_cv_api`, `uc_comun`
+**Module:** `afirmatii`, `chei_unice`, `horeca`, `inchidere_luna`, `produse_api`, `repo_firma_profil`, `repo_stocuri`, `stocuri_api`, `stocuri_cv_api`, `uc_comun`
 
 **Scrie in:** `articole` (INSERT/UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (INSERT/UPDATE) · `inregistrari_linii` (INSERT) · `miscari_stoc` (INSERT/UPDATE) · `nir` (INSERT) · `nir_linii` (INSERT) · `produse` (DELETE/INSERT/UPDATE) · `produse_cota_jurnal` (INSERT)
 
@@ -1782,7 +1782,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `afirmatii`, `amortizare_lunii`, `coada_api`, `d406_active`, `eticheta_nota`, `inchidere_luna`, `jurnal_api`, `mf_registru`, `note_derivate`, `reevaluare`, `repo_contabilitate`, `repo_mijloace_fixe`, `repo_reevaluari`, `uc_comun`
 
-**Scrie in:** `ai_corectii` (INSERT) · `casa_operatiuni` (DELETE) · `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (INSERT) · `extras_linii` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `mijloace_fixe_jurnal` (INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (DELETE/INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT) · `reevaluari` (INSERT)
+**Scrie in:** `ai_corectii` (INSERT) · `casa_operatiuni` (DELETE) · `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (INSERT) · `extras_linii` (UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `mijloace_fixe_jurnal` (INSERT) · `perioade_blocate` (DELETE/INSERT) · `plan_conturi` (DELETE/INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT) · `reevaluari` (INSERT/UPDATE)
 
 **Stari puse:** `aprobata`, `ciorna`, `contat`, `depusa`, `potrivit`, `respinsa`, `validata`
 
@@ -1897,7 +1897,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T28 — Operațiunile intracomunitare, VIES și Intrastat
 
-**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 6) · **refuzuri explicite:** 97
+**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 6) · **refuzuri explicite:** 94
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 6.**
 

@@ -14,6 +14,13 @@
     "pauza": 600
    },
    {
+    "click": "tbody.tn-nota:has(.jn-respinsa) .tn-deschide",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
     "deruleaza": ".jn-respinsa",
     "daca_exista": true
    }
@@ -57,6 +64,10 @@
    },
    {
     "nu_contine": "derivabil"
+   },
+   {
+    "nu_contine": "derivabil",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "500_f1_vechi_totaluri_jurnal.png"
@@ -74,6 +85,12 @@
    },
    {
     "pauza": 600
+   },
+   {
+    "click": "tbody.tn-nota:has-text('Factură F1A nr. 3 din 06.10.2026') .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota:has-text('Factură F1A nr. 3 din 06.10.2026') tr.tn-detaliu"
    }
   ],
   "verifica": [
@@ -85,6 +102,10 @@
    },
    {
     "nu_contine": "nederivat"
+   },
+   {
+    "nu_contine": "nederivat",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "24_f1_vechi_note_automate_cu_document.png"
@@ -139,6 +160,12 @@
    },
    {
     "deruleaza": "[data-nota-id='132']"
+   },
+   {
+    "click": "tbody.tn-nota[data-nota-id='132'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='132'] tr.tn-detaliu"
    }
   ],
   "verifica": [
@@ -237,7 +264,15 @@
     "nu_contine": "Patru-ochi"
    },
    {
+    "nu_contine": "Patru-ochi",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
+   },
+   {
     "nu_contine": "patru-ochi"
+   },
+   {
+    "nu_contine": "patru-ochi",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "53_f1_note_deasupra_declaratiilor.png"
@@ -272,10 +307,14 @@
   ],
   "verifica": [
    {
-    "exista": "#val-note .val-card"
+    "exista": "#val-note tbody.tn-nota"
    },
    {
     "nu_contine": "validarea în doi nu e pornită."
+   },
+   {
+    "nu_contine": "validarea în doi nu e pornită.",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "217_f1_text_validare_in_doi.png"
@@ -283,7 +322,7 @@
  {
   "nr": "51",
   "firma": "tenant_9049",
-  "descriere": "Cabinet, „De validat”: fiecare document e un singur card; un document cu mai multe note (factura cu ieșirea din stoc, NIR-ul) are „Vezi notele →”, iar data-coada-ids poartă toate notele lui (elementele vechi regrupate de core/migrare_grup_coada.py). Dacă coada copiei n-are niciun document cu mai multe note, verificarea „Vezi notele” iese neîndeplinită (de spus în raport)",
+  "descriere": "Cabinet, „De validat”: fiecare document e un singur card; un document cu mai multe note (factura cu ieșirea din stoc, NIR-ul) are pe rândul lui semnul „N note ale documentului” (fostul „Vezi notele →”; liniile fiecărei note sunt în detaliul rândului), iar data-coada-ids poartă toate notele lui (elementele vechi regrupate de core/migrare_grup_coada.py). Dacă coada copiei n-are niciun document cu mai multe note, verificarea „note ale documentului” iese neîndeplinită (de spus în raport)",
   "pasi": [
    {
     "click": ".fereastra:last-of-type .nav-x"
@@ -310,10 +349,10 @@
   ],
   "verifica": [
    {
-    "exista": "#val-note .val-card"
+    "exista": "#val-note tbody.tn-nota"
    },
    {
-    "contine": "Vezi notele",
+    "contine": "note ale documentului",
     "zona": "#val-note"
    }
   ],
@@ -322,7 +361,7 @@
  {
   "nr": "129",
   "firma": "tenant_9049",
-  "descriere": "Cabinet, „De validat” -> „Vezi nota →” pe primul card: detaliul notei are „Validează” și „Respinge”. Nimic nu se apasă în detaliu",
+  "descriere": "Cabinet, „De validat” -> clic pe primul rând din „Note de validat” (fostul „Vezi nota →”): detaliul arată liniile notei, iar rândul are „Validează” și „Respinge”. Nimic nu se apasă",
   "pasi": [
    {
     "click": ".fereastra:last-of-type .nav-x"
@@ -347,7 +386,10 @@
     "pauza": 800
    },
    {
-    "click": "#val-note .val-vezi-nota"
+    "click": "#val-note tbody.tn-nota .tn-deschide"
+   },
+   {
+    "asteapta": "#val-note tbody.tn-nota table.tn-linii"
    },
    {
     "pauza": 800
@@ -355,11 +397,11 @@
   ],
   "verifica": [
    {
-    "exista": ".fereastra:last-of-type .val-aproba",
+    "exista": "#val-note tbody.tn-nota:first-of-type .tn-rand .val-aproba",
     "text": "Validează"
    },
    {
-    "exista": ".fereastra:last-of-type .val-respinge",
+    "exista": "#val-note tbody.tn-nota:first-of-type .tn-rand .val-respinge",
     "text": "Respinge"
    }
   ],
@@ -445,7 +487,13 @@
     "pauza": 800
    },
    {
-    "asteapta": "#val-ciorne .val-ciorne-firma"
+    "asteapta": "#val-ciorne tbody.tn-nota[data-ciorna]"
+   },
+   {
+    "click": "#val-ciorne tbody.tn-nota .tn-deschide"
+   },
+   {
+    "asteapta": "#val-ciorne tbody.tn-nota [data-deschide-ciorna]"
    },
    {
     "deruleaza": "#val-ciorne"
@@ -457,7 +505,7 @@
     "zona": "#val-ciorne"
    },
    {
-    "exista": "#val-ciorne li [data-deschide-ciorna]"
+    "exista": "#val-ciorne tbody.tn-nota [data-deschide-ciorna]"
    }
   ],
   "captura": "182_f1_vechi_ciornele_contabilului.png"
@@ -475,6 +523,12 @@
    },
    {
     "pauza": 600
+   },
+   {
+    "click": "tbody.tn-nota:has(.jn-respinsa) .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota:has(.jn-respinsa) .jn-respinsa"
    }
   ],
   "verifica": [
@@ -520,7 +574,7 @@
  {
   "nr": "259",
   "firma": "tenant_9049",
-  "descriere": "F1, Registru jurnal: pe nota respinsă, motivul stă sub textul notei (caseta .jn-respinsa în coloana textului), iar butoanele își păstrează coloana — de privit pe captură",
+  "descriere": "F1, Registru jurnal: pe nota respinsă, motivul stă în detaliul rândului (caseta .jn-respinsa, sub liniile notei, la clic pe rând), iar butoanele stau în coloana „Acțiune” a rândului — de privit pe captură",
   "pasi": [
    {
     "click": "#fa-jurnal"
@@ -532,13 +586,23 @@
     "pauza": 600
    },
    {
+    "click": "tbody.tn-nota:has(.jn-respinsa) .tn-deschide",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
     "deruleaza": ".jn-respinsa",
     "daca_exista": true
    }
   ],
   "verifica": [
    {
-    "exista": ".pf-frand .jn-respinsa"
+    "exista": "tbody.tn-nota tr.tn-detaliu .jn-respinsa"
+   },
+   {
+    "exista": "tbody.tn-nota:has(.jn-respinsa) td.tn-actiuni button"
    }
   ],
   "captura": "259_f1_vechi_motivul_sub_text.png"

@@ -1,8 +1,8 @@
 [
  {
-  "fisier": "core/facturi_api.py",
-  "ancora": "            axa_ic = _ct.axa_neplatitor(linii, tert_tara)",
-  "inlocuire": "            axa_ic = None",
+  "fisier": "core/categorii_tva.py",
+  "ancora": "    return _AXA_FEL.get(fel.get(str(linie.get(\"cont_venit\") or \"\").strip()[:3]))",
+  "inlocuire": "    return None",
   "test": "frontend_test/e2e/e2e_lot12_cx5.py::test_def_c154_serviciul_ic_al_neplatitorului_art317_intra_in_d390_ca_prestare"
  },
  {

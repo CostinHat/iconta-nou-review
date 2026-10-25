@@ -127,12 +127,15 @@ def test_def_477_factura_de_mana_intra_cu_nota_ca_cea_din_xml(conn):
 
 @DB
 def test_def_477_aceeasi_factura_a_doua_oara_se_refuza(conn):
-    """Aceeași factură (furnizor, serie, număr, dată) introdusă a doua oară: refuz numit, nimic scris a doua oară."""
+    """Aceeași factură (furnizor, serie, număr) introdusă a doua oară: refuz numit, lângă numărul facturii, nimic scris a doua oară.
+    [lotul 12, C73.1] refuzul e cel comun tuturor căilor (`factura_primita_dublura`), cu factura existentă numită ca în Istoric."""
     _valideaza(conn, _corp())
     with pytest.raises(erori.Conflict) as e:
         _valideaza(conn, _corp())
-    # refuzul dublurii (`DUBLURA`), cu factura, furnizorul și data ei — nu alt conflict
-    assert str(e.value) == ufp.DUBLURA % ("DNT nr. 1077", "DANTE INTERNATIONAL SA", "01.04.2099"), e.value
+    d = e.value.detaliu
+    assert d["cod"] == "CHEIE_DUBLATA" and d["erori_campuri"][0]["camp"] == "pm-numar", d
+    assert d["mesaj"].startswith("Factura DNT nr. 1077 de la DANTE INTERNATIONAL SA e deja înregistrată: factura DNT nr. 1077 din "
+                                 "01.04.2099, 121,00 lei."), d["mesaj"]
     with conn.cursor() as cur:
         cur.execute("SELECT count(*) FROM facturi WHERE numar = '1077'")
         assert cur.fetchone()[0] == 1

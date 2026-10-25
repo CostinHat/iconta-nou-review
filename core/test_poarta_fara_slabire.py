@@ -52,10 +52,34 @@ MOTIVATE = {
     "core/test_garda_main.py::test_cu_aprobarea_sha_ului_trece_si_se_consuma":
         "funcție scoasă: aprobarea scrisă APROBARE_MAIN radiată (CLAUDE.md §6, 23.10.2026; DECIZII „Comanda 12.1”); înlocuit de "
         "core/test_garda_main.py::test_cu_poarta_verde_main_se_muta_fara_aprobare_scrisa",
+    "core/test_temei_termene.py::test_datoria_ramasa_e_numita":
+        "înlocuit, nu slăbit: testul număra datoria R4 rămasă (D100, D101, D112, D205, D394, D406 fără temeiul termenului în corpus) și "
+        "cerea, în propria aserțiune, să fie șters când lista se golește („toate tipurile sunt sursate — ridică pragul și șterge testul "
+        "ăsta”). Deficiența 639 (comanda Costin 12.2, pachetul reev2) a sursat toate tipurile cu termen calculat, deci lista e goală; "
+        "aserțiunea inversă o ține acum core/test_temei_termene.py::test_toate_tipurile_cu_termen_calculat_sunt_sursate (lista datoriei "
+        "== []), iar citatele 639 sunt verificate verbatim de test_temeiurile_mutarii_termenului_sunt_verbatim_in_corpus",
     "core/test_garda_main.py::test_aprobarea_fara_text_nu_ajunge":
         "funcție scoasă: aprobarea scrisă APROBARE_MAIN radiată (CLAUDE.md §6, 23.10.2026; DECIZII „Comanda 12.1”); verdictul cerut de "
         "garda pe main rămâne păzit de core/test_garda_main.py::test_aprobarea_fara_poarta_verde_a_sha_ului_nu_ajunge",
 }
+# [lotul 12, integrarea I3] cele patru teste ale lui `valideaza_lic`, scoase de pachetul fisc3 odată cu funcția
+_LIC = ("funcție scoasă: `intracomunitar.valideaza_lic` (apelată numai de livrarea de BUNURI din Operațiuni, scoasă la C84 (b), decizia "
+        "Costin 23.10.2026, DECIZII „Comanda 12.1”), iar refuzul ei „fără dovada transportului” a devenit avertisment la emitere (decizia "
+        "Costin 12.3 pct.7: „C84: livrarea intracomunitară de bunuri fără dovada transportului primește avertisment la emitere, nu refuz.”). ")
+MOTIVATE.update({
+    "test_intracomunitar.py::test_lic_ok": _LIC + (
+        "Mențiunea scutirii pe livrarea din „Emite factură” e a categoriei `livrare_ic`: core/test_274b_categorii_tva.py::"
+        "test_274b_livrarea_intracomunitara_are_livrarea_si_codul_de_tva_al_clientului"),
+    "test_intracomunitar.py::test_lic_fara_transport": _LIC + (
+        "Înlocuit de core/test_lot12_fisc3_c84_dovada_transport.py::test_c84_fara_dovada_factura_se_emite_cu_avertisment_nu_refuz și, pe "
+        "drumul fără întrebare (factura recurentă), de core/test_lot12_int3_c197_recurenta_lic.py::test_c197_avertismentul_c84_pe_fiecare_raspuns"),
+    "test_intracomunitar.py::test_lic_client_ro": _LIC + (
+        "Clientul din România pe livrarea intracomunitară e refuzat de categoria liniei (CATEGORIE_TVA_TARA): core/test_274b_categorii_tva.py::"
+        "test_274b_categoria_se_potriveste_cu_tara_clientului[livrare_ic-RO-False]"),
+    "test_intracomunitar.py::test_lic_cod_invalid": _LIC + (
+        "Codul de TVA invalid în VIES se vede pe ecranul „Emite factură” (Verifică -> răspunsul negativ, lotul 12 C166); emiterea însăși nu "
+        "cere VIES pe server — limită raportată de integrarea I3 ca deficiență nouă (codul valabil e condiția din CF art.294 alin.(2) lit.a)"),
+})
 
 
 def _git(*a):

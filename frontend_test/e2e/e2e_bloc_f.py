@@ -92,7 +92,13 @@ def test_def_171_marcarea_lasa_grupul_deschis_si_ecranul_pe_rand(patron, firma_e
     pg.wait_for_selector(rand + " .cf-extern-anuleaza", timeout=60000)
     assert pg.eval_on_selector(grup, "d => d.open"), "grupul „Înainte de preluare” s-a pliat după „Salvează”"
     y1 = pg.eval_on_selector(rand, "e => e.getBoundingClientRect().top")
-    assert abs(y1 - y0) <= 4, "rândul atins a sărit pe ecran după „Salvează”: %s -> %s px" % (y0, y1)
+    # [triajul plasei 1, 12.2] diagnosticul săriturii (numai în mesaj): derularea ferestrei, câte elemente poartă cheia rândului (regăsirea
+    # lui în `control_verdict.reincarcaPePozitie` ia PRIMUL) și cât conținut are fereastra
+    diag = pg.evaluate("""(c) => { const k = [...document.querySelectorAll('.fereastra')].pop().querySelector('.fereastra-corp');
+      return {sus: k.scrollTop, inalt: k.scrollHeight, vizibil: k.clientHeight,
+              cheie: [...k.querySelectorAll("[data-cheie='" + c + "']")].map((e) => (e.closest('details') || {}).className || 'în afara grupului')}; }""",
+                       "d205-2025-12")
+    assert abs(y1 - y0) <= 4, "rândul atins a sărit pe ecran după „Salvează”: %s -> %s px (%s)" % (y0, y1, diag)
     patron.captura("dupa_salveaza")
     pg.click(rand + " .cf-extern-anuleaza")
     pg.click("#ca-ok")
@@ -211,6 +217,11 @@ def test_def_177_nota_de_stornare_din_coada_arata_rulajul(patron, asistent, firm
     st, r = _api(patron, "/asistenti/%s/permisiuni" % uid_a, "POST",
                  {"poate_pregati": True, "poate_valida": False, "poate_depune": bool(drepturi[2])})
     assert st == 200, (st, r)
+    # date de pornire: seria chitanțelor în Date firmă — [lotul 12, decizia Costin 456 (a), verbatim în DECIZII: „chitanța se emite și
+    # pentru încasarea în numerar fără factură (avansul)”] încasarea în numerar de la client emite chitanța, deci cere seria firmei
+    # (`uc_tenants.chitanta_serie_sau_refuz`, refuzul „Încasarea nu s-a salvat: … scrie-o în Date firmă, la «Chitanțe»”)
+    st, r = _api(patron, "/tenants/%s/firma-profil/date" % tid, "POST", {"serie_chitanta": "E2ECH"})
+    assert st == 200, (st, r)
     try:
         _proba_177(patron, asistent, firma_e2e)
     finally:
@@ -240,8 +251,11 @@ def _proba_177(patron, asistent, firma_e2e):
     pg = patron.pg
     patron.acasa()
     pg.click("button.cab-card:has([data-cheie='validat'])")
-    card = _fata(pg) + " .val-card:has-text('%s')" % firma_e2e["nume"]
+    from e2e_bloc_b import _deschide_rand   # [lotul 12, 622] tabelul de note; e2e_bloc_b nu importă din e2e_bloc_f
+    # [622] nota din coadă = rândul ei din „Note de validat”; rulajul în forma „stornare −… lei” stă în detaliul rândului („Rulaj: …”)
+    card = _fata(pg) + " #val-note tbody.tn-nota:has-text('%s')" % firma_e2e["nume"]
     pg.wait_for_selector(card, timeout=30000)
+    _deschide_rand(patron, pg.locator(card))
     text = pg.inner_text(card)
     patron.captura()
     assert "stornare −1.250,00 lei" in text, text
@@ -498,19 +512,26 @@ def test_def_182_ciornele_proprii_se_vad_in_fereastra_de_validat(patron, firma_e
     pg = patron.pg
     patron.acasa()
     pg.click("button.cab-card:has([data-cheie='validat'])")
-    pg.wait_for_selector(_fata(pg) + " #val-ciorne .val-ciorne-firma", timeout=30000)
+    # [lotul 12, comanda 12.2 pct.12, deficiența 622] „Notele tale în ciornă” e același tabel de note ca Registrul jurnal: un rând pe
+    # ciornă (`tbody.tn-nota[data-ciorna]`), cu celulele data / firma / explicația / documentul / conturile / suma / starea / acțiunea
+    pg.wait_for_selector(_fata(pg) + " #val-ciorne tbody.tn-nota[data-ciorna]", timeout=30000)
     zona = pg.inner_text(_fata(pg) + " #val-ciorne")
     pg.eval_on_selector(_fata(pg) + " #val-ciorne", "e => e.scrollIntoView()")
     patron.captura()
     assert zona.lower().startswith("notele tale în ciornă ("), zona
-    bloc = [b for b in pg.eval_on_selector_all(_fata(pg) + " #val-ciorne .val-ciorne-firma", "es => es.map(e => e.innerText)")
-            if firma_e2e["nume"] in b]
-    assert bloc, "firma cu ciorna nu apare: %s" % zona
-    assert "Ciornă proprie probă E2E 182 · rulaj 75,00 lei · nevalidată, netrimisă" in bloc[0], bloc[0]
+    rand = pg.locator(_fata(pg) + " #val-ciorne tbody.tn-nota[data-ciorna]", has_text="Ciornă proprie probă E2E 182")
+    celule = [c.strip() for c in rand.locator("tr.tn-rand > td").all_inner_texts()]
+    assert celule and firma_e2e["nume"] in celule[1], "firma cu ciorna nu apare: %s" % zona   # coloana Firma
+    # vechiul „Ciornă proprie probă E2E 182 · rulaj 75,00 lei · nevalidată, netrimisă” -> aceleași valori, pe celulele rândului
+    assert celule[2] == "Ciornă proprie probă E2E 182" and celule[5] == "75,00" and celule[6].startswith("● Nevalidată, netrimisă"), celule
     # [lotul 11, 457: „182 nerezolvată” — lista era numai de citit, deci ciorna nu aștepta în nicio coadă] rândul e acum al cozii lui:
-    # „Validează” (contul validează) și „Deschide nota”; drumul întreg (validarea de aici, Registrul jurnal) e în e2e_lot11_a457.py
-    rand = pg.locator(_fata(pg) + " #val-ciorne li", has_text="Ciornă proprie probă E2E 182")
-    assert rand.locator("[data-val-ciorna]").count() == 1 and rand.locator("[data-deschide-ciorna]").count() == 1, rand.inner_text()
+    # „Validează” pe rând (contul validează) și „Deschide nota în Registrul jurnal” în detaliul rândului (deschis întâi, ca omul); drumul
+    # întreg (validarea de aici, Registrul jurnal) e în e2e_lot11_a457.py
+    from e2e_bloc_b import _deschide_rand   # e2e_bloc_b nu importă din e2e_bloc_f
+    _deschide_rand(patron, rand)
+    assert rand.locator("tr.tn-rand [data-val-ciorna]").count() == 1 and rand.locator("tr.tn-detaliu [data-deschide-ciorna]").count() == 1, \
+        rand.inner_text()
+    assert rand.locator("tr.tn-detaliu [data-deschide-ciorna]").is_visible(), rand.inner_text()
 
 
 # ── 183 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

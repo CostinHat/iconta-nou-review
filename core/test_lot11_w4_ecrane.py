@@ -292,6 +292,10 @@ def test_stocuri_rezumatul_sus_si_mesajul_descarcarii_langa_buton(browser):
     try:
         _deschide_firma(pg, "#fa-stocuri")
         pg.wait_for_selector("#s-situatie-tabel", timeout=15000)
+        # [lotul 12, C198] pe luna în curs „Descarcă gestiunea lunii” e inactiv (cu motivul): descărcarea se probează pe luna trecută
+        pg.click("#s-prev")
+        pg.wait_for_function("() => { const b = document.querySelector('#s-desc'); return b && !b.disabled; }", timeout=15000)
+        pg.wait_for_selector("#s-situatie-tabel", timeout=15000)
         pg.wait_for_timeout(200)
         sus = pg.evaluate(_REZ, "#s-rezumat")
         pg.evaluate("() => { [...document.querySelectorAll('.fereastra-corp')].pop().scrollTop = 0; }")

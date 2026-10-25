@@ -1,0 +1,50 @@
+[
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "raise _fpd.refuz(_ex)",
+  "inlocuire": "pass",
+  "test": "frontend_test/e2e/e2e_lot12_fact2.py::test_def_c73_1_a_doua_achizitie_necorporala_cu_aceeasi_factura_se_refuza"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "esc(numarCuSerie(r.serie, r.numar))}</b> emisă",
+  "inlocuire": "esc(r.numar)}</b> emisă",
+  "test": "frontend_test/e2e/e2e_lot12_fact2.py::test_def_443_1_mesajul_dupa_emitere_si_stornare_spune_seria_si_numarul"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "Storno creat: <b>${esc(numarCuSerie(r.serie, r.numar))}</b>",
+  "inlocuire": "Storno creat: <b>${esc(r.numar || \"\")}</b>",
+  "test": "frontend_test/e2e/e2e_lot12_fact2.py::test_def_443_1_mesajul_dupa_emitere_si_stornare_spune_seria_si_numarul"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "const vies = c.vies ? ",
+  "inlocuire": "const vies = false ? ",
+  "test": "frontend_test/e2e/e2e_lot12_fact2.py::test_def_c78_1_vies_se_vede_inainte_de_generare_iar_nota_o_singura_data"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "!(citite.length && doarConturi(r.nota))",
+  "inlocuire": "true",
+  "test": "frontend_test/e2e/e2e_lot12_fact2.py::test_def_c78_1_vies_se_vede_inainte_de_generare_iar_nota_o_singura_data"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": ".querySelectorAll(\".refuz-salvare\").forEach((x) => x.remove());",
+  "inlocuire": ".querySelectorAll(\".refuz-salvare-mutat\").forEach((x) => x.remove());",
+  "test": "frontend_test/e2e/e2e_lot12_fact2.py::test_def_304_refuzul_clientului_roman_dispare_la_tastarea_altui_cui"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "corp.querySelector(\"#em-cui\").addEventListener(\"input\", () => {",
+  "inlocuire": "corp.querySelector(\"#em-cui\").addEventListener(\"x-mutat\", () => {",
+  "test": "frontend_test/e2e/e2e_lot12_fact2.py::test_def_304_refuzul_clientului_roman_dispare_la_tastarea_altui_cui"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "salveazaCiorna();   // [C166] și „CUI negăsit” intră în ciornă",
+  "inlocuire": "/* C166 mutat */",
+  "test": "frontend_test/e2e/e2e_lot12_fact2.py::test_def_c166_raspunsul_negativ_al_verificarii_cui_ramane_la_revenire"
+ }
+]

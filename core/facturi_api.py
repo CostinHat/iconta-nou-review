@@ -21,6 +21,9 @@ MODUL = "facturi_api"
 
 COD_INTREABA_MARFA = "INTREABA_PLEACA_MARFA"
 MESAJ_INTREABA_MARFA = "Răspunde la întrebare: pleacă marfa acum? (Da: se descarcă gestiunea; Nu: numai evidența fiscală)"
+#: [lotul 12, C84, decizia Costin 12.3 pct.7] întrebarea dovezii transportului la livrarea intracomunitară de bunuri (răspunsul „Nu” emite,
+#: cu avertisment — `intracomunitar.AVERTISMENT_LIC_FARA_DOVADA`)
+COD_INTREABA_DOVADA = "INTREABA_DOVADA_TRANSPORT"
 
 
 def poarta_marfa_ceruta(tip, linii, bon_fiscal_nr=None):
@@ -432,15 +435,19 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             # motivul ca DATĂ (cod + temei + linia), ca refuzul să se poată verifica fără a citi fraza
             _e.cod, _e.temei, _e.linie = "EMITENT_NEPLATITOR_TVA", "CF art.310 alin.(10) lit.b)", _l.get("descriere")
             raise _e
+    _avert_emitere = []   # [lotul 12, C157] avertismentele emiterii (nu refuzuri), în răspuns: `avertismente`
     if directie == "emisa":
         # [274b, decizia Costin 16.10.2026] categoria de TVA pe orice linie cu 0% (core/categorii_tva): la neplătitor „O”, automat; la
         # plătitor aleasă, altfel refuz numit (punct UNIC: emiterea, stornarea, proforma transformată, vânzarea IC, API-ul, magazinul,
         # facturile recurente). O linie cu taxare inversă (art.331) pune taxarea inversă pe factură, cu categoria produsului (D394).
+        # [lotul 12, C156 / C157, decizia Costin 12.3 pct.3] și înregistrarea art.317 a neplătitorului: prestarea către clientul din alt stat
+        # membru primește „taxare inversă” și codul RO art.317 (înregistrat) sau avertismentul emiterii (neînregistrat) — `_avert_emitere`
         from core import categorii_tva as _ct
         with conn.cursor() as _cur:
-            _cur.execute("SELECT platitor_tva FROM firma_profil WHERE id = 1")
+            _cur.execute("SELECT platitor_tva, inreg_art317 FROM firma_profil WHERE id = 1")
             _pft = _cur.fetchone()
-        _rele = _ct.verifica_linii(linii, None if _pft is None else _pft[0], tert_tara)
+        _rele = _ct.verifica_linii(linii, None if _pft is None else _pft[0], tert_tara, art317=None if _pft is None else _pft[1],
+                                   tert_cui=tert_cui)
         if _rele:
             _e = ValueError(" ".join(r["mesaj"] for r in _rele))
             _e.cod, _e.campuri = _rele[0]["cod"], _rele
@@ -458,6 +465,8 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             # altfel serviciul către clientul din UE intra în D390 ca livrare de bunuri (L), nu ca prestare (P). Axa dată de apelant
             # (prestarea din Operațiuni, `uc_tenants.vanzare_ic`; stornarea, cu axa originalului) rămâne a lui.
             axa_ic = _ct.axa_neplatitor(linii, tert_tara)
+        if _pft is not None and not any("categorie_istoric" in _l for _l in linii):   # stornarea (marca ei) nu e o prestare nouă
+            _avert_emitere = _ct.avertismente_emitere(_pft[0], _pft[1], (str(axa_ic or "").strip().lower() or None), tert_tara, tert_cui)
         if any(_l.get("categorie_tva") == "taxare_inversa" for _l in linii):
             taxare_inversa = True
             from core import produse_api as _pa   # [lotul 11, 449, patch B/P4] categoriile D394, cu cerealele pe codul NC
@@ -502,6 +511,14 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     axa_v = (str(axa_ic).strip().lower() or None) if axa_ic is not None else None
     status = _status_v
     t = totaluri_din_linii(linii)
+    if directie == "primita" and tip_v == "factura":
+        # [lotul 12, C73.1, comanda Costin 12.2 pct.6] aceeași factură de furnizor (furnizor + număr, `factura_primita_dublura`) nu intră a
+        # doua oară: Operațiuni (necorporală, taxare inversă, intracomunitară) și `POST /facturi` trec toate pe aici. Nimic scris.
+        from core import factura_primita_dublura as _fpd, repo_facturi as _rf_d
+        with conn.cursor() as _cur:
+            _ex = _rf_d.primite_cu_aceeasi_cheie(_cur, None, tert_cui, tert_nume, serie, numar, negativ=t["total"] < 0)
+        if _ex:
+            raise _fpd.refuz(_ex)
     # [A1] Conversia în lei, calculată O DATĂ, la creare. RON → curs 1 (total_lei=total). Valută:
     # cursul dat de apelant, altfel o încercare auto; pe eșec rămâne NULL (factura există, dar
     # contarea o refuză și declarațiile o exclud — nu se ghicește 1).
@@ -571,7 +588,7 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                  l.get("valoare_neta")))
     _redeschide_luna(conn, data_emitere)   # [cap.23] evidenta lunii s-a schimbat -> luna se redeschide
     out = {"ok": True, "factura_id": factura_id,
-           "total": float(t["total"]), "tva": float(t["tva"])}
+           "total": float(t["total"]), "tva": float(t["tva"]), "avertismente": _avert_emitere}
     out["contare"] = _conteaza_la_creare(conn, factura_id, directie, tip_v)
     return out
 
@@ -879,6 +896,7 @@ def detalii_factura(conn, factura_id):
             "link_plata, platita_la, plata_confirmata_de, "  # [R43] marca de simulare
             "bon_fiscal_nr, bon_fiscal_data, "   # [decizia A 02.10] factura emisă pe baza bonului fiscal
             "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar, "
+            "(SELECT serie FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_serie, "   # [lotul 12, C196] seria separat, ca în Istoric
             + _rf.SQL_STORNO_DIN.format(s="", a="facturi") +   # [417] factura stornată, pentru trimiterea de pe PDF
             " FROM facturi WHERE id = %s",
             (factura_id,))
@@ -913,6 +931,16 @@ def detalii_factura(conn, factura_id):
         # „TVA la încasare” (CF art.319 alin.(20) lit.p) și „conform bon fiscal nr./data” (HG 1/2016 pct.97 alin.(1))
         f["mentiuni"] = [m for m in ((_tvi.MENTIUNE if f["tva_la_incasare"] else None),
                                      (_fc.mentiune_bon(f) if _fc.e_din_bon_fiscal(f) else None)) if m]
+        if f.get("directie") == "emisa":
+            # [lotul 12, C156; clasa 417] și mențiunile TVA de pe PDF (`factura_pdf.mentiuni_tva`: scutirea neplătitorului, motivele
+            # categoriilor, „taxare inversă”), iar la prestarea IC a neplătitorului înregistrat art.317 codul RO de pe PDF (`cod_emitent`)
+            cur.execute("SELECT platitor_tva, cui FROM firma_profil WHERE id = 1")
+            _pr = cur.fetchone()
+            _pr = {"platitor_tva": _pr["platitor_tva"], "cui": _pr["cui"]} if _pr else {}
+            _art317 = (["Codul de TVA al firmei pe această factură (art.317): %s" % _fp.cod_emitent(_pr, f["linii"])[1]]
+                       if _ct.cod_tva_art317(_pr.get("platitor_tva"), f["linii"]) else [])
+            f["mentiuni"] = _art317 + _fp.mentiuni_tva(False if _pr.get("platitor_tva") is False else None, f["linii"],
+                                                       f.get("tert_tara")) + f["mentiuni"]
         # [419] ce a plecat din magazie cu factura (ieșirile vii): stornarea întreabă dacă se întoarce
         from core import pdf_util as _pdfu, stocuri_cv_api as _cv
         f["iesiri_stoc"] = [{"articol": m["denumire"], "cantitate": str(m["cantitate"]), "cantitate_text": _pdfu.cantitate(m["cantitate"], m["um"]),
@@ -1390,7 +1418,8 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
                   tert_tara="RO", tip_operatiune="normal", tert_pf=False,
                   data_curs_manual=None, curs_manual_de=None, axa_ic=None,
                   bon_fiscal_nr=None, bon_fiscal_data=None, tert_platitor_tva=None, pleaca_marfa=None,
-                  raspunsuri_ai=None, categorie_331=None, tert_oras=None, tert_judet=None):
+                  raspunsuri_ai=None, categorie_331=None, tert_oras=None, tert_judet=None,
+                  intreaba_dovada=False, dovada_transport=None):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator / raspunsurile modelului, cerute INAINTEA conexiunii:
@@ -1418,7 +1447,10 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
     for _l in linii:
         _l.pop("categorie_istoric", None)
     from core import categorii_tva as _ct
-    _rele = _ct.verifica_linii(linii, platitor_tva, tert_tara)
+    with conn.cursor() as _cur:   # [lotul 12, C156] înregistrarea art.317 a neplătitorului (categoria prestării IC), ca `creeaza_factura`
+        _cur.execute("SELECT inreg_art317 FROM firma_profil WHERE id = 1")
+        _r317 = _cur.fetchone()
+    _rele = _ct.verifica_linii(linii, platitor_tva, tert_tara, art317=_r317[0] if _r317 else None, tert_cui=tert_cui)
     if not _rele and not categorie_331 and any(_l.get("categorie_tva") == "taxare_inversa" for _l in linii):
         _rele = [{"camp": "em-c331", "eticheta": "Categoria produsului (art.331)", "cod": "CATEGORIE_331_DE_COMPLETAT",
                   "mesaj": "Factura are linii cu taxare inversă (art.331): alege categoria produsului (D394 o declară cu codul ei)."}]
@@ -1429,6 +1461,14 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
         # categoriile lor au trecut, nu înainte — un refuz al facturii nu mai așteaptă un răspuns care nu-l schimbă
         _e = ValueError(MESAJ_INTREABA_MARFA)
         _e.cod = COD_INTREABA_MARFA
+        raise _e
+    _lic = tip == "factura" and any(_l.get("categorie_tva") == "livrare_ic" for _l in linii)
+    if intreaba_dovada and _lic and dovada_transport is None:
+        # [lotul 12, C84, decizia Costin 12.3 pct.7] întrebarea, după linii și după „Pleacă marfa acum?”, înaintea oricărei scrieri; răspunsul
+        # nu oprește emiterea („avertisment la emitere, nu refuz”)
+        from core import intracomunitar as _ic
+        _e = ValueError("Răspunde la întrebare: " + _ic.INTREBARE_DOVADA_TRANSPORT)
+        _e.cod, _e.intrebare = COD_INTREABA_DOVADA, _ic.INTREBARE_DOVADA_TRANSPORT
         raise _e
     if tip == "factura" and not str(bon_fiscal_nr or "").strip() and pleaca_marfa is not False:
         verifica_marfa_si_metoda(conn, linii, pleaca_marfa)   # [06.10.2026 §6.3] o singură descărcare pe ieșire
@@ -1529,6 +1569,12 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
         r["curs_manual_la"] = _urma_manual[1].isoformat()
     r["numar"] = numar
     r["serie"] = serie
+    if _lic and dovada_transport is not True:
+        # [lotul 12, C84] emisă fără dovada transportului: ce lipsește și ce se întâmplă cu scutirea. [C197] Pe un drum care nu întreabă
+        # (`intreaba_dovada=False`, răspunsul lipsă: factura recurentă din cron) avertismentul e tot acolo, cu textul a ce nu se știe
+        from core import intracomunitar as _ic
+        r["avertismente"] = list(r.get("avertismente") or []) + [
+            _ic.AVERTISMENT_LIC_FARA_DOVADA if dovada_transport is False else _ic.AVERTISMENT_LIC_NEINTREBAT]
     return r
 
 
@@ -1555,18 +1601,20 @@ def storneaza(conn, factura_id, retur=None):
     # factură stornată integral nu se mai stornează: CF art.330 alin.(1) lit.b) — factura „cu valorile cu semnul minus” anulează valorile
     # facturii corectate, deci a doua stornare ar scădea încă o dată o operațiune care nu mai există (D300, 4111, stocul). Nici o
     # stornare nu se stornează (ecranul n-o oferea; ruta o primea). „Stornată” = aceeași definiție ca starea de încasare (416).
+    from core.pdf_util import serie_nr as _sn   # [lotul 12, 443.1] factura numită ca în Istoric („F1A nr. 8”), nu cu seria lipită („F1A8”)
+    _nr_orig = _sn(orig.get("serie"), orig.get("numar"))
     if orig.get("storno_din_id"):
         raise ValueError("Factura %s e ea însăși o stornare (%s): o stornare nu se stornează la rândul ei (%s)."
-                         % (orig.get("numar"), orig.get("mentiune_storno") or "trimite la factura inițială", TEMEI_STORNARE))
+                         % (_nr_orig, orig.get("mentiune_storno") or "trimite la factura inițială", TEMEI_STORNARE))
     if (orig.get("stare_incasare") or {}).get("stare") == "stornata":
         with conn.cursor() as cur:
-            cur.execute("SELECT numar FROM facturi WHERE storno_din_id = %s ORDER BY id", (factura_id,))
-            prin = [(r["numar"] if isinstance(r, dict) else r[0]) for r in cur.fetchall()]
+            cur.execute("SELECT serie, numar FROM facturi WHERE storno_din_id = %s ORDER BY id", (factura_id,))
+            prin = [_sn(*((r["serie"], r["numar"]) if isinstance(r, dict) else r)) for r in cur.fetchall()]
         raise ValueError("Factura %s e deja stornată integral (prin %s): nu mai rămâne nimic de stornat (%s)."
-                         % (orig.get("numar"), ", ".join(str(x) for x in prin) or "o factură de stornare", TEMEI_STORNARE))
+                         % (_nr_orig, ", ".join(prin) or "o factură de stornare", TEMEI_STORNARE))
     if orig.get("iesiri_stoc") and retur is None:
         _e = ValueError("Factura %s a descărcat din stoc: %s. Marfa se întoarce în stoc (retur) sau rămâne la client (numai corecția "
-                        "valorii)? Alege, apoi confirmă stornarea." % (orig.get("numar"), "; ".join(
+                        "valorii)? Alege, apoi confirmă stornarea." % (_nr_orig, "; ".join(
                             "%s × %s" % (x["articol"], x["cantitate_text"]) for x in orig["iesiri_stoc"])))
         _e.cod = COD_CERE_RETUR
         raise _e
@@ -1627,6 +1675,7 @@ def storneaza(conn, factura_id, retur=None):
         cur.execute("UPDATE facturi SET storno_din_id = %s WHERE id = %s", (factura_id, r["factura_id"]))
         # [C1] contorul a fost incrementat atomic de `_rezerva_numar`; nu se mai incrementeaza aici.
     r["numar"] = numar
+    r["serie"] = serie   # [lotul 12, 443.1] ecranul spune „Storno creat: F1A nr. 16”, nu „F1A16” (`numarCuSerie`)
     r["storno_din_id"] = factura_id
     r["retur"] = []
     if retur and orig.get("iesiri_stoc"):

@@ -56,13 +56,13 @@ _JARGON = re.compile(r"\b(?:persistat[eăa]?|amprent[aăei]+|payload|endpoint|ha
 PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "operațiuni", "luni", "zile", "rânduri",
            "declarații", "firme", "linii", "documente", "perioade", "salariați", "articole", "CNP-uri", "CUI-uri", "achiziții", "activi",
            "activități", "administratori", "adrese", "angajați", "ani", "apariții", "asistenți", "asociați", "beneficiari",
-           "bonuri", "bunuri", "cabinete", "caractere", "cifre", "ciorne", "constatări", "depășite", "câmpuri", "datorate", "deja", "depuse",
+           "bonuri", "bunuri", "cabinete", "caractere", "cifre", "ciorne", "constatări", "corecturi", "depășite", "câmpuri", "datorate", "deja", "depuse",
            "destinatari", "e-Facturi", "erau", "avertismente", "evenimente", "existente", "eșuate", "fișiere", "funcții", "ieșiri", "imagini", "imobile",
            "importate", "ingrediente", "intrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "necunoscute",
            "netrimise", "neverificate", "notificări", "obligații", "ore", "minute", "rulări", "persoane", "plăți", "potriviri", "potrivite",
            "pregătite", "produse", "propoziții", "părți", "recomandări", "respinse", "restante", "restanțe", "retrimiteri", "rețete", "scadente", "scadențe",
            "secțiuni", "sărite", "termene", "tipare", "tipuri", "trimise", "urme", "valizi",
-           "noi")   # [lotul 11, 447] „Salariați: 0 noi, 2 fișe actualizate.” (`migrare.js`, `cate(noi, "nou", "noi")`)
+           "noi")   # [lotul 12, C133] „corecturi”: „3 corecturi mai vechi în jurnal” (firme.js, jurnalul scutirii); [lotul 11, 447] „Salariați: 0 noi, 2 fișe actualizate.” (`migrare.js`, `cate(noi, "nou", "noi")`)
 #: un număr LIPIT de o literă face parte dintr-un cod („D390 bunuri IC” — declarația D390, nu „390 de bunuri”), deci nu e numeral
 _ACORD = re.compile(r"(?<![\w.,])(?:1|\d*(?:[2-9]\d|00)) (?:%s)(?![\wăâîșț-])" % "|".join(map(re.escape, PLURALE)))
 #: [comanda Costin 10.10.2026 pct.5: „Vocea «nu pot …» din Control fiscal: se rescrie la persoana a treia («nu se poate verifica …»), pe

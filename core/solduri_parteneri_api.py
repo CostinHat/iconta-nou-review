@@ -53,7 +53,25 @@ CAMPURI = {
     "numar_doc": ("nr factura", "numar factura", "nr document", "numar document", "nr doc", "=factura", "=document"),
     "scadenta": ("data scadenta", "data scadentei", "scadenta", "termen de plata", "termen plata"),
     "data_doc": ("data factura", "data facturii", "data document", "data documentului", "data emiterii", "data emitere", "=data"),
+    # [lotul 12, deficiența 252, decizia Costin 12.3 pct.5: „coloana TVA la încasare e opțională în fișierul de preluare; dacă lipsește,
+    # se ia regimul firmei la data facturii”] da / nu pe fiecare factură deschisă (sau pe soldul partenerului, în forma pe solduri)
+    "tva_incasare": ("tva la incasare", "sistem tva la incasare", "tva incasare", "=tvai"),
 }
+
+#: [252, 12.3 pct.5] valorile acceptate în coloana „TVA la încasare” (după `import_tabel.norm`: fără diacritice, litere mici); celula
+#: goală = nespus -> regimul firmei la data facturii, ca atunci când coloana lipsește
+VALORI_TVA_INCASARE = {True: ("da", "d", "1", "x", "true", "yes", "y"), False: ("nu", "n", "0", "false", "no")}
+
+
+def valoare_tva_incasare(text):
+    """PURĂ. [252, 12.3 pct.5] Celula „TVA la încasare” -> True / False / None (goală). Altă valoare -> ValueError: nu se ghicește."""
+    t = _it.norm(text)
+    if not t:
+        return None
+    for v, forme in VALORI_TVA_INCASARE.items():
+        if t in forme:
+            return v
+    raise ValueError(text)
 
 # Natura contului de parteneri: pe ce parte stă soldul lui obișnuit. Folosită numai când fișierul are O SINGURĂ coloană de sold
 # („Neachitat final”) — atunci partea o dă contul, iar o valoare negativă trece pe partea cealaltă.
@@ -100,6 +118,8 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
     i_nr = _it.coloana(antet, CAMPURI["numar_doc"], exclus=(i_cont, i_cui, i_den), camp="nr. factură")
     i_scad = _it.coloana(antet, CAMPURI["scadenta"], exclus=(i_cont, i_cui, i_den, i_nr), camp="scadență") if i_nr >= 0 else -1
     i_data = _it.coloana(antet, CAMPURI["data_doc"], exclus=(i_cont, i_cui, i_den, i_nr, i_scad), camp="data facturii") if i_nr >= 0 else -1
+    # [252, 12.3 pct.5] coloana opțională „TVA la încasare” (pe ambele forme)
+    i_tvai = _it.coloana(antet, CAMPURI["tva_incasare"], exclus=(i_cont, i_cui, i_den, i_nr, i_scad, i_data), camp="TVA la încasare")
     if i_nr >= 0 and i_data < 0:
         raise _it.FisierNecitit("Fișierul %s are coloana numărului facturii, dar nu și coloana „Data” a facturii. Adaugă data fiecărei "
                                 "facturi și încarcă-l din nou." % ("«%s»" % nume_fisier if nume_fisier else "trimis"))
@@ -140,11 +160,16 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
                                          "debitul și creditul citite din rând sunt amândouă 0"))
             continue
         rand = {"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre, "rand_fisier": nr}
+        tvai = _tva_incasare_din_rand(r, nr, den or cui, i_tvai, _it.celula(r, i_nr) if i_nr >= 0 else None)
         if i_nr >= 0:
             doc = _document_din_rand(r, nr, den or cui, cont, deb, cre, i_nr, i_data, i_scad, ignorate)
             if doc is None:
                 continue
+            if i_tvai >= 0:
+                doc["tva_la_incasare"] = tvai   # cheia numai când fișierul are coloana: ecranul o arată atunci
             rand["document"] = doc
+        elif i_tvai >= 0:
+            rand["tva_la_incasare"] = tvai   # forma pe solduri: pe documentul „Sold la <data preluării>” al partenerului
         out.append(rand)
     if i_nr >= 0:
         out = grupeaza_pe_parteneri(out)
@@ -153,6 +178,23 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
     if dubluri:
         raise _it.FisierNecitit(MESAJ_PARTENER_DUBLAT % "; ".join(dubluri[:6]))
     return out
+
+
+def _tva_incasare_din_rand(r, nr, cine, i_tvai, numar):
+    """[252, 12.3 pct.5] Valoarea coloanei „TVA la încasare” a rândului (True / False / None = nespus); o valoare necunoscută oprește
+    citirea fișierului, cu rândul, partenerul, factura și valoarea numite (ca data facturii: nu se ghicește)."""
+    if i_tvai < 0:
+        return None
+    try:
+        return valoare_tva_incasare(_it.celula(r, i_tvai))
+    except ValueError:
+        raise _it.FisierNecitit(MESAJ_TVA_INCASARE_NECUNOSCUT % (nr, cine, (", factura %s" % numar) if numar else "", _it.celula(r, i_tvai)))
+
+
+#: [252, 12.3 pct.5] refuzul valorii necunoscute din coloana „TVA la încasare”
+MESAJ_TVA_INCASARE_NECUNOSCUT = ("Rândul %d (%s%s): în coloana „TVA la încasare” scrie „%s”. Se acceptă «da» sau «nu» (și 1 / 0, D / N, x); "
+                                 "lasă celula goală ca să se ia regimul firmei la data facturii, din Date firmă. Corectează celula și "
+                                 "încarcă fișierul din nou.")
 
 
 def _document_din_rand(r, nr, cine, cont, deb, cre, i_nr, i_data, i_scad, ignorate):
@@ -212,7 +254,8 @@ def documente_din_randuri(randuri, data_referinta=None):
     """PURĂ. [252] Facturile deschise pe care le scrie salvarea, din rândurile care intră: forma pe facturi -> facturile rândului
     (`documente`); forma pe solduri -> soldul partenerului întreg, ca un document „Sold la <data preluării>”, fără scadență (nu se
     inventează una). Numai pe 4111 / 401 și numai suma pozitivă (de încasat / de plătit).
-    -> (documente, neconvertite): documente = [{directie, tert_cui, tert_nume, numar, data, scadenta, suma, cont}] (suma în Decimal),
+    -> (documente, neconvertite): documente = [{directie, tert_cui, tert_nume, numar, data, scadenta, suma, cont, tva_la_incasare}] (suma
+    în Decimal; `tva_la_incasare` = coloana fișierului: True / False / None = nespus, hotărât la scriere de `cu_regimul_tva`),
     neconvertite = [text] — ce nu devine document și de ce (spus, nu sărit)."""
     from decimal import Decimal as _D, ROUND_HALF_UP as _SUS
     from core.pdf_util import bani as _b, data_ro as _dro
@@ -235,7 +278,8 @@ def documente_din_randuri(randuri, data_referinta=None):
                     nec.append("%s, factura %s: %s — nu e de %s, rămâne numai în soldul partenerului"
                                % (cine, d.get("numar"), _b(suma, "lei"), "încasat" if dir_ == "emisa" else "plătit"))
                     continue
-                docs.append(dict(baza, numar=str(d.get("numar")), data=d.get("data"), scadenta=d.get("scadenta") or None, suma=suma))
+                docs.append(dict(baza, numar=str(d.get("numar")), data=d.get("data"), scadenta=d.get("scadenta") or None, suma=suma,
+                                 tva_la_incasare=d.get("tva_la_incasare")))
             continue
         suma = (net if dir_ == "emisa" else -net).quantize(_D("0.01"), rounding=_SUS)
         if suma <= 0:
@@ -245,7 +289,8 @@ def documente_din_randuri(randuri, data_referinta=None):
             continue
         zi = str(data_referinta)[:10] if data_referinta else None
         # fără data preluării documentul n-are dată (nici număr): îl numără previzualizarea, iar salvarea îl spune și nu-l scrie
-        docs.append(dict(baza, numar=("Sold la %s" % _dro(_dt.date.fromisoformat(zi))) if zi else None, data=zi, scadenta=None, suma=suma))
+        docs.append(dict(baza, numar=("Sold la %s" % _dro(_dt.date.fromisoformat(zi))) if zi else None, data=zi, scadenta=None, suma=suma,
+                         tva_la_incasare=r.get("tva_la_incasare")))
     return docs, nec
 
 
@@ -285,21 +330,129 @@ def documente_legate(cur):
     return ["%s (%s, %s)" % ((sr + " " + nr).strip(), tn or "—", _b(t, "lei")) for _id, sr, nr, tn, t in cur.fetchall()]
 
 
+def cu_regimul_tva(cur, docs):
+    """[lotul 12, deficiența 252, decizia Costin 12.3 pct.5, verbatim: „coloana TVA la încasare e opțională în fișierul de preluare; dacă
+    lipsește, se ia regimul firmei la data facturii”] Pe fiecare factură deschisă preluată: e TVA-ul cuprins în restul ei încă NEEXIGIBIL
+    (emisă: pe 4428 până la încasare — CF art.282 alin.(3)) / NEDEDUS (primită: pe 4428 până la plată — CF art.297 alin.(2)-(3)), și cât e.
+    Coloana fișierului decide; nespusă -> regimul firmei la data facturii (`regim_tva_incasare.aplica_la`, perioadele din Date firmă —
+    aceeași funcție ca la factura emisă în aplicație). Cât: restul × cotă / (100 + cotă) — CF art.282 alin.(8): „fiecare încasare totală
+    sau parțială se consideră că include și taxa aferentă”; cota standard la data facturii — CF art.291 alin.(5): „În cazul operațiunilor
+    supuse sistemului TVA la încasare, cota aplicabilă este cea în vigoare la data la care intervine faptul generator”.
+    Pune pe fiecare doc `tva` (Decimal, 0 = regulile generale) și `furnizor_tva_incasare` (primită «da» la o dată la care firma NU aplica
+    sistemul: deducerea e amânată numai pentru că furnizorul îl aplica — alin.(2)). Motorul (`tva_incasare.regim`) citește TVA-ul înghețat
+    aici: banca / casa / compensarea îl mută 4428 -> 4427 / 4426, D300 și D394 îl declară la încasare / plată.
+    Refuză (ValueError, nimic scris) ce legea nu admite: «da» la o firmă neînregistrată în scopuri de TVA (alin.(3^1) lit.a); emisă «da» la
+    o dată la care firma nu aplica sistemul (alin.(3): exigibilitatea la încasare e a persoanei care aplică sistemul; alin.(7) lit.a)."""
+    from decimal import Decimal as _D
+    from core import common as _c, regim_tva_incasare as _rg, tva_calcul as _tc
+    from core.pdf_util import data_ro as _dro
+    import datetime as _dt
+    cur.execute("SELECT COALESCE(platitor_tva, false) FROM firma_profil WHERE id = 1")
+    r = cur.fetchone()
+    platitor = bool(r and (r["coalesce"] if isinstance(r, dict) else r[0]))
+    refuz = []
+    for d in docs:
+        d["tva"], d["furnizor_tva_incasare"] = _D(0), False
+        if not d.get("data"):
+            continue
+        zi = _dt.date.fromisoformat(str(d["data"])[:10])
+        spus = d.get("tva_la_incasare")
+        cine = "%s, factura %s din %s" % (d.get("tert_nume") or d.get("tert_cui") or "?", d.get("numar"), _dro(zi))
+        if spus and not platitor:
+            refuz.append("%s: «TVA la încasare: da», dar firma nu e înregistrată în scopuri de TVA (Date firmă)" % cine)
+            continue
+        # neînregistrată în scopuri de TVA -> nu poate aplica sistemul (alin.(3^1) lit.a): regulile generale, fără să mai citim perioadele
+        in_sistem = platitor and _rg.aplica_la(cur, zi)
+        if spus and d["directie"] == "emisa" and not in_sistem:
+            refuz.append("%s: «TVA la încasare: da», dar în Date firmă firma nu aplica sistemul TVA la încasare la această dată — scrie "
+                         "perioada în Date firmă sau corectează coloana" % cine)
+            continue
+        if not (spus if spus is not None else in_sistem):
+            continue
+        cota = int(_c.cota("tva_standard", zi)[0] * 100)
+        d["tva"] = _tc.tva_din_total(d["suma"], cota)
+        d["furnizor_tva_incasare"] = d["directie"] == "primita" and not in_sistem
+    if refuz:
+        raise ValueError(MESAJ_TVA_INCASARE_REFUZ % "; ".join(refuz[:6]))
+    return docs
+
+
+#: [252, 12.3 pct.5] coloana „TVA la încasare” contrazice firma: refuzul previzualizării (`refuz_tva_incasare`) și al salvării (nimic scris)
+MESAJ_TVA_INCASARE_REFUZ = ("Coloana „TVA la încasare” nu se potrivește cu firma: %s. Soldurile pe parteneri nu se salvează până nu corectezi "
+                            "fișierul (în coloană «nu», sau celula goală pentru regimul din Date firmă) și nu-l încarci din nou.")
+
+
+def refuz_tva_incasare(conn, schema, randuri, data_referinta=None):
+    """[252, 12.3 pct.5] Pentru previzualizare: refuzul pe care l-ar da salvarea (`cu_regimul_tva`) pe rândurile care intră, sau None —
+    aceeași regulă, pe aceleași documente (`documente_din_randuri`), fără nicio scriere. `data_referinta` lipsă -> data preluării firmei
+    (`bilant_api.data_soldurilor`), ca la salvare. `conn` = conexiunea pe schema firmei (search_path)."""
+    import psycopg2.extras as _E
+    from core import bilant_api as _bil
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        zi = data_referinta or _bil.data_soldurilor(cur, schema)
+        docs = [d for d in documente_din_randuri(randuri, zi.isoformat() if hasattr(zi, "isoformat") else zi)[0] if d["data"]]
+        try:
+            cu_regimul_tva(cur, docs)
+        except ValueError as e:
+            return str(e)
+    return None
+
+
+def confruntare_4428(cur, docs):
+    """[252, 12.3 pct.5] TVA-ul neexigibil al facturilor preluate (emise − primite) față de 4428 din balanța de deschidere — text de atenție
+    sau None. Informativ, nu blocant: 4428 poate ține și TVA-ul facturilor nesosite / de întocmit, iar cota standard nu e a unei facturi cu
+    cotă redusă; diferența îi arată contabilului unde să se uite. Numai când o factură e la încasare sau 4428 are sold."""
+    from decimal import Decimal as _D
+    from core.pdf_util import bani as _b
+    em = sum((d["tva"] for d in docs if d["directie"] == "emisa"), _D(0))
+    pr = sum((d["tva"] for d in docs if d["directie"] == "primita"), _D(0))
+    cur.execute("SELECT count(*), COALESCE(SUM(sold_creditor - sold_debitor), 0) FROM solduri_initiale WHERE split_part(cont, '.', 1) = '4428'")
+    r = cur.fetchone()
+    n, sold = (r["count"], r["coalesce"]) if isinstance(r, dict) else r
+    sold = _D(str(sold))
+    if (not n and not (em or pr)) or abs(em - pr - sold) < _D("0.01"):
+        return None
+    # semnul contabilului: TVA-ul neexigibil al vânzărilor stă în creditul lui 4428, cel nededus al cumpărărilor în debit
+    return ("TVA-ul neexigibil al facturilor deschise preluate: %s din facturile emise, %s din cele primite, adică 4428 %s; 4428 din "
+            "balanța de deschidere: %s. Diferența de %s: verifică facturile cu altă cotă decât cea standard, cele scutite sau cu taxare "
+            "inversă (în coloana „TVA la încasare”: «nu») și TVA-ul neexigibil al facturilor nesosite sau de întocmit (408 / 418)."
+            % (_b(em, "lei"), _b(pr, "lei"), _pu.sold(pr - em), _pu.sold(-sold), _b(abs(em - pr - sold), "lei")))
+
+
 def _scrie_documente(cur, docs):
     """[252] Facturile deschise preluate, în `facturi` (tip `preluata`, starea „importată”): totalul = restul de la preluare, fără
-    TVA și fără linii (soldul e deja în balanța de deschidere, cu TVA-ul lui) — nicio notă, nicio declarație nu le citește."""
+    linii și fără notă (soldul e deja în balanța de deschidere, cu TVA-ul lui) — nicio declarație nu le citește ca documente ale perioadei.
+    [12.3 pct.5] `tva` = TVA-ul încă neexigibil / nededus din rest (`cu_regimul_tva`; 0 = regulile generale): numai pe el îl citesc motorul
+    TVA la încasare și D300 / D394, la încasarea / plata facturii.
+    [lotul 12, C73.1] Factura de furnizor deja în evidență (furnizor + număr: introdusă de mână, din XML, din Operațiuni, sau de două ori
+    în același fișier) nu se scrie a doua oară: refuzul numit oprește toată salvarea (`ValueError`, nimic scris)."""
+    from core import factura_primita_dublura as _fpd, repo_facturi as _rf
     for d in docs:
+        if d["directie"] == "primita":
+            ex = _rf.primite_cu_aceeasi_cheie(cur, None, d["tert_cui"], d["tert_nume"], None, d["numar"])
+            if ex:
+                raise _fpd.refuz(ex, sfat="Soldurile pe parteneri nu s-au salvat: scoate factura din fișier (sau adună rândurile ei) și "
+                                          "încarcă-l din nou.")
+        tva = d.get("tva") or 0
         cur.execute("INSERT INTO facturi (numar, data_emitere, data_scadenta, total, tva, moneda, directie, status, tert_nume, tert_cui, tip, "
-                    "total_lei, tva_lei, sursa_externa) VALUES (%s, %s, %s, %s, 0, 'RON', %s, 'importata', %s, %s, %s, %s, 0, 'preluare')",
-                    (d["numar"], d["data"], d["scadenta"], d["suma"], d["directie"], d["tert_nume"], d["tert_cui"], _TIP_PRELUAT, d["suma"]))
+                    "total_lei, tva_lei, sursa_externa, furnizor_tva_incasare) "
+                    "VALUES (%s, %s, %s, %s, %s, 'RON', %s, 'importata', %s, %s, %s, %s, %s, 'preluare', %s)",
+                    (d["numar"], d["data"], d["scadenta"], d["suma"], tva, d["directie"], d["tert_nume"], d["tert_cui"], _TIP_PRELUAT, d["suma"],
+                     tva, bool(d.get("furnizor_tva_incasare"))))
 
 
 def rezumat_documente(docs):
-    """PURĂ. [252] {n, emise, total_emise, primite, total_primite} (totalurile în float, la ban)."""
+    """PURĂ. [252] {n, emise, total_emise, primite, total_primite} (totalurile în float, la ban). [12.3 pct.5] + `la_incasare` (câte au TVA
+    neexigibil / nededus, `cu_regimul_tva`), `tva_emise`, `tva_primite` — numai când vreuna e la încasare."""
     from decimal import Decimal as _D
     e = [d["suma"] for d in docs if d["directie"] == "emisa"]
     p = [d["suma"] for d in docs if d["directie"] == "primita"]
-    return {"n": len(docs), "emise": len(e), "total_emise": float(sum(e, _D(0))), "primite": len(p), "total_primite": float(sum(p, _D(0)))}
+    out = {"n": len(docs), "emise": len(e), "total_emise": float(sum(e, _D(0))), "primite": len(p), "total_primite": float(sum(p, _D(0)))}
+    cu_tva = [d for d in docs if d.get("tva")]
+    if cu_tva:
+        out.update(la_incasare=len(cu_tva), tva_emise=float(sum((d["tva"] for d in cu_tva if d["directie"] == "emisa"), _D(0))),
+                   tva_primite=float(sum((d["tva"] for d in cu_tva if d["directie"] == "primita"), _D(0))))
+    return out
 
 
 #: [lotul 10, C73] același partener pe același cont — la citirea fișierului ȘI la scriere (rândurile pot veni și direct, prin API)
@@ -600,6 +753,8 @@ def importa(conn, randuri, data_referinta=None, schema=None, inlocuieste=False):
     docs = [d for d in docs if d["data"]]
     td = tc = 0.0
     with conn.cursor() as cur:
+        cu_regimul_tva(cur, docs)   # [252, 12.3 pct.5] înaintea oricărei scrieri: un refuz nu lasă nimic șters
+        atentie_tva = confruntare_4428(cur, docs)
         cur.execute("DELETE FROM solduri_parteneri")
         with _chei.refuza_dublura(cur, ("solduri_parteneri_cont_cui_uniq",), _refuz_partener_scris_intre_timp):
             for r in bune:
@@ -613,7 +768,7 @@ def importa(conn, randuri, data_referinta=None, schema=None, inlocuieste=False):
         _inlocuieste_documentele(cur, docs)
     return {"randuri": len(bune), "total_debit": round(td, 2), "total_credit": round(tc, 2), "respinse": erori,  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             "inlocuita": vechi if (vechi["randuri"] or vechi["documente"]) else None,
-            "documente": dict(rezumat_documente(docs), neconvertite=neconvertite)}
+            "documente": dict(rezumat_documente(docs), neconvertite=neconvertite, **({"atentie_tva": atentie_tva} if atentie_tva else {}))}
 
 
 def _inlocuieste_documentele(cur, docs):

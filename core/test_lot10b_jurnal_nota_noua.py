@@ -156,6 +156,6 @@ def test_7k_386_un_singur_mesaj_dupa_clic_pe_validare(pagina):
     pg.wait_for_selector("[data-nota-id='101'] [data-val]", timeout=15000)
     pg.eval_on_selector("[data-nota-id='101'] [data-val]", "b => b.click()")
     pg.wait_for_timeout(300)
-    t = pg.inner_text("[data-nota-id='101']")
+    t = pg.inner_text(".fereastra-corp")   # [lotul 12, 617] explicația o dată, deasupra tabelului de note
     # 10.2 pct.7k: „același mesaj apare de două ori (stânga și dreapta)” — după clic, tot un singur mesaj
     assert t.count("nu se validează fără documentul din care provine") == 1 and pg.query_selector("#caseta-atentie-activa") is None, t

@@ -329,7 +329,7 @@ def test_def_c127_vechi_nota_validata_scrisa_inainte_de_incheierea_lunii_e_semna
     curs nu mai e."""
     from core import migrare_note_luna_neincheiata as mig
     from conftest import _db
-    from e2e_bloc_b import _jurnal, _mergi_la_luna
+    from e2e_bloc_b import _deschide_rand, _jurnal, _mergi_la_luna, _nota_jn
     s = firma_f2["schema"]
     urm = (AZI.replace(day=1) + _dt.timedelta(days=32)).replace(day=28)
     if not sql('SELECT 1 FROM "%s".inregistrari WHERE descriere = %%s' % s, ("Salarii E2E C127 validată",)):
@@ -351,6 +351,9 @@ def test_def_c127_vechi_nota_validata_scrisa_inainte_de_incheierea_lunii_e_semna
     vid = sql('SELECT id FROM "%s".inregistrari WHERE descriere = %%s' % s, ("Salarii E2E C127 validată",))[0][0]
     _jurnal(patron, firma_f2, (urm.year, urm.month))
     pg = patron.pg
+    # [lotul 12, 617] caseta „scrisă înainte de încheierea lunii” stă în detaliul rândului: rândul notei validate, deschis
+    pg.wait_for_selector("tbody.tn-nota[data-nota-id='%d']" % vid, timeout=30000)
+    _deschide_rand(patron, _nota_jn(patron, vid))
     pg.wait_for_selector("#jn-inainte-%d" % vid, timeout=30000)
     t = " ".join(pg.inner_text("#jn-inainte-%d" % vid).split())
     patron.captura("vechi_nota_validata_semnalata")

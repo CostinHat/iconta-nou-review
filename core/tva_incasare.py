@@ -47,6 +47,8 @@ Citirile stau în `core/repo_tva_incasare.py`; aici nu se scrie SQL.
 """
 from decimal import Decimal, ROUND_HALF_UP
 
+from core.nomenclator_status_factura import TIP_SOLD_PRELUAT as _TIP_PRELUAT   # [lotul 12, 252] factura deschisă preluată
+
 _BAN = Decimal("0.01")
 
 #: CF art.319 alin.(20) lit.p) — mențiunea obligatorie pe factura emisă în sistem (PDF și BT-22 din e-Factura)
@@ -142,12 +144,19 @@ def regim_din_date(f, cote, firma_in_sistem, regim_original=None):
     negativ fără factură stornată (regularizarea unui avans) rămâne pe regulile generale — avansul a fost încasat, deci TVA-ul lui era
     deja exigibil. PRIMITĂ: deducerea e amânată (`incasare`) dacă furnizorul aplică sistemul la data facturii (art.297 alin.(2)) sau
     firma îl aplică (alin.(3)), afară de taxarea inversă și de achizițiile din afara țării (intracomunitare, importuri — alin.(3) teza
-    finală). STORNARE: urmează factura stornată (alin.(10))."""
-    if (f.get("tip") or "factura") != "factura":
+    finală). STORNARE: urmează factura stornată (alin.(10)).
+    [lotul 12, deficiența 252, decizia Costin 12.3 pct.5] FACTURA DESCHISĂ PRELUATĂ (`tip = 'preluata'`): regimul e hotărât o dată, la
+    preluare (`solduri_parteneri_api.cu_regimul_tva`: coloana „TVA la încasare” a fișierului, altfel regimul firmei la data facturii), și
+    înghețat în TVA-ul ei = TVA-ul încă neexigibil / nededus din rest. TVA pozitiv -> `incasare` (încasarea / plata îl mută și D300 / D394
+    îl declară — CF art.282 alin.(3), (8); art.297 alin.(2)-(3)); 0 -> regulile generale (TVA-ul era deja exigibil în programul vechi)."""
+    tip = f.get("tip") or "factura"
+    tva = Decimal(str(f.get("tva_lei") if f.get("tva_lei") is not None else (f.get("tva") or 0)))
+    if tip == _TIP_PRELUAT:
+        return REGIM_INCASARE if tva > 0 else REGIM_GENERAL
+    if tip != "factura":
         return REGIM_GENERAL
     if f.get("storno_din_id"):
         return REGIM_STORNO if regim_original == REGIM_INCASARE else REGIM_GENERAL
-    tva = Decimal(str(f.get("tva_lei") if f.get("tva_lei") is not None else (f.get("tva") or 0)))
     if tva <= 0:
         return REGIM_GENERAL
     if f.get("directie") == "emisa":
@@ -279,6 +288,8 @@ def regim(cur, schema, f):
     if f.get("storno_din_id"):
         orig = _rp.factura(cur, schema, f["storno_din_id"])
         return regim_din_date(f, None, False, regim(cur, schema, orig) if orig else None)
+    if f.get("tip") == _TIP_PRELUAT:   # [252, 12.3 pct.5] regimul înghețat la preluare, în TVA-ul ei (`regim_din_date`)
+        return regim_din_date(f, None, False)
     if (f.get("tip") or "factura") != "factura" or not f.get("data_emitere"):
         return REGIM_GENERAL
     cote = _rp.cote_linii(cur, schema, f["id"]) if f.get("directie") == "emisa" and f.get("id") else None

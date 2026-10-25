@@ -1,8 +1,8 @@
 [
  {
   "fisier": "static/js/ecrane/firme.js",
-  "ancora": "if (!nume.value.trim() || nume.value === ultimAnaf) { nume.value = r.denumire; ultimAnaf = r.denumire; }",
-  "inlocuire": "if (false) { nume.value = r.denumire; ultimAnaf = r.denumire; }",
+  "ancora": "anaf.pune([r.denumire]);",
+  "inlocuire": "/* mutatie: denumirea de la ANAF nu se pune */",
   "test": "frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f004_adauga_firma_cu_datele_de_la_anaf"
  },
  {

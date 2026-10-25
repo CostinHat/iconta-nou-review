@@ -14,6 +14,7 @@ import json
 import re
 
 from e2e_lot92 import firma_cv, firma_cv_noua  # noqa: F401 — fixturi (firma nouă, stoc cantitativ-valoric)
+from core.pdf_util import serie_nr as _serie_nr   # [lotul 12, 443.1] numărul facturii, ca pe ecran
 
 AZI = _dt.date.today()
 
@@ -72,9 +73,10 @@ def test_def_c63_proforma_cu_articol_intreaba_si_da_descarca_marfa_o_data(patron
     r = rr.value.json()
     assert json.loads(rr.value.request.post_data) == {"pleaca_marfa": True}, rr.value.request.post_data
     pg.wait_for_function("(t) => ((document.querySelector('#fd-act-rez') || {}).textContent || '') === t",
-                         arg="Factura %s a fost emisă · 1 articol descărcat din gestiune." % r["numar"], timeout=20000)
+                         arg="Factura %s a fost emisă · 1 articol descărcat din gestiune." % _serie_nr(r.get("serie"), r["numar"]),
+                         timeout=20000)   # [lotul 12, 443.1] seria și numărul separat, ca în Istoric
     patron.captura("da")
-    assert " ".join(pg.inner_text("#fd-vezi-transformata").split()) == "transformată în %s" % r["numar"], pg.inner_text(".fd-antet")
+    assert " ".join(pg.inner_text("#fd-vezi-transformata").split()) == "transformată în %s" % _serie_nr(r.get("serie"), r["numar"]), pg.inner_text(".fd-antet")   # [lotul 12, C196]
     assert _stoc(patron, firma_cv, aid) == stoc0 - 2, (stoc0, _stoc(patron, firma_cv, aid))
 
 
@@ -89,7 +91,7 @@ def test_def_c63_aviz_cu_articol_intreaba_si_nu_lasa_stocul(patron, firma_cv):
         pg.click("#fd-poarta-nu")
     r = rr.value.json()
     pg.wait_for_function("(t) => ((document.querySelector('#fd-act-rez') || {}).textContent || '') === t",
-                         arg="Factura %s a fost emisă." % r["numar"], timeout=20000)
+                         arg="Factura %s a fost emisă." % _serie_nr(r.get("serie"), r["numar"]), timeout=20000)   # [lotul 12, 443.1]
     patron.captura("nu")
     assert "descarcare" not in r, r
     assert _stoc(patron, firma_cv, aid) == stoc0, (stoc0, _stoc(patron, firma_cv, aid))

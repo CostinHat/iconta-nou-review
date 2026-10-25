@@ -248,9 +248,28 @@ def _card(ecran, f, cheie, asteapta):
 
 
 def _randuri_jurnal(ecran):
-    """Notele din Registrul jurnal de pe ecran: [(text antet, [„D = C · suma”])]."""
-    return ecran.pg.evaluate("""() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('[data-nota-id]')].map((n) =>
-        [n.querySelector('.pf-frand-nume').innerText, n.querySelector('.pf-frand-sub').innerHTML.split('<br>').map((x) => x.replace(/<[^>]+>/g, '').trim())])""")
+    """Notele din Registrul jurnal de pe ecran: [(textul rândului, [„D = C · suma[ · partener][ · centru]”, …, „Document justificativ: …”])].
+    [lotul 12, comanda 12.2 pct.9, deficiența 617] Un rând pe notă în tabelul de note (`tbody.tn-nota`): rândul (nr. crt., data, explicația,
+    documentul, conturile, suma, starea) e primul element; liniile notei și documentul justificativ stau în detaliul rândului, deci
+    detaliile închise se deschid întâi (clic pe butonul din prima celulă, ca omul), apoi se citesc de pe ecran (innerText) în aceeași formă
+    ca înainte: o linie a notei = celulele ei unite („D = C · sumă · partener · centru”), apoi rândul „Document justificativ: …”."""
+    pg = ecran.pg
+    pg.evaluate("""() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('tbody.tn-nota[data-nota-id]')]
+        .forEach((n) => { const d = n.querySelector('tr.tn-detaliu'); if (d && d.hidden) n.querySelector('.tn-deschide').click(); })""")
+    return pg.evaluate("""() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('tbody.tn-nota[data-nota-id]')].map((n) => {
+        const linii = [...n.querySelectorAll('tr.tn-detaliu table.tn-linii tbody tr')].map((r) => {
+          const c = [...r.cells].map((x) => x.innerText.trim());
+          return [c[0] + ' = ' + c[1], ...c.slice(2).filter(Boolean)].join(' · '); });
+        const doc = [...n.querySelectorAll('tr.tn-detaliu p.pf-frand-sub')].map((p) => p.innerText.trim()).filter((t) => t.startsWith('Document justificativ:'));
+        return [n.querySelector('tr.tn-rand').innerText, [...linii, ...doc]]; })""")
+
+
+def _linii_jn(ecran, nid):
+    """[lotul 12, 617] Liniile notei `nid` din Registrul jurnal, cum le vede contabilul în detaliul rândului (deschis întâi):
+    [(debit, credit, sumă „1.234,56”)]."""
+    from e2e_bloc_b import _deschide_rand, _linii_detaliu, _nota_jn   # e2e_bloc_b nu importă din e2e_bloc_e
+    tb = _deschide_rand(ecran, _nota_jn(ecran, nid))
+    return [tuple(r[:3]) for r in _linii_detaliu(tb)]
 
 
 # ------------------------------------------------------------------------------------------------ Date firmă: luna preluării (147, 169)
@@ -652,9 +671,10 @@ def test_def_144_factura_dupa_nir_fara_factura_se_leaga_fara_a_doua_intrare(patr
     patron.captura("stoc_o_singura_intrare")
     _card(patron, firma, "jurnal", "#j-prev")
     _la_luna(patron, "#j-prev", 2026, 8)
-    patron.pg.locator("[data-nota-id='%d']" % nota).scroll_into_view_if_needed()
-    sub = patron.pg.inner_text("[data-nota-id='%d'] .pf-frand-sub" % nota)
-    assert "408 = 401 · 665,50" in sub and "371 = 401" not in sub, sub
+    # [lotul 12, 617] liniile „408 = 401 · 665,50” -> rândurile tabelului de linii din detaliul notei (aceleași valori, pe celule)
+    sub = _linii_jn(patron, nota)
+    patron.pg.locator("tbody.tn-nota[data-nota-id='%d']" % nota).scroll_into_view_if_needed()
+    assert ("408", "401", "665,50") in sub and not [x for x in sub if x[:2] == ("371", "401")], sub
     patron.captura("nota_factura_408_401")
 
 
@@ -667,18 +687,18 @@ def test_def_146_tva_nir_pe_4428_pana_la_factura_apoi_4426(patron, firma):
     pg = patron.pg
     _card(patron, firma, "jurnal", "#j-prev")
     _la_luna(patron, "#j-prev", 2026, 8)
-    subs = " | ".join(pg.inner_text("[data-nota-id='%d'] .pf-frand-sub" % n) for n in note_nir)
-    assert "4428.01 = 408 · 42,00" in subs and "4426 =" not in subs, subs
-    pg.locator("[data-nota-id='%d']" % note_nir[0]).scroll_into_view_if_needed()
+    subs = [x for n in note_nir for x in _linii_jn(patron, n)]   # [lotul 12, 617] liniile din detaliul fiecărei note a NIR-ului
+    assert ("4428.01", "408", "42,00") in subs and not [x for x in subs if x[0] == "4426"], subs
+    pg.locator("tbody.tn-nota[data-nota-id='%d']" % note_nir[0]).scroll_into_view_if_needed()
     patron.captura("nir_tva_pe_4428_01")
     fid = _factura_primita(firma, "FF-146", "2026-08-14", "Furnizor 146 SRL", cui, 4, 50)
     nota, _ = _conteaza_cu_legare(patron, firma, fid, 2026, 8, "E146")
     assert ("4426", "4428.01", "42.00") in _linii_nota(firma, nota)
     _card(patron, firma, "jurnal", "#j-prev")
     _la_luna(patron, "#j-prev", 2026, 8)
-    sub = pg.inner_text("[data-nota-id='%d'] .pf-frand-sub" % nota)
-    assert "4426 = 4428.01 · 42,00" in sub and "4426 = 401" not in sub, sub
-    pg.locator("[data-nota-id='%d']" % nota).scroll_into_view_if_needed()
+    sub = _linii_jn(patron, nota)   # [lotul 12, 617] liniile din detaliul notei
+    assert ("4426", "4428.01", "42,00") in sub and not [x for x in sub if x[:2] == ("4426", "401")], sub
+    pg.locator("tbody.tn-nota[data-nota-id='%d']" % nota).scroll_into_view_if_needed()
     patron.captura("factura_4426_din_4428_01")
 
 
@@ -702,9 +722,9 @@ def test_def_145_nir_din_exercitiul_trecut_se_leaga_cat_408_e_deschis(patron, fi
     assert sql('SELECT factura_id FROM "%s".nir WHERE id = %%s' % firma_gv["schema"], (nir_id,)) == [(fid,)]
     _card(patron, firma_gv, "jurnal", "#j-prev")
     _la_luna(patron, "#j-prev", 2026, 7)
-    sub = patron.pg.inner_text("[data-nota-id='%d'] .pf-frand-sub" % nota)
-    assert "408 = 401 · 665,50" in sub and "378 = 401 · 50,00" in sub, sub
-    patron.pg.locator("[data-nota-id='%d']" % nota).scroll_into_view_if_needed()
+    sub = _linii_jn(patron, nota)   # [lotul 12, 617] liniile din detaliul notei
+    assert ("408", "401", "665,50") in sub and ("378", "401", "50,00") in sub, sub
+    patron.pg.locator("tbody.tn-nota[data-nota-id='%d']" % nota).scroll_into_view_if_needed()
     patron.captura("factura_2026_legata_de_nir_2025")
 
 
@@ -1304,14 +1324,15 @@ def test_def_214_nota_de_amortizare_ultima_zi_si_documentul_ei(patron, firma):
         n = _note_amortizare(f, 2026, 7)
         assert len(n) == 1, n
         assert str(sql('SELECT data FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (n[0][0],))[0][0]) == "2026-07-31"
+        from e2e_bloc_b import _deschide_rand, _nota_jn   # [lotul 12, 617] documentul justificativ stă în detaliul rândului
         pg.wait_for_selector("[data-nota-id='%d']" % n[0][0], timeout=30000)
-        rand = pg.inner_text("[data-nota-id='%d']" % n[0][0])
+        rand = _deschide_rand(patron, _nota_jn(patron, n[0][0])).inner_text()
         patron.captura("amortizare_07")
         assert "31.07.2026" in rand and "nederivat" not in rand and "Document justificativ:" in rand, rand
         pg.click("#j-prev")   # o lună înapoi, din 07/2026
         _asteapta_text(patron, "Luna 06/2026")
         pg.wait_for_selector("[data-nota-id='%d']" % veche, timeout=30000)
-        rand_v = pg.inner_text("[data-nota-id='%d']" % veche)
+        rand_v = _deschide_rand(patron, _nota_jn(patron, veche)).inner_text()
         patron.captura("amortizare_veche")
         assert "Document justificativ: Tabloul de amortizare AMORT-2026-06" in rand_v, rand_v
     finally:

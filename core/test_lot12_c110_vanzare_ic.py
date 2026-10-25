@@ -134,8 +134,10 @@ def test_c110_vanzarea_ic_transmite_platitorul_firmei(conn, monkeypatch):
 
 
 def test_c110_efectul_pe_factura_nota_si_d390(conn):
-    """Efectul stării firmei pe prestarea IC, cap la cap pe date: categoria liniei din regimul firmei (neplătitor -> `NEPLATITOR`, CF art.310
-    alin.(10) lit.b; plătitor -> `serviciu_extern`, art.278 alin.(2)), axa „servicii” înghețată pe factură, o singură notă 4111 = 704
+    """Efectul stării firmei pe prestarea IC, cap la cap pe date: categoria liniei din regimul firmei (plătitor -> `serviciu_extern`,
+    art.278 alin.(2); [lotul 12, C156, decizia Costin 12.3 pct.3] neplătitorul înregistrat art.317 -> aceeași, `PRESTARE_IC_317`: „fără TVA
+    român, mențiunea «taxare inversă», codul RO art. 317 pe factură, P în D390” — cota 0, CF art.310 alin.(10) lit.b; înainte `NEPLATITOR`,
+    O), axa „servicii” înghețată pe factură, o singură notă 4111 = 704
     (OMFP 2634/2015 pct.58 lit.c) și D390 cu P pe baza facturii (CF art.325 alin.(1) lit.c — și pentru înregistratul art.317).
     Verde și fără parametrul reparat: `creeaza_factura` recitește profilul (de aceea C110, așa cum fusese consemnată, nu schimba nici
     nota, nici declarațiile)."""
@@ -143,7 +145,7 @@ def test_c110_efectul_pe_factura_nota_si_d390(conn):
     r = _prestare()
     fid = r["factura_id"]
     linii = _sql(conn, "SELECT categorie_tva, cota_tva FROM factura_linii WHERE factura_id = %s", (fid,))
-    asteptat = categorii_tva.NEPLATITOR["cod"] if conn.platitor is False else "serviciu_extern"
+    asteptat = categorii_tva.PRESTARE_IC_317 if conn.platitor is False else "serviciu_extern"   # [C156] neplătitorul art.317: AE
     assert linii == [(asteptat, Decimal("0.00"))], linii
     assert _sql(conn, "SELECT axa_ic, tert_tara FROM facturi WHERE id = %s", (fid,)) == [("servicii", "DE")]
     note = _sql(conn, "SELECT i.id, l.cont_debit, l.cont_credit, l.suma FROM inregistrari i JOIN inregistrari_linii l "

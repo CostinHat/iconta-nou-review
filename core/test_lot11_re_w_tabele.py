@@ -21,6 +21,8 @@ from scripts import scan_trasee as T
     ("UPDATE public.tenants SET a = 1", ["tenants"]),
     ("INSERT INTO x (a) VALUES (1) ON CONFLICT (a) DO UPDATE SET a = 1", ["x"]),
     ("SELECT 1 FROM t WHERE id = 1 FOR UPDATE", []),
+    # [lotul 12, I3] șirurile unui modul se citesc lipite: „FOR UPDATE” urmat de scrierea reală nu dă tabelul „INSERT”
+    ("SELECT a FROM salariati WHERE cnp = %s FOR UPDATE\n                INSERT INTO salariati (cnp) VALUES (%s)", ["salariati"]),
 ])
 def test_scrierile_dau_numele_intreg_al_tabelului(sql, tabele):
     assert [m.group(2) for m in T.RE_W.finditer(sql)] == tabele

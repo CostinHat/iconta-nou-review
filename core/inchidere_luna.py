@@ -56,34 +56,65 @@ def luna_in_curs(an, luna, azi=None):
 #: [lotul 12, C127] Notele care închid o lună (`uc_comun._cere_luna_incheiata`, 216): salariile și amortizarea ei, după sursa notei.
 SURSE_DUPA_INCHEIERE = ("salarii", "amortizare")
 
+#: [lotul 12, C137] A treia notă care închide o lună: reevaluarea în valută (`uc_reevaluare.reevaluare_valuta_genereaza`, același
+#: `_cere_luna_incheiata`). Decizia Costin 12.3 pct.2, verbatim: „C137: fără marcă nouă acum; notele de reevaluare folosesc tipul de document
+#: existent.” Sursa ei e „operatiuni”, iar documentul — „Notă de calcul” (`documente_interne`, tipul `nota_calcul`) — e al tuturor
+#: operațiunilor speciale (dividende, leasing, provizioane…): după niciunul nu se deosebește. O deosebesc, fără schemă nouă, rândurile ei din
+#: `reevaluari_valuta` (scrise odată cu nota din lotul 10, aceeași legătură după care `reevaluare_valuta.plati_nelegate` scoate deja notele de
+#: reevaluare). Notele de dinainte de legătură (formularul manual scos în lotul 11, 04.07–21.10.2026: sursa „banca”, apoi „operatiuni”) n-au
+#: rânduri acolo; le numește descrierea pe care o scria aplicația: „Reevaluare solduri valuta la <data> (OMFP 1802 …”.
+DESCRIERE_REEVALUARE_VECHE = "Reevaluare solduri valuta la % (OMFP 1802%"
+
+#: [lotul 12, C187, clasa 216] A patra notă care închide o lună: descărcarea gestiunii global-valorice (`uc_tenants.stocuri_descarcare`,
+#: același `_cere_luna_incheiata`; K din rulajele cumulate „până la finele perioadei de referință”, OMFP 1802/2014 pct.286 alin.(4)). O
+#: numește cheia actului (`stocuri_api.descarca_luna`: `numar` = „DESC-GV-AAAA-LL”, sursa „stocuri”), iar pe cele de dinainte de cheie
+#: (05.10.2026) descrierea pe care o scria aplicația: „Descarcare gestiune LL/AAAA” — aceeași recunoaștere ca în `descarca_luna`.
+NUMAR_DESCARCARE_GV, DESCRIERE_DESCARCARE_GV = "DESC-GV-%", "Descarcare gestiune %"
+
+#: Documentul față de care se verifică nota, după felul ei (textul casetei de pe rândul notei).
+_DOCUMENTUL_LUNII = {
+    "document": "documentul lunii (statul de plată, registrul mijloacelor fixe)",
+    "reevaluare": "soldurile în valută de la sfârșitul lunii și de cursul BNR din ultima ei zi bancară",
+    "descarcare": "intrările și vânzările de mărfuri ale lunii întregi, din care se calculează descărcarea gestiunii",
+}
+
 
 def note_contate_inainte(cur, schema, ids=None):
-    """[lotul 12, C127] {nota_id: afirmația `fapt` (motivul = textul pentru contabil; `luna_an`, `scrisa_la`, `status`)} — notele de salarii / amortizare scrise ÎNAINTE ca luna lor să se
-    încheie (`creat_la` înaintea primei zile a lunii următoare datei notei). Reparația 216 (10.10.2026) le oprește pe cele noi; cele scrise
-    înainte au rămas. Ciornele le scoate `core/migrare_note_luna_neincheiata.py`; o notă VALIDATĂ e evidență — nu se șterge și nu se
-    modifică (o corectură se face printr-o notă de corecție), deci se SEMNALEAZĂ, cu mesajul de aici. `ids` = None: toate notele."""
+    """[lotul 12, C127, C137, C187] {nota_id: afirmația `fapt` (motivul = textul pentru contabil; `luna_an`, `scrisa_la`, `status`,
+    `reevaluare`, `descarcare`)} — notele de salarii / amortizare / reevaluare în valută / descărcare a gestiunii global-valorice scrise
+    ÎNAINTE ca luna lor să se încheie (`creat_la` înaintea primei zile a lunii următoare datei notei). Reparația 216 (10.10.2026) le oprește pe cele noi; cele scrise înainte au rămas. Ciornele le scoate
+    `core/migrare_note_luna_neincheiata.py`; o notă VALIDATĂ e evidență — nu se șterge și nu se modifică (o corectură se face printr-o notă
+    de corecție), deci se SEMNALEAZĂ, cu mesajul de aici. `ids` = None: toate notele."""
     from core import afirmatii as _af
     from core.pdf_util import data_ro
     p = ('"%s".' % schema) if schema else ""
-    cond, val = "", [list(SURSE_DUPA_INCHEIERE)]
+    reev = ("(EXISTS (SELECT 1 FROM %sreevaluari_valuta r WHERE r.inregistrare_id = i.id) "
+            "OR (i.sursa IN ('banca', 'operatiuni') AND i.descriere LIKE %%s))" % p)
+    desc = "(i.sursa = 'stocuri' AND (i.numar LIKE %s OR i.descriere LIKE %s))"   # [C187] descărcarea gestiunii GV
+    v_reev, v_desc = [DESCRIERE_REEVALUARE_VECHE], [NUMAR_DESCARCARE_GV, DESCRIERE_DESCARCARE_GV]
+    cond, val = "", v_reev + v_desc + [list(SURSE_DUPA_INCHEIERE)] + v_reev + v_desc
     if ids is not None:
         if not ids:
             return {}
-        cond, val = " AND id = ANY(%s)", val + [list(ids)]
-    cur.execute("SELECT id, data, status, (creat_la AT TIME ZONE 'Europe/Bucharest')::date AS scrisa FROM %sinregistrari "
-                "WHERE sursa = ANY(%%s) AND (creat_la AT TIME ZONE 'Europe/Bucharest') < date_trunc('month', data) + interval '1 month'%s"
-                % (p, cond), val)
+        cond, val = " AND i.id = ANY(%s)", val + [list(ids)]
+    cur.execute("SELECT i.id, i.data, i.status, (i.creat_la AT TIME ZONE 'Europe/Bucharest')::date AS scrisa, %s AS reevaluare, "
+                "%s AS descarcare FROM %sinregistrari i WHERE (i.sursa = ANY(%%s) OR %s OR %s) "
+                "AND (i.creat_la AT TIME ZONE 'Europe/Bucharest') < date_trunc('month', i.data) + interval '1 month'%s"
+                % (reev, desc, p, reev, desc, cond), val)
     out = {}
     for r in cur.fetchall():
-        iid, data, status, scrisa = (r["id"], r["data"], r["status"], r["scrisa"]) if isinstance(r, dict) else r
+        iid, data, status, scrisa, reevaluare, descarcare = (
+            (r["id"], r["data"], r["status"], r["scrisa"], r["reevaluare"], r["descarcare"]) if isinstance(r, dict) else r)
+        fel = "reevaluare" if reevaluare else "descarcare" if descarcare else "document"
         luna = "%02d/%d" % (data.month, data.year)
         out[iid] = _af.afirmatie(
             "fapt", "nota_scrisa_inainte_de_incheierea_lunii",
             "Nota a fost scrisă pe %s, înainte ca luna %s să se încheie: cifrele ei pot să nu cuprindă tot ce s-a întâmplat în lună. "
-            "Verific-o față de documentul lunii (statul de plată, registrul mijloacelor fixe); o diferență se corectează printr-o notă "
-            "de corecție — nota validată nu se modifică." % (data_ro(scrisa), luna),
+            "Verific-o față de %s; o diferență se corectează printr-o notă de corecție — nota validată nu se modifică."
+            % (data_ro(scrisa), luna, _DOCUMENTUL_LUNII[fel]),
             temei_completitudine="data la care a fost scrisă nota în aplicație, față de ultima zi a lunii ei",
-            an=data.year, luna=data.month, luna_an=luna, scrisa_la=scrisa.isoformat(), status=status)
+            an=data.year, luna=data.month, luna_an=luna, scrisa_la=scrisa.isoformat(), status=status, reevaluare=bool(reevaluare),
+            descarcare=fel == "descarcare")
     return out
 
 

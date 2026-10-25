@@ -178,6 +178,12 @@
     "deruleaza": "[data-nota-id='163']"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id='163'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='163'] #jn-depasita-163"
+   },
+   {
     "pauza": 400
    }
   ],
@@ -215,6 +221,12 @@
     "deruleaza": "[data-nota-id='5']"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id='5'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='5'] #jn-depasita-5"
+   },
+   {
     "pauza": 400
    }
   ],
@@ -250,6 +262,12 @@
    },
    {
     "deruleaza": "[data-nota-id='170']"
+   },
+   {
+    "click": "tbody.tn-nota[data-nota-id='170'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='170'] tr.tn-detaliu"
    },
    {
     "pauza": 400
@@ -290,8 +308,7 @@
   ],
   "verifica": [
    {
-    "contine": "Nr. crt. 8",
-    "zona": "[data-nota-id='105']"
+    "exista": "tbody.tn-nota[data-nota-id='105'] .tn-deschide:text-is('8')"
    },
    {
     "contine": "Factură 2 din 05.10.2026",
@@ -501,6 +518,12 @@
     "asteapta": "[data-nota-id]"
    },
    {
+    "click": "tbody.tn-nota:has-text('Contare factura F6 nr. 1') .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota:has-text('Contare factura F6 nr. 1') tr.tn-detaliu"
+   },
+   {
     "pauza": 400
    }
   ],
@@ -513,6 +536,10 @@
    },
    {
     "nu_contine": "F61"
+   },
+   {
+    "nu_contine": "F61",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "443_f6_vechi_registru_jurnal.png"
@@ -549,10 +576,22 @@
     "nu_contine": "Contare factura F1A3"
    },
    {
+    "nu_contine": "Contare factura F1A3",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
+   },
+   {
     "nu_contine": "Factură F1A3 din"
    },
    {
+    "nu_contine": "Factură F1A3 din",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
+   },
+   {
     "nu_contine": "Contare factura F1A12"
+   },
+   {
+    "nu_contine": "Contare factura F1A12",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    },
    {
     "contine": "Încasare factura F1A4"
@@ -963,13 +1002,15 @@
   "firma": "tenant_9049",
   "descriere": "Cabinet, «De validat»: ciornele vechi ale contabilului (scrise înainte de reparație, netrimise — el validează) sunt în coada lui, «Notele tale în ciornă», pe firme (F1: comisionul din bancă, încasarea F1A12 din casă; F6: contarea facturii F61), fiecare cu «Validează» și «Deschide nota»",
   "pasi": [{"click": ".fereastra:last-of-type .nav-x"}, {"pauza": 400}, {"click": ".fereastra:last-of-type .nav-x", "daca_exista": true},
-           {"pauza": 400}, {"click": "button.cab-card:has([data-cheie='validat'])"}, {"asteapta": "#val-ciorne .val-ciorne-firma"},
-           {"deruleaza": "#val-ciorne li", "text": "Comision administrare cont"}, {"pauza": 500}],
+           {"pauza": 400}, {"click": "button.cab-card:has([data-cheie='validat'])"}, {"asteapta": "#val-ciorne tbody.tn-nota[data-ciorna]"},
+           {"deruleaza": "#val-ciorne tbody.tn-nota", "text": "Comision administrare cont"},
+           {"click": "#val-ciorne tbody.tn-nota:has-text('Comision administrare cont') .tn-deschide"},
+           {"asteapta": "#val-ciorne tbody.tn-nota:has-text('Comision administrare cont') [data-deschide-ciorna]"}, {"pauza": 500}],
   "verifica": [{"contine": "Notele scrise de tine care nu sunt încă în evidență", "zona": "#val-ciorne"},
                {"contine": "Comision administrare cont octombrie", "zona": "#val-ciorne"},
                {"contine": "Încasare de la client — factura F1A12", "zona": "#val-ciorne"},
                {"contine": "Contare factura F6 nr. 1", "zona": "#val-ciorne"},
-               {"exista": "#val-ciorne li [data-val-ciorna]"}, {"exista": "#val-ciorne li [data-deschide-ciorna]"}],
+               {"exista": "#val-ciorne tbody.tn-nota [data-val-ciorna]"}, {"exista": "#val-ciorne tbody.tn-nota [data-deschide-ciorna]"}],
   "captura": "457_f1_f6_vechi_ciornele_contabilului_in_coada.png"},
  {"nr": "453", "firma": "tenant_9053",
   "descriere": "F5: statul 10/2026 (calculat înainte de reparație cu 648,75) — «Compoziția netului» arată deducerea personală rotunjită la leu, 649,00 (15% × 4.325 = 648,75), nu 648,75",

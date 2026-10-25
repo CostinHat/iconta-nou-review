@@ -9,9 +9,12 @@ Verificat la sursa oficială (calendar ANAF 2026):
   trimestrial (D100/D300/...)   -> 25 (sau 30/ultima zi) ale lunii următoare trim.
   D205                          -> ultima zi februarie an următor
   D101                          -> 25 iunie an următor (OUG 153/2020 art.I alin.(13) lit.a pt 2021-2025; OUG 8/2026 art.6 pct.12 -> art.42(1) CF pt 2026+)
-Toate se mută la prima zi lucrătoare dacă pică în weekend/sărbătoare legală — CU O EXCEPȚIE: ce cade nominal
-pe 25 decembrie (obligațiile lunii noiembrie) e scadent pe 21 decembrie, iar dacă 21 e nelucrătoare, în ultima zi
-lucrătoare DINAINTE (CPF art.155 alin.(2), v. TEMEI_21_DECEMBRIE). Termenul se mută ÎNAPOI, nu înainte.
+Toate se mută la prima zi lucrătoare dacă pică în weekend/sărbătoare legală (CPF art.75 -> Legea 134/2010 art.181 alin.(2),
+v. TEMEI_ZI_NELUCRATOARE) — CU O EXCEPȚIE, numai pentru CREANȚE fiscale: o declarație de impunere / o plată care cade
+nominal pe 25 decembrie (obligațiile lunii noiembrie) e scadentă pe 21 decembrie, iar dacă 21 e nelucrătoare, în ultima zi
+lucrătoare DINAINTE (CPF art.155 alin.(2), v. TEMEI_21_DECEMBRIE). Termenul se mută ÎNAPOI, nu înainte. O declarație
+INFORMATIVĂ (D390, D208, …: `TEMEI_FARA_CREANTA`) nu declară o creanță, deci nu intră în excepție: 25.12 se mută DUPĂ
+(deficiența 639: D390 pentru 11/2026 arăta 21.12.2026 în loc de 28.12.2026).
 
 ATENȚIE — termenul legal NU e atributul `scadenta` din XML. Validatorul ANAF cere în declarație scadența
 NOMINALĂ (25.12): DUK regula R15.6 (D100) și DUK regula R25 (D300, nr_evid) resping 21.12 — probat 03.10.2026.
@@ -101,12 +104,32 @@ TEMEI_TERMEN = {
     'd402': ('CPF art.60 alin.(1)', _CPF,
              'Plătitorii de venituri de natura celor prevăzute la art. 291 alin. (1) lit. a)-d) au obligația să depună la organul fiscal central o declarație privind veniturile plătite fiecărui beneficiar care este rezident al altor state membre ale Uniunii Europene, până în ultima zi a lunii februarie a anului curent, pentru anul expirat.'),
 }
-# NESURSATE ÎNCĂ (clichetul le numără): d100, d101, d112, d205, d394, d406. Unde se caută, ca
-# următorul să nu reia de la zero: d112 → CF art. 147; d100 → CF art. 56 (micro) și art. 41 (plăți
-# anticipate profit); d101 → CF art. 42; d205 → OPANAF 179/2022 + 102/2025; d394 → OPANAF 3769/2015
-# actualizat prin 2194/2025; d406 → OPANAF 1783/2021 Anexa 4. ATENȚIE la consolidat: are întâi un
-# CUPRINS cu aceleași marcaje „Articolul N", deci numărul se derivă mergând ÎNAPOI de la fraza găsită,
-# nu căutând titlul articolului.
+# [deficiența 639, lotul 12] ultimele șase tipuri lunare / trimestriale / anuale, verificate la sursă: ziua din cod (`_ZIUA`,
+# `_ULTIMA_ZI`, `_data_nominala`) e cea din text. D100 poartă regula impozitului pe veniturile microîntreprinderilor (trimestrial);
+# aceeași zi, 25 a lunii următoare perioadei, o are și impozitul pe dividende declarat lunar (CF art.43 alin.(2): „se declară și se
+# plătește la bugetul de stat, până la data de 25 inclusiv a lunii următoare celei în care se plătește dividendul”). ATENȚIE la
+# consolidat: are întâi un CUPRINS cu aceleași marcaje „Articolul N", deci numărul se derivă mergând ÎNAPOI de la fraza găsită.
+TEMEI_TERMEN.update({
+    "d100": ("CF art.56 alin.(1)", _CF,
+             "Calculul și plata impozitului pe veniturile microîntreprinderilor se efectuează trimestrial, până la data de 25 inclusiv "
+             "a lunii următoare trimestrului pentru care se calculează impozitul"),
+    "d101": ("CF art.42 alin.(1)", _CF,
+             "Contribuabilii au obligația să depună o declarație anuală privind impozitul pe profit până la data de 25 iunie inclusiv a "
+             "anului următor"),
+    "d112": ("CF art.147 alin.(1)", _CF,
+             "sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care se plătesc veniturile, "
+             "Declarația privind obligațiile de plată a contribuțiilor sociale, impozitului pe venit și evidența nominală a persoanelor "
+             "asigurate"),
+    "d205": ("CF art.132 alin.(2)", _CF,
+             "au obligația să depună o declarație privind calcularea și reținerea impozitului pentru fiecare beneficiar de venit la "
+             "organul fiscal competent, până în ultima zi a lunii februarie inclusiv a anului curent pentru anul expirat"),
+    # ziua 30 și, pentru ianuarie, ultima zi a lui februarie (`min(30, ultima zi)` din `_data_nominala`): același punct al instrucțiunilor
+    "d394": ("OPANAF 2194/2025", "anaf_surse/opanaf_2194_2025_d394.txt",
+             "Declaraţia se depune la organul fiscal competent până în data de 30 inclusiv a lunii următoare încheierii perioadei de "
+             "raportare"),
+    "d406": ("OPANAF 1783/2021", "anaf_surse/opanaf_1783_2021_saft_d406.txt",
+             "până la data-limită de depunere - ultima zi a lunii care urmează perioadei pentru care se face raportarea"),
+})
 
 # [Lot 19 defect 7, 03.10.2026] Aplicația arăta 28.12.2026 pentru obligațiile lui noiembrie (25 și 26 decembrie
 # sărbători, 27 duminică -> mutare ÎNAINTE). Legea cere 21 decembrie, mutat ÎNAPOI.
@@ -115,6 +138,45 @@ TEMEI_21_DECEMBRIE = ("CPF art.155 alin.(2)", "anaf_surse/legea_207_2015_consoli
                       "declară până la data de 21 decembrie. În situația în care data de 21 decembrie, este zi "
                       "nelucrătoare, creanțele fiscale sunt scadente și/sau se declară până în ultima zi lucrătoare "
                       "anterioară datei de 21 decembrie")
+
+# [deficiența 639, lotul 12] Mutarea unui termen căzut într-o zi nelucrătoare: DUPĂ, la prima zi lucrătoare. CPF art.75 trimite la Codul de
+# procedură civilă, iar acolo art.181 alin.(2) spune regula. Sunt două citate, fiecare verbatim în fișierul lui (`core/test_temei_termene.py`).
+TEMEI_ZI_NELUCRATOARE = (
+    ("CPF art.75", _CPF,
+     "Termenele de orice fel privind exercitarea drepturilor și îndeplinirea obligațiilor prevăzute de Codul fiscal, de prezentul cod, "
+     "precum și de alte dispoziții legale aplicabile în materie, dacă legislația fiscală nu dispune altfel, se calculează potrivit "
+     "dispozițiilor Codului de procedură civilă"),
+    ("Legea 134/2010 art.181 alin.(2)", "anaf_surse/legea_134_2010_codul_de_procedura_civila.html",
+     "Când ultima zi a unui termen cade într-o zi nelucrătoare, termenul se prelungește până în prima zi lucrătoare care urmează."),
+)
+
+# [deficiența 639, lotul 12] CINE intră în excepția de 21 decembrie. CPF art.155 alin.(2) vorbește de „Creanțele fiscale […] pentru care […]
+# scadența și/sau termenul de declarare se împlinesc la 25 decembrie”, iar creanța fiscală e „dreptul la încasarea oricărei sume care se
+# cuvine bugetului general consolidat” (CPF art.1 pct.10). O declarație INFORMATIVĂ (CPF art.1 pct.19, `TEMEI_INFORMATIVA`) nu declară o
+# sumă de încasat, deci termenul ei de 25 decembrie nu e termenul unei creanțe: se mută DUPĂ, ca orice termen (TEMEI_ZI_NELUCRATOARE).
+# Fiecare tip informativ cu citatul care-l numește așa (verbatim, `core/test_temei_termene.py`). Un tip care NU e aici păstrează excepția
+# (data mai devreme — varianta sigură pentru o creanță).
+TEMEI_INFORMATIVA = ("CPF art.1 pct.19", _CPF,
+                     "declarație informativă - actul întocmit de contribuabil/plătitor referitor la orice informații în legătură cu impozitele, "
+                     "taxele și contribuțiile sociale, bunurile și veniturile impozabile, precum și în legătură cu evidențele contabile și "
+                     "fiscale, inclusiv fișierul standard de control fiscal, dacă legea prevede declararea acestora, altele decât cele "
+                     "prevăzute la pct. 18")
+TEMEI_FARA_CREANTA = {
+    # INTERPRETARE CU TEMEI (de reconfirmat dacă apare o normă care transează): actul nu numește D390 „informativă”. Argumentul: declarația
+    # recapitulativă doar „menționează” operațiunile intracomunitare ale lunii (CF art.325 alin.(1)), fără vreo sumă de plată — TVA-ul lor
+    # se declară și se plătește prin decontul D300 —, deci intră în CPF art.1 pct.19, nu în pct.18. Alternativa respinsă: 21.12 ca la D300
+    # (excepția e scrisă pentru creanțe; Costin a numit 21.12 la D390 deficiență, 639).
+    "d390": ("CF art.325 alin.(1)", _CF,
+             "trebuie să întocmească și să depună la organele fiscale competente o declarație recapitulativă în care menționează"),
+    "d208": ("CF art.113", _CF, "o declarație informativă privind transferurile de proprietăți imobiliare"),
+    "d394": ("OPANAF 2194/2025", "anaf_surse/opanaf_2194_2025_d394.txt",
+             "Declaraţie informativă privind livrările/prestările şi achiziţiile efectuate pe teritoriul naţional"),
+    "d406": TEMEI_INFORMATIVA[:2] + ("inclusiv fișierul standard de control fiscal",),
+    "d205": ("OPANAF 179/2022", "anaf_surse/opanaf_179_2022_d205_d207_baza.txt",
+             "Declaraţie informativă privind impozitul reţinut la sursă şi câştigurile/pierderile din investiţii, pe beneficiari de venit"),
+    "d207": ("OPANAF 179/2022", "anaf_surse/opanaf_179_2022_d205_d207_baza.txt",
+             "Declaraţie informativă privind impozitul reţinut la sursă/impozitul suportat de plătitorul de venit/veniturile scutite"),
+}
 
 # ziua nominală a scadenței per tip (în luna următoare perioadei)
 _ZIUA = {"d394": 30}          # restul: 25 ; d406: ultima zi (tratat separat)
@@ -282,18 +344,23 @@ def ultima_zi_lucratoare_pana_la(d):
     return d
 
 
-def termen_legal(nominala):
+def termen_legal(nominala, creanta=True):
     """Data până la care se declară/plătește o obligație cu scadența nominală `nominala`: prima zi lucrătoare
-    ≥ nominala, cu excepția lui 25 decembrie -> 21 decembrie sau ultima zi lucrătoare dinainte (CPF art.155
-    alin.(2), TEMEI_21_DECEMBRIE). Pură."""
-    if (nominala.month, nominala.day) == (12, 25):
+    ≥ nominala (TEMEI_ZI_NELUCRATOARE); pentru o CREANȚĂ fiscală (`creanta`), 25 decembrie -> 21 decembrie sau ultima zi
+    lucrătoare dinainte (CPF art.155 alin.(2), TEMEI_21_DECEMBRIE). Pură."""
+    if creanta and (nominala.month, nominala.day) == (12, 25):
         return ultima_zi_lucratoare_pana_la(date(nominala.year, 12, 21))
     return urmatoarea_zi_lucratoare(nominala)
 
 
+def declara_creanta(tip):
+    """Intră tipul în excepția de 21 decembrie (CPF art.155 alin.(2))? Nu, dacă e o declarație informativă (`TEMEI_FARA_CREANTA`). Pură."""
+    return tip.lower() not in TEMEI_FARA_CREANTA
+
+
 def scadenta_data(tip, an, luna=None, trim=None):
     """Scadența legală ca obiect date (v. termen_legal). Pură."""
-    return termen_legal(_data_nominala(tip, an, luna=luna, trim=trim))
+    return termen_legal(_data_nominala(tip, an, luna=luna, trim=trim), creanta=declara_creanta(tip))
 
 
 def urmatorul_termen_lunar(azi):

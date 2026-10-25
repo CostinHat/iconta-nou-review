@@ -1,0 +1,163 @@
+[
+ {
+  "nr": "C133",
+  "firma": "tenant_9053",
+  "descriere": "F5: Salariați -> «Corectează datele» la Ionescu Vasile (fișă salvată nescutită, înainte de reparație): «Scutit de contribuția minimă» arată Nu (din fișă), «Motivul scutirii» nu se vede",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": "[data-date='1']"
+   },
+   {
+    "click": "[data-date='1']"
+   },
+   {
+    "asteapta": "#ed-scutit"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#ed-scutit",
+    "egal": "false"
+   },
+   {
+    "contine": "Scutit de contribuția minimă",
+    "zona": "#sp-date-zona"
+   },
+   {
+    "nu_contine": "Motivul scutirii",
+    "zona": "#sp-date-zona"
+   }
+  ],
+  "captura": "c133_f5_vechi_corecteaza_datele_scutit_nu.png"
+ },
+ {
+  "nr": "C133",
+  "firma": "tenant_9053",
+  "descriere": "F5: «Corectează datele» la Popescu Elena (nescutită): Scutit = Da -> Salvează fără motiv: refuz lângă «Motivul scutirii»; motivul 5 („două sau mai multe contracte”) -> Salvează: «datele corectate s-au salvat» și ce face corectura cu D112 (pe copie nu e nicio D112 depusă: «intră în statul de plată și în D112 calculate de acum înainte»)",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": "[data-date='2']"
+   },
+   {
+    "click": "[data-date='2']"
+   },
+   {
+    "asteapta": "#ed-scutit"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "alege": "#ed-scutit",
+    "valoare": "true"
+   },
+   {
+    "click": "#ed-save"
+   },
+   {
+    "asteapta": ".msg-eroare[data-camp='ed-motiv']"
+   },
+   {
+    "captura": "c133_f5_vechi_scutit_da_cere_motivul.png"
+   },
+   {
+    "alege": "#ed-motiv",
+    "valoare": "5"
+   },
+   {
+    "click": "#ed-save"
+   },
+   {
+    "asteapta_text": "Corectura scutirii intră"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "datele corectate s-au salvat"
+   },
+   {
+    "contine": "Corectura scutirii intră"
+   }
+  ],
+  "captura": "c133_f5_vechi_corectura_salvata_efect_d112.png"
+ },
+ {
+  "nr": "C133",
+  "firma": "tenant_9053",
+  "descriere": "F5: Popescu Elena, corectura înapoi (Scutit = Nu; copia rămâne cum era) -> din nou «Corectează datele»: «Corecturile scutirii» arată cine, când, vechi -> nou (Nu -> Da, — -> două sau mai multe contracte, Da -> Nu, motivul -> —)",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": "[data-date='2']"
+   },
+   {
+    "click": "[data-date='2']"
+   },
+   {
+    "asteapta": "#ed-scutit"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "alege": "#ed-scutit",
+    "valoare": "false"
+   },
+   {
+    "click": "#ed-save"
+   },
+   {
+    "asteapta_text": "Corectura scutirii intră"
+   },
+   {
+    "asteapta": "[data-date='2']"
+   },
+   {
+    "click": "[data-date='2']"
+   },
+   {
+    "asteapta": "#ed-jurnal-tabel"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Corecturile scutirii",
+    "zona": "#sp-date-zona"
+   },
+   {
+    "contine": "Scutit de contribuția minimă",
+    "zona": "#ed-jurnal-tabel"
+   },
+   {
+    "contine": "Motivul scutirii",
+    "zona": "#ed-jurnal-tabel"
+   },
+   {
+    "contine": "două sau mai multe contracte",
+    "zona": "#ed-jurnal-tabel"
+   },
+   {
+    "valoare": "#ed-scutit",
+    "egal": "false"
+   }
+  ],
+  "captura": "c133_f5_vechi_jurnalul_corecturilor.png"
+ }
+]

@@ -1621,3 +1621,189 @@ def genereaza(conn, schema, perioada, manual=None):
     _st = _rect.stabileste(conn, schema, "d394", perioada.an, perioada.luna)
     res.rectificativa, res.depunere_anterioara_nr = _st.mentiune, _st.nr
     return _xml, res
+
+
+# ============================================================
+#  [lotul 12, C19 — comanda Costin 12.3 pct.6, verbatim în DECIZII] „rectificativa D394 pentru o perioadă deja depusă se generează
+#  doar la cererea contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.”
+#
+#  TEMEI: OPANAF 2194/2025 anexa nr.2 pct.3: „În cazul în care, după depunerea declaraţiei, persoana impozabilă constată existenţa unor
+#  omisiuni/erori în datele declarate, aceasta trebuie să depună o nouă declaraţie corect completată cu operaţiunile care necesită
+#  modificarea şi/sau operaţiunile care nu au fost declarate, declaraţie care înlocuieşte declaraţia informativă depusă iniţial.”
+#  MARCAJUL: D394 nu are bifă de rectificativă în XML — atributele rădăcinii din D394Validator v5 (Declaratie394.class, constant pool:
+#  luna, an, tip_D394, sistemTVA, op_efectuate, prsAfiliat, cui, caen, den, adresa, …, optiune, schimb_optiune, totalPlata_A) n-au
+#  `d_rec`; `optiune` e acordul de consultare a datelor partenerilor, nu rectificarea. A doua declarație pe perioadă ÎNLOCUIEȘTE prima
+#  (`rectificativa.FARA_MARCAJ_IN_XML`), deci XML-ul rectificativei e o declarație completă, iar ce o deosebește e DOAR conținutul —
+#  exact ce contabilul vede înainte, ca diferențe față de XML-ul depus păstrat (`public.declaratii_depuse.xml`).
+#
+#  AICI: numai citirea XML-ului și diferențele (fără bază). POARTA (depunerile, confirmarea) e `rectificativa.poarta_d394`, chemată de
+#  `uc_declaratii.poarta_cererii` pe fiecare drum al cererilor; NU în `genereaza`: scripturile de citire (cifrele de referință,
+#  amprentele) generează D394 pe perioade depuse fără să producă ceva de depus.
+# ============================================================
+#: cartușele formularului pe tipul partenerului (OPANAF 2194/2025 anexa nr.2 secțiunea 1 lit.C–F; lista lor de detaliu, secțiunea a 2-a)
+LITERA_TIP_PARTENER = {1: "C", 2: "D", 3: "E", 4: "F"}
+
+#: numele rubricilor XML pe care le vede contabilul în diferențe — coloana „Denumire câmp” din structD394 (anaf_surse/d394_struct_anaf.txt);
+#: o rubrică nenumită aici își păstrează numele din XML (numele pe care îl dă și validatorul ANAF în erori)
+ETICHETE_CAMP = {
+    "luna": "luna", "an": "anul", "tip_D394": "tip D394 (lunar / trimestrial / semestrial / anual)",
+    "sistemTVA": "sistemul de TVA (0 normal, 1 la încasare)", "op_efectuate": "operațiuni efectuate (1 da, 0 nu)",
+    "prsAfiliat": "operațiuni cu persoane afiliate (1 da, 0 nu)", "cui": "cod de înregistrare în scopuri de TVA", "caen": "cod CAEN",
+    "den": "denumire", "adresa": "domiciliul fiscal", "telefon": "telefon", "cifR": "codul fiscal al reprezentantului",
+    "denR": "denumirea reprezentantului", "functie_reprez": "funcția reprezentantului", "adresaR": "adresa reprezentantului",
+    "den_intocmit": "întocmit de — denumire", "cif_intocmit": "întocmit de — cod fiscal", "calitate_intocmit": "întocmit de — calitatea",
+    "totalPlata_A": "suma de control", "nrCui1": "nr. persoane, tip partener 1", "nrCui2": "nr. persoane, tip partener 2",
+    "nrCui3": "nr. persoane, tip partener 3", "nrCui4": "nr. persoane, tip partener 4",
+    "nrFacturi": "nr. total facturi emise în perioadă", "nrFact": "nr. facturi", "baza": "baza impozabilă", "tva": "TVA",
+    "denP": "denumirea partenerului", "taraP": "țara partenerului", "judP": "județul partenerului", "codPR": "cod produs",
+    "nrFactPR": "nr. facturi", "bazaPR": "baza impozabilă", "tvaPR": "TVA", "nrAMEF": "nr. de aparate de marcat",
+    "nrBF": "nr. bonuri fiscale", "total": "total încasări",
+}
+
+#: ordinea secțiunilor în lista diferențelor = ordinea formularului (antet, I, rezumatele C–F, H, seriile, listele, G)
+_ORDINE_SECTIUNE = {"antet": 0, "informatii": 1, "rezumat1": 2, "rezumat2": 3, "serieFacturi": 4, "op1": 5, "op2": 6}
+
+
+def _fara_ns(nume):
+    return str(nume).rsplit("}", 1)[-1]
+
+
+def _nr_int(v):
+    try:
+        return int(str(v).strip())
+    except (TypeError, ValueError):
+        return None
+
+
+#: rubricile rezumatelor pe tipul operațiunii: structD394 „facturiL = Σ op1(nrFact) pentru op1(tip)=L”, „bazaL = Σ op1(baza)”, „tvaL =
+#: Σ op1(tva)” (la fel facturiA / bazaAI / tvaLS …) — numărul facturilor, baza și TVA-ul operațiunilor de tipul acela
+_RE_RUBRICA_TIP = re.compile(r"^(facturi|baza|tva)(%s)$" % "|".join(sorted(TIPURI, key=len, reverse=True)))
+_RUBRICA_TIP = {"facturi": "nr. facturi", "baza": "baza impozabilă", "tva": "TVA"}
+
+
+def eticheta_camp(atribut):
+    """„baza impozabilă (baza)” — numele din structD394 plus rubrica XML (o recunoaște din erorile validatorului); necunoscută -> rubrica."""
+    e = ETICHETE_CAMP.get(atribut)
+    m = None if e else _RE_RUBRICA_TIP.match(atribut)
+    if m:
+        e = "%s — %s" % (_RUBRICA_TIP[m.group(1)], ETICHETE_TIP[m.group(2)])
+    return "%s (%s)" % (e, atribut) if e else atribut
+
+
+def _rand_op1(a):
+    part = a.get("denP") or ""
+    if a.get("cuiP"):
+        part = "%s (%s)" % (part, a["cuiP"]) if part else a["cuiP"]
+    return "%s · %s · cota %s%%" % (a.get("tip") or "?", part or "partener fără nume", a.get("cota") or "?")
+
+
+def randuri_xml(xml):
+    """Rândurile unei D394 citite din XML: {cheie: (rând, {rubrică: valoare})}, cheia = (ordine, secțiune, identitatea rândului, a câta
+    apariție). Identitatea: rezumatul pe (tip partener, cotă), lista pe (tip, tip partener, cotă, cod partener — sau numele, fără cod),
+    produsul de taxare inversă pe cod, seria pe (tip, serie), Î1/Î2 pe lună. None = XML lipsă sau ilizibil (diferențele nu se pot calcula)."""
+    import xml.etree.ElementTree as _ET
+    if not xml or not str(xml).strip():
+        return None
+    try:
+        rad = _ET.fromstring(str(xml).encode("utf-8"))
+    except _ET.ParseError:
+        return None
+    if _fara_ns(rad.tag) != "declaratie394":
+        return None
+    out, vazute = {}, {}
+
+    def pune(fel, sect, ident, rand, campuri):
+        baza = (_ORDINE_SECTIUNE.get(fel, len(_ORDINE_SECTIUNE)), sect, tuple(str(x if x is not None else "") for x in ident))
+        i = vazute[baza] = vazute.get(baza, 0) + 1   # doi parteneri fără cod cu același nume: al doilea e alt rând
+        out[baza + (i,)] = (rand if i == 1 else "%s (al %d-lea)" % (rand, i), {_fara_ns(k): v for k, v in campuri.items()})
+
+    def fara(a, *chei):
+        return {k: v for k, v in a.items() if _fara_ns(k) not in chei}
+
+    def tp_eticheta(a):
+        tp = _nr_int(a.get("tip_partener"))
+        return LITERA_TIP_PARTENER.get(tp, "?"), ETICHETE_TIP_PARTENER.get(tp, "tip %s" % a.get("tip_partener"))
+
+    pune("antet", "Antet; A–B. Date de identificare", (), "—", dict(rad.attrib))
+    for poz, el in enumerate(rad):
+        fel, a = _fara_ns(el.tag), {_fara_ns(k): v for k, v in el.attrib.items()}
+        if fel == "informatii":
+            pune(fel, "I. Alte informații", (), "—", a)
+        elif fel == "rezumat1":
+            lit, et = tp_eticheta(a)
+            sect, rand = "%s. Rezumat — partener %s" % (lit, et), "cota %s%%" % a.get("cota")
+            pune(fel, sect, (a.get("tip_partener"), a.get("cota")), rand, fara(a, "tip_partener", "cota"))
+            for d in el:
+                if _fara_ns(d.tag) == "detaliu":
+                    pune(fel, sect, (a.get("tip_partener"), a.get("cota"), d.get("bun")), "%s · bunul %s" % (rand, d.get("bun")),
+                         fara(dict(d.attrib), "bun"))
+        elif fel == "rezumat2":
+            pune(fel, "H. Rezumatul declarației", (a.get("cota"),), "cota %s%%" % a.get("cota"), fara(a, "cota"))
+        elif fel == "serieFacturi":
+            pune(fel, "Seriile facturilor", (a.get("tip"), a.get("serieI")),
+                 "seria %s · %s" % (a.get("serieI"), ETICHETE_TIP_SERIE.get(_nr_int(a.get("tip")), "tip %s" % a.get("tip"))),
+                 fara(a, "tip", "serieI"))
+        elif fel == "op1":
+            lit, et = tp_eticheta(a)
+            sect, rand = "Secțiunea a 2-a, lista %s — partener %s" % (lit, et), _rand_op1(a)
+            cod = a.get("cuiP") or ""
+            ident = (a.get("tip"), a.get("tip_partener"), a.get("cota"), cod, "" if cod else a.get("denP"))
+            pune(fel, sect, ident, rand, fara(a, "tip", "tip_partener", "cota", "cuiP", *(() if cod else ("denP",))))
+            for o in el:
+                if _fara_ns(o.tag) == "op11":
+                    pune(fel, sect, ident + (o.get("codPR"),), "%s · cod %s" % (rand, o.get("codPR")), fara(dict(o.attrib), "codPR"))
+        elif fel == "op2":
+            t = a.get("tip_op2")
+            pune(fel, "G. Încasări prin casa de marcat și din activități exceptate", (t, a.get("luna")),
+                 "%s · luna %s" % ({"I1": "Î1", "I2": "Î2"}.get(t, t), a.get("luna")), fara(a, "tip_op2", "luna"))
+        else:   # o secțiune pe care iConta.eu n-o scrie (venită în XML-ul depus): comparată pe poziție, cu numele ei din XML
+            pune(fel, fel, (poz,), "poziția %d" % (poz + 1), a)
+            for j, c in enumerate(el):
+                pune(fel, fel, (poz, _fara_ns(c.tag), j), "poziția %d · %s %d" % (poz + 1, _fara_ns(c.tag), j + 1), dict(c.attrib))
+    return out
+
+
+_RE_NUMAR_RUBRICA = re.compile(r"-?\d+(?:\.\d+)?")
+
+
+def _egale(a, b):
+    """Aceeași valoare: numerele după valoare („09” = „9”), restul ca text."""
+    if a == b:
+        return True
+    if a is None or b is None:
+        return False
+    sa, sb = str(a).strip(), str(b).strip()
+    if _RE_NUMAR_RUBRICA.fullmatch(sa) and _RE_NUMAR_RUBRICA.fullmatch(sb):
+        return Decimal(sa) == Decimal(sb)
+    return False   # cel puțin unul nu e număr: textele, deja diferite, diferă
+
+
+def diferente(xml_depus, xml_nou, lipsa_depus="—"):
+    """[{sectiune, rand, camp, depus, nou}] — fiecare rubrică a D394 care se schimbă de la declarația depusă la cea generată acum, în
+    ordinea formularului; un rând care apare / dispare are toate rubricile lui, cu „—” pe partea unde lipsește. `xml_depus` lipsă /
+    ilizibil -> None (nu se poate compara)."""
+    dep = randuri_xml(xml_depus)
+    if dep is None:
+        return None
+    nou = randuri_xml(xml_nou) or {}
+    out = []
+    for k in sorted(set(dep) | set(nou)):
+        rd, cd = dep.get(k, (None, {}))
+        rn, cn = nou.get(k, (None, {}))
+        for camp in list(cn) + [c for c in cd if c not in cn]:
+            vd, vn = cd.get(camp), cn.get(camp)
+            if not _egale(vd, vn):
+                out.append({"sectiune": k[1], "rand": rn or rd, "camp": eticheta_camp(camp),
+                            "depus": lipsa_depus if vd is None else vd, "nou": "—" if vn is None else vn})
+    return out
+
+
+#: XML-ul declarației depuse nu e păstrat (depusă în afara iConta.eu, de contabilul anterior, preluată din istoric): rectificativa se
+#: arată întreagă, cu „necunoscut” pe partea depusă — nu se poate spune ce se schimbă, deci contabilul compară cu recipisa din SPV
+NECUNOSCUT = "necunoscut"
+_XML_GOL = '<declaratie394 xmlns="%s"/>' % NS
+
+
+def continut(xml_nou):
+    """Tot conținutul declarației, în forma diferențelor, cu „necunoscut” pe partea depusă (XML-ul depus nu e păstrat)."""
+    return diferente(_XML_GOL, xml_nou, lipsa_depus=NECUNOSCUT)

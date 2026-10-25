@@ -28,21 +28,14 @@ def test_tva_ti():
     with pytest.raises(ValueError):
         m.tva_taxare_inversa(-1, cota=21)
 
-def test_lic_ok():
-    ok, ment = m.valideaza_lic("DE123456789", True, True)
-    assert ok and "294" in ment
-
-def test_lic_cod_invalid():
-    with pytest.raises(ValueError, match="invalid în VIES"):
-        m.valideaza_lic("DE123456789", False, True)
-
-def test_lic_fara_transport():
-    with pytest.raises(ValueError, match="transport"):
-        m.valideaza_lic("DE123456789", True, False)
-
-def test_lic_client_ro():
-    with pytest.raises(ValueError, match="din RO"):
-        m.valideaza_lic("RO34142700", True, True)
+# [lotul 12, C84, decizia Costin 12.3 pct.7] `valideaza_lic` s-a scos (fără apelant de la C84 (b): livrarea de bunuri se emite din
+# „Emite factură”), odată cu refuzul „fără dovada transportului”, care devine avertisment la emitere. Testele ei (cod VIES invalid, client
+# din RO, fără transport) au plecat cu ea; livrarea din „Emite factură” e păzită de core/test_lot12_fisc3_c84_dovada_transport.py, iar
+# clientul din RO de core/test_274b_categorii_tva.py (livrare_ic -> CATEGORIE_TVA_TARA).
+def test_lic_fara_dovada_e_avertisment_care_spune_ce_lipseste():
+    assert not hasattr(m, "valideaza_lic")
+    assert m.INTREBARE_DOVADA_TRANSPORT == ("Ai dovada transportului bunurilor în alt stat membru? Scutirea livrării intracomunitare se "
+                                            "aplică numai dacă o poți justifica cu documentele de transport.")
 
 def test_prestare_ok():
     ok, ment = m.valideaza_prestare_ic("FR12345678901", True)

@@ -110,9 +110,14 @@ def _emite_factura(ecran, firma="Comert Micro TVA"):
 # ---------------------------------------------------------------- firmele sintetice
 @pytest.fixture(scope="module")
 def firma_cv(firma_e2e):
-    """`firma_e2e` cu stocul declarat cantitativ-valoric (Date firmă, `salveaza_date` — jurnalizat cu patronul), numerotarea
-    facturilor configurată (`seteaza_numerotare`), „Produs Pret 100” în nomenclator (`produse_api.creeaza`) și un articol
-    „Marfa A <n>” intrat în fișa de magazie (`stocuri_cv_api.intrare`)."""
+    """`firma_e2e` pregătită de `pregateste_cv`."""
+    return pregateste_cv(firma_e2e)
+
+
+def pregateste_cv(firma_e2e):
+    """O firmă NOUĂ (fără facturi: numerotarea pornește de la 1) cu stocul declarat cantitativ-valoric (Date firmă, `salveaza_date` —
+    jurnalizat cu patronul), numerotarea facturilor configurată (`seteaza_numerotare`), „Produs Pret 100” în nomenclator
+    (`produse_api.creeaza`) și un articol „Marfa A <n>” intrat în fișa de magazie (`stocuri_cv_api.intrare`)."""
     from core import db, facturi_api, firma_profil_api
     uid, _cab = _uid("patron@prisma-cont.test")
     with db.get_conn(firma_e2e["schema"]) as c:
@@ -587,7 +592,8 @@ def _coada(ecran):
 
 
 def _card_firma(ecran, firma):
-    return ecran.pg.locator(".val-card", has_text=firma["nume"])
+    # [lotul 12, 622] nota din coadă e un rând al tabelului de note din „Note de validat” (`e2e_bloc_b._card_nota`), nu un `.val-card`
+    return ecran.pg.locator("#val-note tbody.tn-nota", has_text=firma["nume"])
 
 
 def test_def_80_nir_un_singur_element_in_coada(patron, firma_gv, asistent_pregatitor):
@@ -599,12 +605,20 @@ def test_def_80_nir_un_singur_element_in_coada(patron, firma_gv, asistent_pregat
                     "linii": [_linie_gv("Marfa Coada 80")]}, uid=asist)
     pg = patron.pg
     _coada(patron)
-    carduri = pg.locator(".val-card", has_text="Furnizor Coada 80")
-    pg.wait_for_function("() => [...document.querySelectorAll('.val-card')].some(c => c.innerText.includes('Furnizor Coada 80'))",
+    from e2e_bloc_b import _deschide_rand, _linii_detaliu   # [lotul 12, 622] tabelul de note; e2e_bloc_b nu importă din e2e_bloc_c
+    # [622] nota din coadă = un rând al tabelului „Note de validat”; eticheta documentului (furnizorul) stă în detaliu, deci rândul se
+    # găsește după textul lui din DOM, iar ce vede contabilul se verifică după ce îl deschide
+    carduri = pg.locator("#val-note tbody.tn-nota", has_text="Furnizor Coada 80")
+    pg.wait_for_function("() => [...document.querySelectorAll('#val-note tbody.tn-nota')].some(c => c.textContent.includes('Furnizor Coada 80'))",
                          timeout=15000)
     assert carduri.count() == 1, "NIR-ul apare în %d elemente" % carduri.count()
+    assert "4 note" in carduri.first.locator("tr.tn-rand").inner_text(), carduri.first.inner_text()   # semnul de pe rând: „4 note ale documentului”
+    # „Vezi notele →” (fereastra notelor) -> detaliul rândului: liniile celor 4 note ale documentului, sub eticheta lui
+    _deschide_rand(patron, carduri.first)
     txt = carduri.first.inner_text()
-    assert "Vezi notele" in txt and "4 note" in txt, txt
+    assert "Furnizor Coada 80" in txt and "4 note" in txt, txt
+    linii = _linii_detaliu(carduri.first)
+    assert len(linii) >= 4, linii                                   # fiecare din cele 4 note are cel puțin o linie
     carduri.first.scroll_into_view_if_needed()
     patron.captura()
 
@@ -618,7 +632,7 @@ def test_def_92_butonul_respinge_din_dialog_e_rosu_plin(patron, firma_gv, asiste
                     "linii": [_linie_gv("Marfa Coada 92")]}, uid=asist)
     pg = patron.pg
     _coada(patron)
-    card = pg.locator(".val-card", has_text="Furnizor Coada 92").first
+    card = pg.locator("#val-note tbody.tn-nota", has_text="Furnizor Coada 92").first   # [lotul 12, 622] rândul notei, „Respinge” pe rând
     card.wait_for(timeout=15000)
     stil = "(e) => { const s = getComputedStyle(e); return [s.backgroundColor, s.color, s.opacity]; }"
     pe_card = card.locator(".val-respinge").evaluate(stil)
@@ -640,17 +654,18 @@ def test_def_91_respingerea_e_confirmata_pe_ecran(patron, firma_gv, asistent_pre
                     "linii": [_linie_gv("Marfa Coada 91")]}, uid=asist)
     pg = patron.pg
     _coada(patron)
-    card = pg.locator(".val-card", has_text="Furnizor Coada 91").first
+    card = pg.locator("#val-note tbody.tn-nota", has_text="Furnizor Coada 91").first   # [lotul 12, 622] rândul notei, „Respinge” pe rând
     card.wait_for(timeout=15000)
     card.locator(".val-respinge").click()
     pg.wait_for_selector("#dlg-input", timeout=10000)
     pg.fill("#dlg-input", "lipsește factura")
     pg.click("#dlg-ok")
-    pg.wait_for_function("() => [...document.querySelectorAll('.caseta-info')].some(e => e.innerText.includes('Ai respins'))",
+    # [lotul 12, 622] confirmarea stă în rezumatul lipit sus (`#val-confirmare`); `.caseta-info` poartă acum și explicațiile semnelor
+    pg.wait_for_function("() => [...document.querySelectorAll('#val-confirmare .caseta-info')].some(e => e.innerText.includes('Ai respins'))",
                          timeout=15000)
-    msg = pg.locator(".caseta-info", has_text="Ai respins").first.inner_text()
+    msg = pg.locator("#val-confirmare .caseta-info", has_text="Ai respins").first.inner_text()
     assert "lipsește factura" in msg and "4 note" in msg, msg
-    assert pg.locator(".val-card", has_text="Furnizor Coada 91").count() == 0
+    assert pg.locator("#val-note tbody.tn-nota", has_text="Furnizor Coada 91").count() == 0
     patron.captura()
 
 

@@ -149,9 +149,11 @@ CLASIFICARE = {
         "reparatie":
             "versiunea termenilor se citeste inaintea tranzactiei (un fisier lipsa opreste "
             "inregistrarea, cu 503, inainte de orice scriere), iar `acord_termeni` intra in ACEEASI "
-            "tranzactie cu contul. Al treilea domeniu — provizionarea firmei — ramane despartit "
-            "DELIBERAT si declarat in cod din 27.07.2026: contul e valid si util fara firma, iar "
-            "raspunsul poarta adevarul (`firma_ok`, `firma_motiv`), deci esecul e anuntat.",
+            "tranzactie cu contul. [lotul 12, deficienta 642, PIVOT fata de 27.07.2026] Al treilea "
+            "domeniu — firma proprie din CUI — intra si el in tranzactia contului "
+            "(`uc_auth._firma_proprie`): comanda Costin 12.2 pct.19, „contul si firma lui se creeaza "
+            "impreuna sau deloc”; despartirea de pana atunci lasase un cont fara firma, cu bun venitul "
+            "spunand ca firma exista. Bun venitul pleaca dupa commit si spune ce s-a creat.",
         "proba": "test_register_contul_nu_ramane_fara_dovada_acordului",
     },
 
@@ -160,16 +162,17 @@ CLASIFICARE = {
         "reparat": False,
         "efecte": "cererea in asteptare folosita (public.inregistrari_in_asteptare) <-> cabinetul + userul admin "
                   "(public.accounting_firms, public.users) <-> dovada acordului (public.acord_termeni) <-> bun venit, anuntul "
-                  "catre superadmin si firma din CUI (dupa commit)",
+                  "catre superadmin (dupa commit); firma din CUI IN tranzactie (lotul 12, 642)",
         "de_ce":
             "[15.10.2026, lotul 4] Construita direct in forma corecta: un cont fara cererea lui folosita ar putea fi creat de doua "
             "ori de acelasi link; o cerere folosita fara cont ar lasa omul fara cont si fara link. Cererea se blocheaza (`FOR "
             "UPDATE`) si se marcheaza IN ACEEASI tranzactie cu contul si cu dovada acordului (versiunea termenilor de la formular). "
-            "Emailurile si firma din CUI vin DUPA commit, ca la `/auth/register`: contul e valid si fara firma, iar raspunsul "
-            "poarta adevarul (`firma_creata`, `avertisment`).",
+            "Emailurile vin DUPA commit; firma din CUI intra in aceeasi tranzactie (lotul 12, 642: „contul si firma lui se creeaza "
+            "impreuna sau deloc”) — un CUI refuzat la confirmare refuza contul, iar linkul ramane nefolosit.",
         "reparatie":
             "nimic de reparat: ruta s-a nascut in forma de mai sus (o tranzactie: cererea blocata + contul + acordul + folosirea "
-            "cererii; efectele externe dupa commit). Proba de injectie o tine asa.",
+            "cererii + firma din CUI, de la lotul 12; efectele externe dupa commit). Probele: injectia de mai jos si "
+            "core/test_lot12_form2_register.py.",
         "proba": "test_confirmarea_inregistrarii_nu_lasa_cont_fara_cererea_folosita",
     },
 

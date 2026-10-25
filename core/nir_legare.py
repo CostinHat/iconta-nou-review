@@ -196,7 +196,8 @@ def _tenant(cur, schema):
 def refuz_de_ales(f, cands):
     """(cod, mesaj, detalii) — factura are NIR-uri nelegate de la furnizorul ei și nu s-a ales nimic."""
     p = propus(cands)
-    et = ("%s %s" % (f.get("serie") or "", f.get("numar") or "")).strip()
+    from core.pdf_util import serie_nr   # [lotul 12, 443.1] „LIC nr. 73”, ca în Istoric — nu „LIC 73”
+    et = serie_nr(f.get("serie"), f.get("numar"))
     mesaj = ("Factura %s e de la un furnizor cu %s NIR „fără factură” nelegat. Dacă e aceeași livrare, leag-o de NIR — altfel "
              "371 s-ar încărca de două ori. Dacă nu e, confirmă „altă livrare”." % (et, len(cands)))
     return COD_DE_ALES, mesaj, {"camp": "nir-legat", "candidati": cands, "propus": p, "factura_id": f.get("id"),

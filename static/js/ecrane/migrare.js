@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=309f4d66ae";
+import { api, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=e38843b1ec";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -1160,7 +1160,7 @@ async function wizardParteneri(corp, nav) {
 
 function importParteneriFirma(corp, nav, firma, app = null) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor) sau situația clienților / furnizorilor exportată din programul vechi (denumire · cod fiscal · neachitat final), pe parteneri sau pe facturi (nr. factură · data · scadență · sumă neachitată).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor) sau situația clienților / furnizorilor exportată din programul vechi (denumire · cod fiscal · neachitat final), pe parteneri sau pe facturi (nr. factură · data · scadență · sumă neachitată · TVA la încasare, opțional).</p>
     <label class="camp" style="max-width:420px;margin:10px 0"><span class="camp-eticheta">Contul partenerilor din fișier</span>
       <select id="mig-cont-part" class="camp-input">${ALEGE}<option value="4111">4111 — Clienți</option><option value="401">401 — Furnizori</option></select>
       <span class="camp-ajutor">Numai dacă fișierul n-are coloana „Cont” — situația clienților (4111) sau a furnizorilor (401). Cu coloana „Cont”, contul se ia din fișier.</span></label>
@@ -1294,7 +1294,24 @@ function _mesajSalvarePartiala(rez, ceSalvat) {
 
 // [lotul 12, deficiența 252] facturile deschise preluate: din forma pe facturi, câte una pe rând (`r.documente`, de la server); din forma pe
 // solduri, soldul partenerului întreg de pe 4111 / 401 (un document „Sold la <data preluării>”, `solduri_parteneri_api.documente_din_randuri`)
-const NOTA_FACTURI_PRELUATE = "Facturile deschise ale clienților (4111) și furnizorilor (401) intră în scadențar și se sting din Bancă, Casă sau Compensări. Nu se contează și nu intră în declarații: soldul lor e deja în balanța de deschidere.";
+const NOTA_FACTURI_PRELUATE = "Facturile deschise ale clienților (4111) și furnizorilor (401) intră în scadențar și se sting din Bancă, Casă sau Compensări. Nu se contează: soldul lor e deja în balanța de deschidere.";
+// [lotul 12, 252, decizia Costin 12.3 pct.5: „coloana TVA la încasare e opțională în fișierul de preluare; dacă lipsește, se ia regimul
+// firmei la data facturii”] ce se întâmplă cu TVA-ul facturilor deschise (`solduri_parteneri_api.cu_regimul_tva`)
+const NOTA_TVA_INCASARE = "Coloana opțională „TVA la încasare” (da / nu) spune, pe fiecare factură, dacă TVA-ul din restul ei e încă neexigibil (4428). Unde lipsește, se ia regimul firmei la data facturii, din Date firmă. Cu TVA la încasare, încasarea sau plata mută TVA-ul pe 4427 / 4426 și îl duce în D300 și D394.";
+const TEXT_TVAI = (v) => (v === true ? "da" : v === false ? "nu" : "după Date firmă");
+// [252, 12.3 pct.5] coloana „TVA la încasare” a fișierului, pe rândul partenerului: valoarea fiecărei facturi (sau a soldului întreg)
+function tvaIncasare(r) {
+  if (Array.isArray(r.documente)) {
+    const de = r.documente.filter((d) => Number(d.suma) > 0);
+    if (!de.length) return "—";
+    const pe = {};
+    de.forEach((d) => { const t = TEXT_TVAI(d.tva_la_incasare); (pe[t] = pe[t] || []).push(d.numar); });
+    const chei = Object.keys(pe);
+    return chei.length === 1 ? esc(chei[0]) : esc(chei.map((t) => `${t}: ${pe[t].join(", ")}`).join("; "));
+  }
+  return facturiDeschise(r) === "—" ? "—" : esc(TEXT_TVAI(r.tva_la_incasare));
+}
+const areColoanaTvai = (randuri) => randuri.some((r) => "tva_la_incasare" in r || (r.documente || []).some((d) => "tva_la_incasare" in d));
 function facturiDeschise(r) {
   if (Array.isArray(r.documente)) {
     const de = r.documente.filter((d) => Number(d.suma) > 0);
@@ -1307,7 +1324,11 @@ function facturiDeschise(r) {
 function mesajFacturiPreluate(doc) {
   if (!doc || !doc.n) return "";
   const parti = [doc.emise ? `de încasat ${bani(doc.total_emise)} lei` : "", doc.primite ? `de plătit ${bani(doc.total_primite)} lei` : ""].filter(Boolean);
+  // [252, 12.3 pct.5] TVA-ul încă neexigibil / nededus al facturilor preluate cu TVA la încasare, și confruntarea lui cu 4428
+  const tvai = doc.la_incasare ? `\nCu TVA la încasare: ${cate(doc.la_incasare, "factură", "facturi")} — TVA neexigibil ${bani(doc.tva_emise || 0)} lei pe cele emise, nededus ${bani(doc.tva_primite || 0)} lei pe cele primite; încasarea sau plata îl mută pe 4427 / 4426 și îl duce în D300 și D394.` : "";
+  if (doc.atentie_tva) _migTip = "avert";
   return ` ${cate(doc.n, "factură deschisă preluată", "facturi deschise preluate")} (${parti.join(", ")}): le sting încasările și plățile din Bancă, Casă sau Compensări.` +
+    tvai + (doc.atentie_tva ? `\n${doc.atentie_tva}` : "") +
     ((doc.neconvertite || []).length ? `\nFără factură deschisă: ${doc.neconvertite.join("; ")}.` : "");
 }
 
@@ -1321,7 +1342,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   const coerHTML = coer.map((c) => `<li><b>${esc(c.cont)}</b>: partenerii dau ${sold(c.suma_parteneri)}; ${esc(c.sursa)} la ${esc(dataRo(c.data))}: ${sold(c.sold_balanta)} · ${c.coincide
     ? '<span class="mig-stare-ok">se potrivesc</span>' : `<span class="mig-stare-respins">diferență ${bani(Math.abs(c.diferenta))} lei — rândurile contului nu intră</span>`}</li>`).join("");
   corp.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · parteneri încărcați<br>${NOTA_FACTURI_PRELUATE}</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · parteneri încărcați<br>${NOTA_FACTURI_PRELUATE} ${NOTA_TVA_INCASARE}</p>
     <div class="mig-sold-rezumat">
       <b>${randuri.length}</b> ${dupaNumar(randuri.length, "partener", "parteneri")} · debit <b>${bani(date.total_debit)}</b> · credit <b>${bani(date.total_credit)}</b>
     </div>
@@ -1339,6 +1360,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
       { titlu: "Debit", num: true, celula: (r) => bani(r.debit) },
       { titlu: "Credit", num: true, celula: (r) => bani(r.credit) },
       { titlu: "Facturi deschise", celula: facturiDeschise },
+      ...(areColoanaTvai(randuri) ? [{ titlu: "TVA la încasare", celula: tvaIncasare }] : []),   // [252, 12.3 pct.5] numai cu coloana în fișier
     ], randuri),
     `<div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-part" data-actiune="POST /tenants/{tenant_id}/parteneri">${date.existenta ? "Înlocuiește partenerii" : "Salvează partenerii"}</button>`);
@@ -1347,6 +1369,14 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   _arataInlocuirea(corp, date);   // [446]
   gateazaPartial(corp, "mig-salveaza-part", date.erori, randuri.length, "parteneri");   // [decizia Costin 14.10.2026 pct.2]
   const buton = corp.querySelector("#mig-salveaza-part");
+  // [252, 12.3 pct.5] coloana „TVA la încasare” contrazice Date firmă: salvarea ar refuza tot (`solduri_parteneri_api.refuz_tva_incasare`)
+  if (date.refuz_tva_incasare) {
+    const bloc = document.createElement("div");
+    bloc.className = "caseta-atentie"; bloc.id = "mig-refuz-tvai";
+    bloc.innerHTML = `<div class="ca-mesaj">${esc(date.refuz_tva_incasare)}</div>`;
+    buton.parentNode.insertBefore(bloc, buton);
+    buton.disabled = true;
+  }
   const textButon = buton.textContent;
   const eroare = corp.querySelector("#mig-eroare");
 

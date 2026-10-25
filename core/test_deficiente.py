@@ -35,7 +35,8 @@ def randuri(text=None):
     text = text if text is not None else io.open(os.path.join(_RAD, "DEFICIENTE.md"), encoding="utf-8").read()
     out = []
     for ln in text.splitlines():
-        m = re.match(r"^\| (\d+|N\d+|C\d+) \|(.*)\|\s*$", ln)
+        # [lotul 12, comanda 12.2] „409.1”, „C73.1”: subnumărul lui Costin pentru o reapariție după retest (rândul de bază rămâne)
+        m = re.match(r"^\| (\d+(?:\.\d)?|N\d+|C\d+(?:\.\d)?) \|(.*)\|\s*$", ln)
         if not m:
             continue
         cel = [c.strip() for c in m.group(2).split("|")]
@@ -50,9 +51,10 @@ def plasa_e2e():
     for f in sorted(glob.glob(os.path.join(_RAD, "frontend_test", "e2e", "e2e_*.py"))):
         for n in ast.walk(ast.parse(io.open(f, encoding="utf-8").read())):
             if isinstance(n, ast.FunctionDef):
-                m = re.match(r"^test_def_(\d+|n\d+|c\d+)_", n.name)
+                # subnumărul („test_def_409_1_…” -> „409.1”) e o singură cifră după număr: „test_def_439_426_…” rămâne al lui 439
+                m = re.match(r"^test_def_((?:\d+|n\d+|c\d+)(?:_\d(?=_))?)_", n.name)
                 if m:
-                    out.setdefault(m.group(1).upper(), []).append("%s::%s" % (os.path.relpath(f, _RAD), n.name))
+                    out.setdefault(m.group(1).upper().replace("_", "."), []).append("%s::%s" % (os.path.relpath(f, _RAD), n.name))
     return out
 
 
@@ -63,7 +65,9 @@ def test_numerotarea_e_continua_si_completa():
     assert num == list(range(1, max(num) + 1)), "numerotarea 1..%d are goluri sau dubluri" % max(num)
     assert max(num) >= 188, "anti-vacuu: registrul trebuie să aibă cel puțin 1–188"
     assert [x for x in nr if x.startswith("N")] == ["N%d" % i for i in range(1, NR_N + 1)]
-    c = [x for x in nr if x.startswith("C")]
+    c = [x for x in nr if x.startswith("C") and "." not in x]
+    sub = [x for x in nr if "." in x]
+    assert not [x for x in sub if x.split(".")[0] not in nr], "subnumăr fără rândul de bază: %s" % sub
     assert c == ["C%d" % i for i in range(1, len(c) + 1)], "numerotarea C are goluri, dubluri sau e în altă ordine: %s" % c
     assert len(c) >= 7, "anti-vacuu: C1–C7 (fostele 220–226 ale lui Code) trebuie să fie acolo"
 
@@ -225,7 +229,8 @@ def lipsuri_dovada(r, exista=_captura_amprentata):
         if not capturi:
             rele.append("%s: „%s” nu numește nicio captură (între `…`)" % (nr, DOVADA))
         for c in capturi:
-            if not re.match(_RE_CAPTURA % re.escape(nr.lower()), c):
+            # [lotul 12] subnumărul (409.1, C73.1) se scrie în numele capturii cu punct sau cu „_” (`443_1_f1_…`, `409.1_f1_…`)
+            if not re.match(_RE_CAPTURA % re.escape(nr.lower()).replace(r"\.", "[._]"), c):
                 rele.append("%s: captura %s nu are forma `dovezi/lot<N>/%s_..._f<k>_....png` (numărul rândului, apoi firma de test)"
                             % (nr, c, nr.lower()))
             elif not exista(c):

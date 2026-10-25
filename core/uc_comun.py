@@ -1457,10 +1457,27 @@ def _factura_din_parsat(cur, schema, f):
     prevăzute la art. 294 alin. (2) lit. a) și d)”) și lit.c („prestările de servicii prevăzute la art. 278 alin. (2) efectuate în
     beneficiul unor persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană”); CF art.278 alin.(2) (locul prestării
     către o persoană impozabilă e locul unde ea își are sediul); CF art.307 alin.(1) (taxa o datorează furnizorul, „cu excepția cazurilor
-    pentru care beneficiarul este obligat la plata taxei conform alin. (2)-(6) și art. 331” — de unde „AE”, taxarea inversă)."""
-    ex = _repo.select_facturi_3(cur, schema, f)
-    if ex:
-        return ex[0], False
+    pentru care beneficiarul este obligat la plata taxei conform alin. (2)-(6) și art. 331” — de unde „AE”, taxarea inversă).
+
+    [lotul 12, C73.1, comanda Costin 12.2 pct.6] Factura PRIMITĂ: aceeași factură de furnizor (furnizor + număr, oricare ar fi data,
+    `factura_primita_dublura`) deja în evidență -> refuz numit (`CheieDublata`, nimic scris), pe orice cale ar fi intrat cea dinainte (de
+    mână, Operațiuni, XML, preluarea soldurilor). Singura excepție: chiar ACELAȘI document e-Factura (același XML) — se leagă de factura
+    existentă (importul repetat, mesajul SPV descărcat de două ori), fără a scrie nimic a doua oară."""
+    if f["directie"] == "primita":
+        from decimal import Decimal as _Dz
+        from core import factura_primita_dublura as _fpd, repo_facturi as _rf_d
+        ex = _rf_d.primite_cu_aceeasi_cheie(cur, schema, f.get("tert_cui"), f.get("tert_nume"), f.get("serie"), f.get("numar"),
+                                            negativ=_Dz(str(f.get("total") or 0)) < 0, xml=f.get("xml"))
+        acelasi = [x for x in ex if x["acelasi_xml"]]
+        if acelasi:
+            return acelasi[0]["id"], False
+        if ex:
+            raise _fpd.refuz(ex, sfat=("Dacă ai primit-o din SPV, respinge-o din lista facturilor de validat, cu motivul „dublură”."
+                                       if f.get("xml") else None))
+    else:
+        ex = _repo.select_facturi_3(cur, schema, f)
+        if ex:
+            return ex[0], False
     # [R91/KKK1] Starea depinde de DIRECȚIE, și nu e o subtilitate:
     #   * **primită** -> `importata`, ca până acum. Recunoașterea ei există deja și e alt act:
     #     `/facturi-primite/{id}/valideaza`, unde omul alege contul și clasifică regimul (R88).

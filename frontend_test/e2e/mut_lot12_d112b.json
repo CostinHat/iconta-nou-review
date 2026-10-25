@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "core/d112.py",
+  "ancora": "        _somaj = 0 if x[\"pensionar\"] else x[\"baza_cam\"]",
+  "inlocuire": "        _somaj = 0 if x[\"pensionar\"] else x[\"brut\"]",
+  "test": "frontend_test/e2e/e2e_lot12_d112b.py::test_def_c173_baza_somaj_si_venitul_realizat_in_luna_cu_cm"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "_somaj, x[\"zile\"], x[\"b1_sal1\"], x[\"brute\"]))",
+  "inlocuire": "_somaj, x[\"zile\"], x[\"b1_sal1\"], x[\"brut\"]))",
+  "test": "frontend_test/e2e/e2e_lot12_d112b.py::test_def_c173_baza_somaj_si_venitul_realizat_in_luna_cu_cm"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "        _somaj = 0 if x[\"pensionar\"] else x[\"baza_cam\"]",
+  "inlocuire": "        _somaj = 0 if x[\"pensionar\"] else x[\"brut\"]",
+  "test": "frontend_test/e2e/e2e_lot12_d112b.py::test_def_c173_tipul_1_11_2_fara_suma_netaxabila_in_baza_somaj"
+ }
+]

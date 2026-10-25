@@ -25,7 +25,25 @@ def _text(nod):
         return _text(nod.left) + (_text(nod.right) if isinstance(nod.op, ast.Add) else "")
     if isinstance(nod, ast.JoinedStr):
         return "".join(v.value if isinstance(v, ast.Constant) else "x." for v in nod.values)
+    gen = _lista_generata(nod)
+    if gen is not None:
+        return gen
     return "x."
+
+
+def _lista_generata(nod):
+    """[25.10.2026, C194] `", ".join(<șir> for … in …)`: coloanele generate dintr-un singur șablon. Se redă de două ori, cu `%d` / `{}`
+    înlocuite de 0 și 1 — un șablon fără alias numerotat dă două coloane cu același nume (opt `to_regclass(…) IS NOT NULL` se numeau
+    toate „?column?” pe cursorul-dicționar al cozii: amprenta salariaților cuprindea un singur tabel). Altă formă -> None."""
+    if not (isinstance(nod, ast.Call) and getattr(nod.func, "attr", None) == "join" and isinstance(nod.func.value, ast.Constant)
+            and nod.args and isinstance(nod.args[0], (ast.GeneratorExp, ast.ListComp))):
+        return None
+    elt = nod.args[0].elt
+    sablon = elt.left if isinstance(elt, ast.BinOp) and isinstance(elt.op, ast.Mod) else elt
+    if not (isinstance(sablon, ast.Constant) and isinstance(sablon.value, str)):
+        return None
+    t = sablon.value.replace("%%", "%")
+    return nod.func.value.value.join(t.replace("%d", str(i)).replace("{}", str(i)) for i in (0, 1))
 
 
 def _bucati(lista):
@@ -120,5 +138,19 @@ def luni(cur):
     cur.execute("SELECT DISTINCT EXTRACT(YEAR FROM i.data)::int, EXTRACT(MONTH FROM i.data)::int FROM inregistrari i")
     return {tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()}
 '''
+    vechi += '''
+
+def amprenta_salarii(cur, q, SURSE):
+    cur.execute("SELECT " + ", ".join("to_regclass(%s) IS NOT NULL" for _ in SURSE), [q + t for t, _ in SURSE])
+    r = cur.fetchone()
+    return list(r.values()) if isinstance(r, dict) else list(r)
+
+
+def amprenta_reparata(cur, q, SURSE):
+    cur.execute("SELECT " + ", ".join("to_regclass(%%s) IS NOT NULL AS e%d" % i for i in range(len(SURSE))), [q + t for t, _ in SURSE])
+    r = cur.fetchone()
+    return list(r.values()) if isinstance(r, dict) else list(r)
+'''
     r = [(fn, dubluri) for _c, _l, fn, dubluri in coliziuni(vechi)]
-    assert r == [("note_nevalidate", ["coalesce"]), ("element_activ", ["int4"]), ("luni", ["extract"])], r
+    assert r == [("note_nevalidate", ["coalesce"]), ("element_activ", ["int4"]), ("luni", ["extract"]),
+                 ("amprenta_salarii", ["to_regclass"])], r   # C194 (25.10.2026): coloanele generate dintr-un șablon fără alias (PostgreSQL le numește „?column?”; garda le numește după funcție — tot dublură)

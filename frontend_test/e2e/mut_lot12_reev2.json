@@ -1,0 +1,20 @@
+[
+ {
+  "fisier": "static/js/ecrane/reevaluare_ecran.js",
+  "ancora": "${e.curs_provizoriu ? \" — provizoriu\" : \"\"}",
+  "inlocuire": "${e.curs_provizoriu ? \"\" : \"\"}",
+  "test": "frontend_test/e2e/e2e_lot12_reev2.py::test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111"
+ },
+ {
+  "fisier": "core/scadente.py",
+  "ancora": "    if creanta and (nominala.month, nominala.day) == (12, 25):",
+  "inlocuire": "    if (nominala.month, nominala.day) == (12, 25):",
+  "test": "frontend_test/e2e/e2e_lot12_reev2.py::test_def_639_termenul_d390_din_noiembrie_nu_trece_pe_21_decembrie"
+ },
+ {
+  "fisier": "core/observare.py",
+  "ancora": "    if informativ:\n        from core import dezabonare as _dez\n        motiv = refuz_dezabonare(catre)",
+  "inlocuire": "    if True:\n        from core import dezabonare as _dez\n        motiv = None",
+  "test": "frontend_test/e2e/e2e_lot12_reev2.py::test_def_268_1_alerta_de_test_n_are_dezabonare"
+ }
+]

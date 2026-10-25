@@ -101,7 +101,7 @@ class CursPreaVechi(ValueError):
             "Cel mai recent curs BNR pentru %s la data cerută e din %s — mai vechi cu %s decât "
             "pragul de %d. Peste atât nu mai e pauză de publicare, e flux întrerupt, iar TVA-ul în "
             "lei s-ar calcula cu o cifră care nu mai e a zilei. Cursul găsit: %s."
-            % (moneda, _data_ro(data_curs), _cate(vechime_zile, "zi", "zile"), prag_zile, curs))
+            % (moneda, _data_ro(data_curs), _cate(vechime_zile, "zi", "zile"), prag_zile, curs_text(curs)))   # [lotul 12, 630] „5,3495”, nu „5.3495”
 
 
 class FormatNecunoscut(ValueError):

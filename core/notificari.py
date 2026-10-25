@@ -71,6 +71,20 @@ TIPURI = {
                            "cine": "superadmin"},
     "factura_primita": {"eticheta": "facturi noi primite din SPV", "deschide": "notificari", "grup": "Facturi și SPV",
                         "rand": "Când citirea automată din SPV aduce facturi noi de la furnizorii firmelor tale.", "cine": "pregatire"},
+    # [lotul 12, comanda Costin 12.3 pct.1, verbatim: „C109: refuzul cronului ajunge la contabil prin notificare (clopoțel și email); pe
+    # șablon se vede și starea ultimei emiteri.”] bifat din oficiu (`implicit`): emailul pleacă fără ca omul să-l fi cerut, iar bifa din
+    # Notificări îl poate opri (320: „bifele decid doar WhatsApp/email, clopoțelul din aplicație arată tot”)
+    "factura_recurenta_refuzata": {"eticheta": "o factură recurentă nu s-a emis", "deschide": "notificari", "grup": "Facturi și SPV",
+                                   "rand": "Când emiterea automată a unei facturi recurente e refuzată: factura lunii nu pleacă, iar motivul "
+                                           "e în clopoțel și pe șablon.", "cine": "pregatire", "implicit": True},
+    # [lotul 12, C197] factura recurentă EMISĂ, dar cu un avertisment al emiterii (ex. livrarea intracomunitară fără întrebarea despre dovada
+    # transportului — decizia Costin 12.3 pct.7: „avertisment la emitere, nu refuz”). Tip separat de refuz: eticheta trimisă pe email
+    # („nu s-a emis”) ar fi falsă pentru o factură emisă. Bifat din oficiu, ca refuzul: avertismentul cere o acțiune a contabilului.
+    "factura_recurenta_avertisment": {"eticheta": "o factură recurentă s-a emis cu un avertisment", "deschide": "notificari",
+                                      "grup": "Facturi și SPV",
+                                      "rand": "Când factura emisă automat dintr-o factură recurentă are un avertisment de urmărit (de exemplu, "
+                                              "dovada transportului la o livrare intracomunitară); textul e în clopoțel.",
+                                      "cine": "pregatire", "implicit": True},
     "de_validat": {"eticheta": "un element nou de validat", "deschide": "notificari", "grup": "Validări",
                    "rand": "Când un coleg trimite la validare o notă sau o declarație.", "cine": "validare"},
     "aprobata": {"eticheta": "un element pregătit de tine a fost validat", "deschide": "notificari", "grup": "Validări",
@@ -110,8 +124,10 @@ def vede_tipul(tip, actor):
 def implicit(tip):
     """Bifat din oficiu: grupele implicite și [340, 18.10.2026] tipurile superadminului — „Notificare pentru mine (superadmin) la fiecare
     cerere de import și sesizare din Suport” (comanda Costin 17.10.2026 pct.2.3, DECIZII „Lotul 6 închis de Costin”), deci pornite fără
-    o bifă a lui."""
-    return TIPURI[tip]["grup"] in GRUPURI_IMPLICITE or TIPURI[tip]["cine"] == "superadmin"
+    o bifă a lui. [lotul 12, C109] Și tipul marcat `implicit`: refuzul facturii recurente, pe care comanda 12.3 pct.1 îl cere „prin
+    notificare (clopoțel și email)”, deci pornit fără bifa omului."""
+    return (TIPURI[tip]["grup"] in GRUPURI_IMPLICITE or TIPURI[tip]["cine"] == "superadmin"
+            or bool(TIPURI[tip].get("implicit")))
 
 
 def dorit(tip, preferinte):

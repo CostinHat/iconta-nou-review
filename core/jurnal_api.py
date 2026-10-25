@@ -487,7 +487,8 @@ def valideaza_interne(conn, schema, nota_ids, cu_cod=False):
         for nid in ids:
             cur.execute("SAVEPOINT nota_interna")
             try:
-                rez = valideaza(conn, schema, nid)
+                from core import coada_api as _coada   # [lotul 12, 619] stornarea nu intră în evidență înaintea documentului stornat
+                rez = _coada.refuz_stornare_inaintea_documentului(cur, schema, [nid]) or valideaza(conn, schema, nid)
             except psycopg2.Error as e:
                 cur.execute("ROLLBACK TO SAVEPOINT nota_interna")
                 motiv = _motiv_din_baza(e)

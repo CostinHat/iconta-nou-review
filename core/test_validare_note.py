@@ -234,10 +234,14 @@ def test_concediul_medical_in_nota_cu_421_si_423_soldate(conn_cm, sept_zile, oct
     MUTAȚIE: împărțirea reținerilor scoasă (totul pe 421) -> divergențe pe 421 și 423 -> pică."""
     from core import salarii_contare as sc
     conn, sid = conn_cm
-    _cm(conn, sid, data_acordare="2026-09-%02d" % (31 - sept_zile), data_inceput="2026-09-%02d" % (31 - sept_zile),
+    # [lotul 12, C102.1] intervalele au exact zilele lucrătoare ale certificatelor (serverul cere confirmare peste ele): 4 zile până la
+    # 30.09.2026 încep vineri 25.09 (26–27 = weekend); 5 zile din 06.10.2026 se termină luni 12.10. Până la 24.10.2026: 27–30.09 (3 zile
+    # lucrătoare) și 06–10.10 (4)
+    inceput = {4: "2026-09-25", 1: "2026-09-30"}[sept_zile]
+    _cm(conn, sid, data_acordare=inceput, data_inceput=inceput,
         data_sfarsit="2026-09-30", zile_cm=sept_zile, an=2026, luna=9, numar="0")
     _cm(conn, sid, este_continuare=True, serie_initiala="CMZT", numar_initial="0", zile_cm=oct_zile,
-        data_sfarsit="2026-10-%02d" % (5 + oct_zile))
+        data_sfarsit={5: "2026-10-12", 3: "2026-10-08"}[oct_zile])
     p = sc.propunere(conn, SCH + "_cm", 2026, 10)
     perechi = {(n["debit"], n["credit"]) for n in p["note"]}
     assert {pereche_indemnizatie, ("421", "4315"), ("423", "4315"), ("423", "4316")} <= perechi, p["note"]

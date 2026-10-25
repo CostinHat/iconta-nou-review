@@ -1,0 +1,32 @@
+[
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "                doc[\"tva_la_incasare\"] = tvai   # cheia numai când fișierul are coloana: ecranul o arată atunci",
+  "inlocuire": "                pass",
+  "test": "frontend_test/e2e/e2e_lot12_migr3.py::test_def_252_tva_la_incasare_din_fisier_si_din_regimul_firmei"
+ },
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "        cu_regimul_tva(cur, docs)   # [252, 12.3 pct.5] înaintea oricărei scrieri: un refuz nu lasă nimic șters",
+  "inlocuire": "        [d.update(tva=0, furnizor_tva_incasare=False) for d in docs]",
+  "test": "frontend_test/e2e/e2e_lot12_migr3.py::test_def_252_tva_la_incasare_din_fisier_si_din_regimul_firmei"
+ },
+ {
+  "fisier": "core/tva_incasare.py",
+  "ancora": "        return REGIM_INCASARE if tva > 0 else REGIM_GENERAL",
+  "inlocuire": "        return REGIM_GENERAL",
+  "test": "frontend_test/e2e/e2e_lot12_migr3.py::test_def_252_tva_la_incasare_din_fisier_si_din_regimul_firmei"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "      ...(areColoanaTvai(randuri) ? [{ titlu: \"TVA la încasare\", celula: tvaIncasare }] : []),",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_migr3.py::test_def_252_tva_la_incasare_din_fisier_si_din_regimul_firmei"
+ },
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "        raise _it.FisierNecitit(MESAJ_TVA_INCASARE_NECUNOSCUT",
+  "inlocuire": "        return None and (MESAJ_TVA_INCASARE_NECUNOSCUT",
+  "test": "frontend_test/e2e/e2e_lot12_migr3.py::test_def_252_valoarea_necunoscuta_in_tva_la_incasare_e_refuzata"
+ }
+]

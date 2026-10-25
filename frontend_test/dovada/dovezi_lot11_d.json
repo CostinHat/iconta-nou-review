@@ -1,8 +1,10 @@
 [
  {"nr": "C79", "firma": "tenant_9049",
   "descriere": "F1: factura primită DNT-TEST-1019 din 19.10.2026 (importată din XML înainte de reparație, două cote: 21% pe 500,00 și 11% pe 200,00) — nota ei (ciornă, nr. 143) poartă TVA-ul de pe factură pe fiecare cotă, 105,00 și 22,00 (4426 = 401), iar migrarea `factura_tva_cote` i-a scris cotele din XML (BG-23). Înainte, TVA-ul se recalcula din baza liniilor",
-  "pasi": [{"click": "#fa-jurnal"}, {"asteapta": "[data-nota-id='143']"}, {"deruleaza": "[data-nota-id='143']"}, {"pauza": 400}],
-  "verifica": [{"contine": "4426 = 401 · 105,00", "zona": "[data-nota-id='143']"}, {"contine": "4426 = 401 · 22,00", "zona": "[data-nota-id='143']"},
-               {"contine": "371 = 401 · 500,00", "zona": "[data-nota-id='143']"}],
+  "pasi": [{"click": "#fa-jurnal"}, {"asteapta": "[data-nota-id='143']"}, {"deruleaza": "[data-nota-id='143']"},
+           {"click": "tbody.tn-nota[data-nota-id='143'] .tn-deschide"}, {"asteapta": "tbody.tn-nota[data-nota-id='143'] table.tn-linii"}, {"pauza": 400}],
+  "verifica": [{"contine": "4426 401 105,00", "zona": "tbody.tn-nota[data-nota-id='143'] table.tn-linii"},
+               {"contine": "4426 401 22,00", "zona": "tbody.tn-nota[data-nota-id='143'] table.tn-linii"},
+               {"contine": "371 401 500,00", "zona": "tbody.tn-nota[data-nota-id='143'] table.tn-linii"}],
   "captura": "c79_f1_vechi_nota143_tva_de_pe_factura.png"}
 ]

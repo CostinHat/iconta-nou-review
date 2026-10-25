@@ -9,7 +9,7 @@
 //   X dreapta-sus -> ÎNCHIDE fereastra (acasă). Traseul e memorat de navigator (nav.mergi).
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { esc, inchidereDialog, cate, ultimaCerere } from "./api.js?v=309f4d66ae";  // esc canonic (cap.10): strip-html data-lossy inlocuit
+import { esc, inchidereDialog, cate, ultimaCerere } from "./api.js?v=e38843b1ec";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=1be335b472";  // [bun_venit_v1] "?" general (ansamblu)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -118,7 +118,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         // anunțul „Versiune nouă” pus între timp de `_versiune.aseaza()` — superadminul nu afla niciodată de publicare.
         subbara.innerHTML = `${icon}<span class="subbara-gol" data-sumar-admin>Se încarcă centralizatorul...</span>`;
         const sumarAdmin = subbara.querySelector("[data-sumar-admin]");
-        import("./api.js?v=309f4d66ae").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
+        import("./api.js?v=e38843b1ec").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
           const cabinete = (r && r.cabinete) || [];
           const active = cabinete.filter((c) => c.activ).length;
           const firme = cabinete.reduce((s2, c) => s2 + (c.nr_firme || 0), 0);
@@ -342,7 +342,28 @@ export function creeazaNavigator(radacina, desktopRandator) {
       if (bara) _corp.style.setProperty("--bara-h", bara.offsetHeight + "px"); else _corp.style.removeProperty("--bara-h");
     };
     _lateste();
-    new MutationObserver(() => { _steaza(); _lateste(); }).observe(_corp, { childList: true, subtree: true });
+    // [lotul 12, comanda Costin 12.2 pct.9, deficiența 617 — clasa „după o acțiune pe rând fereastra sare sus”, DS cap.9 v2.102] Un ecran
+    // care se redesenează după o acțiune pe un rând trece prin „Se încarcă…”: conținutul scade la un rând, derularea cade la 0 și, când
+    // lista revine, omul e sus, nu la rândul pe care a lucrat (56 de redesenări de felul ăsta, în 9 ecrane). Navigatorul ține minte
+    // derularea din clipa clicului într-un rând (celula unui tabel, detaliul unui rând, rândul-card `.pf-frand` / `.val-card`, un rând de
+    // listă) și, dacă în cel mult 10 s ecranul trece prin „Se încarcă…”, o pune la loc când conținutul revine. Clicurile din rezumatul de
+    // sus (luna ←/→, filtrele) nu intră: acolo vine altă listă. Gard: `core/test_lot12_ui2_derulare.py`.
+    let _clicPeRand = null, _susDeRefacut = null;
+    _corp.addEventListener("click", (e) => {
+      if (e.target.closest("td, .tn-detaliu, .pf-frand, .val-card, .mig-sold-rand, li") && !e.target.closest(".rezumat-fix"))
+        _clicPeRand = { la: Date.now(), sus: _corp.scrollTop };
+    }, true);
+    const _seIncarca = () => { const k = [..._corp.children].filter((x) => !x.matches("h2[data-titlu-pus]"));
+      return k.length === 1 && k[0].matches("p.ecran-nota"); };
+    const _derulare = () => {
+      if (_seIncarca()) {
+        if (_susDeRefacut == null && _clicPeRand && _clicPeRand.sus > 0 && Date.now() - _clicPeRand.la < 10000) _susDeRefacut = _clicPeRand.sus;
+        _clicPeRand = null;
+        return;
+      }
+      if (_susDeRefacut != null) { const v = _susDeRefacut; _susDeRefacut = null; _corp.scrollTop = v; }
+    };
+    new MutationObserver(() => { _derulare(); _steaza(); _lateste(); }).observe(_corp, { childList: true, subtree: true });
     if (window.ResizeObserver) new ResizeObserver(_lateste).observe(_corp);
   }
 
@@ -472,7 +493,7 @@ export function urmaresteBara3(bara3) {
     const actuala = cerereNoua();
     const _azi = new Date(), _de = `${_azi.getFullYear()}-${String(_azi.getMonth() + 1).padStart(2, "0")}-01`;
     let cal = null;
-    try { const { api } = await import("./api.js?v=309f4d66ae"); cal = await api.get(`/eu/calitate?de=${_de}`); } catch { cal = null; }
+    try { const { api } = await import("./api.js?v=e38843b1ec"); cal = await api.get(`/eu/calitate?de=${_de}`); } catch { cal = null; }
     if (!actuala()) return;
     // [p26_motivationale] iteram peste lista din backend - oricate, flexibil
     const lista = (cal && cal.ok && cal.motivationale) || [];
@@ -503,7 +524,7 @@ async function _clopotActualizeazaBadge(container) {  // [p66_badge_ref]
     }
   } catch {}
   try {
-    const { api } = await import("./api.js?v=309f4d66ae");
+    const { api } = await import("./api.js?v=e38843b1ec");
     const r = await api.get("/notificari/contor");
     const n = (r && r.necitite) || 0;
     badge.textContent = n > 0 ? (n > 9 ? "9+" : String(n)) : "";
@@ -563,7 +584,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
     panou.id = "nav-clopot-panou";
     panou.innerHTML = `<div class="clopot-cap"><span>Notificări</span></div><div class="clopot-lista" id="clopot-lista"><div class="clopot-gol">Se încarcă…</div></div>`;
     ecran.appendChild(panou);
-    const { api } = await import("./api.js?v=309f4d66ae");
+    const { api } = await import("./api.js?v=e38843b1ec");
     const lista = panou.querySelector("#clopot-lista");
     // [422] lista deschisă se reumple la o schimbare (o notificare rezolvată de validarea de alături, una nouă de la un coleg)
     const umple = async () => {
@@ -596,7 +617,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           else if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=5a3d28dbec");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=83581fee57");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide De validat:", e); }
@@ -605,8 +626,8 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const [, tid, nid, an, luna] = n.link.split(":").map((x) => parseInt(x, 10));
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
-              const { api } = await import("./api.js?v=309f4d66ae");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=1c7b806a57");
+              const { api } = await import("./api.js?v=e38843b1ec");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=2b27eebcaf");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();
@@ -657,7 +678,7 @@ function _sumarTextTip(tip, n) {
 async function _sumarLogin(ecran) {
   try {
     if (sessionStorage.getItem("iconta_sumar_aratat") === "1") return;
-    const { api } = await import("./api.js?v=309f4d66ae");
+    const { api } = await import("./api.js?v=e38843b1ec");
     const r = await api.get("/notificari/sumar");
     const total = (r && r.necitite) || 0;
     sessionStorage.setItem("iconta_sumar_aratat", "1");
@@ -693,7 +714,7 @@ async function _anunturiBanner(ecran) {
   if (u.rol === "client" || u.rol === "superadmin") return;
   let d;
   try {
-    const { api } = await import("./api.js?v=309f4d66ae");
+    const { api } = await import("./api.js?v=e38843b1ec");
     d = await api.get("/eu/anunturi");
   } catch { return; }
   const lista = (d && d.anunturi) || [];
@@ -719,7 +740,7 @@ async function _anunturiBanner(ecran) {
     // citirea — un X care închide fără confirmare ar fi o ușă înapoi spre același anunț la intrarea următoare.
     const confirma = async () => {
       try {
-        const { api } = await import("./api.js?v=309f4d66ae");
+        const { api } = await import("./api.js?v=e38843b1ec");
         await api.post(`/eu/anunturi/${a.id}/confirma`, {});
         el.remove();
       } catch (e) {

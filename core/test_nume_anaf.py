@@ -258,7 +258,11 @@ def test_ecranul_stie_cand_o_citire_e_VECHE_nu_divergenta():
 # cale e chiar evenimentul care îl face fals.
 # [459, 22.10.2026] A PATRA cale, pe o firmă EXISTENTĂ: corectura CUI-ului (`tenant_provisioning.inlocuieste_din_anaf`, din
 # `firma_profil_api.corecteaza_cui`). Marcajul de mai sus s-a scos, iar ramura de redeschidere are proba ei pe date (testul 459).
+# [lotul 12, 642, 24.10.2026] cele trei căi de la creare cheamă acum `precompleteaza_sau_semnaleaza` (precompletarea sub punct de revenire),
+# care cheamă o singură dată `precompleteaza_din_anaf`: o cale de captare = un apel al ajutorului SAU un apel direct din afara lui
+# (`_captari_anaf`). Mulțimea e aceeași (creare ×3 + corectura CUI-ului), deci cifra rămâne 4.
 _CAPTARI_ANAF = 4
+_AJUTOR_CAPTARE = "precompleteaza_sau_semnaleaza"
 
 
 def _apeluri_catre(nume_functie):
@@ -282,9 +286,18 @@ def _apeluri_catre(nume_functie):
     return sorted(gasite)
 
 
+def _captari_anaf():
+    """Căile de captare a instantaneului ANAF: apelurile ajutorului `precompleteaza_sau_semnaleaza` plus apelurile directe ale lui
+    `precompleteaza_din_anaf` din AFARA ajutorului (apelul lui din interior e același drum, nu o cale în plus)."""
+    arb = ast.parse(io.open(os.path.join(_RAD, "core", "tenant_provisioning.py"), encoding="utf-8").read())
+    fn = next(n for n in arb.body if isinstance(n, ast.FunctionDef) and n.name == _AJUTOR_CAPTARE)
+    din_ajutor = {("core/tenant_provisioning.py", c.lineno) for c in ast.walk(fn) if isinstance(c, ast.Call)}
+    return sorted([x for x in _apeluri_catre("precompleteaza_din_anaf") if x not in din_ajutor] + _apeluri_catre(_AJUTOR_CAPTARE))
+
+
 def test_calea_care_ar_REDESCHIDE_intrebarea_e_INCA_moarta():
     """[G2] Marcajul de mai sus e o afirmație despre cod, deci poate deveni fals mâine. Asta îl ține."""
-    ap = _apeluri_catre("precompleteaza_din_anaf")
+    ap = _captari_anaf()
     assert len(ap) <= _CAPTARI_ANAF, (
         "au apărut căi noi care citesc ANAF: %s. Dacă vreuna se aplică unei firme care EXISTĂ deja, "
         "`nume_anaf_la` poate depăși `nume_ales_la` — adică ramura de redeschidere devine "

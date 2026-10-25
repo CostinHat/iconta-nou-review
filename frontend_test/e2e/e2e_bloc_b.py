@@ -240,7 +240,7 @@ def _nota_prin_ecran(e, firma, descriere, data, luna=None, doc="Contract E2E nr 
     with pg.expect_response(lambda r: r.url.split("?")[0].endswith("/jurnal") and r.request.method == "POST", timeout=30000) as rr:
         pg.click("#je-salveaza")
     assert rr.value.status < 400, rr.value.text()
-    pg.wait_for_selector(".pf-frand:has-text('%s')" % descriere, timeout=20000)
+    pg.wait_for_selector("tbody.tn-nota:has-text('%s')" % descriere, timeout=20000)   # [lotul 12, 617] rândul notei în tabelul de note
     r = sql('SELECT id FROM "%s".inregistrari WHERE descriere = %%s ORDER BY id DESC LIMIT 1' % firma["schema"], (descriere,))
     assert r, "nota %r nu e în bază" % descriere
     return r[0][0]
@@ -262,18 +262,48 @@ def _de_validat(e):
     pg.wait_for_timeout(500)
 
 
+# [lotul 12, comanda 12.2 pct.9 și 12, deficiențele 617 / 622] notele stau în TABELUL DE NOTE (`static/js/ecrane/tabel_note.js`), același în
+# Registrul jurnal și în „De validat”: un `<tbody class="tn-nota">` pe notă (sau pe documentul cu notele lui, în coadă), cu acțiunea
+# principală pe rând, iar liniile, documentul justificativ, mesajele notei și restul acțiunilor în detaliul care se deschide la clic.
 def _card_nota(e, firma, text):
-    return e.pg.locator("#val-note .val-card").filter(has_text=firma["nume"]).filter(has_text=text)
+    """Rândul din „Note de validat” al notei firmei, după text (descrierea / eticheta notei)."""
+    return e.pg.locator("#val-note tbody.tn-nota").filter(has_text=firma["nume"]).filter(has_text=text)
 
 
 def _card_element(e, coada_id):
-    """Cardul din „De validat” care poartă elementul de coadă dat (după `data-coada-ids`, nu după text)."""
+    """Rândul din „Note de validat” care poartă elementul de coadă dat (după `data-coada-ids`, nu după text)."""
     pg = e.pg
-    pg.wait_for_function("(i) => [...document.querySelectorAll('#val-note .val-card')].some(c => "
+    pg.wait_for_function("(i) => [...document.querySelectorAll('#val-note tbody.tn-nota')].some(c => "
                          "c.dataset.coadaIds.split(',').includes(String(i)))", arg=coada_id, timeout=20000)
-    idx = pg.evaluate("(i) => [...document.querySelectorAll('#val-note .val-card')].findIndex(c => "
+    idx = pg.evaluate("(i) => [...document.querySelectorAll('#val-note tbody.tn-nota')].findIndex(c => "
                       "c.dataset.coadaIds.split(',').includes(String(i)))", coada_id)
-    return pg.locator("#val-note .val-card").nth(idx)
+    return pg.locator("#val-note tbody.tn-nota").nth(idx)
+
+
+def _nota_jn(e, nid):
+    """Rândul notei în Registrul jurnal (`<tbody class="tn-nota" data-nota-id>`)."""
+    return e.pg.locator("tbody.tn-nota[data-nota-id='%d']" % int(nid))
+
+
+def _deschide_rand(e, tb):
+    """Detaliul unui rând din tabelul de note (Registrul jurnal, „De validat”) — liniile notei, documentul justificativ, mesajele ei și
+    restul acțiunilor (Editează, Șterge, Deschide nota …) —, deschis cum îl deschide contabilul: clic pe butonul din prima celulă. Un rând
+    deja deschis rămâne deschis; la întoarcere liniile încărcate la cerere („Se încarcă liniile notei…”) sunt pe ecran. `tb`: locatorul
+    `<tbody>` sau selectorul lui. Întoarce locatorul `<tbody>`."""
+    tb = e.pg.locator(tb).first if isinstance(tb, str) else tb
+    tb.wait_for(timeout=20000)
+    det = tb.locator("tr.tn-detaliu")
+    if det.is_hidden():
+        tb.locator(".tn-deschide").click()
+    det.wait_for(state="visible", timeout=10000)
+    det.locator(".tn-linii-loc").wait_for(state="detached", timeout=20000)
+    return tb
+
+
+def _linii_detaliu(tb):
+    """Liniile notei din detaliul deschis al rândului (`table.tn-linii`), ca liste de celule: [[debit, credit, sumă, (partener) …]]."""
+    return tb.locator("tr.tn-detaliu table.tn-linii").first.evaluate(
+        "(t) => [...t.tBodies[0].rows].map((r) => [...r.cells].map((c) => c.textContent.trim()))")
 
 
 def _nota_salarii(firma):
@@ -325,7 +355,7 @@ def test_def_34_seria_ceruta_la_emitere_si_setata_din_refuz(patron, firma_e2e):
     """34. Factură: seria obligatorie la emitere, setabilă din mesajul de refuz.
     Pașii contabilului: firma configurată fără serie (cum permitea aplicația înainte de 06.10) -> Facturi -> „Emite factură” ->
     completează clientul și o linie de servicii -> „Emite factură”. Refuzul spune că firma n-are serie (CF art.319 alin.(20) lit.a)
-    și cere seria chiar acolo; scrie „ZB” -> „Stabilește seria și emite” -> factura iese „ZB1”, cu formularul păstrat."""
+    și cere seria chiar acolo; scrie „ZB” -> „Stabilește seria și emite” -> factura iese „ZB nr. 1” (443.1), cu formularul păstrat."""
     _fara_serie(firma_e2e)
     pg = patron.pg
     _emitere(patron, firma_e2e)
@@ -345,7 +375,9 @@ def test_def_34_seria_ceruta_la_emitere_si_setata_din_refuz(patron, firma_e2e):
     patron.captura("emisa")
     f = sql('SELECT serie, numar::text, total::text FROM "%s".facturi ORDER BY id DESC LIMIT 1' % firma_e2e["schema"])[0]
     assert f[0] == "ZB", f
-    assert ("Factura %s%s emisă" % (f[0], f[1])) in ok or ("Factura %s" % f[1]) in ok, ok
+    # [lotul 12, 443.1] seria și numărul separat, ca în Istoric: „Factura ZB nr. 1 emisă” (numărul stocat poartă seria în față, „ZB1”)
+    from core.pdf_util import serie_nr
+    assert ("Factura %s emisă" % serie_nr(f[0], f[1])) in ok and "Factura ZB nr. " in ok, ok
     assert "121,00" in ok, ok          # 100 + TVA 21% = 121,00 lei pe ecran
     assert sql('SELECT serie_factura FROM "%s".firma_profil WHERE id = 1' % firma_e2e["schema"])[0][0] == "ZB"
 
@@ -566,12 +598,11 @@ def test_def_35_iesirea_fara_document_primeste_bon_de_consum(patron, firma_e2e):
     _fereastra_firmei(patron)
     pg.click("#fa-jurnal")
     pg.wait_for_selector("#j-nota-noua", timeout=20000)
-    rand = pg.locator(".pf-frand[data-nota-id='%d']" % n[0])
-    rand.wait_for(timeout=20000)
+    rand = _deschide_rand(patron, _nota_jn(patron, n[0]))               # [617] liniile și documentul justificativ: în detaliul rândului
     rand.scroll_into_view_if_needed()
     txt = rand.inner_text()
     patron.captura("jurnal")
-    assert "607 = 371" in txt and "8,00" in txt, txt                     # 2 kg × CMP 4,00 = 8,00 lei
+    assert ["607", "371", "8,00"] in [x[:3] for x in _linii_detaliu(rand)], _linii_detaliu(rand)   # 2 kg × CMP 4,00 = 8,00 lei
     assert re.search(r"Document justificativ: Bon de consum nr \d+ din %s" % re.escape(AZI.strftime("%d.%m.%Y")), txt), txt   # AZI-dat-de-test
     assert "nederivat" not in txt
 
@@ -628,7 +659,7 @@ def test_def_51_o_factura_un_singur_element_de_validat(ana, patron, firma_e2e):
     import re as _re
     from core.pdf_util import serie_nr as _serie_nr
     numit = _serie_nr(f[2], f[1])
-    carduri = patron.pg.locator("#val-note .val-card").filter(has_text=firma_e2e["nume"]).filter(
+    carduri = patron.pg.locator("#val-note tbody.tn-nota").filter(has_text=firma_e2e["nume"]).filter(
         has_text=_re.compile(_re.escape(numit) + r"(?!\d)"))
     carduri.first.wait_for(timeout=20000)
     carduri.first.scroll_into_view_if_needed()
@@ -636,7 +667,10 @@ def test_def_51_o_factura_un_singur_element_de_validat(ana, patron, firma_e2e):
     assert carduri.count() == 1, "factura %s apare în %d elemente de validat" % (f[1], carduri.count())
     ids = carduri.first.get_attribute("data-coada-ids").split(",")
     assert len(ids) == 2, ids
-    assert "Vezi notele" in carduri.first.inner_text()
+    # [622] „Vezi notele →” (fereastra notelor) -> semnul de pe rând „2 note ale documentului”, iar notele, în detaliul rândului
+    assert "2 note ale documentului" in carduri.first.inner_text(), carduri.first.inner_text()
+    _deschide_rand(patron, carduri.first)
+    assert numit in carduri.first.inner_text(), carduri.first.inner_text()          # factura numită, pe ecran (rândul + detaliul)
 
 
 # ═══ NOTE ═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -648,9 +682,9 @@ def test_def_47_editorul_notei_are_data(patron, firma_e2e):
     pg = patron.pg
     desc = "E2E 47 chirie %d" % (int(_t.time()) % 100000)
     nid = _nota_prin_ecran(patron, firma_e2e, desc, "2026-10-03", luna=(2026, 10))
-    rand = pg.locator(".pf-frand[data-nota-id='%d']" % nid)
-    assert "03.10.2026" in rand.inner_text()
-    rand.locator("[data-edit]").click()
+    rand = _nota_jn(patron, nid)
+    assert "03.10.2026" in rand.locator("tr.tn-rand").inner_text()
+    _deschide_rand(patron, rand).locator("[data-edit]").click()          # [617] „Editează” e în detaliul rândului
     pg.wait_for_selector("#je-data", timeout=10000)
     assert pg.input_value("#je-data") == "2026-10-03", "editorul nu arată data notei"
     pg.fill("#je-data", "2026-10-07")
@@ -658,7 +692,7 @@ def test_def_47_editorul_notei_are_data(patron, firma_e2e):
     with pg.expect_response(lambda r: ("/jurnal/%d" % nid) in r.url and r.request.method == "PUT", timeout=30000) as rr:
         pg.click("#je-salveaza")
     assert rr.value.status < 400, rr.value.text()
-    pg.wait_for_function("(i) => { const r = document.querySelector(`.pf-frand[data-nota-id='${i}']`); "
+    pg.wait_for_function("(i) => { const r = document.querySelector(`tbody.tn-nota[data-nota-id='${i}'] tr.tn-rand`); "
                          "return r && r.innerText.includes('07.10.2026'); }", arg=nid, timeout=20000)
     patron.captura("dupa")
     assert str(sql('SELECT data FROM "%s".inregistrari WHERE id = %%s' % firma_e2e["schema"], (nid,))[0][0]) == "2026-10-07"
@@ -673,7 +707,7 @@ def test_def_48_nota_la_validare_nu_se_editeaza_nici_nu_se_sterge(ana, firma_e2e
     desc = "E2E 48 consumabile %d" % (int(_t.time()) % 100000)
     nid = _nota_prin_ecran(ana, firma_e2e, desc, "2026-10-06", luna=(2026, 10))
     assert (_coada_nota(firma_e2e, nid) or (None, None))[1] == "la_senior"
-    rand = pg.locator(".pf-frand[data-nota-id='%d']" % nid)
+    rand = _deschide_rand(ana, _nota_jn(ana, nid))                       # [617] mesajul notei și „Editează” / „Șterge”: în detaliu
     txt = rand.inner_text()
     ana.captura("la_validare")
     assert "La validare în cabinet: nu se modifică" in txt, txt
@@ -716,9 +750,9 @@ def test_def_50_notificarea_duce_la_nota(ana, patron, firma_e2e):
     pg.click("#nav-clopot")
     pg.wait_for_selector(".clopot-item, .clopot-gol", timeout=20000)
     pg.locator(".clopot-item", has_text=desc).first.click()
-    pg.wait_for_selector(".val-card.val-evidentiat", timeout=20000)
+    pg.wait_for_selector("#val-note tbody.tn-nota.val-evidentiat", timeout=20000)
     patron.captura("dupa_clic")
-    ev = pg.locator(".val-card.val-evidentiat")
+    ev = pg.locator("[data-coada-ids].val-evidentiat")                   # notele și declarațiile cozii: un singur element marcat
     assert ev.count() == 1 and str(cid) in ev.first.get_attribute("data-coada-ids").split(","), "alt element marcat"
     assert desc in ev.first.inner_text()
 
@@ -784,7 +818,8 @@ def test_def_56_jurnalul_nu_numara_nota_respinsa_de_validat(ana, patron, firma_e
         e.captura(cine)
         assert "1 respinsă, de corectat" in antet, antet
         assert "de validat" not in antet and "netrimis" not in antet, "nota respinsă e numărată ca nevalidată: %s" % antet
-        assert motiv in e.pg.locator(".pf-frand", has_text=desc).first.inner_text()
+        rand = _deschide_rand(e, e.pg.locator("tbody.tn-nota", has_text=desc).first)   # [617] motivul respingerii: în detaliul rândului
+        assert motiv in rand.inner_text(), rand.inner_text()
 
 
 def test_def_58_ciorna_din_afara_cozii_se_trimite_la_validare(ana, patron, firma_e2e):
@@ -805,11 +840,11 @@ def test_def_58_ciorna_din_afara_cozii_se_trimite_la_validare(ana, patron, firma
     pg = ana.pg
     _jurnal(ana, firma_e2e, (2026, 8))
     antet = pg.inner_text(".fereastra p.pf-intro")
-    rand = pg.locator(".pf-frand[data-nota-id='%d']" % nid)
-    al_sefului = pg.locator(".pf-frand[data-nota-id='%d']" % a_sefului)
+    rand = _nota_jn(ana, nid)
+    al_sefului = _deschide_rand(ana, _nota_jn(ana, a_sefului))           # [617] motivul („a altui utilizator”) e în detaliul rândului
     ana.captura("inainte")
     assert "2 netrimise la validare" in antet and "de validat" not in antet, antet
-    assert (al_sefului.locator("[data-retrimite]").count(), al_sefului.locator(".jn-a-altuia").count()) == (0, 1)
+    assert (al_sefului.locator("[data-retrimite]").count(), al_sefului.locator(".jn-a-altuia:visible").count()) == (0, 1)
     rand.locator("[data-retrimite]").click()
     pg.wait_for_function("() => document.querySelector('#caseta-atentie-activa #ca-ok') || ((document.querySelector('.fereastra "
                          "p.pf-intro') || {}).innerText || '').includes('la validare în cabinet')", timeout=20000)
@@ -831,13 +866,13 @@ def test_def_46_retrimiterea_nu_e_pregatire_noua(ana2, patron, firma_e2e):
     _respinge_din_coada(patron, firma_e2e, desc, "Document greșit")
     pg = ana2.pg
     _jurnal(ana2, firma_e2e, (2026, 10))
-    pg.locator(".pf-frand[data-nota-id='%d'] [data-retrimite]" % nid).click()
+    _nota_jn(ana2, nid).locator("tr.tn-rand [data-retrimite]").click()   # [617] „Trimite din nou la validare” pe rândul notei
     pg.wait_for_function("(i) => document.querySelector('#caseta-atentie-activa #ca-ok') || (document.querySelector("
-                         "`.pf-frand[data-nota-id='${i}']`) || {innerText: ''}).innerText.includes('La validare în cabinet')", arg=nid,
+                         "`tbody.tn-nota[data-nota-id='${i}'] tr.tn-rand`) || {innerText: ''}).innerText.includes('La validare în cabinet')", arg=nid,
                          timeout=20000)
     if pg.query_selector("#caseta-atentie-activa #ca-ok"):   # retrimisă neschimbată: aplicația cere confirmarea explicită
         pg.click("#caseta-atentie-activa #ca-ok")
-    pg.wait_for_function("(i) => (document.querySelector(`.pf-frand[data-nota-id='${i}']`) || {innerText: ''}).innerText"
+    pg.wait_for_function("(i) => (document.querySelector(`tbody.tn-nota[data-nota-id='${i}'] tr.tn-rand`) || {innerText: ''}).innerText"
                          ".includes('La validare în cabinet')", arg=nid, timeout=20000)
     _valideaza_din_coada(patron, firma_e2e, desc)
     ana2.acasa()
@@ -1019,7 +1054,7 @@ def test_def_49_nota_de_salarii_pe_ultima_zi_a_lunii(ana, firma_e2e):
     pg.click("#fa-jurnal")
     pg.wait_for_selector("#j-nota-noua", timeout=20000)
     _mergi_la_luna(ana, *LUNA)   # jurnalul se deschide pe luna curentă; nota e în ultima lună încheiată
-    rand = pg.locator(".pf-frand", has_text="Salariile lunii %02d/%d" % (LUNA[1], LUNA[0])).first
+    rand = pg.locator("tbody.tn-nota", has_text="Salariile lunii %02d/%d" % (LUNA[1], LUNA[0])).first   # [617] rândul notei
     rand.wait_for(timeout=20000)
     rand.scroll_into_view_if_needed()
     ana.captura("jurnal")
@@ -1042,7 +1077,8 @@ def test_def_55_titlul_notei_de_salarii_fara_repetitie(ana, patron, firma_e2e):
     _de_validat(patron)
     card = _card_element(patron, _coada_nota(firma_e2e, _nota_salarii(firma_e2e))[0])
     card.scroll_into_view_if_needed()
-    titlu = card.locator(".val-titlu").inner_text()
+    # [622] titlul elementului (fostul `.val-titlu`) stă în detaliul rândului: „<titlu> · pregătită de <cine>”
+    titlu = _deschide_rand(patron, card).locator("tr.tn-detaliu p.pf-frand-sub").first.inner_text().split(" · pregătită de ")[0]
     patron.captura("titlu")
     assert ("Salariile lunii %02d/%d" % (LUNA[1], LUNA[0])) in titlu, titlu
     norm = titlu.lower().replace("ă", "a").replace("ț", "t")

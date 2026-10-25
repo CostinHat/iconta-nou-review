@@ -195,11 +195,12 @@ def test_def_470_nota_din_factura_se_deschide_pe_nota_ei(patron, firma_emit):
         _factura_din_istoric(patron, firma_emit, f["factura_id"])   # prima factură e a 25-a din listă: „Vezi și … mai vechi”
         pg = patron.pg
         pg.click("#fd-vezi-nota")
-        rand = ".fereastra:last-of-type [data-nota-id='%d']" % nid
+        rand = ".fereastra:last-of-type tbody.tn-nota[data-nota-id='%d']" % nid   # [lotul 12, 617] rândul notei în tabelul de note
         pg.wait_for_selector(rand, timeout=20000)
         pg.wait_for_timeout(600)
         assert "val-evidentiat" in (pg.get_attribute(rand, "class") or ""), "nota facturii nu e evidențiată"
-        pe_ecran = pg.eval_on_selector(rand, "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }")
+        # rândul notei (`tr.tn-rand`) pe ecran; detaliul, deschis sub el, poate trece de marginea ferestrei
+        pe_ecran = pg.eval_on_selector(rand + " tr.tn-rand", "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }")
         assert pe_ecran, "rândul notei facturii nu e pe ecran"
         assert pg.locator(".fereastra:last-of-type .val-evidentiat").count() == 1
         patron.captura("factura_%d" % f["factura_id"])
@@ -313,9 +314,13 @@ def test_def_c84_livrarea_ic_de_bunuri_se_face_din_emite_factura_si_descarca_sto
     pg.click("#em-emite")
     pg.wait_for_selector("#em-poarta-da", timeout=20000)
     pg.click("#em-poarta-da")
+    # [lotul 12, C84, decizia Costin 12.3 pct.7] după „Pleacă marfa acum?”, întrebarea dovezii transportului (livrarea intracomunitară)
+    pg.wait_for_selector("#em-dovada-da", timeout=20000)
+    pg.click("#em-dovada-da")
     pg.wait_for_selector("#em-rezultat.em-bun", timeout=30000)
     rez = pg.inner_text("#em-rezultat")
     assert "total 200,00" in rez and "1 articol descărcat din gestiune" in rez, rez
+    assert pg.locator("#em-rezultat .em-avertisment-emitere").count() == 0, "cu dovada transportului: niciun avertisment"
     patron.captura("emisa")
     fid, total, tva, tara = sql('SELECT id, total::text, tva::text, tert_tara FROM "%s".facturi ORDER BY id DESC LIMIT 1' % s)[0]
     assert (total, tva, tara) == ("200.00", "0.00", "DE"), (total, tva, tara)

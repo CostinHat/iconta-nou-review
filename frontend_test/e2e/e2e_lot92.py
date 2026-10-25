@@ -4,6 +4,7 @@ din index, pe baza de TEST, pe firme NOI de test (`firma_noua`). CUI-urile au ci
 import pytest
 
 from conftest import firma_noua, sql
+from core.pdf_util import serie_nr as _serie_nr   # [lotul 12, 443.1] numărul facturii, ca pe ecran
 
 
 @pytest.fixture(scope="module")
@@ -243,6 +244,10 @@ def test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_bu
     pg = patron.pg
     rand = pg.locator(".fereastra:last-of-type [data-nota-id='%s']" % nid).first
     rand.wait_for(timeout=30000)
+    # [lotul 12, 617] tabelul de note: documentul justificativ („Document justificativ: …”) și liniile stau în detaliul notei — deschis cum îl
+    # deschide contabilul, ca textul verificat să fie tot ce arată nota (rândul și detaliul)
+    from e2e_bloc_b import _deschide_rand
+    _deschide_rand(patron, rand)
     txt = " ".join(rand.inner_text().split())
     patron.captura()
     assert "Factură %s din %s" % (numar, pdf_util.data_ro(data)) in txt, txt
@@ -590,7 +595,8 @@ def test_def_403_fisa_de_magazie_numeste_documentul_nu_id_ul(patron, firma_cv):
 def test_def_408_cardul_nir_din_coada_arata_rulajul_tuturor_notelor(patron, firma_cv):
     """408. Asistentul salvează un NIR cu transport (patru note) -> coada contabilului-șef: cardul NIR-ului arată „rulaj <suma tuturor
     notelor>”, nu rulajul primei note."""
-    from e2e_bloc_d import ASISTENT, _api as _api_ca, _atribuie_asistentului, _card_coada, _coada, _in_coada
+    from e2e_bloc_b import _card_nota, _deschide_rand
+    from e2e_bloc_d import ASISTENT, _api as _api_ca, _atribuie_asistentului, _coada, _in_coada
     _atribuie_asistentului(firma_cv)
     st, r = _api_ca(ASISTENT, "POST", "/tenants/%d/stocuri/nir" % firma_cv["tenant_id"],
                     {"factura_sosita": False, "cota_tva_transport": 21, "numar": "N408", "data": AZI.isoformat(), "transport": 10,
@@ -599,7 +605,9 @@ def test_def_408_cardul_nir_din_coada_arata_rulajul_tuturor_notelor(patron, firm
     assert st == 200 and len(r["inregistrari"]) == 4, (st, r)
     _in_coada(firma_cv)
     _coada(patron)
-    card = _card_coada(patron, firma_cv, "NIR nr N408 ")
+    # [lotul 12, 622] nota din coadă e un rând în tabelul „Note de validat”; rulajul documentului („rulaj X lei”) stă în detaliul rândului,
+    # deschis cum îl deschide contabilul (clic pe rând)
+    card = _deschide_rand(patron, _card_nota(patron, firma_cv, "NIR nr N408 "))
     t = " ".join(card.inner_text().split())
     patron.captura()
     # 1.000 + 210 (TVA) + 10 (transport) + 2,10 (TVA transport) = 1.222,10
@@ -836,6 +844,6 @@ def test_def_c64_confirmarea_transformarii_ramane_peste_detaliu(patron, firma_cv
     MUTAȚIE: mesajul repus pe `corp` (`arataMesaj(corp, …)`) -> detaliul dispare -> ROȘU."""
     pg, _adresa, r = _proforma_transformata(patron, firma_cv)
     pg.wait_for_function("(t) => ((document.querySelector('#fd-act-rez') || {}).textContent || '') === t",
-                         arg="Factura %s a fost emisă." % r["numar"], timeout=20000)
+                         arg="Factura %s a fost emisă." % _serie_nr(r.get("serie"), r["numar"]), timeout=20000)   # [lotul 12, 443.1]
     patron.captura()
-    assert " ".join(pg.inner_text("#fd-vezi-transformata").split()) == "transformată în %s" % r["numar"], pg.inner_text(".fd-antet")
+    assert " ".join(pg.inner_text("#fd-vezi-transformata").split()) == "transformată în %s" % _serie_nr(r.get("serie"), r["numar"]), pg.inner_text(".fd-antet")   # [lotul 12, C196]

@@ -43,7 +43,8 @@ def test_clasificarea_acopera_cele_82_si_fiecare_are_motiv():
     # [lotul 10, 428] + `date_firma.js:vf-tva_incasare` (PRESELECTAT: „Nu” dedus din CF art.282 alin.(3) — sistemul e opțiune)
     # [lotul 12, 477] + `facturi_ecran.js:pm-moneda` (PRESELECTAT: RON, ca la emitere — factura primită introdusă de mână)
     # [lotul 12, C160] + `facturi_ecran.js:fr-tara` (PRESELECTAT: țara dedusă din CUI, ca la emitere — șablonul facturii recurente)
-    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 10 and sum(clase.values()) == 88   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
+    # [lotul 12, 617] + `tabel_note.js:${pre}-stare` (NEFISCAL: filtrul de stare al tabelului de note — ce se arată, nu un fapt scris)
+    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 10 and sum(clase.values()) == 89   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
     assert all(len(m) > 40 for _c, m in S.CLASIFICARE.values())
     assert set(S.HELPERE) <= set(S.CLASIFICARE)
 

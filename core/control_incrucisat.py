@@ -185,9 +185,15 @@ def d301_luni_facturi_ic(conn, schema, an):
     [ruptura D301<->facturi 14.08.2026] Faptul care declanseaza D301 la un neplatitor NU e doar tabelul
     manual d301_operatiuni: o achizitie IC inregistrata ca factura (fluxul normal de utilizator) datoreaza
     D301. Simetric cu D390 (d390_are_operatiuni citeste tot facturi_ic). Reutilizeaza clasificarea UE din
-    facturi_ic (nu construieste una paralela)."""
+    facturi_ic (nu construieste una paralela).
+    [lotul 12, C163, decizia Costin 12.3 pct.3: „serviciile primite din UE intră în D301”] și serviciile primite (axa „servicii”): până azi
+    `facturi_ic` fără servicii le scotea, deci luna cu un serviciu primit de la un prestator din UE nu era lună D301. TEMEI: CF art.307
+    alin.(2) — „Taxa este datorată de orice persoană impozabilă [...] care este beneficiar al serviciilor care au locul prestării în România
+    conform art. 278 alin. (2) și care sunt furnizate de către o persoană impozabilă care nu este stabilită pe teritoriul României”; CF
+    art.324 alin.(1) lit.d — decontul special se depune de persoanele neînregistrate conform art.316 „pentru operațiunile și de către
+    persoanele obligate la plata taxei, conform art. 307 alin. (2)-(4) și (6)”."""
     import datetime as _dt
-    fic = facturi_ic(conn, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1))
+    fic = facturi_ic(conn, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1), cu_servicii=True)
     return {r["data_emitere"].month for r in fic.get("primita", []) if r.get("data_emitere")}
 
 

@@ -263,6 +263,10 @@ def genereaza_xml(factura, linii, furnizor, client):
     from core import categorii_tva as _ct
     from core import tva_calcul as _tc
     neplatitor = not furnizor.get("platitor_tva")
+    # [lotul 12, C156, decizia Costin 12.3 pct.3] prestarea neplătitorului înregistrat art.317 către clientul din alt stat membru: liniile
+    # „serviciu_extern” (puse la emitere) ies AE + „taxare inversă” (CF art.319 alin.(20) lit.m), cu codul RO art.317 al vânzătorului (BT-31,
+    # CF art.318 alin.(1), alin.(4) lit.b pct.2) și codul de TVA al clientului (BT-48) — nu O, care nu admite codurile părților
+    art317 = _ct.cod_tva_art317(False if neplatitor else True, linii)
     line_net = []
     grup = {}  # (cat, cota, motiv, vatex) -> baza
     for l in linii:
@@ -270,7 +274,7 @@ def genereaza_xml(factura, linii, furnizor, client):
         # BR-DEC-23 (regula unică, `core/tva_calcul.py`); [lotul 11, C86] valoarea netă scrisă pe linie (`factura_linii.valoare_neta`: stornarea
         # unei facturi venite din XML poartă −BT-131 al originalului), ca BT-131 trimis să fie cel din contabilitate, nu cantitate × preț
         net = _tc.net_linie(l.get("cantitate"), l.get("pret_unitar"), l.get("valoare_neta"))
-        if neplatitor:
+        if neplatitor and l.get("categorie_tva") != _ct.PRESTARE_IC_317:
             d = _ct.NEPLATITOR
         elif cota > 0:
             d = {"ubl": "S", "mentiune": None, "vatex": None}
@@ -291,7 +295,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     tax_total = _bani(tax_total)
     tax_incl = _bani(line_ext + tax_total)
 
-    sup_vat = _vatid(furnizor.get("cui")) if furnizor.get("platitor_tva") else ""
+    sup_vat = _vatid(furnizor.get("cui")) if furnizor.get("platitor_tva") or art317 else ""
     tara_cli = (client.get("tara") or "RO").strip().upper() or "RO"
     # [274b] O („nu face obiectul TVA”): factura NU conține codul de TVA al cumpărătorului (ghidul MF v2.9, reguli BG-23); pentru un
     # client străin codul de TVA e chiar al lui (prefixul țării), nu „RO” + cifre
@@ -302,7 +306,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     # de identificare fiscală al beneficiarului”: la clientul român BT-48 numai când e plătitor de TVA (statutul înghețat pe factură la
     # emitere, `facturi.tert_platitor_tva`); altfel (neplătitor sau statut necunoscut) CUI-ul fără „RO” la BT-47 (RO_CIUS BR-RO-120).
     # Înainte: „RO” + cifre oricărui client român.
-    if neplatitor or (tara_cli != "RO" and tara_cli not in _UE):
+    if (neplatitor and not art317) or (tara_cli != "RO" and tara_cli not in _UE):
         cli_vat = ""
     elif tara_cli == "RO":
         cli_vat = _vatid(client.get("cui")) if client.get("platitor_tva") is True else ""

@@ -81,10 +81,11 @@ def _schema():
             if re.fullmatch(r"\w+", tok):
                 cols.add(tok.lower())
         sch.setdefault(tbl, set()).update(cols)
-    for m in re.finditer(
-        r"ALTER TABLE TENANT_PLACEHOLDER\.(\w+)\s+ADD COLUMN(?: IF NOT EXISTS)?\s+(\w+)", txt
-    ):
-        sch.setdefault(m.group(1), set()).add(m.group(2).lower())
+    # [lotul 12, integrarea I3] TOATE clauzele `ADD COLUMN` ale unui ALTER, nu numai prima: `ALTER TABLE … ADD COLUMN a …, ADD COLUMN b …;`
+    # (blocul `migrare_sablon_recurent_stare`) dădea numai `a`, iar `b` apărea „inexistentă” în codul care o folosește
+    for m in re.finditer(r"ALTER TABLE TENANT_PLACEHOLDER\.(\w+)\s+(ADD COLUMN[^;]*);", txt):
+        for c in re.finditer(r"ADD COLUMN(?: IF NOT EXISTS)?\s+(\w+)", m.group(2)):
+            sch.setdefault(m.group(1), set()).add(c.group(1).lower())
     return sch
 
 

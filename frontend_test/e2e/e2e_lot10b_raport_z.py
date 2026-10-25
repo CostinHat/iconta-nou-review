@@ -142,6 +142,12 @@ def test_def_zdescarcare_arata_valoarea_si_butonul_de_validare(patron, firma_cv)
     assert "în valoare de 8,00 lei" in " ".join(pg.inner_text("#zd-valoare-%d" % zid).split())
     patron.captura("descarcat")
     pg.click("#zd-val-%d" % zid)
+    # [lotul 12, 474] Z-ul n-are articole, deci înainte de validare aplicația spune ce s-a descărcat (la cost) față de vânzare și cere
+    # confirmarea (`z_descarcare.avertisment_descarcare`) — aceeași valoare de 8,00 lei
+    pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=10000)
+    caseta = " ".join(pg.inner_text("#caseta-atentie-activa").split())
+    assert "Ai descărcat din stoc 1 ieșire la cost 8,00 lei" in caseta and pg.inner_text("#ca-ok").strip() == "Da, validează raportul Z", caseta
+    pg.click("#caseta-atentie-activa #ca-ok")
     pg.wait_for_function("() => (document.querySelector('#zd-rez') || {innerText: ''}).innerText.includes('e validat')", timeout=20000)
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (zid,)) == [("validata",)]
     assert pg.locator("#z-descarcare [data-z='%d']" % zid).count() == 0

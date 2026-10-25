@@ -54,7 +54,8 @@ sys.path.insert(0, os.path.join(_RAD, "scripts"))
 # `tenants` — 238 aparitii, e in fiecare cale — plus `GET /`, care n-are niciun segment literal.
 # Adica INSTANTA FONDATOARE a lui R80, `PUT /tenants/{id}`, ramane oarba: reparatia n-a acoperit-o,
 # a curatat in jurul ei.
-_CLICHET = 6
+# [lotul 12, comanda 12.2, 24.10.2026] 6 -> 10: segmentul `facturi` a trecut pragul de 40 (40 -> 41 referințe de rută în `static/`), odată cu ștergerea refuzului emiterii la schimbarea clientului (deficiența 304 redeschisă, `emitere_ecran.js`: `f.dataset.ruta.startsWith(`/tenants/${tenantId}/facturi`)`) — o referință REALĂ de rută, nu proză. Au orbit cele patru rute al căror singur segment literal e `facturi`: GET/POST `/tenants/{tenant_id}/facturi`, GET/DELETE `/tenants/{tenant_id}/facturi/{factura_id}`. Rutele au apelanți; ce a crescut e numai incapacitatea detectorului de a o dovedi (aceeași formă ca `jurnal` și `salariati` la R80). Codul nu se rescrie ca să intre sub prag (vezi „DE CE NU S-A REDENUMIT ECRANUL”).
+_CLICHET = 10
 _PRAG = 40
 
 
@@ -117,7 +118,8 @@ def test_cazul_cunoscut_e_in_clasa():
 # `_CLICHET = 6` de mai sus masoara ORBIREA instrumentului; `_GRI = 7` masoara cate rute raman,
 # dupa declaratii, in starea „nu se poate afirma nimic". Sunt doua intrebari diferite, si de-aia doua
 # cifre — nu doua masuratori ale aceluiasi lucru.
-_GRI = 7
+# [lotul 12, comanda 12.2, 24.10.2026] 7 -> 11: cele patru rute `/facturi` orbite (cauza la `_CLICHET`); `GET /` rămâne al unsprezecelea.
+_GRI = 11
 _EXCLUS = 32
 _ROSU = 0
 

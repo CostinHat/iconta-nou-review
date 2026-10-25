@@ -10,8 +10,8 @@
 // Ruta scrierii rămâne `POST /tenants/{tenant_id}/achizitie-neinregistrat` (operațiunea D394 N); câmpurile poartă id-urile din refuzurile
 // serverului (`op-*`). Gard: core/test_lot11_b_450_borderou.py (fiecare câmp citit de server are câmpul lui aici).
 import { api, ultimaCerere, esc, bani, cantitate, arataMesaj, dataIso, dataRo, stareNota, pasNota, eroareCamp, curataEroriCamp, confirmaCaseta,
-  dupaGenerare } from "../api.js?v=309f4d66ae";
-import { cautaInLista } from "./emitere_ecran.js?v=ee4898fed1";   /* [lotul 12, 488] */
+  dupaGenerare } from "../api.js?v=e38843b1ec";
+import { cautaInLista } from "./emitere_ecran.js?v=8d3aa3015f";   /* [lotul 12, 488] */
 
 /** Conturile pe care borderoul aduce marfa în gestiune (aceeași listă ca serverul, `uc_tenants.achizitie_neinregistrat`). */
 const CONTURI_STOC = ["371", "301", "302", "303"];
@@ -84,7 +84,7 @@ export async function ecranBorderou(corp, nav, t) {
 
   const deschideNota = async (nid, data) => {
     const [a, l] = String(data || "").split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=1c7b806a57");
+    const { ecranJurnal } = await import("./firme.js?v=2b27eebcaf");
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
       Number.isFinite(a) && Number.isFinite(l) ? { an: a, luna: l } : {})), { lat: "tabel" });
   };

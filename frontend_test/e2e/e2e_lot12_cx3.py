@@ -59,10 +59,12 @@ def _neplatitor_art317(patron, f):
 def test_def_c110_prestarea_ic_a_neplatitorului_art317_poarta_regimul_firmei(patron, firma_cx3):
     """C110. Pașii: firmă neplătitoare de TVA, înregistrată art.317 -> Operațiuni speciale -> „Livrare/prestare intracomunitară” ->
     Servicii, 1.000 lei, client DE811907980 (VIES valid), cont 704 -> „Generează nota” -> confirmarea -> Facturi -> „Istoric facturi” ->
-    factura nouă: linia 0% fără categoria plătitorului (`.fd-categorie` lipsă), PDF-ul cu mențiunea neplătitorului
-    (`factura_pdf.MENTIUNE_NEPLATITOR`); în bază, linia are categoria `categorii_tva.NEPLATITOR` și axa „servicii” (D390 cod P).
-    MUTAȚIA (`mut_lot12_cx3.json`): `creeaza_factura` pune categoria după „plătitor” în loc de regimul citit din profil -> ROȘU (drumul pe
-    care regimul firmei ajunge pe factura prestării; vezi raportul C110 pentru de ce parametrul reparat nu are efect vizibil singur)."""
+    factura nouă: linia 0% cu categoria prestării cu locul la client (`.fd-categorie`), PDF-ul cu „taxare inversă” și codul RO art.317, fără
+    mențiunea scutirii art.310; în bază, linia are categoria `categorii_tva.PRESTARE_IC_317` și axa „servicii” (D390 cod P).
+    [lotul 12, C156, decizia Costin 12.3 pct.3: „Prestarea intracomunitară de servicii a neplătitorului înregistrat art. 317: fără TVA român,
+    mențiunea «taxare inversă», codul RO art. 317 pe factură, P în D390”] — înainte: categoria O și „Scutit de TVA … art. 310”.
+    MUTAȚIA (`mut_lot12_cx3.json`): `creeaza_factura` nu mai dă categoriilor înregistrarea art.317 citită din profil (`art317=None`) -> linia
+    O, PDF-ul „CIF” și scutirea art.310 -> ROȘU (drumul pe care regimul firmei ajunge pe factura prestării)."""
     from core import categorii_tva, factura_pdf
     from e2e_bloc_a import AZI, _deschide_factura, _pdf_ok, _pdf_text
     f = firma_cx3
@@ -87,18 +89,23 @@ def test_def_c110_prestarea_ic_a_neplatitorului_art317_poarta_regimul_firmei(pat
     noi = [r[0] for r in sql('SELECT id FROM "%s".facturi ORDER BY id' % s) if r[0] not in inainte]
     assert len(noi) == 1, noi
     fid = noi[0]
-    # CF art.310 alin.(10) lit.b: neplătitorul „nu are voie să menționeze taxa pe factură” -> linia 0%, categoria regimului special (O)
+    # CF art.310 alin.(10) lit.b: neplătitorul „nu are voie să menționeze taxa pe factură” -> linia 0%; [C156] categoria prestării cu locul
+    # la client (CF art.278 alin.(2)), AE + „taxare inversă” (CF art.319 alin.(20) lit.m)
     assert sql('SELECT categorie_tva, cota_tva::text FROM "%s".factura_linii WHERE factura_id = %%s' % s, (fid,)) == [
-        (categorii_tva.NEPLATITOR["cod"], "0.00")]
+        (categorii_tva.PRESTARE_IC_317, "0.00")]
     # CF art.325 alin.(1) lit.c: prestarea art.278 alin.(2) a înregistratului art.317 intră în D390 — axa „servicii” de pe document (P)
     assert sql('SELECT axa_ic, tert_tara FROM "%s".facturi WHERE id = %%s' % s, (fid,)) == [("servicii", "DE")]
     _deschide_factura(patron, f, fid)
     patron.captura("factura")
-    assert pg.locator(".fd-categorie").count() == 0, "linia neplătitorului poartă o categorie de plătitor"
+    assert categorii_tva.CATEGORII[categorii_tva.PRESTARE_IC_317]["eticheta"] in pg.locator(".fd-categorie").first.inner_text()
+    cui = "".join(ch for ch in sql('SELECT cui FROM "%s".firma_profil' % s)[0][0] if ch.isdigit())
     with pg.expect_response(lambda r: r.url.endswith("/facturi/%s/pdf" % fid), timeout=30000) as rr:
         pg.click("#fd-pdf")
     text, _titlu = _pdf_text(_pdf_ok(patron, rr))
-    assert " ".join(factura_pdf.MENTIUNE_NEPLATITOR.split()) in text, text[-600:]
+    # CF art.318 alin.(1): codul atribuit conform art.317 „are prefixul RO”; CF art.319 alin.(20) lit.m: mențiunea „taxare inversă”
+    mentiune = factura_pdf.mentiuni_categorii([{"categorie_tva": categorii_tva.PRESTARE_IC_317}], "DE")[0]
+    assert (text.count("Cod TVA (art.317): RO%s · J40/1234/2015" % cui), text.count(mentiune),
+            text.count(" ".join(factura_pdf.MENTIUNE_NEPLATITOR.split()))) == (1, 1, 0), text[-600:]
 
 
 # ── C122 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

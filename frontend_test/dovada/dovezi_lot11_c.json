@@ -489,17 +489,23 @@
     "deruleaza": "[data-nota-id]:has-text('DOVC79-1')"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id]:has-text('DOVC79-1') .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id]:has-text('DOVC79-1') table.tn-linii"
+   },
+   {
     "pauza": 500
    }
   ],
   "verifica": [
    {
-    "contine": "4426 = 401 · 42,51",
-    "zona": "[data-nota-id]:has-text('DOVC79-1')"
+    "contine": "4426 401 42,51",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC79-1') table.tn-linii"
    },
    {
-    "contine": "4426 = 401 · 16,49",
-    "zona": "[data-nota-id]:has-text('DOVC79-1')"
+    "contine": "4426 401 16,49",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC79-1') table.tn-linii"
    },
    {
     "nu_contine": "42,49",
@@ -628,29 +634,35 @@
     "deruleaza": "[data-nota-id]:has-text('DOVC80-1')"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id]:has-text('DOVC80-1') .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id]:has-text('DOVC80-1') table.tn-linii"
+   },
+   {
     "pauza": 500
    }
   ],
   "verifica": [
    {
-    "contine": "628 = 401 · 470,00",
-    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+    "contine": "628 401 470,00",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC80-1') table.tn-linii"
    },
    {
-    "contine": "628 = 401 · 270,00",
-    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+    "contine": "628 401 270,00",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC80-1') table.tn-linii"
    },
    {
-    "contine": "4426 = 401 · 98,70",
-    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+    "contine": "4426 401 98,70",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC80-1') table.tn-linii"
    },
    {
-    "contine": "4426 = 401 · 29,70",
-    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+    "contine": "4426 401 29,70",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC80-1') table.tn-linii"
    },
    {
-    "nu_contine": "628 = 401 · 500,00",
-    "zona": "[data-nota-id]:has-text('DOVC80-1')"
+    "nu_contine": "628 401 500,00",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC80-1') table.tn-linii"
    }
   ],
   "captura": "c80_f1_nota_baza_dupa_reduceri.png"
@@ -732,17 +744,23 @@
     "deruleaza": "[data-nota-id]:has-text('DOVC82-1')"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id]:has-text('DOVC82-1') .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id]:has-text('DOVC82-1') table.tn-linii"
+   },
+   {
     "pauza": 500
    }
   ],
   "verifica": [
    {
-    "contine": "628 = 401 · 100,50",
-    "zona": "[data-nota-id]:has-text('DOVC82-1')"
+    "contine": "628 401 100,50",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC82-1') table.tn-linii"
    },
    {
-    "contine": "4426 = 401 · 21,11",
-    "zona": "[data-nota-id]:has-text('DOVC82-1')"
+    "contine": "4426 401 21,11",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC82-1') table.tn-linii"
    },
    {
     "nu_contine": "100,49",
@@ -831,6 +849,12 @@
     "deruleaza": "[data-nota-id]:has-text('DOVC83-1')"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id]:has-text('DOVC83-1') .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id]:has-text('DOVC83-1') table.tn-linii"
+   },
+   {
     "pauza": 500
    }
   ],
@@ -839,14 +863,22 @@
     "exista": "[data-nota-id]:has-text('DOVC83-1')"
    },
    {
-    "contine": "4426 = 401",
-    "zona": "[data-nota-id]:has-text('DOVC83-1')"
+    "contine": "4426 401",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC83-1') table.tn-linii"
    },
    {
     "nu_contine": "nu are curs BNR"
    },
    {
+    "nu_contine": "nu are curs BNR",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
+   },
+   {
     "nu_contine": "n-are încă curs BNR"
+   },
+   {
+    "nu_contine": "n-are încă curs BNR",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "c83_f1_nota_in_lei_cu_cursul_bnr.png"
@@ -928,17 +960,23 @@
     "deruleaza": "[data-nota-id]:has-text('DOVC81-1')"
    },
    {
+    "click": "tbody.tn-nota[data-nota-id]:has-text('DOVC81-1') .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id]:has-text('DOVC81-1') table.tn-linii"
+   },
+   {
     "pauza": 500
    }
   ],
   "verifica": [
    {
-    "contine": "4426 = 401 · 1.030,19",
-    "zona": "[data-nota-id]:has-text('DOVC81-1')"
+    "contine": "4426 401 1.030,19",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC81-1') table.tn-linii"
    },
    {
-    "contine": "4426 = 401 · 269,81",
-    "zona": "[data-nota-id]:has-text('DOVC81-1')"
+    "contine": "4426 401 269,81",
+    "zona": "tbody.tn-nota[data-nota-id]:has-text('DOVC81-1') table.tn-linii"
    }
   ],
   "captura": "c81_f1_nota_tva_lei_bt111.png"
@@ -1011,16 +1049,26 @@
     "asteapta": "[data-nota-id]"
    },
    {
+    "click": "#jn-tabel tbody.tn-nota:has-text('22.10.2026'):has-text('4111 = 704') .tn-deschide"
+   },
+   {
+    "asteapta": "#jn-tabel tbody.tn-nota:has-text('22.10.2026'):has-text('4111 = 704') table.tn-linii"
+   },
+   {
     "pauza": 600
    }
   ],
   "verifica": [
    {
-    "contine": "4111 = 704 · 1.000,00",
-    "zona": "[data-nota-id]"
+    "contine": "4111 704 1.000,00",
+    "zona": "#jn-tabel tbody.tn-nota:has-text('22.10.2026'):has-text('4111 = 704') table.tn-linii"
    },
    {
     "nu_contine": "Servicii dovadă C78"
+   },
+   {
+    "nu_contine": "Servicii dovadă C78",
+    "zona": ".fereastra:last-of-type tr.tn-detaliu"
    }
   ],
   "captura": "c78_f1_registru_jurnal_o_singura_nota.png"

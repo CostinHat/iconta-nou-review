@@ -56,6 +56,11 @@ def pierderi(surse):
                 nume = n.func.attr if isinstance(n.func, ast.Attribute) else (n.func.id if isinstance(n.func, ast.Name) else None)
                 if not nume or nume == fn.name or len(defs.get(nume, ())) != 1:
                     continue
+                # [lotul 12, 24.10.2026] un apel prin PARAMETRUL lui F (o funcție primită, `d390_luni_neplatitor(a)` în
+                # `control_fiscal_api.obligatii_datorate`) nu e un apel al funcției cu același nume din cod: cel care o dă și-a legat
+                # singur valorile (lambda-ul `_d390_luni_neplat` poartă `azi`), deci nu se judecă după semnătura omonimei
+                if isinstance(n.func, ast.Name) and n.func.id in _toti(fn):
+                    continue
                 if any(k.arg is None for k in n.keywords) or any(isinstance(x, ast.Starred) for x in n.args):
                     continue
                 g = defs[nume][0]
@@ -88,5 +93,6 @@ def test_detectorul_are_dinti():
            "def f(a, tert_pf=False):\n    g(a)\n"                                   # pierdut
            "def h(a, tert_pf=False):\n    g(a, tert_pf=tert_pf)\n"                  # transmis
            "def k(a, acum=None):\n    x = acum if acum is not None else g(a)\n"     # folosit el însuși
-           "def m(a, tert_pf=False):\n    g(a, **{'tert_pf': tert_pf})\n")          # prin ** — nu se poate judeca
+           "def m(a, tert_pf=False):\n    g(a, **{'tert_pf': tert_pf})\n"           # prin ** — nu se poate judeca
+           "def n(a, tert_pf=False, g=None):\n    g(a)\n")                          # `g` e parametrul lui n (funcție primită), nu g-ul de sus
     assert [(F, G, p) for _f, _l, F, G, p in pierderi({"x.py": src})] == [("f", "g", "tert_pf")]

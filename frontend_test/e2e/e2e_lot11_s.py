@@ -15,6 +15,7 @@ import datetime as _dt
 import pytest
 
 from conftest import firma_noua, sql
+from e2e_bloc_b import _deschide_rand, _nota_jn
 from e2e_bloc_c import firma_cv  # noqa: F401 — fixtura modulului (firma cantitativ-valorică, „Marfa A <n>” în stoc)
 from e2e_lot10b_raport_z import _articol, _genereaza, _iesire
 
@@ -42,8 +43,10 @@ def _jurnal(e, firma):
     return e.pg
 
 
-def _rand(pg, nid):
-    return " ".join(pg.inner_text("[data-nota-id='%d']" % nid).split())
+def _rand(e, nid):
+    """Textul rândului notei din Registrul jurnal, cu detaliul deschis ([lotul 12, 617] tabelul de note: documentul justificativ, sursa,
+    liniile și mesajele notei — caseta „depășită” — stau în detaliul rândului, deschis la clic, cum îl deschide contabilul)."""
+    return " ".join(_deschide_rand(e, _nota_jn(e, nid)).inner_text().split())
 
 
 def _iesire_z_veche(patron, f, nr):
@@ -74,8 +77,9 @@ def test_def_451_ciorna_depasita_se_arata_pe_rand_se_reface_din_sursa_si_se_vali
     f = firma_cv
     nid, doc_z, zid = _iesire_z_veche(patron, f, "4511")
     pg = _jurnal(patron, f)
+    _deschide_rand(patron, _nota_jn(patron, nid))                   # [617] caseta „depășită” stă în detaliul rândului: deschis întâi
     pg.wait_for_selector("#jn-depasita-%d" % nid, timeout=20000)
-    t = _rand(pg, nid)
+    t = _rand(patron, nid)
     patron.captura("depasita")
     assert "după o regulă care s-a schimbat" in t and ("«%s»" % doc_z) in t and "Bon de consum nr 1" in t, t
     assert pg.is_disabled("[data-val='%d']" % nid)
@@ -89,7 +93,7 @@ def test_def_451_ciorna_depasita_se_arata_pe_rand_se_reface_din_sursa_si_se_vali
     assert pg.locator("#jn-depasita-%d" % nou).count() == 0
     patron.captura("refacuta")
     pg.click("[data-val='%d']" % nou)
-    pg.wait_for_function("(id) => { const r = document.querySelector(`[data-nota-id='${id}']`); return r && r.innerText.includes('Validată'); }",
+    pg.wait_for_function("(id) => { const r = document.querySelector(`tbody.tn-nota[data-nota-id='${id}']`); return r && r.innerText.includes('Validată'); }",
                          arg=nou, timeout=20000)
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % s, (nou,)) == [("validata",)]
 
@@ -118,7 +122,7 @@ def test_def_451_de_validat_refuza_ciorna_depasita_si_ofera_refacerea(patron, as
     _in_coada(f, notifica=False)
     _coada(patron)
     pg = patron.pg
-    card = pg.locator(".val-card", has_text="Ieșire stoc").filter(has_text="Bon de consum").first
+    card = pg.locator("#val-note tbody.tn-nota", has_text="Ieșire stoc").filter(has_text="Bon de consum").first   # [622] rândul notei
     card.wait_for(timeout=20000)
     card.locator(".val-aproba").click()
     pg.wait_for_selector("#val-eroare .val-reface", timeout=20000)
@@ -137,7 +141,8 @@ def test_def_451_de_validat_refuza_ciorna_depasita_si_ofera_refacerea(patron, as
 def test_def_452_returul_din_stornare_se_valideaza_fara_motivul_fals(patron, firma_stoc):
     """452. „nota «Retur în stoc Marfa B × 1 buc (stornare)» de pe F1 e refuzată la validare cu un motiv fals («documentul ei a fost
     respins»).” Pașii: articol în stoc -> factură cu 1 buc, „Pleacă marfa acum: Da” -> stornare cu retur -> Registru jurnal: nota „Retur
-    în stoc … (stornare)” și contarea facturii de stornare -> „Validează” pe fiecare: Validată, fără „documentul ei a fost respins”."""
+    în stoc … (stornare)” și contarea facturii de stornare -> „Validează” pe factura stornată, apoi pe retur (619: stornarea după documentul
+    stornat; returul și contarea stornării se validează împreună): Validată, fără „documentul ei a fost respins”."""
     from e2e_bloc_a import ARTICOL, _api, _ok, articol_in_stoc, emite_api
     f = firma_stoc
     tid, s = f["tenant_id"], f["schema"]
@@ -147,13 +152,19 @@ def test_def_452_returul_din_stornare_se_valideaza_fara_motivul_fals(patron, fir
     st = _ok(_api(patron, "POST", "/tenants/%d/facturi/%d/storno" % (tid, fa["factura_id"]), {"retur": True}), "storno cu retur")
     (retur,), = sql('SELECT id FROM "%s".inregistrari WHERE descriere LIKE %%s ORDER BY id DESC LIMIT 1' % s, ("Retur în stoc %(stornare)",))
     (contare_storno,), = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = %%s' % s, (st["factura_id"], "facturi"))
+    (contare_orig,), = sql('SELECT id FROM "%s".inregistrari WHERE factura_id = %%s AND sursa = %%s' % s, (fa["factura_id"], "facturi"))
     pg = _jurnal(patron, f)
-    for nid in (retur, contare_storno):
+    # [lotul 12, 619 / clasa 80] „Validează” validează DOCUMENTUL, cu toate notele lui, iar stornarea intră în evidență numai după documentul
+    # stornat (`coada_api.refuz_stornare_inaintea_documentului`): întâi factura (contarea + ieșirea din stoc), apoi returul — factura de
+    # stornare și returul ei sunt același document, deci „Validează” pe retur le validează pe amândouă
+    for nid in (contare_orig, retur):
         pg.wait_for_selector("[data-val='%d']" % nid, timeout=20000)
-        assert pg.is_enabled("[data-val='%d']" % nid), _rand(pg, nid)
+        assert pg.is_enabled("[data-val='%d']" % nid), _rand(patron, nid)
         pg.click("[data-val='%d']" % nid)
-        pg.wait_for_function("(id) => { const r = document.querySelector(`[data-nota-id='${id}']`); return r && r.innerText.includes('Validată'); }",
+        pg.wait_for_function("(id) => { const r = document.querySelector(`tbody.tn-nota[data-nota-id='${id}']`); return r && r.innerText.includes('Validată'); }",
                              arg=nid, timeout=20000)
+    pg.wait_for_function("(id) => { const r = document.querySelector(`tbody.tn-nota[data-nota-id='${id}']`); return r && r.innerText.includes('Validată'); }",
+                         arg=contare_storno, timeout=20000)
     patron.captura()
     assert "documentul ei a fost respins" not in pg.inner_text("body")
     assert sql('SELECT status FROM "%s".inregistrari WHERE id IN (%%s, %%s) ORDER BY id' % s, (retur, contare_storno)) == [("validata",), ("validata",)]
@@ -168,8 +179,8 @@ def test_def_23_nota_borderoului_arata_sursa_borderoul_nu_facturile(patron, firm
     r = _borderou_api(patron, f, furnizor_nume="Ion Sursa", articol="porumb E2E", cantitate=50)
     pg = _jurnal(patron, f)
     nid = r["inregistrare_id"]
-    pg.wait_for_selector("[data-nota-id='%d']" % nid, timeout=20000)
-    t = _rand(pg, nid)
+    pg.wait_for_selector("tbody.tn-nota[data-nota-id='%d']" % nid, timeout=20000)
+    t = _rand(patron, nid)                                          # [617] „sursa: …” stă în detaliul rândului
     patron.captura()
     assert "sursa: borderoul de achiziție" in t and "sursa: facturile" not in t, t
 
@@ -201,8 +212,8 @@ def test_def_c75_borderoul_vechi_e_borderou_iar_urmatorul_primeste_numarul_urmat
         c.commit()
     assert [x["id"] for x in r["convertite"]] == [fid], r
     pg = _jurnal(patron, f)
-    pg.wait_for_selector("[data-nota-id='%d']" % nid, timeout=20000)
-    t = _rand(pg, nid)
+    pg.wait_for_selector("tbody.tn-nota[data-nota-id='%d']" % nid, timeout=20000)
+    t = _rand(patron, nid)                                          # [617] „sursa: …” și documentul justificativ, în detaliul rândului
     patron.captura("vechi")
     assert "sursa: borderoul de achiziție" in t and "Borderou de achiziție BA-7 din" in t, t
     nou = _borderou_api(patron, f, furnizor_nume="Maria Noua", articol="porumb E2E", cantitate=20)

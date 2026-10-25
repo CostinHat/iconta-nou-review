@@ -1,0 +1,50 @@
+[
+ {
+  "fisier": "static/js/ecrane/tabel_note.js",
+  "ancora": "<tr class=\"tn-detaliu\" id=\"${pre}-det-${k}\"${deschis ? \"\" : \" hidden\"}>",
+  "inlocuire": "<tr class=\"tn-detaliu\" id=\"${pre}-det-${k}\">",
+  "test": "frontend_test/e2e/e2e_lot12_ui2.py::test_def_617_registrul_jurnal_tabel_cautare_detaliu_si_validare_pe_loc"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "await deseneaza({ peLoc: true });\n        confirma(b.dataset.val,",
+  "inlocuire": "await deseneaza();\n        confirma(b.dataset.val,",
+  "test": "frontend_test/e2e/e2e_lot12_ui2.py::test_def_617_registrul_jurnal_tabel_cautare_detaliu_si_validare_pe_loc"
+ },
+ {
+  "fisier": "static/js/ecrane/tabel_note.js",
+  "ancora": "return !t || textCautare(r).includes(t);",
+  "inlocuire": "return true;",
+  "test": "frontend_test/e2e/e2e_lot12_ui2.py::test_def_617_registrul_jurnal_tabel_cautare_detaliu_si_validare_pe_loc"
+ },
+ {
+  "fisier": "static/js/ecrane/validat.js",
+  "ancora": "if (n.in_coada === \"la_senior\" && inCoada.has(`${f.tenant_id}:${n.id}`)) return;",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_ui2.py::test_def_622_de_validat_trei_sectiuni_un_tabel_nota_o_data_si_cautare"
+ },
+ {
+  "fisier": "static/js/ecrane/validat.js",
+  "ancora": "return !t || normalizeaza(text).replace(/\\s+/g, \" \").includes(t);",
+  "inlocuire": "return true;",
+  "test": "frontend_test/e2e/e2e_lot12_ui2.py::test_def_622_de_validat_trei_sectiuni_un_tabel_nota_o_data_si_cautare"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      ${randCiorne(b && b.ciorne)}\n      </div>\n      ${casetaRulaje}\n",
+  "inlocuire": "      ${randCiorne(b && b.ciorne)}\n      ${casetaRulaje}\n      </div>\n",
+  "test": "frontend_test/e2e/e2e_lot12_ui2.py::test_def_621_balanta_rezumatul_nu_mananca_tabelul_si_importul_are_buton"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "    const bImp = corp.querySelector(\"#b-rulaje-import\");\n    if (bImp) bImp.addEventListener(\"click\", () =>",
+  "inlocuire": "    const bImp = null;\n    if (bImp) bImp.addEventListener(\"click\", () =>",
+  "test": "frontend_test/e2e/e2e_lot12_ui2.py::test_def_621_balanta_rezumatul_nu_mananca_tabelul_si_importul_are_buton"
+ },
+ {
+  "fisier": "static/js/ecrane/date_anaf.js",
+  "ancora": "if (c && puse[i] != null && c.value === puse[i]) c.value = \"\";",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot12_ui2.py::test_def_459_1_denumirea_de_la_anaf_dispare_cand_se_schimba_cui_ul"
+ }
+]

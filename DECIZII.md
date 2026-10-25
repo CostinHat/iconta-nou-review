@@ -23444,3 +23444,257 @@ raportul ei, fără poartă și fără publicare; poarta completă rulează o si
 producție se face numai după confirmarea lui Costin. Regula din CLAUDE.md §6 („după poarta verde se publică imediat”) rămâne pentru loturile
 care nu spun altfel; aici comanda o înlocuiește explicit. Deblocarea lunii 09/2026 la F1 (12.1 pct.4) se face pe producție odată cu
 publicarea, după confirmare.
+
+## 24.10.2026 — Comanda 12.2 (lotul 12): deficiențele retestului lotului 11 și ale testării din 24.10 care țin de pilot — verbatim
+
+**Verbatim (`~/ghid_incoming/comanda_12_2.txt`):**
+
+```
+12.2
+
+Se execută după ce termini 12.1. Sunt deficiențele găsite la retestul lotului 11 și la testarea din 24.10 care țin de pilot. Lucrează cu subagenți în paralel unde atingi fișiere diferite, fără teste grele în paralel (rulezi pe serverul de producție). După fiecare punct doar teste țintite; poarta rulează o singură dată, pe tot lotul 12, înainte de publicare, iar publicarea o faci după confirmarea mea.
+
+1. 409.1 — F1, 05.10: cinci note 607=371 (8 +100; 30 și 32 stornări ale lui 8; 31 și 33 ieșiri pe Factura 2). Net corect, dar nota 8 e stornată de două ori, ieșirea e dublată, titlul notei 30 e stricat. Cerut: o stornare, o ieșire, titlu corect.
+
+2. 443.1 — Mesajul după emitere scrie numărul lipit de serie: „Factura F62 emisă” (F6), „Factura F1A14 emisă” (F1). Seria și numărul se afișează ca în Istoric („F1A nr. 14”).
+
+3. 446.1 — Avertismentul apare acum o singură dată, corect, dar tabelul se strânge la un rând tăiat, iar întrebarea stă într-o casetă roșie.
+
+4. 450.1 — Borderourile noi sunt corecte, dar Stocuri pe F1 arată tot două rânduri „grau” (200 + 10 kg). Un articol, un rând.
+
+5. 459.1 — Adaugă firmă: CUI-ul cu cifra de control greșită e refuzat corect, dar la schimbarea CUI-ului denumirea adusă de la CUI-ul anterior (DANTE INTERNATIONAL SA) rămâne completată. Tot aici: textul „— verifică.” după denumire.
+
+6. C73.1 (grav) — Aceeași factură de furnizor (CUI 14399840, nr. LIC-73, 1.000 + 210) introdusă de două ori la „Achiziție necorporală” pe F1 a generat două note 205 = 404 / 4426 = 404, fără niciun avertisment: imobilizarea și TVA-ul deductibil se dublează. Dublura (același furnizor + același număr de factură) se oprește pe toate căile prin care intră o factură de furnizor. Cele două ciorne LIC-73 de pe F1 rămân ca probă; le ștergi după ce dovedești reparația.
+
+7. C78.1 — Livrare/prestare intracomunitară (VIES live): nota 4111 = 704 fără TVA și partenerul din VIES sunt corecte, dar ecranul nu arată rezultatul VIES (cod valid sau nu, numele firmei) înainte de generare. Mesajul de confirmare repetă nota de trei ori.
+
+8. C102.1 — F5, certificat de concediu medical: cifra scrisă de om nu mai e acoperită, dar propunerea a dispărut cu totul (cu „Zile lucrătoare CM” gol, la orice interval, câmpul rămâne gol). În plus, 10 zile pe un interval cu 5 zile lucrătoare trec fără avertisment. Cerut: propunere din interval cât timp câmpul e gol sau neatins, cifra scrisă de om rămâne, avertisment când depășește zilele lucrătoare din interval.
+
+9. 617 — Registru jurnal: fără căutare. Un câmp (cont, document, partener, sumă, nr. crt.) și filtru de stare; tabel cu un rând pe notă, detaliul la clic, explicațiile o singură dată. După „Validează” pagina sare sus fără confirmare.
+
+10. 619 — Validarea unui document se face împreună cu notele lui (contare, ieșire din stoc, stornare, retur). Azi: stornarea/returul (−27,50) s-a validat înaintea documentului stornat, aflat în ciornă, deci 607 e negativ în evidența validată; la F1A nr. 8 și F1A nr. 14 validarea contării lasă ieșirea de stoc în ciornă.
+
+11. 621 — Balanța: casetele de sus ocupă jumătate din fereastră, se văd 2–3 rânduri de tabel; caseta „Importă…” nu are buton spre import.
+
+12. 622 — De validat: trei forme diferite, note afișate de două ori. Trei secțiuni cu număr, același tabel ca la 617, Validează/Respinge pe rând, căutare.
+
+13. 626 — Date firmă / TVA la încasare: după ce scrii și golești „Aplică de la”, perioada nouă rămâne obligatorie și oprește salvarea. Perioadă nouă doar la cerere.
+
+14. 627 — Date firmă: după o salvare parțială, „Profil incomplet” nu se actualizează.
+
+15. 628 — Stocuri F1: două deschideri consecutive arată liste diferite (4, apoi 6 rânduri); borderourile scriu „buc” la grâu (kg).
+
+16. 629 — F5, Ionescu 10/2026: treapta deducerii personale e stabilită pe 4.815,34, fără indemnizația CM brută (262). Verifică la sursă (Codul fiscal art. 77 și normele) dacă indemnizația CM intră în venitul lunar brut pentru deducere și dacă impozitul pe CM calculat separat e regula corectă; aplică aceeași regulă în calcul, pe fluturaș și în D112.
+
+17. 630 — Reevaluare valută (F1, 10/2026): la luna neîncheiată coloanele Curs BNR și Diferență sunt goale, cu mesajul „mai vechi cu 8 zile… flux întrerupt”; trebuie spus simplu că cursul ultimei zile bancare nu e publicat încă și arătată diferența provizorie la ultimul curs, marcată provizorie. „Cursul găsit: 5.3495” cu punct. „De completat: 1” nu spune ce. F1A nr. 8 apare fără stornarea ei, F1A nr. 9. Soldul în lei 323,64 față de 323,65 pe nota F1A nr. 14: soldul se ia din 4111 pe partener, la ban.
+
+18. 639 — F3: D390 pentru 11/2026 are termen 21.12.2026. Verifică la sursă termenele tuturor declarațiilor (inclusiv mutarea pentru zilele nelucrătoare, care se face după, nu înainte) și corectează.
+
+19. 642 (grav) — 23.10, 14:15: la înregistrarea „Cabinet Test Inregistrare” cu CUI 12345678 contul s-a creat, firma proprie a cabinetului nu (emailul „Eșec pe cale secundară: provisionare tenant la register”), iar emailul de bun venit spune că firma există; în Activitate cabinete apare totuși „1 firmă”. Spune ce e acolo și curăță cabinetul. Retest 24.10 pe formularul din invitație: CUI-ul invalid e refuzat acum la „Creează cont”. Rămân: mesajul de refuz apare de două ori; fereastra formularului iese din ecran sus și jos, „Creează cont” abia se vede.
+
+20. 268.1 — Emailul „TEST Alertă iConta.eu — sănătate server” are „Dezabonează-te”, care ar opri alertele de server. Dezabonarea rămâne numai pe recomandări și pe sinteza zilnică, cum s-a decis la 268. Livrarea alertei funcționează.
+
+21. Răspunde punctual pe fiecare număr de mai sus: rezolvat sau nu, și unde se vede în aplicație.
+
+22. Înainte să începi, listează operațiile pe care le rulezi, fără estimări de timp; în raport dă durata măsurată a fiecărei operații efectuate.
+
+23. La commitul de închidere a lotului 12 fă o arhivă ZIP cu tot ce s-a schimbat (cod, documente noi, artefactele brute ale măsurătorilor) și raportează calea exactă.
+
+Oprește-te și raportează.
+```
+
+## 24.10.2026 — Lotul 12, comanda 12.2: implementarea — interpretările și deciziile de produs luate de Code (CLAUDE.md §8 pct.5)
+
+Varianta aleasă e cea mai sigură pentru contabil; fiecare e cerută lui Costin în raportul 12.2 (§5) acolo unde e decizie de produs.
+
+- **639 — termenul declarațiilor informative la 25 decembrie (INTERPRETARE CU TEMEI).** CPF art.155 alin.(2) mută pe 21 decembrie numai
+  „Creanțele fiscale administrate de organul fiscal central pentru care […] scadența și/sau termenul de declarare se împlinesc la 25
+  decembrie”; „creanța fiscală” e definită în CPF art.1 („dreptul la încasarea oricărei sume care se cuvine bugetului general consolidat”).
+  O declarație care nu declară o creanță (D208 — „declarație informativă”, CF art.113; D390 — declarația recapitulativă, care „menționează”
+  operațiunile, CF art.325 alin.(1), al căror TVA se declară în D300) nu intră în excepție: termenul care cade pe o zi nelucrătoare se
+  prelungește până în prima zi lucrătoare care urmează (CPF art.75 -> Legea 134/2010 art.181 alin.(2)). D390 11/2026: 28.12.2026 (era
+  21.12.2026). D300 / D301 / D100 / D710 / D112 rămân pe 21.12. **Respins:** excepția pe orice tip (cum era). Un tip nou care nu e în lista
+  informativelor păstrează data mai devreme (sigur pentru o creanță). De reconfirmat dacă apare o normă care tranșează D390. Sursa în cod:
+  `core/scadente.py` (`TEMEI_FARA_CREANTA`, `TEMEI_INFORMATIVA`, `TEMEI_ZI_NELUCRATOARE`, citate verbatim, gardate de
+  `core/test_temei_termene.py`); datele existente: `core/migrare_termen_informative_decembrie.py` (elementele de coadă ale informativelor).
+- **630 — reevaluarea lunii în curs:** diferența la ultimul curs publicat se ARATĂ, marcată „provizorie”, dar nota nu se generează și
+  închiderea lunii nu trece pe cursul provizoriu (OMFP 1802/2014 pct.325 alin.(2) lit.b: cursul din ultima zi bancară a lunii); un curs mai
+  vechi de 5 zile față de azi nu se folosește nici provizoriu (C167). Soldul în lei = cel din 4111/401 al partenerului (nota validată), nu
+  `facturi.total_lei`; stornarea cu nota în ciornă nu scade din sold și se numește (C168).
+- **268.1 — alertele de server:** antetul „Dezabonează-te” îl pune Brevo pe orice email (DEFICIENTE 268, decizia Costin 17.10.2026). Alertele
+  de sănătate pleacă pe Postmark când există tokenul (`POSTMARK_SERVER_TOKEN`, lipsă azi) — fără token rămân pe Brevo, ca înainte.
+  **Cerută lui Costin:** tokenul Postmark; și dacă, odată cu el, trec pe Postmark TOATE emailurile tranzacționale.
+- **619 — documentul se validează cu toate notele lui, pe toate drumurile** (jurnal, coadă, validarea în masă, notele interne PFA):
+  stornarea / returul ales înaintea documentului stornat aflat în ciornă se REFUZĂ cu numele documentului (`DOCUMENT_STORNAT_IN_CIORNA`);
+  **respins:** validarea tacită a documentului stornat odată cu stornarea (validatorul ar valida un document pe care nu l-a deschis). Ordinea
+  (OMFP 1802/2014 pct.69 — stornarea corectează operațiunea inițială) e INTERPRETARE CU TEMEI. Coada validează documentul tot sau deloc
+  (C169). Datele existente pe F1 (`scripts/stoc2_619_documente_pe_jumatate.py`): documentele validate pe jumătate se completează pe drumul
+  validării — inclusiv nota 142 (contarea F1A nr. 9), al cărei retur fusese validat de om.
+- **409.1 — dublura de pe F1** vine din reparația manuală 409 (loturile 9 și 10), rulată de două ori fără verificarea „deja făcut” (C170).
+  Codul aplicației nu o mai poate produce. Datele: `scripts/stoc2_409_1_dubluri_corectie.py` scoate perechea în plus (notele validate 168 /
+  169) și corectează titlul notei 146 — cerut explicit de Costin la 12.2 pct.1 („o stornare, o ieșire, titlu corect”), deci pe F1 (firmă
+  de test) se aplică, cu backup chiar înainte; NU e o migrare generală (scoaterea unei note validate rămâne interzisă în aplicație).
+- **C73.1 — dublura facturii de furnizor:** cheia = codul fiscal (fără el, denumirea) + seria și numărul normalizate; data NU intră în cheie.
+  Singura legare permisă: același document e-Factura (același XML). Dublurile existente (F1 LIC-73, F2 TI-1) nu se șterg automat — le
+  numește refuzul următoarei introduceri; ciornele LIC-73 de pe F1 le șterge Costin / executorul după dovadă (12.2 pct.6).
+- **C78.1 — VIES în Operațiuni:** verificarea pornește singură la ieșirea din câmpul codului de TVA (fără buton „Verifică”), ca rezultatul să
+  se vadă sigur înainte de „Generează nota”.
+- **C102.1 — zile CM peste zilele lucrătoare ale intervalului:** serverul nu refuză (Codul muncii art.141: locuri de muncă cu activitate
+  neîntreruptă) și nu salvează tăcut — întreabă; „Salvează cu N zile” salvează.
+- **629 — deducerea personală în luna cu CM:** venitul brut lunar include indemnizația (CF art.76 alin.(1), HG 1/2016 Titlul IV pct.12
+  alin.(1) lit.a pct.(vii), pct.13 alin.(1)); impozitul pe CM NU se calculează separat (CF art.78 alin.(2) lit.a: „asupra veniturilor
+  totale din luna respectivă”). Aceeași regulă în stat, fluturaș, D112 și contare.
+- **C173 — D112 în luna cu CM:** B1_10 / B4_3 = baza indemnizației de șomaj = baza CAM (OPANAF 605/2026 anexa 2 B.1 rd.11 -> Legea
+  76/2002 art.39 alin.(2^1) -> HG 174/2002 norme art.19^1 alin.(1)); B1_sal2 = E3_8 (INTERPRETARE CU TEMEI: structura D112, câmpul 14b,
+  „A_sal2=E3_8-E3_69”, același text la A_sal2 și B1_sal2; **respins:** numai salariul zilelor lucrate). Lunile depuse nu se rescriu;
+  rectificativele sunt decizia lui Costin.
+- **642 — contul și firma proprie a cabinetului se creează împreună sau deloc.** PIVOT: supersedează decizia din 27.07.2026 „contul e valid
+  fără firmă” (`core/p4_clasificare.py`). Emailul de bun venit spune ce s-a creat, după commit. Un CUI refuzat la confirmarea liberă cere o
+  înregistrare nouă — mesajul o spune.
+- **446.1 — nicio întrebare de confirmare nu mai e roșie** (`.caseta-intrebare`, DS cap.5): roșul rămâne al refuzului și al erorii;
+  ireversibilitatea se spune în text. **Respins:** o opțiune „distructiv” (ar cere ~25 de apeluri din alte ecrane).
+- **642 (formular) — reorganizarea ferestrei „Înregistrează cabinetul tău”** (două coloane, „Nume administrator” pe ultimul rând, bifa
+  termenilor deasupra refuzului și a butonului) — necesară ca fereastra să încapă (CLAUDE.md §9); un refuz = un singur loc vizibil, pe orice
+  formular (`api._refuzNevazut`).
+- **626 — „Aplică de la” golit** pe o firmă cu perioadă TVA la încasare = data înregistrată (nu o perioadă nouă, nu o ștergere).
+- **617 / 622 — Registrul jurnal și „De validat”:** un singur tabel de note (`static/js/ecrane/tabel_note.js`); căutarea e pe luna afișată, în
+  pagină, pe textul scris întreg; pe rând numai acțiunea principală (DS cap.9: cel mult două butoane), „Editează” / „Șterge” în detaliu;
+  declarațiile din „De validat” își păstrează cardurile, sub „Declarații (n)”; după orice act fereastra rămâne pe loc, cu confirmarea în
+  rezumat. **621:** butonul casetei de rulaje deschide „Import date” al firmei, la „Solduri inițiale”.
+
+## 24.10.2026 — Comanda 12.3 (lotul 12): deciziile lui Costin la raportul 12.1 — verbatim
+
+**Verbatim (chat, 24.10.2026):**
+
+```
+12.3
+
+Deciziile la raportul 12.1. Le aplici în lotul 12, alături de 12.2, și răspunzi la fiecare în raportul 12.2.
+
+1. C109: refuzul cronului ajunge la contabil prin notificare (clopoțel și email); pe șablon se vede și starea ultimei emiteri.
+2. C137: fără marcă nouă acum; notele de reevaluare folosesc tipul de document existent. Revenim după pilot dacă apare nevoia.
+3. C156, C157, C163: aprob direcția. Prestarea intracomunitară de servicii a neplătitorului înregistrat art. 317: fără TVA român, mențiunea „taxare inversă”, codul RO art. 317 pe factură, P în D390 (C156); fără înregistrare art. 317, avertisment la emitere, nu refuz (C157); serviciile primite din UE intră în D301 (C163). Citezi alineatele exacte din Codul fiscal, verificate la sursă, în test.
+4. C164: pe ecranele scunde, antetul detaliului facturii se strânge pe un rând (număr, client, total, stare SPV); acțiunea principală rămâne fixă jos (clasa 285).
+5. 252: coloana TVA la încasare e opțională în fișierul de preluare; dacă lipsește, se ia regimul firmei la data facturii.
+6. C19: rectificativa D394 pentru o perioadă deja depusă se generează doar la cererea contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.
+7. C84: livrarea intracomunitară de bunuri fără dovada transportului primește avertisment la emitere, nu refuz.
+8. C133: „Scutit” și „Motiv” se pot corecta, cu jurnal (cine, când, vechi → nou); motivul e obligatoriu când e bifat „Scutit”.
+9. Da: cota și categoria pe linia șablonului recurent, ca la factură.
+10. Facturile vechi ale neplătitorilor nu se migrează; regula se aplică de la facturile noi, declarațiile depuse rămân neatinse.
+11. 268 și 268.1: pentru alertele către admin accept dezabonarea Brevo. Verifici la sursă dacă un utilizator care apasă „Dezabonează-te” mai primește emailurile tranzacționale (confirmare cont, resetare parolă, link de logare). Dacă nu le mai primește, propui soluția.
+
+Continuă 12.2.
+```
+
+**Consecințe (executor):** deciziile se aplică în lotul 12, alături de 12.2; răspunsul pe fiecare punct e în raportul 12.2. Pct.2 (C137) SUPERSEDEAZĂ cererea de marcă proprie a reevaluării din raportul 12.1 (§5 pct.2). Pct.10 confirmă varianta din DECIZII „Lotul 12: implementarea” (C154–C162): facturile vechi ale neplătitorilor nu se migrează. Pct.11: pentru alertele către admin, dezabonarea Brevo e acceptată (supersedează propunerea Postmark-pentru-alerte din 12.2 ca necesitate; drumul Postmark rămâne cablat, fără token).
+
+## 24.10.2026 — Comanda 13.1 în coadă: poarta lotului 12 nu se mai rulează separat; o singură poartă pe loturile 12 și 13, apoi backup și publicare
+
+**Verbatim (chat, 24.10.2026):** „Comanda 13.1. După ce termini 12.2 și dai raportul, nu mai rula poarta pentru lotul 12 și nu publica separat:
+treci direct la ~/ghid_incoming/comanda_13_1.txt și execută-l. Poarta se rulează o singură dată, la finalul 13.1, pentru loturile 12 și 13
+împreună; cu poarta verde faci backup și publici, apoi raportezi.”
+
+**Consecințe (executor):** SUPERSEDEAZĂ, pentru lotul 12, „poarta rulează o singură dată, pe tot lotul 12, înainte de publicare, iar
+publicarea o faci după confirmarea mea” (comanda 12.2, preambul; DECIZII „Comenzile 12.1 și 12.2 în același lot”) și pct.23 al 12.2 („La
+commitul de închidere a lotului 12 fă o arhivă ZIP”): 12.2 (cu deciziile 12.3) se încheie cu commitul pe ramură și raportul 12.2, fără
+poartă, fără publicare; ZIP-ul lotului 12 se face la commitul de închidere a lui 12.2 (fără verdict de poartă). Lucrul 13.1 continuă pe
+aceeași ramură; la finalul lui 13.1 poarta completă rulează o singură dată pe loturile 12 + 13 (`sh scripts/poarta_lot.sh`); cu poarta
+VERDE: backup al bazei chiar înainte, publicarea (fast-forward pe `main`, post-commit, migrările `--productie`, four-way), apoi raportul.
+Publicarea după poarta verde nu mai cere o confirmare separată (comanda o dă: „cu poarta verde faci backup și publici”); operațiile pe
+date de producție numite în rapoartele 12.1 / 12.2 (curățenia, deblocarea 09/2026 la F1, scripturile 409.1 / 619 pe F1, ciornele LIC-73)
+se fac la publicare, cu backup chiar înainte.
+
+## 25.10.2026 — Postmark pentru emailurile tranzacționale; fără opriri pentru decizii; oprire după raportul 12.2; rândul „OPRIT —”
+
+**Verbatim (chat, 25.10.2026):** „Punctul 11: decizia e Postmark. Cheia o pune Costin într-un fișier pe server, nu în chat; până atunci
+notezi în raport ce rămâne de activat. Nu te mai opri pentru decizii: notezi în raport și continui. Continuă acum fără oprire: C194, C197,
+C198, plasa, mutațiile, dovezile, commitul și raportul 12.2. Închide shell-urile rămase care nu mai lucrează. După raportul 12.2 te
+oprești. Regulă permanentă, adaug-o acum în CLAUDE.md: de fiecare dată când te oprești, ultimul rând pe care îl scrii e unul singur,
+„OPRIT — aștept: <ce anume>” sau „OPRIT — gata: <ce s-a terminat>”, fără nimic după el.”
+
+**Consecințe (executor):**
+- 12.3 pct.11 / 268 / 268.1: emailurile tranzacționale (confirmarea contului, resetarea parolei, linkul de logare) și alertele către admin
+  pleacă prin Postmark (`observare._trimite_postmark`, deja cablat: `postmark=True` în `uc_auth`, `uc_public`, alertele de sănătate din
+  `main.py`). Motivul, verificat la sursă (help.brevo.com, articolul 209458705): la Brevo dezabonarea blochează EXPEDITORUL pentru toate
+  emailurile tranzacționale, iar `POST /v3/smtp/email` răspunde tot 201 — un utilizator dezabonat n-ar mai primi resetarea parolei, tăcut.
+  **Rămâne de activat (Costin):** `POSTMARK_SERVER_TOKEN` în `~/.iconta/api_keys.env` (fișier pe server; NU în chat), domeniul iconta.eu
+  verificat în Postmark (DKIM, Return-Path), apoi repornirea. Până atunci drumul rămâne pe Brevo, ca înainte (fără token -> Brevo).
+- Deciziile de produs nu mai opresc lucrul: varianta cea mai sigură pentru contabil se aplică și se scrie în raport (§5).
+- SUPERSEDEAZĂ, pentru oprire, „După ce termini 12.2 și dai raportul, […] treci direct la ~/ghid_incoming/comanda_13_1.txt” (DECIZII
+  „Comanda 13.1 în coadă”): după raportul 12.2 executorul se OPREȘTE; 13.1 începe la o comandă nouă. Partea despre poartă (o singură
+  poartă pe loturile 12 + 13, la finalul lui 13.1) rămâne.
+- CLAUDE.md §8: regula rândului final „OPRIT — aștept: …” / „OPRIT — gata: …” (normă, în CLAUDE.md; aici numai temeiul).
+- Shell-urile rămase: 34 de bucle de așteptare de forma `while pgrep -f "<text>"` se găseau pe ele însele (textul căutat e în propria lor
+  linie de comandă) și nu se terminau niciodată — unele de 5 zile, una ținând pachetul decl3 „în așteptare”; închise pe 25.10.2026.
+  Lecția: o așteptare pe un proces se face pe PID (`while kill -0 $PID`) sau pe un fișier-sentinelă, nu pe `pgrep -f` cu un text pe care
+  îl conține și comanda care așteaptă.
+
+## 25.10.2026 — 12.2 se închide fără plasa e2e completă și fără mutații: amândouă în poarta comună de la finalul lui 13.1
+
+**Verbatim (chat, 25.10.2026):** „12.2 — fără plasa e2e completă și fără mutații acum: amândouă se rulează o singură dată, în poarta comună
+de la finalul 13.1 (decizia din 24.10, 20:05; regula din 15.10: după o comandă doar teste țintite). Termină I3 și testele fișierelor
+atinse, apoi dovezile, registrele, commitul (fără publicare), ZIP-ul și raportul 12.2, cu răspuns pe fiecare număr. Ultimul rând: „OPRIT —
+gata: 12.2”.”
+
+**Consecințe (executor):**
+- SUPERSEDEAZĂ, pentru plasă și mutații, „Continuă acum fără oprire: C194, C197, C198, plasa, mutațiile, dovezile, commitul și raportul
+  12.2” (intrarea de mai sus, „Postmark…”): plasa completă (`scripts/e2e_poarta.py --arbore`) și mutațiile din `mut_lot12_*.json` scrise în
+  12.2 / 12.3 NU se rulează la închiderea lui 12.2; le rulează o singură dată poarta comună a loturilor 12 + 13 (`sh scripts/poarta_lot.sh`,
+  la finalul lui 13.1). „Decizia din 24.10, 20:05” = DECIZII „Comanda 13.1 în coadă”; „regula din 15.10” = CLAUDE.md §5 (rularea țintită
+  după o comandă).
+- La 12.2 rulează (CLAUDE.md §5, rularea țintită): testele pytest ale fișierelor atinse (perimetrul `scripts/poarta_scurta.py`), e2e-ul
+  ecranelor atinse = fișierele e2e scrise sau aliniate în 12.2 / 12.3 (nu plasa întreagă), verificatorul, uneltele vizuale pe ecranele
+  atinse, dovezile pe copia firmelor de test.
+- `DEFICIENTE.md`: un număr se trece „rezolvată” când are dovada pe ecran (inclusiv pe documentele vechi, unde e cazul) și testul lui de
+  capăt la capăt a trecut în rularea țintită (CLAUDE.md §4); mutația lui rulează în poarta comună, iar raportul porții confirmă sau
+  redeschide numărul. Un număr al cărui test n-a rulat rămâne „neverificat”, cu motivul.
+
+## 25.10.2026 — Lotul 12, comanda 12.3: implementarea — interpretările și variantele sigure alese de Code (CLAUDE.md §8 pct.5)
+
+Răspunsurile lui Costin la raportul 12.1 (verbatim mai sus, „Comanda 12.3”) aplicate în lotul 12. Fiecare alegere de produs de mai jos e
+varianta cea mai sigură pentru contabil și e cerută spre confirmare în raportul 12.2.
+
+- **C109 (pct.1):** refuzul cronului facturilor recurente ajunge în clopoțel și pe email prin mecanismul existent
+  (`notificari_api.adauga` + `notificari.livreaza_in_asteptare`, destinatarii = `repo_notificari_termene.destinatarii_firmei`), în aceeași
+  tranzacție cu starea șablonului (`ultimul_refuz`, `ultimul_refuz_la`, migrarea `migrare_sablon_recurent_stare`); același refuz se anunță o
+  dată pe lună. Tip nou `factura_recurenta_refuzata`, bifat din oficiu. Refuzurile de dinainte nu fuseseră păstrate nicăieri — nu se pot
+  reface (date existente: prima tură a cronului le consemnează). C190: cronul nu mai trece șablonul drept emis când emiterea a fost refuzată.
+- **C137 (pct.2):** fără marcă nouă — nota de reevaluare se recunoaște după legătura `reevaluari_valuta` (notele vechi după descrierea
+  generată de aplicație), nu după documentul „Notă de calcul” (ar fi semnalat fals dividende, leasing, provizioane). Ciornele de reevaluare
+  scrise înainte de încheierea lunii le scoate migrarea `migrare_note_luna_neincheiata` (ca la C127); cele validate doar se semnalează.
+- **C156 / C157 / C163 (pct.3):** neplătitorul înregistrat art.317 care prestează IC către o persoană impozabilă din UE: categoria AE,
+  mențiunea „taxare inversă”, codul RO art.317 pe factură (CF art.318 alin.(1) și alin.(4) lit.b pct.2; CF art.319 alin.(20) lit.d și lit.m); „B2B” = clientul are cod de
+  TVA cu prefixul unui stat UE (aceeași clasificare ca D390); fără cod rămâne O (art.278 alin.(3)). **Factura mixtă** (prestarea art.317
+  plus linii O) se refuză — cere facturi separate (Ghidul MF e-Factura v2.9 cap.5: O nu conține BT-31 / BT-48). C157: avertisment la prestarea IC a neplătitorului fără înregistrarea art.317.
+  C163: D301 cuprinde serviciile primite (`d301.genereaza`, `control_incrucisat.d301_luni_facturi_ic`); C192: serviciile din afara UE
+  (art.307 alin.(2)) au rândul lor (tip 4), excluse din D390 (CF art.325 alin.(1) lit.e). Alineatele sunt citate pe linie în teste.
+  Detaliul facturii arată de acum mențiunile TVA de pe PDF la toate facturile emise (clasa 417). C193 [EXTERN]: FACT1 dă ERRIdentif pe
+  cumpărătorul străin, inclusiv pe XML-uri care treceau pe 16.10 — consemnat; testul FACT1 live (serviciu extern) a ieșit din suita permanentă,
+  motivat în `core/test_poarta_fara_slabire.py`.
+- **C164 (pct.4):** pe ecranul scund (≤ 700 px înălțime sau ≤ 560 px lățime) antetul facturii e un rând (număr, client, total, starea
+  SPV), acțiunile stau în bara fixă de jos (DS cap.9 v2.103, verificatorul `ANTET_SCUND`); pe ecranul înalt nimic nu se schimbă. C191: bara
+  fixă pe telefon nu mai iese peste margini.
+- **252 (pct.5):** coloana „TVA la încasare” e opțională în fișierul facturilor deschise; celula goală / coloana lipsă = regimul firmei la
+  data facturii; o valoare necunoscută refuză fișierul cu rândul numit; contradicția cu Date firmă refuză salvarea. TVA-ul calculat ia cota
+  standard la data facturii (CF art.291 alin.(5)) — **[DECIZIE]** o factură cu cotă redusă sau mixtă ar primi TVA greșit; plasa e
+  confruntarea cu 4428 din balanța de deschidere, arătată după salvare. Garda „D300 depus” stă în migrare (`migrare_documente_preluate`).
+- **C19 (pct.6):** rectificativa D394 pe o perioadă depusă se generează numai la cererea contabilului, după diferențele pe secțiuni, cu
+  confirmarea legată de amprenta exact a XML-ului văzut (`rectificativa.poarta_d394`, chemată din `uc_declaratii.poarta_cererii` pe toate
+  drumurile: pasul 2, generarea, coada, reluarea după validarea notelor). Fără diferențe nu se generează nimic. D394 n-are marcaj de
+  rectificativă în XML (verificat în jar-ul DUK). Fără XML depus păstrat, diferențele arată tot conținutul, cu „necunoscut” pe partea
+  depusă. **[DECIZIE]** extinderea diferențelor la celelalte declarații cu rectificativă (D300, D112, D100).
+- **C84 (pct.7):** „Emite factură” întreabă „Ai dovada transportului?” la livrarea intracomunitară de bunuri — „Nu încă, emite factura”
+  emite cu avertisment (nu refuz); răspunsul nu se salvează. Pe „Transformă în factură” la fel; pe API, fără `dovada_transport: true`,
+  factura se emite cu avertismentul în răspuns; cronul nu poate întreba: emite cu `AVERTISMENT_LIC_NEINTREBAT`, dus în clopoțel și pe email
+  (C197, tip `factura_recurenta_avertisment`). `intracomunitar.valideaza_lic` (refuzul) a ieșit, fără apelant — cele 4 teste ale ei motivate.
+  C199 (nerezolvată, **[DECIZIE]**): codul de TVA al clientului nu se verifică pe server în VIES la emitere.
+- **C133 (pct.8):** „Scutit” și „Motiv” se corectează, cu jurnal în schema firmei (`salariati_jurnal`, nu `public.audit_log`, care se
+  șterge după 12 luni); fără autor nu se face corectura (ca la 472); motivul e obligatoriu la „Scutit” = Da; nimic depus sau emis nu se
+  rescrie. C194: D112 din coadă devine „depășită” la orice corectură a datelor de salarizare ale lunii (amprenta salariilor; o D112 intrată
+  înainte de reparație e depășită — fail-closed). C195 (consemnat): fluturașul emis e înghețat, D112 nedepusă se recalculează.
+- **pct.9:** cota și categoria pe linia șablonului recurent (forma liniei comună cu „Emite factură”, `emitere_ecran.htmlCotaLinie`); C189:
+  cota aleasă de om nu mai e înlocuită de propunerea sosită după alegere (emitere și șablon).
+- **pct.10:** facturile vechi ale neplătitorilor nu se migrează (nicio reparație nu rescrie date vechi).
+- **pct.11:** decizia Postmark — intrarea „25.10.2026 — Postmark…” de mai sus.
+- **C187 / C198:** descărcarea gestiunii (inclusiv GV) se face numai pe luna încheiată (clasa 216); butoanele stau inactive pe luna în curs,
+  cu motivul lângă ele (ca amortizarea). **C196:** proforma transformată spune în ce factură.

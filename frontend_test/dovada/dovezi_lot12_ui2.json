@@ -1,0 +1,290 @@
+[
+  {
+    "nr": "617",
+    "firma": "tenant_9049",
+    "descriere": "F1, Registru jurnal (luna curentă, notele scrise înainte de reparație): un tabel cu un rând pe notă — nr. crt., data, explicația, documentul, conturile, suma, starea —, detaliile închise; explicația notelor fără document stă o dată, deasupra tabelului; sus, căutarea și filtrul de stare. Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "table.tn-tabel tbody[data-nota-id]"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "table.tn-tabel"
+      },
+      {
+        "exista": "#jn-cauta"
+      },
+      {
+        "exista": "#jn-stare"
+      },
+      {
+        "exista": "#jn-expl-fara_doc"
+      },
+      {
+        "contine": "Fără document justificativ (",
+        "zona": "#jn-explicatii"
+      }
+    ],
+    "captura": "617_f1_vechi_registru_jurnal_tabel.png"
+  },
+  {
+    "nr": "617",
+    "firma": "tenant_9049",
+    "descriere": "F1, Registru jurnal -> clic pe primul rând: detaliul notei (liniile ei: debit, credit, sumă; documentul justificativ) se deschide sub rând. Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "table.tn-tabel tbody[data-nota-id] .tn-deschide"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "table.tn-tabel tbody[data-nota-id] .tn-deschide"
+      },
+      {
+        "asteapta": "table.tn-tabel .tn-detaliu table.tn-linii",
+        "stare": "visible"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "exista": ".tn-detaliu table.tn-linii"
+      },
+      {
+        "contine": "Document justificativ:",
+        "zona": ".tn-detaliu:not([hidden])"
+      }
+    ],
+    "captura": "617_f1_vechi_detaliul_notei.png"
+  },
+  {
+    "nr": "617",
+    "firma": "tenant_9049",
+    "descriere": "F1, Registru jurnal -> filtrul de stare „Ciorne (nevalidate)” și căutarea „5121”: lângă câmp, câte note se văd din câte are luna („N din M note”). Nimic nu se scrie",
+    "pasi": [
+      {
+        "click": "#fa-jurnal"
+      },
+      {
+        "asteapta": "#jn-stare"
+      },
+      {
+        "alege": "#jn-stare",
+        "valoare": "ciorna"
+      },
+      {
+        "completeaza": "#jn-cauta",
+        "valoare": "5121"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": " din ",
+        "zona": "#jn-numar"
+      },
+      {
+        "contine": "note",
+        "zona": "#jn-numar"
+      }
+    ],
+    "captura": "617_f1_vechi_cautare_si_filtru.png"
+  },
+  {
+    "nr": "622",
+    "firma": "tenant_9049",
+    "descriere": "Cabinetul de test -> „De validat” (notele și declarațiile puse în coadă înainte de reparație): trei secțiuni cu număr — „Note de validat (N)”, „Declarații (N)”, „Notele tale în ciornă (N)” —, notele în tabelul Registrului jurnal, cu „Validează” / „Respinge” pe rând, căutarea sus. Nimic nu se validează",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='validat'])"
+      },
+      {
+        "asteapta": "#val-note-titlu"
+      },
+      {
+        "pauza": 800
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "NOTE DE VALIDAT (",
+        "zona": "#val-note-titlu"
+      },
+      {
+        "contine": "DECLARAȚII (",
+        "zona": "#val-decl-titlu"
+      },
+      {
+        "contine": "NOTELE TALE ÎN CIORNĂ (",
+        "zona": "#val-ciorne-titlu"
+      },
+      {
+        "exista": "#val-note table.tn-tabel"
+      },
+      {
+        "exista": "#val-cauta"
+      },
+      {
+        "exista": "#val-note .tn-rand .val-aproba"
+      }
+    ],
+    "captura": "622_f1_vechi_de_validat_trei_sectiuni.png"
+  },
+  {
+    "nr": "621",
+    "firma": "tenant_9055",
+    "descriere": "F6 (balanța de deschidere importată pe 19.10.2026 numai cu soldurile finale): Balanță — rezumatul de sus are titlul, luna, „De unde vin cifrele” (pliat) și ciornele pe un rând; caseta rulajelor lipsă stă sub el, cu butonul „Deschide Import date › Solduri inițiale”",
+    "pasi": [
+      {
+        "click": "#fa-balanta"
+      },
+      {
+        "asteapta": "#b-prev"
+      },
+      {
+        "asteapta": "#b-rulaje"
+      },
+      {
+        "pauza": 500
+      }
+    ],
+    "verifica": [
+      {
+        "exista": "#b-rulaje-import",
+        "text": "Deschide Import date › Solduri inițiale"
+      },
+      {
+        "nu_contine": "Rulajele de la",
+        "zona": ".rezumat-fix"
+      }
+    ],
+    "captura": "621_f6_vechi_balanta_rezumat_si_import.png"
+  },
+  {
+    "nr": "621",
+    "firma": "tenant_9055",
+    "descriere": "F6, Balanță -> „Deschide Import date › Solduri inițiale”: se deschide Import date al firmei, cu pasul „Solduri inițiale”. Nimic nu se importă",
+    "pasi": [
+      {
+        "click": "#fa-balanta"
+      },
+      {
+        "asteapta": "#b-rulaje-import"
+      },
+      {
+        "click": "#b-rulaje-import"
+      },
+      {
+        "asteapta": "#mig-pasi"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Solduri inițiale",
+        "zona": "#mig-pasi"
+      }
+    ],
+    "captura": "621_f6_import_date_din_balanta.png"
+  },
+  {
+    "nr": "459.1",
+    "firma": "tenant_9049",
+    "descriere": "Cabinet, Firme -> «+ Adaugă firmă» -> CUI 14399840: denumirea DANTE INTERNATIONAL SA vine de la ANAF, rândul de sub CUI fără „— verifică.” -> CUI-ul schimbat (o cifră scoasă): „Denumire firmă” e goală. Nimic nu se salvează",
+    "pasi": [
+      {
+        "click": ".fereastra:last-of-type .nav-x"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-x",
+        "daca_exista": true
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "button.cab-card:has([data-cheie='firme'])"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#opt-existente",
+        "daca_exista": true
+      },
+      {
+        "asteapta": "#firme-adauga"
+      },
+      {
+        "click": "#firme-adauga"
+      },
+      {
+        "asteapta": "#fn-cui"
+      },
+      {
+        "completeaza": "#fn-cui",
+        "valoare": "14399840"
+      },
+      {
+        "asteapta_text": "Din ANAF:"
+      },
+      {
+        "pauza": 300
+      },
+      {
+        "captura": "459.1_f1_denumirea_de_la_anaf.png"
+      },
+      {
+        "completeaza": "#fn-cui",
+        "valoare": "1439984"
+      },
+      {
+        "pauza": 300
+      }
+    ],
+    "verifica": [
+      {
+        "valoare": "#fn-nume",
+        "egal": ""
+      },
+      {
+        "nu_contine": "— verifică."
+      }
+    ],
+    "captura": "459.1_f1_cui_schimbat_denumirea_goala.png",
+    "anaf_real": true
+  }
+]

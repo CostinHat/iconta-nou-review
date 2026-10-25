@@ -96,7 +96,7 @@ DUPA = {
     "core/migrare_nir_tva_transport.py": ("core/migrare_stoc_lot4.py",),
     "core/migrare_extras_dubluri_trezorerie.py": ("core/migrare_extras_miscare.py",),
     # [lotul 12, 252] facturile deschise preluate: legăturile lor citesc `compensari` (refacerea indexului numerotării e a ei)
-    "core/migrare_documente_preluate.py": ("core/migrare_compensari_afiliat.py",),
+    "core/migrare_documente_preluate.py": ("core/migrare_compensari_afiliat.py", "core/migrare_d300_b1.py"),
     # [lotul 12, firme2] 475 (articolele dublate) și C133 (motivul scutirii), după tabelele / coloanele pe care le citesc
     "core/migrare_articole_dublate.py": ("core/migrare_cont_linie_primita.py", "core/migrare_nir_cost.py", "core/migrare_punte_stoc.py",
                                          "core/migrare_stoc_lot4.py"),

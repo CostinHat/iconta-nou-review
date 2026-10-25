@@ -1,0 +1,429 @@
+[
+  {
+    "nr": "C156",
+    "firma": "tenant_9051",
+    "descriere": "F3 (neplătitoare de TVA, înregistrată art.317): Date firmă -> forma juridică SRL, capital 200 (F3 n-are forma juridică pe copie: fără ea factura se refuză, Legea 31/1990 art.74 alin.(3)) -> Facturi -> Emite factură -> client DE811907980 (Germania), serviciu 500 lei, 0% -> «Emite factură» -> Istoric facturi -> factura nouă: sub antet «Codul de TVA al firmei pe această factură (art.317): RO404000013» și mențiunea «… Taxare inversă — prestare de servicii cu locul în alt stat membru …», fără «Scutit de TVA … art. 310» (decizia Costin 12.3 pct.3; CF art.318 alin.(1), art.319 alin.(20) lit.m). Scrie pe copie o factură nouă.",
+    "pasi": [
+      {
+        "click": "#fa-datefirma"
+      },
+      {
+        "asteapta": "#df-forma_juridica"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "alege": "#df-forma_juridica",
+        "valoare": "SRL"
+      },
+      {
+        "completeaza": "#df-capital_subscris",
+        "valoare": "200"
+      },
+      {
+        "click": "#df-salveaza"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "click": ".fereastra:last-of-type .nav-inapoi"
+      },
+      {
+        "pauza": 600
+      },
+      {
+        "asteapta": "#fa-facturi"
+      },
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "DE811907980"
+      },
+      {
+        "alege": "#em-tara",
+        "valoare": "DE"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "KUNDE DOVADA GMBH"
+      },
+      {
+        "completeaza": "#em-adresa",
+        "valoare": "Unter den Linden 1"
+      },
+      {
+        "completeaza": "#em-oras",
+        "valoare": "Berlin"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Servicii de consultanta IT dovadă C156"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "500"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta": "#em-rezultat.em-bun"
+      },
+      {
+        "captura": "c156_f3_emisa.png"
+      },
+      {
+        "click": "#em-spre-istoric"
+      },
+      {
+        "asteapta": ".fac-frand-btn",
+        "text": "KUNDE DOVADA GMBH"
+      },
+      {
+        "click": ".fac-frand-btn",
+        "text": "KUNDE DOVADA GMBH"
+      },
+      {
+        "asteapta": "#fd-pdf"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Codul de TVA al firmei pe această factură (art.317): RO404000013"
+      },
+      {
+        "contine": "Taxare inversă"
+      },
+      {
+        "nu_contine": "Scutit de TVA"
+      }
+    ],
+    "captura": "c156_f3_prestarea_art317_taxare_inversa_si_codul_ro.png"
+  },
+  {
+    "nr": "C157",
+    "firma": "tenant_9053",
+    "descriere": "F5 (neplătitoare de TVA, NEînregistrată art.317): Facturi -> Emite factură -> client DE811907980 (Germania), serviciu 500 lei, 0% -> «Emite factură» (pe copia proaspătă F5 n-are seria facturilor: întâi «Nu, încep acum», seria F5D-) -> factura se emite, iar sub confirmare avertismentul: firma nu e înregistrată art.317, Codul fiscal cere înregistrarea înainte de prestare (art.317 alin.(1) lit.b), ce să facă (Date firmă). Decizia Costin 12.3 pct.3: avertisment, nu refuz. Scrie pe copie o factură nouă. Pe o copie proaspătă F5 n-a emis încă nicio factură: întâi „Nu, încep acum”, seria F5D- (pașii se sar când numerotarea e deja făcută).",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui, #em-nu"
+      },
+      {
+        "click": "#em-nu",
+        "daca_exista": true
+      },
+      {
+        "completeaza": "#em-serie2",
+        "valoare": "F5D-",
+        "daca_exista": true
+      },
+      {
+        "click": "#em-salveaza-config2",
+        "daca_exista": true
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "DE811907980"
+      },
+      {
+        "alege": "#em-tara",
+        "valoare": "DE"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "KUNDE DOVADA GMBH"
+      },
+      {
+        "completeaza": "#em-adresa",
+        "valoare": "Unter den Linden 1"
+      },
+      {
+        "completeaza": "#em-oras",
+        "valoare": "Berlin"
+      },
+      {
+        "completeaza": "#em-l0-descriere",
+        "valoare": "Servicii de consultanta IT dovadă C157"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "500"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta": "#em-rezultat.em-bun"
+      },
+      {
+        "asteapta": "#em-rezultat .em-avertisment-emitere"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "emisă",
+        "zona": "#em-rezultat"
+      },
+      {
+        "contine": "nu e înregistrată în scopuri de TVA conform art.317",
+        "zona": "#em-rezultat .em-avertisment-emitere"
+      },
+      {
+        "contine": "art.317 alin.(1) lit.b",
+        "zona": "#em-rezultat .em-avertisment-emitere"
+      }
+    ],
+    "captura": "c157_f5_prestarea_fara_art317_cu_avertisment.png"
+  },
+  {
+    "nr": "C163",
+    "firma": "tenant_9051",
+    "descriere": "F3, serviciul VECHI primit DE-B-001 (Lieferant DE GmbH, 06/2026, factură primită cu axa „servicii”, cu operațiunea D301 de tip 5 scrisă de Operațiuni): Declarații -> D301, 06/2026 -> «Continuă»: operațiunea serviciului e în D301, neatinsă. Reparația C163 citește și serviciile primite în faptul D301 pe facturi și în verificarea generatorului (aceeași sursă); pe F3 luna 06/2026 era datorată și înainte (prin operațiunea din ecranul D301), deci datele existente sunt neafectate. Numai citire.",
+    "pasi": [
+      {
+        "declaratie": "d301",
+        "an": 2026,
+        "luna": 6
+      },
+      {
+        "pauza": 1500
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "DE-B-001"
+      }
+    ],
+    "captura": "c163_f3_vechi_serviciul_primit_de_b_001_in_d301.png"
+  },
+  {
+    "nr": "C84",
+    "firma": "tenant_9049",
+    "descriere": "F1 (plătitoare, stoc cantitativ-valoric): Facturi -> Emite factură -> client DE811907980 (Germania), articolul din stoc, 1 buc × 10,00, 0%, categoria «livrare intracomunitară» -> «Emite factură» -> «Da, pleacă marfa» -> caseta «Ai dovada transportului bunurilor în alt stat membru? …» -> «Nu încă, emite factura»: factura se emite, iar sub confirmare avertismentul spune ce lipsește (dovada transportului) și ce se întâmplă cu scutirea (art.294 alin.(3) din Codul fiscal; HG 1/2016 pct.65). Decizia Costin 12.3 pct.7: avertisment, nu refuz. Scrie pe copie o factură nouă și ieșirea ei din stoc.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-emite"
+      },
+      {
+        "click": "#fac-emite"
+      },
+      {
+        "asteapta": "#em-cui"
+      },
+      {
+        "pauza": 800
+      },
+      {
+        "completeaza": "#em-cui",
+        "valoare": "DE811907980"
+      },
+      {
+        "alege": "#em-tara",
+        "valoare": "DE"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "completeaza": "#em-nume",
+        "valoare": "KUNDE DOVADA GMBH"
+      },
+      {
+        "completeaza": "#em-adresa",
+        "valoare": "Unter den Linden 1"
+      },
+      {
+        "completeaza": "#em-oras",
+        "valoare": "Berlin"
+      },
+      {
+        "alege": "#em-l0-articol",
+        "valoare": "1"
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "completeaza": "#em-l0-cantitate",
+        "valoare": "1"
+      },
+      {
+        "completeaza": "#em-l0-pret_unitar",
+        "valoare": "10"
+      },
+      {
+        "alege": "#em-l0-cota",
+        "valoare": "0"
+      },
+      {
+        "asteapta": "#em-l0-categorie"
+      },
+      {
+        "alege": "#em-l0-categorie",
+        "valoare": "livrare_ic"
+      },
+      {
+        "pauza": 400
+      },
+      {
+        "click": "#em-emite"
+      },
+      {
+        "asteapta": "#em-poarta-da"
+      },
+      {
+        "click": "#em-poarta-da"
+      },
+      {
+        "asteapta": "#em-dovada-nu"
+      },
+      {
+        "captura": "c84_f1_intrebarea_dovezii_transportului.png"
+      },
+      {
+        "click": "#em-dovada-nu"
+      },
+      {
+        "asteapta": "#em-rezultat.em-bun"
+      },
+      {
+        "asteapta": "#em-rezultat .em-avertisment-emitere"
+      },
+      {
+        "pauza": 600
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "emisă",
+        "zona": "#em-rezultat"
+      },
+      {
+        "contine": "dovada transportului",
+        "zona": "#em-rezultat .em-avertisment-emitere"
+      },
+      {
+        "contine": "art.294 alin.(3)",
+        "zona": "#em-rezultat .em-avertisment-emitere"
+      }
+    ],
+    "captura": "c84_f1_livrarea_ic_fara_dovada_cu_avertisment.png"
+  },
+  {
+    "nr": "C84",
+    "firma": "tenant_9050",
+    "descriere": "F2, factura VECHE F2T3 din 20.10.2026 (livrare intracomunitară de bunuri către LU, înainte de reparație): rămâne în Istoric facturi, neatinsă — întrebarea dovezii transportului se pune numai la emitere, o factură emisă nu se reverifică. Date existente neafectate. Numai citire.",
+    "pasi": [
+      {
+        "click": "#fa-facturi"
+      },
+      {
+        "asteapta": "#fac-istoric"
+      },
+      {
+        "click": "#fac-istoric"
+      },
+      {
+        "asteapta": ".fac-frand-btn",
+        "stare": "attached"
+      },
+      {
+        "click": "#fac-mai-multe",
+        "daca_exista": true
+      },
+      {
+        "pauza": 1500
+      },
+      {
+        "asteapta": ".fac-frand-btn[data-id='5']"
+      },
+      {
+        "click": ".fac-frand-btn[data-id='5']"
+      },
+      {
+        "asteapta": "#fd-pdf"
+      },
+      {
+        "pauza": 400
+      }
+    ],
+    "verifica": [
+      {
+        "contine": "Factură F2T nr. 3"
+      },
+      {
+        "contine": "Livrare intracomunitară scutită"
+      },
+      {
+        "nu_contine": "dovada transportului"
+      }
+    ],
+    "captura": "c84_f2_vechi_f2t3_neatinsa_fara_intrebare.png"
+  }
+]

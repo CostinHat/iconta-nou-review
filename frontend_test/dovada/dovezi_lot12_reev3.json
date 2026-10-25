@@ -1,0 +1,19 @@
+[
+ {
+  "nr": "C137",
+  "firma": "tenant_9049",
+  "descriere": "F1, 10/2026 (luna în curs): Închidere lună -> „Reevaluare valută”: caseta „luna 10/2026 nu s-a încheiat … Propunerea e informativă” și „Generează nota” inactiv — o notă de reevaluare nouă nu se mai scrie înainte de încheierea lunii (OMFP 1802/2014 pct.325 alin.(1): cursul BNR din ultima zi bancară a lunii). Datele existente: pe copia firmelor de test nu există nicio notă de reevaluare (0 pe F1–F6 și FISCALOS, 24.10.2026), deci nu există document vechi de arătat. Numai citire.",
+  "pasi": [
+   {"click": "#fa-inchidere"},
+   {"asteapta": ".fereastra:last-of-type #il-reevaluare"},
+   {"click": ".fereastra:last-of-type #il-reevaluare"},
+   {"asteapta": ".fereastra:last-of-type #rv-genereaza"},
+   {"pauza": 800}
+  ],
+  "verifica": [
+   {"contine": "nu s-a încheiat", "zona": ".fereastra:last-of-type #rv-luna-in-curs"},
+   {"inactiv": ".fereastra:last-of-type #rv-genereaza"}
+  ],
+  "captura": "c137_f1_luna_in_curs_reevaluarea_nu_se_scrie.png"
+ }
+]
