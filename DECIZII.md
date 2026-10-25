@@ -23698,3 +23698,38 @@ varianta cea mai sigură pentru contabil și e cerută spre confirmare în rapor
 - **pct.11:** decizia Postmark — intrarea „25.10.2026 — Postmark…” de mai sus.
 - **C187 / C198:** descărcarea gestiunii (inclusiv GV) se face numai pe luna încheiată (clasa 216); butoanele stau inactive pe luna în curs,
   cu motivul lângă ele (ca amortizarea). **C196:** proforma transformată spune în ce factură.
+
+## 25.10.2026 — Comanda 13.1 (lotul 13): pornirea după /clear și comanda unică din 25.10, 16:35 — verbatim
+
+**Verbatim (chat, 25.10.2026, pornirea):** „13.1 — pornire după /clear.
+1. Citește întâi CLAUDE.md și PREDARE_LANT.md. Lucrezi pe ramura lucru/lot12-2026-10-23, peste commitul 3dcb71db (lotul 12, nepublicat), nu pe main.
+2. Execută ~/ghid_incoming/comanda_13_1.txt (versiunea unică din 25.10, 16:35: 11 puncte și anexa cu 162 de numere), fără oprire, până la poarta comună a loturilor 12 și 13, backup, publicare și raport.
+3. Intră în 13.1 și ce a rămas din raportul 12.2: 628 și 642 de dovedit, numerele C reparate și încă „neverificat”, C187, C201 (înaintea porții), C171, C193, C199, C174.
+4. Deciziile la întrebările din raportul 12.2:
+   1. C199: cu un cod TVA invalid în VIES se refuză scutirea; factura se emite doar cu TVA românesc. VIES indisponibil = avertisment și reîncercare, nu refuz (550).
+   2. C174: verifică la sursă, în instrucțiunile D112 în vigoare, dacă tichetele de masă intră în E3_8; aplică ce scrie acolo și citează temeiul în raport.
+   3. C194: confirmat — D112 aflate deja în coadă devin „depășite”, de generat din nou.
+   4. 252: la facturile preluate, dacă fișierul are suma TVA, se ia suma din fișier; doar unde lipsește se calculează la cota standard, iar factura e marcată „de verificat”.
+   5. C19: diferențele dinaintea rectificativei se extind la D112 acum; D300 și D100 după pilot.
+   6. C173: fără rectificative (portofoliul e de test); interpretarea pentru B1_sal2 se confirmă doar cu temeiul citat în raport.
+   7. 642: e2e-ul e dovada potrivită pentru înregistrarea unui cabinet.
+   8. „Înregistrează cabinetul tău” pe două coloane, să încapă pe ecran: confirmat.
+5. Nicio buclă pgrep -f care se poate găsi pe ea însăși (decl3 a stat blocat 20 de ore din asta).”
+
+**Comanda propriu-zisă:** `~/ghid_incoming/comanda_13_1.txt` (185 de rânduri, 25.10.2026 16:35:34, md5 `1b07d56583c878c516a70b0b65a570bf`) —
+11 puncte și anexa (grupa 1: 655–672; grupa 2: 650–681; grupa 3: 504–649, 43, 458.1, C71.1, C87.1, C101). Textul fiecărui număr e în
+rândul lui din `DEFICIENTE.md` (secțiunea „25.10 — comanda 13.1”, numerele noi 643–681, 458.1, C71.1, C87.1; 504–642 erau deja acolo).
+
+**Consecințe (executor):**
+- Numerotarea deficiențelor găsite de Code în lotul 13: comanda, pct.11, cere „cu număr din numerotarea comună, de la 682” — SUPERSEDEAZĂ,
+  pentru numerele noi de acum înainte, prefixul C al deciziei din 10.10.2026 (CLAUDE.md §4); C1–C202 rămân cum sunt.
+- Lucrul: subagenți în paralel, fiecare în worktree-ul lui (`/home/costin/iconta_l13_<zonă>`, ramuri `lucru/l13-<zonă>` din `a632ffa2`), pe
+  fișiere disjuncte (CLAUDE.md §5); un fișier străin se cere sesiunii principale ca petic (forma mutațiilor din `e2e_poarta.py`). E2e-ul,
+  dovezile, uneltele vizuale și verificatorul le rulează sesiunea principală, secvențial.
+- Pct.1 (Postmark): tokenul verificat fără afișare (`GET /server` 200, server „My First Server”, livrare Live; un email de test către
+  contact@iconta.eu: 200 / ErrorCode 0), mutat în `~/.iconta/postmark_de_activat.env` (0600), sursa ștearsă (`shred -u`). Intră în
+  `api_keys.env` la publicare, odată cu codul care trece pe Brevo orice refuz Postmark: producția de acum (lotul 11) ar pierde tăcut
+  emailul tranzacțional către o adresă din afara iconta.eu (contul Postmark în mod de test le refuză), dacă ar reporni cu tokenul înainte.
+- Pct.2 (cheia Anthropic „fiscalos2”): **NEINSTALATĂ**. Fișierul `~/ghid_incoming/anthropic_key.txt` are 95 de caractere, fără prefixul
+  `sk-ant-`; API-ul Anthropic (`GET /v1/models`) răspunde 401 și cu valoarea din fișier, și cu prefixul `sk-ant-api03-` adăugat (cheia de
+  acum răspunde 200, 108 caractere). Cheia veche rămâne activă (expiră 28.10); fișierul nu s-a șters, ca să poată fi verificat ce s-a lipit.
