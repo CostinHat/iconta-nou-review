@@ -124,7 +124,7 @@ def test_cloneaza_refuza_schema_pilotului_inainte_de_pg_dump(monkeypatch):
 
 def test_schema_copiei_numai_pentru_sursele_cunoscute():
     assert [d.schema_copie(s) for s in d.SURSE] == ["tenant_9049", "tenant_9050", "tenant_9051", "tenant_9052", "tenant_9053",
-                                                    "tenant_9054", "tenant_9055"]
+                                                    "tenant_9054", "tenant_9055", "tenant_9057"]
     with pytest.raises(d.Refuz):
         d.schema_copie("tenant_001")
 

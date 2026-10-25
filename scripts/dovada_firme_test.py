@@ -4,8 +4,8 @@ create ÎNAINTE de reparație (comanda Costin 11.2 pct.3, verbatim: „nimic nu 
 pe documentele create înainte de reparație. Orice reparație acoperă și datele existente.”).
 
 DE CE O COPIE. Lotul nepublicat nu rulează pe producție (producția servește codul publicat), deci reparațiile lui nu se pot vedea pe
-firmele de test acolo. Unealta copiază firmele de test ale cabinetului „Cabinet Test Sesiunea B SRL” (F1–F6 + FISCALOS, `tenant_049` …
-`tenant_055`) din PRODUCȚIE în baza de TEST, le trece prin migrările lotului exact cum le-ar trece publicarea și deschide ecranele cu
+firmele de test acolo. Unealta copiază firmele de test ale cabinetului „Cabinet Test Sesiunea B SRL” (F1–F7 + FISCALOS, `tenant_049` …
+`tenant_055`, `tenant_057`) din PRODUCȚIE în baza de TEST, le trece prin migrările lotului exact cum le-ar trece publicarea și deschide ecranele cu
 aplicația din arborele de lucru.
 
   --cloneaza   1. verifică în `public` (producție, numai-citire) că fiecare schemă sursă e a cabinetului de test, NU a cabinetului pilot —
@@ -63,7 +63,8 @@ import argumente_script  # noqa: E402
 #: Cabinetul firmelor de test (comanda Costin; REGULI lotul 11 „Baza de date”). Orice schemă sursă a altui cabinet = refuz.
 CABINET_TEST = "Cabinet Test Sesiunea B SRL"
 #: Schemele sursă (F1–F5, FISCALOS, F6) -> schema copiei în baza de test.
-SURSE = ("tenant_049", "tenant_050", "tenant_051", "tenant_052", "tenant_053", "tenant_054", "tenant_055")
+#: [lotul 13, comanda 13.1 pct.8] + F7 „Preluare Test SRL” (`tenant_057`, creată pe 24.10.2026 pentru grupa 1: preluarea) — dovada grupei 1
+SURSE = ("tenant_049", "tenant_050", "tenant_051", "tenant_052", "tenant_053", "tenant_054", "tenant_055", "tenant_057")
 PREFIX_COPIE = "tenant_9"
 MARCAJ_CABINET = " — copie de dovadă"
 STARE_DIR = os.path.expanduser("~/.cache/iconta_dovada")
