@@ -26,9 +26,10 @@ function _consumaMigMesaj(corp) {
 // importul adaugă, dublează sau înlocuiește”] STAREA PAȘILOR DE PRELUARE AI FIRMEI, derivată pe server din datele ei (`GET /migrare/firma/{id}`,
 // `audit_preluare.stare_pasi`): o singură sursă pentru meniul Migrare cabinet (firma în lucru), meniul „Import date” al firmei, ecranele de
 // import, mesajul de după salvare și fereastra firmei (662). Stările: gata / obligatoriu / nu e cazul / dacă e cazul.
+const _caleStare = (tenantId) => `/migrare/firma/${encodeURIComponent(tenantId)}`;
 async function _starePreluare(tenantId) {
   if (!tenantId) return null;
-  try { return await api.get(`/migrare/firma/${encodeURIComponent(tenantId)}`); } catch { return null; }
+  try { return await api.get(_caleStare(tenantId)); } catch { return null; }
 }
 const CLASA_PAS = { gata: "mig-b-gata", obligatoriu: "mig-b-oblig", nu_e_cazul: "mig-b-curand", optional: "mig-b-curand" };
 function _badgePas(p) {
@@ -43,8 +44,16 @@ function _textUrmatori(st) {
 }
 // [664] după o salvare: confirmarea + pașii următori necesari ai firmei, pe ecranul în care se revine
 // (fiecare salvare cheamă apoi `nav.inapoiPas()` ea însăși: mesajul și revenirea stau în aceeași funcție — garda 423a)
+const cerereUrmatori = ultimaCerere();   // [C103] două salvări în șir: numai pașii următori ai ultimei ajung în mesaj
 async function _adaugaUrmatorii(firma) {
-  const t = _textUrmatori(await _starePreluare(firma && firma.tenant_id));
+  if (!firma || !firma.tenant_id) return;
+  const actuala = cerereUrmatori();
+  let st = null;
+  try {
+    st = await api.get(_caleStare(firma.tenant_id));
+    if (!actuala()) return;
+  } catch { if (!actuala()) return; }
+  const t = _textUrmatori(st);
   if (t) { _migMesaj += (_migMesaj ? "\n" : "") + t; if (_migTip === "ok") _migTip = "avert"; }   // se adaugă la confirmarea salvării
 }
 // [580, 584] sub introducerea ecranului de import: ce s-a adus deja la pas și ce face importul cu ce există
@@ -299,8 +308,14 @@ async function meniuMigrare(corp, nav) {
   // [lotul 13, 663] cu o firmă în lucru, starea fiecărui pas e a EI (derivată din datele ei), iar pasul se deschide direct pe ea (668:
   // „cere din nou firma deși F7 e în lucru”); fără firmă în lucru, meniul rămâne al cabinetului (deciziile „gata / mai am”)
   const idLucru = nav.firmaInLucruId ? nav.firmaInLucruId() : null;
-  const stareFirma = idLucru ? await _starePreluare(idLucru) : null;
-  if (!actuala()) return;
+  // [C103] cererea stă aici, cu jetonul meniului: alegerea aplicației în șir redesenează meniul — numai starea ultimei cereri ajunge pe ecran
+  let stareFirma = null;
+  if (idLucru) {
+    try {
+      stareFirma = await api.get(_caleStare(idLucru));
+      if (!actuala()) return;
+    } catch { if (!actuala()) return; }
+  }
   corp.innerHTML = `
     <div id="mig-aplicatii"></div>
     ${stareFirma ? `<p class="mig-intro" id="mig-firma-lucru">Starea pașilor e a firmei în lucru, <b>${esc(stareFirma.nume)}</b>${stareFirma.urmatori.length

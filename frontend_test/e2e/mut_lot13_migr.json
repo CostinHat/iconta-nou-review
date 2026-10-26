@@ -13,8 +13,8 @@
  },
  {
   "fisier": "static/js/ecrane/migrare.js",
-  "ancora": "const stareFirma = idLucru ? await _starePreluare(idLucru) : null;",
-  "inlocuire": "const stareFirma = null;",
+  "ancora": "stareFirma = await api.get(_caleStare(idLucru));",
+  "inlocuire": "stareFirma = null;",
   "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_663_migrare_cabinet_arata_starea_firmei_in_lucru"
  },
  {

@@ -49,6 +49,7 @@ def _split_nume(intreg):
 # „funcție de bază” (fiecare salariat refuzat), „Data angajării” nu se potrivea cu „angajare” (dată pierdută), „Ore pe lună”
 # intra ca ore pe zi, iar „Norma pe zi” = 4 devenea normă ÎNTREAGĂ (orice valoare fără „part” era întreagă).
 from core import import_tabel as _it
+from core import common as _c
 
 CAMPURI = {
     "nume": ("nume salariat", "nume", "nume si prenume", "nume complet"),
@@ -422,6 +423,14 @@ def semnale_randuri(randuri):
     return out
 
 
+# [lotul 13, 585] norma întreagă în ore pe zi — minimul la normă parțială se ia proporțional cu orele contractului
+ORE_NORMA_INTREAGA = _c.ancoreaza("salariati_import_api.ORE_NORMA_INTREAGA", 8, _c.Temei(
+    "Legea", 53, 2003, art="112", alin="1", data_in="2003-03-01", nivel_sursa="MO", verificat_la="2026-10-26", de_cine="Code",
+    url="anaf_surse/legea_53_2003_codul_muncii.txt",
+    text_citat=("Pentru salariații angajați cu normă întreagă durata normală a timpului de muncă este de 8 ore pe zi și de 40 de ore pe "
+                "săptămână.")))
+
+
 def sub_minim(r, azi=None):
     """[lotul 13, 585] (brutul, minimul, „ la normă întreagă” / „ pe 4 ore pe zi”) — textele — când salariul de bază al rândului e sub
     salariul minim brut pe țară la data `azi` (registrul `salariu_minim`, Codul muncii art.164), proporțional cu orele normei parțiale;
@@ -442,7 +451,7 @@ def sub_minim(r, azi=None):
         prag, unde = minim, " la normă întreagă"
     elif norma == "partiala" and r.get("ore_zi"):
         ore = _D(str(r.get("ore_zi")))
-        prag, unde = _q(minim * ore / 8), " pentru %s pe zi (%s la normă întreagă)" % (_cate(float(ore), "oră", "ore"), _b(minim, "lei"))
+        prag, unde = _q(minim * ore / ORE_NORMA_INTREAGA), " pentru %s pe zi (%s la normă întreagă)" % (_cate(float(ore), "oră", "ore"), _b(minim, "lei"))
     else:
         return None
     if brut >= prag:
