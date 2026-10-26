@@ -67,6 +67,9 @@ def test_567_emailul_respingerii_spune_elementul_si_firma_fara_motiv():
      "Firma FE3 SRL: factura recurentă pentru Kunde GmbH s-a emis (F1, 10.03.2099), cu 1 avertisment."),
     ("Firma FE3 SRL: factura recurentă pentru Client SRL nu s-a emis (10.03.2099). Motivul: firma nu e plătitoare de TVA.",
      "Firma FE3 SRL: factura recurentă pentru Client SRL nu s-a emis (10.03.2099)."),
+    # [valul 5] sumele nu pleacă pe email („eticheta, nu conținutul fiscal”, C109 / C197; e2e_lot7 „fără cifre”)
+    ("Proba lotului 7 E2E-L7-1: D300 09/2026, 1.234 lei", "Proba lotului 7 E2E-L7-1: D300 09/2026."),
+    ("Alfa SRL: Notă · Plată chirie 1.234,56 lei · OP 12 a fost validată.", "Alfa SRL: Notă · Plată chirie · OP 12 a fost validată."),
     ("", ""),
 ])
 def test_567_rezumatul_formele_reale(text, rez):

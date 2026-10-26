@@ -75,8 +75,9 @@ def test_l7_setari_cont_notificari_numar_acord_canal(patron):
 
 def test_l7_notificarea_pleaca_pe_email_si_linkul_deschide_clopotelul(patron):
     """Pașii: o notificare nouă în clopoțelul contabilului (canalul implicit, email) -> în cel mult 30 + 30 de secunde emailul e în cutia
-    aplicației de probă: subiectul = eticheta tipului, fără textul notificării, cu linkul /deschide/notificari; linkul, deschis, arată
-    clopoțelul cu notificarea."""
+    aplicației de probă: subiectul = eticheta tipului, cu linkul /deschide/notificari; linkul, deschis, arată clopoțelul cu notificarea.
+    [lotul 13, 567, comanda 13.1: „emailul nu spune ce element și la ce firmă”] corpul spune elementul (prima propoziție a textului din
+    clopoțel), dar FĂRĂ sume: „eticheta, nu conținutul fiscal” (C109 / C197) — „1.234 lei” rămâne în aplicație (`notificari.rezumat`)."""
     _reseteaza()
     cutie = os.environ["ICONTA_EMAIL_CUTIE"]
     inainte = set(glob.glob(os.path.join(cutie, "*.json")))
@@ -94,7 +95,8 @@ def test_l7_notificarea_pleaca_pe_email_si_linkul_deschide_clopotelul(patron):
                 break
             time.sleep(1)
         assert gasit, "notificarea n-a plecat pe email în 60 de secunde"
-        assert tag not in gasit["html"] and "1.234" not in gasit["html"], "fără textul notificării, fără cifre"
+        assert "1.234" not in gasit["html"], "fără sume în email"
+        assert ("Proba lotului 7 %s: D300 09/2026." % tag) in gasit["html"], "elementul notificării (567)"
         assert "/deschide/notificari" in gasit["html"]
         assert sql("SELECT de_livrat FROM public.notificari WHERE id = %s", (nid,)) == [(False,)]
         patron.acasa()

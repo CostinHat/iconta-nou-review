@@ -167,6 +167,8 @@ def test_def_598_invitatia_asistentului_neplecata_nu_spune_trimisa(monkeypatch):
     monkeypatch.setattr(ua.repo_utilizatori, "creeaza_cont_asistent", lambda *a: {"id": 99})
     monkeypatch.setattr(ua._asist, "atribuie_firma", lambda conn, cab, uid, tid: {"ok": True})
     monkeypatch.setattr(ua._uc_comun, "_pune_token", lambda cur, tok, uid, ttl: None)
+    from core import repo_cabinet
+    monkeypatch.setattr(repo_cabinet, "nume_cabinet", lambda cur, firm_id: "Cabinet Probă")   # [lotul 13, 560] numele în email, fără bază
     monkeypatch.setattr(ua._obs, "trimite_email_html_sau_semnaleaza", lambda *a, **k: False)   # Brevo n-a primit cererea
     date = types.SimpleNamespace(email="zt.598@exemplu.ro", nume="ZT", poate_pregati=True, poate_valida=False, poate_depune=False,
                                  firme=[1])

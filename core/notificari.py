@@ -20,6 +20,7 @@ peste apelul HTTP. Revendicarea e `FOR UPDATE SKIP LOCKED`, comisă ÎNAINTE de 
 Rândurile de dinainte de migrare au `de_livrat = false` (valoarea implicită a coloanei), deci nu pleacă retroactiv.
 """
 import os
+import re
 
 from core import db
 from core import observare as _obs
@@ -181,12 +182,16 @@ def _propozitie(t):
     return (t[:1].upper() + t[1:] + ("" if t.endswith((".", "!", "?")) else ".")) if t else ""
 
 
+#: o sumă cu moneda ei („1.234 lei”, „1.234,56 RON”, „121,00 EUR”), cu virgula / spațiul dinaintea ei — conținut fiscal, nu pleacă pe email
+_SUMA = re.compile(r",?\s*(?<![\d.,])[-−]?\d[\d.]*(?:,\d+)?\s*(?:lei|RON|EUR|USD|GBP|CHF|euro)\b", re.I)
+
+
 def rezumat(text):
     """PURĂ. [lotul 13, 567] Ce element și la ce firmă, din textul notificării din clopoțel — FĂRĂ conținutul fiscal (motivul respingerii,
     avertismentul, sumele), care rămâne în aplicație (regula emailului de notificare: „eticheta, nu conținutul fiscal”, gărzile C109 /
     C197). Textele clopoțelului au forma „<Firma>: <elementul> <ce s-a întâmplat>. Motiv: …” (`uc_comun._cu_firma`): se ia PRIMA
-    propoziție, fără ce urmează după „Motiv: ” / „Motivul: ” / „avertisment: ” (textul avertismentului, C197)."""
-    import re
+    propoziție, fără ce urmează după „Motiv: ” / „Motivul: ” / „avertisment: ” (textul avertismentului, C197), și fără SUME (o sumă cu
+    moneda ei, oriunde în propoziție: „D300 09/2026, 1.234 lei” -> „D300 09/2026”; valul 5, plasa pe 59896e5c: `e2e_lot7` — „fără cifre”)."""
     t = " ".join(str(text or "").split())
     if not t:
         return ""
@@ -194,6 +199,7 @@ def rezumat(text):
     m = re.search(r"\b(Motivul|Motiv|avertismente|avertisment): ", prop)
     if m:   # „Motiv: …” pleacă cu tot cu cuvânt; „cu 1 avertisment: …” rămâne „cu 1 avertisment”
         prop = prop[:m.start() if m.group(1).startswith("Motiv") else m.end() - 2]
+    prop = _SUMA.sub("", prop)
     prop = prop.rstrip(" ,;:.")
     return prop if prop.endswith((".", "!", "?")) else prop + "."
 
