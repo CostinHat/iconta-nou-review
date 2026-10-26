@@ -236,7 +236,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie factura_cota_jurnal (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · d301_operatiuni (DELETE) · factura_linii (INSERT/UPDATE) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `facturi_api`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
+*ce face: scrie factura_cota_jurnal (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · audit_log (INSERT) · bugete (INSERT) · centre_cost (INSERT/UPDATE) · d301_operatiuni (DELETE) · factura_linii (INSERT/UPDATE) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (INSERT) · metrici_sanatate (INSERT) · miscari_stoc (INSERT/UPDATE) · tokene_activare (DELETE/INSERT) · urme_portal (INSERT) — prin `centre_cost_api`, `facturi_api`, `repo_facturi`, `repo_main`, `stocuri_cv_api`*
 
 - [x] factura primește **următorul număr din serie**, fără goluri; două emiteri simultane nu produc același număr
 - exemplarul se îngheață cu amprenta; o regenerare ulterioară produce alt exemplar, nu îl rescrie pe primul

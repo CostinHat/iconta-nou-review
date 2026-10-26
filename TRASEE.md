@@ -1201,7 +1201,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T02 — Factura emisă — creare, contabilizare, ieșiri
 
-**Clasa:** MANUAL · **rute:** 22 (din care schimba date: 16) · **refuzuri explicite:** 101
+**Clasa:** MANUAL · **rute:** 22 (din care schimba date: 16) · **refuzuri explicite:** 102
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 1 din 16.**
 
@@ -1230,9 +1230,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/facturi/{factura_id}/storno` — garda `cere_drept` drept:poate_pregati
 - `POST /tenants/{tenant_id}/facturi/{factura_id}/transforma` — garda `cere_drept` drept:poate_pregati
 
-**Module:** `anaf_api`, `capital_social`, `coada_api`, `contare_facturi`, `cote_tva`, `curs_bnr`, `drepturi`, `eticheta_nota`, `factura_pdf`, `facturi_api`, `facturi_recurente`, `firma_profil_api`, `nir_legare`, `nomenclator_status_factura`, `note_derivate`, `observare`, `repo_efactura`, `repo_facturi`, `repo_main`, `scadentar`, `stocuri_anulare`, `stocuri_cv_api`, `tva_incasare`, `uc_coada`, `uc_comun`, `uc_curs_bnr`
+**Module:** `anaf_api`, `capital_social`, `centre_cost_api`, `coada_api`, `contare_facturi`, `cote_tva`, `curs_bnr`, `drepturi`, `eticheta_nota`, `factura_pdf`, `facturi_api`, `facturi_recurente`, `firma_profil_api`, `nir_legare`, `nomenclator_status_factura`, `note_derivate`, `observare`, `repo_efactura`, `repo_facturi`, `repo_main`, `scadentar`, `stocuri_anulare`, `stocuri_cv_api`, `tva_incasare`, `uc_coada`, `uc_comun`, `uc_curs_bnr`
 
-**Scrie in:** `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `d301_operatiuni` (DELETE) · `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (INSERT) · `efactura_primite` (UPDATE) · `efactura_trimiteri` (INSERT/UPDATE) · `factura_cota_jurnal` (INSERT) · `factura_linii` (INSERT/UPDATE) · `factura_tva_cote` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `facturi_recurente` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (DELETE/INSERT/UPDATE) · `nir` (UPDATE) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
+**Scrie in:** `articole` (INSERT/UPDATE) · `audit_log` (INSERT) · `bugete` (INSERT) · `centre_cost` (INSERT/UPDATE) · `d301_operatiuni` (DELETE) · `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (INSERT) · `efactura_primite` (UPDATE) · `efactura_trimiteri` (INSERT/UPDATE) · `factura_cota_jurnal` (INSERT) · `factura_linii` (INSERT/UPDATE) · `factura_tva_cote` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `facturi_recurente` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `firma_profil_jurnal` (INSERT) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (INSERT) · `metrici_sanatate` (INSERT) · `miscari_stoc` (DELETE/INSERT/UPDATE) · `nir` (UPDATE) · `tokene_activare` (DELETE/INSERT) · `urme_portal` (INSERT)
 
 **Stari puse:** `aprobata`, `ciorna`, `de_verificat`, `depusa`, `emisa`, `investigatie`, `pregatit`, `respinsa`, `validata`
 
@@ -1965,7 +1965,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T30 — Operațiunile în valută
 
-**Clasa:** MECANIC · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 20
+**Clasa:** MECANIC · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 21
 
 **Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 2.**
 
@@ -2055,9 +2055,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T34 — Rapoartele comerciale, centrele de cost și rapoartele salvate
 
-**Clasa:** MECANIC · **rute:** 14 (din care schimba date: 5) · **refuzuri explicite:** 25
+**Clasa:** MECANIC · **rute:** 15 (din care schimba date: 6) · **refuzuri explicite:** 29
 
-**Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 5.**
+**Cine:** drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 6.**
 
 **Pasii, din cod:**
 
@@ -2066,6 +2066,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /cabinet/consolidare` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/centre-cost` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/centre-cost` — garda `cere_drept` drept:poate_pregati
+- `PUT /tenants/{tenant_id}/centre-cost/alocari` — garda `cere_drept` drept:poate_pregati
 - `GET /tenants/{tenant_id}/centre-cost/raport` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/centre-cost/varianta` — garda `cere_cabinet`
 - `PUT /tenants/{tenant_id}/centre-cost/{centru_id}` — garda `cere_drept` drept:poate_pregati
