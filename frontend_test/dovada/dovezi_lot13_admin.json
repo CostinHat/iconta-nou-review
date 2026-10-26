@@ -3,7 +3,7 @@
   "nr": "562",
   "firma": "tenant_9049",
   "utilizator": 71512,
-  "descriere": "F1 (cabinetul copiei), ca «Asist Test» (numai «Poate pregăti»): pagina principală fără fereastră deschisă singură -> «?» -> «Prezentarea aplicației»: fără firul de preluare al administratorului (vector fiscal, solduri inițiale, migrare cabinet), cu pașii de început ai asistentului",
+  "descriere": "F1 (cabinetul copiei), ca «Asist Test» — cont creat pe producție ÎNAINTE de reparație (vechi) (numai «Poate pregăti»): pagina principală fără fereastră deschisă singură -> «?» -> «Prezentarea aplicației»: fără firul de preluare al administratorului (vector fiscal, solduri inițiale, migrare cabinet), cu pașii de început ai asistentului",
   "pasi": [
    {
     "click": ".fereastra:last-of-type .nav-x"
@@ -42,7 +42,7 @@
     "zona": ".fereastra .ans-continut"
    }
   ],
-  "captura": "562_f1_asistent_prezentarea_pe_rol.png"
+  "captura": "562_f1_vechi_asistent_prezentarea_pe_rol.png"
  },
  {
   "nr": "563",
@@ -457,5 +457,629 @@
    }
   ],
   "captura": "c132_f1_vechi_supervizor_diacritice.png"
+ },
+ {
+  "nr": "643",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin (superadminul copiei) -> Sănătate server: cifrele în format românesc și „pragul de alertă” lângă încărcare, RAM și disc; graficul încărcării (media pe 15 minute)",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='sanatate'])"
+   },
+   {
+    "asteapta": "#san-server"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "pragul de alertă",
+    "zona": "#san-server"
+   },
+   {
+    "exista": "[data-grafic='load15']"
+   }
+  ],
+  "captura": "643_admin_sanatate_cifre_si_pragul.png"
+ },
+ {
+  "nr": "644",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin -> Activitate cabinete: bara de sus și rândul cabinetului copiei numără „utilizatori” (conturile), nu „angajați”",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   },
+   {
+    "asteapta": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă'))"
+   },
+   {
+    "deruleaza": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă'))"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "utilizator",
+    "zona": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă')) .pf-frand-sub"
+   },
+   {
+    "nu_contine": "angajat",
+    "zona": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă'))"
+   },
+   {
+    "contine": "utilizatori",
+    "zona": "[data-sumar-admin]"
+   },
+   {
+    "nu_contine": "angajați",
+    "zona": "[data-sumar-admin]"
+   }
+  ],
+  "captura": "644_admin_activitate_utilizatori.png"
+ },
+ {
+  "nr": "649",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin -> Analytics public: nota „Nu se numără vizitele dintr-un browser în care e deschisă o sesiune iConta.eu”, zilele în forma aplicației",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='analytics'])"
+   },
+   {
+    "asteapta": "#an-intern"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Nu se numără vizitele dintr-un browser în care e deschisă o sesiune iConta.eu",
+    "zona": "#an-intern"
+   }
+  ],
+  "captura": "649_admin_analytics_fara_vizitele_noastre.png"
+ },
+ {
+  "nr": "578",
+  "public": true,
+  "descriere": "Pagina publică (vizitator, fără sesiune) -> „Funcționalități și prețuri” -> „Cabinet și portal client”: o singură intrare pentru API, notificări și export; nicio funcție a administratorului platformei, nicio funcție găsită stricată",
+  "pasi": [
+   {
+    "asteapta": "#pagina-functionalitati-btn"
+   },
+   {
+    "click": "#pagina-functionalitati-btn"
+   },
+   {
+    "asteapta": ".func-grila .func-card[data-i]"
+   },
+   {
+    "click": ".func-grila .func-card[data-i]",
+    "text": "Cabinet și portal client"
+   },
+   {
+    "asteapta": ".func-lista"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Chei API publice per cabinet",
+    "zona": ".func-lista"
+   },
+   {
+    "contine": "Notificări în aplicație și pe email",
+    "zona": ".func-lista"
+   },
+   {
+    "nu_contine": "API public pentru integrări",
+    "zona": ".func-lista"
+   },
+   {
+    "nu_contine": "Suspendare cabinet",
+    "zona": ".func-lista"
+   },
+   {
+    "nu_contine": "Sinteza zilnică pe email",
+    "zona": ".func-lista"
+   }
+  ],
+  "captura": "578_public_functionalitati_fara_dubluri.png"
+ },
+ {
+  "nr": "572",
+  "firma": "tenant_9049",
+  "acasa": true,
+  "descriere": "Cabinetul copiei (administratorul): Suport -> „Cum adaug un asistent nou? (dovada 572)” cu AI simulat care răspunde ghicit, fără diacritice, cu un rol din cod -> în fir: confirmarea escaladării, nu răspunsul ghicit",
+  "pasi": [
+   {
+    "ai_raspunde": [
+     "{\"decizie\": \"raspund\", \"raspuns\": \"De obicei apesi pe + in Asistenti. Rolul admin_firma poate adauga.\"}"
+    ]
+   },
+   {
+    "click": "[data-banda='raport']"
+   },
+   {
+    "asteapta": "#rap-text"
+   },
+   {
+    "completeaza": "#rap-text",
+    "valoare": "Cum adaug un asistent nou? (dovada 572)"
+   },
+   {
+    "click": "#rap-trimite"
+   },
+   {
+    "asteapta": "#rap-msg",
+    "text": "Sesizare trimisă"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "click": ".rap-fir-cap",
+    "text": "dovada 572"
+   },
+   {
+    "asteapta": ".rap-fir:has-text('dovada 572') .rap-msg-admin"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sesizarea ta a fost transmisă echipei iConta.eu. Vei primi răspunsul aici, în acest fir.",
+    "zona": ".rap-fir:has-text('dovada 572')"
+   },
+   {
+    "nu_contine": "De obicei",
+    "zona": ".rap-fir:has-text('dovada 572')"
+   }
+  ],
+  "captura": "572_f1_raspunsul_ghicit_nu_pleaca.png"
+ },
+ {
+  "nr": "573",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin -> Raportări -> „De la AI” -> sesizarea „dovada 572” a cabinetului copiei: „Asistentul AI a trimis sesizarea la echipă. Motivul: Asistentul AI a încercat să răspundă, dar …”",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='raportari'])"
+   },
+   {
+    "click": ".rap-tab[data-tab='tine']"
+   },
+   {
+    "click": ".rap-rand",
+    "text": "dovada 572"
+   },
+   {
+    "asteapta": "#rap-triaj"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Asistentul AI a trimis sesizarea la echipă. Motivul: Asistentul AI a încercat să răspundă, dar",
+    "zona": "#rap-triaj"
+   }
+  ],
+  "captura": "573_admin_motivul_escaladarii.png"
+ },
+ {
+  "nr": "648",
+  "firma": "tenant_9049",
+  "acasa": true,
+  "descriere": "Cabinetul copiei: Suport -> sesizarea „Dovada 648: cum export balanța în SAGA?” (AI simulat: escaladează)",
+  "pasi": [
+   {
+    "ai_raspunde": [
+     "{\"decizie\": \"escaladez\", \"motiv\": \"cerere de date (dovada 648)\"}"
+    ]
+   },
+   {
+    "click": "[data-banda='raport']"
+   },
+   {
+    "asteapta": "#rap-text"
+   },
+   {
+    "completeaza": "#rap-text",
+    "valoare": "Dovada 648: cum export balanța în SAGA?"
+   },
+   {
+    "click": "#rap-trimite"
+   },
+   {
+    "asteapta": "#rap-msg",
+    "text": "Sesizare trimisă"
+   },
+   {
+    "pauza": 4000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sesizare trimisă",
+    "zona": "#rap-msg"
+   }
+  ],
+  "captura": "648_f1_sesizarea_trimisa.png"
+ },
+ {
+  "nr": "648",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin -> Raportări -> „De la AI” -> „Dovada 648” -> răspunsul echipei",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='raportari'])"
+   },
+   {
+    "click": ".rap-tab[data-tab='tine']"
+   },
+   {
+    "click": ".rap-rand",
+    "text": "Dovada 648"
+   },
+   {
+    "asteapta": "#rap-text"
+   },
+   {
+    "completeaza": "#rap-text",
+    "valoare": "Balanța se exportă din Raportări (dovada 648)."
+   },
+   {
+    "click": "#rap-trimite"
+   },
+   {
+    "asteapta": "#rap-mesaje .rap-msg-text",
+    "text": "Balanța se exportă din Raportări"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Balanța se exportă din Raportări (dovada 648).",
+    "zona": "#rap-mesaje"
+   }
+  ],
+  "captura": "648_admin_raspunsul_echipei.png"
+ },
+ {
+  "nr": "648",
+  "firma": "tenant_9049",
+  "acasa": true,
+  "descriere": "Cabinetul copiei, fără să deschidă Suport: clopoțelul -> „Echipa iConta.eu ți-a răspuns la sesizarea «Dovada 648 …»”",
+  "pasi": [
+   {
+    "click": "#nav-clopot"
+   },
+   {
+    "asteapta": ".clopot-item",
+    "text": "ți-a răspuns la sesizarea"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Dovada 648",
+    "zona": ".clopot-item:has-text('ți-a răspuns la sesizarea')"
+   }
+  ],
+  "captura": "648_f1_clopotel_raspunsul_echipei.png"
+ },
+ {
+  "nr": "646",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin -> Anunțuri: fără destinatari -> refuz („Alege destinatarii…”); „Destinatari”: numai cabinetul copiei -> „Trimite” -> confirmarea spune „Anunțul pleacă la 1 cabinet.” -> trimis",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='anunturi'])"
+   },
+   {
+    "asteapta": "#an-op-msg"
+   },
+   {
+    "click": "#an-op-msg"
+   },
+   {
+    "completeaza": "#an-mesaj",
+    "valoare": "Anunț de dovadă 646 — mentenanță programată"
+   },
+   {
+    "click": "#an-trimite"
+   },
+   {
+    "asteapta": "#an-msg",
+    "text": "Alege destinatarii"
+   },
+   {
+    "captura": "646_admin_fara_destinatari_refuz.png"
+   },
+   {
+    "click": ".fereastra .nav-inapoi"
+   },
+   {
+    "click": "#an-op-cab"
+   },
+   {
+    "completeaza": "#sel-cauta",
+    "valoare": "copie de dovadă"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".sel-rand",
+    "text": "copie de dovadă"
+   },
+   {
+    "click": ".fereastra .nav-inapoi"
+   },
+   {
+    "click": "#an-op-msg"
+   },
+   {
+    "completeaza": "#an-mesaj",
+    "valoare": "Anunț de dovadă 646 — mentenanță programată"
+   },
+   {
+    "click": "#an-trimite"
+   },
+   {
+    "asteapta": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "captura": "646_admin_confirmarea_la_1_cabinet.png"
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "asteapta": "#an-msg",
+    "text": "Trimis către 1 cabinet"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Trimis către 1 cabinet",
+    "zona": "#an-msg"
+   }
+  ],
+  "captura": "646_admin_trimis_la_cabinetul_ales.png"
+ },
+ {
+  "nr": "646",
+  "firma": "tenant_9049",
+  "acasa": true,
+  "descriere": "Cabinetul copiei intră: fereastra „Mesaj de la iConta.eu” cu anunțul dovezii și data trimiterii („Trimis pe ZZ.LL.AAAA”)",
+  "pasi": [
+   {
+    "asteapta": ".anunt-data"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Trimis pe ",
+    "zona": ".anunt-data"
+   },
+   {
+    "contine": "Anunț de dovadă 646 — mentenanță programată",
+    "zona": ".anunt-text"
+   }
+  ],
+  "captura": "646_f1_fereastra_anuntului_cu_data.png"
+ },
+ {
+  "nr": "646",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin -> Anunțuri -> „Anunțuri trimise”: rândul dovezii, „0 din 1” citit -> „Retrage” -> confirmare -> „retras”",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='anunturi'])"
+   },
+   {
+    "asteapta": "#an-op-trimise"
+   },
+   {
+    "click": "#an-op-trimise"
+   },
+   {
+    "asteapta": "#an-trimise tr:has-text('Anunț de dovadă 646 — mentenanță programată')"
+   },
+   {
+    "captura": "646_admin_lista_trimise_necitit.png"
+   },
+   {
+    "click": "#an-trimise tr:has-text('Anunț de dovadă 646 — mentenanță programată') [data-retrage]"
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "asteapta": "#an-trimise tr:has-text('Anunț de dovadă 646 — mentenanță programată')",
+    "text": "retras"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "retras",
+    "zona": "#an-trimise tr:has-text('Anunț de dovadă 646 — mentenanță programată')"
+   },
+   {
+    "contine": "0 din 1",
+    "zona": "#an-trimise tr:has-text('Anunț de dovadă 646 — mentenanță programată')"
+   }
+  ],
+  "captura": "646_admin_anuntul_retras.png"
+ },
+ {
+  "nr": "646",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin -> Invitații cabinete: invitația nouă are „Copiază” lângă link; lista o arată „valabilă” -> „Retrage” -> „retrasă”",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='invitatii'])"
+   },
+   {
+    "asteapta": "#inv-email"
+   },
+   {
+    "completeaza": "#inv-email",
+    "valoare": "dovada.646e@sesiuneab.test"
+   },
+   {
+    "click": "#inv-trimite"
+   },
+   {
+    "asteapta": "#inv-copiaza"
+   },
+   {
+    "captura": "646_admin_invitatia_cu_copiaza.png"
+   },
+   {
+    "click": "#inv-tabel tr:has-text('dovada.646e@sesiuneab.test') [data-retrage-inv]"
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "asteapta": "#inv-tabel tr:has-text('dovada.646e@sesiuneab.test')",
+    "text": "retrasă"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#inv-copiaza"
+   },
+   {
+    "contine": "retrasă",
+    "zona": "#inv-tabel tr:has-text('dovada.646e@sesiuneab.test')"
+   }
+  ],
+  "captura": "646_admin_invitatia_retrasa.png"
+ },
+ {
+  "nr": "645",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin -> Activitate cabinete -> cabinetul copiei -> „Suspendă”: fără motiv -> „Alege motivul suspendării.”; „Neplată” + nota internă -> confirmare -> suspendat, cu motivul; fișa: jurnalul („încă suspendat”); „Reactivează” -> jurnalul are reactivarea. ULTIMA din listă: suspendarea taie sesiunile copiei",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   },
+   {
+    "asteapta": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă'))"
+   },
+   {
+    "click": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă')) [data-toggle]"
+   },
+   {
+    "asteapta": "#sus-trimite"
+   },
+   {
+    "click": "#sus-trimite"
+   },
+   {
+    "asteapta": "#sus-msg",
+    "text": "Alege motivul suspendării."
+   },
+   {
+    "click": "#sus-motiv [data-motiv='neplata']"
+   },
+   {
+    "completeaza": "#sus-nota",
+    "valoare": "Notă internă a dovezii 645"
+   },
+   {
+    "captura": "645_admin_fereastra_suspendarii_cu_motiv.png"
+   },
+   {
+    "click": "#sus-trimite"
+   },
+   {
+    "asteapta": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "asteapta": "#ac-mesaj",
+    "text": "e suspendat"
+   },
+   {
+    "captura": "645_admin_lista_dupa_suspendare.png"
+   },
+   {
+    "click": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă')) [data-fisa]"
+   },
+   {
+    "asteapta": "#ac-suspendari"
+   },
+   {
+    "captura": "645_admin_jurnal_suspendat.png"
+   },
+   {
+    "click": ".fereastra .nav-inapoi"
+   },
+   {
+    "asteapta": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă'))"
+   },
+   {
+    "click": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă')) [data-toggle]"
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "asteapta": "#ac-mesaj",
+    "text": "activ din nou"
+   },
+   {
+    "click": ".pf-frand:has(.pf-frand-nume:has-text('copie de dovadă')) [data-fisa]"
+   },
+   {
+    "asteapta": "#ac-suspendari"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "neplată",
+    "zona": "#ac-suspendari"
+   },
+   {
+    "contine": "Notă internă a dovezii 645",
+    "zona": "#ac-suspendari"
+   },
+   {
+    "nu_contine": "încă suspendat",
+    "zona": "#ac-suspendari"
+   }
+  ],
+  "captura": "645_admin_jurnal_cu_reactivarea.png"
  }
 ]

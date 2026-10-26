@@ -5,8 +5,9 @@
   * 563 aceeași numărătoare a notelor de validat: cardul de pe pagina principală și „De validat” numără NOTE;
   * 570 notificarea de control fiscal spune culoarea ecranului („de urmărit”, nu „în roșu”);
   * 571 Control fiscal: „comparat cu decontul generat azi”, nu „ce s-a depus nu s-a păstrat”;
-  * 572 / 573 triajul AI: răspunsul ghicit nu pleacă la om; motivul escaladării în Panou Admin; confirmarea cu diacritice, la stânga;
-  * 574 / 575 / 576 Tipare de erori: numai respingerile omului (și notele), valorile sub coloane, analiza AI sub prag refuzată;
+  * 572 triajul AI: răspunsul ghicit nu pleacă la om, confirmarea la stânga; 573 motivul escaladării în Panou Admin, confirmarea cu
+    diacritice;
+  * 574 (+ 575) Tipare de erori: numai respingerile omului (și notele), valorile sub coloane; 576 analiza AI sub prag refuzată;
   * 648 răspunsul echipei ajunge în clopoțel;
   * 458.1 retragerea proprie regenerată nu e eroare a echipei; C87.1 „Declarații și note lucrate” în cuvintele aplicației.
 
@@ -189,23 +190,25 @@ def _sesizarile_patronului():
         sql("DELETE FROM public.raportari WHERE autor_id = %s AND id > %s", (uid, peste))
 
 
-def test_def_572_573_raspunsul_ghicit_nu_pleaca_iar_motivul_se_vede_in_panou(patron, browser, request):
-    """572 + 573. AI simulat: răspunde ghicit, fără diacritice, cu un rol din cod. Pașii: Suport -> „Cum adaug un asistent nou?” ->
-    firul primește confirmarea cu diacritice (nu răspunsul ghicit), la stânga, cu textul aliniat la stânga; Panou Admin -> Raportări ->
-    „De la AI” -> sesizarea: „Asistentul AI a trimis sesizarea la echipă. Motivul: Asistentul AI a încercat să răspundă, dar …”. ROȘU
-    înainte: răspunsul ghicit ajungea la om; confirmarea fără diacritice; motivul nu se vedea."""
+def _sesizarea_triata(patron, text, peste):
+    """Suport -> sesizarea `text`; așteaptă triajul AI (simulat) în fir. -> id-ul sesizării (cea nouă, peste `peste`)."""
+    _sesizare(patron, text)
+    for _ in range(60):
+        r = sql("SELECT r.id FROM public.raportari r JOIN public.raportari_mesaje m ON m.raportare_id = r.id AND m.rol_autor = 'ai' "
+                "WHERE r.autor_id = %s AND r.id > %s", (_uid(PATRON), peste))
+        if r:
+            return r[0][0]
+        time.sleep(0.5)
+    raise AssertionError("triajul AI nu a scris în fir")
+
+
+def test_def_572_raspunsul_ghicit_nu_pleaca_la_om(patron):
+    """572. AI simulat: răspunde ghicit („De obicei…”), fără diacritice, cu un rol din cod. Pașii: Suport -> „Cum adaug un asistent nou?”
+    -> firul primește confirmarea escaladării (nu răspunsul ghicit), la stânga, cu textul aliniat la stânga; sesizarea e escaladată cu
+    motivul „Asistentul AI a încercat să răspundă, dar …”. ROȘU înainte: răspunsul ghicit ajungea la om."""
     ai_pregateste(json.dumps({"decizie": "raspund", "raspuns": "De obicei apesi pe + in Asistenti. Rolul admin_firma poate adauga."}))
     with _sesizarile_patronului() as (uid, peste):
-        _sesizare(patron, "Cum adaug un asistent nou?")
-        rid = None
-        for _ in range(60):
-            r = sql("SELECT r.id FROM public.raportari r JOIN public.raportari_mesaje m ON m.raportare_id = r.id AND m.rol_autor = 'ai' "
-                    "WHERE r.autor_id = %s AND r.id > %s", (uid, peste))
-            if r:
-                rid = r[0][0]
-                break
-            time.sleep(0.5)
-        assert rid, "triajul AI nu a scris în fir"
+        rid = _sesizarea_triata(patron, "Cum adaug un asistent nou?", peste)
         assert ai_prompturi(), "modelul (simulat) n-a fost întrebat"
         pg = patron.pg
         patron.acasa()
@@ -218,16 +221,34 @@ def test_def_572_573_raspunsul_ghicit_nu_pleaca_iar_motivul_se_vede_in_panou(pat
         patron.captura("firul")
         assert TEXT_ESCALADARE in txt and "De obicei" not in txt, txt
         assert stil[0] in ("start", "left") and stil[1] != "flex-end", stil
+        (dec, motiv), = sql("SELECT triaj_decizie, triaj_motiv FROM public.raportari WHERE id = %s", (rid,))
+        assert dec == "escaladare" and motiv.startswith("Asistentul AI a încercat să răspundă, dar"), (dec, motiv)
+
+
+def test_def_573_motivul_escaladarii_se_vede_in_panou_admin(patron, browser, request):
+    """573. AI simulat: escaladează, cu motivul lui. Pașii: Suport -> sesizarea -> firul primește confirmarea cu diacritice („Sesizarea ta a
+    fost transmisă echipei iConta.eu…”); Panou Admin -> Raportări -> „De la AI” -> sesizarea: „Asistentul AI a trimis sesizarea la echipă.
+    Motivul: <motivul AI-ului>”. ROȘU înainte: motivul nu se vedea; confirmarea fără diacritice."""
+    ai_pregateste(json.dumps({"decizie": "escaladez", "motiv": "Este o eroare de date, nu o întrebare de folosire E2E573."}))
+    with _sesizarile_patronului() as (uid, peste):
+        rid = _sesizarea_triata(patron, "Balanța nu se închide pe luna trecută E2E573", peste)
+        pg = patron.pg
+        patron.acasa()
+        pg.click("[data-banda='raport']")
+        pg.click(".rap-fir[data-id='%d'] .rap-fir-cap" % rid)
+        m = pg.locator(".rap-fir[data-id='%d'] .rap-msg-admin" % rid).first
+        m.wait_for(timeout=20000)
+        assert TEXT_ESCALADARE in " ".join(m.inner_text().split())
         with contextlib.contextmanager(_ecran)(browser, request, SUPERADMIN) as sa:
             sa.pg.goto(BAZA + "/", wait_until="domcontentloaded")
             sa.pg.wait_for_selector(".cab-grila", timeout=30000)
             sa.pg.click("button.cab-card:has([data-cheie='raportari'])")
             sa.pg.click(".rap-tab[data-tab='tine']")
-            sa.pg.locator(".rap-rand", has_text="Cum adaug un asistent nou?").first.click()
+            sa.pg.locator(".rap-rand", has_text="Balanța nu se închide pe luna trecută E2E573").first.click()
             sa.pg.wait_for_selector("#rap-triaj", timeout=20000)
             t = " ".join(sa.pg.inner_text("#rap-triaj").split())
             sa.captura("panou_admin")
-            assert t.startswith("Asistentul AI a trimis sesizarea la echipă. Motivul: Asistentul AI a încercat să răspundă, dar"), t
+            assert t == "Asistentul AI a trimis sesizarea la echipă. Motivul: Este o eroare de date, nu o întrebare de folosire E2E573.", t
 
 
 def test_def_648_raspunsul_echipei_ajunge_in_clopotel(patron, browser, request):
@@ -292,17 +313,21 @@ def coada_574(firma_e2e):
         sql("DELETE FROM public.declaratii_coada WHERE id = ANY(%s)", (ids,))
 
 
-def test_def_574_576_tiparele_numara_respingerile_omului_si_analiza_refuza_sub_prag(patron, coada_574):
-    """574 + 575 + 576. Pașii: Activitate -> Tipare de erori: motivul notei respinse de om e în listă („Lipsește documentul justificativ
-    E2E574”), „Depășită, lipsește E2E574” (retragerea proprie regenerată) și „Înlocuită…” nu; rândul „Note contabile” în tabelul
-    ratelor, cu antetele numerice deasupra cifrelor (la dreapta). „Generează analiză AI” sub prag: „Prea puține respingeri pentru o
-    analiză”, fără întrebare la model. ROȘU înainte: înlocuirea numărată, notele lipsă, „—––” / valori sub alte coloane."""
-    ai_pregateste("Analiză care n-ar trebui cerută.")
+def _tipare(patron):
     pg = patron.pg
     patron.acasa()
     pg.click("button.cab-card:has([data-cheie='activitate'])")
     pg.click("#opt-tipare")
     pg.wait_for_selector(".tip-ecran", timeout=30000)
+    return pg
+
+
+def test_def_574_tiparele_numara_respingerile_omului_si_notele(patron, coada_574):
+    """574 (+ 575, tabelul). Pașii: Activitate -> Tipare de erori: motivul notei respinse de om e în listă („Lipsește documentul
+    justificativ E2E574”), „Depășită, lipsește E2E574” (retragerea proprie regenerată) și „Înlocuită…” nu; rândul „Note contabile” în
+    tabelul ratelor, cu antetele numerice deasupra cifrelor (la dreapta). ROȘU înainte: înlocuirea numărată, notele lipsă, valori sub
+    alte coloane."""
+    pg = _tipare(patron)
     t = pg.inner_text(".tip-ecran")
     assert "Lipsește documentul justificativ E2E574" in t and "Depășită, lipsește E2E574" not in t and "Înlocuită de declarația" not in t, t
     rand = pg.locator("#tip-tabel-tipuri tr", has_text="Note contabile")
@@ -312,6 +337,13 @@ def test_def_574_576_tiparele_numara_respingerile_omului_si_analiza_refuza_sub_p
         return [getComputedStyle(th[1]).textAlign, getComputedStyle(td[1]).textAlign, th.length, td.length]; }""")
     assert al[0] == al[1] == "right" and al[2] == al[3] == 3, al
     patron.captura("tipare")
+
+
+def test_def_576_analiza_ai_sub_prag_nu_intreaba_modelul(patron, coada_574):
+    """576. Pașii: Activitate -> Tipare de erori -> „Generează analiză AI” cu o singură respingere a omului (sub pragul de 5): „Prea puține
+    respingeri pentru o analiză”, fără întrebare la model. ROȘU înainte: modelul generaliza dintr-un caz („omite sistematic”)."""
+    ai_pregateste("Analiză care n-ar trebui cerută.")
+    pg = _tipare(patron)
     pg.click("#tip-ai")
     pg.wait_for_function("() => (document.querySelector('#tip-ai-rez') || {}).innerText.includes('Prea puține respingeri')", timeout=30000)
     patron.captura("analiza_sub_prag")

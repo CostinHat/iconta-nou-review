@@ -214,3 +214,38 @@ def test_scoaterea_copiei_trece_peste_randurile_legate_de_cabinet():
             cur.execute("SELECT count(*) FROM public.accounting_firms WHERE id = %s", (cab,))
             assert cur.fetchone()[0] == 0
         c.rollback()
+
+
+def test_scoaterea_copiei_ia_superadminul_copiei_si_sesizarile_ei():
+    """[lotul 13, valul 4] Dovezile Panoului Admin pe copie: superadminul copiei (`SUPERADMIN_COPIE`, utilizator NOU al bazei de test, fără
+    cabinet) răspunde la o sesizare a unui utilizator al copiei. Scoaterea copiei ia sesizarea, mesajele ei (inclusiv răspunsul
+    superadminului) și superadminul — altfel a doua clonare ar găsi superadminul vechi pe emailul lui. Un superadmin cu alt email (al bazei
+    de test) rămâne. MUTAȚIE: ștergerea superadminului scoasă din `_sterge_copia` -> (0, 0, 1) -> pică. Pe baza de TEST, în ROLLBACK."""
+    from core import db, mediu_test
+    if mediu_test.motive(os.environ):
+        pytest.skip("numai pe baza de test")
+    db.init_pool()
+    with db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute("INSERT INTO public.accounting_firms (nume) VALUES (%s) RETURNING id", ("Probă VAL4" + d.MARCAJ_CABINET,))
+            cab = cur.fetchone()[0]
+            cur.execute("INSERT INTO public.users (email, password_hash, accounting_firm_id) VALUES ('val4.cont@sesiuneab.test', 'x', %s) "
+                        "RETURNING id", (cab,))
+            uid = cur.fetchone()[0]
+            cur.execute("INSERT INTO public.users (email, password_hash, rol) VALUES (%s, 'x', 'superadmin') RETURNING id", (d.SUPERADMIN_COPIE,))
+            sa = cur.fetchone()[0]
+            cur.execute("INSERT INTO public.users (email, password_hash, rol) VALUES ('val4.alt.superadmin@sesiuneab.test', 'x', 'superadmin') "
+                        "RETURNING id")
+            alt = cur.fetchone()[0]
+            cur.execute("INSERT INTO public.raportari (autor_id, cabinet_id, subiect, pentru_admin) VALUES (%s, %s, 'Probă VAL4', true) "
+                        "RETURNING id", (uid, cab))
+            rid = cur.fetchone()[0]
+            cur.execute("INSERT INTO public.raportari_mesaje (raportare_id, autor_id, rol_autor, text) VALUES (%s, %s, 'utilizator', 'Întrebare'), "
+                        "(%s, %s, 'admin', 'Răspunsul echipei')", (rid, uid, rid, sa))
+            assert cab in d._sterge_copia(cur)
+            cur.execute("SELECT (SELECT count(*) FROM public.raportari WHERE id = %s), (SELECT count(*) FROM public.raportari_mesaje "
+                        "WHERE raportare_id = %s), (SELECT count(*) FROM public.users WHERE id = ANY(%s))", (rid, rid, [uid, sa]))
+            assert cur.fetchone() == (0, 0, 0)
+            cur.execute("SELECT count(*) FROM public.users WHERE id = %s", (alt,))
+            assert cur.fetchone()[0] == 1, "superadminul bazei de test (alt email) nu e al copiei"
+        c.rollback()

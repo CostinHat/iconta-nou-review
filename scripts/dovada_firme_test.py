@@ -18,6 +18,8 @@ aplicația din arborele de lucru.
                   aici și ținută numai local (`~/.cache/iconta_dovada/parola`, 0600) — nicio parolă / token / cheie de producție nu se
                   copiază; firmele, legăturile utilizator-firmă și rândurile publice de care au nevoie ecranele (declarații depuse, coada,
                   tipul firmei, alertele emise; cursul BNR lipsă);
+                  [lotul 13, valul 4] plus SUPERADMINUL COPIEI (`SUPERADMIN_COPIE`): un utilizator NOU, care nu există pe producție, fără
+                  cabinet, cu email sintetic și aceeași parolă locală — Panoul Admin pe copie (dovezile cu `"utilizator": "superadmin"`);
                4. migrările pe care producția încă nu le are (registrul `public.migrari_rulate` de pe producție, citit), în ordinea
                   publicării (`core.migrari_registru.in_ordine`), rulate cu `python -m core.migrari_registru ruleaza` pe baza de TEST
                   — „datele existente” trec prin aceeași migrare ca la publicare.
@@ -82,6 +84,9 @@ COLOANE_UTILIZATOR = ("nume", "prenume", "functie", "rol", "activ", "parola_schi
 #: O coloană a cărei denumire arată a secret oprește copierea (verificată pe schemele sursă înainte de `pg_dump`).
 RE_SECRET = re.compile(r"(token|parola|passw|secret|api_?key|refresh|pfx|privat)", re.I)
 TELEFON_TEST = "+40700000000"
+#: [lotul 13, valul 4 — dovezile Panoului Admin pe copie] superadminul copiei: utilizator NOU al bazei de TEST (nu copiat de pe producție),
+#: email sintetic, parola locală a copiei. Se scoate odată cu copia (`_sterge_copia`), recunoscut după email ȘI rol.
+SUPERADMIN_COPIE = "dovada.superadmin@sesiuneab.test"
 
 
 class Refuz(SystemExit):
@@ -230,19 +235,32 @@ def _sterge_copia(cur, cabinet_id=None, utilizatori=(), firme=()):
         cur.execute("DELETE FROM public.tenants WHERE accounting_firm_id = %s", (cab,))
         cur.execute("SELECT id FROM public.users WHERE accounting_firm_id = %s", (cab,))
         uids = [r[0] for r in cur.fetchall()]
-        for uid in uids:
-            for t, col in (("notificari", "user_id"), ("audit_log", "user_id"), ("login_esecuri", "user_id")):
-                cur.execute("SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name=%s AND column_name=%s",
-                            (t, col))
-                if cur.fetchone():
-                    cur.execute('DELETE FROM public."%s" WHERE "%s" = %%s' % (t, col), (uid,))
+        _sterge_jurnalele_utilizatorilor(cur, uids)
         _sterge_referintele(cur, "users", uids)
         cur.execute("DELETE FROM public.users WHERE accounting_firm_id = %s", (cab,))
         _sterge_referintele(cur, "accounting_firms", [cab])
         cur.execute("DELETE FROM public.accounting_firms WHERE id = %s", (cab,))
+    # [lotul 13, valul 4] superadminul copiei (fără cabinet), după cabinete: suspendările copiei care îl numesc au plecat cu cabinetul, iar
+    # răspunsurile lui la sesizările copiei, cu sesizarea (`raportari_mesaje.raportare_id` ON DELETE CASCADE)
+    cur.execute("SELECT id FROM public.users WHERE email = %s AND rol = 'superadmin'", (SUPERADMIN_COPIE,))
+    sa = [r[0] for r in cur.fetchall()]
+    if sa:
+        _sterge_jurnalele_utilizatorilor(cur, sa)
+        _sterge_referintele(cur, "users", sa)
+        cur.execute("DELETE FROM public.users WHERE id = ANY(%s)", (sa,))
     for s in tinte:
         cur.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % s)
     return cabinete
+
+
+def _sterge_jurnalele_utilizatorilor(cur, uids):
+    for uid in uids:
+        for t, col in (("notificari", "user_id"), ("audit_log", "user_id"), ("login_esecuri", "user_id")):
+            cur.execute("SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name=%s AND column_name=%s",
+                        (t, col))
+            if cur.fetchone():
+                cur.execute('DELETE FROM public."%s" WHERE "%s" = %%s' % (t, col), (uid,))
+
 
 
 def sterge(_argv):
@@ -376,6 +394,13 @@ def cloneaza(_argv):
             n[t] = _copiaza_randuri(cp, ct, t, "tenant_id = ANY(%s)", (tids,), fara_strain if t == "declaratii_coada" else None)
         for t in ("accounting_firms", "users", "tenants", "declaratii_coada"):
             _aliniaza_secventa(ct, t)
+        # [lotul 13, valul 4] superadminul copiei — utilizator NOU al bazei de TEST (după alinierea secvenței: id-ul nu se ciocnește cu
+        # utilizatorii copiați), fără cabinet, cu email sintetic și parola locală a copiei; nimic de pe producție
+        ct.execute("INSERT INTO public.users (email, password_hash, rol, activ, nume, prenume, telefon, notificari_salvate_la, "
+                   "bun_venit_vazut_la) VALUES (%s, %s, 'superadmin', true, 'Copie de dovadă', 'Superadmin', %s, now(), now()) RETURNING id",
+                   (SUPERADMIN_COPIE, hash_parola, TELEFON_TEST))
+        n["superadmin"] = ct.fetchone()[0]
+        email["superadmin"] = SUPERADMIN_COPIE
         cp.execute("SELECT data, moneda, curs, luat_la FROM public.curs_bnr_zilnic WHERE data >= DATE '2026-01-01'")
         bnr = cp.fetchall()
         for r in bnr:
