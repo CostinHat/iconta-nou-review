@@ -21,9 +21,15 @@ def compensatie(pret_fara_taxa, procent=8):
     return {"pret": p.quantize(B, rounding=ROUND_HALF_UP), "compensatie": c, "total": (p + c).quantize(B, rounding=ROUND_HALF_UP)}
 
 def achizitie_de_la_agricultor(valoare, in_registru, procent=8):
-    """Achizitie de la agricultor cu regim special. Compensatia e deductibila
-    (alin. 17) doar daca agricultorul e in Registrul ANAF la data livrarii."""
+    """Achizitie de la agricultor cu regim special. Compensatia se plateste si se deduce
+    (alin. 17) doar daca agricultorul e in Registrul ANAF la data livrarii.
+    [lotul 13, deficiența 549] „Cu agricultorul neînscris în registru, aplicația refuză toată achiziția; cumpărarea e legală, doar compensația
+    nu se deduce. Corect: 301 = 401 10.000 fără 4426, cu mențiunea că nu se aplică compensația.” -> neînscris: compensația 0 + mențiunea."""
     if not in_registru:
-        raise ValueError("agricultor neînscris în Registrul agricultorilor la data "
-                         "livrării - compensația nu este deductibilă (art. 315^1 alin.(17), norme)")
+        p = Decimal(str(valoare))
+        if p <= 0:
+            raise ValueError("Prețul achiziției trebuie să fie un număr pozitiv — o achiziție consemnează o operațiune efectuată.")
+        p = p.quantize(B, rounding=ROUND_HALF_UP)
+        return {"pret": p, "compensatie": Decimal("0.00"), "total": p,
+                "mentiune": "agricultor neînscris în Registrul agricultorilor la data livrării: fără compensație (art. 315^1 alin.(17))"}
     return compensatie(valoare, procent)

@@ -205,30 +205,27 @@ def test_CALIBRARE_preselectia_e_prinsa():
     assert {"nota-credit:tip"} <= selecturi_preselectate(stricat)
 
 
-def test_conturile_vin_precompletate_cu_sugestia_standard():
-    """[lotul 07.10 B, comanda Costin A.2] „conturile din formularele Operațiunilor (cont_banca, cont_venit, cont_cheltuiala, …) vin
-    precompletate vizibil cu sugestia standard (707, 5124, 612 …), modificabile, câmpul gol nu se acceptă”. Motorul pune sugestia ca
-    VALOARE pe orice câmp-cont obligatoriu; câmpul rămâne obligatoriu („Câmp obligatoriu” la gol). MUTAȚIE: `value=` -> `placeholder=`
-    în ramura `CONT_PRECOMPLETAT` -> pică."""
+def test_niciun_camp_nu_vine_precompletat_sau_cu_text_gri():
+    """[lotul 13, deficiența 504 — PIVOT față de lotul 07.10 B, comanda Costin A.2 „conturile … vin precompletate vizibil cu sugestia
+    standard”] Comanda 13.1, verbatim: „Câmpurile nu au voie să arate valori gri sau precompletate care induc în eroare […] Câmpul rămâne
+    gol.” Motorul nu mai pune sugestia ca valoare și nici ca text gri; contul uzual se spune în explicația câmpului. Câmpul rămâne
+    obligatoriu (golul se refuză lângă el). MUTAȚIE: `placeholder="${c.sugestie || ""}"` pus la loc pe câmpurile numerice -> pică."""
     import scan_formulare_operatiuni as F
     js = _surse_()[0]
-    assert F.motor_conturi_precompletate(js)
-    assert sorted(F.conturi_fara_sugestie(js)) == sorted(F.CONTURI_NEPRECOMPLETATE)
-    # premisă: 18 câmpuri-cont (lotul 11: borderoul de achiziție a ieșit din Operațiuni în Stocuri, cu contul lui — 450 / pct.23;
-    # reevaluarea manuală, cu contul din rânduri, a ieșit — 429)
-    assert len(re.findall(r'C\("cont(?:_[a-z_]+)?", "[^"]*", "text"', js)) >= 18
+    assert F.motor_fara_precompletare(js)
+    # premisă: câmpurile-cont chiar se citesc (14 în lotul 13: contul casei / al amortizării la casare / al dobânzii au ieșit, le dă aplicația)
+    assert len(re.findall(r'C\("cont(?:_[a-z_]+)?", "[^"]*", "text"', js)) >= 14
 
 
-def test_CALIBRARE_cont_fara_sugestie_sau_motor_cu_placeholder_e_prins():
+def test_CALIBRARE_valoarea_sau_textul_gri_e_prins():
     import scan_formulare_operatiuni as F
     js = _surse_()[0]
-    a = 'C("cont_banca", "Cont bancă", "text", { sugestie: "5124" })'
+    a = '<input type="number" step="0.01" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">'
     assert js.count(a) == 1
-    nou = F.conturi_fara_sugestie(js.replace(a, 'C("cont_banca", "Cont bancă", "text")')) - F.conturi_fara_sugestie(js)
-    assert [k.split(":")[1] for k in nou] == ["cont_banca"]
-    b = 'value="${esc(c.sugestie)}">`;'
+    assert not F.motor_fara_precompletare(js.replace(a, a[:-1] + ' placeholder="${c.sugestie || ""}">'))
+    b = '<input type="text" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">'
     assert js.count(b) == 1
-    assert not F.motor_conturi_precompletate(js.replace(b, 'placeholder="${esc(c.sugestie)}">`;'))
+    assert not F.motor_fara_precompletare(js.replace(b, b[:-1] + ' value="${esc(c.sugestie)}">'))
 
 
 def motorul_onoreaza_registrul(js):

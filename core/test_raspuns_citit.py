@@ -231,15 +231,20 @@ def test_ecranul_citeste_din_raspunsul_scrierii_numai_ce_ruta_intoarce():
 
 
 def test_CALIBRARE_prinde_instanta_C5():
-    """Codul de dinainte (815619dd) al ecranului Operațiuni, pe universul real al rutelor: nota-chirie e prinsă."""
+    """Forma instanței C5 (815619dd): ecranul Operațiuni citește din răspuns o cheie pe care ruta n-o întoarce. [lotul 13] Instanța
+    veche (nota-chirie fără `inregistrare_id`) nu mai există — chiria emite acum factura (`emite_factura`, care întoarce nota) —, deci
+    calibrarea citește o cheie pe care o întoarce o SINGURĂ rută a ecranului (`dobanda_din`, creditul, 524): toate celelalte rute ale
+    ecranului sunt prinse, nota-credit nu."""
     vechi = '''
         const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`, corpReq);
-        zona.innerHTML = r && r.inregistrare_id ? "nota" : "calcul";
+        zona.innerHTML = r && r.dobanda_din ? "dobanda" : "nimic";
       } catch (e) {}
     '''
     js = _citeste("static/js/ecrane/operatiuni_ecran.js") + vechi
     rele, _n, _c = nepotriviri([("static/js/ecrane/operatiuni_ecran.js", js)])
-    assert [(c, g) for _f, _l, _m, c, g in rele] == [("/tenants/{}/nota-chirie", frozenset({"inregistrare_id"}))], rele
+    prinse = {c for _f, _l, _m, c, g in rele if g == frozenset({"dobanda_din"})}
+    assert "/tenants/{}/nota-chirie" in prinse and "/tenants/{}/nota-leasing" in prinse, rele
+    assert "/tenants/{}/nota-credit" not in prinse, rele
 
 
 def test_CALIBRARE_prinde_REGES_si_ruta_dinamica_nedeclarata():

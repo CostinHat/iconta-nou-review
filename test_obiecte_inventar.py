@@ -20,11 +20,11 @@ def test_achizitie():
 
 def test_dare_folosinta():
     r = m.nota_dare_folosinta(1200)
-    assert ("603", "303", Decimal("1200.00")) in r["linii"]
-    assert ("8035", "891", Decimal("1200.00")) in r["linii"]
+    # [lotul 13, 507] clasa 8 într-o singură parte, fără 891 și în afara rândurilor notei (`extrabilant`)
+    assert r == {"linii": [("603", "303", Decimal("1200.00"))], "extrabilant": [("8035", "D", Decimal("1200.00"))]}
 
 def test_scoatere():
-    assert m.nota_scoatere_uz(1200)["linii"] == [("891", "8035", Decimal("1200.00"))]
+    assert m.nota_scoatere_uz(1200) == {"linii": [], "extrabilant": [("8035", "C", Decimal("1200.00"))]}
 
 def test_invalid():
     with pytest.raises(ValueError):

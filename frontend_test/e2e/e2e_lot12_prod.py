@@ -249,7 +249,7 @@ def test_def_472_cota_salvata_se_corecteaza_pe_rand_si_corectura_e_consemnata(pa
 def test_def_162_pif_intreg_si_actiunile_in_vedere_la_1700(patron, firma_pr):
     """162 (cazul întreg al lui Costin: „derulare laterală la ~1700 px, PIF tăiat, acțiuni ascunse”; derularea laterală o păzește
     `e2e_bloc_e.test_def_162_*`). Pașii: ecran de 1700 px -> Mijloace fixe: data PIF se vede întreagă (celula n-o taie) -> „Acțiuni”:
-    „Casează”, valoarea justă, „Reevaluează” și „C&D” stau în fereastră, în vedere pe lățime."""
+    „Casează”, „Reevaluează”, „Înregistrează lunile lipsă” și „C&D” stau în fereastră, în vedere pe lățime (lotul 13: fără meniul ascuns)."""
     pg = patron.pg
     pg.set_viewport_size({"width": 1700, "height": 1000})
     _mf(firma_pr, "MF162B", "12000", 24, "2026-01-10")
@@ -259,9 +259,9 @@ def test_def_162_pif_intreg_si_actiunile_in_vedere_la_1700(patron, firma_pr):
     m = pif.evaluate("(td) => { const z = td.closest('.fereastra-corp').getBoundingClientRect(); const r = td.getBoundingClientRect();"
                      " return {text: td.innerText.trim(), sw: td.scrollWidth, cw: td.clientWidth, st: r.left >= z.left, dr: r.right <= z.right}; }")
     assert m["text"] == "10.01.2026" and m["sw"] <= m["cw"] and m["st"] and m["dr"], m
-    rand.locator("details.dec-xml > summary").click()
+    # [lotul 13, clasele 674 / 675] butoanele stau pe rând, fără meniul „Acțiuni”: Casează, Reevaluează, Înregistrează lunile lipsă, C&D
     vazute = rand.evaluate("(tr) => { const z = tr.closest('.fereastra-corp').getBoundingClientRect();"
-                           " return [...tr.querySelectorAll('details.dec-xml button, details.dec-xml input')].map((b) => {"
+                           " return [...tr.querySelectorAll('td:last-child button')].map((b) => {"
                            " const r = b.getBoundingClientRect(); return [b.innerText || b.getAttribute('aria-label'),"
                            " r.width > 0 && r.left >= z.left && r.right <= z.right]; }); }")
     patron.captura("actiuni")

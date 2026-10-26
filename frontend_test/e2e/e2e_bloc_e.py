@@ -1258,10 +1258,8 @@ def test_def_162_mijloace_fixe_nu_deruleaza_lateral_la_1700(patron, firma_gv):
     m = pg.evaluate(masura)
     patron.captura("inchis")
     assert m["lat"] <= m["vizibil"] and m["derulant"] is None, m
-    pg.locator(".fereastra:last-of-type table.fd-tabel details.dec-xml > summary").first.click()
-    m2 = pg.evaluate(masura)
-    patron.captura("actiuni_deschise")
-    assert m2["lat"] <= m2["vizibil"] and m2["derulant"] is None, m2
+    # [lotul 13, clasele 674 / 675] butoanele stau direct pe rând (nu se mai deschide un meniu „Acțiuni”): măsura de mai sus le cuprinde
+    assert pg.locator(".fereastra:last-of-type table.fd-tabel [data-caseaza]").first.is_visible()
 
 
 def test_def_170_c_si_d_cere_poate_valida(patron, junior, firma_gv):
@@ -1274,7 +1272,6 @@ def test_def_170_c_si_d_cere_poate_valida(patron, junior, firma_gv):
     pa = asistent.pg
     _mijloace(asistent, firma_gv)
     rand = pa.locator("table.fd-tabel tbody tr", has_text="Utilaj de probă MF170").first
-    rand.locator("details summary", has_text="Acțiuni").click()
     assert rand.locator("[data-caseaza]").is_visible()
     assert not rand.locator("[data-cd]").is_visible(), "asistentul fără «Poate valida» vede butonul C&D"
     assert "Poate valida" in asistent.fereastra()
@@ -1285,15 +1282,12 @@ def test_def_170_c_si_d_cere_poate_valida(patron, junior, firma_gv):
     pg = patron.pg
     _mijloace(patron, firma_gv)
     rand = pg.locator("table.fd-tabel tbody tr", has_text="Utilaj de probă MF170").first
-    rand.locator("details summary", has_text="Acțiuni").click()
     b = rand.locator("[data-cd]")
     assert b.is_visible() and b.inner_text() == "C&D: nu"
     b.click()
     pg.wait_for_function("() => [...document.querySelectorAll('table.fd-tabel tbody tr')].some((r) => r.textContent.includes('Utilaj de probă MF170')"
                          " && r.querySelector('[data-cd]') && r.querySelector('[data-cd]').textContent === 'C&D: da')", timeout=30000)
     assert sql('SELECT destinatie_cd FROM "%s".mijloace_fixe WHERE id = %%s' % firma_gv["schema"], (mid,)) == [(True,)]
-    rand = pg.locator("table.fd-tabel tbody tr", has_text="Utilaj de probă MF170").first
-    rand.locator("details summary", has_text="Acțiuni").click()
     patron.captura("patron_cd_da")
 
 

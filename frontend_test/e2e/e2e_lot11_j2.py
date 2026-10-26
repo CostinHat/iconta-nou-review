@@ -35,60 +35,64 @@ def _ultima_nota(f):
 
 
 def _randul(pg, cod):
-    rand = pg.locator(".fereastra:last-of-type table.fd-tabel tbody tr", has_text="Utilaj de probă %s" % cod).first
-    rand.locator("details summary", has_text="Acțiuni").click()
-    return rand
+    """[lotul 13, clasele 674 / 675] butoanele stau direct pe rând (nu mai sunt sub „Acțiuni”)."""
+    return pg.locator(".fereastra:last-of-type table.fd-tabel tbody tr", has_text="Utilaj de probă %s" % cod).first
+
+
+def fereastra_mf(pg, cod, fel, data, justa=None):
+    """[lotul 13, deficiența 518 + clasa 673] Casarea / reevaluarea se fac într-o fereastră nouă, cu data cerută (și valoarea justă)."""
+    _randul(pg, cod).locator("[data-caseaza]" if fel == "casare" else "[data-reeval]").click()
+    pg.wait_for_selector(".fereastra:last-of-type #mf-f-data", timeout=20000)
+    pg.fill(".fereastra:last-of-type #mf-f-data", data)
+    if justa is not None:
+        pg.fill(".fereastra:last-of-type #mf-f-justa", str(justa))
+    pg.click(".fereastra:last-of-type #mf-f-genereaza")
 
 
 def _confirmarea(pg):
-    pg.wait_for_selector(".fereastra:last-of-type #mf-mesaj .caseta-ok .cok-linii", timeout=30000)
-    return [" ".join(x.split()) for x in pg.inner_text(".fereastra:last-of-type #mf-mesaj .cok-linii").split("\n") if x.strip()]
+    pg.wait_for_selector(".fereastra:last-of-type #mf-f-mesaj .caseta-ok .cok-linii", timeout=30000)
+    return [" ".join(x.split()) for x in pg.inner_text(".fereastra:last-of-type #mf-f-mesaj .cok-linii").split("\n") if x.strip()]
 
 
 def test_def_8c_casarea_mijlocului_fix_confirmare_verde_cu_conturile_notei(patron, firma_gv):
-    """8c. Pașii: Mijloace fixe -> „Utilaj de probă MFJ2C” (6.000 lei, PIF în luna curentă) -> Acțiuni -> „Casează” -> „Casează” (confirmare).
-    Registrul se redesenează (mijlocul devine casat) și, deasupra lui, caseta verde „Casare înregistrată (ciornă)” cu rândurile notei de
-    casare exact ca în Registrul jurnal. Înainte: mesajul se scria în zona scoasă din pagină de redesenare — nu se vedea nimic."""
+    """8c. Pașii: Mijloace fixe -> „Utilaj de probă MFJ2C” (6.000 lei, PIF în luna curentă) -> „Casează” -> [lotul 13, 518] fereastra
+    casării: data casării -> „Generează nota de casare”: caseta verde „Nota de casare (ciornă)” cu rândurile notei exact ca în Registrul
+    jurnal; registrul arată activul „casare în ciornă” până la validare (519)."""
     f = firma_gv
     pg = patron.pg
     _mf(f, "MFJ2C", "6000", 60, AZI.replace(day=1).isoformat())
     inainte = _ultima_nota(f)
     _mijloace(patron, f)
-    _randul(pg, "MFJ2C").locator("[data-caseaza]").click()
-    pg.click("#ca-ok")
+    fereastra_mf(pg, "MFJ2C", "casare", AZI.isoformat())
     linii = _confirmarea(pg)
     patron.captura("casare")
     nid = _ultima_nota(f)
     assert nid > inainte, "casarea n-a scris nota"
     assert linii == _randuri_notei(f, nid), (linii, _randuri_notei(f, nid))
-    titlu = pg.inner_text(".fereastra:last-of-type #mf-mesaj .cok-titlu")
-    assert titlu.startswith("Casare înregistrată (") and "msg-" not in (pg.get_attribute(".fereastra:last-of-type #mf-mesaj", "class") or ""), titlu
+    titlu = pg.inner_text(".fereastra:last-of-type #mf-f-mesaj .cok-titlu")
+    assert titlu.startswith("Nota de casare (") and "msg-" not in (pg.get_attribute(".fereastra:last-of-type #mf-f-mesaj", "class") or ""), titlu
 
 
 def test_def_8c_reevaluarea_mijlocului_fix_confirmare_verde_si_fara_diferenta_fara_nota(patron, firma_gv):
-    """8c. Pașii: Mijloace fixe -> „Utilaj de probă MFJ2R” (6.000 lei, PIF în luna curentă) -> Acțiuni -> valoarea justă 6.000 (= valoarea
-    netă) -> „Reevaluează”: „Nicio diferență de reevaluat … Nu s-a generat nicio notă.” (nu „Reevaluare înregistrată”, nicio notă în
-    bază) -> valoarea justă 7.000 -> „Reevaluează”: caseta verde „Reevaluare înregistrată (ciornă)”, cu rândurile notei ca în Registrul
-    jurnal (OMFP 1802/2014 pct.111-116: reevaluarea la valoarea justă)."""
+    """8c. Pașii: Mijloace fixe -> „Utilaj de probă MFJ2R” (6.000 lei, PIF în luna curentă) -> „Reevaluează” -> fereastra reevaluării:
+    data, valoarea justă 6.000 (= valoarea netă) -> „Nicio diferență de reevaluat … Nu s-a generat nicio notă.” -> valoarea justă 7.000 ->
+    caseta verde „Nota de reevaluare (ciornă)”, cu rândurile notei ca în Registrul jurnal (OMFP 1802/2014 pct.111-116)."""
     f = firma_gv
     pg = patron.pg
-    mid = _mf(f, "MFJ2R", "6000", 60, AZI.replace(day=1).isoformat())
+    _mf(f, "MFJ2R", "6000", 60, AZI.replace(day=1).isoformat())
     inainte = _ultima_nota(f)
     _mijloace(patron, f)
-    rand = _randul(pg, "MFJ2R")
-    pg.fill("#mf-reeval-%d" % mid, "6000")
-    rand.locator("[data-reeval]").click()
-    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #mf-mesaj') || {innerText: ''}).innerText"
+    fereastra_mf(pg, "MFJ2R", "reevaluare", AZI.isoformat(), 6000)
+    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #mf-f-mesaj') || {innerText: ''}).innerText"
                          ".includes('Nicio diferență de reevaluat')", timeout=30000)
     patron.captura("fara_diferenta")
-    assert pg.locator(".fereastra:last-of-type #mf-mesaj .caseta-ok").count() == 0
+    assert pg.locator(".fereastra:last-of-type #mf-f-mesaj .caseta-ok").count() == 0
     assert _ultima_nota(f) == inainte, "fără diferență nu se scrie nicio notă"
-    rand = _randul(pg, "MFJ2R")
-    pg.fill("#mf-reeval-%d" % mid, "7000")
-    rand.locator("[data-reeval]").click()
+    pg.fill(".fereastra:last-of-type #mf-f-justa", "7000")
+    pg.click(".fereastra:last-of-type #mf-f-genereaza")
     linii = _confirmarea(pg)
     patron.captura("reevaluare")
     nid = _ultima_nota(f)
     assert nid > inainte, "reevaluarea n-a scris nota"
     assert linii == _randuri_notei(f, nid), (linii, _randuri_notei(f, nid))
-    assert pg.inner_text(".fereastra:last-of-type #mf-mesaj .cok-titlu").startswith("Reevaluare înregistrată (")
+    assert pg.inner_text(".fereastra:last-of-type #mf-f-mesaj .cok-titlu").startswith("Nota de reevaluare (")

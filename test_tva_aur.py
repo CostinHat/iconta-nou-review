@@ -44,5 +44,5 @@ def test_optiune_catre_pf_interzisa():
         m.livrare_aur(True, "PF", "Popescu Ion")
 
 def test_client_neidentificat():
-    with pytest.raises(ValueError, match="al. 10"):
+    with pytest.raises(ValueError, match=r"alin\. \(10\)"):
         m.livrare_aur(False, "PF", "")

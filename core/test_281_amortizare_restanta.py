@@ -48,6 +48,9 @@ def firma(monkeypatch):
                         "'AMORT-2099-05', 'Amortizare 05/2099', 'validata', 'amortizare', 'T') RETURNING id")
             cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '6811', '2813', 200)",
                         (cur.fetchone()[0],))
+        # [lotul 13, 522] nota veche (fără activ pe rând) trece prin migrarea care o leagă de activ, ca pe firmele existente
+        from core import migrare_mf_note
+        migrare_mf_note.aplica(c, SCH)
         c.commit()
     monkeypatch.setattr(common, "azi_ro", lambda: datetime.date(2099, 12, 31))
     monkeypatch.setattr(auth_api, "schema_tenant", lambda conn, uid, tid: SCH)

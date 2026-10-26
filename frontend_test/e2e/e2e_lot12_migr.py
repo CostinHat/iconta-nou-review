@@ -401,16 +401,14 @@ def test_def_c116_a_doua_reevaluare_scade_intai_rezerva_activului(patron, firma_
     justă 6.500 -> „Reevaluează”: „105 = 2131 · 500,00 lei” — descreșterea scade întâi rezerva activului, „cu minimul dintre valoarea acelei
     rezerve și valoarea descreșterii” (OMFP 1802/2014 pct.111 alin.(2)). Înainte: „655 = 2131 · 500,00 lei” (rezerva luată 0)."""
     from e2e_bloc_e import AZI, _mf, _mijloace
-    from e2e_lot11_j2 import _confirmarea, _randul, _ultima_nota
+    from e2e_lot11_j2 import _confirmarea, _ultima_nota, fereastra_mf
     from core import db as _cdb, jurnal_api, uc_tenants
     pg = patron.pg
     f = firma_c116
     s = f["schema"]
-    mid = _mf(f, "MFC116", "6000", 60, AZI.replace(day=1).isoformat())
+    _mf(f, "MFC116", "6000", 60, AZI.replace(day=1).isoformat())
     _mijloace(patron, f)
-    _randul(pg, "MFC116")
-    pg.fill("#mf-reeval-%d" % mid, "7000")
-    pg.locator(".fereastra:last-of-type table.fd-tabel tbody tr", has_text="Utilaj de probă MFC116").first.locator("[data-reeval]").click()
+    fereastra_mf(pg, "MFC116", "reevaluare", AZI.isoformat(), 7000)   # [lotul 13, 673] fereastra reevaluării
     assert _confirmarea(pg) == ["2131 = 105 · 1.000,00 lei"], _confirmarea(pg)
     patron.captura("prima")
     nid = _ultima_nota(f)
@@ -420,9 +418,7 @@ def test_def_c116_a_doua_reevaluare_scade_intai_rezerva_activului(patron, firma_
         assert uc_tenants._aplica_reevaluarea(c, s, nid) is True
         c.commit()
     _mijloace(patron, f)
-    _randul(pg, "MFC116")
-    pg.fill("#mf-reeval-%d" % mid, "6500")
-    pg.locator(".fereastra:last-of-type table.fd-tabel tbody tr", has_text="Utilaj de probă MFC116").first.locator("[data-reeval]").click()
+    fereastra_mf(pg, "MFC116", "reevaluare", AZI.isoformat(), 6500)
     linii = _confirmarea(pg)
     patron.captura("a_doua")
     assert linii == ["105 = 2131 · 500,00 lei"], linii

@@ -41,7 +41,7 @@ def de_amortizat(cur, schema):
                 SELECT id, denumire, cont_amortizare, valoare, COALESCE(rezidual,0), dnf_luni,
                        data_pif, cont_imobilizare, metoda, {_REEV.format(p=schema + ".")} AS reevaluari,
                        destinatie_cd, amortizare_preluata, data_preluare
-                FROM {schema}.mijloace_fixe WHERE activ = true
+                FROM {schema}.mijloace_fixe WHERE activ = true ORDER BY id
             """)
     return cur.fetchall()
 
@@ -53,6 +53,9 @@ def active_pentru_d406(cur, schema, an):
                             FROM {schema}.mijloace_fixe
                             WHERE data_pif IS NOT NULL
                               AND EXTRACT(YEAR FROM data_pif) <= %s
+                              -- [lotul 13, 519] activul adus de o notă încă nevalidată nu e în evidență
+                              AND NOT EXISTS (SELECT 1 FROM {schema}.mf_note n JOIN {schema}.inregistrari i ON i.id = n.inregistrare_id
+                                              WHERE n.mijloc_fix_id = mijloace_fixe.id AND n.fel = 'intrare' AND i.status <> 'validata')
                             ORDER BY id""",
                 (an,))
     return cur.fetchall()
@@ -133,11 +136,6 @@ def adauga(cur, schema, cod, denumire, cont_imobilizare, cont_amortizare, valoar
         return cur.fetchone()
 
 
-def scoate_din_evidenta(cur, schema, id_):
-    cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ=false WHERE id=%s",
-                (id_,))
-
-
 def urca_valoarea(cur, schema, id_, valoare):
     """[R59] Valoarea bruta a activului, dupa o reevaluare APLICATA (la validarea notei).
 
@@ -173,3 +171,8 @@ def seteaza_destinatie_cd(cur, schema, id_, destinatie_cd, user_id):
         cur.execute(f"""INSERT INTO {schema}.mijloace_fixe_jurnal (mijloc_id, camp, valoare_veche, valoare_noua, user_id)
                         VALUES (%s, 'destinatie_cd', %s, %s, %s)""", (id_, str(veche).lower(), str(noua).lower(), user_id))
     return id_, veche
+
+
+def seteaza_cod_catalog_schema(cur, schema, mijloc_id, cod):
+    """[lotul 13, 521] Codul din catalog al activului nou (plus de inventar, leasing), pe schema dată."""
+    cur.execute(f"UPDATE {schema}.mijloace_fixe SET cod_catalog = %s WHERE id = %s", (cod, mijloc_id))

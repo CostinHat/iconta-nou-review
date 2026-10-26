@@ -7,8 +7,8 @@ functiunea conturilor 162/168/519/801).
   (sau direct 666=5121); rata 5191=5121; restanta 5191=5192;
 - OVERDRAFT (descoperire de cont): nu se inregistreaza primirea, doar 666=5121;
 - comision acordare esalonat: 471=5121 apoi lunar 628=471; comision lunar 627=5121;
-- garantii NUMAI extracontabil: acordate D8011, primite D8021 (contrapartida
-  tehnica 891); la eliberare se crediteaza."""
+- garantii NUMAI in afara bilantului: acordate D8011, primite D8021, intr-o singura
+  parte (fara 891, lotul 13 / 507); la eliberare se crediteaza."""
 from decimal import Decimal, ROUND_HALF_UP
 from core.common import nomenclator_cerut
 
@@ -71,8 +71,9 @@ def nota_garantie(suma, fel="primita", actiune="inregistrare"):
     if fel not in ("primita", "acordata"):
         raise ValueError(nomenclator_cerut("fel", "primita|acordata"))
     cont = "8021" if fel == "primita" else "8011"
+    # [lotul 13, 507] în afara bilanțului, într-o singură parte (D la înregistrare, C la eliberare), fără 891 și fără rânduri de notă
     if actiune == "inregistrare":
-        return {"linii": [(cont, "891", s)]}
+        return {"linii": [], "extrabilant": [(cont, "D", s)]}
     if actiune == "eliberare":
-        return {"linii": [("891", cont, s)]}
+        return {"linii": [], "extrabilant": [(cont, "C", s)]}
     raise ValueError(nomenclator_cerut("actiune", "inregistrare|eliberare"))

@@ -18,7 +18,7 @@ def test_minus_neimputabil_neasigurat():
     assert ("635", "4426", Decimal("210.00")) in r["linii"]
 
 def test_minus_neimputabil_distrus():
-    r = m.nota_minus(1000, asigurat_sau_distrus=True, cota_tva=21)
+    r = m.nota_minus(1000, lipsa_dovedita=True, cota_tva=21)
     assert len(r["linii"]) == 1
 
 def test_minus_imputabil_salariat():

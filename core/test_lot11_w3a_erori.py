@@ -212,8 +212,8 @@ def _fara_baza(monkeypatch):
 
 @pytest.mark.parametrize("fn, corp, asteptat", [
     ("nota_leasing", {"tip": "rata"}, ["op-capital", "op-cota"]),
-    ("vanzare_marja", {}, ["op-pret_vanzare", "op-pret_cumparare", "op-cota"]),
-    ("nota_chirie", {"fel": "refacturare"}, ["op-total_factura", "op-parte_refacturata", "op-cota"]),
+    ("vanzare_marja", {}, ["op-articol", "op-cantitate", "op-pret_vanzare", "op-cota", "op-client_nume", "op-document"]),   # [lotul 13, 548] bunul din stoc, clientul, documentul
+    ("nota_chirie", {"fel": "refacturare"}, ["op-total_factura", "op-parte_refacturata", "op-cota", "op-numar"]),   # [lotul 13, 530] nr. facturii furnizorului
 ])
 def test_a4_use_case_numeste_toate_campurile_lipsa(monkeypatch, fn, corp, asteptat):
     """Înainte: `KeyError` pe primul câmp -> „Lipsește câmpul `capital`” și atât. MUTAȚIE: chemarea `_campuri_lipsa` scoasă din

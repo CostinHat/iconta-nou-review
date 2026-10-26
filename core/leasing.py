@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Leasing financiar si operational - motor PUR (OMFP 1802/2014 pct. 212-217).
 FINANCIAR (locatar): primire 2133=167 (avans+rate capital+reziduala, curs la
-data finantarii, pct. 321) + dobanda totala extracontabil DEBIT 8051 (pct. 215);
+data finantarii, pct. 321) + dobanda totala in afara bilantului DEBIT 8051 (pct. 215), intr-o singura parte (lotul 13, 507);
 rata: %=404 (167 capital + 666 dobanda + 628 comision) + 4426, concomitent
 CREDIT 8051 cu dobanda facturata; reziduala: 167=404 (inchide 167);
 reevaluare lunara sold 167 la BNR (665/765). Amortizare normala la locatar.
@@ -19,9 +19,8 @@ def nota_primire_financiar(valoare_capital, dobanda_totala, cont_imobilizare="21
     if vc <= 0 or dt < 0:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     linii = [(cont_imobilizare, "167", vc)]
-    if dt > 0:
-        linii.append(("8051", "891", dt))  # debit extracontabil prin 891
-    return {"linii": linii, "capital": vc, "dobanda_totala": dt}
+    # [lotul 13, 507] dobânda totală în afara bilanțului, într-o singură parte (D 8051), fără 891
+    return {"linii": linii, "capital": vc, "dobanda_totala": dt, "extrabilant": [("8051", "D", dt)] if dt > 0 else []}
 
 def nota_rata_financiar(capital, dobanda=0, comision=0, cota_tva=None,
                         tva_pe=("dobanda", "comision")):
@@ -43,9 +42,8 @@ def nota_rata_financiar(capital, dobanda=0, comision=0, cota_tva=None,
     if co > 0:
         linii.append(("628", "404", co))
     linii.append(("4426", "404", tva))
-    if d > 0:
-        linii.append(("891", "8051", d))  # credit extracontabil
-    return {"linii": linii, "baza": baza, "tva": tva}
+    # [lotul 13, 507] dobânda facturată iese din evidența în afara bilanțului: C 8051, într-o singură parte
+    return {"linii": linii, "baza": baza, "tva": tva, "extrabilant": [("8051", "C", d)] if d > 0 else []}
 
 def nota_reziduala(valoare_reziduala, cota_tva=None):
     """Valoarea reziduala la finalul contractului: 167=404 + TVA (inchide 167)."""

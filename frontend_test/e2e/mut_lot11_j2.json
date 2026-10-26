@@ -1,14 +1,14 @@
 [
  {
   "fisier": "static/js/ecrane/mijloace_ecran.js",
-  "ancora": "dupaGenerare(corp.querySelector(\"#mf-mesaj\"), null, { titlu: `Casare înregistrată",
-  "inlocuire": "dupaGenerare(zona, null, { titlu: `Casare înregistrată",
+  "ancora": "dupaGenerare(zf, c2.querySelector(\"#mf-f-genereaza\"), { titlu: `${casare ? \"Nota de casare\"",
+  "inlocuire": "dupaGenerare(document.createElement(\"div\"), c2.querySelector(\"#mf-f-genereaza\"), { titlu: `${casare ? \"Nota de casare\"",
   "test": "frontend_test/e2e/e2e_lot11_j2.py::test_def_8c_casarea_mijlocului_fix_confirmare_verde_cu_conturile_notei"
  },
  {
   "fisier": "static/js/ecrane/mijloace_ecran.js",
-  "ancora": "if (!r.inregistrare_id) {   // valoarea justă = valoarea netă contabilă",
-  "inlocuire": "if (false) {   // valoarea justă = valoarea netă contabilă",
+  "ancora": "if (!r.inregistrare_id) { arataMesaj(zf, \"Nicio diferență de reevaluat",
+  "inlocuire": "if (false) { arataMesaj(zf, \"Nicio diferență de reevaluat",
   "test": "frontend_test/e2e/e2e_lot11_j2.py::test_def_8c_reevaluarea_mijlocului_fix_confirmare_verde_si_fara_diferenta_fara_nota"
  },
  {

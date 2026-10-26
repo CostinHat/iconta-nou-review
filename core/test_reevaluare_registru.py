@@ -215,6 +215,13 @@ def schema():
         _mig.aplica(conn, SCH)
         from core import migrare_mf_amortizare_preluata as _m359   # [359, lotul 9] cititorii registrului poartă coloanele preluării
         _m359.aplica(conn, SCH)
+        # [lotul 13, 519 / 522] registrul citește activul ținut pe notă (`mf_note`, `mf_linii`) — din MIGRARE, ca `reevaluari`; notele și
+        # rândurile lor, numai cât le cere DDL-ul ei (cheile la care trimite)
+        with conn.cursor() as c:
+            c.execute('CREATE TABLE "%s".inregistrari (id integer PRIMARY KEY, data date, status text)' % SCH)
+            c.execute('CREATE TABLE "%s".inregistrari_linii (id integer PRIMARY KEY, inregistrare_id integer)' % SCH)
+        from core import migrare_mf_note as _mfn
+        _mfn.aplica_ddl(conn, SCH)
     try:
         yield db
     finally:

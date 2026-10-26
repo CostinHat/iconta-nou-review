@@ -31,7 +31,7 @@ from core import deconturi, taxare_inversa, tva_marja
 def test_decontul_cu_cazare_pe_factura_DEDUCE_tva():
     """Cazare 400 + transport 200 la 21% → TVA deductibilă 126,00, pe linia 4426.
     Ăsta e exact efectul pe care tăcerea îl ștergea."""
-    r = deconturi.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_tva=21)
+    r = deconturi.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_transport=21, cota_cazare=21)
     linii = {(d, c): s for d, c, s in r["linii"]}
     assert linii[("4426", "542")] == Decimal("126.00")          # 21% × (200+400)
     assert linii[("625", "542")] == Decimal("887.50")           # cheltuiala, fara TVA
@@ -41,7 +41,7 @@ def test_decontul_cu_cazare_pe_factura_DEDUCE_tva():
 
 def test_decontul_cu_cota_ZERO_nu_deduce_nimic_si_o_arata():
     """`0` rămâne răspuns bun — dar DECLARAT. Diferența față de tăcere: aici e o alegere."""
-    r = deconturi.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_tva=0)
+    r = deconturi.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_transport=0, cota_cazare=0)
     conturi = {d for d, _c, _s in r["linii"]}
     assert "4426" not in conturi, "cotă 0 nu produce TVA deductibilă"
     assert r["total_cheltuieli"] == Decimal("887.50")
@@ -50,8 +50,8 @@ def test_decontul_cu_cota_ZERO_nu_deduce_nimic_si_o_arata():
 
 def test_DIFERENTA_dintre_cele_doua_e_chiar_TVA_pierduta():
     """Măsura defectului, ca cifră: ce se pierdea când ruta punea tăcut 0."""
-    cu = deconturi.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_tva=21)
-    fara = deconturi.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_tva=0)
+    cu = deconturi.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_transport=21, cota_cazare=21)
+    fara = deconturi.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_transport=0, cota_cazare=0)
     assert cu["total_cheltuieli"] - fara["total_cheltuieli"] == Decimal("126.00")
 
 
@@ -59,7 +59,7 @@ def test_DIFERENTA_dintre_cele_doua_e_chiar_TVA_pierduta():
                                       (19, Decimal("114.00")), (0, Decimal("0.00"))])
 def test_decontul_urmeaza_cota_data_nu_una_fixa(cota, tva):
     """Calea chiar folosește cota primită — pe patru cote, inclusiv cea istorică de 19%."""
-    r = deconturi.nota_decont(2000, diurna=0, transport=200, cazare=400, cota_tva=cota)
+    r = deconturi.nota_decont(2000, diurna=0, transport=200, cazare=400, cota_transport=cota, cota_cazare=cota)
     linii = {(d, c): s for d, c, s in r["linii"]}
     assert linii.get(("4426", "542"), Decimal("0.00")) == tva
 

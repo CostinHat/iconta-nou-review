@@ -1,0 +1,1196 @@
+[
+ {
+  "nr": "522",
+  "firma": "tenant_9050",
+  "descriere": "F2, date existente (după migrarea core/migrare_mf_note.py): Mijloace fixe -> MF-001 «Utilaj productie» e iar activ (casarea ștearsă rămăsese «casat», 519), MF-PLUS (plusul de inventar a cărui ciornă fusese ștearsă) nu mai e în registru, iar «Înregistrat pe activ» al lui MF-001 e 4.000,00: 2.200 din soldul preluat (02–12/2025) + 9 × 200 din notele 01–09/2026 — înainte, cifra contului stătea la MF-PLUS (522).",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Utilaj productie"
+   },
+   {
+    "nu_contine": "Laptop găsit la inventar"
+   },
+   {
+    "contine": "4.000,00"
+   },
+   {
+    "exista": ".fereastra:last-of-type td.mf-stare",
+    "text": "activ"
+   }
+  ],
+  "captura": "522_519_f2_registrul_pe_activ_vechi.png"
+ },
+ {
+  "nr": "518",
+  "firma": "tenant_9050",
+  "descriere": "F2: Mijloace fixe -> MF-001 -> «Casează» -> fereastra casării: data 25.10.2026 -> «Generează nota de casare»: luna casării 6811 = 2813 200, 2813 = 2131 4.200 (soldul pe activ 4.000 + luna casării), 6583 = 2131 7.800; documentul e procesul-verbal de casare; activul rămâne în registru până la validarea notei (519).",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type tr:has-text('Utilaj productie') [data-caseaza]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #mf-f-data"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #mf-f-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "click": ".fereastra:last-of-type #mf-f-genereaza"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #mf-f-mesaj .caseta-ok, .fereastra:last-of-type #mf-f-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "6811 = 2813",
+    "zona": ".fereastra:last-of-type #mf-f-mesaj"
+   },
+   {
+    "contine": "2813 = 2131",
+    "zona": ".fereastra:last-of-type #mf-f-mesaj"
+   },
+   {
+    "contine": "6583 = 2131",
+    "zona": ".fereastra:last-of-type #mf-f-mesaj"
+   }
+  ],
+  "captura": "518_f2_casarea_mf001_vechi.png"
+ },
+ {
+  "nr": "670",
+  "firma": "tenant_9053",
+  "descriere": "F5: Operațiuni speciale -> Decont deplasare / diurnă -> Decont final: salariatul se alege din salariații firmei (Ionescu Vasile, Popescu Elena), diurna are zilele și deplasarea în țară / în străinătate, transportul și cazarea au fiecare cota lor, iar cotele pornesc goale (nimic precompletat). Nota de decont din 20.10.2026 (dovada grupei 1) nu se atinge.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='decont']"
+   },
+   {
+    "click": "button[data-op='decont']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "decont"
+   },
+   {
+    "asteapta": "#op-salariat_id option:has-text('Ionescu')",
+    "stare": "attached"
+   },
+   {
+    "captura": "670_f5_formularul_gol.png"
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#op-cota_transport",
+    "egal": ""
+   },
+   {
+    "valoare": "#op-cota_cazare",
+    "egal": ""
+   },
+   {
+    "exista": "#op-salariat_id option",
+    "text": "Ionescu Vasile"
+   },
+   {
+    "exista": "#op-zile"
+   },
+   {
+    "exista": "#op-deplasare"
+   }
+  ],
+  "captura": "670_f5_decontul.png"
+ },
+ {
+  "nr": "524",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> Credite bancare -> Plată rată peste 1 an, rata 5.000 -> «Generează nota»: refuzul spune că 1621 are sold creditor 0,00 lei și că nota ar lăsa contul cu sold invers; nicio notă. Întrebarea despre 666 nu mai există.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='credit']"
+   },
+   {
+    "click": "button[data-op='credit']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "plata"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "lung"
+   },
+   {
+    "completeaza": "#op-rata",
+    "valoare": "5000"
+   },
+   {
+    "completeaza": "#op-dobanda",
+    "valoare": "0"
+   },
+   {
+    "completeaza": "#op-comision",
+    "valoare": "0"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "contul 1621",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "sold invers",
+    "zona": "#op-mesaj"
+   },
+   {
+    "nu_contine": "înregistrată deja pe 666"
+   }
+  ],
+  "captura": "524_f1_plata_ratei_refuzata.png"
+ },
+ {
+  "nr": "504",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> Provizioane și ajustări -> Ajustare stocuri: contul de ajustare e o listă 391–398 fără nimic ales; cotele și conturile din formulare pornesc goale, fără text gri; contul uzual stă în explicație («De regulă …»).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='provizion']"
+   },
+   {
+    "click": "button[data-op='provizion']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "stoc"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#op-cont_ajustare",
+    "egal": ""
+   },
+   {
+    "exista": "#op-cont_ajustare option[value='397']"
+   }
+  ],
+  "captura": "504_f1_cont_ajustare_lista.png"
+ },
+ {
+  "nr": "541",
+  "firma": "tenant_9050",
+  "descriere": "F2 (TVA la încasare de la 01.10.2026, factura F2T2 încasată parțial): Operațiuni -> TVA la încasare -> Încasare de la client 1.210 cu TVA, cota 21 -> «Generează nota»: TVA-ul colectat neexigibil rămas pe 4428 e 105 lei, deci nota manuală de 210 se refuză (sold invers pe 4428); nicio notă.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='tva_incasare']"
+   },
+   {
+    "click": "button[data-op='tva_incasare']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-sens",
+    "valoare": "incasare"
+   },
+   {
+    "completeaza": "#op-suma_incasata",
+    "valoare": "1210"
+   },
+   {
+    "completeaza": "#op-data_fapt_generator",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-ramura_291_5",
+    "valoare": "fapt_generator"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4428",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "sold invers",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "541_f2_nota_tva_incasare_refuzata_vechi.png"
+ },
+ {
+  "nr": "544",
+  "firma": "tenant_9050",
+  "descriere": "F2: Operațiuni -> Taxare inversă internă: «Furnizor plătitor TVA» nu mai e în formular; cu CUI-ul furnizorului negăsit la ANAF, «Generează nota» refuză lângă CUI (taxarea inversă cere furnizor înregistrat în scopuri de TVA, art. 331 alin. (1)); nicio notă.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='taxare_inversa']"
+   },
+   {
+    "click": "button[data-op='taxare_inversa']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "completeaza": "#op-furnizor_cui",
+    "valoare": "31654471"
+   },
+   {
+    "completeaza": "#op-furnizor_nume",
+    "valoare": "Furnizor proba"
+   },
+   {
+    "completeaza": "#op-numar",
+    "valoare": "TI-544"
+   },
+   {
+    "alege": "#op-categorie",
+    "valoare": "telefoane"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "30000"
+   },
+   {
+    "completeaza": "#op-cont_destinatie",
+    "valoare": "371"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu e găsit la ANAF",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "544_f2_taxare_inversa_refuzata.png"
+ },
+ {
+  "nr": "530",
+  "firma": "tenant_9050",
+  "descriere": "F2: Operațiuni -> Chirii / comodat / refacturări -> Refacturare utilități (total 1.000, refacturat 400, cota 21): factura furnizorului întreagă 605 = 401 1.000, 4426 = 401 210 și factura emisă chiriașului 4111 = 708 400, 4111 = 4427 84; fără 461.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='chirie']"
+   },
+   {
+    "click": "button[data-op='chirie']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "refacturare"
+   },
+   {
+    "completeaza": "#op-furnizor_cui",
+    "valoare": "31654471"
+   },
+   {
+    "completeaza": "#op-furnizor_nume",
+    "valoare": "Utilitati proba"
+   },
+   {
+    "completeaza": "#op-client_cui",
+    "valoare": "18765430"
+   },
+   {
+    "completeaza": "#op-client_nume",
+    "valoare": "Chirias proba"
+   },
+   {
+    "completeaza": "#op-numar",
+    "valoare": "UT-530"
+   },
+   {
+    "completeaza": "#op-total_factura",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-parte_refacturata",
+    "valoare": "400"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "605 = 401",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "4111 = 708",
+    "zona": "#op-mesaj"
+   },
+   {
+    "nu_contine": "461",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "530_f2_refacturarea.png"
+ },
+ {
+  "nr": "531",
+  "firma": "tenant_9050",
+  "descriere": "F2: Chirie încasată 2.000, bun imobil, fără opțiune de taxare: factura emisă chiriașului e scutită fără drept de deducere (art. 292 alin. (2) lit. e)), nota 4111 = 706 2.000, fără 4427.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='chirie']"
+   },
+   {
+    "click": "button[data-op='chirie']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "chirie_incasata"
+   },
+   {
+    "completeaza": "#op-client_cui",
+    "valoare": "18765430"
+   },
+   {
+    "completeaza": "#op-client_nume",
+    "valoare": "Chirias proba"
+   },
+   {
+    "completeaza": "#op-chirie",
+    "valoare": "2000"
+   },
+   {
+    "alege": "#op-tip_bun",
+    "valoare": "imobil"
+   },
+   {
+    "alege": "#op-optiune_taxare",
+    "valoare": "false"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "scutită fără drept de deducere",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "4111 = 706",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "531_f2_chiria_scutita.png"
+ },
+ {
+  "nr": "527",
+  "firma": "tenant_9050",
+  "descriere": "F2 (profitul preluat pe 117, 14.600, fără analitic — date existente): Decontări asociați -> Dividend 1.000, hotărârea AGA-527: nota reclasifică 117 = 1171 1.000 și repartizează din 1171 pe Ion Test (60%) și Maria Test (40%), cu impozitul 16%.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='asociati']"
+   },
+   {
+    "click": "button[data-op='asociati']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "dividend"
+   },
+   {
+    "completeaza": "#op-brut",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-numar_hotarare",
+    "valoare": "AGA-527"
+   },
+   {
+    "completeaza": "#op-data_hotarare",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-interimar",
+    "valoare": "0"
+   },
+   {
+    "alege": "#op-cu_plata",
+    "valoare": "false"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "117 = 1171",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "1171 = 457",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "527_f2_dividendul_din_1171_vechi.png"
+ },
+ {
+  "nr": "533",
+  "firma": "tenant_9050",
+  "descriere": "F2: Lichidare -> Partaj către asociați: capitalul (1012 = 200), profitul (117 = 14.600) vin din solduri și se împart pe Ion Test / Maria Test (60 / 40); impozitul pe câștigul din lichidare e 10% (CF art.97 alin.(5), neschimbat de Legea 141/2025), pe fiecare asociat.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='lichidare']"
+   },
+   {
+    "click": "button[data-op='lichidare']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "partaj"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "1012 = 456",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "456 = 446",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "533_f2_partajul_pe_asociati_vechi.png"
+ },
+ {
+  "nr": "537",
+  "firma": "tenant_9051",
+  "descriere": "F3: Achiziție intracomunitară în EUR: moneda din listă, 1.000 EUR, cursul BNR îl ia aplicația la data exigibilității; caseta arată conversia (1.000 EUR × curs = lei).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='achizitie_ic']"
+   },
+   {
+    "click": "button[data-op='achizitie_ic']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-moneda",
+    "valoare": "EUR"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-cod_tva_furnizor",
+    "valoare": "DE123456789"
+   },
+   {
+    "completeaza": "#op-numar",
+    "valoare": "AIC-537"
+   },
+   {
+    "completeaza": "#op-cont_destinatie",
+    "valoare": "371"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "bunuri"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "completeaza": "#op-data_faptului_generator",
+    "valoare": "2026-10-25"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "EUR ×",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "537_f3_aic_in_euro.png"
+ },
+ {
+  "nr": "549",
+  "firma": "tenant_9049",
+  "descriere": "F1: Achiziție de la agricultor neînscris în registru: 301 = 401 10.000 fără 4426, cu agricultorul pe rând și mențiunea că nu se aplică compensația.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='agricultor_achizitie']"
+   },
+   {
+    "click": "button[data-op='agricultor_achizitie']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "completeaza": "#op-agricultor_cui",
+    "valoare": "1600101400048"
+   },
+   {
+    "completeaza": "#op-agricultor_nume",
+    "valoare": "Ion Agricultor"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "10000"
+   },
+   {
+    "completeaza": "#op-cont_cheltuiala",
+    "valoare": "301"
+   },
+   {
+    "alege": "#op-agricultor_in_registru",
+    "valoare": "false"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "301 = 401",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "fără compensație",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "549_f1_agricultor_neinscris.png"
+ },
+ {
+  "nr": "523",
+  "firma": "tenant_9050",
+  "descriere": "F2: Leasing -> Primire bun (financiar), cu locatorul, catalogul (2.3.2.1.1), 60 de luni: 2133 = 167 cu locatorul; dobânda totală pe 8051 în afara bilanțului, o singură parte; bunul în registrul mijloacelor fixe la validarea notei.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='leasing']"
+   },
+   {
+    "click": "button[data-op='leasing']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "primire"
+   },
+   {
+    "completeaza": "#op-locator_cui",
+    "valoare": "18765430"
+   },
+   {
+    "completeaza": "#op-locator_nume",
+    "valoare": "Leasing proba"
+   },
+   {
+    "completeaza": "#op-denumire",
+    "valoare": "Autoturism leasing"
+   },
+   {
+    "completeaza": "#op-valoare_capital",
+    "valoare": "60000"
+   },
+   {
+    "completeaza": "#op-dobanda_totala",
+    "valoare": "9000"
+   },
+   {
+    "completeaza": "#op-cont_imobilizare",
+    "valoare": "2133"
+   },
+   {
+    "completeaza": "#op-cod_catalog",
+    "valoare": "2.3.2.1.1"
+   },
+   {
+    "completeaza": "#op-dnf_luni",
+    "valoare": "60"
+   },
+   {
+    "completeaza": "#op-data_pif",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-metoda",
+    "valoare": "liniara"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "2133 = 167",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "8051 debit",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "523_f2_leasingul.png"
+ },
+ {
+  "nr": "C110",
+  "firma": "tenant_9051",
+  "anaf_real": true,
+  "descriere": "F3 (neplătitoare, înregistrată art.317): Livrare/prestare intracomunitară -> Servicii, client LU26375245 (valid în VIES), 1.000, cont 704 -> «Generează nota»: factura emisă poartă regimul firmei (prestare cu locul la client, art.317), nota 4111 = 704.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='vanzare_ic']"
+   },
+   {
+    "click": "button[data-op='vanzare_ic']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "servicii"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-cod_tva_client",
+    "valoare": "LU26375245"
+   },
+   {
+    "pauza": 3000
+   },
+   {
+    "completeaza": "#op-cont_venit",
+    "valoare": "704"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4111 = 704",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "c110_f3_prestarea_ic_art317.png"
+ },
+ {
+  "nr": "548",
+  "firma": "tenant_9049",
+  "descriere": "F1 (stoc cantitativ-valoric): Vânzare regim marjă — bunul „Carte tehnica” se alege din stoc (sub câmp stocul și CMP-ul), clientul e cerut; nota pe client (4111 = 707 + 4427 pe marjă) și ieșirea din stoc 607 = 371 la CMP; confirmarea spune prețul de cumpărare luat din stoc.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='marja']"
+   },
+   {
+    "click": "button[data-op='marja']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "completeaza": "#op-articol",
+    "valoare": "Carte tehnica"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "completeaza": "#op-cantitate",
+    "valoare": "1"
+   },
+   {
+    "completeaza": "#op-pret_vanzare",
+    "valoare": "200"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "completeaza": "#op-client_nume",
+    "valoare": "Client dovada marja"
+   },
+   {
+    "completeaza": "#op-document",
+    "valoare": "Bon fiscal 1 dovada"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Prețul de cumpărare = valoarea bunului ieșit din stoc",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "548_f1_marja_din_stoc.png"
+ },
+ {
+  "nr": "510",
+  "firma": "tenant_9049",
+  "descriere": "F1 (stoc cantitativ-valoric): Producție › Obținere — produsul, cantitatea, costul standard și gestiunea sunt cerute; nota 345 = 711 are Bonul de predare, transfer, restituire, iar produsul intră în fișa de magazie.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='productie']"
+   },
+   {
+    "click": "button[data-op='productie']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "obtinere"
+   },
+   {
+    "completeaza": "#op-produs",
+    "valoare": "Produs dovada 510"
+   },
+   {
+    "completeaza": "#op-um",
+    "valoare": "buc"
+   },
+   {
+    "completeaza": "#op-cantitate",
+    "valoare": "5"
+   },
+   {
+    "completeaza": "#op-cost_standard",
+    "valoare": "40"
+   },
+   {
+    "completeaza": "#op-gestiune",
+    "valoare": "Magazia produse"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Bon de predare, transfer, restituire",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "345 = 711",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "510_f1_obtinere_in_stoc.png"
+ },
+ {
+  "nr": "551",
+  "firma": "tenant_9050",
+  "descriere": "F2 (stoc global-valoric): Vânzare regim marjă nu mai trece fără stoc pe articol — refuzul metodei de stoc, cu butonul spre Date firmă (aceeași regulă ca factura cu marfă).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='marja']"
+   },
+   {
+    "click": "button[data-op='marja']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "completeaza": "#op-articol",
+    "valoare": "Bun oarecare"
+   },
+   {
+    "completeaza": "#op-cantitate",
+    "valoare": "1"
+   },
+   {
+    "completeaza": "#op-pret_vanzare",
+    "valoare": "100"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "completeaza": "#op-client_nume",
+    "valoare": "Client dovada"
+   },
+   {
+    "completeaza": "#op-document",
+    "valoare": "BF dovada"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "asteapta": "[data-ecran-destinatie='date_firma']"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "global-valoric",
+    "zona": "#op-mesaj"
+   },
+   {
+    "exista": "[data-ecran-destinatie='date_firma']"
+   }
+  ],
+  "captura": "551_f2_marja_metoda_stoc.png"
+ },
+ {
+  "nr": "532",
+  "firma": "tenant_9050",
+  "descriere": "F2: Sponsorizare 5.000 către un beneficiar înscris în Registrul entităților: formularul nu mai cere cifra de afaceri și impozitul; confirmarea spune plafonul creditului fiscal (0,75% din cifra de afaceri a anului, 20% din impozit) și că D101 îl scade la nivelul anului; nota 6582 = 401 pe beneficiar.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='sponsorizare']"
+   },
+   {
+    "click": "button[data-op='sponsorizare']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "completeaza": "#op-suma",
+    "valoare": "5000"
+   },
+   {
+    "completeaza": "#op-beneficiar_cui",
+    "valoare": "18765430"
+   },
+   {
+    "completeaza": "#op-beneficiar_nume",
+    "valoare": "Asociatia dovada"
+   },
+   {
+    "alege": "#op-mod",
+    "valoare": "contract"
+   },
+   {
+    "alege": "#op-beneficiar_in_registru",
+    "valoare": "true"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "0,75%",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "6582 = 401",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "532_f2_sponsorizarea_credit.png"
+ }
+]

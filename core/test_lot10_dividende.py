@@ -150,16 +150,18 @@ def test_430a_dividendul_peste_profitul_disponibil_se_refuza(firma):
     assert d["erori_campuri"][0]["camp"] == "op-brut"
 
 
-def test_430a_din_117_preluat_fara_analitic_nota_debiteaza_117_cu_avertisment(firma):
+def test_430a_din_117_preluat_fara_analitic_nota_reclasifica_pe_1171_cu_avertisment(firma):
     _asociati(A1, A2)
     r = _nota()
     # OMFP 1802/2014, contul 117: „soldul creditor, profitul nerepartizat” — nota debitează contul care ARE soldul, nu 1171 cu sold 0
     # avertismentul e o afirmație tipată (`fapt`, decizia 21.08: afirmațiile despre datele firmei sunt obiecte); ecranul arată `motiv`
     assert r["cont_sursa"] == "117" and r["afirmatie"]["fel"] == "fapt"
     assert r["afirmatie"]["unde"] == "contul 117, la 15.05.2099", r["afirmatie"]
-    assert "fără analiticul 1171: nota debitează 117, contul care are soldul. Reclasifică soldul pe 1171 (nota 117 = 1171)" in \
+    # [lotul 13, 527] nota trece suma dividendului pe analitic (117 = 1171) și repartizează din 1171
+    assert "fără analiticul 1171: nota trece întâi suma dividendului pe analitic (117 = 1171) și repartizează din 1171" in \
         r["afirmatie"]["motiv"], r["afirmatie"]
-    assert {d for d, c, s in _sql("SELECT cont_debit, cont_credit, suma FROM inregistrari_linii WHERE cont_credit = '457'")} == {"117"}
+    assert {d for d, c, s in _sql("SELECT cont_debit, cont_credit, suma FROM inregistrari_linii WHERE cont_credit = '457'")} == {"1171"}
+    assert _sql("SELECT cont_debit, cont_credit FROM inregistrari_linii WHERE cont_debit = '117'") == [("117", "1171")]
 
 
 def test_430a_cu_1171_nota_debiteaza_1171_fara_avertisment(firma):
@@ -194,14 +196,16 @@ def test_430bcde_nota_pe_asociati_cu_hotararea_sursa_si_formatele(firma):
                      "15.05.2099)"), descr
     assert r["cota"] == "16%"
     # b) un rând pe fiecare asociat, cu asociatul ca partener al rândului
+    # [lotul 13, 527] profitul preluat pe 117: întâi reclasificarea 117 = 1171 (suma dividendului), apoi repartizarea din 1171
     assert _sql("SELECT cont_debit, cont_credit, suma::text, partener_cui, partener_nume FROM inregistrari_linii "
                 "WHERE inregistrare_id = %s ORDER BY id", (nid,)) == [
-        ("117", "457", "6000.00", A1[1], A1[0]), ("457", "446", "960.00", A1[1], A1[0]),
-        ("117", "457", "4000.00", A2[1], A2[0]), ("457", "446", "640.00", A2[1], A2[0])]
+        ("117", "1171", "10000.00", None, None),
+        ("1171", "457", "6000.00", A1[1], A1[0]), ("457", "446", "960.00", A1[1], A1[0]),
+        ("1171", "457", "4000.00", A2[1], A2[0]), ("457", "446", "640.00", A2[1], A2[0])]
     assert [(a["nume"], a["cota"], a["brut"], a["impozit"], a["net"]) for a in r["asociati"]] == [
         ("POPESCU ION", "60%", "6000.00", "960.00", "5040.00"), ("IONESCU MARIA", "40%", "4000.00", "640.00", "3360.00")]
     # f) răspunsul numește nota (cum o arată Registrul jurnal) și conturile ei, cu id-ul și data pentru legătura spre ea
-    assert r["nota"] == "117 = 457 10.000,00 lei; 457 = 446 1.600,00 lei" and r["nota_eticheta"] and r["data"] == "2099-05-20"
+    assert r["nota"] == "117 = 1171 10.000,00 lei; 1171 = 457 10.000,00 lei; 457 = 446 1.600,00 lei" and r["nota_eticheta"] and r["data"] == "2099-05-20"
 
 
 def test_430c_asociatul_unic_decide_prin_decizie(firma):

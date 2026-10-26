@@ -14,7 +14,7 @@ CE A RAMAS IN `main.py`: semnatura rutei (FastAPI valideaza pe ea), docstringul 
 cheama functia de aici prin adaptorul `_http`.
 """
 
-from decimal import ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_UP
 from core import afirmatii as _af
 from core import common as _common
 from core import cont_valid as _cv
@@ -1556,7 +1556,7 @@ def tenant_amortizare(tenant_id, an, luna, ctx, refuza_aceeasi=True):
             # [lotul 11, 451] rândurile din sursa unică `amortizare_lunii.linii` (metoda reală, CF art.28) — aceeași cu regenerarea pe
             # uscat a ciornei la validare (`ciorne_depasite`)
             try:
-                linii = _al.linii(cur, schema, an, luna)
+                linii = _al.linii_cu_activ(cur, schema, an, luna)   # [lotul 13, 522] fiecare rând cu activul lui
             except ValueError as e:
                 raise _erori.DateInvalide(str(e))
         with conn.cursor() as cur:
@@ -1566,8 +1566,10 @@ def tenant_amortizare(tenant_id, an, luna, ctx, refuza_aceeasi=True):
                 return {"ok": True, "mesaj": "nimic de amortizat", "linii": 0, "inlocuita": ciorna_veche}
             iid = repo_contabilitate.nota_amortizare_ciorna(
                 cur, schema, _uc_comun.ultima_zi_a_lunii(an, luna), numar, f"Amortizare {luna:02d}/{an}", doc_vechi)[0]
-            for cont_am, rata, den in linii:
-                repo_contabilitate.adauga_linie_cheltuiala_amortizare(cur, schema, iid, cont_am, rata)
+            from core import mf_note as _mfn
+            for cont_am, rata, den, mid in linii:
+                _mfn.adauga_linie(cur, schema, iid, _al.CONT_CHELTUIALA, cont_am, rata, mid)
+            reluare = _reluare_subventii(cur, schema, an, luna, linii)   # [lotul 13, 528] subvențiile activelor, odată cu amortizarea
             if ciorna_veche:
                 from core import coada_api as _cq
                 if _cq.amprente_note(cur, [ciorna_veche], schema) == _cq.amprente_note(cur, [iid], schema):
@@ -1578,13 +1580,14 @@ def tenant_amortizare(tenant_id, an, luna, ctx, refuza_aceeasi=True):
                                                    "ciornă) — o vezi și o validezi în Registru jurnal; o a doua generare n-ar schimba "
                                                    "nimic." % _et.nota(cur, schema, ciorna_veche))
                     return {"ok": True, "nota_id": ciorna_veche, "linii": len(linii), "deja_generata": True,
-                            "total": round(sum(r for _, r, _ in linii), 2)}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+                            "total": round(sum(r for _, r, _, _m in linii), 2)}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
                 _nd.sterge_ciorna_inlocuita(cur, schema, ciorna_veche)
             from core import eticheta_nota as _et
             eticheta = _et.nota(cur, schema, iid)
     return {"ok": True, "nota_id": iid, "nota_eticheta": eticheta, "linii": len(linii),
-            "linii_nota": [{"debit": "6811", "credit": c, "suma": s} for c, s, _d in linii],   # [8c] rândurile notei, ca la scriere
-            "total": round(sum(r for _, r, _ in linii), 2), "inlocuita": ciorna_veche}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+            "linii_nota": [{"debit": "6811", "credit": c, "suma": s} for c, s, _d, _m in linii],   # [8c] rândurile notei, ca la scriere
+            "total": round(sum(r for _, r, _, _m in linii), 2), "inlocuita": ciorna_veche,  # round-ok: sumă de bani deja rotunjiți
+            "reluare_subventii": reluare}  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
 
 
 def perioade_blocate_lista(tenant_id, ctx, an=None, luna=None):
@@ -1665,6 +1668,12 @@ def tenant_amortizare_restanta(tenant_id, an, luna, ctx):
     out = []
     for a, l in sorted(luni):
         try:
+            # [lotul 13, deficiența 517] luna cu nota ei deja VALIDATĂ, în care lipsește un activ (adăugat după ea): rândurile lui intră
+            # într-o notă separată, pe activ — nota validată nu se înlocuiește
+            sup = _amortizare_suplimentara(tenant_id, a, l, ctx)
+            if sup is not None:
+                out.append(sup)
+                continue
             r = tenant_amortizare(tenant_id, a, l, ctx, refuza_aceeasi=False)   # [lotul 11] lunile la zi se numără, nu se refuză
             out.append({"an": a, "luna": l, "ok": True, "nota_id": r.get("nota_id"), "total": r.get("total"),
                         "deja_generata": bool(r.get("deja_generata")),
@@ -1676,6 +1685,36 @@ def tenant_amortizare_restanta(tenant_id, an, luna, ctx):
     # (aceleași sume) se spun separat, ca „deja generate, de validat”
     return {"luni": out, "generate": sum(1 for x in out if x["ok"] and not x.get("deja_generata")),
             "deja_generate": sum(1 for x in out if x["ok"] and x.get("deja_generata"))}
+
+
+def _amortizare_suplimentara(tenant_id, an, luna, ctx):
+    """[lotul 13, 517] Nota lunii (an, luna) e validată, dar unor active le lipsește amortizarea lunii: o notă ciornă separată, cu rândurile
+    lor (pe activ, `amortizare_lunii.linii_lipsa`). None dacă nota lunii nu e validată (o face `tenant_amortizare`, ca până acum)."""
+    from core import amortizare_lunii as _al, mf_note as _mfn, note_derivate as _nd, eticheta_nota as _et
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        with conn.cursor() as cur:
+            ex = repo_contabilitate.nota_de_amortizare(cur, schema, _al.numar(an, luna))
+            if not ex or _nd.ciorna_nevalidata(cur, schema, ex[0]) or _nd.respinsa(cur, schema, ex[0]):
+                return None
+            _uc_comun._cere_luna_deschisa(conn, schema, _uc_comun.ultima_zi_a_lunii(an, luna))
+            try:
+                rand = _al.linii_lipsa(cur, schema, an, luna)
+            except ValueError as e:
+                return {"an": an, "luna": luna, "ok": False, "mesaj": str(e)}
+            if not rand:
+                return {"an": an, "luna": luna, "ok": True, "deja_generata": True, "linii_nota": []}
+            iid = repo_contabilitate.nota_operatiune_ciorna(
+                cur, schema, _uc_comun.ultima_zi_a_lunii(an, luna),
+                "Amortizare %02d/%d — %s (adăugate după nota lunii)" % (luna, an, ", ".join(d for _c, _r, d, _m in rand))[:200],
+                "tablou_amortizare")[0]
+            for cont_am, rata, _den, mid in rand:
+                _mfn.adauga_linie(cur, schema, iid, _al.CONT_CHELTUIALA, cont_am, rata, mid)
+            et = _et.nota(cur, schema, iid)
+        conn.commit()
+    return {"an": an, "luna": luna, "ok": True, "nota_id": iid, "nota_eticheta": et, "deja_generata": False,
+            "total": round(sum(r for _c, r, _d, _m in rand), 2),  # round-ok: sumă de valori care au deja bani: curăță zgomotul float
+            "linii_nota": [{"debit": _al.CONT_CHELTUIALA, "credit": c, "suma": r} for c, r, _d, _m in rand]}
 
 
 def perioada_deblocheaza(tenant_id, an, luna, motiv, ctx):
@@ -4003,40 +4042,64 @@ def factura_contabilizeaza(tenant_id, factura_id, ctx, confirma=False, nir_id=No
     return rez
 
 
+def _vanzare_din_stoc(cur, schema, iid, fel, ies, articol, cantitate, pret_vanzare, pret_cumparare, tva, client, document):
+    """[lotul 13, 548] Vânzarea și ieșirea ei din stoc, legate (`vanzari_din_stoc`, `core/migrare_vanzari_stoc.py`): jurnalul marjei citește
+    de aici; nota vânzării nu se șterge cât ieșirea e vie (triggerul bazei)."""
+    cur.execute('INSERT INTO "%s".vanzari_din_stoc (inregistrare_id, fel, miscare_id, nota_iesire_id, articol_id, cantitate, pret_vanzare, '
+                'pret_cumparare, tva, client_cui, client_nume, document) VALUES (%%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s)'
+                % schema, (iid, fel, ies["id"], ies.get("inregistrare_id"), articol[0], cantitate, pret_vanzare, pret_cumparare, tva,
+                           client[0], client[1], document))
+
+
 def vanzare_marja(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/vanzare-marja`; docstringul ei a ramas in stratul HTTP."""
-    from decimal import Decimal
-    from core import tva_marja as _m
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/vanzare-marja`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 548, comanda Costin 13.1] „Vânzarea nu descarcă bunul din gestiune (607 = 371) și nu cere clientul; profitul iese
+    mai mare cu tot costul bunului, stocul rămâne umflat. Prețul de cumpărare se scrie de mână în loc să vină din bunul aflat în stoc.”
+    Acum: bunul se alege din stoc (marfă, 371) și iese din gestiune la CMP (`stocuri_cv_api.iesire`: 607 = 371, cu documentul vânzării);
+    prețul de cumpărare al marjei = valoarea ieșirii; clientul e partenerul rândurilor 4111. Rămân corecte (Costin): TVA pe marjă prin sută
+    mărită, marja negativă -> TVA 0 fără report (norme pct.86). CF art.312 alin.(1) lit.g): „marja profitului este diferența dintre prețul
+    de vânzare aplicat de persoana impozabilă revânzătoare și prețul de cumpărare”."""
+    from core import tva_marja as _m, compensari_api as _cz
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
-            _uc_comun._campuri_lipsa(corp, ("pret_vanzare", "pret_cumparare", "cota"))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
-            r = _m.vanzare_marja(corp["pret_vanzare"], corp["pret_cumparare"], _common.cota_ceruta(corp))
-        except (ValueError, KeyError) as e:
+            _uc_comun._campuri_lipsa(corp, ("articol", "cantitate", "pret_vanzare", "cota", "client_nume", "document"))   # [lotul 11, 440 / A4]
+            pv = Decimal(str(corp["pret_vanzare"]))
+            cota = _common.cota_ceruta(corp)
+        except (ValueError, KeyError, ArithmeticError) as e:
+            raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
+        cant = _cantitate_pozitiva(corp["cantitate"], "op-cantitate")
+        client = (_cz.cui_partener(corp.get("client_cui")) or None, str(corp["client_nume"]).strip())
+        document = str(corp["document"]).strip()
+        with conn.cursor() as cur:
+            _cere_stoc_pe_articol(cur, schema, "Vânzarea în regim de marjă din stoc")
+            art = _articol_stoc(cur, schema, corp["articol"], "371", "op-articol")
+        ies = _iesire_din_stoc(conn, schema, art, cant, corp["data"], document)
+        cost = Decimal(str(ies["valoare"]))
+        try:
+            r = _m.vanzare_marja(pv, cost, cota)
+        except ValueError as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], (corp.get("descriere") or "Vanzare regim marja (art. 312)")[:200])[0]
-            # [1a · CF art.312, norme pct.86] Nota se face la PRETUL DE VANZARE (ce datoreaza clientul),
-            # nu la pretul de cumparare. 707 = pret_vanzare - TVA pe marja; 4427 = TVA (0 la marja
-            # negativa, FARA report - metoda pe fiecare livrare, pct.86).
-            _pv = Decimal(str(corp["pret_vanzare"]))
-            linii = []
-            linii.append(("4111", "707", _pv - r["tva"]))
-            if r["tva"] > 0:
-                linii.append(("4111", "4427", r["tva"]))
-            for d, c, s in linii:
+            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], (corp.get("descriere") or "Vanzare regim marja (art. 312) %s"
+                                                                                       % art[1])[:200], document_ref=document)[0]
+            # [1a · CF art.312, norme pct.86] Nota se face la PRETUL DE VANZARE (ce datoreaza clientul): 707 = pret_vanzare - TVA pe marja;
+            # 4427 = TVA (0 la marja negativa, FARA report - metoda pe fiecare livrare, pct.86).
+            for d, c, s in (("4111", "707", pv - r["tva"]), ("4111", "4427", r["tva"])):
                 if s > 0:
-                    repo_contabilitate.adauga_linie_2(cur, schema, iid, d, c, s)
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, d, c, s, client[0], client[1])
+            _vanzare_din_stoc(cur, schema, iid, "marja", ies, art, cant, pv, cost, r["tva"], client, document)
         conn.commit()
     return _uc_comun.cu_eticheta(schema, dict(_af.afirmatie(
         "fapt", "vânzare în regim de marjă", r["nota"] or "marjă calculată conform art. 312",
         unde=_Unde("inregistrare", iid),
-        temei_completitudine="prețul de vânzare și cel de cumpărare din nota creată "
+        temei_completitudine="prețul de vânzare și prețul de cumpărare = valoarea ieșirii din stoc "
                              "(Cod fiscal art. 312, regimul marjei)"),
-        inregistrare_id=iid, marja_bruta=str(r["marja_bruta"]),
+        inregistrare_id=iid, nota_iesire_id=ies.get("inregistrare_id"), pret_cumparare=str(cost), marja_bruta=str(r["marja_bruta"]),
         tva=str(r["tva"]), marja_neta=str(r["marja_neta"]), avertisment=r["nota"]))
 
 
@@ -4092,16 +4155,21 @@ def vanzare_marja_turism(tenant_id, corp, ctx):
 
 
 def vanzare_aur_investitii(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/vanzare-aur-investitii`; docstringul ei a ramas in stratul HTTP."""
-    from decimal import Decimal
-    from core import tva_aur as _m
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/vanzare-aur-investitii`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 548, comanda Costin 13.1] „Vânzarea nu descarcă bunul din gestiune (costul aurului) și nu cere clientul”. Acum: aurul
+    se alege din stoc (marfă, 371) și iese din gestiune la CMP (`stocuri_cv_api.iesire`: 607 = 371, cu documentul livrării); clientul
+    (numele și identificarea, CF art.313 alin.(10)) e partenerul rândului 4111. Rămân corecte (Costin): refuzul sub 995‰ (art.313 alin.(1)
+    lit.a)), livrarea scutită 4111 = 707 fără TVA; opțiunea de taxare către o persoană impozabilă -> taxare inversă (art.331 alin.(2) lit.h))."""
+    from core import tva_aur as _m, compensari_api as _cz
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
-            _uc_comun._campuri_lipsa(corp, ("tip", "puritate", "calitate_client", "client_identificare", "suma"))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
+            _uc_comun._campuri_lipsa(corp, ("articol", "cantitate", "tip", "puritate", "calitate_client", "client_identificare", "client_nume",
+                                            "suma", "document"))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
             ok, motiv = _m.este_aur_investitii(corp["tip"], corp["puritate"],
                                                corp.get("an_emisie"), corp.get("pret_unitar"),
                                                corp.get("valoare_aur"))
@@ -4117,15 +4185,24 @@ def vanzare_aur_investitii(tenant_id, corp, ctx):
                                  "primit: %s." % suma)
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
+        cant = _cantitate_pozitiva(corp["cantitate"], "op-cantitate")
+        ident = str(corp["client_identificare"]).strip()
+        client = ((_cz.cui_partener(ident) or None) if corp["calitate_client"] == "PJ" else None, str(corp["client_nume"]).strip())
+        document = str(corp["document"]).strip()
+        with conn.cursor() as cur:
+            _cere_stoc_pe_articol(cur, schema, "Livrarea aurului de investiții din stoc")
+            art = _articol_stoc(cur, schema, corp["articol"], "371", "op-articol")
+        ies = _iesire_din_stoc(conn, schema, art, cant, corp["data"], document)
         mentiune = "taxare inversa (art. 331 al. 2 lit. h)" if regim == "taxare_inversa" \
                    else "scutit (art. 313 al. 3)"
-        descr = (corp.get("descriere") or "Livrare aur investitii") + " - " + mentiune \
-                + " - client: " + corp["client_identificare"]
+        descr = (corp.get("descriere") or "Livrare aur investitii %s" % art[1]) + " - " + mentiune + " - client: " + ident
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            repo_contabilitate.adauga_linie_venit_marfa(cur, schema, iid, suma)
+            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], document_ref=document)[0]
+            repo_contabilitate.adauga_linie_partener(cur, schema, iid, "4111", "707", suma, client[0], client[1])
+            _vanzare_din_stoc(cur, schema, iid, "aur", ies, art, cant, suma, Decimal(str(ies["valoare"])), Decimal("0"), client, document)
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "regim": regim, "suma": str(suma)})
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "regim": regim, "suma": str(suma), "nota_iesire_id": ies.get("inregistrare_id"),
+                                          "cost": str(ies["valoare"])})
 
 
 def achizitie_agricultor(tenant_id, corp, ctx):
@@ -4137,7 +4214,8 @@ def achizitie_agricultor(tenant_id, corp, ctx):
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
-            _uc_comun._campuri_lipsa(corp, ("valoare", "agricultor_in_registru"))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
+            _uc_comun._campuri_lipsa(corp, ("data", "valoare", "agricultor_in_registru", "cont_cheltuiala"))   # [lotul 11, 440 / A4]
+            agr = _partener_din_corp(corp.get("agricultor_cui"), corp.get("agricultor_nume"), "agricultor", "agricultorul (CNP sau CUI)")   # [lotul 13, 549 / 506] partenerul achiziției
             r = _m.achizitie_de_la_agricultor(corp["valoare"], _uc_comun.bifa(corp, "agricultor_in_registru"))
             # [R54] confruntarea cu planul firmei inlocuieste verificarea de PREZENTA:
             # `cere_cont` refuza si absenta, si contul care nu exista in plan, si spune CE
@@ -4145,15 +4223,16 @@ def achizitie_agricultor(tenant_id, corp, ctx):
             cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Achizitie agricultor regim special (art. 315^1)") \
-                + ((" - " + corp["agricultor"]) if corp.get("agricultor") else "")
+        descr = (corp.get("descriere") or "Achizitie agricultor regim special (art. 315^1)") + " - " + agr[1] + \
+            ((" - " + r["mentiune"]) if r.get("mentiune") else "")
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], "borderou_achizitie")[0]
             for d, c, s in [(cont, "401", r["pret"]), ("4426", "401", r["compensatie"])]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
+                if s > 0:   # [549] fără compensație, fără rândul 4426
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, d, c, s, agr[0], agr[1])
         conn.commit()
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "pret": str(r["pret"]),
-            "compensatie": str(r["compensatie"]), "total": str(r["total"])})
+            "compensatie": str(r["compensatie"]), "total": str(r["total"]), "avertisment": r.get("mentiune")})
 
 
 def vanzare_agricultor(tenant_id, corp, ctx):
@@ -4210,8 +4289,13 @@ def cabinet_fisa_cont(tenant_id, an, cont, luna, ctx):
 
 
 def jurnal_marja(tenant_id, tip, luna, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/jurnal-marja`; docstringul ei a ramas in stratul HTTP."""
-    from decimal import Decimal
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/jurnal-marja`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 548] Jurnalul vânzărilor în regim de marjă (second-hand, CF art.312): pe fiecare vânzare prețul de vânzare, prețul
+    de cumpărare (valoarea ieșirii din stoc), marja și TVA-ul pe marjă — din `vanzari_din_stoc`, nu din textul notei. Înainte: „cost” era
+    primul rând al notei (707, adică prețul fără TVA), iar o vânzare cu altă explicație decât „(art. 312)” lipsea. Vânzările dinainte de
+    lotul 13 (fără ieșire din stoc) apar din notă, cu prețul de cumpărare necunoscut („—”: nu era în evidență). Turismul (art.311) rămâne
+    citit din note, ca înainte."""
     marker = {"secondhand": "art. 312", "turism": "art. 311"}.get(tip)
     if not marker:
         raise _erori.DateInvalide("tip invalid (secondhand|turism)")
@@ -4221,29 +4305,44 @@ def jurnal_marja(tenant_id, tip, luna, ctx):
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+        from core import eticheta_nota as _et   # [258] nota numită ca în Registrul jurnal (nu prin id)
+        note = {}
         with conn.cursor() as cur:
+            if tip == "secondhand":
+                cur.execute('SELECT i.id, i.data, i.descriere, i.status, v.pret_vanzare, v.pret_cumparare, v.tva, v.client_nume, v.document '
+                            'FROM "%s".vanzari_din_stoc v JOIN "%s".inregistrari i ON i.id = v.inregistrare_id '
+                            "WHERE v.fel = 'marja' AND to_char(i.data, 'YYYY-MM') = %%s ORDER BY i.data, i.id" % (schema, schema), (luna,))
+                for iid, data, descr, status, pv, pc, tva, client, doc in cur.fetchall():
+                    note[iid] = {"id": iid, "data": str(data), "descriere": descr, "status": status, "client": client, "document": doc,
+                                 "pret_vanzare": Decimal(str(pv)), "cost": Decimal(str(pc)), "marja_neta": Decimal(str(pv)) - Decimal(str(pc)) - Decimal(str(tva)),
+                                 "tva": Decimal(str(tva))}
             rows = repo_contabilitate.linii_pentru_jurnal_marja(cur, schema, "%" + marker + "%", luna)
-            from core import eticheta_nota as _et   # [258] nota numită ca în Registrul jurnal (nu prin id)
-            _etj = dict(_et.note(cur, schema, {r[0] for r in rows}))
-    note = {}
-    for iid, data, descr, status, cont, suma, lid in rows:
-        n = note.setdefault(iid, {"id": iid, "eticheta": _etj.get(iid), "data": str(data), "descriere": descr,
-                                  "status": status, "cost": Decimal("0"),
-                                  "marja_neta": Decimal("0"), "tva": Decimal("0")})
-        if cont == "4427":
-            n["tva"] += suma
-        elif n["cost"] == 0:
-            n["cost"] = suma
-        else:
-            n["marja_neta"] += suma
-    tot_cost = sum(n["cost"] for n in note.values())
-    tot_marja = sum(n["marja_neta"] for n in note.values())
-    tot_tva = sum(n["tva"] for n in note.values())
-    return {"tip": tip, "luna": luna, "numar_note": len(note),
-            "note": [{**n, "cost": str(n["cost"]), "marja_neta": str(n["marja_neta"]),
-                      "tva": str(n["tva"])} for n in note.values()],
-            "total_cost": str(tot_cost), "total_baza_marja_neta": str(tot_marja),
-            "total_tva_colectata": str(tot_tva)}
+            vechi = {}
+            for iid, data, descr, status, cont, suma, _lid in rows:
+                if iid in note:
+                    continue
+                n = vechi.setdefault(iid, {"id": iid, "data": str(data), "descriere": descr, "status": status, "client": None, "document": None,
+                                           "pret_vanzare": Decimal("0"), "cost": None, "marja_neta": Decimal("0"), "tva": Decimal("0")})
+                n["pret_vanzare"] += suma
+                if cont == "4427":
+                    n["tva"] += suma
+                elif tip == "turism" and n["cost"] is None:
+                    n["cost"] = suma
+                else:
+                    n["marja_neta"] += suma
+            if tip == "secondhand":   # nota veche: 707 = prețul fără TVA, nu marja; marja nu se poate socoti fără prețul de cumpărare
+                for n in vechi.values():
+                    n["marja_neta"] = None
+            note.update(vechi)
+            _etj = dict(_et.note(cur, schema, set(note)))
+    lista = sorted(note.values(), key=lambda n: (n["data"], n["id"]))
+    tot = lambda k: sum((n[k] for n in lista if n[k] is not None), Decimal("0"))   # noqa: E731
+    s = lambda v: None if v is None else str(v)   # noqa: E731
+    return {"tip": tip, "luna": luna, "numar_note": len(lista),
+            "note": [{**n, "eticheta": _etj.get(n["id"]), "pret_vanzare": s(n["pret_vanzare"]), "cost": s(n["cost"]),
+                      "marja_neta": s(n["marja_neta"]), "tva": s(n["tva"])} for n in lista],
+            "total_vanzari": str(tot("pret_vanzare")), "total_cost": str(tot("cost")), "total_baza_marja_neta": str(tot("marja_neta")),
+            "total_tva_colectata": str(tot("tva"))}
 
 
 def calcul_cm_endpoint(tenant_id, corp, ctx):
@@ -4483,22 +4582,41 @@ def reges_config(tenant_id, corp, ctx):
     return {"ok": True}
 
 
+def _platitor_tva_strict(cui):
+    """[lotul 13, 544] Plătitor de TVA (art.316) după ANAF, pentru CUI-ul dat: True / False; CUI negăsit -> refuz lângă câmp; ANAF care nu
+    răspunde -> refuz „reîncearcă” (nu se presupune nimic)."""
+    from core import anaf_api as _anaf
+    try:
+        r = _anaf.valideaza_cui([cui])
+    except Exception as e:  # noqa: BLE001 — orice cădere a serviciului ANAF e „nu se poate verifica acum”, spusă contabilului
+        _obs.esec_secundar("anaf_platitor_ti", e)
+        raise _erori.ServiciuStrainCazut("ANAF nu răspunde acum, deci nu se poate verifica dacă furnizorul %s e înregistrat în scopuri de "
+                                         "TVA — taxarea inversă se aplică numai între plătitori (CF art.331 alin.(1)). Încearcă din nou peste "
+                                         "câteva minute." % cui)
+    if not r or not r[0].get("gasit"):
+        m = ("CUI-ul %s nu e găsit la ANAF: taxarea inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică "
+             "CUI-ul de pe factură." % cui)
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-furnizor_cui", "mesaj": m}]})
+    return bool(r[0].get("platitor_tva"))
+
+
 def achizitie_taxare_inversa(tenant_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/achizitie-taxare-inversa`; docstringul ei a ramas in stratul HTTP."""
     from decimal import Decimal
     from datetime import date as _date
-    from core import anaf_api as _anaf
     from core import taxare_inversa as _ti
     # ── [P5 val 3, 11.09.2026] ANAF ÎNAINTE de conexiune ────────────────────────────────
     # Statutul TVA al furnizorului se îngheață pe factură și depinde doar de payload. Forma
     # dinainte îl cerea din interiorul tranzacției, deci ținea o conexiune din pool peste un apel
     # cu termen de 20 s. `platitor_tva_freeze` e best-effort: ANAF jos → fallback, nu excepție.
     furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
-    try:
-        _furn_pl = _uc_comun.bifa(corp, "furnizor_platitor_tva", True)
-    except ValueError as e:
-        raise _erori.DateInvalide(str(e))
-    _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=_furn_pl) if furnizor_cui else _furn_pl
+    # [lotul 13, deficiența 544, comanda Costin 13.1] „cu «Furnizor plătitor TVA: Nu» s-a aplicat taxarea inversă (4426 = 4427 6.300); art. 331
+    # o permite doar când ambii parteneri sunt plătitori. Refuză; calitatea de plătitor se verifică la ANAF din CUI, nu se întreabă de mână.”
+    # CF art.331 alin.(1): taxarea inversă se aplică „pentru livrările de bunuri și prestările de servicii […] efectuate de persoane
+    # impozabile înregistrate în scopuri de TVA conform art. 316” către beneficiari înregistrați la fel. Verdictul ANAF e cerut STRICT: fără
+    # el (CUI negăsit, ANAF căzut) nu se aplică taxarea inversă din presupunere — înainte, „Nu” scris de om era înlocuit tăcut de ANAF, iar
+    # ANAF căzut lăsa „Da” implicit.
+    _tert_pl = _platitor_tva_strict(furnizor_cui) if furnizor_cui else None
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -4560,6 +4678,15 @@ def achizitie_ic(tenant_id, corp, ctx):
     from decimal import Decimal
     from core import intracomunitar as _ic
     from core import repo_d301_operatiuni_api as _repo_d301
+    from core import curs_bnr as _cb
+    # [lotul 13, deficiența 537] suma în valuta facturii + cursul BNR al zilei EXIGIBILITĂȚII (CF art.290 alin.(2): „ultimul curs de schimb
+    # comunicat de Banca Națională a României […] valabil la data la care intervine exigibilitatea taxei”; exigibilitatea AIC: CF art.284
+    # alin.(2)); datoria către furnizor se ține în valută (factura în moneda ei), ca reevaluarea lunară și diferența de curs la plată să
+    # se poată calcula. RON rămâne pentru factura în lei.
+    # `valoare` e suma din factura furnizorului, în moneda ei; o cerere fără monedă (API-ul de dinainte) e în lei
+    _moneda = str(corp.get("moneda") or "RON").strip().upper()
+    if _moneda and _moneda != "RON" and corp.get("data"):
+        _uc_comun._preincalzeste_cursul(_moneda, str(_common.exigibilitate_aic(corp["data"], corp.get("data_faptului_generator"))))
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -4587,13 +4714,23 @@ def achizitie_ic(tenant_id, corp, ctx):
             if corp.get("tip") not in ("bunuri", "servicii"):
                 _er.camp("op-tip", nomenclator_cerut("tip", "bunuri|servicii"))
             _er.refuza()
-            val = Decimal(str(corp["valoare"]))
+            val_valuta = Decimal(str(corp["valoare"])).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
             # [R148] Art. 291 alin. (8): pentru AIC cota e cea in vigoare la data EXIGIBILITATII,
             # nu la data facturii. Cele doua difera cand factura furnizorului vine tarziu — atunci
             # exigibilitatea a intervenit deja, in ziua 15 a lunii urmatoare faptului generator
             # (art. 284 alin. 2). Aplicatia calcula deja exact asta pentru D390 (`d390.py:491`) si
             # valida cota pe alta data: doua date pentru acelasi fapt.
             _data_exig = _common.exigibilitate_aic(corp["data"], corp.get("data_faptului_generator"))
+            if _moneda == "RON":
+                curs, data_curs = Decimal("1"), _data_exig
+            else:
+                try:
+                    curs, data_curs, _src = _cb.curs_pentru(conn, _moneda, _data_exig)
+                except _cb.MonedaNecotata as _mn:
+                    raise _erori.DateInvalide({"mesaj": str(_mn), "erori_campuri": [{"camp": "op-moneda", "mesaj": str(_mn)}]})
+                except _cb.CursIndisponibil as _ci:
+                    raise _erori.Conflict(str(_ci))
+            val = (val_valuta * Decimal(str(curs))).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
             tva = _ic.tva_taxare_inversa(
                 val, _common.cota_ceruta({**corp, "data": _data_exig.isoformat()}))
             cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
@@ -4624,7 +4761,9 @@ def achizitie_ic(tenant_id, corp, ctx):
             try:   # [10.10.2026] refuzul motivat al emiterii ajunge la contabil (422), nu ca 500 (deficiența C7, generalizată)
                 fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                            linii=[{"descriere": descr[:200], "cantitate": 1,
-                                                   "pret_unitar": str(val), "cota_tva": 0}],
+                                                   "pret_unitar": str(val_valuta), "cota_tva": 0}],
+                                           moneda=_moneda, curs=None if _moneda == "RON" else curs,
+                                           data_curs=None if _moneda == "RON" else data_curs, curs_sursa=None if _moneda == "RON" else "bnr",
                                            tert_nume=furnizor_nume or None, tert_cui=cod_tva_furnizor,
                                            tert_tara=tara_furnizor,
                                            # [R186, 16.09.2026] AXA, INGHETATA pe document. `corp["tip"]`
@@ -4646,10 +4785,13 @@ def achizitie_ic(tenant_id, corp, ctx):
             _a, _l, _z = corp["data"].split("-")
             _repo_d301.insert_d301_operatiuni(
                 cur, schema, int(_a), int(_l), 1 if corp.get("tip") == "bunuri" else 5,
-                numar, "%s.%s.%s" % (_z, _l, _a), val, "RON", 1, tva,
-                tara_furnizor, cod_tva_furnizor, furnizor_nume or "", None, factura_id=fid)
+                numar, "%s.%s.%s" % (_z, _l, _a), val_valuta, _moneda, curs, tva,
+                # [lotul 13, 539 / 537] codul fără prefixul țării (țara stă în coloana ei): D301 afișa „IEIE6388047V”
+                tara_furnizor, _nr_tva, furnizor_nume or "", None, factura_id=fid)
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)})
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva),
+                                          "moneda": _moneda, "valoare_valuta": str(val_valuta), "curs": str(curs),
+                                          "data_curs": str(data_curs), "exigibilitate": str(_data_exig)})
 
 
 def achizitie_neinregistrat(tenant_id, corp, ctx):
@@ -5011,7 +5153,7 @@ def import_extracomunitar(tenant_id, corp, ctx):
         try:
             # [lotul 5] `procent_taxa_vamala=500` trecea: taxa vamala 5.000 la o valoare
             # vamala de 1.000, baza TVA 6.000. Un procent e o parte dintr-un intreg.
-            _uc_comun._campuri_lipsa(corp, ("valoare_vamala", "cota"))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
+            _uc_comun._campuri_lipsa(corp, ("data", "valoare_vamala", "cota", "numar_dvi", "furnizor_nume", "cont_destinatie"))
             _ptv = corp.get("procent_taxa_vamala", 0) or 0
             if not (0 <= float(_ptv) <= 100):
                 raise ValueError("Procentul taxei vamale e între 0 și 100 — s-a primit %s. Taxa "
@@ -5029,7 +5171,14 @@ def import_extracomunitar(tenant_id, corp, ctx):
         mod_txt = {"decont": "TVA in decont (certificat art. 326(4), 4426=4427)",
                    "vama": "TVA platita in vama (deducere pe DVI art. 299(1)c)",
                    "cost": "neplatitor - TVA in cost"}[r["mod_tva"]]
-        descr = (corp.get("descriere") or "Import extracomunitar") + " - DVI, " + mod_txt
+        # [lotul 13, deficiența 552] documentul e DVI-ul (numărul și data), furnizorul extern e partenerul datoriei (401); baza TVA din vamă e
+        # în lei, cum o stabilește DVI-ul (CF art.290 alin.(1): „cursul de schimb valutar se stabilește conform prevederilor europene care
+        # reglementează calculul valorii în vamă”), deci nu se recalculează aici la cursul BNR. Accesoriile intră în baza TVA (CF art.289
+        # alin.(2)); costul lor intră în stoc prin factura transportatorului, înregistrată separat în Facturi primite (se spune la generare).
+        from core import jurnal_api as _j
+        doc_dvi = _j.eticheta_document("DVI", str(corp["numar_dvi"]).strip(), corp["data"])
+        furnizor = str(corp.get("furnizor_nume") or "").strip()
+        descr = (corp.get("descriere") or "Import extracomunitar de la %s" % furnizor) + " - " + doc_dvi + ", " + mod_txt
         linii = [(cont, "401", val)]
         if r["taxa_vamala"] > 0:
             linii.append((cont, "446", r["taxa_vamala"]))
@@ -5040,12 +5189,18 @@ def import_extracomunitar(tenant_id, corp, ctx):
         else:
             linii.append((cont, "446", r["tva"]))
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], document_ref=doc_dvi)[0]
             for d, c, s in linii:
-                repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
+                if c == "401":
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, d, c, s, None, furnizor)
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, d, c, s)
         conn.commit()
+    acc = Decimal(str(corp.get("accesorii") or 0))
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "taxa_vamala": str(r["taxa_vamala"]),
-            "baza_tva": str(r["baza_tva"]), "tva": str(r["tva"]), "mod_tva": r["mod_tva"]})
+            "baza_tva": str(r["baza_tva"]), "tva": str(r["tva"]), "mod_tva": r["mod_tva"],
+            "avertisment": ("Accesoriile (%s lei) au intrat în baza TVA din vamă; costul lor intră în stoc prin factura transportatorului — "
+                            "înregistreaz-o în Facturi primite." % bani(acc)) if acc > 0 else None})
 
 
 def export_extracomunitar(tenant_id, corp, ctx):
@@ -5120,6 +5275,9 @@ def nota_tva_incasare(tenant_id, corp, ctx):
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         debit, credit = ("4428", "4427") if sens == "incasare" else ("4426", "4428")
+        with conn.cursor() as cur:   # [lotul 13, 541 / 524] nu se exigibilizează mai mult TVA decât e neexigibil pe 4428
+            from core import ops_sold as _os
+            _os.cere_sold_4428(cur, schema, corp.get("data"), tva, sens, camp="op-suma_incasata")
         # [R151] Descrierea implicita numeste RAMURA aleasa: peste sase luni, cine citeste nota
         # trebuie sa poata reconstitui de ce cota e aia si nu alta. Fraza vine de la regula
         # (`cota_tva_incasare.descrierea`), nu se compune aici. O descriere scrisa de om nu se
@@ -5159,49 +5317,90 @@ def tva_incasare_neexigibile(tenant_id, la, ctx):
 
 
 def nota_leasing(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-leasing`; docstringul ei a ramas in stratul HTTP."""
-    from core import leasing as _ls
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-leasing`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 523, comanda Costin 13.1] „bunul primit în leasing financiar (2133 = 167) nu intră în registrul mijloacelor fixe,
+    deci nu se amortizează niciodată — lipsește cheltuiala, profitul iese mai mare. Primirea cere datele activului (catalog, durată, metodă)
+    și locatorul. Dobânda totală pe 8051 tot cu 891 (507). Rata lunară: […] fără locator (506).” TEMEI: OMFP 1802/2014 pct.215 alin.(1):
+    în leasingul financiar „utilizatorul înregistrează bunul primit ca imobilizare” și îl amortizează (pct.238); CF art.28 alin.(16):
+    „În cazul contractelor de leasing, se aplică următoarele reguli: a) în cazul leasingului financiar, utilizatorul este tratat din punct
+    de vedere fiscal ca proprietar”, deci amortizează. Primirea înscrie bunul în registru (activ la validarea notei, 519), cu codul din
+    catalog și durata în plaja lui (HG 2139/2004), metoda și data punerii în funcțiune; locatorul e partenerul rândurilor 167 / 404."""
+    from core import leasing as _ls, mf_note as _mfn, extrabilant as _xb
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         tip = corp.get("tip")
+        mf_reg = None
+        locator = None
         try:
-            _uc_comun._campuri_lipsa(corp, {"primire": ("valoare_capital",), "rata": ("capital", "cota"), "reziduala": ("valoare_reziduala", "cota"),
-                                            "operational": ("chirie", "cota")}.get(tip, ()))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
+            _uc_comun._campuri_lipsa(corp, {"primire": ("valoare_capital", "dobanda_totala", "cont_imobilizare", "denumire", "cod_catalog",
+                                                        "dnf_luni", "data_pif", "metoda"),
+                                            "rata": ("capital", "cota"), "reziduala": ("valoare_reziduala", "cota"),
+                                            "operational": ("chirie", "cota", "cont_cheltuiala")}.get(tip, ()))   # [lotul 11, 440 / A4]
+            if tip in ("primire", "rata", "reziduala", "operational"):
+                locator = _partener_din_corp(corp.get("locator_cui"), corp.get("locator_nume"), "locator", "locatorul (societatea de leasing)")
             if tip == "primire":
-                r = _ls.nota_primire_financiar(corp["valoare_capital"],
-                                               corp.get("dobanda_totala", 0),
-                                               _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare", "2133"))
-                d0 = "Primire bun leasing financiar (2133=167 + D8051 dobanda)"
+                from core import inventariere as _iv
+                ci = _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare")
+                _verifica_catalog(corp.get("cod_catalog"), corp.get("dnf_luni"))
+                mf_reg = _iv.pregateste_mf_plus(dict(corp, valoare=corp["valoare_capital"], cont_imobilizare=ci,
+                                                     cont_amortizare=cont_amortizare_pentru(ci), destinatie_cd=False))
+                r = _ls.nota_primire_financiar(corp["valoare_capital"], corp.get("dobanda_totala", 0), ci)
+                d0 = "Primire în leasing financiar %s de la %s (%s=167 + D8051 dobânda)" % (corp["denumire"], locator[1], ci)
             elif tip == "rata":
                 r = _ls.nota_rata_financiar(corp["capital"], corp.get("dobanda", 0),
                                             corp.get("comision", 0), _common.cota_ceruta(corp))
-                d0 = "Rata leasing financiar (167/666/628=404 + C8051)"
+                d0 = "Rata leasing financiar %s (167/666/628=404 + C8051)" % locator[1]
             elif tip == "reziduala":
                 r = _ls.nota_reziduala(corp["valoare_reziduala"], _common.cota_ceruta(corp))
-                d0 = "Valoare reziduala leasing (167=404, inchide 167)"
+                d0 = "Valoare reziduala leasing %s (167=404, inchide 167)" % locator[1]
             elif tip == "operational":
                 r = _ls.nota_rata_operational(corp["chirie"], _common.cota_ceruta(corp),
-                                              _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala", "612"))
-                d0 = "Rata leasing operational (612=401)"
+                                              _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala"))
+                d0 = "Rata leasing operational %s (612=401)" % locator[1]
             else:
                 raise ValueError(nomenclator_cerut("tip", "primire|rata|reziduala|operational"))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 212-217"
+        info = {}
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            mid = None
+            if mf_reg:   # [523 / 519] bunul intră în registru, activ la validarea notei
+                cod = _numar_inventar(cur, schema, corp.get("numar_inventar"))
+                try:
+                    mid = repo_mijloace_fixe.adauga_cu_reevaluare(cur, schema, cod, mf_reg["denumire"], mf_reg["cont_imobilizare"],
+                                                                  mf_reg["cont_amortizare"], mf_reg["valoare"], mf_reg["rezidual"],
+                                                                  mf_reg["dnf_luni"], mf_reg["data_pif"], mf_reg["metoda"], False)[0]
+                except _chei.CheieDublata as e:
+                    raise _erori.DateInvalide(e.detaliu())
+                repo_mijloace_fixe.seteaza_cod_catalog_schema(cur, schema, mid, str(corp["cod_catalog"]).strip().rstrip("."))
+                cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ = false WHERE id = %s", (mid,))
+                _mfn.leaga(cur, schema, mid, iid, "intrare")
+                info.update(mijloc_fix_id=mid, numar_inventar=cod)
             for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                if mid and dd.startswith("2"):   # bunul primit, pe activ și cu locatorul (167)
+                    _mfn.adauga_linie(cur, schema, iid, dd, cc, ss, mid, locator[0], locator[1])
+                elif locator and ({"167", "404", "401"} & {dd, cc}):   # [506] locatorul pe rândurile datoriei
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, locator[0], locator[1])
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            for cont, sens, suma in r.get("extrabilant") or []:   # [507] 8051 într-o singură parte, legat de notă
+                _xb.scrie(cur, schema, corp["data"], cont, sens, suma, "Dobânda leasingului (%s)" % locator[1], inregistrare_id=iid,
+                          mijloc_fix_id=mid)
+            if r.get("extrabilant"):
+                info["extrabilant"] = [_xb.text(*x) for x in r["extrabilant"]]
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
 def nota_credit(tenant_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-credit`; docstringul ei a ramas in stratul HTTP."""
-    from core import credite as _cr
+    from core import credite as _cr, ops_sold as _os
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -5209,6 +5408,7 @@ def nota_credit(tenant_id, corp, ctx):
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         tip = corp.get("tip", "lung")
+        info = {}
         try:
             _uc_comun._campuri_lipsa(corp, {"primire": ("suma",), "dobanda": ("dobanda",), "restanta": ("suma",),
                                             "garantie": ("suma",)}.get(op, ()))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
@@ -5219,11 +5419,31 @@ def nota_credit(tenant_id, corp, ctx):
                 r = _cr.nota_dobanda_angajata(corp["dobanda"], tip)
                 d0 = "Dobanda angajata credit (666=168x/519x)"
             elif op == "plata":
+                # [lotul 13, deficiența 524] rata stinge 1621/5191, dobânda 1682/5198: niciuna peste soldul contului ei (note validate).
+                # „Dobânda a fost înregistrată deja pe 666” n-o mai spune omul — o stabilește soldul: dobânda angajată (sold creditor
+                # 1682/5198) se plătește din cont; fără sold și fără nicio ciornă care l-ar crea, dobânda e cheltuiala lunii (666 = 5121);
+                # un sold parțial sau o dobândă rămasă în ciornă se refuză (altfel 666 s-ar înregistra de două ori).
+                c_cr = _cr._tip(tip)
+                dob = Decimal(str(corp.get("dobanda") or 0))
+                with conn.cursor() as cur:
+                    _os.cere_sold(cur, schema, c_cr["credit"], corp.get("data"), corp.get("rata") or 0, "creditor", "Plata ratei",
+                                  camp="op-rata")
+                    angajata = False
+                    if dob > 0:
+                        disp, _sold, ciorne = _os.disponibil(cur, schema, c_cr["dobanda"], corp.get("data"), "creditor")
+                        angajata = disp > 0 or bool(ciorne["creeaza"])
+                        if angajata:
+                            _os.cere_sold(cur, schema, c_cr["dobanda"], corp.get("data"), dob, "creditor", "Plata dobânzii",
+                                          camp="op-dobanda")
                 r = _cr.nota_plata(corp.get("rata", 0), corp.get("dobanda", 0),
-                                   corp.get("comision", 0), tip,
-                                   dobanda_angajata=_uc_comun.bifa(corp, "dobanda_angajata", True))
+                                   corp.get("comision", 0), tip, dobanda_angajata=angajata)
+                info = {"dobanda_din": ("contul %s (dobânda înregistrată)" % c_cr["dobanda"]) if angajata else "666 (cheltuiala lunii)"} \
+                    if dob > 0 else {}
                 d0 = "Plata rata/dobanda/comision credit"
             elif op == "restanta":
+                with conn.cursor() as cur:   # [524] restanța mută rata din credit pe restant: nu peste soldul creditului
+                    _os.cere_sold(cur, schema, _cr._tip(tip)["credit"], corp.get("data"), corp.get("suma") or 0, "creditor",
+                                  "Restanța", camp="op-suma")
                 r = _cr.nota_restanta(corp["suma"], tip)
                 d0 = "Credit nerambursat la scadenta"
             elif op == "garantie":
@@ -5235,17 +5455,26 @@ def nota_credit(tenant_id, corp, ctx):
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802"
+        out = {"linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            if r["linii"]:
+                iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
+                for dd, cc, ss in r["linii"]:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                out["inregistrare_id"] = iid
+            if r.get("extrabilant"):   # [lotul 13, 507] garanția: numai în afara bilanțului, cu documentul ei
+                from core import extrabilant as _xb
+                for cont, sens, suma in r["extrabilant"]:
+                    _xb.scrie(cur, schema, corp["data"], cont, sens, suma, descr[:200], document=corp.get("descriere"))
+                out["extrabilant"] = [_xb.text(*x) for x in r["extrabilant"]]
+                out["mesaj"] = "Garanția e înregistrată în afara bilanțului: %s. Nu intră în rândurile notelor." % "; ".join(out["extrabilant"])
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
+    return _uc_comun.cu_eticheta(schema, out)
 
 
 def nota_avans(tenant_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-avans`; docstringul ei a ramas in stratul HTTP."""
-    from core import avansuri as _av
+    from core import avansuri as _av, ops_sold as _os
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -5282,12 +5511,18 @@ def nota_avans(tenant_id, corp, ctx):
                 r = _av.nota_avans_platit(corp["suma"], cota, dest)
                 d0 = f"Factura avans furnizor ({r['cont_avans']}+4426=401)"
             elif op == "regularizare_platit":
+                with conn.cursor() as cur:   # [lotul 13, 524] regularizarea stinge avansul dat (409x): nu peste soldul lui
+                    _os.cere_sold(cur, schema, _av.CONT_AVANS.get(dest, "4091"), corp.get("data"), corp.get("suma") or 0, "debitor",
+                                  "Regularizarea avansului plătit", camp="op-suma")
                 r = _av.nota_regularizare_avans_platit(corp["suma"], cota, dest)
                 d0 = "Regularizare avans furnizor la factura finala"
             elif op == "avans_incasat":
                 r = _av.nota_avans_incasat(corp["suma"], cota)
                 d0 = "Factura avans client (4111=419+4427)"
             elif op == "regularizare_incasat":
+                with conn.cursor() as cur:   # [lotul 13, 524] regularizarea stinge avansul încasat (419): nu peste soldul lui
+                    _os.cere_sold(cur, schema, "419", corp.get("data"), corp.get("suma") or 0, "creditor",
+                                  "Regularizarea avansului încasat", camp="op-suma")
                 r = _av.nota_regularizare_avans_incasat(corp["suma"], cota)
                 d0 = "Regularizare avans client la factura finala"
             else:                       # nu se poate ajunge aici: `op` e verificat mai sus
@@ -5384,14 +5619,18 @@ def achizitie_necorporala(tenant_id, corp, ctx):
             # alin.(3)) -> TVA pe 4428, mutat pe 4426 la plată (`tva_incasare.linii_la_incasare`); altfel 4426, ca până acum
             from core import tva_incasare as _tvi
             _cont_tva = "4428" if _tvi.regim(cur, schema, fid) == _tvi.REGIM_INCASARE else "4426"
-            for dd, cc, ss in [(cont_imo, "404", val), (_cont_tva, "404", tva)]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            # [lotul 13, 519 / 522] activul intră în registru la VALIDAREA notei (`mf_note`, intrare); rândul activului poartă activul
+            from core import mf_note as _mfn
+            cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ = false WHERE id = %s", (mfid,))
+            _mfn.leaga(cur, schema, mfid, iid, "intrare")
+            _mfn.adauga_linie(cur, schema, iid, cont_imo, "404", val, mfid)
+            repo_contabilitate.adauga_linie(cur, schema, iid, _cont_tva, "404", tva)
         conn.commit()
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "factura_id": fid, "mijloc_fix_id": mfid, "dnf_luni": int(dnf),
             "conturi": [cont_imo, cont_am]})
 
 
-def _cere_amortizarea_inregistrata(conn, schema, cont_amortizare, ref, de_eliminat, denumire):
+def _cere_amortizarea_inregistrata(conn, schema, cont_amortizare, ref, de_eliminat, denumire, mijloc_fix_id):
     """[R192] Reevaluarea nu poate elimina o amortizare pe care evidența n-a înregistrat-o.
 
     **DE CE E UN REFUZ, nu un avertisment.** Reevaluarea pe metoda valorii nete începe prin
@@ -5408,11 +5647,13 @@ def _cere_amortizarea_inregistrata(conn, schema, cont_amortizare, ref, de_elimin
     Soldul e CREDITOR (credit − debit) la data reevaluării: debitele sunt chiar eliminările
     anterioare și ieșirile din evidență, deci trebuie scăzute.
     """
-    from core import control_incrucisat as _ci
-    from core import reevaluare as _rv
-    r = _ci.rulaje_interval(conn, schema, "1900-01-01", ref.isoformat(), [cont_amortizare])
-    v = r.get(cont_amortizare) or {}
-    sold = (v.get("credit") or 0) - (v.get("debit") or 0)
+    from core import reevaluare as _rv, mf_registru as _mfr
+    # [lotul 13, deficiențele 516 / 522] „Verificarea citește în 2813 doar notele din 2026 (400) și ignoră soldul de preluare (2.200, lunile
+    # 2025); registrul arată corect 2.600.” Amortizarea înregistrată se citește PE ACTIV, cu partea lui din soldul preluat — aceeași cifră ca
+    # registrul (`mf_registru.inregistrat_pe_activ`), nu rulajele contului de la 1900 (fără soldul inițial) și nu contul întreg (alte active).
+    with conn.cursor() as cur:
+        repo_contabilitate.search_path_firma(cur, schema)
+        sold = _mfr.inregistrat_pe_activ(cur, schema, repo_mijloace_fixe.toate(cur), mijloc_fix_id, ref)
     div = _rv.divergenta_amortizare(de_eliminat, sold)
     if div is None:
         return
@@ -5454,12 +5695,14 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
                 amortizare = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                 from core import amortizare_lunii as _amc
                 ci, ca = _amc.conturile_fisei(den, ci, ca, amortizare > 0)   # [C129] fără contul activului nu se scrie nota
-                _cere_amortizarea_inregistrata(conn, schema, ca, ref, amortizare, den)
+                _cere_amortizarea_inregistrata(conn, schema, ca, ref, amortizare, den, corp["mijloc_fix_id"])
                 # [lotul 12, C116] rezerva din reevaluare (105) și descreșterea trecută anterior pe cheltuieli (655) ale ACESTUI activ: din
                 # reevaluările lui aplicate, când cererea nu le dă (ecranul trimite numai valoarea justă). OMFP 1802/2014 pct.111 alin.(2):
                 # descreșterea se tratează „ca o scădere a rezervei din reevaluare […] cu minimul dintre valoarea acelei rezerve și valoarea
                 # descreșterii, iar eventuala diferență rămasă neacoperită se înregistrează ca o cheltuială”; alin.(1): creșterea compensează
                 # întâi „cheltuiala cu descreșterea recunoscută anterior la acel activ”
+                # [lotul 13, 511] formularul nu le mai cere (vin din reevaluările activului); cererea API le poate da pentru o
+                # reevaluare dinaintea preluării, care nu e în registrul iConta
                 _gol = lambda k: corp.get(k) is None or str(corp.get(k)).strip() == ""   # noqa: E731
                 if _gol("sold_105_activ") or _gol("pierdere_655_anterioara"):
                     with conn.cursor() as cur:
@@ -5490,8 +5733,12 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            from core import mf_note as _mfn
             for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                if fapt and (dd.startswith("2") or cc.startswith("2")):   # [lotul 13, 522] rândurile activului reevaluat, pe activ
+                    _mfn.adauga_linie(cur, schema, iid, dd, cc, ss, fapt["mijloc_fix_id"])
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
             if fapt:
                 # [R59] Efectul pe registru NU se produce aici: nota e CIORNA. Se consemneaza ce
                 # propune ea, iar `mijloace_fixe.valoare` urca la VALIDARE (`jurnal_valideaza`).
@@ -5507,35 +5754,79 @@ def reevaluare_imobilizare(tenant_id, corp, ctx):
 
 
 def nota_provizion_ep(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-provizion`; docstringul ei a ramas in stratul HTTP."""
-    from core import provizioane as _pv
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-provizion`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13] 511: la ajustarea creanțelor se alege factura neîncasată — suma (soldul ei) și zilele de la scadență le dă aplicația;
+    512: nota spune partea deductibilă și pe cea nedeductibilă, iar cea nedeductibilă intră singură în ajustările fiscale ale impozitului
+    pe profit (D101 rd.29, „provizioane / ajustări nedeductibile”, legată de notă: în calcul cu nota validată, ștearsă odată cu ea —
+    `ajustari_fiscale.adauga`); 513: tipurile 1515 și 1517; 514: contul de ajustare a stocurilor ales din 391–398; 524: reluarea nu poate
+    depăși soldul contului de ajustare / provizion. TEMEI: CF art.26 alin.(1) lit.c) („30% din valoarea creanțelor […] neîncasate într-o
+    perioadă ce depășește 270 de zile de la termenul de scadență”), lit.j) (100% la falimentul declarat); provizioanele altele decât cele
+    din art.26 și ajustările pentru deprecierea stocurilor nu sunt deductibile (art.25 alin.(4) — se adaugă la rezultatul fiscal, rd.29)."""
+    from datetime import date as _date
+    from core import provizioane as _pv, ops_sold as _os, ajustari_fiscale as _aj
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
-        act = corp.get("actiune", "constituire")
+        # [lotul 13] ajustarea creanțelor: constituirea pe factura aleasă, reluarea pe sumă — două feluri, nu o acțiune ascunsă
+        act = {"creanta": "constituire", "creanta_reluare": "reluare"}.get(fel) or corp.get("actiune")
         info = {}
+        nedeductibil = Decimal("0")
         try:
-            _uc_comun._campuri_lipsa(corp, ("suma",) if fel in ("creanta", "provizion", "stoc") else ())   # [lotul 11, 440 / A4]
+            _uc_comun._campuri_lipsa(corp, {"creanta": ("data", "factura_id"), "creanta_reluare": ("data", "suma"),
+                                            "provizion": ("data", "actiune", "suma", "tip"),
+                                            "stoc": ("data", "actiune", "suma", "cont_ajustare")}.get(fel, ("data", "actiune")))
+            data = _date.fromisoformat(str(corp["data"])[:10])
             if fel == "creanta":
+                from core import reconciliere_api as _rec
+                f = next((x for x in _rec.facturi_deschise(conn, schema) if x["directie"] == "emisa" and str(x["id"]) == str(corp["factura_id"])), None)
+                if not f:
+                    raise _erori.DateInvalide({"mesaj": "Alege factura emisă neîncasată din listă.",
+                                               "erori_campuri": [{"camp": "op-factura_id", "mesaj": "Alege factura din listă."}]})
+                with conn.cursor() as cur:
+                    cur.execute(f"SELECT data_scadenta FROM {schema}.facturi WHERE id = %s", (f["id"],))
+                    scad = cur.fetchone()[0]
+                zile = (data - scad).days if scad else None
+                suma = Decimal(str(f["sold"]))
+                r = _pv.nota_ajustare_creanta(suma, act)
+                pct, temei = _pv.deductibilitate_creanta(zile if zile is not None else 0, _uc_comun.bifa(corp, "garantata", False),
+                                                          _uc_comun.bifa(corp, "afiliata", False), _uc_comun.bifa(corp, "faliment", False))
+                if zile is None and not _uc_comun.bifa(corp, "faliment", False):
+                    temei += " — factura n-are termen de scadență, deci zilele de la scadență nu se pot socoti"
+                ded, nedeductibil = _pv.parti_fiscale(suma, pct)
+                info = {"deductibil_procent": pct, "temei": temei, "zile_de_la_scadenta": zile, "factura": "%s nr. %s" % (f.get("serie") or "", f["numar"]),
+                        "deductibil": str(ded), "nedeductibil": str(nedeductibil)}
+                d0 = f"Ajustare creanta {f['tert_nume']} {f.get('serie') or ''}{f['numar']} — deductibil {bani(ded, 'lei')}, nedeductibil {bani(nedeductibil, 'lei')}"
+            elif fel == "creanta_reluare":
+                with conn.cursor() as cur:
+                    _os.cere_sold(cur, schema, "491", data, corp["suma"], "creditor", "Reluarea ajustării", camp="op-suma")
                 r = _pv.nota_ajustare_creanta(corp["suma"], act)
-                pct, temei = _pv.deductibilitate_creanta(
-                    corp.get("zile_depasire", 0), _uc_comun.bifa(corp, "garantata", False),
-                    _uc_comun.bifa(corp, "afiliata", False), _uc_comun.bifa(corp, "faliment", False))
-                info = {"deductibil_procent": pct, "temei": temei}
-                d0 = f"Ajustare creanta ({act}) - deductibil {pct}%"
+                d0 = "Reluare ajustare creante 491=7814"
             elif fel == "provizion":
-                r = _pv.nota_provizion(corp["suma"], corp.get("tip", "garantii"), act)
-                info = {"deductibil": r["deductibil"]}
-                d0 = f"Provizion {corp.get('tip','garantii')} ({act})" +                      ("" if r["deductibil"] else " - NEDEDUCTIBIL fiscal")
+                if act == "reluare":
+                    with conn.cursor() as cur:
+                        _os.cere_sold(cur, schema, _pv.PROVIZIOANE.get(corp.get("tip"), "151"), data, corp["suma"], "creditor",
+                                      "Reluarea provizionului", camp="op-suma")
+                r = _pv.nota_provizion(corp["suma"], corp.get("tip"), act)
+                if act == "constituire" and not r["deductibil"]:
+                    nedeductibil = Decimal(str(r["linii"][0][2]))
+                info = {"deductibil": str(r["linii"][0][2]) if r["deductibil"] else "0.00", "nedeductibil": str(nedeductibil)}
+                d0 = f"Provizion {corp.get('tip')} ({act})" + ("" if r["deductibil"] else " - nedeductibil fiscal")
             elif fel == "stoc":
-                r = _pv.nota_ajustare_stoc(corp["suma"], _cv.cere_cont(conn, schema, corp.get("cont_ajustare"), "cont_ajustare", "397"), act)
-                info = {"deductibil": False}
-                d0 = f"Ajustare depreciere stocuri ({act}) - nedeductibil fiscal"
+                cont = str(corp.get("cont_ajustare") or "").strip()
+                if act == "reluare":
+                    with conn.cursor() as cur:
+                        _os.cere_sold(cur, schema, cont, data, corp["suma"], "creditor", "Reluarea ajustării", camp="op-suma")
+                r = _pv.nota_ajustare_stoc(corp["suma"], cont, act)
+                if act == "constituire":
+                    nedeductibil = Decimal(str(r["linii"][0][2]))
+                info = {"deductibil": "0.00", "nedeductibil": str(nedeductibil)}
+                d0 = f"Ajustare depreciere stocuri {cont} ({act}) - nedeductibil fiscal"
             else:
-                raise ValueError(nomenclator_cerut("fel", "creanta|provizion|stoc"))
+                raise ValueError(nomenclator_cerut("fel", "creanta|creanta_reluare|provizion|stoc"))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - art. 26 CF / OMFP 1802"
@@ -5543,85 +5834,340 @@ def nota_provizion_ep(tenant_id, corp, ctx):
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
                 repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            if nedeductibil > 0:   # [512] partea nedeductibilă -> D101 rd.29, legată de notă
+                from core import eticheta_nota as _et
+                _aj.adauga(cur, schema, int(str(corp["data"])[:4]), _aj.trimestrul(corp["data"]), "P29", nedeductibil,
+                           ("Partea nedeductibilă a notei: %s" % d0)[:500], _et.nota(cur, schema, iid), None, iid)
+                info["ajustare_fiscala"] = "%s nedeductibili intră în rezultatul fiscal (D101 rd.29) după validarea notei." % bani(nedeductibil, "lei")
         conn.commit()
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
+def _cere_stoc_pe_articol(cur, schema, actiune):
+    """[lotul 13, deficiențele 510 / 548 / 551] Operațiunea scoate sau pune bunul în fișa de magazie, deci cere stocul ținut pe articol
+    (cantitativ-valoric); la firma fără metodă declarată sau global-valorică — refuzul metodei de stoc, cu butonul spre Date firmă
+    (`metoda_stoc.cere`, aceeași regulă ca factura cu marfă și livrarea intracomunitară: 551, „Inconsecvent: vânzarea în regim de marjă și
+    cea de aur au trecut fără metoda de stoc”)."""
+    from core import metoda_stoc as _ms
+    try:
+        _ms.cere(cur, schema, _ms.CV, actiune)
+    except ValueError as e:
+        raise _erori.CerereGresita(_uc_comun.refuz_spre_ecran(str(e), getattr(e, "cod", None), getattr(e, "ecran", None) or "date_firma",
+                                                            getattr(e, "regula", None)))
+
+
+#: conturile de stoc ale bunurilor alese în Operațiuni: produsele finite (345) și mărfurile (371)
+_STOC_FEL = {"345": "produs finit (345)", "371": "marfă (371)"}
+
+
+def _articol_stoc(cur, schema, denumire, cont, camp, um=None, nou=False):
+    """[lotul 13, 510 / 548] Articolul de stoc ales în formular (lista „operatiuni-date?ce=articole”): (id, denumire, um). Bunul e pe contul
+    cerut (`cont`: 345 produse finite, 371 mărfuri) — altfel refuz lângă câmp. `nou` (obținerea): un produs care nu e încă în stoc se
+    creează pe 345 / 711, cu unitatea de măsură cerută (nu se presupune „buc”)."""
+    from core import produse_api as _pa, stocuri_cv_api as _cva
+    den = " ".join(str(denumire or "").split())
+
+    def refuz(m):
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": camp, "mesaj": m}]})
+    ex = _pa.articol_dupa_denumire(cur, schema, den)
+    if ex:
+        cur.execute('SELECT cont_stoc FROM "%s".articole WHERE id = %%s' % schema, (ex[0],))
+        r = cur.fetchone()
+        cs = str((r["cont_stoc"] if isinstance(r, dict) else r[0]) or "")
+        if not cs.startswith(cont):
+            refuz("„%s” e în stoc pe contul %s, nu ca %s. Alege bunul din listă." % (ex[1], cs, _STOC_FEL[cont]))
+        return ex
+    if not nou:
+        refuz("„%s” nu e în stoc ca %s. Alege bunul din listă (cele cu stoc)." % (den, _STOC_FEL[cont]))
+    if not str(um or "").strip():
+        m = "Produsul „%s” e nou în stoc: scrie unitatea lui de măsură (buc, kg, m …)." % den
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-um", "mesaj": m}]})
+    return _cva.articol_pentru_intrare(cur, schema, den, str(um).strip(), cont, "711"), den, str(um).strip()
+
+
+def _cantitate_pozitiva(v, camp):
+    from decimal import InvalidOperation
+    try:
+        c = Decimal(str(v).replace(",", "."))
+    except (InvalidOperation, ValueError):
+        c = None
+    if c is None or c <= 0:
+        m = "Cantitatea trebuie să fie un număr mai mare decât zero."
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": camp, "mesaj": m}]})
+    return c
+
+
+def _iesire_din_stoc(conn, schema, articol, cantitate, data, document):
+    """[lotul 13, 548] Ieșirea bunului din stoc, ca orice ieșire pe articol (`stocuri_cv_api.iesire`: CMP, nota ei 607 = 371 cu documentul
+    vânzării, fișa de magazie): {"id", "valoare", "inregistrare_id"}; stocul insuficient — refuz lângă cantitate."""
+    from core import stocuri_cv_api as _cva
+    r = _cva.iesire(conn, schema, {"articol_id": articol[0], "data": data, "cantitate": str(cantitate), "document": document})
+    if r is None:
+        m = "Bunul ales nu mai e în nomenclatorul de stoc. Alege-l din nou din listă."
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-articol", "mesaj": m}]})
+    if r.get("eroare"):
+        m = "„%s”: %s" % (articol[1], r["eroare"])
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-cantitate", "mesaj": m}]})
+    return r
+
+
+def _coeficient_348(cur, schema, data):
+    """[lotul 13, 510] Coeficientul de repartizare a diferențelor de preț la produse, din evidență — OMFP 1802/2014 pct.286 alin.(4):
+    (soldul inițial al diferențelor de preț + diferențele aferente intrărilor, cumulat de la începutul exercițiului) / (soldul inițial al
+    stocurilor la preț de înregistrare + valoarea intrărilor la preț de înregistrare, cumulat de la începutul exercițiului). Soldul
+    inițial = 348 / 345 la 31.12 al anului trecut (soldurile preluate + notele validate); intrările = rândurile 345 debit ale notelor
+    validate din an; diferențele intrărilor = 348 pe notele de obținere (documentul „Bon de predare, transfer, restituire”). Fără nicio
+    diferență -> 0 (nimic de repartizat). Numai notele VALIDATE (evidența)."""
+    import datetime as _dt
+    from core import ops_sold as _os, productie as _pr, documente_interne as _di
+    an_inceput = _dt.date(data.year, 1, 1)
+    anterior = an_inceput - _dt.timedelta(days=1)
+    si_348 = _os.sold_net(cur, schema, "348", anterior)
+    si_345 = _os.sold_net(cur, schema, "345", anterior)
+    bon = _di.TIPURI["bon_predare"] + "%"
+    p = '"%s".' % schema
+    # '%%%%' în șablon: după formatarea cu % rămâne '%%', iar cererea cu parametri îl dă '%' (altfel psycopg ia '%'' drept parametru)
+    cur.execute("SELECT COALESCE(SUM(CASE WHEN l.cont_debit LIKE '345%%%%' THEN l.suma ELSE 0 END), 0) AS intrari_345, "
+                "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '348%%%%' AND i.document_ref LIKE %%s THEN l.suma ELSE 0 END), 0) "
+                "- COALESCE(SUM(CASE WHEN l.cont_credit LIKE '348%%%%' AND i.document_ref LIKE %%s THEN l.suma ELSE 0 END), 0) AS dif_intrari "
+                "FROM %sinregistrari_linii l JOIN %sinregistrari i ON i.id = l.inregistrare_id "
+                "WHERE i.status = 'validata' AND i.data >= %%s AND i.data <= %%s" % (p, p), (bon, bon, an_inceput, data))
+    r = cur.fetchone()
+    intrari_345, dif_intrari = (Decimal(str(x)) for x in (list(r.values()) if isinstance(r, dict) else r))
+    if si_348 + dif_intrari == 0:
+        return Decimal("0"), {"sold_initial_348": "0.00", "diferente_intrari": "0.00"}
+    try:
+        k = _pr.coeficient_348(si_348, dif_intrari, si_345, intrari_345)
+    except ValueError as e:
+        raise _erori.DateInvalide(str(e) + " Validează întâi notele de obținere a produselor (Bon de predare), apoi vinde.")
+    return k, {"sold_initial_348": str(si_348), "diferente_intrari": str(dif_intrari), "sold_initial_345": str(si_345),
+               "intrari_345": str(intrari_345)}
+
+
 def nota_productie(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-productie`; docstringul ei a ramas in stratul HTTP."""
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-productie`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 510, comanda Costin 13.1] „Obținerea nu cere produs, cantitate, gestiune; la vânzare costul standard ieșit și
+    coeficientul 348 se introduc de mână. Aplicația ține stocul de produse și calculează coeficientul din soldurile 348 și 345.”
+    - obținerea: produsul (din stoc sau nou, pe 345 / 711), cantitatea, costul standard unitar și gestiunea; nota 345 = 711 (+ 348 la
+      costul efectiv) are documentul „Bon de predare, transfer, restituire” (OMFP 2634/2015, cod 14-3-3A), iar intrarea în fișa de magazie
+      e legată de ea (un document cu mișcare de stoc: se respinge din „De validat”, nu se șterge din Registrul jurnal);
+    - vânzarea: factura din Facturi emise către client (506: partenerul și documentul), cu produsul din stoc — descărcarea gestiunii
+      711 = 345 la ieșire (`descarca_factura`) — și diferențele de preț repartizate asupra ieșirii cu coeficientul din evidență
+      (OMFP 1802/2014 pct.286 alin.(4)); nimic din ele nu se mai scrie de mână;
+    - producția în curs: neschimbată (331 = 711 / 711 = 331)."""
     from core import productie as _pr
+    import datetime as _dt
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
+        info = {}
         try:
-            _uc_comun._campuri_lipsa(corp, {"obtinere": ("cost_standard",), "pic": ("suma",),
-                                            "vanzare": ("pret_vanzare", "cost_standard_iesit", "cota")}.get(op, ()))   # [lotul 11, 440 / A4]
-            if op == "obtinere":
-                r = _pr.nota_obtinere(corp["cost_standard"], corp.get("cost_efectiv"))
-                d0 = "Obtinere produse finite 345=711 (cost standard)"
-            elif op == "pic":
-                r = _pr.nota_productie_in_curs(corp["suma"], corp.get("moment", "constatare"))
-                d0 = f"Productie in curs ({corp.get('moment','constatare')}) 331/711"
-            elif op == "vanzare":
-                r = _pr.nota_vanzare(corp["pret_vanzare"], corp["cost_standard_iesit"],
-                                     _common.cota_ceruta(corp), corp.get("coef_348"))
-                d0 = "Vanzare produse finite 4111=701+4427, descarcare 711=345"
-            else:
+            _uc_comun._campuri_lipsa(corp, {"obtinere": ("produs", "cantitate", "cost_standard", "gestiune"), "pic": ("suma",),
+                                            "vanzare": ("produs", "cantitate", "pret_vanzare", "cota")}.get(op, ()))   # [lotul 11, 440 / A4]
+            if op not in ("obtinere", "pic", "vanzare"):
                 raise ValueError(nomenclator_cerut("operatie", "obtinere|pic|vanzare"))
+            data = _dt.date.fromisoformat(str(corp["data"])[:10])
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - OMFP 1802"
+        if op == "pic":
+            try:
+                r = _pr.nota_productie_in_curs(corp["suma"], corp.get("moment", "constatare"))
+            except ValueError as e:
+                raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
+            descr = (corp.get("descriere") or f"Productie in curs ({corp.get('moment','constatare')}) 331/711") + " - OMFP 1802"
+            with conn.cursor() as cur:
+                iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
+                for dd, cc, ss in r["linii"]:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            conn.commit()
+            return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
+        cant = _cantitate_pozitiva(corp["cantitate"], "op-cantitate")
+        if op == "obtinere":
+            from core import stocuri_cv_api as _cva
+            with conn.cursor() as cur:
+                _cere_stoc_pe_articol(cur, schema, "Obținerea produselor în fișa de magazie")
+                art = _articol_stoc(cur, schema, corp["produs"], "345", "op-produs", um=corp.get("um"), nou=True)
+            try:
+                cs = Decimal(str(corp["cost_standard"]))
+                valoare = (cant * cs).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+                r = _pr.nota_obtinere(valoare, corp.get("cost_efectiv") or None)
+            except (ValueError, ArithmeticError) as e:
+                raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
+            gestiune = str(corp["gestiune"]).strip()
+            descr = (corp.get("descriere") or "Obtinere %s × %s (345=711, cost standard %s)" % (art[1], cant, cs)) + " - OMFP 1802"
+            with conn.cursor() as cur:
+                iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], "bon_predare")[0]
+                for dd, cc, ss in r["linii"]:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                cur.execute('SELECT document_ref FROM "%s".inregistrari WHERE id = %%s' % schema, (iid,))
+                doc = cur.fetchone()[0]
+            m = _cva.intrare(conn, schema, {"articol_id": art[0], "data": corp["data"], "cantitate": str(cant), "pret_unitar": str(cs),
+                                            "document": doc, "locatie": gestiune})
+            if m.get("eroare"):
+                raise _erori.DateInvalide(m["eroare"])
+            with conn.cursor() as cur:   # intrarea în fișă e a notei (documentul cu mișcare de stoc)
+                cur.execute('UPDATE "%s".miscari_stoc SET inregistrare_id = %%s WHERE id = %%s' % schema, (iid, m["id"]))
+            info = {"document": doc, "produs": art[1], "cantitate": str(cant), "gestiune": gestiune, "valoare": str(valoare),
+                    "diferenta": ({k: str(v) for k, v in r["diferenta"].items()} if r.get("diferenta") else None)}
+            conn.commit()
+            return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
+        # vânzarea: factura către client, descărcarea produsului, diferențele de preț repartizate
+        client = _partener_din_corp(corp.get("client_cui"), corp.get("client_nume"), "client", "clientul")
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            _cere_stoc_pe_articol(cur, schema, "Vânzarea produselor din stoc")
+            art = _articol_stoc(cur, schema, corp["produs"], "345", "op-produs")
+        try:
+            linie = {"descriere": art[1], "um": art[2], "cantitate": str(cant), "pret_unitar": str(corp["pret_vanzare"]),
+                     "cota_tva": _common.cota_ceruta(corp), "cont_venit": "701", "articol_id": art[0]}
+        except ValueError as e:
+            raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
+        fid, numar, nid_fact = _emite_catre(conn, schema, corp, client, linie, "Vânzarea produselor")
+        from core import stocuri_cv_api as _cva
+        d = _cva.descarca_factura(conn, schema, fid, corp["data"])
+        if d.get("erori"):
+            m = "Vânzarea nu s-a înregistrat: %s — %s. Nimic nu s-a scris." % (art[1], d["erori"][0]["eroare"])
+            raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-cantitate", "mesaj": m}]})
+        iesit = sum((Decimal(str(x["valoare"])) for x in d["descarcate"]), Decimal("0"))
+        with conn.cursor() as cur:
+            k, baza = _coeficient_348(cur, schema, data)
+            dif = _pr.nota_diferente_iesire(iesit, k)
+            nid_dif = None
+            if dif["linii"]:
+                from core import eticheta_nota as _etn
+                doc_f = _etn.factura(cur, schema, fid)
+                nid_dif = repo_contabilitate.nota_operatiune_ciorna(
+                    cur, schema, corp["data"], ("Diferente de pret repartizate asupra iesirii %s (K = %s, OMFP 1802 pct.286)" % (art[1], k))[:200],
+                    document_ref=doc_f)[0]
+                for dd, cc, ss in dif["linii"]:
+                    repo_contabilitate.adauga_linie(cur, schema, nid_dif, dd, cc, ss)
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": nid_fact, "factura_id": fid, "numar_factura": numar,
+                                          "descarcare": [{k2: str(v) for k2, v in x.items()} for x in d["descarcate"]],
+                                          "coeficient_348": str(k), "baza_coeficient": baza, "nota_diferente_id": nid_dif,
+                                          "linii": [[a, b, str(c)] for a, b, c in dif["linii"]]})
+
+
+def _factura_primita_existenta(cur, schema, furnizor_cui, numar):
+    """[lotul 13, 506] Factura furnizorului deja în Facturi primite (același furnizor și număr): (id, data) sau None — o operațiune care ar
+    înregistra-o a doua oară se leagă de ea."""
+    cur.execute(f"SELECT id, data_emitere FROM {schema}.facturi WHERE directie = 'primita' AND upper(btrim(numar)) = upper(btrim(%s)) "
+                f"AND regexp_replace(upper(COALESCE(tert_cui, '')), '^RO', '') = regexp_replace(upper(%s), '^RO', '') ORDER BY id LIMIT 1",
+                (str(numar), str(furnizor_cui)))
+    r = cur.fetchone()
+    return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
+
+
+def _obiect(cur, schema, obiect_id, stare):
+    """[lotul 13, 508] Obiectul de inventar ales: (id, denumire, valoare) dacă e în starea cerută — „magazie” (intrat, nedat în folosință)
+    sau „folosinta” (dat în folosință prin notă validată, nescos); altfel refuz lângă câmp."""
+    p = '"%s".' % schema
+    cur.execute("SELECT o.id, o.denumire, o.valoare, o.nota_dare_id, o.scoatere_id, ii.status AS stare_intrare, di.status AS stare_dare, o.factura_id FROM %sobiecte_inventar o "
+                "LEFT JOIN %sinregistrari ii ON ii.id = o.nota_intrare_id LEFT JOIN %sinregistrari di ON di.id = o.nota_dare_id WHERE o.id = %%s"
+                % (p, p, p), (obiect_id,))
+    r = cur.fetchone()
+    r = (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
+    ok = r is not None and (
+        (stare == "magazie" and r[3] is None and r[4] is None and (r[5] == "validata" or r[7] is not None)) or
+        (stare == "folosinta" and r[3] is not None and r[6] == "validata" and r[4] is None))
+    if not ok:
+        m = ("Alege obiectul din lista celor intrate în gestiune și nedate încă în folosință (cu nota intrării validată)." if stare == "magazie"
+             else "Alege obiectul din lista celor date în folosință (nota dării validată) și nescoase încă.")
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-obiect_id", "mesaj": m}]})
+    return r[0], r[1], r[2]
 
 
 def nota_obiect_inventar(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-obiect-inventar`; docstringul ei a ramas in stratul HTTP."""
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-obiect-inventar`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13] 505: valoarea e „fără TVA”; 506: achiziția cere furnizorul (din Parteneri / Verifică ANAF) și numărul facturii — documentul
+    notei e factura, nu „Notă de calcul”; factura deja în Facturi primite nu se înregistrează a doua oară (obiectul se leagă de ea);
+    507: clasa 8 într-o singură parte (D 8035 la dare, C 8035 la scoatere), fără 891 și în afara totalurilor notei (`extrabilant`);
+    508: darea și scoaterea aleg obiectul din registrul obiectelor de inventar, iar valoarea vine de la el."""
     from datetime import date as _date
-    from core import obiecte_inventar as _oi
+    from core import obiecte_inventar as _oi, extrabilant as _xb
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
+        obiect = None
+        fact_exist = None
         try:
-            _uc_comun._campuri_lipsa(corp, {"achizitie": ("data", "valoare", "cota"), "dare_folosinta": ("valoare",),
-                                            "scoatere": ("valoare",)}.get(op, ()))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
+            _uc_comun._campuri_lipsa(corp, {"achizitie": ("data", "denumire", "valoare", "cota", "numar"), "dare_folosinta": ("data", "obiect_id"),
+                                            "scoatere": ("data", "obiect_id")}.get(op, ()))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
             if op == "achizitie":
                 ref = _date.fromisoformat(corp["data"])
+                furn = _partener_din_corp(corp.get("furnizor_cui"), corp.get("furnizor_nume"), "furnizor", "furnizorul")
                 if not _oi.e_obiect_inventar(corp["valoare"], ref,
                                              _uc_comun.bifa(corp, "durata_sub_1_an", False)):
                     raise ValueError(f"valoarea depășește pragul pentru mijloc fix, de "
                                      f"{bani(_oi.prag_mf(ref), 'lei')} (OUG 8/2026): "
                                      "înregistrează bunul ca mijloc fix")
                 r = _oi.nota_achizitie(corp["valoare"], _common.cota_ceruta(corp))
-                d0 = "Achizitie obiect de inventar 303+4426=401"
+                with conn.cursor() as cur:
+                    fact_exist = _factura_primita_existenta(cur, schema, furn[0], corp["numar"])
+                d0 = "Achizitie obiect de inventar %s 303+4426=401" % corp["denumire"]
             elif op == "dare_folosinta":
-                r = _oi.nota_dare_folosinta(corp["valoare"])
-                d0 = "Dare in folosinta OI: 603=303 + D8035"
+                with conn.cursor() as cur:
+                    obiect = _obiect(cur, schema, corp["obiect_id"], "magazie")
+                r = _oi.nota_dare_folosinta(obiect[2])
+                d0 = "Dare in folosinta %s: 603=303 + D8035" % obiect[1]
             elif op == "scoatere":
-                r = _oi.nota_scoatere_uz(corp["valoare"])
-                d0 = "Scoatere din uz OI: C8035 (proces-verbal)"
+                with conn.cursor() as cur:
+                    obiect = _obiect(cur, schema, corp["obiect_id"], "folosinta")
+                r = _oi.nota_scoatere_uz(obiect[2])
+                d0 = "Scoatere din folosinta %s: C8035 (proces-verbal)" % obiect[1]
             else:
                 raise ValueError(nomenclator_cerut("operatie", "achizitie|dare_folosinta|scoatere"))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 / OUG 8/2026"
+        iid = None
+        info = {}
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            if op == "achizitie":
+                from core import jurnal_api as _j
+                if fact_exist:   # [506] factura e deja în Facturi primite, cu contarea ei: obiectul se leagă de ea, nicio notă nouă
+                    info["factura_furnizor"] = "deja în Facturi primite (nr. %s): obiectul se leagă de ea, nu se înregistrează a doua oară" % corp["numar"]
+                else:
+                    iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200],
+                                                                    document_ref=_j.eticheta_document("Factura", corp["numar"], corp["data"]))[0]
+                    for dd, cc, ss in r["linii"]:
+                        repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, furn[0], furn[1])
+                cur.execute(f"INSERT INTO {schema}.obiecte_inventar (denumire, valoare, data_intrare, furnizor_cui, furnizor_nume, factura_numar, "
+                            f"nota_intrare_id, factura_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id",
+                            (corp["denumire"][:200], r["linii"][0][2], corp["data"], furn[0], furn[1], str(corp["numar"]), iid,
+                             fact_exist[0] if fact_exist else None))
+                info["obiect_id"] = cur.fetchone()[0]
+            elif op == "dare_folosinta":
+                iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], "bon_consum")[0]
+                for dd, cc, ss in r["linii"]:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                for cont, sens, suma in r["extrabilant"]:
+                    _xb.scrie(cur, schema, corp["data"], cont, sens, suma, "Dare în folosință: %s" % obiect[1], inregistrare_id=iid,
+                              obiect_id=obiect[0])
+                cur.execute(f"UPDATE {schema}.obiecte_inventar SET nota_dare_id = %s WHERE id = %s", (iid, obiect[0]))
+                info["extrabilant"] = [_xb.text(*x) for x in r["extrabilant"]]
+            else:   # scoatere: numai C 8035, cu procesul-verbal; nicio notă (nimic în bilanț)
+                from core import documente_interne as _di, jurnal_api as _j
+                doc = _j.eticheta_document(_di.TIPURI["pv_scoatere"], _di.urmatorul(conn, schema, "pv_scoatere", corp["data"]), corp["data"])
+                for cont, sens, suma in r["extrabilant"]:
+                    xid = _xb.scrie(cur, schema, corp["data"], cont, sens, suma, "Scoatere din folosință: %s" % obiect[1], document=doc,
+                                    obiect_id=obiect[0])
+                cur.execute(f"UPDATE {schema}.obiecte_inventar SET scoatere_id = %s WHERE id = %s", (xid, obiect[0]))
+                info.update(extrabilant=[_xb.text(*x) for x in r["extrabilant"]], document=doc,
+                            mesaj="%s: obiectul «%s» e scos din folosință; în afara bilanțului: %s." % (doc, obiect[1], _xb.text(*r["extrabilant"][0])))
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
+    out = {"linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+    if iid:
+        out["inregistrare_id"] = iid
+    return _uc_comun.cu_eticheta(schema, out)
 
 
 def _refuz_dividend(mesaj, camp=None, ecran=None):
@@ -5662,15 +6208,21 @@ def _sursa_profitului(cur, schema, data_hot, brut):
         if s <= 0:
             continue
         nev = repo_contabilitate.dividende_nevalidate_din(cur, schema, cont)
+        if cont == "117":   # [lotul 13, 527] dividendele din 117 trec prin reclasificarea 117 = 1171 din aceeași notă
+            cur.execute(f"SELECT i.id, SUM(l.suma) AS suma FROM {schema}.inregistrari i JOIN {schema}.inregistrari_linii l "
+                        f"ON l.inregistrare_id = i.id WHERE i.status <> 'validata' AND l.cont_debit = '117' AND l.cont_credit = '1171' "
+                        f"AND EXISTS (SELECT 1 FROM {schema}.inregistrari_linii x WHERE x.inregistrare_id = i.id AND x.cont_credit LIKE '457%') "
+                        f"GROUP BY i.id")
+            nev = list(nev) + [dict(r) if isinstance(r, dict) else {"id": r[0], "suma": r[1]} for r in cur.fetchall()]
         rezervat[cont] = (sum((_D(str(x["suma"])) for x in nev), _D("0")), [x["id"] for x in nev])
         if brut <= s - rezervat[cont][0]:
             if cont == "1171":
                 return cont, None
             return cont, _af.afirmatie(
                 "fapt", "sursa dividendului",
-                "Rezultatul reportat e preluat pe contul sintetic 117 (%s), fără analiticul 1171: nota debitează 117, contul care are "
-                "soldul. Reclasifică soldul pe 1171 (nota 117 = 1171), ca profitul nerepartizat să fie pe analiticul lui (OMFP 1802/2014, "
-                "contul 117)." % bani(s, "lei"), unde="contul 117, la %s" % data_ro(data_hot),
+                "Rezultatul reportat e preluat pe contul sintetic 117 (%s), fără analiticul 1171: nota trece întâi suma dividendului pe "
+                "analitic (117 = 1171) și repartizează din 1171 (OMFP 1802/2014, contul 1171)." % bani(s, "lei"),
+                unde="contul 117, la %s" % data_ro(data_hot),
                 temei_completitudine="soldul la data hotărârii: soldurile preluate și notele validate până la ea")   # citit cu `bilant_api.sold_la`
     parti = ["%s: sold creditor %s" % ("1171" if c == "1171" else "117 (fără analitic)", bani(max(s, _D("0")), "lei"))
              for c, s in solduri.items()]
@@ -5774,7 +6326,7 @@ def dividende_impartire(tenant_id, corp, ctx):
 
 def nota_asociati(tenant_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-asociati`; docstringul ei a ramas in stratul HTTP."""
-    from core import decontari_asociati as _da
+    from core import decontari_asociati as _da, ops_sold as _os
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -5806,6 +6358,10 @@ def nota_asociati(tenant_id, corp, ctx):
                 r = _da.nota_restituire_dividend(corp.get("suma_restituita"))
                 d0 = "Restituire dividende interimare încasată (5121=463, OMFP 3067/2018)"
             elif op == "imprumut":
+                if corp.get("fel") == "restituire":
+                    with conn.cursor() as cur:   # [lotul 13, 524] restituirea stinge datoria către asociați (4551): nu peste soldul ei
+                        _os.cere_sold(cur, schema, "4551", corp.get("data"), corp.get("suma") or 0, "creditor",
+                                      "Restituirea împrumutului", camp="op-suma")
                 r = _da.nota_imprumut_asociat(corp.get("suma", 0),
                                               corp.get("fel", "primire"),
                                               corp.get("dobanda", 0))
@@ -5820,9 +6376,17 @@ def nota_asociati(tenant_id, corp, ctx):
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200],
                                                             document_ref=div["document"] if div else None)[0]
             if div:   # [430b] câte un rând pe fiecare asociat, cu asociatul ca partener al rândului
+                # [lotul 13, deficiența 527] „Profitul nerepartizat al F2 stă pe 117 fără analitic […] nota de dividende debitează 117 deși
+                # eticheta spune 1171/457.” Profitul preluat pe sinteticul 117 se reclasifică în aceeași notă pe analiticul lui (117 = 1171,
+                # suma dividendului), iar dividendul se repartizează din 1171 — OMFP 1802/2014, contul 1171 „Rezultatul reportat reprezentând
+                # profitul nerepartizat sau pierderea neacoperită”.
+                reclas = div["cont_sursa"] == "117"
+                if reclas:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, "117", "1171", div["brut"])
                 for p in r["parti"]:
                     for dd, cc, ss in p["linii"]:
-                        repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, _cif_partener(p["cnp"]), p["nume"])
+                        repo_contabilitate.adauga_linie_partener(cur, schema, iid, "1171" if (reclas and dd == "117") else dd, cc, ss,
+                                                                 _cif_partener(p["cnp"]), p["nume"])
             else:
                 for dd, cc, ss in r["linii"]:
                     repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
@@ -5832,41 +6396,71 @@ def nota_asociati(tenant_id, corp, ctx):
 
 
 def nota_sponsorizare_ep(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-sponsorizare`; docstringul ei a ramas in stratul HTTP."""
-    from core import sponsorizari as _sp
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-sponsorizare`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 532, comanda Costin 13.1] „Formularul cere cifra de afaceri și impozitul datorat, dar creditul fiscal nu apare
+    nicăieri […] Aplicația calculează plafonul […], arată suma scăzută din impozit […], le duce în D101 și ia singură cifra de afaceri și
+    impozitul din contabilitate, la nivelul anului.” CF art.25 alin.(4) lit.i) (forma OUG 115/2023, în vigoare de la 01.01.2024): cei care
+    sponsorizează „scad sumele aferente din impozitul pe profit datorat la nivelul valorii minime dintre următoarele: 1. valoarea calculată
+    prin aplicarea a 0,75% la cifra de afaceri […]; 2. valoarea reprezentând 20% din impozitul pe profit datorat”, iar către entitățile
+    fără scop lucrativ „doar dacă beneficiarul sponsorizării este înscris, la data încheierii contractului, în Registrul entităților”.
+    Acum: cheltuiala intră singură în ajustările fiscale ale anului (D101 rd.27, legată de notă), iar D101 scade creditul la nivelul
+    anului (`d101.calcul_cu_ajustari`: min(sponsorizarea, plafonul pe cifra de afaceri și impozitul anului)); beneficiarul neînscris ->
+    rd.33 (nedeductibilă, fără credit). Nota spune plafonul de acum (0,75% din cifra de afaceri a anului până la data notei). Reportul pe
+    7 ani nu mai există în lege (forma de mai sus nu-l are) — se spune, nu se calculează."""
+    from core import sponsorizari as _sp, ajustari_fiscale as _aj
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
-            _uc_comun._campuri_lipsa(corp, ("suma",))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
-            r = _sp.nota_sponsorizare(corp["suma"], corp.get("mod", "contract"))
-            info = {}
-            if corp.get("cifra_afaceri") is not None:
-                c = _sp.credit_sponsorizare(corp["cifra_afaceri"],
-                                            corp.get("impozit_profit", 0),
-                                            corp["suma"],
-                                            corp.get("tip_impozit", "profit"),
-                                            _uc_comun.bifa(corp, "beneficiar_in_registru", True))
-                info = {k: (str(v) if not isinstance(v, str) else v)
-                        for k, v in c.items()}
+            _uc_comun._campuri_lipsa(corp, ("data", "suma", "mod"))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
+            beneficiar = _partener_din_corp(corp.get("beneficiar_cui"), corp.get("beneficiar_nume"), "beneficiar", "beneficiarul sponsorizării")
+            in_registru = _uc_comun.bifa(corp, "beneficiar_in_registru")
+            r = _sp.nota_sponsorizare(corp["suma"], corp.get("mod"))
+            an = int(str(corp["data"])[:4])
+            with conn.cursor() as cur:
+                cur.execute(f"SELECT COALESCE(SUM(l.suma), 0) FROM {schema}.inregistrari_linii l JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id "
+                            f"WHERE i.status = 'validata' AND l.cont_credit LIKE '70%%' AND i.data >= %s AND i.data <= %s",
+                            ("%d-01-01" % an, str(corp["data"])[:10]))
+                ca = Decimal(str(cur.fetchone()[0] or 0))
+            plafon_ca = (ca * Decimal("0.0075")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            info = {"cifra_afaceri_an": str(ca), "plafon_cifra_afaceri": str(plafon_ca), "in_registru": in_registru,
+                    "credit": ("Se scade din impozitul pe profit al anului %d cel mult minimul dintre 0,75%% din cifra de afaceri (acum %s lei: "
+                               "%s lei) și 20%% din impozitul pe profit datorat — D101 îl calculează la nivelul anului (rd.27 / rd.43.1). "
+                               "Restul de plafon se poate redirecționa prin D177; reportul pe ani nu mai există în lege."
+                               % (an, bani(ca), bani(plafon_ca))) if in_registru else
+                              "Beneficiarul nu e înscris în Registrul entităților: sponsorizarea e numai cheltuială nedeductibilă (D101 rd.33), "
+                              "fără credit fiscal (CF art.25 alin.(4) lit.i))."}
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Sponsorizare (6582, nedeductibil, "
-                 "credit fiscal art. 25(4)i)")
+        descr = (corp.get("descriere") or "Sponsorizare %s (6582, nedeductibil, credit fiscal art. 25(4)i)" % beneficiar[1])
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                if "401" in (dd, cc):
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, beneficiar[0], beneficiar[1])
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            from core import eticheta_nota as _et
+            _aj.adauga(cur, schema, an, _aj.trimestrul(corp["data"]), "P27" if in_registru else "P33", r["linii"][0][2],
+                       ("Sponsorizare %s (CF art.25 alin.(4) lit.i))" % beneficiar[1])[:500], _et.nota(cur, schema, iid), None, iid)
         conn.commit()
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], "credit_fiscal": info})
 
 
 def nota_subventie(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-subventie`; docstringul ei a ramas in stratul HTTP."""
-    from core import subventii as _sb
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-subventie`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 528, comanda Costin 13.1] „Subvenția (445 = 4751) nu se leagă de un mijloc fix, iar reluarea la venituri cere
+    lunar de mână valoarea activului, subvenția și amortizarea lunii. Subvenția se leagă de activ, iar reluarea (4751 = 7584) se generează
+    singură în fiecare lună, odată cu amortizarea lui.” TEMEI: OMFP 1802/2014 pct.400 alin.(2): subvențiile pentru active „se recunosc […]
+    ca venituri […] pe măsura înregistrării cheltuielilor cu amortizarea” activului finanțat. Subvenția pentru investiții se înregistrează
+    acum pe activul ales din registru (rândul 445 = 4751 îl poartă); reluarea lunii o scrie „Generează amortizarea”
+    (`_reluare_subventii`), proporțional cu amortizarea activului. Formularul manual al reluării a ieșit."""
+    from core import subventii as _sb, mf_note as _mfn
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -5874,37 +6468,125 @@ def nota_subventie(tenant_id, corp, ctx):
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         info = {}
+        mid = None
         try:
-            _uc_comun._campuri_lipsa(corp, {"exploatare": ("suma",), "investitii": ("suma",),
-                                            "reluare": ("valoare_activ", "subventie", "amortizare_lunara")}.get(fel, ()))   # [lotul 11, 440 / A4]
+            _uc_comun._campuri_lipsa(corp, {"exploatare": ("suma", "moment", "cont_venit"), "investitii": ("suma", "moment", "mijloc_fix_id")
+                                            }.get(fel, ()))   # [lotul 11, 440 / A4]
             if fel == "exploatare":
-                r = _sb.nota_subventie_exploatare(corp["suma"], corp.get("moment", "drept"),
-                                                  _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "741"))
-                d0 = f"Subventie exploatare ({corp.get('moment','drept')})"
+                r = _sb.nota_subventie_exploatare(corp["suma"], corp.get("moment"),
+                                                  _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit"))
+                d0 = f"Subventie exploatare ({corp.get('moment')})"
             elif fel == "investitii":
-                r = _sb.nota_subventie_investitii(corp["suma"], corp.get("moment", "drept"))
-                d0 = f"Subventie investitii 4751 ({corp.get('moment','drept')})"
-            elif fel == "reluare":
-                r = _sb.reluare_lunara_investitii(corp["valoare_activ"], corp["subventie"],
-                                                  corp["amortizare_lunara"])
-                info = {"procent_subventionat": r["procent_subventionat"]}
-                d0 = "Reluare subventie investitii 4751=7584 (proportional cu amortizarea)"
+                mid = int(corp["mijloc_fix_id"])
+                with conn.cursor() as cur:
+                    cur.execute('SELECT 1 FROM "%s".mijloace_fixe WHERE id = %%s AND activ' % schema, (mid,))   # activul finanțat, din registru
+                    if not cur.fetchone():
+                        raise _erori.DateInvalide({"mesaj": "Alege mijlocul fix finanțat din registrul activelor.",
+                                                   "erori_campuri": [{"camp": "op-mijloc_fix_id", "mesaj": "Alege mijlocul fix din listă."}]})
+                r = _sb.nota_subventie_investitii(corp["suma"], corp.get("moment"))
+                d0 = f"Subventie investitii 4751 ({corp.get('moment')})"
+                info["reluare"] = "Reluarea la venituri (4751 = 7584) se generează odată cu amortizarea lunară a activului."
             else:
-                raise ValueError(nomenclator_cerut("fel", "exploatare|investitii|reluare"))
+                raise ValueError(nomenclator_cerut("fel", "exploatare|investitii"))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 392-402"
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                if mid and "4751" in (dd, cc):   # [528] subvenția stă pe activul finanțat
+                    _mfn.adauga_linie(cur, schema, iid, dd, cc, ss, mid)
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
+def _reluare_subventii(cur, schema, an, luna, linii_amortizare):
+    """[lotul 13, 528] Reluarea lunii la venituri a subvențiilor pentru investiții: pentru fiecare activ cu subvenție VALIDATĂ pe el (445 =
+    4751 cu activul), 4751 = 7584 = amortizarea lunii × subvenție / valoarea activului (OMFP 1802/2014 pct.400 alin.(2); `subventii.
+    reluare_lunara_investitii`), cel mult cât a rămas nereluat. Scrie (sau înlocuiește, dacă e ciornă) nota „SUBV-AAAA-LL”; nimic dacă
+    nu e nicio subvenție sau dacă nota lunii e deja validată. Întoarce eticheta notei sau None."""
+    from decimal import Decimal as _D
+    from core import subventii as _sb, mf_note as _mfn, eticheta_nota as _et
+    p = '"%s".' % schema
+    cur.execute("SELECT ml.mijloc_fix_id, SUM(CASE WHEN l.cont_credit = '4751' THEN l.suma ELSE 0 END) AS primit, "
+                "SUM(CASE WHEN l.cont_debit = '4751' AND l.cont_credit LIKE '758%%' THEN l.suma ELSE 0 END) AS reluat "
+                "FROM %sinregistrari_linii l JOIN %smf_linii ml ON ml.linie_id = l.id JOIN %sinregistrari i ON i.id = l.inregistrare_id "
+                "WHERE i.status = 'validata' AND (l.cont_credit = '4751' OR l.cont_debit = '4751') GROUP BY ml.mijloc_fix_id" % (p, p, p))
+    subv = {r[0]: (_D(str(r[1])), _D(str(r[2]))) for r in cur.fetchall() if r[1]}
+    numar = "SUBV-%d-%02d" % (int(an), int(luna))
+    cur.execute("SELECT id, status FROM %sinregistrari WHERE numar = %%s" % p, (numar,))
+    ex = cur.fetchone()
+    if ex and ex[1] == "validata":
+        return None
+    if ex:
+        cur.execute("DELETE FROM %sinregistrari WHERE id = %%s" % p, (ex[0],))
+    rand = []
+    for cont_am, rata, den, mid in linii_amortizare:
+        if mid not in subv:
+            continue
+        cur.execute("SELECT valoare FROM %smijloace_fixe WHERE id = %%s" % p, (mid,))
+        val = cur.fetchone()[0]
+        try:
+            suma = _sb.reluare_lunara_investitii(val, subv[mid][0], rata)["reluare"]
+        except ValueError:
+            continue
+        suma = min(suma, subv[mid][0] - subv[mid][1])
+        if suma > 0:
+            rand.append((mid, den, suma))
+    if not rand:
+        return None
+    # numărul intră la INSERT (sursa „amortizare”, ca tabloul lunii) — nu printr-un UPDATE pe o coloană de cheie unică (C73)
+    iid = repo_contabilitate.nota_amortizare_ciorna(cur, schema, _uc_comun.ultima_zi_a_lunii(an, luna), numar,
+                                                    "Reluare subvenții pentru investiții %02d/%d (4751=7584, odată cu amortizarea)" % (luna, an))[0]
+    for mid, den, suma in rand:
+        _mfn.adauga_linie(cur, schema, iid, "4751", "7584", suma, mid)
+    return _et.nota(cur, schema, iid)
+
+
+def _partener_din_corp(cui, nume, cheie, eticheta):
+    """[lotul 13, deficiențele 506 / 633] Partenerul operațiunii (câmpurile `op-<cheie>_cui`, `op-<cheie>_nume`), ales în formular din
+    Parteneri sau cu „Verifică” la ANAF: (cui în forma păstrată, nume) sau refuz lângă câmp. „Nota nu are partener (401 fără furnizor,
+    4111 fără client)”. Valorile se citesc în ruta care le cere (`corp.get("<cheie>_cui")`), ca scanerul formularelor să le vadă."""
+    from core import compensari_api as _cz
+    cui, nume = str(cui or "").strip(), str(nume or "").strip()
+    er = _erori.ErorileFormularului("Nota nu s-a generat")
+    if not cui:
+        er.camp("op-%s_cui" % cheie, "Alege %s din Parteneri sau scrie CUI-ul și apasă „Verifică”." % eticheta)
+    if not nume:
+        er.camp("op-%s_nume" % cheie, "Denumirea %s (o aduce „Verifică” de la ANAF)." % eticheta)
+    er.refuza()
+    return _cz.cui_partener(cui) or cui, nume
+
+
+def _emite_catre(conn, schema, corp, client, linie, ce):
+    """[lotul 13, 506 / 530 / 531] Factura emisă către partener (chiria, refacturarea): documentul justificativ e factura din Facturi emise,
+    cu numărul seriei firmei, iar nota e contarea ei de la emitere (o singură notă pe factură). Întoarce (factura_id, numar, nota_id)."""
+    from core import facturi_api as _fa
+    with conn.cursor() as cur:
+        tranzactie.fixeaza_schema(cur, schema)   # emite_factura folosește INSERT necalificat
+    try:
+        fres = _fa.emite_factura(conn, linii=[linie], tert_nume=client[1], tert_cui=client[0], data_emitere=corp["data"],
+                                 platitor_tva=_uc_comun._platitor_tva_firma(conn))
+    except ValueError as e:
+        raise _erori.DateInvalide(str(e))
+    iid = (fres.get("contare") or {}).get("inregistrare_id")
+    if not iid:
+        raise _erori.DateInvalide("%s nu s-a înregistrat: nota contabilă a facturii nu s-a putut scrie (%s). Nimic nu s-a scris."
+                                  % (ce, ((fres.get("contare") or {}).get("afirmatie") or {}).get("motiv") or "contarea facturii lipsește"))
+    return fres["factura_id"], fres.get("numar"), iid
+
+
 def nota_chirie(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-chirie`; docstringul ei a ramas in stratul HTTP."""
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-chirie`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13] 530: refacturarea = factura furnizorului întreagă ca achiziție proprie (605 + 4426 = 401, cu furnizorul) și factura către
+    chiriaș din Facturi emise (4111 = 708 + 4427), fără 461 (CF art.271 alin.(2) lit.c)); dacă factura furnizorului e deja în Facturi primite
+    (același furnizor și număr), nu se înregistrează a doua oară. 531: chiria încasată e factura către chiriaș; închirierea unui bun imobil e
+    scutită fără drept de deducere (CF art.292 alin.(2) lit.e)), afară de opțiunea de taxare notificată (art.292 alin.(3)) — rândul ei
+    în D300 (rd.15) vine din categoria liniei. 506: partenerul (furnizor, chiriaș, proprietar) e cerut. 529: răspunsul numește nota."""
     from core import comodat_chirii as _cc
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -5912,90 +6594,245 @@ def nota_chirie(tenant_id, corp, ctx):
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
-        note = []  # [(descriere, linii)]
+        note = []  # [(descriere, linii, partener (cui, nume) | None)]
         info = {}
+        emitere = None
         try:
-            _uc_comun._campuri_lipsa(corp, {"comodat": ("valoare",), "chirie_platita": ("chirie", "cota"), "chirie_incasata": ("chirie", "cota"),
-                                            "refacturare": ("total_factura", "parte_refacturata", "cota")}.get(fel, ()))   # [lotul 11, 440 / A4]
-            if fel == "comodat":
+            _uc_comun._campuri_lipsa(corp, {"comodat": ("valoare",), "chirie_platita": ("chirie", "proprietar"),
+                                            "chirie_incasata": ("chirie", "tip_bun"),
+                                            "refacturare": ("total_factura", "parte_refacturata", "cota", "numar")}.get(fel, ()))
+            if fel == "comodat":   # [lotul 13, 507] numai în afara bilanțului (D / C 8038), fără notă
                 r = _cc.nota_comodat(corp["valoare"], corp.get("moment", "primire"))
-                note.append((f"Comodat 8038 ({corp.get('moment','primire')}) - art. 2146 CC",
-                             r["linii"]))
+                emitere = None
+                info["extrabilant_comodat"] = r["extrabilant"]
             elif fel == "chirie_platita":
-                r = _cc.nota_chirie_platita(corp["chirie"], _common.cota_ceruta(corp),
-                                            corp.get("proprietar", "pj"))
-                info = {"nota": r.get("nota", "")}
-                note.append((f"Chirie platita ({corp.get('proprietar','pj')})", r["linii"]))
+                furn = _partener_din_corp(corp.get("furnizor_cui"), corp.get("furnizor_nume"), "furnizor", "proprietarul")
+                cota = _common.cota_ceruta(corp) if corp.get("proprietar") != "pf" else None
+                from datetime import date as _date
+                r = _cc.nota_chirie_platita(corp["chirie"], cota, corp.get("proprietar", "pj"),
+                                            la_data=_date.fromisoformat(str(corp["data"])[:10]) if corp.get("data") else None)
+                info = {"nota": r.get("nota", "")} if r.get("nota") else {}
+                note.append((f"Chirie platita {furn[1]}", r["linii"], furn))
             elif fel == "chirie_incasata":
-                r = _cc.nota_chirie_incasata(corp["chirie"], _common.cota_ceruta(corp))
-                note.append(("Chirie incasata 4111=706", r["linii"]))
+                client = _partener_din_corp(corp.get("client_cui"), corp.get("client_nume"), "client", "chiriașul")
+                imobil = corp.get("tip_bun") == "imobil"
+                taxare = _uc_comun.bifa(corp, "optiune_taxare") if imobil else True
+                linie = {"descriere": (corp.get("descriere") or "Chirie")[:200], "cantitate": 1, "pret_unitar": str(corp["chirie"]),
+                         "cont_venit": "706"}
+                if taxare:
+                    linie["cota_tva"] = _common.cota_ceruta(corp)
+                else:   # CF art.292 alin.(2) lit.e): închirierea de bunuri imobile, scutită fără drept de deducere
+                    linie.update(cota_tva=0, categorie_tva="scutit_fara_drept")
+                emitere = ("Chiria", client, linie)
+                info["regim"] = ("taxabilă (opțiune de taxare, art. 292 alin. (3))" if imobil else "taxabilă") if taxare else \
+                    "scutită fără drept de deducere (art. 292 alin. (2) lit. e)) — D300 rd.15; TVA-ul achizițiilor legate de ea nu se deduce"
             elif fel == "refacturare":
-                r = _cc.nota_refacturare(corp["total_factura"],
-                                         corp["parte_refacturata"], _common.cota_ceruta(corp))
+                furn = _partener_din_corp(corp.get("furnizor_cui"), corp.get("furnizor_nume"), "furnizor", "furnizorul utilităților")
+                client = _partener_din_corp(corp.get("client_cui"), corp.get("client_nume"), "client", "chiriașul")
+                cota = _common.cota_ceruta(corp)
+                r = _cc.nota_refacturare(corp["total_factura"], corp["parte_refacturata"], cota)
                 info = {"tva_refacturat": str(r["tva_refacturat"])}
-                if r["primire"]:
-                    note.append(("Factura utilitati: parte proprie + de refacturat (art. 271)",
-                                 r["primire"]))
-                if r["emitere"]:
-                    note.append(("Refacturare utilitati 4111=708 (aceeasi cota)",
-                                 r["emitere"]))
+                with conn.cursor() as cur:   # [506] factura furnizorului deja în Facturi primite: nu se înregistrează a doua oară
+                    cur.execute(f"SELECT id, numar FROM {schema}.facturi WHERE directie = 'primita' AND upper(btrim(numar)) = upper(btrim(%s)) "
+                                f"AND regexp_replace(upper(COALESCE(tert_cui, '')), '^RO', '') = regexp_replace(upper(%s), '^RO', '')",
+                                (str(corp["numar"]), furn[0]))
+                    dubla = cur.fetchone()
+                if dubla:
+                    info["factura_furnizor"] = "deja în Facturi primite (nr. %s): nu se înregistrează a doua oară" % corp["numar"]
+                else:
+                    note.append((f"Factura utilitati {corp['numar']} {furn[1]} - achizitie proprie (art. 271)", r["primire"], furn))
+                emitere = ("Refacturarea", client, {"descriere": (corp.get("descriere") or "Refacturare utilități")[:200], "cantitate": 1,
+                                                    "pret_unitar": str(r["emitere"][0][2]), "cota_tva": cota, "cont_venit": "708"})
             else:
                 raise ValueError(nomenclator_cerut("fel", "comodat|chirie_platita|chirie_incasata|refacturare"))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         ids = []
         with conn.cursor() as cur:
-            for d0, linii in note:
+            for d0, linii, part in note:
                 descr = (corp.get("descriere") or d0)
                 iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
                 ids.append(iid)
                 for dd, cc, ss in linii:
-                    repo_contabilitate.adauga_linie_2(cur, schema, iid, dd, cc, ss)
+                    if part and ("401" in (dd, cc) or "462" in (dd, cc)):
+                        repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, part[0], part[1])
+                    else:
+                        repo_contabilitate.adauga_linie_2(cur, schema, iid, dd, cc, ss)
+        if info.get("extrabilant_comodat"):
+            from core import extrabilant as _xb
+            with conn.cursor() as cur:
+                for cont, sens, suma in info.pop("extrabilant_comodat"):
+                    _xb.scrie(cur, schema, corp["data"], cont, sens, suma, (corp.get("descriere") or "Comodat (art. 2146 Cod civil)")[:200],
+                              document=corp.get("descriere"))
+                    info.setdefault("extrabilant", []).append(_xb.text(cont, sens, suma))
+            info["mesaj"] = "Bunul în comodat e înregistrat în afara bilanțului: %s. Nu intră în rândurile notelor." % "; ".join(info["extrabilant"])
+        if emitere:
+            fid, nr, iid = _emite_catre(conn, schema, corp, emitere[1], emitere[2], emitere[0])
+            ids.append(iid)
+            info.update(factura_id=fid, factura_numar=nr)
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrari": ids, **info})
+    # cheile răspunsului scrise pe nume (nu `**info`): garda „ecranul citește numai ce întoarce ruta” (`test_raspuns_citit`) le vede
+    return _uc_comun.cu_eticheta(schema, {"inregistrari": ids, "nota": info.get("nota"), "regim": info.get("regim"),
+                                          "tva_refacturat": info.get("tva_refacturat"), "factura_furnizor": info.get("factura_furnizor"),
+                                          "extrabilant": info.get("extrabilant"), "mesaj": info.get("mesaj"),
+                                          "factura_id": info.get("factura_id"), "factura_numar": info.get("factura_numar")})
+
+
+def _salariat_decont(cur, schema, salariat_id, data):
+    """[lotul 13, deficiența 670 (a)] Salariatul decontului, ales din salariații firmei: {id, nume, cif} sau refuz lângă câmp. „542 trebuie
+    urmărit pe persoană” (comanda Costin 13.1): rândurile 542 poartă salariatul ca partener (CNP-ul, numai valid — `_cif_partener`)."""
+    try:
+        sid = int(salariat_id)
+    except (TypeError, ValueError):
+        sid = None
+    if not sid:
+        raise _erori.DateInvalide({"mesaj": "Alege salariatul care a făcut deplasarea: avansul spre decontare (542) se urmărește pe "
+                                            "persoană.", "erori_campuri": [{"camp": "op-salariat_id", "mesaj": "Alege salariatul."}]})
+    cur.execute(f"SELECT id, nume, prenume, cnp, data_angajare, data_incetare FROM {schema}.salariati WHERE id = %s", (sid,))
+    r = cur.fetchone()
+    if not r:
+        raise _erori.DateInvalide({"mesaj": "Salariatul ales nu e în evidența firmei.",
+                                   "erori_campuri": [{"camp": "op-salariat_id", "mesaj": "Alege salariatul din listă."}]})
+    r = dict(r) if isinstance(r, dict) else dict(zip(("id", "nume", "prenume", "cnp", "data_angajare", "data_incetare"), r))
+    nume = " ".join(x for x in (r["nume"], r["prenume"]) if x).strip() or "salariatul ales"
+    if (r["data_angajare"] and data < r["data_angajare"]) or (r["data_incetare"] and data > r["data_incetare"]):
+        raise _erori.DateInvalide({"mesaj": "%s nu era salariat al firmei la %s: decontul de deplasare e al unui salariat (CF art.76 "
+                                            "alin.(2) lit.k)." % (nume, data_ro(data)),
+                                   "erori_campuri": [{"camp": "op-salariat_id", "mesaj": "Salariatul nu era angajat la data decontului."}]})
+    return {"id": r["id"], "nume": nume, "cif": _cif_partener(r["cnp"])}
+
+
+def _plafon_diurnei(conn, cur, schema, corp, data, diurna, sal):
+    """[lotul 13, deficiența 670 (b)] Diurna decontului față de plafonul neimpozabil — CF art.76 alin.(2) lit.k, verbatim:
+    „… pentru partea care depășește plafonul neimpozabil stabilit astfel: (i) în țară, 2,5 ori nivelul legal stabilit pentru
+    indemnizație, prin hotărâre a Guvernului, pentru personalul autorităților și instituțiilor publice, în limita a 3 salarii de bază
+    corespunzătoare locului de muncă ocupat; (ii) în străinătate, 2,5 ori nivelul legal stabilit pentru diurnă, prin hotărâre a
+    Guvernului, pentru personalul român trimis în străinătate […]. Plafonul aferent valorii a 3 salarii de bază […] se calculează
+    distinct pentru fiecare lună în parte, prin raportarea celor 3 salarii la numărul de zile lucrătoare din luna respectivă”.
+    Indemnizația internă: 23 lei/zi (Ordinul MF 1235/2023, MO 261/29.03.2023, de la 01.04.2023, actualizând HG 714/2018); externă:
+    nomenclatorul HG 518/1995, pe țară, în valută (se scrie din anexă), la cursul BNR al zilei (CF art.290 alin.(2)).
+    INTERPRETARE: deplasarea se socotește în luna decontului (zilele lucrătoare și salariul de bază ale lunii lui); o deplasare peste
+    două luni se decontează pe fiecare lună. {zile, deplasare, plafon_zi, neimpozabil, impozabil, salariu_baza, zile_lucratoare, curs?}."""
+    from core import deconturi as _dp, salariu_istoric as _si, scadente as _sc
+    er = _erori.ErorileFormularului("Decontul nu s-a generat")
+    dep = corp.get("deplasare")
+    if dep not in ("interna", "externa"):
+        er.camp("op-deplasare", "Alege deplasarea: în țară sau în străinătate (plafonul neimpozabil al diurnei diferă).")
+    try:
+        zile = int(str(corp.get("zile") or "").strip())
+    except ValueError:
+        zile = 0
+    if zile <= 0:
+        er.camp("op-zile", "Scrie numărul de zile de deplasare (un număr întreg pozitiv).")
+    if dep == "externa":
+        if not str(corp.get("diurna_bugetara") or "").strip():
+            er.camp("op-diurna_bugetara", "Scrie diurna pe zi a țării din anexa HG 518/1995 (în valuta ei).")
+        if not str(corp.get("moneda") or "").strip():
+            er.camp("op-moneda", "Alege moneda diurnei din HG 518/1995.")
+    er.refuza()
+    sb = _si.salariu_la(cur, schema, sal["id"], data)
+    if sb is None or Decimal(str(sb)) <= 0:
+        raise _erori.DateInvalide({"mesaj": "%s n-are salariul de bază în fișă la %s: plafonul neimpozabil al diurnei se limitează la 3 "
+                                            "salarii de bază pe lună (CF art.76 alin.(2) lit.k). Completează salariul din Salarizare."
+                                            % (sal["nume"], data_ro(data)),
+                                   "erori_campuri": [{"camp": "op-salariat_id", "mesaj": "Salariatul n-are salariul de bază în fișă."}]})
+    zl = _sc.zile_lucratoare_luna(data.year, data.month)
+    curs = Decimal("1")
+    bug = None
+    if dep == "externa":
+        from core import curs_bnr as _cb
+        try:
+            curs, _dc, _s = _cb.curs_pentru(conn, str(corp["moneda"]).upper(), data)
+        except _cb.MonedaNecotata as e:
+            raise _erori.DateInvalide({"mesaj": str(e), "erori_campuri": [{"camp": "op-moneda", "mesaj": str(e)}]})
+        except _cb.CursIndisponibil as e:
+            raise _erori.Conflict(str(e))
+        bug = corp["diurna_bugetara"]
+    d = Decimal(str(diurna)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    p = _dp.plafon_diurna((d / zile).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP), zile, sb, zl, bug, curs, la_data=data)
+    neimp = min(d, (p["plafon_zi"] * zile).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+    out = {"zile": zile, "deplasare": dep, "plafon_zi": p["plafon_zi"], "neimpozabil": neimp, "impozabil": d - neimp,
+           "salariu_baza": Decimal(str(sb)), "zile_lucratoare": zl}
+    if dep == "externa":
+        out["curs"] = curs
+    return out
 
 
 def nota_decont_deplasare(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-decont-deplasare`; docstringul ei a ramas in stratul HTTP."""
-    from core import deconturi as _dp
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-decont-deplasare`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 670, comanda Costin 13.1] Proba lui Costin: decont final, casa, avans 1.000, diurnă 300, transport 200, cazare
+    400, cota 21 -> 625 = 542 900; 4426 = 542 126; 542 = 5311 26. Reparat: (a) salariatul, ales din salariații firmei, e partenerul
+    rândurilor 542 (542 urmărit pe persoană); (b) diurna cu zilele și deplasarea (în țară / în străinătate): partea peste plafonul
+    neimpozabil (CF art.76 alin.(2) lit.k) e venit de natură salarială și pleacă spre statul de plată al lunii
+    (`diurna_salariat.adauga_excedent`, modulul salarizării), unde intră în impozit, contribuții și D112; (c) transportul și cazarea,
+    fiecare cu cota ei, pe baza fără TVA, diurna fără TVA (`deconturi.nota_decont`); (d) nicio cotă precompletată, transportul și
+    cazarea opționale; avansul nu poate depăși soldul 542 (deficiența 524, `ops_sold`)."""
+    from datetime import date as _date
+    from core import deconturi as _dp, ops_sold as _os
+    fel = corp.get("fel")
+    if fel == "decont" and corp.get("deplasare") == "externa" and corp.get("moneda"):
+        _uc_comun._preincalzeste_cursul(corp.get("moneda"), corp.get("data"))   # [P5 val 3] descărcarea BNR, înainte de tranzacție
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
-        fel = corp.get("fel")
         info = {}
+        plafon = None
         try:
-            _uc_comun._campuri_lipsa(corp, {"plafon": ("diurna_pe_zi", "zile", "salariu_baza", "zile_lucratoare"), "avans": ("suma",),
-                                            "decont": ("cota",)}.get(fel, ()))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
-            if fel == "plafon":
-                p = _dp.plafon_diurna(corp["diurna_pe_zi"], corp["zile"],
-                                      corp["salariu_baza"], corp["zile_lucratoare"],
-                                      corp.get("diurna_bugetara"), corp.get("curs", 1))
-                return {k: str(v) for k, v in p.items()}
+            _uc_comun._campuri_lipsa(corp, {"avans": ("data", "suma", "sursa"), "decont": ("data", "sursa", "diurna")}.get(fel, ("data",)))
+            if fel not in ("avans", "decont"):
+                raise ValueError(nomenclator_cerut("fel", "avans|decont"))
+            data = _date.fromisoformat(str(corp["data"])[:10])
+            with conn.cursor() as cur:
+                sal = _salariat_decont(cur, schema, corp.get("salariat_id"), data)
             if fel == "avans":
-                r = _dp.nota_avans(corp["suma"], corp.get("sursa", "casa"))
-                d0 = "Avans spre decontare 542"
-            elif fel == "decont":
-                # cota CERUTA, ca la celelalte 14 rute: `corp.get("cota", 0)` punea tacit 0,
-                # adica „scutit", pe un decont care putea avea cazare cu TVA (R26, a doua runda).
-                r = _dp.nota_decont(corp.get("avans", 0), corp.get("diurna", 0),
-                                    corp.get("transport", 0), corp.get("cazare", 0),
-                                    _common.cota_ceruta(corp), corp.get("sursa", "casa"))
-                info = {"total_cheltuieli": str(r["total_cheltuieli"]),
-                        "diferenta": str(r["diferenta"])}
-                d0 = "Decont deplasare 625=542 (ordin de deplasare + justificative)"
+                r = _dp.nota_avans(corp["suma"], corp.get("sursa"))
+                d0 = "Avans spre decontare 542 — %s" % sal["nume"]
             else:
-                raise ValueError(nomenclator_cerut("fel", "avans|decont|plafon"))
+                cote, er = {}, _erori.ErorileFormularului("Decontul nu s-a generat")
+                for k, baza, ce in (("cota_transport", corp.get("transport"), "transportului"), ("cota_cazare", corp.get("cazare"), "cazării")):
+                    if Decimal(str(baza or 0)) > 0:   # [670 c-d] cota se cere numai pentru cheltuiala care există
+                        if corp.get(k) in (None, ""):
+                            er.camp("op-" + k, "Alege cota de TVA a %s (0 dacă documentul nu are TVA deductibilă)." % ce)
+                        else:
+                            cote[k] = _common.cota_ceruta({"cota": corp.get(k), "data": corp.get("data")})
+                er.refuza()
+                r = _dp.nota_decont(corp.get("avans") or 0, corp.get("diurna") or 0, corp.get("transport") or 0, corp.get("cazare") or 0,
+                                    cote.get("cota_transport"), cote.get("cota_cazare"), corp.get("sursa"))
+                with conn.cursor() as cur:
+                    # [524] avansul decontat stinge 542: nu poate depăși soldul lui (note validate)
+                    _os.cere_sold(cur, schema, "542", data, corp.get("avans") or 0, "debitor", "Decontul avansului",
+                                  camp="op-avans")
+                    plafon = _plafon_diurnei(conn, cur, schema, corp, data, Decimal(str(corp.get("diurna") or 0)), sal) \
+                        if Decimal(str(corp.get("diurna") or 0)) > 0 else None
+                info = {"total_cheltuieli": str(r["total_cheltuieli"]), "diferenta": str(r["diferenta"]),
+                        "tva_transport": str(r["tva_transport"]), "tva_cazare": str(r["tva_cazare"])}
+                if plafon:
+                    info["diurna"] = {k: str(v) if isinstance(v, Decimal) else v for k, v in plafon.items()}
+                d0 = "Decont deplasare %s — %s" % (sal["nume"], "ordin de deplasare și justificative")
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        descr = (corp.get("descriere") or d0) + " - art. 76(2)k CF / HG 714/2018"
+        descr = (corp.get("descriere") or d0) + " - art. 76(2)k CF"
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                if "542" in (dd, cc):   # [670 a] 542 pe persoană
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, sal["cif"], sal["nume"])
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            if plafon and plafon["impozabil"] > 0:
+                # [670 b] excedentul diurnei = venit de natură salarial (CF art.76 alin.(2) lit.k) -> statul de plată al lunii decontului;
+                # referința leagă excedentul de nota care l-a produs (ștergerea notei îl scoate — `diurna_salariat.sterge_excedent`)
+                from core import diurna_salariat as _ds
+                _ds.adauga_excedent(cur, schema, sal["id"], data.year, data.month, plafon["impozabil"], "decont-deplasare:%d" % iid,
+                                    "Diurnă peste plafonul neimpozabil, %s (%s, %s)" % (
+                                        sal["nume"], "în țară" if plafon["deplasare"] == "interna" else "în străinătate",
+                                        _common.cate(plafon["zile"], "zi", "zile")))
+                info["excedent_in_stat"] = "%02d/%d" % (data.month, data.year)
         conn.commit()
-    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
+    return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "salariat": sal["nume"],
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
 
 
@@ -6192,10 +7029,119 @@ def mijloc_fix_cod_catalog(tenant_id, mijloc_id, corp, ctx):
     return {"id": mijloc_id, "cod_catalog": cod, "catalog": _mfr.catalog().get(cod), "afirmatii": [avert] if avert else []}
 
 
+def _casare(conn, schema, mijloc_fix_id, data):
+    """[lotul 13, deficiențele 518 / 519 / 522, comanda Costin 13.1] Casarea mijlocului fix ales din registru.
+
+    518, verbatim: „nota debitează 2813 cu 4.200 deși contul are 2.600; 2813 ajunge cu sold invers 1.600, iar amortizarea lunilor lipsă
+    (1.600) nu trece prin 6811 — profit mai mare cu 1.600. Nu refuză ca reevaluarea, nu cere data casării, nu arată nota, justificativul e
+    «Listă de inventariere» în loc de proces-verbal de casare, activul devine «casat» înainte de validarea notei.”
+    Acum: (1) amortizarea lunilor de dinaintea casării trebuie să fie ÎNREGISTRATĂ pe activ (rândurile lui, `mf_registru.inregistrat_pe_activ`
+    — nu soldul contului, 522); lipsa lor se refuză, cu lunile și suma, ca la reevaluare (R192): ele se generează din registru (517), prin
+    6811; (2) luna casării, care nu se poate înregistra înainte de sfârșitul ei, intră în nota casării: 6811 = 28xx (motorul de amortizare,
+    `d406_active.amortizat_la_data`, socotește luna ieșirii — INTERPRETARE: OMFP 1802/2014 pct.238 alin.(2) amortizează „până la recuperarea
+    integrală a valorii”, iar pct.243 alin.(1) trece valoarea neamortizată pe cheltuieli la scoaterea din evidență; alternativa respinsă,
+    fără luna ieșirii, ar schimba motorul folosit și de reevaluare și de D406); (3) 28xx = 21x cu toată amortizarea, 6583 = 21x restul
+    neamortizat; (4) documentul: procesul-verbal de casare; (5) activul se scoate din registru la VALIDAREA notei (`mf_note`, iesire)."""
+    from datetime import date as _date, timedelta as _td
+    from core import d406_active as _d406, inventariere as _iv, mf_note as _mfn, mf_registru as _mfr, amortizare_lunii as _amc
+    mf_id = int(mijloc_fix_id)
+    ref = _date.fromisoformat(str(data)[:10])
+    with conn.cursor() as cur:
+        mf = repo_mijloace_fixe.pentru_inventariere(cur, schema, mf_id)
+        if not mf:
+            # [R147] „inexistent/inactiv" lăsa omul să ghicească pe care din două.
+            raise _erori.Inexistent("Mijlocul fix ales nu există în registrul firmei sau a fost casat. Alege-l din listă.")
+        p = _mfn.iesire_in_asteptare(cur, schema, mf_id)
+        if p:
+            from core import eticheta_nota as _et
+            raise _erori.DateInvalide("Casarea acestui mijloc fix e deja în ciorna %s: valideaz-o din Registrul jurnal sau șterge-o, nu o "
+                                      "genera a doua oară." % _et.nota(cur, schema, p[0]))
+        repo_contabilitate.search_path_firma(cur, schema)
+        rows = repo_mijloace_fixe.toate(cur)
+    den, ci, ca, val, rez, dnf, pif, met, reev, dcd, prel, dprel = mf
+    mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca, "valoare": val, "rezidual": rez, "dnf_luni": dnf,
+            "data_pif": pif, "metoda": met, "reevaluari": reev, "destinatie_cd": dcd, "amortizare_preluata": prel, "data_preluare": dprel}
+    if pif and ref < pif:
+        raise _erori.DateInvalide({"mesaj": "Data casării (%s) e înaintea punerii în funcțiune a activului (%s)." % (data_ro(ref), data_ro(pif)),
+                                   "erori_campuri": [{"camp": "op-data", "mesaj": "Data casării e înaintea punerii în funcțiune."}]})
+    luna_dinainte = ref.replace(day=1) - _td(days=1)
+    am_total = Decimal(str(_d406.amortizat_la_data(mf_d, ref)["amortizat"]))
+    am_inainte = Decimal(str(_d406.amortizat_la_data(mf_d, luna_dinainte)["amortizat"])) if not pif or luna_dinainte >= pif else Decimal("0")
+    with conn.cursor() as cur:
+        repo_contabilitate.search_path_firma(cur, schema)
+        inreg = _mfr.inregistrat_pe_activ(cur, schema, rows, mf_id, luna_dinainte)
+        luna_inreg = (ref.year, ref.month) in _mfn.pe_activ(cur, schema, ref).get(mf_id, {}).get("luni", set())
+        reg = next((x for x in _mfr.registru(cur, rows) if x["id"] == mf_id), {})
+    if inreg + Decimal("0.005") < am_inainte:
+        lipsa = am_inainte - inreg
+        luni = reg.get("luni_neinregistrate") or []
+        raise _erori.DateInvalide(
+            "Casarea lui %s nu se poate genera: până la %s amortizarea calculată e %s, dar pe activ sunt înregistrați %s — lipsesc %s%s. "
+            "Fără ele, nota ar scădea din %s o amortizare pe care evidența n-o are (sold invers), iar lunile lipsă n-ar trece prin 6811 "
+            "(profit mai mare cu suma lor). Înregistrează întâi lunile lipsă (registrul mijloacelor fixe, „Înregistrează lunile lipsă”), "
+            "valideaz-le, apoi casează." % (den, data_ro(luna_dinainte), bani(am_inainte, "lei"), bani(inreg, "lei"), bani(lipsa, "lei"),
+                                            (" (lunile %s)" % luni_ca_text(luni)) if luni else "", ca))
+    rata_luna = Decimal("0") if luna_inreg else am_total - am_inainte
+    ci, ca = _amc.conturile_fisei(den, ci, ca, (inreg + rata_luna) > 0)   # [C129, clasa] casarea, ca reevaluarea
+    r = _iv.nota_casare_mf(val, inreg + rata_luna, ci, ca)
+    if rata_luna > 0:   # luna casării: amortizarea ei, pe 6811, în nota casării
+        r["linii"].insert(0, (_amc.CONT_CHELTUIALA, ca, rata_luna))
+    r["d0"] = f"Casare {den} (PV comisie, neamortizat {bani(r['neamortizat'], 'lei')})"   # [lotul 10, 430e, clasa]
+    r["mijloc_fix_id"] = mf_id
+    return r
+
+
+def luni_ca_text(luni):
+    """[„05/2026”, „06/2026”] -> „05–06/2026” (lunile consecutive se strâng, ca în registru)."""
+    from core import mf_registru as _mfr
+    return _mfr.luni_ca_interval(sorted((int(x.split("/")[1]), int(x.split("/")[0])) for x in luni))
+
+
+def _numar_inventar(cur, schema, dat):
+    """[lotul 13, deficiența 521] „activul primește codul «MF-PLUS» în loc de număr de inventar”: numărul scris de contabil sau, fără
+    el, următorul număr din șirul registrului (MF-001, MF-002 …)."""
+    dat = str(dat or "").strip()
+    if dat:
+        return dat
+    cur.execute(f"SELECT cod FROM {schema}.mijloace_fixe")
+    import re as _re
+    nr = [int(m.group(1)) for (c,) in [tuple(x.values()) if isinstance(x, dict) else tuple(x) for x in cur.fetchall()]
+          for m in [_re.fullmatch(r"MF-(\d+)", str(c or ""))] if m]
+    return "MF-%03d" % ((max(nr) if nr else 0) + 1)
+
+
+def cont_amortizare_pentru(cont_imobilizare):
+    """Contul de amortizare al contului de imobilizare (OMFP 1802/2014, planul de conturi: 2131 -> 2813, 205 -> 2805, 214 -> 2814 —
+    „28” + grupa imobilizării). Nu se mai cere de mână (deficiențele 511 / 504)."""
+    c = str(cont_imobilizare or "").strip()
+    return ("28" + c[1:3]) if len(c) >= 3 and c[0] == "2" and c[1] in "01" else None
+
+
+def _verifica_catalog(cod, dnf_luni, camp_cod="op-cod_catalog", camp_durata="op-dnf_luni"):
+    """[lotul 13, deficiența 521] Codul din Catalogul HG 2139/2004 e cerut, iar durata se alege în plaja lui — HG 2139/2004, anexa, cap.I
+    pct.4: „pentru fiecare mijloc fix nou achiziționat se utilizează sistemul unor plaje de ani cuprinse între o valoare minima și una
+    maxima, existând astfel posibilitatea alegerii duratei normale de funcționare cuprinsa între aceste limite.”"""
+    from core import mf_registru as _mfr
+    c = _mfr.catalog().get(str(cod or "").strip().rstrip("."))
+    if not c:
+        m = ("Scrie codul de clasificare din Catalogul HG 2139/2004 (de exemplu 2.2.9 pentru calculatoare): durata normală de funcționare "
+             "se alege în plaja lui.") if not str(cod or "").strip() else ("Codul %s nu e în Catalogul HG 2139/2004." % cod)
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": camp_cod, "mesaj": m}]})
+    try:
+        d = int(dnf_luni)
+    except (TypeError, ValueError):
+        d = 0
+    if not (c["ani_min"] * 12 <= d <= c["ani_max"] * 12):
+        m = ("Durata trebuie aleasă în plaja catalogului pentru codul %s (%s): între %d și %d luni (%d–%s)."
+             % (cod, c["denumire"], c["ani_min"] * 12, c["ani_max"] * 12, c["ani_min"], _common.cate(c["ani_max"], "an", "ani")))
+        raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": camp_durata, "mesaj": m}]})
+    return c
+
+
 def nota_inventariere(tenant_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/nota-inventariere`; docstringul ei a ramas in stratul HTTP."""
     from datetime import date as _date
-    from core import inventariere as _iv
+    from core import inventariere as _iv, mf_note as _mfn
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -6203,80 +7149,149 @@ def nota_inventariere(tenant_id, corp, ctx):
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         mf_id = None
+        tip_doc = "lista_inventariere"
         try:
-            _uc_comun._campuri_lipsa(corp, {"plus": ("valoare",), "plus_mf": ("valoare",), "minus": ("valoare", "cota"),
-                                            "casare": ("data",) if corp.get("mijloc_fix_id") else ("valoare_bruta", "amortizare_cumulata")
+            _uc_comun._campuri_lipsa(corp, {"plus": ("valoare",), "plus_mf": ("valoare", "denumire", "cont_imobilizare", "cod_catalog",
+                                                                               "dnf_luni", "data_pif", "metoda"),
+                                            "minus": ("valoare", "cota"), "casare": ("data", "mijloc_fix_id")
                                             }.get(op, ()))   # [lotul 11, 440 / A4] toate câmpurile lipsă deodată
             if op == "plus":
-                r = _iv.nota_plus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"))
+                r = _iv.nota_plus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc"))
                 d0 = "Plus la inventar stocuri"
             elif op == "plus_mf":
-                # [ruptura mijloc-fix post-migrare 14.08.2026] valideaza (art.28 alin.5/8^1) SI inscrie
-                # activul in registrul mijloace_fixe (nu doar nota 21x=4754) -> ajunge la amortizare/D406.
-                mf_reg = _iv.pregateste_mf_plus(dict(corp, destinatie_cd=_uc_comun.bifa(corp, "destinatie_cd", False)))
+                # [ruptura mijloc-fix post-migrare 14.08.2026] valideaza (art.28 alin.5/8^1) SI inscrie activul in registru.
+                # [lotul 13, 521] codul din catalog cerut, durata în plaja lui, contul de amortizare din contul activului, numărul de
+                # inventar al șirului registrului; [519] activul intră în registru la VALIDAREA notei (`mf_note`, intrare)
+                ci = _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare")
+                _verifica_catalog(corp.get("cod_catalog"), corp.get("dnf_luni"))
+                mf_reg = _iv.pregateste_mf_plus(dict(corp, cont_imobilizare=ci, cont_amortizare=cont_amortizare_pentru(ci),
+                                                     destinatie_cd=_uc_comun.bifa(corp, "destinatie_cd", False)))
                 r = _iv.nota_plus_mf(corp["valoare"], mf_reg["cont_imobilizare"])
                 d0 = "Plus la inventar mijloace fixe (21x=4754)"
             elif op == "minus":
-                r = _iv.nota_minus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"),
-                                   _uc_comun.bifa(corp, "imputabil", False),
+                # [lotul 13, deficiența 520] întrebarea e criteriul legal (CF art.304 alin.(2) lit.a)): lipsa e DOVEDITĂ ca distrugere, pierdere
+                # sau furt, cu documentul aferent — nu „era asigurat”; documentul se cere și intră în explicația notei. Imputarea către
+                # salariat îl alege din salariații firmei (rândul 4282 îl poartă, ca reținerea să ajungă în stat — 506).
+                dovedita = _uc_comun.bifa(corp, "lipsa_dovedita")
+                if dovedita and not str(corp.get("document_lipsa") or "").strip():
+                    raise _erori.DateInvalide({"mesaj": "Scrie documentul care dovedește distrugerea, pierderea sau furtul (de exemplu procesul-verbal "
+                                                        "al organelor judiciare): fără el TVA dedusă se ajustează (CF art.304 alin.(2) lit.a)).",
+                                               "erori_campuri": [{"camp": "op-document_lipsa", "mesaj": "Scrie documentul doveditor."}]})
+                imputabil = _uc_comun.bifa(corp, "imputabil", False)
+                sal = None
+                if imputabil and corp.get("vinovat", "salariat") == "salariat":
+                    with conn.cursor() as cur:
+                        sal = _salariat_decont(cur, schema, corp.get("salariat_id"), _date.fromisoformat(str(corp["data"])[:10]))
+                r = _iv.nota_minus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc"),
+                                   imputabil,
                                    corp.get("valoare_imputare"),
                                    corp.get("vinovat", "salariat"),
                                    _common.cota_ceruta(corp),
-                                   _uc_comun.bifa(corp, "asigurat_sau_distrus", False))
-                d0 = "Minus la inventar" + (" imputabil" if _uc_comun.bifa(corp, "imputabil", False) else
-                                            " neimputabil")
+                                   dovedita)
+                r["salariat"] = sal
+                if dovedita:
+                    r["document_lipsa"] = str(corp["document_lipsa"]).strip()
+                d0 = "Minus la inventar" + (" imputabil" + (" — " + sal["nume"] if sal else "") if imputabil else " neimputabil") + \
+                    ((" (lipsă dovedită: %s)" % r["document_lipsa"]) if dovedita else "")
             elif op == "casare":
-                if corp.get("mijloc_fix_id"):
-                    mf_id = corp["mijloc_fix_id"]
-                    with conn.cursor() as cur:
-                        mf = repo_mijloace_fixe.pentru_inventariere(cur, schema, mf_id)
-                    if not mf:
-                        # [R147] „inexistent/inactiv" lăsa omul să ghicească pe care din două.
-                        raise _erori.Inexistent("Mijlocul fix ales nu există în registrul "
-                                                     "firmei sau a fost casat. Alege-l din listă.")
-                    den, ci, ca, val, rez, dnf, pif, met, reev, dcd, prel, dprel = mf
-                    ref = _date.fromisoformat(corp["data"])
-                    from core import d406_active as _d406
-                    mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
-                            "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif,
-                            "metoda": met, "reevaluari": reev, "destinatie_cd": dcd,
-                            "amortizare_preluata": prel, "data_preluare": dprel}   # [359, A.1]
-                    am = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
-                    from core import amortizare_lunii as _amc
-                    ci, ca = _amc.conturile_fisei(den, ci, ca, am > 0)   # [C129, clasa] casarea, ca reevaluarea
-                    r = _iv.nota_casare_mf(val, am, ci, ca)
-                    d0 = f"Casare {den} (PV comisie, neamortizat {bani(r['neamortizat'], 'lei')})"   # [lotul 10, 430e, clasa]
-                else:
-                    r = _iv.nota_casare_mf(corp["valoare_bruta"],
-                                           corp["amortizare_cumulata"],
-                                           _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare", "2131"),
-                                           _cv.cere_cont(conn, schema, corp.get("cont_amortizare"), "cont_amortizare", "2813"))
-                    d0 = "Casare mijloc fix (PV comisie)"
+                r = _casare(conn, schema, corp["mijloc_fix_id"], corp["data"])
+                mf_id, d0, tip_doc = r["mijloc_fix_id"], r["d0"], "pv_casare"
             else:
                 raise ValueError(nomenclator_cerut("operatie", "plus|plus_mf|minus|casare"))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 2861/2009"
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], "lista_inventariere")[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
-            if mf_id:
-                repo_mijloace_fixe.scoate_din_evidenta(cur, schema, mf_id)
+            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], tip_doc)[0]
             mf_nou_id = None
             if op == "plus_mf":
-                # [lotul 10, C73] ecranul n-are câmp de cod: primul cod liber („MF-PLUS”, „MF-PLUS-2”, …), nu același „MF-PLUS” la
-                # fiecare plus de inventar (al doilea cădea cu 500); cursa dintre două salvări -> refuz numit
-                _cod_mf = repo_mijloace_fixe.cod_liber(cur, schema, mf_reg["cod"])
+                # [lotul 10, C73] cursa dintre două salvări cu același număr -> refuz numit
+                _cod_mf = _numar_inventar(cur, schema, corp.get("numar_inventar"))
                 try:
                     mf_nou_id = repo_mijloace_fixe.adauga_cu_reevaluare(cur, schema, _cod_mf, mf_reg["denumire"], mf_reg["cont_imobilizare"], mf_reg["cont_amortizare"], mf_reg["valoare"], mf_reg["rezidual"], mf_reg["dnf_luni"], mf_reg["data_pif"], mf_reg["metoda"], mf_reg["destinatie_cd"])[0]
                 except _chei.CheieDublata as e:
                     raise _erori.DateInvalide(e.detaliu())
+                repo_mijloace_fixe.seteaza_cod_catalog_schema(cur, schema, mf_nou_id, str(corp["cod_catalog"]).strip().rstrip("."))
+                cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ = false WHERE id = %s", (mf_nou_id,))   # [519] până la validare
+                _mfn.leaga(cur, schema, mf_nou_id, iid, "intrare")
+                mf_id = mf_nou_id
+            elif op == "casare":
+                _mfn.leaga(cur, schema, mf_id, iid, "iesire")   # [519] activul iese din registru la VALIDAREA notei
+            for dd, cc, ss in r["linii"]:
+                if mf_id and (dd.startswith("2") or cc.startswith("2") or dd.startswith("68")):   # [522] rândurile activului
+                    _mfn.adauga_linie(cur, schema, iid, dd, cc, ss, mf_id)
+                elif r.get("salariat") and dd == "4282":   # [520 / 506] imputarea, pe salariat
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, r["salariat"]["cif"], r["salariat"]["nume"])
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     rez_out = {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
     if mf_nou_id:
         rez_out["mijloc_fix_id"] = mf_nou_id
+        rez_out["numar_inventar"] = _cod_mf
     return _uc_comun.cu_eticheta(schema, rez_out)
+
+
+def _partaj_lichidare(conn, schema, data):
+    """[lotul 13, deficiența 533, comanda Costin 13.1] „capital, rezerve și profit scrise de mână (511), fără verificarea soldurilor (524) și
+    fără împărțire pe asociați”; „nota debitează 1171 deși profitul F2 stă pe 117 (527)”. Acum: capitalul (1012), rezervele (106x) și
+    profitul (117x, 121) vin din SOLDURILE lor la data partajului (soldurile preluate + notele validate, `bilant_api.sold_la`), din contul
+    care le are; se împart pe asociații de la data partajului (Date firmă → Asociați, cotele), fiecare cu rândurile lui (456 pe
+    asociat): capitalul neimpozabil, câștigul (rezerve + profit) impozitat cu cota CF art.97 alin.(5) — verbatim: „Venitul impozabil
+    obținut din lichidarea unei persoane juridice de către acționari/asociați persoane fizice […] se impun cu o cotă de 10%, impozitul
+    fiind final” (forma consolidată; Legea 141/2025 art.II pct.5 a modificat numai alin.(7), dividendele, la 16%). -> (rezultat, info)."""
+    from decimal import Decimal as _D
+    from psycopg2.extras import RealDictCursor
+    from core import bilant_api as _ba, lichidare as _li, dividende_curs as _dc, repo_d205 as _rd, decontari_asociati as _da
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        sold = _ba.sold_la(cur, schema, data)
+        repo_contabilitate.search_path_firma(cur, schema)
+        asoc, istoric = _rd.select_asociati(cur), _rd.select_asociati_istoric(cur)
+    if sold is None:
+        raise _erori.DateInvalide("Data partajului e înaintea soldurilor preluate: capitalul, rezervele și profitul nu se cunosc la ea.")
+    cred = {k: c - d for k, (d, c) in sold.items() if c - d > 0}
+    capital = {k: v for k, v in cred.items() if str(k).startswith("1012")}
+    rezerve = {k: v for k, v in cred.items() if str(k).startswith("106")}
+    profit = {k: v for k, v in cred.items() if str(k).startswith("117") or str(k).startswith("121")}
+    if not (capital or rezerve or profit):
+        raise _erori.DateInvalide("La %s nu e nimic de împărțit: capitalul (1012), rezervele (106x) și profitul (117x, 121) n-au sold creditor "
+                                  "(din soldurile preluate și notele validate)." % data_ro(data))
+    structura = _dc.structura_la([(a["nume"], a.get("cnp"), a["cota"]) for a in asoc],
+                                 [(r["cnp"], r["nume"], r["cota"], r["valabil_pana_la"]) for r in istoric])(data)
+    if not structura:
+        raise _erori.DateInvalide(_uc_comun.refuz_spre_ecran(_da.FARA_ASOCIATI, None, "date_firma", "Legea 31/1990 art.67 alin.(2)",
+                                                             tip="partajul lichidării"))
+    cota_impozit = _li._cota_lichidare(data)
+    linii, pe_asociat = [], []
+    tot = {"capital": _D("0"), "castig": _D("0"), "impozit": _D("0"), "net": _D("0")}
+    def impartire(v):   # partea fiecărui asociat, rotunjită la ban; restul rotunjirii la ultimul (suma părților = soldul)
+        p = [(v * _D(str(a[2])) / 100).quantize(_D("0.01"), rounding=ROUND_HALF_UP) for a in structura]
+        p[-1] = v - sum(p[:-1], _D("0"))
+        return p
+    conturi = list(capital.items()) + list(rezerve.items()) + list(profit.items())
+    parti = {k: impartire(v) for k, v in conturi}
+    for i, a in enumerate(structura):
+        nume, cnp, c = a[0], a[1], _D(str(a[2]))
+        cif = _cif_partener(cnp)
+        cap_i = sum((parti[k][i] for k in capital), _D("0"))
+        castig_i = _D("0")
+        for k, _v in conturi:
+            p_ = parti[k][i]
+            if p_ > 0:
+                linii.append((str(k), "456", p_, cif, nume))
+                if not str(k).startswith("1012"):
+                    castig_i += p_
+        imp_i = (castig_i * cota_impozit / 100).quantize(_D("0.01"), rounding=ROUND_HALF_UP)
+        if imp_i > 0:
+            linii.append(("456", "446", imp_i, cif, nume))
+        net_i = cap_i + castig_i - imp_i
+        linii.append(("456", "5121", net_i, cif, nume))
+        pe_asociat.append({"nume": nume, "cota": str(c), "capital": str(cap_i), "castig": str(castig_i), "impozit": str(imp_i), "net": str(net_i)})
+        for k2, v2 in (("capital", cap_i), ("castig", castig_i), ("impozit", imp_i), ("net", net_i)):
+            tot[k2] += v2
+    info = {"castig_impozabil": str(tot["castig"]), "impozit": str(tot["impozit"]), "net_asociat": str(tot["net"]), "cota": str(cota_impozit),
+            "asociati": pe_asociat, "solduri": {k: str(v) for k, v in {**capital, **rezerve, **profit}.items()}}
+    return {"linii": linii}, info
 
 
 def nota_lichidare(tenant_id, corp, ctx):
@@ -6292,7 +7307,7 @@ def nota_lichidare(tenant_id, corp, ctx):
         info = {}
         try:
             _uc_comun._campuri_lipsa(corp, {"vanzare_activ": ("pret", "valoare_bruta", "amortizare_cumulata", "cota"),
-                                            "partaj": ("capital_social", "data")}.get(op, ()))   # [lotul 11, 440 / A4]
+                                            "partaj": ("data",)}.get(op, ()))   # [lotul 11, 440 / A4]
             if op == "vanzare_activ":
                 r = _li.nota_vanzare_activ(corp["pret"], corp["valoare_bruta"],
                                            corp["amortizare_cumulata"],
@@ -6301,13 +7316,8 @@ def nota_lichidare(tenant_id, corp, ctx):
                                            _common.cota_ceruta(corp))
                 d0 = "Lichidare: valorificare activ (7583 + descarcare)"
             elif op == "partaj":
-                r = _li.partaj(corp["capital_social"], corp.get("rezerve", 0),
-                               corp.get("profituri", 0),
-                               _date.fromisoformat(corp["data"]))
-                info = {"castig_impozabil": str(r["castig_impozabil"]),
-                        "impozit": str(r["impozit"]),
-                        "net_asociat": str(r["net_asociat"]), "cota": r["cota"]}
-                d0 = "Partaj lichidare: capital neimpozabil + castig cu impozit dividend"
+                r, info = _partaj_lichidare(conn, schema, _date.fromisoformat(corp["data"]))
+                d0 = "Partaj lichidare pe asociați: capital neimpozabil + câștig impozitat (CF art.97 alin.(5))"
             else:
                 raise ValueError(nomenclator_cerut("operatie", "vanzare_activ|partaj"))
         except (ValueError, KeyError) as e:
@@ -6315,8 +7325,12 @@ def nota_lichidare(tenant_id, corp, ctx):
         descr = (corp.get("descriere") or d0) + " - OMFP 897/2015"
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
-            for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+            for rand in r["linii"]:
+                dd, cc, ss = rand[:3]
+                if len(rand) > 3:   # [533] rândul asociatului, cu partenerul lui
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, rand[3], rand[4])
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
@@ -7632,11 +8646,77 @@ def factura_primita_valideaza(tenant_id, primita_id, corp, ctx):
 
 
 
-def decontare_valuta(tenant_id, corp, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/decontare-valuta`; docstringul ei a ramas in stratul HTTP."""
-    _uc_comun._preincalzeste_cursul(corp.get("moneda", "EUR"), corp.get("data"))   # [P5 val 3] descărcarea BNR, înainte de tranzacție
+def operatiuni_date(tenant_id, ce, parametri, ctx):
+    """[lotul 13] Corpul rutei `GET /tenants/{tenant_id}/operatiuni-date?ce=…`: listele din care formularele Operațiunilor aleg ce
+    aplicația are deja (deficiența 511, „Aplicația cere de mână date pe care le are”), în loc să fie scrise de mână. Nu scrie nimic.
+      ce=facturi_valuta (`tip` creanta|datorie, `data`) — facturile în valută deschise, cu soldul rămas și cursul de evidență (524);
+      ce=articole (`tip` produs|marfa) — articolele de stoc pe 345 / 371, cu stocul, unitatea și CMP-ul (510 / 548)."""
     from datetime import date as _date
-    from core import diferente_curs as _dc
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    try:
+        data = _date.fromisoformat(str(parametri.get("data") or "")[:10]) if parametri.get("data") else _common.azi_ro()
+    except ValueError:
+        raise _erori.DateInvalide("Data nu e o dată calendaristică (aaaa-ll-zz): %r." % parametri.get("data"))
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            if ce == "facturi_valuta":
+                from core import ops_valuta as _ov
+                tip = parametri.get("tip")
+                if tip not in ("creanta", "datorie"):
+                    raise _erori.DateInvalide(nomenclator_cerut("tip", "creanta|datorie"))
+                out = [{"id": f["id"], "document": f["document"], "partener": f["partener"], "moneda": f["moneda"],
+                        "rest_valuta": str(f["rest_valuta"]), "curs_evidenta": str(f["curs_evidenta"]), "curs_din": f["curs_din"],
+                        "cont_tert": f["cont_tert"]}
+                       for f in _ov.facturi_deschise(cur, schema, "emisa" if tip == "creanta" else "primita", data)]
+                return {"facturi": out}
+            if ce == "articole":   # [lotul 13, 510 / 548] bunurile din stoc din care se alege: produse finite (345) / mărfuri (371)
+                from core import stocuri_cv_api as _cva
+                cont = {"produs": "345", "marfa": "371"}.get(parametri.get("tip"))
+                if not cont:
+                    raise _erori.DateInvalide(nomenclator_cerut("tip", "produs|marfa"))
+                return {"articole": [{"id": a["id"], "denumire": a["denumire"], "um": a["um"], "stoc": a["stoc"], "cmp": a["cmp"]}
+                                     for a in _cva.articole(conn, schema) if str(a["cont_stoc"] or "").startswith(cont)]}
+            if ce == "obiecte":   # [lotul 13, 508] obiectele de inventar în starea cerută (magazie / folosinta)
+                stare = parametri.get("tip")
+                p = '"%s".' % schema
+                cur.execute("SELECT o.id, o.denumire, o.valoare, o.data_intrare, o.nota_dare_id, o.scoatere_id, ii.status AS stare_intrare, di.status AS stare_dare, o.factura_id "
+                            "FROM %sobiecte_inventar o LEFT JOIN %sinregistrari ii ON ii.id = o.nota_intrare_id "
+                            "LEFT JOIN %sinregistrari di ON di.id = o.nota_dare_id ORDER BY o.data_intrare, o.id" % (p, p, p))
+                out = []
+                for oid, den, val, din, dare, scos, st_i, st_d, fid in [tuple(r.values()) if isinstance(r, dict) else tuple(r) for r in cur.fetchall()]:
+                    ok = (stare == "magazie" and dare is None and scos is None and (st_i == "validata" or fid is not None)) or \
+                         (stare == "folosinta" and dare is not None and st_d == "validata" and scos is None)
+                    if ok:
+                        out.append({"id": oid, "denumire": den, "valoare": str(val), "data": str(din)})
+                return {"obiecte": out}
+            if ce == "facturi_neincasate":   # [lotul 13, 511] facturile emise neîncasate, cu soldul și scadența
+                from core import reconciliere_api as _rec
+                fs = [f for f in _rec.facturi_deschise(conn, schema) if f["directie"] == "emisa"]
+                scad = {}
+                if fs:
+                    cur.execute(f"SELECT id, data_scadenta FROM {schema}.facturi WHERE id = ANY(%s)", ([f["id"] for f in fs],))
+                    scad = {r[0]: r[1] for r in cur.fetchall()}
+                return {"facturi": [{"id": f["id"], "document": "%s%s" % (f.get("serie") or "", f["numar"]), "partener": f["tert_nume"],
+                                     "sold": f["sold"], "scadenta": str(scad.get(f["id"]) or ""),
+                                     "zile": (data - scad[f["id"]]).days if scad.get(f["id"]) else None} for f in fs]}
+            if ce == "catalog":   # [lotul 13, 521] codul din Catalogul HG 2139/2004: denumirea și plaja duratei
+                from core import mf_registru as _mfr
+                cod = str(parametri.get("tip") or "").strip().rstrip(".")
+                c = _mfr.catalog().get(cod)
+                return {"cod": cod, "gasit": bool(c), **({"denumire": c["denumire"], "ani_min": c["ani_min"], "ani_max": c["ani_max"]}
+                                                        if c else {})}
+    raise _erori.DateInvalide(nomenclator_cerut("ce", "facturi_valuta|articole|obiecte|facturi_neincasate|catalog"))
+
+
+def decontare_valuta(tenant_id, corp, ctx):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/decontare-valuta`; docstringul ei a ramas in stratul HTTP.
+
+    [lotul 13, deficiența 524] Decontarea se face pe FACTURA din care provine creanța / datoria (`ops_valuta.facturi_deschise`): moneda,
+    contul de terț, partenerul și cursul de evidență (al facturii sau al ultimei reevaluări validate) vin din evidență, nu se scriu; suma
+    în valută nu poate depăși soldul rămas al facturii. Cursul decontării e cursul BNR al zilei (CF art.290 alin.(2)), ca înainte. Nota
+    se leagă de factură (soldul ei scade), cu partenerul pe rândul contului de terț."""
+    from datetime import date as _date
+    from core import diferente_curs as _dc, ops_valuta as _ov
     from core import curs_bnr as _cb
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -7644,29 +8724,52 @@ def decontare_valuta(tenant_id, corp, ctx):
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         _uc_comun._cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
-            _uc_comun._campuri_lipsa(corp, ("data", "valoare_valuta", "curs_evidenta", "tip"))   # [lotul 11, 440 / A4]
-            data = _date.fromisoformat(corp["data"])
+            _uc_comun._campuri_lipsa(corp, ("data", "tip", "factura_id", "valoare_valuta", "cont_banca"))   # [lotul 11, 440 / A4]
+            if corp.get("tip") not in ("creanta", "datorie"):
+                raise ValueError(nomenclator_cerut("tip", "creanta|datorie"))
+            data = _date.fromisoformat(str(corp["data"])[:10])
+            with conn.cursor() as cur:
+                f = _ov.factura_deschisa(cur, schema, corp["factura_id"], "emisa" if corp["tip"] == "creanta" else "primita", data)
+            if not f:
+                raise _erori.DateInvalide({"mesaj": "Factura aleasă nu e o %s în valută deschisă la %s (contată prin notă validată, cu sold "
+                                                    "rămas). Alege-o din listă." % ("creanță" if corp["tip"] == "creanta" else "datorie",
+                                                                                     data_ro(data)),
+                                           "erori_campuri": [{"camp": "op-factura_id", "mesaj": "Alege factura din listă."}]})
+            v = Decimal(str(corp["valoare_valuta"])).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            if v <= 0 or v > f["rest_valuta"]:
+                m = ("Suma de %s %s depășește soldul rămas al facturii %s: %s %s. O decontare peste sold ar înregistra o %s care nu "
+                     "există (și o diferență de curs inventată)." % (bani(v), f["moneda"], f["document"], bani(f["rest_valuta"]), f["moneda"],
+                                                                      "creanță" if corp["tip"] == "creanta" else "datorie")) if v > 0 \
+                    else "Suma în valută trebuie să fie un număr pozitiv."
+                raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-valoare_valuta", "mesaj": m}]})
+            _uc_comun._preincalzeste_cursul(f["moneda"], corp.get("data"))
             try:
-                curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, corp.get("moneda", "EUR"), data)
+                curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, f["moneda"], data)
             except _cb.MonedaNecotata as _mn:   # [lotul 8] iesea ca `500`
                 raise _erori.DateInvalide(str(_mn))
             except _cb.CursIndisponibil as _ci:
                 raise _erori.Conflict(str(_ci))
-            r = _dc.nota_decontare(corp["valoare_valuta"], corp["curs_evidenta"],
-                                   curs_dec, corp["tip"],
-                                    _cv.cere_cont(conn, schema, corp.get("cont_tert"), "cont_tert"),
-                                   _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca", "5124"),
-                                   in_lei_cu_clauza=_uc_comun.bifa(corp, "in_lei_cu_clauza", False))
+            r = _dc.nota_decontare(v, f["curs_evidenta"], curs_dec, corp["tip"], f["cont_tert"],
+                                   _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca"))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         d = r["diferenta"]
-        descr = (corp.get("descriere") or "Decontare valuta") +                 f" {bani(corp['valoare_valuta'])} {corp.get('moneda','EUR')} curs {curs_dec}" +                 (f", dif. {d['sens']} {bani(d['diferenta'], 'lei')} ({d['cont']})" if d["cont"] else "")
+        descr = (corp.get("descriere") or ("Decontare %s %s" % ("încasare" if corp["tip"] == "creanta" else "plată", f["document"]))) + \
+            f" {bani(v)} {f['moneda']} curs {curs_dec} (evidență {f['curs_evidenta']}, {f['curs_din']})" + \
+            (f", dif. {d['sens']} {bani(d['diferenta'], 'lei')} ({d['cont']})" if d["cont"] else "")
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
+            cur.execute(f"UPDATE {schema}.inregistrari SET factura_id = %s WHERE id = %s", (f["id"], iid))   # soldul facturii scade
+            from core import compensari_api as _cz
             for dd, cc, ss in r["linii"]:
-                repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
+                if f["cont_tert"] in (dd, cc):
+                    repo_contabilitate.adauga_linie_partener(cur, schema, iid, dd, cc, ss, _cz.cui_partener(f["cui"]) or None, f["partener"])
+                else:
+                    repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
         conn.commit()
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "curs_decontare": str(curs_dec),
+            "curs_evidenta": str(f["curs_evidenta"]), "curs_din": f["curs_din"], "factura": f["document"],
+            "rest_valuta": str(f["rest_valuta"] - v), "moneda": f["moneda"],
             "lei_evidenta": str(r["lei_evidenta"]),
             "diferenta": {"suma": str(d["diferenta"]), "cont": d["cont"],
                           "sens": d["sens"]}})
@@ -7858,6 +8961,8 @@ def vanzare_ic(tenant_id, corp, ctx):
             # minciuna. Pana azi orice altceva decat „servicii" devenea TACIT bunuri — aceeasi clasa
             # pe care lotul 5 a reparat-o la `achizitie_ic` pe 04.09. ([lotul 11, 440] verificat sus, cu codul și valoarea, înainte de VIES)
             # [C84, decizia Costin (b)] numai prestarea de servicii (bunurile s-au refuzat sus, înainte de VIES)
+            if v.get("stare") == "indisponibil":   # [lotul 13, 550] VIES căzut nu e cod invalid: se reîncearcă, nu se taxează
+                raise _erori.ServiciuStrainCazut(_ic.mesaj_vies_indisponibil(corp["cod_tva_client"], v.get("eroare")))
             ok, ment = _ic.valideaza_prestare_ic(corp["cod_tva_client"], v["valid"])
             cont_venit = _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "704")
             cont_venit = _cv.cere_cont(conn, schema, cont_venit, "cont_venit")

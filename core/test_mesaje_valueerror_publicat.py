@@ -42,15 +42,16 @@ _BASELINE_DIACRITICE = {
     # 1 -> 0. Amandoua au iesit la iveala proband cele 32 de operatiuni speciale.
     "core/facturi_api.py": 1,
     "core/gdpr_cerere.py": 1, "core/gdpr_sterge.py": 2,   # [lotul 12, 317] gdpr_cerere: „Denumirea scrisă nu se potrivește…”, cu diacritice
-    "core/intracomunitar.py": 1, "core/inventariere.py": 2, "core/migrare_api.py": 1,
-    "core/productie.py": 1, "core/provizioane.py": 1,
+    # [lotul 13, 515] ieșite din baseline: intracomunitar, inventariere, productie, provizioane, tva_aur, tva_marja_turism — refuzurile
+    # rescrise pe limba contabilului („cont stoc: 371|301…”, „lista componente goala”, „cost efectiv invalid”, „cont ajustare stocuri = grupa 39x”)
+    "core/migrare_api.py": 1,
     "core/reset_parola.py": 1, "core/retete_api.py": 1,
     "core/taxare_inversa.py": 1, 
     # [LOTUL 11, 04.09.2026] `core/tenant_provisioning.py` A IESIT din baseline: 2 -> 0.
     # Reparatia lui R134 (refuzurile rutei nu mai ies `500`) a PUBLICAT patru mesaje care
     # pana atunci nu ajungeau la nimeni, iar doua erau scrise fara diacritice. Rescrise in
     # AMANDOUA locurile in care traiau — creare si actualizare —, nu doar pe calea noua.
-    "core/tva_aur.py": 1, "core/tva_marja_turism.py": 1, 
+
 }
 
 

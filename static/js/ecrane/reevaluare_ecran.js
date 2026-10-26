@@ -12,7 +12,12 @@
 // `.bara-fixa` (cap.6, v2.92), confirmarea care numește nota și consecința rămâne pe ecran (cap.27).
 import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=e38843b1ec";
 
+import { MONEDE } from "./operatiuni_ecran.js?v=0000000000";   // [lotul 13, 631] aceeași listă de monede ca la factură
+
 const FEL = { creanta: "Creanță", datorie: "Datorie", disponibil: "Disponibil" };
+// [lotul 13, deficiența 631] „Moneda se scrie de mână; trebuie aleasă din lista de coduri BNR, ca la factură”: select, nu text
+const selectMoneda = (atrib, val, eticheta, clasa) => `<select class="camp-input ${clasa}" ${atrib} aria-label="${esc(eticheta)}"><option value=""${val ? "" : " selected"}>— moneda —</option>${
+  (val && !MONEDE.includes(val) ? [val] : []).concat(MONEDE).map((m) => `<option value="${esc(m)}"${m === val ? " selected" : ""}>${esc(m)}</option>`).join("")}</select>`;
 
 /** De unde vine cursul din evidență: factura, media facturilor, reevaluarea anterioară sau soldul contului (lei / valută). */
 function dinEvidenta(e) {
@@ -70,8 +75,9 @@ export async function ecranReevaluareValuta(corp, nav, t, an, luna, opt = {}) {
         return c === "moneda" ? esc(e.moneda || "—") : (e.sold_valuta === null ? "—" : bani(e.sold_valuta));
       }
       const val = (completari[e.cheie] || {})[c] ?? (c === "moneda" ? (e.moneda || "") : (e.sold_valuta ?? ""));
+      if (c === "moneda") return selectMoneda(`id="rv-${c}-${esc(e.cheie)}" data-cheie="${esc(e.cheie)}" data-camp="${c}" style="width:7em"`, val, eticheta, "rv-camp");
       return `<input class="camp-input rv-camp" id="rv-${c}-${esc(e.cheie)}" data-cheie="${esc(e.cheie)}" data-camp="${c}"
-        aria-label="${esc(eticheta)}" value="${esc(val)}" ${c === "moneda" ? 'maxlength="3" style="width:5em"' : 'inputmode="decimal" style="width:9em"'}>`;
+        aria-label="${esc(eticheta)}" value="${esc(val)}" inputmode="decimal" style="width:9em">`;
     };
     const nume = (e) => e.document || e.partener || "contul " + e.cont;
     const rand = (e) => `<tr data-cheie="${esc(e.cheie)}">
@@ -92,8 +98,7 @@ export async function ecranReevaluareValuta(corp, nav, t, an, luna, opt = {}) {
     const randManual = (m, i) => `<tr data-rand-manual="${i}">
         <td><input class="camp-input rv-m" id="rv-m${i}-cont" data-i="${i}" data-camp="cont" aria-label="Contul ajustării ${i + 1}"
           value="${esc(m.cont || "")}" style="width:8em"></td>
-        <td><input class="camp-input rv-m" id="rv-m${i}-moneda" data-i="${i}" data-camp="moneda" aria-label="Moneda ajustării ${i + 1}"
-          value="${esc(m.moneda || "")}" maxlength="3" style="width:5em"></td>
+        <td>${selectMoneda(`id="rv-m${i}-moneda" data-i="${i}" data-camp="moneda" style="width:7em"`, m.moneda || "", `Moneda ajustării ${i + 1}`, "rv-m")}</td>
         <td><input class="camp-input rv-m" id="rv-m${i}-sold_valuta" data-i="${i}" data-camp="sold_valuta" inputmode="decimal"
           aria-label="Soldul în valută al ajustării ${i + 1}" value="${esc(m.sold_valuta || "")}" style="width:9em"></td>
         <td>${selectDaNu(`id="rv-m${i}-clauza" class="rv-m" data-i="${i}" data-camp="clauza"`, m.clauza, `În lei cu clauză valutară (668 / 768), ajustarea ${i + 1}`)}</td>

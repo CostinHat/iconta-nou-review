@@ -23,16 +23,11 @@ def test_pic():
 def test_coeficient():
     assert m.coeficient_348(200, 800, 5000, 15000) == Decimal("0.050000")
 
-def test_vanzare_cu_repartizare():
-    r = m.nota_vanzare(8000, 5000, 21, "0.05")
-    assert ("4111", "701", Decimal("8000.00")) in r["linii"]
-    assert ("4111", "4427", Decimal("1680.00")) in r["linii"]
-    assert ("711", "345", Decimal("5000.00")) in r["linii"]
-    assert ("711", "348", Decimal("250.00")) in r["linii"]
-
-def test_vanzare_coef_favorabil():
-    r = m.nota_vanzare(8000, 5000, 21, "-0.02")
-    assert ("348", "711", Decimal("100.00")) in r["linii"]
+def test_diferente_repartizate_asupra_iesirii():
+    # [lotul 13, 510] vânzarea trece prin factură; aici rămâne numai repartizarea diferențelor (OMFP 1802/2014 pct.286 alin.(4))
+    assert m.nota_diferente_iesire(5000, "0.05")["linii"] == [("711", "348", Decimal("250.00"))]
+    assert m.nota_diferente_iesire(5000, "-0.02")["linii"] == [("348", "711", Decimal("100.00"))]
+    assert m.nota_diferente_iesire(5000, 0)["linii"] == []
 
 def test_invalid():
     with pytest.raises(ValueError):

@@ -157,11 +157,16 @@ def plan_lunar(mf, inregistrate, azi, acoperite=frozenset()):
 
 
 def amortizare_lunii_neinregistrata(cur, rows, an, luna):
-    """[W2] [{cont, rata}] — conturile de amortizare cu rată teoretică > 0 în (an, luna) și fără nicio notă validată care să le
-    crediteze în luna aceea (în afara lunilor acoperite de soldul preluat); plus {cont, rata: None, eroare} pentru mijlocul a cărui
-    rată nu se poate calcula (metodă nepermisă). Baza blocajului închiderii lunii."""
-    from core import d406_active as _a
+    """[W2] [{cont, rata}] — conturile de amortizare cu rată teoretică > 0 în (an, luna) a unor active a căror amortizare a lunii nu e
+    trecută PE ACTIV într-o notă validată (lotul 13, 522: „Amortizarea înregistrată se ține pe fiecare activ” — înainte, o lună era
+    „înregistrată” pe cont dacă orice notă validată credita contul, deci luna lipsă a unui activ nou se ascundea sub nota celorlalte),
+    în afara lunilor acoperite de soldul preluat; plus {cont, rata: None, eroare} pentru mijlocul a cărui rată nu se poate calcula
+    (metodă nepermisă). Baza blocajului închiderii lunii. `cur` are `search_path` pe firmă (rândurile sunt ale lui `toate`)."""
+    import datetime as _dt
+    from core import d406_active as _a, mf_note as _mfn
     pe_cont, mfs, necalculabile = {}, {}, []
+    sfarsit = _dt.date(int(an) + (int(luna) == 12), int(luna) % 12 + 1, 1) - _dt.timedelta(days=1)
+    pa = _mfn.pe_activ(cur, None, sfarsit)
     for m in (_mf_dict(r) for r in rows):
         if not (m["activ"] and m["data_pif"] and m["dnf_luni"]):
             continue
@@ -171,11 +176,11 @@ def amortizare_lunii_neinregistrata(cur, rows, an, luna):
         except ValueError as e:   # nu se ghicește o rată: închiderea se oprește pe ea, cu motivul
             necalculabile.append({"cont": m["cont_amortizare"], "rata": None, "eroare": str(e)})
             continue
-        if rata > 0:
-            pe_cont[m["cont_amortizare"]] = pe_cont.get(m["cont_amortizare"], Decimal(0)) + rata
+        if rata > 0 and (an, luna) not in pa.get(m["id"], {}).get("luni", set()):
+            pe_cont.setdefault(m["cont_amortizare"], Decimal(0))
+            pe_cont[m["cont_amortizare"]] += rata
     return necalculabile + [{"cont": c, "rata": str(v)} for c, v in sorted(pe_cont.items())
-                            if (an, luna) not in luni_inregistrate(cur, c)
-                            and (an, luna) not in luni_acoperite_de_soldul_initial(mfs[c], sold_initial_cont(cur, c) - preluat_pe_cont(mfs[c]))]
+                            if (an, luna) not in luni_acoperite_de_soldul_initial(mfs[c], sold_initial_cont(cur, c) - preluat_pe_cont(mfs[c]))]
 
 
 def preluat_pe_cont(mfs):
@@ -222,10 +227,16 @@ def luni_ca_interval(luni):
 
 
 def registru(cur, rows, azi=None):
-    """Rândurile registrului (din `repo_mijloace_fixe.toate`) cu amortizarea teoretică, cea înregistrată, diferența, lunile
-    neînregistrate, durata, codul din catalog și planul lunar."""
-    from core import d406_active as _a, inchidere_luna as _il
+    """Rândurile registrului (din `repo_mijloace_fixe.toate`) cu amortizarea teoretică, cea înregistrată PE ACTIV, diferența, lunile
+    neînregistrate, durata, codul din catalog, planul lunar și starea (activ / casat / intrare sau casare în așteptarea validării).
+
+    [lotul 13, deficiența 522, comanda Costin 13.1] „Coloana «Înregistrat» se citește pe cont (2813), nu pe activ. Cu MF-001 «casat»,
+    întreaga amortizare a lui (4.000) apare la MF-PLUS […] Amortizarea înregistrată se ține pe fiecare activ.” Înregistrat = partea
+    activului din soldul preluat (amortizarea preluată din registrul vechi sau ratele lui din lunile acoperite de sold) + rândurile LUI pe
+    contul de amortizare din notele validate (`mf_note.pe_activ`). Ce stă pe cont fără activ (notă manuală) se arată separat, pe cont."""
+    from core import d406_active as _a, inchidere_luna as _il, mf_note as _mfn
     from core.common import azi_ro
+    from core import eticheta_nota as _et
     azi = azi or azi_ro()   # ziua României, ca `ultima_zi_incheiata` și închiderea lunii
     pana = _il.ultima_zi_incheiata(azi)   # [Retest 2 pct.5] calculul și soldul înregistrat: până la ultima lună încheiată
     mfs = [_mf_dict(r) for r in rows]
@@ -236,30 +247,68 @@ def registru(cur, rows, azi=None):
         if m["activ"]:
             pe_cont.setdefault(m["cont_amortizare"], []).append(m["id"])
     sold = {c: sold_creditor_cont(cur, c, pana) for c in pe_cont}
-    inreg = {c: luni_inregistrate(cur, c) for c in pe_cont}
     acoperite = {c: luni_acoperite_de_soldul_initial([m for m in mfs if m["activ"] and m["cont_amortizare"] == c],
                                                      sold_initial_cont(cur, c)) for c in pe_cont}
+    pa = _mfn.pe_activ(cur, None, pana)
+    asteapta = _mfn.in_asteptare(cur, None)
     out = []
     for m in mfs:
         e = {"amortizat_teoretic": None, "ramas": None, "eroare": None, "inregistrat": None, "inregistrat_pe_cont": None,
              "diferenta": None, "luni_neinregistrate": [], "plan_lunar": [], "cod_catalog": cod_cat.get(m["id"]),
              "catalog": cat.get(str(cod_cat.get(m["id"]) or "").rstrip(".")), "durata_luni": m["dnf_luni"]}
+        st = asteapta.get(m["id"], {})
+        if "intrare" in st:   # [519] adus de o ciornă: intră în registru la validarea ei
+            e["stare"], e["nota_asteptare"] = "intrare_in_asteptare", _et.nota(cur, None, st["intrare"][0])
+        elif "iesire" in st:  # [519] casarea e ciornă: activul rămâne activ până la validarea ei
+            e["stare"], e["nota_asteptare"] = "casare_in_asteptare", _et.nota(cur, None, st["iesire"][0])
+        else:
+            e["stare"] = "activ" if m["activ"] else "casat"
         if m["activ"]:
             try:
                 t = _a.amortizat_la_data(m, pana)
                 e["amortizat_teoretic"], e["ramas"] = str(t["amortizat"]), str(t["ramas"])
-                plan = plan_lunar(m, inreg[m["cont_amortizare"]], azi, acoperite[m["cont_amortizare"]])
-                e["plan_lunar"] = [{"an": a, "luna": l, "rata": str(r), "stare": s} for a, l, r, s in plan]
-                e["luni_neinregistrate"] = ["%02d/%d" % (l, a) for a, l, r, s in plan if s == "neinregistrata"]
                 c = m["cont_amortizare"]
+                pm = pa.get(m["id"], {"inregistrat": Decimal(0), "luni": set(), "luni_ciorna": set()})
+                plan = plan_lunar(m, pm["luni"], azi, acoperite[c])
+                e["plan_lunar"] = [{"an": a, "luna": l, "rata": str(r), "stare": ("in_ciorna" if s == "neinregistrata" and (a, l) in pm["luni_ciorna"]
+                                                                                   else s)} for a, l, r, s in plan]
+                e["luni_neinregistrate"] = ["%02d/%d" % (l, a) for a, l, r, s in plan if s == "neinregistrata" and (a, l) not in pm["luni_ciorna"]]
+                e["luni_in_ciorna"] = ["%02d/%d" % (l, a) for a, l, r, s in plan if s == "neinregistrata" and (a, l) in pm["luni_ciorna"]]
+                pr = m.get("amortizare_preluata")
+                din_sold = Decimal(str(pr)) if pr is not None else sum((r for a, l, r, s in plan if s == "sold_initial"), Decimal(0))
+                inreg = din_sold + pm["inregistrat"]
+                e["inregistrat"] = str(inreg)
+                e["diferenta"] = str(Decimal(str(t["amortizat"])) - inreg)
                 e["inregistrat_pe_cont"] = {"cont": c, "sold": str(sold[c]), "mijloace": len(pe_cont[c])}
-                if len(pe_cont[c]) == 1:   # contul are un singur mijloc fix: soldul lui e amortizarea acestuia
-                    e["inregistrat"] = str(sold[c])
-                    e["diferenta"] = str(Decimal(str(t["amortizat"])) - sold[c])
             except (ValueError, KeyError) as ex:
                 e["eroare"] = str(ex)
         out.append(dict(m, valoare=str(m["valoare"]), rezidual=str(m["rezidual"]),
                         metoda_eticheta=_a.eticheta_metoda(m.get("metoda")),   # [Retest 2 pct.2]
                         data_pif=str(m["data_pif"]) if m["data_pif"] else None, reevaluari=None,
                         amortizat=e["amortizat_teoretic"], **e))
+    # [522] ce stă pe contul de amortizare fără activ (o notă manuală): se spune pe cont, nu se pune pe un activ
+    for c in pe_cont:
+        nealocat = sold[c] - sum((Decimal(x["inregistrat"]) for x in out if x["activ"] and x["cont_amortizare"] == c and x["inregistrat"]),
+                                 Decimal(0))
+        for x in out:
+            if x["activ"] and x["cont_amortizare"] == c and x["inregistrat_pe_cont"]:
+                x["inregistrat_pe_cont"]["nealocat"] = str(nealocat)
     return out
+
+
+def inregistrat_pe_activ(cur, schema, rows, mijloc_fix_id, la_data):
+    """[lotul 13, 518 / 516] Amortizarea ÎNREGISTRATĂ a activului la `la_data`: partea lui din soldul preluat + rândurile lui validate
+    (aceeași regulă ca registrul). `cur` cu `search_path` pe firmă; `rows` = `repo_mijloace_fixe.toate`."""
+    from core import mf_note as _mfn
+    mfs = [_mf_dict(r) for r in rows]
+    m = next(x for x in mfs if x["id"] == int(mijloc_fix_id))
+    c = m["cont_amortizare"]
+    acoperite = luni_acoperite_de_soldul_initial([x for x in mfs if x["activ"] and x["cont_amortizare"] == c], sold_initial_cont(cur, c))
+    pr = m.get("amortizare_preluata")
+    if pr is not None:
+        din_sold = Decimal(str(pr))
+    else:
+        from core import d406_active as _a
+        din_sold = sum((Decimal(str(_a.amortizare_luna(m, a, l))) for a, l in acoperite
+                        if (a, l) > (m["data_pif"].year, m["data_pif"].month)), Decimal(0))
+    return din_sold + _mfn.pe_activ(cur, None, la_data).get(m["id"], {}).get("inregistrat", Decimal(0))

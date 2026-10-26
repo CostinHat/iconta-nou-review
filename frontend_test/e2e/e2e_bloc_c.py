@@ -733,19 +733,18 @@ def test_def_75_achizitia_de_la_agricultor_deschide_formularul_ei(patron):
     patron.captura()
 
 
-def test_def_78_conturile_vin_precompletate_si_modificabile(patron):
-    """78. Operațiuni: conturile trebuiau tastate; acum precompletate și modificabile.
-    Pașii: Operațiuni speciale -> „Lichidare / radiere firmă” -> Vânzare activ la lichidare: „Cont imobilizare” vine 2131 și
-    „Cont amortizare” 2813 (cazul uzual, vizibil înainte de generare), se pot schimba; golit, contul se cere lângă câmp (410)."""
+def test_def_78_conturile_pornesc_goale_cu_contul_uzual_in_explicatie(patron):
+    """78 (cu 504, lotul 13). Operațiuni: conturile trebuiau tastate; în lotul 07.10 au venit precompletate. [PIVOT, comanda Costin 13.1,
+    504: „Câmpurile nu au voie să arate valori gri sau precompletate care induc în eroare […] Câmpul rămâne gol.”] Pașii: Operațiuni
+    speciale -> „Lichidare / radiere firmă” -> Vânzare activ la lichidare: „Cont imobilizare” și „Cont amortizare” pornesc goale, fără text
+    gri, cu contul uzual spus în explicația câmpului („De regulă 2131.”); golit, contul se cere lângă câmp (410)."""
     pg = patron.pg
     _operatiune(patron, "Comert Micro TVA", "Lichidare / radiere firmă")
     pg.select_option("#op-operatie", "vanzare_activ")
-    assert pg.input_value("#op-cont_imobilizare") == "2131"
-    assert pg.input_value("#op-cont_amortizare") == "2813"
-    patron.captura("precompletat")
-    pg.fill("#op-cont_imobilizare", "2133")
-    assert pg.input_value("#op-cont_imobilizare") == "2133"
-    pg.fill("#op-cont_imobilizare", "")
+    assert (pg.input_value("#op-cont_imobilizare"), pg.input_value("#op-cont_amortizare")) == ("", "")
+    assert (pg.get_attribute("#op-cont_imobilizare", "placeholder") or "") == ""
+    assert "De regulă 2131." in pg.locator(".camp:has(#op-cont_imobilizare) .camp-ajutor").inner_text()
+    patron.captura("gol")
     pg.fill("#op-data", AZI.isoformat())
     for c in ("pret", "valoare_bruta", "amortizare_cumulata", "cota"):
         pg.fill("#op-%s" % c, "21" if c == "cota" else "100")
@@ -759,21 +758,26 @@ def test_def_78_conturile_vin_precompletate_si_modificabile(patron):
 
 def test_def_76_datele_citite_de_server_sunt_cerute_de_formular(patron, firma_cv):
     """76. Formulare: 33 de date citite de server nu erau cerute de formular.
-    Pașii (cazul probat la reparație): Operațiuni speciale -> „Credite bancare” -> Plată rată: formularul cere acum dobânda,
-    comisionul și „Dobânda a fost înregistrată deja pe 666” (Da/Nu, fără preselecție). Rata 1.000 (sub 1 an) + dobândă 200
-    neangajată + comision 50 -> nota are rata (… = 5121 1.000), 666 = 5121 200 și 627 = 5121 50 (înainte: doar rata)."""
+    Pașii (cazul probat la reparație): Operațiuni speciale -> „Credite bancare” -> Plată rată: formularul cere dobânda și comisionul.
+    [lotul 13, 524] „Dobânda a fost înregistrată deja pe 666” nu se mai întreabă: o stabilește soldul 5198 (fără dobândă angajată ->
+    666 = 5121). Creditul primit (5121 = 5191 1.000) e validat (date de pornire); rata 1.000 (sub 1 an) + dobândă 200 + comision 50 ->
+    nota are rata (5191 = 5121 1.000), 666 = 5121 200 și 627 = 5121 50."""
     pg = patron.pg
+    s = firma_cv["schema"]
+    (nid0,) = sql('INSERT INTO "%s".inregistrari (data, descriere, sursa, status, document_ref) VALUES (%%s, %%s, %%s, %%s, %%s) RETURNING id' % s,
+                  (AZI.replace(day=1).isoformat(), "Primire credit E2E 76", "operatiuni", "validata", "Contract credit E2E"))[0]
+    sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, %%s, %%s, %%s)' % s,
+        (nid0, "5121", "5191", 1000))
     _operatiune(patron, firma_cv["nume"], "Credite bancare")
     pg.select_option("#op-operatie", "plata")
-    for c in ("dobanda", "rata", "comision", "dobanda_angajata"):
+    for c in ("dobanda", "rata", "comision"):
         assert pg.is_visible("#op-%s" % c), c
-    assert pg.input_value("#op-dobanda_angajata") == "", "Da/Nu preselectat"
+    assert pg.locator("#op-dobanda_angajata").count() == 0
     pg.fill("#op-data", AZI.isoformat())
     pg.select_option("#op-tip", "scurt")
     pg.fill("#op-rata", "1000")
     pg.fill("#op-dobanda", "200")
     pg.fill("#op-comision", "50")
-    pg.select_option("#op-dobanda_angajata", label="Nu")
     pg.fill("#op-descriere", "Rata credit proba 76")
     ultima = _ultima_nota(firma_cv)
     pg.click("#op-trimite")

@@ -104,8 +104,9 @@ def test_achizitie_taxare_inversa_emite_factura_ajunge_in_d394_duk_valid(monkeyp
                 _scratch(cur)
             conn.commit()
         monkeypatch.setattr(main.auth_api, "schema_tenant", lambda conn, uid, tid: _SCH)
+        _anaf_platitor(monkeypatch)
         r = main.achizitie_taxare_inversa(1, {"data": "2026-06-15", "categorie": "deseuri", "valoare": 5000,
-                                              "cont_destinatie": "371", "cota": 21, "furnizor_platitor_tva": True,
+                                              "cont_destinatie": "371", "cota": 21,
                                               "furnizor_cui": "RO14399840", "furnizor_nume": "FURNIZOR RO",
                                               "numar": "F-RO-1"}, {"uid": 1})
         assert r.get("factura_id"), r
@@ -253,6 +254,13 @@ def _stub_anaf(monkeypatch):
                         "valideaza_cui", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("ANAF stub")))
 
 
+def _anaf_platitor(monkeypatch):
+    """[lotul 13, 544] Taxarea inversă cere verdictul ANAF STRICT (CF art.331 alin.(1): „efectuate de persoane impozabile înregistrate în
+    scopuri de TVA conform art. 316”); ANAF căzut = refuz. Testele care o înregistrează dau un răspuns ANAF determinist: plătitor."""
+    from core import anaf_api
+    monkeypatch.setattr(anaf_api, "valideaza_cui", lambda cuis, *a, **k: [{"cui": c, "gasit": True, "platitor_tva": True} for c in cuis])
+
+
 def test_clasifica_partener_consulta_flag_nu_forma():
     from core.d394 import clasifica_partener, P_TVA_RO, P_NEINREG, P_UE
     CUI = "RO14399840"   # RO CUI VALID (forma OK)
@@ -323,8 +331,9 @@ def test_handlerele_ingheata_flagul_la_creare(monkeypatch):
         monkeypatch.setattr(main.auth_api, "schema_tenant", lambda conn, uid, tid: _SCH)
         rn = main.achizitie_neinregistrat(1, {"data": "2026-06-18", "furnizor_nume": "ION", "valoare": 2000, **_PF_402,
                                              "cont_cheltuiala": "301", "categorie": "deseuri"}, {"uid": 1})
+        _anaf_platitor(monkeypatch)
         rt = main.achizitie_taxare_inversa(1, {"data": "2026-06-15", "categorie": "deseuri", "valoare": 5000,
-                                              "cont_destinatie": "371", "cota": 21, "furnizor_platitor_tva": True,
+                                              "cont_destinatie": "371", "cota": 21,
                                               "furnizor_cui": "RO14399840", "furnizor_nume": "FRZ", "numar": "F1"},
                                            {"uid": 1})
         with db.get_conn() as conn, conn.cursor() as cur:

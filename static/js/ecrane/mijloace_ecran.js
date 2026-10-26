@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, cate, esc, arataMesaj, confirmaCaseta, bani, dataRo, dataIso, dupaGenerare, noteGenerate, stareNota, pasNota } from "../api.js?v=e38843b1ec";
+import { api, cate, esc, arataMesaj, arataRefuzul, bani, dataRo, dupaGenerare, noteGenerate, stareNota, pasNota, eroareCamp, curataEroriCamp } from "../api.js?v=e38843b1ec";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {
@@ -22,7 +22,6 @@ export function luniScurte(luni) {
 }
 
 export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
-  const azi = dataIso();
   // [368, lotul 9] la PFA (partidă simplă) nu există note contabile: registrul ține activele și amortizarea calculată (deductibilă în
   // D212), fără coloanele „înregistrat în contabilitate” / „diferență” și fără casarea / reevaluarea care scriu note
   const simpla = !!opt.simpla;
@@ -42,24 +41,46 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
 
   // [08.10.2026, decizia Costin W2] „registrul afișează amortizarea înregistrată în contabilitate, iar separat diferența față de
   // calculul teoretic, cu lunile neînregistrate … durata, codul din catalog și planul lunar de amortizare”
+  // [lotul 13, deficiența 522] „Înregistrat” e al ACTIVULUI (rândurile lui din note + partea lui din soldul preluat), nu soldul contului;
+  // ce stă pe cont fără activ (notă manuală) se spune separat
   const inregistrat = (m) => m.inregistrat != null
-    ? bani(m.inregistrat)
-    : (m.inregistrat_pe_cont ? `<span class="tip-desc">pe contul ${esc(m.inregistrat_pe_cont.cont)}: ${bani(m.inregistrat_pe_cont.sold)} (${cate(m.inregistrat_pe_cont.mijloace, "mijloc", "mijloace")})</span>` : "—");
+    ? `${bani(m.inregistrat)}${m.inregistrat_pe_cont && Number(m.inregistrat_pe_cont.nealocat || 0) !== 0
+        ? `<div class="tip-desc">pe contul ${esc(m.inregistrat_pe_cont.cont)}, fără activ: ${bani(m.inregistrat_pe_cont.nealocat)}</div>` : ""}`
+    : "—";
   // [08.10.2026, retest pct.13] „Lunile lipsă scurtate («8 luni: 01–08/2026»)” — lunile consecutive se strâng într-un interval.
   const diferenta = (m) => (m.diferenta == null ? "—"
-    : `${bani(m.diferenta)}${(m.luni_neinregistrate || []).length ? `<div class="tip-desc">neînregistrate: ${esc(luniScurte(m.luni_neinregistrate))}</div>` : ""}`);
+    : `${bani(m.diferenta)}${(m.luni_neinregistrate || []).length ? `<div class="tip-desc">neînregistrate: ${esc(luniScurte(m.luni_neinregistrate))}</div>` : ""}${
+      (m.luni_in_ciorna || []).length ? `<div class="tip-desc">în ciornă, de validat: ${esc(luniScurte(m.luni_in_ciorna))}</div>` : ""}`);
   const catalogCel = (m) => `<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-      <input class="camp-input" style="max-width:120px" id="mf-catalog-${m.id}" value="${esc(m.cod_catalog || "")}" placeholder="ex. 2.1.17.2.1" aria-label="Cod din catalog ${esc(m.denumire || "")}">
+      <input class="camp-input" style="max-width:120px" id="mf-catalog-${m.id}" value="${esc(m.cod_catalog || "")}" aria-label="Cod din catalog ${esc(m.denumire || "")}">
       <button class="buton-secundar" data-catalog="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/cod-catalog">Salvează</button></div>
     ${m.catalog ? `<div class="tip-desc">${esc(m.catalog.denumire)} · ${m.catalog.ani_min}–${cate(m.catalog.ani_max, "an", "ani")}</div>` : ""}`;
   const planLunar = (m) => !(m.plan_lunar || []).length ? "" : `<tr><td colspan="${simpla ? 11 : 13}"><details><summary>Planul lunar de amortizare — ${esc(m.cod || m.denumire || "")} (${cate(m.plan_lunar.length, "lună", "luni")})</summary>
       <table class="fd-tabel"><thead><tr><th>Luna</th><th class="fd-td-num">Rata</th>${simpla ? "" : "<th>Înregistrare</th>"}</tr></thead><tbody>
-      ${m.plan_lunar.map((p) => `<tr><td>${dataRo(new Date(p.an, p.luna - 1, 1), "luna_an_numeric")}</td><td class="fd-td-num">${bani(p.rata)}</td>${simpla ? "" : `<td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td>`}</tr>`).join("")}
+      ${m.plan_lunar.map((p) => `<tr><td>${dataRo(new Date(p.an, p.luna - 1, 1), "luna_an_numeric")}</td><td class="fd-td-num">${bani(p.rata)}</td>${simpla ? "" : `<td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_ciorna: "în ciornă, de validat", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td>`}</tr>`).join("")}
       </tbody></table></details></td></tr>`;
+  // [lotul 13, deficiența 519] starea activului: intră / iese din registru la VALIDAREA notei care îl aduce / îl casează
+  const stare = (m) => ({
+    activ: "activ", casat: "casat",
+    intrare_in_asteptare: `intră la validarea notei ${esc(m.nota_asteptare || "")}`,
+    casare_in_asteptare: `casarea e în ciorna ${esc(m.nota_asteptare || "")}, de validat`,
+  }[m.stare] || (m.activ ? "activ" : "casat"));
+  // [lotul 13, clasele 674 / 675] aceleași butoane pe fiecare rând, în aceeași ordine; cel care nu se aplică e inactiv, cu motivul
+  const motivInactiv = (m, act) => {
+    if (m.stare === "intrare_in_asteptare") return "Activul intră în registru la validarea notei lui; până atunci nu are acțiuni.";
+    if (m.stare === "casat") return "Activul e casat.";
+    if (m.stare === "casare_in_asteptare" && act !== "cd") return "Casarea e în ciornă: valideaz-o sau șterge-o din Registrul jurnal.";
+    if (act === "lipsa" && !(m.luni_neinregistrate || []).length) return "Nicio lună de amortizare neînregistrată până la ultima lună încheiată.";
+    return "";
+  };
+  const buton = (m, act, eticheta, atrib) => {
+    const motiv = motivInactiv(m, act);
+    return `<button class="buton-secundar" ${atrib}${motiv ? ` disabled title="${esc(motiv)}"` : ""}>${eticheta}</button>`;
+  };
 
   function randeaza(lista, pana) {
     const randuri = lista.map((m) => `
-      <tr>
+      <tr data-mf="${m.id}">
         <td>${esc(m.cod || "")}</td>
         <td>${esc(m.denumire || "")}</td>
         <td>${catalogCel(m)}</td>
@@ -73,34 +94,31 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td class="fd-td-num">${m.ramas != null ? bani(m.ramas) : "—"}</td>`}
         <td>${esc(m.metoda_eticheta || "")}</td>
         <td style="white-space:nowrap">${m.data_pif ? dataRo(m.data_pif) : "—"}</td>
-        <td>${m.activ ? "activ" : "casat"}</td>
-        <td>${m.activ ? `
-          <details class="dec-xml"><summary>Acțiuni</summary>
-          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:6px">
-            ${simpla ? "" : `<button class="buton-secundar" data-caseaza="${m.id}" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/nota-inventariere">Casează</button>
-            <input type="number" step="0.01" class="camp-input" style="max-width:130px" id="mf-reeval-${m.id}" placeholder="valoare justă" aria-label="Valoare justă ${esc(m.denumire || "")}">
-            <button class="buton-secundar" data-reeval="${m.id}" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare">Reevaluează</button>`}
-            <button class="buton-secundar" data-cd="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd" data-cd-val="${m.destinatie_cd ? 1 : 0}">C&amp;D: ${m.destinatie_cd ? "da" : "nu"}</button>
-          </div></details>` : "—"}</td>
+        <td class="mf-stare">${stare(m)}</td>
+        <td><div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">
+          ${simpla ? "" : `${buton(m, "casare", "Casează", `data-caseaza="${m.id}" data-actiune="POST /tenants/{tenant_id}/nota-inventariere"`)}
+          ${buton(m, "reeval", "Reevaluează", `data-reeval="${m.id}" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare"`)}
+          ${buton(m, "lipsa", `Înregistrează lunile lipsă${(m.luni_neinregistrate || []).length ? " (" + m.luni_neinregistrate.length + ")" : ""}`, `data-lipsa="${m.id}" data-actiune="POST /tenants/{tenant_id}/amortizare/restanta"`)}`}
+          ${buton(m, "cd", `C&amp;D: ${m.destinatie_cd ? "da" : "nu"}`, `data-cd="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd" data-cd-val="${m.destinatie_cd ? 1 : 0}"`)}
+        </div></td>
       </tr>${planLunar(m)}`).join("");
 
     // [lotul 10, deficiențele 421 / 424, DS cap.9 v2.96] „se derulează doar tabelul din mijloc, niciodată lateral”: tabelul stă direct în
-    // corp (fără cutia lui cu derulare laterală), iar zona de mesaj a acțiunilor de pe rânduri e lipită sus (`.rezumat-fix`) — refuzul
-    // unui „Salvează” de la capătul tabelului se vede fără să urci
+    // corp (fără cutia lui cu derulare laterală), iar zona de mesaj a acțiunilor de pe rânduri e lipită sus (`.rezumat-fix`)
     corp.innerHTML = `
       <h2 class="pf-titlu">Mijloace fixe</h2>
-      ${simpla ? `<p class="pf-intro" id="mf-intro-simpla">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ, CF art.28), și rămas. Firma ține contabilitatea în partidă simplă, deci amortizarea nu se înregistrează prin note: ea intră în cheltuielile deductibile ale anului, în fișa D212. Butonul <b>C&amp;D</b> marchează aparatura destinată cercetării-dezvoltării (amortizare accelerată, CF art. 20 alin. (1) lit. b)).</p>` : `<p class="pf-intro">Registrul activelor firmei: valoare, amortizarea <b>calculată</b> până la sfârșitul lunii ${esc(pana)}, ultima lună încheiată (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), amortizarea <b>înregistrată</b> în contabilitate la aceeași dată (soldul contului de amortizare, note validate) și diferența, cu lunile neînregistrate; rămas. Casarea și reevaluarea generează note contabile, validate apoi din Registrul jurnal. Butonul <b>C&amp;D</b> marchează aparatura și echipamentele destinate cercetării-dezvoltării: ele se pot amortiza accelerat din orice cont (CF art. 20 alin. (1) lit. b)).</p>`}
+      ${simpla ? `<p class="pf-intro" id="mf-intro-simpla">Registrul activelor firmei: amortizarea <b>calculată</b> până la ${esc(pana)} (metoda fiecărui activ, CF art.28); în partidă simplă amortizarea intră în cheltuielile deductibile ale anului, în D212.</p>` : `<p class="pf-intro">Registrul activelor firmei: amortizarea <b>calculată</b> până la ${esc(pana)} și cea <b>înregistrată</b> pe fiecare activ; un activ adus sau casat printr-o notă se schimbă în registru la validarea ei.</p>`}
       <div id="mf-mesaj" class="rezumat-fix"></div>
       ${lista.length ? `
         <table class="fd-tabel">
           <thead><tr>
             <th>Cod</th><th>Denumire</th><th>Cod din catalog</th><th class="fd-td-num">Durată</th>
-            <th class="fd-td-num">Valoare</th><th class="fd-td-num">Amortizat (calculat, până la ${esc(pana)})</th>${simpla ? "" : `<th class="fd-td-num">Înregistrat (cont, la ${esc(pana)})</th>
+            <th class="fd-td-num">Valoare</th><th class="fd-td-num">Amortizat (calculat, până la ${esc(pana)})</th>${simpla ? "" : `<th class="fd-td-num">Înregistrat pe activ (la ${esc(pana)})</th>
             <th class="fd-td-num">Diferență</th>`}<th class="fd-td-num">Rămas</th>
             <th>Metodă</th><th>PIF</th><th>Stare</th><th>Acțiuni</th>
           </tr></thead>
           <tbody>${randuri}</tbody>
-        </table>` : `<p class="ecran-nota">Firma nu are mijloace fixe înregistrate. Se adaugă la migrare sau prin Operațiuni speciale → Inventariere anuală (plus mijloc fix).</p>`}`;
+        </table>` : `<p class="ecran-nota">Firma nu are mijloace fixe înregistrate. Se adaugă la migrare sau prin Operațiuni speciale → Inventariere anuală (plus mijloc fix) ori Leasing (primire bun).</p>`}`;
 
     const zona = corp.querySelector("#mf-mesaj");
 
@@ -114,24 +132,58 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
       } catch (e) { arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut salva codul din catalog.", "eroare"); }
     }));
 
+    // [lotul 13, deficiența 518 + clasa 673] casarea și reevaluarea se deschid într-o fereastră nouă: data casării (cerută, nu azi tăcut),
+    // valoarea justă, nota generată arătată acolo; registrul se reîncarcă la întoarcere
+    const fereastra = (titlu, m, fel) => nav.deschide(titlu, (c2) => {
+      const casare = fel === "casare";
+      c2.innerHTML = `<h2 class="pf-titlu">${esc(titlu)}</h2>
+        <p class="pf-intro">${esc(m.cod || "")} · ${esc(m.denumire || "")} · valoare ${bani(m.valoare)} lei · înregistrat pe activ ${bani(m.inregistrat || 0)} lei.</p>
+        <div class="grila-campuri">
+          <div class="camp"><label class="camp-eticheta" for="mf-f-data">${casare ? "Data casării" : "Data reevaluării"}<span class="oblig">*</span></label><input type="date" id="mf-f-data" class="camp-input"></div>
+          ${casare ? "" : `<div class="camp"><label class="camp-eticheta" for="mf-f-justa">Valoarea justă (raportul evaluatorului)<span class="oblig">*</span></label><input type="number" step="0.01" id="mf-f-justa" class="camp-input"></div>`}
+        </div>
+        <p class="camp-ajutor">${casare ? "Nota: luna casării pe 6811, amortizarea cumulată scoasă din contul de amortizare, restul neamortizat pe 6583; documentul e procesul-verbal de casare. Activul iese din registru la validarea notei." : "Rezerva din reevaluare (105) și pierderea anterioară (655) ale activului le ia aplicația din reevaluările lui."}</p>
+        <div class="bara-fixa"><p class="dec-bara"><button class="buton-primar" id="mf-f-genereaza" data-genereaza-nota data-actiune="${casare ? "POST /tenants/{tenant_id}/nota-inventariere" : "POST /tenants/{tenant_id}/reevaluare-imobilizare"}">${casare ? "Generează nota de casare" : "Generează nota de reevaluare"}</button></p><div id="mf-f-mesaj"></div></div>`;
+      const zf = c2.querySelector("#mf-f-mesaj");
+      c2.querySelector("#mf-f-genereaza").addEventListener("click", async () => {
+        curataEroriCamp(c2);
+        const data = c2.querySelector("#mf-f-data").value;
+        const justa = casare ? null : parseFloat(c2.querySelector("#mf-f-justa").value);
+        let lipsa = false;
+        if (!data) { eroareCamp(c2, "mf-f-data", "Alege data."); lipsa = true; }
+        if (!casare && !(justa > 0)) { eroareCamp(c2, "mf-f-justa", "Scrie valoarea justă din raportul evaluatorului."); lipsa = true; }
+        if (lipsa) return;
+        try {
+          const r = casare ? await api.post(`/tenants/${tenantId}/nota-inventariere`, { operatie: "casare", mijloc_fix_id: Number(m.id), data })
+            : await api.post(`/tenants/${tenantId}/reevaluare-imobilizare`, { operatie: "reevaluare", mijloc_fix_id: Number(m.id), valoare_justa: justa, data });
+          if (!r.inregistrare_id) { arataMesaj(zf, "Nicio diferență de reevaluat: valoarea justă e egală cu valoarea netă contabilă. Nu s-a generat nicio notă.", "info"); return; }
+          dupaGenerare(zf, c2.querySelector("#mf-f-genereaza"), { titlu: `${casare ? "Nota de casare" : "Nota de reevaluare"} (${stareNota(r)})`,
+            note: await noteGenerate(tenantId, [r.inregistrare_id], data), pas: pasNota(r) });
+        } catch (e) { arataRefuzul(c2, e, zf, { campuri: { data: "mf-f-data", valoare_justa: "mf-f-justa" } }); }
+      });
+    });
     corp.querySelectorAll("[data-caseaza]").forEach((b) => b.addEventListener("click", () => {
-      const id = b.dataset.caseaza;
-      const m = lista.find((x) => String(x.id) === String(id));
-      confirmaCaseta(b.closest("tr"),
-        `Casezi <b>${esc(m ? m.denumire : id)}</b>? Se generează nota de casare, amortizarea la zi se calculează automat și mijlocul devine inactiv.`,
-        async () => {
-          try {
-            const r = await api.post(`/tenants/${tenantId}/nota-inventariere`,
-              { operatie: "casare", mijloc_fix_id: Number(id), data: azi });
-            // [8c] registrul se redesenează (mijlocul devine casat): confirmarea verde, cu conturile notei, în zona NOUĂ a ecranului
-            // (`zona` de dinainte e scoasă din pagină de redesenare — mesajul se pierdea)
-            await incarca();
-            dupaGenerare(corp.querySelector("#mf-mesaj"), null, { titlu: `Casare înregistrată (${stareNota(r)})`,
-              note: await noteGenerate(tenantId, [r.inregistrare_id], azi), pas: pasNota(r) });
-          } catch (e) {
-            arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut casa mijlocul fix.", "eroare");
-          }
-        }, { textOk: "Casează" });
+      const m = lista.find((x) => String(x.id) === String(b.dataset.caseaza));
+      fereastra(`Casare ${m.cod || ""}`, m, "casare");
+    }));
+    corp.querySelectorAll("[data-reeval]").forEach((b) => b.addEventListener("click", () => {
+      const m = lista.find((x) => String(x.id) === String(b.dataset.reeval));
+      fereastra(`Reevaluare ${m.cod || ""}`, m, "reevaluare");
+    }));
+    // [lotul 13, deficiența 517] „Din rândul activului se generează toate lunile lipsă deodată, ca ciorne” — până la ultima lună încheiată
+    corp.querySelectorAll("[data-lipsa]").forEach((b) => b.addEventListener("click", async () => {
+      const [luna, an] = String(pana).split("/").map(Number);
+      b.disabled = true;
+      try {
+        const r = await api.post(`/tenants/${tenantId}/amortizare/restanta?an=${an}&luna=${luna}`, {});
+        await incarca();
+        const z = corp.querySelector("#mf-mesaj");
+        const ok = (r.luni || []).filter((x) => x.ok && !x.deja_generata), refuz = (r.luni || []).filter((x) => !x.ok);
+        dupaGenerare(z, null, { titlu: `${cate(ok.length, "notă de amortizare generată", "note de amortizare generate")} (ciorne)`,
+          note: ok.map((x) => ({ eticheta: `${String(x.luna).padStart(2, "0")}/${x.an} — ${x.nota_eticheta || ""}`, linii: (x.linii_nota || []).map((l) => ({ debit: l.debit, credit: l.credit, suma: l.suma })) })),
+          detalii: [r.deja_generate ? `${cate(r.deja_generate, "lună era deja generată", "luni erau deja generate")}, de validat.` : "", ...refuz.map((x) => `${String(x.luna).padStart(2, "0")}/${x.an}: ${x.mesaj}`)],
+          pas: "Le validezi din Registrul jurnal; după validare lunile apar înregistrate pe activ." });
+      } catch (e) { b.disabled = false; arataMesaj(zona, e && e.mesaj ? e.mesaj : "Lunile lipsă nu s-au putut genera.", "eroare"); }
     }));
 
     // [lot 19 d11] bifa «Destinat C&D» — CF art. 20 alin. (1) lit. b)
@@ -144,31 +196,8 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut schimba destinația C&D.", "eroare");
       }
     }));
-
-    corp.querySelectorAll("[data-reeval]").forEach((b) => b.addEventListener("click", async () => {
-      const id = b.dataset.reeval;
-      const inp = corp.querySelector(`#mf-reeval-${id}`);
-      const v = inp && parseFloat(inp.value);
-      if (!v || v <= 0) {
-        arataMesaj(zona, "Introdu valoarea justă (din raportul evaluatorului) înainte de reevaluare.", "eroare");
-        return;
-      }
-      try {
-        const r = await api.post(`/tenants/${tenantId}/reevaluare-imobilizare`,
-          { operatie: "reevaluare", mijloc_fix_id: Number(id), valoare_justa: v, data: azi });
-        await incarca();
-        const zn = corp.querySelector("#mf-mesaj");   // zona NOUĂ, după redesenare
-        if (!r.inregistrare_id) {   // valoarea justă = valoarea netă contabilă: serverul nu scrie nicio notă
-          arataMesaj(zn, "Nicio diferență de reevaluat: valoarea justă e egală cu valoarea netă contabilă. Nu s-a generat nicio notă.", "info");
-          return;
-        }
-        dupaGenerare(zn, null, { titlu: `Reevaluare înregistrată (${stareNota(r)})`,
-          note: await noteGenerate(tenantId, [r.inregistrare_id], azi), pas: pasNota(r) });
-      } catch (e) {
-        arataMesaj(zona, e && e.mesaj ? e.mesaj : "Nu s-a putut reevalua mijlocul fix.", "eroare");
-      }
-    }));
   }
 
+  corp.addEventListener("nav:revenire", incarca);   // [lotul 13] întors din fereastra casării / reevaluării: registrul la zi
   await incarca();
 }

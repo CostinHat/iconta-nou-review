@@ -13,8 +13,14 @@ from decimal import Decimal, ROUND_HALF_UP
 from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
+#: [lotul 13, deficiența 513] „Lipsesc tipurile 1515 (pensii și obligații similare) și 1517 (terminarea contractului de muncă).” —
+#: OMFP 1802/2014, planul de conturi, grupa 151 „Provizioane”: 1511 litigii, 1512 garanții acordate clienților, 1513 dezafectare
+#: imobilizări corporale și alte acțiuni similare legate de acestea, 1514 restructurare, 1515 pensii și obligații similare, 1516
+#: impozite, 1517 terminarea contractului de muncă, 1518 alte provizioane.
 PROVIZIOANE = {"litigii": "1511", "garantii": "1512", "dezafectare": "1513",
-               "restructurare": "1514", "impozite": "1516", "altele": "1518"}
+               "restructurare": "1514", "pensii": "1515", "impozite": "1516", "terminare_cm": "1517", "altele": "1518"}
+#: [lotul 13, deficiența 514] conturile de ajustare a stocurilor (grupa 39), din care se alege — nu se scriu
+CONTURI_AJUSTARE_STOC = ("391", "392", "393", "394", "395", "396", "397", "398")
 
 def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)
@@ -63,10 +69,19 @@ def nota_ajustare_stoc(suma, cont_ajustare="397", actiune="constituire"):
     s = _d(suma)
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
-    if not str(cont_ajustare).startswith("39"):
-        raise ValueError("cont ajustare stocuri = grupa 39x")
+    if str(cont_ajustare) not in CONTURI_AJUSTARE_STOC:   # [lotul 13, 515] refuzul pe limba contabilului
+        raise ValueError("Alege contul de ajustare a stocurilor din grupa 39 (391–398): ajustarea se înregistrează pe contul stocului "
+                         "depreciat (de exemplu 397 pentru mărfuri).")
     if actiune == "constituire":
         return {"linii": [("6814", str(cont_ajustare), s)], "deductibil": False}
     if actiune == "reluare":
         return {"linii": [(str(cont_ajustare), "7814", s)], "deductibil": False}
     raise ValueError(nomenclator_cerut("actiune", "constituire|reluare"))
+
+
+def parti_fiscale(suma, procent_deductibil):
+    """[lotul 13, deficiența 512] (deductibil, nedeductibil) dintr-o constituire: „10.000 la 300 de zile = 3.000 deductibil, 7.000
+    nedeductibil”. Decimal, ROUND_HALF_UP."""
+    s = _d(suma)
+    ded = (s * Decimal(str(procent_deductibil)) / 100).quantize(B, rounding=ROUND_HALF_UP)
+    return ded, s - ded

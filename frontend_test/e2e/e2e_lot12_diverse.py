@@ -169,6 +169,16 @@ def test_def_c117_casarea_nu_cere_valoarea_mijlocului_fix(patron, firma_d):
     f = firma_d
     _firma_gata(f)
     mid = _mf(f, "MF117", "1200", 12, "2026-01-10")
+    # [lotul 13, 518] date de pornire: amortizarea lunilor de dinaintea casării, înregistrată pe activ (note validate, cu activul pe rând) —
+    # fără ea casarea se refuză (lunile lipsă nu trec prin 6811)
+    for luna in range(2, AZI.month):
+        # ciornă -> rândul (cu activul, `mf_linii`) -> validată: rândurile unei note validate nu se mai scriu (`trg_regula_linii_nota`)
+        (nid,) = sql('INSERT INTO "%s".inregistrari (data, descriere, sursa, status, document_ref) VALUES (%%s, %%s, %%s, %%s, %%s) RETURNING id'
+                     % f["schema"], ("2026-%02d-28" % luna, "Amortizare E2E C117", "operatiuni", "ciorna", "Tablou E2E"))[0]
+        (lid,) = sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, %%s, %%s, %%s) RETURNING id'
+                     % f["schema"], (nid, "6811", "2813", 100))[0]
+        sql('INSERT INTO "%s".mf_linii (linie_id, mijloc_fix_id) VALUES (%%s, %%s)' % f["schema"], (lid, mid))
+        sql('UPDATE "%s".inregistrari SET status = \'validata\' WHERE id = %%s' % f["schema"], (nid,))
     pg = patron.pg
     patron.firma(f["nume"])
     pg.click("#fa-operatiuni")
@@ -195,7 +205,8 @@ def test_def_c117_casarea_nu_cere_valoarea_mijlocului_fix(patron, firma_d):
     linii = sql('SELECT l.cont_debit, l.cont_credit, l.suma FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l '
                 "ON l.inregistrare_id = i.id WHERE i.sursa = 'operatiuni' AND i.descriere LIKE %%s ORDER BY l.cont_debit"
                 % (f["schema"], f["schema"]), ("Casare Utilaj de probă MF117 %",))
-    assert linii and all(c == "2131" for _d, c, _s in linii) and sum(s for _d, _c, s in linii) == 1200, linii
+    # 2131 creditat cu toată valoarea (amortizarea pe 2813 + restul pe 6583); [518] luna casării prin 6811
+    assert linii and sum(s for _d, c, s in linii if c == "2131") == 1200 and any(d == "6811" for d, _c, _s in linii), linii
 
 
 # ── 214: ciorna veche de amortizare (ziua 28) ───────────────────────────────────────────────────────────────────────────────────
@@ -268,6 +279,7 @@ def test_def_c128_achizitia_intracomunitara_refuza_furnizorul_din_romania(patron
     for camp, v in (("data", AZI.isoformat()), ("valoare", "1000"), ("cod_tva_furnizor", "RO14399840"), ("numar", "AIC-C128"),
                     ("cota", "21"), ("data_faptului_generator", AZI.isoformat())):
         pg.fill("#op-%s" % camp, v)
+    pg.select_option("#op-moneda", "RON")   # [lotul 13, 537] moneda facturii se alege
     pg.fill("#op-cont_destinatie", "371")
     pg.select_option("#op-tip", "bunuri")
     pg.click("#op-trimite")
@@ -287,7 +299,7 @@ def test_def_c128_achizitia_intracomunitara_refuza_furnizorul_din_romania(patron
 def test_def_c129_reevaluarea_refuza_fisa_fara_cont_de_imobilizare(patron, firma_d):
     """C129. Date de pornire: o fișă în registru cu contul de imobilizare GOL, cum o scrie importul registrului când rândul n-are cont
     (`mijloace_fixe_import_api`: „gol = neclasificat”). Pașii: Operațiuni -> „Reevaluare imobilizări (105)” -> Reevaluare MF -> fișa ->
-    data, valoarea justă 15.000, 0 / 0 -> „Generează nota”: „Mijlocul fix … nu are contul de imobilizare în registru … Completează ce
+    data, valoarea justă 15.000 -> „Generează nota”: „Mijlocul fix … nu are contul de imobilizare în registru … Completează ce
     lipsește din Migrare → Mijloace fixe …”, nicio notă (înainte: nota cu „ = 105”, fără contul activului)."""
     from core.amortizare_lunii import UNDE_SE_COMPLETEAZA
     f = firma_d
@@ -300,8 +312,7 @@ def test_def_c129_reevaluarea_refuza_fisa_fara_cont_de_imobilizare(patron, firma
                          arg=mid, timeout=20000)
     pg.select_option("#op-mijloc_fix_id", str(mid))
     pg.fill("#op-data", AZI.isoformat())
-    for camp, v in (("valoare_justa", "15000"), ("sold_105_activ", "0"), ("pierdere_655_anterioara", "0")):
-        pg.fill("#op-%s" % camp, v)
+    pg.fill("#op-valoare_justa", "15000")   # [lotul 13, 511] rezerva 105 și pierderea 655 nu se mai cer: le ia aplicația
     pg.click("#op-trimite")
     pg.wait_for_selector("#op-mesaj.msg-eroare, #op-mesaj [data-dupa-generare]", timeout=30000)   # `arataMesaj`: clasa e pe zonă
     m = " ".join(pg.inner_text("#op-mesaj").split())

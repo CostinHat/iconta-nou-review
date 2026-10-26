@@ -61,19 +61,42 @@ def _vies_simulat(cod_tva):
                                                     "eroare": "INVALID_INPUT"}
 
 
+#: [lotul 13, deficiența 550] Răspunsurile VIES care spun că codul NU e valid. Orice altă eroare (MS_UNAVAILABLE — „serviciu indisponibil
+#: în statul membru”, MS_MAX_CONCURRENT_REQ, SERVICE_UNAVAILABLE, TIMEOUT, GLOBAL_MAX_CONCURRENT_REQ …) înseamnă că verificarea NU s-a
+#: făcut: VIES întoarce atunci tot `isValid: false`, dar cu codul erorii în `userError`. Proba lui Costin: pentru IE6388047V aplicația a
+#: spus „invalid în VIES — facturează cu TVA românesc”, deși site-ul VIES răspundea „Serviciu indisponibil în statul membru”.
+VIES_INVALID = ("INVALID", "INVALID_INPUT")
+
+
+def stare_vies(valid, eroare):
+    """„valid” | „invalid” | „indisponibil” — din `isValid` și `userError` ale răspunsului VIES. PURĂ."""
+    if valid:
+        return "valid"
+    return "invalid" if (eroare or "INVALID") in VIES_INVALID else "indisponibil"
+
+
 def verifica_vies(cod_tva, timeout=15):
-    """Interogheaza VIES oficial. Returneaza {valid, nume, adresa, tara, numar}."""
+    """Interogheaza VIES oficial. Returneaza {valid, stare, nume, adresa, tara, numar, eroare}; `stare` deosebește codul invalid de
+    VIES indisponibil (`stare_vies`), ca o livrare scutită să nu fie taxată cu TVA românesc din cauza unui serviciu căzut."""
     s = _vies_simulat(cod_tva)
     if s is not None:
-        return s
+        return dict(s, stare=stare_vies(s.get("valid"), s.get("eroare")))
     tara, nr = desparte_cod_tva(cod_tva)
     req = urllib.request.Request(VIES_URL.format(ms=tara, vat=nr),
                                  headers={"Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         d = json.loads(r.read())
-    return {"valid": bool(d.get("isValid")), "nume": d.get("name") or "",
-            "adresa": (d.get("address") or "").strip(), "tara": tara, "numar": nr,
-            "eroare": d.get("userError") if not d.get("isValid") else None}
+    valid, eroare = bool(d.get("isValid")), (d.get("userError") if not d.get("isValid") else None)
+    return {"valid": valid, "stare": stare_vies(valid, eroare), "nume": d.get("name") or "",
+            "adresa": (d.get("address") or "").strip(), "tara": tara, "numar": nr, "eroare": eroare}
+
+
+def mesaj_vies_indisponibil(cod_tva, eroare=None):
+    """[550] Textul pentru contabil când VIES n-a răspuns pentru statul membru: nu e un cod invalid, verificarea se reîncearcă."""
+    tara = str(cod_tva or "")[:2].upper()
+    return ("VIES n-a putut verifica acum codul %s: serviciul statului membru (%s) e indisponibil%s. Asta NU înseamnă că codul e "
+            "invalid — încearcă din nou peste câteva minute; până la verificare nu trata operațiunea ca taxabilă în România."
+            % (cod_tva, tara, (" (%s)" % eroare) if eroare else ""))
 
 def tva_taxare_inversa(baza, cota=None):
     """AIC bunuri/servicii primite: TVA prin taxare inversa 4426 = 4427."""
@@ -148,7 +171,7 @@ def valideaza_prestare_ic(cod_tva_client, cod_valid_vies):
     in RO, locul = beneficiarul; se declara in D390 (S)."""
     tara, _ = desparte_cod_tva(cod_tva_client)
     if tara == "RO":
-        raise ValueError("clientul e din RO - regim normal")
+        raise ValueError("Clientul are cod de TVA din România: prestarea către el e o operațiune internă, cu TVA (regim normal), nu una intracomunitară.")
     if not cod_valid_vies:
         raise ValueError("codul de TVA al clientului e invalid în VIES - nu e persoană impozabilă dovedită, "
                          "serviciul se facturează cu TVA românesc (art. 278 alin.(3))")

@@ -71,7 +71,7 @@ def livrare_aur(optiune_taxare, calitate_client, client_identificare):
     Optiunea de taxare e permisa doar catre persoana impozabila (alin. 4-5).
     Identificarea clientului e obligatorie (alin. 10)."""
     if not (client_identificare or "").strip():
-        raise ValueError("identificarea clientului este obligatorie (art. 313 al. 10)")
+        raise ValueError("Identificarea clientului e obligatorie la livrarea de aur de investiții (art. 313 alin. (10)): scrie CNP-ul, actul de identitate sau CUI-ul lui.")
     if optiune_taxare:
         if calitate_client != "PJ":
             raise ValueError("opțiunea de taxare permisa doar către persoana impozabilă (art. 313 al. 4-5)")
