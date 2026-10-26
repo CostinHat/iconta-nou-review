@@ -49,6 +49,25 @@ TINUT_MIN = 15
 MIN_RANDURI = 3
 FARA_TESTE_MIN = 30
 
+#: [lotul 13, deficiența 643 — „Load average afișat «1.53369140625» (11 zecimale, punct), fără pragul de alertă alături; graficele pe 24 h
+#: fără scară verticală și fără linia pragului”] Pragurile alertelor de sănătate, într-un singur loc: bucla de alertă (`main.py`) și ecranul
+#: Sănătate server (`uc_admin.admin_sanatate`, pragul lângă cifră și linia pragului pe grafic) le citesc de aici. Valorile sunt cele din
+#: `main.py` de dinainte (măsurat pe producție, 02–16.10.2026: RAM max 64% față de 75%) — nu sunt valori fiscale.
+PRAG_RAM_PROCENT = 75
+PRAG_DISC_PROCENT = 75
+
+
+def prag_conexiuni_db(workeri, maxconn):
+    """Conexiunile DB normale = fiecare worker cu pool-ul lui, plus o marjă de 10 (P6 val 3, 12.09.2026 — mutat din `main.py`)."""
+    return max(1, int(workeri or 1)) * int(maxconn) + 10
+
+
+def praguri(cpu, workeri, maxconn):
+    """PURĂ. Pragurile de alertă, cum le arată ecranul: încărcarea (media pe 15 minute, numărul de procesoare), RAM, disc (procente),
+    conexiunile DB."""
+    return {"load": prag(cpu), "ram_procent": PRAG_RAM_PROCENT, "disc_procent": PRAG_DISC_PROCENT,
+            "conexiuni_db": prag_conexiuni_db(workeri, maxconn)}
+
 
 def prag(cpu):
     return float(max(1, int(cpu or 1)))

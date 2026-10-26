@@ -25,6 +25,11 @@ def login(date):
         raise _erori.PreaDes("Prea multe încercări eșuate pentru acest cont. Încearcă din nou peste câteva minute.")
     with db.get_conn() as conn:
         r = auth_api.login(conn, date.email, date.parola)
+    if not r["ok"] and r.get("cod") == "CABINET_SUSPENDAT":
+        # [lotul 13, 645] parola e corectă (auth_api o verifică înaintea suspendării), deci omul cabinetului află motivul ales, fără
+        # linie de contact; nota internă a suspendării nu se arată
+        from core import uc_admin as _uc_admin
+        raise _erori.Neautentificat(_uc_admin.mesaj_suspendare(r.get("cabinet_id")))
     if not r["ok"]:
         _uc_comun._login_esec(_email)
         if _asteapta_confirmare(_email, date.parola):
@@ -73,8 +78,11 @@ def reinnoieste(ctx):
             raise _erori.Neautentificat(MESAJ_REINNOIRE_INVALIDATA)
         s = auth_api.sesiune_pentru_user(conn, ctx["uid"])
         conn.rollback()
+    if not s.get("ok") and s.get("cod") == "CABINET_SUSPENDAT":   # [645] motivul suspendării, ca la logare
+        from core import uc_admin as _uc_admin
+        raise _erori.Neautentificat(_uc_admin.mesaj_suspendare(s.get("cabinet_id")))
     if not s.get("ok"):
-        raise _erori.Neautentificat(s.get("mesaj") or "sesiune invalidă")
+        raise _erori.Neautentificat(s.get("mesaj") or "Sesiunea nu mai e valabilă. Autentifică-te din nou.")
     return {"token": s["token"], "user": s["user"]}
 
 
@@ -469,6 +477,17 @@ def invitatii_lista(ctx):
             r = _inv.lista(cur)
         conn.rollback()
     return {"invitatii": r}
+
+
+def invitatie_retrage(invitatie_id, ctx):
+    """[superadmin, lotul 13, 646 e] Retrage o invitație nefolosită: linkul ei nu mai creează cont."""
+    from core import invitatii as _inv
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            email = _inv.retrage(cur, invitatie_id)
+    if not email:
+        raise _erori.Conflict("Invitația nu se mai poate retrage: a fost folosită, retrasă deja sau nu există.")
+    return {"ok": True, "email": email}
 
 
 def invitatie_stare(token):

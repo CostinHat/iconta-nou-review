@@ -171,6 +171,7 @@ async function deschideSesizare(corp, nav, id) {
     <div class="rap-fir-cap">
       <div class="rap-fir-subiect">${esc(titluFir(cap))}</div>
       <div class="rap-fir-meta">${esc(cap.cabinet || "")}${cap.autor ? " · " + esc(cap.autor) : ""}</div>
+      ${triajHtml(cap)}
       <button class="buton-secundar rap-muta" id="rap-muta">${etMutare}</button>
       ${cap.stare !== "inchisa" ? `<button class="buton-secundar rap-muta" id="rap-inchide">\u00cenchide sesizarea</button>` : `<span class="rap-fir-stare rap-stare-inchisa">\u00eenchis\u0103</span>`}
     </div>
@@ -200,6 +201,18 @@ async function deschideSesizare(corp, nav, id) {
     try { await api.post(`/raportari/${id}/stare`, { stare: "inchisa" }); await incarcaLista(corp, nav); fir.innerHTML = `<div class="rap-gol">Sesizare \u00eenchis\u0103.</div>`; }
     catch { bInc.disabled = false; refuzPeRand(bInc, "Nu s-a putut închide sesizarea. Reîncearcă."); }
   });
+}
+
+// [lotul 13, deficiența 573 — „La sesizarea escaladată nu se vede clasificarea/motivul AI”] decizia triajului și motivul ei, numai aici
+// (utilizatorul vede doar confirmarea, cu diacritice)
+function triajHtml(cap) {
+  if (cap.triaj_decizie === "escaladare") {
+    return `<div class="caseta-info rap-triaj" id="rap-triaj"><div class="ci-mesaj">Asistentul AI a trimis sesizarea la echipă. Motivul: ${esc(cap.triaj_motiv || "nespus")}</div></div>`;
+  }
+  if (cap.triaj_decizie === "raspuns") {
+    return `<div class="caseta-info rap-triaj" id="rap-triaj"><div class="ci-mesaj">Asistentul AI a răspuns singur (răspunsul e în fir).</div></div>`;
+  }
+  return "";
 }
 
 function randeazaMesaje(cont, mesaje) {

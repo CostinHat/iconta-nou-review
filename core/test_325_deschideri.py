@@ -18,7 +18,7 @@ STATIC = os.path.join(RAD, "static")
 
 #: fișier -> de ce se deschide fără clic (decizia)
 DESCHISE_DE_APLICATIE = {
-    "static/js/ecrane/ansamblu.js": "bun venit, la prima logare (bun_venit_v1)",
+    # [lotul 13, 562] „bun venit, la prima logare” a ieșit din listă: prezentarea se deschide numai din „?”
     "static/js/ecrane/inceput.js": "prima intrare, „Înainte de a începe” (telefonul, canalul, notificările): obligatorie înaintea aplicației "
                                    "(decizia 320); fereastră din lotul 12 (deficiențele 561 / 596, DESIGN_SYSTEM cap.12b)",
     "static/js/navigator.js": "anunțul iConta către utilizatori (anunt_modal_v2)",

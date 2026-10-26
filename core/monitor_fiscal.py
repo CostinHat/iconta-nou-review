@@ -39,6 +39,7 @@ Pentru fiecare, raspunde la DOUA INTREBARI DE FAPT, nu la «cat de important e»
 
 Raspunde DOAR JSON, cu EXACT campurile: %s
 `data_vigoare` = "YYYY-MM-DD" sau null daca nu apare data intrarii in vigoare.
+`data_publicarii` = "YYYY-MM-DD", data publicarii actului in Monitorul Oficial, sau null daca nu apare. NU ghici.
 Daca nu e nimic relevant, raspunde [].
 TEXT:
 """ % ", ".join('"%s"' % c for c in _ca.CAMPURI_CERUTE)
@@ -64,12 +65,21 @@ def analizeaza(text):
         return []
 
 
+def _data_iso(v):
+    """PURĂ. O dată AAAA-LL-ZZ validă din răspunsul analizei, altfel None (nu se ghicește o dată)."""
+    import datetime as _dt
+    try:
+        return _dt.date.fromisoformat(str(v)).isoformat() if v else None
+    except ValueError:
+        return None
+
+
 def salveaza(conn, sursa, alerte, url):
     noi = []
     with conn.cursor() as cur:
         for a in alerte:
-            dv = a.get("data_vigoare") or None
-            if dv and not str(dv).count("-") == 2: dv = None  # doar YYYY-MM-DD
+            dv = _data_iso(a.get("data_vigoare"))
+            dp = _data_iso(a.get("data_publicarii"))   # [lotul 13, 646 b]
             # Relevanta se DERIVA din cele doua fapte, nu se ia din raspuns. Daca modelul o mai
             # trimite (prompt vechi in cache, alt apelant), e IGNORATA — altfel verdictul s-ar
             # strecura inapoi pe usa din dos, iar confruntarea n-ar mai avea ce compara.
@@ -79,7 +89,7 @@ def salveaza(conn, sursa, alerte, url):
                 directie = "necunoscut"
             decl = [str(x)[:16] for x in (a.get("declaratii_atinse") or [])]
             rel = _ca.relevanta_din(directie, decl)
-            if _repo.insert_public(cur, sursa, url, rel, dv, directie, decl, a):
+            if _repo.insert_public(cur, sursa, url, rel, dv, directie, decl, a, dp):
                 noi.append(dict(a, _relevanta=rel))   # relevanța DERIVATĂ (nu cea din răspuns), pentru notificare
     conn.commit()
     return noi
@@ -297,9 +307,9 @@ def emite_alerte_programate(conn):
                     cap = "In %s intra in vigoare: " % _cate(prag, "zi", "zile")
                 mesaj = cap + (titlu or "") + ((" - " + rezumat) if rezumat else "")
                 _repo.select_public_4(cur)
-                for (cid,) in cur.fetchall():
-                    _repo.insert_public_2(cur, cid, mesaj)
-                    emise += 1
+                ids = [_repo.insert_public_2(cur, cid, mesaj) for (cid,) in cur.fetchall()]
+                _repo.leaga_trimiterea(cur, ids)   # [lotul 13, 646 c] o trimitere în lista anunțurilor din Panou Admin
+                emise += len(ids)
     conn.commit()
     return emise
 

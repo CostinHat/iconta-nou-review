@@ -61,13 +61,27 @@ def test_doua_rulari_aceeasi_zi_o_singura_alerta():
 # ---- TEXT agregat per firma ----
 
 def test_text_agregat_o_singura_notificare_per_firma():
-    t = text_alerta("DANTE SA", [("tva", "TVA"), ("d112", "D112 (salarii)"), ("d390", "D390 (intracom.)")])
+    t = text_alerta("DANTE SA", [("tva", "TVA"), ("d112", "D112 (salarii)"), ("d390", "D390 (intracomunitare)")])
     assert "DANTE SA" in t
-    assert "3 controale fiscale în roșu" in t
+    # [lotul 13, 570] culoarea spusă e cea a ecranului (constatarea = galben, „de urmărit”; roșu = numai termen depășit, decizia 220)
+    assert "3 controale fiscale de urmărit" in t and "roșu" not in t
     assert "TVA" in t and "D112" in t and "D390" in t
 
 
 def test_text_singular_un_control():
     t = text_alerta("Firma X", [("d112", "D112 (salarii)")])
-    assert "1 control fiscal în roșu" in t
+    assert "1 control fiscal de urmărit" in t and "roșu" not in t   # [570]
     assert "D112" in t
+
+
+def test_570_eticheta_culorii_e_a_galbenului_din_ecran():
+    """[lotul 13, 570] Notificarea și detaliul firmei spun aceeași culoare: eticheta galbenului din `control_verdict.js`
+    (`galben: { … txt:"de urmărit" }`) — citită din fișierul ecranului, nu copiată. MUTAȚIE: `ETICHETA_CULOARE = "în roșu"` -> pică."""
+    import io
+    import os
+    import re
+    from core.alerte_control_fiscal import ETICHETA_CULOARE
+    js = io.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static", "js", "ecrane", "control_verdict.js"),
+                 encoding="utf-8").read()
+    m = re.search(r'galben:\s*\{[^}]*txt:"([^"]+)"', js)
+    assert m and m.group(1) == ETICHETA_CULOARE, (m and m.group(1), ETICHETA_CULOARE)

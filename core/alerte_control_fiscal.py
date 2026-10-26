@@ -16,7 +16,7 @@ GARDURI (decizii Costin 19.07):
 1. DOAR ROSU se pusheaza. Gri ("nu pot verifica") ramane pull - e informatie, nu actiune;
    nu spamam contabilul cu ce nu poate rezolva. Verde/tacut = nimic.
 2. DESTINATAR = validatorii_cabinetului (contabilii, cere_cabinet) - ei corecteaza, nu patronul.
-3. GRANULARITATE = agregat per FIRMA: "Firma X: N controale in rosu (D112, D390)" cu
+3. GRANULARITATE = agregat per FIRMA: "Firma X: N controale fiscale de urmărit (D112, D390)" cu
    link=control-fiscal:{tenant_id}. O notificare per firma, NU per finding (consecvent cu
    filtrarea anti-dublura din portofoliu).
 4. DEDUP prin jurnal public.alerte_control_emise (pattern public.alerte_emise / F103), cheie
@@ -42,7 +42,7 @@ def _verificatori(ci):
     return (
         ("tva", "TVA", ci.verifica_tva),
         ("d112", "D112 (salarii)", ci.verifica_d112),
-        ("d390", "D390 (intracom.)", ci.verifica_d390),
+        ("d390", "D390 (intracomunitare)", ci.verifica_d390),   # [lotul 13, 570] fără prescurtare
         ("cota_tva", "cotă TVA facturi", ci.verifica_cota_tva),   # F184 (value-aware)
     )
 
@@ -76,10 +76,17 @@ def decide(rosii_chei, deja_notificate):
     return noi, rezolvate, bool(noi)
 
 
+#: [lotul 13, deficiența 570 — „Notificarea «2 controale fiscale în roșu (TVA, D112)» la F6, dar detaliul firmei arată doar galben (ciornă /
+#: stat necontabilizat): aceeași regulă de culoare în ambele locuri.”] Regula ecranului (deficiența 220, decizia Costin 10.10.2026: „Roșu
+#: înseamnă termen depășit.”): o constatare a verificatorilor se arată cel mult galben, cu eticheta galbenului din Control fiscal
+#: (`control_verdict.js`, CULORI.galben.txt = „de urmărit”). Severitatea verificatorului rămâne cea de push (numai roșul pleacă).
+ETICHETA_CULOARE = "de urmărit"
+
+
 def text_alerta(nume_firma, rosii):
     """Textul AGREGAT per firma. rosii = [(cheie, eticheta)] in ordine canonica."""
     etichete = ", ".join(e for _, e in rosii)
-    return "%s: %s în roșu (%s)" % (nume_firma or "Firmă", _cate(len(rosii), "control fiscal", "controale fiscale"), etichete)
+    return "%s: %s %s (%s)" % (nume_firma or "Firmă", _cate(len(rosii), "control fiscal", "controale fiscale"), ETICHETA_CULOARE, etichete)
 
 
 # Jurnal de idempotenta (pattern public.alerte_emise / F103) al alertelor de control.

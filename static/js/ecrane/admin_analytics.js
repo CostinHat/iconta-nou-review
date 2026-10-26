@@ -1,9 +1,28 @@
 // admin_analytics.js — Admin iConta: analytics public (doar superadmin).
 // Cifre ANONIME din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
 // Tabela nu contine niciun identificator (fara IP/UA/cookie/sesiune) -> fara date personale.
-import { api, esc, CULORI_CARD, cate, dupaNumar } from "../api.js?v=e38843b1ec";
+import { api, esc, CULORI_CARD, cate, dupaNumar, dataRo } from "../api.js?v=e38843b1ec";
+
+// [lotul 13, deficiența 649 — „Cifrele includ vizitele noastre de testare […]; nu se pot separa vizitatorii reali. Fără a adăuga
+// identificatori: evenimentele venite dintr-un browser cu sesiune iConta deschisă (cabinet sau admin) nu se numără, ori se arată separat.”]
+// Varianta aleasă: NU SE NUMĂRĂ. Pagina principală a cabinetului / asistentului și Panou Admin scriu în browser (localStorage, nu cookie,
+// nimic trimis serverului) momentul ultimei sesiuni deschise; pagina publică (login.js) nu trimite evenimentul cât acel moment e mai nou de
+// `FEREASTRA_SESIUNE_MS` (durata unei sesiuni, 24 h). Serverul nu primește și nu ține nimic în plus: tabela rămâne fără identificatori.
+export const CHEIE_SESIUNE_INTERNA = "iconta_sesiune_interna";
+export const FEREASTRA_SESIUNE_MS = 24 * 3600 * 1000;
+export function marcheazaSesiuneInterna() {
+  try { localStorage.setItem(CHEIE_SESIUNE_INTERNA, String(Date.now())); } catch (_e) { /* navigare privată: nimic de marcat */ }
+}
+export function sesiuneInternaDeschisa(acum = Date.now()) {
+  try {
+    const t = Number(localStorage.getItem(CHEIE_SESIUNE_INTERNA) || 0);
+    return t > 0 && acum - t < FEREASTRA_SESIUNE_MS;
+  } catch (_e) { return false; }
+}
 
 const C = CULORI_CARD.albastru;
+//: [649] ziua de la care vizitele dintr-o sesiune iConta deschisă nu se mai numără (publicarea lotului 13); de potrivit la publicare
+export const NUMARARE_FARA_INTERN_DE_LA = "2026-10-26";
 
 const ETICHETE = {
   vizita_landing: "Vizite landing",
@@ -52,9 +71,11 @@ export async function randeazaAdminAnalytics(corp, nav) {
       <p class="ecran-nota"><strong>${Number(d.total) || 0}</strong> ${dupaNumar(Number(d.total) || 0, "eveniment înregistrat", "evenimente înregistrate")}. Date anonime:
         se rețin doar tipul evenimentului, pagina de proveniență și momentul. Fără IP, fără cookie, fără
         amprentă de browser, fără niciun identificator de persoană.</p>
+      <p class="ecran-nota" id="an-intern">Nu se numără vizitele dintr-un browser în care e deschisă o sesiune iConta (cabinet sau Panou
+        Admin) — testele noastre. Zilele de dinainte de ${dataRo(NUMARARE_FARA_INTERN_DE_LA)} le cuprind încă.</p>
     </div>
     ${sectiune("Pe eveniment", d.pe_eveniment, (r) => ETICHETE[r.tip] || r.tip)}
-    ${sectiune("Pe zi", d.pe_zi, (r) => r.zi)}
+    ${sectiune("Pe zi", d.pe_zi, (r) => dataRo(r.zi))}
     ${sectiune("Pe pagină de proveniență", d.pe_pagina, (r) => r.pagina)}
   `;
 }

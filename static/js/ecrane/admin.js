@@ -7,7 +7,7 @@ import { api, ultimaCerere, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusF
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=a2a0b629a8";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=02723895d2";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=f72a91fe71";
-import { randeazaAdminAnalytics } from "./admin_analytics.js?v=65a3ea09d5";
+import { randeazaAdminAnalytics, marcheazaSesiuneInterna } from "./admin_analytics.js?v=65a3ea09d5";
 import { numeDeSalut } from "./salut.js?v=10719d2154";
 import { panouNotificari } from "./setari.js?v=ba6bc8a464";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală
 
@@ -48,6 +48,7 @@ const DEF = [
 ];
 
 export function desktopAdmin(continut, nav) {
+  marcheazaSesiuneInterna();   // [lotul 13, 649] vizitele publice din acest browser nu se numără cât sesiunea e deschisă
   const azi = dataRo(new Date(), "lung");
   const nume = numeDeSalut(sesiune.user());
   continut.innerHTML = `
@@ -89,49 +90,86 @@ export function desktopAdmin(continut, nav) {
 
 
 // admin_anunturi_fe_v1
+// [lotul 13, deficiența 646 — anexa comenzii 13.1, decizia Costin 24.10.2026, verbatim: „(a) «Nimic bifat = anunțul merge la toți» e
+// periculos: o bifă uitată trimite la toate cabinetele. Decis: bifă explicită «Toate cabinetele» sus; fără nicio bifă trimiterea e
+// refuzată; înainte de trimitere confirmarea spune la câte cabinete pleacă. (b) Propunerile monitorului fiscal nu au data publicării și
+// data intrării în vigoare. (c) Nu există lista anunțurilor trimise (către cine, citit sau nu, retragere).”]
 async function randeazaAdminAnunturi(corp, nav) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let cabinete = [];
   try {
     const r = await api.get("/admin/activitate/cabinete");
-    cabinete = (r && r.cabinete) || [];
+    cabinete = ((r && r.cabinete) || []).filter((c) => c.activ);   // anunțul ajunge numai la cabinetele active (cele suspendate nu intră)
   } catch {}
   // [anunturi_meniu_v1] DS cap.2a: optiunile se deschid ca pasi de navigator, nu inline
   const stare = window._anStare = window._anStare || { segment: null, cabIds: null };  // persistenta intre re-randari (mergi/inapoi re-executa radacina)
+  const cateCabinete = () => stare.segment === "toate" ? cabinete.length : (stare.cabIds || []).length;
   const rezumat = () => {
-    if (stare.segment === "cabinete") return stare.cabIds ? cate(stare.cabIds.length, "cabinet ales", "cabinete alese") : "toate cabinetele";
-    return "nimeni ales înc\u0103";
+    if (stare.segment === "toate") return `toate cabinetele (${cate(cabinete.length, "cabinet activ", "cabinete active")})`;
+    if (stare.segment === "cabinete" && stare.cabIds && stare.cabIds.length) return cate(stare.cabIds.length, "cabinet ales", "cabinete alese");
+    return "niciun destinatar ales";
   };
   const meniu = () => {
     if (nav.setInapoi) nav.setInapoi(undefined);
     corp.innerHTML = `
       <h2 class="pf-titlu">Anun\u021buri</h2>
-      <p class="mig-intro">Mesajul apare ca banner la logare, p\u00e2n\u0103 la \u201eAm \u00een\u021beles\u201d. Alege destinatarii, apoi scrie mesajul.</p>
+      <p class="mig-intro">Mesajul apare la logare, p\u00e2n\u0103 la \u201eAm \u00een\u021beles\u201d. Alege destinatarii, apoi scrie mesajul.</p>
       <div class="firme-meniu">
         <button class="firme-optiune" id="an-op-cab">
           <div class="firme-optiune-icon accent-albastru"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M9 13h1M14 9h1M14 13h1"/></svg></div>
-          <div class="firme-optiune-titlu">Cabinete</div>
-          <div class="firme-optiune-desc">${stare.segment === "cabinete" ? esc(rezumat()) : "alege cabinetele destinatare"}</div>
+          <div class="firme-optiune-titlu">Destinatari</div>
+          <div class="firme-optiune-desc">${esc(rezumat())}</div>
         </button>
         <button class="firme-optiune" id="an-op-msg">
           <div class="firme-optiune-icon accent-roz"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></div>
           <div class="firme-optiune-titlu">Mesaj</div>
           <div class="firme-optiune-desc">c\u0103tre: ${esc(rezumat())}</div>
         </button>
+        <button class="firme-optiune" id="an-op-trimise">
+          <div class="firme-optiune-icon accent-albastru"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+          <div class="firme-optiune-titlu">Anunțuri trimise</div>
+          <div class="firme-optiune-desc">către cine, citit sau nu, retragere</div>
+        </button>
       </div>
       <div id="an-propuneri"></div>`;
-    corp.querySelector("#an-op-cab").addEventListener("click", () => nav.mergi("Cabinete", (c) => pasSelectie(c, "cabinete")));
+    corp.querySelector("#an-op-cab").addEventListener("click", () => nav.mergi("Destinatari", (c) => pasSelectie(c)));
     corp.querySelector("#an-op-msg").addEventListener("click", () => nav.mergi("Mesaj", (c) => pasMesaj(c)));
-    incarcaPropuneri(corp);
+    corp.querySelector("#an-op-trimise").addEventListener("click", () => nav.mergi("Anunțuri trimise", (c) => pasTrimise(c)));
+    propuneri();
   };
-  function pasSelectie(c, seg) {
-    const idsCur = stare.cabIds;
+  // [F103 partea 2] propunerile monitorului fiscal ca anunțuri; [646 b] cu data publicării actului și data intrării în vigoare.
+  // „Preia în mesaj” deschide pasul „Mesaj” cu textul propunerii (până azi căuta câmpul mesajului în meniu, unde nu e)
+  async function propuneri() {
+    const zona = corp.querySelector("#an-propuneri");
+    if (!zona) return;
+    let d = { alerte: [] };
+    try { d = await api.get("/admin/alerte-fiscale"); } catch { return; }
+    if (!d.alerte || !d.alerte.length || !zona.isConnected) return;
+    const zi = (v) => v ? dataRo(v) : "nu apare în sursă";
+    zona.innerHTML = `
+      <h2 class="pf-titlu" style="margin-top:18px">Propuneri de la monitorul fiscal</h2>
+      ${d.alerte.map((a) => `
+        <div class="panou" style="margin-bottom:10px" data-alerta="${a.id}">
+          <div><b>${esc(a.titlu)}</b>${a.relevanta === "mare" ? " \u00b7 relevan\u021b\u0103 mare" : ""}</div>
+          <div class="tip-micut an-date-act">Publicat: ${zi(a.data_publicarii)} \u00b7 intră în vigoare: ${zi(a.data_vigoare)}</div>
+          <div class="tip-mic" style="margin:4px 0">${esc(a.rezumat || "")}</div>
+          <button class="buton-secundar buton-mic" data-id="${a.id}" data-actiune="POST /admin/alerte-fiscale/{aid}/tratat">Preia \u00een mesaj</button>
+        </div>`).join("")}`;
+    zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", async () => {
+      const a = d.alerte.find((x) => String(x.id) === b.dataset.id);
+      try { await api.post(`/admin/alerte-fiscale/${a.id}/tratat`, {}); } catch {}
+      nav.mergi("Mesaj", (c) => pasMesaj(c, a.titlu + (a.rezumat ? "\n\n" + a.rezumat : "")));
+    }));
+  }
+  function pasSelectie(c) {
+    const idsCur = stare.cabIds || [];
     c.innerHTML = `
-      <h2 class="pf-titlu">Cabinete destinatare</h2>
-      <p class="mig-intro">Bifeaz\u0103 destinatarii. Nimic bifat = anun\u021bul merge la to\u021bi.</p>
+      <h2 class="pf-titlu">Destinatari</h2>
+      <p class="mig-intro">Bifează «Toate cabinetele» sau cabinetele cărora le trimiți anunțul. Fără nicio bifă anunțul nu pleacă.</p>
+      <label class="set-bifa" style="margin:0 0 10px"><input type="checkbox" id="an-toate" ${stare.segment === "toate" ? "checked" : ""}> <span><b>Toate cabinetele</b> (${cate(cabinete.length, "cabinet activ", "cabinete active")})</span></label>
       <input aria-label="Caută" type="text" class="camp-input" id="sel-cauta" placeholder="caut\u0103" style="max-width:340px;margin-bottom:10px">
       <div class="pf-lista zebra-lista" id="an-sel-lista">
-        ${cabinete.map((x, i) => `<label class="pf-frand set-bifa sel-rand" data-zebra="${i % 2}" style="cursor:pointer;display:flex;align-items:center;gap:12px"><input type="checkbox" class="sel-bifa" value="${x.id}" ${idsCur && idsCur.includes(x.id) ? "checked" : ""} style="flex-shrink:0">
+        ${cabinete.map((x, i) => `<label class="pf-frand set-bifa sel-rand" data-zebra="${i % 2}" style="cursor:pointer;display:flex;align-items:center;gap:12px"><input type="checkbox" class="sel-bifa" value="${x.id}" ${idsCur.includes(x.id) ? "checked" : ""} style="flex-shrink:0">
           <div class="pf-frand-text" style="flex:1;text-align:left"><div class="pf-frand-nume">${esc(x.nume || "")}</div></div>
         </label>`).join("")}
       </div>`;
@@ -139,70 +177,87 @@ async function randeazaAdminAnunturi(corp, nav) {
       const q = e.target.value.trim().toLowerCase();
       c.querySelectorAll(".sel-rand").forEach((r) => { r.style.display = !q || r.textContent.toLowerCase().includes(q) ? "" : "none"; });
     });
-    const salveaza = () => {  // [sel_direct_v1] bifarea E selectia; nimic bifat = toate
+    const toate = c.querySelector("#an-toate");
+    const salveaza = () => {  // [sel_direct_v1] bifarea E selectia; [646 a] fără nicio bifă = niciun destinatar (nu „toate”)
       const ids = [...c.querySelectorAll(".sel-bifa:checked")].map((b) => Number(b.value));
-      stare.segment = seg;
-      const val = ids.length ? ids : null;
-      stare.cabIds = val;
+      c.querySelectorAll(".sel-bifa").forEach((b) => { b.disabled = toate.checked; });
+      stare.segment = toate.checked ? "toate" : (ids.length ? "cabinete" : null);
+      stare.cabIds = toate.checked ? null : ids;
     };
+    toate.addEventListener("change", salveaza);
     c.querySelectorAll(".sel-bifa").forEach((b) => b.addEventListener("change", salveaza));
     salveaza();
   }
-  function pasMesaj(c) {
+  function pasMesaj(c, textPropunere) {
     c.innerHTML = `
       <h2 class="pf-titlu">Mesaj</h2>
-      <p class="mig-intro">C\u0103tre: <b>${esc(rezumat())}</b></p>
+      <p class="mig-intro">C\u0103tre: <b id="an-catre">${esc(rezumat())}</b></p>
       <div class="camp" style="margin-bottom:10px"><label for="an-mesaj" class="camp-eticheta">Mesaj<span class="oblig">*</span></label>
         <textarea class="camp-input" id="an-mesaj" rows="4" style="resize:vertical;min-height:90px"></textarea></div>
       <div class="camp" style="margin-bottom:10px"><label for="an-data" class="camp-eticheta">Afi\u0219are de la data (op\u021bional \u2014 gol = imediat)</label>
         <input type="date" class="camp-input" id="an-data"></div>
-      <button class="buton-primar" id="an-trimite">Trimite</button>
-      <p id="an-msg" style="margin-top:8px"></p>`;
+      <div class="bara-fixa">
+        <button class="buton-primar" id="an-trimite" data-actiune="POST /admin/anunturi">Trimite</button>
+        <p id="an-msg" style="margin-top:8px"></p>
+      </div>`;
     const ta = c.querySelector("#an-mesaj");
     ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; });
-    c.querySelector("#an-trimite").addEventListener("click", async () => {
+    if (textPropunere) { ta.value = textPropunere; ta.dispatchEvent(new Event("input")); }   // ales de om: „Preia în mesaj”
+    const b = c.querySelector("#an-trimite");
+    b.addEventListener("click", () => {
       const msg = c.querySelector("#an-msg");
       const mesaj = ta.value.trim();
       if (!mesaj) { arataMesaj(msg, "Scrie mesajul.", "eroare"); return; }
-      if (!stare.segment) { arataMesaj(msg, "Alege \u00eent\u00e2i destinatarii (Cabinete).", "eroare"); return; }
-      try {
-        const r = await api.post("/admin/anunturi", { mesaj, segment: stare.segment, cabinet_ids: stare.cabIds, cabinet_id: null, data_afisare: c.querySelector("#an-data").value || null });
-        arataMesaj(msg, `Trimis c\u0103tre ${cate(r.trimise, "destinatar", "destinatari")}.`, "ok");
-        ta.value = "";
-      } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
+      if (!stare.segment) { arataMesaj(msg, "Alege destinatarii: bifează «Toate cabinetele» sau cabinetele cărora le trimiți anunțul.", "eroare"); return; }
+      const n = cateCabinete();
+      confirmaCaseta(b, `Anunțul pleacă la ${esc(cate(n, "cabinet", "cabinete"))}${stare.segment === "toate" ? " (toate cabinetele active)" : ""}. Trimiți?`, async () => {
+        try {
+          const r = await api.post("/admin/anunturi", { mesaj, segment: stare.segment, cabinet_ids: stare.segment === "cabinete" ? stare.cabIds : null,
+                                                       cabinet_id: null, data_afisare: c.querySelector("#an-data").value || null });
+          arataMesaj(msg, `Trimis c\u0103tre ${cate(r.trimise, "cabinet", "cabinete")}. Îl găsești în «Anunțuri trimise».`, "ok");
+          ta.value = "";
+        } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Anunțul nu s-a putut trimite.", "eroare"); }
+      }, { textOk: "Trimite" });
     });
+  }
+  async function pasTrimise(c) {
+    c.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
+    let lst = [];
+    try { lst = ((await api.get("/admin/anunturi")) || {}).trimiteri || []; } catch (e) {
+      c.innerHTML = `<p class="ecran-nota">${esc((e && e.mesaj) || "Lista anunțurilor nu se poate încărca.")}</p>`; return;
+    }
+    if (!lst.length) { c.innerHTML = `<h2 class="pf-titlu">Anunțuri trimise</h2><div class="stare-goala">Niciun anunț trimis încă.</div>`; return; }
+    c.innerHTML = `<h2 class="pf-titlu">Anunțuri trimise</h2>
+      <div class="rezumat-fix"><div id="an-trimise-msg"></div></div>
+      <table class="fd-tabel" id="an-trimise"><thead><tr><th>Trimis</th><th>Mesaj</th><th>Către</th><th class="fd-td-num">Citit</th><th>Stare</th><th>Acțiuni</th></tr></thead><tbody>
+      ${lst.map((t) => `<tr data-lot="${t.lot}"><td>${dataRo(t.creat_la, "cu_ora")}${t.data_afisare ? `<div class="tip-micut">afișat de la ${dataRo(t.data_afisare)}</div>` : ""}${t.trimis_de ? `<div class="tip-micut">de ${esc(t.trimis_de)}</div>` : ""}</td>
+        <td>${esc(t.mesaj || "")}</td><td>${esc(cate(t.destinatari, "cabinet", "cabinete"))}</td><td class="fd-td-num">${t.citite} din ${t.destinatari}</td>
+        <td>${t.retras_la ? `retras ${dataRo(t.retras_la, "cu_ora")}` : "activ"}</td>
+        <td><button class="buton-secundar buton-mic" data-dest="${t.lot}" data-fara-actiune="lista destinatarilor (citire)">Destinatari</button>
+          <button class="buton-sters buton-mic" data-retrage="${t.lot}" data-actiune="POST /admin/anunturi/{lot}/retrage" ${t.retras_la ? `disabled title="Anunțul e retras deja."` : (t.citite === t.destinatari ? `disabled title="L-au citit toate cabinetele: nu mai are cui să fie retras."` : "")}>Retrage</button></td></tr>`).join("")}
+      </tbody></table>`;
+    c.querySelectorAll("[data-dest]").forEach((b) => b.addEventListener("click", () => {
+      const t = lst.find((x) => String(x.lot) === b.dataset.dest);
+      nav.deschide("Destinatarii anunțului", (cd) => {
+        cd.innerHTML = `<h2 class="pf-titlu">Destinatarii anunțului</h2><div class="rezumat-fix"><p class="pf-intro">${esc(t.mesaj || "")} · citit de ${t.citite} din ${t.destinatari}</p></div>
+          <table class="fd-tabel" id="an-destinatari"><thead><tr><th>Cabinet</th><th>Citit</th></tr></thead><tbody>
+          ${t.cabinete.map((d) => `<tr><td>${esc(d.cabinet)}</td><td>${d.citit_la ? `citit ${dataRo(d.citit_la, "cu_ora")}` : "necitit"}</td></tr>`).join("")}
+          </tbody></table>`;
+      });
+    }));
+    c.querySelectorAll("[data-retrage]").forEach((b) => b.addEventListener("click", () => {
+      const t = lst.find((x) => String(x.lot) === b.dataset.retrage);
+      confirmaCaseta(b, `Retragi anunțul? Necitit e la ${esc(cate(t.destinatari - t.citite, "cabinet", "cabinete"))}; după retragere nu-l mai vede niciunul.`, async () => {
+        try {
+          await api.post(`/admin/anunturi/${t.lot}/retrage`, {});
+          await pasTrimise(c);
+          arataMesaj(c.querySelector("#an-trimise-msg"), "Anunțul e retras.", "ok");
+        } catch (e) { refuzPeRand(b, (e && e.mesaj) || "Anunțul nu s-a putut retrage."); }
+      }, { textOk: "Retrage" });
+    }));
   }
   meniu();
 }
-// [F103 partea 2] propunerile monitorului fiscal ca anunturi
-async function incarcaPropuneri(corp) {
-  const zona = corp.querySelector("#an-propuneri");
-  if (!zona) return;
-  let d = { alerte: [] };
-  try { d = await api.get("/admin/alerte-fiscale"); } catch { return; }
-  if (!d.alerte || !d.alerte.length) return;
-  zona.innerHTML = `
-    <h2 class="pf-titlu" style="margin-top:18px">Propuneri de la monitorul fiscal</h2>
-    ${d.alerte.map((a) => `
-      <div class="panou" style="margin-bottom:10px">
-        <div><b>${esc(a.titlu)}</b>${a.relevanta === "mare" ? " \u00b7 relevan\u021b\u0103 mare" : ""}</div>
-        <div class="tip-mic" style="margin:4px 0">${esc(a.rezumat || "")}</div>
-        <button class="buton-secundar buton-mic" data-id="${a.id}">Preia \u00een mesaj</button>
-      </div>`).join("")}`;
-  zona.querySelectorAll("button[data-id]").forEach((b) => {
-    b.addEventListener("click", async () => {
-      const a = d.alerte.find((x) => String(x.id) === b.dataset.id);
-      const ta2 = corp.querySelector("#an-mesaj");
-      ta2.value = a.titlu + (a.rezumat ? "\n\n" + a.rezumat : "");
-      ta2.dispatchEvent(new Event("input"));
-      try { await api.post(`/admin/alerte-fiscale/${a.id}/tratat`, {}); } catch {}
-      b.closest(".panou").remove();
-      focusFaraSalt(ta2);
-    });
-  });
-}
-
-
 // [14.10.2026, comanda Costin pct.3] Invitațiile: emailul invitat primește linkul (14 zile, o singură folosire). Linkul se arată
 // o singură dată, aici, ca superadminul să-l poată da direct dacă emailul nu ajunge.
 async function randeazaAdminInvitatii(corp) {
@@ -221,9 +276,24 @@ async function randeazaAdminInvitatii(corp) {
     try {
       const r = await api.get("/admin/invitatii");
       const v = (r && r.invitatii) || [];
-      lista.innerHTML = v.length ? `<table class="fd-tabel"><thead><tr><th>Email</th><th>Trimisă</th><th>Expiră</th><th>Folosită</th></tr></thead><tbody>
-        ${v.map((x) => `<tr><td>${esc(x.email)}</td><td>${dataRo(x.creat_la, "cu_ora")}</td><td>${dataRo(x.expira_la, "cu_ora")}</td><td>${x.folosita_la ? dataRo(x.folosita_la, "cu_ora") : "—"}</td></tr>`).join("")}
+      // [lotul 13, 646 e] starea fiecărei invitații și „Retrage” pe cea încă valabilă (inactiv, cu motivul, pe celelalte — 675)
+      const motivNu = { "folosită": "Invitația a fost folosită: contul cabinetului există.", "retrasă": "Invitația e retrasă deja.",
+                        "expirată": "Invitația a expirat: linkul ei nu mai creează cont." };
+      lista.innerHTML = v.length ? `<table class="fd-tabel" id="inv-tabel"><thead><tr><th>Email</th><th>Trimisă</th><th>Expiră</th><th>Folosită</th><th>Stare</th><th>Acțiune</th></tr></thead><tbody>
+        ${v.map((x) => `<tr data-invitatie="${x.id}"><td>${esc(x.email)}</td><td>${dataRo(x.creat_la, "cu_ora")}</td><td>${dataRo(x.expira_la, "cu_ora")}</td><td>${x.folosita_la ? dataRo(x.folosita_la, "cu_ora") : "—"}</td>
+          <td>${esc(x.stare || "")}${x.retrasa_la ? " " + dataRo(x.retrasa_la, "cu_ora") : ""}</td>
+          <td><button class="buton-sters buton-mic" data-retrage-inv="${x.id}" data-actiune="POST /admin/invitatii/{invitatie_id}/retrage"${x.stare !== "valabilă" ? ` disabled title="${esc(motivNu[x.stare] || "")}"` : ""}>Retrage</button></td></tr>`).join("")}
         </tbody></table>` : `<div class="stare-goala">Nicio invitație trimisă încă. Scrie emailul cabinetului mai sus și apasă „Trimite invitația”.</div>`;
+      lista.querySelectorAll("[data-retrage-inv]").forEach((b) => b.addEventListener("click", () => {
+        const x = v.find((y) => String(y.id) === b.dataset.retrageInv);
+        confirmaCaseta(b, `Retragi invitația pentru ${esc(x.email)}? Linkul ei nu mai creează cont.`, async () => {
+          try {
+            await api.post(`/admin/invitatii/${x.id}/retrage`, {});
+            await incarca();
+            arataMesaj(corp.querySelector("#inv-msg"), `Invitația pentru ${x.email} e retrasă.`, "ok");
+          } catch (e) { refuzPeRand(b, (e && e.mesaj) || "Invitația nu s-a putut retrage."); }
+        }, { textOk: "Retrage" });
+      }));
     } catch (e) { arataMesaj(lista, (e && e.mesaj) || "Lista invitațiilor nu se poate încărca.", "eroare"); }
   }
   corp.querySelector("#inv-trimite").addEventListener("click", async () => {
@@ -236,7 +306,15 @@ async function randeazaAdminInvitatii(corp) {
       const r = await api.post("/admin/invitatii", { email });
       const [cls, m] = r.email_trimis ? ["caseta-info", "ci-mesaj"] : ["caseta-atentie", "ca-mesaj"];   // emailul netrimis = atenție
       msg.innerHTML = `<div class="${cls}" id="inv-rezultat"><div class="${m}">${r.email_trimis ? `Invitația a plecat pe <b>${esc(r.email)}</b>.` : `Emailul către <b>${esc(r.email)}</b> nu s-a putut trimite — dă-i linkul de mai jos direct.`} Linkul (valabil ${cate(r.valabila_zile, "zi", "zile")}, o singură folosire):</div>
-        <input type="text" class="camp-input" id="inv-link" readonly aria-label="Linkul invitației" value="${esc(r.link)}" style="margin-top:6px"></div>`;
+        <div class="camp-cu-buton" style="display:flex;gap:8px;margin-top:6px"><input type="text" class="camp-input" id="inv-link" readonly aria-label="Linkul invitației" value="${esc(r.link)}" style="flex:1 1 auto;min-width:0">
+          <button type="button" class="buton-secundar" id="inv-copiaza" data-fara-actiune="copiază linkul în memoria browserului">Copiază</button></div>
+        <span class="tip-micut" id="inv-copiat" role="status"></span></div>`;
+      // [lotul 13, 646 e] „lipsesc «Copiază» lângă link”: linkul se arată o singură dată (în bază stă numai hash-ul lui)
+      corp.querySelector("#inv-copiaza").addEventListener("click", async () => {
+        const st = corp.querySelector("#inv-copiat");
+        try { await navigator.clipboard.writeText(r.link); st.textContent = "Linkul e copiat."; }
+        catch { corp.querySelector("#inv-link").select(); st.textContent = "Browserul nu permite copierea automată: linkul e selectat, apasă Ctrl+C."; }
+      });
       corp.querySelector("#inv-email").value = "";
       await incarca();
     } catch (e) {

@@ -58,6 +58,21 @@ def text_notificare(conn, raportare_id):
 #: [deficiența 291] cine scrie din partea iConta într-un fir (bulina autorului se aprinde la mesajele lor)
 ROLURI_ICONTA = ("admin", "ai")
 
+#: [lotul 13, deficiența 573 — „mesajul automat către utilizator e fără diacritice”] confirmarea escaladării, scrisă de aplicație în fir
+#: (`raportari_ai.proceseaza`); migrarea `core/migrare_triaj_sesizari.py` aduce la forma asta și mesajele vechi
+TEXT_ESCALADARE = "Sesizarea ta a fost transmisă echipei iConta.eu. Vei primi răspunsul aici, în acest fir."
+
+#: [573] deciziile triajului AI, păstrate pe sesizare (`raportari.triaj_decizie`, CHECK-ul din migrare)
+DECIZII_TRIAJ = ("raspuns", "escaladare")
+
+
+def scrie_triajul(conn, raportare_id, decizie, motiv=None):
+    """[573] Ce a decis asistentul AI la o sesizare și de ce (motivul escaladării îl vede numai echipa iConta, în Panou Admin). O decizie
+    din afara `DECIZII_TRIAJ` o refuză baza (CHECK-ul din `core/migrare_triaj_sesizari.py`)."""
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.raportari SET triaj_decizie = %s, triaj_motiv = %s, triaj_la = now() WHERE id = %s",
+                    (decizie, (motiv or None) and str(motiv)[:500], raportare_id))
+
 
 def adauga_mesaj(conn, raportare_id, autor_id, rol_autor, text, schimba_stare=True, veste=True):
     """Adauga un mesaj in fir. rol_autor = 'utilizator', 'admin' sau 'ai' (autor_id NULL).
@@ -192,7 +207,7 @@ def toate_raportarile(conn):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT r.id, r.subiect, r.stare, r.tip, r.aplicatie, r.creat_la, r.ultim_mesaj_la, "
-            "       r.pentru_admin, "  # [p38_pentru_admin]
+            "       r.pentru_admin, r.triaj_decizie, r.triaj_motiv, "  # [p38_pentru_admin] [lotul 13, 573] decizia și motivul triajului AI
             "       u.prenume, u.nume, u.email, af.nume AS cabinet, "
             "       (SELECT COUNT(*) FROM public.raportari_mesaje m "
             "          WHERE m.raportare_id = r.id AND m.rol_autor='utilizator' AND m.citit=false) AS necitite, "
@@ -212,6 +227,7 @@ def toate_raportarile(conn):
                 "autor": _nume(r["prenume"], r["nume"], r["email"]),
                 "cabinet": r["cabinet"], "necitite": int(r["necitite"] or 0),
                 "pentru_admin": bool(r["pentru_admin"]),  # [p38_pentru_admin]
+                "triaj_decizie": r["triaj_decizie"], "triaj_motiv": r["triaj_motiv"],   # [573]
                 "text": (r["text"] or ""),  # [p40_text_lista]
             })
     return {"ok": True, "raportari": fire}
@@ -224,7 +240,7 @@ def firul_complet(conn, raportare_id, cerut_de_uid=None, e_superadmin=False):
     relaxare la cabinet. Fara context (apel superadmin/intern) ramane pe id. Vezi test_izolare_raportari.py."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         _baza = (
-            "SELECT r.id, r.subiect, r.stare, r.tip, r.aplicatie, r.autor_id, "
+            "SELECT r.id, r.subiect, r.stare, r.tip, r.aplicatie, r.autor_id, r.triaj_decizie, r.triaj_motiv, "
             "       u.prenume, u.nume, u.email, af.nume AS cabinet "
             "  FROM public.raportari r "
             "  LEFT JOIN public.users u ON u.id = r.autor_id "
@@ -244,6 +260,8 @@ def firul_complet(conn, raportare_id, cerut_de_uid=None, e_superadmin=False):
         "autor_id": f["autor_id"],
         "autor": _nume(f["prenume"], f["nume"], f["email"]),
         "cabinet": f["cabinet"], "mesaje": mesaje,
+        # [573] decizia triajului AI și motivul ei: numai pentru echipa iConta (utilizatorul nu vede motivul intern)
+        **({"triaj_decizie": f["triaj_decizie"], "triaj_motiv": f["triaj_motiv"]} if (e_superadmin or cerut_de_uid is None) else {}),
         "text": next((m["text"] for m in mesaje if m.get("rol_autor") == "utilizator"), "")}}  # [titlu_fir]
 
 

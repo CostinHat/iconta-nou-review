@@ -287,8 +287,8 @@ def test_def_c101_panou_admin_nu_numara_refuzurile_ca_facturi_emise(superadmin, 
     pg.wait_for_function("() => /cabinet/.test((document.querySelector('[data-sumar-admin]') || {}).textContent || '')", timeout=30000)
     bara = pg.inner_text("[data-sumar-admin]")
     assert cate(2, "factură emisă", "facturi emise") in bara and cate(1, "declarație depusă", "declarații depuse") in bara, bara
-    rand.locator(".pf-frand-text").click()
-    pg.wait_for_selector("#ac-detaliu .panou", timeout=30000)
-    fisa = pg.inner_text("#ac-detaliu .panou .pf-frand-sub")
+    rand.locator("[data-fisa]").click()   # [lotul 13, 673 / 674] fișa: butonul „Fișa”, fereastră nouă
+    pg.wait_for_selector("#ac-detaliu .pf-frand-sub", timeout=30000)
+    fisa = pg.inner_text("#ac-detaliu .pf-frand-sub")
     superadmin.captura("fisa")
     assert cate(2, "factură emisă", "facturi emise") in fisa, fisa

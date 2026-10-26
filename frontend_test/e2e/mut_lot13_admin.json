@@ -1,0 +1,146 @@
+[
+ {
+  "fisier": "core/uc_admin.py",
+  "ancora": "    return (\"%s Motivul: %s.\" % (TEXT_SUSPENDAT, m)) if m else TEXT_SUSPENDAT",
+  "inlocuire": "    return TEXT_SUSPENDAT + \" Contactați furnizorul.\"",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_645_suspendarea_cere_motivul_iar_logarea_il_arata_fara_contact"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "        window.addEventListener(\"iconta:schimbare\", laSchimbareCabinet);",
+  "inlocuire": "        void laSchimbareCabinet;",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_644_bara_superadminului_se_reciteste_dupa_suspendare_si_numara_utilizatori"
+ },
+ {
+  "fisier": "core/uc_admin.py",
+  "ancora": "    if segment not in (\"toate\", \"cabinete\") or (segment == \"cabinete\" and not alese):",
+  "inlocuire": "    if segment == \"altceva\":",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_646_a_c_anuntul_cere_destinatari_confirma_numarul_si_se_retrage"
+ },
+ {
+  "fisier": "static/js/ecrane/admin.js",
+  "ancora": "      if (!stare.segment) { arataMesaj(msg, \"Alege destinatarii: bifează «Toate cabinetele» sau cabinetele cărora le trimiți anunțul.\", \"eroare\"); return; }",
+  "inlocuire": "      if (!stare.segment) stare.segment = \"toate\";",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_646_a_c_anuntul_cere_destinatari_confirma_numarul_si_se_retrage"
+ },
+ {
+  "fisier": "static/js/ecrane/admin.js",
+  "ancora": "          <div class=\"tip-micut an-date-act\">Publicat: ${zi(a.data_publicarii)} \\u00b7 intră în vigoare: ${zi(a.data_vigoare)}</div>",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_646_b_propunerea_monitorului_arata_datele_actului"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "        <p class=\"tip-micut anunt-data\">Trimis pe ${dataRo(a.data_afisare || a.creat_la)}</p>",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_646_d_fereastra_anuntului_arata_data"
+ },
+ {
+  "fisier": "core/invitatii.py",
+  "ancora": "    if retrasa is not None and folosita is None:",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_646_e_invitatia_se_copiaza_si_se_retrage"
+ },
+ {
+  "fisier": "static/js/ecrane/admin_sanatate.js",
+  "ancora": "      ${cifra(numar2(srv.load1), ",
+  "inlocuire": "      ${cifra((srv.load1 ?? \"—\"), ",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_643_sanatatea_arata_cifre_romanesti_pragul_si_scara"
+ },
+ {
+  "fisier": "static/js/ecrane/login.js",
+  "ancora": "  if (sesiuneInternaDeschisa()) return;\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_649_vizitele_dintr_o_sesiune_interna_nu_se_numara"
+ },
+ {
+  "fisier": "static/js/ecrane/login.js",
+  "ancora": "\"Notificări în aplicație și pe email\"",
+  "inlocuire": "\"Notificări în aplicație și pe email\", \"Suspendare cabinet\"",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_578_pagina_functionalitati_fara_functii_stricate_de_platforma_si_dubluri"
+ },
+ {
+  "fisier": "core/auth_api.py",
+  "ancora": "    if not verifica_parola_orice(parola, u[\"password_hash\"]):\n        return {\"ok\": False, \"cod\": \"AUTH_ESEC\", \"mesaj\": \"Email sau parolă greșite.\"}",
+  "inlocuire": "    if not verifica_parola_orice(parola, u[\"password_hash\"]):\n        return {\"ok\": False, \"cod\": \"AUTH_ESEC\", \"mesaj\": \"email sau parolă greșite\"}",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_608_mesajele_de_autentificare_incep_cu_majuscula"
+ },
+ {
+  "fisier": "static/js/ecrane/login.js",
+  "ancora": "      <div class=\"grila-doc reg-grila\" style=\"grid-template-columns:repeat(auto-fit, minmax(240px, 1fr))\">",
+  "inlocuire": "      <div class=\"grila-doc reg-grila\" style=\"grid-template-columns:1fr\">",
+  "test": "frontend_test/e2e/e2e_lot13_admin.py::test_def_642_inregistrarea_pe_doua_coloane_incape_in_ecran"
+ },
+ {
+  "fisier": "static/js/app.js",
+  "ancora": "  // [lotul 13, deficiența 562] prezentarea de ansamblu NU se mai deschide singură",
+  "inlocuire": "  import(\"./ecrane/ansamblu.js?v=1be335b472\").then((m) => m.deschideAnsamblu());\n  // [lotul 13, deficiența 562] prezentarea de ansamblu NU se mai deschide singură",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_562_prezentarea_nu_se_deschide_singura_iar_asistentul_nu_vede_pasii_administratorului"
+ },
+ {
+  "fisier": "static/js/ecrane/validat.js",
+  "ancora": "  return Math.max(1, ((c && c.membri_ids) || []).length);",
+  "inlocuire": "  return 1;",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_563_cardul_si_de_validat_numara_aceleasi_note"
+ },
+ {
+  "fisier": "core/alerte_control_fiscal.py",
+  "ancora": "ETICHETA_CULOARE = \"de urmărit\"",
+  "inlocuire": "ETICHETA_CULOARE = \"în roșu\"",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_570_notificarea_de_control_fiscal_spune_culoarea_ecranului"
+ },
+ {
+  "fisier": "core/control_incrucisat.py",
+  "ancora": "                else \"comparat cu decontul generat azi din evidență, nu cu cel depus\")",
+  "inlocuire": "                else \"recalculat acum — ce s-a depus nu s-a păstrat\")",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_571_control_fiscal_spune_ca_se_compara_cu_declaratia_generata_azi"
+ },
+ {
+  "fisier": "core/raportari_ai.py",
+  "ancora": "            motiv_nu = verifica_raspuns(raspuns)",
+  "inlocuire": "            motiv_nu = None",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_572_573_raspunsul_ghicit_nu_pleaca_iar_motivul_se_vede_in_panou"
+ },
+ {
+  "fisier": "static/js/ecrane/admin_raportari.js",
+  "ancora": "      ${triajHtml(cap)}",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_572_573_raspunsul_ghicit_nu_pleaca_iar_motivul_se_vede_in_panou"
+ },
+ {
+  "fisier": "core/uc_raportari.py",
+  "ancora": "        if r.get(\"ok\") and rol_autor == \"admin\":\n            _anunta_raspunsul(conn, rid)",
+  "inlocuire": "        pass",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_648_raspunsul_echipei_ajunge_in_clopotel"
+ },
+ {
+  "fisier": "core/tipare_api.py",
+  "ancora": "d.fel IN ('declaratie', 'nota')),",
+  "inlocuire": "d.fel = 'declaratie'),",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_574_576_tiparele_numara_respingerile_omului_si_analiza_refuza_sub_prag"
+ },
+ {
+  "fisier": "core/tipare_api.py",
+  "ancora": "    if (date.get(\"respinse\") or 0) < PRAG_ANALIZA:",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_574_576_tiparele_numara_respingerile_omului_si_analiza_refuza_sub_prag"
+ },
+ {
+  "fisier": "static/stil.css",
+  "ancora": ".cap-tabel th.cap-num { text-align: right; }",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_574_576_tiparele_numara_respingerile_omului_si_analiza_refuza_sub_prag"
+ },
+ {
+  "fisier": "core/coada_api.py",
+  "ancora": "            \"OR ({a}.respins_de_id IS NOT NULL AND {a}.respins_de_id = {a}.creat_de_id AND u_.creat_de_id = {a}.respins_de_id \"\n            \"AND u_.creat_la >= {a}.respins_la))))\").format(a=a)",
+  "inlocuire": "            \"OR FALSE))\").format(a=a)",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_458_1_retragerea_proprie_regenerata_nu_e_eroare_a_echipei"
+ },
+ {
+  "fisier": "core/asistenti_api.py",
+  "ancora": "        r[\"eticheta\"] = _eticheta(r.get(\"fel\"), r.get(\"tip\"), r.get(\"perioada\"), r.get(\"payload\"))",
+  "inlocuire": "        r[\"eticheta\"] = \"%s · %s\" % (r.get(\"tip\"), r.get(\"perioada\"))",
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_c87_1_activitatea_numeste_notele_si_starile_in_cuvinte"
+ }
+]

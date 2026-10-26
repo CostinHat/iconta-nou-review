@@ -336,53 +336,52 @@ def test_def_3_email_client_al_unui_cont_cu_alt_rol_e_refuzat_pe_camp(patron):
 
 def test_def_4_bun_venit_se_inchide_din_x_si_cu_esc(browser, request):
     """4. Bun venit: fereastra se închide doar de la butonul de jos; lipsesc X și Esc.
-    Pașii contabilului: la prima intrare apare „Bun venit”, cu X în antet; Esc o închide; la o nouă primă intrare, X o închide.
-    Închiderea o marchează văzută (nu reapare). [retestul Costin 09.10: testul vechi trecea pe defect — proba doar „Bun venit”]
-    Aceeași prezentare, deschisă din semnul „?” al barei („Prezentarea aplicației”), se închide și ea cu Esc."""
+    [lotul 13, 562] Prezentarea nu se mai deschide singură la prima logare („nimic nu se deschide singur”; decizia 320: „ghidul de
+    început rămâne în butonul de ajutor (?)”). Pașii: la prima intrare pagina principală, FĂRĂ fereastră de bun venit; din semnul „?”
+    al barei se deschide „Prezentarea aplicației”, cu X în antet; Esc o închide; deschisă din nou, X o închide. Prima deschidere o
+    marchează văzută."""
     with cont_asistent(firme=(T_COMERT,), bun_venit_vazut=False) as a:
         with ecran_cont(browser, request, a["email"]) as e:
             pg = e.pg
             pg.goto(e_baza(), wait_until="domcontentloaded")
-            pg.wait_for_selector(".bun-venit-overlay .ans-continut", timeout=30000)
-            assert pg.is_visible(".bun-venit-antet button.nav-x[aria-label='Închide']"), "fără X în antet"
-            e.captura("deschis")
-            pg.keyboard.press("Escape")
-            pg.wait_for_selector(".bun-venit-overlay", state="detached", timeout=10000)
-            e.captura("dupa_esc")
-        _asteapta(lambda: sql("SELECT bun_venit_vazut_la IS NOT NULL FROM public.users WHERE id = %s", (a["id"],)) == [(True,)])
-        sql("UPDATE public.users SET bun_venit_vazut_la = NULL WHERE id = %s", (a["id"],))
-        with ecran_cont(browser, request, a["email"]) as e:
-            pg = e.pg
-            pg.goto(e_baza(), wait_until="domcontentloaded")
-            pg.wait_for_selector(".bun-venit-antet .nav-x", timeout=30000)
-            pg.click(".bun-venit-antet .nav-x")
-            pg.wait_for_selector(".bun-venit-overlay", state="detached", timeout=10000)
-            e.captura("dupa_x")
-            # [retestul Costin 09.10] aceeași prezentare, deschisă din semnul „?” al barei („Prezentarea aplicației”): Esc o închide
+            pg.wait_for_selector(".cab-grila", timeout=30000)
+            pg.wait_for_timeout(1500)
+            assert pg.query_selector(".bun-venit-overlay, .fereastra .ans-continut") is None, "prezentarea s-a deschis singură"
+            e.captura("fara_fereastra")
             pg.click("#nav-ghid")
             pg.wait_for_selector(".fereastra .ans-continut", timeout=20000)
+            assert pg.is_visible(".fereastra .fereastra-antet button.nav-x[aria-label='Închide']"), "fără X în antet"
             e.captura("prezentarea_deschisa")
             pg.keyboard.press("Escape")
             pg.wait_for_selector(".fereastra .ans-continut", state="detached", timeout=10000)
             e.captura("prezentarea_dupa_esc")
+            pg.click("#nav-ghid")
+            pg.wait_for_selector(".fereastra .ans-continut", timeout=20000)
+            pg.click(".fereastra .fereastra-antet .nav-x")
+            pg.wait_for_selector(".fereastra .ans-continut", state="detached", timeout=10000)
+            e.captura("dupa_x")
+        _asteapta(lambda: sql("SELECT bun_venit_vazut_la IS NOT NULL FROM public.users WHERE id = %s", (a["id"],)) == [(True,)])
 
 
 def test_def_5_ghidul_e_pe_rol_iar_asistentul_fara_firme_primeste_mesaj(browser, request, patron):
     """5. Bun venit: ghidul e același pentru toate rolurile; asistentul fără firme nu primește un mesaj potrivit.
-    Pașii contabilului: (a) asistentul fără firme alocate intră prima oară: „Nu ai firme asociate…”, fără fir de pași; (b) asistentul
-    cu firme și „Poate pregăti”: firul începe de la datele firmei (fără pasul „Firme”, al administratorului); (c) administratorul,
-    din semnul „?” al barei: firul începe cu „Firme”."""
-    with cont_asistent(firme=(), bun_venit_vazut=False, eticheta="farafirme") as a, ecran_cont(browser, request, a["email"]) as e:
-        e.pg.goto(e_baza(), wait_until="domcontentloaded")
-        e.pg.wait_for_selector(".bun-venit-overlay .ans-continut", timeout=30000)
-        txt = e.pg.inner_text(".bun-venit-overlay")
+    Pașii contabilului, din semnul „?” al barei: (a) asistentul fără firme alocate: „Nu ai firme asociate…”, fără fir de pași; (b)
+    [lotul 13, 562] asistentul cu firme și „Poate pregăti”: NICIUN pas de preluare (vector fiscal, solduri, asociați, migrare cabinet
+    sunt ai administratorului) — cardurile lui de început (firmele, drepturile); (c) administratorul: firul începe cu „Firme”."""
+    with cont_asistent(firme=(), eticheta="farafirme") as a, ecran_cont(browser, request, a["email"]) as e:
+        e.acasa()
+        e.pg.click("#nav-ghid")
+        e.pg.wait_for_selector(".fereastra .ans-continut .ans-fara-firme", timeout=30000)
+        txt = e.pg.inner_text(".fereastra .ans-continut")
         e.captura("fara_firme")
         assert "Nu ai firme asociate" in txt, txt[:300]
-        assert e.pg.query_selector(".bun-venit-overlay .ans-fir") is None, "asistentul fără firme primește firul de pași"
-    with cont_asistent(firme=(T_COMERT,), bun_venit_vazut=False) as a, ecran_cont(browser, request, a["email"]) as e:
-        e.pg.goto(e_baza(), wait_until="domcontentloaded")
-        e.pg.wait_for_selector(".bun-venit-overlay .ans-pas-titlu", timeout=30000)
-        pasi_asist = e.pg.eval_on_selector_all(".bun-venit-overlay .ans-pas-titlu", "els => els.map(e => e.textContent.trim())")
+        assert e.pg.query_selector(".fereastra .ans-fir") is None, "asistentul fără firme primește firul de pași"
+    with cont_asistent(firme=(T_COMERT,)) as a, ecran_cont(browser, request, a["email"]) as e:
+        e.acasa()
+        e.pg.click("#nav-ghid")
+        e.pg.wait_for_selector(".fereastra .ans-grupa-lista li", timeout=30000)
+        txt_asist = e.pg.inner_text(".fereastra .ans-continut")
+        pasi_asist = e.pg.eval_on_selector_all(".fereastra .ans-pas-titlu", "els => els.map(e => e.textContent.trim())")
         e.captura("asistent")
     patron.acasa()
     patron.pg.click("#nav-ghid")
@@ -390,7 +389,8 @@ def test_def_5_ghidul_e_pe_rol_iar_asistentul_fara_firme_primeste_mesaj(browser,
     pasi_admin = patron.pg.eval_on_selector_all(".fereastra-corp .ans-pas-titlu", "els => els.map(e => e.textContent.trim())")
     patron.captura("admin")
     assert pasi_admin[0] == "Firme", pasi_admin
-    assert "Firme" not in pasi_asist and "Vector fiscal" in pasi_asist, pasi_asist
+    assert not pasi_asist, pasi_asist                                         # [562] niciun pas de administrator la asistent
+    assert "Migrare cabinet" not in txt_asist and "Vector fiscal" not in txt_asist, txt_asist[:600]
     # [retestul Costin 09.10] „Ana vede în catalog funcții de administrator”: catalogul „Ce cuprinde aplicația” al asistentului nu
     # are funcțiile administratorului de cabinet, nici pe ale platformei; administratorul cabinetului le are pe ale lui
     ADMIN_CABINET = {"Chei API publice per cabinet", "Contabilii și asistenții cabinetului", "Exportul datelor cabinetului, din aplicație"}
@@ -425,13 +425,13 @@ def test_def_6_contorul_asistenti_nu_numara_administratorul(browser, request):
 
 def test_def_7_bun_venit_fara_termenul_de_48_de_ore(browser, request):
     """7. Bun venit: textul „se rezolvă în maximum 48 de ore” e un angajament public nedecis.
-    Pașii contabilului: la prima intrare citește „Bun venit”: fraza despre cardul „Suport” (deficiența 225; între 09.10 și 10.10 s-a
-    numit „Raportează”, deficiența 202) rămâne,
-    fără niciun termen de rezolvare."""
-    with cont_asistent(firme=(T_COMERT,), bun_venit_vazut=False) as a, ecran_cont(browser, request, a["email"]) as e:
-        e.pg.goto(e_baza(), wait_until="domcontentloaded")
-        e.pg.wait_for_selector(".bun-venit-overlay .ans-continut", timeout=30000)
-        txt = e.pg.inner_text(".bun-venit-overlay")
+    Pașii contabilului: deschide „Prezentarea aplicației” din „?” ([lotul 13, 562] nu se mai deschide singură): fraza despre „Suport”
+    (deficiența 225; între 09.10 și 10.10 s-a numit „Raportează”, deficiența 202) rămâne, fără niciun termen de rezolvare."""
+    with cont_asistent(firme=(T_COMERT,)) as a, ecran_cont(browser, request, a["email"]) as e:
+        e.acasa()
+        e.pg.click("#nav-ghid")
+        e.pg.wait_for_selector(".fereastra .ans-continut", timeout=30000)
+        txt = e.pg.inner_text(".fereastra .ans-continut")
         e.captura()
         fraza = [p for p in txt.split("\n") if "din „Suport”, sus pe pagina principală" in p]   # [225] „Suport” — banda de sus din 12.10.2026
         assert fraza, txt[:400]

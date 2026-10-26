@@ -34,7 +34,9 @@ Amandoua ar fi iesit corect din cele doua fapte, fara nicio judecata de ansamblu
 #: Ce campuri cere prompt-ul in raspunsul JSON. Exista ca DATE ca sa se poata confrunta cu
 #: prompt-ul fara sa cautam cuvinte in proza lui: garda intreaba «multimea ceruta e asta?», nu
 #: «apare sirul X undeva in text».
-CAMPURI_CERUTE = ("titlu", "rezumat", "directie", "declaratii_atinse", "data_vigoare")
+CAMPURI_CERUTE = ("titlu", "rezumat", "directie", "declaratii_atinse", "data_vigoare", "data_publicarii")
+#: [lotul 13, 646 b] „Propunerile monitorului fiscal nu au data publicării și data intrării în vigoare.” — `data_publicarii` se cere ca
+#: FAPT (data din Monitorul Oficial, sau null dacă nu apare), ca `data_vigoare`; nu e o judecată.
 
 #: Campul pe care prompt-ul NU are voie sa-l mai ceara: verdictul. Daca reapare, derivarea din cod
 #: devine decor.

@@ -354,6 +354,9 @@ async function deschideVizualizare(uid, nav) {
   });
 }
 
+// [C87.1] rolul omului, în cuvintele aplicației (nu codul din bază)
+const ROL_OM = { admin_firma: "administratorul cabinetului", angajat: "asistent" };
+
 function _asiRandeazaFereastra(d, c) {
   const cal = c && c.ok ? c : null;
   const nivel = cal ? cal.nivel : 1;
@@ -365,7 +368,7 @@ function _asiRandeazaFereastra(d, c) {
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <span class="asi-nivel-badge">Nivel ${nivel}</span>
       ${_semaforEticheta(sem)}
-      <span class="tip-desc">${d.actor.rol}</span>
+      <span class="tip-desc">${esc(ROL_OM[d.actor.rol] || "")}</span>
     </div>`;
 
   const perioada = `
@@ -408,16 +411,18 @@ function _asiRandeazaFereastra(d, c) {
   const alerta = d.nr_self_approval > 0
     ? `<div class="asi-alerta-rosu">\u26a0 ${cate(d.nr_self_approval, "declarație aprobată", "declarații aprobate")} de propriul preg\u0103titor (patru ochi).</div>`
     : `<div class="asi-alerta-verde">\u2713 Nicio declara\u021bie aprobat\u0103 de propriul preg\u0103titor.</div>`;
+  // [lotul 13, C87.1 — „«Declarații lucrate» există, dar rândurile spun «nota · nota-143» (numărul intern), «stare: la_senior», «Acoperire:
+  // nota»; titlul spune declarații, lista are note”] numele elementului și starea vin de la server în cuvintele aplicației
   const randuri = acte.length ? acte.map((c2) => {
     const roluri = [];
-    if (c2.a_pregatit) roluri.push("pregatit");
-    if (c2.a_aprobat) roluri.push("aprobat");
-    if (c2.a_respins) roluri.push("respins");
-    const flag = c2.self_approval ? `<span class="asi-flag-rosu">și-a aprobat singur</span>` : "";
-    return `<div class="asi-act-rand ${c2.self_approval ? "asi-act-rosu" : ""}"><div class="asi-act-tip">${c2.tip} \u00b7 ${c2.perioada}</div><div class="asi-act-meta">${esc(c2.firma || "o firmă care nu mai există")} \u00b7 ${roluri.join(", ")} \u00b7 stare: ${c2.stare} ${flag}</div></div>`;
+    if (c2.a_pregatit) roluri.push("a pregătit");
+    if (c2.a_aprobat) roluri.push("a validat");
+    if (c2.a_respins) roluri.push("a respins");
+    const flag = c2.self_approval ? `<span class="asi-flag-rosu">și-a validat singur lucrarea</span>` : "";
+    return `<div class="asi-act-rand ${c2.self_approval ? "asi-act-rosu" : ""}"><div class="asi-act-tip">${esc(c2.eticheta || "")}</div><div class="asi-act-meta">${esc(c2.firma || "o firmă care nu mai există")} \u00b7 ${roluri.join(", ")} \u00b7 ${esc(c2.stare_text || "")} ${flag}</div></div>`;
   }).join("") : `<div class="stare-goala">Nicio activitate \u00eenregistrat\u0103.</div>`;
 
-  return `${header}${perioada}${calitate}${tipare}${alerta}<div class="asi-sectiune-titlu">Declarații lucrate (max. 200)</div><div id="asi-activitate">${randuri}</div>`;
+  return `${header}${perioada}${calitate}${tipare}${alerta}<div class="asi-sectiune-titlu">Declarații și note lucrate (ultimele 200)</div><div id="asi-activitate">${randuri}</div>`;
 }
 
 /* [patch10_banner_erori] */
