@@ -5,9 +5,10 @@
 // „Vederea aleasă e activă, nu dezactivată”); nimic ales la deschidere când nu există o valoare salvată (cap.17: aplicația nu alege în
 // locul omului). Valoarea stă într-un `<input type="hidden">` cu id-ul câmpului, deci formularul o citește ca pe un select (`daNu`,
 // `.value`) și ciorna formularului o păstrează; alegerea lipsă se cere lângă grup (`cereButoane`), ca `cereAlegerile` la select.
-// [655] Sumele scrise de om se citesc în format românesc (`sumaRo`): „1.000” = o mie, „1.000,50”, „12,5”, „2000.41”; ce nu se poate citi fără ghicit se refuză lângă câmp.
+// [655] Sumele scrise de om se citesc cu regula unică a aplicației (`numarRo` din api.js, DS cap.6 „Numerele scrise de om”); `sumaRo`
+// doar o adaptează la forma ferestrelor salarizării (null = gol, NaN = refuzat lângă câmp).
 // Dacă subagentul Design System a pus mecanismele comune în api.js, acest modul se înlocuiește cu ele (aceeași semantică).
-import { esc, eroareCamp } from "../api.js?v=e38843b1ec";
+import { esc, eroareCamp, numarRo, MESAJ_NUMAR_RO } from "../api.js?v=e38843b1ec";
 
 // Grupul de butoane al câmpului `id` (opțiunile: [[valoare, eticheta]]); `ales` = valoarea salvată ("" / null = nimic ales).
 export function alegereButoane(id, optiuni, ales, eticheta) {
@@ -81,15 +82,11 @@ export function cereButoane(root, ids) {
   return lipsa;
 }
 
-// [655] Suma scrisă de om, în format românesc: punctul desparte miile („1.000” = o mie, „1.000,50”), virgula zecimalele („12,5”); un punct
-// urmat de una sau două cifre e zecimal („2000.41”). null = câmp gol; NaN = nu se poate citi fără ghicit (ex. „1.00.0”, „1,000.5”).
+// [655] Suma scrisă de om, citită cu `numarRo` (api.js — regula unică, oglinda `core/numere.numar_ro`): null = câmp gol; NaN = nu se
+// poate citi fără ghicit (refuzată lângă câmp cu `MESAJ_SUMA`); altfel numărul.
 export function sumaRo(text) {
-  const t = String(text == null ? "" : text).replace(/[\s ]/g, "");
-  if (!t) return null;
-  if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(t) || /^-?\d+(,\d+)?$/.test(t)) return Number(t.replace(/\./g, "").replace(",", "."));
-  // un punct urmat de una sau două cifre nu poate despărți miile: e zecimal („2000.41”)
-  if (/^-?\d+\.\d{1,2}$/.test(t)) return Number(t);
-  return NaN;
+  const r = numarRo(text);
+  return r.gol ? null : (r.eroare ? NaN : r.valoare);
 }
 
 // Valoarea unei sume pentru câmpul de text: cu virgulă la zecimale („12,5”), fără separator de mii (se citește înapoi cu `sumaRo`).
@@ -99,4 +96,4 @@ export function sumaInCamp(v) {
   return Number.isFinite(n) ? String(n).replace(".", ",") : "";
 }
 
-export const MESAJ_SUMA = "Scrie suma în lei, cu virgulă la zecimale (ex. 1.000 sau 1.000,50).";
+export const MESAJ_SUMA = MESAJ_NUMAR_RO;

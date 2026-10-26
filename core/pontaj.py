@@ -27,6 +27,7 @@ from datetime import date, timedelta
 from core.scadente import e_zi_lucratoare
 from core.migrare_pontaj import STARI
 from core.common import cate as _cate
+from core.pdf_util import data_ro as _data_ro   # DS cap.4: data pentru om, sursa unică
 
 #: Stările pe care le marchează contabilul (fără „prezent”, care e implicit). Concediul medical NU e aici: vine din certificate.
 STARI_MARCATE = ("concediu_odihna", "delegatie", "absent_motivat", "absent_nemotivat", "invoire")
@@ -69,10 +70,10 @@ def _afirmatia_zilei(fel, tip, motiv, d):
         return None
     from core import afirmatii as _af
     if fel == "neconformitate":
-        return _af.afirmatie(fel, tip, motiv, unde="ziua %s" % d.strftime("%d.%m.%Y"), an=d.year, luna=d.month,
+        return _af.afirmatie(fel, tip, motiv, unde="ziua %s" % _data_ro(d), an=d.year, luna=d.month,
                              regula="ziua de concediu medical vine din certificat (comanda 13.1, deficiența 671)")
     return _af.afirmatie(fel, tip, motiv, temei_completitudine=_TEMEI_ZILEI[tip], an=d.year, luna=d.month,
-                         unde="ziua %s" % d.strftime("%d.%m.%Y"))
+                         unde="ziua %s" % _data_ro(d))
 
 
 def grila_pura(an, luna, data_angajare, exceptii, data_incetare=None, certificate=(), suspendari=()):
@@ -198,7 +199,7 @@ def seteaza(conn, schema, salariat_id, zi, stare, tenant_id=None):
         return {"ok": False, "mesaj": "Salariatul nu există."}
     ziua = next((x for x in g["zile"] if x["zi"] == d.isoformat()), None)
     if ziua is not None and not ziua["editabil"]:
-        return {"ok": False, "mesaj": "Ziua %s nu se marchează în pontaj. %s" % (d.strftime("%d.%m.%Y"), ziua["afirmatie"]["motiv"])}
+        return {"ok": False, "mesaj": "Ziua %s nu se marchează în pontaj. %s" % (_data_ro(d), ziua["afirmatie"]["motiv"])}
     if not stare or stare == "prezent":
         with conn.cursor() as cur:
             cur.execute(f"DELETE FROM {_p(schema)}pontaj WHERE salariat_id = %s AND zi = %s", (salariat_id, d))
