@@ -93,6 +93,11 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   try { cen = await api.get("/asistenti/echipa/centralizator" + sfx); } catch { _eroareAzi = true; }
   try { jur = await api.get("/asistenti/echipa/jurnal" + sfx + "&limit=5"); } catch { _eroareAzi = true; }
   try { rap = await api.get("/raportari/contor"); } catch {}
+  // [lotul 13, deficiența 568: „«1 de validat», deși coada are 5 note (Ana, 19.10) + 1 declarație; sinteza numără doar ce a intrat azi.”]
+  // „de validat” = coada ÎNTREAGĂ de acum (starea `la_senior`), nu numai ce a intrat azi: centralizatorul fără interval, ca emailul de
+  // seară (`sinteza_zilnica.sinteza_cabinet`, `de_validat`)
+  let deValidat = null;
+  try { const c = await api.get("/asistenti/echipa/centralizator"); deValidat = ((c || {}).totaluri || {}).in_asteptare || 0; } catch { _eroareAzi = true; }
   if (_eroareAzi) { corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca activitatea de azi (eroare de server).</p>`; return; }
 
   const t = cen.totaluri || {};
@@ -110,7 +115,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
     cifra(t.aprobate || 0, "validate", "activitate", (t.aprobate ? "var(--verde)" : null)),
     cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "var(--rosu)" : null)),
     cifra(t.depuse || 0, "depuse", "activitate", (t.depuse ? "var(--verde)" : null)),
-    cifra(t.in_asteptare || 0, "de validat", "validat", (t.in_asteptare ? "var(--galben-text)" : null)),
+    cifra(deValidat || 0, "de validat", "validat", (deValidat ? "var(--galben-text)" : null)),
     cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "var(--rosu)" : null)),
   ].join("");
 
@@ -136,7 +141,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
       const ora = e.cand ? new Date(e.cand).toLocaleTimeString("ro-RO",{hour:"2-digit",minute:"2-digit"}) : "";
       return `<li class="sa-ev"><span class="sa-pct ${cl}"></span>
         <span class="sa-ev-txt"><b>${esc(e.cine)}</b> ${act}
-        ${(e.tip||"").toUpperCase()} ${e.firma ? "· " + esc(e.firma) : ""}</span>
+        ${esc(e.eticheta || "")} ${e.firma ? "· " + esc(e.firma) : ""}</span>
         <span class="sa-ev-ora">${ora}</span></li>`;
     }).join("");
   } else {

@@ -102,15 +102,8 @@ CLASIFICARE = {
     "facturi_ecran.js:pm-moneda": (PRESELECTAT, "(a) uzual: RON — ca la emitere; (b) vizibil lângă total, iar în valută cursul BNR apare "
                                    "dedesubt; (c) se schimbă din listă"),
     "firme.js:fn-tip": (FISCAL, "tipul firmei SRL / PFA (venea „SRL”) — partida dublă / simplă; DS cap.17 îl numește între faptele decisive"),
-    "firme.js:sn-${id}": (FISCAL, "helperul formularului «Salariat nou» (tipul normei; DA/NU-urile declarația pentru copii, funcția de bază, scutirea de contribuția minimă — prin `selectDaNu`) — D112"),
-    "firme.js:pj-sel": (EXISTENTA, "pontajul e INFORMATIV (DECIZII 17.07, F135): „prezent” = lipsa unei excepții, prin modelul de date; selectul arată starea reală a zilei"),
-    "firme.js:ad-tip": (FISCAL, "tipul contractului pe adeverință (venea „nedeterminată”)"),
     "setari.js:not-canal": (NEFISCAL, "canalul notificărilor utilizatorului (lotul 7, 2.2: „implicit email”) — setare a contului, nu fapt fiscal; se schimbă cu «Salvează canalul»"),
     "tabel_note.js:${pre}-stare": (NEFISCAL, "filtrul de stare al tabelului de note (lotul 12, 617: Registru jurnal) — ce note se ARATĂ (toate / validate / ciorne), nu un fapt scris; pornește pe „toate”, se schimbă oricând, nu se trimite nicăieri"),
-    "firme.js:rg-mediu": (NEFISCAL, "mediul REGES (test / producție) — setare tehnică a conexiunii, nu fapt fiscal"),
-    "firme.js:cadou-ev": (FISCAL, "evenimentul tichetelor cadou (venea „Paște”) — decide neimpozabilul de 300 lei"),
-    "firme.js:ed-norma": (FISCAL, "tipul normei la corectarea salariatului (venea „întreagă” și când lipsea) — D112"),
-    "firme.js:susp${i}-tip": (FISCAL, "tipul suspendării (rândul nou venea „CFP”) — D112"),
     "firme.js:tr-art": (BUILDER, "builderul `optArts` începe cu „— alege articolul —”"),
     "firme.js:rc-art": (BUILDER, "builderul `optArts` începe cu „— alege articolul —”"),
     "firme.js:fc-luna": (NEFISCAL, "filtrul fișei contului (luna / tot anul) — afișare"),
@@ -136,7 +129,6 @@ CLASIFICARE = {
 #: selecturile construite prin HELPERE (un singur `<select` în helper, mai multe câmpuri): locatorii ceruți la trimitere
 HELPERE = {
     "etransport_ecran.js:${id}": ["et-tip", "s-judet", "f-judet", "b-cod_scop"],
-    "firme.js:sn-${id}": ["sn-tip_norma", "sn-declaratie_copii", "sn-functie_baza", "sn-scutit_contrib_minim"],
 }
 
 

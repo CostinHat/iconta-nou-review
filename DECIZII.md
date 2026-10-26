@@ -23733,3 +23733,9 @@ rândul lui din `DEFICIENTE.md` (secțiunea „25.10 — comanda 13.1”, numere
 - Pct.2 (cheia Anthropic „fiscalos2”): **NEINSTALATĂ**. Fișierul `~/ghid_incoming/anthropic_key.txt` are 95 de caractere, fără prefixul
   `sk-ant-`; API-ul Anthropic (`GET /v1/models`) răspunde 401 și cu valoarea din fișier, și cu prefixul `sk-ant-api03-` adăugat (cheia de
   acum răspunde 200, 108 caractere). Cheia veche rămâne activă (expiră 28.10); fișierul nu s-a șters, ca să poată fi verificat ce s-a lipit.
+- **Pct.2, completare (25.10.2026, după mesajul lui Costin: „~/ghid_incoming/anthropic_key.txt e acum cheia corectă („fiscalos3”; cea
+  dinainte era un text copiat greșit, iar cheia aceea a fost ștearsă din Console)”):** cheia începe cu `sk-ant-` (106 caractere), `GET
+  /v1/models` 200; instalată în `~/.iconta/api_keys.env` în locul cheii „fiscalos”, fără afișare; fișierul sursă șters (`shred -u`).
+  Funcțiile AI ale aplicației cu cheia nouă: `ai_client.genereaza_text` -> „funcționează”, `ai_client.citeste_imagini` (o imagine PNG) ->
+  răspuns. Procesul de producție citește cheile la pornire: cheia nouă intră în producție la repornirea publicării; dacă publicarea trece
+  de 28.10 (expirarea cheii „fiscalos”), funcțiile AI de pe producție cad până la repornire.

@@ -44,7 +44,9 @@ def test_clasificarea_acopera_cele_82_si_fiecare_are_motiv():
     # [lotul 12, 477] + `facturi_ecran.js:pm-moneda` (PRESELECTAT: RON, ca la emitere — factura primită introdusă de mână)
     # [lotul 12, C160] + `facturi_ecran.js:fr-tara` (PRESELECTAT: țara dedusă din CUI, ca la emitere — șablonul facturii recurente)
     # [lotul 12, 617] + `tabel_note.js:${pre}-stare` (NEFISCAL: filtrul de stare al tabelului de note — ce se arată, nu un fapt scris)
-    assert clase[S.FISCAL] == 55 and clase[S.PRESELECTAT] == 10 and sum(clase.values()) == 89   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
+    # [lotul 13, 676] − 7 selecturi ale salarizării devenite butoane alăturate (`sn-${id}`, `ad-tip`, `cadou-ev`, `ed-norma`, `susp${i}-tip`
+    # FISCAL; `pj-sel` EXISTENTA; `rg-mediu` NEFISCAL), păzite acum de `core/test_lot13_sal_alegeri.py`
+    assert clase[S.FISCAL] == 50 and clase[S.PRESELECTAT] == 10 and sum(clase.values()) == 82   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
     assert all(len(m) > 40 for _c, m in S.CLASIFICARE.values())
     assert set(S.HELPERE) <= set(S.CLASIFICARE)
 
@@ -118,12 +120,14 @@ def test_casutele_ramase_sunt_toate_clasificate():
 
 
 def test_CALIBRARE_danu_necerut_e_prins():
-    p = "static/js/ecrane/flux_concediu.js"
-    s = _js(p)
-    a = '["#cm-cod", "#cm-continuare", "#cm-spital", "#cm-program-national"]'
-    assert s.count(a) == 1
-    rele = dict(S.danu_necerute([(p, s.replace(a, '["#cm-cod", "#cm-continuare", "#cm-program-national"]'))]))
-    assert rele.get("flux_concediu.js:cm-spital", "").startswith("DA/NU situațional pe care handlerul nu-l cere")
+    # [lotul 13, 676] Concediul medical nu mai are DA/NU-uri ca select (sunt butoane alăturate, păzite de `core/test_lot13_sal_alegeri.py`):
+    # calibrarea scanerului pe un fragment sintetic, cu aceeași formă ca vechiul formular
+    p = "static/js/ecrane/proba_danu.js"
+    s = ('z.innerHTML = `${selectDaNu(\'id="cm-continuare"\', null, "C")}${selectDaNu(\'id="cm-spital"\', null, "S")}`;\n'
+         'if (cereAlegerile(zona, ["#cm-cod", "#cm-continuare", "#cm-spital"])) return;\n')
+    assert dict(S.danu_necerute([(p, s)])) == {}
+    rele = dict(S.danu_necerute([(p, s.replace('"#cm-spital"])', '])'))]))
+    assert rele.get("proba_danu.js:cm-spital", "").startswith("DA/NU situațional pe care handlerul nu-l cere")
 
 
 def test_inputurile_precompletate_sunt_clasificate():

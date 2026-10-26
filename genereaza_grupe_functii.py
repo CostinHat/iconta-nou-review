@@ -45,6 +45,21 @@ EXPLICIT = {"F061": "Contabilitate", "F016": "Cabinet și portal client", "F143"
     "F265": "Fiscalitate", "F267": "Contabilitate"}
 # cross-check-urile fiscale -> Control fiscal (NU Fiscalitate, desi numele incepe cu declaratia)
 CROSS = {"F162", "F163", "F169", "F180", "F184"}
+# [lotul 13, deficiența 578 — „Pagina Funcționalități promite public funcții găsite stricate (sinteza zilnică, triaj AI); listează funcții de
+# admin (Suspendare cabinet, Înregistrarea cabinetului) și dubluri (3× API, 3× notificări, 2× export).”] Ies din listă, cu motivul:
+# cele găsite stricate la testare revin după ce retestul lui Costin le confirmă (o linie scoasă de aici); din fiecare dublură rămâne una.
+NEPUBLICE = {
+    "F083": "stricată la testare (565: sinteza zilnică n-a ajuns la administrator) — revine după retest",
+    "F152": "stricată la testare (572 / 573: triajul AI al sesizărilor) — revine după retest",
+    "F120": "stricată la testare (576: analiza AI a tiparelor inventa) — revine după retest",
+    "F108": "funcție a administratorului platformei (înregistrarea cabinetelor), nu a cabinetului",
+    "F109": "funcție a administratorului platformei (suspendarea cabinetelor), nu a cabinetului",
+    "F068": "dublură a lui F005 (API): API-ul se folosește cu cheia creată în Setări cont",
+    "F114": "dublură a lui F005 (API)",
+    "F062": "dublură a lui F115 (notificările)",
+    "F261": "dublură a lui F115 (notificările)",
+    "F199": "dublură a lui F204 (exportul datelor cabinetului)",
+}
 # EXCLUSE: infrastructura invizibila utilizatorului + variante superadmin + pagina insasi + cont gratuit inchis
 EXCLUDE = {
     # infra invizibila
@@ -55,7 +70,7 @@ EXCLUDE = {
     # mecanism intern de coliziune (nu capabilitate)
     "F185",
     # cont gratuit: palnie publica INCHISA (DECIZII 25.07) -> nu afisam functii inaccesibile
-    "F153", "F160"}
+    "F153", "F160"} | set(NEPUBLICE)
 # variantele "in contul gratuit" (se subinteleg; oricum palnia e inchisa)
 GRATUIT = {"F154", "F155", "F156", "F157", "F158", "F159"}
 # importuri de migrare -> comasate intr-o singura intrare (COMASAT)

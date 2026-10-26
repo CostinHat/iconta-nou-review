@@ -486,12 +486,38 @@ def _stat_09(patron, f, an=AN, luna=LUNA):
         pg.wait_for_function("(p) => { const i = [...document.querySelectorAll('.fereastra')].pop().querySelector('.pf-intro'); "
                              "return i && i.innerText !== p; }", arg=prev, timeout=30000)
     _asteapta_text(patron, "Luna %02d/%d" % (luna, an))
-    pg.wait_for_selector(_F + ".pf-lista .pf-frand", timeout=30000)
+    pg.wait_for_selector(_F + "#sp-tabel tbody tr.sp-rand", timeout=30000)   # [lotul 13, 677] statul = tabel, un rând pe salariat
     return pg
 
 
+def _salariat(pg, nume):
+    """[lotul 13, 677] Rândul statului -> fereastra salariatului (cu butoanele lui și compoziția netului pe trei coloane)."""
+    pg.locator(_F + "#sp-tabel tbody tr.sp-rand", has_text=nume).first.locator(".sp-deschide").click()
+    pg.wait_for_selector(_F + "#ss-butoane", timeout=30000)
+
+
+def _coloane(pg):
+    """Compoziția netului din fereastra salariatului: {etichetă: (valoare, net)} (rândurile celor trei coloane, `data-*`)."""
+    return pg.eval_on_selector_all(
+        _F + "#ss-compozitie tr[data-eticheta]",
+        "rs => Object.fromEntries(rs.map(r => [r.dataset.eticheta, [r.dataset.valoare === '' ? null : Number(r.dataset.valoare),"
+        " r.dataset.net === undefined ? null : Number(r.dataset.net)]]))")
+
+
 def _rand_stat(pg, nume):
-    return " ".join(pg.locator(_F + ".pf-lista .pf-frand", has_text=nume).first.inner_text().split())
+    """Sumele salariatului, citite din fereastra lui, ca „brut … · CAS … · CASS … · impozit … · net …” (în luna cu concediu medical
+    „net <de plată> (salariu <net> + indemnizație CM <net CM>)”); fereastra se închide, înapoi la stat."""
+    _salariat(pg, nume)
+    c = _coloane(pg)
+    pg.click(_F + ".nav-inapoi")
+    pg.wait_for_selector(_F + "#sp-tabel tbody tr.sp-rand", timeout=30000)
+    v = lambda e: D(str(c[e][0]))   # noqa: E731
+    net = "net %s" % _bani(v("Net de plată"))
+    if "Indemnizație concediu medical" in c:
+        cm = D(str(c["Indemnizație concediu medical"][1]))
+        net += " (salariu %s + indemnizație CM %s)" % (_bani(v("Net de plată") - cm), _bani(cm))
+    return "brut %s · CAS %s · CASS %s · impozit %s · %s" % (_bani(v("Salariu pe zile lucrate")), _bani(v("CAS (25%)")),
+                                                              _bani(v("CASS (10%)")), _bani(v("Impozit pe venit")), net)
 
 
 def _sume(text):
@@ -1120,7 +1146,7 @@ def test_pilot_19_salariatii(patron, firma_pilot):
             pg.fill(sel, v)
         for sel, v in (("#sn-tip_norma", "intreaga"), ("#sn-declaratie_copii", "false"), ("#sn-functie_baza", "true"),
                        ("#sn-scutit_contrib_minim", "false"), ("#sn-tip_contract", "nedeterminata")):
-            pg.select_option(sel, v)
+            pg.click("%s-grup [data-v='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
         pg.fill("#sn-cor-cauta", s["cor"])
         pg.wait_for_selector("#sn-cor-rez [data-cod='%s']" % s["cor"], timeout=20000)
         pg.click("#sn-cor-rez [data-cod='%s']" % s["cor"])
@@ -1142,7 +1168,8 @@ def test_pilot_20_statul_de_plata_cu_concediul_medical(patron, firma_pilot):
     indemnizație CM 321,00)."""
     f = firma_pilot
     pg = _stat_09(patron, f)
-    pg.locator(_F + ".pf-lista .pf-frand", has_text=SAL2["nume"]).first.locator("[data-cm]").click()
+    _salariat(pg, SAL2["nume"])
+    pg.click(_F + "#ss-butoane [data-cm]")
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
     pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
@@ -1154,7 +1181,7 @@ def test_pilot_20_statul_de_plata_cu_concediul_medical(patron, firma_pilot):
     pg.fill(_F + "#cm-sfarsit", zi(18).isoformat())
     _propunerea_zilelor(pg, ZILE_CM)                                    # 14–18.09.2026: luni–vineri, 5 zile lucrătoare
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
-        pg.select_option(_F + sel, "false")
+        pg.click(_F + sel + "-grup [data-v='false']")                  # [lotul 13, 676] Da / Nu = butoane
     pg.fill(_F + "#cm-ven6", str(CM_VEN6))
     pg.fill(_F + "#cm-zile6", str(CM_ZILE6))
     pg.click(_F + "#cm-calc")
@@ -1190,13 +1217,15 @@ def test_pilot_21_concediul_medical_arata_cas_ul(patron, firma_pilot):
     iar brutul minus reținerile = netul (netul se reface din ecran)."""
     from e2e_lot11_s9 import _randuri_compozitie
     pg = _stat_09(patron, firma_pilot)
-    rand = pg.locator(_F + ".pf-lista .pf-frand", has_text=SAL2["nume"]).first
-    rand.locator("details.dec-xml summary").first.click()
-    comp = _randuri_compozitie(rand.locator("details.dec-xml").first.inner_text())
+    # [lotul 13, 677] fereastra salariatului: indemnizația o dată, cu brutul și netul pe același rând; reținerile ei în „Rețineri”
+    _salariat(pg, SAL2["nume"])
+    c = _coloane(pg)
+    comp = _randuri_compozitie(c)
     patron.captura()
-    asteptat = {"Indemnizație CM (netă)": CM_NET, "din indemnizația CM brută": CM_BRUT, "reținut din indemnizație: CAS (25%)": -CM_CAS,
-                "reținut din indemnizație: CASS (10%)": -CM_CASS, "reținut din indemnizație: impozit pe venit": -CM_IMPOZIT}
+    asteptat = {"Indemnizație concediu medical": CM_BRUT, "reținut din indemnizație: CAS (25%)": CM_CAS,
+                "reținut din indemnizație: CASS (10%)": CM_CASS, "reținut din indemnizație: impozit pe venit": CM_IMPOZIT}
     assert {k: comp.get(k) for k in asteptat} == asteptat, comp
+    assert D(str(c["Indemnizație concediu medical"][1])) == CM_NET, c
     assert CM_BRUT - CM_CAS - CM_CASS - CM_IMPOZIT == CM_NET
 
 
@@ -1210,9 +1239,9 @@ def test_pilot_22_contabilizarea_statului_si_fluturasul(patron, firma_pilot):
     from pypdf import PdfReader
     f = firma_pilot
     pg = _stat_09(patron, f)
-    rand = pg.locator(_F + ".pf-lista .pf-frand", has_text=SAL1["nume"]).first
+    _salariat(pg, SAL1["nume"])   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
     with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-        rand.locator("[data-flut]").click()
+        pg.click(_F + "#ss-butoane [data-flut]")
     assert rr.value.status == 200, rr.value.status
     b64 = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
       const x = await fetch(u, {headers: {'Authorization': 'Bearer ' + t}}); const b = new Uint8Array(await x.arrayBuffer());
@@ -1245,18 +1274,20 @@ def test_pilot_23_plata_salariilor_pe_card(patron, firma_pilot):
     card (SEPA)”: „2 plată/plăți · total 8.979,00 lei · format SEPA pain.001” (netul de plată, salariu + indemnizația CM)."""
     pg = _stat_09(patron, firma_pilot)
     for i, s in enumerate((SAL1, SAL2)):
-        rand = pg.locator(_F + ".pf-lista .pf-frand", has_text=s["nume"]).first
-        rand.locator("[data-iban]").click()
+        # [lotul 13, 673 / 677] fereastra salariatului -> „IBAN ⚠” (fereastra lui) -> „IBAN ✓” -> înapoi la stat
+        _salariat(pg, s["nume"])
+        pg.click(_F + "#ss-butoane [data-iban]")
         pg.fill(_F + "#iban-input", _iban_ro("BTRL", "RONCRT00P1LOT%03d" % (i + 1)))
         pg.click(_F + "#iban-save")
-        pg.wait_for_function("(n) => { const r = [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('.pf-lista .pf-frand')]"
-                             ".find((x) => x.innerText.includes(n)); const b = r && r.querySelector('[data-iban]'); return b && b.innerText.includes('✓'); }",
-                             arg=s["nume"], timeout=30000)
+        pg.wait_for_function("() => { const b = [...document.querySelectorAll('.fereastra')].pop().querySelector('#ss-butoane [data-iban]');"
+                             " return b && b.innerText.includes('✓'); }", timeout=30000)
+        pg.click(_F + ".nav-inapoi")
+        pg.wait_for_selector(_F + "#sp-tabel tbody tr.sp-rand", timeout=30000)
     pg.click(_F + "#sp-plata-card")
     pg.wait_for_selector(_F + "#plata-descarca", timeout=30000)
-    zona = " ".join(pg.inner_text(_F + "#sp-plata-zona").split())
+    zona = " ".join(patron.fereastra().split())
     patron.captura()
-    assert "2 plată/plăți · total %s lei" % _bani(NET_DE_PLATA) in zona, zona
+    assert "2 plăți · total %s lei" % _bani(NET_DE_PLATA) in zona, zona
 
 
 # ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -1646,7 +1677,8 @@ def test_pilot_37_concediul_cod_10_pe_luna_urmatoare(patron, firma_pilot):
     pg = patron.pg
     di, ds, zile = _dt.date(2026, 10, 1), _dt.date(2026, 10, 14), 10          # 1–14 octombrie 2026: 10 zile lucrătoare
     _stat_09(patron, firma_pilot, di.year, di.month)
-    pg.locator(_F + ".pf-lista .pf-frand", has_text=SAL1["nume"]).first.locator("[data-cm]").click()
+    _salariat(pg, SAL1["nume"])
+    pg.click(_F + "#ss-butoane [data-cm]")
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
     pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
@@ -1659,7 +1691,7 @@ def test_pilot_37_concediul_cod_10_pe_luna_urmatoare(patron, firma_pilot):
     pg.fill(_F + "#cm-sfarsit", ds.isoformat())
     _propunerea_zilelor(pg, zile)
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
-        pg.select_option(_F + sel, "false")
+        pg.click(_F + sel + "-grup [data-v='false']")                  # [lotul 13, 676] Da / Nu = butoane
     pg.fill(_F + "#cm-ven6", str(CM_VEN6))
     pg.fill(_F + "#cm-zile6", str(CM_ZILE6))
     pg.fill(_F + "#cm-urgenta", "4321")

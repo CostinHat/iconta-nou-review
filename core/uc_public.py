@@ -50,7 +50,25 @@ def reset_parola_seteaza(date):
 # [lotul 13, deficiența 608 — „Mesajele de autentificare încep cu literă mică”] mesajele linkului de logare: propoziții întregi, cu ce are
 # omul de făcut (DS cap.0: „Mesajele către utilizator […] spun ce s-a întâmplat și ce are de făcut”)
 MESAJ_LINK_INVALID = "Linkul de logare nu e valid. Cere unul nou din „Trimite-mi link de logare”."
-MESAJ_LINK_FOLOSIT = "Linkul de logare a expirat sau a fost folosit deja. Cere unul nou din „Trimite-mi link de logare”."
+
+
+def motiv_link_nevalid(cur, tok, fel):
+    """[lotul 13, deficiența 560, comanda Costin 13.1] „Link deja folosit: mesajul «link invalid sau expirat» să spună «Contul e deja
+    activat — intră cu emailul și parola».” Ce s-a întâmplat cu linkul (`repo_utilizatori.stare_token_activare`) și ce face omul acum.
+    `fel` = „activare” (linkul asistentului: își setează parola) sau „logare” (linkul fără parolă: clientul, „Trimite-mi link de logare”)."""
+    st = repo_utilizatori.stare_token_activare(cur, _uc_comun._hash_tok(tok or ""))
+    if fel == "activare":
+        if st and st[0]:
+            return "Contul e deja activat — intră cu emailul și parola."
+        if st and st[1]:
+            return "Linkul de activare a expirat (e valabil 48 de ore). Cere administratorului cabinetului o invitație nouă."
+        return "Linkul de activare nu e valid. Cere administratorului cabinetului o invitație nouă."
+    parola = " sau intră cu emailul și parola" if st and st[2] else ""
+    if st and st[0]:
+        return "Linkul de logare a fost deja folosit. Cere unul nou cu „Trimite-mi link de logare”%s." % parola
+    if st and st[1]:
+        return "Linkul de logare a expirat. Cere unul nou cu „Trimite-mi link de logare”%s." % parola
+    return "Linkul de logare nu e valid. Cere unul nou cu „Trimite-mi link de logare”."
 
 
 def magic_login(date):
@@ -61,7 +79,7 @@ def magic_login(date):
     with db.get_conn() as conn, conn.cursor() as cur:
         r = repo_utilizatori.cont_din_token_activare(cur, _uc_comun._hash_tok(tok))
         if not r:
-            raise _erori.Neautentificat(MESAJ_LINK_FOLOSIT)
+            raise _erori.Neautentificat(motiv_link_nevalid(cur, tok, "logare"))
         repo_utilizatori.marcheaza_tokenul_folosit(cur, _uc_comun._hash_tok(tok))
         conn.commit()
     with db.get_conn() as conn:
@@ -83,7 +101,7 @@ def activare_cont(date):
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             r = repo_utilizatori.cont_din_token_activare_2(cur, _uc_comun._hash_tok(date.token))
             if not r:
-                raise _erori.CerereGresita("Linkul de activare nu mai e valabil: a expirat sau a fost folosit deja.")   # [608]
+                raise _erori.CerereGresita(motiv_link_nevalid(cur, date.token, "activare"))   # [608, 560]
             repo_utilizatori.seteaza_parola(cur, _nucleu.hash_parola(date.parola), r["user_id"])
             repo_utilizatori.marcheaza_tokenul_folosit(cur, _uc_comun._hash_tok(date.token))
             # [deficiența 320, „Cont și echipă”] administratorul cabinetului află că asistentul invitat și-a activat contul

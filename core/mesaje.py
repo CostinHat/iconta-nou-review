@@ -56,7 +56,7 @@ MESAJ_COD = {
     "MESAJ_INEXISTENT": "Mesajul cerut nu există sau a fost șters.",
     "USER_INEXISTENT": "Utilizatorul cerut nu există.",
     # acces / control
-    "CABINET_SUSPENDAT": "Cabinetul este suspendat. Contactează furnizorul pentru reactivare.",
+    "CABINET_SUSPENDAT": "Cabinetul este suspendat.",   # [lotul 13, 645] motivul îl adaugă `uc_admin.text_suspendare`; fără linie de contact
     "AUTH_ESEC": "Autentificare eșuată. Verifică emailul și parola.",
     "PATRU_OCHI": ("Nu poți aproba o declarație pe care ai pregătit-o tu însuți "
                    "(control intern: pregătirea și validarea se fac de persoane diferite)."),

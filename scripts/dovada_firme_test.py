@@ -73,7 +73,9 @@ DOVEZI_IMPLICIT = os.path.join(RAD, "frontend_test", "dovada", "dovezi_lot11.jso
 #: Rândurile publice copiate, pe firmă (coloanele comune ambelor baze). Restul tabelelor cu `tenant_id` nu se copiază: chei / tokene
 #: (spv_token, reges_chei, api_chei), urme de acces și jurnale (audit_log, urme_portal, schimbari_email), cache-uri recalculate de aplicație
 #: (firma_rezumat, firma_sursa_versiune, supervizor_*).
-PUBLICE_PE_FIRMA = ("declaratii_depuse", "declaratii_coada", "firma_tip", "alerte_control_emise", "declaratii_in_asteptare")
+#: [lotul 13, 558] + `pachet_povestea`: povestea lunii aprobată pe producție (textul, starea, amprenta cifrelor) — dovada pe povestea veche.
+PUBLICE_PE_FIRMA = ("declaratii_depuse", "declaratii_coada", "firma_tip", "alerte_control_emise", "declaratii_in_asteptare",
+                    "pachet_povestea")
 #: Coloanele de utilizator copiate (identitatea de pe ecran și drepturile); NU: email, password_hash, telefon, sesiuni.
 COLOANE_UTILIZATOR = ("nume", "prenume", "functie", "rol", "activ", "parola_schimbata", "poate_pregati", "poate_valida", "poate_depune",
                       "nivel")

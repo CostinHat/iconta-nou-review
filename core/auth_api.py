@@ -135,9 +135,10 @@ def sesiune_pentru_user(conn, user_id, secret=None):
             "WHERE u.id = %s", (user_id,))
         u = cur.fetchone()
     if not u or not u["activ"]:
-        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "cont inexistent sau inactiv"}
+        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "Contul nu există sau nu e activ."}   # [lotul 13, 608] propoziție întreagă
     if u["accounting_firm_id"] and u["firma_activa"] is False:
-        return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat."}
+        # [lotul 13, 645] cabinetul suspendat: apelantul spune motivul ales (`uc_admin.mesaj_suspendare(cabinet_id)`)
+        return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat.", "cabinet_id": u["accounting_firm_id"]}
     token = emite_token(u, secret=secret)
     nume_tenant, tenant_are_cabinet = _tenant_client(conn, u)
     return {"ok": True, "token": token,
@@ -173,11 +174,13 @@ def login(conn, email, parola, secret=None):
         u = cur.fetchone()
 
     if not u or not u["activ"]:
-        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
-    if u["accounting_firm_id"] and u["firma_activa"] is False:
-        return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat. Contactați furnizorul."}
+        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "Email sau parolă greșite."}   # [lotul 13, 608] propoziție întreagă
+    # [lotul 13, 645] parola ÎNAINTEA suspendării: motivul suspendării (`uc_admin.mesaj_suspendare`) îl află numai cine știe parola, iar
+    # mesajul nu mai trimite la „furnizor” (decizia Costin 24.10.2026: motivul ales, fără linie de contact)
     if not verifica_parola_orice(parola, u["password_hash"]):
-        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
+        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "Email sau parolă greșite."}
+    if u["accounting_firm_id"] and u["firma_activa"] is False:
+        return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat.", "cabinet_id": u["accounting_firm_id"]}
 
     token = emite_token(u, secret=secret)
     # [[p90_client_bara]] pentru client: numele firmei lui (tenant) + daca e gestionat de cabinet
@@ -307,7 +310,7 @@ def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=
     """
     import psycopg2.extras as _E
     from core import chei_unice as _chei, repo_utilizatori as _ru
-    exista = {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "email deja înregistrat"}
+    exista = {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "Există deja un cont cu acest email. Autentifică-te sau folosește alt email."}   # [lotul 13, 608]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         if _ru.id_si_activ_dupa_email(cur, email):
             return exista

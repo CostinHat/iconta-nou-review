@@ -146,7 +146,11 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # [24.10.2026, lotul 12, comanda 12.3] 143 -> 145: `migrare_salariati_jurnal` (C133, pachetul sal3 — jurnalul corecturii scutirii pe fișa
     # salariatului) și `migrare_sablon_recurent_stare` (C109, alt pachet al aceleiași comenzi; numită aici fiindcă fișierul era revendicat
     # de sal3) — DDL idempotent, rulate o dată prin `core.migrari_registru`.
-    assert 40 <= len(mg) <= 145, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [25.10.2026, lotul 13, comanda 13.1, zona portal] 145 -> 147: `migrare_notificari_solicitare_client` (566, bifa „O solicitare nouă
+    # de la un client” pusă la loc pe bifele salvate cât implicitul era greșit) și `migrare_tva_incasare_perioade_optiune` (541, data
+    # notificării pe perioadele TVA la încasare — CF art.282 alin.(3^1) lit.a)); amândouă idempotente, rulate o dată prin
+    # `core.migrari_registru`. Migrările noi ale altor zone ale lotului adaugă fiecare +1 la integrare.
+    assert 40 <= len(mg) <= 147, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

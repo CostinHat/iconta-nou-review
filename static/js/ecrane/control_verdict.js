@@ -448,10 +448,22 @@ export function legaVerdict(corp, nav, firma) {
 
   // [deficiența 370, comanda Costin 8.2] un audit randat (verdictul păstrat sau cel tocmai rulat) — aceeași formă pentru primul și ultimul
   const htmlAudit = (a, eticheta) => {
+    // [lotul 13, deficiența 623, comanda Costin 13.1: „Audit de preluare: același paragraf repetat la fiecare rând”] constatările aceleiași
+    // verificări (aceeași etichetă, același temei) stau împreună: fiecare mesaj pe rândul lui, temeiul și remediile o singură dată — și pe
+    // auditurile păstrate dinainte (gruparea se face la afișare)
     const grup = (titlu, stare, cls) => {
       const arr = (a.constatari || []).filter((c) => c.stare === stare);
       if (!arr.length) return "";
-      return `<div class="cf-grup-titlu ${cls}">${titlu} (${arr.length})</div>${arr.map((c) => randA(Object.assign({}, c, { stare: stareAfisata(c.stare) }))).join("")}`;
+      const pe = new Map();
+      arr.forEach((c) => { const k = (c.eticheta || "") + "\u0000" + (c.temei || ""); if (!pe.has(k)) pe.set(k, []); pe.get(k).push(c); });
+      return `<div class="cf-grup-titlu ${cls}">${titlu} (${arr.length})</div>` + [...pe.values()].map((cs) => {
+        if (cs.length === 1) return randA(Object.assign({}, cs[0], { stare: stareAfisata(cs[0].stare) }));
+        const dot = (CULORI[stareAfisata(stare)] || CULORI.gri).dot;
+        const rem = [...new Map(cs.filter((c) => c.remediu).map((c) => [(c.remediu.cauza || "") + "|" + (c.remediu.actiune || ""), c.remediu])).values()];
+        return `<div class="cf-incr-rand cf-audit-grup">${cs.map((c) => `<div class="cf-incr-cap"><span class="cf-dot" style="background:${dot}"></span><span>${esc(c.mesaj || "")}</span></div>`).join("")}
+          <div class="cf-incr-temei">${esc(cs[0].temei || "")}</div>
+          ${rem.map((r) => `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}</div>`).join("")}</div>`;
+      }).join("");
     };
     // [deficiența 220] auditul nu e o restanță: „divergent” e galben și se spune pe nume (eticheta paletei ar fi zis „restanță”)
     const col = CULORI[stareAfisata(a.stare)] || CULORI.gri;

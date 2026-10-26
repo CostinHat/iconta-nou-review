@@ -332,8 +332,7 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
     necontate = necontate or []
     # [interdictia 32] DIN CE s-a comparat, spus o data si folosit in ambele temeiuri de mai jos.
     _de_unde = ("din rândurile salvate la depunere" if sursa_declarat == "depus"
-                else "recalculat acum — ce s-a depus nu s-a păstrat, deci se compară evidența de azi cu decontul "
-                     "care s-ar genera azi")
+                else "comparat cu decontul generat azi din evidență, nu cu cel depus")   # [lotul 13, 571] nu „nu s-a păstrat” (citit ca pierdere)
     # TVA deductibilă = R27_2 (TOTAL taxă deductibilă), NU R31_2 (care e doar AJUSTAREA
     # pro-rata, goala la pro_rata 100%). Bug dovedit 16.07.2026: pe tenant_002 D300
     # declara corect R27_2=210 (achizitie ORANGE), dar comparatia pe R31_2=0 vs 4426=210
@@ -533,8 +532,7 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=Tru
         dif = decl - contabil
         cod_txt = "+".join(coduri)
         de_unde = ("din declarația depusă, salvată la depunere" if sursa_declarat == "depus"
-                   else "recalculată acum — ce s-a depus nu s-a păstrat, deci se compară evidența de azi cu declarația "
-                        "care s-ar genera azi")
+                   else "comparată cu declarația generată azi din evidență, nu cu cea depusă")   # [lotul 13, 571]
         temei = (f"D112, obligațiile angajatorului cu codul {cod_txt} ({de_unde}), față de "
                  f"rulaj credit cont {cont} pe lună, numai note validate. "
                  f"Toleranță {_lei(tol)}: D112 rotunjește la leu, evidența ține bani "
@@ -800,9 +798,8 @@ def verifica_tva(conn, schema, an, luna):
 
         "limita": (("Verificat: D300 depus (rândurile salvate la depunere) față de conturile "
                     "4427/4426. " if sursa_declarat == "depus" else
-                    "Verificat: D300 regenerat acum din facturile lunii — nu s-a păstrat ce s-a "
-                    "depus, deci comparația e evidența de azi față de decontul care s-ar genera "
-                    "azi — față de conturile 4427/4426. ") +
+                    "Verificat: D300 generat azi din facturile lunii, nu cel depus — față de "   # [lotul 13, 571]
+                    "conturile 4427/4426. ") +
                    "Evidența = note validate; ciornele nu intră în rulaj. "
                    "Neverificat: dacă D300 depus efectiv la ANAF coincide cu cel calculat aici "
                    "(necesită SPV)."),

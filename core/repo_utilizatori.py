@@ -164,6 +164,15 @@ def leaga_contul_de_firma(cur, user_id, tenant_id):
                 (user_id, tenant_id))
 
 
+def stare_token_activare(cur, token_hash):
+    """[lotul 13, deficiența 560] De ce nu mai merge un link (`tokene_activare`): (folosit, expirat, are_parola) sau None când tokenul nu
+    există. `are_parola` = contul și-a setat parola (`parola_schimbata`), deci „intră cu emailul și parola” e un drum real."""
+    cur.execute("SELECT t.folosit, t.expira <= now(), COALESCE(u.parola_schimbata, false) FROM public.tokene_activare t "
+                "JOIN public.users u ON u.id = t.user_id WHERE t.token_hash = %s", (token_hash,))
+    r = cur.fetchone()
+    return (tuple(r.values()) if isinstance(r, dict) else tuple(r)) if r else None
+
+
 def marcheaza_tokenul_folosit(cur, token_hash):
     cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token_hash=%s",
                 (token_hash,))

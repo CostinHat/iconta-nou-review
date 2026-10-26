@@ -9,6 +9,13 @@ Fiecare funcție primește CURSORUL apelantului. Nu deschide conexiuni, nu comit
 """
 
 
+def nume_cabinet(cur, firm_id):
+    """[lotul 13, deficiența 560] Numele cabinetului (`accounting_firms.nume`), sau None."""
+    cur.execute("SELECT nume FROM public.accounting_firms WHERE id = %s", (firm_id,))
+    r = cur.fetchone()
+    return ((r["nume"] if isinstance(r, dict) else r[0]) or "").strip() or None if r else None
+
+
 def intocmitorul(cur, firm_id):
     """(calit_intocmit, nume_intocmit, cif_intocmit, nri_intocmit) ale cabinetului, sau None."""
     cur.execute("SELECT calit_intocmit, nume_intocmit, cif_intocmit, nri_intocmit FROM public.accounting_firms WHERE id = %s",

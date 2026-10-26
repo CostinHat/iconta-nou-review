@@ -3259,6 +3259,21 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.elemente_salariale (
     CONSTRAINT elemente_salariale_ore_ck CHECK ((tip = 'ore_suplimentare') = (ore IS NOT NULL))
 );
 CREATE INDEX IF NOT EXISTS elemente_salariale_luna_ix ON TENANT_PLACEHOLDER.elemente_salariale (an, luna, salariat_id);
+-- [lotul 13, 679] sporul orelor suplimentare: suma = ore x tariful orar x (100% + spor) (mirror core/migrare_lot13_salarii.py)
+ALTER TABLE TENANT_PLACEHOLDER.elemente_salariale ADD COLUMN IF NOT EXISTS spor_procent numeric(6,2) CHECK (spor_procent IS NULL OR spor_procent >= 0);
+-- [lotul 13, 670 b] excedentul de diurnă, venit asimilat salariilor (CF art.76 alin.(2) lit.k); DDL-ul în core/diurna_salariat.py
+-- (mirror core/migrare_lot13_salarii.py)
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.diurna_excedent (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    salariat_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.salariati(id) ON DELETE RESTRICT,
+    an integer NOT NULL,
+    luna integer NOT NULL CHECK (luna BETWEEN 1 AND 12),
+    suma numeric(12,2) NOT NULL CHECK (suma > 0),
+    referinta text NOT NULL CHECK (length(btrim(referinta)) > 0),
+    descriere text,
+    creat_la timestamp with time zone NOT NULL DEFAULT now(),
+    CONSTRAINT diurna_excedent_referinta_uniq UNIQUE (referinta)
+);
 
 -- [08.10.2026, decizia Costin §6 pct.4] luna preluării, editabilă în Date firmă (mirror core/migrare_decizii_0810_s6.py)
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS luna_preluare date;
@@ -3685,6 +3700,9 @@ ALTER TABLE TENANT_PLACEHOLDER.solduri_initiale ADD COLUMN IF NOT EXISTS rulaj_a
 -- [deficiența 428, lotul 10, 20.10.2026] perioadele sistemului TVA la încasare (CF art.282 alin.(3), (3^1), (5), (7)).
 -- Firmele existente: core/migrare_tva_incasare_perioade.py.
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.tva_incasare_perioade (id serial PRIMARY KEY, de_la date NOT NULL, pana_la date, sursa text NOT NULL DEFAULT 'manual' CHECK (sursa IN ('manual', 'anaf')), verificat_anaf_la timestamptz, stare_anaf text, creat_la timestamptz NOT NULL DEFAULT now(), CHECK (pana_la IS NULL OR pana_la >= de_la));
+-- [deficiența 541, lotul 13, 25.10.2026] data notificării (opțiunii) pe perioadă — CF art.282 alin.(3^1) lit.a). Firmele existente:
+-- core/migrare_tva_incasare_perioade_optiune.py.
+ALTER TABLE TENANT_PLACEHOLDER.tva_incasare_perioade ADD COLUMN IF NOT EXISTS data_optiune date;
 
 -- [deficiența 429, lotul 10, 20.10.2026] reevaluarea lunară a soldurilor în valută (OMFP 1802/2014 pct.325), un rând pe element.
 -- Firmele existente: core/migrare_reevaluari_valuta.py.
@@ -3803,6 +3821,10 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.produse_cota_jurnal (
 -- [tara_sablon_recurent_v1, lotul 12, C160] țara clientului pe șablonul facturii recurente — SURSA: core/migrare_tara_sablon_recurent.py
 ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente ADD COLUMN IF NOT EXISTS tert_tara text DEFAULT 'RO'::text NOT NULL;
 -- [tara_sablon_recurent_v1] sfârșit
+
+-- [tva_preluat_de_verificat_v1, lotul 13, 252] TVA-ul facturii deschise preluate, calculat la cota standard — SURSA: core/migrare_coloana_tva_preluat.py
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS tva_de_verificat boolean DEFAULT false NOT NULL;
+-- [tva_preluat_de_verificat_v1] sfârșit
 
 -- [salariati_jurnal_v1, lotul 12, C133] corectura scutirii de contribuția minimă pe fișa salariatului, consemnată — SURSA: core/migrare_salariati_jurnal.py
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.salariati_jurnal (

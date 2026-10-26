@@ -398,7 +398,23 @@ def test_numarul_de_instructiuni_se_conserva():
     #   neutre: repo_efactura.marcheaza_primita_validata, repo_facturi.actualizeaza_clasificarea ×2 / actualizeaza_destinatii_linii /
     #     actualizeaza_conturi_linii mutate din `uc_tenants.factura_primita_valideaza` în `uc_factura_primita.valideaza` (477, drumul
     #     comun cu factura primită introdusă de mână).
-    assert _apeluri_catre_repository() == 386
+    # [lotul 13, zona admin] 386 -> 397, cu apelurile numite (toate în `uc_admin`, diferența față de a632ffa2, apel cu apel):
+    #   645 suspendarea cu motiv și jurnal: + repo_admin.numele_cabinetului ×2 (suspendare, reactivare), + suspendarea_deschisa ×2 (o
+    #     suspendare deschisă; textul de la logare), + deschide_suspendarea, + adminii_cabinetului (emailul), + scrie_emailurile_suspendarii,
+    #     + inchide_suspendarea (reactivarea), + jurnalul_suspendarilor (fișa) — citiri / scrieri NOI;
+    #   646 anunțurile pe trimiteri: + anunturi_trimise, + destinatarii_trimiterii, + retrage_trimiterea, + leaga_trimiterea — NOI;
+    #     − repo_admin.adauga_anunt ×2: cele trei ramuri (cabinete alese / cabinetul unic / „nimic = toate”) au devenit una (destinatarii
+    #     expliciți), deci un singur apel.
+    # [lotul 13, comanda 13.1, zona portal] +6 (la integrare: 397 -> 403), cu apelurile numite (diferența față de a632ffa2, apel cu apel):
+    #   + repo_portal.facturi_deschise_validate ×5 (uc_portal.portal_kpi ×2, portal_cashflow ×2, scadentar_client) — 559: „De încasat” /
+    #     „De plătit”, previziunea și Scadențarul clientului pornesc din aceeași bază (facturile cu nota validată, pe monedă); citire NOUĂ;
+    #   + repo_firma_profil.fapte_preluare (uc_portal._preluare) — 553 / 558: luna de început a evidenței (prima lună nu se compară cu una
+    #     dinaintea evidenței); citire NOUĂ;
+    #   + repo_utilizatori.stare_token_activare (uc_public) — 560: linkul de activare deja folosit spune „Contul e deja activat — intră cu
+    #     emailul și parola”; citire NOUĂ;
+    #   − repo_facturi.pentru_cashflow (uc_portal.portal_cashflow) — înlocuit de `repo_portal.facturi_deschise_validate` (559, C113).
+    # Apelurile noi ale altor zone ale lotului se adaugă la integrare, fiecare numit.
+    assert _apeluri_catre_repository() == 403
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

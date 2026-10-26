@@ -220,9 +220,13 @@ def antet_raport(nume_firma, cui, acum=None, platitor_tva=None):
     return "%s%sGenerată la %s" % (firma, " — " if firma else "", data_ro(acum, "cu_ora"))
 
 
-def balanta_pdf(conn, schema, an, luna, nume_firma=""):
+def balanta_pdf(conn, schema, an, luna, nume_firma="", note_client=None):
     """Design System cap.7: reportlab Table cu colWidths explicite (ca factura_pdf.py),
-    nu drawString manual. Sume in format romanesc via pdf_util.bani()."""
+    nu drawString manual. Sume in format romanesc via pdf_util.bani().
+
+    [lotul 13, deficiențele 557 + 556] `note_client` (listă de propoziții, din `uc_portal._note_balanta_client`) = balanța e pentru CLIENT:
+    rândurile de sub antet sunt ale lui („Provizorie: luna … nu e încă închisă de contabil…”, „Evidența în iConta.eu începe cu …”), în
+    locul celor pentru contabil (ciornele nevalidate, paragraful rulajelor preluate cu „Import date › Solduri inițiale”). Tabelul e același."""
     from reportlab.lib.pagesizes import A4 as _A4, landscape as _landscape
     from reportlab.lib.units import mm as _mm
     from reportlab.lib import colors as _colors
@@ -264,10 +268,12 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
         Paragraph(f"Balan\u021ba de verificare \u2014 {luna:02d}/{an}", st_titlu),
         # [retest 08.10 pct.18, DS cap.7] „PDF balanță: CUI-ul firmei și data generării în antet.”
         Paragraph(antet_raport(nume_firma, _cui, platitor_tva=_platitor), st_meta),
+    ] + ([Paragraph(n, st_meta) for n in note_client] if note_client is not None else [
         Paragraph("Cuprinde numai notele validate." + (" %s." % _cate(
             _n_ci, "ciorn\u0103 nevalidat\u0103 nu este inclus\u0103", "ciorne nevalidate nu sunt incluse") if _n_ci else ""), st_meta),
-    ]
-    _av = avertisment_balanta(conn, schema, an)   # [lotul 10, 425] rulajele dinainte de preluare lipsesc: se spune și pe hârtie
+    ])
+    # [lotul 10, 425] rulajele dinainte de preluare lipsesc: se spune și pe hârtie — contabilului; clientul are nota lui (557)
+    _av = avertisment_balanta(conn, schema, an) if note_client is None else None
     if _av:
         el.append(Paragraph(_av["motiv"], st_meta))
     el.append(Spacer(1, 8))
@@ -303,12 +309,3 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
     doc.build(el)
     return buf.getvalue()
 
-def declaratii_depuse(conn, tenant_id):
-    with conn.cursor() as cur:
-        cur.execute("""
-            SELECT an, luna, tip, data_depunere
-            FROM public.declaratii_depuse_curente
-            WHERE tenant_id = %s
-            ORDER BY an DESC, luna DESC, tip
-        """, (tenant_id,))
-        return [{"an": a, "luna": l, "tip": t, "data": d.isoformat()} for a, l, t, d in cur.fetchall()]

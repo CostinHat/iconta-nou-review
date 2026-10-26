@@ -222,13 +222,19 @@ def asistent_creeaza(date, ctx):
         with conn.cursor() as cur:
             tok = _sec.token_urlsafe(32)
             _uc_comun._pune_token(cur, tok, uid, "48 hours")
+            from core import repo_cabinet as _rcab
+            nume_cab = _rcab.nume_cabinet(cur, ctx["firm"])
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#activare=" + tok
-    html = ("<p>Bună,</p><p>Ai fost adăugat ca asistent în cabinetul tău pe iConta.eu.</p>"
+    # [lotul 13, 560] „Emailul asistentului spune «în cabinetul tău» fără numele cabinetului”
+    html = (("<p>Bună,</p><p>Ai fost adăugat ca asistent în cabinetul <b>%s</b> pe iConta.eu.</p>" % _esc_html(nume_cab)) if nume_cab else
+            "<p>Bună,</p><p>Ai fost adăugat ca asistent pe iConta.eu.</p>") + (
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activează contul</a></p>"
             "<p>După activare, intră cu emailul <b>%s</b> și parola setată. Linkul e valabil 48 de ore.</p>") % (link, _esc_html(email))
     # [R73] ALERTA: fara linkul de activare, asistentul nu are cont.
-    if _obs.trimite_email_html_sau_semnaleaza("email invitatie asistent", email, "Acces asistent iConta.eu", html, alerta=True):
+    # [lotul 13, 560 / 268] tranzacțional: pe Postmark (fără „Dezabonează-te”), Brevo rezervă
+    if _obs.trimite_email_html_sau_semnaleaza("email invitatie asistent", email, "Acces asistent iConta.eu" + ((" — " + nume_cab) if nume_cab else ""),
+                                              html, alerta=True, postmark=True):
         return {"ok": True, "user_id": uid}
     # [598, lotul 12 — clasa: eșecul unui canal extern spus contabilului, cu ce face aplicația în loc] ecranul spunea „Invitație trimisă”
     # și când emailul n-a plecat: contul e creat, linkul nu a ajuns la coleg

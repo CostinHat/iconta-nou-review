@@ -215,37 +215,36 @@ def portal_declaratii(tenant_id, ctx):
 def portal_povesti(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/portal/povesti`; docstringul ei a ramas in stratul HTTP."""
     t = _uc_comun._tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
+    with db.get_conn(t["schema_name"]) as conn:   # [C201] o singură conexiune: poveștile (`public.*`) și cifrele lunii (schema firmei)
         rows = _pachete.lista_povesti_aprobate(conn, t["id"])
-        with db.get_conn(t["schema_name"]) as conn_s:
-            with conn_s.cursor() as cur:
-                preluare = _preluare(cur)
-            for r in rows:
-                an, luna = r["an"], r["luna"]
-                an_p, luna_p = (an - 1, 12) if luna == 1 else (an, luna - 1)
-                cur_rz = _pachete.rezumat_luna(conn_s, conn, t["id"], an, luna)
-                r["venituri"] = cur_rz["venituri"]
-                r["cheltuieli"] = cur_rz["cheltuieli"]
-                r["rezultat"] = cur_rz["rezultat"]
-                r["tip"] = cur_rz["tip"]
-                # [lotul 13, 558] „Povestea pe septembrie (aprobată înainte de reparația 288) spune tot «încasări de 1.000 de lei» —
-                # poveștile trimise cu termeni greșiți se regenerează sau se marchează.” Textul care spune altceva decât cifrele lunii
-                # (`pachete_api.abateri_termeni`: termen, sumă, felul rezultatului) sau aprobat pe alte cifre (`depasita`, 314) nu ajunge
-                # la client: rândul îl marchează „retras”, cu cifrele lunii; contabilul îl vede depășit și îl reface.
-                abateri = [a for a in _pachete.abateri_termeni(r["text"], cur_rz)
-                           if not a.startswith(_pachete.ABATERI_CU_DECIZIE)]   # trecute de contabil cu decizie expresă (288c): rămân
-                depasita = _pachete.get_poveste(conn, t["id"], an, luna, rz=cur_rz).get("depasita")
-                r["retrasa"] = bool(abateri or depasita)
-                if r["retrasa"]:
-                    r["text"] = None
-                # [558] „«−13.713 față de luna anterioară» compară cu august, care în iConta nu există; la prima lună nu se face
-                # comparație”: luna dinaintea preluării nu are evidență în iConta.eu (`luna_preluare.efectiva`)
-                if preluare and (an_p, luna_p) < tuple(preluare):
-                    r["rezultat_anterior"] = r["diferenta"] = None
-                else:
-                    prev_rz = _pachete.rezumat_luna(conn_s, conn, t["id"], an_p, luna_p)
-                    r["rezultat_anterior"] = prev_rz["rezultat"]
-                    r["diferenta"] = round(cur_rz["rezultat"] - prev_rz["rezultat"], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+        with conn.cursor() as cur:
+            preluare = _preluare(cur)
+        for r in rows:
+            an, luna = r["an"], r["luna"]
+            an_p, luna_p = (an - 1, 12) if luna == 1 else (an, luna - 1)
+            cur_rz = _pachete.rezumat_luna(conn, conn, t["id"], an, luna)
+            r["venituri"] = cur_rz["venituri"]
+            r["cheltuieli"] = cur_rz["cheltuieli"]
+            r["rezultat"] = cur_rz["rezultat"]
+            r["tip"] = cur_rz["tip"]
+            # [lotul 13, 558] „Povestea pe septembrie (aprobată înainte de reparația 288) spune tot «încasări de 1.000 de lei» —
+            # poveștile trimise cu termeni greșiți se regenerează sau se marchează.” Textul care spune altceva decât cifrele lunii
+            # (`pachete_api.abateri_termeni`: termen, sumă, felul rezultatului) sau aprobat pe alte cifre (`depasita`, 314) nu ajunge
+            # la client: rândul îl marchează „retras”, cu cifrele lunii; contabilul îl vede depășit și îl reface.
+            abateri = [a for a in _pachete.abateri_termeni(r["text"], cur_rz)
+                       if not a.startswith(_pachete.ABATERI_CU_DECIZIE)]   # trecute de contabil cu decizie expresă (288c): rămân
+            depasita = _pachete.get_poveste(conn, t["id"], an, luna, rz=cur_rz).get("depasita")
+            r["retrasa"] = bool(abateri or depasita)
+            if r["retrasa"]:
+                r["text"] = None
+            # [558] „«−13.713 față de luna anterioară» compară cu august, care în iConta nu există; la prima lună nu se face
+            # comparație”: luna dinaintea preluării nu are evidență în iConta.eu (`luna_preluare.efectiva`)
+            if preluare and (an_p, luna_p) < tuple(preluare):
+                r["rezultat_anterior"] = r["diferenta"] = None
+            else:
+                prev_rz = _pachete.rezumat_luna(conn, conn, t["id"], an_p, luna_p)
+                r["rezultat_anterior"] = prev_rz["rezultat"]
+                r["diferenta"] = round(cur_rz["rezultat"] - prev_rz["rezultat"], 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     return {"povesti": rows}
 
 
@@ -339,16 +338,15 @@ def portal_acasa(tenant_id, ctx):
     schema = t["schema_name"]
     azi = _d.today()
     balante = {}
-    with db.get_conn(schema) as conn_schema:
-        with db.get_conn() as conn_public:
-            rez = control_fiscal_api.evalueaza_firma(conn_schema, conn_public, t["id"], schema)
+    with db.get_conn(schema) as conn_schema:   # [C201] o singură conexiune (`evalueaza_firma`: conn_public = conn_schema)
+        rez = control_fiscal_api.evalueaza_firma(conn_schema, conn_schema, t["id"], schema)
 
-            def balanta_la(an, luna):
-                if (an, luna) not in balante:
-                    balante[(an, luna)] = documente_api.balanta(conn_public, schema, int(an), int(luna))
-                return balante[(an, luna)]
-            regim = ((portal_api.date_firma(conn_schema, schema) or {}).get("regim_fiscal"))
-            plati = de_platit(rez, balanta_la, regim, azi)
+        def balanta_la(an, luna):
+            if (an, luna) not in balante:
+                balante[(an, luna)] = documente_api.balanta(conn_schema, schema, int(an), int(luna))
+            return balante[(an, luna)]
+        regim = ((portal_api.date_firma(conn_schema, schema) or {}).get("regim_fiscal"))
+        plati = de_platit(rez, balanta_la, regim, azi)
     return {
         "tenant_id": t["id"],
         "nume": t.get("nume"),

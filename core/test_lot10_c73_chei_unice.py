@@ -1019,6 +1019,10 @@ def test_clasificarea_facturii_nu_atinge_cheile():
 # ============================================================
 #: scrieri pe o cheie unică a schemei `public` care NU pot dubla, fiecare cu motivul (și, unde se poate, premisa verificată mecanic)
 EXCEPTII_PUBLIC = {
+    # [lotul 13, 645] reactivarea pune `reactivat_la` pe suspendarea deschisă: rândul IESE din indexul unic parțial
+    # `suspendari_cabinet_deschisa` (`WHERE reactivat_la IS NULL`), deci nu poate produce o dublură
+    ("core/repo_admin.py", "inchide_suspendarea", "suspendari_cabinet"):
+        "UPDATE care scoate rândul din indexul unic parțial (`reactivat_la` devine nenul): o dublură n-are drum",
     ("core/api_public.py", "genereaza", "api_chei"):
         "`cheie_hash` = sha256 al unei chei noi `secrets.token_urlsafe(32)` (256 de biți aleatori): o coliziune n-are drum "
         "(`test_tokenurile_publice_sunt_aleatoare`)",
@@ -1397,7 +1401,7 @@ def test_inregistrarea_cu_adresa_luata_la_cursa(pub):
     pub.orb["SELECT id, activ FROM public.users WHERE email=%s"] = None
     r = auth_api.inregistreaza_cabinet(pub, "u3.cabinet@exemplu.test", "Parola-U3-lunga!", "U3 CABINET NOU")
     print("C73/U3 înregistrare:", r)
-    assert r == {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "email deja înregistrat"}, r
+    assert r == {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "Există deja un cont cu acest email. Autentifică-te sau folosește alt email."}, r   # [lotul 13, 608]
     assert _sql(pub, "SELECT count(*) FROM public.accounting_firms WHERE nume = 'U3 CABINET NOU'") == [(0,)]
     # fără cursă: înregistrarea merge (savepoint-ul nu strică drumul obișnuit)
     r = auth_api.inregistreaza_cabinet(pub, "u3.altul@exemplu.test", "Parola-U3-lunga!", "U3 CABINET NOU")

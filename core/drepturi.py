@@ -116,7 +116,7 @@ def verifica(conn, ctx, nivel, tenant_id=None):
     if rol in _TREC_MEREU:
         return None
     if rol != "angajat":
-        raise _erori.FaraDrept(MESAJ[ADMIN] if nivel == ADMIN else "clienții folosesc portalul, nu rutele de cabinet")
+        raise _erori.FaraDrept(MESAJ[ADMIN] if nivel == ADMIN else "Contul de client intră în portal, nu în aplicația cabinetului.")   # [lotul 13, 608]
     if nivel == ADMIN:
         raise _erori.FaraDrept(MESAJ[ADMIN])
     if tenant_id is not None:

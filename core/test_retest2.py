@@ -286,7 +286,7 @@ def test_pct11_declaratia_nedepusa_cu_termen_in_luna_e_avertisment(monkeypatch):
         "lipsa": [{"tip": "d300", "an": 2026, "luna": 8, "perioada": "08/2026", "termen": "2026-09-25"}],
         "urmarit": [{"tip": "d112", "an": 2026, "luna": 9, "perioada": "09/2026", "termen": "2026-10-25"},
                     {"tip": "d112", "an": 2026, "luna": 10, "perioada": "10/2026", "termen": "2026-11-25"}]})
-    r = uc_comun.declaratii_nedepuse_cu_termen_in_luna("x", 2026, 9, azi=datetime.date(2026, 10, 9))
+    r = uc_comun.declaratii_nedepuse_cu_termen_in_luna(_C(), "x", 2026, 9, azi=datetime.date(2026, 10, 9))   # [C201] conexiunea închiderii
     assert r == [("d300", "D300 pentru 08/2026, cu termen pe 25.09.2026, nu e depusă — depune-o sau marchează-o depusă în Control fiscal"),
                  ("d112", "D112 pentru 09/2026, cu termen pe 25.10.2026, nu e depusă — depune-o sau marchează-o depusă în Control fiscal")]
 

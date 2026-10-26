@@ -368,33 +368,44 @@ def controale_inchidere(conn, schema, an, luna):
             _bl = _rv.blocaj_inchidere(cur, schema, an, luna)
         if _bl:
             blocaje.append(_ctl("REEVALUARE_VALUTA", _bl[0], elemente=_bl[1]))
-        semnale += [_ctl("DECLARATIE_NEDEPUSA", m, tip=t) for t, m in declaratii_nedepuse_cu_termen_in_luna(schema, an, luna)]
+        semnale += [_ctl("DECLARATIE_NEDEPUSA", m, tip=t) for t, m in declaratii_nedepuse_cu_termen_in_luna(conn, schema, an, luna)]
     return {"blocaje": blocaje, "semnale": semnale}
 
 
-def declaratii_nedepuse_cu_termen_in_luna(schema, an, luna, azi=None):
+def declaratii_nedepuse_cu_termen_in_luna(conn, schema, an, luna, azi=None):
     """[(tip, mesaj)] — [Retest 2 pct.11, comanda Costin 09.10.2026] „O declarație care are termenul în luna respectivă și nu e
     depusă apare ca avertisment.” Avertisment, nu blocaj: depunerea e un act față de ANAF, nu o înregistrare a lunii. Sursa e
     semaforul Control fiscal (`control_fiscal_api.evalueaza_firma`), aceeași listă de restanțe, filtrată pe lună; un eșec de calcul
     se spune ca semnal, nu se înghite.
     [retestul Costin 09.10, deficiența 181: „pe F2 09/2026 nu apare avertismentul pentru declarațiile nedepuse”] Pe lângă termenul din
     lună, intră și declarațiile PERIOADEI care se încheie cu luna (D300 / D394 / D406 pe T3/2026 la închiderea lui 09/2026): termenul
-    lor e în luna următoare, deci filtrul pe termen singur nu le vedea niciodată la închidere."""
+    lor e în luna următoare, deci filtrul pe termen singur nu le vedea niciodată la închidere.
+    [C201, lotul 13] Pe conexiunea închiderii (`conn`, cu căutarea pe schema firmei), nu pe două conexiuni noi deschise cât închiderea
+    o ține pe a ei: o cerere care ține două conexiuni face, cu o operație de structură pe aceeași firmă, un blocaj pe care PostgreSQL nu-l
+    vede. Semaforul rulează în savepoint-ul lui: o eroare se întoarce la savepoint (și se spune ca semnal), tranzacția apelantului rămâne
+    întreagă."""
     import calendar as _cal
     import datetime as _dt
     from core import control_fiscal_api as _cf
     from core.common import azi_ro
     from core.pdf_util import data_ro as _data_ro
     inceput, sfarsit = _dt.date(an, luna, 1), _dt.date(an, luna, _cal.monthrange(an, luna)[1])
+    from core import repo_tenants as _rt, tranzactie as _tx
     try:
-        with db.get_conn() as cp:
-            with cp.cursor() as cur:
-                from core import repo_tenants as _rt
+        with conn.cursor() as cur:
+            _tx.savepoint_semafor(cur)
+        try:
+            with conn.cursor() as cur:
                 r = _rt.dupa_numele_schemei(cur, schema)
-            if not r:
-                return []
-            with db.get_conn(schema) as cs:
-                ev = _cf.evalueaza_firma(cs, cp, r[0], schema, azi or azi_ro(), cu_reconciliere=False)
+            ev = _cf.evalueaza_firma(conn, conn, r[0], schema, azi or azi_ro(), cu_reconciliere=False) if r else None
+        except Exception:
+            with conn.cursor() as cur:
+                _tx.intoarce_la_semafor(cur)
+            raise
+        with conn.cursor() as cur:
+            _tx.elibereaza_semafor(cur)
+        if ev is None:
+            return []
     except Exception as e:  # noqa: BLE001 — se spune, nu se tace (CLAUDE.md: try/except tăcut e mai grav decât o cădere)
         return [("?", "nu se pot verifica declarațiile cu termen în %02d/%04d: %s" % (luna, an, _perioada.text_exceptie(e).split("\n")[0][:160]))]
     out = []
@@ -771,17 +782,35 @@ def _cer_admin_cabinet(ctx):
     return ctx["firm"]
 
 
-def _are_permisiune(ctx, flag):
-    """True dacă userul curent are flagul (poate_valida / poate_depune).
-    superadmin trece mereu. Citește direct din public.users."""
+def _permisiune_fara_baza(ctx, flag):
+    """True / False când răspunsul nu cere baza (superadmin trece mereu; un flag necunoscut nu se are), altfel None."""
     if ctx.get("rol") == "superadmin":
         return True
     if flag not in ("poate_pregati", "poate_valida", "poate_depune"):
         return False
+    return None
+
+
+def _are_permisiune(ctx, flag):
+    """True dacă userul curent are flagul (poate_valida / poate_depune).
+    superadmin trece mereu. Citește direct din public.users, pe o conexiune proprie — din interiorul unei tranzacții se cheamă
+    `_are_permisiune_pe` (C201)."""
+    r = _permisiune_fara_baza(ctx, flag)
+    if r is not None:
+        return r
     with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            r = _repo.select_public_13(cur, flag, ctx)
-            return bool(r and r[0])
+        return _are_permisiune_pe(conn, ctx, flag)
+
+
+def _are_permisiune_pe(conn, ctx, flag):
+    """`_are_permisiune` pe conexiunea pe care cererea o ține deja (`public.users`, calificat). [C201, lotul 13] O cerere care întreba
+    permisiunea din interiorul propriei tranzacții ținea două conexiuni deodată."""
+    r = _permisiune_fara_baza(ctx, flag)
+    if r is not None:
+        return r
+    with conn.cursor() as cur:
+        r = _repo.select_public_13(cur, flag, ctx)
+        return bool(r and r[0])
 
 
 def _perioada_an(de, pana):

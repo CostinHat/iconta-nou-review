@@ -55,16 +55,17 @@ def ruleaza(trimite=None, **override):
     de_trimis = []
     with db.get_conn() as c:
         flagged = detecteaza(c, p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"])
-        for u in flagged:
-            cheie = "acces_anormal_user_%s" % u["user_id"]
-            if _poate_trimite(cheie, p["dedup_min"]):
-                subiect = "Acces anormal: utilizatorul %s (%s firme, %s acțiuni în %s min)" % (   # [317, lotul 12] cu diacritice
-                    u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"])
-                mesaj = ("Semnal automat (art.33): utilizatorul %s a atins %s firme distincte și %s acțiuni "
-                         "în ultimele %s min (praguri %s firme / %s acțiuni). Nu s-a blocat nimic. Verifică manual."
-                         % (u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"]))
-                de_trimis.append((subiect, mesaj))
-        # [P4] `c` nu mai scrie nimic: detectia e o citire, iar rezervarea si-a luat tranzactia ei.
+    # [P4] `c` nu scria nimic: detectia e o citire, iar rezervarea isi ia tranzactia ei. [C201, lotul 13] Deci citirea se inchide
+    # INAINTE de rezervari: cat timp `c` era tinut, fiecare `_poate_trimite` era a doua conexiune a aceluiasi fir.
+    for u in flagged:
+        cheie = "acces_anormal_user_%s" % u["user_id"]
+        if _poate_trimite(cheie, p["dedup_min"]):
+            subiect = "Acces anormal: utilizatorul %s (%s firme, %s acțiuni în %s min)" % (   # [317, lotul 12] cu diacritice
+                u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"])
+            mesaj = ("Semnal automat (art.33): utilizatorul %s a atins %s firme distincte și %s acțiuni "
+                     "în ultimele %s min (praguri %s firme / %s acțiuni). Nu s-a blocat nimic. Verifică manual."
+                     % (u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"]))
+            de_trimis.append((subiect, mesaj))
     # [P5 val 3, 11.09.2026] TRIMITEREA, AICI: apelul la Brevo are termen de 10 s, iar forma
     # dinainte il facea in bucla, cu conexiunea in mana — cate 10 s pentru fiecare alerta. Ordinea
     # ramane aceeasi: rezervarea de dedup s-a facut deja mai sus, deci nici numarul de alerte, nici

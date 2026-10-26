@@ -105,6 +105,8 @@ DUPA = {
     "core/migrare_avans_nir_ajustare_nota.py": ("core/migrare_ajustari_fiscale.py",),
     "core/migrare_borderou_tip_vechi.py": ("core/migrare_punte_stoc.py", "core/migrare_reguli_fond.py", "core/migrare_tert_platitor_tva.py"),
     "core/migrare_canal_notificari.py": ("core/migrare_inregistrare_libera.py",),
+    # [lotul 13, 566] bifa „solicitare_client” pusă la loc citește `users.notificari_tipuri` / `notificari_salvate_la`
+    "core/migrare_notificari_solicitare_client.py": ("core/migrare_canal_notificari.py",),
     "core/migrare_ciorne_proprii.py": ("core/migrare_nr_curent_note.py", "core/migrare_validare_note.py"),
     "core/migrare_cui_fara_ro.py": ("core/migrare_efactura_primite.py", "core/migrare_intocmitor_bilant.py", "core/migrare_partener_linie.py",
                                     "core/migrare_tert_platitor_tva.py"),
@@ -121,6 +123,7 @@ DUPA = {
     "core/migrare_reguli_fond_2.py": ("core/migrare_declaratii_depuse_randuri.py", "core/migrare_declaratii_depuse_versiune.py"),
     "core/migrare_retest2.py": ("core/migrare_validare_note.py",),
     "core/migrare_retest_0810.py": ("core/migrare_metoda_stoc.py",),
+    "core/migrare_tva_incasare_perioade_optiune.py": ("core/migrare_tva_incasare_perioade.py",),   # [lotul 13, 541] ALTER pe tabela ei
     "core/migrare_schema_seq.py": ("core/migrare_firme_scoase.py",),
     "core/migrare_serie_nr_descrieri.py": ("core/migrare_compensari_afiliat.py", "core/migrare_punte_stoc.py", "core/migrare_reguli_fond.py"),
 }

@@ -55,7 +55,7 @@ _JARGON = re.compile(r"\b(?:persistat[eăa]?|amprent[aăei]+|payload|endpoint|ha
 #: lui `cate` (JS și Python) să fie aici. Acordul greșit pe ecran: „1 <plural>” și un număr terminat în 00 sau 20–99 fără „de”.
 PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "operațiuni", "luni", "zile", "rânduri",
            "declarații", "firme", "linii", "documente", "perioade", "salariați", "articole", "CNP-uri", "CUI-uri", "achiziții", "activi",
-           "activități", "administratori", "adrese", "angajați", "ani", "apariții", "asistenți", "asociați", "beneficiari",
+           "activități", "administratori", "adrese", "utilizatori", "angajați", "ani", "apariții", "asistenți", "asociați", "beneficiari",
            "bonuri", "bunuri", "cabinete", "caractere", "cifre", "ciorne", "constatări", "corecturi", "depășite", "câmpuri", "datorate", "deja", "depuse",
            "destinatari", "e-Facturi", "erau", "avertismente", "evenimente", "existente", "eșuate", "fișiere", "funcții", "ieșiri", "imagini", "imobile",
            "importate", "ingrediente", "intrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "necunoscute",

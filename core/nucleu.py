@@ -99,13 +99,13 @@ def verifica_token(token, secret, acum=None):
     try:
         corp, sig_b64 = token.split(".")
     except (ValueError, AttributeError):
-        return _rezultat(False, "TOKEN_INVALID", "format token incorect")
+        return _rezultat(False, "TOKEN_INVALID", "Sesiunea nu e validă: autentifică-te din nou.")   # [lotul 13, 608]
     asteptat = hmac.new(secret.encode(), corp.encode(), hashlib.sha256).digest()
     if not hmac.compare_digest(_b64d(sig_b64), asteptat):
-        return _rezultat(False, "TOKEN_INVALID", "semnătură invalidă (token modificat)")
+        return _rezultat(False, "TOKEN_INVALID", "Sesiunea nu e validă: autentifică-te din nou.")
     payload = json.loads(_b64d(corp))
     if payload.get("exp", 0) < acum:
-        return _rezultat(False, "TOKEN_EXPIRAT", "token expirat")
+        return _rezultat(False, "TOKEN_EXPIRAT", "Sesiunea a expirat: autentifică-te din nou.")
     return _rezultat(True, payload=payload)
 
 

@@ -1049,7 +1049,9 @@ REGISTRU = (
     D("core/salariu_istoric.py", REPOSITORY, None,
       "«istoricul salariului de baza pe contract (PASUL 2, forma 1)» — acces la date",
       "PLAN_HARDENING.md:842 — depozitul e singurul care stie SQL si scheme"),
-    D("core/sinteza_zilnica.py", REPOSITORY, None,
+    # [lotul 13, 565] SQL-ul sintezei a trecut în depozitul ei; `core/sinteza_zilnica.py` (jobul de cron, își deschide conexiunea din
+    # pool) nu mai conține SQL
+    D("core/repo_sinteza_zilnica.py", REPOSITORY, None,
       "«sinteza zilnica a activitatii din cabinet, trimisa seara patronului (admin_firma) pe email-ul de login» — acces la date",
       "PLAN_HARDENING.md:842 — depozitul e singurul care stie SQL si scheme"),
     D("core/solduri_api.py", REPOSITORY, None,

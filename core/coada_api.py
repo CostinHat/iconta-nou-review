@@ -204,10 +204,18 @@ def sql_cheie_pregatire(alias=""):
 # Erori — echipa, centralizatorul, jurnalul, Capacitate, sinteza zilnică, tiparele). Gărzi: `core/test_lot11_a458_erori_echipa.py`
 # (orice numărătoare de respingeri pe declarații o folosește), `core/test_lot11_t2_inlocuiri.py`.
 def sql_inlocuita(a):
-    """Expresia SQL (bool) „rândul `a` din `public.declaratii_coada` a fost înlocuit de declarația generată din nou, nu respins”."""
+    """Expresia SQL (bool) „rândul `a` din `public.declaratii_coada` a fost înlocuit de declarația generată din nou, nu respins”.
+
+    [lotul 13, deficiența 458.1 — „Administratorul are încă «Depășită, lipsește F1A5» numărată ca respingere, deși e regenerare automată;
+    regenerările automate nu intră în calitatea echipei.”] Al doilea fel de înlocuire: autorul își RETRAGE singur declarația (cine o
+    respinge e cine a pregătit-o, `respins_de_id = creat_de_id`) și o generează din nou el însuși, mai târziu (urmașul: aceeași firmă, tip,
+    perioadă, creat de el după retragere). Nu e o greșeală prinsă de altcineva — e o refacere, ca „Generează din nou” (măsurat pe copia
+    firmelor de test: rândul 11407, respins de 71507 pe propria D300 la 11:56:58, urmașul 11411 creat de 71507 la 11:58:51)."""
     return ("({a}.respins_la IS NOT NULL AND {a}.fel IS DISTINCT FROM 'nota' AND EXISTS (SELECT 1 FROM public.declaratii_coada u_ "
             "WHERE u_.tenant_id = {a}.tenant_id AND u_.tip = {a}.tip AND u_.perioada = {a}.perioada AND u_.id <> {a}.id "
-            "AND u_.fel IS NOT DISTINCT FROM {a}.fel AND u_.creat_la = {a}.respins_la))").format(a=a)
+            "AND u_.fel IS NOT DISTINCT FROM {a}.fel AND (u_.creat_la = {a}.respins_la "
+            "OR ({a}.respins_de_id IS NOT NULL AND {a}.respins_de_id = {a}.creat_de_id AND u_.creat_de_id = {a}.respins_de_id "
+            "AND u_.creat_la >= {a}.respins_la))))").format(a=a)
 
 
 def grup_nota(nota_id, grup_doc=None):
@@ -936,7 +944,7 @@ def verdict_din_rand(verdict, erori, amp, la, versiune, xml, confirmare=None):
     implementare ar fi putut diverge tacit de prima - adica ecranul ar fi aratat verde exact
     acolo unde serverul refuza."""
     if not verdict or not amp:
-        return {"stare": "lipsa", "motiv": "nu s-a păstrat niciun verdict pentru elementul ăsta",
+        return {"stare": "lipsa", "motiv": "elementul ăsta nu are încă un verdict al validatorului",   # [lotul 13, clasa 571]
                 "actiune": "deschide elementul în ecranul de validare — validatorul rulează și verdictul se păstrează"}
     acum = amprenta_xml(xml or "")
     if amp != acum:
@@ -1450,6 +1458,8 @@ SURSE_SALARII = (
     ("perioada_confirmata", "t.an = %(an)s AND t.luna = %(luna)s"),
     ("elemente_salariale", "t.an = %(an)s AND t.luna = %(luna)s"),
     ("beneficii_lunare", "t.an = %(an)s AND t.luna <= %(luna)s"),   # plafonul anual al tichetelor de vacanță se cumulează pe an
+    # [lotul 13, 670 b] excedentul de diurnă al lunii (venit salarial, `core/diurna_salariat.py`): un decont refăcut schimbă D112
+    ("diurna_excedent", "t.an = %(an)s AND t.luna = %(luna)s"),
 )
 
 

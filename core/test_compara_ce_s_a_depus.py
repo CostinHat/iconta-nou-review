@@ -68,7 +68,8 @@ def test_regenerarea_isi_declara_limita_SI_IN_TEXTUL_CITIT_DE_OM():
 
     Nu e într-o buclă, ca să nu poată trece pe listă goală (suprapunerea 18/19, METODA §23)."""
     t = _constatari(sursa_declarat="regenerat")[0]["temei"]
-    assert "ce s-a depus nu s-a păstrat" in t, (
+    # [lotul 13, 571] limita rămâne spusă, fără „nu s-a păstrat” (contabilul o citea ca pierdere de date): comparată cu cea generată azi
+    assert "generată azi" in t and "nu cu cea depusă" in t and "nu s-a păstrat" not in t, (
         "limita nu e scrisă în temei — cititorul crede că s-a comparat cu depunerea:\n  %s" % t)
 
 

@@ -32,7 +32,9 @@ def scoate(db, firme, incercari=5):
             try:
                 _scoate_una(db, tabele, tid, schema)
                 break
-            except errors.DeadlockDetected:
+            except (errors.DeadlockDetected, errors.LockNotAvailable):
+                # [C201, lotul 13] `LockNotAvailable`: `DROP SCHEMA` a așteptat peste `lock_timeout` (db.optiuni_sesiune) o cerere a
+                # aplicației încă deschise; se reia ca deadlock-ul, în loc să aștepte la nesfârșit (blocajul de 38 de minute din C201)
                 if incercare == incercari:
                     raise
                 time.sleep(0.5 * incercare)

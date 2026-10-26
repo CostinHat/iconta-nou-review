@@ -403,13 +403,14 @@ def coada_adauga(date, ctx):
                 "camp_trecere": "motiv_trecere"})
 
     # 3) pune în coadă (pe public), stare 'la_senior'
+    _inlocuit = getattr(date, "inlocuieste", None)
+    _cine_inlocuieste = _cine(ctx) if _inlocuit else None   # [C201] citit înainte: cererea nu ține două conexiuni deodată
     with db.get_conn() as conn:
-        _inlocuit = getattr(date, "inlocuieste", None)
         if _inlocuit:
             # [297 + 299] „Generează din nou” / „Înlocuiește”: elementul activ iese din coadă în ACEEAȘI tranzacție cu intrarea celui nou
             with conn.cursor() as cur:
                 if not coada_api.inlocuieste(cur, int(_inlocuit), ctx["firm"], ctx["uid"],
-                                             "Înlocuită de declarația generată din nou (%s)." % _cine(ctx)):
+                                             "Înlocuită de declarația generată din nou (%s)." % _cine_inlocuieste):
                     raise _erori.Conflict("Declarația de înlocuit nu mai e în coadă (a fost depusă, retrasă sau înlocuită între timp).")
         r = coada_api.adauga_in_coada(
             conn, ctx["firm"], date.tenant_id, date.tip, date.an, payload,
@@ -625,7 +626,7 @@ def pas_urmator(conn, ctx):
     from core import afirmatii as _af
     if coada_api.patru_ochi_stare(conn, ctx["firm"])["efectiv"]:
         cod, mesaj = "validare", PAS_VALIDARE
-    elif _uc_comun._are_permisiune(ctx, "poate_depune"):
+    elif _uc_comun._are_permisiune_pe(conn, ctx, "poate_depune"):   # [C201] pe conexiunea ținută, nu pe una a doua
         cod, mesaj = "depunere", PAS_DEPUNERE
     else:
         cod, mesaj = "depunere_altcineva", PAS_DEPUNERE_ALTCINEVA
@@ -708,7 +709,7 @@ def coada_aproba(coada_id, date, ctx):
     """[P7 · use-case] Corpul rutei `/coada/{coada_id}/aproba`; docstringul ei a ramas in stratul HTTP."""
     _fel, _schema_nota, _el = _schema_notei(coada_id, ctx)   # [validare_note] nota se validează pe schema firmei ei
     with db.get_conn(_schema_nota) as conn:
-        if not _uc_comun._are_permisiune(ctx, "poate_valida"):
+        if not _uc_comun._are_permisiune_pe(conn, ctx, "poate_valida"):   # [C201] pe conexiunea ținută, nu pe una a doua
             raise _erori.FaraDrept(FARA_DREPT_VALIDARE)
         # [R41] `motiv_trecere` = trecerea EXPLICITĂ peste un verdict lipsă, stătut sau cu erori.
         # Fără el, acțiunea e refuzată; cu el, se consemnează cine și de ce.

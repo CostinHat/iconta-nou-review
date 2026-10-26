@@ -367,7 +367,7 @@ def _anunta_cabinet_nou(nume_cabinet, email, cale):
     html = ("<p>Cabinet nou pe iConta.eu: <b>%s</b> (%s), creat la %s, prin %s.</p>"
             "<p>Îl vezi în Panou Admin &rarr; Activitate cabinete.</p>") % (_esc(nume_cabinet), _esc(email), _esc(acum), _esc(cale))
     return _obs.trimite_email_html_sau_semnaleaza("email anunt cabinet nou", dest, "[iConta.eu] Cabinet nou: %s" % nume_cabinet,
-                                                  html)
+                                                  html, postmark=True)   # [lotul 13, 13.1 pct.1] tranzacțional: Postmark, rezerva Brevo
 
 
 def _anaf_firma_proprie(cui):
@@ -440,7 +440,7 @@ def _dupa_cont_nou(r, nume_cabinet, email, firma, cale):
     bun venit (cu ce s-a creat), anunțul către superadmin."""
     # register_email_v1: email de bun venit — [R73] fara alerta: bun venit nu e cale de ACCES, doar politete
     _obs.trimite_email_html_sau_semnaleaza("email bun venit cabinet", email, "Bine ai venit pe iConta.eu",
-                                           text_bun_venit(nume_cabinet, email, firma))
+                                           text_bun_venit(nume_cabinet, email, firma), postmark=True)   # [lotul 13, 13.1 pct.1]
     _anunta_cabinet_nou(nume_cabinet, email, cale)
     return {"user_id": r["user_id"], "firm_id": r["firm_id"]}
 
@@ -465,7 +465,8 @@ def invitatie_creeaza(date, ctx):
             "text-decoration:none'>Creează contul</a></p><p>Contul se creează cu emailul <b>%s</b>. Invitația e valabilă %s "
             "și se folosește o singură dată.</p>") % (link, _esc(email), _esc(_cate(_inv.VALABILITATE_ZILE, "zi", "zile")))
     # superadminul vede pe ecran dacă a plecat (și primește linkul oricum) -> fără alertă
-    trimis = _obs.trimite_email_html_sau_semnaleaza("email invitatie cabinet", email, "Invitație iConta.eu", html)
+    trimis = _obs.trimite_email_html_sau_semnaleaza("email invitatie cabinet", email, "Invitație iConta.eu", html,
+                                                    postmark=True)   # [lotul 13, 13.1 pct.1] tranzacțional: Postmark, rezerva Brevo
     return {"ok": True, "email": email, "link": link, "email_trimis": trimis, "valabila_zile": _inv.VALABILITATE_ZILE}
 
 

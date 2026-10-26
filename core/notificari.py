@@ -108,6 +108,11 @@ TIPURI = {
                                 "validarea. Vine numai pe email.", "cine": "admin", "implicit": True, "doar_email": True},
     "asistent_activat": {"eticheta": "un coleg și-a activat contul", "deschide": "notificari", "grup": "Cont și echipă",
                          "rand": "Când un coleg invitat în Asistenți își activează contul.", "cine": "admin"},
+    # [lotul 13, 648] „Răspunsul la o sesizare trebuie să ajungă în clopoțel (și pe email, dacă utilizatorul nu e conectat).” Pornit din
+    # oficiu (un răspuns cerut de om nu se pierde); linkul duce în Suport (banda `data-deschide="raport"`); scrisă de `uc_raportari`
+    "raspuns_suport": {"eticheta": "un răspuns nou la sesizarea ta din Suport", "deschide": "raport", "grup": "Cont și echipă",
+                       "rand": "Când echipa iConta.eu răspunde la o sesizare trimisă de tine din Suport.", "cine": "cabinet",
+                       "implicit": True},
     "sesizare": {"eticheta": "o sesizare nouă în Suport", "deschide": "raportari", "grup": "Platformă",
                  "rand": "Când un cabinet trimite o sesizare din Suport.", "cine": "superadmin"},
     "cerere_import": {"eticheta": "o cerere nouă de import din altă aplicație", "deschide": "raportari", "grup": "Platformă",

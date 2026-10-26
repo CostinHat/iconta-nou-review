@@ -551,13 +551,14 @@ def articole_import_incarca(tenant_id, continut, nume_fisier, ctx):
         randuri = articole_import_api.extrage(continut, nume_fisier or "")
     except ValueError as e:
         raise _erori.CerereGresita(str(e))
-    articole_import_api.eticheteaza(randuri)
     with db.get_conn(schema) as conn:
         with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
             solduri = solduri_api.solduri_deschidere(cur)
         data_sold = _data_soldurilor(conn, schema)
+    # [lotul 13, deficiența 668] rândurile contului de stoc care nu dă soldul din balanța de deschidere nu intră — aceeași regulă la salvare
+    articole_import_api.eticheteaza(randuri, solduri)
     return _uc_comun._raspuns({"randuri": randuri, "rezumat": articole_import_api.rezumat(randuri),
-                               "erori": articole_import_api.verifica_randuri(randuri),
+                               "erori": articole_import_api.verifica_randuri(randuri, solduri),
                                "reconciliere": articole_import_api.reconciliere_balanta(randuri, solduri),
                                "data_sold": data_sold, **_firma_fisier(tenant_id, continut, nume_fisier)})   # [599]
 
@@ -740,6 +741,9 @@ def facturi_numerotare_set(tenant_id, date, ctx):
 def scadentar_get(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/scadentar`; docstringul ei a ramas in stratul HTTP."""
     from core import scadentar as _sc
+    if ctx.get("rol") == "client":   # [lotul 13, 559] portalul: aceleași facturi ca „Cifrele firmei” (nota validată)
+        from core import uc_portal as _uc_portal
+        return _uc_portal.scadentar_client(tenant_id, ctx)
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         return _sc.pull(conn, schema)
@@ -3342,15 +3346,16 @@ def cv_locatii(tenant_id, articol_id, ctx):
     from core import stocuri_cv_api as _s
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+    with db.get_conn(schema) as conn:   # [C201] o singură conexiune ținută: verificarea articolului și locațiile, pe schema firmei
         # [lotul 7] Un articol care NU EXISTA intorcea `{"locatii": []}` — „articolul asta nu e
         # nicaieri" arata identic cu „articolul asta nu exista". Aceeasi clasa ca salariatul din
         # lotul 4 si contul din lotul 3.
-        if articol_id is not None and schema:
-            with db.get_conn(schema) as _c2, _c2.cursor() as _cur:
+        if articol_id is not None:
+            with conn.cursor() as _cur:
                 if not repo_stocuri.articolul_exista(_cur, articol_id):
                     raise _erori.Inexistent("articol inexistent")
-        if not schema:
-            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
         return {"locatii": _s.stoc_pe_locatii(conn, schema, articol_id)}
 
 
@@ -6414,8 +6419,9 @@ def client_acces_creeaza(tenant_id, date, ctx):
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intră în portal</a></p>"
             "<p>Linkul e valabil 48 de ore.</p>") % (_common.esc(d.get("nume", "")), link)
     # [R73] ALERTA: linkul e singura usa a clientului in portal (ca linkul de logare)
+    # [lotul 13, 560 / 268] invitația e tranzacțională: pe Postmark (fără „Dezabonează-te”), Brevo rămâne rezervă (`observare`)
     _obs.trimite_email_html_sau_semnaleaza("email acces portal", email, "Acces portal iConta.eu — " + d.get("nume", ""), html,
-                                           alerta=True)
+                                           alerta=True, postmark=True)
     return {"ok": True, "user_id": uid}
 
 

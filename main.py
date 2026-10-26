@@ -381,6 +381,12 @@ async def _handler_perioada_blocata(request: Request, exc: Exception):
     # [15.10.2026, deficiența 246] ciorna altui utilizator (core/migrare_ciorne_proprii.py) — 403: nu e o stare a evidenței, e un drept
     if "DREPT_CIORNA:" in msg:
         return _JR(status_code=403, content={"detail": msg.split("DREPT_CIORNA:")[1].split("\n")[0].strip()})
+    # [C201, lotul 13] o operație oprită de un termen al bazei (`lock_timeout` / tranzacție uitată deschisă, `db.optiuni_sesiune`):
+    # 503 cu textul pentru contabil (nimic nu s-a scris, reluarea reușește), nu traceback 500; rămâne în jurnal ca avertisment
+    _blocaj = db.text_blocaj(exc)
+    if _blocaj:
+        logging.getLogger("iconta").warning("termen al bazei la %s %s: %s", request.method, request.url.path, str(exc).strip()[:300])
+        return _JR(status_code=503, content={"detail": _blocaj})
     # [log_500_v1] traceback vizibil pt erori necunoscute inainte de re-raise
     logging.getLogger("iconta").exception("Eroare 500 la %s %s", request.method, request.url.path)
     raise exc
@@ -519,11 +525,11 @@ def favicon():
 def cere_context(authorization: Optional[str] = Header(None)):
     """Extrage 'Bearer <token>', verifică, întoarce contextul. 401 dacă lipsă/invalid."""
     if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(401, "lipsă token (Authorization: Bearer ...)")
+        raise HTTPException(401, "Nu ești autentificat: intră în cont.")   # [lotul 13, 608] propoziție, nu numele antetului
     token = authorization[7:]
     ctx = auth_api.context_din_token(token)
     if not ctx["ok"]:
-        raise HTTPException(401, ctx.get("mesaj", "token invalid"))
+        raise HTTPException(401, ctx.get("mesaj", "Sesiunea nu e validă: autentifică-te din nou."))
     return ctx
 
 
@@ -540,20 +546,20 @@ def cere_rol(*roluri):
 def cere_client(ctx=Depends(cere_context)):
     """Dependență pentru portal: doar rol 'client' (plus superadmin pt debug)."""
     if ctx["rol"] not in ("client", "superadmin"):
-        raise HTTPException(403, "doar clienții accesează portalul")
+        raise HTTPException(403, "Portalul e numai pentru clienții firmelor.")   # [lotul 13, 608]
     return ctx
 
 
 def cere_cabinet(ctx=Depends(cere_context)):
     """Rute de cabinet: orice rol mai puțin 'client' (clienții au portalul)."""
     if ctx["rol"] == "client":
-        raise HTTPException(403, "clienții folosesc portalul, nu rutele de cabinet")
+        raise HTTPException(403, "Contul de client intră în portal, nu în aplicația cabinetului.")   # [lotul 13, 608]
     # [suspendare-live] cabinet suspendat => 403 imediat, nu doar la login
     if ctx["rol"] != "superadmin":
         with db.get_conn() as conn, conn.cursor() as cur:
             r = _repo.select_u(cur, ctx)
-            if r and r[0] is False:
-                raise HTTPException(403, "Cabinetul este suspendat. Contactați furnizorul.")
+            if r and r[0] is False:   # [lotul 13, 645] motivul ales la suspendare, fără linie de contact (`uc_admin.text_suspendare`)
+                raise HTTPException(403, _uc_admin.text_suspendare_cabinet(cur, ctx.get("firm")))
             # [reset_parola_v1] sesiune emisa INAINTE de o schimbare de parola (iat < sesiuni_valide_de) -> invalidata
             if r and r[1] is not None and ctx.get("iat") is not None and ctx["iat"] < r[1]:
                 raise HTTPException(401, "Sesiune încheiată (parola a fost schimbată). Autentifică-te din nou.")
@@ -791,8 +797,9 @@ def _pagina_publica_indexabila(cale):
 # ICRD_CABINETE_CONSOLIDAT_V1
 # ICRD_SANATATE_SERVER_V1
 # ICRD_ALERTE_SANATATE_V1
-_PRAG_RAM_PROCENT = 75
-_PRAG_DISC_PROCENT = 75
+# [lotul 13, 643] pragurile stau într-un singur loc (`core/alerta_load.py`): bucla de alertă și ecranul Sănătate server le citesc de acolo
+_PRAG_RAM_PROCENT = _alerta_load.PRAG_RAM_PROCENT
+_PRAG_DISC_PROCENT = _alerta_load.PRAG_DISC_PROCENT
 #: [P6 val 3, 12.09.2026] Cate conexiuni sunt NORMALE nu mai e un numar ales, e o consecinta:
 #: fiecare worker isi tine pool-ul lui. Era `20`, scris cand exista un singur proces cu pool maxim
 #: 10 — iar la doi workeri ar fi devenit o ALARMA FALSA PERMANENTA, fiindca 2 x 10 atinge pragul
@@ -804,7 +811,7 @@ _PRAG_DISC_PROCENT = 75
 #: o citeste uvicorn pentru `--workers` (verificat empiric, nu presupus), deci numarul de instante
 #: are UN singur loc unde e scris.
 _WORKERI = max(1, int(os.environ.get("WEB_CONCURRENCY") or 1))
-_PRAG_CONEXIUNI_DB = _WORKERI * db.config_din_env()["maxconn"] + 10
+_PRAG_CONEXIUNI_DB = _alerta_load.prag_conexiuni_db(_WORKERI, db.config_din_env()["maxconn"])   # [lotul 13, 643] aceeași formulă, în alerta_load
 _ALERTE_COOLDOWN_SEC = 3600
 
 def _citeste_metrici_pentru_alerte():
@@ -1071,6 +1078,22 @@ def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
+
+@app.get("/admin/anunturi")   # [lotul 13, 646 c] trimiterile: către cine, citit sau nu, retrase
+def admin_anunturi_lista(ctx=Depends(cere_rol("superadmin"))):
+    try:
+        return _uc_admin.admin_anunturi_lista(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/admin/anunturi/{lot}/retrage")   # [lotul 13, 646 c] anunțul nu se mai arată cabinetelor care nu l-au citit
+def admin_anunt_retrage(lot: int, ctx=Depends(cere_rol("superadmin"))):
+    try:
+        return _uc_admin.admin_anunt_retrage(lot, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
 @app.get("/admin/alerte-fiscale")  # [F103 partea 2] propunerile monitorului pentru anunturi
 def admin_alerte_fiscale(ctx=Depends(cere_rol("superadmin"))):
     try:
@@ -1104,10 +1127,15 @@ def admin_activitate_cabinete(ctx=Depends(cere_cabinet)):
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
+class SuspendareIn(BaseModel):   # [lotul 13, 645] motivul din lista fixă (`uc_admin.MOTIVE_SUSPENDARE`) + nota internă opțională
+    motiv: Optional[str] = None
+    nota_interna: Optional[str] = None
+
+
 @app.post("/admin/cabinete/{firm_id}/suspenda")
-def admin_cabinet_suspenda(firm_id: int, ctx=Depends(cere_cabinet)):
+def admin_cabinet_suspenda(firm_id: int, date: SuspendareIn, ctx=Depends(cere_cabinet)):
     try:
-        return _uc_admin.admin_cabinet_suspenda(firm_id, ctx)
+        return _uc_admin.admin_cabinet_suspenda(firm_id, date, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -1497,6 +1525,7 @@ class DocumentPreluatRand(BaseModel):          # [lotul 12, 252] factura deschis
     suma: float
     rand_fisier: Optional[int] = None
     tva_la_incasare: Optional[bool] = None   # [252, 12.3 pct.5] coloana „TVA la încasare”; None = nespus -> regimul firmei la data facturii
+    tva_fisier: Optional[float] = None       # [lotul 13, 252, decizia Costin 13.1] suma TVA din fișier; None = se calculează, „de verificat”
 class PartenerRand(BaseModel):
     cont: str
     cui: str = ""
@@ -1506,6 +1535,7 @@ class PartenerRand(BaseModel):
     rand_fisier: Optional[int] = None
     documente: Optional[list[DocumentPreluatRand]] = None   # [252] None = forma pe solduri (soldul întreg devine documentul)
     tva_la_incasare: Optional[bool] = None   # [252, 12.3 pct.5] forma pe solduri: pe documentul „Sold la <data>”
+    tva_fisier: Optional[float] = None       # [lotul 13, 252, decizia Costin 13.1] forma pe solduri: suma TVA a soldului întreg
 class ParteneriIn(BaseModel):
     randuri: list[PartenerRand]
     data_referinta: Optional[str] = None
@@ -1727,6 +1757,14 @@ def invitatie_creeaza(date: InvitatieIn, ctx=Depends(cere_rol("superadmin"))):
     """Invită un email să-și creeze contul de cabinet (link valabil 14 zile, o singură folosire)."""
     try:
         return _uc_auth.invitatie_creeaza(date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.post("/admin/invitatii/{invitatie_id}/retrage")   # [lotul 13, 646 e] linkul invitației retrase nu mai creează cont
+def invitatie_retrage(invitatie_id: int, ctx=Depends(cere_rol("superadmin"))):
+    try:
+        return _uc_auth.invitatie_retrage(invitatie_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -2199,6 +2237,17 @@ def migrare_firme_strat(strat: str, ctx=Depends(cere_cabinet)):
     if strat not in migrare_api.STRATURI:
         raise HTTPException(422, nomenclator_cerut("strat", migrare_api.STRATURI))
     return _uc_migrare.migrare_firme_strat(strat, ctx)
+
+
+@app.get("/migrare/firma/{tenant_id}")
+def migrare_stare_firma(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """[lotul 13, comanda Costin 13.1 — 662, 663, 664, 580, 584] Starea pașilor de preluare ai FIRMEI (nu ai cabinetului), derivată din
+    datele ei: `{pasi: {strat: {stare, eticheta, detaliu, exista, comportament}}, urmatori, incepe_preluarea}` (`uc_migrare.stare_preluare_firma`).
+    Aceleași drepturi ca ecranul migrării (`/migrare/status`); firma trebuie să fie în portofoliul utilizatorului."""
+    try:
+        return _uc_migrare.stare_preluare_firma(tenant_id, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 
 
 @app.get("/migrare/aplicatii")
@@ -4889,11 +4938,11 @@ def portal_documente_balanta(an: int, luna: int, tenant_id: Optional[int] = None
 def cere_api_key(x_api_key: Optional[str] = Header(None)):
     from core import api_public as _ap
     if not x_api_key:
-        raise HTTPException(401, "lipsă X-Api-Key")
+        raise HTTPException(401, "Lipsește cheia API (antetul X-Api-Key).")   # [lotul 13, 608]
     with db.get_conn() as conn:
         firm_id = _ap.verifica(conn, x_api_key)
     if not firm_id:
-        raise HTTPException(401, "cheie invalidă sau revocată")
+        raise HTTPException(401, "Cheia API nu e validă sau a fost revocată.")   # [lotul 13, 608]
     return {"firm": firm_id}
 
 

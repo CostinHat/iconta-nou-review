@@ -8,6 +8,7 @@ Forma unei dovezi (JSON):
   {"nr": "428", "firma": "tenant_9055", "descriere": "...", "pasi": [...], "verifica": [...], "captura": "428_f6_x.png",
    "intreaga": false}
   - `firma`: schema copiei (`tenant_9049` …) sau a sursei (`tenant_049` …); firma se deschide din cabinet, ca în plasă (`Ecran.firma`).
+  - `portal: true` (cu `utilizator` = contul de client al copiei): dovada e în portalul clientului — pagina lui principală, fără cabinet.
   - `pasi` (în ordine; fiecare un obiect cu O acțiune):
       {"click": CSS, ["text": T], ["daca_exista": true]}   (`daca_exista` și la „completeaza”: câmpul unui pas care apare numai uneori)   clic pe primul element CSS (cu textul T, dacă e dat); cu `daca_exista`,
                                             un element absent nu e o eroare (ex. „Vezi XML-ul generat” numai când declarația s-a generat)
@@ -40,7 +41,7 @@ import urllib.request
 
 RAD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #: Acțiunile unui pas și felurile de verificare (forma de mai sus); lista de dovezi e păzită pe ele (`core/test_dovada_firme_test.py`).
-PASI = ("click", "asteapta", "asteapta_text", "completeaza", "alege", "deruleaza", "pauza", "captura", "declaratie", "incarca")
+PASI = ("click", "asteapta", "asteapta_text", "completeaza", "alege", "deruleaza", "pauza", "captura", "declaratie", "incarca", "lucrator")
 VERIFICARI = ("contine", "nu_contine", "contine_oricare", "inactiv", "activ", "exista", "valoare")
 
 
@@ -116,6 +117,22 @@ def _pas(e, pas):
         modul, functie = pas["generator"].split(":")
         octeti = getattr(importlib.import_module(modul), functie)(*pas.get("argumente", []))
         pg.set_input_files(pas["incarca"], files=[{"name": pas["nume"], "mimeType": pas.get("tip", "text/csv"), "buffer": octeti}])
+    elif "lucrator" in pas:
+        # [lotul 13, C130 / C132] lucrătorul Supervizorului rulează pe producție în tura de 5 minute (`firma_rezumat.main` ->
+        # `supervizor_cache.recalculeaza_lot`); pe copie cronul nu rulează. Pasul cheamă același calcul pe firmă (`recalculeaza_firma`), pe
+        # luna confruntată, pentru firmele copiei (`tenant_9049` … `tenant_9057`) — ca ecranul Supervizor să arate ce ar arăta după tură.
+        if pas["lucrator"] != "supervizor":
+            raise ValueError("lucrător necunoscut: %r" % (pas,))
+        from core import db as _db, supervizor_cache as _sc
+        from core.common import azi_ro as _azi
+        from core.control_fiscal_api import luna_confruntata as _lc
+        a = _azi()
+        an, luna = _lc(a.year, a.month)
+        with _db.get_conn() as c, c.cursor() as cur:
+            cur.execute("SELECT id, schema_name FROM public.tenants WHERE schema_name ~ '^tenant_90(49|5[0-5]|57)$'")
+            firme = cur.fetchall()
+        for tid, sch in firme:
+            _sc.recalculeaza_firma(tid, sch, an, luna)
     else:
         raise ValueError("pas necunoscut: %r" % (pas,))
 
@@ -205,7 +222,10 @@ def ruleaza(dovezi, baza, email, parola, firme, iesire, lat=1700, inalt=1000, em
             try:
                 if schema is None:
                     raise ValueError("firma %r nu e în copie" % d["firma"])
-                e.firma(firme[schema]["nume"])
+                if d.get("portal"):   # [lotul 13, portal] clientul firmei (`utilizator`): portalul lui se deschide singur, fără lista de firme
+                    e.acasa()
+                else:
+                    e.firma(firme[schema]["nume"])
                 for i, pas in enumerate(d.get("pasi", [])):
                     try:
                         _pas(e, pas)

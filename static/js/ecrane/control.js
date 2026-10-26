@@ -14,7 +14,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
   try {
     date = await api.get("/control-fiscal");
   } catch (e) {
-    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca controlul fiscal.</p>`;
+    corp.innerHTML = `<p class="msg-eroare">${esc((e && e.mesaj) || "Nu s-a putut încărca controlul fiscal.")}</p>`;   // [C201] mesajul serverului, ca în detaliu
     return;
   }
   const firme = date.firme || [];
@@ -93,7 +93,9 @@ async function detaliuFirma(corp, nav, firma) {
   try {
     d = await api.get(`/control-fiscal/${firma.tenant_id}`);
   } catch (e) {
-    corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca controlul fiscal. Reîncearcă.</p>`;
+    // [C201, lotul 13] mesajul serverului (ex. „Datele firmei sunt ocupate chiar acum…” când o operație de structură ține firma), ca în
+    // fereastra firmei (`firme.js` ecranControlFirma) — situații identice, soluții identice; textul generic rămâne numai fără mesaj
+    corp.innerHTML = `<p class="msg-eroare">${esc((e && e.mesaj) || "Nu s-a putut încărca controlul fiscal. Reîncearcă.")}</p>`;
     return;
   }
   const col = CULORI[d.stare] || CULORI.gri;

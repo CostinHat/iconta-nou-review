@@ -71,7 +71,9 @@ def select_public_3(cur, tenant_id):
 
 
 def delete_public(cur):
-    cur.execute("DELETE FROM public.tokene_activare WHERE expira < now() OR folosit = true")
+    # [lotul 13, deficiența 560] un link folosit sau expirat rămâne 30 de zile (numai amprenta lui, `token_hash`), ca al doilea clic să afle
+    # „Contul e deja activat — intră cu emailul și parola”, nu „link invalid”; `cont_din_token_activare` cere în continuare NOT folosit
+    cur.execute("DELETE FROM public.tokene_activare WHERE expira < now() - interval '30 days'")
 
 
 def insert_public_3(cur, user_id, interval_sql, _hash_tok, tok):

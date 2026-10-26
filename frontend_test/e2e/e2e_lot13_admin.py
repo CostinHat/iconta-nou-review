@@ -460,7 +460,8 @@ def test_def_608_mesajele_de_autentificare_incep_cu_majuscula(browser, request):
         ctx.close()
     det = r[1].get("detail")
     det = det if isinstance(det, str) else json.dumps(det, ensure_ascii=False)
-    assert r[0] == 401 and det.startswith("Linkul de logare a expirat sau a fost folosit deja."), r
+    # [integrare 560 + 608] un token inexistent: textul lui 560 („nu e valid”), cu literă mare și cu ce e de făcut
+    assert r[0] == 401 and det.startswith("Linkul de logare nu e valid. Cere unul nou"), r
 
 
 # ── 642 / „Înregistrează cabinetul tău” pe două coloane ─────────────────────────────────────────────────────────────────────────

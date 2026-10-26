@@ -9,7 +9,7 @@
 //   X dreapta-sus -> ÎNCHIDE fereastra (acasă). Traseul e memorat de navigator (nav.mergi).
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { esc, inchidereDialog, cate, ultimaCerere } from "./api.js?v=e38843b1ec";  // esc canonic (cap.10): strip-html data-lossy inlocuit
+import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=e38843b1ec";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=1be335b472";  // [bun_venit_v1] "?" general (ansamblu)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -118,19 +118,27 @@ export function creeazaNavigator(radacina, desktopRandator) {
         // anunțul „Versiune nouă” pus între timp de `_versiune.aseaza()` — superadminul nu afla niciodată de publicare.
         subbara.innerHTML = `${icon}<span class="subbara-gol" data-sumar-admin>Se încarcă centralizatorul...</span>`;
         const sumarAdmin = subbara.querySelector("[data-sumar-admin]");
-        import("./api.js?v=e38843b1ec").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
+        // [lotul 13, 644 a — clasa 286] „După suspendare bara de sus rămâne «2 cabinete active» până la reîncărcare”: centralizatorul se
+        // recitește după orice scriere reușită pe un cabinet (`iconta:schimbare` din api.js, cu căile scrise), ca pagina principală (286)
+        const citesteSumarAdmin = () => import("./api.js?v=e38843b1ec").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
           const cabinete = (r && r.cabinete) || [];
           const active = cabinete.filter((c) => c.activ).length;
           const firme = cabinete.reduce((s2, c) => s2 + (c.nr_firme || 0), 0);
-          const angajati = cabinete.reduce((s2, c) => s2 + (c.nr_angajati || 0), 0);
+          const utilizatori = cabinete.reduce((s2, c) => s2 + (c.nr_utilizatori || 0), 0);   // [644 b] conturile, nu salariații
           const facturi = cabinete.reduce((s2, c) => s2 + (c.nr_facturi || 0), 0);
           const declaratii = cabinete.reduce((s2, c) => s2 + (c.nr_declaratii || 0), 0);
           const recomandari = cabinete.reduce((s2, c) => s2 + (c.nr_recomandari || 0), 0);
           sumarAdmin.className = "subbara-admin-sumar";
-          sumarAdmin.textContent = `${cate(active, "cabinet activ", "cabinete active")} · ${cate(firme, "firmă", "firme")} · ${cate(angajati, "angajat", "angajați")} · ${cate(facturi, "factură emisă", "facturi emise")} · ${cate(declaratii, "declarație depusă", "declarații depuse")} · ${cate(recomandari, "recomandare", "recomandări")}`;
+          sumarAdmin.textContent = `${cate(active, "cabinet activ", "cabinete active")} · ${cate(firme, "firmă", "firme")} · ${cate(utilizatori, "utilizator", "utilizatori")} · ${cate(facturi, "factură emisă", "facturi emise")} · ${cate(declaratii, "declarație depusă", "declarații depuse")} · ${cate(recomandari, "recomandare", "recomandări")}`;
         }).catch(() => {
           sumarAdmin.textContent = "Centralizatorul nu a putut fi încărcat.";
         });
+        citesteSumarAdmin();
+        const laSchimbareCabinet = (ev) => {
+          if (!sumarAdmin.isConnected) { window.removeEventListener("iconta:schimbare", laSchimbareCabinet); return; }
+          if (((ev.detail && ev.detail.cai) || []).some((c) => String(c).startsWith("/admin/cabinete/"))) citesteSumarAdmin();
+        };
+        window.addEventListener("iconta:schimbare", laSchimbareCabinet);
       } else {
         subbara.innerHTML = firmaInLucru
           ? `${icon}<span class="subbara-cheie">În lucru:</span> <span class="subbara-firma">${esc(firmaInLucru)}</span>`   /* [331] spațiul și în text, nu numai în `gap` */
@@ -733,6 +741,7 @@ async function _anunturiBanner(ecran) {
       <div class="fereastra-antet"><span class="fereastra-spatiu"></span></div>
       <div class="fereastra-corp" tabindex="0">
         <h2 class="pf-titlu">Mesaj de la iConta.eu</h2>
+        <p class="tip-micut anunt-data">Trimis pe ${dataRo(a.data_afisare || a.creat_la)}</p>   <!-- [lotul 13, 646 d] fereastra anunțului arată data -->
         <p class="anunt-text">${esc(a.mesaj || "")}</p>
         <button class="buton-primar anunt-ok">Am \u00een\u021beles</button>
       </div></div>`;

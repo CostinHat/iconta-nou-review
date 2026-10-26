@@ -160,7 +160,8 @@ def test_287_pasul_urmator_dupa_starea_reala(monkeypatch):
     stare = {"efectiv": False}
     monkeypatch.setattr(uc.coada_api, "patru_ochi_stare", lambda c, f: dict(stare))
     perm = {"poate_depune": True}
-    monkeypatch.setattr(uc._uc_comun, "_are_permisiune", lambda ctx, flag: perm.get(flag, False))
+    # [C201] `pas_urmator` întreabă permisiunea pe conexiunea ținută (`_are_permisiune_pe`), nu pe una a doua
+    monkeypatch.setattr(uc._uc_comun, "_are_permisiune_pe", lambda conn, ctx, flag: perm.get(flag, False))
     ctx = {"firm": 1, "uid": 1}
     assert uc.pas_urmator(None, ctx)["cod"] == "depunere"
     perm["poate_depune"] = False

@@ -42,7 +42,7 @@ import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=bcad53d1e9";
 import { ecranBorderou } from "./borderou_ecran.js?v=d10158abe3";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=17a05c8d9a";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=3330107d41";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=3330107d41";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=cb3b13150a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=3fb2042f33";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=66a07e1f74";  // [produse_firma_v1]
@@ -622,6 +622,7 @@ function meniuFirma(corp, nav, t) {
   corp.innerHTML = `
     <h2 class="pf-titlu">${esc(antetFirma)}</h2>
     <div id="firma-spv" style="margin-bottom:12px"></div>
+    <div id="firma-preluare"></div>
     ${grupeazaCarduri(vizibile).map(([g, titluGrup, carduri]) => {
       return `<section class="firme-grup" aria-labelledby="fg-${g}">
       <h3 class="pf-subtitlu" id="fg-${g}">${titluGrup}</h3>
@@ -646,6 +647,8 @@ function meniuFirma(corp, nav, t) {
 
   _randDivergentaNume(corp, nav, t);   // [nume_anaf_v1]
   randeazaStareSpv(corp.querySelector("#firma-spv"), nav, t.id);   // [deficiența 289b] starea SPV a firmei, cu drum spre Conectare SPV
+  // [lotul 13, deficiența 662] firma nouă se deschide cu „Începe preluarea” (preluarea începută și neterminată: „Continuă preluarea”)
+  randeazaPreluareFirma(corp.querySelector("#firma-preluare"), nav, t);
 
   // [deficiența 262, comanda Costin 15.10.2026] „asistentul vede «Scoate firma din portofoliu» în fereastra firmei; se ascunde, ca în
   // lista de firme.” Blocul întreg (butonul + nota lui) poartă acțiunile ecranului de scoatere — amândouă numai ale administratorului —,
@@ -5696,7 +5699,8 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
     const respinseN = ciorneToate.filter((n) => n.validare && n.validare.stare_coada === "respinsa").length;
     const inAfaraN = ciorneToate.filter((n) => !n.validare).length;
     const partiCiorne = [
-      laValidareN ? `${laValidareN} la validare în cabinet` : "",
+      // [lotul 13, 563] spune ce numără: NOTELE lunii acestei firme (cardul și „De validat” numără tot note, ale tuturor firmelor)
+      laValidareN ? `${cate(laValidareN, "notă", "note")} ale lunii la validare în cabinet` : "",
       respinseN ? `${cate(respinseN, "respinsă", "respinse")}, de corectat` : "",
       inAfaraN ? (poateValida ? `${inAfaraN} de validat` : `${cate(inAfaraN, "netrimisă", "netrimise")} la validare`) : "",
     ].filter(Boolean).join(" \u00b7 ");
@@ -6944,7 +6948,9 @@ async function ecranAccesClient(corp, nav, t) {
       const r = await api.get(`/tenants/${t.id}/client-acces`);
       if (!actuala()) return;
       const cl = r.clienti || [];
-      { const _pv = corp.querySelector("#ac-btn-preview"); if (_pv && !cl.length) { _pv.disabled = true; _pv.title = "Nu exist\u0103 client. Invit\u0103 un client \u00eent\u00e2i."; } }
+      /* [lotul 13, 555] inactiv cu motivul SCRIS lângă el (DS cap.1, ca „Validează” din Bilanț): `title` pe un buton dezactivat nu se
+         vede — Chromium nu arată indicația unui element dezactivat; același ajutor ca butonul unei generări făcute */
+      { const _pv = corp.querySelector("#ac-btn-preview"); if (_pv && !cl.length) butonGenerat(_pv, "Previzualizarea cere un cont de client: invită unul cu „Invită client nou”."); }
       if (!cl.length) { zona.innerHTML = `<p class="ecran-nota">Niciun cont de client încă.</p>`; }
       else {
         zona.innerHTML = cl.map((c) => `

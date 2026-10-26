@@ -146,6 +146,13 @@ BASELINE = {
     # fișierului se cercetează după antet (exista neschimbată înainte de lot, d850db00:core/import_tabel.py:273). OPERAȚIONAL, nu fiscal; nimic de citat,
     # iar un nume din `NOM` ar minți despre ce e. Drumul de coborâre: granița de cuvânt în `NF` (scoate și `declaratii_componente.py`).
     "import_tabel.py": 1,
+    # [lotul 13, 643 + 576] LARGIREA DOMENIULUI, aceeași clasă OPERAȚIONALĂ (nimic de citat): `alerta_load.py` 0 -> 3 — pragurile alertei de
+    # sănătate MUTATE din `main.py` (în afara domeniului scanului) lângă `prag(cpu)`, ca ecranul Sănătate server să le arate (643):
+    # `PRAG_RAM_PROCENT = 75`, `PRAG_DISC_PROCENT = 75`, iar textul nou a urcat densitatea `NF` peste `PRAG_SEMNAL`, deci a devenit vizibil și
+    # `FARA_TESTE_MIN = 30` (exista neschimbat); `tipare_api.py` 0 -> 2 — `PRAG_ANALIZA = 5` (sub câte respingeri ale omului analiza AI nu
+    # se cere, „prea puține cazuri”, 576) și `PRAG_SISTEMATIC = 3` (de la câte cazuri un motiv se poate numi „sistematic”). Niciuna nu e
+    # valoare fiscală.
+    "alerta_load.py": 3, "tipare_api.py": 2,
 }
 
 

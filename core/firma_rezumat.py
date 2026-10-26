@@ -1098,10 +1098,9 @@ def _termene_una_firma(f, ctx, azi):
                 neevaluate.append(_n)
                 # [P2] era `continue`; in functie: firma iese NEEVALUATA, cu afirmatia ei
                 return (None, neevaluate[0] if neevaluate else None)
-            with db.get_conn() as cp:
-                with cp.cursor() as cur:
-  # [F163v2] vederea = depunerea curentă
-                    depuse = {(t, a, l) for (t, a, l) in _repo.select_public_4(cur, tid)}
+            with cs.cursor() as cur:   # [C201] pe conexiunea firmei (`public.*` calificat), nu pe o a doua ținută deodată
+                # [F163v2] vederea = depunerea curentă
+                depuse = {(t, a, l) for (t, a, l) in _repo.select_public_4(cur, tid)}
             # [D390-fapt] termene intreaba faptul lunar prin cs (conn pe schema firmei, cat timp e deschis):
             # luna deschisa -> AFISAM (nu putem exclude operatiuni pana la finalul lunii); vezi obligatii_datorate.
             from core import d390 as _d390
@@ -1186,8 +1185,8 @@ def recalculeaza_greu(tenant_id, schema, azi=None, ctx=None, nume=None, cui=None
         from core import uc_comun as _uc_comun
         from core.common import pastila_firma
         from core import control_fiscal_api as _cf
-        with _db.get_conn(schema) as cs, _db.get_conn() as cp:
-            r = _cf.evalueaza_firma(cs, cp, tenant_id, schema, azi)
+        with _db.get_conn(schema) as cs:   # [C201] o singură conexiune (`evalueaza_firma`: conn_public = conn_schema)
+            r = _cf.evalueaza_firma(cs, cs, tenant_id, schema, azi)
         contabil, _vc = _uc_comun._construieste_contabil(schema, tenant_id, ctx, azi.year, azi.month,
                                                          r.get("regim_tva_anaf"))
         valori["control_fiscal"] = {
@@ -1493,6 +1492,9 @@ def recalculeaza_lot(limita=LOT_RECALCULARE, azi=None, ctx=None, opreste=None):
         # sesiune înseamnă ceva. Vezi `ia_blocajul` pentru ce se întâmpla înainte.
         with _db.get_conn() as lock_conn:
             luat, pid_lock = ia_blocajul(lock_conn, tid)
+            # [C201, lotul 13] blocajul e de SESIUNE: supraviețuiește commitului. Fără commit, `lock_conn` stătea „idle in transaction”
+            # toată recalcularea firmei — iar `idle_in_transaction_session_timeout` (db.optiuni_sesiune) ar închide-o la o recalculare lungă
+            lock_conn.commit()
             if not luat:
                 r["sarite_blocate"] += 1
                 continue

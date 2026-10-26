@@ -25,7 +25,7 @@ function butonInapoi(zona, nav) {
 }
 
 // [lotul 12, 468] moneda unei sume, scrisă: RON -> „lei”, altfel codul ei (EUR, USD…)
-const monedaScrisa = (m) => (!m || String(m).toUpperCase() === "RON") ? "lei" : String(m).toUpperCase();
+export const monedaScrisa = (m) => (!m || String(m).toUpperCase() === "RON") ? "lei" : String(m).toUpperCase();   // [lotul 13, 559] și în „Cifrele firmei” (portal.js)
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");

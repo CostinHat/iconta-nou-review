@@ -251,13 +251,16 @@ def test_revocarea_unei_chei_inexistente_refuza_curat(env):
 
 
 # ── /admin/cabinete/{firm_id}/suspenda · reactiveaza ─────────────────────────────────────────
+#: [lotul 13, 645] suspendarea cere motivul din lista fixă (`uc_admin.MOTIVE_SUSPENDARE`); parola sintetică a cabinetului A, pentru login
+MOTIV = {"motiv": "neplata", "nota_interna": None}
+PAROLA_A = "Parola-Proba-Chei-645"
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_suspendarea_cere_superadmin(env):
     """Un admin de cabinet nu-și poate suspenda concurentul — nici pe sine."""
     cl = _client()
     for tok in (env["tok_adminA"], env["tok_angajatA"]):
-        r = cl.post("/admin/cabinete/%d/suspenda" % env["firmB"], headers=_H(tok))
+        r = cl.post("/admin/cabinete/%d/suspenda" % env["firmB"], headers=_H(tok), json=MOTIV)
         assert r.status_code in (401, 403), "suspendare fără superadmin: %d %s" % (r.status_code, r.text[:200])
     with env["conn"].cursor() as cur:
         cur.execute("SELECT activ FROM public.accounting_firms WHERE id=%s", (env["firmB"],))
@@ -266,24 +269,29 @@ def test_suspendarea_cere_superadmin(env):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_suspendarea_opreste_loginul_iar_reactivarea_il_reda(env):
-    """Efectul măsurat la poartă, nu în coloană: `login` distinge CABINET_SUSPENDAT de AUTH_ESEC
-    ÎNAINTE de a verifica parola, deci se vede cu o parolă oricare."""
+    """Efectul măsurat la poartă, nu în coloană: cu parola CORECTĂ, `login` spune CABINET_SUSPENDAT (cu cabinetul, pentru motiv); cu o
+    parolă greșită — AUTH_ESEC și pe cabinetul suspendat ([lotul 13, 645] parola se verifică ÎNAINTEA suspendării: motivul suspendării nu
+    se arată cui nu știe parola)."""
+    from core import nucleu
     cl = _client()
     conn = env["conn"]
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.users SET password_hash = %s WHERE email = 'ztest_chei_a@invalid'", (nucleu.hash_parola(PAROLA_A),))
 
-    inainte = auth_api.login(conn, "ztest_chei_a@invalid", "parola-gresita")
-    assert inainte["cod"] == "AUTH_ESEC", "martor: %r" % inainte
+    inainte = auth_api.login(conn, "ztest_chei_a@invalid", PAROLA_A)
+    assert inainte["ok"], "martor: %r" % inainte
 
-    r = cl.post("/admin/cabinete/%d/suspenda" % env["firmA"], headers=_H(env["tok_super"]))
+    r = cl.post("/admin/cabinete/%d/suspenda" % env["firmA"], headers=_H(env["tok_super"]), json=MOTIV)
     assert r.status_code == 200, r.text[:200]
-    dupa = auth_api.login(conn, "ztest_chei_a@invalid", "parola-gresita")
-    assert dupa["cod"] == "CABINET_SUSPENDAT", (
+    dupa = auth_api.login(conn, "ztest_chei_a@invalid", PAROLA_A)
+    assert dupa["cod"] == "CABINET_SUSPENDAT" and dupa["cabinet_id"] == env["firmA"], (
         "suspendarea nu se vede la login: %r — ruta ar schimba o coloană fără urmare" % dupa)
+    assert auth_api.login(conn, "ztest_chei_a@invalid", "parola-gresita")["cod"] == "AUTH_ESEC"
 
     r = cl.post("/admin/cabinete/%d/reactiveaza" % env["firmA"], headers=_H(env["tok_super"]))
     assert r.status_code == 200, r.text[:200]
-    redat = auth_api.login(conn, "ztest_chei_a@invalid", "parola-gresita")
-    assert redat["cod"] == "AUTH_ESEC", "reactivarea nu redă accesul: %r" % redat
+    redat = auth_api.login(conn, "ztest_chei_a@invalid", PAROLA_A)
+    assert redat["ok"], "reactivarea nu redă accesul: %r" % redat
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -300,7 +308,7 @@ def test_cheia_moare_cu_cabinetul_suspendat_si_INVIE_la_reactivare(env):
     assert cl.get("/api/v1/firme", headers={"X-Api-Key": k["cheie"]}).status_code == 200
 
     assert cl.post("/admin/cabinete/%d/suspenda" % env["firmA"],
-                   headers=_H(env["tok_super"])).status_code == 200
+                   headers=_H(env["tok_super"]), json=MOTIV).status_code == 200
     dupa = cl.get("/api/v1/firme", headers={"X-Api-Key": k["cheie"]})
     assert dupa.status_code == 401, (
         "cheia unui cabinet SUSPENDAT încă deschide API-ul (%d)" % dupa.status_code)
@@ -332,7 +340,7 @@ def test_o_incercare_respinsa_nu_se_scrie_ca_folosire(env):
     assert dupa_folosire is not None, "martor: o folosire REUȘITĂ nu lasă urmă — proba n-ar separa nimic"
 
     assert cl.post("/admin/cabinete/%d/suspenda" % env["firmA"],
-                   headers=_H(env["tok_super"])).status_code == 200
+                   headers=_H(env["tok_super"]), json=MOTIV).status_code == 200
     assert cl.get("/api/v1/firme", headers={"X-Api-Key": k["cheie"]}).status_code == 401
     with env["conn"].cursor() as cur:
         cur.execute("SELECT ultima_folosire FROM public.api_chei WHERE id=%s", (k["id"],))

@@ -252,7 +252,6 @@ EXCEPTII = [
      "suma în litere de pe chitanță: „un ban” / „doi bani” sub 20, iar ramura de la 20 pune „de bani” explicit (ca la lei, rândul de mai sus)"),
     ("core/d401.py", "%s coproprietate",
      "`%s` e prefixul rândului (imobilul), nu un număr: „Imobilul 2: coproprietate -> cel puțin un coproprietar”"),
-    ("core/tipare_api.py", "%d respingeri", "prompt pentru asistentul AI (date de intrare, nu text afișat)"),
     ("core/tipare_api.py", "%d respinse", "prompt pentru asistentul AI (date de intrare, nu text afișat)"),
     ("core/uc_coada.py", "'notei' if",
      "[284] genitivul articulat fără numeral („declarația așteaptă validarea notei” / „notelor”): niciun număr afișat, deci nici „de”"),

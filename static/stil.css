@@ -1347,7 +1347,9 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 /* utilizator = stanga, gri; admin = dreapta, albastru */
 .rap-msg-user { align-self: flex-start; }
 .rap-msg-user .rap-msg-text { background: var(--albastru-clar); color: var(--ardezie); }
-.rap-msg-admin { align-self: flex-end; text-align: right; }
+/* [lotul 13, 572] numai în Panou Admin → Raportări (`#rap-mesaje`): în Suportul utilizatorului (`raporteaza.js`, aceeași clasă) răspunsul
+   echipei / asistentului AI stătea la dreapta, cu textul aliniat la dreapta; textul unui mesaj se citește de la stânga, oriunde */
+#rap-mesaje .rap-msg-admin { align-self: flex-end; }
 .rap-msg-admin .rap-msg-text { background: var(--albastru); color: var(--alb); }
 
 /* ----- compose (raspuns) ----- */
@@ -1807,6 +1809,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .cap-tabel td { padding: 9px 12px; border-bottom: 1px solid #f3f3f3; color: #1a1d21; }
 .cap-tabel tr:last-child td { border-bottom: none; }
 .cap-num { text-align: right; }
+/* [lotul 13, 575] antetul unei coloane numerice stă deasupra cifrelor: `.cap-tabel th` (stânga) bătea `.cap-num` (Tipare, Capacitate) */
+.cap-tabel th.cap-num { text-align: right; }
 .cap-rol { font-size: var(--text-mic); color: #999; margin-left: 6px; }
 
 /* [p72_tipare] ecran Tipare */
@@ -2437,8 +2441,8 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
 @media (max-width: 480px) { .cab-card-mic { width: auto; } }
 /* portal_layout_v2: umbra pe panoul de status ca la carduri */
 .pa-card { box-shadow: 0 3px 12px rgba(20,30,45,0.14); border-radius: 12px; border-width: 2px; }
-.pa-card { cursor: pointer; transition: transform 0.12s, box-shadow 0.12s; }
-.pa-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(20,30,45,0.12); }
+/* [lotul 13, 554] panoul portalului nu se mai apasă: rândurile „De plătit la stat” se văd direct, deci fără cursor de clic și fără
+   ridicarea la trecere (un panou care arată apăsabil și nu face nimic) */
 /* conventie globala mesaje (msg_conventie_v1) */
 /* [DS cap.6 v2.89, deficiența 238] zonele de mesaj păstrează rândurile (`\n`): un refuz cu un rând pe cont se citește rând cu rând */
 .msg-eroare { color: #a3231c; font-weight: 600; font-size: var(--text-mic); white-space: pre-line; overflow-wrap: break-word; word-break: break-word; line-height: 1.45; }
@@ -2783,20 +2787,7 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .ans-mostra { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; vertical-align: middle; }
 .ans-mostra--general { width: 20px; height: 20px; border-radius: 5px; border: 1px solid #17324d; background: #17324d; color: #fff; font-size: 12px; }
 .ans-mostra--contextual { width: 18px; height: 18px; border-radius: 50%; background: #eef4fd; color: #3d8fd6; border: 1px solid #b9c2cf; font-size: 12px; }
-.ans-actiuni { margin-top: 18px; text-align: right; }
-
-/* pagina de bun-venit — overlay peste desktop (z sub .fereastra-overlay=100, ca "?"-urile contextuale sa apara deasupra) */
-.bun-venit-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(16,32,48,0.55);
-  display: flex; align-items: flex-start; justify-content: center; padding: 34px 16px; overflow: auto; }
-.bun-venit-box { width: min(920px, 100%); background: #fff; border-radius: 14px;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.28); overflow: hidden; }
-.bun-venit-antet { background: #17324d; color: #fff; font-weight: 700; font-size: 15px; padding: 13px 12px 13px 20px;
-                   display: flex; align-items: center; gap: 8px; }
-/* [dialog_inchidere 04.10.2026] X-ul din antet (DS cap.9: fereastra informativă se închide din X și cu Esc).
-   Butonul e `.nav-x` global; aici doar culoarea pe fundalul închis al antetului (gri pe #17324d n-ar avea contrast). */
-.bun-venit-titlu { flex: 1; }
-.bun-venit-antet .nav-x { color: #fff; }
-.bun-venit-corp { padding: 20px 22px; max-height: calc(100dvh - 150px); overflow: auto; }
+/* [lotul 13, 562] stratul „bun venit” (deschis singur la prima logare) a fost scos: prezentarea se deschide numai din „?” */
 /* ============================================================
    CAP. 22 — PAGINI PUBLICE DE GHID · forma Fluent
    Se adauga la SFARSITUL lui static/stil.css. Rescrie regulile
