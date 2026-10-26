@@ -231,7 +231,7 @@ async function randeazaAdminAnunturi(corp, nav) {
       <div class="rezumat-fix"><div id="an-trimise-msg"></div></div>
       <table class="fd-tabel" id="an-trimise"><thead><tr><th>Trimis</th><th>Mesaj</th><th>Către</th><th class="fd-td-num">Citit</th><th>Stare</th><th>Acțiuni</th></tr></thead><tbody>
       ${lst.map((t) => `<tr data-lot="${t.lot}"><td>${dataRo(t.creat_la, "cu_ora")}${t.data_afisare ? `<div class="tip-micut">afișat de la ${dataRo(t.data_afisare)}</div>` : ""}${t.trimis_de ? `<div class="tip-micut">de ${esc(t.trimis_de)}</div>` : ""}</td>
-        <td>${esc(t.mesaj || "")}</td><td>${esc(cate(t.destinatari, "cabinet", "cabinete"))}</td><td class="fd-td-num">${t.citite} din ${t.destinatari}</td>
+        <td>${esc(t.text_anunt || "")}</td><td>${esc(cate(t.destinatari, "cabinet", "cabinete"))}</td><td class="fd-td-num">${t.citite} din ${t.destinatari}</td>
         <td>${t.retras_la ? `retras ${dataRo(t.retras_la, "cu_ora")}` : "activ"}</td>
         <td><button class="buton-secundar buton-mic" data-dest="${t.lot}" data-fara-actiune="lista destinatarilor (citire)">Destinatari</button>
           <button class="buton-sters buton-mic" data-retrage="${t.lot}" data-actiune="POST /admin/anunturi/{lot}/retrage" ${t.retras_la ? `disabled title="Anunțul e retras deja."` : (t.citite === t.destinatari ? `disabled title="L-au citit toate cabinetele: nu mai are cui să fie retras."` : "")}>Retrage</button></td></tr>`).join("")}
@@ -239,7 +239,7 @@ async function randeazaAdminAnunturi(corp, nav) {
     c.querySelectorAll("[data-dest]").forEach((b) => b.addEventListener("click", () => {
       const t = lst.find((x) => String(x.lot) === b.dataset.dest);
       nav.deschide("Destinatarii anunțului", (cd) => {
-        cd.innerHTML = `<h2 class="pf-titlu">Destinatarii anunțului</h2><div class="rezumat-fix"><p class="pf-intro">${esc(t.mesaj || "")} · citit de ${t.citite} din ${t.destinatari}</p></div>
+        cd.innerHTML = `<h2 class="pf-titlu">Destinatarii anunțului</h2><div class="rezumat-fix"><p class="pf-intro">${esc(t.text_anunt || "")} · citit de ${t.citite} din ${t.destinatari}</p></div>
           <table class="fd-tabel" id="an-destinatari"><thead><tr><th>Cabinet</th><th>Citit</th></tr></thead><tbody>
           ${t.cabinete.map((d) => `<tr><td>${esc(d.cabinet)}</td><td>${d.citit_la ? `citit ${dataRo(d.citit_la, "cu_ora")}` : "necitit"}</td></tr>`).join("")}
           </tbody></table>`;

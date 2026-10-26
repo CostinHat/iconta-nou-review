@@ -119,7 +119,7 @@ def test_suspendarea_scrie_jurnalul_trimite_emailul_si_reactivarea_il_inchide(ba
         cur.execute("SELECT activ FROM public.accounting_firms WHERE id = %s", (baza.cab,))
         assert cur.fetchone()[0] is False
         j = uc_admin.jurnal_suspendari(cur, baza.cab)
-        assert len(j) == 1 and j[0]["motiv"] == "neplată" and j[0]["nota_interna"] == "restanță din septembrie"
+        assert len(j) == 1 and j[0]["motiv_suspendare"] == "neplată" and j[0]["nota_interna"] == "restanță din septembrie"
         assert j[0]["suspendat_la"] and j[0]["reactivat_la"] is None and j[0]["emailuri_trimise"] == 1
         assert uc_admin.text_suspendare_cabinet(cur, baza.cab) == "Cabinetul este suspendat. Motivul: neplată."
     with pytest.raises(erori.Conflict):                                          # o singură suspendare deschisă

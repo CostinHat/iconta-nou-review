@@ -191,7 +191,7 @@ function actiuneRo(a) {  // [aa_ro] jurnalul pe romaneste; necunoscutele raman b
 function htmlSuspendari(lst) {
   if (!lst.length) return "";
   const rand = (s) => `<tr><td>${s.suspendat_la ? dataRo(s.suspendat_la, "cu_ora") : "dată neînregistrată"}</td><td>${esc(s.suspendat_de || "—")}</td>
-    <td>${esc(s.motiv || "neînregistrat (suspendare de dinainte de jurnal)")}</td><td>${esc(s.nota_interna || "—")}</td>
+    <td>${esc(s.motiv_suspendare || "neînregistrat (suspendare de dinainte de jurnal)")}</td><td>${esc(s.nota_interna || "—")}</td>
     <td>${s.reactivat_la ? `${dataRo(s.reactivat_la, "cu_ora")}${s.reactivat_de ? " · " + esc(s.reactivat_de) : ""}` : "încă suspendat"}</td></tr>`;
   return `<h3 class="pf-subtitlu" style="margin-top:14px">Suspendări</h3>
     <table class="fd-tabel" id="ac-suspendari"><thead><tr><th>Suspendat la</th><th>De</th><th>Motivul</th><th>Notă internă</th><th>Reactivat</th></tr></thead>

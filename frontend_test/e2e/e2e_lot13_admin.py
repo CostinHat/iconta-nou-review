@@ -271,11 +271,19 @@ def test_def_646_a_c_anuntul_cere_destinatari_confirma_numarul_si_se_retrage(sup
 def test_def_646_b_propunerea_monitorului_arata_datele_actului(superadmin):
     """646 b. O propunere a monitorului fiscal (alertă nevăzută) -> Anunțuri: „Publicat: 15.01.2099 · intră în vigoare: 01.02.2099”;
     alta fără date în sursă: „nu apare în sursă”. ROȘU înainte: fără date."""
-    # date-de-pornire: alertele monitorului vin dintr-un cron care citește Portalul legislativ (de neatins din plasă)
-    a1 = sql("INSERT INTO public.alerte_fiscale (sursa, titlu, rezumat, relevanta, vazut, data_vigoare, data_publicarii) VALUES "
-             "('portal_alerta', 'E2E 646 b act cu date', 'r', 'mare', false, '2099-02-01', '2099-01-15') RETURNING id")[0][0]
-    a2 = sql("INSERT INTO public.alerte_fiscale (sursa, titlu, rezumat, relevanta, vazut) VALUES "
-             "('portal_alerta', 'E2E 646 b act fara date', 'r', 'medie', false) RETURNING id")[0][0]
+    # Drumul aplicației: monitorul fiscal (cronul) citește actul din Portalul legislativ — de neatins din plasă —, îl dă analizei AI și
+    # scrie propunerile cu `monitor_fiscal.salveaza`. Plasa pornește de la ieșirea analizei (forma ei, cu datele actului sau fără ele)
+    # și trece prin același `salveaza`: data publicării și data intrării în vigoare se citesc / se derivă exact ca pe producție.
+    from core import monitor_fiscal
+    from conftest import _db
+    analiza = [{"titlu": "E2E 646 b act cu date", "rezumat": "r", "directie": "catre_anaf", "declaratii_atinse": ["D300"],
+                "data_vigoare": "2099-02-01", "data_publicarii": "2099-01-15"},
+               {"titlu": "E2E 646 b act fara date", "rezumat": "r", "directie": "necunoscut", "declaratii_atinse": []}]
+    with _db().get_conn() as conn:
+        noi = monitor_fiscal.salveaza(conn, "portal_alerta", analiza, "https://legislatie.just.ro/Public/DetaliiDocument/0")
+    assert [x["titlu"] for x in noi] == ["E2E 646 b act cu date", "E2E 646 b act fara date"], noi
+    ids = dict(sql("SELECT titlu, id FROM public.alerte_fiscale WHERE sursa = 'portal_alerta' AND titlu LIKE %s", ("E2E 646 b act %",)))
+    a1, a2 = ids["E2E 646 b act cu date"], ids["E2E 646 b act fara date"]
     try:
         pg = superadmin.pg
         _panou(superadmin, "anunturi")
