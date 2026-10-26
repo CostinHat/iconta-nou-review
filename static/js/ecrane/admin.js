@@ -272,9 +272,14 @@ async function randeazaAdminInvitatii(corp) {
     </div>
     <div id="inv-lista" style="margin-top:16px"></div>`;
   const lista = corp.querySelector("#inv-lista");
+  // [lotul 13, găsită la e2e: încărcarea de la deschidere, lentă, sosea DUPĂ cea de după „Trimite invitația” și redesena lista peste
+  // întrebarea „Retragi invitația?” deja deschisă] numai ultima cerere a listei ajunge pe ecran (C103)
+  const ultimaLista = ultimaCerere(lista);
   async function incarca() {
+    const actuala = ultimaLista();
     try {
       const r = await api.get("/admin/invitatii");
+      if (!actuala()) return;
       const v = (r && r.invitatii) || [];
       // [lotul 13, 646 e] starea fiecărei invitații și „Retrage” pe cea încă valabilă (inactiv, cu motivul, pe celelalte — 675)
       const motivNu = { "folosită": "Invitația a fost folosită: contul cabinetului există.", "retrasă": "Invitația e retrasă deja.",
@@ -294,7 +299,7 @@ async function randeazaAdminInvitatii(corp) {
           } catch (e) { refuzPeRand(b, (e && e.mesaj) || "Invitația nu s-a putut retrage."); }
         }, { textOk: "Retrage" });
       }));
-    } catch (e) { arataMesaj(lista, (e && e.mesaj) || "Lista invitațiilor nu se poate încărca.", "eroare"); }
+    } catch (e) { if (actuala()) arataMesaj(lista, (e && e.mesaj) || "Lista invitațiilor nu se poate încărca.", "eroare"); }
   }
   corp.querySelector("#inv-trimite").addEventListener("click", async () => {
     const msg = corp.querySelector("#inv-msg");

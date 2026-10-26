@@ -377,35 +377,37 @@ def test_def_643_sanatatea_arata_cifre_romanesti_pragul_si_scara(superadmin):
 
 # ── 649 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_649_vizitele_dintr_o_sesiune_interna_nu_se_numara(browser, request, superadmin):
-    """649. Pașii: superadminul deschide Panou Admin (sesiune iConta în browser), apoi pagina publică în același browser: nicio cerere
-    `/api/eveniment-public`. Un browser fără sesiune iConta: vizita se trimite. Analytics: zilele în forma aplicației (ZZ.LL.AAAA), nu ISO,
-    și nota despre vizitele noastre. ROȘU înainte: vizita dintr-o sesiune deschisă se număra; „2026-10-24”."""
+    """649. Pașii: superadminul deschide Panou Admin -> browserul ține momentul sesiunii (`localStorage`, nimic trimis serverului);
+    Analytics: zilele în forma aplicației (ZZ.LL.AAAA), nu ISO, și nota despre vizitele noastre. Pagina publică, într-un browser cu acel
+    moment (o sesiune iConta deschisă): nicio cerere `/api/eveniment-public`; într-un browser fără el: vizita pleacă. ROȘU înainte:
+    vizita dintr-o sesiune deschisă se număra; „2026-10-24”."""
     pg = superadmin.pg
     _panou(superadmin, "analytics")
     pg.wait_for_selector("#an-intern", timeout=30000)
     zile = pg.inner_text("#an-intern")
     corp = pg.evaluate("() => [...document.querySelectorAll('.fereastra .pf-titlu')].find((h) => h.innerText === 'Pe zi')?.nextElementSibling?.innerText || ''")
+    marcaj = pg.evaluate("() => localStorage.getItem('iconta_sesiune_interna')")
     superadmin.captura("analytics")
     assert "nu se numără" in zile.replace("Nu se numără", "nu se numără"), zile
     assert not re.search(r"\b20\d\d-\d\d-\d\d\b", corp), corp
-    trimise = []
-    pg.on("request", lambda r: trimise.append(r.url) if "/api/eveniment-public" in r.url else None)
-    pg.evaluate("() => { sessionStorage.clear(); }")
-    pg.goto(BAZA + "/", wait_until="domcontentloaded")
-    pg.wait_for_selector("#pagina-acces-btn", timeout=20000)
-    pg.wait_for_timeout(1500)
-    assert trimise == [], trimise
-    ctx = browser.new_context(viewport={"width": 1700, "height": 1000})
-    try:
-        p2 = ctx.new_page()
-        alte = []
-        p2.on("request", lambda r: alte.append(r.url) if "/api/eveniment-public" in r.url else None)
-        p2.goto(BAZA + "/", wait_until="domcontentloaded")
-        p2.wait_for_selector("#pagina-acces-btn", timeout=20000)
-        p2.wait_for_timeout(1500)
-        assert len(alte) >= 1, alte                                                      # anti-vacuu: fără sesiune, vizita pleacă
-    finally:
-        ctx.close()
+    assert marcaj and int(marcaj) > 0, marcaj                                       # Panou Admin a marcat sesiunea în browser
+
+    def vizite(cu_marcaj):
+        ctx = browser.new_context(viewport={"width": 1700, "height": 1000})
+        if cu_marcaj:   # același browser în care e deschisă sesiunea (contextul superadminului are sesiunea pusă la fiecare pagină)
+            ctx.add_init_script("localStorage.setItem('iconta_sesiune_interna', %s);" % json.dumps(marcaj))
+        try:
+            p2 = ctx.new_page()
+            trimise = []
+            p2.on("request", lambda r: trimise.append(r.url) if "/api/eveniment-public" in r.url else None)
+            p2.goto(BAZA + "/", wait_until="domcontentloaded")
+            p2.wait_for_selector("#pagina-acces-btn", timeout=20000)
+            p2.wait_for_timeout(1500)
+            return trimise
+        finally:
+            ctx.close()
+    assert vizite(True) == []
+    assert len(vizite(False)) >= 1                                                 # anti-vacuu: fără sesiune, vizita pleacă
 
 
 # ── 578 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

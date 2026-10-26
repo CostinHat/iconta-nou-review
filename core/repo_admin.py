@@ -21,8 +21,25 @@ care o deține apelantul — contractul P4, care nu se redeschide aici.*
 _REUSITA = "(%s.detalii->>'status') ~ '^2[0-9][0-9]$'"
 
 
+#: [lotul 13, găsită la e2e-ul integrat] Interogarea făcea `LEFT JOIN audit_log` pe toate rândurile, grupat pe cabinet, PLUS trei
+#: subinterogări cu `LIKE` (o parcurgere a jurnalului de audit pe fiecare cabinet, pentru fiecare contor): 22 s pe baza de test (3,1 milioane
+#: de rânduri de audit, 8 cabinete), peste termenul de 30 s al probei sub sarcină — Panou Admin → Activitate cabinete și centralizatorul
+#: superadminului se încărcau greu sau deloc. Acum jurnalul se parcurge O SINGURĂ DATĂ (`pe_cabinet`), cu toate contoarele ca agregate
+#: filtrate; aceleași cifre (`core/test_lot12_notif_c101_contoare_admin.py`, `core/test_lot13_admin_suspendare.py`).
 def activitate_pe_cabinete(cur):
     cur.execute("""
+                WITH pe_cabinet AS (
+                    SELECT u.accounting_firm_id AS cabinet_id,
+                           COUNT(*) FILTER (WHERE a.actiune LIKE 'POST /recomanda%%' AND """ + _REUSITA % "a" + """) AS nr_recomandari,
+                           COUNT(*) FILTER (WHERE a.actiune LIKE '%%/facturi/emite%%' AND """ + _REUSITA % "a" + """) AS nr_facturi,
+                           COUNT(*) FILTER (WHERE a.actiune LIKE '%%/depune%%' AND """ + _REUSITA % "a" + """) AS nr_declaratii,  -- ICRD_CABINETE_CATEGORII_V1
+                           MAX(a.created_at) AS ultima_activitate,
+                           MAX(a.created_at) FILTER (WHERE a.actiune = 'login') AS ultim_login,
+                           COUNT(*) AS nr_actiuni,
+                           COUNT(*) FILTER (WHERE a.actiune = 'login') AS nr_logari
+                      FROM public.audit_log a JOIN public.users u ON u.id = a.user_id
+                     WHERE u.accounting_firm_id IS NOT NULL
+                     GROUP BY u.accounting_firm_id)
                 SELECT f.id, f.nume, f.activ, f.creat_la,
                        -- [15.10.2026, lotul 4 pct.4] pe ce cale a venit cabinetul (invitația lui sau înregistrarea liberă confirmată)
                        CASE WHEN EXISTS (SELECT 1 FROM public.invitatii_cabinet ic WHERE ic.firm_id = f.id) THEN 'invitație'
@@ -35,20 +52,11 @@ def activitate_pe_cabinete(cur):
                        -- [lotul 13, 645] motivul suspendării deschise (NULL = activ, sau suspendat înainte de jurnal)
                        (SELECT s.motiv FROM public.suspendari_cabinet s WHERE s.cabinet_id = f.id AND s.reactivat_la IS NULL) AS motiv_suspendare,
                        (SELECT s.suspendat_la FROM public.suspendari_cabinet s WHERE s.cabinet_id = f.id AND s.reactivat_la IS NULL) AS suspendat_la,
-                       (SELECT COUNT(*) FROM public.audit_log a2 JOIN public.users u3 ON u3.id = a2.user_id
-                          WHERE u3.accounting_firm_id = f.id AND a2.actiune LIKE 'POST /recomanda%%' AND """ + _REUSITA % "a2" + """) AS nr_recomandari,
-                       (SELECT COUNT(*) FROM public.audit_log a5 JOIN public.users u6 ON u6.id = a5.user_id
-                          WHERE u6.accounting_firm_id = f.id AND a5.actiune LIKE '%%/facturi/emite%%' AND """ + _REUSITA % "a5" + """) AS nr_facturi,
-                       (SELECT COUNT(*) FROM public.audit_log a6 JOIN public.users u7 ON u7.id = a6.user_id
-                          WHERE u7.accounting_firm_id = f.id AND a6.actiune LIKE '%%/depune%%' AND """ + _REUSITA % "a6" + """) AS nr_declaratii,  -- ICRD_CABINETE_CATEGORII_V1
-                       MAX(a.created_at) AS ultima_activitate,
-                       MAX(a.created_at) FILTER (WHERE a.actiune = 'login') AS ultim_login,
-                       COUNT(a.id) AS nr_actiuni,
-                       COUNT(a.id) FILTER (WHERE a.actiune = 'login') AS nr_logari
+                       COALESCE(p.nr_recomandari, 0) AS nr_recomandari, COALESCE(p.nr_facturi, 0) AS nr_facturi,
+                       COALESCE(p.nr_declaratii, 0) AS nr_declaratii, p.ultima_activitate, p.ultim_login,
+                       COALESCE(p.nr_actiuni, 0) AS nr_actiuni, COALESCE(p.nr_logari, 0) AS nr_logari
                 FROM public.accounting_firms f
-                LEFT JOIN public.users u ON u.accounting_firm_id = f.id
-                LEFT JOIN public.audit_log a ON a.user_id = u.id
-                GROUP BY f.id, f.nume, f.activ, f.creat_la
+                LEFT JOIN pe_cabinet p ON p.cabinet_id = f.id
                 ORDER BY f.nume
             """)
     return cur.fetchall()
