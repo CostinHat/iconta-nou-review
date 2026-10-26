@@ -62,7 +62,7 @@ def admin_anunturi_lista(ctx):
             for (lot, mesaj, creat_la, data_af, retras_la, _tid, trimis_de, n, citite) in repo_admin.anunturi_trimise(cur):
                 dest = [{"cabinet": nume or "(cabinet șters)", "citit_la": c.isoformat() if c else None}
                         for (nume, c) in repo_admin.destinatarii_trimiterii(cur, lot)]
-                out.append({"lot": lot, "mesaj": mesaj, "creat_la": creat_la.isoformat() if creat_la else None,
+                out.append({"lot": lot, "text_anunt": mesaj, "creat_la": creat_la.isoformat() if creat_la else None,
                             "data_afisare": data_af.isoformat() if data_af else None,
                             "retras_la": retras_la.isoformat() if retras_la else None, "trimis_de": trimis_de,
                             "destinatari": int(n), "citite": int(citite), "cabinete": dest})
@@ -219,7 +219,7 @@ def jurnal_suspendari(cur, firm_id):
     """[645] Jurnalul suspendărilor pentru fișa cabinetului: cine, când, motivul (eticheta), nota internă, reactivarea."""
     out = []
     for (sid, motiv, nota, s_la, r_la, emailuri, s_de, r_de) in repo_admin.jurnalul_suspendarilor(cur, firm_id):
-        out.append({"id": sid, "motiv": MOTIVE_SUSPENDARE.get(motiv or "") or None, "nota_interna": nota,
+        out.append({"id": sid, "motiv_suspendare": MOTIVE_SUSPENDARE.get(motiv or "") or None, "nota_interna": nota,
                     "suspendat_la": s_la.isoformat() if s_la else None, "suspendat_de": s_de,
                     "reactivat_la": r_la.isoformat() if r_la else None, "reactivat_de": r_de, "emailuri_trimise": emailuri})
     return out
