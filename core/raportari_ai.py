@@ -99,10 +99,13 @@ def triaj(subiect, text):
         if d.get("decizie") == "raspund" and (d.get("raspuns") or "").strip():
             raspuns = ai_client.text_simplu(d["raspuns"].strip())   # [lot 06.10 pct.14]
             motiv_nu = verifica_raspuns(raspuns)   # [lotul 13, 572] ghicit / rol din cod / fără diacritice -> nu pleacă la om
-            if motiv_nu:
-                return {"decizie": "escaladez", "motiv": "Asistentul AI a încercat să răspundă, dar %s." % motiv_nu}
-            return {"decizie": "raspund", "raspuns": raspuns}
-        return {"decizie": "escaladez", "motiv": (d.get("motiv") or "asistentul AI nu a spus motivul")[:300]}
+            if not motiv_nu:
+                return {"decizie": "raspund", "raspuns": raspuns}
+            motiv = "Asistentul AI a încercat să răspundă, dar %s." % motiv_nu
+        else:
+            motiv = (d.get("motiv") or "asistentul AI nu a spus motivul")[:300]
+        # [lotul 13, 572] o singură escaladare pentru ambele drumuri (AI-ul escaladează / răspunsul lui e oprit de verifica_raspuns)
+        return {"decizie": "escaladez", "motiv": motiv}
     except Exception as e:
         return {"decizie": "escaladez", "motiv": ("Asistentul AI nu a răspuns (%s)." % type(e).__name__)[:300]}
 
