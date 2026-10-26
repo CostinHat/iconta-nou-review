@@ -1,8 +1,8 @@
 [
  {
   "fisier": "static/js/ecrane/portal.js",
-  "ancora": "const felRez = k.tip === \"pierdere\" ? \"Pierdere\" : (k.tip === \"profit\" ? \"Profit\" : \"Rezultat\");",
-  "inlocuire": "const felRez = \"Profit\";",
+  "ancora": "const FEL_REZULTAT = { pierdere: \"Pierdere înainte de impozit\", profit: \"Profit înainte de impozit\" };",
+  "inlocuire": "const FEL_REZULTAT = { pierdere: \"Profit înainte de impozit\", profit: \"Profit înainte de impozit\" };",
   "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_553_cifrele_spun_pierderea_si_previziunea_isi_explica_saptamana"
  },
  {
