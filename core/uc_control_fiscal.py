@@ -76,9 +76,9 @@ def control_fiscal_audit_preluare(tenant_id, ctx):
     import datetime
     from core import audit_preluare
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as cs, db.get_conn() as cp:
-        r = audit_preluare.audit(cs, schema, tenant_id, cp)
-        with cp.cursor() as cur:  # creat_la = de cand e firma in iConta sub cabinet (proxy preluare)
+    with db.get_conn(schema) as cs:   # [C201] o singură conexiune: tabelele `public.*` se citesc calificat, pe aceeași conexiune
+        r = audit_preluare.audit(cs, schema, tenant_id, cs)
+        with cs.cursor() as cur:  # creat_la = de cand e firma in iConta sub cabinet (proxy preluare)
             row = repo_tenants.creat_la(cur, tenant_id)
     r["data"] = datetime.datetime.now().isoformat(timespec="minutes")  # cu ora: doua rulari/zi se disting
     r["in_iconta_din"] = row[0].date().isoformat() if row and row[0] else None  # data simpla (scara = luni)
@@ -123,8 +123,8 @@ def control_fiscal_detaliu(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/control-fiscal/{tenant_id}`; docstringul ei a ramas in stratul HTTP."""
     azi = azi_ro()   # [fus] verdict de zi = zi RO (acelasi ca portofoliul)
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as cs, db.get_conn() as cp:
-        r = control_fiscal_api.evalueaza_firma(cs, cp, tenant_id, schema, azi)
+    with db.get_conn(schema) as cs:   # [C201] o singură conexiune pe cerere (`evalueaza_firma`: conn_public = conn_schema)
+        r = control_fiscal_api.evalueaza_firma(cs, cs, tenant_id, schema, azi)
     # [deficiența 463] e-Factura: facturile emise de la luna preluării care trebuie transmise în SPV și nu sunt, cu termenul fiecăreia —
     # secțiunea «e-Factura — transmiterea în SPV» (starea dreptului SPV o citește ecranul din aceeași rută ca fereastra firmei)
     try:
@@ -199,11 +199,11 @@ def control_fiscal_depuse_anterior(tenant_id, corp, ctx):
         return dict(_af.afirmatie("neconformitate", "marcare_depusa_sarita", motiv, unde="%s %s" % (tip.upper(), eticheta),
                                   regula="se marchează numai o perioadă dinaintea preluării, încă nedepusă"), tip=tip, an=an, luna=luna)
     acum = datetime.datetime.now(datetime.timezone.utc)
-    with db.get_conn(schema) as cs, db.get_conn() as conn:
+    with db.get_conn(schema) as conn:   # [C201] o singură conexiune: eticheta perioadei (schema firmei) și depunerile (`public.*`)
         with conn.cursor() as cur:
             for p in perioade:
                 tip, an, luna = _perioada(p)
-                et = control_fiscal_api.perioada_declaratiei(cs, tip, an, luna)   # [213] „T1/2026”, nu „03/2026”
+                et = control_fiscal_api.perioada_declaratiei(conn, tip, an, luna)   # [213] „T1/2026”, nu „03/2026”
                 if not preluare or (an, luna) >= tuple(preluare):
                     sarite.append(_sarita(tip, an, luna, "nu e dinaintea preluării", et))
                     continue
@@ -222,12 +222,12 @@ def control_fiscal_anuleaza_marcare(tenant_id, corp, ctx):
     from core import repo_control_fiscal_api
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     tip, an, luna = _perioada(corp)
-    with db.get_conn(schema) as cs, db.get_conn() as conn:
+    with db.get_conn(schema) as conn:   # [C201] o singură conexiune
         with conn.cursor() as cur:
             cur_dep = repo_control_fiscal_api.select_depusa_curenta(cur, tenant_id, an, luna, tip)
             if not cur_dep or cur_dep[1] not in SURSE_MARCATE:
                 raise _erori.Conflict("%s pe %s nu e o marcare — nu e nimic de anulat."
-                                      % (tip.upper(), control_fiscal_api.perioada_declaratiei(cs, tip, an, luna)))   # [213]
+                                      % (tip.upper(), control_fiscal_api.perioada_declaratiei(conn, tip, an, luna)))   # [213]
             n = repo_control_fiscal_api.delete_marcari(cur, tenant_id, an, luna, tip)
         conn.commit()
     return {"ok": True, "anulate": n, "tip": tip, "an": an, "luna": luna}
@@ -258,13 +258,13 @@ def control_fiscal_depusa_extern(tenant_id, corp, ctx):
     if recipisa and len(recipisa) > 100:
         er.camp("recipisa", "Numărul recipisei are peste 100 de caractere.")
     er.refuza()
-    with db.get_conn(schema) as cs, db.get_conn() as conn:
+    with db.get_conn(schema) as conn:   # [C201] o singură conexiune
         with conn.cursor() as cur:
             cur_dep = repo_control_fiscal_api.select_depusa_curenta(cur, tenant_id, an, luna, tip)
             # [retest 08.10 pct.10] o MARCARE se poate modifica (versiune nouă); o depunere prin iConta.eu nu se suprascrie
             if cur_dep and cur_dep[1] not in SURSE_MARCATE:
                 raise _erori.Conflict("%s pe %s e deja depusă prin iConta.eu."
-                                      % (tip.upper(), control_fiscal_api.perioada_declaratiei(cs, tip, an, luna)))   # [213]
+                                      % (tip.upper(), control_fiscal_api.perioada_declaratiei(conn, tip, an, luna)))   # [213]
             repo_control_fiscal_api.insert_depusa_extern(cur, tenant_id, an, luna, tip, data, recipisa)
         conn.commit()
     return {"ok": True, "tip": tip, "an": an, "luna": luna, "data_depunere": data.isoformat(), "recipisa": recipisa}

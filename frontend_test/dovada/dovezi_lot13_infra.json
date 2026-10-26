@@ -1,0 +1,250 @@
+[
+ {
+  "nr": "C201",
+  "firma": "tenant_9049",
+  "descriere": "F1: fereastra firmei -> Control fiscal, pe firma creată înainte de reparație: controlul se încarcă pe O SINGURĂ conexiune (înainte: două conexiuni ținute deodată de aceeași cerere — blocajul fără ieșire cu o operație de structură, 38 de minute pe 25.10.2026), fără mesaj de eroare. Datele firmei nu se schimbă (reparația e în drumul cererii și în termenele conexiunilor). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-stare-mare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Control fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Nu s-a putut evalua controlul fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Datele firmei sunt ocupate",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c201_f1_vechi_control_fiscal_o_conexiune.png"
+ },
+ {
+  "nr": "C201",
+  "firma": "tenant_9050",
+  "descriere": "F2: fereastra firmei -> Control fiscal, pe firma creată înainte de reparație: controlul se încarcă pe O SINGURĂ conexiune (înainte: două conexiuni ținute deodată de aceeași cerere — blocajul fără ieșire cu o operație de structură, 38 de minute pe 25.10.2026), fără mesaj de eroare. Datele firmei nu se schimbă (reparația e în drumul cererii și în termenele conexiunilor). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-stare-mare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Control fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Nu s-a putut evalua controlul fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Datele firmei sunt ocupate",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c201_f2_vechi_control_fiscal_o_conexiune.png"
+ },
+ {
+  "nr": "C201",
+  "firma": "tenant_9051",
+  "descriere": "F3: fereastra firmei -> Control fiscal, pe firma creată înainte de reparație: controlul se încarcă pe O SINGURĂ conexiune (înainte: două conexiuni ținute deodată de aceeași cerere — blocajul fără ieșire cu o operație de structură, 38 de minute pe 25.10.2026), fără mesaj de eroare. Datele firmei nu se schimbă (reparația e în drumul cererii și în termenele conexiunilor). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-stare-mare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Control fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Nu s-a putut evalua controlul fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Datele firmei sunt ocupate",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c201_f3_vechi_control_fiscal_o_conexiune.png"
+ },
+ {
+  "nr": "C201",
+  "firma": "tenant_9052",
+  "descriere": "F4: fereastra firmei -> Control fiscal, pe firma creată înainte de reparație: controlul se încarcă pe O SINGURĂ conexiune (înainte: două conexiuni ținute deodată de aceeași cerere — blocajul fără ieșire cu o operație de structură, 38 de minute pe 25.10.2026), fără mesaj de eroare. Datele firmei nu se schimbă (reparația e în drumul cererii și în termenele conexiunilor). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-stare-mare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Control fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Nu s-a putut evalua controlul fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Datele firmei sunt ocupate",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c201_f4_vechi_control_fiscal_o_conexiune.png"
+ },
+ {
+  "nr": "C201",
+  "firma": "tenant_9053",
+  "descriere": "F5: fereastra firmei -> Control fiscal, pe firma creată înainte de reparație: controlul se încarcă pe O SINGURĂ conexiune (înainte: două conexiuni ținute deodată de aceeași cerere — blocajul fără ieșire cu o operație de structură, 38 de minute pe 25.10.2026), fără mesaj de eroare. Datele firmei nu se schimbă (reparația e în drumul cererii și în termenele conexiunilor). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-stare-mare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Control fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Nu s-a putut evalua controlul fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Datele firmei sunt ocupate",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c201_f5_vechi_control_fiscal_o_conexiune.png"
+ },
+ {
+  "nr": "C201",
+  "firma": "tenant_9054",
+  "descriere": "FISCALOS: fereastra firmei -> Control fiscal, pe firma creată înainte de reparație: controlul se încarcă pe O SINGURĂ conexiune (înainte: două conexiuni ținute deodată de aceeași cerere — blocajul fără ieșire cu o operație de structură, 38 de minute pe 25.10.2026), fără mesaj de eroare. Datele firmei nu se schimbă (reparația e în drumul cererii și în termenele conexiunilor). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-stare-mare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Control fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Nu s-a putut evalua controlul fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Datele firmei sunt ocupate",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c201_fiscalos_vechi_control_fiscal_o_conexiune.png"
+ },
+ {
+  "nr": "C201",
+  "firma": "tenant_9055",
+  "descriere": "F6: fereastra firmei -> Control fiscal, pe firma creată înainte de reparație: controlul se încarcă pe O SINGURĂ conexiune (înainte: două conexiuni ținute deodată de aceeași cerere — blocajul fără ieșire cu o operație de structură, 38 de minute pe 25.10.2026), fără mesaj de eroare. Datele firmei nu se schimbă (reparația e în drumul cererii și în termenele conexiunilor). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-stare-mare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Control fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Nu s-a putut evalua controlul fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Datele firmei sunt ocupate",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c201_f6_vechi_control_fiscal_o_conexiune.png"
+ },
+ {
+  "nr": "C201",
+  "firma": "tenant_9057",
+  "descriere": "F7: fereastra firmei -> Control fiscal, pe firma creată înainte de reparație: controlul se încarcă pe O SINGURĂ conexiune (înainte: două conexiuni ținute deodată de aceeași cerere — blocajul fără ieșire cu o operație de structură, 38 de minute pe 25.10.2026), fără mesaj de eroare. Datele firmei nu se schimbă (reparația e în drumul cererii și în termenele conexiunilor). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-stare-mare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Control fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Nu s-a putut evalua controlul fiscal",
+    "zona": ".fereastra:last-of-type"
+   },
+   {
+    "nu_contine": "Datele firmei sunt ocupate",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c201_f7_vechi_control_fiscal_o_conexiune.png"
+ }
+]

@@ -95,8 +95,16 @@ def blocaj_pornire(conn):
     `pg_advisory_xact_lock` blocheaza pana il primeste — si asta e purtarea dorita: un worker care
     asteapta e corect, unul care sare peste instalare ar servi cereri peste o infrastructura
     neverificata, adica exact ce interzice blocul fail-closed din `lifespan`.
+
+    [C201, lotul 13] Conexiunile aplicatiei poarta `lock_timeout` (`db.optiuni_sesiune`, 30 s): o
+    cerere care asteapta o blocare se opreste cu mesaj. Pornirea NU: asteptarea dupa pornirea altui
+    worker dureaza cat instalarea lui (DDL pe toate firmele), iar o pornire oprita la 30 s ar face
+    serviciul sa nu porneasca. Deci, numai in tranzactia pornirii (`SET LOCAL`, moare cu ea),
+    termenul e 0 = asteptare fara termen, ca inainte. Ciclul cu o cerere care tine doua conexiuni
+    il rupe partea cererii (termenul ei), nu pornirea.
     """
     with conn.cursor() as cur:
+        cur.execute("SET LOCAL lock_timeout = 0")
         cur.execute("SELECT pg_advisory_xact_lock(%s)", (CHEIE_PORNIRE,))
 
 

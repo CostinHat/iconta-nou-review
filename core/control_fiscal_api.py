@@ -1034,6 +1034,9 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     stare: 'verde' / 'galben' / 'gri' / 'rosu'. Fiecare linie poarta `motiv` (pe orice culoare).
     Acopera 9/9: D100/D101/D112/D300/D390/D394/D406 (vector) + D205/D301 (fapt, punte control_incrucisat).
     conn_schema: search_path pe schema firmei; conn_public: public (declaratii_depuse).
+    [C201, lotul 13] Într-o cerere, `conn_public` E `conn_schema` (aceeași conexiune, `db.get_conn(schema)`: căutarea e
+    „schema firmei, public”, iar tabelele publice se citesc aici numai calificat, `public.*`). Două conexiuni ale aceleiași cereri
+    făceau, cu o operație de structură pe firmă (`DROP SCHEMA`, o migrare), un blocaj pe care PostgreSQL nu-l vede.
     """
     azi = azi or azi_ro()   # [fus] verdict de zi (lipsa vs urmarit) = zi RO
 

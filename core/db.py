@@ -10,13 +10,14 @@ DATABASE_URL (sau DB_HOST/PORT), ZERO cod.
 Principii:
   - Pool global (ThreadedConnectionPool). Conexiunile se reciclează
     (vechiul main.py deschidea psycopg2.connect() la FIECARE rută — înlocuit).
-  - search_path cu SET LOCAL (valabil DOAR în tranzacția curentă)
-    -> sigur în PgBouncer transaction mode.
+  - search_path pe SESIUNE cât ține împrumutul conexiunii (RESET în `finally`, înainte de întoarcerea în pool), ca să reziste
+    unui commit din mijlocul cererii; căutarea e „schema firmei, public” (C201: aceeași conexiune citește și tabelele publice).
   - psycopg2 importat LAZY (doar la init_pool) — restul logicii e pură.
 
 Se dovedește pe server: forma tabelelor auth/tenant, maparea tenant->schemă.
 """
 from __future__ import annotations
+import contextvars as _cv
 import os
 import re as _re
 from contextlib import contextmanager
@@ -143,15 +144,102 @@ def _clasa_pool():
     return PoolCuAsteptare
 
 
+#: [C201, lotul 13] cât AȘTEAPTĂ o instrucțiune a aplicației o blocare (tabel, rând, blocaj consultativ) înainte să se oprească cu
+#: eroarea `LockNotAvailable` (ICONTA_LOCK_TIMEOUT). 30 s: sub cele 60 s după care nginx (`proxy_read_timeout` implicit, neschimbat în
+#: `/etc/nginx/sites-available/iconta`) închide oricum cererea cu 504 fără niciun mesaj, deci contabilul primește textul nostru, nu un
+#: ecran gol; și peste orice așteptare obișnuită — o cerere ține blocările câteva sute de milisecunde, iar serializările pe blocaj
+#: consultativ (numărul notei, salvarea aceleiași facturi, importul extrasului) așteaptă cel mult durata unei cereri vecine.
+LOCK_TIMEOUT_IMPLICIT = "30s"
+#: [C201, lotul 13] cât poate sta o conexiune a aplicației „idle in transaction” (tranzacție deschisă, nicio instrucțiune) până o oprește
+#: PostgreSQL (ICONTA_IDLE_TX_TIMEOUT). 10 minute: peste cel mai lung termen al unui apel extern făcut cu tranzacția deschisă (300 s,
+#: `grep -rn "timeout=" core`), ca nicio operație legitimă să nu fie tăiată; dar finit, ca o tranzacție uitată să nu mai țină
+#: blocările unei firme la nesfârșit (blocajul din C201 a stat 38 de minute).
+IDLE_TX_TIMEOUT_IMPLICIT = "10min"
+
+
+def optiuni_sesiune(env=None):
+    """Parametrii de sesiune PostgreSQL ai conexiunilor aplicației (`options` la conectare). Pură.
+
+    [C201, lotul 13] Înainte nu exista niciun termen: o cerere care ținea două conexiuni deodată (una „idle in transaction”, cu blocări
+    pe tabelele firmei) și o operație de structură pe aceeași firmă (`DROP SCHEMA`, o migrare) se așteptau reciproc fără ieșire —
+    PostgreSQL nu poate vedea ciclul, fiindcă una din muchii e firul aplicației care așteaptă între două conexiuni proprii. Cu
+    `lock_timeout`, conexiunea care așteaptă se oprește cu `LockNotAvailable`, cererea se termină cu mesajul din `text_blocaj`, iar
+    tranzacția ei se anulează și eliberează blocările. Valorile și motivul: `LOCK_TIMEOUT_IMPLICIT`, `IDLE_TX_TIMEOUT_IMPLICIT`.
+
+    LIMITĂ declarată: un PgBouncer în modul tranzacție nu transmite `options`; la trecerea pe el, valorile se mută pe rolul bazei
+    (`ALTER ROLE … SET lock_timeout …`)."""
+    env = env if env is not None else os.environ
+    lock = env.get("ICONTA_LOCK_TIMEOUT", LOCK_TIMEOUT_IMPLICIT)
+    idle = env.get("ICONTA_IDLE_TX_TIMEOUT", IDLE_TX_TIMEOUT_IMPLICIT)
+    for v in (lock, idle):
+        if not _re.match(r"^[0-9]+(ms|s|min|h)?$", str(v)):
+            raise ValueError("termen PostgreSQL invalid: %r (ex. 30s, 10min, 0)" % (v,))
+    return "-c lock_timeout=%s -c idle_in_transaction_session_timeout=%s" % (lock, idle)
+
+
 def init_pool(cfg=None):
-    """Inițializează pool-ul global. psycopg2 importat lazy aici."""
+    """Inițializează pool-ul global. psycopg2 importat lazy aici. Conexiunile poartă termenele din `optiuni_sesiune` (C201)."""
     global _pool
     if _pool is not None:
         return _pool
     cfg = cfg if cfg is not None else config_din_env()
     _pool = _clasa_pool()(cfg["minconn"], cfg["maxconn"], dsn_din_config(cfg),
-                          asteptare_sec=float(os.environ.get("ICONTA_POOL_ASTEPTARE_SEC", ASTEPTARE_SEC_IMPLICIT)))
+                          asteptare_sec=float(os.environ.get("ICONTA_POOL_ASTEPTARE_SEC", ASTEPTARE_SEC_IMPLICIT)),
+                          options=optiuni_sesiune())
     return _pool
+
+
+def text_blocaj(exc):
+    """Textul pentru contabil când o operație s-a oprit pe un termen al bazei (C201), sau None pentru orice altă eroare.
+
+    `LockNotAvailable` (55P03): instrucțiunea a așteptat o blocare peste `lock_timeout`. `IdleInTransactionSessionTimeout` (25P03):
+    PostgreSQL a închis o tranzacție lăsată deschisă peste `idle_in_transaction_session_timeout`. În ambele cazuri tranzacția cererii
+    s-a anulat întreagă — nimic nu s-a scris —, iar o reluare peste puțin timp reușește."""
+    cod = getattr(exc, "pgcode", None)
+    if cod == "55P03":
+        return ("Datele firmei sunt ocupate chiar acum de o altă operație (o salvare în curs sau o actualizare a aplicației). Nimic nu "
+                "s-a salvat; încearcă din nou peste un minut.")
+    if cod == "25P03" or "idle-in-transaction timeout" in str(exc):
+        return "Operația a durat prea mult și a fost oprită. Nimic nu s-a salvat; încearcă din nou."
+    return None
+
+
+# ============================================================
+#  O SINGURĂ CONEXIUNE PE CERERE (C201, lotul 13)
+# ============================================================
+#: câte conexiuni ține ACUM contextul curent (firul cererii); se citește cu `conexiuni_tinute()`
+_TINUTE = _cv.ContextVar("iconta_conexiuni_tinute", default=0)
+#: în interiorul `o_singura_conexiune()`: lista încălcărilor (a doua conexiune ținută deodată ridică `ADouaConexiune` și se notează
+#: aici, ca o încălcare înghițită de un `except` al drumului să rămână vizibilă); în afara lui, None
+_STRICT = _cv.ContextVar("iconta_o_singura_conexiune", default=None)
+
+
+class ADouaConexiune(RuntimeError):
+    """Invariant de PROGRAMATOR (nu text pentru contabil): un drum care trebuie să lucreze pe o singură conexiune a cerut o a doua
+    cât o ținea pe prima. [C201] Două conexiuni ale aceleiași cereri formează, cu o operație de structură pe aceeași firmă, un blocaj
+    pe care PostgreSQL nu-l poate vedea; pe o singură conexiune același conflict devine un `deadlock` pe care îl vede și îl oprește.
+    Ridicată numai sub `o_singura_conexiune()` (teste), deci nu ajunge niciodată pe ecran (ca `SchemaInvalida`)."""
+    def __init__(self, schema):
+        super().__init__("a doua conexiune ținută deodată în aceeași cerere (pe %r) — C201: o cerere lucrează pe o singură "
+                         "conexiune" % (schema,))
+
+
+def conexiuni_tinute():
+    """Câte conexiuni din pool ține contextul curent în acest moment (0 în afara oricărui `get_conn`)."""
+    return _TINUTE.get()
+
+
+@contextmanager
+def o_singura_conexiune():
+    """În interiorul blocului, `get_conn` refuză (`ADouaConexiune`) să dea a doua conexiune cât prima e ținută, și notează fiecare
+    refuz în lista dată de `with` (un drum care prinde excepțiile ar înghiți refuzul). Garda testelor C201
+    (`core/test_lot13_infra_o_conexiune.py`) rulează drumurile cererilor sub ea."""
+    incalcari = []
+    jeton = _STRICT.set(incalcari)
+    try:
+        yield incalcari
+    finally:
+        _STRICT.reset(jeton)
 
 
 def pool():
@@ -175,10 +263,10 @@ def inchide_pool():
 @contextmanager
 def get_conn(schema=None):
     """
-    Scoate o conexiune din pool, optional fixeaza schema (SET LOCAL),
+    Scoate o conexiune din pool, optional fixeaza schema (`SET search_path` pe sesiune, RESET la intoarcere),
     commit la succes / rollback la excepție, întoarce conexiunea în pool.
 
-    SET LOCAL = PgBouncer-safe: search_path traieste doar cat tranzactia.
+    Cautarea e „schema firmei, public”: o cerere citeste tabelele publice (calificate `public.*`) pe ACEEASI conexiune (C201).
 
     Folosire:
         with get_conn(ctx.schema) as conn:
@@ -186,6 +274,11 @@ def get_conn(schema=None):
     """
     if schema is not None and not schema_valida(schema):
         raise SchemaInvalida(schema)
+    _incalcari = _STRICT.get()
+    if _incalcari is not None and _TINUTE.get():
+        import traceback
+        _incalcari.append("schema %r, cerută din:\n%s" % (schema, "".join(traceback.format_stack(limit=8)[:-1])))
+        raise ADouaConexiune(schema)
     p = pool()
     # [P5, 10.09.2026] Reperele despart AȘTEPTAREA de EXECUȚIE. Inerte fără `ICONTA_CRONOMETRU=1`
     # — v. `core/cronometru.py`. Importul e local ca `db` să rămână fără dependențe la import.
@@ -194,6 +287,7 @@ def get_conn(schema=None):
     _crono.marca("pool_asteptare")
     _cu_autor = False
     try:
+        _TINUTE.set(_TINUTE.get() + 1)   # [C201] câte conexiuni ține cererea; scade în `finally`
         if schema is not None:
             with conn.cursor() as cur:
                 cur.execute('SET search_path TO "%s", public' % schema)
@@ -247,6 +341,7 @@ def get_conn(schema=None):
                 conn.close()
             except Exception:
                 pass
+        _TINUTE.set(max(0, _TINUTE.get() - 1))
 
 
 # ============================================================
