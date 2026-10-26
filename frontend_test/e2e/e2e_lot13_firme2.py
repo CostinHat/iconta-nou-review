@@ -148,7 +148,7 @@ def test_def_624_673_675_676_casa_tabel_fereastra_si_butoanele(patron, firma):
     """624 (Casă la forma 617/622), 673 (dispoziția nouă în fereastra ei), 675 (aceleași butoane, inactive cu motivul), 676 (tipul =
     butoane alăturate). Pașii: Casă -> „+ Dispoziție nouă”: fereastră nouă, „Tip” cu cinci butoane, nimic ales -> „Ridicare de la bancă”,
     300 lei, DR-<tag> -> „Adaugă”: fereastra se închide, Casa spune „Dispoziția a fost salvată” -> rândul operațiunii în tabel: „Stornează”
-    inactiv („Nota e ciornă …”), „Șterge” activ -> clic pe rând: detaliul cu documentul, „PDF chitanță” inactiv („Operațiunea n-are
+    inactiv („Nota operațiunii nu e validată …”), „Șterge” activ -> clic pe rând: detaliul cu documentul, „PDF chitanță” inactiv („Operațiunea n-are
     chitanță emisă.”) și „Leagă de factură” inactiv („Numai încasarea de la client și plata furnizorului …”).
     MUTAȚIA: dispoziția nouă desenată în pagina Casei (fără fereastră) -> ROȘU."""
     f = firma
@@ -173,7 +173,7 @@ def test_def_624_673_675_676_casa_tabel_fereastra_si_butoanele(patron, firma):
     rand = pg.locator("#c-tabel tbody.tn-nota", has_text=doc).first
     oid = rand.get_attribute("data-op-id")
     b = _butoane(pg, "#c-tabel tbody[data-op-id='%s'] .tn-actiuni button" % oid)
-    assert [x[:2] for x in b] == [["Stornează", True], ["Șterge", False]] and b[0][2].startswith("Nota e ciornă"), b
+    assert [x[:2] for x in b] == [["Stornează", True], ["Șterge", False]] and b[0][2].startswith("Nota operațiunii nu e validată"), b
     rand.locator(".tn-deschide").click()
     det = _butoane(pg, "#c-tabel tbody[data-op-id='%s'] .tn-detaliu button" % oid)
     patron.captura("randul_si_detaliul")
@@ -295,7 +295,7 @@ def test_def_612_606_inventarul_in_fereastra_lui_cu_randul_lipsei_sub_articol(pa
     """612: „Rândul cu lipsă e înghesuit”; 606: „«neimputabila» fără diacritice”. Pașii: un articol cu denumire lungă în stoc (5 buc,
     date de pornire: ruta „Intrare”) -> Stocuri -> „Mișcări, fișe…” -> „Inventar (stoc faptic)”: fereastra inventarului, tabel -> faptic 3:
     rândul lipsei apare SUB articol, cu încadrarea din trei butoane („lipsă imputabilă”, „lipsă neimputabilă”, „lipsă justificată …”), iar
-    denumirea stă pe cel mult două rânduri -> „lipsă neimputabilă” -> „Salvează inventarul”: fereastra se închide, Stocuri arată notele
+    denumirea stă pe cel mult două rânduri -> „lipsă neimputabilă”, cota 21 -> „Salvează inventarul”: fereastra se închide, Stocuri arată notele
     diferențelor și „Lipsa neimputabilă …” (cu diacritice).
     MUTAȚIA: rândul lipsei pus pe rândul articolului -> ROȘU."""
     f = firma
@@ -321,6 +321,9 @@ def test_def_612_606_inventarul_in_fereastra_lui_cu_randul_lipsei_sub_articol(pa
     assert g["sub"] and g["randuri"] <= 2, g
     assert g["butoane"] == ["lipsă imputabilă", "lipsă neimputabilă", "lipsă justificată (distrusă, pierdută, furată — dovedit)"], g
     pg.click(_F + "#cvi-a%d-lipsa-zona .alegere-butoane button[data-valoare='neimputabila']" % aid)
+    # articolul intrat pe ruta „Intrare” n-are cota în nomenclator: contabilul scrie cota cu care s-a dedus TVA-ul (ajustarea 635 = 4427;
+    # fără ea, refuzul stă lângă câmp — `stocuri_cv_api`, HG 1/2016 titlul VII pct.78 alin.(6) lit.a)
+    pg.fill(_F + "#cvi-a%d-cota" % aid, "21")
     pg.click(_F + "#cvi-salveaza")
     pg.wait_for_function("() => document.body.innerText.includes('Inventarul din')", timeout=30000)
     patron.captura("dupa_inventar")

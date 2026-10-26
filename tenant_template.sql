@@ -3654,6 +3654,40 @@ CREATE TRIGGER trg_regula_rip_ciorna_proprie BEFORE UPDATE OR DELETE ON TENANT_P
 -- [deficiența 378, comanda Costin 8.2, 18.10.2026] ajustările fiscale ale rezultatului (Registrul de evidență fiscală, varianta pe profit),
 -- pe rândul oficial D101 (OPANAF 206/2025): sursa unică pentru D100 trimestrial (cumulat) și D101. `trim` NULL = cifră a anului (rd.39,
 -- pierderea de recuperat). Firmele existente: core/migrare_ajustari_fiscale.py. Modulul: core/ajustari_fiscale.py.
+-- [lotul 13, plasa: 577] registrul de evidență fiscală al persoanei fizice — oglinda lui `core/migrare_registru_fiscal_pf.py` (sursa
+-- schemei, care spune „mirror in tenant_template.sql”, dar oglinda lipsea: la o firmă PFA nouă, „Registrul de evidență fiscală” pe
+-- varianta persoanei fizice dădea 500 — relation registru_fiscal_pf does not exist)
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registru_fiscal_pf (
+    id                      BIGSERIAL PRIMARY KEY,
+    an                      integer     NOT NULL,
+    categorie_venit         text        NOT NULL,
+    sursa_venit             text        NOT NULL,
+    nr_crt                  integer     NOT NULL,
+    venit_brut              numeric(18,2) NOT NULL,
+    cheltuieli_deductibile  numeric(18,2) NOT NULL,
+    rectificare             boolean     NOT NULL DEFAULT false,
+    motiv_rectificare       text,
+    creat_la                timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT registru_fiscal_pf_ordine_unica UNIQUE (an, categorie_venit, sursa_venit, nr_crt)
+);
+
+-- [lotul 13, plasa: 577] registrul de evidență fiscală al persoanei fizice — oglinda lui `core/migrare_registru_fiscal_pf.py` (sursa
+-- schemei, care spune „mirror in tenant_template.sql”, dar oglinda lipsea: la o firmă PFA nouă, „Registrul de evidență fiscală” pe
+-- varianta persoanei fizice dădea 500 — relation registru_fiscal_pf does not exist)
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registru_fiscal_pf (
+    id                      BIGSERIAL PRIMARY KEY,
+    an                      integer     NOT NULL,
+    categorie_venit         text        NOT NULL,
+    sursa_venit             text        NOT NULL,
+    nr_crt                  integer     NOT NULL,
+    venit_brut              numeric(18,2) NOT NULL,
+    cheltuieli_deductibile  numeric(18,2) NOT NULL,
+    rectificare             boolean     NOT NULL DEFAULT false,
+    motiv_rectificare       text,
+    creat_la                timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT registru_fiscal_pf_ordine_unica UNIQUE (an, categorie_venit, sursa_venit, nr_crt)
+);
+
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.ajustari_fiscale (
     id serial PRIMARY KEY,
     an integer NOT NULL,

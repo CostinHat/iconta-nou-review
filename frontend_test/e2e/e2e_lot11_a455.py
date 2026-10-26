@@ -123,7 +123,8 @@ def test_def_456_incasarea_facturii_din_casa_emite_chitanta_cu_seria_firmei(patr
     pg = patron.pg
     _casa(patron, f)
     _dispozitie(pg, "incasare_client", total, cui=CLIENT["#em-cui"], factura_id=fid)
-    pg.wait_for_selector(".fereastra:last-of-type [data-ecran-destinatie='date_firma']", timeout=20000)
+    # [lotul 13, 543] refuzul numit vine cu seria cerută pe loc (câmpul seriei în fereastra dispoziției; Date firmă rămâne celălalt drum)
+    pg.wait_for_selector(".fereastra:last-of-type #ser-chit-serie", timeout=20000)
     assert "n-are serie pentru chitanțe" in patron.fereastra(), patron.fereastra()
     patron.captura("fara_serie")
     assert sql('SELECT (SELECT count(*) FROM "%s".casa_operatiuni), (SELECT count(*) FROM "%s".chitante)' % (s, s)) == [(0, 0)]

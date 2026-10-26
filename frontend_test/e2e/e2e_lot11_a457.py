@@ -83,7 +83,7 @@ def test_def_457_contarea_din_banca_spune_ciorna_nu_la_validare(patron, firma_e2
     _card(patron, "banca", "#bk-fisier")
     pg.set_input_files("#bk-fisier", {"name": "extras_%s.csv" % tag, "mimeType": "text/csv", "buffer": extras.encode("utf-8")})
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('importat')", timeout=30000)
-    rand = pg.locator(".pf-frand", has_text="Comision administrare cont " + tag)
+    rand = pg.locator("#bk-lista tbody.tn-nota", has_text="Comision administrare cont " + tag)   # [lotul 13, 624] rândul liniei în tabelul de note
     rand.locator("[data-cont]").click()
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('creat')", timeout=30000)
     rand.get_by_text("Contată · notă ciornă").wait_for(timeout=20000)
@@ -103,6 +103,6 @@ def test_def_457_contarea_din_banca_spune_ciorna_nu_la_validare(patron, firma_e2
     assert _status(firma_e2e, nid) == "validata"
     patron.firma(firma_e2e["nume"])
     _card(patron, "banca", "#bk-fisier")
-    rand = pg.locator(".pf-frand", has_text="Comision administrare cont " + tag)
+    rand = pg.locator("#bk-lista tbody.tn-nota", has_text="Comision administrare cont " + tag)   # [lotul 13, 624] rândul liniei în tabelul de note
     rand.get_by_text("Contat ✓").wait_for(timeout=20000)
     patron.captura("banca_validata")

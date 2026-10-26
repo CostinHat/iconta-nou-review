@@ -90,7 +90,10 @@ def _pagina(browser, rute, cereri=None, firma=T):
                 v = rute[k]
                 if callable(v):
                     v = v(route.request.method, u.path, urllib.parse.parse_qs(u.query), route.request.post_data)
-                return route.fulfill(status=200, content_type="application/json", body=json.dumps(v))
+                st = 200
+                if isinstance(v, tuple):   # (stare HTTP, corp): un refuz al serverului
+                    st, v = v
+                return route.fulfill(status=st, content_type="application/json", body=json.dumps(v))
         return route.fulfill(status=200, content_type="application/json", body="{}")
     pg.route("**/harness.html", lambda r: r.fulfill(status=200, content_type="text/html", body=PAGINA))
     for pref in ("/tenants", "/migrare/", "/auth/", "/notificari", "/versiune", "/eu/", "/admin/", "/coada", "/public/", "/cabinet/", "/firme/"):
@@ -171,6 +174,42 @@ def test_def_673_676_dispozitia_noua_in_fereastra_ei_cu_tipul_din_butoane(browse
             "Avans spre decontare (542=5311)"]
         pg.click("#c-renunta")
         pg.wait_for_selector("#c-tabel")
+        assert not erori, erori
+    finally:
+        pg.close()
+
+
+def test_440_dispozitia_refuzata_pastreaza_ambele_erori_dupa_previzualizare(browser):
+    """[e2e_lot11_w3a::test_def_440_casa_*, plasa lotului 13] În fereastra dispoziției (673): refuzul serverului pune eroarea lângă „Suma” și
+    lângă „Avansul e pentru”; o previzualizare DUPĂ refuz (un `change` pe zona câmpurilor, ca la părăsirea câmpului CUI) nu le șterge."""
+    MSG_S = "Plată către furnizor de 500,00 lei nu încape în casă (contul 5311)."
+    MSG_A = "Plata cuprinde un avans acordat furnizorului (500,00 lei): alege pentru ce e avansul."
+
+    def operatiuni(metoda, cale, q, corp):
+        return (400, {"detail": {"mesaj": MSG_S + "\n" + MSG_A, "erori_campuri": [{"camp": "c-suma", "mesaj": MSG_S},
+                                                                                    {"camp": "c-avans-dest", "mesaj": MSG_A}]}})
+    prev = {"facturi": [], "avans": {"mesaj": "Plata e avans acordat furnizorului: 500,00 lei."}, "refuz": MSG_S}
+    pg, erori = _pagina(browser, {"/casa/registru": REG_CASA, "/firma-profil/date": {"profil": {}}, "/casa/previzualizare": prev,
+                                  "/casa/operatiuni": operatiuni})
+    try:
+        pg.click("#fa-casa")
+        pg.wait_for_selector("#c-tabel")
+        pg.click("#c-toggle")
+        pg.wait_for_selector("#c-campuri")
+        pg.fill("#c-data", AZI.isoformat())
+        pg.select_option("#c-cat", "plata_furnizor")
+        pg.fill("#c-suma", "500")
+        pg.fill("#c-part", "FURNIZOR E2E 440 SRL")
+        pg.fill("#c-cui", "14399840")
+        pg.dispatch_event("#c-campuri", "change")
+        pg.wait_for_selector("#c-avans-dest", state="attached", timeout=10000)
+        pg.click("#c-adauga")
+        pg.wait_for_function("() => document.getElementById('c-avans-dest').getAttribute('aria-invalid') === 'true'", timeout=10000)
+        pg.evaluate("() => { window.__p = document.getElementById('c-previz-refuz'); }")
+        pg.dispatch_event("#c-campuri", "change")
+        pg.wait_for_function("() => { const x = document.getElementById('c-previz-refuz'); return !!x && x !== window.__p; }", timeout=10000)
+        stare = pg.evaluate("""() => ['c-suma', 'c-avans-dest'].map((id) => [id, document.getElementById(id).getAttribute('aria-invalid')])""")
+        assert stare == [["c-suma", "true"], ["c-avans-dest", "true"]], stare
         assert not erori, erori
     finally:
         pg.close()

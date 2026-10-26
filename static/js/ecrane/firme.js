@@ -4414,7 +4414,7 @@ async function ecranCasa(corp, nav, t) {
         <tr class="tn-rand${deschis ? " tn-deschis" : ""}">
           <td><button type="button" class="btn-link tn-deschide" aria-expanded="${deschis}" aria-controls="c-det-${k}" aria-label="Detaliul operațiunii din ${dataRo(o.data)}">${dataRo(o.data)}</button></td>
           <td>${o.document ? esc(o.document) : `<span class="tip-desc">fără document</span>`}</td>
-          <td>${esc(o.partener || "")}<div class="tip-desc">${esc(o.categorie_eticheta || "")}${o.factura ? " · factura " + esc(o.factura) : ""}${o.avans ? " · avans" : ""}</div></td>
+          <td>${esc(o.partener || "")}<div class="tip-desc">${esc(o.categorie_eticheta || "")}${o.factura ? " · factura " + esc(o.factura) : ""}${o.avans ? " · avans" : ""}${o.nir ? " pentru " + esc(o.nir) : ""}</div></td>
           <td class="fd-td-num">${o.tip !== "plata" ? suma : ""}</td>
           <td class="fd-td-num">${o.tip === "plata" ? suma : ""}</td>
           <td class="fd-td-num">${bani(o.sold)}</td>
@@ -4862,13 +4862,13 @@ async function ecranBanca(corp, nav, t) {
     <h2 class="pf-titlu">Bancă ${semnAjutor("F011")}</h2>
     <p class="pf-intro">Încarcă extrasul de cont: liniile se potrivesc automat pe facturi după CUI, iar o linie care există deja (aceeași
       dată, sumă, sens, referință sau descriere și același cont) nu se adaugă a doua oară.</p>
-    <details class="dec-xml" id="bk-formate"><summary>Formatele citite</summary><ul class="pf-intro">
+    <ul class="pf-intro" id="bk-formate">
       <li><b>MT940</b> (formatul SWIFT al extrasului, fișier .sta, .940 sau .txt), de la orice bancă care îl exportă: se citesc și contul, și
         soldul inițial și final, comparate cu 5121.</li>
       <li><b>ING</b>: extrasul în .xls, .xlsx sau .csv.</li>
       <li><b>Altă bancă</b>: tabel .xls, .xlsx sau .csv cu coloanele Data, Detalii și Debit + Credit (sau o coloană Sumă, cu semn). Din tabel
         nu se citesc soldurile.</li>
-    </ul></details>
+    </ul>
     <p><input type="file" id="bk-fisier" aria-label="Fișier extras bancar" accept=".xls,.xlsx,.csv,.sta,.940,.txt,.mt940">
       <span id="bk-cautare-loc" style="margin-left:12px"></span></p>
     <div id="bk-mesaj"></div>
@@ -6033,7 +6033,7 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
         stari,
         actiuni: `${bVal} ${bRetrimite}`,
         detaliu: `<p class="pf-frand-sub">${docJustificativ(n)}${n.sursa_eticheta ? " · sursa: " + esc(n.sursa_eticheta) : ""}</p>
-          ${faraDoc ? `<div class="caseta-atentie jn-fara-doc" id="jn-fara-doc-${n.id}"><div class="ca-mesaj">Pasul notei: ${esc(pasDoc)}</div></div>` : ""}
+          ${faraDoc ? `<div class="caseta-atentie jn-fara-doc" id="jn-fara-doc-${n.id}"><div class="ca-mesaj">Notă fără document justificativ. ${esc(pasDoc)}</div></div>` : ""}
           ${dep ? `<div class="caseta-atentie jn-depasita" id="jn-depasita-${n.id}"><div class="ca-mesaj pe-randuri">${esc(dep.mesaj)}</div></div>` : ""}
           ${stareValidare}${motive}${n.contata_inainte ? `<div class="caseta-atentie jn-inainte" id="jn-inainte-${n.id}"><div class="ca-mesaj">${esc(n.contata_inainte.motiv)}</div></div>` : ""}
           <p class="tn-detaliu-actiuni">${bReface} ${bEdit} ${bDel}</p>`,
