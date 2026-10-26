@@ -153,6 +153,12 @@ BASELINE = {
     # se cere, „prea puține cazuri”, 576) și `PRAG_SISTEMATIC = 3` (de la câte cazuri un motiv se poate numi „sistematic”). Niciuna nu e
     # valoare fiscală.
     "alerta_load.py": 3, "tipare_api.py": 2,
+    # [lotul 13, zona portal] LARGIREA DOMENIULUI, aceeași clasă OPERAȚIONALĂ (nimic de citat): `notificari_api.py` 0 -> 1 — `def lista(…,
+    # limita=50)`, câte notificări întoarce clopoțelul (paginare), NESCHIMBAT de la a632ffa2. A intrat în domeniu fiindcă registrul a
+    # primit valoarea 50 (zona decl, 7a1be4ab: `verificare_bun_simt.COTA_VENITURI_FARA_SCHIMB_INFORMATII` 50% și `PRAG_D318_EUR_AN` 50 euro),
+    # iar `_poarta_valoare_de_registru` trage în domeniu orice modul cu un default egal cu o valoare din registru. Nu e valoare fiscală;
+    # un nume din `NOM` ar minți despre ce e.
+    "notificari_api.py": 1,
 }
 
 
