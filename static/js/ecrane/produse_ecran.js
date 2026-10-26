@@ -264,7 +264,7 @@ function formularAdauga(corp, tenantId, reincarca, cat) {
       <div class="camp-eticheta">Pre\u021b \u00b7 unitate de m\u0103sur\u0103 \u00b7 cot\u0103 TVA</div>
       <div class="pr-form-rand pr-form-detalii">
         <input class="camp-input pr-mic" id="pr-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b">
-        <input class="camp-input pr-mic" id="pr-um" placeholder="UM (buc)" aria-label="Unitate de m\u0103sur\u0103" value="buc">
+        <input class="camp-input pr-mic" id="pr-um" placeholder="UM (gol = buc)" aria-label="Unitate de m\u0103sur\u0103">
         <select class="camp-input pr-mic" id="pr-cota" aria-label="Cota TVA">${optCota(cat, "cot\u0103 (auto)")}</select>
         <select class="camp-input pr-mic" id="pr-c331" aria-label="Bunul cu taxare inversă (art.331)" hidden>${optC331(cat)}</select>
       </div>

@@ -103,34 +103,30 @@ def test_def_443_factura_seriei_f6_se_afiseaza_f6_nr_1(patron, firma_u0):
 
 # ── 445 — „Deschide X” dintr-un refuz întoarce în formular, cu datele intacte ─────────────────────────────────────────────
 def test_def_445_deschide_date_firma_din_refuzul_chitantei_intoarce_la_chitanta(patron, firma_gv):
-    """445 (pct.21: „orice buton «Deschide X» dintr-un refuz întoarce în formularul de plecare, cu datele intacte.”). Pașii: firma fără
-    serie de chitanțe -> factura emisă -> detaliul ei -> „Emite chitanță” (formularul cu data și suma propuse, nimic tastat) -> „Emite”:
-    refuzul spune că lipsește seria, cu „Deschide Date firmă” -> apăsat: Date firmă se deschide PESTE factură, iar săgeata spune „Înapoi
-    la …” -> X: înapoi în detaliul facturii, cu formularul chitanței deschis, aceeași dată și sumă și refuzul lui (nu pagina principală,
-    nu detaliul redesenat fără formular); apoi „Deschide Date firmă” din nou -> „← Înapoi la …”: același formular."""
+    """445 (pct.21: „orice buton «Deschide X» dintr-un refuz întoarce în formularul de plecare, cu datele intacte.”), pe chitanța facturii.
+    [lotul 13, 543 — comanda Costin 13.1: „La lipsa seriei de chitanțe, aplicația trimite în Date firmă, iar la factură seria se cere pe loc
+    […] Seria se cere pe loc, ca la factură.”] Refuzul seriei nu mai trimite în Date firmă: seria se cere chiar sub formular, deci nici nu
+    se mai pleacă din el. Pașii: firma fără serie de chitanțe -> factura emisă -> detaliul ei -> „Emite chitanță” (fereastra chitanței, cu
+    data și suma propuse, nimic tastat) -> „Emite”: refuzul spune că lipsește seria și o cere pe loc, fără „Deschide Date firmă”, iar data și
+    suma rămân cele din formular -> seria „G445” -> „Stabilește seria și emite chitanța”: chitanța se emite cu ACEEAȘI dată și sumă."""
     assert not sql('SELECT serie_chitanta FROM "%s".firma_profil WHERE serie_chitanta IS NOT NULL' % firma_gv["schema"])
-    numar, _fid = _factura_emisa(firma_gv)
+    numar, fid = _factura_emisa(firma_gv)
     pg = patron.pg
     _detaliu_factura(patron, firma_gv, numar)
     pg.click(".fereastra:last-of-type #fd-chitanta")
     pg.wait_for_selector(".fereastra:last-of-type #fd-chit-ok", timeout=20000)
     inainte = {"data": pg.input_value("#fd-chit-data"), "suma": pg.input_value("#fd-chit-suma")}
     pg.click(".fereastra:last-of-type #fd-chit-ok")
-    buton = pg.wait_for_selector(".fereastra:last-of-type #fd-chit-form [data-ecran-destinatie='date_firma']", timeout=20000)
-    refuz = pg.inner_text("#fd-chit-msg")
+    pg.wait_for_selector(".fereastra:last-of-type #ser-chit-serie", timeout=20000)
+    refuz = pg.inner_text(".fereastra:last-of-type #ser-chit-box")
+    patron.captura("seria_pe_loc")
     assert "serie" in refuz, refuz
-    buton.click()
-    pg.wait_for_selector(".fereastra:last-of-type #df-serie_chitanta", timeout=20000)
-    sageata = pg.locator(".fereastra:last-of-type .nav-inapoi")
-    assert (sageata.get_attribute("aria-label") or "").startswith("Înapoi la "), sageata.get_attribute("aria-label")
-    patron.captura("date_firma_din_refuz")
-    pg.click(".fereastra:last-of-type .nav-x")                                             # X: întoarce la formular
-    pg.wait_for_selector(".fereastra:last-of-type #fd-chit-form", timeout=20000)
+    assert not pg.query_selector(".fereastra:last-of-type [data-ecran-destinatie='date_firma']:not([hidden])"), "refuzul nu mai trimite în Date firmă (543)"
     dupa = {"data": pg.input_value("#fd-chit-data"), "suma": pg.input_value("#fd-chit-suma")}
-    patron.captura("inapoi_din_x")
-    assert dupa == inainte and pg.inner_text("#fd-chit-msg").startswith(refuz[:40]), (inainte, dupa)   # 445: „cu datele intacte”
-    pg.click(".fereastra:last-of-type #fd-chit-form [data-ecran-destinatie='date_firma']")
-    pg.wait_for_selector(".fereastra:last-of-type #df-serie_chitanta", timeout=20000)
-    pg.click(".fereastra:last-of-type .nav-inapoi")                                        # „← Înapoi la …”
-    pg.wait_for_selector(".fereastra:last-of-type #fd-chit-form", timeout=20000)
-    assert {"data": pg.input_value("#fd-chit-data"), "suma": pg.input_value("#fd-chit-suma")} == inainte
+    assert dupa == inainte, (inainte, dupa)                                                 # 445: „cu datele intacte”
+    pg.fill(".fereastra:last-of-type #ser-chit-serie", "G445")
+    pg.click(".fereastra:last-of-type #ser-chit-ok")
+    pg.wait_for_function("() => document.body.innerText.includes('a fost emisă')", timeout=30000)
+    patron.captura("emisa")
+    rand = sql('SELECT serie, data::text, suma FROM "%s".chitante WHERE factura_id = %%s' % firma_gv["schema"], (fid,))
+    assert [(r[0], r[1], float(r[2])) for r in rand] == [("G445", inainte["data"], float(inainte["suma"]))], (rand, inainte)

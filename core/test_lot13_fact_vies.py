@@ -47,6 +47,18 @@ def test_def_c199_vies_cazut_la_emitere_e_indisponibil(monkeypatch):
     assert cerute == ["DE123456789"]
 
 
+def test_def_c199_codul_fara_forma_de_cod_ue_e_invalid_cu_motivul(monkeypatch):
+    """Codul care nu are forma unui cod de TVA din UE (`intracomunitar.verifica_vies` ridică ValueError) -> verdictul „invalid”, cu motivul
+    spus (nu un dict tăcut — garda `core/test_gard_masca_zero.py`, masca succes-shaped).
+    MUTAȚIE: `"motiv": str(e)` scos din `verifica_vies_emitere` -> pică."""
+    def _forma(cod, timeout=15):
+        raise ValueError("Codul %s nu are forma unui cod de TVA din UE." % cod)
+    monkeypatch.setattr(intracomunitar, "verifica_vies", _forma)
+    r = facturi_api.verifica_vies_emitere("XX12", None)
+    assert (r["stare"], r["valid"]) == ("invalid", False) and facturi_api.stare_vies(r) == "invalid"
+    assert r["motiv"] == "Codul XX12 nu are forma unui cod de TVA din UE.", r
+
+
 @DB
 def test_def_c199_cod_invalid_in_vies_refuza_scutirea(conn):
     """Codul invalid în VIES -> refuzul scutirii (VIES_INVALID, lângă codul clientului), nicio factură scrisă.

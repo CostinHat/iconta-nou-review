@@ -25,6 +25,11 @@ function _fereastraUit(dataTransport, intracom) {
   return { ok, mesaj, semafor, valabilPana: dataIso(valabilPana), zileVal, zileRamase };
 }
 
+// [lotul 13, 534] documentul ales în fereastra „Alege factura / NIR-ul”, de pus pe formular la întoarcere: navigatorul REDESENEAZĂ
+// fereastra de dedesubt dacă omul n-a tastat nimic în ea (`navigator._dePastrat`), deci completarea nu se poate face pe elementul vechi —
+// se ține aici, pe firmă, și o aplică formularul desenat la întoarcere (sau cel păstrat, dacă navigatorul l-a pus la loc)
+const _deCompletat = {};
+
 export async function ecranEtransport(corp, nav, t) {
   const ziAzi = dataIso();
   const COD_SCOP = [["101","Comercializare"],["201","Producție"],["301","Gratuități"],["401","Echipament comercial"],["501","Mijloace fixe"],["601","Uz propriu"],["703","Livrare cu instalare"],["704","Transfer între gestiuni"],["705","Bunuri puse la dispoziție"],["9901","Altele"]];
@@ -42,8 +47,10 @@ export async function ecranEtransport(corp, nav, t) {
     : `<span class="camp-eticheta">${e}</span>`;
   const inp = (id, eticheta, tip = "text", val = "", extra = "") =>
     `<label class="camp">${_et(eticheta)}<input type="${tip}" id="${id}" class="camp-input" value="${esc(val)}" ${extra}></label>`;
+  // [lotul 13, 676 — DS cap.2a v2.104] desenatorul comun al listelor închise pune `data-butoane` o dată: lista cu cel mult 6 opțiuni
+  // (tipul operațiunii, scopul) se arată ca butoane alăturate (`api.alegereButoane`); județele (42) rămân listă
   const sel = (id, eticheta, optiuni, val = "") =>
-    `<label class="camp">${_et(eticheta)}<select id="${id}" class="camp-input">${alegeDacaLipseste(val)}${optiuni.map(([v, l]) => `<option value="${v}"${String(v) === String(val) ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></label>`;
+    `<label class="camp">${_et(eticheta)}<select id="${id}" class="camp-input" data-butoane="">${alegeDacaLipseste(val)}${optiuni.map(([v, l]) => `<option value="${v}"${String(v) === String(val) ? " selected" : ""}>${esc(l)}</option>`).join("")}</select></label>`;
 
   const blocLoc = (p, titlu) => `
     <div class="pf-frand-nume" style="margin:12px 0 6px">${titlu}</div>
@@ -263,8 +270,9 @@ export async function ecranEtransport(corp, nav, t) {
       c2.querySelectorAll(".et-doc").forEach((b) => b.addEventListener("click", async () => {
         try {
           const r = await api.get(`/tenants/${t.id}/etransport/din-document?fel=${fel}&id=${b.dataset.id}`);
+          _deCompletat[t.id] = r;
           nav.inapoi();
-          completeazaDin(r);
+          if (corp.isConnected && _deCompletat[t.id]) { delete _deCompletat[t.id]; completeazaDin(r); }   // fereastra păstrată
         } catch (e) { arataMesaj(c2, (e && e.mesaj) || "Documentul nu s-a putut citi.", "eroare"); }
       }));
     }); }
@@ -311,6 +319,7 @@ export async function ecranEtransport(corp, nav, t) {
       </div>`).join("")}</div>`;
   }
   deseneaza();
+  if (_deCompletat[t.id]) { const r = _deCompletat[t.id]; delete _deCompletat[t.id]; completeazaDin(r); }   // fereastra redesenată la întoarcere
 }
 
 // etransport_std_v1 · batch 3a: randuri dinamice cap.24 (model pozitional + re-randare + stergere + backend autoritar)

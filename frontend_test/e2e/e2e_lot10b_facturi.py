@@ -91,7 +91,9 @@ def test_def_419_dupa_stornare_factura_e_stornata_fara_reimprospatare(patron, fi
     sus = " ".join(pg.inner_text(".fd-antet-sus").split())
     assert "Se stornează" not in pg.inner_text("body"), sus
     assert "stornată" in sus and "neîncasată" not in sus, sus
-    assert not pg.query_selector("#fd-storno") and not pg.query_selector("#fd-chitanta") and not pg.query_selector("#fd-storno-ok"), sus
+    # [lotul 13, 675 — DS cap.1 v2.104] „Stornează” și „Emite chitanță” stau la locul lor, inactive, cu motivul (nu mai dispar)
+    assert pg.get_attribute("#fd-storno", "aria-disabled") == "true" and "stornată integral" in pg.get_attribute("#fd-storno", "title"), sus
+    assert pg.get_attribute("#fd-chitanta", "aria-disabled") == "true" and not pg.query_selector("#fd-storno-ok"), sus
     assert "Marfa a revenit în stoc: %s × 1 buc" % ARTICOL in pg.inner_text("#fd-storno-rez") and pg.is_visible("#fd-spre-istoric")
 
 
@@ -183,7 +185,7 @@ def test_def_419_clasa_chitanta_integrala_arata_incasata_fara_reimprospatare(pat
     stari = pg.eval_on_selector_all(".fd-stare", "els => els.map(e => e.innerText.trim())")
     patron.captura()
     assert "încasată" in stari and "neîncasată" not in stari, stari
-    assert not pg.query_selector("#fd-chitanta") and pg.query_selector("[data-chpdf]"), stari
+    assert pg.get_attribute("#fd-chitanta", "aria-disabled") == "true" and pg.query_selector("[data-chpdf]"), stari   # [lotul 13, 675] inactiv, cu motivul
 
 
 # ── C74 — o factură stornată integral (sau o stornare) nu se mai stornează ──────────────────────────────────────────────────
@@ -205,4 +207,6 @@ def test_def_c74_factura_stornata_nu_se_mai_storneaza(patron, firma_fac):
     assert sql('SELECT count(*) FROM "%s".facturi' % s)[0][0] == inainte      # nimic scris, niciun număr rezervat
     _deschide_factura(patron, firma_fac, f["factura_id"])
     patron.captura()
-    assert not patron.pg.query_selector("#fd-storno"), "factura stornată integral nu mai oferă „Stornează”"
+    # [lotul 13, 675] „Stornează” stă la locul lui, inactiv, cu motivul (nu mai dispare)
+    assert patron.pg.get_attribute("#fd-storno", "aria-disabled") == "true", "factura stornată integral nu mai oferă „Stornează”"
+    assert "stornată integral" in patron.pg.get_attribute("#fd-storno", "title")

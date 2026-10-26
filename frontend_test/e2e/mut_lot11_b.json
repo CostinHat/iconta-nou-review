@@ -13,8 +13,8 @@
  },
  {
   "fisier": "static/js/ecrane/borderou_ecran.js",
-  "ancora": "${!b.storno_din && !b.stornat_de ? `<button",
-  "inlocuire": "${true ? `<button",
+  "ancora": "(b.stornat_de ? atributeInactiv(",
+  "inlocuire": "(false ? atributeInactiv(",
   "test": "frontend_test/e2e/e2e_lot11_b.py::test_decizia_103_borderoul_se_storneaza_din_lista_lunii"
  },
  {

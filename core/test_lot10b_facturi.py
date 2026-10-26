@@ -19,7 +19,7 @@ from decimal import ROUND_HALF_UP, Decimal as D
 import pytest
 
 from core import db as _db, tenant_provisioning as _tp
-from core.arbore_js import apeluri, arbore_js, conditii_cu_element, declaratii, elemente_html, functia, noduri
+from core.arbore_js import apeluri, arbore_js, declaratii, elemente_html, functia, noduri
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCHEMA_T = "ztest_lot10b_facturi"
@@ -215,23 +215,31 @@ def test_419_factura_stornata_nu_se_mai_storneaza(conn_schema):
 
 def test_419_dupa_stornare_detaliul_se_reface_si_nu_mai_ofera_stornarea():
     """DS cap.27 v2.93–v2.94: „o listă care trebuie reîmprospătată se reface ACUM, iar confirmarea se pune peste ea”, „în zona de mesaj a
-    ecranului redesenat”. Butonul „Se stornează…” dispare odată cu zona veche; starea „stornată” vine de la server; „Stornează” și „Emite
-    chitanță” nu se mai oferă pe factura stornată."""
+    ecranului redesenat”. Butonul „Se stornează…” dispare odată cu fereastra confirmării; starea „stornată” vine de la server; „Stornează”
+    și „Emite chitanță” nu se mai aplică facturii stornate. [lotul 13, 673 / 675 — DS cap.2a / cap.1 v2.104] Confirmarea stornării e o
+    fereastră mică; după „Confirm stornarea” confirmarea e lăsată detaliului (`laRevenire`), apoi „←”, iar detaliul REFĂCUT (de ecran sau de
+    navigator) o pune în zona lui de stornare; „Stornează” / „Emite chitanță” stau la locul lor, inactive, cu motivul."""
     js = _js("facturi_ecran.js")
-    i = js.index('zonaStorno.querySelector("#fd-storno-ok").addEventListener("click"')
+    i = js.index('c2.querySelector("#fd-storno-ok").addEventListener("click"')
     h = js[i:js.index("} catch (e) {", i)]
-    assert h.index("await detaliiFactura(corp, nav, tenantId, facturaId, opt);") < h.index('id="fd-storno-rez">'), h
+    assert h.index("laRevenire(tenantId, facturaId,") < h.index('id="fd-storno-rez">') < h.index("nav.inapoi();") < h.index(
+        "await detaliiFactura(corp, nav, tenantId, facturaId, opt);"), h
     arb, cod = arbore_js("facturi_ecran.js")
-    ok = [c for c in noduri(arb, "CallExpression") if cod(c["callee"]) == 'zonaStorno.querySelector("#fd-storno-ok").addEventListener']
+    ok = [c for c in noduri(arb, "CallExpression") if cod(c["callee"]) == 'c2.querySelector("#fd-storno-ok").addEventListener']
     assert len(ok) == 1, len(ok)
     handler = ok[0]["arguments"][1]
-    # zona de stornare se ia din detaliul REFĂCUT, iar confirmarea se pune în ea
-    assert declaratii(handler, cod).get("zs") == ['corp.querySelector("#fd-storno-zona")'], declaratii(handler, cod)
-    assert apeluri(handler, cod, "rezNou.appendChild") == [("bi",)]
-    # 416: „stornată” = starea de încasare a serverului; „Stornează” și „Emite chitanță” nu se oferă pe ea
+    # zona de stornare se ia din detaliul REFĂCUT (`c`, corpul primit la revenire), iar confirmarea se pune în ea
+    assert declaratii(handler, cod).get("zs") == ['c.querySelector("#fd-storno-zona")'], declaratii(handler, cod)
+    assert apeluri(handler, cod, 'zs.querySelector("#fd-storno-rez").appendChild') == [("bi",)]
+    # 416: „stornată” = starea de încasare a serverului; „Stornează” și „Emite chitanță” nu se aplică pe ea (inactive, cu motivul)
     assert declaratii(arb, cod).get("stornata") == ['!!(f.stare_incasare && f.stare_incasare.stare === "stornata")']
-    cond = conditii_cu_element(arb, cod)
-    assert cond["fd-storno"] >= {"!f.storno_din_id", "!stornata"} and cond["fd-chitanta"] >= {"!f.platita_la", "!stornata"}, cond
+    m = js[js.index("  const motiv = {"):]
+    m = m[:m.index("\n  };")]
+    storno = m[m.index("    storno:"):m.index("    transforma:")]
+    chitanta = m[m.index("    chitanta:"):m.index("    saga:")]
+    assert "f.storno_din_id" in storno and "stornata" in storno, storno
+    assert "f.platita_la" in chitanta and "stornata" in chitanta, chitanta
+    assert 'id="fd-storno"${inactivDaca(motiv.storno)}' in js and 'data-actiune="POST /tenants/{tenant_id}/chitante"${inactivDaca(motiv.chitanta)}' in js
     butoane = {at.get("id"): at.get("data-actiune") for _t, at in elemente_html(arb)}
     assert (butoane["fd-storno"], butoane["fd-chitanta"]) == ("POST /tenants/{tenant_id}/facturi/{factura_id}/storno",
                                                               "POST /tenants/{tenant_id}/chitante")
@@ -242,9 +250,17 @@ def test_419_clasa_chitanta_si_spv_refac_detaliul_dupa_act():
     și „Trimite în SPV” (eticheta SPV din antet) refac detaliul de la server și pun confirmarea în zona de mesaj a detaliului refăcut
     (`#fd-act-rez`), ca „Transformă în factură” (C64). „Trimite pe email” și „Export SAGA” nu schimbă starea facturii."""
     js = _js("facturi_ecran.js")
+    # [lotul 13, 673] chitanța se emite în fereastra ei: confirmarea e lăsată detaliului (`mesajDupaRevenire`), apoi „←”, iar detaliul se
+    # reface de la server — de ecran (fereastra păstrată) sau de navigator (redesenată) — și o pune în `#fd-act-rez`, după desenare
     i = js.index('form.querySelector("#fd-chit-ok").addEventListener("click"')
     h = js[i:js.index("} catch (e) {", i)]
-    assert h.index("await detaliiFactura(corp, nav, tenantId, facturaId, opt);") < h.index('arataMesaj(corp.querySelector("#fd-act-rez")'), h
+    assert h.index("mesajDupaRevenire(tenantId, facturaId,") < h.index("nav.inapoi();") < h.index(
+        "await detaliiFactura(corp, nav, tenantId, facturaId, opt);"), h
+    m = js[js.index("function mesajDupaRevenire("):]
+    assert 'arataMesaj(c.querySelector("#fd-act-rez") || c, text, fel)' in m[:m.index("\n}")], m[:300]
+    d = js[js.index("async function detaliiFactura("):]
+    d = d[:d.index("\nasync function ") if "\nasync function " in d else len(d)]
+    assert d.index("corp.innerHTML = `") < d.index("dupaRevenire(corp);"), "confirmarea se pune după desenarea detaliului"
     i = js.index("/facturi/${facturaId}/trimite-spv`")
     h = js[i:js.index("} catch (e) {", i)]
     assert h.index("await detaliiFactura(corp, nav, tenantId, facturaId, opt);") < h.index('arataMesaj(corp.querySelector("#fd-act-rez")'), h

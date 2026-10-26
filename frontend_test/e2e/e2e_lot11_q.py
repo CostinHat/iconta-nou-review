@@ -59,8 +59,9 @@ def test_def_c86_factura_emisa_din_xml_nu_se_trimite_in_spv_iar_stornarea_ia_val
     pg = patron.pg
     patron.captura("detaliul_din_xml")
     antet = pg.inner_text(".fd-antet")
-    # OUG 120/2021 art.4 alin.(3)/(6): transmisă de emitent — nu se mai oferă a doua trimitere, iar motivul stă în locul butonului
-    assert pg.locator("#fd-spv").count() == 0, antet
+    # OUG 120/2021 art.4 alin.(3)/(6): transmisă de emitent — nu se mai oferă a doua trimitere: [lotul 13, 675 — DS cap.1 v2.104] butonul
+    # stă la locul lui, inactiv, cu motivul (la trecerea cu mouse-ul și scris lângă el)
+    assert pg.get_attribute("#fd-spv", "aria-disabled") == "true" and pg.get_attribute("#fd-spv", "title") == ETICHETA, antet
     assert pg.inner_text("#fd-spv-motiv").strip() == ETICHETA, antet
     assert "netrimis" not in antet and "termen de transmitere" not in antet, antet
     # serverul refuză și el, numit (nu „conectează SPV”)
@@ -93,4 +94,4 @@ def test_def_c86_factura_emisa_din_xml_nu_se_trimite_in_spv_iar_stornarea_ia_val
     patron.captura("detaliul_stornarii")
     rand = pg.locator("tr:has(td.fd-td-den)").first.inner_text()
     assert re.search(r"[-−]\s?100,50 RON\s*$", rand.strip()) and "100,49" not in rand, rand
-    assert pg.locator("#fd-spv").count() == 1 and pg.locator("#fd-spv-motiv").count() == 0
+    assert pg.locator("#fd-spv").count() == 1 and pg.get_attribute("#fd-spv", "aria-disabled") is None and pg.locator("#fd-spv-motiv").count() == 0

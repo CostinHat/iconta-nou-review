@@ -417,22 +417,23 @@ def _detaliu_factura(ecran, firma, numar):
 def test_def_116_refuzul_chitantei_duce_la_campul_seriei(patron, firma_gv):
     """116. Chitanțe: „Deschide Date firmă” ducea la începutul paginii.
     Pașii contabilului: firma n-are serie de chitanțe -> factura emisă -> „Emite chitanță” -> „Emite” -> refuzul spune că lipsește
-    seria și are „Deschide Date firmă” -> apăsat, Date firmă se deschide cu câmpul „Seria chitanțelor” în vedere și în focus."""
+    seria și, de la 543 (lotul 13), cere seria pe loc: câmpul „Seria chitanțelor” sub refuz, în vedere și în focus."""
     assert not sql('SELECT serie_chitanta FROM "%s".firma_profil WHERE serie_chitanta IS NOT NULL' % firma_gv["schema"])
     numar, _fid = _factura_emisa(firma_gv)
     pg = patron.pg
     _detaliu_factura(patron, firma_gv, numar)
     pg.click(".fereastra:last-of-type #fd-chitanta")
     pg.click(".fereastra:last-of-type #fd-chit-ok")
-    buton = pg.wait_for_selector(".fereastra:last-of-type [data-ecran-destinatie='date_firma']", timeout=20000)
+    # [lotul 13, deficiența 543 — Costin 13.1: „La lipsa seriei de chitanțe, aplicația trimite în Date firmă, iar la factură seria se cere pe
+    # loc […] Seria se cere pe loc, ca la factură.”] Câmpul seriei vine sub refuz, în aceeași fereastră, în focus și în vedere (nu mai
+    # e nevoie de drumul prin Date firmă, pe care îl păzea 116)
+    pg.wait_for_selector(".fereastra:last-of-type #ser-chit-serie", timeout=20000)
     assert "n-are serie pentru chitanțe" in patron.fereastra()
     patron.captura("refuz")
-    buton.click()
-    pg.wait_for_selector(".fereastra:last-of-type #df-serie_chitanta", timeout=20000)
-    pg.wait_for_function("() => document.activeElement && document.activeElement.id === 'df-serie_chitanta'", timeout=10000)
-    vazut = pg.evaluate("() => { const r = document.querySelector('.fereastra:last-of-type #df-serie_chitanta').getBoundingClientRect();"
+    pg.wait_for_function("() => document.activeElement && document.activeElement.id === 'ser-chit-serie'", timeout=10000)
+    vazut = pg.evaluate("() => { const r = document.querySelector('.fereastra:last-of-type #ser-chit-serie').getBoundingClientRect();"
                         " return r.top >= 0 && r.bottom <= window.innerHeight; }")
-    patron.captura("date_firma")
+    patron.captura("seria_pe_loc")
     assert vazut, "câmpul seriei nu e în vedere"
 
 

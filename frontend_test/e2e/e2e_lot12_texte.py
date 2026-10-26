@@ -235,8 +235,9 @@ def test_def_45_refuzul_emailului_facturii_vine_in_vedere(patron, factura_e2e):
     client, total, stare SPV); acțiunea principală rămâne fixă jos (clasa 285).”] Până la C164 (aici un `xfail(strict=True)`), zona
     e-mailului stătea în antetul lipit sus, care pe un ecran mai scund decât el nu se derula: un refuz scris mai jos de marginea ecranului
     nu mai putea intra în vedere. Acum, pe ecranul scund (DS cap.9 v2.103), butoanele detaliului și zonele lor de rezultat stau în bara
-    lipită jos — zona refuzului e mereu în vedere, oricât s-ar derula tabelul. Mutația (`mut_lot12_fe3.json`: media query-ul ecranului scund
-    scos din stil.css) o pune înapoi în antet -> ROȘU (zona nu mai e în bară)."""
+    lipită jos — zona refuzului e mereu în vedere, oricât s-ar derula tabelul. [lotul 13, 673 — DS cap.2a v2.104: „orice acțiune din orice
+    fereastră: deschide o fereastră nouă”] De la lotul 13 formularul „Trimite pe email” e în fereastra lui, deasupra detaliului: refuzul stă
+    lângă „Trimite”, în fereastra aceea, în vedere."""
     from e2e_bloc_a import _deschide_factura
     pg = patron.pg
     pg.set_viewport_size({"width": 1280, "height": 520})
@@ -252,7 +253,8 @@ def test_def_45_refuzul_emailului_facturii_vine_in_vedere(patron, factura_e2e):
     assert pg.inner_text(_F + "#fd-email-rez").strip() == "Introdu o adresă validă."
     v = _in_vedere(pg, "#fd-email-rez")
     assert v["ok"], v
-    assert pg.eval_on_selector(_F + "#fd-email-rez", "z => !!z.closest('.bara-fixa')"), "zona refuzului nu e în bara lipită jos (C164)"
+    assert pg.eval_on_selector(_F + "#fd-email-rez", "z => !z.closest('.fereastra').querySelector('#fd-pdf')"), \
+        "formularul de email nu e în fereastra lui (673), ci în detaliul facturii"
 
 
 def test_def_45_confirmarea_modelului_de_factura_vine_in_vedere(patron, firma_e2e):

@@ -89,7 +89,8 @@ def _pe_ecranul_scund(a):
 def test_def_c164_pe_fereastra_scunda_antetul_e_un_rand_iar_actiunile_raman_jos(browser):  # noqa: F811
     """1280×600, factura cu 30 de linii (tabelul derulează): antetul lipit e UN rând (număr, client, total, stare SPV), iar „PDF factură”,
     „Trimite pe email”, „Stornează”, „Emite chitanță”, „Export SAGA”, „Trimite în SPV” stau în bara lipită jos — în vedere la începutul și
-    la capătul tabelului. Rezultatul unei acțiuni („Introdu o adresă validă.” la „Trimite pe email” cu adresa goală) e în vedere."""
+    la capătul tabelului. Rezultatul unei acțiuni („Introdu o adresă validă.” la „Trimite pe email” cu adresa goală) e în vedere — de la
+    lotul 13 (673, DS cap.2a v2.104) în fereastra formularului de email, deschisă peste detaliu."""
     f = _factura()
     pg, erori = _pagina(browser, _rute_detaliu(f), lat=1280, inalt=600)
     _deschide_detaliul(pg)
@@ -104,9 +105,9 @@ def test_def_c164_pe_fereastra_scunda_antetul_e_un_rand_iar_actiunile_raman_jos(
     pg.click("#fd-email-send")
     pg.wait_for_function("() => (document.querySelector('#fd-email-rez') || {}).innerText", timeout=5000)
     v = pg.evaluate("""() => { const c = %s, z = c.querySelector('#fd-email-rez'), r = z.getBoundingClientRect(), rc = c.getBoundingClientRect();
-      return {text: z.innerText.trim(), in_bara: !!z.closest('.bara-fixa'), ok: r.top >= rc.top && r.bottom <= Math.min(innerHeight, rc.bottom) + 1}; }"""
+      return {text: z.innerText.trim(), fereastra_lui: !c.querySelector('#fd-pdf'), ok: r.top >= rc.top && r.bottom <= Math.min(innerHeight, rc.bottom) + 1}; }"""
                     % _CORP)
-    assert v["text"] == "Introdu o adresă validă." and v["in_bara"] and v["ok"], v
+    assert v["text"] == "Introdu o adresă validă." and v["fereastra_lui"] and v["ok"], v
     assert erori == [], erori
 
 
@@ -121,26 +122,27 @@ def test_def_c164_pe_telefon_antetul_e_un_rand_iar_actiunile_raman_jos(browser):
 
 def test_c164_pe_ecranul_inalt_antetul_ramane_cel_de_pana_acum_si_revine_la_marire(browser):  # noqa: F811
     """1280×900: rândul scurt ascuns, butoanele în antetul lipit sus (DS cap.9 v2.96 pct.5), în ordinea lor. Fereastra micșorată la 600 px
-    -> rândul scurt și butoanele jos; mărită la loc -> fiecare buton înapoi în antet, în aceeași ordine, iar zona e-mailului deschisă
-    rămâne cu ce era scris în ea (se mută nodurile, nu se redesenează)."""
+    -> rândul scurt și butoanele jos; mărită la loc -> fiecare buton înapoi în antet, în aceeași ordine, iar zona de rezultat a unei
+    acțiuni rămâne cu ce era scris în ea (se mută nodurile, nu se redesenează). [lotul 13, 673] „Trimite pe email” și „Stornează” au acum
+    fereastra lor; zona care rămâne în detaliu e rezultatul lui „Export SAGA”."""
     pg, erori = _pagina(browser, _rute_detaliu(_factura()), lat=1280, inalt=900)
     _deschide_detaliul(pg)
     inalt = _asezare(pg)
     assert not inalt["scurt_vizibil"] and inalt["in_antet"] == inalt["butoane"] and not inalt["in_bara"], inalt
     assert {"fd-antet"} <= set(inalt["rezumat"].split()), inalt   # clasa (sau id-ul) rezumatului lipit: antetul întreg
     ordine = pg.eval_on_selector_all(".fd-antet-sus > *", "els => els.map((e) => e.id || e.tagName)")
-    pg.click("#fd-email")
-    pg.fill("#fd-email-input", "client@exemplu.ro")
+    pg.click("#fd-saga")
+    pg.wait_for_function("() => (document.querySelector('#fd-saga-zona') || {innerText: ''}).innerText.includes('XML SAGA descărcat')", timeout=5000)
     pg.set_viewport_size({"width": 1280, "height": 600})
     pg.wait_for_timeout(300)
     _pe_ecranul_scund(_asezare(pg))
-    assert pg.input_value("#fd-email-input") == "client@exemplu.ro"
+    assert "XML SAGA descărcat" in pg.inner_text("#fd-saga-zona")
     pg.set_viewport_size({"width": 1280, "height": 900})
     pg.wait_for_timeout(300)
     inapoi = _asezare(pg)
     assert not inapoi["scurt_vizibil"] and inapoi["in_antet"] == inalt["butoane"], inapoi
     assert pg.eval_on_selector_all(".fd-antet-sus > *", "els => els.map((e) => e.id || e.tagName)") == ordine
-    assert pg.input_value("#fd-email-input") == "client@exemplu.ro"
+    assert "XML SAGA descărcat" in pg.inner_text("#fd-saga-zona")
     assert erori == [], erori
 
 

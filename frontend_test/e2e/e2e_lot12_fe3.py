@@ -221,8 +221,10 @@ def test_def_c164_pe_ecranul_scund_antetul_facturii_e_un_rand_iar_actiunile_rama
             pg.wait_for_timeout(800)
             v = pg.evaluate("""() => { const z = document.querySelector('.fereastra:last-of-type #fd-email-rez'), c = z.closest('.fereastra-corp');
               const r = z.getBoundingClientRect(), rc = c.getBoundingClientRect();
-              return {text: z.innerText.trim(), bara: !!z.closest('.bara-fixa'), ok: r.top >= rc.top && r.bottom <= Math.min(innerHeight, rc.bottom) + 1}; }""")
+              return {text: z.innerText.trim(), fereastra_lui: !z.closest('.fereastra').querySelector('#fd-pdf'),
+                      ok: r.top >= rc.top && r.bottom <= Math.min(innerHeight, rc.bottom) + 1}; }""")
             patron.captura("email_refuz_%dx%d" % (lat, inalt))
-            assert v["text"] == "Introdu o adresă validă." and v["bara"] and v["ok"], v
+            # [lotul 13, 673 — DS cap.2a v2.104] formularul de email e în fereastra lui (nu în bara detaliului); refuzul, în vedere
+            assert v["text"] == "Introdu o adresă validă." and v["fereastra_lui"] and v["ok"], v
     finally:
         pg.set_viewport_size({"width": 1700, "height": 1000})
