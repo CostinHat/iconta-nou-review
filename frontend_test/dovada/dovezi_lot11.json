@@ -993,7 +993,7 @@
   "nr": "457",
   "firma": "tenant_9049",
   "descriere": "F1: linia de extras din 16.10.2026 (comisionul de 12,50 lei, contată pe 22.10 de contabil, înainte de reparație) spune «Contată · notă ciornă» — nota ei e ciornă, n-a trimis-o nimeni la validare —, nu «Contată, nota e la validare»",
-  "pasi": [{"click": "#fa-banca"}, {"asteapta": "#bk-lista .pf-frand"}, {"deruleaza": "#bk-lista .pf-frand", "text": "Comision administrare cont"},
+  "pasi": [{"click": "#fa-banca"}, {"asteapta": "#bk-lista tbody.tn-nota"}, {"deruleaza": "#bk-lista tbody.tn-nota", "text": "Comision administrare cont"},
            {"pauza": 500}],
   "verifica": [{"contine": "Contată · notă ciornă", "zona": "#bk-lista"}, {"nu_contine": "nota e la validare", "zona": "#bk-lista"}],
   "captura": "457_f1_vechi_banca_comision_ciorna.png"},

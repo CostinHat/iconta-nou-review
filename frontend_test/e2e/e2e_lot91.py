@@ -350,7 +350,7 @@ def test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare(patron, firma
     pg.click("#je-salveaza")
     pg.wait_for_selector("[data-nota-id='%s'] [data-val]" % nid, timeout=20000)
     pg.click("[data-nota-id='%s'] [data-val]" % nid)
-    pg.wait_for_function("(n) => { const r = document.querySelector(`[data-nota-id='${n}']`); return r && !r.querySelector('[data-val]'); }",
+    pg.wait_for_function("(n) => { const r = document.querySelector(`[data-nota-id='${n}']`); return r && !r.querySelector(\"[data-val]:not([aria-disabled='true'])\"); }",   # [lotul 13, 675]
                          arg=nid, timeout=20000)
     patron.captura("validata")
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % s, (nid,))[0][0] == "validata"

@@ -24,9 +24,9 @@ def test_def_c150_doua_contari_din_aceeasi_zi_au_confirmari_diferite(patron, fir
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('importate')", timeout=30000)
     confirmari = []
     for text, suma in (("Comision administrare cont E2E C150", "12,50"), ("Comision mentenanta card E2E C150", "7,00")):
-        rand = pg.locator("#bk-lista .pf-frand", has_text=text).first
+        rand = pg.locator("#bk-lista tbody.tn-nota", has_text=text).first
         rand.locator("[data-cont]").first.click()
-        pg.locator("#bk-lista .pf-frand", has_text=text).get_by_text("Contată").first.wait_for(timeout=20000)
+        pg.locator("#bk-lista tbody.tn-nota", has_text=text).get_by_text("Contată").first.wait_for(timeout=20000)
         pg.wait_for_function("(t) => document.querySelector('#bk-mesaj').innerText.includes(t)", arg=text, timeout=20000)
         m = " ".join(pg.inner_text("#bk-mesaj").split())
         assert m.startswith("Linia din %s, −%s lei (%s): notă 627=5121 creată" % (zi, suma, text)), m

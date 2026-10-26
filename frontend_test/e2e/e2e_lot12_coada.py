@@ -227,10 +227,10 @@ def test_def_c107_validarea_contarii_din_jurnal_valideaza_si_iesirea_din_stoc(pa
     with pg.expect_response(lambda r: ("/jurnal/%d/valideaza" % contare) in r.url, timeout=30000) as rr:
         pg.click("[data-val='%d']" % contare)
     assert rr.value.status == 200, rr.value.text()
-    pg.wait_for_function("(i) => !document.querySelector(`[data-val='${i}']`) && !!document.querySelector(`[data-nota-id='${i}']`)",
+    pg.wait_for_function("(i) => !document.querySelector(`[data-val='${i}']:not([aria-disabled='true'])`) && !!document.querySelector(`[data-nota-id='${i}']`)",   # [lotul 13, 675]
                          arg=contare, timeout=20000)
     stari = dict(sql('SELECT id, status FROM "%s".inregistrari WHERE id = ANY(%%s)' % s, ([contare, iesire],)))
     pg.locator("[data-nota-id='%d']" % iesire).scroll_into_view_if_needed()
     patron.captura("dupa")
     assert stari == {contare: "validata", iesire: "validata"}, stari
-    assert pg.locator("[data-val='%d']" % iesire).count() == 0, "ieșirea din stoc a rămas de validat"
+    assert pg.locator("[data-val='%d']:not([aria-disabled='true'])" % iesire).count() == 0, "ieșirea din stoc a rămas de validat"

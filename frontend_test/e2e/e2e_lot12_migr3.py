@@ -109,7 +109,7 @@ def test_def_252_tva_la_incasare_din_fisier_si_din_regimul_firmei(patron, in_sis
     extras = "Data;Detalii;Suma\n%s;Incasare FA-101 CUI RO%s;1210,00\n" % (_ro(AZI), ALFA[0])
     pg.set_input_files("#bk-fisier", {"name": "extras_migr3.csv", "mimeType": "text/csv", "buffer": extras.encode("utf-8")})
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('linie importată')", timeout=30000)
-    linie = pg.locator("#bk-lista .pf-frand", has_text="Incasare FA-101").first
+    linie = pg.locator("#bk-lista tbody.tn-nota", has_text="Incasare FA-101").first
     linie.wait_for(timeout=20000)
     assert "Potrivire exactă" in " ".join(linie.inner_text().split()), linie.inner_text()
     inainte = pg.inner_text("#bk-mesaj")

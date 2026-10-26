@@ -1276,7 +1276,7 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
     pg.set_input_files("#bk-fisier", {"name": "extras_e2e_24_%d.csv" % time.time(), "mimeType": "text/csv",
                                       "buffer": extras.encode("utf-8")})
     pg.wait_for_selector("[data-cont]", timeout=30000)
-    pg.locator(".pf-frand", has_text="Comision administrare cont E2E 24").locator("[data-cont]").click()
+    pg.locator("#bk-lista tbody.tn-nota", has_text="Comision administrare cont E2E 24").locator("[data-cont]").click()
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('627=5121')", timeout=20000)
     nota_manuala = _ok(_api(patron, "POST", "/tenants/%d/jurnal" % tid, {"descriere": "Notă fără document E2E 24", "data":
                                                                          AZI.isoformat(), "linii": [{"debit": "6022", "credit": "5311",
@@ -1355,11 +1355,11 @@ def test_def_26_banca_spune_exact_ce_a_importat_si_ce_nota_a_creat(patron, firma
     mesaj = pg.inner_text("#bk-mesaj")
     patron.captura("import")
     assert "2 linii importate: 0 potrivite pe facturi, 2 fără potrivire" in mesaj, mesaj
-    pg.locator(".pf-frand", has_text="Comision administrare cont E2E 26").locator("[data-cont]").click()
+    pg.locator("#bk-lista tbody.tn-nota", has_text="Comision administrare cont E2E 26").locator("[data-cont]").click()
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('creat')", timeout=20000)
     mesaj = pg.inner_text("#bk-mesaj")
     # [309, 17.10.2026] nota comisionului e ciornă: rândul spune „Contată, nota e la validare”, nu „Contat ✓”
-    pg.locator(".pf-frand", has_text="Comision administrare cont E2E 26").get_by_text("Contată · notă ciornă")   # [309; lotul 11, 457] nota comisionului e ciornă netrimisă.wait_for(timeout=20000)
+    pg.locator("#bk-lista tbody.tn-nota", has_text="Comision administrare cont E2E 26").get_by_text("Contată · notă ciornă")   # [309; lotul 11, 457] nota comisionului e ciornă netrimisă.wait_for(timeout=20000)
     patron.captura("contare")
     # [258] nota se numește cum o arată Registrul jurnal („nr. crt. N din ZZ.LL.AAAA”), nu prin id-ul intern
     nid = sql('SELECT i.id FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '

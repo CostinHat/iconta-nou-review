@@ -1,0 +1,68 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "facturi = (r.facturi || []).filter((f) => f.directie === (inc ? \"emisa\" : \"primita\"));",
+  "inlocuire": "facturi = (r.facturi || []).filter((f) => f.directie === (inc ? \"emisa\" : \"primita\") && !f.preluata);",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_669_banca_alege_facturile_ofera_si_stinge_soldul_preluat"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": ": opBanca(l) ? `Linia e o operațiune a băncii (nota propusă ${np.debit} = ${np.credit}), nu plata unei facturi: se contează pe nota propusă.` : null;   // [607]",
+  "inlocuire": ": null;",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "deschideActiunea(nav, cheie, stareLuna, \"Dispoziție nouă\", (c2) => ecranDispozitieNoua(c2, nav, t, cheie)));",
+  "inlocuire": "(() => { const d = document.createElement(\"div\"); corp.appendChild(d); ecranDispozitieNoua(d, nav, t, cheie); })());",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_624_673_675_676_casa_tabel_fereastra_si_butoanele"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "const notaNoua = { id: \"nou\", data: lunaCurenta ? dataIso() : \"\",",
+  "inlocuire": "const notaNoua = { id: \"nou\", data: `${an}-${String(luna).padStart(2, \"0\")}-01`,",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": ": faraDoc ? `Notă fără document justificativ. ${pasDoc}`",
+  "inlocuire": ": faraDoc ? null",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul"
+ },
+ {
+  "fisier": "core/jurnal_api.py",
+  "ancora": "t = \"Vânzări din raportul Z nr %s din %s, casa %s\" % (nr_raport, pdf_util.data_ro(data), nui)",
+  "inlocuire": "t = \"Vânzări din raportul Z nr %s din %s, casa %s\" % (nr_raport, data, nui)",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_605_618_raport_z_numele_documentului_confirmarea_sub_buton_si_data_romaneasca"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "style=\"width:120px\"></td></tr>\n        <tr class=\"cvi-lipsa-rand\" id=\"cvi-a${a.id}-lipsa-zona\" hidden><td colspan=\"4\">",
+  "inlocuire": "style=\"width:120px\"></td>\n        <td class=\"cvi-lipsa-rand\" id=\"cvi-a${a.id}-lipsa-zona\" hidden><div>",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_612_606_inventarul_in_fereastra_lui_cu_randul_lipsei_sub_articol"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "[\"neimputabila\", \"lipsă neimputabilă\"]",
+  "inlocuire": "[\"neimputabila\", \"lipsa neimputabila\"]",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_612_606_inventarul_in_fereastra_lui_cu_randul_lipsei_sub_articol"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "  inpS.addEventListener(\"input\", arataAvert);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_589_sinteticul_refuzat_inainte_de_salvare_si_contul_nelegal_se_sterge"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "      descSimpla: \"D212 (declarația unică), D300, D112 și restul\",",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_577_cardurile_firmei_pfa_descriu_ce_are_pfa"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "  randeazaSituatiaStocului(corp, r.articole || []);\n  return r;",
+  "inlocuire": "  { const a0 = r.articole || []; if (!window.__s628) { window.__s628 = 1; randeazaSituatiaStocului(corp, a0.slice(0, Math.max(1, a0.length - 2))); } else randeazaSituatiaStocului(corp, a0); }\n  return r;",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_628_doua_deschideri_consecutive_ale_stocurilor_arata_aceeasi_lista"
+ }
+]

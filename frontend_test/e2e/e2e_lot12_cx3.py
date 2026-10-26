@@ -214,12 +214,13 @@ def test_def_c45_chitanta_de_dinainte_stinge_factura_si_la_banca(patron, firma_c
     pg.set_input_files("#bk-fisier", {"name": "extras_e2e_c45_%d.csv" % time.time(), "mimeType": "text/csv",
                                       "buffer": extras.encode("utf-8")})
     # o singură linie: confirmarea spune „1 linie importată” (`cate`), deci se așteaptă rândul liniei în listă, nu un cuvânt din mesaj
-    rand = pg.locator("#bk-lista .pf-frand", has_text=detalii).first
+    rand = pg.locator("#bk-lista tbody.tn-nota", has_text=detalii).first
     rand.wait_for(timeout=30000)
     rand.locator("[data-alege]").first.click()
-    pg.wait_for_selector("#bk-mesaj .stare-goala, #bk-mesaj input[data-fid]", timeout=20000)
+    # [lotul 13, 673] facturile deschise ale liniei, în fereastra „Alege facturile”
+    pg.wait_for_selector(".fereastra:last-of-type #bk-pk-gol, .fereastra:last-of-type input[data-fid]", timeout=20000)
     patron.captura("banca_alege_facturile")
-    assert pg.locator("#bk-mesaj input[data-fid='%s']" % fid).count() == 0, "factura încasată cu chitanța veche e oferită deschisă"
+    assert pg.locator(".fereastra:last-of-type input[data-fid='%s']" % fid).count() == 0, "factura încasată cu chitanța veche e oferită deschisă"
     _deschide_factura(patron, f, fid)
     patron.captura("factura_incasata")
     assert pg.locator(_F + ".fd-stare.fd-stare-verde").count() >= 1

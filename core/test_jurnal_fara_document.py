@@ -86,7 +86,8 @@ def test_validarea_fara_document_nu_se_ofera_iar_cu_document_pleaca(pagina):
     legat de el (aria-describedby); clicul nu deschide nimic și nu trimite nimic. Nota cu document se validează direct."""
     pg, validari = pagina
     b = '[data-val="7"]'
-    assert pg.eval_on_selector(b, "b => b.disabled"), "„Validează” se oferă pe nota fără document (R3 o refuză)"
+    # [lotul 13, 675] inactiv cu motivul (`api.atributeInactiv`: aria-disabled + titlul), nu ascuns și nu `disabled` fără explicație
+    assert pg.eval_on_selector(b, "b => b.getAttribute('aria-disabled') === 'true' && !!b.title"), "„Validează” se oferă pe nota fără document (R3 o refuză)"
     leg = pg.eval_on_selector(b, "b => b.getAttribute('aria-describedby')")
     # [lotul 12, 617] legat de pasul notei (din detaliul ei) și de explicația de deasupra tabelului
     # (că explicația poartă mesajul „nu se validează fără documentul din care provine” o arată, pe elemente, verificarea de mai jos)

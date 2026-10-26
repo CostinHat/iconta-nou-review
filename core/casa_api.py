@@ -131,10 +131,14 @@ def facturi_partener(conn, schema, categorie, cui=None):
     if not deschise:
         return []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT id, serie, numar, tert_nume FROM {schema}.facturi WHERE id = ANY(%s)", ([f["id"] for f in deschise],))
+        cur.execute(f"SELECT id, serie, numar, tert_nume, tip FROM {schema}.facturi WHERE id = ANY(%s)", ([f["id"] for f in deschise],))
         nume = {r["id"]: r for r in cur.fetchall()}
+    # [lotul 13, 669] `preluata`: documentul „Sold la <data>” scris la migrare din soldurile pe parteneri (`nomenclator_status_factura.
+    # TIP_SOLD_PRELUAT`) — ecranul îl numește ca sold preluat, nu ca factură „din <data>”
+    from core import nomenclator_status_factura as _nsf
     return sorted(({"id": f["id"], "numar": _ncs(nume[f["id"]]["serie"], nume[f["id"]]["numar"]), "data_emitere": str(f["data_emitere"]),
-                    "tert_nume": nume[f["id"]]["tert_nume"], "tert_cui": f["tert_cui"], "sold": str(f["sold"])} for f in deschise),
+                    "tert_nume": nume[f["id"]]["tert_nume"], "tert_cui": f["tert_cui"], "sold": str(f["sold"]),
+                    "preluata": nume[f["id"]]["tip"] == _nsf.TIP_SOLD_PRELUAT} for f in deschise),
                   key=lambda f: (f["data_emitere"], f["id"]))
 
 

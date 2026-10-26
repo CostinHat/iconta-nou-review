@@ -1,0 +1,593 @@
+[
+ {
+  "nr": "669",
+  "firma": "tenant_9057",
+  "descriere": "F7 (soldurile pe parteneri preluate înainte de reparație: Client Alfa Test SRL 1.500 lei pe 4111): Casă -> „+ Dispoziție nouă” (fereastra ei) -> „Încasare client”, 1.500 lei, CUI 401007106: „Factura încasată” oferă „Sold la 30.09.2026 (sold preluat la migrare) · Client Alfa Test SRL · rămas 1.500,00 lei”. Nu se adaugă dispoziția",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": "#c-toggle"
+   },
+   {
+    "click": "#c-toggle"
+   },
+   {
+    "asteapta": "#c-campuri"
+   },
+   {
+    "alege": "#c-cat",
+    "valoare": "incasare_client"
+   },
+   {
+    "completeaza": "#c-suma",
+    "valoare": "1500"
+   },
+   {
+    "completeaza": "#c-cui",
+    "valoare": "401007106"
+   },
+   {
+    "asteapta": "#c-facturi [data-cf]"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sold la 30.09.2026",
+    "zona": "#c-facturi"
+   },
+   {
+    "contine": "sold preluat la migrare",
+    "zona": "#c-facturi"
+   },
+   {
+    "contine": "Client Alfa Test SRL",
+    "zona": "#c-facturi"
+   },
+   {
+    "contine": "rămas 1.500,00 lei",
+    "zona": "#c-facturi"
+   },
+   {
+    "nu_contine": "Nicio factură emisă",
+    "zona": "#c-facturi"
+   }
+  ],
+  "captura": "669_f7_vechi_casa_dispozitie_sold_preluat.png"
+ },
+ {
+  "nr": "669",
+  "firma": "tenant_9057",
+  "descriere": "F7: Bancă -> extrasul de probă (încasarea de 1.500 lei fără CUI și un comision de 5 lei) -> „Alege facturile” pe încasare: fereastra ei oferă soldurile preluate ale clienților („Sold la 30.09.2026 (sold preluat la migrare)”, Alfa 1.500,00, Beta 1.000,00). Nu se contează",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-fisier",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#bk-fisier",
+    "generator": "e2e_lot13_firme2:extras_dovada_f7",
+    "argumente": [
+     "2026-10-26"
+    ],
+    "nume": "proba_669_607.csv"
+   },
+   {
+    "asteapta_text": "linii importate"
+   },
+   {
+    "asteapta": "#bk-lista tbody.tn-nota",
+    "text": "Proba 669"
+   },
+   {
+    "click": "#bk-lista tbody.tn-nota:has-text('Proba 669') [data-alege]"
+   },
+   {
+    "asteapta": "#bk-pk-tabel"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sold la 30.09.2026 (sold preluat la migrare)",
+    "zona": "#bk-pk-tabel"
+   },
+   {
+    "contine": "Client Alfa Test SRL",
+    "zona": "#bk-pk-tabel"
+   },
+   {
+    "contine": "1.500,00",
+    "zona": "#bk-pk-tabel"
+   },
+   {
+    "contine": "Client Beta Test SRL",
+    "zona": "#bk-pk-tabel"
+   }
+  ],
+  "captura": "669_f7_vechi_banca_alege_facturile.png"
+ },
+ {
+  "nr": "607",
+  "firma": "tenant_9057",
+  "descriere": "F7: Bancă -> comisionul de 5 lei din extrasul de probă: „Contează 627=5121” activ, „Alege facturile” inactiv, cu motivul („operațiune a băncii …”) la trecerea cu mouse-ul; explicația „Operațiune a băncii” o dată, deasupra tabelului",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-lista tbody.tn-nota",
+    "text": "Proba 607"
+   },
+   {
+    "deruleaza": "#bk-lista tbody.tn-nota",
+    "text": "Proba 607"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": "#bk-lista tbody.tn-nota:has-text('Proba 607') [data-alege]"
+   },
+   {
+    "activ": "#bk-lista tbody.tn-nota:has-text('Proba 607') [data-cont]"
+   },
+   {
+    "contine": "Operațiune a băncii",
+    "zona": "#bk-explicatii"
+   }
+  ],
+  "captura": "607_f7_comisionul_fara_alege_facturile.png"
+ },
+ {
+  "nr": "624",
+  "firma": "tenant_9049",
+  "descriere": "F1, operațiunile de casă din octombrie (scrise înainte de reparație): Casă = tabel, un rând pe operațiune (data, documentul, partenerul și felul, încasare / plată, sold, nota), „Stornează” și „Șterge” pe fiecare rând (inactiv cu motivul unde nu se aplică); clic pe primul rând -> detaliul: partenerul, documentul, nota, „PDF chitanță”, „Leagă de factură”",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": "#c-tabel"
+   },
+   {
+    "click": "#c-tabel tbody.tn-nota .tn-deschide"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#c-tabel tbody.tn-nota .tn-detaliu:not([hidden])"
+   },
+   {
+    "contine": "Nota:",
+    "zona": "#c-tabel"
+   },
+   {
+    "exista": "#c-tabel tbody.tn-nota [data-storno]"
+   },
+   {
+    "exista": "#c-tabel tbody.tn-nota [data-del]"
+   }
+  ],
+  "captura": "624_f1_vechi_casa_tabel_detaliu.png"
+ },
+ {
+  "nr": "624",
+  "firma": "tenant_9049",
+  "descriere": "F1, liniile de extras importate înainte de reparație: Bancă = tabel, un rând pe linie (data, suma, descrierea, CUI, potrivirea), „Contează” și „Alege facturile” pe fiecare rând; liniile puse deoparte („Ignorată”) grupate în „Linii puse deoparte (N)”, sub cele de lucru",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-lista tbody.tn-nota"
+   },
+   {
+    "deruleaza": "#bk-deoparte"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Linii puse deoparte (",
+    "zona": "#bk-deoparte"
+   },
+   {
+    "contine": "Ignorată",
+    "zona": "#bk-deoparte"
+   },
+   {
+    "exista": "#bk-tabel tbody.tn-nota [data-alege]"
+   }
+  ],
+  "captura": "624_f1_vechi_banca_tabel_deoparte.png"
+ },
+ {
+  "nr": "602",
+  "firma": "tenant_9053",
+  "descriere": "F5: Registru jurnal -> „+ Notă nouă” (fereastra ei): „Data notei” e ziua de azi, nu 1 ale lunii; nimic „nederivat” pe ecran. Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "click": "#j-nota-noua"
+   },
+   {
+    "asteapta": "#je-data"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#je-data",
+    "egal": "2026-10-26"
+   },
+   {
+    "nu_contine": "nederivat"
+   }
+  ],
+  "captura": "602_f5_nota_noua_data_de_azi.png"
+ },
+ {
+  "nr": "602",
+  "firma": "tenant_9053",
+  "descriere": "F5, notele lunii scrise înainte de reparație: în detaliul unei note, „Document justificativ: …” (documentul sau „lipsește — …”), niciodată „nederivat”",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "click": "tbody.tn-nota .tn-deschide"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Document justificativ:"
+   },
+   {
+    "nu_contine": "nederivat"
+   }
+  ],
+  "captura": "602_f5_vechi_document_justificativ.png"
+ },
+ {
+  "nr": "563",
+  "firma": "tenant_9049",
+  "descriere": "F1: Registru jurnal -> antetul numără NOTELE LUNII acestei firme și spune ce cuprinde fiecare parte („N note ale lunii la validare în cabinet”, „N ciorne ale lunii în afara cozii …”), fără „de validat” (al cardului și al ferestrei „De validat”)",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "ale lunii la validare în cabinet",
+     "ale lunii în afara cozii",
+     "netrimise la validare",
+     "netrimisă la validare"
+    ],
+    "zona": "#j-rezumat"
+   },
+   {
+    "nu_contine": "de validat",
+    "zona": "#j-rezumat"
+   }
+  ],
+  "captura": "563_f1_vechi_numaratoarea_registrului.png"
+ },
+ {
+  "nr": "610",
+  "firma": "tenant_9049",
+  "descriere": "F1, nota ciornă fără document din 20.10.2026 (scrisă înainte de reparație): „Validează” e inactiv, cu pasul notei la trecerea cu mouse-ul („Notă fără document justificativ. Scrie referința …”); regula („o notă nu se validează fără documentul din care provine”) stă o dată, deasupra tabelului — niciun refuz la clic",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "deruleaza": "tbody.tn-nota[data-nota-id='161']"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": "tbody.tn-nota[data-nota-id='161'] [data-val]"
+   },
+   {
+    "contine": "o notă nu se validează fără documentul din care provine",
+    "zona": "#jn-explicatii"
+   }
+  ],
+  "captura": "610_f1_vechi_valideaza_inactiv_cu_motiv.png"
+ },
+ {
+  "nr": "605",
+  "firma": "tenant_9049",
+  "descriere": "F1, rapoartele Z din 20–22.10.2026 (înainte de reparație): rândul fiecăruia e „Raport Z nr 0042 · casa 8000000001 · …”, nu cheia „Z-8000000001-0042”; etichetele cotelor sunt „Total 11%” / „Total 21%” (comerț, fără „mâncare” / „alcool, sucuri”); confirmarea notei stă sub „Generează notă”",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   },
+   {
+    "asteapta": "#z-descarcare .pf-frand"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Raport Z nr 0042 · casa 8000000001",
+    "zona": "#z-descarcare"
+   },
+   {
+    "nu_contine": "Z-8000000001",
+    "zona": "#z-descarcare"
+   },
+   {
+    "nu_contine": "mâncare"
+   },
+   {
+    "nu_contine": "Consum pe rețetă"
+   }
+  ],
+  "captura": "605_f1_vechi_raport_z_randuri.png"
+ },
+ {
+  "nr": "618",
+  "firma": "tenant_9049",
+  "descriere": "F1, nota ciornă a raportului Z din 20.10.2026 (scrisă înainte de reparație, „Raport Z 2026-10-20 casa 8000000001 nr 0042”): după migrarea `core/migrare_explicatie_raport_z.py`, explicația ei e „Vânzări din raportul Z nr 0042 din 20.10.2026, casa 8000000001”. Nota Z validată din 22.10 păstrează explicația scrisă atunci (o notă validată nu se modifică)",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "completeaza": "#jn-cauta",
+    "valoare": "raportul Z nr 0042"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Vânzări din raportul Z nr 0042 din 20.10.2026, casa 8000000001"
+   },
+   {
+    "nu_contine": "Raport Z 2026-10-20"
+   }
+  ],
+  "captura": "618_f1_vechi_explicatia_notei_z.png"
+ },
+ {
+  "nr": "612",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri -> „Mișcări, fișe…” -> „Inventar (stoc faptic)”: fereastra inventarului, tabel; faptic 0 la primul articol -> rândul lipsei apare SUB articol, pe toată lățimea, cu încadrarea din trei butoane cu diacritice („lipsă neimputabilă”, 606). Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#cv-toggle"
+   },
+   {
+    "click": "#cv-toggle"
+   },
+   {
+    "asteapta": "#cv-inv"
+   },
+   {
+    "click": "#cv-inv"
+   },
+   {
+    "asteapta": "#cvi-tabel"
+   },
+   {
+    "completeaza": "#cvi-tabel .cvi-faptic",
+    "valoare": "0"
+   },
+   {
+    "asteapta": "#cvi-tabel .cvi-lipsa-rand:not([hidden])"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#cvi-tabel .cvi-lipsa-rand:not([hidden]) .alegere-butoane button",
+    "text": "lipsă neimputabilă"
+   },
+   {
+    "nu_contine": "neimputabila"
+   }
+  ],
+  "captura": "612_606_f1_inventarul_in_fereastra_lui.png"
+ },
+ {
+  "nr": "589",
+  "firma": "tenant_9055",
+  "descriere": "F6, contul 731 „Test cont nelegal” adăugat manual la retest (înainte de reparație): în Plan de conturi rândul lui are „Șterge” ACTIV (fără rulaj, fără sold, fără analitice) — curățenia pe producție o face scriptul `scripts/lot13_firme2_curata_731.py`; scris „731” în câmpul simbolului, avertismentul apare înainte de „Adaugă”: „Contul 731 e sintetic …”. Nu se adaugă, nu se șterge",
+  "pasi": [
+   {
+    "click": "#fa-planconturi"
+   },
+   {
+    "asteapta": "#pcf-lista .pf-frand"
+   },
+   {
+    "completeaza": "#pcf-cauta",
+    "valoare": "731"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "completeaza": "#pcf-simbol",
+    "valoare": "731"
+   },
+   {
+    "asteapta": "#pcf-avert"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "activ": "#pcf-lista [data-simbol='731'] [data-sterge]"
+   },
+   {
+    "contine": "Contul 731 e sintetic",
+    "zona": "#pcf-avert"
+   }
+  ],
+  "captura": "589_f6_vechi_731_se_sterge_si_sinteticul_e_refuzat.png"
+ },
+ {
+  "nr": "577",
+  "firma": "tenant_9052",
+  "descriere": "F4 PFA (sistem real): fereastra firmei — „Declarații: D212 (declarația unică), D300, D112 și restul”, „Verificări: Trezorerie, TVA, documente pozate”, „Registrul de evidență fiscală: Venituri și cheltuieli · persoane fizice · art. 68” (nu „D101”, „Echilibru”, „Profit · art. 19”)",
+  "pasi": [
+   {
+    "asteapta": "#fa-declaratii"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D212 (declarația unică), D300, D112 și restul",
+    "zona": "#fa-declaratii"
+   },
+   {
+    "contine": "Trezorerie, TVA, documente pozate",
+    "zona": "#fa-verificari"
+   },
+   {
+    "contine": "Venituri și cheltuieli · persoane fizice · art. 68",
+    "zona": "#fa-regfiscal"
+   },
+   {
+    "nu_contine": "D101",
+    "zona": "#fa-declaratii"
+   },
+   {
+    "nu_contine": "Profit · art. 19",
+    "zona": "#fa-regfiscal"
+   }
+  ],
+  "captura": "577_f4_cardurile_pfa.png"
+ },
+ {
+  "nr": "628",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri -> situația stocului -> „←” -> Stocuri din nou: aceeași listă, toate articolele firmei (C177: contorul cererilor e al ferestrei)",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#s-situatie-tabel"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "captura": "628_f1_prima_deschidere.png"
+   },
+   {
+    "click": ".nav-sageata.nav-inapoi"
+   },
+   {
+    "asteapta": "#fa-stocuri"
+   },
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#s-situatie-tabel"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#s-situatie-tabel tbody tr"
+   },
+   {
+    "nu_contine": "Se încarcă situația stocului"
+   }
+  ],
+  "captura": "628_f1_a_doua_deschidere_aceeasi_lista.png"
+ },
+ {
+  "nr": "C187",
+  "firma": "tenant_9050",
+  "descriere": "F2 (global-valoric): Stocuri pe luna în curs — „Descarcă gestiunea lunii” inactiv, cu motivul („Descărcarea gestiunii lunii se face după ce luna se încheie.”); pe firmele de test nu era nicio ciornă a descărcării pe luna în curs (SELECT pe F1–F7: 0 note „DESC-GV-…”), deci nimic de arătat pe un document vechi",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#s-desc"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": "#s-desc"
+   },
+   {
+    "contine": "Descărcarea gestiunii lunii se face după ce luna se încheie."
+   }
+  ],
+  "captura": "c187_f2_vechi_luna_in_curs_descarcarea_inactiva.png"
+ }
+]

@@ -577,7 +577,10 @@ def test_def_183_planul_de_conturi_are_ecran_cu_cautare_analitic_si_stergere_paz
     pg.wait_for_selector(f + " #pcf-lista [data-simbol='4111.07']", timeout=10000)
     rand = f + " #pcf-lista [data-simbol='4111.07']"
     assert "folosit în note" in pg.inner_text(rand), pg.inner_text(rand)
-    assert pg.locator(rand + " [data-sterge]").count() == 0, "contul folosit în note are „Șterge”"
+    # [lotul 13, 675] „Șterge” stă la locul lui, inactiv, cu motivul la trecerea cu mouse-ul (nu dispare)
+    b = pg.locator(rand + " [data-sterge]")
+    assert b.count() == 1 and b.get_attribute("aria-disabled") == "true", "contul folosit în note are „Șterge” activ"
+    assert "apare în note contabile" in (b.get_attribute("title") or ""), b.get_attribute("title")
     st, r = _api(patron, "/tenants/%s/plan-conturi/4111.07" % tid, "DELETE")
     assert st >= 400, "serverul a șters un cont folosit în note: %s %s" % (st, r)
     patron.captura("folosit")
@@ -612,7 +615,7 @@ def test_def_218_sinteticele_legale_si_conturile_cu_sold_nu_se_sterg(patron, fir
             '\'2026-01-01\')' % s)
         f = _plan(patron, firma_e2e, "")
         stare = pg.evaluate("""(ss) => ss.map(x => { const r = document.querySelector(`#pcf-lista [data-simbol='${x}']`);
-            return [x, !!r, !!(r && r.querySelector('[data-sterge]'))]; })""", ["1012", "4111", "611", "4111.21", "4111.22"])
+            return [x, !!r, !!(r && r.querySelector('[data-sterge]:not([aria-disabled="true"])'))]; })""", ["1012", "4111", "611", "4111.21", "4111.22"])   # [lotul 13, 675] inactiv = nu se șterge
         patron.captura("plan")
         # 611: sintetic legal fără sold, fără analitice și nefolosit — nu se șterge NUMAI fiindcă e în planul legal;
         # 4111.22: analitic al firmei, cu sold inițial — nu se șterge NUMAI fiindcă are sold

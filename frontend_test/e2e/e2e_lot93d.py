@@ -159,7 +159,7 @@ def test_def_c65_z_la_pfa_validat_intern_intra_in_d300(patron, pfa_tva):
     pg.wait_for_timeout(2500)
     pg.click(".zd-fara")
     pg.click("#ca-ok")
-    pg.wait_for_function("(t) => ((document.querySelector('#zd-rez') || {}).textContent || '').includes(t)",
+    pg.wait_for_function("(t) => ((document.querySelector('#z-descarcare') || {}).textContent || '').includes(t)",
                          arg="Poartă TVA-ul pentru D300 / D394", timeout=20000)
     patron.captura("z-interna")
     assert sql(_q, ("Z-8000000368-0368",)) == [("validata",)]

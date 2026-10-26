@@ -194,7 +194,8 @@ def test_def_402_refuzul_la_contul_de_stoc_spune_ce_lipseste_si_de_ce(patron, fi
 def test_def_404_randul_cu_lipsa_la_inventar_nu_rupe_denumirea(patron, firma_cv):
     """404 (comanda 10.2 pct.7c). Pașii: un articol cu denumire lungă în stoc -> Stocuri -> „Mișcări, fișe…” -> Inventar: faptic 0 ->
     apare încadrarea lipsei SUB rând, iar denumirea rămâne pe cel mult două rânduri (era ruptă pe 5).
-    MUTAȚIA: static/js/ecrane/firme.js, `id="cvi-a${a.id}-rand" style="flex-wrap:wrap"` -> `id="cvi-a${a.id}-rand"` -> ROȘU."""
+    [lotul 13, 612 / 673] inventarul e un tabel în fereastra lui: articolul pe rândul lui, încadrarea lipsei pe rândul de sub el.
+    MUTAȚIA: static/js/ecrane/firme.js, rândul lipsei (`class="cvi-lipsa-rand"`) pus în celula articolului -> ROȘU."""
     from e2e_bloc_a import _api, _card, _ok
     tid = firma_cv["tenant_id"]
     den = "Marfa cu denumire lungă pentru inventarul E2E 404, ambalaj de carton"
@@ -211,7 +212,7 @@ def test_def_404_randul_cu_lipsa_la_inventar_nu_rupe_denumirea(patron, firma_cv)
     pg.wait_for_selector("#cvi-a%d-lipsa" % aid, state="visible", timeout=5000)
     patron.captura()
     g = pg.evaluate("""(id) => {
-        const r = document.querySelector('#cvi-a' + id + '-rand'), n = r.querySelector('.pf-frand-nume'),
+        const r = document.querySelector('#cvi-a' + id + '-rand'), n = r.querySelector('.cvi-denumire'),
               z = document.querySelector('#cvi-a' + id + '-lipsa-zona');
         const lh = parseFloat(getComputedStyle(n).lineHeight) || parseFloat(getComputedStyle(n).fontSize) * 1.3;
         return {randuri: Math.round(n.getBoundingClientRect().height / lh), sub: z.getBoundingClientRect().top >= n.getBoundingClientRect().bottom - 1};

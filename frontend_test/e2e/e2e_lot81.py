@@ -334,9 +334,13 @@ def test_def_331_banca_descrierea_scurtata_la_cuvant_fara_separator_ramas(patron
         _card(patron, "banca", "#bk-fisier")
         pg = patron.pg
         pg.wait_for_function("(d) => document.querySelector('#bk-lista').innerText.includes(d)", arg="Incasare contravaloare", timeout=20000)
-        rand = pg.evaluate("() => [...document.querySelectorAll('#bk-lista .pf-frand-sub')].map((x) => x.innerText).find((t) => t.startsWith('Incasare contravaloare'))")
+        # [lotul 13, 624] descrierea scurtată stă în coloana ei, motivul potrivirii în detaliul liniei (clic pe rând)
+        rand = pg.evaluate("() => [...document.querySelectorAll('#bk-lista tbody.tn-nota tr.tn-rand td:nth-child(3)')].map((x) => x.innerText).find((t) => t.startsWith('Incasare contravaloare'))")
         patron.captura("descrierea")
-        assert " - ·" not in rand and "- …" not in rand and "… · nicio factură" in rand, rand
+        assert " -" != rand[-2:] and "- …" not in rand and rand.endswith("…"), rand
+        tb = pg.locator("#bk-lista tbody.tn-nota", has_text="Incasare contravaloare").first
+        tb.locator(".tn-deschide").click()
+        assert "Potrivirea: nicio factură" in " ".join(tb.inner_text().split()), tb.inner_text()
     finally:
         sql('DELETE FROM "%s".extras_linii WHERE id = %%s' % s, (lid,))
 
@@ -424,7 +428,7 @@ def test_def_328_nota_din_factura_nu_se_sterge_iar_mesajul_spune_ciorna(patron, 
         # de mai jos vede rândul și detaliul
         _deschide_rand(patron, _nota_jn(patron, nid))
         patron.captura("jurnal")
-        assert pg.locator("[data-nota-id='%d'] [data-del]" % nid).count() == 0, "„Șterge” oferit pe nota facturii"
+        assert pg.locator("[data-nota-id='%d'] [data-del]:not([aria-disabled='true'])" % nid).count() == 0, "„Șterge” oferit pe nota facturii"   # [lotul 13, 675]
         d = _api(patron, "DELETE", "/tenants/%d/jurnal/%d" % (firma_e2e["tenant_id"], nid))
         assert d["status"] >= 400 and "se corectează numai de acolo" in json.dumps(d["json"], ensure_ascii=False), d
     finally:

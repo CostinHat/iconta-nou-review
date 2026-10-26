@@ -44,7 +44,7 @@ def test_def_277_extrasul_nou_se_importa_iar_duplicatul_e_miscarea(patron, firma
     patron.captura("primul_import")
     assert "2 linii importate" in m1 and "găsite deja" not in m1, m1
     assert "Sold inițial la 15.10.2026: 10.000,00 RON în extras" in m1 and "Sold final la 16.10.2026: 10.229,50 RON în extras" in m1, m1
-    assert patron.pg.locator(".pf-frand", has_text="Comision administrare cont octombrie " + tag).count() == 1
+    assert patron.pg.locator("#bk-lista tbody.tn-nota", has_text="Comision administrare cont octombrie " + tag).count() == 1
 
     m2 = _incarca(patron, "extras_%s_iar.sta" % tag, text, "găsite deja")
     patron.captura("acelasi_extras")
@@ -85,7 +85,7 @@ def test_def_276_banca_spune_formatele_si_compara_soldurile(patron, firma_e2e):
     patron.captura("solduri")
     assert "Sold inițial la 15.10.2026: 10.000,00 RON în extras, 0,00 în 5121 (din notele validate) — diferență 10.000,00." in m, m
     assert "Sold final la 16.10.2026: 10.229,50 RON în extras, 0,00 în 5121 (din notele validate) — diferență 10.229,50." in m, m
-    rand = pg.locator(".pf-frand", has_text="Comision administrare cont octombrie " + tag)
+    rand = pg.locator("#bk-lista tbody.tn-nota", has_text="Comision administrare cont octombrie " + tag)
     # [309, 17.10.2026] comisionul e recunoscut din descriere: n-are factură de potrivit, are nota propusă (nu „Fără potrivire”, roșu)
     assert "Notă propusă 627 = 5121" in rand.inner_text() and "Fără potrivire" not in rand.inner_text() \
         and "match" not in rand.inner_text().lower(), rand.inner_text()
@@ -136,7 +136,7 @@ def test_def_278_dispozitia_leaga_factura_si_semnaleaza_avansul_si_plafonul(patr
     from e2e_bloc_a import SERIE
     assert f["numar"].startswith(SERIE), f
     nr = "%s nr. %s" % (SERIE, f["numar"][len(SERIE):])
-    assert pg.locator(".pf-frand", has_text=_re.compile(r"factura %s(?!\d)" % _re.escape(nr))).count() == 1
+    assert pg.locator(".fereastra:last-of-type tbody.tn-nota", has_text=_re.compile(r"factura %s(?!\d)" % _re.escape(nr))).count() == 1
 
 
 def test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand(asistent, firma_e2e):
@@ -160,9 +160,9 @@ def test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand(asistent, firma_e2e)
         mesaj = pg.locator("p.pf-intro", has_text="Dispoziția a fost salvată").inner_text()
         asistent.captura("salvata")
         assert "e trimisă la validare în cabinet" in mesaj and "Cabinetul o validează" in mesaj and "ciornă" not in mesaj, mesaj
-        rand = pg.locator(".pf-frand", has_text="DI-E2E-279")
+        rand = pg.locator(".fereastra:last-of-type tbody.tn-nota", has_text="DI-E2E-279")
         assert "notă la validare în cabinet" in rand.inner_text(), rand.inner_text()
-        assert rand.locator("[data-del]").count() == 0, "nota la validare nu oferă ștergerea"
+        assert rand.locator("[data-del]:not([aria-disabled='true'])").count() == 0, "nota la validare nu oferă ștergerea"   # [lotul 13, 675] inactiv cu motiv
     finally:
         sql("UPDATE public.users SET poate_valida = %s WHERE id = %s", (era, uid))
 

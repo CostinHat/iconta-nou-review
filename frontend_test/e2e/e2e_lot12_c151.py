@@ -34,9 +34,11 @@ def test_def_c151_chitanta_incasarii_legate_de_factura_numeste_factura(patron, f
     pg.click("#c-adauga")   # factura nebifată: încasarea se salvează fără factură, cu chitanța ei (456 a)
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('a fost emisă')", timeout=30000)
     ((cid, serie, nr, op_id),) = sql('SELECT id, serie, numar, casa_operatiune_id FROM "%s".chitante WHERE suma = 151 AND factura_id IS NULL' % s)
-    rand = pg.locator(".pf-frand", has_text="%s-%s" % (serie, nr)).first
+    # [lotul 13, 624 / 673] „Leagă de factură” e în detaliul rândului (clic pe rând) și deschide fereastra cu facturile deschise
+    rand = pg.locator(".fereastra:last-of-type tbody.tn-nota", has_text="%s-%s" % (serie, nr)).first
+    rand.locator(".tn-deschide").click()
     rand.locator("[data-leaga]").click()
-    rand.locator("[data-leaga-f='%s']" % f["factura_id"]).click()
+    pg.click(".fereastra:last-of-type [data-leaga-f='%s']" % f["factura_id"])
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('Operațiunea e legată de factura')",
                          timeout=20000)
     patron.captura("legata")

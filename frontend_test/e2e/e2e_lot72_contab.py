@@ -106,7 +106,7 @@ def test_def_309_banca_contata_la_validare_comisionul_si_motivul_pe_romaneste(pa
     _card(patron, "banca", "#bk-fisier")
     _incarca(patron, "extras_%s.sta" % tag, MT940.format(tag=tag, ziua=AZI.strftime("%y%m%d"), zz=AZI.strftime("%m%d")), "importate")
     pg = patron.pg
-    comision = pg.locator(".pf-frand", has_text="Comision administrare cont " + tag)
+    comision = pg.locator("#bk-lista tbody.tn-nota", has_text="Comision administrare cont " + tag)
     assert "Notă propusă 627 = 5121" in comision.inner_text() and "Fără potrivire" not in comision.inner_text(), comision.inner_text()
     lid = sql('SELECT id FROM "%s".extras_linii WHERE descriere LIKE %%s AND tip = \'incasare\'' % s, ("%" + tag,))[0][0]
     r = _api(patron, "POST", "/tenants/%d/banca/reconciliere/%d/conteaza" % (firma_e2e["tenant_id"], lid), {})
@@ -114,7 +114,7 @@ def test_def_309_banca_contata_la_validare_comisionul_si_motivul_pe_romaneste(pa
     sql('UPDATE "%s".extras_linii SET alocari = jsonb_set(alocari, \'{motiv}\', \'"match exact pe o factura"\') WHERE id = %%s' % s, (lid,))
     patron.firma(firma_e2e["nume"])
     _card(patron, "banca", "#bk-fisier")
-    incasare = pg.locator(".pf-frand", has_text="Incasare DANTE INTERNATIONAL SA CUI 14399840 factura " + tag)
+    incasare = pg.locator("#bk-lista tbody.tn-nota", has_text="Incasare DANTE INTERNATIONAL SA CUI 14399840 factura " + tag)
     t = incasare.inner_text()
     patron.captura("banca")
     assert "Contată · notă ciornă" in t and "la validare" not in t and "Contat ✓" not in t, t   # [lotul 11, 457] patronul contează: ciornă netrimisă
@@ -156,7 +156,8 @@ def test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta(patron, firma_
     assert t.startswith(nr + " din ") and "e încasată printr-o notă care așteaptă validarea" in t and "(din " in t, t
     assert pg.locator("[data-cf='%s']" % f["factura_id"]).count() == 0
     pg.click("#c-renunta")
-    assert pg.locator("#c-zona").is_hidden()
+    pg.wait_for_selector("#c-campuri", state="detached", timeout=10000)   # [lotul 13, 673] fereastra dispoziției se închide
+    assert pg.locator("#c-toggle").is_visible()
     patron.captura("renunta")
 
 

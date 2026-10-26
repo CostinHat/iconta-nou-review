@@ -568,9 +568,10 @@ def test_def_62_nir_nou_nu_se_deschide_singur(patron, firma_e2e):
     _deschide_firma(patron, firma_e2e["nume"])
     pg.click("#fa-stocuri")
     pg.wait_for_selector("#sn-toggle", timeout=20000)
-    pg.wait_for_selector("#sn-zona", state="attached", timeout=20000)
+    pg.wait_for_selector("#s-situatie-tabel, #s-situatie .stare-goala", timeout=20000)
     patron.captura("la_deschidere")
-    assert not pg.is_visible("#sn-zona"), "formularul NIR nou e deschis fără să fi fost cerut"
+    # [lotul 13, 673] formularul NIR stă în fereastra lui, deschisă numai de „+ NIR nou”
+    assert pg.locator("#sn-numar").count() == 0, "formularul NIR nou e deschis fără să fi fost cerut"
     assert not pg.is_visible("#sn-salveaza")
     pg.click("#sn-toggle")
     pg.wait_for_selector("#sn-salveaza", state="visible", timeout=10000)
@@ -711,7 +712,8 @@ def test_def_48_nota_la_validare_nu_se_editeaza_nici_nu_se_sterge(ana, firma_e2e
     txt = rand.inner_text()
     ana.captura("la_validare")
     assert "La validare în cabinet: nu se modifică" in txt, txt
-    assert rand.locator("[data-edit]").count() == 0 and rand.locator("[data-del]").count() == 0, "butoanele de modificare sunt pe rând"
+    # [lotul 13, 675] „Editează” / „Șterge” stau la locul lor, inactive, cu motivul (nu dispar): niciunul activ
+    assert rand.locator("[data-edit]:not([aria-disabled='true'])").count() == 0 and rand.locator("[data-del]:not([aria-disabled='true'])").count() == 0, "butoanele de modificare sunt active"
     put = _cerere(pg, "PUT", "/tenants/%d/jurnal/%d" % (firma_e2e["tenant_id"], nid),
                   {"descriere": desc + " schimbat", "linii": [{"debit": "612", "credit": "401", "suma": 999, "partener_nume": "PARTENER PROBA SRL"}]})
     dele = _cerere(pg, "DELETE", "/tenants/%d/jurnal/%d" % (firma_e2e["tenant_id"], nid))
@@ -844,7 +846,7 @@ def test_def_58_ciorna_din_afara_cozii_se_trimite_la_validare(ana, patron, firma
     al_sefului = _deschide_rand(ana, _nota_jn(ana, a_sefului))           # [617] motivul („a altui utilizator”) e în detaliul rândului
     ana.captura("inainte")
     assert "2 netrimise la validare" in antet and "de validat" not in antet, antet
-    assert (al_sefului.locator("[data-retrimite]").count(), al_sefului.locator(".jn-a-altuia:visible").count()) == (0, 1)
+    assert (al_sefului.locator("[data-retrimite]:not([aria-disabled='true'])").count(), al_sefului.locator(".jn-a-altuia:visible").count()) == (0, 1)   # [lotul 13, 675]
     rand.locator("[data-retrimite]").click()
     pg.wait_for_function("() => document.querySelector('#caseta-atentie-activa #ca-ok') || ((document.querySelector('.fereastra "
                          "p.pf-intro') || {}).innerText || '').includes('la validare în cabinet')", timeout=20000)

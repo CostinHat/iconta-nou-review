@@ -546,10 +546,12 @@ def test_pozitie_f073_extrasul_se_potriveste_exact_pe_combinatie_si_partial(patr
     pg.set_input_files("#bk-fisier", {"name": "extras_f073_%d.csv" % time.time(), "mimeType": "text/csv", "buffer": extras.encode("utf-8")})
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('importate')", timeout=30000)
     assert "3 linii importate: 3 potrivite pe facturi, 0 fără potrivire" in pg.inner_text("#bk-mesaj"), pg.inner_text("#bk-mesaj")
-    pg.wait_for_selector(".pf-frand:has-text('CUI %s')" % cc, timeout=20000)
+    pg.wait_for_selector("#bk-lista tbody.tn-nota:has-text('CUI %s')" % cc, timeout=20000)
 
     def _rand(cui):
-        r = pg.locator("#bk-lista .pf-frand", has_text="Incasare F073 CUI %s" % cui).first
+        # [lotul 13, 624] facturile pe care le stinge linia stau în detaliul ei: rândul se deschide, ca la contabil
+        r = pg.locator("#bk-lista tbody.tn-nota", has_text="Incasare F073 CUI %s" % cui).first
+        r.locator(".tn-deschide").click()
         return r, " ".join(r.inner_text().split())
 
     _ra, ta = _rand(ca)

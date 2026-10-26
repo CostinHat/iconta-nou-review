@@ -36,7 +36,10 @@ MOUNT = """async ([modUrl]) => {
   document.body.innerHTML = '<div id="mount"><div id="cv-zona"></div><div id="msgs"></div></div>';
   const corp = document.getElementById('mount');
   const zonaM = document.getElementById('msgs');
-  await m.sectiuneaCV(corp, { id: 1 }, zonaM);
+  // [lotul 13, 673] inventarul se deschide în fereastra lui: navigatorul de probă desenează fereastra deschisă peste secțiune
+  const nav = { deschide(titlu, f) { const d = document.createElement('div'); d.className = 'fer-proba'; document.body.appendChild(d); f(d, nav); },
+                inapoi() { const f = [...document.querySelectorAll('.fer-proba')].pop(); if (f) f.remove(); } };
+  await m.sectiuneaCV(corp, { id: 1 }, zonaM, nav);
   return true;
 }"""
 

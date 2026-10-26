@@ -27,7 +27,8 @@ def test_def_174_operatiunea_cu_nota_validata_se_storneaza_nu_se_sterge(patron, 
     patron.firma(firma_e2e["nume"])
     pg.click("#fa-casa")
     pg.wait_for_selector(".fereastra:last-of-type [data-storno='%s']" % oid, timeout=20000)
-    assert pg.locator(".fereastra:last-of-type [data-del='%s']" % oid).count() == 0, "operațiunea cu notă validată are „Șterge”"
+    # [lotul 13, 675] „Șterge” stă la locul lui, inactiv, cu motivul: nu e activ
+    assert pg.locator(".fereastra:last-of-type [data-del='%s']:not([aria-disabled='true'])" % oid).count() == 0, "operațiunea cu notă validată are „Șterge” activ"
     assert "1.250,00" in patron.fereastra()
     patron.captura("inainte")
     pg.click(".fereastra:last-of-type [data-storno='%s']" % oid)
@@ -38,7 +39,7 @@ def test_def_174_operatiunea_cu_nota_validata_se_storneaza_nu_se_sterge(patron, 
     st = sql('SELECT o.suma::text, i.status FROM "%s".casa_operatiuni o JOIN "%s".inregistrari i ON i.id = o.inregistrare_id '
              "WHERE o.storno_de = %%s" % (firma_e2e["schema"], firma_e2e["schema"]), (oid,))
     assert st == [("-1250.00", "ciorna")], st
-    assert pg.locator(".fereastra:last-of-type [data-storno='%s']" % oid).count() == 0, "operațiunea stornată se poate storna din nou"
+    assert pg.locator(".fereastra:last-of-type [data-storno='%s']:not([aria-disabled='true'])" % oid).count() == 0, "operațiunea stornată se poate storna din nou"
 
 
 # ── Control fiscal: lista din rezumat față de detaliu (156, 173 — retestul Costin 09.10) ──────────────────────────────────────
