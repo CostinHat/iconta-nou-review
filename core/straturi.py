@@ -479,6 +479,11 @@ REGISTRU = (
     D("core/repo_mijloace_fixe.py", REPOSITORY, None,
       "P7 · V1: mijloacele fixe din schema unui tenant — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/repo_operatiuni.py", REPOSITORY, None,
+      "lotul 13, pachetul ops (regula straturilor): operațiunile speciale — vânzarea din stoc (marjă / aur), obiectele de inventar, producția, "
+      "subvenția, dividendele, sponsorizarea, decontul, listele formularelor; SQL-ul scris în `uc_tenants` în lotul 13, mutat fără schimbare "
+      "de comportament; zero `get_conn`, zero commit",
+      "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_portal.py", REPOSITORY, None,
       "P7 · V1: portalul clientului: solicitări și clienți — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
@@ -490,6 +495,10 @@ REGISTRU = (
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_stocuri.py", REPOSITORY, None,
       "P7 · V1: articolele și mișcările de stoc — citiri mutate din rute, zero `get_conn`, zero commit",
+      "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/repo_etransport.py", REPOSITORY, None,
+      "lotul 13 (534): citirile notificării e-Transport completate din factură / NIR — SQL-ul din `etransport.din_document` / "
+      "`documente_recente`, mutat fără schimbare de comportament; zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_borderou.py", REPOSITORY, None,
       "lotul 11 (regula straturilor): borderoul de achiziție și stornarea lui — SQL-ul din `uc_tenants.achizitie_neinregistrat` / "

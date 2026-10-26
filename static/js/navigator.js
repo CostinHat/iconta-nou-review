@@ -650,7 +650,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=cb524f997d");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=1ef998eccc");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=e8ba418f34");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

@@ -51,6 +51,11 @@ EXCEPTII = {
     # [lotul 13, 681] căutarea globală din antet — decizia Costin 25.10.2026 (comanda 13.1): „parte din pilot, excepție de la «fără funcții
     # noi»”
     "GET /eu/cautare": "681",
+    # [lotul 13, zona fact] rutele reparațiilor comenzii 13.1: ștergerea fișei de furnizor fără documente (640), completarea notificării
+    # e-Transport din factură / NIR (534), emiterea ciornei lunii din șablonul recurent (680)
+    "DELETE /tenants/{tenant_id}/furnizori/{furnizor_id}": "640",
+    "GET /tenants/{tenant_id}/etransport/din-document": "534",
+    "POST /tenants/{tenant_id}/facturi-recurente/{sid}/emite": "680",
 }
 #: sha256 al conținutului referinței (fără liniile de comentariu); se schimbă numai împreună cu referința (vezi docstring)
 AMPRENTA_REFERINTA = "4b107c8b92b3c82d40c152d5d91c664cac035d20549e7cd630574180bfd54e7d"

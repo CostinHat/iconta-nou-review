@@ -32,7 +32,7 @@ import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, f
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
 import { randA as randConstatare } from "./control_verdict.js?v=1f610ac06a";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=1ef998eccc";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=e8ba418f34";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea

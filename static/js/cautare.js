@@ -45,7 +45,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=1ef998eccc");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=e8ba418f34");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
@@ -139,7 +139,7 @@ export function puneCautarea(bara, nav) {
     }
     if (!actuala()) return;   // a sosit răspunsul unei căutări mai vechi
     // acțiunea unei operațiuni se compune ca la butoanele ei (`actiuneOp`); cele refuzate rolului nu apar
-    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=3affe700ed");
+    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=0a8114ed64");
     if (!actuala()) return;
     rezultate = ((r && r.rezultate) || []).filter((x) => (x.ruta ? permis(actiuneOp(x)) : (!x.actiune || permis(x.actiune))));
     const deFirma = rezultate.some((x) => x.fel !== "card" && x.fel !== "operatiune") || tid;

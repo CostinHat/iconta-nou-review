@@ -1206,6 +1206,19 @@ def client_sterge(tenant_id, client_id, ctx):
     return r
 
 
+def furnizor_sterge(tenant_id, furnizor_id, ctx):
+    """[lotul 13, 640] Corpul rutei `DELETE /tenants/{tenant_id}/furnizori/{furnizor_id}`, ca `client_sterge`: fișa furnizorului fără facturi
+    primite / borderouri se șterge (`clienti_api.sterge_furnizor`); inexistentă -> 404, cu documente -> 409."""
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = clienti_api.sterge_furnizor(conn, furnizor_id)
+    if not r.get("ok"):
+        if r.get("cod") == "INEXISTENT":
+            raise _erori.Inexistent(r["mesaj"])
+        raise _erori.Conflict(r["mesaj"])
+    return r
+
+
 def salariati_lista(tenant_id, activ, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/salariati`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
@@ -4893,7 +4906,11 @@ def achizitie_neinregistrat(tenant_id, corp, ctx):
                     articol = articol_ales[1]
                 # [lotul 12, C115] UM-ul liniei borderoului și al intrării în stoc: al articolului ales din nomenclator (stocul lui se ține în
                 # unitatea lui), al celui nou cerut explicit — cel ales pe ecran; „buc” numai când nici unul nu are
-                um_stoc = (articol_ales[2] if articol_ales else None) or str(corp.get("um") or "").strip() or "buc"
+                # [lotul 13, regula UM — `facturi.MESAJ_UM_LIPSA`] fără UM nici la articol, nici pe ecran: nu „buc”, ci cerut lângă câmp
+                um_stoc = (articol_ales[2] if articol_ales else None) or str(corp.get("um") or "").strip() or None
+                if articol and not um_stoc:
+                    from core import facturi as _fc_um
+                    lipsa_stoc.append(("op-um", _fc_um.MESAJ_UM_LIPSA, "unitatea de măsură"))
                 if not articol and not lipsa_stoc:
                     lipsa_stoc.append(("op-articol", "Alege articolul care intră în stoc pe contul %s (din nomenclator, sau unul nou, cerut "
                                                      "explicit): marfa intră în gestiune odată cu borderoul." % cont, "articolul"))
@@ -7608,6 +7625,16 @@ def facturi_emite(tenant_id, date, ctx):
         # poarta doar la FACTURA (nu proforma/aviz), cu linie de stoc; nu și la factura din bon (fără descărcare) — aceeași condiție
         # ca la transformarea proformei / avizului (C63)
         poarta_ceruta = facturi_api.poarta_marfa_ceruta(date.tip, linii, date.bon_fiscal_nr)
+        # [lotul 13, regula UM — `facturi.um_lipsa`, decizia sesiunii principale 26.10.2026] UM-ul gol nu devine „buc”: se refuză lângă
+        # câmpul liniei (al articolului din nomenclator se ia de la articol), împreună cu celelalte câmpuri lipsă ale liniilor (440)
+        _um_lipsa = facturi_api.um_lipsa_emitere(conn, linii)
+        if _um_lipsa:
+            er = _erori.ErorileFormularului("Factura nu s-a emis")
+            for x in facturi_api.linii_campuri_lipsa(linii):
+                er.camp(x["camp"], x.get("mesaj") or x["eticheta"])
+            for camp, mesaj in _um_lipsa:
+                er.camp(camp, mesaj)
+            er.refuza()
         platitor = _uc_comun._platitor_tva_firma(conn)
         try:
             r = facturi_api.emite_factura(

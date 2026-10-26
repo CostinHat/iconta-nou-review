@@ -8,7 +8,7 @@
 
 import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=cb524f997d";
 import { randeazaRecomanda } from "./recomanda.js?v=e5354ffd52"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=66670d0f77"; // [p34_raporteaza]
+import { randeazaRaporteaza } from "./raporteaza.js?v=766651826e"; // [p34_raporteaza]
 import { marcheazaSesiuneInterna } from "./admin_analytics.js?v=440f824e89";   // [lotul 13, 649] sesiunea deschisă: vizitele publice nu se numără
 
 function svg(nume, culoare) {

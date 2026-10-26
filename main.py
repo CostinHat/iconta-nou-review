@@ -3521,8 +3521,7 @@ def furnizor_actualizeaza(tenant_id: int, furnizor_id: int, date: FurnizorEdit, 
 def furnizor_sterge(tenant_id: int, furnizor_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """[lotul 13, deficiența 640] Fișa furnizorului fără facturi primite se șterge (`clienti_api.sterge_furnizor`), ca a clientului."""
     try:
-        from core import clienti_api as _cl_api
-        return _cl_api.furnizor_sterge_uc(tenant_id, furnizor_id, ctx)
+        return _uc_tenants.furnizor_sterge(tenant_id, furnizor_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

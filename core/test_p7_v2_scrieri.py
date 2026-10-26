@@ -425,7 +425,19 @@ def test_numarul_de_instructiuni_se_conserva():
     #   + repo_mijloace_fixe.adauga_cu_reevaluare, seteaza_cod_catalog_schema ×2, toate ×2 (519 / 521 / 522 / 523: activul există în registru
     #     numai după validarea notei, codul din catalog, amortizarea pe activ); −cod_liber, −scoate_din_evidenta;
     #   + tranzactie.fixeaza_schema (670: decontul scrie și excedentul de diurnă al salariatului, în schema firmei).
-    assert _apeluri_catre_repository() == 430
+    # [lotul 13, zona ops, după integrare] +27 (430 -> 457): SQL-ul scris direct în `uc_tenants` în lotul 13 (28 de `execute`) mutat în
+    # depozite, fără schimbare de comportament (PLAN_HARDENING.md:842; registrul `straturi` declară `uc_tenants` cu 0 instrucțiuni SQL):
+    #   + repo_operatiuni (depozit NOU) ×20: vanzare_din_stoc_scrie, vanzari_marja_luna (548); scadente_facturi ×2 (511);
+    #     factura_primita_dupa_furnizor_si_numar (506 / 530); leaga_nota_de_factura (524); contul_stocului, leaga_miscarea_de_nota,
+    #     rulaje_productie_an (510); obiect_inventar, obiecte_inventar, obiect_inventar_scrie, obiect_dat_in_folosinta,
+    #     obiect_scos_din_folosinta (505–508); dividende_117_nevalidate (527); venituri_70x (532); subventii_pe_activ, nota_dupa_numar,
+    #     sterge_nota (528); salariat (670);
+    #   + repo_mijloace_fixe ×6: in_asteptarea_validarii ×3 (519: plus de inventar, necorporală, leasing), e_activ, valoarea (528),
+    #     coduri (521);
+    #   + repo_contabilitate.documentul_notei ×1 (510: documentul notei de obținere).
+    # [lotul 13, zona firme2, peticul firme2_1/2] +1 (la integrare: 457 -> 458): + repo_contabilitate.toate_conturile în `uc_tenants`
+    #   (589: planul întreg pentru verificarea analiticului adăugat de mână — numai sub sintetic legal).
+    assert _apeluri_catre_repository() == 458
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():
