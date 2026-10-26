@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Lotul 13, comanda Costin 13.1 (`~/ghid_incoming/comanda_13_1.txt`), subagentul DECL — declarațiile: 651, 659, 656, 657, 652, 653, 654,
-658, 650, 635, 595, 594, 636, 637, 638, 538, 591, 592, 539, 540, 660 și C19 (D112). Pașii contabilului pe aplicația din index, pe baza de
+658, 650, 635, 594, 636, 637, 638, 538, 591, 592, 539, 540, 660 și C19 (D112). Pașii contabilului pe aplicația din index, pe baza de
 TEST, pe firme NOI (`firma_noua`).
 
 DATE DE PORNIRE fără ecran (declarate, `# date-de-pornire` pe linie): Date firmă și vectorul fiscal pe rutele ecranelor (`pregateste_firma`,
@@ -278,26 +278,6 @@ def test_def_594_d398_texte_si_date_din_date_firma(patron, firma_l13):
     for intern in ("msest", "msid", "e_int", "harta de componente", "selectorul de sus"):
         assert intern not in t, (intern, t[:2000])
     assert pg.locator(_F + ".dec-eroare, " + _F + "#dec-refuz").count() == 0
-
-
-def test_def_595_d398_fara_inregistrare_oss_nu_se_genereaza(patron, firma_l13):
-    """595. Pașii: firmă neplătitoare înregistrată art.317 -> D398 -> „Firma e înregistrată în regimul special OSS …?” „Nu” -> „Generează
-    D398”: nu pleacă nicio cerere; lângă întrebare: „Firma nu e înregistrată în regimul special OSS, deci nu depune D398 (CF art.315
-    alin.(3)).” MUTAȚIA: verificarea scoasă din ecran -> ROȘU."""
-    _neplatitor(patron, firma_l13)
-    p = perioada_incheiata("trimestrial")
-    pg = _continua_formular(patron, firma_l13, "d398", p.an, trim=p.trim)
-    cereri = []
-    pg.on("request", lambda r: cereri.append(r.url) if r.url.endswith("/declaratii/d398/valideaza") else None)
-    pg.select_option(_F + "#d398-oss", "false")
-    pg.dispatch_event(_F + "#d398-oss", "change")
-    pg.click(_F + "#d398-regen")
-    pg.wait_for_selector(_F + ".msg-eroare[data-camp='d398-oss']", timeout=20000)
-    patron.captura("d398_fara_oss")
-    assert "Firma nu e înregistrată în regimul special OSS, deci nu depune D398 (CF art.315 alin.(3))." in \
-        _txt(pg, ".msg-eroare[data-camp='d398-oss']")
-    pg.wait_for_timeout(800)
-    assert cereri == []
 
 
 def _d318_pas2(patron, f, an=None):

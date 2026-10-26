@@ -151,37 +151,6 @@
   "captura": "594_f3_d398_formular.png"
  },
  {
-  "nr": "595",
-  "firma": "tenant_9051",
-  "descriere": "F3 (neplătitoare, înregistrată art.317, fără înregistrare OSS): D398, T3/2026 -> „Firma e înregistrată în regimul special OSS …?” „Nu” -> „Generează D398”: nu se generează; lângă întrebare „Firma nu e înregistrată în regimul special OSS, deci nu depune D398 (CF art.315 alin.(3)).” Nimic nu intră în coadă.",
-  "pasi": [
-   {
-    "declaratie": "d398",
-    "an": 2026,
-    "trim": 3
-   },
-   {
-    "alege": ".fereastra:last-of-type #d398-oss",
-    "valoare": "false"
-   },
-   {
-    "click": ".fereastra:last-of-type #d398-regen"
-   },
-   {
-    "asteapta": ".fereastra:last-of-type .msg-eroare[data-camp='d398-oss']"
-   }
-  ],
-  "verifica": [
-   {
-    "contine": "Firma nu e înregistrată în regimul special OSS, deci nu depune D398 (CF art.315 alin.(3))."
-   },
-   {
-    "nu_contine": "Validat cu DUKIntegrator"
-   }
-  ],
-  "captura": "595_f3_d398_fara_oss.png"
- },
- {
   "nr": "636",
   "firma": "tenant_9049",
   "descriere": "F1: Declarații -> D318, 2026 -> „Continuă”: CUI-ul, denumirea, IBAN-ul, emailul, declarantul, funcția și codul CAEN vin din Date firmă; moneda se alege din lista monedelor BNR. Numai citire.",

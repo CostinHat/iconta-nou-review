@@ -62,6 +62,10 @@ const CAMPURI = [
   // DA” (structura ANAF SC 1225); neales = „— alege —”, bilanțul îl cere (generatorul scria 0 oricărei firme)
   { k: "interes_public", e: "Entitate de interes public", ob: true, tip: "danu",
     aj: "Da numai pentru entitățile de interes public definite de lege (ex. bănci, societăți de asigurare, societăți listate).", ajOb: "Cerut la bilanț." },
+  // [lotul 13, deficiența 595, decizia Costin 26.10.2026 „6 da”] înregistrarea în regimul special OSS se întreabă aici, nu în formularul D398
+  // (o singură sursă): neales = „— alege —” (fără răspuns implicit), D398 se oprește până se răspunde; nu e „obligatoriu” oricărei firme
+  { k: "inregistrat_oss", e: "Înregistrată în regimul special OSS (a depus declarația de începere a activității)", tip: "danu",
+    aj: "Răspunde Da numai dacă firma a depus declarația de începere a activității sale supuse regimului special de TVA (CF art.315 alin.(3)); D398 se generează numai atunci." },
 ];
 
 // [lotul 11, deficiența 442] câmpurile capitalului (blocul „Capital social”), cu numele lor în „Profil incomplet” — „blochează emiterea
@@ -190,7 +194,7 @@ function _blocPreluare(d) {
 // și capitalul, iar jurnalul e vizibil cabinetului.”
 const ETICHETE_JURNAL = { forma_juridica: "Forma juridică", capital_subscris: "Capital subscris", capital_varsat: "Capital vărsat",
   metoda_stoc: "Metoda de stoc", serie_chitanta: "Seria chitanțelor", platitor_tva: "Plătitor de TVA", tip_decont: "Periodicitatea decontului",
-  inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
+  inregistrat_oss: "Înregistrată în regimul special OSS", inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
   cont_venit_implicit: "Cont venit implicit", luna_preluare: "Luna preluării", data_infiintare: "Data înființării",
   // [lotul 10, 428 / 431] regimul TVA la încasare (perioadele și „se aplică azi”), asociații și cotele
   tva_incasare_perioade: "TVA la încasare (perioadele)", tva_la_incasare: "Aplică TVA la încasare azi", asociati: "Asociații și cotele",

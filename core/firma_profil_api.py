@@ -184,9 +184,16 @@ CAMPURI_C69 = ("mare_contribuabil", "forma_proprietate", "fara_cont_bancar")
 #: Coloana: core/migrare_intocmitor_bilant.py.
 CAMPURI_BILANT = ("interes_public",)
 
+#: [lotul 13, deficiența 595, decizia Costin 26.10.2026, verbatim în DECIZII: „6 da” la „înregistrarea OSS se întreabă în Date firmă, nu în
+#: formularul D398”] CF art.315 alin.(3): „persoana impozabilă respectivă trebuie să depună în format electronic o declarație de începere
+#: a activității sale supuse regimului special”. Da / Nu; NULL = nedeclarat (fără răspuns implicit) -> D398 nu se generează
+#: (`d398.refuz_oss`). Nu intră în `OBLIGATORII`: nu e cerută oricărei firme, ci numai celei care depune D398 — refuzul ei trimite aici.
+#: Coloana: core/migrare_inregistrat_oss.py.
+CAMPURI_OSS = ("inregistrat_oss",)
+
 #: [06.10.2026, comanda Costin §6.4] „Orice modificare [a Date firmă] se jurnalizează (cine, când, valoare veche → nouă),
 #: inclusiv forma juridică și capitalul, iar jurnalul e vizibil cabinetului.” Toate câmpurile ecranului, din toate grupurile.
-CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + CAMPURI_C69 + CAMPURI_BILANT + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta",
+CAMPURI_JURNAL = CAMPURI_FISCALE + CAMPURI_CAPITAL + CAMPURI_AMEF + CAMPURI_C69 + CAMPURI_BILANT + CAMPURI_OSS + ("cont_venit_implicit", "metoda_stoc", "serie_chitanta",
                                                                     "luna_preluare",   # [08.10 §6 pct.4] „Schimbarea se jurnalizează.”
                                                                     "data_infiintare")   # [deficiența 229, 12.10.2026]
 
@@ -566,7 +573,8 @@ def citeste_date(conn):
     import psycopg2.extras as _E
     coloane = (list(CAMPURI_FISCALE) + ["cont_venit_implicit"] + list(CAMPURI_CAPITAL) + ["tip_firma"]
                + list(CAMPURI_AMEF) + ["metoda_stoc", "serie_chitanta", "data_infiintare"] + list(CAMPURI_C69)  # [F182]; [lot 19 d12]; [D394 Î2]; [06.10.2026 §6.3]; [decizii 07.10 pct.5]
-               + list(CAMPURI_BILANT))   # [lotul 11, decizia 10.3] interesul public (bilanțul)
+               + list(CAMPURI_BILANT)   # [lotul 11, decizia 10.3] interesul public (bilanțul)
+               + list(CAMPURI_OSS))   # [lotul 13, 595] înregistrarea în regimul special OSS (D398)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
@@ -765,6 +773,14 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
             _val["interes_public"] = _bifa(date, "interes_public", None)
         except ValueError as e:
             er.camp("interes_public", str(e))
+    # [lotul 13, deficiența 595, decizia Costin 26.10.2026] înregistrarea în regimul special OSS (Da / Nu; gol = nedeclarat, NULL — D398 o
+    # cere: CF art.315 alin.(3))
+    if "inregistrat_oss" in (date or {}):
+        from core.uc_comun import bifa as _bifa
+        try:
+            _val["inregistrat_oss"] = _bifa(date, "inregistrat_oss", None)
+        except ValueError as e:
+            er.camp("inregistrat_oss", str(e))
     # [lotul 10, deficiența 427] „Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet» și blochează doar declarațiile
     # afectate, cum spune deja ecranul.” Un câmp obligatoriu GOL nu mai refuză salvarea: rămâne în `lipsuri()` (panoul și mesajul de
     # după salvare), iar fiecare generator îl oprește pe declarația lui (`core/test_camp_blocant.py` păzește perechile OBLIGATORII).
@@ -842,6 +858,7 @@ ETICHETE = {
     "mare_contribuabil": "Mare contribuabil", "forma_proprietate": "Forma de proprietate",   # [lotul 10, C69]
     "fara_cont_bancar": "Nu are cont bancar",
     "interes_public": "Entitate de interes public",   # [lotul 11, decizia 10.3]
+    "inregistrat_oss": "Înregistrată în regimul special OSS",   # [lotul 13, 595]
     # [lotul 11, deficiența 442] capitalul social (Legea 31/1990 art.74 alin.(3)) — în „Profil incomplet” cu „blochează emiterea facturilor”
     "forma_juridica": "Forma juridica", "capital_subscris": "Capital social subscris", "capital_varsat": "Capital social varsat",
 }

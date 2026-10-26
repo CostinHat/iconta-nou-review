@@ -90,7 +90,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa, preset = null) {
     // [formular_manual_d110] regularizare impozit retinut la sursa: d_temei + IBAN/banca + lista obligatii. Identitatea din firma_profil. In memorie, ca d207.
     d110: { d_temei: null, d_rec: 0, iban: "", banca: "", obligatii: [] },
     // [formular_manual_d398] OSS TVA: regim + identitate + linii-supply pe stat de consum (grupate pe MS). In memorie, ca d207.
-    d398: { inregistrat_oss: null, moes_voes_imp: null, name: "", vat_id_no: "", e_int: null, currency: "EUR", d_rec: 0, linii: [] },
+    d398: { moes_voes_imp: null, name: "", vat_id_no: "", e_int: null, currency: "EUR", d_rec: 0, linii: [] },
     // [formular_manual_d318] rambursare TVA din alt stat UE (Directiva 2008/9/CE): perioada + solicitant +
     // cont de rambursare + activitate NACE + facturi (achizitie/import) cu furnizor UE. In memorie, ca d207.
     d318: { an: "", annual: 1, luna_inceput: "", luna_sfarsit: "", refunding_country: null, cui: "", d_rec: 0,
@@ -2278,7 +2278,6 @@ function _d398Manual() {
   });
   const ms = Object.keys(byState).map((st) => ({ mscon_state: st, supplies: byState[st] }));
   const m = {
-    inregistrat_oss: d.inregistrat_oss === null || d.inregistrat_oss === undefined ? null : !!d.inregistrat_oss,   // [lotul 13, 595]
     moes_voes_imp: moes, name: (d.name || "").trim(), vat_id_no: (d.vat_id_no || "").replace(/\s+/g, "").toUpperCase(),
     an_r: an, luna_r: trim * 3, period_start_date: q[0] + "." + an, period_end_date: q[1] + "." + an,
     d_rec: d.d_rec ? 1 : 0, currency: "EUR", ms: ms,   // CF art.314 alin.(10) / art.315 alin.(12) / art.315^2 alin.(22): „se întocmește în euro”
@@ -2311,8 +2310,6 @@ function randeazaFormularD398(corp, nav) {
   zona.innerHTML = '<details class="dec-xml" open><summary>OSS — TVA regimuri speciale (' + cate(linii.length, "livrare", "livrări") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Contribuabilul și regimul</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-start;gap:10px;margin-bottom:8px">' +
-      // [lotul 13, 595] D398 numai pentru firma înregistrată în regimul special (CF art.315 alin.(3)); aplicația n-o ține, deci o întreabă
-      '<label class="camp" style="flex:1 1 360px"><span class="camp-eticheta">Firma e înregistrată în regimul special OSS (a depus declarația de începere a activității, CF art.315 alin.(3))? <span class="oblig">*</span></span>' + selectDaNu('id="d398-oss"', d.inregistrat_oss, "Înregistrată în regimul special OSS") + "</label>" +
       '<label class="camp" style="width:230px"><span class="camp-eticheta">Regim special <span class="oblig">*</span></span><select id="d398-moes" class="camp-input">' + alegeDacaLipseste(d.moes_voes_imp) + optRegim("1", "UE (bunuri și servicii)") + optRegim("2", "non-UE (servicii)") + optRegim("3", "import (bunuri)") + "</select></label>" +
       '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire <span class="oblig">*</span></span><input id="d398-name" type="text" class="camp-input" value="' + esc(d.name || "") + '"></label>' +
       '<label class="camp" style="width:170px"><span class="camp-eticheta">Cod de TVA <span class="oblig">*</span></span><input id="d398-vat" type="text" class="camp-input" value="' + esc(d.vat_id_no || "") + '"></label>' +
@@ -2341,11 +2338,10 @@ function randeazaFormularD398(corp, nav) {
     S.d398.moes_voes_imp = gv("#d398-moes").value;
     S.d398.name = gv("#d398-name").value.trim();
     S.d398.vat_id_no = gv("#d398-vat").value.replace(/\s+/g, "").toUpperCase();
-    const oss = gv("#d398-oss"); if (oss) S.d398.inregistrat_oss = daNu(oss);
     const ei = gv("#d398-eint"); if (ei) { const v = daNu(ei); S.d398.e_int = v === null ? null : (v ? 1 : 0); }
   };
   gv("#d398-moes").addEventListener("change", () => { salveaza(); randeazaFormularD398(corp, nav); });
-  ["#d398-name", "#d398-vat", "#d398-oss"].forEach((id) => gv(id).addEventListener("change", salveaza));
+  ["#d398-name", "#d398-vat"].forEach((id) => gv(id).addEventListener("change", salveaza));
   const ei0 = gv("#d398-eint"); if (ei0) ei0.addEventListener("change", salveaza);
   zona.querySelectorAll(".dec-d398-del").forEach((b) => b.addEventListener("click", () => { S.d398.linii.splice(parseInt(b.dataset.idx), 1); randeazaFormularD398(corp, nav); }));
   gv("#d398-add").addEventListener("click", () => {
@@ -2369,9 +2365,7 @@ function randeazaFormularD398(corp, nav) {
     curataEroriCamp(zona);
     salveaza();
     // [lotul 11, 440] toate lipsurile deodată (alegerile + câmpurile), apoi un singur `return`
-    let faraAlegere = false; if (cereAlegerile(zona, ["#d398-oss", "#d398-moes", "#d398-eint"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
-    // [lotul 13, 595] fără înregistrarea OSS nu se generează (CF art.315 alin.(3)); motivul lângă întrebare
-    if (S.d398.inregistrat_oss === false) { eroareCamp(zona, "d398-oss", "Firma nu e înregistrată în regimul special OSS, deci nu depune D398 (CF art.315 alin.(3))."); faraAlegere = true; }
+    let faraAlegere = false; if (cereAlegerile(zona, ["#d398-moes", "#d398-eint"])) faraAlegere = true;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     if (!(S.d398.linii || []).length) { _refuzLangaRegen(zona, "Adaugă cel puțin o livrare."); return; }
     if (faraAlegere) return;
     regenereaza(corp, nav);
