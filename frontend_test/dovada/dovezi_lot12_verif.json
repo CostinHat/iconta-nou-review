@@ -727,7 +727,7 @@
     "zona": ".fereastra:last-of-type .mig-intro"
    },
    {
-    "exista": ".fereastra:last-of-type #dec-tip optgroup[label='Datorate de firmă (din vectorul fiscal)'] option",
+    "exista": ".fereastra:last-of-type #dec-tip optgroup[label='Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)'] option",
     "text": "D300 · "
    },
    {

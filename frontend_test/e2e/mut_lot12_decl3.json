@@ -7,8 +7,8 @@
  },
  {
   "fisier": "core/uc_declaratii.py",
-  "ancora": "    if tip == \"d394\":\n        from core import rectificativa as _rect\n        _rect.poarta_d394(conn, schema, body, xml, res)",
-  "inlocuire": "    if False:\n        from core import rectificativa as _rect\n        _rect.poarta_d394(conn, schema, body, xml, res)",
+  "ancora": "    if tip in _rect.CU_DIFERENTE:   # [lotul 12 / 13, C19] D394, D112: rectificativa numai la cerere, după diferențe\n        _rect.poarta_diferente(conn, schema, tip, body, xml, res)",
+  "inlocuire": "    if False:\n        _rect.poarta_diferente(conn, schema, tip, body, xml, res)",
   "test": "frontend_test/e2e/e2e_lot12_decl3.py::test_def_c19_rectificativa_d394_numai_la_cerere_dupa_diferente"
  },
  {

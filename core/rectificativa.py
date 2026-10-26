@@ -234,7 +234,7 @@ def refuz_la_depunere(cur, tenant_id, tip, an, luna, payload):
 class RefuzRectificativa(RefuzGenerare):
     """Refuzul generării D394 peste o depunere: codul și datele diferențelor în `detaliu()` (ecranul le desenează), fraza în `mesaj`
     (coada, reluarea declarației care aștepta notele, notificarea)."""
-    TIP = "rectificativa D394"
+    TIP = "declarație rectificativă"
 
     def __init__(self, cod, mesaj, **campuri):
         super().__init__(mesaj)
@@ -250,60 +250,181 @@ def confirmarea(cerere):
     return str(extra.get("rectificativa_confirmata") or "") if isinstance(extra, dict) else ""
 
 
-def poarta_d394(conn, schema, body, xml, res):
-    """D394 pe o perioadă cu declarația depusă: trece numai cu confirmarea contabilului pentru EXACT acest XML. Altfel refuz:
+#: [lotul 13, C19 — decizia Costin: „diferențele dinaintea rectificativei se extind la D112 acum; D300 și D100 după pilot”] Declarațiile a
+#: căror rectificativă se generează numai la cererea contabilului, după diferențele față de cea depusă. Pentru fiecare: (fraza despre forma
+#: rectificativei, cu temeiul ei din `TEMEI_PE_TIP`).
+CU_DIFERENTE = {
+    "d394": "O rectificativă o înlocuiește integral (OPANAF 2194/2025 anexa nr.2 pct.3)",
+    "d112": ("O rectificativă se completează integral, cu toate datele, inclusiv cele care nu diferă de declarația inițială (OPANAF 605/2026 "
+             "anexa nr.2 pct.2.4)"),
+}
+
+
+def _diferente_tip(tip, xml_depus, xml_nou):
+    """(diferențe | None dacă XML-ul depus nu se poate citi, conținutul întreg pentru „XML-ul depus nu e păstrat”)."""
+    if tip == "d394":
+        from core import d394 as _d394
+        return _d394.diferente(xml_depus, xml_nou), _d394.continut(xml_nou)
+    return diferente_xml(xml_depus, xml_nou), diferente_xml(None, xml_nou, lipsa_depus=NECUNOSCUT)
+
+
+def poarta_diferente(conn, schema, tip, body, xml, res):
+    """O declarație din `CU_DIFERENTE` pe o perioadă cu declarația depusă trece numai cu confirmarea contabilului pentru EXACT acest XML.
+    Altfel refuz:
       RECTIFICATIVA_FARA_DIFERENTE — XML-ul nou e identic cu cel depus: nimic de rectificat, nu se generează nimic (oricum ar fi cerut);
       RECTIFICATIVA_DE_CONFIRMAT  — diferențele (fără XML depus păstrat: tot conținutul, cu „necunoscut” pe partea depusă) și amprenta
                                     de confirmat; cu o confirmare veche (datele s-au schimbat după ce le-a văzut) -> `schimbata`.
     Fără depunere pe perioadă -> None (inițiala trece neschimbată)."""
-    from core import coada_api as _coada, d394 as _d394
+    from core import coada_api as _coada
+    tip = str(tip).lower()
     an, luna = int(getattr(res, "an", None) or body["an"]), int(getattr(res, "luna", None) or body["luna"])
     with conn.cursor() as cur:
-        deps = depuneri(cur, schema, "d394", an, luna)
+        deps = depuneri(cur, schema, tip, an, luna)
     if not deps:
         return None
     dep = deps[-1]
-    per, descriere = "%02d/%d" % (luna, an), descriere_depunere(dep)
-    dif = _d394.diferente(dep.get("xml"), xml)
+    per, descriere, T = "%02d/%d" % (luna, an), descriere_depunere(dep), tip.upper()
+    dif, tot = _diferente_tip(tip, dep.get("xml"), xml)
     pastrat = dif is not None
     campuri = {"perioada": per, "depunere": descriere, "depunere_nr": dep["nr_depunere"], "xml_depus_pastrat": pastrat}
     if pastrat and not dif:
         raise RefuzRectificativa(
             "RECTIFICATIVA_FARA_DIFERENTE",
-            "D394 pe %s: declarația generată acum din datele firmei e identică cu %s. Nu e nimic de rectificat, deci nu se generează "
-            "nicio declarație." % (per, descriere), diferente=[], amprenta=None, schimbata=False, **campuri)
+            "%s pe %s: declarația generată acum din datele firmei e identică cu %s. Nu e nimic de rectificat, deci nu se generează "
+            "nicio declarație." % (T, per, descriere), diferente=[], amprenta=None, schimbata=False, **campuri)
     amprenta, cerut = _coada.amprenta_xml(xml), confirmarea(body)
     if cerut == amprenta:
         return None
     raise RefuzRectificativa(
         "RECTIFICATIVA_DE_CONFIRMAT",
-        "D394 pe %s e deja depusă (%s). %sO rectificativă o înlocuiește integral (OPANAF 2194/2025 anexa nr.2 pct.3) și se generează numai "
-        "la cererea ta, din Declarații, după ce vezi diferențele față de cea depusă." % (
-            per, descriere, "Datele perioadei s-au schimbat după ce ai văzut diferențele; uită-te din nou la ele. " if cerut else ""),
-        diferente=dif if pastrat else _d394.continut(xml), amprenta=amprenta, schimbata=bool(cerut), **campuri)
+        "%s pe %s e deja depusă (%s). %s%s și se generează numai la cererea ta, din Declarații, după ce vezi diferențele față de cea "
+        "depusă." % (T, per, descriere, "Datele perioadei s-au schimbat după ce ai văzut diferențele; uită-te din nou la ele. " if cerut else "",
+                     CU_DIFERENTE[tip]),
+        diferente=dif if pastrat else tot, amprenta=amprenta, schimbata=bool(cerut), **campuri)
+
+
+def poarta_d394(conn, schema, body, xml, res):
+    """[lotul 12, C19] Poarta D394 — acum `poarta_diferente` pentru toate declarațiile din `CU_DIFERENTE`."""
+    return poarta_diferente(conn, schema, "d394", body, xml, res)
 
 
 def d394_confirmata(payload):
-    """Declarația D394 din coadă poartă confirmarea contabilului pentru exact XML-ul ei (cererea păstrată în `_cerere`)."""
+    """Declarația din coadă poartă confirmarea contabilului pentru exact XML-ul ei (cererea păstrată în `_cerere`)."""
     from core import coada_api as _coada
     p = payload or {}
     return bool(p.get("xml")) and confirmarea(p.get("_cerere")) == _coada.amprenta_xml(p.get("xml"))
 
 
+confirmata = d394_confirmata   # [lotul 13, C19] aceeași regulă pentru toate declarațiile din `CU_DIFERENTE`
+
+
 def _refuz_d394_neconfirmata(tip, an, luna, dep, payload):
-    """[lotul 12, C19, comanda Costin 12.3 pct.6] „rectificativa D394 pentru o perioadă deja depusă se generează doar la cererea
-    contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.” La „Confirmă depunerea”: o D394 peste o depunere
-    pleacă numai cu confirmarea contabilului pentru exact XML-ul ei (`d394_confirmata`). Prinde declarațiile intrate în coadă
-    înainte de reparație (generate fără diferențe arătate) — nu se rescriu, se generează din nou din Declarații. None la celelalte."""
-    if str(tip).lower() != "d394":
+    """[lotul 12, C19, comanda Costin 12.3 pct.6; lotul 13: și D112] „rectificativa […] pentru o perioadă deja depusă se generează doar la
+    cererea contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.” La „Confirmă depunerea”: o declarație din
+    `CU_DIFERENTE` peste o depunere pleacă numai cu confirmarea contabilului pentru exact XML-ul ei (`confirmata`). Prinde declarațiile
+    intrate în coadă înainte de reparație (generate fără diferențe arătate) — nu se rescriu, se generează din nou din Declarații. None la
+    celelalte."""
+    t = str(tip).lower()
+    if t not in CU_DIFERENTE:
         return None
-    if d394_confirmata(payload):
+    if confirmata(payload):
         return None
-    per = "%02d/%d" % (int(luna), int(an))
+    per, T = "%02d/%d" % (int(luna), int(an)), t.upper()
     return {"ok": False, "cod": "RECTIFICATIVA_NECONFIRMATA",
-            "mesaj": ("D394 pe %s e deja depusă (%s), iar declarația aceasta o înlocuiește fără ca diferențele față de ea să-ți fi fost "
-                      "arătate. O declarație rectificativă se depune numai la cererea ta: Declarații → D394 → %s → „Continuă”, uită-te la diferențe, "
-                      "apoi „Generează declarația rectificativă” și trimite-o în coadă în locul acesteia." % (per, descriere_depunere(dep), per))}
+            "mesaj": ("%s pe %s e deja depusă (%s), iar declarația aceasta o %s fără ca diferențele față de ea să-ți fi fost arătate. O "
+                      "declarație rectificativă se depune numai la cererea ta: Declarații → %s → %s → „Continuă”, uită-te la diferențe, apoi "
+                      "„Generează declarația rectificativă” și trimite-o în coadă în locul acesteia." % (
+                          T, per, descriere_depunere(dep), "înlocuiește" if t == "d394" else "rectifică", T, per))}
+
+
+# ── [lotul 13, C19] DIFERENȚELE UNUI XML DE DECLARAȚIE, GENERIC (D112) ───────────────────────────────────────────────────────────────
+#: XML-ul declarației depuse nu e păstrat: rectificativa se arată întreagă, cu „necunoscut” pe partea depusă
+NECUNOSCUT = "necunoscut"
+#: identitatea unui rând D112 (elementul -> atributul care îl numește): obligația pe codul ei, asiguratul pe CNP
+_IDENTITATE_D112 = {"angajatorA": "A_codOblig", "asigurat": "cnpAsig"}
+#: secțiunile D112, cum le numește formularul (OPANAF 605/2026 anexa nr.1)
+_SECTIUNI_D112 = {"declaratieUnica": "Antet", "angajator": "Angajator", "angajatorA": "Obligații de plată (secțiunea A)",
+                  "angajatorB": "Angajator — secțiunea B", "angajatorC1": "Angajator — secțiunea C.1",
+                  "angajatorC2": "Angajator — secțiunea C.2 (concedii medicale)", "angajatorC4": "Angajator — secțiunea C.4 (CAM)",
+                  "asigurat": "Asigurat", "asiguratB1": "Asigurat — secțiunea B.1", "asiguratB2": "Asigurat — secțiunea B.2",
+                  "asiguratB3": "Asigurat — secțiunea B.3", "asiguratB4": "Asigurat — secțiunea B.4", "asiguratD": "Asigurat — secțiunea D",
+                  "asiguratE1": "Asigurat — secțiunea E.1", "asiguratE2": "Asigurat — secțiunea E.2", "asiguratE3": "Asigurat — secțiunea E.3"}
+
+
+def _fara_ns(nume):
+    return str(nume).rsplit("}", 1)[-1]
+
+
+def randuri_xml_generic(xml):
+    """{cheie: (secțiune, rând, {rubrică: valoare})} pentru un XML de declarație cu rânduri pe atribute (D112): fiecare element e un rând;
+    cheia = drumul de la rădăcină, cu identitatea elementelor din `_IDENTITATE_D112` (codul obligației, CNP-ul asiguratului) și, la elementele
+    repetate fără identitate (B3, D), al câtelea e. None = XML lipsă sau ilizibil (diferențele nu se pot calcula)."""
+    import xml.etree.ElementTree as _ET
+    if not xml or not str(xml).strip():
+        return None
+    try:
+        rad = _ET.fromstring(str(xml).encode("utf-8"))
+    except _ET.ParseError:
+        return None
+    out = {}
+
+    def umbla(el, drum, nume_rand):
+        tag = _fara_ns(el.tag)
+        atr = {_fara_ns(k): v for k, v in el.attrib.items()}
+        out[drum] = (_SECTIUNI_D112.get(tag, tag), nume_rand, atr)
+        vazute = {}
+        for c in el:
+            ct = _fara_ns(c.tag)
+            ident = c.attrib.get(_IDENTITATE_D112.get(ct, ""), None)
+            if ident is None:
+                vazute[ct] = vazute.get(ct, 0) + 1
+                ident = str(vazute[ct])
+            rand = nume_rand
+            if ct == "asigurat":
+                rand = "%s %s (CNP %s)" % (c.attrib.get("numeAsig", ""), c.attrib.get("prenAsig", ""), ident)
+            elif ct == "angajatorA":
+                rand = "obligația cu codul %s" % ident
+            umbla(c, drum + ((ct, ident),), rand)
+
+    umbla(rad, ((_fara_ns(rad.tag), ""),), "declarația")
+    return out
+
+
+def _egale(a, b):
+    if a == b:
+        return True
+    if a is None or b is None:
+        return False
+    try:
+        from decimal import Decimal
+        return Decimal(str(a).strip()) == Decimal(str(b).strip())
+    except Exception:  # noqa: BLE001 — cel puțin una nu e număr: textele, deja diferite, diferă
+        return False
+
+
+def diferente_xml(xml_depus, xml_nou, lipsa_depus="—"):
+    """[{sectiune, rand, camp, depus, nou}] — fiecare rubrică care se schimbă de la declarația depusă la cea generată acum, în ordinea
+    declarației nou generate (apoi rândurile care au dispărut); un rând care apare / dispare are toate rubricile lui, cu „—” pe partea unde
+    lipsește. `xml_depus` lipsă / ilizibil -> None, afară de `lipsa_depus=NECUNOSCUT` (tot conținutul, depusul necunoscut)."""
+    if lipsa_depus == NECUNOSCUT:
+        dep = {}
+    else:
+        dep = randuri_xml_generic(xml_depus)
+        if dep is None:
+            return None
+    nou = randuri_xml_generic(xml_nou) or {}
+    out = []
+    for k in list(nou) + [x for x in dep if x not in nou]:
+        sd, rd, cd = dep.get(k, (None, None, {}))
+        sn, rn, cn = nou.get(k, (None, None, {}))
+        for camp in list(cn) + [c for c in cd if c not in cn]:
+            if camp == "xmlns":
+                continue
+            vd, vn = cd.get(camp), cn.get(camp)
+            if not _egale(vd, vn):
+                out.append({"sectiune": sn or sd, "rand": rn or rd, "camp": camp,
+                            "depus": lipsa_depus if vd is None else vd, "nou": "—" if vn is None else vn})
+    return out
 
 
 def aplica(res, st):
@@ -324,9 +445,9 @@ def aplica(res, st):
 #: depunerea înregistrată, când indexul e cunoscut). D216 / D395 / D397 își fac singure calculul (`stabileste`), nu sunt aici.
 DREC_DIN_MANUAL = {
     "d104": None, "d106": None, "d107": None, "d108": None, "d110": None, "d114": None, "d119": None, "d120": None, "d130": None,
-    "d177": "index", "d200": None, "d201": None, "d204": None, "d207": None, "d213": "index_init", "d221": None,
-    "d223": None, "d307": None, "d311": None, "d318": None, "d393": None, "d401": None, "d402": None, "d403": None,
-    "d407": None, "d600": None,
+    "d177": "index", "d204": None, "d207": None, "d213": "index_init",
+    "d307": None, "d311": None, "d318": None, "d393": None, "d401": None, "d402": None, "d403": None,
+    "d407": None,
 }
 
 #: Formularele al căror validator NU admite rectificativa: `d_rec` are intervalul [0, 0] (probat pe DUK 21.10.2026, același XML valid cu
@@ -356,7 +477,6 @@ DECID_SINGURE = ("d100", "d101", "d101g", "d112", "d205", "d216", "d301", "d390"
 DREC_NEACOPERITE = {
     "d212": ("D212: rectificativa bifează capitolul corectat (rectif1 / rectif2 — DUK D212 v9), alegere a contabilului; d_rec=1 "
              "fără capitol e respinsă"),
-    "d220": "D220: rectificativa se exprimă prin d_rec1 / d_rec2 (tipul rectificării, DUK D220 v1), alegere a contabilului",
     "d300": "D300: decontul nu are rectificativă (CPF art.105 alin.(4)); patch-ul (refuz la generare) e cerut în raport",
     "d208": "D208: validatorul are `d_rec` (DUK D208 v6), generatorul nu-l emite; de completat (fișier în afara lotului)",
 }

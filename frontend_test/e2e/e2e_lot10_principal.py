@@ -44,7 +44,7 @@ def test_def_432_datorate_dinaintea_preluarii_raman_marcate_separat(patron, firm
     luna_dinainte = [o for o in inainte[0]["optiuni"] if o["tip"] in ("d394", "d406") and (o["an"], o["luna"]) == (an_p, luna_p)]
     assert luna_dinainte and all(o["text"].endswith("· înainte de preluare") for o in luna_dinainte), inainte
     assert all((o["an"], o["luna"] or 12) < (azi.year, azi.month) for o in inainte[0]["optiuni"]), inainte
-    obisnuite = [g for g in grupuri if g["eticheta"] == "Datorate de firmă (din vectorul fiscal)"]
+    obisnuite = [g for g in grupuri if g["eticheta"] == "Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)"]
     assert all("înainte de preluare" not in o["text"] for g in obisnuite for o in g["optiuni"]), obisnuite
 
 

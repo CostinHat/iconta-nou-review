@@ -1,0 +1,992 @@
+[
+ {
+  "nr": "651",
+  "firma": "tenant_9049",
+  "descriere": "F1: Declarații -> D207, 2025 -> „Continuă”: formularul, cu nota neutră „Completează formularul de mai jos, apoi apasă „Generează D207””; niciun refuz roșu „D207 nu are ce genera” (clasa 89). Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d207",
+    "an": 2025
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Completează formularul de mai jos, apoi apasă „Generează D207”"
+   },
+   {
+    "nu_contine": "nu are ce genera"
+   },
+   {
+    "exista": ".fereastra:last-of-type #d207-regen",
+    "text": "Generează D207"
+   }
+  ],
+  "captura": "651_f1_d207_formular.png"
+ },
+ {
+  "nr": "659",
+  "firma": "tenant_9051",
+  "descriere": "F3 (neplătitoare): Declarații -> D311, 09/2026 -> „Continuă”: formularul, fără paragraful roșu cu trei erori sub zona vizibilă; erorile apar la „Generează D311”, lângă câmpuri. Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d311",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "captura": "659_f3_d311_la_deschidere.png"
+   },
+   {
+    "click": ".fereastra:last-of-type #d311-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .msg-eroare[data-camp='d311-data']"
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "D311 nu are ce genera"
+   },
+   {
+    "contine": "Completează data la care ți-a fost anulat codul de TVA."
+   }
+  ],
+  "captura": "659_f3_d311_erori_langa_campuri.png"
+ },
+ {
+  "nr": "650",
+  "firma": "tenant_9049",
+  "descriere": "F1 (plătitoare de TVA): Declarații -> „Arată alte declarații”: D311 e inactivă, cu motivul „D311 nu se datorează — firma e înregistrată în scopuri de TVA … (CF art.324 alin.(10))”, nu „D311 · lunar”. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "click": ".fereastra:last-of-type #dec-alte",
+    "daca_exista": true
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip option[value='d311']",
+    "stare": "attached"
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": ".fereastra:last-of-type #dec-tip option[value='d311']"
+   },
+   {
+    "contine": "D311 nu se datorează — firma e înregistrată în scopuri de TVA",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "captura": "650_f1_d311_nu_se_datoreaza.png"
+ },
+ {
+  "nr": "635",
+  "firma": "tenant_9051",
+  "descriere": "F3 (neînregistrată în scopuri de TVA): Declarații -> „Arată alte declarații”: D318 e inactivă, cu motivul (HG 1/2016 pct.73 alin.(15) lit.c). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "click": ".fereastra:last-of-type #dec-alte",
+    "daca_exista": true
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip option[value='d318']",
+    "stare": "attached"
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": ".fereastra:last-of-type #dec-tip option[value='d318']"
+   },
+   {
+    "contine": "D318 nu se depune",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "captura": "635_f3_d318_inactiva.png"
+ },
+ {
+  "nr": "594",
+  "firma": "tenant_9051",
+  "descriere": "F3: Declarații -> D398, T3/2026 -> „Continuă”: denumirea (F3 Intracomunitar SRL) și codul de TVA (RO404000013) vin din Date firmă; fără refuz roșu înainte de orice acțiune; fără „msest”, „msid”, „e_int”, „harta de componente”, „selectorul de sus”. Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d398",
+    "an": 2026,
+    "trim": 3
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": ".fereastra:last-of-type #d398-name",
+    "egal": "F3 Intracomunitar SRL"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #d398-vat",
+    "egal": "RO404000013"
+   },
+   {
+    "nu_contine": "msest"
+   },
+   {
+    "nu_contine": "e_int"
+   },
+   {
+    "nu_contine": "selectorul de sus"
+   },
+   {
+    "nu_contine": "nu are ce genera"
+   }
+  ],
+  "captura": "594_f3_d398_formular.png"
+ },
+ {
+  "nr": "595",
+  "firma": "tenant_9051",
+  "descriere": "F3 (neplătitoare, înregistrată art.317, fără înregistrare OSS): D398, T3/2026 -> „Firma e înregistrată în regimul special OSS …?” „Nu” -> „Generează D398”: nu se generează; lângă întrebare „Firma nu e înregistrată în regimul special OSS, deci nu depune D398 (CF art.315 alin.(3)).” Nimic nu intră în coadă.",
+  "pasi": [
+   {
+    "declaratie": "d398",
+    "an": 2026,
+    "trim": 3
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-oss",
+    "valoare": "false"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .msg-eroare[data-camp='d398-oss']"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Firma nu e înregistrată în regimul special OSS, deci nu depune D398 (CF art.315 alin.(3))."
+   },
+   {
+    "nu_contine": "Validat cu DUKIntegrator"
+   }
+  ],
+  "captura": "595_f3_d398_fara_oss.png"
+ },
+ {
+  "nr": "636",
+  "firma": "tenant_9049",
+  "descriere": "F1: Declarații -> D318, 2026 -> „Continuă”: CUI-ul, denumirea, IBAN-ul, emailul, declarantul, funcția și codul CAEN vin din Date firmă; moneda se alege din lista monedelor BNR. Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d318",
+    "an": 2026
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": ".fereastra:last-of-type #d318-cui",
+    "egal": "401002001"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #d318-soldenumire",
+    "egal": "F1 Comert Stoc SRL"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #d318-iban",
+    "egal": "RO49AAAA1B31007593840000"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #d318-solemail",
+    "egal": "f1@sesiuneab.test"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #d318-declarant",
+    "egal": "Ion Ionescu"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #d318-nace",
+    "egal": "4711"
+   },
+   {
+    "exista": ".fereastra:last-of-type select#d318-cur option[value='HUF']"
+   }
+  ],
+  "captura": "636_f1_d318_precompletat.png"
+ },
+ {
+  "nr": "637",
+  "firma": "tenant_9049",
+  "descriere": "F1: D318, 2026 -> statul HU, titularul „A”, moneda HUF, BIC, fără nicio factură -> „Generează D318”: lângă buton numai „Adaugă cel puțin o factură.”; perioada, CUI-ul și IBAN-ul (venite din Date firmă) nu sunt cerute. Nimic generat.",
+  "pasi": [
+   {
+    "declaratie": "d318",
+    "an": 2026
+   },
+   {
+    "alege": ".fereastra:last-of-type #d318-tara",
+    "valoare": "HU"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d318-ownt",
+    "valoare": "A"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d318-cur",
+    "valoare": "HUF"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-bic",
+    "valoare": "BTRLRO22"
+   },
+   {
+    "click": ".fereastra:last-of-type #d318-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-regen-msg"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Adaugă cel puțin o factură.",
+    "zona": ".fereastra:last-of-type .dec-regen-msg"
+   },
+   {
+    "nu_contine": "completează perioada de rambursare, CUI-ul solicitantului, IBAN-ul"
+   }
+  ],
+  "captura": "637_f1_d318_numai_factura.png"
+ },
+ {
+  "nr": "638",
+  "firma": "tenant_9049",
+  "descriere": "F1: D318 pe iulie–septembrie 2026, o factură HUF cu TVA deductibil 27.000 HUF (~70 euro) -> „Generează D318”: nu se generează, sub pragul minim de 400 euro (HG 1/2016 pct.73 alin.(13)); titlul spune anul 2026; fără „harta de componente”. Nimic în coadă.",
+  "pasi": [
+   {
+    "declaratie": "d318",
+    "an": 2026
+   },
+   {
+    "click": ".fereastra:last-of-type #d318-annual"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #d318-li"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-li",
+    "valoare": "7"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-ls",
+    "valoare": "9"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d318-tara",
+    "valoare": "HU"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d318-ownt",
+    "valoare": "A"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d318-cur",
+    "valoare": "HUF"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-bic",
+    "valoare": "BTRLRO22"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d318-fel",
+    "valoare": "achizitie"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-fnr",
+    "valoare": "HU-77"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-fdata",
+    "valoare": "15.08.2026"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-fbaza",
+    "valoare": "100000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-ftva",
+    "valoare": "27000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-fded",
+    "valoare": "27000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-ffz",
+    "valoare": "BUDAPEST KFT"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-ffzstr",
+    "valoare": "Andrassy ut 1, Budapest"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d318-ffztara",
+    "valoare": "HU"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d318-fcod",
+    "valoare": "1"
+   },
+   {
+    "click": ".fereastra:last-of-type #d318-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-d318-del"
+   },
+   {
+    "click": ".fereastra:last-of-type #d318-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-refuz"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "sub pragul minim de 400 euro"
+   },
+   {
+    "contine": "HG 1/2016 pct.73 alin.(13)"
+   },
+   {
+    "nu_contine": "harta de componente"
+   }
+  ],
+  "captura": "638_f1_d318_sub_prag.png"
+ },
+ {
+  "nr": "656",
+  "firma": "tenant_9049",
+  "descriere": "F1: D207, 2025 -> beneficiar: dividende, KUNDE GMBH, Germania, cod fiscal străin, Codul fiscal, bază 1 leu, impozit 160 lei -> „+ adaugă beneficiarul”: refuzul lângă „Impozit reținut” — impozitul e mai mare decât baza; beneficiarul nu intră (cazul lui Costin, 656). Nimic generat.",
+  "pasi": [
+   {
+    "declaratie": "d207",
+    "an": 2025
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-tip",
+    "valoare": "01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-den",
+    "valoare": "KUNDE GMBH"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-stat-cauta",
+    "valoare": "germ"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-stat",
+    "valoare": "DE"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-cifs",
+    "valoare": "DE811907980"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-act",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-baza",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-imp",
+    "valoare": "160"
+   },
+   {
+    "click": ".fereastra:last-of-type #d207-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .msg-eroare[data-camp='d207-imp']"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Impozitul (160,00 lei) e mai mare decât baza (1,00 lei)"
+   }
+  ],
+  "captura": "656_f1_d207_160_pe_1.png"
+ },
+ {
+  "nr": "656",
+  "firma": "tenant_9049",
+  "descriere": "F1: D207, 2025 -> dividende, Codul fiscal, bază 10.000, impozit 1.600 (16%) -> „+ adaugă” -> „Generează D207”: verificarea cifrelor oprește generarea înaintea validatorului — „la dividende plătite în 2025, Codul fiscal cere impozit de 10% din bază (CF art.224 alin.(4) lit.b): 1.000 lei, nu 1.600 lei”. Nimic în coadă.",
+  "pasi": [
+   {
+    "declaratie": "d207",
+    "an": 2025
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-tip",
+    "valoare": "01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-den",
+    "valoare": "KUNDE GMBH"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-stat-cauta",
+    "valoare": "germ"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-stat",
+    "valoare": "DE"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-cifs",
+    "valoare": "DE811907980"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-act",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-baza",
+    "valoare": "10000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-imp",
+    "valoare": "1600"
+   },
+   {
+    "click": ".fereastra:last-of-type #d207-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-d207-del"
+   },
+   {
+    "click": ".fereastra:last-of-type #d207-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-refuz"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Codul fiscal cere impozit de 10% din bază"
+   },
+   {
+    "nu_contine": "Validat cu DUKIntegrator"
+   }
+  ],
+  "captura": "656_f1_d207_cota.png"
+ },
+ {
+  "nr": "652",
+  "firma": "tenant_9049",
+  "descriere": "F1: D207, 2025 -> beneficiarul completat (10.000 / 1.000), FĂRĂ „+ adaugă” -> „Generează D207”: beneficiarul intră în declarație și D207 se validează; nicio eroare pe „Nume”. Nimic în coadă (nu se apasă „Trimite”).",
+  "pasi": [
+   {
+    "declaratie": "d207",
+    "an": 2025
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-tip",
+    "valoare": "01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-den",
+    "valoare": "KUNDE GMBH"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-stat-cauta",
+    "valoare": "germ"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-stat",
+    "valoare": "DE"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-cifs",
+    "valoare": "DE811907980"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-act",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-baza",
+    "valoare": "10000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-imp",
+    "valoare": "1000"
+   },
+   {
+    "click": ".fereastra:last-of-type #d207-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-ok"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validat cu DUKIntegrator"
+   },
+   {
+    "contine": "KUNDE GMBH"
+   },
+   {
+    "nu_contine": "Adaugă cel puțin un beneficiar"
+   }
+  ],
+  "captura": "652_f1_d207_adaugat_la_generare.png"
+ },
+ {
+  "nr": "657",
+  "firma": "tenant_9049",
+  "descriere": "F1: D207, 2025 -> un beneficiar -> „Generează D207” (validată) -> „șterge” beneficiarul: caseta verde dispare, „Trimite în coadă →” e inactiv, iar lângă el „Ai modificat declarația după ce a fost generată și validată …”. Nimic în coadă.",
+  "pasi": [
+   {
+    "declaratie": "d207",
+    "an": 2025
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-tip",
+    "valoare": "01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-den",
+    "valoare": "KUNDE GMBH"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-stat-cauta",
+    "valoare": "germ"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-stat",
+    "valoare": "DE"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-cifs",
+    "valoare": "DE811907980"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-act",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-baza",
+    "valoare": "10000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-imp",
+    "valoare": "1000"
+   },
+   {
+    "click": ".fereastra:last-of-type #d207-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-d207-del"
+   },
+   {
+    "click": ".fereastra:last-of-type #d207-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-ok"
+   },
+   {
+    "captura": "657_f1_d207_validata.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .dec-d207-del"
+   },
+   {
+    "asteapta_text": "rezultatul nu mai e valabil"
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": ".fereastra:last-of-type #dec-trimite"
+   },
+   {
+    "contine": "Ai modificat declarația după ce a fost generată și validată"
+   }
+  ],
+  "captura": "657_f1_d207_dupa_stergere.png"
+ },
+ {
+  "nr": "658",
+  "firma": "tenant_9049",
+  "descriere": "F1: D207, 2025 generată și validată: pe ecran nu mai apare „nu e trecut în harta de componente” și nici altă notă despre componente. Nimic în coadă.",
+  "pasi": [
+   {
+    "declaratie": "d207",
+    "an": 2025
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-tip",
+    "valoare": "01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-den",
+    "valoare": "KUNDE GMBH"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-stat-cauta",
+    "valoare": "germ"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-stat",
+    "valoare": "DE"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-cifs",
+    "valoare": "DE811907980"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-act",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-baza",
+    "valoare": "10000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-imp",
+    "valoare": "1000"
+   },
+   {
+    "click": ".fereastra:last-of-type #d207-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-ok"
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "harta de componente"
+   },
+   {
+    "nu_contine": "nu se poate desface"
+   },
+   {
+    "contine": "Validat cu DUKIntegrator"
+   }
+  ],
+  "captura": "658_f1_d207_fara_componente.png"
+ },
+ {
+  "nr": "653",
+  "firma": "tenant_9049",
+  "descriere": "F1: D207, 2025 -> „Stat de rezidență”: „germ” în căutare păstrează Germania (DE); codurile fiscale spun de la început „completează măcar unul”. Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d207",
+    "an": 2025
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-stat-cauta",
+    "valoare": "germ"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "completează măcar unul"
+   },
+   {
+    "contine": "Germania (DE)",
+    "zona": ".fereastra:last-of-type #d207-stat"
+   },
+   {
+    "nu_contine": "Franța",
+    "zona": ".fereastra:last-of-type #d207-stat"
+   }
+  ],
+  "captura": "653_f1_d207_stat_cautat.png"
+ },
+ {
+  "nr": "654",
+  "firma": "tenant_9049",
+  "descriere": "F1: D710, T3/2026 -> „Generează D710” fără obligații: „D710 cere cel puțin o obligație corectată.” -> se alege codul 121: refuzul vechi dispare. Nimic generat.",
+  "pasi": [
+   {
+    "declaratie": "d710",
+    "an": 2026,
+    "trim": 3
+   },
+   {
+    "click": ".fereastra:last-of-type #d710-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-refuz"
+   },
+   {
+    "captura": "654_f1_d710_refuz.png"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d710-cod",
+    "valoare": "121"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "cel puțin o obligație corectată"
+   }
+  ],
+  "captura": "654_f1_d710_refuz_disparut.png"
+ },
+ {
+  "nr": "538",
+  "firma": "tenant_9051",
+  "descriere": "F3 (neplătitoare art.317, achiziția IE-100 validată pe 09/2026 — document de dinainte de reparație): Declarații -> „Datorate de firmă”: D301 · 09/2026 · termen de depunere 26.10.2026 (CF art.324 alin.(1); 25.10 duminică), nu numai D100 / D390 / D406. Numai citire. Termenul e în fereastra listei până la 26.10.2026 inclusiv.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #dec-tip option",
+    "text": "D301 · 09/2026 · termen de depunere 26.10.2026"
+   }
+  ],
+  "captura": "538_f3_vechi_datorate_d301.png"
+ },
+ {
+  "nr": "591",
+  "firma": "tenant_9051",
+  "descriere": "F3: aceeași listă ca la 538 — D301 09/2026 (AIC IE-100 validată, nemarcată depusă) e în „Datorate de firmă”. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #dec-tip option",
+    "text": "D301 · 09/2026"
+   }
+  ],
+  "captura": "591_f3_vechi_datorate_d301.png"
+ },
+ {
+  "nr": "592",
+  "firma": "tenant_9051",
+  "descriere": "F3: „Datorate de firmă”: D390 numai pe 09/2026 (luna cu achiziția intracomunitară), nu pe 10/2026 și 11/2026 (CF art.325 alin.(2)). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D406",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D390 · 10/2026",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D390 · 11/2026",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "captura": "592_f3_vechi_datorate_d390.png"
+ },
+ {
+  "nr": "C162",
+  "firma": "tenant_9051",
+  "descriere": "F3 (neplătitoare art.317): Declarații -> „Datorate de firmă”: D390 apare numai pe lunile cu operațiuni intracomunitare (nu pe 10 / 11 2026). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D406",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D390 · 10/2026",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D390 · 11/2026",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "captura": "c162_f3_vechi_datorate_d390.png"
+ },
+ {
+  "nr": "539",
+  "firma": "tenant_9051",
+  "descriere": "F3: Declarații -> D301, 09/2026 -> „Continuă”: rândul achiziției IE-100 (document de dinainte de reparație, corectat de migrarea `core/migrare_d301_cod_tva_fara_prefix.py`) spune „furnizor IE6388047V Furnizor test UE”, nu „IEIE6388047V”. Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d301",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-d301-op .dec-man-rand"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "furnizor IE6388047V",
+    "zona": ".fereastra:last-of-type #dec-d301-op"
+   },
+   {
+    "nu_contine": "IEIE",
+    "zona": ".fereastra:last-of-type #dec-d301-op"
+   }
+  ],
+  "captura": "539_f3_vechi_d301_furnizor.png"
+ },
+ {
+  "nr": "540",
+  "firma": "tenant_9049",
+  "descriere": "F1: Declarații -> D406, 09/2026 -> „Continuă” (pasul 2) -> săgeata ←: pasul 1, cu D406 ales (nu pagina principală). Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d406",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta_text": "Pasul 1 din 3"
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": ".fereastra:last-of-type #dec-tip",
+    "egal": "d406"
+   },
+   {
+    "contine": "Pasul 1 din 3"
+   }
+  ],
+  "captura": "540_f1_inapoi_pasul_1.png"
+ },
+ {
+  "nr": "660",
+  "firma": "tenant_9052",
+  "descriere": "F4 (PFA): Declarații -> „Arată alte declarații”: D200, D201, D220, D221, D223, D600 nu se oferă (Declarația unică D212, CF art.122 / 130 / 107 / 125 / 151); D212 rămâne. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "click": ".fereastra:last-of-type #dec-alte",
+    "daca_exista": true
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip option[value='d212']",
+    "stare": "attached"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D212",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D600",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D200",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D221",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D223",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "nu_contine": "D201",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "captura": "660_f4_pfa_fara_formulare_inlocuite.png"
+ },
+ {
+  "nr": "C43",
+  "firma": "tenant_9049",
+  "descriere": "F1: D300 10/2026 (serviciile către GOOGLE IRELAND LIMITED, documente de dinainte de reparație): rd.3.1 numai cu clienții din UE. Perioada se încheie la 31.10.2026 — dovada e posibilă de la 01.11.2026.",
+  "posibila_de_la": "2026-11-01",
+  "pasi": [
+   {
+    "declaratie": "d300",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-ok, .fereastra:last-of-type .dec-avert"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validat cu DUKIntegrator"
+   }
+  ],
+  "captura": "c43_f1_vechi_d300_10_2026.png"
+ },
+ {
+  "nr": "C76",
+  "firma": "tenant_9049",
+  "descriere": "F1: D300 10/2026: rândul 34 cu ajustarea lipsei la inventar (nota 635 = 4427 43,24, document de dinainte de reparație). Posibilă de la 01.11.2026.",
+  "posibila_de_la": "2026-11-01",
+  "pasi": [
+   {
+    "declaratie": "d300",
+    "an": 2026,
+    "luna": 10
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-ok, .fereastra:last-of-type .dec-avert"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Validat cu DUKIntegrator"
+   }
+  ],
+  "captura": "c76_f1_vechi_d300_10_2026.png"
+ }
+]

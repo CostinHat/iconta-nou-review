@@ -226,60 +226,60 @@ def erori_generare(prof, manual):
     er = []
     moes = _int(manual.get("moes_voes_imp"))
     if moes not in (SCHEME_UE, SCHEME_NONUE, SCHEME_IMP):
-        er.append("moes_voes_imp obligatoriu 1 (regim UE) / 2 (regim non-UE) / 3 (regim import).")
+        er.append("Alege regimul special: UE (bunuri și servicii), non-UE (servicii) sau import (bunuri).")
     if not _esc(manual.get("name")):
-        er.append("Lipsă denumire contribuabil (name).")
+        er.append("Completează denumirea firmei.")
     if not _esc(manual.get("vat_id_no")):
-        er.append("Lipsă cod de identificare TVA (vat_id_no) - DUK regula R10.")
+        er.append("Completează codul de TVA al firmei (DUK regula R10).")
     if _int(manual.get("an_r")) is None:
-        er.append("Lipsă an de raportare (an_r).")
+        er.append("Lipsește anul declarației — alege-l la pasul 1.")
     if _int(manual.get("luna_r")) is None:
-        er.append("Lipsă perioada de raportare luna_r - DUK regula R3.")
+        er.append("Lipsește trimestrul declarației — alege-l la pasul 1 (DUK regula R3).")
     if moes == SCHEME_UE and _int(manual.get("e_int")) not in (0, 1):
-        er.append("e_int obligatoriu (0/1) când moes_voes_imp=1 - DUK regula R5.1.")
+        er.append("În regimul UE spune dacă firma are sedii fixe în alte state membre (DUK regula R5.1).")
     ps, pe = _esc(manual.get("period_start_date")), _esc(manual.get("period_end_date"))
     if bool(ps) != bool(pe):
-        er.append("period_start_date și period_end_date simultan nule sau nenule - DUK regula R6.1.")
+        er.append("Perioada declarației trebuie să aibă și începutul, și sfârșitul (DUK regula R6.1).")
     for d, nume in ((ps, "period_start_date"), (pe, "period_end_date")):
         if d and not _DATA_OK.match(d):
-            er.append("%s trebuie în format dd.MM.yyyy." % nume)
+            er.append("Data perioadei declarației trebuie scrisă zz.ll.aaaa.")
 
     state_vazute = set()
     for i, m in enumerate(manual.get("ms") or [], 1):
         stat = _esc(m.get("mscon_state")).upper()
         if not _STAT_OK.match(stat):
-            er.append("MS[%d]: mscon_state invalid (se așteaptă 2 litere)." % i)
+            er.append("Statul de consum %d: alege statul din listă." % i)
         if stat in state_vazute:
-            er.append("MS[%d]: mscon_state %s duplicat - DUK regula R14." % (i, stat))
+            er.append("Statul de consum %s apare de două ori — livrările lui se scriu sub același stat (DUK regula R14)." % stat)
         state_vazute.add(stat)
         supplies = m.get("supplies") or []
         if not supplies:
-            er.append("MS[%d] (%s): trebuie cel puțin un SUPPLY - DUK regula R22." % (i, stat))
+            er.append("Statul de consum %s: adaugă cel puțin o livrare (DUK regula R22)." % stat)
         for j, s in enumerate(supplies, 1):
-            pfx = "MS[%d]/SUPPLY[%d]" % (i, j)
+            pfx = "Livrarea %d din %s" % (j, stat)
             st = _int(s.get("supply_type"))
             tt = _int(s.get("trade_type"))
             if st not in (1, 2):
-                er.append("%s: supply_type obligatoriu 1 (bunuri) / 2 (servicii)." % pfx)
+                er.append("%s: alege dacă sunt bunuri sau servicii." % pfx)
             if tt not in (1, 2):
-                er.append("%s: trade_type obligatoriu 1 (msid) / 2 (msest)." % pfx)
+                er.append("%s: alege de unde pleacă livrarea (din România sau din sediul fix din alt stat)." % pfx)
             if _int(s.get("vat_rate_type")) is None:
-                er.append("%s: vat_rate_type obligatoriu." % pfx)
+                er.append("%s: alege tipul cotei (standard sau redusă)." % pfx)
             rate = _dec(s.get("vat_rate"))
             if not (Decimal("0") < rate <= Decimal("100")):
-                er.append("%s: vat_rate în intervalul (0, 100] - DUK regula R27.1." % pfx)
+                er.append("%s: cota TVA trebuie să fie mai mare ca 0 și cel mult 100%% (DUK regula R27.1)." % pfx)
             if _dec(s.get("taxable_amount")) <= 0:
-                er.append("%s: taxable_amount strict pozitiv - DUK regula R28." % pfx)
+                er.append("%s: baza impozabilă trebuie să fie mai mare ca zero (DUK regula R28)." % pfx)
             if st == 1 and moes == SCHEME_NONUE:
-                er.append("%s: bunuri interzise în regim non-UE - DUK regula R25.1." % pfx)
+                er.append("%s: regimul non-UE cuprinde numai servicii, nu bunuri (DUK regula R25.1)." % pfx)
             if st == 2 and moes == SCHEME_IMP:
-                er.append("%s: servicii interzise în regim import - DUK regula R25.2." % pfx)
+                er.append("%s: regimul de import cuprinde numai bunuri, nu servicii (DUK regula R25.2)." % pfx)
             if tt == 2 and moes != SCHEME_UE:
-                er.append("%s: msest (trade_type=2) doar în regim UE - DUK regula R23." % pfx)
+                er.append("%s: livrarea din sediul fix din alt stat există numai în regimul UE (DUK regula R23)." % pfx)
             if tt == 2 and not _esc(s.get("vat_id_no_msest")):
-                er.append("%s: vat_id_no_msest obligatoriu la trade_type=2 - DUK regula R24.1." % pfx)
+                er.append("%s: completează codul de TVA al sediului fix din care pleacă livrarea (DUK regula R24.1)." % pfx)
             if tt == 1 and _esc(s.get("vat_id_no_msest")):
-                er.append("%s: vat_id_no_msest interzis la trade_type=1 - DUK regula R24.4." % pfx)
+                er.append("%s: la livrarea din România nu se scrie codul de TVA al unui sediu fix (DUK regula R24.4)." % pfx)
 
     cor_chei = set()
     for i, c in enumerate(manual.get("corrections") or [], 1):

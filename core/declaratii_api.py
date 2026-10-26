@@ -1,6 +1,6 @@
 """
 core/declaratii_api.py — dispatch pentru TOATE declarațiile pe care le produce aplicația.
-Registrul DECLARATII (mai jos) = SURSA UNICĂ a tipurilor produse: 50 de tipuri, fiecare cu
+Registrul DECLARATII (mai jos) = SURSA UNICĂ a tipurilor produse (numărul lor îl dă dicționarul; formularele înlocuite de Declarația unică stau în FORMULARE_INLOCUITE), fiecare cu
 periodicitate + adaptor către core/<tip>.py::genereaza(). O singură rută în main.py cheamă aici;
 diferențele de semnătură genereaza() stau în ADAPTOARE, izolate, ca ruta să fie uniformă.
 Cele 9 periodice GENERICE (tipuri() = DECLARATII − _DOAR_API: d100 d101 d112 d205 d300 d301
@@ -23,8 +23,8 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 """
 from __future__ import annotations
 
-from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710,
-                  d120, d200, d201, d204, d208, d216, d393, d395, d397, d600,
+from core import (d100, d101, d104, d107, d110, d307, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710,
+                  d120, d204, d208, d216, d393, d395, d397,
                   d106, d108, d114, d130, d318, d603,
                   d119, d169n, d213, d214, d401, d402,
                   d101g, d169, d398, d399, d403, d407,
@@ -122,19 +122,7 @@ def _d110(conn, schema, b):
     return d110.genereaza(conn, schema, Perioada(b["an"], luna=b["luna"]), b.get("manual") or {})
 
 
-def _d220(conn, schema, b):
-    # D220 e MANUALA (venit estimat / norma de venit - persoana fizica). Anuala (luna raportare=12 fix).
-    return d220.genereaza(conn, schema, Perioada(b["an"]), b.get("manual") or {})
 
-
-def _d221(conn, schema, b):
-    # D221 e MANUALA (venituri agricole pe norme de venit - PF/asociere). Anuala (luna=12 fix).
-    return d221.genereaza(conn, schema, Perioada(b["an"]), b.get("manual") or {})
-
-
-def _d223(conn, schema, b):
-    # D223 e MANUALA (venituri estimate asocieri fara PJ / transparenta fiscala). Anuala (luna=12 fix).
-    return d223.genereaza(conn, schema, Perioada(b["an"]), b.get("manual") or {})
 
 
 def _d230(conn, schema, b):
@@ -166,12 +154,6 @@ def _d397(conn, schema, b):   # informativa transport alternativ (lunara)
     return d397.genereaza(conn, schema, Perioada(b["an"], luna=int(b["luna"])), b.get("manual") or {})
 
 
-def _d200(conn, schema, b):   # venituri realizate din Romania (PF, anuala)
-    return d200.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
-
-
-def _d201(conn, schema, b):   # venituri din strainatate (PF, anuala)
-    return d201.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
 
 
 def _d204(conn, schema, b):   # venit asocieri fara personalitate juridica (anuala)
@@ -192,9 +174,6 @@ def _d216(conn, schema, b):   # impozit special bunuri de valoare mare (anuala)
 def _d120(conn, schema, b):   # decont accize (anual)
     return d120.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
 
-
-def _d600(conn, schema, b):   # baza CAS/CASS estimata (PF, anuala)
-    return d600.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
 
 
 def _d106(conn, schema, b):   # informativa dividende actionari de stat (anuala); header din firma_profil
@@ -284,9 +263,6 @@ DECLARATII = {
     "d177": ("anual",       _d177),
     "d205": ("anual",       _d205),
     "d207": ("anual",       _d207),
-    "d220": ("anual",       _d220),
-    "d221": ("anual",       _d221),
-    "d223": ("anual",       _d223),
     "d230": ("anual",       _d230),
     "d300": ("lunar",       _d300),
     "d301": ("lunar",       _d301),
@@ -303,13 +279,10 @@ DECLARATII = {
     "d393": ("anual",       _d393),
     "d395": ("lunar",       _d395),
     "d397": ("lunar",       _d397),
-    "d200": ("anual",       _d200),
-    "d201": ("anual",       _d201),
     "d204": ("anual",       _d204),
     "d208": ("lunar",       _d208),
     "d216": ("anual",       _d216),
     "d120": ("anual",       _d120),
-    "d600": ("anual",       _d600),
     "d106": ("anual",       _d106),
     "d108": ("anual",       _d108),
     "d114": ("lunar",       _d114),
@@ -336,15 +309,95 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d220",
+_DOAR_API = frozenset((
                        "d393", "d395", "d397", "d120",
                        "d106", "d108", "d130",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
                        "d101g", "d169", "d399", "d403", "d407"))
 
 
+# [lotul 13, deficiența 660, comanda Costin 13.1: „Code verifică la sursă fiecare formular din aplicație dacă mai e în vigoare; cele
+# abrogate nu se mai oferă la nicio firmă (nici PFA).”] Formularele persoanelor fizice înlocuite de Declarația unică (D212): obligația pe
+# care o declarau trece, în Codul fiscal în vigoare, prin declarația unică — textele de mai jos sunt cele din
+# `anaf_surse/cod_fiscal_227_2015_consolidat.html` (forma consolidată din corpus). Nu mai sunt în dispecer (`DECLARATII`), deci nici în
+# selector, nici în coadă; o cerere pe tipul lor primește motivul de aici (`valideaza_cerere`). Generatoarele `core/<tip>.py` rămân numai
+# ca referință de structură (testele de structură DUK, nomenclatorul D220 din `registru_evidenta_fiscala`), nechemate din aplicație.
+# Garda: `core/test_lot13_decl_logica.py` (testele `test_660_*`).
+FORMULARE_INLOCUITE = {
+    "d200": ("D200 (veniturile realizate din România de persoanele fizice)", "CF art.122 alin.(1)",
+             "Contribuabilii au obligația depunerii Declarației unice privind impozitul pe venit și contribuțiile sociale la organul fiscal "
+             "competent, pentru fiecare an fiscal, în cazul în care realizează, individual sau într-o formă de asociere, venituri/pierderi"),
+    "d201": ("D201 (veniturile realizate din străinătate de persoanele fizice)", "CF art.130 alin.(4)",
+             "Contribuabilii care obțin venituri din străinătate conform dispozițiilor alin. (1) au obligația să le declare în Declarația "
+             "unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice"),
+    "d220": ("D220 (venitul estimat / norma de venit a persoanelor fizice)", "CF art.120, abrogat de OUG 128/2024",
+             "Articolul 120 Abrogat."),
+    "d221": ("D221 (veniturile agricole pe norme de venit)", "CF art.107 alin.(2)",
+             "Contribuabilul care desfășoară o activitate agricolă prevăzută la art. 103 alin. (1) pentru care venitul se determină pe baza "
+             "normei anuale de venit are obligația de a depune anual, pentru veniturile anului anterior, Declarația unică privind impozitul "
+             "pe venit și contribuțiile sociale datorate de persoanele fizice"),
+    "d223": ("D223 (venitul estimat al asocierilor fără personalitate juridică)", "CF art.125 alin.(4)",
+             "Asocierile au obligația să depună la organul fiscal competent, până în ultima zi a lunii februarie inclusiv a anului următor "
+             "celui de realizare a venitului, declarația anuală de venit"),
+    "d600": ("D600 (venitul estimat pentru CAS și baza CASS)", "CF art.151 alin.(1)",
+             "depun Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice până la termenul legal "
+             "prevăzut la art. 122 alin. (3)"),
+}
+
+
+def refuz_inlocuita(tip):
+    """Motivul pentru care un formular din `FORMULARE_INLOCUITE` nu se mai generează (text pentru contabil), sau None."""
+    r = FORMULARE_INLOCUITE.get(str(tip or "").lower())
+    if not r:
+        return None
+    den, act, text = r
+    if tip == "d223":
+        return ("%s nu se mai depune: Codul fiscal cere asocierii numai declarația anuală de venit (D204), iar venitul estimat nu se mai "
+                "declară — %s: „%s”." % (den, act, text))
+    if tip == "d220":
+        return ("%s nu se mai depune: venitul estimat nu se mai declară (%s), iar veniturile anului se declară în Declarația unică (D212)."
+                % (den, act))
+    return "%s nu se mai depune: se declară în Declarația unică (D212) — %s: „%s”." % (den, act, text)
+
+
+# [lotul 13, deficiențele 650, 595, 635] Declarațiile pe care REGIMUL DE TVA al firmei nu le poate datora — gri în selector, cu motivul,
+# și refuzate la generare (aceeași poartă ca neaplicabilele din `control_fiscal_api.neaplicabile_selector`, căreia i se adaugă). Textul
+# legii, din `anaf_surse/`:
+#  - D311, CF art.324 alin.(10): „Persoanele impozabile al căror cod de înregistrare în scopuri de TVA a fost anulat potrivit prevederilor
+#    art. 316 alin. (11) lit. a)-e) și h) trebuie să depună o declarație privind taxa colectată care trebuie plătită” — firma
+#    înregistrată în scopuri de TVA n-are codul anulat (650: la F1, plătitoare, D311 apărea „lunar”, ca datorată);
+#  - D398, CF art.315 alin.(4): „În cazul în care România este statul membru de înregistrare, codul de înregistrare utilizat de persoana
+#    impozabilă este cel care i-a fost atribuit conform art. 316 sau art. 317” — fără cod de TVA românesc nu există regimul special (595);
+#  - D318, HG 1/2016 pct.73 alin.(15) lit.c: „Organul fiscal competent din România nu înaintează cererea statului membru de rambursare în
+#    cazul în care, pe parcursul perioadei de rambursare, solicitantul […] beneficiază de scutirea pentru întreprinderi mici prevăzută la
+#    art. 310 din Codul fiscal” — firma neînregistrată în scopuri de TVA (635).
+NEAPLICABILE_REGIM = {
+    "d311": ("D311 nu se datorează — firma e înregistrată în scopuri de TVA, iar D311 o depune numai firma căreia i s-a anulat codul de "
+             "TVA (CF art.324 alin.(10))."),
+    "d398": ("D398 nu se datorează — firma n-are cod de TVA românesc (nici plătitoare, nici înregistrată conform art.317), iar regimul "
+             "special OSS se aplică numai cu codul atribuit conform art.316 sau art.317 (CF art.315 alin.(4))."),
+    "d318": ("D318 nu se depune — firma nu e înregistrată în scopuri de TVA: ANAF nu înaintează cererea de rambursare a firmei care aplică "
+             "scutirea pentru întreprinderile mici (HG 1/2016 pct.73 alin.(15) lit.c)."),
+}
+
+
+def neaplicabile_regim(vector):
+    """{tip: motiv} — din `NEAPLICABILE_REGIM`, după vectorul fiscal (`platitor_tva`, `inreg_art317`). Vector necompletat (None) -> nimic
+    blocat: un gol nu e un răspuns (ca `control_fiscal_api.neaplicabile_selector`)."""
+    v = vector or {}
+    platitor, art317 = v.get("platitor_tva"), v.get("inreg_art317")
+    out = {}
+    if platitor is True:
+        out["d311"] = NEAPLICABILE_REGIM["d311"]
+    if platitor is False:
+        out["d318"] = NEAPLICABILE_REGIM["d318"]
+        if not art317:
+            out["d398"] = NEAPLICABILE_REGIM["d398"]
+    return out
+
+
 # [C11, 07.10.2026] Situațiile financiare anuale (bilanțul) trec prin aceeași coadă ca declarațiile — generare, poarta
-# validatorului, patru ochi, depunere, persistare —, dar NU sunt declarații fiscale: nu intră în `DECLARATII` (lista celor 50 din
+# validatorului, patru ochi, depunere, persistare —, dar NU sunt declarații fiscale: nu intră în `DECLARATII` (lista declarațiilor din
 # pagina publică și din selector), iar intrarea lor e ecranul Bilanț (categoria de mărime se alege acolo).
 SITUATII_FINANCIARE = {
     "s1005": ("anual", _s1005),   # bilanțul microentităților
@@ -413,6 +466,8 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     fără ea, o firmă trimestrială (care trimite `trim`) pică pe periodicitatea statică.
     """
     erori = []
+    if refuz_inlocuita(tip):   # [lotul 13, 660] formularul înlocuit de Declarația unică: motivul lui, nu „tip necunoscut”
+        return [refuz_inlocuita(tip)]
     per = periodicitate(tip)
     if per is None:
         return ["tip declarație necunoscut: %r (suportate: %s)"
@@ -477,15 +532,6 @@ def valideaza_cerere(tip, body, per_efectiv=None):
             erori.append("D207 nu are ce genera: adaugă în formular cel puțin un beneficiar nerezident căruia "
                          "i-ai plătit venituri cu reținere la sursă (dividende, dobânzi, redevențe etc.).")
 
-    # d200 (venituri realizate din Romania, persoane fizice, MANUALA anuala): cere manual.sectiuni.
-    # Mesaj de CONTABIL (formularul din UI trimite mereu sectiuni -> aici cade doar apelul API gol).
-    # Regulile pe categorie (venit_brut/chelt vs castig/pierdere, den_orgJN/cif_orgJN) le da d200.erori_generare.
-    if tip == "d200":
-        m = body.get("manual")
-        if not isinstance(m, dict) or not m.get("sectiuni"):
-            erori.append("D200 nu are ce genera: adaugă în formular cel puțin o secțiune de venit "
-                         "(categoria de venit realizat + sumele).")
-
     # d212 (Declaratia unica, persoane fizice, MANUALA anuala): cere identitate (cif/nume_c/adresa_c).
     # Formularul strange identitatea; cu `din_rip` serverul completeaza subsectiunea I.1.1 (cap11, sistem
     # real) din registrul RIP (D212 Etapa 2, d212.cap11_din_rip). oblig_realizat (impozit/CAS/CASS) = Etapa 4.
@@ -496,15 +542,6 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not (m.get("nume_c") and m.get("adresa_c") and m.get("cif")):
             erori.append("D212 nu are ce genera: completează în formular datele de identificare ale "
                          "persoanei fizice (CNP, nume și adresă).")
-
-    # d201 (venituri realizate din strainatate, persoane fizice, MANUALA anuala): cere identitate + sectiuni.
-    # Mesaj de CONTABIL (formularul din UI trimite mereu identitatea + sectiuni -> aici cade doar apelul API gol).
-    # Regulile pe sectiune (pereche tara/categorie unica, imp2 doar la categ=14, categ=23 net-only) le da d201.erori_generare.
-    if tip == "d201":
-        m = body.get("manual")
-        if not isinstance(m, dict) or not (m.get("nume_c") and m.get("cif_c")) or not m.get("sectiuni"):
-            erori.append("D201 nu are ce genera: completează identitatea persoanei fizice (CNP, nume) și adaugă "
-                         "cel puțin o secțiune de venit (o pereche țară + categorie de venit).")
 
     # d204 (asociere fara personalitate juridica, PF, MANUALA anuala): asociere + reprezentant + activitate + asociati.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
@@ -543,15 +580,6 @@ def valideaza_cerere(tip, body, per_efectiv=None):
             erori.append("D603 nu are ce genera: completează persoana fizică (CNP, nume), categoria de "
                          "exceptare, statul de asigurare (diferit de RO) și perioada de exceptare.")
 
-    # d600 (baza CAS/CASS estimata, PF, MANUALA anuala): identitate + cel putin o componenta (totalPlata_A>0).
-    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
-    # Regulile pe camp (CNP, R42 totalPlata_A>0, exclusivitate CASS, baze >= salariu minim) le da d600.erori_generare.
-    if tip == "d600":
-        m = body.get("manual")
-        if not isinstance(m, dict) or not m.get("nume_c") or not m.get("cif_c"):
-            erori.append("D600 nu are ce genera: completează datele persoanei fizice (CNP, nume, adresă) și "
-                         "bifează contribuția datorată (CAS) cu baza lunară estimată.")
-
     # d114 (CAM pentru situatii ne-D112, MANUALA lunara): declarant + cel putin un contract (lucrator).
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
     # Regulile pe camp (cui_lucrator, venit/contributie > 0, campuri obligatorii) le da d114.erori_generare.
@@ -563,24 +591,32 @@ def valideaza_cerere(tip, body, per_efectiv=None):
 
     # d318 (rambursare TVA din alt stat membru UE - Directiva 2008/9/CE, MANUALA / la cerere): perioada +
     # solicitant + IBAN de rambursare + activitate NACE + cel putin o factura de achizitie sau de import.
-    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
+    # [lotul 13, deficiența 637] refuzul numește NUMAI ce lipsește (până la 637 cerea perioada, CUI-ul și IBAN-ul și când erau completate).
     # Regulile pe camp (annual R5, referenceNumber R9, semne/vatAmount pe factura R50/R80) le da d318.erori_generare.
     if tip == "d318":
         m = body.get("manual")
-        _ach = (m or {}).get("achizitii") or (m or {}).get("importuri") if isinstance(m, dict) else None
-        if not isinstance(m, dict) or not m.get("cui") or not m.get("iban") or not _ach:
-            erori.append("D318 nu are ce genera: completează perioada de rambursare, CUI-ul solicitantului, "
-                         "IBAN-ul contului de rambursare și adaugă cel puțin o factură de achiziție sau de "
-                         "import din statul de rambursare (furnizor UE, bază impozabilă și TVA deductibilă).")
+        m = m if isinstance(m, dict) else {}
+        lipsa = [ce for ce, ok in (("CUI-ul solicitantului", m.get("cui")), ("IBAN-ul contului de rambursare", m.get("iban")),
+                                   ("cel puțin o factură de achiziție sau de import din statul de rambursare",
+                                    m.get("achizitii") or m.get("importuri"))) if not ok]
+        if lipsa:
+            erori.append("D318 nu are ce genera: completează %s." % " și ".join(lipsa))
 
     # d398 (OSS - TVA regimuri speciale UE/non-UE/import, MANUALA trimestriala): regim + identitate + livrari.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
     # Regulile pe camp (regim, cod TVA, state, supply_type/trade_type, cote) le da d398.erori_generare.
+    # [lotul 13, deficiența 595] D398 o depune numai firma înregistrată în regimul special: CF art.315 alin.(3) — „În cazul în care România
+    # este statul membru de înregistrare, persoana impozabilă respectivă trebuie să depună în format electronic o declarație de începere a
+    # activității sale supuse regimului special la organul fiscal competent.” Aplicația nu ține înregistrarea OSS: formularul o întreabă
+    # (Da / Nu, fără răspuns implicit), iar fără „Da” declarația nu se generează.
     if tip == "d398":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("name") or not m.get("vat_id_no") or not m.get("ms"):
             erori.append("D398 nu are ce genera: completează regimul, denumirea și codul de TVA, apoi adaugă "
                          "pentru fiecare stat de consum livrările (bunuri/servicii) cu cota și baza impozabilă.")
+        elif m.get("inregistrat_oss") is not True:
+            erori.append("D398 se depune numai de firma înregistrată în regimul special OSS, care a depus declarația de începere a "
+                         "activității (CF art.315 alin.(3)); firma nu e înregistrată, deci nu are D398 de depus.")
 
     # d104 (distribuire venituri asocieri f.PJ, MANUALA trimestriala): declarant + asociere + asociati + profit_pierd.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
@@ -608,30 +644,6 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("obligatii"):
             erori.append("D110 nu are ce genera: adaugă cel puțin o obligație (cod obligație + impozit datorat "
                          "și impozit reținut) de regularizat; pentru restituire alege tipul „cerere de restituire” + IBAN.")
-
-    # d220 (venit estimat PF, MANUALA anuala): cere manual.cif (CNP) + manual.activitate
-    if tip == "d220":
-        m = body.get("manual")
-        if not isinstance(m, dict) or not m.get("cif") or not m.get("activitate"):
-            erori.append("D220 cere CNP-ul și activitatea (venitul estimat al persoanei fizice).")
-
-    # d221 (venituri agricole pe norme de venit, MANUALA anuala): contribuabil + activitati agricole.
-    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
-    # Regulile pe camp (judet, localitate unica, codp unic, forma_org, cote asociati) le da d221.erori_generare.
-    if tip == "d221":
-        m = body.get("manual")
-        if not isinstance(m, dict) or not m.get("cif") or not m.get("activitati"):
-            erori.append("D221 nu are ce genera: completează contribuabilul (CNP, nume, adresă) și adaugă cel "
-                         "puțin o activitate agricolă (județ, localitate) cu produsele ei (cod produs + suprafață/nr. capete).")
-
-    # d223 (venituri estimate asocieri fara personalitate juridica, MANUALA anuala): activitate + asociati.
-    # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
-    # Regulile pe camp (categ/forma_org/det_venit, judet numeric, Sigma cota=100, CNP 13) le da d223.erori_generare.
-    if tip == "d223":
-        m = body.get("manual")
-        if not isinstance(m, dict) or not m.get("activitate") or not m.get("asociati"):
-            erori.append("D223 nu are ce genera: completează asocierea și responsabilul, activitatea (categorie, "
-                         "CAEN, județ, venit estimat) și cel puțin un asociat (cotele însumând 100).")
 
     # d230 (redirectionare 3,5% din impozit catre ONG, PF, MANUALA anuala): cere identitate + entitate.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).
@@ -724,13 +736,14 @@ def genereaza(conn, schema, tip, body):
     from core import control_fiscal_api as _cf
     from core.common import azi_ro as _azi
     with conn.cursor() as cur:
-        cur.execute("SELECT tip_firma, platitor_tva, operatiuni_ic, regim_fiscal "
+        cur.execute("SELECT tip_firma, platitor_tva, operatiuni_ic, regim_fiscal, inreg_art317 "
                     f"FROM {schema}.firma_profil WHERE id = 1")
         _row = cur.fetchone()
     _vec = ({"tip_firma": _row[0], "platitor_tva": _row[1], "operatiuni_ic": _row[2],
-             "regim_fiscal": _row[3]} if _row else {})
+             "regim_fiscal": _row[3], "inreg_art317": _row[4]} if _row else {})
     _neap = _cf.neaplicabile_selector(
         _vec, ic_fapt=(lambda: _cf.ic_fapt_din_db(conn, schema, _azi().year)))
+    _neap = {**neaplicabile_regim(_vec), **_neap}   # [lotul 13, 650/595/635] regimul de TVA: D311, D398, D318
     if tip in _neap:
         raise ValueError(_neap[tip])
     # [C7] setul TVA trimestrial: wizardul trimite `trim`; generatoarele d300/d394/d406 sunt ancorate

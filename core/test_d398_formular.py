@@ -35,8 +35,10 @@ def test_d398_nu_e_doar_api():
 def test_d398_cerere_goala_refuza_la_api():
     """Bloc validare API: fara regim/identitate/state -> erori; cerere valida -> lista goala."""
     goala = declaratii_api.valideaza_cerere("d398", {"tenant_id": 1, "an": 2026, "trim": 1})
-    valida = declaratii_api.valideaza_cerere("d398", {"tenant_id": 1, "an": 2026, "trim": 1, "manual": _m()})
-    assert goala and valida == []
+    valida = declaratii_api.valideaza_cerere("d398", {"tenant_id": 1, "an": 2026, "trim": 1, "manual": _m(inregistrat_oss=True)})
+    # [lotul 13, 595] fără înregistrarea în regimul special (CF art.315 alin.(3)) D398 nu se generează
+    fara_oss = declaratii_api.valideaza_cerere("d398", {"tenant_id": 1, "an": 2026, "trim": 1, "manual": _m()})
+    assert goala and valida == [] and fara_oss and "art.315 alin.(3)" in fara_oss[0]
 
 
 def test_d398_formular_gol_refuza():
