@@ -129,7 +129,7 @@ def antet_nota(an, luna):
     return ultima, nr, "Salariile lunii %02d/%d" % (luna, an), _j.eticheta_document("Stat de plată", nr, ultima)
 
 
-def note_lunare(conn, schema, an, luna, xml_d112=None):
+def note_lunare(conn, schema, an, luna, xml_d112=None, ponderi=None):
     """Notele statului de plata, agregate pe (debit, credit) din monografie_salariu per salariat.
 
     [R34 — DECIZIA lui Costin, 28.08.2026] CELE PATRU POZITII FISCALE NU SE MAI CALCULEAZA AICI.
@@ -226,6 +226,11 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
         ret_salariu["4316"] += _d(calc["cass"]) + _d(calc.get("cass_tichete", 0))
         ret_salariu["444"] += _d(calc["impozit"])
         for n in _sz.monografie_salariu(calc):
+            if ponderi is not None and str(n["debit"]).startswith("6"):
+                # [lotul 13, 536] ponderea salariatului în fiecare cont de cheltuială (brutul pe 641, CAM-ul pe 646, tichetele pe 642): pe
+                # ea se împarte rândul notei pe centrele de cost (`pe_centre`); nota însăși rămâne cea de mai jos
+                _pd = ponderi.setdefault(n["debit"], {})
+                _pd[s.get("id")] = _pd.get(s.get("id"), Decimal("0")) + _d(n["suma"])
             # [R34] pozitiile fiscale se sar aici: vin din declaratie, mai jos. Filtrul e pe
             # CREDIT fiindca acolo stau cele patru conturi, indiferent din ce debit vin (421
             # pentru retineri, 646/6451/6453 pentru ce suporta unitatea).
@@ -261,6 +266,34 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
         # contributii (4315/4316…), din care art.38 interzice recuperarea. De reconfirmat daca apare o norma care transeaza.
         agg[("4382", "423")] = agg.get(("4382", "423"), Decimal("0")) + cm_fnuass
     return [(d, c, s) for (d, c), s in sorted(agg.items()) if s > 0], len(salariati)
+
+
+def pe_centre(note, ponderi, centre):
+    """[lotul 13, deficiența 536 — „Centrul se poate pune pe liniile […] salariilor”] Rândurile de cheltuială ale notei statului de plată
+    (clasa 6), împărțite pe centrele de cost ale salariaților: fiecare centru primește partea salariaților lui din contul rândului (`ponderi`
+    = {cont: {salariat_id: suma din fluturași}}, din `note_lunare`; un cont fără ponderi proprii — cadoul neimpozabil, indemnizația CM a
+    angajatorului — se împarte după brut, 641). Rotunjirea la ban ROUND_HALF_UP, iar ultimul centru primește restul: suma contului rămâne
+    exact cea din D112 / din stat. Salariații fără centru stau pe „fără centru”; fără niciun centru pus, nota rămâne neschimbată.
+    `centre` = {salariat_id: centru_cost_id}. Întoarce [(debit, credit, suma, centru_cost_id | None)]."""
+    from core import centre_cost_api as _cc
+    out = []
+    for d, c, v in note:
+        w = (ponderi or {}).get(d) or (ponderi or {}).get("641") or {}
+        pe_centru = {}
+        for sid, x in w.items():
+            pe_centru[centre.get(sid)] = pe_centru.get(centre.get(sid), Decimal("0")) + x
+        tot = sum(pe_centru.values(), Decimal("0"))
+        if not (centre and _cc.e_rand_de_centru(d, c)) or tot <= 0 or set(pe_centru) == {None}:
+            out.append((d, c, v, None))
+            continue
+        chei = sorted(pe_centru, key=lambda k: (k is None, k or 0))
+        pus = Decimal("0")
+        for i, k in enumerate(chei):
+            parte = (v - pus) if i == len(chei) - 1 else (v * pe_centru[k] / tot).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            pus += parte
+            if parte:
+                out.append((d, c, parte, k))
+    return out
 
 
 def _leu(x):
@@ -391,7 +424,9 @@ def propunere(conn, schema, an, luna):
     from core import d112 as _d112
     xml, _av = _d112.genereaza(conn, schema, Perioada(an=an, luna=luna))   # [R34] o singura generare pe raspuns
     from core import stat_plata_api as _sp
-    note, nr = note_lunare(conn, schema, an, luna, xml_d112=xml)
+    from core import centre_cost_api as _cc
+    ponderi = {}
+    note, nr = note_lunare(conn, schema, an, luna, xml_d112=xml, ponderi=ponderi)
     div = control_coerenta(note, conn, schema, an, luna, xml_d112=xml)
     net = _sp.net_de_plata(conn, schema, an, luna)
     d421 = control_421(note, net)
@@ -407,6 +442,7 @@ def propunere(conn, schema, an, luna):
     with conn.cursor() as cur:
         cur.execute(f"SELECT id, status FROM {schema}.inregistrari WHERE numar = %s ORDER BY id LIMIT 1", (document_ref(an, luna),))
         _nota = cur.fetchone()
+        centre = _cc.centrele_salariatilor(cur, schema)
     return {
         "nota_status": (_nota[1] if not isinstance(_nota, dict) else _nota["status"]) if _nota else None,
         "net_fluturasi": _bani(net),
@@ -414,7 +450,9 @@ def propunere(conn, schema, an, luna):
         "an": an, "luna": luna,
         "document_ref": document_ref(an, luna),
         "nr_salariati": nr,
-        "note": [{"debit": d, "credit": c, "suma": _bani(v)} for d, c, v in note],
+        # [lotul 13, 536] rândurile de cheltuială pe centrele de cost ale salariaților (controalele de mai sus rămân pe nota întreagă)
+        "note": [dict({"debit": d, "credit": c, "suma": _bani(v)}, **({"centru_cost_id": cc} if cc else {}))
+                 for d, c, v, cc in pe_centre(note, ponderi, centre)],
         "total": _bani(sum(v for _d1, _c1, v in note)),
         "divergente": div,
     }

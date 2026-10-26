@@ -93,6 +93,17 @@ def _alerta(c, pozitie=2):
     return None
 
 
+def _subiect(nod):
+    """Subiectul emailului, ca text: literalul, sau PREFIXUL literal al unei concatenări (`"Acces asistent iConta.eu" + (" — " + nume)`).
+
+    [lotul 13, 560] Invitația asistentului poartă acum și numele cabinetului în subiect, lipit DUPĂ textul fix: fără prefix, subiectul ieșea
+    `None` și ambele reguli (alerta pe calea de acces, anti-vacuu) nu mai vedeau trimiterea. Orice altceva decât literal sau literal + …
+    -> `None` (nu se ghicește)."""
+    while isinstance(nod, ast.BinOp) and isinstance(nod.op, ast.Add):
+        nod = nod.left
+    return nod.value if isinstance(nod, ast.Constant) and isinstance(nod.value, str) else None
+
+
 def trimiteri(sursa):
     """Fiecare apel `trimite_email_html` din sursă, cu ce-l protejează.
 
@@ -106,7 +117,7 @@ def trimiteri(sursa):
     for n in ast.walk(arb):
         if isinstance(n, ast.Call) and _nume(n) == UNICA:
             # semnalarea e în funcția unică: un „handler” care cheamă `esec_secundar` cu `alerta` din apel
-            subiect = n.args[2].value if len(n.args) >= 3 and isinstance(n.args[2], ast.Constant) else None
+            subiect = _subiect(n.args[2]) if len(n.args) >= 3 else None
             out.append({"linia": n.lineno, "subiect": subiect, "protejat": True,
                         "handlere": [{"linia": n.lineno, "tip": UNICA, "esec_secundar": True, "alerta": _alerta(n, 4)}]})
             continue
@@ -115,8 +126,7 @@ def trimiteri(sursa):
         gazde = [t for t in tries
                  if any(any(x is n for x in ast.walk(s)) for s in t.body)]
         gazda = min(gazde, key=lambda t: n.lineno - t.lineno) if gazde else None
-        subiect = (n.args[1].value
-                   if len(n.args) >= 2 and isinstance(n.args[1], ast.Constant) else None)
+        subiect = _subiect(n.args[1]) if len(n.args) >= 2 else None
         handlere = []
         for h in (gazda.handlers if gazda is not None else []):
             ap = [c for c in ast.walk(h)

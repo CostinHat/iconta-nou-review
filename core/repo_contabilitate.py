@@ -199,10 +199,11 @@ def nota_cu_sursa_si_status(cur, data_, numar, descriere, sursa, status, documen
     return cur.fetchone()
 
 
-def adauga_linie_fara_schema(cur, inregistrare_id, cont_debit, cont_credit, suma):
+def adauga_linie_fara_schema(cur, inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id=None):
+    # [lotul 13, 536] + centrul de cost al rândului (nota statului de plată, împărțită pe centrele salariaților)
     cur.execute("INSERT INTO inregistrari_linii "
-                            "(inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
-                (inregistrare_id, cont_debit, cont_credit, suma))
+                            "(inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id) VALUES (%s,%s,%s,%s,%s)",
+                (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id))
 
 
 def _cu_document_intern(cur, schema, tip, data_, rand):

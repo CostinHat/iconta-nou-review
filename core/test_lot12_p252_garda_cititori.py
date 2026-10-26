@@ -25,7 +25,6 @@ UNU = re.compile(r"WHERE\s+(\w+\.)?id\s*=\s*%|id\s*=\s*ANY|id=ANY|WHERE\s+(\w+\.
 #: (fișier, funcție) -> de ce citește fără filtru pe tip. Fiecare intrare e verificată că mai există (o intrare moartă pică).
 PERMISE = {
     ("core/facturi_api.py", "lista_facturi"): "filtrul e în `cond` (`clauza_fara_sold_preluat`), compus înaintea instrucțiunii",
-    ("core/clienti_api.py", "sterge_client"): "după `client_id`: facturile preluate n-au client_id",
     ("core/clienti_api.py", "_surse"): "lista partenerilor firmei, cu documentele lor: factura preluată apare, numită „Factură preluată” "
                                        "(`_fel_factura`)",
     ("core/repo_d406.py", "parteneri_si_localitati"): "numai localitatea partenerilor cunoscuți (factura preluată n-are localitate)",

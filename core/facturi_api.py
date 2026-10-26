@@ -579,13 +579,17 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
         for l in linii:
             cur.execute(
                 "INSERT INTO factura_linii (factura_id, descriere, um, cantitate, "
-                "pret_unitar, cota_tva, articol_id, cont_venit, categorie_tva, valoare_neta) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                "pret_unitar, cota_tva, articol_id, cont_venit, categorie_tva, valoare_neta, centru_cost_id) "
+                "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                 (factura_id, l["descriere"], l.get("um", "buc"),
                  l["cantitate"], l["pret_unitar"], l["cota_tva"], l.get("articol_id"),
                  (l.get("cont_venit") or None),  # #11 cont venit pe linie (auto din denumire, editabil)
                  (l.get("categorie_tva") if directie == "emisa" else None),   # [274b] categoria liniei cu 0%
                  # [lotul 11, C86] valoarea netă a liniei, când apelantul o dă (stornarea unei facturi venite din XML: −BT-131); NULL = cant. × preț
-                 l.get("valoare_neta")))
+                 l.get("valoare_neta"),
+                 # [lotul 13, 536] centrul de cost al liniei (verificat de apelant: `centre_cost_api.campuri_centru_gresit`); contarea îl duce
+                 # pe rândul de venit / cheltuială al notei
+                 l.get("centru_cost_id") or None))
     _redeschide_luna(conn, data_emitere)   # [cap.23] evidenta lunii s-a schimbat -> luna se redeschide
     out = {"ok": True, "factura_id": factura_id,
            "total": float(t["total"]), "tva": float(t["tva"]), "avertismente": _avert_emitere}
@@ -923,7 +927,8 @@ def detalii_factura(conn, factura_id):
         cur.execute(
             "SELECT id, descriere, um, cantitate, pret_unitar, cota_tva, cont_venit, categorie_tva, "
             "articol_id, "   # [C63] articolul de stoc al liniei: proforma / avizul îl trec pe factură, cu „Pleacă marfa acum?”
-            "valoare_neta "   # [lotul 11, C82] BT-131 de pe factura importată: valoarea liniei pe ecran și pe PDF (NULL = cantitate × preț)
+            "valoare_neta, "   # [lotul 11, C82] BT-131 de pe factura importată: valoarea liniei pe ecran și pe PDF (NULL = cantitate × preț)
+            "centru_cost_id "   # [lotul 13, 536] centrul liniei: stornarea și transformarea îl duc mai departe
             "FROM factura_linii WHERE factura_id = %s ORDER BY id", (factura_id,))
         f["linii"] = [dict(r) for r in cur.fetchall()]
         _cu_total_de_plata([f])   # [lotul 13, 546]
@@ -1809,6 +1814,7 @@ def storneaza(conn, factura_id, retur=None):
             # (3,333 × 30,15 = 100,49, pe factură 100,50). CF art.330 alin.(1) lit.b): factura de stornare cuprinde „informațiile din factura
             # inițială [...] valorile cu semnul minus” — valorile ei, deci nota, D300, D394, D406 și XML-ul stornării iau exact −100,50
             "valoare_neta": (-Decimal(str(l["valoare_neta"])) if l.get("valoare_neta") not in (None, "") else None),
+            "centru_cost_id": l.get("centru_cost_id"),   # [lotul 13, 536] corecția scade venitul din același centru
         })
     cere_serie(conn)   # [06.10.2026 §6.1] storno-ul e tot o factură (CF art.319 alin.(20) lit.a)
     serie, numar_int = _rezerva_numar(conn, "factura")   # [C1] rezervare atomica si la storno

@@ -2897,7 +2897,28 @@ def centre_cost_lista(tenant_id, doar_active, ctx):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
-        return {"centre": _cc.lista(conn, schema, doar_active=doar_active)}
+        # [lotul 13, 536] lista întreagă (ecranul Centre de cost) poartă și ce are azi fiecare centru: salariații și mijloacele fixe
+        return {"centre": _cc.lista(conn, schema, doar_active=doar_active), **({} if doar_active else {"alocari": _cc.alocari(conn, schema)})}
+
+
+def centre_cost_alocari(tenant_id, corp, ctx):
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/centre-cost/alocari` (lotul 13, deficiența 536): centrul de cost al salariaților și
+    al mijloacelor fixe, `{salariati: {id: centru | null}, mijloace: {id: centru | null}}`. Centrul inactiv / inexistent se refuză lângă
+    rândul lui; notele deja scrise nu se schimbă."""
+    from core import centre_cost_api as _cc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+        try:
+            sal = {int(k): v for k, v in dict(corp.get("salariati") or {}).items()}
+            mf = {int(k): v for k, v in dict(corp.get("mijloace") or {}).items()}
+        except (TypeError, ValueError):
+            raise _erori.DateInvalide("Alocarea nu s-a salvat: salariații și mijloacele fixe se trimit după numărul lor din listă.")
+        r = _cc.seteaza_alocari(conn, schema, sal, mf)
+        if r.get("eroare"):
+            raise _erori.DateInvalide({"mesaj": r["eroare"], "erori_campuri": r["erori_campuri"]})
+        return r   # `get_conn` comite la ieșire (ca la celelalte rute ale centrelor)
 
 
 def centre_cost_adauga(tenant_id, corp, ctx):
@@ -7628,6 +7649,10 @@ def facturi_emite(tenant_id, date, ctx):
         # [lotul 13, regula UM — `facturi.um_lipsa`, decizia sesiunii principale 26.10.2026] UM-ul gol nu devine „buc”: se refuză lângă
         # câmpul liniei (al articolului din nomenclator se ia de la articol), împreună cu celelalte câmpuri lipsă ale liniilor (440)
         _um_lipsa = facturi_api.um_lipsa_emitere(conn, linii)
+        # [lotul 13, 536] centrul de cost al liniei: un centru activ al firmei (sau niciunul), refuzat lângă câmpul liniei
+        from core import centre_cost_api as _cc
+        with conn.cursor() as _cur_cc:
+            _um_lipsa += _cc.campuri_centru_gresit(_cur_cc, schema, [l.get("centru_cost_id") for l in linii], lambda i: "em-l%d-centru" % i)
         if _um_lipsa:
             er = _erori.ErorileFormularului("Factura nu s-a emis")
             for x in facturi_api.linii_campuri_lipsa(linii):
@@ -7719,7 +7744,8 @@ def linii_din_proforma(linii):
     return [{"descriere": l.get("descriere"), "cantitate": l.get("cantitate"), "um": l.get("um") or "buc",
              "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva"), "cont_venit": l.get("cont_venit"),
              "categorie_tva": l.get("categorie_tva"),   # [274b] categoria aleasă pe proformă trece pe factură
-             "articol_id": l.get("articol_id")}   # [C63] articolul de stoc: întrebarea „Pleacă marfa acum?” și descărcarea la „Da”
+             "articol_id": l.get("articol_id"),   # [C63] articolul de stoc: întrebarea „Pleacă marfa acum?” și descărcarea la „Da”
+             "centru_cost_id": l.get("centru_cost_id")}   # [lotul 13, 536] centrul de cost al liniei trece pe factură
             for l in linii]
 
 
@@ -7853,8 +7879,8 @@ def salarii_contare_scrie(tenant_id, an, luna, ctx, confirma=False):
             # (`ciorne_depasite`), ca nota scrisă și cea comparată la validare să nu poată spune lucruri diferite
             _data, _nr, _descr, _doc = _sc.antet_nota(an, luna)
             nota_id = repo_contabilitate.nota_cu_sursa_si_status(cur, _data, _nr, _descr, "salarii", _uc_comun.STARE_CIORNA, _doc)[0]
-            for n in p["note"]:
-                repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"])
+            for n in p["note"]:   # [lotul 13, 536] rândurile de cheltuială cu centrul salariaților lor
+                repo_contabilitate.adauga_linie_fara_schema(cur, nota_id, n["debit"], n["credit"], n["suma"], n.get("centru_cost_id"))
             if ciorna_veche:
                 if _cq.amprente_note(cur, [ciorna_veche]) == _cq.amprente_note(cur, [nota_id]):
                     repo_contabilitate.revino_la(cur, "salarii_ciorna")   # aceleași sume și dată: ciorna e chiar statul afișat

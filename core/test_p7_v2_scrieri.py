@@ -437,7 +437,9 @@ def test_numarul_de_instructiuni_se_conserva():
     #   + repo_contabilitate.documentul_notei ×1 (510: documentul notei de obținere).
     # [lotul 13, zona firme2, peticul firme2_1/2] +1 (la integrare: 457 -> 458): + repo_contabilitate.toate_conturile în `uc_tenants`
     #   (589: planul întreg pentru verificarea analiticului adăugat de mână — numai sub sintetic legal).
-    assert _apeluri_catre_repository() == 458
+    # [lotul 13, zona comp, 536] +1 (458 -> 459): + repo_facturi.actualizeaza_centre_linii în `uc_factura_primita.valideaza` (centrul de cost
+    #   al fiecărei linii a facturii primite, scris înaintea notei, ca `actualizeaza_conturi_linii`).
+    assert _apeluri_catre_repository() == 459
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

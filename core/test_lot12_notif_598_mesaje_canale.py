@@ -160,7 +160,7 @@ def test_def_598_invitatia_asistentului_neplecata_nu_spune_trimisa(monkeypatch):
 
     class _C:
         def cursor(self, **_k):
-            return contextlib.nullcontext(types.SimpleNamespace(execute=lambda *a, **k: None))
+            return contextlib.nullcontext(types.SimpleNamespace(execute=lambda *a, **k: None, fetchone=lambda: None))   # [560] `nume_cabinet`: niciun rând
     monkeypatch.setattr(ua.db, "get_conn", lambda schema=None: contextlib.nullcontext(_C()))
     monkeypatch.setattr(nucleu, "hash_parola", lambda p: "x")
     monkeypatch.setattr(ua.repo_utilizatori, "contul_dupa_email", lambda cur, e: None)

@@ -3943,3 +3943,10 @@ END $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS trg_vanzare_stoc_sterge ON TENANT_PLACEHOLDER.inregistrari;
 CREATE TRIGGER trg_vanzare_stoc_sterge BEFORE DELETE ON TENANT_PLACEHOLDER.inregistrari FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.vanzare_stoc_sterge();
 -- [vanzari_stoc_v1] sfârșit
+
+-- [centru_cost_surse_v1, lotul 13, deficiența 536] centrul de cost pe liniile facturilor, pe salariați și pe mijloacele fixe (contarea automată
+-- îl duce pe rândurile de venit / cheltuială ale notelor) — SURSA: core/migrare_centru_cost_surse.py
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
+ALTER TABLE TENANT_PLACEHOLDER.salariati ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
+ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
+-- [centru_cost_surse_v1] sfârșit

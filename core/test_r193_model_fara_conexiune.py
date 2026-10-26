@@ -154,7 +154,7 @@ def test_povestea_si_tiparele_intreaba_modelul_dupa_ce_conexiunile_s_au_inchis(m
     monkeypatch.setattr(pachete_api, "abateri_termeni", lambda *a, **k: [])
     monkeypatch.setattr(pachete_api, "scoate_afirmatii_fara_sursa", lambda t, rz: (t, []))
     uc_pachete.pachet_genereaza(1, 2026, 9, {"uid": 1})
-    monkeypatch.setattr(tipare_api, "tipare", lambda *a, **k: {"are_date": True, "motive": [{"motiv": "CIF", "n": 2}],
+    monkeypatch.setattr(tipare_api, "tipare", lambda *a, **k: {"are_date": True, "motive": [{"motiv": "CIF", "n": 5}], "respinse": 5,   # [lotul 13, 576] pragul
                                                                 "tipuri": [], "firme": []})
     uc_tipare.tipare_ai_panou({"firm": 1})
     assert mediu["la_model"] == [0, 0], mediu["la_model"]

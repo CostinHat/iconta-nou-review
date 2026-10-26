@@ -15,6 +15,7 @@ import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";  // [lotul 
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444] numele ANAF vs fișa clientului
 import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF / VIES țin de CUI-ul lor
+import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=0000000000";   // [lotul 13, 536] centrul de cost al liniei
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -44,6 +45,7 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
     if (!opt.client) {
       try { opt.articole = (await api.get(`/tenants/${tenantId}/stocuri/articole`)).articole || []; } catch { opt.articole = []; }
     }
+    opt.centre = opt.client ? [] : await centreActive(tenantId);   // [lotul 13, 536] centrele active ale firmei (portalul clientului n-are)
     opt.tvaProfil = tvaProfil;   // [lot 19 pct.4d] neplatitor -> liniile nu poarta TVA (CF art.310 alin.(10) lit.b))
     opt.tvaIncasare = tvaIncasare;   // [lotul 11, C85] „Schimbă seria” deschide aceeași Configurare emitere: și ea arată sistemul TVA la încasare
     await incarcaCiorna(tenantId);   // [495] ciorna de pe server (sau copia netrimisă din browser), înainte de prima desenare
@@ -572,7 +574,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // [lotul 13, regula UM — `facturi.MESAJ_UM_LIPSA`] UM-ul liniei noi pornește gol (nu „buc”): îl alege omul, sau vine vizibil de la
   // articolul / produsul din nomenclator; gol la emitere -> refuzul serverului lângă câmp
   const linieNoua = () => ({ descriere: "", cantitate: "", um: "", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null,
-    categorie_tva: null });
+    categorie_tva: null, centru_cost_id: null });   // [lotul 13, 536] centrul de cost: gol = fără centru
+  const centre = opt.centre || [];
   // [comanda Costin 05.10.2026 pct.3] „contabilul poate corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când)”.
   // Cotele oferite = cele permise la data facturii, de la server (aceeași sursă ca validarea emiterii).
   let COTE = (num.cote_permise && num.cote_permise.length) ? num.cote_permise : [];   // se reîncarcă la schimbarea datei
@@ -589,7 +592,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <input class="camp-input em-l-pret" id="em-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
       ${htmlCotaLinie("em-l" + i + "-cota", l, COTE, platitor)}
       <button type="button" class="buton-sters em-l-sterge" data-idx="${i}" title="Șterge">×</button>
-      ${platitor ? htmlCategorieLinie("em-l" + i + "-categorie", l, CATEG) : ""}`;
+      ${platitor ? htmlCategorieLinie("em-l" + i + "-categorie", l, CATEG) : ""}
+      ${htmlCentru("em-l" + i + "-centru", "em-l-centru", centre, l.centru_cost_id, "Centrul de cost al liniei " + (i + 1))}`;
     if (articole.length) {
       // [deficiența 488, lotul 12] deasupra listei, căutarea după denumire sau cod de bare (`cautaInLista`); alegerea rămâne a omului
       const selArticol = `
@@ -763,6 +767,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       if (l.cota_tva != null) { const z = zonaLinii.querySelector("#em-l" + linii.indexOf(l) + "-cota-mesaj"); if (z) z.innerHTML = ""; }
       recalc();
     });
+    const selCentru = zonaLinii.querySelector("#em-l" + i + "-centru");   // [lotul 13, 536]
+    if (selCentru) selCentru.addEventListener("change", () => { l.centru_cost_id = valoareCentru(selCentru.value); });
     const selCateg = zonaLinii.querySelector("#em-l" + i + "-categorie");
     if (selCateg) selCateg.addEventListener("change", () => { l.categorie_tva = selCateg.value || null; l.cotaAleasa = true; l.categoriePropusa = false; actualizeazaC331(); });
     cant.addEventListener("input", () => { l.cantitate = parseFloat(cant.value) || 0; recalc(); });
@@ -1131,6 +1137,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         cota_propusa: l.cota_propusa,   // [pct.3] pentru jurnalul „propus → ales”
         articol_id: l.articol_id || null,  // [punte_stoc_v1] F172
         categorie_tva: l.cota_tva === 0 ? (l.categorie_tva || null) : null,   // [274b] categoria liniei cu 0%
+        centru_cost_id: l.centru_cost_id || null,   // [lotul 13, 536] centrul de cost al liniei (rândul de venit al notei îl poartă)
       })),
       // [274b] categoria produsului la taxarea inversă; localitatea și regiunea clientului străin (adresa de livrare din e-Factura)
       // [C61] la clientul român localitatea și județul (codul din listă) — scrise pe factură și pe PDF

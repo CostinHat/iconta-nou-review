@@ -55,7 +55,8 @@ def _deja_pe_activ(cur, schema, an, luna):
     sfarsit = _dt.date(int(an) + (int(luna) == 12), int(luna) % 12 + 1, 1)
     cur.execute("SELECT DISTINCT ml.mijloc_fix_id FROM %sinregistrari_linii l JOIN %smf_linii ml ON ml.linie_id = l.id "
                 "JOIN %sinregistrari i ON i.id = l.inregistrare_id "
-                "WHERE l.cont_debit LIKE '68%%%%' AND l.cont_credit LIKE '28%%%%' AND i.data >= %%s AND i.data < %%s "
+                "WHERE l.cont_debit LIKE '68%%%%' AND l.cont_credit LIKE '28%%%%' AND l.cont_credit NOT LIKE '121%%%%' "   # [C15] fără închiderea în 121
+                "AND i.data >= %%s AND i.data < %%s "
                 "AND COALESCE(i.numar, '') <> %%s" % (p, p, p), (inceput, sfarsit, numar(an, luna)))
     return {(list(r.values())[0] if isinstance(r, dict) else r[0]) for r in cur.fetchall()}
 
@@ -116,7 +117,8 @@ def linii_lipsa(cur, schema, an, luna):
     sfarsit = _dt.date(int(an) + (int(luna) == 12), int(luna) % 12 + 1, 1)
     cur.execute("SELECT DISTINCT ml.mijloc_fix_id FROM %sinregistrari_linii l JOIN %smf_linii ml ON ml.linie_id = l.id "
                 "JOIN %sinregistrari i ON i.id = l.inregistrare_id "
-                "WHERE l.cont_debit LIKE '68%%%%' AND l.cont_credit LIKE '28%%%%' AND i.data >= %%s AND i.data < %%s"
+                "WHERE l.cont_debit LIKE '68%%%%' AND l.cont_credit LIKE '28%%%%' AND l.cont_credit NOT LIKE '121%%%%' "   # [C15] fără închiderea în 121
+                "AND i.data >= %%s AND i.data < %%s"
                 % (p, p, p), (inceput, sfarsit))
     au = {(list(r.values())[0] if isinstance(r, dict) else r[0]) for r in cur.fetchall()}
     return [x for x in linii_cu_activ(cur, schema, an, luna) if x[3] not in au]

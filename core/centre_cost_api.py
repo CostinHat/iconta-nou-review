@@ -143,3 +143,98 @@ def raport_varianta(conn, schema, an):
                 "net_buget": round(bve - bch, 2), "net_realizat": round(rve - rch, 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
             })
     return {"an": an, "centre": centre}
+
+
+# ============================================================
+#  [lotul 13, deficiența 536] Centrul pe documentele contate automat
+# ============================================================
+# Comanda Costin 13.1, 536, verbatim: „Centrul se pune doar pe notele manuale; tot ce se contează automat (facturi, NIR, salarii, amortizare)
+# iese «nealocat» […] Centrul se poate pune pe liniile facturilor, NIR-urilor, salariilor și pe mijloacele fixe (amortizarea moștenește
+# centrul activului).” Centrul e o dimensiune a rândului de VENIT / CHELTUIALĂ (clasele 6 / 7 — raportul le citește numai pe ele): pe
+# rândurile de TVA, terți sau stoc nu are ce căuta, iar închiderea în 121 nu e rulaj (C15).
+
+MESAJ_CENTRU_INEXISTENT = ("Centrul de cost ales nu există sau a fost dezactivat. Alege un centru activ din listă, sau lasă rândul fără "
+                           "centru.")
+
+
+def e_rand_de_centru(debit, credit):
+    """True dacă rândul de notă (debit = credit) e unul de venit / cheltuială pe care centrul îl poartă: o latură în clasa 6 sau 7, niciuna
+    în 121 (închiderea nu e rulaj, C15)."""
+    d, c = str(debit or ""), str(credit or "")
+    return (d[:1] in ("6", "7") or c[:1] in ("6", "7")) and not (d.startswith("121") or c.startswith("121"))
+
+
+def _id_centru(v):
+    """Valoarea trimisă de ecran -> id-ul centrului sau None (gol / 0 = fără centru); altceva decât un întreg pozitiv -> ValueError."""
+    if v in (None, "", 0, "0"):
+        return None
+    n = int(v)
+    if n <= 0:
+        raise ValueError(v)
+    return n
+
+
+def centre_gresite(cur, schema, valori):
+    """{valoarea trimisă} care nu e un centru ACTIV al firmei (inexistent, dezactivat, sau nu e un număr). Golul nu e greșit."""
+    ids, rele = set(), set()
+    for v in valori:
+        try:
+            n = _id_centru(v)
+        except (TypeError, ValueError):
+            rele.add(v)
+            continue
+        if n is not None:
+            ids.add(n)
+    if ids:
+        cur.execute(f"SELECT id FROM {schema}.centre_cost WHERE activ = true AND id = ANY(%s)", (sorted(ids),))
+        bune = {(r["id"] if isinstance(r, dict) else r[0]) for r in cur.fetchall()}
+        rele |= ids - bune
+    return rele
+
+
+def campuri_centru_gresit(cur, schema, centre, camp):
+    """[(camp(i), mesaj)] pentru fiecare linie al cărei centru nu e un centru activ (`camp` = i -> id-ul câmpului de pe ecran)."""
+    rele = centre_gresite(cur, schema, centre or [])
+    return [(camp(i), MESAJ_CENTRU_INEXISTENT) for i, v in enumerate(centre or []) if _str_in(v, rele)]
+
+
+def _str_in(v, rele):
+    return any(str(v) == str(r) for r in rele)
+
+
+def centru_valoare(v):
+    """Centrul de scris în bază: id-ul, sau None (după ce `centre_gresite` a respins ce nu e bun)."""
+    return _id_centru(v)
+
+
+def alocari(conn, schema):
+    """Ce poartă azi un centru, pentru ecranul Centre de cost: salariații în serviciu și mijloacele fixe active, fiecare cu centrul lui."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT id, trim(coalesce(nume, '') || ' ' || coalesce(prenume, '')) AS nume, centru_cost_id FROM {schema}.salariati "
+                    "WHERE data_incetare IS NULL OR data_incetare >= current_date ORDER BY nume, prenume, id")
+        sal = [dict(r) for r in cur.fetchall()]
+        cur.execute(f"SELECT id, cod, denumire, centru_cost_id FROM {schema}.mijloace_fixe WHERE activ IS NOT false ORDER BY cod, denumire, id")
+        mf = [dict(r) for r in cur.fetchall()]
+    return {"salariati": sal, "mijloace": mf}
+
+
+def seteaza_alocari(conn, schema, salariati=None, mijloace=None):
+    """Pune centrul pe salariați și pe mijloacele fixe: {id: centru | None}. Un centru inactiv / inexistent se refuză lângă rândul lui
+    (`cc-sal-<id>` / `cc-mf-<id>`), nimic scris. Notele deja scrise rămân cum sunt; centrul se vede pe notele generate de acum."""
+    salariati, mijloace = dict(salariati or {}), dict(mijloace or {})
+    with conn.cursor() as cur:
+        rele = centre_gresite(cur, schema, list(salariati.values()) + list(mijloace.values()))
+        erori = ([{"camp": "cc-sal-%s" % k, "mesaj": MESAJ_CENTRU_INEXISTENT} for k, v in salariati.items() if _str_in(v, rele)]
+                 + [{"camp": "cc-mf-%s" % k, "mesaj": MESAJ_CENTRU_INEXISTENT} for k, v in mijloace.items() if _str_in(v, rele)])
+        if erori:
+            return {"eroare": "Alocarea nu s-a salvat: " + MESAJ_CENTRU_INEXISTENT, "erori_campuri": erori}
+        for tabel, alese in (("salariati", salariati), ("mijloace_fixe", mijloace)):
+            for k, v in alese.items():
+                cur.execute(f"UPDATE {schema}.{tabel} SET centru_cost_id = %s WHERE id = %s", (_id_centru(v), int(k)))
+    return {"ok": True, "salariati": len(salariati), "mijloace": len(mijloace)}
+
+
+def centrele_salariatilor(cur, schema):
+    """{salariat_id: centru_cost_id} (numai cei cu centru)."""
+    cur.execute(f"SELECT id, centru_cost_id FROM {schema}.salariati WHERE centru_cost_id IS NOT NULL")
+    return {(r["id"] if isinstance(r, dict) else r[0]): (r["centru_cost_id"] if isinstance(r, dict) else r[1]) for r in cur.fetchall()}

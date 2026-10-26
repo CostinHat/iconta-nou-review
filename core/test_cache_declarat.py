@@ -121,6 +121,20 @@ def test_ajutor_se_reconstruieste_identic():
         ajutor._CACHE = vechi
 
 
+def test_cautare_se_reconstruieste_identic():
+    """[lotul 13, 681] Sursele căutării din antet, golite, se recitesc identic din aceleași fișiere."""
+    from core import cautare
+    vechi = dict(cautare._cache)
+    try:
+        cautare._cache.clear()
+        intai = (cautare.carduri_firma(), cautare.operatiuni())
+        assert len(intai[0]) > 20 and len(intai[1]) > 20, "%d carduri, %d operațiuni: sursa pare trunchiată" % tuple(map(len, intai))
+        cautare._cache.clear()
+        assert (cautare.carduri_firma(), cautare.operatiuni()) == intai
+    finally:
+        cautare._cache.clear(); cautare._cache.update(vechi)
+
+
 def test_ghid_teme_se_reconstruieste_identic():
     """Cache-ul golit se reface identic din aceleași surse (lot 06.10)."""
     import main

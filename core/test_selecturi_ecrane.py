@@ -135,7 +135,9 @@ def test_inputurile_precompletate_sunt_clasificate():
     gasite = {k for k, _l in S.inputuri_precompletate()}
     # [lotul 13, 504] premisa anti-vid: 7 -> 2 — D603 (țara „RO”), D318 (lunile 1 / 12), UM-ul produsului și țara facturii primite de mână
     # pornesc acum goale (DS cap.6 „Nimic precompletat”); rămân valoarea fixă prin lege (D398, „EUR”) și contul sugerat la NIR (446)
-    assert len(gasite) >= 2 and sorted(gasite ^ set(S.INPUTURI)) == []
+    # [lotul 13, 504, zona firme2 — `firme.js:sn-cont-taxe`] 2 -> 1: contul taxelor la NIR (446) nu mai vine precompletat (îl scrie contabilul,
+    # cerut lângă câmp); rămâne numai valoarea fixă prin lege (D398, „EUR”). Premisa anti-vid cere încă un câmp văzut, iar mulțimea e exactă
+    assert len(gasite) >= 1 and sorted(gasite ^ set(S.INPUTURI)) == []
 
 
 def test_CALIBRARE_input_precompletat_neclasificat_e_prins():

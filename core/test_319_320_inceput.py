@@ -102,6 +102,7 @@ def test_320_numai_conturile_noi_trec_prin_prima_intrare(monkeypatch):
     monkeypatch.setattr(uc._repo, "stare", lambda cur, uid: st["stare"])
     monkeypatch.setattr(uc._repo, "preferintele", lambda cur, uid: st["pref"])
     monkeypatch.setattr(uc._repo, "alte_conturi_cu_telefonul", lambda cur, uid, tel: 0)   # [338] fără bază: niciun alt cont
+    monkeypatch.setattr(uc._repo, "emailul", lambda cur, uid: None)   # [lotul 13, 565] fără bază: nota sintezei nu întreabă de dezabonare
     assert uc._stare(None, 1)["complet"] is True                          # existent: fără telefon, fără bife — intră direct
     st["pref"] = (None, False, "admin_firma", True, True, False)
     assert uc._stare(None, 1)["complet"] is False                         # nou: oprit până la telefon + bife
@@ -146,7 +147,7 @@ def test_319_invitatia_cu_drepturi_si_firme_e_o_singura_tranzactie(monkeypatch, 
     class _C:
         def cursor(self, **_k):
             # [lotul 10, C73 / U3] contul se scrie sub savepoint (`chei_unice.refuza_dublura`): cursorul simulat primește SAVEPOINT-urile
-            return contextlib.nullcontext(types.SimpleNamespace(execute=lambda *a, **k: None))
+            return contextlib.nullcontext(types.SimpleNamespace(execute=lambda *a, **k: None, fetchone=lambda: None))   # [560] `nume_cabinet`: niciun rând
 
     @contextlib.contextmanager
     def _conn(schema=None):

@@ -96,9 +96,13 @@ def test_navigatorul_fara_recunoasterea_tabelului_e_prins(regula, reale):
 
 
 @pytest.mark.parametrize("ancora, inlocuire, fragment", [
-    ("height: calc(100vh - 48px); transition: none;", "transition: none;", "înălțimea ecranului"),
-    ("{ width: calc(100vw - 48px); max-width", "{ max-width", "lățimea ecranului"),
-    ("{ overflow-x: hidden; overflow-y: auto; }", "{ overflow-x: auto; overflow-y: auto; }", "numai vertical"),
+    # [lotul 13, 673] `.fereastra.fer-lucru` (fereastra de lucru, DS cap.2a) are aceleași declarații ca fereastra cu tabel, stă în altă regulă
+    # (după `.fer-larg-simplu`, ca să nu i se micșoreze lățimea) -> ancorele numesc selectorul ferestrei cu tabel, ca mutația s-o lovească NUMAI pe ea
+    (".fereastra.fer-tabel { width: calc(100vw - 48px); max-width: calc(100vw - 48px); height: calc(100vh - 48px); transition: none; }",
+     ".fereastra.fer-tabel { width: calc(100vw - 48px); max-width: calc(100vw - 48px); transition: none; }", "înălțimea ecranului"),
+    (".fereastra.fer-tabel { width: calc(100vw - 48px); max-width", ".fereastra.fer-tabel { max-width", "lățimea ecranului"),
+    (".fereastra.fer-larg.fer-tabel .fereastra-corp { overflow-x: hidden; overflow-y: auto; }",
+     ".fereastra.fer-larg.fer-tabel .fereastra-corp { overflow-x: auto; overflow-y: auto; }", "numai vertical"),
     ("position: sticky; top: -24px; z-index: 3;", "z-index: 3;", "`.rezumat-fix` nu mai e lipit sus"),
     (".mig-prev-cutie { margin-top: 8px; }", ".mig-prev-cutie { max-height: 55vh; overflow: auto; margin-top: 8px; }", "`.mig-prev-cutie` derulează"),
 ])

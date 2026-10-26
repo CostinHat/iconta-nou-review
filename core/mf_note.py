@@ -31,10 +31,20 @@ def leaga(cur, schema, mijloc_fix_id, nota_id, fel):
 
 
 def adauga_linie(cur, schema, nota_id, debit, credit, suma, mijloc_fix_id, partener_cui=None, partener_nume=None):
-    """Un rând de notă cu activul lui (și, unde e cazul, partenerul — locatorul la primirea în leasing)."""
+    """Un rând de notă cu activul lui (și, unde e cazul, partenerul — locatorul la primirea în leasing).
+
+    [lotul 13, deficiența 536 — „amortizarea moștenește centrul activului”] Rândul de cheltuială / venit al activului (6811 = 28…, casarea,
+    reevaluarea) poartă centrul de cost al activului (`mijloace_fixe.centru_cost_id`); rândurile fără clasa 6 / 7 nu poartă centru."""
+    from core import centre_cost_api as _cc
     p = _p(schema)
-    cur.execute("INSERT INTO %sinregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma, partener_cui, partener_nume) "
-                "VALUES (%%s, %%s, %%s, %%s, %%s, %%s) RETURNING id" % p, (nota_id, debit, credit, suma, partener_cui, partener_nume))
+    centru = None
+    if _cc.e_rand_de_centru(debit, credit):
+        cur.execute("SELECT centru_cost_id FROM %smijloace_fixe WHERE id = %%s" % p, (mijloc_fix_id,))
+        r = cur.fetchone()
+        centru = (r["centru_cost_id"] if isinstance(r, dict) else r[0]) if r else None
+    cur.execute("INSERT INTO %sinregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma, partener_cui, partener_nume, centru_cost_id) "
+                "VALUES (%%s, %%s, %%s, %%s, %%s, %%s, %%s) RETURNING id" % p,
+                (nota_id, debit, credit, suma, partener_cui, partener_nume, centru))
     r = cur.fetchone()
     lid = r["id"] if isinstance(r, dict) else r[0]
     cur.execute("INSERT INTO %smf_linii (linie_id, mijloc_fix_id) VALUES (%%s, %%s)" % p, (lid, mijloc_fix_id))

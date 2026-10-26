@@ -1,0 +1,26 @@
+[
+ {
+  "fisier": "core/contare_facturi.py",
+  "ancora": "(iid, n[\"debit\"], n[\"credit\"], Decimal(str(n[\"suma\"])), n.get(\"centru_cost_id\")))",
+  "inlocuire": "(iid, n[\"debit\"], n[\"credit\"], Decimal(str(n[\"suma\"])), None))",
+  "test": "frontend_test/e2e/e2e_lot13_comp.py::test_def_536_centrul_pe_factura_salariat_si_mijloc_fix_ajunge_in_raport"
+ },
+ {
+  "fisier": "core/mf_note.py",
+  "ancora": "    if _cc.e_rand_de_centru(debit, credit):\n        cur.execute(\"SELECT centru_cost_id FROM %smijloace_fixe",
+  "inlocuire": "    if False:\n        cur.execute(\"SELECT centru_cost_id FROM %smijloace_fixe",
+  "test": "frontend_test/e2e/e2e_lot13_comp.py::test_def_536_centrul_pe_factura_salariat_si_mijloc_fix_ajunge_in_raport"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "        centru_cost_id: l.centru_cost_id || null,   // [lotul 13, 536]",
+  "inlocuire": "        centru_cost_id: null,   // [lotul 13, 536]",
+  "test": "frontend_test/e2e/e2e_lot13_comp.py::test_def_536_centrul_pe_factura_salariat_si_mijloc_fix_ajunge_in_raport"
+ },
+ {
+  "fisier": "core/centre_cost_api.py",
+  "ancora": "                cur.execute(f\"UPDATE {schema}.{tabel} SET centru_cost_id = %s WHERE id = %s\", (_id_centru(v), int(k)))",
+  "inlocuire": "                pass",
+  "test": "frontend_test/e2e/e2e_lot13_comp.py::test_def_536_centrul_pe_factura_salariat_si_mijloc_fix_ajunge_in_raport"
+ }
+]

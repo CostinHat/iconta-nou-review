@@ -441,12 +441,19 @@ def test_pct13_lunile_lipsa_se_strang_in_intervale(tmp_path):
 
 
 def test_pct13_actiunile_mijlocului_fix_sunt_intr_un_meniu():
-    """„acțiunile ascunse … acțiunile într-un meniu”, „PIF tăiat”. Gardul general e `ACTIUNI_RAND_LIBERE` (verificator)."""
+    """„acțiunile ascunse … acțiunile într-un meniu”, „PIF tăiat”. Gardul general e `ACTIUNI_RAND_LIBERE` (verificator).
+    [lotul 13, clasele 674 / 675, comanda Costin 13.1, verbatim: 674 „Orice acțiune e un buton, nu text pe care se dă click”; 675 „entitățile
+    de același tip […] au același set de butoane, în aceeași ordine; ce nu se aplică stă inactiv, cu motivul la trecerea cu mouse-ul”] Meniul
+    `<details>` (deschis printr-un clic pe text) a devenit coloana de butoane a rândului: aceleași cinci, în aceeași ordine, pe fiecare activ
+    (și casat), cel care nu se aplică inactiv cu motivul (`buton` -> `motivInactiv`) — acțiunile nu mai sunt ascunse.
+    MUTAȚIE: `buton` fără `disabled title` (sau o acțiune scoasă de pe rândul casat) -> pică."""
     import re
     src = io.open("static/js/ecrane/mijloace_ecran.js", encoding="utf-8").read()
-    # celula acțiunilor: butoanele ei stau toate în meniu (numărate în celulă), PIF-ul pe un rând
-    celula = re.search(r"<td>\$\{m\.activ \? `(.*?)` : \"—\"\}</td>", src, re.S).group(1)
-    assert re.match(r"\s*<details class=\"dec-xml\"><summary>Acțiuni</summary>", celula) and len(re.findall(r"<button\b", celula)) == 3
+    # celula acțiunilor: o coloană de butoane, aceleași pe fiecare rând (fără ramură pe `m.activ`); PIF-ul pe un rând
+    celula = re.search(r'<td><div style="display:flex;flex-direction:column[^"]*">(.*?)</div></td>', src, re.S).group(1)
+    assert (re.findall(r"data-(caseaza|reeval|lipsa|plan|cd)=", celula) == ["caseaza", "reeval", "lipsa", "plan", "cd"]
+            and "m.activ" not in celula and "<details" not in celula
+            and re.search(r'\$\{motiv \? ` disabled title="\$\{esc\(motiv\)\}"` : ""\}', src))
     assert re.search(r'<td style="white-space:nowrap">\$\{m\.data_pif \? dataRo\(m\.data_pif\)', src)
 
 

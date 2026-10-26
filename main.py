@@ -1466,6 +1466,7 @@ class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
     articol_id: Optional[int] = None  # [punte_stoc_v1] F172: leaga linia de stoc (CV); None = serviciu
     cont_venit: Optional[str] = None  # [DECIZII 64] cont de venit explicit pe linie: escape cand clasificarea nu poate decide si emiterea s-ar bloca
     categorie_tva: Optional[str] = None  # [274b] categoria liniei cu 0% (core/categorii_tva.CATEGORII), obligatorie la plătitor
+    centru_cost_id: Optional[int] = None  # [lotul 13, 536] centrul de cost al liniei (gol = fără centru); contarea îl duce pe rândul de venit
 
 class EmitereIn(BaseModel):
     tip: str = "factura"  # factura|proforma|aviz
@@ -6129,6 +6130,15 @@ def centre_cost_lista(tenant_id: int, doar_active: bool = False, ctx=Depends(cer
 def centre_cost_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.centre_cost_adauga(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+# [lotul 13, 536] centrul de cost al salariaților și al mijloacelor fixe (nota salariilor și a activului îl duc pe rândurile de cheltuială).
+# Declarată ÎNAINTEA rutei `/centre-cost/{centru_id}`: altfel „alocari” s-ar citi drept id de centru (422)
+@app.put("/tenants/{tenant_id}/centre-cost/alocari")
+def centre_cost_alocari(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    try:
+        return _uc_tenants.centre_cost_alocari(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

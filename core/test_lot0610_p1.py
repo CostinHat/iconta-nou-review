@@ -67,6 +67,11 @@ def test_factura_fara_serie_se_refuza_numit_fara_sa_consume_numarul(conn):
 
 
 def test_dupa_setarea_seriei_emiterea_continua_cu_numarul_urmator_si_facturile_vechi_raman(conn):
+    """Facturile vechi (fără serie) rămân; emiterea continuă cu numărul următor AL SERIEI.
+    [lotul 13, deficiența 542, comanda Costin 13.1, verbatim: „Seria F2T stabilită la prima factură a pornit de la nr. 2 (contorul vechi),
+    deci F2T1 lipsește și seria are o gaură. Seria nouă pornește de la 1 sau de la numărul ales de contabil.”] Până la lotul 13 seria nouă
+    prelua contorul vechi (FCT4 aici); acum contorul e al seriei: „FCT” n-are nicio factură, deci prima e FCT1 (`seteaza_numerotare`).
+    MUTAȚIE: `_urm = _acum[1]` (contorul vechi) în `seteaza_numerotare` -> FCT4 -> pică."""
     from core import facturi_api as fa
     with conn.cursor() as cur:   # o factură emisă înainte, fără serie (ca pe F1/F2 în producție)
         cur.execute("INSERT INTO facturi (numar, serie, data_emitere, directie, total, tva) VALUES ('3', '', '2026-10-01', 'emisa', 121, 21)")
@@ -74,8 +79,8 @@ def test_dupa_setarea_seriei_emiterea_continua_cu_numarul_urmator_si_facturile_v
     r = fa.emite_factura(conn, LINII, tert_nume="Client SRL", tert_cui="14399840")
     with conn.cursor() as cur:
         cur.execute("SELECT numar, serie FROM facturi ORDER BY id")
-        assert cur.fetchall() == [("3", ""), ("FCT4", "FCT")]
-    assert r["numar"] == "FCT4"
+        assert cur.fetchall() == [("3", ""), ("FCT1", "FCT")]   # [542] seria nouă pornește de la 1
+    assert r["numar"] == "FCT1"
 
 
 def test_storno_fara_serie_se_refuza_la_fel(conn):

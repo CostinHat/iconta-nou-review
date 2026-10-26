@@ -64,7 +64,8 @@ def divergenta_amortizare(de_eliminat, sold_inregistrat):
     """`None` daca reevaluarea poate merge; altfel dict-ul divergentei, cu toate cifrele ei.
 
     `de_eliminat` vine din REGISTRU (motorul o calculeaza din PIF, durata si metoda);
-    `sold_inregistrat` e soldul creditor al contului de amortizare, din notele chiar inregistrate.
+    `sold_inregistrat` e amortizarea INREGISTRATA PE ACTIV (lotul 13, 522: randurile lui din notele validate + partea lui din soldul
+    preluat — `mf_registru.inregistrat_pe_activ`), nu soldul contului, care poate tine si alte active.
     """
     a, b = _d(de_eliminat), _d(sold_inregistrat)
     if a <= b:
@@ -81,8 +82,8 @@ def mesaj_divergenta(div, denumire, cont, la_data):
     """
     from core.pdf_util import bani as _b
     return ("Registrul mijloacelor fixe și contabilitatea nu spun același lucru despre amortizarea "
-            "lui %s. Fișa activului arată %s lei amortizare strânsă până la %s, iar contul %s are %s "
-            "lei înregistrați — o diferență de %s lei. Reevaluarea pornește prin scoaterea din "
+            "lui %s. Fișa activului arată %s lei amortizare strânsă până la %s, iar pe activ, în contul %s, sunt "
+            "înregistrați %s lei — o diferență de %s lei. Reevaluarea pornește prin scoaterea din "
             "evidență a amortizării strânse, deci pe diferența asta ar scădea o amortizare care nu "
             "s-a înregistrat niciodată. Înregistrează întâi amortizarea lipsă (nota lunară, pe "
             "lunile care lipsesc), apoi reevaluarea trece."

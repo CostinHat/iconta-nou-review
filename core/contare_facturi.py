@@ -372,8 +372,9 @@ def cont_venit_linie(cont_venit, cont_venit_implicit=None, tip_operatiune=None):
 def _linii_facturii(cur, schema, fid):
     """Liniile facturii (contul de venit / de cheltuială al liniei, cota, cantitatea, prețul), în ordinea lor."""
     # [lotul 11, C82] + `valoare_neta` (BT-131 de pe factură, la factura importată): valoarea liniei e aceea, nu cantitate × preț
-    cur.execute("SELECT cont_venit, cont_cheltuiala, cota_tva, cantitate, pret_unitar, valoare_neta FROM %sfactura_linii WHERE factura_id=%%s "
-                "ORDER BY id" % _p(schema), (fid,))
+    # [lotul 13, 536] + `centru_cost_id`: centrul liniei ajunge pe rândul de venit / cheltuială al notei (`_note_pe_cote`)
+    cur.execute("SELECT cont_venit, cont_cheltuiala, cota_tva, cantitate, pret_unitar, valoare_neta, centru_cost_id FROM %sfactura_linii "
+                "WHERE factura_id=%%s ORDER BY id" % _p(schema), (fid,))
     return [dict(r) for r in cur.fetchall()]
 
 
@@ -388,20 +389,22 @@ def _note_pe_cote(linii, curs, nota_baza, nota_tva, tva_factura=None, tva_lei_do
     `tva_factura` = {cotă: TVA} de pe factura FURNIZORULUI (`tva_facturii_pe_cote`, lotul 11, C79): pe factura primită TVA-ul cotei e cel
     înscris pe factură (CF art.299 alin.(1) lit.a, art.319 alin.(20) lit.j), nu recalculul din baze; baza pe cont rămâne a liniilor.
     `tva_lei_document` = TVA-ul facturii în lei scris de furnizor (BT-111, lotul 11, C81), împărțit pe cote (`tva_lei_pe_cote`)."""
-    from core import tva_calcul as _tc
-    baze = {}   # {cota: {cont: baza}} — rândurile se grupează direct pe cotă (fără comparație pe valoarea cotei)
+    from core import centre_cost_api as _cc, tva_calcul as _tc
+    baze = {}   # {cota: {cont: {centru: baza}}} — rândurile se grupează direct pe cotă (fără comparație pe valoarea cotei)
     for l in linii:
-        pe_cont = baze.setdefault(Decimal(str(l["cota_tva"])), {})
-        pe_cont[l["cont"]] = (pe_cont.get(l["cont"], Decimal(0))
-                              + _tc.net_linie(l["cantitate"], l["pret_unitar"], l.get("valoare_neta")))   # [C82] BT-131
+        pe_cont = baze.setdefault(Decimal(str(l["cota_tva"])), {}).setdefault(l["cont"], {})
+        # [lotul 13, 536] centrul liniei, numai pe un cont de venit / cheltuială (clasele 6 / 7): pe 371 / 419 nu are ce căuta
+        centru = l.get("centru_cost_id") if _cc.e_rand_de_centru(l["cont"], "") else None
+        pe_cont[centru] = (pe_cont.get(centru, Decimal(0))
+                           + _tc.net_linie(l["cantitate"], l["pret_unitar"], l.get("valoare_neta")))   # [C82] BT-131
     pc = _tc.pe_cote(linii)
     if tva_factura is not None:
         pc = {c: (b, tva_factura[c]) for c, (b, _t) in pc.items()}
     tva_lei = _tc.tva_lei_pe_cote(pc, curs, tva_lei_document=tva_lei_document)
     note = []
     for cota in sorted(pc):
-        for cont, b in sorted(baze.get(cota, {}).items()):
-            note.append(_fc._nota(*nota_baza(cont, b * curs)))
+        for cont, pe_centru in sorted(baze.get(cota, {}).items()):
+            note.extend(_pe_centre(nota_baza, cont, pe_centru, curs))
         if tva_lei[cota]:
             d, cr, s = nota_tva(tva_lei[cota])
             note.append(_fc._nota(d, cr, s, temei=(
@@ -513,6 +516,23 @@ def curs_factura_importate(cur, schema, f):
     _re.seteaza_cursul_importului(cur, schema, f["id"], curs, data_curs, sursa, tva_lei, total_lei)
     f.update({"curs_bnr": curs, "data_curs": data_curs, "curs_sursa": sursa, "tva_lei": tva_lei, "total_lei": total_lei})
     return {"curs": curs, "data_curs": data_curs, "tva_lei": tva_lei, "total_lei": total_lei, "bt111": bt111 is not None}
+
+
+def _pe_centre(nota_baza, cont, pe_centru, curs):
+    """[lotul 13, 536] Rândul (sau rândurile) de venit / cheltuială ale unui cont: unul pe centru de cost. Baza contului în lei se calculează o
+    dată (ca înainte de centre), iar împărțirea pe centre o păstrează la ban: fiecare centru = baza lui × curs, rotunjit, iar ultimul primește
+    restul — nota, D300 și cifrele facturii rămân aceleași, oricum ar fi împărțită linia pe centre."""
+    total = _q(sum(pe_centru.values(), Decimal(0)) * curs)
+    chei = sorted(pe_centru, key=lambda c: (c is None, c or 0))
+    out, pus = [], Decimal(0)
+    for i, centru in enumerate(chei):
+        suma = total - pus if i == len(chei) - 1 else _q(pe_centru[centru] * curs)
+        pus += suma
+        n = _fc._nota(*nota_baza(cont, suma))
+        if centru:
+            n["centru_cost_id"] = centru
+        out.append(n)
+    return out
 
 
 def genereaza_note(cur, schema, f, pe_4428, cont_venit_implicit, cont_cheltuiala=None):
@@ -844,10 +864,10 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
                 (data_nota, factura_id, descriere))
     r = cur.fetchone()
     iid = r["id"] if isinstance(r, dict) else r[0]
-    for n in note:
-        cur.execute("INSERT INTO %sinregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
-                    "VALUES (%%s,%%s,%%s,%%s)" % _p(schema),
-                    (iid, n["debit"], n["credit"], Decimal(str(n["suma"]))))
+    for n in note:   # [lotul 13, 536] centrul liniei facturii, pe rândul de venit / cheltuială
+        cur.execute("INSERT INTO %sinregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id) "
+                    "VALUES (%%s,%%s,%%s,%%s,%%s)" % _p(schema),
+                    (iid, n["debit"], n["credit"], Decimal(str(n["suma"])), n.get("centru_cost_id")))
     stornare_nir = None
     if nir_ales and nir_ales.get("forma_noua"):
         from core import pdf_util as _pu

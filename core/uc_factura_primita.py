@@ -192,7 +192,17 @@ def valideaza(conn, schema, f, corp, statut, primita_id=None):
     from core import repo_efactura, repo_facturi
     from core import uc_tenants as _uct
     cont = cont_facturii(conn, schema, corp, primita_id)   # [FFF1] obligatoriu, și din planul firmei
+    from core import centre_cost_api as _cc
     with conn.cursor() as cur:
+        # [lotul 13, 536] centrul de cost al fiecărei linii (gol = fără centru): un centru activ al firmei, refuzat lângă linia lui, nimic scris
+        _centre = list(corp.get("centre") or [])
+        _rele = _cc.campuri_centru_gresit(cur, schema, _centre, (lambda i: "pm-l%d-centru" % (i + 1)) if f.get("manuala")
+                                          else (lambda i: "pr-centru-l%d" % i))
+        if _rele:
+            er = _erori.ErorileFormularului("Factura primită nu s-a validat")
+            for camp, mesaj in _rele:
+                er.camp(camp, mesaj)
+            er.refuza()
         # [lotul 6 pct.7c, 273] ce nu vine din factură se cere aici, înainte de orice scriere: tipul furnizorului (D394) și, la taxarea
         # inversă (linii „AE”), categoria produsului (codul D394, art.331)
         _tp = statut["platitor_tva"] if statut["platitor_tva"] is not None else corp.get("tert_platitor_tva")   # [418a] faptul, nu tastarea
@@ -241,6 +251,9 @@ def valideaza(conn, schema, f, corp, statut, primita_id=None):
         # [deficiența 418b] contul fiecărei linii (gol = contul facturii): marfa pe 371, cartea de birou pe cheltuială
         if fid_final and corp.get("conturi"):
             repo_facturi.actualizeaza_conturi_linii(cur, schema, fid_final, corp.get("conturi"))
+        # [lotul 13, 536] centrul de cost al fiecărei linii, înaintea notei: contarea îl duce pe rândul de cheltuială
+        if fid_final and any(_cc.centru_valoare(v) for v in _centre):
+            repo_facturi.actualizeaza_centre_linii(cur, schema, fid_final, [_cc.centru_valoare(v) for v in _centre])
     # [FFF1] NOTA SE SCRIE AICI, în același act cu validarea — după ce clasificarea e pusă pe factură. [FFF2] Clasa ambiguă (furnizor la
     # încasare + firmă în regim normal) e refuzată automat, cu motivul: factura se validează oricum, nota o scrie omul.
     contare = {"stare": "neaplicabil", "afirmatie": _af.afirmatie(

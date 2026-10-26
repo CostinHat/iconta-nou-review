@@ -4,6 +4,7 @@
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=cb524f997d";  /* esc_nc27 */
+import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=0000000000";   // [lotul 13, 536] centrul de cost al liniei
 import { randeazaStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
@@ -156,6 +157,8 @@ async function primiteSPV(corp, nav, tenantId, opt, mesaj = null) {
     if (!actuala()) return;
     lista = (r && r.primite) || []; categorii331 = (r && r.categorii_331) || [];
   } catch { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile primite din SPV.</p>`; return; }
+  opt.centre = await centreActive(tenantId);   // [lotul 13, 536] centrele active: pe liniile facturii validate (din SPV sau de mână)
+  if (!actuala()) return;
   // [deficiența 273a/b, lotul 6] starea SPV a firmei (conectată? verificată când? ce a răspuns ANAF?), „Verifică acum în SPV” și importul
   // manual XML UBL. „apar aici automat” se spune NUMAI când firma chiar e citită automat (conectată și cu drept).
   corp.innerHTML = `
@@ -246,6 +249,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           <option value="mixt">Mixtă</option>
         </select>
         <input class="camp-input pr-cont-linie" data-i="${i}" id="pr-cont-l${i}" placeholder="contul facturii" aria-label="Contul liniei ${i + 1}" style="flex:0 0 130px;width:130px">
+        ${htmlCentru("pr-centru-l" + i, "pr-centru-linie", opt.centre, null, "Centrul de cost al liniei " + (i + 1), "flex:0 0 200px;width:200px")}
       </div>`).join("") || '<div class="pf-frand-sub">—</div>'}
       ${linii.length > 1 ? '<span class="camp-ajutor">Contul liniei: gol = contul facturii de mai jos. O linie de altă natură (cartea de birou lângă marfă) se contează pe contul ei; numai liniile pe un cont de stoc (371 / 301–303) intră în stoc.</span>' : ""}</div>
     <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:12px">
@@ -291,6 +295,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
             categorie_331: p.taxare_inversa ? corp.querySelector("#pr-c331").value : null,
             tert_tara: _tara,
             destinatii: _dest, conturi: Array.from(corp.querySelectorAll(".pr-cont-linie")).map((x) => x.value.trim()),   // [418b] contul liniei
+            centre: Array.from(corp.querySelectorAll(".pr-centru-linie")).map((x) => valoareCentru(x.value)),   // [lotul 13, 536] centrul liniei
             ...alegere }));
         // [lotul 13, deficiența 634 (b) — „După validare: «Cheltuiala creată» deși contul e 371 (marfă), fără legătură spre notă”] mesajul
         // spune ce s-a scris, pe contul ales (marfă / materiale / cheltuială), cu nota (conturile ei) și butonul spre ea în Registrul jurnal
@@ -412,7 +417,7 @@ function anuntaCursulValidat(zona, r) {
 // parametri fiscali, `GET /tenants/{tenant_id}/facturi/numerotare`), contul facturii și al fiecărei linii, destinația TVA a liniei. Validarea e ACEEAȘI ca la
 // factura din XML (`uc_factura_primita.valideaza`): nota, gestiunea pe un cont de stoc, alegerea NIR-ului „fără factură”.
 // [lotul 13, regula UM — `facturi.MESAJ_UM_LIPSA`] UM-ul pornește gol (nu „buc”): îl scrie omul de pe factură; gol -> refuzul lângă câmp
-const linieManuala = () => ({ descriere: "", cantitate: "", um: "", pret_unitar: "", cota_tva: "", dest: "taxabil", cont: "" });
+const linieManuala = () => ({ descriere: "", cantitate: "", um: "", pret_unitar: "", cota_tva: "", dest: "taxabil", cont: "", centru: "" });   // [536] centru: gol = fără
 
 function primitaManuala(corp, nav, tenantId, opt) {
   const linii = [linieManuala()];
@@ -492,6 +497,7 @@ function primitaManuala(corp, nav, tenantId, opt) {
         <select class="camp-input pr-dest pm-camp" data-c="dest" aria-label="Destinație TVA linie ${i}" style="flex:0 0 auto;width:auto" data-butoane="">
           <option value="taxabil"${l.dest === "taxabil" ? " selected" : ""}>Taxabilă</option><option value="scutit"${l.dest === "scutit" ? " selected" : ""}>Scutită</option><option value="mixt"${l.dest === "mixt" ? " selected" : ""}>Mixtă</option></select>
         <input class="camp-input pm-camp pr-cont-linie" data-c="cont" id="pm-l${i}-cont" value="${esc(l.cont)}" placeholder="contul facturii" aria-label="Contul liniei ${i}" style="flex:0 0 130px;width:130px">
+        ${htmlCentru(`pm-l${i}-centru`, "pm-camp pm-centru", opt.centre, l.centru, "Centrul de cost al liniei " + i, "flex:0 0 200px;width:200px", 'data-c="centru"')}
         <button class="buton-sters buton-mic pm-sterge" type="button" data-k="${k}" data-fara-actiune="scoate linia din formular, fără scriere" aria-label="Șterge linia ${i}"${linii.length > 1 ? "" : atributeInactiv("Factura are o singură linie: rămâne cel puțin una.")}>Șterge</button>
       </div>`;
     }).join("");
@@ -561,6 +567,7 @@ function primitaManuala(corp, nav, tenantId, opt) {
       data_emitere: v("pm-data"), data_scadenta: v("pm-scadenta"), moneda: v("pm-moneda"), cont: v("pr-cont").trim(),
       linii: linii.map((l) => ({ descriere: l.descriere.trim(), cantitate: l.cantitate, um: (l.um || "").trim(), pret_unitar: l.pret_unitar, cota_tva: l.cota_tva })),
       destinatii: linii.map((l) => l.dest), conturi: linii.map((l) => (l.cont || "").trim()),
+      centre: linii.map((l) => valoareCentru(l.centru)),   // [lotul 13, 536] centrul de cost al fiecărei linii
       tert_platitor_tva: daNu(corp.querySelector("#pr-platitor")), furnizor_tva_incasare: daNu(corp.querySelector("#pr-furnizor-incasare")),
     };
   };
@@ -1791,7 +1798,7 @@ export async function formSablon(corp, nav, tenantId, opt) {
       <label class="camp-eticheta" for="fr-cui">CUI beneficiar</label>
       <div class="em-cui-rand"><input class="camp-input" id="fr-cui" placeholder="ex: RO12345678" autocomplete="off">
         <button type="button" class="buton-secundar" id="fr-anaf" data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}">Verifică la ANAF</button></div>
-      <div id="fr-anaf-stare"></div>
+      <div class="em-cui-stare" id="fr-anaf-stare"></div>
       <label class="camp-eticheta" for="fr-tara">Țara beneficiarului</label>
       <select class="camp-input" id="fr-tara">${optiuniTara()}</select>
       <label class="camp-eticheta" for="fr-nume">Denumire beneficiar</label>
@@ -1994,12 +2001,15 @@ export async function formSablon(corp, nav, tenantId, opt) {
     const cui = corp.querySelector("#fr-cui").value.trim(), st = corp.querySelector("#fr-anaf-stare");
     curataEroriCamp(corp);
     if (!cui) { eroareCamp(corp, "fr-cui", "Scrie codul fiscal ca să-l verifici la ANAF."); return; }
+    // [lotul 13, 680 — „aceleași controale ca Emite factură”] starea verificării, ca la factura primită (`pm-cui-stare`): refuzul serverului pe
+    // rândurile lui (`pe-randuri`, DS cap.6 v2.89; gard core/test_lot11_g2_pre_line.py), culoarea refuzului pe CUI negăsit / eroare
+    st.textContent = "se verifică la ANAF…"; st.className = "em-cui-stare";
     try {
       const r = await api.get(`/tenants/${tenantId}/verifica-cui/${encodeURIComponent(cui)}`);
-      if (!(r && r.gasit)) { st.textContent = "CUI negăsit la ANAF."; return; }
+      if (!(r && r.gasit)) { st.textContent = "CUI negăsit la ANAF."; st.className = "em-cui-stare em-cui-rau"; return; }
       anafFr.pune([r.denumire], { suprascrie: true });
       st.innerHTML = `<span class="em-cui-info">La ANAF: „${esc(r.denumire)}” · ${r.platitor_tva ? "plătitor TVA" : "neplătitor TVA"}.</span>`;
-    } catch (e) { st.textContent = (e && e.mesaj) || "Verificarea nu s-a putut face — reîncearcă."; }
+    } catch (e) { st.textContent = (e && e.mesaj) || "Verificarea nu s-a putut face — reîncearcă."; st.className = "em-cui-stare em-cui-rau pe-randuri"; }
   });
 
   // plaseaza erorile field-keyed din 422 (backendul: erori_campuri [{camp: fr-l{i}-.., mesaj}]) LANGA campul lor

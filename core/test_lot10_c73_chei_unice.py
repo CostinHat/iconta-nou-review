@@ -597,12 +597,16 @@ def test_solduri_cont_dublat_in_randuri_trimise(firma):
                                     {"cont": "1012", "debit": 0, "credit": 150}], "2025-12-31")
     # refuzul numit al contului dublat, cu contul (constanta mesajului, nu o copie a textului)
     assert type(ex.value) is ValueError and str(ex.value) == solduri_api.MESAJ_CONT_DUBLAT % "5121", repr(ex.value)
+    dublati = [{"cont": "4111", "cui": "14399840", "denumire": "BETA", "debit": 10, "credit": 0},
+               {"cont": "4111", "cui": "14399840", "denumire": "BETA", "debit": 5, "credit": 0}]
     with pytest.raises(ValueError) as ex:
         with _db.get_conn(SCH) as c:
-            solduri_parteneri_api.importa(c, [{"cont": "4111", "cui": "14399840", "denumire": "BETA", "debit": 10, "credit": 0},
-                                              {"cont": "4111", "cui": "14399840", "denumire": "BETA", "debit": 5, "credit": 0}],
-                                          "2025-12-31")
-    assert str(ex.value) == solduri_parteneri_api.MESAJ_PARTENER_DUBLAT % "4111 / 14399840 (rândurile 2 și 3)", repr(ex.value)
+            solduri_parteneri_api.importa(c, dublati, "2025-12-31")
+    # [lotul 13, deficiența 582, comanda Costin 13.1, verbatim: „Verificarea dublurilor oprește tot înainte de celelalte verificări; restul
+    # greșelilor apar abia la reîncărcare.”] Perechea dublată se respinge acum pe rânduri, în `verifica_randuri`, cu celelalte verificări
+    # (regula `partener_dublat`, ambele rânduri numite); fără niciun rând bun, refuzul întreg le spune pe amândouă — tot refuz numit, nu 500
+    assert ([(e["rand"], e["regula"]) for e in solduri_parteneri_api.verifica_randuri(dublati)[0]] == [(2, "partener_dublat"), (3, "partener_dublat")]
+            and "rândul 3" in str(ex.value) and "rândul 2" in str(ex.value) and "4111" in str(ex.value)), repr(ex.value)
     assert _numar("solduri_initiale") == 0 and _numar("solduri_parteneri") == 0
 
 

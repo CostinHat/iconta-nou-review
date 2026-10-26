@@ -170,7 +170,11 @@ def test_jurnalul_si_coada_nu_pot_spune_lucruri_diferite(tx):
 
 
 def test_nota_nu_se_depune_iar_tiparele_declaratiilor_n_o_vad(tx):
-    """MUTAȚIE: filtrul `fel = 'declaratie'` scos din `tipare_api` -> motivul notei apare în tiparele declarațiilor -> pică."""
+    """Nota nu se depune; respingerea ei (a omului) intră în tipare.
+    [lotul 13, deficiența 574, comanda Costin 13.1, verbatim: „«Înlocuită de declarația generată din nou» (automat) e numărată ca respingere:
+    D300 67% umflat; notele respinse de om (ex. Asist Test azi) lipsesc.”] Până la lotul 13 testul cerea opusul (tiparele erau numai ale
+    declarațiilor, validare_note 06.10.2026); 574 le face tiparele RESPINGERILOR OMULUI, pe declarații ȘI pe note (`tipare_api`).
+    MUTAȚIE: `'nota'` scos din `d.fel IN ('declaratie', 'nota')` în `tipare_api.tipare` -> motivul notei lipsește -> pică."""
     from core import coada_api as c, tipare_api
     conn, cur, tid, cab, asist, valid = tx
     _ca(cur, asist)
@@ -178,7 +182,7 @@ def test_nota_nu_se_depune_iar_tiparele_declaratiilor_n_o_vad(tx):
     cid = c.pune_notele_in_coada(conn, cab, tid, asist)[0]["coada_id"]
     c.respinge(conn, cid, str(valid), "ZT-motiv-de-nota-unic", respins_de_id=valid, cabinet_id_apelant=cab)
     assert c.marcheaza_depusa(conn, cid, cabinet_id_apelant=cab)["cod"] == "STARE_GRESITA"
-    assert "ZT-motiv-de-nota-unic" not in [m["motiv"] for m in tipare_api.tipare(conn, cab)["motive"]]
+    assert "ZT-motiv-de-nota-unic" in [m["motiv"] for m in tipare_api.tipare(conn, cab)["motive"]]   # [574] respingerea omului, pe notă
 
 
 def test_validatorul_nu_pregateste_pentru_altcineva(tx):

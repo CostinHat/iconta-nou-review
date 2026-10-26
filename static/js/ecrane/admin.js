@@ -224,7 +224,7 @@ async function randeazaAdminAnunturi(corp, nav) {
     c.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
     let lst = [];
     try { lst = ((await api.get("/admin/anunturi")) || {}).trimiteri || []; } catch (e) {
-      c.innerHTML = `<p class="ecran-nota">${esc((e && e.mesaj) || "Lista anunțurilor nu se poate încărca.")}</p>`; return;
+      c.innerHTML = `<p class="ecran-nota pe-randuri">${esc((e && e.mesaj) || "Lista anunțurilor nu se poate încărca.")}</p>`; return;
     }
     if (!lst.length) { c.innerHTML = `<h2 class="pf-titlu">Anunțuri trimise</h2><div class="stare-goala">Niciun anunț trimis încă.</div>`; return; }
     c.innerHTML = `<h2 class="pf-titlu">Anunțuri trimise</h2>

@@ -108,8 +108,8 @@ def test_celelalte_texte_ai_afisate_ies_fara_marcaje(monkeypatch):
     se afișau la fel, brut. MUTAȚIE: `text_simplu` scos din `tipare_api` sau din `raportari_ai` -> pică."""
     from core import raportari_ai, tipare_api
     monkeypatch.setattr(ai_client, "disponibil", lambda: True)
-    monkeypatch.setattr(tipare_api, "tipare", lambda *a, **k: {"are_date": True, "motive": [{"motiv": "CIF invalid", "n": 3}],
-                                                                "tipuri": [], "firme": []})
+    monkeypatch.setattr(tipare_api, "tipare", lambda *a, **k: {"are_date": True, "motive": [{"motiv": "CIF invalid", "n": 5}],
+                                                                "tipuri": [], "firme": [], "respinse": 5})   # [lotul 13, 576] pragul analizei
     monkeypatch.setattr(ai_client, "genereaza_text", lambda *a, **k: "**Tipar:** D300 respinsă de 3 ori")
     assert tipare_api.analiza_ai(tipare_api.tipare(None, 1)) == {"disponibil": True, "analiza": "Tipar: D300 respinsă de 3 ori"}
     monkeypatch.setattr(ai_client, "genereaza_text",
