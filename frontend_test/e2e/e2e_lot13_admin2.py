@@ -67,9 +67,10 @@ def test_def_562_prezentarea_nu_se_deschide_singura_iar_asistentul_nu_vede_pasii
         pg.wait_for_timeout(800)
         t = pg.inner_text(".fereastra .ans-continut")
         e.captura("prezentarea")
-        assert pg.query_selector(".fereastra .ans-fir") is None, "asistentul primește firul de pași al administratorului"
-        for pas in ("Vector fiscal", "Solduri inițiale", "Migrare cabinet"):
-            assert pas not in t, (pas, t[:500])
+        assert pg.query_selector(".fereastra .ans-fir, .fereastra .ans-pas-titlu, #ans-alta-aplicatie") is None, \
+            "asistentul primește firul de pași al administratorului"
+        # pașii de preluare nu sunt la el (catalogul „Ce cuprinde aplicația” poate numi funcțiile — „Vector fiscal per firmă” —, nu pașii)
+        assert "Firul de intrare" not in t and "Vii din altă aplicație" not in t, t[:500]
         assert "Lucrezi pe firmele pe care ți le alocă administratorul cabinetului" in t, t[:300]
 
 
@@ -101,7 +102,7 @@ def test_def_563_cardul_si_de_validat_numara_aceleasi_note(patron, document_cu_d
     n_card = int(re.search(r"(\d+)\s+(?:de\s+)?not[ăe] de validat", card).group(1))
     pg.click("button.cab-card:has([data-cheie='validat'])")
     pg.wait_for_selector("#val-note-titlu", timeout=30000)
-    titlu = pg.inner_text("#val-note-titlu")
+    titlu = pg.text_content("#val-note-titlu")                    # textul, nu forma afișată (titlul e cu majuscule din CSS)
     patron.captura()
     n_fer = int(re.search(r"Note de validat \((\d+)\)", titlu).group(1))
     assert n_card == n_fer, (card, titlu)
@@ -335,8 +336,10 @@ def test_def_458_1_retragerea_proprie_regenerata_nu_e_eroare_a_echipei(patron, c
     pg.wait_for_timeout(1500)
     if pg.query_selector("#asi-vezi-erori"):
         pg.click("#asi-vezi-erori")
-        pg.wait_for_selector(".fereastra .val-card, .fereastra .asi-alerta-verde", timeout=20000)
-        t = pg.inner_text(".fereastra:last-of-type")
+        # fereastra „Erori — echipa” (lista Asistenți are și ea `.val-card`: se așteaptă textul ferestrei noi)
+        pg.wait_for_function("() => /Cine a produs respingeri|Nicio respingere/.test((document.querySelector('.fereastra-corp') || {}).innerText || '')",
+                             timeout=20000)
+        t = pg.inner_text(".fereastra-corp")
         patron.captura("erori_echipa")
         assert "Depășită, lipsește E2E574" not in t, t[:800]
         assert "Lipsește documentul justificativ E2E574" in t, t[:800]

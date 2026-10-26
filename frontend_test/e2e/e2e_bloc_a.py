@@ -390,7 +390,8 @@ def test_def_5_ghidul_e_pe_rol_iar_asistentul_fara_firme_primeste_mesaj(browser,
     patron.captura("admin")
     assert pasi_admin[0] == "Firme", pasi_admin
     assert not pasi_asist, pasi_asist                                         # [562] niciun pas de administrator la asistent
-    assert "Migrare cabinet" not in txt_asist and "Vector fiscal" not in txt_asist, txt_asist[:600]
+    # catalogul „Ce cuprinde aplicația” poate numi funcțiile („Vector fiscal per firmă”); firul de preluare (pașii) nu e la asistent
+    assert "Firul de intrare" not in txt_asist and "Vii din altă aplicație" not in txt_asist, txt_asist[:600]
     # [retestul Costin 09.10] „Ana vede în catalog funcții de administrator”: catalogul „Ce cuprinde aplicația” al asistentului nu
     # are funcțiile administratorului de cabinet, nici pe ale platformei; administratorul cabinetului le are pe ale lui
     ADMIN_CABINET = {"Chei API publice per cabinet", "Contabilii și asistenții cabinetului", "Exportul datelor cabinetului, din aplicație"}
