@@ -74,9 +74,12 @@ def pentru_cashflow(cur):
     # [deficiența 416] totalul de după stornări (`repo_facturi.SQL_STORNARI`); factura stornată integral nu mai intră
     # [lotul 12, 468, clasa „lei adunați cu euro”] totalul în LEI (`total_lei`): `cashflow.aloca_sold` îl împarte din soldul balanței (în
     # lei), iar o factură de 1.000 EUR intra ca 1.000 lei
+    # [lotul 13, 546] totalul DE PLATĂ (`facturi.SQL_TOTAL_DE_PLATA_LEI`): factura primită cu taxare inversă e datorată fără TVA-ul ei
+    from core import facturi as _fc
     st = SQL_STORNARI_LEI.format(s="", a="facturi")
-    cur.execute("SELECT directie, data_emitere, data_scadenta, COALESCE(total_lei, total) + " + st + " AS total "
-                "FROM facturi WHERE tip='factura' AND storno_din_id IS NULL AND COALESCE(total_lei, total) + " + st + " > %s",
+    tp = _fc.SQL_TOTAL_DE_PLATA_LEI.format(a="facturi")
+    cur.execute("SELECT directie, data_emitere, data_scadenta, " + tp + " + " + st + " AS total "
+                "FROM facturi WHERE tip='factura' AND storno_din_id IS NULL AND " + tp + " + " + st + " > %s",
                 (TOLERANTA_STORNATA,))
     return cur.fetchall()
 
@@ -101,6 +104,7 @@ def de_incasat(cur, directie, conditii="", parametri=()):
     from core import nomenclator_status_factura as _nsf
     st = SQL_STORNARI.format(s="", a="f")
     cur.execute("SELECT f.id, f.numar, f.serie, f.data_emitere, f.data_scadenta, f.total, f.tva, f.total_lei, f.tva_lei, f.curs_bnr, "
+                "       f.directie, COALESCE(f.taxare_inversa, false) AS taxare_inversa, "   # [lotul 13, 546] totalul de plată (taxarea inversă)
                 "       COALESCE(f.moneda, 'RON') AS moneda, f.tip, f.storno_din_id, f.platita_la, f.tert_nume, f.tert_cui, f.client_id, "
                 "       c.email, COALESCE(f.notificare_stop, false) AS notificare_stop, f.notificare_amanata_pana, "
                 "       " + st + " AS storno_valuta "
@@ -118,7 +122,9 @@ def de_incasat(cur, directie, conditii="", parametri=()):
         if not s or s["stare"] not in STARI_DE_INCASAT:
             continue
         total_lei, rest_lei = Decimal(s["total"]), Decimal(s["total"]) - Decimal(s["incasat"])
-        valuta = Decimal(str(f["total"] or 0)) + Decimal(str(f["storno_valuta"] or 0))
+        # [lotul 13, 546] în valută, tot totalul de plată: la factura primită cu taxare inversă, fără TVA-ul beneficiarului (CF art.331 alin.(3))
+        from core import facturi as _fc
+        valuta = _fc.total_de_plata(f, f["total"], f["tva"]) + Decimal(str(f["storno_valuta"] or 0))
         if s["stare"] == "neincasata" or total_lei <= 0:
             rest = valuta
         else:

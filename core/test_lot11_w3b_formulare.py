@@ -117,9 +117,11 @@ def test_b23_factura_recurenta_refuza_liniile_beneficiarul_si_ziua_deodata(conn)
     """Fără linii, fără beneficiar, ziua 40: trei erori, pe id-urile din ecran (`fr-zi`, nu `fr-zi_emitere`, care nu există).
     MUTAȚIE: `return` imediat după liniile lipsă -> pică."""
     from core import facturi_recurente
-    r = facturi_recurente.adauga(conn, _SCH, {"linii": [], "tert_nume": "", "zi_emitere": 40})
+    _em = {"scadenta_zile": 15, "data_inceput": "2026-01-01", "valabil_pana": "oprire", "mod_emitere": "automata", "trimite_spv": False}   # [lotul 13, 680] întrebările emiterii, date: testul e despre linii / beneficiar / zi
+    r = facturi_recurente.adauga(conn, _SCH, dict({"linii": [], "tert_nume": "", "zi_emitere": 40}, **_em))
     assert _campuri(r) == ["fr-linii", "fr-nume", "fr-zi"], r
-    r = facturi_recurente.adauga(conn, _SCH, {"linii": [{"descriere": "", "cantitate": 1, "pret_unitar": 10}], "zi_emitere": "prima"})
+    r = facturi_recurente.adauga(conn, _SCH, dict({"linii": [{"descriere": "", "cantitate": 1, "pret_unitar": 10}], "zi_emitere": "prima"},
+                                                  **_em))
     assert _campuri(r) == ["fr-nume", "fr-zi", "fr-l0-descriere"], r
     assert _randuri(r["eroare"]) == [
         'Șablonul nu s-a salvat:',

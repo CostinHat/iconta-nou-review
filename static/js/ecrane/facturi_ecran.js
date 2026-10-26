@@ -7,7 +7,7 @@ import { api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaset
 import { randeazaStareSpv } from "./spv_stare.js?v=a12ccba975";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, htmlCotaLinie, htmlCategorieLinie } from "./emitere_ecran.js?v=8d3aa3015f";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda } from "./emitere_ecran.js?v=8d3aa3015f";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
@@ -22,6 +22,43 @@ function butonInapoi(zona, nav) {
   b.textContent = "\u2190 Înapoi";
   b.addEventListener("click", () => nav.inapoi());
   zona.appendChild(b);
+}
+
+// [lotul 13, deficiența 543 — „La lipsa seriei de chitanțe, aplicația trimite în Date firmă, iar la factură seria se cere pe loc”] Refuzul
+// `SERIE_CHITANTA_LIPSA` (serverul: `uc_tenants.chitanta_serie_sau_refuz`) se rezolvă pe loc, ca seria facturii (`emitere_ecran.arataSerieLipsa`):
+// câmpul seriei sub butonul apăsat, salvat în Date firmă (`POST /firma-profil/date`, numai `serie_chitanta` — salvarea parțială, jurnalizată),
+// apoi aceeași acțiune se reia (`reia`). Folosit de chitanța din detaliul facturii și de Casă (chitanța fără factură, încasarea facturii).
+// Întoarce true dacă refuzul a fost al seriei (și l-a preluat), altfel false (apelantul îl arată ca de obicei).
+export function cereSeriaChitanteiPeLoc(zona, tenantId, e, reia) {
+  const det = e && e.detaliu;
+  if (!zona || !det || det.cod !== "SERIE_CHITANTA_LIPSA") return false;
+  zona.innerHTML = `
+    <div class="em-curs-box" id="ser-chit-box">
+      <span data-ecran-destinatie="date_firma" hidden></span>
+      <div class="em-curs-titlu">⚠ ${esc(e.mesaj || det.mesaj || "")}</div>
+      <label class="camp"><span class="camp-eticheta">Seria chitanțelor (ex: CH)<span class="oblig">*</span></span>
+        <input class="camp-input" id="ser-chit-serie" maxlength="10" autocomplete="off"></label>
+      <div class="em-curs-actiuni">
+        <button class="buton-primar" id="ser-chit-ok" data-actiune="POST /tenants/{tenant_id}/firma-profil/date">Stabilește seria și emite chitanța</button>
+      </div>
+    </div>`;
+  const inp = zona.querySelector("#ser-chit-serie");
+  focusFaraSalt(inp);
+  zona.querySelector("#ser-chit-ok").addEventListener("click", async () => {
+    curataEroriCamp(zona);
+    const serie = inp.value.trim().toUpperCase();
+    if (!serie) { eroareCamp(zona, "ser-chit-serie", "Completează seria chitanțelor (o stabilește firma: OMFP 2634/2015 anexa 1 pct.24)."); return; }
+    try {
+      await api.post(`/tenants/${tenantId}/firma-profil/date`, { serie_chitanta: serie });
+    } catch (er) {
+      const pe = ((er && er.erori_campuri) || []).find((x) => x.camp === "serie_chitanta");
+      eroareCamp(zona, "ser-chit-serie", (pe && pe.mesaj) || (er && er.mesaj) || "Seria nu s-a putut salva.");
+      return;
+    }
+    zona.innerHTML = "";
+    reia();
+  });
+  return true;
 }
 
 // [lotul 12, 468] moneda unei sume, scrisă: RON -> „lei”, altfel codul ei (EUR, USD…)
@@ -227,7 +264,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
     <div id="pr-zona" style="margin-top:10px"></div>
     <div id="pr-xml-zona" style="margin-top:10px"></div>`;
   const zona = corp.querySelector("#pr-zona");
-  arataCursulValidarii(corp.querySelector("#pr-valuta"), tenantId, p.moneda, p.data);   // [lotul 12, cursul vechi la validare (a)]
+  arataCursulValidarii(corp.querySelector("#pr-valuta"), tenantId, p.moneda, p.data, { tva: p.tva, total: p.total });   // [lotul 12, cursul vechi la validare (a)]; [lotul 13, 634 a] echivalentul în lei
   propuneNumeAnaf(corp.querySelector("#pr-zona"), p.fisa_vs_anaf, tenantId, { fel: "furnizori", pre: "pr" });   // [lotul 11, 444] numele ANAF vs fișa furnizorului
   corp.querySelector("#pr-valideaza").addEventListener("click", () => {
     curataEroriCamp(corp);
@@ -247,7 +284,24 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
             tert_tara: _tara,
             destinatii: _dest, conturi: Array.from(corp.querySelectorAll(".pr-cont-linie")).map((x) => x.value.trim()),   // [418b] contul liniei
             ...alegere }));
-        arataMesaj(zona, "Validată. Cheltuiala creată din factura " + (p.numar || "fără număr") + (p.data ? " din " + dataRo(p.data) : "") + ".", "ok");   // [258] factura cum o arată lista, nu id-ul ei
+        // [lotul 13, deficiența 634 (b) — „După validare: «Cheltuiala creată» deși contul e 371 (marfă), fără legătură spre notă”] mesajul
+        // spune ce s-a scris, pe contul ales (marfă / materiale / cheltuială), cu nota (conturile ei) și butonul spre ea în Registrul jurnal
+        const ct = (r && r.contare) || {};
+        const cont = corp.querySelector("#pr-cont").value.trim();
+        const fel = /^(371|30[1-3])/.test(cont) ? "marfa / materialele intră în stoc" : (/^2/.test(cont) ? "imobilizarea intră în evidență" : "cheltuiala intră în evidență");
+        const conturi = (ct.linii || []).map((l) => `${l.debit} = ${l.credit} ${bani(l.suma)}`).join("; ");
+        arataMesaj(zona, `Validată: factura ${p.numar || "fără număr"}${p.data ? " din " + dataRo(p.data) : ""} — ${fel} (contul ${cont || "sugerat"}).`
+          + (ct.inregistrare_id ? ` Nota ciornă, de validat: ${conturi}.` : (ct.stare === "refuzata" ? " Nota n-a putut fi scrisă automat: o scrii din Registrul jurnal." : "")), "ok");   // [258] factura cum o arată lista, nu id-ul ei
+        if (ct.inregistrare_id) {
+          const bn = document.createElement("button");
+          bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
+          bn.addEventListener("click", async () => {
+            const { ecranJurnal } = await import("./firme.js?v=2b27eebcaf");   // dinamic, ca „nota …” din detaliul facturii
+            const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
+            nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
+          });
+          zona.appendChild(bn);
+        }
         anuntaCursulValidat(zona, r);   // [lotul 12, cursul vechi la validare (a)]
         butonInapoi(zona, nav);   // [418c / 410, DS cap.27] confirmarea rămâne; înapoi la cererea omului
       } catch (e) { arataRefuzul(corp, e, zona); }   // [lotul 11, 440] câmpurile refuzului lângă ele, restul în zonă
@@ -287,7 +341,25 @@ function sumaCuMoneda(x, moneda) {
 // [lotul 12, decizia Costin „cursul vechi la validare (a)”: „anunțul la validare, ca la emitere”] cursul cu care se va valida factura primită
 // în valută — ACEEAȘI rută ca formularul de emitere (`POST /tenants/{tenant_id}/facturi/previzualizare-lei`, `facturi_api.curs_automat`), iar când cursul zilei
 // lipsește și se folosește unul mai vechi, ACELAȘI anunț (`curs_bnr.cursul_zilei_lipsa`, act „validare”; DS cap.6: avert)
-async function arataCursulValidarii(zona, tenantId, moneda, data) {
+// [lotul 13, deficiența 634 (a) — „Detaliul facturii în valută arată TVA și total fără monedă, cu punct, fără cursul BNR și echivalentul în
+// lei înainte de validare”] suma × cursul, la ban, rotunjită aritmetic (ca `facturi_api.sume_lei`: ROUND_HALF_UP), în numere întregi (bani ×
+// zecimi de miime ale cursului) — fără virgulă mobilă
+function leiLaCurs(suma, curs) {
+  const N = (x) => BigInt(x);   // BigInt prin apel (fără literali „…n”: parserul gărzilor îi serializează în JSON)
+  const intreg = (x, zec) => {
+    const t = String(x).trim(), semn = t.startsWith("-") ? N(-1) : N(1);
+    const [a, b = ""] = t.replace(/^[-+]/, "").split(".");
+    return semn * N((a || "0") + (b + "0".repeat(zec)).slice(0, zec));
+  };
+  const bani = intreg(suma, 2), c = intreg(curs, 6);
+  const prod = bani * c;                                   // bani × curs × 10^6
+  const neg = prod < N(0), abs = neg ? -prod : prod;
+  const rez = (abs + N(500000)) / N(1000000);              // ROUND_HALF_UP la ban
+  const v = (neg ? -rez : rez).toString().padStart(3, "0");
+  return v.slice(0, -2) + "." + v.slice(-2);
+}
+
+async function arataCursulValidarii(zona, tenantId, moneda, data, sume = null) {
   if (!zona) return;
   const actuala = ultimaCerere(zona)();   // [C103] moneda / data schimbate în șir: numai ultimul curs cerut ajunge pe ecran
   const m = String(moneda || "RON").toUpperCase();
@@ -302,8 +374,11 @@ async function arataCursulValidarii(zona, tenantId, moneda, data) {
   catch (e) { if (!actuala()) return; zona.innerHTML = `${titlu}<div class="pr-curs-mesaj"></div>`; arataMesaj(zona.querySelector(".pr-curs-mesaj"), (e && e.mesaj) || "Cursul BNR nu s-a putut citi acum.", "eroare"); return; }
   if (!actuala() || !zona.isConnected) return;
   if (!r || !r.ok) { zona.innerHTML = `${titlu}<div class="pr-curs-mesaj"></div>`; arataMesaj(zona.querySelector(".pr-curs-mesaj"), (r && r.mesaj) || "Cursul BNR nu e disponibil acum.", "eroare"); return; }
+  const lei = (x) => (x == null || x === "") ? "" : bani(leiLaCurs(x, r.curs)) + " lei";
   zona.innerHTML = `${titlu}
     <div class="fd-tot-rand"><span>Curs BNR ${esc(m)}</span><span class="pr-curs"><b>${cursValutar(r.curs)}</b> din ${esc(dataRo(r.data_curs))}</span></div>
+    ${sume ? `<div class="fd-tot-rand" id="pr-tva-lei"><span>TVA în lei</span><span><b>${lei(sume.tva)}</b></span></div>
+    <div class="fd-tot-rand" id="pr-total-lei"><span>Total în lei</span><span>${lei(sume.total)}</span></div>` : ""}
     ${r.curs_zilei_lipsa ? `<div class="pr-curs-lipsa"></div>`
       : `<div class="fd-valuta-sub">Ultimul curs comunicat de BNR înaintea datei facturii (${esc(dataRo(String(data).slice(0, 10)))}); se fixează la validare.</div>`}`;
   if (r.curs_zilei_lipsa) arataMesaj(zona.querySelector(".pr-curs-lipsa"), r.curs_zilei_lipsa.mesaj, "avert");
@@ -540,7 +615,8 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     let corpuri = !lista.length
       ? `<div class="stare-goala">Nicio factur\u0103 \u00een luna aceasta.</div>`
       : lista.map((f) => {
-          const suma = f.total != null ? bani(f.total) + " " + (f.moneda || "lei") : "";
+          // [lotul 13, 546] totalul de plată (factura primită cu taxare inversă: fără TVA-ul determinat de firmă — CF art.331 alin.(3))
+          const suma = f.total != null ? bani(f.total_de_plata != null ? f.total_de_plata : f.total) + " " + (f.moneda || "lei") : "";
           const dir = dirEticheta(f.directie);
           const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
           const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
@@ -847,6 +923,23 @@ function aseazaAntetul(corp) {
   antet.classList.toggle("rezumat-fix", !scund);
 }
 
+// [lotul 13, deficiența 546] factura primită cu taxare inversă: furnizorul nu înscrie TVA-ul (CF art.331 alin.(3)), deci totalul de plată e
+// baza; TVA-ul determinat de firmă (4426 = 4427, în decont colectat și deductibil) se arată separat, ca taxare inversă, nu în total
+function randuriTaxareInversa(f, peCota, mon) {
+  const cote = Object.keys(peCota).map(Number).sort((a, b) => b - a);
+  return cote.map((c) => `<div class="fd-tot-rand"><span>Bază ${c}%</span><span>${_bani(peCota[c].baza, mon)}</span></div>`).join("") + `
+      <div class="fd-tot-rand" id="fd-tva-ti"><span>TVA taxare inversă (art. 331): o determini tu, 4426 = 4427 — nu se plătește furnizorului</span><span>${_bani(f.tva_taxare_inversa, mon)}</span></div>
+      <div class="fd-tot-rand fd-tot-final" id="fd-total-de-plata"><span>Total de plată</span><span>${_bani(f.total_de_plata, mon)}</span></div>`;
+}
+
+// [lotul 13, deficiența 547] factura primită se șterge cât nota ei e ciornă (serverul: `facturi_api._sterge_primita_cu_notele_ciorna`);
+// altfel butonul stă inactiv, cu motivul (DS: comenzile se văd mereu, cele care nu se aplică inactive cu motiv — 675)
+function motivStergerePrimita(f) {
+  if (f.contabilizata) return "Nota facturii e validată: factura e în evidență și nu se mai șterge. Se corectează prin stornare.";
+  if (f.stare_incasare && f.stare_incasare.stare !== "neincasata") return "Factura are plăți legate: dezleagă întâi plata (Bancă / Casă).";
+  return "";
+}
+
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
 
@@ -937,7 +1030,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   corp.innerHTML = `
     <div class="fd-antet-scurt" id="fd-antet-scurt" hidden>
       <span class="fd-scurt-client" title="${esc(f.tert_nume || "")}">${esc(f.tert_nume || "")}</span>
-      <span class="fd-scurt-total">${_bani(f.total, mon)}</span>
+      <span class="fd-scurt-total">${_bani(f.total_de_plata != null ? f.total_de_plata : f.total, mon)}</span>
     </div>
     <div class="fd-antet rezumat-fix">
       <div class="fd-antet-sus">
@@ -945,7 +1038,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
         ${(!opt.client && nc) ? `<button class="btn-link" id="fd-vezi-nota">nota ${esc(nc.eticheta || "")}</button>` : ""}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
-        <button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email" class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
+        ${f.directie === "emisa" ? '<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email" class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>' : ""}
+        ${(!opt.client && f.directie === "primita" && f.tip === "factura") ? `<button data-actiune="DELETE /tenants/{tenant_id}/facturi/{factura_id}" class="buton-secundar em-buton-sec" id="fd-sterge"${motivStergerePrimita(f) ? ` disabled title="${esc(motivStergerePrimita(f))}"` : ""}>Șterge factura</button>` : ""}
         ${(!opt.client && f.directie === "emisa" && !f.storno_din_id && !stornata) ? '<button data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/storno" class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.stare_incasare ? `<span class="fd-stare${f.stare_incasare.stare === "incasata" ? " fd-stare-verde" : ""}">${esc(etichetaIncasare(f))}</span>` : ""}
@@ -989,8 +1083,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
     ${blocValuta}
     <div class="bara-fixa"><div class="fd-bara-actiuni" id="fd-bara-actiuni"></div><div class="fd-totaluri">   <!-- [lotul 11, decizia Costin 10.3: „Totalurile … fix”] totalurile facturii rămân jos, în vedere (DS cap.9 v2.100) -->
-      ${randuriTot}
-      <div class="fd-tot-rand fd-tot-final"><span>Total</span><span>${_bani(f.total, mon)}</span></div>
+      ${f.tva_taxare_inversa != null ? randuriTaxareInversa(f, peCota, mon) : `${randuriTot}
+      <div class="fd-tot-rand fd-tot-final"><span>Total</span><span>${_bani(f.total, mon)}</span></div>`}
     </div></div>`;
 
 
@@ -1127,6 +1221,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
           av.length ? "avert" : "ok");
       } catch (e) {
         b.disabled = false; b.textContent = "Emite";
+        if (cereSeriaChitanteiPeLoc(msg, tenantId, e, () => b.click())) return;   // [lotul 13, 543] seria se cere pe loc
         arataRefuzul(form, e, msg, { campuri: { suma: "fd-chit-suma", data: "fd-chit-data" } });   // [lotul 11, 440] câmpurile serverului lângă ele
       }
     });
@@ -1148,6 +1243,21 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         btnPdf.disabled = false;
         if (btnPdf.textContent === "Se genereaz\u0103\u2026") btnPdf.textContent = txtVechi;
       }
+    });
+  }
+
+  const btnSterge = corp.querySelector("#fd-sterge");
+  if (btnSterge && !btnSterge.disabled) {
+    btnSterge.addEventListener("click", () => {
+      const zr = corp.querySelector("#fd-act-rez");
+      confirmaCaseta(zr, `Ștergi factura ${esc(numarCuSerie(f.serie, f.numar))} de la ${esc(f.tert_nume || "furnizor")}? Se șterg și notele ei, care sunt încă ciornă (nimic din ea n-a intrat în evidență).`, async () => {
+        try {
+          await api.del(`/tenants/${tenantId}/facturi/${facturaId}`);
+          corp.innerHTML = `<h2 class="pf-titlu">Factură ștearsă</h2><div id="fd-sters-rez"></div>`;
+          arataMesaj(corp.querySelector("#fd-sters-rez"), `Factura ${esc(numarCuSerie(f.serie, f.numar))} de la ${esc(f.tert_nume || "furnizor")} și notele ei ciornă au fost șterse.`, "ok");
+          butonInapoi(corp.querySelector("#fd-sters-rez"), nav);
+        } catch (e) { arataRefuzul(corp, e, zr); }
+      }, { textOk: "Șterge factura" });
     });
   }
 
@@ -1521,27 +1631,44 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
         const refuz = s.ultimul_refuz
           ? `<div class="pf-frand-sub fr-refuz" id="fr-refuz-${s.id}"><span style="color:var(--rosu)">Emiterea automat\u0103 refuzat\u0103 la ${dataRo(s.ultimul_refuz_la)}:</span> ${esc(s.ultimul_refuz)}</div>`
           : "";
+        // [lotul 13, 680] cum se emite (singură / ciornă), SPV-ul, scadența și perioada, scrise pe rând; ciorna lunii, cu „Emite factura lunii”
+        const mod = s.mod_emitere === "ciorna" ? "ciornă pregătită — o emiți tu" : "se emite singură" + (s.trimite_spv ? " și pleacă în SPV" : "");
+        const scad = s.scadenta_zile != null ? ` \u00b7 scadența la ${cate(s.scadenta_zile, "zi", "zile")}` : "";
+        const perioada = s.data_inceput ? ` \u00b7 valabil ${dataRo(s.data_inceput)} – ${s.data_sfarsit ? dataRo(s.data_sfarsit) : "până la oprire"}` : "";
         return `
       <div class="pf-frand" data-id="${s.id}">
         <div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(s.tert_nume) || "\u2014"}</div>
           <div class="pf-frand-sub">ziua ${s.zi_emitere} \u00b7 ${emisa} \u00b7 ${stare}${s.tert_tara && s.tert_tara !== "RO" ? ` \u00b7 client din ${esc(s.tert_tara)}` : ""}</div>
+          <div class="pf-frand-sub fr-mod-rand">${esc(mod)}${scad}${perioada}</div>
           ${refuz}
+          <div class="fr-rez" id="fr-rez-${s.id}"></div>
         </div>
         <span class="pf-frand-suma">${sumaTxt}</span>
-        <span class="btn-link fr-toggle" data-actiune="PUT /tenants/{tenant_id}/facturi-recurente/{sid}" data-id="${s.id}" data-activ="${s.activ}" style="margin-left:8px">${s.activ ? "Dezactiveaz\u0103" : "Activeaz\u0103"}</span>
-        <span class="btn-link fr-sterge" data-actiune="DELETE /tenants/{tenant_id}/facturi-recurente/{sid}" data-id="${s.id}" style="margin-left:8px;color:var(--rosu)">\u0218terge</span>
+        ${s.de_emis_acum ? `<button type="button" class="buton-primar fr-emite" data-actiune="POST /tenants/{tenant_id}/facturi-recurente/{sid}/emite" data-id="${s.id}" style="margin-left:8px">Emite factura lunii</button>` : ""}
+        <button type="button" class="buton-secundar fr-toggle" data-actiune="PUT /tenants/{tenant_id}/facturi-recurente/{sid}" data-id="${s.id}" data-activ="${s.activ}" style="margin-left:8px">${s.activ ? "Dezactiveaz\u0103" : "Activeaz\u0103"}</button>
+        <button type="button" class="buton-secundar fr-sterge" data-actiune="DELETE /tenants/{tenant_id}/facturi-recurente/{sid}" data-id="${s.id}" style="margin-left:8px">\u0218terge</button>
       </div>`;
       }).join("");
 
   corp.innerHTML = `
     <h2 class="pf-titlu">Facturi recurente ${semnAjutor("F047")}</h2>
-    <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
+    <p class="pf-intro">\u0218abloanele facturilor lunare: fiecare se emite singur în ziua lui sau se pregătește ca ciornă, pe care o emiți tu (verificare zilnic\u0103 la 07:00).</p>
     <div class="pf-lista zebra-lista">${corpuri}</div>
     <button class="buton-primar" id="fr-add" data-actiune="POST /tenants/{tenant_id}/facturi-recurente" style="margin-top:12px">+ \u0218ablon nou</button>
     <div id="fr-msg" role="alert"></div>`;
   corp.querySelector("#fr-add").addEventListener("click", () => nav.mergi("\u0218ablon nou", (c) => formSablon(c, nav, tenantId, opt)));  // faza_b_traseu_v1
 
+  corp.querySelectorAll(".fr-emite").forEach((b) => b.addEventListener("click", async () => {
+    const z = corp.querySelector(`#fr-rez-${b.dataset.id}`);
+    b.disabled = true;
+    try {
+      const r = await api.post(`/tenants/${tenantId}/facturi-recurente/${b.dataset.id}/emite`, {});
+      b.remove();
+      arataMesaj(z, `Factura ${esc(r.factura || "")} a fost emisă din șablon.` + ((r.avertismente || []).length ? " " + r.avertismente.join(" ") : ""),
+        (r.avertismente || []).length ? "avert" : "ok");
+    } catch (e) { b.disabled = false; arataMesaj(z, (e && e.mesaj) || "Factura nu s-a emis.", "eroare"); }
+  }));
   corp.querySelectorAll(".fr-toggle").forEach((b) => b.addEventListener("click", async () => {
     const activNou = !(b.dataset.activ === "true");
     try {
@@ -1586,6 +1713,9 @@ export async function formSablon(corp, nav, tenantId, opt) {
     return;
   }
   const platitor = tvaProfil !== false;   // profilul fără statut: ca la emitere, plătitor (lista cotelor), nu cota 0 presupusă
+  // [lotul 13, 680] clienții firmei (fișele și partenerii facturilor emise), pentru alegerea beneficiarului ca la „Emite factură” —
+  // citiți după desenarea formularului (`incarcaClientii`); o citire eșuată se spune sub CUI
+  let clienti = [];
   const COTE = (num.cote_permise && num.cote_permise.length) ? num.cote_permise : [];
   const CATEG = platitor ? (num.categorii_tva || []) : [];
   const C331 = num.categorii_331 || [];
@@ -1594,8 +1724,15 @@ export async function formSablon(corp, nav, tenantId, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Beneficiar</div>
+      <label class="camp-eticheta" for="fr-client-cauta">Alege din clienți (fișele și clienții facturilor)</label>
+      <input class="camp-input" id="fr-client-cauta" placeholder="Caută după nume sau cod fiscal…" autocomplete="off">
+      <select class="camp-input" id="fr-client" aria-label="Clientul din listă">
+        <option value="">— alege clientul —</option>
+      </select>
       <label class="camp-eticheta" for="fr-cui">CUI beneficiar</label>
-      <input class="camp-input" id="fr-cui" placeholder="ex: RO12345678" autocomplete="off">
+      <div class="em-cui-rand"><input class="camp-input" id="fr-cui" placeholder="ex: RO12345678" autocomplete="off">
+        <button type="button" class="buton-secundar" id="fr-anaf" data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}">Verifică la ANAF</button></div>
+      <div id="fr-anaf-stare"></div>
       <label class="camp-eticheta" for="fr-tara">Țara beneficiarului</label>
       <select class="camp-input" id="fr-tara">${optiuniTara()}</select>
       <label class="camp-eticheta" for="fr-nume">Denumire beneficiar</label>
@@ -1613,12 +1750,33 @@ export async function formSablon(corp, nav, tenantId, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Emitere</div>
-      <input class="camp-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" aria-label="Ziua din lună la care se emite" title="Ziua din lună la care se emite">
-      <select class="camp-input" id="fr-moneda" aria-label="Moneda">
-        <option value="RON" selected>RON</option>
-        <option value="EUR">EUR</option>
-        <option value="USD">USD</option>
-      </select>
+      <p class="pf-intro" id="fr-serie">Seria facturilor: <b>${esc(num.serie || "nestabilită încă (se cere la prima emitere)")}</b> — numerotarea firmei, aceeași ca la „Emite factură”.</p>
+      <div class="grila-doc" style="grid-template-columns:1fr 1fr 1fr">
+        <label class="camp"><span class="camp-eticheta">Ziua din lună la care se emite (1–28)<span class="oblig">*</span></span>
+          <input class="camp-input" id="fr-zi" type="number" min="1" max="28"></label>
+        <label class="camp"><span class="camp-eticheta">Moneda</span><select class="camp-input" id="fr-moneda">${optiuniMoneda("RON")}</select></label>
+        <label class="camp"><span class="camp-eticheta">Termen de plată (zile de la emitere)<span class="oblig">*</span></span>
+          <input class="camp-input" id="fr-scadenta" type="number" min="0" max="365"></label>
+      </div>
+      <div class="grila-doc" style="grid-template-columns:1fr 2fr">
+        <label class="camp"><span class="camp-eticheta">Valabil de la<span class="oblig">*</span></span><input class="camp-input" id="fr-inceput" type="date"></label>
+        <div class="camp"><span class="camp-eticheta">Până când<span class="oblig">*</span></span>
+          <div class="em-optiuni" id="fr-pana" role="group" aria-label="Până când e valabil șablonul">
+            <button type="button" class="buton-secundar" data-val="data">Până la o dată</button>
+            <button type="button" class="buton-secundar" data-val="oprire">Până îl opresc</button>
+          </div>
+          <input class="camp-input" id="fr-sfarsit" type="date" hidden aria-label="Valabil până la"></div>
+      </div>
+      <div class="camp"><span class="camp-eticheta">Cum se emite factura lunii<span class="oblig">*</span></span>
+        <div class="em-optiuni" id="fr-mod" role="group" aria-label="Cum se emite factura lunii">
+          <button type="button" class="buton-secundar" data-val="automata">Se emite singură, în ziua ei</button>
+          <button type="button" class="buton-secundar" data-val="ciorna">Ciornă pregătită — o emit eu</button>
+        </div></div>
+      <div class="camp" id="fr-spv-camp" hidden><span class="camp-eticheta">După emitere, în SPV (RO e-Factura)<span class="oblig">*</span></span>
+        <div class="em-optiuni" id="fr-spv" role="group" aria-label="Trimiterea în SPV">
+          <button type="button" class="buton-secundar" data-val="true">Pleacă singură în SPV</button>
+          <button type="button" class="buton-secundar" data-val="false">O trimit eu din Istoric facturi</button>
+        </div></div>
     </div>
 
     <div class="em-actiuni">
@@ -1630,7 +1788,8 @@ export async function formSablon(corp, nav, tenantId, opt) {
   const linii = [];
   const _val = (x) => (x === "" || x == null) ? "" : esc(String(x));
   // [comanda Costin 06.10.2026 pct.1b, clasa] rândul nou NU poartă un preț (era 0): „un preț pe care nu l-a ales nimeni nu se propune”
-  const linieNoua = () => ({ descriere: "", cantitate: 1, pret_unitar: "", cota_tva: null, cota_propusa: null, categorie_tva: null });
+  // [lotul 13, 680] la neplătitor cota e 0 prin lege (CF art.310 alin.(10) lit.b) și se arată de la început („0%”, nu „—”)
+  const linieNoua = () => ({ descriere: "", cantitate: 1, pret_unitar: "", cota_tva: platitor ? null : 0, cota_propusa: null, categorie_tva: null });
 
   // randeaza O linie DIN MODEL, id-uri pozitionale fr-l{i}-* (cap.24: id derivat din pozitie, ca backendul sa
   // lege eroarea de camp). Buton de stergere pe fiecare rand (cap.24 regula 3).
@@ -1737,6 +1896,44 @@ export async function formSablon(corp, nav, tenantId, opt) {
   linii.push(linieNoua());  // prima linie
   deseneazaLinii();
 
+  // [lotul 13, 680] alegerile cu butoane alăturate (DS 676: listele scurte nu sunt liste derulante): nimic ales din oficiu
+  const alegeri = {};
+  const legaAlegere = (id, laSchimbare) => corp.querySelectorAll(`#${id} button`).forEach((b) => b.addEventListener("click", () => {
+    corp.querySelectorAll(`#${id} button`).forEach((x) => x.classList.toggle("buton-activ", x === b));
+    alegeri[id] = b.dataset.val;
+    if (laSchimbare) laSchimbare(b.dataset.val);
+  }));
+  legaAlegere("fr-pana", (v) => { corp.querySelector("#fr-sfarsit").hidden = v !== "data"; });
+  legaAlegere("fr-mod", (v) => { corp.querySelector("#fr-spv-camp").hidden = v !== "automata"; });
+  legaAlegere("fr-spv");
+  // beneficiarul ales din clienți (căutare deasupra listei, ca articolul pe linia facturii) sau verificat la ANAF (ca la „Emite factură”)
+  const selCl = corp.querySelector("#fr-client"), cautaCl = corp.querySelector("#fr-client-cauta");
+  cautaCl.addEventListener("input", () => {
+    const q = cautaCl.value.trim().toLowerCase();
+    [...selCl.options].forEach((o) => { if (o.value) o.hidden = !!q && !o.dataset.cauta.includes(q); });
+  });
+  const anafFr = legaDateAnaf(corp.querySelector("#fr-cui"), [corp.querySelector("#fr-nume")], corp.querySelector("#fr-anaf-stare"));
+  let clientId = null;
+  selCl.addEventListener("change", () => {
+    const c = clienti[Number(selCl.value)];
+    clientId = c && c.id ? c.id : null;
+    if (!c) return;
+    corp.querySelector("#fr-cui").value = c.cui || "";
+    corp.querySelector("#fr-nume").value = c.nume || "";
+    const t = taraDinCui(c.cui || ""); if (t) corp.querySelector("#fr-tara").value = t;
+  });
+  corp.querySelector("#fr-anaf").addEventListener("click", async () => {
+    const cui = corp.querySelector("#fr-cui").value.trim(), st = corp.querySelector("#fr-anaf-stare");
+    curataEroriCamp(corp);
+    if (!cui) { eroareCamp(corp, "fr-cui", "Scrie codul fiscal ca să-l verifici la ANAF."); return; }
+    try {
+      const r = await api.get(`/tenants/${tenantId}/verifica-cui/${encodeURIComponent(cui)}`);
+      if (!(r && r.gasit)) { st.textContent = "CUI negăsit la ANAF."; return; }
+      anafFr.pune([r.denumire], { suprascrie: true });
+      st.innerHTML = `<span class="em-cui-info">La ANAF: „${esc(r.denumire)}” · ${r.platitor_tva ? "plătitor TVA" : "neplătitor TVA"}.</span>`;
+    } catch (e) { st.textContent = (e && e.mesaj) || "Verificarea nu s-a putut face — reîncearcă."; }
+  });
+
   // plaseaza erorile field-keyed din 422 (backendul: erori_campuri [{camp: fr-l{i}-.., mesaj}]) LANGA campul lor
   // (cap.6 mecanism A). Cele fara #camp in DOM -> zona generica (fallback B).
   corp.querySelector("#fr-salveaza").addEventListener("click", async () => {
@@ -1748,8 +1945,16 @@ export async function formSablon(corp, nav, tenantId, opt) {
       tert_cui: corp.querySelector("#fr-cui").value.trim() || null,
       tert_nume: corp.querySelector("#fr-nume").value.trim(),
       tert_tara: corp.querySelector("#fr-tara").value,   // [C160] țara clientului, până la emitere
-      zi_emitere: Number(corp.querySelector("#fr-zi").value) || 1,
+      client_id: clientId,   // [lotul 13, 680] clientul ales din listă (fișa lui)
+      zi_emitere: corp.querySelector("#fr-zi").value === "" ? null : Number(corp.querySelector("#fr-zi").value),
       moneda: corp.querySelector("#fr-moneda").value,
+      // [lotul 13, 680] întrebările emiterii, fiecare aleasă de om (serverul refuză lipsa, lângă câmp)
+      scadenta_zile: corp.querySelector("#fr-scadenta").value === "" ? null : Number(corp.querySelector("#fr-scadenta").value),
+      data_inceput: corp.querySelector("#fr-inceput").value || null,
+      valabil_pana: alegeri["fr-pana"] || null,
+      data_sfarsit: alegeri["fr-pana"] === "data" ? (corp.querySelector("#fr-sfarsit").value || null) : null,
+      mod_emitere: alegeri["fr-mod"] || null,
+      trimite_spv: alegeri["fr-spv"] === "true" ? true : (alegeri["fr-spv"] === "false" ? false : null),
       linii: linii.map((l) => ({ descriere: l.descriere, cantitate: l.cantitate,
         pret_unitar: (l.pret_unitar === "" || l.pret_unitar == null) ? null : l.pret_unitar, cota_tva: l.cota_tva,   // [pct.1b] gol = lipsă, refuzat lângă câmp
         ...(l.cota_tva === 0 && l.categorie_tva ? { categorie_tva: l.categorie_tva } : {}) })),   // [12.3 pct.9] categoria liniei cu 0%, ca la emitere (lipsa ei = linia fără categorie)
@@ -1766,6 +1971,16 @@ export async function formSablon(corp, nav, tenantId, opt) {
       arataRefuzul(corp, e, _z);
     }
   });
+  // [lotul 13, 680] lista clienților, după ce toate butoanele sunt legate (un clic dat cât se citește lista nu se pierde)
+  try {
+    const rc = await api.get(`/tenants/${tenantId}/clienti`);
+    clienti = [...((rc && rc.clienti) || []), ...((rc && rc.parteneri_fara_fisa) || [])].filter((x) => x.nume || x.cui);
+    selCl.insertAdjacentHTML("beforeend", clienti.map((c, i) => `<option value="${i}" data-cauta="${esc(String((c.nume || "") + " " + (c.cui || "")).toLowerCase())}">${esc(c.nume || "")}${c.cui ? " · " + esc(c.cui) : ""}</option>`).join(""));
+    if (!clienti.length) { selCl.disabled = cautaCl.disabled = true; selCl.title = cautaCl.title = "Niciun client încă: scrie codul fiscal și verifică-l la ANAF."; }
+  } catch (e) {
+    selCl.disabled = cautaCl.disabled = true;
+    arataMesaj(corp.querySelector("#fr-anaf-stare"), `Lista clienților nu s-a putut citi (${(e && e.mesaj) || "eroare"}): scrie codul fiscal și verifică-l la ANAF.`, "avert");
+  }
 }
 
 // chitante_fe_v1

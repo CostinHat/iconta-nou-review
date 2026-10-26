@@ -10,6 +10,10 @@ căror intrare în stoc (`miscari_stoc.factura_id`) e pe un articol cu altă uni
 și încă pe implicitul „buc” primește unitatea articolului. E o CITIRE a documentului: cantitatea, prețul, nota, fișa articolului și
 declarațiile nu se ating (cantitatea din fișă e deja în unitatea articolului). O linie cu altă unitate decât „buc” (pusă de om) nu se
 rescrie. Idempotentă.
+[lotul 13, C171] și liniile BORDEROURILOR DE STORNARE: stornarea copiază linia borderoului cu prefixul „STORNO: ” și cu UM-ul ei
+(`uc_tenants.borderou_storneaza`), deci stornarea unui borderou de dinainte de reparație păstra „buc” („STORNO: grau” în „buc”), iar
+potrivirea pe denumire n-o găsea. Intrarea stornată din stoc poartă borderoul de stornare (`miscari_stoc.factura_id` = stornarea), cu același
+articol: linia „STORNO: <articol>” pe „buc” primește unitatea articolului, ca linia borderoului stornat.
 Rulare: `python -m core.migrari_registru ruleaza [--productie] core/migrare_um_borderou.py`.
 """
 from core import db
@@ -25,7 +29,7 @@ def aplica(conn, schema):
         cur.execute('UPDATE "%s".factura_linii l SET um = a.um FROM "%s".facturi f, "%s".miscari_stoc m, "%s".articole a '
                     "WHERE f.id = l.factura_id AND f.tip = 'borderou' AND m.factura_id = f.id AND a.id = m.articol_id "
                     "AND COALESCE(btrim(a.um), '') NOT IN ('', %%s) AND COALESCE(l.um, %%s) = %%s "
-                    "AND lower(btrim(l.descriere)) = lower(btrim(a.denumire)) RETURNING f.numar"
+                    "AND lower(btrim(l.descriere)) IN (lower(btrim(a.denumire)), lower('STORNO: ' || btrim(a.denumire))) RETURNING f.numar"
                     % (schema, schema, schema, schema), (IMPLICIT, IMPLICIT, IMPLICIT))
         numere = sorted({r[0] for r in cur.fetchall()})
     return {"linii": len(numere), "borderouri": numere}

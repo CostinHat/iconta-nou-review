@@ -61,6 +61,12 @@ def _sablon(patron, f, cui, nume, denumire, cota, categorie=None, tara=None):
     pg.fill("#fr-l0-pret_unitar", "500")
     pg.dispatch_event("#fr-l0-pret_unitar", "input")
     pg.fill("#fr-zi", "5")
+    # [lotul 13, 680] întrebările emiterii de pe șablon, alese explicit (scadența, perioada, modul, SPV)
+    pg.fill("#fr-scadenta", "15")
+    pg.fill("#fr-inceput", "2026-01-01")
+    pg.click("#fr-pana button[data-val='oprire']")
+    pg.click("#fr-mod button[data-val='automata']")
+    pg.click("#fr-spv button[data-val='false']")
     patron.captura("sablon")
     pg.click("#fr-salveaza")
     pg.wait_for_selector("#fr-add", timeout=30000)               # salvat: înapoi la lista șabloanelor

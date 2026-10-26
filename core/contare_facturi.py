@@ -836,9 +836,9 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
             % _et.lista(cur, schema, [n["id"] for n in candidate]),
             detalii={"note": [n["id"] for n in candidate]})
 
+    # [lotul 13, deficiența 634 (c) — „Titlul notei include «altă livrare decât NIR-urile nelegate (confirmat)»”] titlul notei e al
+    # documentului („Contare factura …”), nu al unei alegeri de pe ecran: confirmarea „altă livrare” rămâne în răspuns (`alta_livrare`)
     descriere = _descriere(f, data_nota, motiv_data)
-    if alta_livrare:   # confirmarea omului rămâne lângă notă: factura nu e a niciunuia din NIR-urile nelegate
-        descriere = (descriere + _nl.MENTIUNE_ALTA_LIVRARE)[:200]
     cur.execute("INSERT INTO %sinregistrari (data, factura_id, descriere, sursa, status) "
                 "VALUES (%%s,%%s,%%s,'facturi','ciorna') RETURNING id" % _p(schema),
                 (data_nota, factura_id, descriere))

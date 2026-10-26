@@ -89,6 +89,8 @@ def mediu(monkeypatch):
             cur.execute(_tp.parametrizeaza_template(io.open(os.path.join(RAD, "tenant_template.sql"), encoding="utf-8").read(), SCH))
             from core import migrare_sablon_recurent_stare as m
             m.aplica(c, SCH)
+            from core import migrare_sablon_recurent_emitere as m2   # [lotul 13, 680] întrebările emiterii pe șablon
+            m2.aplica(c, SCH)
             cur.execute("SET LOCAL search_path TO %s, public" % SCH)
             cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,regim_fiscal,platitor_tva,tip_decont,"
                         "declarant_nume,declarant_prenume,declarant_functie,forma_juridica,capital_subscris,metoda_stoc) VALUES (1,'Firma FE3 SRL',"
@@ -130,7 +132,8 @@ def _sql(m, q, args=()):
 
 def _adauga(m, **k):
     from core import facturi_recurente as fr
-    corp = dict({"tert_nume": "Client Recurent SRL", "tert_cui": CUI_CLIENT, "zi_emitere": 5, "moneda": "RON", "linii": [dict(LINIE)]}, **k)
+    corp = dict({"tert_nume": "Client Recurent SRL", "tert_cui": CUI_CLIENT, "zi_emitere": 5, "moneda": "RON", "linii": [dict(LINIE)],
+                 "scadenta_zile": 15, "data_inceput": "2026-01-01", "valabil_pana": "oprire", "mod_emitere": "automata", "trimite_spv": False}, **k)   # [lotul 13, 680] întrebările emiterii
     with m["c"].cursor() as cur:
         cur.execute("SET LOCAL search_path TO %s, public" % SCH)
     return fr.adauga(_Prox(m["c"]), SCH, corp, azi=AZI)

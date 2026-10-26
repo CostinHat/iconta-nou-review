@@ -1,0 +1,104 @@
+[
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "        if _ex:\n            raise _fpd.refuz(_ex)",
+  "inlocuire": "        if False:\n            raise _fpd.refuz(_ex)",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_545_a_doua_factura_ti_1_de_la_acelasi_furnizor_e_refuzata"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "${f.tva_taxare_inversa != null ? randuriTaxareInversa(f, peCota, mon) :",
+  "inlocuire": "${false ? randuriTaxareInversa(f, peCota, mon) :",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_546_factura_cu_taxare_inversa_arata_totalul_de_plata_fara_tva"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "        primita_ciorna = bool(_fp_ and",
+  "inlocuire": "        primita_ciorna = False and bool(_fp_ and",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_547_factura_primita_cu_nota_ciorna_se_sterge"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "                seturi.append(\"urmator_numar_factura = %s\"); val.append(_urm)",
+  "inlocuire": "                pass",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_542_seria_noua_porneste_de_la_1_nu_de_la_contorul_vechi"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "        if (cereSeriaChitanteiPeLoc(msg, tenantId, e, () => b.click())) return;   // [lotul 13, 543] seria se cere pe loc\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_543_seria_chitantelor_se_cere_pe_loc"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "    if _stare_vies == \"invalid\":",
+  "inlocuire": "    if _stare_vies == \"invalid_mutat\":",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_c199_cod_invalid_in_vies_refuza_scutirea"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "      if (r.vies_de_reverificat) reverificaVies(rez2, r.vies_de_reverificat);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_c199_vies_indisponibil_emite_cu_avertisment_si_reincercare"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "    ${sume ? `<div class=\"fd-tot-rand\" id=\"pr-tva-lei\">",
+  "inlocuire": "    ${false ? `<div class=\"fd-tot-rand\" id=\"pr-tva-lei\">",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_634_factura_in_valuta_arata_leii_si_dupa_validare_nota"
+ },
+ {
+  "fisier": "core/clienti_api.py",
+  "ancora": "            \"(SELECT count(*) FROM facturi f WHERE \" + _FACTURI_FEL[fel] + \" AND (\" + leg + \")) AS facturi, \"",
+  "inlocuire": "            \"NULL AS facturi, \"",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_632_fisa_clientului_pastreaza_facturile_si_clientul_strain_n_are_judet"
+ },
+ {
+  "fisier": "core/clienti_api.py",
+  "ancora": "    _sincronizeaza_dupa(conn, \"furnizori\", c)   # [lotul 13, 640]",
+  "inlocuire": "    pass",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_640_partenerul_se_adauga_se_cauta_si_se_sterge"
+ },
+ {
+  "fisier": "static/js/ecrane/etransport_ecran.js",
+  "ancora": "          nav.inapoi();\n          completeazaDin(r);",
+  "inlocuire": "          nav.inapoi();",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_534_notificarea_se_completeaza_din_factura"
+ },
+ {
+  "fisier": "static/js/ecrane/etransport_ecran.js",
+  "ancora": "      try { await api.post(`/tenants/${t.id}/etransport-xml`, construiesteCorp()); }\n      catch (e) { curataEroriCamp(corp); arataRefuzul(corp, e, zona); return; }   // drumul unic al refuzului: fiecare câmp lângă el\n      if (faraAlegeri) return;",
+  "inlocuire": "      if (faraAlegeri) return;",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_535_trimiterea_cu_formularul_gol_arata_toate_campurile_lipsa"
+ },
+ {
+  "fisier": "core/facturi_recurente.py",
+  "ancora": "        r[\"de_emis_acum\"] = bool(r.get(\"mod_emitere\") == \"ciorna\" and de_emis([r], azi, mod=\"ciorna\"))",
+  "inlocuire": "        r[\"de_emis_acum\"] = False",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_680_sablonul_are_intrebarile_emiterii_iar_ciorna_se_emite_din_lista"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "  { cat: \"TVA regimuri speciale\", cheie: \"aur\",",
+  "inlocuire": "  { cat: \"TVA regimuri speciale\", cheie: \"neinregistrat_mut\", titlu: \"Achiziție de la neînregistrat (persoană fizică) — D394 op. N\", ruta: \"achizitie-neinregistrat\", frecventa: \"lunar\", campuri: [] },\n  { cat: \"TVA regimuri speciale\", cheie: \"aur\",",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_604_borderoul_sta_langa_nir_nu_in_tva_regimuri_speciale"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "\"Scrie cantitatea care intră în stoc pe contul %s, mai mare decât zero, în \"\n                                                       \"unitatea de măsură a articolului.\" % cont",
+  "inlocuire": "\"cantitatea\"",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_611_refuzul_achizitiei_de_la_persoana_fizica_numeste_ce_lipseste"
+ },
+ {
+  "fisier": "static/js/ecrane/emitere_ecran.js",
+  "ancora": "      if (l.cota_tva != null) { const z = zonaLinii.querySelector(\"#em-l\" + linii.indexOf(l) + \"-cota-mesaj\"); if (z) z.innerHTML = \"\"; }",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_613_mesajul_articolului_fara_cota_dispare_cand_aleg_cota"
+ },
+ {
+  "fisier": "static/js/ecrane/facturi_ecran.js",
+  "ancora": "          await detaliiFactura(corp, nav, tenantId, facturaId, opt);\n          const zs = corp.querySelector(\"#fd-storno-zona\");",
+  "inlocuire": "          const zs = corp.querySelector(\"#fd-storno-zona\");",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_615_dupa_stornare_factura_e_stornata_fara_reimprospatare"
+ }
+]

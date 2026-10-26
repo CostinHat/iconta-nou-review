@@ -42,6 +42,28 @@ def e_din_bon_fiscal(f):
     return (f.get("directie") or "emisa") == "emisa" and bool(str(f.get("bon_fiscal_nr") or "").strip())
 
 
+# ── FACTURA PRIMITĂ CU TAXARE INVERSĂ: TOTALUL DE PLATĂ (lotul 13, deficiența 546) ───────────────────────────────────
+# CF art.331 alin.(3): „Pe facturile emise pentru livrările de bunuri/prestările de servicii prevăzute la alin. (2) furnizorii/prestatorii
+# nu vor înscrie taxa colectată aferentă. Beneficiarii vor determina taxa aferentă, care se va evidenția în decontul prevăzut la art. 323,
+# atât ca taxă colectată, cât și ca taxă deductibilă.” Pe factura primită cu taxare inversă, antetul păstrează TVA-ul determinat de
+# beneficiar (`tva`, scris odată cu nota 4426 = 4427 și citit de D300 / D394 / D406), dar datoria către furnizor e numai baza: nota e
+# `<cont> = 401 baza`. O SINGURĂ definiție a „totalului de plată”: starea de plată, scadențarul, potrivirea plății, ecranul.
+def fara_tva_de_plata(f):
+    """Factura (dict cu `directie`, `taxare_inversa`) e primită cu taxare inversă: TVA-ul de pe antet nu se plătește furnizorului."""
+    return (f.get("directie") or "") == "primita" and bool(f.get("taxare_inversa"))
+
+
+def total_de_plata(f, total, tva):
+    """Totalul de plată al facturii (în moneda lui `total`): `total - tva` la factura primită cu taxare inversă, altfel `total`."""
+    t = _dec(total or 0)
+    return t - _dec(tva or 0) if fara_tva_de_plata(f) else t
+
+
+#: aceeași definiție, în SQL, în LEI, pe factura cu aliasul `{a}` (cititorii care adună datorii / creanțe în lei)
+SQL_TOTAL_DE_PLATA_LEI = ("(COALESCE({a}.total_lei, {a}.total) - CASE WHEN {a}.directie = 'primita' AND COALESCE({a}.taxare_inversa, false) "
+                          "THEN COALESCE({a}.tva_lei, {a}.tva, 0) ELSE 0 END)")
+
+
 def clauza_nu_din_bon(alias="f"):
     """Predicatul SQL al aceleiași definiții, pentru repository-urile care numără vânzările (D300 și calea a doua)."""
     return ("%s.bon_fiscal_nr IS NULL" % alias) if alias else "bon_fiscal_nr IS NULL"
