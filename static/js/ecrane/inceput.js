@@ -10,23 +10,23 @@ import { api, esc, arataMesaj } from "../api.js?v=e38843b1ec";
 // [320] butoanele cardurilor: fiecare deschide ecranul REAL (aceleași funcții ca meniul aplicației)
 async function deschide(cheie, nav, laSchimbare) {
   if (cheie === "migrare") {
-    const { randeazaMigrare } = await import("./migrare.js?v=3330107d41");
+    const { randeazaMigrare } = await import("./migrare.js?v=7614b8c5ae");
     nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" });
   } else if (cheie === "suport_import") {
     // banda „Suport” de pe pagina principală, apoi fila „Cerere import din altă aplicație”
     const b = document.querySelector('[data-deschide="raport"]');
     if (b) { b.click(); setTimeout(() => { const t = document.querySelector('.rap-tab[data-tab="import"]'); if (t) t.click(); }, 300); }
   } else if (cheie === "setari_spv") {
-    const { panouConectareSPV } = await import("./setari.js?v=ba6bc8a464");
+    const { panouConectareSPV } = await import("./setari.js?v=08abddba63");
     nav.deschide("Conectare SPV", (c) => panouConectareSPV(c), { nivel: "cabinet" });
   } else if (cheie === "setari_notificari" || cheie === "notificari_portal") {
-    const { panouNotificari } = await import("./setari.js?v=ba6bc8a464");
+    const { panouNotificari } = await import("./setari.js?v=08abddba63");
     nav.deschide("Notificări", (c) => panouNotificari(c, { dupaSalvare: laSchimbare }));
   } else if (cheie === "asistenti") {
-    const { randeazaAsistenti } = await import("./asistenti.js?v=9138993ad1");
+    const { randeazaAsistenti } = await import("./asistenti.js?v=a8f250b414");
     nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
   } else if (cheie === "firme") {
-    const { randeazaListaFirme } = await import("./firme.js?v=2b27eebcaf");
+    const { randeazaListaFirme } = await import("./firme.js?v=4c2b4e3117");
     nav.deschide("Firmele tale alocate", (c) => randeazaListaFirme(c, nav, null), { nivel: "cabinet" });
   }
 }
@@ -146,7 +146,7 @@ export async function ecranPrimaIntrare(radacina, gata) {
     try { verifica(await stareaNotificarilor()); } catch { /* rândul rămâne */ }
   };
   window.addEventListener("iconta:schimbare", laSchimbare);
-  const { panouNotificari } = await import("./setari.js?v=ba6bc8a464");
+  const { panouNotificari } = await import("./setari.js?v=08abddba63");
   await panouNotificari(radacina.querySelector("#pi-notificari"), { dupaSalvare: verifica });
   try { verifica(await stareaNotificarilor()); } catch { /* rândul rămâne cel de la început */ }
 }

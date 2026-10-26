@@ -8,7 +8,7 @@
 import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
 import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand } from "../api.js?v=e38843b1ec";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
-import { randeazaStareSpv } from "./spv_stare.js?v=a12ccba975";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
+import { randeazaStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {

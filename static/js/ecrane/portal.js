@@ -2,7 +2,7 @@
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand } from "../api.js?v=e38843b1ec";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=ed7b7b85bf";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
+import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=c5b207b0d7";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 

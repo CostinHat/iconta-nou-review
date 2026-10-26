@@ -9,7 +9,7 @@
 import { api, dataRo, esc, ICOANE, CULORI_CARD } from "../api.js?v=e38843b1ec";
 import { randeazaRecomanda } from "./recomanda.js?v=e5354ffd52"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=c8012ff8c2"; // [p34_raporteaza]
-import { marcheazaSesiuneInterna } from "./admin_analytics.js?v=65a3ea09d5";   // [lotul 13, 649] sesiunea deschisă: vizitele publice nu se numără
+import { marcheazaSesiuneInterna } from "./admin_analytics.js?v=c7c3950941";   // [lotul 13, 649] sesiunea deschisă: vizitele publice nu se numără
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;

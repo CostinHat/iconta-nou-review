@@ -7,20 +7,20 @@ import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arat
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=2b27eebcaf";
-import { randeazaMigrare } from "./migrare.js?v=3330107d41";
-import { randeazaControl } from "./control.js?v=2c85c083b5";
+import { randeazaListaFirme } from "./firme.js?v=4c2b4e3117";
+import { randeazaMigrare } from "./migrare.js?v=7614b8c5ae";
+import { randeazaControl } from "./control.js?v=680bf7a6fb";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=80b751d073"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=ba6bc8a464"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=08abddba63"; // [p28_setari]
 import { randeazaRaporteaza } from "./raporteaza.js?v=c8012ff8c2"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
-import { paginaPrincipala, legaBenzile } from "./salut.js?v=10719d2154"; // [225 + 231] banda de sus, aceeași la ambele roluri
+import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=74c373edbf";
-import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=83581fee57";
+import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=058e9d8957";
 import { randeazaSupervizor } from "./supervizor.js?v=33940e0a4c"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=9138993ad1";
+import { randeazaAsistenti } from "./asistenti.js?v=a8f250b414";
 import { randeazaCapacitate } from "./capacitate.js?v=9d11e90cef"; // [p71_capacitate]
-import { randeazaTipare } from "./tipare.js?v=5a174b5054"; // [p72_tipare]
+import { randeazaTipare } from "./tipare.js?v=f0567e421b"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
 function svg(nume, culoare) {

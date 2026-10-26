@@ -10,10 +10,10 @@
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=e38843b1ec";  // esc canonic (cap.10): strip-html data-lossy inlocuit
-import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=1be335b472";  // [bun_venit_v1] "?" general (ansamblu)
+import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=40864142dd";  // [bun_venit_v1] "?" general (ansamblu)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
-import { numeDeSalut } from "./ecrane/salut.js?v=10719d2154";   // [269] numele din salut, același loc ca pagina principală
+import { numeDeSalut } from "./ecrane/salut.js?v=f5a3ed7133";   // [269] numele din salut, același loc ca pagina principală
 import { reimprospateazaDrepturi } from "./drepturi.js?v=34d0fb0afd";   // [265] drepturile recitite pe ceasul aplicației
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
@@ -625,7 +625,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           else if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=83581fee57");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=058e9d8957");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide De validat:", e); }
@@ -635,7 +635,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=e38843b1ec");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=2b27eebcaf");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=4c2b4e3117");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();
@@ -650,7 +650,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const tid = parseInt(n.link.slice("control-fiscal:".length), 10);
             if (!Number.isFinite(tid)) { console.warn("[clopot] link control-fiscal malformat:", n.link); return; }
             try {
-              const { randeazaControl } = await import("./ecrane/control.js?v=2c85c083b5");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
+              const { randeazaControl } = await import("./ecrane/control.js?v=680bf7a6fb");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
               window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide control fiscal:", e); }
           }

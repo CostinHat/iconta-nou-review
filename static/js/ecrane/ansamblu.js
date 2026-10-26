@@ -13,7 +13,7 @@
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
 import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=e38843b1ec";
-import { STRATURI } from "./migrare.js?v=3330107d41";
+import { STRATURI } from "./migrare.js?v=7614b8c5ae";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
