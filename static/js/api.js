@@ -40,13 +40,11 @@ async function cere(metoda, cale, corp) {
   if (gresit) throw gresit;
   const deblocheaza = blocheazaButon(metoda);
   const declansator = metoda !== "GET" && _butonScriere && Date.now() - _butonScriereT < FEREASTRA_REFUZ_MS ? _butonScriere : null;
-  // [654] numai cererea pornită în partea sincronă a handlerului clicului (nu o previzualizare pornită de un ceas, care ar șterge
-  // refuzul tocmai pus de handler — cursa din 440)
-  const dinClic = declansator && _butonViu ? declansator : null;
   try {
-    const r = await _cere(metoda, cale, corp);
-    if (dinClic) _dupaScriereReusita(dinClic);   // [654] scrierea pornită chiar de clic a reușit: refuzurile de dinainte nu mai țin
-    return r;
+    // [654] refuzurile de DINAINTE au plecat la apăsare (ascultătorul clicului, `refuzuriVechi`); reușita nu mai șterge nimic: un clic
+    // care trimite mai multe scrieri (Date firmă: datele, vectorul, asociații) își păstrează refuzul unei părți și când altă parte reușește
+    // după el (valul 5, plasa pe 59896e5c: 526 / 440 — „vezi câmpurile marcate” fără niciun câmp marcat)
+    return await _cere(metoda, cale, corp);
   } catch (e) {
     // [410] refuzul serverului pentru cererea pornită de butonul apăsat: helperul care îl afișează (în `catch`-ul ecranului) îl pune și în
     // lista „NU s-a salvat” de lângă buton
@@ -617,14 +615,15 @@ document.addEventListener("click", (e) => {
   _butonScriereT = Date.now();
   _aprindeButonul();
   if (_butonScriere && _butonScriere._refuz) { _scoateCaseta(_butonScriere._refuz); _butonScriere._refuz = null; }
-  if (_butonScriere) refuzuriVechi(_butonScriere);   // [654] refuzurile de dinainte din fereastră nu mai sunt adevărate
+  if (_butonScriere) { refuzuriVechi(_butonScriere); _marcajeVechi(_butonScriere); }   // [654] refuzurile de dinainte nu mai sunt adevărate
 }, true);
 // ── [lotul 13, deficiența 654 — clasa; comanda 13.1, verbatim: „Mesajele de eroare vechi («NU s-a salvat», «nu are ce genera») rămân pe
 // ecran după acțiunea următoare, când eroarea e alta sau a dispărut.”] La apăsarea unui buton care scrie, refuzurile de dinainte din
 // fereastra lui (casetele „NU s-a salvat.” ale oricărui buton, zonele de refuz ale formularului, bannerul refuzului nevăzut) pleacă:
-// acțiunea nouă își spune singură refuzul, dacă are unul. După o scriere reușită pleacă și marcajele câmpurilor din fereastra
-// butonului (`_dupaScriereReusita`). Refuzul de pe un rând (`refuzPeRand`) ține de rând și rămâne (DS cap.6). Gard:
-// `core/test_lot13_ds_mesaje.py`.
+// acțiunea nouă își spune singură refuzul, dacă are unul. Tot la apăsare pleacă și marcajele câmpurilor din fereastra butonului
+// (`_marcajeVechi`), înainte ca handlerul să-și pună validarea: ce marchează clicul de acum (validarea lui, refuzul oricărei scrieri
+// pornite de el) rămâne, oricare ar fi ordinea răspunsurilor. Refuzul de pe un rând (`refuzPeRand`) ține de rând și rămâne (DS cap.6).
+// Gard: `core/test_lot13_ds_mesaje.py`, `core/test_lot13_portal_refuz_concurent.py`.
 export function refuzuriVechi(buton) {
   const scop = buton && buton.closest(".fereastra, form, .acces-modal, .pacm");
   if (!scop) return;
@@ -639,11 +638,9 @@ export function refuzuriVechi(buton) {
   const ban = document.getElementById("refuz-nevazut");
   if (ban) ban.remove();
 }
-function _dupaScriereReusita(buton) {
+function _marcajeVechi(buton) {
   const scop = buton && buton.isConnected && buton.closest(".fereastra, form, .acces-modal, .pacm");
-  if (!scop) return;
-  refuzuriVechi(buton);
-  curataEroriCamp(scop);
+  if (scop) curataEroriCamp(scop);
 }
 // [515] o casetă „NU s-a salvat.” care pleacă își dă înapoi zonele al căror text îl purta (le ascunsese ca textul să stea o dată)
 function _scoateCaseta(box) {
