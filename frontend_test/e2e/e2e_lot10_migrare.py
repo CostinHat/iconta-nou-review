@@ -244,21 +244,22 @@ def test_def_salariat_edit_corecteaza_datele_deducerilor(patron, firma_cv):
     VASILE: datele corectate s-au salvat; statul se calculează cu ele.”; fișa le păstrează, iar formularul redeschis le arată."""
     s = firma_cv["schema"]
     pg = _stat(patron, firma_cv)
-    rand = pg.locator(".pf-frand", has_text="IONESCU VASILE").first
-    rand.locator("[data-date]").click()
+    # [lotul 13, 675] deducerile se corectează din „Date de calcul” (fereastra salariatului); Da / Nu = butoane alăturate (676)
+    from e2e_lot13_sal_ajutor import alege, buton, deschide_salariat
+    deschide_salariat(patron, "IONESCU VASILE")
+    buton(patron, "calcul")
     pg.wait_for_function("() => (document.querySelector('#ed-fbaza') || {}).value", timeout=20000)   # fișa citită (Da/Nu salvat)
-    pg.select_option("#ed-fbaza", "false")
+    alege(patron, "ed-fbaza", "false")
     pg.fill("#ed-nastere", "2002-05-10")
     pg.fill("#ed-copii", "2")
-    pg.select_option("#ed-declcopii", "true")
+    alege(patron, "ed-declcopii", "true")
     pg.click("#ed-save")
-    pg.wait_for_function("() => document.body.innerText.includes('datele corectate s-au salvat; statul se calculează cu ele.')",
+    pg.wait_for_function("() => document.body.innerText.includes('datele de calcul s-au salvat; statul se calculează cu ele.')",
                          timeout=30000)
     patron.captura()
     assert sql('SELECT functie_baza, data_nastere::text, copii_scolarizati, declaratie_copii FROM "%s".salariati WHERE nume = %%s'
                % s, ("IONESCU",)) == [(False, "2002-05-10", 2, True)]
-    rand = pg.locator(".pf-frand", has_text="IONESCU VASILE").first
-    rand.locator("[data-date]").click()
+    buton(patron, "calcul")
     pg.wait_for_function("() => (document.querySelector('#ed-nastere') || {}).value === '2002-05-10'", timeout=20000)
     assert (pg.input_value("#ed-fbaza"), pg.input_value("#ed-copii"), pg.input_value("#ed-declcopii")) == ("false", "2", "true")
     # starea de la început, pentru rularea repetată

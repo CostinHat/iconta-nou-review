@@ -162,7 +162,10 @@ def test_clicurile_programatice_sunt_numai_cele_alese_de_om():
 MOUNT = """async ([modUrl]) => {
   const m = await import(modUrl);
   document.body.innerHTML = '<div id="mount"></div>';
-  await m.ecranSalariati(document.getElementById('mount'), { inapoiPas(){}, deschide(){}, mergi(){}, setInapoi(){} }, { id: 1 });
+  // [lotul 13, 673] navigatorul de probă desenează ferestrele deschise (fereastra salariatului, fereastra „Salariu”) una peste alta
+  const nav = { deschide(titlu, f) { const d = document.createElement('div'); d.className = 'fer-proba'; document.body.appendChild(d); f(d, nav); },
+                inapoi() { const f = [...document.querySelectorAll('.fer-proba')].pop(); if (f) f.remove(); }, inapoiPas(){}, mergi(){}, setInapoi(){} };
+  await m.ecranSalariati(document.getElementById('mount'), nav, { id: 1 });
   return true;
 }"""
 
@@ -203,25 +206,29 @@ def pagina():
 
 def _montat(pg):
     pg.evaluate(MOUNT, ["/static/js/ecrane/firme.js"])
-    pg.wait_for_selector("[data-adev]", timeout=15000)
+    pg.wait_for_selector("#mount .sp-deschide", timeout=15000)
+    # [lotul 13, 677] butoanele salariatului stau în fereastra lui, deschisă din rândul statului
+    pg.click("#mount .sp-deschide")
+    pg.wait_for_selector(".fer-proba [data-adev]", timeout=15000)
 
 
 def test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor(pagina):
     pg = pagina
     _montat(pg)
-    pg.click("[data-adev]")
+    pg.click(".fer-proba [data-adev]")
+    pg.wait_for_selector("#ad-gen", timeout=10000)
     pg.click("#sp-contare")
     pg.wait_for_selector("#sp-contare-scrie", timeout=10000)
     # „formularul «Ocupație COR · Ionescu Vasile» se deschide singur, gol […] Nimic nu se deschide fără să fie ales.”
-    assert pg.inner_html("#sp-cor-zona").strip() == "", pg.inner_text("#sp-cor-zona")
+    assert pg.locator("#cor-edit-cor").count() == 0
 
 
 def test_formularul_cor_ales_vine_cu_codul_salariatului(pagina):
     pg = pagina
     _montat(pg)
-    pg.click("[data-cor]")
+    pg.click(".fer-proba [data-cor]")
     pg.wait_for_selector("#cor-edit-cor-cauta", timeout=5000)
     # „deși Ionescu are COR”: deschis cu „COR ✓”, formularul arată codul lui, nu un câmp gol
     assert pg.input_value("#cor-edit-cor") == COR and pg.input_value("#cor-edit-cor-cauta").startswith(COR)
-    # formularul e al salariatului ales (eticheta lui, din `data-nume` al butonului apăsat)
-    assert pg.inner_text("#sp-cor-zona .camp-eticheta").strip() == "Ocupație COR · IONESCU VASILE:"
+    # formularul e al salariatului ales (titlul ferestrei lui)
+    assert pg.locator(".fer-proba h2", has_text="Ocupație COR").last.inner_text().strip() == "Ocupație COR · IONESCU VASILE"

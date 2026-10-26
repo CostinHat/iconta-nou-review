@@ -12,6 +12,7 @@ from core import salarizare
 from core import scadente as _scad
 from core import beneficii_api as _ben
 from core import common as _common
+from decimal import Decimal as _Dec, ROUND_HALF_UP as _HALF_UP
 
 def stat_plata(conn, schema, an, luna):
     """Calcul salarii pentru toti salariatii activi, la data de referinta (an, luna)."""
@@ -69,6 +70,10 @@ def stat_plata(conn, schema, an, luna):
     # [S1] elementele variabile ale lunii (prime, sporuri, ore suplimentare) — aceeași citire ca D112 (`d112.pull`)
     from core import elemente_salariale as _es
     elem_luna = _es.lista_luna(conn, schema, an, luna)
+    # [lotul 13, 670 b] excedentul de diurnă al lunii (venit asimilat salariilor, CF art.76 alin.(2) lit.k) — aceeași citire ca D112
+    from core import diurna_salariat as _dsal
+    with conn.cursor() as _cdz:
+        diurna_luna = _dsal.excedente_luna(_cdz, schema, an, luna)
     # [S1, aceeași clasă — găsită comparând argumentele celor trei apelanți] partea TAXABILĂ a cadoului intră în calcul ca în
     # D112 (`d112.pull`) și în notă: statul n-o trecea, deci fluturașul și declarația difereau la un cadou taxabil
     cadou_tax_luna = _ben.cadou_taxabil_luna(conn, schema, an, luna)
@@ -90,6 +95,7 @@ def stat_plata(conn, schema, an, luna):
         _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, sid, an, luna, data_ang, data_inc, _susp)
         _fac_prorata = (_zlm / _zll) if _zll else 0.0  # lit.a): zile ACTIVE si LA MINIM
         c_cm = cm.get(sid)
+        _tarif = _es.tarif_orar(_cs_sal, schema, sid, an, luna)   # [679] sursa unică a tarifului orar (orele suplimentare)
         # zile lucratoare FARA sarbatori (OUG 158/2005 art.10) - numitorul proratarii CM
         zile_luna = _scad.zile_lucratoare_luna(an, luna)
         cm_zile = c_cm["zile"] if (c_cm and c_cm["zile"] > 0) else 0
@@ -101,7 +107,9 @@ def stat_plata(conn, schema, an, luna):
         # pontaj_neconfirmat (tichetele raman blocate pana la confirmarea pontajului). HG 1045/2018 art.10(3).
         _pontaj_neconf = float(tichet_val or 0) > 0 and not _pontaj_confirmat
         _tichet_val = 0.0 if _pontaj_neconf else float(tichet_val or 0)
-        _fara_tichet = _pontaj.zile_fara_tichet(conn, schema, sid, an, luna) if _tichet_val > 0 else 0
+        # [lotul 13, 671] zilele lunii din sursa unică (fișa, certificatele, suspendările, pontajul) — aceleași ca D112 și pontajul
+        _grila = _pontaj.zilele_lunii(conn, schema, sid, an, luna)
+        _fara_tichet = _pontaj.fara_tichet(_grila) if _tichet_val > 0 else 0
         # [lot 19 pct.4c] tichetele pe zilele ACTIVE ale contractului (nu pe toată luna): HG 1045/2018 art.10(3)
         tichet_zile = max(_za - cm_zile - _fara_tichet, 0)
         # CM pe zile din contract: brutul cuvenit (prezența) minus zilele de CM la salariul mediu zilnic al prezenței.
@@ -141,7 +149,9 @@ def stat_plata(conn, schema, an, luna):
                                          # art.50 lit.b), iar salariatul scutit nu o datorează — aceleași intrări ca `d112.pull`
                                          zile_cm=cm_zile, exceptat_suprataxare=bool(scutit),
                                          # [482] indemnizația CM impozabilă în deducerea personală (CF art.76 alin.(1), art.77)
-                                         cm_impozabil=salarizare.cm_impozabil_luna(cm_cert.get(sid) if cm_zile > 0 else None, ref))
+                                         cm_impozabil=salarizare.cm_impozabil_luna(cm_cert.get(sid) if cm_zile > 0 else None, ref),
+                                         # [670 b] excedentul de diurnă: în brut și baze, nu în net (plătit prin decont)
+                                         exces_diurna=_dsal.total(diurna_luna.get(sid)))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
@@ -155,7 +165,9 @@ def stat_plata(conn, schema, an, luna):
             "data_angajare": data_ang.isoformat() if data_ang else None, "ore_zi": ore_zi,
             "brut": float(calc["brut"]), "cas": float(calc["cas"]),
             # [S1] compoziția brutului: salariul de bază lucrat + fiecare element variabil, distinct (fluturaș, stat)
-            "brut_baza_lucrat": round(float(brut_lucrat), 2), "elemente": elem_luna.get(sid, []),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+            "brut_baza_lucrat": round(float(brut_lucrat), 2),  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+            # [679] rândurile de ore suplimentare cu tariful orar și sporul afișate (calculul sumei, nu numai suma)
+            "elemente": _es.cu_calculul(elem_luna.get(sid, []), _tarif),
             "elemente_variabile": float(calc.get("elemente_variabile", 0)),
             # [lot 19 pct.4c] transparența proratării: salariul din contract și zilele lucrătoare active din lună
             "brut_contractual": float(brut or 0), "zile_active": _za,
@@ -177,6 +189,11 @@ def stat_plata(conn, schema, an, luna):
             # (deducerea personală / contribuția minimă pot fi greșite) până când contabilul le salvează pe salariat
             "de_verificat": list(de_verificat or []),
             "persoane_intretinere": int(pers or 0), "scutit_contrib_minim": bool(scutit),
+            # [lotul 13, 675] setările din care se calculează statul, la vedere în fereastra salariatului („Din ce se calculează”)
+            "functie_baza": functie_baza if functie_baza is None else bool(functie_baza),
+            "data_nastere": data_nastere.isoformat() if data_nastere else None,
+            "copii_scolarizati": int(copii_scolarizati or 0),
+            "declaratie_copii": declaratie_copii if declaratie_copii is None else bool(declaratie_copii),
             "tichet_masa_valoare": float(tichet_val or 0),  # valoarea configurata (chiar daca blocata luna asta)
             "tichete_vacanta": float(calc.get("tichete_vacanta", 0)),
             "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),
@@ -201,6 +218,18 @@ def stat_plata(conn, schema, an, luna):
             # [411] completate de `_cu_de_plata`, după împărțirea CAM-ului și după reținerile CM declarate (`stat_final`)
             "cost_total": None, "net_de_plata": None, "total_disponibil": None,
             "cm_zile": cm_zile,
+            # [lotul 13, 671 / 677] zilele lunii, din aceeași sursă ca pontajul și D112: lucrătoare din lună, lucrate (cele ale
+            # contractului, fără concediul medical — numărul de pe certificat, ca proratarea) și semnele lunii
+            "zile_lucratoare_luna": zile_luna,
+            "zile_lucrate": max(_za - cm_zile, 0),
+            "pontaj": {k: int((_grila or {}).get("rezumat", {}).get(k, 0)) for k in
+                       ("concediu_odihna", "delegatie", "absent_motivat", "absent_nemotivat", "invoire", "cfp", "suspendare",
+                        "cm_fara_certificat")},
+            "regula_pontaj": _pontaj.REGULA_PONTAJ,
+            # [670 b] excedentul de diurnă al lunii (venit salarial plătit prin decont), cu deconturile din care vine
+            "exces_diurna": float(calc.get("exces_diurna", 0)),
+            "diurne": [{"suma": float(x["suma"]), "descriere": x["descriere"], "referinta": x["referinta"]}
+                       for x in diurna_luna.get(sid, [])],
             "cm_brut": c_cm["brut"] if c_cm else 0,
             # [salariu_edit] baza contractuala (salariu_istoric) lipsa/0 -> statul e incoerent
             # (net 0 dar apare cost din suprataxa sub-minim); se SEMNALEAZA, nu se afiseaza tacit (MEMORY §13).
@@ -208,7 +237,8 @@ def stat_plata(conn, schema, an, luna):
             "salariu_baza": float(brut or 0),  # [salariu_edit] baza contractuala (istoric), pt pre-completarea editarii
             # [deficiența 413] tariful orar al salariului de bază: salariul / orele normei lunii (zile lucrătoare × ore pe zi) — din el
             # ecranul propune suma orelor suplimentare (Codul muncii art.123 alin.(2): sporul, „din salariul de bază”)
-            "tarif_orar": round(float(brut or 0) / (zile_luna * float(ore_zi or 8)), 4) if zile_luna and float(brut or 0) > 0 else None,  # round-ok: tarif afișat ca propunere, suma se rotunjește la ban pe ecran
+            # [679] din `elemente_salariale.tarif_orar` — același din care serverul calculează suma orelor suplimentare
+            "tarif_orar": float(_tarif.quantize(_Dec("0.0001"), rounding=_HALF_UP)) if _tarif is not None else None,
             # [stat_emis 21.08.2026] doua campuri pe care fluturasul si le recalcula singur, cu alte
             # intrari. Acum le ia de aici: statul e sursa unica a cifrelor de pe fluturas.
             "facilitate": float(calc.get("facilitate", 0)),
@@ -225,7 +255,7 @@ def stat_plata(conn, schema, an, luna):
             # nota și D112 aveau CAM-ul pe total cu prima).
             "_bazac": max(int(_leu(brut_lucrat)) + _d112._venituri_adaugate({
                               "exces_vacanta": calc.get("tichete_vacanta_exces", 0), "e83_cadou": calc.get("tichete_cadou", 0),
-                              "elemente_variabile": calc.get("elemente_variabile", 0)})
+                              "elemente_variabile": calc.get("elemente_variabile", 0), "exces_diurna": calc.get("exces_diurna", 0)})
                           - int(_leu(calc.get("facilitate", 0))), 0)
                       # [482, lotul 12] + indemnizația CM suportată de angajator (OUG 158/2005 art.12 lit.A): baza CAM din D112 (B4_14)
                       + (c_cm["brut_ang_leu"] if (c_cm and cm_zile > 0) else 0),
@@ -234,7 +264,39 @@ def stat_plata(conn, schema, an, luna):
     _imparte_cam(stat, ref)
     for r in stat:
         _cu_de_plata(r)
+        r["semne"] = semnele_lunii(r)
     return stat
+
+
+def semnele_lunii(r):
+    """[lotul 13, 677] Semnele lunii pe rândul salariatului (statul de plată, tabelul compact): concediul medical, concediul / suspendarea
+    și ce e „de verificat”, fiecare cu motivul (afișat la trecerea cu mouse-ul). Din câmpurile rândului; nu calculează nimic."""
+    out = []
+    pj = r.get("pontaj") or {}
+    if int(r.get("cm_zile") or 0):
+        out.append({"cod": "cm", "text": "CM", "titlu": _common.cate(int(r["cm_zile"]), "zi", "zile") + " de concediu medical"})
+    if pj.get("concediu_odihna"):
+        out.append({"cod": "concediu", "text": "concediu",
+                    "titlu": _common.cate(pj["concediu_odihna"], "zi", "zile") + " de concediu de odihnă (pontaj)"})
+    if pj.get("cfp") or pj.get("suspendare"):
+        out.append({"cod": "suspendare", "text": "suspendare",
+                    "titlu": _common.cate(pj.get("cfp", 0) + pj.get("suspendare", 0), "zi", "zile") + " fără plată (Suspendare / CFP)"})
+    motive = []
+    if r.get("baza_lipsa"):
+        motive.append("salariul de bază lipsește")
+    if r.get("de_verificat"):
+        motive.append("date importate de confirmat")
+    if pj.get("cm_fara_certificat"):
+        motive.append("zile de concediu medical fără certificat în pontaj")
+    if r.get("pontaj_neconfirmat"):
+        motive.append("tichetele așteaptă confirmarea pontajului")
+    if r.get("vacanta_peste_plafon"):
+        motive.append("tichetele de vacanță depășesc plafonul anual")
+    if r.get("cadou_taxabil"):
+        motive.append("cadoul e taxabil")
+    if motive:
+        out.append({"cod": "verifica", "text": "de verificat", "titlu": "; ".join(motive)})
+    return out
 
 
 def de_plata(r):
@@ -286,6 +348,15 @@ def _imparte_cam(stat, ref):
         del r["_bazac"]
 
 def stat_final(conn, schema, an, luna):
+    """`_stat_final_cifre` (mai jos) + compoziția netului pe trei coloane, pentru fereastra salariatului (677). Compoziția nu
+    calculează nimic: așază câmpurile rândului (`compozitie_coloane`)."""
+    stat = _stat_final_cifre(conn, schema, an, luna)
+    for r in stat:
+        r["compozitie_coloane"] = compozitie_coloane(r)
+    return stat
+
+
+def _stat_final_cifre(conn, schema, an, luna):
     """Statul de plată AȘA CUM SE PLĂTEȘTE ȘI SE TIPĂREȘTE: `stat_plata` + indemnizația de concediu medical cu reținerile
     DECLARATE (comanda Costin 06.10.2026, pct.2: „421 se soldează la ban și în lunile cu concediu medical”).
 
@@ -444,7 +515,8 @@ CAMPURI_COMPUSE = ("brut", "facilitate", "cas", "cass", "deducere_baza", "deduce
                    "cass_tichete", "impozit_tichete", "tichete_nominal", "tichete_vacanta",
                    "cadou", "tichete_cultural", "tichete_cresa", "valoare_tichete",
                    "total_disponibil", "cost_total", "cam", "cas_suprataxa", "cass_suprataxa", "net_de_plata",
-                   "brut_baza_lucrat", "elemente_variabile")   # [S1] compoziția brutului
+                   "brut_baza_lucrat", "elemente_variabile",   # [S1] compoziția brutului
+                   "exces_diurna")   # [lotul 13, 670 b] excedentul de diurnă, venit salarial plătit prin decont
 
 # Ce trimite ruta si compozitia NU arata, cu motivul scris. Fara randul asta, absenta ar arata
 # identic cu o scapare - iar conditia de inchidere a lui R97 cere ori reparatie, ori motiv scris.
@@ -466,9 +538,14 @@ def randuri_brut(r):
     fiecare element variabil (primă, spor, ore suplimentare), cu denumirea scrisă de contabil. Rânduri `FEL_DETALIU`: compun
     „Salariu brut”, nu se adună încă o dată la net. Exemplarul înghețat fără lista elementelor cade pe totalul lor (nu pe 0)."""
     var = float(r.get("elemente_variabile") or 0)
-    if var <= 0:
+    diurna = float(r.get("exces_diurna") or 0)
+    if var <= 0 and diurna <= 0:
         return []
     out = [("  din care salariul de bază (zilele lucrate)", float(r.get("brut_baza_lucrat") or 0), FEL_DETALIU)]
+    if diurna > 0:   # [lotul 13, 670 b] CF art.76 alin.(2) lit.k: partea diurnei peste plafonul neimpozabil
+        out.append(("  din care excedentul de diurnă (plătit prin decont, impozabil)", diurna, FEL_DETALIU))
+    if var <= 0:
+        return out
     elemente = r.get("elemente") if isinstance(r.get("elemente"), list) else []
     if not elemente:
         return out + [("  din care elemente variabile (prime, sporuri, ore suplimentare)", var, FEL_DETALIU)]
@@ -591,6 +668,96 @@ def compozitie_fluturas(r):
                   float(r["cost_total"]) if r.get("cost_total") is not None else _n("cost"), FEL_NOTA))
 
     return [{"eticheta": e, "valoare": v, "fel": f} for e, v, f in linii]
+
+
+def _ore_supl_text(e):
+    """„10 ore × 28,41 lei × 175%” — calculul sumei orelor suplimentare (679), din rândul elementului (`cu_calculul`)."""
+    from core.pdf_util import bani as _b
+    ore = float(e.get("ore") or 0)
+    txt = _common.cate(ore, "oră", "ore")
+    if e.get("tarif_orar") and e.get("spor_procent") is not None:
+        sp = float(e["spor_procent"])
+        txt += " × %s lei × %s%%" % (_b(float(e["tarif_orar"])), ("%g" % (100 + sp)).replace(".", ","))
+    return txt
+
+
+def compozitie_coloane(r):
+    """[lotul 13, 677] Compoziția netului pe TREI coloane, pentru fereastra salariatului: venituri / rețineri / rezultat. Comanda Costin
+    13.1: „venituri (salariu pe zile, «19 zile lucrate din 22», ore suplimentare, indemnizație CM brută) / rețineri (CAS, CASS, impozit,
+    cu deducerea ca explicație la impozit) / rezultat (net de plată, apoi costul angajatorului cu CAM). Indemnizația CM apare o singură
+    dată, cu brut și net pe același rând; dispare rândul «Zile de concediu medical: 3» fără sumă. Cifrele de azi sunt corecte — se
+    schimbă doar organizarea.”
+
+    Nu calculează: așază câmpurile rândului, cu ACELEAȘI etichete ca fluturașul (`compozitie_fluturas`) acolo unde rândul e același
+    (reținerile, deducerea, reținerile din indemnizație, CAM, suprataxa). Coloanele se închid: veniturile în bani − totalul reținerilor =
+    netul de plată (`core/test_lot13_sal_salarizare.py`). Fiecare rând: {eticheta, valoare, detaliu, net?, fel}; `fel` = linie |
+    subtotal | total | info (o explicație cu suma ei, care nu se adună)."""
+    def _n(k):
+        return float(r.get(k) or 0)
+
+    def rand(eticheta, valoare, fel="linie", detaliu="", **extra):
+        return {"eticheta": eticheta, "valoare": valoare, "fel": fel, "detaliu": detaliu, **extra}
+
+    venituri = []
+    zl, zll = r.get("zile_lucrate"), r.get("zile_lucratoare_luna")
+    zile_txt = ("%s din %d" % (_common.cate(int(zl), "zi lucrată", "zile lucrate"), int(zll))) if zl is not None and zll else ""
+    venituri.append(rand("Salariu pe zile lucrate", _n("brut_baza_lucrat") if r.get("brut_baza_lucrat") is not None else _n("brut"),
+                         detaliu=zile_txt))
+    elemente = r.get("elemente") if isinstance(r.get("elemente"), list) else None
+    for e in elemente or ():
+        venituri.append(rand("%s — %s" % (e.get("eticheta_tip") or e.get("tip"), e.get("denumire") or ""), float(e.get("suma") or 0),
+                             detaliu=_ore_supl_text(e) if e.get("tip") == "ore_suplimentare" else ""))
+    if elemente is None and _n("elemente_variabile"):
+        venituri.append(rand("Prime, sporuri, ore suplimentare", _n("elemente_variabile")))
+    cm_zile = int(_n("cm_zile"))
+    if cm_zile:
+        venituri.append(rand("Indemnizație concediu medical", _n("cm_brut"), detaliu=_common.cate(cm_zile, "zi", "zile"), net=_n("cm_net")))
+    venituri.append(rand("Venituri în bani", sum(x["valoare"] for x in venituri), "subtotal"))
+    if _n("tichete_nominal"):
+        venituri.append(rand("Tichete de masă", _n("tichete_nominal"), "info",
+                             "%s × %s lei, pe card" % (_common.cate(int(_n("tichete_zile")), "zi", "zile"),
+                                                       ("%g" % _n("tichet_masa_valoare")).replace(".", ","))))
+    for cheie, et in (("tichete_vacanta", "Tichete de vacanță"), ("cadou", "Tichete cadou"), ("tichete_cultural", "Tichete culturale"),
+                      ("tichete_cresa", "Tichete de creșă")):
+        if _n(cheie):
+            venituri.append(rand(et, _n(cheie), "info", "pe card"))
+    if _n("exces_diurna"):
+        venituri.append(rand("Excedent de diurnă", _n("exces_diurna"), "info", "plătit prin decont, impozabil"))
+
+    retineri = [rand("CAS (25%)", _n("cas")), rand("CASS (10%)", _n("cass"))]
+    if _n("tichete_nominal") or _n("tichete_vacanta"):
+        retineri.append(rand("CASS tichete (10%) — reținut din salariu", _n("cass_tichete")))
+    retineri.append(rand("Impozit pe venit", _n("impozit_salariu")))
+    if _n("tichete_nominal") or _n("tichete_vacanta"):
+        retineri.append(rand("Impozit tichete (10%) — reținut din salariu", _n("impozit_tichete")))
+    # [411] deducerea nu e o reținere: explicația impozitului, cu eticheta fluturașului
+    for e, v in randuri_deducere(r):
+        if v:
+            retineri.append(rand("în calculul impozitului, scade baza (nu se reține): " + e[:1].lower() + e[1:], v, "info"))
+    if cm_zile and all(k in r for k in ("cm_cas", "cm_cass", "cm_impozit")):
+        retineri += [rand("reținut din indemnizație: CAS (25%)", _n("cm_cas")), rand("reținut din indemnizație: CASS (10%)", _n("cm_cass")),
+                     rand("reținut din indemnizație: impozit pe venit", _n("cm_impozit"))]
+    if _n("facilitate"):
+        retineri.append(rand("Facilitate salariu minim (netaxabilă)", _n("facilitate"), "info",
+                             "scăzută din baza contribuțiilor și a impozitului"))
+    retineri.append(rand("Total rețineri", sum(x["valoare"] for x in retineri if x["fel"] == "linie"), "subtotal"))
+
+    net_plata = float(r["net_de_plata"]) if r.get("net_de_plata") is not None else float(de_plata(r))
+    rezultat = [rand("Net de plată", net_plata, "total", "salariu + indemnizație CM" if cm_zile else "")]
+    are_tichete = any(_n(k) for k in ("tichete_nominal", "tichete_vacanta", "cadou", "tichete_cultural", "tichete_cresa"))
+    if are_tichete:
+        val_t = (float(r["valoare_tichete"]) if r.get("valoare_tichete") is not None else
+                 _n("tichete_nominal") + _n("tichete_vacanta") + _n("cadou") + _n("tichete_cultural") + _n("tichete_cresa"))
+        rezultat.append(rand("Tichete pe card", val_t))
+        rezultat.append(rand("Total disponibil", float(r["total_disponibil"]) if r.get("total_disponibil") is not None
+                             else net_plata + val_t, "total", "net + tichete"))
+    rezultat.append(rand("Cost total angajator (cu indemnizația CM suportată de angajator)" if _n("cm_brut_ang") else "Cost total angajator",
+                         float(r["cost_total"]) if r.get("cost_total") is not None else _n("cost")))
+    rezultat.append(rand("CAM — contribuția asiguratorie pentru muncă (2,25%), plătită de angajator", _n("cam"), "info"))
+    _supra = _n("cas_suprataxa") + _n("cass_suprataxa")
+    if _supra > 0:
+        rezultat.append(rand("Suprataxă part-time (CAS + CASS pe podeaua salariului minim), plătită de angajator", _supra, "info"))
+    return {"venituri": venituri, "retineri": retineri, "rezultat": rezultat}
 
 
 def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):

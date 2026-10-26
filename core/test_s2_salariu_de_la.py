@@ -22,7 +22,10 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MOUNT = """async ([modUrl]) => {
   const m = await import(modUrl);
   document.body.innerHTML = '<div id="mount"></div>';
-  await m.ecranSalariati(document.getElementById('mount'), { inapoiPas(){}, deschide(){}, mergi(){} }, { id: 1 });
+  // [lotul 13, 673] navigatorul de probă desenează ferestrele deschise (fereastra salariatului, fereastra „Salariu”) una peste alta
+  const nav = { deschide(titlu, f) { const d = document.createElement('div'); d.className = 'fer-proba'; document.body.appendChild(d); f(d, nav); },
+                inapoi() { const f = [...document.querySelectorAll('.fer-proba')].pop(); if (f) f.remove(); }, inapoiPas(){}, mergi(){}, setInapoi(){} };
+  await m.ecranSalariati(document.getElementById('mount'), nav, { id: 1 });
   return true;
 }"""
 
@@ -59,9 +62,11 @@ def pagina():
 def test_salariul_de_la_porneste_cu_prima_zi_a_lunii_afisate(pagina):
     pg = pagina
     pg.evaluate(MOUNT, ["/static/js/ecrane/firme.js"])
-    pg.wait_for_selector("[data-salariu]")
-    pg.click("#sp-prev"); pg.wait_for_selector("[data-salariu]")
-    pg.click("[data-salariu]"); pg.wait_for_selector("#salariu-data")
+    pg.wait_for_selector("#mount .sp-deschide")
+    pg.click("#sp-prev"); pg.wait_for_selector("#mount .sp-deschide")
+    # [lotul 13, 677] rândul deschide fereastra salariatului; „Salariu” e unul din butoanele ei (675)
+    pg.click("#mount .sp-deschide"); pg.wait_for_selector(".fer-proba [data-salariu]")
+    pg.click(".fer-proba [data-salariu]"); pg.wait_for_selector("#salariu-data")
     azi = datetime.date.today()
     prima_lunii_trecute = (azi.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
     assert pg.input_value("#salariu-data") == prima_lunii_trecute.isoformat()   # luna lucrată (afișată), ziua 1

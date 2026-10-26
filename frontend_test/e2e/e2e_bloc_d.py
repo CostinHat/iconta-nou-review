@@ -552,29 +552,40 @@ def _stat(ecran, firma, luni_inapoi=0):
     pg = ecran.pg
     ecran.firma(firma["nume"])
     _deschide(ecran, "#fa-salariati", "Stat de plat")
-    pg.wait_for_selector(".fereastra:last-of-type .pf-lista .pf-frand", timeout=30000)
+    # [lotul 13, 677] statul e un tabel cu un rând pe salariat (`#sp-tabel`)
+    pg.wait_for_selector(".fereastra:last-of-type #sp-tabel tbody tr.sp-rand", timeout=30000)
     for _ in range(luni_inapoi):
         prev = pg.inner_text(".fereastra:last-of-type .pf-intro")
         pg.click(".fereastra:last-of-type #sp-prev")
         pg.wait_for_function("(p) => { const f = [...document.querySelectorAll('.fereastra')].pop(); const i = f.querySelector('.pf-intro');"
-                             " return i && i.innerText !== p && f.querySelector('.pf-lista .pf-frand'); }", arg=prev, timeout=30000)
+                             " return i && i.innerText !== p && f.querySelector('#sp-tabel tbody tr.sp-rand'); }", arg=prev, timeout=30000)
 
 
 def _rand_salariat(ecran):
-    """Textul rândului salariatului, cu compoziția netului (și partea ei pliată)."""
-    return ecran.pg.eval_on_selector(".fereastra:last-of-type .pf-lista .pf-frand", "e => e.textContent.replace(/\\s+/g, ' ')")
+    """Rândul salariatului din statul de plată (677: tabel), ca text „brut X · net Y · cost Z · zile Z1 · semne”."""
+    return ecran.pg.eval_on_selector(".fereastra:last-of-type #sp-tabel tbody tr.sp-rand",
+                                     "r => { const c = [...r.cells].map(x => x.textContent.replace(/\\s+/g, ' ').trim()); "
+                                     "return `${c[0]} · zile ${c[1]} · brut ${c[2]} · net ${c[3]} · cost ${c[4]} · ${c[5]}`; }")
 
 
 def _adauga_prima(ecran, denumire, suma):
+    """[lotul 13, 673 / 676] fereastra salariatului -> „Prime, sporuri, ore supl.” (fereastra ei) -> „Primă” -> „Adaugă” -> închide, înapoi
+    la statul de plată redesenat."""
+    from e2e_lot13_sal_ajutor import alege, buton, deschide_salariat, inchide
     pg = ecran.pg
-    pg.click(".fereastra:last-of-type [data-elem]")
-    pg.wait_for_selector(".fereastra:last-of-type #el-tip", timeout=20000)
-    pg.select_option(".fereastra:last-of-type #el-tip", "prima")
+    deschide_salariat(ecran)
+    buton(ecran, "elem")
+    pg.wait_for_selector(".fereastra:last-of-type #el-tip-grup", timeout=20000)
+    alege(ecran, "el-tip", "prima")
     pg.fill(".fereastra:last-of-type #el-denumire", denumire)
-    pg.fill(".fereastra:last-of-type #el-suma", str(suma))
+    pg.fill(".fereastra:last-of-type #el-suma", str(suma).replace(".", ","))
     pg.click(".fereastra:last-of-type #el-adauga")
     pg.wait_for_function("(d) => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
-                         "return f && !f.querySelector('#el-tip') && f.querySelector('.pf-lista .pf-frand'); }", arg=denumire, timeout=30000)
+                         "return f && (f.querySelector('#el-tabel') || {innerText: ''}).innerText.includes(d); }", arg=denumire, timeout=30000)
+    inchide(ecran)   # fereastra salariatului
+    pg.wait_for_selector(".fereastra:last-of-type #ss-butoane", timeout=30000)
+    inchide(ecran)   # statul de plată
+    pg.wait_for_selector(".fereastra:last-of-type #sp-tabel tbody tr.sp-rand", timeout=30000)
 
 
 def test_def_103_salariu_de_la_e_prima_zi_a_lunii_lucrate(patron, firma_sal):
@@ -582,7 +593,9 @@ def test_def_103_salariu_de_la_e_prima_zi_a_lunii_lucrate(patron, firma_sal):
     Pașii contabilului: Stat de plată -> „← luna” (luna trecută) -> „Salariu” pe salariat: „de la” e 01 al lunii afișate, nu azi."""
     _stat(patron, firma_sal, luni_inapoi=1)
     pg = patron.pg
-    pg.click(".fereastra:last-of-type [data-salariu]")
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat
+    deschide_salariat(patron)
+    buton(patron, "salariu")
     pg.wait_for_selector(".fereastra:last-of-type #salariu-data", timeout=20000)
     luna_trecuta = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)
     val = pg.input_value(".fereastra:last-of-type #salariu-data")
@@ -600,7 +613,10 @@ def test_def_102_prima_intra_in_brut_si_pe_fluturas(patron, firma_sal):
     rand = _rand_salariat(patron)
     patron.captura()
     assert "brut 5.500,50" in rand, rand
-    assert "prima de performanță D" in rand, rand
+    # [lotul 13, 677] compoziția netului stă în fereastra salariatului, pe trei coloane: prima e un rând al veniturilor, cu numele ei
+    from e2e_lot13_sal_ajutor import coloane, deschide_salariat
+    deschide_salariat(patron)
+    assert coloane(patron).get("Primă — prima de performanță D", [None])[0] == 500.5, coloane(patron)
 
 
 def test_def_110_costul_pe_salariat_are_cam_pe_prima(patron, firma_sal):
@@ -633,6 +649,8 @@ def test_def_109_dupa_prima_ciorna_veche_se_inlocuieste_si_merge_la_validare(asi
     vechi = sql('SELECT id FROM "%s".inregistrari WHERE status = \'ciorna\' AND sursa = \'salarii\'' % s)
     assert len(vechi) == 1, vechi
     _in_coada(firma_sal)
+    from e2e_lot13_sal_ajutor import inchide
+    inchide(asistent)   # [lotul 13, 673] fereastra contabilizării -> statul de plată
     _adauga_prima(asistent, "prima D109", "1000")
     pg.click(".fereastra:last-of-type #sp-contare")
     pg.wait_for_selector(".fereastra:last-of-type #sp-contare-scrie", timeout=30000)

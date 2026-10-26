@@ -14,7 +14,8 @@ import pytest
 from conftest import _scoate_firmele_e2e, sql
 from e2e_bloc_d import LUNA_TRECUTA, PATRON, _api
 from e2e_bloc_d import _stat as _stat_luna
-from e2e_lot11_s9 import (_F, _compozitie, _d112_xml, _firma_cu_salariat, _propunerea_zilelor, _randuri_compozitie, _singurul,
+from e2e_lot13_sal_ajutor import alege
+from e2e_lot11_s9 import (_F, _concedii, _compozitie, _d112_xml, _firma_cu_salariat, _propunerea_zilelor, _randuri_compozitie, _singurul,
                           _un)
 
 
@@ -27,7 +28,7 @@ def _zile_lucratoare(de, pana):
 def _formular_nou(patron, firma):
     pg = patron.pg
     _stat_luna(patron, firma, luni_inapoi=1)
-    pg.click(_F + "[data-cm] >> nth=0")
+    _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
     pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
@@ -99,7 +100,7 @@ def test_def_c102_1_zile_peste_interval_avertisment_si_confirmare(patron, firma_
     av = pg.inner_text(_F + "#cm-zile-avert")
     assert "sunt 5 zile lucrătoare (fără weekend și sărbători legale), iar aici scrie 10 zile. Verifică cifra de pe certificat." in av, av
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
-        pg.select_option(_F + sel, "false")
+        alege(patron, sel.lstrip("#"), "false")   # [lotul 13, 676] Da / Nu = butoane
     pg.fill(_F + "#cm-ven6", "30000")
     pg.fill(_F + "#cm-zile6", "125")
     patron.captura("avertisment_zile")
@@ -148,7 +149,7 @@ def test_def_629_treapta_deducerii_cu_indemnizatia_cm(patron, firma_629):
     _stat_luna(patron, firma_629, luni_inapoi=1)
     comp = _randuri_compozitie(_compozitie(patron))
     patron.captura("compozitia_netului")
-    brut, cm = comp["Salariu brut"], comp["din indemnizația CM brută"]
+    brut, cm = comp["Salariu pe zile lucrate"], comp["Indemnizație concediu medical"]   # [lotul 13, 677] coloana „Venituri”
     ded = comp["în calculul impozitului, scade baza (nu se reține): deducere personală"]
     # CF art.77 alin.(4): treapta pe „venituri brute lunare din salarii” = salariul + indemnizația impozabilă (CF art.76 alin.(1))
     asteptat = salarizare.deducere_personala(brut + cm, la_data=LUNA_TRECUTA)["total"]

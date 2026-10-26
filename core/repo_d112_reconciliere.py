@@ -54,6 +54,14 @@ def elemente_variabile(cur, schema, an, luna):
     return cur.fetchall()
 
 
+def excedente_diurna(cur, schema, an, luna):
+    """[lotul 13, 670 b] Excedentul de diurnă al lunii (venit asimilat salariilor, CF art.76 alin.(2) lit.k), pe salariat — SQL PROPRIU al
+    căii a doua (nu `diurna_salariat`, care e citirea generatorului)."""
+    cur.execute("SELECT salariat_id, SUM(suma) AS total FROM %s.diurna_excedent WHERE an=%%s AND luna=%%s GROUP BY salariat_id"
+                % schema, (an, luna))
+    return cur.fetchall()
+
+
 def select_6(cur, schema, an, luna):
     cur.execute("SELECT DISTINCT salariat_id FROM %s.beneficii_lunare WHERE an=%%s AND luna=%%s"
                 % schema, (an, luna))

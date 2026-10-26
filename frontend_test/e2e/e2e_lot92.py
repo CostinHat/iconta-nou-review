@@ -175,15 +175,16 @@ def test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia(patro
     patron.firma(firma_cv["nume"])
     _card(patron, "salariati", "#sp-contare")
     pg = patron.pg
-    rand = pg.locator(".pf-frand", has_text="IONESCU VASILE").first
-    t = " ".join(rand.inner_text().split())
+    # [lotul 13, 677] rândul statului: coloanele „Net de plată” și „Cost angajator”; compoziția în fereastra salariatului
+    celule = [" ".join(x.split()) for x in pg.locator("#sp-tabel tbody tr.sp-rand", has_text="IONESCU VASILE").first.locator("td").all_inner_texts()]
     patron.captura()
-    assert ("net %s (salariu %s + indemnizație CM %s)" % (_lei(r["net_de_plata"]), _lei(r["net"]), _lei(r["cm_net"]))) in t, t
-    assert ("cost %s" % _lei(r["cost_total"])) in t and abs(r["cost_total"] - r["cost"] - 262) < 0.005, (t, r)
-    rand.locator("details.dec-xml summary").click()
-    t = " ".join(rand.inner_text().split())
-    assert ("din ce se face %s lei" % _lei(r["net_de_plata"])) in t and ("Net de plată (salariu + indemnizație CM) %s" % _lei(r["net_de_plata"])) in t, t
-    assert "în calculul impozitului, scade baza (nu se reține): deducere personală" in t, t
+    assert celule[3] == _lei(r["net_de_plata"]) and celule[4] == _lei(r["cost_total"]), (celule, r)
+    assert abs(r["cost_total"] - r["cost"] - 262) < 0.005, r
+    from e2e_lot13_sal_ajutor import coloane, deschide_salariat
+    deschide_salariat(patron, "IONESCU VASILE")
+    c = coloane(patron)
+    assert c["Net de plată"][0] == r["net_de_plata"] and c["Indemnizație concediu medical"][1] == r["cm_net"], (c, r)
+    assert "în calculul impozitului, scade baza (nu se reține): deducere personală" in c, c   # deducerea: explicația impozitului
 
 
 # ── 416 / 417 / 419 — stornarea ─────────────────────────────────────────────────────────────────────────────────────────
@@ -460,24 +461,32 @@ def _stat(patron, firma):
 def test_def_412_adeverinta_precompleteaza_functia_din_fisa(patron, firma_cv):
     """412. Pașii: Salariați -> „Adeverință” la salariatul cu ocupația COR 241107: „Funcția” = „auditor financiar”, modificabilă."""
     pg = _stat(patron, firma_cv)
-    pg.locator(".pf-frand", has_text="IONESCU VASILE").first.locator("[data-adev]").click()
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat
+    deschide_salariat(patron, "IONESCU VASILE")
+    buton(patron, "adev")
     pg.wait_for_function("() => (document.querySelector('#ad-functie') || {}).value === 'auditor financiar'", timeout=20000)
     patron.captura()
 
 
 def test_def_413_orele_suplimentare_propun_suma_si_semnaleaza_sporul_sub_75(patron, firma_cv):
-    """413. Pașii: Salariați -> „Prime, sporuri, ore supl.” -> ore suplimentare 10 ore, spor 50%: suma propusă = tarif × ore × 1,5 și
-    semnalul „sub 75% … art.123 alin.(2)”."""
+    """413 (cu 679, lotul 13: suma se calculează, nu se propune spre scriere). Pașii: Salariați -> fereastra salariatului -> „Prime,
+    sporuri, ore supl.” -> ore suplimentare 10 ore, spor 50% -> „Adaugă”: rândul arată calculul „10 ore × <tarif> lei × 150%” și semnalul
+    „sub 75% … art.123 alin.(2)”."""
+    from e2e_lot13_sal_ajutor import alege, buton, deschide_salariat
     pg = _stat(patron, firma_cv)
-    pg.locator(".pf-frand", has_text="IONESCU VASILE").first.locator("[data-elem]").click()
-    pg.select_option("#el-tip", "ore_suplimentare")
+    deschide_salariat(patron, "IONESCU VASILE")
+    buton(patron, "elem")
+    pg.wait_for_selector("#el-tip-grup", timeout=20000)
+    alege(patron, "el-tip", "ore_suplimentare")
+    pg.fill("#el-denumire", "ore suplimentare")
     pg.fill("#el-ore", "10")
     pg.fill("#el-spor", "50")
-    pg.wait_for_function("() => (document.querySelector('#el-propunere') || {}).innerText", timeout=5000)
-    t = pg.inner_text("#el-propunere")
-    suma = pg.input_value("#el-suma")
+    pg.click("#el-adauga")
+    pg.wait_for_selector("#el-tabel", timeout=30000)
+    t = pg.inner_text("#el-msg")
+    rand = " ".join(pg.inner_text("#el-tabel tbody tr").split())
     patron.captura()
-    assert t.startswith("Propus: ") and "× 10 ore × (1 + 50%)" in t and "art.123 alin.(2)" in t and float(suma) > 0, (t, suma)
+    assert "10 ore ×" in rand and "× 150%" in rand and "sub 75%" in t and "art.123 alin.(2)" in t, (rand, t)
 
 
 def test_def_414_luna_in_curs_nu_ofera_butonul_care_scrie_nota(patron, firma_cv):

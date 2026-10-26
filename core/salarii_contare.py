@@ -219,7 +219,9 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             elemente_variabile=float(s.get("elemente_variabile") or 0),
             venit_cm=float(s.get("venit_cm") or 0),
             # [482] ca `pull` și statul: indemnizația CM impozabilă în deducerea personală (CF art.76 alin.(1), art.77)
-            cm_impozabil=_sz.cm_impozabil_luna(s.get("cm") if int(s.get("zile_cm") or 0) else None, ref))
+            cm_impozabil=_sz.cm_impozabil_luna(s.get("cm") if int(s.get("zile_cm") or 0) else None, ref),
+            # [lotul 13, 670 b] excedentul de diurnă, din `pull`: în brut pentru reținerile de pe 421, nu pe 641 (`monografie_salariu`)
+            exces_diurna=float(s.get("exces_diurna") or 0))
         ret_salariu["4315"] += _d(calc["cas"])
         ret_salariu["4316"] += _d(calc["cass"]) + _d(calc.get("cass_tichete", 0))
         ret_salariu["444"] += _d(calc["impozit"])

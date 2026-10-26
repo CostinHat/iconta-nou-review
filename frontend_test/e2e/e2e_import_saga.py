@@ -307,20 +307,25 @@ def test_salariatii_partial_si_de_verificat_pana_la_confirmare(patron, firma_imp
         ("Marin", 0, False, ["persoane_intretinere", "scutit_contrib_minim"])]
     patron.firma(firma_import["nume"])
     pg.click("#fa-salariati")
-    pg.wait_for_selector("[data-verif]", timeout=20000)
+    # [lotul 13, 677] rândul statului poartă semnul „de verificat”; avertismentul întreg și „De verificat” sunt în fereastra salariatului
+    from e2e_lot13_sal_ajutor import alege, deschide_salariat
+    pg.wait_for_selector("#sp-tabel tbody tr.sp-rand", timeout=20000)
+    assert "de verificat" in pg.inner_text("#sp-tabel tbody tr.sp-rand:has-text('Marin')")
+    deschide_salariat(patron, "Marin")
     t = patron.fereastra()
     assert "persoane în întreținere de completat (s-au importat 0 — deducerea personală poate fi greșită)" in t, t[:2000]
     patron.captura("stat_avertisment")
     pid = sql('SELECT id FROM "%s".salariati WHERE nume = %%s' % sch, ("Marin",))[0][0]
     pg.click("[data-verif='%s']" % pid)
+    pg.wait_for_selector("#dv-persoane", timeout=20000)
     pg.fill("#dv-persoane", "1")
-    pg.select_option("#dv-scutit", "false")
+    alege(patron, "dv-scutit", "false")
     pg.click("#dv-save")
     pg.wait_for_function("() => document.body.innerText.includes('datele de verificat sunt confirmate')", timeout=20000)
     patron.captura("confirmat")
     assert sql('SELECT persoane_intretinere, scutit_contrib_minim, de_verificat FROM "%s".salariati WHERE id = %%s' % sch, (pid,)) == \
         [(1, False, [])]
-    assert pg.locator("[data-verif='%s']" % pid).count() == 0
+    assert pg.locator("[data-verif='%s']" % pid).is_disabled()   # [675] butonul rămâne, inactiv: nimic de verificat
     _pas(patron, firma_import, "Salaria")
     _incarca(patron, "salariati_fara_scutire.csv", _cp1250(SALARIATI_FARA_SCUTIRE), "#mig-salveaza-sal")
     pg.click("#mig-salveaza-sal")

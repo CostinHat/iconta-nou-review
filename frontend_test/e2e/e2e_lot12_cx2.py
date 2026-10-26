@@ -215,7 +215,7 @@ def test_def_c148_perioada_indisponibila_spune_data_ca_zz_ll_aaaa(patron, firma_
     luna = azi.replace(day=1)
     patron.firma(firma_cx2a_c148["nume"])
     pg.click("#fa-salariati")
-    pg.wait_for_selector(_F + ".pf-lista .pf-frand", timeout=30000)
+    pg.wait_for_selector(_F + "#sp-tabel tbody tr.sp-rand", timeout=30000)
     stare = None
     while luna > tinta:
         prev = pg.inner_text(_F + ".pf-intro")
@@ -227,11 +227,11 @@ def test_def_c148_perioada_indisponibila_spune_data_ca_zz_ll_aaaa(patron, firma_
         if stare != 200:
             break
         pg.wait_for_function("(p) => { const f = [...document.querySelectorAll('.fereastra')].pop(); const i = f.querySelector('.pf-intro');"
-                             " return i && i.innerText !== p && !!f.querySelector('.pf-lista .pf-frand'); }", arg=prev, timeout=30000)
+                             " return i && i.innerText !== p && !!f.querySelector('#sp-tabel tbody tr.sp-rand'); }", arg=prev, timeout=30000)
     # statul se calculează pe fiecare lună de la 01.01.2025 încoace, iar luna dinainte e refuzată ca perioadă indisponibilă (423)
     assert (data_ro(luna), stare) == (data_ro(tinta), 423), (data_ro(luna), stare)
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop();"
-                         " return !f.querySelector('#sp-prev') && !!f.querySelector('p.ecran-nota') && !f.querySelector('.pf-lista'); }",
+                         " return !f.querySelector('#sp-prev') && !!f.querySelector('p.ecran-nota') && !f.querySelector('#sp-tabel'); }",
                          timeout=30000)
     pg.wait_for_timeout(300)
     nota = " ".join(pg.inner_text(_F + "p.ecran-nota").split())
@@ -274,7 +274,7 @@ def _a_stat_pana_la(patron, firma, tinta):
     pg = patron.pg
     patron.firma(firma["nume"])
     pg.click("#fa-salariati")
-    pg.wait_for_selector(_F + ".pf-lista .pf-frand", timeout=30000)
+    pg.wait_for_selector(_F + "#sp-tabel tbody tr.sp-rand", timeout=30000)
     luna, stare = _dt.date.today().replace(day=1), None
     while luna > tinta:
         prev = pg.inner_text(_F + ".pf-intro")
@@ -286,7 +286,7 @@ def _a_stat_pana_la(patron, firma, tinta):
         if stare != 200:
             break
         pg.wait_for_function("(p) => { const f = [...document.querySelectorAll('.fereastra')].pop(); const i = f.querySelector('.pf-intro');"
-                             " return i && i.innerText !== p && !!f.querySelector('.pf-lista .pf-frand'); }", arg=prev, timeout=30000)
+                             " return i && i.innerText !== p && !!f.querySelector('#sp-tabel tbody tr.sp-rand'); }", arg=prev, timeout=30000)
     return luna, stare
 
 
@@ -318,7 +318,7 @@ def test_def_c159_statul_din_10_2025_se_calculeaza_fara_tichete_si_se_opreste_mo
     luna, stare = _a_stat_pana_la(patron, f, gol)
     patron.captura("fara_tichete_10_2025_calculat")
     assert (data_ro(luna), stare) == (data_ro(gol), 200), (data_ro(luna), stare)    # golul nu oprește firma care nu dă tichete
-    assert pg.locator(_F + ".pf-lista .pf-frand").count() == 1
+    assert pg.locator(_F + "#sp-tabel tbody tr.sp-rand").count() == 1
     # al doilea salariat, cu tichete, și pontajul lunii confirmat (butonul „Confirmă pontajul lunii”, aceeași rută)
     _a_salariat_c159(f, "Cu Tichete", 40)
     st, r = _api_cont(PATRON, "POST", "/tenants/%d/pontaj/confirma" % f["tenant_id"], {"an": gol.year, "luna": gol.month})
@@ -326,7 +326,7 @@ def test_def_c159_statul_din_10_2025_se_calculeaza_fara_tichete_si_se_opreste_mo
     luna, stare = _a_stat_pana_la(patron, f, gol)
     assert (data_ro(luna), stare) == (data_ro(gol), 423), (data_ro(luna), stare)    # refuz de perioadă, nu eroare de server
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop();"
-                         " return !f.querySelector('#sp-prev') && !!f.querySelector('p.ecran-nota') && !f.querySelector('.pf-lista'); }",
+                         " return !f.querySelector('#sp-prev') && !!f.querySelector('p.ecran-nota') && !f.querySelector('#sp-tabel'); }",
                          timeout=30000)
     pg.wait_for_timeout(300)
     nota = " ".join(pg.inner_text(_F + "p.ecran-nota").split())

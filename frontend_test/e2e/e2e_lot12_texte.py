@@ -193,17 +193,21 @@ def test_def_184_refuzul_pontajului_scrie_luna_ca_LL_AAAA(patron, firma_sal):
     pg = patron.pg
     tid = firma_sal["tenant_id"]
     _stat(patron, firma_sal)
-    pg.click(_F + "[data-pontaj] >> nth=0")
-    pg.wait_for_selector(_F + ".pj-sel", timeout=30000)
-    antet = pg.inner_text(_F + ".pf-intro >> nth=0")
-    m = re.search(r"luna (\d{2})/(\d{4})", antet)
+    # [lotul 13, 677 / 678] fereastra salariatului -> „Pontaj”: calendarul, cu luna în titlu („Pontaj · <nume> · LL/AAAA”)
+    from e2e_lot13_sal_ajutor import alege, buton, deschide_salariat
+    deschide_salariat(patron)
+    buton(patron, "pontaj")
+    pg.wait_for_selector(_F + "#pj-calendar", timeout=30000)
+    antet = pg.inner_text(_F + "h2.pf-titlu >> nth=0")
+    m = re.search(r"· (\d{2})/(\d{4})$", antet.strip())
     assert m, antet
     luna, an = int(m.group(1)), int(m.group(2))
     # date-de-pornire: D112 depus la ANAF pe luna stării de plată — depunerea trece prin SPV, nu se poate produce în plasă
     sql("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, sursa, randuri) VALUES (%s, %s, %s, 'd112', 'iconta', NULL)",
         (tid, an, luna))
     try:
-        pg.select_option(_F + ".pj-sel >> nth=0", "absent_motivat")
+        alege(patron, "pj-marcaj", "absent_motivat")
+        pg.click(_F + "#pj-calendar .pj-zi:not([disabled]) >> nth=0")
         pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #pj-msg') || {}).innerText", timeout=25000)
         msg = pg.inner_text(_F + "#pj-msg").strip()
         patron.captura("pontaj_refuz")

@@ -65,15 +65,17 @@ def test_def_c194_d112_din_coada_devine_depasita_dupa_corectarea_fisei_salariatu
         rand = _deschide_coada(patron, cid)
         patron.captura("d112_in_coada")
         assert pg.locator("#val-depasite " + rand).count() == 0, "D112 depășită înainte de orice corectură"
-        # Salariați -> „Corectează datele” -> scutit, motivul 5 (pașii lui C133, `e2e_lot12_sal3.py`)
+        # Salariați -> salariatul -> „Date de calcul” -> scutit, motivul 5 (pașii lui C133, `e2e_lot12_sal3.py`)
         patron.firma(f["nume"])
         pg.click("#fa-salariati")
-        pg.wait_for_selector("[data-date='%s']" % sid, timeout=30000)
-        pg.click("[data-date='%s']" % sid)
-        pg.wait_for_selector("#ed-scutit", timeout=20000)
+        # [lotul 13, 675 / 676] fereastra salariatului -> „Date de calcul”; Da / Nu și motivul = butoane alăturate
+        from e2e_lot13_sal_ajutor import alege, buton, deschide_salariat_id
+        deschide_salariat_id(patron, sid)
+        buton(patron, "calcul")
+        pg.wait_for_selector("#ed-scutit-grup", timeout=20000)
         pg.wait_for_function("() => (document.querySelector('#ed-scutit') || {}).value !== ''", timeout=20000)
-        pg.select_option("#ed-scutit", "true")
-        pg.select_option("#ed-motiv", "5")
+        alege(patron, "ed-scutit", "true")
+        alege(patron, "ed-motiv", "5")
         pg.click("#ed-save")
         pg.wait_for_function("() => document.body.innerText.includes('Corectura scutirii intră')", timeout=30000)
         assert sql('SELECT scutit_contrib_minim, motiv_exceptare FROM "%s".salariati WHERE id = %%s' % f["schema"], (sid,)) == [(True, 5)]

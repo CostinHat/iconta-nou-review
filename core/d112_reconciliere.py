@@ -135,6 +135,10 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
         # aici nu se re-derivă proratarea: skip LEGITIM (complexitate), ca luna parțială pe angajare/încetare.
         partiala_ids = {r["salariat_id"] for r in _repo.select_luna_partiala(cur, schema, luna_inc, luna_sf)}
         variabile = {r["salariat_id"]: Decimal(str(r["total"] or 0)) for r in _repo.elemente_variabile(cur, schema, an, luna)}
+        # [lotul 13, 670 b] excedentul de diurnă e tot venit realizat (CF art.76 alin.(2) lit.k; bazele art.139 alin.(1) lit.j, art.157
+        # alin.(1) lit.m) — se adună la elementele variabile, pe calea a doua, din SQL-ul ei
+        for _r in _repo.excedente_diurna(cur, schema, an, luna):
+            variabile[_r["salariat_id"]] = variabile.get(_r["salariat_id"], Decimal(0)) + Decimal(str(_r["total"] or 0))
         ben_ids = set()
         try:
             ben_ids = {r["salariat_id"] for r in _repo.select_6(cur, schema, an, luna)}

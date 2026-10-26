@@ -113,9 +113,11 @@ def firma_280():
 
 def _cam_pe_cartela(patron, nume):
     """Statul afișat -> rândul salariatului -> „Compoziția netului”: rândul CAM (lei)."""
-    rand = patron.pg.locator(_F + ".pf-lista .pf-frand", has_text=nume).first
-    rand.locator("details.dec-xml summary").click()
-    comp = _randuri_compozitie(rand.locator("details.dec-xml").inner_text())
+    # [lotul 13, 677] fereastra salariatului, coloana „Rezultat”; înapoi la stat pentru salariatul următor
+    from e2e_lot13_sal_ajutor import coloane, deschide_salariat, inchide
+    deschide_salariat(patron, nume)
+    comp = _randuri_compozitie(coloane(patron))
+    inchide(patron)
     assert ETICHETA_CAM in comp, comp
     return comp[ETICHETA_CAM]
 

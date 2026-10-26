@@ -71,8 +71,9 @@ def test_elementul_se_cere_complet_fara_preselectie():
     from core import elemente_salariale as es
     _, er = es.valideaza({"denumire": "x", "suma": 10})
     assert [e["camp"] for e in er] == ["tip"]
+    # [lotul 13, 679] la orele suplimentare suma nu se mai cere (o calculează aplicația): se cer orele și sporul
     _, er = es.valideaza({"tip": "ore_suplimentare", "denumire": "ore", "suma": 10})
-    assert [e["camp"] for e in er] == ["ore"]
+    assert [e["camp"] for e in er] == ["ore", "spor"]
     _, er = es.valideaza({"tip": "prima", "denumire": " ", "suma": 0, "ore": 3})
     assert sorted(e["camp"] for e in er) == ["denumire", "ore", "suma"]
 
@@ -129,26 +130,28 @@ def test_prima_ajunge_in_stat_d112_si_nota_la_fel_si_d112_e_valid(conn):
     from core import elemente_salariale as es, stat_plata_api as sp, d112, salarii_contare as sc, duk
     sid = _sid(conn)
     assert es.adauga(conn, SCH, sid, 2026, 6, {"tip": "prima", "denumire": "prima de performanță", "suma": "500.50"})["ok"]
+    # [lotul 13, 679] suma orelor suplimentare o calculează aplicația: 5.000 / (21 zile lucrătoare în 06/2026 × 8 ore) × 10 ore × 175%
+    # = 520,833… -> 520,83 (Codul muncii art.123 alin.(2)-(3); suma „450” trimisă de ecranul vechi nu se mai ia în seamă)
     assert es.adauga(conn, SCH, sid, 2026, 6, {"tip": "ore_suplimentare", "denumire": "ore lucrate sâmbătă", "ore": 10,
-                                               "suma": 450})["ok"]
+                                               "spor_procent": 75, "suma": 450})["suma"] == "520.83"
     rand = next(x for x in sp.stat_plata(conn, SCH, 2026, 6) if x["id"] == sid)
-    assert (rand["brut"], rand["brut_baza_lucrat"], rand["elemente_variabile"]) == (5950.5, 5000.0, 950.5)
+    assert (rand["brut"], rand["brut_baza_lucrat"], rand["elemente_variabile"]) == (6021.33, 5000.0, 1021.33)
     assert [e["denumire"] for e in rand["elemente"]] == ["prima de performanță", "ore lucrate sâmbătă"]
     comp = [(c["eticheta"], c["valoare"]) for c in sp.compozitie_fluturas(rand)
             if c["fel"] == sp.FEL_DETALIU and c["eticheta"].startswith("  din care")]   # [411] deducerea e și ea defalcare (a impozitului)
     assert comp == [("  din care salariul de bază (zilele lucrate)", 5000.0), ("  din care Primă — prima de performanță", 500.5),
-                    ("  din care Ore suplimentare — ore lucrate sâmbătă (10 ore)", 450.0)]
+                    ("  din care Ore suplimentare — ore lucrate sâmbătă (10 ore)", 520.83)]
     _p, sal = d112.pull(conn, SCH, Perioada(an=2026, luna=6))
     s = next(x for x in sal if x["id"] == sid)
     assert (float(s["cas"]), float(s["cass"]), float(s["impozit"])) == (rand["cas"], rand["cass"], rand["impozit"])
     xml, _r = d112.genereaza(conn, SCH, Perioada(an=2026, luna=6))
     b1 = _asigurat_b1(xml)
-    assert (b1["B1_sal2"], b1["B1_sal1"]) == ("5951", "5000")       # realizat (cu prima) / contractual (fără)
+    assert (b1["B1_sal2"], b1["B1_sal1"]) == ("6021", "5000")       # realizat (cu prima) / contractual (fără)
     if duk.poate_valida("d112"):
         rez = duk.valideaza(xml, "d112", an=2026, luna=6)
         assert rez["stare"] == "valid", rez
     note = dict(((n[0], n[1]), n[2]) for n in sc.note_lunare(conn, SCH, 2026, 6, xml)[0])
-    assert note[("641", "421")] == Decimal("5950.50")
+    assert note[("641", "421")] == Decimal("6021.33")
 
 
 def test_luna_cu_d112_depusa_nu_mai_primeste_elemente(conn):
