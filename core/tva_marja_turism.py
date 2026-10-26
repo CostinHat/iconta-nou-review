@@ -74,10 +74,12 @@ def marja_turism_normal(componente):
     """componente: [{descriere?, baza, cota}] - baza include marja alocata (alin. 11).
     Returneaza TVA per componenta + totaluri. Agentia are drept de deducere pe achizitii."""
     if not componente:
-        raise ValueError("lista componente goala")
+        raise ValueError("Pachetul turistic nu are nicio componentă: adaugă cel puțin un serviciu, cu baza și cota lui de TVA.")   # [lotul 13, 515]
     out, tb, tt = [], Decimal("0"), Decimal("0")
     for comp in componente:
-        baza, c = _d(comp["baza"]), _d(comp.get("cota", 21))
+        if comp.get("cota") in (None, ""):   # [lotul 13] fără cotă implicită (CLAUDE.md: nicio valoare fiscală presupusă)
+            raise ValueError("Cota de TVA a componentei „%s” lipsește. Declară cota fiecărui serviciu din pachet." % (comp.get("descriere") or "fără denumire"))
+        baza, c = _d(comp["baza"]), _d(comp["cota"])
         if baza <= 0 or c < 0:
             raise ValueError("Componenta introdusă e invalidă. Verifică valorile.")
         tva = (baza * c / 100).quantize(B, rounding=ROUND_HALF_UP)

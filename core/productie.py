@@ -6,9 +6,9 @@ inventarului permanent, cost standard cu diferente pe 348).
   (efectiv > standard) 348 = 711; favorabile 711 = 348 (sau 348 in rosu);
 - productie in curs: constatare la sfarsit de luna 331 = 711;
   reluare la inceputul lunii urmatoare 711 = 331;
-- vanzare: 4111 = 701 + 4427 (separat) si descarcarea gestiunii 711 = 345
-  la cost standard + repartizarea diferentelor: coeficient 348 aplicat la
-  iesiri -> 711 = 348 (nefavorabile) / 348 = 711 (favorabile)."""
+- vanzare [lotul 13, 510]: factura din Facturi emise (4111 = 701 + 4427) cu produsul din stoc, descarcarea gestiunii la iesire
+  (711 = 345, `stocuri_cv_api.descarca_factura`) + repartizarea diferentelor asupra iesirii: coeficientul din evidenta
+  (OMFP 1802/2014 pct.286 alin.(4), `uc_tenants._coeficient_348`) -> 711 = 348 (nefavorabile) / 348 = 711 (favorabile)."""
 from decimal import Decimal, ROUND_HALF_UP
 from core.common import nomenclator_cerut
 
@@ -27,7 +27,7 @@ def nota_obtinere(cost_standard, cost_efectiv=None):
     if cost_efectiv is not None:
         ce = _d(cost_efectiv)
         if ce <= 0:
-            raise ValueError("cost efectiv invalid")
+            raise ValueError("Costul efectiv trebuie să fie un număr mai mare decât zero — sau lasă câmpul gol când e egal cu costul standard.")
         d = ce - cs
         if d > 0:
             linii.append(("348", "711", d))
@@ -60,25 +60,14 @@ def coeficient_348(sold_initial_348, rulaj_348, sold_initial_345, intrari_345):
             "soldul și intrările contului 345 pe perioada aleasă.")
     return (numarator / numitor).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
 
-def nota_vanzare(pret_vanzare, cost_standard_iesit, cota_tva=None, coef_348=None):
-    """4111 = 701 + 4427; descarcare 711=345 standard + diferente aferente."""
-    if cota_tva is None:
-        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
-    pv, cs = _d(pret_vanzare), _d(cost_standard_iesit)
-    if pv <= 0 or cs <= 0:
-        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
-    tva = (pv * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
-    linii = [("4111", "701", pv)]
-    if tva > 0:
-        linii.append(("4111", "4427", tva))
-    linii.append(("711", "345", cs))
-    dif = None
-    if coef_348:
-        d = (cs * Decimal(str(coef_348))).quantize(B, rounding=ROUND_HALF_UP)
-        if d > 0:
-            linii.append(("711", "348", d))
-            dif = {"sens": "nefavorabila", "suma": d}
-        elif d < 0:
-            linii.append(("348", "711", -d))
-            dif = {"sens": "favorabila", "suma": -d}
-    return {"linii": linii, "tva": tva, "diferenta_repartizata": dif}
+def nota_diferente_iesire(valoare_iesita, coef_348):
+    """[lotul 13, 510] Diferențele de preț repartizate asupra produselor ieșite: valoarea ieșită la preț de înregistrare × coeficient
+    (OMFP 1802/2014 pct.286 alin.(4): „Acest coeficient se înmulțește cu valoarea bunurilor ieșite din gestiune la preț de înregistrare,
+    iar suma rezultată se înregistrează în conturile corespunzătoare în care au fost înregistrate bunurile ieșite”). Coeficient pozitiv
+    (diferențe nefavorabile) -> 711 = 348; negativ (favorabile) -> 348 = 711; zero -> nicio linie."""
+    d = (_d(valoare_iesita) * Decimal(str(coef_348 or 0))).quantize(B, rounding=ROUND_HALF_UP)
+    if d > 0:
+        return {"linii": [("711", "348", d)], "diferenta": {"sens": "nefavorabila", "suma": d}}
+    if d < 0:
+        return {"linii": [("348", "711", -d)], "diferenta": {"sens": "favorabila", "suma": -d}}
+    return {"linii": [], "diferenta": None}

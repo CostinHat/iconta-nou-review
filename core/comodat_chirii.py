@@ -9,11 +9,8 @@ comisionar, prestare in nume propriu) + practica ANAF.
 - CHIRIE platita: 612 = 401 + 4426 (PJ cu factura); de la PERSOANA FIZICA:
   612 = 462, fara TVA, fara retinere la sursa (PF isi declara singura prin DU);
 - CHIRIE incasata (activitate): 4111 = 706 + 4427;
-- REFACTURARE utilitati (chirias): structura de comisionar art. 271:
-  la primire factura furnizor (partea chiriasului): 461 = 401 cu TVA-ul
-  refacturat identic; la refacturare: se emite factura cu aceeasi cota;
-  practica simpla: primire % (605 + 4426) = 401 pentru partea proprie,
-  461 = 401 partea de refacturat; emitere 4111 = 708 + 4427."""
+- REFACTURARE utilitati (chirias): art. 271 alin.(2) lit.c (livrare in nume propriu): toata factura furnizorului
+  e achizitie proprie (605 + 4426 = 401), apoi factura catre chirias 4111 = 708 + 4427 (lotul 13, 530)."""
 from decimal import Decimal, ROUND_HALF_UP
 from core.common import nomenclator_cerut, cota
 
@@ -30,10 +27,11 @@ def nota_comodat(valoare, moment="primire"):
     v = _d(valoare)
     if v <= 0:
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
+    # [lotul 13, 507] în afara bilanțului, într-o singură parte (D la primire, C la restituire), fără 891 și fără rânduri de notă
     if moment == "primire":
-        return {"linii": [("8038", "891", v)]}
+        return {"linii": [], "extrabilant": [("8038", "D", v)]}
     if moment == "restituire":
-        return {"linii": [("891", "8038", v)]}
+        return {"linii": [], "extrabilant": [("8038", "C", v)]}
     raise ValueError(nomenclator_cerut("moment", "primire|restituire"))
 
 def nota_chirie_platita(chirie, cota_tva=None, proprietar="pj", la_data=None):
@@ -67,41 +65,28 @@ def nota_chirie_platita(chirie, cota_tva=None, proprietar="pj", la_data=None):
         linii.append(("4426", "401", tva))
     return {"linii": linii}
 
-def nota_chirie_incasata(chirie, cota_tva=None):
-    """4111 = 706 + 4427."""
-    if cota_tva is None:
-        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
-    c = _d(chirie)
-    if c <= 0:
-        raise ValueError("chirie invalidă")
-    tva = _tva(c, cota_tva)
-    linii = [("4111", "706", c)]
-    if tva > 0:
-        linii.append(("4111", "4427", tva))
-    return {"linii": linii}
-
 def nota_refacturare(total_factura_furnizor, parte_refacturata, cota_tva=None):
-    """Factura furnizor: partea proprie 605+4426=401, partea chiriasului 461=401
-    (cu TVA inclus in creanta); refacturare: 4111 = 708 + 4427 cu ACEEASI cota
-    (art. 271 - structura de comisionar)."""
+    """[lotul 13, deficiența 530, comanda Costin 13.1] Refacturarea utilităților către chiriaș.
+
+    Verbatim: „la total 1.000, refacturat 400, cota 21 se generează două note: 605 = 401 600, 4426 = 401 126, 461 = 401 484 și 4111 = 708
+    400, 4111 = 4427 84. Chiriașul apare că datorează de două ori (461 484 + 4111 484), iar TVA de 84 aferentă părții refacturate nu e dedusă
+    dar e colectată — 84 lei TVA plătită în plus. Corect (art. 271, livrare în nume propriu): toată factura ca achiziție proprie (605 = 401
+    1.000, 4426 = 401 210), apoi factura către chiriaș (4111 = 708 400, 4111 = 4427 84), fără 461.”
+    TEMEI: CF art.271 alin.(2) lit.c) — persoana impozabilă care acționează în nume propriu, dar în contul altei persoane, „se consideră
+    că a achiziționat și livrat ea însăși” bunurile / serviciile; deci achiziția e a ei (cu deducerea TVA, art.297), iar refacturarea e o
+    livrare a ei (cu TVA colectată). `primire` = factura furnizorului întreagă; `emitere` = rândurile facturii către chiriaș (le scrie
+    emiterea facturii, `facturi_api.emite_factura`, cu contul 708)."""
     if cota_tva is None:
         raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     tf, pr = _d(total_factura_furnizor), _d(parte_refacturata)
-    if tf <= 0 or pr < 0 or pr > tf:
-        raise ValueError("valori invalide (partea refacturată <= total)")
-    proprie = tf - pr
-    tva_proprie = _tva(proprie, cota_tva)
+    if tf <= 0 or pr <= 0 or pr > tf:
+        raise ValueError("Partea refacturată trebuie să fie un număr pozitiv, cel mult cât totalul facturii furnizorului.")
+    tva_total = _tva(tf, cota_tva)
     tva_refact = _tva(pr, cota_tva)
-    primire = []
-    if proprie > 0:
-        primire.append(("605", "401", proprie))
-        if tva_proprie > 0:
-            primire.append(("4426", "401", tva_proprie))
-    if pr > 0:
-        primire.append(("461", "401", pr + tva_refact))
-    emitere = []
-    if pr > 0:
-        emitere = [("4111", "708", pr)]
-        if tva_refact > 0:
-            emitere.append(("4111", "4427", tva_refact))
-    return {"primire": primire, "emitere": emitere, "tva_refacturat": tva_refact}
+    primire = [("605", "401", tf)]
+    if tva_total > 0:
+        primire.append(("4426", "401", tva_total))
+    emitere = [("4111", "708", pr)]
+    if tva_refact > 0:
+        emitere.append(("4111", "4427", tva_refact))
+    return {"primire": primire, "emitere": emitere, "tva_refacturat": tva_refact, "tva_total": tva_total}

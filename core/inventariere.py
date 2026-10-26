@@ -4,8 +4,8 @@ Rezultatele inventarierii (dupa compensari plus/minus sortimente confundabile
 si perisabilitati legale):
 - PLUS la inventar: stocuri 3xx = 60x corespondent (371=607, 301=601,
   345=711 produse); mijloace fixe 21x = 4754 (subventii asimilate);
-- MINUS NEIMPUTABIL: 60x = 3xx; daca neasigurat si nedovedit distrus ->
-  ajustare TVA 635 = 4426 (art. 304);
+- MINUS NEIMPUTABIL: 60x = 3xx; daca lipsa NU e dovedita ca distrugere, pierdere sau furt ->
+  ajustare TVA 635 = 4426 (art. 304 alin.(2) lit.a; asigurarea nu scuteste, lotul 13 / 520);
 - MINUS IMPUTABIL: 60x = 3xx + imputare persoanei vinovate la valoarea de
   inlocuire: 4282 = 7581 + 4427 (salariat) / 461 = 7581 + 4427 (tert);
 - CASARE MF (comisie, proces-verbal): % = 21x: 28xx amortizarea cumulata +
@@ -25,7 +25,7 @@ def nota_plus(valoare, cont_stoc="371"):
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     c = CORESPONDENT.get(str(cont_stoc))
     if not c:
-        raise ValueError("cont stoc: " + "|".join(CORESPONDENT))
+        raise ValueError("Contul de stoc %s nu e unul din cele cu plus / minus de inventar. Alege contul din listă: %s." % (cont_stoc, ", ".join(CORESPONDENT)))   # [lotul 13, 515]
     return {"linii": [(str(cont_stoc), c, v)]}
 
 def nota_plus_mf(valoare, cont_imobilizare="2131"):
@@ -71,7 +71,7 @@ def pregateste_mf_plus(corp):
 
 def nota_minus(valoare, cont_stoc="371", imputabil=False,
                valoare_imputare=None, vinovat="salariat",
-               cota_tva=None, asigurat_sau_distrus=False):
+               cota_tva=None, lipsa_dovedita=False):
     """Minus: descarcare 60x=3xx; imputabil -> imputare la valoarea de
     inlocuire cu TVA; neimputabil neasigurat -> ajustare TVA pe cost."""
     if cota_tva is None:
@@ -81,15 +81,17 @@ def nota_minus(valoare, cont_stoc="371", imputabil=False,
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     c = CORESPONDENT.get(str(cont_stoc))
     if not c:
-        raise ValueError("cont stoc: " + "|".join(CORESPONDENT))
+        raise ValueError("Contul de stoc %s nu e unul din cele cu plus / minus de inventar. Alege contul din listă: %s." % (cont_stoc, ", ".join(CORESPONDENT)))   # [lotul 13, 515]
     linii = [(c, str(cont_stoc), v)]
     if imputabil:
         vi = _d(valoare_imputare if valoare_imputare is not None else v)
         cont_crt = "4282" if vinovat == "salariat" else "461"
         linii.append((cont_crt, "7581", vi))
         # [3e · HG 1/2016 tit.VII pct.78(6)a) / pct.79(10)] suma imputata NU e in sfera TVA -> fara 4427.
-    if not asigurat_sau_distrus:
-        # ajustarea TVA DEDUSE pe bunul lipsa din gestiune (art. 304), pe COSTUL bunului (v), nu pe imputare.
+    if not lipsa_dovedita:
+        # [lotul 13, deficiența 520] CF art.304 alin.(2) lit.a): nu se ajustează deducerea numai pentru „bunurile distruse, pierdute sau furate,
+        # în condițiile în care aceste situații sunt demonstrate sau confirmate în mod corespunzător” (furtul, cu actele organelor judiciare)
+        # — asigurarea nu scutește. Altfel: ajustarea TVA DEDUSE pe bunul lipsa, pe COSTUL bunului (v), nu pe imputare.
         tva = (v * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
         if tva > 0:
             linii.append(("635", "4426", tva))  # ajustare art. 304

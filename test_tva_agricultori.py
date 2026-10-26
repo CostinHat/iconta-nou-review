@@ -21,5 +21,6 @@ def test_achizitie_in_registru():
     assert r["compensatie"] == Decimal("240.00")
 
 def test_achizitie_neinscris():
-    with pytest.raises(ValueError, match="nu este deductibilă"):
-        m.achizitie_de_la_agricultor(3000, False)
+    # [lotul 13, 549] „cumpărarea e legală, doar compensația nu se deduce”: achiziția trece, fără compensație, cu mențiunea
+    r = m.achizitie_de_la_agricultor(3000, False)
+    assert r["compensatie"] == Decimal("0.00") and r["total"] == Decimal("3000.00") and "fără compensație" in r["mentiune"]

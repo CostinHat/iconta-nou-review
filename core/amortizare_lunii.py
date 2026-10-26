@@ -40,17 +40,50 @@ def numar(an, luna):
 
 
 def linii(cur, schema, an, luna):
-    """[(cont_amortizare, rata, denumirea mijlocului fix)] — o linie pe mijloc fix cu rată pozitivă în luna cerută. Ridică ValueError cu
+    """[(cont_amortizare, rata, denumirea mijlocului fix)] — forma de trei a lui `linii_cu_activ` (regenerarea pe uscat a ciornei,
+    `ciorne_depasite`, compară conturile și sumele)."""
+    return [(c, r, d) for c, r, d, _m in linii_cu_activ(cur, schema, an, luna)]
+
+
+def _deja_pe_activ(cur, schema, an, luna):
+    """[lotul 13, deficiențele 517 / 518] {mijloc_fix_id} cu amortizarea lunii (an, luna) trecută pe activ într-o ALTĂ notă decât nota
+    lunii (`AMORT-AAAA-LL`): lunile lipsă generate din rândul activului, luna casării din nota ei. Nota lunii nu le mai cuprinde — altfel
+    luna s-ar amortiza de două ori."""
+    import datetime as _dt
+    p = '"%s".' % schema if schema else ""
+    inceput = _dt.date(int(an), int(luna), 1)
+    sfarsit = _dt.date(int(an) + (int(luna) == 12), int(luna) % 12 + 1, 1)
+    cur.execute("SELECT DISTINCT ml.mijloc_fix_id FROM %sinregistrari_linii l JOIN %smf_linii ml ON ml.linie_id = l.id "
+                "JOIN %sinregistrari i ON i.id = l.inregistrare_id "
+                "WHERE l.cont_debit LIKE '68%%%%' AND l.cont_credit LIKE '28%%%%' AND i.data >= %%s AND i.data < %%s "
+                "AND COALESCE(i.numar, '') <> %%s" % (p, p, p), (inceput, sfarsit, numar(an, luna)))
+    return {(list(r.values())[0] if isinstance(r, dict) else r[0]) for r in cur.fetchall()}
+
+
+def _scoase_inainte(cur, schema, an, luna):
+    """[lotul 13, 518] {mijloc_fix_id} cu casarea (validată sau nu) datată înaintea lunii: din luna de după casare activul nu se mai
+    amortizează, chiar dacă nota casării așteaptă validarea (luna casării intră în nota ei)."""
+    import datetime as _dt
+    p = '"%s".' % schema if schema else ""
+    cur.execute("SELECT n.mijloc_fix_id FROM %smf_note n JOIN %sinregistrari i ON i.id = n.inregistrare_id WHERE n.fel = 'iesire' "
+                "AND i.data < %%s" % (p, p), (_dt.date(int(an), int(luna), 1),))
+    return {(list(r.values())[0] if isinstance(r, dict) else r[0]) for r in cur.fetchall()}
+
+
+def linii_cu_activ(cur, schema, an, luna):
+    """[(cont_amortizare, rata, denumirea mijlocului fix, id-ul lui)] — o linie pe mijloc fix cu rată pozitivă în luna cerută, fără activele
+    a căror lună e deja trecută pe activ în altă notă (`_deja_pe_activ`) și fără cele casate înainte de lună. Ridică ValueError cu
     motivul pentru contabil („Amortizarea nu se poate genera pentru <mijloc> până nu corectezi fișa lui: <motiv>”). Nu scrie nimic."""
     from core import d406_active as _d406, repo_mijloace_fixe
     with cur.connection.cursor() as c:   # rândurile de tuplu ale depozitului, oricare ar fi cursorul apelantului
         mf = repo_mijloace_fixe.de_amortizat(c, schema)
+        sarite = _deja_pe_activ(c, schema, an, luna) | _scoase_inainte(c, schema, an, luna)
     out = []
     # [lotul 12, clasa 440] toate fișele de corectat deodată, fiecare cu motivul ei (nu numai prima), într-un singur refuz
     from core.erori import ErorileFormularului
     er = ErorileFormularului("Amortizarea lunii nu se poate genera")
     for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met, reev, dcd, prel, dprel in mf:
-        if not pif or not dnf:
+        if not pif or not dnf or mid in sarite:
             continue
         mf_d = {"cod": den, "denumire": den, "cont_imobilizare": cont_imob,
                 "cont_amortizare": cont_am, "valoare": val, "rezidual": rez,
@@ -68,7 +101,22 @@ def linii(cur, schema, an, luna):
             except ValueError as e:
                 er.fara_camp(f"Amortizarea lunii nu poate fi generată: {e}")
                 continue
-            out.append((cont_am, float(rata), den))
+            out.append((cont_am, float(rata), den, mid))
     if er:
         raise ValueError(er.detaliu()["mesaj"])   # ValueError, ca înainte: apelanții (generarea notei, regenerarea ciornei) îl prind așa
     return out
+
+
+def linii_lipsa(cur, schema, an, luna):
+    """[lotul 13, deficiența 517] Rândurile lunii pentru activele care n-au amortizarea ei în NICIO notă (nici în nota lunii): activul
+    adăugat după ce nota lunii a fost validată. Se scriu într-o notă separată, pe activ (`uc_tenants.tenant_amortizare_restanta`)."""
+    import datetime as _dt
+    p = '"%s".' % schema if schema else ""
+    inceput = _dt.date(int(an), int(luna), 1)
+    sfarsit = _dt.date(int(an) + (int(luna) == 12), int(luna) % 12 + 1, 1)
+    cur.execute("SELECT DISTINCT ml.mijloc_fix_id FROM %sinregistrari_linii l JOIN %smf_linii ml ON ml.linie_id = l.id "
+                "JOIN %sinregistrari i ON i.id = l.inregistrare_id "
+                "WHERE l.cont_debit LIKE '68%%%%' AND l.cont_credit LIKE '28%%%%' AND i.data >= %%s AND i.data < %%s"
+                % (p, p, p), (inceput, sfarsit))
+    au = {(list(r.values())[0] if isinstance(r, dict) else r[0]) for r in cur.fetchall()}
+    return [x for x in linii_cu_activ(cur, schema, an, luna) if x[3] not in au]

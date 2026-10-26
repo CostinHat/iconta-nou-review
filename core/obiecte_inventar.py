@@ -6,7 +6,7 @@ amortizeaza pe durata ramasa (art. 45(21^3)) - NU se reclasifica.
 Sub prag sau durata <1 an -> obiect de inventar:
 - achizitie: 303 + 4426 = 401;
 - dare in folosinta: 603 = 303 (integral pe cheltuiala) + evidenta
-  extracontabila D8035 pana la scoaterea din uz (C8035)."""
+  in afara bilantului D8035 pana la scoaterea din uz (C8035), intr-o singura parte (lotul 13, 507)."""
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 
@@ -75,15 +75,15 @@ def nota_achizitie(valoare, cota_tva=None):
     return {"linii": linii, "tva": tva}
 
 def nota_dare_folosinta(valoare):
-    """603=303 + D8035 extracontabil (contrapartida tehnica 891)."""
+    """603 = 303 (integral pe cheltuială) + D 8035 în afara bilanțului (`extrabilant`, o singură parte — lotul 13, 507)."""
     v = _d(valoare)
     if v <= 0:
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
-    return {"linii": [("603", "303", v), ("8035", "891", v)]}
+    return {"linii": [("603", "303", v)], "extrabilant": [("8035", "D", v)]}
 
 def nota_scoatere_uz(valoare):
-    """C8035 la casare/scoatere din uz (proces-verbal)."""
+    """C 8035 la scoaterea din folosință (proces-verbal): nicio linie în bilanț — numai înregistrarea în afara bilanțului (lotul 13, 507)."""
     v = _d(valoare)
     if v <= 0:
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
-    return {"linii": [("891", "8035", v)]}
+    return {"linii": [], "extrabilant": [("8035", "C", v)]}

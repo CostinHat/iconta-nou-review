@@ -72,22 +72,28 @@ def nota_avans(suma, sursa="casa"):
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return {"linii": [("542", "5311" if sursa == "casa" else "5121", s)]}
 
-def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_tva=None, sursa="casa"):
-    """Decont: 625 = 542 (+4426 pe cazare/transport cu factura daca cota>0);
-    diferenta: daca cheltuieli < avans -> restituire rest; daca > -> plata diferentei."""
-    # R26, a doua rundă: `cota_tva=0` era tot un default cu VALOARE - si mai periculos decat 21,
-    # fiindca 0 e o cota VALIDA (scutit). Un decont cu cazare pe factura, trimis fara cota, primea
-    # tacit 0% -> zero TVA deductibila. `0` ramane raspuns bun, dar DECLARAT.
-    if cota_tva is None:
-        raise ValueError("Cota de TVA nu s-a dat. Pentru un decont fără facturi cu TVA declară "
-                         "explicit cota 0 — absența nu se poate deosebi de scutire, iar tăcerea ar "
-                         "șterge TVA-ul deductibil de pe cazare sau transport.")
+def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_transport=None, cota_cazare=None, sursa="casa"):
+    """Decontul final al deplasării: 625 = 542 pe bazele cheltuielilor (fără TVA), 4426 = 542 pe TVA-ul fiecărei cheltuieli cu cota
+    EI, restul de restituit (5311/5121 = 542) sau diferența de plătit salariatului (542 = 5311/5121).
+
+    [lotul 13, deficiența 670 (c)-(d), comanda Costin 13.1] „O singură cotă TVA pentru toate cheltuielile: cazarea are cota redusă
+    (126 lei în loc de 86 în probă), diurna nu are TVA; nu scrie dacă sumele se introduc cu sau fără TVA. Fiecare cheltuială cu cota ei
+    și cu baza clară. […] transportul și cazarea sunt obligatorii, deși pot lipsi.” Deci: transportul și cazarea sunt BAZELE din
+    documentele lor (fără TVA), fiecare cu cota ei (CF art.291 alin.(1): 21%; alin.(2) lit.m): „cazarea în cadrul sectorului hotelier sau
+    al sectoarelor cu funcție similară” — 11%); diurna nu e o livrare, deci n-are TVA. O cheltuială care lipsește (0) nu cere cotă; una
+    prezentă o cere declarat (R26: 0 e un răspuns bun — bon fără TVA deductibilă —, dar tăcerea nu se deosebește de el)."""
     av = _d(avans)
     d, t, c = _d(diurna), _d(transport), _d(cazare)
     if av < 0 or d < 0 or t < 0 or c < 0 or (d + t + c) <= 0:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
+    lipsa = [n for n, baza, cota in (("transportului", t, cota_transport), ("cazării", c, cota_cazare)) if baza > 0 and cota is None]
+    if lipsa:
+        raise ValueError("Alege cota de TVA a %s (0 dacă documentul nu are TVA deductibilă): fiecare cheltuială are cota ei."
+                         % " și a ".join(lipsa))
     cont_banii = "5311" if sursa == "casa" else "5121"
-    tva = (Decimal(str(cota_tva)) / 100 * (t + c)).quantize(B, rounding=ROUND_HALF_UP)
+    tva_t = (Decimal(str(cota_transport or 0)) / 100 * t).quantize(B, rounding=ROUND_HALF_UP) if t > 0 else Decimal("0.00")
+    tva_c = (Decimal(str(cota_cazare or 0)) / 100 * c).quantize(B, rounding=ROUND_HALF_UP) if c > 0 else Decimal("0.00")
+    tva = tva_t + tva_c
     total = d + t + c + tva
     linii = [("625", "542", d + t + c)]
     if tva > 0:
@@ -97,4 +103,4 @@ def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_tva=None, sursa="ca
         linii.append((cont_banii, "542", dif))       # restituire rest
     elif dif < 0:
         linii.append(("542", cont_banii, -dif))      # plata diferentei
-    return {"linii": linii, "total_cheltuieli": total, "diferenta": dif}
+    return {"linii": linii, "total_cheltuieli": total, "diferenta": dif, "tva_transport": tva_t, "tva_cazare": tva_c}

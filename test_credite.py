@@ -32,5 +32,6 @@ def test_restanta():
     assert m.nota_restanta(6000, "scurt")["linii"] == [("5191", "5192", Decimal("6000.00"))]
 
 def test_garantie():
-    assert m.nota_garantie(200000, "primita")["linii"] == [("8021", "891", Decimal("200000.00"))]
-    assert m.nota_garantie(200000, "acordata", "eliberare")["linii"] == [("891", "8011", Decimal("200000.00"))]
+    # [lotul 13, 507] numai evidența în afara bilanțului, într-o singură parte, fără 891
+    assert m.nota_garantie(200000, "primita") == {"linii": [], "extrabilant": [("8021", "D", Decimal("200000.00"))]}
+    assert m.nota_garantie(200000, "acordata", "eliberare") == {"linii": [], "extrabilant": [("8011", "C", Decimal("200000.00"))]}

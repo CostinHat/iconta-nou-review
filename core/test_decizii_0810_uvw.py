@@ -189,6 +189,10 @@ def cu_mf(conn):
         _nota(cur, "2099-03-31", [("6811", "2813", 200)])
         _nota(cur, "2099-04-30", [("6811", "2813", 200)], status="ciorna")   # propunere, nu înregistrare
     conn.commit()
+    # [lotul 13, 522] amortizarea se ține PE ACTIV (`inregistrari_linii.mijloc_fix_id`): notele scrise ca înainte de lot primesc activul
+    # din migrarea datelor existente, exact ca pe firmele reale
+    from core import migrare_mf_note
+    migrare_mf_note.aplica(conn, SCH)
     return conn
 
 
@@ -200,10 +204,12 @@ def test_registrul_arata_amortizarea_inregistrata_si_lunile_lipsa(cu_mf):
     # decizia W2: „registrul afișează amortizarea înregistrată în contabilitate, iar separat diferența față de calculul teoretic”
     assert Decimal(r["inregistrat"]) == 400                           # 200 inițial (solduri_initiale) + 200 validat; ciorna nu
     assert Decimal(r["amortizat_teoretic"]) - Decimal(r["inregistrat"]) == Decimal(r["diferenta"]) > 0
-    assert r["luni_neinregistrate"] == ["04/2099", "05/2099"]          # iunie e luna curentă, nu „lipsă”
+    # iunie e luna curentă, nu „lipsă”; [lotul 13, 517] aprilie are ciorna amortizării pe activ: „în ciornă”, nu „lipsă” (nu se generează a
+    # doua oară din „Înregistrează lunile lipsă”) — și tot neînregistrată (nu intră în „înregistrat”)
+    assert r["luni_neinregistrate"] == ["05/2099"] and r["luni_in_ciorna"] == ["04/2099"]
     assert r["durata_luni"] == 60 and len(r["plan_lunar"]) == 60
     # soldul preluat stinge lunile cele mai vechi (02.2099): nu e „neînregistrată” (pe F2: 2.200 = 02–12.2025)
-    assert [p["stare"] for p in r["plan_lunar"][:6]] == ["sold_initial", "inregistrata", "neinregistrata", "neinregistrata",
+    assert [p["stare"] for p in r["plan_lunar"][:6]] == ["sold_initial", "inregistrata", "in_ciorna", "neinregistrata",
                                                           "in_curs", "viitoare"]
 
 

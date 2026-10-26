@@ -166,7 +166,25 @@ _MOTIV_C73_U3 = ("Deficiența C73 pe schema `public` (lotul 10, U3, 21.10.2026; 
 _MOTIV_102_8B = ("Comanda Costin 10.2 pct.8b (lotul 10, verbatim în DECIZII „Comanda 10.2”): „La refuzul «numerar + card ≠ total» mesajul nu "
                   "dă cifrele (total 231,00, încasat 200,00, diferență 31,00).” Același 400, cu cifrele (`raport_z.mesaj_plata_diferita`); "
                   "comparația pe lei în Decimal, nu în float cu toleranța 0,01.")
+_MOTIV_L13_OPS = ("Lotul 13, pachetul ops (comanda Costin 13.1): operațiile speciale rescrise pe deficiențele numite în intrare — 506 / 633 "
+                  "(partenerul pe rândul notei: `adauga_linie_partener`), 510 (producția din stoc, vânzarea pe factură), 518 / 519 / 522 "
+                  "(casarea pe activ, în `_casare`; activul schimbat numai la validare), 524 (soldul contului stins), 527, 530 / 531 "
+                  "(chiria și refacturarea pe factură emisă), 532 (creditul de sponsorizare în D101), 533 (partajul din solduri), 544 "
+                  "(ANAF strict la taxarea inversă), 548 (marja / aurul din stoc), 670 (plafonul diurnei în decont). Raportul: "
+                  "`l13_raport/ops.md`.")
 PERECHI_ADAUGATE = {
+    # [lotul 13, pachetul ops] refuzurile noi, fiecare lângă câmpul ei
+    ('achizitie_ic', "{'mesaj': str(_mn), 'erori_campuri': [{'camp': 'op-moneda', 'mesaj': str(_mn)}]}"): _MOTIV_L13_OPS + ' 537: moneda facturii fără curs BNR.',
+    ('achizitie_ic', 'str(_ci)'): _MOTIV_L13_OPS + ' 537: cursul BNR al zilei exigibilității nu e încă publicat (409, reîncearcă).',
+    ('decontare_valuta', "{'mesaj': 'Factura aleasă nu e o %s în valută deschisă la %s (contată prin notă validată, cu sold rămas). Alege-o din listă.' % ('creanță' if corp['tip'] == 'creanta' else 'datorie', data_ro(data)), 'erori_campuri': [{'camp': 'op-factura_id', 'mesaj': 'Alege factura din listă.'}]}"): _MOTIV_L13_OPS + ' 524: decontarea se face pe factura de origine.',
+    ('decontare_valuta', "{'mesaj': m, 'erori_campuri': [{'camp': 'op-valoare_valuta', 'mesaj': m}]}"): _MOTIV_L13_OPS + ' 524: suma peste restul facturii.',
+    ('nota_inventariere', "{'mesaj': 'Scrie documentul care dovedește distrugerea, pierderea sau furtul (de exemplu procesul-verbal al organelor judiciare): fără el TVA dedusă se ajustează (CF art.304 alin.(2) lit.a)).', 'erori_campuri': [{'camp': 'op-document_lipsa', 'mesaj': 'Scrie documentul doveditor.'}]}"): _MOTIV_L13_OPS + ' 520: lipsa dovedită cere documentul.',
+    ('nota_leasing', 'e.detaliu()'): _MOTIV_L13_OPS + ' 523: codul de inventar dublat al bunului primit (`CheieDublata.detaliu()`).',
+    ('nota_productie', "{'mesaj': m, 'erori_campuri': [{'camp': 'op-cantitate', 'mesaj': m}]}"): _MOTIV_L13_OPS + ' 510: stocul produsului insuficient la vânzare.',
+    ('nota_productie', "m['eroare']"): _MOTIV_L13_OPS + ' 510: intrarea în fișa de magazie refuzată.',
+    ('nota_provizion_ep', "{'mesaj': 'Alege factura emisă neîncasată din listă.', 'erori_campuri': [{'camp': 'op-factura_id', 'mesaj': 'Alege factura din listă.'}]}"): _MOTIV_L13_OPS + ' 511: ajustarea creanței pe factura neîncasată aleasă.',
+    ('nota_subventie', "{'mesaj': 'Alege mijlocul fix finanțat din registrul activelor.', 'erori_campuri': [{'camp': 'op-mijloc_fix_id', 'mesaj': 'Alege mijlocul fix din listă.'}]}"): _MOTIV_L13_OPS + ' 528: subvenția pentru investiții se leagă de activ.',
+    ('vanzare_ic', "_ic.mesaj_vies_indisponibil(corp['cod_tva_client'], v.get('eroare'))"): _MOTIV_L13_OPS + ' 550: VIES indisponibil nu e cod invalid (502).',
     ("facturi_emite", "{'ok': False, 'cod': e.cod, 'mesaj': str(e), 'intrebare': e.intrebare}"): (
         "Deficiența C84 (lotul 12, decizia Costin 12.3 pct.7: „livrarea intracomunitară de bunuri fără dovada transportului primește "
         "avertisment la emitere, nu refuz”): după linii și după „Pleacă marfa acum?”, emiterea unei livrări intracomunitare de bunuri "
@@ -431,17 +449,13 @@ BIFA_INLOCUIRI = {
     "export_extracomunitar": (_BOOL_GET, {}, "dovada_export"),
     "import_extracomunitar": (_BOOL_GET, {}, "certificat_amanare"),
     "nota_asociati": ({"bool": 1, "get": 1}, {}, "interimar: select „0”/„1”; [07.10.2026, „Cele 33 de chei”] DA/NU nou în ecran („true”/„false” ca TEXT) citit acum prin `bifa`, nu prin `corp.get`: cu_plata"),
-    "nota_credit": ({"get": 1}, {}, "[07.10.2026, „Cele 33 de chei”] DA/NU nou în ecran („true”/„false” ca TEXT) citit acum prin `bifa`, nu prin `corp.get`: dobanda_angajata"),
     "nota_sponsorizare_ep": ({"get": 1}, {}, "[07.10.2026, „Cele 33 de chei”] DA/NU nou în ecran („true”/„false” ca TEXT) citit acum prin `bifa`, nu prin `corp.get`: beneficiar_in_registru"),
     "vanzare_aur_investitii": ({"get": 1}, {}, "[07.10.2026, „Cele 33 de chei”] DA/NU nou în ecran („true”/„false” ca TEXT) citit acum prin `bifa`, nu prin `corp.get`: optiune_taxare"),
     "vanzare_marja_turism": ({"get": 3}, {}, "[07.10.2026, „Cele 33 de chei”] DA/NU nou în ecran („true”/„false” ca TEXT) citit acum prin `bifa`, nu prin `corp.get`: intermediar, optiune_normal, tva_inclus"),
-    "nota_inventariere": (_BOOL_GET, {}, "imputabil, asigurat_sau_distrus, destinatie_cd"),
+    "nota_inventariere": (_BOOL_GET, {}, "imputabil, lipsa_dovedita (fosta asigurat_sau_distrus, lotul 13 / 520), destinatie_cd"),
     "nota_obiect_inventar": (_BOOL_GET, {}, "durata_sub_1_an"),
     "nota_perisabilitati": (_BOOL_GET, {}, "degradare_dovedita_distrusa"),
     "nota_provizion_ep": (_BOOL_GET, {}, "garantata, afiliata, faliment"),
-    "achizitie_taxare_inversa": ({"get": 1, "strip": 1, "lower": 1}, {"get": 1},
-                                 "furnizor_platitor_tva; al doilea `corp.get` (sirul trimis la se_aplica) inlocuit "
-                                 "de verdictul ANAF/bifa `_tert_pl`"),
 }
 
 
@@ -483,6 +497,7 @@ _MOTIV_C36 = ("C36 / 270d (comanda Costin 15.10.2026, verbatim în DECIZII „Lo
               "`salveaza` verifică tipul DUPĂ CONȚINUT și limita (`verifica`), scrie fișierul și rândul lui din `public.fisiere_private` "
               "(în locul lui `raportari_api.adauga_atasament` și al tabelei `raportari_atasamente`). Gardul: `core/test_fisiere_private.py`.")
 PERECHI_MUTATE_IN_AJUTOR = {
+    ('nota_inventariere', "'Mijlocul fix ales nu există în registrul firmei sau a fost casat. Alege-l din listă.'"): ('_casare', _MOTIV_L13_OPS + ' 518 / 519: casarea pe activ a plecat în `uc_tenants._casare`; același 404.'),
     ("factura_primita_valideaza", "dict(_af.afirmatie('neconformitate', 'CONT_CHELTUIALA_OBLIGATORIU', 'Alege contul de cheltuială "
                                   "înainte de a valida: validarea recunoaște cheltuiala și îi scrie nota contabilă în același act, iar "
                                   "nota nu poate ghici contul.', unde='factura primită #%s' % primita_id, regula='validarea unei facturi "
@@ -582,6 +597,10 @@ _MOTIV_642_PRECOMPLETARE = ("Lotul 12, deficiența 642 (clasa): precompletarea A
                             "căderea consemnată; fără el, o eroare de bază strica tranzacția creării, iar `commit`-ul o anula tăcut. Gardul: "
                             "core/test_lot12_form2_register.py")
 APELURI_INLOCUITE = {
+    ('achizitie_agricultor', 'adauga_linie'): ('adauga_linie_partener', _MOTIV_L13_OPS + ' 549: agricultorul e partenerul rândului 401.'),
+    ('tenant_amortizare', 'adauga_linie_cheltuiala_amortizare'): ('adauga_linie', _MOTIV_L13_OPS + ' 522: rândul amortizării poartă activul (`mf_note.adauga_linie`).'),
+    ('vanzare_aur_investitii', 'adauga_linie_venit_marfa'): ('adauga_linie_partener', _MOTIV_L13_OPS + ' 548: clientul pe rândul 4111.'),
+    ('vanzare_marja', 'adauga_linie_2'): ('adauga_linie_partener', _MOTIV_L13_OPS + ' 548: clientul pe rândurile 4111.'),
     ("migrare_importa", "precompleteaza_din_anaf"): ("precompleteaza_sau_semnaleaza", _MOTIV_642_PRECOMPLETARE),
     ("jurnal_valideaza", "valideaza"): ("valideaza_documentul", "C107, lotul 12: notele documentului se validează împreună, ca în coada de validare (toate "
                                                            "notele aceluiași document, o singură dată)"),
@@ -710,6 +729,7 @@ APELURI_INLOCUITE = {
 #: Creditul NU se dă orb: se numără apelurile din corpul ajutorului (plus funcțiile modulului lui pe care le cheamă direct), deci
 #: un apel care nu există nici acolo rămâne pierdut. Anti-vacuu: `test_EXTRAGERILE_declarate_chiar_cheama_ajutorul`.
 APELURI_EXTRASE_IN_AJUTOR = {
+    'nota_decont_deplasare': (('core/uc_tenants.py', '_plafon_diurnei'), _MOTIV_L13_OPS + ' 670: plafonul diurnei se socotește în decont, pe salariat (`_plafon_diurnei`).'),
     # [lotul 12, 642 — clasa] `try: precompleteaza_din_anaf … except: esec_secundar` din `tenant_creeaza` a devenit ajutorul cu punct de revenire
     'tenant_creeaza': (("core/tenant_provisioning.py", "precompleteaza_sau_semnaleaza"), _MOTIV_642_PRECOMPLETARE),
     'raportari_creeaza': (("core/db.py", "fir_de_fundal"), (
@@ -717,7 +737,7 @@ APELURI_EXTRASE_IN_AJUTOR = {
         'acum prin `db.fir_de_fundal`, singurul loc care pornește fire cu bază din drumul unei cereri, oprit în suită. Gardul: '
         '`core/test_fire_fundal.py::test_niciun_fir_pornit_in_afara_portii_unice`.')),
     "import_efactura": (("core/uc_tenants.py", "_factura_importata"), "Lotul 11, C79 (subagentul Y): importul facturii din XML trece numai prin `uc_tenants._factura_importata` — `_factura_din_parsat` (facturi + linii, dedup) ȘI TVA-ul pe cote al facturii (BG-23, `factura_tva_cote`), de pe care se contează și se declară TVA-ul (CF art.299 alin.(1) lit.a). Gardul: `core/test_lot11_y_tva_primita.py::test_importul_trece_numai_prin_factura_importata`."),
-    'tenant_amortizare': (("core/amortizare_lunii.py", "linii"), (
+    'tenant_amortizare': (("core/amortizare_lunii.py", "linii_cu_activ"), (
         "Lotul 11, deficiența 451 (comanda Costin 11.1 pct.6): corpul buclei rândurilor amortizării (`repo_mijloace_fixe.de_amortizat`, "
         "`amortizare_luna` pe metoda reală — CF art.28 —, `append`, `float`) a plecat în `amortizare_lunii.linii`, sursa unică cu "
         "regenerarea pe uscat a ciornei depășite (`ciorne_depasite`). Gardul: `core/test_r36_evidenta.py -k amortiz`.")),
@@ -826,6 +846,16 @@ _MOTIV_CF_CUI = ("Lotul 11, decizia Costin 10.3 pct.4 (CUI-ul fără „RO” ș
 _MOTIV_C84 = ("C84 (b), decizia Costin 23.10.2026: livrarea intracomunitară de bunuri trece pe „Emite factură”; Operațiuni rămân "
               "pentru servicii, deci verificarea dovezii transportului și contul bunurilor ies din `vanzare_ic`.")
 APELURI_REDUSE = {
+    ('achizitie_taxare_inversa', 'get'): (1, _MOTIV_L13_OPS + ' 544: `furnizor_platitor_tva` nu se mai citește.'),
+    ('decontare_valuta', 'get'): (3, _MOTIV_L13_OPS + ' 524: moneda, contul de terț și cursul de evidență vin de la factură, nu din cerere.'),
+    ('decontare_valuta', 'cere_cont'): (1, _MOTIV_L13_OPS + ' 524: contul de terț e al facturii.'),
+    ('jurnal_marja', 'sum'): (2, _MOTIV_L13_OPS + ' 548: jurnalul citește prețurile din `vanzari_din_stoc`.'),
+    ('jurnal_marja', 'values'): (2, _MOTIV_L13_OPS + ' 548: idem.'),
+    ('nota_chirie', 'append'): (1, _MOTIV_L13_OPS + ' 530 / 531: chiria încasată pleacă pe factură.'),
+    ('nota_inventariere', 'cere_cont'): (1, _MOTIV_L13_OPS + ' 518: casarea nu mai primește conturi din cerere.'),
+    ('nota_lichidare', 'get'): (1, _MOTIV_L13_OPS + ' 533: capitalul, rezervele și profitul nu mai vin din cerere.'),
+    ('nota_lichidare', 'str'): (3, _MOTIV_L13_OPS + ' 533: idem.'),
+    ('nota_sponsorizare_ep', 'get'): (2, _MOTIV_L13_OPS + ' 532: cifra de afaceri și impozitul nu mai vin din cerere.'),
     ("vanzare_ic", "cere_cont"): (2, _MOTIV_C84),
     ("cv_barcode_set", "get"): (1, _MOTIV_C73_U2 + " `rez.get(\"eroare\")` a ieșit cu verificarea prealabilă: `set_barcode` nu mai "
                                 "întoarce refuzul ca valoare, ridică `CheieDublata`; rămâne `corp.get(\"barcode\")`."),
@@ -846,6 +876,23 @@ APELURI_REDUSE = {
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    ('achizitie_taxare_inversa', 'lower'): _MOTIV_L13_OPS + ' 544: bifa „Furnizor plătitor TVA” scoasă — verdictul ANAF strict (`_platitor_tva_strict`).',
+    ('achizitie_taxare_inversa', 'platitor_tva_freeze'): _MOTIV_L13_OPS + ' 544: calitatea furnizorului cerută STRICT de la ANAF (`_platitor_tva_strict`), nu best-effort.',
+    ('nota_chirie', 'nota_chirie_incasata'): _MOTIV_L13_OPS + ' 531: chiria încasată e factura emisă (`_emite_catre` -> `emite_factura`), nu nota scrisă de mână.',
+    ('nota_inventariere', 'scoate_din_evidenta'): _MOTIV_L13_OPS + ' 519: activul iese din registru la VALIDAREA casării (triggerul `trg_mf_nota_status`), nu la generare.',
+    ('nota_inventariere', 'nota_casare_mf'): _MOTIV_L13_OPS + ' 518: casarea pe activ a plecat în `_casare`; calea API cu sumele date de mână a ieșit.',
+    ('nota_inventariere', 'pentru_inventariere'): _MOTIV_L13_OPS + ' 518: fișa activului se citește în `_casare`.',
+    ('nota_inventariere', 'amortizat_la_data'): _MOTIV_L13_OPS + ' 518: amortizarea la data casării se socotește în `_casare`.',
+    ('nota_lichidare', 'partaj'): _MOTIV_L13_OPS + ' 533: partajul din solduri și din structura asociaților (`_partaj_lichidare`).',
+    ('nota_productie', 'nota_vanzare'): _MOTIV_L13_OPS + ' 510: vânzarea produselor e factura emisă cu produsul din stoc (`_emite_catre`, `descarca_factura`).',
+    ('nota_provizion_ep', 'cere_cont'): _MOTIV_L13_OPS + ' 514: contul de ajustare a stocurilor se alege din lista 391–398 (`provizioane.CONTURI_AJUSTARE_STOC`).',
+    ('nota_sponsorizare_ep', 'credit_sponsorizare'): _MOTIV_L13_OPS + ' 532: creditul îl calculează D101 la nivelul anului; nota spune plafonul (0,75% din cifra de afaceri).',
+    ('nota_sponsorizare_ep', 'items'): _MOTIV_L13_OPS + ' 532: cifra de afaceri și impozitul nu mai vin din cerere.',
+    ('nota_sponsorizare_ep', 'isinstance'): _MOTIV_L13_OPS + ' 532: idem — calculul creditului din cerere a ieșit.',
+    ('nota_subventie', 'reluare_lunara_investitii'): _MOTIV_L13_OPS + ' 528: reluarea se generează odată cu amortizarea lunii (`_reluare_subventii`).',
+    ('tenant_amortizare', 'append'): _MOTIV_L13_OPS + ' 522: rândurile cu activul vin din `amortizare_lunii.linii_cu_activ`.',
+    ('tenant_amortizare', 'float'): _MOTIV_L13_OPS + ' 522: idem.',
+    ('vanzare_marja', 'append'): _MOTIV_L13_OPS + ' 548: rândurile pe client scrise direct (`adauga_linie_partener`).',
     ("register", "precompleteaza_din_anaf"): (
         "Lotul 12, deficiența 642: precompletarea firmei proprii trece prin `tenant_provisioning.precompleteaza_sau_semnaleaza` (chemat "
         "din ajutorul `uc_auth._firma_proprie`), care cheamă `precompleteaza_din_anaf` sub un punct de revenire. " + _MOTIV_642_PRECOMPLETARE),

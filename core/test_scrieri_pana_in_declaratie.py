@@ -22,6 +22,7 @@ from __future__ import annotations
 import contextlib
 
 import pytest
+from decimal import Decimal
 
 from core import auth_api, declaratii_api
 from core import db as _db
@@ -519,29 +520,34 @@ def test_CHITANTA_emisa_intra_in_inregistrarile_citite_de_generatoare(firma):
 NOTE = [
     ("/tenants/{tenant_id}/nota-bacsis", {"fel": "incasare", "suma": 100, "sursa": "card"}),
     ("/tenants/{tenant_id}/nota-credit", {"operatie": "primire", "suma": 5000, "tip": "lung"}),
-    ("/tenants/{tenant_id}/nota-sponsorizare", {"suma": 1000, "mod": "contract"}),
+    # [lotul 13, pachetul ops] corpurile cer acum ce cere formularul: partenerul (506 / 633), contul de venit, contul stocului, tipul
+    # provizionului, salariatul decontului (670), locatorul (523), obiectul cumpărat (508), DVI-ul (552), factura în valută (524)
+    ("/tenants/{tenant_id}/nota-sponsorizare", {"suma": 1000, "mod": "contract", "beneficiar_cui": "18765430",
+                                                "beneficiar_nume": "ASOCIATIA PROBA", "beneficiar_in_registru": "true"}),
     ("/tenants/{tenant_id}/nota-subventie", {"fel": "exploatare", "suma": 2000,
-                                             "moment": "drept"}),
-    ("/tenants/{tenant_id}/nota-inventariere", {"operatie": "plus", "valoare": 300}),
+                                             "moment": "drept", "cont_venit": "7411"}),
+    ("/tenants/{tenant_id}/nota-inventariere", {"operatie": "plus", "valoare": 300, "cont_stoc": "371"}),
     ("/tenants/{tenant_id}/nota-provizion", {"fel": "provizion", "suma": 700,
-                                             "actiune": "constituire"}),
+                                             "actiune": "constituire", "tip": "litigii"}),
     ("/tenants/{tenant_id}/nota-chirie", {"fel": "chirie_platita", "chirie": 1500,
-                                          "proprietar": "pj", "cota": 21}),
+                                          "proprietar": "pj", "cota": 21, "furnizor_cui": "18765430",
+                                          "furnizor_nume": "PROPRIETAR PROBA SRL"}),
     ("/tenants/{tenant_id}/nota-asociati", {"operatie": "imprumut", "suma": 2500}),
     ("/tenants/{tenant_id}/nota-decont-deplasare", {"fel": "avans", "suma": 400,
-                                                    "sursa": "casa"}),
+                                                    "sursa": "casa", "salariat_id": "<salariat>"}),
     ("/tenants/{tenant_id}/nota-leasing", {"tip": "rata", "capital": 800, "dobanda": 120,
-                                           "cota": 21}),
-    ("/tenants/{tenant_id}/nota-obiect-inventar", {"operatie": "dare_folosinta",
-                                                   "valoare": 350, "cota": 21}),
+                                           "cota": 21, "locator_cui": "18765430", "locator_nume": "LEASING PROBA IFN"}),
+    ("/tenants/{tenant_id}/nota-obiect-inventar", {"operatie": "achizitie", "denumire": "Scaun birou",
+                                                   "valoare": 350, "cota": 21, "furnizor_cui": "18765430",
+                                                   "furnizor_nume": "MOBILA PROBA SRL", "numar": "MB-1"}),
     ("/tenants/{tenant_id}/nota-productie", {"operatie": "pic", "suma": 900,
                                              "moment": "constatare"}),
     ("/tenants/{tenant_id}/nota-contract-special", {"brut": 500, "fel": "zilier"}),
     ("/tenants/{tenant_id}/nota-perisabilitati", {"valoare_intrari": 10000,
                                                   "procent_limita": 0.5,
                                                   "pierdere_constatata": 40, "cota": 21}),
-    ("/tenants/{tenant_id}/nota-lichidare", {"operatie": "partaj", "capital_social": 5000,
-                                             "rezerve": 1000}),
+    ("/tenants/{tenant_id}/nota-lichidare", {"operatie": "vanzare_activ", "pret": 3000, "valoare_bruta": 5000,
+                                             "amortizare_cumulata": 4000, "cota": 21}),
     ("/tenants/{tenant_id}/export-extracomunitar", {"tara_client": "US", "dovada_export": True,
                                                     "valoare": 3000}),
     ("/tenants/{tenant_id}/vanzare-agricultor", {"pret": 1200}),
@@ -551,19 +557,44 @@ NOTE = [
     ("/tenants/{tenant_id}/import-extracomunitar", {"valoare_vamala": 5000,
                                                     "procent_taxa_vamala": 0,
                                                     "accize": 0, "accesorii": 0, "cota": 21,
-                                                    "cont_destinatie": "371"}),
-    ("/tenants/{tenant_id}/decontare-valuta", {"valoare_valuta": 100, "curs_evidenta": 4.9,
-                                               "tip": "creanta", "moneda": "EUR",
-                                               "cont_tert": "4111", "cont_banca": "5124"}),
+                                                    "cont_destinatie": "371", "numar_dvi": "DVI-1",
+                                                    "furnizor_nume": "SUPPLIER INC"}),
+    ("/tenants/{tenant_id}/decontare-valuta", {"valoare_valuta": 100, "tip": "creanta", "cont_banca": "5124",
+                                               "factura_id": "<factura_valuta>"}),
 ]
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.parametrize("sablon,corp", NOTE, ids=[s.rsplit("/", 1)[1] for s, _ in NOTE])
-def test_NOTA_manuala_ajunge_in_inregistrarile_din_care_se_ridica_balanta(firma, sablon, corp):
+def test_NOTA_manuala_ajunge_in_inregistrarile_din_care_se_ridica_balanta(firma, sablon, corp, monkeypatch):
     cl = _client()
-    inainte = _numar(firma, "SELECT count(*) FROM inregistrari")
     corp = dict(corp, data=ZI)
+    # [lotul 13] DATE DE PORNIRE ale rutelor care aleg din ce are firma: salariatul (decontul, 670) și factura în valută contată (524)
+    if corp.get("salariat_id") == "<salariat>":
+        r = cl.post(_U(firma, "/tenants/{tenant_id}/salariati"), headers=_H(firma), json={
+            "nume": "POPESCU", "prenume": "ION", "cnp": "1800101221144", "data_angajare": "2026-01-05", "salariu_brut": 5000,
+            "cor": "251401", "tip_norma": "intreaga", "functie_baza": True, "scutit_contrib_minim": False})
+        assert r.status_code == 200, r.text[:300]
+        corp["salariat_id"] = _numar(firma, "SELECT max(id) FROM salariati")
+    if corp.get("factura_id") == "<factura_valuta>":
+        from core import curs_bnr, uc_comun
+        monkeypatch.setattr(curs_bnr, "curs_pentru", lambda conn, moneda, data, **k: (Decimal("5.0000"), data, "bnr"))
+        monkeypatch.setattr(uc_comun, "_preincalzeste_cursul", lambda *a, **k: None)
+        with firma["conn"].cursor() as cur:
+            cur.execute('SET search_path TO "%s", public' % SCH)
+            cur.execute("INSERT INTO facturi (serie, numar, data_emitere, directie, moneda, total, total_lei, curs_bnr, tert_nume, tert_cui, "
+                        "tert_tara) VALUES ('ZV', '1', '2026-05-10', 'emisa', 'EUR', 500, 2475, 4.95, 'CLIENT IE', 'IE6388047V', 'IE') "
+                        "RETURNING id")
+            fid = cur.fetchone()[0]
+            cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, document_ref, factura_id) VALUES ('2026-05-10', "
+                        "'Factura ZV 1', 'facturi', 'ciorna', 'Factura ZV 1', %s) RETURNING id", (fid,))
+            nid = cur.fetchone()[0]
+            cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '4111', '707', 2475)",
+                        (nid,))
+            cur.execute("UPDATE inregistrari SET status = 'validata' WHERE id = %s", (nid,))
+        # fără commit: aplicația lucrează pe aceeași conexiune a fixture-ului (`_fake`), anulată la final
+        corp["factura_id"] = fid
+    inainte = _numar(firma, "SELECT count(*) FROM inregistrari")
 
     r = cl.post(_U(firma, sablon), headers=_H(firma), json=corp)
     assert r.status_code == 200, "%s -> %d %s" % (sablon, r.status_code, r.text[:300])

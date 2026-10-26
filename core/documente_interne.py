@@ -25,6 +25,13 @@ TIPURI = {
     "lista_inventariere": "Listă de inventariere",
     "nota_calcul": "Notă de calcul",
     "borderou_achizitie": "Borderou de achiziție",   # [401] numărul borderoului (BA-n) când omul nu scrie unul
+    # [lotul 13, deficiența 518] „justificativul e «Listă de inventariere» în loc de proces-verbal de casare”: casarea are documentul ei
+    "pv_casare": "Proces-verbal de casare",
+    # [lotul 13, deficiențele 507 / 508] scoaterea obiectului de inventar din folosință: documentul înregistrării C 8035
+    "pv_scoatere": "Proces-verbal de scoatere din folosință",
+    # [lotul 13, deficiența 510] predarea produselor finite la magazie: OMFP 2634/2015 anexa 2, cod 14-3-3A — „document justificativ pentru
+    # încărcare/descărcare în/din gestiune; document justificativ de înregistrare în contabilitate”
+    "bon_predare": "Bon de predare, transfer, restituire",
 }
 
 #: [401, 434] numărul borderoului de achiziție scris de aplicație: „BA-<n>”

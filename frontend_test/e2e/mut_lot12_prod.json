@@ -67,8 +67,8 @@
  },
  {
   "fisier": "static/js/ecrane/mijloace_ecran.js",
-  "ancora": "display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:6px",
-  "inlocuire": "display:flex;flex-direction:column;gap:6px;align-items:flex-start;margin-top:6px;position:fixed;left:4000px",
+  "ancora": "<td><div style=\"display:flex;flex-direction:column;gap:6px;align-items:stretch\">",
+  "inlocuire": "<td><div style=\"display:flex;flex-direction:column;gap:6px;align-items:stretch;position:fixed;left:4000px\">",
   "test": "frontend_test/e2e/e2e_lot12_prod.py::test_def_162_pif_intreg_si_actiunile_in_vedere_la_1700"
  }
 ]

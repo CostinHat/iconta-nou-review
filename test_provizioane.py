@@ -40,5 +40,5 @@ def test_ajustare_stoc():
     assert r["linii"] == [("6814", "397", Decimal("2000.00"))] and not r["deductibil"]
 
 def test_stoc_cont_gresit():
-    with pytest.raises(ValueError, match="39x"):
+    with pytest.raises(ValueError, match="391–398"):   # [lotul 13, 514 / 515] refuzul pe limba contabilului
         m.nota_ajustare_stoc(1, "491")
