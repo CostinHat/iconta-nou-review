@@ -9,7 +9,6 @@
 // absenta unei stari sau dintr-o stare necunoscuta — instanta care a nascut fisierul: portal.js initializa
 // "pa-verde"/"Totul e la zi" din oficiu si-l suprascria doar pe rosu/galben/gri, iar `stare` putea fi None.
 export const VERDICT_POZITIV = {
-  firme_toate: "Toate firmele la zi",
   control_firma: "totul la zi",
   control_depus: "Totul depus la zi",
 };

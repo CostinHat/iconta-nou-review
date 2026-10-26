@@ -44,7 +44,8 @@ def _fisiere_js():
 def test_ANTI_VACUU_punctul_unic_are_frazele():
     fraze = _fraze_pozitive()
     # [lotul 13, 683-C] 4 -> 3: cheia `portal` ("Totul e la zi") n-a mai avut cititor după 554 (portalul nu mai spune verdictul din oficiu) — scoasă
-    assert len(fraze) >= 3, "verdict.js: sub 3 fraze de verdict — parserul s-a rupt, gardul ar trece in gol: %r" % fraze
+    # [lotul 13, cod mort] 3 -> 2: cheia `firme_toate` ("Toate firmele la zi") n-a avut niciodată cititor — scoasă
+    assert len(fraze) >= 2, "verdict.js: sub 2 fraze de verdict — parserul s-a rupt, gardul ar trece in gol: %r" % fraze
 
 
 def test_frazele_verdict_traiesc_DOAR_in_punctul_unic():

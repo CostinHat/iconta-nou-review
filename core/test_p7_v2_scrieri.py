@@ -443,7 +443,9 @@ def test_numarul_de_instructiuni_se_conserva():
     #   al fiecărei linii a facturii primite, scris înaintea notei, ca `actualizeaza_conturi_linii`).
     # [lotul 13, la integrarea zonelor comp (+1: repo_facturi.actualizeaza_centre_linii, 536) și ops (+1: conturi_cu_prefix, 524)]
     #   suma măsurată pe arborele unit: 461 (fiecare apel numit mai sus).
-    assert _apeluri_catre_repository() == 461
+    # [lotul 13, 683] −1 (461 -> 460): − repo_operatiuni.salariat (uc_tenants._salariat_decont) — mutat în `core/salariat_decont.alege`, comun cu
+    #   Casa (verificarea salariatului stă într-un singur loc).
+    assert _apeluri_catre_repository() == 460
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():
