@@ -2159,7 +2159,6 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 
 /* ===== Trimite pe email (fd-email-*) ===== */
 .fd-email-btn { cursor: pointer; white-space: nowrap; }
-.fd-email-zona { margin-top: 8px; }
 .fd-email-box { background: #fff; border: 1px solid var(--linie); border-radius: var(--raza); padding: 14px 16px; margin: 10px 0 14px; max-width: 560px; }
 .fd-email-eticheta { display: block; font-size: var(--text-mic); color: var(--ardezie); margin-bottom: 8px; }
 .fd-email-rand { display: flex; gap: 8px; }

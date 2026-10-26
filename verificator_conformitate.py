@@ -2910,7 +2910,9 @@ def analiza_lot13(fisiere, css="", numere_py=""):
                     out.append((nume, ln(t, m.start()), "PRECOMPLETARE", "indiciul gri arată ca o valoare („%s”) — „ex. …” sau nimic (DS cap.6, 504): %s"
                                 % (pv, tag[:60])))
         # 673 — o acțiune din fereastră care scrie un formular într-o zonă a ferestrei (bandă, card), în loc de o fereastră nouă
-        for m in _re.finditer(r"([\w$]+(?:\.querySelector\([^()]*\)|\.getElementById\([^()]*\))?)\.innerHTML\s*=\s*`", t):
+        # [lotul 13, zona fact] și formularul INSERAT (`zona.insertAdjacentHTML("afterbegin", `…<input …`)`) — chitanța din detaliul facturii
+        # stătea așa, nevăzută de detector
+        for m in _re.finditer(r"([\w$]+(?:\.querySelector\([^()]*\)|\.getElementById\([^()]*\))?)\.(?:innerHTML\s*=\s*|insertAdjacentHTML\(\s*\x22[a-z]+\x22\s*,\s*)`", t):
             sf = _l13_sablon_la(t, m.end())
             tpl = t[m.end():sf]
             if not _re.search(r"<input\b(?![^>]*\breadonly\b)|<select|<textarea|<form\b", tpl):
