@@ -315,7 +315,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=4463b4d6cf");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=b99ca91399");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -1403,7 +1403,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=4463b4d6cf");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=b99ca91399");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
   });

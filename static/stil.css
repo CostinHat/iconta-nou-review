@@ -3180,4 +3180,4 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .cautare-titlu { font-size: var(--text-mic); font-weight: 600; }
 .cautare-unde { font-size: var(--text-desc); color: var(--gri); }
 .cautare-mesaj { margin: 6px 8px; font-size: var(--text-mic); color: var(--gri); }
-@media (max-width: 560px) { .cautare-globala { flex-basis: 160px; margin-left: 4px; } .fereastra-antet .cautare-in-fereastra { flex-basis: 140px; } }
+@media (max-width: 560px) { .cautare-globala { flex-basis: 160px; margin-left: 4px; } .fereastra-antet { flex-wrap: wrap; } .fereastra-antet .cautare-in-fereastra { order: 5; flex: 1 1 100%; margin: 0; } }   /* telefon: căsuța pe rândul ei, traseul nu se strânge */
