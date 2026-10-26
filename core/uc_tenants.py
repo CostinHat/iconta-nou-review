@@ -8730,13 +8730,26 @@ def operatiuni_date(tenant_id, ce, parametri, ctx):
                 return {"facturi": [{"id": f["id"], "document": _serie_nr(f.get("serie"), f["numar"]), "partener": f["tert_nume"],
                                      "sold": f["sold"], "scadenta": str(scad.get(f["id"]) or ""),
                                      "zile": (data - scad[f["id"]]).days if scad.get(f["id"]) else None} for f in fs]}
+            if ce == "conturi_trezorerie":   # [lotul 13, decizia după 524 / 504] contul decontării în valută, din planul firmei
+                return {"conturi": [{"id": c, "cont": c, "denumire": d} for c, d in conturi_trezorerie_decontare(cur, schema)]}
             if ce == "catalog":   # [lotul 13, 521] codul din Catalogul HG 2139/2004: denumirea și plaja duratei
                 from core import mf_registru as _mfr
                 cod = str(parametri.get("tip") or "").strip().rstrip(".")
                 c = _mfr.catalog().get(cod)
                 return {"cod": cod, "gasit": bool(c), **({"denumire": c["denumire"], "ani_min": c["ani_min"], "ani_max": c["ani_max"]}
                                                         if c else {})}
-    raise _erori.DateInvalide(nomenclator_cerut("ce", "facturi_valuta|articole|obiecte|facturi_neincasate|catalog"))
+    raise _erori.DateInvalide(nomenclator_cerut("ce", "facturi_valuta|articole|obiecte|facturi_neincasate|catalog|conturi_trezorerie"))
+
+
+#: [lotul 13, decizia Costin după 524 / 504] Conturile de trezorerie prin care se decontează o creanță / datorie în valută: 5124 „Conturi
+#: la bănci în valută”, 5121 „Conturi la bănci în lei” (banca a convertit), 5314 „Casa în valută” (planul de conturi, OMFP 1802/2014) și
+#: analiticele lor din planul firmei (un procesator de plăți ținut ca analitic al unuia dintre ele) — o listă ÎNCHISĂ, fără nimic ales
+CONTURI_TREZORERIE_DECONTARE = ("5124", "5121", "5314")
+
+
+def conturi_trezorerie_decontare(cur, schema):
+    """[(simbol, denumire)] — contul de trezorerie al decontării în valută se alege numai dintre acestea."""
+    return repo_operatiuni.conturi_cu_prefix(cur, schema, CONTURI_TREZORERIE_DECONTARE)
 
 
 def decontare_valuta(tenant_id, corp, ctx):
@@ -8789,8 +8802,14 @@ def decontare_valuta(tenant_id, corp, ctx):
                 raise _erori.DateInvalide(str(_mn))
             except _cb.CursIndisponibil as _ci:
                 raise _erori.Conflict(str(_ci))
-            r = _dc.nota_decontare(v, f["curs_evidenta"], curs_dec, corp["tip"], f["cont_tert"],
-                                   _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca"))
+            cont_tr = _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca")
+            with conn.cursor() as cur:
+                permise = [x[0] for x in conturi_trezorerie_decontare(cur, schema)]
+            if cont_tr not in permise:
+                m = ("Contul %s nu e un cont de trezorerie al decontării: alege din listă — %s (conturile 5124, 5121, 5314 și analiticele "
+                     "lor din planul firmei)." % (cont_tr, ", ".join(permise) or "planul firmei nu are niciunul"))
+                raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-cont_banca", "mesaj": m}]})
+            r = _dc.nota_decontare(v, f["curs_evidenta"], curs_dec, corp["tip"], f["cont_tert"], cont_tr)
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         d = r["diferenta"]

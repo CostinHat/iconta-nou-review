@@ -38,6 +38,6 @@ Formula de calcul, aplicată la o creanță (o factură de încasat de la un cli
 
 Motorul pur aplicația, funcția „calculul diferenței de curs”, calculează exact formula de mai sus pentru `tip="creanta"`, cu rotunjire aritmetică (Decimal + ROUND_HALF_UP). Operațiunea „Decontare în valută" din ecranul Operațiuni speciale ia automat ultimul curs comunicat de BNR înaintea zilei încasării (cel comunicat în ziua bancară anterioară, valabil în ziua încasării) și generează nota contabilă completă — linia principală plus linia de diferență pe 665/765 — direct în registrul jurnal, ca ciornă.
 
-În formularul „Decontare în valută", factura (creanța sau datoria) se alege din lista facturilor în valută încă deschise, iar moneda, contul de terț, partenerul și cursul de evidență vin de la ea; contul prin care s-a făcut plata sau încasarea se alege în câmpul „Contul bancar” (5124 — cont la bănci în valută, sau 5121 — cont la bănci în lei), fără nicio valoare precompletată.
+În formularul „Decontare în valută", factura (creanța sau datoria) se alege din lista facturilor în valută încă deschise, iar moneda, contul de terț, partenerul și cursul de evidență vin de la ea; contul prin care s-a făcut plata sau încasarea se alege în câmpul „Contul de trezorerie (bancă sau casă)”, o listă din planul firmei — 5124 (cont la bănci în valută), 5121 (cont la bănci în lei), 5314 (casa în valută) și analiticele lor —, fără nimic ales.
 
 [iConta.eu](/)
