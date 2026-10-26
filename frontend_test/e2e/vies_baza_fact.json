@@ -29,6 +29,13 @@
    "adresa": "GORDON HOUSE\nDUBLIN 4",
    "eroare": null
   },
+  "IE1234567T": {
+   "valid": false,
+   "stare": "indisponibil",
+   "nume": "",
+   "adresa": "",
+   "eroare": "MS_UNAVAILABLE"
+  },
   "DE136695976": {
    "valid": true,
    "stare": "valid",

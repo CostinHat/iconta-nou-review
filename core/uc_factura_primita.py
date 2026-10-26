@@ -192,6 +192,8 @@ def valideaza(conn, schema, f, corp, statut, primita_id=None):
     from core import repo_efactura, repo_facturi
     from core import uc_tenants as _uct
     cont = cont_facturii(conn, schema, corp, primita_id)   # [FFF1] obligatoriu, și din planul firmei
+    from core import mf_din_factura as _mfdf
+    mf_cereri = _mfdf.cere(f, corp, cont)   # [lotul 13, 601] liniile pe un cont de imobilizare: datele fișei, înaintea oricărei scrieri
     with conn.cursor() as cur:
         # [lotul 6 pct.7c, 273] ce nu vine din factură se cere aici, înainte de orice scriere: tipul furnizorului (D394) și, la taxarea
         # inversă (linii „AE”), categoria produsului (codul D394, art.331)
@@ -265,6 +267,14 @@ def valideaza(conn, schema, f, corp, statut, primita_id=None):
                            unde="factura #%s" % fid_final,
                            regula="nota automată se scrie doar când toate intrările ei sunt "
                                   "cunoscute")}
+    # [lotul 13, 601, decizia Costin (a)] mijlocul fix de pe linia de imobilizare intră în registru din nota facturii, la validarea ei
+    mijloace = []
+    if mf_cereri:
+        if not contare.get("inregistrare_id"):
+            conn.rollback()
+            raise _erori.DateInvalide(_mfdf.FARA_NOTA % ((contare.get("afirmatie") or {}).get("motiv") or "contarea a fost refuzată."))
+        with conn.cursor() as cur:
+            mijloace = _mfdf.inscrie(cur, schema, contare["inregistrare_id"], fid_final, mf_cereri)
     # [reconciliere factura->stoc, 21.09.2026] RECEPȚIA CANTITATIVĂ: pe un cont de STOC (al liniei sau al facturii), intrarea în fișa de
     # magazie din liniile facturii (cantitate-DOAR, idempotentă pe factura_id; OMFP 1802/2014: recepția mărfii e un act unic)
     stoc = None
@@ -274,7 +284,8 @@ def valideaza(conn, schema, f, corp, statut, primita_id=None):
         stoc = _cv.intrare_din_factura(conn, schema, fid_final, cont or "", f.get("data_emitere"))
     curs_lipsa = _anunt_curs(conn, schema, fid_final)
     conn.commit()
-    return {"stare": "validata", "factura_id": fid_final, "contare": contare, "stoc": stoc, "curs_zilei_lipsa": curs_lipsa}
+    return {"stare": "validata", "factura_id": fid_final, "contare": contare, "stoc": stoc, "curs_zilei_lipsa": curs_lipsa,
+            "mijloace_fixe": mijloace}
 
 
 def _anunt_curs(conn, schema, fid):

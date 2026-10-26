@@ -11,7 +11,8 @@ import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataA
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
-import { optiuniTara, taraDinCui } from "./tari_partener.js?v=43a0fddc7d";   // [lotul 12, C160] țara clientului pe șablonul facturii recurente
+import { optiuniTara, taraDinCui } from "./tari_partener.js?v=43a0fddc7d";
+import { campuriMf, pornesteMf } from "./mf_din_factura.js?v=0000000000";   // [lotul 13, 601] mijlocul fix de pe linia de imobilizare   // [lotul 12, C160] țara clientului pe șablonul facturii recurente
 
 // [deficiența 418c, clasa 410, DS cap.27] după un act reușit, confirmarea rămâne pe ecran și drumul înapoi e un buton — nu o navigare
 // temporizată, care ștergea confirmarea înainte de a fi citită
@@ -246,7 +247,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           <option value="mixt">Mixtă</option>
         </select>
         <input class="camp-input pr-cont-linie" data-i="${i}" id="pr-cont-l${i}" placeholder="contul facturii" aria-label="Contul liniei ${i + 1}" style="flex:0 0 130px;width:130px">
-      </div>`).join("") || '<div class="pf-frand-sub">—</div>'}
+      </div>${campuriMf("pr", i)}`).join("") || '<div class="pf-frand-sub">—</div>'}
       ${linii.length > 1 ? '<span class="camp-ajutor">Contul liniei: gol = contul facturii de mai jos. O linie de altă natură (cartea de birou lângă marfă) se contează pe contul ei; numai liniile pe un cont de stoc (371 / 301–303) intră în stoc.</span>' : ""}</div>
     <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:12px">
       <label class="camp"><span class="camp-eticheta">Contul facturii (sugerat, confirmă): cheltuială, sau 371 / 301–303 la marfă și materiale</span><input class="camp-input" id="pr-cont" value="${esc(p.cont_sugerat || "")}" placeholder="ex. 628 sau 371" aria-label="Contul facturii"></label>
@@ -272,6 +273,9 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
     <div id="pr-zona" style="margin-top:10px"></div>
     <div id="pr-xml-zona" style="margin-top:10px"></div>`;
   const zona = corp.querySelector("#pr-zona");
+  // [lotul 13, 601] linia pe un cont de imobilizare cere datele fișei mijlocului fix (intră în registru din factura asta)
+  const mf = pornesteMf(corp, tenantId, "pr", { contLinie: (i) => (corp.querySelector(`#pr-cont-l${i}`) || {}).value,
+                                                 contFactura: () => corp.querySelector("#pr-cont").value, indici: () => linii.map((_l, i) => i) });
   arataCursulValidarii(corp.querySelector("#pr-valuta"), tenantId, p.moneda, p.data, { tva: p.tva, total: p.total });   // [lotul 12, cursul vechi la validare (a)]; [lotul 13, 634 a] echivalentul în lei
   propuneNumeAnaf(corp.querySelector("#pr-zona"), p.fisa_vs_anaf, tenantId, { fel: "furnizori", pre: "pr" });   // [lotul 11, 444] numele ANAF vs fișa furnizorului
   corp.querySelector("#pr-valideaza").addEventListener("click", () => {
@@ -291,6 +295,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
             categorie_331: p.taxare_inversa ? corp.querySelector("#pr-c331").value : null,
             tert_tara: _tara,
             destinatii: _dest, conturi: Array.from(corp.querySelectorAll(".pr-cont-linie")).map((x) => x.value.trim()),   // [418b] contul liniei
+            imobilizari: mf.date(),   // [lotul 13, 601] fișa mijlocului fix al liniei de imobilizare
             ...alegere }));
         // [lotul 13, deficiența 634 (b) — „După validare: «Cheltuiala creată» deși contul e 371 (marfă), fără legătură spre notă”] mesajul
         // spune ce s-a scris, pe contul ales (marfă / materiale / cheltuială), cu nota (conturile ei) și butonul spre ea în Registrul jurnal
@@ -299,7 +304,8 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
         const fel = /^(371|30[1-3])/.test(cont) ? "marfa / materialele intră în stoc" : (/^2/.test(cont) ? "imobilizarea intră în evidență" : "cheltuiala intră în evidență");
         const conturi = (ct.linii || []).map((l) => `${l.debit} = ${l.credit} ${bani(l.suma)}`).join("; ");
         arataMesaj(zona, `Validată: factura ${p.numar || "fără număr"}${p.data ? " din " + dataRo(p.data) : ""} — ${fel} (contul ${cont || "sugerat"}).`
-          + (ct.inregistrare_id ? ` Nota ciornă, de validat: ${conturi}.` : (ct.stare === "refuzata" ? " Nota n-a putut fi scrisă automat: o scrii din Registrul jurnal." : "")), "ok");   // [258] factura cum o arată lista, nu id-ul ei
+          + (ct.inregistrare_id ? ` Nota ciornă, de validat: ${conturi}.` : (ct.stare === "refuzata" ? " Nota n-a putut fi scrisă automat: o scrii din Registrul jurnal." : ""))
+          + textMijloace(r), "ok");   // [258] factura cum o arată lista, nu id-ul ei
         if (ct.inregistrare_id) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
@@ -493,7 +499,7 @@ function primitaManuala(corp, nav, tenantId, opt) {
           <option value="taxabil"${l.dest === "taxabil" ? " selected" : ""}>Taxabilă</option><option value="scutit"${l.dest === "scutit" ? " selected" : ""}>Scutită</option><option value="mixt"${l.dest === "mixt" ? " selected" : ""}>Mixtă</option></select>
         <input class="camp-input pm-camp pr-cont-linie" data-c="cont" id="pm-l${i}-cont" value="${esc(l.cont)}" placeholder="contul facturii" aria-label="Contul liniei ${i}" style="flex:0 0 130px;width:130px">
         <button class="buton-sters buton-mic pm-sterge" type="button" data-k="${k}" data-fara-actiune="scoate linia din formular, fără scriere" aria-label="Șterge linia ${i}"${linii.length > 1 ? "" : atributeInactiv("Factura are o singură linie: rămâne cel puțin una.")}>Șterge</button>
-      </div>`;
+      </div>${campuriMf("pm", i)}`;
     }).join("");
     z.querySelectorAll(".pm-camp").forEach((el) => el.addEventListener(el.tagName === "SELECT" ? "change" : "input", () => {
       linii[Number(el.closest("[data-k]").dataset.k)][el.dataset.c] = el.value;
@@ -504,6 +510,7 @@ function primitaManuala(corp, nav, tenantId, opt) {
       z.querySelectorAll(".pm-cota").forEach((sel) => { sel.disabled = true; sel.title = "Alege întâi data facturii: cotele sunt cele în vigoare atunci."; });
     }
     totaluri();
+    mfPm.reimprospateaza();
   };
   const cerereCote = ultimaCerere();
   const incarcaCotele = async () => {
@@ -521,6 +528,9 @@ function primitaManuala(corp, nav, tenantId, opt) {
       eroareCamp(corp, "pm-data", `Cotele de TVA în vigoare la data aleasă nu s-au putut citi${e && e.mesaj ? ": " + e.mesaj : ""} — alege data din nou.`);
     }
   };
+  // [lotul 13, 601] linia pe un cont de imobilizare cere datele fișei mijlocului fix (intră în registru din factura asta)
+  const mfPm = pornesteMf(corp, tenantId, "pm", { contLinie: (i) => (linii[i - 1] || {}).cont, contFactura: () => corp.querySelector("#pr-cont").value,
+                                                  indici: () => linii.map((_l, k) => k + 1) });
   deseneazaLinii();
   corp.querySelector("#pm-add-linie").addEventListener("click", () => { linii.push(linieManuala()); deseneazaLinii(); });
   corp.querySelector("#pm-data").addEventListener("change", () => { incarcaCotele(); valuta(); });
@@ -561,6 +571,7 @@ function primitaManuala(corp, nav, tenantId, opt) {
       data_emitere: v("pm-data"), data_scadenta: v("pm-scadenta"), moneda: v("pm-moneda"), cont: v("pr-cont").trim(),
       linii: linii.map((l) => ({ descriere: l.descriere.trim(), cantitate: l.cantitate, um: (l.um || "").trim(), pret_unitar: l.pret_unitar, cota_tva: l.cota_tva })),
       destinatii: linii.map((l) => l.dest), conturi: linii.map((l) => (l.cont || "").trim()),
+      imobilizari: mfPm.date(),   // [lotul 13, 601] fișa mijlocului fix al liniei de imobilizare
       tert_platitor_tva: daNu(corp.querySelector("#pr-platitor")), furnizor_tva_incasare: daNu(corp.querySelector("#pr-furnizor-incasare")),
     };
   };
@@ -573,7 +584,7 @@ function primitaManuala(corp, nav, tenantId, opt) {
         // [decizia 08.10 pct.2] factura de marfă cu NIR „fără factură” nelegat la același furnizor: serverul cere alegerea
         const r = await cuLegareaNir(zona, "POST /tenants/{tenant_id}/facturi-primite/manual", (alegere) =>
           api.post(`/tenants/${tenantId}/facturi-primite/manual`, { ...c, ...alegere }));
-        arataMesaj(zona, `Validată. Cheltuiala creată din factura ${numarCuSerie(c.serie, c.numar)} din ${dataRo(c.data_emitere)}.`, "ok");
+        arataMesaj(zona, `Validată. Cheltuiala creată din factura ${numarCuSerie(c.serie, c.numar)} din ${dataRo(c.data_emitere)}.${textMijloace(r)}`, "ok");
         anuntaCursulValidat(zona, r);
         corp.querySelector("#pm-valideaza").disabled = true;   // aceeași factură nu se validează a doua oară din formularul ăsta
         butonInapoi(zona, nav);   // [418c / 410, DS cap.27] confirmarea rămâne; înapoi la cererea omului
@@ -584,6 +595,10 @@ function primitaManuala(corp, nav, tenantId, opt) {
     }, { textOk: "Validează" });
   });
 }
+
+// [lotul 13, 601] activele scrise din factură: numărul de inventar și când intră în registru
+const textMijloace = (r) => ((r && r.mijloace_fixe) || []).length
+  ? ` Mijloace fixe din factură: ${r.mijloace_fixe.map((m) => `${esc(m.cod)} «${esc(m.denumire)}» ${bani(m.valoare)} lei`).join("; ")} — intră în registru la validarea notei.` : "";
 
 // [retest 08.10, completarea pct.1, comanda Costin] „starea de încasare (încasată / parțial / neîncasată) trebuie să fie vizibilă pe
 // factură și în lista «Istoric facturi»” — o singură etichetare, din `stare_incasare` (serverul, `facturi_api._cu_stare_incasare`);
