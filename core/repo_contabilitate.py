@@ -336,13 +336,6 @@ def adauga_linie_2(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
                 (inregistrare_id, cont_debit, cont_credit, suma))
 
 
-def adauga_linie_venit_marfa(cur, schema, inregistrare_id, cont_debit):
-    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                            (inregistrare_id, cont_debit, cont_credit, suma)
-                            VALUES (%s,'4111','707',%s)""",
-                (inregistrare_id, cont_debit))
-
-
 def adauga_linie(cur, schema, inregistrare_id, cont_debit, cont_credit, suma):
     cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                                 (inregistrare_id, cont_debit, cont_credit, suma)

@@ -3841,3 +3841,98 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.salariati_jurnal (
 -- [sablon_recurent_stare_v1, lotul 12, C109 + 12.3 pct.9] starea ultimei emiteri și categoria produsului pe șablonul facturii recurente — SURSA: core/migrare_sablon_recurent_stare.py
 ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente ADD COLUMN IF NOT EXISTS ultimul_refuz text, ADD COLUMN IF NOT EXISTS ultimul_refuz_la date, ADD COLUMN IF NOT EXISTS categorie_331 text;
 -- [sablon_recurent_stare_v1] sfârșit
+
+-- [mf_note_v1, lotul 13, deficiențele 519 / 522] activul ținut pe rândul notei și schimbat de notă numai la validare — SURSA: core/migrare_mf_note.py
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.mf_linii (
+    linie_id integer PRIMARY KEY REFERENCES TENANT_PLACEHOLDER.inregistrari_linii(id) ON DELETE CASCADE,
+    mijloc_fix_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.mijloace_fixe(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS mf_linii_mijloc_idx ON TENANT_PLACEHOLDER.mf_linii (mijloc_fix_id);
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.mf_note (
+    inregistrare_id integer PRIMARY KEY REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE,
+    mijloc_fix_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.mijloace_fixe(id) ON DELETE CASCADE,
+    fel text NOT NULL CHECK (fel IN ('intrare', 'iesire'))
+);
+CREATE INDEX IF NOT EXISTS mf_note_mijloc_idx ON TENANT_PLACEHOLDER.mf_note (mijloc_fix_id);
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.mf_nota_status() RETURNS trigger AS $$
+BEGIN
+  IF NEW.status = 'validata' AND OLD.status IS DISTINCT FROM 'validata' THEN
+    UPDATE TENANT_PLACEHOLDER.mijloace_fixe m SET activ = (n.fel = 'intrare') FROM TENANT_PLACEHOLDER.mf_note n
+     WHERE n.inregistrare_id = NEW.id AND n.mijloc_fix_id = m.id;
+  ELSIF OLD.status = 'validata' AND NEW.status IS DISTINCT FROM 'validata' THEN
+    UPDATE TENANT_PLACEHOLDER.mijloace_fixe m SET activ = (n.fel = 'iesire') FROM TENANT_PLACEHOLDER.mf_note n
+     WHERE n.inregistrare_id = NEW.id AND n.mijloc_fix_id = m.id;
+  END IF;
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_mf_nota_status ON TENANT_PLACEHOLDER.inregistrari;
+CREATE TRIGGER trg_mf_nota_status AFTER UPDATE OF status ON TENANT_PLACEHOLDER.inregistrari FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.mf_nota_status();
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.mf_nota_sterge() RETURNS trigger AS $$
+BEGIN
+  DELETE FROM TENANT_PLACEHOLDER.mijloace_fixe m USING TENANT_PLACEHOLDER.mf_note n
+   WHERE n.inregistrare_id = OLD.id AND n.fel = 'intrare' AND n.mijloc_fix_id = m.id AND NOT m.activ;
+  RETURN OLD;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_mf_nota_sterge ON TENANT_PLACEHOLDER.inregistrari;
+CREATE TRIGGER trg_mf_nota_sterge BEFORE DELETE ON TENANT_PLACEHOLDER.inregistrari FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.mf_nota_sterge();
+-- [mf_note_v1] sfârșit
+
+-- [extrabilant_v1, lotul 13, deficiențele 507 / 508] clasa 8 într-o singură parte și registrul obiectelor de inventar — SURSA: core/migrare_extrabilant.py
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.evidenta_extrabilant (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    inregistrare_id integer REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE,
+    data date NOT NULL,
+    document text,
+    cont text NOT NULL CHECK (cont LIKE '8%'),
+    sens char(1) NOT NULL CHECK (sens IN ('D', 'C')),
+    suma numeric(14,2) NOT NULL CHECK (suma > 0),
+    explicatie text,
+    obiect_id integer,
+    mijloc_fix_id integer
+);
+CREATE INDEX IF NOT EXISTS evidenta_extrabilant_nota_idx ON TENANT_PLACEHOLDER.evidenta_extrabilant (inregistrare_id);
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.obiecte_inventar (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    denumire text NOT NULL,
+    valoare numeric(14,2) NOT NULL CHECK (valoare > 0),
+    data_intrare date NOT NULL,
+    furnizor_cui text,
+    furnizor_nume text,
+    factura_numar text,
+    nota_intrare_id integer REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE,
+    factura_id integer,
+    nota_dare_id integer REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE SET NULL,
+    scoatere_id integer REFERENCES TENANT_PLACEHOLDER.evidenta_extrabilant(id) ON DELETE SET NULL,
+    creat_la timestamptz NOT NULL DEFAULT now()
+);
+-- [extrabilant_v1] sfârșit
+
+-- [vanzari_stoc_v1, lotul 13, deficiența 548] vânzarea în regim de marjă / aurul de investiții din stoc — SURSA: core/migrare_vanzari_stoc.py
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.vanzari_din_stoc (
+    inregistrare_id integer PRIMARY KEY REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE,
+    fel text NOT NULL CHECK (fel IN ('marja', 'aur')),
+    miscare_id integer REFERENCES TENANT_PLACEHOLDER.miscari_stoc(id) ON DELETE SET NULL,
+    nota_iesire_id integer REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE SET NULL,
+    articol_id integer,
+    cantitate numeric(12,3) NOT NULL CHECK (cantitate > 0),
+    pret_vanzare numeric(14,2) NOT NULL,
+    pret_cumparare numeric(14,2) NOT NULL,
+    tva numeric(14,2) NOT NULL,
+    client_cui text,
+    client_nume text NOT NULL,
+    document text
+);
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.vanzare_stoc_sterge() RETURNS trigger AS $$
+DECLARE doc text;
+BEGIN
+  SELECT m.document INTO doc FROM TENANT_PLACEHOLDER.vanzari_din_stoc v JOIN TENANT_PLACEHOLDER.miscari_stoc m ON m.id = v.miscare_id
+   WHERE v.inregistrare_id = OLD.id AND m.anuleaza_id IS NULL
+     AND NOT EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.miscari_stoc r WHERE r.anuleaza_id = m.id);
+  IF FOUND THEN
+    RAISE EXCEPTION 'REGULA_CONTABILA: Vânzarea a scos bunul din stoc (ieșirea „%”). Anulează întâi ieșirea (respinge-i nota din „De validat”), apoi șterge nota vânzării — altfel bunul ar rămâne ieșit din gestiune fără vânzare.', doc;
+  END IF;
+  RETURN OLD;
+END $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_vanzare_stoc_sterge ON TENANT_PLACEHOLDER.inregistrari;
+CREATE TRIGGER trg_vanzare_stoc_sterge BEFORE DELETE ON TENANT_PLACEHOLDER.inregistrari FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.vanzare_stoc_sterge();
+-- [vanzari_stoc_v1] sfârșit

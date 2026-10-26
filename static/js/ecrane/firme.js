@@ -2950,19 +2950,21 @@ async function ecranJurnalMarja(corp, nav, t) {
     const tabel = !note.length
       ? `<div class="stare-goala">Nicio v\u00e2nzare \u00een regim marj\u0103 \u00een luna asta. Jurnalul se umple din notele emise cu <b>V\u00e2nzare regim marj\u0103</b> — dac\u0103 firma a avut astfel de v\u00e2nz\u0103ri, \u00eenregistreaz\u0103-le de pe ecranul de opera\u021biuni.</div>`
       : `<table class="fd-tabel">
-          <thead><tr><th>Data</th><th>Nota</th><th>Explica\u021bie</th><th>Stare</th>
-            <th class="fd-td-num">Cost</th><th class="fd-td-num">Marj\u0103 net\u0103</th>
+          <thead><tr><th>Data</th><th>Nota</th><th>Explica\u021bie</th><th>Client</th><th>Stare</th>
+            <th class="fd-td-num">Pre\u021b v\u00e2nzare</th><th class="fd-td-num">Pre\u021b cump\u0103rare</th><th class="fd-td-num">Marj\u0103 net\u0103</th>
             <th class="fd-td-num">TVA colectat\u0103</th></tr></thead>
           <tbody>${note.map((n) => `<tr>
               <td>${dataRo(n.data)}</td><td>${esc(n.eticheta || "")}</td>
-              <td>${esc(n.descriere || "")}</td><td>${esc(n.status || "")}</td>
-              <td class="fd-td-num">${bani(n.cost)}</td>
-              <td class="fd-td-num">${bani(n.marja_neta)}</td>
+              <td>${esc(n.descriere || "")}</td><td>${esc(n.client || "\u2014")}</td><td>${esc(n.status || "")}</td>
+              <td class="fd-td-num">${bani(n.pret_vanzare)}</td>
+              <td class="fd-td-num" title="${n.cost == null ? "v\u00e2nzare dinaintea lotului 13: pre\u021bul de cump\u0103rare nu e \u00een eviden\u021b\u0103" : ""}">${n.cost == null ? "\u2014" : bani(n.cost)}</td>
+              <td class="fd-td-num">${n.marja_neta == null ? "\u2014" : bani(n.marja_neta)}</td>
               <td class="fd-td-num">${bani(n.tva)}</td></tr>`).join("")}</tbody>
         </table>
         <div class="bara-fixa"><div class="fd-totaluri">   <!-- [lotul 11, decizia Costin 10.3: \u201eTotalurile \u2026 fix\u201d] totalurile lunii r\u0103m\u00e2n jos, \u00een vedere (DS cap.9 v2.100) -->
           <div class="fd-tot-rand"><span>Note \u00een lun\u0103</span><span>${d.numar_note}</span></div>
-          <div class="fd-tot-rand"><span>Total cost</span><span>${bani(d.total_cost)} lei</span></div>
+          <div class="fd-tot-rand"><span>Total v\u00e2nz\u0103ri</span><span>${bani(d.total_vanzari)} lei</span></div>
+          <div class="fd-tot-rand"><span>Total pre\u021b de cump\u0103rare</span><span>${bani(d.total_cost)} lei</span></div>
           <div class="fd-tot-rand"><span>Total baz\u0103 (marj\u0103 net\u0103)</span><span>${bani(d.total_baza_marja_neta)} lei</span></div>
           <div class="fd-tot-rand fd-tot-final"><span>Total TVA colectat\u0103</span><span>${bani(d.total_tva_colectata)} lei</span></div>
         </div></div>`;

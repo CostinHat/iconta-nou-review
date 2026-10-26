@@ -45,6 +45,18 @@ TID = 991073
 
 #: scrieri pe o cheie unică care NU pot dubla, fiecare cu motivul. (fișier, funcție, tabel) -> motiv
 EXCEPTII = {
+    # [lotul 13, 519 / 522] legăturile activului (`mf_note`: nota -> activ; `mf_linii`: rândul -> activ): le scrie numai operațiunea care
+    # tocmai a creat nota / rândul, în aceeași tranzacție, o singură dată — id-ul notei / al rândului e nou (secvență), deci nu poate exista
+    ("core/mf_note.py", "leaga", "mf_note"):
+        "nota e creată chiar înainte, în aceeași tranzacție (`nota_operatiune_ciorna` … RETURNING id), și se leagă o singură dată de "
+        "activul ei: cheia `mf_note_pkey` (inregistrare_id) nu poate dubla",
+    ("core/mf_note.py", "adauga_linie", "mf_linii"):
+        "rândul e inserat chiar înainte, în aceeași funcție (`INSERT INTO inregistrari_linii … RETURNING id`), și primește activul o "
+        "singură dată: cheia `mf_linii_pkey` (linie_id) nu poate dubla",
+    # [lotul 13, 548] vânzarea din stoc (marjă / aur), legată de ieșirea ei: rândul îl scrie numai use-case-ul care tocmai a creat nota
+    ("core/uc_tenants.py", "_vanzare_din_stoc", "vanzari_din_stoc"):
+        "nota vânzării e creată chiar înainte, în aceeași tranzacție (`nota_operatiune_ciorna` … RETURNING id), și se scrie o singură "
+        "dată: cheia `vanzari_din_stoc_pkey` (inregistrare_id) nu poate dubla",
     # [lotul 12, 252] facturile deschise preluate (`tip = 'preluata'`) nu cad sub nicio cheie unică a `facturi`: numerotarea emise
     # (`facturi_numar_emisa_uniq`) le scoate (`migrare_unic_numar_factura.CONDITIE`), iar cheile borderoului sunt parțiale pe `tip = 'borderou'`
     ("core/solduri_parteneri_api.py", "_scrie_documente", "facturi"):

@@ -406,6 +406,12 @@ def valideaza_documentul(conn, schema, nota_id):
                     cur.execute("ROLLBACK TO SAVEPOINT valideaza_documentul")
                 return r
             rez = rez or r
+        # [lotul 13, NOU-ops-1] reevaluarea validată urcă valoarea pe registru pe ORICE drum de validare (coada „De validat”, validarea în
+        # masă), nu numai din Registrul jurnal: înainte, nota de reevaluare aprobată din coadă rămânea validată cu registrul neurcat.
+        # Idempotent prin date (`aplicata_la IS NULL` + FOR UPDATE în `_aplica_reevaluarea`): apelul din `jurnal_valideaza` devine nul.
+        from core import uc_tenants as _uct
+        for nid in ids:
+            _uct._aplica_reevaluarea(conn, schema, nid)
     except Exception:
         with conn.cursor() as cur:
             cur.execute("ROLLBACK TO SAVEPOINT valideaza_documentul")

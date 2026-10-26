@@ -25,21 +25,23 @@ RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 #: (rută, select=opțiune, câmp) — o ramură care cere `corp["x"]` neatinsă din ecran, cu motivul.
 EXCEPTII = {
-    ("nota-inventariere", "operatie=casare", "valoare_bruta"):
-        "formularul cere `mijloc_fix_id` (obligatoriu) -> ramura fără el, cu sumele date de mână, e calea API",
-    ("nota-inventariere", "operatie=casare", "amortizare_cumulata"): "idem",
+    # [lotul 13, 517 / 519] casarea cere activul din registru și pe API (`_casare`): ramura cu sumele date de mână a ieșit
     ("nota-sgr", "operatie=virare", "suma"):
         "câmp comun: alternativ la nr. ambalaje la achiziție/vânzare/restituire, obligatoriu doar la virare; motorul de "
         "formulare nu are «opțional pe operație» pentru același câmp, iar refuzul rutei numește câmpul",
-    ("achizitie-agricultor", "*", "agricultor"): "citit numai sub `if corp.get(\"agricultor\")` — opțional prin construcție",
+    # [lotul 13, 549] agricultorul e partenerul notei (agricultor_cui / agricultor_nume, ceruți) — excepția „agricultor” a ieșit
+    # [lotul 13, 531] cota la chirii: câmp comun pe trei feluri; la refacturare și la chiria taxabilă serverul o cere numit, lângă câmp
+    # (`cota_ceruta` -> op-cota); la chiria de la PF și la cea scutită (imobil fără opțiune, CF art.292 alin.(2) lit.e) nu se aplică —
+    # motorul nu are «opțional pe ramură» pentru același câmp (ca la nota-sgr › virare)
+    ("nota-chirie", "fel=chirie_platita", "cota"): "obligatorie numai de la PJ; la PF nu se aplică — refuzul numește câmpul",
+    ("nota-chirie", "fel=chirie_incasata", "cota"): "obligatorie numai la bunul taxabil; la imobilul scutit nu se aplică — refuzul numește câmpul",
+    ("nota-chirie", "fel=refacturare", "cota"): "obligatorie mereu la refacturare; câmpul comun e marcat opțional pentru celelalte feluri — refuzul numește câmpul",
 }
 
 #: [07.10.2026, comanda Costin — „Cele 33 de chei”] Chei citite de server care RĂMÂN în afara ecranului: nu schimbă nota, baza
 #: sau impozitul (testul de încadrare al comenzii). Restul celor 33 au intrat în formular. O cheie nouă fără câmp pică poarta.
 CHEI_IN_AFARA_ECRANULUI = {
-    "achizitie-agricultor:agricultor":
-        "numai text adăugat în explicația notei („- <nume>”); liniile, baza și compensația 8% nu depind de el, iar câmpul "
-        "Descriere acoperă explicația",
+    # [lotul 13, 549 / 506] agricultorul e acum partenerul notei (agricultor_cui / agricultor_nume, cerute în formular)
     "achizitie-necorporala:cod":
         "codul activului în registru; când lipsește se generează primul cod liber `NEC-<tip>`, `NEC-<tip>-2`, … (lotul 10, C73) — nu "
         "schimbă nota, baza sau amortizarea",
@@ -47,10 +49,7 @@ CHEI_IN_AFARA_ECRANULUI = {
 
 #: Chei citite pe o ramură pe care câmpul lor e ASCUNS, care rămân așa — cu motivul.
 ASCUNSE_PERMISE = {
-    "nota-inventariere:operatie=casare:cont_imobilizare":
-        "citit numai pe calea API a casării (fără `mijloc_fix_id`); din ecran casarea alege activul din registru, iar conturile "
-        "vin de acolo (C4)",
-    "nota-inventariere:operatie=casare:cont_amortizare": "idem",
+    # [lotul 13, 517 / 519] casarea ia activul și conturile lui numai din registru (`_casare`): calea API cu conturi date de mână a ieșit
 }
 
 #: Câmpuri care RĂMÂN opționale: golul lor NU e o valoare pe care serverul o pune în locul omului.
@@ -60,6 +59,20 @@ OPTIONALE_PERMISE = {
     "nota-sgr:nr_ambalaje": "pereche alternativă cu `suma` (una din două); serverul refuză numit dacă lipsesc amândouă",
     "nota-sgr:suma": "idem (la virare e obligatorie — EXCEPTII)",
     "achizitie-ic:furnizor_nume": "numele furnizorului; identitatea fiscală e codul de TVA (obligatoriu)",
+    # [lotul 13, 670 (d), comanda Costin 13.1: „transportul și cazarea sunt obligatorii, deși pot lipsi”] lipsa lor = cheltuiala nu există
+    # (nu un implicit al serverului); cota fiecăreia se cere numai când cheltuiala există (refuz numit lângă câmp, `nota_decont_deplasare`)
+    "nota-decont-deplasare:transport": "cheltuiala de transport poate lipsi din decont (670 d); golul = nicio cheltuială, nu o sumă presupusă",
+    "nota-decont-deplasare:cazare": "cheltuiala de cazare poate lipsi din decont (670 d); golul = nicio cheltuială, nu o sumă presupusă",
+    "nota-decont-deplasare:cota_transport": "cerută de server, lângă câmp, exact când transportul există (670 c); fără transport nu are obiect",
+    "nota-decont-deplasare:cota_cazare": "cerută de server, lângă câmp, exact când cazarea există (670 c); fără cazare nu are obiect",
+    "nota-chirie:cota": "cerută de server (cota_ceruta) la chiria taxabilă și la refacturare; la chiria de la PF și la cea scutită (531) nu se aplică",
+    "nota-inventariere:numar_inventar": "golul = următorul număr din șirul registrului (MF-001, MF-002 …, 521) — o numerotare, nu un fapt fiscal",
+    "nota-leasing:numar_inventar": "golul = următorul număr din șirul registrului (MF-001, MF-002 …, 521/523) — o numerotare, nu un fapt fiscal",
+    # [lotul 13, 510] produsul nou intră în stoc cu unitatea lui (cerută numit de server numai atunci); costul efectiv lipsă = nicio diferență pe 348
+    "nota-productie:um": "cerută de server, lângă câmp, numai pentru un produs care nu e încă în stoc (`_articol_stoc`, nou); produsul existent are unitatea lui",
+    "nota-productie:cost_efectiv": "golul = costul efectiv egal cu cel standard: nicio diferență pe 348 (OMFP 1802/2014 pct.286 alin.(3)), nu o sumă presupusă",
+    # [lotul 13, 548] clientul persoană fizică nu are CUI; numele lui e cerut
+    "vanzare-marja:client_cui": "golul = clientul persoană fizică (fără cod fiscal); numele clientului e obligatoriu și intră pe rândurile 4111",
 }
 
 
@@ -311,33 +324,11 @@ def bife_nerespectate(js, main, uc):
     return out
 
 
-#: [lotul 07.10 B] câmpuri-cont din RÂNDURILE repetabile (`subcampuri`) care NU se precompletează — cu motivul
-#: [lotul 11, 429] „reevaluare-valuta:cont” a ieșit odată cu formularul manual din Operațiuni (reevaluarea are un singur formular, în
-#: Închidere lună, cu propunerea) — niciun câmp-cont din rânduri nu mai rămâne neprecompletat
-CONTURI_NEPRECOMPLETATE = {}
-
-
-def motor_conturi_precompletate(js):
-    """Motorul pune sugestia standard ca VALOARE (nu placeholder) pe câmpurile-cont obligatorii? Se citește din codul lui."""
-    return (re.search(r'const CONT_PRECOMPLETAT = \(c\) => c\.tip === "text" && /\^cont\(_\|\$\)/\.test\(c\.nume\) && !!c\.sugestie', js)
-            is not None and re.search(r'\} else if \(CONT_PRECOMPLETAT\(c\)\) \{\n(?:\s*//[^\n]*\n)*\s*input = `<input type="text" id="op-\$\{c\.nume\}"'
-                                      r' class="camp-input" aria-label="\$\{esc\(c\.eticheta\)\}" value="\$\{esc\(c\.sugestie\)\}">`;', js) is not None)
-
-
-def conturi_fara_sugestie(js):
-    """{rută:cheie} — câmp-cont (`cont`, `cont_*`) fără sugestie standard: ar porni gol (DS cap.17 corectat: contul vine
-    precompletat vizibil cu sugestia standard, modificabil, golul refuzat). Rândurile repetabile, separat (`CONTURI_NEPRECOMPLETATE`)."""
-    out = set()
-    starts = list(re.finditer(r'cheie: "([^"]+)", titlu: "([^"]+)", ruta: "([^"]+)"', js))
-    for k, m in enumerate(starts):
-        corp = js[m.end():(starts[k + 1].start() if k + 1 < len(starts) else len(js))]
-        principal, _, sub = corp.partition("subcampuri:")
-        for c in re.finditer(r'C\("(cont(?:_[a-z_]+)?)", "[^"]*", "text"(, \{[^\n]*?\})?\)', principal):
-            if "sugestie:" not in (c.group(2) or "") or "optional: true" in (c.group(2) or ""):
-                out.add("%s:%s" % (m.group(3), c.group(1)))
-        for c in re.finditer(r'C\("(cont(?:_[a-z_]+)?)", "[^"]*", "text"', sub):
-            out.add("%s:%s" % (m.group(3), c.group(1)))
-    return out
+def motor_fara_precompletare(js):
+    """[lotul 13, deficiența 504, comanda Costin 13.1: „Câmpurile nu au voie să arate valori gri sau precompletate care induc în eroare […]
+    Câmpul rămâne gol.” — PIVOT față de lotul 07.10 B, „conturile vin precompletate vizibil cu sugestia standard”] Motorul NU pune sugestia
+    ca valoare și nici ca text gri (placeholder); contul uzual se spune în explicația câmpului („De regulă 704.”). Se citește din codul lui."""
+    return not re.search(r'value="\$\{esc\(c\.sugestie\)\}"|placeholder="\$\{s?c\.sugestie|CONT_PRECOMPLETAT', js)
 
 
 def selecturi_preselectate(js):
@@ -360,10 +351,8 @@ def masoara():
         out.append(("%s:%s" % (r, b), ce))
     for r, sel, val, x in cerute_fara_efect(js, main, uc):
         out.append(("%s:%s=%s:%s" % (r, sel, val, x), "câmp obligatoriu pe ramură, necitit de server pe ea (C117)"))
-    if not motor_conturi_precompletate(js):
-        out.append(("motor:CONT_PRECOMPLETAT", "motorul nu mai pune sugestia standard ca valoare pe câmpurile-cont (DS cap.17 corectat)"))
-    for k in sorted(conturi_fara_sugestie(js) - set(CONTURI_NEPRECOMPLETATE)):
-        out.append((k, "câmp-cont fără sugestie standard precompletată (sau opțional)"))
+    if not motor_fara_precompletare(js):
+        out.append(("motor:PRECOMPLETARE", "motorul pune sugestia ca valoare sau ca text gri pe câmpuri (504, comanda Costin 13.1)"))
     for k in sorted(selecturi_preselectate(js)):
         out.append((k, "select obligatoriu cu prima opțiune aleasă de ecran (preselecție tacită)"))
     return out

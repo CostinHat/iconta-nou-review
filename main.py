@@ -6942,8 +6942,9 @@ def reges_poll(tenant_id: int, ctx=Depends(cere_drept(_drepturi.DEPUNE))):
 
 @app.post("/tenants/{tenant_id}/achizitie-taxare-inversa")
 def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),                              ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    """corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?,
-    furnizor_platitor_tva, descriere?}. Beneficiarul (firma) trebuie platitor TVA.
+    """corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota, furnizor_cui, furnizor_nume?, numar,
+    descriere?}. Beneficiarul (firma) trebuie platitor TVA; furnizorul se verifica la ANAF din CUI (lotul 13, 544:
+    CF art.331 alin.(1) — taxarea inversa numai intre platitori; ANAF cazut sau CUI negasit -> refuz, nu presupunere).
     Nota ciorna: cont_dest=401 valoare + 4426=4427 TVA (norme pct. 109)."""
     try:
         return _uc_tenants.achizitie_taxare_inversa(tenant_id, corp, ctx)
@@ -6963,7 +6964,9 @@ def verifica_vies_ep(tenant_id: int, cod_tva: str, ctx=Depends(cere_context)):
 @app.post("/tenants/{tenant_id}/achizitie-ic")
 def achizitie_ic(tenant_id: int, corp: dict = Body(...),                  ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """AIC bunuri/servicii primite (art. 268 / 278(2), plata = beneficiar art. 308).
-    corp: {data, valoare (RON), cont_destinatie, cota?, tip bunuri|servicii, descriere?}.
+    corp: {data, valoare (in moneda facturii), moneda? (implicit RON), cont_destinatie, cota, tip bunuri|servicii,
+    cod_tva_furnizor, furnizor_nume, numar, data_faptului_generator?, descriere?}. In valuta: cursul BNR de la
+    exigibilitate (CF art.290 alin.(2)), factura pastreaza moneda si cursul (lotul 13, 537).
     Nota ciorna: cont_dest=401 + 4426=4427 (norme 109)."""
     try:
         return _uc_tenants.achizitie_ic(tenant_id, corp, ctx)
@@ -7071,8 +7074,9 @@ def tva_incasare_neexigibile(tenant_id: int, la: str, ctx=Depends(cere_drept(_dr
 @app.post("/tenants/{tenant_id}/decontare-valuta")
 def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765.
-    corp: {data, valoare_valuta, moneda, curs_evidenta, tip creanta|datorie,
-    cont_tert, cont_banca?, descriere?}. Cursul decontarii = BNR la data (auto)."""
+    corp: {data, tip creanta|datorie, factura_id, valoare_valuta, cont_banca, descriere?}. Moneda, contul de tert,
+    partenerul si cursul de evidenta vin de la factura aleasa (lotul 13, 524); suma nu poate depasi restul ei in valuta.
+    Cursul decontarii = BNR la data (auto). Lista facturilor: GET operatiuni-date?ce=facturi_valuta."""
     try:
         return _uc_tenants.decontare_valuta(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -7130,7 +7134,9 @@ def compensari_genereaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 @app.post("/tenants/{tenant_id}/nota-leasing")
 def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?,
-    + campuri pe tip: primire{valoare_capital, dobanda_totala, cont_imobilizare?};
+    locator_cui, locator_nume (pe toate tipurile; lotul 13, 523),
+    + campuri pe tip: primire{valoare_capital, dobanda_totala, denumire, cont_imobilizare, cod_catalog, dnf_luni,
+    data_pif, metoda, numar_inventar?} (activul intra in registru la validarea notei; 8051 in afara bilantului);
     rata{capital, dobanda?, comision?}; reziduala{valoare_reziduala};
     operational{chirie, cont_cheltuiala?}}. Nota ciorna."""
     try:
@@ -7143,8 +7149,9 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(
 def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt,
     descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?,
-    comision?, dobanda_angajata?}; restanta{suma}; garantie{suma, fel primita|acordata,
-    actiune inregistrare|eliberare}}. Nota ciorna."""
+    comision?}; restanta{suma}; garantie{suma, fel primita|acordata,
+    actiune inregistrare|eliberare}}. Nota ciorna. Plata si restanta cer soldul creditului (1621/5191); dobanda platita
+    stinge intai dobanda angajata pe 1682/5198, din sold (lotul 13, 524). Garantia = numai evidenta in afara bilantului."""
     try:
         return _uc_tenants.nota_credit(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -7189,10 +7196,11 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
 
 @app.post("/tenants/{tenant_id}/nota-provizion")
 def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    """corp: {data, fel creanta|provizion|stoc, actiune constituire|reluare, suma,
-    descriere?, + creanta{zile_depasire?, garantata?, afiliata?, faliment?} |
-    provizion{tip litigii|garantii|dezafectare|restructurare|impozite|altele} |
-    stoc{cont_ajustare?}}. Raspunsul include deductibilitatea fiscala."""
+    """corp: {data, fel creanta|creanta_reluare|provizion|stoc, descriere?, +
+    creanta{factura_id, garantata?, afiliata?, faliment?} (suma si zilele de la scadenta vin de la factura) |
+    creanta_reluare{suma} | provizion{actiune constituire|reluare, suma, tip} | stoc{actiune, suma, cont_ajustare}}.
+    Reluarea cere soldul contului. Raspunsul include deductibilitatea fiscala; partea nedeductibila intra in D101 rd.29
+    dupa validarea notei (lotul 13, 511/512)."""
     try:
         return _uc_tenants.nota_provizion_ep(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -7212,8 +7220,9 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drep
 
 @app.post("/tenants/{tenant_id}/nota-obiect-inventar")
 def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    """corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?,
-    descriere?}. Achizitia verifica pragul MF (5000 din anul fiscal 2026, OUG 8/2026 art.10 alin.2)
+    """corp: {data, operatie achizitie|dare_folosinta|scoatere, descriere?, + achizitie{denumire, valoare (fara TVA),
+    cota, furnizor_cui, furnizor_nume?, numar} | dare_folosinta{obiect_id} | scoatere{obiect_id}} (lotul 13, 505-508:
+    obiectul din registrul obiectelor de inventar; clasa 8 intr-o singura parte, in afara bilantului). Achizitia verifica pragul MF (5000 din anul fiscal 2026, OUG 8/2026 art.10 alin.2)
     si refuza daca valoarea e peste prag (foloseste fluxul de mijloace fixe)."""
     try:
         return _uc_tenants.nota_obiect_inventar(tenant_id, corp, ctx)
@@ -7246,6 +7255,16 @@ def dividende_impartire(tenant_id: int, brut: str = "", data_hotarare: str = "",
         raise _http_din(e)
 
 
+@app.get("/tenants/{tenant_id}/operatiuni-date")
+def operatiuni_date(tenant_id: int, ce: str = "", tip: str = "", data: str = "", ctx=Depends(cere_cabinet)):
+    """[lotul 13, 511 / 524] Listele din care formularele Operațiunilor aleg ce aplicația are deja (facturile în valută deschise, cu soldul
+    rămas și cursul de evidență). Nu scrie nimic."""
+    try:
+        return _uc_tenants.operatiuni_date(tenant_id, ce, {"tip": tip, "data": data}, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/tenants/{tenant_id}/nota-sponsorizare")
 def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul
@@ -7259,9 +7278,9 @@ def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 @app.post("/tenants/{tenant_id}/nota-subventie")
 def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    """corp: {data, fel exploatare|investitii|reluare, descriere?, +
-    exploatare/investitii{suma, moment drept|incasare};
-    reluare{valoare_activ, subventie, amortizare_lunara}}."""
+    """corp: {data, fel exploatare|investitii, descriere?, suma, moment drept|incasare, cont_venit?, +
+    investitii{mijloc_fix_id}}. Reluarea subventiei pentru investitii (4751=7584) se genereaza odata cu
+    amortizarea lunii, din activ (lotul 13, 532)."""
     try:
         return _uc_tenants.nota_subventie(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -7271,10 +7290,11 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drep
 @app.post("/tenants/{tenant_id}/nota-chirie")
 def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare,
-    descriere?, cota?, + comodat{valoare, moment primire|restituire};
-    chirie_platita{chirie, proprietar pj|pf}; chirie_incasata{chirie};
-    refacturare{total_factura, parte_refacturata}}.
-    Refacturarea creeaza DOUA note (primire+emitere)."""
+    descriere?, cota?, + comodat{valoare, moment primire|restituire} (numai evidenta 8038, fara nota);
+    chirie_platita{chirie, proprietar pj|pf, furnizor_cui, furnizor_nume}; chirie_incasata{chirie, client_cui,
+    client_nume, tip_bun imobil|alt_bun, optiune_taxare?} (factura emisa; imobil fara optiune = scutit, CF art.292
+    alin.(2) lit.e); refacturare{numar, total_factura, parte_refacturata, furnizor_*, client_*}}.
+    Refacturarea: factura furnizorului ca achizitie proprie + factura emisa catre chirias (lotul 13, 530/531)."""
     try:
         return _uc_tenants.nota_chirie(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -7283,10 +7303,10 @@ def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_
 
 @app.post("/tenants/{tenant_id}/nota-decont-deplasare")
 def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
-    """corp: {data, fel avans|decont|plafon, descriere?, sursa casa|banca, +
-    avans{suma}; decont{avans, diurna?, transport?, cazare?, cota?};
-    plafon{diurna_pe_zi, zile, salariu_baza, zile_lucratoare, diurna_bugetara?,
-    curs?} - plafon NU creeaza nota, doar calculeaza}."""
+    """corp: {data, fel avans|decont, salariat_id, descriere?, sursa casa|banca, +
+    avans{suma}; decont{avans, diurna, zile, deplasare interna|externa, diurna_bugetara?, moneda?, transport?,
+    cota_transport?, cazare?, cota_cazare?}}. Plafonul neimpozabil (CF art.76 alin.(2) lit.k) se calculeaza in decont;
+    excedentul intra in salariul lunii (lotul 13, 670)."""
     try:
         return _uc_tenants.nota_decont_deplasare(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -7378,11 +7398,12 @@ def mijloc_fix_cod_catalog(tenant_id: int, mijloc_id: int, corp: dict = Body(...
 @app.post("/tenants/{tenant_id}/nota-inventariere")
 def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie plus|plus_mf|minus|casare, descriere?, +
-    plus{valoare, cont_stoc?}; plus_mf{valoare, cont_imobilizare?};
-    minus{valoare, cont_stoc?, imputabil?, valoare_imputare?, vinovat
-    salariat|tert, cota?, asigurat_sau_distrus?};
-    casare{mijloc_fix_id SAU valoare_bruta+amortizare_cumulata+conturi}.
-    Casarea cu mijloc_fix_id calculeaza amortizarea auto si dezactiveaza MF."""
+    plus{valoare, cont_stoc}; plus_mf{valoare, denumire, cont_imobilizare, cod_catalog, dnf_luni, data_pif, metoda,
+    numar_inventar?} (activul intra in registru la validarea notei);
+    minus{valoare, cont_stoc, cota, lipsa_dovedita?, document_lipsa (daca da), imputabil?, valoare_imputare?, vinovat
+    salariat|tert, salariat_id?} (CF art.304 alin.(2) lit.a);
+    casare{mijloc_fix_id} (proces-verbal de casare; amortizarea lunilor anterioare trebuie inregistrata pe activ, luna
+    casarii intra in nota; activul iese din registru la validarea notei — lotul 13, 517-522)."""
     try:
         return _uc_tenants.nota_inventariere(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:
@@ -7393,7 +7414,8 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_d
 def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """corp: {data, operatie vanzare_activ|partaj, descriere?, +
     vanzare_activ{pret, valoare_bruta, amortizare_cumulata, conturi?, cota?};
-    partaj{capital_social, rezerve?, profituri?}}. OMFP 897/2015."""
+    partaj{} — capitalul, rezervele, profitul si asociatii vin din solduri si din structura asociatilor la data
+    (lotul 13, 533)}. OMFP 897/2015."""
     try:
         return _uc_tenants.nota_lichidare(tenant_id, corp, ctx)
     except _erori.EroareDeDomeniu as e:

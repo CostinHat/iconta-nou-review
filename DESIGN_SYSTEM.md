@@ -644,8 +644,11 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   categoria sau temeiul dintr-o declarație, tipul imobilului, valabilitatea, opțiuni de regim alese de contribuabil. Acolo rămâne
   „— alege —”.”* Mecanic: (1) o preselecție permisă stă în `CLASIFICARE` ca `PRESELECTAT_PERMIS`, cu criteriile (a)–(c) scrise în
   motiv (moneda / țara dedusă din CUI / tipul operației / documentul la emitere, moneda facturii recurente, destinația TVA pe linie,
-  cererea inițială D318); (2) **un câmp-cont** din Operațiuni (`cont`, `cont_*`) vine precompletat VIZIBIL cu sugestia standard
-  (707, 5124, 612 …), modificabil, iar golul se refuză (`CONT_PRECOMPLETAT` în motor; excepțiile în `CONTURI_NEPRECOMPLETATE`);
+  cererea inițială D318); (2) **un câmp din Operațiuni nu vine precompletat și nu arată text gri** — PIVOT lotul 13 (deficiența 504, comanda Costin 13.1,
+  verbatim: *„Câmpurile nu au voie să arate valori gri sau precompletate care induc în eroare […] Câmpul rămâne gol.”*), care înlocuiește
+  „câmpul-cont vine precompletat VIZIBIL cu sugestia standard” din v2.79: câmpul (cont, cotă, sumă) pornește gol, contul uzual se spune
+  în explicația câmpului („De regulă 707.”), iar golul se refuză lângă câmp. Mecanic: `scan_formulare_operatiuni.motor_fara_precompletare`
+  (în `masoara()`, deci în verificator, `FAPT_FISCAL_NECERUT`) pică dacă motorul pune `sugestie` ca valoare sau ca `placeholder`;
   (3) **un DA/NU situațional nu e căsuță de bifat** — o căsuță nebifată răspunde „Nu” în locul omului: e `selectDaNu` din `api.js`
   („— alege —” + Da/Nu, citit cu `daNu`), cerut de handler; fiecare căsuță rămasă e în `CASUTE`, cu motivul (rectificativa = cazul
   uzual, setări de acces, selecții de lucru); (4) **un input cu valoare pusă de ecran** (literal sau `|| "x"`) e în `INPUTURI`, cu
