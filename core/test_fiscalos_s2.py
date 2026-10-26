@@ -78,6 +78,7 @@ def _forme_legale(v):
     if intreg:
         forme += [intreg + "%", intreg + " lei", intreg + " euro", intreg + " USD", intreg + " de lei",
                   intreg + " de zile", intreg + " zile"]   # un numar de zile (d212.ZILE_AN_NORMA: „la 365 de zile”)
+        forme += [intreg + " ore", intreg + " de ore"]   # [lotul 13] un număr de ore (salariati_import_api.ORE_NORMA_INTREAGA: „8 ore pe zi”)
     return forme
 
 

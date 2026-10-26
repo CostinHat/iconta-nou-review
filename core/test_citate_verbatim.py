@@ -53,7 +53,9 @@ from core import scan_citate
 #: `impozit_venit_categorii` (CF art.64 alin.(1), ambele intrări), `tva_standard` și `tva_redusa` pe textul verbatim al art.291
 #: alin.(1)/(2). Nicio prevedere n-a pierdut citatul verificabil: art.17, art.64 alin.(1) și art.291 alin.(1)/(2) au câte unul, în
 #: registru — scăderea e numărul dublurilor, nu o citare devenită parafrază.
-VERBATIM_BASELINE = 69
+# [lotul 13, 26.10.2026] 69 -> 78: nouă citări verbatim noi ale lotului 13 (registrul COTE: cotele / pragurile verificării de bun-simț,
+# zona decl; ORE_NORMA_INTREAGA, Legea 53/2003 art.112 alin.(1), zona migr), fiecare verificată în corpus
+VERBATIM_BASELINE = 78
 
 
 @pytest.fixture(scope="module")
