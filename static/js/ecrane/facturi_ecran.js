@@ -1727,7 +1727,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
 
   corp.innerHTML = `
     <h2 class="pf-titlu">Facturi recurente ${semnAjutor("F047")}</h2>
-    <p class="pf-intro">\u0218abloanele facturilor lunare: fiecare se emite singur în ziua lui sau se pregătește ca ciornă, pe care o emiți tu (verificare zilnic\u0103 la 07:00).</p>
+    <p class="pf-intro">\u0218abloanele facturilor lunare: fiecare se emite singur în ziua lui sau se pregătește pentru tine, iar factura lunii o emiți din listă (verificare zilnic\u0103 la 07:00).</p>
     <div class="pf-lista zebra-lista">${corpuri}</div>
     <button class="buton-primar" id="fr-add" data-actiune="POST /tenants/{tenant_id}/facturi-recurente" style="margin-top:12px">+ \u0218ablon nou</button>
     <div id="fr-msg" role="alert"></div>`;
