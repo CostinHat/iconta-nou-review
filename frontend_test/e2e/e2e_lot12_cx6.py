@@ -112,7 +112,7 @@ def test_def_c160_factura_recurenta_catre_clientul_ue_poarta_tara_clientului(pat
 
 def test_def_c162_declaratii_arata_d390_numai_pe_luna_cu_prestarea(patron, firma_cx6):
     """C162. Pașii: firmă neplătitoare de TVA, înregistrată art.317 -> Emite factură: prestarea de servicii către clientul din DE în luna
-    încheiată -> Declarații: în „Datorate de firmă” D390 apare numai pe luna facturii (cât termenul ei, 25 ale lunii de azi, n-a trecut),
+    încheiată -> Declarații: în „Datorate de firmă” D390 apare numai pe luna facturii (cât termenul ei — 25 ale lunii de azi, sau ziua lucrătoare următoare — n-a trecut),
     niciodată pe luna în curs, fără nicio operațiune intracomunitară (CF art.325 alin.(2)). Înainte: D390 și pe luna în curs — motorul
     termenelor punea D390 pe toate lunile neplătitorului art.317.
     MUTAȚIA (`mut_lot12_cx6.json`): calendarul neplătitorului netrimis motorului (`termene_api.termene_firma`) -> D390 pe luna în curs
@@ -127,8 +127,12 @@ def test_def_c162_declaratii_arata_d390_numai_pe_luna_cu_prestarea(patron, firma
     _deschide(patron, f["nume"], "declaratii", "#dec-tip")
     datorate = pg.eval_on_selector_all("#dec-tip optgroup option", "(os) => os.map((o) => o.textContent)")
     patron.captura("datorate")
+    from core import scadente
     azi = _dt.date.today()
     d390 = sorted(t.split(" · ")[1] for t in datorate if t.startswith("D390 · "))
-    asteptat = ["%02d/%d" % (LUNA.luna, LUNA.an)] if azi.day <= 25 else []   # termenul D390 al lunii încheiate: 25 ale lunii de azi
+    # [lotul 13] termenul D390 al lunii încheiate e cel al aplicației (`scadente`): 25 ale lunii de azi, mutat pe următoarea zi lucrătoare
+    # când cade în weekend / sărbătoare (25.10.2026 = duminică -> 26.10.2026) — nu „ziua 25” scrisă în test
+    termen = scadente.scadenta_data("d390", LUNA.an, luna=LUNA.luna)
+    asteptat = ["%02d/%d" % (LUNA.luna, LUNA.an)] if azi <= termen else []
     assert d390 == asteptat, datorate
     assert not any(t.startswith("D390 · %02d/%d" % (azi.month, azi.year)) for t in datorate), datorate
