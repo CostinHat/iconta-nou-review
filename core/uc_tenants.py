@@ -44,6 +44,7 @@ from core.common import nomenclator_cerut
 from core.mesaje import CUI_FIRMA_LIPSA, PERIOADA_INCHISA, FARA_DREPT_VALIDARE, FARA_ACCES_TENANT
 from core.mesaje import COD_SERIE_CHITANTA_LIPSA, MESAJ_SERIE_CHITANTA_LIPSA   # [decizii 07.10 pct.5]
 from core.pdf_util import bani, data_ro
+from core.salariat_decont import cif_partener as _cif_partener   # [lotul 13] punctul unic al CNP-ului pe rând (și Casa îl folosește)
 from core.unde import Unde as _Unde
 import os
 import psycopg2.extras as _E_audit
@@ -4495,7 +4496,8 @@ def factura_trimite_spv(tenant_id, factura_id, ctx):
             "execution_status": r.get("execution_status"),
             "erori": r.get("errors") or ([r.get("raspuns", "")] if st in ("nok", "eroare_upload") else []),
             # [lotul 10, C73 / U2] «investigatie»: încărcată peste o trimitere vie — mesajul numește dublura
-            "mesaj": r.get("mesaj") if st == "investigatie" else r.get("raspuns")}
+            "mesaj": r.get("mesaj") if st == "investigatie" else r.get("raspuns"),
+            "avertisment": r.get("avertisment")}   # [lotul 13, 696] dreptul certificatului pe CUI nu e confirmat: ecranul îl arată lângă buton
 
 
 #: [lotul 6 pct.7c, 273] ce nu vine din XML-ul facturii primite și se cere la validare (refuzuri structurate: `camp` = câmpul din ecran)
@@ -6329,14 +6331,6 @@ def _dividend_propus(conn, schema, corp, pentru_nota=True):
                           "impozit": str(p["impozit"]), "net": str(p["net"])} for p in r["parti"]]}
 
 
-def _cif_partener(cnp):
-    """[lotul 10, deficiența 430b] Codul asociatului pe rândul notei, numai când e valid (CNP sau CUI): D406 refuză un cod de
-    partener invalid, iar D205 numește singur CNP-ul greșit al beneficiarului (`d205.build_xml`)."""
-    from core.identitate import valideaza_cnp, valideaza_cui
-    c = "".join(ch for ch in str(cnp or "") if ch.isdigit())
-    return c if c and (valideaza_cnp(c)[0] or valideaza_cui(c)[0]) else None
-
-
 def dividende_impartire(tenant_id, corp, ctx):
     """[lotul 10, deficiența 430b] Corpul rutei `GET /tenants/{tenant_id}/dividende-impartire`: tabelul arătat ÎNAINTE de
     generarea notei — asociații la data hotărârii, cota, dividendul brut, impozitul și netul fiecăruia, contul sursă și documentul.
@@ -6695,25 +6689,10 @@ def nota_chirie(tenant_id, corp, ctx):
 
 
 def _salariat_decont(cur, schema, salariat_id, data):
-    """[lotul 13, deficiența 670 (a)] Salariatul decontului, ales din salariații firmei: {id, nume, cif} sau refuz lângă câmp. „542 trebuie
-    urmărit pe persoană” (comanda Costin 13.1): rândurile 542 poartă salariatul ca partener (CNP-ul, numai valid — `_cif_partener`)."""
-    try:
-        sid = int(salariat_id)
-    except (TypeError, ValueError):
-        sid = None
-    if not sid:
-        raise _erori.DateInvalide({"mesaj": "Alege salariatul care a făcut deplasarea: avansul spre decontare (542) se urmărește pe "
-                                            "persoană.", "erori_campuri": [{"camp": "op-salariat_id", "mesaj": "Alege salariatul."}]})
-    r = repo_operatiuni.salariat(cur, schema, sid)
-    if not r:
-        raise _erori.DateInvalide({"mesaj": "Salariatul ales nu e în evidența firmei.",
-                                   "erori_campuri": [{"camp": "op-salariat_id", "mesaj": "Alege salariatul din listă."}]})
-    nume = " ".join(x for x in (r["nume"], r["prenume"]) if x).strip() or "salariatul ales"
-    if (r["data_angajare"] and data < r["data_angajare"]) or (r["data_incetare"] and data > r["data_incetare"]):
-        raise _erori.DateInvalide({"mesaj": "%s nu era salariat al firmei la %s: decontul de deplasare e al unui salariat (CF art.76 "
-                                            "alin.(2) lit.k)." % (nume, data_ro(data)),
-                                   "erori_campuri": [{"camp": "op-salariat_id", "mesaj": "Salariatul nu era angajat la data decontului."}]})
-    return {"id": r["id"], "nume": nume, "cif": _cif_partener(r["cnp"])}
+    """[lotul 13, deficiența 670 (a)] Salariatul decontului, ales din salariații firmei: {id, nume, cif} sau refuz lângă câmp
+    (`op-salariat_id`). Verificarea e în `core.salariat_decont.alege`, comună cu Casa (683)."""
+    from core import salariat_decont as _sd
+    return _sd.alege(cur, schema, salariat_id, data, "op-salariat_id")
 
 
 def _plafon_diurnei(conn, cur, schema, corp, data, diurna, sal):

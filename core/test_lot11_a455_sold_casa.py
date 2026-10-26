@@ -55,6 +55,9 @@ def conn():
                            declarant_functie,platitor_tva) VALUES (1,'F1 SRL','RO14399840','s','B','B','e@x.ro','07','4690','P','I','A',true)""")
         c.commit()
     with _db.get_conn(_SCH) as c:
+        with c.cursor() as cur:   # [lotul 13, 683] avansul spre decontare se dă unui salariat din evidență (CNP cu cifra de control verificată)
+            cur.execute("INSERT INTO salariati (id, cnp, nume, prenume, data_angajare) OVERRIDING SYSTEM VALUE "
+                        "VALUES (1, '1900101400012', 'Popescu', 'Ion', '2026-01-01')")
         yield c
     with _db.get_conn() as c:
         with c.cursor() as cur:
@@ -117,7 +120,7 @@ def test_registrul_e_soldul_notelor_in_fiecare_zi(conn):
     _ca.adauga(conn, _SCH, _op("2026-10-05", "ridicare_banca", 1000, "DI1"))
     _nota(conn, "2026-10-06", "401", "5311", 100, "manual", "Plată manuală", status="validata")
     _nota(conn, "2026-10-07", "5311.01", "707", 50, "horeca_z", "Raport Z analitic")
-    _ca.adauga(conn, _SCH, _op("2026-10-08", "avans_decontare", 30, "DP1"))
+    _ca.adauga(conn, _SCH, dict(_op("2026-10-08", "avans_decontare", 30, "DP1"), salariat_id=1))   # [683] avansul are salariat
     reg = _ca.registru(conn, _SCH, 2026, 10)
     with conn.cursor() as cur:
         for zi in range(1, 32):

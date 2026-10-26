@@ -1,0 +1,60 @@
+[
+ {
+  "nr": "683",
+  "firma": "tenant_9049",
+  "descriere": "F1: Casă -> + Dispoziție nouă -> Tip «Avans spre decontare»: câmpurile Partener și CUI dispar, apare «Salariatul» (listă cu căutare, cu salariații F1: Ionescu, Popescu, Georgescu), nimic ales. «Adaugă» fără salariat: lângă câmp «Alege o valoare», nimic scris (refuzul vine înainte de orice scriere). Alegerea salariatului și scrierea rândului 542 pe persoană sunt probate de e2e_lot13_val6.py::test_def_683 pe firmă nouă — pe copie nu se scrie.",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": "#c-toggle"
+   },
+   {
+    "click": "#c-toggle"
+   },
+   {
+    "asteapta": "#c-cat"
+   },
+   {
+    "alege": "#c-cat",
+    "valoare": "avans_decontare"
+   },
+   {
+    "completeaza": "#c-suma",
+    "valoare": "300"
+   },
+   {
+    "asteapta": "#c-salariat option:has-text('Ionescu')",
+    "stare": "attached"
+   },
+   {
+    "captura": "683_f1_formularul_cu_salariat.png"
+   },
+   {
+    "click": "#c-adauga"
+   },
+   {
+    "asteapta": ".msg-eroare[data-camp='c-salariat']"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#c-zona-salariat"
+   },
+   {
+    "exista": "#c-salariat option",
+    "text": "Ionescu"
+   },
+   {
+    "exista": ".msg-eroare[data-camp='c-salariat']",
+    "text": "Alege"
+   },
+   {
+    "valoare": "#c-salariat",
+    "egal": ""
+   }
+  ],
+  "captura": "683_f1_fara_salariat_refuzul.png"
+ }
+]

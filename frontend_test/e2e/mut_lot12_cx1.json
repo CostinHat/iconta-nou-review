@@ -7,8 +7,8 @@
  },
  {
   "fisier": "core/repo_facturi.py",
-  "ancora": "    cur.execute(\"SELECT directie, data_emitere, data_scadenta, COALESCE(total_lei, total) + \" + st + \" AS total \"",
-  "inlocuire": "    cur.execute(\"SELECT directie, data_emitere, data_scadenta, total + \" + st + \" AS total \"",
+  "ancora": "        total_lei, rest_lei = Decimal(s[\"total\"]), Decimal(s[\"total\"]) - Decimal(s[\"incasat\"])",
+  "inlocuire": "        total_lei, rest_lei = Decimal(str(f[\"total\"])), Decimal(str(f[\"total\"])) - Decimal(s[\"incasat\"])",
   "test": "frontend_test/e2e/e2e_lot12_cx1.py::test_def_c113_cashflow_portalului_ia_totalul_facturii_in_lei"
  },
  {

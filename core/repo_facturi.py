@@ -65,25 +65,6 @@ def seteaza_act_identitate(cur, schema, factura_id, act):
     cur.execute(f"UPDATE {schema}.facturi SET tert_act_identitate = %s WHERE id = %s", (act, factura_id))
 
 
-#: [lotul 12, 468] aceeași sumă a stornărilor, în LEI (`total_lei` al stornării; RON fără `total_lei` = totalul) — pentru cititorii care
-#: adună facturi în monede diferite (cashflow-ul se alocă din soldul balanței, care e în lei)
-SQL_STORNARI_LEI = "COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total)) FROM {s}facturi st WHERE st.storno_din_id = {a}.id), 0)"
-
-
-def pentru_cashflow(cur):
-    # [deficiența 416] totalul de după stornări (`repo_facturi.SQL_STORNARI`); factura stornată integral nu mai intră
-    # [lotul 12, 468, clasa „lei adunați cu euro”] totalul în LEI (`total_lei`): `cashflow.aloca_sold` îl împarte din soldul balanței (în
-    # lei), iar o factură de 1.000 EUR intra ca 1.000 lei
-    # [lotul 13, 546] totalul DE PLATĂ (`facturi.SQL_TOTAL_DE_PLATA_LEI`): factura primită cu taxare inversă e datorată fără TVA-ul ei
-    from core import facturi as _fc
-    st = SQL_STORNARI_LEI.format(s="", a="facturi")
-    tp = _fc.SQL_TOTAL_DE_PLATA_LEI.format(a="facturi")
-    cur.execute("SELECT directie, data_emitere, data_scadenta, " + tp + " + " + st + " AS total "
-                "FROM facturi WHERE tip='factura' AND storno_din_id IS NULL AND " + tp + " + " + st + " > %s",
-                (TOLERANTA_STORNATA,))
-    return cur.fetchall()
-
-
 #: [lotul 12, 466] stările de încasare ale unei facturi care mai are ceva de încasat / de plătit (`facturi_api._cu_stare_incasare`)
 STARI_DE_INCASAT = ("neincasata", "partial")
 

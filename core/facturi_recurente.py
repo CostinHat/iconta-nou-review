@@ -597,15 +597,20 @@ def _trimite_spv(schema, s, r, azi):
             principal = _sc.principal_pentru_schema(conn, schema)
         rez = _eft.trimite(schema, r["factura_id"], principal, mediu=os.environ.get("EFACTURA_MEDIU", "prod"))
         stare, motiv = rez.get("stare"), rez.get("mesaj") or ("; ".join(rez.get("erori") or []) or rez.get("stare"))
+        avertisment = rez.get("avertisment")   # [lotul 13, 696] a plecat, dar dreptul certificatului pe CUI nu era confirmat
     except Exception as e:  # noqa: BLE001 — trimiterea nereușită nu desface emiterea; se anunță
         _obs.esec_secundar("trimiterea în SPV a facturii recurente %s/%s" % (schema, s.get("id")), e)
         stare, motiv = "eroare", (str(e) if isinstance(e, ValueError) else "trimiterea n-a reușit (echipa iConta.eu a fost anunțată)")
-    if stare not in STARI_SPV_PLECATA:
+        avertisment = None
+    if stare not in STARI_SPV_PLECATA or avertisment:
+        # [696] a plecat, dar dreptul certificatului pe CUI nu era confirmat: aici nu e niciun ecran lângă un buton, deci avertismentul
+        # ajunge la contabil în clopoțel (factura nu se retrimite — verifică Setări cont › Conectare SPV dacă ANAF o respinge)
+        ce = ("a plecat în SPV. %s" % avertisment if stare in STARI_SPV_PLECATA
+              else "s-a emis, dar n-a plecat în SPV: %s. Trimite-o din Istoric facturi." % motiv)
         try:
             with db.get_conn(schema) as conn:
-                _nt.notifica_pe_conexiune(conn, schema, TIP_AVERTISMENT, lambda nume: "%s: factura recurentă %s pentru %s s-a emis, dar n-a "
-                                          "plecat în SPV: %s. Trimite-o din Istoric facturi." % (nume, r.get("numar") or "",
-                                                                                                str(s.get("tert_nume") or ""), motiv))
+                _nt.notifica_pe_conexiune(conn, schema, TIP_AVERTISMENT, lambda nume: "%s: factura recurentă %s pentru %s %s" % (
+                    nume, r.get("numar") or "", str(s.get("tert_nume") or ""), ce))
                 conn.commit()
         except Exception as e:  # noqa: BLE001 — anunțul nereușit nu desface emiterea; eșecul nu e tăcut
             _obs.esec_secundar("anunțul trimiterii SPV a facturii recurente %s/%s" % (schema, s.get("id")), e)

@@ -4528,14 +4528,20 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
       <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input" value="${dataIso()}"></label>
       <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input" data-butoane>${ALEGE}${CATEGORII_CASA.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
       <label class="camp"><span class="camp-eticheta">Suma (lei)</span><input type="number" step="0.01" id="c-suma" class="camp-input"></label>
-      <label class="camp"><span class="camp-eticheta">Partener</span><input type="text" id="c-part" class="camp-input"></label>
-      <label class="camp">
+      <label class="camp" id="c-l-part"><span class="camp-eticheta">Partener</span><input type="text" id="c-part" class="camp-input"></label>
+      <label class="camp" id="c-l-cui">
         <span class="camp-eticheta" style="display:flex;justify-content:space-between;align-items:center">
           CUI
           <button type="button" class="buton-secundar buton-mic" id="c-cui-verif">Verifică la ANAF</button>
         </span>
         <input type="text" id="c-cui" class="camp-input">
       </label>
+      <!-- [lotul 13, 683] „Avans spre decontare” (542) se dă unui SALARIAT, ales din evidența firmei: în locul partenerului și al CUI-ului -->
+      <div class="camp" id="c-zona-salariat" hidden>
+        <label class="camp-eticheta" for="c-salariat">Salariatul<span class="oblig">*</span></label>
+        <input type="text" id="c-salariat-cauta" class="camp-input" data-cautare placeholder="Caută salariatul…" aria-label="Caută salariatul" autocomplete="off" style="margin-bottom:6px">
+        <select id="c-salariat" class="camp-input"><option value="" data-alege>— se încarcă salariații… —</option></select>
+      </div>
       <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
     </div>
     <div class="em-cui-stare" id="c-cui-stare"></div>
@@ -4606,10 +4612,37 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
     });
     return { facturi: out, niruri: nir };
   };
+  // [lotul 13, 683] la „Avans spre decontare” partenerul e salariatul (lista lui, cu căutare), nu un partener scris: câmpurile Partener și CUI
+  // se ascund, iar corpul poartă `salariat_id`. Lista salariaților activi se aduce o dată, la prima alegere a categoriei; nimic precompletat.
+  const zSal = corp.querySelector("#c-zona-salariat"), selSal = corp.querySelector("#c-salariat");
+  let salariatiIncarcati = false;
+  const cuSalariat = () => corp.querySelector("#c-cat").value === "avans_decontare";
+  const salariatiInLista = async () => {
+    if (salariatiIncarcati) return;
+    salariatiIncarcati = true;
+    try {
+      const r = await api.get(`/tenants/${t.id}/salariati?activ=true`);
+      const sal = (r && r.salariati) || [];
+      selSal.innerHTML = sal.length ? ALEGE + sal.map((x) => `<option value="${x.id}">${esc([x.nume, x.prenume].filter(Boolean).join(" "))}</option>`).join("")
+        : `<option value="" data-alege>Firma nu are salariați în Salarizare</option>`;
+      cautaInLista(corp.querySelector("#c-salariat-cauta"), selSal);
+    } catch (e) {
+      salariatiIncarcati = false;
+      selSal.innerHTML = `<option value="" data-alege>Salariații nu s-au putut încărca — reîncearcă</option>`;
+    }
+  };
+  corp.querySelector("#c-cat").addEventListener("change", () => {
+    const sal = cuSalariat();
+    zSal.hidden = !sal;
+    corp.querySelector("#c-l-part").hidden = corp.querySelector("#c-l-cui").hidden = sal;
+    if (sal) salariatiInLista();
+  });
   const opPropusa = () => ({
     data: corp.querySelector("#c-data").value, categorie: corp.querySelector("#c-cat").value,
-    suma: parseFloat(corp.querySelector("#c-suma").value) || 0, partener: corp.querySelector("#c-part").value || null,
-    cui: corp.querySelector("#c-cui").value || null, document: corp.querySelector("#c-doc").value || null,
+    suma: parseFloat(corp.querySelector("#c-suma").value) || 0,
+    partener: cuSalariat() ? null : corp.querySelector("#c-part").value || null,
+    cui: cuSalariat() ? null : corp.querySelector("#c-cui").value || null, document: corp.querySelector("#c-doc").value || null,
+    salariat_id: cuSalariat() && selSal.value ? Number(selSal.value) : null,   // [683]
     facturi: cuFacturi() ? alocari().facturi : [], niruri: cuFacturi() ? alocari().niruri : [],   // [405]
     avans: cuFacturi() && avansFaraFactura && !alese.size && !aleseNir.size,
     avans_destinatie: avansDest || null,   // [407]
@@ -4726,7 +4759,7 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
       _lipsa = true;
     }
     // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite; [lotul 11, 440] categoria lipsă se marchează odată cu data și suma
-    if (cereAlegerile(corp, ["#c-cat"])) _lipsa = true;
+    if (cereAlegerile(corp, ["#c-cat", "#c-salariat"])) _lipsa = true;   // [683] salariatul se cere numai când lista lui e vizibilă
     if (_lipsa) return;
     try {
       const r = await api.post(`/tenants/${t.id}/casa/operatiuni`, opPropusa());
