@@ -23739,3 +23739,40 @@ rândul lui din `DEFICIENTE.md` (secțiunea „25.10 — comanda 13.1”, numere
   Funcțiile AI ale aplicației cu cheia nouă: `ai_client.genereaza_text` -> „funcționează”, `ai_client.citeste_imagini` (o imagine PNG) ->
   răspuns. Procesul de producție citește cheile la pornire: cheia nouă intră în producție la repornirea publicării; dacă publicarea trece
   de 28.10 (expirarea cheii „fiscalos”), funcțiile AI de pe producție cad până la repornire.
+
+## 26.10.2026 — Comanda 13.1: deciziile lui Costin la lista din 26.10 — verbatim
+
+Răspunsul lui Costin, la lista de decizii cerute de executor după citirea predării (`~/ghid_incoming/stare_13_1.md`), verbatim:
+
+> 13.1 — deciziile:
+> 1 da: varianta (a), după git diff și testele rulate.
+> 2 nu: impozitul pe dividende, deci și pe lichidare, e 16% pentru distribuiri de la 01.01.2026 și 10% în 2025; aplică cota pe dată, citează actul și articolul în vigoare și corectează nota și D100/D205.
+> 3 da. 4 da.
+> 5 da, cu actul de abrogare citat pentru fiecare modul șters.
+> 6 da. 7 da. 8 da.
+> 9 da: tot până la poarta verde și backup, apoi te oprești și aștepți confirmarea mea pentru publicare.
+> Restul celor 19 din DECIZII_PROPUSE.md: aplică varianta ta recomandată și raportează-le în raportul final.
+> Continuă 13.1.
+
+**Ce înseamnă fiecare (propunerile executorului, la care Costin a răspuns):**
+1. **536 la NIR, varianta (a)** — centrul de cost pe articolul de stoc, ieșirea din stoc îl moștenește. Lucrul necomis al zonei COMP, citit (`git diff`)
+   și probat (`core/test_lot13_comp_536.py`, 8 verzi) înainte de comitere: `d473873f`. Temei: comanda 13.1 la 536; decizia de produs a lui Costin.
+2. **533 — cota impozitului pe venitul din lichidare.** Costin: 16% pentru distribuiri de la 01.01.2026, 10% în 2025, „citează actul și articolul
+   în vigoare”. **CONFLICT CU SURSA, RIDICAT, NEREZOLVAT LA ACEASTĂ INTRARE:** `anaf_surse/cod_fiscal_227_2015_consolidat.txt:3684`, CF art.97
+   alin.(5), forma în vigoare, scrie „Venitul impozabil obținut din lichidarea unei persoane juridice de către acționari/asociați persoane fizice
+   sau din reducerea capitalului social […] se impun cu o cotă de 10%, impozitul fiind final”; Legea 141/2025 art.II pct.5 modifică numai
+   alin.(7) (dividendele, 16%), iar art.VII alin.(1) lit.c o aplică dividendelor distribuite de la 01.01.2026 (aceeași consolidare, liniile
+   3693–3699). Nicio normă din corpus nu trimite lichidarea la cota dividendelor. CLAUDE.md §3: legea câștigă, iar unde nu există temei nu se
+   construiește. Deci cota 10% rămâne în cod până când Costin indică actul sau articolul care schimbă alin.(5) (sau confirmă că a vrut
+   dividendele din lichidare, caz în care se citează alin.(7)); în acel moment se aplică pe dată (16% / 10%) și se corectează nota și D100/D205.
+   Alternativa respinsă: 16% fără text, cu sau fără mențiunea „așa a cerut Costin” (ar pune o cifră fiscală fără temei în declarația D100/D205).
+   Decizie în așteptare (CLAUDE.md §2.3 pct.12 b): se lucrează la restul, se raportează la §6.
+3. **UM gol pe factură = refuz lângă câmp**; API fără cheia `um` rămâne „buc” (confirmat). 4. **606: nota 171 validată rămâne** (confirmat).
+5. **Modulele D200, D201, D220, D221, D223, D600 se șterg**, cu actul de abrogare citat pentru fiecare (ramura `lucru/l13-sterge`).
+   SUPERSEDEAZĂ „Alternativa respinsă: ștergerea lor acum” din „Declarații (zona decl)” 660 din intrarea 26.10.2026 de implementare.
+6. **595 — înregistrarea OSS se întreabă în Date firmă**, nu în formularul D398 (ramura `lucru/l13-oss`). SUPERSEDEAZĂ „595 — înregistrarea OSS se
+   întreabă în formularul D398” din aceeași intrare.
+7. **Notificările din clopoțel pe email rămân pe Brevo**; Postmark numai pentru emailurile contului. 8. **Decontarea prin casa în valută** —
+   rezolvată prin lista de trezorerie 5124 / 5121 / 5314, confirmată.
+9. **Publicarea:** totul până la poarta verde și backup, apoi oprire și așteptarea confirmării lui Costin pentru publicare (regimul pilot).
+- **Restul celor 19 din `DECIZII_PROPUSE.md`:** se aplică varianta recomandată de executor; fiecare se raportează la §6 al raportului final.
