@@ -46,6 +46,17 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
+- fir: **Lotul 13, comanda 13.1 (Costin 25.10.2026; deciziile din 26.10.2026 verbatim în DECIZII „Lotul 13: deciziile din 26.10”)** — loturile 12 + 13, o singură poartă;
+  worktree `/home/costin/iconta_lot12`, ramura `lucru/lot12-2026-10-23`, nepublicat; predarea completă: `~/ghid_incoming/stare_13_1.md`.
+  - ultim: (26.10.2026) 536 la NIR, varianta (a) comisă și unită (`d473873f`); T34 închis (`f017d75c`): antetul regenerat, blocul de verificare scris.
+  - urmator: ștergerea modulelor abrogate D200/D201/D220/D221/D223/D600 (ramura `lucru/l13-sterge`) și 595 în Date firmă (ramura `lucru/l13-oss`),
+    apoi valul 6 (deficiențele noi nerezolvate 683, 686, 692, 694, 696, codul mort), artefactele, suita, plasa, vizualul, dovezile, registrele, poarta. IN LUCRU
+  - pasi:
+    L13-1. 536/NIR (a) — FĂCUT. L13-2. T34 — FĂCUT. L13-3. ștergerea D2xx abrogate (decizia 5, cu actul de abrogare citat). L13-4. 595 în Date firmă (decizia 6).
+    L13-5. valul 6: 683, 686, 692, 694, 696, 693 (după decizia C199), codul mort NOU-portal-p1-1/-2, scăderea `test_datorie._FARA_TERMEN_07_10`.
+    L13-6. `versioneaza_assets.py --scrie`, artefactele din browser, `regen_baza_test_garzi.py`. L13-7. suita pytest întreagă, apoi plasa e2e, apoi verificatorul.
+    L13-8. dovezile pe copie (`dovada_firme_test.py`), AMPRENTE. L13-9. registrele. L13-10. poarta, apoi STOP până la confirmarea lui Costin (backup, publicare).
+
 - fir: **Lotul 11, comanda 11.1 (Costin 21.10.2026, verbatim în DECIZII „Comanda 11.1”)** — deciziile din „Comanda 10.3” pct.4, C75 (DA,
   migrare pe toate firmele, inclusiv cabinetul pilot), prioritarele C76, 428, 439, 451, 409, apoi 452, 450, 449, 429, 420, 424, 446, 447,
   440–445, 436 (afișare), măruntele (pct.23), dovada pe aplicație pentru C68, C69, C71–C74, 7g, 8b–8e, ghidurile 247 / 248 + sitemap;
