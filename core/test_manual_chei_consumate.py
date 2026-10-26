@@ -76,7 +76,7 @@ def nesolicitate():
 def test_ecranul_trimite_manual_pentru_declaratiile_cunoscute():
     # gardul nu are voie să treacă pentru că n-a găsit nimic de verificat (regex rupt de o refactorizare)
     tipuri = dict(_RE_TRIMITE.findall(open(_JS, encoding="utf-8").read()))
-    assert len(tipuri) >= 21 and tipuri.get("d212") == "_d212Manual"
+    assert len(tipuri) >= 16 and tipuri.get("d212") == "_d212Manual"   # [lotul 13, 660] D200, D201, D221, D223, D600 scoase: 21 -> 16
     js = open(_JS, encoding="utf-8").read()
     assert chei_rand_lista(js, "d710_obligatii") >= {"cod_oblig", "suma_dat_i", "suma_dat_c", "cota"}
 

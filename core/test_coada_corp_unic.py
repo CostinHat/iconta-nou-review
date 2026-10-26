@@ -31,7 +31,7 @@ def test_constructorul_poarta_toate_formularele_manuale():
     """Fiecare `_dXXXManual()` din ecran ajunge în corp; D710 își trimite obligațiile."""
     corp = _functie("corpGenerare")
     toate = set(re.findall(r"function (_d\d{3}Manual)\(", JS))
-    assert len(toate) >= 20                                         # premisă: formularele chiar s-au citit
+    assert len(toate) >= 17   # premisă: formularele chiar s-au citit ([lotul 13, 660] D200, D201, D221, D223, D600 scoase: 22 -> 17)
     lipsa = sorted(f for f in toate if not re.search(r"body\.manual = %s\(\)" % f, corp))
     assert lipsa == []
     assert re.search(r"body\.obligatii = S\.d710_obligatii", corp)

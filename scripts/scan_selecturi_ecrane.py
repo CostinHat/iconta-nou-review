@@ -297,9 +297,6 @@ def casute(fisiere=None):
 
 #: [lotul 07.10 B] INPUT-URI cu valoare pusă de ecran (literal sau `|| "x"` în `value=`) — fiecare cu motivul, după regula corectată.
 INPUTURI = {
-    "declaratii.js:d603-tara": "(a) uzual: contribuabilul D603 rezident în România („RO”); (b) vizibil; (c) se scrie alt cod de țară",
-    "declaratii.js:d318-li": "(a) uzual: cererea pe an întreg — luna 1; apare numai când cererea NU e anuală, deci e vizibilă și se schimbă",
-    "declaratii.js:d318-ls": "idem — luna 12",
     "produse_ecran.js:pr-um": "(a) uzual: unitatea „buc”; (b) vizibilă; (c) se schimbă — unitatea nu schimbă nota, baza sau impozitul",
     "firme.js:sn-cont-taxe": "cont contabil sugerat (446) la NIR, vizibil și modificabil — idem",
     # [lotul 12, 477] factura primită de mână: țara furnizorului, ca la validarea facturii din XML (`pr-tara`, dedusă din CIF, implicit RO)

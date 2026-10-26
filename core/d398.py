@@ -222,6 +222,17 @@ def pull(conn, schema, perioada):
 MONEDA_OSS = "EUR"
 
 
+def refuz_fara_oss(manual):
+    """[lotul 13, deficiența 595] Răspunsul contabilului la „Firma e înregistrată în regimul special OSS?” (formularul D398, cheia
+    `inregistrat_oss`, fără răspuns implicit). CF art.315 alin.(3): „persoana impozabilă respectivă trebuie să depună în format electronic
+    o declarație de începere a activității sale supuse regimului special” — fără înregistrare nu există D398 de depus. Chemat de
+    `declaratii_api.valideaza_cerere` (poarta cererii), înaintea generării. -> motivul (text pentru contabil) sau None."""
+    if (manual or {}).get("inregistrat_oss") is True:
+        return None
+    return ("D398 se depune numai de firma înregistrată în regimul special OSS, care a depus declarația de începere a activității "
+            "(CF art.315 alin.(3)); firma nu e înregistrată, deci nu are D398 de depus.")
+
+
 def erori_generare(prof, manual):
     er = []
     moes = _int(manual.get("moes_voes_imp"))
