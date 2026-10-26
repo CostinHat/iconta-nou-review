@@ -29,7 +29,8 @@ def excedente(monkeypatch):
     """`core.diurna_salariat` e modulul salarizării (subagentul SAL): aici se înregistrează ce i se trimite."""
     trimise = []
     mod = types.ModuleType("core.diurna_salariat")
-    mod.adauga_excedent = lambda cur, schema, sid, an, luna, suma, referinta, descriere: trimise.append(
+    # [684] `nota_id` (nota decontului) e obligatoriu în fals: o chemare fără el ar lăsa excedentul în stat după ștergerea notei
+    mod.adauga_excedent = lambda cur, schema, sid, an, luna, suma, referinta, descriere, *, nota_id: trimise.append(
         (sid, an, luna, Decimal(str(suma)), referinta, descriere)) or 1
     mod.sterge_excedent = lambda cur, schema, referinta: None
     monkeypatch.setitem(sys.modules, "core.diurna_salariat", mod)

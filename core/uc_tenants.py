@@ -6829,12 +6829,13 @@ def nota_decont_deplasare(tenant_id, corp, ctx):
                     repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
             if plafon and plafon["impozabil"] > 0:
                 # [670 b] excedentul diurnei = venit de natură salarial (CF art.76 alin.(2) lit.k) -> statul de plată al lunii decontului;
-                # referința leagă excedentul de nota care l-a produs (ștergerea notei îl scoate — `diurna_salariat.sterge_excedent`)
+                # [684] excedentul e legat de nota decontului (`nota_id`): ștergerea notei, pe orice drum, îl scoate (cheia străină,
+                # ON DELETE CASCADE — `diurna_salariat.DDL_NOTA`)
                 from core import diurna_salariat as _ds
                 _ds.adauga_excedent(cur, schema, sal["id"], data.year, data.month, plafon["impozabil"], "decont-deplasare:%d" % iid,
                                     "Diurnă peste plafonul neimpozabil, %s (%s, %s)" % (
                                         sal["nume"], "în țară" if plafon["deplasare"] == "interna" else "în străinătate",
-                                        _common.cate(plafon["zile"], "zi", "zile")))
+                                        _common.cate(plafon["zile"], "zi", "zile")), nota_id=iid)
                 info["excedent_in_stat"] = "%02d/%d" % (data.month, data.year)
         conn.commit()
     return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "salariat": sal["nume"],

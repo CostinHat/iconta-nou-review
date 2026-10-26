@@ -3274,6 +3274,9 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.diurna_excedent (
     creat_la timestamp with time zone NOT NULL DEFAULT now(),
     CONSTRAINT diurna_excedent_referinta_uniq UNIQUE (referinta)
 );
+-- [684, lotul 13] excedentul cade odată cu nota decontului care l-a produs, pe orice drum de ștergere (mirror core/migrare_lot13_salarii.py,
+-- DDL-ul în core/diurna_salariat.py DDL_NOTA)
+ALTER TABLE TENANT_PLACEHOLDER.diurna_excedent ADD COLUMN IF NOT EXISTS inregistrare_id integer REFERENCES TENANT_PLACEHOLDER.inregistrari(id) ON DELETE CASCADE;
 
 -- [08.10.2026, decizia Costin §6 pct.4] luna preluării, editabilă în Date firmă (mirror core/migrare_decizii_0810_s6.py)
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS luna_preluare date;
