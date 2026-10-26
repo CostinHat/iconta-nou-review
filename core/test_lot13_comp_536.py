@@ -159,3 +159,37 @@ def test_def_536_alocarile_salariatilor_si_ale_activelor(conn):
     a = cc.alocari(conn, SCH)
     assert ([(x["id"], x["centru_cost_id"]) for x in a["salariati"]], [(x["id"], x["centru_cost_id"]) for x in a["mijloace"]]) == (
         [(sid, prod)], [(mid, prod)])
+
+
+# ── 536 / NIR — decizia Costin, varianta (a): „centrul pe articol sau pe gestiune, ieșirea din stoc îl moștenește” ──────────────────────
+def test_def_536_iesirea_din_stoc_mosteneste_centrul_articolului(conn):
+    """NIR-ul scrie numai stoc / TVA / furnizor; cheltuiala apare la IEȘIRE. Articolul „Făină” pe Producție: intrarea (fără notă de cheltuială)
+    și ieșirea la CMP -> 607 = 371 poartă centrul articolului; reclasificarea 371 -> 301 (stoc = stoc) nu poartă centru.
+    MUTAȚIE: `centrul_articolului` întoarce mereu None (`scrie_rand_stoc`) -> 607 fără centru -> pică."""
+    from core import stocuri_cv_api as cv
+    prod = IDS[0]
+    with conn.cursor() as k:
+        k.execute("UPDATE firma_profil SET metoda_stoc = 'cantitativ_valoric'")
+        k.execute("INSERT INTO articole (denumire, um, cont_stoc, cont_cheltuiala, centru_cost_id) VALUES ('Făină', 'kg', '371', '607', %s) "
+                  "RETURNING id", (prod,))
+        aid = k.fetchone()[0]
+    assert cv.intrare(conn, SCH, {"articol_id": aid, "data": "2026-10-01", "cantitate": "10", "pret_unitar": "5", "document": "NIR 1"}).get("id")
+    r = cv.iesire(conn, SCH, {"articol_id": aid, "data": "2026-10-05", "cantitate": "4", "document": "Bon consum 1"})
+    rc = cv.reclasificare(conn, SCH, {"articol_id": aid, "cont_stoc_nou": "301", "data": "2026-10-06", "document": "NC 1"})
+    with conn.cursor() as k:
+        k.execute("SELECT inregistrare_id, cont_debit, cont_credit, suma::text, centru_cost_id FROM inregistrari_linii "
+                  "WHERE inregistrare_id = ANY(%s) ORDER BY inregistrare_id", ([r["inregistrare_id"], rc["inregistrare_id"]],))
+        assert [x[1:] for x in k.fetchall()] == [("607", "371", "20.00", prod), ("301", "371", "30.00", None)]
+
+
+def test_def_536_articolul_primeste_centrul_din_alocare(conn):
+    """Articolul de stoc apare în alocare și primește centrul (al treilea tabel al ferestrei); centrul dezactivat se refuză lângă rândul
+    articolului. MUTAȚIE: grupa `articole` scoasă din `seteaza_alocari` -> centrul articolului nu se scrie -> pică."""
+    from core import centre_cost_api as cc
+    prod, _v, vechi = IDS
+    with conn.cursor() as k:
+        k.execute("INSERT INTO articole (denumire, um) VALUES ('Zahăr', 'kg') RETURNING id")
+        aid = k.fetchone()[0]
+    assert [e["camp"] for e in cc.seteaza_alocari(conn, SCH, articole={aid: vechi})["erori_campuri"]] == ["cc-art-%d" % aid]
+    assert cc.seteaza_alocari(conn, SCH, articole={aid: prod})["articole"] == 1
+    assert [(x["id"], x["centru_cost_id"]) for x in cc.alocari(conn, SCH)["articole"]] == [(aid, prod)]

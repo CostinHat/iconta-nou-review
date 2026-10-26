@@ -2903,7 +2903,8 @@ def centre_cost_lista(tenant_id, doar_active, ctx):
 
 def centre_cost_alocari(tenant_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/centre-cost/alocari` (lotul 13, deficiența 536): centrul de cost al salariaților și
-    al mijloacelor fixe, `{salariati: {id: centru | null}, mijloace: {id: centru | null}}`. Centrul inactiv / inexistent se refuză lângă
+    al mijloacelor fixe și al articolelor de stoc (536 / NIR, decizia Costin (a)), `{salariati: {id: centru | null}, mijloace: {…},
+    articole: {…}}`. Centrul inactiv / inexistent se refuză lângă
     rândul lui; notele deja scrise nu se schimbă."""
     from core import centre_cost_api as _cc
     with db.get_conn() as conn:
@@ -2913,9 +2914,10 @@ def centre_cost_alocari(tenant_id, corp, ctx):
         try:
             sal = {int(k): v for k, v in dict(corp.get("salariati") or {}).items()}
             mf = {int(k): v for k, v in dict(corp.get("mijloace") or {}).items()}
+            art = {int(k): v for k, v in dict(corp.get("articole") or {}).items()}   # [536 / NIR, decizia (a)] articolele de stoc
         except (TypeError, ValueError):
-            raise _erori.DateInvalide("Alocarea nu s-a salvat: salariații și mijloacele fixe se trimit după numărul lor din listă.")
-        r = _cc.seteaza_alocari(conn, schema, sal, mf)
+            raise _erori.DateInvalide("Alocarea nu s-a salvat: salariații, mijloacele fixe și articolele se trimit după numărul lor din listă.")
+        r = _cc.seteaza_alocari(conn, schema, sal, mf, art)
         if r.get("eroare"):
             raise _erori.DateInvalide({"mesaj": r["eroare"], "erori_campuri": r["erori_campuri"]})
         return r   # `get_conn` comite la ieșire (ca la celelalte rute ale centrelor)
