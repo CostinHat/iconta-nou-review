@@ -1,0 +1,45 @@
+[
+ {
+  "nr": "78",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> Lichidare / radiere firmă -> Vânzare activ la lichidare: «Cont imobilizare» și «Cont amortizare» pornesc GOALE (PIVOT 504 față de regula 78: nimic precompletat sau gri), contul uzual stă în explicația câmpului («De regulă 2131.» / «De regulă 2813.»); câmpurile rămân modificabile.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='lichidare']"
+   },
+   {
+    "click": "button[data-op='lichidare']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "vanzare_activ"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#op-cont_imobilizare",
+    "egal": ""
+   },
+   {
+    "valoare": "#op-cont_amortizare",
+    "egal": ""
+   },
+   {
+    "contine": "De regulă 2131."
+   },
+   {
+    "contine": "De regulă 2813."
+   }
+  ],
+  "captura": "78_f1_conturile_pornesc_goale.png"
+ }
+]

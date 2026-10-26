@@ -82,7 +82,10 @@ PLAFON_NICAIERI = 21
 #: subset în lotul 11 (scriu `tva_incasare_perioade`, din care se ridică regimul facturii, deci cifra D300 / D394) — au probă până în
 #: rândul D300 (`core/test_scrieri_pana_in_declaratie.py::test_TVA_LA_INCASARE_*`, K). Rămân, NUMITE: `articole_import_salveaza`,
 #: `tenant_pontaj_set`, `wc_sinc`.
-PLAFON_SUBSET_FISCAL = 3
+#: [lotul 13, reparațiile finale înaintea porții] 3 -> 2: `tenant_pontaj_set` are probă acum — e2e-ul lotului 13
+#: (`frontend_test/e2e/e2e_lot13_sal.py`, `PUT /tenants/{id}/salariati/{id}/pontaj`, zona sal: pontajul care intră în statul de plată și
+#: în D112). Rămân, NUMITE: `articole_import_salveaza` (`d406_stocuri`), `wc_sinc` (facturile WooCommerce: D100, D300, D390, D394, D406).
+PLAFON_SUBSET_FISCAL = 2
 
 
 def test_CLICHET_rutele_care_scriu_fara_proba_in_suita_nu_cresc():

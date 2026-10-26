@@ -101,7 +101,10 @@ def test_notificarea_pleaca_o_data_pe_email_cu_eticheta_nu_cu_textul(baza):
     # [lotul 13, 567: „emailul nu spune ce element și la ce firmă”] emailul poartă eticheta ca propoziție + elementul și firma (prima
     # propoziție a textului din clopoțel, `N.rezumat`; formele reale: core/test_lot13_portal_p2_notificari.py)
     assert html == N.html_email("de_validat", "Declarația D300 (09/2026) a firmei X: 1.234 lei de plată, de validat."), html
-    assert "Un element nou de validat." in html and "Ai un element" not in html, html
+    # paragrafele emailului, fiecare întreg (fără etichete HTML): primul e eticheta ca propoziție, niciunul nu mai începe cu „Ai …”
+    import re as _re
+    paragrafe = [_re.sub(r"<[^>]+>", "", x) for x in _re.findall(r"<p[^>]*>(.*?)</p>", html)]
+    assert paragrafe[0] == "Un element nou de validat." and not [x for x in paragrafe if x.startswith("Ai un element")], paragrafe
     assert _sql(baza, "SELECT canal, stare, rezerva_email FROM public.notificari_jurnal WHERE user_id = %s", baza["uid"]) == [
         ("email", "trimis", False)]
 

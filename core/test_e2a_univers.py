@@ -153,7 +153,15 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # [26.10.2026, lotul 13, comanda 13.1, zona firme2] +1: `migrare_explicatie_raport_z` (618, explicația ciornelor Z scrise cu data ISO,
     # numai ciorne — nota validată nu se modifică); idempotentă, rulată o dată prin `core.migrari_registru`. (Măsurat pe 9ecf2b6d + zona firme2: 154 de
     # module — baza avea deja 153 > 147, migrările zonelor integrate fără plafon ridicat; la integrare se pune numărul final.)
-    assert 40 <= len(mg) <= 154, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [26.10.2026, lotul 13, reparațiile finale înaintea porții] 154 -> 160, cu toate migrările lotului 13 NUMITE (cele de dinainte de
+    # 9ecf2b6d intraseră fără nume): `migrare_anunturi_trimiteri` (646, anunțurile pe trimiteri, retragerea invitației),
+    # `migrare_coloana_tva_preluat` (252, „TVA de verificat” pe facturile preluate), `migrare_lot13_salarii` (670 b / 684, `diurna_excedent`),
+    # `migrare_suspendari_cabinet` (645, jurnalul suspendărilor), `migrare_texte_control_fiscal` (570, culoarea notificărilor vechi),
+    # `migrare_triaj_sesizari` (573, decizia triajului) — incluse deja în 154; apoi cele 6 de după 9ecf2b6d: `migrare_d301_cod_tva_fara_prefix`
+    # (539), `migrare_extrabilant` (507, clasa 8 într-o parte), `migrare_mf_note` (519 / 522, activul pe rândul notei), `migrare_sablon_recurent_emitere`
+    # (680), `migrare_sablon_um_articol` (regula UM pe șablonul recurent), `migrare_vanzari_stoc` (548, vânzarea din stoc). Toate idempotente,
+    # rulate o dată prin `core.migrari_registru`.
+    assert 40 <= len(mg) <= 160, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

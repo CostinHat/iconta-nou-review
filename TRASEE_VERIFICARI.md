@@ -610,7 +610,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel avans|decont, salariat_id, descriere?, sursa casa|banca, + avans{suma}; decont{avans, diurna, zile, deplasare interna|externa, diurna_bugetara?, moneda?, — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · diurna_excedent (DELETE/INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `diurna_salariat`, `jurnal_api`, `repo_contabilitate`*
+*ce face: corp: {data, fel avans|decont, salariat_id, descriere?, sursa casa|banca, + avans{suma}; decont{avans, diurna, zile, deplasare interna|externa, diurna_bugetara?, moneda?, — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · diurna_excedent (DELETE/INSERT/UPDATE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `diurna_salariat`, `jurnal_api`, `repo_contabilitate`*
 
 - [x] diurna neimpozabilă e plafonată; ce depășește e venit asimilat salariilor
 - plafonul intern și cel extern sunt diferite, iar cel extern diferă pe țară — verifică dacă se cere din registru
@@ -687,7 +687,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie achizitie|dare_folosinta|scoatere, descriere?, + achizitie{denumire, valoare (fara TVA), cota, furnizor_cui, furnizor_nume?, numar} | dare_folosinta — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · obiecte_inventar (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · documente_interne_contor (INSERT) · evidenta_extrabilant (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `documente_interne`, `extrabilant`, `jurnal_api`, `repo_contabilitate`*
+*ce face: corp: {data, operatie achizitie|dare_folosinta|scoatere, descriere?, + achizitie{denumire, valoare (fara TVA), cota, furnizor_cui, furnizor_nume?, numar} | dare_folosinta — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · obiecte_inventar (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · documente_interne_contor (INSERT) · evidenta_extrabilant (INSERT) · extras_linii (UPDATE) · miscari_stoc (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · vanzari_din_stoc (INSERT) — prin `documente_interne`, `extrabilant`, `jurnal_api`, `repo_contabilitate`, `repo_operatiuni`*
 
 - [x] valoarea e **sub pragul** de mijloc fix la data operațiunii — altfel e imobilizare, nu obiect de inventar
 - pragul se cere din registru, pe dată
@@ -721,7 +721,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie obtinere|pic|vanzare, descriere?, + obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare}; vanzare{pret_vanzare, cost_standar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
+*ce face: corp: {data, operatie obtinere|pic|vanzare, descriere?, + obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare}; vanzare{pret_vanzare, cost_standar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · obiecte_inventar (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · vanzari_din_stoc (INSERT) — prin `jurnal_api`, `repo_contabilitate`, `repo_operatiuni`, `stocuri_cv_api`*
 
 - [x] costul de producție cuprinde materialele, manopera și cota de indirecte — verifică ce cuprinde efectiv
 - produsul finit intră în stoc la cost, nu la preț de vânzare
@@ -732,7 +732,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel creanta|creanta_reluare|provizion|stoc, descriere?, + creanta{factura_id, garantata?, afiliata?, faliment?} (suma si zilele de la scadenta vin de la fact — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · ajustari_fiscale (DELETE/INSERT) · casa_operatiuni (DELETE) · extras_linii (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `ajustari_fiscale`, `jurnal_api`, `reconciliere_api`, `repo_contabilitate`*
+*ce face: corp: {data, fel creanta|creanta_reluare|provizion|stoc, descriere?, + creanta{factura_id, garantata?, afiliata?, faliment?} (suma si zilele de la scadenta vin de la fact — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · ajustari_fiscale (DELETE/INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (INSERT/UPDATE) · miscari_stoc (INSERT/UPDATE) · obiecte_inventar (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · vanzari_din_stoc (INSERT) — prin `ajustari_fiscale`, `jurnal_api`, `reconciliere_api`, `repo_contabilitate`, `repo_operatiuni`, `stocuri_cv_api`*
 
 - [x] provizionul deductibil fiscal e limitat prin lege; ce depășește e cheltuială nedeductibilă
 - verifică dacă ruta distinge deductibil de nedeductibil, sau lasă totul deductibil
@@ -756,7 +756,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro, beneficiar_in_registru} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · ajustari_fiscale (DELETE/INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `ajustari_fiscale`, `jurnal_api`, `repo_contabilitate`*
+*ce face: corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro, beneficiar_in_registru} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · ajustari_fiscale (DELETE/INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (UPDATE) · obiecte_inventar (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · vanzari_din_stoc (INSERT) — prin `ajustari_fiscale`, `jurnal_api`, `repo_contabilitate`, `repo_operatiuni`*
 
 - [x] creditul fiscal e minimul dintre 0,75% din cifra de afaceri și 20% din impozit — verifică dacă se calculează, sau se ia suma integral
 - beneficiarul e în Registrul entităților; altfel sponsorizarea nu dă credit fiscal
@@ -767,7 +767,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel exploatare|investitii, descriere?, suma, moment drept|incasare, cont_venit?, + investitii{mijloc_fix_id}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mf_linii (INSERT) · mf_note (INSERT) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `stocuri_cv_api`*
+*ce face: corp: {data, fel exploatare|investitii, descriere?, suma, moment drept|incasare, cont_venit?, + investitii{mijloc_fix_id}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mf_linii (INSERT) · mf_note (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`, `stocuri_cv_api`*
 
 - [x] subvenția pentru investiții se recunoaște la venit **pe măsura amortizării**, nu integral la încasare
 - subvenția de exploatare e venit în perioada în care se acoperă cheltuiala
@@ -2312,7 +2312,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie facturi (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · d301_operatiuni (DELETE) · documente_interne_contor (INSERT) · extras_linii (UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · produse (DELETE/INSERT/UPDATE) · produse_cota_jurnal (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `documente_interne`, `facturi_api`, `jurnal_api`, `metoda_stoc`, `produse_api`, `repo_borderou`, `repo_contabilitate`, `repo_facturi`, `stocuri_cv_api`*
+*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie facturi (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · d301_operatiuni (DELETE) · documente_interne_contor (INSERT) · extras_linii (UPDATE) · factura_cota_jurnal (INSERT) · factura_linii (INSERT/UPDATE) · firma_profil (UPDATE) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · produse (DELETE/INSERT/UPDATE) · produse_cota_jurnal (INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `documente_interne`, `facturi`, `facturi_api`, `jurnal_api`, `metoda_stoc`, `produse_api`, `repo_borderou`, `repo_contabilitate`, `repo_facturi`, `stocuri_cv_api`*
 
 - [x] operațiunea apare în D394 ca tip N, cu `tip_partener=2` — verificat pe declarația generată, nu pe intenția din cod
 - persoana fizică nu are cod fiscal, deci nu se cere; dar se cere o identificare, altfel operațiunea n-are partener
@@ -2418,7 +2418,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · compensari (INSERT) · extras_linii (UPDATE) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `compensari_api`, `jurnal_api`, `repo_contabilitate`, `stocuri_cv_api`*
+*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie inregistrari (INSERT/UPDATE) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · compensari (INSERT) · efactura_primite (UPDATE) · efactura_trimiteri (INSERT/UPDATE) · extras_linii (UPDATE) · factura_tva_cote (INSERT) · facturi (UPDATE) · miscari_stoc (INSERT/UPDATE) · obiecte_inventar (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · vanzari_din_stoc (INSERT) — prin `compensari_api`, `jurnal_api`, `repo_contabilitate`, `repo_efactura`, `repo_operatiuni`, `stocuri_cv_api`*
 
 - [x] diferența de curs se calculează între cursul de la înregistrarea creanței și cel de la decontare
 - cursul vine din `curs_bnr_zilnic`; dacă lipsește pentru data respectivă, se aduce sau se refuză — **nu se folosește cel mai apropiat fără să se spună**

@@ -48,7 +48,7 @@ def _valideaza(cur, nid):
 @pytest.fixture
 def azi(monkeypatch):
     import datetime
-    from core import common, inchidere_luna
+    from core import common
     zi = datetime.date(2026, 10, 25)
     monkeypatch.setattr(common, "azi_ro", lambda *a: zi)
     return zi

@@ -68,7 +68,13 @@ from core import scan_pereche_act_articol as S  # noqa: E402
 #: **1 → 0 la 06.09.2026.** Ultima pereche negăsită, `OMFP 3254/2017 art. 1-6`, s-a despicat în
 #: ȘASE citări, una per articol (decizia lui Costin: *„nu se alege un singur articol «care poartă
 #: regula» — ar fi o interpretare"*). **Zero, deci orice apariție e o regresie.**
-CLICHET_NEGASIT = 0
+CLICHET_NEGASIT = 2
+#: **0 → 2 la 26.10.2026 (lotul 13, 638), o singură pereche, de clasa R111 / R171 — o formă pe care instrumentul n-o citește.**
+#: `HG 1/2016 pct.73` (×2: alin.(13) și (14), pragurile D318 de 400 și 50 de euro). Documentul NU e ciot (forma consolidată a normelor,
+#: id_portal 307847, 2,3 milioane de caractere) și punctul e acolo, citit verbatim: „73. (1) Conform art. 302 alin. (2)…”, alin.(13)
+#: „…nu poate fi mai mic de 400 euro…”, alin.(14) „…nu poate fi mai mic de 50 euro…”. Normele numerotează puncte în forma `73. (1)`,
+#: pe care tiparul ÎNGUST al lui R171 (`N. - `) nu o numără — iar lărgirea lui a fost respinsă cu motiv (test de mai jos). Verdictul
+#: rămâne în direcția sigură (NEGĂSIT, nu un STABIL inventat); vigoarea pct.73 e citită de mână (core/test_vigoare_articole_registru.py).
 #: Ce a rămas după convenție: **2**, amândouă `OUG 156/2024 art. LXVI` — articol care CHIAR e al
 #: ordonanței, într-un document adus ca ciot. Problemă de **corpus**, nu de temei: **R107**.
 #:
@@ -107,7 +113,12 @@ CLICHET_NEGASIT = 0
 #: din `anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt`. Același document ca `anexa 1 pct. 24`: anexa 1 numerotează PUNCTE, iar
 #: antetul ei nu se auto-identifică (R171, decizia de mai jos `test_R171_tiparul_LARG_de_puncte_nu_a_fost_adoptat` ține tiparul îngust).
 #: Verdictul rămâne în direcția sigură: refuză, nu inventează un STABIL.
-CLICHET_CIOT = 6
+#: **6 → 7 la 26.10.2026 (lotul 13, 656), aceeași cauză ca primele două (R107: corpus adus ca formă din MO, fără titluri de articol).**
+#: `OUG 156/2024 art. LXIV` (cota de 10% a dividendelor plătite nerezidenților în 2025, `verificare_bun_simt.COTA_DIVIDENDE_NEREZIDENTI_2025`)
+#: citează `anaf_surse/oug_156_2024.txt` — același document ca `art. LXVI` de mai sus. Pasajul e citit verbatim acolo („b) 10% pentru
+#: veniturile din dividende …”), iar vigoarea articolului e măsurată pe portal (id 293109, fără marcaj de modificare:
+#: `core/test_vigoare_articole_registru.py`). Verdictul instrumentului rămâne în direcția sigură: refuză, nu inventează un STABIL.
+CLICHET_CIOT = 7
 #: Pragul de JOS pe confirmate: dacă scade, ceva a dispărut din registru sau instrumentul s-a rupt.
 #: 15 → **24** după ce instrumentul a învățat convenția — fără ca vreun temei să se schimbe.
 #: 24 → **34** la 06.09.2026: lărgirea domeniului a adus și confirmări, nu doar necunoscute.
@@ -119,8 +130,8 @@ PRAG_CONFIRMATE = 52
 #: Perechile negăsite **cunoscute** — IDENTITĂȚILE, nu numărul. Clichetul pe număr n-ar vedea o
 #: pereche reparată și alta stricată în aceeași tură. Cele patru de aici sunt cele scoase la iveală
 #: de lărgirea domeniului (R169), toate din forma localizatorului; se închid prin **R171**.
-#: Goală — iar goliciunea ei e chiar aserțiunea.
-NEGASITE_CUNOSCUTE = set()
+#: Goală până la 26.10.2026 — iar goliciunea ei era chiar aserțiunea; acum una, numită (lotul 13).
+NEGASITE_CUNOSCUTE = {("HG 1/2016", "pct.73")}   # [26.10.2026, lotul 13] forma `73. (1)` a normelor — vezi CLICHET_NEGASIT
 
 
 def _inv():

@@ -256,6 +256,8 @@ def _expr(nod, rel, in_dom, out, alias):
             f = sub.func
             if isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name):
                 modul = alias.get(f.value.id)
+            elif isinstance(f, ast.Name):
+                modul = alias.get("@fn:" + f.id)   # funcția importată pe nume din modulul ei (`_alias`)
             brute.append((cheie, ("apel", nume, rel, sub.lineno, in_dom, modul, False)))
     brute.sort(key=lambda x: x[0])
     out.extend(n for _c, n in brute)
@@ -312,6 +314,13 @@ def _alias(noduri, cunoscute):
     out = {}
     for nod in noduri:
         if isinstance(nod, ast.ImportFrom) and (nod.module or "").split(".")[0] == "core":
+            # [lotul 13] `from core.identitate import valideaza_cui`: FUNCȚIA importată din modulul ei. Fără asta, apelul `valideaza_cui(...)`
+            # cădea pe treapta omonimelor (trei definiții: `identitate` — cifra de control —, `anaf_api` — rețea —, `solduri_parteneri_api`)
+            # și aducea rețeaua lui `anaf_api` pe o cale care n-o atinge (fals C5 pe `nota-inventariere`, prin `_cif_partener`)
+            parti = (nod.module or "").split(".")
+            if len(parti) == 2 and "core/%s.py" % parti[1] in cunoscute:
+                for a in nod.names:
+                    out["@fn:" + (a.asname or a.name)] = "core/%s.py" % parti[1]
             for a in nod.names:
                 cale = "core/%s.py" % a.name
                 if cale in cunoscute:

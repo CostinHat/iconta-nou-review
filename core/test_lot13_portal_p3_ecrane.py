@@ -180,7 +180,7 @@ def test_def_c71_1_srl_pastreaza_campurile_bilantului(browser):
 def _stare_spv(**x):
     """Răspunsul `GET /tenants/{id}/spv/stare` (`spv_conector.stare_firma`), cu `acoperire` clasificată de server (`acoperire_cui`)."""
     from core.spv_conector import acoperire_cui
-    st = {"conectat": True, "cui": "49123458", "verificat_la": None, "are_drept": None, "eroare": None, "mesaje": None}
+    st = {"conectat": True, "cui": "49123456", "verificat_la": None, "are_drept": None, "eroare": None, "mesaje": None}
     st.update(x)
     st["acoperire"] = acoperire_cui(st["conectat"], st["verificat_la"], st["are_drept"])
     return st
@@ -192,8 +192,8 @@ def test_def_661_conectat_e_al_cabinetului_firma_spune_daca_certificatul_acopera
     stari = {
         "neverificat": _stare_spv(),
         "neconfirmat": _stare_spv(verificat_la="2026-10-25T10:17:00+03:00", eroare="CIF introdus nu este valid", eroare_de_la_anaf=True),
-        "neacoperit": _stare_spv(verificat_la="2026-10-25T10:17:00+03:00", are_drept=False, eroare="Nu aveti drept in SPV pentru CIF=49123458",
-                                 mesaj="Certificatul conectat al cabinetului nu are drept în SPV pentru CUI-ul acestei firme (49123458)."),
+        "neacoperit": _stare_spv(verificat_la="2026-10-25T10:17:00+03:00", are_drept=False, eroare="Nu aveti drept in SPV pentru CIF=49123456",
+                                 mesaj="Certificatul conectat al cabinetului nu are drept în SPV pentru CUI-ul acestei firme (49123456)."),
         "acoperit": _stare_spv(verificat_la="2026-10-25T10:17:00+03:00", are_drept=True, mesaje=2),
         "neconectat": {"conectat": False, "cui": "", "verificat_la": None, "are_drept": None, "eroare": None, "mesaje": None},
     }
@@ -206,10 +206,10 @@ def test_def_661_conectat_e_al_cabinetului_firma_spune_daca_certificatul_acopera
     assert not erori, erori
     for k in ("neverificat", "neconfirmat", "neacoperit", "neconectat"):
         assert "SPV: conectat" not in texte[k]["text"] and texte[k]["tip"] == "avert", (k, texte[k])
-    assert "încă nu se știe dacă certificatul cabinetului are drept pe CUI-ul acestei firme (49123458)" in texte["neverificat"]["text"]
+    assert "încă nu se știe dacă certificatul cabinetului are drept pe CUI-ul acestei firme (49123456)" in texte["neverificat"]["text"]
     assert "nu e confirmat" in texte["neconfirmat"]["text"] and "„CIF introdus nu este valid”" in texte["neconfirmat"]["text"]
     assert texte["neacoperit"]["text"].startswith("SPV: fără drept pentru această firmă.") and texte["neacoperit"]["spreConectare"]
-    assert texte["acoperit"]["tip"] == "ok" and "are drept pe CUI-ul acestei firme (49123458)" in texte["acoperit"]["text"], texte["acoperit"]
+    assert texte["acoperit"]["tip"] == "ok" and "are drept pe CUI-ul acestei firme (49123456)" in texte["acoperit"]["text"], texte["acoperit"]
     assert "2 facturi primite" in texte["acoperit"]["text"], texte["acoperit"]
 
 

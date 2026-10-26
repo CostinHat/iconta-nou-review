@@ -34,7 +34,9 @@ EXCEPTII = {
 
 #: „#” la început de cuvânt, urmat de un loc de completat (printf, plpgsql `%`, `.format`)
 _PY = re.compile(r"(?:^|(?<=[\s(\[„\"'«:,]))#(?:%|\{\})")
-_SELECTORI = ("querySelector", "querySelectorAll", "closest", "matches", "getElementById", "gv")
+_SELECTORI = ("querySelector", "querySelectorAll", "closest", "matches", "getElementById", "gv",
+              # [lotul 13] `api.cereAlegerile(root, [selectori])` — al doilea argument e o listă de selectori CSS
+              "cereAlegerile")
 _JS = re.compile(r"(?:^|(?<=[\s(\[„\"'`>«:,]))#(?:\$\{|[\"'`]\s*\+)")
 _LOG = ("debug", "info", "warning", "error", "exception", "critical")
 
@@ -138,7 +140,8 @@ def aparitii_js():
                 continue
             for m in _JS.finditer(linie):
                 inainte = linie[:m.start()].rstrip("`\"' ")
-                if re.search(r"\b(?:%s)\($" % "|".join(_SELECTORI), inainte):                   # selector CSS
+                # selector CSS: „#” stă între parantezele unei funcții de selecție, ca prim argument sau mai încolo (o listă de selectori)
+                if re.search(r"\b(?:%s)\([^()]*$" % "|".join(_SELECTORI), inainte):
                     continue
                 rele.append("%s:%d  %s" % (rel, i, linie.strip()[:130]))
     return rele
@@ -175,7 +178,9 @@ def test_scanerul_vede_clasa_si_lasa_exceptiile_structurale(tmp_path, monkeypatc
         'const b = "Cerere (#" + r.id + ")";\n'
         'const c = corp.querySelector("#" + id);\n'
         'const d = scope.querySelector(`#${prefix}-cor`);\n'
-        'window.open(`/#${q}`);\n', encoding="utf-8")
+        'window.open(`/#${q}`);\n'
+        'if (cereAlegerile(corp, [`#${P}-afiliat`])) lipsa = true;\n'
+        'arata(`Cerere #${r.id}`, document.querySelector("#x"));\n', encoding="utf-8")
     monkeypatch.setattr(g, "RAD", str(tmp_path))
     assert [r.split("  ")[0] for r in g.aparitii_py()] == ["core/m.py:%d" % i for i in (1, 2, 3, 4, 5)]
-    assert [r.split("  ")[0] for r in g.aparitii_js()] == ["static/e.js:1", "static/e.js:2"]
+    assert [r.split("  ")[0] for r in g.aparitii_js()] == ["static/e.js:1", "static/e.js:2", "static/e.js:7"]

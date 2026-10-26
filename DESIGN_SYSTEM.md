@@ -51,10 +51,10 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   facturii rămânea după contare — 45 de butoane cu elemente, în 10 fișiere). Gard: `core/test_buton_blocat_structura.py`
   (în browser, pe modulul real).
 
-- **Comenzile se văd mereu: ce nu se aplică stă inactiv, cu motivul (v2.104, lotul 13, deficiența 675 — clasă; comanda Costin 13.1,
+- **Comenzile se văd mereu: ce nu se aplică stă inactiv, cu motivul (v2.104)** — `atributeInactiv`, gardul `BUTON_ASCUNS` (lotul 13, deficiența 675 — clasă; comanda Costin 13.1,
   verbatim: „entitățile de același tip (salariați, facturi, note…) au același set de butoane, în aceeași ordine; ce nu se aplică stă
   inactiv, cu motivul la trecerea cu mouse-ul. Nicio setare care schimbă cifre nu stă ascunsă într-un formular de corectare. La salariat:
-  + masă, alături de + vacanță, + cadou, + cultural, + creșă.”).** Pe rândurile aceleiași entități butoanele sunt aceleași, în aceeași
+  + masă, alături de + vacanță, + cadou, + cultural, + creșă.”). Pe rândurile aceleiași entități butoanele sunt aceleași, în aceeași
   ordine; un buton care nu se aplică rândului (stare, regim, date lipsă) NU dispare: stă la locul lui, inactiv, cu motivul. Un singur
   mecanism, în `api.js`: `inactiv(buton, motiv)` / `activ(buton)`, iar în șablon `${atributeInactiv(motiv)}` — `aria-disabled="true"` (rămâne
   focusabil, motivul se citește și din tastatură), motivul în `title` (la trecerea cu mouse-ul), arată ca butonul `:disabled` al clasei

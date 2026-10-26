@@ -56,9 +56,19 @@ EXCEPTII = {
     "DELETE /tenants/{tenant_id}/furnizori/{furnizor_id}": "640",
     "GET /tenants/{tenant_id}/etransport/din-document": "534",
     "POST /tenants/{tenant_id}/facturi-recurente/{sid}/emite": "680",
+    # [lotul 13, reparațiile finale] rutele reparațiilor comenzii 13.1, fiecare cu deficiența ei: lista anunțurilor trimise și retragerea
+    # unei trimiteri (646 c), retragerea invitației (646 e), starea pașilor de preluare ai firmei (662 — „Începe / Continuă preluarea”),
+    # listele din care formularele Operațiunilor aleg ce aplicația știe deja (511 facturile neîncasate, 524 facturile în valută)
+    "GET /admin/anunturi": "646",
+    "POST /admin/anunturi/{lot}/retrage": "646",
+    "POST /admin/invitatii/{invitatie_id}/retrage": "646",
+    "GET /migrare/firma/{tenant_id}": "662",
+    "GET /tenants/{tenant_id}/operatiuni-date": "524",
 }
 #: sha256 al conținutului referinței (fără liniile de comentariu); se schimbă numai împreună cu referința (vezi docstring)
-AMPRENTA_REFERINTA = "4b107c8b92b3c82d40c152d5d91c664cac035d20549e7cd630574180bfd54e7d"
+#: [26.10.2026, lotul 13] referința s-a schimbat numai prin scoaterea din [live] a celor cinci formulare înlocuite de Declarația unică
+#: (660: F214, F215, F221, F222, F227, trecute în RESPINS) — exactă în ambele sensuri; amprenta veche: 4b107c8b…
+AMPRENTA_REFERINTA = "5d5b9b7a05749070b18e6d4e37d52cdbc54d90864a8ae7c6a9769e14f18dc228"
 DOMENII_PILOT = ("facturi", "bancă", "casă", "stoc", "salarii", "închidere", "D300", "D394", "D112", "D100", "balanță")
 STARI_PILOT = ("neprobat", "în probă", "probat")
 

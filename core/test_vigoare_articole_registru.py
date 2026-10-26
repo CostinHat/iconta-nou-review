@@ -68,6 +68,16 @@ MODIFICARI = {
     ("Legea 70/2015", "4^2"): datetime.date(2023, 12, 15), # alin.(1) modificat la 15-12-2023
     ("Legea 165/2018", "19"): None,
     ("OUG 24/2026", "2"): None,
+    # [26.10.2026, lotul 13, reparațiile finale] constantele ancorate ale lotului (656: nerezidenții D207; 638: pragul D318; 585: norma
+    # întreagă), măsurate la sursă:
+    ("CF", "224"): datetime.date(2025, 8, 1),          # corpus (amprenta 2393786755c97dc5): lit.b modificată la 01-08-2025 (cel mai recent marcaj)
+    ("OUG 156/2024", "LXIV"): None,                     # portal id 293109 (consolidare 01.07.2026): în vigoare, fără marcaj de modificare
+    ("Legea 53/2003", "112"): None,                     # corpus (amprenta 73c8251e946ca58e, id_portal 309240): în vigoare, fără marcaj
+    # CITIT LA SURSĂ 26.10.2026, de mână, ca la Ordin 1604/2025: `vigoare_articol.py` răspunde NEGĂSIT, fiindcă punctele normelor nu au
+    # titluri «Articolul N». În forma consolidată din corpus (hg_1_2016_norme_cod_fiscal.html, id_portal 307847, consolidare 31.03.2026)
+    # pct.73 (de la „73. (1) Conform art. 302 alin. (2)” la „74.”) nu poartă niciun marcaj „(la <data>, … modificat …)”; alin.(13) și (14)
+    # spun 400 și 50 de euro, textul citat de cele două constante.
+    ("HG 1/2016", "pct.73"): None,
 }
 
 # Un `Temei` care citează un act MODIFICATOR plus un număr de articol al Codului fiscal se citește ca

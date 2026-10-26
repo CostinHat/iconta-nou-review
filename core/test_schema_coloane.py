@@ -227,6 +227,10 @@ def _coloane_candidate(sql, tabel):
 #: literal SQL: SQL-ul lui e un literal in interiorul codului, iar cuvintele Python de dupa el (`def`, `cur`, `n` din `\n`) ar trece
 #: drept coloane. SQL-ul real nu contine niciodata o definitie de functie sau un apel `.execute(`.
 _COD_PYTHON = re.compile(r"\bdef\s+\w+\s*\(|\.execute(?:many)?\s*\(")
+#: [lotul 13] textul unui MOTIV (o excepție scrisă în proză: „rândul e inserat chiar înainte, în aceeași funcție (`INSERT INTO
+#: inregistrari_linii … RETURNING id`), și primește …”) nu e SQL: cuvintele lui ar trece drept coloane. Semnul e structural: elipsa „…”
+#: (un SQL executat n-o conține niciodată în afara unui literal) sau un nume citat între backtick-uri, ca în documentație.
+_PROZA_CU_SQL = re.compile(r"…|`[^`]*\b(?:SELECT|INSERT|UPDATE|DELETE)\b[^`]*`", re.I)
 
 
 def _violari(fragmente_provider):
@@ -235,6 +239,9 @@ def _violari(fragmente_provider):
     for fp, frag in fragmente_provider():
         if not re.search(r"\b(SELECT|INSERT|UPDATE|DELETE)\b", frag, re.I) or _COD_PYTHON.search(frag):
             continue
+        if _PROZA_CU_SQL.search(re.sub(r"'(?:''|[^'])*'", " ", frag)):
+            continue   # proză care CITEAZĂ un SQL prescurtat („`INSERT INTO t … RETURNING id`”), nu SQL executat
+
         refs = _referinte_tabele(frag)
         if not any(r[1] for r in refs):
             continue
@@ -311,3 +318,19 @@ def test_proba_de_cod_python_nu_e_citita_drept_sql():
         yield "sql", "SELECT count(*) FROM facturi WHERE directie_gresita = 'emisa'"
 
     assert {(t, c) for _, t, c, _ in _violari(prov_sql)} == {("facturi", "directie_gresita")}
+
+
+def test_proza_care_citeaza_sql_nu_e_citita_drept_sql():
+    """[lotul 13] Calibrarea lui `_PROZA_CU_SQL`: motivul unei excepții, scris în proză, care citează un SQL prescurtat („`INSERT INTO
+    inregistrari_linii … RETURNING id`”) nu e SQL — cuvintele lui (`rândul`, `e`, `chiar`) nu devin coloane; același SQL scris de-a binelea,
+    cu o coloană inexistentă și cu un literal care conține „…”, rămâne prins."""
+    def prov_proza():
+        yield "proza", ("rândul e inserat chiar înainte, în aceeași funcție (`INSERT INTO inregistrari_linii … RETURNING id`), și primește "
+                        "activul o singură dată")
+
+    assert not _violari(prov_proza)
+
+    def prov_sql():
+        yield "sql", "UPDATE inregistrari_linii SET explicatie_gresita = 'nota … veche' WHERE id = %s"
+
+    assert {(t, c) for _, t, c, _ in _violari(prov_sql)} == {("inregistrari_linii", "explicatie_gresita")}

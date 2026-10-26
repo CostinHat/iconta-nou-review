@@ -160,7 +160,8 @@ def test_def_548_vanzarea_cu_iesirea_vie_nu_se_sterge(monkeypatch):
         cur.execute("SAVEPOINT s")
         with pytest.raises(psycopg2.Error) as e:
             cur.execute("DELETE FROM inregistrari WHERE id = %s", (r["inregistrare_id"],))
-        assert "REGULA_CONTABILA: Vânzarea a scos bunul din stoc" in str(e.value)
+        # mesajul primar al excepției ridicate de trigger (nu reprezentarea ei): prefixul regulii contabile și ce a oprit ștergerea
+        assert e.value.diag.message_primary.startswith("REGULA_CONTABILA: Vânzarea a scos bunul din stoc"), e.value.diag.message_primary
         cur.execute("ROLLBACK TO SAVEPOINT s")
         monkeypatch.setattr(uc._uc_comun, "_schema_sau_404", lambda ctx, tid: SCH)
         assert Decimal("0") == Decimal(str(uc.operatiuni_date(1, "articole", {"tip": "marfa"}, CTX)["articole"][0]["stoc"]))

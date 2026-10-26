@@ -41,6 +41,10 @@ _BASELINE = {
     # [08.10.2026, decizia Costin U3] „Închidere lună”, card separat în grupul Zilnic — și scanat: `nav_ecrane.ECRANE`
     # („inchidere_luna”).
     "fa-inchidere",
+    # [26.10.2026, lotul 13, deficiența 662] NU e un ecran nou: butonul „Începe preluarea” / „Continuă preluarea” din fereastra firmei
+    # (`migrare.randeazaPreluareFirma`), care deschide „Import date” al firmei — ecranul `fa-import`, deja scanat (`nav_ecrane`). Butonul
+    # îl probează e2e-ul `frontend_test/e2e/e2e_lot13_migr.py` (pașii 662).
+    "fa-preluare",
 }
 
 

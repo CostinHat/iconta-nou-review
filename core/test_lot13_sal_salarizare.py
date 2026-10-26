@@ -37,7 +37,7 @@ def conn():
             cur.execute(_tp.parametrizeaza_template(io.open("tenant_template.sql", encoding="utf-8").read(), SCH))
         _m.aplica(c, SCH)
         with c.cursor() as cur:
-            cur.execute("SET search_path TO %s, public" % SCH)
+            cur.execute("SET LOCAL search_path TO %s, public" % SCH)   # [lotul 10, garda pool-ului] numai pe tranzacția de pregătire
             cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,regim_fiscal,platitor_tva,"
                         "tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'PROBA L13 SRL','14399840',"
                         "'Str 1','Buc','B','6202','BCR','RO49RNCB0000000000000001','profit',true,'L','Pop','Ion','administrator')")
