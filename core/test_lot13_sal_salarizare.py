@@ -5,6 +5,7 @@
 Schemă efemeră din `tenant_template.sql` + `core/migrare_lot13_salarii.py` (ca la publicare), în tranzacție anulată; perioadele sunt
 lunile 2026 ale firmei efemere (tabelele ei, nu tabele partajate)."""
 import io
+import os
 from decimal import Decimal
 
 import pytest
@@ -217,6 +218,98 @@ def test_670b_adauga_excedent_refuza_ce_nu_e_venit():
         ds._suma("0")
     with pytest.raises(ValueError):
         ds._suma("abc")
+
+
+# ── 684: excedentul cade odată cu nota decontului ──────────────────────────────────────────────────────────────────────────────────
+def _nota_decont(cur):
+    from core import repo_contabilitate as rc
+    r = rc.nota_operatiune_ciorna(cur, SCH, "2026-09-20", "Decont deplasare proba 684")
+    return int(r["id"] if isinstance(r, dict) else r[0])
+
+
+def test_684_stergerea_notei_decontului_scoate_excedentul_din_stat_si_d112(conn):
+    """684 (găsită de OPS la integrare): nota decontului ștearsă din jurnal lăsa excedentul de diurnă în statul de plată și în D112 —
+    venit salarial fără decont. Acum excedentul e legat de notă (`inregistrare_id`, ON DELETE CASCADE): ștergerea ei prin jurnal
+    (`jurnal_api.sterge`) îl scoate, iar statul revine la 5.000. Temeiul venitului: CF art.76 alin.(2) lit.k (excedentul există numai
+    ca parte a unei indemnizații de delegare acordate — fără decont, nu există). MUTAȚIE: `ON DELETE CASCADE` scos din `DDL_NOTA`
+    (cheia străină fără acțiune) -> ștergerea notei e refuzată de bază -> pică."""
+    from core import diurna_salariat as ds, jurnal_api, stat_plata_api as sp
+    sid = _sid(conn)
+    with conn.cursor() as cur:
+        nid = _nota_decont(cur)
+        ds.adauga_excedent(cur, SCH, sid, 2026, 9, Decimal("300"), "decont-deplasare:%d" % nid, "proba 684", nota_id=nid)
+    assert next(x for x in sp.stat_plata(conn, SCH, 2026, 9) if x["id"] == sid)["brut"] == 5300.0
+    assert jurnal_api.sterge(conn, SCH, nid) == {"ok": True}
+    with conn.cursor() as cur:
+        assert ds.excedente_luna(cur, SCH, 2026, 9) == {}
+    assert next(x for x in sp.stat_plata(conn, SCH, 2026, 9) if x["id"] == sid)["brut"] == 5000.0
+    # și pe un drum care nu trece prin jurnal (ex. ștergerea ciornelor derivate): baza o face, nu o chemare care se poate uita
+    with conn.cursor() as cur:
+        nid2 = _nota_decont(cur)
+        ds.adauga_excedent(cur, SCH, sid, 2026, 9, Decimal("120"), "decont-deplasare:%d" % nid2, "proba 684 b", nota_id=nid2)
+        cur.execute("DELETE FROM %s.inregistrari WHERE id = %%s" % SCH, (nid2,))
+        assert ds.excedente_luna(cur, SCH, 2026, 9) == {}
+        with pytest.raises(ValueError):
+            ds.adauga_excedent(cur, SCH, sid, 2026, 9, Decimal("50"), "decont-deplasare:%d" % nid2, "nota ștearsă", nota_id=nid2)
+
+
+def test_684_datele_existente_primesc_nota_iar_orfanele_se_scot(conn):
+    """Datele de dinainte de 684: rândul scris de decont (`decont-deplasare:<nota>`) primește nota; cel a cărui notă fusese ștearsă
+    (orfanul defectului) iese; excedentul cu altă referință (fără notă) rămâne. MUTAȚIE: DELETE-ul scos din `REPARA_LEGATURA` ->
+    orfanul rămâne -> pică."""
+    from core import diurna_salariat as ds
+    sid = _sid(conn)
+    with conn.cursor() as cur:
+        nid = _nota_decont(cur)
+        cur.execute("SELECT COALESCE(max(id), 0) + 1000 FROM %s.inregistrari" % SCH)
+        lipsa = cur.fetchone()[0]
+        for ref in ("decont-deplasare:%d" % nid, "decont-deplasare:%d" % lipsa, "decont:7"):
+            cur.execute("INSERT INTO %s.diurna_excedent (salariat_id, an, luna, suma, referinta) VALUES (%%s, 2026, 9, 100, %%s)" % SCH,
+                        (sid, ref))
+        cur.execute(ds.REPARA_LEGATURA.format(s=SCH))
+        cur.execute("SELECT referinta, inregistrare_id FROM %s.diurna_excedent" % SCH)
+        assert {tuple(r) for r in cur.fetchall()} == {("decont-deplasare:%d" % nid, nid), ("decont:7", None)}
+
+
+def test_684_firmele_noi_au_aceeasi_legatura_ca_migrarea():
+    """Firmele noi (`tenant_template.sql`) și cele migrate (`DDL_NOTA`) au aceeași cheie străină, cu ON DELETE CASCADE. MUTAȚIE:
+    CASCADE scos numai din `DDL_NOTA` -> textele diferă -> pică."""
+    from core import diurna_salariat as ds
+    tpl = io.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tenant_template.sql"), encoding="utf-8").read()
+    assert "ON DELETE CASCADE" in ds.DDL_NOTA
+    assert ds.DDL_NOTA.replace('"{s}"', "TENANT_PLACEHOLDER") in tpl, "tenant_template.sql nu are legătura excedentului de notă (684)"
+
+
+def test_684_orice_chemare_de_productie_leaga_excedentul_de_nota():
+    """Garda statică: fiecare `adauga_excedent(` din codul de producție (core/*.py fără teste, main.py) trimite `nota_id=` — un drum nou
+    care scrie excedent fără notă l-ar lăsa în stat după ștergerea decontului. CALIBRARE: chemarea fără `nota_id` e prinsă."""
+    rele, n = _chemari_fara_nota()
+    assert n >= 1, "ANTI-VACUU: nicio chemare de producție a lui adauga_excedent"
+    assert not rele, "excedent de diurnă scris fără nota decontului (684): %s" % rele
+    rele2, _n = _chemari_fara_nota({"core/x.py": 'ds.adauga_excedent(cur, s, 1, 2026, 9, d, "decont-deplasare:%d" % i, "x")\n'})
+    assert rele2 == ["core/x.py:1"], rele2
+
+
+def _chemari_fara_nota(surse=None):
+    import glob
+    import re
+    if surse is None:
+        rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        fis = [f for f in glob.glob(os.path.join(rad, "core", "*.py")) if not os.path.basename(f).startswith("test_")
+               and os.path.basename(f) != "diurna_salariat.py"] + [os.path.join(rad, "main.py")]
+        surse = {os.path.relpath(f, rad): io.open(f, encoding="utf-8").read() for f in fis if os.path.exists(f)}
+    rele, n = [], 0
+    for cale, txt in surse.items():
+        for m in re.finditer(r"\badauga_excedent\(", txt):
+            # textul chemării: până la paranteza care o închide
+            niv, i = 1, m.end()
+            while niv and i < len(txt):
+                niv += {"(": 1, ")": -1}.get(txt[i], 0)
+                i += 1
+            n += 1
+            if "nota_id=" not in txt[m.end():i]:
+                rele.append("%s:%d" % (cale, txt.count("\n", 0, m.start()) + 1))
+    return rele, n
 
 
 # ── C174: E3_8 cuprinde tichetele ─────────────────────────────────────────────────────────────────────────────────────────────────

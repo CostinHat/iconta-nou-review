@@ -20,7 +20,13 @@ TEMEI (textul, `anaf_surse/cod_fiscal_227_2015_consolidat.txt`):
 Contabil: excedentul s-a plătit deja prin decont (625 = 542 / 5311), deci în nota salariilor NU mai intră pe 641 = 421: din el se rețin
 numai CAS, CASS și impozitul (din salariul în bani al lunii), iar CAM-ul îl plătește angajatorul (`salarizare.monografie_salariu`).
 
-Interfața cu decontul (OPS): `adauga_excedent` la decontul final (idempotent pe `referinta`), `sterge_excedent` la ștergerea decontului.
+Interfața cu decontul (OPS): `adauga_excedent` la decontul final (idempotent pe `referinta`), cu `nota_id` = nota decontului.
+
+[684, lotul 13] Excedentul trăiește cât trăiește nota decontului care l-a produs: coloana `inregistrare_id` e cheie străină spre
+`inregistrari(id)` cu ON DELETE CASCADE, deci ORICE drum care șterge nota (jurnalul, `note_derivate`, descărcarea Z, ștergerea facturii,
+un DELETE scris de mână) scoate și excedentul — venitul salarial nu mai rămâne în statul de plată și în D112 fără decont. Nu e o chemare
+pe care un drum de ștergere o poate uita: o face baza. `sterge_excedent` rămâne pentru excedentul fără notă (referință externă).
+Garda: `core/test_lot13_sal_salarizare.py::test_684_*` (orice chemare de producție trimite `nota_id`; ștergerea notei scoate excedentul).
 """
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
@@ -37,6 +43,19 @@ DDL = ('CREATE TABLE IF NOT EXISTS "{s}".diurna_excedent ('
        ' creat_la timestamp with time zone NOT NULL DEFAULT now(),'
        ' CONSTRAINT diurna_excedent_referinta_uniq UNIQUE (referinta));')
 
+#: [684] legătura excedentului de nota decontului: ștergerea notei îl scoate (ON DELETE CASCADE). Separat de CREATE TABLE, ca tabelele
+#: create înainte (lotul 13, înaintea lui 684) s-o primească prin migrare; `ADD COLUMN IF NOT EXISTS` sare cu tot cu cheia străină.
+DDL_NOTA = ('ALTER TABLE "{s}".diurna_excedent ADD COLUMN IF NOT EXISTS inregistrare_id integer '
+            'REFERENCES "{s}".inregistrari(id) ON DELETE CASCADE;')
+
+#: [684, datele existente] referința pe care decontul OPS o scria înainte de legătură (`uc_tenants`, decontul de deplasare): rândurile ei
+#: primesc nota din referință; cele a căror notă nu mai există sunt excedentele rămase orfane prin defectul 684 și se scot.
+REPARA_LEGATURA = (
+    'UPDATE "{s}".diurna_excedent d SET inregistrare_id = substring(d.referinta from \'^decont-deplasare:([0-9]+)$\')::integer '
+    'WHERE d.inregistrare_id IS NULL AND d.referinta ~ \'^decont-deplasare:[0-9]+$\' AND EXISTS (SELECT 1 FROM "{s}".inregistrari i '
+    'WHERE i.id = substring(d.referinta from \'^decont-deplasare:([0-9]+)$\')::integer);'
+    'DELETE FROM "{s}".diurna_excedent d WHERE d.inregistrare_id IS NULL AND d.referinta ~ \'^decont-deplasare:[0-9]+$\';')
+
 
 def _p(schema):
     return ('"%s".' % str(schema).strip('"')) if schema else ""
@@ -52,10 +71,10 @@ def _suma(v):
     return d.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)   # aritmetic (CLAUDE.md „Rotunjire fiscală”)
 
 
-def adauga_excedent(cur, schema, salariat_id, an, luna, suma, referinta, descriere):
+def adauga_excedent(cur, schema, salariat_id, an, luna, suma, referinta, descriere, nota_id=None):
     """Excedentul de diurnă al salariatului în luna (an, luna) — venit salarial (CF art.76 alin.(2) lit.k). Idempotent pe `referinta`
-    (decontul care l-a produs): a doua chemare cu aceeași referință rescrie salariatul, luna, suma și descrierea, nu adaugă un rând.
-    Întoarce id-ul rândului."""
+    (decontul care l-a produs): a doua chemare cu aceeași referință rescrie salariatul, luna, suma, descrierea și nota, nu adaugă un rând.
+    `nota_id` = nota decontului [684]: ștergerea ei scoate excedentul (cheia străină, ON DELETE CASCADE). Întoarce id-ul rândului."""
     ref = str(referinta or "").strip()
     if not ref:
         raise ValueError("Excedentul de diurnă cere referința decontului care l-a produs.")
@@ -65,17 +84,23 @@ def adauga_excedent(cur, schema, salariat_id, an, luna, suma, referinta, descrie
     cur.execute(f"SELECT 1 FROM {_p(schema)}salariati WHERE id = %s", (int(salariat_id),))
     if cur.fetchone() is None:
         raise ValueError("Salariatul excedentului de diurnă nu există în firmă.")
+    nota = int(nota_id) if nota_id is not None else None
+    if nota is not None:
+        cur.execute(f"SELECT 1 FROM {_p(schema)}inregistrari WHERE id = %s", (nota,))
+        if cur.fetchone() is None:
+            raise ValueError("Nota decontului care a produs excedentul de diurnă nu există în firmă.")
     # upsert-ok: aceeași referință (același decont) rescrie rândul ei — un decont refăcut nu dublează venitul salarial
-    cur.execute(f"INSERT INTO {_p(schema)}diurna_excedent (salariat_id, an, luna, suma, referinta, descriere) "
-                "VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (referinta) DO UPDATE SET salariat_id = EXCLUDED.salariat_id, "
-                "an = EXCLUDED.an, luna = EXCLUDED.luna, suma = EXCLUDED.suma, descriere = EXCLUDED.descriere RETURNING id",
-                (int(salariat_id), int(an), int(luna), s, ref, (str(descriere).strip() or None) if descriere else None))
+    cur.execute(f"INSERT INTO {_p(schema)}diurna_excedent (salariat_id, an, luna, suma, referinta, descriere, inregistrare_id) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (referinta) DO UPDATE SET salariat_id = EXCLUDED.salariat_id, "
+                "an = EXCLUDED.an, luna = EXCLUDED.luna, suma = EXCLUDED.suma, descriere = EXCLUDED.descriere, "
+                "inregistrare_id = EXCLUDED.inregistrare_id RETURNING id",
+                (int(salariat_id), int(an), int(luna), s, ref, (str(descriere).strip() or None) if descriere else None, nota))
     r = cur.fetchone()
     return int(r["id"] if isinstance(r, dict) else r[0])
 
 
 def sterge_excedent(cur, schema, referinta):
-    """Scoate excedentul decontului `referinta` (decontul șters). Fără rând: nimic de făcut."""
+    """Scoate excedentul cu referința `referinta`. Excedentul legat de o notă cade singur odată cu nota (684); aici, cel fără notă."""
     cur.execute(f"DELETE FROM {_p(schema)}diurna_excedent WHERE referinta = %s", (str(referinta or "").strip(),))
 
 
