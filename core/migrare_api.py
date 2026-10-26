@@ -247,6 +247,12 @@ REGULI = {
     "durata_teren":     {"fel": "incoerent", "inseamna": "terenul nu se amortizeaza, dar fisierul ii da o durata"},
     "durata_amenajare_teren": {"fel": "incoerent", "inseamna": "amenajarile de terenuri se amortizeaza liniar pe 10 ani (CF art.28 alin.(12) lit.e))"},
     "articol_dublat":   {"fel": "duplicat", "inseamna": "aceeasi denumire de articol pe doua randuri; un articol se trece o data, cu stocul lui total"},
+    # [lotul 13, 582] același partener (cont, CUI) pe mai multe rânduri: toate aparițiile se resping (ca la articole, 590), restul se verifică
+    "partener_dublat":  {"fel": "duplicat", "inseamna": "acelasi partener pe acelasi cont pe mai multe randuri; un partener are un singur sold pe un cont"},
+    # [lotul 13, 668] articolele unui cont de stoc nu dau soldul contului din balanța de deschidere: rândurile contului nu intră (ca la 346)
+    "stoc_nu_da_soldul": {"fel": "incoerent", "inseamna": "articolele unui cont de stoc nu dau soldul lui din balanta de deschidere"},
+    # [lotul 13, 588] valoarea de intrare sub plafonul de mijloc fix la data intrării (CF art.28 alin.(2) lit.b): obiect de inventar
+    "sub_plafon_mf":    {"fel": "invalid", "inseamna": "valoarea de intrare e sub plafonul de mijloc fix la data intrarii: e obiect de inventar"},
     "cota_invalida":    {"fel": "invalid", "inseamna": "cota de participare nu e intre 0 si 100"},
     # [373, comanda Costin 8.2] articole / stoc inițial: nimic completat din oficiu
     "um_lipsa":         {"fel": "lipsa", "inseamna": "articolul n-are unitatea de masura; nu se presupune buc"},
@@ -284,6 +290,10 @@ REGULI = {
     # [lotul 10, deficiența 420] norma și funcția de bază lipsă din fișier: propuse pe ecran (editabile), intră marcate de verificat
     "norma_propusa":    {"fel": "semnal", "inseamna": "norma lipsește din fișier: propusă (întreagă, 8 ore), editabilă, marcată de verificat"},
     "functie_baza_propusa": {"fel": "semnal", "inseamna": "funcția de bază lipsește din fișier: propusă „Da”, editabilă, marcată de verificat"},
+    # [lotul 13, 585] brutul la normă întreagă sub salariul minim (Codul muncii art.164 alin.(6)): rândul intră, cu observația
+    "salariu_sub_minim": {"fel": "semnal", "inseamna": "salariul de baza la norma intreaga e sub salariul minim brut pe tara"},
+    # [lotul 13, 586] D100 pe o lună care nu încheie un trimestru: citită ca D100 lunară (ex. impozitul pe dividende, CF art.43 alin.(2))
+    "d100_lunara":      {"fel": "semnal", "inseamna": "D100 pe o luna care nu incheie un trimestru: citita ca declaratie lunara"},
 }
 
 #: [comanda Costin 8.2 pct.4] formele care NU opresc rândul — `semnaleaza` le cere, `respinge` le refuză
@@ -373,9 +383,30 @@ def cere_confirmarea_inlocuirii(exista, inlocuieste, text, vechi=None, nou=None,
         raise exceptie("%s %s" % (str(text).rstrip(), CERE_CONFIRMAREA), vechi, nou, dependente)
 
 
+class RanduriCareIntra(list):
+    """[lotul 13, deficiența 583] Rândurile care intră, cu `citite` = câte rânduri s-au citit din fișier: „Fișierul nou: 0 parteneri, debit
+    0,00” sub „4 parteneri · debit 1.700” se citea ca un fișier gol; textul înlocuirii spune acum „0 rânduri valide din 4”."""
+    citite = None
+
+
 def randuri_care_intra(randuri, erori):
     """[426] Rândurile previzualizate care intră la salvare (fără cele respinse în `erori`, pe numărul rândului din fișier — aceeași
-    regulă ca `importa`: `import_tabel.nr_rand`). Din ele se spune, înainte de salvare, ce aduce fișierul nou."""
+    regulă ca `importa`: `import_tabel.nr_rand`). Din ele se spune, înainte de salvare, ce aduce fișierul nou. [583] Lista ține și
+    câte rânduri s-au citit (`citite`)."""
     from core import import_tabel as _it
     resp = {e.get("rand") for e in erori or [] if e.get("rand") is not None}
-    return [r for i, r in enumerate(randuri or [], start=2) if _it.nr_rand(r, i) not in resp]
+    out = RanduriCareIntra(r for i, r in enumerate(randuri or [], start=2) if _it.nr_rand(r, i) not in resp)
+    out.citite = len(randuri or [])
+    return out
+
+
+def text_fisier_nou(descriere, intra, citite=None):
+    """PURĂ. [lotul 13, deficiența 583, comanda Costin 13.1: „Sus «4 parteneri · debit 1.700», în casetă «Fișierul nou: 0 parteneri, debit
+    0,00»: trebuie «0 rânduri valide din 4».”] Partea „Fișierul nou: …” a textului înlocuirii, comună importurilor: cu toate rândurile
+    valide, descrierea a ce aduce; cu o parte respinsă, și câte intră din câte s-au citit; fără niciun rând valid, numai asta."""
+    if not intra:
+        return ("0 rânduri valide din %d — nu intră nimic" % citite) if citite else "niciun rând valid — nu intră nimic"
+    if citite and citite > intra:
+        from core.common import cate as _cate
+        return "%s (%s din %d)" % (descriere, _cate(intra, "rând valid", "rânduri valide"), citite)
+    return descriere

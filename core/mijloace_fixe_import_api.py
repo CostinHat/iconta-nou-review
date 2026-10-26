@@ -199,12 +199,18 @@ def extrage(continut, nume_fisier="", data_preluare=None):
         semnale = []
         _prag = float(_oi.prag_mf(_pif))
         _cand = _data_ro(_pif) if _pif else "dată lipsă"
-        if 0 < valoare < _prag:
-            if _oi.prag_mf_cunoscut(_pif):
-                semnale.append("sub plafonul de mijloc fix de %s, la data intrării %s" % (_bani(_prag, "lei"), _cand))
-            else:
-                # Necunoscutul nu se rotunjeste la „stiu ca nu": registrul n-are prag pentru data aia
-                semnale.append("sub cel mai vechi plafon cunoscut (%s) — registrul n-are prag verificat pentru %s" % (_bani(_prag, "lei"), _cand))
+        # [lotul 13, 588] sub plafonul CUNOSCUT la data intrării rândul se respinge (`verifica_randuri`, `sub_plafon_mf`); aici rămâne numai
+        # semnalul pentru o dată fără prag verificat în registru
+        if 0 < valoare < _prag and not (_pif and _oi.prag_mf_cunoscut(_pif)):
+            # Necunoscutul nu se rotunjeste la „stiu ca nu": registrul n-are prag pentru data aia
+            semnale.append("sub cel mai vechi plafon cunoscut (%s) — registrul n-are prag verificat pentru %s" % (_bani(_prag, "lei"), _cand))
+        # [lotul 13, deficiența 587, comanda Costin 13.1: „Coloana «rezidual» din model se confundă cu «valoarea rămasă» din exporturile
+        # vechi; o valoare reziduală mare (2/3 din valoare) nu e semnalată”] valoarea reziduală nu se amortizează (amortizabil = valoare −
+        # rezidual, OMFP 1802/2014 pct.139 alin.(2)); orice valoare reziduală se spune, cu partea din valoare
+        if valoare > 0 and 0 < rezidual <= valoare:
+            semnale.append("valoarea reziduală %s (%s din valoarea de intrare) nu se amortizează — e valoarea estimată la sfârșitul duratei "
+                           "(de obicei 0), nu valoarea rămasă (neamortizată) dintr-un export vechi; verifică coloana"
+                           % (_bani(rezidual, "lei"), "%d%%" % int(_q_proc(rezidual, valoare))))
         if metoda == "" and not e_teren(cel(i_cimo)):
             semnale.append("fără metodă de amortizare: se amortizează liniar (metoda de bază a CF art.28)")
         if not cel(i_cimo):
@@ -277,6 +283,12 @@ def eticheteaza(randuri, azi=None):
     return randuri
 
 
+def _q_proc(parte, total):
+    """Procentul `parte` din `total`, rotunjit aritmetic la întreg (CLAUDE.md §10: Decimal + ROUND_HALF_UP)."""
+    from decimal import Decimal as _D, ROUND_HALF_UP
+    return (_D(str(parte)) * 100 / _D(str(total))).quantize(_D("1"), rounding=ROUND_HALF_UP)
+
+
 def _da_nu(v):
     """„da”/„nu” dintr-o celulă de import (da/nu, x, 1/0, true/false); gol = nu; altceva = None (avertisment)."""
     s = str(v or "").strip().lower()
@@ -346,6 +358,21 @@ def verifica_randuri(randuri, azi=None):
         elif rez > val + 0.01:
             er.append(respinge("mijloc fix", i, "rezidual_peste_intrare",
                                "%s: valoarea reziduală (%s) depășește valoarea de intrare (%s)" % (eticheta, _bani(rez, "lei"), _bani(val, "lei"))))
+        # [lotul 13, deficiența 588, comanda Costin 13.1: „Bun de 1.800 lei «sub plafonul de mijloc fix de 5.000 lei» intră totuși ca mijloc
+        # fix; trebuie propus obiect de inventar.”] CF art.28 alin.(2) lit.b) (OUG 8/2026 art.6 pct.7, aplicat de la anul fiscal 2026): mijlocul
+        # fix amortizabil are „la data intrării în patrimoniul contribuabilului, o valoare fiscală egală sau mai mare decât suma de 5.000 lei”;
+        # înainte de 2026, 2.500 lei (HG 276/2013), iar cele între 2.500 și 5.000 intrate până la 31.12.2025 rămân mijloace fixe (CF art.45
+        # alin.(21^3)). Pragul, din registru, la data PIF (`obiecte_inventar.prag_mf`); numai când e verificat pentru acea dată.
+        _pif_d = None
+        try:
+            _pif_d = datetime.date.fromisoformat(str(r.get("data_pif"))[:10]) if r.get("data_pif") else None
+        except ValueError:
+            _pif_d = None
+        if val > 0 and _pif_d and _oi.prag_mf_cunoscut(_pif_d) and val < float(_oi.prag_mf(_pif_d)):
+            er.append(respinge("mijloc fix", i, "sub_plafon_mf",
+                               "%s: valoarea de intrare %s e sub plafonul de mijloc fix de %s la data intrării %s (CF art.28 alin.(2) lit.b)) "
+                               "— e obiect de inventar, nu mijloc fix amortizabil: nu intră în registrul mijloacelor fixe"
+                               % (eticheta, _bani(val, "lei"), _bani(float(_oi.prag_mf(_pif_d)), "lei"), _data_ro(_pif_d))))
         if dur <= 0 and not teren and cimo.split(".")[0] != "2112":   # [362] amenajarea de teren are mesajul ei, cu durata din lege
             er.append(respinge("mijloc fix", i, "durata_lipsa",
                                "%s: durata în luni lipsește sau nu e pozitivă (%s) - fără ea nu se calculează amortizarea" % (eticheta, dur)))
@@ -456,7 +483,8 @@ def totaluri(randuri):
     from decimal import Decimal as _D
     rs = randuri or []
     return {"randuri": len(rs), "total_valoare": float(sum((_D(str(r.get("valoare") or 0)) for r in rs), _D(0))),
-            "total_amortizare": float(sum((_D(str(r.get("amortizat_preluat") or 0)) for r in rs), _D(0)))}
+            "total_amortizare": float(sum((_D(str(r.get("amortizat_preluat") or 0)) for r in rs), _D(0))),
+            "citite": getattr(randuri, "citite", None)}   # [lotul 13, 583] câte rânduri s-au citit (`migrare_api.RanduriCareIntra`)
 
 
 def text_inlocuire(vechi, nou):
@@ -466,8 +494,9 @@ def text_inlocuire(vechi, nou):
     def _parte(x):
         return "%s, valoare de intrare %s, amortizare preluată %s" % (
             _cate(x["randuri"], "mijloc fix", "mijloace fixe"), _bani(x["total_valoare"], "lei"), _bani(x["total_amortizare"], "lei"))
+    from core.migrare_api import text_fisier_nou
     t = ("Firma are deja un registru de mijloace fixe: %s. Fișierul nou: %s. Salvarea înlocuiește registrul vechi."
-         % (_parte(vechi), _parte(nou)))
+         % (_parte(vechi), text_fisier_nou(_parte(nou), nou["randuri"], nou.get("citite"))))   # [583]
     na = vechi.get("note_amortizare") or {}
     if na.get("numar"):
         t += (" În contabilitate %s de amortizare (%s), calculate pe registrul vechi: rămân cum sunt, iar amortizarea lunilor "

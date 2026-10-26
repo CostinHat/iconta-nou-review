@@ -331,11 +331,13 @@ def text_inlocuire(vechi, nou):
     avertismentului din previzualizare și refuzului de la salvare: structura de acum și cea din fișier, cu cotele, și notele de dividende
     care se împart după structura de acum, numite. `nou` = rândurile care intră (`migrare_api.randuri_care_intra`)."""
     from core.pdf_util import bani as _bani
+    from core.migrare_api import text_fisier_nou as _tfn
 
     def _str(lst):
         return ", ".join("%s %s" % (str(a.get("nume") or "").strip() or "—", _procent(a.get("cota"))) for a in lst) or "niciun asociat"
     t = ("Firma are deja %s: %s. Fișierul nou: %s. Fără dată de cesiune, salvarea e o corectură: structura de acum se înlocuiește "
-         "și nu rămâne în istoric." % (_cate(vechi["randuri"], "asociat", "asociați"), _str(vechi["structura"]), _str(nou)))
+         "și nu rămâne în istoric." % (_cate(vechi["randuri"], "asociat", "asociați"), _str(vechi["structura"]),
+                                       _tfn(_str(nou), len(nou or []), getattr(nou, "citite", None))))   # [lotul 13, 583]
     note = vechi.get("note_dividende") or []
     if note:
         # [lotul 10] numeralul acordat prin `cate` (gardul `test_plural_dupa_numar`): „3 note de dividende se împart”, „20 de note …”

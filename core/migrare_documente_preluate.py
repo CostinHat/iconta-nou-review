@@ -107,7 +107,7 @@ def aplica(conn, schema):
         depus = d300_depus_dupa(cur, schema, zi) if any(d["tva"] for d in docs) else None
         if depus:
             for d in docs:
-                d["tva"], d["furnizor_tva_incasare"] = 0, False
+                d["tva"], d["furnizor_tva_incasare"], d["tva_de_verificat"] = 0, False, False
             rez["sarite"].append("firma aplica sistemul TVA la încasare la %s, dar are D300 depus pe %02d/%d: documentele se scriu fără TVA "
                                  "neexigibil (declarația depusă rămâne neatinsă); reîncarcă soldurile pe parteneri din ecran, cu coloana "
                                  "„TVA la încasare”, dacă TVA-ul lor trebuie să devină exigibil la încasare" % (zi.isoformat(), depus[1], depus[0]))

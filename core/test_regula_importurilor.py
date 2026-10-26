@@ -137,6 +137,11 @@ DUBLURI = {
 }
 
 
+#: [lotul 13, deficiența 590, comanda Costin 13.1: „La articol dublat, primul rând intră cu 10 buc (stocul real 13); trebuie respinse ambele
+#: până la cumulare, ca la parteneri.”] importurile la care dublura respinge TOATE aparițiile (un sold parțial n-are voie să intre)
+TOATE_APARITIILE = ("core.articole_import_api",)
+
+
 @pytest.mark.parametrize("modul", sorted(DUBLURI))
 def test_dublura_din_fisier_e_respinsa_numit(modul):
     m = __import__(modul, fromlist=["x"])
@@ -145,4 +150,7 @@ def test_dublura_din_fisier_e_respinsa_numit(modul):
     er = m.verifica_randuri(randuri)
     pe3 = [e.get("regula") for e in er if e.get("rand") == 3]
     assert regula in pe3, (modul, er)
-    assert not [e for e in er if e.get("rand") == 2 and e.get("regula") == regula], (modul, er)   # primul rând intră
+    if modul in TOATE_APARITIILE:   # [lotul 13, 590] articolul dublat: ambele rânduri, până la cumulare
+        assert [e for e in er if e.get("rand") == 2 and e.get("regula") == regula], (modul, er)
+    else:
+        assert not [e for e in er if e.get("rand") == 2 and e.get("regula") == regula], (modul, er)   # primul rând intră

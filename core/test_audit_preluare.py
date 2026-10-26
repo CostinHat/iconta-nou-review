@@ -191,7 +191,8 @@ def test_pfa_ruleaza_doar_rip_zero_importa_balanta():
     # TOATE constatarile sunt despre registrul RIP - nicio verificare de partida dubla
     assert r["constatari"], "PFA cu RIP trebuie sa produca constatari"
     for c in r["constatari"]:
-        assert "Registru" in c["eticheta"], f"constatare non-RIP la PFA: {c['eticheta']}"
+        # [lotul 13, 251] „Texte importate” (literele pierdute la citirea fișierului) e a ambelor regimuri, nu de partidă dublă
+        assert "Registru" in c["eticheta"] or c["eticheta"] == "Texte importate", f"constatare non-RIP la PFA: {c['eticheta']}"
     # ZERO "importa balanta / parteneri" (remediu imposibil la partida simpla)
     tot = " ".join(c["mesaj"] + (c.get("remediu") or {}).get("actiune", "") for c in r["constatari"])
     assert "balanț" not in tot.lower() and "balanta" not in tot.lower()

@@ -85,7 +85,8 @@ def test_pasii_raman_in_aceeasi_ordine_si_nu_se_pliaza():
     corp = re.search(r'corp\.innerHTML = `\s*<div id="mig-aplicatii"></div>(.*?)`;', js, re.S).group(1)
     p = _Arbore()
     p.feed(corp)
-    assert [(t, a.get("id")) for t, a, _ in p.elemente] == [("div", "mig-meniu")], corp   # meniul pașilor, fără pliere
+    # [lotul 13, 663] deasupra meniului, numai linia firmei în lucru (`#mig-firma-lucru`, când e o firmă în lucru); meniul, fără pliere
+    assert [(t, a.get("id")) for t, a, _ in p.elemente if a.get("id") != "mig-firma-lucru" and t not in ("b",)] == [("div", "mig-meniu")], corp
 
 
 # ── „Rânduri mai compacte” (a doua decizie 394) ──────────────────────────────────────────────────────────────────────────────────
