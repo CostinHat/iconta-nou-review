@@ -39,7 +39,9 @@ const DEF = [  /* cab_ordine_v3 — [deficiența 203, retestul Costin 09.10: „
    cere acțiune azi (de validat, restanțe, scadențe), apoi lucrul pe firme și ziua, apoi lunarul, echipa și contul, la urmă sesizările;
    ordinea e păzită de `frontend_test/e2e/e2e_bloc_a.py::ORDINE_CABINET` */
   { cheie:"validat",   titlu:"De validat",     icon:"clipboard", ...CULORI_CARD.piersica,
-    sinteza:'<b class="tip-figura">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
+    // [lotul 13, e2e 203] fără cifră până vin datele: textul de pornire „4 declarații de validat și trimis” era o cifră inventată, pe care
+    // contabilul o vedea cât timp (sau dacă) /coada nu răspundea — și pe care testul o lua drept cifra cozii
+    sinteza:'se încarcă…', actiune:inLucru("De validat") },
   { cheie:"control",   titlu:"Control fiscal", icon:"shield",    ...CULORI_CARD.teal,
     sinteza:'se încarcă…',
     actiune:inLucru("Control fiscal") },
@@ -439,7 +441,9 @@ async function actualizeazaValidat(grila) {
       const rcm = await api.get("/eu/ciorne");
       if (rcm && rcm.total) zona.innerHTML += ` · <b class="tip-figura">${rcm.total}</b> ${dupaNumar(rcm.total, "notă a ta în ciornă", "note ale tale în ciornă")}`;
     } catch (e) { /* cardul rămâne cu coada; lista din fereastră spune eșecul */ }
-  } catch {}
+  } catch (e) {
+    zona.textContent = "Coada nu s-a putut încărca; deschide cardul pentru detalii.";   // [lotul 13, e2e 203] nu rămâne textul de pornire
+  }
 }
 
 async function actualizeazaAsistenti(grila) {

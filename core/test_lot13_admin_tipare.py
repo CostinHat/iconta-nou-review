@@ -120,5 +120,6 @@ def test_analiza_ai_peste_prag_cu_reguli_si_fara_separatoare(monkeypatch):
             "tipuri": [{"tip": "nota", "respinse": 6, "total": 9, "pct": 67}], "firme": [{"nume": "F1", "respinse": 6, "total": 9}]}
     r = tipare_api.analiza_ai(date)
     assert r == {"disponibil": True, "analiza": "Observ un tipar.\n- Verifică documentul."}, r
-    assert "Note contabile: 6 din 9" in primit["p"] and "nu numești firme, persoane, sesiuni" in primit["s"]
+    assert [l for l in primit["p"].splitlines() if l.startswith("- Note contabile")] == ["- Note contabile: 6 din 9 respinse (67%)"], primit["p"]
+    assert primit["s"] == tipare_api.SISTEM_ANALIZA   # regulile („numai datele primite”, „sistematic”, diacritice) pleacă la model
     assert ("cel puțin %d cazuri" % tipare_api.PRAG_SISTEMATIC) in primit["s"]   # PRAG_SISTEMATIC = 3 -> „3 cazuri” (`cate`)
