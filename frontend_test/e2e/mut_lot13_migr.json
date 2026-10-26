@@ -139,7 +139,7 @@
  },
  {
   "fisier": "static/js/ecrane/migrare.js",
-  "ancora": "  _consumaMigMesaj(corp);   // [423 a, 664] salvarea din pasul deschis direct revine aici: confirmarea și pașii următori, sus\n",
+  "ancora": "  _consumaMigMesaj(corp);   // [423 a] confirmarea deciziei „gata / mai am” a unui pas (randeazaDecizie)\n",
   "inlocuire": "",
   "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_664_salvarea_din_pasul_deschis_direct_numeste_pasii_urmatori"
  }

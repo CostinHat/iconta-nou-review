@@ -46,6 +46,14 @@ def _parteneri_api(patron, f, randuri):
         "soldurile pe parteneri")
 
 
+def _rezumat_parteneri(f):
+    """Date de pornire: rezumatul „parteneri” al firmei, calculat cum îl calculează tura de 5 minute a cronului
+    (`firma_rezumat.recalculeaza_firma`). Lista „Solduri parteneri” citește modelul: fără rezumat, firma e „încă necunoscută” (P3 val B,
+    corect — un necunoscut nu se arată ca „nu e cazul”), iar o firmă abia creată nu-l are."""
+    from core import firma_rezumat as fr
+    fr.recalculeaza_firma(f["tenant_id"], f["schema"], aspecte=["parteneri"])
+
+
 def _parteneri_f7(patron, f):
     _parteneri_api(patron, f, (("4111",) + ALFA + (1500, 0), ("4111",) + BETA + (1000, 0)))
 
@@ -123,11 +131,12 @@ def test_def_664_salvarea_balantei_numeste_pasii_urmatori(patron, firma):
 
 
 def test_def_664_salvarea_din_pasul_deschis_direct_numeste_pasii_urmatori(patron, firma):
-    """664 pe drumul lui 663: cu firma în lucru, pasul din „Migrare cabinet” se deschide direct pe ea; salvarea revine în același ecran,
-    care trebuie să arate confirmarea și pașii următori (altfel mesajul rămânea neafișat — garda 423a a prins-o). Pașii: firma în lucru ->
-    Firme -> „Migrare cabinet” -> „Solduri inițiale” (direct importul firmei, cu „Altă firmă”) -> balanța F7 -> data 30.09.2026 -> metoda
-    „cantitativ-valoric” -> „Salvează soldurile” -> în aceeași fereastră, sus: „7 conturi salvate …” și „Pașii următori necesari pentru <firmă>:”.
-    MUTAȚIA: ecranul pasului deschis direct nu mai arată mesajul salvării -> ROȘU."""
+    """664 pe drumul lui 663: cu firma în lucru, pasul din „Migrare cabinet” se deschide direct pe ea, într-o fereastră nouă; salvarea o
+    închide (`nav.inapoiPas()` fără pas pe traseu) și revine în meniul „Migrare cabinet”, care trebuie să arate confirmarea, pașii următori
+    și starea nouă a pasului. Pașii: firma în lucru -> Firme -> „Migrare cabinet” -> „Solduri inițiale” (direct importul firmei, cu „Altă
+    firmă”) -> balanța F7 -> data 30.09.2026 -> metoda „cantitativ-valoric” -> „Salvează soldurile” -> înapoi în meniu: „7 conturi salvate …”,
+    „Pașii următori necesari pentru <firmă>:” cu „Solduri parteneri — … 401 …”, iar „Solduri inițiale” e „gata”.
+    MUTAȚIA: meniul Migrare cabinet nu mai arată mesajul salvării -> ROȘU."""
     pg = patron.pg
     patron.firma(firma["nume"])                      # firma în lucru
     _migrare(patron)
@@ -139,14 +148,16 @@ def test_def_664_salvarea_din_pasul_deschis_direct_numeste_pasii_urmatori(patron
     pg.fill(_F + "#mig-data-bal", DATA)
     pg.select_option(_F + "#mig-metoda-stoc", "cantitativ_valoric")
     pg.click(_F + "#mig-salveaza-sold")
-    pg.wait_for_selector(_F + "#mig-alta-firma", timeout=30000)            # înapoi în ecranul pasului deschis direct
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop();"
-                         " return !!f && f.innerText.includes('Pașii următori necesari pentru'); }", timeout=30000)
+                         " return !!f && !!f.querySelector('#mig-firma-lucru') && f.innerText.includes('Pașii următori necesari pentru'); }",
+                         timeout=30000)                                    # înapoi în meniul Migrare cabinet, cu mesajul
     t = _txt(pg, ".fereastra:last-of-type")
     patron.captura("pasii_urmatori_direct")
     assert "7 conturi salvate, cu soldurile la 30.09.2026." in t, t[:2000]
     assert "Pașii următori necesari pentru %s:" % firma["nume"] in t, t[:2000]
     assert "Solduri parteneri — De defalcat pe parteneri: 401 (creditor 3.000,00 lei în balanță)" in t, t[:3000]
+    pg.wait_for_function("() => { const r = [...document.querySelectorAll('#mig-meniu .mig-op')].find((x) => x.innerText.includes('Solduri inițiale'));"
+                         " const b = r && r.querySelector('[data-stare-pas]'); return !!b && b.dataset.starePas === 'gata'; }", timeout=20000)
 
 
 # ── 663 + 668 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -239,6 +250,7 @@ def test_def_666_firma_fara_solduri_nu_e_cazul_iar_contul_potrivit_sta_separat(p
     401 motivul scurt „nu intră: pe contul 401 …”, iar lista refuzurilor îl spune o dată.
     MUTAȚIA: conturile potrivite și nepotrivite din nou în aceeași casetă -> ROȘU."""
     pg = patron.pg
+    _rezumat_parteneri(firma)                        # date de pornire: tura de 5 minute a cronului (firma nouă n-are încă rezumatul)
     _migrare(patron)
     _pas_meniu(pg, "Solduri parteneri").click()
     rand = pg.locator(".mig-frand", has_text=firma["nume"]).first
@@ -429,7 +441,7 @@ def test_def_583_inlocuirea_spune_zero_randuri_valide_din_cate_s_au_citit(patron
     _balanta_api(patron, firma, (("4111", 500, 0), ("1012", 0, 500)))
     _parteneri_api(patron, firma, (("4111",) + ALFA + (500, 0),))   # date de pornire: soldurile existente (ecranul — test_def_666)
     _pas(patron, firma, "Solduri parteneri")
-    csv = ("cont;cui;denumire;sold debitor;sold creditor\n" + "".join("4111;1483742%d;GRESIT %d SRL;%d;0\n" % (n, n, 100 * n) for n in (0, 1, 2, 3))).encode()
+    csv = ("cont;cui;denumire;sold debitor;sold creditor\n" + "".join("4111;1483742%d;GRESIT %d SRL;%d;0\n" % (n, n, 100 * n) for n in (1, 2, 3, 4))).encode()
     _incarca(patron, "parteneri_583.csv", csv, "#mig-salveaza-part")
     patron.captura("zero_din_patru")
     assert "4 rânduri citite (0 intră)" in _txt(pg, ".mig-sold-rezumat")

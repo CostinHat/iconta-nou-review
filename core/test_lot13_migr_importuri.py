@@ -154,6 +154,24 @@ def test_668_contul_de_stoc_nepotrivit_cu_balanta_nu_intra_iar_cel_potrivit_intr
     assert aa.verifica_randuri(f7, None) == []                  # fără balanță: nimic de confruntat
 
 
+def test_668_previzualizarea_eticheteaza_intai_iar_confruntarea_tot_numara_randurile_contului():
+    """[e2e pe arborele integrat 526f12af: „371: stoc inițial 0,00 lei · … lipsesc 4.200,00 lei”] ruta previzualizării cheamă întâi
+    `eticheteaza` (rândurile contului nepotrivit primesc `stare = respins`), apoi `verifica_randuri` și `reconciliere_balanta` — cifrele
+    contului rămân ale fișierului (4.100), nu 0; un rând respins pentru alt motiv (dublura) iese din sumă. MUTAȚIE: reconcilierea scoate
+    iar orice rând `respins` -> 0,00 -> pică."""
+    f7 = [_art(2, "Marfa X Test", 10, 150), _art(3, "Marfa Y Test", 20, 80), _art(4, "Marfa Z Test", 5, 200)]
+    solduri = {"371": (Decimal("4200"), Decimal("0"))}
+    aa.eticheteaza(f7, solduri)
+    assert [r["stare"] for r in f7] == ["respins"] * 3
+    assert aa.reconciliere_balanta(f7, solduri) == [{"cont": "371", "registru": 4100.0, "balanta": 4200.0, "diferenta": -100.0}]
+    assert aa.verifica_randuri(f7, solduri)[0]["mesaj"] == (
+        "nu intră: articolele de pe contul 371 dau 4.100,00 lei, iar balanța de deschidere are 4.200,00 lei (diferență 100,00 lei)")
+    # un rând respins pentru alt motiv (dublura, 590: ambele apariții) nu intră în suma contului: rămâne numai Marfa Y (1.600)
+    dublat = [_art(2, "Marfa X Test", 10, 150), _art(3, "Marfa X Test", 10, 150), _art(4, "Marfa Y Test", 20, 80)]
+    aa.eticheteaza(dublat, solduri)
+    assert aa.reconciliere_balanta(dublat, solduri)[0]["registru"] == 1600.0
+
+
 def test_668_contul_de_cheltuiala_dedus_se_spune_o_singura_data():
     sem = aa.semnale_randuri([_art(2, "A", 1, 1), _art(3, "B", 1, 1), _art(4, "C", 1, 1)])
     assert len(sem) == 1 and sem[0]["rand"] == 2
