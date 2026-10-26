@@ -189,6 +189,8 @@ def _main(argv):
         os.remove(_wa)
     # [lotul 11] răspunsurile reale ale ANAF pentru firmele din teste (baza simulatorului; testele pun peste ea `anaf.json`)
     shutil.copy(os.path.join(arb, "frontend_test", "e2e", "anaf_baza.json"), os.path.join(env["ICONTA_ANAF_SIMULAT"], "anaf_baza.json"))
+    # [lotul 13, C199] baza VIES a plasei (emiterea livrării intracomunitare verifică codul clientului pe server)
+    shutil.copy(os.path.join(arb, "frontend_test", "e2e", "vies_baza_fact.json"), os.path.join(env["ICONTA_ANAF_SIMULAT"], "vies_baza.json"))
     os.makedirs(env["ICONTA_BON_DIR"], exist_ok=True)
     sys.path.insert(0, RAD)
     contor = _contor_schema(env)

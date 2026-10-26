@@ -80,11 +80,12 @@ def facturi_deschise(conn, schema, cu_asteptare=False):
     `factura_id`) stinge ambele facturi prin `compensari` (`compensari_api.nota_de_compensare`) — altfel banca și casa ar mai încasa o dată
     partea compensată."""
     from core import compensari_api as _cz, nomenclator_status_factura as _nsf
+    from core import facturi as _fc_tp   # [lotul 13, 546] totalul de plată: factura primită cu taxare inversă, fără TVA-ul beneficiarului
     stinge = _cz.nota_stinge_factura("i", "f.id", f"{schema}.")   # [lotul 12, C153] condiția unică: nota legată, chitanța veche, compensarea
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             SELECT f.id, f.tert_cui, f.directie, f.data_emitere, f.serie, f.numar,
-                   COALESCE(f.total_lei, f.total) AS total,
+                   {_fc_tp.SQL_TOTAL_DE_PLATA_LEI.format(a='f')} AS total,
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id

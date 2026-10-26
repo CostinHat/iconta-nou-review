@@ -4874,7 +4874,7 @@
   {
     "nr": "418",
     "firma": "tenant_9049",
-    "descriere": "După DOVD418-1 (numai citire): Registru jurnal 10/2026 -> nota facturii are contul fiecărei linii: marfa 371 = 401 · 83,00, cartea 6028 = 401 · 100,00 (nu un singur cont pe factură) și „altă livrare decât NIR-urile nelegate (confirmat)”",
+    "descriere": "După DOVD418-1 (numai citire): Registru jurnal 10/2026 -> nota facturii are contul fiecărei linii: marfa 371 = 401 · 83,00, cartea 6028 = 401 · 100,00 (nu un singur cont pe factură); [lotul 13, 634 c] titlul notei nu mai poartă „altă livrare decât NIR-urile nelegate (confirmat)”",
     "pasi": [
       {
         "click": "#fa-jurnal"
@@ -4911,7 +4911,7 @@
         "zona": "tbody.tn-nota[data-nota-id]:has-text('Contare factura DOVD418-1') table.tn-linii"
       },
       {
-        "contine": "altă livrare decât NIR-urile nelegate (confirmat)",
+        "nu_contine": "altă livrare decât NIR-urile nelegate (confirmat)",
         "zona": "[data-nota-id]:has-text('Contare factura DOVD418-1')"
       }
     ],

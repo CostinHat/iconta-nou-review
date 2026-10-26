@@ -3191,6 +3191,16 @@ def fr_sterge(tenant_id: int, sid: int, ctx=Depends(cere_drept(_drepturi.PREGATI
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
+@app.post("/tenants/{tenant_id}/facturi-recurente/{sid}/emite")
+def fr_emite(tenant_id: int, sid: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 13, deficiența 680] „Emite factura lunii” pe șablonul cu emitere ca ciornă: aceeași emitere ca a cronului
+    (`facturi_recurente.emite_unul`)."""
+    from core import facturi_recurente as _fr
+    try:
+        return _fr.emite_unul_uc(tenant_id, sid, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
 def _preincalzeste_cursul(moneda, data_emitere):
     """[P7 · use-case, lotul 2] Invelisul HTTP al lui `core/uc_comun._preincalzeste_cursul` — traduce
     refuzul de domeniu inapoi in `HTTPException`. Corpul a plecat in stratul use-case."""
@@ -3502,6 +3512,16 @@ def furnizor_creeaza(tenant_id: int, date: FurnizorIn, ctx=Depends(cere_drept(_d
 def furnizor_actualizeaza(tenant_id: int, furnizor_id: int, date: FurnizorEdit, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:
         return _uc_tenants.furnizor_actualizeaza(tenant_id, furnizor_id, date, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.delete("/tenants/{tenant_id}/furnizori/{furnizor_id}")
+def furnizor_sterge(tenant_id: int, furnizor_id: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 13, deficiența 640] Fișa furnizorului fără facturi primite se șterge (`clienti_api.sterge_furnizor`), ca a clientului."""
+    try:
+        from core import clienti_api as _cl_api
+        return _cl_api.furnizor_sterge_uc(tenant_id, furnizor_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
@@ -6538,6 +6558,18 @@ def etransport_trimite(tenant_id: int, corp: dict = Body(...),                  
     -> idempotency -> validare pe TEST -> upload). Poll-ul stare NU e sincron. Live pending drept e-Transport."""
     try:
         return _uc_tenants.etransport_trimite(tenant_id, corp, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/tenants/{tenant_id}/etransport/din-document")
+def etransport_din_document(tenant_id: int, fel: Optional[str] = None, id: Optional[int] = None,
+                            ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 13, deficiența 534] Notificarea e-Transport completată din factură (`fel=factura`) sau din NIR (`fel=nir`): bunurile, partenerul,
+    locurile și tipul operațiunii (`etransport.din_document`); fără `fel`, documentele din ultimele 60 de zile din care se poate completa."""
+    from core import etransport as _etr
+    try:
+        return _etr.din_document_uc(tenant_id, fel, id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

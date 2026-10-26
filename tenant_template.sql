@@ -3842,6 +3842,10 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.salariati_jurnal (
 ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente ADD COLUMN IF NOT EXISTS ultimul_refuz text, ADD COLUMN IF NOT EXISTS ultimul_refuz_la date, ADD COLUMN IF NOT EXISTS categorie_331 text;
 -- [sablon_recurent_stare_v1] sfârșit
 
+-- [sablon_recurent_emitere_v1, lotul 13, 680] scadența, perioada, modul emiterii și trimiterea în SPV pe șablonul facturii recurente — SURSA: core/migrare_sablon_recurent_emitere.py
+ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente ADD COLUMN IF NOT EXISTS scadenta_zile integer, ADD COLUMN IF NOT EXISTS data_inceput date, ADD COLUMN IF NOT EXISTS data_sfarsit date, ADD COLUMN IF NOT EXISTS mod_emitere text, ADD COLUMN IF NOT EXISTS trimite_spv boolean, ADD COLUMN IF NOT EXISTS ultima_pregatire date;
+-- [sablon_recurent_emitere_v1] sfârșit
+
 -- [mf_note_v1, lotul 13, deficiențele 519 / 522] activul ținut pe rândul notei și schimbat de notă numai la validare — SURSA: core/migrare_mf_note.py
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.mf_linii (
     linie_id integer PRIMARY KEY REFERENCES TENANT_PLACEHOLDER.inregistrari_linii(id) ON DELETE CASCADE,

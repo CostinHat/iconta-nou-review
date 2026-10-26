@@ -4090,7 +4090,7 @@ def vanzare_marja(tenant_id, corp, ctx):
         except ValueError as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         with conn.cursor() as cur:
-            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], (corp.get("descriere") or "Vanzare regim marja (art. 312) %s"
+            iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], (corp.get("descriere") or "Vânzare în regim de marjă (art. 312) %s"
                                                                                        % art[1])[:200], document_ref=document)[0]
             # [1a · CF art.312, norme pct.86] Nota se face la PRETUL DE VANZARE (ce datoreaza clientul): 707 = pret_vanzare - TVA pe marja;
             # 4427 = TVA (0 la marja negativa, FARA report - metoda pe fiecare livrare, pct.86).
@@ -4198,9 +4198,9 @@ def vanzare_aur_investitii(tenant_id, corp, ctx):
             _cere_stoc_pe_articol(cur, schema, "Livrarea aurului de investiții din stoc")
             art = _articol_stoc(cur, schema, corp["articol"], "371", "op-articol")
         ies = _iesire_din_stoc(conn, schema, art, cant, corp["data"], document)
-        mentiune = "taxare inversa (art. 331 al. 2 lit. h)" if regim == "taxare_inversa" \
-                   else "scutit (art. 313 al. 3)"
-        descr = (corp.get("descriere") or "Livrare aur investitii %s" % art[1]) + " - " + mentiune + " - client: " + ident
+        mentiune = "taxare inversă (art. 331 alin. (2) lit. h)" if regim == "taxare_inversa" \
+                   else "scutit (art. 313 alin. (3))"
+        descr = (corp.get("descriere") or "Livrare aur de investiții %s" % art[1]) + " - " + mentiune + " - client: " + ident
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], document_ref=document)[0]
             repo_contabilitate.adauga_linie_partener(cur, schema, iid, "4111", "707", suma, client[0], client[1])
@@ -4228,7 +4228,7 @@ def achizitie_agricultor(tenant_id, corp, ctx):
             cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Achizitie agricultor regim special (art. 315^1)") + " - " + agr[1] + \
+        descr = (corp.get("descriere") or "Achiziție de la agricultor, regim special (art. 315^1)") + " - " + agr[1] + \
             ((" - " + r["mentiune"]) if r.get("mentiune") else "")
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200], "borderou_achizitie")[0]
@@ -4253,7 +4253,7 @@ def vanzare_agricultor(tenant_id, corp, ctx):
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         descr = (corp.get("descriere") or "Livrare produse agricole") \
-                + " - regim special agricultori (art. 315^1), compensatie 8%"
+                + " - regim special agricultori (art. 315^1), compensație 8%"
         with conn.cursor() as cur:
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
             for s in (r["pret"], r["compensatie"]):
@@ -4653,7 +4653,7 @@ def achizitie_taxare_inversa(tenant_id, corp, ctx):
             furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Achizitie") + " - " + mentiune
+        descr = (corp.get("descriere") or "Achiziție") + " - " + mentiune
         with conn.cursor() as cur:
             tranzactie.fixeaza_schema(cur, schema)   # creeaza_factura foloseste INSERT necalificat
             # 1) rand FACTURA (directie=primita, furnizor RO cu CUI, categorie_331 -> codPR, taxare_inversa=True)
@@ -4754,7 +4754,7 @@ def achizitie_ic(tenant_id, corp, ctx):
             data_fg = corp.get("data_faptului_generator") or None
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        tip = "servicii IC primite (art. 278(2))" if corp.get("tip") == "servicii"               else "achizitie intracomunitara bunuri (art. 268)"
+        tip = "servicii intracomunitare primite (art. 278 alin. (2))" if corp.get("tip") == "servicii"               else "achiziție intracomunitară de bunuri (art. 268)"
         with conn.cursor() as _curp:
             _benef_platitor = bool((repo_firma_profil.platitor_tva(_curp, schema) or [True])[0])
         _linii_ti, _ment_ti = _ic.note_taxare_inversa(cont, val, tva, _benef_platitor)
@@ -4944,7 +4944,7 @@ def achizitie_neinregistrat(tenant_id, corp, ctx):
                                                                                               corp["data"]))
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Achizitie de la neinregistrat") + " - " + furnizor_nume
+        descr = (corp.get("descriere") or "Achiziție de la neînregistrat") + " - " + furnizor_nume
         with conn.cursor() as cur:
             tranzactie.fixeaza_schema(cur, schema)
             # tert_cui GOL -> clasifica_partener -> tip_partener 2 (N); PF nu factureaza TVA -> linie cota 0.
@@ -7633,6 +7633,9 @@ def facturi_emite(tenant_id, date, ctx):
             er.camp(x["camp"], x.get("mesaj") or x["eticheta"])
         er.refuza()
     _ai = _uc_comun._intreaba_modelul(schema, linii)   # [R193] modelul, înaintea tranzacției de emitere
+    # [lotul 13, C199] livrarea intracomunitară: codul de TVA al clientului în VIES, pe server, înaintea tranzacției (ca `vanzare_ic`, P5);
+    # invalid -> refuzul scutirii, indisponibil -> avertisment (550) — `facturi_api.emite_factura`
+    _vies = facturi_api.verifica_vies_emitere(date.tert_cui, date.tert_tara) if facturi_api.cere_vies(date.tip, linii) else None
     with db.get_conn(schema) as conn:
         din_bon = bool((date.bon_fiscal_nr or "").strip())
         if din_bon and date.pleaca_marfa is True:
@@ -7658,6 +7661,7 @@ def facturi_emite(tenant_id, date, ctx):
                 # [lotul 12, C84, decizia Costin 12.3 pct.7] livrarea intracomunitară de bunuri: întrebarea dovezii transportului (ca
                 # „Pleacă marfa acum?”); „Nu” emite, cu avertisment. Câmpul `EmitereIn.dovada_transport` (main.py)
                 intreaba_dovada=True, dovada_transport=getattr(date, "dovada_transport", None),
+                vies=_vies,   # [lotul 13, C199] răspunsul VIES, cerut înaintea tranzacției
                 # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
                 # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
                 curs_manual_de="utilizator %s" % ctx["uid"])
@@ -7681,6 +7685,8 @@ def facturi_emite(tenant_id, date, ctx):
             if getattr(e, "cod", None) == facturi_api.COD_SERIE_LIPSA:
                 # [06.10.2026 §6.1] refuz STRUCTURAT: ecranul setează seria peste factură și emiterea continuă
                 raise _erori.DateInvalide(facturi_api.detaliu_serie_lipsa(e))
+            if getattr(e, "cod", None) == facturi_api.COD_VIES_INVALID:   # [lotul 13, C199] lângă codul clientului
+                raise _erori.DateInvalide({"cod": e.cod, "mesaj": str(e), "erori_campuri": [{"camp": "em-cui", "mesaj": str(e)}]})
             if getattr(e, "cod", None) == "CAPITAL_SOCIAL_LIPSA":
                 # [lot 19 d12] refuz STRUCTURAT: ecranul păstrează factura și oferă butonul spre Date firmă
                 from core import capital_social as _cs
@@ -7759,7 +7765,10 @@ def proforma_transforma(tenant_id, factura_id, ctx, pleaca_marfa=None, dovada_tr
     # le recitește: o linie schimbată între timp n-are răspuns, deci cota ei iese nedeterminată, nu ghicită
     with db.get_conn(schema) as conn:
         _linii0 = _linii_proformei(conn)
+        _ant0 = antet_din_proforma(facturi_api.detalii_factura(conn, factura_id) or {})
     _ai = _uc_comun._intreaba_modelul(schema, _linii0)
+    # [lotul 13, C199] ca la „Emite factură”: livrarea intracomunitară verifică în VIES codul clientului, înaintea tranzacției
+    _vies = facturi_api.verifica_vies_emitere(_ant0.get("tert_cui"), _ant0.get("tert_tara")) if facturi_api.cere_vies("factura", _linii0) else None
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             r = repo_facturi.tip_si_transformare(cur, factura_id)
@@ -7782,7 +7791,7 @@ def proforma_transforma(tenant_id, factura_id, ctx, pleaca_marfa=None, dovada_tr
         try:
             rez = facturi_api.emite_factura(conn, linii, platitor_tva=platitor, raspunsuri_ai=_ai,
                                             # [lotul 12, C84] întrebarea dovezii transportului, ca la „Emite factură” (`facturi_emite`)
-                                            intreaba_dovada=True, dovada_transport=dovada_transport,
+                                            intreaba_dovada=True, dovada_transport=dovada_transport, vies=_vies,   # [lotul 13, C199]
                                             intreaba_marfa=poarta_ceruta, pleaca_marfa=pleaca_marfa, **antet_din_proforma(f))
         except ValueError as e:
             if getattr(e, "cod", None) == facturi_api.COD_INTREABA_MARFA:
@@ -8979,7 +8988,7 @@ def vanzare_ic(tenant_id, corp, ctx):
                                  "decât zero.")
         except (ValueError, KeyError) as e:
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
-        descr = (corp.get("descriere") or "Vanzare IC") + " - " + ment +                 f" [{v['nume']}]"
+        descr = (corp.get("descriere") or "Vânzare intracomunitară") + " - " + ment +                 f" [{v['nume']}]"
         # [R187, decizia lui Costin 16.09.2026] LIVRAREA PRODUCE FACTURA. Fara rand in `facturi`,
         # operatiunea nu putea ajunge nici la rd.1/rd.3 din D300, nici in D390 — amandoua citesc
         # `facturi`. Numarul vine din SERIA proprie (`emite_factura` numeroteaza), nu din corpul

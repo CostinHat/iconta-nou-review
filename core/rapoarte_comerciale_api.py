@@ -131,11 +131,12 @@ def fisa_partener(conn, schema, cui, de, pana):
     [lotul 10, 428] decontat = și compensarea (ca `reconciliere_api.facturi_deschise`, `compensari_api.nota_de_compensare`).
     [lotul 12, C181, clasa 443.1] fiecare factură poartă și `serie`: ecranul afișează „F1A nr. 3” (`numarCuSerie(r.serie, r.numar)`)."""
     from core import compensari_api as _cz, cui_forma as _cf   # [lotul 11, 10.3 pct.4] partenerul în forma păstrată a CUI-ului
+    from core import facturi as _fc_tp   # [lotul 13, 546] totalul de plată: factura primită cu taxare inversă, fără TVA-ul beneficiarului
     stinge = _cz.nota_stinge_factura("i", "f.id", f"{schema}.")   # [lotul 12, C153] și chitanța veche, nu numai nota legată / compensarea
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""
             SELECT f.id, f.serie, f.numar, f.data_emitere, f.directie, f.tert_nume,
-                   COALESCE(f.total_lei, f.total) AS total,
+                   {_fc_tp.SQL_TOTAL_DE_PLATA_LEI.format(a='f')} AS total,   -- [lotul 13, 546]
                    COALESCE((SELECT SUM(l.suma)
                              FROM {schema}.inregistrari i
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id

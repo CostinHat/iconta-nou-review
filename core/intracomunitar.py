@@ -50,11 +50,15 @@ def _vies_simulat(cod_tva):
     if m:
         raise RuntimeError("ICONTA_ANAF_SIMULAT e setat pe un mediu care nu e de test (%s) — refuz răspunsurile VIES pregătite"
                            % ", ".join(x.cod for x in m))
-    cale = os.path.join(d, "vies.json")
+    # [lotul 13, C199] baza simulatorului (`vies_baza.json`, copiată de plasă / dovezi din `frontend_test/e2e/vies_baza_fact.json`: codurile
+    # clienților din teste, „valid”), apoi răspunsurile puse de test (`vies.json`) peste ea — ca la ANAF (`anaf_baza.json` + `anaf.json`)
     dupa_cod = {}
-    if os.path.exists(cale):
-        with open(cale, encoding="utf-8") as fh:
-            dupa_cod = json.load(fh)
+    for _nume in ("vies_baza.json", "vies.json"):
+        cale = os.path.join(d, _nume)
+        if os.path.exists(cale):
+            with open(cale, encoding="utf-8") as fh:
+                _c = json.load(fh)
+            dupa_cod.update(_c.get("raspunsuri", _c) if _nume == "vies_baza.json" else _c)
     tara, nr = desparte_cod_tva(cod_tva)
     r = dupa_cod.get(tara + nr)
     return dict(r, tara=tara, numar=nr) if r else {"valid": False, "nume": "", "adresa": "", "tara": tara, "numar": nr,
@@ -119,9 +123,9 @@ def note_taxare_inversa(cont, val, tva, beneficiar_platitor):
     val = Decimal(str(val)); tva = Decimal(str(tva))
     baza = (cont, "401", val)
     if beneficiar_platitor:
-        return [baza, ("4426", "4427", tva)], "taxare inversa 4426=4427 (deductibila, art.297)"
-    return [baza, (cont, "446", tva)], ("neplatitor art.317 - TVA nedeductibila in costul "
-                                        "achizitiei (CF art.297: deducerea cere art.316)")
+        return [baza, ("4426", "4427", tva)], "taxare inversă 4426 = 4427 (deductibilă, art. 297)"
+    return [baza, (cont, "446", tva)], ("neplătitor art. 317 - TVA nedeductibilă în costul "
+                                        "achiziției (CF art. 297: deducerea cere art. 316)")
 
 
 # [lotul 12, C84, decizia Costin 12.3 pct.7] „livrarea intracomunitară de bunuri fără dovada transportului primește avertisment la

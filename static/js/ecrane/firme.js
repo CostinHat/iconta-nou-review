@@ -35,7 +35,7 @@ import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, c
 import { fluxConcediu } from "./flux_concediu.js?v=3cb9dd0359";  /* cm_flux_v1 */
 import { alegereButoane, alegereDaNu, legaAlegeri, cereButoane, sincronizeazaAlegeri, puneAlegerea, sumaRo, sumaInCamp, MESAJ_SUMA } from "./sal_alegeri.js?v=3c516dc10a";  /* [lotul 13, 676 / 655] */
 import { randeazaStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi } from "./facturi_ecran.js?v=c5b207b0d7";
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=c5b207b0d7";   // [lotul 13, 543] seria chitanțelor pe loc
 import { cautaInLista } from "./emitere_ecran.js?v=8d3aa3015f";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=9a99f946fa";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=a6ea6eafbc";  /* [C11, 07.10.2026] bilanțul prin coadă */
@@ -2821,13 +2821,13 @@ export async function sectiuneaCV(corp, t, zonaM) {
     try {
       const r = await api.get(`/tenants/${t.id}/stocuri/articole/${val("#cv-art")}/fisa`);
       zona.querySelector("#cv-fisa-zona").innerHTML = `
-        <div class="pf-frand-nume" style="margin:8px 0">Fisa: ${esc(r.articol.denumire)}</div>
+        <div class="pf-frand-nume" style="margin:8px 0">Fișa: ${esc(r.articol.denumire)}</div>
         <div class="pf-lista">${r.linii.map((l) => `
           <div class="pf-frand"><div class="pf-frand-text">
             <div class="pf-frand-nume">${dataRo(l.data)} \u00b7 ${l.tip === "ajustare" ? `diferen\u021b\u0103 de pre\u021b ${bani(l.valoare)} lei` : miscareFisa(l)}${l.pret_unitar ? " \u00b7 pre\u021b " + pretUnitar(l.pret_unitar) + " lei" : ""}</div>
             <div class="pf-frand-sub">sold ${cantitate(l.sold_cantitate)} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + pretUnitar(l.cmp) + " lei" : ""}${l.document ? " \u00b7 " + esc(l.document) : ""}</div>
           </div></div>`).join("") || '<div class="stare-goala">Fără mișcări în fișă.</div>'}</div>`;
-    } catch { arataMesaj(zona.querySelector("#cv-fisa-zona"), "Nu s-a putut încărca fisa.", "eroare"); }
+    } catch { arataMesaj(zona.querySelector("#cv-fisa-zona"), "Nu s-a putut încărca fișa.", "eroare"); }
   });
 }
 
@@ -4295,6 +4295,7 @@ async function ecranCasa(corp, nav, t) {
         mesajSucces = `Chitanța ${esc(numarCuSerie(r.serie, String(r.numar)))} a fost emisă; nota ${esc(r.nota || "")} e ${stareNota(r)}.${av ? ` ${cate(av, "avertisment", "avertismente")} de plafon.` : ""}`;
         deseneaza();
       } catch (e) {   // [lotul 11, 440] fiecare eroare a serverului lângă câmpul ei, textul refuzului sub buton
+        if (cereSeriaChitanteiPeLoc(zonaM, t.id, e, () => bChit.click())) return;   // [lotul 13, 543] seria chitanțelor se cere pe loc, ca la factură
         arataRefuzul(corp, e, zonaM, { campuri: { data: "ch-data", suma: "ch-suma", cota_tva: "ch-cota", client_nume: "ch-client", reprezentand: "ch-repr" } });
       }
     });
@@ -4513,7 +4514,10 @@ async function ecranCasa(corp, nav, t) {
           ...(av ? [`${cate(av, "avertisment", "avertismente")} de plafon (Legea 70/2015).`] : [])].join(" ");
         mesajSucces = esc(textSucces);
         deseneaza();
-      } catch (e) { arataRefuzul(corp, e, zonaM); }   // [lotul 11, 440] toate erorile serverului (id-urile câmpurilor Casă), fiecare lângă câmpul ei
+      } catch (e) {
+        if (cereSeriaChitanteiPeLoc(zonaM, t.id, e, () => corp.querySelector("#c-adauga").click())) return;   // [lotul 13, 543] seria pe loc
+        arataRefuzul(corp, e, zonaM);   // [lotul 11, 440] toate erorile serverului (id-urile câmpurilor Casă), fiecare lângă câmpul ei
+      }
     });
     // [D394 Î2] chitanța fără factură și fără cotă (emisă înainte de marcarea exceptării): D394 o refuză numită până aici
     corp.querySelectorAll("[data-cota]").forEach((b) => b.addEventListener("click", async () => {

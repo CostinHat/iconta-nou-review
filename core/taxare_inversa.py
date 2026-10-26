@@ -51,7 +51,7 @@ def se_aplica(categorie, valoare_fara_tva, furnizor_tva, beneficiar_tva, la_data
         raise ValueError(f"taxarea inversă pentru lit. {c['lit']}) a expirat la {c['expira']} - regim normal")
     if c["prag"] and Decimal(str(valoare_fara_tva)) < c["prag"]:
         raise ValueError(f"sub pragul de {bani(c['prag'], 'lei')}/factura (lit. {c['lit']}) - regim normal cu TVA")
-    return True, f"taxare inversa - art. 331 alin. (2) lit. {c['lit']}) Cod fiscal"
+    return True, f"taxare inversă - art. 331 alin. (2) lit. {c['lit']}) Cod fiscal"
 
 def tva_beneficiar(valoare_fara_tva, cota=None):
     """TVA simultan colectata si deductibila la beneficiar: 4426 = 4427."""

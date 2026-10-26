@@ -465,6 +465,8 @@ def capturi(argv):
         for k in ("ICONTA_AI_SIMULAT", "ICONTA_ANAF_SIMULAT", "ICONTA_BON_DIR"):
             if k in env:
                 os.makedirs(env[k], exist_ok=True)
+        if "ICONTA_ANAF_SIMULAT" in env:   # [lotul 13, C199] baza VIES, ca în plasă
+            shutil.copy(os.path.join(arb, "frontend_test", "e2e", "vies_baza_fact.json"), os.path.join(env["ICONTA_ANAF_SIMULAT"], "vies_baza.json"))
         port = _port_liber()
         os.makedirs(STARE_DIR, mode=0o700, exist_ok=True)
         log = open(os.path.join(STARE_DIR, "uvicorn.log"), "w")   # lângă starea copiei, nu printre capturi (care pot intra în git)

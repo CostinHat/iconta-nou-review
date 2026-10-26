@@ -108,8 +108,10 @@ def cui_partener(cui):
 
 # ══════════════════════════════════════════════════════════════════ FACTURILE COMPENSABILE
 def _detalii(cur, schema, ids):
+    from core import facturi as _fc_tp   # [lotul 13, 546] totalul de plată: factura primită cu taxare inversă, fără TVA-ul beneficiarului
     cur.execute(f"SELECT id, directie, COALESCE(tip, 'factura') AS tip, serie, numar, data_emitere, COALESCE(moneda, 'RON') AS moneda, "
-                f"tert_nume, tert_cui, COALESCE(total_lei, total) AS total_lei FROM {schema}.facturi WHERE id = ANY(%s)", (list(ids),))
+                f"tert_nume, tert_cui, {_fc_tp.SQL_TOTAL_DE_PLATA_LEI.format(a='facturi')} AS total_lei FROM {schema}.facturi "
+                f"WHERE id = ANY(%s)", (list(ids),))
     return {r["id"]: dict(r) for r in cur.fetchall()}
 
 
