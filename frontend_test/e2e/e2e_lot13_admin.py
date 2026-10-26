@@ -38,7 +38,18 @@ LAPTOP = {"width": 1280, "height": 720}
 
 @pytest.fixture()
 def superadmin(browser, request):
-    yield from _ecran(browser, request, SUPERADMIN)
+    """[lotul 13, plasa 1: ERROR la 644 / 646 a-c] testele care restrâng lista cabinetelor (`_numai_cabinetul`) lasă rutele active la
+    închidere: o cerere `/admin/activitate/cabinete` încă în zbor („Route.fetch: Request context disposed”) arunca eroarea în testul
+    următor. Rutele se scot (fără să aștepte cererea) înaintea închiderii contextului."""
+    g = _ecran(browser, request, SUPERADMIN)
+    e = next(g)
+    try:
+        yield e
+    finally:
+        with contextlib.suppress(Exception):
+            e.pg.unroute_all(behavior="ignoreErrors")
+        with contextlib.suppress(StopIteration):
+            next(g)
 
 
 def _emailurile(catre, inainte):
@@ -354,8 +365,9 @@ def test_def_646_e_invitatia_se_copiaza_si_se_retrage(browser, request):
         sql("DELETE FROM public.invitatii_cabinet WHERE email = %s", (email,))
 
 
-#: o cifră cu punct ZECIMAL („1.53369140625”, „32.9”); punctul de mii al formatului românesc („7.812,3”) nu e una
-ZECIMALA_CU_PUNCT = re.compile(r"\b\d+\.\d+\b(?![.,]\d)")
+#: o cifră cu punct ZECIMAL („1.53369140625”, „32.9”); punctul de mii al formatului românesc („7.812,3”, „3.651 MB” — grup de exact trei
+#: cifre) nu e una [lotul 13, plasa 1: „3.651 MB liber” era citit ca zecimală]
+ZECIMALA_CU_PUNCT = re.compile(r"\b\d+\.(?!\d{3}\b)\d+\b(?![.,]\d)")
 
 
 # ── 643 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

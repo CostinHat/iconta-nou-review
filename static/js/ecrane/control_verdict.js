@@ -209,8 +209,11 @@ export function randeazaCorpVerdict(d, opt = {}) {
       <div class="dec-bara"><button type="button" class="buton-secundar cf-inainte-btn" data-fara-actiune="deschide declarațiile de dinainte de preluare, în fereastra lor">Vezi declarațiile de dinainte de preluare (${inainte.length})</button></div>
       <template class="cf-inainte-sablon"><div class="cf-inainte">
         <p class="cf-incr-temei">Luna preluării în iConta.eu e ${esc(d.luna_preluare || "")}${d.luna_preluare_din ? ` (${esc(d.luna_preluare_din)})` : ""}: declarațiile pe ${esc(d.luna_preluare || "")} și după se numără la restanțe, cele până la ${esc(d.luna_inainte_de_preluare || "")} nu se numără la restanțe. O declarație depusă în afara iConta.eu sau de contabilul anterior se marchează pe rândul ei.</p>
-        ${inainte.some((x) => x.luna && !x.extern) ? `<div class="dec-bara"><button class="buton-secundar cf-anterior-toate" data-actiune="POST /control-fiscal/{tenant_id}/depuse-anterior"
-          data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'>Marchează toate ca depuse de contabilul anterior</button></div>` : ""}
+        <div class="dec-bara"><button class="buton-secundar cf-anterior-toate" data-actiune="POST /control-fiscal/{tenant_id}/depuse-anterior"
+          data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'${
+          /* [lotul 13, 675 — DS cap.1] butonul stă și când nu mai e nimic de marcat: inactiv, cu motivul (până acum dispărea, iar rândurile
+             de sub el urcau pe ecran după ultima marcare — e2e 171) */
+          inainte.some((x) => x.luna && !x.extern) ? "" : atributeInactiv("Toate declarațiile de dinainte de preluare sunt marcate.")}>Marchează toate ca depuse de contabilul anterior</button></div>
         <div class="cf-decl">${randDecl(inainte, "", true)}</div></div></template>` : ""}`;
 
   // «Declaratie vs contabilitate» — vc.tva_incrucisat/d112_incrucisat/d390_incrucisat (aceeasi anatomie) + d.reconciliere_surse.
@@ -371,13 +374,23 @@ export function legaVerdict(corp, nav, firma) {
   // „Înainte de preluare” nu mai e un grup pliat pe care se dă clic: butonul lui deschide o fereastră nouă (673) cu declarațiile, marcările
   // pe rând și „Marchează toate”. Ce cerea 158 rămâne: grupul nu stă desfăcut din oficiu. Fereastra se desenează din șablonul randat al
   // ecranului de dedesubt; după o marcare se reîncarcă ecranul de dedesubt (`firma.reincarca`) și se redesenează fereastra din șablonul nou.
+  // [lotul 13, e2e 122] o declarație marcată „depusă în afara iConta.eu” CU DATA nu mai e „înainte de preluare”: serverul o mută la „La zi”
+  // / „Depuse cu întârziere” (`control_fiscal_api`: grupul cuprinde numai obligațiile NEDEPUSE dinaintea preluării). Rândul atins nu se
+  // mai găsește în fereastra grupului, deci fereastra se închide și contabilul îl vede în Control fiscal, în grupul în care a ajuns.
   corp.querySelectorAll(".cf-inainte-btn").forEach((b) => b.addEventListener("click", () => {
     nav.deschide("Înainte de preluare în iConta.eu", (cc, nn) => {
+      let atins = null;
+      cc.addEventListener("click", (e) => { const r = e.target instanceof Element && e.target.closest("[data-cheie]"); if (r) atins = r.dataset.cheie; }, true);
       const deseneaza = () => {
         const s = corp.querySelector("template.cf-inainte-sablon");
         cc.innerHTML = s ? s.innerHTML : `<p class="ecran-nota">Nu mai e nicio declarație de dinainte de preluare de arătat; închide fereastra.</p>`;
         legaVerdict(cc, nn, Object.assign({}, firma, {
-          reincarca: async () => { if (typeof firma.reincarca === "function") await firma.reincarca(); deseneaza(); } }));
+          reincarca: async () => {
+            if (typeof firma.reincarca === "function") await firma.reincarca();
+            const s2 = corp.querySelector("template.cf-inainte-sablon");
+            if (atins && !(s2 && s2.content.querySelector(`[data-cheie="${CSS.escape(atins)}"]`))) { nn.inapoi(); return; }
+            deseneaza();
+          } }));
       };
       deseneaza();
     });
