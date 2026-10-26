@@ -102,7 +102,9 @@ def test_def_564_cheia_api_se_copiaza_spune_folosirea_si_dispare_la_revocare(pat
         pg.wait_for_function("(s) => /revocată/.test((document.querySelector(s) || {}).innerText || '')", arg=rand2 + " .pf-frand-sub",
                              timeout=20000)
         assert cheie2 not in pg.content(), "cheia completă a rămas pe ecran după revocare"
-        assert pg.locator(rand2 + " .set-cheie-revoca").count() == 0
+        # [675, DS cap.1] „Revocă” rămâne la locul lui, inactiv, cu motivul (nu dispare)
+        assert pg.get_attribute(rand2 + " .set-cheie-revoca", "aria-disabled") == "true"
+        assert pg.get_attribute(rand2 + " .set-cheie-revoca", "title") == "Cheia e deja revocată."
         patron.captura("revocata_cheia_dispare")
     finally:
         r = sql("SELECT id FROM public.api_chei WHERE nume LIKE %s", (nume + "%",))

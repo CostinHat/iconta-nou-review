@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand } from "../api.js?v=e38843b1ec";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand, atributeInactiv } from "../api.js?v=e38843b1ec";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=c5b207b0d7";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
 
@@ -116,7 +116,7 @@ async function ecranAccesCont(corp, nav) {
       ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-schimba-email" style="margin-bottom:24px">Schimbă adresa de email</button>' : '<p class="ecran-nota" style="margin:0 0 24px">Doar titularul contului poate schimba acest email.</p>'}
       <h3 style="margin:0 0 8px">Alte persoane cu acces</h3>
       <div id="ac-lista-suplimentar" style="margin-bottom:16px"></div>
-      ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-adauga-acces" data-fara-actiune="portalul clientului: nu e acțiune de cabinet">Adaugă acces altor persoane</button>' : ""}
+      <button class="buton-secundar" id="ac-btn-adauga-acces" data-fara-actiune="portalul clientului: nu e acțiune de cabinet"${d.eu_principal ? "" : atributeInactiv("Doar titularul contului poate da acces altor persoane.")}>Adaugă acces altor persoane</button>
     `;
     const lista = corp.querySelector("#ac-lista-suplimentar");
     lista.innerHTML = (d.suplimentare || []).map((c) => `
