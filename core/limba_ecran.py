@@ -58,7 +58,7 @@ PLURALE = ("parteneri", "facturi", "note", "conturi", "clienți", "furnizori", "
            "activități", "administratori", "adrese", "utilizatori", "angajați", "ani", "apariții", "asistenți", "asociați", "beneficiari",
            "bonuri", "bunuri", "cabinete", "caractere", "cifre", "ciorne", "constatări", "corecturi", "depășite", "câmpuri", "datorate", "deja", "depuse",
            "destinatari", "e-Facturi", "erau", "avertismente", "evenimente", "existente", "eșuate", "fișiere", "funcții", "ieșiri", "imagini", "imobile",
-           "importate", "ingrediente", "intrări", "înregistrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "necunoscute",
+           "importate", "ingrediente", "intrări", "înregistrări", "invalide", "livrări", "lucrări", "lucrători", "mijloace", "mișcări", "necunoscute",
            "netrimise", "neverificate", "notificări", "obligații", "ore", "minute", "rulări", "persoane", "plăți", "potriviri", "potrivite",
            "pregătite", "produse", "propoziții", "părți", "recomandări", "respinse", "restante", "restanțe", "retrimiteri", "rețete", "scadente", "scadențe",
            "secțiuni", "sărite", "termene", "tipare", "tipuri", "trimise", "urme", "valizi",
