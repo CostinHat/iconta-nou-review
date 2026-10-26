@@ -45,7 +45,8 @@ def test_clasificarea_acopera_cele_82_si_fiecare_are_motiv():
     # [lotul 12, C160] + `facturi_ecran.js:fr-tara` (PRESELECTAT: țara dedusă din CUI, ca la emitere — șablonul facturii recurente)
     # [lotul 12, 617] + `tabel_note.js:${pre}-stare` (NEFISCAL: filtrul de stare al tabelului de note — ce se arată, nu un fapt scris)
     # [lotul 13, 676] − 7 selecturi ale salarizării devenite butoane alăturate (`sn-${id}`, `ad-tip`, `cadou-ev`, `ed-norma`, `susp${i}-tip`
-    # FISCAL; `pj-sel` EXISTENTA; `rg-mediu` NEFISCAL), păzite acum de `core/test_lot13_sal_alegeri.py`
+    # FISCAL; `pj-sel` EXISTENTA; `rg-mediu` NEFISCAL) — acum `selectScurt` / `selectDaNu` cu „— alege —” (mecanismul comun `data-butoane`),
+    # cerute la salvare (`core/test_lot13_sal_alegeri.py`)
     # [lotul 13, 660] − 6 fapte fiscale ale formularelor D200 / D221 / D223, scoase (formulare înlocuite de Declarația unică)
     assert clase[S.FISCAL] == 44 and clase[S.PRESELECTAT] == 10 and sum(clase.values()) == 76   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
     assert all(len(m) > 40 for _c, m in S.CLASIFICARE.values())
@@ -121,8 +122,7 @@ def test_casutele_ramase_sunt_toate_clasificate():
 
 
 def test_CALIBRARE_danu_necerut_e_prins():
-    # [lotul 13, 676] Concediul medical nu mai are DA/NU-uri ca select (sunt butoane alăturate, păzite de `core/test_lot13_sal_alegeri.py`):
-    # calibrarea scanerului pe un fragment sintetic, cu aceeași formă ca vechiul formular
+    # calibrarea scanerului pe un fragment sintetic, cu forma formularului de concediu medical (`selectDaNu` + `cereAlegerile`)
     p = "static/js/ecrane/proba_danu.js"
     s = ('z.innerHTML = `${selectDaNu(\'id="cm-continuare"\', null, "C")}${selectDaNu(\'id="cm-spital"\', null, "S")}`;\n'
          'if (cereAlegerile(zona, ["#cm-cod", "#cm-continuare", "#cm-spital"])) return;\n')
