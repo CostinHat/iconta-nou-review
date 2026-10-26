@@ -192,7 +192,9 @@ def test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia(patro
 def test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa(patron, firma_cv):
     """419 (PRIORITAR, 9.3). Pașii: factură cu un articol din stoc, emisă cu „Pleacă marfa acum: Da” -> detaliul -> „Stornează”: întrebarea
     „Marfa … se întoarce în stoc?”; fără răspuns: „NU s-a salvat.”; „Da” -> „Confirm stornarea”: confirmarea spune că marfa a revenit în
-    stoc, iar stocul articolului e iar cel dinainte. 416: factura stornată apare „stornată” în Istoric facturi."""
+    stoc, iar stocul articolului e iar cel dinainte. 416: factura stornată apare „stornată” în Istoric facturi.
+    [lotul 13, 673 — DS cap.2a v2.104] confirmarea stornării, cu întrebarea returului, e fereastra mică deschisă peste detaliu; după
+    „Confirm stornarea” detaliul refăcut arată confirmarea în zona lui de stornare."""
     from e2e_bloc_a import ARTICOL, _api, _card, _ok, articol_in_stoc, emite_api
     tid = firma_cv["tenant_id"]
     aid = articol_in_stoc(patron, firma_cv, cantitate=22, pret=10)
@@ -204,8 +206,9 @@ def test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa(patron, firma_cv):
     pg = patron.pg
     pg.wait_for_selector("#fd-storno", timeout=20000)
     pg.click("#fd-storno")
-    pg.wait_for_selector("#fd-storno-retur", timeout=10000)
-    assert "se întoarce în stoc?" in pg.inner_text("#fd-storno-zona")
+    pg.wait_for_selector(".fereastra:last-of-type #fd-storno-retur", state="attached", timeout=10000)
+    assert "se întoarce în stoc?" in pg.inner_text(".fereastra:last-of-type .fd-storno-box")   # fereastra confirmării, nu detaliul
+    assert not pg.query_selector(".fereastra:last-of-type #fd-pdf"), "întrebarea returului nu e în fereastra ei (673)"
     pg.click("#fd-storno-ok")
     pg.wait_for_selector(".refuz-salvare", timeout=10000)
     pg.select_option("#fd-storno-retur", "true")
