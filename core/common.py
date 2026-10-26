@@ -892,6 +892,7 @@ ETICHETE_COTE = {
     "casa.PLAFON_PLATA_PJ": "Plafonul zilnic de plată în numerar către o persoană juridică (5.000 lei)",
     "casa.PLAFON_PLATA_PJ_TOTAL": "Plafonul zilnic total de plăți în numerar către persoane juridice (10.000 lei)",
     "casa.PLAFON_SOLD_ZI_CC": "Plafonul soldului de casă la sfârșitul zilei, cash and carry (500.000 lei)",
+    "salariati_import_api.ORE_NORMA_INTREAGA": "Norma întreagă în ore pe zi (8; minimul la normă parțială, la importul salariaților)",
     "common.PLAFON_CRESA_BAZA": "Nivelul maxim lunar al tichetelor de creșă, fără indexare (450 lei/copil)",
     "d100_pozitia_116.PRAG_BRENT_USD": "Pragul prețului Brent peste care se datorează contribuția de solidaritate (70 USD/baril)",
     "d101.PRAG_IMCA_EUR": "Pragul cifrei de afaceri pentru impozitul minim pe cifra de afaceri (50.000.000 euro)",
