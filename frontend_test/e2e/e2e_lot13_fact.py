@@ -67,6 +67,14 @@ def _vies(cod, raspuns):
     json.dump(v, open(cale, "w", encoding="utf-8"), ensure_ascii=False)
 
 
+def _fisa(patron, firma, fel, corp):
+    """Fișa unui client / furnizor pe ruta ecranului Clienți / Furnizori (`POST /clienti`, `POST /furnizori`); una cu același CUI deja
+    în nomenclator (409, salvată de un test de dinainte) rămâne cum e."""
+    r = _api(patron, "POST", "/tenants/%d/%s" % (firma["tenant_id"], fel), corp)
+    assert r["status"] in (200, 409), r
+    return r["json"]
+
+
 def _ti_operatiuni(patron, firma, numar="TI-1", valoare="30000"):
     """Operațiuni speciale -> „Taxare inversă internă (art. 331)” -> furnizorul DANTE, factura `numar`, deșeuri, 30.000, 371, 21%,
     furnizor plătitor -> „Generează nota”; întoarce textul zonei de rezultat."""
@@ -167,8 +175,8 @@ def test_def_542_seria_noua_porneste_de_la_1_nu_de_la_contorul_vechi(patron, fir
     s = firma_fact["schema"]
     from core import nomenclator_status_factura as _nsf   # starea implicită a facturii emise, din nomenclator
     sql('INSERT INTO "%s".facturi (numar, data_emitere, total, tva, directie, status, tip, tert_nume, tert_cui) VALUES '
-        "('1', %%s, 121, 21, %%s, %%s, 'factura', 'DANTE INTERNATIONAL SA', %%s)" % s, (AZI, "emisa", _nsf.IMPLICITA, CUI_DANTE))
-    sql('UPDATE "%s".firma_profil SET serie_factura = NULL, urmator_numar_factura = 2 WHERE id = 1' % s)
+        "('1', %%s, 121, 21, %%s, %%s, 'factura', 'DANTE INTERNATIONAL SA', %%s)" % s, (AZI, "emisa", _nsf.IMPLICITA, CUI_DANTE))  # date-de-pornire: starea de pe F2 din 22.10.2026 (o factură „1” emisă fără serie, contorul la 2), pe care ecranul nu o mai produce
+    sql('UPDATE "%s".firma_profil SET serie_factura = NULL, urmator_numar_factura = 2 WHERE id = 1' % s)  # date-de-pornire: starea de pe F2 din 22.10.2026 (o factură „1” emisă fără serie, contorul la 2), pe care ecranul nu o mai produce
     try:
         _deschide_emiterea(patron, firma_fact["nume"])
         pg = patron.pg
@@ -183,7 +191,7 @@ def test_def_542_seria_noua_porneste_de_la_1_nu_de_la_contorul_vechi(patron, fir
         assert "F2T nr. 1" in pg.inner_text("#em-rezultat"), pg.inner_text("#em-rezultat")
         assert sql('SELECT numar FROM "%s".facturi WHERE serie = %%s' % s, ("F2T",)) == [("F2T1",)]
     finally:
-        sql('UPDATE "%s".firma_profil SET serie_factura = %%s WHERE id = 1' % s, ("E2EA",))
+        sql('UPDATE "%s".firma_profil SET serie_factura = %%s WHERE id = 1' % s, ("E2EA",))  # date-de-pornire: seria firmei pusă la loc după probă (Date firmă nu șterge / nu dă înapoi seria)
 
 
 def test_def_543_seria_chitantelor_se_cere_pe_loc(patron, firma_fact):
@@ -192,7 +200,7 @@ def test_def_543_seria_chitantelor_se_cere_pe_loc(patron, firma_fact):
     emisă”; seria e în Date firmă."""
     s = firma_fact["schema"]
     f = emite_api(patron, firma_fact)
-    sql('UPDATE "%s".firma_profil SET serie_chitanta = NULL WHERE id = 1' % s)
+    sql('UPDATE "%s".firma_profil SET serie_chitanta = NULL WHERE id = 1' % s)  # date-de-pornire: firma fără seria chitanțelor — Date firmă refuză ștergerea seriei, odată stabilită
     try:
         _deschide_factura(patron, firma_fact, f["factura_id"])
         pg = patron.pg
@@ -208,7 +216,7 @@ def test_def_543_seria_chitantelor_se_cere_pe_loc(patron, firma_fact):
         patron.captura("emisa")
         assert sql('SELECT serie_chitanta FROM "%s".firma_profil' % s) == [("CHE",)]
     finally:
-        sql('UPDATE "%s".firma_profil SET serie_chitanta = %%s WHERE id = 1' % s, ("E2ECH",))
+        sql('UPDATE "%s".firma_profil SET serie_chitanta = %%s WHERE id = 1' % s, ("E2ECH",))  # date-de-pornire: seria de pornire a firmei, pusă la loc după probă
 
 
 # ================================================================ C199 / 550 — VIES la emitere
@@ -314,7 +322,7 @@ def test_def_632_fisa_clientului_pastreaza_facturile_si_clientul_strain_n_are_ju
     alt stat”)."""
     emite_api(patron, firma_fact)
     emite_api(patron, firma_fact)
-    sql('INSERT INTO "%s".clienti (nume, cui) VALUES (%%s, %%s)' % firma_fact["schema"], ("Client Irlanda E2E Ltd", "IE9999999ZZ"))
+    _fisa(patron, firma_fact, "clienti", {"nume": "Client Irlanda E2E Ltd", "cui": "IE9999999ZZ", "afiliat": False})
     patron.firma(firma_fact["nume"])
     pg = patron.pg
     _card(patron, "clienti", "#cl-nou")
@@ -337,9 +345,9 @@ def test_def_640_partenerul_se_adauga_se_cauta_si_se_sterge(patron, firma_fact):
     -> dispare; Clienți: DANTE (fișă de client) are localitatea scrisă la furnizor (aceeași firmă); o persoană fizică fără localitate e
     semnalată („D394 o cere”)."""
     s = firma_fact["schema"]
-    sql('INSERT INTO "%s".furnizori (nume) VALUES (%%s)' % s, ("Furnizor de sters E2E",))
-    sql('INSERT INTO "%s".clienti (nume, cui) VALUES (%%s, %%s)' % s, ("DANTE INTERNATIONAL SA", CUI_DANTE))
-    sql('INSERT INTO "%s".clienti (nume) VALUES (%%s)' % s, ("Vasile Test E2E",))
+    _fisa(patron, firma_fact, "furnizori", {"nume": "Furnizor de sters E2E"})
+    _fisa(patron, firma_fact, "clienti", {"nume": "DANTE INTERNATIONAL SA", "cui": CUI_DANTE, "afiliat": False})
+    _fisa(patron, firma_fact, "clienti", {"nume": "Vasile Test E2E", "afiliat": False})
     patron.firma(firma_fact["nume"])
     pg = patron.pg
     _card(patron, "furnizori", "#fz-nou")

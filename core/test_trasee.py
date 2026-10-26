@@ -36,7 +36,9 @@ _SCAN = os.path.join(_RAD, "scripts", "scan_trasee.py")
 #: MECANIC fiindca i s-a SCOS pasul manual — plata online, care depindea de un procesator din
 #: afara. *Nu e un castig de acoperire, e o functionalitate mai putina.* Se scrie asa ca sa nu
 #: para ca s-a construit ceva: T18 are acum 3 rute in loc de 6.
-_CLICHET = {"MECANIC": 32, "PARTIAL": 0, "MANUAL": 4}
+#: [lotul 13, 680] T02 („Factura emisă…”, cu `/facturi-recurente`) a trecut din MECANIC în MANUAL: șablonul recurent poate trimite factura
+#: emisă automat în SPV (`facturi_recurente._trimite_spv`, alegerea „pleacă singură în SPV”) — traseul atinge acum exteriorul (ANAF)
+_CLICHET = {"MECANIC": 31, "PARTIAL": 0, "MANUAL": 5}
 _TRASEE_TOTAL = 36
 
 
