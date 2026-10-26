@@ -102,6 +102,7 @@ def test_320_numai_conturile_noi_trec_prin_prima_intrare(monkeypatch):
     monkeypatch.setattr(uc._repo, "stare", lambda cur, uid: st["stare"])
     monkeypatch.setattr(uc._repo, "preferintele", lambda cur, uid: st["pref"])
     monkeypatch.setattr(uc._repo, "alte_conturi_cu_telefonul", lambda cur, uid, tel: 0)   # [338] fără bază: niciun alt cont
+    monkeypatch.setattr(uc._repo, "emailul", lambda cur, uid: None)   # [lotul 13, 565] nota sintezei citește adresa: fără bază, niciuna
     assert uc._stare(None, 1)["complet"] is True                          # existent: fără telefon, fără bife — intră direct
     st["pref"] = (None, False, "admin_firma", True, True, False)
     assert uc._stare(None, 1)["complet"] is False                         # nou: oprit până la telefon + bife
@@ -161,6 +162,8 @@ def test_319_invitatia_cu_drepturi_si_firme_e_o_singura_tranzactie(monkeypatch, 
     monkeypatch.setattr(ua._asist, "atribuie_firma", lambda conn, cab, uid, tid: jurnal.append(("firma", tid))
                         or ({"ok": False, "cod": "firma_alt_cabinet"} if tid == firma_refuzata else {"ok": True}))
     monkeypatch.setattr(ua._uc_comun, "_pune_token", lambda cur, tok, uid, ttl: jurnal.append("link"))
+    from core import repo_cabinet
+    monkeypatch.setattr(repo_cabinet, "nume_cabinet", lambda cur, firm_id: "Cabinet Probă")   # [lotul 13, 560] numele în email, fără bază
     monkeypatch.setattr(ua._obs, "trimite_email_html_sau_semnaleaza", lambda *a, **k: jurnal.append("email") or True)   # [598] a plecat
     date = types.SimpleNamespace(email="zt.319@exemplu.ro", nume="ZT", poate_pregati=True, poate_valida=False, poate_depune=True,
                                  firme=[1, 2])

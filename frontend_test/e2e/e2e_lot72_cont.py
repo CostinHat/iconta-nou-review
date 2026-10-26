@@ -165,7 +165,11 @@ def test_def_320_prima_intrare_cere_telefonul_canalul_si_bifele_grupate_dupa_dre
         assert "Cu trei zile înainte de termenul unei declarații" in pg.inner_text("#not-tipuri")
         pg.screenshot(path=os.path.join(os.environ.get("E2E_CAPTURI", "/tmp"), "320_prima_intrare.png"), full_page=True)
         pg.click("#not-salveaza-canal")
-        pg.wait_for_function("() => document.querySelector('#not-msg').innerText.includes('telefon')", timeout=10000)
+        # [lotul 13, 625, DS cap.6: „Lângă câmp + rezumat, persistente”] refuzul făcut numai din eroarea unui câmp de pe ecran stă lângă
+        # câmpul telefonului și în caseta „NU s-a salvat.”, nu a treia oară în zona mesajului (`api._campuriAutomat`)
+        pg.wait_for_function("() => ((document.querySelector('.msg-eroare[data-camp=\"not-telefon\"]') || {}).innerText || '')"
+                             ".includes('telefon')", timeout=10000)
+        assert pg.get_attribute("#not-telefon", "aria-invalid") == "true"
         assert pg.eval_on_selector("#pi-continua", "b => b.disabled") is True
         pg.fill("#not-telefon", "0700000001")
         pg.click("#not-salveaza-telefon")
