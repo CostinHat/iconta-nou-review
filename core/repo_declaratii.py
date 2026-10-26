@@ -126,6 +126,14 @@ def antet_firma(cur):
     return dict(r) if isinstance(r, dict) else dict(zip(chei, r))
 
 
+def inregistrat_oss(cur):
+    """[lotul 13, deficiența 595] Răspunsul firmei, din Date firmă, la „Înregistrată în regimul special OSS”: True / False, sau None =
+    nedeclarat (și firmă fără profil). Cursorul e poziționat pe schema firmei."""
+    cur.execute("SELECT inregistrat_oss FROM firma_profil WHERE id = 1")
+    r = cur.fetchone()
+    return None if not r else (r["inregistrat_oss"] if isinstance(r, dict) else r[0])
+
+
 def monede_bnr(cur):
     """[lotul 13, deficiența 636 — clasa 631] Monedele pe care BNR le cotează (cursurile zilnice păstrate, `public.curs_bnr_zilnic`), fără
     aurul și DST: lista din care se alege moneda unui formular (D318), nu un cod scris de mână."""

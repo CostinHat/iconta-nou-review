@@ -233,6 +233,14 @@ def _d169(conn, schema, b):   # inregistrare contracte de fiducie (anuala)
 
 
 def _d398(conn, schema, b):   # TVA regim special OSS (UE/non-UE), trimestriala
+    # [lotul 13, 595] înregistrarea OSS e un răspuns al firmei, în Date firmă (nu al formularului): citit aici, unde generarea are
+    # conexiunea (`d398.pull` nu atinge baza de date); refuzul trimite la câmpul din Date firmă
+    from core import repo_declaratii as _repo
+    from core.erori import RefuzGenerare as _RefuzGenerare
+    with conn.cursor() as cur:
+        _motiv = d398.refuz_oss(_repo.inregistrat_oss(cur))
+    if _motiv:
+        raise _RefuzGenerare(_motiv, ecran=d398.ECRAN_OSS, camp_ecran=d398.CAMP_OSS)
     return d398.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
 
 
@@ -607,15 +615,13 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     # Regulile pe camp (regim, cod TVA, state, supply_type/trade_type, cote) le da d398.erori_generare.
     # [lotul 13, deficiența 595] D398 o depune numai firma înregistrată în regimul special: CF art.315 alin.(3) — „În cazul în care România
     # este statul membru de înregistrare, persoana impozabilă respectivă trebuie să depună în format electronic o declarație de începere a
-    # activității sale supuse regimului special la organul fiscal competent.” Aplicația nu ține înregistrarea OSS: formularul o întreabă
-    # (Da / Nu, fără răspuns implicit), iar fără „Da” declarația nu se generează.
+    # activității sale supuse regimului special la organul fiscal competent.” Înregistrarea OSS se întreabă în Date firmă (nu în formular) și
+    # se verifică la generare (`_d398`, care are conexiunea); aici rămâne numai forma cererii.
     if tip == "d398":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("name") or not m.get("vat_id_no") or not m.get("ms"):
             erori.append("D398 nu are ce genera: completează regimul, denumirea și codul de TVA, apoi adaugă "
                          "pentru fiecare stat de consum livrările (bunuri/servicii) cu cota și baza impozabilă.")
-        elif d398.refuz_fara_oss(m):   # [lotul 13, 595] regula înregistrării OSS stă în modulul D398
-            erori.append(d398.refuz_fara_oss(m))
 
     # d104 (distribuire venituri asocieri f.PJ, MANUALA trimestriala): declarant + asociere + asociati + profit_pierd.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).

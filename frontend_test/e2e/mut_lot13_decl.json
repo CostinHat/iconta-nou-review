@@ -73,12 +73,6 @@
  },
  {
   "fisier": "static/js/ecrane/declaratii.js",
-  "ancora": "    if (S.d398.inregistrat_oss === false) { eroareCamp(zona, \"d398-oss\",",
-  "inlocuire": "    if (false) { eroareCamp(zona, \"d398-oss\",",
-  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_595_d398_fara_inregistrare_oss_nu_se_genereaza"
- },
- {
-  "fisier": "static/js/ecrane/declaratii.js",
   "ancora": "  _pune(\"cui\", String(fd.cui || \"\").replace(/^RO/i, \"\").replace(/\\s+/g, \"\"));\n",
   "inlocuire": "",
   "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_636_d318_precompletat_din_date_firma"

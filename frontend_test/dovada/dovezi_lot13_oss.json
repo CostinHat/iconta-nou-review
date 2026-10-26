@@ -1,0 +1,351 @@
+[
+ {
+  "nr": "595",
+  "firma": "tenant_9051",
+  "descriere": "F3 (neplătitoare, înregistrată art.317; firmă existentă, câmpul nou „Înregistrată în regimul special OSS” nedeclarat — profil scris înainte de reparație): D398, T3/2026 -> formularul NU mai întreabă înregistrarea OSS -> regim UE, o livrare în DE -> „Generează D398”: refuz „nu ai răspuns … Date firmă”, cu butonul „Date firmă” (decizia Costin 26.10.2026 „6 da”). Nu se salvează nimic",
+  "pasi": [
+   {
+    "declaratie": "d398",
+    "an": 2026,
+    "trim": 3
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-moes",
+    "valoare": "1"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #d398-eint"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-eint",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-stat",
+    "valoare": "DE"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-sup",
+    "valoare": "1"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-trade",
+    "valoare": "1"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-vrt",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-rate",
+    "valoare": "19"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-baza",
+    "valoare": "1000"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-d398-del"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-refuz"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu ai răspuns în Date firmă la „Înregistrată în regimul special OSS”",
+    "zona": "#dec-refuz"
+   },
+   {
+    "contine": "CF art.315 alin.(3)",
+    "zona": "#dec-refuz"
+   },
+   {
+    "nu_contine": "Firma e înregistrată în regimul special OSS",
+    "zona": "#dec-d398-form"
+   },
+   {
+    "exista": ".fereastra:last-of-type [data-ecran-destinatie='date_firma']"
+   }
+  ],
+  "captura": "595_f3_vechi_d398_nedeclarat_refuz.png"
+ },
+ {
+  "nr": "595",
+  "firma": "tenant_9051",
+  "descriere": "F3 (profil scris înainte de reparație): Date firmă -> «Înregistrată în regimul special OSS (a depus declarația de începere a activității)» arată „— alege —” (nedeclarat), nimic precompletat sau gri (DS cap.17 / 504), cu explicația într-o singură frază. Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-inregistrat_oss"
+   },
+   {
+    "deruleaza": "#df-inregistrat_oss"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#df-inregistrat_oss",
+    "egal": ""
+   },
+   {
+    "contine": "Înregistrată în regimul special OSS (a depus declarația de începere a activității)",
+    "zona": "label.camp:has(#df-inregistrat_oss)"
+   },
+   {
+    "contine": "CF art.315 alin.(3)",
+    "zona": "label.camp:has(#df-inregistrat_oss)"
+   }
+  ],
+  "captura": "595_f3_vechi_date_firma_alege.png"
+ },
+ {
+  "nr": "595",
+  "firma": "tenant_9051",
+  "descriere": "F3: refuzul nedeclarat -> butonul „Date firmă” duce în Date firmă, la câmpul OSS -> „Nu” -> Salvează: „Datele firmei au fost salvate”",
+  "pasi": [
+   {
+    "declaratie": "d398",
+    "an": 2026,
+    "trim": 3
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-moes",
+    "valoare": "1"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #d398-eint"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-eint",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-stat",
+    "valoare": "DE"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-sup",
+    "valoare": "1"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-trade",
+    "valoare": "1"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-vrt",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-rate",
+    "valoare": "19"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-baza",
+    "valoare": "1000"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-d398-del"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-refuz"
+   },
+   {
+    "click": ".fereastra:last-of-type [data-ecran-destinatie='date_firma']"
+   },
+   {
+    "asteapta": "#df-inregistrat_oss"
+   },
+   {
+    "alege": "#df-inregistrat_oss",
+    "valoare": "0"
+   },
+   {
+    "click": "#df-salveaza"
+   },
+   {
+    "asteapta_text": "alvat"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "alvat",
+    "zona": "#df-msg"
+   }
+  ],
+  "captura": "595_f3_date_firma_nu_salvat.png"
+ },
+ {
+  "nr": "595",
+  "firma": "tenant_9051",
+  "descriere": "F3, cu „Nu” în Date firmă: D398 refuzat cu motivul legii (CF art.315 alin.(3)) și trimitere la Date firmă; apoi „Da” -> Salvează",
+  "pasi": [
+   {
+    "declaratie": "d398",
+    "an": 2026,
+    "trim": 3
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-moes",
+    "valoare": "1"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #d398-eint"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-eint",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-stat",
+    "valoare": "DE"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-sup",
+    "valoare": "1"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-trade",
+    "valoare": "1"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-vrt",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-rate",
+    "valoare": "19"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-baza",
+    "valoare": "1000"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-d398-del"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-refuz"
+   },
+   {
+    "captura": "595_f3_d398_refuz_nu.png"
+   },
+   {
+    "click": ".fereastra:last-of-type [data-ecran-destinatie='date_firma']"
+   },
+   {
+    "asteapta": "#df-inregistrat_oss"
+   },
+   {
+    "alege": "#df-inregistrat_oss",
+    "valoare": "1"
+   },
+   {
+    "click": "#df-salveaza"
+   },
+   {
+    "asteapta_text": "alvat"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "alvat",
+    "zona": "#df-msg"
+   }
+  ],
+  "captura": "595_f3_date_firma_da_salvat.png"
+ },
+ {
+  "nr": "595",
+  "firma": "tenant_9051",
+  "descriere": "F3, cu „Da” în Date firmă (pe o firmă care avea câmpul nedeclarat): D398, T3/2026, aceeași livrare -> se generează (pasul 2 cu rezultatul), fără refuzul „nu ai răspuns”",
+  "pasi": [
+   {
+    "declaratie": "d398",
+    "an": 2026,
+    "trim": 3
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-moes",
+    "valoare": "1"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #d398-eint"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-eint",
+    "valoare": "false"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-stat",
+    "valoare": "DE"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-sup",
+    "valoare": "1"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-trade",
+    "valoare": "1"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d398-vrt",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-rate",
+    "valoare": "19"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d398-baza",
+    "valoare": "1000"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-add"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-d398-del"
+   },
+   {
+    "click": ".fereastra:last-of-type #d398-regen"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-ok, .fereastra:last-of-type .dec-avert, .fereastra:last-of-type #dec-refuz"
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "nu ai răspuns"
+   },
+   {
+    "nu_contine": "nu are D398 de depus"
+   },
+   {
+    "exista": ".fereastra:last-of-type #d398-regen"
+   }
+  ],
+  "captura": "595_f3_d398_generat_da.png"
+ }
+]

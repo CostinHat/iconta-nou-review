@@ -3771,6 +3771,10 @@ CREATE UNIQUE INDEX IF NOT EXISTS facturi_borderou_storno_uniq ON TENANT_PLACEHO
 -- (structura SC 1225); NULL = nedeclarat -> bilanțul se oprește. Firmele existente: core/migrare_intocmitor_bilant.py.
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS interes_public boolean;
 
+-- [lotul 13, deficiența 595, decizia Costin 26.10.2026 „6 da”] înregistrarea în regimul special OSS (CF art.315 alin.(3)), în Date firmă;
+-- NULL = nedeclarat -> D398 nu se generează. Firmele existente: core/migrare_inregistrat_oss.py.
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS inregistrat_oss boolean;
+
 -- [cui_fara_ro_v1, lotul 11, decizia Costin 10.3] CUI-ul fără „RO” și fără spații — SURSA: core/migrare_cui_fara_ro.py
 CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.cui_stocare(v text) RETURNS text AS $$
   SELECT CASE WHEN v IS NULL OR btrim(v) = '' THEN v ELSE regexp_replace(regexp_replace(upper(v), '[\s\u0085\u00a0\u2007\u202f\u001c-\u001f]', '', 'g'), '^RO([0-9]+)$', '\1') END

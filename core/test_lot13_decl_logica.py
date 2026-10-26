@@ -65,9 +65,14 @@ def test_595_d398_fara_inregistrarea_oss_nu_se_genereaza(cf):
     sale supuse regimului special”."""
     assert "trebuie să depună în format electronic o declarație de începere a activității sale supuse regimului special" in cf
     m = {"name": "F", "vat_id_no": "RO1", "ms": [{"mscon_state": "DE"}]}
-    assert DA.valideaza_cerere("d398", {"an": 2026, "trim": 3, "manual": m}) != []
-    assert DA.valideaza_cerere("d398", {"an": 2026, "trim": 3, "manual": dict(m, inregistrat_oss=False)}) != []
-    assert DA.valideaza_cerere("d398", {"an": 2026, "trim": 3, "manual": dict(m, inregistrat_oss=True)}) == []
+    # [decizia Costin 26.10.2026 „6 da”] înregistrarea OSS nu mai e în formular: o dă Date firmă (`firma_profil.inregistrat_oss`), verificată
+    # la generare (`DA._d398`); poarta cererii verifică numai forma, iar refuzul (nedeclarat / „Nu” / „Da”) e al `d398.refuz_oss`
+    # (cu baza: `core/test_lot13_oss_date_firma.py`)
+    from core import d398
+    assert DA.valideaza_cerere("d398", {"an": 2026, "trim": 3, "manual": m}) == []
+    assert "nu ai răspuns" in d398.refuz_oss(None) and "art.315 alin.(3)" in d398.refuz_oss(None)
+    assert "nu e înregistrată" in d398.refuz_oss(False) and "art.315 alin.(3)" in d398.refuz_oss(False)
+    assert d398.refuz_oss(True) is None
 
 
 def test_594_d398_mesajele_fara_numele_atributelor_xml():

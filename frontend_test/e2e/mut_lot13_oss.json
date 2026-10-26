@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "core/declaratii_api.py",
+  "ancora": "        _motiv = d398.refuz_oss(_repo.inregistrat_oss(cur))",
+  "inlocuire": "        _motiv = None",
+  "test": "frontend_test/e2e/e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma"
+ },
+ {
+  "fisier": "static/js/ecrane/date_firma.js",
+  "ancora": "  { k: \"inregistrat_oss\", e: \"Înregistrată în regimul special OSS (a depus declarația de începere a activității)\", tip: \"danu\",",
+  "inlocuire": "  { k: \"inregistrat_oss_scos\", e: \"Înregistrată în regimul special OSS (a depus declarația de începere a activității)\", tip: \"danu\",",
+  "test": "frontend_test/e2e/e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma"
+ }
+]
