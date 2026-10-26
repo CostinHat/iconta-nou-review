@@ -15,10 +15,12 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # XSD stem (declaratie) -> modul generator in core/. Nemapate = eroare (forteaza inregistrarea).
 _HARTA = {
-    "d104": "d104", "d110": "d110", "d112": "d112", "d220": "d220", "d221": "d221",
-    "d223": "d223", "d307": "d307", "d311": "d311", "d402": "d402", "saft": "d406",
+    "d104": "d104", "d110": "d110", "d112": "d112", "d307": "d307", "d311": "d311", "d402": "d402", "saft": "d406",
     "d101g": "d101g",   # [lotul 11, C70] d101g_2024.xsd adus în corpus; generatorul core/d101g.py, probat de test_lot11_d_d101g
 }
+#: [lotul 13, deficiența 660] XSD-urile formularelor înlocuite de Declarația unică (CF art.120 „Abrogat.” / art.107 alin.(2) / art.125 alin.(4),
+#: OUG 128/2024): generatoarele lor au fost șterse, XSD-urile rămân în `anaf_surse/` ca sursă oficială arhivată. Lista e ÎNCHISĂ și numită.
+_INLOCUITE_DECLARATIA_UNICA = frozenset(("d220", "d221", "d223"))
 _GEN_TOKEN = re.compile(r"build_xml|genereaza|calcul_|XMLSchema|Validator\.jar|\.xsd", re.I)
 
 
@@ -36,6 +38,10 @@ def _xsd_stems():
 def test_fiecare_xsd_are_generator_si_test_care_il_exercita():
     lipsa = []
     for stem, xsd in sorted(_xsd_stems().items()):
+        if stem in _INLOCUITE_DECLARATIA_UNICA:
+            if os.path.exists(os.path.join(_RAD, "core", stem + ".py")):
+                lipsa.append("XSD '%s': formular înlocuit de Declarația unică (660), dar generatorul core/%s.py a reapărut" % (stem, stem))
+            continue
         mod = _HARTA.get(stem)
         if mod is None:
             lipsa.append("XSD '%s' (%s) nemapate in _HARTA -> inregistreaza modulul generator"

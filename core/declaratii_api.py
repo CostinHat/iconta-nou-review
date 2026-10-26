@@ -320,8 +320,9 @@ _DOAR_API = frozenset((
 # abrogate nu se mai oferă la nicio firmă (nici PFA).”] Formularele persoanelor fizice înlocuite de Declarația unică (D212): obligația pe
 # care o declarau trece, în Codul fiscal în vigoare, prin declarația unică — textele de mai jos sunt cele din
 # `anaf_surse/cod_fiscal_227_2015_consolidat.html` (forma consolidată din corpus). Nu mai sunt în dispecer (`DECLARATII`), deci nici în
-# selector, nici în coadă; o cerere pe tipul lor primește motivul de aici (`valideaza_cerere`). Generatoarele `core/<tip>.py` rămân numai
-# ca referință de structură (testele de structură DUK, nomenclatorul D220 din `registru_evidenta_fiscala`), nechemate din aplicație.
+# selector, nici în coadă; o cerere pe tipul lor primește motivul de aici (`valideaza_cerere`). Generatoarele `core/<tip>.py`, repository-urile
+# și testele lor au fost ȘTERSE (decizia Costin 26.10.2026; actele de abrogare în mesajul commitului „Lotul 13: șterse generatoarele …”);
+# nomenclatorul categoriilor de venit al registrului de evidență fiscală (`registru_evidenta_fiscala.CATEGORII_VENIT_PF`) nu depindea de ele.
 # Garda: `core/test_lot13_decl_logica.py` (testele `test_660_*`).
 FORMULARE_INLOCUITE = {
     "d200": ("D200 (veniturile realizate din România de persoanele fizice)", "CF art.122 alin.(1)",

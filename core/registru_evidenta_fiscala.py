@@ -236,7 +236,7 @@ def compune_profit(P, totalizare="an", perioada=None):
 # declaratia n-are in spate niciun document care s-o justifice la control.
 # ─────────────────────────────────────────────────────────────────────────────────────────────
 
-#: Nomenclatorul OFICIAL de categorii, luat din structura D220 (`core/d220.py`: categ_venit 1-7),
+#: Nomenclatorul OFICIAL de categorii, luat din structura formularului D220 (`anaf_surse/structura_D220_2017_09012018.txt`: categ_venit 1-7),
 #: nu inventat aici. Registrul se tine *„pe fiecare sursa de venit din cadrul fiecarei categorii"*,
 #: iar categoria trebuie sa fie aceeasi cu cea din declaratie — altfel registrul ar clasifica altfel
 #: decat documentul pe care il justifica.
@@ -250,7 +250,7 @@ CATEGORII_VENIT_PF = {
     7: "venituri din cedarea folosintei bunurilor",
 }
 
-#: Modul de stabilire a venitului net, tot din structura D220 (`det_venit`). El decide CE PARTE din
+#: Modul de stabilire a venitului net, tot din structura formularului D220 (`det_venit`, aceeași sursă). El decide CE PARTE din
 #: registru se completeaza — nu o preferinta, ci art. 1 alin. (1)-(3) din ordin.
 MOD_VENIT_NET = {1: "sistem real", 2: "cote forfetare", 3: "norma de venit"}
 

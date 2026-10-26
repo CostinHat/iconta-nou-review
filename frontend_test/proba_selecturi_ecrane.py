@@ -32,8 +32,8 @@ F1 = "Firma Grea Audit SRL"
 F3 = "Distributie Profit IC SRL"
 #: declarațiile cu formular manual în pasul 2: (tip, firmă, an, lună)
 DECLARATII = [("d390", F3, 2026, 8), ("d301", F1, 2026, 8), ("d710", F1, 2026, "T3"), ("d307", F1, 2026, 8), ("d177", F1, 2025, None),
-              ("d200", F1, 2025, None), ("d230", F1, 2025, None), ("d223", F1, 2025, None), ("d208", F1, 2025, None),
-              ("d221", F1, 2025, None), ("d603", F1, 2025, None), ("d110", F1, 2026, 8), ("d398", F1, 2026, "T3"),
+              ("d230", F1, 2025, None), ("d208", F1, 2025, None),
+              ("d603", F1, 2025, None), ("d110", F1, 2026, 8), ("d398", F1, 2026, "T3"),
               ("d318", F1, 2025, None), ("d212", F1, 2025, None), ("d207", F1, 2025, None), ("d300", F1, 2026, 8)]
 
 SELECTURI = """() => [...document.querySelectorAll('.fereastra-corp select')].filter(s => s.offsetParent).map(s => {

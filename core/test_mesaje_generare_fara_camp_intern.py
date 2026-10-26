@@ -25,12 +25,11 @@ _SNAKE = re.compile(r"\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b")
 # Datorie F5 app-wide (burn-down). D301 = 0 (reparat, perimetru 006). Scade pe masura ce rescrii.
 _BASELINE = {
     "core/d104.py": 2, "core/d110.py": 8, "core/d114.py": 12, "core/d119.py": 2, "core/d120.py": 4,
-    "core/d130.py": 3, "core/d169.py": 1, "core/d169n.py": 2, "core/d200.py": 9, "core/d201.py": 7,
+    "core/d130.py": 3, "core/d169.py": 1, "core/d169n.py": 2,
     "core/d204.py": 11, "core/d208.py": 4, "core/d212.py": 4, "core/d213.py": 13, "core/d214.py": 6,
-    "core/d216.py": 9, "core/d220.py": 7, "core/d221.py": 12, "core/d223.py": 9, "core/d230.py": 8,
+    "core/d216.py": 9, "core/d230.py": 8,
     "core/d300.py": 0, "core/d318.py": 0, "core/d393.py": 1, "core/d395.py": 1, "core/d397.py": 4,
     "core/d398.py": 3, "core/d399.py": 16, "core/d402.py": 19, "core/d403.py": 36, "core/d407.py": 21,
-    "core/d600.py": 7,
 }
 
 

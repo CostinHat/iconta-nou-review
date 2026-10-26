@@ -308,7 +308,7 @@ def test_neaplicabile_forma_pfa_vs_juridic():
     # situații financiare anuale.” — PFA (partidă simplă) e la art.1 alin.(5), deci nu le întocmește
     assert set(cf.neaplicabile_forma("pfa")) == {"d100", "d101", "d406", "bilant"}
     assert "D212" in cf.neaplicabile_forma("pfa")["d101"]
-    # [301, 17.10.2026] persoana juridică: declarațiile persoanelor fizice (D212, D200, …) nu se datorează
+    # [301, 17.10.2026] persoana juridică: declarațiile persoanelor fizice (D212, D204, …) nu se datorează
     assert set(cf.neaplicabile_forma("srl")) == set(cf._NEAP_PERSOANA_JURIDICA)
     # regim_contabil trateaza ca 'simpla' DOAR 'pfa' — CORECT prin CONSTRANGERE DB (verificat la sursa 23.07):
     # firma_profil.tip_firma are CHECK IN ('srl','pfa') (tenant_002 real + tenant_template.sql:2102) -> 'ii'/'if'/

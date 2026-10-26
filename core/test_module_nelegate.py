@@ -23,14 +23,6 @@ from core import scan_module_nelegate as scan
 
 # Fiecare intrare poartă DE CE e aici. O intrare fără motiv ar face clichetul o listă de tolerat.
 PIN = {
-    # [26.10.2026, lotul 13, deficiența 660] D200 și D220 sunt înlocuite de Declarația unică (CF art.122 alin.(1); art.120 „Abrogat.”):
-    # formularele au ieșit din dispecer, selector și generare (`declaratii_api.FORMULARE_INLOCUITE`), deci generatoarele nu mai au apelant
-    # în producție. Au rămas ca referință de structură (testele DUK ale lor: core/test_d200_formular.py, core/test_d220*.py); ștergerea lor
-    # e o decizie de produs a lui Costin, cerută în raportul zonei decl ([DECIZIE] la 660). Se scot de aici odată cu decizia.
-    "core/d200.py":
-        "generatorul D200, fără apelant după 660 (formular înlocuit de Declarația unică); păstrat până la decizia lui Costin",
-    "core/d220.py":
-        "generatorul D220, fără apelant după 660 (formular înlocuit de Declarația unică); păstrat până la decizia lui Costin",
     # [lot 19, 02.10.2026] comparatorul pe articol al corpusului: apelantii lui sunt GARDUL
     # (core/test_corpus_continut.py) si scriptul de aducere a documentelor (scripts/import_corpus_fiscal.py) —
     # amandoi in afara domeniului „productie” al scanului. Nu e cod mort: e instrumentul care probeaza ca un act din
