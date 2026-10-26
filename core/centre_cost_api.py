@@ -215,23 +215,38 @@ def alocari(conn, schema):
         sal = [dict(r) for r in cur.fetchall()]
         cur.execute(f"SELECT id, cod, denumire, centru_cost_id FROM {schema}.mijloace_fixe WHERE activ IS NOT false ORDER BY cod, denumire, id")
         mf = [dict(r) for r in cur.fetchall()]
-    return {"salariati": sal, "mijloace": mf}
+        # [536 / NIR, decizia Costin (a)] articolele de stoc: ieșirea lor din gestiune (607 = 371 …) moștenește centrul articolului
+        cur.execute(f"SELECT id, denumire, um, cont_stoc, centru_cost_id FROM {schema}.articole ORDER BY denumire, id")
+        art = [dict(r) for r in cur.fetchall()]
+    return {"salariati": sal, "mijloace": mf, "articole": art}
 
 
-def seteaza_alocari(conn, schema, salariati=None, mijloace=None):
-    """Pune centrul pe salariați și pe mijloacele fixe: {id: centru | None}. Un centru inactiv / inexistent se refuză lângă rândul lui
-    (`cc-sal-<id>` / `cc-mf-<id>`), nimic scris. Notele deja scrise rămân cum sunt; centrul se vede pe notele generate de acum."""
-    salariati, mijloace = dict(salariati or {}), dict(mijloace or {})
+def seteaza_alocari(conn, schema, salariati=None, mijloace=None, articole=None):
+    """Pune centrul pe salariați, pe mijloacele fixe și pe articolele de stoc: {id: centru | None}. Un centru inactiv / inexistent se
+    refuză lângă rândul lui (`cc-sal-<id>` / `cc-mf-<id>` / `cc-art-<id>`), nimic scris. Notele deja scrise rămân cum sunt; centrul se vede
+    pe notele generate de acum."""
+    grupe = (("salariati", "sal", dict(salariati or {})), ("mijloace_fixe", "mf", dict(mijloace or {})),
+             ("articole", "art", dict(articole or {})))
     with conn.cursor() as cur:
-        rele = centre_gresite(cur, schema, list(salariati.values()) + list(mijloace.values()))
-        erori = ([{"camp": "cc-sal-%s" % k, "mesaj": MESAJ_CENTRU_INEXISTENT} for k, v in salariati.items() if _str_in(v, rele)]
-                 + [{"camp": "cc-mf-%s" % k, "mesaj": MESAJ_CENTRU_INEXISTENT} for k, v in mijloace.items() if _str_in(v, rele)])
+        rele = centre_gresite(cur, schema, [v for _t, _p, alese in grupe for v in alese.values()])
+        erori = [{"camp": "cc-%s-%s" % (pre, k), "mesaj": MESAJ_CENTRU_INEXISTENT}
+                 for _t, pre, alese in grupe for k, v in alese.items() if _str_in(v, rele)]
         if erori:
             return {"eroare": "Alocarea nu s-a salvat: " + MESAJ_CENTRU_INEXISTENT, "erori_campuri": erori}
-        for tabel, alese in (("salariati", salariati), ("mijloace_fixe", mijloace)):
+        for tabel, _pre, alese in grupe:
             for k, v in alese.items():
                 cur.execute(f"UPDATE {schema}.{tabel} SET centru_cost_id = %s WHERE id = %s", (_id_centru(v), int(k)))
-    return {"ok": True, "salariati": len(salariati), "mijloace": len(mijloace)}
+    return {"ok": True, **{tabel if tabel != "mijloace_fixe" else "mijloace": len(alese) for tabel, _p, alese in grupe}}
+
+
+def centrul_articolului(cur, schema, articol_id, debit, credit):
+    """[536 / NIR, decizia Costin (a)] Centrul de pus pe rândul (debit = credit) al unei note de stoc: centrul articolului, numai pe un rând
+    de venit / cheltuială (clasele 6 / 7) — pe 371 / 4426 / 401 nu. `schema` None = schema conexiunii."""
+    if not articol_id or not e_rand_de_centru(debit, credit):
+        return None
+    cur.execute("SELECT centru_cost_id FROM %sarticole WHERE id = %%s" % (("%s." % schema) if schema else ""), (articol_id,))
+    r = cur.fetchone()
+    return (r["centru_cost_id"] if isinstance(r, dict) else r[0]) if r else None
 
 
 def centrele_salariatilor(cur, schema):

@@ -22,5 +22,11 @@
   "ancora": "                cur.execute(f\"UPDATE {schema}.{tabel} SET centru_cost_id = %s WHERE id = %s\", (_id_centru(v), int(k)))",
   "inlocuire": "                pass",
   "test": "frontend_test/e2e/e2e_lot13_comp.py::test_def_536_centrul_pe_factura_salariat_si_mijloc_fix_ajunge_in_raport"
+ },
+ {
+  "fisier": "core/centre_cost_api.py",
+  "ancora": "    if not articol_id or not e_rand_de_centru(debit, credit):\n        return None",
+  "inlocuire": "    if True:\n        return None",
+  "test": "frontend_test/e2e/e2e_lot13_comp.py::test_def_536_iesirea_din_stoc_mosteneste_centrul_articolului"
  }
 ]

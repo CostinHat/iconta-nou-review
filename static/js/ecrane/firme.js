@@ -603,7 +603,7 @@ function meniuFirma(corp, nav, t) {
     { cheie: "planconturi", regim: "dubla", grup: "firma", titlu: "Plan de conturi", desc: "Conturile firmei, cu analiticele sub sintetic",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 4h16v4H4z"/><path d="M8 12h12M8 16h12M8 20h12"/><path d="M4 12h.01M4 16h.01M4 20h.01"/>', activ: true },
-    { cheie: "centrecost", regim: "dubla", grup: "firma", titlu: "Centre de cost", desc: "Venituri și cheltuieli pe centre: note, facturi, salarii, mijloace fixe",  // [F143]
+    { cheie: "centrecost", regim: "dubla", grup: "firma", titlu: "Centre de cost", desc: "Venituri și cheltuieli pe centre: note, facturi, salarii, mijloace fixe, stoc",  // [F143]
       ...CULORI_CARD.teal,
       icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', activ: true },
   ];
@@ -6487,11 +6487,11 @@ async function ecranCentreCost(corp, nav, t) {
       </div>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Centre de cost</h2>
-      <p class="pf-intro">Dimensiune de management pe rândurile de venituri și cheltuieli: se alege pe notele manuale (Registru jurnal) și pe liniile facturilor (emise și primite); salariații și mijloacele fixe își primesc centrul în „Salariați și mijloace fixe”, iar nota salariilor și amortizarea îl preiau. Un centru scos din uz se dezactivează — rămâne pe notele vechi, nu se mai oferă la note noi.</p>
+      <p class="pf-intro">Dimensiune de management pe rândurile de venituri și cheltuieli: se alege pe notele manuale (Registru jurnal) și pe liniile facturilor (emise și primite); salariații, mijloacele fixe și articolele de stoc își primesc centrul în „Salariați, mijloace fixe, articole”, iar nota salariilor, amortizarea și ieșirea din stoc îl preiau. Un centru scos din uz se dezactivează — rămâne pe notele vechi, nu se mai oferă la note noi.</p>
       <div style="display:flex;gap:8px;max-width:760px;margin-bottom:12px;flex-wrap:wrap">
         <input type="text" id="cc-nume" class="camp-input" placeholder="Nume centru (ex: Vânzări, Producție)" aria-label="Nume centru" style="flex:1">
         <button class="buton-primar" id="cc-add" data-actiune="POST /tenants/{tenant_id}/centre-cost">Adaugă</button>
-        <button class="buton-secundar" id="cc-alocari" data-fara-actiune="citire: salariații și mijloacele fixe cu centrul lor">Salariați și mijloace fixe</button>
+        <button class="buton-secundar" id="cc-alocari" data-fara-actiune="citire: salariații, mijloacele fixe și articolele cu centrul lor">Salariați, mijloace fixe, articole</button>
       </div>
       <div id="cc-mesaj"></div>
       <div class="pf-lista">${centre.length ? centre.map(rand).join("") : '<div class="stare-goala">Niciun centru încă. Adaugă primul.</div>'}</div>
@@ -6521,7 +6521,7 @@ async function ecranCentreCost(corp, nav, t) {
     };
     corp.querySelector("#cc-add").addEventListener("click", adauga);
     // [lotul 13, 536, DS cap.2a — acțiunea din fereastră deschide o fereastră nouă] alocarea salariaților și a mijloacelor fixe pe centre
-    corp.querySelector("#cc-alocari").addEventListener("click", () => nav.deschide("Salariați și mijloace fixe pe centre",
+    corp.querySelector("#cc-alocari").addEventListener("click", () => nav.deschide("Salariați, mijloace fixe și articole pe centre",
       (c2) => ecranAlocariCentre(c2, nav, t)));
     corp.querySelector("#cc-nume").addEventListener("keydown", (e) => { if (e.key === "Enter") adauga(); });
     corp.querySelectorAll("[data-toggle]").forEach((b) => b.addEventListener("click", async () => {
@@ -6599,7 +6599,8 @@ async function ecranCentreCost(corp, nav, t) {
 
 
 // [lotul 13, deficiența 536 — comanda Costin 13.1, verbatim: „Centrul se poate pune pe liniile facturilor, NIR-urilor, salariilor și pe
-// mijloacele fixe (amortizarea moștenește centrul activului)”] Centrul fiecărui salariat (nota salariilor își împarte cheltuielile cu
+// mijloacele fixe (amortizarea moștenește centrul activului)”; NIR-ul, decizia Costin (a): „centrul pe articol sau pe gestiune, ieșirea
+// din stoc îl moștenește” — al treilea tabel, articolele de stoc] Centrul fiecărui salariat (nota salariilor își împarte cheltuielile cu
 // personalul pe centre, după brutul fiecăruia) și al fiecărui mijloc fix (amortizarea și celelalte rânduri de cheltuială ale activului îl
 // preiau). Se aplică notelor generate de acum; o notă deja scrisă rămâne cum e. Se salvează numai rândurile schimbate; un centru
 // dezactivat rămâne afișat pe rândul care îl are, dar nu se mai poate alege.
@@ -6620,29 +6621,31 @@ async function ecranAlocariCentre(corp, nav, t) {
     ? `<table class="fd-tabel"><thead><tr><th>${cap}</th><th>Centru de cost</th></tr></thead><tbody>${randuri.join("")}</tbody></table>`
     : `<div class="stare-goala">${gol}</div>`}`;
   corp.innerHTML = `
-    <div class="rezumat-fix"><h2 class="pf-titlu">Salariați și mijloace fixe pe centre</h2>
-      <p class="pf-intro">Centrul salariatului împarte nota salariilor pe centre (cheltuielile cu personalul, după brutul fiecăruia); centrul mijlocului fix merge pe amortizarea lui și pe celelalte rânduri de cheltuială ale activului. Se aplică notelor generate de acum — o notă deja scrisă rămâne cum e.</p></div>
+    <div class="rezumat-fix"><h2 class="pf-titlu">Salariați, mijloace fixe și articole pe centre</h2>
+      <p class="pf-intro">Centrul salariatului împarte nota salariilor pe centre (cheltuielile cu personalul, după brutul fiecăruia); centrul mijlocului fix merge pe amortizarea lui și pe celelalte rânduri de cheltuială ale activului; centrul articolului de stoc merge pe ieșirea lui din gestiune (cheltuiala cu marfa, materialele, consumul) — NIR-ul intră pe stoc, iar cheltuiala apare la ieșire. Se aplică notelor generate de acum — o notă deja scrisă rămâne cum e.</p></div>
     ${active.length ? "" : `<div class="caseta-info"><span class="ci-mesaj">Firma n-are niciun centru de cost activ: adaugă întâi unul în fereastra Centre de cost.</span></div>`}
     ${tabel("Salariați", "Salariat", al.salariati.map((x) => rand("sal", x, esc(x.nume || ""), "Centrul de cost al salariatului " + (x.nume || ""))),
             "Firma n-are salariați în serviciu.")}
     ${tabel("Mijloace fixe", "Mijloc fix", al.mijloace.map((x) => rand("mf", x, esc([x.cod, x.denumire].filter(Boolean).join(" · ")),
             "Centrul de cost al mijlocului fix " + (x.denumire || x.cod || ""))), "Firma n-are mijloace fixe în registru.")}
+    ${tabel("Articole de stoc", "Articol", (al.articole || []).map((x) => rand("art", x, esc([x.denumire, x.um, x.cont_stoc].filter(Boolean).join(" · ")),
+            "Centrul de cost al articolului " + (x.denumire || ""))), "Firma n-are articole de stoc (ieșirea pe articol e a firmelor cu stocul la cost).")}
     <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="cc-aloc-salveaza" data-actiune="PUT /tenants/{tenant_id}/centre-cost/alocari"${active.length ? "" : atributeInactiv("Firma n-are niciun centru de cost activ.")}>Salvează alocarea</button>
       <button class="buton-secundar" data-renunta style="margin-left:6px">Renunță</button></p><div id="cc-aloc-mesaj"></div></div>`;
   legaRenunta(corp, nav);
   const msg = corp.querySelector("#cc-aloc-mesaj");
   corp.querySelector("#cc-aloc-salveaza").addEventListener("click", async () => {
     curataEroriCamp(corp);
-    const corpReq = { salariati: {}, mijloace: {} };
+    const corpReq = { salariati: {}, mijloace: {}, articole: {} };
     corp.querySelectorAll("select.cc-aloc").forEach((s) => {
-      if (s.value !== s.dataset.initial) corpReq[s.dataset.fel === "sal" ? "salariati" : "mijloace"][s.dataset.id] = valoareCentru(s.value);
+      if (s.value !== s.dataset.initial) corpReq[{ sal: "salariati", mf: "mijloace", art: "articole" }[s.dataset.fel]][s.dataset.id] = valoareCentru(s.value);
     });
-    const n = Object.keys(corpReq.salariati).length + Object.keys(corpReq.mijloace).length;
+    const n = Object.values(corpReq).reduce((t, g) => t + Object.keys(g).length, 0);
     if (!n) { arataMesaj(msg, "Nimic schimbat: alege centrul pe rândurile de mai sus, apoi salvează.", "avert"); return; }
     try {
       await api.put(`/tenants/${t.id}/centre-cost/alocari`, corpReq);
       corp.querySelectorAll("select.cc-aloc").forEach((s) => { s.dataset.initial = s.value; });
-      arataMesaj(msg, `Alocarea s-a salvat (${cate(n, "rând schimbat", "rânduri schimbate")}). Notele salariilor și amortizarea generate de acum poartă centrul.`, "ok");
+      arataMesaj(msg, `Alocarea s-a salvat (${cate(n, "rând schimbat", "rânduri schimbate")}). Notele salariilor, amortizarea și ieșirile din stoc generate de acum poartă centrul.`, "ok");
     } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Alocarea nu s-a salvat.", "eroare"); }
   });
 }

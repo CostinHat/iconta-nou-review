@@ -11,7 +11,7 @@ mijlocul fix din registru. Mutațiile care îl fac ROȘU: `mut_lot13_comp.json`.
 import pytest
 
 from conftest import firma_noua, sql
-from e2e_bloc_a import AZI, CLIENT, PRODUS, _api, _card, _deschide_emiterea, _ok, pregateste_firma
+from e2e_bloc_a import AZI, ARTICOL, CLIENT, PRODUS, _api, _card, _deschide_emiterea, _ok, articol_in_stoc, pregateste_firma
 
 _F = ".fereastra:last-of-type "
 CENTRU = "Producție E2E 536"
@@ -114,3 +114,34 @@ def test_def_536_centrul_pe_factura_salariat_si_mijloc_fix_ajunge_in_raport(patr
     rap = " ".join(pg.inner_text("#cc-raport-zona").split())
     patron.captura("raport")
     assert "%s cheltuieli 100,00 · venituri 150,00" % CENTRU in rap and "Nealocat" not in rap, rap
+
+
+def test_def_536_iesirea_din_stoc_mosteneste_centrul_articolului(patron, firma_comp):
+    """536 / NIR — decizia Costin, varianta (a): „centrul pe articol sau pe gestiune, ieșirea din stoc îl moștenește”. NIR-ul scrie numai
+    stoc / TVA / furnizor, deci centrul se vede la ieșire. Pașii contabilului: firma cu stocul la cost (Date firmă), marfa intrată în
+    fișa de magazie; Centre de cost -> centrul nou -> „Salariați, mijloace fixe, articole” -> articolul pe centru -> „Salvează alocarea”;
+    ieșirea din stoc (ruta din „Mișcări, fișe de magazie”) -> rândul 607 = 371 al notei poartă centrul articolului. Înainte: ieșirea ieșea
+    „nealocat”, iar centrul de pe NIR n-ar fi avut unde să apară."""
+    f, pg = firma_comp, patron.pg
+    s, tid = f["schema"], f["tenant_id"]
+    _ok(_api(patron, "POST", "/tenants/%d/firma-profil/date" % tid, {"metoda_stoc": "cantitativ_valoric"}), "metoda de stoc (Date firmă)")
+    aid = articol_in_stoc(patron, f)
+    patron.firma(f["nume"])
+    _card(patron, "centrecost", "#cc-nume")
+    pg.fill("#cc-nume", CENTRU)
+    pg.click("#cc-add")
+    pg.wait_for_selector(_F + ".pf-frand-nume:has-text('%s')" % CENTRU, timeout=20000)
+    (cid,) = sql('SELECT id FROM "%s".centre_cost WHERE nume = %%s' % s, (CENTRU,))[0]
+    pg.click("#cc-alocari")
+    pg.wait_for_selector("#cc-art-%d" % aid, timeout=20000)
+    assert ARTICOL in " ".join(pg.inner_text(_F + ".fereastra-corp").split())
+    pg.select_option("#cc-art-%d" % aid, str(cid))
+    pg.click("#cc-aloc-salveaza")
+    pg.wait_for_selector("#cc-aloc-mesaj:has-text('Alocarea s-a salvat')", timeout=20000)
+    patron.captura("articolul_pe_centru")
+    assert sql('SELECT centru_cost_id FROM "%s".articole WHERE id = %%s' % s, (aid,)) == [(cid,)]
+    r = _ok(_api(patron, "POST", "/tenants/%d/stocuri/iesire" % tid, {"articol_id": aid, "cantitate": 2, "data": AZI.isoformat(),
+                                                                      "document": "Bon de consum E2E 536"}), "ieșirea din stoc")
+    linii = sql('SELECT cont_debit, cont_credit, suma::text, centru_cost_id FROM "%s".inregistrari_linii WHERE inregistrare_id = %%s' % s,
+                (r["inregistrare_id"],))
+    assert linii == [("607", "371", "25.00", cid)], linii   # 2 × 12,50 (CMP-ul intrării), pe centrul articolului

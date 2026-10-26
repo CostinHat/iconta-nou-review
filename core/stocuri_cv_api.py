@@ -254,6 +254,15 @@ def document_iesire(cur, schema, document_scris, z_id):
     return str(document_scris or "").strip() or (_zd.document_z(cur, schema, z_id) if z_id else None)
 
 
+def scrie_rand_stoc(cur, schema, iid, debit, credit, suma, articol_id):
+    """Un rând al notei unei mișcări pe articol. [lotul 13, 536 / NIR, decizia Costin (a): „centrul pe articol sau pe gestiune, ieșirea din
+    stoc îl moștenește”] rândul de cheltuială / venit (607 = 371, minusul la inventar, returul) poartă centrul de cost al articolului
+    (`centre_cost_api.centrul_articolului`); rândurile de stoc / TVA nu."""
+    from core import centre_cost_api as _cc
+    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id)
+                    VALUES (%s,%s,%s,%s,%s)""", (iid, debit, credit, suma, _cc.centrul_articolului(cur, schema, articol_id, debit, credit)))
+
+
 def scrie_nota_iesire(cur, schema, a, data, cantitate, valoare, document):
     """Nota ciornă a unei ieșiri pe articol: `cont_cheltuiala = cont_stoc` cu valoarea la CMP, cu documentul ei (Registrul-jurnal, col.3)
     sau — fără document — cu bonul de consum generat odată cu nota. Întoarce id-ul notei.
@@ -268,9 +277,8 @@ def scrie_nota_iesire(cur, schema, a, data, cantitate, valoare, document):
         # [06.10.2026 §6.2] ieșirea fără document scris de om: bonul de consum, generat odată cu nota
         from core import documente_interne as _di
         _di.genereaza(cur, schema, "bon_consum", data, [iid])
-    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                    (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                (iid, a["cont_cheltuiala"], a["cont_stoc"], valoare))
+    # `a` = articolul (ieșirea) sau mișcarea cu articolul ei (refacerea ciornei din mișcare: `articol_id`)
+    scrie_rand_stoc(cur, schema, iid, a["cont_cheltuiala"], a["cont_stoc"], valoare, a.get("articol_id") or a.get("id"))
     return iid
 
 
@@ -387,8 +395,7 @@ def reface_nota_miscare(conn, schema, nota_id):
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
                             VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""", (p["data"], p["descriere"], document))
             nou = cur.fetchone()["id"]
-            cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
-                        (nou, m["cont_cheltuiala"], m["cont_stoc"], m["valoare"]))
+            scrie_rand_stoc(cur, schema, nou, m["cont_cheltuiala"], m["cont_stoc"], m["valoare"], m["articol_id"])
         doc_miscare = document if p["document"] != BON_CONSUM_GENERAT else m["document"]
         cur.execute(f"UPDATE {schema}.miscari_stoc SET inregistrare_id = %s, document = %s WHERE id = %s",
                     (nou, (doc_miscare or "")[:100] or None, m["id"]))
@@ -500,8 +507,7 @@ def retur_la_stornare(conn, schema, factura_id, storno_id, data, document):
                             VALUES (%s,%s,'stocuri','ciorna',%s) RETURNING id""",
                         (data, _descriere_retur(m["denumire"], cant, m["um"]), document))
             iid = cur.fetchone()["id"]
-            cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
-                        (iid, m["cont_cheltuiala"], m["cont_stoc"], -val))
+            scrie_rand_stoc(cur, schema, iid, m["cont_cheltuiala"], m["cont_stoc"], -val, m["articol_id"])   # [536] centrul articolului
             # [lotul 10, C73 / U2] o ieșire se stornează o singură dată (`miscari_stoc_anuleaza_uq`): două stornări simultane ale aceleiași
             # facturi treceau amândouă de verificarea „deja stornată” (`facturi_api.storneaza`), iar a doua cădea aici cu 500. Acum refuz
             # numit; excepția anulează toată stornarea a doua (use-case-ul o întoarce 422, în tranzacția care se derulează înapoi).
@@ -576,10 +582,8 @@ def inventar(conn, schema, corp):
             iid = cur.fetchone()["id"]
             note_inventar.append(iid)
             linii_nota = [(debit, credit, val)] + (_lipsa["linii"] if dif < 0 else [])
-            for _d_, _c_, _s_ in linii_nota:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                            (iid, _d_, _c_, _s_))
+            for _d_, _c_, _s_ in linii_nota:   # [536] plusul / minusul la inventar: rândul de cheltuială / venit cu centrul articolului
+                scrie_rand_stoc(cur, schema, iid, _d_, _c_, _s_, a["id"])
             cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                             (articol_id, data, tip, cantitate, pret_unitar, valoare, document, inregistrare_id)
                             VALUES (%s,%s,%s,%s,%s,%s,'inventar',%s)""",
@@ -933,9 +937,7 @@ def reclasificare(conn, schema, corp):
                 cur.execute(f"UPDATE {schema}.inregistrari SET document_ref=%s WHERE id=%s", (str(corp["document"]).strip(), iid))
             else:
                 _di.genereaza(cur, schema, "nota_calcul", corp["data"], [iid])
-            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                            (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                        (iid, cont_nou, a["cont_stoc"], val))
+            scrie_rand_stoc(cur, schema, iid, cont_nou, a["cont_stoc"], val, a["id"])   # stoc = stoc: fără centru (clasa 3)
         cur.execute(f"UPDATE {schema}.articole SET cont_stoc=%s, cont_cheltuiala=%s WHERE id=%s",
                     (cont_nou, chelt_nou, a["id"]))
     return {"articol_id": a["id"], "denumire": a["denumire"],

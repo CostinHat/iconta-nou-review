@@ -188,18 +188,20 @@ def descarca(conn, schema, corp):
                     (d, f"Consum reteta {ret['denumire']} x{corp['portii']}"[:200], doc_z))
         iid = cur.fetchone()["id"]
         pe_cont = {}
+        from core import centre_cost_api as _cc
         for l in linii_r:
             c = pe_art[l["articol_id"]]
-            cheie = (l["cont_cheltuiala"], l["cont_stoc"])
+            # [lotul 13, 536 / NIR, decizia Costin (a)] consumul fiecărui articol pe centrul lui: rândul notei se împarte pe centre
+            cheie = (l["cont_cheltuiala"], l["cont_stoc"], _cc.centrul_articolului(cur, schema, l["articol_id"], l["cont_cheltuiala"], l["cont_stoc"]))
             pe_cont[cheie] = pe_cont.get(cheie, Decimal("0")) + c["valoare"]
             cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                             (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, z_inregistrare_id)
                             VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s)""",
                         (l["articol_id"], d, c["cantitate"], c["valoare"], (doc_z or "reteta")[:100], iid, z_id))
-        for (deb, cred), suma in pe_cont.items():
+        for (deb, cred, centru), suma in pe_cont.items():
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                            (inregistrare_id, cont_debit, cont_credit, suma)
-                            VALUES (%s,%s,%s,%s)""", (iid, deb, cred, suma))
+                            (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id)
+                            VALUES (%s,%s,%s,%s,%s)""", (iid, deb, cred, suma, centru))
         # [06.10.2026, comanda Costin §6.2] consumul pe rețetă se justifică printr-un bon de consum (Legea 82/1991 art.6 alin.(1))
         if not doc_z:
             from core import documente_interne as _di

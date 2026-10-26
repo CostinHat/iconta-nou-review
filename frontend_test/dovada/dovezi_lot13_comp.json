@@ -38,7 +38,7 @@
     "zona": "#cc-raport-zona"
    },
    {
-    "contine": "Salariați și mijloace fixe"
+    "contine": "Salariați, mijloace fixe, articole"
    }
   ],
   "captura": "536_f2_raport_vechi_nealocat.png"
@@ -129,5 +129,64 @@
    }
   ],
   "captura": "536_f2_emite_factura_centrul_liniei.png"
+ },
+ {
+  "nr": "536",
+  "firma": "tenant_9049",
+  "descriere": "F1 (stoc la cost, articolele Marfa A … Cafea boabe): decizia Costin la 536 / NIR, varianta (a) — „centrul pe articol sau pe gestiune, ieșirea din stoc îl moștenește”. Centre de cost -> centrul nou «Vânzări magazin» -> «Salariați, mijloace fixe, articole» -> tabelul «Articole de stoc» -> Marfa A pe centrul nou -> «Salvează alocarea»: alocarea s-a salvat; ieșirile din stoc ale articolului (607 = 371) poartă de acum centrul lui (NIR-ul intră pe stoc, cheltuiala apare la ieșire).",
+  "pasi": [
+   {
+    "click": "#fa-centrecost"
+   },
+   {
+    "asteapta": "#cc-nume"
+   },
+   {
+    "completeaza": "#cc-nume",
+    "valoare": "Vânzări magazin"
+   },
+   {
+    "click": "#cc-add"
+   },
+   {
+    "asteapta_text": "Vânzări magazin"
+   },
+   {
+    "click": "#cc-alocari"
+   },
+   {
+    "asteapta": "#cc-art-1"
+   },
+   {
+    "alege": "#cc-art-1",
+    "valoare": "1"
+   },
+   {
+    "click": "#cc-aloc-salveaza"
+   },
+   {
+    "asteapta_text": "Alocarea s-a salvat"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Articole de stoc"
+   },
+   {
+    "contine": "Marfa A"
+   },
+   {
+    "contine": "Alocarea s-a salvat (1 rând schimbat)",
+    "zona": "#cc-aloc-mesaj"
+   },
+   {
+    "valoare": "#cc-art-1",
+    "egal": "1"
+   }
+  ],
+  "captura": "536_f1_articolul_pe_centru.png"
  }
 ]

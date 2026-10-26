@@ -3970,4 +3970,6 @@ CREATE TRIGGER trg_cui_fara_ro_l13 BEFORE INSERT OR UPDATE OF client_cui ON TENA
 ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
 ALTER TABLE TENANT_PLACEHOLDER.salariati ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
 ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
+-- [536 / NIR, decizia Costin (a)] centrul articolului de stoc: ieșirea din stoc îl moștenește
+ALTER TABLE TENANT_PLACEHOLDER.articole ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
 -- [centru_cost_surse_v1] sfârșit

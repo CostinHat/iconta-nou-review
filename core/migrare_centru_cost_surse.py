@@ -11,7 +11,10 @@ CE ADAUGĂ (oglindit în `tenant_template.sql`), coloane goale, cu cheia străin
   - `salariati.centru_cost_id` — centrul salariatului; nota statului de plată împarte cheltuielile cu personalul pe centre, după brutul
     fiecărui salariat (`salarii_contare.pe_centre`);
   - `mijloace_fixe.centru_cost_id` — centrul activului; rândurile de cheltuială ale notelor activului (amortizarea lunii, casarea,
-    reevaluarea) îl moștenesc (`mf_note.adauga_linie`).
+    reevaluarea) îl moștenesc (`mf_note.adauga_linie`);
+  - `articole.centru_cost_id` — [decizia Costin la 536 / NIR, varianta (a): „centrul pe articol sau pe gestiune, ieșirea din stoc îl
+    moștenește”] centrul articolului de stoc: NIR-ul scrie numai stoc / TVA / furnizor, deci centrul se vede la IEȘIRE — nota ieșirii
+    (607 = 371 la CMP, consumul pe rețetă, minusul la inventar, returul la stornare) îl preia (`stocuri_cv_api.scrie_rand_stoc`).
 
 DATELE EXISTENTE: neafectate. Coloanele pornesc goale — alocarea se face de acum (o notă deja scrisă rămâne cum e; un centru pus azi pe un
 salariat sau pe un activ se vede pe notele generate de acum încolo). Nicio notă contabilă nu se rescrie.
@@ -21,7 +24,7 @@ import sys
 
 from core import db
 
-_TABELE = ("factura_linii", "salariati", "mijloace_fixe")
+_TABELE = ("factura_linii", "salariati", "mijloace_fixe", "articole")
 
 _DDL = ['ALTER TABLE "{s}".%s ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES "{s}".centre_cost(id);' % t for t in _TABELE]
 
