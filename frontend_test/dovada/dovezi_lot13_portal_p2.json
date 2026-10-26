@@ -71,12 +71,12 @@
     "zona": ".fereastra:last-of-type #set-msg-chei"
    }
   ],
-  "captura": "564_copie_cheie_noua_copiaza_nefolosita.png"
+  "captura": "564_f1_copie_cheie_noua_copiaza_nefolosita.png"
  },
  {
   "nr": "564",
   "firma": "tenant_9049",
-  "descriere": "Administratorul cabinetului copiei: Setări cont -> Chei API -> „Generează cheie nouă” („Dovadă 564 revocare”) -> „Revocă” pe rândul ei (ultimul) -> confirmare „Revocă”: cheia completă dispare de pe ecran, rândul spune „revocată”, fără buton",
+  "descriere": "Administratorul cabinetului copiei: Setări cont -> Chei API -> „Generează cheie nouă” („Dovadă 564 revocare”) -> „Revocă” pe rândul ei (ultimul) -> confirmare „Revocă”: cheia completă dispare de pe ecran, rândul spune „revocată”, iar „Revocă” rămâne la locul lui, inactiv, cu motivul „Cheia e deja revocată.” (675)",
   "pasi": [
    {
     "click": ".fereastra:last-of-type .nav-x",
@@ -152,16 +152,16 @@
     "zona": ".fereastra:last-of-type #set-chei-lista .pf-frand:last-child"
    },
    {
-    "nu_contine": "Revocă",
-    "zona": ".fereastra:last-of-type #set-chei-lista .pf-frand:last-child"
+    "exista": ".fereastra:last-of-type #set-chei-lista .pf-frand:last-child button.set-cheie-revoca[aria-disabled='true'][title='Cheia e deja revocată.']",
+    "text": "Revocă"
    }
   ],
-  "captura": "564_copie_revocata_cheia_dispare.png"
+  "captura": "564_f1_copie_revocata_revoca_inactiv.png"
  },
  {
   "nr": "565",
   "firma": "tenant_9049",
-  "descriere": "Administratorul cabinetului copiei: Setări cont -> Notificări -> grupa „Cont și echipă”: „Sinteza zilei din cabinet”, cu rândul „Seara, la 19:00, în zilele lucrătoare: … Vine numai pe email.”, bifată din oficiu. Nu se salvează nimic",
+  "descriere": "Administratorul cabinetului copiei (contul de dinainte de reparație, cu bifele lui salvate pe producție — copiate de peticul l13_petice/portal_dovada_bife_notificari.json): Setări cont -> Notificări -> grupa „Cont și echipă”: „Sinteza zilei din cabinet”, cu rândul „Seara, la 19:00, în zilele lucrătoare: … Vine numai pe email.”, bifată (tipul nu exista la salvarea bifelor, deci vine bifat din oficiu). Nu se salvează nimic",
   "pasi": [
    {
     "click": ".fereastra:last-of-type .nav-x",
@@ -211,12 +211,12 @@
     "zona": ".fereastra:last-of-type #not-tipuri"
    }
   ],
-  "captura": "565_copie_sinteza_in_notificari.png"
+  "captura": "565_f1_vechi_sinteza_in_notificari.png"
  },
  {
   "nr": "566",
   "firma": "tenant_9049",
-  "descriere": "Administratorul cabinetului copiei: Setări cont -> Notificări -> grupa „Clienți”: „O solicitare nouă de la un client” bifată din oficiu (înainte: debifată). Nu se salvează nimic",
+  "descriere": "Administratorul cabinetului copiei (bifele salvate pe producție înainte de reparație, copiate de peticul l13_petice/portal_dovada_bife_notificari.json; copia rulează migrarea core/migrare_notificari_solicitare_client.py, ca la publicare): Setări cont -> Notificări -> grupa „Clienți”: „O solicitare nouă de la un client” bifată (înainte: debifată din oficiu, iar o salvare de atunci o păstra debifată). Nu se salvează nimic",
   "pasi": [
    {
     "click": ".fereastra:last-of-type .nav-x",
@@ -262,7 +262,7 @@
     "zona": ".fereastra:last-of-type #not-tipuri"
    }
   ],
-  "captura": "566_copie_solicitare_client_bifata.png"
+  "captura": "566_f1_vechi_solicitare_client_bifata.png"
  },
  {
   "nr": "568",
@@ -303,6 +303,6 @@
     "zona": ".fereastra:last-of-type .sa-cifra[data-ecran='validat']"
    }
   ],
-  "captura": "568_copie_vechi_de_validat_coada_intreaga.png"
+  "captura": "568_f1_vechi_de_validat_coada_intreaga.png"
  }
 ]

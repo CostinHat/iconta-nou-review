@@ -335,5 +335,59 @@
    }
   ],
   "captura": "555_f2_previzualizare_inactiva_cu_motiv.png"
+ },
+ {
+  "nr": "560",
+  "firma": "tenant_9049",
+  "descriere": "F1 copie: contabilul -> „Acces client” -> „Invită client nou” -> adresa dovada.560.client@sesiuneab.test -> „Trimite invitația” (o invitație NOUĂ; pe copie emailul ajunge în cutia de test, nu pleacă) -> clientul, într-un browser fără sesiunea cabinetului, are deschisă pagina iConta.eu (formularul de intrare) și deschide în aceeași filă linkul „Intră în portal” din email, o singură dată: intră în cont („Înainte de a începe”, prima intrare a clientului), nu rămâne pe formularul de autentificare. Copia trebuie re-clonată înainte de o a doua rulare (contul clientului rămâne pe copie)",
+  "pasi": [
+   {
+    "click": "#fa-acces"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ac-btn-invita"
+   },
+   {
+    "click": ".fereastra:last-of-type #ac-btn-invita"
+   },
+   {
+    "asteapta": "#ac-email"
+   },
+   {
+    "completeaza": "#ac-email",
+    "valoare": "dovada.560.client@sesiuneab.test"
+   },
+   {
+    "click": "#ac-btn"
+   },
+   {
+    "asteapta_text": "dovada.560.client@sesiuneab.test"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "link_email": "dovada.560.client@sesiuneab.test",
+    "subiect": "Acces portal",
+    "cauta": "#magic=",
+    "fila_deschisa": true
+   },
+   {
+    "asteapta": "#prima-intrare"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#prima-intrare"
+   },
+   {
+    "contine": "Înainte de a începe",
+    "zona": "body"
+   }
+  ],
+  "captura": "560_f1_link_invitatie_intra_in_cont.png"
  }
 ]
