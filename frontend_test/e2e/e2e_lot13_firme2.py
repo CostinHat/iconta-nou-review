@@ -27,7 +27,7 @@ import time
 
 import pytest
 
-from conftest import cui_cu_control, firma_noua, linie_nota, sql
+from conftest import cui_cu_control, firma_noua, linie_nota, sql, zile_de_acum
 from e2e_bloc_a import _api, _card, _ok, pregateste_firma
 
 AZI = _dt.date.today()
@@ -196,7 +196,8 @@ def test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare(patron
     desc = "E2E 602 consumabile %d" % _tag()
     pg.click("#j-nota-noua")
     pg.wait_for_selector(_F + "#je-data", timeout=20000)
-    assert pg.input_value(_F + "#je-data") == AZI.isoformat()   # AZI-dat-de-test: data faptului, ziua în care scrie contabilul
+    # data notei noi o pune aplicația ACUM (ziua în care scrie contabilul), deci se compară cu ziua de la import SAU cea de acum
+    assert pg.input_value(_F + "#je-data") in [d.isoformat() for d in zile_de_acum(AZI)], pg.input_value(_F + "#je-data")
     patron.captura("nota_noua")
     pg.fill(_F + "#je-desc", desc)
     pg.fill(_F + "#je-doc", "PV E2E 602")
@@ -209,7 +210,8 @@ def test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare(patron
     (nid,) = [r[0] for r in sql('SELECT id FROM "%s".inregistrari WHERE descriere = %%s' % f["schema"], (desc,))]
     pg.wait_for_selector("tbody.tn-nota.val-evidentiat[data-nota-id='%d']" % nid, timeout=20000)
     patron.captura("dupa_salvare")
-    assert _txt(pg, "#j-mesaj").startswith("Ai salvat nota din %s („%s”)" % (AZI.strftime("%d.%m.%Y"), desc)), _txt(pg, "#j-mesaj")
+    assert any(_txt(pg, "#j-mesaj").startswith("Ai salvat nota din %s („%s”)" % (d.strftime("%d.%m.%Y"), desc))
+               for d in zile_de_acum(AZI)), _txt(pg, "#j-mesaj")
     assert "nederivat" not in patron.fereastra()
 
 
@@ -286,7 +288,7 @@ def test_def_618_explicatia_notei_z_are_data_romaneasca(patron, firma):
     pg.wait_for_timeout(500)
     patron.captura("explicatia_notei_z")
     assert asteptat in _txt(pg, ".fereastra:last-of-type"), _txt(pg, ".fereastra:last-of-type")[:600]
-    assert "Raport Z %s" % AZI.isoformat() not in _txt(pg, ".fereastra:last-of-type")
+    assert "Raport Z %s" % AZI.isoformat() not in _txt(pg, ".fereastra:last-of-type")   # AZI-dat-de-test: data Z-ului o scrie testul (`_z_generat`)
 
 # ── 612 + 606 (Inventar) ─────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_612_606_inventarul_in_fereastra_lui_cu_randul_lipsei_sub_articol(patron, firma):
