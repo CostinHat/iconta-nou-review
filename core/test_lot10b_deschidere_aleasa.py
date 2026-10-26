@@ -163,7 +163,7 @@ MOUNT = """async ([modUrl]) => {
   const m = await import(modUrl);
   document.body.innerHTML = '<div id="mount"></div>';
   // [lotul 13, 673] navigatorul de probă desenează ferestrele deschise (fereastra salariatului, fereastra „Salariu”) una peste alta
-  const nav = { deschide(titlu, f) { const d = document.createElement('div'); d.className = 'fer-proba'; document.body.appendChild(d); f(d, nav); },
+  const nav = { deschide(titlu, f) { const d = document.createElement('div'); d.className = 'fer-proba'; d.dataset.titlu = titlu; document.body.appendChild(d); f(d, nav); },
                 inapoi() { const f = [...document.querySelectorAll('.fer-proba')].pop(); if (f) f.remove(); }, inapoiPas(){}, mergi(){}, setInapoi(){} };
   await m.ecranSalariati(document.getElementById('mount'), nav, { id: 1 });
   return true;
@@ -231,4 +231,6 @@ def test_formularul_cor_ales_vine_cu_codul_salariatului(pagina):
     # „deși Ionescu are COR”: deschis cu „COR ✓”, formularul arată codul lui, nu un câmp gol
     assert pg.input_value("#cor-edit-cor") == COR and pg.input_value("#cor-edit-cor-cauta").startswith(COR)
     # formularul e al salariatului ales (titlul ferestrei lui)
-    assert pg.locator(".fer-proba h2", has_text="Ocupație COR").last.inner_text().strip() == "Ocupație COR · IONESCU VASILE"
+    # [lotul 13, ENTITATE_IN_TITLU] <h2> e fix; salariatul e numit în titlul ferestrei (`nav.deschide`: antetul și eticheta ei)
+    fer = pg.locator(".fer-proba", has=pg.locator("h2", has_text="Ocupație COR")).last
+    assert fer.locator("h2").inner_text().strip() == "Ocupație COR" and fer.get_attribute("data-titlu") == "Ocupație COR · IONESCU VASILE"

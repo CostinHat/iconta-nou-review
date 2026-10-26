@@ -38,7 +38,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
   // sal = { id, nume } (salariatul selectat)
   const numeSal = [sal.prenume, sal.nume].filter(Boolean).join(" ") || "salariat fără nume";   // [258] nu id-ul intern
   // [lotul 13, 673] fereastră nouă, centrată, cât ecranul (nu un pas în fereastra salariatului); certificatul nou are fereastra lui
-  nav.deschide("Concediu medical \u2014 " + numeSal, (corp) => randeaza(corp), { lat: "tabel" });
+  nav.deschide("Concediu medical · " + numeSal, (corp) => randeaza(corp), { lat: "tabel" });
   let rezultatSalvat = "";   // rezultatul ultimului certificat salvat, arătat deasupra listei la întoarcerea în ea (DS cap.27)
 
   async function randeaza(corp) {
@@ -70,7 +70,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     rezultatSalvat = "";
 
     corp.querySelector("#cm-nou").addEventListener("click", () => {
-      nav.deschide("Certificat nou \u2014 " + numeSal, (c2) => deschideFormular(c2), { lat: "tabel" });
+      nav.deschide("Certificat nou · " + numeSal, (c2) => deschideFormular(c2), { lat: "tabel" });
     });
 
     corp.querySelectorAll("[data-sterge]").forEach((b) => b.addEventListener("click", () => {

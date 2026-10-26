@@ -325,7 +325,7 @@ def test_salariatii_partial_si_de_verificat_pana_la_confirmare(patron, firma_imp
     patron.captura("confirmat")
     assert sql('SELECT persoane_intretinere, scutit_contrib_minim, de_verificat FROM "%s".salariati WHERE id = %%s' % sch, (pid,)) == \
         [(1, False, [])]
-    assert pg.locator("[data-verif='%s']" % pid).is_disabled()   # [675] butonul rămâne, inactiv: nimic de verificat
+    assert pg.locator("[data-verif='%s']" % pid).get_attribute("aria-disabled") == "true"   # [675] butonul rămâne, inactiv: nimic de verificat
     _pas(patron, firma_import, "Salaria")
     _incarca(patron, "salariati_fara_scutire.csv", _cp1250(SALARIATI_FARA_SCUTIRE), "#mig-salveaza-sal")
     pg.click("#mig-salveaza-sal")

@@ -75,16 +75,22 @@ def test_CALIBRARE_grupul_necerut_e_prins():
 
 
 def test_sumele_scrise_romaneste():
-    """[655] `sumaRo` (sal_alegeri.js): „1.000” = o mie; „1.000,50”; „12,5”; „2000.41” (punct + 1–2 cifre = zecimal); ce nu se poate
-    citi fără ghicit -> NaN. Pe textul funcției, rulat în Node (aceeași funcție pe care o folosesc ferestrele)."""
+    """[655] `sumaRo` (sal_alegeri.js) citește suma cu regula unică a aplicației, `numarRo` din api.js (DS cap.6 „Numerele scrise de om”,
+    oglinda `core/numere.numar_ro`), și o adaptează ferestrelor salarizării: gol -> null, refuzat -> NaN, altfel numărul. „1.000” = o mie;
+    „1.000,50”; „12,5”; „2000.41” (punct + zecimale = zecimal); ce nu se poate citi fără ghicit -> NaN. Rulat în Node pe textul funcțiilor
+    (aceleași pe care le folosesc ferestrele). MUTAȚIE: un parsator local în loc de `numarRo` -> garda de mai jos pică."""
     import json
     import subprocess
     import tempfile
     src = io.open(os.path.join(RAD, "static/js/ecrane/sal_alegeri.js"), encoding="utf-8").read()
     corp = src[src.index("export function sumaRo"):]
     corp = corp[:corp.index("\n}\n") + 3].replace("export function", "function")
-    cazuri = ["1.000", "1.500", "1.000,50", "12,5", "2000.41", "1000", "1.000.000", "", "1.00.0", "1,000.5", "abc", " 4 325 "]
-    js = corp + "\nconsole.log(JSON.stringify(%s.map((t) => { const v = sumaRo(t); return v === null ? null : (Number.isNaN(v) ? 'NaN' : v); })));" \
+    assert "numarRo(" in corp and ".replace(" not in corp, "sumaRo trebuie să citească prin `numarRo` (api.js), nu cu un parsator local"
+    api = io.open(os.path.join(RAD, "static/js/api.js"), encoding="utf-8").read()
+    regula = api[api.index("export const MESAJ_NUMAR_RO"):]
+    regula = regula[:regula.index("\n}\n", regula.index("export function numarRo")) + 3].replace("export ", "")
+    cazuri = ["1.000", "1.500", "1.000,50", "12,5", "2000.41", "1000", "1.000.000", "", "1.00.0", "abc", " 4 325 "]
+    js = regula + "\n" + corp + "\nconsole.log(JSON.stringify(%s.map((t) => { const v = sumaRo(t); return v === null ? null : (Number.isNaN(v) ? 'NaN' : v); })));" \
         % json.dumps(cazuri)
     with tempfile.NamedTemporaryFile("w", suffix=".mjs", delete=False, encoding="utf-8") as f:
         f.write(js)
@@ -92,4 +98,4 @@ def test_sumele_scrise_romaneste():
         out = json.loads(subprocess.run(["node", f.name], capture_output=True, text=True, check=True).stdout)
     finally:
         os.unlink(f.name)
-    assert out == [1000, 1500, 1000.5, 12.5, 2000.41, 1000, 1000000, None, "NaN", "NaN", "NaN", 4325], out
+    assert out == [1000, 1500, 1000.5, 12.5, 2000.41, 1000, 1000000, None, "NaN", "NaN", 4325], out

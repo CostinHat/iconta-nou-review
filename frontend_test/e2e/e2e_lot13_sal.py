@@ -198,7 +198,8 @@ def test_def_675_acelasi_set_de_butoane_si_fereastra_noua_pentru_fiecare_actiune
         deschide_salariat(patron, nume)
         seturi.append(pg.eval_on_selector_all(_F + "#ss-butoane button", "bs => bs.map(b => b.textContent.replace(/[✓⚠]/g, '').trim())"))
         verif = pg.locator(_F + "#ss-butoane [data-verif]")
-        assert verif.is_disabled() and verif.get_attribute("title"), verif.get_attribute("title")
+        # [675] inactiv cu motivul (`atributeInactiv`, DS cap.1): rămâne focusabil, motivul la trecerea cu mouse-ul
+        assert verif.get_attribute("aria-disabled") == "true" and verif.get_attribute("title"), verif.get_attribute("title")
         inchide(patron)
     assert seturi[0] == seturi[1] and seturi[0][6:11] == ["+ masă", "+ vacanță", "+ cadou", "+ cultural", "+ creșă"], seturi
     deschide_salariat(patron, "Popescu")
