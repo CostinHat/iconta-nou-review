@@ -427,6 +427,10 @@ def semnale_randuri(randuri):
 ORE_NORMA_INTREAGA = _c.ancoreaza("salariati_import_api.ORE_NORMA_INTREAGA", 8, _c.Temei(
     "Legea", 53, 2003, art="112", alin="1", data_in="2003-03-01", nivel_sursa="MO", verificat_la="2026-10-26", de_cine="Code",
     url="anaf_surse/legea_53_2003_codul_muncii.txt",
+    # data_in: art.281 alin.(1) din aceeași sursă, verificat: „Prezentul cod intră în vigoare la data de 1 martie 2003.” LIMITĂ: sursa e forma
+    # consolidată (republicată, Legea 40/2011 art.V, cu „o nouă numerotare”); textul art.112 alin.(1) e verificat în ea, forma lui din 2003
+    # (altă numerotare) nu e în anaf_surse. Pentru importurile de azi data nu schimbă valoarea (8 ore, în vigoare și acum).
+    lant_acte="Legea 53/2003 art.281 alin.(1): intră în vigoare la 01.03.2003; republicată în temeiul Legii 40/2011 art.V (nouă numerotare)",
     text_citat=("Pentru salariații angajați cu normă întreagă durata normală a timpului de muncă este de 8 ore pe zi și de 40 de ore pe "
                 "săptămână.")))
 
