@@ -187,8 +187,10 @@ def test_def_c165_nota_validata_direct_nu_e_aratata_ciorna(patron, firma_c165):
     pg = patron.pg
     _stat_luna(patron, firma_c165, luni_inapoi=1)
     pg.click(_F + "#sp-contare")
-    pg.wait_for_function("() => { const z = document.querySelector(%r); return z && !z.innerText.includes('Se calculează') "
-                         "&& z.innerText.trim() !== ''; }" % (_F + "#sp-contare-zona"), timeout=30000)
+    from e2e_lot13_sal_ajutor import contare_deschisa
+    contare_deschisa(patron)   # [lotul 13] fereastra contabilizării (statul are și el `#sp-contare-zona`: starea notei)
+    pg.wait_for_function("() => { const z = document.querySelector(%r); return z && z.innerText.trim() !== ''; }" % (_F + "#sp-contare-zona"),
+                         timeout=30000)
     zona = pg.inner_text(_F + "#sp-contare-zona")
     patron.captura("nota_validata")
     assert "e validată." in zona, zona

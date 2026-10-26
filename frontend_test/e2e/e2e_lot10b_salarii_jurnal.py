@@ -27,7 +27,7 @@ def test_def_433_dupa_contabilizarea_statului_nu_se_deschide_formularul_cor(patr
     Pașii: Salariați -> „+ vacanță” la IONESCU VASILE -> 100 -> „Renunță” -> „Adeverință” -> „←” -> „Contabilizează statul”: sub stat
     apare propunerea notei, iar formularul „Ocupație COR” NU e deschis -> „COR ✓”: formularul se deschide cu ocupația lui (241107)."""
     # [lotul 13, 673 / 677] fiecare acțiune a salariatului are fereastra ei, deschisă din fereastra salariatului
-    from e2e_lot13_sal_ajutor import buton, deschide_salariat, inchide
+    from e2e_lot13_sal_ajutor import buton, contare_deschisa, deschide_salariat, inchide
     pg = _stat(patron, firma_cv)
     deschide_salariat(patron, _RAND)
     buton(patron, "vac")
@@ -41,8 +41,7 @@ def test_def_433_dupa_contabilizarea_statului_nu_se_deschide_formularul_cor(patr
     inchide(patron)
     pg.wait_for_selector("#sp-contare", timeout=20000)
     pg.click("#sp-contare")
-    pg.wait_for_function("() => { const z = document.querySelector('#sp-contare-zona'); return z && !z.innerText.includes('Se calculează'); }",
-                         timeout=30000)
+    contare_deschisa(patron)   # [lotul 13] fereastra contabilizării, deschisă după răspunsul propunerii
     patron.captura("dupa_contabilizare")
     assert pg.locator("#cor-edit-cor").count() == 0   # „Nimic nu se deschide fără să fie ales.”
     assert pg.locator("text=Ocupație COR ·").count() == 0

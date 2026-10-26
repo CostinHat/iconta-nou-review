@@ -47,6 +47,13 @@ def text_compozitie(ecran):
     return ecran.pg.inner_text(_F + "#ss-compozitie")
 
 
+def contare_deschisa(ecran):
+    """„Contabilizează statul” deschide fereastra contabilizării DUPĂ ce propunerea vine de la server (lotul 13, 673): se așteaptă
+    fereastra ei (titlul), nu `#sp-contare-zona` — statul are și el o zonă cu același id (starea notei), deci o așteptare pe zonă
+    trece înaintea ferestrei, iar pasul următor lucrează pe stat."""
+    ecran.pg.wait_for_selector(_F + "h2.pf-titlu:has-text('Contabilizarea statului')", timeout=30000)
+
+
 def inchide(ecran):
     """X-ul ferestrei de sus nu e „înapoi”: săgeata întoarce la fereastra de dedesubt (salariatul, statul)."""
     ecran.pg.click(_F + ".nav-inapoi")
