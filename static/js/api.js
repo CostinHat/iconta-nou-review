@@ -552,6 +552,9 @@ export function eroareCamp(root, idCamp, txt) {
   // nume fără câmp pe ecran cade la zona generică, nu aruncă
   const inp = idCamp ? (root || document).querySelector("#" + CSS.escape(String(idCamp))) : null;
   if (!inp) return false;
+  // [lotul 13, 655] un număr scris greșit („1.5o0”): orice ar spune ecranul despre valoare („Suma trebuie să fie mai mare ca 0.”) presupune
+  // un număr citit; cauza e scrierea, iar omul află cum se scrie (plasa lotului 13: Casă spunea „Suma trebuie …” peste „Scrie numărul …”)
+  if (numarScrisGresit(inp)) txt = MESAJ_NUMAR_RO;
   // [fieldmark 18.08.2026] marcaj VIZUAL pe campul vinovat (contur rosu + aria-invalid), nu doar mesaj
   // ancorat: la un formular lung, mesajul rosu nu spune singur CARE input e problema. Regula 14 pct.4.
   inp.classList.add("camp-invalid");

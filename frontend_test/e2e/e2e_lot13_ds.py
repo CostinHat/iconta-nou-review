@@ -35,7 +35,10 @@ def test_def_655_suma_cu_punct_de_mii_in_casa(patron, firma_e2e):
     pg.select_option(_F + "#c-cat", "ridicare_banca")
     pg.fill(_F + "#c-suma", "1.500")
     pg.fill(_F + "#c-doc", "RB 655")
-    assert pg.input_value(_F + "#c-suma") == "1500"                       # ce citește ecranul: o mie cinci sute
+    # ce citește ECRANUL (lumea paginii, unde stă mecanismul din api.js): o mie cinci sute; `input_value` al Playwright citește din lumea
+    # lui izolată textul scris de om („1.500”), care rămâne cum l-a scris
+    assert pg.eval_on_selector(_F + "#c-suma", "e => e.value") == "1500"
+    assert pg.input_value(_F + "#c-suma") == "1.500"
     assert pg.evaluate("() => document.querySelector('.fereastra:last-of-type #c-suma').getAttribute('inputmode')") == "decimal"
     patron.captura("casa_inainte_de_adauga")
     pg.click(_F + "#c-adauga")
@@ -58,8 +61,7 @@ def test_def_655_textul_care_nu_e_numar_nu_se_salveaza(patron, firma_e2e):
     pg.click(_F + "#c-adauga")
     pg.wait_for_selector(_F + '.msg-eroare[data-camp="c-suma"]', timeout=10000)
     patron.captura("casa_refuz_format")
-    assert pg.inner_text(_F + '.msg-eroare[data-camp="c-suma"]').strip() in (MESAJ_NUMAR_RO, "Suma trebuie să fie un număr mai mare ca 0."), \
-        pg.inner_text(_F + '.msg-eroare[data-camp="c-suma"]')
+    assert pg.inner_text(_F + '.msg-eroare[data-camp="c-suma"]').strip() == MESAJ_NUMAR_RO, pg.inner_text(_F + '.msg-eroare[data-camp="c-suma"]')
     assert MESAJ_NUMAR_RO in patron.fereastra()
     assert pg.locator(_F + ".refuz-salvare").count() == 1
     assert sql('SELECT count(*) FROM "%s".casa_operatiuni WHERE document = %%s' % firma_e2e["schema"], ("RB 655 rau",)) == [(0,)]

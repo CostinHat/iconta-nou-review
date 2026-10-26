@@ -2,7 +2,7 @@
  {
   "nr": "655",
   "firma": "tenant_9057",
-  "descriere": "F7 (instanța din 25.10): Casă -> «+ Dispoziție nouă» -> Încasare client, CUI-ul clientului Alfa Test SRL, Suma «1.500» (cum scrie contabilul o mie cinci sute). Câmpul citește 1500 (nu 1,5), iar previzualizarea vorbește de 1.500,00 lei, nu de «1,50 lei depășesc facturile deschise ale clientului». Nu se apasă «Adaugă»: nimic scris (datele F7 rămân pentru retestul lui Costin, comanda 13.1 pct.8).",
+  "descriere": "F7 (instanța din 25.10): Casă -> «+ Dispoziție nouă» -> Încasare client, CUI-ul clientului Alfa Test SRL, Suma «1.500» (cum scrie contabilul o mie cinci sute). Câmpul păstrează textul scris («1.500»), iar previzualizarea (care citește numărul prin mecanism) vorbește de 1.500,00 lei, nu de «1,50 lei depășesc facturile deschise ale clientului». Nu se apasă «Adaugă»: nimic scris (datele F7 rămân pentru retestul lui Costin, comanda 13.1 pct.8).",
   "pasi": [
    {
     "click": "#fa-casa"
@@ -38,7 +38,7 @@
   "verifica": [
    {
     "valoare": ".fereastra:last-of-type #c-suma",
-    "egal": "1500"
+    "egal": "1.500"
    },
    {
     "contine": "1.500,00"
@@ -110,7 +110,7 @@
  {
   "nr": "655",
   "firma": "tenant_9053",
-  "descriere": "F5, date existente (capitalul social scris înainte de reparație, 200.00 în bază): Date firmă -> «Capital subscris» se arată «200,00» și se citește 200 (nu 20.000, cum ar fi dat punctul citit ca mii). Numai citire.",
+  "descriere": "F5, date existente (capitalul social scris înainte de reparație, 200.00 în bază): Date firmă -> «Capital subscris» se arată «200,00» (forma românească a valorii salvate 200.00) și se citește 200 (nu 20.000, cum ar fi dat punctul citit ca mii). Numai citire.",
   "pasi": [
    {
     "click": "#fa-datefirma"
@@ -125,7 +125,7 @@
   "verifica": [
    {
     "valoare": "#df-capital_subscris",
-    "egal": "200.00"
+    "egal": "200,00"
    }
   ],
   "captura": "655_f5_vechi_capital_subscris.png"

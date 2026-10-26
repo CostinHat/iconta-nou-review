@@ -170,3 +170,19 @@ def test_textul_care_nu_e_numar_nu_pleaca_la_server(pg):
     })""")
     assert r2["trimise"] == 0, r2
     assert r2["refuz"] and "„Suma”" in r2["refuz"] and MESAJ_NUMAR_RO in r2["refuz"] and r2["campuri"] == ["s"], r2
+
+
+def test_refuzul_ecranului_pe_un_numar_scris_gresit_spune_formatul(pg):
+    """655 (plasa lotului 13, Casă în fereastra ei): handlerul ecranului citește suma goală și pune „Suma trebuie să fie un număr mai mare ca
+    0.” peste marcajul de format. Cauza reală e scrierea: `eroareCamp` pe un câmp numeric scris greșit spune formatul, orice text i-ar da
+    ecranul. MUTAȚIE: rândul `if (numarScrisGresit(inp)) txt = MESAJ_NUMAR_RO;` scos din `eroareCamp` -> pică."""
+    pg.evaluate(_FORMULAR)
+    pg.fill("#s", "1.5o0")
+    r = pg.evaluate("""() => { const c = document.querySelector('.fereastra-corp');
+      A.eroareCamp(c, 's', 'Suma trebuie să fie un număr mai mare ca 0.');
+      return document.querySelector('.msg-eroare[data-camp="s"]').textContent; }""")
+    assert r == MESAJ_NUMAR_RO, r
+    pg.fill("#s", "0")
+    r2 = pg.evaluate("""() => { A.eroareCamp(document.querySelector('.fereastra-corp'), 's', 'Suma trebuie să fie un număr mai mare ca 0.');
+      return document.querySelector('.msg-eroare[data-camp="s"]').textContent; }""")
+    assert r2 == "Suma trebuie să fie un număr mai mare ca 0.", r2        # un număr corect primește mesajul ecranului
