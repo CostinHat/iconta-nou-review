@@ -166,8 +166,8 @@ def test_def_232_inainte_de_preluare_si_restantele_spun_aceeasi_luna(patron, fir
     MUTAȚIA din plasă: antetul înapoi pe luna preluării -> ROȘU."""
     _control_firma(patron, firma_preluata_08)
     g = _grupuri_control(patron)
-    patron.pg.click(".fereastra:last-of-type details.cf-inainte summary")
-    expl = patron.pg.inner_text(".fereastra:last-of-type details.cf-inainte .cf-incr-temei")
+    patron.pg.click(".fereastra:last-of-type .cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
+    expl = patron.pg.inner_text(".fereastra:last-of-type .cf-inainte .cf-incr-temei")
     patron.captura()
     inainte = next((v for k, v in g.items() if k.startswith("Înainte de preluare în iConta.eu — până la 07/2026")), None)
     restante = [r for k, v in g.items() if k.startswith("Restanțe") for r in v]

@@ -1010,7 +1010,7 @@ def test_def_159_marcarea_nu_muta_ecranul_de_pe_rand(patron, preluata_07):
     data, „Salvează”: rândul rămâne unde era -> „Anulează marcarea”, confirmă: la fel."""
     pg = patron.pg
     _control(patron, preluata_07)
-    pg.click("details.cf-inainte > summary")
+    pg.click(".cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
     rand = ".fereastra:last-of-type [data-cheie='d100-2025-12']"
     pg.wait_for_selector(rand + " .cf-extern-btn", timeout=30000)
     pg.eval_on_selector(rand + " .cf-extern-btn", "e => e.scrollIntoView({block: 'end'})")
@@ -1059,11 +1059,11 @@ def test_def_157_d100_d205_2025_sunt_inainte_de_preluare(patron, preluata_07):
     neclar = pg.evaluate("() => { const t = [...document.querySelectorAll('.cf-grup-titlu')].find((x) => x.textContent.trim().startsWith('Nu se poate verifica'));"
                          " return t ? t.nextElementSibling.innerText : ''; }")
     assert not _re.search(r"D100[\s\S]{0,40}2025|D205[\s\S]{0,40}2025", neclar), neclar
-    pg.click("details.cf-inainte > summary")
-    rand = lambda tip, per: pg.locator("details.cf-inainte .cf-decl-item", has=pg.locator(".mig-sold-cont", has_text=tip)).filter(
+    pg.click(".cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
+    rand = lambda tip, per: pg.locator(".fereastra:last-of-type .cf-inainte .cf-decl-item", has=pg.locator(".mig-sold-cont", has_text=tip)).filter(
         has=pg.locator(".cf-perioada", has_text=per))
     for tip, per in (("D100", "T1/2025"), ("D100", "T4/2025"), ("D205", "2025")):
-        assert rand(tip, per).count() >= 1, (tip, per, pg.inner_text("details.cf-inainte"))
+        assert rand(tip, per).count() >= 1, (tip, per, pg.inner_text(".fereastra:last-of-type .cf-inainte"))
         assert "termen " in rand(tip, per).first.inner_text()
     rand("D205", "2025").first.scroll_into_view_if_needed()
     patron.captura("d100_d205_2025_inainte_de_preluare")
@@ -1075,18 +1075,19 @@ def test_def_158_grupul_inainte_de_preluare_pliat_cu_marcheaza_toate(patron, pre
     toate ca depuse de contabilul anterior” -> o apasă și confirmă -> rândurile devin „Depusă de contabilul anterior”."""
     pg = patron.pg
     _control(patron, preluata_07)
-    grup = pg.locator("details.cf-inainte")
-    assert grup.count() == 1 and not grup.evaluate("(d) => d.open"), "grupul nu e pliat"
-    assert not pg.locator("details.cf-inainte .cf-extern-btn").first.is_visible()
+    # [lotul 13, 674 — comanda 13.1 supersedează forma „pliat” (DECIZII)] grupul nu stă desfăcut din oficiu: pe ecran sunt titlul și
+    # butonul lui; declarațiile și „Marchează toate” sunt în fereastra deschisă de buton
+    assert pg.locator(".cf-inainte-btn").count() == 1, "lipsește butonul grupului"
+    assert pg.locator(".fereastra .cf-inainte").count() == 0, "grupul e desfăcut din oficiu"
     patron.captura("pliat")
-    pg.click("details.cf-inainte > summary")
-    b = pg.locator("details.cf-inainte .cf-anterior-toate")
+    pg.click(".cf-inainte-btn")
+    b = pg.locator(".fereastra:last-of-type .cf-inainte .cf-anterior-toate")
     assert b.is_visible() and b.inner_text() == "Marchează toate ca depuse de contabilul anterior"
     n = len(_json.loads(b.get_attribute("data-perioade")))
     assert n >= 2
     b.click()
     pg.click("#ca-ok")
-    pg.wait_for_function("() => (document.querySelector('details.cf-inainte') || {}).innerText?.includes('Depusă de contabilul anterior')",
+    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type .cf-inainte') || {}).innerText?.includes('Depusă de contabilul anterior')",
                          timeout=60000)
     marcate = sql("SELECT count(*) FROM public.declaratii_depuse WHERE tenant_id = %s AND sursa = 'contabil_anterior'",
                   (preluata_07["tenant_id"],))[0][0]
@@ -1095,10 +1096,10 @@ def test_def_158_grupul_inainte_de_preluare_pliat_cu_marcheaza_toate(patron, pre
 
 
 def _marcheaza(pg, cheie):
-    pg.wait_for_selector("details.cf-inainte .cf-decl-item", timeout=30000)
-    chei = pg.evaluate("() => [...document.querySelectorAll('details.cf-inainte .cf-decl-item')].map((e) => e.dataset.cheie)")
+    pg.wait_for_selector(".fereastra:last-of-type .cf-inainte .cf-decl-item", timeout=30000)
+    chei = pg.evaluate("() => [...document.querySelectorAll('.fereastra:last-of-type .cf-inainte .cf-decl-item')].map((e) => e.dataset.cheie)")
     assert cheie in chei, chei
-    item = pg.locator("details.cf-inainte .cf-decl-item[data-cheie='%s']" % cheie)
+    item = pg.locator(".fereastra:last-of-type .cf-inainte .cf-decl-item[data-cheie='%s']" % cheie)
     item.scroll_into_view_if_needed()
     return item
 
@@ -1111,9 +1112,9 @@ def test_def_212_inainte_de_preluare_o_explicatie_si_perioadele_impreuna(patron,
     sunt în grupul acesta, nu la „Nu se poate verifica”."""
     pg = patron.pg
     _control(patron, preluata_07_fara_activitate)
-    pg.click("details.cf-inainte > summary")
-    pg.wait_for_selector("details.cf-inainte .cf-decl-item", timeout=30000)
-    g = pg.evaluate("""() => { const d = document.querySelector('details.cf-inainte');
+    pg.click(".cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
+    pg.wait_for_selector(".fereastra:last-of-type .cf-inainte .cf-decl-item", timeout=30000)
+    g = pg.evaluate("""() => { const d = document.querySelector('.fereastra:last-of-type .cf-inainte');
       return {explicatii: [...d.querySelectorAll(':scope > .cf-incr-temei')].map(e => e.innerText),
               randuri: [...d.querySelectorAll('.cf-decl-item')].map(e => ({cheie: e.dataset.cheie, text: e.innerText}))}; }""")
     patron.captura("inainte")
@@ -1129,13 +1130,13 @@ def test_def_213_confirmarea_anularii_spune_perioada_randului(patron, preluata_0
     întrebarea spune „Anulezi marcarea D100 T4/2025?” (perioada rândului), nu „D100 12/2025”."""
     pg = patron.pg
     _control(patron, preluata_07)
-    pg.click("details.cf-inainte > summary")
+    pg.click(".cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
     cheie = "d100-2025-12"
     item = _marcheaza(pg, cheie)
     item.locator(".cf-extern-btn").click()
     item.locator(".cf-extern-form input[type=date]").fill("2026-01-20")
     item.locator(".cf-extern-salveaza").click()
-    sel = "details.cf-inainte .cf-decl-item[data-cheie='%s']" % cheie
+    sel = ".fereastra:last-of-type .cf-inainte .cf-decl-item[data-cheie='%s']" % cheie
     pg.wait_for_selector(sel + " .cf-extern-anuleaza", timeout=60000)
     pg.click(sel + " .cf-extern-anuleaza")
     pg.wait_for_selector("#caseta-atentie-activa", timeout=10000)
@@ -1152,14 +1153,14 @@ def test_def_194_randul_marcat_spune_doar_ca_e_depus(patron, preluata_07):
     verifica” / „nu pot demonstra” / „necunoscut”."""
     pg = patron.pg
     _control(patron, preluata_07)
-    pg.click("details.cf-inainte > summary")
+    pg.click(".cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
     for cheie, data in (("d205-2025-12", "2026-03-20"), ("d100-2025-12", "2026-01-20")):
         item = _marcheaza(pg, cheie)
         item.locator(".cf-extern-btn").click()
         item.locator(".cf-extern-form input[type=date]").fill(data)
         item.locator(".cf-extern-salveaza").click()
-        pg.wait_for_selector("details.cf-inainte .cf-decl-item[data-cheie='%s'] .cf-extern-anuleaza" % cheie, timeout=60000)
-        txt = pg.locator("details.cf-inainte .cf-decl-item[data-cheie='%s']" % cheie).inner_text()
+        pg.wait_for_selector(".fereastra:last-of-type .cf-inainte .cf-decl-item[data-cheie='%s'] .cf-extern-anuleaza" % cheie, timeout=60000)
+        txt = pg.locator(".fereastra:last-of-type .cf-inainte .cf-decl-item[data-cheie='%s']" % cheie).inner_text()
         zi = "%s.%s.%s" % (data[8:10], data[5:7], data[:4])
         assert ("Depusă în afara iConta.eu %s" % zi) in txt, txt
         assert not _re.search(r"(?i)nu pot verifica|nu pot demonstra|necunoscut", txt), txt
@@ -1172,7 +1173,7 @@ def test_def_148_recipisa_doar_numar(patron, preluata_07):
     număr, fără încărcare de fișier -> salvează cu recipisa „R-148” -> rândul arată „… · recipisă R-148” și se poate anula."""
     pg = patron.pg
     _control(patron, preluata_07)
-    pg.click("details.cf-inainte > summary")
+    pg.click(".cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
     cheie = "d100-2025-12"
     item = _marcheaza(pg, cheie)
     item.locator(".cf-extern-btn").click()
@@ -1182,8 +1183,8 @@ def test_def_148_recipisa_doar_numar(patron, preluata_07):
     form.locator("input[type=date]").fill("2026-07-20")
     form.locator("input[type=text]").fill("R-148")
     form.locator(".cf-extern-salveaza").click()
-    pg.wait_for_selector("details.cf-inainte .cf-decl-item[data-cheie='%s'] .cf-extern-anuleaza" % cheie, timeout=60000)
-    item = pg.locator("details.cf-inainte .cf-decl-item[data-cheie='%s']" % cheie)
+    pg.wait_for_selector(".fereastra:last-of-type .cf-inainte .cf-decl-item[data-cheie='%s'] .cf-extern-anuleaza" % cheie, timeout=60000)
+    item = pg.locator(".fereastra:last-of-type .cf-inainte .cf-decl-item[data-cheie='%s']" % cheie)
     txt = item.inner_text()
     assert "recipisă R-148" in txt and item.locator(".cf-extern-anuleaza").count() == 1, txt
     assert sql("SELECT recipisa FROM public.declaratii_depuse WHERE tenant_id = %s AND tip = 'd100' AND an = 2025 AND luna = 12",

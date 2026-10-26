@@ -146,10 +146,6 @@
     "pauza": 800
    },
    {
-    "click": ".fereastra:last-of-type details.cf-inainte > summary",
-    "daca_exista": true
-   },
-   {
     "pauza": 300
    }
   ],
@@ -158,7 +154,7 @@
     "contine": "nu se numără la restanțe"
    },
    {
-    "contine": "Luna preluării în iConta.eu e"
+    "contine": "Înainte de preluare în iConta.eu — până la"
    },
    {
     "nu_contine": "01/2026",
@@ -259,7 +255,7 @@
     "pauza": 800
    },
    {
-    "click": ".fereastra:last-of-type details.cf-inainte > summary",
+    "click": ".fereastra:last-of-type .cf-inainte-btn",
     "daca_exista": true
    },
    {
@@ -269,11 +265,15 @@
   "verifica": [
    {
     "contine": "D100",
-    "zona": ".fereastra:last-of-type details.cf-inainte"
+    "zona": ".fereastra:last-of-type .cf-inainte"
    },
    {
     "contine": "2025",
-    "zona": ".fereastra:last-of-type details.cf-inainte"
+    "zona": ".fereastra:last-of-type .cf-inainte"
+   },
+   {
+    "contine": "Luna preluării în iConta.eu e",
+    "zona": ".fereastra:last-of-type .cf-inainte"
    },
    {
     "nu_contine": "din 12/2025"
@@ -296,7 +296,7 @@
     "pauza": 800
    },
    {
-    "click": ".fereastra:last-of-type details.cf-inainte > summary"
+    "click": ".fereastra:last-of-type .cf-inainte-btn"
    },
    {
     "pauza": 300
@@ -353,7 +353,7 @@
     "pauza": 800
    },
    {
-    "click": ".fereastra:last-of-type details.cf-inainte > summary"
+    "click": ".fereastra:last-of-type .cf-inainte-btn"
    },
    {
     "pauza": 300
@@ -395,7 +395,7 @@
     "pauza": 800
    },
    {
-    "click": ".fereastra:last-of-type details.cf-inainte > summary"
+    "click": ".fereastra:last-of-type .cf-inainte-btn"
    },
    {
     "pauza": 300

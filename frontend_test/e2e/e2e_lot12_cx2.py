@@ -736,7 +736,9 @@ def test_def_497_restanta_e_obligatia_cu_termenul_trecut_nedepusa_nemarcata_de_l
     restante = _B_F + ".cf-grup-titlu.cf-rosu + .cf-decl "
     rand = restante + ".cf-decl-item[data-cheie='%s']" % _b_cheie(rest)
     pg.wait_for_selector(rand, timeout=30000)
-    assert pg.locator(_B_F + "details.cf-inainte .cf-decl-item[data-cheie='d112-%d-%d']" % (inainte.year, inainte.month)).count() == 1
+    # [lotul 13, 674] rândurile grupului „Înainte de preluare” stau în șablonul ferestrei lui (deschisă de buton)
+    assert pg.evaluate("(s) => !!document.querySelector('.fereastra:last-of-type template.cf-inainte-sablon')?.content.querySelector(s)",
+                       ".cf-decl-item[data-cheie='d112-%d-%d']" % (inainte.year, inainte.month))
     assert pg.locator(restante + ".cf-decl-item[data-cheie='d112-%d-%d']" % (inainte.year, inainte.month)).count() == 0
     patron.captura("restantele")
     pg.click(rand + " .cf-extern-btn")

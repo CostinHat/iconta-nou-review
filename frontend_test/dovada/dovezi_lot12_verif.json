@@ -297,7 +297,7 @@
     "pauza": 800
    },
    {
-    "click": ".fereastra:last-of-type details.cf-inainte > summary",
+    "click": ".fereastra:last-of-type .cf-inainte-btn",
     "daca_exista": true
    },
    {
@@ -334,7 +334,7 @@
     "pauza": 800
    },
    {
-    "click": ".fereastra:last-of-type details.cf-inainte > summary",
+    "click": ".fereastra:last-of-type .cf-inainte-btn",
     "daca_exista": true
    },
    {

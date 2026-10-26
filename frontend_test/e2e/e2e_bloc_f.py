@@ -79,9 +79,9 @@ def test_def_171_marcarea_lasa_grupul_deschis_si_ecranul_pe_rand(patron, firma_e
     -> confirmă -> la fel."""
     pg = patron.pg
     _detaliu_fiscal(patron, firma_e2e["nume"])
-    grup = _fata(pg) + " details.cf-inainte"
+    pg.click(_fata(pg) + " .cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
+    grup = _fata(pg) + " .cf-inainte"
     rand = grup + " [data-cheie='d205-2025-12']"
-    pg.click(grup + " > summary")
     pg.wait_for_selector(rand + " .cf-extern-btn", timeout=20000)
     pg.eval_on_selector(rand, "e => e.scrollIntoView({block: 'center'})")
     y0 = pg.eval_on_selector(rand, "e => e.getBoundingClientRect().top")
@@ -90,7 +90,7 @@ def test_def_171_marcarea_lasa_grupul_deschis_si_ecranul_pe_rand(patron, firma_e
     pg.fill(rand + " .cf-extern-form input[type=date]", "2026-02-20")
     pg.click(rand + " .cf-extern-salveaza")
     pg.wait_for_selector(rand + " .cf-extern-anuleaza", timeout=60000)
-    assert pg.eval_on_selector(grup, "d => d.open"), "grupul „Înainte de preluare” s-a pliat după „Salvează”"
+    assert pg.locator(grup).count() == 1, "fereastra „Înainte de preluare” s-a închis după „Salvează”"
     y1 = pg.eval_on_selector(rand, "e => e.getBoundingClientRect().top")
     # [triajul plasei 1, 12.2] diagnosticul săriturii (numai în mesaj): derularea ferestrei, câte elemente poartă cheia rândului (regăsirea
     # lui în `control_verdict.reincarcaPePozitie` ia PRIMUL) și cât conținut are fereastra
@@ -336,8 +336,8 @@ def test_def_196_d390_dinaintea_preluarii_isi_pastreaza_faptul(patron):
     preluare”: rândul D390 06/2026 spune „operațiuni intracomunitare înregistrate în 06/2026”."""
     pg = patron.pg
     _detaliu_fiscal(patron, FIRMA_IC_NEPLATITOARE)
-    pg.click(_fata(pg) + " details.cf-inainte > summary")
-    rand = _fata(pg) + " details.cf-inainte .cf-decl-item[data-cheie='d390-2026-6']"
+    pg.click(_fata(pg) + " .cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
+    rand = _fata(pg) + " .cf-inainte .cf-decl-item[data-cheie='d390-2026-6']"
     pg.wait_for_selector(rand, timeout=30000)
     txt = pg.inner_text(rand)
     patron.captura()
@@ -390,8 +390,9 @@ def test_def_180_inainte_de_preluare_rand_cu_perioada_termen_si_buton(patron):
     fiecare rând D100 / D406 / D205 are perioada, termenul cu dată și butonul lui „Marchează depusă în afara iConta.eu”."""
     pg = patron.pg
     _detaliu_fiscal(patron, FIRMA_IC_NEPLATITOARE)
-    grup = _fata(pg) + " details.cf-inainte"
-    pg.click(grup + " > summary")
+    pg.click(_fata(pg) + " .cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
+    grup = _fata(pg) + " .cf-inainte"
+    pg.wait_for_selector(grup + " .cf-decl-item", timeout=30000)
     randuri = pg.eval_on_selector_all(grup + " .cf-decl-item", """es => es.map(e => ({cheie: e.dataset.cheie,
         tip: (e.querySelector('.mig-sold-cont') || {}).innerText, perioada: (e.querySelector('.cf-perioada') || {}).innerText || '',
         termen: (e.querySelector('.cf-termen') || {}).innerText || '', buton: !!e.querySelector('.cf-extern-btn')}))""")

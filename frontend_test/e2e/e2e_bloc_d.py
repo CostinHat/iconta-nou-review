@@ -690,7 +690,8 @@ def _control_firma(ecran, firma):
 def _grupuri_control(ecran):
     """{titlul grupului: [„TIP perioada termen …”, …]} din detaliul firmei (grupurile de declarații cu termen)."""
     return ecran.pg.evaluate("""() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const out = {};
-        f.querySelectorAll('.cf-grup-titlu').forEach((t) => { const d = t.tagName === 'SUMMARY' ? t.parentElement.querySelector('.cf-decl')
+        f.querySelectorAll('.cf-grup-titlu').forEach((t) => { const s = f.querySelector('template.cf-inainte-sablon');
+          const d = t.classList.contains('cf-inainte-titlu') ? (s && s.content.querySelector('.cf-decl'))   // [lotul 13, 674] din fereastra lui
             : t.nextElementSibling; if (d && d.classList.contains('cf-decl')) out[t.textContent.replace(/\\s+/g, ' ').trim()] =
             [...d.querySelectorAll('.cf-rand-decl')].map((r) => r.textContent.replace(/\\s+/g, ' ').trim()); }); return out; }""")
 
@@ -717,7 +718,7 @@ def test_def_122_declaratia_se_marcheaza_depusa_in_afara_iconta(patron, firma_sa
     data depunerii 25.02.2026, recipisa „REC-D122” -> Salvează: rândul are acum „Modifică marcarea” / „Anulează marcarea”."""
     pg = patron.pg
     _control_firma(patron, firma_sal)
-    pg.click(".fereastra:last-of-type details.cf-inainte > summary")
+    pg.click(".fereastra:last-of-type .cf-inainte-btn")   # [lotul 13, 674] grupul se deschide în fereastra lui
     item = pg.locator(".fereastra:last-of-type .cf-decl-item[data-cheie='d112-2026-1']")
     item.locator(".cf-extern-btn").click()
     item.locator(".cf-extern-form input[type=date]").fill("2026-02-25")
