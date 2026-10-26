@@ -442,6 +442,33 @@ def test_def_592_d390_numai_pe_lunile_cu_operatiuni(patron, firma_l13):
     assert not [o for o in d390 for z in zile_de_acum(AZI) if o.startswith("D390 · %02d/%d" % (z.month, z.year))], d390
 
 
+def test_def_593_d390_din_noiembrie_are_termenul_dupa_sarbatori_nu_21_decembrie(patron, firma_l13):
+    """593 (aceeași cu 639). Pașii: firmă neplătitoare înregistrată art.317 -> achiziție intracomunitară pe 1 noiembrie -> Declarații: în
+    „Datorate de firmă” D390 pe 11/<an> are termenul 25 decembrie mutat DUPĂ zilele nelucrătoare (2026: 25.12 vineri, 26.12 sărbătoare,
+    27.12 duminică -> 28.12.2026), nu 21.12 (excepția de 21 decembrie e numai a creanțelor). Temei: OPANAF 705/2020 („până la data de 25
+    inclusiv a lunii următoare”), CPF art.75 -> Legea 134/2010 art.181 alin.(2) (zi nelucrătoare -> prima zi lucrătoare de DUPĂ), CPF
+    art.155 alin.(2) numai la creanțe. Testul cere o operațiune din noiembrie și termenul în fereastra de 60 de zile a listei: rulează între
+    1 noiembrie și termen (altfel `skip`, cu motivul). MUTAȚIA: excepția de 21 decembrie aplicată oricărui tip -> 21.12 -> ROȘU."""
+    from core import scadente
+    azi = _dt.date.today()
+    an = azi.year
+    termen = scadente.scadenta_data("d390", an, luna=11)
+    if not (_dt.date(an, 11, 1) <= azi <= termen):
+        pytest.skip("D390 pe 11/%d se arată numai între 01.11.%d (operațiunea din noiembrie) și termenul ei (%s)" % (an, an, termen))
+    _neplatitor(patron, firma_l13)
+    _aic(patron, firma_l13, _dt.date(an, 11, 1), "IE-L13-593")   # AZI-dat-de-test: data operațiunii o dă testul
+    opt = _datorate(patron, firma_l13)
+    patron.captura("datorate_d390_noiembrie")
+    d390 = [o for o in opt if o.startswith("D390 · 11/%d " % an)]
+    assert len(d390) == 1, opt
+    m = re.search(r"termen de depunere (\d\d)\.(\d\d)\.(\d{4})", d390[0])
+    afisat = _dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+    assert (afisat.month, afisat.day) != (12, 21) and 25 <= afisat.day <= 29 and afisat.weekday() < 5, d390   # după 25, zi lucrătoare
+    if an == 2026:
+        assert afisat == _dt.date(2026, 12, 28), d390   # 25.12 vineri, 26.12 a doua zi de Crăciun, 27.12 duminică
+    assert not patron.erori, patron.erori
+
+
 def test_def_539_d301_furnizorul_fara_prefix_dublat(patron, firma_l13):
     """539. Pașii: firmă neplătitoare înregistrată art.317 -> achiziția intracomunitară de la IE6388047V (codul întreg, cum cere exemplul
     din formular), luna trecută -> Declarații -> D301, luna trecută -> „Continuă”: rândul operațiunii spune „furnizor IE6388047V …”, nu

@@ -816,6 +816,85 @@
   "captura": "592_f3_vechi_datorate_d390.png"
  },
  {
+  "nr": "593",
+  "firma": "tenant_9051",
+  "posibila_de_la": "2026-11-01",
+  "descriere": "F3 (neplătitoare art.317, cu operațiuni intracomunitare): Operațiuni -> Achiziție intracomunitară pe 01.11.2026 (scrisă prin ecran pe copie) -> Declarații -> „Datorate de firmă”: D390 · 11/2026 · termen de depunere 28.12.2026 (25.12 vineri, 26.12 sărbătoare, 27.12 duminică -> prima zi lucrătoare de DUPĂ: CPF art.75 -> Legea 134/2010 art.181 alin.(2)), nu 21.12.2026 (excepția CPF art.155 alin.(2) e numai a creanțelor). Posibilă de la 01.11.2026 (operațiunea din noiembrie; termenul intră în fereastra de 60 de zile de la 29.10).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='achizitie_ic']"
+   },
+   {
+    "click": "button[data-op='achizitie_ic']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-11-01"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-cod_tva_furnizor",
+    "valoare": "IE6388047V"
+   },
+   {
+    "completeaza": "#op-numar",
+    "valoare": "AIC-593"
+   },
+   {
+    "completeaza": "#op-cont_destinatie",
+    "valoare": "371"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "bunuri"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "completeaza": "#op-data_faptului_generator",
+    "valoare": "2026-11-01"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #dec-tip option",
+    "text": "D390 · 11/2026 · termen de depunere 28.12.2026"
+   },
+   {
+    "nu_contine": "termen de depunere 21.12.2026",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "captura": "593_f3_datorate_d390_11_2026_termen.png"
+ },
+ {
   "nr": "C162",
   "firma": "tenant_9051",
   "descriere": "F3 (neplătitoare art.317): Declarații -> „Datorate de firmă”: D390 apare numai pe lunile cu operațiuni intracomunitare (nu pe 10 / 11 2026). Numai citire.",

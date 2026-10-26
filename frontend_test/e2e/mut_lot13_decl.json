@@ -137,5 +137,11 @@
   "ancora": "    \"d394\": \"O rectificativă o înlocuiește integral (OPANAF 2194/2025 anexa nr.2 pct.3)\",\n    \"d112\": (",
   "inlocuire": "    \"d394\": \"O rectificativă o înlocuiește integral (OPANAF 2194/2025 anexa nr.2 pct.3)\",\n    \"_d112\": (",
   "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_c19_rectificativa_d112_numai_la_cerere_dupa_diferente"
+ },
+ {
+  "fisier": "core/scadente.py",
+  "ancora": "    if creanta and (nominala.month, nominala.day) == (12, 25):",
+  "inlocuire": "    if (nominala.month, nominala.day) == (12, 25):",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_593_d390_din_noiembrie_are_termenul_dupa_sarbatori_nu_21_decembrie"
  }
 ]
