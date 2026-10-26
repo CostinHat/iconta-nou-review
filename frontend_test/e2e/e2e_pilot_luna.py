@@ -72,7 +72,7 @@ from conftest import ai_pregateste, alege_perioada, alege_tipul, cui_cu_control,
 from e2e_bloc_a import _api, _card, _deschide_emiterea, _ok, _pdf_ok, _pdf_text, pregateste_firma
 from e2e_bloc_b import _cnp, _jurnal, _linie
 from e2e_bloc_d import _control_firma, _grupuri_control
-from e2e_bloc_e import _asteapta_text, _inchidere, _la_luna
+from e2e_bloc_e import _GATA, _asteapta_text, _inchidere, _la_luna
 from e2e_import_saga import _incarca, _pas
 from e2e_lot10_balanta import _celule
 from e2e_lot11_s9 import _propunerea_zilelor
@@ -759,8 +759,10 @@ def test_pilot_06_nir_cu_transport(patron, firma_pilot):
     patron.captura("salvat")
     # OMFP 1802/2014 pct.62 alin.(1): costul de achiziție = prețul + transportul atribuibil -> 3.200,00, din care accesoriu 200,00
     assert "4 note ciorne, la cost %s lei (din care accesoriu %s" % (_bani(COST_NIR), _bani(TRANSPORT)) in msg, msg
-    # „NIR-urile lunii” pornesc pe luna de azi; NIR-ul din 02.09.2026 e în luna lui -> „← luna” până la 09/2026
-    _la_luna(patron, "#s-prev", AN, LUNA)
+    # [lotul 13, 673] fereastra NIR-ului se închide, iar Stocuri se redesenează pe luna NIR-ului (02.09.2026 -> „Luna 09/2026”), cu „NIR-urile
+    # lunii” ei — nu mai e nevoie de „← luna” (înainte ecranul rămânea pe luna de azi)
+    _asteapta_text(patron, "Luna %02d/%d" % (LUNA, AN))
+    pg.wait_for_function(_GATA["#s-prev"], timeout=60000)
     pg.click(".nir-deschide[data-numar='1']")
     pg.wait_for_selector("#nir-detaliu-linii", timeout=20000)
     celule = pg.eval_on_selector_all("#nir-detaliu-linii tbody tr", "rs => rs.map(r => [...r.cells].map(c => c.innerText.trim()))")
