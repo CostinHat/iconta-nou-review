@@ -37,6 +37,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from e2e_lot12_notif import meta_refuza   # noqa: E402,F401 — fixtura
 from e2e_lot72_cont import deschide_setari_panou   # noqa: E402
 from e2e_bloc_d import ASISTENT, _api, _atribuie_asistentului, _in_coada, _respinge   # noqa: E402
+from e2e_bloc_e import _sterge_note   # noqa: E402
 
 PATRON = "patron@prisma-cont.test"
 _F = ".fereastra:last-of-type "
@@ -139,7 +140,8 @@ def test_def_565_sinteza_zilnica_apare_in_notificari_si_se_poate_opri(patron, bi
     assert pg.is_checked(bifa)
     eticheta = pg.inner_text(_F + "#not-tipuri label.not-tip:has([data-tip='sinteza_zilnica'])")
     assert "Sinteza zilei din cabinet" in eticheta and "Vine numai pe email." in eticheta, eticheta
-    grup = pg.eval_on_selector(bifa, "c => c.closest('.not-grup').querySelector('.cf-grup-titlu').innerText.trim()")
+    # textContent, nu innerText: titlul grupei e scris cu majuscule din CSS (`.cf-grup-titlu`), textul lui rămâne „Cont și echipă”
+    grup = pg.eval_on_selector(bifa, "c => c.closest('.not-grup').querySelector('.cf-grup-titlu').textContent.trim()")
     assert grup == "Cont și echipă", grup
     pg.locator(bifa).scroll_into_view_if_needed()
     patron.captura("sinteza_in_notificari")
@@ -223,7 +225,7 @@ def test_def_567_emailul_notificarii_spune_elementul_si_firma(patron, firma_e2e)
     finally:
         sql("UPDATE public.users SET notificari_tipuri = %s::jsonb, canal_notificari = %s, notificari_salvate_la = %s WHERE id = %s",
             (tipuri, canal, salvat, uid_a))
-        sql("DELETE FROM public.declaratii_coada WHERE id = %s", (el["coada_id"],))
+        _scoate_nota_asistentului(firma_e2e, el)
 
 
 # ── 568 / 569 — Sinteza zilei ───────────────────────────────────────────────────────────────────────────────────────────────────
@@ -245,7 +247,14 @@ def _nota_asistentului(firma, descriere, document_ref):
     assert st == 200, (st, r)
     el = [a for a in _in_coada(firma) if descriere in a["eticheta"]]
     assert len(el) == 1, el
-    return el[0]
+    ((per,),) = sql("SELECT perioada FROM public.declaratii_coada WHERE id = %s", (el[0]["coada_id"],))
+    return dict(el[0], nota_id=int(per.split("-", 1)[1]))   # perioada elementului = „nota-<id>”
+
+
+def _scoate_nota_asistentului(firma, el):
+    """Curățenia: nota ciornă a asistentului și elementul ei din coadă (`e2e_bloc_e._sterge_note`). Fără ea, nota rămasă ciornă reintră în
+    coadă la proba următoare (`pune_notele_in_coada` ia toate ciornele asistentului fără element), iar proba vede două elemente."""
+    _sterge_note(firma, [el["nota_id"]])
 
 
 @pytest.fixture()
@@ -263,11 +272,13 @@ def coada_probei(firma_e2e):
     # date-de-pornire: vârsta declarației din coadă (pregătită acum două zile) — aplicația nu poate scrie o pregătire în trecut
     sql("UPDATE public.declaratii_coada SET creat_la = now() - interval '2 days', inceput_la = now() - interval '2 days' WHERE id = %s",
         (decl,))
-    nota = _nota_asistentului(firma_e2e, "Plată chirie probă 569", "OP 569")["coada_id"]
+    el = _nota_asistentului(firma_e2e, "Plată chirie probă 569", "OP 569")
+    nota = el["coada_id"]
     try:
         yield {"cab": cab, "decl": decl, "nota": nota}
     finally:
-        sql("DELETE FROM public.declaratii_coada WHERE id IN (%s, %s)", (decl, nota))
+        sql("DELETE FROM public.declaratii_coada WHERE id = %s", (decl,))
+        _scoate_nota_asistentului(firma_e2e, el)
 
 
 def test_def_568_sinteza_zilei_numara_toata_coada(patron, coada_probei):

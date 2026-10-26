@@ -135,11 +135,14 @@ def test_def_526_cnp_invalid_fara_mesajul_de_total(patron, firma_srl):
     pg.click("#df-salveaza")
     pg.wait_for_selector(".msg-eroare[data-camp='as-1-cnp']", timeout=30000)
     pg.wait_for_selector("#df-salveaza:not([disabled])", timeout=30000)
-    refuz = pg.inner_text(".fereastra:last-of-type #df-msg")
     patron.captura("cnp_invalid_fara_total")
-    assert "însumează" not in refuz and "CNP invalid" in refuz, refuz
-    assert pg.locator(".msg-eroare[data-camp='as-total']").count() == 0
-    assert pg.locator(".msg-eroare[data-camp='as-2-cnp']").count() == 1
+    # refuzul stă lângă câmpurile lui (caseta de sus spune numai „Restul NU — vezi câmpurile marcate”): CNP-ul pe fiecare rând, niciun
+    # mesaj de total; înainte, „cotele însumează 0%, nu 100%” lângă „Total cote: 100%”
+    mesaje = pg.eval_on_selector_all(".fereastra:last-of-type .msg-eroare", "els => els.map((e) => [e.dataset.camp, e.innerText])")
+    assert not [m for m in mesaje if "însumează" in m[1]], mesaje
+    assert pg.locator(".msg-eroare[data-camp='as-total']").count() == 0, mesaje
+    for camp in ("as-1-cnp", "as-2-cnp"):
+        assert "CNP" in pg.inner_text(".fereastra:last-of-type .msg-eroare[data-camp='%s']" % camp), mesaje
     assert sql('SELECT count(*) FROM "%s".asociati' % s) == [(0,)]
 
 

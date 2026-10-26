@@ -64,6 +64,15 @@ def firma_doc():
 
 
 @pytest.fixture(scope="module")
+def firma_558():
+    """[558] O firmă NOUĂ, fără nicio notă: luna preluării aleasă (09/2099) e luna efectivă numai fără o notă mai veche — altfel se
+    socotește luna primei note (`luna_preluare.efectiva`, „niciodată după luna primei note”), iar 08/2099 ar fi o lună din evidență
+    (goală), cu comparația corectă. Pe `firma_doc`, notele probelor anterioare (2026) mutau începutul evidenței în 2026."""
+    for f in firma_noua():
+        yield f
+
+
+@pytest.fixture(scope="module")
 def firma_559():
     for f in firma_noua():
         yield f
@@ -279,12 +288,13 @@ def test_def_557_pdf_balantei_clientului_fara_paragraful_pentru_contabil(patron,
 
 
 # ── 558 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_def_558_povestea_cu_termeni_gresiti_e_retrasa_si_prima_luna_fara_comparatie(patron, firma_doc, browser, request):
+def test_def_558_povestea_cu_termeni_gresiti_e_retrasa_si_prima_luna_fara_comparatie(patron, firma_558, browser, request):
     """558. Pașii: evidența firmei începe cu 09/2099 (luna preluării); povestea lunii 09/2099, aprobată înainte de reparația 288 („încasări de
     1.000 de lei”) -> clientul: „Povestea lunii”: rândul spune „Textul acestei luni a fost retras: folosea alți termeni decât cifrele lunii.
     Contabilul îl reface.”, cu cifrele lunii, fără „încasări”; și fără „față de luna anterioară” (08/2099 nu există în iConta.eu).
     MUTAȚIILE: povestea niciodată retrasă -> ROȘU; comparația și la prima lună -> ROȘU."""
-    f, s = firma_doc, firma_doc["schema"]
+    f, s = firma_558, firma_558["schema"]
+    assert sql('SELECT count(*) FROM "%s".inregistrari' % s) == [(0,)]   # calibrarea: nicio notă, deci evidența începe cu luna aleasă
     # date-de-pornire: luna preluării (Date firmă) și povestea aprobată înainte de 288 (fără amprenta cifrelor), perioadă sintetică 2099
     sql('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % s, (_dt.date(2099, 9, 1),))
     # date-de-pornire: povestea lunii aprobată înainte de reparația 288, scrisă cum o scria codul de atunci (documentul vechi)
