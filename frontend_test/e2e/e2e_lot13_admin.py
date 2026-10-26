@@ -366,8 +366,9 @@ def test_def_646_e_invitatia_se_copiaza_si_se_retrage(browser, request):
 
 
 #: o cifră cu punct ZECIMAL („1.53369140625”, „32.9”); punctul de mii al formatului românesc („7.812,3”, „3.651 MB” — grup de exact trei
-#: cifre) nu e una [lotul 13, plasa 1: „3.651 MB liber” era citit ca zecimală]
-ZECIMALA_CU_PUNCT = re.compile(r"\b\d+\.(?!\d{3}\b)\d+\b(?![.,]\d)")
+#: cifre) nu e una [lotul 13, plasa 1: „3.651 MB liber” era citit ca zecimală], nici ziua și luna de pe axa timpului a graficului, urmate de
+#: oră („25.10 17:54”) [lotul 13, plasa: etichetele graficului citite ca zecimale]
+ZECIMALA_CU_PUNCT = re.compile(r"\b\d+\.(?!\d{3}\b)\d+\b(?![.,]\d)(?!\s+\d{1,2}:\d\d)")
 
 
 # ── 643 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
