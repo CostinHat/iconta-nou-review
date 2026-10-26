@@ -614,9 +614,8 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("name") or not m.get("vat_id_no") or not m.get("ms"):
             erori.append("D398 nu are ce genera: completează regimul, denumirea și codul de TVA, apoi adaugă "
                          "pentru fiecare stat de consum livrările (bunuri/servicii) cu cota și baza impozabilă.")
-        elif m.get("inregistrat_oss") is not True:
-            erori.append("D398 se depune numai de firma înregistrată în regimul special OSS, care a depus declarația de începere a "
-                         "activității (CF art.315 alin.(3)); firma nu e înregistrată, deci nu are D398 de depus.")
+        elif d398.refuz_fara_oss(m):   # [lotul 13, 595] regula înregistrării OSS stă în modulul D398
+            erori.append(d398.refuz_fara_oss(m))
 
     # d104 (distribuire venituri asocieri f.PJ, MANUALA trimestriala): declarant + asociere + asociati + profit_pierd.
     # Mesaj de CONTABIL (formularul din UI trimite mereu datele -> aici cade doar apelul API gol).

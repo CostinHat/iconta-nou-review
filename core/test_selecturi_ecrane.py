@@ -133,7 +133,8 @@ def test_CALIBRARE_danu_necerut_e_prins():
 
 def test_inputurile_precompletate_sunt_clasificate():
     gasite = {k for k, _l in S.inputuri_precompletate()}
-    assert len(gasite) >= 5 and sorted(gasite ^ set(S.INPUTURI)) == []
+    # [lotul 13, 504] premisa anti-vid: 5 -> 4 — D603 (țara „RO”) și D318 (lunile 1 / 12) pornesc acum goale (DS cap.6 „Nimic precompletat”)
+    assert len(gasite) >= 4 and sorted(gasite ^ set(S.INPUTURI)) == []
 
 
 def test_CALIBRARE_input_precompletat_neclasificat_e_prins():
