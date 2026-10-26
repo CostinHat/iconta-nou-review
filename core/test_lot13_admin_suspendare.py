@@ -114,7 +114,13 @@ def test_suspendarea_scrie_jurnalul_trimite_emailul_si_reactivarea_il_inchide(ba
                                         _ctx(baza))
     assert r == {"ok": True, "motiv": "neplată", "emailuri_trimise": 1, "destinatari": 1}, r
     assert [t[0] for t in trimise] == ["admin.645@exemplu.ro"]
-    assert "Motivul: <b>neplată</b>" in trimise[0][2] and "restanță" not in trimise[0][2]      # nota internă nu pleacă la cabinet
+    # emailul = cel construit din numele cabinetului, data suspendării și motivul ales — fără nota internă (nu e argument al lui)
+    with baza.conn.cursor() as cur:
+        cur.execute("SELECT suspendat_la FROM public.suspendari_cabinet WHERE cabinet_id = %s AND reactivat_la IS NULL", (baza.cab,))
+        (s_la,), = cur.fetchall()
+        nume = repo_admin.numele_cabinetului(cur, baza.cab)
+    assert trimise[0][1:] == uc_admin._email_suspendare(nume, "neplata", s_la) and "restanță" not in trimise[0][2]
+    assert trimise[0][2].count("Motivul: <b>neplată</b>.") == 1, trimise[0][2]   # motivul, o dată, în cuvintele listei (nu cheia)
     with baza.conn.cursor() as cur:
         cur.execute("SELECT activ FROM public.accounting_firms WHERE id = %s", (baza.cab,))
         assert cur.fetchone()[0] is False
@@ -168,7 +174,7 @@ def test_anuntul_fara_destinatari_alesi_e_refuzat(baza):
     for d in (_anunt(), _anunt(segment="cabinete", cabinet_ids=[]), _anunt(segment="altceva")):
         with pytest.raises(erori.DateInvalide) as e:
             uc_admin.admin_anunt_creeaza(d, _ctx(baza))
-        assert "Toate cabinetele" in str(e.value.args[0])
+        assert e.value.args[0] == {"mesaj": uc_admin.MESAJ_FARA_DESTINATARI, "camp": "destinatari"}, e.value.args
     with baza.conn.cursor() as cur:
         cur.execute("SELECT count(*) FROM public.anunturi_cabinet WHERE mesaj = 'Anunț de probă 646'")
         assert cur.fetchone()[0] == 0
@@ -217,7 +223,7 @@ def test_invitatia_retrasa_nu_mai_creeaza_cont(baza):
         assert [x["stare"] for x in inv.lista(cur) if x["id"] == iid] == ["valabilă"]
         assert inv.retrage(cur, iid) == "retras.646@exemplu.ro"
         s = inv.stare(cur, tok)
-        assert s["valida"] is False and s["refuz"]["cod"] == "RETRASA" and "retrasă" in s["refuz"]["motiv"]
+        assert s["valida"] is False and s["refuz"]["cod"] == "RETRASA", s
         assert [x["stare"] for x in inv.lista(cur) if x["id"] == iid] == ["retrasă"]
         assert inv.retrage(cur, iid) is None
         with pytest.raises(ValueError):
@@ -237,7 +243,9 @@ def test_datele_actului_din_propunerile_monitorului(baza):
 def test_monitorul_cere_data_publicarii_ca_fapt():
     """646 b: analiza cere `data_publicarii` (un fapt, ca `data_vigoare`), iar o dată ghicită greșit nu se scrie."""
     from core import clasificator_alerte as ca, monitor_fiscal as mf
-    assert "data_publicarii" in ca.CAMPURI_CERUTE and '"data_publicarii"' in mf.PROMPT
+    assert ca.CAMPURI_CERUTE[-2:] == ("data_vigoare", "data_publicarii"), ca.CAMPURI_CERUTE
+    campuri = re.search(r"cu EXACT campurile: (.*)", mf.PROMPT).group(1)   # lista câmpurilor cerute modelului, din prompt
+    assert [c.strip().strip('"') for c in campuri.split(",")] == list(ca.CAMPURI_CERUTE), campuri
     assert mf._data_iso("2026-10-08") == "2026-10-08" and mf._data_iso("08.10.2026") is None and mf._data_iso(None) is None
 
 

@@ -43,7 +43,8 @@ def test_baza_de_cunostinte_fara_roluri_din_cod_si_fara_functii_de_platforma():
     from core import raportari_ai as rai
     rai._BAZA = None
     b = rai._baza_cunostinte()
-    assert "admin_firma" not in b and "superadmin" not in b and "Suspendare cabinet" not in b, [l for l in b.splitlines() if "admin_firma" in l][:2]
+    assert "admin_firma" not in b and "superadmin" not in b and "Suspendare cabinet" not in b, b[:400]
+    assert rai.fara_roluri_interne(b) == b   # niciun rol din cod rămas de tradus
     assert rai.fara_roluri_interne("token JWT cu rol (superadmin/admin_firma/angajat/client)") == "token JWT cu rol rolul utilizatorului"
 
 
