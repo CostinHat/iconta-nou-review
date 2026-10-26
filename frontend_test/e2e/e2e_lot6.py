@@ -400,10 +400,10 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
     intro = pg.inner_text(".mig-intro")
     assert intro == "Pasul 1 din 3 — alege tipul declarației și perioada.", intro
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
-    assert grupe == ["Datorate de firmă (din vectorul fiscal)"], grupe   # [301] „Alte declarații” pliată, la cerere
+    assert grupe == ["Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)"], grupe   # [301] „Alte declarații” pliată, la cerere
     pg.click("#dec-alte")
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
-    assert grupe == ["Datorate de firmă (din vectorul fiscal)", "Alte declarații"], grupe
+    assert grupe == ["Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)", "Alte declarații"], grupe
     datorate = pg.eval_on_selector_all("#dec-tip optgroup:first-of-type option", "(os) => os.map((o) => o.textContent)")
     d300 = [t for t in datorate if t.startswith("D300 · T3/2026 · termen ")]
     assert d300, datorate

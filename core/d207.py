@@ -42,6 +42,26 @@ _NEDIGIT = re.compile(r"\D")
 # tip_venit valide (nomenclator, struct): 01..25, 26; fara 09
 _TIP_VALIDE = {"%02d" % n for n in range(1, 26)} | {"26"}
 _TIP_VALIDE.discard("09")
+# [lotul 13, deficiența 653] Statul de rezidență (Stat_R) = un cod din lista validatorului oficial: `~/duk/dist/lib/D207Validator.jar`,
+# clasa `d207validator/parameters/Parameters_v3` (versiunea „2021-12 J2.0.2”, în vigoare; `Benef.Stat_R` -> `nextAttributeInList(_stat_R)`),
+# extrasă cu `strings` (codurile de 2 litere ale clasei, 249 unice). Grecia e „GR” (ISO), nu „EL” (VIES). Ecranul le arată într-o listă cu
+# căutare (numele din browser, `Intl.DisplayNames`); generarea refuză un cod din afara listei, înaintea validatorului.
+STAT_R = frozenset((
+    "AD", "AE", "AF", "AG", "AI", "AL", "AM", "AN", "AO", "AQ", "AR", "AS", "AT", "AU", "AW", "AX", "AZ", "BA", "BB",
+    "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BM", "BN", "BO", "BR", "BS", "BT", "BV", "BW", "BY", "BZ", "CA", "CC",
+    "CD", "CF", "CG", "CH", "CI", "CK", "CL", "CM", "CN", "CO", "CR", "CU", "CV", "CX", "CY", "CZ", "DE", "DJ", "DK",
+    "DM", "DO", "DZ", "EC", "EE", "EG", "EH", "ER", "ES", "ET", "FC", "FI", "FJ", "FK", "FM", "FO", "FR", "GA", "GB",
+    "GD", "GE", "GF", "GG", "GH", "GI", "GL", "GM", "GN", "GP", "GQ", "GR", "GS", "GT", "GU", "GW", "GY", "HK", "HM",
+    "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IN", "IO", "IQ", "IR", "IS", "IT", "JE", "JM", "JO", "JP", "KE", "KG",
+    "KH", "KI", "KM", "KN", "KP", "KR", "KW", "KY", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV",
+    "LY", "MA", "MC", "MD", "ME", "MF", "MG", "MH", "MK", "ML", "MM", "MN", "MO", "MP", "MQ", "MR", "MS", "MT", "MU",
+    "MV", "MW", "MX", "MY", "MZ", "NA", "NC", "NE", "NF", "NG", "NI", "NL", "NO", "NP", "NR", "NU", "NZ", "OM", "PA",
+    "PE", "PF", "PG", "PH", "PK", "PL", "PM", "PN", "PR", "PS", "PT", "PW", "PY", "QA", "RE", "RO", "RS", "RU", "RW",
+    "SA", "SB", "SC", "SD", "SE", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SR", "ST", "SV", "SY", "SZ",
+    "TC", "TD", "TF", "TG", "TH", "TJ", "TK", "TL", "TM", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "UM",
+    "US", "UY", "UZ", "VA", "VC", "VE", "VG", "VI", "VN", "VU", "WF", "WS", "XC", "XI", "XK", "XL", "YE", "YT", "ZA",
+    "ZM", "ZW"
+))
 # impozabile (baza -> Tbaza, imp permis): 01..11 si 22; scutite (baza -> Tscutit, imp=0): 12..21
 _TIP_SCUTIT = {"%02d" % n for n in range(12, 22)}
 
@@ -130,7 +150,10 @@ def erori_generare(prof, manual):
         if not str(b.get("den") or "").strip():
             er.append("Beneficiarul %d: completează numele sau denumirea beneficiarului nerezident." % i)
         if not str(b.get("stat") or "").strip():
-            er.append("Beneficiarul %d: completează statul de rezidență (codul de țară din 2 litere)." % i)
+            er.append("Beneficiarul %d: alege statul de rezidență din listă." % i)
+        elif str(b.get("stat")).strip().upper() not in STAT_R:
+            er.append("Beneficiarul %d: statul de rezidență „%s” nu e în lista ANAF a statelor (D207) — alege-l din listă."
+                      % (i, str(b.get("stat")).strip()))
         if not (_cif(b.get("cif_ro")) or str(b.get("cif_strain") or "").strip()):
             er.append("Beneficiarul %d: completează codul de identificare fiscală — cel din România sau cel "
                       "din străinătate (măcar unul)." % i)

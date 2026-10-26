@@ -1242,11 +1242,7 @@ DECLARATII_IN_CURSUL_PERIOADEI = {
              "corecte și complete despre beneficiarul real”; alin.(3): „în termen de 30 de zile de la data la care a survenit modificarea”"),
     "d169n": ("Legea 129/2019 art.19 alin.(7^1): „Entitățile raportoare, după consultarea registrelor centrale [...], informează autoritățile "
               "care gestionează aceste registre cu privire la orice neconcordanță”"),
-    "d220": ("OPANAF 184/2013 anexa nr.2 (instrucțiunile formularului 220) pct.I.1: „în termen de 15 zile de la data începerii activității, "
-             "în cazul contribuabililor [...] care încep o activitate în cursul anului fiscal”"),
-    "d223": ("OPANAF 184/2013 anexa nr.2 (instrucțiunile formularului 223) pct.1: „în termen de 15 zile de la data începerii activității, în "
-             "cazul asocierilor care încep o activitate în cursul anului fiscal”"),
-}
+}  # [lotul 13, 660] D220 / D223 ieșite: formulare înlocuite de Declarația unică (`declaratii_api.FORMULARE_INLOCUITE`)
 
 
 def perioada_neincheiata(an, luna, trim=None, azi=None, tip=None, manual=None):

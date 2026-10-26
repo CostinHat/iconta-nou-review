@@ -103,8 +103,6 @@ _SURSA_TEMEI = {
     "d214": "anaf_surse/ordin_216_2023__baza_265344.html",
     "d169": "anaf_surse/legea_129_2019.html",
     "d169n": "anaf_surse/legea_129_2019.html",
-    "d220": "anaf_surse/opanaf_184_2013.txt",
-    "d223": "anaf_surse/opanaf_184_2013.txt",
 }
 
 

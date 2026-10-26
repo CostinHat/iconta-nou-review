@@ -1,0 +1,141 @@
+[
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "  if (_FORMULARE[S.tip] && !cerut) {   // [lotul 13, 651 / 659] formularul întâi, fără nicio cerere la server",
+  "inlocuire": "  if (false) {   // [lotul 13, 651 / 659] formularul întâi, fără nicio cerere la server",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_651_d207_formularul_gol_fara_eroare_rosie"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "  if (_FORMULARE[S.tip] && !cerut) {   // [lotul 13, 651 / 659] formularul întâi, fără nicio cerere la server",
+  "inlocuire": "  if (false) {   // [lotul 13, 651 / 659] formularul întâi, fără nicio cerere la server",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_659_d311_la_deschidere_fara_erori"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "    if (_imp > _baza) err.push([\"d207-imp\",",
+  "inlocuire": "    if (false) err.push([\"d207-imp\",",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_656_d207_impozitul_peste_baza_e_oprit_la_adaugare"
+ },
+ {
+  "fisier": "core/verificare_bun_simt.py",
+  "ancora": "{2025: Decimal(\"0.10\"), 2026: Decimal(\"0.16\")},",
+  "inlocuire": "{2025: Decimal(\"0.16\"), 2026: Decimal(\"0.16\")},",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_656_d207_cota_dividendelor_verificata_inaintea_validatorului"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "  const modificat = JSON.stringify(corpGenerare()) !== S.corpValidat || !!S.panouModificat || _completateNeadaugate(corp).length > 0;",
+  "inlocuire": "  const modificat = false;",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_657_dupa_stergerea_beneficiarului_validarea_se_anuleaza"
+ },
+ {
+  "fisier": "core/declaratii_componente.py",
+  "ancora": "    if t in DIN_FORMULAR:   # [lotul 13, 658] compoziția e formularul de pe ecran",
+  "inlocuire": "    if False:   # [lotul 13, 658] compoziția e formularul de pe ecran",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_658_d207_fara_harta_de_componente"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "      urm.click();",
+  "inlocuire": "      void 0;",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_652_beneficiarul_completat_se_adauga_la_generare"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "  cautaInLista(gv(\"#d207-stat-cauta\"), gv(\"#d207-stat\"));",
+  "inlocuire": "  void 0;",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_653_statul_de_rezidenta_lista_cu_cautare"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "  if (refuz) refuz.remove();   // 654:",
+  "inlocuire": "  if (false) refuz.remove();   // 654:",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_654_refuzul_vechi_dispare_la_urmatoarea_actiune"
+ },
+ {
+  "fisier": "core/declaratii_api.py",
+  "ancora": "    if platitor is True:\n        out[\"d311\"] = NEAPLICABILE_REGIM[\"d311\"]",
+  "inlocuire": "    if False:\n        out[\"d311\"] = NEAPLICABILE_REGIM[\"d311\"]",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_650_d311_nu_se_datoreaza_la_platitor"
+ },
+ {
+  "fisier": "core/declaratii_api.py",
+  "ancora": "        out[\"d318\"] = NEAPLICABILE_REGIM[\"d318\"]\n",
+  "inlocuire": "        pass\n",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_635_d318_inactiva_la_neplatitor"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "  if (!d.name && fd.nume) d.name = fd.nume;\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_594_d398_texte_si_date_din_date_firma"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "    if (S.d398.inregistrat_oss === false) { eroareCamp(zona, \"d398-oss\",",
+  "inlocuire": "    if (false) { eroareCamp(zona, \"d398-oss\",",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_595_d398_fara_inregistrare_oss_nu_se_genereaza"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "  _pune(\"cui\", String(fd.cui || \"\").replace(/^RO/i, \"\").replace(/\\s+/g, \"\"));\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_636_d318_precompletat_din_date_firma"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "    if (!(d.facturi || []).length) err.push([null, \"Adaugă cel puțin o factură.\"]);\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_637_d318_refuzul_numeste_numai_ce_lipseste"
+ },
+ {
+  "fisier": "core/verificare_bun_simt.py",
+  "ancora": "{\"perioada\": Decimal(\"400\"), \"an\": Decimal(\"50\")}",
+  "inlocuire": "{\"perioada\": Decimal(\"1\"), \"an\": Decimal(\"50\")}",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_638_d318_sub_pragul_minim_se_opreste"
+ },
+ {
+  "fisier": "core/termene_api.py",
+  "ancora": "    if declaratii_fapt is not None:   # [lotul 13, 538 / 591]",
+  "inlocuire": "    if False:   # [lotul 13, 538 / 591]",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_538_d301_din_achizitia_intracomunitara_e_datorata"
+ },
+ {
+  "fisier": "core/termene_api.py",
+  "ancora": "    return [d for d in datorate if (d[\"tip\"], d[\"an\"], d[\"luna\"]) not in depuse]",
+  "inlocuire": "    return datorate",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_591_d301_depusa_nu_mai_e_datorata"
+ },
+ {
+  "fisier": "core/control_incrucisat.py",
+  "ancora": "        if m not in luni and _d390.d390_are_operatiuni(conn, schema, an, m, azi) is True:",
+  "inlocuire": "        if m not in luni:",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_592_d390_numai_pe_lunile_cu_operatiuni"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "_d301_cod(tara_furnizor, cod_tva_furnizor)",
+  "inlocuire": "cod_tva_furnizor",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_539_d301_furnizorul_fara_prefix_dublat",
+  "motiv": "ancora există după peticul l13_petice/decl_3.json (sesiunea principală îl aplică la integrare)"
+ },
+ {
+  "fisier": "static/js/ecrane/declaratii.js",
+  "ancora": "cont.addEventListener(\"click\", () => nav.mergi(\"Declarații\", (c) => pas2(c, nav)));",
+  "inlocuire": "cont.addEventListener(\"click\", () => pas2(corp, nav));",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_540_sageata_din_pasul_2_intoarce_la_pasul_1_cu_firma"
+ },
+ {
+  "fisier": "core/declaratii_api.py",
+  "ancora": "    return sorted(k for k in DECLARATII if k not in _DOAR_API)",
+  "inlocuire": "    return sorted([k for k in DECLARATII if k not in _DOAR_API] + [\"d600\"])",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_660_formularele_inlocuite_nu_se_ofera_nici_la_pfa"
+ },
+ {
+  "fisier": "core/rectificativa.py",
+  "ancora": "    \"d394\": \"O rectificativă o înlocuiește integral (OPANAF 2194/2025 anexa nr.2 pct.3)\",\n    \"d112\": (",
+  "inlocuire": "    \"d394\": \"O rectificativă o înlocuiește integral (OPANAF 2194/2025 anexa nr.2 pct.3)\",\n    \"_d112\": (",
+  "test": "frontend_test/e2e/e2e_lot13_decl.py::test_def_c19_rectificativa_d112_numai_la_cerere_dupa_diferente"
+ }
+]

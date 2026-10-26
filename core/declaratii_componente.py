@@ -292,18 +292,29 @@ def _randuri(res, sec):
 # adica exact ce interzice decizia din 21.08 (o afirmatie e un obiect, nu un sir), si a fost prinsa
 # de `core/test_afirmatii_tipate.py` la prima rulare a suitei. Motivul TEHNIC nu s-a pierdut: sta in
 # `FARA_COMPONENTE`, unde il citeste omul care repara, si unde il verifica gardul.
-ACOPERIRE = ("completa", "absenta", "necunoscuta")
+ACOPERIRE = ("completa", "absenta", "necunoscuta", "formular")
+
+#: [lotul 13, deficiențele 658 / 638] Declarațiile făcute din FORMULARUL de pe ecran (beneficiarii, facturile, sumele scrise de contabil):
+#: compoziția lor e chiar formularul, deasupra rezultatului — `acoperire="formular"`, iar ecranul nu mai scrie nimic despre ea. Până la 658
+#: ieșeau „necunoscuta”, iar ecranul spunea „Cifra acestui tip de declarație nu se poate desface — nu e trecut în harta de componente”
+#: (limbaj intern, D207 / D318). Fiecare tip al dispecerului e ori în `COMPONENTE`, ori aici (`core/test_lot13_decl_componente.py`).
+DIN_FORMULAR = frozenset(("d104", "d106", "d107", "d108", "d110", "d114", "d119", "d120", "d130", "d169", "d169n", "d177", "d204",
+                          "d207", "d208", "d212", "d213", "d214", "d216", "d230", "d307", "d311", "d318", "d393", "d395", "d397", "d398",
+                          "d399", "d401", "d402", "d403", "d407", "d603", "d101g"))
 
 
 def componente(tip, res):
     """{"acoperire", "sectiuni", "total"} — din ce e făcută declarația.
 
     `acoperire`: `completa` (componentele sunt aici) · `absenta` (tipul nu le poate da; motivul
-    tehnic e în `FARA_COMPONENTE`) · `necunoscuta` (tip nemapat — se spune, nu se tace).
+    tehnic e în `FARA_COMPONENTE`) · `formular` (declarația e chiar formularul de pe ecran, `DIN_FORMULAR`) · `necunoscuta` (tip
+    nemapat — se spune, nu se tace).
     """
     t = (tip or "").lower()
     if t in FARA_COMPONENTE:
         return {"acoperire": "absenta", "sectiuni": [], "total": 0}
+    if t in DIN_FORMULAR:   # [lotul 13, 658] compoziția e formularul de pe ecran
+        return {"acoperire": "formular", "sectiuni": [], "total": 0}
     if t not in COMPONENTE:
         return {"acoperire": "necunoscuta", "sectiuni": [], "total": 0}
     sectiuni, total = [], 0

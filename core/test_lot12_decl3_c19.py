@@ -297,7 +297,7 @@ def test_orice_drum_al_cererilor_cheama_poarta():
 
 def test_poarta_cererii_cheama_poarta_rectificativei():
     corp = ast.parse(textwrap.dedent(inspect.getsource(uc_declaratii.poarta_cererii)))
-    assert {"_rect.poarta_d394"} <= _apeluri(corp)
+    assert {"_rect.poarta_diferente"} <= _apeluri(corp)   # [lotul 13, C19] poarta comună D394 / D112
 
 
 def test_diferentele_citesc_toate_sectiunile_d394():

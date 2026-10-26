@@ -1288,15 +1288,18 @@ def test_def_74_declaratia_cu_formular_manual_intra_in_coada(patron):
 def test_def_190_eroarea_primei_generari_nu_ramane_dupa_trimitere(patron):
     """190. D710: mesajul de eroare „D710 cere cel puțin o obligație corectată.” de la prima generare rămâne pe ecran după „Trimisă în
     coada de validare”.
-    Pașii: „Comert Micro TVA” -> Declarații -> D710 -> Continuă (prima generare: „D710 cere cel puțin o obligație corectată.”) ->
-    obligația (121, 100 -> 150, 1%) -> „+ adaugă” -> „Regenerează D710” -> „Trimite în coadă →”: ecranul „Trimisă în coada de
-    validare” nu mai poartă eroarea primei generări — nici în fereastră, nici în altă parte a paginii."""
+    Pașii: „Comert Micro TVA” -> Declarații -> D710 -> Continuă -> [lotul 13, 651] formularul, fără nicio generare -> „Generează D710”
+    fără obligații (prima generare: „D710 cere cel puțin o obligație corectată.”) -> obligația (121, 100 -> 150, 1%) -> „+ adaugă” ->
+    „Regenerează D710” -> „Trimite în coadă →”: ecranul „Trimisă în coada de validare” nu mai poartă eroarea primei generări — nici în
+    fereastră, nici în altă parte a paginii."""
     tid = 4838
     peste = sql("SELECT COALESCE(max(id), 0) FROM public.declaratii_coada")[0][0]
     pg = patron.pg
     try:
         _declaratie_pas1(patron, "Comert Micro TVA", "d710", 2026, luna=9, trim=3)
         pg.wait_for_selector("#d710-cod", timeout=60000)
+        pg.click("#d710-regen")   # [lotul 13] prima generare o cere omul (formularul se arată întâi, fără cerere la server)
+        pg.wait_for_selector("#dec-refuz", timeout=60000)
         inainte = pg.inner_text("body")
         pg.select_option("#d710-cod", "121")
         pg.fill("#d710-i", "100")

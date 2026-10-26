@@ -94,6 +94,19 @@ def cote_perioada(an, luna):
     return optiuni
 
 
+def cod_tva_fara_prefix(tara, cod):
+    """[lotul 13, deficiența 539] Codul de TVA al furnizorului, ținut FĂRĂ prefixul țării (țara stă în coloana ei): „IE6388047V” cu țara
+    IE -> „6388047V”; „6388047V” rămâne. Grecia: prefixul VIES „EL” și cel ISO „GR” sunt aceeași țară. Codul se normalizează o singură
+    dată, la scriere (ecranul D301 și achiziția intracomunitară, `uc_tenants`); până la 539 D301 arăta „IEIE6388047V” (țara + codul cu
+    prefix). Spațiile și semnele dintre caractere ies (codul VIES e numai litere și cifre)."""
+    t = (tara or "").strip().upper()
+    c = re.sub(r"[^A-Z0-9]", "", str(cod or "").upper())
+    for pfx in ({t} | ({"EL", "GR"} if t in ("EL", "GR") else set())):
+        if pfx and c.startswith(pfx) and len(c) > len(pfx):
+            return c[len(pfx):]
+    return c
+
+
 def _tva_din(val_valuta, curs, cota):
     baza = calc_baza(val_valuta, curs)
     return baza, _r0(Decimal(str(baza)) * Decimal(str(int(cota))) / Decimal(100))
@@ -189,7 +202,7 @@ def adauga(conn, schema, an, luna, d):
     # la generare). Checksum-ul VIES (algoritm offline DE/FR/HR) il rulam ACUM, NEBLOCANT (audit 006/R24.1):
     # calea d301-derivata NU trece prin _facturi_ic, deci fara asta codul gresit ajungea neverificat pana la DUK.
     partener_tara = (d.get("partener_tara") or "").strip().upper()
-    partener_cod = (d.get("partener_cod") or "").strip().upper()
+    partener_cod = cod_tva_fara_prefix(partener_tara, d.get("partener_cod"))   # [lotul 13, 539] „IE6388047V” sau „6388047V”, o dată
     partener_den = (d.get("partener_den") or "").strip()
     if partener_tara and not re.match(r"^[A-Z]{2}$", partener_tara):
         erori.append(("partener_tara", "Țara furnizorului trebuie să fie codul din 2 litere (ex. DE, FR, IT)."))

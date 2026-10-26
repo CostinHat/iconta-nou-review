@@ -28,17 +28,12 @@ def _m(**ov):
     return m
 
 
-def test_d221_nu_e_doar_api():
-    """d221 are formular manual in UI -> nu mai e ascuns; apare in selectorul de tipuri."""
-    assert _TIP not in declaratii_api._DOAR_API
-    assert _TIP in declaratii_api.tipuri()
-
-
-def test_d221_cerere_goala_refuza_la_api():
-    """Bloc validare API: fara cif/activitati -> erori; cerere valida -> lista goala."""
-    goala = declaratii_api.valideaza_cerere("d221", {"tenant_id": 1, "an": 2024})
-    valida = declaratii_api.valideaza_cerere("d221", {"tenant_id": 1, "an": 2024, "manual": _m()})
-    assert goala and valida == []
+def test_d221_nu_se_mai_ofera_formular_inlocuit_de_declaratia_unica():
+    """[lotul 13, deficiența 660] D221 e înlocuită de Declarația unică (D212): nu e în selector, nici în dispecer, iar o cerere — chiar
+    completă — primește motivul cu textul Codului fiscal (`declaratii_api.FORMULARE_INLOCUITE`), nu XML."""
+    assert _TIP not in declaratii_api.tipuri() and _TIP not in declaratii_api.DECLARATII
+    er = declaratii_api.valideaza_cerere(_TIP, {"tenant_id": 1, "an": 2024, "manual": _m()})
+    assert len(er) == 1 and "nu se mai depune" in er[0] and declaratii_api.FORMULARE_INLOCUITE[_TIP][1] in er[0], er
 
 
 def test_d221_baza_valida_fara_erori():

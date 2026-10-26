@@ -14,7 +14,7 @@ CE A RAMAS IN `main.py`: semnatura rutei (FastAPI valideaza pe ea), docstringul 
 cheama functia de aici prin adaptorul `_http`.
 """
 
-from core import db, auth_api, declaratii_api, control_fiscal_api, declaratii_componente
+from core import db, auth_api, declaratii_api, control_fiscal_api, declaratii_componente, repo_declaratii, d207
 from core import repo_firma_profil
 from core.common import azi_ro
 from core.mesaje import FARA_ACCES_TENANT
@@ -30,14 +30,20 @@ def declaratii_tipuri(tenant_id, ctx):
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             row = repo_firma_profil.profil_fiscal(cur)
+            antet = repo_declaratii.antet_firma(cur)   # [lotul 13, 636 / 594] precompletarea formularelor manuale din Date firmă
+            monede = repo_declaratii.monede_bnr(cur)   # [lotul 13, 636] moneda D318 din lista BNR
         _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2],
-                 "operatiuni_ic": row[3], "regim_fiscal": row[4]}   # [R94] regimul intra in vector
+                 "operatiuni_ic": row[3], "regim_fiscal": row[4],   # [R94] regimul intra in vector
+                 "inreg_art317": antet["inreg_art317"]}            # [lotul 13, 595] D398 cere codul art.316 / art.317
                 if row else {})
         # [21.08.2026] FAPTUL BATE VECTORUL: selectorul nu mai blocheaza D390/D301 pe bifa cand exista
         # operatiuni IC reale (sau cand evidenta e incompleta). Tiparul tenant_006. Sonda se cheama
         # INAINTE de inchiderea conexiunii - inainte era calculata dupa `with`, ceea ce n-ar fi mers.
         _neap = control_fiscal_api.neaplicabile_selector(
             _vec, ic_fapt=(lambda: control_fiscal_api.ic_fapt_din_db(conn, schema, azi_ro().year)))
+        # [lotul 13, 650 / 595 / 635] regimul de TVA: D311 (plătitor), D398 (fără cod 316 / 317), D318 (neînregistrat) — aceeași poartă ca la
+        # generare (`declaratii_api.genereaza`)
+        _neap = {**declaratii_api.neaplicabile_regim(_vec), **_neap}
     # [deficiența 301] declarațiile pe care forma firmei nu le poate datora nici nu apar (persoanele fizice, la o persoană juridică)
     _forma = control_fiscal_api.neaplicabile_forma(row[0] if row else None)
     _tipuri = [t for t in declaratii_api.tipuri() if t not in control_fiscal_api._NEAP_PERSOANA_JURIDICA or t not in _forma]
@@ -47,7 +53,11 @@ def declaratii_tipuri(tenant_id, ctx):
             "neaplicabile": _neap,
             "datorate": _datorate_firmei(tenant_id, ctx),
             # [comanda Costin 9.1, A.3] obligațiile pe care le corectează formularul D710, cu denumirea oficială din nomenclator
-            "obligatii_d710": _obligatii_d710()}
+            "obligatii_d710": _obligatii_d710(),
+            # [lotul 13, 636 / 594] Date firmă pentru formularele manuale (D318, D398 …): ecranul le pune în câmpuri, vizibile și modificabile
+            "firma": {k: v for k, v in antet.items() if k not in ("platitor_tva", "inreg_art317")},
+            # [lotul 13, 653] statele de rezidență acceptate de validatorul D207 (lista cu căutare a formularului)
+            "nomenclatoare": {"d207_stat_r": sorted(d207.STAT_R), "monede_bnr": ["RON"] + [m for m in monede if m != "RON"]}}
 
 
 def aduce_localitati_parteneri(schema, tip):
@@ -97,12 +107,16 @@ def poarta_cererii(conn, schema, tip, body, xml, res):
     servește și „Generează din nou” și reluarea declarației care aștepta validarea notelor). Scripturile de citire (cifrele de referință,
     amprentele) cheamă dispecerul fără ea: nu produc ceva de depus.
     [lotul 12, C19, comanda Costin 12.3 pct.6, verbatim în DECIZII] „rectificativa D394 pentru o perioadă deja depusă se generează doar la
-    cererea contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.” -> `rectificativa.poarta_d394`: peste o
-    depunere, D394 iese numai cu confirmarea contabilului pentru exact conținutul văzut ca diferențe; fără diferențe, nu iese deloc.
+    cererea contabilului, cu diferențele față de cea depusă arătate înainte; niciodată automat.” [lotul 13, C19: și D112] ->
+    `rectificativa.poarta_diferente` (declarațiile din `rectificativa.CU_DIFERENTE`): peste o
+    depunere, declarația iese numai cu confirmarea contabilului pentru exact conținutul văzut ca diferențe; fără diferențe, nu iese deloc.
     Garda: `core/test_lot12_decl3_c19.py` (orice funcție a use-case-urilor care cheamă dispecerul cheamă și poarta)."""
-    if tip == "d394":
-        from core import rectificativa as _rect
-        _rect.poarta_d394(conn, schema, body, xml, res)
+    # [lotul 13, 656 + comanda 13.1 pct.5] verificarea proprie a cifrelor (impozit ≤ bază, cota legii), înaintea validatorului ANAF
+    from core import verificare_bun_simt as _vbs
+    _vbs.poarta(tip, body, res, conn)
+    from core import rectificativa as _rect
+    if tip in _rect.CU_DIFERENTE:   # [lotul 12 / 13, C19] D394, D112: rectificativa numai la cerere, după diferențe
+        _rect.poarta_diferente(conn, schema, tip, body, xml, res)
 
 
 def declaratie_valideaza(tip, date, ctx):
