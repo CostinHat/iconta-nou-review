@@ -41,7 +41,9 @@ export async function ecranCompensari(corp, nav, t, opt = {}) {
     const facturi = x ? Object.fromEntries([...x.emise, ...x.primite].map((f) => [f.id, f])) : {};
     const perechi = x ? x.perechi : [];
     const suma = (i) => (sume[i] !== undefined ? sume[i] : perechi[i].suma);
-    const total = perechi.reduce((s, _q, i) => s + (Number(String(suma(i)).replace(",", ".")) || 0), 0);
+    // [lotul 13, 655] suma scrisă în câmp vine deja citită în format românesc („1.210,50” -> „1210.50”) de câmpul numeric comun
+    // (`api.campNumericRo`, DS cap.6): aici nu se mai citește cu un parsator local, care lua „1.210” drept 1,21
+    const total = perechi.reduce((s, _q, i) => s + (Number(suma(i)) || 0), 0);
     const tva = (f) => (f.tva_la_incasare
       ? (f.directie === "emisa" ? "TVA la încasare: partea compensată trece 4428 → 4427" : "Deducere amânată: partea plătită trece 4428 → 4426")
       : "TVA exigibil la emitere: nimic de mutat");
@@ -118,7 +120,7 @@ export async function ecranCompensari(corp, nav, t, opt = {}) {
       if (!data) { eroareCamp(corp, "cz-data", "Alege data ordinului de compensare: la ea se sting datoriile."); rau = true; }
       if (!numar) { eroareCamp(corp, "cz-numar", "Scrie numărul ordinului de compensare (documentul justificativ al notei)."); rau = true; }
       const trimise = perechi.map((q, i) => ({ factura_emisa_id: q.factura_emisa_id, factura_primita_id: q.factura_primita_id,
-        suma: String(suma(i)).replace(",", ".") }));
+        suma: String(suma(i)) }));   // [655] forma canonică a câmpului numeric („1210.50”)
       trimise.forEach((q, i) => {
         const v = Number(q.suma);
         const max = Math.min(Number(facturi[q.factura_emisa_id].rest), Number(facturi[q.factura_primita_id].rest));

@@ -643,7 +643,8 @@ def test_def_c146_refuzul_stergerii_notei_z_trimite_la_raport_z(patron, firma_cx
     rand = _deschide_rand(patron, _nota_jn(patron, zid))
     motiv = " ".join(rand.locator(".jn-derivata").inner_text().split())
     patron.captura("motivul_din_jurnal")
-    assert rand.locator("[data-del]").count() == 0 and rand.locator("[data-edit]").count() == 0
+    # [lotul 13, 675] „Editează” / „Șterge” stau la locul lor, inactive, cu motivul: niciunul activ
+    assert rand.locator('[data-del]:not([aria-disabled="true"])').count() == 0 and rand.locator('[data-edit]:not([aria-disabled="true"])').count() == 0
     # motivul e chiar textul pe care îl citește contabilul: se compară cu ce ARATĂ aplicația pe drumul numit (titlul cardului și eticheta
     # butonului, citite de pe ecran), nu cu o constantă din cod — o mutație a textului din cod ar trece o comparație cu codul însuși
     assert ("în %s:" % titlu_card) in motiv and ("«%s»" % buton) in motiv, (motiv, titlu_card, buton)

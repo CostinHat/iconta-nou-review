@@ -1117,7 +1117,8 @@ def test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza(patron, firma_gv):
     for i in nir_ids + [m["id"]]:   # [617] „Editează” / „Șterge” și locul corecturii stau în detaliul notei: se deschide rândul
         _deschide_rand(patron, _nota_jn(patron, i))
     stare = pg.evaluate("""(ids) => ids.map(i => { const r = document.querySelector(`.fereastra:last-of-type [data-nota-id='${i}']`);
-        return r ? {id: i, edit: !!r.querySelector('[data-edit]'), del: !!r.querySelector('[data-del]'), text: r.innerText} : {id: i, lipsa: true}; })""",
+        const activ = (s) => !!r.querySelector(s + ':not([aria-disabled="true"])');   // [lotul 13, 675] inactiv cu motiv = neoferit
+        return r ? {id: i, edit: activ('[data-edit]'), del: activ('[data-del]'), text: r.innerText} : {id: i, lipsa: true}; })""",
                         nir_ids + [m["id"]])
     patron.captura()
     *nir, manuala = stare

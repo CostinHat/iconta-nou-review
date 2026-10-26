@@ -36,7 +36,7 @@ def test_def_440_casa_data_tipul_si_suma_lipsa_toate_deodata(patron, firma_e2e):
     pg = patron.pg
     patron.firma(firma_e2e["nume"])
     _card(patron, "casa", "#c-toggle")
-    if pg.is_hidden("#c-zona"):
+    if not pg.locator("#c-campuri").count():   # [lotul 13, 673] dispoziția nouă e o fereastră
         pg.click("#c-toggle")
     pg.fill("#c-data", "")
     pg.fill("#c-suma", "")

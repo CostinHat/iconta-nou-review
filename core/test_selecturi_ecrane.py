@@ -65,9 +65,9 @@ def test_mecanismul_comun_din_api():
 def test_CALIBRARE_select_fiscal_fara_alege_e_prins():
     p = "static/js/ecrane/firme.js"
     s = _js(p)
-    a = '<select class="camp-input" id="fn-tip">${ALEGE}'
+    a = '<select class="camp-input" id="fn-tip" data-butoane>${ALEGE}'   # [lotul 13, 676] tipul faptului: butoane alăturate
     assert s.count(a) == 1
-    rele = dict(S.masoara([(p, s.replace(a, '<select class="camp-input" id="fn-tip">'))]))
+    rele = dict(S.masoara([(p, s.replace(a, '<select class="camp-input" id="fn-tip" data-butoane>'))]))
     assert rele.get("firme.js:fn-tip", "").startswith("fapt fiscal fără")
 
 

@@ -155,11 +155,14 @@ def test_def_617_jurnal_un_rand_pe_nota_detaliul_la_clic_explicatia_o_data(brows
                   explicatie: (c.innerText.match(/nu se validează fără documentul din care provine/g) || []).length,
                   legenda: !!c.querySelector('#jn-expl-fara_doc'),
                   aria: c.querySelector('[data-val="1031"]').getAttribute('aria-describedby'),
-                  dezactivat: c.querySelector('[data-val="1031"]').disabled}; }""" % _CORP)
+                  dezactivat: c.querySelector('[data-val="1031"]').getAttribute('aria-disabled') === 'true',
+                  motiv: c.querySelector('[data-val="1031"]').title}; }""" % _CORP)
         assert m["note"] == 34 and set(m["randuri"]) == {1}, m              # „tabel cu un rând pe notă”
         assert m["detalii_vazute"] == 0, m                                   # „detaliul la clic”: închis la deschidere
         assert m["explicatie"] == 1 and m["legenda"], m                      # „explicațiile o singură dată” (două note fără document)
         assert m["dezactivat"] and "jn-expl-fara_doc" in m["aria"], m       # [386] „Validează” inactiv, legat de explicație
+        # [lotul 13, 675 / 610] inactiv cu motivul (pasul notei) la trecerea cu mouse-ul — clicul nu dă niciun refuz
+        assert m["motiv"].startswith("Notă fără document justificativ. Scrie referința"), m
         pg.click("tbody[data-nota-id='1005'] .tn-rand td:nth-child(4)")     # clic pe rând (în afara butoanelor)
         pg.wait_for_selector("#jn-det-1005", state="visible", timeout=5000)
         celule = pg.evaluate("""() => [...document.querySelectorAll('#jn-det-1005 table.tn-linii tbody tr')]

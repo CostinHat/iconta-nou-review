@@ -126,7 +126,7 @@ def test_def_252_facturile_preluate_intra_in_scadentar_si_le_stinge_banca(patron
     pg.wait_for_function("() => document.querySelector('#bk-mesaj').innerText.includes('linie importată')", timeout=30000)
     assert "1 linie importată: 1 potrivită pe facturi, 0 fără potrivire" in " ".join(pg.inner_text("#bk-mesaj").split()), \
         pg.inner_text("#bk-mesaj")
-    linie = pg.locator("#bk-lista .pf-frand", has_text="Incasare FA-101").first
+    linie = pg.locator("#bk-lista tbody.tn-nota", has_text="Incasare FA-101").first
     linie.wait_for(timeout=20000)
     patron.captura("banca_potrivire")
     assert "Potrivire exactă" in " ".join(linie.inner_text().split()), linie.inner_text()

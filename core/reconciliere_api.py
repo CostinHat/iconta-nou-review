@@ -468,9 +468,11 @@ def facturi_deschise_detalii(conn, schema):
         return []
     ids = [f["id"] for f in fd]
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT id, numar, serie, tert_nume FROM {schema}.facturi WHERE id=ANY(%s)", (ids,))
+        cur.execute(f"SELECT id, numar, serie, tert_nume, tip FROM {schema}.facturi WHERE id=ANY(%s)", (ids,))
         det = {r["id"]: r for r in cur.fetchall()}
+    # [lotul 13, 669] `preluata`: soldul pe partener preluat la migrare („Sold la <data>”), stins ca o factură (Casă, Bancă, Compensări)
+    from core import nomenclator_status_factura as _nsf
     return [{"id": f["id"], "tert_cui": f["tert_cui"], "directie": f["directie"],
              "data_emitere": str(f["data_emitere"]), "sold": str(f["sold"]),
              "numar": det[f["id"]]["numar"], "serie": det[f["id"]]["serie"],
-             "tert_nume": det[f["id"]]["tert_nume"]} for f in fd]
+             "tert_nume": det[f["id"]]["tert_nume"], "preluata": det[f["id"]]["tip"] == _nsf.TIP_SOLD_PRELUAT} for f in fd]

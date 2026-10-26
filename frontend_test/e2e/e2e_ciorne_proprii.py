@@ -51,7 +51,8 @@ def test_def_246_ciorna_altui_utilizator_se_vede_dar_nu_se_schimba(asistent, fir
         _deschide_rand(asistent, _nota_jn(asistent, i))
     stare = pg.evaluate("""(ids) => ids.map(i => { const r = document.querySelector(`.fereastra:last-of-type [data-nota-id='${i}']`);
         const m = r && r.querySelector('.jn-a-altuia');
-        return r ? {edit: !!r.querySelector('[data-edit]'), del: !!r.querySelector('[data-del]'), trimite: !!r.querySelector('[data-retrimite]'),
+        const activ = (s) => !!r.querySelector(s + ':not([aria-disabled="true"])');   // [lotul 13, 675] inactiv cu motiv = neoferit
+        return r ? {edit: activ('[data-edit]'), del: activ('[data-del]'), trimite: activ('[data-retrimite]'),
                     motiv: m ? m.innerText.trim() : null} : null; })""", [a_patronului, a_ei])
     asistent.captura()
     nume = _nume(PATRON)

@@ -37,7 +37,10 @@ MOUNT = """async ([modUrl]) => {
   const m = await import(modUrl);
   document.body.innerHTML = '<div id="mount"></div>';
   const corp = document.getElementById('mount');
-  await m.ecranStocuri(corp, { inapoiPas(){}, deschide(){} }, { id: 1 });
+  // [lotul 13, 673] „+ NIR nou” deschide formularul în fereastra lui: navigatorul de probă desenează fereastra peste ecran
+  const nav = { inapoiPas(){}, mergi(){}, deschide(titlu, f) { const d = document.createElement('div'); d.className = 'fer-proba'; document.body.appendChild(d); f(d, nav); },
+                inapoi() { const f = [...document.querySelectorAll('.fer-proba')].pop(); if (f) f.remove(); } };
+  await m.ecranStocuri(corp, nav, { id: 1 });
   return true;
 }"""
 
@@ -118,7 +121,7 @@ def nir_env():
         pg.goto("http://127.0.0.1:%d/static/" % port)
         pg.evaluate(MOUNT, ["/static/js/ecrane/firme.js"])
         pg.wait_for_selector("#sn-toggle")
-        pg.click("#sn-toggle")           # dezvaluie zona NIR (hidden by default)
+        pg.click("#sn-toggle")           # [lotul 13, 673] deschide fereastra NIR-ului
         pg.wait_for_selector("#sn-linii")
         return pg
 
@@ -191,7 +194,7 @@ def test_doua_randuri_cu_erori_simultan(nir_env):
     _factura_nesosita(pg); pg.click("#sn-salveaza"); pg.wait_for_timeout(300)
     assert pg.locator('.msg-eroare[data-camp="nir-l1-denumire"]').count() == 1, "eroarea nu e langa nir-l1-denumire"
     assert pg.locator('.msg-eroare[data-camp="nir-l1-cantitate"]').count() == 1, "eroarea nu e langa nir-l1-cantitate"
-    assert pg.locator('#mount .msg-eroare[data-camp^="nir-l0-"]').count() == 0, "linia completa l0 are erori false"
+    assert pg.locator('.fer-proba .msg-eroare[data-camp^="nir-l0-"]').count() == 0, "linia completa l0 are erori false"
     pg.close()
 
 

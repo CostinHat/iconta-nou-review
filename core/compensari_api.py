@@ -33,6 +33,7 @@ plăților unei facturi o citesc prin `legaturi()` / `nota_de_compensare()` — 
 
 FIECARE FUNCȚIE PRIMEȘTE CURSORUL / CONEXIUNEA APELANTULUI. Nu deschide conexiuni, nu comite.
 """
+import re
 from decimal import Decimal, ROUND_HALF_UP
 
 from psycopg2.extras import RealDictCursor
@@ -194,11 +195,17 @@ def propunere(conn, schema):
 
 
 # ══════════════════════════════════════════════════════════════════ VERIFICAREA ȘI SCRIEREA
+#: [lotul 13, deficiența 655] suma cererii, în forma canonică a ecranului („1210.50”, câmpul numeric comun) sau cu virgulă la zecimale
+#: („1210,50”): cel mult două zecimale. Un text cu punct de mii („1.210” = o mie două sute zece) nu e o sumă în lei și bani — înainte
+#: `Decimal("1.210")` era 1,21 și trecea de verificarea zecimalelor (1,210 == 1,21); acum se refuză numit, nu se citește greșit tăcut.
+_RE_SUMA = re.compile(r"^\d+(?:[.,]\d{1,2})?$")
+
+
 def _suma(v):
-    try:
-        s = Decimal(str(v).replace(" ", "").replace(",", "."))
-    except Exception:  # noqa: BLE001 — orice text care nu e număr e același refuz numit
-        raise RefuzCompensare(COD_DATE, "Suma de compensat trebuie să fie un număr (ex. 605,00).")
+    t = str(v).replace(" ", "")
+    if not _RE_SUMA.match(t):
+        raise RefuzCompensare(COD_DATE, "Suma de compensat se scrie în lei și bani, cu cel mult două zecimale (ex. 1210,50).")
+    s = Decimal(t.replace(",", "."))
     if s <= 0 or s != s.quantize(_BAN, rounding=ROUND_HALF_UP):
         raise RefuzCompensare(COD_DATE, "Suma de compensat trebuie să fie mai mare decât zero, în lei și bani (cel mult două zecimale).")
     return s

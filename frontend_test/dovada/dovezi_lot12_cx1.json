@@ -23,10 +23,10 @@
     "asteapta_text": "linii importate"
    },
    {
-    "asteapta": "#bk-lista .pf-frand:has-text('Proba C150 Comision administrare') [data-cont]"
+    "asteapta": "#bk-lista tbody.tn-nota:has-text('Proba C150 Comision administrare') [data-cont]"
    },
    {
-    "click": "#bk-lista .pf-frand:has-text('Proba C150 Comision administrare') [data-cont]"
+    "click": "#bk-lista tbody.tn-nota:has-text('Proba C150 Comision administrare') [data-cont]"
    },
    {
     "asteapta_text": "Proba C150 Comision administrare cont): notă"
@@ -38,10 +38,10 @@
     "captura": "c150_f1_prima_confirmare.png"
    },
    {
-    "asteapta": "#bk-lista .pf-frand:has-text('Proba C150 Comision mentenanta') [data-cont]"
+    "asteapta": "#bk-lista tbody.tn-nota:has-text('Proba C150 Comision mentenanta') [data-cont]"
    },
    {
-    "click": "#bk-lista .pf-frand:has-text('Proba C150 Comision mentenanta') [data-cont]"
+    "click": "#bk-lista tbody.tn-nota:has-text('Proba C150 Comision mentenanta') [data-cont]"
    },
    {
     "asteapta_text": "Proba C150 Comision mentenanta card): notă"

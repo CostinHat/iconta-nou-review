@@ -55,7 +55,7 @@ def _iesire_z_veche(patron, f, nr):
     id-ul Z-ului)."""
     pg, zid = _genereaza(patron, f, nr)
     _iesire(pg, zid, _articol(f), 2)
-    pg.wait_for_function("() => (document.querySelector('#zd-rez') || {innerText: ''}).innerText.includes('Ieșire înregistrată')",
+    pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('Ieșire înregistrată')",
                          timeout=20000)
     s = f["schema"]
     (nid, doc_z), = sql('SELECT i.id, i.document_ref FROM "%s".miscari_stoc m JOIN "%s".inregistrari i ON i.id = m.inregistrare_id '

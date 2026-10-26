@@ -140,11 +140,15 @@
     "click": "#fa-banca"
    },
    {
-    "asteapta": "#bk-lista .pf-frand",
+    "asteapta": "#bk-lista tbody.tn-nota",
     "text": "IE6388047V factura F1A7"
    },
    {
-    "deruleaza": "#bk-lista .pf-frand",
+    "deruleaza": "#bk-lista tbody.tn-nota",
+    "text": "IE6388047V factura F1A7"
+   },
+   {
+    "click": "#bk-lista tbody.tn-nota",
     "text": "IE6388047V factura F1A7"
    },
    {
@@ -161,7 +165,7 @@
     "zona": "#bk-lista"
    },
    {
-    "exista": "#bk-lista .pf-frand",
+    "exista": "#bk-lista tbody.tn-nota",
     "text": "IE6388047V factura F1A7"
    }
   ],

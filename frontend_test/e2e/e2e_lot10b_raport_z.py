@@ -63,7 +63,7 @@ def test_def_438_descarcarea_pe_z_are_ca_document_raportul_z(patron, firma_cv):
     pg, zid = _genereaza(patron, f, "1438")
     aid = _articol(f)
     _iesire(pg, zid, aid, 2)
-    pg.wait_for_function("() => (document.querySelector('#zd-rez') || {innerText: ''}).innerText.includes('Ieșire înregistrată')",
+    pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('Ieșire înregistrată')",
                          timeout=20000)
     doc = "Raport Z nr 1438 din %s (casa %s)" % (AZI.strftime("%d.%m.%Y"), CASA)
     rand = sql('SELECT i.document_ref, m.document FROM "%s".miscari_stoc m JOIN "%s".inregistrari i ON i.id = m.inregistrare_id '
@@ -138,7 +138,7 @@ def test_def_zdescarcare_arata_valoarea_si_butonul_de_validare(patron, firma_cv)
     _iesire(pg, zid, _articol(f), 2)
     pg.wait_for_selector("#zd-val-%d" % zid, timeout=20000)
     # OMFP 1802/2014 pct.96: ieșirea la costul mediu ponderat — 2 buc × 4,00 = 8,00 lei
-    assert "Ieșire înregistrată: 8,00 lei" in pg.inner_text("#zd-rez")
+    assert "Ieșire înregistrată: 8,00 lei" in pg.inner_text("#z-descarcare")
     assert "în valoare de 8,00 lei" in " ".join(pg.inner_text("#zd-valoare-%d" % zid).split())
     patron.captura("descarcat")
     pg.click("#zd-val-%d" % zid)
@@ -148,7 +148,7 @@ def test_def_zdescarcare_arata_valoarea_si_butonul_de_validare(patron, firma_cv)
     caseta = " ".join(pg.inner_text("#caseta-atentie-activa").split())
     assert "Ai descărcat din stoc 1 ieșire la cost 8,00 lei" in caseta and pg.inner_text("#ca-ok").strip() == "Da, validează raportul Z", caseta
     pg.click("#caseta-atentie-activa #ca-ok")
-    pg.wait_for_function("() => (document.querySelector('#zd-rez') || {innerText: ''}).innerText.includes('e validat')", timeout=20000)
+    pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('e validat')", timeout=20000)
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (zid,)) == [("validata",)]
     assert pg.locator("#z-descarcare [data-z='%d']" % zid).count() == 0
     patron.captura("validat")

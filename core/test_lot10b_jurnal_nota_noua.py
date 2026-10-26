@@ -49,7 +49,15 @@ MOUNT = """async ([modUrl, an, luna, regim]) => {
       <span class="fereastra-spatiu"></span><button class="nav-x">✕</button></div>
     <div class="fereastra-corp" tabindex="0"></div></div></div>`;
   const m = await import(modUrl);
-  await m.ecranJurnal(document.querySelector('.fereastra-corp'), { deschide(){}, inapoi(){}, setInapoi(){} },
+  // [lotul 13, 673] „Notă nouă” se deschide în fereastra ei, peste registru: navigatorul de probă pune o fereastră nouă (aceeași structură,
+  // lățimea tabelului — `deschideActiunea`, `lat: "tabel"`) și o scoate la „Renunță” / după salvare
+  const fer = () => { const o = document.createElement('div'); o.className = 'fereastra-overlay fer-proba';
+    o.innerHTML = `<div class="fereastra fer-tabel" role="dialog"><div class="fereastra-antet"><button class="nav-sageata nav-inapoi">←</button>
+      <span class="fereastra-fir">Notă nouă</span><span class="fereastra-spatiu"></span><button class="nav-x">✕</button></div>
+      <div class="fereastra-corp" tabindex="0"></div></div>`; document.body.appendChild(o); return o.querySelector('.fereastra-corp'); };
+  const nav = { setInapoi(){}, deschide(titlu, f) { f(fer(), nav); },
+                inapoi() { const f = [...document.querySelectorAll('.fer-proba')].pop(); if (f) f.remove(); } };
+  await m.ecranJurnal(document.querySelector('.fereastra-corp'), nav,
                       { id: 1, nume: "Firma", regim_contabil: regim || "dubla" }, { an: an || 2026, luna: luna || 9 });
   return true;
 }"""
@@ -111,6 +119,8 @@ def test_7h_suma_notei_noi_e_goala(pagina):
 def test_7h_suma_goala_e_ceruta_langa_camp_nu_trimisa_drept_zero(pagina):
     pg, cereri = pagina
     _deschide_nota_noua(pg)
+    # [lotul 13, 602] în altă lună decât cea curentă data notei noi nu mai vine precompletată cu ziua 1: o scrie contabilul (ziua documentului)
+    pg.fill("#je-data", "2026-09-01")
     pg.fill("#je-doc", "Chitanță nr. 5 din 01.09.2026")
     pg.fill("#je-linii .je-deb", "6022")
     pg.fill("#je-linii .je-cre", "5311")
@@ -137,7 +147,7 @@ def test_7i_394_fereastra_notei_noi_nu_deruleaza(pagina, luna_curenta, regim):
     pg, _ = pagina
     azi = datetime.date.today()
     _deschide_nota_noua(pg, azi.year if luna_curenta else None, azi.month if luna_curenta else None, regim)
-    m = pg.evaluate("""() => { const c = document.querySelector('.fereastra-corp'), s = document.querySelector('#je-salveaza');
+    m = pg.evaluate("""() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(), s = document.querySelector('#je-salveaza');
       return {sh: c.scrollHeight, ch: c.clientHeight, jos_salveaza: s.getBoundingClientRect().bottom, jos_corp: c.getBoundingClientRect().bottom,
               note: document.querySelectorAll('[data-nota-id]').length}; }""")
     # 10.2 pct.7i (394): „fereastra «Notă nouă» din Registru jurnal încă se derulează vertical.” — cu 8 note în lună, la 1366×768

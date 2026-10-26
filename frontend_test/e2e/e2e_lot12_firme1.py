@@ -59,7 +59,7 @@ def _lista_cu(pg, text):
     """Lista liniilor DUPĂ ce a ajuns pe ecran rândul cu `text`. Ecranul scrie mesajul importului, apoi recere lista (`incarca()`,
     neașteptat): citită imediat după mesaj, lista e încă cea dinainte de import (prins la rularea din 23.10.2026, 251: lista avea numai
     liniile testelor anterioare). Firma e una pe fișier, deci rândurile testelor de dinainte sunt și ele în listă."""
-    pg.locator("#bk-lista .pf-frand", has_text=text).first.wait_for(timeout=20000)
+    pg.locator("#bk-lista tbody.tn-nota", has_text=text).first.wait_for(timeout=20000)
     return pg.inner_text("#bk-lista")
 
 
@@ -107,13 +107,15 @@ def test_def_479_extrasul_in_tabel_dupa_mt940_nu_dubleaza_linia_si_nu_propune_51
     m2 = _incarca(pg, "extras_e2e479_%d.csv" % time.time(), "text/csv", csv)
     patron.captura("dublura_pusa_deoparte")
     assert "1 linie pare deja importată din alt extras" in m2 and "pusă deoparte, ca «Ignorată»" in m2, m2
-    pg.wait_for_function("() => document.querySelectorAll('#bk-lista .pf-frand').length >= 2", timeout=20000)
+    pg.wait_for_function("() => document.querySelectorAll('#bk-lista tbody.tn-nota').length >= 2", timeout=20000)
     lista = pg.inner_text("#bk-lista")
     assert "5121=5121" not in lista and "5121 = 5121" not in lista, lista
-    rand = pg.locator("#bk-lista .pf-frand", has_text="pare aceeași mișcare")
+    # [lotul 13, 624] linia pusă deoparte stă grupată, în tabelul „Linii puse deoparte”; motivul și „Readu” sunt în detaliul ei (clic pe rând)
+    rand = pg.locator("#bk-deoparte tbody.tn-nota", has_text=desc)
     assert rand.count() == 1, lista
-    t = rand.inner_text()
-    assert "Ignorată" in t and "readu" in t and "+479,00 lei" in t, t
+    rand.locator(".tn-deschide").click()
+    t = " ".join(rand.inner_text().split())
+    assert "Ignorată" in t and "pare aceeași mișcare" in t and "Readu" in t and "+479,00" in t, t
     # nota propusă are și suma, modulul și versiunea regulilor (`core/banca._nota`): aici contează perechea de conturi
     assert sql("SELECT status, nota_propusa->>'debit', nota_propusa->>'credit' FROM \"%s\".extras_linii WHERE suma = 479 ORDER BY id" % s) == [
         ("nou", "5121", "4111"), ("ignorat", None, None)]
@@ -158,9 +160,10 @@ def test_def_480_incasarea_cu_cod_tva_strain_si_numarul_facturii_se_potriveste(p
     _banca(patron, firma_e2e)
     pg = patron.pg
     _incarca(pg, "extras_e2e480_%d.csv" % time.time(), "text/csv", csv)
-    rand = pg.locator("#bk-lista .pf-frand", has_text=_AT)
+    rand = pg.locator("#bk-lista tbody.tn-nota", has_text=_AT)
     rand.wait_for(timeout=20000)
-    t = rand.inner_text()
+    rand.locator(".tn-deschide").click()   # [lotul 13, 624] motivul potrivirii e în detaliul liniei
+    t = " ".join(rand.inner_text().split())
     patron.captura("potrivire_dupa_numar")
     assert "Potrivire exactă" in t and "numărul facturii din descriere" in t, t
     assert rand.locator("[data-cont]").count() == 1, t
@@ -183,7 +186,7 @@ def test_def_481_numerarul_din_z_intra_in_registrul_de_casa(patron, firma_e2e):
     pg.click(".nav-sageata.nav-inapoi")
     _card(patron, "casa", "#c-sold-final")
     pg.wait_for_timeout(500)
-    rand = pg.locator(".pf-frand", has_text="0481")
+    rand = pg.locator(".fereastra:last-of-type tbody.tn-nota", has_text="0481")
     t = rand.first.inner_text()
     patron.captura("registrul_cu_z")
     # OMFP 2634/2015 14-4-1: raportul Z e documentul încasărilor zilnice în numerar -> rând în registrul de casă (14-4-7A)
@@ -214,9 +217,10 @@ def test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta(patron, firma
     patron.captura("chitanta_avans")
     (serie, nr), = sql('SELECT serie, numar FROM "%s".chitante WHERE factura_id IS NULL AND suma = 456' % s)
     assert serie == "E2ECH" and ("Chitanța %s" % serie) in text, text
-    rand = pg.locator(".pf-frand", has_text="%s-%s" % (serie, nr))
+    rand = pg.locator(".fereastra:last-of-type tbody.tn-nota", has_text="%s-%s" % (serie, nr))
     t = rand.first.inner_text()
-    assert "fără chitanță" not in t and rand.first.locator("[data-chpdf]").count() == 1, t
+    # [lotul 13, 675] „PDF chitanță” e pe fiecare rând (în detaliu); activ numai unde chitanța există
+    assert "fără chitanță" not in t and rand.first.locator("[data-chpdf]:not([aria-disabled='true'])").count() == 1, t
 
 
 # ── 483 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -307,7 +311,7 @@ def test_def_474_z_descarcat_partial_cere_confirmarea_cu_cifrele(patron, firma_e
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % s, (zid,)) == [("ciorna",)]
     pg.click("#zd-val-%d" % zid)
     pg.click("#caseta-atentie-activa #ca-ok")
-    pg.wait_for_function("() => document.querySelector('#zd-rez').innerText.includes('e validat')", timeout=25000)
+    pg.wait_for_function("() => document.querySelector('#z-descarcare').innerText.includes('e validat')", timeout=25000)
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % s, (zid,)) == [("validata",)]
 
 

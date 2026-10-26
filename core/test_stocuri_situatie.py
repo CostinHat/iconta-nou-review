@@ -2,8 +2,8 @@
 """GARD ÎN BROWSER — ecranul Stocuri (comanda Costin 05.10.2026 pct.10): „ecranul se deschide cu situația stocului (articol, UM,
 cantitate, CMP, valoare), formularele (NIR, mișcări, coduri, nivel minim) stau sub ea, la cerere; Rețete apare doar la firmele
 HoReCa.” Ecranul real (`firme.ecranStocuri`) montat în Chromium, rutele simulate.
-MUTAȚII: `hidden` scos de pe `#cv-zona` -> formularele deschise de la început -> pică; condiția `reteteVizibile` scoasă -> Rețete
-la o firmă non-HoReCa -> pică; situația scoasă -> pică.
+MUTAȚII: formularele desenate în pagina Stocurilor de la deschidere -> pică; condiția `reteteVizibile` scoasă -> Rețete la o firmă
+non-HoReCa -> pică; situația scoasă -> pică. [lotul 13, 673] NIR-ul și „Mișcări, fișe…” se deschid fiecare în fereastra lor.
 """
 import functools
 import http.server
@@ -22,7 +22,9 @@ ARTS = [{"id": 1, "denumire": "Pâine albă", "um": "buc", "stoc": "110.000", "v
 MOUNT = """async ([modUrl]) => {
   const m = await import(modUrl);
   document.body.innerHTML = '<div id="mount"></div>';
-  await m.ecranStocuri(document.getElementById('mount'), { deschide(){}, inapoi(){}, inapoiPas(){} }, { id: 1 });
+  const nav = { inapoiPas(){}, mergi(){}, deschide(titlu, f) { const d = document.createElement('div'); d.className = 'fer-proba'; document.body.appendChild(d); f(d, nav); },
+                inapoi() { const f = [...document.querySelectorAll('.fer-proba')].pop(); if (f) f.remove(); } };
+  await m.ecranStocuri(document.getElementById('mount'), nav, { id: 1 });
   return true;
 }"""
 
@@ -46,7 +48,6 @@ def _pagina(br, port, horeca):
     pg.goto("http://127.0.0.1:%d/static/" % port)
     pg.evaluate(MOUNT, ["/static/js/ecrane/firme.js"])
     pg.wait_for_selector("#s-situatie-tabel", timeout=15000)
-    pg.wait_for_selector("#cv-zona #cv-art", state="attached", timeout=15000)
     return pg
 
 
@@ -74,9 +75,9 @@ def test_situatia_stocului_e_prima_si_formularele_la_cerere(br):
     assert pg.eval_on_selector("#s-situatie-tabel tfoot", "e => e.innerText.replace(/\\s+/g, ' ').trim()") == "Total valoare stoc 257,50"
     # situația stă DEASUPRA formularelor; formularele sunt închise la deschidere
     assert pg.evaluate("() => !!(document.querySelector('#s-situatie').compareDocumentPosition(document.querySelector('#sn-toggle')) & Node.DOCUMENT_POSITION_FOLLOWING)")
-    assert pg.eval_on_selector("#cv-zona", "e => e.hidden") and pg.eval_on_selector("#sn-zona", "e => e.hidden")
-    pg.click("#cv-toggle")
-    assert not pg.eval_on_selector("#cv-zona", "e => e.hidden")
+    assert pg.locator("#cv-art, #sn-numar").count() == 0, "formularele sunt deschise fără să fi fost cerute"
+    pg.click("#cv-toggle")                                      # [lotul 13, 673] fereastra mișcărilor, peste Stocuri
+    pg.wait_for_selector(".fer-proba #cv-zona #cv-art", state="attached", timeout=15000)
     assert pg.query_selector("#rt-lista") is None, "Rețete la o firmă care nu e HoReCa"
     pg.close()
 
@@ -84,5 +85,7 @@ def test_situatia_stocului_e_prima_si_formularele_la_cerere(br):
 def test_retetele_apar_la_firma_horeca(br):
     b, port = br
     pg = _pagina(b, port, horeca=True)
+    pg.click("#cv-toggle")
+    pg.wait_for_selector(".fer-proba #cv-zona #cv-art", state="attached", timeout=15000)
     assert pg.query_selector("#rt-lista") is not None
     pg.close()

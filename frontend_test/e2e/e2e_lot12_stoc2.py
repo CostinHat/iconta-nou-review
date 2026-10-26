@@ -92,11 +92,11 @@ def test_def_619_jurnalul_refuza_stornarea_inaintea_facturii_stornate(patron, fi
     with pg.expect_response(lambda r: ("/jurnal/%d/valideaza" % iesire) in r.url, timeout=30000) as rr:
         pg.click("[data-val='%d']" % iesire)
     assert rr.value.status == 200, rr.value.text()
-    pg.wait_for_function("(i) => !document.querySelector(`[data-val='${i}']`)", arg=iesire, timeout=20000)
+    pg.wait_for_function("(i) => !document.querySelector(`[data-val='${i}']:not([aria-disabled='true'])`)", arg=iesire, timeout=20000)   # [lotul 13, 675]
     with pg.expect_response(lambda r: ("/jurnal/%d/valideaza" % retur) in r.url, timeout=30000) as rr:
         pg.click("[data-val='%d']" % retur)
     assert rr.value.status == 200, rr.value.text()
-    pg.wait_for_function("(i) => !document.querySelector(`[data-val='${i}']`)", arg=retur, timeout=20000)
+    pg.wait_for_function("(i) => !document.querySelector(`[data-val='${i}']:not([aria-disabled='true'])`)", arg=retur, timeout=20000)
     patron.captura("stornarea_dupa_factura")
     assert set(_stari(firma_e2e, [retur, contare_s, iesire, contare]).values()) == {"validata"}
 

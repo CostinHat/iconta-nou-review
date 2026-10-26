@@ -106,11 +106,11 @@ def _incarca_extras(pg, csv_text, eticheta):
 
 
 def _alege_facturile(pg, text_linie):
-    """„Alege facturile” pe rândul liniei `text_linie`; întoarce rândul. Lista facturilor deschise e în zona mesajului (`#bk-mesaj`)."""
-    rand = pg.locator("#bk-lista .pf-frand", has_text=text_linie).first
+    """„Alege facturile” pe rândul liniei `text_linie`; întoarce rândul. [lotul 13, 673] Lista facturilor deschise e în fereastra ei."""
+    rand = pg.locator("#bk-lista tbody.tn-nota", has_text=text_linie).first
     rand.wait_for(timeout=20000)
     rand.locator("[data-alege]").click()
-    pg.wait_for_selector("#bk-mesaj #bk-pk-ok", timeout=20000)
+    pg.wait_for_selector(".fereastra:last-of-type #bk-pk-ok", timeout=20000)
     return rand
 
 
@@ -121,10 +121,11 @@ def _fid_oferite(pg, zona, atribut):
 def _conteaza_pe_factura(pg, text_linie, fid):
     """Linia `text_linie` -> „Alege facturile” -> factura `fid` bifată -> „Contează selectate”: nota se creează."""
     _alege_facturile(pg, text_linie)
-    pg.check("#bk-mesaj input[data-fid='%d']" % fid)
-    pg.click("#bk-pk-ok")
-    pg.wait_for_function("() => !document.querySelector('#bk-mesaj input[data-fid]') && "
-                         "(document.querySelector('#bk-mesaj').innerText || '').length > 0", timeout=30000)
+    pg.check(".fereastra:last-of-type input[data-fid='%d']" % fid)
+    pg.click(".fereastra:last-of-type #bk-pk-ok")
+    # [lotul 13, 673] fereastra alegerii se închide; confirmarea contării e în zona de mesaj a Băncii
+    pg.wait_for_function("() => !document.querySelector('#bk-pk-ok') && "
+                         "((document.querySelector('#bk-mesaj') || {}).innerText || '').length > 0", timeout=30000)
 
 
 def _istoric_detaliu(e, firma, fid):
@@ -424,7 +425,7 @@ def test_def_c125_raspunsul_importului_pastreaza_sensul_liniei(patron, firma_e2e
     inc, pla = "Incasare E2E C125 %d" % t, "Plata E2E C125 %d" % t
     _banca(patron, firma_e2e)
     r = _incarca_extras(patron.pg, "Data;Detalii;Suma\n%s;%s;125,00\n%s;%s;-12,50\n" % (zi, inc, zi, pla), "c125")
-    patron.pg.locator("#bk-lista .pf-frand", has_text=pla).first.wait_for(timeout=20000)
+    patron.pg.locator("#bk-lista tbody.tn-nota", has_text=pla).first.wait_for(timeout=20000)
     patron.captura("import")
     assert {x["descriere"]: (x["tip"], Decimal(x["suma"])) for x in r["linii"]} == {inc: ("incasare", Decimal("125.00")),
                                                                                     pla: ("plata", Decimal("12.50"))}, r["linii"]
@@ -492,9 +493,9 @@ def test_def_c144_banca_si_casa_nu_ofera_proforma(patron, firma_e2e):
     pg = patron.pg
     _incarca_extras(pg, "Data;Detalii;Suma\n%s;Incasare E2E C144 %d DANTE;121,00\n" % (AZI.strftime("%d.%m.%Y"), t), "c144")
     _alege_facturile(pg, "Incasare E2E C144 %d" % t)
-    banca = _fid_oferite(pg, "#bk-mesaj", "data-fid")
+    banca = _fid_oferite(pg, ".fereastra:last-of-type #bk-pk-tabel", "data-fid")
     patron.captura("banca_fara_proforma")
-    pg.click("#bk-pk-nu")
+    pg.click(".fereastra:last-of-type #bk-pk-nu")
     assert fact in banca and prof not in banca, (fact, prof, banca)
     patron.firma(firma_e2e["nume"])
     _card(patron, "casa", "#c-toggle")

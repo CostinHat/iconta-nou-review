@@ -951,8 +951,8 @@ def test_pilot_12_raportul_z_si_descarcarea_lui(patron, firma_pilot):
     pg.select_option("#zd-art-%d" % zid, str(_articol_id(f)))
     pg.fill("#zd-cant-%d" % zid, "2")
     pg.click(".zd-iesire[data-z='%d']" % zid)
-    pg.wait_for_function("() => (document.querySelector('#zd-rez') || {innerText: ''}).innerText.includes('Ieșire înregistrată')", timeout=20000)
-    assert "Ieșire înregistrată: %s lei" % _bani(2 * CMP) in pg.inner_text("#zd-rez"), pg.inner_text("#zd-rez")   # OMFP 1802/2014 pct.96
+    pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('Ieșire înregistrată')", timeout=20000)
+    assert "Ieșire înregistrată: %s lei" % _bani(2 * CMP) in pg.inner_text("#z-descarcare"), pg.inner_text("#z-descarcare")   # OMFP 1802/2014 pct.96
     _valideaza_z(patron, f, zid, 2 * CMP, Z_BAZA)
     patron.captura("validat")
 
@@ -989,8 +989,8 @@ def test_pilot_13_raportul_z_din_fisierul_amef(patron, firma_pilot):
     pg.select_option("#zd-art-%d" % zid, str(_articol_id(f)))
     pg.fill("#zd-cant-%d" % zid, "1")
     pg.click(".zd-iesire[data-z='%d']" % zid)
-    pg.wait_for_function("() => (document.querySelector('#zd-rez') || {innerText: ''}).innerText.includes('Ieșire înregistrată')", timeout=20000)
-    assert "Ieșire înregistrată: %s lei" % _bani(CMP) in pg.inner_text("#zd-rez"), pg.inner_text("#zd-rez")   # OMFP 1802/2014 pct.96
+    pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('Ieșire înregistrată')", timeout=20000)
+    assert "Ieșire înregistrată: %s lei" % _bani(CMP) in pg.inner_text("#z-descarcare"), pg.inner_text("#z-descarcare")   # OMFP 1802/2014 pct.96
     _valideaza_z(patron, f, zid, CMP, Z2_BAZA)
     patron.captura("validat")
 
@@ -1088,7 +1088,7 @@ def test_pilot_18_extrasul_de_banca_si_potrivirea(patron, firma_pilot):
     assert "6 linii importate: 4 potrivite pe facturi, 2 fără potrivire" in msg, msg
 
     def _rand(text):
-        r = pg.locator("#bk-lista .pf-frand", has_text=text).first
+        r = pg.locator("#bk-lista tbody.tn-nota", has_text=text).first
         r.wait_for(timeout=20000)
         return r, " ".join(r.inner_text().split())
 
@@ -1118,8 +1118,8 @@ def test_pilot_18_extrasul_de_banca_si_potrivirea(patron, firma_pilot):
         # confirmarea contării = rândul ACESTEI linii ajunge „Contat…” după reîncărcarea listei (`incarca`), iar zona de mesaj spune
         # „… creată”. NU „mesajul s-a schimbat”: două plăți din aceeași zi pe aceeași notă dau același text („Notă 401=5121 creată (…)”,
         # MF-901 și chiria, 28.09) — de acolo căderea din v6–v12, la a TREIA contare (chiria), deși ea plecase și se scrisese
-        pg.wait_for_function("(t) => { const r = [...document.querySelectorAll('#bk-lista .pf-frand')].find((x) => x.innerText.includes(t)); "
-                             "return r && /Contat/.test(r.querySelector('.pf-frand-nume').innerText); }", arg=text, timeout=30000)
+        pg.wait_for_function("(t) => { const r = [...document.querySelectorAll('#bk-lista tbody.tn-nota')].find((x) => x.innerText.includes(t)); "
+                             "return r && /Contat/.test(r.querySelector('.bk-stare').innerText); }", arg=text, timeout=30000)
         assert "creat" in pg.inner_text("#bk-mesaj"), (text, inainte, pg.inner_text("#bk-mesaj"))
     patron.captura("contat")
     note = sorted((_sintetic(d), _sintetic(c), s) for d, c, s in _note(f, "i.sursa = 'banca'"))
@@ -1325,7 +1325,7 @@ def test_pilot_24_notele_lunii_validate(patron, firma_pilot):
         pg.locator(buton).scroll_into_view_if_needed()
         pg.click(buton)
         pg.wait_for_function("(id) => { const r = document.querySelector(`tbody.tn-nota[data-nota-id='${id}']`); "
-                             "return r && !r.querySelector('[data-val]') && r.innerText.includes('Validată'); }", arg=str(nid), timeout=30000)
+                             "return r && !r.querySelector(\"[data-val]:not([aria-disabled='true'])\") && r.innerText.includes('Validată'); }", arg=str(nid), timeout=30000)
     patron.captura()
     assert sql('SELECT count(*) FROM "%s".inregistrari WHERE status <> \'validata\' AND data >= %%s AND data <= %%s' % f["schema"],
                (zi(1), zi(30))) == [(0,)]
@@ -1403,7 +1403,7 @@ def test_pilot_28_inchiderea_lunii(patron, firma_pilot):
     pg.wait_for_selector(buton, timeout=20000)
     pg.click(buton)
     pg.wait_for_function("(id) => { const r = document.querySelector(`tbody.tn-nota[data-nota-id='${id}']`); "
-                         "return r && !r.querySelector('[data-val]') && r.innerText.includes('Validată'); }", arg=str(nid), timeout=30000)
+                         "return r && !r.querySelector(\"[data-val]:not([aria-disabled='true'])\") && r.innerText.includes('Validată'); }", arg=str(nid), timeout=30000)
     patron.captura("regularizare")
     _inchidere(patron, f)
     _la_luna(patron, "#il-prev", AN, LUNA)

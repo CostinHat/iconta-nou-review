@@ -614,6 +614,20 @@ def eticheta_document(fel, numar=None, data=None, detaliu=None):
     return t
 
 
+def explicatie_raport_z(data, nui, nr_raport, nr_bonuri=None, amef=False):
+    """[lotul 13, deficiența 618, comanda Costin 13.1, verbatim: „Raport Z | Titlul notei cu data ISO («Raport Z 2026-10-20»)”] Explicația
+    notei raportului Z, cu data în forma românească (`pdf_util.data_ro`, ca documentul justificativ de la `eticheta_document`): „Vânzări din
+    raportul Z nr 0042 din 20.10.2026, casa 8000000001”; la importul din fișierul AMEF, plus numărul de bonuri și pasul („de verificat cu
+    Z-ul tipărit”). Sursa UNICĂ pentru ambele drumuri ale Z-ului (scris de mână, `uc_tenants.horeca_raport_z`; importat,
+    `uc_tenants.horeca_import_amef`) și pentru migrarea ciornelor scrise înainte (`core/migrare_explicatie_raport_z.py`)."""
+    from core import pdf_util
+    from core.common import cate
+    t = "Vânzări din raportul Z nr %s din %s, casa %s" % (nr_raport, pdf_util.data_ro(data), nui)
+    if amef:
+        t += " (import AMEF, %s) — de verificat cu Z-ul tipărit" % cate(int(nr_bonuri or 0), "bon", "bonuri")
+    return t
+
+
 def eticheta_factura(fel, serie, numar, data):
     """„Factură FCT nr. 12 din 05.10.2026” — felul, numărul și data, în forma în care le citește omul.
 

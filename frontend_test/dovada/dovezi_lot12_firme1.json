@@ -31,7 +31,11 @@
     "click": "#fa-banca"
    },
    {
-    "asteapta": "#bk-lista .pf-frand"
+    "asteapta": "#bk-lista tbody.tn-nota"
+   },
+   {
+    "click": "#bk-deoparte tbody.tn-nota",
+    "text": "FISCALOS"
    },
    {
     "pauza": 800
@@ -115,7 +119,11 @@
     "asteapta_text": "linie importată"
    },
    {
-    "asteapta": "#bk-lista .pf-frand",
+    "asteapta": "#bk-lista tbody.tn-nota",
+    "text": "factura F1A5"
+   },
+   {
+    "click": "#bk-lista tbody.tn-nota",
     "text": "factura F1A5"
    }
   ],
@@ -307,7 +315,7 @@
     "asteapta_text": "linie importată"
    },
    {
-    "asteapta": "#bk-lista .pf-frand",
+    "asteapta": "#bk-lista tbody.tn-nota",
     "text": "Proba 251"
    }
   ],

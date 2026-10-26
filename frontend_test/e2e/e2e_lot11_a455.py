@@ -132,7 +132,8 @@ def test_def_456_incasarea_facturii_din_casa_emite_chitanta_cu_seria_firmei(patr
     _dispozitie(pg, "incasare_client", total, cui=CLIENT["#em-cui"], factura_id=fid)
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('Chitanța E2ECH nr. 1 a fost emisă')",
                          timeout=20000)
-    pg.wait_for_selector(".fereastra:last-of-type [data-chpdf]", timeout=20000)
+    # [lotul 13, 624] „PDF chitanță” stă în detaliul rândului (activ numai unde chitanța există)
+    pg.wait_for_selector(".fereastra:last-of-type [data-chpdf]:not([aria-disabled='true'])", state="attached", timeout=20000)
     patron.captura("chitanta_emisa")
     ((cid, serie, nr, f_id, op_id, anulata),) = sql('SELECT id, serie, numar, factura_id, casa_operatiune_id, anulata FROM "%s".chitante' % s)
     assert (serie, nr, f_id, anulata) == ("E2ECH", 1, fid, False)

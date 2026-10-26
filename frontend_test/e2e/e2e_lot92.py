@@ -74,7 +74,7 @@ def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_sr
     _card(patron, "casa", "#c-toggle")
 
     def _dispozitie(cat, suma, doc, avans_dest=None):
-        if pg.is_hidden("#c-zona"):
+        if not pg.locator("#c-campuri").count():   # [lotul 13, 673] dispoziția nouă e o fereastră
             pg.click("#c-toggle")
         pg.select_option("#c-cat", cat)
         pg.fill("#c-suma", str(suma))

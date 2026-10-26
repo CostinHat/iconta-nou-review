@@ -49,3 +49,24 @@ def avertisment(cur, schema, conturi):
         "D406 îl respinge." % (", ".join(afara), "OMFP 1802/2014" if norma == "A" else norma),
         unde="plan de conturi", regula="nomenclatorul validatorului ANAF pe norma firmei (d406.plan_oficial)"),
         cod=COD, conturi=afara)
+
+
+def refuz_adaugare_manuala(cur, schema, simbol, sintetic, plan_firma):
+    """[lotul 13, deficiența 589, comanda Costin 13.1, verbatim: „Plan de conturi | Contul sintetic 731 (în afara planului legal) a fost
+    adăugat manual; avertismentul apare după salvare; contul nu se poate șterge. Adăugarea manuală doar pentru analitice sub sintetic
+    legal.”] De ce contul `simbol` NU se adaugă manual în planul firmei, sau None. `sintetic` = sinteticul analiticului
+    (`uc_tenants.sintetic_al`; None = contul e sintetic), `plan_firma` = simbolurile din planul firmei.
+      - un sintetic nu se adaugă: planul firmei are deja sinteticele planului general, semănate la crearea ei (`tenant_template.sql`);
+      - un analitic se adaugă numai sub un sintetic din planul firmei care e în planul legal al normei ei (`in_afara`).
+    Aceeași regulă o aplică ecranul ÎNAINTE de salvare (Plan de conturi: avertismentul lângă câmp, din lista conturilor), iar serverul
+    la salvare (`uc_tenants.tenant_plan_conturi_adauga`)."""
+    if not sintetic:
+        return ("Contul %s e sintetic: sinteticele vin din planul general de conturi și sunt deja în planul firmei. Manual se adaugă numai "
+                "un analitic, sub sinteticul lui (de exemplu %s.01)." % (simbol, simbol))
+    if sintetic not in set(plan_firma or ()):
+        return "Contul sintetic %s nu e în planul firmei: analiticul se adaugă sub un cont sintetic din plan." % sintetic
+    if in_afara(cur, schema, [sintetic]):
+        norma = norma_firmei(cur, schema) or "A"
+        return ("Contul sintetic %s nu e în planul de conturi al normei firmei (%s): sub el nu se adaugă analitice." %
+                (sintetic, "OMFP 1802/2014" if norma == "A" else norma))
+    return None
