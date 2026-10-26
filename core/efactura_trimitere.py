@@ -36,6 +36,16 @@ MESAJ_NETRIMISA = "Factura nu a plecat în SPV și rămâne netrimisă."
 MESAJ_FARA_TOKEN = ("Cabinetul nu e conectat la SPV, deci factura nu poate pleca la ANAF. Conectarea se face o singură dată, din "
                     "Setări cont → Conectare SPV, cu certificatul digital al administratorului.")
 
+#: [lotul 13, deficiența 696] dreptul certificatului pe CUI-ul firmei nu e CONFIRMAT (`spv_conector.acoperire_cui`: «neverificat» — CUI-ul n-a
+#: fost încă citit —, «neconfirmat» — ultima citire n-a ajuns la un răspuns): factura se trimite oricum (ANAF răspunde la încărcare, deci nu e
+#: pierdere tăcută; numai „Nu aveți drept” — `neacoperit` — oprește, poarta 1b), iar răspunsul poartă `avertisment`, pe care ecranul „Trimite
+#: în SPV” îl arată lângă buton. Varianta respinsă: refuzul — ar bloca firmele noi, al căror CUI se citește abia la următoarea citire automată.
+AVERTISMENT_ACOPERIRE = {
+    "neverificat": "Certificatul nu a fost verificat pe CUI-ul firmei; dacă ANAF respinge factura, verifică în Setări cont › Conectare SPV.",
+    "neconfirmat": "Dreptul certificatului pe CUI-ul firmei nu s-a putut confirma la ultima verificare; dacă ANAF respinge factura, verifică "
+                   "în Setări cont › Conectare SPV.",
+}
+
 #: [lotul 11, C86] factura EMISĂ venită din XML-ul e-Factura (`/import-efactura`) — sursa unică a refuzului (ecranul îl arată în locul
 #: butonului „Trimite în SPV”, ruta îl întoarce cu `COD_DIN_EFACTURA`)
 MESAJ_DIN_EFACTURA = ("Factura a venit din e-Factura: e deja transmisă în SPV de programul care a emis-o (aplicația are XML-ul ei). Nu se "
@@ -197,6 +207,7 @@ def trimite(schema, factura_id, principal, mediu="test"):
         _st = spv_conector.stare_firma(conn, principal, cif)
         if _st.get("are_drept") is False:
             return {"stare": "fara_drept", "mesaj": _st["mesaj"]}
+        avertisment = AVERTISMENT_ACOPERIRE.get(_st.get("acoperire"))   # [696] drept neconfirmat: se trimite, cu avertisment
         _factura, linii, furnizor, client = incarca_factura(conn, schema, factura_id)
     # [C61] ANAF după P0, cu pool-ul liber (cele trei conexiuni rămân trei); generatorul e pur, nu mai cere conexiunea
     xml = _ef.genereaza_xml(_factura, linii, furnizor, completeaza_client_ro(client))
@@ -267,4 +278,6 @@ def trimite(schema, factura_id, principal, mediu="test"):
         stare = "investigatie"
         rez["mesaj"] = dublura
     rez["stare"] = stare
+    if avertisment:
+        rez["avertisment"] = avertisment
     return rez

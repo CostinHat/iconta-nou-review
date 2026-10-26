@@ -4496,7 +4496,8 @@ def factura_trimite_spv(tenant_id, factura_id, ctx):
             "execution_status": r.get("execution_status"),
             "erori": r.get("errors") or ([r.get("raspuns", "")] if st in ("nok", "eroare_upload") else []),
             # [lotul 10, C73 / U2] «investigatie»: încărcată peste o trimitere vie — mesajul numește dublura
-            "mesaj": r.get("mesaj") if st == "investigatie" else r.get("raspuns")}
+            "mesaj": r.get("mesaj") if st == "investigatie" else r.get("raspuns"),
+            "avertisment": r.get("avertisment")}   # [lotul 13, 696] dreptul certificatului pe CUI nu e confirmat: ecranul îl arată lângă buton
 
 
 #: [lotul 6 pct.7c, 273] ce nu vine din XML-ul facturii primite și se cere la validare (refuzuri structurate: `camp` = câmpul din ecran)

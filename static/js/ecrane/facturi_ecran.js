@@ -1234,10 +1234,13 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
               // răspunsul stă în zona de mesaj a detaliului refăcut — nu în zona SPV, pe care starea citită o rescrie (DS cap.27 v2.94)
               const trimisa = r.stare === "incarcat" || r.stare === "in_prelucrare";
               await detaliiFactura(corp, nav, tenantId, facturaId, opt);
-              arataMesaj(corp.querySelector("#fd-act-rez") || corp, trimisa
+              // [lotul 13, 696] dreptul certificatului pe CUI-ul firmei nu era confirmat: factura a plecat, iar avertismentul stă în același
+              // mesaj, sub buton (galben, persistent), ca omul să știe unde verifică dacă ANAF o respinge
+              arataMesaj(corp.querySelector("#fd-act-rez") || corp, (trimisa
                 ? "Trimisă în SPV (index " + (r.index_incarcare || "—") + "). ANAF o prelucrează; recipișa se preia separat."
                 : (r.stare === "eroare_upload" ? (r.erori || []).join("\n")   // [lotul 12, clasa 598] eroarea trimiterii e a aplicației, nu răspuns ANAF
-                  : "Răspuns ANAF:\n" + (r.erori || [r.mesaj || "eroare"]).join("\n")), trimisa ? "ok" : "avert");
+                  : "Răspuns ANAF:\n" + (r.erori || [r.mesaj || "eroare"]).join("\n"))) + (r.avertisment ? "\n" + r.avertisment : ""),
+                trimisa && !r.avertisment ? "ok" : "avert");
             }
           } catch (e) {
             arataMesaj(zonaSpv, e.mesaj || e.message || "eroare la trimitere", "eroare");
