@@ -8,7 +8,7 @@
 // fiecare rezultat e un buton (DS cap.2a, 674); alegerea (clic / Enter) deschide fereastra potrivită PESTE ce e deschis — ce s-a tastat
 // într-o fereastră de dedesubt se păstrează (DS cap.3, `nav` păstrează corpul ferestrei). Operațiunile refuzate rolului nu apar (`permis`).
 // Gard: `core/test_lot13_ds_cautare.py` (server) + e2e `frontend_test/e2e/e2e_lot13_ds.py::test_def_681_*`.
-import { api, esc, ultimaCerere } from "./api.js?v=e38843b1ec";
+import { api, esc, ultimaCerere } from "./api.js?v=cb524f997d";
 import { permis } from "./drepturi.js?v=34d0fb0afd";
 
 const ASTEPTARE_MS = 200;
@@ -45,7 +45,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=2b27eebcaf");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=1ef998eccc");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
@@ -70,7 +70,7 @@ export async function deschideRezultatul(x, nav) {
   }
   if (x.fel === "declaratie") {
     await _fereastraFirmei(nav, t);
-    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=cb3b13150a");
+    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=d7d80b5949");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, { tenant_id: t.id, nume: t.nume }, { tenant_id: t.id, tip: x.tip }),
       { lat: "tabel" });
     return;
@@ -139,7 +139,7 @@ export function puneCautarea(bara, nav) {
     }
     if (!actuala()) return;   // a sosit răspunsul unei căutări mai vechi
     // acțiunea unei operațiuni se compune ca la butoanele ei (`actiuneOp`); cele refuzate rolului nu apar
-    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=bcad53d1e9");
+    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=3affe700ed");
     if (!actuala()) return;
     rezultate = ((r && r.rezultate) || []).filter((x) => (x.ruta ? permis(actiuneOp(x)) : (!x.actiune || permis(x.actiune))));
     const deFirma = rezultate.some((x) => x.fel !== "card" && x.fel !== "operatiune") || tid;

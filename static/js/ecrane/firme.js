@@ -1,9 +1,9 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=e38843b1ec";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
-import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=e38843b1ec";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
-import { arataRefuzul, cereCompletate, ultimaCerere, pastreazaCampulActiv } from "../api.js?v=e38843b1ec";  /* [lotul 11, 440] refuzul serverului / câmpurile goale: toate deodată */
+import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=cb524f997d";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=cb524f997d";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
+import { arataRefuzul, cereCompletate, ultimaCerere, pastreazaCampulActiv } from "../api.js?v=cb524f997d";  /* [lotul 11, 440] refuzul serverului / câmpurile goale: toate deodată */
 // [lotul 11, 440] „Corectează datele” salariatului (PUT /salariati): numele câmpurilor din refuzul serverului (`valideaza_salariat`, corpul
 // cererii) -> id-ul de pe ecran, pentru `arataRefuzul`
 const CAMPURI_ED_SALARIAT = { nume: "ed-nume", prenume: "ed-pren", cnp: "ed-cnp", data_angajare: "ed-ang", tip_norma: "ed-norma", ore_zi: "ed-orezi",
@@ -32,27 +32,27 @@ function cnpValid(c) {
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=3cb9dd0359";  /* cm_flux_v1 */
-import { sumaRo } from "./sal_sume.js?v=lot13";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
-import { MESAJ_NUMAR_RO } from "../api.js?v=e38843b1ec";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
+import { fluxConcediu } from "./flux_concediu.js?v=e7e0501a77";  /* cm_flux_v1 */
+import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
+import { MESAJ_NUMAR_RO } from "../api.js?v=cb524f997d";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=c5b207b0d7";   // [lotul 13, 543] seria chitanțelor pe loc
-import { cautaInLista } from "./emitere_ecran.js?v=8d3aa3015f";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=7670069d0a";   // [lotul 13, 543] seria chitanțelor pe loc
+import { cautaInLista } from "./emitere_ecran.js?v=683df90dae";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=9a99f946fa";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=a6ea6eafbc";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=bcad53d1e9";
-import { ecranBorderou } from "./borderou_ecran.js?v=d10158abe3";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
-import { ecranEtransport } from "./etransport_ecran.js?v=17a05c8d9a";
-import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=7614b8c5ae";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=cb3b13150a";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=d858b7c307";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=66a07e1f74";  // [produse_firma_v1]
-import { ecranMagazin } from "./woo_ecran.js?v=0be26265a3";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=0250aeb5db";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js?v=2cbf966d6c";  // [ecran_mf_v1]
-import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=f9ca9329cc";  // [lotul 10, 429]
-import { ecranCompensari } from "./compensari_ecran.js?v=995d59c147";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
-import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=038e03a287";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=3affe700ed";
+import { ecranBorderou } from "./borderou_ecran.js?v=afada811c5";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
+import { ecranEtransport } from "./etransport_ecran.js?v=d8c78d67e3";
+import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=f6b23a2d2a";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=d7d80b5949";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=1f610ac06a";  // renderer unic verdict control fiscal (DS cap.20)
+import { randeazaProduse } from "./produse_ecran.js?v=862d71a030";  // [produse_firma_v1]
+import { ecranMagazin } from "./woo_ecran.js?v=885f441ff4";  // [wc_extras_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=9f13524992";  // [date_firma_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=8c6adaea51";  // [ecran_mf_v1]
+import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=bf9065cbb3";  // [lotul 10, 429]
+import { ecranCompensari } from "./compensari_ecran.js?v=ed3e73a2f0";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
+import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=91f9fce823";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
 import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
@@ -4265,10 +4265,12 @@ function starePastrata(cheie) {
 }
 // [lotul 13, 669] documentul deschis din ofertele Casei și Băncii: factura „F1A nr. 8 din 01.10.2026”, soldul preluat la migrare „Sold la
 // 30.09.2026 (sold preluat la migrare)” — fără „din <data>” repetat după data din numele lui
+// numărul documentului cu seria lui, pentru rândul listei (forma `numarCuSerie`)
+const cuSerieSiNumar = (f) => ({ ...f, numar: numarCuSerie(f.serie, f.numar) });
 const numeDocDeschis = (f, cuData = true) => f.preluata ? `${esc(f.numar)} <span class="tip-desc">(sold preluat la migrare)</span>`
   : `${esc(f.numar)}${cuData ? " din " + dataRo(f.data_emitere) : ""}`;
 // [lotul 13, 675] butonul unei acțiuni a rândului: la locul lui, activ — sau inactiv cu motivul (`atributeInactiv`, DS cap.1 v2.104)
-const butonRand = (clasa, atribute, eticheta, motiv) => `<button type="button" class="${clasa}" ${atribute}${motiv ? atributeInactiv(motiv) : ""}>${eticheta}</button>`;
+const butonRand = (cls, atribute, eticheta, motiv) => `<button type="button" class="${cls}" ${atribute}${motiv ? atributeInactiv(motiv) : ""}>${eticheta}</button>`;
 // [lotul 13, 624] o explicație repetată (aceeași, pe mai multe rânduri) se spune O DATĂ, cu rândurile ei (ca `listaRefuzuri` din Import date)
 function grupeazaMesaje(linii) {
   const g = new Map();
@@ -5093,7 +5095,7 @@ async function ecranAlegeFacturiBanca(corp, nav, t, cheie, l, pre) {
       <p class="pf-intro">${inc ? "Facturile emise neîncasate" : "Facturile primite neplătite"} și soldurile preluate la migrare („Sold la …”): bifează ce stinge linia; suma se împarte pe ele în ordinea din listă.</p></div>
     ${facturi.length ? `<table class="fd-tabel" id="bk-pk-tabel"><thead><tr><th>Alege</th><th>Factură</th><th>Partener</th><th>CUI</th><th>Data</th><th class="fd-td-num">Rămas (lei)</th></tr></thead>
       <tbody>${facturi.map((f) => `<tr><td><input type="checkbox" data-fid="${f.id}" data-sold="${f.sold}" aria-label="Alege ${esc(numarCuSerie(f.serie, f.numar))}"></td>
-        <td>${numeDocDeschis({ ...f, numar: numarCuSerie(f.serie, f.numar) }, false)}</td><td>${esc(f.tert_nume || "")}</td><td>${esc(f.tert_cui || "")}</td><td>${dataRo(f.data_emitere)}</td><td class="fd-td-num">${bani(f.sold)}</td></tr>`).join("")}</tbody></table>`
+        <td>${numeDocDeschis(cuSerieSiNumar(f), false)}</td><td>${esc(f.tert_nume || "")}</td><td>${esc(f.tert_cui || "")}</td><td>${dataRo(f.data_emitere)}</td><td class="fd-td-num">${bani(f.sold)}</td></tr>`).join("")}</tbody></table>`
       : `<div class="stare-goala" id="bk-pk-gol">${inc ? "Nicio factură emisă neîncasată" : "Nicio factură primită neplătită"} și niciun sold preluat deschis.</div>`}
     <div class="bara-fixa"><p class="dec-bara"><button class="buton-primar" id="bk-pk-ok" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza"${facturi.length ? "" : atributeInactiv("Nu e nicio factură deschisă de ales pe această direcție.")}>Contează selectate</button>
       <button type="button" class="buton-secundar" id="bk-pk-nu" data-fara-actiune="închide fereastra, fără scriere" style="margin-left:6px">Renunță</button></p>

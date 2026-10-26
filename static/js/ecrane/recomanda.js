@@ -1,7 +1,7 @@
 // recomanda.js — cardul Recomanda: invita un cabinet in iConta.
 // Trimite email(uri) de invitatie cu buton "Incearca iConta".
 // "Vezi ce trimite" = preview exact al emailului (acelasi HTML ca cel trimis).
-import { api, esc, arataMesaj, inchidereDialog, cate } from "../api.js?v=e38843b1ec";
+import { api, esc, arataMesaj, inchidereDialog, cate } from "../api.js?v=cb524f997d";
 
 export function randeazaRecomanda(corp, nav) {
   corp.innerHTML = `

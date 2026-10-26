@@ -3,7 +3,7 @@
 // Jurnal: evenimente cronologice (pregatit/aprobat/respins/depus), tabel scrollabil.
 // Regula design: fer-larg, antet fix, doar tabelul scrolleaza (un singur scrollbar).
 
-import { api, ultimaCerere, dataIso, esc, cate } from "../api.js?v=e38843b1ec";
+import { api, ultimaCerere, dataIso, esc, cate } from "../api.js?v=cb524f997d";
 
 // perioade selectabile -> [de, pana] ISO (sau null pentru tot)
 function interval(cheie) {

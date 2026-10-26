@@ -1,7 +1,7 @@
 // admin_analytics.js — Admin iConta: analytics public (doar superadmin).
 // Cifre ANONIME din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
 // Tabela nu contine niciun identificator (fara IP/UA/cookie/sesiune) -> fara date personale.
-import { api, esc, CULORI_CARD, cate, dupaNumar, dataRo } from "../api.js?v=e38843b1ec";
+import { api, esc, CULORI_CARD, cate, dupaNumar, dataRo } from "../api.js?v=cb524f997d";
 
 // [lotul 13, deficiența 649 — „Cifrele includ vizitele noastre de testare […]; nu se pot separa vizitatorii reali. Fără a adăuga
 // identificatori: evenimentele venite dintr-un browser cu sesiune iConta deschisă (cabinet sau admin) nu se numără, ori se arată separat.”]

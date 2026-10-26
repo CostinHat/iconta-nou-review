@@ -1,6 +1,6 @@
 // admin_activitate.js — Admin iConta: activitate + business cabinete (doar superadmin).
 // Sumar + lista cu firme/utilizatori/recomandari/actiuni, suspenda/reactiveaza, „Fișa” -> fereastra cabinetului.
-import { api, dataRo, confirmaCaseta, esc, cate, arataMesaj, arataRefuzul } from "../api.js?v=e38843b1ec";  /* audit_cab_lot2_v1 + esc_nc27 */
+import { api, dataRo, confirmaCaseta, esc, cate, arataMesaj, arataRefuzul } from "../api.js?v=cb524f997d";  /* audit_cab_lot2_v1 + esc_nc27 */
 
 // [lotul 13, deficiența 645 — anexa comenzii 13.1, decizia Costin + arhitect 24.10.2026, verbatim: „motiv obligatoriu din listă fixă —
 // neplată, la cererea cabinetului, încălcarea termenilor, acces suspect / securitate, la cererea unei autorități — plus notă internă

@@ -1,12 +1,12 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj, arataRefuzul, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=e38843b1ec";
+import { api, arataMesaj, arataRefuzul, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=cb524f997d";
 import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267] ciorna formularului de înregistrare
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
-import { sesiuneInternaDeschisa } from "./admin_analytics.js?v=c7c3950941";   // [lotul 13, 649] vizitele noastre nu se numără
+import { sesiuneInternaDeschisa } from "./admin_analytics.js?v=440f824e89";   // [lotul 13, 649] vizitele noastre nu se numără
 
 function svgIcon(paths, w = 24) {
   return `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;

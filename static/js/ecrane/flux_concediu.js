@@ -1,9 +1,9 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, daNu, refuzPeRand, arataRefuzul, arataMesaj, selectDaNu, MESAJ_NUMAR_RO } from "../api.js?v=e38843b1ec";
+import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, daNu, refuzPeRand, arataRefuzul, arataMesaj, selectDaNu, MESAJ_NUMAR_RO } from "../api.js?v=cb524f997d";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267, clasa] ciorna formularelor lungi de creare
-import { sumaRo } from "./sal_sume.js?v=lot13";  // [lotul 13, 655] suma scrisă de om, prin `numarRo`
+import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  // [lotul 13, 655] suma scrisă de om, prin `numarRo`
 // [lotul 11, 440] numele câmpurilor din refuzul serverului (`salariati_api.salveaza_concediu`, corpul cererii) -> id-ul de pe ecran
 const CAMPURI_CONCEDIU = { serie: "cm-serie", numar: "cm-numar", cod: "cm-cod", cod_urgenta: "cm-urgenta", cnp_ingrijit: "cm-cnp-ingrijit",
   venit_realizat: "cm-venit", data_acordare: "cm-acord", data_inceput: "cm-inceput", data_sfarsit: "cm-sfarsit", diagnostic: "cm-diag",

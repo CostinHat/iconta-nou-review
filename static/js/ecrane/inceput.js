@@ -5,28 +5,28 @@
 // butonul de ajutor (?).” + „La prima intrare, fiecare utilizator își pune obligatoriu telefonul, canalul (WhatsApp sau email) și bifele
 // de notificări înainte să ajungă în aplicație.”
 // Textul și starea fiecărui card vin de la server (`GET /eu/inceput`, `core/uc_inceput.py`): „făcut” e citit din bază, nu ținut aici.
-import { api, esc, arataMesaj } from "../api.js?v=e38843b1ec";
+import { api, esc, arataMesaj } from "../api.js?v=cb524f997d";
 
 // [320] butoanele cardurilor: fiecare deschide ecranul REAL (aceleași funcții ca meniul aplicației)
 async function deschide(cheie, nav, laSchimbare) {
   if (cheie === "migrare") {
-    const { randeazaMigrare } = await import("./migrare.js?v=7614b8c5ae");
+    const { randeazaMigrare } = await import("./migrare.js?v=f6b23a2d2a");
     nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" });
   } else if (cheie === "suport_import") {
     // banda „Suport” de pe pagina principală, apoi fila „Cerere import din altă aplicație”
     const b = document.querySelector('[data-deschide="raport"]');
     if (b) { b.click(); setTimeout(() => { const t = document.querySelector('.rap-tab[data-tab="import"]'); if (t) t.click(); }, 300); }
   } else if (cheie === "setari_spv") {
-    const { panouConectareSPV } = await import("./setari.js?v=08abddba63");
+    const { panouConectareSPV } = await import("./setari.js?v=ae0ddd2b13");
     nav.deschide("Conectare SPV", (c) => panouConectareSPV(c), { nivel: "cabinet" });
   } else if (cheie === "setari_notificari" || cheie === "notificari_portal") {
-    const { panouNotificari } = await import("./setari.js?v=08abddba63");
+    const { panouNotificari } = await import("./setari.js?v=ae0ddd2b13");
     nav.deschide("Notificări", (c) => panouNotificari(c, { dupaSalvare: laSchimbare }));
   } else if (cheie === "asistenti") {
-    const { randeazaAsistenti } = await import("./asistenti.js?v=a8f250b414");
+    const { randeazaAsistenti } = await import("./asistenti.js?v=ee88f981f1");
     nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
   } else if (cheie === "firme") {
-    const { randeazaListaFirme } = await import("./firme.js?v=4c2b4e3117");
+    const { randeazaListaFirme } = await import("./firme.js?v=1ef998eccc");
     nav.deschide("Firmele tale alocate", (c) => randeazaListaFirme(c, nav, null), { nivel: "cabinet" });
   }
 }
@@ -146,7 +146,7 @@ export async function ecranPrimaIntrare(radacina, gata) {
     try { verifica(await stareaNotificarilor()); } catch { /* rândul rămâne */ }
   };
   window.addEventListener("iconta:schimbare", laSchimbare);
-  const { panouNotificari } = await import("./setari.js?v=08abddba63");
+  const { panouNotificari } = await import("./setari.js?v=ae0ddd2b13");
   await panouNotificari(radacina.querySelector("#pi-notificari"), { dupaSalvare: verifica });
   try { verifica(await stareaNotificarilor()); } catch { /* rândul rămâne cel de la început */ }
 }

@@ -5,7 +5,7 @@
 // exporturi (CSV, XLS/XLSX, ZIP). [C36] Fisierele firului stau in depozitul privat: se arata si se descarca numai prin ruta
 // autentificata `/raportari/fisiere/{id}` (echipa iConta si autorul), iar autorul le poate sterge.
 
-import { api, ultimaCerere, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand, atributeInactiv } from "../api.js?v=e38843b1ec";
+import { api, ultimaCerere, dataRo, arataMesaj, esc, cereBlob, descarca, deschideLupa, confirmaCaseta, eroareCamp, curataEroriCamp, cate, refuzPeRand, atributeInactiv } from "../api.js?v=cb524f997d";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");
@@ -19,12 +19,12 @@ const MARIME_MAXIMA = 8 * 1024 * 1024;   // aceeași ca `core/fisiere_private.MA
 export function fisiereHTML(atasamente, poateSterge) {
   return (atasamente || []).map((a) => {
     // [lotul 13, 675 — DS cap.1] „Șterge” stă la fiecare fișier; la echipa iConta.eu (nu e autorul sesizării) e inactiv, cu motivul
-    const sterge = ` <button type="button" class="buton-sters buton-mic" data-sterge-fisier="${a.id}" data-actiune="DELETE /raportari/fisiere/{fid}" aria-label="Șterge fișierul ${esc(a.nume)}"${
+    const butonSterge = ` <button type="button" class="buton-sters buton-mic" data-sterge-fisier="${a.id}" data-actiune="DELETE /raportari/fisiere/{fid}" aria-label="Șterge fișierul ${esc(a.nume)}"${
       poateSterge ? "" : atributeInactiv("Numai autorul sesizării își șterge fișierele.")}>Șterge</button>`;
     if (CAPTURI.includes(a.tip)) {
-      return `<span class="rap-fisier" data-fisier="${a.id}"><a href="#" class="rap-img-link" data-deschide-fisier="${a.id}"><img class="rap-img" data-captura="${a.id}" alt="captura ${esc(a.nume)}"></a>${sterge}</span>`;
+      return `<span class="rap-fisier" data-fisier="${a.id}"><a href="#" class="rap-img-link" data-deschide-fisier="${a.id}"><img class="rap-img" data-captura="${a.id}" alt="captura ${esc(a.nume)}"></a>${butonSterge}</span>`;
     }
-    return `<span class="rap-fisier" data-fisier="${a.id}"><button type="button" class="btn-link" data-descarca-fisier="${a.id}" data-nume="${esc(a.nume)}" data-fara-actiune="descărcarea unui fișier al sesizării — echipa iConta.eu și autorul">${esc(a.nume)}</button>${sterge}</span>`;
+    return `<span class="rap-fisier" data-fisier="${a.id}"><button type="button" class="btn-link" data-descarca-fisier="${a.id}" data-nume="${esc(a.nume)}" data-fara-actiune="descărcarea unui fișier al sesizării — echipa iConta.eu și autorul">${esc(a.nume)}</button>${butonSterge}</span>`;
   }).join(" ");
 }
 

@@ -7,7 +7,7 @@
 // Locul: Setări cont → Date cabinet (`setari.js` îl pune sub numele și CUI-ul cabinetului) și refuzul bilanțului („Deschide Date cabinet”,
 // `ecran_destinatie.js`, cheia `date_cabinet`), cu câmpul lipsă adus în vedere (`camp`, id-urile `cab-…`).
 // DS: cap.6 (asterisc pe obligatorii, ajutor sub etichetă, refuzul lângă câmp), cap.17 (lista cu „— alege —” când nu e nimic salvat).
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, alegeDacaLipseste, focusFaraSalt } from "../api.js?v=e38843b1ec";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, alegeDacaLipseste, focusFaraSalt } from "../api.js?v=cb524f997d";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export async function panouIntocmitor(zona, opt = {}) {
