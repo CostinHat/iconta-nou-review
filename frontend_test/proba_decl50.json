@@ -1,7 +1,7 @@
 {
- "asteptat": 50,
- "ui_hash": "05ff438f14ce1ea8",
- "celule": 50,
+ "asteptat": 44,
+ "ui_hash": "4f50d9155d1a7997",
+ "celule": 44,
  "coduri": [
   "D100",
   "D101",
@@ -19,8 +19,6 @@
   "D169",
   "D169N",
   "D177",
-  "D200",
-  "D201",
   "D204",
   "D205",
   "D207",
@@ -29,9 +27,6 @@
   "D213",
   "D214",
   "D216",
-  "D220",
-  "D221",
-  "D223",
   "D230",
   "D300",
   "D301",
@@ -50,11 +45,10 @@
   "D403",
   "D406",
   "D407",
-  "D600",
   "D603",
   "D710"
  ],
- "butoane_ce": 50,
+ "butoane_ce": 44,
  "derulare": {
   "grila": false,
   "corp": false,
@@ -75,7 +69,7 @@
   }
  },
  "mobil": {
-  "celule": 50,
+  "celule": 44,
   "revarsare_x": false,
   "tinte_sub_24": 0
  }

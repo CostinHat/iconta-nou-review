@@ -20,7 +20,9 @@ def _import_strat(pg, eticheta):
     pg.click("#fa-import")
     pg.wait_for_selector(".mig-card, .mig-strat, [class*='mig']", timeout=12000)
     pg.wait_for_timeout(500)
-    pg.get_by_text(eticheta, exact=False).first.click(timeout=8000)
+    # [lotul 13, 662 / 663] rândul stratului e un buton `.mig-frand`; textul „De făcut: Solduri inițiale.” de deasupra listei conține același nume și
+    # ajungea primul la `get_by_text` (clicul pe o frază nu deschidea nimic)
+    pg.locator("button.mig-frand", has_text=eticheta).first.click(timeout=8000)
     pg.wait_for_timeout(1100)
 
 

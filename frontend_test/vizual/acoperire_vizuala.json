@@ -1,5 +1,5 @@
 {
- "ui_hash": "05ff438f14ce1ea8",
+ "ui_hash": "4f50d9155d1a7997",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -80,8 +80,8 @@
   "solduri_parteneri": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 7,
-    "apasate": 6,
+    "vazute": 9,
+    "apasate": 8,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },
@@ -97,28 +97,13 @@
    }
   },
   "import_solduri_saga": {
-   "axe_desktop": [],
-   "apasare": {
-    "vazute": 7,
-    "apasate": 5,
-    "console_errors": [],
-    "layout_rupt_dupa_click": false
-   },
-   "completare": {
-    "overflow_x": false,
-    "peste_viewport": []
-   },
-   "axe_mobil": [],
-   "mobil": {
-    "tap_sub24": [],
-    "overflow_x": false,
-    "title_unic": 0
-   }
+   "error": "Page.set_input_files: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#mig-file\")\n",
+   "error_mobil": "Page.set_input_files: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#mig-file\")\n"
   },
   "import_mijloace_saga": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 7,
+    "vazute": 9,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -129,7 +114,10 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [],
+    "tap_sub24": [
+     "mig-eq mig-eq-ok 110x23",
+     "mig-eq mig-eq-no 219x23"
+    ],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -137,7 +125,7 @@
   "import_istoric_saga": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 7,
+    "vazute": 9,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -148,7 +136,10 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [],
+    "tap_sub24": [
+     "mig-eq mig-eq-ok 131x23",
+     "mig-eq mig-eq-no 250x23"
+    ],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -173,9 +164,18 @@
    }
   },
   "stat_plata": {
-   "axe_desktop": [],
+   "axe_desktop": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "n": 1,
+     "target": [
+      "button[data-sal=\"3\"]"
+     ]
+    }
+   ],
    "apasare": {
-    "vazute": 43,
+    "vazute": 13,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -186,7 +186,10 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [],
+    "tap_sub24": [
+     "btn-link sp-deschide 19x144",
+     "btn-link sp-deschide 19x126"
+    ],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -213,7 +216,7 @@
   "stocuri": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 29,
+    "vazute": 11,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -251,7 +254,7 @@
   "registratura": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 9,
+    "vazute": 11,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -268,9 +271,18 @@
    }
   },
   "banca": {
-   "axe_desktop": [],
+   "axe_desktop": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "n": 11,
+     "target": [
+      "button[aria-controls=\"bk-det-11\"]"
+     ]
+    }
+   ],
    "apasare": {
-    "vazute": 42,
+    "vazute": 54,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -281,7 +293,18 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [],
+    "tap_sub24": [
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180",
+     "btn-link tn-deschide 10x180"
+    ],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -308,7 +331,7 @@
   "etransport": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 9,
+    "vazute": 11,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -327,7 +350,7 @@
   "centrecost": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 10,
+    "vazute": 11,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -346,7 +369,7 @@
   "planconturi": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 586,
+    "vazute": 1166,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -365,7 +388,7 @@
   "casa": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 13,
+    "vazute": 10,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -403,7 +426,7 @@
   "datefirma": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 14,
+    "vazute": 27,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -422,7 +445,7 @@
   "emitere": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 14,
+    "vazute": 20,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -477,28 +500,18 @@
    }
   },
   "clienti": {
-   "axe_desktop": [],
+   "axe_desktop": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "n": 1,
+     "target": [
+      "tr[data-partener=\"nume-AGENTIE_TURISM_MARJA_SRL\"] > td:nth-child(7) > .cl-actiuni > summary"
+     ]
+    }
+   ],
    "apasare": {
-    "vazute": 6,
-    "apasate": 4,
-    "console_errors": [],
-    "layout_rupt_dupa_click": false
-   },
-   "completare": {
-    "overflow_x": false,
-    "peste_viewport": []
-   },
-   "axe_mobil": [],
-   "mobil": {
-    "tap_sub24": [],
-    "overflow_x": false,
-    "title_unic": 0
-   }
-  },
-  "furnizori": {
-   "axe_desktop": [],
-   "apasare": {
-    "vazute": 7,
+    "vazute": 14,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -511,7 +524,35 @@
    "mobil": {
     "tap_sub24": [],
     "overflow_x": false,
-    "title_unic": 0
+    "title_unic": 3
+   }
+  },
+  "furnizori": {
+   "axe_desktop": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "n": 1,
+     "target": [
+      "tr[data-partener=\"cui-95275466\"] > td:nth-child(6) > .fz-actiuni > summary"
+     ]
+    }
+   ],
+   "apasare": {
+    "vazute": 10,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 2
    }
   },
   "parteneri": {
@@ -536,8 +577,8 @@
   "magazin": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 6,
-    "apasate": 4,
+    "vazute": 7,
+    "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },
@@ -593,7 +634,7 @@
   "import_asociati": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 8,
+    "vazute": 9,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -604,7 +645,9 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [],
+    "tap_sub24": [
+     "mig-eq mig-eq-ok 110x23"
+    ],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -688,7 +731,7 @@
   "control_verdict": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 17,
+    "vazute": 7,
     "apasate": 2,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -726,7 +769,7 @@
   "ansamblu": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 178,
+    "vazute": 165,
     "apasate": 1,
     "console_errors": [],
     "layout_rupt_dupa_click": false
@@ -745,8 +788,8 @@
   "bilant": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 6,
-    "apasate": 4,
+    "vazute": 8,
+    "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false
    },
@@ -782,11 +825,11 @@
   }
  },
  "fir": {
-  "inainte": "Firme › Firme existente › Comert Micro TVA SRL · CUI 95141537",
+  "inainte": "Firme › Firme existente › Comert Micro TVA SRL · CUI 95141537 › Declarații",
   "dupa": [
-   "Firme › Firme existente › Comert Micro TVA SRL · CUI 95141537",
-   "Firme › Firme existente › Comert Micro TVA SRL · CUI 95141537",
-   "Firme › Firme existente › Comert Micro TVA SRL · CUI 95141537"
+   "Firme › Firme existente › Comert Micro TVA SRL · CUI 95141537 › Declarații",
+   "Firme › Firme existente › Comert Micro TVA SRL · CUI 95141537 › Declarații",
+   "Firme › Firme existente › Comert Micro TVA SRL · CUI 95141537 › Declarații"
   ],
   "stabil": true
  }

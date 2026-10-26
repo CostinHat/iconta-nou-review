@@ -1,6 +1,6 @@
 {
- "ui_hash": "05ff438f14ce1ea8",
- "instrument_hash": "8e667f6c641b4263",
+ "ui_hash": "4f50d9155d1a7997",
+ "instrument_hash": "922a7763d7c08c79",
  "ecrane": [
   "Achizitii IC Neplatitor/declaratie_d300",
   "Achizitii IC Neplatitor/declaratie_d390",
@@ -32,6 +32,7 @@
   "Achizitii IC Neplatitor/fa-operatiuni",
   "Achizitii IC Neplatitor/fa-parteneri",
   "Achizitii IC Neplatitor/fa-planconturi",
+  "Achizitii IC Neplatitor/fa-preluare",
   "Achizitii IC Neplatitor/fa-produse",
   "Achizitii IC Neplatitor/fa-rapoarte",
   "Achizitii IC Neplatitor/fa-raportz",

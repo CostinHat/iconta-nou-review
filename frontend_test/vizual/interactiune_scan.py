@@ -114,7 +114,7 @@ def _mobil(pg):
         let titleUnic = 0;
         document.querySelectorAll('[title]').forEach(e=>{
             const t=(e.getAttribute('title')||'').trim();
-            if (t && !(e.innerText||'').trim() && !e.getAttribute('aria-label')) titleUnic++;
+            if (t && !(e.textContent||'').trim() && !e.getAttribute('aria-label')) titleUnic++;   // [lotul 13] textContent: un buton cu text din <details> închis nu e «numai title» (innerText al conținutului nerandat e gol)
         });
         return {tap_sub24: small.slice(0,10), overflow_x: document.body.scrollWidth>vw+2, title_unic: titleUnic};
     }""")

@@ -2606,6 +2606,9 @@ textarea[readonly]:focus {
 /* [08.10.2026, DS cap.15 v2.81] linkul de acțiune pe rândul zebră: #2f6fa6 dă 4,13:1 pe --albastru-clar (axe, „Contează” în Istoric
    facturi); albastrul închis al DS (cap.1, #1a5a94) dă 5,55:1 pe rândul zebră și 7,16:1 pe alb. Gard: core/test_contrast_zebra.py */
 .zebra-lista .btn-link { color: #1a5a94; }
+/* [lotul 13, plasa vizuală — axe color-contrast 4,13:1] aceeași regulă pentru tabelele zebră (`table tbody tr:nth-child(odd) td` = --albastru-clar): linkurile și
+   „Acțiuni” din rândurile lor (stat de plată, note, clienți, furnizori) iau albastrul închis al DS, 5,55:1 pe rândul zebră și 7,16:1 pe alb */
+table tbody .btn-link, table tbody details > summary, table tbody .dec-xml > summary { color: #1a5a94; }
 .firme-lista > .firme-rand:nth-of-type(odd) { background: var(--albastru-clar) !important; }
 .firme-lista > .firme-rand:nth-of-type(even) { background: var(--alb) !important; }
 /* [R78] Acelasi zebra si acelasi hover, cand randul e invelit ca sa aiba actiune langa el.
@@ -3186,3 +3189,19 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .cautare-unde { font-size: var(--text-desc); color: var(--gri); }
 .cautare-mesaj { margin: 6px 8px; font-size: var(--text-mic); color: var(--gri); }
 @media (max-width: 560px) { .cautare-globala { flex-basis: 160px; margin-left: 4px; } .fereastra-antet { flex-wrap: wrap; } .fereastra-antet .cautare-in-fereastra { order: 5; flex: 1 1 100%; margin: 0; } }   /* telefon: căsuța pe rândul ei, traseul nu se strânge */
+
+
+/* [lotul 13, plasa vizuală — ținte sub 24 px pe telefon] DS cap.9: pe telefon fără derulare laterală. (1) Tabelul de note (`.tn-tabel`, 7–9 coloane: Registru
+   jurnal, Bancă, De validat) se așază ca rânduri-card: fiecare celulă pe rândul ei, butonul care deschide detaliul pe toată lățimea (înainte coloana lui
+   rămânea de 10 px, iar eticheta se rupea pe litere). (2) Statul de plată păstrează Salariat, Zile, Net și Semnele; brutul și costul sunt în fereastra
+   salariatului (rândul o deschide). (3) Chipul „potrivit / nepotrivit” al importurilor atinge înălțimea unei ținte. */
+@media (max-width: 560px) {
+  .tn-tabel, .tn-tabel tbody, .tn-tabel tr.tn-rand, .tn-tabel tr.tn-rand > td, .tn-tabel tr.tn-detaliu, .tn-tabel tr.tn-detaliu > td { display: block; }
+  .tn-tabel thead { display: none; }
+  .tn-tabel tr.tn-rand > td { padding: 3px 10px; border-bottom: 0; }
+  .tn-tabel .tn-deschide { display: inline-block; min-height: 24px; min-width: 24px; white-space: nowrap; }
+  .tn-tabel .fd-td-num { text-align: left; }
+  #sp-tabel th:nth-child(3), #sp-tabel td:nth-child(3), #sp-tabel th:nth-child(5), #sp-tabel td:nth-child(5) { display: none; }
+  #sp-tabel .sp-deschide { min-height: 24px; text-align: left; overflow-wrap: anywhere; }
+  .mig-eq { min-height: 24px; display: inline-flex; align-items: center; }
+}
