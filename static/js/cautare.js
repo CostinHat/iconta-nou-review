@@ -138,7 +138,10 @@ export function puneCautarea(bara, nav) {
       return;
     }
     if (!actuala()) return;   // a sosit răspunsul unei căutări mai vechi
-    rezultate = ((r && r.rezultate) || []).filter((x) => !x.actiune || permis(x.actiune));
+    // acțiunea unei operațiuni se compune ca la butoanele ei (`actiuneOp`); cele refuzate rolului nu apar
+    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=bcad53d1e9");
+    if (!actuala()) return;
+    rezultate = ((r && r.rezultate) || []).filter((x) => (x.ruta ? permis(actiuneOp(x)) : (!x.actiune || permis(x.actiune))));
     const deFirma = rezultate.some((x) => x.fel !== "card" && x.fel !== "operatiune") || tid;
     deseneaza(rezultate.length ? (deFirma ? "" : TEXT_FARA_FIRMA) : `Nimic găsit pentru „${q}”.`);
   };
