@@ -246,7 +246,8 @@ def test_def_112_refa_nir_precompleteaza_articolul_fara_zecimale_in_exces(patron
     ales = pg.eval_on_selector(f + "#nir-l0-articol", "s => s.options[s.selectedIndex].text")
     valori = (ales, pg.input_value(f + "#nir-l0-cantitate"), pg.input_value(f + "#nir-l0-pret_achizitie"))
     patron.captura()
-    assert valori == ("Marfa D112", "10", "55.00"), valori
+    # [lotul 13, 655] câmpul numeric arată numărul în forma românească („55,00”; `api.campNumericRo`), iar `input_value` citește textul afișat
+    assert valori == ("Marfa D112", "10", "55,00"), valori
 
 
 def _refa_din_ecran(ecran, firma, numar, cantitate=None):

@@ -136,7 +136,7 @@ def test_def_zdescarcare_arata_valoarea_si_butonul_de_validare(patron, firma_cv)
     f = firma_cv
     pg, zid = _genereaza(patron, f, "2005")
     _iesire(pg, zid, _articol(f), 2)
-    pg.wait_for_selector("#zd-val-%d" % zid, timeout=20000)
+    pg.wait_for_selector("#zd-val-%d:not([aria-disabled='true'])" % zid, timeout=20000)   # [lotul 13, 675] butonul e mereu pe rând; activ după descărcare
     # OMFP 1802/2014 pct.96: ieșirea la costul mediu ponderat — 2 buc × 4,00 = 8,00 lei
     assert "Ieșire înregistrată: 8,00 lei" in pg.inner_text("#z-descarcare")
     assert "în valoare de 8,00 lei" in " ".join(pg.inner_text("#zd-valoare-%d" % zid).split())

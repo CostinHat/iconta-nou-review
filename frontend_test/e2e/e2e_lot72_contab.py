@@ -157,7 +157,8 @@ def test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta(patron, firma_
     assert pg.locator("[data-cf='%s']" % f["factura_id"]).count() == 0
     pg.click("#c-renunta")
     pg.wait_for_selector("#c-campuri", state="detached", timeout=10000)   # [lotul 13, 673] fereastra dispoziției se închide
-    assert pg.locator("#c-toggle").is_visible()
+    # înapoi în Casă: ecranul se redesenează (își recitește registrul lunii), apoi „+ Dispoziție nouă” e din nou pe ecran
+    pg.wait_for_selector(".fereastra:last-of-type #c-toggle", state="visible", timeout=20000)
     patron.captura("renunta")
 
 

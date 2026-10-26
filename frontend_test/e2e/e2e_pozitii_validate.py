@@ -823,7 +823,7 @@ def test_pozitie_f254_factura_pe_bon_nu_se_numara_a_doua_oara(patron, firma_proa
     pg.wait_for_selector(".zd-fara[data-z='%d']" % zid, timeout=20000)
     pg.click(".zd-fara[data-z='%d']" % zid)
     pg.click("#ca-ok")   # „Declari că în acest raport Z nu s-a vândut nicio marfă din stoc…?” -> „Da, fără marfă”
-    pg.wait_for_selector("#zd-val-%d" % zid, timeout=20000)
+    pg.wait_for_selector("#zd-val-%d:not([aria-disabled='true'])" % zid, timeout=20000)   # [lotul 13, 675] butonul e mereu pe rând; activ după descărcare
     pg.click("#zd-val-%d" % zid)
     pg.wait_for_function("(z) => !document.querySelector('#zd-val-' + z)", arg=zid, timeout=30000)
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (zid,)) == [("validata",)]

@@ -105,7 +105,8 @@ def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_sr
     patron.captura()
     assert pg.inner_text('.msg-eroare[data-camp="c-suma"]') == asteptat % (zi, zi)
     assert pg.get_attribute("#c-suma", "aria-invalid") == "true"
-    assert _refuz(pg) == [["Suma", "— " + asteptat % (zi, zi)]], _refuz(pg)
+    # [lotul 13, 673 / 504] câmpul se numește „Suma (lei)” în fereastra dispoziției (unitatea în etichetă, fără „0,00” precompletat)
+    assert _refuz(pg) == [["Suma (lei)", "— " + asteptat % (zi, zi)]], _refuz(pg)
     assert pg.inner_text("#c-sold-final") == "142,00 lei"
 
 

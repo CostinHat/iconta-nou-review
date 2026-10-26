@@ -1069,8 +1069,9 @@ def test_def_98_seria_chitantei_nu_vine_ch_din_oficiu(patron, firma_gv):
     pg.select_option("#ch-cota", "21")
     pg.fill("#ch-client", "Client Chitanta Proba")
     pg.click("#ch-emite")
-    pg.wait_for_function("() => (document.querySelector('#ch-mesaj') || {innerText: ''}).innerText.trim() !== ''", timeout=15000)
-    msg = pg.inner_text("#ch-mesaj")
+    # [lotul 13, 543] refuzul vine cu seria cerută pe loc: caseta stă lângă zona de mesaj a ferestrei (`facturi_ecran.cereSeriaChitanteiPeLoc`)
+    pg.wait_for_selector(".fereastra:last-of-type #ser-chit-serie", timeout=15000)
+    msg = pg.inner_text(".fereastra:last-of-type #ser-chit-box")
     patron.captura("refuz")
     assert "n-are serie pentru chitanțe" in msg and "Date firmă" in msg, msg
     assert sql('SELECT count(*) FROM "%s".chitante' % firma_gv["schema"])[0][0] == 0

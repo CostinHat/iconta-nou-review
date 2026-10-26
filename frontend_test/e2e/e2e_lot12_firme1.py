@@ -143,7 +143,9 @@ def test_def_478_extrasul_xlsx_cu_date_excel_se_importa(patron, firma_e2e):
     patron.captura("xlsx_importat")
     assert "2 linii importate" in m and "nu s-a putut citi" not in m, m
     lista = _lista_cu(pg, "Comision E2E478")
-    assert "+478,25 lei" in lista and "−4,78 lei" in lista and zi.strftime("%d.%m.%Y") in lista, lista   # AZI-dat-de-test
+    # [lotul 13, 624] tabelul de note: suma în coloana „Suma (lei)”, cu semnul, pe rândul liniei (data · suma · descrierea)
+    zr = zi.strftime("%d.%m.%Y")
+    assert ("%s\t+478,25\tIncasare E2E478 client" % zr) in lista and ("%s\t−4,78\tComision E2E478" % zr) in lista, lista   # AZI-dat-de-test
 
 
 # ── 480 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
