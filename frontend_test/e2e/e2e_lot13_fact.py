@@ -406,7 +406,8 @@ def test_def_640_partenerul_se_adauga_se_cauta_si_se_sterge(patron, firma_fact):
     rand.locator("details.fz-actiuni > summary").click()                  # [lotul 13, DS cap.9 v2.83] acțiunile rândului, în meniul „Acțiuni”
     rand.locator("button[id^='fz-sterge-']").click()
     pg.locator("#ca-ok", has_text="Șterge fișa").click()
-    pg.wait_for_function("() => document.querySelector('#fz-mesaj').innerText.includes('a fost ștearsă')", timeout=20000)
+    # lista se redesenează după ștergere (zona mesajului lipsește o clipă): predicatul nu citește un nod absent
+    pg.wait_for_function("() => (document.querySelector('#fz-mesaj') || {innerText: ''}).innerText.includes('a fost ștearsă')", timeout=20000)
     assert sql('SELECT count(*) FROM "%s".furnizori WHERE nume = %%s' % s, ("Furnizor de sters E2E",))[0][0] == 0
     oras_fz = sql('SELECT oras FROM "%s".furnizori WHERE cui = %%s' % s, (CUI_DANTE,))[0][0]
     assert sql('SELECT oras FROM "%s".clienti WHERE cui = %%s' % s, (CUI_DANTE,))[0][0] == oras_fz, "o singură localitate pentru DANTE"
@@ -432,7 +433,8 @@ def test_def_534_notificarea_se_completeaza_din_factura(patron, firma_fact):
     pg.wait_for_function("() => document.querySelector('#b0-denumire') && document.querySelector('#b0-denumire').value !== ''",
                          timeout=20000)
     patron.captura()
-    assert (pg.input_value("#b0-denumire"), Decimal(pg.input_value("#b0-valoare_fara_tva"))) == (PRODUS, Decimal("300.00"))
+    # câmpul numeric românesc (655) arată „300,00”; valoarea lui (`.value`, forma canonică) e cea citită aici
+    assert (pg.input_value("#b0-denumire"), Decimal(pg.eval_on_selector("#b0-valoare_fara_tva", "e => e.value"))) == (PRODUS, Decimal("300.00"))
     assert (pg.input_value("#p-cod_tara"), pg.input_value("#p-cod"), pg.input_value("#et-tip")) == ("RO", CUI_DANTE, "30")
     assert pg.input_value("#s-localitate") == "București" and pg.input_value("#s-judet") == "B"
     assert "De completat" in pg.inner_text("#et-din-rez")
