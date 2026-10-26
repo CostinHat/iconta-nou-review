@@ -90,7 +90,11 @@ def inregistreaza(cur, fisier, amp, fel, commit=None, motiv=None):
 #: `ruleaza` refuză o migrare cât timp una din cele de dinaintea ei e nerulată pe aceeași bază.
 DUPA = {
     # [lotul 12] migrările noi, după cele ale tabelelor pe care le citesc
-    "core/migrare_lot13_salarii.py": ("core/migrare_decizii_0710.py",),   # [lotul 13, 679] adaugă `elemente_salariale.spor_procent`; tabela o creează decizii_0710
+    "core/migrare_lot13_salarii.py": ("core/migrare_decizii_0710.py",),
+    "core/migrare_anunturi_trimiteri.py": ("core/migrare_invitatii_cabinet.py",),   # [lotul 13, 646] coloanele trimiterilor pe tabela anunțurilor creată acolo
+    "core/migrare_d301_cod_tva_fara_prefix.py": ("core/migrare_d301_partener.py",),   # [lotul 13, 539] rescrie codul de TVA al partenerului D301, coloana creată acolo
+    "core/migrare_triaj_sesizari.py": ("core/migrare_fisiere_private.py",),   # [lotul 13, 572–573] coloanele triajului pe sesizări, tabela atinsă acolo
+    "core/migrare_vanzari_stoc.py": ("core/migrare_decizii_0710.py",),   # [lotul 13, 548] vânzările din stoc citesc tabela creată acolo   # [lotul 13, 679] adaugă `elemente_salariale.spor_procent`; tabela o creează decizii_0710
     "core/migrare_mesaje_spv_tehnice.py": ("core/migrare_efactura_trimiteri.py", "core/migrare_etransport_trimiteri.py", "core/migrare_spv_citiri.py"),
     "core/migrare_um_linii_xml.py": ("core/migrare_punte_stoc.py",),
     "core/migrare_um_borderou.py": ("core/migrare_punte_stoc.py",),   # [lotul 12, C115] citește `miscari_stoc.factura_id`
