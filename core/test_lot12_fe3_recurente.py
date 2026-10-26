@@ -37,12 +37,12 @@ AZI = datetime.date(2099, 3, 10)
 LUNA_URM = datetime.date(2099, 4, 10)
 CUI_CLIENT = "14399840"
 COD_DE = "DE811907980"
-LINIE = {"descriere": "Abonament mentenanta lunara", "cantitate": 1, "pret_unitar": 100, "cota_tva": 21, "cont_venit": "704"}
+LINIE = {"descriere": "Abonament mentenanta lunara", "cantitate": 1, "um": "luna", "pret_unitar": 100, "cota_tva": 21, "cont_venit": "704"}  # [lotul 13, regula UM] linia șablonului poartă UM-ul
 #: refuzul real al emiterii pentru neplătitor (`facturi_api.creeaza_factura`, CF art.310 alin.(10) lit.b), întreg — comparat cu `==`
 MOTIV_NEPLATITOR = ("Firma nu e plătitoare de TVA, deci factura nu poate purta TVA: linia 'Abonament mentenanta lunara' are cota 21%. Cota pe "
                     "liniile unui neplătitor e 0 (CF art.310 alin.(10) lit.b): persoana în regim special de scutire „nu are voie să menționeze "
                     "taxa pe factură sau pe alt document”).")
-SERVICIU = {"descriere": "Servicii de consultanta IT", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0, "categorie_tva": "serviciu_extern",
+SERVICIU = {"descriere": "Servicii de consultanta IT", "cantitate": 1, "um": "serv.", "pret_unitar": 500, "cota_tva": 0, "categorie_tva": "serviciu_extern",
             "cont_venit": "704"}
 
 
@@ -316,7 +316,7 @@ def test_9_taxarea_inversa_cere_categoria_produsului_pe_sablon_si_o_duce_pe_fact
     `fr-c331` scoasă din `_camp_sablon` -> refuzul fără câmp -> ROȘU."""
     from core import facturi_recurente as fr, produse_api
     cod = sorted(produse_api.coduri_331())[0]
-    linie = {"descriere": "Deseuri feroase", "cantitate": 1, "pret_unitar": 100, "cota_tva": 0, "categorie_tva": "taxare_inversa",
+    linie = {"descriere": "Deseuri feroase", "cantitate": 1, "um": "kg", "pret_unitar": 100, "cota_tva": 0, "categorie_tva": "taxare_inversa",
              "cont_venit": "707"}
     rau = _adauga(mediu, linii=[dict(linie)])
     assert [c for c, _m in _pe_campuri(rau)] == ["fr-c331"], rau

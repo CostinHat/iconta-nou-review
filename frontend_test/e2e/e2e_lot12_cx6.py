@@ -83,6 +83,9 @@ def test_def_c160_factura_recurenta_catre_clientul_ue_poarta_tara_clientului(pat
     pg.dispatch_event("#fr-l0-cantitate", "input")
     pg.fill("#fr-l0-pret_unitar", "500")
     pg.dispatch_event("#fr-l0-pret_unitar", "input")
+    if not pg.input_value("#fr-l0-um"):   # [lotul 13, regula UM] linia șablonului poartă UM-ul: ce nu propune nomenclatorul scrie omul
+        pg.fill("#fr-l0-um", "serv.")
+        pg.dispatch_event("#fr-l0-um", "input")
     pg.fill("#fr-zi", "5")
     # [lotul 13, 680] întrebările emiterii de pe șablon, alese explicit (scadența, perioada, modul, SPV)
     pg.fill("#fr-scadenta", "15")

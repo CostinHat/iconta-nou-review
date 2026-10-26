@@ -70,6 +70,10 @@
     "valoare": "Marfa livrare IC dovada C84"
    },
    {
+    "completeaza": "#em-l0-um",
+    "valoare": "buc"
+   },
+   {
     "pauza": 1500
    },
    {
@@ -214,6 +218,10 @@
    {
     "completeaza": "#em-l0-descriere",
     "valoare": "Servicii de consultanta IT dovada C157"
+   },
+   {
+    "completeaza": "#em-l0-um",
+    "valoare": "ora"
    },
    {
     "pauza": 1500

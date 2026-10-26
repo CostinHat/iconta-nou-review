@@ -1730,6 +1730,7 @@ def test_pilot_38_factura_primita_introdusa_manual(patron, firma_pilot):
                          "[...s.options].some((o) => o.value === '21'); }", timeout=20000)
     pg.fill("#pm-l1-descriere", "Chirie spațiu comercial octombrie 2026")
     pg.fill("#pm-l1-cantitate", "1")
+    pg.fill("#pm-l1-um", "buc")   # [lotul 13, regula UM] UM-ul liniei nu mai vine „buc” din oficiu: îl scrie omul de pe factură
     pg.fill("#pm-l1-pret", str(CHIRIE))
     pg.select_option("#pm-l1-cota", "21")
     pg.wait_for_selector("#pm-total-cu-tva", timeout=10000)

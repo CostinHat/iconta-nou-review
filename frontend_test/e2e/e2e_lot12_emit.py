@@ -226,6 +226,9 @@ def _sablon_nou(e, firma, cui, nume):
     pg.dispatch_event("#fr-l0-cantitate", "input")
     pg.fill("#fr-l0-pret_unitar", "100")
     pg.dispatch_event("#fr-l0-pret_unitar", "input")
+    if not pg.input_value("#fr-l0-um"):   # [lotul 13, regula UM] linia șablonului poartă UM-ul: ce nu propune nomenclatorul scrie omul
+        pg.fill("#fr-l0-um", "ora")
+        pg.dispatch_event("#fr-l0-um", "input")
     pg.fill("#fr-zi", "5")
     # [lotul 13, 680] întrebările emiterii de pe șablon, alese explicit (scadența, perioada, modul, SPV)
     pg.fill("#fr-scadenta", "15")

@@ -448,19 +448,6 @@ def parteneri_fara_fisa(conn, fel="clienti"):
     return out
 
 
-def furnizor_sterge_uc(tenant_id, furnizor_id, ctx):
-    """[lotul 13, 640] Corpul rutei `DELETE /tenants/{tenant_id}/furnizori/{furnizor_id}` (ca `uc_tenants.client_sterge`)."""
-    from core import db, erori as _erori, uc_comun as _uc
-    schema = _uc._schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = sterge_furnizor(conn, furnizor_id)
-    if not r.get("ok"):
-        if r.get("cod") == "INEXISTENT":
-            raise _erori.Inexistent(r["mesaj"])
-        raise _erori.Conflict(r["mesaj"])
-    return r
-
-
 def fise_dupa_cui(cur, cui):
     """[lotul 11, deficiența 444] Fișele (client și / sau furnizor) care au acest CUI: [{fel, id, nume}]."""
     c = _cf.stocare(cui)

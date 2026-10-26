@@ -191,7 +191,7 @@ def test_facturile_recurente_intreaba_modelul_inaintea_emiterii(mediu, monkeypat
     import datetime
     import json
     from core import cote_tva, facturi_recurente as fr
-    linii = json.dumps([{"descriere": "Mentenanta platforma web", "cantitate": 1, "pret_unitar": 100}])
+    linii = json.dumps([{"descriere": "Mentenanta platforma web", "cantitate": 1, "um": "luna", "pret_unitar": 100}])  # [lotul 13, regula UM] linia șablonului poartă UM-ul
     azi = datetime.date(2026, 10, 10)
     with mediu["conn"].cursor() as cur:
         for i in (1, 2):

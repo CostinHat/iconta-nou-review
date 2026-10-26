@@ -379,6 +379,10 @@ export function cautaInLista(intrare, lista) {
 }
 
 // ---------- FORMULAR EMITERE ----------
+// [331] UM-ul propus unei linii de servicii: cod E48 în e-Factura și D406 (`efactura_send._UM`, `d406.UOM_UNECE`); îl folosește și șablonul
+// facturii recurente (lotul 13, regula UM)
+export const UM_SERVICIU = "serv.";
+
 function formularEmitere(corp, nav, tenantId, num, opt) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || undefined);  // emitere_inapoi_v1
   // [lotul 07.10 B, DS cap.17 corectat] PRESELECȚIE PERMISĂ: moneda RON e cazul uzual, se vede înainte de emitere și se schimbă
@@ -565,8 +569,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   let dovadaTransportCurent = null;           // [lotul 12, C84] răspunsul la „Ai dovada transportului?” (livrarea intracomunitară)
   let semnDovada = null;                      // liniile de livrare intracomunitară pentru care s-a dat răspunsul
 
-  const UM_SERVICIU = "serv.";   // [331] cod E48 în e-Factura și D406 (`efactura_send._UM`, `d406.UOM_UNECE`)
-  const linieNoua = () => ({ descriere: "", cantitate: "", um: "buc", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null,
+  // [lotul 13, regula UM — `facturi.MESAJ_UM_LIPSA`] UM-ul liniei noi pornește gol (nu „buc”): îl alege omul, sau vine vizibil de la
+  // articolul / produsul din nomenclator; gol la emitere -> refuzul serverului lângă câmp
+  const linieNoua = () => ({ descriere: "", cantitate: "", um: "", pret_unitar: "", cota_tva: null, cota_propusa: null, articol_id: null,
     categorie_tva: null });
   // [comanda Costin 05.10.2026 pct.3] „contabilul poate corecta cota; schimbarea rămâne consemnată (propus → ales, cine, când)”.
   // Cotele oferite = cele permise la data facturii, de la server (aceeași sursă ca validarea emiterii).
@@ -661,7 +666,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // schimbă, propunerea nu mai e a liniei și se golește. Ce a scris omul (`pretPropus` / `umPropus` false) rămâne neatins.
   function golestePropunerea(l, pret, um) {
     if (l.pretPropus) { l.pret_unitar = ""; l.pretPropus = false; if (pret) pret.value = ""; }
-    if (l.umPropus) { l.um = "buc"; l.umScris = false; l.umPropus = false; if (um) um.value = "buc"; }
+    if (l.umPropus) { l.um = ""; l.umScris = false; l.umPropus = false; if (um) um.value = ""; }
   }
 
   // inputurile scriu in MODEL (nu re-randeaza -> fara pierdere de focus la tastare). Fetch-ul cotei capteaza
@@ -1121,7 +1126,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     // valideaza pe backend si se raporteaza langa campul lui, nu dispare tacit.
     const payload = {
       linii: linii.map((l) => ({
-        descriere: l.descriere, cantitate: l.cantitate, um: l.um || "buc",
+        descriere: l.descriere, cantitate: l.cantitate, um: (l.um || "").trim(),
         pret_unitar: (l.pret_unitar === "" || l.pret_unitar == null) ? null : l.pret_unitar, cota_tva: l.cota_tva,   // [pct.1b] gol = lipsă
         cota_propusa: l.cota_propusa,   // [pct.3] pentru jurnalul „propus → ales”
         articol_id: l.articol_id || null,  // [punte_stoc_v1] F172

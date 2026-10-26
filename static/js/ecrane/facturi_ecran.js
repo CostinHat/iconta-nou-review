@@ -7,7 +7,7 @@ import { api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaset
 import { randeazaStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda } from "./emitere_ecran.js?v=683df90dae";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=8d3aa3015f";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
@@ -411,7 +411,8 @@ function anuntaCursulValidat(zona, r) {
 // data, scadența, moneda (cursul BNR ca la validarea facturii din XML), liniile cu cotele în vigoare la data facturii (registrul de
 // parametri fiscali, `GET /tenants/{tenant_id}/facturi/numerotare`), contul facturii și al fiecărei linii, destinația TVA a liniei. Validarea e ACEEAȘI ca la
 // factura din XML (`uc_factura_primita.valideaza`): nota, gestiunea pe un cont de stoc, alegerea NIR-ului „fără factură”.
-const linieManuala = () => ({ descriere: "", cantitate: "", um: "buc", pret_unitar: "", cota_tva: "", dest: "taxabil", cont: "" });
+// [lotul 13, regula UM — `facturi.MESAJ_UM_LIPSA`] UM-ul pornește gol (nu „buc”): îl scrie omul de pe factură; gol -> refuzul lângă câmp
+const linieManuala = () => ({ descriere: "", cantitate: "", um: "", pret_unitar: "", cota_tva: "", dest: "taxabil", cont: "" });
 
 function primitaManuala(corp, nav, tenantId, opt) {
   const linii = [linieManuala()];
@@ -1847,7 +1848,9 @@ export async function formSablon(corp, nav, tenantId, opt) {
   const _val = (x) => (x === "" || x == null) ? "" : esc(String(x));
   // [comanda Costin 06.10.2026 pct.1b, clasa] rândul nou NU poartă un preț (era 0): „un preț pe care nu l-a ales nimeni nu se propune”
   // [lotul 13, 680] la neplătitor cota e 0 prin lege (CF art.310 alin.(10) lit.b) și se arată de la început („0%”, nu „—”)
-  const linieNoua = () => ({ descriere: "", cantitate: 1, pret_unitar: "", cota_tva: platitor ? null : 0, cota_propusa: null, categorie_tva: null });
+  // [lotul 13, regula UM — `facturi.um_linie`] UM-ul liniei pornește gol: îl scrie omul sau vine, vizibil, din nomenclator (UM-ul produsului,
+  // „serv.” la servicii); gol la salvare -> refuzul lângă câmp (`facturi_recurente.verificari_drum`)
+  const linieNoua = () => ({ descriere: "", cantitate: 1, um: "", pret_unitar: "", cota_tva: platitor ? null : 0, cota_propusa: null, categorie_tva: null });
 
   // randeaza O linie DIN MODEL, id-uri pozitionale fr-l{i}-* (cap.24: id derivat din pozitie, ca backendul sa
   // lege eroarea de camp). Buton de stergere pe fiecare rand (cap.24 regula 3).
@@ -1856,6 +1859,7 @@ export async function formSablon(corp, nav, tenantId, opt) {
     return `<div class="em-linie" data-idx="${i}">
       <input class="camp-input em-l-den" id="fr-l${i}-descriere" data-actiune-camp="POST /tenants/{tenant_id}/produse/potriveste" value="${_val(l.descriere)}" placeholder="Denumire (ex: abonament mentenanță)" aria-label="Denumire articol" autocomplete="off">
       <input class="camp-input em-l-cant" id="fr-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
+      <input class="camp-input em-l-um" id="fr-l${i}-um" maxlength="10" value="${_val(l.um)}" aria-label="Unitate de măsură" title="Unitate de măsură">
       <input class="camp-input em-l-pret" id="fr-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
       ${htmlCotaLinie("fr-l" + i + "-cota", l, COTE, platitor)}
       <button type="button" class="buton-sters em-l-sterge" data-idx="${i}" title="Șterge">×</button>
@@ -1896,12 +1900,16 @@ export async function formSablon(corp, nav, tenantId, opt) {
     const den = zonaLinii.querySelector("#fr-l" + i + "-descriere");
     const cant = zonaLinii.querySelector("#fr-l" + i + "-cantitate");
     const pret = zonaLinii.querySelector("#fr-l" + i + "-pret_unitar");
+    const um = zonaLinii.querySelector("#fr-l" + i + "-um");
     const del = zonaLinii.querySelector('.em-l-sterge[data-idx="' + i + '"]');
+    // UM-ul propus (nu scris de om) se schimbă cu denumirea; cel scris de om rămâne al lui
+    const puneUm = (v) => { if (l.umScris) return; l.um = v; const e = zonaLinii.querySelector("#fr-l" + linii.indexOf(l) + "-um"); if (e) e.value = v; };
     let timer = null;
     const cerereCota = ultimaCerere();   // [C103] denumirea scrisă în reprize: numai cota pentru ultima denumire ajunge pe linie
     den.addEventListener("input", () => {
       l.descriere = den.value.trim();
       l.cota_tva = null; l.cota_propusa = null; l.categorie_tva = null; l.cotaAleasa = false;   // denumire nouă, propunere nouă (ca la emitere)
+      puneUm("");
       clearTimeout(timer);
       const actuala = cerereCota();   // și o denumire scurtă (fără cerere) oprește cota cerută înainte
       const d = l.descriere;
@@ -1920,6 +1928,7 @@ export async function formSablon(corp, nav, tenantId, opt) {
             // [lotul 11, 449] la cota 0 din nomenclator, categoria de TVA a produsului se propune (ca la emitere)
             if (r.cota === 0 && r.categorie_tva) l.categorie_tva = r.categorie_tva;
             setCota(l, r.cota);
+            if (r.um) puneUm(r.um); else if (r.tip === "servicii") puneUm(UM_SERVICIU);   // [regula UM] propunerea, vizibilă (ca la emitere)
           } else if (!l.cotaAleasa) setCota(l, null);
         } catch { if (!actuala() || l.cotaAleasa) return; setCota(l, null); }
       }, 400);
@@ -1933,6 +1942,7 @@ export async function formSablon(corp, nav, tenantId, opt) {
     const selCateg = zonaLinii.querySelector("#fr-l" + i + "-categorie");
     if (selCateg) selCateg.addEventListener("change", () => { l.categorie_tva = selCateg.value || null; actualizeazaC331(); });
     cant.addEventListener("input", () => { l.cantitate = Number(cant.value) || 0; });
+    um.addEventListener("input", () => { l.um = um.value.trim(); l.umScris = !!l.um; });
     pret.addEventListener("input", () => { const v = parseFloat(pret.value); l.pret_unitar = Number.isFinite(v) ? v : ""; });   // [pct.1b] golul rămâne gol
     del.addEventListener("click", () => { const p = linii.indexOf(l); if (p >= 0) linii.splice(p, 1); deseneazaLinii(); });
   }
@@ -2013,7 +2023,7 @@ export async function formSablon(corp, nav, tenantId, opt) {
       data_sfarsit: alegeri["fr-pana"] === "data" ? (corp.querySelector("#fr-sfarsit").value || null) : null,
       mod_emitere: alegeri["fr-mod"] || null,
       trimite_spv: alegeri["fr-spv"] === "true" ? true : (alegeri["fr-spv"] === "false" ? false : null),
-      linii: linii.map((l) => ({ descriere: l.descriere, cantitate: l.cantitate,
+      linii: linii.map((l) => ({ descriere: l.descriere, cantitate: l.cantitate, um: (l.um || "").trim(),   // [regula UM] gol = refuzat lângă câmp
         pret_unitar: (l.pret_unitar === "" || l.pret_unitar == null) ? null : l.pret_unitar, cota_tva: l.cota_tva,   // [pct.1b] gol = lipsă, refuzat lângă câmp
         ...(l.cota_tva === 0 && l.categorie_tva ? { categorie_tva: l.categorie_tva } : {}) })),   // [12.3 pct.9] categoria liniei cu 0%, ca la emitere (lipsa ei = linia fără categorie)
       categorie_331: c331 && !c331.hidden ? (c331.value || null) : null,   // [12.3 pct.9] bunul cu taxare inversă (art.331)

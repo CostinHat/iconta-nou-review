@@ -17,7 +17,7 @@ import re
 
 from core.test_lot12_fe3_recurente import AZI, COD_DE, LINIE, SCH, _adauga, _notificari, _stare, mediu  # noqa: F401 — `mediu` e fixture
 
-LIC = {"descriere": "Piese de schimb livrate in Germania", "cantitate": 1, "pret_unitar": 1000, "cota_tva": 0, "categorie_tva": "livrare_ic",
+LIC = {"descriere": "Piese de schimb livrate in Germania", "cantitate": 1, "um": "buc", "pret_unitar": 1000, "cota_tva": 0, "categorie_tva": "livrare_ic",
        "cont_venit": "707"}
 
 

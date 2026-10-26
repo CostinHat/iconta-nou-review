@@ -49,6 +49,7 @@ def _emite_prestarea_ic(patron, f):
     pg.wait_for_function("() => document.querySelector('#em-l0-cota').textContent.trim() === '0%'", timeout=20000)
     pg.fill("#em-l0-cantitate", "1")
     pg.fill("#em-l0-pret_unitar", "500")
+    pg.fill("#em-l0-um", "ora")   # [lotul 13, regula UM] UM-ul nu mai vine „buc” din oficiu: ce nu propune nomenclatorul scrie omul
     assert pg.locator("#em-l0-categorie").count() == 0, "neplătitorul nu alege categoria de TVA (vine din regimul firmei)"
     patron.captura("emitere")
     pg.wait_for_function("() => !document.querySelector('#em-emite').disabled", timeout=20000)

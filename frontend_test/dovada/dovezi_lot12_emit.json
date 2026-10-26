@@ -193,6 +193,10 @@
     "valoare": "Servicii de consultanță"
    },
    {
+    "completeaza": "#fr-l0-um",
+    "valoare": "ora"
+   },
+   {
     "completeaza": "#fr-l0-cantitate",
     "valoare": "1"
    },

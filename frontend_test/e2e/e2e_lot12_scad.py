@@ -206,6 +206,7 @@ def test_def_477_factura_primita_introdusa_de_mana(patron, firma_scad):
     pg.wait_for_function("() => !document.querySelector('#pm-l1-cota').disabled", timeout=20000)
     pg.fill("#pm-l1-descriere", "Servicii curierat")
     pg.fill("#pm-l1-cantitate", "2")
+    pg.fill("#pm-l1-um", "buc")   # [lotul 13, regula UM] UM-ul liniei nu mai vine „buc” din oficiu: îl scrie omul de pe factură
     pg.fill("#pm-l1-pret", "50")
     pg.select_option("#pm-l1-cota", "21")
     pg.fill("#pr-cont", "628")

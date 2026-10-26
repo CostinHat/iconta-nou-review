@@ -185,6 +185,8 @@ def _linie(pg, i, descriere, cant, pret, articol_id=None):
     pg.fill("#em-l%d-cantitate" % i, str(cant))
     pg.fill("#em-l%d-pret_unitar" % i, str(pret))
     pg.select_option("#em-l%d-cota" % i, "21")
+    if not pg.input_value("#em-l%d-um" % i):  # [lotul 13, regula UM] UM-ul nu mai vine „buc” din oficiu: ce nu propune nomenclatorul scrie omul
+        pg.fill("#em-l%d-um" % i, "buc")
 
 
 def _rezultat(pg):

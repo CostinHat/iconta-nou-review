@@ -115,6 +115,10 @@
         "valoare": "Servicii de consultanță dovadă 443.1"
       },
       {
+        "completeaza": "#em-l0-um",
+        "valoare": "ora"
+      },
+      {
         "completeaza": "#em-l0-cantitate",
         "valoare": "1"
       },

@@ -132,7 +132,7 @@ def _ops(res):
 def _linie_serviciu(c):
     """Linia de servicii a șablonului: la neplătitor cota 0 (CF art.310 alin.(10) lit.b), categoria o pune regimul firmei; la plătitor
     cota 0 cu categoria prestării cu locul în afara României (art.278 alin.(2)) — ce trimite API-ul (ecranul șablonului n-o alege)."""
-    l = {"descriere": SERVICIU, "cantitate": 1, "pret_unitar": 500, "cota_tva": 0}
+    l = {"descriere": SERVICIU, "cantitate": 1, "um": "serv.", "pret_unitar": 500, "cota_tva": 0}  # [lotul 13, regula UM] linia șablonului poartă UM-ul
     if c.platitor:
         l["categorie_tva"] = "serviciu_extern"
     return l
@@ -212,11 +212,11 @@ def test_c160_refuzurile_raman_numai_unde_sablonul_nu_poate_spune_operatiunea(co
     assert _pe_campuri(r) == [("fr-cui", fr.MESAJ_CLIENT_STRAIN % COD_CLIENT)], r
     r = _adauga(conn, tert_tara="Germania")
     assert ("fr-tara", fr.MESAJ_TARA % "Germania") in _pe_campuri(r), r
-    r = _adauga(conn, linii=[{"descriere": SERVICIU, "cantitate": 1, "pret_unitar": 500, "cota_tva": None}])
+    r = _adauga(conn, linii=[{"descriere": SERVICIU, "cantitate": 1, "um": "serv.", "pret_unitar": 500, "cota_tva": None}])
     if conn.platitor:
         assert _pe_campuri(r) == [("fr-l0-cota", fr.MESAJ_STRAIN_FARA_COTA % (1, "DE"))], r
         assert _sql(conn, "SELECT count(*) FROM facturi_recurente")[0][0] == 0
-        r = _adauga(conn, linii=[{"descriere": SERVICIU, "cantitate": 1, "pret_unitar": 500, "cota_tva": 21}])
+        r = _adauga(conn, linii=[{"descriere": SERVICIU, "cantitate": 1, "um": "serv.", "pret_unitar": 500, "cota_tva": 21}])
         assert set(r) == {"id"}, r   # 12.3 pct.9: cota aleasă pe linie = alegerea contabilului (CLAUDE.md §8), ca la „Emite factură”
     else:
         assert set(r) == {"id"}, r

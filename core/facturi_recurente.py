@@ -182,7 +182,25 @@ def verificari_drum(s, platitor=None):
     for i, l in enumerate(s.get("linii") or []):
         if isinstance(l, dict) and l.get("articol_id"):
             out.append(("fr-l%d-descriere" % i, MESAJ_ARTICOL_STOC % (i + 1)))
+    # [lotul 13, regula UM — `facturi.um_linie`, decizia sesiunii principale 26.10.2026] linia șablonului poartă UM-ul: scris de om (sau al
+    # articolului, pus de migrarea `migrare_sablon_um_articol`); fără el, nu „buc” pe ascuns — refuz lângă câmp la salvare, iar la cron
+    # șablonul vechi se oprește cu refuzul în clopoțel (C109), ca să fie completat o dată
+    from core import facturi as _fc
+    for i, l in enumerate(s.get("linii") or []):
+        if isinstance(l, dict) and not l.get("articol_id") and not _fc.um_linie(l):   # linia cu articol: UM-ul articolului (refuzată oricum)
+            out.append(("fr-l%d-um" % i, _fc.MESAJ_UM_LIPSA))
     return out
+
+
+def motiv_drum(rele):
+    """[C109] Textul refuzului cronului din verificările drumului: câmpul unei linii (`fr-l{i}-…`) se spune cu numărul liniei, când mesajul
+    nu-l are deja („Linia 2 — Alege unitatea de măsură a liniei.”)."""
+    import re as _re
+    out = []
+    for camp, m in rele:
+        lin = _re.match(r"fr-l(\d+)-", str(camp or ""))
+        out.append("Linia %d — %s" % (int(lin.group(1)) + 1, m) if lin and not m.startswith("Linia") else m)
+    return " ".join(out)
 
 
 def _camp_sablon(camp):
@@ -479,7 +497,7 @@ def emite_scadente(schema, azi=None, doar=None):
         for s in _alese(lista(conn, schema)):   # REVALIDARE: scadente si acum
             rele = verificari_drum(s, platitor)   # [462] și pe șabloanele salvate înainte de 462: aceleași verificări ca drumul obișnuit
             if rele:
-                motiv = " ".join(m for _c, m in rele)
+                motiv = motiv_drum(rele)
                 emise.append({"sablon": s["id"], "eroare": motiv})
                 _consemneaza_refuzul(conn, schema, s, motiv, azi)
                 continue

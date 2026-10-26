@@ -24,7 +24,7 @@ from core import db as _db, tenant_provisioning as _tp
 _SCHEMA = "test_lot12_emit_rec"
 AZI = datetime.date(2099, 3, 10)   # perioadă sintetică (CLAUDE.md §10): cotele în vigoare sunt cele de azi, fără curs (RON)
 CUI_CLIENT = "14399840"            # DANTE INTERNATIONAL SA — cifra de control verificată cu `cui_valid` (CLAUDE.md)
-LINIE = {"descriere": "Abonament mentenanta lunara", "cantitate": 1, "pret_unitar": 100, "cota_tva": 21, "cont_venit": "704"}
+LINIE = {"descriere": "Abonament mentenanta lunara", "cantitate": 1, "um": "luna", "pret_unitar": 100, "cota_tva": 21, "cont_venit": "704"}  # [lotul 13, regula UM] linia șablonului poartă UM-ul
 
 
 def _db_ok():

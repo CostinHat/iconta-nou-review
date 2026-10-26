@@ -136,6 +136,7 @@ def test_def_c6_neplatitorul_primeste_contul_de_venit_de_la_asistent(patron, fir
     pg.fill("#em-l0-descriere", "Mentenanță platformă web")   # neplătitor: cota e 0 prin lege, ecranul nu cere propunerea
     pg.fill("#em-l0-cantitate", "1")
     pg.fill("#em-l0-pret_unitar", "500")
+    pg.fill("#em-l0-um", "luna")   # [lotul 13, regula UM] UM-ul nu mai vine „buc” din oficiu: ce nu propune nomenclatorul scrie omul
     pg.click("#em-emite")
     pg.wait_for_selector("#em-rezultat.em-bun, #em-rezultat.em-rau, #em-rezultat .msg-eroare", timeout=60000)
     rez = pg.inner_text("#em-rezultat")

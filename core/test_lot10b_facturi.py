@@ -233,13 +233,22 @@ def test_419_dupa_stornare_detaliul_se_reface_si_nu_mai_ofera_stornarea():
     assert apeluri(handler, cod, 'zs.querySelector("#fd-storno-rez").appendChild') == [("bi",)]
     # 416: „stornată” = starea de încasare a serverului; „Stornează” și „Emite chitanță” nu se aplică pe ea (inactive, cu motivul)
     assert declaratii(arb, cod).get("stornata") == ['!!(f.stare_incasare && f.stare_incasare.stare === "stornata")']
-    m = js[js.index("  const motiv = {"):]
-    m = m[:m.index("\n  };")]
-    storno = m[m.index("    storno:"):m.index("    transforma:")]
-    chitanta = m[m.index("    chitanta:"):m.index("    saga:")]
-    assert "f.storno_din_id" in storno and "stornata" in storno, storno
-    assert "f.platita_la" in chitanta and "stornata" in chitanta, chitanta
-    assert 'id="fd-storno"${inactivDaca(motiv.storno)}' in js and 'data-actiune="POST /tenants/{tenant_id}/chitante"${inactivDaca(motiv.chitanta)}' in js
+    # motivele butoanelor (`const motiv = {…}` din detaliu): ce citește fiecare (membrii și numele din expresia lui)
+    det = functia(arb, "detaliiFactura")
+    obj = [d["init"] for d in noduri(det, "VariableDeclarator") if d["id"].get("name") == "motiv"]
+    assert len(obj) == 1 and obj[0]["type"] == "ObjectExpression", obj
+    citeste = {cod(p["key"]): {cod(x) for x in noduri(p["value"], "MemberExpression")} | {x["name"] for x in noduri(p["value"], "Identifier")}
+               for p in obj[0]["properties"]}
+    assert {"f.storno_din_id", "stornata"} <= citeste["storno"], citeste["storno"]
+    assert {"f.platita_la", "stornata"} <= citeste["chitanta"], citeste["chitanta"]
+    # fiecare buton își ia inactivitatea din motivul lui: expresia care urmează după `id="…"` din șablon
+    legat = {}
+    for t in noduri(det, "TemplateLiteral"):
+        for q, ex in zip(t["quasis"], t["expressions"]):
+            idm = re.search(r'id="([^"]+)"[^<>]*$', q["value"]["cooked"] or "")
+            if idm:
+                legat[idm.group(1)] = cod(ex)
+    assert (legat["fd-storno"], legat["fd-chitanta"]) == ("inactivDaca(motiv.storno)", "inactivDaca(motiv.chitanta)"), legat
     butoane = {at.get("id"): at.get("data-actiune") for _t, at in elemente_html(arb)}
     assert (butoane["fd-storno"], butoane["fd-chitanta"]) == ("POST /tenants/{tenant_id}/facturi/{factura_id}/storno",
                                                               "POST /tenants/{tenant_id}/chitante")
@@ -256,8 +265,8 @@ def test_419_clasa_chitanta_si_spv_refac_detaliul_dupa_act():
     h = js[i:js.index("} catch (e) {", i)]
     assert h.index("mesajDupaRevenire(tenantId, facturaId,") < h.index("nav.inapoi();") < h.index(
         "await detaliiFactura(corp, nav, tenantId, facturaId, opt);"), h
-    m = js[js.index("function mesajDupaRevenire("):]
-    assert 'arataMesaj(c.querySelector("#fd-act-rez") || c, text, fel)' in m[:m.index("\n}")], m[:300]
+    arb, cod = arbore_js("facturi_ecran.js")
+    assert apeluri(functia(arb, "mesajDupaRevenire"), cod, "arataMesaj") == [('c.querySelector("#fd-act-rez") || c', "text", "fel")]
     d = js[js.index("async function detaliiFactura("):]
     d = d[:d.index("\nasync function ") if "\nasync function " in d else len(d)]
     assert d.index("corp.innerHTML = `") < d.index("dupaRevenire(corp);"), "confirmarea se pune după desenarea detaliului"
