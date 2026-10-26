@@ -167,6 +167,33 @@ def _completeaza_factura(pg):
     pg.dispatch_event("#em-l0-pret_unitar", "input")
     if pg.input_value("#em-l0-cota") != "21":
         pg.select_option("#em-l0-cota", "21")
+    if not pg.input_value("#em-l0-um"):   # [lotul 13, regula UM] UM-ul nu mai vine „buc” din oficiu: ce nu propune nomenclatorul scrie omul
+        pg.fill("#em-l0-um", "ora")
+
+
+def test_def_504_um_gol_la_emitere_se_refuza_langa_camp(patron, firma_fact):
+    """504 (clasa — decizia sesiunii principale 26.10.2026 pe întrebarea UM: „UM gol NU devine «buc» pe ascuns — se refuză, lângă câmp, cu
+    o propoziție («Alege unitatea de măsură a liniei.»)”). Pașii: Emite factură -> linia nouă: UM-ul e gol (nu „buc”) -> DANTE, produsul din
+    nomenclator, 1 × 100, 21% -> UM-ul șters de om -> „Emite”: refuzul lângă UM-ul liniei, cu propoziția regulii, nicio factură scrisă ->
+    „ora” -> „Emite”: factura emisă, linia în „ora”.
+    MUTAȚIA (`mut_lot13_fact.json`): refuzul UM-ului scos din ruta emiterii -> factura pleacă fără UM -> ROȘU."""
+    s = firma_fact["schema"]
+    _deschide_emiterea(patron, firma_fact["nume"])
+    pg = patron.pg
+    assert pg.input_value("#em-l0-um") == "", "linia nouă vine cu UM pus din oficiu"
+    _completeaza_factura(pg)
+    pg.fill("#em-l0-um", "")
+    n0 = sql('SELECT count(*) FROM "%s".facturi' % s)[0][0]
+    pg.click("#em-emite")
+    pg.wait_for_selector("#em-l0-um[aria-invalid='true']", timeout=30000)
+    patron.captura("um_refuzat")
+    assert pg.inner_text(".msg-eroare[data-camp='em-l0-um']").strip() == "Alege unitatea de măsură a liniei."
+    assert sql('SELECT count(*) FROM "%s".facturi' % s)[0][0] == n0
+    pg.fill("#em-l0-um", "ora")
+    pg.click("#em-emite")
+    pg.wait_for_selector("#em-rezultat.em-bun", timeout=30000)
+    patron.captura("emisa")
+    assert sql('SELECT l.um FROM "%s".factura_linii l JOIN "%s".facturi f ON f.id = l.factura_id ORDER BY f.id DESC LIMIT 1' % (s, s)) == [("ora",)]
 
 
 def test_def_542_seria_noua_porneste_de_la_1_nu_de_la_contorul_vechi(patron, firma_fact):
@@ -232,6 +259,8 @@ def _livrare_ic(patron, firma, cod):
     pg.fill("#em-l0-descriere", "Servicii de consultanță UE E2E")
     pg.dispatch_event("#em-l0-descriere", "input")
     pg.wait_for_timeout(1200)
+    if not pg.input_value("#em-l0-um"):  # [lotul 13, regula UM] UM-ul nu mai vine „buc” din oficiu: ce nu propune nomenclatorul scrie omul
+        pg.fill("#em-l0-um", "ora")
     pg.fill("#em-l0-cantitate", "1")
     pg.dispatch_event("#em-l0-cantitate", "input")
     pg.fill("#em-l0-pret_unitar", "1000")
@@ -450,6 +479,9 @@ def test_def_680_sablonul_are_intrebarile_emiterii_iar_ciorna_se_emite_din_lista
     pg.dispatch_event("#fr-l0-cantitate", "input")
     pg.fill("#fr-l0-pret_unitar", "100")
     pg.dispatch_event("#fr-l0-pret_unitar", "input")
+    if not pg.input_value("#fr-l0-um"):   # [lotul 13, regula UM] linia șablonului poartă UM-ul: ce nu propune nomenclatorul scrie omul
+        pg.fill("#fr-l0-um", "ora")
+        pg.dispatch_event("#fr-l0-um", "input")
     pg.fill("#fr-zi", "1")
     pg.fill("#fr-scadenta", "15")
     pg.fill("#fr-inceput", "2026-01-01")

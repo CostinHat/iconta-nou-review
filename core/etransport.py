@@ -156,28 +156,22 @@ def _bani(x):
 
 def din_document(conn, schema, fel, doc_id):
     """Propunerea notificării din factura `doc_id` (fel „factura”) sau din NIR-ul `doc_id` (fel „nir”): {cod_tip_operatiune, ref,
-    bunuri, partener, start, final, de_completat}; None dacă documentul nu există."""
+    bunuri, partener, start, final, de_completat}; None dacă documentul nu există. Citirile: `repo_etransport` (regula straturilor)."""
     from decimal import Decimal
     from psycopg2.extras import RealDictCursor
-    from core import eticheta_nota as _et
-    s = '"%s".' % str(schema).strip('"')
+    from core import eticheta_nota as _et, repo_etransport as _re
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute("SELECT nume, adresa, oras, judet FROM %sfirma_profil WHERE id = 1" % s)
-        firma = cur.fetchone() or {}
+        firma = _re.firma(cur, schema)
         loc_firma = _loc(firma.get("adresa"), firma.get("oras"), firma.get("judet"))
         if fel == "factura":
-            cur.execute("SELECT id, directie, tert_nume, tert_cui, tert_tara, tert_adresa, tert_oras, tert_judet, curs_bnr, moneda "
-                        "FROM %sfacturi WHERE id = %%s" % s, (doc_id,))
-            f = cur.fetchone()
+            f = _re.factura(cur, schema, doc_id)
             if not f:
                 return None
-            cur.execute("SELECT descriere, cantitate, um, pret_unitar, valoare_neta FROM %sfactura_linii WHERE factura_id = %%s ORDER BY id"
-                        % s, (doc_id,))
             curs = Decimal(str(f["curs_bnr"] or 1))
             bunuri = [{"denumire": l["descriere"] or "", "cantitate": str(l["cantitate"]), "um": _um_unece(l["um"]),
                        "valoare_fara_tva": _bani((Decimal(str(l["valoare_neta"])) if l["valoare_neta"] is not None
                                                   else Decimal(str(l["cantitate"] or 0)) * Decimal(str(l["pret_unitar"] or 0))) * curs)}
-                      for l in cur.fetchall()]
+                      for l in _re.factura_linii(cur, schema, doc_id)]
             tara = str(f["tert_tara"] or "").strip().upper() or _tara_din_cod(f["tert_cui"])
             intrare = f["directie"] == "primita"
             partener = {"cod_tara": tara, "cod": str(f["tert_cui"] or "").strip(), "denumire": f["tert_nume"] or ""}
@@ -185,22 +179,16 @@ def din_document(conn, schema, fel, doc_id):
                 {"cod_judet": "", "localitate": str(f["tert_oras"] or "").strip(), "strada": str(f["tert_adresa"] or "").strip()}
             ref = _et.factura(cur, schema, doc_id)
         elif fel == "nir":
-            cur.execute("SELECT id, numar, data, furnizor, cui FROM %snir WHERE id = %%s" % s, (doc_id,))
-            n = cur.fetchone()
+            n = _re.nir(cur, schema, doc_id)
             if not n:
                 return None
-            cur.execute("SELECT l.denumire, l.cantitate, l.pret_achizitie, a.um FROM %snir_linii l LEFT JOIN %sarticole a ON a.id = l.articol_id "
-                        "WHERE l.nir_id = %%s ORDER BY l.id" % (s, s), (doc_id,))
             bunuri = [{"denumire": l["denumire"] or "", "cantitate": str(l["cantitate"]), "um": _um_unece(l["um"]),
                        "valoare_fara_tva": _bani(Decimal(str(l["cantitate"] or 0)) * Decimal(str(l["pret_achizitie"] or 0)))}
-                      for l in cur.fetchall()]
+                      for l in _re.nir_linii(cur, schema, doc_id)]
             tara = _tara_din_cod(n["cui"])
             intrare = True
             partener = {"cod_tara": tara, "cod": str(n["cui"] or "").strip(), "denumire": n["furnizor"] or ""}
-            from core import cui_forma as _cf
-            cur.execute("SELECT adresa, oras, judet FROM %sfurnizori WHERE %s = %%s ORDER BY id LIMIT 1" % (s, _cf.SQL.format(c="cui")),
-                        (_cf.stocare(n["cui"]) or "",))
-            fz = cur.fetchone() or {}
+            fz = _re.adresa_furnizor(cur, schema, n["cui"])
             loc_partener = _loc(fz.get("adresa"), fz.get("oras"), fz.get("judet"))
             from core.pdf_util import data_ro
             ref = "NIR %s din %s" % (n["numar"], data_ro(n["data"]))
@@ -215,19 +203,13 @@ def documente_recente(conn, schema, zile=60):
     """Documentele din care se poate completa notificarea: facturile (emise și primite, nu proforme) și NIR-urile din ultimele `zile`
     zile, cele mai noi întâi — {facturi: [{id, eticheta, partener}], nir: [{id, eticheta, partener}]}."""
     from psycopg2.extras import RealDictCursor
-    from core import eticheta_nota as _et
+    from core import eticheta_nota as _et, repo_etransport as _re
     from core.pdf_util import data_ro
-    s = '"%s".' % str(schema).strip('"')
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute("SELECT id, directie, tip, serie, numar, data_emitere, tert_nume FROM %sfacturi WHERE COALESCE(tip, 'factura') = 'factura' "
-                    "AND storno_din_id IS NULL AND COALESCE(status, '') NOT IN ('anulata', 'ciorna') "
-                    "AND data_emitere >= CURRENT_DATE - %%s ORDER BY data_emitere DESC, id DESC LIMIT 200" % s, (zile,))
         facturi = [{"id": r["id"], "eticheta": _et.factura_din_rand(r), "partener": r["tert_nume"] or "",
-                    "directie": r["directie"]} for r in cur.fetchall()]
-        cur.execute("SELECT id, numar, data, furnizor FROM %snir WHERE data >= CURRENT_DATE - %%s ORDER BY data DESC, id DESC LIMIT 200" % s,
-                    (zile,))
+                    "directie": r["directie"]} for r in _re.facturi_recente(cur, schema, zile)]
         nir = [{"id": r["id"], "eticheta": "NIR %s din %s" % (r["numar"], data_ro(r["data"])), "partener": r["furnizor"] or ""}
-               for r in cur.fetchall()]
+               for r in _re.nir_recente(cur, schema, zile)]
     return {"facturi": facturi, "nir": nir}
 
 

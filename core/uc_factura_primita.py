@@ -29,6 +29,7 @@ from decimal import Decimal, InvalidOperation
 from core import auth_api, db
 from core import chei_unice as _chei
 from core import erori as _erori
+from core import facturi as _fc
 from core import uc_comun as _uc_comun
 from core.pdf_util import data_ro as _data_ro   # data pentru om, sursa unică (DS cap.4)
 
@@ -121,9 +122,9 @@ def factura_din_formular(corp):
             er.camp(camp_linie(i, "descriere"), "Linia %d: scrie denumirea, cum e pe factură." % i)
         if cant is None or cant == 0:
             er.camp(camp_linie(i, "cantitate"), "Linia %d: scrie cantitatea (diferită de 0)." % i)
-        um = str(l.get("um") or "").strip()
+        um = _fc.um_linie(l) or ""   # [lotul 13, regula UM — o singură regulă cu emiterea și borderoul: gol nu devine „buc”]
         if not um:
-            er.camp(camp_linie(i, "um"), "Linia %d: scrie unitatea de măsură de pe factură (buc, m, kg …)." % i)
+            er.camp(camp_linie(i, "um"), _fc.MESAJ_UM_LIPSA)
         elif len(um) > 10:
             er.camp(camp_linie(i, "um"), "Linia %d: unitatea de măsură are cel mult 10 caractere." % i)
         if pret is None or pret < 0:

@@ -198,6 +198,7 @@ def test_def_c84_livrarea_ic_fara_dovada_transportului_se_emite_cu_avertisment(p
     pg.fill("#em-data", ZI.isoformat())
     pg.fill("#em-l0-descriere", "Marfa revanzare IC E2E")
     pg.wait_for_timeout(1200)                                              # propunerea cotei pentru denumire
+    pg.fill("#em-l0-um", "buc")   # [lotul 13, regula UM] UM-ul nu mai vine „buc” din oficiu: ce nu propune nomenclatorul scrie omul
     pg.fill("#em-l0-cantitate", "2")
     pg.dispatch_event("#em-l0-cantitate", "input")
     pg.fill("#em-l0-pret_unitar", "100")

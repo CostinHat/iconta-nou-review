@@ -64,6 +64,36 @@ SQL_TOTAL_DE_PLATA_LEI = ("(COALESCE({a}.total_lei, {a}.total) - CASE WHEN {a}.d
                           "THEN COALESCE({a}.tva_lei, {a}.tva, 0) ELSE 0 END)")
 
 
+#: [lotul 13, decizia sesiunii principale 26.10.2026 pe întrebarea UM — CLAUDE.md §8 + DS cap.6 v2.104, 504: „nimic precompletat care induce
+#: în eroare”] UM-ul gol NU devine „buc” pe ascuns: se refuză lângă câmp, cu această propoziție, în toate locurile care scriu o linie nouă
+#: (emiterea, factura primită introdusă de mână, articolul nou din borderou) — o singură regulă, server + ecran.
+MESAJ_UM_LIPSA = "Alege unitatea de măsură a liniei."
+
+
+def um_linie(linie, um_articol=None):
+    """UM-ul liniei, după regula unică: cel scris pe linie; gol, pe o linie cu articol din nomenclator (`articol_id`) -> UM-ul articolului
+    (vizibil pe linie, ecranul îl pune la alegerea articolului); altfel None = de refuzat. Niciodată „buc” din oficiu."""
+    um = str((linie or {}).get("um") or "").strip()
+    if um:
+        return um
+    if (linie or {}).get("articol_id") and str(um_articol or "").strip():
+        return str(um_articol).strip()
+    return None
+
+
+def um_lipsa(linii, um_articole=None, prefix="em-l", de_la=0):
+    """[(camp, mesaj)] pentru fiecare linie fără UM (`um_linie`); pe celelalte pune UM-ul ales (al articolului, când linia îl ia de acolo).
+    `um_articole` = {articol_id: um}; câmpul = `{prefix}{i}-um`, cu i numărat de la `de_la` (emiterea: 0, factura de mână: 1)."""
+    out = []
+    for i, l in enumerate(linii, de_la):
+        um = um_linie(l, (um_articole or {}).get(l.get("articol_id")))
+        if um:
+            l["um"] = um
+        else:
+            out.append(("%s%d-um" % (prefix, i), MESAJ_UM_LIPSA))
+    return out
+
+
 def clauza_nu_din_bon(alias="f"):
     """Predicatul SQL al aceleiași definiții, pentru repository-urile care numără vânzările (D300 și calea a doua)."""
     return ("%s.bon_fiscal_nr IS NULL" % alias) if alias else "bon_fiscal_nr IS NULL"

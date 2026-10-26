@@ -653,6 +653,10 @@
         "valoare": "Vânzare marfă: făină"
       },
       {
+        "completeaza": "#em-l0-um",
+        "valoare": "kg"
+      },
+      {
         "pauza": 2500
       },
       {
@@ -734,6 +738,10 @@
       {
         "completeaza": "#em-l0-descriere",
         "valoare": "Vânzare marfă: făină"
+      },
+      {
+        "completeaza": "#em-l0-um",
+        "valoare": "kg"
       },
       {
         "pauza": 2500

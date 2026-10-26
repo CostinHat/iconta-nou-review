@@ -17,13 +17,14 @@ from core import facturi_api as F
 
 COTA = 21
 
+# [lotul 13, regula UM — `facturi.um_linie`] linia șablonului poartă UM-ul, scris de om (pornește gol, nu „buc”): e în FILL și în payload
 FILL = [
-    {"descriere": "Abonament mentenanta", "cantitate": "2", "pret_unitar": "100"},
-    {"descriere": "Consultanta lunara", "cantitate": "3", "pret_unitar": "50"},
+    {"descriere": "Abonament mentenanta", "cantitate": "2", "um": "luna", "pret_unitar": "100"},
+    {"descriere": "Consultanta lunara", "cantitate": "3", "um": "ora", "pret_unitar": "50"},
 ]
 CANONICAL_LINII = [
-    {"descriere": "Abonament mentenanta", "cantitate": 2, "pret_unitar": 100, "cota_tva": COTA},
-    {"descriere": "Consultanta lunara", "cantitate": 3, "pret_unitar": 50, "cota_tva": COTA},
+    {"descriere": "Abonament mentenanta", "cantitate": 2, "um": "luna", "pret_unitar": 100, "cota_tva": COTA},
+    {"descriere": "Consultanta lunara", "cantitate": 3, "um": "ora", "pret_unitar": 50, "cota_tva": COTA},
 ]
 
 
@@ -136,6 +137,7 @@ def _fill_benef(pg):
 def _fill_linie(pg, i, l):
     pg.fill("#fr-l%d-descriere" % i, l["descriere"])
     pg.fill("#fr-l%d-cantitate" % i, l["cantitate"])
+    pg.fill("#fr-l%d-um" % i, l["um"])
     pg.fill("#fr-l%d-pret_unitar" % i, l["pret_unitar"])
 
 

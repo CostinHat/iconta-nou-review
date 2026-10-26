@@ -79,6 +79,10 @@
         "valoare": "Servicii de consultanta IT dovadă C156"
       },
       {
+        "completeaza": "#em-l0-um",
+        "valoare": "ora"
+      },
+      {
         "pauza": 1500
       },
       {
@@ -194,6 +198,10 @@
       {
         "completeaza": "#em-l0-descriere",
         "valoare": "Servicii de consultanta IT dovadă C157"
+      },
+      {
+        "completeaza": "#em-l0-um",
+        "valoare": "ora"
       },
       {
         "pauza": 1500

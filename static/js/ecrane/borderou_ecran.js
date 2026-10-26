@@ -47,8 +47,8 @@ export async function ecranBorderou(corp, nav, t) {
           ${text("op-furnizor_adresa", "Domiciliul vânzătorului")}
           ${text("op-furnizor_act", "Actul de identitate (seria și numărul)")}
           ${campNumeric("op-valoare", "Valoarea")}
-          ${text("op-cont_cheltuiala", "Contul (stoc sau cheltuială)", { valoare: "301",
-            ajutor: "Pe un cont de stoc (371, 301, 302, 303) marfa intră în gestiune odată cu borderoul: alege articolul și cantitatea." })}
+          ${text("op-cont_cheltuiala", "Contul (stoc sau cheltuială)", {
+            ajutor: "Contul uzual: 301 (materii prime), 371 la mărfuri. Pe un cont de stoc (371, 301, 302, 303) marfa intră în gestiune odată cu borderoul: alege articolul și cantitatea." })}
           ${camp("op-articol", "Articolul (din nomenclator)", `<input type="text" id="op-articol-cauta" class="camp-input" placeholder="Caută articolul în stoc…" aria-label="Caută articolul" autocomplete="off" style="margin-bottom:6px">
             <select id="op-articol" class="camp-input" aria-label="Articolul (din nomenclator)">
               <option value="" selected>— alege —</option>
@@ -56,7 +56,7 @@ export async function ecranBorderou(corp, nav, t) {
               <option value="${ARTICOL_NOU}">Articol nou… (îl creez acum)</option>
             </select>`, { ajutor: "Alege-l din listă. „Articol nou…” îl creează în nomenclator, numai dacă denumirea nu e deja a altui articol." })}
           ${text("op-articol_den", "Denumirea articolului nou", { ascuns: true })}
-          ${text("op-um", "UM-ul articolului nou", { ascuns: true, valoare: "buc" })}
+          ${text("op-um", "UM-ul articolului nou", { ascuns: true })}
           ${campNumeric("op-cantitate", "Cantitatea", { pas: "0.001", ajutor: "În UM-ul articolului." })}
           ${camp("op-categorie", "Categoria bunului (D394, lit. D)", `<select id="op-categorie" class="camp-input" aria-label="Categoria bunului (D394, lit. D)">
               <option value="" selected>— alege —</option>${categoriiN.map((c) => `<option value="${esc(c.cod)}">${esc(c.eticheta)}</option>`).join("")}</select>`,

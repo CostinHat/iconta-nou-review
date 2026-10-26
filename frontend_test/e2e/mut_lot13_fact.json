@@ -100,5 +100,11 @@
   "ancora": "          await detaliiFactura(corp, nav, tenantId, facturaId, opt);\n          const zs = corp.querySelector(\"#fd-storno-zona\");",
   "inlocuire": "          const zs = corp.querySelector(\"#fd-storno-zona\");",
   "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_615_dupa_stornare_factura_e_stornata_fara_reimprospatare"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "            for camp, mesaj in _um_lipsa:\n                er.camp(camp, mesaj)\n            er.refuza()",
+  "inlocuire": "            for camp, mesaj in _um_lipsa:\n                er.camp(camp, mesaj)",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_504_um_gol_la_emitere_se_refuza_langa_camp"
  }
 ]

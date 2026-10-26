@@ -120,7 +120,7 @@ def test_b23_factura_recurenta_refuza_liniile_beneficiarul_si_ziua_deodata(conn)
     _em = {"scadenta_zile": 15, "data_inceput": "2026-01-01", "valabil_pana": "oprire", "mod_emitere": "automata", "trimite_spv": False}   # [lotul 13, 680] întrebările emiterii, date: testul e despre linii / beneficiar / zi
     r = facturi_recurente.adauga(conn, _SCH, dict({"linii": [], "tert_nume": "", "zi_emitere": 40}, **_em))
     assert _campuri(r) == ["fr-linii", "fr-nume", "fr-zi"], r
-    r = facturi_recurente.adauga(conn, _SCH, dict({"linii": [{"descriere": "", "cantitate": 1, "pret_unitar": 10}], "zi_emitere": "prima"},
+    r = facturi_recurente.adauga(conn, _SCH, dict({"linii": [{"descriere": "", "cantitate": 1, "um": "buc", "pret_unitar": 10}], "zi_emitere": "prima"},   # [regula UM] UM-ul dat: testul e despre denumire
                                                   **_em))
     assert _campuri(r) == ["fr-nume", "fr-zi", "fr-l0-descriere"], r
     assert _randuri(r["eroare"]) == [

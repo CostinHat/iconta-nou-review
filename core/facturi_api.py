@@ -1716,6 +1716,25 @@ def stare_vies(v):
     return "valid" if v.get("valid") else "indisponibil"
 
 
+def um_lipsa_emitere(conn, linii, prefix="em-l", de_la=0):
+    """[lotul 13, regula UM — `facturi.um_lipsa`, decizia sesiunii principale 26.10.2026] Liniile unei facturi noi scrise de om: UM-ul gol se
+    refuză lângă câmpul lui (`MESAJ_UM_LIPSA`), nu devine „buc”; pe linia cu articol din nomenclator UM-ul gol se ia de la articol
+    (`repo_stocuri.articolul_ales`). Întoarce [(camp, mesaj)]; liniile bune primesc UM-ul ales."""
+    import psycopg2.extras as _E
+    from core import facturi as _f, repo_stocuri as _rs
+    ids = {l.get("articol_id") for l in linii if l.get("articol_id") and not str(l.get("um") or "").strip()}
+    um_art = {}
+    if ids:
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            cur.execute("SELECT current_schema() AS s")
+            schema = cur.fetchone()["s"]
+            for aid in ids:
+                r = _rs.articolul_ales(cur, schema, aid)
+                if r:
+                    um_art[aid] = r["um"]
+    return _f.um_lipsa(linii, um_art, prefix, de_la)
+
+
 def verifica_vies_emitere(cod, tara=None):
     """[lotul 13, C199] VIES pentru emitere, chemat de ruta emiterii ÎNAINTEA conexiunii (ca `vanzare_ic`, P5): răspunsul lui
     `intracomunitar.verifica_vies`, sau `{"stare": "indisponibil"}` dacă serviciul nu răspunde (căderea nu refuză emiterea — 550); detaliul
