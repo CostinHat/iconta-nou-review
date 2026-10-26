@@ -40,6 +40,9 @@ def conn():
                            declarant_functie,platitor_tva) VALUES (1,'F1 SRL','RO14399840','s','B','B','e@x.ro','07','4690','P','I','A',true)""")
         c.commit()
     with _db.get_conn(_SCH) as c:
+        with c.cursor() as cur:   # [lotul 13, 683] avansul spre decontare se dă unui salariat din evidență (CNP cu cifra de control verificată)
+            cur.execute("INSERT INTO salariati (id, cnp, nume, prenume, data_angajare) OVERRIDING SYSTEM VALUE "
+                        "VALUES (1, '1900101400012', 'Popescu', 'Ion', '2026-01-01')")
         yield c
     with _db.get_conn() as c:
         with c.cursor() as cur:
@@ -72,7 +75,7 @@ def test_plata_peste_sold_e_refuzata_la_salvare(conn):
 def test_plata_pusa_in_trecut_strica_soldurile_de_dupa(conn):
     """O plată datată înaintea încasării: casa e zero în ziua ei — refuzată, deși soldul de azi ar acoperi-o."""
     _ca.adauga(conn, _SCH, _op("2026-10-15", "ridicare_banca", 500, "DI1"))
-    r = _ca.adauga(conn, _SCH, _op("2026-10-10", "avans_decontare", 50, "DP1"))
+    r = _ca.adauga(conn, _SCH, dict(_op("2026-10-10", "avans_decontare", 50, "DP1"), salariat_id=1))   # [683] avansul are salariat
     assert r["cod"] == "CASA_NEGATIVA" and r["eroare"].startswith(
         "Avans spre decontare de 50,00 lei nu încape în casă (contul 5311): soldul casei pe 10.10.2026, în registru, e 0,00 lei"), r
     # plata de azi care ar strica o plată deja înregistrată mai târziu

@@ -9,6 +9,8 @@ from decimal import Decimal, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import casa as _m
 from core import cui_forma as _forma_cui
+from core import salariat_decont as _sd   # [lotul 13, 683] salariatul avansului spre decontare (punctul unic, comun cu Operațiunile)
+from core import erori as _erori
 from core import chei_unice as _chei   # [lotul 10, C73 / U2] stornarea dublă -> refuz numit și la cursă, nu 500
 from core.pdf_util import bani as _bani, data_ro as _data_ro, serie_nr as _ncs   # [lotul 11, 443] afișare „F6 nr. 1”, nu „F61” (numai pentru om: `numar` e text pe ecran, nu identificator)
 
@@ -291,6 +293,29 @@ def _refuz_adunat(er, coduri=()):
     return r
 
 
+def _cu_salariat(cur, schema, op, er=None):
+    """[lotul 13, deficiența 683 — „Avans spre decontare nu pune salariatul pe rândul notei: 542 nu se urmărește pe persoană”] La
+    `avans_decontare` partenerul dispoziției E salariatul ales (`op["salariat_id"]`, din evidența firmei, angajat la data dispoziției —
+    `core.salariat_decont.alege`, aceeași verificare ca la Operațiuni › Avans spre decontare, 670 a): operațiunea primește numele și CNP-ul
+    lui în locul partenerului scris. Întoarce (op, salariat); fără salariat valid, `er` (dacă e dat) primește refuzul lângă `c-salariat`,
+    altfel excepția `DateInvalide` urcă. Alte categorii: op neschimbat, None."""
+    import datetime as _dt
+    if op.get("categorie") != "avans_decontare":
+        return op, None
+    try:
+        d = _dt.date.fromisoformat(str(op.get("data"))[:10])
+    except ValueError:
+        d = None   # data refuzată separat (`c-data`): alegerea salariatului se verifică, data nu
+    try:
+        sal = _sd.alege(cur, schema, op.get("salariat_id"), d, "c-salariat")
+    except _erori.DateInvalide as e:
+        if er is None:
+            raise
+        er.camp("c-salariat", e.detaliu["mesaj"])
+        return op, None
+    return dict(op, partener=sal["nume"], cui=sal["cif"]), sal
+
+
 def adauga(conn, schema, op, linii=None):
     """op: {data, categorie, suma, document?, partener?, cui?, facturi?: [{factura_id, suma}], avans?}; `linii` = [(debit, credit, suma)]
     pentru categoriile din `CATEGORII_CU_LINII` (suma lor = suma operațiunii). Creează operațiunea + nota ciornă. Întoarce operațiunea +
@@ -431,12 +456,17 @@ def adauga(conn, schema, op, linii=None):
                                     "servicii (4092), imobilizări corporale (4093) sau necorporale (4094); nota avansului e 409x = 5311."
                                     % _bani(sum((p[0] for p in parti if p[3]), Decimal(0))))
             coduri.append(COD_AVANS_DESTINATIE)
+    sal = None
+    if cat == "avans_decontare":
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            op, sal = _cu_salariat(cur, schema, op, er)   # [683] salariatul e partenerul; refuz numit lângă `c-salariat`
     if er:
         return _refuz_adunat(er, coduri)
     sem = semnale(conn, schema, op)
     create = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         from core import avansuri as _av
+        from core import repo_contabilitate as _rc
         for s_p, fid, stinge, avans, nid in parti:
             rand = ([(d, c, Decimal(str(v))) for d, c, v in linii if Decimal(str(v))] if linii
                     else [(_av.CONT_AVANS[DESTINATIE_AVANS_NIR], "5311", s_p)] if nid   # [405] NIR-ul plătit: 4091 = 5311
@@ -455,9 +485,12 @@ def adauga(conn, schema, op, linii=None):
                         (op["data"], descriere_nota(op_p), (str(op.get("document") or "").strip() or None), fid))
             iid = cur.fetchone()["id"]
             for debit, credit, v in rand:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
-                            (iid, debit, credit, v))
+                if sal and "542" in (debit, credit):   # [683] 542 se urmărește pe persoană: rândul poartă salariatul (CNP valid, nume)
+                    _rc.adauga_linie_partener(cur, schema, iid, debit, credit, v, sal["cif"], sal["nume"])
+                else:
+                    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                    (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                                (iid, debit, credit, v))
             cur.execute(f"""INSERT INTO {schema}.casa_operatiuni
                             (data, tip, categorie, document, partener, cui, suma, inregistrare_id, avans, nir_id)
                             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
@@ -476,11 +509,16 @@ def previzualizare(conn, schema, op):
     from core import casa_sold as _cs
     an, luna = int(str(op["data"])[:4]), int(str(op["data"])[5:7])
     plata = op.get("categorie") in CONTURI and op.get("categorie") not in CATEGORII_INCASARE
+    from core.erori import ErorileFormularului as _Erori
+    er_sal = _Erori("Dispoziția nu s-a salvat")
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        if op.get("salariat_id"):   # [683] aceeași regulă ca la salvare: salariatul ales e partenerul; alegerea nepotrivită se spune înainte de „Adaugă”
+            op, _sal = _cu_salariat(cur, schema, op, er_sal)
         sold_initial, rows = _registru_luna(cur, schema, an, luna)   # [455] aceleași rânduri și același sold ca registrul
         # [406] refuzul salvării, spus înainte de „Adaugă” — aceeași regulă ca `adauga`
         refuz = _cs.refuz_iesire(cur, schema, CONTURI[op["categorie"]][1], op["data"], Decimal(str(op.get("suma") or 0)),
                                  doar_validate=False, ce=ETICHETE_CATEGORIE[op["categorie"]]) if plata else None
+    refuz = refuz or (er_sal.detaliu()["mesaj"] if er_sal else None)
     ops = _pentru_motor(rows) + _pentru_motor([{"data": _date_iso(op["data"]), "tip": "incasare" if op.get("categorie") in CATEGORII_INCASARE
                                                 else "plata", "suma": Decimal(str(op.get("suma") or 0)), "partener": op.get("partener"),
                                                 "cui": op.get("cui"), "categorie": op.get("categorie")}])
@@ -719,8 +757,10 @@ def storneaza(conn, schema, op_id, data):
                                 VALUES (%s, %s, 'casa', 'ciorna', %s, %s) RETURNING id""",
                             (data, ("Stornare: " + (n["descriere"] or ""))[:200], doc, n["factura_id"]))
                 iid = cur.fetchone()["id"]
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
-                                SELECT %s, cont_debit, cont_credit, -suma FROM {schema}.inregistrari_linii WHERE inregistrare_id = %s""",
+                # [683] rândul inversat păstrează partenerul rândului inițial (542 al avansului spre decontare = salariatul)
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma, partener_cui, partener_nume)
+                                SELECT %s, cont_debit, cont_credit, -suma, partener_cui, partener_nume
+                                  FROM {schema}.inregistrari_linii WHERE inregistrare_id = %s""",
                             (iid, op["inregistrare_id"]))
                 # [405] stornarea plății unui NIR poartă NIR-ul, cu suma cu minus: NIR-ul redevine neplătit (`niruri_neplatite`)
                 cur.execute(f"""INSERT INTO {schema}.casa_operatiuni (data, tip, categorie, document, partener, cui, suma, inregistrare_id,

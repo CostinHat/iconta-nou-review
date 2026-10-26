@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "core/casa_api.py",
+  "ancora": "                if sal and \"542\" in (debit, credit):",
+  "inlocuire": "                if False and sal and \"542\" in (debit, credit):",
+  "test": "frontend_test/e2e/e2e_lot13_val6.py::test_def_683_avansul_spre_decontare_se_da_unui_salariat"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "    salariat_id: cuSalariat() && selSal.value ? Number(selSal.value) : null,   // [683]",
+  "inlocuire": "    salariat_id: null,   // [683]",
+  "test": "frontend_test/e2e/e2e_lot13_val6.py::test_def_683_avansul_spre_decontare_se_da_unui_salariat"
+ }
+]
