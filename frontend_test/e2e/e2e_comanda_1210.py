@@ -289,19 +289,22 @@ def test_def_230_firul_de_intrare_al_lui_ana_incepe_de_la_1(browser, request, pa
     Pașii: Ana (asistent, „Poate pregăti”) -> „?” -> „Firul de intrare”: pașii numerotați 1, 2, 3 … (fără pasul „Firme”, al
     administratorului) -> contabilul-șef: tot de la 1, începând cu „Firme”.
     MUTAȚIA din plasă: numărul luat înapoi din STRATURI (`st.nr`) -> la Ana începe de la 2 -> ROȘU."""
+    # [lotul 13, 562 — anexa comenzii 13.1, decizia 320] asistentul nu mai primește firul de intrare (pașii de preluare sunt ai
+    # administratorului): în „?” are intro-ul pe rol și cardurile lui de început, deci niciun pas numerotat — nici „2” fără „1”
     with cont_asistent(firme=(T_COMERT,)) as a, ecran_cont(browser, request, a["email"]) as e:
         e.acasa()
         e.pg.click("#nav-ghid")
-        e.pg.wait_for_selector(".fereastra .ans-pas-nr", timeout=20000)
+        e.pg.wait_for_selector(".fereastra #ans-inceput", timeout=20000)
+        e.pg.wait_for_timeout(600)
         nr = e.pg.eval_on_selector_all(".fereastra .ans-pas-nr", "els => els.map(x => x.innerText.trim())")
-        titluri = e.pg.eval_on_selector_all(".fereastra .ans-pas-titlu", "els => els.map(x => x.innerText.trim())")
         e.captura("ana")
-        assert nr == [str(i) for i in range(1, len(nr) + 1)] and "Firme" not in titluri, (nr, titluri)
+        assert nr == [], nr
     patron.acasa()
     patron.pg.click("#nav-ghid")
     patron.pg.wait_for_selector(".fereastra .ans-pas-nr", timeout=20000)
     nr = patron.pg.eval_on_selector_all(".fereastra .ans-pas-nr", "els => els.map(x => x.innerText.trim())")
-    assert nr == [str(i) for i in range(1, len(nr) + 1)], nr
+    titluri = patron.pg.eval_on_selector_all(".fereastra .ans-pas-titlu", "els => els.map(x => x.innerText.trim())")
+    assert nr == [str(i) for i in range(1, len(nr) + 1)] and titluri[:1] == ["Firme"], (nr, titluri)
 
 
 # ── C11 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

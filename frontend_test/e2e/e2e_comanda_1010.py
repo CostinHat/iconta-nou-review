@@ -107,8 +107,10 @@ def test_def_223_catalogul_lui_ana_arata_doar_ce_poate_folosi(browser, request, 
     assert _catalog(patron, ascunse=True) == set(), "contabilul-șef vede tot catalogul"   # filtrul e al rolului, nu al portalului
     assert len(ana) > 100 and {"Generare contracte", "Declarația D300", "Editor note contabile"} <= ana, "anti-vacuu"
     assert not NU_PENTRU_ANA & ana, sorted(NU_PENTRU_ANA & ana)
-    assert {"Panoul de capacitate", "Contabilii și asistenții cabinetului", "Blocare perioade", "Sinteza zilnică pe email"} <= admin, \
-        sorted({"Panoul de capacitate", "Contabilii și asistenții cabinetului", "Blocare perioade", "Sinteza zilnică pe email"} - admin)
+    # [lotul 13, 578] „Sinteza zilnică pe email” a ieșit din catalog (găsită stricată la testare, revine după retest —
+    # `genereaza_grupe_functii.NEPUBLICE`); funcția de administrator a probei e acum „Chei API publice per cabinet”
+    assert {"Panoul de capacitate", "Contabilii și asistenții cabinetului", "Blocare perioade", "Chei API publice per cabinet"} <= admin, \
+        sorted({"Panoul de capacitate", "Contabilii și asistenții cabinetului", "Blocare perioade", "Chei API publice per cabinet"} - admin)
 
 
 # ── 222 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
