@@ -18,6 +18,10 @@ aplicația din arborele de lucru.
                   aici și ținută numai local (`~/.cache/iconta_dovada/parola`, 0600) — nicio parolă / token / cheie de producție nu se
                   copiază; firmele, legăturile utilizator-firmă și rândurile publice de care au nevoie ecranele (declarații depuse, coada,
                   tipul firmei, alertele emise; cursul BNR lipsă);
+                  [lotul 13, valul 4 — decizia coordonatorului] plus documentele de DINAINTE ale cabinetului de test, ca dovezile `vechi`
+                  să arate ce fac migrările nepublicate cu ele: `notificari` ale utilizatorilor copiei, sesizările lor (`raportari` +
+                  `raportari_mesaje`, fără fișiere) și `anunturi_cabinet` ale cabinetului de test (`PUBLICE_PE_CABINET`) — cu id-uri NOI
+                  în baza de test (nu se ciocnesc cu rândurile plasei), trimiterile la utilizatori din afara copiei golite (NULL);
                   [lotul 13, valul 4] plus SUPERADMINUL COPIEI (`SUPERADMIN_COPIE`): un utilizator NOU, care nu există pe producție, fără
                   cabinet, cu email sintetic și aceeași parolă locală — Panoul Admin pe copie (dovezile cu `"utilizator": "superadmin"`);
                4. migrările pe care producția încă nu le are (registrul `public.migrari_rulate` de pe producție, citit), în ordinea
@@ -287,6 +291,46 @@ def _coloane(cur, tabel):
     return [r[0] for r in cur.fetchall()]
 
 
+def _copiaza_cu_id_nou(cp, ct, tabel, unde, param, inlocuiri=None):
+    """Ca `_copiaza_randuri`, dar rândul primește în baza de test un id NOU (secvența ei): tabelele cabinetului / utilizatorilor
+    (`PUBLICE_PE_CABINET`) au id-uri pe care plasa le folosește deja. -> {id pe producție: id în copie}, pentru cheile care trimit la el."""
+    col = [c for c in _coloane(cp, tabel) if c in set(_coloane(ct, tabel)) and c != "id"]
+    cp.execute('SELECT id, %s FROM public."%s" WHERE %s ORDER BY id' % (", ".join('"%s"' % c for c in col), tabel, unde), param)
+    from psycopg2.extras import Json
+    ids = {}
+    for r in cp.fetchall():
+        v = list(r[1:])
+        for i, c in enumerate(col):
+            if inlocuiri and c in inlocuiri:
+                v[i] = inlocuiri[c](v[i])
+            if isinstance(v[i], (dict, list)):
+                v[i] = Json(v[i])
+        ct.execute('INSERT INTO public."%s" (%s) VALUES (%s) RETURNING id' % (tabel, ", ".join('"%s"' % c for c in col),
+                                                                             ", ".join(["%s"] * len(col))), v)
+        ids[r[0]] = ct.fetchone()[0]
+    return ids
+
+
+def copiaza_documentele_cabinetului(cp, ct, cabinet_id, utilizatori, tids):
+    """[lotul 13, valul 4 — decizia coordonatorului: „copiază, numai-citire de pe producție și NUMAI pentru cabinetul de test […]
+    `notificari` ale utilizatorilor copiei, `raportari` + `raportari_mesaje` ale lor (fără fișiere), `anunturi_cabinet` ale cabinetului de
+    test, apoi migrările nepublicate le trec la clonare”] Documentele de dinainte ale cabinetului de test (verificat de `verifica_surse`),
+    pe care dovezile `vechi` le arată după migrări (570 notificările de control fiscal, 572 / 573 sesizările triate, 646 anunțurile).
+    `cp` citește producția (numai-citire); `ct` scrie în baza de TEST. Trimiterile la utilizatori / firme din afara copiei devin NULL
+    (răspunsul echipei iConta de pe producție rămâne mesaj „admin”, fără autor). -> {tabel: câte rânduri}."""
+    afara = lambda ok: (lambda v: v if v in ok else None)   # noqa: E731
+    n = {}
+    n["notificari"] = len(_copiaza_cu_id_nou(cp, ct, "notificari", "user_id = ANY(%s)", (list(utilizatori),)))
+    sesizari = _copiaza_cu_id_nou(cp, ct, "raportari", "autor_id = ANY(%s)", (list(utilizatori),),
+                                  {"cabinet_id": lambda v: v if v == cabinet_id else None})
+    n["raportari"] = len(sesizari)
+    n["raportari_mesaje"] = len(_copiaza_cu_id_nou(cp, ct, "raportari_mesaje", "raportare_id = ANY(%s)", (list(sesizari) or [0],),
+                                                   {"raportare_id": sesizari.get, "autor_id": afara(set(utilizatori))}))
+    n["anunturi_cabinet"] = len(_copiaza_cu_id_nou(cp, ct, "anunturi_cabinet", "cabinet_id = %s", (cabinet_id,),
+                                                   {"tenant_id": afara(set(tids)), "trimis_de": afara(set(utilizatori))}))
+    return n
+
+
 def _copiaza_randuri(cp, ct, tabel, unde, param, inlocuiri=None, exclude=()):
     """Rândurile `tabel` WHERE `unde` de pe producție (cp) în baza de test (ct), pe coloanele comune, cu id-ul păstrat."""
     col = [c for c in _coloane(cp, tabel) if c in set(_coloane(ct, tabel)) and c not in exclude]
@@ -401,6 +445,7 @@ def cloneaza(_argv):
             n[t] = _copiaza_randuri(cp, ct, t, "tenant_id = ANY(%s)", (tids,), fara_strain if t == "declaratii_coada" else None)
         for t in ("accounting_firms", "users", "tenants", "declaratii_coada"):
             _aliniaza_secventa(ct, t)
+        n.update(copiaza_documentele_cabinetului(cp, ct, cabinet_id, utilizatori, tids))   # [lotul 13, valul 4] documentele `vechi`
         # [lotul 13, valul 4] superadminul copiei — utilizator NOU al bazei de TEST (după alinierea secvenței: id-ul nu se ciocnește cu
         # utilizatorii copiați), fără cabinet, cu email sintetic și parola locală a copiei; nimic de pe producție
         ct.execute("INSERT INTO public.users (email, password_hash, rol, activ, nume, prenume, telefon, notificari_salvate_la, "
