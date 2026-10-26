@@ -5821,9 +5821,10 @@ def nota_provizion_ep(tenant_id, corp, ctx):
                 if zile is None and not _uc_comun.bifa(corp, "faliment", False):
                     temei += " — factura n-are termen de scadență, deci zilele de la scadență nu se pot socoti"
                 ded, nedeductibil = _pv.parti_fiscale(suma, pct)
-                info = {"deductibil_procent": pct, "temei": temei, "zile_de_la_scadenta": zile, "factura": "%s nr. %s" % (f.get("serie") or "", f["numar"]),
+                from core.pdf_util import serie_nr as _serie_nr   # [443] seria și numărul separat, fără seria dublată din număr
+                info = {"deductibil_procent": pct, "temei": temei, "zile_de_la_scadenta": zile, "factura": _serie_nr(f.get("serie"), f["numar"]),
                         "deductibil": str(ded), "nedeductibil": str(nedeductibil)}
-                d0 = f"Ajustare creanta {f['tert_nume']} {f.get('serie') or ''}{f['numar']} — deductibil {bani(ded, 'lei')}, nedeductibil {bani(nedeductibil, 'lei')}"
+                d0 = f"Ajustare creanta {f['tert_nume']} {_serie_nr(f.get('serie'), f['numar'])} — deductibil {bani(ded, 'lei')}, nedeductibil {bani(nedeductibil, 'lei')}"
             elif fel == "creanta_reluare":
                 with conn.cursor() as cur:
                     _os.cere_sold(cur, schema, "491", data, corp["suma"], "creditor", "Reluarea ajustării", camp="op-suma")
@@ -5840,7 +5841,8 @@ def nota_provizion_ep(tenant_id, corp, ctx):
                 info = {"deductibil": str(r["linii"][0][2]) if r["deductibil"] else "0.00", "nedeductibil": str(nedeductibil)}
                 d0 = f"Provizion {corp.get('tip')} ({act})" + ("" if r["deductibil"] else " - nedeductibil fiscal")
             elif fel == "stoc":
-                cont = str(corp.get("cont_ajustare") or "").strip()
+                # [lotul 13, garda conturilor din corp] contul se confruntă cu planul firmei (ca înainte de 504, fără implicitul 397)
+                cont = _cv.cere_cont(conn, schema, corp.get("cont_ajustare"), "cont_ajustare")
                 if act == "reluare":
                     with conn.cursor() as cur:
                         _os.cere_sold(cur, schema, cont, data, corp["suma"], "creditor", "Reluarea ajustării", camp="op-suma")
@@ -5972,6 +5974,7 @@ def nota_productie(tenant_id, corp, ctx):
       (OMFP 1802/2014 pct.286 alin.(4)); nimic din ele nu se mai scrie de mână;
     - producția în curs: neschimbată (331 = 711 / 711 = 331)."""
     from core import productie as _pr
+    from core import eticheta_nota as _et_prod
     import datetime as _dt
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -5999,7 +6002,8 @@ def nota_productie(tenant_id, corp, ctx):
                 for dd, cc, ss in r["linii"]:
                     repo_contabilitate.adauga_linie(cur, schema, iid, dd, cc, ss)
             conn.commit()
-            return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
+            with conn.cursor() as cur:   # [C201] nota numită pe conexiunea ținută, după commit (nu pe a doua conexiune a lui `cu_eticheta`)
+                return _et_prod.in_raspuns(cur, schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]})
         cant = _cantitate_pozitiva(corp["cantitate"], "op-cantitate")
         if op == "obtinere":
             from core import stocuri_cv_api as _cva
@@ -6028,7 +6032,8 @@ def nota_productie(tenant_id, corp, ctx):
             info = {"document": doc, "produs": art[1], "cantitate": str(cant), "gestiune": gestiune, "valoare": str(valoare),
                     "diferenta": ({k: str(v) for k, v in r["diferenta"].items()} if r.get("diferenta") else None)}
             conn.commit()
-            return _uc_comun.cu_eticheta(schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
+            with conn.cursor() as cur:   # [C201] ca mai sus
+                return _et_prod.in_raspuns(cur, schema, {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info})
         # vânzarea: factura către client, descărcarea produsului, diferențele de preț repartizate
         client = _partener_din_corp(corp.get("client_cui"), corp.get("client_nume"), "client", "clientul")
         with conn.cursor() as cur:
@@ -8695,7 +8700,8 @@ def operatiuni_date(tenant_id, ce, parametri, ctx):
                 from core import reconciliere_api as _rec
                 fs = [f for f in _rec.facturi_deschise_detalii(conn, schema) if f["directie"] == "emisa"]   # [lotul 13] cu partenerul și numărul (detaliile)
                 scad = repo_operatiuni.scadente_facturi(cur, schema, [f["id"] for f in fs])
-                return {"facturi": [{"id": f["id"], "document": "%s%s" % (f.get("serie") or "", f["numar"]), "partener": f["tert_nume"],
+                from core.pdf_util import serie_nr as _serie_nr   # [443] seria și numărul separat („F1 nr. 3”), ca peste tot
+                return {"facturi": [{"id": f["id"], "document": _serie_nr(f.get("serie"), f["numar"]), "partener": f["tert_nume"],
                                      "sold": f["sold"], "scadenta": str(scad.get(f["id"]) or ""),
                                      "zile": (data - scad[f["id"]]).days if scad.get(f["id"]) else None} for f in fs]}
             if ce == "catalog":   # [lotul 13, 521] codul din Catalogul HG 2139/2004: denumirea și plaja duratei
@@ -8717,6 +8723,16 @@ def decontare_valuta(tenant_id, corp, ctx):
     from datetime import date as _date
     from core import diferente_curs as _dc, ops_valuta as _ov
     from core import curs_bnr as _cb
+    # [lotul 13, reparațiile finale; P5 val 3, C201] Moneda vine acum din factură (524), deci cursul se aduce după o citire SCURTĂ a monedei
+    # și ÎNAINTEA tranzacției — descărcarea BNR (până la 3×10 s) nu ține o conexiune din pool (ca `factura_contabilizeaza`).
+    _md = None
+    if str(corp.get("factura_id") or "").isdigit():
+        with db.get_conn() as conn0:
+            schema0 = auth_api.schema_tenant(conn0, ctx["uid"], tenant_id)
+            with conn0.cursor() as cur0:
+                _md = repo_efactura.moneda_si_data(cur0, schema0, int(corp["factura_id"])) if schema0 else None
+    if _md:
+        _uc_comun._preincalzeste_cursul(_md[0], corp.get("data"))
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -8741,7 +8757,6 @@ def decontare_valuta(tenant_id, corp, ctx):
                                                                       "creanță" if corp["tip"] == "creanta" else "datorie")) if v > 0 \
                     else "Suma în valută trebuie să fie un număr pozitiv."
                 raise _erori.DateInvalide({"mesaj": m, "erori_campuri": [{"camp": "op-valoare_valuta", "mesaj": m}]})
-            _uc_comun._preincalzeste_cursul(f["moneda"], corp.get("data"))
             try:
                 curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, f["moneda"], data)
             except _cb.MonedaNecotata as _mn:   # [lotul 8] iesea ca `500`

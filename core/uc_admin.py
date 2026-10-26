@@ -36,14 +36,17 @@ def admin_anunt_creeaza(date, ctx):
     """[P7 · use-case] Corpul rutei `/admin/anunturi`; docstringul ei a ramas in stratul HTTP.
     [646] Destinatarii explicit (`segment` = `toate` | `cabinete` + `cabinet_ids`); rândurile trimiterii primesc același `lot` (lista
     trimiterilor, retragerea) și pe cel care a trimis."""
+    # [lotul 13, clasa 440] mesajul și destinatarii sunt câmpuri independente: refuzurile se adună și pleacă o dată, fiecare lângă câmpul ei
+    er = _erori.ErorileFormularului("Anunțul nu s-a trimis")
     if not (date.mesaj or "").strip():
-        raise _erori.DateInvalide({"mesaj": "Scrie mesajul anunțului.", "camp": "mesaj"})
-    mesaj = date.mesaj.strip()
+        er.camp("mesaj", "Scrie mesajul anunțului.")
+    mesaj = (date.mesaj or "").strip()
     data_af = (date.data_afisare or "").strip() or None
     segment = (date.segment or "").strip()
     alese = sorted({int(c) for c in (date.cabinet_ids or [])})
     if segment not in ("toate", "cabinete") or (segment == "cabinete" and not alese):
-        raise _erori.DateInvalide({"mesaj": MESAJ_FARA_DESTINATARI, "camp": "destinatari"})
+        er.camp("destinatari", MESAJ_FARA_DESTINATARI)
+    er.refuza()
     ids = []
     with db.get_conn() as conn, conn.cursor() as cur:
         tinte = [cid for (cid,) in repo_tenants.cabinete_active(cur)] if segment == "toate" else alese
@@ -171,14 +174,16 @@ def admin_cabinet_suspenda(firm_id, date, ctx):
     scrie pe rândul jurnalului. Întoarce `{ok, motiv, emailuri_trimise, destinatari}`."""
     if ctx["rol"] != "superadmin":
         raise _erori.FaraDrept(DOAR_ADMIN_ICONTA)
+    # [lotul 13, clasa 440] motivul și nota internă sunt câmpuri independente: refuzurile se adună și pleacă o dată, fiecare lângă câmpul ei
+    er = _erori.ErorileFormularului("Cabinetul nu s-a suspendat")
     motiv = str(getattr(date, "motiv", None) or "").strip()
     if motiv not in MOTIVE_SUSPENDARE:
-        raise _erori.DateInvalide({"mesaj": "Alege motivul suspendării: %s." % ", ".join(MOTIVE_SUSPENDARE.values()), "camp": "motiv"})
+        er.camp("motiv", "Alege motivul suspendării: %s." % ", ".join(MOTIVE_SUSPENDARE.values()))
     nota = str(getattr(date, "nota_interna", None) or "").strip() or None
     if nota and len(nota) > NOTA_INTERNA_MAX:
-        raise _erori.DateInvalide({"mesaj": "Nota internă are %s; încap cel mult %s." % (_cate(len(nota), "caracter", "caractere"),
-                                                                                            _cate(NOTA_INTERNA_MAX, "caracter", "caractere")),
-                                   "camp": "nota_interna"})
+        er.camp("nota_interna", "Nota internă are %s; încap cel mult %s." % (_cate(len(nota), "caracter", "caractere"),
+                                                                            _cate(NOTA_INTERNA_MAX, "caracter", "caractere")))
+    er.refuza()
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             nume = repo_admin.numele_cabinetului(cur, firm_id)

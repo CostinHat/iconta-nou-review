@@ -173,7 +173,7 @@ def extrage(continut, nume_fisier=""):
     i_fbaza = col("fbaza")
     i_scut = col("scut")
     i_functie = col("functie", exclus=(i_fbaza, i_cor))
-    if i_nume < 0 and i_cnp < 0:
+    if i_nume < 0 and i_cnp < 0:   # refuz de FORMĂ, fără temei normativ: fișierul nu are coloanele care identifică salariatul
         raise ValueError("nu se găsește coloana nume/CNP salariat - fișier nerecunoscut")
 
     out = []
@@ -571,7 +571,7 @@ def importa(conn, randuri, inlocuieste=False):
     (confirmarea de pe ecran); fără ea -> `migrare_api.InlocuireNeconfirmata` (409), cu cine se actualizează și ce.
     """
     # [lotul 6] Aceeasi clasa ca la articole: o cerere fara randuri nu e un import de zero.
-    if not randuri:
+    if not randuri:   # refuz de FORMĂ, fără temei normativ: cererea goală
         raise ValueError("nu ai trimis niciun rând. Un import fără rânduri n-are ce adăuga în "
                          "evidența salariaților; dacă voiai altceva, e altă operațiune.")
     er = verifica_randuri(randuri)
@@ -588,6 +588,7 @@ def importa(conn, randuri, inlocuieste=False):
         # reparat in lotul 1 pe istoricul de declaratii — acolo, cu aceleasi cuvinte.
         _n = len({e["rand"] for e in er})
         _cine = ("Un rând nu poate intra" if _n == 1 else _cate(_n, "rând", "rânduri") + " nu pot intra")
+        # refuz de FORMĂ (adunat): niciun rând bun; motivul fiecărui rând e al lui, cu temeiul acolo unde există (585: salariul minim)
         raise ValueError("%s în evidență: %s. Salariații intră în D112 și REGES - datele trebuie "
                          "să fie cele reale; niciun salariat n-a fost scris." % (_cine, det))
     vechi = existent(conn, [r.get("cnp") for r in bune])

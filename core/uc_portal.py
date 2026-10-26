@@ -208,8 +208,8 @@ def portal_facturi(tenant_id, an, luna, ctx):
 def portal_declaratii(tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/portal/declaratii`; docstringul ei a ramas in stratul HTTP."""
     t = _uc_comun._tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn, db.get_conn(t["schema_name"]) as conn_s:
-        return {"declaratii": portal_api.declaratii_depuse(conn, t["id"], conn_s)}
+    with db.get_conn(t["schema_name"]) as conn:   # [C201] o singură conexiune: `public.declaratii_depuse` și periodicitatea din schema firmei
+        return {"declaratii": portal_api.declaratii_depuse(conn, t["id"], conn)}
 
 
 def portal_povesti(tenant_id, ctx):
@@ -474,7 +474,7 @@ def portal_documente_balanta(an, luna, tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/portal/documente/balanta`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an, luna)
     t = _uc_comun._tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
+    with db.get_conn(t["schema_name"]) as conn:   # [C201] o singură conexiune, pe schema firmei (tabelele publice sunt calificate)
         pdf = documente_api.balanta_pdf(conn, t["schema_name"], an, luna, t.get("nume") or "",
                                         note_client=_note_balanta_client(conn, t["schema_name"], an, luna))
     return pdf
@@ -492,7 +492,7 @@ def _note_balanta_client(conn, schema, an, luna):
         note.append("Provizorie: luna %02d/%d nu e încă închisă de contabil, deci cifrele se pot schimba%s." % (
             luna, an, (" (%s încă neverificate)" % _common.cate(st["neverificate"], "înregistrare", "înregistrări"))
             if st["neverificate"] else ""))
-    with db.get_conn(schema) as cs, cs.cursor() as cur:
+    with conn.cursor() as cur:   # [C201] conexiunea apelantului, pe schema firmei
         preluare = _preluare(cur)
     if preluare and preluare[0] == an and documente_api.avertisment_balanta(conn, schema, an):
         note.append("Evidența în iConta.eu începe cu %s %d." % (_pa.LUNI[preluare[1]], preluare[0]))

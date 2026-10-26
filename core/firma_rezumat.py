@@ -189,7 +189,9 @@ _T_CONTROL_FISCAL = (
     # [lotul 11, C79] D300 / D394 / D406 citesc TVA-ul de pe factura furnizorului, pe cote (BG-23, `factura_tva_cote`)
     "factura_tva_cote",
     # [lotul 12, 463] Control fiscal spune facturile emise netransmise în SPV, din ultima lor trimitere (triggerul există deja, al supervizorului)
-    "efactura_trimiteri")
+    "efactura_trimiteri",
+    # [lotul 13, 670 b] statul de plată și D112 citesc excedentul de diurnă al salariatului (venit asimilat salariilor, CF art.76 alin.(2) lit.k)
+    "diurna_excedent")
 
 #: SURSE CONDIȚIONATE — citite de `control_fiscal` doar CÂND o fereastră de obligație e deschisă (spre
 #: scadență), nu în fiecare zi. `efactura_primite`: `control_fiscal` numără e-facturile primite
@@ -202,7 +204,9 @@ _T_CONTROL_FISCAL = (
 TABELE_CONDITIONALE = ("efactura_primite",)
 
 #: [432, lotul 10] + luna preluării (`repo_firma_profil.fapte_preluare`: soldurile de preluare și prima notă) — marcajul „înainte de preluare”
-_T_TERMENE = ("clienti", "d390_manual", "facturi", "firma_profil", "salariati", "inregistrari", "solduri_initiale")
+_T_TERMENE = ("clienti", "d390_manual", "facturi", "firma_profil", "salariati", "inregistrari", "solduri_initiale",
+              # [lotul 13, 592] D390 la neplătitorul art.317: numai lunile cu operațiuni intracomunitare (`d301_operatiuni`)
+              "d301_operatiuni")
 
 ASPECTE = {
     "solduri": {
@@ -212,8 +216,9 @@ ASPECTE = {
         "tabele": ("plan_conturi",), "tabele_public": (), "timp": None,
         "calcul": _plan_conturi},
     "vector": {
-        # [428, lotul 10] vectorul arată și regimul TVA la încasare (perioadele lui)
-        "tabele": ("firma_profil", "tva_incasare_perioade"), "tabele_public": (), "timp": None,
+        # [428, lotul 10] vectorul arată și regimul TVA la încasare (perioadele lui); [lotul 13, 541] și cine și când a schimbat
+        # perioadele, din jurnalul Date firmă (`firma_profil_jurnal`, `regim_tva_incasare.istoric_perioade`)
+        "tabele": ("firma_profil", "tva_incasare_perioade", "firma_profil_jurnal"), "tabele_public": (), "timp": None,
         "calcul": _vector},
     # ── [P3 val B, 09.09.2026] cele patru straturi de migrare ──
     #

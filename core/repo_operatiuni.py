@@ -49,10 +49,13 @@ def scadente_facturi(cur, schema, ids):
 
 
 def factura_primita_dupa_furnizor_si_numar(cur, schema, furnizor_cui, numar):
-    """(id, data_emitere, numar) a facturii primite de la furnizor (CUI cu sau fără „RO”) cu acel număr, sau None."""
+    """(id, data_emitere, numar) a facturii primite de la furnizor (CUI cu sau fără „RO”) cu acel număr, sau None.
+
+    [lotul 11, decizia Costin 10.3 pct.4] CUI-ul comparat în forma păstrată, pe ambele părți (`cui_forma.SQL` / `cui_forma.stocare`):
+    rândurile vechi pot avea „RO” sau spații, iar codul de TVA al altui stat își păstrează prefixul."""
+    from core import cui_forma as _cf
     cur.execute("SELECT id, data_emitere, numar FROM %sfacturi WHERE directie = 'primita' AND upper(btrim(numar)) = upper(btrim(%%s)) "
-                "AND regexp_replace(upper(COALESCE(tert_cui, '')), '^RO', '') = regexp_replace(upper(%%s), '^RO', '') ORDER BY id LIMIT 1"
-                % _p(schema), (str(numar), str(furnizor_cui)))
+                "AND %s = %%s ORDER BY id LIMIT 1" % (_p(schema), _cf.SQL.format(c="tert_cui")), (str(numar), _cf.stocare(furnizor_cui)))
     return _rand(cur.fetchone())
 
 

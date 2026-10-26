@@ -3946,6 +3946,8 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.obiecte_inventar (
     scoatere_id integer REFERENCES TENANT_PLACEHOLDER.evidenta_extrabilant(id) ON DELETE SET NULL,
     creat_la timestamptz NOT NULL DEFAULT now()
 );
+DROP TRIGGER IF EXISTS trg_cui_fara_ro_l13 ON TENANT_PLACEHOLDER.obiecte_inventar;
+CREATE TRIGGER trg_cui_fara_ro_l13 BEFORE INSERT OR UPDATE OF furnizor_cui ON TENANT_PLACEHOLDER.obiecte_inventar FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('furnizor_cui');
 -- [extrabilant_v1] sfârșit
 
 -- [vanzari_stoc_v1, lotul 13, deficiența 548] vânzarea în regim de marjă / aurul de investiții din stoc — SURSA: core/migrare_vanzari_stoc.py
@@ -3976,4 +3978,6 @@ BEGIN
 END $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS trg_vanzare_stoc_sterge ON TENANT_PLACEHOLDER.inregistrari;
 CREATE TRIGGER trg_vanzare_stoc_sterge BEFORE DELETE ON TENANT_PLACEHOLDER.inregistrari FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.vanzare_stoc_sterge();
+DROP TRIGGER IF EXISTS trg_cui_fara_ro_l13 ON TENANT_PLACEHOLDER.vanzari_din_stoc;
+CREATE TRIGGER trg_cui_fara_ro_l13 BEFORE INSERT OR UPDATE OF client_cui ON TENANT_PLACEHOLDER.vanzari_din_stoc FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('client_cui');
 -- [vanzari_stoc_v1] sfârșit

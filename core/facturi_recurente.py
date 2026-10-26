@@ -492,6 +492,7 @@ def emite_scadente(schema, azi=None, doar=None):
     # [368] începutul scrierii, pe același ceas și cu aceeași marjă ca middleware-ul (`main._autor_si_note_in_coada`)
     from core import uc_coada as _uc_coada_ni
     de_la = _uc_coada_ni.inceputul_scrierii()
+    de_trimis = []   # [lotul 13, C201 / P5] trimiterile în SPV se fac DUPĂ ce conexiunea emiterii s-a închis (apel extern, altă conexiune)
     with db.get_conn(schema) as conn:
         platitor = _uc._platitor_tva_firma(conn)
         for s in _alese(lista(conn, schema)):   # REVALIDARE: scadente si acum
@@ -529,13 +530,15 @@ def emite_scadente(schema, azi=None, doar=None):
                 conn.commit()
                 emise.append({"sablon": s["id"], "factura": r.get("numar"), **({"avertismente": _avert} if _avert else {})})
                 if s.get("trimite_spv"):   # [lotul 13, 680] factura emisă automat pleacă singură în SPV (alegerea de pe șablon)
-                    emise[-1]["spv"] = _trimite_spv(conn, schema, s, r, azi)
+                    de_trimis.append((emise[-1], s, r))
             except Exception as e:  # noqa: BLE001 — refuzul unui șablon nu le oprește pe celelalte; se consemnează și se anunță
                 conn.rollback()
                 emise.append({"sablon": s["id"], "eroare": str(e)})   # jurnalul jobului: textul întreg
                 if not isinstance(e, ValueError):   # o cădere a aplicației, nu un refuz al emiterii: operatorul e anunțat
                     _obs.esec_secundar("emiterea facturii recurente %s/%s" % (schema, s["id"]), e)
                 _consemneaza_refuzul(conn, schema, s, motiv_refuzului(e) if isinstance(e, ValueError) else MESAJ_NEPREVAZUT, azi)
+    for rand, s, r in de_trimis:   # factura e deja comisă; trimiterea nu ține nicio conexiune deschisă cât așteaptă SPV-ul
+        rand["spv"] = _trimite_spv(schema, s, r, azi)
     if doar is None:
         _anunta_ciornele(schema, azi)
     if any("eroare" not in e for e in emise):
@@ -579,14 +582,19 @@ def _anunta_ciorna(conn, schema, s, azi):
 STARI_SPV_PLECATA = ("incarcat", "in_prelucrare", "ok", "deja_trimisa")
 
 
-def _trimite_spv(conn, schema, s, r, azi):
+def _trimite_spv(schema, s, r, azi):
     """[680] Trimiterea automată în SPV a facturii emise din șablon (`efactura_trimitere.trimite`, același drum ca butonul „Trimite în
     SPV”, cu principalul firmei — cabinetul). Orice altceva decât „a plecat” (fără token, fără drept, date incomplete, ANAF căzut) se
-    anunță contabilului în clopoțel, cu motivul: factura rămâne emisă, iar trimiterea o face el din Istoric facturi."""
+    anunță contabilului în clopoțel, cu motivul: factura rămâne emisă, iar trimiterea o face el din Istoric facturi.
+
+    [lotul 13, C201 / P5] Se cheamă după ce conexiunea emiterii s-a închis: principalul se citește pe o conexiune scurtă, trimiterea
+    (care își deschide singură conexiunea și așteaptă SPV-ul) rulează fără nicio conexiune ținută, iar anunțul are conexiunea lui."""
     import os
+    from core import db
     from core import efactura_trimitere as _eft, notificari_termene as _nt, observare as _obs, spv_conector as _sc
     try:
-        principal = _sc.principal_pentru_schema(conn, schema)
+        with db.get_conn(schema) as conn:
+            principal = _sc.principal_pentru_schema(conn, schema)
         rez = _eft.trimite(schema, r["factura_id"], principal, mediu=os.environ.get("EFACTURA_MEDIU", "prod"))
         stare, motiv = rez.get("stare"), rez.get("mesaj") or ("; ".join(rez.get("erori") or []) or rez.get("stare"))
     except Exception as e:  # noqa: BLE001 — trimiterea nereușită nu desface emiterea; se anunță
@@ -594,12 +602,12 @@ def _trimite_spv(conn, schema, s, r, azi):
         stare, motiv = "eroare", (str(e) if isinstance(e, ValueError) else "trimiterea n-a reușit (echipa iConta.eu a fost anunțată)")
     if stare not in STARI_SPV_PLECATA:
         try:
-            _nt.notifica_pe_conexiune(conn, schema, TIP_AVERTISMENT, lambda nume: "%s: factura recurentă %s pentru %s s-a emis, dar n-a plecat "
-                                      "în SPV: %s. Trimite-o din Istoric facturi." % (nume, r.get("numar") or "", str(s.get("tert_nume") or ""),
-                                                                                     motiv))
-            conn.commit()
-        except Exception as e:  # noqa: BLE001
-            conn.rollback()
+            with db.get_conn(schema) as conn:
+                _nt.notifica_pe_conexiune(conn, schema, TIP_AVERTISMENT, lambda nume: "%s: factura recurentă %s pentru %s s-a emis, dar n-a "
+                                          "plecat în SPV: %s. Trimite-o din Istoric facturi." % (nume, r.get("numar") or "",
+                                                                                                str(s.get("tert_nume") or ""), motiv))
+                conn.commit()
+        except Exception as e:  # noqa: BLE001 — anunțul nereușit nu desface emiterea; eșecul nu e tăcut
             _obs.esec_secundar("anunțul trimiterii SPV a facturii recurente %s/%s" % (schema, s.get("id")), e)
     return stare
 

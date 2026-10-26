@@ -484,6 +484,18 @@ REGISTRU = (
       "subvenția, dividendele, sponsorizarea, decontul, listele formularelor; SQL-ul scris în `uc_tenants` în lotul 13, mutat fără schimbare "
       "de comportament; zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/extrabilant.py", REPOSITORY, None,
+      "lotul 13, deficiența 507: evidența în afara bilanțului (clasa 8, o singură parte) — scrie și citește `evidenta_extrabilant` pe "
+      "cursorul apelantului; zero `get_conn`, zero commit",
+      "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/mf_note.py", REPOSITORY, None,
+      "lotul 13, deficiențele 519 / 522 / 518 / 517: activul ținut pe rândul notei (`mf_linii`, `mf_note`) — legături și citiri pe "
+      "cursorul apelantului; zero `get_conn`, zero commit",
+      "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
+    D("core/ops_sold.py", REPOSITORY, None,
+      "lotul 13, deficiența 524: soldul contului stins de o operațiune specială (solduri preluate + note validate − ciornele care îl "
+      "consumă) și refuzul de FORMĂ al soldului invers; citiri pe cursorul apelantului, zero `get_conn`, zero commit",
+      "citit la sursa (docstring + ce face modulul)"),
     D("core/repo_portal.py", REPOSITORY, None,
       "P7 · V1: portalul clientului: solicitări și clienți — citiri mutate din rute, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),

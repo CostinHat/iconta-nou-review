@@ -196,12 +196,12 @@ def _tva_din_rand(r, nr, cine, i_tva, numar, deb, cre, cont):
     """[lotul 13, 252, decizia Costin 13.1] Suma TVA din coloana opțională a fișierului: Decimal, sau None (coloana lipsă / celula goală ->
     TVA-ul se calculează la cota standard, iar factura e marcată „de verificat”). O sumă care nu e număr, negativă sau mai mare decât restul
     facturii oprește citirea fișierului, cu rândul, partenerul și factura numite (nu se ghicește)."""
-    from decimal import Decimal as _D
+    from decimal import Decimal as _D, ROUND_HALF_UP as _SUS
     if i_tva < 0 or not _it.celula(r, i_tva):
         return None
     unde = "Rândul %d (%s%s)" % (nr, cine, (", factura %s" % numar) if numar else "")
     try:
-        v = _D(str(_numar(_it.valoare(r, i_tva), strict=True))).quantize(_D("0.01"))
+        v = _D(str(_numar(_it.valoare(r, i_tva), strict=True))).quantize(_D("0.01"), rounding=_SUS)
     except (ValueError, ArithmeticError):
         raise _it.FisierNecitit("%s: suma TVA «%s» nu e un număr. Corectează celula și încarcă fișierul din nou." % (unde, _it.celula(r, i_tva)))
     net = _D(str(deb)) - _D(str(cre))

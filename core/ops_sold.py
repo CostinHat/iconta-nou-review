@@ -128,7 +128,6 @@ def cere_sold_4428(cur, schema, data, suma, sens, camp=None):
         exigibilizările 4426 = 4428 deja validate, minus ce exigibilizează ciornele.
     TEMEI: CF art.282 alin.(3)-(4) (exigibilitatea la încasare / dreptul de deducere la plată, art.297 alin.(2)) — nota exigibilizează
     numai TVA-ul care e neexigibil; refuz de FORMĂ (sold invers pe 4428)."""
-    from core import eticheta_nota as _et
     suma = Decimal(str(suma or 0))
     if suma <= 0:
         return

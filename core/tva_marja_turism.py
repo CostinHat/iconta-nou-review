@@ -77,7 +77,7 @@ def marja_turism_normal(componente):
         raise ValueError("Pachetul turistic nu are nicio componentă: adaugă cel puțin un serviciu, cu baza și cota lui de TVA.")   # [lotul 13, 515]
     out, tb, tt = [], Decimal("0"), Decimal("0")
     for comp in componente:
-        if comp.get("cota") in (None, ""):   # [lotul 13] fără cotă implicită (CLAUDE.md: nicio valoare fiscală presupusă)
+        if comp.get("cota") in (None, ""):   # [lotul 13] fără cotă implicită (CLAUDE.md: nicio valoare fiscală presupusă) — refuz de FORMĂ: câmp lipsă
             raise ValueError("Cota de TVA a componentei „%s” lipsește. Declară cota fiecărui serviciu din pachet." % (comp.get("descriere") or "fără denumire"))
         baza, c = _d(comp["baza"]), _d(comp["cota"])
         if baza <= 0 or c < 0:

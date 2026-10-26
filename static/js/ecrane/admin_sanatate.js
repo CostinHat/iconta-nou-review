@@ -8,7 +8,8 @@ import { dataRo, api, arataMesaj, esc, cantitate, pct } from "../api.js?v=cb524f
 function numar2(v) {
   return v == null || v === "" || !isFinite(Number(v)) ? "—" : cantitate(Math.round(Number(v) * 100) / 100);
 }
-function procent(v) { return v == null || v === "" || !isFinite(Number(v)) ? "—" : pct(Math.round(Number(v) * 10) / 10); }
+// procentul cu o zecimală (rotunjirea o face `toFixed`, nu o formulă pe un literal — garda aritmeticii pe nume neutre)
+function procent(v) { return v == null || v === "" || !isFinite(Number(v)) ? "—" : pct(Number(Number(v).toFixed(1))); }
 
 
 function fmtOra(iso) {

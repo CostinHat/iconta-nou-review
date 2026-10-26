@@ -49,6 +49,12 @@ _DDL = [
     'DROP TRIGGER IF EXISTS trg_vanzare_stoc_sterge ON "{s}".inregistrari;',
     'CREATE TRIGGER trg_vanzare_stoc_sterge BEFORE DELETE ON "{s}".inregistrari '
     'FOR EACH ROW EXECUTE FUNCTION "{s}".vanzare_stoc_sterge();',
+    # [lotul 13, garda CUI-ului fără „RO” (decizia Costin 10.3 pct.4)] codul clientului, normalizat în bază pe orice drum, cu funcția
+    # creată de `migrare_cui_fara_ro` (ca toate coloanele de cod fiscal: core/test_lot11_p_cui.py); alt nume decât `trg_cui_fara_ro`, ca `migrare_cui_fara_ro.verifica`
+    # (care numără triggerele lui, câte una pe tabelă din `COLOANE_FIRMA`) să rămână adevărată
+    'DROP TRIGGER IF EXISTS trg_cui_fara_ro_l13 ON "{s}".vanzari_din_stoc;',
+    'CREATE TRIGGER trg_cui_fara_ro_l13 BEFORE INSERT OR UPDATE OF client_cui ON "{s}".vanzari_din_stoc FOR EACH ROW '
+    'EXECUTE FUNCTION "{s}".cui_normalizeaza(\'client_cui\');',
 ]
 
 

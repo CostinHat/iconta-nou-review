@@ -129,5 +129,5 @@ def antet_firma(cur):
 def monede_bnr(cur):
     """[lotul 13, deficiența 636 — clasa 631] Monedele pe care BNR le cotează (cursurile zilnice păstrate, `public.curs_bnr_zilnic`), fără
     aurul și DST: lista din care se alege moneda unui formular (D318), nu un cod scris de mână."""
-    cur.execute("SELECT DISTINCT moneda FROM public.curs_bnr_zilnic WHERE moneda NOT IN ('XAU', 'XDR') ORDER BY moneda")
-    return [r[0] if not isinstance(r, dict) else list(r.values())[0] for r in cur.fetchall()]
+    from core import curs_bnr as _cb   # [lotul 11, garda „un singur loc alege cursul”] cache-ul cursurilor îl citește numai `curs_bnr`
+    return sorted(m for m in _cb._monede_din_cache(cur.connection) if m not in ("XAU", "XDR"))

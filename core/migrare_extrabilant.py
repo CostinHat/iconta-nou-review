@@ -52,6 +52,12 @@ _DDL = [
     ' nota_dare_id integer REFERENCES "{s}".inregistrari(id) ON DELETE SET NULL,'
     ' scoatere_id integer REFERENCES "{s}".evidenta_extrabilant(id) ON DELETE SET NULL,'
     ' creat_la timestamptz NOT NULL DEFAULT now());',
+    # [lotul 13, garda CUI-ului fără „RO” (decizia Costin 10.3 pct.4)] codul furnizorului, normalizat în bază pe orice drum, cu funcția
+    # creată de `migrare_cui_fara_ro` (ca toate coloanele de cod fiscal: core/test_lot11_p_cui.py); alt nume decât `trg_cui_fara_ro`, ca `migrare_cui_fara_ro.verifica`
+    # (care numără triggerele lui, câte una pe tabelă din `COLOANE_FIRMA`) să rămână adevărată
+    'DROP TRIGGER IF EXISTS trg_cui_fara_ro_l13 ON "{s}".obiecte_inventar;',
+    'CREATE TRIGGER trg_cui_fara_ro_l13 BEFORE INSERT OR UPDATE OF furnizor_cui ON "{s}".obiecte_inventar FOR EACH ROW '
+    'EXECUTE FUNCTION "{s}".cui_normalizeaza(\'furnizor_cui\');',
 ]
 
 

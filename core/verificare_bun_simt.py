@@ -83,12 +83,22 @@ def _fr(cota_impozit):
     return cota_impozit / 100
 
 
-#: cota pe anul distribuirii dividendelor — numai anii verificați la sursă (pe ceilalți se verifică doar impozit ≤ bază)
-COTA_DIVIDENDE_NEREZIDENTI = {2025: _fr(COTA_DIVIDENDE_NEREZIDENTI_2025), 2026: _fr(COTA_DIVIDENDE_NEREZIDENTI_2026)}
-#: cotele Codului fiscal pentru celelalte venituri (lit.c^1, lit.d, lit.c)
-COTE_ALTE_VENITURI = (_fr(COTA_VENITURI_NEREZIDENTI_PF_UE), _fr(COTA_ALTE_VENITURI_NEREZIDENTI), _fr(COTA_VENITURI_FARA_SCHIMB_INFORMATII))
-#: art.230 alin.(1): convenția se aplică numai dacă e mai favorabilă — cota din Codul fiscal (lit.d) e plafonul
-COTA_MAXIMA_CONVENTIE_ALTE = _fr(COTA_ALTE_VENITURI_NEREZIDENTI)
+# [lotul 13, reparațiile finale] Fracțiile se fac LA FOLOSIRE, în funcții, nu în structuri de modul calculate la import: o constantă
+# ancorată citită numai de cod de modul n-are cititor în graful consumatorilor (`core/consumatori_temei.py`), deci reverificarea ei ar fi
+# ieșit „consecință necunoscută” (core/test_consumatori_temei.py). Aceleași valori, același temei.
+def cota_dividende_nerezidenti(an):
+    """Cota pe anul distribuirii dividendelor, ca fracție — numai anii verificați la sursă; altfel None (se verifică doar impozit ≤ bază)."""
+    return {2025: _fr(COTA_DIVIDENDE_NEREZIDENTI_2025), 2026: _fr(COTA_DIVIDENDE_NEREZIDENTI_2026)}.get(an)
+
+
+def cote_alte_venituri():
+    """Cotele Codului fiscal pentru celelalte venituri (lit.c^1, lit.d, lit.c), ca fracții."""
+    return (_fr(COTA_VENITURI_NEREZIDENTI_PF_UE), _fr(COTA_ALTE_VENITURI_NEREZIDENTI), _fr(COTA_VENITURI_FARA_SCHIMB_INFORMATII))
+
+
+def cota_maxima_conventie_alte():
+    """art.230 alin.(1): convenția se aplică numai dacă e mai favorabilă — cota din Codul fiscal (lit.d) e plafonul."""
+    return _fr(COTA_ALTE_VENITURI_NEREZIDENTI)
 
 #: D207: tipurile de venit care sunt chiar „cf. convenției” (nomenclatorul structurii D207): actul normativ nu poate fi Codul fiscal
 TIP_D207_CONVENTIE = {"22", "23", "24", "25"}
@@ -164,7 +174,7 @@ def _lei(n):
 
 
 def _proc(c):
-    p = (Decimal(c) * 100).quantize(Decimal("0.01"))
+    p = (Decimal(c) * 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     return ("%d%%" % p) if p == p.to_integral() else ("%s%%" % p.normalize()).replace(".", ",")
 
 
@@ -198,7 +208,8 @@ def _d207(body, conn=None):
             er.append("%s: tipul de venit e „cf. convenției de evitare a dublei impuneri”, dar actul normativ ales e Codul fiscal — alege "
                       "„Convenție de evitare a dublei impuneri” sau tipul de venit din Codul fiscal." % cine)
             continue
-        cota_div = COTA_DIVIDENDE_NEREZIDENTI.get(int(an)) if isinstance(an, int) else None
+        cota_div = cota_dividende_nerezidenti(int(an)) if isinstance(an, int) else None
+        alte = cote_alte_venituri()
         if act == "1":
             if tv in TIP_D207_DIVIDENDE:
                 if cota_div is not None and not _aproape(total, Decimal(baza) * cota_div):
@@ -206,14 +217,14 @@ def _d207(body, conn=None):
                               "%s. Dacă se aplică o convenție de evitare a dublei impuneri, alege actul „Convenție”." % (
                                   cine, an, _proc(cota_div), _lei(int((Decimal(baza) * cota_div).quantize(Decimal("1"), ROUND_HALF_UP))),
                                   _lei(total)))
-            elif not any(_aproape(total, Decimal(baza) * c) for c in COTE_ALTE_VENITURI):
+            elif not any(_aproape(total, Decimal(baza) * c) for c in alte):
                 er.append("%s: impozitul (%s) nu corespunde niciunei cote din Codul fiscal pentru acest venit (CF art.224 alin.(4): 16%%; 10%% "
                           "pentru persoanele fizice din UE sau dintr-un stat cu convenție; 50%% în statele fără schimb de informații) — "
                           "pe baza de %s ar fi %s sau %s. Dacă se aplică o convenție, alege actul „Convenție”." % (
-                              cine, _lei(total), _lei(baza), _lei(int((Decimal(baza) * COTE_ALTE_VENITURI[1]).quantize(Decimal("1"), ROUND_HALF_UP))),
-                              _lei(int((Decimal(baza) * COTE_ALTE_VENITURI[0]).quantize(Decimal("1"), ROUND_HALF_UP)))))
+                              cine, _lei(total), _lei(baza), _lei(int((Decimal(baza) * alte[1]).quantize(Decimal("1"), ROUND_HALF_UP))),
+                              _lei(int((Decimal(baza) * alte[0]).quantize(Decimal("1"), ROUND_HALF_UP)))))
         elif act in ("2", "3"):
-            maxim = cota_div if tv in TIP_D207_DIVIDENDE else COTA_MAXIMA_CONVENTIE_ALTE
+            maxim = cota_div if tv in TIP_D207_DIVIDENDE else cota_maxima_conventie_alte()
             if maxim is not None and Decimal(total) > (Decimal(baza) * maxim).quantize(Decimal("1"), ROUND_HALF_UP) + 1:
                 er.append("%s: cu o convenție / un acord internațional, impozitul (%s) nu poate depăși cota din Codul fiscal (%s din %s = %s; "
                           "CF art.230 alin.(1): se aplică cota mai favorabilă)." % (
@@ -255,7 +266,7 @@ def _d208(body, conn=None):
         for i, b in enumerate(imob.get("beneficiari") or [], 1):
             baza, imp = _int(b.get("baza_calcul")), _int(b.get("impozit"))
             # cota impozitului pe transferul proprietăților imobiliare (CF art.111), câmpul `cotaImpozit` al D208 — impozit, nu TVA: nu trece
-            # prin `tva_calcul` (regula BR-CO-17 rotunjește la ban, iar impozitul se compară în lei întregi — o rotunjire, nu două)
+            # prin `tva_calcul` (eFactura regula BR-CO-17 rotunjește la ban, iar impozitul se compară în lei întregi — o rotunjire, nu două)
             cota_impozit = _dec(b.get("cotaImpozit"))
             if None in (baza, imp) or cota_impozit is None:
                 continue
@@ -346,8 +357,8 @@ def _d318(body, conn=None):
         er.append("Cererea de rambursare pe %02d–%02d/%d cere %s %s (aproximativ %s euro la cursul BNR), sub pragul minim de %s euro: %s — "
                   "„cuantumul TVA pentru care se solicită o rambursare nu poate fi mai mic de %s euro sau echivalentul acestei sume în moneda "
                   "națională a statului de rambursare”. Adaugă facturile restului perioadei sau depune cererea pe tot anul." % (
-                      li, ls, an, str(total.quantize(Decimal("0.01"))).replace(".", ","), moneda,
-                      str(eur.quantize(Decimal("0.01"))).replace(".", ","), prag, temei, prag))
+                      li, ls, an, str(total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)).replace(".", ","), moneda,
+                      str(eur.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)).replace(".", ","), prag, temei, prag))
     return er, av
 
 

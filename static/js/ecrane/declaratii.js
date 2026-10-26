@@ -2437,7 +2437,7 @@ function randeazaFormularD318(corp, nav) {
   const fd = S.firmaDate || {};
   const _pune = (k, v) => { if ((d[k] === "" || d[k] === null || d[k] === undefined) && v) d[k] = v; };
   _pune("an", String(S.an || ""));
-  _pune("cui", String(fd.cui || "").replace(/^RO/i, "").replace(/\s+/g, ""));
+  _pune("cui", String(fd.cui || "").replace(/\s+/g, ""));   // CUI-ul din Date firmă e deja în forma păstrată, fără „RO” (decizia 10.3 pct.4)
   _pune("sol_denumire", fd.nume); _pune("owner_name", fd.nume);
   _pune("sol_strada", [fd.adresa, fd.oras, fd.judet].filter(Boolean).join(", "));
   _pune("sol_email", fd.email); _pune("sol_cod", fd.cod_postal);

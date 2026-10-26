@@ -29,6 +29,6 @@ Aplicat la o încasare Stripe: creanța față de client (factura emisă, în va
 
 Aici trebuie spus direct: iConta.eu **nu are o integrare cu Stripe sau cu alt procesator de plăți online** — decizia de produs a fost explicit să nu se automatizeze această cale, fluxul real fiind transferul bancar, confirmat din extrasul de cont, la reconciliere. Deci nu există un circuit automat care să detecteze o încasare Stripe și să calculeze diferența de curs.
 
-Ce se poate folosi, manual: dacă o creanță în valută a fost încasată (indiferent prin ce mijloc — inclusiv printr-un procesator de plăți) la un curs diferit de cel din evidență, contabilul poate introduce decontarea prin funcționalitatea de decontare în valută din iConta.eu, care calculează automat diferența 665/765. Contul prin care au intrat banii se alege în câmpul „Cont bancă" al formularului de decontare (propus 5124), inclusiv un cont intermediar de tip Stripe, dacă firma îl are în planul de conturi.
+Ce se poate folosi, manual: dacă o creanță în valută a fost încasată (indiferent prin ce mijloc — inclusiv printr-un procesator de plăți) la un curs diferit de cel din evidență, contabilul poate introduce decontarea prin funcționalitatea de decontare în valută din iConta.eu, care calculează automat diferența 665/765. Contul prin care au intrat banii se alege în câmpul „Contul bancar” al formularului de decontare, dintre 5124 (cont la bănci în valută) și 5121 (cont la bănci în lei), fără nicio valoare precompletată; un cont intermediar de tip Stripe nu se poate alege acolo.
 
 [iConta.eu](/)

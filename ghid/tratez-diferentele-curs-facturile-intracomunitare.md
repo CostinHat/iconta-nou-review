@@ -34,6 +34,6 @@ Aplicat la o factură intracomunitară:
 
 Partea de **decontare** a unei datorii sau creanțe provenite dintr-o factură intracomunitară (indiferent dacă tranzacția de bază a fost o achiziție sau o livrare intracomunitară) trece prin același motor din iConta.eu folosit pentru orice decontare în valută: contabilul introduce tipul (creanță/datorie), suma în valută, cursul din evidență, iar aplicația calculează automat diferența 665/765 față de ultimul curs comunicat de BNR înaintea zilei decontării. Aplicația nu distinge, la acest pas, dacă factura de bază a fost intracomunitară sau internă — motorul lucrează generic cu creanța/datoria rezultată.
 
-Ce nu acoperă acest circuit: cursul folosit la **înregistrarea inițială** a facturii intracomunitare (la recepție/emitere) nu ține de acest motor, ci de fluxul de facturare/achiziție separat. Contul prin care a avut loc plata sau încasarea se alege în câmpul „Cont bancă" al formularului de decontare (propus 5124).
+Ce nu acoperă acest circuit: cursul folosit la **înregistrarea inițială** a facturii intracomunitare (la recepție/emitere) nu ține de acest motor, ci de fluxul de facturare/achiziție separat. În formularul de decontare, factura (creanța sau datoria) se alege din lista facturilor în valută încă deschise, iar moneda, contul de terț, partenerul și cursul de evidență vin de la ea; contul prin care s-a făcut plata sau încasarea se alege în câmpul „Contul bancar” (5124 — cont la bănci în valută, sau 5121 — cont la bănci în lei), fără nicio valoare precompletată.
 
 [iConta.eu](/)

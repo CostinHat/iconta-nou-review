@@ -1746,7 +1746,8 @@ def verifica_vies_emitere(cod, tara=None):
     try:
         return _ic.verifica_vies(c)
     except ValueError as e:   # codul nu e un cod de TVA din UE (formă greșită): nu poate fi „valabil” — verdictul, cu motivul lui
-        return {"stare": "invalid", "valid": False, "motiv": str(e)}
+        # în cheia `eroare`, ca răspunsul lui `intracomunitar.verifica_vies` (aceeași formă a rezultatului VIES; nu o afirmație despre firmă)
+        return {"stare": "invalid", "valid": False, "eroare": str(e)}
     except Exception as e:   # noqa: BLE001 — VIES căzut: avertisment la emitere, nu refuz; nu e tăcut (jurnalul operatorului)
         _obs.esec_secundar("vies_emitere", e)
         return {"stare": "indisponibil", "valid": False}

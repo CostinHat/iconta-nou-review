@@ -90,10 +90,10 @@ def _mfs(cur, schema):
 
 
 def _rata(mf, an, luna):
-    from decimal import Decimal
+    from decimal import Decimal, ROUND_HALF_UP
     from core import d406_active as _a
     try:
-        return Decimal(str(_a.amortizare_luna(mf, an, luna))).quantize(Decimal("0.01"))
+        return Decimal(str(_a.amortizare_luna(mf, an, luna))).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     except (ValueError, KeyError, TypeError):
         return None
 
