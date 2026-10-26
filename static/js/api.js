@@ -296,7 +296,10 @@ function _butonSpreEcran(eroare, cale) {
     if (!zone.length) return false;
     const el = zone[zone.length - 1];
     const cadru = el.closest(".em-curs-box, #refuz-nevazut") || el;
-    if (cadru.querySelector("[data-ecran-destinatie]")) return true;
+    // [lotul 13, plasa 436 / 284 / 299 — clasa 515] zona ascunsă cât stă caseta „NU s-a salvat.” își ține butoanele imediat după ea
+    // (`coada_trimite._actiuniRefuz`): un buton spre ecran pus acolo e „butonul de lângă refuz”, nu se mai adaugă al doilea, ascuns
+    const dupa = el.nextElementSibling;
+    if (cadru.querySelector("[data-ecran-destinatie]") || (dupa && dupa.querySelector("[data-ecran-destinatie]"))) return true;
     const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=0a2b447df1");
     const z = document.createElement("span");
     z.className = "ecran-destinatie";
