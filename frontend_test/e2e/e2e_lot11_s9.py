@@ -141,10 +141,11 @@ def _singurul(st):
     return st[cnp[0]]
 
 
-def _bani_net(patron, eticheta):
-    """Netul de pe rândul `eticheta` al compoziției (rândul indemnizației CM: brut și net pe același rând)."""
+def _bani_net(patron, eticheta, coloane=None):
+    """Netul de pe rândul `eticheta` al compoziției (rândul indemnizației CM: brut și net pe același rând). `coloane` = compoziția citită
+    deja (`_compozitie`), când fereastra salariatului nu mai e în față (după D112); altfel se citește din fereastra salariatului."""
     from decimal import Decimal
-    return Decimal(str(_compozitie(patron)[eticheta][1]))
+    return Decimal(str((coloane if coloane is not None else _compozitie(patron))[eticheta][1]))
 
 
 def _int(el, *atribute):
@@ -281,7 +282,9 @@ def test_def_c89_indemnizatia_cm_rotunjita_la_sursa(patron, firma_c89):
     cert = re.findall(r"indemnizație brută ([\d.]+,\d\d) lei · net ([\d.]+,\d\d) lei", lista)
     assert [(_bani(b), _bani(n)) for b, n in cert] == [(_bani("500,00"), _bani("292,00"))], lista
     _stat_luna(patron, firma_c89, luni_inapoi=1)
-    comp = _randuri_compozitie(_compozitie(patron))
+    # compoziția se citește O DATĂ, cât fereastra salariatului e în față (după D112 ecranul e cel al declarației)
+    coloane = _compozitie(patron)
+    comp = _randuri_compozitie(coloane)
     patron.captura("compozitia_netului")
     a = _singurul(_d112_xml(patron, firma_c89))
     d, b4, e3 = _un(a, "asiguratD"), _un(a, "asiguratB4"), _un(a, "asiguratE3")
@@ -292,7 +295,7 @@ def test_def_c89_indemnizatia_cm_rotunjita_la_sursa(patron, firma_c89):
     # [lotul 13, 677] reținerile stau în coloana „Rețineri” (pozitive); indemnizația o dată, cu brutul și netul pe același rând
     ret_sal = comp["CAS (25%)"] + comp["CASS (10%)"] + comp["Impozit pe venit"]
     ret_cm = int(b4["B4_8"]) + int(b4["B4_6"]) + int(e3["E3_15"]) - ret_sal
-    assert _bani_net(patron, "Indemnizație concediu medical") == 500 - ret_cm, (comp, b4, e3)
+    assert _bani_net(patron, "Indemnizație concediu medical", coloane) == 500 - ret_cm, (comp, b4, e3)
     assert comp["Net de plată"] == comp["Venituri în bani"] - comp["Total rețineri"], comp
 
 
