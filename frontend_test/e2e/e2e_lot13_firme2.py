@@ -7,11 +7,12 @@ Inventar, Plan de conturi și cardurile firmei PFA, în `firme.js`.
   607 — pe comisionul băncii „Alege facturile” nu e activ (stă inactiv, cu motivul — 675).
   602 / 563 — nota nouă din Registru jurnal: data de azi; după salvare rămâi pe nota salvată, cu confirmarea; nimic „nederivat”.
   610 — „Validează” pe nota fără document: inactiv, cu motivul; clicul nu dă niciun refuz (nici unul, nici două).
-  605 / 618 — Raport Z: rândul numit „Raport Z nr … · casa …”, confirmarea sub buton, explicația notei cu data românească.
+  605 — Raport Z: rândul numit „Raport Z nr … · casa …”, confirmarea sub buton; 618 — explicația notei cu data românească.
   612 / 606 — inventarul în fereastra lui: rândul lipsei sub articol, încadrarea cu diacritice.
   589 — Plan de conturi: sinteticul refuzat înainte de salvare; contul nelegal fără rulaj se șterge; „Șterge” inactiv spune de ce.
   577 — firma PFA: cardurile Declarații, Verificări, Registrul de evidență fiscală descriu ce are PFA-ul.
   628 — două deschideri consecutive ale Stocurilor arată aceeași listă.
+  C177 — două ferestre Stocuri deschise deodată (Stocuri + „Mișcări, fișe…”) își desenează fiecare situația (răspunsurile ținute pe loc).
   673 / 675 / 676 — dispoziția nouă în fereastra ei, tipul din butoane alăturate, aceleași butoane pe fiecare operațiune.
 
 Pașii contabilului pe aplicația din index, pe baza de TEST, pe firme NOI (`conftest.firma_noua`). Datele de pornire puse pe rutele
@@ -235,31 +236,57 @@ def test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul(patron, firm
 
 
 # ── 605 + 618 (Raport Z) ─────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_def_605_618_raport_z_numele_documentului_confirmarea_sub_buton_si_data_romaneasca(patron, firma):
-    """605: „Textul «raportul Z Raport Z nr» [...]; mesajul de confirmare sus, departe de buton”; 618: „Titlul notei cu data ISO”. Pașii:
-    Raport Z -> data de azi, casa 8000000605, Z nr. 0605, total 21% 121,00, numerar 121,00, card 0, 3 bonuri -> „Generează notă”: confirmarea
-    stă SUB buton; nota are explicația „Vânzări din raportul Z nr 0605 din <azi>, casa 8000000605” (fără data ISO) -> lista Z-urilor lunii:
-    rândul „Raport Z nr 0605 · casa 8000000605”, nu cheia „Z-8000000605-0605”.
-    MUTAȚIA: explicația notei înapoi cu data ISO -> ROȘU."""
-    f = firma
+def _z_generat(patron, f, casa):
+    """Raport Z -> data de azi, casa dată, Z nr. unic, total 21% 121,00, numerar 121,00, card 0, 3 bonuri -> „Generează notă”; așteaptă
+    confirmarea notei (conturile ei). Întoarce numărul Z-ului."""
     patron.firma(f["nume"])
     _card(patron, "raportz", "#z-salveaza")
     pg = patron.pg
     nr = "%04d" % (_tag() % 10000)
-    for sel, v in (("#z-data", AZI.isoformat()), ("#z-nui", "8000000605"), ("#z-nr", nr), ("#z-21", "121"), ("#z-num", "121"),
+    for sel, v in (("#z-data", AZI.isoformat()), ("#z-nui", casa), ("#z-nr", nr), ("#z-21", "121"), ("#z-num", "121"),
                    ("#z-card", "0"), ("#z-bonuri", "3")):
         pg.fill(sel, v)
     pg.click("#z-salveaza")
     pg.wait_for_function("() => (document.querySelector('#z-rezultat') || {innerText: ''}).innerText.includes('5311')", timeout=30000)
+    return nr
+
+
+def test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton(patron, firma):
+    """605: „Textul «raportul Z Raport Z nr»; [...] mesajul de confirmare sus, departe de buton (clasa 45).” Pașii: un raport Z nou ->
+    „Generează notă”: confirmarea stă SUB buton (`#z-rezultat`); lista Z-urilor lunii numește rândul „Raport Z nr <nr> · casa 8000000605”, nu
+    cheia „Z-8000000605-<nr>”, și nicăieri „raportul Z Raport Z”.
+    MUTAȚIA: numele rândului înapoi pe cheia notei (`numeZ`) -> ROȘU."""
+    f = firma
+    nr = _z_generat(patron, f, "8000000605")
+    pg = patron.pg
     patron.captura("nota_generata")
     assert pg.evaluate("() => !!(document.querySelector('#z-salveaza').compareDocumentPosition(document.querySelector('#z-rezultat'))"
                        " & Node.DOCUMENT_POSITION_FOLLOWING)"), "confirmarea notei nu stă sub buton"
-    (desc,) = [r[0] for r in sql('SELECT descriere FROM "%s".inregistrari WHERE numar = %%s' % f["schema"], ("Z-8000000605-%s" % nr,))]
-    assert desc == "Vânzări din raportul Z nr %s din %s, casa 8000000605" % (nr, AZI.strftime("%d.%m.%Y")), desc
-    assert not re.search(r"\d{4}-\d{2}-\d{2}", desc), desc
     pg.wait_for_selector("#z-descarcare .pf-frand", timeout=20000)
-    assert "Raport Z nr %s · casa 8000000605" % nr in _txt(pg, "#z-descarcare") and "Z-8000000605" not in _txt(pg, "#z-descarcare")
+    lista = _txt(pg, "#z-descarcare")
+    assert "Raport Z nr %s · casa 8000000605" % nr in lista and "Z-8000000605" not in lista, lista
+    assert "raportul Z Raport Z" not in _txt(pg, ".fereastra:last-of-type")
 
+
+def test_def_618_explicatia_notei_z_are_data_romaneasca(patron, firma):
+    """618: „Raport Z | Titlul notei cu data ISO («Raport Z 2026-10-20»)”. Pașii: un raport Z nou -> „Generează notă” -> Registru jurnal,
+    căutarea „raportul Z nr <nr>”: explicația notei e „Vânzări din raportul Z nr <nr> din <azi>, casa 8000000618” (data românească), iar
+    în baza de date nota n-are nicio dată ISO în explicație. (Datele existente: `core/migrare_explicatie_raport_z.py`, dovada `618_f1_vechi_…`.)
+    MUTAȚIA: explicația notei înapoi cu data ISO (`jurnal_api.explicatie_raport_z`) -> ROȘU."""
+    f = firma
+    nr = _z_generat(patron, f, "8000000618")
+    pg = patron.pg
+    (desc,) = [r[0] for r in sql('SELECT descriere FROM "%s".inregistrari WHERE numar = %%s' % f["schema"], ("Z-8000000618-%s" % nr,))]
+    asteptat = "Vânzări din raportul Z nr %s din %s, casa 8000000618" % (nr, AZI.strftime("%d.%m.%Y"))
+    assert desc == asteptat, desc
+    assert not re.search(r"\d{4}-\d{2}-\d{2}", desc), desc
+    patron.firma(f["nume"])
+    _card(patron, "jurnal", "#j-nota-noua")
+    pg.fill("#jn-cauta", "raportul Z nr %s" % nr)
+    pg.wait_for_timeout(500)
+    patron.captura("explicatia_notei_z")
+    assert asteptat in _txt(pg, ".fereastra:last-of-type"), _txt(pg, ".fereastra:last-of-type")[:600]
+    assert "Raport Z %s" % AZI.isoformat() not in _txt(pg, ".fereastra:last-of-type")
 
 # ── 612 + 606 (Inventar) ─────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_612_606_inventarul_in_fereastra_lui_cu_randul_lipsei_sub_articol(patron, firma):
@@ -392,6 +419,59 @@ def test_def_628_doua_deschideri_consecutive_ale_stocurilor_arata_aceeasi_lista(
     assert prima == a_doua and len(a_doua) == total, (prima, a_doua, total)
     assert len([x for x in a_doua if x.startswith("Articol E2E 628 %d-" % t)]) == 6
 
+
+
+def test_def_c177_doua_ferestre_stocuri_nu_isi_anuleaza_situatia(patron, firma):
+    """C177: „Stocuri: contorul cererilor situației stocului era comun tuturor ferestrelor — o fereastră o lăsa pe alta pe «Se încarcă
+    situația stocului…».” Din clicuri: Stocuri (cererea situației ținută pe loc, `page.route`) -> „Mișcări, fișe de magazie, coduri, nivel
+    minim” (fereastra ei, peste Stocuri, cere și ea articolele) -> răspunsurile eliberate, întâi al ferestrei de sus, apoi al Stocurilor ->
+    AMBELE ferestre își desenează lista: mișcările au formularele, iar Stocuri (dedesubt) situația, nu „Se încarcă situația stocului…”.
+    Cursa se probează numai cu răspunsurile ținute pe loc (ca C102 în `e2e_lot11_s9.py`); fără ele, cererea Stocurilor se termină înaintea
+    clicului. Date de pornire: metoda cantitativ-valorică și un articol în stoc (ruta „Intrare”).
+    MUTAȚIA: contorul situației comun tuturor ferestrelor (`ultimaCerere(document.body)`) -> Stocuri rămâne pe „Se încarcă” -> ROȘU."""
+    f = firma
+    _ok(_api(patron, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"metoda_stoc": "cantitativ_valoric"}), "metoda de stoc")
+    t = _tag()
+    _ok(_api(patron, "POST", "/tenants/%d/stocuri/intrare" % f["tenant_id"], {"denumire": "Articol E2E C177 %d" % t, "um": "buc",
+                                                                          "data": AZI.isoformat(), "cantitate": 3, "pret_unitar": 5,
+                                                                          "document": "NIR E2E C177"}), "intrare")   # date de pornire
+    patron.firma(f["nume"])
+    pg = patron.pg
+    vazute, tinute = [0], []
+
+    def _tine(route):
+        # prima cerere a articolelor e a formularului NIR (ecranul o așteaptă ca să se deseneze): trece; situațiile se țin pe loc
+        vazute[0] += 1
+        if vazute[0] == 1:
+            route.continue_()
+        else:
+            tinute.append(route)
+    pg.route("**/stocuri/articole*", _tine)
+
+    def asteapta_cereri(n):
+        for _ in range(150):
+            if len(tinute) >= n:
+                return
+            pg.wait_for_timeout(100)
+        raise AssertionError("ecranul n-a cerut situația stocului (%d cereri din %d)" % (len(tinute), n))
+    try:
+        _card(patron, "stocuri", "#cv-toggle")
+        asteapta_cereri(1)
+        assert "Se încarcă situația stocului" in _txt(pg, _F + "#s-situatie")
+        pg.click(_F + "#cv-toggle")                                   # fereastra mișcărilor, peste Stocuri
+        asteapta_cereri(2)
+        for i in (1, 0):                                              # întâi răspunsul ferestrei de sus, apoi al Stocurilor
+            with pg.expect_response(lambda r: "/stocuri/articole" in r.url):
+                tinute[i].continue_()
+            pg.wait_for_timeout(300)
+    finally:
+        pg.unroute("**/stocuri/articole*")
+    pg.wait_for_selector(_F + "#cv-zona #cv-art", state="attached", timeout=15000)
+    patron.captura("doua_ferestre_stocuri")
+    jos = ".fereastra:has(#s-situatie) #s-situatie"
+    assert pg.locator(jos + " #s-situatie-tabel").count() == 1, _txt(pg, jos)
+    assert "Se încarcă situația stocului" not in _txt(pg, jos)
+    assert "Articol E2E C177 %d" % t in _txt(pg, jos)
 
 # ── generatorul extrasului dovezii 669 / 607 pe F7 (copia firmelor de test, `frontend_test/dovada/dovezi_lot13_firme2.json`) ─────────
 def extras_dovada_f7(zi):

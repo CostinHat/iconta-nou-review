@@ -33,7 +33,7 @@
   "fisier": "core/jurnal_api.py",
   "ancora": "t = \"Vânzări din raportul Z nr %s din %s, casa %s\" % (nr_raport, pdf_util.data_ro(data), nui)",
   "inlocuire": "t = \"Vânzări din raportul Z nr %s din %s, casa %s\" % (nr_raport, data, nui)",
-  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_605_618_raport_z_numele_documentului_confirmarea_sub_buton_si_data_romaneasca"
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_618_explicatia_notei_z_are_data_romaneasca"
  },
  {
   "fisier": "static/js/ecrane/firme.js",
@@ -64,5 +64,17 @@
   "ancora": "  randeazaSituatiaStocului(corp, r.articole || []);\n  return r;",
   "inlocuire": "  { const a0 = r.articole || []; if (!window.__s628) { window.__s628 = 1; randeazaSituatiaStocului(corp, a0.slice(0, Math.max(1, a0.length - 2))); } else randeazaSituatiaStocului(corp, a0); }\n  return r;",
   "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_628_doua_deschideri_consecutive_ale_stocurilor_arata_aceeasi_lista"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "    return nr ? `Raport Z nr ${nr} · casa ${z.nui}` : \"Raport Z\";",
+  "inlocuire": "    return z.numar || \"Raport Z\";",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "async function incarcaSituatiaStocului(corp, t) {\n  const actuala = ultimaCerere(corp)();",
+  "inlocuire": "async function incarcaSituatiaStocului(corp, t) {\n  const actuala = ultimaCerere(document.body)();",
+  "test": "frontend_test/e2e/e2e_lot13_firme2.py::test_def_c177_doua_ferestre_stocuri_nu_isi_anuleaza_situatia"
  }
 ]
