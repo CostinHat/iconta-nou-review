@@ -243,7 +243,7 @@
         "zona": ".fd-antet"
       },
       {
-        "exista": "#fd-vezi-nota"
+        "activ": "#fd-vezi-nota"
       },
       {
         "contine": "Factură F1A nr. 7",

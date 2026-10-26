@@ -77,7 +77,7 @@ def _fisa(patron, firma, fel, corp):
 
 def _ti_operatiuni(patron, firma, numar="TI-1", valoare="30000"):
     """Operațiuni speciale -> „Taxare inversă internă (art. 331)” -> furnizorul DANTE, factura `numar`, deșeuri, 30.000, 371, 21%,
-    furnizor plătitor -> „Generează nota”; întoarce textul zonei de rezultat."""
+    (plătitorul se verifică la ANAF din CUI, nu se mai întreabă) -> „Generează nota”; întoarce textul zonei de rezultat."""
     patron.firma(firma["nume"])
     _card(patron, "operatiuni", "[data-op]")
     pg = patron.pg
@@ -91,7 +91,6 @@ def _ti_operatiuni(patron, firma, numar="TI-1", valoare="30000"):
     pg.fill("#op-valoare", valoare)
     pg.fill("#op-cont_destinatie", "371")
     pg.fill("#op-cota", "21")
-    pg.select_option("#op-furnizor_platitor_tva", "true")
     pg.click("#op-trimite")
     pg.wait_for_function("() => (document.querySelector('#op-mesaj') || {innerText: ''}).innerText.trim().length > 0", timeout=30000)
     pg.wait_for_timeout(400)
@@ -101,7 +100,7 @@ def _ti_operatiuni(patron, firma, numar="TI-1", valoare="30000"):
 def _ti_api(patron, firma, numar="TI-7"):
     r = _ok(_api(patron, "POST", "/tenants/%d/achizitie-taxare-inversa" % firma["tenant_id"], {
         "data": AZI.isoformat(), "furnizor_nume": "DANTE INTERNATIONAL SA", "furnizor_cui": CUI_DANTE, "numar": numar,
-        "categorie": "deseuri", "valoare": 30000, "cont_destinatie": "371", "cota": 21, "furnizor_platitor_tva": True}), "taxare inversă")
+        "categorie": "deseuri", "valoare": 30000, "cont_destinatie": "371", "cota": 21}), "taxare inversă")
     return r["factura_id"]
 
 
@@ -139,8 +138,10 @@ def test_def_547_factura_primita_cu_nota_ciorna_se_sterge(patron, firma_fact):
     fid = _ti_api(patron, firma_fact, "TI-547")
     _deschide_factura(patron, firma_fact, fid)
     pg = patron.pg
-    assert not pg.query_selector("#fd-email"), "„Trimite pe email” nu are rost la o factură primită"
-    assert pg.is_enabled("#fd-sterge")
+    # [lotul 13, 675 — DS cap.1 v2.104] „Trimite pe email” stă la locul lui, inactiv, cu motivul: nu se aplică unei facturi primite
+    assert pg.get_attribute("#fd-email", "aria-disabled") == "true" and "primită" in pg.get_attribute("#fd-email", "title"), \
+        "„Trimite pe email” nu are rost la o factură primită"
+    assert pg.is_enabled("#fd-sterge") and pg.get_attribute("#fd-sterge", "aria-disabled") is None
     pg.click("#fd-sterge")
     pg.locator("#ca-ok", has_text="Șterge factura").click()
     pg.wait_for_selector("#fd-sters-rez", timeout=20000)
@@ -276,11 +277,15 @@ def test_def_c199_vies_indisponibil_emite_cu_avertisment_si_reincercare(patron, 
 
 
 # ================================================================ 634 — factura primită: valuta, mesajul validării
-def fisier_xml_634_eur():
-    """Factura e-Factura de probă (DANTE -> firmă) în EUR, cu numărul PROBA-634 (generatorul dovezii și al testului)."""
+def fisier_xml_634_eur(firma=None):
+    """Factura e-Factura de probă (DANTE -> F1) în EUR, cu numărul PROBA-634 (generatorul dovezii, pe F1). Cu `firma`, cumpărătorul e
+    firma de test (CUI și nume): importul refuză factura altei firme („Factura … nu e a firmei”, efactura_import)."""
     from e2e_lot12_cx1 import PROBA_XML
     import io
     t = io.open(PROBA_XML, encoding="utf-8").read().replace("DNT-RT-1020", "PROBA-634")
+    if firma:
+        cifre = "".join(c for c in sql('SELECT cui FROM "%s".firma_profil WHERE id = 1' % firma["schema"])[0][0] if c.isdigit())
+        t = t.replace("RO401002001", "RO" + cifre).replace(">401002001<", ">%s<" % cifre).replace("F1 Comert Stoc SRL", firma["nume"])
     return t.replace(">RON<", ">EUR<").replace('currencyID="RON"', 'currencyID="EUR"').encode("utf-8")
 
 
@@ -293,7 +298,7 @@ def test_def_634_factura_in_valuta_arata_leii_si_dupa_validare_nota(patron, firm
     pg = patron.pg
     pg.click("#fac-primite")
     pg.wait_for_selector("#fp-xml", state="attached", timeout=20000)
-    pg.set_input_files("#fp-xml", files=[{"name": "PROBA-634.xml", "mimeType": "application/xml", "buffer": fisier_xml_634_eur()}])
+    pg.set_input_files("#fp-xml", files=[{"name": "PROBA-634.xml", "mimeType": "application/xml", "buffer": fisier_xml_634_eur(firma_fact)}])
     pg.wait_for_selector(".fac-primita-btn", timeout=30000)
     pg.locator(".fac-primita-btn", has_text="PROBA-634").first.click()
     pg.wait_for_selector("#pr-tva-lei", timeout=30000)
@@ -332,9 +337,10 @@ def test_def_632_fisa_clientului_pastreaza_facturile_si_clientul_strain_n_are_ju
     pg.fill(rand + " input[id^='cl-oras-']", "Sector 2")
     pg.click(rand + " button.cl-salveaza")
     pg.wait_for_function("() => (document.querySelector('#cl-mesaj') || {innerText: ''}).innerText.includes('DANTE')", timeout=20000)
-    rand2 = pg.locator("#cl-tabel tr", has_text="DANTE INTERNATIONAL SA").first
+    # numele stă în valoarea câmpului (nu în textul rândului): rândul se găsește după CUI, care e text
+    rand2 = pg.locator("#cl-tabel tbody tr", has_text=CUI_DANTE).first
     assert rand2.locator("td.fd-td-num").inner_text().strip() == n and int(n) >= 2, (n, rand2.inner_text())
-    strain = pg.locator("#cl-tabel tr", has_text="Client Irlanda E2E Ltd").first
+    strain = pg.locator("#cl-tabel tbody tr", has_text="IE9999999ZZ").first
     assert "partener din alt stat" in strain.inner_text() and strain.locator("select[id^='cl-judet-']").count() == 0
     patron.captura()
 
@@ -364,10 +370,11 @@ def test_def_640_partenerul_se_adauga_se_cauta_si_se_sterge(patron, firma_fact):
     pg.fill("#fz-cauta", "dante")
     pg.wait_for_timeout(300)
     vizibile = pg.eval_on_selector_all("#fz-tabel tbody tr", "rs => rs.filter(r => !r.hidden).map(r => r.innerText)")
-    assert len(vizibile) == 1 and "DANTE" in vizibile[0].upper(), vizibile
+    assert len(vizibile) == 1 and CUI_DANTE in vizibile[0], vizibile   # numele e valoarea câmpului; CUI-ul e textul rândului
     pg.fill("#fz-cauta", "")
     pg.dispatch_event("#fz-cauta", "input")
-    rand = pg.locator("#fz-tabel tr", has_text="Furnizor de sters E2E").first
+    rand = pg.locator("#fz-tabel tbody tr:has(input[value='Furnizor de sters E2E'])").first
+    rand.locator("details.fz-actiuni > summary").click()                  # [lotul 13, DS cap.9 v2.83] acțiunile rândului, în meniul „Acțiuni”
     rand.locator("button[id^='fz-sterge-']").click()
     pg.locator("#ca-ok", has_text="Șterge fișa").click()
     pg.wait_for_function("() => document.querySelector('#fz-mesaj').innerText.includes('a fost ștearsă')", timeout=20000)
@@ -376,7 +383,7 @@ def test_def_640_partenerul_se_adauga_se_cauta_si_se_sterge(patron, firma_fact):
     assert sql('SELECT oras FROM "%s".clienti WHERE cui = %%s' % s, (CUI_DANTE,))[0][0] == oras_fz, "o singură localitate pentru DANTE"
     patron.firma(firma_fact["nume"])
     _card(patron, "clienti", "#cl-tabel")
-    assert "D394 o cere" in pg.locator("#cl-tabel tr", has_text="Vasile Test E2E").first.inner_text()
+    assert "D394 o cere" in pg.locator("#cl-tabel tbody tr:has(input[value='Vasile Test E2E'])").first.inner_text()
     patron.captura("clienti")
 
 
@@ -477,6 +484,7 @@ def test_def_604_borderoul_sta_langa_nir_nu_in_tva_regimuri_speciale(patron, fir
     _card(patron, "operatiuni", "[data-op]")
     toate = " ".join(pg.eval_on_selector_all("button[data-op]", "bs => bs.map(b => b.innerText)"))
     assert "neînregistrat" not in toate and "op. N" not in toate, toate
+    patron.firma(firma_fact["nume"])                                     # fereastra Operațiunilor acoperă cardurile firmei
     _card(patron, "stocuri", "#s-borderou")
     assert "Borderou" in pg.inner_text("#s-borderou")
     pg.click("#s-borderou")
@@ -577,4 +585,4 @@ def test_def_615_dupa_stornare_factura_e_stornata_fara_reimprospatare(patron, fi
     patron.captura()
     sus = " ".join(pg.inner_text(".fd-antet-sus").split())
     assert "Se stornează" not in pg.inner_text("body") and "stornată" in sus and "neîncasată" not in sus, sus
-    assert not pg.query_selector("#fd-storno") and not pg.query_selector("#fd-chitanta")
+    assert pg.get_attribute("#fd-storno", "aria-disabled") == "true" and pg.get_attribute("#fd-chitanta", "aria-disabled") == "true"   # [675]

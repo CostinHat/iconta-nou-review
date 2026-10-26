@@ -191,6 +191,8 @@ def test_def_444_numele_anaf_diferit_de_fisa_se_propune_actualizarea(patron, fir
     _card(patron, "clienti", "#cl-tabel")
     pg = patron.pg
     rand = "tr[data-partener='cui-2864518']"
+    if not pg.eval_on_selector(rand + " details.cl-actiuni", "d => d.open"):   # [lotul 13, DS cap.9 v2.83] acțiunile rândului, în meniul „Acțiuni”
+        pg.click(rand + " details.cl-actiuni > summary")
     pg.click(rand + " button.cl-anaf")
     pg.wait_for_selector(rand + " button[id^='cl-anaf-aplica-']", timeout=30000)
     st = pg.inner_text(rand + " div[id^='cl-anaf-stare-']")
@@ -201,6 +203,8 @@ def test_def_444_numele_anaf_diferit_de_fisa_se_propune_actualizarea(patron, fir
                          timeout=30000)
     assert sql('SELECT nume, cui, oras, judet FROM "%s".clienti WHERE cui = %%s' % s, ("2864518",)) == [
         ("ALTEX ROMANIA SRL", "2864518", "Pantelimon", "IF")]   # CUI-ul fără „RO” (decizia 10.3); localitatea / județul de la ANAF
+    if not pg.eval_on_selector(rand + " details.cl-actiuni", "d => d.open"):   # [lotul 13, DS cap.9 v2.83] acțiunile rândului, în meniul „Acțiuni”
+        pg.click(rand + " details.cl-actiuni > summary")
     pg.click(rand + " button.cl-anaf")
     pg.wait_for_function("r => (document.querySelector(r + \" div[id^='cl-anaf-stare-']\") || {innerText: ''}).innerText.includes('e același')",
                          arg=rand, timeout=30000)

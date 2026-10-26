@@ -69,10 +69,33 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null, tvaI
     <div class="em-config">
       <div class="em-intrebare">Ai mai emis facturi până acum (în alt program sau pe hârtie)?</div>
       <div class="em-optiuni">
-        <button data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva" class="buton-primar" id="em-da">Da, am mai emis</button>
-        <button data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva" class="buton-secundar em-buton-sec" id="em-nu">Nu, încep acum</button>
+        <button data-fara-actiune="arată câmpurile răspunsului; scrierea e pe „Continuă”" class="buton-primar" id="em-da">Da, am mai emis</button>
+        <button data-fara-actiune="arată câmpurile răspunsului; scrierea e pe „Continuă”" class="buton-secundar em-buton-sec" id="em-nu">Nu, încep acum</button>
       </div>
-      <div class="em-config-form" id="em-config-form"></div>
+      <!-- [lotul 13, 673 — DS cap.2a v2.104] răspunsul la întrebare arată câmpurile lui, chiar sub întrebare, în același formular (nu un
+           formular scris în pagină de buton): cele două secțiuni sunt desenate o dată, „Da” / „Nu” o arată pe a lui -->
+      <div class="em-config-form" id="em-config-form">
+        <div id="em-config-da" hidden>
+          <div class="em-config-camp">
+            <label for="em-serie">Seria facturilor (ex: KAI-)<span class="oblig">*</span></label>
+            <input class="camp-input" id="em-serie" placeholder="ex: KAI-" autocomplete="off">
+          </div>
+          <div class="em-config-camp">
+            <label for="em-ultim">Numărul ultimei facturi emise</label>
+            <input class="camp-input" id="em-ultim" type="number" placeholder="ex: 147">
+          </div>
+          <p class="em-hint">Vom continua de la numărul următor.</p>
+          <button class="buton-primar" id="em-salveaza-config" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva">Continuă</button>
+        </div>
+        <div id="em-config-nu" hidden>
+          <div class="em-config-camp">
+            <label for="em-serie2">Seria facturilor (ex: FCT-)<span class="oblig">*</span></label>
+            <input class="camp-input" id="em-serie2" placeholder="ex: FCT-" autocomplete="off">
+          </div>
+          <p class="em-hint">Prima factură va avea numărul 1.</p>
+          <button class="buton-primar" id="em-salveaza-config2" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva">Continuă</button>
+        </div>
+      </div>
     </div>`;
 
   const zona = corp.querySelector("#em-config-form");
@@ -84,52 +107,41 @@ function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null, tvaI
     bTvaNu.addEventListener("click", () => { platitorTva = false; bTvaNu.classList.add("buton-activ"); bTvaDa.classList.remove("buton-activ"); });
   }
 
-  corp.querySelector("#em-da").addEventListener("click", () => {
-    zona.innerHTML = `
-      <div class="em-config-camp">
-        <label for="em-serie">Seria facturilor (ex: KAI-)<span class="oblig">*</span></label>
-        <input class="camp-input" id="em-serie" placeholder="ex: KAI-" autocomplete="off">
-      </div>
-      <div class="em-config-camp">
-        <label for="em-ultim">Numărul ultimei facturi emise</label>
-        <input class="camp-input" id="em-ultim" type="number" placeholder="ex: 147">
-      </div>
-      <p class="em-hint">Vom continua de la numărul următor.</p>
-      <button class="buton-primar" id="em-salveaza-config" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva">Continuă</button>`;
-    zona.querySelector("#em-salveaza-config").addEventListener("click", async () => {
-      const serie = zona.querySelector("#em-serie").value.trim() || null;
-      // [lotul 11, 440] toate câmpurile deodată, fiecare marcat lângă el (`cereCompletate` / `eroareCamp`), nu primul într-un <p> de mână
-      curataEroriCamp(corp);
-      let lipsa = cereCompletate(zona, [{ id: "em-serie", mesaj: "Completează seria: numărul facturii se dă într-o serie (CF art.319 alin.(20) lit.a)." }]);
-      if (serie && /^\d+$/.test(serie)) lipsa = eroareCamp(zona, "em-serie", "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numărul ultimei facturi se pune în câmpul următor.") || lipsa;
-      const ultim = parseInt((zona.querySelector("#em-ultim").value || "").trim(), 10);
-      if (!Number.isFinite(ultim) || ultim < 1) lipsa = eroareCamp(zona, "em-ultim", "Completează numărul ultimei facturi emise (nu se poate presupune numărul 1).") || lipsa;
-      const start = ultim + 1;   // #10: cerut explicit, nu fabricat
-      if (platitorTva === null) lipsa = eroareCamp(corp, "em-tva-da", "Alege dacă firma e plătitoare de TVA.") || lipsa;
-      if (lipsa) return;
-      await salveazaConfig(tenantId, serie, start, tvaDinProfil ? null : platitorTva);
-      if (opt.dupaSalvare) opt.dupaSalvare(); else randeazaEmitere(corp, nav, tenantId, opt);   // [pct.4] din „Schimbă seria”: înapoi la factură
-    });
+  const bDa = corp.querySelector("#em-da"), bNu = corp.querySelector("#em-nu");
+  const arataRaspuns = (da) => {
+    corp.querySelector("#em-config-da").hidden = !da;
+    corp.querySelector("#em-config-nu").hidden = da;
+    bDa.classList.toggle("buton-activ", da);
+    bNu.classList.toggle("buton-activ", !da);
+    curataEroriCamp(zona);
+    focusFaraSalt(corp.querySelector(da ? "#em-serie" : "#em-serie2"));
+  };
+  bDa.addEventListener("click", () => arataRaspuns(true));
+  bNu.addEventListener("click", () => arataRaspuns(false));
+  zona.querySelector("#em-salveaza-config").addEventListener("click", async () => {
+    const serie = zona.querySelector("#em-serie").value.trim() || null;
+    // [lotul 11, 440] toate câmpurile deodată, fiecare marcat lângă el (`cereCompletate` / `eroareCamp`), nu primul într-un <p> de mână
+    curataEroriCamp(corp);
+    let lipsa = cereCompletate(zona, [{ id: "em-serie", mesaj: "Completează seria: numărul facturii se dă într-o serie (CF art.319 alin.(20) lit.a)." }]);
+    if (serie && /^\d+$/.test(serie)) lipsa = eroareCamp(zona, "em-serie", "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numărul ultimei facturi se pune în câmpul următor.") || lipsa;
+    const ultim = parseInt((zona.querySelector("#em-ultim").value || "").trim(), 10);
+    if (!Number.isFinite(ultim) || ultim < 1) lipsa = eroareCamp(zona, "em-ultim", "Completează numărul ultimei facturi emise (nu se poate presupune numărul 1).") || lipsa;
+    const start = ultim + 1;   // #10: cerut explicit, nu fabricat
+    if (platitorTva === null) lipsa = eroareCamp(corp, "em-tva-da", "Alege dacă firma e plătitoare de TVA.") || lipsa;
+    if (lipsa) return;
+    await salveazaConfig(tenantId, serie, start, tvaDinProfil ? null : platitorTva);
+    if (opt.dupaSalvare) opt.dupaSalvare(); else randeazaEmitere(corp, nav, tenantId, opt);   // [pct.4] din „Schimbă seria”: înapoi la factură
   });
 
-  corp.querySelector("#em-nu").addEventListener("click", () => {
-    zona.innerHTML = `
-      <div class="em-config-camp">
-        <label for="em-serie2">Seria facturilor (ex: FCT-)<span class="oblig">*</span></label>
-        <input class="camp-input" id="em-serie2" placeholder="ex: FCT-" autocomplete="off">
-      </div>
-      <p class="em-hint">Prima factură va avea numărul 1.</p>
-      <button class="buton-primar" id="em-salveaza-config2" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare|POST /tenants/{tenant_id}/firma-profil/regim-tva">Continuă</button>`;
-    zona.querySelector("#em-salveaza-config2").addEventListener("click", async () => {
-      const serie = zona.querySelector("#em-serie2").value.trim() || null;
-      curataEroriCamp(corp);   // [lotul 11, 440] toate deodată, lângă câmpuri
-      let lipsa = cereCompletate(zona, [{ id: "em-serie2", mesaj: "Completează seria: numărul facturii se dă într-o serie (CF art.319 alin.(20) lit.a)." }]);
-      if (serie && /^\d+$/.test(serie)) lipsa = eroareCamp(zona, "em-serie2", "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-).") || lipsa;
-      if (platitorTva === null) lipsa = eroareCamp(corp, "em-tva-da", "Alege dacă firma e plătitoare de TVA.") || lipsa;
-      if (lipsa) return;
-      await salveazaConfig(tenantId, serie, 1, tvaDinProfil ? null : platitorTva);
-      if (opt.dupaSalvare) opt.dupaSalvare(); else randeazaEmitere(corp, nav, tenantId, opt);   // [pct.4] din „Schimbă seria”: înapoi la factură
-    });
+  zona.querySelector("#em-salveaza-config2").addEventListener("click", async () => {
+    const serie = zona.querySelector("#em-serie2").value.trim() || null;
+    curataEroriCamp(corp);   // [lotul 11, 440] toate deodată, lângă câmpuri
+    let lipsa = cereCompletate(zona, [{ id: "em-serie2", mesaj: "Completează seria: numărul facturii se dă într-o serie (CF art.319 alin.(20) lit.a)." }]);
+    if (serie && /^\d+$/.test(serie)) lipsa = eroareCamp(zona, "em-serie2", "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-).") || lipsa;
+    if (platitorTva === null) lipsa = eroareCamp(corp, "em-tva-da", "Alege dacă firma e plătitoare de TVA.") || lipsa;
+    if (lipsa) return;
+    await salveazaConfig(tenantId, serie, 1, tvaDinProfil ? null : platitorTva);
+    if (opt.dupaSalvare) opt.dupaSalvare(); else randeazaEmitere(corp, nav, tenantId, opt);   // [pct.4] din „Schimbă seria”: înapoi la factură
   });
 }
 
@@ -456,7 +468,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <label class="camp-eticheta" for="em-c331" id="em-c331-et" hidden>Categoria produsului cu taxare inversă (art.331; codul din D394)</label>
       <select class="camp-input" id="em-c331" hidden><option value="">— alege —</option>${C331.map((c) => `<option value="${esc(c.cod)}">${esc(c.eticheta)}</option>`).join("")}</select>
       <label class="camp-eticheta" for="em-tipop">Tip operațiune</label>
-      <select class="camp-input" id="em-tipop">
+      <select class="camp-input" id="em-tipop" data-butoane="">
         <option value="normal" selected>Operațiune normală</option>
         <option value="avans">Avans încasat</option>
         <option value="regularizare_avans">Regularizare avans</option>
@@ -468,7 +480,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <p class="camp-ajutor">Pentru o factură cerută de client pentru un bon deja emis: vânzarea e în raportul Z, deci factura nu se mai numără a doua oară (D300, D394, evidență, stoc). Pe factură apare „conform bon fiscal nr./data”.</p>
     </div>
     <div class="bara-fixa"><div class="em-rezultat" id="em-rezultat"></div><div class="em-actiuni">
-      <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px">
+      <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px" data-butoane="">
         <option value="factura" selected>Factură</option>
         <option value="proforma">Proforma</option>
         <option value="aviz">Aviz de însoțire</option>
@@ -1278,22 +1290,27 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
           <button class="buton-primar em-curs-retry" id="em-curs-retry">Reîncearcă</button>
           <button data-actiune="POST /tenants/{tenant_id}/facturi/emite" class="buton-secundar em-buton-sec" id="em-curs-manual">Introdu manual</button>
         </div>
-        <div id="em-curs-manual-zona"></div>
       </div>`;
     rez.querySelector("#em-curs-retry").addEventListener("click", () => trimiteEmitere(null));
+    // [lotul 13, 673 — DS cap.2a v2.104] „Introdu manual” deschide o fereastră nouă cu cursul (înainte: câmpul apărea în zona rezultatului);
+    // „Emite cu acest curs” întoarce la factură (formularul ei, completat, e păstrat de navigator) și emite de acolo
     rez.querySelector("#em-curs-manual").addEventListener("click", () => {
-      const zona = rez.querySelector("#em-curs-manual-zona");
-      zona.innerHTML = `
-        <div class="em-curs-manual">
-          <label for="em-curs-val">Curs ${det.moneda} → RON pentru ${dataRo(det.data)}</label>
-          <input type="number" step="0.0001" id="em-curs-val" placeholder="ex. 5.2438" class="camp-input">
-          <button class="buton-primar" id="em-curs-ok" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite cu acest curs</button>
-          <div class="em-curs-avertisment">Introdu cursul BNR valabil pentru data facturii. Răspunderea corectitudinii îți revine.</div>
-        </div>`;
-      zona.querySelector("#em-curs-ok").addEventListener("click", () => {
-        const v = parseFloat(zona.querySelector("#em-curs-val").value);
-        if (!v || v <= 0) { focusFaraSalt(zona.querySelector("#em-curs-val")); return; }
-        trimiteEmitere(v);
+      nav.deschide("Cursul introdus de mână", (c2) => {
+        c2.innerHTML = `
+          <div class="em-curs-manual">
+            <label for="em-curs-val">Curs ${det.moneda} → RON pentru ${dataRo(det.data)}</label>
+            <input type="number" step="0.0001" id="em-curs-val" placeholder="ex. 5.2438" class="camp-input">
+            <button class="buton-primar" id="em-curs-ok" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite cu acest curs</button>
+            <div class="em-curs-avertisment">Introdu cursul BNR valabil pentru data facturii. Răspunderea corectitudinii îți revine.</div>
+          </div>`;
+        focusFaraSalt(c2.querySelector("#em-curs-val"));
+        c2.querySelector("#em-curs-ok").addEventListener("click", () => {
+          curataEroriCamp(c2);
+          const v = parseFloat(c2.querySelector("#em-curs-val").value);
+          if (!v || v <= 0) { eroareCamp(c2, "em-curs-val", "Scrie cursul BNR al zilei facturii (un număr mai mare ca 0)."); return; }
+          nav.inapoi();
+          trimiteEmitere(v);
+        });
       });
     });
   }

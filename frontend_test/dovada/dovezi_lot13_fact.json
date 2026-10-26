@@ -50,10 +50,6 @@
     "valoare": "21"
    },
    {
-    "alege": "#op-furnizor_platitor_tva",
-    "valoare": "true"
-   },
-   {
     "click": "#op-trimite"
    },
    {

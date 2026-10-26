@@ -61,8 +61,8 @@
  },
  {
   "fisier": "static/js/ecrane/etransport_ecran.js",
-  "ancora": "          nav.inapoi();\n          completeazaDin(r);",
-  "inlocuire": "          nav.inapoi();",
+  "ancora": "          _deCompletat[t.id] = r;\n",
+  "inlocuire": "",
   "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_534_notificarea_se_completeaza_din_factura"
  },
  {

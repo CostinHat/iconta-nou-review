@@ -137,7 +137,7 @@ def _istoric_detaliu(e, firma, fid):
     sel = ".fac-frand-btn[data-id='%d']" % fid
     for _ in range(10):
         pg.wait_for_function("() => !document.body.innerText.includes('Se încarcă')", timeout=25000)
-        if pg.locator(sel).count() or not pg.locator("#fac-mai-multe").count():
+        if pg.locator(sel).count() or not pg.locator("#fac-mai-multe:not([aria-disabled='true'])").count():   # [lotul 13, 675] inactiv = toate afișate
             break
         pg.click("#fac-mai-multe")
     pg.click(sel)

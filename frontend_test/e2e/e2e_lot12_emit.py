@@ -175,7 +175,8 @@ def _factura_din_istoric(e, firma, factura_id):
     rand = ".fac-frand-btn[data-id='%s']" % factura_id
     pg.wait_for_selector(".fac-frand-btn", timeout=25000)
     while not pg.locator(rand).count():
-        assert pg.locator("#fac-mai-multe").count(), "factura %s nu e în Istoric facturi" % factura_id
+        # [lotul 13, 675] butonul stă mereu la locul lui; inactiv (cu motivul) când toate facturile lunii sunt afișate
+        assert pg.locator("#fac-mai-multe:not([aria-disabled='true'])").count(), "factura %s nu e în Istoric facturi" % factura_id
         pg.click("#fac-mai-multe")
         pg.wait_for_function("(n) => document.querySelectorAll('.fac-frand-btn').length > n",
                              arg=pg.locator(".fac-frand-btn").count(), timeout=25000)
@@ -219,7 +220,8 @@ def _sablon_nou(e, firma, cui, nume):
     pg.fill("#fr-nume", nume)
     pg.fill("#fr-l0-descriere", PRODUS)
     pg.dispatch_event("#fr-l0-descriere", "input")
-    pg.wait_for_function("() => (document.querySelector('#fr-l0-cota') || {textContent: ''}).textContent.includes('21')", timeout=10000)
+    # [lotul 13] cota PROPUSĂ sosită pe linie (valoarea listei), nu textul opțiunilor (care cuprinde „21%” oricum)
+    pg.wait_for_function("() => (document.querySelector('#fr-l0-cota') || {value: ''}).value === '21'", timeout=10000)
     pg.fill("#fr-l0-cantitate", "1")
     pg.dispatch_event("#fr-l0-cantitate", "input")
     pg.fill("#fr-l0-pret_unitar", "100")
@@ -252,6 +254,8 @@ def test_def_462_sablonul_trece_prin_verificarile_facturii_obisnuite(patron, fir
     assert sql('SELECT count(*) FROM "%s".facturi_recurente' % s)[0][0] == 0
     pregateste_firma(patron, firma_emit)                                   # Date firmă completate la loc (forma SRL, capitalul)
     _sablon_nou(patron, firma_emit, "DE123456789", "Kunde GmbH")
+    # [lotul 13] țara se deduce din cod la ieșirea din câmp (C160, „DE”): cazul probat e codul altui stat lăsat cu țara „România”
+    pg.select_option("#fr-tara", "RO")
     pg.click("#fr-salveaza")
     pg.wait_for_selector("#fr-cui[aria-invalid='true']", timeout=20000)
     assert "client din alt stat" in patron.fereastra(), patron.fereastra()

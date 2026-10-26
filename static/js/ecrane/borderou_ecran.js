@@ -10,7 +10,7 @@
 // Ruta scrierii rămâne `POST /tenants/{tenant_id}/achizitie-neinregistrat` (operațiunea D394 N); câmpurile poartă id-urile din refuzurile
 // serverului (`op-*`). Gard: core/test_lot11_b_450_borderou.py (fiecare câmp citit de server are câmpul lui aici).
 import { api, ultimaCerere, esc, bani, cantitate, arataMesaj, dataIso, dataRo, stareNota, pasNota, eroareCamp, curataEroriCamp, confirmaCaseta,
-  dupaGenerare } from "../api.js?v=e38843b1ec";
+  dupaGenerare, atributeInactiv } from "../api.js?v=e38843b1ec";
 import { cautaInLista } from "./emitere_ecran.js?v=8d3aa3015f";   /* [lotul 12, 488] */
 
 /** Conturile pe care borderoul aduce marfa în gestiune (aceeași listă ca serverul, `uc_tenants.achizitie_neinregistrat`). */
@@ -77,8 +77,10 @@ export async function ecranBorderou(corp, nav, t) {
           b.valoare != null ? bani(b.valoare) + " lei" : ""}${b.nota_eticheta ? " · nota " + esc(b.nota_eticheta) + (b.nota_status ? " (" + esc(b.nota_status) + ")" : "") : ""}</div>
         ${b.storno_din ? `<div class="pf-frand-sub">Stornare pentru ${esc(b.storno_din)}.</div>` : ""}
         ${b.stornat_de ? `<div class="pf-frand-sub">Stornat prin ${esc(b.stornat_de)}.</div>` : ""}
-        ${!b.storno_din && !b.stornat_de ? `<button type="button" class="buton-secundar ba-storneaza" id="ba-storneaza-${b.id}" data-id="${b.id}"
-            data-actiune="POST /tenants/{tenant_id}/borderouri/{factura_id}/storneaza">Stornează</button>` : ""}
+        <!-- [lotul 13, 675 — DS cap.1 v2.104] „Stornează” stă pe fiecare borderou; pe stornare și pe borderoul stornat, inactiv cu motivul -->
+        <button type="button" class="buton-secundar ba-storneaza" id="ba-storneaza-${b.id}" data-id="${b.id}"
+            data-actiune="POST /tenants/{tenant_id}/borderouri/{factura_id}/storneaza"${b.storno_din ? atributeInactiv(`E chiar stornarea lui ${b.storno_din}.`)
+              : (b.stornat_de ? atributeInactiv(`Borderoul e stornat deja, prin ${b.stornat_de}.`) : "")}>Stornează</button>
         <div id="ba-storno-mesaj-${b.id}"></div>
       </div>`).join("") : `<div class="stare-goala">Niciun borderou de achiziție în luna asta.</div>`;
 

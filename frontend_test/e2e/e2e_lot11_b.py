@@ -140,9 +140,10 @@ def test_decizia_103_borderoul_se_storneaza_din_lista_lunii(patron, firma_b):
     pg.wait_for_selector("#ba-lista-mesaj .caseta-ok", timeout=20000)
     patron.captura()
     rand = pg.inner_text('[data-borderou="%d"]' % fid)
-    assert "Stornat prin Borderou de achiziție BA-" in rand and pg.query_selector("#ba-storneaza-%d" % fid) is None, rand
+    # [lotul 13, 675 — DS cap.1 v2.104] „Stornează” stă pe fiecare borderou; pe cel stornat și pe stornare, inactiv, cu motivul
+    assert "Stornat prin Borderou de achiziție BA-" in rand and pg.get_attribute("#ba-storneaza-%d" % fid, "aria-disabled") == "true", rand
     s = sql('SELECT id FROM "%s".facturi WHERE storno_din_id = %%s' % firma_b["schema"], (fid,))
-    assert len(s) == 1 and pg.query_selector("#ba-storneaza-%d" % s[0][0]) is None
+    assert len(s) == 1 and pg.get_attribute("#ba-storneaza-%d" % s[0][0], "aria-disabled") == "true"
     assert sql('SELECT l.cont_debit, l.cont_credit, l.suma FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
                'WHERE i.factura_id = %%s' % (firma_b["schema"], firma_b["schema"]), (s[0][0],)) == [("371", "401", -50)]   # OMFP 1802/2014 pct.69
     r = _api(patron, "POST", "/tenants/%d/borderouri/%d/storneaza" % (firma_b["tenant_id"], fid), {})
