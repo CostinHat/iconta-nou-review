@@ -16,8 +16,8 @@ Sursele JS se citesc o dată și se recitesc numai când fișierul s-a schimbat 
 fiecare cuvânt scris trebuie să apară. `SINONIME` leagă cuvintele contabilului de fereastra în care lucrează („tichet” -> Salariați: tichetele
 se pun pe rândul salariatului), nu o listă de funcții.
 
-DREPTURI: firma se citește numai dacă utilizatorul are acces la ea (`_schema_sau_404`, același drum ca rutele firmei); acțiunea fiecărei
-operațiuni (`POST /tenants/{tenant_id}/<ruta>`) pleacă în rezultat, iar ecranul o ascunde celui căruia serverul i-o refuză (`drepturi.permis`).
+DREPTURI: firma se citește numai dacă utilizatorul are acces la ea (`_schema_sau_404`, același drum ca rutele firmei); ruta fiecărei
+operațiuni pleacă în rezultat, ecranul îi compune acțiunea (`actiuneOp`) și o ascunde celui căruia serverul i-o refuză (`drepturi.permis`).
 Gard: `core/test_lot13_ds_cautare.py`.
 """
 import json
@@ -153,8 +153,9 @@ def cauta(q, firma=None):
         for o in operatiuni():
             s = _potriveste(cuvinte, o["titlu"], o["cat"], " ".join(o["campuri"]))
             if s:
+                # ruta operației, nu acțiunea: acțiunea o compune ecranul cu `actiuneOp` (operatiuni_ecran.js), aceeași formă ca la butoane
                 rez.append((s + 1, {"fel": "operatiune", "cheie": o["cheie"], "titlu": o["titlu"],
-                                    "unde": "Operațiuni speciale › %s" % o["cat"], "actiune": "POST /tenants/{tenant_id}/" + o["ruta"]}))
+                                    "unde": "Operațiuni speciale › %s" % o["cat"], "ruta": o["ruta"], "actiune": None}))
     if firma:
         for d in _declaratii_firmei(firma.get("tip_firma")):
             s = _potriveste(cuvinte, d["tip"], d["denumire"])

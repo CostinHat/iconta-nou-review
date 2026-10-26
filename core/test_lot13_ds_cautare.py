@@ -39,7 +39,7 @@ def test_proba_lui_costin_decontul_de_deplasare_se_gaseste(q):
     r = C.cauta(q, FIRMA)
     assert r and r[0]["fel"] == "operatiune" and r[0]["cheie"] == "decont", r
     assert r[0]["unde"] == "Operațiuni speciale › Personal și deconturi"
-    assert r[0]["actiune"] == "POST /tenants/{tenant_id}/nota-decont-deplasare"
+    assert r[0]["ruta"] == "nota-decont-deplasare"
 
 
 def test_declaratia_tichetul_si_salariatul():

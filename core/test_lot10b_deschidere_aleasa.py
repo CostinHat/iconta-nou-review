@@ -143,6 +143,9 @@ CLICURI_PROGRAMATICE = {
     "static/js/ecrane/migrare.js": (1, "descărcarea fișierului cerut de om"),
     "static/js/ecrane/etransport_ecran.js": (1, "descărcarea XML-ului cerut de om"),
     "static/js/ecrane/firme.js": (2, "descărcarea cerută de om; „Scanează cod de bare” deschide alegerea imaginii (input ascuns)"),
+    # [lotul 13, 681] rezultatul ales de om în căutarea din antet apasă cardul ferestrei firmei și butonul operației pe care le numește
+    # — aceleași elemente pe care omul le-ar fi apăsat, cu ascultătorii și drepturile lor (nu o a doua cale de deschidere)
+    "static/js/cautare.js": (2, "rezultatul căutării ales de om apasă cardul firmei / butonul operației pe care îl numește"),
     "static/js/ecrane/validat.js": (1, "„Respinge nota” ales în caseta de confirmare apasă butonul de respingere al notei"),
 }
 
