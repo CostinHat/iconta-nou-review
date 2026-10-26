@@ -2652,7 +2652,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 ## T34 — Rapoartele comerciale, centrele de cost și rapoartele salvate
 
-*clasa MECANIC · 14 rute · 5 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 15 rute · 6 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/ansamblu`, `/api/v1/firme/{tenant_id}/kpi`, `/cabinet/consolidare`, `/tenants/{tenant_id}/centre-cost`, `/tenants/{tenant_id}/centre-cost/raport`, `/tenants/{tenant_id}/centre-cost/varianta`, `/tenants/{tenant_id}/rapoarte-comerciale`, `/tenants/{tenant_id}/rapoarte-comerciale/fisa`, `/tenants/{tenant_id}/rapoarte-salvate`*
 
@@ -2685,6 +2685,17 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 - suma bugetelor pe centre nu trebuie să dea un total impus — nu e o repartizare
 
 ---
+
+### `PUT /tenants/{tenant_id}/centre-cost/alocari`
+
+*garda `cere_cabinet` · **fara rol***
+
+*ce face: pune centrul de cost pe salariați, pe mijloacele fixe și pe articolele de stoc (`salariati` / `mijloace_fixe` / `articole`, UPDATE) — prin `centre_cost_api.seteaza_alocari`*
+
+- [x] un centru inactiv sau inexistent se refuză lângă rândul lui, iar din alocare nu se scrie nimic (`core/test_lot13_comp_536.py`)
+- [x] notele deja scrise nu se rescriu: centrul se vede numai pe notele generate după alocare (datele existente neafectate)
+- [x] ieșirea din stoc (607 = 371, consum pe rețetă, inventar, retur la stornare) poartă centrul articolului numai pe rândul de cheltuială / venit, nu pe stoc / TVA
+- ștergerea unui centru care e pus pe un articol, salariat sau activ — verifică ce se întâmplă
 
 ### `POST /tenants/{tenant_id}/rapoarte-salvate`
 
