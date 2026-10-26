@@ -23776,3 +23776,19 @@ Răspunsul lui Costin, la lista de decizii cerute de executor după citirea pred
    rezolvată prin lista de trezorerie 5124 / 5121 / 5314, confirmată.
 9. **Publicarea:** totul până la poarta verde și backup, apoi oprire și așteptarea confirmării lui Costin pentru publicare (regimul pilot).
 - **Restul celor 19 din `DECIZII_PROPUSE.md`:** se aplică varianta recomandată de executor; fiecare se raportează la §6 al raportului final.
+
+## 26.10.2026 — Comanda 13.1: precizare la 681 (căutarea globală) — verbatim
+
+Costin, verbatim: *„13.1 — precizare la 681: căutarea este a funcțiilor aplicației (scrii „D300”, „stat de plată”, „NIR” și te duce în fereastra
+respectivă), nu căutare de documente sau date. Căsuța trebuie să fie accesibilă din fiecare fereastră de lucru (pe bara de sus a ferestrei,
+lângă traseu), nu doar în antetul paginii, care e acoperit de ferestre; plus scurtătura Ctrl+K de oriunde. Continuă 13.1.”*
+
+**SUPERSEDEAZĂ** din „Comanda 13.1 (25.10.2026)”, 681, partea „sau un nume […] un salariat” și „Căsuță de căutare în antet”: căutarea nu mai
+cuprinde nicio dată a firmei (numele unui salariat e dată, nu funcție), iar căsuța stă și în antetul fiecărei ferestre de lucru.
+**Ce s-a făcut:** `core/cautare.py` fără salariați (și fără să mai citească lista lor); `static/js/cautare.js` — aceeași componentă montată în
+antetul paginii și în bara de sus a fiecărei ferestre (`#cautare-fereastra`, între traseu și închidere; fereastra mică de confirmare și clientul din
+portal n-o au), plus Ctrl+K / Cmd+K (cursorul în căsuța ferestrei de sus, altfel în cea din antet). **Alternativa respinsă:** căsuță plutitoare
+pe fereastră (ar fi acoperit conținutul; Costin a cerut bara de sus, lângă traseu). **Limită:** în ferestrele mici lista de rezultate e tăiată de
+marginea ferestrei (`.fereastra { overflow: hidden }`); ferestrele de lucru sunt cât ecranul, deci nu se vede în uz; căsuța din fereastră se
+redesenează odată cu fereastra (textul tastat nu se păstrează la redesenare). **Gărzi:** `core/test_lot13_ds_cautare.py` (11, cu mutații),
+verificatorul `CAUTARE_FEREASTRA`, e2e `test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste`. DS cap.9 „Căutarea globală” rescris.
