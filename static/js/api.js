@@ -714,8 +714,8 @@ export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
     a.className = "btn-link refuz-salvare-text";
     a.textContent = (mesaj.textContent || "").trim();
     li.append(a);
-    // [lotul 13, deficiența 515; comanda 13.1, verbatim: „Caseta roșie spune doar «motivul e mai jos» […] O singură propoziție clară în
-    // casetă, pe limba contabilului.”] Zona refuzului e chiar lângă buton: caseta spune motivul (nu doar „NU s-a salvat.”, cu motivul
+    // [lotul 13, deficiența 515; comanda 13.1, redat: caseta roșie trimitea la motivul de dedesubt, iar textul lui era tehnic — „O singură
+    // propoziție clară în casetă, pe limba contabilului.”] Zona refuzului e chiar lângă buton: caseta spune motivul (nu doar „NU s-a salvat.”, cu motivul
     // dedesubt), iar zona se ascunde cât stă caseta — același text, o singură dată. Zona revine la prima scriere nouă în ea (`arataMesaj`)
     // sau când pleacă caseta (`_scoateCaseta`).
     if (_langaButon(mesaj, b)) {
@@ -847,8 +847,8 @@ function _campuriAutomat(e, buton) {
   // stă acum lângă fiecare câmp și în caseta „NU s-a salvat.” — a treia oară, în zonă, nu mai stă (DS cap.6 v2.30 pct.6: „doar erori de
   // câmp → doar A”). Un refuz cu o parte fără câmp rămâne în zonă.
   const campuri = eris.map((c) => _faraSpatii(c.mesaj)).filter(Boolean);
-  const linii = String((e && e.mesaj) || "").split(/\n+/).map(_faraSpatii).filter(Boolean);
-  if (campuri.length && linii.length && linii.every((l) => campuri.includes(l))
+  const randuriMesaj = String((e && e.mesaj) || "").split(/\n+/).map(_faraSpatii).filter(Boolean);
+  if (campuri.length && randuriMesaj.length && randuriMesaj.every((l) => campuri.includes(l))
       && eris.every((c) => c.camp && scop.querySelector("#" + CSS.escape(String(c.camp))))) {
     scop.querySelectorAll(ZONE_EROARE_FORMULAR + ", .msg-in-formular").forEach((z) => {
       if (_faraSpatii(z.textContent) !== _faraSpatii(e.mesaj)) return;
