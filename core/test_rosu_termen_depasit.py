@@ -34,6 +34,7 @@ def test_firma_e_rosie_numai_cu_o_restanta():
 _STUB = {
     r'from "\./verdict\.js[^"]*"': 'from "data:text/javascript,export const VERDICT_POZITIV={control_depus:%22ok%22}"',
     r'from "\.\./api\.js[^"]*"': ('from "data:text/javascript,export const api=0,confirmaCaseta=0,arataMesaj=0,focusFaraSalt=0,refuzPeRand=0;'
+                                 'export const atributeInactiv=()=>String();'   # [lotul 13, 675] butonul inactiv cu motiv
                                  'export const esc=(s)=>String(s);export const dataRo=(s)=>String(s);export const bani=(n)=>String(n)"'),
     r'from "\./nir_legare\.js[^"]*"': 'from "data:text/javascript,export const cuLegareaNir=0,interogareLegare=0"',
     # [lotul 12, 463] starea SPV a firmei, randată după inserare (`legaVerdict`): corpul verdictului n-o atinge

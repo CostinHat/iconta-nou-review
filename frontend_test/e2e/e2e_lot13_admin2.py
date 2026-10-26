@@ -334,7 +334,7 @@ def test_def_458_1_retragerea_proprie_regenerata_nu_e_eroare_a_echipei(patron, c
     pg.click("button.cab-card:has([data-cheie='asistenti'])")
     pg.wait_for_selector("#asi-banner", timeout=30000)
     pg.wait_for_timeout(1500)
-    if pg.query_selector("#asi-vezi-erori"):
+    if pg.query_selector("#asi-vezi-erori:not([aria-disabled='true'])"):   # [675] butonul stă mereu; fără erori e inactiv
         pg.click("#asi-vezi-erori")
         # fereastra „Erori — echipa” (lista Asistenți are și ea `.val-card`: se așteaptă textul ferestrei noi)
         pg.wait_for_function("() => /Cine a produs respingeri|Nicio respingere/.test((document.querySelector('.fereastra-corp') || {}).innerText || '')",

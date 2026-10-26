@@ -34,9 +34,9 @@ function cifreCabinet(c) {
 
 function stareSuspendare(c) {
   if (c.activ) return "";
-  const motiv = c.motiv_suspendare ? ` · motivul: ${esc(c.motiv_suspendare)}` : " · motivul nu s-a înregistrat";
+  const motiv = c.motiv_suspendare ? `· motivul: ${esc(c.motiv_suspendare)}` : "· motivul nu s-a înregistrat";
   const din = c.suspendat_la ? ` · din ${dataRo(c.suspendat_la, "cu_ora")}` : "";
-  return `<div class="pf-frand-sub ac-suspendat">Suspendat${motiv}${din}</div>`;
+  return `<div class="pf-frand-sub ac-suspendat">Suspendat ${motiv}${din}</div>`;
 }
 
 async function randeaza(corp, nav, mesajOk) {
@@ -60,6 +60,7 @@ async function randeaza(corp, nav, mesajOk) {
   // „Reactivează”; textul rândului nu mai e o acțiune pe care se dă clic
   const randuri = cabinete.map((c, i) => {
     const stare = c.activ ? "" : `<span class="mig-stare mig-rosu">suspendat</span>`;
+    const cls = c.activ ? "buton-sters" : "buton-secundar";   // Suspendă (ștergere de acces) / Reactivează
     return `
       <div class="pf-frand" data-zebra="${i % 2}" data-cabinet="${c.id}">
         <div class="pf-frand-text">
@@ -69,7 +70,7 @@ async function randeaza(corp, nav, mesajOk) {
         </div>
         ${stare}
         <button class="buton-secundar" data-fisa="${i}" style="margin-left:10px" data-fara-actiune="deschide fișa cabinetului (citire)">Fișa</button>
-        <button class="${c.activ ? "buton-sters" : "buton-secundar"}" data-toggle="${i}" style="margin-left:8px"
+        <button class="${cls}" data-toggle="${i}" style="margin-left:8px"
           data-actiune="${c.activ ? "POST /admin/cabinete/{firm_id}/suspenda" : "POST /admin/cabinete/{firm_id}/reactiveaza"}">${c.activ ? "Suspendă" : "Reactivează"}</button>
       </div>`;
   }).join("");
