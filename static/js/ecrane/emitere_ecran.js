@@ -774,13 +774,15 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     if (selArt) selArt.addEventListener("change", () => {  // [punte_stoc_v1] F172
       l.articol_id = selArt.value ? parseInt(selArt.value, 10) : null;
       const o = selArt.selectedOptions[0];
-      if (l.articol_id && o && o.dataset.um) { l.um = o.dataset.um; l.umScris = true; l.umPropus = true; um.value = o.dataset.um; }   // UM-ul articolului din stoc
       aratăFaraArticol();
       if (l.articol_id && o && o.dataset.den) {
         l.descriere = o.dataset.den;
         den.value = o.dataset.den;
         den.dispatchEvent(new Event("input"));  // completeaza denumirea + declanseaza potrivirea cotei
       }
+      // UM-ul articolului din stoc, DUPĂ denumire: denumirea nouă golește propunerea de dinainte (`golestePropunerea`), iar UM-ul articolului
+      // e al liniei de acum (lotul 13, regula UM: o linie cu articol din nomenclator își ia UM-ul articolului — nu „buc”, nu gol)
+      if (l.articol_id && o && o.dataset.um) { l.um = o.dataset.um; l.umScris = true; l.umPropus = true; um.value = o.dataset.um; }
     });
     del.addEventListener("click", () => { const p = linii.indexOf(l); if (p >= 0) linii.splice(p, 1); deseneazaLinii(); });
   }

@@ -46,7 +46,9 @@ def _zile_bancare_inainte(zi, n):
 def _fara_ultimele_zile(n=2):
     """Pornirea: cache-ul fără cursurile ultimelor `n` zile bancare dinaintea zilei de azi (ca pe producție, 22.10.2026)."""
     zile = _zile_bancare_inainte(AZI, n)
-    sql("DELETE FROM public.curs_bnr_zilnic WHERE data = ANY(%s)", (zile,))
+    # [lotul 13] pornirea e „cache-ul ca pe producție”: fără ultimele n zile bancare și fără nimic după ele până azi — un rând pus de alt test
+    # pe o zi fără curs BNR (sâmbătă / duminică, `e2e_lot13_ops::test_def_537`) ar trece drept „cel mai nou curs” și ar ascunde golul
+    sql("DELETE FROM public.curs_bnr_zilnic WHERE data >= %s AND data < %s", (min(zile), AZI))
     sql("DELETE FROM public.alerte_cooldown WHERE categorie = 'bnr_completare'")
     return zile
 
