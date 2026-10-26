@@ -9,8 +9,13 @@ strat AI. Trei perspective, toate pe cabinet (doar patron):
 La teste se umple singur. AI-ul (stratul 5) va citi exact aceste agregate.
 
 [validare_note, 06.10.2026] Coada poartă și note (`fel='nota'`); tiparele de aici sunt ale DECLARAȚIILOR — filtrate explicit.
+[lotul 13, deficiența 574 — „«Înlocuită de declarația generată din nou» (automat) e numărată ca respingere: D300 67% umflat; notele respinse
+de om (ex. Asist Test azi) lipsesc.”] Tiparele sunt ale RESPINGERILOR FĂCUTE DE OM, pe declarații ȘI pe note: înlocuirea (automată, sau
+retragerea propriei declarații urmată de regenerare — `coada_api.sql_inlocuita`, 458.1) nu e o respingere; nota respinsă la validare este.
 """
 import psycopg2.extras as _E
+
+from core.common import cate as _cate
 
 
 def tipare(conn, cabinet_id):
@@ -24,9 +29,9 @@ def tipare(conn, cabinet_id):
         cur.execute(
             "WITH x AS (SELECT d.tenant_id, d.tip, d.id, d.respins_la, d.motiv_respingere, " + _cheie("d") + " AS cheie, "
             "  (d.respins_la IS NOT NULL AND NOT " + sql_inlocuita("d") + ") AS respingere "
-            "  FROM public.declaratii_coada d WHERE d.cabinet_id = %s AND d.fel = 'declaratie'), "
+            "  FROM public.declaratii_coada d WHERE d.cabinet_id = %s AND d.fel IN ('declaratie', 'nota')), "   # [574] și notele
             "p AS (SELECT cheie, MIN(tenant_id) AS tenant_id, MIN(tip) AS tip, bool_or(respingere) AS respinsa, "
-            "  (array_agg(COALESCE(NULLIF(TRIM(motiv_respingere), ''), '(fara motiv)') ORDER BY respins_la DESC, id DESC) "
+            "  (array_agg(COALESCE(NULLIF(TRIM(motiv_respingere), ''), '(fără motiv)') ORDER BY respins_la DESC, id DESC) "
             "     FILTER (WHERE respingere))[1] AS motiv "
             "  FROM x GROUP BY cheie) "
             "SELECT p.tenant_id, p.tip, p.respinsa, p.motiv, t.nume, t.cui "
@@ -55,7 +60,7 @@ def tipare(conn, cabinet_id):
     # ---------- 3) FIRME cu cele mai multe respingeri ----------
     pe_firma = {}
     for x in prg:
-        g = pe_firma.setdefault(x["tenant_id"], {"tenant_id": x["tenant_id"], "nume": x["nume"] or "(firma necunoscuta)",
+        g = pe_firma.setdefault(x["tenant_id"], {"tenant_id": x["tenant_id"], "nume": x["nume"] or "(firmă necunoscută)",
                                                   "cui": x["cui"] or "", "respinse": 0, "total": 0})
         g["total"] += 1
         g["respinse"] += 1 if x["respinsa"] else 0
@@ -80,27 +85,54 @@ def analiza_ai(date):
     from core import ai_client
     if not date.get("are_date"):
         return {"disponibil": False, "motiv": "Nu există încă respingeri de analizat."}
+    # [lotul 13, 576] „«prea puține cazuri» sub prag”: dintr-o mână de respingeri nu iese un tipar — modelul generaliza dintr-un caz
+    if (date.get("respinse") or 0) < PRAG_ANALIZA:
+        return {"disponibil": False, "motiv": "Prea puține respingeri pentru o analiză: %s; analiza pornește de la %d." % (
+            _cate(date.get("respinse") or 0, "respingere", "respingeri"), PRAG_ANALIZA)}
     if not ai_client.disponibil():
         return {"disponibil": False, "motiv": "Asistentul AI nu e configurat pe acest server."}
 
-    motive = "\n".join("- %s: %d respingeri" % (m["motiv"], m["n"]) for m in date["motive"][:15])
-    tipuri = "\n".join("- %s: %d din %d respinse (%d%%)" % (t["tip"].upper(), t["respinse"], t["total"], t["pct"])
+    motive = "\n".join("- %s: %s" % (m["motiv"], _cate(m["n"], "respingere", "respingeri")) for m in date["motive"][:15])
+    tipuri = "\n".join("- %s: %d din %d respinse (%d%%)" % (eticheta_tip(t["tip"]), t["respinse"], t["total"], t["pct"])
                        for t in date["tipuri"] if t["respinse"] > 0)
     firme = "\n".join("- %s: %d respinse din %d" % (f["nume"], f["respinse"], f["total"]) for f in date["firme"][:10])
-
-    sistem = ("Esti asistentul unui cabinet de contabilitate din Romania. Analizezi tiparele de respingere "
-              "a declaratiilor fiscale la ANAF si propui recomandari CONCRETE, actionabile, pentru a reduce "
-              "respingerile. Foloseste DOAR datele furnizate - nu inventa cifre, firme sau motive care nu apar. "
-              "Raspunzi in romana, concis si structurat: intai ce tipare observi (2-3 fraze), apoi 3-5 recomandari "
-              "practice cu bullet. Fara introduceri de politete, direct la analiza.")
-    prompt = ("Date agregate ale cabinetului (respingeri reale de declaratii):\n\n"
-              "MOTIVE DE RESPINGERE RECURENTE:\n%s\n\n"
-              "TIPURI DE DECLARATII CU RATA DE RESPINGERE:\n%s\n\n"
+    prompt = ("Date agregate ale cabinetului (respingeri făcute la validare, de un om; regenerările automate nu sunt incluse):\n\n"
+              "MOTIVE DE RESPINGERE:\n%s\n\n"
+              "DECLARAȚII ȘI NOTE, CU RATA DE RESPINGERE:\n%s\n\n"
               "FIRME CU CELE MAI MULTE RESPINGERI:\n%s\n\n"
-              "Analizeaza tiparele si propune recomandari."
+              "Analizează tiparele și propune recomandări."
               % (motive or "(niciunul)", tipuri or "(niciunul)", firme or "(niciuna)"))
     try:
-        text = ai_client.genereaza_text(prompt, sistem=sistem, max_tokens=1000, temperatura=0.4)
+        text = ai_client.genereaza_text(prompt, sistem=SISTEM_ANALIZA, max_tokens=1000, temperatura=0.2)
     except Exception as e:
         return {"disponibil": False, "motiv": "Nu s-a putut genera analiza acum (%s)." % type(e).__name__}
-    return {"disponibil": True, "analiza": ai_client.text_simplu(text)}   # [lot 06.10 pct.14] fără marcaje brute pe ecran
+    return {"disponibil": True, "analiza": curata_analiza(ai_client.text_simplu(text))}   # [lot 06.10 pct.14] fără marcaje brute pe ecran
+
+
+#: [lotul 13, 576] sub atâtea respingeri (ale omului) nu se cere analiza: „prea puține cazuri”. Pragul nu e o valoare fiscală; e cât
+#: de puțin poate susține un „tipar” (un motiv repetat de cel puțin două ori, pe cel puțin două pregătiri) — ales cel mai prudent.
+PRAG_ANALIZA = 5
+#: un motiv se poate numi „sistematic” / „repetat” numai de la atâtea cazuri (promptul o cere; garda de text o verifică)
+PRAG_SISTEMATIC = 3
+
+#: [lotul 13, 576 — „Construiește pe cifrele umflate și inventează: «Sesiunea A» inexistentă, check-out în Excel, «omite sistematic» dintr-un
+#: singur caz; «---» afișat ca atare.”] Reguli, cu diacritice: numai ce e în date (niciun nume, niciun instrument, nicio procedură
+#: nepomenite), „sistematic” numai de la PRAG_SISTEMATIC cazuri, text simplu fără linii-separator.
+SISTEM_ANALIZA = ("Ești asistentul unui cabinet de contabilitate din România. Analizezi motivele pentru care colegii au respins la validare "
+                  "declarații și note contabile și propui recomandări concrete pentru a le reduce. Reguli stricte: folosești NUMAI datele "
+                  "primite — nu numești firme, persoane, sesiuni, programe (Excel etc.) sau proceduri care nu apar în ele și nu inventezi "
+                  "cifre; un motiv îl numești „repetat” sau „sistematic” numai dacă are cel puțin %s, altfel spui că e un caz "
+                  "izolat; dacă datele nu ajung pentru o concluzie, spui asta. Scrii în limba română, cu diacritice, concis: întâi ce "
+                  "observi (2–3 fraze), apoi cel mult 5 recomandări, fiecare pe un rând care începe cu „- ”. Text simplu: fără titluri, "
+                  "fără linii de separare („---”), fără formule de politețe." % _cate(PRAG_SISTEMATIC, "caz", "cazuri"))
+
+
+def eticheta_tip(tip):
+    """PURĂ. Cum se numește pe ecran și în analiză felul pregătirii: notele contabile, sau codul declarației (D300)."""
+    return "Note contabile" if (tip or "") == "nota" else (tip or "").upper()
+
+
+def curata_analiza(text):
+    """PURĂ. [576] Liniile-separator (`---`, `***`, `___`) ies din textul arătat; restul rămâne cum l-a scris modelul."""
+    import re
+    return "\n".join(l for l in (text or "").splitlines() if not re.fullmatch(r"\s*[-*_=]{3,}\s*", l)).strip()

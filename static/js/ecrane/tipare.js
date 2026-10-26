@@ -5,10 +5,13 @@
 import { api, esc } from "../api.js?v=e38843b1ec";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
+// [574] cum se numește felul pregătirii (aceeași regulă ca `tipare_api.eticheta_tip`)
+function etichetaTip(tip) { return tip === "nota" ? "Note contabile" : String(tip || "").toUpperCase(); }
+
 function bara(pct) {
   // bara de proportie pentru rata de respingere
   const c = pct >= 30 ? "var(--rosu-semafor)" : (pct >= 10 ? "var(--galben)" : "var(--verde)");
-  return `<div class="tip-bara"><div class="tip-bara-fill" style="width:${pct}%;background:${c}"></div></div>`;
+  return `<div class="tip-bara" style="margin-top:4px"><div class="tip-bara-fill" style="width:${pct}%;background:${c}"></div></div>`;
 }
 
 export async function randeazaTipare(corp, nav) {
@@ -28,9 +31,9 @@ export async function randeazaTipare(corp, nav) {
       <div class="tip-ecran">
         <div class="tip-gol-mare">
           <h3 class="tip-titlu">Încă nu sunt tipare de arătat</h3>
-          <p class="cap-nota">Pe măsură ce echipa pregătește și validează declarații, aici apar
-          motivele de respingere recurente, tipurile cu cea mai mare rată de respingere și firmele
-          care cer mai multă atenție. Datele se adună singure din munca de zi cu zi.</p>
+          <p class="cap-nota">Pe măsură ce echipa pregătește și validează declarații și note, aici apar
+          motivele pentru care colegii le-au respins, felurile cu cea mai mare rată de respingere și firmele
+          care cer mai multă atenție. Regenerările automate nu se numără. Datele se adună singure din munca de zi cu zi.</p>
         </div>
       </div>`;
     return;
@@ -53,7 +56,7 @@ export async function randeazaTipare(corp, nav) {
     });
   }
   const sectMotive = `
-    <h3 class="tip-titlu">Motive de respingere recurente</h3>
+    <h3 class="tip-titlu">Motive de respingere</h3>
     <div class="cap-tabel-wrap">
       <table class="cap-tabel">
         <thead><tr><th>Motiv</th><th class="cap-num">De câte ori</th></tr></thead>
@@ -63,27 +66,28 @@ export async function randeazaTipare(corp, nav) {
   `;
 
   // --- 2) TIPURI cu rata ---
+  // [lotul 13, 575 — „Tabelul declarațiilor din Tipare: valorile nu stau sub coloane”] trei coloane cu antetul lor (era un al patrulea
+  // antet, „Acțiune”, deasupra barei, iar antetele numerice stăteau la stânga peste cifre aliniate la dreapta); bara stă în celula ratei.
+  // [574] rândurile cuprind și notele contabile respinse de om („Note contabile”)
   let randTipuri = "";
   const tipuriCuResp = tipuri.filter((t) => t.respinse > 0);
   if (!tipuriCuResp.length) {
-    randTipuri = `<tr><td colspan="4" class="stare-goala">Niciun tip cu respingeri.</td></tr>`;
+    randTipuri = `<tr><td colspan="3" class="stare-goala">Nicio respingere.</td></tr>`;
   } else {
     tipuriCuResp.forEach((t) => {
       randTipuri += `<tr>
-        <td>${(t.tip || "").toUpperCase()}</td>
-        <td class="cap-num">${t.respinse} / ${t.total}</td>
-        <td class="cap-num">${t.pct}%</td>
-        <td class="tip-bara-cel">${bara(t.pct)}</td>
+        <td>${esc(etichetaTip(t.tip))}</td>
+        <td class="cap-num">${t.respinse} din ${t.total}</td>
+        <td class="cap-num tip-rata">${t.pct}%${bara(t.pct)}</td>
       </tr>`;
     });
   }
   const sectTipuri = `
-    <h3 class="tip-titlu">Tipuri de declarații cu rată de respingere</h3>
+    <h3 class="tip-titlu">Declarații și note: rata de respingere</h3>
     <div class="cap-tabel-wrap">
-      <table class="cap-tabel">
+      <table class="cap-tabel" id="tip-tabel-tipuri">
         <thead><tr>
-          <th>Declarație</th><th class="cap-num">Respinse</th>
-          <th class="cap-num">Rată</th><th>Acțiune</th>
+          <th>Declarație sau notă</th><th class="cap-num">Respinse din pregătite</th><th class="cap-num">Rată</th>
         </tr></thead>
         <tbody>${randTipuri}</tbody>
       </table>
@@ -121,7 +125,7 @@ export async function randeazaTipare(corp, nav) {
   // rezumatul lipit sus, iar rezultatul chiar sub el, deasupra tabelelor (DS cap.9 v2.100)
   corp.innerHTML = `<div class="tip-ecran">
     <div class="rezumat-fix tip-analiza">
-      <p class="cap-nota"><b>Analiză AI</b> — Claude citește exact tiparele de mai jos și propune explicații și recomandări concrete.
+      <p class="cap-nota"><b>Analiză AI</b> — Claude citește exact tiparele de mai jos (numai respingerile făcute de colegi) și propune explicații și recomandări concrete.
         <button class="buton-primar" id="tip-ai" data-actiune="GET /tipare/ai" style="margin-left:8px">Generează analiză AI</button></p>
     </div>
     <div id="tip-ai-rez"></div>

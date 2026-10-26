@@ -12,12 +12,13 @@ nu construieste `HTTPException`. *Hotarele tranzactiei raman ale apelantului —
 redeschide aici.*
 """
 
-def insert_public(cur, sursa, url, rel, dv, directie, decl, a):
+def insert_public(cur, sursa, url, rel, dv, directie, decl, a, dp=None):
+    # [lotul 13, 646 b] `dp` = data publicării actului (din analiză; None dacă nu apare)
     cur.execute("""INSERT INTO public.alerte_fiscale (sursa, titlu, rezumat, url, relevanta,
-                                                   data_vigoare, directie, declaratii_atinse)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                                                   data_vigoare, directie, declaratii_atinse, data_publicarii)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT (sursa, titlu) DO NOTHING RETURNING id""", (sursa, a.get("titlu", "")[:500], a.get("rezumat"), url,
-                         rel, dv, directie, decl))
+                         rel, dv, directie, decl, dp))
     return cur.fetchone()
 
 
@@ -48,7 +49,14 @@ def select_public_4(cur):
 
 
 def insert_public_2(cur, cid, mesaj):
-    cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj) VALUES (%s, %s)", (cid, mesaj))
+    cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj) VALUES (%s, %s) RETURNING id", (cid, mesaj))
+    return cur.fetchone()[0]
+
+
+def leaga_trimiterea(cur, ids):
+    """[lotul 13, 646 c] Anunțurile automate ale aceluiași prag, la toate cabinetele = o trimitere (`lot` = cel mai mic id)."""
+    if ids:
+        cur.execute("UPDATE public.anunturi_cabinet SET lot = %s WHERE id = ANY(%s)", (min(ids), list(ids)))
 
 
 def revendica_pragul(cur, aid, prag):

@@ -84,7 +84,7 @@ function verdictInfo(c) {
              iesire: v.actiune || "Redeschide elementul ca să fie validat conținutul curent." };
   }
   return { gata: false, clasa: "val-coer-gri", text: "nevalidat",
-           lipsa: v.motiv || "nu s-a păstrat niciun verdict pentru elementul ăsta.",
+           lipsa: v.motiv || "elementul ăsta nu are încă un verdict al validatorului.",   // [lotul 13, clasa 571] nu „nu s-a păstrat”
            iesire: v.actiune || "Deschide elementul — validatorul rulează și verdictul se păstrează." };
 }
 
@@ -125,6 +125,18 @@ function _confirma(ids, text) { _ultimaActiune = { ids: ids.map(Number), text, l
 // unite cu „ · ”; coada goală -> „Coada de validare și depunere” (fără dreptul «Poate depune»: „Coada de validare” — deficiența 266).
 // [deficiența 313, comanda Costin 17.10.2026 7.2] titlul CARDULUI cozii — o singură regulă, pentru card (cabinet.js) și pentru fereastra
 // deschisă din el: cardul trecea pe „De depus”, iar fereastra rămânea pe titlul de la deschidere („De validat”)
+// [lotul 13, deficiența 563 — „Aceeași informație, trei cifre: Registrul jurnal F1 «8 la validare în cabinet», lista De validat «Note de
+// validat (6)», cardul de pe pagina principală «5 note de validat». Aceeași numărătoare peste tot (sau spus clar ce cuprinde fiecare).”]
+// Un element din coadă e un DOCUMENT cu notele lui (`membri_ids`: o factură = contarea + ieșirea din stoc); Registrul jurnal numără
+// NOTE. Numărătoarea comună e a NOTELOR: o singură definiție, aici, folosită de card (cabinet.js) și de fereastră (titlul secțiunii,
+// căutarea); Registrul jurnal numără tot note, ale firmei și lunii lui, și o spune.
+export function noteDinElement(c) {
+  return Math.max(1, ((c && c.membri_ids) || []).length);
+}
+export function noteDeValidatInCoada(coada) {
+  return (coada || []).filter((c) => c.fel === "nota" && c.stare === "la_senior").reduce((s, c) => s + noteDinElement(c), 0);
+}
+
 export function titluCardCoada({ patruOchi = false, note = 0 }) {
   return (patruOchi || note) ? "De validat" : "De depus";
 }
@@ -273,7 +285,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
       <div class="mig-eroare" id="val-eroare"></div>
     </div>
     <section id="val-note">
-      <div class="cf-grup-titlu cf-galben" id="val-note-titlu">Note de validat (${noteDeValidat.length})</div>
+      <div class="cf-grup-titlu cf-galben" id="val-note-titlu">Note de validat (${noteDeValidatInCoada(noteDeValidat)})</div>
       ${noteDeValidat.length ? htmlTabelNote({ pre: "val-n", randuri: randuriCoada, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })
         : `<div class="stare-goala" id="val-note-gol">Nicio notă nu așteaptă validarea.</div>`}
     </section>
@@ -295,7 +307,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   `;
   const tabele = [];
   if (noteDeValidat.length) {
-    tabele.push({ titlu: corp.querySelector("#val-note-titlu"), nume: "Note de validat", zona: corp.querySelector("#val-note"), t: legaTabelNote(corp.querySelector("#val-note"),
+    tabele.push({ titlu: corp.querySelector("#val-note-titlu"), nume: "Note de validat", note: true, zona: corp.querySelector("#val-note"), t: legaTabelNote(corp.querySelector("#val-note"),
       { pre: "val-n", randuri: randuriCoada, firma: true, deschise: corp._val.deschise, incarcaLinii: liniiElementCoada }) });
     corp.querySelectorAll("#val-note tbody.tn-nota").forEach((tb) => {
       const c = noteDeValidat.find((x) => String(x.id) === tb.dataset.tn);
@@ -344,10 +356,15 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   const filtreaza = () => {
     const text = corp._val.text;
     let vazute = 0, total = 0;
-    tabele.forEach(({ titlu: el, nume, t }) => {
+    tabele.forEach(({ titlu: el, nume, t, zona: z, note }) => {
       const r = t.filtreaza(text, "");
+      // [563] „Note de validat” numără NOTELE (rândul = documentul, cu notele lui în `data-coada-ids`), ca titlul de la desenare
+      const n = note ? [...z.querySelectorAll("tbody.tn-nota")].reduce((a, tb) => {
+        const k = (tb.dataset.coadaIds || "").split(",").filter(Boolean).length || 1;
+        return { v: a.v + (tb.hidden ? 0 : k), t: a.t + k };
+      }, { v: 0, t: 0 }) : { v: r.vazute, t: r.total };
       vazute += r.vazute; total += r.total;
-      if (el) el.textContent = `${nume} (${text ? `${r.vazute} din ${r.total}` : r.total})`;
+      if (el) el.textContent = `${nume} (${text ? `${n.v} din ${n.t}` : n.t})`;
     });
     const carduri = [...corp.querySelectorAll("#val-declaratii .val-card")];
     let vd = 0;

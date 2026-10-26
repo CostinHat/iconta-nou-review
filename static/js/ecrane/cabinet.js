@@ -16,7 +16,7 @@ import { randeazaRaporteaza } from "./raporteaza.js?v=c8012ff8c2"; // [p34_rapor
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=10719d2154"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=74c373edbf";
-import { randeazaValidat, titluCardCoada } from "./validat.js?v=83581fee57";
+import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=83581fee57";
 import { randeazaSupervizor } from "./supervizor.js?v=33940e0a4c"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=9138993ad1";
 import { randeazaCapacitate } from "./capacitate.js?v=9d11e90cef"; // [p71_capacitate]
@@ -395,7 +395,7 @@ async function actualizeazaValidat(grila) {
     // se potrivesc.” Notele de validat se numără ca în fereastră (validat.js: `fel === "nota"`, `la_senior`; serverul le dă deja
     // pe DOCUMENT), cu eticheta lor; declarațiile rămân declarații. Înainte, notele (inclusiv cele deja validate, `aprobata`)
     // intrau în „nevalidate”, iar titlul „De depus” acoperea notele de validat.
-    const noteDeValidat = coada.filter((c) => c.fel === "nota" && c.stare === "la_senior").length;
+    const noteDeValidat = noteDeValidatInCoada(coada);   // [lotul 13, 563] note, nu documente — aceeași funcție ca fereastra „De validat”
     const declaratii = coada.filter((c) => c.fel !== "nota");
     const laSenior = declaratii.filter((c) => c.stare === "la_senior").length;
     // [R41 partea II] „de depus" numara DOAR ce e gata de depus — `gata_de_depus` vine de la

@@ -102,7 +102,8 @@ def cabinet_cu_cate_unul():
 
 
 #: rândul cabinetului (Panou Admin → Cabinete) și bara superadminului: (câmpul din răspuns, singular, plural)
-FORME = (("nr_firme", "firmă", "firme"), ("nr_angajati", "angajat", "angajați"), ("nr_facturi", "factură emisă", "facturi emise"),
+#: [lotul 13, 644 b] „utilizatori” = conturile cabinetului (administrator + asistenți), nu salariații firmelor (era „angajați”)
+FORME = (("nr_firme", "firmă", "firme"), ("nr_utilizatori", "utilizator", "utilizatori"), ("nr_facturi", "factură emisă", "facturi emise"),
          ("nr_declaratii", "declarație depusă", "declarații depuse"), ("nr_recomandari", "recomandare", "recomandări"))
 
 
@@ -130,16 +131,16 @@ def test_def_263_panou_admin_cabinete_acorda_facturile_si_angajatii(superadmin, 
     """263 și „1 angajați”. Panou Admin → Cabinete, un cabinet cu câte unul din fiecare: rândul spune „1 firmă · 1 angajat · 1 factură
     emisă · 1 declarație depusă · 1 recomandare” (era „1 firme · 1 angajați · 1 facturi emise · 1 declarații depuse · 1 recomandări”);
     cu 20, 21, 100, 101, 119: „20 de firme · 21 de angajați · 100 de facturi emise · 101 declarații depuse · 119 recomandări”. Bara
-    superadminului (aceleași cifre, adunate) — la fel. MUTAȚIE: `cate(c.nr_angajati …)` înapoi la `${c.nr_angajati ?? 0} angajați` ->
-    „1 angajați” -> pică."""
+    superadminului (aceleași cifre, adunate) — la fel. MUTAȚIE: `cate(c.nr_utilizatori …)` înapoi la `${c.nr_utilizatori ?? 0} utilizatori` ->
+    „1 utilizatori” -> pică. [lotul 13, 644 b] eticheta e „utilizator(i)” — conturile cabinetului."""
     pg = superadmin.pg
     sub = _cabinete(pg)
     for camp, s, p in FORME:
         assert cate(1, s, p) in sub, (camp, sub)
-    assert not re.search(r"\b1 (?:firme|angajați|facturi|declarații|recomandări)\b", sub), sub
+    assert not re.search(r"\b1 (?:firme|utilizatori|facturi|declarații|recomandări)\b", sub), sub
     superadmin.captura("cate_unul")
 
-    numere = {"nr_firme": 20, "nr_angajati": 21, "nr_facturi": 100, "nr_declaratii": 101, "nr_recomandari": 119}
+    numere = {"nr_firme": 20, "nr_utilizatori": 21, "nr_facturi": 100, "nr_declaratii": 101, "nr_recomandari": 119}
     _cu_numere(pg, cabinet_cu_cate_unul["id"], numere)
     sub = _cabinete(pg)
     for camp, s, p in FORME:

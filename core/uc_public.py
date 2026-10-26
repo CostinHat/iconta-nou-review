@@ -47,21 +47,31 @@ def reset_parola_seteaza(date):
     return {"ok": True}
 
 
+# [lotul 13, deficiența 608 — „Mesajele de autentificare încep cu literă mică”] mesajele linkului de logare: propoziții întregi, cu ce are
+# omul de făcut (DS cap.0: „Mesajele către utilizator […] spun ce s-a întâmplat și ce are de făcut”)
+MESAJ_LINK_INVALID = "Linkul de logare nu e valid. Cere unul nou din „Trimite-mi link de logare”."
+MESAJ_LINK_FOLOSIT = "Linkul de logare a expirat sau a fost folosit deja. Cere unul nou din „Trimite-mi link de logare”."
+
+
 def magic_login(date):
     """[P7 · use-case] Corpul rutei `/public/magic-login`; docstringul ei a ramas in stratul HTTP."""
     tok = (date.token or "").strip()
     if not tok.startswith("ml_"):
-        raise _erori.Neautentificat("link invalid")
+        raise _erori.Neautentificat(MESAJ_LINK_INVALID)
     with db.get_conn() as conn, conn.cursor() as cur:
         r = repo_utilizatori.cont_din_token_activare(cur, _uc_comun._hash_tok(tok))
         if not r:
-            raise _erori.Neautentificat("link expirat sau folosit")
+            raise _erori.Neautentificat(MESAJ_LINK_FOLOSIT)
         repo_utilizatori.marcheaza_tokenul_folosit(cur, _uc_comun._hash_tok(tok))
         conn.commit()
     with db.get_conn() as conn:
         rez = auth_api.sesiune_pentru_user(conn, r[0])
+    if not rez.get("ok") and rez.get("cod") == "CABINET_SUSPENDAT":
+        # [lotul 13, 645] linkul fără parolă al unui cabinet suspendat: motivul ales, ca la logarea cu parolă
+        from core import uc_admin as _uc_admin
+        raise _erori.Neautentificat(_uc_admin.mesaj_suspendare(rez.get("cabinet_id")))
     if not rez.get("ok"):
-        raise _erori.Neautentificat(rez.get("mesaj", "cont inactiv"))
+        raise _erori.Neautentificat(rez.get("mesaj") or "Contul nu e activ.")
     return rez
 
 
@@ -73,7 +83,7 @@ def activare_cont(date):
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             r = repo_utilizatori.cont_din_token_activare_2(cur, _uc_comun._hash_tok(date.token))
             if not r:
-                raise _erori.CerereGresita("link de activare invalid sau expirat")
+                raise _erori.CerereGresita("Linkul de activare nu mai e valabil: a expirat sau a fost folosit deja.")   # [608]
             repo_utilizatori.seteaza_parola(cur, _nucleu.hash_parola(date.parola), r["user_id"])
             repo_utilizatori.marcheaza_tokenul_folosit(cur, _uc_comun._hash_tok(date.token))
             # [deficiența 320, „Cont și echipă”] administratorul cabinetului află că asistentul invitat și-a activat contul

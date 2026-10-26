@@ -25,8 +25,8 @@
  },
  {
   "fisier": "static/js/ecrane/cabinet.js",
-  "ancora": "const noteDeValidat = coada.filter((c) => c.fel === \"nota\" && c.stare === \"la_senior\").length;",
-  "inlocuire": "const noteDeValidat = coada.filter((c) => c.fel === \"nota\" && (c.stare === \"la_senior\" || c.stare === \"aprobata\")).length;",
+  "ancora": "const noteDeValidat = noteDeValidatInCoada(coada);",
+  "inlocuire": "const noteDeValidat = noteDeValidatInCoada(coada) + coada.filter((c) => c.fel === \"nota\" && c.stare === \"aprobata\").length;",
   "test": "frontend_test/e2e/e2e_lot12_coada.py::test_def_52_cardul_si_fereastra_numara_exact_notele_de_validat"
  },
  {

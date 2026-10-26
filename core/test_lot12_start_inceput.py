@@ -310,7 +310,6 @@ STRATURI = {
     ".rec-overlay": ".rec-modal-corp",            # Recomandă: max-height = ecranul, corpul derulează
     ".acces-overlay": ".acces-modal",             # intrarea în cont și „Înregistrează cabinetul tău”
     ".lupa-overlay": None,                        # poza mărită (o imagine, cu rotița pentru zoom)
-    ".bun-venit-overlay": None,                   # stratul derulează (`overflow: auto`)
     ".reaut-overlay": ".reaut",                   # parola cerută peste ecran
 }
 

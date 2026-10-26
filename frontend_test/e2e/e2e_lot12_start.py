@@ -149,18 +149,14 @@ def _salveaza_numarul(pg, numar):
 
 
 def treci_prima_intrare(pg):
-    """„Înainte de a începe”: numărul -> „Salvează numărul” -> „Salvează” (alegerile din oficiu) -> „Continuă în aplicație”; apoi
-    prezentarea de bun venit (prima logare) se închide din X."""
+    """„Înainte de a începe”: numărul -> „Salvează numărul” -> „Salvează” (alegerile din oficiu) -> „Continuă în aplicație” -> pagina
+    principală (prezentarea de bun venit nu se mai deschide singură, lotul 13, 562)."""
     _salveaza_numarul(pg, TELEFON)
     pg.wait_for_function("(t) => document.querySelector('#not-stare-telefon').innerText.includes(t)", arg=TELEFON_SALVAT, timeout=15000)
     pg.click("#not-salveaza-canal")
     pg.wait_for_function("() => !document.querySelector('#pi-continua').disabled", timeout=15000)
     pg.click("#pi-continua")
-    pg.wait_for_selector(".cab-grila", timeout=30000)
-    with contextlib.suppress(Exception):
-        pg.wait_for_selector(".bun-venit-overlay .dialog-x", timeout=8000)
-        pg.click(".bun-venit-overlay .dialog-x")
-        pg.wait_for_selector(".bun-venit-overlay", state="detached", timeout=8000)
+    pg.wait_for_selector(".cab-grila", timeout=30000)   # [lotul 13, 562] prezentarea de bun venit nu se mai deschide singură
 
 
 def test_def_596_inainte_de_a_incepe_incape_pe_ecran_iar_refuzul_numarului_sta_langa_buton(cabinet_de_la_zero):
@@ -218,9 +214,6 @@ def test_def_596_inainte_de_a_incepe_incape_pe_ecran_iar_refuzul_numarului_sta_l
     pg.wait_for_function("() => !document.querySelector('#pi-continua').disabled", timeout=15000)
     pg.click("#pi-continua")
     pg.wait_for_selector(".cab-grila", timeout=30000)
-    with contextlib.suppress(Exception):
-        pg.wait_for_selector(".bun-venit-overlay .dialog-x", timeout=8000)
-        pg.click(".bun-venit-overlay .dialog-x")
     pg.wait_for_selector(_CARD % "preluare", timeout=30000)
     assert pg.locator(_CARD % "preluare" + " details.dec-xml[open]").count() == 0, "„Cum se face” vine deschis"
     loc = pg.evaluate("(s) => { const c = document.querySelector(s).getBoundingClientRect(); "

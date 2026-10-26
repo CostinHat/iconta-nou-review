@@ -44,14 +44,17 @@ def _refuz(cod, motiv, email):
 
 def stare(cur, token, acum=None):
     """`{valida, email, refuz}` — fără să consume invitația (ecranul de înregistrare își ia emailul de aici). `refuz` = afirmația
-    tipată `neconformitate` (cu `cod`: INEXISTENTA / FOLOSITA / EXPIRATA), sau None când invitația e valabilă."""
+    tipată `neconformitate` (cu `cod`: INEXISTENTA / RETRASA / FOLOSITA / EXPIRATA), sau None când invitația e valabilă."""
     acum = acum or datetime.datetime.now(datetime.timezone.utc)
-    cur.execute("SELECT email, expira_la, folosita_la FROM public.invitatii_cabinet WHERE token_hash = %s", (_hash(token),))
+    cur.execute("SELECT email, expira_la, folosita_la, retrasa_la FROM public.invitatii_cabinet WHERE token_hash = %s", (_hash(token),))
     r = cur.fetchone()
     if not r:
         return {"valida": False, "email": None, "refuz": _refuz("INEXISTENTA", "Invitația nu există. Folosește linkul din emailul "
                                                                  "primit.", None)}
-    email, expira, folosita = r[0], r[1], r[2]
+    email, expira, folosita, retrasa = r[0], r[1], r[2], r[3]
+    if retrasa is not None and folosita is None:   # [lotul 13, 646 e] retrasă de Admin iConta: linkul nu mai creează cont
+        return {"valida": False, "email": email, "refuz": _refuz("RETRASA", "Invitația a fost retrasă. Cere-ne una nouă la "
+                                                                  "contact@iconta.eu.", email)}
     if folosita is not None:
         return {"valida": False, "email": email, "refuz": _refuz("FOLOSITA", "Invitația a fost folosită deja: contul cabinetului "
                                                                   "există. Intră în cont.", email)}
@@ -74,8 +77,24 @@ def consuma(cur, token, email, firm_id, acum=None):
                 (firm_id, _hash(token)))
 
 
-def lista(cur):
-    """Invitațiile, cele mai noi întâi: {email, creat_la, expira_la, folosita_la} (fără token, fără hash)."""
-    cur.execute("SELECT email, creat_la, expira_la, folosita_la FROM public.invitatii_cabinet ORDER BY creat_la DESC LIMIT 200")
-    return [{"email": a, "creat_la": b.isoformat(), "expira_la": c.isoformat(), "folosita_la": d.isoformat() if d else None}
-            for a, b, c, d in cur.fetchall()]
+def lista(cur, acum=None):
+    """Invitațiile, cele mai noi întâi: {id, email, creat_la, expira_la, folosita_la, retrasa_la, stare} (fără token, fără hash).
+    [lotul 13, 646 e] `stare` = folosită / retrasă / expirată / valabilă — numai cea valabilă se poate retrage."""
+    acum = acum or datetime.datetime.now(datetime.timezone.utc)
+    cur.execute("SELECT id, email, creat_la, expira_la, folosita_la, retrasa_la FROM public.invitatii_cabinet "
+                "ORDER BY creat_la DESC LIMIT 200")
+    out = []
+    for i, a, b, c, d, r in cur.fetchall():
+        stare_ = "folosită" if d else "retrasă" if r else "expirată" if c < acum else "valabilă"
+        out.append({"id": i, "email": a, "creat_la": b.isoformat(), "expira_la": c.isoformat(), "folosita_la": d.isoformat() if d else None,
+                    "retrasa_la": r.isoformat() if r else None, "stare": stare_})
+    return out
+
+
+def retrage(cur, invitatie_id):
+    """[lotul 13, 646 e] Retrage o invitație nefolosită: linkul ei nu mai creează cont. Întoarce emailul, sau None dacă nu era de retras
+    (inexistentă, folosită sau retrasă deja)."""
+    cur.execute("UPDATE public.invitatii_cabinet SET retrasa_la = now() WHERE id = %s AND folosita_la IS NULL AND retrasa_la IS NULL "
+                "RETURNING email", (invitatie_id,))
+    r = cur.fetchone()
+    return r[0] if r else None

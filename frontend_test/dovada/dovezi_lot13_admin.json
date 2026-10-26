@@ -1,0 +1,461 @@
+[
+ {
+  "nr": "562",
+  "firma": "tenant_9049",
+  "utilizator": 71512,
+  "descriere": "F1 (cabinetul copiei), ca «Asist Test» (numai «Poate pregăti»): pagina principală fără fereastră deschisă singură -> «?» -> «Prezentarea aplicației»: fără firul de preluare al administratorului (vector fiscal, solduri inițiale, migrare cabinet), cu pașii de început ai asistentului",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "#nav-ghid"
+   },
+   {
+    "asteapta": ".fereastra .ans-continut #ans-inceput"
+   },
+   {
+    "pauza": 1200
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Lucrezi pe firmele pe care ți le alocă administratorul cabinetului",
+    "zona": ".fereastra .ans-continut"
+   },
+   {
+    "nu_contine": "Migrare cabinet",
+    "zona": ".fereastra .ans-continut"
+   },
+   {
+    "nu_contine": "Vector fiscal",
+    "zona": ".fereastra .ans-continut"
+   }
+  ],
+  "captura": "562_f1_asistent_prezentarea_pe_rol.png"
+ },
+ {
+  "nr": "563",
+  "firma": "tenant_9049",
+  "descriere": "F1 (cabinetul copiei): cardul «De validat» de pe pagina principală și fereastra «De validat» numără aceleași NOTE (7 note în 5 documente la validare, pregătite înainte de reparație: factura 54, factura 58, NIR 4 cu 3 note, notele 136 și 137)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "asteapta": ".cab-card-sinteza[data-cheie='validat']"
+   },
+   {
+    "asteapta_text": "7 note de validat"
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-note-titlu"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Note de validat (7)",
+    "zona": "#val-note-titlu"
+   },
+   {
+    "contine": "3 note ale documentului",
+    "zona": "#val-note"
+   }
+  ],
+  "captura": "563_f1_vechi_card_si_de_validat_numara_note.png"
+ },
+ {
+  "nr": "571",
+  "firma": "tenant_9049",
+  "descriere": "F1: Control fiscal -> firma -> «Declarație vs contabilitate»: sub rânduri nu mai scrie «ce s-a depus nu s-a păstrat» (datele F1 de dinainte de reparație)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='control'])"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cf-lista .mig-frand"
+   },
+   {
+    "click": ".fereastra:last-of-type #cf-lista .mig-frand",
+    "text": "F1 Comert Stoc SRL"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "nu s-a păstrat"
+   },
+   {
+    "exista": ".fereastra:last-of-type #cf-incrucisat"
+   }
+  ],
+  "captura": "571_f1_vechi_control_fiscal_comparat_cu_generat_azi.png"
+ },
+ {
+  "nr": "574",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei: Activitate -> Tipare de erori: retragerea proprie a D300 F1 urmată de regenerare (11407, «Depășită, lipsește F1A5», 17.10.2026) și înlocuirile automate nu mai sunt respingeri; notele respinse de om apar («Note contabile»)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   },
+   {
+    "click": "#opt-tipare"
+   },
+   {
+    "asteapta": ".tip-ecran"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Depășită, lipsește F1A5",
+    "zona": ".tip-ecran"
+   },
+   {
+    "nu_contine": "Înlocuită de declarația generată din nou",
+    "zona": ".tip-ecran"
+   },
+   {
+    "contine": "Note contabile",
+    "zona": "#tip-tabel-tipuri"
+   },
+   {
+    "contine": "NIR făcut cu logica veche",
+    "zona": ".tip-ecran"
+   }
+  ],
+  "captura": "574_f1_vechi_tipare_numai_respingerile_omului.png"
+ },
+ {
+  "nr": "575",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei: Tipare de erori — tabelul ratelor are trei coloane, antetele numerice deasupra cifrelor",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   },
+   {
+    "click": "#opt-tipare"
+   },
+   {
+    "asteapta": "#tip-tabel-tipuri"
+   },
+   {
+    "deruleaza": "#tip-tabel-tipuri"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Respinse din pregătite",
+    "zona": "#tip-tabel-tipuri"
+   },
+   {
+    "nu_contine": "Acțiune",
+    "zona": "#tip-tabel-tipuri"
+   }
+  ],
+  "captura": "575_f1_vechi_tipare_tabel_coloane.png"
+ },
+ {
+  "nr": "576",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei: Tipare de erori -> «Generează analiză AI»: analiza se cere numai peste prag, pe respingerile omului (AI simulat pe copie)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   },
+   {
+    "click": "#opt-tipare"
+   },
+   {
+    "asteapta": "#tip-ai"
+   },
+   {
+    "click": "#tip-ai"
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "---",
+    "zona": "#tip-ai-rez"
+   },
+   {
+    "exista": "#tip-ai-rez"
+   }
+  ],
+  "captura": "576_f1_vechi_analiza_ai.png"
+ },
+ {
+  "nr": "458.1",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei: Asistenți -> «Vezi erorile»: administratorul nu mai apare cu «Depășită, lipsește F1A5» (și-a retras singur D300 F1 și a generat-o din nou, 17.10.2026)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='asistenti'])"
+   },
+   {
+    "asteapta": "#asi-lista .val-card"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "click": "#asi-vezi-erori",
+    "daca_exista": true
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Depășită, lipsește F1A5"
+   }
+  ],
+  "captura": "458.1_f1_vechi_erori_echipa_fara_regenerare.png"
+ },
+ {
+  "nr": "C87.1",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei: Asistenți -> «Ana Asistent» -> «Vizualizează»: «Declarații și note lucrate», notele numite ca în aplicație, starea în cuvinte, «Acoperire» fără «nota»",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='asistenti'])"
+   },
+   {
+    "asteapta": "#asi-lista .val-card"
+   },
+   {
+    "click": "#asi-lista .val-card:has(.asi-nume:text-is('Ana Asistent')) [data-act='vezi']"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #asi-activitate"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Declarații și note lucrate"
+   },
+   {
+    "nu_contine": "nota-",
+    "zona": ".fereastra:last-of-type #asi-activitate"
+   },
+   {
+    "nu_contine": "la_senior"
+   },
+   {
+    "nu_contine": "Acoperire: nota"
+   }
+  ],
+  "captura": "c87.1_f1_vechi_declaratii_si_note_lucrate.png"
+ },
+ {
+  "nr": "C130",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei: tura lucrătorului Supervizorului (pasul `lucrator`, același calcul ca tura de 5 minute) -> Supervizor: firmele copiei au rezultat calculat («Perioada evaluată»), nu „rezultatul nu a fost calculat încă”",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "lucrator": "supervizor"
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='supervizor'])"
+   },
+   {
+    "asteapta": ".sv-antet"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Perioada evaluată"
+   },
+   {
+    "nu_contine": "rezultatul nu a fost calculat încă"
+   }
+  ],
+  "captura": "c130_f1_vechi_supervizor_calculat.png"
+ },
+ {
+  "nr": "C132",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei: după tura lucrătorului, Supervizorul spune constatările cu diacritice — fără „Nu ma pronunt inca”",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "lucrator": "supervizor"
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='supervizor'])"
+   },
+   {
+    "asteapta": ".sv-antet"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Nu ma pronunt"
+   },
+   {
+    "nu_contine": "declara "
+   },
+   {
+    "contine": "Perioada evaluată"
+   }
+  ],
+  "captura": "c132_f1_vechi_supervizor_diacritice.png"
+ }
+]

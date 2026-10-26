@@ -593,6 +593,22 @@ def _identificatori(actor):
     return list(dict.fromkeys(vals)) or [""]
 
 
+#: [lotul 13, C87.1] starea unui element din coadă, în cuvintele contabilului (codurile `la_senior` / `aprobata` nu ajung pe ecran)
+STARI_ELEMENT = {"la_senior": "la validare", "aprobata": "validată", "respinsa": "respinsă", "depusa": "depusă"}
+
+
+def stare_element(stare, inlocuita=False):
+    """PURĂ. [C87.1] Cum se spune starea pe ecran; ieșirea din coadă la „Generează din nou” e „înlocuită”, nu „respinsă” (458)."""
+    if stare == "respinsa" and inlocuita:
+        return "înlocuită de una generată din nou"
+    return STARI_ELEMENT.get(stare or "", stare or "")
+
+
+def eticheta_tip(tip):
+    """PURĂ. [C87.1] Ce acoperă cineva: „note contabile” pentru notele din coadă, codul declarației (D300) pentru rest."""
+    return "note contabile" if (tip or "") == "nota" else (tip or "").upper()
+
+
 def activitate(conn, cabinet_id, user_id):
     """
     Read-only. Declarațiile prin care a trecut actorul (pregătit/aprobat/respins),
@@ -607,7 +623,7 @@ def activitate(conn, cabinet_id, user_id):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             """
-            SELECT c.id, c.tenant_id, t.nume AS firma, c.tip, c.perioada, c.stare,
+            SELECT c.id, c.tenant_id, t.nume AS firma, c.fel, c.tip, c.perioada, c.stare, c.payload,
                    c.creat_de, c.creat_la, c.aprobat_de, c.aprobat_la,
                    c.respins_de, c.respins_la, """ + sql_inlocuita("c") + """ AS inlocuita
               FROM public.declaratii_coada c
@@ -622,7 +638,13 @@ def activitate(conn, cabinet_id, user_id):
         )
         randuri = [dict(r) for r in cur.fetchall()]
 
+    from core.coada_api import eticheta_element as _eticheta
     for r in randuri:
+        # [lotul 13, C87.1 — „rândurile spun «nota · nota-143» (numărul intern), «stare: la_senior»”] numele elementului ca oriunde în
+        # aplicație (`coada_api.eticheta_element`: „D300 · <perioada>”, „Notă · <descriere> · <document>”) și starea în cuvinte
+        r["eticheta"] = _eticheta(r.get("fel"), r.get("tip"), r.get("perioada"), r.get("payload"))
+        r["stare_text"] = stare_element(r.get("stare"), r.get("inlocuita"))
+        r.pop("payload", None)
         r["a_pregatit"] = r["creat_de"] in idents
         r["a_aprobat"] = r["aprobat_de"] in idents if r["aprobat_de"] else False
         r["a_respins"] = (r["respins_de"] in idents if r["respins_de"] else False) and not r.get("inlocuita")   # [458]
@@ -702,7 +724,7 @@ def calitate(conn, cabinet_id, user_id, de=None, pana=None):
     evaluate = sum(1 for x in prg if x["acceptata"] or x["respinsa"])   # pregătiri cu o decizie (acceptate sau respinse măcar o dată)
     _durate = [(x["aprobat_la"] - x["creat_la"]).total_seconds() / 86400.0 for x in acc if x["aprobat_la"] is not None]
     zile_mediu = round(sum(_durate) / len(_durate), 1) if _durate else None  # round-ok: indicator (procent / durată / rație), nu sumă fiscală
-    tipuri = sorted({x["tip"] for x in prg if x["tip"]})
+    tipuri = sorted({eticheta_tip(x["tip"]) for x in prg if x["tip"]})   # [C87.1] „note contabile”, „D300” — nu „nota”
 
     # [patch4_tipare_nivel]
     nivel = 3 if _perm.get("poate_depune") else (2 if _perm.get("poate_valida") else 1)

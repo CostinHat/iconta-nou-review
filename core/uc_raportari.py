@@ -97,9 +97,37 @@ def raportari_mesaj(rid, date, ctx):
             if f["raportare"]["autor_id"] != ctx["uid"]:
                 raise _erori.FaraDrept(FARA_ACCES)
         r = _rap.adauga_mesaj(conn, rid, ctx["uid"], rol_autor, date.text)
+        if r.get("ok") and rol_autor == "admin":
+            _anunta_raspunsul(conn, rid)
     if not r.get("ok"):
         raise _erori.CerereGresita(mesaj_din_cod(r.get("cod")))
     return r
+
+
+#: [lotul 13, deficiența 648 — „După răspunsul adminului (24.10, 11:11), utilizatorul vede «răspuns primit» doar dacă deschide Suport:
+#: clopoțelul nu arată nimic și nu pleacă email. Răspunsul la o sesizare trebuie să ajungă în clopoțel (și pe email, dacă utilizatorul
+#: nu e conectat).”] Tipul `raspuns_suport` (`core/notificari.TIPURI`, pornit din oficiu; scris ca literal, ca garda tipurilor să-l vadă —
+#: `core/test_notificari_canal.py`): clopoțelul îl arată, iar cutia de ieșire
+#: (`core/notificari.py`) îl trimite pe canalul omului — email, implicit — fără conținutul mesajului (numai eticheta și linkul spre
+#: Suport). Notificarea intră în aceeași tranzacție cu răspunsul: un răspuns anulat nu anunță nimic.
+
+
+def text_notificare_raspuns(subiect, primul_mesaj):
+    """PURĂ. Textul din clopoțel: despre ce sesizare e vorba (subiectul, altfel începutul primului mesaj)."""
+    t = " ".join(str(subiect or primul_mesaj or "").split())
+    if len(t) > 80:
+        t = t[:79].rstrip() + "…"
+    return "Echipa iConta.eu ți-a răspuns la sesizarea „%s”. Răspunsul e în Suport." % (t or "fără subiect")
+
+
+def _anunta_raspunsul(conn, rid):
+    from core import notificari_api as _notif
+    f = _rap.firul_complet(conn, rid)
+    if not f.get("ok") or not f["raportare"].get("autor_id"):
+        return
+    fir = f["raportare"]
+    _notif.adauga(conn, fir["autor_id"], "raspuns_suport", text_notificare_raspuns(fir.get("subiect"), fir.get("text")),
+                  link="deschide:raport")
 
 
 def raportari_citit(rid, ctx):

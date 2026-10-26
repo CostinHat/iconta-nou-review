@@ -73,8 +73,6 @@ def test_operatiunile_speciale_merg_pe_rute_reale_cu_drept():
 
 # Căile pe care instrumentul nu le poate lega static — fiecare cu motivul. Cheia: (fișier, METODĂ, cale normalizată).
 _DINAMICE = {
-    ("static/js/ecrane/admin_activitate.js", "POST", "/admin/cabinete/{}/{}"):
-        "acțiunea de cabinet a SUPERADMINULUI (suspendă/reactivează), pe desktopul lui — nu e o rută de cabinet",
     ("static/js/ecrane/cabinet.js", "GET", "/asistenti/echipa/jurnal{}"):
         "CITIRE (jurnalul echipei, cu interogarea lipită de cale) pe desktopul administratorului",
     ("static/js/ecrane/firme.js", "GET", "/public/verifica-cui/"):

@@ -1,16 +1,45 @@
 // admin_activitate.js — Admin iConta: activitate + business cabinete (doar superadmin).
-// Sumar + lista cu firme/angajati/recomandari/actiuni, suspenda/reactiveaza, click -> timeline.
-import { api, dataRo, confirmaCaseta, esc, cate } from "../api.js?v=e38843b1ec";  /* audit_cab_lot2_v1 + esc_nc27 */
+// Sumar + lista cu firme/utilizatori/recomandari/actiuni, suspenda/reactiveaza, „Fișa” -> fereastra cabinetului.
+import { api, dataRo, confirmaCaseta, esc, cate, arataMesaj, arataRefuzul } from "../api.js?v=e38843b1ec";  /* audit_cab_lot2_v1 + esc_nc27 */
 
+// [lotul 13, deficiența 645 — anexa comenzii 13.1, decizia Costin + arhitect 24.10.2026, verbatim: „motiv obligatoriu din listă fixă —
+// neplată, la cererea cabinetului, încălcarea termenilor, acces suspect / securitate, la cererea unei autorități — plus notă internă
+// opțională. […] nota internă nu se arată. […] Email către administratorul cabinetului la suspendare, cu același motiv. Cine, când, motivul
+// și reactivarea rămân în jurnal.”] Cheile sunt ale serverului (`core/uc_admin.MOTIVE_SUSPENDARE`, CHECK-ul din bază); serverul refuză
+// orice altă valoare. Cinci opțiuni -> butoane alăturate, nimic ales din oficiu (clasa 676: lista scurtă nu e listă derulantă).
+export const MOTIVE_SUSPENDARE = [
+  ["neplata", "Neplată"],
+  ["cerere_cabinet", "La cererea cabinetului"],
+  ["incalcare_termeni", "Încălcarea termenilor"],
+  ["securitate", "Acces suspect / securitate"],
+  ["autoritate", "La cererea unei autorități"],
+];
+
+// confirmarea suspendării, arătată de lista redesenată după închiderea ferestrei de suspendare (`nav.inapoi` o redesenează)
+let _mesajUrmator = null;
 
 export async function randeazaAdminActivitate(corp, nav) {
   const f = corp.closest(".fereastra");
   if (f) f.classList.add("fer-larg-simplu");
   corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-  await randeaza(corp, nav);
+  const m = _mesajUrmator;
+  _mesajUrmator = null;
+  await randeaza(corp, nav, m);
 }
 
-async function randeaza(corp, nav) {
+// [lotul 13, 644 b] „«Angajați» în bară și pe cabinet înseamnă conturile de utilizator, nu salariați: eticheta devine «utilizatori».”
+function cifreCabinet(c) {
+  return `${cate(c.nr_firme ?? 0, "firmă", "firme")} · ${cate(c.nr_utilizatori ?? 0, "utilizator", "utilizatori")} · ${cate(c.nr_facturi ?? 0, "factură emisă", "facturi emise")} · ${cate(c.nr_declaratii ?? 0, "declarație depusă", "declarații depuse")} · ${cate(c.nr_recomandari ?? 0, "recomandare", "recomandări")}`;
+}
+
+function stareSuspendare(c) {
+  if (c.activ) return "";
+  const motiv = c.motiv_suspendare ? ` · motivul: ${esc(c.motiv_suspendare)}` : " · motivul nu s-a înregistrat";
+  const din = c.suspendat_la ? ` · din ${dataRo(c.suspendat_la, "cu_ora")}` : "";
+  return `<div class="pf-frand-sub ac-suspendat">Suspendat${motiv}${din}</div>`;
+}
+
+async function randeaza(corp, nav, mesajOk) {
   if (nav && nav.setInapoi) nav.setInapoi(undefined);
   let cabinete = [];
   try {
@@ -27,27 +56,33 @@ async function randeaza(corp, nav) {
     return;
   }
 
+  // [lotul 13, 674 / 675] fiecare rând are aceleași două butoane, în aceeași ordine: „Fișa” (fereastră nouă — 673) și „Suspendă” /
+  // „Reactivează”; textul rândului nu mai e o acțiune pe care se dă clic
   const randuri = cabinete.map((c, i) => {
     const stare = c.activ ? "" : `<span class="mig-stare mig-rosu">suspendat</span>`;
     return `
-      <div class="pf-frand" data-zebra="${i % 2}">
-        <div class="pf-frand-text" data-i="${i}" style="cursor:pointer">
+      <div class="pf-frand" data-zebra="${i % 2}" data-cabinet="${c.id}">
+        <div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(c.nume || "—")}</div>
-          <div class="pf-frand-sub">${cate(c.nr_firme ?? 0, "firmă", "firme")} · ${cate(c.nr_angajati ?? 0, "angajat", "angajați")} · ${cate(c.nr_facturi ?? 0, "factură emisă", "facturi emise")} · ${cate(c.nr_declaratii ?? 0, "declarație depusă", "declarații depuse")} · ${cate(c.nr_recomandari ?? 0, "recomandare", "recomandări")} · ultima activitate: ${dataRo(c.ultima_activitate, "cu_ora")}${c.creat_la ? ` · creat: ${dataRo(c.creat_la, "cu_ora")}${c.cale ? ` (${esc(c.cale)})` : ""}` : ""}</div>
+          <div class="pf-frand-sub">${cifreCabinet(c)} · ultima activitate: ${dataRo(c.ultima_activitate, "cu_ora")}${c.creat_la ? ` · creat: ${dataRo(c.creat_la, "cu_ora")}${c.cale ? ` (${esc(c.cale)})` : ""}` : ""}</div>
+          ${stareSuspendare(c)}
         </div>
         ${stare}
-        <button class="${c.activ ? 'buton-sters' : 'buton-secundar'}" data-toggle="${i}" style="margin-left:10px">
-          ${c.activ ? "Suspendă" : "Reactivează"}
-        </button>
+        <button class="buton-secundar" data-fisa="${i}" style="margin-left:10px" data-fara-actiune="deschide fișa cabinetului (citire)">Fișa</button>
+        <button class="${c.activ ? "buton-sters" : "buton-secundar"}" data-toggle="${i}" style="margin-left:8px"
+          data-actiune="${c.activ ? "POST /admin/cabinete/{firm_id}/suspenda" : "POST /admin/cabinete/{firm_id}/reactiveaza"}">${c.activ ? "Suspendă" : "Reactivează"}</button>
       </div>`;
   }).join("");
 
   corp.innerHTML = `
     <h2 class="pf-titlu">Cabinete</h2>
-    <label class="camp" style="max-width:340px;margin-bottom:10px"><span class="camp-eticheta">Caut\u0103 cabinet</span><input type="text" id="ac-cauta" class="camp-input" placeholder="nume cabinet"></label>
+    <div class="rezumat-fix">
+      <label class="camp" style="max-width:340px;margin-bottom:10px"><span class="camp-eticheta">Caută cabinet</span><input type="text" id="ac-cauta" class="camp-input" placeholder="nume cabinet"></label>
+      <div id="ac-mesaj"></div>
+    </div>
     <div class="pf-lista zebra-lista" id="ac-lista">${randuri}</div>
-    <div id="ac-detaliu"></div>
   `;
+  if (mesajOk) arataMesaj(corp.querySelector("#ac-mesaj"), mesajOk, "ok");
 
   corp.querySelector("#ac-cauta").addEventListener("input", (e) => {  // [ac_cauta] filtrare live
     const q = e.target.value.trim().toLowerCase();
@@ -55,32 +90,77 @@ async function randeaza(corp, nav) {
       rand.style.display = !q || (cabinete[i].nume || "").toLowerCase().includes(q) ? "" : "none";
     });
   });
-  corp.querySelectorAll("#ac-lista [data-i]").forEach((el) => {
-    el.addEventListener("click", () => {
-      const c = cabinete[Number(el.dataset.i)];
-      deschideTimeline(corp, c);
-    });
-  });
+  // [lotul 13, 673] fișa cabinetului e o acțiune din fereastră: fereastră nouă, nu un bloc desfăcut sub listă
+  corp.querySelectorAll("#ac-lista [data-fisa]").forEach((b) => b.addEventListener("click", () => {
+    const c = cabinete[Number(b.dataset.fisa)];
+    nav.deschide(`Fișa cabinetului ${c.nume || ""}`, (corpF) => deschideFisa(corpF, c), { lat: "larg" });
+  }));
 
   corp.querySelectorAll("#ac-lista [data-toggle]").forEach((btn) => {
-    btn.addEventListener("click", async (ev) => {
+    btn.addEventListener("click", (ev) => {
       ev.stopPropagation();
       const c = cabinete[Number(btn.dataset.toggle)];
-      const ruta = c.activ ? "suspenda" : "reactiveaza";
-      const mesaj = c.activ
-        ? `Suspenzi accesul cabinetului "${esc(c.nume)}"? Login-ul se taie instant, datele rămân.`
-        : `Reactivezi accesul cabinetului "${esc(c.nume)}"?`;
-      confirmaCaseta(btn.parentElement || btn, mesaj, async () => {  // audit_cab_lot2_v1
-      try {
-        await api.post(`/admin/cabinete/${c.id}/${ruta}`, {});
-        corp.innerHTML = `<p class="ecran-nota">Se actualizează...</p>`;
-        await randeaza(corp, nav);
-      } catch {
-        corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-        corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">A apărut o eroare. Reîncearcă.</p>');
+      if (c.activ) {
+        // [645] suspendarea cere motivul: fereastră nouă, centrată (673), nu o întrebare pe rând
+        nav.deschide(`Suspendă cabinetul ${c.nume || ""}`, (corpS) => formularSuspendare(corpS, c, (m) => {
+          _mesajUrmator = m;
+          nav.inapoi();
+        }));
+        return;
       }
-      }, { textOk: c.activ ? "Suspendă" : "Reactivează" });
+      confirmaCaseta(btn.parentElement || btn, `Reactivezi accesul cabinetului „${esc(c.nume)}”? Logarea cu parola și cu linkul de logare merg din nou.`, async () => {  // audit_cab_lot2_v1
+        try {
+          await api.post(`/admin/cabinete/${c.id}/reactiveaza`, {});
+          corp.innerHTML = `<p class="ecran-nota">Se actualizează...</p>`;
+          await randeaza(corp, nav, `Cabinetul „${c.nume}” e activ din nou; reactivarea e în jurnalul lui.`);
+        } catch (e) {
+          arataMesaj(corp.querySelector("#ac-mesaj"), (e && e.mesaj) || "Cabinetul nu s-a putut reactiva.", "eroare");
+        }
+      }, { textOk: "Reactivează" });
     });
+  });
+}
+
+// [645] fereastra suspendării: motivul (obligatoriu, butoane alăturate), nota internă (opțională), acțiunea jos
+function formularSuspendare(corp, c, dupa) {
+  let motiv = null;
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Suspendă cabinetul</h2>
+    <p class="pf-intro"><b>${esc(c.nume || "")}</b> — cabinetul vede motivul la logare; administratorii lui primesc un email cu același motiv.</p>
+    <fieldset class="camp" id="sus-motiv" style="border:0;padding:0;margin:0 0 12px">
+      <legend class="camp-eticheta">Motivul suspendării<span class="oblig">*</span></legend>
+      <div role="group" aria-label="Motivul suspendării" style="display:flex;flex-wrap:wrap;gap:8px">
+        ${MOTIVE_SUSPENDARE.map(([k, t]) => `<button type="button" class="buton-secundar" data-motiv="${k}" aria-pressed="false" data-fara-actiune="alegerea motivului, în formular">${t}</button>`).join("")}
+      </div>
+    </fieldset>
+    <div class="camp" style="margin-bottom:10px"><label for="sus-nota" class="camp-eticheta">Notă internă (opțional — n-o vede cabinetul)</label>
+      <textarea class="camp-input" id="sus-nota" rows="3" maxlength="1000" style="resize:vertical;min-height:70px"></textarea></div>
+    <div class="bara-fixa">
+      <button class="buton-sters" id="sus-trimite" data-actiune="POST /admin/cabinete/{firm_id}/suspenda">Suspendă accesul</button>
+      <div id="sus-msg"></div>
+    </div>`;
+  corp.querySelectorAll("[data-motiv]").forEach((b) => b.addEventListener("click", () => {
+    motiv = b.dataset.motiv;
+    corp.querySelectorAll("[data-motiv]").forEach((x) => {
+      const ales = x === b;
+      x.classList.toggle("buton-activ", ales);
+      x.setAttribute("aria-pressed", String(ales));
+    });
+    corp.querySelector("#sus-msg").innerHTML = "";
+  }));
+  const b = corp.querySelector("#sus-trimite");
+  b.addEventListener("click", () => {
+    const msg = corp.querySelector("#sus-msg");
+    if (!motiv) { arataMesaj(msg, "Alege motivul suspendării.", "eroare"); return; }
+    const eticheta = (MOTIVE_SUSPENDARE.find((m) => m[0] === motiv) || [])[1] || "";
+    confirmaCaseta(b, `Suspenzi accesul cabinetului „${esc(c.nume)}” (motivul: ${esc(eticheta.toLowerCase())})? Logarea se taie imediat, datele rămân.`, async () => {
+      try {
+        const r = await api.post(`/admin/cabinete/${c.id}/suspenda`, { motiv, nota_interna: corp.querySelector("#sus-nota").value.trim() || null });
+        const em = r.destinatari ? ` Emailul cu motivul a plecat la ${cate(r.emailuri_trimise, "administrator", "administratori")} din ${r.destinatari}.`
+          : " Cabinetul nu are niciun administrator activ cu email: emailul nu a plecat.";
+        await dupa(`Cabinetul „${c.nume}” e suspendat (motivul: ${r.motiv}).${em}`);
+      } catch (e) { arataRefuzul(corp, e, msg, { campuri: { motiv: "sus-motiv", nota_interna: "sus-nota" } }); }
+    }, { textOk: "Suspendă" });
   });
 }
 
@@ -107,19 +187,26 @@ function actiuneRo(a) {  // [aa_ro] jurnalul pe romaneste; necunoscutele raman b
   return a;
 }
 
-async function deschideTimeline(corp, cabinet) {
-  const zona = corp.querySelector("#ac-detaliu");
-  zona.innerHTML = `<p class="ecran-nota">Se încarcă istoricul...</p>`;
-  let activitate = [];
+// [645] jurnalul suspendărilor: cine, când, motivul, nota internă (o vede numai Admin iConta), reactivarea
+function htmlSuspendari(lst) {
+  if (!lst.length) return "";
+  const rand = (s) => `<tr><td>${s.suspendat_la ? dataRo(s.suspendat_la, "cu_ora") : "dată neînregistrată"}</td><td>${esc(s.suspendat_de || "—")}</td>
+    <td>${esc(s.motiv || "neînregistrat (suspendare de dinainte de jurnal)")}</td><td>${esc(s.nota_interna || "—")}</td>
+    <td>${s.reactivat_la ? `${dataRo(s.reactivat_la, "cu_ora")}${s.reactivat_de ? " · " + esc(s.reactivat_de) : ""}` : "încă suspendat"}</td></tr>`;
+  return `<h3 class="pf-subtitlu" style="margin-top:14px">Suspendări</h3>
+    <table class="fd-tabel" id="ac-suspendari"><thead><tr><th>Suspendat la</th><th>De</th><th>Motivul</th><th>Notă internă</th><th>Reactivat</th></tr></thead>
+    <tbody>${lst.map(rand).join("")}</tbody></table>`;
+}
+
+async function deschideFisa(corp, cabinet) {
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă istoricul...</p>`;
+  let activitate = [], suspendari = [];
   try {
     const r = await api.get(`/admin/activitate/cabinet/${cabinet.id}`);
     activitate = (r && r.activitate) || [];
+    suspendari = (r && r.suspendari) || [];
   } catch (e) {
-    zona.innerHTML = `<div class="ecran-nota">Nu s-a putut încărca istoricul cabinetului. Reîncearcă.</div>`;
-    return;
-  }
-  if (!activitate.length) {
-    zona.innerHTML = `<div class="stare-goala">Niciun eveniment înregistrat încă. Apar aici pe măsură ce cabinetele lucrează.</div>`;
+    corp.innerHTML = `<div class="ecran-nota">Nu s-a putut încărca istoricul cabinetului. Reîncearcă.</div>`;
     return;
   }
   // [aa_grupe] DS cap.2: nimic vizibil decat la selectie - jurnal grupat pe categorii, butoane toggle
@@ -131,24 +218,25 @@ async function deschideTimeline(corp, cabinet) {
   const butoane = Object.keys(grupe).map((t, i) =>
     `<button class="buton-secundar buton-mic" data-grup="${i}">${esc(t)} (${grupe[t].length})</button>`).join(" ");
   const c = cabinet;  // [aa_rezumat] cifrele cabinetului, vizibile in capul detaliului
-  zona.innerHTML = `
-    <div class="panou" style="margin-top:14px">
+  corp.innerHTML = `
+    <div class="rezumat-fix" id="ac-detaliu">
       <div class="pf-frand-nume" style="margin-bottom:4px">${esc(c.nume || "")}</div>
-      <div class="pf-frand-sub" style="margin-bottom:10px">${cate(c.nr_firme ?? 0, "firmă", "firme")} \u00b7 ${cate(c.nr_angajati ?? 0, "angajat", "angajați")} \u00b7 ${cate(c.nr_facturi ?? 0, "factură emisă", "facturi emise")} \u00b7 ${cate(c.nr_declaratii ?? 0, "declarație", "declarații")} \u00b7 ${cate(c.nr_recomandari ?? 0, "recomandare", "recomandări")}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px">${butoane}</div>
-      <div id="aa-evenimente"></div>
-    </div>`;
+      <div class="pf-frand-sub" style="margin-bottom:10px">${cifreCabinet(c)}</div>
+    </div>
+    ${htmlSuspendari(suspendari)}
+    ${activitate.length ? `<h3 class="pf-subtitlu" style="margin-top:14px">Activitate</h3><div style="display:flex;flex-wrap:wrap;gap:6px">${butoane}</div><div id="aa-evenimente"></div>`
+      : `<div class="stare-goala">Niciun eveniment înregistrat încă. Apar aici pe măsură ce cabinetul lucrează.</div>`}`;
   const chei = Object.keys(grupe);
   let deschis = null;
-  zona.querySelectorAll("[data-grup]").forEach((b) => b.addEventListener("click", () => {
+  corp.querySelectorAll("[data-grup]").forEach((b) => b.addEventListener("click", () => {
     const i = Number(b.dataset.grup);
-    const ev = zona.querySelector("#aa-evenimente");
-    zona.querySelectorAll("[data-grup]").forEach((x) => x.classList.remove("buton-activ"));  // DS cap.1: fratii se inchid
+    const ev = corp.querySelector("#aa-evenimente");
+    corp.querySelectorAll("[data-grup]").forEach((x) => x.classList.remove("buton-activ"));  // DS cap.1: fratii se inchid
     if (deschis === i) { deschis = null; ev.innerHTML = ""; return; }
     deschis = i; b.classList.add("buton-activ");
     ev.innerHTML = `<div class="sol-fir" style="margin-top:10px">${grupe[chei[i]].map((a) => `
       <div class="sol-rand sol-cabinet">
-        <div class="sol-meta">${esc(a.nume || "")} ${esc(a.prenume || "")} \u00b7 ${dataRo(a.created_at, "cu_ora")}</div>
+        <div class="sol-meta">${esc(a.nume || "")} ${esc(a.prenume || "")} · ${dataRo(a.created_at, "cu_ora")}</div>
       </div>`).join("")}</div>`;
   }));
 }

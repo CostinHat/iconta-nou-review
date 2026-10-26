@@ -97,7 +97,7 @@ def test_def_c87_declaratii_lucrate_arata_declaratia_pregatita_de_coleg(patron, 
         assert lista != "Nicio activitate înregistrată.", "C87: „Declarații lucrate” goală, deși asistenta a pregătit D300"
         ale_firmei = [x for x in randuri if x["meta"].startswith(firma_e2e["nume"] + " · ")]
         assert len(ale_firmei) == 1, randuri
-        assert ale_firmei[0]["meta"].split(" · ")[1] == "pregatit", ale_firmei   # ea a pregătit-o; n-a aprobat-o, n-a respins-o
+        assert ale_firmei[0]["meta"].split(" · ")[1] == "a pregătit", ale_firmei   # ea a pregătit-o; n-a validat-o, n-a respins-o (C87.1: cu diacritice)
         assert "300" in ale_firmei[0]["tip"], ale_firmei
     finally:
         _curata(firma_e2e, peste)

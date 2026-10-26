@@ -1,7 +1,7 @@
 // ansamblu.js — Prezentarea de ANSAMBLU a aplicatiei.
-// Doua intrari, acelasi continut:
+// O intrare:
 //   - semnul "?" GENERAL din bara de stare (.nav-ghid) -> oricand;
-//   - pagina de BUN-VENIT (overlay) -> o singura data, la prima logare.
+//   - [lotul 13, 562] pagina de BUN-VENIT care se deschidea singură la prima logare a fost scoasă: nimic nu se deschide singur.
 // Continut DERIVAT, nu scris separat:
 //   - firul de intrare = STRATURI (migrare.js): pasii de migrare, in ordine, migrarea prima;
 //   - ansamblul = grupele din registru (/ansamblu, SURSA UNICA genereaza_grupe_functii.repartizeaza)
@@ -38,21 +38,12 @@ function _grupeHTML(grupe) {
   }).join("");
 }
 
-// Firul de intrare, după rol. Pentru asistent pasul „Firme” (adăugarea) e al administratorului, deci firul lui
-// începe de la datele unei firme deja adăugate; fără „Poate pregăti” nu are niciun pas.
-function _sectiuneFir(asistent, pasi) {
-  if (!pasi.length) {
-    return `<section class="ans-sectiune">` +
-      `<h3 class="ans-sec-titlu">Firul de intrare</h3>` +
-      `<p class="ans-fir-unde">Preluarea datelor unei firme (Import date) cere dreptul «Poate pregăti», pe care nu-l ai. ` +
-      `Îl acordă administratorul cabinetului, din ecranul Asistenți. Până atunci poți urmări firmele alocate în Control fiscal și Termene.</p>` +
-    `</section>`;
-  }
+// Firul de intrare al administratorului cabinetului ([562] asistentul nu-l mai primește: pașii de preluare sunt ai administratorului;
+// administratorul are toate drepturile cabinetului, deci pașii lui nu sunt niciodată goi).
+function _sectiuneFir(pasi) {
   return `<section class="ans-sectiune">` +
     `<h3 class="ans-sec-titlu">Firul de intrare — pașii, în ordine</h3>` +
-    `<p class="ans-fir-unde">Fiecare pas se face pentru firma respectivă, din cardul „Import date” al firmei (ecranul Firme → firma → Import date). Excepție: „Vector fiscal” se completează în ecranul „Date firmă”.` +
-    (asistent ? ` Firma o adaugă în portofoliu administratorul cabinetului; tu preiei datele firmelor care ți-au fost alocate.` : "") +
-    `</p>` +
+    `<p class="ans-fir-unde">Fiecare pas se face pentru firma respectivă, din cardul „Import date” al firmei (ecranul Firme → firma → Import date). Excepție: „Vector fiscal” se completează în ecranul „Date firmă”.</p>` +
     // [270 e, comanda Costin 15.10.2026] rândul cerut, verbatim; numai unde există pași permiși (fără „Poate pregăti” nu e de unde începe)
     `<p class="ans-fir-unde" id="ans-alta-aplicatie">Vii din altă aplicație? Începe din Firme → Migrare cabinet.</p>` +
     `<ol class="ans-fir">${_firHTML(pasi)}</ol>` +
@@ -72,7 +63,13 @@ function _sectiuneSpv() {
   `</section>`;
 }
 
-async function _corpAnsamblu(corp, primaLogare) {
+// [lotul 13, deficiența 562 — anexa comenzii 13.1: „La prima intrare a asistentului junior (doar «Poate pregăti»), fereastra se deschide
+// singură (contrar regulii: nimic nu se deschide fără să fie ales) și îi arată pașii de administrator (vector fiscal, solduri inițiale,
+// asociați, migrare cabinet). […] Fereastra încalcă 320: ghidul de început rămâne în butonul de ajutor (?), nu se deschide singur, și e
+// pe rol.”] (1) Prezentarea NU se mai deschide singură la prima logare (pentru niciun rol — CLAUDE.md §9: „Nimic nu se deschide singur”);
+// o deschide omul din „?”. (2) Pe rol: asistentul nu mai primește firul de preluare (pașii administratorului); primește ce i se potrivește
+// — firmele lui și ce are voie (cardurile lui de început, ca pagina „Primii pași”), plus catalogul filtrat pe drepturi.
+async function _corpAnsamblu(corp) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă prezentarea…</p>`;
   const asistent = sesiune.rol() === "angajat";
   let grupe = [];
@@ -86,29 +83,26 @@ async function _corpAnsamblu(corp, primaLogare) {
   const pasi = STRATURI.filter((st) => permis(st.actiune));
   const faraFirme = asistent && nrFirme === 0;
   const intro = asistent
-    ? `<p class="ans-intro">Bun venit în iConta.eu. Lucrezi pe firmele pe care ți le alocă administratorul cabinetului. Mai jos e ce poți face cu drepturile tale. E o hartă a aplicației; n-o reține acum, o ai oricând la îndemână.</p>`
+    ? `<p class="ans-intro">Bun venit în iConta.eu. Lucrezi pe firmele pe care ți le alocă administratorul cabinetului; ce ai voie să faci pe ele stabilește tot el, în ecranul Asistenți. Mai jos sunt pașii tăi de început și ce cuprinde aplicația, după drepturile tale.</p>`
     : `<p class="ans-intro">Bun venit în iConta.eu. Mai jos e drumul de la preluarea unei firme până la operarea curentă — parcurge-l în ordine, începând cu migrarea. E o hartă a aplicației; n-o reține acum, o ai oricând la îndemână.</p>`;
   corp.innerHTML =
     `<div class="ans-continut">` +
-      (primaLogare ? intro : "") +
+      intro +
       `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează din „Suport”, sus pe pagina principală, lângă „Recomandă”.</p>`   /* [deficiența 225, 12.10.2026] bandă, nu card */ +
       (asistent ? "" : _sectiuneSpv()) +
       (faraFirme
         ? `<p class="msg-avert ans-fara-firme" role="status">Nu ai firme asociate. Cere administratorului cabinetului să ți le aloce, din ecranul Asistenți.</p>`
-        : _sectiuneFir(asistent, pasi)) +
+        : (asistent ? "" : _sectiuneFir(pasi))) +
+      // [deficiența 320] „ghidul de început rămâne în butonul de ajutor (?)”: cardurile de început ale omului, de citit, cu starea lor
+      `<section class="ans-sec" id="ans-inceput"></section>` +
       `<section class="ans-sectiune">` +
         `<h3 class="ans-sec-titlu">Ce cuprinde aplicația</h3>` +
         `<div class="ans-grupe">${grupe.length ? _grupeHTML(grupe) : '<p class="ecran-nota">—</p>'}</div>` +
       `</section>` +
-      // [deficiența 320] „ghidul de început rămâne în butonul de ajutor (?)”: cardurile de început ale omului, de citit, cu starea lor
-      `<section class="ans-sec" id="ans-inceput"></section>` +
       `<p class="ans-inchidere">` +
         `Semnul <span class="ans-mostra ans-mostra--general">?</span> din bara de sus redeschide oricând această prezentare de ansamblu. ` +
         `Semnele <span class="ans-mostra ans-mostra--contextual">?</span> de pe ecrane explică fiecare funcționalitate în parte.` +
       `</p>` +
-      (primaLogare
-        ? `<div class="ans-actiuni"><button type="button" class="buton-primar" id="ans-intra">Am înțeles, intru în aplicație</button></div>`
-        : "") +
     `</div>`;
   import("./inceput.js?v=9a8b26bf4b").then((m) => m.ghidulDeInceput(corp.querySelector("#ans-inceput"))).catch(() => {});
 }
@@ -116,32 +110,14 @@ async function _corpAnsamblu(corp, primaLogare) {
 // semnul "?" GENERAL din bara de stare -> modalul de ansamblu (oricand)
 // [deficiența 4, retestul Costin 09.10] fereastra se închide și cu Esc, prin mecanismul unic al dialogurilor (`inchidereDialog`):
 // e o fereastră de citit, fără nimic de pierdut; X-ul ei rămâne cel al navigatorului
+// [lotul 13, 562] singurul drum spre prezentare (nu se mai deschide singură la prima logare); prima deschidere o marchează văzută
 export function deschideAnsamblu() {
   if (!window._navGlobal) return;
-  window._navGlobal.deschide("Prezentarea aplicației", (corp) => { _corpAnsamblu(corp, false); }, { nivel: "cabinet", lat: "larg" });   // [200] o hartă: lată, ca grupele să stea pe coloane
+  window._navGlobal.deschide("Prezentarea aplicației", (corp) => { _corpAnsamblu(corp); }, { nivel: "cabinet", lat: "larg" });   // [200] o hartă: lată, ca grupele să stea pe coloane
   const fer = [...document.querySelectorAll(".fereastra")].pop();
   if (fer) inchidereDialog(fer, () => { if (fer.isConnected) window._navGlobal.inapoi(); });
-}
-
-// pagina de BUN-VENIT (o data, la prima logare) — overlay peste desktop, inainte de operare.
-// [dialog_inchidere 04.10.2026, comanda Costin pct.4] Se închide din X-ul din antet, cu Esc sau din butonul de la
-// capăt — toate trei prin ACELAȘI `inchide`, deci toate marchează bun-venitul ca văzut (altfel X ar fi o ușă
-// care-l face să reapară la fiecare intrare).
-export function ecranBunVenit(radacina, laInchidere) {
-  const ov = document.createElement("div");
-  ov.className = "bun-venit-overlay";
-  ov.setAttribute("role", "dialog");
-  ov.setAttribute("aria-modal", "true");
-  ov.setAttribute("aria-label", "Bun venit în iConta.eu");
-  ov.dataset.deschidere = "aplicatie";   // [325] deschisă de aplicație, la prima logare (decizie), nu de un clic
-  ov.innerHTML = `<div class="bun-venit-box"><div class="bun-venit-antet"><span class="bun-venit-titlu">iConta.eu · bun venit</span></div>` +
-                 `<div class="bun-venit-corp"></div></div>`;
-  radacina.appendChild(ov);
-  const inchide = inchidereDialog(ov, () => { ov.remove(); if (laInchidere) laInchidere(); },
-                                  ov.querySelector(".bun-venit-antet"));
-  const corp = ov.querySelector(".bun-venit-corp");
-  _corpAnsamblu(corp, true).then(() => {
-    const b = ov.querySelector("#ans-intra");
-    if (b) b.addEventListener("click", inchide);
-  });
+  const u = sesiune.user();
+  if (u && u.bun_venit_vazut === false) {
+    api.post("/cont/bun-venit-vazut", {}).then(() => sesiune.marcheazaBunVenit()).catch(() => {});
+  }
 }
