@@ -147,6 +147,7 @@ CLICURI_PROGRAMATICE = {
     # — aceleași elemente pe care omul le-ar fi apăsat, cu ascultătorii și drepturile lor (nu o a doua cale de deschidere)
     "static/js/cautare.js": (2, "rezultatul căutării ales de om apasă cardul firmei / butonul operației pe care îl numește"),
     "static/js/ecrane/validat.js": (1, "„Respinge nota” ales în caseta de confirmare apasă butonul de respingere al notei"),
+    "static/js/ecrane/declaratii.js": (1, "„Generează / Regenerează” apăsat de om adaugă întâi rândul completat și neadăugat (652): se apasă „+ adaugă” al rândului, cu verificările lui"),
 }
 
 
