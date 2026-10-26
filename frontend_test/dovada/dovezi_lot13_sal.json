@@ -1148,5 +1148,49 @@
    }
   ],
   "captura": "c96_f5_d112_09_2026.png"
+ },
+ {
+  "nr": "C194",
+  "firma": "tenant_9053",
+  "descriere": "F5, DATE DE DINAINTE (precondiție: o D112 a lui F5 pusă în coadă pe PRODUCȚIE, cu codul publicat, înainte de clonare — azi copia nu are niciuna: în coadă sunt numai note și D300): «De validat / De depus»: D112 stă în grupul «Depășite — de generat din nou», cu eticheta «depășită — de generat din nou», FĂRĂ nicio corectură pe copie — amprenta salariilor a lotului 13 (`coada_api.SURSE_SALARII` cu `diurna_excedent`; `elemente_salariale.spor_procent`) diferă de cea cu care a intrat (fail-closed, decizia Costin 13.1 pct.4.3). Numai citire.",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-depasite .val-card"
+   },
+   {
+    "deruleaza": "#val-depasite"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D112",
+    "zona": "#val-depasite"
+   },
+   {
+    "contine": "depășită — de generat din nou",
+    "zona": "#val-depasite .val-card"
+   }
+  ],
+  "captura": "c194_f5_vechi_d112_din_coada_depasita.png"
  }
 ]
