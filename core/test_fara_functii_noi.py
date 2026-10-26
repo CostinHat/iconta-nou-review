@@ -48,6 +48,9 @@ EXCEPTII = {
     "DELETE /tenants/{tenant_id}/ciorne-formular/{formular}": "495",
     # [lotul 12, C139] raportul Z importat greșit (ciornă) n-avea niciun drum de ștergere: jurnalul trimite nota Z-ului la ecranul Raport Z
     "DELETE /tenants/{tenant_id}/horeca/raport-z/{nota_id}": "C139",
+    # [lotul 13, 681] căutarea globală din antet — decizia Costin 25.10.2026 (comanda 13.1): „parte din pilot, excepție de la «fără funcții
+    # noi»”
+    "GET /eu/cautare": "681",
 }
 #: sha256 al conținutului referinței (fără liniile de comentariu); se schimbă numai împreună cu referința (vezi docstring)
 AMPRENTA_REFERINTA = "4b107c8b92b3c82d40c152d5d91c664cac035d20549e7cd630574180bfd54e7d"

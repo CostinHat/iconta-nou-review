@@ -56,6 +56,7 @@ from core import aplicatii_migrare, fisiere_private   # [270 / C36, 15.10.2026] 
 # aplicatie (masurat: zero `except HTTPException`), deci rolul ei e exclusiv de iesire. Codul si
 # mesajul ies literă cu literă cum ieseau.
 from core import erori as _erori
+from core import cautare as _cautare   # [lotul 13, 681] căutarea globală din antet (`GET /eu/cautare`)
 from core import ciorne_formular as _ciorne_formular   # [lotul 12, 495] ciornele formularelor, pe server
 from core import uc_factura_primita as _uc_factura_primita   # [lotul 12, 477] factura primită introdusă de mână
 from core import uc_raport_z as _uc_raport_z   # [lotul 12, C139] ștergerea raportului Z nevalidat
@@ -5372,6 +5373,16 @@ def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_drept(_drepturi.ADMIN))):
 def eu_educatie_vazut(ctx=Depends(cere_drept(_drepturi.ADMIN))):
     try:
         return _uc_eu.eu_educatie_vazut(ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
+@app.get("/eu/cautare")
+def eu_cautare(q: str = "", tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)):
+    """[lotul 13, deficiența 681 — decizia Costin 25.10.2026] Căutarea globală din antet: cardurile ferestrei firmei, operațiunile speciale,
+    declarațiile și salariații firmei în lucru (`core/cautare.py`); firma se citește numai cu dreptul utilizatorului asupra ei."""
+    try:
+        return _cautare.cauta_pentru(q, tenant_id, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

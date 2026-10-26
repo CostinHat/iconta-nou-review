@@ -2465,6 +2465,8 @@ select.camp-invalid, textarea.camp-invalid { border-color: #a3231c !important; }
   color: #a3231c; font-size: var(--text-mic); line-height: 1.45; }
 .refuz-salvare-lista { margin: 4px 0 0; padding-left: 18px; font-weight: 400; }
 .refuz-salvare-lista .btn-link { font-weight: 600; color: #a3231c; text-decoration: underline; padding: 0; }
+/* [lotul 13, 515] motivul refuzului de lângă buton stă chiar în casetă, ca text (o propoziție), nu ca trimitere; pe rândurile lui */
+.refuz-salvare-lista > li.refuz-salvare-motiv, .refuz-salvare-lista .refuz-salvare-motiv { color: #a3231c; font-weight: 600; white-space: pre-line; }
 .msg-avert  { color: #8a6410; font-weight: 600; font-size: var(--text-mic); white-space: pre-line; }
 .msg-info   { color: var(--gri); font-size: var(--text-mic); white-space: pre-line; }
 .msg-ok     { color: var(--verde); font-weight: 600; font-size: var(--text-mic); white-space: pre-line; }
@@ -3134,3 +3136,50 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 /* [lotul 10, 421/424] lista rezultatelor căutării COR: derulare verticală proprie (o listă de sugestii, nu un tabel) — fostul stil inline
    din `campCorLookup`; DS cap.9 v2.96 interzice derularea inline în șabloane */
 .cor-rez-lista { max-height: 180px; overflow-y: auto; }
+
+/* ---------- LOTUL 13 (comanda 13.1), zona DS — mecanismele claselor 673 / 675 / 676 (DS cap.1, cap.2a, cap.9) ----------
+   [676] Lista scurtă (≤ 6 opțiuni, `select[data-butoane]`) se arată ca butoane alăturate (`.alegere-butoane`, `api.alegereButoane`); lista
+   rămâne în pagină, nevăzută (`.alegere-sursa`: 1×1 px, transparentă, fără clic — nu `display:none`, ca valoarea, `change` și refuzul de
+   lângă câmp să meargă ca înainte), iar marcajul de câmp greșit se vede pe butoane. */
+.alegere-butoane { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 40px; }
+.alegere-butoane[hidden] { display: none !important; }
+.alegere-butoane > button { padding: 7px 14px; }
+.alegere-butoane > button[aria-checked="true"] { font-weight: 600; }
+.alegere-butoane:has(+ select.camp-invalid) > button { border-color: var(--rosu); }
+select.alegere-sursa { position: absolute !important; width: 1px !important; height: 1px !important; min-width: 0 !important;
+  min-height: 0 !important; padding: 0 !important; margin: 0 !important; border: 0 !important; opacity: 0; pointer-events: none; overflow: hidden; }
+/* [675] Butonul care nu se aplică stă la locul lui, inactiv, cu motivul la trecerea cu mouse-ul (`api.inactiv` / `atributeInactiv`):
+   arată ca butonul `:disabled` al clasei lui (DS cap.1 v2.87), iar hover-ul nu se aplică. */
+.buton-primar[aria-disabled="true"] { background: var(--gri-clar); cursor: not-allowed; transform: none; box-shadow: none; }
+.buton-secundar[aria-disabled="true"], .buton-sters[aria-disabled="true"], .buton-verde[aria-disabled="true"],
+.btn-link[aria-disabled="true"], .buton-text[aria-disabled="true"] { opacity: .55; cursor: not-allowed; transform: none; }
+/* [673] Fereastra de lucru deschisă dintr-o fereastră (o acțiune: Salariu, Prime, Compoziția netului, Corectează datele …) e o fereastră
+   NOUĂ, centrată, cât ecranul — ca fereastra cu tabel (`navigator`: `fer-lucru`, pusă singur pe fereastra deschisă peste alta, sau cu
+   `{ lat: "lucru" }`); corpul derulează numai pe verticală. Fereastra mică rămâne pentru confirmări (`{ lat: "mic" }`). */
+.fereastra.fer-lucru { width: calc(100vw - 48px); max-width: calc(100vw - 48px); height: calc(100vh - 48px); transition: none; }
+.fereastra.fer-lucru .fereastra-corp { overflow-x: hidden; overflow-y: auto; }
+@media (max-width: 560px) {
+  .fereastra.fer-lucru { width: 100%; max-width: none; height: 100%; }
+}
+/* [581] Bara de jos nu mănâncă tabelul: orice zonă de mesaj sau casetă din `.bara-fixa` are cel mult 35vh și derulează ea (ca
+   `[id$="-mesaj"]`, DS cap.6 v2.98) — lista rândurilor respinse a unui import nu mai strânge tabelul la o bară albă (DS cap.9 v2.104). */
+.fereastra-corp .bara-fixa .mig-eroare, .fereastra-corp .bara-fixa > .caseta-atentie, .fereastra-corp .bara-fixa .refuz-salvare,
+.fereastra-corp .bara-fixa > .msg-eroare, .fereastra-corp .bara-fixa > .msg-avert { max-height: 35vh; overflow-y: auto; }
+/* [681] Căutarea globală din antet (`static/js/cautare.js`, DS cap.9 v2.104): mereu vizibilă — deasupra stratului ferestrelor, ca
+   „Versiune nouă” (z-index peste 100); lista rezultatelor sub căsuță, numai cât omul scrie. */
+.cautare-globala { position: relative; z-index: 102; flex: 0 1 340px; min-width: 0; margin-left: 12px; }
+.cautare-camp { width: 100%; height: 34px; box-sizing: border-box; border: 1px solid #b9c2cf; border-radius: 8px; padding: 0 12px;
+  font: inherit; font-size: var(--text-mic); background: #fff; color: var(--ardezie); }
+.cautare-camp:focus { outline: 2px solid #fff; outline-offset: 1px; }
+.cautare-rez { position: absolute; top: calc(100% + 4px); left: 0; width: min(520px, calc(100vw - 32px)); max-height: 60vh; overflow-y: auto;
+  background: #fff; border: 1px solid #b9c2cf; border-radius: var(--raza); box-shadow: 0 12px 32px rgba(20, 30, 45, 0.25); padding: 6px; }
+.cautare-rez[hidden] { display: none; }
+.btn-link.cautare-item { text-decoration: none; }
+.cautare-item { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; text-align: left; border: 0;
+  background: none; border-radius: 6px; padding: 8px 10px; cursor: pointer; font: inherit; color: var(--ardezie); min-height: 24px; }
+.cautare-item:hover, .cautare-item:focus-visible { background: var(--albastru-clar); }
+.cautare-item.buton-activ .cautare-unde { color: #fff; }
+.cautare-titlu { font-size: var(--text-mic); font-weight: 600; }
+.cautare-unde { font-size: var(--text-desc); color: var(--gri); }
+.cautare-mesaj { margin: 6px 8px; font-size: var(--text-mic); color: var(--gri); }
+@media (max-width: 560px) { .cautare-globala { flex-basis: 160px; margin-left: 4px; } }
