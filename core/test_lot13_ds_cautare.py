@@ -29,7 +29,8 @@ def test_sursele_se_citesc_din_ecrane():
     ops = {o["cheie"]: o for o in C.operatiuni()}
     assert len(ops) >= 25, len(ops)
     assert ops["decont"]["titlu"] == "Decont deplasare / diurnă" and ops["decont"]["cat"] == "Personal și deconturi", ops["decont"]
-    assert "Diurna acordată pe zi" in ops["decont"]["campuri"], ops["decont"]["campuri"]
+    # etichetele câmpurilor decontului (formularul îl schimbă zona OPS — 670): se caută pe ele, nu pe o etichetă anume
+    assert any(c.startswith("Diurna") for c in ops["decont"]["campuri"]) and len(ops["decont"]["campuri"]) >= 8, ops["decont"]["campuri"]
 
 
 @pytest.mark.parametrize("q", ["diurnă", "diurna", "DIURNA", "decont deplasare", "Diurnă acordată"])
