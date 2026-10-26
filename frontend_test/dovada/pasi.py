@@ -47,7 +47,7 @@ import urllib.request
 RAD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #: Acțiunile unui pas și felurile de verificare (forma de mai sus); lista de dovezi e păzită pe ele (`core/test_dovada_firme_test.py`).
 PASI = ("click", "asteapta", "asteapta_text", "completeaza", "alege", "deruleaza", "pauza", "captura", "declaratie", "incarca", "lucrator",
-        "link_email")
+        "link_email", "ai_raspunde")
 VERIFICARI = ("contine", "nu_contine", "contine_oricare", "inactiv", "activ", "exista", "valoare")
 
 
