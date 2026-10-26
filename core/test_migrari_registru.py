@@ -155,6 +155,8 @@ _SCRIU_NUMAI_IN_CIORNE = {
     "core/migrare_serie_nr_descrieri.py": "descrierea / documentul ciornelor scrise înainte de 443 cu seria lipită („Contare factura F61”)",
     # [lotul 12, 168] descrierea ciornei notei chitanței emise automat la încasarea din Casă (456), scrisă fără chitanță
     "core/migrare_descriere_nota_chitanta.py": "descrierea ciornelor notelor de chitanță scrise fără chitanță (168)",
+    # [lotul 13, 618] explicația ciornelor raportului Z scrise cu data ISO („Raport Z 2026-10-20 casa …”), regula 3a
+    "core/migrare_explicatie_raport_z.py": "explicația ciornelor raportului Z scrise cu data ISO (618)",
 }
 
 

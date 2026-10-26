@@ -46,7 +46,9 @@ def _odata_cu(confirmare):
 
 def _eticheta(cur, z):
     from core import z_descarcare as zd
-    return "Raportul Z „%s”" % zd.document_z(cur, SCH, z)
+    # [lotul 13, 605] documentul Z („Raport Z nr 0042 din …”) se numește o dată: „Raportul Z nr 0042 din …”, nu „Raportul Z „Raport Z nr …””
+    doc = zd.document_z(cur, SCH, z)
+    return ("Raportul Z" + doc[len("Raport Z"):]) if doc.startswith("Raport Z ") else "Raportul Z „%s”" % doc
 
 
 def _db_ok():
@@ -329,7 +331,8 @@ def test_def_c139_lista_lunii_poarta_confirmarea_pe_ciorna_si_refuzul_pe_validat
     _valideaza(cur, z2)
     rap = {x["id"]: x for x in zd.lista_luna(conn, SCH, 2099, 10)}
     assert rap[z1]["status"] == "ciorna" and rap[z1]["stergere"]["refuz"] is None
-    assert rap[z1]["stergere"]["confirmare"].startswith("Ștergi raportul Z „Raport Z nr 0042 din 20.10.2099 (AMEF 8000000001)”")
+    # [lotul 13, 605] documentul Z se numește o dată („raportul Z Raport Z nr” era deficiența)
+    assert rap[z1]["stergere"]["confirmare"].startswith("Ștergi raportul Z nr 0042 din 20.10.2099 (AMEF 8000000001)")
     from core import eticheta_nota as _et
     assert rap[z2]["status"] == "validata"
     assert _parametri(zd.MESAJ_Z_VALIDAT, rap[z2]["stergere"]["refuz"]) == (_eticheta(cur, z2), _et.nota(cur, SCH, z2)), rap[z2]

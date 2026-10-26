@@ -32,10 +32,10 @@ UNDE = {
     "nir": ("NIR-ul %s", "în Stoc › NIR-urile lunii: deschizi NIR-ul"),
     "casa": ("operațiunea de casă %s", "în Casă: ștergi operațiunea și o scrii din nou"),
     "chitanta": ("chitanța %s", "în Casă: anulezi chitanța și o emiți din nou"),
-    "extras": ("linia de extras %s", "în Bancă: reconcilierea extrasului"),
+    "extras": ("o linie din extrasul bancar %s", "în Bancă: reconcilierea extrasului"),
     "salarii": ("statul de plată %s", "în Salarizare: corectezi statul (salariați, pontaj, contracte) și apeși «Contabilizează statul»"),
     "raport_z": ("raportul Z %s", "în Raport Z: cât e nevalidat, «Șterge raportul Z» pe rândul lui (cu descărcările lui necontate); validat, se corectează prin stornare"),   # [lotul 12, C139]
-    "amortizare": ("amortizarea %s", "în Mijloace fixe: amortizarea lunii"),
+    "amortizare": ("tabloul de amortizare %s", "în Mijloace fixe: amortizarea lunii"),
     # [lotul 10, 428] nota compensării derivă din ordinul de compensare (HG 685/1999 anexa 2 art.11: „Ordinul de compensare se anexeaza la
     # nota contabila”) și din rândul `compensari`: editată în jurnal, suma notei s-ar despărți de compensare. Ștergerea (ciornă) rămâne:
     # rândul `compensari` cade odată cu nota (ON DELETE CASCADE), iar facturile redevin deschise
@@ -43,6 +43,16 @@ UNDE = {
                                                   "compensarea din nou"),
 }
 COD = "NOTA_DERIVATA"
+#: [lotul 13, deficiența 605, comanda Costin 13.1: „Textul «raportul Z Raport Z nr»”] documentul scris pe notă își poartă felul în nume
+#: („Raport Z nr 0042 din 20.10.2026 (casa 8000000001)”, `jurnal_api.eticheta_document`): în fraza „derivată din <felul> <documentul>” felul
+#: nu se repetă. Clasa: același tipar la tabloul de amortizare și la extrasul bancar.
+FEL_IN_NUME = {"raport_z": "Raport Z ", "amortizare": "Tablou de amortizare ", "extras": "Extras bancar "}
+
+
+def numele_documentului(fel, eticheta):
+    """PURĂ. Eticheta documentului fără felul lui din față, când îl poartă („Raport Z nr 0042 …” -> „nr 0042 …”)."""
+    p = FEL_IN_NUME.get(fel)
+    return eticheta[len(p):] if p and str(eticheta or "").startswith(p) else eticheta
 #: documentele care INDICĂ nota din alt tabel: ștergerea notei din jurnal ar lăsa legătura în aer
 #: [deficiența 328, 18.10.2026] + nota statului de plată: statul rămâne, iar „Contabilizează statul” își înlocuiește singur ciorna
 #: (`uc_tenants.salarii_contare_scrie`) — ștergerea din jurnal nu e drumul niciunei corecturi.
@@ -130,7 +140,7 @@ def mesaj_refuz(nota_id, doc):
     fel, eticheta, et_nota = doc
     ce, unde = UNDE[fel]
     return ("Nota %s e derivată din %s: se corectează numai de acolo — %s. Dacă a fost respinsă la validare, după corectare "
-            "recontabilizarea o înlocuiește și o trimite din nou la validare." % (et_nota, ce % eticheta, unde))
+            "recontabilizarea o înlocuiește și o trimite din nou la validare." % (et_nota, ce % numele_documentului(fel, eticheta), unde))
 
 
 def respinsa(cur, schema, nota_id):

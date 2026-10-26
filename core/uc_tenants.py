@@ -302,6 +302,13 @@ def tenant_plan_conturi_adauga(tenant_id, date, ctx):
                 if existent:
                     raise _erori.Conflict("Contul %s există deja în plan: „%s”. Caută-l în lista de mai sus; dacă ai nevoie "
                             "de un cont diferit, folosește alt simbol." % (simbol, existent[0]))
+            # [lotul 13, deficiența 589] „Adăugarea manuală doar pentru analitice sub sintetic legal” — refuzul înaintea oricărei scrieri,
+            # lângă câmpul simbolului; aceeași regulă o spune ecranul înainte de „Adaugă” (`plan_legal.refuz_adaugare_manuala`)
+            from core import plan_legal as _pl589
+            _refuz589 = _pl589.refuz_adaugare_manuala(cur, schema, simbol, sintetic_al(simbol),
+                                                      [r[0] for r in repo_contabilitate.toate_conturile(cur)])
+            if _refuz589:
+                _erori.ErorileFormularului("Contul nu s-a adăugat").camp("pc-simbol", _refuz589).refuza()
             _cont_existent(cur)
             # [369] funcțiunea nu se alege: contul o moștenește de la sinteticul lui din planul OMFP (`plan_functiune`)
             from core import plan_functiune as _pf
@@ -7920,7 +7927,7 @@ def horeca_import_amef(tenant_id, continut, ctx):
             try:
                 tranzactie.savepoint_z_insert(cur)
                 # id-ul se citește ÎNAINTE de `RELEASE`: orice `execute` următor golește cursorul
-                iid = repo_contabilitate.nota_amef_ciorna(cur, schema, rz["data"], _numar_z, f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({_common.cate(rz['nr_bonuri'] or 0, 'bon', 'bonuri')}) - de verificat cu Z tiparit",
+                iid = repo_contabilitate.nota_amef_ciorna(cur, schema, rz["data"], _numar_z, _jurnal_api.explicatie_raport_z(rz["data"], rz["nui"], rz["nr_raport"], rz["nr_bonuri"], amef=True),
                                                           _jurnal_api.eticheta_document("Raport Z", rz["nr_raport"], rz["data"], "AMEF %s" % rz["nui"]))[0]
                 tranzactie.elibereaza_z_insert(cur)
             except _psycopg2.errors.UniqueViolation:
@@ -8023,7 +8030,7 @@ def horeca_raport_z(tenant_id, rz, ctx):
             # prin rețetă); Z-ul nu se validează fără ea.” -> la cantitativ-valoric nota intră CIORNĂ (validarea o păzește)
             from core import metoda_stoc as _ms
             _la_cost = _ms.citeste(cur, schema) == _ms.CV
-            _desc_z = "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport)
+            _desc_z = _jurnal_api.explicatie_raport_z(rz.data, nui, nr_raport)   # [lotul 13, 618] data românească, sursa unică
             _doc_z = _jurnal_api.eticheta_document("Raport Z", nr_raport, rz.data, "casa %s" % nui)
             # [lotul 10, C73 / U2] cursa dintre două cereri cu același Z trecea de verificarea de mai sus și cădea cu 500 pe indexul
             # `inregistrari_raport_z_unic`; acum ACELAȘI 409 ca a doua încercare conștientă (ca la import-amef), prin helperul comun

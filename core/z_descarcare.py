@@ -248,7 +248,8 @@ def plan_stergere(cur, schema, nota_id, verifica_costul=True):
     if not z:
         return None
     doc = document_z(cur, schema, z["id"])
-    eticheta = "Raportul Z „%s”" % doc
+    # [lotul 13, 605] „Textul «raportul Z Raport Z nr»”: documentul („Raport Z nr 0042 din …”) se numește o dată — „Raportul Z nr 0042 din …”
+    eticheta = ("Raportul Z" + doc[len("Raport Z"):]) if doc.startswith("Raport Z ") else "Raportul Z „%s”" % doc
     plan = {"z": {"id": z["id"], "data": str(z["data"])[:10], "document": doc, "incasat": str(z["incasat"]), "tva": str(z["tva"])},
             "note_iesiri": [], "miscari": [], "rip": None, "refuz": None, "cod": None, "confirmare": None, "dupa": None}
 

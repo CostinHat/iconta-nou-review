@@ -150,7 +150,10 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # de la un client” pusă la loc pe bifele salvate cât implicitul era greșit) și `migrare_tva_incasare_perioade_optiune` (541, data
     # notificării pe perioadele TVA la încasare — CF art.282 alin.(3^1) lit.a)); amândouă idempotente, rulate o dată prin
     # `core.migrari_registru`. Migrările noi ale altor zone ale lotului adaugă fiecare +1 la integrare.
-    assert 40 <= len(mg) <= 147, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [26.10.2026, lotul 13, comanda 13.1, zona firme2] +1: `migrare_explicatie_raport_z` (618, explicația ciornelor Z scrise cu data ISO,
+    # numai ciorne — nota validată nu se modifică); idempotentă, rulată o dată prin `core.migrari_registru`. (Măsurat pe 9ecf2b6d + zona firme2: 154 de
+    # module — baza avea deja 153 > 147, migrările zonelor integrate fără plafon ridicat; la integrare se pune numărul final.)
+    assert 40 <= len(mg) <= 154, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

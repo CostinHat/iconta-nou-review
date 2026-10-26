@@ -297,7 +297,6 @@ def casute(fisiere=None):
 
 #: [lotul 07.10 B] INPUT-URI cu valoare pusă de ecran (literal sau `|| "x"` în `value=`) — fiecare cu motivul, după regula corectată.
 INPUTURI = {
-    "firme.js:sn-cont-taxe": "cont contabil sugerat (446) la NIR, vizibil și modificabil — idem",
     # [lotul 13, 504 — DS cap.6 v2.104] `produse_ecran.js:pr-um` și `facturi_ecran.js:pm-tara` au ieșit: câmpurile pornesc goale (țara
     # facturii primite de mână se deduce din codul fiscal scris, `taraDinCui`)
     "declaratii.js:d398-cur": "VALOARE FIXĂ, nu alegere: CF art.314 alin.(10) / art.315 alin.(12) / art.315^2 alin.(22) — „Declarația specială de TVA se întocmește în euro” (readonly)",
