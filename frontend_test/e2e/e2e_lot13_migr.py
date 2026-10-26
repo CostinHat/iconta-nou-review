@@ -600,9 +600,11 @@ def test_def_252_tva_din_fisier_sau_calculat_si_marcat_de_verificat(patron, firm
     pg = patron.pg
     s = firma["schema"]
     pregateste_firma(patron, firma)
-    # date-de-pornire: perioada TVA la încasare a firmei (ecranul Date firmă e probat în e2e_lot10_date_firma), ca în e2e_lot12_migr3
-    sql('INSERT INTO "%s".tva_incasare_perioade (de_la, sursa) VALUES (%%s, %%s)' % s, ("2026-01-01", "manual"))
-    sql('UPDATE "%s".firma_profil SET tva_la_incasare = true WHERE id = 1' % s)
+    # perioada TVA la încasare a firmei, pe drumul aplicației (ruta ecranului Date firmă, `POST tva-incasare` -> `regim_tva_incasare.salveaza`,
+    # care scrie perioada și sincronizează indicatorul; ecranul e probat în e2e_lot10_date_firma / e2e_lot11_t)
+    _ok(_api(patron, "POST", "/tenants/%d/tva-incasare" % firma["tenant_id"], {"aplica": "da", "de_la": "2026-01-01"}),
+        "sistemul TVA la încasare de la 01.01.2026")
+    assert sql('SELECT de_la::text, pana_la FROM "%s".tva_incasare_perioade' % s) == [("2026-01-01", None)]
     _balanta_api(patron, firma, (("4111", 2300, 0), ("4428", 0, 300), ("1012", 0, 2000)))
     _pas(patron, firma, "Solduri parteneri")
     csv = ("Cont;Cod fiscal;Denumire;Nr. factură;Data;Scadență;Sumă neachitată;TVA la încasare;TVA\n"
