@@ -26,7 +26,7 @@ import time
 
 import pytest
 
-from conftest import cui_cu_control, firma_noua, linie_nota, sql
+from conftest import cui_cu_control, firma_noua, linie_nota, sql, zile_de_acum
 from e2e_bloc_a import _api, _card, _ok, pregateste_firma
 
 AZI = _dt.date.today()
@@ -195,7 +195,8 @@ def test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare(patron
     desc = "E2E 602 consumabile %d" % _tag()
     pg.click("#j-nota-noua")
     pg.wait_for_selector(_F + "#je-data", timeout=20000)
-    assert pg.input_value(_F + "#je-data") == AZI.isoformat()   # AZI-dat-de-test: data faptului, ziua în care scrie contabilul
+    # data implicită o pune aplicația ACUM (nu testul): ziua importului sau cea de acum, dacă rularea a trecut de miezul nopții
+    assert pg.input_value(_F + "#je-data") in [d.isoformat() for d in zile_de_acum(AZI)], pg.input_value(_F + "#je-data")
     patron.captura("nota_noua")
     pg.fill(_F + "#je-desc", desc)
     pg.fill(_F + "#je-doc", "PV E2E 602")
@@ -208,7 +209,8 @@ def test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare(patron
     (nid,) = [r[0] for r in sql('SELECT id FROM "%s".inregistrari WHERE descriere = %%s' % f["schema"], (desc,))]
     pg.wait_for_selector("tbody.tn-nota.val-evidentiat[data-nota-id='%d']" % nid, timeout=20000)
     patron.captura("dupa_salvare")
-    assert _txt(pg, "#j-mesaj").startswith("Ai salvat nota din %s („%s”)" % (AZI.strftime("%d.%m.%Y"), desc)), _txt(pg, "#j-mesaj")
+    assert any(_txt(pg, "#j-mesaj").startswith("Ai salvat nota din %s („%s”)" % (d.strftime("%d.%m.%Y"), desc))
+               for d in zile_de_acum(AZI)), _txt(pg, "#j-mesaj")   # data notei = data implicită de mai sus (pusă de aplicație)
     assert "nederivat" not in patron.fereastra()
 
 
@@ -255,7 +257,7 @@ def test_def_605_618_raport_z_numele_documentului_confirmarea_sub_buton_si_data_
     assert pg.evaluate("() => !!(document.querySelector('#z-salveaza').compareDocumentPosition(document.querySelector('#z-rezultat'))"
                        " & Node.DOCUMENT_POSITION_FOLLOWING)"), "confirmarea notei nu stă sub buton"
     (desc,) = [r[0] for r in sql('SELECT descriere FROM "%s".inregistrari WHERE numar = %%s' % f["schema"], ("Z-8000000605-%s" % nr,))]
-    assert desc == "Vânzări din raportul Z nr %s din %s, casa 8000000605" % (nr, AZI.strftime("%d.%m.%Y")), desc
+    assert desc == "Vânzări din raportul Z nr %s din %s, casa 8000000605" % (nr, AZI.strftime("%d.%m.%Y")), desc   # AZI-dat-de-test: #z-data
     assert not re.search(r"\d{4}-\d{2}-\d{2}", desc), desc
     pg.wait_for_selector("#z-descarcare .pf-frand", timeout=20000)
     assert "Raport Z nr %s · casa 8000000605" % nr in _txt(pg, "#z-descarcare") and "Z-8000000605" not in _txt(pg, "#z-descarcare")
@@ -323,7 +325,7 @@ def test_def_589_sinteticul_refuzat_inainte_de_salvare_si_contul_nelegal_se_ster
     assert sql('SELECT count(*) FROM "%s".plan_conturi WHERE simbol = \'731\'' % s) == [(0,)]
     r = _api(patron, "POST", "/tenants/%d/plan-conturi" % f["tenant_id"], {"simbol": "731", "denumire": "Test cont nelegal"})
     assert r["status"] >= 400 and "e sintetic" in str(r["json"]), r
-    sql('INSERT INTO "%s".plan_conturi (simbol, denumire, tip) VALUES (\'731\', \'Test cont nelegal\', \'Nedeterminat\')' % s)   # date de pornire
+    sql('INSERT INTO "%s".plan_conturi (simbol, denumire, tip) VALUES (\'731\', \'Test cont nelegal\', \'Nedeterminat\')' % s)   # date-de-pornire: contul sintetic scris înainte de reparație (ecranul și API-ul îl refuză acum)
     patron.firma(f["nume"])
     _card(patron, "planconturi", "#pcf-adauga")
     pg.fill(_F + "#pcf-cauta", "731")

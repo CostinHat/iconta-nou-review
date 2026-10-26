@@ -72,6 +72,11 @@ TIP_FORMA = {
     "opanaf_2194_2025_d394.txt": "forma_la_data",           # ordinul ANAF publicat (PDF), aplicabil de la 01.08.2025 (art.III)
     "ordin_2736_2025__anexa_306268.html": "forma_la_data",  # anexa ordinului din 23.12.2025, documentul separat de pe portal
     "oug_24_2026_contributie_solidaritate.txt": "forma_la_data",  # forma din MO a OUG 24/2026 (portal 309088), act punctual
+    # [26.10.2026, lotul 13] fișierele constantelor ancorate ale lotului, intrate în registru —
+    "hg_1_2016_norme_cod_fiscal.html": "consolidat_la_zi",   # normele CF, forma consolidată (portal 307847, consolidare 31.03.2026); pragurile
+                                                             # D318 400 / 50 euro (pct.73 alin.(13)-(14)) n-au succesor
+    "legea_53_2003_codul_muncii.txt": "consolidat_la_zi",    # Codul muncii, forma consolidată (portal 309240, consolidare 27.04.2026); 8 ore pe
+                                                             # zi la normă întreagă (art.112 alin.(1)) n-are succesor
 }
 
 SURSE = "anaf_surse"

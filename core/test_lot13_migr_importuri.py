@@ -126,9 +126,11 @@ def test_252_cu_regimul_tva_ia_suma_din_fisier_si_marcheaza_numai_calculata(monk
 
 def test_252_suma_tva_peste_restul_facturii_opreste_citirea():
     rau = FISIER_252.decode("utf-8").replace(";1210,00;da;210,00", ";1210,00;da;2100,00").encode("utf-8")
-    with pytest.raises(Exception) as e:
+    with pytest.raises(sp._it.FisierNecitit) as e:   # refuzul de citire a fișierului (nu orice excepție)
         sp.extrage(rau, "situatie.csv")
-    assert "suma TVA 2.100,00 lei nu poate fi mai mare decât restul facturii (1.210,00 lei)" in str(e.value)
+    unde, motiv = e.value.args[0].split(": ", 1)   # „Rândul N (partener, factura): <motiv>”
+    assert unde.startswith("Rândul ") and motiv.startswith(
+        "suma TVA 2.100,00 lei nu poate fi mai mare decât restul facturii (1.210,00 lei)"), e.value.args
 
 
 # ── 590 + 668: articolele ─────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -175,7 +177,10 @@ def test_668_previzualizarea_eticheteaza_intai_iar_confruntarea_tot_numara_randu
 def test_668_contul_de_cheltuiala_dedus_se_spune_o_singura_data():
     sem = aa.semnale_randuri([_art(2, "A", 1, 1), _art(3, "B", 1, 1), _art(4, "C", 1, 1)])
     assert len(sem) == 1 and sem[0]["rand"] == 2
-    assert sem[0]["mesaj"] == "contul de cheltuială 607 e dedus din contul de stoc 371 (lipsea din fișier) — pe 3 rânduri: 2, 3, 4"
+    # nu pe egalitatea textului întreg (garda mesajelor afișabile): perechea de conturi la început, rândurile o singură dată, la sfârșit
+    m = sem[0]["mesaj"]
+    assert m.startswith("contul de cheltuială 607 e dedus din contul de stoc 371") and m.endswith("pe 3 rânduri: 2, 3, 4") \
+        and m.count("2, 3, 4") == 1, m
 
 
 # ── 585: salariul sub minim ──────────────────────────────────────────────────────────────────────────────────────────────────

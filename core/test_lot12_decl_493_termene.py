@@ -44,7 +44,9 @@ def test_def_493_d407_nu_primeste_un_termen_ghicit():
 
 def test_def_493_tipurile_ramase_in_datorie_sunt_cele_numite():
     from core.test_datorie import _FARA_TERMEN_07_10, _fara_termen
-    assert _fara_termen() == _FARA_TERMEN_07_10   # 17 tipuri, fiecare cu motivul în xfail-ul din core/test_datorie.py
+    # 11 tipuri (17 până la 660, lotul 13: cele șase formulare înlocuite de Declarația unică au ieșit din dispecer), fiecare cu motivul în
+    # xfail-ul din core/test_datorie.py
+    assert _fara_termen() == _FARA_TERMEN_07_10
 
 
 # ── datele existente: elementele din coadă cu „anul AAAA” (core/migrare_termene_anuale.py), pe baza de test, ROLLBACK ─────────────────

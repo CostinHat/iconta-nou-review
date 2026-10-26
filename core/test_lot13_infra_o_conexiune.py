@@ -183,6 +183,10 @@ def test_rutele_control_fiscal_lucreaza_pe_o_singura_conexiune(firma_efemera, mo
     monkeypatch.setattr(auth_api, "schema_tenant", lambda conn, uid, tenant_id: SCH if tenant_id == tid else None)
     ctx = {"uid": 0, "firm": af, "nume": "proba C201", "rol": "admin_firma"}
     an = 2000   # perioadă evident nereală (cea mai veche primită de `_perioada`), pe o firmă sintetică — nicio coliziune cu date reale
+    # un verificator care CADE devine constatarea gri „… — eșuată” prin `_constatare_esuata`: se numără apelurile (structura), nu textul
+    from core import uc_comun as _ucc
+    esuate, _orig = [], _ucc._constatare_esuata
+    monkeypatch.setattr(_ucc, "_constatare_esuata", lambda eticheta, *a, **k: esuate.append(eticheta) or _orig(eticheta, *a, **k))
     with db.o_singura_conexiune() as incalcari:
         det = ucf.control_fiscal_detaliu(tid, ctx)
         aud = ucf.control_fiscal_audit_preluare(tid, ctx)
@@ -194,7 +198,7 @@ def test_rutele_control_fiscal_lucreaza_pe_o_singura_conexiune(firma_efemera, mo
     assert incalcari == [], "a doua conexiune ținută deodată pe un drum Control fiscal:\n" + "\n".join(incalcari)
     assert det["stare"] in ("verde", "galben", "rosu", "gri") and "contabil" in det, det.keys()
     assert "ADouaConexiune" not in repr(det), "o verificare a ecranului a căzut pe garda C201 (înghițită ca constatare)"
-    assert not [c for c in det["contabil"] if "eșuată" in str(c.get("eticheta"))], [c.get("eticheta") for c in det["contabil"]]
+    assert esuate == [], esuate   # nicio verificare a ecranului n-a căzut (înainte: căutarea „eșuată” în etichetele constatărilor)
     assert aud.get("data") and ist["rulari"] >= 1
     assert ant["marcate"] == 1 and ant["sarite"] == []              # 01/2000 e dinaintea preluării (firma e din 2020): se marchează
     assert ext["ok"] and ext["recipisa"] == "C201"

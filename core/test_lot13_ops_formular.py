@@ -59,7 +59,12 @@ def test_decontul_are_salariatul_zilele_deplasarea_si_cota_fiecarei_cheltuieli()
 
 def test_moneda_reevaluarii_se_alege_din_lista():
     js = _js("reevaluare_ecran.js")
-    assert 'maxlength="3"' not in js and "selectMoneda(" in js and 'from "./operatiuni_ecran.js' in js
+    # structura importurilor modulului (nu un sub-șir): lista monedelor vine din motorul Operațiunilor (aceeași ca la factură), iar
+    # câmpul monedei e un `<select>` construit din ea (`selectMoneda`, chemată pe rândurile reevaluării)
+    importate = {x.strip() for grup in re.findall(r'import\s*\{([^}]*)\}\s*from\s*"\./operatiuni_ecran\.js(?:\?v=[0-9a-f]+)?"', js)
+                 for x in grup.split(",")}
+    assert 'maxlength="3"' not in js and {"MONEDE"} <= importate, importate
+    assert len(re.findall(r"\bselectMoneda\(", js)) >= 2 and re.search(r"const selectMoneda = [^\n]*<select", js)
 
 
 def test_registrul_mf_are_aceleasi_butoane_pe_fiecare_rand():

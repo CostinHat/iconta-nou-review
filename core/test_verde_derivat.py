@@ -94,8 +94,10 @@ def test_fratii_deja_corecti_raman_corecti():
     # sub 4,5:1). Forma CONDIȚIONATĂ — pe care o calibrează testul — e aceeași; s-a schimbat doar tokenul.
     assert 't.respinse ? "var(--rosu)" : null' in t, \
         "cabinet.js: fratele conditionat `respinse` a disparut — calibrarea nu mai tine"
-    assert 't.in_asteptare ? "var(--galben-text)" : null' in t, \
-        "cabinet.js: fratele conditionat `in_asteptare` a disparut"
+    # [lotul 13, deficiența 568] „de validat” = coada ÎNTREAGĂ de acum (`deValidat`, centralizatorul fără interval), nu `t.in_asteptare`
+    # al zilei — aceeași formă CONDIȚIONATĂ, altă sursă a cifrei
+    assert 'deValidat ? "var(--galben-text)" : null' in t, \
+        "cabinet.js: fratele conditionat `de validat` (`deValidat`) a disparut"
     c = _citeste("capacitate.js")
     assert 'cab.de_validat ? "var(--galben-text)" : null' in c, \
         "capacitate.js: fratele conditionat `de_validat` a disparut"

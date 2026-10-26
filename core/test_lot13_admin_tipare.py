@@ -39,6 +39,7 @@ def cur():
 
 
 def _rand(b, fel, tip, perioada, creat_de, creat_la, stare="la_senior", respins_de=None, respins_la=None, motiv=None, payload=None):
+    # fixtura-sintetica-ok: cabinet sintetic, perioadele numai 2099 (`_scenariu`), tranzacție anulată de fixtura `cur`
     b.c.execute("INSERT INTO public.declaratii_coada (cabinet_id, tenant_id, fel, tip, perioada, stare, payload, creat_de, creat_de_id, "
                 "creat_la, respins_de, respins_de_id, respins_la, motiv_respingere) "
                 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",

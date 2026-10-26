@@ -41,8 +41,33 @@ _MOTIV_440_W3A = ("Deficiența 440 (comanda Costin 11.1 pct.16, verbatim în DEC
 _MOTIV_440 = ("Lotul 11, deficiența 440 (comanda Costin 11.1 pct.16): toate erorile deodată, fiecare lângă câmpul ei — `erori_campuri`, "
               "același cod.")
 
+#: [lotul 13, reparațiile finale înaintea porții] motivele comune ale contractului schimbat de zonele admin / infra / portal
+_MOTIV_L13_608 = ("Lotul 13, deficiența 608 (comanda Costin 13.1, zona admin): mesajele de autentificare cu majusculă și propoziție întreagă, în "
+                  "limba contabilului (`auth_api`, `uc_public`, `main.py`, `drepturi.py`, `nucleu.py`); același cod HTTP.")
+_MOTIV_L13_645 = ("Lotul 13, deficiența 645 (comanda Costin 13.1, decisă de Costin și arhitect pe 24.10.2026): suspendarea cabinetului cu motiv din "
+                  "lista fixă (`uc_admin.MOTIVE_SUSPENDARE`), nota internă, jurnalul (`public.suspendari_cabinet`) și reactivarea; logarea, "
+                  "linkul fără parolă și sesiunea deschisă spun „Cabinetul este suspendat. Motivul: …” (`uc_admin.mesaj_suspendare` / "
+                  "`text_suspendare_cabinet`).")
+_MOTIV_L13_646 = ("Lotul 13, deficiența 646 a (comanda Costin 13.1, decizia Costin 24.10): anunțul cere destinatari expliciți (toate cabinetele "
+                  "sau cele alese) — ramura „nimic = toți” scoasă —, iar trimiterea e una (`lot`, `repo_admin.leaga_trimiterea`), cu retragere.")
+_MOTIV_L13_C201 = ("Lotul 13, C201 (zona infra): o cerere lucrează pe O SINGURĂ conexiune — conexiunea a doua (schema firmei / `public`) s-a "
+                   "unit cu prima (`db.get_conn(schema)` caută „schema firmei, public”); garda: `core/test_lot13_infra_o_conexiune.py`.")
 #: abaterile acceptate de la „mesaj neschimbat", fiecare cu motivul ei. Orice alta abatere pica.
 ABATERI = {
+    # [lotul 13, reparațiile finale înaintea porții] același cod HTTP, mesajul rescris (608 / 645 / 646 / 560)
+    ("cere_api_key", "'lipsă X-Api-Key'"): _MOTIV_L13_608,
+    ("cere_api_key", "'cheie invalidă sau revocată'"): _MOTIV_L13_608,
+    ("cere_client", "'doar clienții accesează portalul'"): _MOTIV_L13_608,
+    ("cere_context", "'lipsă token (Authorization: Bearer ...)'"): _MOTIV_L13_608,
+    ("cere_context", "ctx.get('mesaj', 'token invalid')"): _MOTIV_L13_608,
+    ("cere_cabinet", "'clienții folosesc portalul, nu rutele de cabinet'"): _MOTIV_L13_608,
+    ("cere_cabinet", "'Cabinetul este suspendat. Contactați furnizorul.'"): _MOTIV_L13_645,
+    ("magic_login", "'link invalid'"): _MOTIV_L13_608 + " Linkul nevalid: `MESAJ_LINK_INVALID`.",
+    ("magic_login", "rez.get('mesaj', 'cont inactiv')"): _MOTIV_L13_645,
+    ("magic_login", "'link expirat sau folosit'"): _MOTIV_L13_608 + " Contul inactiv: „Contul nu e activ.”.",
+    ("activare_cont", "'link de activare invalid sau expirat'"): (
+        "Lotul 13, deficiența 560 (zona portal): linkul de activare spune DE CE nu mai e valabil (folosit / expirat / necunoscut — "
+        "`uc_public.motiv_link_nevalid`, același cu `magic_login`); același 400."),
     # [lotul 12, clasa 598] două mesaje noi, câte unul pe fiecare drum REGES (trimiterea / citirea răspunsurilor) — deci abatere pe funcție
     ("reges_trimite_salariat", "f'REGES: {e}'"): (
         "Lotul 12, clasa 598 (eșecul canalului extern spus contabilului, fără textul excepției): același 502 — „REGES nu a răspuns, deci "
@@ -173,6 +198,18 @@ _MOTIV_L13_OPS = ("Lotul 13, pachetul ops (comanda Costin 13.1): operațiile spe
                   "(ANAF strict la taxarea inversă), 548 (marja / aurul din stoc), 670 (plafonul diurnei în decont). Raportul: "
                   "`l13_raport/ops.md`.")
 PERECHI_ADAUGATE = {
+    # [lotul 13, reparațiile finale înaintea porții] refuzurile noi ale zonelor admin și fact
+    ("admin_cabinet_reactiveaza", "'Nu există niciun cabinet cu numărul %d.' % firm_id"): _MOTIV_L13_645 + " Cabinetul inexistent (404).",
+    ("admin_cabinet_suspenda", "'Nu există niciun cabinet cu numărul %d.' % firm_id"): _MOTIV_L13_645 + " Cabinetul inexistent (404).",
+    ("login", "_uc_admin.mesaj_suspendare(r.get('cabinet_id'))"): _MOTIV_L13_645 + " Logarea într-un cabinet suspendat (401, cu motivul).",
+    ("admin_cabinet_suspenda", "'Cabinetul %s e deja suspendat.' % nume"): _MOTIV_L13_645 + " Suspendarea a doua oară (409), pe ambele drumuri.",
+    ("magic_login", "motiv_link_nevalid(cur, tok, 'logare')"): (
+        "Lotul 13, deficiența 560 (zona portal): linkul de logare spune DE CE nu mai e valabil (folosit / expirat / necunoscut — "
+        "`uc_public.motiv_link_nevalid`, același cu `activare_cont`); 401."),
+    ("facturi_emite", "{'cod': e.cod, 'mesaj': str(e), 'erori_campuri': [{'camp': 'em-cui', 'mesaj': str(e)}]}"): (
+        "Lotul 13, C199 (decizia Costin, verbatim: „C199: cu un cod TVA invalid în VIES se refuză scutirea; factura se emite doar cu TVA "
+        "românesc.”): livrarea intracomunitară cu codul invalid în VIES e refuzată la emitere (422 `VIES_INVALID`, lângă codul clientului), "
+        "înaintea oricărei scrieri."),
     # [lotul 13, pachetul ops] refuzurile noi, fiecare lângă câmpul ei
     ('achizitie_ic', "{'mesaj': str(_mn), 'erori_campuri': [{'camp': 'op-moneda', 'mesaj': str(_mn)}]}"): _MOTIV_L13_OPS + ' 537: moneda facturii fără curs BNR.',
     ('achizitie_ic', 'str(_ci)'): _MOTIV_L13_OPS + ' 537: cursul BNR al zilei exigibilității nu e încă publicat (409, reîncearcă).',
@@ -525,6 +562,8 @@ PERECHI_MUTATE_IN_AJUTOR = {
 #: Perechi (cod, mesaj) SCOASE deliberat din funcție — refuzul nu mai are ce refuza acolo (operația lui a plecat în altă rută). Anti-vacuu:
 #: `test_SCOASELE_perechi_chiar_lipsesc`.
 PERECHI_SCOASE = {
+    ("admin_anunt_creeaza", "'mesaj gol'"): (_MOTIV_L13_646 + " Mesajul gol („Scrie mesajul anunțului.”) și destinatarii lipsă se adună "
+                                             "în colector (`ErorileFormularului`, clasa 440), fiecare lângă câmpul lui; același 422."),
     ("factura_primita_valideaza", "'XML neparsabil: %s' % str(e)[:200]"): (
         "Deficiența C120 (lotul 12): refuzul XML-ului necitibil (rescris la 172 „XML-ul nu se poate citi: …”) trece acum prin variabila "
         "`refuz`, aceeași cu refuzul facturii altei firme — perechea nouă e în PERECHI_ADAUGATE, același 422."),
@@ -597,6 +636,10 @@ _MOTIV_642_PRECOMPLETARE = ("Lotul 12, deficiența 642 (clasa): precompletarea A
                             "căderea consemnată; fără el, o eroare de bază strica tranzacția creării, iar `commit`-ul o anula tăcut. Gardul: "
                             "core/test_lot12_form2_register.py")
 APELURI_INLOCUITE = {
+    # [lotul 13, reparațiile finale înaintea porții]
+    ("coada_aproba", "_are_permisiune"): ("_are_permisiune_pe", _MOTIV_L13_C201 + " Permisiunea se întreabă pe conexiunea ținută."),
+    ("portal_cashflow", "aloca_sold"): ("din_facturi", 'Lotul 13, deficiențele 553 + 559 (zona portal): previziunea clientului se face din facturile deschise VALIDATE, fiecare la scadența ei (`cashflow.din_facturi`, `repo_portal.facturi_deschise_validate`), nu din soldul balanței împărțit „de la cele mai noi” (`cashflow.aloca_sold`, scos).'),
+    ("portal_cashflow", "pentru_cashflow"): ("facturi_deschise_validate", 'Lotul 13, deficiențele 553 + 559 (zona portal): previziunea clientului se face din facturile deschise VALIDATE, fiecare la scadența ei (`cashflow.din_facturi`, `repo_portal.facturi_deschise_validate`), nu din soldul balanței împărțit „de la cele mai noi” (`cashflow.aloca_sold`, scos).'),
     ('achizitie_agricultor', 'adauga_linie'): ('adauga_linie_partener', _MOTIV_L13_OPS + ' 549: agricultorul e partenerul rândului 401.'),
     ('tenant_amortizare', 'adauga_linie_cheltuiala_amortizare'): ('adauga_linie', _MOTIV_L13_OPS + ' 522: rândul amortizării poartă activul (`mf_note.adauga_linie`).'),
     ('vanzare_aur_investitii', 'adauga_linie_venit_marfa'): ('adauga_linie_partener', _MOTIV_L13_OPS + ' 548: clientul pe rândul 4111.'),
@@ -812,6 +855,10 @@ _MOTIV_LOTUL_4 = ('Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „L
                   'contul nou (`_dupa_cont_nou`, `_anunta_cabinet_nou`) sunt ajutoare comune cu confirmarea (`confirma_inregistrarea`). '
                   'Trimiterea emailului: `observare.trimite_email_html_sau_semnaleaza` (C34).')
 APELURI_EXTRASE_IN_AJUTOARE = {
+    # [lotul 13, C201] permisiunea fără bază (superadmin, contextul) și citirea ei pe conexiunea dată au plecat în două ajutoare
+    "_are_permisiune": ((("core/uc_comun.py", "_permisiune_fara_baza"), ("core/uc_comun.py", "_are_permisiune_pe")),
+                        _MOTIV_L13_C201 + " `_are_permisiune` citește pe conexiunea ei numai când nu e chemată dintr-o tranzacție; "
+                                          "corpul (contextul, interogarea `public.users`) e în `_permisiune_fara_baza` / `_are_permisiune_pe`."),
     "factura_primita_valideaza": ((("core/uc_factura_primita.py", "cont_facturii"), ("core/uc_factura_primita.py", "valideaza"),
                                    ("core/uc_tenants.py", "_factura_importata")), _MOTIV_477),
     "chitanta_emite": ((("core/uc_tenants.py", "chitanta_serie_sau_refuz"), ("core/uc_tenants.py", "chitanta_scrie")), (
@@ -846,8 +893,24 @@ _MOTIV_CF_CUI = ("Lotul 11, decizia Costin 10.3 pct.4 (CUI-ul fără „RO” ș
 _MOTIV_C84 = ("C84 (b), decizia Costin 23.10.2026: livrarea intracomunitară de bunuri trece pe „Emite factură”; Operațiuni rămân "
               "pentru servicii, deci verificarea dovezii transportului și contul bunurilor ies din `vanzare_ic`.")
 APELURI_REDUSE = {
+    # [lotul 13, reparațiile finale înaintea porții] C201: a doua conexiune a cererii s-a unit cu prima
+    ('control_fiscal_audit_preluare', 'get_conn'): (1, _MOTIV_L13_C201),
+    ('control_fiscal_detaliu', 'get_conn'): (1, _MOTIV_L13_C201),
+    ('pachet_genereaza', 'get_conn'): (1, _MOTIV_L13_C201),
+    ('pachet_preview', 'get_conn'): (1, _MOTIV_L13_C201),
+    ('pachet_rezumat', 'get_conn'): (1, _MOTIV_L13_C201),
+    ('pachet_trimite', 'get_conn'): (1, _MOTIV_L13_C201),
+    ('portal_acasa', 'get_conn'): (1, _MOTIV_L13_C201),
+    ('portal_povesti', 'get_conn'): (1, _MOTIV_L13_C201),
+    ('portal_acasa', 'get'): (3, "Lotul 13, deficiența 554 (zona portal): panoul clientului nu mai poartă declarațiile (restanțele, de urmărit, "
+                                 "datorate, depuse — „restanțele declarațiilor rămân alertă la cabinet”), ci ce are clientul de plătit și "
+                                 "până când (`de_platit`)."),
+    ('admin_anunt_creeaza', 'adauga_anunt'): (2, _MOTIV_L13_646 + " Cele trei ramuri (toate / un cabinet / implicit) au devenit o buclă "
+                                                                    "peste destinatarii aleși, cu un singur apel."),
     ('achizitie_taxare_inversa', 'get'): (1, _MOTIV_L13_OPS + ' 544: `furnizor_platitor_tva` nu se mai citește.'),
-    ('decontare_valuta', 'get'): (3, _MOTIV_L13_OPS + ' 524: moneda, contul de terț și cursul de evidență vin de la factură, nu din cerere.'),
+    ('decontare_valuta', 'get'): (2, _MOTIV_L13_OPS + ' 524: moneda, contul de terț și cursul de evidență vin de la factură, nu din cerere '
+                                     '(−3); [reparațiile finale, peticul garzi_4, C201] +1: `factura_id` citit și înaintea tranzacției, ca moneda '
+                                     'facturii să se afle pe o conexiune scurtă și cursul BNR să se aducă fără conexiune ținută.'),
     ('decontare_valuta', 'cere_cont'): (1, _MOTIV_L13_OPS + ' 524: contul de terț e al facturii.'),
     ('jurnal_marja', 'sum'): (2, _MOTIV_L13_OPS + ' 548: jurnalul citește prețurile din `vanzari_din_stoc`.'),
     ('jurnal_marja', 'values'): (2, _MOTIV_L13_OPS + ' 548: idem.'),
@@ -876,6 +939,15 @@ APELURI_REDUSE = {
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    ('portal_cashflow', 'str'): ("Lotul 13, deficiențele 553 + 559 (zona portal): conversiile soldurilor balanței pentru `cashflow.aloca_sold` "
+                                 "au ieșit odată cu el (previziunea citește `rest_lei` al facturilor validate)."),
+    ('portal_cashflow', 'float'): ("Lotul 13, deficiențele 553 + 559 (zona portal): conversia `float(...)` a soldului balanței împărțit de "
+                                   "`cashflow.aloca_sold` a ieșit odată cu el (previziunea citește `rest_lei` al facturilor validate)."),
+    ('admin_anunt_creeaza', 'HTTPException'): (_MOTIV_L13_646 + " Refuzurile (mesajul gol, destinatarii lipsă) se adună în colector "
+                                                "(`ErorileFormularului.refuza()`, clasa 440), deci nu mai e un `raise` în corp."),
+    ('portal_documente_luni', 'declaratii_depuse'): (
+        "Lotul 13, deficiența 555 (zona portal): lunile balanțelor nu mai poartă și declarațiile depuse — cardul „Declarații depuse” "
+        "le citește dintr-un singur loc (`portal_api.declaratii_depuse`, ruta `/portal/declaratii`), cu perioada, data și recipisa."),
     ('achizitie_taxare_inversa', 'lower'): _MOTIV_L13_OPS + ' 544: bifa „Furnizor plătitor TVA” scoasă — verdictul ANAF strict (`_platitor_tva_strict`).',
     ('achizitie_taxare_inversa', 'platitor_tva_freeze'): _MOTIV_L13_OPS + ' 544: calitatea furnizorului cerută STRICT de la ANAF (`_platitor_tva_strict`), nu best-effort.',
     ('nota_chirie', 'nota_chirie_incasata'): _MOTIV_L13_OPS + ' 531: chiria încasată e factura emisă (`_emite_catre` -> `emite_factura`), nu nota scrisă de mână.',
@@ -885,7 +957,8 @@ APELURI_SCOASE = {
     ('nota_inventariere', 'amortizat_la_data'): _MOTIV_L13_OPS + ' 518: amortizarea la data casării se socotește în `_casare`.',
     ('nota_lichidare', 'partaj'): _MOTIV_L13_OPS + ' 533: partajul din solduri și din structura asociaților (`_partaj_lichidare`).',
     ('nota_productie', 'nota_vanzare'): _MOTIV_L13_OPS + ' 510: vânzarea produselor e factura emisă cu produsul din stoc (`_emite_catre`, `descarca_factura`).',
-    ('nota_provizion_ep', 'cere_cont'): _MOTIV_L13_OPS + ' 514: contul de ajustare a stocurilor se alege din lista 391–398 (`provizioane.CONTURI_AJUSTARE_STOC`).',
+    # [lotul 13, reparațiile finale] ('nota_provizion_ep', 'cere_cont') NU mai e scos: contul de ajustare ales din lista 391–398 (514) se
+    # confruntă iar cu planul firmei (`cont_valid.cere_cont`, garda core/test_cont_din_corp_normalizat.py), fără implicitul 397 (504)
     ('nota_sponsorizare_ep', 'credit_sponsorizare'): _MOTIV_L13_OPS + ' 532: creditul îl calculează D101 la nivelul anului; nota spune plafonul (0,75% din cifra de afaceri).',
     ('nota_sponsorizare_ep', 'items'): _MOTIV_L13_OPS + ' 532: cifra de afaceri și impozitul nu mai vin din cerere.',
     ('nota_sponsorizare_ep', 'isinstance'): _MOTIV_L13_OPS + ' 532: idem — calculul creditului din cerere a ieșit.',

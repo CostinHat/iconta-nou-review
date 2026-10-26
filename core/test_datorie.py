@@ -381,8 +381,9 @@ def test_datorie_d212_cass22_retinuta_peste_datorata():
 # Coada nu mai cade — pune perioada de raportare („anul 2025”) în locul unui termen ghicit —, dar termenul lipsește. Ratchetul de
 # mai jos oprește CREȘTEREA listei; datoria cere golirea ei, tip cu tip, cu textul legii.
 # [deficiența 493, lotul 12] 12 tipuri sursate (core/scadente.py `_ANUALE` + TEMEI_TERMEN); rămân 17, fiecare cu motivul în xfail-ul de jos.
-_FARA_TERMEN_07_10 = {"d106", "d130", "d169", "d169n", "d200", "d201", "d213", "d214", "d216", "d220", "d221", "d223", "d393",
-                      "d403", "d407", "d600", "d603"}
+# [26.10.2026, lotul 13, deficiența 660] 17 -> 11: D200, D201, D220, D221, D223, D600 au ieșit din dispecer (formulare înlocuite de Declarația
+# unică, `declaratii_api.FORMULARE_INLOCUITE`, CF art.122 alin.(1)) — nu mai sunt tipuri de depus, deci nici datorie de termen
+_FARA_TERMEN_07_10 = {"d106", "d130", "d169", "d169n", "d213", "d214", "d216", "d393", "d403", "d407", "d603"}
 
 
 def _fara_termen():
@@ -396,7 +397,7 @@ def test_niciun_tip_nou_fara_termen_de_depunere():
     assert sorted(_fara_termen() - _FARA_TERMEN_07_10) == []
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 07.10.2026, redusă la 493 (23.10.2026) de la 29 la 17 tipuri (temei neverificat: termenul de depunere): termen pe EVENIMENT, nu pe perioadă — D106 (OPANAF 1292/2014: „până la data de 25 a lunii următoare aprobării repartiției profitului”), D169 (Legea 287/2009 art.780 alin.(1): „în termen de o lună de la data încheierii”), D213 (OPANAF 216/2023: „în maximum 10 zile de la data transferului”); NEGĂSIT în corpus — D169n, D214, D603; formular preluat de D212 sau abrogat (OPANAF 507/2026) — D200, D201, D600, D220, D221, D223; temei de reconfirmat — D130 (impozitul la țiței nu mai e în CF 227/2015), D393 (CF art.324 alin.(6), suspendat până la 31.12.2026 de OUG 115/2023 art.LXII), D403 (ordinul formularului lipsește), D216 (CF art.500^3 alin.(2): 30 septembrie la clădiri, 31 decembrie la autoturisme — două termene pe un formular), D407 (CPF art.61^2 alin.(2): termenele se aprobă prin ordin comun ANAF–ASF, absent). Coada le etichetează cu perioada de raportare („anul 2025”)")
+@pytest.mark.xfail(strict=True, reason="DATORIE 07.10.2026, redusă la 493 (23.10.2026) de la 29 la 17 tipuri și la 660 (26.10.2026, lotul 13) la 11 (temei neverificat: termenul de depunere): termen pe EVENIMENT, nu pe perioadă — D106 (OPANAF 1292/2014: „până la data de 25 a lunii următoare aprobării repartiției profitului”), D169 (Legea 287/2009 art.780 alin.(1): „în termen de o lună de la data încheierii”), D213 (OPANAF 216/2023: „în maximum 10 zile de la data transferului”); NEGĂSIT în corpus — D169n, D214, D603; [lotul 13, 660] formularele preluate de D212 (D200, D201, D600, D220, D221, D223) au ieșit din dispecer; temei de reconfirmat — D130 (impozitul la țiței nu mai e în CF 227/2015), D393 (CF art.324 alin.(6), suspendat până la 31.12.2026 de OUG 115/2023 art.LXII), D403 (ordinul formularului lipsește), D216 (CF art.500^3 alin.(2): 30 septembrie la clădiri, 31 decembrie la autoturisme — două termene pe un formular), D407 (CPF art.61^2 alin.(2): termenele se aprobă prin ordin comun ANAF–ASF, absent). Coada le etichetează cu perioada de raportare („anul 2025”)")
 def test_datorie_toate_tipurile_au_termen_sursat():
     assert sorted(_fara_termen()) == []
 

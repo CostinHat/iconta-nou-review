@@ -26,5 +26,7 @@ def test_scanerul_vede_formele_clasei(tmp_path):
         '<label for="c">C</label><input id="c">\n'
         '<label class="camp"><span>D</span><input id="d"></label>\n'
         '<input id="e" aria-label="E">\n'
-        '<input type="file" id="f" hidden>\n', encoding="utf-8")
-    assert _s.neetichetate(str(tmp_path)) == [("static/js/x.js", 1, "a"), ("static/js/x.js", 3, "b")]
+        '<input type="file" id="f" hidden>\n'
+        '// [comentariu] câmpul `<input type="number">` al browserului citește punctul ca zecimală\n'
+        'const h = `<input id="g">`; // codul de pe rând, nu comentariul, desenează câmpul\n', encoding="utf-8")
+    assert _s.neetichetate(str(tmp_path)) == [("static/js/x.js", 1, "a"), ("static/js/x.js", 3, "b"), ("static/js/x.js", 9, "g")]

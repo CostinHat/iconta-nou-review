@@ -23,7 +23,22 @@ import re
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 #: 22.10.2026, după W3a (B1–B20, B25–B26, A1–A4) și W3b (B21–B23, B27–B31, B35–B37, B39), măsurat cu `_functii_clasei(RAD)`
-PRAG = 238
+PRAG = 242
+# [26.10.2026, loturile 12 + 13, reparațiile finale înaintea porții] 238 -> 242, măsurat pe ramura integrată cu peticele: 5 au ieșit
+# (`common.cota`, `comodat_chirii.nota_chirie_incasata` — 531, `intracomunitar.valideaza_lic` — C84, `productie.nota_vanzare` — 510,
+# `uc_tenants.factura_primita_valideaza` — C120), 2 noi au trecut pe colector chiar acum (`uc_admin.admin_anunt_creeaza` 646 și
+# `admin_cabinet_suspenda` 645: câmpuri independente, refuzul adunat — `core/test_lot13_admin_suspendare.py::test_440_…`), iar 9 noi
+# rămân, NUMITE: niciuna nu validează câmpuri independente ale unui formular — refuzurile lor sunt în ȘIR (al doilea nu se poate
+# judeca înaintea primului) sau de STARE:
+#   - `ciorne_formular.ciorna_scrie` (lotul 12): forma ciornei, apoi mărimea ei (aceeași valoare, citită întâi);
+#   - `clienti_api._sterge_fisa` (lotul 12): fișa inexistentă / fișa cu facturi — stări, nu câmpuri;
+#   - `diurna_salariat._suma` (lotul 13, 670): suma nu e număr / suma nu e pozitivă — aceeași valoare;
+#   - `diurna_salariat.adauga_excedent` (lotul 13, 670): API intern chemat de decont (referința, luna, salariatul, nota) — nu e un formular;
+#   - `facturi_recurente.emite_unul` (lotul 13, 680): șablonul inexistent / nescadent azi — stări;
+#   - `numere.numar_ro` (lotul 13, 655): o singură valoare scrisă de om, refuzată cu același mesaj pe două forme;
+#   - `uc_tenants._emite_catre` (lotul 13, 530 / 531): emiterea refuzată / nota facturii nescrisă — în șir;
+#   - `uc_tenants._partaj_lichidare` (lotul 13, 533): data înaintea soldurilor / nimic de împărțit / fără asociați — stări ale firmei;
+#   - `uc_tenants.operatiuni_date` (lotul 13): parametrii unei LISTE (data, tipul, ce) — o citire, nu un formular.
 
 _REFUZ = re.compile(r'raise\s+_erori\.(?:DateInvalide|CerereGresita)\(|raise\s+ValueError\(|'
                     r'raise\s+HTTPException\(\s*(?:status_code\s*=\s*)?(?:400|422)\b|'

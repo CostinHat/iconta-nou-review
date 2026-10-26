@@ -131,7 +131,13 @@ BASELINE = {
     # 607, `nir_legare.plan_ajustare_cv`, nu în fișă), aceeași clasă cu „ieșire peste stoc”. Creșterea se înregistrează, nu se ascunde.
     "core/stocuri_cv.py": 8,
     "core/tva_marja.py": 3,
-    "core/tva_marja_turism.py": 7,
+    # 7 -> 8 la 26.10.2026 (lotul 13, reparațiile finale): +1 refuz de FORMĂ, marcat lângă el — cota componentei lipsă (lotul 13: fără
+    # cota 21 implicită, nicio valoare fiscală presupusă); cota însăși o dă omul, refuzul nu aplică o normă
+    "core/tva_marja_turism.py": 8,
+    # NOU la 26.10.2026 (lotul 13, deficiența 585): modulul a intrat în domeniu — citează acum Codul muncii art.164 / HG 146/2026 pentru
+    # salariul minim. Cele 3 refuzuri de dinainte trec din umbră aici, toate de FORMĂ, marcate lângă ele: fișierul fără coloana nume / CNP,
+    # cererea fără rânduri, importul în care niciun rând nu e bun (motivele rândurilor sunt ale lor, cu temeiul acolo unde există)
+    "core/salariati_import_api.py": 3,
     # [lotul 10, 20.10.2026, deficiența 429] `uc_comun.py` INTRAT ÎN DOMENIU, nu refuzuri noi — controlul de închidere „Reevaluare valută”
     # citează `reevaluare_valuta.TEMEI` (OMFP 1802/2014 pct.325), deci modulul „citează legea”, iar cele 23 de refuzuri de dinainte (toate
     # din HEAD-ul lotului 9) trec din umbră aici. Toate sunt de FORMĂ sau de stare a aplicației: da/nu, lună / an / exercițiu în afara

@@ -9033,9 +9033,9 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1132 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1182 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 1093
+### `core/` — 1142
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9862,6 +9862,55 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot12_ui2_verificator.py` — [lotul 12, pachetul ui2] Regulile noi ale verificatorului — REZUMAT_CASETA (621) și TABEL_NOTE (617 / 622).
 - `core/test_lot12_verif_dovezi.py` — Lotul 12, comanda Costin 12.1 pct.13–14, pachetul `verif`: forma dovezilor și a mutațiilor pachetului, verificată fără browser.
 - `core/test_lot12_zsterge_c139.py` — Lotul 12, deficiența C139 — „Șterge raportul Z”: raportul Z nevalidat (importat din AMEF sau scris de mână) se șterge de pe rândul lui
+- `core/test_lot13_admin_suport.py` — Lotul 13 (comanda 13.1), zona admin — Suportul: triajul AI (572, 573), răspunsul echipei în clopoțel (648), notificarea de control
+- `core/test_lot13_admin_suspendare.py` — Lotul 13 (comanda 13.1), zona admin — suspendarea unui cabinet cu motiv (645), anunțurile (646), invitațiile retrase (646 e).
+- `core/test_lot13_admin_tipare.py` — Lotul 13 (comanda 13.1), zona admin — tiparele de erori (574, 576), calitatea echipei fără regenerări (458.1), „Declarații lucrate”
+- `core/test_lot13_decl_logica.py` — [lotul 13, subagentul DECL] Logica numerelor 660, 650, 595, 635, 637, 653, 539, 538/591, 658 și C19, probată fără browser (e2e-ul lor e
+- `core/test_lot13_decl_rare.py` — [lotul 13, comanda 13.1 pct.5 + deficiența 656] PROBA AUTOMATĂ PE TOATE DECLARAȚIILE RARE: fiecare se generează pe date minime complete,
+- `core/test_lot13_ds_cautare.py` — Lotul 13 (comanda 13.1), deficiența 681 — căutarea globală din antet (decizia Costin 25.10.2026, excepție de la „fără funcții noi”).
+- `core/test_lot13_ds_ferestre.py` — Lotul 13 (comanda 13.1), clasele Design System 673 / 509 (fereastra de lucru), 575 (drumul din antet), 676 (listele scurte), 675
+- `core/test_lot13_ds_mesaje.py` — Lotul 13 (comanda 13.1), mesajele de refuz — 515 (caseta spune motivul), 625 (aceeași eroare o singură dată; bannerul nu pleacă
+- `core/test_lot13_ds_sume_ro.py` — Lotul 13 (comanda 13.1, grupa 1), deficiența 655 — sumele scrise în format românesc se citesc corect în TOATĂ aplicația.
+- `core/test_lot13_ds_verificator.py` — Lotul 13 (comanda 13.1), zona DS — regulile noi ale verificatorului (analiza `lot13`): 655 (SUMA_CITITA_BRUT, SUMA_TEXT), 673
+- `core/test_lot13_fact_c171.py` — Lotul 13, comanda 13.1, zona `fact` — C171 (găsită de Code la 628, lotul 12): „Migrarea `migrare_um_borderou` (C115) nu acoperă liniile
+- `core/test_lot13_fact_numerotare.py` — Lotul 13, comanda 13.1, zona `fact` — 542: „Seria F2T stabilită la prima factură a pornit de la nr. 2 (contorul vechi), deci F2T1
+- `core/test_lot13_fact_parteneri.py` — Lotul 13, comanda 13.1, zona `fact` — 632 și 640, fișele partenerilor (Clienți / Furnizori).
+- `core/test_lot13_fact_primite.py` — Lotul 13, comanda 13.1, zona `fact` — facturile primite: 545 (dublura), 546 (totalul de plată la taxarea inversă), 547 (ștergerea
+- `core/test_lot13_fact_recurente.py` — Lotul 13, comanda 13.1, zona `fact` — 680: „Facturi recurente, Șablon nou [...] lipsesc seria, scadența, perioada de valabilitate și, mai
+- `core/test_lot13_fact_um.py` — Lotul 13, zona `fact` — regula UM-ului unei linii noi (decizia sesiunii principale, 26.10.2026, pe întrebarea din raportul fact §14,
+- `core/test_lot13_fact_um_borderou.py` — Lotul 13, zona `fact` — regula UM-ului pe borderoul de achiziție (decizia sesiunii principale, 26.10.2026: „UM gol NU devine «buc» pe
+- `core/test_lot13_fact_um_recurente.py` — Lotul 13, zona `fact` — regula UM pe șablonul facturii recurente (decizia sesiunii principale, 26.10.2026, verbatim: „Șablonul recurent —
+- `core/test_lot13_fact_vies.py` — Lotul 13, comanda 13.1, zona `fact` — C199 (decizia Costin, verbatim: „C199: cu un cod TVA invalid în VIES se refuză scutirea; factura se
+- `core/test_lot13_firme2_ecrane.py` — [lotul 13, zona firme2] Ecranele din `firme.js` atinse de comanda 13.1, în Chromium, cu rutele simulate (se măsoară ecranul real, nu
+- `core/test_lot13_firme2_plan_conturi.py` — [lotul 13, zona firme2] Deficiența 589 — Plan de conturi.
+- `core/test_lot13_firme2_preluate.py` — [lotul 13, zona firme2] Deficiența 669 — soldurile pe parteneri preluate, în ofertele Casei și Băncii.
+- `core/test_lot13_firme2_raport_z.py` — [lotul 13, zona firme2] Raportul Z: 618 (explicația notei cu data ISO) și 605 (textele ecranului Raport Z).
+- `core/test_lot13_firme2_sume.py` — [lotul 13, zona firme2] Deficiența 655 în Compensări (clasa „suma cu punct de mii citită ca zecimal”).
+- `core/test_lot13_infra_blocaj.py` — Lotul 13, C201 — blocajul fără ieșire dintre o cerere care ține DOUĂ conexiuni și o operație de structură (DDL) pe aceeași firmă,
+- `core/test_lot13_infra_o_conexiune.py` — Lotul 13, C201 — GARDA: o cerere lucrează pe O SINGURĂ conexiune; conexiunile aplicației poartă termene.
+- `core/test_lot13_migr_importuri.py` — [lotul 13, comanda Costin 13.1] Importurile de migrare — verificările pe rânduri (funcții PURE, fără bază), deficiențele:
+- `core/test_lot13_migr_previzualizare.py` — GARDĂ — previzualizarea comună a importurilor de migrare (`static/js/ecrane/migrare.js`), lotul 13, comanda Costin 13.1:
+- `core/test_lot13_migr_stare_pasi.py` — [lotul 13, comanda Costin 13.1 — deficiențele 662, 663, 664, 665, 666, 668, 580, 584] STAREA PAȘILOR DE PRELUARE, PE FIRMĂ
+- `core/test_lot13_migr_tva_preluat.py` — [lotul 13, deficiența 252, decizia Costin 13.1, verbatim: „252: la facturile preluate, dacă fișierul are suma TVA, se ia suma din fișier;
+- `core/test_lot13_ops_chirie.py` — [lotul 13, deficiențele 530 / 531 / 506, comanda Costin 13.1] Chiria încasată și refacturarea utilităților, prin factura emisă.
+- `core/test_lot13_ops_decont.py` — [lotul 13, deficiența 670, comanda Costin 13.1] Decontul de deplasare / diurna (Operațiuni → Personal și deconturi).
+- `core/test_lot13_ops_dovezi.py` — [lotul 13, pachetul `ops`] Forma dovezilor pe copia firmelor de test (`frontend_test/dovada/dovezi_lot13_ops.json`) și a mutațiilor de
+- `core/test_lot13_ops_formular.py` — [lotul 13, pachetul `ops`] Gărzile formularelor din Operațiuni speciale, Mijloace fixe și Reevaluarea în valută.
+- `core/test_lot13_ops_mf.py` — [lotul 13, deficiențele 518 / 519 / 522 / 516 / 521, comanda Costin 13.1] Mijloacele fixe: activul schimbat de o notă numai prin
+- `core/test_lot13_ops_productie.py` — [lotul 13, deficiențele 510 / 548 / 551, comanda Costin 13.1] Producția, vânzarea în regim de marjă și aurul de investiții — din stoc.
+- `core/test_lot13_ops_schema.py` — [lotul 13, pachetul `ops`] Schema efemeră pe care rulează probele operațiunilor speciale (`uc_tenants`), în tranzacție anulată.
+- `core/test_lot13_ops_sold.py` — [lotul 13, deficiența 524, comanda Costin 13.1] „Orice plată, restituire sau regularizare verifică soldul contului pe care îl stinge,
+- `core/test_lot13_portal_p1_cifre.py` — Lotul 13, comanda Costin 13.1 (verbatim în DECIZII „Comanda 13.1”) — portalul clientului, cifrele (fork P1 al subagentului PORTAL).
+- `core/test_lot13_portal_p1_forme.py` — Lotul 13 (comanda Costin 13.1), fork P1 al subagentului PORTAL — forma dovezilor și a mutațiilor (ca `test_lot12_verif_dovezi.py`):
+- `core/test_lot13_portal_p1_link.py` — Lotul 13, comanda Costin 13.1 (verbatim în DECIZII „Comanda 13.1”), deficiența 560 (fork P1 al subagentului PORTAL) — linkurile de acces.
+- `core/test_lot13_portal_p2_notificari.py` — Lotul 13, comanda Costin 13.1 (verbatim în DECIZII „Comanda 13.1”), pachetul PORTAL / P2 — notificări, sinteza zilnică, chei API, WhatsApp.
+- `core/test_lot13_portal_p3_asociati.py` — [lotul 13, comanda 13.1] Deficiența 526 — Date firmă → Asociați: mesajul de total al cotelor.
+- `core/test_lot13_portal_p3_ecrane.py` — [lotul 13, comanda 13.1, subagentul PORTAL — partea Date firmă / SPV] Ecranele reale, în Chromium, cu rutele simulate (harness-ul din
+- `core/test_lot13_portal_p3_tva_incasare.py` — [lotul 13, comanda 13.1] Deficiența 541 — Date firmă → TVA la încasare.
+- `core/test_lot13_portal_postmark.py` — [lotul 13, comanda 13.1 pct.1 — Postmark] Emailurile tranzacționale (confirmare cont, resetare parolă, link de logare, invitații, alerte)
+- `core/test_lot13_sal_alegeri.py` — GARD lotul 13 (676 + cap.17 „fapte fiscale fără default tacit”): listele scurte din ferestrele salarizării folosesc mecanismul COMUN al
+- `core/test_lot13_sal_e2e_ordine.py` — GARD lotul 13 (C89 pe e2e-ul integrat, 26.10.2026): compoziția netului se citește din fereastra salariatului, deschisă din rândul
+- `core/test_lot13_sal_salarizare.py` — Lotul 13 (comanda Costin 13.1), salarizarea: 671 (zilele lunii dintr-o singură sursă), 679 (suma orelor suplimentare calculată),
 - `core/test_luna_preluare.py` — GARDA deciziei Costin 08.10.2026 §6 pct.4 (verbatim în DECIZII):
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
@@ -10131,7 +10180,7 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 39
+### `scripts/` — 40
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -10151,6 +10200,7 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `scripts/scan_functionalitati.py` — scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod.
 - `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
 - `scripts/scan_ghid_suprapuneri.py` — scripts/scan_ghid_suprapuneri.py — ghidurile publice care răspund la ACEEAȘI întrebare (comanda Costin 13.10.2026, pct.2a, verbatim
+- `scripts/scan_infra_conexiuni_imbricate.py` — scripts/scan_infra_conexiuni_imbricate.py — CINE ȚINE DOUĂ CONEXIUNI DEODATĂ, derivat din cod (C201, lotul 13).
 - `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
 - `scripts/scan_lanturi_declaratie.py` — ETAPA 2 — CARE unitate alimentează CARE declarație, derivat din cod.
 - `scripts/scan_lista3.py` — scripts/scan_lista3.py — lista 3, DERIVATA din registru, nu numarata cu mana.

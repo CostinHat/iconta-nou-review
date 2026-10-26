@@ -2,6 +2,8 @@
 # Starea de la închiderea lotului 11: rutele din main.py, ID-urile din FUNCTIONALITATI.csv și cele „în aplicație” (LIVE / PARTIAL /
 # API / INTERN). Nu se editează de mână: o rută nouă intră numai prin EXCEPTII (cu numărul deficienței), în gardă.
 # 509 rute, 257 funcționalități, 217 în aplicație.
+# [26.10.2026, lotul 13, deficiența 660] scoase din [live]: F214 (D223), F215 (D221), F221 (D200), F222 (D201), F227 (D600) — formularele
+# înlocuite de Declarația unică au trecut în RESPINS în FUNCTIONALITATI.csv (referința e exactă în ambele sensuri): 212 în aplicație.
 [rute]
 DELETE /asistenti/{uid}/firme/{tid}
 DELETE /cabinet/api-chei/{kid}
@@ -952,16 +954,11 @@ F209
 F210
 F211
 F212
-F214
-F215
 F216
 F217
-F221
-F222
 F223
 F224
 F225
-F227
 F230
 F232
 F233

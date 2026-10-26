@@ -111,6 +111,16 @@
       "id": 309088,
       "text_integral": true,
       "nota": "10.10.2026 (R1 registrul unic): id verificat pe portal — pagina DetaliiDocument/309088 are titlul «ORD DE URGENTA 24 03/04/2026»; id din PROVENIENTA (DetaliiDocumentAfis/309088); citat de constanta ancorată d100_pozitia_116.PRAG_BRENT_USD, intrată în COTE; text măsurat 10.10.2026: 18 titluri «Articolul N» în pagină"
+    },
+    "HG 1/2016": {
+      "id": 307847,
+      "text_integral": true,
+      "nota": "26.10.2026 (lotul 13, reparațiile finale): id_portal din PROVENIENTA — forma consolidată a NORMELOR metodologice (titlul paginii «NORMA (A) 06/01/2016», consolidare 31.03.2026, hg_1_2016_norme_cod_fiscal.html); actul de aprobare (HG-ul însuși) e documentul separat 307846 (hg_1_2016__baza_307846.html). Citat de constantele ancorate verificare_bun_simt.PRAG_D318_EUR_PERIOADA / PRAG_D318_EUR_AN (pct.73 alin.(13) și (14), intrate în COTE la 638). Punctele normelor nu au titluri «Articolul N»: `vigoare_articol.py` nu le localizează — pct.73 s-a citit de mână în corpus (MODIFICARI din core/test_vigoare_articole_registru.py)"
+    },
+    "Legea 53/2003 (Codul muncii)": {
+      "id": 309240,
+      "text_integral": true,
+      "nota": "26.10.2026 (lotul 13, reparațiile finale): id_portal din PROVENIENTA — forma consolidată oficială (titlul paginii «CODUL MUNCII (A) 24/01/2003», consolidare 27.04.2026, legea_53_2003_codul_muncii.html); citat de constanta ancorată salariati_import_api.ORE_NORMA_INTREAGA (art.112 alin.(1), intrată în COTE la 585); text măsurat 26.10.2026 cu scripts/vigoare_articol.py: 609 titluri de articol, art.112 în vigoare, fără marcaj de modificare"
     }
   }
 }

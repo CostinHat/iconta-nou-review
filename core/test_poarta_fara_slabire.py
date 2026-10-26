@@ -81,6 +81,75 @@ MOTIVATE.update({
         "cere VIES pe server — limită raportată de integrarea I3 ca deficiență nouă (codul valabil e condiția din CF art.294 alin.(2) lit.a)"),
 })
 
+# [lotul 13, comanda 13.1] testele scoase / rescrise de deficiențele lotului, fiecare cu decizia și testul care o păzește acum
+_660 = ("funcție scoasă: formularele D200, D201, D220, D221, D223, D600 sunt înlocuite de Declarația unică (deficiența 660, comanda Costin "
+        "13.1; CF art.122 alin.(1), art.120 „Abrogat.”) — scoase din dispecer, selector și generare (`declaratii_api.FORMULARE_INLOCUITE`). ")
+_660_TESTE = ("Înlocuit de core/test_%s_formular.py::test_%s_nu_se_mai_ofera_formular_inlocuit_de_declaratia_unica (cererea, chiar "
+              "completă, primește motivul cu textul legii) și core/test_lot13_decl_logica.py::test_660_*")
+_507 = ("schimbare decisă: clasa 8 se înregistrează într-o singură parte, fără 891 și în afara rândurilor notei (deficiența 507, comanda "
+        "Costin 13.1: „Clasa 8 se înregistrează într-o singură parte (doar debit 8035 la dare, doar credit la scoatere)”). ")
+MOTIVATE.update({
+    "core/test_cashflow.py::test_aloca_noi_intai":
+        "funcție scoasă: `cashflow.aloca_sold` (soldul balanței împărțit pe facturi „de la cele mai noi”) înlocuit de `cashflow.din_facturi` "
+        "(deficiențele 553 + 559, comanda Costin 13.1: facturile deschise validate, fiecare la scadența ei). Înlocuit de "
+        "core/test_cashflow.py::test_din_facturi_fiecare_la_scadenta_ei",
+    "core/test_cashflow.py::test_aloca_partial":
+        "funcție scoasă: `cashflow.aloca_sold` (553 + 559). Partea de sold peste facturi o păzește "
+        "core/test_cashflow.py::test_din_facturi_soldul_peste_facturi_intra_o_data_numit",
+    "core/test_cashflow.py::test_aloca_zero":
+        "funcție scoasă: `cashflow.aloca_sold` (553 + 559). Cazul gol îl păzește core/test_cashflow.py::test_din_facturi_fara_sold_in_plus",
+    "core/test_d200_formular.py::test_d200_nu_e_doar_api": _660 + _660_TESTE % ("d200", "d200"),
+    "core/test_d200_formular.py::test_d200_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d200", "d200"),
+    "core/test_d201_formular.py::test_d201_nu_e_doar_api": _660 + _660_TESTE % ("d201", "d201"),
+    "core/test_d201_formular.py::test_d201_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d201", "d201"),
+    "core/test_d221_formular.py::test_d221_nu_e_doar_api": _660 + _660_TESTE % ("d221", "d221"),
+    "core/test_d221_formular.py::test_d221_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d221", "d221"),
+    "core/test_d223_formular.py::test_d223_nu_e_doar_api": _660 + _660_TESTE % ("d223", "d223"),
+    "core/test_d223_formular.py::test_d223_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d223", "d223"),
+    "core/test_d600_formular.py::test_d600_nu_e_doar_api": _660 + _660_TESTE % ("d600", "d600"),
+    "core/test_d600_formular.py::test_d600_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d600", "d600"),
+    "core/test_formulare_operatiuni_campuri.py::test_conturile_vin_precompletate_cu_sugestia_standard":
+        "PIVOT decis: deficiența 504 (comanda Costin 13.1: „Câmpurile nu au voie să arate valori gri sau precompletate care induc în eroare "
+        "[…] Câmpul rămâne gol.”) răstoarnă regula lotului 07.10 B (conturile precompletate cu sugestia). Înlocuit de "
+        "core/test_formulare_operatiuni_campuri.py::test_niciun_camp_nu_vine_precompletat_sau_cu_text_gri",
+    "core/test_formulare_operatiuni_campuri.py::test_CALIBRARE_cont_fara_sugestie_sau_motor_cu_placeholder_e_prins":
+        "PIVOT decis (504, ca mai sus): calibrarea regulii vechi nu mai are obiect. Înlocuit de "
+        "core/test_formulare_operatiuni_campuri.py::test_CALIBRARE_valoarea_sau_textul_gri_e_prins (valoarea sau textul gri puse la loc -> "
+        "prinse)",
+    "frontend_test/e2e/e2e_bloc_c.py::test_def_78_conturile_vin_precompletate_si_modificabile":
+        "redenumit după PIVOT-ul 504 (aceeași deficiență 78, regula inversă: conturile pornesc goale, contul uzual stă în explicația "
+        "câmpului): frontend_test/e2e/e2e_bloc_c.py::test_def_78_conturile_pornesc_goale_cu_contul_uzual_in_explicatie",
+    "core/test_import_saga.py::test_contul_de_doua_ori_se_refuza_numit_nu_la_scriere":
+        "schimbare decisă: deficiența 582 (comanda Costin 13.1: „Verificarea dublurilor oprește tot înainte de celelalte verificări”) — "
+        "partenerul dublat nu mai oprește citirea fișierului; `pytest.raises` + aserțiunea pe text s-au înlocuit cu o singură aserțiune de "
+        "egalitate pe rândurile respinse (`verifica_randuri` -> [(2, partener_dublat), (3, partener_dublat)]), mai strictă",
+    "core/test_lot10_dividende.py::test_430a_din_117_preluat_fara_analitic_nota_debiteaza_117_cu_avertisment":
+        "redenumit după deficiența 527 (comanda Costin 13.1: nota trece întâi suma dividendului pe analitic, 117 = 1171, și repartizează din "
+        "1171): core/test_lot10_dividende.py::test_430a_din_117_preluat_fara_analitic_nota_reclasifica_pe_1171_cu_avertisment (5 aserțiuni)",
+    "core/test_stocuri_situatie.py::test_situatia_stocului_e_prima_si_formularele_la_cerere":
+        "schimbare decisă: deficiența 673 (comanda Costin 13.1: acțiunile deschid fereastră nouă) — formularele Stocurilor nu mai stau "
+        "ascunse în pagină (`#cv-zona` hidden + click care îl arăta = două aserțiuni) ci se deschid în fereastra lor; o singură aserțiune "
+        "cere că nu sunt desenate la deschidere, iar așteptarea ferestrei după click e `wait_for_selector` (eșuează la lipsă)",
+    "test_comodat_chirii.py::test_chirie_incasata":
+        "funcție scoasă: `comodat_chirii.nota_chirie_incasata` — chiria încasată e factură către chiriaș, din Facturi emise, cu cota după "
+        "bun și opțiune (deficiența 531, comanda Costin 13.1; CF art.292 alin.(2) lit.e). Înlocuit de "
+        "core/test_lot13_ops_chirie.py::test_def_531_chiria_unui_imobil_fara_optiune_e_scutita și e2e "
+        "frontend_test/e2e/e2e_lot13_ops.py::test_def_531_chiria_unui_imobil_fara_optiune_e_scutita",
+    "test_comodat_chirii.py::test_refacturare":
+        "schimbare decisă: deficiența 530 (comanda Costin 13.1; CF art.271 alin.(2)) — factura furnizorului e întreagă achiziție proprie, "
+        "fără 461; cele cinci aserțiuni de apartenență (`in`) s-au înlocuit cu două de EGALITATE pe listele întregi, mai stricte",
+    "test_obiecte_inventar.py::test_dare_folosinta": _507 + "Cele două aserțiuni de apartenență (`in`) au devenit una de EGALITATE pe "
+        "rezultatul întreg (rândul 603 = 303 și înregistrarea 8035 D în `extrabilant`), mai strictă",
+    "test_productie.py::test_vanzare_cu_repartizare":
+        "funcție scoasă: `productie.nota_vanzare` — vânzarea produselor trece prin factură, care descarcă produsul (deficiența 510, comanda "
+        "Costin 13.1); aici rămâne repartizarea diferențelor (OMFP 1802/2014 pct.286 alin.(4)): test_productie.py::"
+        "test_diferente_repartizate_asupra_iesirii, plus core/test_lot13_ops_productie.py::"
+        "test_def_510_vanzarea_e_factura_descarca_produsul_si_repartizeaza_348",
+    "test_productie.py::test_vanzare_coef_favorabil":
+        "funcție scoasă: `productie.nota_vanzare` (510, ca mai sus); coeficientul favorabil (348 = 711) e păzit de "
+        "test_productie.py::test_diferente_repartizate_asupra_iesirii",
+})
+
 
 def _git(*a):
     return subprocess.run(("git",) + a, cwd=_RAD, capture_output=True, text=True)

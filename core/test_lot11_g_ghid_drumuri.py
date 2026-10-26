@@ -31,8 +31,13 @@ INTERZISE = (
     ("cursul BNR al zilei din aplicație", "cursul operațiunii = ultimul comunicat înaintea zilei (HG 1/2016 pct.35 alin.(1))"),
     ("cursul BNR al zilei încasării", "cursul operațiunii = ultimul comunicat înaintea zilei (HG 1/2016 pct.35 alin.(1))"),
     ("cursul BNR al zilei de decontare", "cursul operațiunii = ultimul comunicat înaintea zilei (HG 1/2016 pct.35 alin.(1))"),
-    ("nu are câmp pentru contul de bancă", "formularul „Decontare în valută” are câmpul „Cont bancă”"),
-    ("nu are un câmp pentru contul de bancă", "formularul „Decontare în valută” are câmpul „Cont bancă”"),
+    ("nu are câmp pentru contul de bancă", "formularul „Decontare în valută” are câmpul „Contul bancar”"),
+    ("nu are un câmp pentru contul de bancă", "formularul „Decontare în valută” are câmpul „Contul bancar”"),
+    # [lotul 13, deficiențele 524 + 504] formularul se face pe FACTURĂ (moneda, contul de terț, cursul de evidență vin de la ea), iar
+    # „Contul bancar” e o alegere între 5124 și 5121, fără nimic precompletat — formulările vechi, găsite la 26.10.2026 în ghid/
+    ("câmpul „Cont bancă\"", "câmpul se numește „Contul bancar” și nu propune nimic (504)"),
+    ("propus 5124", "contul bancar nu e precompletat: se alege între 5124 și 5121 (504)"),
+    ("valoarea în valută, moneda și cursul de evidență", "moneda și cursul de evidență vin de la factura aleasă (524)"),
 )
 
 
@@ -105,7 +110,8 @@ def _elemente_cu_text(arb, noduri, cu_clasa=False):
 
 def test_drumurile_noi_numite_in_ghiduri_exista_pe_ecrane():
     """Ghidurile corectate trimit la „Închidere lună → Reevaluare valută”, „Stocuri → Borderou de achiziție” și „Operațiuni speciale →
-    Decontare în valută” (cu câmpul „Cont bancă”). Dacă un ecran se mută, garda pică aici — înainte ca ghidul să mintă."""
+    Decontare în valută” (cu câmpul „Contul bancar” — „Cont bancă” până la lotul 13, 524). Dacă un ecran se mută, garda pică aici — înainte
+    ca ghidul să mintă."""
     firme = io.open(os.path.join(RAD, "static/js/ecrane/firme.js"), encoding="utf-8").read()
     oper = io.open(os.path.join(RAD, "static/js/ecrane/operatiuni_ecran.js"), encoding="utf-8").read()
     import ast
@@ -120,14 +126,14 @@ def test_drumurile_noi_numite_in_ghiduri_exista_pe_ecrane():
     titluri = [t for tag, _id, t, cls in ((e[0], e[1], e[2], e[3]) for e in _elemente_cu_text(arb_f, noduri, cu_clasa=True))
                if tag == "h2" and cls == "pf-titlu"]
     assert set(titluri) >= {"Închidere lună"} and any(t.startswith("Stocuri") for t in titluri), sorted(set(titluri))[:20]
-    # operațiunea „Decontare în valută” cu câmpul „Cont bancă”: obiectul din `REGISTRU` și apelul `C(...)` din câmpurile lui
+    # operațiunea „Decontare în valută” cu câmpul „Contul bancar”: obiectul din `REGISTRU` și apelul `C(...)` din câmpurile lui
     arb_o, cod_o = arbore_js("operatiuni_ecran.js")
     reg = [d for d in noduri(arb_o, "VariableDeclarator") if d["id"].get("name") == "REGISTRU"]
     assert len(reg) == 1, "REGISTRU: %d declarații" % len(reg)
     decont = [o for o in reg[0]["init"]["elements"] if any(p["key"].get("name") == "titlu" and p["value"].get("value") ==
                                                           "Decontare în valută (665/765)" for p in o.get("properties", []))]
     assert len(decont) == 1, "operațiunea „Decontare în valută (665/765)” nu mai e în REGISTRU"
-    assert any(a[:2] == ('"cont_banca"', '"Cont bancă"') for a in apeluri(decont[0], cod_o, "C")), apeluri(decont[0], cod_o, "C")
+    assert any(a[:2] == ('"cont_banca"', '"Contul bancar"') for a in apeluri(decont[0], cod_o, "C")), apeluri(decont[0], cod_o, "C")
     # intrările scoase nu se întorc în Operațiuni speciale
     assert 'cheie: "reeval_valuta"' not in oper and 'cheie: "neinregistrat"' not in oper
     # regula cursului (CF art.290 alin.(2) + HG 1/2016 pct.35 alin.(1): cursul zilei anterioare) ca noduri AST, nu șiruri în sursă

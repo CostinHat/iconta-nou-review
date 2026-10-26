@@ -54,6 +54,12 @@ def test_fiecare_coloana_de_cod_fiscal_are_trigger():
         if re.fullmatch(r"(\w+_)?(cui|cif)(_\w+)?", col):
             gasite.add((tab, col))
     declarate = {(tab, c) for tab, cols in m.COLOANE_FIRMA for c in cols}
+    # [lotul 13] o tabelă creată DUPĂ blocul `cui_fara_ro` din șablon (de altă migrare) își pune singură triggerul, cu aceeași funcție
+    # (`cui_normalizeaza('<coloana>')`, triggerul `trg_cui_fara_ro_l13` — alt nume, ca `migrare_cui_fara_ro.verifica` să numere numai ale
+    # ei) — se numără numai triggerul scris efectiv în șablon, pe coloana lui
+    trig = re.findall(r"CREATE TRIGGER trg_cui_fara_ro_l13 BEFORE INSERT OR UPDATE OF (\w+) ON TENANT_PLACEHOLDER\.(\w+) FOR EACH ROW "
+                      r"EXECUTE FUNCTION TENANT_PLACEHOLDER\.cui_normalizeaza\('(\w+)'\);", t)
+    declarate |= {(tab, col) for col, tab, arg in trig if arg == col}
     assert len(gasite) >= 12, gasite                                           # anti-vacuu: cititorul vede coloanele
     assert gasite <= declarate, sorted(gasite - declarate)
 
@@ -121,6 +127,21 @@ def test_triggerul_normalizeaza_pe_orice_drum(conn):
         cur.execute("INSERT INTO facturi (numar, data_emitere, directie, total, tva, tert_cui, tert_nume) VALUES "
                     "('F3', '2026-06-10', 'primita', 0, 0, '', 'PF') RETURNING tert_cui, tert_platitor_tva")
         assert cur.fetchone() == ("", None)                                    # golul rămâne gol, fără stare ghicită
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_coloanele_noi_ale_lotului_13_sunt_normalizate_de_trigger(conn):
+    """[lotul 13] `obiecte_inventar.furnizor_cui` și `vanzari_din_stoc.client_cui` (tabele create după blocul `cui_fara_ro`): o scriere
+    SQL directă iese în forma păstrată. MUTAȚIE: triggerul scos din șablon -> „RO 2864518” rămâne cum e -> pică."""
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO obiecte_inventar (denumire, valoare, data_intrare, furnizor_cui) VALUES ('Scaun', 10, '2099-01-05', "
+                    "'ro 2864518') RETURNING furnizor_cui")
+        assert cur.fetchone()[0] == "2864518"
+        cur.execute("INSERT INTO inregistrari (data, descriere) VALUES ('2099-01-05', 'probă CUI') RETURNING id")
+        nid = cur.fetchone()[0]
+        cur.execute("INSERT INTO vanzari_din_stoc (inregistrare_id, fel, cantitate, pret_vanzare, pret_cumparare, tva, client_cui, "
+                    "client_nume) VALUES (%s, 'marja', 1, 10, 5, 0, ' RO 2864518', 'Client') RETURNING client_cui", (nid,))
+        assert cur.fetchone()[0] == "2864518"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

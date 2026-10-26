@@ -142,8 +142,9 @@ def test_def_624_casa_tabel_observatii_la_clic_respinsele_grupate(browser):
         assert "Încasare fără chitanță (1)" in m["expl"] and "Scrisă din alt ecran (1)" in m["expl"], m["expl"]
         # „observații la clic”: clic pe rând -> detaliul (partenerul, documentul, nota, PDF chitanță, Leagă de factură)
         pg.click("tbody[data-op-id='2'] .tn-rand td:nth-child(3)")
-        det = " ".join(pg.inner_text("tbody[data-op-id='2'] .tn-detaliu").split())
-        assert "Partener: Client 2 SRL" in det and "Respinsă la validare: lipsește documentul" in det, det
+        # rândurile detaliului, fiecare întreg (nu un sub-șir din textul lipit): partenerul și refuzul la validare, pe rândul lor
+        det = [" ".join(x.split()) for x in pg.inner_text("tbody[data-op-id='2'] .tn-detaliu").split("\n") if x.strip()]
+        assert {"Partener: Client 2 SRL · CUI 14399840", "Respinsă la validare: lipsește documentul."} <= set(det), det
         # [675] același set de butoane pe fiecare operațiune, în aceeași ordine; ce nu se aplică stă inactiv, cu motivul
         for oid in ("1", "2", "4"):
             assert [x[0] for x in _butoane(pg, "tbody[data-op-id='%s'] .tn-actiuni button" % oid)] == ["Stornează", "Șterge"]
@@ -206,8 +207,9 @@ def test_def_624_607_669_banca(browser):
         # [669 / 673] „Alege facturile” deschide fereastra lui, cu soldul preluat la migrare
         pg.click("tbody[data-linie-id='2'] [data-alege]")
         pg.wait_for_selector("#bk-pk-tabel")
-        t = " ".join(pg.inner_text("#bk-pk-tabel").split())
-        assert "Sold la 30.09.2026 (sold preluat la migrare)" in t and "1.500,00" in t, t
+        # celulele tabelului, fiecare întreagă: rândul soldului preluat la migrare și suma lui
+        t = pg.eval_on_selector_all("#bk-pk-tabel td", "els => els.map((e) => e.innerText.replace(/\\s+/g, ' ').trim())")
+        assert {"Sold la 30.09.2026 (sold preluat la migrare)", "1.500,00"} <= set(t), t
         pg.check("input[data-fid='9']")
         pg.click("#bk-pk-ok")
         pg.wait_for_selector("#bk-tabel")

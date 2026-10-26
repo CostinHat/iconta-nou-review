@@ -12,7 +12,6 @@ Pe baza de TEST, în tranzacții anulate (cabinetul și utilizatorii sintetici n
 `core/migrare_anunturi_trimiteri.py`) se aplică în aceeași tranzacție — testul nu depinde de starea bazei.
 """
 import contextlib
-import datetime
 import os
 import re
 import types
@@ -104,6 +103,18 @@ def test_suspendarea_cere_motivul_din_lista(baza):
         assert repo_admin.suspendarea_deschisa(cur, baza.cab) is None
 
 
+def test_440_anuntul_si_suspendarea_spun_toate_campurile_gresite_deodata(baza):
+    """[lotul 13, clasa 440 — garda `core/test_lot11_w3_ratchet.py`] Mesajul gol ȘI destinatarii lipsă -> un singur refuz, cu amândouă
+    câmpurile; motivul lipsă ȘI nota internă prea lungă -> la fel. MUTAȚIE: `raise` la primul câmp pus la loc -> un singur câmp -> pică."""
+    with pytest.raises(erori.DateInvalide) as e:
+        uc_admin.admin_anunt_creeaza(_anunt(mesaj="  "), _ctx(baza))
+    assert [c["camp"] for c in e.value.args[0]["erori_campuri"]] == ["mesaj", "destinatari"], e.value.args
+    with pytest.raises(erori.DateInvalide) as e:
+        uc_admin.admin_cabinet_suspenda(baza.cab, types.SimpleNamespace(motiv=None, nota_interna="x" * (uc_admin.NOTA_INTERNA_MAX + 1)),
+                                        _ctx(baza))
+    assert [c["camp"] for c in e.value.args[0]["erori_campuri"]] == ["motiv", "nota_interna"], e.value.args
+
+
 def test_suspendarea_scrie_jurnalul_trimite_emailul_si_reactivarea_il_inchide(baza, monkeypatch):
     """Suspendare cu „neplata” + notă internă: cabinetul inactiv; jurnalul (cine, când, motivul, nota); emailul către administratorul
     cabinetului, cu motivul și fără nota internă; logarea spune motivul. Reactivarea închide rândul (cine, când)."""
@@ -174,7 +185,9 @@ def test_anuntul_fara_destinatari_alesi_e_refuzat(baza):
     for d in (_anunt(), _anunt(segment="cabinete", cabinet_ids=[]), _anunt(segment="altceva")):
         with pytest.raises(erori.DateInvalide) as e:
             uc_admin.admin_anunt_creeaza(d, _ctx(baza))
-        assert e.value.args[0] == {"mesaj": uc_admin.MESAJ_FARA_DESTINATARI, "camp": "destinatari"}, e.value.args
+        # [lotul 13, clasa 440] refuzul adunat (`ErorileFormularului`): un singur câmp greșit -> mesajul lui, lângă câmpul lui
+        assert e.value.args[0] == {"mesaj": uc_admin.MESAJ_FARA_DESTINATARI,
+                                   "erori_campuri": [{"camp": "destinatari", "mesaj": uc_admin.MESAJ_FARA_DESTINATARI}]}, e.value.args
     with baza.conn.cursor() as cur:
         cur.execute("SELECT count(*) FROM public.anunturi_cabinet WHERE mesaj = 'Anunț de probă 646'")
         assert cur.fetchone()[0] == 0

@@ -109,8 +109,13 @@ DISTRIBUTIE = {
     # `COTE["impozit_venit_categorii"]`, ale carei doua intrari (CF art.64 / Legea 227/2015 art.64) sunt STABIL/DEPUS — locul lasat de
     # `d101.COTA_STANDARD` si `d212.COTA_IMPOZIT_VENIT`, iesite si ele (STABIL/DEPUS ramane 14). Masurat cu R.inventar.
     # 13 -> 12 la 22.10.2026 (lotul 11): iese `jurnal_api.TEMEI_CONSEMNARE`, trecut în STABIL/DEPUS (vezi mai sus).
-    ("STABIL", "CALCULAT"): 12,
-    ("MISCATOR", "CALCULAT"): 7,
+    # 12 -> 13 la 26.10.2026 (lotul 13, 585): `salariati_import_api.ORE_NORMA_INTREAGA` (Legea 53/2003 art.112 alin.(1), 8 ore pe zi la
+    # normă întreagă) — STABIL (art.112 fără marcaj de modificare), CALCULAT (minimul brut la normă parțială, la importul salariaților).
+    ("STABIL", "CALCULAT"): 13,
+    # 7 -> 11 la 26.10.2026 (lotul 13, 656): cotele CF art.224 alin.(4) ale nerezidenților (lit.b dividende 2026, lit.c, lit.c^1, lit.d) —
+    # MISCATOR (art.224, lit.b modificată la 01.08.2025), CALCULAT prin verificarea D207 (`verificare_bun_simt.cota_dividende_nerezidenti`
+    # / `cote_alte_venituri` / `cota_maxima_conventie_alte`, citite la folosire — graful consumatorilor le vede). Masurat cu R.inventar.
+    ("MISCATOR", "CALCULAT"): 11,
     # 0 -> 6 la 03.10.2026 (D212 Etapa 5c-2a), clasa noua: CF art.110 alin.(1) (premii 10%), alin.(4) lit.a (600 lei pe
     # premiu), alin.(4) lit.b (66.750 lei la jocuri), art.111 alin.(1) lit.a/b (3% / 1% la transfer), alin.(3) (1% la
     # mostenire). Masurat cu R.inventar: MISCATOR (art.110/111 modificate des, inclusiv Legea 141/2025), DEPUS, prag 3 luni.
@@ -144,7 +149,12 @@ DISTRIBUTIE = {
     # 27 -> 28 la 22.10.2026 (lotul 11): `ciorne_depasite.TEMEI` — OMFP 2634/2015 pct.58 lit.c (ciornele rămase în urma perioadei).
     # Documentul (anexa 1) e ciot pentru instrument (R111, `core/test_pereche_act_articol.py` CLICHET_CIOT), deci frecventa nu se
     # poate citi. Masurat cu R.inventar.
-    ("NECUNOSCUT", "NECUNOSCUT"): 28,
+    # 28 -> 31 la 26.10.2026 (lotul 13): `verificare_bun_simt.PRAG_D318_EUR_PERIOADA` / `PRAG_D318_EUR_AN` (HG 1/2016 pct.73
+    # alin.(13)-(14), 638) — normele numerotează puncte în forma `73. (1)`, pe care `articol_in_act` n-o citește (R111 / R171,
+    # `core/test_pereche_act_articol.py` NEGASITE_CUNOSCUTE), deci frecvența nu se poate citi; și `COTA_DIVIDENDE_NEREZIDENTI_2025` (OUG
+    # 156/2024 art.LXIV pct.15, 656) — actul modificator, forma din MO adusă ca text fără titluri de articol, deci tot necitibilă.
+    # *NECUNOSCUT declarat, cu motivul.* Masurat cu R.inventar.
+    ("NECUNOSCUT", "NECUNOSCUT"): 31,
 }
 
 _AZI = datetime.date(2026, 8, 31)
@@ -271,7 +281,9 @@ def test_ANTI_VACUU_si_distributia_pinata():
 #: 14 -> 13 la 11.10.2026 (R3): `bacsis.COTA_IMPOZIT` a iesit — cota e acum in registru (`impozit_venit_categorii`), sub podeaua
 #: globala ca orice cheie din `COTE`: verificata MAI DES, nu mai rar.
 #: 13 -> 12 la 22.10.2026 (lotul 11): `jurnal_api.TEMEI_CONSEMNARE` trece la DEPUS (prin `ciorne_depasite`), prag 6 luni = podeaua: MAI DES.
-PRIMESC_PRAG_PESTE_PODEA = 12
+#: 12 -> 13 la 26.10.2026 (lotul 13, 585): `salariati_import_api.ORE_NORMA_INTREAGA` (Legea 53/2003 art.112), STABIL/CALCULAT, 12 luni —
+#: constantă nouă, deci un prag primit pentru PRIMA oară, nu o verificare mai rară.
+PRIMESC_PRAG_PESTE_PODEA = 13
 
 
 def test_nicio_valoare_nu_devine_verificata_MAI_RAR():

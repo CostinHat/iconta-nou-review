@@ -28,6 +28,9 @@ def neetichetate(rad=None):
         s = open(f, encoding="utf-8").read()
         for m in _CAMP.finditer(s):
             tag = m.group(0)
+            # [lotul 13] un tag citat într-un comentariu de linie (`// … <input type="number"> …`) nu e un câmp desenat
+            if s[s.rfind("\n", 0, m.start()) + 1:m.start()].lstrip().startswith("//"):
+                continue
             if re.search(r'type="(hidden|button|submit|checkbox|radio)"', tag):
                 continue
             if re.search(r'\bhidden\b(?!-)', tag.replace("hidden;", "")) or "display:none" in tag.replace(" ", ""):

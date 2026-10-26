@@ -66,6 +66,18 @@ _PERMISE = {
                                                             "a unui cuvânt, nu o parolă) — Retest 2, lexiconul derivat din corpus"),
     ("core/test_spv_conector.py", "PAROLA_ATRIBUITA"): (3, "jetoane de reîmprospătare false ale serverului simulat"),
     ("core/test_wave1_stare_partajata.py", "PAROLA_ATRIBUITA"): (1, "parolă GREȘITĂ intenționat (se numără logările eșuate)"),
+    # [lotul 12 / 13, reparațiile finale înaintea porții] parolele conturilor pe care testul le CREEAZĂ el însuși (înregistrare / login
+    # de probă pe baza de test, în tranzacție anulată sau pe un cabinet efemer) și jetoane false ale serverelor simulate
+    ("core/test_comportament_chei_suspendare.py", "PAROLA_ATRIBUITA"): (1, "parola sintetică a cabinetului A creat de fixtura testului "
+                                                                        "(645, login după suspendare / reactivare)"),
+    ("core/test_lot12_form2_register.py", "PAROLA_ATRIBUITA"): (1, "parola formularului de înregistrare a unui cabinet de probă (642), "
+                                                               "generată cu `secrets.token_hex`, în tranzacție anulată"),
+    ("core/test_lot13_portal_postmark.py", "PAROLA_ATRIBUITA"): (1, "jetonul fals `pm-token-de-proba-…` al serverului Postmark simulat "
+                                                                 "(nicio cerere nu pleacă)"),
+    ("core/test_p7_uc.py", "AUTORIZARE_HTTP"): (1, "mesajul VECHI al refuzului 401 („lipsă token (Authorization: Bearer ...)”), declarat ca "
+                                                 "abatere rescrisă (608) — textul antetului, fără niciun jeton"),
+    ("frontend_test/e2e/e2e_lot13_admin.py", "PAROLA_ATRIBUITA"): (2, "parola cabinetului e2e creat de test (645) și jetonul inexistent "
+                                                                  "`ml_inexistent608` al legăturii magice refuzate (608)"),
     ("static/js/sesiune.js", "PAROLA_ATRIBUITA"): (2, "NUMELE cheilor din sessionStorage (`iconta_token`), nu valori"),
     ("core/test_fara_secrete_in_git.py", "PAROLA_ATRIBUITA"): (5, "mostrele de calibrare ale ACESTUI gard (`nuOparola…`, sintetice)"),
     ("core/test_fara_secrete_in_git.py", "SIR_CONEXIUNE_CU_PAROLA"): (1, "mostra de calibrare a redactării (`u:nuOparola9@h`)"),

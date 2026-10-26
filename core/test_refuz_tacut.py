@@ -51,7 +51,18 @@ _SCRIERI_MUTE = 16
 # (`coada_trimite.etichetaTrimitere`: rămâne „Trimite în coadă”), lista declarațiilor firmei deja în coadă (299), cardurile de început și
 # ghidul lor din „?” (319 / 320: fără ele pagina principală rămâne cum era), poarta primei intrări (o eroare de citire nu blochează
 # intrarea), lista firmelor din invitația asistentului (are mesajul ei), tipurile de notificări.
-_CITIRI_MUTE = 87
+_CITIRI_MUTE = 95
+# [26.10.2026, loturile 12 + 13, reparațiile finale înaintea porții] 87 -> 95 (măsurat pe intrarea lotului d850db00: 89, deja peste 87, sub
+#   pragul de toleranță; pe ramura integrată: 95). Toate citiri AJUTĂTOARE, fiecare numită — niciuna nu e un refuz al unei scrieri:
+#   - `ecrane/migrare.js` ×3 (lotul 13, 662 / 664): starea preluării firmei (`_caleStare`) pentru insignele pașilor și „Începe / Continuă
+#     preluarea”; dacă citirea cade, fereastra rămâne fără insigne și fără îndemn (nimic nu se scrie, nimic nu se deschide singur);
+#   - `cautare.js` (lotul 13, 681): căutarea globală la tastare — catch-ul ARATĂ motivul (`deseneaza(e.mesaj || „Căutarea nu s-a putut
+#     face — reîncearcă.”)`), dar printr-o funcție proprie, pe care scanul n-o recunoaște (modul de eșec 1 al instrumentului);
+#   - `ciorna_formular.js` (lotul 12): ciorna de pe server a formularului lung; dacă citirea cade, formularul pornește din ciorna locală;
+#   - `ecrane/setari.js` (lotul 12): reîmprospătarea stării SPV după conectare (`/spv/stare`, la interval); dacă o citire cade, rămâne
+#     starea afișată, iar următoarea o reface;
+#   - `navigator.js` (lotul 13): mesajele motivaționale ale paginii principale (`/eu/calitate`) — fără ele, pagina rămâne cum era.
+#   (`ecrane/portal.js` 7 -> 6: o citire a plecat cu panoul declarațiilor, 554.)
 # [17.10.2026, lotul 7 pct.2.2] 77 -> 78: după „Cere codul”, Setări cont → Notificări recitește `/eu/notificari` ca să arate acordul salvat
 #   (și când WhatsApp nu e activ). Mesajul cererii — reușită sau refuz — e deja lângă buton; dacă recitirea cade, ecranul rămâne cu
 #   starea afișată. Măsurat pe HEAD 590c6170: 82, pe lot: 83 (`ecrane/setari.js` 4 -> 5).

@@ -166,7 +166,14 @@ ATINSE_LOT11 = frozenset(
     + ["C%d" % n for n in range(68, 77)])
 DOVADA = "dovadă firme de test:"
 DATE_EXISTENTE = "date existente:"
-_RE_CAPTURA = r"^dovezi/lot\d+/%s_(?:[a-z0-9]+_)*?f\d+(?:_[a-z0-9]+)*\.png$"
+# [lotul 13, cerut de sesiunea principală] contextul capturii: firma de test (`f<k>`, FISCALOS `fiscalos_f9054`) SAU, cuvânt întreg, `admin`
+# (ecran al Panoului Admin, fără firmă) / `public` (pagina publică, fără sesiune) — `administrator`, `publicat` nu trec
+_RE_CAPTURA = r"^dovezi/lot\d+/%s_(?:[a-z0-9]+_)*?(?:f\d+|admin|public)(?:_[a-z0-9]+)*\.png$"
+#: Numerele a căror dovadă e e2e-ul, prin decizia SCRISĂ a lui Costin — mulțime ÎNCHISĂ (calibrarea pică dacă alt număr o folosește):
+#: „rezolvată” fără captură, cu testul e2e cerut în continuare (`test_rezolvata_are_commit_si_test_de_capat_la_capat`).
+DOVADA_PRIN_E2E = {
+    "642": "decizia Costin 13.1 pct.4.7: „642: e2e-ul e dovada potrivită pentru înregistrarea unui cabinet.”",
+}
 _FORME_DATE = ("migrare", "script", "cod", "neafectate, pentru că")
 
 
@@ -218,6 +225,9 @@ def cere_dovada(r, vechi):
 def lipsuri_dovada(r, exista=_captura_amprentata):
     """PURĂ (cu `exista` injectat). Ce lipsește din dovada rândului rezolvat — [] dacă e completă."""
     nr, t = r["nr"], r["lipsa"]
+    if nr in DOVADA_PRIN_E2E:   # dovada e e2e-ul (decizia scrisă din DOVADA_PRIN_E2E); testul de capăt la capăt rămâne cerut
+        return [] if re.search(r"`[^`]+::test_def_[^`]+`", r.get("test") or "") else [
+            "%s: dovada prin e2e (%s) cere testul de capăt la capăt numit în coloana testului" % (nr, DOVADA_PRIN_E2E[nr])]
     rele = []
     i, j = t.find(DOVADA), t.find(DATE_EXISTENTE)
     if i < 0:
@@ -231,8 +241,8 @@ def lipsuri_dovada(r, exista=_captura_amprentata):
         for c in capturi:
             # [lotul 12] subnumărul (409.1, C73.1) se scrie în numele capturii cu punct sau cu „_” (`443_1_f1_…`, `409.1_f1_…`)
             if not re.match(_RE_CAPTURA % re.escape(nr.lower()).replace(r"\.", "[._]"), c):
-                rele.append("%s: captura %s nu are forma `dovezi/lot<N>/%s_..._f<k>_....png` (numărul rândului, apoi firma de test)"
-                            % (nr, c, nr.lower()))
+                rele.append("%s: captura %s nu are forma `dovezi/lot<N>/%s_..._f<k>_....png` (numărul rândului, apoi firma de test — sau "
+                            "`admin` / `public`, ecranele fără firmă)" % (nr, c, nr.lower()))
             elif not exista(c):
                 rele.append("%s: captura %s nu e în `%s/AMPRENTE.json` sau amprenta ei diferă (regenerare: python "
                             "scripts/dovada_firme_test.py --amprente=%s > %s/AMPRENTE.json)" % (nr, c, *[os.path.dirname(c)] * 3))
@@ -277,11 +287,25 @@ def test_rezolvata_din_lotul_11_are_dovada_pe_firmele_de_test_si_datele_existent
 def test_garda_dovezii_nu_e_vida():
     """Anti-vacuu: garda pică pe un rând sintetic rău și trece pe unul bun; criteriul prinde rândul nou, rândul atins și lista lotului 11."""
     are = {"dovezi/lot11/439_f1_balanta.png", "dovezi/lot11/439_f1_vechi_balanta.png", "dovezi/lot11/439_f1_vechime_balanta.png",
+           "dovezi/lot11/439_admin_balanta.png", "dovezi/lot11/439_public_balanta.png", "dovezi/lot11/439_administrator_x.png",
            "core/migrare_x.py"}.__contains__
     bun = dict(nr="439", stare="rezolvată", test="`x::test_def_439_a`", lipsa=(
         "văzut: … dovadă firme de test: `dovezi/lot11/439_f1_balanta.png`, `dovezi/lot11/439_f1_vechi_balanta.png`; "
         "date existente: migrare `core/migrare_x.py` (balanțele preluate refăcute)"))
     assert lipsuri_dovada(bun, are) == []
+    # [lotul 13] contextul `admin` / `public` (ecrane fără firmă), cuvânt întreg — `administrator` nu e contextul admin
+    _ne = "; date existente: neafectate, pentru că ecranul nu citește documente scrise înainte"
+    assert lipsuri_dovada(dict(bun, lipsa="dovadă firme de test: `dovezi/lot11/439_admin_balanta.png`" + _ne), are) == []
+    assert lipsuri_dovada(dict(bun, lipsa="dovadă firme de test: `dovezi/lot11/439_public_balanta.png`" + _ne), are) == []
+    assert lipsuri_dovada(dict(bun, lipsa="dovadă firme de test: `dovezi/lot11/439_administrator_x.png`" + _ne), are), \
+        "`administrator` a trecut drept contextul `admin`"
+    # [lotul 13] excepția dovezii prin e2e e ÎNCHISĂ: numai numerele din DOVADA_PRIN_E2E, și numai cu testul e2e numit
+    assert set(DOVADA_PRIN_E2E) == {"642"}, "alt număr folosește excepția dovezii prin e2e fără decizia scrisă: %s" % sorted(DOVADA_PRIN_E2E)
+    fara_captura = dict(bun, lipsa="lotul 12, reparat; dovada pe firmele de test nu se aplică",
+                        test="`frontend_test/e2e/e2e_lot12_form2.py::test_def_642_x`")
+    assert lipsuri_dovada(dict(fara_captura, nr="642"), are) == []
+    assert lipsuri_dovada(dict(fara_captura, nr="642", test=""), are), "excepția 642 fără testul e2e numit"
+    assert lipsuri_dovada(dict(fara_captura, nr="643"), are), "excepția dovezii prin e2e s-a întins la alt număr"
     assert lipsuri_dovada(dict(bun, lipsa="date existente: neafectate, pentru că balanța se citește din fișier la import; "
                                          "dovadă firme de test: `dovezi/lot11/439_f1_balanta.png`"), are), "ordinea: întâi dovada, apoi datele"
     rele = {
