@@ -19,7 +19,7 @@ from decimal import Decimal as D
 
 import pytest
 
-from core import facturi_api, repo_facturi, repo_notificari_scadenta, repo_scadentar, scadentar
+from core import facturi_api, repo_facturi, repo_notificari_scadenta, repo_portal, repo_scadentar, scadentar
 from core.test_417_storno_trimitere import _LINIE, _db_ok, conn  # noqa: F401 — fixtura și ajutoarele ei
 
 DB = pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -137,9 +137,14 @@ def test_def_468_istoricul_compara_lei_cu_lei(conn):
 
 @DB
 def test_def_468_cashflow_aloca_in_lei(conn):
-    """Aceeași clasă: cashflow-ul împarte soldul balanței (lei) pe facturi cu totalul în LEI (500), nu în valută (100)."""
+    """Aceeași clasă: previziunea clientului (cashflow) pornește din facturile deschise VALIDATE (`repo_portal.facturi_deschise_validate`,
+    care a luat locul lui `repo_facturi.pentru_cashflow`, 559) cu restul în LEI (500), nu în valută (100). MUTAȚIE: `rest_lei` calculat
+    din `total` (valuta) în `repo_facturi.de_incasat` -> 100 -> pică."""
     fid = _valuta(conn, "FE-3", 100, 500)
     with conn.cursor() as cur:
-        cur.execute("SELECT id FROM facturi WHERE id = %s", (fid,))
-        tot = [float(r[3]) for r in repo_facturi.pentru_cashflow(cur)]
-    assert tot == [500.0], tot
+        # date de pornire: nota facturii, validată de contabil (cititorul numără numai facturile cu nota validată)
+        cur.execute("INSERT INTO inregistrari (data, descriere, sursa, status, factura_id) VALUES ('2099-04-01', 'Factură FE-3', 'facturi', "
+                    "'validata', %s)", (fid,))
+    with _rd(conn) as cur:
+        tot = [(x["rest_lei"], x["rest"]) for x in repo_portal.facturi_deschise_validate(cur, "emisa") if x["id"] == fid]
+    assert tot == [(D("500.00"), D("100.00"))], tot

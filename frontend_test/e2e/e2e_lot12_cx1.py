@@ -191,7 +191,8 @@ def test_def_c113_cashflow_portalului_ia_totalul_facturii_in_lei(patron, firma_p
     """C113. Pașii: contabilul emite factura în EUR (121,00 EUR, cursul 5 -> 605,00 lei, scadentă peste 30 de zile) și îi validează nota
     (4111 = 605,00) -> dă acces clientului la portal -> clientul: „Cifrele firmei” -> „Previziune bani (8 săptămâni)”: în săptămâna
     scadenței intră +605 lei (înainte: +121 — totalul în EUR luat ca lei, deși soldul din balanță e în lei).
-    MUTAȚIA: `repo_facturi.pentru_cashflow` ia `total` (în valută) -> +121 -> ROȘU."""
+    MUTAȚIA: `repo_facturi.de_incasat` ia `total` (în valută) drept rest în lei (funcția `pentru_cashflow`, scoasă în lotul 13, a fost înlocuită de
+    `repo_portal.facturi_deschise_validate`) -> +121 -> ROȘU."""
     pregateste_firma(patron, firma_portal)
     s, tid = firma_portal["schema"], firma_portal["tenant_id"]
     f = _emite(patron, firma_portal, 100, moneda="EUR", curs=5, descriere="Servicii E2E C113")
