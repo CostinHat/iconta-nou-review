@@ -22,6 +22,8 @@ Forma unei dovezi (JSON):
                                             (alegerea tipului și a perioadei: `declaratie_tip.alege_tipul`, `conftest.alege_perioada`)
       {"incarca": CSS, "generator": "modul:funcție", ["argumente": [...]], "nume": FIȘIER}   fișierul dat de funcție (octeți), încărcat
                                             în câmpul de fișier — sursa lui e aceeași cu a testelor (ex. balanța SAGA a lui 439)
+      {"link_email": ADRESA, ["subiect": S], "cauta": T, ["fila_deschisa": true]}   linkul care conține T din ultimul email către ADRESA
+                                            (cutia de test a copiei), deschis de destinatar, fără sesiunea cabinetului (560)
   - `verifica` (după pași): {"contine": T, ["zona": CSS]}, {"nu_contine": T, ["zona": CSS]}, {"inactiv": CSS, ["text": T]},
       {"activ": CSS, ["text": T]}, {"exista": CSS, ["text": T]}, {"contine_oricare": [T1, T2, …], ["zona": CSS]},
       {"valoare": CSS, "egal": V} (valoarea câmpului, nu textul: cifra scrisă de contabil într-un câmp, C102). Textul se compară cu spațiile normalizate; fără `zona`, pe fereastra
@@ -41,7 +43,8 @@ import urllib.request
 
 RAD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 #: Acțiunile unui pas și felurile de verificare (forma de mai sus); lista de dovezi e păzită pe ele (`core/test_dovada_firme_test.py`).
-PASI = ("click", "asteapta", "asteapta_text", "completeaza", "alege", "deruleaza", "pauza", "captura", "declaratie", "incarca", "lucrator")
+PASI = ("click", "asteapta", "asteapta_text", "completeaza", "alege", "deruleaza", "pauza", "captura", "declaratie", "incarca", "lucrator",
+        "link_email")
 VERIFICARI = ("contine", "nu_contine", "contine_oricare", "inactiv", "activ", "exista", "valoare")
 
 
@@ -117,6 +120,37 @@ def _pas(e, pas):
         modul, functie = pas["generator"].split(":")
         octeti = getattr(importlib.import_module(modul), functie)(*pas.get("argumente", []))
         pg.set_input_files(pas["incarca"], files=[{"name": pas["nume"], "mimeType": pas.get("tip", "text/csv"), "buffer": octeti}])
+    elif "link_email" in pas:
+        # [lotul 13, 560] linkul dintr-un email al aplicației copiei (cutia de test, `ICONTA_EMAIL_CUTIE`: pe copie nimic nu pleacă), deschis
+        # de DESTINATAR: un browser fără sesiunea cabinetului (fereastra InPrivate a clientului). Cu `fila_deschisa`, pagina iConta.eu e
+        # deschisă întâi (formularul de intrare), iar linkul se deschide în aceeași filă — drumul din 560. Pașii și captura de după continuă
+        # pe pagina destinatarului; erorile ei de JavaScript și cererile 5xx intră în rezultatul dovezii.
+        import glob as _glob
+        import re as _re
+        from urllib.parse import urlsplit as _us
+        cutie = os.environ["ICONTA_EMAIL_CUTIE"]
+        scrisori = []
+        for cale in sorted(_glob.glob(os.path.join(cutie, "*.json"))):
+            m = json.load(open(cale, encoding="utf-8"))
+            if m.get("catre") == pas["link_email"] and pas.get("subiect", "") in m.get("subiect", ""):
+                scrisori.append(m)
+        if not scrisori:
+            raise ValueError("niciun email către %s în cutia de test" % pas["link_email"])
+        linkuri = [h for h in _re.findall(r"href=['\"]([^'\"]+)['\"]", scrisori[-1]["html"]) if pas.get("cauta", "") in h]
+        if not linkuri:
+            raise ValueError("emailul către %s n-are linkul %r" % (pas["link_email"], pas.get("cauta")))
+        u = _us(pg.url)
+        baza = "%s://%s" % (u.scheme, u.netloc)
+        link = baza + linkuri[0][linkuri[0].index("/", linkuri[0].index("//") + 2):] if "//" in linkuri[0] else baza + linkuri[0]
+        ctx_nou = pg.context.browser.new_context(viewport=pg.viewport_size)
+        pagina = ctx_nou.new_page()
+        pagina.on("pageerror", lambda x: e.erori.append(str(x)))
+        pagina.on("response", lambda r: e.cereri_rele.append((r.status, r.url)) if r.status >= 500 else None)
+        if pas.get("fila_deschisa"):
+            pagina.goto(baza + "/", wait_until="domcontentloaded")
+            pagina.wait_for_selector("#pagina-acces-btn", timeout=40000)
+        pagina.goto(link, wait_until="domcontentloaded")
+        e.pg = pagina
     elif "lucrator" in pas:
         # [lotul 13, C130 / C132] lucrătorul Supervizorului rulează pe producție în tura de 5 minute (`firma_rezumat.main` ->
         # `supervizor_cache.recalculeaza_lot`); pe copie cronul nu rulează. Pasul cheamă același calcul pe firmă (`recalculeaza_firma`), pe

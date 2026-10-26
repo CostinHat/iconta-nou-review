@@ -78,7 +78,10 @@ PUBLICE_PE_FIRMA = ("declaratii_depuse", "declaratii_coada", "firma_tip", "alert
                     "pachet_povestea")
 #: Coloanele de utilizator copiate (identitatea de pe ecran și drepturile); NU: email, password_hash, telefon, sesiuni.
 COLOANE_UTILIZATOR = ("nume", "prenume", "functie", "rol", "activ", "parola_schimbata", "poate_pregati", "poate_valida", "poate_depune",
-                      "nivel")
+                      "nivel", "notificari_tipuri")
+#: [lotul 13, 565 / 566] bifele notificărilor (`notificari_tipuri`, mai sus) și momentul salvării lor se copiază: sunt alegerile de dinainte
+#: de reparație ale utilizatorului (nu un secret), pe care migrarea 566 le corectează și pe care Setări cont -> Notificări le arată. Fără
+#: moment salvat pe producție, copia pune momentul copierii (altfel ar cere „Înainte de a începe” la prima intrare).
 #: O coloană a cărei denumire arată a secret oprește copierea (verificată pe schemele sursă înainte de `pg_dump`).
 RE_SECRET = re.compile(r"(token|parola|passw|secret|api_?key|refresh|pfx|privat)", re.I)
 TELEFON_TEST = "+40700000000"
@@ -362,9 +365,13 @@ def cloneaza(_argv):
             col = [c for c in COLOANE_UTILIZATOR if c in set(_coloane(cp, "users")) & set(_coloane(ct, "users"))]
             cp.execute("SELECT %s FROM public.users WHERE id = %%s" % ", ".join(col), (uid,))
             val = cp.fetchone()
+            cp.execute("SELECT notificari_salvate_la FROM public.users WHERE id = %s", (uid,))
+            (salvat,) = cp.fetchone()
+            if "notificari_tipuri" in col:   # jsonb citit ca dict: se scrie înapoi ca JSON
+                val = tuple(json.dumps(v) if c == "notificari_tipuri" and v is not None else v for c, v in zip(col, val))
             ct.execute("INSERT INTO public.users (id, email, password_hash, accounting_firm_id, telefon, notificari_salvate_la, "
-                       "bun_venit_vazut_la, %s) OVERRIDING SYSTEM VALUE VALUES (%%s, %%s, %%s, %%s, %%s, now(), now(), %s)"
-                       % (", ".join(col), ", ".join(["%s"] * len(col))), (uid, email[uid], hash_parola, cabinet_id, TELEFON_TEST, *val))
+                       "bun_venit_vazut_la, %s) OVERRIDING SYSTEM VALUE VALUES (%%s, %%s, %%s, %%s, %%s, COALESCE(%%s, now()), now(), %s)"
+                       % (", ".join(col), ", ".join(["%s"] * len(col))), (uid, email[uid], hash_parola, cabinet_id, TELEFON_TEST, salvat, *val))
         n["users"] = len(utilizatori)
         copie = {surse[s][0]: schema_copie(s) for s in SURSE}
         n["tenants"] = _copiaza_randuri(cp, ct, "tenants", "id = ANY(%s)", (tids,), {"schema_name": lambda v: schema_copie(v)},
