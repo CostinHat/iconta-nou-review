@@ -853,7 +853,12 @@ def firma_mf():
                                    "data_pif": "2026-01-15", "metoda": "liniara", "cont_imobilizare": "2131",
                                    "cont_amortizare": "2813"}]})
         assert st == 200 and r.get("importati") == 1, (st, r)
-        _nota_validata(f, "2026-02-28", "6811", "2813", 200, "Amortizare 02/2026 D")
+        # [lotul 13, 522] amortizarea lui 02/2026 pe drumul aplicației (nota tabloului, cu activul pe rând), validată din Registrul jurnal:
+        # o notă manuală 6811 = 2813 nu e a niciunui activ (registrul o arată „pe contul 2813, fără activ”)
+        st, r = _api(PATRON, "POST", "/tenants/%d/amortizare?an=2026&luna=2" % f["tenant_id"], {})
+        assert st == 200 and r.get("nota_id"), (st, r)
+        st, r2 = _api(PATRON, "POST", "/tenants/%d/jurnal/%d/valideaza" % (f["tenant_id"], r["nota_id"]), {})
+        assert st == 200, (st, r2)
         # [406] casa nu ajunge sub zero: numerarul depus la bancă există întâi în casă (aportul asociatului)
         _nota_validata(f, "2026-02-28", "5311", "1012", 300, "Aport numerar D141")
         _nota_validata(f, LUNA_TRECUTA.replace(day=20).isoformat(), "581", "5311", 300, "Depunere numerar D141")
@@ -899,7 +904,7 @@ def test_def_139_registrul_mf_arata_amortizarea_inregistrata_si_diferenta(patron
 def test_def_140_registrul_mf_are_durata_catalogul_si_planul_lunar(patron, firma_mf):
     """140. Mijloace fixe: lipseau durata, codul din catalog și planul lunar.
     Pașii contabilului: Mijloace fixe -> MF-D1: durata „60 de luni”; „Cod din catalog” 2.1.17.2.1 -> Salvează -> apare denumirea din
-    Catalogul HG 2139/2004 cu plaja de ani; „Planul lunar de amortizare” are 60 de luni, 02/2026 „înregistrată”, 03/2026
+    Catalogul HG 2139/2004 cu plaja de ani; butonul „Planul lunar (60 de luni)” deschide fereastra: 02/2026 „înregistrată”, 03/2026
     „neînregistrată”."""
     pg = patron.pg
     _mijloace(patron, firma_mf)
@@ -910,10 +915,12 @@ def test_def_140_registrul_mf_are_durata_catalogul_si_planul_lunar(patron, firma
     pg.wait_for_function("() => { const r = [...document.querySelectorAll('.fereastra')].pop().querySelector('.fd-tabel tbody tr');"
                          " return r && /\\d+–\\d+ ani/.test(r.innerText); }",
                          timeout=20000)
-    rezumat = pg.locator(".fereastra:last-of-type details summary", has_text="Planul lunar de amortizare")
-    assert "(60 de luni)" in rezumat.inner_text(), rezumat.inner_text()
-    rezumat.click()
-    plan = pg.evaluate("() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('details[open] .fd-tabel tbody tr')]"
+    # [lotul 13, clasa 674] planul lunar se deschide cu butonul de pe rândul activului, într-o fereastră nouă
+    buton = pg.locator(".fereastra:last-of-type [data-plan='%d']" % mid)
+    assert buton.inner_text().strip() == "Planul lunar (60 de luni)", buton.inner_text()
+    buton.click()
+    pg.wait_for_function("() => /Planul lunar de amortizare/.test([...document.querySelectorAll('.fereastra')].pop().innerText)", timeout=20000)
+    plan = pg.evaluate("() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('.fd-tabel tbody tr')]"
                        ".map((r) => [...r.cells].map((c) => c.innerText.trim()))")
     patron.captura()
     assert len(plan) == 60 and plan[0] == ["02/2026", "200,00", "înregistrată"] and plan[1] == ["03/2026", "200,00", "neînregistrată"], plan[:3]

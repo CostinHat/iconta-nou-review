@@ -13,7 +13,7 @@ import os
 
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import firma_noua, sql, zile_de_acum
 from e2e_bloc_a import AZI, _api, _ok, pregateste_firma
 
 D = AZI.isoformat()
@@ -76,17 +76,24 @@ def _linii(f, nid):
                                   'WHERE inregistrare_id = %%s ORDER BY id' % f["schema"], (nid,))]
 
 
-def _nota_validata(f, data, linii, partener=(None, None), descriere="Date de pornire E2E lot 13", mijloc_fix_id=None):
+def _nota_validata(f, data, linii, partener=(None, None), descriere="Date de pornire E2E lot 13", mijloc_fix_id=None, factura_id=None):
     """DATE DE PORNIRE (declarat): o notă VALIDATĂ cu rândurile [(debit, credit, suma)] — soldul pe care îl stinge pasul probat."""
     s = f["schema"]
     # ciornă -> rânduri (cu activul lor, `mf_linii`) -> validată: rândurile unei note validate nu se mai scriu (`trg_regula_linii_nota`)
+    # date-de-pornire: nota validată a pasului anterior (soldul pe care îl stinge pasul probat), declarată în docstringul helperului
     (nid,) = sql('INSERT INTO "%s".inregistrari (data, descriere, sursa, status, document_ref) VALUES (%%s, %%s, %%s, %%s, %%s) RETURNING id' % s,
-                 (data, descriere, "operatiuni", "ciorna", "Document E2E"))[0]
+                 (data, descriere, "facturi" if factura_id else "operatiuni", "ciorna", "Document E2E"))[0]
+    if factura_id:
+        # date-de-pornire: contarea facturii de pornire, legată de ea înainte de validare (nota validată nu se mai modifică)
+        sql('UPDATE "%s".inregistrari SET factura_id = %%s WHERE id = %%s' % s, (factura_id, nid))
     for d, c, x in linii:
+        # date-de-pornire: rândurile aceleiași note de pornire, scrise în ciornă (rândurile notei validate nu se mai scriu)
         (lid,) = sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma, partener_cui, partener_nume) '
                      'VALUES (%%s, %%s, %%s, %%s, %%s, %%s) RETURNING id' % s, (nid, d, c, x, partener[0], partener[1]))[0]
         if mijloc_fix_id:
+            # date-de-pornire: activul rândului de pornire (`mf_linii`), cum îl scrie aplicația la amortizare
             sql('INSERT INTO "%s".mf_linii (linie_id, mijloc_fix_id) VALUES (%%s, %%s)' % s, (lid, mijloc_fix_id))
+    # date-de-pornire: validarea notei de pornire, ca după „Validează” din Registrul jurnal
     sql('UPDATE "%s".inregistrari SET status = \'validata\' WHERE id = %%s' % s, (nid,))
     return nid
 
@@ -166,8 +173,10 @@ def test_def_524_plata_ratei_cu_creditul_numai_in_ciorna_se_refuza(patron, firma
     MUTAȚIA: `ops_sold.cere_sold` nu mai refuză -> nota cu sold invers se scrie -> ROȘU."""
     f = firma_ops
     s = f["schema"]
+    # date-de-pornire: creditul primit numai în ciornă — starea pe care o refuză plata ratei (524)
     (nid0,) = sql('INSERT INTO "%s".inregistrari (data, descriere, sursa, status, document_ref) VALUES (%%s, %%s, %%s, %%s, %%s) RETURNING id' % s,
                   (AZI.replace(day=1).isoformat(), "Primire credit E2E 524", "operatiuni", "ciorna", "Contract credit E2E"))[0]
+    # date-de-pornire: rândul aceleiași ciorne a creditului
     sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, %%s, %%s, %%s)' % s,
         (nid0, "5121", "1621", 5000))
     pg = _op(patron, f, "credit")
@@ -200,11 +209,11 @@ def test_def_524_decontarea_in_valuta_pe_factura_de_origine(patron, firma_ops):
     _completeaza(pg, [("data", D), ("tip", "creanta")])
     pg.wait_for_function("() => (document.querySelector('#op-factura_id') || {innerText: ''}).innerText.includes('Nicio factură emisă')", timeout=20000)
     patron.captura("fara_factura")
+    # date-de-pornire: factura emisă în EUR din care provine creanța în valută (524) — emiterea în valută nu e pasul probat
     (fid,) = sql('INSERT INTO "%s".facturi (serie, numar, data_emitere, directie, moneda, total, total_lei, curs_bnr, tert_nume, tert_cui, '
                  'tert_tara) VALUES (%%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s) RETURNING id' % s,
                  ("F13V", "1", AZI.replace(day=1).isoformat(), "emisa", "EUR", 5000, 24750, 4.95, "Client IE E2E", "IE6388047V", "IE"))[0]
-    nid_f = _nota_validata(f, AZI.replace(day=1).isoformat(), [("4111", "704", 24750)])
-    sql('UPDATE "%s".inregistrari SET factura_id = %%s, sursa = %%s WHERE id = %%s' % s, (fid, "facturi", nid_f))
+    _nota_validata(f, AZI.replace(day=1).isoformat(), [("4111", "704", 24750)], factura_id=fid)
     pg = _op(patron, f, "decont_valuta")
     _completeaza(pg, [("data", D), ("tip", "creanta")])
     pg.wait_for_function("(id) => [...document.querySelectorAll('#op-factura_id option')].some((o) => o.value === String(id))", arg=fid, timeout=20000)
@@ -289,7 +298,8 @@ def test_def_517_lunile_lipsa_din_randul_activului(patron, firma_ops):
     pg.wait_for_selector(_F + "#mf-mesaj .caseta-ok", timeout=60000)
     patron.captura("generate")
     noi = _note_noi(f, ultima)
-    assert len(noi) == AZI.month - 2, noi            # 02 … luna trecută, o notă pe lună
+    # 02 … luna trecută, o notă pe lună — luna în care aplicația generează ACUM (rularea poate trece de miezul nopții)
+    assert len(noi) in {z.month - 2 for z in zile_de_acum(AZI)}, noi
     assert all(sql('SELECT count(*) FROM "%s".inregistrari_linii l JOIN "%s".mf_linii ml ON ml.linie_id = l.id WHERE l.inregistrare_id = %%s '
                    'AND ml.mijloc_fix_id = %%s AND l.cont_debit = %%s' % (f["schema"], f["schema"]), (n, ml, "6811"))[0][0] == 1 for n in noi)
     assert "în ciornă, de validat" in _rand_mf(pg, "MFL").inner_text()
@@ -298,7 +308,7 @@ def test_def_517_lunile_lipsa_din_randul_activului(patron, firma_ops):
 # ── 521 / 519 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_521_519_plusul_de_mijloc_fix_cu_catalog_intra_in_registru_la_validare(patron, firma_ops):
     """521 / 519 / 504. Pașii: Inventariere anuală -> Plus mijloc fix: conturile pornesc goale, „Cont amortizare” nu se mai cere (îl dă
-    contul activului), codul din catalog arată plaja (2.2.9: 3–5 ani) -> durata 12 luni se refuză lângă câmp -> 36 de luni: nota 2131 = 4754
+    contul activului), codul din catalog arată plaja (2.2.9: 2–4 ani, HG 2139/2004) -> durata 12 luni se refuză lângă câmp -> 36 de luni: nota 2131 = 4754
     6.000; numărul de inventar e MF-001 (nu „MF-PLUS”); registrul arată activul „intră la validarea notei” -> nota validată -> „activ”.
     MUTAȚIA: `_verifica_catalog` nu mai refuză durata din afara plajei -> nota cu 12 luni se scrie -> ROȘU."""
     f = firma_ops
@@ -306,7 +316,7 @@ def test_def_521_519_plusul_de_mijloc_fix_cu_catalog_intra_in_registru_la_valida
     _completeaza(pg, [("data", D), ("operatie", "plus_mf")])
     assert pg.input_value("#op-cont_imobilizare") == "" and pg.locator("#op-cont_amortizare").count() == 0
     _completeaza(pg, [("valoare", "6000"), ("denumire", "Laptop găsit la inventar"), ("cont_imobilizare", "2131"), ("cod_catalog", "2.2.9")])
-    pg.wait_for_function("() => (document.querySelector('#op-cod_catalog-stare') || {innerText: ''}).innerText.includes('între 36 și 60')", timeout=20000)
+    pg.wait_for_function("() => (document.querySelector('#op-cod_catalog-stare') || {innerText: ''}).innerText.includes('între 24 și 48')", timeout=20000)
     _completeaza(pg, [("dnf_luni", "12"), ("data_pif", D), ("metoda", "liniara"), ("destinatie_cd", "false")])
     ultima = _ultima(f)
     _genereaza(pg)
@@ -470,7 +480,8 @@ def test_def_511_512_ajustarea_creantei_pe_factura_cu_partea_nedeductibila(patro
     MUTAȚIA: partea nedeductibilă nu mai intră în ajustări (`_aj.adauga` scos) -> ROȘU."""
     from e2e_bloc_a import emite_api
     f = firma_ops
-    fid = emite_api(patron, f)
+    fid = emite_api(patron, f)["factura_id"]
+    # date-de-pornire: scadența facturii cu 300 de zile în urmă (zilele de la scadență ale ajustării, 511) — timpul nu se poate aștepta în probă
     sql('UPDATE "%s".facturi SET data_scadenta = %%s WHERE id = %%s' % f["schema"], ((AZI - __import__("datetime").timedelta(days=300)).isoformat(), fid))
     pg = _op(patron, f, "provizion")
     _completeaza(pg, [("data", D), ("fel", "provizion")])
@@ -542,7 +553,7 @@ def test_def_520_minusul_intreaba_daca_lipsa_e_dovedita_si_imputa_salariatul(pat
     assert pg.locator("#op-asigurat_sau_distrus").count() == 0
     _completeaza(pg, [("valoare", "1000"), ("cont_stoc", "371"), ("cota", "21"), ("imputabil", "false"), ("lipsa_dovedita", "true")])
     ultima = _ultima(f)
-    _genereaza(pg)
+    pg.click("#op-trimite")   # documentul doveditor e obligatoriu pe ramura „Da”: refuzul vine lângă câmp, nu în caseta de după generare
     pg.wait_for_selector('.msg-eroare[data-camp="op-document_lipsa"], #op-mesaj.msg-eroare', timeout=20000)
     patron.captura("fara_document")
     assert _note_noi(f, ultima) == []
@@ -563,6 +574,7 @@ def test_def_527_533_dividendul_si_partajul_din_soldurile_pe_asociati(patron, fi
     MUTAȚIA: partajul ia iar capitalul din cerere (`_partaj_lichidare` ocolit) -> refuz „Lipsește câmpul” -> ROȘU."""
     f = firma_ops
     s = f["schema"]
+    # date-de-pornire: soldurile preluate pe 117 / 1012 ale firmei (profitul nerepartizat al F2, 527 / 533), ca la migrare
     sql('INSERT INTO "%s".solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES (%%s, %%s, 0, %%s, %%s), '
         '(%%s, %%s, 0, %%s, %%s)' % s, ("1012", "Capital subscris vărsat", 200, "2025-12-31", "117", "Rezultatul reportat", 14600, "2025-12-31"))
     _ok(_api(patron, "POST", "/tenants/%d/asociati" % f["tenant_id"],
@@ -659,6 +671,7 @@ def test_def_537_achizitia_intracomunitara_in_moneda_facturii(patron, firma_ops)
     MUTAȚIA: cursul ignorat (`curs = 1`) -> 371 = 401 1.000 -> ROȘU."""
     import datetime as _dt
     for k in range(1, 8):
+        # date-de-pornire: cursul BNR al zilei, în afara plasei (ANAF / BNR simulate)
         sql("INSERT INTO public.curs_bnr_zilnic (data, moneda, curs, luat_la) VALUES (%s, 'EUR', 5.0000, now()) ON CONFLICT DO NOTHING",
             ((AZI - _dt.timedelta(days=k)).isoformat(),))
     f = firma_ops
@@ -734,6 +747,7 @@ def test_def_549_agricultorul_neinscris_achizitie_fara_compensatie(patron, firma
 # ── 510 / 548 / 551 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def _stoc_pe_articol(f):
     """DATE DE PORNIRE (declarat): firma ține stocul cantitativ-valoric (Date firmă › metoda de stoc) — nu e pasul probat."""
+    # date-de-pornire: metoda de stoc a firmei (Date firmă), declarată — nu e pasul probat
     sql('UPDATE "%s".firma_profil SET metoda_stoc = %%s' % f["schema"], ("cantitativ_valoric",))
 
 
@@ -821,6 +835,7 @@ def test_def_551_548_marja_fara_metoda_de_stoc_trimite_in_date_firma(patron, fir
     metoda de stoc declarată -> Vânzare regim marjă, completat -> refuzul metodei de stoc, cu butonul „Deschide Date firmă”; nicio notă.
     MUTAȚIA: cererea metodei de stoc scoasă din vânzarea în regim de marjă -> nota trece fără metodă -> ROȘU."""
     f = firma_ops
+    # date-de-pornire: metoda de stoc nedeclarată — starea pe care o refuză vânzarea (551)
     sql('UPDATE "%s".firma_profil SET metoda_stoc = NULL' % f["schema"])   # DATE DE PORNIRE (declarat): metoda nedeclarată
     pg = _op(patron, f, "marja")
     _completeaza(pg, [("data", D), ("articol", "Ceas E2E"), ("cantitate", "1"), ("pret_vanzare", "510"), ("cota", "21"),

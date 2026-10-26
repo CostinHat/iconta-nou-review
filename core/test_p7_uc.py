@@ -184,7 +184,7 @@ PERECHI_ADAUGATE = {
     ('nota_productie', "m['eroare']"): _MOTIV_L13_OPS + ' 510: intrarea în fișa de magazie refuzată.',
     ('nota_provizion_ep', "{'mesaj': 'Alege factura emisă neîncasată din listă.', 'erori_campuri': [{'camp': 'op-factura_id', 'mesaj': 'Alege factura din listă.'}]}"): _MOTIV_L13_OPS + ' 511: ajustarea creanței pe factura neîncasată aleasă.',
     ('nota_subventie', "{'mesaj': 'Alege mijlocul fix finanțat din registrul activelor.', 'erori_campuri': [{'camp': 'op-mijloc_fix_id', 'mesaj': 'Alege mijlocul fix din listă.'}]}"): _MOTIV_L13_OPS + ' 528: subvenția pentru investiții se leagă de activ.',
-    ('vanzare_ic', "_ic.mesaj_vies_indisponibil(corp['cod_tva_client'], v.get('eroare'))"): _MOTIV_L13_OPS + ' 550: VIES indisponibil nu e cod invalid (502).',
+    ('vanzare_ic', "_ic.mesaj_vies_indisponibil(corp['cod_tva_client'], v.get('eroare'))"): _MOTIV_L13_OPS + ' 550: VIES indisponibil nu e cod invalid (409, reîncearcă).',
     ("facturi_emite", "{'ok': False, 'cod': e.cod, 'mesaj': str(e), 'intrebare': e.intrebare}"): (
         "Deficiența C84 (lotul 12, decizia Costin 12.3 pct.7: „livrarea intracomunitară de bunuri fără dovada transportului primește "
         "avertisment la emitere, nu refuz”): după linii și după „Pleacă marfa acum?”, emiterea unei livrări intracomunitare de bunuri "

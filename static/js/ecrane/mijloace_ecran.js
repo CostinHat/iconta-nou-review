@@ -55,10 +55,12 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
       <input class="camp-input" style="max-width:120px" id="mf-catalog-${m.id}" value="${esc(m.cod_catalog || "")}" aria-label="Cod din catalog ${esc(m.denumire || "")}">
       <button class="buton-secundar" data-catalog="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/cod-catalog">Salvează</button></div>
     ${m.catalog ? `<div class="tip-desc">${esc(m.catalog.denumire)} · ${m.catalog.ani_min}–${cate(m.catalog.ani_max, "an", "ani")}</div>` : ""}`;
-  const planLunar = (m) => !(m.plan_lunar || []).length ? "" : `<tr><td colspan="${simpla ? 11 : 13}"><details><summary>Planul lunar de amortizare — ${esc(m.cod || m.denumire || "")} (${cate(m.plan_lunar.length, "lună", "luni")})</summary>
+  // [lotul 13, clasa 674] planul lunar se deschide cu un buton, într-o fereastră (nu un `<details>` pe care se dă clic, sub rând)
+  const planLunar = (m) => `<h2 class="pf-titlu">Planul lunar de amortizare — ${esc(m.cod || m.denumire || "")}</h2>
+      <p class="pf-intro">${esc(m.denumire || "")} · ${cate(m.plan_lunar.length, "lună", "luni")}</p>
       <table class="fd-tabel"><thead><tr><th>Luna</th><th class="fd-td-num">Rata</th>${simpla ? "" : "<th>Înregistrare</th>"}</tr></thead><tbody>
       ${m.plan_lunar.map((p) => `<tr><td>${dataRo(new Date(p.an, p.luna - 1, 1), "luna_an_numeric")}</td><td class="fd-td-num">${bani(p.rata)}</td>${simpla ? "" : `<td>${{ inregistrata: "înregistrată", sold_initial: "în soldul de preluare", neinregistrata: "neînregistrată", in_ciorna: "în ciornă, de validat", in_curs: "luna curentă", viitoare: "—" }[p.stare] || ""}</td>`}</tr>`).join("")}
-      </tbody></table></details></td></tr>`;
+      </tbody></table>`;
   // [lotul 13, deficiența 519] starea activului: intră / iese din registru la VALIDAREA notei care îl aduce / îl casează
   const stare = (m) => ({
     activ: "activ", casat: "casat",
@@ -99,9 +101,10 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
           ${simpla ? "" : `${buton(m, "casare", "Casează", `data-caseaza="${m.id}" data-actiune="POST /tenants/{tenant_id}/nota-inventariere"`)}
           ${buton(m, "reeval", "Reevaluează", `data-reeval="${m.id}" data-actiune="POST /tenants/{tenant_id}/reevaluare-imobilizare"`)}
           ${buton(m, "lipsa", `Înregistrează lunile lipsă${(m.luni_neinregistrate || []).length ? " (" + m.luni_neinregistrate.length + ")" : ""}`, `data-lipsa="${m.id}" data-actiune="POST /tenants/{tenant_id}/amortizare/restanta"`)}`}
+          <button class="buton-secundar" data-plan="${m.id}" data-fara-actiune="citire: planul lunar al activului"${(m.plan_lunar || []).length ? "" : ' disabled title="Activul nu are plan lunar de amortizare."'}>Planul lunar${(m.plan_lunar || []).length ? ` (${cate(m.plan_lunar.length, "lună", "luni")})` : ""}</button>
           ${buton(m, "cd", `C&amp;D: ${m.destinatie_cd ? "da" : "nu"}`, `data-cd="${m.id}" data-actiune="PUT /tenants/{tenant_id}/mijloace-fixe/{mijloc_id}/destinatie-cd" data-cd-val="${m.destinatie_cd ? 1 : 0}"`)}
         </div></td>
-      </tr>${planLunar(m)}`).join("");
+      </tr>`).join("");
 
     // [lotul 10, deficiențele 421 / 424, DS cap.9 v2.96] „se derulează doar tabelul din mijloc, niciodată lateral”: tabelul stă direct în
     // corp (fără cutia lui cu derulare laterală), iar zona de mesaj a acțiunilor de pe rânduri e lipită sus (`.rezumat-fix`)
@@ -162,6 +165,10 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         } catch (e) { arataRefuzul(c2, e, zf, { campuri: { data: "mf-f-data", valoare_justa: "mf-f-justa" } }); }
       });
     });
+    corp.querySelectorAll("[data-plan]").forEach((b) => b.addEventListener("click", () => {
+      const m = lista.find((x) => String(x.id) === String(b.dataset.plan));
+      nav.deschide(`Planul lunar ${m.cod || ""}`, (c2) => { c2.innerHTML = planLunar(m); });
+    }));
     corp.querySelectorAll("[data-caseaza]").forEach((b) => b.addEventListener("click", () => {
       const m = lista.find((x) => String(x.id) === String(b.dataset.caseaza));
       fereastra(`Casare ${m.cod || ""}`, m, "casare");
@@ -180,8 +187,8 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         const z = corp.querySelector("#mf-mesaj");
         const ok = (r.luni || []).filter((x) => x.ok && !x.deja_generata), refuz = (r.luni || []).filter((x) => !x.ok);
         dupaGenerare(z, null, { titlu: `${cate(ok.length, "notă de amortizare generată", "note de amortizare generate")} (ciorne)`,
-          note: ok.map((x) => ({ eticheta: `${String(x.luna).padStart(2, "0")}/${x.an} — ${x.nota_eticheta || ""}`, linii: (x.linii_nota || []).map((l) => ({ debit: l.debit, credit: l.credit, suma: l.suma })) })),
-          detalii: [r.deja_generate ? `${cate(r.deja_generate, "lună era deja generată", "luni erau deja generate")}, de validat.` : "", ...refuz.map((x) => `${String(x.luna).padStart(2, "0")}/${x.an}: ${x.mesaj}`)],
+          note: ok.map((x) => ({ eticheta: `${dataRo(new Date(x.an, x.luna - 1, 1), "luna_an_numeric")} — ${x.nota_eticheta || ""}`, linii: (x.linii_nota || []).map((l) => ({ debit: l.debit, credit: l.credit, suma: l.suma })) })),
+          detalii: [r.deja_generate ? `${cate(r.deja_generate, "lună era deja generată", "luni erau deja generate")}, de validat.` : "", ...refuz.map((x) => `${dataRo(new Date(x.an, x.luna - 1, 1), "luna_an_numeric")}: ${x.mesaj}`)],
           pas: "Le validezi din Registrul jurnal; după validare lunile apar înregistrate pe activ." });
       } catch (e) { b.disabled = false; arataMesaj(zona, e && e.mesaj ? e.mesaj : "Lunile lipsă nu s-au putut genera.", "eroare"); }
     }));

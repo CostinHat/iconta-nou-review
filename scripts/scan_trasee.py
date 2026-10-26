@@ -92,8 +92,11 @@ TRASEE = [
       # spre deosebire de celelalte doua, NU se deriva din `inregistrari`: coloana lui de valoare
       # de inventar vine din numararea faptica. Tabelul propriu e declarat mai jos.
       r"^/tenants/\{\}/registru-inventar",
-      r"^/tenants/\{\}/documente/balanta", r"^/api/v1/firme/\{\}/balanta"],
-     ["inregistrari", "inregistrari_linii", "plan_conturi", "registru_inventar"]),
+      r"^/tenants/\{\}/documente/balanta", r"^/api/v1/firme/\{\}/balanta",
+      # [lotul 13, ops] listele din care aleg formularele operațiunilor speciale (facturi în valută, articole, obiecte de inventar,
+      # facturi neîncasate, catalogul MF) — citire pentru nota contabilă; clasa 8 în afara bilanțului și obiectele de inventar (507 / 508)
+      r"^/tenants/\{\}/operatiuni-date$"],
+     ["inregistrari", "inregistrari_linii", "plan_conturi", "registru_inventar", "evidenta_extrabilant", "obiecte_inventar"]),
     # --- deja scrise în TRASEE.md, partea X ---
     ("T06", "Importul de e-Factura și transmiterea prin SPV",
      [r"^/tenants/\{\}/import-efactura", r"^/tenants/\{\}/facturi-primite",
@@ -160,7 +163,7 @@ TRASEE = [
      [r"^/tenants/\{\}/mijloace-fixe$", r"^/tenants/\{\}/mijloace-fixe/\{\}/destinatie-cd", r"^/tenants/\{\}/amortizare",
       r"^/tenants/\{\}/mijloace-fixe/\{\}/cod-catalog$",   # [08.10.2026, decizia Costin W2]
       r"^/tenants/\{\}/reevaluare-imobilizare"],
-     ["mijloace_fixe"]),
+     ["mijloace_fixe", "mf_note", "mf_linii"]),   # [lotul 13, 519 / 522] activul pe notă și pe rândul notei
     ("T23", "Bonul de la client — portalul și decontul",
      [r"^/portal/bon", r"^/tenants/\{\}/bonuri"], ["bonuri"]),
     ("T24", "Bonul fiscal și raportul Z (AMEF, horeca)",
@@ -188,7 +191,7 @@ TRASEE = [
       r"^/tenants/\{\}/borderouri(/|$)",   # [lotul 11, 450] borderourile de achiziție ale lunii și stornarea lor (decizia 10.3)
       r"^/tenants/\{\}/(import-extracomunitar|export-extracomunitar)",
       r"^/tenants/\{\}/jurnal-marja"],
-     []),
+     ["vanzari_din_stoc"]),   # [lotul 13, 548] vânzarea în regim de marjă / aurul, legate de ieșirea din stoc
     ("T30", "Operațiunile în valută",
      [r"^/tenants/\{\}/(decontare-valuta|reevaluare-valuta)"], []),
     ("T31", "Completările manuale la o declarație (D300, D301)",

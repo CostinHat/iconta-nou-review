@@ -54,7 +54,7 @@ EXCEPTII = {
         "rândul e inserat chiar înainte, în aceeași funcție (`INSERT INTO inregistrari_linii … RETURNING id`), și primește activul o "
         "singură dată: cheia `mf_linii_pkey` (linie_id) nu poate dubla",
     # [lotul 13, 548] vânzarea din stoc (marjă / aur), legată de ieșirea ei: rândul îl scrie numai use-case-ul care tocmai a creat nota
-    ("core/uc_tenants.py", "_vanzare_din_stoc", "vanzari_din_stoc"):
+    ("core/repo_operatiuni.py", "vanzare_din_stoc_scrie", "vanzari_din_stoc"):
         "nota vânzării e creată chiar înainte, în aceeași tranzacție (`nota_operatiune_ciorna` … RETURNING id), și se scrie o singură "
         "dată: cheia `vanzari_din_stoc_pkey` (inregistrare_id) nu poate dubla",
     # [lotul 12, 252] facturile deschise preluate (`tip = 'preluata'`) nu cad sub nicio cheie unică a `facturi`: numerotarea emise

@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, cate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=e38843b1ec";
+import { api, ultimaCerere, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=e38843b1ec";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
@@ -143,7 +143,7 @@ const REGISTRU = [
   { cat: "Imobilizări și capital", cheie: "productie", titlu: "Producție (711/345)", ruta: "nota-productie", frecventa: "lunar", faraPropunere: "comenzile de producție și costul standard nu sunt înregistrate în aplicație", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["obtinere","Ob\u021binere produse (predare la magazie)"],["pic","Produc\u021bie \u00een curs (331)"],["vanzare","V\u00e2nzare (factur\u0103 + desc\u0103rcare din stoc)"]] }),
-    C("produs", "Produsul", "articol", { cond: { camp: "operatie", val: ["obtinere", "vanzare"] }, stoc: "produs", nou: true, ajutor: "Din fișa de magazie (produse finite, 345). La obținere, un produs nou intră în stoc." }),
+    C("produs", "Produsul", "articol", { cond: { camp: "operatie", val: ["obtinere", "vanzare"] }, felStoc: "produs", nou: true, ajutor: "Din fișa de magazie (produse finite, 345). La obținere, un produs nou intră în stoc." }),
     C("um", "Unitatea de măsură (numai produs nou)", "text", { cond: { camp: "operatie", val: "obtinere" }, optional: true }),
     C("cantitate", "Cantitatea", "numar", { cond: { camp: "operatie", val: ["obtinere", "vanzare"] } }),
     C("cost_standard", "Cost standard unitar", "numar", { cond: { camp: "operatie", val: "obtinere" } }),
@@ -205,7 +205,7 @@ const REGISTRU = [
   // [lotul 13, deficiența 548] bunul se alege din stoc și iese din gestiune la CMP (prețul de cumpărare al marjei); clientul e cerut
   { cat: "TVA regimuri speciale", cheie: "marja", titlu: "Vânzare regim marjă (second-hand)", ruta: "vanzare-marja", frecventa: "lunar", faraPropunere: "e documentul operațiunii (factura, borderoul, declarația vamală) — nu vine din alt ecran al aplicației, se introduce la fiecare operațiune", campuri: [
     C("data", "Data", "data"),
-    C("articol", "Bunul vândut (din stoc)", "articol", { stoc: "marfa", ajutor: "Prețul de cumpărare e valoarea bunului în stoc (CMP), nu se scrie." }),
+    C("articol", "Bunul vândut (din stoc)", "articol", { felStoc: "marfa", ajutor: "Prețul de cumpărare e valoarea bunului în stoc (CMP), nu se scrie." }),
     C("cantitate", "Cantitatea", "numar"),
     C("pret_vanzare", "Preț de vânzare (total)"),
     C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
@@ -252,7 +252,7 @@ const REGISTRU = [
     C("data", "Data", "data"),
     C("tip", "Tip", "select", { optiuni: [["lingou","Lingou"],["plancheta","Plachetă"],["moneda","Moneda"]] }),
     C("puritate", "Puritate (ex. 995)", "numar"),   // [C6 vecin de tip] serverul o citește ca număr (tva_aur._numar)
-    C("articol", "Aurul vândut (din stoc)", "articol", { stoc: "marfa", ajutor: "Iese din gestiune la CMP (607 = 371)." }),
+    C("articol", "Aurul vândut (din stoc)", "articol", { felStoc: "marfa", ajutor: "Iese din gestiune la CMP (607 = 371)." }),
     C("cantitate", "Cantitatea", "numar"),
     C("suma", "Valoare vânzare"),
     C("calitate_client", "Client", "select", { optiuni: [["PF","Persoană fizică"],["PJ","Persoană juridică"]] }),
@@ -458,6 +458,11 @@ export const actiuneOp = (o) => "POST /tenants/{tenant_id}/" + o.ruta;
 /** [lotul 13] Ce mai spune răspunsul operației, pe lângă notă, într-o frază fiecare: regimul chiriei (531), reluarea subvenției (528),
  *  partea nedeductibilă a provizionului (512), factura deja primită (506), creditul de sponsorizare (532), evidența în afara bilanțului
  *  (507), numărul de inventar și cursul BNR folosit (521 / 537). */
+// [lotul 13, 507] textul operației fără rânduri în bilanț (scoaterea din folosință, garanția: `mesaj`; comodatul: `extrabilant_text`)
+function faraNote(r) {
+  return r ? (r.mesaj || r.extrabilant_text || "") : "";
+}
+
 export function detaliiOperatie(r) {
   if (!r) return [];
   const d = [];
@@ -472,7 +477,7 @@ export function detaliiOperatie(r) {
   if (r.ajustare_fiscala) d.push(r.ajustare_fiscala);
   if (r.factura_furnizor) d.push(`Factura furnizorului e ${r.factura_furnizor}.`);
   if (r.credit_fiscal && r.credit_fiscal.credit) d.push(r.credit_fiscal.credit);
-  if (!r.mesaj && (r.extrabilant || []).length) d.push(`În afara bilanțului: ${r.extrabilant.join("; ")}.`);
+  if (!faraNote(r) && (r.extrabilant || []).length) d.push(`În afara bilanțului: ${r.extrabilant.join("; ")}.`);
   if (r.numar_inventar) d.push(`Numărul de inventar: ${r.numar_inventar}; activul intră în registru la validarea notei.`);
   if (r.curs && r.moneda && r.moneda !== "RON") d.push(`${bani(r.valoare_valuta)} ${r.moneda} × ${String(r.curs).replace(".", ",")} (cursul BNR valabil la exigibilitate, ${r.exigibilitate}) = ${bani(r.valoare)} lei.`);
   if (r.factura_numar) d.push(`Factura emisă: ${r.factura_numar} (în Facturi emise).`);
@@ -481,7 +486,7 @@ export function detaliiOperatie(r) {
   if (r.cost != null && r.regim) d.push(`Livrarea e ${r.regim === "taxare_inversa" ? "cu taxare inversă (art. 331 alin. (2) lit. h))" : "scutită (art. 313 alin. (3))"}; aurul a ieșit din stoc la CMP: ${bani(r.cost)} lei (607 = 371).`);
   if (r.numar_factura) d.push(`Factura emisă: ${r.numar_factura} (în Facturi emise); produsul a ieșit din stoc (711 = 345).`);
   if (r.coeficient_348 != null && r.numar_factura) d.push(`Coeficientul diferențelor de preț (348): ${String((Number(r.coeficient_348) * 100).toFixed(4)).replace(".", ",")}% (OMFP 1802/2014 pct. 286).`);
-  if (r.document && r.produs) d.push(`${r.produs}: ${r.cantitate} intrate în ${r.gestiune}, cu ${r.document}.`);
+  if (r.document && r.produs) d.push(`${r.produs} a intrat în ${r.gestiune} (cantitatea: ${cantitate(r.cantitate)}), cu ${r.document}.`);
   return d;
 }
 
@@ -536,7 +541,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         // (felul operației, termenul creditului 519/162, metoda de amortizare) — o alegere fiscală făcută de ecran.
         const gol = c.optional ? '<option value="">-</option>'
           : `<option value="" selected>${esc(c.neales || "— alege —")}</option>`;
-        input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">${gol + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
+        input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" data-butoane="">${gol + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
       } else if (c.tip === "mijloc_fix") {
         // [decizia Costin 07.10.2026, C4] „«ID mijloc fix» la reevaluare și casare: devine listă din registrul activelor firmei.”
         // Până azi era un câmp numeric: contabilul trebuia să știe ID-ul intern, iar refuzul îi cerea „alege-l din listă” fără listă.
@@ -547,16 +552,16 @@ export async function ecranOperatiuni(corp, nav, t) {
       } else if (c.tip === "cui") {
         // [lotul 13, deficiențele 506 / 633] partenerul se alege din Parteneri (lista firmei, după nume sau CUI) sau se scrie CUI-ul și
         // „Verifică” aduce denumirea de la ANAF — același drum ca la „Emite factură” (`#em-verifica`, `date_anaf.legaDateAnaf`)
-        input = `<div class="em-benef"><input type="text" id="op-${c.nume}" class="camp-input op-cui" data-nume-camp="${c.numeCamp || ""}" list="op-${c.nume}-lista" autocomplete="off" aria-label="${esc(c.eticheta)}">
-          <button type="button" class="buton-secundar em-buton-sec" id="op-${c.nume}-verifica" data-fara-actiune="citire ANAF; salvarea formularului poartă acțiunea">Verifică</button></div>
-          <datalist id="op-${c.nume}-lista"></datalist><div class="em-cui-stare" id="op-${c.nume}-stare" aria-live="polite"></div>`;
+        input = `<div class="em-benef"><input type="text" id="op-${esc(c.nume)}" class="camp-input op-cui" data-nume-camp="${c.numeCamp || ""}" list="op-${esc(c.nume)}-lista" autocomplete="off" aria-label="${esc(c.eticheta)}">
+          <button type="button" class="buton-secundar em-buton-sec" id="op-${esc(c.nume)}-verifica" data-fara-actiune="citire ANAF; salvarea formularului poartă acțiunea">Verifică</button></div>
+          <datalist id="op-${esc(c.nume)}-lista"></datalist><div class="em-cui-stare" id="op-${esc(c.nume)}-stare" aria-live="polite"></div>`;
       } else if (c.tip === "obiect" || c.tip === "factura_neincasata") {
         // [lotul 13, 508 / 511] obiectul de inventar / factura neîncasată se aleg din ce are aplicația; valoarea vine de la ele
         input = `<select id="op-${c.nume}" class="camp-input op-lista-date" data-ce="${c.tip}" aria-label="${esc(c.eticheta)}"><option value="">— alege întâi operația —</option></select>`;
       } else if (c.tip === "articol") {
         // [lotul 13, 510 / 548] bunul din fișa de magazie (produse finite 345 / mărfuri 371), cu stocul lui sub câmp
-        input = `<input type="text" id="op-${c.nume}" class="camp-input op-articol" data-stoc="${c.stoc}"${c.nou ? " data-nou" : ""} list="op-${c.nume}-lista" autocomplete="off" aria-label="${esc(c.eticheta)}">
-          <datalist id="op-${c.nume}-lista"></datalist><div class="em-cui-stare" id="op-${c.nume}-stare" aria-live="polite"></div>`;
+        input = `<input type="text" id="op-${esc(c.nume)}" class="camp-input op-articol" data-fel-stoc="${esc(c.felStoc)}"${c.nou ? " data-nou" : ""} list="op-${esc(c.nume)}-lista" autocomplete="off" aria-label="${esc(c.eticheta)}">
+          <datalist id="op-${esc(c.nume)}-lista"></datalist><div class="em-cui-stare" id="op-${esc(c.nume)}-stare" aria-live="polite"></div>`;
       } else if (c.tip === "catalog") {
         // [lotul 13, 521] codul din Catalogul HG 2139/2004: sub câmp, denumirea și plaja duratei
         input = `<input type="text" id="op-${c.nume}" class="camp-input op-catalog" aria-label="${esc(c.eticheta)}"><div class="em-cui-stare" id="op-${c.nume}-stare" aria-live="polite"></div>`;
@@ -661,7 +666,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     const zonaMulti = corp.querySelector("#op-multi");
     const randMulti = (i) => `<div class="grila-campuri grila-campuri-compacta">
       ${opCurenta.subcampuri.map((sc) => {
-        if (sc.tip === "select") return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><select id="m${i}-${sc.nume}" class="camp-input"><option value="" selected>— alege —</option>${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></div>`;
+        if (sc.tip === "select") return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><select id="m${i}-${sc.nume}" class="camp-input" data-butoane=""><option value="" selected>— alege —</option>${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></div>`;
         const t2 = sc.tip === "numar" ? "number" : "text";
         return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><input type="${t2}" step="0.0001" id="m${i}-${sc.nume}" class="camp-input"></div>`;   // [504] fără text gri
       }).join("")}</div>`;
@@ -822,7 +827,9 @@ export async function ecranOperatiuni(corp, nav, t) {
     });
     // [lotul 13, 508 / 511] listele din datele firmei: obiectele de inventar (după operație), facturile emise neîncasate
     const listeDate = [...corp.querySelectorAll(".op-lista-date")];
+    const cerereListe = ultimaCerere();   // [lotul 13] o încărcare veche nu se scrie peste una nouă
     const incarcaListe = async () => {
+      const actuala = cerereListe();
       for (const sel of listeDate) {
         const op = (corp.querySelector("#op-operatie") || {}).value || "";
         let url = null, gol = "", eticheta = null;
@@ -835,14 +842,18 @@ export async function ecranOperatiuni(corp, nav, t) {
         } else {
           url = `/tenants/${t.id}/operatiuni-date?ce=facturi_neincasate&data=${encodeURIComponent((corp.querySelector("#op-data") || {}).value || "")}`;
           gol = "Nicio factură emisă neîncasată";
-          eticheta = (f) => `${esc(f.document)} · ${esc(f.partener || "")} · sold ${bani(f.sold)} lei${f.zile != null ? ` · ${f.zile} zile de la scadență` : " · fără scadență"}`;
+          eticheta = (f) => `${esc(f.document)} · ${esc(f.partener || "")} · sold ${bani(f.sold)} lei${f.zile != null ? ` · ${cate(f.zile, "zi", "zile")} de la scadență` : " · fără scadență"}`;
         }
         try {
           const r = await api.get(url);
+          if (!actuala()) return;
           const xs = (r && (r.obiecte || r.facturi)) || [];
+          // [lotul 13] alegerea omului rămâne aleasă când lista se reîncarcă (data sau operația schimbată) și elementul e tot acolo
+          const ales = sel.value;
           sel.innerHTML = xs.length ? `<option value="">— alege —</option>` + xs.map((x) => `<option value="${x.id}">${eticheta(x)}</option>`).join("")
             : `<option value="">${gol}</option>`;
-        } catch { sel.innerHTML = `<option value="">Lista nu s-a putut încărca — reîncearcă</option>`; }
+          if (ales && [...sel.options].some((o) => o.value === ales)) sel.value = ales;
+        } catch { if (!actuala()) return; sel.innerHTML = `<option value="">Lista nu s-a putut încărca — reîncearcă</option>`; }
       }
     };
     if (listeDate.length) {
@@ -855,18 +866,18 @@ export async function ecranOperatiuni(corp, nav, t) {
       const st = corp.querySelector(`#${inp.id}-stare`);
       let xs = [];
       try {
-        xs = ((await api.get(`/tenants/${t.id}/operatiuni-date?ce=articole&tip=${inp.dataset.stoc}`)) || {}).articole || [];
+        xs = ((await api.get(`/tenants/${t.id}/operatiuni-date?ce=articole&tip=${encodeURIComponent(inp.dataset.felStoc)}`)) || {}).articole || [];
       } catch {
         st.className = "em-cui-stare em-cui-rau"; st.textContent = "Lista bunurilor din stoc nu s-a putut încărca — reîncearcă."; return;
       }
-      lista.innerHTML = xs.map((a) => `<option value="${esc(a.denumire)}">${esc(a.denumire)} · în stoc ${esc(a.stoc)} ${esc(a.um)}</option>`).join("");
+      lista.innerHTML = xs.map((a) => `<option value="${esc(a.denumire)}">${esc(a.denumire)} · în stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("");
       const arata = () => {
         const v = inp.value.trim().toLowerCase();
         const a = xs.find((x) => String(x.denumire).toLowerCase() === v);
         st.className = "em-cui-stare";
         // un produs nou intră în stoc numai la obținere; la vânzare bunul trebuie să existe
         const nou = inp.hasAttribute("data-nou") && (corp.querySelector("#op-operatie") || {}).value === "obtinere";
-        if (a) st.innerHTML = `<span class="em-cui-info">în stoc ${esc(a.stoc)} ${esc(a.um)}${a.cmp ? ` · CMP ${bani(a.cmp)} lei` : ""}</span>`;
+        if (a) st.innerHTML = `<span class="em-cui-info">în stoc ${esc(cantitate(a.stoc, a.um))}${a.cmp ? ` · CMP ${bani(a.cmp)} lei` : ""}</span>`;
         else st.textContent = !v ? "" : nou ? "Produs nou: intră în stoc cu unitatea de măsură scrisă." : "Nu e în stoc — alege din listă.";
       };
       inp.addEventListener("input", arata);
@@ -886,9 +897,9 @@ export async function ecranOperatiuni(corp, nav, t) {
         try {
           const r = await api.get(`/tenants/${t.id}/operatiuni-date?ce=catalog&tip=${encodeURIComponent(cod)}`);
           if (!actuala()) return;
-          if (r.gasit) { st.className = "em-cui-stare"; st.innerHTML = `<span class="em-cui-info">${esc(r.denumire)} · durata între ${r.ani_min * 12} și ${r.ani_max * 12} de luni (${r.ani_min}–${r.ani_max} ani)</span>`; }
+          if (r.gasit) { st.className = "em-cui-stare"; st.innerHTML = `<span class="em-cui-info">${esc(r.denumire)} · durata între ${r.ani_min * 12} și ${cate(r.ani_max * 12, "lună", "luni")} (${r.ani_min}–${cate(r.ani_max, "an", "ani")})</span>`; }
           else { st.className = "em-cui-stare em-cui-rau"; st.textContent = "Codul nu e în Catalogul HG 2139/2004."; }
-        } catch { if (actuala()) { st.className = "em-cui-stare em-cui-rau"; st.textContent = "Catalogul nu s-a putut citi — reîncearcă."; } }
+        } catch { if (!actuala()) return; st.className = "em-cui-stare em-cui-rau"; st.textContent = "Catalogul nu s-a putut citi — reîncearcă."; }
       });
     });
     // [lotul 13, 529] „la schimbarea operației mesajul vechi rămâne pe ecran”: alegerea altei operații (primul select al formularului)
@@ -975,10 +986,10 @@ export async function ecranOperatiuni(corp, nav, t) {
           if (r.avertisment) mesajIn(zona, r.avertisment, "avert");
           if (ids.length) butoaneNote(caseta || zona, ids, note, corpReq.data);   // data notei = data trimisă (toate operațiunile)
           if (zonaProp && r.asociati) arataImpartirea(r, "Nota împarte dividendul pe asociați");   // [430b] tabelul notei generate
-        } else if (r && r.mesaj) {
+        } else if (faraNote(r)) {
           // [lotul 13, 507] o operație fără rânduri în bilanț (scoaterea din folosință, comodatul, garanția): înregistrarea în afara
           // bilanțului, spusă într-o singură casetă
-          dupaGenerare(zona, corp.querySelector("#op-trimite"), { titlu: "Înregistrat în afara bilanțului", note: [], detalii: [r.mesaj, ...detaliiOperatie(r)],
+          dupaGenerare(zona, corp.querySelector("#op-trimite"), { titlu: "Înregistrat în afara bilanțului", note: [], detalii: [faraNote(r), ...detaliiOperatie(r)],
             reactiveazaLa: opCurenta.campuri.map((c) => corp.querySelector(`#op-${c.nume}`)) });
         } else {
           zona.innerHTML = `<p class="pf-intro">Calcul (nu s-a generat nicio notă):</p><ul class="pf-intro">${Object.entries(r || {}).map(([k, v]) => `<li>${esc(k.replace(/_/g, " "))}: <b>${esc(String(v))}</b></li>`).join("")}</ul>`;

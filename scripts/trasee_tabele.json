@@ -50,6 +50,7 @@
   "emailuri_dezabonate",
   "etransport_trimiteri",
   "eveniment_public",
+  "evidenta_extrabilant",
   "extras_import",
   "extras_linii",
   "factura_cota_jurnal",
@@ -77,6 +78,8 @@
   "invitatii_cont",
   "login_esecuri",
   "metrici_sanatate",
+  "mf_linii",
+  "mf_note",
   "migrare_status",
   "migrari_rulate",
   "mijloace_fixe",
@@ -87,6 +90,7 @@
   "notificari",
   "notificari_jurnal",
   "notificari_scadenta",
+  "obiecte_inventar",
   "pachet_povestea",
   "perioada_confirmata",
   "perioade_blocate",
@@ -138,6 +142,7 @@
   "tva_incasare_perioade",
   "urme_portal",
   "user_tenants",
-  "users"
+  "users",
+  "vanzari_din_stoc"
  ]
 }

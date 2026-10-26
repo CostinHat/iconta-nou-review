@@ -764,10 +764,14 @@ def test_def_76_datele_citite_de_server_sunt_cerute_de_formular(patron, firma_cv
     nota are rata (5191 = 5121 1.000), 666 = 5121 200 și 627 = 5121 50."""
     pg = patron.pg
     s = firma_cv["schema"]
+    # date-de-pornire: creditul primit și validat (5121 = 5191 1.000) — soldul pe care îl stinge rata probată (524), nu pasul probat
     (nid0,) = sql('INSERT INTO "%s".inregistrari (data, descriere, sursa, status, document_ref) VALUES (%%s, %%s, %%s, %%s, %%s) RETURNING id' % s,
-                  (AZI.replace(day=1).isoformat(), "Primire credit E2E 76", "operatiuni", "validata", "Contract credit E2E"))[0]
+                  (AZI.replace(day=1).isoformat(), "Primire credit E2E 76", "operatiuni", "ciorna", "Contract credit E2E"))[0]
+    # date-de-pornire: rândul creditului primit, scris în ciornă (rândurile notei validate nu se mai scriu — `trg_regula_linii_nota`)
     sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, %%s, %%s, %%s)' % s,
         (nid0, "5121", "5191", 1000))
+    # date-de-pornire: validarea creditului primit, ca după „Validează” din Registrul jurnal
+    sql('UPDATE "%s".inregistrari SET status = \'validata\' WHERE id = %%s' % s, (nid0,))
     _operatiune(patron, firma_cv["nume"], "Credite bancare")
     pg.select_option("#op-operatie", "plata")
     for c in ("dobanda", "rata", "comision"):

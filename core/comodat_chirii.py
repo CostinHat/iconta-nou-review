@@ -68,7 +68,7 @@ def nota_chirie_platita(chirie, cota_tva=None, proprietar="pj", la_data=None):
 def nota_refacturare(total_factura_furnizor, parte_refacturata, cota_tva=None):
     """[lotul 13, deficiența 530, comanda Costin 13.1] Refacturarea utilităților către chiriaș.
 
-    Verbatim: „la total 1.000, refacturat 400, cota 21 se generează două note: 605 = 401 600, 4426 = 401 126, 461 = 401 484 și 4111 = 708
+    Verbatim (cota scrisă ca procent, „21%”): „la total 1.000, refacturat 400, cota 21% se generează două note: 605 = 401 600, 4426 = 401 126, 461 = 401 484 și 4111 = 708
     400, 4111 = 4427 84. Chiriașul apare că datorează de două ori (461 484 + 4111 484), iar TVA de 84 aferentă părții refacturate nu e dedusă
     dar e colectată — 84 lei TVA plătită în plus. Corect (art. 271, livrare în nume propriu): toată factura ca achiziție proprie (605 = 401
     1.000, 4426 = 401 210), apoi factura către chiriaș (4111 = 708 400, 4111 = 4427 84), fără 461.”
