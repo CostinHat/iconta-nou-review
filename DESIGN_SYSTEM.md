@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.103 · 24 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.104 · 25 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -51,6 +51,18 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   facturii rămânea după contare — 45 de butoane cu elemente, în 10 fișiere). Gard: `core/test_buton_blocat_structura.py`
   (în browser, pe modulul real).
 
+- **Comenzile se văd mereu: ce nu se aplică stă inactiv, cu motivul (v2.104, lotul 13, deficiența 675 — clasă; comanda Costin 13.1,
+  verbatim: „entitățile de același tip (salariați, facturi, note…) au același set de butoane, în aceeași ordine; ce nu se aplică stă
+  inactiv, cu motivul la trecerea cu mouse-ul. Nicio setare care schimbă cifre nu stă ascunsă într-un formular de corectare. La salariat:
+  + masă, alături de + vacanță, + cadou, + cultural, + creșă.”).** Pe rândurile aceleiași entități butoanele sunt aceleași, în aceeași
+  ordine; un buton care nu se aplică rândului (stare, regim, date lipsă) NU dispare: stă la locul lui, inactiv, cu motivul. Un singur
+  mecanism, în `api.js`: `inactiv(buton, motiv)` / `activ(buton)`, iar în șablon `${atributeInactiv(motiv)}` — `aria-disabled="true"` (rămâne
+  focusabil, motivul se citește și din tastatură), motivul în `title` (la trecerea cu mouse-ul), arată ca butonul `:disabled` al clasei
+  (stil.css), clicul e oprit în captură. INTERZIS `${cond ? \`<button …>\` : ""}` pentru o acțiune a entității. Rămân ascunse numai
+  acțiunile refuzate ROLULUI (cap.9, v2.64 — `data-actiune` + `drepturi.js`, cu nota `.drept-motiv`) și cardurile ferestrei firmei care nu
+  țin de regimul ei (cap.18). O setare care schimbă cifrele (tichetul de masă, salariul) are butonul ei pe rând, nu stă numai într-un
+  formular de corectare. Gard: verificator `BUTON_ASCUNS` (lotul 13) + `core/test_lot13_ds_ferestre.py`.
+
 **Feedback obligatoriu:**
 - Butoane cu zonă toggle: primesc `.buton-activ` cât timp zona e deschisă; deschiderea unei zone închide zonele-frate.
 - **Vederea aleasă e activă, nu dezactivată (lotul 12, deficiența 469).** Între două sau mai multe vederi ale aceluiași ecran, butonul ales poartă `.buton-activ` și `aria-pressed="true"`; niciunul nu e `disabled` — un buton ales care arată gri pare că nu merge, iar cel neales pare cel activ. Verificatorul îl prinde (`lot12`, `ALEGERE_DEZACTIVATA`).
@@ -76,6 +88,34 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - INTERZIS ca un card sa se deschida inline in corpul panoului (sa suprascrie `.cab-grila`/`continut`). Un card = o fereastra.
 - Meniurile cu sub-optiuni (ex. Firme, Activitate) sunt tot ferestre: sub-optiunile devin `.meniu-card` in corpul ferestrei, NU un al doilea nivel inline cu breadcrumb.
 - Consecinta: in corpul panoului nu apare breadcrumb ("Panou > X") si nici al doilea rand de sageti. Inchiderea se face din X-ul ferestrei.
+- **Acțiunile din ferestre: fereastră nouă, centrată, cât ecranul (v2.104, lotul 13, deficiența 673 — clasă; comanda Costin 13.1, verbatim:
+  „Regula DS 2a (fereastră, niciodată inline) acoperă doar cardurile din grila cabinetului. Se extinde la orice acțiune din orice fereastră:
+  deschide o fereastră nouă, centrată; fereastra de lucru (formular, detalii) ocupă ecranul ca fereastra cu tabel, fără derulare; fereastra
+  mică rămâne doar pentru confirmări; explicația din fereastră are cel mult o frază, restul în «?». Verificatorul o caută peste tot.”).**
+  (1) O acțiune dintr-o fereastră (Salariu, Prime / sporuri / ore suplimentare, Compoziția netului, Corectează datele, + vacanță …) își
+  deschide conținutul printr-o fereastră NOUĂ (`nav.deschide`), nu într-o bandă / un card al ferestrei de dedesubt (`zona.innerHTML =
+  \`…<input …\``), departe de locul apăsării. (2) Fereastra deschisă peste alta e **fereastră de lucru** (`.fer-lucru`, pusă de navigator
+  singur, ca `fer-tabel`): lățimea și înălțimea ecranului minus marginea (`calc(100vw - 48px)` × `calc(100vh - 48px)`), centrată, corpul
+  derulează numai pe verticală; pe telefon tot ecranul. `{ lat: "lucru" }` o cere și pe prima fereastră; `{ lat: "mic" }` o ține mică — numai
+  pentru o confirmare. (3) Explicația din fereastră: cel mult o frază; restul în „?” (`semnAjutor`). Rândurile adăugate într-un formular
+  (cap.24) și refuzul de pe un rând (cap.6) nu sunt „conținut deschis”. Gard: verificator `FEREASTRA_INLINE` + `core/test_lot13_ds_ferestre.py`.
+- **Orice acțiune e un buton (v2.104, lotul 13, deficiența 674 — clasă; comanda Costin 13.1, verbatim: „Orice acțiune e un buton, nu text pe
+  care se dă click (ex. «▸ Compoziția netului»). Excepție: traseul din antetul ferestrei. Gard în verificator.”).** INTERZISE: un
+  `<details>` închis care ascunde date (un tabel) sau un formular — „▸ Compoziția netului” devine un buton care deschide fereastra (cap.2a,
+  673); un `<div>` / `<span>` / `<td>` / `<li>` făcut clicabil (`cursor:pointer`, `role="button"`, `onclick`). Rămân: meniul „Acțiuni” al
+  rândului (cap.9 v2.83), notele informative pliate (text, fără tabel / câmpuri — cap.9 v2.98 / v2.102), „Cum se face” (cap.9 v2.95), eticheta
+  unei căsuțe de bifat și a unui câmp de fișier (`<label>`), traseul din antetul ferestrei (`.fir-veriga` — butoane oricum). Gard: verificator
+  `ACTIUNE_FARA_BUTON`.
+- **Listele scurte sunt butoane alăturate (v2.104, lotul 13, deficiența 676 — clasă; comanda Costin 13.1, verbatim: „Listele scurte (până la
+  6 opțiuni) nu sunt liste derulante | opțiunile apar ca butoane alăturate, toate vizibile, cea aleasă marcată (ex. Fel decont, Sursa
+  Casa/Banca). Listele lungi (firme, conturi, țări, salariați) rămân câmp cu căutare. Nimic nu se deschide singur.”).** O listă închisă cu
+  cel mult 6 opțiuni se scrie `<select … data-butoane="">` (cu valoare goală: scanerul listelor, `scan_selecturi_ecrane._locator`, nu ia un atribut fără `=` drept nume) (cu `ALEGE` / `alegeDacaLipseste`, cap.17): mecanismul din `api.js`
+  (`alegereButoane`, aplicat de observator oricărei liste desenate) arată în locul ei butoanele alăturate (`.alegere-butoane`, câte unul pe
+  opțiune; cel ales `.buton-activ` + `aria-checked`), iar lista rămâne în pagină, nevăzută (`.alegere-sursa`) — valoarea, `change`,
+  `cereAlegerile`, refuzul lângă câmp merg ca înainte. „— alege —” nu e buton: la deschidere nu e nimic ales. O listă care crește peste 6
+  opțiuni redevine listă; o valoare pusă din cod se vede pe buton; clicul pe eticheta de lângă butoane nu alege nimic. Desenatorii comuni
+  (`selectDaNu` — Da/Nu —, registrul Operațiunilor, e-Transport) pun `data-butoane` o dată, pentru toate. O listă ale cărei opțiuni vin din
+  date (firme, conturi, țări, salariați, articole) rămâne listă. Gard: verificator `LISTA_SCURTA` + `core/test_lot13_ds_ferestre.py`.
 - **Pagina principală are aceeași structură la ambele roluri (v2.88, 12.10.2026, comanda Costin, deficiențele 225 + 231: „«Recomandă» și
   «Suport» sunt două benzi înguste, una lângă alta, deasupra cardurilor, la ambele roluri, ca la Cabinet.” · „la Ana, scoate meniul din
   stânga care repetă cardurile. Pagina principală are aceeași structură la ambele roluri.”).** La contabilul-șef și la asistent: banda de
@@ -174,6 +214,46 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **Câmpul cu un buton pe rândul lui (v2.102, lotul 12, 642):** `.camp-cu-buton` (ex. CUI + „Verifică la ANAF”): eroarea vine sub rând
   (`api._ancoraCamp`), ca la `.data-golibila`. Plasa „refuz nevăzut” socotește arătat un refuz când textul lui (cu spațiile strânse) sau
   FIECARE eroare de câmp a lui e în pagină: un refuz, un singur loc vizibil.
+- **Numerele scrise de om, în format românesc (v2.104, lotul 13, deficiența 655 — clasă, grupa 1; comanda Costin 13.1, verbatim: „«1.000»
+  scris în format românesc a fost înregistrat «bază 1,00 lei»: punctul de mii citit ca zecimal, fără avertisment. […] Clasa e în formularele
+  de zi cu zi, nu doar în D207: toate câmpurile de sumă din aplicație.”).** Regula unică, în două oglinzi cu aceleași exemple (`api.js`
+  `numarRo`, `core/numere.numar_ro`; `core/test_lot13_ds_sume_ro.py`): punctul urmat de grupuri de câte trei cifre desparte miile („1.000” = o
+  mie, „1.234.567,89”); virgula e zecimala („1500,5”); un punct urmat de 1–2 sau de 4+ cifre („1234.56”, „4.9750”, „0.500”) nu poate fi
+  separator de mii, deci e zecimală (copiat din alt program); „1,234.56” e scrierea englezească, citită ca atare; orice altceva („1.23.4”,
+  „12a”) e refuzat cu „Scrie numărul ca în contabilitate: 1.234,56 (punct la mii, virgulă la zecimale).” — nu devine un număr ghicit și nici
+  zero. **Mecanismul, în `api.js`, pentru toate ecranele:** orice câmp numeric (`input[type=number]`, `input[inputmode=decimal]`), oricând e
+  desenat, devine câmp de text cu tastatura numerică (`inputmode="decimal"`, `data-numar="ro"`), iar `.value` întoarce numărul canonic
+  (punct zecimal, fără mii: „1000.5”) — codul ecranelor și trimiterea la server primesc numărul corect; o valoare pusă din cod (`x.value =
+  4.975`, atributul `value` al șablonului, un `bani(…)`) e un număr și se arată românește („4,975”); textul care nu e număr se marchează la
+  părăsirea câmpului, iar o scriere pornită dintr-o fereastră cu un astfel de câmp se oprește înainte de server, cu câmpul în „NU s-a
+  salvat.”. Ce scrie ecranul: câmpul de sumă e `type="number"` sau `inputmode="decimal"`; INTERZIS un câmp de sumă de tip text simplu și
+  un parsator local al textului numeric (`String(x).replace(",", ".")`, `parseFloat(t.replace(…))`) — textul se citește cu `numarRo`.
+  `common._dec` rămâne pentru valorile INTERNE (punctul e zecimala). Importurile (`numere.numar`) citesc separatorii după aceeași regulă.
+  Gard: verificator `SUMA_CITITA_BRUT` / `SUMA_TEXT` + `core/test_lot13_ds_sume_ro.py` (în Chromium) + e2e `test_def_655_*`.
+- **Nimic precompletat sau gri care induce în eroare (v2.104, lotul 13, deficiența 504 — clasă; comanda Costin 13.1, verbatim: „Câmpurile nu
+  au voie să arate valori gri sau precompletate care induc în eroare (Costin: «nu trebuie să fie precompletat nimic care să inducă în
+  eroare»). Ex.: Cota TVA arată «21» gri, dar e gol și formularul refuză; la Ajustare stocuri contul vine precompletat cu 397. Câmpul rămâne
+  gol.”). PIVOT al cap.17 v2.79 pct.(2) și (4)** (contul precompletat cu sugestia, inputurile cu valoare pusă de ecran). Un câmp de valoare
+  (sumă, cotă, cont, țară, UM, număr de document) pornește GOL: fără `value` scris de ecran (literal, `|| "x"`, sugestia registrului) și fără
+  un indiciu gri care arată ca o valoare (`placeholder="21"`, `"0,00"`, `"DE"`, `"446"`). Cazul uzual se spune lângă câmp, în
+  `.camp-ajutor` („Contul uzual: 397.”), sau în indiciu cu „ex. …”. O valoare impusă de lege e FIXĂ (`readonly`, cap.17 pct.4), nu
+  precompletare; o valoare salvată se arată (ea e a omului). Gard: verificator `PRECOMPLETARE` (lotul 13).
+- **Caseta de refuz spune motivul (v2.104, lotul 13, deficiența 515; comanda Costin 13.1, verbatim: „Caseta roșie spune doar «motivul e mai
+  jos», iar motivul e tehnic […]. O singură propoziție clară în casetă, pe limba contabilului.”).** Când refuzul de formular stă chiar lângă
+  butonul apăsat, caseta „NU s-a salvat.” îl spune ea (`.refuz-salvare-motiv`), iar zona lui se ascunde cât stă caseta — același text, o
+  singură dată (până acum caseta rămânea cu „NU s-a salvat.” și motivul dedesubt). Textul refuzului e al serverului: o propoziție în limba
+  contabilului (cap.0), fără formule („cont = grupa 39x”). Gard: `core/test_lot13_ds_mesaje.py`.
+- **Aceeași eroare o singură dată: lângă câmp și în rezumat, persistente (v2.104, lotul 13, deficiența 625; comanda Costin 13.1: „Aceeași
+  eroare de trei ori; fereastra plutitoare dispare la schimbarea ecranului și mesajul se pierde. Lângă câmp + rezumat, persistente”).** Un
+  refuz făcut numai din erori de câmp, toate cu câmpul pe ecran, stă lângă fiecare câmp și în caseta „NU s-a salvat.” — zona formularului nu
+  îl mai repetă a treia oară (`api._campuriAutomat`). Bannerul refuzului nevăzut (`#refuz-nevazut`) nu mai pleacă singur după 12 s: rămâne
+  până la „Am înțeles”, până la o scriere reușită pe aceeași rută sau până la următoarea acțiune care scrie. Gard: `core/test_lot13_ds_mesaje.py`.
+- **Mesajele vechi pleacă la acțiunea următoare (v2.104, lotul 13, deficiența 654; comanda Costin 13.1, verbatim: „Mesajele de eroare vechi
+  («NU s-a salvat», «nu are ce genera») rămân pe ecran după acțiunea următoare, când eroarea e alta sau a dispărut.”).** La apăsarea unui buton
+  care scrie, refuzurile de dinainte din fereastra lui pleacă: casetele „NU s-a salvat.” (ale oricărui buton), zonele în care s-a scris
+  refuzul unei acțiuni (`data-refuz-actiune`, marcate de `refuzSalvare`), bannerul. După o scriere reușită pornită de clic pleacă și
+  marcajele câmpurilor. Starea ecranului („nu s-a putut încărca”) și refuzul de pe un rând rămân. Rezultatul unei generări (`.dec-eroare`)
+  ține de ecranul declarației (657). Un mecanism, `api.refuzuriVechi`. Gard: `core/test_lot13_ds_mesaje.py`.
 - **Datele aduse de la ANAF țin de CUI-ul lor (v2.102, lotul 12, 459.1; comanda Costin 12.2 pct.5: „la schimbarea CUI-ului denumirea adusă
   de la CUI-ul anterior rămâne completată”):** un formular în care ANAF completează câmpuri din CUI (denumirea; la factură și adresa,
   localitatea, județul) le leagă prin `legaDateAnaf` (`ecrane/date_anaf.js`): la schimbarea CUI-ului, valoarea pusă de ANAF și neatinsă de
@@ -433,6 +513,30 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   Chromium) + e2e `test_def_421_*` / `test_def_424_*` (Balanța, Registrul-inventar, statul de plată și importul salariaților la 1366×768);
   rezumatul pe toate ecranele cu tabel: `core/test_lot10_rezumat_fix.py` (v2.97).
 - Nicio fereastră nu iese din ecran.
+- **Ferestrele care își pierd alinierea folosesc ecranul (v2.104, lotul 13, deficiența 509 — clasă; comanda Costin 13.1, verbatim: „Ferestrele
+  care își pierd alinierea (câmpuri împrăștiate, goluri, etichete pe rânduri diferite) se redimensionează să folosească ecranul, cu câmpurile
+  aliniate și fără bară de derulare; inclusiv ferestrele de dimensiune fixă care derulează pe interior deși ecranul are loc (ex. Marjă
+  agenții de turism)”).** (1) Fereastra deschisă peste alta e fereastra de lucru cât ecranul (`fer-lucru`, cap.2a 673) — nu mai e de 680 px
+  cu derulare pe interior. (2) Câmpurile unui formular stau în grila canonică `.grila-campuri` / `.grila-doc` (etichetă deasupra câmpului,
+  aliniate pe coloane), nu într-o grilă scrisă inline (`style="display:grid…"`). Gard: verificator `GRILA_INLINE` + `FEREASTRA_INLINE`.
+- **Bara de jos nu mănâncă tabelul (v2.104, lotul 13, deficiența 581 — partea de afișare; comanda Costin 13.1: „La mărimea normală a ecranului,
+  casetele roșii fixe strâng tabelul rândurilor într-o bară albă și acoperă câmpul de dată la derulare”).** În `.bara-fixa` stă acțiunea, câmpurile
+  salvării și mesajul ei; orice zonă de mesaj sau casetă din bară (`.mig-eroare`, `.caseta-atentie`, `.refuz-salvare`, `.msg-*`) are cel mult
+  35vh și derulează ea (ca `[id$="-mesaj"]`, cap.6 v2.98). Lista rândurilor respinse ale unui import stă pe rândurile lor, în tabel (motivul
+  sub rând, 349) — bara spune o propoziție, nu lista din nou (625). Etichetele benzii stărilor („1 rând cu observație”) sunt butoane care duc la
+  rândurile lor (674). Gard: `core/test_lot13_ds_ferestre.py` (1280×720).
+- **Drumul din antet se încheie cu fereastra în care ești (v2.104, lotul 13, deficiența 575 — partea de afișare; comanda Costin 13.1:
+  „titlul «Firme › Firme existente» la Adaugă firmă și în fereastra firmei”).** Când fereastra are părinți, antetul arată „părinte › părinte ›
+  <b>fereastra de acum</b>” (`.fir-acum`, nu se apasă); părinții rămân butoane (`.fir-veriga`). Fără ultimul nod, ultimul părinte se citea ca
+  titlul ferestrei. Gard: `core/test_lot13_ds_ferestre.py`.
+- **Căutarea globală (v2.104, lotul 13, deficiența 681 — decizia Costin 25.10.2026, excepție de la „fără funcții noi”: „Căsuță de căutare în
+  antet, mereu vizibilă; scrii o funcție, o declarație sau un nume («diurnă», «tichet», «D112», un salariat) și te duce în fereastra potrivită,
+  pentru firma în lucru.”).** O componentă, `static/js/cautare.js`, pusă de navigator în bara de sus (`#cautare-globala`, deasupra stratului
+  ferestrelor, ca „Versiune nouă”); rezultatele vin de la `GET /cautare` (`core/cautare.py`): cardurile ferestrei firmei, operațiunile
+  speciale (titlul și câmpurile lor), declarațiile firmei (cod și denumirea oficială), salariații firmei, cu diacriticele ignorate la căutare.
+  Lista de rezultate apare sub căsuță numai cât omul scrie; fiecare rezultat e un buton; alegerea (clic / Enter) deschide fereastra potrivită
+  PESTE ce e deschis (ce s-a tastat nu se pierde, cap.3), pe firma în lucru; fără firmă în lucru, rezultatele de firmă cer întâi firma.
+  Acțiunile refuzate rolului nu apar (`permis`, `drepturi.js`). Gard: `core/test_lot13_ds_cautare.py` + e2e `test_def_681_*`.
 - **Rezumatul nu mănâncă tabelul (v2.102, lotul 12, 621; comanda Costin 12.2 pct.11, verbatim: „Balanța: casetele de sus ocupă jumătate
   din fereastră, se văd 2–3 rânduri de tabel; caseta «Importă…» nu are buton spre import.”; cerința: „Casetele nu mănâncă tabelul — regulă
   globală”).** (1) În rezumatul lipit sus (`.rezumat-fix`) stă numai ce trebuie văzut cât derulezi: titlul, perioada, cifrele, butoanele, zona
@@ -648,7 +752,7 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   verbatim: *„Câmpurile nu au voie să arate valori gri sau precompletate care induc în eroare […] Câmpul rămâne gol.”*), care înlocuiește
   „câmpul-cont vine precompletat VIZIBIL cu sugestia standard” din v2.79: câmpul (cont, cotă, sumă) pornește gol, contul uzual se spune
   în explicația câmpului („De regulă 707.”), iar golul se refuză lângă câmp. Mecanic: `scan_formulare_operatiuni.motor_fara_precompletare`
-  (în `masoara()`, deci în verificator, `FAPT_FISCAL_NECERUT`) pică dacă motorul pune `sugestie` ca valoare sau ca `placeholder`;
+  (în `masoara()`, deci în verificator, `FAPT_FISCAL_NECERUT`) pică dacă motorul pune `sugestie` ca valoare sau ca `placeholder` — regula generală, pentru toate ecranele: cap.6 „Nimic precompletat sau gri” (v2.104, 504);
   (3) **un DA/NU situațional nu e căsuță de bifat** — o căsuță nebifată răspunde „Nu” în locul omului: e `selectDaNu` din `api.js`
   („— alege —” + Da/Nu, citit cu `daNu`), cerut de handler; fiecare căsuță rămasă e în `CASUTE`, cu motivul (rectificativa = cazul
   uzual, setări de acces, selecții de lucru); (4) **un input cu valoare pusă de ecran** (literal sau `|| "x"`) e în `INPUTURI`, cu
@@ -1186,6 +1290,16 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.104 (25.10.2026)** — lotul 13, comanda Costin 13.1 (grupa 1: 655; clasele DS 673–676; 504, 509, 515, 575, 581, 625, 654; căutarea 681):
+**cap.1** — „Comenzile se văd mereu” (675: `api.inactiv` / `atributeInactiv`, butonul inactiv cu motivul). **Cap.2a** — „Acțiunile din
+ferestre” (673: fereastră nouă, `fer-lucru` cât ecranul), „Orice acțiune e un buton” (674), „Listele scurte sunt butoane alăturate” (676:
+`data-butoane`, `api.alegereButoane`; `selectDaNu` le are). **Cap.6** — „Numerele scrise de om” (655: `numarRo` / `numere.numar_ro`, câmpul
+numeric românesc), „Nimic precompletat sau gri” (504, PIVOT cap.17 v2.79 pct.2/4), caseta de refuz spune motivul (515), aceeași eroare o dată
+și bannerul persistent (625), mesajele vechi pleacă (654). **Cap.9** — ferestrele folosesc ecranul (509), bara de jos nu mănâncă tabelul
+(581), drumul se încheie cu fereastra de acum (575), căutarea globală (681). Gărzi: verificator `SUMA_CITITA_BRUT`, `SUMA_TEXT`,
+`FEREASTRA_INLINE`, `ACTIUNE_FARA_BUTON`, `BUTON_ASCUNS`, `LISTA_SCURTA`, `PRECOMPLETARE`, `GRILA_INLINE` (analiza `lot13`);
+`core/test_lot13_ds_*.py`; e2e `frontend_test/e2e/e2e_lot13_ds.py`.
+
 **v2.103 (24.10.2026)** — lotul 12, comanda Costin 12.3 pct.4: **cap.9 — „Antetul documentului pe ecranul scund”** (C164: pe ecranul mai
 scund de 700 px sau îngust ca un telefon, detaliul facturii are sus un rând — numărul, clientul, totalul, starea SPV — iar butoanele și
 zonele lor de rezultat stau în bara lipită jos; pragul numai în `stil.css`, `--antet-scund`). Gărzi: verificator `ANTET_SCUND`;

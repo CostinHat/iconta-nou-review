@@ -1,0 +1,56 @@
+[
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "  Object.defineProperty(inp, \"value\", {",
+  "inlocuire": "  if (0) Object.defineProperty(inp, \"value\", {",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_655_suma_cu_punct_de_mii_in_casa"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "  if (gresit) throw gresit;",
+  "inlocuire": "  if (0 && gresit) throw gresit;",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_655_textul_care_nu_e_numar_nu_se_salveaza"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "  if (_RE_MII.test(t)) c = t.replace(/\\./g, \"\").replace(\",\", \".\");",
+  "inlocuire": "  if (false) c = t;",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_655_baza_d207_cu_punct_de_mii"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "aria-label=\"${esc(eticheta || \"Da sau Nu\")}\" ${rest} data-butoane=\"\">",
+  "inlocuire": "aria-label=\"${esc(eticheta || \"Da sau Nu\")}\" ${rest}>",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_676_da_nu_din_salariat_nou_sunt_butoane_alaturate"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "fer.classList.toggle(\"fer-lucru\", _lat === \"lucru\" || (stiva.length > 1 && _lat !== \"mic\" && _lat !== \"tabel\"));",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_673_509_operatiunea_se_deschide_in_fereastra_de_lucru_cat_ecranul"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "<span class=\"fir-acum\" aria-current=\"page\">",
+  "inlocuire": "<span class=\"fir-x\" aria-current=\"page\">",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_575_antetul_adauga_firma_se_incheie_cu_adauga_firma"
+ },
+ {
+  "fisier": "static/js/api.js",
+  "ancora": "  if (_butonScriere) refuzuriVechi(_butonScriere);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_625_654_refuzul_casei_o_data_si_pleaca_dupa_reusita"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "    if (u.rol !== \"client\") puneCautarea(bara, nav);",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_681_cautarea_gaseste_decontul_de_deplasare"
+ },
+ {
+  "fisier": "core/cautare.py",
+  "ancora": "    if regim in (None, \"dubla\"):   # operațiunile speciale",
+  "inlocuire": "    if False and regim in (None, \"dubla\"):   # operațiunile speciale",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_681_cautarea_gaseste_decontul_de_deplasare"
+ }
+]

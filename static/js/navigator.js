@@ -11,6 +11,7 @@
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=e38843b1ec";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=40864142dd";  // [bun_venit_v1] "?" general (ansamblu)
+import { puneCautarea } from "./cautare.js";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
 import { numeDeSalut } from "./ecrane/salut.js?v=f5a3ed7133";   // [269] numele din salut, același loc ca pagina principală
@@ -100,6 +101,8 @@ export function creeazaNavigator(radacina, desktopRandator) {
       <button class="nav-iesire" id="nav-iesire" title="Ieși din cont" aria-label="Ieși din cont"><span aria-hidden="true">←</span></button>
     `;
     bara.querySelector("#nav-iesire").addEventListener("click", () => sesiune.iesi());
+    // [lotul 13, deficiența 681] căutarea globală: în antet, mereu vizibilă, pentru contabil și asistent (nu pentru clientul din portal)
+    if (u.rol !== "client") puneCautarea(bara, nav);
     bara.querySelector("#nav-ghid").addEventListener("click", deschideAnsamblu);  // [bun_venit_v1]
     antet.appendChild(bara);
     // [p58_clopot] clopotel notificari -- dupa append, ca badge-ul sa fie in DOM  // [p65_clopot_dom]
@@ -250,7 +253,11 @@ export function creeazaNavigator(radacina, desktopRandator) {
     const drumHtml = drum.map((d, i) =>
       `<button class="fir-veriga" data-fer="${d.fereastra ?? ''}" data-pas="${d.pas ?? ''}">${esc(String(d.text))}</button>` +
       (i < drum.length - 1 ? `<span class="fir-sep" aria-hidden="true">›</span>` : "")
-    ).join("");  // fir_doar_parinti_v1: doar parintii; pasul curent = titlul din corp
+    ).join("") + (drum.length ? `<span class="fir-sep" aria-hidden="true">›</span><span class="fir-acum" aria-current="page">${
+      esc(String(sus.titluCurent || sus.titlu || ""))}</span>` : "");
+    // [lotul 13, deficiența 575 — partea de afișare; comanda 13.1: „titlul «Firme › Firme existente» la Adaugă firmă și în fereastra
+    // firmei”] drumul din antet se încheie cu fereastra în care ești (`.fir-acum`, nu se apasă): fără el, ultimul părinte („Firme
+    // existente”) se citea ca titlul ferestrei. Părinții rămân butoane (`.fir-veriga`); fereastra fără părinți nu are drum.
     fer.innerHTML = `
       <div class="fereastra-antet">
         ${_butonInapoi(sus, areInapoi)}
@@ -287,6 +294,14 @@ export function creeazaNavigator(radacina, desktopRandator) {
     fer.classList.toggle("fer-larg", (sus.optiuni || {}).lat === "larg");
     // [08.10.2026, decizia Costin W5] fereastra cu tabele se lățește cât îi cere conținutul, până la marginea ecranului (DS cap.9)
     fer.classList.toggle("fer-tabel", (sus.optiuni || {}).lat === "tabel");
+    // [lotul 13, deficiența 673 — clasa, DS cap.2a „Acțiunile din ferestre”; comanda 13.1, verbatim: „Se extinde la orice acțiune din orice
+    // fereastră: deschide o fereastră nouă, centrată; fereastra de lucru (formular, detalii) ocupă ecranul ca fereastra cu tabel, fără
+    // derulare; fereastra mică rămâne doar pentru confirmări”] fereastra deschisă PESTE alta (o acțiune dintr-o fereastră) e fereastră de
+    // lucru cât ecranul (`fer-lucru`), oricine ar fi ecranul și oricât de lată ar fi cerut-o (`larg`); `{ lat: "lucru" }` o cere și pe prima
+    // fereastră, `{ lat: "mic" }` o ține mică (numai o confirmare). Deficiența 509 („ferestrele care își pierd alinierea … se redimensionează
+    // să folosească ecranul”, ex. Marjă agenții de turism) e aceeași regulă: fereastra deschisă din fereastra firmei nu mai e de 680 px.
+    const _lat = (sus.optiuni || {}).lat;
+    fer.classList.toggle("fer-lucru", _lat === "lucru" || (stiva.length > 1 && _lat !== "mic" && _lat !== "tabel"));
     if (pastrat) {   // [pct.1b] revenire la o fereastră în care omul lucra: elementul ei, nu o redesenare
       fer.querySelector(".fereastra-corp").replaceWith(pastrat.corp);
       if (pastrat.clase) fer.className = pastrat.clase;

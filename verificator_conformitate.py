@@ -2752,6 +2752,250 @@ def analiza_lot12(fisiere, css=""):
 
 rap["lot12"] = analiza_lot12(fisiere, open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read())
 
+
+# ── [lotul 13, comanda 13.1, zona DS] Clasele Design System ale comenzii 13.1 — DS cap.1 (675), cap.2a „Acțiunile din ferestre” (673,
+# 674, 676), cap.6 „Numerele scrise de om” (655) și „Nimic precompletat care induce în eroare” (504), cap.9 (509). Fiecare cod prinde
+# TIPARUL în toate fișierele frontendului (static/js/ecrane + static/js); locurile din fișierele altor zone se raportează, nu se scutesc.
+# Mecanismele comune (api.js / navigator.js / stil.css / core/numere.py) sunt verificate că există — fără ele, regula n-are cum fi
+# respectată. Mutațiile care le probează: `core/test_lot13_ds_verificator.py` (fragmente rele / bune + fișierele reale).
+_L13_SUMA = r"sum[aăe]\b|sumă|valoare|total|baz[aă]\b|pre[tț]\b|sold\b|salariu|brut|avans|diurn|impozit|\blei\b"
+_L13_NU_SUMA = r"caut|cont\b|cont |cod|serie|nume|denumire|cui|iban|email|telefon|adres|motiv|document|descriere"
+
+
+def _l13_sablon_la(t, start):
+    """Capătul șablonului care începe la `start` (după backtick), cu `${…}` imbricate sărite."""
+    i, d = start, 0
+    while i < len(t):
+        if t.startswith("${", i):
+            d += 1
+            i += 2
+            continue
+        if t[i] == "}" and d > 0:
+            d -= 1
+        elif t[i] == "`" and d == 0:
+            return i
+        i += 1
+    return len(t)
+
+
+def _l13_fara_expresii(t):
+    """Textul unui șablon fără expresiile `${…}` (cu imbricările lor) — ce e scris literal."""
+    out, i, d = [], 0, 0
+    while i < len(t):
+        if t.startswith("${", i):
+            d += 1
+            i += 2
+            continue
+        if d and t[i] == "{":
+            d += 1
+        elif d and t[i] == "}":
+            d -= 1
+        elif not d:
+            out.append(t[i])
+        i += 1
+    return "".join(out)
+
+
+def _l13_expresii(t):
+    """[(început, sfârșit, text)] — expresiile `${…}` de pe primul nivel al unui șablon."""
+    out, i, d, st = [], 0, 0, None
+    while i < len(t):
+        if t.startswith("${", i):
+            if d == 0:
+                st = i + 2
+            d += 1
+            i += 2
+            continue
+        if d and t[i] == "{":
+            d += 1
+        elif d and t[i] == "}":
+            d -= 1
+            if d == 0:
+                out.append((st - 2, i + 1, t[st:i]))
+        i += 1
+    return out
+
+
+def _l13_nr_elemente(corp):
+    """Câte elemente are o listă JS scrisă literal (conținutul dintre `[` și `]`): virgulele de pe nivelul ei + 1."""
+    adanc, n, sir, gol = 0, 0, None, True
+    for ch in corp:
+        if sir:
+            if ch == sir:
+                sir = None
+            continue
+        if ch in "\"'`":
+            sir, gol = ch, False
+        elif ch in "[({":
+            adanc, gol = adanc + 1, False
+        elif ch in "])}":
+            adanc -= 1
+        elif ch == "," and adanc == 0:
+            n += 1
+        elif not ch.isspace():
+            gol = False
+    rest = corp.rstrip()
+    return 0 if gol else n + (0 if rest.endswith(",") else 1)
+
+
+def analiza_lot13(fisiere, css="", numere_py=""):
+    """[(fișier, linie, COD, text)] — codurile: SUMA_CITITA_BRUT, SUMA_TEXT (655), FEREASTRA_INLINE (673), ACTIUNE_FARA_BUTON (674),
+    BUTON_ASCUNS (675), LISTA_SCURTA (676), PRECOMPLETARE (504), GRILA_INLINE (509)."""
+    import re as _re
+    out = []
+    api, nav = fisiere.get("api.js", ""), fisiere.get("navigator.js", "")
+    ln = lambda t, p: t.count("\n", 0, p) + 1   # noqa: E731
+    # ── mecanismele comune
+    for cod, ok, ce in (
+        ("SUMA_CITITA_BRUT", "export function numarRo(" in api and "export function campNumericRo(" in api and "_campuriNumericeIn(n)" in api
+         and "if (gresit) throw gresit;" in api, "api.js: regula `numarRo` / câmpul numeric românesc / oprirea scrierii (655)"),
+        ("SUMA_CITITA_BRUT", (not numere_py) or "def numar_ro(" in numere_py, "core/numere.py: oglinda Python `numar_ro` (655)"),
+        ("LISTA_SCURTA", "export function alegereButoane(" in api and 'select[data-butoane]' in api and "data-butoane" in
+         _re.search(r"export function selectDaNu\([^\n]*\n(?:.*\n){0,8}", api).group(0) if "export function selectDaNu(" in api else False,
+         "api.js: butoanele alăturate ale listei scurte (`alegereButoane`, `selectDaNu` cu `data-butoane`) (676)"),
+        ("BUTON_ASCUNS", "export function inactiv(" in api and "export function atributeInactiv(" in api and '[aria-disabled="true"]' in api,
+         "api.js: butonul inactiv cu motiv (`inactiv` / `atributeInactiv` + oprirea clicului) (675)"),
+        ("FEREASTRA_INLINE", '"fer-lucru"' in nav, "navigator.js: fereastra deschisă peste alta e fereastră de lucru (`fer-lucru`) (673)"),
+    ):
+        if not ok:
+            out.append(("api.js" if "api.js" in ce else ("navigator.js" if "navigator" in ce else "numere.py"), 0, cod, "mecanismul lipsește — " + ce))
+    if css:
+        if not _re.search(r"\.fereastra\.fer-lucru\s*\{[^}]*height:\s*calc\(100vh - 48px\)", css):
+            out.append(("stil.css", 0, "FEREASTRA_INLINE", "lipsește `.fereastra.fer-lucru` cât ecranul (DS cap.2a, 673 / 509)"))
+        if not _re.search(r"\.alegere-butoane\s*\{", css) or not _re.search(r"select\.alegere-sursa\s*\{", css):
+            out.append(("stil.css", 0, "LISTA_SCURTA", "lipsesc `.alegere-butoane` / `select.alegere-sursa` (DS cap.2a, 676)"))
+        if not _re.search(r'\.buton-secundar\[aria-disabled="true"\]', css):
+            out.append(("stil.css", 0, "BUTON_ASCUNS", "butonul inactiv cu motiv (`[aria-disabled=\"true\"]`) nu arată inactiv (DS cap.1, 675)"))
+    for nume, t in sorted(fisiere.items()):
+        linii = t.split("\n")
+        for i, lin in enumerate(linii, 1):
+            s = lin.strip()
+            if s.startswith(("//", "/*", "*")):
+                continue
+            # 655 — parsator local al textului numeric (punctul de mii devine zecimală: „1.500” -> 1,5)
+            if nume != "api.js" and _re.search(r"\.replace\(\s*(?:\"\,\"|',')\s*,\s*(?:\"\.\"|'\.')\s*\)|\.replace\(/,/g?\s*,\s*(?:\"\.\"|'\.')\)", lin) \
+                    and (_re.search(r"\b(parseFloat|Number|parseInt)\s*\(", lin) or _re.search(r"\b\w+\s*:\s*[^,;]*\.replace\(", lin)):
+                out.append((nume, i, "SUMA_CITITA_BRUT", "text numeric citit cu un parsator local — `numarRo` (api.js) sau câmpul numeric (DS cap.6, 655): " + s[:80]))
+            # 509 — grilă de câmpuri scrisă inline (câmpuri împrăștiate, etichete pe rânduri diferite): `.grila-campuri` / `.grila-doc`
+            if _re.search(r"style=\"[^\"]*display:\s*grid", lin) and _re.search(r"<input|<select|<textarea|class=\"camp\"",
+                                                                                   "\n".join(linii[i - 1:i + 8])):
+                out.append((nume, i, "GRILA_INLINE", "grilă de câmpuri inline — `.grila-campuri` / `.grila-doc` (DS cap.9, 509): " + s[:80]))
+        # 655 — câmp de sumă de tip text, fără tastatura numerică (nu trece prin mecanism)
+        for m in _re.finditer(r"<input\b[^>]*>", t):
+            tag = m.group(0)
+            ty = _re.search(r'\btype="([\w-]+)"', tag)
+            if (ty and ty.group(1) != "text") or _re.search(r"\breadonly\b|\bdisabled\b|inputmode=\"(decimal|numeric)\"", tag):
+                continue
+            eticheta = " ".join(_re.findall(r'(?:\bid|aria-label|placeholder|title)="([^"]*)"', tag))
+            if _re.search(_L13_SUMA, eticheta, _re.I) and not _re.search(_L13_NU_SUMA, eticheta, _re.I):
+                out.append((nume, ln(t, m.start()), "SUMA_TEXT", "câmp de sumă de tip text: `type=\"number\"` sau `inputmode=\"decimal\"` (DS cap.6, 655): "
+                            + tag[:80]))
+            # 504 — valoare scrisă în câmp, gata aleasă (contul 446, țara RO, UM buc)
+            v = _re.search(r'\bvalue="([^"\'$]+)"', tag)
+            if v and v.group(1).strip():
+                out.append((nume, ln(t, m.start()), "PRECOMPLETARE", "câmp precompletat cu „%s” — rămâne gol (DS cap.6, 504): %s" % (v.group(1), tag[:70])))
+        for m in _re.finditer(r"<input\b[^>]*>", t):
+            tag = m.group(0)
+            if _re.search(r'\btype="(hidden|checkbox|radio|button|submit|file|date|month|time|color|range)"', tag):
+                continue
+            # 504 — valoare implicită ascunsă în șablon (`value="${esc(x || "RO")}"`, `value="${esc(c.sugestie)}"`)
+            if _re.search(r'value="(?:\$\{|\'\s*\+)[^"]*(?:\|\|\s*(?:"[^"]+"|\'[^\']+\'|\d+)|sugestie)', tag):
+                out.append((nume, ln(t, m.start()), "PRECOMPLETARE", "valoare implicită pusă în câmp — rămâne gol (DS cap.6, 504): " + tag[:80]))
+            # 504 — „valoare gri”: indiciul arată ca o valoare (21, 0,00, DE, 446) — se scrie „ex. …” sau nimic
+            p = _re.search(r'placeholder="([^"]*)"', tag)
+            if p:
+                pv = p.group(1).strip()
+                eticheta_scurta = pv in ("UM", "CUI", "CNP", "TVA", "NIR", "CAEN", "COR", "IBAN", "BIC")   # numele câmpului, nu o valoare
+                if _re.search(r"sugestie", pv) or (not eticheta_scurta and _re.fullmatch(r"[-+]?\d[\d.,]*\s*(%|lei|RON)?|[A-Z]{2,3}|\d{3,}|\d\d\.\d\d\.\d{4}", pv)):
+                    out.append((nume, ln(t, m.start()), "PRECOMPLETARE", "indiciul gri arată ca o valoare („%s”) — „ex. …” sau nimic (DS cap.6, 504): %s"
+                                % (pv, tag[:60])))
+        # 673 — o acțiune din fereastră care scrie un formular într-o zonă a ferestrei (bandă, card), în loc de o fereastră nouă
+        for m in _re.finditer(r"([\w$]+(?:\.querySelector\([^()]*\)|\.getElementById\([^()]*\))?)\.innerHTML\s*=\s*`", t):
+            sf = _l13_sablon_la(t, m.end())
+            tpl = t[m.end():sf]
+            if not _re.search(r"<input\b(?![^>]*\breadonly\b)|<select|<textarea|<form\b", tpl):
+                continue   # un rezultat cu un câmp de copiat (numai citire) nu e un formular
+            ant = t[max(0, m.start() - 3000):m.start()]
+            k = ant.rfind('addEventListener("click"')
+            if k < 0 or ant[k:].count("{") - ant[k:].count("}") <= 0:
+                continue
+            x = m.group(1)
+            sub = "querySelector" in x or "getElementById" in x
+            if not sub:
+                dec = list(_re.finditer(r"(?:const|let|var)\s+%s\s*=\s*([^;\n]+)" % _re.escape(x.split(".")[0]), t[:m.start()]))
+                sub = bool(dec) and bool(_re.search(r"querySelector|getElementById", dec[-1].group(1)))
+            if sub:
+                out.append((nume, ln(t, m.start()), "FEREASTRA_INLINE", "acțiunea deschide un formular în pagină (`%s.innerHTML`) — fereastră nouă, "
+                            "`nav.deschide` (DS cap.2a, 673)" % x[:30]))
+        # 674 — text pe care se dă clic: `<details>` închis care ascunde date / un formular („▸ Compoziția netului”) și elementele de
+        # text făcute clicabile (`cursor:pointer`, `role="button"`, `onclick`); excepția: meniul „Acțiuni” al rândului (cap.9 v2.83)
+        for m in _re.finditer(r"<details\b([^>]*)>(.*?)</details>", t, _re.S):
+            if _re.search(r"\bopen\b", m.group(1)):
+                continue
+            sm = _re.search(r"<summary[^>]*>(.*?)</summary>", m.group(2), _re.S)
+            st = _re.sub(r"<[^>]+>|\$\{[^}]*\}", "", sm.group(1) if sm else "").strip()
+            if st in ("Acțiuni", "Ac\\u021biuni"):
+                continue
+            if _re.search(r"<table|<input|<select|<textarea|<button", m.group(2)):
+                out.append((nume, ln(t, m.start()), "ACTIUNE_FARA_BUTON", "„%s” se deschide cu clic pe text — buton care deschide fereastra (DS cap.2a, 674)"
+                            % st[:60]))
+        for m in _re.finditer(r"<(div|span|td|tr|li|p|img|h\d|section)\b([^>]*)>", t):
+            if _re.search(r"cursor:\s*pointer|role=\"button\"|\bonclick=", m.group(2)):
+                out.append((nume, ln(t, m.start()), "ACTIUNE_FARA_BUTON", "<%s> clicabil — acțiunea e un buton (DS cap.2a, 674): %s"
+                            % (m.group(1), m.group(2).strip()[:60])))
+        # 675 — butonul unei acțiuni care dispare când nu se aplică (în loc să stea inactiv, cu motivul)
+        for m in _re.finditer(r"\?\s*(`|')\s*(<button\b(?:[^`'$]|\$\{[^}]*\})*?)\1\s*:\s*(\"\"|''|``)", t):
+            b = m.group(2)
+            if not _re.search(r'class="[^"]*\b(buton-primar|buton-secundar|buton-sters|buton-verde|btn-link)\b', b):
+                continue
+            out.append((nume, ln(t, m.start()), "BUTON_ASCUNS", "butonul dispare când nu se aplică — stă inactiv, cu motivul (`atributeInactiv`, "
+                        "DS cap.1, 675): " + _re.sub(r"\s+", " ", b)[:70]))
+        # 676 — listă derulantă cu cel mult 6 opțiuni (scrise în șablon sau dintr-o listă fixă a fișierului)
+        for m in _re.finditer(r"<select\b([^>]*)>(.*?)</select>", t, _re.S):
+            atr, corp = m.group(1), m.group(2)
+            if _re.search(r"\bdata-butoane\b|\bmultiple\b|data-lista=", atr):
+                continue
+            # opțiunile scrise în șablon (nu cele dintr-un `${….map(…)}`); „— alege —” nu e o opțiune
+            static = _l13_fara_expresii(corp)
+            reale = [tx for atr_o, tx in _re.findall(r"<option\b([^>]*)>([^<]*)", static)
+                     if "data-alege" not in atr_o and not _re.search(r"alege|se încarcă|se incarca", tx, _re.I)]
+            # o listă ÎNCHISĂ primită de un desenator comun (registrul Operațiunilor `c.optiuni`, e-Transport `optiuni`): butoanele le pune
+            # mecanismul, cât lista are cel mult 6 opțiuni — desenatorul pune `data-butoane` o dată, pentru toate
+            if _re.search(r"\boptiuni\.map\(", corp):
+                out.append((nume, ln(t, m.start()), "LISTA_SCURTA", "listă închisă (`optiuni`) desenată fără `data-butoane` — butoanele alăturate le pune "
+                            "mecanismul până la 6 opțiuni (DS cap.2a, 676)"))
+                continue
+            n = len(reale)
+            for mm in _re.finditer(r"(?:\$\{|'\s*\+)\s*([A-Z_][A-Z0-9_]*)\.map\(", corp):
+                defs = [d for d in _re.finditer(r"(?:const|let)\s+%s\s*=\s*\[(.*?)\];" % _re.escape(mm.group(1)), t, _re.S)
+                        if d.start() < m.start()]   # definiția cea mai apropiată de dinaintea listei (același nume, în alt ecran)
+                dm = defs[-1] if defs else None
+                if not dm:
+                    n = 99
+                    break
+                n += _l13_nr_elemente(dm.group(1))
+            # opțiunile vin din date (firme, conturi, salariați, o variabilă a ecranului): lista lungă rămâne listă. Se judecă expresiile
+            # de pe primul nivel al corpului listei: „— alege —”, o listă fixă a fișierului (`NUME.map`), o expresie în tagul sau în
+            # eticheta unei opțiuni scrise literal nu fac lista dinamică; orice altă expresie, da
+            dinamica = False
+            for a0, b0, ex in _l13_expresii(corp):
+                if _re.match(r"\s*(ALEGE|alegeDacaLipseste\(|[A-Z_][A-Z0-9_]*\.map\()", ex):
+                    continue
+                inainte = corp[:a0]
+                if inainte.rfind("<option") > inainte.rfind(">") or _re.search(r"<option\b[^>]*>\s*$", inainte):
+                    continue
+                dinamica = True
+                break
+            if dinamica or _re.search(r"'\s*\+\s*(?![A-Z_][A-Z0-9_]*\.map|ALEGE)\w", corp):
+                continue
+            if 0 < n <= 6:
+                out.append((nume, ln(t, m.start()), "LISTA_SCURTA", "listă cu %d opțiuni — butoane alăturate: `data-butoane` (DS cap.2a, 676)" % n))
+    return out
+
+
+rap["lot13"] = analiza_lot13(fisiere, open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read(),
+                             open(os.path.join(BAZA_PY, "core", "numere.py"), encoding="utf-8").read())
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

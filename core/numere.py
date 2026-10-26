@@ -11,9 +11,60 @@ O sursa unica inseamna: un singur loc de reparat, un singur loc de testat.
 """
 
 
+import re as _re
+
+# [lotul 13, deficiența 655 — clasa, toată aplicația] REGULA UNICĂ a numărului scris de om, în format românesc. Oglinda JS e
+# `static/js/api.js::numarRo` (aceleași exemple, `core/test_lot13_ds_sume_ro.py`; DS cap.6 „Numerele scrise de om”). Instanțele:
+# D207 „1.000” la bază -> „bază 1,00 lei”; Casă „1.500” -> 1,50 lei. Regula:
+#   - punctul urmat de grupuri de câte trei cifre desparte miile: „1.000” = o mie, „1.234.567,89”;
+#   - virgula e zecimala: „1500,5”, „1.500,50”;
+#   - un punct urmat de 1–2 sau de 4+ cifre („1234.56”, „4.9750”, „0.500”) nu poate fi separator de mii, deci e zecimală;
+#   - „1,234.56” (amândouă, punctul ultimul) e scrierea englezească, citită ca atare;
+#   - orice altceva („1.23.4”, „12a”, „1,2,3”) e refuzat, cu MESAJ_NUMAR_RO — nu devine un număr ghicit și nici zero.
+# Nu e `common._dec`: acela citește valori INTERNE (Decimal -> str, „4.975” = cursul), unde punctul e zecimala.
+MESAJ_NUMAR_RO = "Scrie numărul ca în contabilitate: 1.234,56 (punct la mii, virgulă la zecimale)."
+_RE_MII = _re.compile(r"^[1-9]\d{0,2}(\.\d{3})+(,\d*)?$")
+_RE_VIRGULA = _re.compile(r"^(\d+(,\d*)?|,\d+)$")
+_RE_ENGLEZ = _re.compile(r"^[1-9]\d{0,2}(,\d{3})+\.\d+$")
+_RE_PUNCT_ZECIMAL = _re.compile(r"^\d+\.\d+$")
+
+
+def numar_ro(text):
+    """Numărul scris de om (format românesc) -> `Decimal`; gol -> None; text care nu e număr -> ValueError(MESAJ_NUMAR_RO).
+    Aceeași regulă ca `api.js::numarRo` (vezi blocul de mai sus)."""
+    from decimal import Decimal
+    if text is None:
+        return None
+    if isinstance(text, bool):
+        raise ValueError(MESAJ_NUMAR_RO)
+    if isinstance(text, (int, float, Decimal)):
+        return Decimal(str(text))
+    t = _re.sub(r"[\s\u00a0\u202f]", "", str(text))
+    if not t:
+        return None
+    minus = False
+    if t[0] in "-+\u2212":
+        minus, t = t[0] != "+", t[1:]
+    if _RE_MII.match(t):
+        c = t.replace(".", "").replace(",", ".")
+    elif _RE_VIRGULA.match(t):
+        c = t.replace(",", ".")
+    elif _RE_ENGLEZ.match(t):
+        c = t.replace(",", "")
+    elif _RE_PUNCT_ZECIMAL.match(t):
+        c = t
+    else:
+        raise ValueError(MESAJ_NUMAR_RO)
+    if c.startswith("."):
+        c = "0" + c
+    if c.endswith("."):
+        c = c[:-1]
+    return Decimal(("-" if minus else "") + c)
+
+
 def numar(v, strict=False):
     """Transforma o valoare in numar. Accepta:
-      - '1.234,56' (RO) / '1,234.56' (EN)
+      - '1.234,56' / '1.500' / '1500,5' (RO) / '1,234.56' (EN) — regula `numar_ro` (655)
       - '(500)' -> -500.0 (format contabil: paranteze = suma negativa)
       - '500 lei' / '1.234,56 RON' / '2 buc' (sufixe uzuale in exporturi)
       - '', None -> 0.0
@@ -35,16 +86,11 @@ def numar(v, strict=False):
     for suf in ("RON", "ron", "LEI", "Lei", "lei", "EUR", "eur", "buc", "BUC", "kg", "KG", "%"):
         if t.endswith(suf):
             t = t[:-len(suf)].strip()
-    if "," in t and "." in t:
-        if t.rfind(",") > t.rfind("."):
-            t = t.replace(".", "").replace(",", ".")   # 1.234,56
-        else:
-            t = t.replace(",", "")                      # 1,234.56
-    elif "," in t:
-        parte = t.split(",")[-1]
-        t = t.replace(",", ".") if len(parte) <= 2 else t.replace(",", "")
+    # [655] separatorii se citesc după regula unică a numărului scris (`numar_ro`): „1.500” = o mie cinci sute (era 1,5), „1.234.567”
+    # = un milion... (era 0, tăcut), „1,234” = 1,234 (virgula e zecimala; era 1234), „1,234.56” rămâne scrierea englezească
     try:
-        x = float(t)
+        d = numar_ro(t)
+        x = float(d) if d is not None else 0.0
     except ValueError:
         if strict:
             raise ValueError("valoare numerică neinterpretabila: %r" % (v,))

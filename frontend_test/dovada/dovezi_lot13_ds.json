@@ -1,0 +1,397 @@
+[
+ {
+  "nr": "655",
+  "firma": "tenant_9057",
+  "descriere": "F7 (instanța din 25.10): Casă -> «+ Dispoziție nouă» -> Încasare client, CUI-ul clientului Alfa Test SRL, Suma «1.500» (cum scrie contabilul o mie cinci sute). Câmpul citește 1500 (nu 1,5), iar previzualizarea vorbește de 1.500,00 lei, nu de «1,50 lei depășesc facturile deschise ale clientului». Nu se apasă «Adaugă»: nimic scris (datele F7 rămân pentru retestul lui Costin, comanda 13.1 pct.8).",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #c-toggle"
+   },
+   {
+    "click": ".fereastra:last-of-type #c-toggle"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #c-suma"
+   },
+   {
+    "alege": ".fereastra:last-of-type #c-cat",
+    "valoare": "incasare_client"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #c-cui",
+    "valoare": "401007106"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #c-suma",
+    "valoare": "1.500"
+   },
+   {
+    "click": ".fereastra:last-of-type #c-doc"
+   },
+   {
+    "pauza": 2500
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": ".fereastra:last-of-type #c-suma",
+    "egal": "1500"
+   },
+   {
+    "contine": "1.500,00"
+   },
+   {
+    "nu_contine": "1,50 lei"
+   }
+  ],
+  "captura": "655_f7_casa_suma_1500.png"
+ },
+ {
+  "nr": "655",
+  "firma": "tenant_9049",
+  "descriere": "F1: Declarații -> D207 -> anul trecut -> «Continuă →» -> beneficiar nerezident (tip 07, DE, cod fiscal străinătate, Codul fiscal), Bază «1.000», impozit 160 -> «+ adaugă»: rândul spune «bază 1.000,00 lei» (înainte: «bază 1,00 lei»). Beneficiarul stă numai în formular (memoria ecranului), nu se trimite nimic în coadă.",
+  "pasi": [
+   {
+    "declaratie": "d207",
+    "an": 2025
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #d207-add"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-tip",
+    "valoare": "07"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-den",
+    "valoare": "Beneficiar Dovada 655 GmbH"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type input#d207-stat",
+    "valoare": "DE",
+    "daca_exista": true
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-cifs",
+    "valoare": "DE655000001"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-act",
+    "valoare": "1"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-baza",
+    "valoare": "1.000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #d207-imp",
+    "valoare": "160"
+   },
+   {
+    "click": ".fereastra:last-of-type #d207-add"
+   },
+   {
+    "asteapta_text": "Beneficiar Dovada 655 GmbH"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "bază 1.000,00 lei"
+   },
+   {
+    "nu_contine": "bază 1,00 lei"
+   }
+  ],
+  "captura": "655_f1_d207_baza_1000.png"
+ },
+ {
+  "nr": "655",
+  "firma": "tenant_9053",
+  "descriere": "F5, date existente (capitalul social scris înainte de reparație, 200.00 în bază): Date firmă -> «Capital subscris» se arată «200,00» și se citește 200 (nu 20.000, cum ar fi dat punctul citit ca mii). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-capital_subscris"
+   },
+   {
+    "deruleaza": "#df-capital_subscris"
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#df-capital_subscris",
+    "egal": "200.00"
+   }
+  ],
+  "captura": "655_f5_vechi_capital_subscris.png"
+ },
+ {
+  "nr": "676",
+  "firma": "tenant_9049",
+  "descriere": "F1: Salariați -> «+ Salariat nou»: «Funcția de bază la acest angajator», «Declarația părintelui pentru copii», «Scutit contribuție minimă» sunt câte două butoane alăturate, Da și Nu, niciunul ales (înainte: listă derulantă cu «— alege —»). Nu se salvează nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-functie_baza)"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #sn-functie_baza",
+    "stare": "attached"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-functie_baza) button",
+    "text": "Da"
+   },
+   {
+    "exista": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-functie_baza) button",
+    "text": "Nu"
+   },
+   {
+    "nu_contine": "— alege —"
+   }
+  ],
+  "captura": "676_f1_salariat_nou_da_nu_butoane.png"
+ },
+ {
+  "nr": "673",
+  "firma": "tenant_9049",
+  "descriere": "F1: fereastra firmei -> «Operațiuni speciale» -> «Marjă agenții de turism» (instanța 509): fereastra e cât ecranul (fereastra de lucru `fer-lucru`), centrată, nu mai e de 680 px cu derulare pe interior. Nu se generează nimic.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type [data-op=\"marja_turism\"]"
+   },
+   {
+    "click": ".fereastra:last-of-type [data-op=\"marja_turism\"]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #op-trimite"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra.fer-lucru"
+   },
+   {
+    "contine": "Marjă agenții de turism"
+   }
+  ],
+  "captura": "673_509_f1_marja_turism_fereastra_de_lucru.png"
+ },
+ {
+  "nr": "509",
+  "firma": "tenant_9053",
+  "descriere": "F5, document vechi (decontul de deplasare din 20.10.2026 rămâne neatins, comanda 13.1 pct.8): Operațiuni speciale -> «Decont deplasare / diurnă» se deschide în fereastra de lucru cât ecranul; nu se generează nimic.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type [data-op=\"decont\"]"
+   },
+   {
+    "click": ".fereastra:last-of-type [data-op=\"decont\"]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #op-trimite"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra.fer-lucru"
+   },
+   {
+    "contine": "Decont deplasare / diurnă"
+   }
+  ],
+  "captura": "509_f5_vechi_decont_fereastra_de_lucru.png"
+ },
+ {
+  "nr": "681",
+  "firma": "tenant_9049",
+  "descriere": "F1 în lucru: în căsuța din antet «diurnă» -> primul rezultat «Decont deplasare / diurnă · Operațiuni speciale › Personal și deconturi» -> clic: formularul decontului (proba lui Costin). Nu se generează nimic.",
+  "pasi": [
+   {
+    "completeaza": "#cautare-globala",
+    "valoare": "diurnă"
+   },
+   {
+    "asteapta": "#cautare-rez .cautare-item"
+   },
+   {
+    "captura": "681_f1_cautare_diurna_rezultate.png"
+   },
+   {
+    "click": "#cautare-rez .cautare-item"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #op-trimite"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Decont deplasare / diurnă"
+   },
+   {
+    "exista": ".fereastra:last-of-type #op-trimite"
+   }
+  ],
+  "captura": "681_f1_cautare_diurna_decont_deschis.png"
+ },
+ {
+  "nr": "681",
+  "firma": "tenant_9057",
+  "descriere": "F7 în lucru: «D112» în căsuța din antet -> «D112 — Declarație privind obligațiile de plată a contribuțiilor sociale…» -> clic: fereastra Declarații cu D112 ales. Nu se generează nimic.",
+  "pasi": [
+   {
+    "completeaza": "#cautare-globala",
+    "valoare": "D112"
+   },
+   {
+    "asteapta": "#cautare-rez .cautare-item",
+    "text": "D112 —"
+   },
+   {
+    "click": "#cautare-rez .cautare-item",
+    "text": "D112 —"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": ".fereastra:last-of-type #dec-tip",
+    "egal": "d112"
+   }
+  ],
+  "captura": "681_f7_cautare_d112.png"
+ },
+ {
+  "nr": "625",
+  "firma": "tenant_9049",
+  "descriere": "F1: Casă -> «+ Dispoziție nouă» -> «Adaugă» fără sumă și fără tip: fiecare eroare stă lângă câmpul ei și în caseta «NU s-a salvat.» (de două ori, nu de trei); nimic nu se scrie.",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #c-toggle"
+   },
+   {
+    "click": ".fereastra:last-of-type #c-toggle"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #c-adauga"
+   },
+   {
+    "click": ".fereastra:last-of-type #c-adauga"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .refuz-salvare"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type .msg-eroare[data-camp=\"c-suma\"]"
+   },
+   {
+    "exista": ".fereastra:last-of-type .refuz-salvare",
+    "text": "NU s-a salvat."
+   }
+  ],
+  "captura": "625_f1_casa_refuz_langa_camp_si_rezumat.png"
+ },
+ {
+  "nr": "575",
+  "firma": "tenant_9049",
+  "descriere": "F1: fereastra firmei — antetul se încheie cu fereastra în care ești («… › F1 … · CUI …»), nu cu părintele «Firme existente», citit ca titlu. Numai citire.",
+  "pasi": [
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type .fereastra-fir .fir-acum"
+   }
+  ],
+  "captura": "575_f1_antetul_ferestrei_firmei.png"
+ },
+ {
+  "nr": "C111",
+  "firma": "tenant_9049",
+  "descriere": "Copia de dovadă: «Ieși din cont» -> pagina publică -> «Acces» -> «Client nou» -> «Înregistrează cabinetul tău»: formularul încape sau derulează el însuși până la «Creează cont» (1366×768). Nu se trimite nimic.",
+  "pasi": [
+   {
+    "click": "#nav-iesire"
+   },
+   {
+    "asteapta": "#pagina-acces-btn"
+   },
+   {
+    "click": "#pagina-acces-btn"
+   },
+   {
+    "click": "#acces-client-nou"
+   },
+   {
+    "asteapta": "#pr-continua"
+   },
+   {
+    "click": "#pr-continua"
+   },
+   {
+    "asteapta": "#reg-buton",
+    "stare": "attached"
+   },
+   {
+    "deruleaza": "#reg-buton"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#reg-buton"
+   }
+  ],
+  "captura": "c111_f1_inregistrarea_cabinetului_incape.png"
+ }
+]
