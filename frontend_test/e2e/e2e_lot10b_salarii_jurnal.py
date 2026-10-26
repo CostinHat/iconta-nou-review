@@ -26,22 +26,29 @@ def test_def_433_dupa_contabilizarea_statului_nu_se_deschide_formularul_cor(patr
     pe „Adeverință” îl deschidea și pe acela, gol; statul în care s-a scris ceva se păstrează la întoarcere, cu formularul deschis.
     Pașii: Salariați -> „+ vacanță” la IONESCU VASILE -> 100 -> „Renunță” -> „Adeverință” -> „←” -> „Contabilizează statul”: sub stat
     apare propunerea notei, iar formularul „Ocupație COR” NU e deschis -> „COR ✓”: formularul se deschide cu ocupația lui (241107)."""
+    # [lotul 13, 673 / 677] fiecare acțiune a salariatului are fereastra ei, deschisă din fereastra salariatului
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat, inchide
     pg = _stat(patron, firma_cv)
-    rand = pg.locator(".pf-frand", has_text=_RAND).first
-    rand.locator("[data-vac]").click()
-    pg.fill("#vac-input", "100")          # statul a primit o tastare: la întoarcere se păstrează (nu se redesenează)
-    pg.click("#vac-cancel")
-    pg.locator(".pf-frand", has_text=_RAND).first.locator("[data-adev]").click()
+    deschide_salariat(patron, _RAND)
+    buton(patron, "vac")
+    pg.fill("#ben-input", "100")          # fereastra a primit o tastare
+    pg.click(".fereastra:last-of-type [data-renunta]")
+    pg.wait_for_selector("#ss-butoane", timeout=20000)
+    buton(patron, "adev")
     pg.wait_for_selector("#ad-functie", timeout=20000)
     pg.click(".nav-sageata.nav-inapoi")
+    pg.wait_for_selector("#ss-butoane", timeout=20000)
+    inchide(patron)
     pg.wait_for_selector("#sp-contare", timeout=20000)
     pg.click("#sp-contare")
     pg.wait_for_function("() => { const z = document.querySelector('#sp-contare-zona'); return z && !z.innerText.includes('Se calculează'); }",
                          timeout=30000)
     patron.captura("dupa_contabilizare")
-    assert pg.inner_html("#sp-cor-zona").strip() == "", pg.inner_text("#sp-cor-zona")   # „Nimic nu se deschide fără să fie ales.”
+    assert pg.locator("#cor-edit-cor").count() == 0   # „Nimic nu se deschide fără să fie ales.”
     assert pg.locator("text=Ocupație COR ·").count() == 0
-    pg.locator(".pf-frand", has_text=_RAND).first.locator("[data-cor]").click()
+    inchide(patron)
+    deschide_salariat(patron, _RAND)
+    buton(patron, "cor")
     pg.wait_for_selector("#cor-edit-cor-cauta", timeout=10000)
     patron.captura("cor_ales")
     assert pg.input_value("#cor-edit-cor") == "241107" and pg.input_value("#cor-edit-cor-cauta").startswith("241107")   # „deși Ionescu are COR”

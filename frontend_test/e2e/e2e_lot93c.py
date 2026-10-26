@@ -28,10 +28,12 @@ def test_def_412_adeverinta_precompleteaza_tipul_si_cim_din_fisa(patron, firma_c
     sid = _salariat_cu_cm(firma_cv)
     sql('UPDATE "%s".salariati SET tip_contract = NULL, nr_cim = NULL, data_cim = NULL WHERE id = %%s' % s, (sid,))  # rulare repetată
     pg = _stat(patron, firma_cv)
-    rand = pg.locator(".pf-frand", has_text=_RAND).first
+    # [lotul 13, 677 / 676] fereastra salariatului -> „Corectează datele” (fereastra ei); tipul contractului = butoane alăturate
+    from e2e_lot13_sal_ajutor import alege, buton, deschide_salariat
+    deschide_salariat(patron, _RAND)
     with _fisa_citita(pg):
-        rand.locator("[data-date]").click()
-    pg.select_option("#ed-tipcim", "determinata")
+        buton(patron, "date")
+    alege(patron, "ed-tipcim", "determinata")
     pg.fill("#ed-nrcim", "12/2023")
     pg.fill("#ed-datacim", "2023-12-20")
     pg.click("#ed-save")
@@ -39,17 +41,16 @@ def test_def_412_adeverinta_precompleteaza_tipul_si_cim_din_fisa(patron, firma_c
     assert sql('SELECT tip_contract, nr_cim, data_cim::text FROM "%s".salariati WHERE id = %%s' % s, (sid,)) == \
         [("determinata", "12/2023", "2023-12-20")]
     # fișa redeschisă arată CIM-ul salvat
-    rand = pg.locator(".pf-frand", has_text=_RAND).first
     with _fisa_citita(pg):
-        rand.locator("[data-date]").click()
+        buton(patron, "date")
     pg.wait_for_function("() => (document.querySelector('#ed-nrcim') || {}).value === '12/2023'", timeout=20000)
     assert (pg.input_value("#ed-tipcim"), pg.input_value("#ed-datacim")) == ("determinata", "2023-12-20")
-    pg.click("#ed-cancel")
+    assert pg.get_attribute("#ed-tipcim-grup [data-v='determinata']", "aria-pressed") == "true"
+    pg.click(".fereastra:last-of-type [data-renunta]")
     # adeverința le ia din fișă, modificabile
-    rand = pg.locator(".pf-frand", has_text=_RAND).first
-    rand.locator("[data-adev]").click()
+    pg.wait_for_selector("#ss-butoane", timeout=20000)
+    buton(patron, "adev")
     pg.wait_for_function("() => (document.querySelector('#ad-nrcim') || {}).value === '12/2023'", timeout=20000)
     assert (pg.input_value("#ad-tip"), pg.input_value("#ad-datacim")) == ("determinata", "2023-12-20")
-    assert pg.is_editable("#ad-nrcim") and pg.is_enabled("#ad-tip")
-    assert pg.locator(".pf-intro", has_text="Tipul contractului și Nr. / Dată CIM vin din fișa salariatului — le poți schimba.").count() == 1
+    assert pg.is_editable("#ad-nrcim") and pg.is_enabled("#ad-tip-grup [data-v='nedeterminata']")
     patron.captura()

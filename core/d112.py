@@ -247,7 +247,10 @@ def _venituri_adaugate(s):
     contributivă (B2_5 / B4_7, deci și B1_5 / B1_10 / B4_3): excesul de tichete de vacanță [D3], partea taxabilă a cadoului, elementele variabile (prime,
     sporuri, ore suplimentare — CF art.76 alin.(1)). O SINGURĂ definiție pentru ambele (înainte, două rânduri care adunau
     aceleași componente separat), aceeași cu `salarizare.calcul_salariu` (`b_imp`)."""
-    return _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0)) + _d112int(s.get("elemente_variabile", 0))
+    # [lotul 13, 670 b] + excedentul de diurnă (CF art.76 alin.(2) lit.k; bazele: art.139 alin.(1) lit.j, art.157 alin.(1) lit.m, art.220^4
+    # alin.(1) lit.h) — `core/diurna_salariat.py`
+    return (_d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0)) + _d112int(s.get("elemente_variabile", 0))
+            + _d112int(s.get("exces_diurna", 0)))
 
 
 def _d112int(x):
@@ -746,13 +749,25 @@ def calcul_d112(prof, salariati, an, luna):
         _b1_sal1 = _d112int(s.get("brut_contractual", s.get("brut")))
         _b1_7 = int(s.get("zile_suspendate") or 0) * ore_contract   # [lotul 11, C96] „B1_7<= NZL* i - B1_6” la Pi
         # [8.3 avantaje] bilete de valoare defalcate pe tip: E3_10 masa / E3_75 vacanta / E3_74 cultural /
-        # E3_72 cresa / E3_73 cadou (partea taxabila); E3_60 = suma (structura D112: E3_60 >= E3_10+E3_72+E3_73+E3_74+E3_75). INFORMATIV -
-        # NU se atinge E3_8/E1_1 (ar rupe DUK regula S111: E1_1 = Suma(E3_8)); E3_8 (venit, mii) >= E3_60 (bilete,
-        # sute) prin constructie. Emise DOAR cand exista avantaje (salariatii fara bilete raman neschimbati).
+        # E3_72 cresa / E3_73 cadou (partea taxabila); E3_60 = suma (structura D112: E3_60 >= E3_10+E3_72+E3_73+E3_74+E3_75). [lotul 13, C174]
+        # E3_8 le CUPRINDE (rândul 8 „Total venit brut, din care” — temeiul mai jos); E1_1 = Suma(E3_8) (DUK S111) le urmează.
+        # Emise DOAR cand exista avantaje (salariatii fara bilete raman neschimbati).
         # Probat DUK 04.08.2026. Cadou (E3_73): partea TAXABILA (excedent >300 la eveniment legal / integral la nelegal, CF art.76(4)a + art.142) intra in brut + E3_73 (16.08 - inainte era neinclus).
         _m = _d112int(s.get("e83_masa", 0)); _vc = _d112int(s.get("e83_vacanta", 0))
         _cu = _d112int(s.get("e83_cultural", 0)); _cr = _d112int(s.get("e83_cresa", 0))
         _cd = _d112int(s.get("e83_cadou", 0))   # [cadou] E3_73
+        # [lotul 13, C174 — decizia Costin 13.1 pct.4: „verifică la sursă, în instrucțiunile D112 în vigoare, dacă tichetele de masă intră în
+        # E3_8; aplică ce scrie acolo”] DA, intră. OPANAF 605/2026 anexa 2, E.3: „Rândul 8 «Total venit brut, din care:» - se completează,
+        # cu suma reprezentând venitul brut realizat, potrivit legii şi care reprezintă suma totală a veniturilor din salarii şi asimilate
+        # salariilor, prevăzute la art. 76 alin. (1) - (41) din Codul fiscal”; „Rândul 8.3. «Avantaje în bani şi în natură, din care» - se
+        # completează cu totalul avantajelor impozabile […]”; „Rândul 8.3.1. «Contravaloarea tichetelor de masă, acordate potrivit legii» - se
+        # completează cu valoarea tichetelor de masă, acordate salariaţilor potrivit legii, la funcţia de bază.” (8.3.1.1 creșă, 8.3.1.3
+        # culturale, 8.3.1.4 vouchere de vacanță, la fel). Structura D112 (`anaf_surse/structura_D112_0726_070926.txt`, rândul 129): „E3_8>=
+        # E3_61 + E3_59 + E3_60 + E3_69+E3_90”, iar „E3_60>= E3_10 + E3_72 + E3_73+ E3_74 + E3_75+…”. Deci E3_8 („din care”) cuprinde E3_60
+        # întreg; până la 25.10.2026 cuprindea numai cadoul taxabil (E3_73, prin `_venituri_adaugate`), iar masa, vacanța (în plafon),
+        # culturalele și creșa rămâneau afară — E3_8 mai mic decât baza impozitului (E3_14 = salariu + bilete). E1_1 / E2_1 = ΣE3_8 („E1_1 =
+        # ∑E3_8 pentru E3_3=1”) și B1_sal2 = E3_8 (A_sal2 = E3_8 − E3_69, interpretarea C173) urmează aceeași cifră.
+        brute = brute + _m + _vc + _cu + _cr
         # [R105] Se strange AICI, nu se recalculeaza altundeva: `brute`, `b4base`, `imp`, `cas` si
         # `cass` sunt chiar valorile pe care build_xml le scrie in E3/B4. `int()` face ce face si `%d`
         # din formatul XML, deci componenta nu poate diverge de declaratie printr-o rotunjire.
@@ -772,7 +787,9 @@ def calcul_d112(prof, salariati, an, luna):
             "d": _dl, "brute": brute, "tip_asig": tip_asig, "s51": facil if tip_asig == 51 else 0,
             "e83": {"masa": _m, "vacanta": _vc, "cultural": _cu, "cresa": _cr, "cadou": _cd,
                     "total": _m + _vc + _cu + _cr + _cd},
-            "e3": _sectiunea_e(s, bimp if (cms and zile_cm > 0) else None, bazac, _cas_w, _cass_w, cas, cass)})
+            "e3": _sectiunea_e(s, bimp if (cms and zile_cm > 0) else None, bazac, _cas_w, _cass_w, cas, cass),
+            # [670 b] E3_59 „Venituri asimilate salariilor” >= E3_52 „Indemnizații de delegare impozabile” (excedentul de diurnă)
+            "e3_52": _d112int(s.get("exces_diurna", 0))})
     n = len(salariati)
     # round() Python (bancar) se aplica ICI, INAINTE ca _d112int() sa poata
     # rotunji aritmetic - 112.5 devenea deja 112 prin round() inainte sa ajunga
@@ -970,11 +987,14 @@ def build_xml(calc):
         # utilizează pentru veniturile primite în perioada de raportare fără desfăşurarea efectivă a unei activităţi în această perioadă”;
         # rândurile 5-6: „Se completează doar dacă la rândul 4 […] a fost utilizată opţiunea "A"”. Structura: „E3_5=null daca E3_4=’P’”.
         # Până la 22.10.2026: E3_4="A" cu E3_5 = E3_6 = luna raportării (DUK nu o respinge, dar e alt fel de venit).
+        # [lotul 13, 670 b] OPANAF 605/2026 anexa 2, E.3 rândul 8.2.1 „Indemnizaţii de delegare impozabile” - „partea care depăşeşte plafonul
+        # neimpozabil stabilit în Codul fiscal”; rândul 8.2 (E3_59) le cuprinde. Emise numai când există excedent.
+        _e82 = (' E3_59="%d" E3_52="%d"' % (x["e3_52"], x["e3_52"])) if x.get("e3_52") else ""
         a.append('    <asiguratE3 E3_1="B" E3_2="%d" E3_3="%d" E3_4="P" E3_8="%d" '
                  'E3_9="%d" E3_11="%d" E3_12="%d" E3_121="%d" E3_122="%d" E3_1221="%d" E3_1222="%d" '
-                 'E3_14="%d" E3_15="%d" E3_16="0" E3_19="0" E3_21="0"%s/>'
+                 'E3_14="%d" E3_15="%d" E3_16="0" E3_19="0" E3_21="0"%s%s/>'
                  % (x["tip_asig"], e3["e3_3"], x["brute"], e3["contributii"], e3["persoane"], e3["ded"], e3["ded_baza"],
-                    e3["ded_supl"], e3["ded_tineri"], e3["ded_copii"], e3["baza_imp"], x["imp"], _e83))
+                    e3["ded_supl"], e3["ded_tineri"], e3["ded_copii"], e3["baza_imp"], x["imp"], _e82, _e83))
         a.append('  </asigurat>')
         H.append("\n".join(a))
     H.append('</declaratieUnica>')
@@ -1112,6 +1132,10 @@ def pull(conn, schema, perioada):
     # [S1] elementele variabile ale lunii (prime, sporuri, ore suplimentare) — aceeași citire ca statul de plată
     from core import elemente_salariale as _es
     _elem = _es.lista_luna(conn, schema, an, luna)
+    # [lotul 13, 670 b] excedentul de diurnă al lunii (venit asimilat salariilor) — aceeași citire ca statul de plată
+    from core import diurna_salariat as _dsal
+    with conn.cursor() as _cdz:
+        _diurna = _dsal.excedente_luna(_cdz, schema, an, luna)
     for s in salariati:
         _sal_luna = float(_si.salariu_la(_cs_sal, schema, s["id"], _ultima_luna) or 0)
         # [lot 19 pct.4c] prezența în contract (angajare/încetare, CFP/suspendare, schimbare de salariu) — ACEEAȘI
@@ -1166,7 +1190,9 @@ def pull(conn, schema, perioada):
                                # [lotul 11, C99] zilele de CM (zile active pentru contribuția minimă) și excepția de la ea, ca statul
                                zile_cm=zile_cm_s, exceptat_suprataxare=bool(s.get("scutit_pt")),
                                # [482] aceeași intrare ca statul de plată: indemnizația CM impozabilă în deducerea personală
-                               cm_impozabil=_sz.cm_impozabil_luna(s.get("cm") if zile_cm_s else None, ref))
+                               cm_impozabil=_sz.cm_impozabil_luna(s.get("cm") if zile_cm_s else None, ref),
+                               exces_diurna=_dsal.total(_diurna.get(s["id"])))
+        s["exces_diurna"] = float(_dsal.total(_diurna.get(s["id"])))   # [670 b] în brut și baze (`_venituri_adaugate`), E3_52; și contarea
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         s["elemente_variabile"] = float(_var)   # [S1] în brutul declarat și în bază (`_venituri_adaugate`); și pentru contare
         s["elemente"] = _elem.get(s["id"], [])

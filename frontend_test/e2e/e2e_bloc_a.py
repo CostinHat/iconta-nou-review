@@ -503,9 +503,11 @@ def test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul(browser, request, patr
         _pdf_ok(e, rr)
         e.captura("chitanta")
         e.firma("Panificatie Salarii Speciale")
-        _card(e, "salariati", "[data-flut]")
+        _card(e, "salariati", "#sp-tabel")
+        from e2e_lot13_sal_ajutor import buton, deschide_salariat
+        deschide_salariat(e)   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
         with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-            pg.click("[data-flut] >> nth=0")
+            buton(e, "flut")
         _pdf_ok(e, rr)
         e.captura("fluturas")
         # [retestul 09.10, pct.7: directorul separat al bonurilor] fotografia bonului, pe drumul ecranului (`pozaUrl`: cererea imaginii)
@@ -557,10 +559,15 @@ def test_def_11_reges_trimiterea_la_poate_depune_credentialele_la_administrator(
     def numara(a):
         with ecran_cont(browser, request, a["email"]) as e:
             e.firma("Panificatie Salarii Speciale")
-            _card(e, "salariati", "[data-flut]")
-            r = {s: _vizibile(e.pg, s) for s in ("[data-reges]", "#sp-reges-poll", "#sp-reges-cfg")}
+            _card(e, "salariati", "#sp-tabel")
+            r = {s: _vizibile(e.pg, s) for s in ("#sp-reges-poll", "#sp-reges-cfg")}
             # [retestul Costin 09.10] textul nu trimite la un buton pe care contul nu-l are („Chei REGES” e al administratorului)
             r["text_chei"] = "Chei REGES" in e.fereastra()
+            # [lotul 13, 675] „REGES” e un buton al ferestrei salariatului (același set la fiecare salariat)
+            from e2e_lot13_sal_ajutor import deschide_salariat
+            deschide_salariat(e)
+            r["[data-reges]"] = _vizibile(e.pg, "[data-reges]")
+            r["text_chei"] = r["text_chei"] or "Chei REGES" in e.fereastra()
             e.captura("depune" if a.get("depune") else "pregatire")
             return r
     with cont_asistent(firme=(T_PANIFICATIE,)) as a:

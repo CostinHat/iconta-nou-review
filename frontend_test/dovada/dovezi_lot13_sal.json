@@ -1,0 +1,1152 @@
+[
+ {
+  "nr": "671",
+  "firma": "tenant_9053",
+  "descriere": "F5 (date de dinainte de reparație): Ionescu Vasile are certificatul CCMAM 1234567, 13–15.10.2026 (proba lui Costin) -> Salariați -> fereastra lui -> «Pontaj»: zilele 13, 14, 15 sunt «concediu medical», inactive, cu motivul certificatului; 19 zile de prezență; regula unică a pontajului. Înainte: 13, 14, 15 «prezent», 22 de prezență. Nu scrie nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Ionescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-pontaj]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #pj-calendar"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": ".fereastra:last-of-type #pj-calendar button[data-zi='2026-10-14']"
+   },
+   {
+    "contine": "concediu medical",
+    "zona": ".fereastra:last-of-type #pj-calendar"
+   },
+   {
+    "contine": "19 zile de prezență",
+    "zona": ".fereastra:last-of-type .cf-sumar"
+   },
+   {
+    "contine": "3 zile de concediu medical",
+    "zona": ".fereastra:last-of-type .cf-sumar"
+   },
+   {
+    "contine": "Zilele pe care le marchezi tu (concediu de odihnă, delegație, absențe, învoiri) schimbă numai tichetele de masă"
+   }
+  ],
+  "captura": "671_f5_vechi_pontaj_cm_din_certificat.png"
+ },
+ {
+  "nr": "678",
+  "firma": "tenant_9053",
+  "descriere": "F5: Ionescu Vasile -> «Pontaj»: calendar luni–vineri pe săptămâni, fără liste derulante; «Marchează ca:» cu butoane alăturate; implicit «prezent». Nu scrie nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Ionescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-pontaj]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #pj-calendar"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Luni Marți Miercuri Joi Vineri",
+    "zona": ".fereastra:last-of-type #pj-calendar thead"
+   },
+   {
+    "exista": ".fereastra:last-of-type #pj-marcaj-grup"
+   },
+   {
+    "contine": "prezent",
+    "zona": ".fereastra:last-of-type #pj-calendar button[data-zi='2026-10-01']"
+   }
+  ],
+  "captura": "678_f5_vechi_pontaj_calendar.png"
+ },
+ {
+  "nr": "677",
+  "firma": "tenant_9053",
+  "descriere": "F5 (statul de octombrie, cu certificatul și orele suplimentare scrise înainte de reparație): Salariați -> tabelul compact (un rând pe salariat, total, căutare) -> fereastra lui Ionescu Vasile: compoziția pe trei coloane, «19 zile lucrate din 22», indemnizația CM o dată (brut și net pe același rând), fără «Zile de concediu medical: 3». Nu scrie nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "captura": "677_f5_vechi_statul_compact.png"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Ionescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-compozitie"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Venituri",
+    "zona": ".fereastra:last-of-type #ss-compozitie"
+   },
+   {
+    "contine": "Rețineri",
+    "zona": ".fereastra:last-of-type #ss-compozitie"
+   },
+   {
+    "contine": "Rezultat",
+    "zona": ".fereastra:last-of-type #ss-compozitie"
+   },
+   {
+    "contine": "19 zile lucrate din 22",
+    "zona": ".fereastra:last-of-type #ss-venituri"
+   },
+   {
+    "contine": "Indemnizație concediu medical",
+    "zona": ".fereastra:last-of-type #ss-venituri"
+   },
+   {
+    "nu_contine": "Zile de concediu medical"
+   },
+   {
+    "contine": "Net de plată",
+    "zona": ".fereastra:last-of-type #ss-rezultat"
+   }
+  ],
+  "captura": "677_f5_vechi_fereastra_salariatului.png"
+ },
+ {
+  "nr": "679",
+  "firma": "tenant_9053",
+  "descriere": "F5: rândul de ore suplimentare al lui Ionescu Vasile, scris înainte de reparație (10 ore, 497,16 lei, fără spor salvat) -> «Prime, sporuri, ore supl.»: rândul arată calculul «10 ore × 28,41 lei × 175% (sporul rezultă din suma scrisă)»; la «Ore suplimentare» se cer orele și sporul, suma nu se cere. Nu scrie nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Ionescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-elem]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #el-tip-grup"
+   },
+   {
+    "click": ".fereastra:last-of-type #el-tip-grup [data-v='ore_suplimentare']"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "10 ore × 28,41 lei × 175%",
+    "zona": ".fereastra:last-of-type #el-tabel"
+   },
+   {
+    "contine": "497,16 lei",
+    "zona": ".fereastra:last-of-type #el-tabel"
+   },
+   {
+    "contine": "Sporul din contract (%)",
+    "zona": ".fereastra:last-of-type #el-spor-camp"
+   }
+  ],
+  "captura": "679_f5_vechi_ore_suplimentare_calcul.png"
+ },
+ {
+  "nr": "675",
+  "firma": "tenant_9053",
+  "descriere": "F5: fereastra lui Ionescu Vasile: același set de butoane ca la Popescu Elena, în aceeași ordine; «+ masă» lângă «+ vacanță / + cadou / + cultural / + creșă»; «De verificat» inactiv, cu motivul. Nu scrie nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Ionescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Fluturaș Pontaj Concediu medical Suspendare / CFP",
+    "zona": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "contine": "+ masă + vacanță + cadou + cultural + creșă",
+    "zona": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "inactiv": ".fereastra:last-of-type #ss-butoane [data-verif]"
+   },
+   {
+    "contine": "Din ce se calculează"
+   }
+  ],
+  "captura": "675_f5_butoanele_salariatului.png"
+ },
+ {
+  "nr": "676",
+  "firma": "tenant_9053",
+  "descriere": "F5: Ionescu Vasile -> «Date de calcul» (fereastra ei): normă, funcția de bază, declarația, scutirea = butoane alăturate, cea salvată marcată; nicio listă derulantă scurtă. Nu scrie nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Ionescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-calcul]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ed-fbaza-grup"
+   },
+   {
+    "pauza": 1200
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #ed-norma-grup"
+   },
+   {
+    "exista": ".fereastra:last-of-type #ed-scutit-grup"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #ed-fbaza",
+    "egal": "true"
+   }
+  ],
+  "captura": "676_f5_date_de_calcul_butoane.png"
+ },
+ {
+  "nr": "673",
+  "firma": "tenant_9053",
+  "descriere": "F5: Ionescu Vasile -> «Salariu»: se deschide o fereastră nouă, cât ecranul (traseul arată fereastra salariatului), nu o bandă peste listă. Nu scrie nimic.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Ionescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-salariu]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #salariu-input"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Ionescu",
+    "zona": ".fereastra:last-of-type .fereastra-fir"
+   },
+   {
+    "exista": ".fereastra:last-of-type #salariu-save"
+   }
+  ],
+  "captura": "673_f5_salariu_fereastra_noua.png"
+ },
+ {
+  "nr": "672",
+  "firma": "tenant_9053",
+  "descriere": "F5: Popescu Elena (salariat existent, fără tichete) -> fereastra ei -> «+ masă» -> 40 -> «Salvează»: confirmarea în fereastra salariatului, «Din ce se calculează»: «Tichet de masă 40,00 lei pe zi lucrată». SCRIE pe copie tichetul (îl folosește dovada C174).",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Popescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-masa]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #masa-input"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #masa-input",
+    "valoare": "40"
+   },
+   {
+    "click": ".fereastra:last-of-type #masa-save"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-msg.msg-ok"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "tichete de masă de 40,00 lei pe zi lucrată",
+    "zona": ".fereastra:last-of-type #ss-msg"
+   },
+   {
+    "contine": "40,00 lei pe zi lucrată",
+    "zona": ".fereastra:last-of-type #ss-calcul"
+   }
+  ],
+  "captura": "672_f5_tichetul_pus_la_salariatul_existent.png"
+ },
+ {
+  "nr": "C174",
+  "firma": "tenant_9053",
+  "descriere": "F5, 09/2026: Popescu Elena cu tichetul de 40 lei (dovada 672) -> «Pontaj» pe 09/2026 -> «Confirmă pontajul lunii» -> Declarații -> D112 09/2026: «fără erori» la DUKIntegrator, iar XML-ul are E3_10 (tichetele) și E3_8 = salariul + tichetele (OPANAF 605/2026 anexa 2, E.3 rândul 8 «din care» 8.3.1). SCRIE pe copie confirmarea pontajului 09/2026.",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Popescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-pontaj]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #pj-calendar"
+   },
+   {
+    "click": ".fereastra:last-of-type #pj-prev"
+   },
+   {
+    "asteapta_text": "Pontaj · Popescu Elena · 09/2026"
+   },
+   {
+    "click": ".fereastra:last-of-type #pj-confirma",
+    "daca_exista": true
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok",
+    "daca_exista": true
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": "#fa-declaratii"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "E3_10=\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   }
+  ],
+  "captura": "c174_f5_d112_09_2026_e3_8_cu_tichete.png"
+ },
+ {
+  "nr": "C194",
+  "firma": "tenant_9053",
+  "descriere": "F5 (decizia Costin 13.1: «D112 aflate deja în coadă devin «depășite», de generat din nou»): Declarații -> D112 09/2026 -> «Trimite în coadă» -> Salariați -> Ionescu Vasile -> «Date de calcul»: persoane în întreținere 1 -> «Salvează» -> «De validat / De depus»: D112 09/2026 stă la «depășită — de generat din nou». SCRIE pe copie D112 în coadă și corectura fișei.",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type #dec-trimite"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": "#opt-existente",
+    "daca_exista": true
+   },
+   {
+    "asteapta": "#firme-lista button.firme-rand"
+   },
+   {
+    "click": "#firme-lista button.firme-rand",
+    "text": "F5 SRL Salariati"
+   },
+   {
+    "asteapta": "#fa-salariati"
+   },
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Ionescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-calcul]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ed-fbaza-grup"
+   },
+   {
+    "pauza": 1200
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #ed-persoane",
+    "valoare": "1"
+   },
+   {
+    "click": ".fereastra:last-of-type #ed-save"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-msg.msg-ok"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   },
+   {
+    "asteapta": "#val-depasite"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "depășită — de generat din nou",
+    "zona": "#val-depasite"
+   }
+  ],
+  "captura": "c194_f5_d112_din_coada_depasita.png"
+ },
+ {
+  "nr": "43",
+  "firma": "tenant_9053",
+  "descriere": "F5, 09/2026 (luna încheiată; 10/2026 se poate declara abia de la 01.11.2026): Popescu Elena -> «Concediu medical» -> certificat INIȚIAL cod 01, 01–10.09.2026, 8 zile lucrătoare (suma veniturilor scrisă «30.000») -> statul 09/2026: salariul pe zilele lucrate (14 din 22), indemnizația o dată. SCRIE pe copie certificatul (îl folosesc dovezile 482, C134, C172, C173).",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-prev"
+   },
+   {
+    "asteapta_text": "Luna 09/2026"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Popescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "click": ".fereastra:last-of-type #ss-butoane [data-cm]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-serie",
+    "valoare": "AB"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-numar",
+    "valoare": "4309"
+   },
+   {
+    "alege": ".fereastra:last-of-type #cm-cod",
+    "valoare": "01"
+   },
+   {
+    "pauza": 300
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-acord",
+    "valoare": "2026-09-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-inceput",
+    "valoare": "2026-09-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-sfarsit",
+    "valoare": "2026-09-10"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile",
+    "valoare": "8"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-continuare-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-spital-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-program-national-grup [data-v='false']"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-ven6",
+    "valoare": "30.000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cm-zile6",
+    "valoare": "125"
+   },
+   {
+    "click": ".fereastra:last-of-type #cm-calc"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cm-rezultat .panou"
+   },
+   {
+    "captura": "43_f5_certificat_09_2026.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-butoane"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-tabel tbody tr.sp-rand .sp-deschide",
+    "text": "Popescu"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ss-compozitie"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "14 zile lucrate din 22",
+    "zona": ".fereastra:last-of-type #ss-venituri"
+   },
+   {
+    "contine": "Indemnizație concediu medical · 8 zile",
+    "zona": ".fereastra:last-of-type #ss-venituri"
+   }
+  ],
+  "captura": "43_f5_stat_09_2026_zilele_certificatului.png"
+ },
+ {
+  "nr": "482",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 cu certificatul cod 01 (dovada 43): «fără erori» la DUKIntegrator; secțiunea D a certificatului, zilele lucrate 14 (B1_15), baza CAM cu indemnizația angajatorului (B1_5 = B4_14). Nu scrie nimic.",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "asiguratD ",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   },
+   {
+    "contine": "D_9=\"01\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   },
+   {
+    "contine": "B1_15=\"14\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   },
+   {
+    "contine": "B4_14=\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   }
+  ],
+  "captura": "482_f5_d112_09_2026_cm.png"
+ },
+ {
+  "nr": "C134",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 cu certificatul cod 01 (dovada 43): «fără erori»; B_brutSalarii cu indemnizația CM a angajatorului. Nu scrie nimic.",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "B_brutSalarii=\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   }
+  ],
+  "captura": "c134_f5_d112_09_2026.png"
+ },
+ {
+  "nr": "C172",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 cu certificatul cod 01 (dovada 43): «fără erori»; E3_8 numără o dată zilele de CM (salariul realizat + indemnizația). Nu scrie nimic.",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "E3_8=\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   }
+  ],
+  "captura": "c172_f5_d112_09_2026.png"
+ },
+ {
+  "nr": "C173",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 cu certificatul cod 01 (dovada 43): «fără erori»; baza șomaj (B1_10) = baza CAM, B1_sal2 = E3_8. Nu scrie nimic.",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "B1_10=\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   },
+   {
+    "contine": "B1_sal2=\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   }
+  ],
+  "captura": "c173_f5_d112_09_2026.png"
+ },
+ {
+  "nr": "C90",
+  "firma": "tenant_9053",
+  "descriere": "F5: «+ Salariat nou» FARABAZA ION (angajat 01.09.2026, 5.000 lei, funcția de bază: Nu), MINIM ION (4.325 lei, salariul minim din 07/2026, HG 146/2026), PARTIAL ANA (normă parțială, 4 ore, 2.500 lei) -> D112 09/2026: «fără erori»; FARABAZA declarat cu E3_3=\"2\" (secțiunea E2). SCRIE pe copie cei trei salariați (îi folosesc dovezile C93, C96).",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-nume",
+    "valoare": "FARABAZA"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-prenume",
+    "valoare": "ION"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cnp",
+    "valoare": "1800101400016"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-data_angajare",
+    "valoare": "2026-09-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-salariu_brut",
+    "valoare": "5000"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-persoane_intretinere",
+    "valoare": "0"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-judet_casa",
+    "valoare": "B"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-tip_norma-grup [data-v='intreaga']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-declaratie_copii-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-functie_baza-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-scutit_contrib_minim-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-tip_contract-grup [data-v='nedeterminata']"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
+    "valoare": "241107"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "asteapta_text": "Salariat salvat: FARABAZA"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-nume",
+    "valoare": "MINIM"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-prenume",
+    "valoare": "ION"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cnp",
+    "valoare": "1800202400020"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-data_angajare",
+    "valoare": "2026-09-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-salariu_brut",
+    "valoare": "4325"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-persoane_intretinere",
+    "valoare": "0"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-judet_casa",
+    "valoare": "B"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-tip_norma-grup [data-v='intreaga']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-declaratie_copii-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-functie_baza-grup [data-v='true']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-scutit_contrib_minim-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-tip_contract-grup [data-v='nedeterminata']"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
+    "valoare": "241107"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "asteapta_text": "Salariat salvat: MINIM"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel"
+   },
+   {
+    "click": ".fereastra:last-of-type #sp-salariat-nou"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-nume",
+    "valoare": "PARTIAL"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-prenume",
+    "valoare": "ANA"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cnp",
+    "valoare": "2800303400037"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-data_angajare",
+    "valoare": "2026-09-01"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-salariu_brut",
+    "valoare": "2500"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-persoane_intretinere",
+    "valoare": "0"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-judet_casa",
+    "valoare": "B"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-ore_zi",
+    "valoare": "4"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-tip_norma-grup [data-v='partiala']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-declaratie_copii-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-functie_baza-grup [data-v='true']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-scutit_contrib_minim-grup [data-v='false']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-tip_contract-grup [data-v='nedeterminata']"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
+    "valoare": "241107"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-cor-rez [data-cod='241107']"
+   },
+   {
+    "click": ".fereastra:last-of-type #sn-salveaza"
+   },
+   {
+    "asteapta_text": "Salariat salvat: PARTIAL"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #sp-tabel"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": "#fa-declaratii"
+   },
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "E3_3=\"2\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   },
+   {
+    "contine": "asiguratE2 ",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   }
+  ],
+  "captura": "c90_f5_d112_09_2026_fara_functie_de_baza.png"
+ },
+ {
+  "nr": "C93",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 cu salariații dovezii C90: «fără erori»; MINIM ION, beneficiarul facilității, declarat cu tipul 51 (B1_1, E3_2). Nu scrie nimic.",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "B1_1=\"51\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   },
+   {
+    "contine": "E3_2=\"51\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   }
+  ],
+  "captura": "c93_f5_d112_09_2026.png"
+ },
+ {
+  "nr": "C96",
+  "firma": "tenant_9053",
+  "descriere": "F5: D112 09/2026 cu salariații dovezii C90: «fără erori»; PARTIAL ANA declarată cu normă parțială de 4 ore (B1_3=\"P4\"). Nu scrie nimic.",
+  "pasi": [
+   {
+    "declaratie": "d112",
+    "an": 2026,
+    "luna": 9
+   },
+   {
+    "click": ".fereastra:last-of-type details.dec-xml summary",
+    "text": "Vezi XML-ul generat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "fără erori"
+   },
+   {
+    "contine": "B1_3=\"P4\"",
+    "zona": ".fereastra:last-of-type details.dec-xml pre"
+   }
+  ],
+  "captura": "c96_f5_d112_09_2026.png"
+ }
+]

@@ -18,7 +18,8 @@ from conftest import _scoate_firmele_e2e
 from e2e_bloc_b import _cnp
 from e2e_bloc_d import LUNA_TRECUTA, PATRON, _api
 from e2e_bloc_d import _stat as _stat_luna
-from e2e_lot11_s9 import (_F, _compozitie, _d112_xml, _firma_cu_salariat, _int, _propunerea_zilelor, _randuri_compozitie,
+from e2e_lot13_sal_ajutor import alege
+from e2e_lot11_s9 import (_F, _bani_net, _concedii, _compozitie, _d112_xml, _firma_cu_salariat, _int, _propunerea_zilelor, _randuri_compozitie,
                           _salveaza_certificat, _singurul, _un)
 
 
@@ -44,7 +45,7 @@ def _certificat_01(patron, firma, zi_sfarsit, numar):
     di, ds = LUNA_TRECUTA, LUNA_TRECUTA.replace(day=zi_sfarsit)
     zile = _zile_lucratoare(di, ds)
     _stat_luna(patron, firma, luni_inapoi=1)
-    pg.click(_F + "[data-cm] >> nth=0")
+    _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
     pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
@@ -57,7 +58,7 @@ def _certificat_01(patron, firma, zi_sfarsit, numar):
     _propunerea_zilelor(pg, zile)
     pg.fill(_F + "#cm-zile", str(zile))
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
-        pg.select_option(_F + sel, "false")
+        alege(patron, sel.lstrip("#"), "false")   # [lotul 13, 676] Da / Nu = butoane
     pg.fill(_F + "#cm-ven6", "30000")
     pg.fill(_F + "#cm-zile6", "125")
     _salveaza_certificat(patron)
@@ -147,7 +148,11 @@ def test_def_43_proratare_pe_zilele_certificatului_initial_cu_zi_de_diminuare(pa
     _stat_luna(patron, firma_43, luni_inapoi=1)
     comp = _compozitie(patron)
     patron.captura("compozitia_netului")
-    assert "Zile de concediu medical: %d" % zile in comp, comp
+    # [lotul 13, 677] fără rândul „Zile de concediu medical: N” fără sumă: zilele stau pe rândul indemnizației, cu brutul și netul ei
+    from e2e_lot13_sal_ajutor import text_compozitie
+    t = text_compozitie(patron)
+    assert "Zile de concediu medical" not in t and ("Indemnizație concediu medical · %d zile" % zile) in " ".join(t.split()), t
+    assert ("%d zile lucrate din %d" % (nzl - zile, nzl)) in t, t
     a = _singurul(_d112_xml(patron, firma_43))
     b1, b2, d = _un(a, "asiguratB1"), _un(a, "asiguratB2"), _un(a, "asiguratD")
     assert int(b1["B1_15"]) == nzl - zile, (b1, nzl, zile)
@@ -199,11 +204,12 @@ def test_def_482_cam_si_retinerile_din_indemnizatie(patron, firma_482):
     _stat_luna(patron, firma_482, luni_inapoi=1)
     comp = _randuri_compozitie(_compozitie(patron))
     patron.captura("compozitia_netului")
-    brut = comp["din indemnizația CM brută"]
+    # [lotul 13, 677] indemnizația o dată: brutul în valoarea rândului, netul pe același rând; reținerile ei în coloana „Rețineri”
+    brut = comp["Indemnizație concediu medical"]
     ret = [comp["reținut din indemnizație: CAS (25%)"], comp["reținut din indemnizație: CASS (10%)"],
            comp["reținut din indemnizație: impozit pe venit"]]
-    assert all(x < 0 for x in ret[:2]), comp
-    assert brut + sum(ret) == comp["Indemnizație CM (netă)"], comp
+    assert all(x > 0 for x in ret[:2]), comp
+    assert brut - sum(ret) == _bani_net(patron, "Indemnizație concediu medical"), comp
     cam_stat = comp["CAM — contribuția asiguratorie pentru muncă (2,25%), plătită de angajator"]
     st = _d112_xml(patron, firma_482)
     a = _singurul(st)

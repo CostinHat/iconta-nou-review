@@ -17,6 +17,7 @@ from e2e_bloc_b import _cnp
 from e2e_bloc_d import LUNA_TRECUTA, PATRON, _api, _firma_noua, _genereaza
 from e2e_bloc_d import _stat as _stat_luna
 from e2e_lot11_a453 import _pdf_fluturas
+from e2e_lot13_sal_ajutor import alege
 
 _F = ".fereastra:last-of-type "
 
@@ -76,10 +77,25 @@ def firma_c89():
         _scoate_firmele_e2e(f["tenant_id"])
 
 
+def _salariat_deschis(patron):
+    """[lotul 13, 677] fereastra salariatului (deschisă din rândul statului, dacă nu e deja în față)."""
+    from e2e_lot13_sal_ajutor import deschide_salariat
+    if not patron.pg.locator(_F + "#ss-butoane").count():
+        deschide_salariat(patron)
+
+
+def _concedii(patron):
+    """Fereastra salariatului -> „Concediu medical” (fereastra certificatelor)."""
+    from e2e_lot13_sal_ajutor import buton
+    _salariat_deschis(patron)
+    buton(patron, "cm")
+
+
 def _compozitie(patron):
-    pg = patron.pg
-    pg.click(_F + ".pf-frand details.dec-xml summary")
-    return pg.inner_text(_F + ".pf-frand details.dec-xml")
+    """[lotul 13, 677] Compoziția netului din fereastra salariatului: {etichetă: (valoare, net)}, citită din rândurile celor trei coloane."""
+    from e2e_lot13_sal_ajutor import coloane
+    _salariat_deschis(patron)
+    return coloane(patron)
 
 
 _NS = "{mfp:anaf:dgti:declaratie_unica:declaratie:v7}"
@@ -125,6 +141,12 @@ def _singurul(st):
     return st[cnp[0]]
 
 
+def _bani_net(patron, eticheta):
+    """Netul de pe rândul `eticheta` al compoziției (rândul indemnizației CM: brut și net pe același rând)."""
+    from decimal import Decimal
+    return Decimal(str(_compozitie(patron)[eticheta][1]))
+
+
 def _int(el, *atribute):
     return [int(el[a]) for a in atribute]
 
@@ -136,7 +158,11 @@ def _bani(text):
 
 
 def _randuri_compozitie(comp):
-    """Rândurile tabelului „Compoziția netului”, ca {etichetă: sumă} (un rând = „etichetă<TAB>sumă lei”)."""
+    """Rândurile compoziției netului, ca {etichetă: sumă}: din fereastra salariatului (dict, `_compozitie`) sau dintr-un text
+    („etichetă<TAB>sumă lei” pe rând)."""
+    from decimal import Decimal
+    if isinstance(comp, dict):
+        return {k: Decimal(str(v[0])) for k, v in comp.items() if v[0] is not None}
     out = {}
     for linie in comp.splitlines():
         m = re.fullmatch(r"\s*(.+?)\t(-?[\d.]+,\d\d) lei\s*", linie)
@@ -180,9 +206,9 @@ def test_def_c90_fara_functie_de_baza_declarat_cu_e3_3_doi(patron, firma_c90):
     Temeiul: structura D112, E3_3 — „=1, pentru functia de baza / =2, pentru venit in afara functiei de baza”; E2 = Σ E3 „pentru E3_3=2”."""
     pg = patron.pg
     _stat_luna(patron, firma_c90, luni_inapoi=1)
-    rand = pg.eval_on_selector(_F + ".pf-lista .pf-frand", "e => e.textContent.replace(/\\s+/g, ' ')")
+    comp = _randuri_compozitie(_compozitie(patron))   # [lotul 13, 677] fereastra salariatului
     patron.captura("stat")
-    assert "impozit 325,00" in rand, rand
+    assert comp["Impozit pe venit"] == _bani("325,00"), comp
     a = _singurul(_d112_xml(patron, firma_c90))
     assert len(a.get("asiguratE1", [])) == 0, a
     assert _int(_un(a, "asiguratE3"), "E3_3", "E3_11", "E3_12", "E3_14", "E3_15") == [2, 0, 0, 3250, 325], a
@@ -210,7 +236,7 @@ def _formular_cod10(patron, firma):
     zile = int(r["zile"])
     assert zile >= 9, zile          # Bmax = 25% × 240 × zile >= 540 > 499,59: indemnizația nu e plafonată
     _stat_luna(patron, firma, luni_inapoi=1)
-    pg.click(_F + "[data-cm] >> nth=0")
+    _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
     pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
@@ -224,7 +250,7 @@ def _formular_cod10(patron, firma):
     _propunerea_zilelor(pg, zile)
     pg.fill(_F + "#cm-zile", str(zile))   # aceeași cifră ca propunerea ecranului (zilele lucrătoare dintre cele două date)
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
-        pg.select_option(_F + sel, "false")
+        alege(patron, sel.lstrip("#"), "false")   # [lotul 13, 676] Da / Nu = butoane
     pg.fill(_F + "#cm-ven6", str(_VEN6))
     pg.fill(_F + "#cm-zile6", str(_ZILE6))
     return zile
@@ -263,10 +289,11 @@ def test_def_c89_indemnizatia_cm_rotunjita_la_sursa(patron, firma_c89):
     # Statul arată indemnizația cu reținerile DECLARATE (`stat_plata_api.stat_final`, comanda Costin 06.10.2026 pct.2: „421 se soldează la
     # ban și în lunile cu concediu medical”): reținerile CM = totalul declarat al salariatului (B4_8 CAS + B4_6 CASS + E3_15 impozit) −
     # reținerile din salariu (rândurile CAS / CASS / impozit ale compoziției); netul CM = indemnizația declarată (D_20 + D_21) − ele.
-    ret_sal = -(comp["CAS (25%)"] + comp["CASS (10%)"] + comp["Impozit pe venit"])
+    # [lotul 13, 677] reținerile stau în coloana „Rețineri” (pozitive); indemnizația o dată, cu brutul și netul pe același rând
+    ret_sal = comp["CAS (25%)"] + comp["CASS (10%)"] + comp["Impozit pe venit"]
     ret_cm = int(b4["B4_8"]) + int(b4["B4_6"]) + int(e3["E3_15"]) - ret_sal
-    assert comp["Indemnizație CM (netă)"] == 500 - ret_cm, (comp, b4, e3)
-    assert comp["Net de plată (salariu + indemnizație CM)"] == comp["Salariu net"] + comp["Indemnizație CM (netă)"], comp
+    assert _bani_net(patron, "Indemnizație concediu medical") == 500 - ret_cm, (comp, b4, e3)
+    assert comp["Net de plată"] == comp["Venituri în bani"] - comp["Total rețineri"], comp
 
 
 def test_def_c92_cod10_cere_avizul_medicului_expert(patron, firma_c89):
@@ -313,7 +340,7 @@ def test_def_c102_propunerea_zilelor_nu_inlocuieste_ce_a_scris_contabilul(patron
         zile[zi] = str(r["zile"])
     assert zile[7] != zile[14] and zile[10] != "3", zile
     _stat_luna(patron, firma_c89, luni_inapoi=1)
-    pg.click(_F + "[data-cm] >> nth=0")
+    _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
     pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
@@ -448,7 +475,7 @@ def test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112(patron
     assert st == 200, (st, r)
     nzl = int(r["zile"])
     _stat_luna(patron, firma_c99, luni_inapoi=1)
-    pg.click(_F + "[data-cm] >> nth=0")
+    _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
     pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
@@ -461,7 +488,7 @@ def test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112(patron
     _propunerea_zilelor(pg, zile_cm)
     pg.fill(_F + "#cm-zile", str(zile_cm))
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
-        pg.select_option(_F + sel, "false")
+        alege(patron, sel.lstrip("#"), "false")   # [lotul 13, 676] Da / Nu = butoane
     pg.fill(_F + "#cm-ven6", "12000")
     pg.fill(_F + "#cm-zile6", "125")
     _salveaza_certificat(patron)

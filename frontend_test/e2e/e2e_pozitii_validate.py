@@ -78,6 +78,20 @@ def _sume_rand(text):
     return out
 
 
+def _sume_salariat(patron):
+    """[lotul 13, 677] {brut, CAS, CASS, impozit, net: (Decimal, textul de pe ecran)} din compoziția netului, în fereastra salariatului
+    (deschisă din rândul statului, apoi închisă: înapoi la statul de plată)."""
+    from e2e_lot13_sal_ajutor import coloane, deschide_salariat, inchide
+    deschide_salariat(patron)
+    c = coloane(patron)
+    inchide(patron)
+    patron.pg.wait_for_selector(_F + "#sp-tabel", timeout=30000)
+    ro = lambda v: "{:,.2f}".format(Decimal(str(v))).replace(",", "X").replace(".", ",").replace("X", ".")   # noqa: E731
+    return {k: (Decimal(str(c[e][0])).quantize(Decimal("0.01")), ro(c[e][0])) for k, e in (
+        ("brut", "Salariu pe zile lucrate"), ("CAS", "CAS (25%)"), ("CASS", "CASS (10%)"), ("impozit", "Impozit pe venit"),
+        ("net", "Net de plată"))}
+
+
 def _iban_ro(banca, cont16):
     """IBAN românesc cu cifrele de control calculate (ISO 13616, mod-97), verificat de validatorul aplicației — nu inventat."""
     from core.salariati_api import iban_valid
@@ -350,7 +364,7 @@ def test_pozitie_f028_d112_din_statul_de_plata_e_valida_la_duk_cu_sumele_statulu
     CASS, impozit pe rând -> Declarații -> D112 pe luna trecută -> pasul 2: „Validat cu DUKIntegrator (validatorul oficial ANAF rulat
     local), fără erori”, iar rezumatul „D112: 1 salariat - impozit …, CAS …, CASS …” are exact sumele de pe statul de plată."""
     _stat_luna(patron, firma_sal, luni_inapoi=1)
-    s = _sume_rand(_rand_salariat(patron))
+    s = _sume_salariat(patron)
     _genereaza(patron, firma_sal, "d112", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     pg = patron.pg
     patron.captura()
@@ -369,7 +383,7 @@ def test_pozitie_f080_statul_calculeaza_contributiile_si_netul_din_brut(patron, 
     """F080. Pașii: Salariați -> statul lunii trecute, salariatul cu 5.000 lei brut, normă întreagă, funcția de bază, fără persoane în
     întreținere: pe rând CAS = 25% din brut, CASS = 10% din brut, impozitul în lei întregi, iar netul = brut − CAS − CASS − impozit."""
     _stat_luna(patron, firma_sal, luni_inapoi=1)
-    s = _sume_rand(_rand_salariat(patron))
+    s = _sume_salariat(patron)
     patron.captura()
     brut = s["brut"][0]
     assert brut == Decimal("5000.00"), s
@@ -433,18 +447,23 @@ def test_pozitie_f134_fisierul_de_plata_pe_card_are_netul_si_iban_ul_salariatulu
     iban = _iban_ro("BTRL", "RONCRT00F1340001")
     _stat_luna(patron, firma_sal, luni_inapoi=1)
     pg = patron.pg
-    net = _sume_rand(_rand_salariat(patron))["net"]
-    pg.click(_F + "[data-iban]")
+    net = _sume_salariat(patron)["net"]
+    # [lotul 13, 673 / 677] fereastra salariatului -> „IBAN ⚠” (fereastra lui); înapoi la stat -> „Fișier plată card” (fereastra lui)
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat, inchide
+    deschide_salariat(patron)
+    buton(patron, "iban")
     pg.fill(_F + "#iban-input", iban)
     pg.click(_F + "#iban-save")
-    pg.wait_for_function("() => { const b = [...document.querySelectorAll('.fereastra')].pop().querySelector('[data-iban]'); "
+    pg.wait_for_function("() => { const b = [...document.querySelectorAll('.fereastra')].pop().querySelector('#ss-butoane [data-iban]'); "
                          "return b && b.innerText.includes('✓'); }", timeout=30000)
+    inchide(patron)
+    pg.wait_for_selector(_F + "#sp-plata-card", timeout=30000)
     assert not pg.is_disabled(_F + "#sp-plata-card")
     pg.click(_F + "#sp-plata-card")
     pg.wait_for_selector(_F + "#plata-descarca", timeout=30000)
-    zona = " ".join(pg.inner_text(_F + "#sp-plata-zona").split())
+    zona = " ".join(patron.fereastra().split())
     patron.captura()
-    assert "1 plată/plăți · total %s lei" % net[1] in zona, zona
+    assert "1 plată · total %s lei" % net[1] in zona, zona
     with pg.expect_download(timeout=60000) as dl:
         pg.click(_F + "#plata-descarca")
     xml = open(dl.value.path(), "rb").read()
@@ -478,7 +497,7 @@ def test_pozitie_f078_salariatul_se_adauga_si_se_corecteaza_din_ecran(patron, fi
         pg.fill(sel, v)
     for sel, v in (("#sn-tip_norma", "intreaga"), ("#sn-declaratie_copii", "false"), ("#sn-functie_baza", "true"),
                    ("#sn-scutit_contrib_minim", "false"), ("#sn-tip_contract", "nedeterminata")):
-        pg.select_option(sel, v)
+        pg.click("%s-grup [data-v='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
     pg.fill("#sn-cor-cauta", "241107")
     pg.wait_for_selector("#sn-cor-rez [data-cod='241107']", timeout=20000)
     pg.click("#sn-cor-rez [data-cod='241107']")
@@ -492,14 +511,15 @@ def test_pozitie_f078_salariatul_se_adauga_si_se_corecteaza_din_ecran(patron, fi
                % firma_poz["schema"], (cnp,))
     assert fisa == [("POZITIEF078", "ANA", False, 8.0, True, "241107", "2026-01-05")], fisa
     pg.click("#sn-gata")
-    rand = pg.locator(_F + ".pf-frand", has_text="POZITIEF078").first
-    rand.wait_for(timeout=30000)
-    rand.locator("[data-date]").click()
+    # [lotul 13, 677 / 675] rândul statului -> fereastra salariatului -> „Corectează datele” (fereastra ei)
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat
+    deschide_salariat(patron, "POZITIEF078")
+    with pg.expect_response(lambda r: "/salariati/" in r.url and r.request.method == "GET", timeout=30000):
+        buton(patron, "date")   # fișa citită (CIM-ul salvat)
     pg.wait_for_selector(_F + "#ed-pren", timeout=20000)
-    pg.wait_for_function("() => (document.querySelector('#ed-fbaza') || {value: ''}).value !== ''", timeout=20000)   # fișa citită
     pg.fill(_F + "#ed-pren", "ANA-MARIA")
     pg.click(_F + "#ed-save")
-    pg.wait_for_function("() => (document.querySelector('#sp-date-zona') || {innerText: ''}).innerText.includes('datele corectate s-au "
+    pg.wait_for_function("() => (document.querySelector('#ss-msg') || {innerText: ''}).innerText.includes('datele corectate s-au "
                          "salvat')", timeout=30000)
     patron.captura("corectat")
     assert sql('SELECT prenume FROM "%s".salariati WHERE cnp = %%s' % firma_poz["schema"], (cnp,)) == [("ANA-MARIA",)]
@@ -716,11 +736,14 @@ def test_pozitie_f087_fluturasul_si_nota_statului_au_netul_statului(patron, firm
     cu „Salariu brut” = brutul și „Salariu net” = netul de pe rândul statului, CAS (25%) -> „Contabilizează statul”: „Contul 421 se
     soldează exact cu netul fluturașilor (<netul> lei).”"""
     _stat_luna(patron, firma_sal, luni_inapoi=1)
-    s = _sume_rand(_rand_salariat(patron))
+    s = _sume_salariat(patron)
     pg = patron.pg
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat, inchide
+    deschide_salariat(patron)   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
     with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-        pg.click(_F + "[data-flut] >> nth=0")
+        buton(patron, "flut")
     text, _titlu = _pdf_text(_pdf_ok(patron, rr))
+    inchide(patron)
     patron.captura("fluturas")
     assert "Fluturaș de salariu — %02d/%d" % (LUNA_TRECUTA.month, LUNA_TRECUTA.year) in text, text[:1500]
     # CF art.138 lit.a: CAS 25%; netul fluturașului = netul statului (aceeași sumă ca nota și D112)

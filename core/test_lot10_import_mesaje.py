@@ -131,8 +131,8 @@ def test_420_fiecare_camp_de_verificat_are_avertisment_si_confirmare_in_stat():
     """Sursa unică `DE_VERIFICAT`: un câmp marcabil nou fără avertisment / fără câmp de confirmare în Stat de plată -> pică."""
     from core.salariati_import_api import DE_VERIFICAT
     avert = FIR[FIR.index("function _avertDeVerificat"):FIR.index("function formularSalariatNou")]
-    panou = FIR[FIR.index('corp.querySelectorAll("[data-verif]").forEach((b) => b.addEventListener("click"'):]
-    panou = panou[:panou.index("[lot 19 pct.4c] Suspendari")]
+    panou = FIR[FIR.index("function ecranDeVerificat("):]   # [lotul 13, 673] fereastra „De verificat” a salariatului
+    panou = panou[:panou.index("\nfunction ", 1)]
     for c in DE_VERIFICAT:
         assert 'dv.includes("%s")' % c in avert, c
         assert 'dv.includes("%s")' % c in panou, c
@@ -156,22 +156,16 @@ def test_426_inlocuirea_balantei_cere_confirmare_pe_ecran():
 
 
 def test_salariat_edit_corecteaza_datele_trimite_campurile_deducerilor():
-    i = FIR.index("Corectează datele salariatului")
-    bloc = FIR[i:FIR.index("[decizia Costin 14.10.2026 pct.3–4, verbatim în DECIZII] câmpurile importate fără valoare", i)]
+    # [lotul 13, 675] deducerile (setări care schimbă cifrele) stau în „Date de calcul”, nu în „Corectează datele”
+    i = FIR.index("function ecranDateCalcul(")
+    bloc = FIR[i:FIR.index("\nfunction ", i + 1)]
     for camp in ('functie_baza: daNu(corp.querySelector("#ed-fbaza"))', 'declaratie_copii: daNu(corp.querySelector("#ed-declcopii"))',
-                 "deduceri.data_nastere", "deduceri.copii_scolarizati", '"#ed-fbaza", "#ed-declcopii"'):
+                 "deduceri.data_nastere", "deduceri.copii_scolarizati", '"ed-fbaza", "ed-declcopii"'):
         assert camp in bloc, camp
-    # clasa 410: confirmarea după salvare — apelul `arataMesaj(zona statului, <text>, "ok")`, cu textul exact după numele salariatului
-    arb_fir, cod_fir = arbore_js("firme.js")
-    conf = [c["arguments"][1] for c in noduri(arb_fir, "CallExpression") if cod_fir(c["callee"]) == "arataMesaj"
-            and [cod_fir(a) for a in c["arguments"][0:3:2]] == ['corp.querySelector("#sp-date-zona")', '"ok"']]
-    # [lotul 12, C133] textul e urmat de efectul corecturii scutirii în D112 (`șablon + (rez.efect_d112 ? " " + … : "")`): partea șablon
-    # e operandul stâng, efectul — operandul drept, condiționat de răspunsul serverului
-    sabl = [a["left"] if a["type"] == "BinaryExpression" else a for a in conf]
-    assert [[q["value"]["cooked"] for q in a["quasis"]][-1] for a in sabl] == [
-        ": datele corectate s-au salvat; statul se calculează cu ele."], [cod_fir(a) for a in conf]
-    assert [(a["right"]["type"], cod_fir(a["right"]["test"])) for a in conf] == [
-        ("ConditionalExpression", "rez && rez.scutire_corectata && rez.efect_d112")], [cod_fir(a) for a in conf]
+    # clasa 410: confirmarea după salvare numește salariatul și consecința, urmată de efectul corecturii scutirii în D112, condiționat
+    # de răspunsul serverului (`rez && rez.scutire_corectata && rez.efect_d112`)
+    assert re.search(r'dupa\(`\$\{s\.nume\}: datele de calcul s-au salvat; statul se calculează cu ele\.` \+ '
+                     r'\(rez && rez\.scutire_corectata && rez\.efect_d112 \? " " \+ rez\.efect_d112 : ""\)\)', bloc), bloc[-600:]
     import main
     for camp in ("data_nastere", "copii_scolarizati", "declaratie_copii", "functie_baza"):
         assert camp in main.SalariatEdit.model_fields, camp

@@ -1,0 +1,50 @@
+[
+ {
+  "fisier": "core/pontaj.py",
+  "ancora": "        elif cert is not None:\n            stare, sursa = \"concediu_medical\", \"certificat\"",
+  "inlocuire": "        elif False:\n            stare, sursa = \"concediu_medical\", \"certificat\"",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_671_pontajul_arata_concediul_medical_din_certificat"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "const stare = b.dataset.stare === marcaj ? \"prezent\" : marcaj;",
+  "inlocuire": "const stare = \"prezent\";",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_678_pontajul_e_calendar_si_se_apasa_doar_zilele_altfel"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "await api.put(`/tenants/${t.id}/salariati/${s.id}`, { tichet_masa_valoare: v });",
+  "inlocuire": "await api.put(`/tenants/${t.id}/salariati/${s.id}`, { tichet_masa: v });",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_672_tichetul_de_masa_se_pune_la_salariatul_existent"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "    <h3 class=\"pf-subtitlu\">Compoziția netului</h3>\n    ${compozitieColoane(s)}",
+  "inlocuire": "    <h3 class=\"pf-subtitlu\">Compoziția netului</h3>",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_677_statul_compact_si_compozitia_pe_trei_coloane"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "    b(\"masa\", \"+ masă\", \"PUT /tenants/{tenant_id}/salariati/{salariat_id}\"),\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_675_acelasi_set_de_butoane_si_fereastra_noua_pentru_fiecare_actiune"
+ },
+ {
+  "fisier": "core/elemente_salariale.py",
+  "ancora": "(Decimal(100) + Decimal(str(spor_procent))) / Decimal(100)",
+  "inlocuire": "Decimal(100) / Decimal(100)",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_679_suma_orelor_suplimentare_se_calculeaza"
+ },
+ {
+  "fisier": "core/salarizare.py",
+  "ancora": "    b_imp = b + var + exces_vac + cadou_tax + exc_diurna",
+  "inlocuire": "    b_imp = b + var + exces_vac + cadou_tax",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_670_b_excedentul_de_diurna_e_venit_salarial"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "        brute = brute + _m + _vc + _cu + _cr",
+  "inlocuire": "        brute = brute",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_c174_e3_8_cuprinde_tichetele_de_masa"
+ }
+]

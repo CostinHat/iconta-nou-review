@@ -46,13 +46,17 @@ def test_def_448_ciorna_salariilor_depasita_se_reface_din_stat_si_se_valideaza(p
     assert len(vechi) == 1 and float(vechi[0][1]) == 5000.0, vechi
     nid = vechi[0][0]
     # 2. sursa se schimbă: salariul de bază 6.000 de la prima zi a lunii statului („de la” vine cu ea)
-    pg.click(_F + "[data-salariu]")
+    # [lotul 13, 673 / 677] fereastra contabilizării -> statul -> fereastra salariatului -> „Salariu” (fereastra ei)
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat, inchide
+    inchide(patron)
+    deschide_salariat(patron)
+    buton(patron, "salariu")
     pg.wait_for_selector(_F + "#salariu-input", timeout=20000)
     assert pg.input_value(_F + "#salariu-data") == P.inceput.isoformat()
     pg.fill(_F + "#salariu-input", "6000")
     pg.click(_F + "#salariu-save")
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop();"
-                         " return f && !f.querySelector('#salariu-input') && f.textContent.replace(/\\s+/g, ' ').includes('brut 6.000,00'); }",
+                         " return f && !f.querySelector('#salariu-input') && f.textContent.replace(/\\s+/g, ' ').includes('e 6.000,00 lei de la'); }",
                          timeout=30000)
     patron.captura("statul_schimbat")
     # 3. Registrul jurnal al lunii: ciorna e depășită, cu sumele statului de acum și cele de pe ciornă; „Validează” inactiv

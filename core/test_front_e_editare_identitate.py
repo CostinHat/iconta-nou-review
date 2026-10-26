@@ -30,12 +30,17 @@ def test_ui_cableaza_editarea_identitatii():
     if not os.path.exists(p):
         pytest.skip("firme.js absent")
     src = open(p, encoding="utf-8").read()
-    i = src.index("async function ecranSalariati")
-    rest = src[i + 1:]
-    j = i + 1 + rest.index("\nasync function ") if "\nasync function " in rest else len(src)
-    reg = src[i:j]
-    assert "data-date=" in reg and "ed-cnp" in reg and "cnpValid" in reg, \
-        "editarea identitatii (nume/prenume/CNP/data angajare/norma) nu mai e cablata in ecranSalariati"
-    # [412, 19.10.2026] corpul poate continua cu alte câmpuri ale fișei (CIM-ul: tip_contract, nr_cim, data_cim) — cele șase rămân
-    assert 'api.put(`/tenants/${t.id}/salariati/${sid}`, { nume, prenume, cnp, data_angajare, tip_norma, ore_zi' in reg, \
+    # [lotul 13, 675] identitatea și contractul se corectează din „Corectează datele” (fereastra lui); data angajării și norma, care
+    # schimbă cifrele statului, din „Date de calcul” — amândouă butoane ale fereastrei salariatului
+    i = src.index("function ecranCorecteazaDatele(")
+    reg = src[i:src.index("\nfunction ", i + 1)]
+    assert "ed-cnp" in reg and "cnpValid" in reg, "editarea identitatii (nume/prenume/CNP) nu mai e cablata"
+    assert 'api.put(`/tenants/${t.id}/salariati/${sid}`, { nume, prenume, cnp' in reg, \
         "PUT-ul de corectare identitate nu mai trimite campurile asteptate"
+    i = src.index("function ecranDateCalcul(")
+    reg = src[i:src.index("\nfunction ", i + 1)]
+    assert 'api.put(`/tenants/${t.id}/salariati/${sid}`, { data_angajare, tip_norma, ore_zi' in reg, \
+        "PUT-ul datelor de calcul nu mai trimite data angajarii / norma"
+    i = src.index("function butoaneSalariat(")
+    reg = src[i:src.index("\nfunction ", i + 1)]
+    assert 'b("date", "Corectează datele"' in reg and 'b("calcul", "Date de calcul"' in reg

@@ -24,8 +24,11 @@ def _pdf_fluturas(patron):
     """„Fluturaș” pe rândul salariatului -> textul PDF-ului (citit întreg, din același URL, cu tokenul sesiunii)."""
     from pypdf import PdfReader
     pg = patron.pg
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat
+    if not pg.locator(_F + "#ss-butoane").count():   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
+        deschide_salariat(patron)
     with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-        pg.click(_F + "[data-flut] >> nth=0")
+        buton(patron, "flut")
     assert rr.value.status == 200, rr.value.status
     b64 = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
       const x = await fetch(u, {headers: {'Authorization': 'Bearer ' + t}}); const b = new Uint8Array(await x.arrayBuffer());
@@ -44,8 +47,8 @@ def test_def_453_deducerea_rotunjita_pe_stat_fluturas_si_d112(patron, firma_sal)
     obtinute prin rotunjire matematica”; CF art.77 alin.(4) dă procentul, fără să spună cum se rotunjește suma."""
     pg = patron.pg
     _stat_luna(patron, firma_sal, luni_inapoi=1)
-    pg.click(_F + ".pf-frand details.dec-xml summary")
-    comp = pg.inner_text(_F + ".pf-frand details.dec-xml")
+    from e2e_lot11_s9 import _compozitie
+    comp = _compozitie(patron)   # [lotul 13, 677] fereastra salariatului, compoziția pe trei coloane
     patron.captura("compozitia_netului")
     # [deficiența 411, lotul 9] rândul deducerii stă sub impozit, cu eticheta „în calculul impozitului, scade baza (nu se reține): deducere
     # personală” (`stat_plata_api.compozitie_fluturas`); valoarea e cea rotunjită la leu (453)
@@ -75,15 +78,16 @@ def test_def_454_salariat_nou_toate_erorile_deodata_cnp_si_norma_obligatorii(pat
     _card(patron, "salariati", "#sp-salariat-nou")
     pg.click("#sp-salariat-nou")
     pg.wait_for_selector("#sn-salveaza", timeout=20000)
-    for camp in ("sn-cnp", "sn-tip_norma"):
-        assert pg.locator('label[for="%s"] .oblig' % camp).count() == 1, "„%s” fără asteriscul de obligatoriu" % camp
+    assert pg.locator('label[for="sn-cnp"] .oblig').count() == 1, "„CNP” fără asteriscul de obligatoriu"
+    # [lotul 13, 676] „Tip normă” e un grup de butoane: asteriscul stă în eticheta câmpului care îl conține
+    assert pg.locator('.camp:has(#sn-tip_norma-grup) .camp-eticheta .oblig').count() == 1, "„Tip normă” fără asteriscul de obligatoriu"
     gresit = _cnp("190030541007")[:12] + str((int(_cnp("190030541007")[12]) + 1) % 10)
     pg.fill("#sn-nume", "Marinescu")
     pg.fill("#sn-cnp", gresit)
     pg.click("#sn-salveaza")
     pg.wait_for_selector(".refuz-salvare", timeout=10000)
     patron.captura("toate_deodata")
-    for i in ("sn-cnp", "sn-tip_norma", "sn-salariu_brut", "sn-cor-cauta"):
+    for i in ("sn-cnp", "sn-tip_norma-grup", "sn-salariu_brut", "sn-cor-cauta"):   # [lotul 13, 676] norma = grup de butoane
         assert pg.get_attribute("#" + i, "aria-invalid") == "true", i
     assert pg.inner_text('.msg-eroare[data-camp="sn-cnp"]').strip() == "CNP invalid (13 cifre, cifră de control greșită)."
     caseta = pg.eval_on_selector_all(".refuz-salvare .refuz-salvare-lista > li", "lis => lis.filter(li => !li.hidden).map(li => li.textContent.trim())")
@@ -91,13 +95,13 @@ def test_def_454_salariat_nou_toate_erorile_deodata_cnp_si_norma_obligatorii(pat
     assert not sql('SELECT 1 FROM "%s".salariati WHERE nume = %%s' % firma_sal["schema"], ("Marinescu",))
     # (b) CNP-ul altui salariat al firmei + data încetării înaintea angajării + IBAN greșit: refuzul serverului, cu toate trei
     pg.fill("#sn-cnp", existent)
-    pg.select_option("#sn-tip_norma", "intreaga")
+    pg.click("#sn-tip_norma-grup [data-v='intreaga']")
     pg.fill("#sn-salariu_brut", "4500")
     pg.fill("#sn-data_angajare", "2026-05-01")
     pg.fill("#sn-data_incetare", "2026-04-01")
     pg.fill("#sn-iban", "RO00BANK0000000000000001")
     for sel, v in (("#sn-functie_baza", "true"), ("#sn-scutit_contrib_minim", "false"), ("#sn-declaratie_copii", "false")):
-        pg.select_option(sel, v)
+        pg.click("%s-grup [data-v='%s']" % (sel, v))   # [lotul 13, 676]
     pg.fill("#sn-cor-cauta", "241107")
     pg.wait_for_selector("#sn-cor-rez [data-cod='241107']", timeout=20000)
     pg.click("#sn-cor-rez [data-cod='241107']")

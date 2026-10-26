@@ -224,7 +224,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
                    cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0, zile_cm=0,
-                   cm_impozabil=None):
+                   cm_impozabil=None, exces_diurna=0):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -273,7 +273,13 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # variabile + cadoul taxabil + indemnizația de concediu medical (art.76 alin.(1): „inclusiv indemnizațiile pentru
     # incapacitate temporară de muncă”). Până azi (d) se judeca pe brutul contractual și lipsea pe ramura `facilitate_prorata`.
     var = _dec(elemente_variabile) if _dec(elemente_variabile) > 0 else Decimal(0)
-    venit_realizat = b + var + (_dec(cadou_taxabil) if _dec(cadou_taxabil) > 0 else Decimal(0)) + _dec(venit_cm or 0)
+    # [lotul 13, 670 b] EXCEDENTUL DE DIURNĂ (`core/diurna_salariat.py`): venit asimilat salariilor — CF art.76 alin.(2) lit.k): „… pentru
+    # partea care depășește plafonul neimpozabil” —, deci și în venitul realizat al condiției (d) (art.76 alin.(1)-(3)). Intră în brutul
+    # impozabil și în bazele CAS (art.139 alin.(1) lit.j), CASS (art.157 alin.(1) lit.m), CAM (art.220^4 alin.(1) lit.h) și impozit, dar NU
+    # în netul în bani: s-a plătit deja prin decont (625 = 542 / 5311); din salariu se rețin numai contribuțiile și impozitul lui.
+    exc_diurna = _dec(exces_diurna) if _dec(exces_diurna) > 0 else Decimal(0)
+    venit_realizat = (b + var + (_dec(cadou_taxabil) if _dec(cadou_taxabil) > 0 else Decimal(0)) + _dec(venit_cm or 0)
+                      + exc_diurna)
     sub_plafon = venit_realizat <= plafon_fac
     # PRORATA luna de ANGAJARE (zile lucrate / zile lucratoare din luna, fara sarbatori), pentru FACILITATE (forma clasica, fara
     # `facilitate_prorata`). 1 daca nu e luna de angajare (contract activ tot). [lotul 11, C99] Pragul de suprataxare NU mai trece pe aici:
@@ -339,7 +345,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # [cadou 16.08] cadou TAXABIL (excedent >300 la eveniment legal / integral la nelegal, CF art.76(4)a
     # + art.142) = venit salarial COMPLET: intra in b_imp ca exces_vac -> CAS/CASS (baza_contrib), CAM, impozit.
     cadou_tax = _dec(cadou_taxabil) if _dec(cadou_taxabil) > 0 else Decimal(0)
-    b_imp = b + var + exces_vac + cadou_tax
+    b_imp = b + var + exces_vac + cadou_tax + exc_diurna   # [670 b] excedentul de diurnă: venit salarial, plătit prin decont
     baza_contrib = b_imp - facilitate
 
     cas = baza_contrib * cota_cas
@@ -492,6 +498,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         "tichete_cresa": _q(tichete_cresa),        # [cresa] valoare nominala; impozit 10%, FARA CASS
         # angajatorul suporta valoarea nominala a biletelor (le cumpara) - cost real
         "elemente_variabile": _q(var),            # [S1] prime + sporuri + ore suplimentare (în brut și în baze)
+        "exces_diurna": _q(exc_diurna),            # [670 b] excedentul de diurnă (în brut și în baze, plătit prin decont, nu în net)
         "cost_angajator": _q(b + var + cam + cas_suprataxa + cass_suprataxa + tichete_nominal + tichete_vac + tichete_cult + tichete_cresa),
     }
 
@@ -515,7 +522,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
                    cadou_taxabil=0, declaratie_copii=False, suspendari=(), elemente_variabile=0, venit_cm=0, zile_cm=0,
-                   cm_impozabil=None):
+                   cm_impozabil=None, exces_diurna=0):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -532,7 +539,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural,
               tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil, declaratie_copii=declaratie_copii,
               suspendari=suspendari, elemente_variabile=elemente_variabile, venit_cm=venit_cm, zile_cm=zile_cm,
-              cm_impozabil=cm_impozabil)
+              cm_impozabil=cm_impozabil, exces_diurna=exces_diurna)
 
 
 # ============================================================
@@ -549,7 +556,10 @@ def monografie_salariu(calc):
     # înregistrează: … valoarea tichetelor acordate salariaților (532)”. Cu forma veche, 421 rămânea cu excesul nesoldat
     # (tenant_001 06/2026: 5.700 lei). Cadoul (integral) îl pune pe 642 = 5328 `salarii_contare.note_lunare`.
     exces_vac = _dec(calc.get("tichete_vacanta_exces", 0))
-    brut_bani = _dec(calc["brut"]) - exces_vac - _dec(calc.get("tichete_cadou", 0))
+    # [lotul 13, 670 b] excedentul de diurnă e venit salarial (în brut, pentru contribuții și impozit), dar s-a plătit și s-a înregistrat
+    # prin decont (625 = 542 / 5311): pe 641 = 421 nu intră, altfel cheltuiala ar apărea de două ori și 421 ar rămâne nesoldat
+    brut_bani = (_dec(calc["brut"]) - exces_vac - _dec(calc.get("tichete_cadou", 0))
+                 - _dec(calc.get("exces_diurna", 0)))
     note = [
         _nota("641", "421", brut_bani),          # cheltuială salarii brute (în bani)
         _nota("421", "4315", calc["cas"]),        # CAS reținut (angajat)

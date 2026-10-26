@@ -946,8 +946,15 @@ def test_def_38_fluturasul_nota_si_d112_aceleasi_sume(patron, firma_e2e):
     _salariat(firma_e2e)
     pg = patron.pg
     _stat(patron, firma_e2e)
-    sub = pg.locator(".pf-frand", has_text="Ionescu").first.locator(".pf-frand-sub").last.inner_text()
-    m = {k: _lei(v) for k, v in re.findall(r"(brut|CAS|CASS|impozit|net)\s+([\d.]+,\d{2})", sub)}
+    # [lotul 13, 677] sumele salariatei: din compoziția netului, în fereastra ei (pe trei coloane), apoi înapoi la stat
+    from e2e_lot13_sal_ajutor import coloane, deschide_salariat, inchide
+    deschide_salariat(patron, "Ionescu")
+    c = coloane(patron)
+    sub = str(c)
+    m = {"brut": c["Salariu pe zile lucrate"][0], "CAS": c["CAS (25%)"][0], "CASS": c["CASS (10%)"][0], "impozit": c["Impozit pe venit"][0],
+         "net": c["Net de plată"][0]}
+    inchide(patron)
+    pg.wait_for_selector("#sp-contare", timeout=30000)
     _propunere(patron)
     linii = _linii_nota(pg)
     patron.captura("propunere", intreaga=True)
@@ -959,7 +966,8 @@ def test_def_38_fluturasul_nota_si_d112_aceleasi_sume(patron, firma_e2e):
     credit_421 = sum(_lei(x[2]) for x in linii if x[1] == "421")
     debit_421 = sum(_lei(x[2]) for x in linii if x[0] == "421")
     assert round(credit_421 - debit_421, 2) == m["net"], (credit_421, debit_421, m)
-    assert "Contul 421 se soldează exact cu netul fluturașilor (%s lei)" % sub.split("net ")[1].split(" ")[0] in patron.fereastra()
+    net_ro = "{:,.2f}".format(m["net"]).replace(",", "X").replace(".", ",").replace("X", ".")
+    assert "Contul 421 se soldează exact cu netul fluturașilor (%s lei)" % net_ro in patron.fereastra()
 
 
 def _text_fluturas(patron, firma):
@@ -970,8 +978,10 @@ def _text_fluturas(patron, firma):
     _salariat(firma)
     pg = patron.pg
     _stat(patron, firma)
+    from e2e_lot13_sal_ajutor import buton, deschide_salariat
+    deschide_salariat(patron)   # [lotul 13, 677] „Fluturaș” e butonul fereastra salariatului
     with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-        pg.click("[data-flut] >> nth=0")
+        buton(patron, "flut")
     r = rr.value
     assert r.status == 200, r.status
     b64 = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
@@ -1027,7 +1037,8 @@ def test_def_39_mesajul_spune_ce_a_verificat_fara_toleranta(patron, firma_e2e):
     _salariat(firma_e2e)
     pg = patron.pg
     _stat(patron, firma_e2e)
-    net = re.search(r"net\s+([\d.]+,\d{2})", pg.locator(".pf-frand", has_text="Ionescu").first.inner_text()).group(1)
+    # [lotul 13, 677] coloana „Net de plată” a rândului salariatei din tabelul statului
+    net = pg.locator("#sp-tabel tbody tr.sp-rand", has_text="Ionescu").first.locator("td").nth(3).inner_text().strip()
     p = _propunere(patron)
     zona = pg.inner_text("#sp-contare-zona")
     patron.captura("mesaj")
