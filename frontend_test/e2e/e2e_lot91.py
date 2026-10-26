@@ -289,7 +289,9 @@ def test_def_384_totalul_cotelor_nu_aduna_randurile_respinse(patron, firma_srl):
 # ── 385 — Import Articole: dublura se respinge numit ─────────────────────────────────────────────────────────────────────────────
 def test_def_385_articolul_de_pe_doua_randuri_e_respins_numit(patron, firma_srl):
     """385. „Marfa valida” pe două rânduri (10 buc și 3 buc) intra de două ori, fără observație. Pașii: Articole și stoc inițial -> fișierul
-    -> rândul 3: „respins — nu intră”, „„Marfa valida” apare și pe rândul 2 — un articol se trece o singură dată, cu stocul lui total”."""
+    -> rândul 3: „respins — nu intră”, „„Marfa valida” apare și pe rândul 2 — un articol se trece o singură dată, cu stocul lui total”; și
+    rândul 2 e respins („apare și pe rândul 3”) — [lotul 13, 590, comanda 13.1: „La articol dublat, primul rând intră cu 10 buc (stocul real
+    13); trebuie respinse ambele până la cumulare, ca la parteneri.”]."""
     _pas(patron, firma_srl, "Articole")
     _incarca(patron, "articole.csv", "Denumire;UM;Cantitate;Pret;Cont stoc\nMarfa valida;buc;10;2;371\nMarfa valida;buc;3;2;371\n".encode(),
              "#mig-importa")
@@ -297,7 +299,9 @@ def test_def_385_articolul_de_pe_doua_randuri_e_respins_numit(patron, firma_srl)
     r = _randul(pg, 3)
     patron.captura()
     assert "respins — nu intră" in r and "apare și pe rândul 2 — un articol se trece o singură dată, cu stocul lui total" in r, r
-    assert "respins" not in _randul(pg, 2), _randul(pg, 2)
+    r2 = _randul(pg, 2)
+    assert "respins — nu intră" in r2 and "apare și pe rândul 3 — un articol se trece o singură dată" in r2, r2
+    assert pg.is_disabled("#mig-importa")
 
 
 def test_def_c55_salariatul_de_pe_doua_randuri_e_respins_numit(patron, firma_srl):
@@ -419,11 +423,12 @@ def test_def_391_dupa_emitere_nu_mai_e_renunta(patron, firma_tva_luna):
 # ── 392 — Solduri inițiale: textul spune ce se întâmplă cu contul inexistent; 5121 creditor semnalat pe rând ─────────────────────
 def test_def_392_textul_spune_respingerea_si_5121_creditor_e_semnalat(patron, firma_srl):
     """392. Textul ferestrei spunea că, conturile noi „se adaugă automat (nu sunt respinse)”, contrar 343; 5121 cu sold creditor intra fără
-    avertisment la import. Pașii: Solduri inițiale -> textul: „e respins, cu motivul”; balanța cu 5121 creditor 20.000 -> rândul 5121 „intră,
+    avertisment la import. Pașii: Solduri inițiale -> „Ce se citește din balanță” ([lotul 13, 667] explicația lungă, pliată): „e respins, cu
+    motivul”; balanța cu 5121 creditor 20.000 -> rândul 5121 „intră,
     cu observație”: „5121 (activ) are sold creditor 20.000,00 lei: soldul stă pe partea opusă funcțiunii contului …”."""
     _pas(patron, firma_srl, "Solduri ini")
     pg = patron.pg
-    intro = " ".join(pg.inner_text(".mig-intro").split())
+    intro = " ".join(((pg.text_content("#mig-cum-balanta") or "") + " " + pg.inner_text(".mig-intro")).split())
     assert "e respins, cu motivul" in intro and "nu sunt respinse" not in intro, intro
     _incarca(patron, "balanta.csv", "Cont;Denumire;Sold final debitor;Sold final creditor\n5121;Banca;0;20000\n1012;Capital;20000;0\n"
              .encode(), "#mig-salveaza-sold")

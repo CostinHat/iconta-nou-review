@@ -479,7 +479,8 @@ def test_def_342_cuiul_cu_cifra_de_control_gresita_spune_ce_e_gresit(patron, fir
 def test_def_345_terminat_nu_e_activ_cat_balanta_are_terti_fara_parteneri(patron, firma_srl):
     """345. „Finalizează stratul” (jargon) era activ cu firme cu balanță fără parteneri. Pașii: firma are în balanța de deschidere 401
     (credit 500), fără parteneri -> Migrare cabinet -> Solduri parteneri: butonul „Am terminat soldurile pe parteneri” e inactiv și
-    textul numește firma și „401 în balanță”."""
+    textul numește firma și contul, cu soldul lui: „401 (creditor 500,00 lei în balanță) — partenerii dau 0,00 lei” ([lotul 13, 665] aceeași
+    confruntare pentru firma fără parteneri și pentru cea cu un cont rămas nedefalcat)."""
     from e2e_lot5_migrare import _migrare
     sch = firma_srl["schema"]
     sql('DELETE FROM "%s".solduri_initiale' % sch)
@@ -493,15 +494,17 @@ def test_def_345_terminat_nu_e_activ_cat_balanta_are_terti_fara_parteneri(patron
         motiv = pg.inner_text("#mig-fin-motiv")
         patron.captura()
         assert pg.is_disabled("#mig-finalizeaza") and pg.inner_text("#mig-finalizeaza") == "Am terminat soldurile pe parteneri"
-        assert firma_srl["nume"] in motiv and "401 în balanță" in motiv, motiv
+        assert firma_srl["nume"] in motiv and "401 (creditor 500,00 lei în balanță) — partenerii dau 0,00 lei" in motiv, motiv
     finally:
         sql('DELETE FROM "%s".solduri_initiale' % sch)
 
 
 def test_def_346_partenerii_care_nu_dau_soldul_contului_nu_intra(patron, firma_srl):
     """346 (grav). Pe F2 se lăsa salvarea unei sume (net creditor 100) diferite de 401 din contabilitate (debitor 500).
-    Pașii: balanța de deschidere 401 credit 500 -> Solduri parteneri -> fișier cu un furnizor pe 401 credit 100 -> rândul e respins:
-    „pe 401, partenerii din fișier dau … iar balanța de deschidere … are …”; caseta de confruntare numește cifrele; nimic scris."""
+    Pașii: balanța de deschidere 401 credit 500 -> Solduri parteneri -> fișier cu un furnizor pe 401 credit 100 -> rândul e respins, cu
+    motivul scurt „nu intră: contul 401 nu se potrivește cu soldul lui”; caseta „Nu se potrivesc cu soldul contului” numește cifrele, iar
+    lista refuzurilor spune o dată „pe 401, partenerii din fișier dau … iar balanța de deschidere … are …” ([lotul 13, 666: mesajul cu cifre
+    nu se mai repetă pe fiecare rând]); nimic scris."""
     sch = firma_srl["schema"]
     sql('DELETE FROM "%s".solduri_initiale' % sch)
     sql('INSERT INTO "%s".solduri_initiale (cont, sold_debitor, sold_creditor, data_referinta) VALUES (\'401\', 0, 500, \'2026-09-30\'), '
@@ -513,8 +516,10 @@ def test_def_346_partenerii_care_nu_dau_soldul_contului_nu_intra(patron, firma_s
         r = _randul(patron.pg, 2)
         t = _text(patron)
         patron.captura()
-        assert "respins — nu intră" in r and "pe 401, partenerii din fișier dau" in r, r
-        assert "Soldurile pe parteneri, față de soldul fiecărui cont" in t, t[:1500]
+        assert "respins — nu intră" in r and "nu intră: contul 401 nu se potrivește cu soldul lui" in r, r
+        nep = " ".join(patron.pg.inner_text("#mig-coer-nepotrivit").split())
+        assert "Nu se potrivesc cu soldul contului" in nep and "401: partenerii dau creditor 100,00" in nep and "creditor 500,00" in nep, nep
+        assert "pe 401, partenerii din fișier dau creditor 100,00 lei" in " ".join(patron.pg.inner_text("#mig-refuzuri").split()), t[:1500]
         assert sql('SELECT count(*) FROM "%s".solduri_parteneri' % sch)[0][0] == 0
     finally:
         sql('DELETE FROM "%s".solduri_initiale' % sch)
