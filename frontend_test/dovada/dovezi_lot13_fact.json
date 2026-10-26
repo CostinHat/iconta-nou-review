@@ -142,7 +142,7 @@
     "asteapta": "#fd-sterge"
    },
    {
-    "captura": "547_f2_vechi_ti1_dublura_inainte"
+    "captura": "547_f2_vechi_ti1_dublura_inainte.png"
    },
    {
     "click": "#fd-sterge"
@@ -293,7 +293,7 @@
     "asteapta": "#ser-chit-serie"
    },
    {
-    "captura": "543_f6_vechi_seria_pe_loc"
+    "captura": "543_f6_vechi_seria_pe_loc.png"
    },
    {
     "completeaza": "#ser-chit-serie",
@@ -478,7 +478,7 @@
     "asteapta": "#fz-tabel"
    },
    {
-    "captura": "640_f1_vechi_furnizori_lista"
+    "captura": "640_f1_vechi_furnizori_lista.png"
    },
    {
     "completeaza": "#fz-cauta",
@@ -515,7 +515,7 @@
     "asteapta": "#et-din-factura"
    },
    {
-    "captura": "534_f1_formular_gol"
+    "captura": "534_f1_formular_gol.png"
    },
    {
     "click": "#et-din-factura"
@@ -602,7 +602,7 @@
     "asteapta": "#fr-mod"
    },
    {
-    "captura": "680_f1_sablon_nou"
+    "captura": "680_f1_sablon_nou.png"
    },
    {
     "click": "#fr-salveaza"
@@ -687,7 +687,10 @@
     "asteapta": "[data-op]"
    },
    {
-    "captura": "604_f1_operatiuni"
+    "captura": "604_f1_operatiuni.png"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
    },
    {
     "click": "#fa-stocuri"
@@ -891,5 +894,99 @@
    }
   ],
   "captura": "c153_f1_vechi_f1a3_achitata.png"
+ },
+ {
+  "nr": "613",
+  "firma": "tenant_9049",
+  "descriere": "F1 (stoc cantitativ-valoric): Stocuri › „Mișcări, fișe de magazie, coduri, nivel minim”: intrare manuală a articolului nou „Marfa 613 dovada” (5 buc, 10 lei; fără produs în nomenclator) › Facturi › Emite factură › linia: articolul din stoc -> sub linie caseta roșie „Articolul … n-are cota TVA în nomenclator” -> cota 21% aleasă pe linie -> caseta dispare",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#cv-toggle"
+   },
+   {
+    "click": "#cv-toggle"
+   },
+   {
+    "asteapta": "#cv-den"
+   },
+   {
+    "completeaza": "#cv-den",
+    "valoare": "Marfa 613 dovada"
+   },
+   {
+    "completeaza": "#cv-cant",
+    "valoare": "5"
+   },
+   {
+    "completeaza": "#cv-pret",
+    "valoare": "10"
+   },
+   {
+    "completeaza": "#cv-doc",
+    "valoare": "NIR 613 dovada"
+   },
+   {
+    "click": "#cv-intrare"
+   },
+   {
+    "asteapta_text": "Intrare înregistrată"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": "#fa-facturi"
+   },
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-l0-articol",
+    "stare": "attached"
+   },
+   {
+    "alege": "#em-l0-articol",
+    "valoare": "Marfa 613 dovada · stoc 5 buc"
+   },
+   {
+    "asteapta": "#em-l0-cota-mesaj .caseta-atentie"
+   },
+   {
+    "captura": "613_f1_mesajul_articolului_fara_cota.png"
+   },
+   {
+    "alege": "#em-l0-cota",
+    "valoare": "21"
+   },
+   {
+    "pauza": 1000
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "n-are cota TVA",
+    "zona": "#em-l0-cota-mesaj"
+   },
+   {
+    "valoare": "#em-l0-cota",
+    "egal": "21"
+   }
+  ],
+  "captura": "613_f1_cota_aleasa_mesajul_dispare.png"
  }
 ]
