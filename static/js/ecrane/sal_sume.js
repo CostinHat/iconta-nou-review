@@ -2,7 +2,7 @@
 // DS cap.6 „Numerele scrise de om”, oglinda `core/numere.numar_ro`). Primește câmpul (se citește TEXTUL scris de om, `textCamp`: un text
 // care nu e număr nu devine gol tacit) sau un text. Întoarce: null = gol; NaN = nu se poate citi fără ghicit (refuzat lângă câmp, cu
 // `MESAJ_NUMAR_RO`); altfel numărul. Listele scurte ale salarizării folosesc mecanismul comun (`select[data-butoane]`, `alegereButoane`).
-import { numarRo, textCamp } from "../api.js?v=9bcf50c899";
+import { numarRo, textCamp } from "../api.js?v=c6c45aefe4";
 
 export function sumaRo(sursa) {
   const r = numarRo(sursa && typeof sursa === "object" ? textCamp(sursa) : sursa);

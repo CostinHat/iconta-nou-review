@@ -473,7 +473,11 @@ def test_def_c177_doua_ferestre_stocuri_nu_isi_anuleaza_situatia(patron, firma):
         pg.unroute("**/stocuri/articole*")
     pg.wait_for_selector(_F + "#cv-zona #cv-art", state="attached", timeout=15000)
     patron.captura("doua_ferestre_stocuri")
-    jos = ".fereastra:has(#s-situatie) #s-situatie"
+    # [lotul 13, 673] o singură fereastră e în pagină: Stocurile (dedesubt) se văd prin „înapoi”, cu corpul păstrat — aici se probează că răspunsul
+    # lor, sosit cât stăteau sub fereastra mișcărilor, a ajuns în corpul păstrat
+    pg.click(_F + ".fereastra-antet .nav-inapoi")
+    pg.wait_for_selector(_F + "#s-situatie", timeout=15000)
+    jos = _F + "#s-situatie"
     assert pg.locator(jos + " #s-situatie-tabel").count() == 1, _txt(pg, jos)
     assert "Se încarcă situația stocului" not in _txt(pg, jos)
     assert "Articol E2E C177 %d" % t in _txt(pg, jos)

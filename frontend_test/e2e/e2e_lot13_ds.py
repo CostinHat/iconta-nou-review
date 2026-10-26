@@ -185,33 +185,33 @@ def test_def_625_654_refuzul_casei_o_data_si_pleaca_dupa_reusita(patron, firma_e
 
 # ── 681 — căutarea globală din antet ─────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_681_cautarea_gaseste_decontul_de_deplasare(patron, firma_e2e):
-    """681 (proba lui Costin): firma în lucru -> în căsuța din antet „diurnă” -> primul rezultat „Decont deplasare / diurnă”, „Operațiuni
+    """681 (proba lui Costin): firma în lucru -> în căsuța din bara ferestrei firmei „diurnă” -> primul rezultat „Decont deplasare / diurnă”, „Operațiuni
     speciale › Personal și deconturi” -> clic: se deschide formularul decontului (fereastra Operațiuni speciale, pasul „Decont deplasare
     / diurnă”). Fără căutare, decontul se găsea numai știind că e în Operațiuni → Personal și deconturi. MUTAȚIE: `puneCautarea` scos din
     navigator -> căsuța lipsește -> ROȘU."""
     pg = patron.pg
     patron.firma(firma_e2e["nume"])
-    pg.wait_for_selector("#cautare-globala", timeout=10000)
-    pg.fill("#cautare-globala", "diurnă")
-    pg.wait_for_selector("#cautare-rez .cautare-item", timeout=15000)
-    primul = pg.inner_text("#cautare-rez .cautare-item >> nth=0")
+    pg.wait_for_selector(_F + "#cautare-fereastra", timeout=10000)
+    pg.fill(_F + "#cautare-fereastra", "diurnă")
+    pg.wait_for_selector(_F + "#cautare-fereastra-rez .cautare-item", timeout=15000)
+    primul = pg.inner_text(_F + "#cautare-fereastra-rez .cautare-item >> nth=0")
     patron.captura("cautare_diurna")
     assert "Decont deplasare / diurnă" in primul and "Personal și deconturi" in primul, primul
-    pg.click("#cautare-rez .cautare-item >> nth=0")
+    pg.click(_F + "#cautare-fereastra-rez .cautare-item >> nth=0")
     pg.wait_for_selector(_F + "#op-trimite", timeout=30000)
     patron.captura("decont_deschis")
     assert "Decont deplasare / diurnă" in patron.fereastra()
 
 
 def test_def_681_cautarea_d112_deschide_declaratiile_cu_d112_ales(patron, firma_e2e):
-    """681. Pașii: firma în lucru -> „D112” în căsuța din antet -> rezultatul declarației -> clic: fereastra Declarații, cu D112 ales.
-    Căsuța e deasupra ferestrelor: se poate scrie în ea și cu o fereastră deschisă."""
+    """681. Pașii: firma în lucru -> „D112” în căsuța din bara ferestrei firmei -> rezultatul declarației -> clic: fereastra Declarații, cu D112 ales.
+    Căsuța stă în bara de sus a ferestrei (precizarea 26.10.2026: antetul paginii e acoperit de ferestre)."""
     pg = patron.pg
     patron.firma(firma_e2e["nume"])
-    pg.fill("#cautare-globala", "D112")
-    pg.wait_for_selector("#cautare-rez .cautare-item", timeout=15000)
-    loc = pg.locator("#cautare-rez .cautare-item", has_text="D112 —")
-    assert loc.count() >= 1, pg.inner_text("#cautare-rez")
+    pg.fill(_F + "#cautare-fereastra", "D112")
+    pg.wait_for_selector(_F + "#cautare-fereastra-rez .cautare-item", timeout=15000)
+    loc = pg.locator(_F + "#cautare-fereastra-rez .cautare-item", has_text="D112 —")
+    assert loc.count() >= 1, pg.inner_text(_F + "#cautare-fereastra-rez")
     loc.first.click()
     pg.wait_for_selector(_F + "#dec-tip", timeout=30000)
     pg.wait_for_timeout(800)
@@ -244,9 +244,9 @@ def test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste(patron, firma
     patron.captura("cautare_stat_de_plata_din_fereastra")
     assert "Salariați" in primul, primul
     pg.click(_F + "#cautare-fereastra-rez .cautare-item >> nth=0")
-    pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].length >= 2", timeout=30000)
-    # fereastra Casă a rămas dedesubt (căutarea deschide PESTE ce e deschis)
-    assert pg.locator(".fereastra").count() >= 2
+    pg.wait_for_selector(_F + "#sp-salariat-nou", timeout=30000)   # fereastra Salariați, deschisă de rezultat
+    # fereastra Casă a rămas dedesubt (căutarea deschide PESTE ce e deschis): traseul o numește, ca pe un pas de întoarcere
+    assert pg.locator(_F + ".fereastra-fir .fir-veriga", has_text="Casă").count() >= 1
     # nu se caută date: numele firmei nu e o funcție
     pg.keyboard.press("Control+k")
     pg.keyboard.type(firma_e2e["nume"].split()[0])

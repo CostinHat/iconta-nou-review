@@ -15,7 +15,7 @@
 // singur); fiecare rezultat e un buton (DS cap.2a, 674); alegerea (clic / Enter) deschide fereastra potrivită PESTE ce e deschis — ce s-a
 // tastat într-o fereastră de dedesubt se păstrează (DS cap.3, `nav` păstrează corpul ferestrei). Operațiunile refuzate rolului nu apar (`permis`).
 // Gard: `core/test_lot13_ds_cautare.py` (server + structură) + e2e `frontend_test/e2e/e2e_lot13_ds.py::test_def_681_*`.
-import { api, esc, ultimaCerere } from "./api.js?v=9bcf50c899";
+import { api, esc, ultimaCerere } from "./api.js?v=c6c45aefe4";
 import { permis } from "./drepturi.js?v=34d0fb0afd";
 
 const ASTEPTARE_MS = 200;
@@ -89,15 +89,16 @@ export async function deschideRezultatul(x, nav) {
 // paginii `cautare-globala`, fereastra `cautare-fereastra`).
 export function puneCautarea(bara, nav, opt = {}) {
   const id = opt.id || "cautare-globala";
+  const idRez = opt.id ? opt.id + "-rez" : "cautare-rez";   // lista antetului paginii își păstrează id-ul de la început (`#cautare-rez`)
   const loc = document.createElement("div");
   loc.className = "cautare-globala" + (opt.inainte ? " cautare-in-fereastra" : "");
   loc.innerHTML = `<input type="search" id="${id}" class="cautare-camp" autocomplete="off" spellcheck="false"
       placeholder="Caută o funcție: D300, stat de plată, NIR…" aria-label="Caută o funcție a aplicației (Ctrl+K)" title="Ctrl+K"
-      role="combobox" aria-expanded="false" aria-controls="${id}-rez" aria-autocomplete="list">
-    <div class="cautare-rez" id="${id}-rez" role="listbox" aria-label="Rezultatele căutării" hidden></div>`;
+      role="combobox" aria-expanded="false" aria-controls="${idRez}" aria-autocomplete="list">
+    <div class="cautare-rez" id="${idRez}" role="listbox" aria-label="Rezultatele căutării" hidden></div>`;
   bara.insertBefore(loc, opt.inainte || bara.querySelector(".bara-spatiu"));
   const inp = loc.querySelector("#" + id);
-  const lista = loc.querySelector("#" + id + "-rez");
+  const lista = loc.querySelector("#" + idRez);
   let ceas = null, rezultate = [], activ = -1;
   const cerereNoua = ultimaCerere();   // [C103] numai răspunsul ultimei căutări ajunge în listă
 
@@ -142,7 +143,7 @@ export function puneCautarea(bara, nav, opt = {}) {
     }
     if (!actuala()) return;   // a sosit răspunsul unei căutări mai vechi
     // acțiunea unei operațiuni se compune ca la butoanele ei (`actiuneOp`); cele refuzate rolului nu apar
-    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=54dc44fa27");
+    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=5429f3285c");
     if (!actuala()) return;
     rezultate = ((r && r.rezultate) || []).filter((x) => (x.ruta ? permis(actiuneOp(x)) : (!x.actiune || permis(x.actiune))));
     const deFirma = rezultate.some((x) => x.fel !== "card" && x.fel !== "operatiune") || tid;

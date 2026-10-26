@@ -3,7 +3,7 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api, ultimaCerere, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand, confirmaCaseta } from "../api.js?v=9bcf50c899";
+import { api, ultimaCerere, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand, confirmaCaseta } from "../api.js?v=c6c45aefe4";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=75ecec94e0";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=0f96afcd4e";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=ad3794a4df";

@@ -868,7 +868,8 @@ def _bilant_coada_2025(patron, firma):
 
 
 def test_def_72_bilantul_intra_in_coada(patron, firma_gv):
-    """72. Bilanț: nu trecea prin coada pregătit → validat → depus.
+    """72. Bilanț: nu trecea prin coada pregătit → validat → depus. [lotul 13, 515] butoanele refuzului („Deschide Date firmă” / „Date cabinet”) stau în rândul
+    `.coada-actiuni-refuz` de după zona mesajului, nu în ea (zona se ascunde cât stă caseta „NU s-a salvat.”).
     Pașii: firma -> Bilanț anual -> an 2025, S1005 -> „Trimite în coadă →”. Bilanțul intră în coada de validare (mesaj „a intrat
     în coada de validare”), iar în coada cabinetului apare S1005 al firmei.
     [lotul 11, decizia Costin 10.3 pct.4, verbatim: „Întocmitorul bilanțului: calitatea întocmitorului în profilul cabinetului, interesul
@@ -899,10 +900,10 @@ def test_def_72_bilantul_intra_in_coada(patron, firma_gv):
         msg = _bilant_coada_2025(patron, firma_gv)
         assert "Nu e declarat dacă firma e entitate de interes public" in msg and "Calitatea întocmitorului bilanțului lipsește" in msg, msg
         assert "a intrat în coada de validare" not in msg, msg
-        pg.wait_for_selector("#bl-coada-mesaj [data-ecran-destinatie='date_firma']", timeout=30000)
+        pg.wait_for_selector("#bl-coada-mesaj + .coada-actiuni-refuz [data-ecran-destinatie='date_firma']", timeout=30000)
         patron.captura("refuz_firma")
         assert sql("SELECT count(*) FROM public.declaratii_coada WHERE tenant_id = %s AND tip = 's1005'", (tid,)) == [(0,)]
-        pg.click("#bl-coada-mesaj [data-ecran-destinatie='date_firma']")
+        pg.click("#bl-coada-mesaj + .coada-actiuni-refuz [data-ecran-destinatie='date_firma']")
         pg.wait_for_selector("#df-interes_public", timeout=30000)
         pg.select_option("#df-interes_public", "0")
         pg.evaluate("() => { const m = document.querySelector('#df-msg'); if (m) m.innerHTML = ''; }")
@@ -914,9 +915,9 @@ def test_def_72_bilantul_intra_in_coada(patron, firma_gv):
         # 2. refuzul rămas e al întocmitorului, cu butonul spre Date cabinet
         msg = _bilant_coada_2025(patron, firma_gv)
         assert "entitate de interes public" not in msg and "Calitatea întocmitorului bilanțului lipsește" in msg, msg
-        pg.wait_for_selector("#bl-coada-mesaj [data-ecran-destinatie='date_cabinet']", timeout=30000)
+        pg.wait_for_selector("#bl-coada-mesaj + .coada-actiuni-refuz [data-ecran-destinatie='date_cabinet']", timeout=30000)
         patron.captura("refuz_cabinet")
-        pg.click("#bl-coada-mesaj [data-ecran-destinatie='date_cabinet']")
+        pg.click("#bl-coada-mesaj + .coada-actiuni-refuz [data-ecran-destinatie='date_cabinet']")
         pg.wait_for_selector("#cab-calit_intocmit", timeout=30000)
         pg.select_option("#cab-calit_intocmit", "12")   # „Contabil șef”, nomenclatorul ANAF (`migrare_intocmitor_bilant.CALITATI_INTOCMIT`)
         pg.fill("#cab-nume_intocmit", "IONESCU MARIA")

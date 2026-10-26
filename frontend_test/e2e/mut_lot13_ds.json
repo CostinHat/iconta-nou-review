@@ -43,8 +43,8 @@
  },
  {
   "fisier": "static/js/navigator.js",
-  "ancora": "    if (u.rol !== \"client\") puneCautarea(bara, nav);",
-  "inlocuire": "",
+  "ancora": "    if ((sus.optiuni || {}).lat !== \"mic\" && (sesiune.user() || {}).rol !== \"client\") puneCautarea(fer.querySelector(\".fereastra-antet\"), nav,",
+  "inlocuire": "    if (false) puneCautarea(fer.querySelector(\".fereastra-antet\"), nav,",
   "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_681_cautarea_gaseste_decontul_de_deplasare"
  },
  {

@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand, atributeInactiv } from "../api.js?v=9bcf50c899";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand, atributeInactiv } from "../api.js?v=c6c45aefe4";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=c0a800d25f";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
 

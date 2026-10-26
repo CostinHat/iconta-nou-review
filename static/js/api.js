@@ -666,7 +666,9 @@ function _etichetaCamp(inp) {
 // jos” (DS cap.6 v2.89 înlocuit în v2.99). Excepția, ca același text să nu stea de două ori lipit: refuzul de formular a cărui zonă e chiar
 // lângă buton (în rândul lui sau în vecinul imediat al rândului, `_langaButon`) nu se mai copiază — se citește acolo. O eroare de câmp fără câmp pe ecran
 // (`{txt}`) intră cu textul ei. Gard: verificator ERORI_TOATE (fără „motivul e mai”) + e2e `test_def_440_*`.
-function _randButon(b) { return b.parentElement && !b.parentElement.matches(".fereastra-corp, body") ? b.parentElement : b; }
+// [lotul 13, plasa 410] butonul pus DIRECT în bara fixă (`.bara-fixa`, jos în fereastră) își ține caseta în bara însăși: rândul lui e butonul, nu bara
+// (altfel caseta ajungea după bară, la capătul conținutului, la sute de pixeli de buton, în afara ferestrei vizibile)
+function _randButon(b) { return b.parentElement && !b.parentElement.matches(".fereastra-corp, .bara-fixa, body") ? b.parentElement : b; }
 function _langaButon(zona, b) {
   const rand = _randButon(b);
   if (rand.contains(zona)) return true;

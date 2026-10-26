@@ -1,8 +1,10 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=9bcf50c899";
+import { api, ultimaCerere, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=c6c45aefe4";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
+import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";   // [lotul 13, 551 / 548] refuzul care trimite în Date firmă are butonul lui
+import { actiuniRefuz, scoateActiuniRefuz } from "./coada_trimite.js?v=50cade9fc8";   // rândul de butoane de lângă caseta „NU s-a salvat”
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
   credit:"F024", chirie:"F020", decont:"F040", contract_special:"F021", reevaluare:"F074",
@@ -934,6 +936,7 @@ export async function ecranOperatiuni(corp, nav, t) {
 
     corp.querySelector("#op-trimite").addEventListener("click", async () => {
       const zona = corp.querySelector("#op-mesaj");
+      scoateActiuniRefuz(zona);   // butonul spre ecran al refuzului de la clicul trecut
       const corpReq = {};
       // [deficiența 410, clasa — toate formularele] TOATE câmpurile lipsă, fiecare lângă el (și în lista „NU s-a salvat” de lângă
       // buton), nu numai primul (fail-fast, DS cap.6 G10 pct.4)
@@ -1007,6 +1010,10 @@ export async function ecranOperatiuni(corp, nav, t) {
         // [410] refuzul serverului care își numește câmpurile: fiecare lângă câmpul lui; restul, în zona formularului
         const peCamp = ((e && e.erori_campuri) || []).filter((x) => eroareCamp(corp, x.camp, x.mesaj)).length;
         arataMesaj(zona, (peCamp ? "Nota nu s-a generat: " : "") + (e.mesaj || e.message || "Nu s-a putut genera nota — verifică datele introduse și reîncearcă."), "eroare");
+        // [lotul 13, 551 / 548] refuzul numește ecranul unde se repară (metoda de stoc -> Date firmă): butonul stă după caseta „NU s-a salvat”, nu în
+        // zona ascunsă a mesajului (unde l-ar pune `api.js`) — ca la „Trimite în coadă” (`coada_trimite.actiuniRefuz`)
+        const det = (e && e.detaliu && typeof e.detaliu === "object") ? e.detaliu : {};
+        if (det.ecran && window._navGlobal) butonSpreEcran(actiuniRefuz(zona), det.ecran, window._navGlobal, t.id, { clasa: "buton-secundar", camp: det.camp_ecran || null });
       }
     });
   };

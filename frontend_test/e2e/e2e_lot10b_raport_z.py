@@ -150,5 +150,7 @@ def test_def_zdescarcare_arata_valoarea_si_butonul_de_validare(patron, firma_cv)
     pg.click("#caseta-atentie-activa #ca-ok")
     pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('e validat')", timeout=20000)
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % f["schema"], (zid,)) == [("validata",)]
-    assert pg.locator("#z-descarcare [data-z='%d']" % zid).count() == 0
+    # [lotul 13, 675] comenzile rămân pe rând, inactive (cu motivul), nu dispar: Z-ul validat își păstrează „Validează” / „Șterge” inactive
+    butoane = pg.locator("#z-descarcare button[data-z='%d']" % zid)
+    assert butoane.count() >= 1 and [b.get_attribute("aria-disabled") for b in butoane.all()] == ["true"] * butoane.count()
     patron.captura("validat")

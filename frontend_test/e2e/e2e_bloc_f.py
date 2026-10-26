@@ -83,6 +83,7 @@ def test_def_171_marcarea_lasa_grupul_deschis_si_ecranul_pe_rand(patron, firma_e
     grup = _fata(pg) + " .cf-inainte"
     rand = grup + " [data-cheie='d205-2025-12']"
     pg.wait_for_selector(rand + " .cf-extern-btn", timeout=20000)
+    pg.wait_for_timeout(500)   # [lotul 13, 674] fereastra se deschide cu o animație de 140 ms (`aparitie-fereastra`): poziția de pornire se ia după ea
     pg.eval_on_selector(rand, "e => e.scrollIntoView({block: 'center'})")
     y0 = pg.eval_on_selector(rand, "e => e.getBoundingClientRect().top")
     patron.captura("inainte")
@@ -104,7 +105,8 @@ def test_def_171_marcarea_lasa_grupul_deschis_si_ecranul_pe_rand(patron, firma_e
     pg.click("#ca-ok")
     pg.wait_for_function("(s) => { const r = document.querySelector(s); return r && !r.querySelector('.cf-extern-anuleaza') "
                          "&& r.innerText.includes('Marchează depusă'); }", arg=rand, timeout=60000)
-    assert pg.eval_on_selector(grup, "d => d.open"), "grupul „Înainte de preluare” s-a pliat după „Anulează marcarea”"
+    # [lotul 13, 674] grupul nu mai e un `<details>` pliat, ci fereastra lui: „rămâne deschis” = fereastra e încă în pagină, cu rândul în ea
+    assert pg.locator(grup).count() == 1, "fereastra „Înainte de preluare” s-a închis după „Anulează marcarea”"
     y2 = pg.eval_on_selector(rand, "e => e.getBoundingClientRect().top")
     assert abs(y2 - y0) <= 4, "rândul atins a sărit pe ecran după „Anulează marcarea”: %s -> %s px" % (y0, y2)
     patron.captura("dupa_anuleaza")

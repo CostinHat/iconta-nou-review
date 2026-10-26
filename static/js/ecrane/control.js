@@ -3,7 +3,7 @@
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
-import { api, esc, cate } from "../api.js?v=9bcf50c899";  /* esc_nc27 */
+import { api, esc, cate } from "../api.js?v=c6c45aefe4";  /* esc_nc27 */
 import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului
 import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=3dc9eca249";  // renderer unic al verdictului (DS cap.20)
 

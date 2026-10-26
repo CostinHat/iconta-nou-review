@@ -238,17 +238,17 @@
   "descriere": "F1 în lucru: în căsuța din antet «diurnă» -> primul rezultat «Decont deplasare / diurnă · Operațiuni speciale › Personal și deconturi» -> clic: formularul decontului (proba lui Costin). Nu se generează nimic.",
   "pasi": [
    {
-    "completeaza": "#cautare-globala",
+    "completeaza": ".fereastra:last-of-type #cautare-fereastra",
     "valoare": "diurnă"
    },
    {
-    "asteapta": "#cautare-rez .cautare-item"
+    "asteapta": ".fereastra:last-of-type #cautare-fereastra-rez .cautare-item"
    },
    {
     "captura": "681_f1_cautare_diurna_rezultate.png"
    },
    {
-    "click": "#cautare-rez .cautare-item"
+    "click": ".fereastra:last-of-type #cautare-fereastra-rez .cautare-item"
    },
    {
     "asteapta": ".fereastra:last-of-type #op-trimite"
@@ -273,15 +273,15 @@
   "descriere": "F7 în lucru: «D112» în căsuța din antet -> «D112 — Declarație privind obligațiile de plată a contribuțiilor sociale…» -> clic: fereastra Declarații cu D112 ales. Nu se generează nimic.",
   "pasi": [
    {
-    "completeaza": "#cautare-globala",
+    "completeaza": ".fereastra:last-of-type #cautare-fereastra",
     "valoare": "D112"
    },
    {
-    "asteapta": "#cautare-rez .cautare-item",
+    "asteapta": ".fereastra:last-of-type #cautare-fereastra-rez .cautare-item",
     "text": "D112 —"
    },
    {
-    "click": "#cautare-rez .cautare-item",
+    "click": ".fereastra:last-of-type #cautare-fereastra-rez .cautare-item",
     "text": "D112 —"
    },
    {

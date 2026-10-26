@@ -736,6 +736,7 @@ def test_def_633_verifica_aduce_denumirea_de_la_anaf(patron, firma_ops):
     pg = _op(patron, f, "chirie")
     _completeaza(pg, [("data", D), ("fel", "chirie_platita"), ("furnizor_cui", "14399840")])
     assert pg.input_value("#op-furnizor_nume") == ""
+    patron.captura("inainte_de_verifica")
     pg.click("#op-furnizor_cui-verifica")
     pg.wait_for_function("() => /plătitor TVA|negăsit|nu răspunde/.test((document.querySelector('#op-furnizor_cui-stare') || {innerText: ''}).innerText)",
                          timeout=30000)
@@ -1206,6 +1207,6 @@ def test_def_551_548_marja_fara_metoda_de_stoc_trimite_in_date_firma(patron, fir
                       ("client_nume", "Ion Pop"), ("document", "BF 1")])
     ultima = _ultima(f)
     m = _genereaza(pg)
-    pg.wait_for_selector("[data-ecran-destinatie='date_firma']", timeout=20000)
     patron.captura("refuz_metoda")
+    pg.wait_for_selector("[data-ecran-destinatie='date_firma']", timeout=20000)
     assert "metoda de stoc" in m and _note_noi(f, ultima) == [], m

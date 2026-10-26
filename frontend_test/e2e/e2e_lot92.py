@@ -107,6 +107,9 @@ def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_sr
     assert pg.get_attribute("#c-suma", "aria-invalid") == "true"
     # [lotul 13, 673 / 504] câmpul se numește „Suma (lei)” în fereastra dispoziției (unitatea în etichetă, fără „0,00” precompletat)
     assert _refuz(pg) == [["Suma (lei)", "— " + asteptat % (zi, zi)]], _refuz(pg)
+    # [lotul 13, 673] registrul stă sub fereastra dispoziției (cu o singură fereastră în pagină): „Renunță” o închide, iar soldul n-a mișcat
+    pg.click("#c-renunta")
+    pg.wait_for_selector("#c-sold-final", timeout=20000)
     assert pg.inner_text("#c-sold-final") == "142,00 lei"
 
 
