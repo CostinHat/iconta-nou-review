@@ -152,12 +152,17 @@ def test_def_299_refuzul_spune_perioada_deschide_si_inlocuieste(patron, firma_e2
         pg.wait_for_selector("#dec-trimite", timeout=90000)
         pg.click("#dec-trimite")
         pg.wait_for_selector("#coada-deja-inlocuieste", timeout=90000)
-        m = pg.inner_text("#dec-coada-mesaj")
+        # [lotul 13, 515] textul refuzului îl spune caseta „NU s-a salvat.” de lângă buton (zona lui stă ascunsă cât stă caseta); „Deschide
+        # declarația existentă” / „Înlocuiește” stau în rândul de după zonă, vizibile
+        from e2e_lot11_g import text_langa_butoane
+        m = text_langa_butoane(pg, "#dec-coada-mesaj")["text"]
+        assert pg.locator("#dec-coada-mesaj + .coada-actiuni-refuz #coada-deja-deschide").is_visible()
         assert m.startswith("Există deja în coadă o declarație D300 pentru %s, pregătită de " % per) and "25." not in m.split(",")[0], m
         cale = pg.inner_text(".fereastra:last-of-type .fereastra-fir")
         assert cale.strip(), "calea din antet (ferestrele părinte) e pe ecran"
         pg.wait_for_timeout(15000)
-        assert pg.inner_text("#dec-coada-mesaj") == m, "mesajul nu dispare singur"
+        assert text_langa_butoane(pg, "#dec-coada-mesaj")["text"] == m, "mesajul nu dispare singur"
+        assert pg.locator("#coada-deja-inlocuieste").is_visible(), "„Înlocuiește” rămâne pe ecran până la alegere"
         assert pg.inner_text(".fereastra:last-of-type .fereastra-fir") == cale, "calea din antet rămâne"
         patron.captura("refuz_cu_drumuri")
         with pg.expect_response(lambda x: x.url.endswith("/coada") and x.request.method == "POST", timeout=120000) as rr:

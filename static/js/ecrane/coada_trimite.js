@@ -35,7 +35,26 @@ export async function etichetaTrimitere(btn) {
   } catch { /* eticheta veche rămâne: trimiterea funcționează la fel */ }
 }
 
+// [lotul 13, plasa 436 / 284 / 299 — clasa 515] Refuzul de lângă „Trimite în coadă” îl spune caseta „NU s-a salvat.” (`api.refuzSalvare`),
+// iar zona lui se ascunde cât stă caseta — același text, o dată. Butoanele refuzului (notele de deschis, „Deschide declarația existentă” /
+// „Înlocuiește”, ecranul unde se repară) nu pot sta în zona ascunsă: stau imediat după ea, într-un rând al lor, vizibil; trimiterea
+// următoare îl scoate.
+function _actiuniRefuz(zona) {
+  let a = zona.nextElementSibling;
+  if (!a || !a.classList.contains("coada-actiuni-refuz")) {
+    a = document.createElement("div");
+    a.className = "coada-actiuni-refuz";
+    zona.insertAdjacentElement("afterend", a);
+  }
+  return a;
+}
+function _scoateActiuniRefuz(zona) {
+  const a = zona && zona.nextElementSibling;
+  if (a && a.classList.contains("coada-actiuni-refuz")) a.remove();
+}
+
 export async function trimiteInCoada(zona, body, laSucces, confirmare) {
+  _scoateActiuniRefuz(zona);
   const corp = Object.assign({}, body);
   if (confirmare) corp.motiv_trecere = confirmare;
   try {
@@ -75,7 +94,7 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
         b.className = "coada-deja";
         b.innerHTML = `<button type="button" class="buton-secundar" id="coada-deja-deschide">Deschide declarația existentă</button>
           <button type="button" class="buton-primar" id="coada-deja-inlocuieste" data-actiune="POST /coada">Înlocuiește</button>`;
-        zona.appendChild(b);
+        _actiuniRefuz(zona).appendChild(b);
         b.querySelector("#coada-deja-deschide").addEventListener("click", () => deschideInCoada(det.coada_id, true));
         b.querySelector("#coada-deja-inlocuieste").addEventListener("click", () =>
           trimiteInCoada(zona, Object.assign({}, body, { inlocuieste: det.coada_id }), laSucces, confirmare));
@@ -88,10 +107,10 @@ export async function trimiteInCoada(zona, body, laSucces, confirmare) {
     const text = mesajLangaNote(cuNote, det.mesaj_langa_note, (typeof (e && e.mesaj) === "string" && e.mesaj) || det.mesaj)
       || "Nu s-a putut trimite în coadă.";
     arataMesaj(zona, text + (det.erori ? " — " + det.erori : ""), "eroare");
-    if (cuNote) legaturiNote(zona, body.tenant_id, det.note);
+    if (cuNote) legaturiNote(_actiuniRefuz(zona), body.tenant_id, det.note);
     // [lotul 11, 445] refuzul generatorului numește ecranul unde se repară (`RefuzGenerare.detaliu`, ex. Date firmă): butonul spre el, cu
     // întoarcerea la declarație (mecanismul unic `butonSpreEcran` -> `nav.dinRefuz`); ca declaratii.js la generare
-    if (det.ecran && window._navGlobal) butonSpreEcran(zona, det.ecran, window._navGlobal, body.tenant_id,
+    if (det.ecran && window._navGlobal) butonSpreEcran(_actiuniRefuz(zona), det.ecran, window._navGlobal, body.tenant_id,
       { clasa: "buton-secundar", camp: det.camp_ecran || null });
     return null;
   }
