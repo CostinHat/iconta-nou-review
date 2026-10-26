@@ -179,7 +179,7 @@ def erori_optiune(de_la, data_optiune, tip_decont, tva_data_inceput, azi):
         return []   # lit.b) teza a 2-a: opțiunea de la înregistrarea în scopuri de TVA se aplică de la acea dată
     curenta = inceput_perioada(azi, tip_decont)
     if curenta <= de_la <= azi:
-        return [("tva_incasare_de_la", "„Aplică de la” %s cade în perioada fiscală în curs (%s): opțiunea se aplică de la prima zi a perioadei "
+        return [("tva_incasare_de_la", "„Aplică de la” %s este în perioada fiscală în curs (%s): opțiunea se aplică de la prima zi a perioadei "
                                        "fiscale următoare celei în care s-a depus notificarea (%s). O notificare depusă acum se aplică de la "
                                        "%s. Dacă notificarea s-a depus înainte de %s, scrie data ei la „Data notificării”."
                  % (_ro(de_la), _nume_perioada(azi, tip_decont), _TEMEI, _ro(perioada_urmatoare(azi, tip_decont)), _ro(curenta)))]

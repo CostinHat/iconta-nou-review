@@ -276,7 +276,7 @@ def test_def_557_pdf_balantei_clientului_fara_paragraful_pentru_contabil(patron,
             from pypdf import PdfReader
             text = " ".join(PdfReader(io.BytesIO(open(dl.value.path(), "rb").read())).pages[0].extract_text().split())
             c.captura("pdf_balanta_client")
-        assert "Provizorie: luna %02d/%d nu e încă închisă de contabil" % (AZI.month, AZI.year) in text, text[:600]
+        assert "Provizorie: luna %02d/%d nu e încă închisă de contabil" % (AZI.month, AZI.year) in text, text[:600]   # AZI-dat-de-test: luna notei scrise de probă (`_nota(f, AZI…)`) și a balanței alese pe rândul ei
         assert "Evidența în iConta.eu începe cu" in text, text[:600]
         for tehnic in ("Import date", "Rulajele de la", "ciorne nevalidate", "Cuprinde numai notele validate"):
             assert tehnic not in text, (tehnic, text[:600])

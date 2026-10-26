@@ -257,6 +257,11 @@ async function deschideFacturi(corp, nav) {
 // ---------- DECLARATII DEPUSE ----------
 /* [lotul 13, deficiența 555] „Rândul arată doar «d406 · depusă» (fără perioadă, dată, recipisă; gol după «·»)”: rândul citea câmpuri pe care
    serverul nu le trimitea. Acum: codul și denumirea formularului, perioada, ziua depunerii și recipisa (`portal_api.declaratii_depuse`). */
+/* [lotul 13, 553 / 558] Felul rezultatului, numit întreg („Pierdere înainte de impozit”): o singură sursă pentru „Cifrele firmei” și
+   „Povestea lunii”. Rezultatul e înainte de impozit (grupa 69 nu intră în cheltuieli), iar la rezultat negativ clientul citește „Pierdere”. */
+const FEL_REZULTAT = { pierdere: "Pierdere înainte de impozit", profit: "Profit înainte de impozit" };
+const felRezultat = (tip) => FEL_REZULTAT[tip] || "Rezultat înainte de impozit";
+
 function randDeclaratie(d) {
   return `
       <div class="pf-frand">
@@ -361,7 +366,7 @@ async function ecranPovestea(corp, nav) {
      iConta.eu; povestea scrisă cu alți termeni decât cifrele (ex. „încasări” în loc de „venituri”) sau aprobată pe alte cifre e „retrasă”:
      rândul arată cifrele lunii și spune că textul se reface, nu textul greșit. */
   const textRand = (p) => p.retrasa
-    ? `Textul acestei luni a fost retras: folosea alți termeni decât cifrele lunii. Contabilul îl reface. Cifrele lunii: venituri ${bani(p.venituri)} lei, cheltuieli ${bani(p.cheltuieli)} lei, ${p.tip === "pierdere" ? "pierdere" : (p.tip === "profit" ? "profit" : "rezultat")} înainte de impozit ${bani(Math.abs(p.rezultat || 0))} lei.`
+    ? `Textul acestei luni a fost retras: folosea alți termeni decât cifrele lunii. Contabilul îl reface. Cifrele lunii: venituri ${bani(p.venituri)} lei, cheltuieli ${bani(p.cheltuieli)} lei, ${felRezultat(p.tip).toLowerCase()} ${bani(Math.abs(p.rezultat || 0))} lei.`
     : (p.text || "");
   const fmtDif = (p) => {
     if (typeof p.diferenta !== "number") return "";
@@ -634,7 +639,6 @@ async function ecranCifre(corp, nav) {
       <div class="pf-frand-text"><div class="pf-frand-nume">${eticheta}</div>${sub ? `<div class="pf-frand-sub">${sub}</div>` : ""}</div>
       <span class="pf-frand-suma" style="${culoare ? "color:" + culoare : ""}">${valoare}</span>
     </div>`;
-  const felRez = k.tip === "pierdere" ? "Pierdere" : (k.tip === "profit" ? "Profit" : "Rezultat");
   const provizorie = d.luna_definitiva === false
     ? ` Luna ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}`, "luna_an")} e încă deschisă: cifrele sunt provizorii${d.neverificate ? ` (${cate(d.neverificate, "înregistrare neverificată", "înregistrări neverificate")} de contabil nu sunt cuprinse)` : ""}.`
     : "";
@@ -644,7 +648,7 @@ async function ecranCifre(corp, nav) {
     <div class="pf-lista">
       ${rand("Venituri", lei(k.venituri))}
       ${rand("Cheltuieli (fără impozitul pe profit sau pe venit)", lei(k.cheltuieli))}
-      ${rand(felRez + " înainte de impozit", lei(Math.abs(k.profit || 0)), k.tip === "pierdere" ? "var(--rosu)" : (k.tip === "profit" ? "var(--verde)" : null), "", "cf-rezultat")}
+      ${rand(felRezultat(k.tip), lei(Math.abs(k.profit || 0)), k.tip === "pierdere" ? "var(--rosu)" : (k.tip === "profit" ? "var(--verde)" : null), "", "cf-rezultat")}
       ${rand("Bani disponibili (cas\u0103 + banc\u0103)", lei(k.cash))}
       ${rand("De \u00eencasat de la clien\u021bi", sumePeMoneda(k.facturi_de_incasat || {}), null, subFacturi(k.facturi_de_incasat || {}), "cf-de-incasat")}
       ${rand("De pl\u0103tit c\u0103tre furnizori", sumePeMoneda(k.facturi_de_platit || {}), null, subFacturi(k.facturi_de_platit || {}), "cf-de-platit")}

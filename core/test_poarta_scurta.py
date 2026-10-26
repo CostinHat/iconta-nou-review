@@ -140,9 +140,11 @@ def test_js_atins_nu_porneste_suita_ci_verificatorul_e2e_si_garzile_statice(monk
     #   `#reg-cui-verifica`, `#reg-cui-info`)
     # [lotul 13, 560] + e2e_lot13_portal_p1.py: clientul invitat intră în portal din linkul emailului; testul așteaptă formularul de
     #   autentificare (`#login-email`) ca să dovedească că linkul l-a dus în cont, nu la formular
+    # [lotul 13, 644 / 645] + e2e_lot13_admin.py: cabinetul suspendat nu intră cu parola, iar refuzul se citește pe formularul de
+    #   autentificare (`#login-email`, `#login-parola`, `#login-buton`, `#login-eroare`)
     assert e2e == ["--doar=e2e_inregistrare_libera.py", "--doar=e2e_invitatii.py", "--doar=e2e_lot11_w2.py", "--doar=e2e_lot12_cx7.py",
-                   "--doar=e2e_lot12_form2.py", "--doar=e2e_lot12_start.py", "--doar=e2e_lot13_portal_p1.py", "--doar=e2e_lot5_c3.py",
-                   "--doar=e2e_lot6.py", "--doar=e2e_pozitii_validate.py"], e2e
+                   "--doar=e2e_lot12_form2.py", "--doar=e2e_lot12_start.py", "--doar=e2e_lot13_admin.py", "--doar=e2e_lot13_portal_p1.py",
+                   "--doar=e2e_lot5_c3.py", "--doar=e2e_lot6.py", "--doar=e2e_pozitii_validate.py"], e2e
 
 
 def test_registrul_langa_python_nu_porneste_suita(monkeypatch):
