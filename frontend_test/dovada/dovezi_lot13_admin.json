@@ -1,5 +1,176 @@
 [
  {
+  "nr": "646",
+  "firma": "tenant_9049",
+  "acasa": true,
+  "descriere": "VECHI — anunțurile cabinetului de test trimise pe producție ÎNAINTE de reparație (copiate în clonă, trecute prin `core/migrare_anunturi_trimiteri.py`): cele necitite apar la intrare cu data trimiterii („Trimis pe ZZ.LL.AAAA”). Prima din listă: anunțurile necitite acoperă ecranul până la „Am înțeles” (dovada următoare le confirmă). Fără anunțuri necitite pe producție, dovada iese neîndeplinită — răspuns valid",
+  "pasi": [
+   {
+    "pauza": 2500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Trimis pe ",
+    "zona": ".anunt-data"
+   }
+  ],
+  "captura": "646_f1_vechi_anuntul_cu_data.png"
+ },
+ {
+  "nr": "646",
+  "firma": "tenant_9049",
+  "acasa": true,
+  "descriere": "VECHI (continuare) — „Am înțeles” pe fiecare anunț vechi necitit: nu mai rămâne niciunul (ca dovezile cabinetului să nu fie acoperite de ele)",
+  "pasi": [
+   {
+    "pauza": 2500
+   },
+   {
+    "click": ".anunt-ok",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".anunt-ok",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".anunt-ok",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".anunt-ok",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".anunt-ok",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".anunt-ok",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Trimis pe ",
+    "zona": ".anunt-data"
+   }
+  ],
+  "captura": "646_f1_vechi_anunturile_confirmate.png"
+ },
+ {
+  "nr": "570",
+  "firma": "tenant_9055",
+  "acasa": true,
+  "descriere": "VECHI — notificările de control fiscal scrise pe producție ÎNAINTE de reparație („N controale fiscale în roșu (…)”, copiate în clonă, trecute prin `core/migrare_texte_control_fiscal.py`): clopoțelul spune „de urmărit”, culoarea detaliului firmei. Fără asemenea notificări pe producție, dovada iese neîndeplinită — răspuns valid",
+  "pasi": [
+   {
+    "click": "#nav-clopot"
+   },
+   {
+    "asteapta": ".clopot-item",
+    "text": "controale fiscale"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "controale fiscale de urmărit",
+    "zona": ".clopot-item"
+   },
+   {
+    "nu_contine": "controale fiscale în roșu",
+    "zona": ".clopot-item"
+   }
+  ],
+  "captura": "570_f6_vechi_clopotel_controale_de_urmarit.png"
+ },
+ {
+  "nr": "573",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "VECHI — o sesizare a cabinetului de test escaladată de AI pe producție ÎNAINTE de reparație (copiată, trecută prin `core/migrare_triaj_sesizari.py`): Panou Admin -> Raportări -> „De la AI” -> „Asistentul AI a trimis sesizarea la echipă. Motivul: escaladată înainte ca aplicația să păstreze motivul (lotul 13)” — motivul real nu s-a păstrat, nu se inventează",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='raportari'])"
+   },
+   {
+    "click": ".rap-tab[data-tab='tine']"
+   },
+   {
+    "click": ".rap-rand:has-text('copie de dovadă')"
+   },
+   {
+    "asteapta": "#rap-triaj"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "escaladată înainte ca aplicația să păstreze motivul (lotul 13)",
+    "zona": "#rap-triaj"
+   }
+  ],
+  "captura": "573_admin_vechi_motivul_nepastrat_spus.png"
+ },
+ {
+  "nr": "572",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "VECHI — aceeași sesizare veche, firul: confirmarea automată de dinainte, scrisă fără diacritice, are textul de acum, cu diacritice (`core/migrare_triaj_sesizari.py`)",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='raportari'])"
+   },
+   {
+    "click": ".rap-tab[data-tab='tine']"
+   },
+   {
+    "click": ".rap-rand:has-text('copie de dovadă')"
+   },
+   {
+    "asteapta": "#rap-mesaje"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sesizarea ta a fost transmisă echipei iConta.eu. Vei primi răspunsul aici, în acest fir.",
+    "zona": "#rap-mesaje"
+   },
+   {
+    "nu_contine": "Sesizarea ta a fost transmisa echipei iConta. Vei primi raspuns aici, in acest fir.",
+    "zona": "#rap-mesaje"
+   }
+  ],
+  "captura": "572_admin_vechi_confirmarea_cu_diacritice.png"
+ },
+ {
   "nr": "562",
   "firma": "tenant_9049",
   "utilizator": 71512,
