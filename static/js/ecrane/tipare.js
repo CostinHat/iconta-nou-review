@@ -72,7 +72,7 @@ export async function randeazaTipare(corp, nav) {
   let randTipuri = "";
   const tipuriCuResp = tipuri.filter((t) => t.respinse > 0);
   if (!tipuriCuResp.length) {
-    randTipuri = `<tr><td colspan="3" class="stare-goala">Nicio respingere.</td></tr>`;
+    randTipuri = `<tr><td colspan="3" class="stare-goala">Nicio declarație sau notă respinsă la validare încă — rata pe tip apare după primele respingeri.</td></tr>`;
   } else {
     tipuriCuResp.forEach((t) => {
       randTipuri += `<tr>

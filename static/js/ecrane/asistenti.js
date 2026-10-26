@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate } from "../api.js?v=e38843b1ec";  /* audit_cab_lot2_v1 */
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, confirmaCaseta, esc, eroareCamp, curataEroriCamp, dataIso, cate, atributeInactiv } from "../api.js?v=e38843b1ec";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina
@@ -224,10 +224,10 @@ async function deschideEditare(uid, corp, nav) {
       ${sectiuneFirme}
       <div class="asi-editbtns">
         <button class="buton-primar" id="asi-salveaza" data-actiune="POST /asistenti/{uid}/permisiuni|POST /asistenti/{uid}/firme/{tid}|DELETE /asistenti/{uid}/firme/{tid}|POST /asistenti/{uid}/finalizeaza-firme">Salveaz\u0103</button>
-        ${a.rol !== "admin_firma" && a.activ
-          ? `<button class="buton-secundar mig-buton-sec" id="asi-dezactiveaza" data-actiune="POST /asistenti/{uid}/dezactiveaza">Dezactivează asistentul</button>` : ""}
-        ${!a.activ
-          ? `<button class="buton-secundar mig-buton-sec" id="asi-reactiveaza" data-actiune="POST /asistenti/{uid}/reactiveaza">Reactivează</button>` : ""}
+        <button class="buton-secundar mig-buton-sec" id="asi-dezactiveaza" data-actiune="POST /asistenti/{uid}/dezactiveaza"${a.rol === "admin_firma"
+          ? atributeInactiv("Administratorul cabinetului nu se dezactivează.") : !a.activ ? atributeInactiv("Asistentul e deja dezactivat.") : ""}>Dezactivează asistentul</button>
+        <button class="buton-secundar mig-buton-sec" id="asi-reactiveaza" data-actiune="POST /asistenti/{uid}/reactiveaza"${a.activ
+          ? atributeInactiv("Asistentul e activ; se reactivează numai după dezactivare.") : ""}>Reactivează</button>
       </div>
       <div class="mig-eroare" id="asi-edit-eroare"></div>
     `;
@@ -299,6 +299,7 @@ async function deschideEditare(uid, corp, nav) {
       confirmaCaseta(btnS.parentElement || btnS, intrebari.join(" ") + " Continui?", _salveazaEfectiv, { textOk: "Da, salvează" });
     };
 
+    // [lotul 13, 675 — DS cap.1] aceleași două butoane la fiecare asistent; cel care nu se aplică stă inactiv, cu motivul (`atributeInactiv`)
     const bDez = box.querySelector("#asi-dezactiveaza");
     if (bDez) bDez.onclick = () => {
       confirmaCaseta(bDez.parentElement || bDez, `Dezactivezi ${esc(nume)}? Rămâne în istoric, dar nu mai are acces.`, async () => {
@@ -374,7 +375,7 @@ function _asiRandeazaFereastra(d, c) {
   const perioada = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
       <span class="tip-desc">Perioada:</span>
-      <select class="camp-input" data-per aria-label="Perioada" style="width:auto;">
+      <select class="camp-input" data-per data-butoane="" aria-label="Perioada" style="width:auto;">
         <option value="tot">Tot</option>
         <option value="azi">Azi</option>
         <option value="luna">Luna curentă</option>
@@ -445,7 +446,7 @@ async function _asiBannerEchipa(corp, nav) {
     <div class="asi-echipa-banner">
       <span class="asi-sem asi-sem-${s.culoare}"></span>
       <span class="asi-echipa-text">Calitatea echipei (${cate(s.zile, "zi", "zile")}): ${text}</span>
-      ${areErori ? `<button class="buton-secundar buton-mic" id="asi-vezi-erori">Vezi erorile</button>` : ""}
+      <button class="buton-secundar buton-mic" id="asi-vezi-erori"${areErori ? "" : atributeInactiv("Nicio eroare a echipei în această perioadă.")}>Vezi erorile</button>
     </div>`;
   const b = host.querySelector("#asi-vezi-erori");
   if (b) b.onclick = () => deschideEchipaErori(nav);

@@ -71,7 +71,7 @@ export async function randeazaAdminAnalytics(corp, nav) {
       <p class="ecran-nota"><strong>${Number(d.total) || 0}</strong> ${dupaNumar(Number(d.total) || 0, "eveniment înregistrat", "evenimente înregistrate")}. Date anonime:
         se rețin doar tipul evenimentului, pagina de proveniență și momentul. Fără IP, fără cookie, fără
         amprentă de browser, fără niciun identificator de persoană.</p>
-      <p class="ecran-nota" id="an-intern">Nu se numără vizitele dintr-un browser în care e deschisă o sesiune iConta (cabinet sau Panou
+      <p class="ecran-nota" id="an-intern">Nu se numără vizitele dintr-un browser în care e deschisă o sesiune iConta.eu (cabinet sau Panou
         Admin) — testele noastre. Zilele de dinainte de ${dataRo(NUMARARE_FARA_INTERN_DE_LA)} le cuprind încă.</p>
     </div>
     ${sectiune("Pe eveniment", d.pe_eveniment, (r) => ETICHETE[r.tip] || r.tip)}
