@@ -212,14 +212,17 @@ def test_378_d100_cu_amenda_e_valid_la_duk(conn_amenda, monkeypatch):
 # ── 382, lotul 9: amortizarea în ciornă și notele nevalidate se spun la generare ──────────────────────────────────────────────────
 def _amortizare_in_ciorna(cur):
     """Un mijloc fix de 12.000 lei, pus în funcțiune pe 15.12.2025, 60 de luni, liniar -> 200 lei/lună din 01/2026; amortizarea 01–07/2026
-    generată și nevalidată (ciornă), 08–09/2026 validată."""
+    generată și nevalidată (ciornă), 08–09/2026 validată.
+    [lotul 13, deficiența 522 — „Amortizarea înregistrată se ține pe fiecare activ.”] Rândurile notelor poartă activul (`mf_linii`), ca nota
+    generată de aplicație (`mf_note.adauga_linie`): lunile înregistrate ale activului se citesc pe el, nu pe cont."""
+    from core import mf_note as _mfn
     cur.execute("INSERT INTO mijloace_fixe (cod,denumire,cont_imobilizare,cont_amortizare,valoare,dnf_luni,data_pif,metoda) "
-                "VALUES ('MF1','Laptop','2131','2813',12000,60,'2025-12-15','liniara')")
+                "VALUES ('MF1','Laptop','2131','2813',12000,60,'2025-12-15','liniara') RETURNING id")
+    mfid = cur.fetchone()[0]
     for luna in range(1, 10):
         cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere,document_ref) VALUES (%s,%s,'amortizare','Amortizare','AM') "
                     "RETURNING id", ("2026-%02d-28" % luna, "ciorna" if luna <= 7 else "validata"))
-        cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'6811','2813',200)",
-                    (cur.fetchone()[0],))
+        _mfn.adauga_linie(cur, None, cur.fetchone()[0], "6811", "2813", 200, mfid)
 
 
 def test_382_d100_spune_amortizarea_nevalidata_din_fereastra_cumulata(conn_amenda, monkeypatch):

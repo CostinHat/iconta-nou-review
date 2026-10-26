@@ -226,6 +226,14 @@ def actualizeaza_conturi_linii(cur, schema, fid, conturi):
         cur.execute(f"UPDATE {schema}.factura_linii SET cont_cheltuiala=%s WHERE id=%s", ((str(cont or "").strip() or None), lid))
 
 
+def actualizeaza_centre_linii(cur, schema, fid, centre):
+    """[lotul 13, 536] Centrul de cost al fiecărei linii a facturii PRIMITE, în ordinea liniilor (ca `actualizeaza_conturi_linii`):
+    centre[i] <-> linia i; None = fără centru. Valorile vin verificate (`centre_cost_api.campuri_centru_gresit`)."""
+    cur.execute(f"SELECT id FROM {schema}.factura_linii WHERE factura_id=%s ORDER BY id", (fid,))
+    for lid, centru in zip([r[0] for r in cur.fetchall()], centre or []):
+        cur.execute(f"UPDATE {schema}.factura_linii SET centru_cost_id=%s WHERE id=%s", (centru, lid))
+
+
 def actualizeaza_destinatii_linii(cur, schema, fid, destinatii):
     """[A12b] Aplica destinatia TVA (taxabil/scutit/mixt) per linie de factura, in ORDINEA
     liniilor (ORDER BY id) — aceeasi ordine in care `_factura_din_parsat` insereaza `f["linii"]`

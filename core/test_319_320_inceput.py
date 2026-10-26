@@ -147,7 +147,7 @@ def test_319_invitatia_cu_drepturi_si_firme_e_o_singura_tranzactie(monkeypatch, 
     class _C:
         def cursor(self, **_k):
             # [lotul 10, C73 / U3] contul se scrie sub savepoint (`chei_unice.refuza_dublura`): cursorul simulat primește SAVEPOINT-urile
-            return contextlib.nullcontext(types.SimpleNamespace(execute=lambda *a, **k: None))
+            return contextlib.nullcontext(types.SimpleNamespace(execute=lambda *a, **k: None, fetchone=lambda: None))   # [560] `nume_cabinet`: niciun rând
 
     @contextlib.contextmanager
     def _conn(schema=None):

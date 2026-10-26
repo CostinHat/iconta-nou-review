@@ -33,10 +33,12 @@ def test_1a_marja_negativa_tva_zero_fara_report():
 def test_1a_nota_use_case_la_pret_vanzare():
     # [1a] STRUCTURA: uc_tenants.vanzare_marja construieste 4111=707 din pret_VANZARE (_pv - tva),
     # nu din pret_cumparare. MUTATIE: revert la ("4111","707", pret_cumparare) -> regex nu mai prinde -> rosu.
+    # [lotul 13, deficiența 548] vânzarea din stoc: prețul de vânzare e `pv`, prețul de cumpărare = valoarea ieșirii din stoc (`cost`), iar
+    # rândurile 4111 se scriu pe client dintr-un tuplu; regula notei e aceeași (707 = pv − TVA pe marjă)
     s = _sursa("core/uc_tenants.py")
-    assert re.search(r'_pv\s*=\s*Decimal\(str\(corp\["pret_vanzare"\]\)\)', s), \
+    assert re.search(r'\bpv\s*=\s*Decimal\(str\(corp\["pret_vanzare"\]\)\)', s), \
         "nota marja nu mai porneste de la pret_vanzare"
-    assert re.search(r'linii\.append\(\("4111",\s*"707",\s*_pv\s*-\s*r\["tva"\]\)\)', s), \
+    assert re.search(r'\("4111",\s*"707",\s*pv\s*-\s*r\["tva"\]\)', s), \
         "linia 4111=707 nu mai e la pret_vanzare - TVA"
 
 

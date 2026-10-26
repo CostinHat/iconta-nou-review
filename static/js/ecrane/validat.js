@@ -133,8 +133,12 @@ function _confirma(ids, text) { _ultimaActiune = { ids: ids.map(Number), text, l
 export function noteDinElement(c) {
   return Math.max(1, ((c && c.membri_ids) || []).length);
 }
+// elementele cozii care sunt note de validat — o singură selecție, a cardului (cabinet.js, prin numărătoarea de mai jos) și a ferestrei
+export function elementeNoteDeValidat(coada) {
+  return (coada || []).filter((c) => c.fel === "nota" && c.stare === "la_senior");
+}
 export function noteDeValidatInCoada(coada) {
-  return (coada || []).filter((c) => c.fel === "nota" && c.stare === "la_senior").reduce((s, c) => s + noteDinElement(c), 0);
+  return elementeNoteDeValidat(coada).reduce((s, c) => s + noteDinElement(c), 0);
 }
 
 export function titluCardCoada({ patruOchi = false, note = 0 }) {
@@ -244,7 +248,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   // [validare_note 06.10.2026, comanda Costin pct.1] coada poartă și NOTELE pregătite de asistenți (`fel: "nota"`). Ele se
   // validează (nota devine validată în jurnal) sau se resping cu motiv — nu se depun; au secțiunea lor, oricare ar fi
   // regimul patru-ochi, fiindcă le-a pregătit altcineva decât cel care le validează.
-  const noteDeValidat = coada.filter((c) => c.fel === "nota" && c.stare === "la_senior");
+  const noteDeValidat = elementeNoteDeValidat(coada);   // [lotul 13, 563] aceeași selecție ca a cardului
   const declaratii = coada.filter((c) => c.fel !== "nota");
   const laSenior = declaratii.filter((c) => c.stare === "la_senior");
   const aprobate = declaratii.filter((c) => c.stare === "aprobata");

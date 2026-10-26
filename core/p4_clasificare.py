@@ -652,6 +652,68 @@ CLASIFICARE = {
             "o firma care esueaza nu atinge firmele de dinainte. Al doilea domeniu e cache-ul de "
             "curs. Nicio scriere nu depinde de alta peste granita de tranzactie.",
     },
+    "POST /tenants/{tenant_id}/facturi-recurente/{sid}/emite": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR în cache (înaintea emiterii) <-> emiterea facturii lunii din ciorna șablonului, cu marcarea șablonului și "
+                  "anunțul avertismentelor <-> refuzul consemnat pe șablon <-> trimiterea în SPV (după emitere) <-> validarea notelor interne",
+        "de_ce":
+            "[lotul 13, 680, 26.10.2026] „Emite factura lunii” (`facturi_recurente.emite_unul_uc` -> `emite_unul` -> `emite_scadente(doar=)`) "
+            "e EXACT calea cronului (`core/facturi_recurente.py::__main__`, rândul de mai sus), pe un singur șablon: o citire scurtă "
+            "(:472, fără scrieri), cursul BNR și întrebarea către model FĂRĂ conexiune (:484, cache-ul public, eșecul înghițit deliberat), "
+            "apoi emiterea pe o conexiune nouă (:496) care recitește șablonul — factura, ultima emitere și anunțul avertismentelor se comit "
+            "împreună (:530) sau deloc (rollback pe orice refuz); un refuz se consemnează pe șablon și se anunță (`_consemneaza_refuzul`, "
+            "commit :447 — marcaj de stare refăcut la încercarea următoare, nu evidență contabilă). Trimiterea în SPV (alegerea șablonului) "
+            "se face DUPĂ ce conexiunea emiterii s-a închis (:542, `_trimite_spv`): principalul pe o conexiune scurtă, apoi "
+            "`efactura_trimitere.trimite` — " + TIPARUL_PREGATIT + "; orice nereușită se anunță în clopoțel, iar factura rămâne emisă "
+            "(trimiterea se reia din Istoric facturi). Validarea notelor interne vine după commit (`_note_interne`), cu refuzul în răspuns.",
+    },
+    "POST /tenants/{tenant_id}/achizitie-ic": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR al zilei exigibilității în cache (public.alerte_cooldown + public.curs_bnr_zilnic, înaintea tranzacției) <-> "
+                  "achiziția intracomunitară: factura primită, nota de taxare inversă, operațiunea D301",
+        "de_ce":
+            "[lotul 13, 537, 26.10.2026] `uc_tenants.achizitie_ic` (core/uc_tenants.py:4697): pe factura în valută, "
+            "`_preincalzeste_cursul` (:4710) scrie NUMAI cache-ul public, pe conexiunile lui, cu eșecul înghițit deliberat; apoi ACTUL "
+            "într-o singură tranzacție (:4711 -> commit :4812): `curs_bnr.curs_pentru` decide pe cache (`MonedaNecotata` -> refuz lângă "
+            "câmp, `CursIndisponibil` -> 409, înaintea oricărei scrieri), apoi factura primită, nota 4426 = 4427 și operațiunea D301, "
+            "legate. Orice refuz (lună închisă, câmpuri, cod de TVA, factura refuzată) anulează tot actul. Cache scris + act refuzat = "
+            "numai cache mai bogat, care nu e stare a firmei. Același tipar ca `POST /tenants/{tenant_id}/decontare-valuta`.",
+    },
+    "POST /tenants/{tenant_id}/nota-decont-deplasare": {
+        "clasa": NECRITIC,
+        "efecte": "cursul BNR al decontului în valută în cache (public.alerte_cooldown + public.curs_bnr_zilnic, înaintea tranzacției) <-> "
+                  "nota decontului (ciornă) cu rândurile 542 pe salariat <-> excedentul diurnei spre statul de plată",
+        "de_ce":
+            "[lotul 13, 670, 26.10.2026] `uc_tenants.nota_decont_deplasare` (core/uc_tenants.py:6747): la decontul deplasării externe în "
+            "valută, `_preincalzeste_cursul` (:6761) scrie NUMAI cache-ul public, pe conexiunile lui, cu eșecul înghițit deliberat; apoi "
+            "ACTUL într-o singură tranzacție (:6762 -> commit :6821): verificările (salariatul, cotele, soldul 542, plafonul diurnei), nota "
+            "și rândurile ei, iar excedentul diurnei peste plafon (`diurna_salariat.adauga_excedent`, :6816) legat de notă (cheia străină, "
+            "ON DELETE CASCADE). Un refuz anulează tot; cache scris + act refuzat = numai cache mai bogat, care nu e stare a firmei.",
+    },
+    "POST /tenants/{tenant_id}/nota-productie": {
+        "clasa": FALS,
+        "efecte": "-",
+        "de_ce":
+            "OARBIREA «ramuri exclusive aplatizate», declarata in antetul instrumentului. `uc_tenants.nota_productie` "
+            "(core/uc_tenants.py:5962, lotul 13, 510) are trei ramuri pe `operatie`, fiecare cu commitul ei urmat de `return`: productia "
+            "in curs (commit :6001), obtinerea (commit :6030) si vanzarea (commit :6061). Scanerul le pune in ordinea sursei si vede "
+            "«commit, apoi scriere» (articolul creat de emiterea vanzarii dupa commitul obtinerii); cele trei nu se executa niciodata "
+            "impreuna. Pe fiecare ramura toate scrierile — nota, intrarea in fisa de magazie legata de nota; factura, descarcarea "
+            "gestiunii si nota diferentelor de pret — sunt intr-o singura tranzactie, a rutei (:5976); `rollback`-ul din emitere "
+            "(`facturi_api`, cursul refuzat) anuleaza tot actul, iar un refuz al descarcarii il opreste inaintea commitului.",
+    },
+    "POST /admin/cabinete/{firm_id}/suspenda": {
+        "clasa": NECRITIC,
+        "efecte": "suspendarea cabinetului și rândul jurnalului (o tranzacție) <-> emailurile către administratorii cabinetului (după "
+                  "commit) <-> câte emailuri au plecat, pe rândul jurnalului",
+        "de_ce":
+            "[lotul 13, 645, 26.10.2026] `uc_admin.admin_cabinet_suspenda` (core/uc_admin.py:166): flagul cabinetului și rândul "
+            "jurnalului suspendărilor se scriu în ACEEAȘI tranzacție (:182), cu refuzul suspendării duble înaintea scrierii; emailurile "
+            "pleacă DUPĂ commit (:197 — o suspendare anulată nu anunță nimic), fiecare prin `trimite_email_html_sau_semnaleaza` (eșecul "
+            "se semnalează operatorului, nu tace); a treia tranzacție (:198) scrie numai numărul celor plecate pe rândul jurnalului. Un "
+            "defect între ele lasă suspendarea scrisă și numărul gol — un contor informativ, nu evidență: suspendarea însăși e completă și "
+            "vizibilă în fișa cabinetului, iar răspunsul spune câte emailuri au plecat din câți destinatari.",
+    },
     "core/woocommerce.py::__main__ -> _main()": {
         "clasa": NECRITIC,
         "efecte": "sincronizarea WooCommerce ca lucrator de fundal",

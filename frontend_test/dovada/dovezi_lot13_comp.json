@@ -1,0 +1,133 @@
+[
+ {
+  "nr": "536",
+  "firma": "tenant_9050",
+  "descriere": "F2, date existente (neafectate, declarat): Centre de cost -> «Vezi realizat» pe 2026 arată cifrele de dinainte de reparație — centrul «Productie» 0 și «Nealocat (fără centru)» cheltuieli 1.900,00 / venituri 6.000,00: notele deja scrise nu se rescriu; centrul se pune de acum pe facturi, salariați și mijloace fixe (536).",
+  "pasi": [
+   {
+    "click": "#fa-centrecost"
+   },
+   {
+    "asteapta": "#cc-raport"
+   },
+   {
+    "completeaza": "#cc-de",
+    "valoare": "2026-01-01"
+   },
+   {
+    "completeaza": "#cc-pana",
+    "valoare": "2026-12-31"
+   },
+   {
+    "click": "#cc-raport"
+   },
+   {
+    "asteapta": "#cc-raport-zona .pf-frand"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Nealocat (fără centru)",
+    "zona": "#cc-raport-zona"
+   },
+   {
+    "contine": "cheltuieli 1.900,00 · venituri 6.000,00",
+    "zona": "#cc-raport-zona"
+   },
+   {
+    "contine": "Salariați și mijloace fixe"
+   }
+  ],
+  "captura": "536_f2_raport_vechi_nealocat.png"
+ },
+ {
+  "nr": "536",
+  "firma": "tenant_9050",
+  "descriere": "F2: Centre de cost -> «Productie» (dezactivat pe F2) -> Reactivează -> «Salariați și mijloace fixe» (fereastră nouă) -> MF-001 «Utilaj productie» pe centrul Productie -> «Salvează alocarea»: mesajul spune că alocarea s-a salvat, iar amortizarea generată de acum poartă centrul activului (536: „amortizarea moștenește centrul activului”).",
+  "pasi": [
+   {
+    "click": "#fa-centrecost"
+   },
+   {
+    "asteapta": "#cc-alocari"
+   },
+   {
+    "click": "[data-toggle]",
+    "text": "Reactivează",
+    "daca_exista": true
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#cc-alocari"
+   },
+   {
+    "asteapta": "#cc-aloc-salveaza"
+   },
+   {
+    "alege": "#cc-mf-1",
+    "valoare": "1"
+   },
+   {
+    "click": "#cc-aloc-salveaza"
+   },
+   {
+    "asteapta_text": "Alocarea s-a salvat"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Alocarea s-a salvat (1 rând schimbat)",
+    "zona": "#cc-aloc-mesaj"
+   },
+   {
+    "valoare": "#cc-mf-1",
+    "egal": "1"
+   },
+   {
+    "contine": "MF-001 · Utilaj productie"
+   }
+  ],
+  "captura": "536_f2_alocarea_mijlocului_fix.png"
+ },
+ {
+  "nr": "536",
+  "firma": "tenant_9050",
+  "descriere": "F2: Facturi -> Emite factură: linia facturii are acum lista «Centru de cost» (gol = fără centru, nimic precompletat), cu centrul activ Productie; la emitere rândul de venit al notei îl poartă (536: „Centrul se poate pune pe liniile facturilor”).",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-l0-centru"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#em-l0-centru option",
+    "text": "Productie"
+   },
+   {
+    "valoare": "#em-l0-centru",
+    "egal": ""
+   }
+  ],
+  "captura": "536_f2_emite_factura_centrul_liniei.png"
+ }
+]

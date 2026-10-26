@@ -56,6 +56,11 @@ TABEL = {
         "Enumerarile din XSD-ul D112. Sursa e un artefact ADUS, cu amprenta in registrul de "
         "provenienta; un XSD nou intra ca FISIER NOU, deci cheia veche nu-si poate schimba "
         "raspunsul sub cache."),
+    ("core.cautare", "_cache"): V(
+        ABD, "declarat", REGULA_DECLARAT,
+        "[lotul 13, 681] Sursele JS ale cautarii din antet (`firme.js`, `operatiuni_ecran.js`), fisiere VERSIONATE pe care aplicatia "
+        "nu le scrie; cheia e data modificarii fiecarui fisier, deci o schimbare se vede la urmatoarea cautare, iar repornirea de la "
+        "commit il goleste oricum. Doua procese citesc acelasi fisier: nu pot da raspunsuri diferite."),
     ("core.ghid_teme", "_CACHE"): V(
         ABD, "declarat", REGULA_DECLARAT,
         "Indexul pe teme al ghidurilor publice (lot 06.10). Sursele sunt fisiere VERSIONATE; cheia e starea lor pe disc, "

@@ -5,6 +5,8 @@ Regula straturilor (PLAN_HARDENING.md:842): depozitul e singurul care știe SQL.
 creditul, obiectele de inventar, producția, marja / aurul din stoc, subvenția, chiria, provizioanele, sponsorizarea, lichidarea,
 listele formularelor) cheamă de aici citirile și scrierile lor; tranzacția rămâne a apelantului — nicio funcție nu deschide conexiuni
 și nu comite. Fiecare primește cursorul apelantului (tuplu sau dicționar) și întoarce valori simple."""
+from core.nomenclator_status_factura import clauza_tip_cu_incasare   # [252] facturile deschise preluate, cu intenție
+from core import cui_forma as _forma_cui   # [lotul 11, decizia 10.3 pct.4] forma unică a codului fiscal
 
 
 def _p(schema):
@@ -52,10 +54,13 @@ def factura_primita_dupa_furnizor_si_numar(cur, schema, furnizor_cui, numar):
     """(id, data_emitere, numar) a facturii primite de la furnizor (CUI cu sau fără „RO”) cu acel număr, sau None.
 
     [lotul 11, decizia Costin 10.3 pct.4] CUI-ul comparat în forma păstrată, pe ambele părți (`cui_forma.SQL` / `cui_forma.stocare`):
-    rândurile vechi pot avea „RO” sau spații, iar codul de TVA al altui stat își păstrează prefixul."""
-    from core import cui_forma as _cf
+    rândurile vechi pot avea „RO” sau spații, iar codul de TVA al altui stat își păstrează prefixul.
+    [lotul 12, 252 — garda `core/test_lot12_p252_garda_cititori.py`] Documentele cu stare de încasare (`clauza_tip_cu_incasare`): factura
+    înregistrată ȘI factura deschisă preluată la migrare — cheltuiala și datoria ei sunt deja în evidență (prin soldurile inițiale), deci o
+    operațiune care ar înregistra-o a doua oară se leagă de ea; o proformă nu e factură (nu oprește înregistrarea)."""
     cur.execute("SELECT id, data_emitere, numar FROM %sfacturi WHERE directie = 'primita' AND upper(btrim(numar)) = upper(btrim(%%s)) "
-                "AND %s = %%s ORDER BY id LIMIT 1" % (_p(schema), _cf.SQL.format(c="tert_cui")), (str(numar), _cf.stocare(furnizor_cui)))
+                "AND " % _p(schema) + _forma_cui.SQL.format(c="tert_cui") + " = %s AND "
+                + clauza_tip_cu_incasare(alias="") + " ORDER BY id LIMIT 1", (str(numar), _forma_cui.stocare(furnizor_cui) or ""))
     return _rand(cur.fetchone())
 
 
@@ -142,7 +147,9 @@ def venituri_70x(cur, schema, de_la, pana_la):
     """Rulajul creditor al conturilor 70x din notele VALIDATE între cele două date (cifra de afaceri)."""
     p = _p(schema)
     cur.execute("SELECT COALESCE(SUM(l.suma), 0) FROM %sinregistrari_linii l JOIN %sinregistrari i ON i.id = l.inregistrare_id "
-                "WHERE i.status = 'validata' AND l.cont_credit LIKE '70%%%%' AND i.data >= %%s AND i.data <= %%s" % (p, p), (de_la, pana_la))
+                "WHERE i.status = 'validata' AND l.cont_credit LIKE '70%%%%' AND i.data >= %%s AND i.data <= %%s "
+                # [C15] fără închiderea în 121: 709 (reduceri acordate, sold debitor) se închide 121 = 709 — rândul ar umfla cifra de afaceri
+                "AND l.cont_debit NOT LIKE '121%%%%' AND l.cont_credit NOT LIKE '121%%%%'" % (p, p), (de_la, pana_la))
     r = _rand(cur.fetchone())
     return r[0] if r else 0
 
@@ -162,7 +169,7 @@ def subventii_pe_activ(cur, schema):
     """{mijloc_fix_id: (subvenția primită pe 4751, reluată deja pe 758x)} din notele VALIDATE, pe rândurile cu activ (`mf_linii`)."""
     p = _p(schema)
     cur.execute("SELECT ml.mijloc_fix_id, SUM(CASE WHEN l.cont_credit = '4751' THEN l.suma ELSE 0 END) AS primit, "
-                "SUM(CASE WHEN l.cont_debit = '4751' AND l.cont_credit LIKE '758%%' THEN l.suma ELSE 0 END) AS reluat "
+                "SUM(CASE WHEN l.cont_debit = '4751' AND l.cont_credit LIKE '758%%' AND l.cont_credit NOT LIKE '121%%' THEN l.suma ELSE 0 END) AS reluat "   # [C15]
                 "FROM %sinregistrari_linii l JOIN %smf_linii ml ON ml.linie_id = l.id JOIN %sinregistrari i ON i.id = l.inregistrare_id "
                 "WHERE i.status = 'validata' AND (l.cont_credit = '4751' OR l.cont_debit = '4751') GROUP BY ml.mijloc_fix_id" % (p, p, p))
     return {r[0]: (r[1], r[2]) for r in _randuri(cur) if r[1]}

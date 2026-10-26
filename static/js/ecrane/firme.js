@@ -2,6 +2,7 @@
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=cb524f997d";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=0000000000";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=cb524f997d";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
 import { arataRefuzul, cereCompletate, ultimaCerere, pastreazaCampulActiv } from "../api.js?v=cb524f997d";  /* [lotul 11, 440] refuzul serverului / câmpurile goale: toate deodată */
 // [lotul 11, 440] „Corectează datele” salariatului (PUT /salariati): numele câmpurilor din refuzul serverului (`valideaza_salariat`, corpul
@@ -602,7 +603,7 @@ function meniuFirma(corp, nav, t) {
     { cheie: "planconturi", regim: "dubla", grup: "firma", titlu: "Plan de conturi", desc: "Conturile firmei, cu analiticele sub sintetic",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 4h16v4H4z"/><path d="M8 12h12M8 16h12M8 20h12"/><path d="M4 12h.01M4 16h.01M4 20h.01"/>', activ: true },
-    { cheie: "centrecost", regim: "dubla", grup: "firma", titlu: "Centre de cost", desc: "Dimensiune pe notele manuale, pentru raport realizat pe centru",  // [F143]
+    { cheie: "centrecost", regim: "dubla", grup: "firma", titlu: "Centre de cost", desc: "Venituri și cheltuieli pe centre: note, facturi, salarii, mijloace fixe",  // [F143]
       ...CULORI_CARD.teal,
       icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', activ: true },
   ];
@@ -6486,10 +6487,11 @@ async function ecranCentreCost(corp, nav, t) {
       </div>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Centre de cost</h2>
-      <p class="pf-intro">Dimensiune de management pe notele manuale (Registru jurnal). Un centru scos din uz se dezactivează — rămâne pe notele vechi, nu se mai oferă la note noi.</p>
-      <div style="display:flex;gap:8px;max-width:520px;margin-bottom:12px">
+      <p class="pf-intro">Dimensiune de management pe rândurile de venituri și cheltuieli: se alege pe notele manuale (Registru jurnal) și pe liniile facturilor (emise și primite); salariații și mijloacele fixe își primesc centrul în „Salariați și mijloace fixe”, iar nota salariilor și amortizarea îl preiau. Un centru scos din uz se dezactivează — rămâne pe notele vechi, nu se mai oferă la note noi.</p>
+      <div style="display:flex;gap:8px;max-width:760px;margin-bottom:12px;flex-wrap:wrap">
         <input type="text" id="cc-nume" class="camp-input" placeholder="Nume centru (ex: Vânzări, Producție)" aria-label="Nume centru" style="flex:1">
         <button class="buton-primar" id="cc-add" data-actiune="POST /tenants/{tenant_id}/centre-cost">Adaugă</button>
+        <button class="buton-secundar" id="cc-alocari" data-fara-actiune="citire: salariații și mijloacele fixe cu centrul lor">Salariați și mijloace fixe</button>
       </div>
       <div id="cc-mesaj"></div>
       <div class="pf-lista">${centre.length ? centre.map(rand).join("") : '<div class="stare-goala">Niciun centru încă. Adaugă primul.</div>'}</div>
@@ -6518,6 +6520,9 @@ async function ecranCentreCost(corp, nav, t) {
       catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
     };
     corp.querySelector("#cc-add").addEventListener("click", adauga);
+    // [lotul 13, 536, DS cap.2a — acțiunea din fereastră deschide o fereastră nouă] alocarea salariaților și a mijloacelor fixe pe centre
+    corp.querySelector("#cc-alocari").addEventListener("click", () => nav.deschide("Salariați și mijloace fixe pe centre",
+      (c2) => ecranAlocariCentre(c2, nav, t)));
     corp.querySelector("#cc-nume").addEventListener("keydown", (e) => { if (e.key === "Enter") adauga(); });
     corp.querySelectorAll("[data-toggle]").forEach((b) => b.addEventListener("click", async () => {
       try { await api.put(`/tenants/${t.id}/centre-cost/${b.dataset.toggle}`, { activ: b.dataset.activ !== "1" }); deseneaza(); }
@@ -6590,6 +6595,56 @@ async function ecranCentreCost(corp, nav, t) {
     corp.querySelector("#cc-bugete").addEventListener("click", incarcaBugete);
   };
   deseneaza();
+}
+
+
+// [lotul 13, deficiența 536 — comanda Costin 13.1, verbatim: „Centrul se poate pune pe liniile facturilor, NIR-urilor, salariilor și pe
+// mijloacele fixe (amortizarea moștenește centrul activului)”] Centrul fiecărui salariat (nota salariilor își împarte cheltuielile cu
+// personalul pe centre, după brutul fiecăruia) și al fiecărui mijloc fix (amortizarea și celelalte rânduri de cheltuială ale activului îl
+// preiau). Se aplică notelor generate de acum; o notă deja scrisă rămâne cum e. Se salvează numai rândurile schimbate; un centru
+// dezactivat rămâne afișat pe rândul care îl are, dar nu se mai poate alege.
+async function ecranAlocariCentre(corp, nav, t) {
+  const cerere = ultimaCerere();
+  const actuala = cerere();
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  let r;
+  try { r = await api.get(`/tenants/${t.id}/centre-cost`); if (!actuala()) return; }
+  catch (e) { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota pe-randuri">${esc((e && e.mesaj) || "Centrele de cost nu s-au putut încărca.")}</p>`; return; }
+  const toate = (r && r.centre) || [], al = (r && r.alocari) || { salariati: [], mijloace: [] };
+  const active = toate.filter((c) => c.activ);
+  // lista rândului: centrele active, plus centrul dezactivat pe care rândul îl are deja (numit „inactiv”, ca să nu se piardă tăcut)
+  const optiuni = (ales) => active.concat(toate.filter((c) => !c.activ && c.id === ales).map((c) => ({ ...c, nume: c.nume + " (inactiv)" })));
+  const rand = (pre, x, celule, eticheta) => `<tr><td>${celule}</td><td>${htmlCentru(`cc-${pre}-${x.id}`, "cc-aloc", optiuni(x.centru_cost_id),
+    x.centru_cost_id, eticheta, "", `data-fel="${pre}" data-id="${x.id}" data-initial="${x.centru_cost_id || ""}"`)}</td></tr>`;
+  const tabel = (titlu, cap, randuri, gol) => `<h3 class="cap-titlu" style="margin-top:14px">${titlu}</h3>${randuri.length
+    ? `<table class="fd-tabel"><thead><tr><th>${cap}</th><th>Centru de cost</th></tr></thead><tbody>${randuri.join("")}</tbody></table>`
+    : `<div class="stare-goala">${gol}</div>`}`;
+  corp.innerHTML = `
+    <div class="rezumat-fix"><h2 class="pf-titlu">Salariați și mijloace fixe pe centre</h2>
+      <p class="pf-intro">Centrul salariatului împarte nota salariilor pe centre (cheltuielile cu personalul, după brutul fiecăruia); centrul mijlocului fix merge pe amortizarea lui și pe celelalte rânduri de cheltuială ale activului. Se aplică notelor generate de acum — o notă deja scrisă rămâne cum e.</p></div>
+    ${active.length ? "" : `<div class="caseta-info"><span class="ci-mesaj">Firma n-are niciun centru de cost activ: adaugă întâi unul în fereastra Centre de cost.</span></div>`}
+    ${tabel("Salariați", "Salariat", al.salariati.map((x) => rand("sal", x, esc(x.nume || ""), "Centrul de cost al salariatului " + (x.nume || ""))),
+            "Firma n-are salariați în serviciu.")}
+    ${tabel("Mijloace fixe", "Mijloc fix", al.mijloace.map((x) => rand("mf", x, esc([x.cod, x.denumire].filter(Boolean).join(" · ")),
+            "Centrul de cost al mijlocului fix " + (x.denumire || x.cod || ""))), "Firma n-are mijloace fixe în registru.")}
+    <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="cc-aloc-salveaza" data-actiune="PUT /tenants/{tenant_id}/centre-cost/alocari"${active.length ? "" : atributeInactiv("Firma n-are niciun centru de cost activ.")}>Salvează alocarea</button>
+      <button class="buton-secundar" data-renunta style="margin-left:6px">Renunță</button></p><div id="cc-aloc-mesaj"></div></div>`;
+  legaRenunta(corp, nav);
+  const msg = corp.querySelector("#cc-aloc-mesaj");
+  corp.querySelector("#cc-aloc-salveaza").addEventListener("click", async () => {
+    curataEroriCamp(corp);
+    const corpReq = { salariati: {}, mijloace: {} };
+    corp.querySelectorAll("select.cc-aloc").forEach((s) => {
+      if (s.value !== s.dataset.initial) corpReq[s.dataset.fel === "sal" ? "salariati" : "mijloace"][s.dataset.id] = valoareCentru(s.value);
+    });
+    const n = Object.keys(corpReq.salariati).length + Object.keys(corpReq.mijloace).length;
+    if (!n) { arataMesaj(msg, "Nimic schimbat: alege centrul pe rândurile de mai sus, apoi salvează.", "avert"); return; }
+    try {
+      await api.put(`/tenants/${t.id}/centre-cost/alocari`, corpReq);
+      corp.querySelectorAll("select.cc-aloc").forEach((s) => { s.dataset.initial = s.value; });
+      arataMesaj(msg, `Alocarea s-a salvat (${cate(n, "rând schimbat", "rânduri schimbate")}). Notele salariilor și amortizarea generate de acum poartă centrul.`, "ok");
+    } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Alocarea nu s-a salvat.", "eroare"); }
+  });
 }
 
 

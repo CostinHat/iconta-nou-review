@@ -25,6 +25,8 @@ import os
 import re
 import unicodedata
 
+from core.cache_declarat import Declaratie as _Dec
+
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SURSA_CARDURI = os.path.join(_RAD, "static", "js", "ecrane", "firme.js")
 SURSA_OPERATIUNI = os.path.join(_RAD, "static", "js", "ecrane", "operatiuni_ecran.js")
@@ -46,6 +48,15 @@ _RE_GRUP = re.compile(r"\[\s*" + _SIR + r"\s*,\s*" + _SIR + r"\s*\]")
 _RE_OP = re.compile(r"\{\s*cat:\s*" + _SIR + r",\s*cheie:\s*" + _SIR + r",\s*titlu:\s*" + _SIR + r",\s*ruta:\s*" + _SIR)
 _RE_CAMP = re.compile(r"\b(?:C|DN)\(\s*" + _SIR + r"\s*,\s*" + _SIR)
 _cache = {}
+_cache_DECLARATIE = _Dec(
+    rol="sursele JS ale căutării din antet (cardurile din `firme.js`, registrul operațiunilor din `operatiuni_ecran.js`), ca o căutare să nu "
+        "recitească fișierele la fiecare literă scrisă",
+    sursa="fișierele `static/js/ecrane/firme.js` și `static/js/ecrane/operatiuni_ecran.js` (versionate); aplicația nu le scrie",
+    motiv="citirea a două fișiere sursă mari pe calea fiecărei cereri de căutare",
+    invalidare="la schimbarea datei modificării fișierului (`_citeste` compară `getmtime` la fiecare citire); plus repornirea procesului, "
+               "pe care publicarea o face la orice commit",
+    dovada="core/test_cache_declarat.py::test_cautare_se_reconstruieste_identic",
+)
 
 
 def normalizeaza(text):

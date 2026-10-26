@@ -439,7 +439,9 @@ def test_numarul_de_instructiuni_se_conserva():
     #   (589: planul întreg pentru verificarea analiticului adăugat de mână — numai sub sintetic legal).
     # [lotul 13, reparațiile finale, peticul garzi_4] +1 (458 -> 459): + repo_efactura.moneda_si_data în `uc_tenants.decontare_valuta`
     #   (C201 / P5: moneda facturii citită pe o conexiune SCURTĂ, ca cursul BNR să se aducă înaintea tranzacției — ca `factura_contabilizeaza`).
-    assert _apeluri_catre_repository() == 459
+    # [lotul 13, zona comp, 536] +1 (459 -> 460, la unire): + repo_facturi.actualizeaza_centre_linii în `uc_factura_primita.valideaza` (centrul de cost
+    #   al fiecărei linii a facturii primite, scris înaintea notei, ca `actualizeaza_conturi_linii`).
+    assert _apeluri_catre_repository() == 460
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

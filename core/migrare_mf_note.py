@@ -109,7 +109,7 @@ def backfill(conn, schema):
         # 1. amortizarea lunii, pe activ
         cur.execute("SELECT i.id, i.data, l.id, l.cont_credit, l.suma FROM %sinregistrari i JOIN %sinregistrari_linii l ON l.inregistrare_id = i.id "
                     "WHERE NOT EXISTS (SELECT 1 FROM %smf_linii ml WHERE ml.linie_id = l.id) AND l.cont_debit LIKE '68%%' "
-                    "AND l.cont_credit LIKE '28%%' ORDER BY i.id, l.id" % (s, s, s))
+                    "AND l.cont_credit LIKE '28%%' AND l.cont_credit NOT LIKE '121%%' ORDER BY i.id, l.id" % (s, s, s))   # [C15] fără închiderea în 121
         folosite = {}
         for nid, data, lid, cont, suma in cur.fetchall():
             luat = folosite.setdefault(nid, set())

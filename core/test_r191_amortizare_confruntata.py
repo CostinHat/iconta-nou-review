@@ -93,6 +93,8 @@ def schema():
         _mig.aplica(conn, SCH)          # DDL-ul `reevaluari` din MIGRARE, nu rescris aici
         from core import migrare_mf_amortizare_preluata as _m359   # [359, lotul 9] cititorii registrului poartă coloanele preluării
         _m359.aplica(conn, SCH)
+        from core import migrare_mf_note as _m519   # [lotul 13, 519 / 522] registrul citește și notele care aduc / scot activul (`mf_note`)
+        _m519.aplica_ddl(conn, SCH)
         with conn.cursor() as c:
             c.execute('INSERT INTO "%s".mijloace_fixe (cod, denumire, cont_imobilizare, '
                       "cont_amortizare, valoare, rezidual, dnf_luni, data_pif, metoda) "

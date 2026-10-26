@@ -435,14 +435,18 @@ def _inregistreaza_amortizarea(lume, suma):
     """Amortizarea deja INREGISTRATA in contul de amortizare, ca nota validata.
 
     E precondiția pe care reevaluarea o cere de la R192 incoace: nu se poate scoate din evidenta o
-    amortizare pe care evidenta n-o contine."""
+    amortizare pe care evidenta n-o contine.
+
+    [lotul 13, deficienta 522 — „Amortizarea înregistrată se ține pe fiecare activ.”] Randul notei poarta activul (`mf_linii`), ca la
+    nota generata de aplicatie (`mf_note.adauga_linie`): reevaluarea compara registrul cu amortizarea inregistrata PE ACTIV
+    (`mf_registru.inregistrat_pe_activ`), nu cu soldul contului impartit intre active."""
+    from core import mf_note as _mfn
     with lume["conn"].cursor() as cur:
         cur.execute('INSERT INTO "%s".inregistrari (data, descriere, sursa, status) '
                     "VALUES (%%s,'amortizare cumulata proba','amortizare','validata') RETURNING id"
                     % SCH, ("%d-%02d-01" % (AN, LUNA),))
         iid = cur.fetchone()[0]
-        cur.execute('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, '
-                    "cont_credit, suma) VALUES (%%s,'6811','2813',%%s)" % SCH, (iid, suma))
+        _mfn.adauga_linie(cur, SCH, iid, "6811", "2813", suma, lume["mfid"])
 
 
 # ─────────────────────── R192: reevaluarea nu elimină ce nu s-a înregistrat ───────────────────────

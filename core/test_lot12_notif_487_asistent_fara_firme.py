@@ -23,7 +23,7 @@ def jurnal(monkeypatch):
 
     class _C:
         def cursor(self, **_k):
-            return contextlib.nullcontext(types.SimpleNamespace(execute=lambda *a, **k: None))
+            return contextlib.nullcontext(types.SimpleNamespace(execute=lambda *a, **k: None, fetchone=lambda: None))   # [560] `nume_cabinet`: niciun rând
 
     @contextlib.contextmanager
     def _conn(schema=None):

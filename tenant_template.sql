@@ -3981,3 +3981,10 @@ CREATE TRIGGER trg_vanzare_stoc_sterge BEFORE DELETE ON TENANT_PLACEHOLDER.inreg
 DROP TRIGGER IF EXISTS trg_cui_fara_ro_l13 ON TENANT_PLACEHOLDER.vanzari_din_stoc;
 CREATE TRIGGER trg_cui_fara_ro_l13 BEFORE INSERT OR UPDATE OF client_cui ON TENANT_PLACEHOLDER.vanzari_din_stoc FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.cui_normalizeaza('client_cui');
 -- [vanzari_stoc_v1] sfârșit
+
+-- [centru_cost_surse_v1, lotul 13, deficiența 536] centrul de cost pe liniile facturilor, pe salariați și pe mijloacele fixe (contarea automată
+-- îl duce pe rândurile de venit / cheltuială ale notelor) — SURSA: core/migrare_centru_cost_surse.py
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
+ALTER TABLE TENANT_PLACEHOLDER.salariati ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
+ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe ADD COLUMN IF NOT EXISTS centru_cost_id integer REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
+-- [centru_cost_surse_v1] sfârșit

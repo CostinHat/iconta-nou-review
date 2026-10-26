@@ -62,10 +62,13 @@ def test_notificarile_duc_la_element():
 
 def test_cardul_si_fereastra_numara_notele_la_fel():
     """pct.10: „Cardul arată «3 nevalidate», fereastra «Note de validat (2)». Numerele se potrivesc.” Aceeași expresie de
-    selecție în ambele. MUTAȚIE: cardul numără și `aprobata` -> expresia diferă -> pică."""
+    selecție în ambele. [lotul 13, deficiența 563: „Aceeași informație, trei cifre […] Aceeași numărătoare peste tot”] Expresia stă o
+    singură dată, în `validat.js` (`elementeNoteDeValidat`): fereastra o cheamă, iar cardul (`cabinet.js`) numără prin `noteDeValidatInCoada`,
+    fără o selecție a lui. MUTAȚIE: cardul numără și `aprobata` (o selecție proprie în `cabinet.js`) -> pică."""
     expr = r'c\.fel === "nota" && c\.stare === "la_senior"'
     assert len(re.findall(expr, _js("ecrane/validat.js"))) == 1
-    assert len(re.findall(expr, _js("ecrane/cabinet.js"))) == 1
+    cab = _js("ecrane/cabinet.js")
+    assert re.search(r"\bnoteDeValidatInCoada\(coada\)", cab) and not re.search(r'c\.fel === "nota"', cab)
 
 
 def test_fraza_despre_semnal_numai_cand_cifrele_difera():
