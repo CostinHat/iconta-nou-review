@@ -129,3 +129,26 @@ def test_def_541_nota_tva_la_incasare_nu_exigibilizeaza_peste_4428(monkeypatch):
         assert linii(cur, r["inregistrare_id"]) == [("4428", "4427", "210.00", None)]
         m, _c = _refuz(uc.nota_tva_incasare, 1, corp, CTX)   # a doua oară: 210 deja exigibilizați de ciorna de mai sus
         assert "deja exigibilizați de note nevalidate" in m, m
+
+
+def test_def_524_contul_de_trezorerie_e_lista_inchisa_din_planul_firmei(monkeypatch):
+    """[lotul 13, decizia Costin după 524 / 504] Contul prin care s-a decontat se alege dintr-o listă ÎNCHISĂ din planul firmei: 5124, 5121,
+    5314 (casa în valută) și analiticele lor (aici 5124.01 „Stripe EUR”, procesatorul ținut ca analitic); 5125 / 5311 nu sunt în ea, iar
+    serverul refuză lângă câmp un cont din afara ei. Decontarea prin casa în valută: 5314 = 4111 la cursul facturii + 765 diferența.
+    MUTAȚIE: verificarea listei scoasă din `decontare_valuta` -> 5125 trece -> pică."""
+    from core import curs_bnr, uc_comun
+    monkeypatch.setattr(curs_bnr, "curs_pentru", lambda conn, moneda, data, **k: (Decimal("5.3370"), data, "bnr"))
+    monkeypatch.setattr(uc_comun, "_preincalzeste_cursul", lambda *a, **k: None)
+    with schema_ops(monkeypatch) as (c, cur, uc):
+        cur.execute("INSERT INTO plan_conturi (simbol, denumire, tip) VALUES ('5124.01', 'Stripe EUR', 'Bifunctional') ON CONFLICT DO NOTHING")
+        conturi = [x["cont"] for x in uc.operatiuni_date(1, "conturi_trezorerie", {}, CTX)["conturi"]]
+        assert {"5121", "5124", "5124.01", "5314"} <= set(conturi) and not [x for x in conturi if x.startswith(("5125", "5311"))], conturi
+        fid = _factura_valuta(cur)
+        m, campuri = _refuz(uc.decontare_valuta, 1, {"data": D, "tip": "creanta", "factura_id": fid, "valoare_valuta": 1000,
+                                                       "cont_banca": "5125"}, CTX)
+        assert campuri == ["op-cont_banca"] and "5314" in m, m
+        r = uc.decontare_valuta(1, {"data": D, "tip": "creanta", "factura_id": fid, "valoare_valuta": 1000, "cont_banca": "5314"}, CTX)
+        # 1.000 EUR x 4,95 = 4.950 la cursul de evidență; x 5,3370 = 5.337 -> 765 387 (OMFP 1802/2014 pct.322 alin.(1))
+        assert linii(cur, r["inregistrare_id"]) == [("5314", "4111", "4950.00", "Client IE"), ("5314", "765", "387.00", None)]
+        r = uc.decontare_valuta(1, {"data": D, "tip": "creanta", "factura_id": fid, "valoare_valuta": 500, "cont_banca": "5124.01"}, CTX)
+        assert linii(cur, r["inregistrare_id"])[0][:2] == ("5124.01", "4111")

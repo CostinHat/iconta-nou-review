@@ -249,6 +249,34 @@ def test_def_524_decontarea_in_valuta_pe_factura_de_origine(patron, firma_ops):
     assert "rămas 3.000,00 EUR" in eticheta, eticheta   # soldul facturii scade cu decontarea legată de ea (ciorna se vede după validare)
 
 
+def test_def_524_contul_de_trezorerie_din_planul_firmei_si_casa_in_valuta(patron, firma_ops):
+    """524 / 504 (decizia Costin, lotul 13): „Contul de trezorerie” al decontării e o listă închisă din planul firmei — 5124, 5121, 5314 (casa
+    în valută) și analiticele lor —, fără nimic ales. Pașii: DATE DE PORNIRE: factura emisă F13C nr. 1 de 1.000 EUR la cursul 4,95, contată
+    prin notă validată -> Decontare în valută -> Încasare creanță: lista contului are 5121, 5124, 5314 și nimic ales; 5125 / 5311 nu sunt în
+    ea -> 5314, 1.000 EUR -> nota 5314 = 4111 4.950 (cursul de evidență) + diferența de curs.
+    MUTAȚIA: lista se cere iar fixă (5124 / 5121) — `ce=conturi_trezorerie` nu mai e citit -> 5314 lipsește -> ROȘU."""
+    f = firma_ops
+    s = f["schema"]
+    # date-de-pornire: factura emisă în EUR din care provine creanța în valută — emiterea în valută nu e pasul probat
+    (fid,) = sql('INSERT INTO "%s".facturi (serie, numar, data_emitere, directie, moneda, total, total_lei, curs_bnr, tert_nume, tert_cui, '
+                 'tert_tara) VALUES (%%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s, %%s) RETURNING id' % s,
+                 ("F13C", "1", AZI.replace(day=1).isoformat(), "emisa", "EUR", 1000, 4950, 4.95, "Client IE E2E", "IE6388047V", "IE"))[0]
+    _nota_validata(f, AZI.replace(day=1).isoformat(), [("4111", "704", 4950)], factura_id=fid)
+    pg = _op(patron, f, "decont_valuta")
+    _completeaza(pg, [("data", D), ("tip", "creanta")])
+    pg.wait_for_function("() => [...document.querySelectorAll('#op-cont_banca option')].some((o) => o.value === '5314')", timeout=20000)
+    valoare, conturi = pg.eval_on_selector("#op-cont_banca", "e => [e.value, [...e.options].map((o) => o.value).filter(Boolean)]")
+    patron.captura("lista_conturilor")
+    assert valoare == "" and {"5121", "5124", "5314"} <= set(conturi), conturi
+    assert not [c for c in conturi if not c.startswith(("5121", "5124", "5314"))], conturi
+    _completeaza(pg, [("factura_id", fid), ("valoare_valuta", "1000"), ("cont_banca", "5314")])
+    ultima = _ultima(f)
+    _genereaza(pg)
+    patron.captura("decontarea_prin_casa")
+    (nid,) = _note_noi(f, ultima)
+    assert _linii(f, nid)[0] == ("5314", "4111", "4950.00", "Client IE E2E"), _linii(f, nid)
+
+
 # ── 518 / 519 / 522 / 517 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_522_inregistrat_pe_activ_nu_pe_cont(patron, firma_ops):
     """522. „Grav: coloana «Înregistrat» se citește pe cont (2813), nu pe activ.” Pașii: MF-A (6.000 lei, 60 de luni, PIF 10.01.2026) și MF-B

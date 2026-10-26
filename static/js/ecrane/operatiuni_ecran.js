@@ -272,7 +272,9 @@ const REGISTRU = [
     C("tip", "Tip", "select", { optiuni: [["creanta","Încasare creanță"],["datorie","Plată datorie"]] }),
     C("factura_id", "Factura", "factura_valuta", { cond: { camp: "tip", val: ["creanta", "datorie"] } }),
     C("valoare_valuta", "Suma în valută", "numar", { cond: { camp: "tip", val: ["creanta", "datorie"] } }),
-    C("cont_banca", "Contul bancar", "select", { optiuni: [["5124","Cont la bănci în valută (5124)"],["5121","Cont la bănci în lei (5121)"]], cond: { camp: "tip", val: ["creanta", "datorie"] } }),
+    // [lotul 13, decizia Costin după 524 / 504] contul prin care s-a decontat: listă închisă din planul firmei — 5124, 5121, 5314 (casa în
+    // valută) și analiticele lor (un procesator de plăți ținut ca analitic), fără nimic ales
+    C("cont_banca", "Contul de trezorerie (bancă sau casă)", "cont_trezorerie", { cond: { camp: "tip", val: ["creanta", "datorie"] } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 { cat: "Extern", cheie: "achizitie_ic", titlu: "Achiziție intracomunitară", ruta: "achizitie-ic", frecventa: "lunar", faraPropunere: "e documentul operațiunii (factura, borderoul, declarația vamală) — nu vine din alt ecran al aplicației, se introduce la fiecare operațiune", campuri: [
     C("data", "Data facturii", "data"),
@@ -555,6 +557,8 @@ export async function ecranOperatiuni(corp, nav, t) {
         input = `<div class="em-benef"><input type="text" id="op-${esc(c.nume)}" class="camp-input op-cui" data-nume-camp="${c.numeCamp || ""}" list="op-${esc(c.nume)}-lista" autocomplete="off" aria-label="${esc(c.eticheta)}">
           <button type="button" class="buton-secundar em-buton-sec" id="op-${esc(c.nume)}-verifica" data-fara-actiune="citire ANAF; salvarea formularului poartă acțiunea">Verifică</button></div>
           <datalist id="op-${esc(c.nume)}-lista"></datalist><div class="em-cui-stare" id="op-${esc(c.nume)}-stare" aria-live="polite"></div>`;
+      } else if (c.tip === "cont_trezorerie") {
+        input = `<select id="op-${esc(c.nume)}" class="camp-input op-lista-date" data-ce="cont_trezorerie" data-butoane="" aria-label="${esc(c.eticheta)}"><option value="" data-alege>— se încarcă planul de conturi… —</option></select>`;
       } else if (c.tip === "obiect" || c.tip === "factura_neincasata") {
         // [lotul 13, 508 / 511] obiectul de inventar / factura neîncasată se aleg din ce are aplicația; valoarea vine de la ele
         input = `<select id="op-${c.nume}" class="camp-input op-lista-date" data-ce="${c.tip}" aria-label="${esc(c.eticheta)}"><option value="">— alege întâi operația —</option></select>`;
@@ -834,7 +838,11 @@ export async function ecranOperatiuni(corp, nav, t) {
       for (const sel of listeDate) {
         const op = (corp.querySelector("#op-operatie") || {}).value || "";
         let url = null, gol = "", eticheta = null;
-        if (sel.dataset.ce === "obiect") {
+        if (sel.dataset.ce === "cont_trezorerie") {
+          url = `/tenants/${t.id}/operatiuni-date?ce=conturi_trezorerie`;
+          gol = "Planul firmei n-are niciun cont 5124, 5121 sau 5314";
+          eticheta = (c) => `${esc(c.cont)} ${esc(c.denumire || "")}`;
+        } else if (sel.dataset.ce === "obiect") {
           const stare = op === "dare_folosinta" ? "magazie" : op === "scoatere" ? "folosinta" : "";
           if (!stare) { sel.innerHTML = `<option value="">— alege întâi operația —</option>`; continue; }
           url = `/tenants/${t.id}/operatiuni-date?ce=obiecte&tip=${stare}`;
@@ -848,10 +856,10 @@ export async function ecranOperatiuni(corp, nav, t) {
         try {
           const r = await api.get(url);
           if (!actuala()) return;
-          const xs = (r && (r.obiecte || r.facturi)) || [];
+          const xs = (r && (r.obiecte || r.facturi || r.conturi)) || [];
           // [lotul 13] alegerea omului rămâne aleasă când lista se reîncarcă (data sau operația schimbată) și elementul e tot acolo
           const ales = sel.value;
-          sel.innerHTML = xs.length ? `<option value="">— alege —</option>` + xs.map((x) => `<option value="${x.id}">${eticheta(x)}</option>`).join("")
+          sel.innerHTML = xs.length ? `<option value="" data-alege>— alege —</option>` + xs.map((x) => `<option value="${esc(x.id)}">${eticheta(x)}</option>`).join("")
             : `<option value="">${gol}</option>`;
           if (ales && [...sel.options].some((o) => o.value === ales)) sel.value = ales;
         } catch { if (!actuala()) return; sel.innerHTML = `<option value="">Lista nu s-a putut încărca — reîncearcă</option>`; }

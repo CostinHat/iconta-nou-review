@@ -189,3 +189,11 @@ def moneda_si_cursul_facturii(cur, schema, factura_id):
     cur.execute("SELECT id, moneda, curs_bnr FROM %sfacturi WHERE id = %%s" % _p(schema), (factura_id,))
     r = _rand(cur.fetchone())
     return {"id": r[0], "moneda": r[1], "curs_bnr": r[2]} if r else {"id": factura_id, "moneda": "RON", "curs_bnr": None}
+
+
+# ── contul de trezorerie al decontării în valută (decizia Costin după 524 / 504) ─────────────────────────────────────────────────────
+def conturi_cu_prefix(cur, schema, sintetice):
+    """[(simbol, denumire)] — conturile din planul firmei care sunt unul din `sintetice` sau un analitic al lor, în ordinea simbolului."""
+    cur.execute("SELECT simbol, denumire FROM %splan_conturi WHERE simbol LIKE ANY(%%s) ORDER BY simbol" % _p(schema),
+                ([s + "%" for s in sintetice],))
+    return _randuri(cur)

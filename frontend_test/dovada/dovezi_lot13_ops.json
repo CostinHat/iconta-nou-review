@@ -2548,5 +2548,58 @@
    }
   ],
   "captura": "601_f2_registrul_activul_din_factura.png"
+ },
+ {
+  "nr": "524",
+  "firma": "tenant_9051",
+  "descriere": "F3: Operațiuni speciale -> Decontare în valută -> Încasare creanță: «Contul de trezorerie (bancă sau casă)» e o listă din planul firmei — 5121, 5124, 5314 (casa în valută) — fără nimic ales; 5125 / 5311 nu sunt în ea (decizia Costin după 524 / 504). Nimic nu se scrie.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='decont_valuta']"
+   },
+   {
+    "click": "button[data-op='decont_valuta']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "creanta"
+   },
+   {
+    "asteapta": "#op-cont_banca option[value='5314']",
+    "stare": "attached"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#op-cont_banca option",
+    "text": "5314"
+   },
+   {
+    "exista": "#op-cont_banca option",
+    "text": "5124"
+   },
+   {
+    "valoare": "#op-cont_banca",
+    "egal": ""
+   },
+   {
+    "nu_contine": "5125",
+    "zona": ".camp:has(#op-cont_banca)"
+   }
+  ],
+  "captura": "524_f3_contul_de_trezorerie_din_planul_firmei.png"
  }
 ]

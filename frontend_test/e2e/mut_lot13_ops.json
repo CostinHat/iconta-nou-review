@@ -232,5 +232,11 @@
   "ancora": "        _mfn.leaga(cur, schema, mid, nota_id, \"intrare\")\n",
   "inlocuire": "",
   "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_601_mijlocul_fix_intra_in_registru_din_factura_primita"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "          url = `/tenants/${t.id}/operatiuni-date?ce=conturi_trezorerie`;",
+  "inlocuire": "          url = null;",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_524_contul_de_trezorerie_din_planul_firmei_si_casa_in_valuta"
  }
 ]
