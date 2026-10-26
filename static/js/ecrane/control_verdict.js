@@ -205,12 +205,13 @@ export function randeazaCorpVerdict(d, opt = {}) {
     ${neaplicabile.length || contraziceri.length ? `<div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div><div class="cf-decl">${randMotiv(neaplicabile, contraziceri, "cf-semnal-contra")}</div>` : ""}
     ${cu_intarziere.length ? `<div class="cf-grup-titlu cf-galben">Depuse cu întârziere (${cu_intarziere.length})</div><div class="cf-decl">${randDecl(cu_intarziere, "cf-termen-galben")}</div>` : ""}
     ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
-    ${inainte.length ? `<details class="dec-xml cf-inainte">
-        <summary class="cf-grup-titlu">Înainte de preluare în iConta.eu — până la ${esc(d.luna_inainte_de_preluare || "")} (${inainte.length}, nu se numără la restanțe)</summary>
+    ${inainte.length ? `<div class="cf-grup-titlu cf-inainte-titlu">Înainte de preluare în iConta.eu — până la ${esc(d.luna_inainte_de_preluare || "")} (${inainte.length}, nu se numără la restanțe)</div>
+      <div class="dec-bara"><button type="button" class="buton-secundar cf-inainte-btn" data-fara-actiune="deschide declarațiile de dinainte de preluare, în fereastra lor">Vezi declarațiile de dinainte de preluare (${inainte.length})</button></div>
+      <template class="cf-inainte-sablon"><div class="cf-inainte">
         <p class="cf-incr-temei">Luna preluării în iConta.eu e ${esc(d.luna_preluare || "")}${d.luna_preluare_din ? ` (${esc(d.luna_preluare_din)})` : ""}: declarațiile pe ${esc(d.luna_preluare || "")} și după se numără la restanțe, cele până la ${esc(d.luna_inainte_de_preluare || "")} nu se numără la restanțe. O declarație depusă în afara iConta.eu sau de contabilul anterior se marchează pe rândul ei.</p>
         ${inainte.some((x) => x.luna && !x.extern) ? `<div class="dec-bara"><button class="buton-secundar cf-anterior-toate" data-actiune="POST /control-fiscal/{tenant_id}/depuse-anterior"
           data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'>Marchează toate ca depuse de contabilul anterior</button></div>` : ""}
-        <div class="cf-decl">${randDecl(inainte, "", true)}</div></details>` : ""}`;
+        <div class="cf-decl">${randDecl(inainte, "", true)}</div></div></template>` : ""}`;
 
   // «Declaratie vs contabilitate» — vc.tva_incrucisat/d112_incrucisat/d390_incrucisat (aceeasi anatomie) + d.reconciliere_surse.
   // [deficiența 484, lotul 12: „Control încrucișat: confruntarea declarații–contabilitate nu rulează”] (1) confruntarea rula pe luna în
@@ -366,6 +367,21 @@ function perioadaButonului(b) {
 }
 
 export function legaVerdict(corp, nav, firma) {
+  // [lotul 13, 674 — DS cap.2a „Orice acțiune e un buton”; comanda Costin 13.1 supersedează forma „pliat implicit” din 158 (DECIZII)] grupul
+  // „Înainte de preluare” nu mai e un grup pliat pe care se dă clic: butonul lui deschide o fereastră nouă (673) cu declarațiile, marcările
+  // pe rând și „Marchează toate”. Ce cerea 158 rămâne: grupul nu stă desfăcut din oficiu. Fereastra se desenează din șablonul randat al
+  // ecranului de dedesubt; după o marcare se reîncarcă ecranul de dedesubt (`firma.reincarca`) și se redesenează fereastra din șablonul nou.
+  corp.querySelectorAll(".cf-inainte-btn").forEach((b) => b.addEventListener("click", () => {
+    nav.deschide("Înainte de preluare în iConta.eu", (cc, nn) => {
+      const deseneaza = () => {
+        const s = corp.querySelector("template.cf-inainte-sablon");
+        cc.innerHTML = s ? s.innerHTML : `<p class="ecran-nota">Nu mai e nicio declarație de dinainte de preluare de arătat; închide fereastra.</p>`;
+        legaVerdict(cc, nn, Object.assign({}, firma, {
+          reincarca: async () => { if (typeof firma.reincarca === "function") await firma.reincarca(); deseneaza(); } }));
+      };
+      deseneaza();
+    });
+  }));
   // [08.10, decizia Costin U2] „depusă în afara iConta”: data depunerii (de pe recipisă) obligatorie, numărul recipisei opțional
   corp.querySelectorAll(".cf-extern-btn").forEach((b) => b.addEventListener("click", () => {
     const item = b.closest(".cf-decl-item");
