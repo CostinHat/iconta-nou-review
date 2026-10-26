@@ -589,5 +589,47 @@
    }
   ],
   "captura": "c187_f2_vechi_luna_in_curs_descarcarea_inactiva.png"
+ },
+ {
+  "nr": "C177",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri -> „Mișcări, fișe de magazie, coduri, nivel minim” (fereastra ei, peste Stocuri, care cere și ea situația articolelor) -> înapoi la Stocuri: situația stocului e desenată (tabelul articolelor), nu „Se încarcă situația stocului…” — contorul cererilor e al fiecărei ferestre. Cursa însăși (răspunsurile ținute pe loc) o probează e2e `test_def_c177_…`; nu se scrie nimic pe copie",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#cv-toggle"
+   },
+   {
+    "asteapta": "#s-situatie-tabel"
+   },
+   {
+    "click": "#cv-toggle"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cv-zona #cv-art",
+    "stare": "attached"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #s-situatie-tabel"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #s-situatie-tabel"
+   },
+   {
+    "nu_contine": "Se încarcă situația stocului",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "c177_f1_stocuri_dupa_fereastra_miscarilor.png"
  }
 ]
