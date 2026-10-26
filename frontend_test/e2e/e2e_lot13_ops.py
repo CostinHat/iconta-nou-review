@@ -670,10 +670,14 @@ def test_def_537_achizitia_intracomunitara_in_moneda_facturii(patron, firma_ops)
     valoarea în valută și codul furnizorului fără prefixul dublat (539).
     MUTAȚIA: cursul ignorat (`curs = 1`) -> 371 = 401 1.000 -> ROȘU."""
     import datetime as _dt
+    from core import scadente as _sc
     for k in range(1, 8):
+        z = AZI - _dt.timedelta(days=k)
+        if not _sc.e_zi_lucratoare(z):   # [lotul 13, fact] BNR nu comunică în zilele nelucrătoare: un rând pe sâmbătă / duminică trecea drept
+            continue                     # „cel mai nou curs” și ascundea golul din `e2e_lot11_a460` (cache-ul public e comun)
         # date-de-pornire: cursul BNR al zilei, în afara plasei (ANAF / BNR simulate)
         sql("INSERT INTO public.curs_bnr_zilnic (data, moneda, curs, luat_la) VALUES (%s, 'EUR', 5.0000, now()) ON CONFLICT DO NOTHING",
-            ((AZI - _dt.timedelta(days=k)).isoformat(),))
+            (z.isoformat(),))
     f = firma_ops
     s = f["schema"]
     pg = _op(patron, f, "achizitie_ic")
