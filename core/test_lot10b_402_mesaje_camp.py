@@ -103,6 +103,7 @@ def test_def_402_refuzul_la_contul_de_stoc_spune_complet_ce_lipseste(conn):
     with pytest.raises(erori.DateInvalide) as e:
         uc_tenants.achizitie_neinregistrat(1, {"data": "2026-10-20", "furnizor_nume": "Maria Ionescu", "furnizor_adresa": "Str. Mare 2",
                                                "furnizor_act": "PH 1", "valoare": 150, "cont_cheltuiala": "371", "articol": "grâu",
+                                               "um": "kg",   # [lotul 13, 504] UM-ul gol se refuză lângă câmp: aici lipsește numai cantitatea
                                                "articol_nou": True},   # [lotul 11, 450] articolul nou, cerut explicit
                                            {"uid": 1})
     d = e.value.args[0]

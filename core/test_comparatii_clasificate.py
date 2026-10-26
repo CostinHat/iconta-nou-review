@@ -53,7 +53,7 @@ MARCAJ_INTERP = "interpretare:"
 # sigur zgomot (formatare `cota == cota.to_integral_value()`, verificari de zero, stari interne) -
 # dar „aproape sigur" nu e o clasificare, si de-aia stau aici. Cine le priveste si le gaseste
 # nevinovate le marcheaza `temei-determina:` sau le scoate din domeniu cu motiv; ce ramane e alegere.
-BASELINE_NECLASIFICATE = 13
+BASELINE_NECLASIFICATE = 10   # [lotul 13] 13 -> 10: trei comparații clasificate (rescrierile zonelor sal / ops); clichetul coboară
 
 
 def _fisiere():

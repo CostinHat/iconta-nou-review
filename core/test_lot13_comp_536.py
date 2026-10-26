@@ -43,7 +43,7 @@ def conn():
         with c.cursor() as k:
             k.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
             k.execute(_tprov.parametrizeaza_template(io.open(os.path.join(RAD, "tenant_template.sql"), encoding="utf-8").read(), SCH))
-            k.execute("SET search_path TO %s, public" % SCH)
+            k.execute("SET LOCAL search_path TO %s, public" % SCH)
             k.execute("INSERT INTO firma_profil (id, nume, cui, platitor_tva, forma_juridica, capital_subscris, serie_factura, "
                       "urmator_numar_factura) VALUES (1, 'ZT Centre SRL', '14399840', true, 'SRL', 200, 'CC', 1)")
             k.execute("INSERT INTO centre_cost (nume) VALUES ('Producție'), ('Vânzări'), ('Vechi') RETURNING id")

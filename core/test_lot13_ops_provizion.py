@@ -28,7 +28,7 @@ def test_def_511_lista_facturilor_neincasate_are_partenerul_soldul_si_zilele(mon
         r = uc.operatiuni_date(1, "facturi_neincasate", {"data": "2026-10-15"}, CTX)
         f = next(x for x in r["facturi"] if x["id"] == fid)
         # 01.12.2025 -> 15.10.2026 = 318 zile de la scadență
-        assert (f["document"], f["partener"], Decimal(str(f["sold"])), f["zile"]) == ("F19", "Client Restant SRL", Decimal("1210.00"), 318), f
+        assert (f["document"], f["partener"], Decimal(str(f["sold"])), f["zile"]) == ("F1 nr. 9", "Client Restant SRL", Decimal("1210.00"), 318), f
 
 
 def test_def_512_nota_pe_factura_aleasa_spune_partile_fiscale(monkeypatch):

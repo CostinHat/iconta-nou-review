@@ -70,8 +70,8 @@ def test_595_d398_fara_inregistrarea_oss_nu_se_genereaza(cf):
     # (cu baza: `core/test_lot13_oss_date_firma.py`)
     from core import d398
     assert DA.valideaza_cerere("d398", {"an": 2026, "trim": 3, "manual": m}) == []
-    assert "nu ai răspuns" in d398.refuz_oss(None) and "art.315 alin.(3)" in d398.refuz_oss(None)
-    assert "nu e înregistrată" in d398.refuz_oss(False) and "art.315 alin.(3)" in d398.refuz_oss(False)
+    assert d398.refuz_oss(None) == d398.MOTIV_OSS_NEDECLARAT and d398.refuz_oss(False) == d398.MOTIV_OSS_NU
+    assert d398.TEMEI_OSS == "CF art.315 alin.(3)" and d398.MOTIV_OSS_NU.count(d398.TEMEI_OSS) == 1 == d398.MOTIV_OSS_NEDECLARAT.count(d398.TEMEI_OSS)
     assert d398.refuz_oss(True) is None
 
 
@@ -93,8 +93,11 @@ def test_653_d207_statul_din_lista_validatorului():
     from core import d207
     assert "GR" in d207.STAT_R and "EL" not in d207.STAT_R and "IN" in d207.STAT_R and len(d207.STAT_R) == 249
     b = {"tip_venit": "02", "den": "X", "cif_strain": "1", "act_n": "1"}
-    assert any("nu e în lista ANAF" in e for e in d207.erori_generare({}, {"beneficiari": [dict(b, stat="EL")]}))
-    assert not any("stat" in e.lower() for e in d207.erori_generare({}, {"beneficiari": [dict(b, stat="GR")]}))
+    # refuzul statului: mesajul exact al beneficiarului 1 (egalitate pe lista de erori, nu căutare de sub-șir); statul corect (GR) -> nicio eroare de stat
+    cu_stat_gresit = d207.erori_generare({}, {"beneficiari": [dict(b, stat="EL")]})
+    assert [e for e in cu_stat_gresit if e.startswith("Beneficiarul 1: statul de rezidență „EL”")] == [
+        "Beneficiarul 1: statul de rezidență „EL” nu e în lista ANAF a statelor (D207) — alege-l din listă."]
+    assert [e for e in d207.erori_generare({}, {"beneficiari": [dict(b, stat="GR")]}) if e.startswith("Beneficiarul 1: statul")] == []
 
 
 # ── 539: codul de TVA al furnizorului D301, fără prefix ──────────────────────────────────────────────────────────────────────────────

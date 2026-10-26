@@ -169,7 +169,7 @@ def test_textul_care_nu_e_numar_nu_pleaca_la_server(pg):
       b.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); b.click();
     })""")
     assert r2["trimise"] == 0, r2
-    assert r2["refuz"] and "„Suma”" in r2["refuz"] and MESAJ_NUMAR_RO in r2["refuz"] and r2["campuri"] == ["s"], r2
+    assert r2["refuz"] and r2["refuz"].count("„Suma”") >= 1 and MESAJ_NUMAR_RO in r2["refuz"] and r2["campuri"] == ["s"], r2
 
 
 def test_refuzul_ecranului_pe_un_numar_scris_gresit_spune_formatul(pg):

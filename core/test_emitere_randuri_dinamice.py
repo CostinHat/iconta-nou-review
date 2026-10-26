@@ -22,14 +22,15 @@ COTA = 21
 # `cota_propusa` (propunerea automata, aici = cota aleasa) — pentru jurnalul „propus -> ales”; nu e un camp fiscal al liniei.
 # [05.10.2026, pct.9] si `um` — unitatea de masura a liniei, care pana acum aparea doar pe PDF. [lotul 13, regula UM — `facturi.um_lipsa`]
 # linia noua porneste cu UM-ul GOL (nu „buc” din oficiu): il scrie omul, deci e in FILL, iar payload-ul il poarta neschimbat.
+# [lotul 13, 536] si `centru_cost_id` — centrul de cost al liniei (null când omul nu l-a ales).
 # [16.10.2026, 274b] si `categorie_tva` — categoria liniei cu 0% (null pe o linie cu cota pozitiva).
 FILL = [
     {"descriere": "Serviciu consultanta", "cantitate": "2", "um": "ora", "pret_unitar": "100"},
     {"descriere": "Produs marfa vandut", "cantitate": "3", "um": "buc", "pret_unitar": "50"},
 ]
 CANONICAL_LINII = [
-    {"descriere": "Serviciu consultanta", "cantitate": 2, "um": "ora", "pret_unitar": 100, "cota_tva": COTA, "cota_propusa": COTA, "articol_id": None, "categorie_tva": None},
-    {"descriere": "Produs marfa vandut", "cantitate": 3, "um": "buc", "pret_unitar": 50, "cota_tva": COTA, "cota_propusa": COTA, "articol_id": None, "categorie_tva": None},
+    {"descriere": "Serviciu consultanta", "cantitate": 2, "um": "ora", "pret_unitar": 100, "cota_tva": COTA, "cota_propusa": COTA, "articol_id": None, "categorie_tva": None, "centru_cost_id": None},
+    {"descriere": "Produs marfa vandut", "cantitate": 3, "um": "buc", "pret_unitar": 50, "cota_tva": COTA, "cota_propusa": COTA, "articol_id": None, "categorie_tva": None, "centru_cost_id": None},
 ]
 
 

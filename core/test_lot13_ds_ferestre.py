@@ -35,7 +35,7 @@ def test_def_673_fereastra_deschisa_peste_alta_e_fereastra_de_lucru_cat_ecranul(
               fir: (f.querySelector('.fereastra-fir') || {}).innerText || '', acum: (f.querySelector('.fir-acum') || {}).innerText || '' });
       }, 120);
     })""")
-    assert "fer-lucru" in r["clase"], r
+    assert set(r["clase"].split()) >= {"fer-lucru"}, r
     assert abs(r["lat"] - (LAT - 48)) <= 2 and abs(r["inalt"] - (INALT - 48)) <= 2, r          # cât ecranul, minus marginea
     assert abs(r["stanga"] - 24) <= 2 and abs(r["sus"] - 24) <= 2, r                           # centrată
     # 575 — drumul se încheie cu fereastra de acum (nu cu părintele, citit ca titlu). MUTAȚIE: `fir-acum` scos -> pică.

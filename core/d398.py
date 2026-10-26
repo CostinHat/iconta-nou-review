@@ -226,6 +226,15 @@ MONEDA_OSS = "EUR"
 ECRAN_OSS, CAMP_OSS = "date_firma", "df-inregistrat_oss"
 
 
+#: Temeiul înregistrării în regimul special (citat în ambele motive): CF art.315 alin.(3).
+TEMEI_OSS = "CF art.315 alin.(3)"
+MOTIV_OSS_NU = ("D398 se depune numai de firma înregistrată în regimul special OSS, care a depus declarația de începere a activității "
+                "(" + TEMEI_OSS + "); în Date firmă ai răspuns că firma nu e înregistrată, deci nu are D398 de depus.")
+MOTIV_OSS_NEDECLARAT = ("D398 nu se poate genera: nu ai răspuns în Date firmă la „Înregistrată în regimul special OSS”. D398 se depune numai de "
+                        "firma care a depus declarația de începere a activității sale supuse regimului special (" + TEMEI_OSS + "); spune "
+                        "acolo dacă firma e înregistrată.")
+
+
 def refuz_oss(inregistrat):
     """[lotul 13, deficiența 595; decizia Costin 26.10.2026: înregistrarea OSS se întreabă în Date firmă, nu în formular] Răspunsul firmei
     la „Înregistrată în regimul special OSS” (Date firmă; True / False / None = nedeclarat, fără răspuns implicit). CF art.315 alin.(3):
@@ -234,12 +243,7 @@ def refuz_oss(inregistrat):
     are conexiunea. -> motivul (text pentru contabil, cu trimitere la Date firmă) sau None dacă firma a răspuns Da."""
     if inregistrat is True:
         return None
-    if inregistrat is False:
-        return ("D398 se depune numai de firma înregistrată în regimul special OSS, care a depus declarația de începere a activității "
-                "(CF art.315 alin.(3)); în Date firmă ai răspuns că firma nu e înregistrată, deci nu are D398 de depus.")
-    return ("D398 nu se poate genera: nu ai răspuns în Date firmă la „Înregistrată în regimul special OSS”. D398 se depune numai de firma "
-            "care a depus declarația de începere a activității sale supuse regimului special (CF art.315 alin.(3)); spune acolo dacă "
-            "firma e înregistrată.")
+    return MOTIV_OSS_NU if inregistrat is False else MOTIV_OSS_NEDECLARAT
 
 
 def erori_generare(prof, manual):

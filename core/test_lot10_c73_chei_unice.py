@@ -607,8 +607,11 @@ def test_solduri_cont_dublat_in_randuri_trimise(firma):
     # [lotul 13, deficiența 582, comanda Costin 13.1, verbatim: „Verificarea dublurilor oprește tot înainte de celelalte verificări; restul
     # greșelilor apar abia la reîncărcare.”] Perechea dublată se respinge acum pe rânduri, în `verifica_randuri`, cu celelalte verificări
     # (regula `partener_dublat`, ambele rânduri numite); fără niciun rând bun, refuzul întreg le spune pe amândouă — tot refuz numit, nu 500
-    assert ([(e["rand"], e["regula"]) for e in solduri_parteneri_api.verifica_randuri(dublati)[0]] == [(2, "partener_dublat"), (3, "partener_dublat")]
-            and "rândul 3" in str(ex.value) and "rândul 2" in str(ex.value) and "4111" in str(ex.value)), repr(ex.value)
+    erori_dublate = solduri_parteneri_api.verifica_randuri(dublati)[0]
+    assert [(e["rand"], e["regula"]) for e in erori_dublate] == [(2, "partener_dublat"), (3, "partener_dublat")]
+    # refuzul întreg poartă, în ordine, chiar mesajele celor două rânduri (egalitate pe șirul compus din structură, nu căutare de sub-șir)
+    detaliu = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in erori_dublate)
+    assert str(ex.value).split(" în evidență: ", 1)[1].split(". Soldurile pe parteneri", 1)[0] == detaliu, repr(ex.value)
     assert _numar("solduri_initiale") == 0 and _numar("solduri_parteneri") == 0
 
 

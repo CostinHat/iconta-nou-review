@@ -38,7 +38,7 @@ def cur():
         with c.cursor() as k:
             k.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
             k.execute(_tprov.parametrizeaza_template(io.open(os.path.join(RAD, "tenant_template.sql"), encoding="utf-8").read(), SCH))
-            k.execute("SET search_path TO %s, public" % SCH)
+            k.execute("SET LOCAL search_path TO %s, public" % SCH)
             yield k
         c.rollback()
 

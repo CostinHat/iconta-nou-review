@@ -18,6 +18,7 @@ duratei normale, în ani.
 import io
 import os
 import re
+import types
 from decimal import Decimal
 
 from core.common import cate as _cate
@@ -28,9 +29,7 @@ _RAND = re.compile(r"^(\d+(?:\.\d+)+)\.\s+(.*?)[\s;:,.]*\s(\d+)\s*-\s*(\d+)\s*$"
 TEMEI_CATALOG = "HG 2139/2004"
 
 
-def catalog():
-    """{cod: {denumire, ani_min, ani_max}} — numai codurile cu plajă de durată (grupele fără plajă nu se aleg). Fără cache de proces:
-    citirea fișierului versionat costă ~3 ms (măsurat), iar un cache ar fi încă o stare de proces de declarat (P6)."""
+def _citeste_catalogul():
     out = {}
     for linie in io.open(_CATALOG, encoding="utf-8"):
         if linie.strip() == "DICȚIONAR":   # anexa (corespondența cu HG 964/1998) nu e catalogul: se oprește aici
@@ -38,7 +37,19 @@ def catalog():
         m = _RAND.match(linie.strip())
         if m:
             out[m.group(1)] = {"denumire": m.group(2).strip(" -"), "ani_min": int(m.group(3)), "ani_max": int(m.group(4))}
-    return out
+    return types.MappingProxyType(out)
+
+
+#: {cod: {denumire, ani_min, ani_max}} — numai codurile cu plajă de durată (grupele fără plajă nu se aleg). CONSTANTĂ, nu cache: citită o
+#: singură dată la import din fișierul versionat (`anaf_surse/hg_2139_2004_…`), imuabilă la nivelul codurilor (MappingProxyType) și schimbată numai odată cu
+#: publicarea, care repornește procesul. [lotul 13, C5] Înainte se citea fișierul la FIECARE apel (~3 ms) — și apelul venea din interiorul unei
+#: conexiuni din pool (validarea facturii primite cu linie de imobilizare, 601): scanerul de blocante o socotea cale cu I/O sub conexiune.
+_CATALOGUL = _citeste_catalogul()
+
+
+def catalog():
+    """Catalogul HG 2139/2004 (vezi `_CATALOGUL`): {cod: {denumire, ani_min, ani_max}}, imuabil."""
+    return _CATALOGUL
 
 
 def verifica_cod(cod, dnf_luni):

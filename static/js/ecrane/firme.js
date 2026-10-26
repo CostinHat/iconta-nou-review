@@ -4617,17 +4617,21 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
   const zSal = corp.querySelector("#c-zona-salariat"), selSal = corp.querySelector("#c-salariat");
   let salariatiIncarcati = false;
   const cuSalariat = () => corp.querySelector("#c-cat").value === "avans_decontare";
+  const cerereSalariati = ultimaCerere();   // [C103] numai răspunsul ultimei cereri a listei ajunge în câmp
   const salariatiInLista = async () => {
     if (salariatiIncarcati) return;
     salariatiIncarcati = true;
+    const actuala = cerereSalariati();
     try {
       const r = await api.get(`/tenants/${t.id}/salariati?activ=true`);
+      if (!actuala()) return;
       const sal = (r && r.salariati) || [];
       selSal.innerHTML = sal.length ? ALEGE + sal.map((x) => `<option value="${x.id}">${esc([x.nume, x.prenume].filter(Boolean).join(" "))}</option>`).join("")
         : `<option value="" data-alege>Firma nu are salariați în Salarizare</option>`;
       cautaInLista(corp.querySelector("#c-salariat-cauta"), selSal);
     } catch (e) {
       salariatiIncarcati = false;
+      if (!actuala()) return;
       selSal.innerHTML = `<option value="" data-alege>Salariații nu s-au putut încărca — reîncearcă</option>`;
     }
   };
@@ -6673,7 +6677,7 @@ async function ecranAlocariCentre(corp, nav, t) {
     corp.querySelectorAll("select.cc-aloc").forEach((s) => {
       if (s.value !== s.dataset.initial) corpReq[{ sal: "salariati", mf: "mijloace", art: "articole" }[s.dataset.fel]][s.dataset.id] = valoareCentru(s.value);
     });
-    const n = Object.values(corpReq).reduce((t, g) => t + Object.keys(g).length, 0);
+    const n = Object.values(corpReq).reduce((acc, g) => acc + Object.keys(g).length, 0);
     if (!n) { arataMesaj(msg, "Nimic schimbat: alege centrul pe rândurile de mai sus, apoi salvează.", "eroare"); return; }
     try {
       await api.put(`/tenants/${t.id}/centre-cost/alocari`, corpReq);

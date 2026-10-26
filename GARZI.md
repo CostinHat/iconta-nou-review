@@ -9313,8 +9313,8 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_d177.py` — Teste D177 (redirectionare impozit pe profit catre entitati nonprofit).
 - `core/test_d177_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D177 gol NU produce declaratie.
 - `core/test_d1_import_integritate.py` — core/test_d1_import_integritate.py — GARD: importul de salariati BLOCHEAZA CNP invalid, NU sare tacut.
-- `core/test_d200_formular.py` — [Regula 4 + Regula 6 + METODA §23] GARDA: formularul D200 gol NU produce declaratie; regulile pe
-- `core/test_d201_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D201 gol NU produce declaratie; identitatea + sectiunile +
+- `core/test_d200_formular.py` — [Regula 4 + Regula 6 + METODA §23] GARDA: formularul D200 gol NU produce declaratie; regulile pe [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
+- `core/test_d201_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D201 gol NU produce declaratie; identitatea + sectiunile + [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
 - `core/test_d204_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D204 gol NU produce declaratie; asocierea + reprezentantul +
 - `core/test_d205.py` — Teste gardian pentru D205 - REFACUT A DOUA OARA 16.07.2026.
 - `core/test_d205_cesiune.py` — GARD — D205 împarte dividendele după cotele de la DATA DISTRIBUIRII, nu după cotele de azi (lot 19 pct.4e, 02.10.2026).
@@ -9341,11 +9341,11 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_d212_oblig_realizat.py` — D212 Etapa 4 — CAS, CASS, impozitul în sistem real și sumarul (oblig_realizat), din venitul declarat (02.10.2026).
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
 - `core/test_d216_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D216 gol NU produce declaratie; antetul + cel putin un bun
-- `core/test_d220.py` — Teste D220 (venit estimat / norma de venit - persoane fizice).
-- `core/test_d221.py` — Teste D221 (venituri din activitati agricole impuse pe norme de venit - persoane fizice/asocieri).
-- `core/test_d221_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D221 gol NU produce declaratie; contribuabilul + activitatile
-- `core/test_d223.py` — Teste D223 (venituri estimate pentru asocieri fara personalitate juridica / transparenta fiscala).
-- `core/test_d223_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D223 gol NU produce declaratie; asocierea + responsabilul +
+- `core/test_d220.py` — Teste D220 (venit estimat / norma de venit - persoane fizice). [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
+- `core/test_d221.py` — Teste D221 (venituri din activitati agricole impuse pe norme de venit - persoane fizice/asocieri). [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
+- `core/test_d221_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D221 gol NU produce declaratie; contribuabilul + activitatile [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
+- `core/test_d223.py` — Teste D223 (venituri estimate pentru asocieri fara personalitate juridica / transparenta fiscala). [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
+- `core/test_d223_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D223 gol NU produce declaratie; asocierea + responsabilul + [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
 - `core/test_d230.py` — Teste D230 (redirectionare pana la 3,5% din impozit catre ONG).
 - `core/test_d230_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D230 gol NU produce declaratie; identitatea PF + entitatea ONG
 - `core/test_d300.py` — Teste gardian pentru D300 — lantul de calcul R27->R42 lipsea complet.
@@ -9431,7 +9431,7 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_d406_supplierid.py` — GARD D406 SupplierID (10.08.2026): SupplierID/CustomerID pe factura NU poate fi "0".
 - `core/test_d406_taxcode_nota.py` — GARD D406 TaxCode nota contabila (10.08.2026): pe liniile din GeneralLedgerEntries
 - `core/test_d4_mutatie_prinsa.py` — [D4, 18.09.2026] GARDA-MUTAȚIE PERMANENTĂ. O rută nouă care dublează `facturi.total`, numită doar
-- `core/test_d600_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D600 gol NU produce declaratie; identitatea + cel putin o
+- `core/test_d600_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D600 gol NU produce declaratie; identitatea + cel putin o [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
 - `core/test_d603_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D603 gol NU produce declaratie; identitatea + categoria de
 - `core/test_d710.py` — Teste gardian pentru D710 (Declaratie rectificativa - corectie D100).
 - `core/test_d710_cod131_132.py` — GARD TURA 3 — D710 C5: cod_oblig 131/132 cer Data_I (data incheierii exercitiului financiar) pe care

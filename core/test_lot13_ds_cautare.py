@@ -16,7 +16,8 @@ CE FACE IMPOSIBIL:
   3. „D112” găsește declarația firmei, „tichet” / „stat de plată” Salariații, „NIR” Stocurile; NICIO dată a firmei (numele unui salariat) nu se
      caută și nu se citește (precizarea 26.10);
   4. firma altui cabinet să se poată citi prin căutare (ruta refuză ca orice rută a firmei);
-  5. căsuța să lipsească dintr-o fereastră de lucru sau Ctrl+K să dispară (structural; comportamentul îl probează e2e).
+  5. căsuța să lipsească dintr-o fereastră de lucru: verificatorul `CAUTARE_FEREASTRA` (probat în `core/test_lot13_ds_verificator.py`) și e2e-ul
+     `test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste` (Ctrl+K inclus) — fără aserțiuni pe sursa JS aici (garda peste gărzi).
 
 Temei: N/A — funcție de interfață (DS cap.9 „Căutarea globală”).
 """
@@ -51,7 +52,7 @@ def test_proba_lui_costin_decontul_de_deplasare_se_gaseste(q):
 def test_declaratia_tichetul_statul_de_plata_si_nir():
     """3. MUTAȚIE: `SINONIME` golit -> „tichet” nu găsește Salariați -> pică."""
     d = C.cauta("D112", FIRMA)
-    assert d[0]["fel"] == "declaratie" and d[0]["tip"] == "d112" and "contribuțiilor sociale" in d[0]["titlu"], d[:2]
+    assert d[0]["fel"] == "declaratie" and d[0]["tip"] == "d112" and d[0]["titlu"] == "D112 — " + __import__("core.d112", fromlist=["x"]).DENUMIRE_OFICIALA.strip(), d[:2]
     t = C.cauta("tichet", FIRMA)
     assert t[0]["fel"] == "card" and t[0]["cheie"] == "salariati", t
     assert C.cauta("stat de plată", FIRMA)[0]["cheie"] == "salariati"      # precizarea 26.10: «stat de plată»
@@ -116,17 +117,3 @@ def test_nicio_data_a_firmei_nu_se_cauta():
     import inspect
     assert "salariati_api" not in inspect.getsource(C) and 'fel": "salariat"' not in inspect.getsource(C)
 
-
-def test_casuta_e_in_fiecare_fereastra_si_ctrl_k_exista():
-    """5. Structural (comportamentul îl probează e2e): navigatorul montează căsuța în bara de sus a FIECĂREI ferestre de lucru, lângă traseu
-    (numai fereastra mică de confirmare și clientul din portal n-o au), iar Ctrl+K e legat de `focuseazaCautarea`.
-    MUTAȚIA: scos apelul `puneCautarea(... cautare-fereastra ...)` din `randeazaFerestre` -> pică."""
-    import io, os
-    rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    nav = io.open(os.path.join(rad, "static", "js", "navigator.js"), encoding="utf-8").read()
-    i = nav.index("function randeazaFerestre()")
-    corp = nav[i:nav.index("\n  }\n", i)]
-    assert 'puneCautarea(fer.querySelector(".fereastra-antet")' in corp and '"cautare-fereastra"' in corp, "căsuța nu mai e în antetul ferestrei"
-    assert '!== "mic"' in corp and '!== "client"' in corp
-    js = io.open(os.path.join(rad, "static", "js", "cautare.js"), encoding="utf-8").read()
-    assert "export function focuseazaCautarea" in js and 'key).toLowerCase() === "k"' in js and "e.ctrlKey || e.metaKey" in js

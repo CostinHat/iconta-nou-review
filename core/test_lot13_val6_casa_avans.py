@@ -9,12 +9,13 @@ OMFP 1802/2014, funcțiunea contului 542 „Avansuri de trezorerie”: contul �
 pe persoana care le-a primit (evidența analitică pe salariat).
 
 Schemă efemeră din template, ștearsă la ieșire. Datele de PORNIRE (salariații) scrise direct — salariații sunt scrierea altui modul."""
+import datetime as _dt
 import io
 import pathlib
 
 import pytest
 
-from core import casa_api as _ca, db as _db, tenant_provisioning as _tprov
+from core import casa_api as _ca, db as _db, salariat_decont as _sd, tenant_provisioning as _tprov
 from core.identitate import valideaza_cnp
 
 _SCH = "efemer_lot13_val6_casa"
@@ -71,22 +72,31 @@ def test_cnp_de_proba_e_valid():
     assert valideaza_cnp(_CNP)[0], _CNP
 
 
+def _mesaj_alege(conn, salariat_id, data):
+    """Refuzul punctului unic `salariat_decont.alege` (același text pe Casă și pe Operațiuni) — așteptarea se citește de la sursă, nu se scrie a doua oară."""
+    from core import erori as _erori
+    with conn.cursor() as cur:
+        with pytest.raises(_erori.DateInvalide) as e:
+            _sd.alege(cur, _SCH, salariat_id, data, "c-salariat")
+    return e.value.detaliu["mesaj"]
+
+
 def test_fara_salariat_refuz_lang_camp(conn):
     _incarca_casa(conn)
     r = _ca.adauga(conn, _SCH, _avans())
-    assert "eroare" in r and [c["camp"] for c in r["erori_campuri"]] == ["c-salariat"], r
+    assert r.get("eroare") is not None and [c["camp"] for c in r["erori_campuri"]] == ["c-salariat"], r
 
 
 def test_salariat_necunoscut_refuz(conn):
     _incarca_casa(conn)
     r = _ca.adauga(conn, _SCH, _avans(salariat_id=999))
-    assert [c["camp"] for c in r["erori_campuri"]] == ["c-salariat"] and "evidența" in r["eroare"], r
+    assert [(c["camp"], c["mesaj"]) for c in r["erori_campuri"]] == [("c-salariat", _mesaj_alege(conn, 999, _dt.date(2026, 10, 12)))], r
 
 
 def test_salariat_neangajat_la_data_refuz(conn):
     _incarca_casa(conn)
     r = _ca.adauga(conn, _SCH, _avans(salariat_id=2))   # angajat de la 01.11.2026, dispoziția e din 12.10
-    assert [c["camp"] for c in r["erori_campuri"]] == ["c-salariat"] and "nu era salariat" in r["eroare"], r
+    assert [(c["camp"], c["mesaj"]) for c in r["erori_campuri"]] == [("c-salariat", _mesaj_alege(conn, 2, _dt.date(2026, 10, 12)))], r
 
 
 def test_salariat_angajat_nota_are_542_pe_persoana(conn):
@@ -107,7 +117,7 @@ def test_alte_categorii_nu_cer_salariat(conn):
 def test_previzualizarea_spune_refuzul_salariatului(conn):
     _incarca_casa(conn)
     p = _ca.previzualizare(conn, _SCH, _avans(salariat_id=2))
-    assert p["refuz"] and "nu era salariat" in p["refuz"], p["refuz"]
+    assert p["refuz"] == _mesaj_alege(conn, 2, _dt.date(2026, 10, 12)), p["refuz"]
     assert _ca.previzualizare(conn, _SCH, _avans(salariat_id=1))["refuz"] is None
 
 

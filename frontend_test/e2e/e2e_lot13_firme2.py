@@ -355,7 +355,7 @@ def test_def_589_sinteticul_refuzat_inainte_de_salvare_si_contul_nelegal_se_ster
     assert sql('SELECT count(*) FROM "%s".plan_conturi WHERE simbol = \'731\'' % s) == [(0,)]
     r = _api(patron, "POST", "/tenants/%d/plan-conturi" % f["tenant_id"], {"simbol": "731", "denumire": "Test cont nelegal"})
     assert r["status"] >= 400 and "e sintetic" in str(r["json"]), r
-    sql('INSERT INTO "%s".plan_conturi (simbol, denumire, tip) VALUES (\'731\', \'Test cont nelegal\', \'Nedeterminat\')' % s)   # date de pornire
+    sql('INSERT INTO "%s".plan_conturi (simbol, denumire, tip) VALUES (\'731\', \'Test cont nelegal\', \'Nedeterminat\')' % s)   # date-de-pornire: contul sintetic 731 nelegal, pe care aplicația îl refuză acum — trebuie să existe deja ca să probăm ștergerea lui
     patron.firma(f["nume"])
     _card(patron, "planconturi", "#pcf-adauga")
     pg.fill(_F + "#pcf-cauta", "731")

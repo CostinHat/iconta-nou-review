@@ -63,7 +63,7 @@ def test_dreptul_neconfirmat_trimite_cu_avertisment(trimitere, monkeypatch, acop
     r = et.trimite("tenant_x", 5, "P")
     print("696", acoperire, "->", r["stare"], "|", r.get("avertisment"))
     assert r["stare"] == "incarcat" and len(trimitere) == 1, (r, trimitere)   # a plecat la ANAF
-    assert r["avertisment"] == et.AVERTISMENT_ACOPERIRE[acoperire] and "Setări cont › Conectare SPV" in r["avertisment"], r
+    assert r["avertisment"] == et.AVERTISMENT_ACOPERIRE[acoperire] and et.AVERTISMENT_ACOPERIRE[acoperire].count("Setări cont › Conectare SPV") == 1, r
 
 
 def test_dreptul_confirmat_trimite_fara_avertisment(trimitere, monkeypatch):

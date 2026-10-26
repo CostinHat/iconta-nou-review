@@ -80,7 +80,7 @@ def test_nedeclarat_nu_genereaza_si_trimite_la_date_firma(conn):
         DA.genereaza(conn, _SCHEMA, "d398", _cerere())
     d = ei.value.detaliu()
     assert (d["ecran"], d["camp_ecran"]) == ("date_firma", "df-inregistrat_oss"), d   # butonul „Date firmă” cu câmpul adus în vedere
-    assert "nu ai răspuns" in d["mesaj"] and "Date firmă" in d["mesaj"] and "art.315 alin.(3)" in d["mesaj"], d["mesaj"]
+    assert d["mesaj"] == d398.MOTIV_OSS_NEDECLARAT, d["mesaj"]
 
 
 def test_nu_nu_genereaza_cu_motivul_legii(conn):
@@ -89,7 +89,7 @@ def test_nu_nu_genereaza_cu_motivul_legii(conn):
         DA.genereaza(conn, _SCHEMA, "d398", _cerere())
     d = ei.value.detaliu()
     assert (d["ecran"], d["camp_ecran"]) == ("date_firma", "df-inregistrat_oss")
-    assert "CF art.315 alin.(3)" in d["mesaj"] and "nu e înregistrată" in d["mesaj"], d["mesaj"]
+    assert d["mesaj"] == d398.MOTIV_OSS_NU, d["mesaj"]
 
 
 def test_da_genereaza_xml_d398(conn):
