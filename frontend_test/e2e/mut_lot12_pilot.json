@@ -13,8 +13,8 @@
  },
  {
   "fisier": "core/solduri_parteneri_api.py",
-  "ancora": "(d[\"numar\"], d[\"data\"], d[\"scadenta\"], d[\"suma\"], d[\"directie\"], d[\"tert_nume\"]",
-  "inlocuire": "(d[\"numar\"], d[\"data\"], d[\"scadenta\"], d[\"suma\"], \"emisa\", d[\"tert_nume\"]",
+  "ancora": "(d[\"numar\"], d[\"data\"], d[\"scadenta\"], d[\"suma\"], tva, d[\"directie\"], d[\"tert_nume\"]",
+  "inlocuire": "(d[\"numar\"], d[\"data\"], d[\"scadenta\"], d[\"suma\"], tva, \"emisa\", d[\"tert_nume\"]",
   "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_04_soldul_preluat_e_document_deschis"
  },
  {
@@ -136,5 +136,17 @@
   "ancora": "perioade-blocate?an=${an}&luna=${luna}&motiv=${encodeURIComponent(motiv)}`",
   "inlocuire": "perioade-blocate?an=${an}&luna=${luna}`",
   "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_39_deblocarea_lunii_cu_motiv"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "if (t) { _migMesaj += (_migMesaj ? \"\\n\" : \"\") + t; if (_migTip === \"ok\") _migTip = \"avert\"; }",
+  "inlocuire": "if (false) { _migMesaj = t; }",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_01_preluarea_luna_si_balanta_de_deschidere"
+ },
+ {
+  "fisier": "core/nomenclator_status_factura.py",
+  "ancora": "TIPURI_CU_INCASARE = (TIP_IMPLICIT, TIP_SOLD_PRELUAT)",
+  "inlocuire": "TIPURI_CU_INCASARE = (TIP_IMPLICIT,)",
+  "test": "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_04_soldul_preluat_e_document_deschis"
  }
 ]

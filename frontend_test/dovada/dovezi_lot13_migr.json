@@ -1,0 +1,1276 @@
+[
+ {
+  "nr": "662",
+  "firma": "tenant_9054",
+  "descriere": "FISCALOS (firmă fără nimic adus, creată înainte de reparație): fereastra firmei se deschide cu caseta preluării, deasupra grupurilor, și butonul principal „Începe preluarea”. Nu se apasă nimic",
+  "pasi": [
+   {
+    "asteapta": "#firma-preluare #fa-preluare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Începe preluarea",
+    "zona": "#firma-preluare"
+   },
+   {
+    "contine": "Firma e nouă în iConta.eu: nu are încă nimic adus din programul vechi",
+    "zona": "#firma-preluare"
+   }
+  ],
+  "captura": "662_fiscalos_f9054_vechi_incepe_preluarea.png"
+ },
+ {
+  "nr": "662",
+  "firma": "tenant_9057",
+  "descriere": "F7 (balanța salvată pe 24.10, înainte de reparație; nicio notă încă): fereastra firmei arată „Preluarea firmei nu e terminată. De făcut: Vector fiscal, Solduri parteneri, Articole și stoc inițial.” și „Continuă preluarea”. Nu se apasă nimic",
+  "pasi": [
+   {
+    "asteapta": "#firma-preluare #fa-preluare"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Continuă preluarea",
+    "zona": "#firma-preluare"
+   },
+   {
+    "contine": "De făcut: Vector fiscal, Solduri parteneri, Articole și stoc inițial.",
+    "zona": "#firma-preluare"
+   }
+  ],
+  "captura": "662_f7_vechi_continua_preluarea.png"
+ },
+ {
+  "nr": "663",
+  "firma": "tenant_9057",
+  "descriere": "F7 în lucru: Firme -> „Migrare cabinet”: stările sunt ale lui F7 — Solduri inițiale gata (balanța la 30.09.2026: 7 conturi), Vector fiscal obligatoriu (nimic citit), Solduri parteneri obligatoriu (401 nedefalcat), Articole și stoc inițial obligatoriu (371: 4.100 față de 4.200). Nu se apasă niciun pas",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "asteapta": "#opt-migrare"
+   },
+   {
+    "click": "#opt-migrare"
+   },
+   {
+    "asteapta": "#mig-meniu .mig-op"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "asteapta": "#mig-firma-lucru"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Starea pașilor e a firmei în lucru, F7 Preluare Test SRL",
+    "zona": "#mig-firma-lucru"
+   },
+   {
+    "contine": "Lipsesc: regimul fiscal (micro / profit), dacă e plătitoare de TVA, operațiunile intracomunitare.",
+    "zona": "#mig-meniu"
+   },
+   {
+    "contine": "balanța la 30.09.2026: 7 conturi.",
+    "zona": "#mig-meniu"
+   },
+   {
+    "contine": "De defalcat pe parteneri: 401 (creditor 3.000,00 lei în balanță) — partenerii dau 0,00 lei.",
+    "zona": "#mig-meniu"
+   },
+   {
+    "contine": "371: stocul inițial 4.100,00 lei, balanța debitor 4.200,00 lei",
+    "zona": "#mig-meniu"
+   }
+  ],
+  "captura": "663_f7_vechi_migrare_cabinet_pe_firma.png"
+ },
+ {
+  "nr": "664",
+  "firma": "tenant_9057",
+  "descriere": "F7 (balanța salvată înainte de reparație): Import date -> sus, „De făcut: Vector fiscal, Solduri parteneri, Articole și stoc inițial.”; rândurile lor „obligatoriu”, cu motivul (401 nedefalcat, 371 nepotrivit). Nimic nu se importă",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": "#mig-urmatori"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "De făcut: Vector fiscal, Solduri parteneri, Articole și stoc inițial.",
+    "zona": "#mig-urmatori"
+   },
+   {
+    "exista": ".mig-frand[data-strat='solduri_parteneri'] [data-stare-pas='obligatoriu']"
+   },
+   {
+    "exista": ".mig-frand[data-strat='articole'] [data-stare-pas='obligatoriu']"
+   }
+  ],
+  "captura": "664_f7_vechi_pasii_urmatori.png"
+ },
+ {
+  "nr": "665",
+  "firma": "tenant_9057",
+  "descriere": "F7 în lucru: Migrare cabinet -> „Solduri parteneri” (se deschide pe F7) -> „Altă firmă”: lista cabinetului — F7 „de completat”, „2 parteneri importați · nedefalcat: 401 (creditor 3.000,00 lei în balanță) — partenerii dau 0,00 lei”; „Am terminat soldurile pe parteneri” inactiv, cu F5 și F7 numite. Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "asteapta": "#opt-migrare"
+   },
+   {
+    "click": "#opt-migrare"
+   },
+   {
+    "asteapta": "#mig-meniu .mig-op"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": "#mig-meniu .mig-op",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-alta-firma"
+   },
+   {
+    "click": "#mig-alta-firma"
+   },
+   {
+    "asteapta": "#mig-finalizeaza"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "2 parteneri importați · nedefalcat: 401 (creditor 3.000,00 lei în balanță) — partenerii dau 0,00 lei",
+    "zona": "#mig-firme"
+   },
+   {
+    "inactiv": "#mig-finalizeaza"
+   },
+   {
+    "contine": "F7 Preluare Test SRL",
+    "zona": "#mig-fin-motiv"
+   },
+   {
+    "contine": "F5 SRL Salariati SRL",
+    "zona": "#mig-fin-motiv"
+   }
+  ],
+  "captura": "665_f7_vechi_parteneri_de_completat.png"
+ },
+ {
+  "nr": "666",
+  "firma": "tenant_9054",
+  "descriere": "FISCALOS (fără balanță): Migrare cabinet -> „Solduri parteneri” -> „Altă firmă”: lista cabinetului — FISCALOS „nu e cazul”, „balanța n-are solduri pe conturi de terți”. Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "asteapta": "#opt-migrare"
+   },
+   {
+    "click": "#opt-migrare"
+   },
+   {
+    "asteapta": "#mig-meniu .mig-op"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": "#mig-meniu .mig-op",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-alta-firma"
+   },
+   {
+    "click": "#mig-alta-firma"
+   },
+   {
+    "asteapta": "#mig-finalizeaza"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu e cazul",
+    "zona": "#mig-firme"
+   },
+   {
+    "contine": "balanța n-are solduri pe conturi de terți",
+    "zona": "#mig-firme"
+   }
+  ],
+  "captura": "666_fiscalos_f9054_vechi_nu_e_cazul.png"
+ },
+ {
+  "nr": "666",
+  "firma": "tenant_9057",
+  "descriere": "F7: Import date -> „Solduri parteneri” -> partenerii lui F7 cu Alfa de două ori, un CUI greșit și Beta (generatorul testului): 4111 nu se potrivește (Beta singur, 1.000 față de 2.500), iar motivul contului stă scurt pe rând; deodată se văd dublura (582), CUI-ul greșit, iar caseta înlocuirii spune „Fișierul nou: 0 rânduri valide din 4” (583); refuzurile stau în pagină, deasupra tabelului (581). Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_f7_parteneri_dublura",
+    "nume": "parteneri_f7_dublura.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu intră: contul 4111 nu se potrivește cu soldul lui (cifrele, deasupra tabelului)",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "apare pe același cont 4111 și pe rândul 3",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "CUI 14837429 invalid",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "Fișierul nou: 0 rânduri valide din 4 — nu intră nimic.",
+    "zona": "#mig-inlocuire"
+   },
+   {
+    "exista": "#mig-refuzuri"
+   },
+   {
+    "exista": "button[data-filtru-stare='respins']"
+   }
+  ],
+  "captura": "666_f7_vechi_parteneri_confruntare.png"
+ },
+ {
+  "nr": "581",
+  "firma": "tenant_9057",
+  "descriere": "F7: Import date -> „Solduri parteneri” -> partenerii lui F7 cu Alfa de două ori, un CUI greșit și Beta (generatorul testului): 4111 nu se potrivește (Beta singur, 1.000 față de 2.500), iar motivul contului stă scurt pe rând; deodată se văd dublura (582), CUI-ul greșit, iar caseta înlocuirii spune „Fișierul nou: 0 rânduri valide din 4” (583); refuzurile stau în pagină, deasupra tabelului (581). Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_f7_parteneri_dublura",
+    "nume": "parteneri_f7_dublura.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu intră: contul 4111 nu se potrivește cu soldul lui (cifrele, deasupra tabelului)",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "apare pe același cont 4111 și pe rândul 3",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "CUI 14837429 invalid",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "Fișierul nou: 0 rânduri valide din 4 — nu intră nimic.",
+    "zona": "#mig-inlocuire"
+   },
+   {
+    "exista": "#mig-refuzuri"
+   },
+   {
+    "exista": "button[data-filtru-stare='respins']"
+   }
+  ],
+  "captura": "581_f7_vechi_parteneri_refuzuri.png"
+ },
+ {
+  "nr": "582",
+  "firma": "tenant_9057",
+  "descriere": "F7: Import date -> „Solduri parteneri” -> partenerii lui F7 cu Alfa de două ori, un CUI greșit și Beta (generatorul testului): 4111 nu se potrivește (Beta singur, 1.000 față de 2.500), iar motivul contului stă scurt pe rând; deodată se văd dublura (582), CUI-ul greșit, iar caseta înlocuirii spune „Fișierul nou: 0 rânduri valide din 4” (583); refuzurile stau în pagină, deasupra tabelului (581). Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_f7_parteneri_dublura",
+    "nume": "parteneri_f7_dublura.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu intră: contul 4111 nu se potrivește cu soldul lui (cifrele, deasupra tabelului)",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "apare pe același cont 4111 și pe rândul 3",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "CUI 14837429 invalid",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "Fișierul nou: 0 rânduri valide din 4 — nu intră nimic.",
+    "zona": "#mig-inlocuire"
+   },
+   {
+    "exista": "#mig-refuzuri"
+   },
+   {
+    "exista": "button[data-filtru-stare='respins']"
+   }
+  ],
+  "captura": "582_f7_vechi_parteneri_refuzuri.png"
+ },
+ {
+  "nr": "583",
+  "firma": "tenant_9057",
+  "descriere": "F7: Import date -> „Solduri parteneri” -> partenerii lui F7 cu Alfa de două ori, un CUI greșit și Beta (generatorul testului): 4111 nu se potrivește (Beta singur, 1.000 față de 2.500), iar motivul contului stă scurt pe rând; deodată se văd dublura (582), CUI-ul greșit, iar caseta înlocuirii spune „Fișierul nou: 0 rânduri valide din 4” (583); refuzurile stau în pagină, deasupra tabelului (581). Nimic nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_f7_parteneri_dublura",
+    "nume": "parteneri_f7_dublura.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu intră: contul 4111 nu se potrivește cu soldul lui (cifrele, deasupra tabelului)",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "apare pe același cont 4111 și pe rândul 3",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "CUI 14837429 invalid",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "Fișierul nou: 0 rânduri valide din 4 — nu intră nimic.",
+    "zona": "#mig-inlocuire"
+   },
+   {
+    "exista": "#mig-refuzuri"
+   },
+   {
+    "exista": "button[data-filtru-stare='respins']"
+   }
+  ],
+  "captura": "583_f7_vechi_parteneri_refuzuri.png"
+ },
+ {
+  "nr": "668",
+  "firma": "tenant_9057",
+  "descriere": "F7 în lucru: Migrare cabinet -> „Articole și stoc inițial” se deschide direct pe F7 (nu mai cere firma), cu „Există deja: 3 articole, stoc inițial 4.100,00 lei.” -> articolele lui F7 (generatorul testului): rândurile lui 371 nu intră (4.100 față de 4.200), motivul o dată, grupat (624); „607 dedus din 371” o singură dată. Nimic nu se importă",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "asteapta": "#opt-migrare"
+   },
+   {
+    "click": "#opt-migrare"
+   },
+   {
+    "asteapta": "#mig-meniu .mig-op"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": "#mig-meniu .mig-op",
+    "text": "Articole și stoc inițial"
+   },
+   {
+    "asteapta": "#mig-exista"
+   },
+   {
+    "captura": "668_f7_vechi_articole_direct.png"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_f7_articole",
+    "nume": "articole_f7.csv"
+   },
+   {
+    "asteapta": "#mig-importa"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "rândurile 2, 3, 4: nu intră: articolele de pe contul 371 dau 4.100,00 lei, iar balanța de deschidere are 4.200,00 lei",
+    "zona": "#mig-refuzuri"
+   },
+   {
+    "contine": "în stoc inițial lipsesc 100,00 lei",
+    "zona": "#mig-reconciliere"
+   },
+   {
+    "inactiv": "#mig-importa"
+   }
+  ],
+  "captura": "668_f7_vechi_articole_nepotrivite.png"
+ },
+ {
+  "nr": "624",
+  "firma": "tenant_9057",
+  "descriere": "F7 în lucru: Migrare cabinet -> „Articole și stoc inițial” se deschide direct pe F7 (nu mai cere firma), cu „Există deja: 3 articole, stoc inițial 4.100,00 lei.” -> articolele lui F7 (generatorul testului): rândurile lui 371 nu intră (4.100 față de 4.200), motivul o dată, grupat (624); „607 dedus din 371” o singură dată. Nimic nu se importă",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "asteapta": "#opt-migrare"
+   },
+   {
+    "click": "#opt-migrare"
+   },
+   {
+    "asteapta": "#mig-meniu .mig-op"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": "#mig-meniu .mig-op",
+    "text": "Articole și stoc inițial"
+   },
+   {
+    "asteapta": "#mig-exista"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_f7_articole",
+    "nume": "articole_f7.csv"
+   },
+   {
+    "asteapta": "#mig-importa"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "rândurile 2, 3, 4: nu intră: articolele de pe contul 371 dau 4.100,00 lei, iar balanța de deschidere are 4.200,00 lei",
+    "zona": "#mig-refuzuri"
+   },
+   {
+    "contine": "în stoc inițial lipsesc 100,00 lei",
+    "zona": "#mig-reconciliere"
+   },
+   {
+    "inactiv": "#mig-importa"
+   }
+  ],
+  "captura": "624_f7_vechi_refuzuri_grupate.png"
+ },
+ {
+  "nr": "667",
+  "firma": "tenant_9057",
+  "descriere": "F7: Import date -> „Solduri inițiale”: explicația lungă pliată („Ce se citește din balanță”) -> balanța lui F7 (generatorul testului): rezumatul lipit sus are numai titlul, totalurile și banda; avertismentul rulajelor stă în pagină. Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri ini"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "captura": "667_f7_vechi_inainte_de_fisier.png"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_f7_balanta",
+    "nume": "balanta_f7.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sold"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#mig-rulaje"
+   },
+   {
+    "nu_contine": "rulaj",
+    "zona": ".rezumat-fix"
+   },
+   {
+    "contine": "7 conturi",
+    "zona": ".rezumat-fix"
+   }
+  ],
+  "captura": "667_f7_vechi_balanta_rezumat_mic.png"
+ },
+ {
+  "nr": "669",
+  "firma": "tenant_9057",
+  "descriere": "F7 (partenerii preluați pe 24.10, înainte de reparație): Casă -> „+ Dispoziție nouă” -> încasare de la client, 1.500, CUI-ul lui Client Alfa Test SRL: „Factura încasată” oferă „Sold la 30.09.2026 · Client Alfa Test SRL · rămas 1.500,00 lei” — nu „Nicio factură emisă neîncasată”. Dispoziția NU se adaugă (datele lui F7 rămân neatinse)",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": "#c-toggle"
+   },
+   {
+    "click": "#c-toggle"
+   },
+   {
+    "completeaza": "#c-data",
+    "valoare": "2026-10-05"
+   },
+   {
+    "alege": "#c-cat",
+    "valoare": "incasare_client"
+   },
+   {
+    "completeaza": "#c-suma",
+    "valoare": "1500"
+   },
+   {
+    "completeaza": "#c-cui",
+    "valoare": "401007106"
+   },
+   {
+    "click": "#c-doc"
+   },
+   {
+    "asteapta": "#c-facturi [data-cf]"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sold la 30.09.2026",
+    "zona": "#c-facturi"
+   },
+   {
+    "contine": "Client Alfa Test SRL",
+    "zona": "#c-facturi"
+   },
+   {
+    "contine": "rămas 1.500,00 lei",
+    "zona": "#c-facturi"
+   },
+   {
+    "nu_contine": "Nicio factură",
+    "zona": "#c-facturi"
+   }
+  ],
+  "captura": "669_f7_vechi_casa_sold_preluat.png"
+ },
+ {
+  "nr": "580",
+  "firma": "tenant_9055",
+  "descriere": "F6 (balanța la 30.09.2026, importată pe 19.10): Import date -> rândul „Solduri inițiale” spune „balanța la 30.09.2026: 16 conturi” și „gata” -> „Solduri inițiale”: înainte de orice fișier, „Există deja: balanța la 30.09.2026: 16 conturi. Un fișier nou înlocuiește balanța de deschidere …”. Nimic nu se încarcă",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri ini"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "asteapta": "#mig-exista"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Există deja: balanța la 30.09.2026: 16 conturi. Un fișier nou înlocuiește balanța de deschidere",
+    "zona": "#mig-exista"
+   }
+  ],
+  "captura": "580_f6_vechi_exista_balanta.png"
+ },
+ {
+  "nr": "584",
+  "firma": "tenant_9055",
+  "descriere": "F6 (salariații importați pe 19.10): Import date -> „Salariați”: „Există deja: … salariați …” și „Importul adaugă salariații noi și actualizează fișele celor cu același CNP (după confirmare); nu dublează și nu șterge salariații care lipsesc din fișier.” Nimic nu se încarcă",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Salaria"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "asteapta": "#mig-exista"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Există deja:",
+    "zona": "#mig-exista"
+   },
+   {
+    "contine": "salariați",
+    "zona": "#mig-exista"
+   },
+   {
+    "contine": "Importul adaugă salariații noi și actualizează fișele celor cu același CNP",
+    "zona": "#mig-exista"
+   }
+  ],
+  "captura": "584_f6_vechi_salariati_exista.png"
+ },
+ {
+  "nr": "609",
+  "firma": "tenant_9055",
+  "descriere": "F6 (balanța preluată pe 19.10: 2131 D 24.000, 2813 C 6.000, 371 D 15.000, fără registru și fără articole): Control fiscal -> F6 -> „Rulează auditul de preluare”: diferențele fără minus — „balanța creditor 6.000,00 lei — în registru lipsesc 6.000,00 lei față de balanță”; temeiul istoricului declarațiilor o singură dată (623); textele importate fără litere pierdute (251)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='control'])"
+   },
+   {
+    "asteapta": "#cf-lista .mig-frand"
+   },
+   {
+    "click": "#cf-lista .mig-frand",
+    "text": "F6 Migrare Test SRL"
+   },
+   {
+    "asteapta": "#cf-audit-run"
+   },
+   {
+    "click": "#cf-audit-run"
+   },
+   {
+    "asteapta_text": "Ultimul audit"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Contul 2813 (amortizarea preluată): registrul 0,00 lei, balanța creditor 6.000,00 lei — în registru lipsesc 6.000,00 lei față de balanță.",
+    "zona": "#cf-audit-istoric"
+   },
+   {
+    "nu_contine": "-24.000",
+    "zona": "#cf-audit-istoric"
+   },
+   {
+    "nu_contine": "-6.000",
+    "zona": "#cf-audit-istoric"
+   }
+  ],
+  "captura": "609_f6_vechi_audit_fara_minus.png"
+ },
+ {
+  "nr": "623",
+  "firma": "tenant_9055",
+  "descriere": "F6 (balanța preluată pe 19.10: 2131 D 24.000, 2813 C 6.000, 371 D 15.000, fără registru și fără articole): Control fiscal -> F6 -> „Rulează auditul de preluare”: diferențele fără minus — „balanța creditor 6.000,00 lei — în registru lipsesc 6.000,00 lei față de balanță”; temeiul istoricului declarațiilor o singură dată (623); textele importate fără litere pierdute (251)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='control'])"
+   },
+   {
+    "asteapta": "#cf-lista .mig-frand"
+   },
+   {
+    "click": "#cf-lista .mig-frand",
+    "text": "F6 Migrare Test SRL"
+   },
+   {
+    "asteapta": "#cf-audit-run"
+   },
+   {
+    "click": "#cf-audit-run"
+   },
+   {
+    "asteapta_text": "Ultimul audit"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Sold de deschidere pe 4423 (TVA de plată, 2.940,00 lei) fără D300 în istoricul importat.",
+    "zona": "#cf-audit-istoric"
+   },
+   {
+    "exista": ".cf-audit-grup"
+   }
+  ],
+  "captura": "623_f6_vechi_audit_grupat.png"
+ },
+ {
+  "nr": "251",
+  "firma": "tenant_9055",
+  "descriere": "F6 (balanța preluată pe 19.10: 2131 D 24.000, 2813 C 6.000, 371 D 15.000, fără registru și fără articole): Control fiscal -> F6 -> „Rulează auditul de preluare”: diferențele fără minus — „balanța creditor 6.000,00 lei — în registru lipsesc 6.000,00 lei față de balanță”; temeiul istoricului declarațiilor o singură dată (623); textele importate fără litere pierdute (251)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='control'])"
+   },
+   {
+    "asteapta": "#cf-lista .mig-frand"
+   },
+   {
+    "click": "#cf-lista .mig-frand",
+    "text": "F6 Migrare Test SRL"
+   },
+   {
+    "asteapta": "#cf-audit-run"
+   },
+   {
+    "click": "#cf-audit-run"
+   },
+   {
+    "asteapta_text": "Ultimul audit"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Textele importate n-au litere pierdute la citirea fișierului.",
+    "zona": "#cf-audit-istoric"
+   }
+  ],
+  "captura": "251_f6_vechi_texte_importate.png"
+ },
+ {
+  "nr": "252",
+  "firma": "tenant_9055",
+  "descriere": "F6: Import date -> „Solduri parteneri” -> situația pe facturi cu coloana „TVA” (generatorul testului): coloana „TVA din rest” arată „F6-A1: 867,77; F6-A2: calculat, de verificat” — suma din fișier, iar unde lipsește, calculată și marcată. Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri parteneri"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_f6_cu_tva",
+    "nume": "situatie_f6_tva.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-part"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "TVA din rest",
+    "zona": ".mig-prev thead"
+   },
+   {
+    "contine": "F6-A1: 867,77; F6-A2: calculat, de verificat",
+    "zona": ".mig-prev tbody tr[data-rand=\"2\"]"
+   }
+  ],
+  "captura": "252_f6_vechi_coloana_tva.png"
+ },
+ {
+  "nr": "585",
+  "firma": "tenant_9053",
+  "descriere": "F5: Import date -> „Salariați” -> un salariat cu 3.000 lei brut la normă întreagă (generatorul testului): rândul „intră, cu observație”, „salariul de bază 3.000,00 lei e sub salariul minim brut 4.325,00 lei la normă întreagă (Codul muncii art.164 alin.(6))”. Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Salaria"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_salariat_sub_minim",
+    "nume": "salariat_sub_minim.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sal"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "salariul de bază 3.000,00 lei e sub salariul minim brut 4.325,00 lei la normă întreagă (Codul muncii art.164 alin.(6))",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "585_f5_salariu_sub_minim.png"
+ },
+ {
+  "nr": "586",
+  "firma": "tenant_9051",
+  "descriere": "F3: Import date -> „Istoric declarații” -> D100 pe 02/2026 (generatorul testului): „luna 02 nu încheie un trimestru — rândul e citit ca D100 lunară …; … scrie luna de sfârșit a trimestrului (03 = T1)”. Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Istoric declara"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_d100_luna_02",
+    "nume": "istoric_d100.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-ist"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "luna 02 nu încheie un trimestru — rândul e citit ca D100 lunară",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "(03 = T1)",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "586_f3_d100_lunara.png"
+ },
+ {
+  "nr": "587",
+  "firma": "tenant_9050",
+  "descriere": "F2: Import date -> „Mijloace fixe”: textul cere „valoarea reziduală la sfârșitul duratei, de obicei 0 — nu valoarea rămasă” -> registrul generatorului: Utilaj (9.000, reziduală 6.000) „intră, cu observație” — „valoarea reziduală 6.000,00 lei (67% din valoarea de intrare) nu se amortizează”; Scaun birou (1.800, PIF 10.03.2026) „respins — nu intră”: sub plafonul de 5.000 lei, obiect de inventar (588). Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Mijloace"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_mijloace",
+    "nume": "mijloace.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-mf"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "valoarea reziduală 6.000,00 lei (67% din valoarea de intrare) nu se amortizează",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "e sub plafonul de mijloc fix de 5.000,00 lei la data intrării 10.03.2026 (CF art.28 alin.(2) lit.b)) — e obiect de inventar",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "587_f2_valoarea_reziduala.png"
+ },
+ {
+  "nr": "588",
+  "firma": "tenant_9050",
+  "descriere": "F2: Import date -> „Mijloace fixe”: textul cere „valoarea reziduală la sfârșitul duratei, de obicei 0 — nu valoarea rămasă” -> registrul generatorului: Utilaj (9.000, reziduală 6.000) „intră, cu observație” — „valoarea reziduală 6.000,00 lei (67% din valoarea de intrare) nu se amortizează”; Scaun birou (1.800, PIF 10.03.2026) „respins — nu intră”: sub plafonul de 5.000 lei, obiect de inventar (588). Nu se salvează",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Mijloace"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_mijloace",
+    "nume": "mijloace.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-mf"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "valoarea reziduală 6.000,00 lei (67% din valoarea de intrare) nu se amortizează",
+    "zona": ".mig-prev"
+   },
+   {
+    "contine": "e sub plafonul de mijloc fix de 5.000,00 lei la data intrării 10.03.2026 (CF art.28 alin.(2) lit.b)) — e obiect de inventar",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "588_f2_sub_plafon_obiect_de_inventar.png"
+ },
+ {
+  "nr": "590",
+  "firma": "tenant_9049",
+  "descriere": "F1: Import date -> „Articole și stoc inițial” -> „Marfa valida” 10 + 3 buc și „Alta marfa” (generatorul testului): ambele rânduri „Marfa valida” respinse, „adună cantitățile în fișier”. Nimic nu se importă",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand [data-stare-pas]"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Articole"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot13_migr:fisier_articol_dublat",
+    "nume": "articole_dublat.csv"
+   },
+   {
+    "asteapta": "#mig-importa"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "adună cantitățile în fișier (niciunul din rânduri nu intră până atunci)",
+    "zona": ".mig-prev"
+   }
+  ],
+  "captura": "590_f1_articol_dublat.png"
+ },
+ {
+  "nr": "C125",
+  "firma": "tenant_9049",
+  "descriere": "F1: Bancă -> extrasul cu o încasare (+125,00) și o plată (−12,50) (generatorul), încărcat de două ori: al doilea import le spune „găsite deja”, fiecare cu sensul ei — „125,00 lei · încasare”, „12,50 lei · plată” (răspunsul importului păstrează tipul liniei). Liniile intră pe copia lui F1 la primul import",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   },
+   {
+    "asteapta": "#bk-fisier",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#bk-fisier",
+    "generator": "e2e_lot13_migr:fisier_extras_c125",
+    "nume": "extras_c125.csv"
+   },
+   {
+    "asteapta_text": "importate"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "incarca": "#bk-fisier",
+    "generator": "e2e_lot13_migr:fisier_extras_c125",
+    "nume": "extras_c125.csv"
+   },
+   {
+    "asteapta_text": "găsit"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "125,00 lei · încasare · Incasare dovada C125",
+    "zona": "#bk-mesaj"
+   },
+   {
+    "contine": "12,50 lei · plată · Plata dovada C125",
+    "zona": "#bk-mesaj"
+   }
+  ],
+  "captura": "c125_f1_vechi_extras_sensul_liniei.png"
+ }
+]

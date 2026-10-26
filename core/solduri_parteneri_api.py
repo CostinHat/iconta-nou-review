@@ -56,6 +56,9 @@ CAMPURI = {
     # [lotul 12, deficiența 252, decizia Costin 12.3 pct.5: „coloana TVA la încasare e opțională în fișierul de preluare; dacă lipsește,
     # se ia regimul firmei la data facturii”] da / nu pe fiecare factură deschisă (sau pe soldul partenerului, în forma pe solduri)
     "tva_incasare": ("tva la incasare", "sistem tva la incasare", "tva incasare", "=tvai"),
+    # [lotul 13, deficiența 252, decizia Costin 13.1, verbatim: „la facturile preluate, dacă fișierul are suma TVA, se ia suma din fișier;
+    # doar unde lipsește se calculează la cota standard, iar factura e marcată «de verificat».”] suma TVA din restul facturii (opțională)
+    "tva": ("=tva", "suma tva", "valoare tva", "tva neexigibil", "tva neexigibila", "tva din rest"),
 }
 
 #: [252, 12.3 pct.5] valorile acceptate în coloana „TVA la încasare” (după `import_tabel.norm`: fără diacritice, litere mici); celula
@@ -120,6 +123,9 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
     i_data = _it.coloana(antet, CAMPURI["data_doc"], exclus=(i_cont, i_cui, i_den, i_nr, i_scad), camp="data facturii") if i_nr >= 0 else -1
     # [252, 12.3 pct.5] coloana opțională „TVA la încasare” (pe ambele forme)
     i_tvai = _it.coloana(antet, CAMPURI["tva_incasare"], exclus=(i_cont, i_cui, i_den, i_nr, i_scad, i_data), camp="TVA la încasare")
+    # [lotul 13, 252, decizia Costin 13.1] coloana opțională a sumei TVA din restul facturii (pe ambele forme)
+    i_tva = _it.coloana(antet, CAMPURI["tva"], exclus=(i_cont, i_cui, i_den, i_nr, i_scad, i_data, i_tvai, i_deb, i_cre, i_sold),
+                        camp="suma TVA")
     if i_nr >= 0 and i_data < 0:
         raise _it.FisierNecitit("Fișierul %s are coloana numărului facturii, dar nu și coloana „Data” a facturii. Adaugă data fiecărei "
                                 "facturi și încarcă-l din nou." % ("«%s»" % nume_fisier if nume_fisier else "trimis"))
@@ -161,23 +167,49 @@ def extrage(continut, nume_fisier="", cont_implicit=None, ignorate=None):
             continue
         rand = {"cont": cont, "cui": cui, "denumire": den, "debit": deb, "credit": cre, "rand_fisier": nr}
         tvai = _tva_incasare_din_rand(r, nr, den or cui, i_tvai, _it.celula(r, i_nr) if i_nr >= 0 else None)
+        tva_f = _tva_din_rand(r, nr, den or cui, i_tva, _it.celula(r, i_nr) if i_nr >= 0 else None, deb, cre, cont)
         if i_nr >= 0:
             doc = _document_din_rand(r, nr, den or cui, cont, deb, cre, i_nr, i_data, i_scad, ignorate)
             if doc is None:
                 continue
             if i_tvai >= 0:
                 doc["tva_la_incasare"] = tvai   # cheia numai când fișierul are coloana: ecranul o arată atunci
+            if i_tva >= 0:
+                doc["tva_fisier"] = tva_f   # [252, 13.1] suma TVA din fișier (None = celula goală: se calculează, de verificat)
             rand["document"] = doc
-        elif i_tvai >= 0:
-            rand["tva_la_incasare"] = tvai   # forma pe solduri: pe documentul „Sold la <data preluării>” al partenerului
+        else:
+            if i_tvai >= 0:
+                rand["tva_la_incasare"] = tvai   # forma pe solduri: pe documentul „Sold la <data preluării>” al partenerului
+            if i_tva >= 0:
+                rand["tva_fisier"] = tva_f
         out.append(rand)
     if i_nr >= 0:
         out = grupeaza_pe_parteneri(out)
-    # același partener pe același cont de două ori: baza are UNIQUE(cont, cui) (GARZI cat.1) — refuz numit, nu eroare de bază
-    dubluri = parteneri_dublati(out)
-    if dubluri:
-        raise _it.FisierNecitit(MESAJ_PARTENER_DUBLAT % "; ".join(dubluri[:6]))
+    # [lotul 13, deficiența 582, comanda Costin 13.1: „Verificarea dublurilor oprește tot înainte de celelalte verificări; restul greșelilor
+    # apar abia la reîncărcare.”] același partener pe același cont de două ori NU mai oprește citirea: rândurile lui se resping amândouă în
+    # `verifica_randuri` (ca articolul dublat, 590), iar celelalte verificări rulează pe tot fișierul, deodată. Baza are UNIQUE(cont, cui)
+    # (GARZI cat.1): `importa` refuză și ea perechea dublată, înaintea scrierii.
     return out
+
+
+def _tva_din_rand(r, nr, cine, i_tva, numar, deb, cre, cont):
+    """[lotul 13, 252, decizia Costin 13.1] Suma TVA din coloana opțională a fișierului: Decimal, sau None (coloana lipsă / celula goală ->
+    TVA-ul se calculează la cota standard, iar factura e marcată „de verificat”). O sumă care nu e număr, negativă sau mai mare decât restul
+    facturii oprește citirea fișierului, cu rândul, partenerul și factura numite (nu se ghicește)."""
+    from decimal import Decimal as _D
+    if i_tva < 0 or not _it.celula(r, i_tva):
+        return None
+    unde = "Rândul %d (%s%s)" % (nr, cine, (", factura %s" % numar) if numar else "")
+    try:
+        v = _D(str(_numar(_it.valoare(r, i_tva), strict=True))).quantize(_D("0.01"))
+    except (ValueError, ArithmeticError):
+        raise _it.FisierNecitit("%s: suma TVA «%s» nu e un număr. Corectează celula și încarcă fișierul din nou." % (unde, _it.celula(r, i_tva)))
+    net = _D(str(deb)) - _D(str(cre))
+    rest = abs(net)
+    if v < 0 or v > rest:
+        raise _it.FisierNecitit("%s: suma TVA %s nu poate fi %s restul facturii (%s). Corectează celula și încarcă fișierul din nou."
+                                % (unde, _pu.bani(v, "lei"), "negativă, sub" if v < 0 else "mai mare decât", _pu.bani(rest, "lei")))
+    return v
 
 
 def _tva_incasare_din_rand(r, nr, cine, i_tvai, numar):
@@ -279,7 +311,7 @@ def documente_din_randuri(randuri, data_referinta=None):
                                % (cine, d.get("numar"), _b(suma, "lei"), "încasat" if dir_ == "emisa" else "plătit"))
                     continue
                 docs.append(dict(baza, numar=str(d.get("numar")), data=d.get("data"), scadenta=d.get("scadenta") or None, suma=suma,
-                                 tva_la_incasare=d.get("tva_la_incasare")))
+                                 tva_la_incasare=d.get("tva_la_incasare"), tva_fisier=d.get("tva_fisier")))
             continue
         suma = (net if dir_ == "emisa" else -net).quantize(_D("0.01"), rounding=_SUS)
         if suma <= 0:
@@ -290,7 +322,7 @@ def documente_din_randuri(randuri, data_referinta=None):
         zi = str(data_referinta)[:10] if data_referinta else None
         # fără data preluării documentul n-are dată (nici număr): îl numără previzualizarea, iar salvarea îl spune și nu-l scrie
         docs.append(dict(baza, numar=("Sold la %s" % _dro(_dt.date.fromisoformat(zi))) if zi else None, data=zi, scadenta=None, suma=suma,
-                         tva_la_incasare=r.get("tva_la_incasare")))
+                         tva_la_incasare=r.get("tva_la_incasare"), tva_fisier=r.get("tva_fisier")))
     return docs, nec
 
 
@@ -352,7 +384,7 @@ def cu_regimul_tva(cur, docs):
     platitor = bool(r and (r["coalesce"] if isinstance(r, dict) else r[0]))
     refuz = []
     for d in docs:
-        d["tva"], d["furnizor_tva_incasare"] = _D(0), False
+        d["tva"], d["furnizor_tva_incasare"], d["tva_de_verificat"] = _D(0), False, False
         if not d.get("data"):
             continue
         zi = _dt.date.fromisoformat(str(d["data"])[:10])
@@ -369,8 +401,15 @@ def cu_regimul_tva(cur, docs):
             continue
         if not (spus if spus is not None else in_sistem):
             continue
-        cota = int(_c.cota("tva_standard", zi)[0] * 100)
-        d["tva"] = _tc.tva_din_total(d["suma"], cota)
+        # [lotul 13, 252, decizia Costin 13.1, verbatim: „dacă fișierul are suma TVA, se ia suma din fișier; doar unde lipsește se calculează
+        # la cota standard, iar factura e marcată «de verificat».”] Cota standard nu e a unei facturi cu cotă redusă sau scutite: suma din
+        # fișier câștigă; calculată, se spune și rămâne de verificat (auditul de preluare o numește).
+        if d.get("tva_fisier") is not None:
+            d["tva"] = _D(str(d["tva_fisier"]))
+        else:
+            cota = int(_c.cota("tva_standard", zi)[0] * 100)
+            d["tva"] = _tc.tva_din_total(d["suma"], cota)
+            d["tva_de_verificat"] = True
         d["furnizor_tva_incasare"] = d["directie"] == "primita" and not in_sistem
     if refuz:
         raise ValueError(MESAJ_TVA_INCASARE_REFUZ % "; ".join(refuz[:6]))
@@ -434,11 +473,12 @@ def _scrie_documente(cur, docs):
                 raise _fpd.refuz(ex, sfat="Soldurile pe parteneri nu s-au salvat: scoate factura din fișier (sau adună rândurile ei) și "
                                           "încarcă-l din nou.")
         tva = d.get("tva") or 0
+        # [lotul 13, 252, decizia Costin 13.1] `tva_de_verificat`: TVA-ul neexigibil calculat la cota standard (lipsea din fișier)
         cur.execute("INSERT INTO facturi (numar, data_emitere, data_scadenta, total, tva, moneda, directie, status, tert_nume, tert_cui, tip, "
-                    "total_lei, tva_lei, sursa_externa, furnizor_tva_incasare) "
-                    "VALUES (%s, %s, %s, %s, %s, 'RON', %s, 'importata', %s, %s, %s, %s, %s, 'preluare', %s)",
+                    "total_lei, tva_lei, sursa_externa, furnizor_tva_incasare, tva_de_verificat) "
+                    "VALUES (%s, %s, %s, %s, %s, 'RON', %s, 'importata', %s, %s, %s, %s, %s, 'preluare', %s, %s)",
                     (d["numar"], d["data"], d["scadenta"], d["suma"], tva, d["directie"], d["tert_nume"], d["tert_cui"], _TIP_PRELUAT, d["suma"],
-                     tva, bool(d.get("furnizor_tva_incasare"))))
+                     tva, bool(d.get("furnizor_tva_incasare")), bool(d.get("tva_de_verificat"))))
 
 
 def rezumat_documente(docs):
@@ -452,6 +492,10 @@ def rezumat_documente(docs):
     if cu_tva:
         out.update(la_incasare=len(cu_tva), tva_emise=float(sum((d["tva"] for d in cu_tva if d["directie"] == "emisa"), _D(0))),
                    tva_primite=float(sum((d["tva"] for d in cu_tva if d["directie"] == "primita"), _D(0))))
+    # [lotul 13, 252, decizia Costin 13.1] facturile cu TVA-ul calculat la cota standard (lipsea din fișier), marcate „de verificat”
+    dv = [d for d in docs if d.get("tva_de_verificat")]
+    if dv:
+        out["tva_de_verificat"] = ["%s (%s)" % (d.get("numar"), d.get("tert_nume") or d.get("tert_cui") or "?") for d in dv]
     return out
 
 
@@ -560,6 +604,8 @@ def respinse_coerenta(randuri, coer):
         i = _it.nr_rand(r, i)
         c = nepotr.get(_radacina(r.get("cont")))
         if c:
+            # [lotul 13, deficiența 666] mesajul (cu cifrele) rămâne întreg — îl spune o dată lista refuzurilor (grupată) și răspunsul
+            # salvării; pe rândul tabelului ecranul arată motivul scurt (`migrare.js:previzualizeazaParteneri`)
             er.append(respinge(
                 "sold partener", i, "parteneri_nu_dau_soldul",
                 "pe %s, partenerii din fișier dau %s, iar %s la %s are %s (diferență %s) — rândurile contului nu intră până nu se potrivesc"
@@ -622,6 +668,12 @@ def verifica_randuri(randuri):
     Semnalarea fara oprire e mai rea decat tacerea: da impresia ca s-a verificat.
     """
     erori, bune = [], []
+    # [lotul 13, 582] perechile (cont, CUI) de pe mai multe rânduri: TOATE aparițiile se resping (nu prima intră și a doua nu — ar intra un
+    # sold parțial), cu rândurile celelalte numite; restul verificărilor rulează pe celelalte rânduri
+    pe_cheie = {}
+    for i, r in enumerate(randuri or [], start=2):
+        if str(r.get("cui") or "").strip():
+            pe_cheie.setdefault((str(r.get("cont") or "").strip(), str(r.get("cui") or "").strip()), []).append(_it.nr_rand(r, i))
     for i, r in enumerate(randuri or [], start=2):   # +2: randul din fisier, cu antet
         i = _it.nr_rand(r, i)
         cont = str(r.get("cont") or "").strip()
@@ -640,6 +692,14 @@ def verifica_randuri(randuri):
                 "sold partener", i, "cui_invalid",
                 ("partenerul %s nu are CUI" % (den or "?")) if motiv == "lipsa"
                 else ("CNP %s invalid (%s)" % (cui, motiv[5:]) if motiv.startswith("CNP: ") else "CUI %s invalid (%s)" % (cui, motiv)),
+                cont=cont, cui=cui, denumire=den))
+            continue
+        alte = [n for n in pe_cheie.get((cont, cui), []) if n != i]
+        if alte:
+            erori.append(respinge(
+                "sold partener", i, "partener_dublat",
+                "%s apare pe același cont %s și pe %s — un partener are un singur sold pe un cont: adună rândurile în fișier"
+                % (den or cui, cont, " și pe ".join("rândul %d" % n for n in alte)),   # rândurile se enumeră, nu se numără
                 cont=cont, cui=cui, denumire=den))
             continue
         bune.append(r)
@@ -670,6 +730,7 @@ def totaluri(randuri):
     [lotul 12, 252] + `documente`: câte facturi deschise preluate scrie salvarea (`documente_din_randuri`)."""
     from decimal import Decimal as _D
     return {"randuri": len(randuri or []), "documente": len(documente_din_randuri(randuri)[0]),
+            "citite": getattr(randuri, "citite", None),   # [lotul 13, 583] câte rânduri s-au citit (`migrare_api.RanduriCareIntra`)
             "total_debit": float(sum((_D(str(r.get("debit") or 0)) for r in randuri or []), _D(0))),
             "total_credit": float(sum((_D(str(r.get("credit") or 0)) for r in randuri or []), _D(0)))}
 
@@ -688,8 +749,10 @@ def text_inlocuire(vechi, nou):
                                               _b(x["total_credit"], "lei"),
                                               (", cu %s" % _cate(doc, "factură deschisă preluată", "facturi deschise preluate")) if doc else "")
     # ce se ȘTERGE se numește întreg (și facturile deschise vechi); ce aduce fișierul, pe solduri (facturile lui le arată tabelul)
+    from core.migrare_api import text_fisier_nou as _tfn   # [lotul 13, 583] „0 rânduri valide din 4”, nu „0 parteneri, debit 0,00”
     t = ("Firma are deja solduri pe parteneri%s: %s. Fișierul nou: %s. Salvarea le înlocuiește pe cele vechi."
-         % ((" la %s" % _data_ro_iso(vechi["data_referinta"])) if vechi.get("data_referinta") else "", _parte(vechi, True), _parte(nou)))
+         % ((" la %s" % _data_ro_iso(vechi["data_referinta"])) if vechi.get("data_referinta") else "", _parte(vechi, True),
+            _tfn(_parte(nou), nou["randuri"], nou.get("citite"))))
     if vechi.get("legate"):
         t += " " + MESAJ_DOCUMENTE_LEGATE % "; ".join(vechi["legate"][:6])
     return t

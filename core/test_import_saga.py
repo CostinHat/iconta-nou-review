@@ -90,10 +90,11 @@ def test_contul_de_doua_ori_se_refuza_numit_nu_la_scriere():
     with pytest.raises(it.FisierNecitit) as e:
         solduri_api.extrage_balanta(csv, "b.csv")
     assert str(e.value).startswith("Contul 5311 apare de mai multe ori în balanță.")
+    # [lotul 13, deficiența 582: „Verificarea dublurilor oprește tot înainte de celelalte verificări”] partenerul dublat nu mai oprește
+    # citirea: ambele rânduri se resping numit în `verifica_randuri` (restul fișierului se verifică deodată), iar `importa` refuză perechea
     csv = "Cont;Cod fiscal;Denumire;Sold debitor;Sold creditor\n4111;14837428;A;10;0\n4111;RO14837428;A;5;0\n".encode()
-    with pytest.raises(it.FisierNecitit) as e:
-        sp.extrage(csv, "p.csv")
-    assert str(e.value) == 'Același partener apare de două ori pe același cont: 4111 / 14837428 (rândurile 2 și 3). Un partener are un singur sold pe un cont; adună rândurile în fișier și încarcă-l din nou.'
+    er, bune = sp.verifica_randuri(sp.extrage(csv, "p.csv"))
+    assert bune == [] and [(e["rand"], e["regula"]) for e in er] == [(2, "partener_dublat"), (3, "partener_dublat")], er
 
 
 def test_balanta_simpla_de_deschidere_ramane_cum_era():

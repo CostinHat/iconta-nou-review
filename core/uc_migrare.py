@@ -222,33 +222,84 @@ def _strat_aplicabil(strat, firma):
 
 def migrare_firme_strat(strat, ctx):
     """[P7 · use-case] Corpul rutei `GET /migrare/firme` — [deficiența 371, comanda Costin 8.2] firmele portofoliului
-    cărora li se aplică stratul (`migrare_api.straturi_pentru`, după regimul fiecărei firme; [371, lotul 9] Rețete numai la HoReCa)."""
+    cărora li se aplică stratul (`migrare_api.straturi_pentru`, după regimul fiecărei firme; [371, lotul 9] Rețete numai la HoReCa).
+    [lotul 13, deficiența 668, comanda Costin 13.1: „Lista de firme de aici nu are stări (ce firme au articole / au nevoie)”] fiecare firmă
+    poartă starea pasului ei (`stare`: aceeași derivare ca meniul firmei, `audit_preluare.stare_pasi`)."""
     with db.get_conn() as conn:
         firme = auth_api.tenantii_userului(conn, ctx["uid"])
-    return {"strat": strat, "firme": [{"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"), "tip_firma": f.get("tip_firma")}
-                                      for f in firme if _strat_aplicabil(strat, f)]}
+    out = []
+    for f in firme:
+        if not _strat_aplicabil(strat, f):
+            continue
+        st = _stare_firma(f, migrare_api.straturi_pentru(f.get("tip_firma")))   # regimul întreg: starea unui pas depinde de ceilalți (balanța)
+        out.append({"tenant_id": f.get("id"), "nume": f.get("nume"), "cui": f.get("cui"), "tip_firma": f.get("tip_firma"),
+                    "stare": (st["pasi"].get(strat) if st else None)})
+    return {"strat": strat, "firme": out}
 
 
-def straturi_firmei(tenant_id, ctx):
-    """[371, lotul 9] Straturile aplicabile UNEI firme (meniul ei de import): aceeași regulă ca lista din Migrare cabinet."""
+def _firma_din_portofoliu(tenant_id, ctx):
     with db.get_conn() as conn:
         firme = [f for f in auth_api.tenantii_userului(conn, ctx["uid"]) if f.get("id") == int(tenant_id)]
     if not firme:
         raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
-    return {"straturi": [s for s in migrare_api.straturi_pentru(firme[0].get("tip_firma")) if _strat_aplicabil(s, firme[0])]}
+    return firme[0]
+
+
+def straturi_firmei(tenant_id, ctx):
+    """[371, lotul 9] Straturile aplicabile UNEI firme (meniul ei de import): aceeași regulă ca lista din Migrare cabinet."""
+    f = _firma_din_portofoliu(tenant_id, ctx)
+    return {"straturi": [s for s in migrare_api.straturi_pentru(f.get("tip_firma")) if _strat_aplicabil(s, f)]}
+
+
+def _stare_firma(firma, straturi):
+    """`audit_preluare.stare_pasi` pe schema firmei (numai citire), sau None când firma s-a șters între timp (`db.pe_firma_existenta`)."""
+    from core import audit_preluare
+    sch = firma.get("schema_name")
+    if not sch:
+        return None
+    return db.pe_firma_existenta(sch, lambda c: audit_preluare.stare_pasi(c, sch, firma.get("id"), straturi))[1]
+
+
+def stare_preluare_firma(tenant_id, ctx):
+    """[lotul 13, comanda Costin 13.1 — deficiențele 662, 663, 664, 580, 584] `GET /migrare/firma/{tenant_id}`: starea fiecărui pas de
+    preluare al FIRMEI (nu al cabinetului), derivată din datele ei — `{tenant_id, nume, straturi, pasi, urmatori, incepe_preluarea}`.
+    Verbatim 663: „Stările pașilor sunt pe cabinet, nu pe firma în lucru”; 662: „Firma nouă trebuie să deschidă cu «Începe preluarea»”;
+    664: „Salvarea trebuie să ducă la pașii următori necesari.” Aceeași sursă pentru meniul Migrare cabinet (firma în lucru), meniul
+    „Import date” al firmei și fereastra firmei."""
+    f = _firma_din_portofoliu(tenant_id, ctx)
+    straturi = [s for s in migrare_api.straturi_pentru(f.get("tip_firma")) if _strat_aplicabil(s, f)]
+    st = _stare_firma(f, straturi)
+    if st is None:
+        raise _erori.Inexistent("Firma nu mai există.")
+    return dict(st, tenant_id=f.get("id"), nume=f.get("nume"), straturi=straturi)
 
 
 def terti_in_balanta_firme(firme):
     """[P7 · use-case] Pentru `GET /migrare/parteneri` — [deficiența 345, comanda Costin 8.2] stratul nu se marchează terminat cât
-    o firmă are în balanța de deschidere solduri pe conturi de terți (4111 / 401 / 409 / 419) fără solduri pe parteneri; se citește numai
-    pentru firmele fără parteneri. `firme` poartă `_schema`, care se scoate aici."""
-    from core import solduri_parteneri_api
+    o firmă are în balanța de deschidere solduri pe conturi de terți (4111 / 401 / 409 / 419) fără solduri pe parteneri. `firme` poartă
+    `_schema`, care se scoate aici.
+    [lotul 13, deficiența 665, comanda Costin 13.1: „F7 apare «✓ gata, 2 parteneri importați», deși 401 (3.000) a fost refuzat și a rămas
+    nedefalcat. Verificarea de la «Am terminat soldurile pe parteneri» numește doar F5 și omite F7. Un cont cu sold în balanță și fără
+    parteneri trebuie să țină pasul deschis.”] Se citește pe TOATE firmele (nu numai pe cele fără parteneri): `nedefalcate` = conturile de
+    terți din balanță ale căror solduri pe parteneri nu le dau (`audit_preluare.nepotrivite_terti`, aceeași confruntare ca importul și
+    auditul); `terti_in_balanta` = conturile de terți cu sold în balanță (666: fără ele, pasul „nu e cazul”)."""
+    from core import audit_preluare, solduri_parteneri_api
+
+    def _citeste(sch):
+        def f(conn):
+            terti = solduri_parteneri_api.terti_in_balanta(conn)
+            rows = (audit_preluare.randuri_balanta(conn, sch) or []) if terti else []
+            return terti, ([dict(c, text=audit_preluare.text_nepotrivire_terti(c)) for c in audit_preluare.nepotrivite_terti(conn, sch, rows)]
+                           if terti else [])
+        return f
     for x in firme:
         sch = x.pop("_schema")
-        x["terti_in_balanta"] = []
-        if not x["are_parteneri"] and sch:
+        x["terti_in_balanta"], x["nedefalcate"] = [], []
+        if sch:
             # [lotul 10] firma ștearsă între timp: rămâne fără terți (ca firma fără schemă), nu 500
-            x["terti_in_balanta"] = db.pe_firma_existenta(sch, solduri_parteneri_api.terti_in_balanta)[1] or []
+            r = db.pe_firma_existenta(sch, _citeste(sch))[1]
+            if r:
+                x["terti_in_balanta"], x["nedefalcate"] = r
     return firme
 
 

@@ -390,6 +390,15 @@ def semnale_randuri(randuri):
                                   if "scutit_contrib_minim" in din else
                                   "%s: scutirea de contribuția minimă lipsește din fișier — intră „nescutit” și salariatul e marcat de "
                                   "verificat" % nume))
+        # [lotul 13, deficiența 585, comanda Costin 13.1: „3.000 lei brut la normă întreagă (sub minimul de 4.050) intră fără semnal.”]
+        # Codul muncii art.164 alin.(6): „Angajatorul nu poate negocia și stabili salarii de bază brute, prin contractul individual de muncă
+        # și/sau contractul colectiv de muncă aplicabil, sub valoarea salariului de bază minim brut orar”; minimul, din registru (HG 146/2026
+        # de la 01.07.2026), la data importului. La normă parțială, minimul pe orele normei (ore/zi din 8). Rândul intră, cu observația.
+        _sub = sub_minim(r)
+        if _sub:
+            out.append(semnaleaza("salariat", i, "salariu_sub_minim",
+                                  "%s: salariul de bază %s e sub salariul minim brut %s%s (Codul muncii art.164 alin.(6)) — verifică "
+                                  "fișierul; salariatul intră cu suma din el" % ((nume,) + _sub)))
         if "motiv_exceptare" in dv:   # [C133]
             out.append(semnaleaza("salariat", i, "motiv_scutire_lipsa",
                                   "%s: e scutit de contribuția minimă, dar fișierul nu spune motivul scutirii (D112 îl declară) — salariatul "
@@ -411,6 +420,34 @@ def semnale_randuri(randuri):
                                   "%s: funcția de bază lipsește din fișier — propusă „Da”; schimb-o pe rând dacă nu e așa (intră marcată "
                                   "de verificat)" % nume))
     return out
+
+
+def sub_minim(r, azi=None):
+    """[lotul 13, 585] (brutul, minimul, „ la normă întreagă” / „ pe 4 ore pe zi”) — textele — când salariul de bază al rândului e sub
+    salariul minim brut pe țară la data `azi` (registrul `salariu_minim`, Codul muncii art.164), proporțional cu orele normei parțiale;
+    altfel None (și când brutul sau norma lipsesc: le refuză / propune altă regulă)."""
+    import datetime as _dt
+    from decimal import Decimal as _D
+    from core.common import cota as _cota, _q
+    from core.pdf_util import bani as _b
+    try:
+        brut = _D(str(r.get("salariu_brut")))
+    except (ArithmeticError, ValueError, TypeError):
+        return None
+    if brut <= 0:
+        return None
+    norma = r.get("tip_norma")
+    minim = _D(str(_cota("salariu_minim", azi or _dt.date.today())[0]))
+    if norma == "intreaga":
+        prag, unde = minim, " la normă întreagă"
+    elif norma == "partiala" and r.get("ore_zi"):
+        ore = _D(str(r.get("ore_zi")))
+        prag, unde = _q(minim * ore / 8), " pentru %s pe zi (%s la normă întreagă)" % (_cate(float(ore), "oră", "ore"), _b(minim, "lei"))
+    else:
+        return None
+    if brut >= prag:
+        return None
+    return (_b(brut, "lei"), _b(prag, "lei"), unde)
 
 
 def eticheteaza(randuri):

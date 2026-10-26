@@ -311,6 +311,20 @@ def semnale_randuri(randuri, azi=None):
             out.append(semnaleaza("declarație depusă", i, "an_vechi",
                                   "%s: anul %s e mai vechi decât anii pe care îi urmărește aplicația (%s și %s) — se importă, dar nu "
                                   "schimbă nimic în termenele de azi" % (per, an, azi.year - 1, azi.year)))
+        # [lotul 13, deficiența 586, comanda Costin 13.1: „D100 cu luna 02 intră fără să spună cum a fost citit (lunar, ex. impozit pe
+        # dividende, vs trimestrial).”] D100 pe o lună care nu încheie un trimestru se citește ca D100 LUNARĂ — ex. impozitul pe dividende,
+        # CF art.43 alin.(2): „se declară și se plătește la bugetul de stat, până la data de 25 inclusiv a lunii următoare celei în care se
+        # plătește dividendul” —, nu ca trimestrul impozitului pe profit / micro (CF art.41 alin.(1), art.56 alin.(1): luna de sfârșit a
+        # trimestrului). Spus pe rând, cu ce trebuie scris dacă era trimestrială.
+        try:
+            _l = int(r.get("luna") or 0)
+        except (TypeError, ValueError):
+            _l = 0
+        if tip == "D100" and 1 <= _l <= 12 and _l % 3:
+            out.append(semnaleaza("declarație depusă", i, "d100_lunara",
+                                  "%s: luna %02d nu încheie un trimestru — rândul e citit ca D100 lunară (de exemplu impozitul pe dividende, "
+                                  "declarat în luna de după plată); dacă era D100 trimestrială (impozit pe profit sau micro), scrie luna de "
+                                  "sfârșit a trimestrului (%02d = T%d)" % (per, _l, (_l + 2) // 3 * 3, (_l + 2) // 3)))
         if tip == "D100" and r.get("suma") is None and not str(r.get("suma_brut") or "").strip():
             out.append(semnaleaza("declarație depusă", i, "suma_lipsa_d100",
                                   "%s: fără suma declarată — la impozitul pe profit, D100 de pe trimestrele următoare n-o poate scădea "
@@ -347,7 +361,8 @@ def totaluri(randuri):
     """[426] Ce aduce fișierul, pe rândurile care intră: {randuri, tipuri, perioade}."""
     rs = randuri or []
     return {"randuri": len(rs), "tipuri": sorted({str(r.get("tip") or "").strip().upper() for r in rs} - {""}),
-            "perioade": _perioade([(r.get("an"), r.get("luna")) for r in rs])}
+            "perioade": _perioade([(r.get("an"), r.get("luna")) for r in rs]),
+            "citite": getattr(randuri, "citite", None)}   # [lotul 13, 583] câte rânduri s-au citit (`migrare_api.RanduriCareIntra`)
 
 
 def text_inlocuire(vechi, nou):
@@ -355,8 +370,9 @@ def text_inlocuire(vechi, nou):
     din previzualizare și refuzului de la salvare: declarațiile și perioadele, vechi și noi, și depunerile prin iConta din anii lor."""
     def _parte(x):
         return "%s (%s), %s" % (_cate(x["randuri"], "declarație", "declarații"), ", ".join(x["tipuri"]) or "—", x["perioade"])
+    from core.migrare_api import text_fisier_nou as _tfn   # [583]
     t = ("Firma are deja un istoric de declarații preluat: %s. Fișierul nou: %s. Salvarea înlocuiește istoricul preluat; declarațiile "
-         "depuse prin iConta rămân." % (_parte(vechi), _parte(nou)))
+         "depuse prin iConta rămân." % (_parte(vechi), _tfn(_parte(nou), nou["randuri"], nou.get("citite"))))
     di = vechi.get("depuse_iconta") or {}
     if di.get("numar"):
         t += (" În %s %s %s prin iConta: termenele, restanțele și suma D100 deja declarată pe trimestrele anterioare se socotesc "

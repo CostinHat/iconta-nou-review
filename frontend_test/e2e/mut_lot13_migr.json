@@ -1,0 +1,146 @@
+[
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "if (!st.incepe_preluarea && !(st.in_preluare && urm.length)) { corp.innerHTML = \"\"; _consumaMigMesaj(corp); return; }",
+  "inlocuire": "if (true) { corp.innerHTML = \"\"; return; }",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_662_firma_noua_se_deschide_cu_incepe_preluarea"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "if (t) { _migMesaj += (_migMesaj ? \"\\n\" : \"\") + t; if (_migTip === \"ok\") _migTip = \"avert\"; }",
+  "inlocuire": "if (false) { _migMesaj = t; }",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_664_salvarea_balantei_numeste_pasii_urmatori"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "const stareFirma = idLucru ? await _starePreluare(idLucru) : null;",
+  "inlocuire": "const stareFirma = null;",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_663_migrare_cabinet_arata_starea_firmei_in_lucru"
+ },
+ {
+  "fisier": "core/articole_import_api.py",
+  "ancora": "        er += respinse_balanta(randuri, solduri, {e[\"rand\"] for e in er})",
+  "inlocuire": "        pass",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_668_articolele_nepotrivite_cu_371_nu_intra_iar_lista_are_stari"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "const fel = nedef.length || (!f.are_parteneri && terti.length) ? \"de_completat\" : (f.are_parteneri ? \"gata\" : \"nu_e_cazul\");",
+  "inlocuire": "const fel = f.are_parteneri ? \"gata\" : (terti.length ? \"de_completat\" : \"nu_e_cazul\");",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_665_contul_nedefalcat_tine_pasul_deschis"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "const coerOk = coer.filter((c) => c.coincide), coerNu = coer.filter((c) => !c.coincide);",
+  "inlocuire": "const coerOk = [], coerNu = coer;",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_666_firma_fara_solduri_nu_e_cazul_iar_contul_potrivit_sta_separat"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "return `<div class=\"rezumat-fix\">${sus}</div>${tabel}<div class=\"bara-fixa\">${jos}</div>`;",
+  "inlocuire": "return `<div class=\"rezumat-fix\">${sus}${tabel}</div><div class=\"bara-fixa\">${jos}</div>`;",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_667_rezumatul_lipit_al_balantei_e_mic_si_nu_acopera_tabelul"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "  if (tabel && tabel.parentNode) tabel.parentNode.insertBefore(bloc, tabel);",
+  "inlocuire": "  if (false) tabel.parentNode.insertBefore(bloc, tabel);",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_581_refuzurile_in_pagina_si_banda_cu_filtre"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "    if (!grup.has(m)) grup.set(m, []);\n    grup.get(m).push(e);",
+  "inlocuire": "    grup.set(m + \"#\" + grup.size, [e]);",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_624_observatiile_la_clic_si_respinsele_grupate"
+ },
+ {
+  "fisier": "core/nomenclator_status_factura.py",
+  "ancora": "TIPURI_CU_INCASARE = (TIP_IMPLICIT, TIP_SOLD_PRELUAT)",
+  "inlocuire": "TIPURI_CU_INCASARE = (TIP_IMPLICIT,)",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_669_soldul_preluat_al_clientului_se_incaseaza_din_casa"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "  if (!p || !intro || !intro.isConnected) return;",
+  "inlocuire": "  if (true) return;",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_580_import_date_arata_ce_s_a_adus_deja"
+ },
+ {
+  "fisier": "core/audit_preluare.py",
+  "ancora": "            \"comportament\": COMPORTAMENT_IMPORT.get(strat)}",
+  "inlocuire": "            \"comportament\": None}",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_584_salariati_si_istoric_spun_ce_exista_si_ce_face_importul"
+ },
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "        alte = [n for n in pe_cheie.get((cont, cui), []) if n != i]",
+  "inlocuire": "        alte = []",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_582_dublura_si_celelalte_greseli_se_vad_deodata"
+ },
+ {
+  "fisier": "core/migrare_api.py",
+  "ancora": "        return (\"0 rânduri valide din %d — nu intră nimic\" % citite) if citite else \"niciun rând valid — nu intră nimic\"",
+  "inlocuire": "        return descriere",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_583_inlocuirea_spune_zero_randuri_valide_din_cate_s_au_citit"
+ },
+ {
+  "fisier": "core/salariati_import_api.py",
+  "ancora": "        _sub = sub_minim(r)",
+  "inlocuire": "        _sub = None",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_585_salariul_sub_minim_e_semnalat"
+ },
+ {
+  "fisier": "core/istoric_declaratii_import_api.py",
+  "ancora": "        if tip == \"D100\" and 1 <= _l <= 12 and _l % 3:",
+  "inlocuire": "        if False:",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_586_d100_pe_luna_02_spune_cum_e_citita"
+ },
+ {
+  "fisier": "core/mijloace_fixe_import_api.py",
+  "ancora": "        if valoare > 0 and 0 < rezidual <= valoare:",
+  "inlocuire": "        if False:",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_587_valoarea_reziduala_mare_e_semnalata"
+ },
+ {
+  "fisier": "core/mijloace_fixe_import_api.py",
+  "ancora": "        if val > 0 and _pif_d and _oi.prag_mf_cunoscut(_pif_d) and val < float(_oi.prag_mf(_pif_d)):",
+  "inlocuire": "        if False:",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_588_bunul_sub_plafon_nu_intra_ca_mijloc_fix"
+ },
+ {
+  "fisier": "core/articole_import_api.py",
+  "ancora": "            alte = [n for n in pe_den.get(_cheie_denumire(den), []) if n != i]",
+  "inlocuire": "            alte = [n for n in pe_den.get(_cheie_denumire(den), []) if n < i]",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_590_articolul_dublat_respinge_ambele_randuri"
+ },
+ {
+  "fisier": "core/audit_preluare.py",
+  "ancora": "        return \"%s lipsesc %s față de balanță\" % (unde, _lei(abs(dif)))",
+  "inlocuire": "        return \"diferență %s\" % _lei(dif)",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_609_auditul_scrie_soldurile_si_diferentele_fara_minus"
+ },
+ {
+  "fisier": "static/js/ecrane/control_verdict.js",
+  "ancora": "        if (cs.length === 1) return randA(Object.assign({}, cs[0], { stare: stareAfisata(cs[0].stare) }));",
+  "inlocuire": "        return cs.map((c) => randA(Object.assign({}, c, { stare: stareAfisata(c.stare) }))).join(\"\");",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_623_auditul_spune_temeiul_o_singura_data_pe_verificare"
+ },
+ {
+  "fisier": "core/audit_preluare.py",
+  "ancora": "(\"%�%\",)",
+  "inlocuire": "(\"%￾%\",)",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_251_auditul_numeste_textele_stricate_de_un_import_vechi"
+ },
+ {
+  "fisier": "core/solduri_parteneri_api.py",
+  "ancora": "        if d.get(\"tva_fisier\") is not None:",
+  "inlocuire": "        if False:",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_252_tva_din_fisier_sau_calculat_si_marcat_de_verificat"
+ },
+ {
+  "fisier": "static/js/ecrane/migrare.js",
+  "ancora": "  _consumaMigMesaj(corp);   // [423 a, 664] salvarea din pasul deschis direct revine aici: confirmarea și pașii următori, sus\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_migr.py::test_def_664_salvarea_din_pasul_deschis_direct_numeste_pasii_urmatori"
+ }
+]

@@ -8,9 +8,15 @@ Legătura poziție -> pas -> stare: `PILOT_CRITERII.md`, păzită de `core/test_
 FIRMA-PILOT: un SRL de comerț NOU, creat de la zero în baza de TEST (`conftest.firma_noua`: CUI sintetic cu cifra de control verificată,
 `conftest.cui_cu_control`), plătitor de TVA lunar, MICROÎNTREPRINDERE (1%) — ca F1 („Comert Stoc SRL”, SRL micro plătitor de TVA lunar,
 cu salariați, pe 09/2026: DECIZII „F1 e micro 1% -> depune D100”, `scripts/cifre_referinta_aprobate.json`), cu stocul cantitativ-valoric
-(F1). Firma e înființată în august 2026 (capital vărsat, o cheltuială de înființare neplătită, fără vânzări) și e PRELUATĂ de cabinet din
-09/2026: balanța de deschidere la 31.08.2026, soldul furnizorului pe partener. De aceea D100 pe T3/2026 cuprinde numai septembrie — legal,
-firma n-a avut venituri în iulie–august (CF art.53 alin.(1): baza = veniturile; art.56 alin.(1): trimestrial).
+(F1). Firma e înființată în 2025 (capital vărsat; în decembrie 2025 a cumpărat 7 scaune de birou și a vândut 2 pe credit clientului Delta,
+neîncasate) și n-a avut venituri în 2026 până la preluare (o cheltuială de consultanță neplătită). E PRELUATĂ de cabinet din 09/2026:
+balanța de deschidere la 31.08.2026, soldurile pe parteneri (furnizorul și clientul Delta), articolele cu stocul inițial (5 scaune de
+birou). De aceea D100 pe T3/2026 cuprinde numai septembrie — legal, firma n-a avut venituri în iulie–august (CF art.53 alin.(1): baza =
+veniturile; art.56 alin.(1): trimestrial).
+[lotul 13, comanda Costin 13.1 pct.7, verbatim: „Extinde scenariul automat al lunii pilot cu preluarea: balanța de deschidere, soldurile pe
+parteneri, articolele cu stoc inițial și încasarea unei creanțe preluate, cu cifre așteptate exacte. Rămâne permanent în poartă.”] Pașii
+01–04: balanța (8 conturi, cu 371 și 4111), pașii următori spuși la salvare (664), articolele cu stocul inițial potrivit cu 371 (668),
+partenerii pe 401 și 4111, auditul, iar soldul preluat al clientului Delta încasat din Casă pe documentul lui preluat (669).
 
 LUNA: 09/2026, FIXĂ — încheiată (deficiența 383: declarațiile nu se generează pe luna în curs), închide trimestrul (D100 T3/2026), iar
 cifrele se calculează o dată, după legea în vigoare atunci (salariul minim 4.325 lei de la 01.07.2026, HG 146/2026 art.1; cota TVA 21%, CF
@@ -31,7 +37,9 @@ extern) și răspunsul AI al cotei (`ICONTA_AI_SIMULAT`). Restul — preluarea, 
 statul, validarea, închiderea, declarațiile — pe ecran.
 
 CIFRELE LUNII (calculate din lege, nu citite din aplicație; temeiul pe linia fiecărui assert):
-  balanța de deschidere 31.08.2026: 1012 C 10.000 · 121 D 1.000 · 401 C 1.000 (Consultanță Înființare) · 5121 D 9.500 · 5311 D 500
+  balanța de deschidere 31.08.2026: 1012 C 10.000 · 1171 C 1.580 · 121 D 1.000 · 371 D 1.000 (5 × 200, Marfă birou pilot) · 401 C 1.000
+    (Consultanță Înființare) · 4111 D 2.420 (Delta) · 5121 D 7.660 · 5311 D 500 — debit = credit = 12.580
+  casa 03.09: încasarea creanței preluate de la Delta, 2.420,00 (5311 = 4111, pe documentul „Sold la 31.08.2026”)
   NIR 1 / 02.09: 20 × 150,00 = 3.000,00 + transport 200,00 (repartizat integral pe singura linie) = 3.200,00 -> CMP 160,00 / buc;
     TVA 21%: 630,00 + 42,00 = 672,00 (nesosită: 4428.01 = 408) -> factura MF-901 / 03.09 (3.200 + 672) se leagă: 408 = 401 3.872,00,
     4426 = 4428.01 672,00
@@ -45,6 +53,7 @@ CIFRELE LUNII (calculate din lege, nu citite din aplicație; temeiul pe linia fi
   E2EA3 / 20.09 Beta: 5 × 300 = 1.500 + 315 = 1.815,00; descărcare 5 × 160 = 800
   E2EA4 / 29.09 Alfa: montaj 300 + 63 = 363,00 — neîncasată la 30.09
   banca: −1.000 (Consultanță) · +3.000 (depunere) · +1.815 (Beta) · −3.872 (Mobila) · −1.210 (chirie) · −15 (comision 627)
+  casa la 30.09: 500 + 2.420 (Delta) + 3.993 (E2EA1) + 363 (Z 0041) + 726 (Z 0042) − 3.000 (depunerea) = 5.002
   salarii: POPA ANDREI 8.000 brut; MARIN ELENA 8.800 contractual, CM cod 01 14–18.09 (5 zile lucrătoare) -> 6.800 lucrat + CM 550
   TVA: colectată 693 + 63 + 315 + 126 + 63 = 1.260 · deductibilă 672 + 210 = 882 · de plată 378
   D100 T3: 1% × (707: 3.000 + 600 + 300 + 1.500 = 5.400; 704: 300 + 300 = 600) = 1% × 6.000 = 60
@@ -101,12 +110,17 @@ GAMMA = _partener(41200003, "GAMMA DESIGN PILOT SRL", "București", "B")
 MOBILA = _partener(41200004, "MOBILA FURNIZOR PILOT SRL", "Brașov", "BV")
 IMOB = _partener(41200005, "IMOBILIARE PILOT SRL", "București", "B")
 INFIINTARE = _partener(41200006, "CONSULTANTA INFIINTARE PILOT SRL", "București", "B", platitor=False)
-PARTENERI = (ALFA, BETA, GAMMA, MOBILA, IMOB, INFIINTARE)
+DELTA = _partener(41200007, "DELTA CLIENT PILOT SRL", "Ploiești", "PH")   # [lotul 13, pct.7] clientul cu creanța preluată
+PARTENERI = (ALFA, BETA, GAMMA, MOBILA, IMOB, INFIINTARE, DELTA)
 
 MARFA = "Marfă scaun ergonomic pilot"           # „marf” -> 707 (`facturi.tip_din_denumire`), fără AI
+MARFA_STOC = "Marfă birou pilot"               # [lotul 13, pct.7] articolul cu stocul inițial: 5 buc × 200,00 = 1.000,00 (371 la 31.08)
 SERVICIU = "Servicii de montaj mobilier pilot"  # „servici” -> 704
 CASA_Z = "8000000001"
 D = Decimal
+STOC_INITIAL_CANT, STOC_INITIAL_PRET = 5, D("200")   # [pct.7] 5 × 200,00 = 1.000,00 — soldul lui 371 din balanța de deschidere
+STOC_INITIAL = STOC_INITIAL_CANT * STOC_INITIAL_PRET
+CREANTA_DELTA = D("2420")                            # [pct.7] 4111 Delta la 31.08.2026: 2.000 + TVA 21% 420 (factura din 12/2025)
 
 
 def _bani(x):
@@ -514,15 +528,23 @@ def test_pilot_00_primii_pasi(browser, request, cabinet_nou):
 # ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
 # 01–04 — preluarea firmei
 # ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
-BALANTA_DESCHIDERE = ("cont;denumire;sold debitor;sold creditor\n1012;Capital subscris vărsat;0;10000\n121;Profit sau pierdere;1000;0\n"
-                      "401;Furnizori;0;1000\n5121;Conturi la bănci în lei;9500;0\n5311;Casa în lei;500;0\n")
+# [lotul 13, pct.7] cu stocul (371) și creanța (4111) preluate; 1171 = profitul nerepartizat al anului 2025 (1.600 − impozitul micro 20)
+BALANTA_DESCHIDERE = ("cont;denumire;sold debitor;sold creditor\n1012;Capital subscris vărsat;0;10000\n"
+                      "1171;Rezultatul reportat reprezentând profitul nerepartizat;0;1580\n121;Profit sau pierdere;1000;0\n"
+                      "371;Mărfuri;1000;0\n401;Furnizori;0;1000\n4111;Clienți;2420;0\n5121;Conturi la bănci în lei;7660;0\n"
+                      "5311;Casa în lei;500;0\n")
+BANCA_INITIAL = D("7660")
 
 
 @pozitii("F084")
 def test_pilot_01_preluarea_luna_si_balanta_de_deschidere(patron, firma_pilot):
     """F084. Pașii: Date firmă (vectorul fiscal: micro, TVA lunar) -> „Luna preluării” 09/2026 -> „Salvează”: „Datele firmei au fost
-    salvate” -> Import date -> „Solduri inițiale” -> fișierul balanței la 31.08.2026 (5 conturi, debit = credit = 11.000) -> data propusă
-    31.08.2026 -> „Salvează”: „5 conturi salvate, cu soldurile la 31.08.2026.”"""
+    salvate” -> Import date -> „Solduri inițiale” -> fișierul balanței la 31.08.2026 (8 conturi, debit = credit = 12.580) -> data propusă
+    31.08.2026 -> „Salvează”: „8 conturi salvate, cu soldurile la 31.08.2026.” și pașii următori necesari (664): „Solduri parteneri —
+    … 401 (creditor 1.000,00 lei în balanță) … 4111 (debitor 2.420,00 lei în balanță) …” și „Articole și stoc inițial — … 371 …” ->
+    [lotul 13, pct.7] Import date -> „Articole și stoc inițial” -> „Marfă birou pilot”, 5 buc × 200,00 -> confruntarea cu balanța: „371:
+    stoc inițial 1.000,00 lei · balanță 1.000,00 lei · se potrivesc” -> „Importă articolele”: „1 articol importat.”; în fișa de magazie
+    intrarea „sold initial (import)” din 31.08.2026: 5 buc, 1.000,00."""
     f = firma_pilot
     pregateste_firma(patron, f)                      # date de pornire: profilul + vectorul (micro, TVA lunar), seria facturilor
     pg = patron.pg
@@ -537,26 +559,53 @@ def test_pilot_01_preluarea_luna_si_balanta_de_deschidere(patron, firma_pilot):
     _incarca(patron, "balanta_31082026.csv", BALANTA_DESCHIDERE.encode("utf-8"), "#mig-salveaza-sold")
     assert pg.input_value("#mig-data-bal") == "2026-08-31", pg.input_value("#mig-data-bal")   # ultima zi dinaintea lunii preluării
     t = " ".join(patron.fereastra().split())
-    assert "5 conturi" in t and "echilibrat" in t, t[:2000]
+    assert "8 conturi" in t and "echilibrat" in t, t[:2000]
     pg.click("#mig-salveaza-sold")
-    pg.wait_for_function("() => document.body.innerText.includes('5 conturi salvate, cu soldurile la 31.08.2026.')", timeout=30000)
+    pg.wait_for_function("() => document.body.innerText.includes('8 conturi salvate, cu soldurile la 31.08.2026.')", timeout=30000)
     patron.captura("balanta")
+    # [lotul 13, 664] salvarea numește pașii următori necesari: partenerii pe 401 și 4111, articolele pe 371 (cantitativ-valoric)
+    pg.wait_for_function("() => document.body.innerText.includes('Pașii următori necesari pentru')", timeout=30000)
+    t = " ".join(patron.fereastra().split())
+    assert ("Solduri parteneri — De defalcat pe parteneri: 401 (creditor 1.000,00 lei în balanță) — partenerii dau 0,00 lei; 4111 "
+            "(debitor 2.420,00 lei în balanță) — partenerii dau 0,00 lei.") in t, t[:3000]
+    assert "Articole și stoc inițial — Articolele cu stocul inițial trebuie să dea soldul conturilor de stoc din balanță — 371" in t, t[:3000]
+    # [lotul 13, pct.7] articolele cu stocul inițial, potrivit cu 371 (OMFP 1802/2014 pct.130: soldurile de deschidere)
+    _pas(patron, f, "Articole")
+    _incarca(patron, "articole_31082026.csv", ("denumire;um;cantitate;pret;cont stoc\n%s;buc;%d;%s;371\n"
+                                               % (MARFA_STOC, STOC_INITIAL_CANT, STOC_INITIAL_PRET)).encode("utf-8"), "#mig-importa")
+    rec = " ".join(pg.inner_text("#mig-reconciliere").split())
+    patron.captura("articole")
+    assert "371: stoc inițial %s lei · balanță %s lei · se potrivesc" % (_bani(STOC_INITIAL), _bani(STOC_INITIAL)) in rec, rec
+    pg.click("#mig-importa")
+    pg.wait_for_function("() => document.body.innerText.includes('1 articol importat.')", timeout=30000)
+    patron.captura("articole_importate")
+    st = sql('SELECT m.data::text, m.cantitate::text, m.valoare::text FROM "%s".miscari_stoc m JOIN "%s".articole a ON a.id = m.articol_id '
+             "WHERE a.denumire = %%s" % (f["schema"], f["schema"]), (MARFA_STOC,))
+    assert [(d_, D(c), D(v)) for d_, c, v in st] == [("2026-08-31", D(STOC_INITIAL_CANT), STOC_INITIAL)], st
 
 
 @pozitii("F085")
 def test_pilot_02_soldurile_pe_parteneri(patron, firma_pilot):
-    """F085. Pașii: Import date -> „Solduri parteneri” -> fișierul (401, Consultanță Înființare, creditor 1.000) -> previzualizarea: soldurile
-    pe parteneri se potrivesc cu contul 401 din balanță -> „Salvează”: „Un partener salvat.”"""
+    """F085. Pașii: Import date -> „Solduri parteneri” -> fișierul (401, Consultanță Înființare, creditor 1.000; [lotul 13, pct.7] 4111, Delta,
+    debitor 2.420) -> previzualizarea: soldurile pe parteneri se potrivesc cu 401 și 4111 din balanță -> „Salvează”: „2 parteneri salvați.”,
+    cu „2 facturi deschise preluate (de încasat 2.420,00 lei, de plătit 1.000,00 lei)”; în Import date, „Solduri parteneri” și
+    „Articole și stoc inițial” sunt „gata”."""
     f = firma_pilot
     pg = patron.pg
     _pas(patron, f, "Solduri parteneri")
-    csv = "cont;cui;denumire;sold debitor;sold creditor\n401;RO%s;%s;0;1000\n" % (INFIINTARE["cui"], INFIINTARE["nume"])
+    csv = ("cont;cui;denumire;sold debitor;sold creditor\n401;RO%s;%s;0;1000\n4111;RO%s;%s;%s;0\n"
+           % (INFIINTARE["cui"], INFIINTARE["nume"], DELTA["cui"], DELTA["nume"], CREANTA_DELTA))
     _incarca(patron, "parteneri_31082026.csv", csv.encode("utf-8"), "#mig-salveaza-part")
     coer = " ".join(patron.fereastra().split())
-    assert "se potrivesc (401)" in coer, coer[:2000]
+    assert "se potrivesc (401, 4111)" in coer, coer[:2000]
     pg.click("#mig-salveaza-part")
-    pg.wait_for_function("() => document.body.innerText.includes('Un partener salvat.')", timeout=30000)
+    pg.wait_for_function("() => document.body.innerText.includes('2 parteneri salvați.')", timeout=30000)
+    t = " ".join(patron.fereastra().split())
     patron.captura()
+    assert "2 facturi deschise preluate (de încasat %s lei, de plătit 1.000,00 lei)" % _bani(CREANTA_DELTA) in t, t[:2000]
+    # [lotul 13, 663 / 665] pașii pe care balanța i-a făcut necesari sunt acum „gata”
+    for strat in ("solduri_parteneri", "articole"):
+        assert pg.get_attribute(".mig-frand[data-strat='%s'] [data-stare-pas]" % strat, "data-stare-pas") == "gata", strat
 
 
 @pozitii("F183")
@@ -573,17 +622,51 @@ def test_pilot_03_auditul_de_preluare(patron, firma_pilot):
     patron.captura()
     assert "Contul 401: defalcarea pe parteneri (creditor 1.000,00 lei) coincide cu balanța." in text, text
     assert "Contul 401: parteneri" not in text, text
+    # [lotul 13, pct.7] creanța preluată pe partener și stocul inițial pe articole dau balanța
+    assert "Contul 4111: defalcarea pe parteneri (debitor %s lei) coincide cu balanța." % _bani(CREANTA_DELTA) in text, text
+    assert "Stocul inițial dă soldurile din balanța de deschidere pe 1 cont." in text, text
 
 
 @pozitii("F085")
 def test_pilot_04_soldul_preluat_e_document_deschis(patron, firma_pilot):
     """252 (partea reparată: factura deschisă preluată). Pașii: după preluare, plata furnizorului preluat (Consultanță Înființare, 1.000 lei)
     găsește în Bancă un document deschis al partenerului, ca o factură. Citire: facturile deschise pe care le oferă potrivirea băncii (ruta
-    ecranului Bancă, „Alege facturile”: `{facturi: [{tert_cui, directie, sold, …}]}`)."""
-    r = _ok(_api(patron, "GET", "/tenants/%d/banca/reconciliere/facturi-deschise" % firma_pilot["tenant_id"]), "documentele deschise")
+    ecranului Bancă, „Alege facturile”: `{facturi: [{tert_cui, directie, sold, …}]}`).
+    [lotul 13, pct.7 + 669: „Soldurile preluate pe parteneri trebuie să apară ca sume de încasat/plătit, ca să poată fi stinse în prima
+    lună.”] Încasarea creanței preluate: Casa -> „+ Dispoziție nouă” -> 03.09.2026, încasare de la client, 2.420,00, CUI-ul lui Delta ->
+    „Factura încasată” oferă „Sold la 31.08.2026 · Delta · rămas 2.420,00 lei” (nu „Nicio factură emisă neîncasată”) -> bifată -> „Adaugă”:
+    „Dispoziția a fost salvată”, nota 5311 = 4111 2.420,00 pe documentul preluat (nu avans: nici 419, nici 4427) -> documentul nu mai e
+    deschis."""
+    f = firma_pilot
+    r = _ok(_api(patron, "GET", "/tenants/%d/banca/reconciliere/facturi-deschise" % f["tenant_id"]), "documentele deschise")
     gasite = [x for x in r.get("facturi", []) if str(x.get("tert_cui") or "").endswith(INFIINTARE["cui"])]
     # soldul creditor al lui 401 pe partener la 31.08.2026 (balanța de deschidere, pasul 02) = datoria de plătit
     assert len(gasite) == 1 and gasite[0]["directie"] == "primita" and _q(gasite[0]["sold"]) == D("1000.00"), r
+    delta = [x for x in r.get("facturi", []) if str(x.get("tert_cui") or "").endswith(DELTA["cui"])]
+    # soldul debitor al lui 4111 pe Delta la 31.08.2026 = creanța de încasat
+    assert len(delta) == 1 and delta[0]["directie"] == "emisa" and _q(delta[0]["sold"]) == CREANTA_DELTA, r
+    doc = delta[0]["id"]
+    pg = patron.pg
+    patron.firma(f["nume"])
+    _card(patron, "casa", "#c-toggle")
+    pg.click("#c-toggle")
+    pg.fill("#c-data", zi(3).isoformat())
+    pg.select_option("#c-cat", "incasare_client")
+    pg.fill("#c-suma", str(CREANTA_DELTA))
+    pg.fill("#c-cui", DELTA["cui"])
+    pg.dispatch_event("#c-campuri", "change")
+    pg.wait_for_selector("#c-facturi [data-cf='%d']" % doc, timeout=30000)
+    oferta = " ".join(pg.inner_text("#c-facturi").split())
+    patron.captura("creanta_preluata")
+    assert "Sold la 31.08.2026" in oferta and DELTA["nume"] in oferta and "rămas %s lei" % _bani(CREANTA_DELTA) in oferta, oferta
+    pg.check("#c-facturi [data-cf='%d']" % doc)
+    pg.click("#c-adauga")
+    pg.wait_for_function("() => document.body.innerText.includes('Dispoziția a fost salvată')", timeout=30000)
+    patron.captura("incasata")
+    # OMFP 1802/2014: încasarea în numerar a creanței (5311 = 4111), pe documentul preluat — soldul lui e deja în balanța de deschidere
+    assert [(d_, _sintetic(c), s) for d_, c, s in _note(f, "i.factura_id = %s", (doc,))] == [("5311", "4111", "%s.00" % CREANTA_DELTA)]
+    r = _ok(_api(patron, "GET", "/tenants/%d/banca/reconciliere/facturi-deschise" % f["tenant_id"]), "documentele deschise")
+    assert not [x for x in r.get("facturi", []) if x["id"] == doc], r
 
 
 # ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -663,7 +746,9 @@ def test_pilot_06_nir_cu_transport(patron, firma_pilot):
     # conturilor 408 și 4428); CF art.299 alin.(1) lit.a: deducerea cere factura
     assert sorted(map(tuple, note)) == sorted([("371", "408", "3.000,00"), ("4428.01", "408", "630,00"), ("371", "408", "200,00"),
                                                ("4428.01", "408", "42,00")]), note
-    st = sql('SELECT sum(cantitate)::text, sum(valoare)::text FROM "%s".miscari_stoc WHERE tip = \'intrare\'' % f["schema"])
+    # [lotul 13, pct.7] numai intrările scaunului (articolul cu stocul inițial, „Marfă birou pilot”, are intrarea lui din 31.08)
+    st = sql('SELECT sum(cantitate)::text, sum(valoare)::text FROM "%s".miscari_stoc WHERE tip = \'intrare\' AND articol_id = %%s' % f["schema"],
+             (_articol_id(f),))
     assert st == [("20.000", "3200.00")] or (D(st[0][0]), D(st[0][1])) == (D(CANT_NIR), COST_NIR), st
 
 
@@ -1217,8 +1302,8 @@ def test_pilot_24_notele_lunii_validate(patron, firma_pilot):
 
 @pozitii("F015")
 def test_pilot_25_registrul_de_casa(patron, firma_pilot):
-    """F015. Pașii: Casa -> luna 09/2026: sold la început 500,00, sold final 2.582,00 (500 + 3.993 încasarea + 363 raportul Z 0041 + 726
-    raportul Z 0042 − 3.000 depunerea), iar rapoartele Z apar în registru."""
+    """F015. Pașii: Casa -> luna 09/2026: sold la început 500,00, sold final 5.002,00 (500 + 2.420 creanța preluată a lui Delta + 3.993
+    încasarea + 363 raportul Z 0041 + 726 raportul Z 0042 − 3.000 depunerea), iar rapoartele Z apar în registru."""
     pg = patron.pg
     patron.firma(firma_pilot["nume"])
     _card(patron, "casa", "#c-toggle")
@@ -1303,26 +1388,26 @@ def test_pilot_28_inchiderea_lunii(patron, firma_pilot):
 
 
 #: soldurile finale la 30.09.2026 (debitor, creditor) — din cifrele lunii (docstringul modulului)
-SOLD_CASA = D(500) + D(3993) + Z2_TOTAL + Z_TOTAL - D(3000)                         # 2.582: casa la 30.09.2026
+SOLD_CASA = D(500) + CREANTA_DELTA + D(3993) + Z2_TOTAL + Z_TOTAL - D(3000)         # 5.002: casa la 30.09.2026 (+ creanța Delta, pct.7)
 SOLDURI_FINALE = {
-    "1012": (None, D("10000")), "121": (D("1000"), None),
-    "371": (COST_NIR - CMP * DESCARCAT, None),                                      # 3.200 − 18 × 160 = 320
+    "1012": (None, D("10000")), "1171": (None, D("1580")), "121": (D("1000"), None),
+    "371": (COST_NIR - CMP * DESCARCAT + STOC_INITIAL, None),                       # 3.200 − 18 × 160 = 320, + stocul inițial 1.000
     "4111": (D("363"), None), "4423": (None, TVA_PLATA), "421": (None, NET_FLUTURASI), "423": (None, CM_NET),
     "4315": (None, D112_CAS), "4316": (None, D112_CASS), "436": (None, D112_CAM), "444": (None, D112_IMPOZIT),
-    "5121": (D("9500") - 1000 + 3000 + 1815 - 3872 - 1210 - 15, None),             # 8.218
-    "5311": (SOLD_CASA, None),                                                       # 2.582
+    "5121": (BANCA_INITIAL - 1000 + 3000 + 1815 - 3872 - 1210 - 15, None),         # 6.378
+    "5311": (SOLD_CASA, None),                                                       # 5.002
     "607": (CMP * DESCARCAT, None), "612": (CHIRIE, None), "627": (D("15"), None), "646": (D112_CAM, None),
     "704": (None, V704), "707": (None, V707),
 }
-#: totalul soldurilor finale: partida dublă — creditoarele (toate conturile cu sold creditor sunt mai sus) = debitoarele (32.073)
+#: totalul soldurilor finale: partida dublă — creditoarele (toate conturile cu sold creditor sunt mai sus) = debitoarele (33.653)
 TOTAL_SOLDURI = sum(c for _d, c in SOLDURI_FINALE.values() if c)
 
 
 @pozitii("F061")
 def test_pilot_29_balanta(patron, firma_pilot):
-    """F061 (cartea mare). Pașii: Balanță -> 09/2026: soldurile finale ale conturilor lunii (5121 debitor 8.218,00; 5311 debitor 2.582,00; 371
-    debitor 320,00; 4111 debitor 363,00; 4423 creditor 378,00; 421 creditor 8.658,00; 707 creditor 5.400,00 …); 401, 408, 4426, 4427,
-    4428.01, 581 închise (fără sold); totalul soldurilor finale debitoare = creditoare = 32.073,00."""
+    """F061 (cartea mare). Pașii: Balanță -> 09/2026: soldurile finale ale conturilor lunii (5121 debitor 6.378,00; 5311 debitor 5.002,00; 371
+    debitor 1.320,00; 1171 creditor 1.580,00; 4111 debitor 363,00; 4423 creditor 378,00; 421 creditor 8.658,00; 707 creditor 5.400,00 …); 401, 408, 4426, 4427,
+    4428.01, 581 închise (fără sold); totalul soldurilor finale debitoare = creditoare = 33.653,00."""
     pg = patron.pg
     patron.firma(firma_pilot["nume"])
     pg.click("#fa-balanta")

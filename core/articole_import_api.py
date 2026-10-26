@@ -113,11 +113,23 @@ def extrage(continut, nume_fisier=""):
     return rez
 
 
-def verifica_randuri(randuri):
+def _cheie_denumire(den):
+    return " ".join(str(den or "").strip().lower().split())
+
+
+def verifica_randuri(randuri, solduri=None):
     """PURĂ: respingerile [{rand, motiv, mesaj}] — rândurile care NU intră. Aceeași funcție la previzualizare ȘI la scriere (până azi
-    `importa` credea indicatorul `valid` venit din cererea ecranului)."""
+    `importa` credea indicatorul `valid` venit din cererea ecranului).
+    [lotul 13, deficiența 668] `solduri` = balanța de deschidere ({cont: (debit, credit)}, None = fără balanță): rândurile unui cont de stoc
+    ale cărui articole nu dau soldul lui din balanță nu intră (`stoc_nu_da_soldul`) — aceeași regulă ca la soldurile pe parteneri (346)."""
     er = []
-    vazut = {}
+    # [lotul 13, deficiența 590, comanda Costin 13.1: „La articol dublat, primul rând intră cu 10 buc (stocul real 13); trebuie respinse
+    # ambele până la cumulare, ca la parteneri.”] TOATE aparițiile denumirii dublate se resping, nu numai a doua
+    pe_den = {}
+    for i, a in enumerate(randuri or [], start=2):
+        k = _cheie_denumire(a.get("denumire"))
+        if k:
+            pe_den.setdefault(k, []).append(_it.nr_rand(a, i))
     for i, a in enumerate(randuri or [], start=2):
         i = _it.nr_rand(a, i)
         den = str(a.get("denumire") or "").strip()
@@ -127,12 +139,12 @@ def verifica_randuri(randuri):
         else:
             # [385, retestul 19.10.2026: „acelasi articol pe doua randuri («Marfa valida» 10 buc si 3 buc) intra de doua ori, fara
             # observatie. Celelalte importuri resping dublurile.”] aceeași denumire (fără deosebire de litere mari / spații) = același articol
-            cheie = " ".join(den.lower().split())
-            if cheie in vazut:
+            alte = [n for n in pe_den.get(_cheie_denumire(den), []) if n != i]
+            if alte:
                 er.append(respinge("articol", i, "articol_dublat",
-                                   "%s apare și pe rândul %s — un articol se trece o singură dată, cu stocul lui total" % (et, vazut[cheie])))
-            else:
-                vazut[cheie] = i
+                                   "%s apare și pe %s — un articol se trece o singură dată, cu stocul lui total: adună cantitățile "
+                                   "în fișier (niciunul din rânduri nu intră până atunci)"
+                                   % (et, " și pe ".join("rândul %d" % n for n in alte))))   # rândurile se enumeră, nu se numără
         if not str(a.get("um") or "").strip():
             er.append(respinge("articol", i, "um_lipsa", "%s: unitatea de măsură lipsește — nu se presupune „buc”" % et))
         cant, pret = a.get("cantitate"), a.get("pret")
@@ -159,23 +171,58 @@ def verifica_randuri(randuri):
         elif not str(a.get("cont_cheltuiala") or "").strip():
             er.append(respinge("articol", i, "cont_cheltuiala_lipsa",
                                "%s: contul de cheltuială lipsește și nu se poate deduce din contul de stoc %s" % (et, cont)))
+    if solduri:
+        er += respinse_balanta(randuri, solduri, {e["rand"] for e in er})
+    return er
+
+
+def respinse_balanta(randuri, solduri, deja_respinse=()):
+    """[lotul 13, deficiența 668, comanda Costin 13.1: „Fișele (3 articole, 4.100 lei) față de 371 din balanță (4.200): diferența -100,00 lei
+    e afișată, dar «Importă articolele» importă fără oprire sau confirmare și răspunde verde «3 articole importate». Fișele de magazie și 371
+    pornesc nepotrivite. Aceeași regulă ca la parteneri: contul care nu se potrivește nu intră.”] Rândurile (încă nerespinse) ale unui cont
+    de stoc a cărui valoare nu dă soldul lui din balanța de deschidere — fiecare respins, scurt; cifrele contului stau o singură dată, în
+    confruntarea cu balanța (`reconciliere_balanta`)."""
+    from core.pdf_util import bani as _b
+    bune = [dict(a, stare="respins") if _it.nr_rand(a, i) in deja_respinse else a for i, a in enumerate(randuri or [], start=2)]
+    nepotr = {c["cont"]: c for c in reconciliere_balanta(bune, solduri) if c["diferenta"] is not None and abs(c["diferenta"]) > 0.005}
+    er = []
+    for i, a in enumerate(randuri or [], start=2):
+        n = _it.nr_rand(a, i)
+        c = str(a.get("cont_stoc") or "").strip().split(".")[0]
+        if n in deja_respinse or c not in nepotr:
+            continue
+        x = nepotr[c]
+        er.append(respinge("articol", n, "stoc_nu_da_soldul",
+                           "nu intră: articolele de pe contul %s dau %s, iar balanța de deschidere are %s (diferență %s)"
+                           % (c, _b(x["registru"], "lei"), _b(x["balanta"], "lei"), _b(abs(x["diferenta"]), "lei")), cont=c))
     return er
 
 
 def semnale_randuri(randuri):
-    """PURĂ: rândurile care INTRĂ cu ceva completat din oficiu, spus pe rând (comanda Costin 8.2 pct.4)."""
-    out = []
+    """PURĂ: rândurile care INTRĂ cu ceva completat din oficiu, spus (comanda Costin 8.2 pct.4).
+    [lotul 13, deficiența 668 / clasa 666: „observația «607 dedus din 371» repetată pe fiecare rând”] o singură dată pe pereche (cont de stoc
+    -> cont de cheltuială dedus), pe primul ei rând, cu numărul rândurilor pe care se aplică."""
+    pe_pereche = {}
     for i, a in enumerate(randuri or [], start=2):
         if a.get("cont_cheltuiala_dedus"):
-            out.append(semnaleaza("articol", _it.nr_rand(a, i), "cont_cheltuiala_dedus",
-                                  "contul de cheltuială %s e dedus din contul de stoc %s (lipsea din fișier)"
-                                  % (a.get("cont_cheltuiala"), a.get("cont_stoc"))))
+            pe_pereche.setdefault((a.get("cont_stoc"), a.get("cont_cheltuiala")), []).append(_it.nr_rand(a, i))
+    out = []
+    for (stoc, ch), nr in pe_pereche.items():
+        out.append(semnaleaza("articol", nr[0], "cont_cheltuiala_dedus",
+                              "contul de cheltuială %s e dedus din contul de stoc %s (lipsea din fișier)%s"
+                              % (ch, stoc, "" if len(nr) == 1 else " — pe %s: %s" % (_cate_r(len(nr)), ", ".join(str(n) for n in nr)))))
     return out
 
 
-def eticheteaza(randuri):
-    """[comanda Costin 8.2 pct.4] Starea fiecărui rând (ok / semnalat / respins), cu motivele."""
-    er, sem = verifica_randuri(randuri), semnale_randuri(randuri)
+def _cate_r(n):
+    from core.common import cate
+    return cate(n, "rând", "rânduri")
+
+
+def eticheteaza(randuri, solduri=None):
+    """[comanda Costin 8.2 pct.4] Starea fiecărui rând (ok / semnalat / respins), cu motivele. [lotul 13, 668] `solduri` = balanța de
+    deschidere (rândurile contului de stoc nepotrivit sunt respinse, ca la salvare)."""
+    er, sem = verifica_randuri(randuri, solduri), semnale_randuri(randuri)
     for i, r in enumerate(randuri, start=2):
         n = _it.nr_rand(r, i)
         resp = [e["mesaj"] for e in er if e.get("rand") == n]
@@ -241,7 +288,14 @@ def importa(conn, schema, articole, data_sold=None):
                          "Încarcă întâi balanța de deschidere (sau scrie luna preluării în Date firmă) — stocul inițial e "
                          "la data soldurilor de preluare.")
     d = data_sold
-    er = verifica_randuri(articole)
+    # [lotul 13, 668] aceeași confruntare cu balanța ca la previzualizare: rândurile contului de stoc nepotrivit nu intră
+    from core import solduri_api as _sa
+    with conn.cursor() as _cur:
+        _cur.execute("SELECT to_regclass(%s)", ("%s.solduri_initiale" % schema,))
+        solduri = None
+        if _cur.fetchone()[0] is not None:
+            solduri = _sa.solduri_deschidere(_cur) or None   # conexiunea e pe schema firmei (`db.get_conn(schema)`)
+    er = verifica_randuri(articole, solduri)
     resp_idx = {e["rand"] for e in er}
     create, sarite = 0, list(er)
     with conn.cursor() as cur:
