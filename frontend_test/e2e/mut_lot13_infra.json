@@ -1,0 +1,14 @@
+[
+ {
+  "fisier": "core/db.py",
+  "ancora": "    return \"-c lock_timeout=%s -c idle_in_transaction_session_timeout=%s\" % (lock, idle)",
+  "inlocuire": "    return \"-c lock_timeout=0 -c idle_in_transaction_session_timeout=%s\" % (idle,)",
+  "test": "frontend_test/e2e/e2e_lot13_infra.py::test_def_c201_control_fiscal_raspunde_cu_mesaj_cand_firma_e_tinuta_de_o_operatie_de_structura"
+ },
+ {
+  "fisier": "core/db.py",
+  "ancora": "    if cod == \"55P03\":\n",
+  "inlocuire": "    if cod == \"55P03\" and False:\n",
+  "test": "frontend_test/e2e/e2e_lot13_infra.py::test_def_c201_control_fiscal_raspunde_cu_mesaj_cand_firma_e_tinuta_de_o_operatie_de_structura"
+ }
+]

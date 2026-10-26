@@ -52,5 +52,19 @@ def intoarce_la_firma(cur):
     cur.execute("ROLLBACK TO SAVEPOINT sp_firma")
 
 
+# [C201, lotul 13] Semaforul Control fiscal evaluat pe conexiunea apelantului (închiderea lunii), nu pe una a doua ținută deodată:
+# o eroare a lui se întoarce la savepoint și nu anulează tranzacția apelantului (`uc_comun.declaratii_nedepuse_cu_termen_in_luna`).
+def savepoint_semafor(cur):
+    cur.execute("SAVEPOINT semafor")
+
+
+def elibereaza_semafor(cur):
+    cur.execute("RELEASE SAVEPOINT semafor")
+
+
+def intoarce_la_semafor(cur):
+    cur.execute("ROLLBACK TO SAVEPOINT semafor")
+
+
 def fixeaza_schema(cur, schema):
     cur.execute(f"SET LOCAL search_path TO {schema}")
