@@ -9,6 +9,9 @@ Forma unei dovezi (JSON):
    "intreaga": false}
   - `firma`: schema copiei (`tenant_9049` …) sau a sursei (`tenant_049` …); firma se deschide din cabinet, ca în plasă (`Ecran.firma`).
   - `portal: true` (cu `utilizator` = contul de client al copiei): dovada e în portalul clientului — pagina lui principală, fără cabinet.
+  - [lotul 13, valul 4] `acasa: true`: dovada pornește din pagina principală a utilizatorului, fără să deschidă o firmă (Panoul Admin al
+      superadminului copiei — `"utilizator": "superadmin"` —, clopoțelul, Suportul, fereastra unui anunț); `firma` e atunci opțională (o dă
+      numai numele capturii). `public: true`: pagina publică, FĂRĂ sesiune (vizitatorul: „Funcționalități și prețuri”).
   - `pasi` (în ordine; fiecare un obiect cu O acțiune):
       {"click": CSS, ["text": T], ["daca_exista": true]}   (`daca_exista` și la „completeaza”: câmpul unui pas care apare numai uneori)   clic pe primul element CSS (cu textul T, dacă e dat); cu `daca_exista`,
                                             un element absent nu e o eroare (ex. „Vezi XML-ul generat” numai când declarația s-a generat)
@@ -151,6 +154,15 @@ def _pas(e, pas):
             pagina.wait_for_selector("#pagina-acces-btn", timeout=40000)
         pagina.goto(link, wait_until="domcontentloaded")
         e.pg = pagina
+    elif "ai_raspunde" in pas:
+        # [lotul 13, valul 4 — 572 / 573 / 648] răspunsurile pe care „modelul” le dă, în ordine (AI simulat al copiei, `ICONTA_AI_SIMULAT`,
+        # pus de `scripts/e2e_poarta._env_test`), ca la `conftest.ai_pregateste`: nimic nu pleacă la un model real
+        d = os.environ.get("ICONTA_AI_SIMULAT")
+        if not d:
+            raise ValueError("pasul ai_raspunde cere AI-ul simulat (ICONTA_AI_SIMULAT) — pe copie nu se cheamă modelul real")
+        json.dump(list(pas["ai_raspunde"]), open(os.path.join(d, "raspunsuri.json"), "w", encoding="utf-8"), ensure_ascii=False)
+        if os.path.exists(os.path.join(d, "prompturi.jsonl")):
+            os.remove(os.path.join(d, "prompturi.jsonl"))
     elif "lucrator" in pas:
         # [lotul 13, C130 / C132] lucrătorul Supervizorului rulează pe producție în tura de 5 minute (`firma_rezumat.main` ->
         # `supervizor_cache.recalculeaza_lot`); pe copie cronul nu rulează. Pasul cheamă același calcul pe firmă (`recalculeaza_firma`), pe
@@ -240,9 +252,11 @@ def ruleaza(dovezi, baza, email, parola, firme, iesire, lat=1700, inalt=1000, em
             if c.sql("SELECT to_regclass('public.ciorne_formular') IS NOT NULL")[0][0]:
                 c.sql("DELETE FROM public.ciorne_formular cf USING public.users u WHERE u.id = cf.user_id AND u.email = ANY(%s)",
                       ([email] + [e for e in (emailuri or {}).values() if e],))
-            schema = d["firma"] if d["firma"] in firme else dupa_sursa.get(d["firma"])
+            schema = (d["firma"] if d["firma"] in firme else dupa_sursa.get(d["firma"])) if d.get("firma") else None
             ctx = b.new_context(viewport={"width": d.get("latime", lat), "height": d.get("inaltime", inalt)})
-            if d.get("utilizator") is not None:
+            if d.get("public"):   # [lotul 13, valul 4] vizitatorul paginii publice: fără sesiune
+                pass
+            elif d.get("utilizator") is not None:
                 em = (emailuri or {}).get(str(d["utilizator"])) or (emailuri or {}).get(d["utilizator"])
                 if not em:
                     raise ValueError("dovada %s cere utilizatorul %s, care nu e în copie" % (d["nr"], d["utilizator"]))
@@ -254,9 +268,11 @@ def ruleaza(dovezi, baza, email, parola, firme, iesire, lat=1700, inalt=1000, em
             r = {"nr": d["nr"], "firma": schema, "nume_firma": (firme.get(schema) or {}).get("nume"), "descriere": d.get("descriere"),
                  "captura": os.path.join(iesire, d["captura"]), "verificari": [], "eroare_pas": None}
             try:
-                if schema is None:
-                    raise ValueError("firma %r nu e în copie" % d["firma"])
-                if d.get("portal"):   # [lotul 13, portal] clientul firmei (`utilizator`): portalul lui se deschide singur, fără lista de firme
+                if schema is None and (d.get("firma") or not (d.get("acasa") or d.get("public"))):
+                    raise ValueError("firma %r nu e în copie" % d.get("firma"))
+                if d.get("public"):
+                    e.pg.goto(baza + "/", wait_until="domcontentloaded")
+                elif d.get("portal") or d.get("acasa"):   # [lotul 13, portal / valul 4] pagina principală a utilizatorului, fără firmă
                     e.acasa()
                 else:
                     e.firma(firme[schema]["nume"])
