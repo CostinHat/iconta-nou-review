@@ -72,6 +72,10 @@ Testele grele (suita, poarta, e2e, uneltele vizuale, verificatorul) rulează una
 în paralel: serverul e și producția. Subagenții lucrează în paralel numai pe fișiere diferite și rulează
 doar teste pe fișiere individuale.
 
+Subagenții (regulă permanentă a lui Costin, 26.10.2026): cel mult 2 în paralel, toți pe Sonnet 5.5; Opus numai dacă Costin
+îl cere explicit. Un subagent care nu a dat niciun rezultat după 1 oră se oprește, iar oprirea se raportează (ce rămăsese
+neterminat).
+
 ## 6. Publicarea
 
 După poarta verde, Code publică imediat, fără să aștepte confirmare: backup al bazei chiar înainte,
