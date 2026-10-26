@@ -1274,7 +1274,7 @@ function importParteneriFirma(corp, nav, firma, app = null) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor) sau situația clienților / furnizorilor exportată din programul vechi (denumire · cod fiscal · neachitat final), pe parteneri sau pe facturi (nr. factură · data · scadență · sumă neachitată · TVA la încasare, opțional).</p>
     <label class="camp" style="max-width:420px;margin:10px 0"><span class="camp-eticheta">Contul partenerilor din fișier</span>
-      <select id="mig-cont-part" class="camp-input">${ALEGE}<option value="4111">4111 — Clienți</option><option value="401">401 — Furnizori</option></select>
+      <select id="mig-cont-part" class="camp-input" data-butoane="">${ALEGE}<option value="4111">4111 — Clienți</option><option value="401">401 — Furnizori</option></select>
       <span class="camp-ajutor">Numai dacă fișierul n-are coloana „Cont” — situația clienților (4111) sau a furnizorilor (401). Cu coloana „Cont”, contul se ia din fișier.</span></label>
     ${_exportHTML(app, "solduri_parteneri") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
     <label class="mig-drop" id="mig-drop">
@@ -1700,7 +1700,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
   const norma = (r) => {
     if (!normaEd.has(String(r.rand_fisier))) return normaText(r);
     const n = nr(r);
-    return `<select id="mig-norma-${n}" class="camp-input" data-rand="${n}" data-propus="tip_norma" aria-label="Norma de lucru — rândul ${n}">${alegeDacaLipseste(r.tip_norma)}<option value="intreaga"${r.tip_norma === "intreaga" ? " selected" : ""}>întreagă (8 h)</option><option value="partiala"${r.tip_norma === "partiala" ? " selected" : ""}>parțială</option></select>`
+    return `<select id="mig-norma-${n}" class="camp-input" data-rand="${n}" data-propus="tip_norma" data-butoane="" aria-label="Norma de lucru — rândul ${n}">${alegeDacaLipseste(r.tip_norma)}<option value="intreaga"${r.tip_norma === "intreaga" ? " selected" : ""}>întreagă (8 h)</option><option value="partiala"${r.tip_norma === "partiala" ? " selected" : ""}>parțială</option></select>`
       + `<input type="number" id="mig-ore-${n}" class="camp-input" data-rand="${n}" data-propus="ore_zi" min="1" max="7.5" step="0.5" aria-label="Ore pe zi — rândul ${n}" value="${r.tip_norma === "partiala" ? esc(String(r.ore_zi || "")) : ""}"${r.tip_norma === "partiala" ? "" : " hidden"}>`
       + (dv(r).includes("tip_norma") ? `<div class="tip-desc">${dinFisa(r, "tip_norma")} — de verificat</div>` : "");
   };
