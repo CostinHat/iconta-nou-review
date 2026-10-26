@@ -18,7 +18,7 @@ import re
 
 import pytest
 
-from conftest import alege_perioada, alege_tipul, firma_noua, perioada_incheiata, sql
+from conftest import alege_perioada, alege_tipul, firma_noua, perioada_incheiata, sql, zile_de_acum
 from e2e_bloc_a import _api, _card, _ok, pregateste_firma
 
 _F = ".fereastra:last-of-type "
@@ -415,14 +415,15 @@ def test_def_591_d301_depusa_nu_mai_e_datorata(patron, firma_l13):
     MUTAȚIA: depunerile nu mai scot obligația -> ROȘU."""
     _neplatitor(patron, firma_l13)
     _aic(patron, firma_l13, AZI, "IE-L13-2")
-    assert [o for o in _datorate(patron, firma_l13) if o.startswith("D301 · %02d/%d" % (AZI.month, AZI.year))]
+    # luna D301 = luna achiziției, pe care testul a datat-o AZI (`_aic` de mai sus) — nu o dată pusă de aplicație acum
+    assert [o for o in _datorate(patron, firma_l13) if o.startswith("D301 · %02d/%d" % (AZI.month, AZI.year))]   # AZI-dat-de-test
     # date-de-pornire: depunerea la ANAF a D301 pe luna achiziției (perioadă a firmei de probă, scoasă cu firma)
     sql("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, sursa, data_depunere, nr_depunere) "
         "VALUES (%s, %s, %s, 'd301', 'extern', now(), 1)", (firma_l13["tenant_id"], AZI.year, AZI.month))
     try:
         opt = _datorate(patron, firma_l13)
         patron.captura("datorate_d301_depusa")
-        assert not [o for o in opt if o.startswith("D301 · %02d/%d" % (AZI.month, AZI.year))], opt
+        assert not [o for o in opt if o.startswith("D301 · %02d/%d" % (AZI.month, AZI.year))], opt   # AZI-dat-de-test
     finally:
         sql("DELETE FROM public.declaratii_depuse WHERE tenant_id = %s AND tip = 'd301'", (firma_l13["tenant_id"],))
 
@@ -437,7 +438,8 @@ def test_def_592_d390_numai_pe_lunile_cu_operatiuni(patron, firma_l13):
     patron.captura("datorate_d390")
     d390 = [o for o in opt if o.startswith("D390 · ")]
     assert all(o.startswith("D390 · %02d/%d " % (LUNA.luna, LUNA.an)) for o in d390), d390
-    assert not [o for o in d390 if o.startswith("D390 · %02d/%d" % (AZI.month, AZI.year))], d390
+    # luna în curs e a aplicației ACUM (o rulare peste miezul nopții de la sfârșitul lunii o mută): ziua importului și ziua de acum
+    assert not [o for o in d390 for z in zile_de_acum(AZI) if o.startswith("D390 · %02d/%d" % (z.month, z.year))], d390
 
 
 def test_def_539_d301_furnizorul_fara_prefix_dublat(patron, firma_l13):
