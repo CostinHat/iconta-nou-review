@@ -46,5 +46,11 @@
   "ancora": "        brute = brute + _m + _vc + _cu + _cr",
   "inlocuire": "        brute = brute",
   "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_c174_e3_8_cuprinde_tichetele_de_masa"
+ },
+ {
+  "fisier": "core/d112.py",
+  "ancora": "brute = _d112int(s.get(\"brut_lucrat\", s.get(\"brut\"))) + _venituri_adaugate(s) + cm_base",
+  "inlocuire": "brute = _d112int(s.get(\"brut\")) + _venituri_adaugate(s) + cm_base",
+  "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_c172_e3_8_numara_o_data_zilele_de_concediu_medical"
  }
 ]

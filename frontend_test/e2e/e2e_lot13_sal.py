@@ -281,3 +281,35 @@ def test_def_c174_e3_8_cuprinde_tichetele_de_masa(patron, firma_sal):
     a = _singurul(_d112_xml(patron, firma_sal))
     e3, e1 = _un(a, "asiguratE3"), _un(a, "asiguratE1")
     assert (int(e3["E3_10"]), int(e3["E3_8"]), int(e1["E1_1"])) == (40 * nzl, 5000 + 40 * nzl, 5000 + 40 * nzl), (e3, e1)
+
+
+# ── C172: E3_8 numără o dată zilele de concediu medical ─────────────────────────────────────────────────────────────────────────
+@pytest.fixture
+def firma_c172():
+    f = _firma_cu_salariat("SC172", salariu_brut=7000)
+    try:
+        yield f
+    finally:
+        _scoate_firmele_e2e(f["tenant_id"])
+
+
+def test_def_c172_e3_8_numara_o_data_zilele_de_concediu_medical(patron, firma_c172):
+    """C172 (găsită de Code la 629). Pașii: salariat cu 7.000 lei -> statul lunii trecute -> fereastra lui -> „Concediu medical” ->
+    „+ Certificat nou”: cod 01, 1–10 ale lunii trecute, media 240 lei/zi -> „Calculează și salvează” -> Declarații -> D112 pe luna trecută:
+    „fără erori”; „Total venit brut” (E3_8 = E1_1) = salariul REALIZAT pe zilele lucrate (B2_5) + indemnizația (B3_7) = B4_7. Înainte:
+    E3_8 = salariul întreg al lunii (cu zilele de CM) + indemnizația — zilele de CM numărate de două ori.
+    Temeiul: OPANAF 605/2026 anexa 2, E.3 rândul 8 „Total venit brut”: „venitul brut realizat […] suma totală a veniturilor din salarii şi
+    asimilate salariilor, prevăzute la art. 76 alin. (1) - (41) din Codul fiscal”; CF art.76 alin.(1): „inclusiv indemnizațiile pentru
+    incapacitate temporară de muncă”.
+    MUTAȚIE (`mut_lot13_sal.json`): E3_8 din salariul întreg (`s.get("brut")`) în loc de cel realizat -> E3_8 > B2_5 + B3_7 -> pică."""
+    from e2e_lot12_ctrl_d112 import _certificat_01
+    zile = _certificat_01(patron, firma_c172, 10, "1721")
+    nzl = _zile_lucratoare(LUNA_TRECUTA.replace(day=1), _ultima_zi(LUNA_TRECUTA))
+    assert 0 < zile < nzl, (zile, nzl)   # premisa: luna are și zile lucrate, și zile de CM
+    a = _singurul(_d112_xml(patron, firma_c172))
+    e3, e1, b2, b3, b4 = (_un(a, s) for s in ("asiguratE3", "asiguratE1", "asiguratB2", "asiguratB3", "asiguratB4"))
+    realizat = int((Decimal(7000) * (nzl - zile) / nzl).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+    assert int(b2["B2_5"]) == realizat, (b2, realizat, zile, nzl)
+    assert int(b3["B3_7"]) > 0, b3
+    assert int(e3["E3_8"]) == int(e1["E1_1"]) == int(b2["B2_5"]) + int(b3["B3_7"]) == int(b4["B4_7"]), (e3, e1, b2, b3, b4)
+    patron.captura("d112_e3_8_cu_cm")
