@@ -105,6 +105,8 @@ LA_APELANT = {
         "raportul Z importat: `uc_tenants.horeca_import_amef` (savepoint + `UniqueViolation` -> același 409 ca `_cere_z_unic`)",
     ("core/repo_contabilitate.py", "nota_horeca_z_ciorna", "inregistrari"):
         "raportul Z tastat: `uc_tenants.horeca_raport_z` (`refuza_dublura` -> același 409 ca `_cere_z_unic`)",
+    ("core/repo_registru_evidenta_fiscala.py", "insert_s", "registru_fiscal_pf"):
+        "`registru_evidenta_fiscala.adauga_pf` alocă `nr_crt` (MAX + 1) și scrie sub `reincearca_la_dublura` pe `registru_fiscal_pf_ordine_unica`",
     ("core/repo_registru_inventar.py", "insert_s", "registru_inventar"):
         "`registru_inventar.adauga` alocă `nr_curent` (MAX + 1) și scrie sub `reincearca_la_dublura`",
     ("core/repo_contabilitate.py", "adauga_cont_in_plan", "plan_conturi"):

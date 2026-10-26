@@ -27,9 +27,6 @@ _BUTON = re.compile(r"<button\b")
 #: (fișier, fragmentul rândului) -> motivul pentru care rândul spune „ciornă” fără să mintă
 EXCEPTII = {
     ("firme.js", 'return "notă ciornă";'): "stareNotaCasa: starea citită din bază (nota_status + coada), pe rând",
-    ("facturi_ecran.js", "se pregătește ca ciornă, pe care o emiți tu"):
-        "[lotul 13, 680] explicația ecranului Facturi recurente: modul șablonului (factura lunii emisă singură sau pregătită ca ciornă de "
-        "FACTURĂ, emisă apoi de contabil) — nu e mesajul de după salvarea unei note și nu afirmă starea vreunei note",
 }
 
 

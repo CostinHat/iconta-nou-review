@@ -3671,23 +3671,6 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registru_fiscal_pf (
     CONSTRAINT registru_fiscal_pf_ordine_unica UNIQUE (an, categorie_venit, sursa_venit, nr_crt)
 );
 
--- [lotul 13, plasa: 577] registrul de evidență fiscală al persoanei fizice — oglinda lui `core/migrare_registru_fiscal_pf.py` (sursa
--- schemei, care spune „mirror in tenant_template.sql”, dar oglinda lipsea: la o firmă PFA nouă, „Registrul de evidență fiscală” pe
--- varianta persoanei fizice dădea 500 — relation registru_fiscal_pf does not exist)
-CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registru_fiscal_pf (
-    id                      BIGSERIAL PRIMARY KEY,
-    an                      integer     NOT NULL,
-    categorie_venit         text        NOT NULL,
-    sursa_venit             text        NOT NULL,
-    nr_crt                  integer     NOT NULL,
-    venit_brut              numeric(18,2) NOT NULL,
-    cheltuieli_deductibile  numeric(18,2) NOT NULL,
-    rectificare             boolean     NOT NULL DEFAULT false,
-    motiv_rectificare       text,
-    creat_la                timestamptz NOT NULL DEFAULT now(),
-    CONSTRAINT registru_fiscal_pf_ordine_unica UNIQUE (an, categorie_venit, sursa_venit, nr_crt)
-);
-
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.ajustari_fiscale (
     id serial PRIMARY KEY,
     an integer NOT NULL,

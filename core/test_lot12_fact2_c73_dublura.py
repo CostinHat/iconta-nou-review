@@ -155,7 +155,10 @@ def test_def_c73_1_factura_de_mana_cu_alta_data_se_refuza(conn):
     corp = {"tert_tara": "RO", "tert_cui": "14399840", "tert_nume": "DANTE INTERNATIONAL SA", "serie": "LIC", "numar": "73",
             "data_emitere": "2099-03-20", "moneda": "RON", "cont": "205",
             "linii": [{"descriere": "Licență", "cantitate": "1", "um": "buc", "pret_unitar": "1000", "cota_tva": "21"}],
-            "destinatii": ["taxabil"], "conturi": [""]}
+            "destinatii": ["taxabil"], "conturi": [""],
+            # [lotul 13, 601] linia pe un cont de imobilizare (205) cere fișa activului înaintea oricărei verificări: o dăm completă, ca să
+            # rămână testat refuzul dublurii (nu cel al fișei)
+            "imobilizari": [{"cod_catalog": "", "dnf_luni": "36", "data_pif": "2099-03-20", "metoda": "liniara"}]}
     with pytest.raises(erori.Conflict) as e:
         ufp.valideaza(_FaraCommit(conn), _SCHEMA, ufp.factura_din_formular(corp), dict(corp), {"platitor_tva": True, "tva_la_incasare": False})
     assert e.value.detaliu["erori_campuri"][0]["camp"] == "pm-numar" and e.value.detaliu["cod"] == "CHEIE_DUBLATA", e.value.detaliu

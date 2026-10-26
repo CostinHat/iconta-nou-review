@@ -28,6 +28,7 @@ from core.afirmatii import afirmatie
 from core.common import Temei
 from core.unde import Unde
 from core import repo_registru_evidenta_fiscala as _repo
+from core import chei_unice as _chei
 
 MODUL = "registru_evidenta_fiscala"
 
@@ -326,8 +327,15 @@ def adauga_pf(conn, schema, an, date):
     sursa din fiecare categorie, deci si numerotarea curge acolo, nu global."""
     valideaza_pf(date)
     with conn.cursor() as cur:
-        nr = _repo.select_s(cur, schema, an, date)[0]
-        iid = _repo.insert_s(cur, schema, an, nr, date)[0]
+        def _scrie():
+            nr = _repo.select_s(cur, schema, an, date)[0]
+            return _repo.insert_s(cur, schema, an, nr, date)[0], nr
+
+        # [lotul 13, C73] numărul îl dă APLICAȚIA (`MAX + 1`): două rânduri simultane pe aceeași sursă citeau același număr, iar al doilea
+        # cădea cu 500 pe `registru_fiscal_pf_ordine_unica`. Cursa nu e a omului — se reia cu numărul următor, sub savepoint.
+        iid, nr = _chei.reincearca_la_dublura(cur, ("registru_fiscal_pf_ordine_unica",), _scrie, lambda cur, e: _chei.CheieDublata(
+            "Registrul a primit în același timp prea multe înregistrări pe aceeași sursă și numărul nu s-a putut aloca. Nimic nu s-a "
+            "scris: salvează din nou."))
     conn.commit()
     return {"id": iid, "nr_crt": nr}
 
