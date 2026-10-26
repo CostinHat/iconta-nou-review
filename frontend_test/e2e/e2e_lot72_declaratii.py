@@ -197,7 +197,7 @@ def test_def_300_d390_datorat_in_luna_deschisa_cu_factura_ic_si_fara_d112_fara_s
 
 
 def test_def_301_alte_declaratii_pliata_fara_cele_ale_persoanelor_fizice(patron, firma_e2e):
-    """301. „Alte declarații” cuprindea declarațiile persoanelor fizice (D200, D201, D204, D212, D216, D221, D223, D230). Decizia: pliată,
+    """301. „Alte declarații” cuprindea declarațiile persoanelor fizice (D204, D212, D216, D230; D200, D201, D221, D223 au ieșit din aplicație, 660). Decizia: pliată,
     deschisă la cerere, numai declarațiile pe care un SRL le poate datora.
     Pașii: Declarații pe SRL: selectorul arată numai „Datorate de firmă”; „Arată alte declarații” -> apare grupa „Alte declarații”, fără
     niciuna dintre declarațiile persoanelor fizice."""
@@ -214,7 +214,7 @@ def test_def_301_alte_declaratii_pliata_fara_cele_ale_persoanelor_fizice(patron,
                              timeout=10000)
     tipuri = pg.eval_on_selector_all("#dec-tip option", "(os) => os.map((o) => o.value)")
     patron.captura("deschisa")
-    for t in ("d200", "d201", "d204", "d212", "d216", "d221", "d223", "d230"):
+    for t in ("d204", "d212", "d216", "d230"):
         assert t not in tipuri, (t, tipuri)
     assert "d300" in tipuri and "d101" in tipuri, tipuri
 

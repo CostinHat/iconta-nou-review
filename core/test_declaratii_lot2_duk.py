@@ -9,7 +9,7 @@ D216 e validator de generatie noua (cere DecValidation 2024); core.duk.valideaza
 pe classpath cu DecValidation nou (vezi core/duk.py).
 """
 from core.common import Perioada
-from core import duk, d393, d395, d397, d200, d201, d204, d208, d216, d120, d600
+from core import duk, d393, d395, d397, d204, d208, d216, d120
 
 import pytest
 
@@ -38,15 +38,6 @@ CAZURI = [
                        "auto": [{"nr_auto": "B123ABC", "data_acceptA": "15.01.2026", "nr_km": 1000,
                                  "durata": 100, "venituri": 5000, "sume_n": 2000, "nume": "Ionescu Vasile",
                                  "cnp": "1800101221144", "data_accept_CA": "15.01.2026", "statut": "1"}]}]}),
-
-    ("d200", d200, Perioada(2025, luna=12), {
-        "cif_i": "1800101221144", "nume_c": "POPESCU", "prenume_c": "ION", "den_i": "POPESCU ION",
-        "adresa_i": "Bucuresti Sector 1",
-        "sectiuni": [{"categ_venit": "1", "caen": "6201", "venit_brut": 10000, "chelt": 4000}]}),
-
-    ("d201", d201, Perioada(2025, luna=12), {
-        "nume_c": "ION", "initiala_c": "V", "prenume_c": "DAN", "cif_c": "1800101221144",
-        "sectiuni": [{"categ_venit": 3, "statul": 276, "venit_B": 1000, "chlt_D": 0}]}),
 
     ("d204", d204, Perioada(2025, luna=12), {
         "asociere": {"den": "ASOCIERE X", "cif": "23456783", "adresa": "Cluj-Napoca, Str. A nr.1"},
@@ -80,9 +71,6 @@ CAZURI = [
         "cif": "13548146", "den": "SC MIN SRL", "adresa": "Bucuresti", "caen": "1101",
         "nume_declar": "Ionescu", "prenume_declar": "Ana", "functie_declar": "Contabil"}),
 
-    ("d600", d600, Perioada(2025, luna=12), {
-        "nume_c": "POPESCU", "initiala_c": "I", "prenume_c": "ION", "cif_c": "1960501122231",
-        "adresa_c": "Bucuresti, sector 1", "cass_opt": "1"}),
 ]
 
 

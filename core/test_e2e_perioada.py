@@ -159,4 +159,4 @@ def test_helperul_deschide_alte_declaratii_numai_cand_trebuie():
     alege_tipul(pg, "d390")
     assert (pg.ales, pg.deschis) == ("d390", True)
     with pytest.raises(AssertionError, match="nici în „Alte declarații”"):
-        alege_tipul(_PgTip({"d300"}, set()), "d200")
+        alege_tipul(_PgTip({"d300"}, set()), "d204")

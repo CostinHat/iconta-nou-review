@@ -5,11 +5,11 @@
  "_categorii": {
   "reprezentare": 240,
   "sursa": 106,
-  "nedeterminat": 1113,
+  "nedeterminat": 1096,
   "container": 79,
   "randare": 6
  },
- "_total_aserțiuni": 1544,
+ "_total_aserțiuni": 1527,
  "_in_clasa": 352,
  "fisiere": {
   "core/test_11_deducere_copii_gard.py": 1,
@@ -124,7 +124,7 @@
   "core/test_lot13_migr_previzualizare.py": 1,
   "core/test_lot13_ops_formular.py": 2
  },
- "_vacue": 224,
+ "_vacue": 215,
  "_vacue_de_ce": "aserțiuni din clasă care trec ȘI pe iterabil gol — suprapunerea cu interdicția 19. Clasele NU sunt disjuncte. Plafon inferior.",
  "_motive": {
   "core/test_compara_ce_s_a_depus.py": "1 aserțiune, declarată în fișier: temeiul e proza CITITĂ DE CONTABIL, iar cerința e chiar că fraza destinată lui spune limita regenerării. Nu există structură sub o propoziție - subiectul aserțiunii ESTE proza. Perechea ei structurală (`sursa_declarat` ca CÂMP) e testul de deasupra. Nu e într-o buclă, deci nu poate trece pe listă goală. (Fisierul se numea test_d112_...; redenumit cand a inceput sa acopere si D300.)",
@@ -134,7 +134,7 @@
  },
  "_pe_fel": {
   "mesaj_de_rau": 182,
-  "apare_oricum": 1362
+  "apare_oricum": 1345
  },
  "_pe_fel_de_ce": "PROPRIETATE, nu procent: o aserțiune pe text trece pe date goale, exceptand cele care cauta un mesaj de eroare. `mesaj_de_rau` e plafon SUPERIOR (clasificatorul supraevalueaza), `apare_oricum` plafon INFERIOR.",
  "_pe_fel_ridicari": [

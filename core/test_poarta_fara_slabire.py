@@ -84,8 +84,28 @@ MOTIVATE.update({
 # [lotul 13, comanda 13.1] testele scoase / rescrise de deficiențele lotului, fiecare cu decizia și testul care o păzește acum
 _660 = ("funcție scoasă: formularele D200, D201, D220, D221, D223, D600 sunt înlocuite de Declarația unică (deficiența 660, comanda Costin "
         "13.1; CF art.122 alin.(1), art.120 „Abrogat.”) — scoase din dispecer, selector și generare (`declaratii_api.FORMULARE_INLOCUITE`). ")
-_660_TESTE = ("Înlocuit de core/test_%s_formular.py::test_%s_nu_se_mai_ofera_formular_inlocuit_de_declaratia_unica (cererea, chiar "
-              "completă, primește motivul cu textul legii) și core/test_lot13_decl_logica.py::test_660_*")
+_660_TESTE = ("Generatorul și testele lui au fost șterse (decizia Costin 26.10.2026: formularele înlocuite de Declarația unică se scot din cod, nu "
+              "rămân ca referință); refuzul cererii pe tipul scos, cu textul legii, îl păzește core/test_lot13_decl_logica.py::test_660_*")
+# fișierele șterse de lotul 13 la 660 și testele lor de la intrarea lotului (toate au rămas fără modul de testat)
+_660_SCOASE = {
+    "core/test_d200_formular.py": ("test_d200_nu_e_doar_api", "test_d200_cerere_goala_refuza_la_api", "test_d200_formular_gol_refuza",
+                                   "test_d200_categ14_castig_pierdere_discrimineaza", "test_d200_categ13_organizator_discrimineaza",
+                                   "test_d200_sectiune_valida_genereaza"),
+    "core/test_d201_formular.py": ("test_d201_nu_e_doar_api", "test_d201_cerere_goala_refuza_la_api", "test_d201_formular_gol_refuza",
+                                   "test_d201_imp2_doar_la_categ14_discrimineaza", "test_d201_sectiune_valida_genereaza"),
+    "core/test_d220.py": ("test_d220_totaluri_si_drec", "test_d220_stat_pensie_omis", "test_d220_erori", "test_d220_valid_pe_validatorul_oficial"),
+    "core/test_d221_formular.py": ("test_d221_nu_e_doar_api", "test_d221_cerere_goala_refuza_la_api", "test_d221_baza_valida_fara_erori",
+                                   "test_d221_structural", "test_d221_codp_duplicat_refuza", "test_d221_asociere_fara_asociati_refuza"),
+    "core/test_d221.py": ("test_d221_structura_fixa", "test_d221_erori", "test_d221_valid_pe_validatorul_oficial",
+                          "test_1d_an_2025_refuza_generarea", "test_1d_an_2024_trece_poarta_de_an"),
+    "core/test_d223_formular.py": ("test_d223_nu_e_doar_api", "test_d223_cerere_goala_refuza_la_api", "test_d223_erori_generare_gol_refuza",
+                                   "test_d223_structural", "test_d223_baza_valida_fara_erori", "test_d223_cota_nu_suma_100_refuza",
+                                   "test_d223_sector_obligatoriu_bucuresti"),
+    "core/test_d223.py": ("test_d223_distributie_si_totaluri", "test_d223_norma_venit_d_zero", "test_d223_erori",
+                          "test_d223_valid_pe_validatorul_oficial"),
+    "core/test_d600_formular.py": ("test_d600_nu_e_doar_api", "test_d600_cerere_goala_refuza_la_api", "test_d600_formular_gol_refuza",
+                                   "test_d600_structural", "test_d600_fara_componenta_refuza"),
+}
 _507 = ("schimbare decisă: clasa 8 se înregistrează într-o singură parte, fără 891 și în afara rândurilor notei (deficiența 507, comanda "
         "Costin 13.1: „Clasa 8 se înregistrează într-o singură parte (doar debit 8035 la dare, doar credit la scoatere)”). ")
 MOTIVATE.update({
@@ -98,16 +118,6 @@ MOTIVATE.update({
         "core/test_cashflow.py::test_din_facturi_soldul_peste_facturi_intra_o_data_numit",
     "core/test_cashflow.py::test_aloca_zero":
         "funcție scoasă: `cashflow.aloca_sold` (553 + 559). Cazul gol îl păzește core/test_cashflow.py::test_din_facturi_fara_sold_in_plus",
-    "core/test_d200_formular.py::test_d200_nu_e_doar_api": _660 + _660_TESTE % ("d200", "d200"),
-    "core/test_d200_formular.py::test_d200_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d200", "d200"),
-    "core/test_d201_formular.py::test_d201_nu_e_doar_api": _660 + _660_TESTE % ("d201", "d201"),
-    "core/test_d201_formular.py::test_d201_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d201", "d201"),
-    "core/test_d221_formular.py::test_d221_nu_e_doar_api": _660 + _660_TESTE % ("d221", "d221"),
-    "core/test_d221_formular.py::test_d221_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d221", "d221"),
-    "core/test_d223_formular.py::test_d223_nu_e_doar_api": _660 + _660_TESTE % ("d223", "d223"),
-    "core/test_d223_formular.py::test_d223_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d223", "d223"),
-    "core/test_d600_formular.py::test_d600_nu_e_doar_api": _660 + _660_TESTE % ("d600", "d600"),
-    "core/test_d600_formular.py::test_d600_cerere_goala_refuza_la_api": _660 + _660_TESTE % ("d600", "d600"),
     "core/test_formulare_operatiuni_campuri.py::test_conturile_vin_precompletate_cu_sugestia_standard":
         "PIVOT decis: deficiența 504 (comanda Costin 13.1: „Câmpurile nu au voie să arate valori gri sau precompletate care induc în eroare "
         "[…] Câmpul rămâne gol.”) răstoarnă regula lotului 07.10 B (conturile precompletate cu sugestia). Înlocuit de "
@@ -149,6 +159,7 @@ MOTIVATE.update({
         "funcție scoasă: `productie.nota_vanzare` (510, ca mai sus); coeficientul favorabil (348 = 711) e păzit de "
         "test_productie.py::test_diferente_repartizate_asupra_iesirii",
 })
+MOTIVATE.update({"%s::%s" % (f, t): _660 + _660_TESTE for f, ts in _660_SCOASE.items() for t in ts})
 
 
 def _git(*a):

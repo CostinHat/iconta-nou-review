@@ -124,7 +124,7 @@ _NU_E_TVA = re.compile(r"pro_?rata|cass|impozit|dobanda|discount|cota_cas|cota_p
 
 #: plafonul de azi (21.10.2026) al calculelor din cotă scrise în afara `core/tva_calcul.py`. Un fișier migrat iese de aici (0); o cifră
 #: poate scădea, niciodată crește; un fișier nou nu are voie. Două feluri:
-#:  - NU E TVA (impozit pe dividende / pe venit, cote de impozit): d100_reconciliere, d101, d101g, d114, d212, d216, d223, dividende_curs,
+#:  - NU E TVA (impozit pe dividende / pe venit, cote de impozit): d100_reconciliere, d101, d101g, d114, d212, d216, dividende_curs,
 #:    decontari_asociati, cititor_js (comentariu);
 #:  - TVA ÎNCĂ NEMIGRAT (de adus pe regula unică; patch-urile sunt în raportul lotului 11, subagentul T): contare_facturi (factura veche fără linii, cota ca fracție), control_incrucisat, avansuri, comodat_chirii, deconturi, import_export, intracomunitar,
 #:    inventariere, leasing, lichidare, obiecte_inventar, perisabilitati, productie, sgr, stocuri, stocuri_cv_api, taxare_inversa, tva_marja,
@@ -133,7 +133,7 @@ _NU_E_TVA = re.compile(r"pro_?rata|cass|impozit|dobanda|discount|cota_cas|cota_p
 #:    (`test_d300_reconciliere.test_non_tautologie_*`), deci își scriu singure regula.
 PLAFON = {
     "core/avansuri.py": 1, "core/cititor_js.py": 1, "core/comodat_chirii.py": 1, "core/contare_facturi.py": 2, "core/control_incrucisat.py": 1, "core/d100_reconciliere.py": 1,
-    "core/d101.py": 1, "core/d101g.py": 1, "core/d114.py": 2, "core/d212.py": 1, "core/d216.py": 2, "core/d223.py": 1, "core/d300.py": 3,
+    "core/d101.py": 1, "core/d101g.py": 1, "core/d114.py": 2, "core/d212.py": 1, "core/d216.py": 2, "core/d300.py": 3,
     "core/d300_reconciliere.py": 1, "core/d301_operatiuni_api.py": 2, "core/d394.py": 1, "core/d394_reconciliere.py": 2, "core/d406.py": 2,
     "core/decontari_asociati.py": 1, "core/deconturi.py": 1, "core/dividende_curs.py": 1, "core/export_saga.py": 1,
     "core/export_winmentor.py": 1, "core/import_export.py": 1, "core/intracomunitar.py": 1,

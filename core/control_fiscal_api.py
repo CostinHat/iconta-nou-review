@@ -212,16 +212,11 @@ _NEAP_FORMA_SIMPLA = {
 # o persoană juridică — denumirea fiecăreia, din antetul generatorului ei (`core/dNNN.py`). Pentru o persoană juridică ies din selector și
 # generarea lor e refuzată; la PFA (partidă simplă) rămân.
 _NEAP_PERSOANA_JURIDICA = {t: "%s nu se depune de o persoană juridică — e declarația %s." % (t.upper(), cine) for t, cine in (
-    ("d200", "persoanelor fizice pentru veniturile realizate din România"),
-    ("d201", "persoanelor fizice pentru veniturile realizate din străinătate"),
     ("d204", "asocierilor fără personalitate juridică (venitul anual distribuit pe asociați)"),
     ("d208", "notarilor (impozitul pe transferul proprietăților imobiliare din patrimoniul personal)"),
     ("d212", "unică a persoanelor fizice (impozitul pe venit și contribuțiile sociale)"),
     ("d216", "persoanelor fizice pentru impozitul special pe bunurile de valoare mare"),
-    ("d221", "persoanelor fizice (sau a asocierilor lor) pentru veniturile agricole pe norme de venit"),
-    ("d223", "asocierilor fără personalitate juridică (venitul estimat)"),
     ("d230", "persoanelor fizice pentru redirecționarea a până la 3,5% din impozitul pe venit"),
-    ("d600", "persoanelor fizice pentru venitul estimat (CAS / CASS)"),
     ("d603", "persoanelor fizice pentru exceptarea de la plata CASS"),
 )}
 

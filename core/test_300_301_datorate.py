@@ -37,7 +37,7 @@ def test_300_termenele_d112_din_fapt_nu_din_are_salariati(monkeypatch):
 def test_301_persoana_juridica_nu_vede_declaratiile_persoanelor_fizice():
     """MUTAȚIE: `else dict(_NEAP_PERSOANA_JURIDICA)` -> `else {}` -> pică."""
     pj = cf.neaplicabile_forma("srl")
-    assert {"d200", "d201", "d204", "d212", "d216", "d221", "d223", "d230"} <= set(pj), pj
+    assert {"d204", "d212", "d216", "d230"} <= set(pj), pj
     assert pj["d212"] == "D212 nu se depune de o persoană juridică — e declarația unică a persoanelor fizice (impozitul pe venit și " \
                          "contribuțiile sociale).", pj["d212"]
     assert not set(cf.neaplicabile_forma("pfa")) & set(cf._NEAP_PERSOANA_JURIDICA), "la PFA declarațiile persoanei fizice rămân"
