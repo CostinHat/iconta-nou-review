@@ -99,13 +99,13 @@
   "fisier": "core/raportari_ai.py",
   "ancora": "            motiv_nu = verifica_raspuns(raspuns)",
   "inlocuire": "            motiv_nu = None",
-  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_572_573_raspunsul_ghicit_nu_pleaca_iar_motivul_se_vede_in_panou"
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_572_raspunsul_ghicit_nu_pleaca_la_om"
  },
  {
   "fisier": "static/js/ecrane/admin_raportari.js",
   "ancora": "      ${triajHtml(cap)}",
   "inlocuire": "",
-  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_572_573_raspunsul_ghicit_nu_pleaca_iar_motivul_se_vede_in_panou"
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_573_motivul_escaladarii_se_vede_in_panou_admin"
  },
  {
   "fisier": "core/uc_raportari.py",
@@ -117,19 +117,19 @@
   "fisier": "core/tipare_api.py",
   "ancora": "d.fel IN ('declaratie', 'nota')),",
   "inlocuire": "d.fel = 'declaratie'),",
-  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_574_576_tiparele_numara_respingerile_omului_si_analiza_refuza_sub_prag"
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_574_tiparele_numara_respingerile_omului_si_notele"
  },
  {
   "fisier": "core/tipare_api.py",
   "ancora": "    if (date.get(\"respinse\") or 0) < PRAG_ANALIZA:",
   "inlocuire": "    if False:",
-  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_574_576_tiparele_numara_respingerile_omului_si_analiza_refuza_sub_prag"
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_576_analiza_ai_sub_prag_nu_intreaba_modelul"
  },
  {
   "fisier": "static/stil.css",
   "ancora": ".cap-tabel th.cap-num { text-align: right; }",
   "inlocuire": "",
-  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_574_576_tiparele_numara_respingerile_omului_si_analiza_refuza_sub_prag"
+  "test": "frontend_test/e2e/e2e_lot13_admin2.py::test_def_574_tiparele_numara_respingerile_omului_si_notele"
  },
  {
   "fisier": "core/coada_api.py",
