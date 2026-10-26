@@ -632,8 +632,8 @@ def test_def_142_cd_cere_poate_valida(browser, request, patron, firma_e2e):
     def deschide(e):
         e.firma(firma_e2e["nume"])
         e.pg.click("#fa-mijloace")
+        # [lotul 13, clasele 674 / 675 — zona ops] acțiunile activului stau direct pe rând (fără meniul „Acțiuni” pliat); nu mai e nimic de deschis
         e.pg.wait_for_selector(sel, state="attached", timeout=20000)
-        e.pg.evaluate("(s) => document.querySelector(s).closest('details').open = true", sel)
 
     with cont_asistent(firme=(firma_e2e["tenant_id"],), eticheta="junior142") as a, ecran_cont(browser, request, a["email"]) as e:
         deschide(e)
