@@ -249,7 +249,8 @@ def test_def_472_cota_salvata_se_corecteaza_pe_rand_si_corectura_e_consemnata(pa
 def test_def_162_pif_intreg_si_actiunile_in_vedere_la_1700(patron, firma_pr):
     """162 (cazul întreg al lui Costin: „derulare laterală la ~1700 px, PIF tăiat, acțiuni ascunse”; derularea laterală o păzește
     `e2e_bloc_e.test_def_162_*`). Pașii: ecran de 1700 px -> Mijloace fixe: data PIF se vede întreagă (celula n-o taie) -> „Acțiuni”:
-    „Casează”, „Reevaluează”, „Înregistrează lunile lipsă” și „C&D” stau în fereastră, în vedere pe lățime (lotul 13: fără meniul ascuns)."""
+    „Casează”, „Reevaluează”, „Înregistrează lunile lipsă”, „Planul lunar” și „C&D” stau în fereastră, în vedere pe lățime (lotul 13: fără
+    meniul ascuns; „Planul lunar” e butonul care deschide planul — clasa 674, înainte un `<details>` sub rând)."""
     pg = patron.pg
     pg.set_viewport_size({"width": 1700, "height": 1000})
     _mf(firma_pr, "MF162B", "12000", 24, "2026-01-10")
@@ -259,10 +260,12 @@ def test_def_162_pif_intreg_si_actiunile_in_vedere_la_1700(patron, firma_pr):
     m = pif.evaluate("(td) => { const z = td.closest('.fereastra-corp').getBoundingClientRect(); const r = td.getBoundingClientRect();"
                      " return {text: td.innerText.trim(), sw: td.scrollWidth, cw: td.clientWidth, st: r.left >= z.left, dr: r.right <= z.right}; }")
     assert m["text"] == "10.01.2026" and m["sw"] <= m["cw"] and m["st"] and m["dr"], m
-    # [lotul 13, clasele 674 / 675] butoanele stau pe rând, fără meniul „Acțiuni”: Casează, Reevaluează, Înregistrează lunile lipsă, C&D
+    # [lotul 13, clasele 674 / 675] butoanele stau pe rând, fără meniul „Acțiuni”: Casează, Reevaluează, Înregistrează lunile lipsă,
+    # Planul lunar (674: buton, nu text pe care se dă clic), C&D
     vazute = rand.evaluate("(tr) => { const z = tr.closest('.fereastra-corp').getBoundingClientRect();"
                            " return [...tr.querySelectorAll('td:last-child button')].map((b) => {"
                            " const r = b.getBoundingClientRect(); return [b.innerText || b.getAttribute('aria-label'),"
                            " r.width > 0 && r.left >= z.left && r.right <= z.right]; }); }")
     patron.captura("actiuni")
-    assert len(vazute) == 4 and all(ok for _t, ok in vazute), vazute
+    assert [t.split(" (")[0] for t, _ok in vazute] == ["Casează", "Reevaluează", "Înregistrează lunile lipsă", "Planul lunar", "C&D: nu"] \
+        and all(ok for _t, ok in vazute), vazute

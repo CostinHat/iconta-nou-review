@@ -57,10 +57,23 @@ def _completeaza(pg, campuri):
         pg.dispatch_event(sel, "change")
 
 
+def _text(pg, sel):
+    """Textul zonei, și când e ascunsă: [lotul 13, 515] refuzul de lângă buton stă în caseta „NU s-a salvat.” (motivul întreg), iar zona
+    lui se ascunde cât stă caseta (`data-in-refuz`, `api.arataRefuzul`) — același text, o singură dată pe ecran."""
+    return " ".join((pg.eval_on_selector(sel, "e => e.textContent") or "").split())
+
+
 def _genereaza(pg):
-    pg.click("#op-trimite")
-    pg.wait_for_selector("#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare", timeout=40000)
-    return " ".join(pg.inner_text("#op-mesaj").split())
+    """„Generează nota” -> răspunsul serverului -> textul zonei (confirmarea, sau refuzul mutat în caseta de lângă buton)."""
+    inainte = _text(pg, "#op-mesaj")   # zona de la generarea dinainte (un refuz rămâne în ea, ascuns)
+    with pg.expect_response(lambda r: r.request.method == "POST" and "/tenants/" in r.url, timeout=40000):
+        pg.click("#op-trimite")
+    # răspunsul a sosit: zona primește confirmarea sau refuzul NOU (alt text decât cel de dinainte)
+    pg.wait_for_function("(v) => { const z = document.querySelector('#op-mesaj'); if (!z) return false;"
+                         " const t = z.textContent.replace(/\\s+/g, ' ').trim();"
+                         " return t !== v && (!!z.querySelector('[data-dupa-generare]') || (z.classList.contains('msg-eroare') && t !== '')); }",
+                         arg=inainte, timeout=20000)
+    return _text(pg, "#op-mesaj")
 
 
 def _ultima(f):
@@ -237,32 +250,44 @@ def test_def_524_decontarea_in_valuta_pe_factura_de_origine(patron, firma_ops):
 
 
 # ── 518 / 519 / 522 / 517 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_def_518_519_522_casarea_pe_activ_in_fereastra_ei(patron, firma_ops):
-    """518 / 519 / 522. Pașii: MF-A (6.000 lei, 60 de luni, PIF 10.01.2026, rata 100) și MF-B (3.600 lei, PIF în luna curentă) pe același
-    cont 2813; amortizarea lui MF-A pe 02/2026 validată pe activ (100) -> Mijloace fixe: „Înregistrat pe activ” 100 la MF-A și 0 la MF-B (522:
-    înainte, contul întreg stătea la activul rămas singur) -> „Casează” MF-A -> fereastra casării: data -> „Generează nota de casare”: refuzul
-    numește lunile lipsă și suma lor (518: înainte nota debita 2813 cu toată amortizarea calculată) -> DATE DE PORNIRE: lunile 03…luna trecută
-    înregistrate pe activ -> casarea: luna casării pe 6811, 2813 = 2131 cu toată amortizarea, restul pe 6583, documentul „Proces-verbal de
-    casare”; registrul arată „casarea e în ciornă” (519: nu „casat”) -> ciorna ștearsă din Registrul jurnal -> MF-A e iar „activ”.
-    MUTAȚIA: triggerul / registrul: `mf_registru.registru` ia starea din `activ`, fără nota în așteptare -> „activ” în loc de „casarea e în
-    ciornă” -> ROȘU."""
+def test_def_522_inregistrat_pe_activ_nu_pe_cont(patron, firma_ops):
+    """522. „Grav: coloana «Înregistrat» se citește pe cont (2813), nu pe activ.” Pașii: MF-A (6.000 lei, 60 de luni, PIF 10.01.2026) și MF-B
+    (3.600 lei, PIF în luna curentă) pe același cont 2813; amortizarea lui MF-A pe 02/2026 validată pe activ (100) -> Mijloace fixe:
+    „Înregistrat pe activ” 100 la MF-A și 0 la MF-B (înainte, contul întreg stătea la fiecare activ al contului).
+    MUTAȚIA: registrul ia soldul contului pentru fiecare activ (`inreg = sold[c]`) -> MF-B arată 100 -> ROȘU."""
     f = firma_ops
-    s = f["schema"]
     ma = _mf(f, "MFA", "6000", 60, "2026-01-10")
     _mf(f, "MFB", "3600", 36, AZI.replace(day=1).isoformat())
     _nota_validata(f, "2026-02-28", [("6811", "2813", 100)], mijloc_fix_id=ma)
     _registru(patron, f)
     pg = patron.pg
-    assert "100,00" in _rand_mf(pg, "MFA").inner_text() and "0,00" in _rand_mf(pg, "MFB").locator("td").nth(6).inner_text()
+    assert "100,00" in _rand_mf(pg, "MFA").locator("td").nth(6).inner_text()
+    assert _rand_mf(pg, "MFB").locator("td").nth(6).inner_text().strip().startswith("0,00"), _rand_mf(pg, "MFB").inner_text()
     patron.captura("inregistrat_pe_activ")
+
+
+def test_def_518_casarea_cere_lunile_lipsa_si_trece_luna_ei_prin_6811(patron, firma_ops):
+    """518. Pașii: MF-A (6.000 lei, 60 de luni, PIF 10.01.2026, rata 100), amortizarea lui 02/2026 validată pe activ -> Mijloace fixe ->
+    „Casează” MF-A -> fereastra casării: data -> „Generează nota de casare”: refuzul numește lunile lipsă și suma lor (înainte nota debita
+    2813 cu toată amortizarea calculată) -> DATE DE PORNIRE: lunile 03…luna trecută înregistrate pe activ -> casarea: luna casării pe 6811,
+    2813 = 2131 cu toată amortizarea, restul pe 6583, documentul „Proces-verbal de casare”.
+    MUTAȚIA: refuzul lunilor lipsă scos din `_casare` -> nota se scrie fără ele -> ROȘU."""
+    f = firma_ops
+    s = f["schema"]
+    ma = _mf(f, "MFA", "6000", 60, "2026-01-10")
+    _nota_validata(f, "2026-02-28", [("6811", "2813", 100)], mijloc_fix_id=ma)
+    _registru(patron, f)
+    pg = patron.pg
     _rand_mf(pg, "MFA").locator("[data-caseaza]").click()
     pg.wait_for_selector(_F + "#mf-f-data", timeout=20000)
     pg.fill(_F + "#mf-f-data", D)
+    ultima = _ultima(f)
     pg.click(_F + "#mf-f-genereaza")
-    pg.wait_for_selector(_F + "#mf-f-mesaj.msg-eroare, " + _F + "#mf-f-mesaj .msg-eroare", timeout=30000)
-    m = " ".join(pg.inner_text(_F + "#mf-f-mesaj").split())
+    pg.wait_for_selector(_F + "#mf-f-mesaj.msg-eroare, " + _F + "#mf-f-mesaj .msg-eroare, " + _F + "#mf-f-mesaj .caseta-ok", state="attached",
+                         timeout=30000)
+    m = _text(pg, _F + "#mf-f-mesaj")
     patron.captura("refuz_luni_lipsa")
-    assert "lipsesc" in m and "6811" in m and "Înregistrează lunile lipsă" in m, m
+    assert "lipsesc" in m and "6811" in m and "Înregistrează lunile lipsă" in m and _note_noi(f, ultima) == [], m
     for luna in range(3, AZI.month):
         _nota_validata(f, "2026-%02d-28" % luna, [("6811", "2813", 100)], mijloc_fix_id=ma)
     ultima = _ultima(f)
@@ -273,13 +298,70 @@ def test_def_518_519_522_casarea_pe_activ_in_fereastra_ei(patron, firma_ops):
     linii = [x[:3] for x in _linii(f, nid)]
     assert linii[0] == ("6811", "2813", "100.00") and sum(float(x[2]) for x in linii if x[1] == "2131") == 6000, linii
     assert sql('SELECT document_ref FROM "%s".inregistrari WHERE id = %%s' % s, (nid,))[0][0].startswith("Proces-verbal de casare nr ")
+
+
+def test_def_519_activul_iese_din_registru_numai_la_validarea_casarii(patron, firma_ops):
+    """519. „După ștergerea ciornei de casare, MF-001 rămâne «casat», fără acțiuni și fără cifre în registru.” Pașii: MF-A cu toate lunile
+    până la luna trecută înregistrate pe activ (DATE DE PORNIRE) -> „Casează” -> nota de casare (ciornă) -> registrul arată „casarea e în
+    ciornă, de validat” (nu „casat”) -> ciorna ștearsă din Registrul jurnal -> MF-A e iar „activ”, cu acțiunile lui.
+    MUTAȚIA: registrul ia starea numai din `activ`, fără nota în așteptare -> „activ” în loc de „casarea e în ciornă” -> ROȘU."""
+    f = firma_ops
+    ma = _mf(f, "MFA", "6000", 60, "2026-01-10")
+    for luna in range(2, AZI.month):
+        _nota_validata(f, "2026-%02d-28" % luna, [("6811", "2813", 100)], mijloc_fix_id=ma)
+    _registru(patron, f)
+    pg = patron.pg
+    _rand_mf(pg, "MFA").locator("[data-caseaza]").click()
+    pg.wait_for_selector(_F + "#mf-f-data", timeout=20000)
+    pg.fill(_F + "#mf-f-data", D)
+    ultima = _ultima(f)
+    pg.click(_F + "#mf-f-genereaza")
+    pg.wait_for_selector(_F + "#mf-f-mesaj .caseta-ok", timeout=30000)
+    (nid,) = _note_noi(f, ultima)
     _registru(patron, f)
     assert "casarea e în ciorna" in _rand_mf(pg, "MFA").locator(".mf-stare").inner_text()
     patron.captura("casare_in_asteptare")
     _ok(_api(patron, "DELETE", "/tenants/%d/jurnal/%d" % (f["tenant_id"], nid)), "ștergerea ciornei")
     _registru(patron, f)
     assert _rand_mf(pg, "MFA").locator(".mf-stare").inner_text().strip() == "activ"
+    assert _rand_mf(pg, "MFA").locator("[data-caseaza]").is_enabled()
     patron.captura("dupa_stergere")
+
+
+def test_def_516_reevaluarea_citeste_amortizarea_pe_activ_cu_soldul_preluat(patron, firma_ops):
+    """516. „Verificarea citește în 2813 doar notele din 2026 (400) și ignoră soldul de preluare (2.200, lunile 2025); registrul arată corect
+    2.600.” Pașii: MF-R (12.000 lei, 60 de luni, PIF 15.01.2025) cu soldul preluat 2813 = 2.200 (02–12/2025, DATE DE PORNIRE) și lunile
+    2026 până la luna trecută înregistrate pe activ -> Mijloace fixe -> „Reevaluează” MF-R -> fereastra spune „înregistrat pe activ” =
+    2.200 + lunile 2026 -> data = ultima zi a lunii trecute, valoarea justă 9.000 -> „Generează nota de reevaluare”: nota scoate toată
+    amortizarea (2813 = 2131 cu 2.200 + lunile 2026), fără refuzul „amortizare neînregistrată”.
+    MUTAȚIA: amortizarea înregistrată pe activ fără partea din soldul preluat (`inregistrat_pe_activ`) -> refuz -> ROȘU."""
+    import datetime as _dt
+    f = firma_ops
+    s = f["schema"]
+    mr = _mf(f, "MFR", "12000", 60, "2025-01-15")
+    # date-de-pornire: soldul preluat al contului de amortizare (lunile 02–12/2025 ale activului), ca la migrare
+    sql('INSERT INTO "%s".solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES (%%s, %%s, 0, %%s, %%s)' % s,
+        ("2813", "Amortizarea instalațiilor", 2200, "2025-12-31"))
+    for luna in range(1, AZI.month):
+        _nota_validata(f, "2026-%02d-28" % luna, [("6811", "2813", 200)], mijloc_fix_id=mr)
+    total = 2200 + 200 * (AZI.month - 1)
+    lei = "{:,.2f}".format(total).replace(",", "X").replace(".", ",").replace("X", ".")
+    _registru(patron, f)
+    pg = patron.pg
+    _rand_mf(pg, "MFR").locator("[data-reeval]").click()
+    pg.wait_for_selector(_F + "#mf-f-justa", timeout=20000)
+    intro = " ".join(pg.inner_text(_F + ".pf-intro").split())
+    assert "înregistrat pe activ %s lei" % lei in intro, intro
+    pg.fill(_F + "#mf-f-data", (AZI.replace(day=1) - _dt.timedelta(days=1)).isoformat())
+    pg.fill(_F + "#mf-f-justa", "9000")
+    ultima = _ultima(f)
+    pg.click(_F + "#mf-f-genereaza")
+    pg.wait_for_selector(_F + "#mf-f-mesaj .caseta-ok, " + _F + "#mf-f-mesaj .msg-eroare, " + _F + "#mf-f-mesaj.msg-eroare", state="attached",
+                         timeout=30000)
+    m = _text(pg, _F + "#mf-f-mesaj")
+    patron.captura("reevaluarea")
+    (nid,) = _note_noi(f, ultima)
+    assert [x[:3] for x in _linii(f, nid)][0] == ("2813", "2131", "%.2f" % total), (m, _linii(f, nid))
 
 
 def test_def_517_lunile_lipsa_din_randul_activului(patron, firma_ops):
@@ -471,56 +553,178 @@ def test_def_504_niciun_camp_precompletat_sau_cu_text_gri(patron, firma_ops):
     assert rele == [], rele
 
 
-# ── 511 / 512 / 513 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_def_511_512_ajustarea_creantei_pe_factura_cu_partea_nedeductibila(patron, firma_ops):
-    """511 / 512 / 513. Pașii: o factură emisă de 1.210 lei (scadența trecută: DATE DE PORNIRE, scadența mutată cu 300 de zile în urmă) ->
-    Provizioane și ajustări -> Ajustare creanțe — constituire: factura se alege din lista celor neîncasate („sold 1.210,00 lei · 300 zile de la
-    scadență”), suma și zilele nu se mai scriu -> nota 6814 = 491 1.210; caseta: deductibil 363 (30%, CF art.26 alin.(1) lit.c)),
-    nedeductibil 847, care intră în ajustările fiscale ale anului (D101 rd.29), legată de notă. Provizioanele au și 1515 / 1517.
-    MUTAȚIA: partea nedeductibilă nu mai intră în ajustări (`_aj.adauga` scos) -> ROȘU."""
+# ── 511 / 512 / 513 / 514 ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+def _factura_scadenta(patron, f, zile=300):
     from e2e_bloc_a import emite_api
-    f = firma_ops
+    import datetime as _dt
     fid = emite_api(patron, f)["factura_id"]
-    # date-de-pornire: scadența facturii cu 300 de zile în urmă (zilele de la scadență ale ajustării, 511) — timpul nu se poate aștepta în probă
-    sql('UPDATE "%s".facturi SET data_scadenta = %%s WHERE id = %%s' % f["schema"], ((AZI - __import__("datetime").timedelta(days=300)).isoformat(), fid))
+    # date-de-pornire: scadența facturii mutată în urmă (zilele de la scadență ale ajustării) — timpul nu se poate aștepta în probă
+    sql('UPDATE "%s".facturi SET data_scadenta = %%s WHERE id = %%s' % f["schema"], ((AZI - _dt.timedelta(days=zile)).isoformat(), fid))
+    return fid, sql('SELECT total FROM "%s".facturi WHERE id = %%s' % f["schema"], (fid,))[0][0]
+
+
+def _ajustare_pe_factura(patron, f, fid):
     pg = _op(patron, f, "provizion")
-    _completeaza(pg, [("data", D), ("fel", "provizion")])
-    assert {"1515", "1517"} <= {x[x.find("(") + 1:x.find(")")] for x in pg.eval_on_selector("#op-tip", "e => [...e.options].map((o) => o.textContent)")}
-    _completeaza(pg, [("fel", "creanta")])
+    _completeaza(pg, [("data", D), ("fel", "creanta")])
     pg.wait_for_function("(id) => [...document.querySelectorAll('#op-factura_id option')].some((o) => o.value === String(id))", arg=fid, timeout=20000)
-    sold = sql('SELECT total FROM "%s".facturi WHERE id = %%s' % f["schema"], (fid,))[0][0]
+    return pg
+
+
+def test_def_511_ajustarea_creantei_ia_suma_si_zilele_din_factura(patron, firma_ops):
+    """511. „Aplicația cere de mână date pe care le are: la ajustarea creanțelor suma și zilele de la scadență.” Pașii: o factură emisă de
+    363 lei cu scadența trecută de 300 de zile (DATE DE PORNIRE) -> Provizioane și ajustări -> Ajustare creanțe — constituire: factura se
+    alege din lista celor neîncasate („sold 363,00 lei · 300 de zile de la scadență”), suma și zilele nu se scriu -> nota 6814 = 491 cu
+    soldul facturii.
+    MUTAȚIA: suma ajustării luată din cerere, nu din soldul facturii -> ROȘU."""
+    f = firma_ops
+    fid, sold = _factura_scadenta(patron, f)
+    pg = _ajustare_pe_factura(patron, f, fid)
+    assert pg.locator("#op-suma").count() == 0 or not pg.locator("#op-suma").is_visible()
+    eticheta = dict(_optiuni(pg, "#op-factura_id"))[str(fid)]
+    assert "300 de zile de la scadență" in eticheta and "sold" in eticheta, eticheta
+    _completeaza(pg, [("factura_id", fid), ("garantata", "false"), ("afiliata", "false"), ("faliment", "false")])
+    patron.captura("factura_aleasa")
+    ultima = _ultima(f)
+    _genereaza(pg)
+    (nid,) = _note_noi(f, ultima)
+    assert [x[:3] for x in _linii(f, nid)] == [("6814", "491", "%.2f" % sold)]
+
+
+def test_def_512_ajustarea_spune_partea_nedeductibila_si_o_duce_in_d101(patron, firma_ops):
+    """512. „Nota nu arată partea deductibilă și nedeductibilă (ex.: 10.000 la 300 de zile = 3.000 deductibil, 7.000 nedeductibil).” Pașii:
+    factura scadentă de 300 de zile (DATE DE PORNIRE) -> Ajustare creanțe pe ea -> caseta spune deductibilul (30%, CF art.26 alin.(1)
+    lit.c)) și nedeductibilul (70%), iar nedeductibilul intră în ajustările fiscale ale anului (rândul P29 al D101), legat de notă.
+    MUTAȚIA: partea nedeductibilă nu mai intră în ajustări -> ROȘU."""
+    f = firma_ops
+    fid, sold = _factura_scadenta(patron, f)
+    pg = _ajustare_pe_factura(patron, f, fid)
     _completeaza(pg, [("factura_id", fid), ("garantata", "false"), ("afiliata", "false"), ("faliment", "false")])
     ultima = _ultima(f)
     m = _genereaza(pg)
-    patron.captura("ajustarea")
+    patron.captura("partile_fiscale")
     (nid,) = _note_noi(f, ultima)
-    assert [x[:3] for x in _linii(f, nid)] == [("6814", "491", "%.2f" % sold)]
+    assert "deductibil" in m and "nedeductibil" in m, m
     aj = sql('SELECT rand, suma FROM "%s".ajustari_fiscale WHERE inregistrare_id = %%s' % f["schema"], (nid,))
     assert aj and aj[0][0] == "P29" and abs(float(aj[0][1]) - float(sold) * 0.7) < 0.02, aj
-    assert "nedeductibil" in m, m
 
 
-# ── 505 / 507 / 508 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_def_505_507_508_obiectul_de_inventar_ales_din_registru(patron, firma_ops):
-    """505 / 506 / 507 / 508. Pașii: Obiecte de inventar -> Achiziție: „Valoare fără TVA” 350, cota 21, furnizorul și factura OI-1 -> nota
-    303 = 401 / 4426 = 401 cu furnizorul, documentul „Factura OI-1” (nu „Notă de calcul”) -> nota validată -> Dare în folosință: obiectul se
-    alege din registru (valoarea vine de la el) -> nota 603 = 303 350, iar 8035 debit 350 stă în afara bilanțului (fără 891, nu în rândurile
-    notei) -> nota validată -> Scoatere din folosință: obiectul ales -> „Înregistrat în afara bilanțului”: 8035 credit 350, procesul-verbal.
-    MUTAȚIA: darea în folosință scrie iar 8035 = 891 în notă (`nota_dare_folosinta`) -> ROȘU."""
+def test_def_513_provizioanele_1515_si_1517(patron, firma_ops):
+    """513. „Lipsesc tipurile 1515 (pensii și obligații similare) și 1517 (terminarea contractului de muncă).” Pașii: Provizioane și
+    ajustări -> Provizion (151) -> Constituire: tipul are „Pensii și obligații similare (1515)” și „Terminarea contractului de muncă (1517)”
+    -> pensii, 1.000 -> nota 6812 = 1515 1.000.
+    MUTAȚIA: tipul „pensii” trimis pe 1518 (`provizioane.PROVIZIOANE`) -> 6812 = 1518 -> ROȘU."""
     f = firma_ops
-    s = f["schema"]
+    pg = _op(patron, f, "provizion")
+    _completeaza(pg, [("data", D), ("fel", "provizion"), ("actiune", "constituire")])
+    texte = [t for _v, t in _optiuni(pg, "#op-tip")]
+    assert any("(1515)" in t for t in texte) and any("(1517)" in t for t in texte), texte
+    _completeaza(pg, [("tip", "pensii"), ("suma", "1000")])
+    ultima = _ultima(f)
+    _genereaza(pg)
+    patron.captura("provizion_1515")
+    (nid,) = _note_noi(f, ultima)
+    assert [x[:3] for x in _linii(f, nid)] == [("6812", "1515", "1000.00")]
+
+
+def test_def_514_contul_ajustarii_stocurilor_e_lista_391_398_fara_nimic_ales(patron, firma_ops):
+    """514. „Contul e câmp liber; refuză corect conturile din afara grupei 39, dar trebuie listă 391–398 fără nimic ales.” Pașii: Provizioane
+    și ajustări -> Ajustare stocuri (39x): „Cont ajustare stocuri” e o listă cu 391…398 și nimic ales -> 397, constituire 500 -> nota
+    6814 = 397 500.
+    MUTAȚIA: câmpul înapoi text liber -> ROȘU."""
+    f = firma_ops
+    pg = _op(patron, f, "provizion")
+    _completeaza(pg, [("fel", "stoc")])
+    assert pg.eval_on_selector("#op-cont_ajustare", "e => [e.tagName, e.value, [...e.options].map((o) => o.value).filter(Boolean)]") == [
+        "SELECT", "", ["391", "392", "393", "394", "395", "396", "397", "398"]]
+    patron.captura("lista_conturilor")
+    _completeaza(pg, [("data", D), ("actiune", "constituire"), ("cont_ajustare", "397"), ("suma", "500")])
+    ultima = _ultima(f)
+    _genereaza(pg)
+    (nid,) = _note_noi(f, ultima)
+    assert [x[:3] for x in _linii(f, nid)][0][1] == "397", _linii(f, nid)
+
+
+# ── 505 / 506 / 507 / 508 / 633 ─────────────────────────────────────────────────────────────────────────────────────────────────────
+def _obiect_intrat(patron, f, denumire="Scaun birou E2E", numar="OI-1"):
+    """DATE DE PORNIRE (pe ruta formularului, nu în bază): obiectul de inventar intrat cu factura lui, nota intrării validată."""
+    r = _ok(_api(patron, "POST", "/tenants/%d/nota-obiect-inventar" % f["tenant_id"],
+                 {"data": D, "operatie": "achizitie", "denumire": denumire, "valoare": 350, "cota": 21, "furnizor_cui": "31654471",
+                  "furnizor_nume": "Mobila Proba SRL", "numar": numar, "durata_sub_1_an": False}), "achiziția obiectului")
+    _valideaza(patron, f, r["inregistrare_id"])
+    return r["obiect_id"]
+
+
+def _optiuni(pg, sel):
+    return pg.eval_on_selector(sel, "e => [...e.options].map((o) => [o.value, o.textContent])")
+
+
+def test_def_505_valoarea_obiectului_de_inventar_e_fara_tva(patron, firma_ops):
+    """505. „Eticheta «Valoare» nu spune că e fără TVA; trebuie «Valoare fără TVA».” Pașii: Obiecte de inventar -> Achiziție: câmpul se
+    numește „Valoare fără TVA” -> 350, cota 21, furnizorul și factura -> nota 303 = 401 350 (baza) și 4426 = 401 73,50 (TVA-ul peste ea).
+    MUTAȚIA: eticheta înapoi „Valoare” -> ROȘU."""
+    f = firma_ops
     pg = _op(patron, f, "obiect_inv")
     _completeaza(pg, [("data", D), ("operatie", "achizitie")])
-    assert "Valoare fără TVA" in pg.inner_text(".camp:has(#op-valoare) .camp-eticheta")
+    assert pg.inner_text(".camp:has(#op-valoare) .camp-eticheta").startswith("Valoare fără TVA")
     _completeaza(pg, [("denumire", "Scaun birou E2E"), ("valoare", "350"), ("cota", "21"), ("furnizor_cui", "31654471"),
                       ("furnizor_nume", "Mobila Proba SRL"), ("numar", "OI-1"), ("durata_sub_1_an", "false")])
     ultima = _ultima(f)
     _genereaza(pg)
+    patron.captura("achizitia")
     (n1,) = _note_noi(f, ultima)
-    assert _linii(f, n1) == [("303", "401", "350.00", "Mobila Proba SRL"), ("4426", "401", "73.50", "Mobila Proba SRL")]
-    assert sql('SELECT document_ref FROM "%s".inregistrari WHERE id = %%s' % s, (n1,))[0][0].startswith("Factura nr OI-1")
-    _valideaza(patron, f, n1)
-    (oid,) = sql('SELECT id FROM "%s".obiecte_inventar WHERE denumire = %%s' % s, ("Scaun birou E2E",))[0]
+    assert [x[:3] for x in _linii(f, n1)] == [("303", "401", "350.00"), ("4426", "401", "73.50")]
+
+
+def test_def_506_furnizorul_din_partenerii_firmei_pe_401_si_factura_ca_document(patron, firma_ops):
+    """506. „Nota nu are partener (401 fără furnizor […]) și nu e legată de factura.” Pașii: o factură emisă către DANTE (partenerul apare în
+    documentele firmei) -> Obiecte de inventar -> Achiziție: lista câmpului „CUI furnizor” are partenerii firmei; DANTE ales din ea ->
+    denumirea vine singură -> nota 303 = 401 / 4426 = 401 cu DANTE pe ambele rânduri, documentul „Factura nr OI-6”.
+    MUTAȚIA: lista se cere de la `GET parteneri` (rezumatul soldurilor de preluare) -> lista goală -> ROȘU."""
+    from e2e_bloc_a import emite_api, CLIENT
+    f = firma_ops
+    s = f["schema"]
+    emite_api(patron, f)
+    pg = _op(patron, f, "obiect_inv")
+    _completeaza(pg, [("data", D), ("operatie", "achizitie")])
+    pg.wait_for_function("(c) => [...document.querySelectorAll('#op-furnizor_cui-lista option')].some((o) => o.value === c)",
+                         arg=CLIENT["#em-cui"], timeout=20000)
+    _completeaza(pg, [("denumire", "Raft E2E"), ("valoare", "350"), ("cota", "21"), ("furnizor_cui", CLIENT["#em-cui"])])
+    assert pg.input_value("#op-furnizor_nume") == CLIENT["#em-nume"]
+    _completeaza(pg, [("numar", "OI-6"), ("durata_sub_1_an", "false")])
+    patron.captura("furnizorul_din_lista")
+    ultima = _ultima(f)
+    _genereaza(pg)
+    (n1,) = _note_noi(f, ultima)
+    assert _linii(f, n1) == [("303", "401", "350.00", CLIENT["#em-nume"]), ("4426", "401", "73.50", CLIENT["#em-nume"])]
+    assert sql('SELECT document_ref FROM "%s".inregistrari WHERE id = %%s' % s, (n1,))[0][0].startswith("Factura nr OI-6")
+
+
+def test_def_633_verifica_aduce_denumirea_de_la_anaf(patron, firma_ops):
+    """633. „CUI-ul partenerului se scrie de mână, fără «Verifică» la ANAF și fără denumire adusă.” Pașii: Chirii -> Chirie plătită: „CUI
+    proprietar / furnizor” 14399840 -> „Verifică” -> denumirea DANTE INTERNATIONAL SA vine de la ANAF (al plasei) în „Proprietarul /
+    furnizorul”, iar sub câmp „plătitor TVA”.
+    MUTAȚIA: răspunsul ANAF nu se mai pune în câmpul denumirii -> câmpul rămâne gol -> ROȘU."""
+    f = firma_ops
+    pg = _op(patron, f, "chirie")
+    _completeaza(pg, [("data", D), ("fel", "chirie_platita"), ("furnizor_cui", "14399840")])
+    assert pg.input_value("#op-furnizor_nume") == ""
+    pg.click("#op-furnizor_cui-verifica")
+    pg.wait_for_function("() => /plătitor TVA|negăsit|nu răspunde/.test((document.querySelector('#op-furnizor_cui-stare') || {innerText: ''}).innerText)",
+                         timeout=30000)
+    patron.captura("verifica_anaf")
+    assert pg.input_value("#op-furnizor_nume") == "DANTE INTERNATIONAL SA", pg.inner_text("#op-furnizor_cui-stare")
+    assert "plătitor TVA" in pg.inner_text("#op-furnizor_cui-stare")
+
+
+def test_def_507_darea_in_folosinta_tine_8035_in_afara_bilantului(patron, firma_ops):
+    """507. „Evidența în afara bilanțului e înregistrată 8035 = 891 / 891 = 8035; 891 e «Bilanț de deschidere».” Pașii: obiectul intrat
+    (nota validată, DATE DE PORNIRE pe ruta formularului) -> Obiecte de inventar -> Dare în folosință: obiectul din listă -> nota are
+    numai 603 = 303 350; caseta spune „8035 debit 350,00 lei (în afara bilanțului)”, iar 8035 stă în evidența din afara bilanțului
+    (o singură parte, fără 891).
+    MUTAȚIA: darea în folosință scrie iar 8035 = 891 în notă (`obiecte_inventar.nota_dare_folosinta`) -> ROȘU."""
+    f = firma_ops
+    s = f["schema"]
+    oid = _obiect_intrat(patron, f)
     pg = _op(patron, f, "obiect_inv")
     _completeaza(pg, [("data", D), ("operatie", "dare_folosinta"), ("obiect_id", oid)])
     ultima = _ultima(f)
@@ -529,9 +733,36 @@ def test_def_505_507_508_obiectul_de_inventar_ales_din_registru(patron, firma_op
     (n2,) = _note_noi(f, ultima)
     assert [x[:3] for x in _linii(f, n2)] == [("603", "303", "350.00")]
     assert "8035 debit 350,00 lei (în afara bilanțului)" in m, m
+    assert sql('SELECT cont, sens, suma::text FROM "%s".evidenta_extrabilant WHERE obiect_id = %%s' % s, (oid,)) == [("8035", "D", "350.00")]
+
+
+def test_def_508_darea_si_scoaterea_aleg_obiectul_din_registru(patron, firma_ops):
+    """508. „Dare și scoatere din folosință nu sunt legate de obiecte: se poate da sau scoate orice sumă fără verificare.” Pașii: obiectul
+    intrat (DATE DE PORNIRE) -> Scoatere din folosință: obiectul NU e în listă (n-a fost dat în folosință) -> Dare în folosință: obiectul
+    ales din listă, valoarea vine de la el -> nota validată -> Dare: obiectul nu mai e în listă -> Scoatere: obiectul e în listă ->
+    „Înregistrat în afara bilanțului”: 8035 credit 350,00 lei, „Proces-verbal de scoatere din folosință”.
+    MUTAȚIA: lista „date în folosință” arată orice obiect (filtrul stării scos) -> obiectul nedat apare la scoatere -> ROȘU."""
+    f = firma_ops
+    s = f["schema"]
+    oid = _obiect_intrat(patron, f)
+    pg = _op(patron, f, "obiect_inv")
+    _completeaza(pg, [("data", D), ("operatie", "scoatere")])
+    pg.wait_for_function("() => !(document.querySelector('#op-obiect_id option') || {textContent: 'se încarcă'}).textContent.includes('alege întâi')",
+                         timeout=20000)
+    pg.wait_for_timeout(500)
+    assert str(oid) not in [v for v, _t in _optiuni(pg, "#op-obiect_id")], _optiuni(pg, "#op-obiect_id")
+    patron.captura("scoatere_fara_obiect")
+    _completeaza(pg, [("operatie", "dare_folosinta"), ("obiect_id", oid)])
+    ultima = _ultima(f)
+    _genereaza(pg)
+    (n2,) = _note_noi(f, ultima)
     _valideaza(patron, f, n2)
     pg = _op(patron, f, "obiect_inv")
-    _completeaza(pg, [("data", D), ("operatie", "scoatere"), ("obiect_id", oid)])
+    _completeaza(pg, [("data", D), ("operatie", "dare_folosinta")])
+    pg.wait_for_timeout(1500)
+    assert str(oid) not in [v for v, _t in _optiuni(pg, "#op-obiect_id")], _optiuni(pg, "#op-obiect_id")
+    _completeaza(pg, [("operatie", "scoatere"), ("obiect_id", oid)])
+    assert any(v == str(oid) and "350,00 lei" in t for v, t in _optiuni(pg, "#op-obiect_id")), _optiuni(pg, "#op-obiect_id")
     m = _genereaza(pg)
     patron.captura("scoatere")
     assert "Înregistrat în afara bilanțului" in m and "8035 credit 350,00 lei" in m and "Proces-verbal de scoatere din folosință" in m, m
@@ -566,13 +797,7 @@ def test_def_520_minusul_intreaba_daca_lipsa_e_dovedita_si_imputa_salariatul(pat
 
 
 # ── 527 / 533 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def test_def_527_533_dividendul_si_partajul_din_soldurile_pe_asociati(patron, firma_ops):
-    """527 / 533. Pașii: DATE DE PORNIRE: soldurile preluate 1012 = 200 C și 117 = 14.600 C (fără analitic, ca F2), asociații Pop Ion 60% și
-    Pop Maria 40% (Date firmă -> Asociați) -> Lichidare -> Partaj către asociați: capitalul, rezervele și profitul nu se mai scriu, vin din
-    solduri, iar nota are câte un rând pe asociat (1012 = 456 120 / 80, 117 = 456 8.760 / 5.840, impozitul 10% pe câștig: 876 / 584 —
-    CF art.97 alin.(5)) -> Decontări asociați -> Dividend 1.000: nota reclasifică 117 = 1171 și repartizează din 1171 (527).
-    MUTAȚIA: partajul ia iar capitalul din cerere (`_partaj_lichidare` ocolit) -> refuz „Lipsește câmpul” -> ROȘU."""
-    f = firma_ops
+def _solduri_si_asociati(patron, f):
     s = f["schema"]
     # date-de-pornire: soldurile preluate pe 117 / 1012 ale firmei (profitul nerepartizat al F2, 527 / 533), ca la migrare
     sql('INSERT INTO "%s".solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES (%%s, %%s, 0, %%s, %%s), '
@@ -580,6 +805,16 @@ def test_def_527_533_dividendul_si_partajul_din_soldurile_pe_asociati(patron, fi
     _ok(_api(patron, "POST", "/tenants/%d/asociati" % f["tenant_id"],
              {"randuri": [{"nume": "Pop Ion", "cnp": _cnp("180010140001"), "cota": 60}, {"nume": "Pop Maria", "cnp": _cnp("280010140002"), "cota": 40}]}),
         "asociații")
+
+
+def test_def_533_partajul_din_solduri_pe_fiecare_asociat(patron, firma_ops):
+    """533. Pașii: DATE DE PORNIRE: soldurile preluate 1012 = 200 C și 117 = 14.600 C (fără analitic, ca F2), asociații Pop Ion 60% și Pop
+    Maria 40% (Date firmă -> Asociați) -> Lichidare -> Partaj către asociați: capitalul, rezervele și profitul nu se mai scriu, vin din
+    solduri, iar nota are câte un rând pe asociat (1012 = 456 120 / 80, 117 = 456 8.760 / 5.840, impozitul 10% pe câștig: 876 / 584 —
+    CF art.97 alin.(5)).
+    MUTAȚIA: partajul ia iar capitalul din cerere (`_partaj_lichidare` ocolit) -> refuz „Lipsește câmpul” -> ROȘU."""
+    f = firma_ops
+    _solduri_si_asociati(patron, f)
     pg = _op(patron, f, "lichidare")
     _completeaza(pg, [("data", D), ("operatie", "partaj")])
     assert pg.locator("#op-capital_social").count() == 0
@@ -590,7 +825,14 @@ def test_def_527_533_dividendul_si_partajul_din_soldurile_pe_asociati(patron, fi
     linii = _linii(f, nid)
     assert ("1012", "456", "120.00", "Pop Ion") in linii and ("117", "456", "5840.00", "Pop Maria") in linii, linii
     assert ("456", "446", "876.00", "Pop Ion") in linii and ("456", "446", "584.00", "Pop Maria") in linii, linii
-    # 527: dividendul din profitul preluat pe 117 se repartizează din 1171, după reclasificarea din aceeași notă
+
+
+def test_def_527_dividendul_din_profitul_preluat_trece_prin_1171(patron, firma_ops):
+    """527. Pașii: DATE DE PORNIRE: profitul preluat pe 117 (14.600, fără analitic), asociații -> Decontări asociați -> Dividend 1.000: nota
+    reclasifică întâi 117 = 1171 și repartizează din 1171 (457 creditat numai din 1171).
+    MUTAȚIA: repartizarea rămâne pe 117 (reclasificarea scoasă) -> ROȘU."""
+    f = firma_ops
+    _solduri_si_asociati(patron, f)
     pg = _op(patron, f, "asociati")
     _completeaza(pg, [("data", D), ("operatie", "dividend"), ("brut", "1000"), ("numar_hotarare", "AGA-527"), ("data_hotarare", D),
                       ("interimar", "0"), ("cu_plata", "false")])
@@ -600,6 +842,96 @@ def test_def_527_533_dividendul_si_partajul_din_soldurile_pe_asociati(patron, fi
     (nd,) = _note_noi(f, ultima)
     ld = [x[:3] for x in _linii(f, nd)]
     assert ld[0] == ("117", "1171", "1000.00") and {d for d, c, _s in ld if c == "457"} == {"1171"}, ld
+
+
+# ── 631 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+def test_def_631_moneda_ajustarii_manuale_se_alege_din_lista(patron, firma_ops):
+    """631. „Moneda se scrie de mână; trebuie aleasă din lista de coduri BNR, ca la factură.” Pașii: Închidere lună -> „Reevaluare valută” ->
+    „Adaugă un cont”: „Moneda” e o listă (EUR, USD, GBP… — aceeași listă ca la factură) fără nimic ales; EUR se alege din ea.
+    MUTAȚIA: moneda ajustării înapoi câmp de text -> ROȘU."""
+    f = firma_ops
+    pg = patron.pg
+    patron.firma(f["nume"])
+    pg.click("#fa-inchidere")
+    pg.wait_for_selector(_F + "#il-reevaluare", timeout=60000)
+    pg.click(_F + "#il-reevaluare")
+    pg.wait_for_selector(_F + "#rv-m-adauga", timeout=60000)
+    pg.click(_F + "#rv-m-adauga")
+    pg.wait_for_selector(_F + "#rv-m0-moneda", timeout=20000)
+    tag, val, opt = pg.eval_on_selector(_F + "#rv-m0-moneda", "e => [e.tagName, e.value, [...e.options].map((o) => o.value).filter(Boolean)]")
+    assert tag == "SELECT" and val == "" and {"EUR", "USD", "GBP"} <= set(opt), (tag, val, opt)
+    pg.select_option(_F + "#rv-m0-moneda", "EUR")
+    patron.captura("moneda_din_lista")
+    assert pg.input_value(_F + "#rv-m0-moneda") == "EUR"
+
+
+# ── 601 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+def test_def_601_mijlocul_fix_intra_in_registru_din_factura_primita(patron, firma_ops):
+    """601. „Pe ecranul Mijloace fixe nu există buton de adăugare a unui mijloc fix (la achiziții).” Decizia Costin (a): linia „imobilizare”
+    pe factura primită. Pașii: Facturi -> „Facturi primite” -> „Introdu factura de mână”: DANTE, MF-601, linia „Laptop Dell” 1 × 6.000,
+    cota 21, contul liniei 2131 -> sub linie apar datele fișei mijlocului fix -> „Validează” fără ele: refuzul lângă codul din catalog,
+    durată, data PIF și metodă -> 2.2.9, 36 de luni, PIF, liniară -> „Validează”: „Mijloace fixe din factură: MF-001 «Laptop Dell» 6.000,00
+    lei — intră în registru la validarea notei” -> Mijloace fixe: rândul „Laptop Dell” arată „intră la validarea notei …” -> nota facturii
+    validată -> „activ”.
+    MUTAȚIA: activul nelegat de nota facturii (`mf_note.leaga` scos din `mf_din_factura.inscrie`) -> rămâne în afara registrului -> ROȘU."""
+    from e2e_bloc_a import _card
+    f = firma_ops
+    pg = patron.pg
+    patron.firma(f["nume"])
+    _card(patron, "facturi", "#fac-primite")
+    pg.click("#fac-primite")
+    pg.wait_for_selector("#fp-manual", timeout=20000)
+    pg.click("#fp-manual")
+    pg.wait_for_selector("#pm-valideaza", timeout=20000)
+    pg.fill("#pm-cui", "14399840")
+    pg.fill("#pm-furnizor", "DANTE INTERNATIONAL SA")
+    pg.fill("#pm-numar", "MF-601")
+    pg.fill("#pm-data", D)
+    pg.dispatch_event("#pm-data", "change")
+    pg.wait_for_function("() => { const s = document.querySelector('#pm-l1-cota'); return s && !s.disabled && "
+                         "[...s.options].some((o) => o.value === '21'); }", timeout=20000)
+    pg.fill("#pm-l1-descriere", "Laptop Dell")
+    pg.fill("#pm-l1-cantitate", "1")
+    pg.fill("#pm-l1-um", "buc")
+    pg.fill("#pm-l1-pret", "6000")
+    pg.select_option("#pm-l1-cota", "21")
+    assert pg.locator("[data-mf='1']").is_hidden()
+    pg.fill("#pm-l1-cont", "2131")
+    pg.dispatch_event("#pm-l1-cont", "input")
+    pg.wait_for_selector("[data-mf='1'] #pm-mf1-cod_catalog", state="visible", timeout=10000)
+    pg.fill("#pr-cont", "604")
+    pg.click("#pm-valideaza")
+    pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=20000)
+    pg.click("#caseta-atentie-activa #ca-ok")
+    pg.wait_for_selector('.msg-eroare[data-camp="pm-mf1-cod_catalog"]', timeout=40000)
+    refuzate = pg.eval_on_selector_all(".msg-eroare[data-camp^='pm-mf1-']", "e => e.map((x) => x.dataset.camp)")
+    patron.captura("fisa_ceruta")
+    assert set(refuzate) == {"pm-mf1-cod_catalog", "pm-mf1-dnf_luni", "pm-mf1-data_pif", "pm-mf1-metoda"}, refuzate
+    pg.fill("#pm-mf1-cod_catalog", "2.2.9")
+    pg.dispatch_event("#pm-mf1-cod_catalog", "change")
+    pg.wait_for_function("() => (document.querySelector('#pm-mf1-cod_catalog-stare') || {innerText: ''}).innerText.includes('între 24 și 48')",
+                         timeout=20000)
+    pg.fill("#pm-mf1-dnf_luni", "36")
+    pg.fill("#pm-mf1-data_pif", D)
+    pg.select_option("#pm-mf1-metoda", "liniara")
+    ultima = _ultima(f)
+    pg.click("#pm-valideaza")
+    pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=20000)
+    pg.click("#caseta-atentie-activa #ca-ok")
+    pg.wait_for_function("() => (document.querySelector('#pr-zona') || {innerText: ''}).innerText.includes('Validată')", timeout=60000)
+    m = " ".join(pg.inner_text("#pr-zona").split())
+    patron.captura("validata")
+    assert "Mijloace fixe din factură: MF-001 «Laptop Dell» 6.000,00 lei — intră în registru la validarea notei" in m, m
+    (nid,) = _note_noi(f, ultima)
+    assert ("2131", "401", "6000.00") in [x[:3] for x in _linii(f, nid)]
+    _registru(patron, f)
+    rand = pg.locator(_F + "table.fd-tabel tbody tr", has_text="Laptop Dell").first
+    assert "intră la validarea notei" in rand.locator(".mf-stare").inner_text()
+    _valideaza(patron, f, nid)
+    _registru(patron, f)
+    rand = pg.locator(_F + "table.fd-tabel tbody tr", has_text="Laptop Dell").first
+    assert rand.locator(".mf-stare").inner_text().strip() == "activ"
+    patron.captura("activ_in_registru")
 
 
 # ── 528 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

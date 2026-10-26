@@ -227,6 +227,10 @@ def test_def_c76_lipsa_la_inventar_ajunge_in_d300(patron, firma_t):
     pg.wait_for_selector("#cv-inv", timeout=20000)
     pg.fill("#cv-data", LUNA.inceput.replace(day=20).isoformat())
     pg.click("#cv-inv")
+    # [lotul 13, 673 — zona firme2] inventarul se deschide într-o fereastră de lucru, cu data LUI (implicit azi): data inventarului se scrie
+    # acolo (înainte o lua din câmpul „Mișcări”)
+    pg.wait_for_selector(".fereastra:last-of-type #cvi-data", timeout=20000)
+    pg.fill(".fereastra:last-of-type #cvi-data", LUNA.inceput.replace(day=20).isoformat())
     pg.fill("#cvi-a%d-faptic" % aid, "0")
     pg.wait_for_selector("#cvi-a%d-lipsa" % aid, state="visible", timeout=5000)
     pg.select_option("#cvi-a%d-lipsa" % aid, "neimputabila")

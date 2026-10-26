@@ -5807,7 +5807,7 @@ def nota_provizion_ep(tenant_id, corp, ctx):
             data = _date.fromisoformat(str(corp["data"])[:10])
             if fel == "creanta":
                 from core import reconciliere_api as _rec
-                f = next((x for x in _rec.facturi_deschise(conn, schema) if x["directie"] == "emisa" and str(x["id"]) == str(corp["factura_id"])), None)
+                f = next((x for x in _rec.facturi_deschise_detalii(conn, schema) if x["directie"] == "emisa" and str(x["id"]) == str(corp["factura_id"])), None)
                 if not f:
                     raise _erori.DateInvalide({"mesaj": "Alege factura emisă neîncasată din listă.",
                                                "erori_campuri": [{"camp": "op-factura_id", "mesaj": "Alege factura din listă."}]})
@@ -8693,7 +8693,7 @@ def operatiuni_date(tenant_id, ce, parametri, ctx):
                 return {"obiecte": out}
             if ce == "facturi_neincasate":   # [lotul 13, 511] facturile emise neîncasate, cu soldul și scadența
                 from core import reconciliere_api as _rec
-                fs = [f for f in _rec.facturi_deschise(conn, schema) if f["directie"] == "emisa"]
+                fs = [f for f in _rec.facturi_deschise_detalii(conn, schema) if f["directie"] == "emisa"]   # [lotul 13] cu partenerul și numărul (detaliile)
                 scad = repo_operatiuni.scadente_facturi(cur, schema, [f["id"] for f in fs])
                 return {"facturi": [{"id": f["id"], "document": "%s%s" % (f.get("serie") or "", f["numar"]), "partener": f["tert_nume"],
                                      "sold": f["sold"], "scadenta": str(scad.get(f["id"]) or ""),

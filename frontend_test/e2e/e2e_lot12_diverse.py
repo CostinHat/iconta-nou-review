@@ -318,8 +318,11 @@ def test_def_c129_reevaluarea_refuza_fisa_fara_cont_de_imobilizare(patron, firma
     pg.fill("#op-data", AZI.isoformat())
     pg.fill("#op-valoare_justa", "15000")   # [lotul 13, 511] rezerva 105 și pierderea 655 nu se mai cer: le ia aplicația
     pg.click("#op-trimite")
-    pg.wait_for_selector("#op-mesaj.msg-eroare, #op-mesaj [data-dupa-generare]", timeout=30000)   # `arataMesaj`: clasa e pe zonă
-    m = " ".join(pg.inner_text("#op-mesaj").split())
+    # `arataMesaj`: clasa e pe zonă; [lotul 13, 515] refuzul se mută în caseta „NU s-a salvat.” de lângă buton, iar zona (cu același text)
+    # se ascunde cât stă caseta — se așteaptă zona în pagină și se citește textul ei
+    pg.wait_for_selector("#op-mesaj.msg-eroare, #op-mesaj [data-dupa-generare]", state="attached", timeout=30000)
+    m = " ".join((pg.eval_on_selector("#op-mesaj", "e => e.textContent") or "").split())
+    assert m in " ".join(pg.inner_text(".refuz-salvare").split()), m   # motivul se vede, în casetă
     patron.captura("fara_cont")
     assert "msg-eroare" in (pg.get_attribute("#op-mesaj", "class") or ""), m
     assert "Utilaj de probă MF129" in m and "nu are contul de imobilizare în registru" in m and UNDE_SE_COMPLETEAZA in m, m

@@ -21,7 +21,7 @@
   "fisier": "core/mf_registru.py",
   "ancora": "        if \"intrare\" in st:   # [519] adus de o ciornă",
   "inlocuire": "        st = {}\n        if \"intrare\" in st:   # [519] adus de o ciornă",
-  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_518_519_522_casarea_pe_activ_in_fereastra_ei"
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_519_activul_iese_din_registru_numai_la_validarea_casarii"
  },
  {
   "fisier": "static/js/ecrane/mijloace_ecran.js",
@@ -75,13 +75,13 @@
   "fisier": "core/uc_tenants.py",
   "ancora": "            if nedeductibil > 0:   # [512] partea nedeductibilă -> D101 rd.29, legată de notă",
   "inlocuire": "            if False:   # [512] partea nedeductibilă -> D101 rd.29, legată de notă",
-  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_511_512_ajustarea_creantei_pe_factura_cu_partea_nedeductibila"
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_512_ajustarea_spune_partea_nedeductibila_si_o_duce_in_d101"
  },
  {
   "fisier": "core/obiecte_inventar.py",
   "ancora": "    return {\"linii\": [(\"603\", \"303\", v)], \"extrabilant\": [(\"8035\", \"D\", v)]}",
   "inlocuire": "    return {\"linii\": [(\"603\", \"303\", v), (\"8035\", \"891\", v)], \"extrabilant\": [(\"8035\", \"D\", v)]}",
-  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_505_507_508_obiectul_de_inventar_ales_din_registru"
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_507_darea_in_folosinta_tine_8035_in_afara_bilantului"
  },
  {
   "fisier": "core/uc_tenants.py",
@@ -93,7 +93,7 @@
   "fisier": "core/uc_tenants.py",
   "ancora": "                r, info = _partaj_lichidare(conn, schema, _date.fromisoformat(corp[\"data\"]))",
   "inlocuire": "                r, info = _li.partaj(corp[\"capital_social\"], 0, 0), {}",
-  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_527_533_dividendul_si_partajul_din_soldurile_pe_asociati"
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_533_partajul_din_solduri_pe_fiecare_asociat"
  },
  {
   "fisier": "core/uc_tenants.py",
@@ -154,5 +154,83 @@
   "ancora": "            _cere_stoc_pe_articol(cur, schema, \"Vânzarea în regim de marjă din stoc\")\n",
   "inlocuire": "            pass\n",
   "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_551_548_marja_fara_metoda_de_stoc_trimite_in_date_firma"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "    if inreg.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP) < am_inainte.quantize(Decimal(\"0.01\"), rounding=ROUND_HALF_UP):",
+  "inlocuire": "    if False:",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_518_casarea_cere_lunile_lipsa_si_trece_luna_ei_prin_6811"
+ },
+ {
+  "fisier": "core/mf_registru.py",
+  "ancora": "                inreg = din_sold + pm[\"inregistrat\"]\n",
+  "inlocuire": "                inreg = Decimal(str(sold[c]))\n",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_522_inregistrat_pe_activ_nu_pe_cont"
+ },
+ {
+  "fisier": "core/mf_registru.py",
+  "ancora": "    return din_sold + _mfn.pe_activ(cur, None, la_data)",
+  "inlocuire": "    return Decimal(0) + _mfn.pe_activ(cur, None, la_data)",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_516_reevaluarea_citeste_amortizarea_pe_activ_cu_soldul_preluat"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "                suma = Decimal(str(f[\"sold\"]))\n",
+  "inlocuire": "                suma = Decimal(str(corp.get(\"suma\") or 1))\n",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_511_ajustarea_creantei_ia_suma_si_zilele_din_factura"
+ },
+ {
+  "fisier": "core/provizioane.py",
+  "ancora": "\"pensii\": \"1515\"",
+  "inlocuire": "\"pensii\": \"1518\"",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_513_provizioanele_1515_si_1517"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "C(\"cont_ajustare\", \"Cont ajustare stocuri\", \"select\",",
+  "inlocuire": "C(\"cont_ajustare\", \"Cont ajustare stocuri\", \"text\",",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_514_contul_ajustarii_stocurilor_e_lista_391_398_fara_nimic_ales"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "C(\"valoare\", \"Valoare fără TVA\", \"numar\", { cond: { camp: \"operatie\", val: \"achizitie\" } }),",
+  "inlocuire": "C(\"valoare\", \"Valoare\", \"numar\", { cond: { camp: \"operatie\", val: \"achizitie\" } }),",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_505_valoarea_obiectului_de_inventar_e_fara_tva"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "api.get(`/tenants/${t.id}/parteneri-firma`).then",
+  "inlocuire": "api.get(`/tenants/${t.id}/parteneri`).then",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_506_furnizorul_din_partenerii_firmei_pe_401_si_factura_ca_document"
+ },
+ {
+  "fisier": "static/js/ecrane/operatiuni_ecran.js",
+  "ancora": "            anaf.pune([r.denumire], { suprascrie: true });\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_633_verifica_aduce_denumirea_de_la_anaf"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "(stare == \"folosinta\" and dare is not None and st_d == \"validata\" and scos is None)",
+  "inlocuire": "(stare == \"folosinta\")",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_508_darea_si_scoaterea_aleg_obiectul_din_registru"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "\"1171\" if (reclas and dd == \"117\") else dd",
+  "inlocuire": "dd",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_527_dividendul_din_profitul_preluat_trece_prin_1171"
+ },
+ {
+  "fisier": "static/js/ecrane/reevaluare_ecran.js",
+  "ancora": "<td>${selectMoneda(`id=\"rv-m${i}-moneda\" data-i=\"${i}\" data-camp=\"moneda\" style=\"width:7em\"`, m.moneda || \"\", `Moneda ajustării ${i + 1}`, \"rv-m\")}</td>",
+  "inlocuire": "<td><input class=\"camp-input rv-m\" id=\"rv-m${i}-moneda\" data-i=\"${i}\" data-camp=\"moneda\" value=\"${esc(m.moneda || \"\")}\"></td>",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_631_moneda_ajustarii_manuale_se_alege_din_lista"
+ },
+ {
+  "fisier": "core/mf_din_factura.py",
+  "ancora": "        _mfn.leaga(cur, schema, mid, nota_id, \"intrare\")\n",
+  "inlocuire": "",
+  "test": "frontend_test/e2e/e2e_lot13_ops.py::test_def_601_mijlocul_fix_intra_in_registru_din_factura_primita"
  }
 ]

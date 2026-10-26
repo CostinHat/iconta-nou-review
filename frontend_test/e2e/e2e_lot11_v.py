@@ -113,7 +113,8 @@ def test_def_429_plata_nelegata_scade_soldul_partenerului(patron, firma_v):
     assert sold.count() == 1, rand
     patron.captura("plata_nelegata")
     # OMFP 1802/2014 pct.322 alin.(1): plata stinge creanța la cursul din evidență: 500 / (1.906,98 / 363) = 95,18 EUR -> 267,82 EUR;
-    assert sold.input_value() == "267.82", sold.input_value()
+    # [lotul 13, 655 — DS cap.6] câmpul numeric arată numărul românesc (virgula zecimală); valoarea canonică rămâne a codului
+    assert sold.input_value() == "267,82", sold.input_value()
     # pct.325 alin.(1): 267,82 x 5,2586 = 1.408,36; 1.408,36 - 1.406,98 = 1,38 -> 765
     for x in ("1.406,98", "estimat din plățile în lei", "plăți nelegate de factură", "500,00 lei din 28.08.2026", "5,2586",
               "1,38", "765"):
@@ -133,8 +134,7 @@ def test_def_429_ajustarea_manuala_e_in_acelasi_formular_marcata(patron, firma_v
     pg.fill(".fereastra:last-of-type #rv-m0-cont", "1621")
     pg.dispatch_event(".fereastra:last-of-type #rv-m0-cont", "change")
     pg.wait_for_selector(".fereastra:last-of-type #rv-m0-moneda", timeout=30000)
-    pg.fill(".fereastra:last-of-type #rv-m0-moneda", "EUR")
-    pg.dispatch_event(".fereastra:last-of-type #rv-m0-moneda", "change")
+    pg.select_option(".fereastra:last-of-type #rv-m0-moneda", "EUR")   # [lotul 13, 631] moneda se alege din listă
     pg.wait_for_selector(".fereastra:last-of-type #rv-m0-sold_valuta", timeout=30000)
     pg.fill(".fereastra:last-of-type #rv-m0-sold_valuta", "1000")
     pg.dispatch_event(".fereastra:last-of-type #rv-m0-sold_valuta", "change")
@@ -182,8 +182,11 @@ def test_def_c103_raspunsul_vechi_nu_acopera_ajustarea_scrisa(patron, firma_v):
 
     def scrie(camp, valoare):
         n = len(tinute)
-        pg.fill(F + "#rv-m0-" + camp, valoare)
-        pg.dispatch_event(F + "#rv-m0-" + camp, "change")
+        if camp == "moneda":   # [lotul 13, 631] moneda se alege din listă (alegerea pornește `change`)
+            pg.select_option(F + "#rv-m0-moneda", valoare)
+        else:
+            pg.fill(F + "#rv-m0-" + camp, valoare)
+            pg.dispatch_event(F + "#rv-m0-" + camp, "change")
         for _ in range(100):
             if len(tinute) > n:
                 return
@@ -224,8 +227,9 @@ def test_def_c103_raspunsul_vechi_nu_acopera_ajustarea_scrisa(patron, firma_v):
 
 def test_def_c103_campul_in_care_scrie_omul_ramane_cand_soseste_raspunsul(patron, firma_v):
     """C103, a doua fațetă. Pașii: „Reevaluare valută” -> „Adaugă un cont” -> 1621 (ecranul recalculează; răspunsul întârzie) -> contabilul
-    trece la „Moneda” și scrie EUR -> sosește răspunsul pentru cont: formularul se re-desenează, iar „Moneda” rămâne EUR, cu focusul în
-    ea. Înainte: re-desenarea punea câmpul la loc gol — ce tastase și nu confirmase încă dispărea (testul ajustării manuale a picat așa)."""
+    trece la „Sold în valută” și scrie 1000 -> sosește răspunsul pentru cont: formularul se re-desenează, iar soldul rămâne 1000, cu focusul
+    în el. Înainte: re-desenarea punea câmpul la loc gol — ce tastase și nu confirmase încă dispărea (testul ajustării manuale a picat așa).
+    [lotul 13, 631] Moneda se alege acum din listă (alegerea e confirmată pe loc), deci câmpul în care se scrie e soldul."""
     f = firma_v
     if not sql('SELECT 1 FROM "%s".inregistrari WHERE document_ref = \'Contract credit 429\'' % f["schema"]):
         _nota(patron, f, "2026-08-03", {"debit": "5121", "credit": "1621", "suma": 4970}, "Contract credit 429")
@@ -240,7 +244,7 @@ def test_def_c103_campul_in_care_scrie_omul_ramane_cand_soseste_raspunsul(patron
     pg.route(propunerea, lambda route: tinute.append(route))
     pg.fill(F + "#rv-m0-cont", "1621")
     pg.dispatch_event(F + "#rv-m0-cont", "change")
-    pg.fill(F + "#rv-m0-moneda", "EUR")          # cererea pentru cont e încă în zbor; „change” pe monedă n-a plecat
+    pg.fill(F + "#rv-m0-sold_valuta", "1000")    # cererea pentru cont e încă în zbor; „change” pe sold n-a plecat
     for _ in range(50):
         if tinute:
             break
@@ -252,14 +256,14 @@ def test_def_c103_campul_in_care_scrie_omul_ramane_cand_soseste_raspunsul(patron
             route.continue_()
     pg.wait_for_timeout(500)
     pg.unroute(propunerea)
-    patron.captura("moneda_pastrata")
-    assert pg.input_value(F + "#rv-m0-moneda") == "EUR", "re-desenarea a golit câmpul în care scria contabilul: %r" % \
-        pg.input_value(F + "#rv-m0-moneda")
-    assert pg.evaluate("() => document.activeElement && document.activeElement.id") == "rv-m0-moneda"
-    # cel târziu la părăsirea câmpului, moneda ajunge în model ca orice editare: propunerea se recalculează cu ea
-    pg.focus(F + "#rv-m0-sold_valuta")
+    patron.captura("soldul_pastrat")
+    assert pg.input_value(F + "#rv-m0-sold_valuta") == "1000", "re-desenarea a golit câmpul în care scria contabilul: %r" % \
+        pg.input_value(F + "#rv-m0-sold_valuta")
+    assert pg.evaluate("() => document.activeElement && document.activeElement.id") == "rv-m0-sold_valuta"
+    # cel târziu la părăsirea câmpului, soldul ajunge în model ca orice editare: propunerea se recalculează cu el
+    pg.focus(F + "#rv-m0-cont")
     for _ in range(50):
-        if any("EUR" in urllib.parse.unquote(u) for u in cerute):
+        if any("1000" in urllib.parse.unquote(u) for u in cerute):
             break
         pg.wait_for_timeout(100)
-    assert any("EUR" in urllib.parse.unquote(u) for u in cerute), "moneda păstrată n-a ajuns în propunere: %s" % cerute
+    assert any("1000" in urllib.parse.unquote(u) for u in cerute), "soldul păstrat n-a ajuns în propunere: %s" % cerute
