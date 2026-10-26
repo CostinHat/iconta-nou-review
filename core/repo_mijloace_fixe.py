@@ -176,3 +176,28 @@ def seteaza_destinatie_cd(cur, schema, id_, destinatie_cd, user_id):
 def seteaza_cod_catalog_schema(cur, schema, mijloc_id, cod):
     """[lotul 13, 521] Codul din catalog al activului nou (plus de inventar, leasing), pe schema dată."""
     cur.execute(f"UPDATE {schema}.mijloace_fixe SET cod_catalog = %s WHERE id = %s", (cod, mijloc_id))
+
+
+def in_asteptarea_validarii(cur, schema, mijloc_id):
+    """[lotul 13, 519] Activul adus de o notă (plus de inventar, achiziție necorporală, leasing) intră în registru numai la VALIDAREA notei
+    (triggerul `trg_mf_nota_status` îl face activ): până atunci e inactiv."""
+    cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ = false WHERE id = %s", (mijloc_id,))
+
+
+def e_activ(cur, schema, mijloc_id):
+    """[lotul 13, 528] Activul e în registru (activ)."""
+    cur.execute(f"SELECT 1 FROM {schema}.mijloace_fixe WHERE id = %s AND activ", (mijloc_id,))
+    return cur.fetchone() is not None
+
+
+def valoarea(cur, schema, mijloc_id):
+    """[lotul 13, 528] Valoarea de intrare a activului, sau None."""
+    cur.execute(f"SELECT valoare FROM {schema}.mijloace_fixe WHERE id = %s", (mijloc_id,))
+    r = cur.fetchone()
+    return (r["valoare"] if isinstance(r, dict) else r[0]) if r else None
+
+
+def coduri(cur, schema):
+    """[lotul 13, 521] Codurile tuturor activelor (pentru următorul număr de inventar)."""
+    cur.execute(f"SELECT cod FROM {schema}.mijloace_fixe")
+    return [(r["cod"] if isinstance(r, dict) else r[0]) for r in cur.fetchall()]

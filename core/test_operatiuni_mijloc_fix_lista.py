@@ -21,6 +21,6 @@ def test_niciun_id_intern_tastabil():
 
 def test_mijlocul_fix_se_alege_din_registru():
     campuri = re.findall(r'C\("mijloc_fix_id", "[^"]*", "([a-z_]+)"', SRC)
-    assert campuri == ["mijloc_fix", "mijloc_fix"]                        # reevaluare + casare
+    assert campuri == ["mijloc_fix", "mijloc_fix", "mijloc_fix"]          # reevaluare + casare + [lotul 13] subvenția pentru investiții
     assert re.search(r'api\.get\(`/tenants/\$\{t\.id\}/mijloace-fixe`\)', SRC)   # lista vine din registrul firmei
     assert re.search(r'c\.tip === "mijloc_fix" \? parseInt\(v, 10\)', SRC)      # se trimite ID-ul ales, numeric

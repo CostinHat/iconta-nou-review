@@ -52,7 +52,9 @@ def test_fiecare_lunara_spune_unde_o_propune_aplicatia_sau_de_ce_nu_poate():
     # cele propuse din alt ecran (verificate la sursă: T — bancă / casă / compensare; V — reevaluarea la închiderea lunii; facturile de
     # avans și casa; contarea facturii cu taxare inversă; asociații din Date firmă)
     # [lotul 11, 429] reevaluarea în valută nu mai are formular aici: se propune și se generează numai din Închidere lună
-    assert {k for k, v in i.items() if v["propune"]} == {"tva_incasare", "avans", "taxare_inversa", "asociati"}
+    # [lotul 13, 528] subvenția pentru investiții: reluarea lunară 4751 = 7584 o generează amortizarea lunii (`uc_tenants._reluare_subventii`,
+    # chemată din generarea amortizării)
+    assert {k for k, v in i.items() if v["propune"]} == {"tva_incasare", "avans", "taxare_inversa", "asociati", "subventie"}
 
 
 def test_ecranul_separa_lunarele_de_cele_rare():

@@ -448,7 +448,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T05 — Nota contabilă — de la document la registrul-jurnal
 
-*clasa MECANIC · 39 rute · 29 schimba date · 29 firme il pot exercita azi*
+*clasa MECANIC · 40 rute · 29 schimba date · 28 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/dividende-impartire`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/jurnal/{nota_id}/depasita`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
 
@@ -575,7 +575,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare, descriere?, cota?, + comodat{valoare, moment primire|restituire} (numai evidenta 8038, fara nota); ch — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
+*ce face: corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare, descriere?, cota?, + comodat{valoare, moment primire|restituire} (numai evidenta 8038, fara nota); ch — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · evidenta_extrabilant (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `extrabilant`, `jurnal_api`, `repo_contabilitate`*
 
 - [x] chiria plătită unei persoane fizice atrage impozit și, uneori, CASS — verifică dacă se rețin
 - chiria în valută produce diferențe de curs
@@ -599,7 +599,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt, descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?, comision — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `repo_contabilitate`*
+*ce face: corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt, descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?, comision — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · evidenta_extrabilant (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `extrabilant`, `jurnal_api`, `repo_contabilitate`*
 
 - [x] rambursarea se desface în principal și dobândă; principalul stinge datoria, dobânda e cheltuială
 - comisioanele au tratament propriu — verifică dacă se disting
@@ -621,7 +621,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
 
-*ce face: corp: {data, operatie plus|plus_mf|minus|casare, descriere?, + plus{valoare, cont_stoc}; plus_mf{valoare, denumire, cont_imobilizare, cod_catalog, dnf_luni, data_pif, met — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mijloace_fixe_jurnal (INSERT) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`, `stocuri_cv_api`*
+*ce face: corp: {data, operatie plus|plus_mf|minus|casare, descriere?, + plus{valoare, cont_stoc}; plus_mf{valoare, denumire, cont_imobilizare, cod_catalog, dnf_luni, data_pif, met — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mf_linii (INSERT) · mf_note (INSERT) · mijloace_fixe_jurnal (INSERT) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`, `stocuri_cv_api`*
 
 - [x] plusul de inventar e venit; minusul e cheltuială, deductibilă doar în limita perisabilităților
 - minusul imputabil se recuperează de la gestionar — verifică dacă se distinge de cel neimputabil
@@ -636,7 +636,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?, locator_cui, locator_nume (pe toate tipurile; lotul 13, 523), + campuri pe tip: primire{valoare_ca — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mijloace_fixe_jurnal (INSERT) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`, `stocuri_cv_api`*
+*ce face: corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?, locator_cui, locator_nume (pe toate tipurile; lotul 13, 523), + campuri pe tip: primire{valoare_ca — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · evidenta_extrabilant (INSERT) · extras_linii (UPDATE) · mf_linii (INSERT) · mf_note (INSERT) · mijloace_fixe_jurnal (INSERT) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `extrabilant`, `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`, `stocuri_cv_api`*
 
 - [x] financiar sau operațional — cele două au tratamente contabile opuse. Verifică dacă ruta le distinge, sau presupune unul
 - la leasing financiar, bunul intră ca imobilizare și se amortizează; rata se desface în principal și dobândă
@@ -687,7 +687,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, operatie achizitie|dare_folosinta|scoatere, descriere?, + achizitie{denumire, valoare (fara TVA), cota, furnizor_cui, furnizor_nume?, numar} | dare_folosinta — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · documente_interne_contor (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `documente_interne`, `jurnal_api`, `repo_contabilitate`*
+*ce face: corp: {data, operatie achizitie|dare_folosinta|scoatere, descriere?, + achizitie{denumire, valoare (fara TVA), cota, furnizor_cui, furnizor_nume?, numar} | dare_folosinta — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · obiecte_inventar (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · documente_interne_contor (INSERT) · evidenta_extrabilant (INSERT) · extras_linii (UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `documente_interne`, `extrabilant`, `jurnal_api`, `repo_contabilitate`*
 
 - [x] valoarea e **sub pragul** de mijloc fix la data operațiunii — altfel e imobilizare, nu obiect de inventar
 - pragul se cere din registru, pe dată
@@ -767,7 +767,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, fel exploatare|investitii, descriere?, suma, moment drept|incasare, cont_venit?, + investitii{mijloc_fix_id}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `stocuri_cv_api`*
+*ce face: corp: {data, fel exploatare|investitii, descriere?, suma, moment drept|incasare, cont_venit?, + investitii{mijloc_fix_id}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · articole (INSERT/UPDATE) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mf_linii (INSERT) · mf_note (INSERT) · miscari_stoc (INSERT/UPDATE) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `stocuri_cv_api`*
 
 - [x] subvenția pentru investiții se recunoaște la venit **pe măsura amortizării**, nu integral la încasare
 - subvenția de exploatare e venit în perioada în care se acoperă cheltuiala
@@ -1211,7 +1211,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T13 — Trecerea de regim fiscal
 
-*clasa MECANIC · 12 rute · 6 schimba date · 29 firme il pot exercita azi*
+*clasa MECANIC · 12 rute · 6 schimba date · 28 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/migrare/vector`, `/tenants/{tenant_id}/firma-profil`, `/tenants/{tenant_id}/firma-profil/date`, `/tenants/{tenant_id}/tva-incasare/neexigibile`, `/tenants/{tenant_id}/tva-incasare/verifica-anaf`, `/tenants/{tenant_id}/vector`*
 
@@ -1506,7 +1506,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T15 — Salariatul — angajare, contract, adeverință, REGES
 
-*clasa MANUAL · 20 rute · 14 schimba date · 12 firme il pot exercita azi*
+*clasa MANUAL · 20 rute · 14 schimba date · 11 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/contracte/marcaje`, `/cor`, `/tenants/{tenant_id}/contracte/sabloane`, `/tenants/{tenant_id}/salariati`, `/tenants/{tenant_id}/salariati/{salariat_id}`, `/tenants/{tenant_id}/salariati/{salariat_id}/elemente`*
 
@@ -1941,7 +1941,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_drept` · **fara rol** · drept:poate_pregati · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · extras_linii (UPDATE) · inregistrari_linii (DELETE/INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `coada_api`, `jurnal_api`, `mf_note`, `note_derivate`, `repo_contabilitate`*
+*ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · extras_linii (UPDATE) · inregistrari_linii (DELETE/INSERT) · mf_linii (INSERT) · mf_note (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `coada_api`, `jurnal_api`, `mf_note`, `note_derivate`, `repo_contabilitate`*
 
 - [x] amortizarea lunară se calculează din valoarea de intrare și durata rămasă, la data lunii
 - un mijloc fix complet amortizat nu mai produce amortizare
@@ -1981,7 +1981,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii, reevaluari*
 
-*ce face: corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · reevaluari (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`, `repo_reevaluari`*
+*ce face: corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · reevaluari (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · mf_linii (INSERT) · mf_note (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`, `repo_reevaluari`*
 
 - [x] reevaluarea schimbă valoarea de intrare, deci **schimbă amortizarea viitoare** — dar nu pe cea trecută
 - diferența din reevaluare merge la rezervă, nu la venit — verifică unde ajunge
@@ -2280,7 +2280,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ## T29 — Regimurile speciale de TVA — marjă, aur, agricultori, taxare inversă
 
-*clasa MECANIC · 13 rute · 11 schimba date · ? firme il pot exercita azi*
+*clasa MECANIC · 13 rute · 11 schimba date · 0 firme il pot exercita azi*
 
 *clasa MECANIC · 11 rute · 10 schimba date · nu se poate sti din date*
 
@@ -2301,7 +2301,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
 
-*ce face: corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet| dezvoltare|constituire, dnf_luni?, cota?, cod?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · d301_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `facturi_api`, `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet| dezvoltare|constituire, dnf_luni?, cota?, cod?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · d301_operatiuni (DELETE) · extras_linii (UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · mf_linii (INSERT) · mf_note (INSERT) · mijloace_fixe_jurnal (INSERT) · perioade_blocate (DELETE/INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) — prin `facturi_api`, `jurnal_api`, `mf_note`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
 - [x] durata normală de funcționare vine din catalog pentru tipul respectiv; `dnf_luni` din corp nu o poate coborî sub minim
 - valoarea sub pragul de imobilizare nu produce mijloc fix — e cheltuială. Verifică pragul la data operațiunii

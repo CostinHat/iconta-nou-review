@@ -173,11 +173,15 @@ def test_def_c117_casarea_nu_cere_valoarea_mijlocului_fix(patron, firma_d):
     # fără ea casarea se refuză (lunile lipsă nu trec prin 6811)
     for luna in range(2, AZI.month):
         # ciornă -> rândul (cu activul, `mf_linii`) -> validată: rândurile unei note validate nu se mai scriu (`trg_regula_linii_nota`)
+        # date-de-pornire: amortizarea lunilor de dinaintea casării, înregistrată pe activ (518) — nu e pasul probat (C117)
         (nid,) = sql('INSERT INTO "%s".inregistrari (data, descriere, sursa, status, document_ref) VALUES (%%s, %%s, %%s, %%s, %%s) RETURNING id'
                      % f["schema"], ("2026-%02d-28" % luna, "Amortizare E2E C117", "operatiuni", "ciorna", "Tablou E2E"))[0]
+        # date-de-pornire: aceeași notă de amortizare pe activ (rândul, activul lui, validarea)
         (lid,) = sql('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, %%s, %%s, %%s) RETURNING id'
                      % f["schema"], (nid, "6811", "2813", 100))[0]
+        # date-de-pornire: aceeași notă de amortizare pe activ (rândul, activul lui, validarea)
         sql('INSERT INTO "%s".mf_linii (linie_id, mijloc_fix_id) VALUES (%%s, %%s)' % f["schema"], (lid, mid))
+        # date-de-pornire: aceeași notă de amortizare pe activ (rândul, activul lui, validarea)
         sql('UPDATE "%s".inregistrari SET status = \'validata\' WHERE id = %%s' % f["schema"], (nid,))
     pg = patron.pg
     patron.firma(f["nume"])

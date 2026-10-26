@@ -106,7 +106,7 @@ def cere_sold(cur, schema, cont, data, suma, sens, ce, camp=None, partener_cui=N
     if suma <= disp + Decimal("0.005"):
         return
     cui = " (partenerul %s)" % partener if partener else ""
-    m = ("%s de %s stinge contul %s%s, dar la %s contul are sold %s %s (din soldurile preluate și notele validate)"
+    m = ("%s (%s) stinge contul %s%s, dar la %s contul are sold %s %s (din soldurile preluate și notele validate)"
          % (ce, bani(suma, "lei"), cont, cui, data_ro(data), sens, bani(max(sold, Decimal("0")), "lei")))
     stinse = sum((s for _i, s in ciorne["sting"]), Decimal("0"))
     if stinse > 0:

@@ -57,15 +57,15 @@ export async function ecranRip(corp, nav, t) {
       <p><button class="buton-secundar" id="r-toggle" data-actiune="POST /tenants/{tenant_id}/rip/operatiuni">+ Opera\u021biune nou\u0103</button></p>
       <div id="r-zona" hidden style="margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
+        <div class="grila-campuri">
           <label class="camp"><span class="camp-eticheta">Data<span class="oblig">*</span></span><input type="date" id="r-data" class="camp-input" value="${dataIso()}"></label>
-          <label class="camp"><span class="camp-eticheta">Tip</span><select id="r-tip" class="camp-input">${ALEGE}<option value="incasare">Încasare</option><option value="plata">Plată</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Tip</span><select id="r-tip" class="camp-input" data-butoane="">${ALEGE}<option value="incasare">Încasare</option><option value="plata">Plată</option></select></label>
           <label class="camp"><span class="camp-eticheta">Categorie</span><select id="r-cat" class="camp-input"></select></label>
-          <label class="camp"><span class="camp-eticheta">Deductibilitate</span><select id="r-ded" class="camp-input" disabled>
-            <option value="">-</option><option value="integral">integral</option>
+          <label class="camp"><span class="camp-eticheta">Deductibilitate</span><select id="r-ded" class="camp-input" data-butoane="" disabled>
+            <option value="" data-alege>-</option><option value="integral">integral</option>
             <option value="limitat">limitat</option><option value="nedeductibil">nedeductibil</option></select></label>
-          <label class="camp"><span class="camp-eticheta">Suma (lei)<span class="oblig">*</span></span><input type="number" step="0.01" id="r-suma" class="camp-input" placeholder="0,00"></label>
-          <label class="camp"><span class="camp-eticheta">Metod\u0103</span><select id="r-met" class="camp-input">${ALEGE}<option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Suma (lei)<span class="oblig">*</span></span><input type="number" step="0.01" id="r-suma" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Metod\u0103</span><select id="r-met" class="camp-input" data-butoane="">${ALEGE}<option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
           <label class="camp"><span class="camp-eticheta">Explicație<span class="oblig">*</span></span><input type="text" id="r-expl" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Document nr.</span><input type="text" id="r-doc" class="camp-input"></label>
         </div>
