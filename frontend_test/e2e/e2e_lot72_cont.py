@@ -155,8 +155,11 @@ def test_def_320_prima_intrare_cere_telefonul_canalul_si_bifele_grupate_dupa_dre
         grupe = pg.eval_on_selector_all("#not-tipuri .cf-grup-titlu", "gs => gs.map((g) => g.textContent.trim())")
         assert grupe == ["Termene și declarații", "Facturi și SPV", "Validări", "Clienți", "Cont și echipă"], grupe
         bifate = pg.eval_on_selector_all("#not-tipuri [data-tip]", "cs => cs.filter((c) => c.checked).map((c) => c.dataset.tip)")
+        # [lotul 13] + `solicitare_client` (566: bifată din oficiu, mesajul clientului cere răspuns) și `sinteza_zilnica` (565: emailul
+        # de seară al administratorului, bifat din oficiu)
         assert set(bifate) == {"termen_declaratie", "declaratie_reluata", "depusa", "control_fiscal", "de_validat", "aprobata",
-                               "respinsa"}, bifate
+                               "respinsa", "factura_recurenta_refuzata", "factura_recurenta_avertisment", "solicitare_client",
+                               "sinteza_zilnica"}, bifate
         assert "Emailurile contului" in pg.inner_text("#not-tipuri") and "pleacă mereu" in pg.inner_text("#not-tipuri")
         assert "Cu trei zile înainte de termenul unei declarații" in pg.inner_text("#not-tipuri")
         pg.screenshot(path=os.path.join(os.environ.get("E2E_CAPTURI", "/tmp"), "320_prima_intrare.png"), full_page=True)

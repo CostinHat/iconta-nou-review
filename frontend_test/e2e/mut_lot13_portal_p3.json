@@ -1,0 +1,44 @@
+[
+ {
+  "fisier": "static/js/ecrane/date_firma.js",
+  "ancora": "  _legaTvaIncasare(corp, nav, tenantId, opt);\n  const asoc = _legaAsociati(corp, a);\n  // [lotul 12, 169] „Luna preluării” golită revine, la ieșirea din câmp, la propunere — nu rămâne „---------- ----” (luna goală în Chromium)\n  const _lpIn = corp.querySelector(\"#df-luna_preluare\");\n  _lpIn.addEventListener(\"blur\", () => { if (!_lpIn.value && _lpIn.dataset.propunere) _lpIn.value = _lpIn.dataset.propunere; });\n  _pozitioneaza(corp, opt);\n",
+  "inlocuire": "  _pozitioneaza(corp, opt);\n  _legaTvaIncasare(corp, nav, tenantId, opt);\n  const asoc = _legaAsociati(corp, a);\n  // [lotul 12, 169] „Luna preluării” golită revine, la ieșirea din câmp, la propunere — nu rămâne „---------- ----” (luna goală în Chromium)\n  const _lpIn = corp.querySelector(\"#df-luna_preluare\");\n  _lpIn.addEventListener(\"blur\", () => { if (!_lpIn.value && _lpIn.dataset.propunere) _lpIn.value = _lpIn.dataset.propunere; });\n",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p3.py::test_def_525_din_refuzul_dividendului_la_asociati_si_ramai_acolo_dupa_salvare"
+ },
+ {
+  "fisier": "static/js/ecrane/date_firma.js",
+  "ancora": "{ ...opt, camp: null, peLoc: true, sus: cadru.scrollTop }",
+  "inlocuire": "{ ...opt, camp: null }",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p3.py::test_def_525_din_refuzul_dividendului_la_asociati_si_ramai_acolo_dupa_salvare"
+ },
+ {
+  "fisier": "core/uc_asociati.py",
+  "ancora": "_as.erori_pe_campuri(_as.erori_ecran(randuri, _imp.verifica_randuri(randuri, anaf)))",
+  "inlocuire": "_as.erori_pe_campuri(_imp.verifica_randuri(randuri, anaf))",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p3.py::test_def_526_cnp_invalid_fara_mesajul_de_total"
+ },
+ {
+  "fisier": "core/firma_profil_api.py",
+  "ancora": "    return {\"obligatorii\": [c for c, decl in OBLIGATORII.items() if _decl_aplicabile(decl, neap)],",
+  "inlocuire": "    return {\"obligatorii\": list(OBLIGATORII),",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p3.py::test_def_c71_1_pfa_fara_campurile_bilantului_si_fara_regim_micro_profit"
+ },
+ {
+  "fisier": "core/regim_tva_incasare.py",
+  "ancora": "    tva_in = _data(tva_data_inceput) if tva_data_inceput else None\n    _TEMEI = \"Cod fiscal art. 282 alin. (3^1) lit. a)\"\n",
+  "inlocuire": "    return []\n",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p3.py::test_def_541_optiunea_nu_se_aplica_in_perioada_in_curs_si_jurnalul_arata_cine"
+ },
+ {
+  "fisier": "core/regim_tva_incasare.py",
+  "ancora": "                scoase[x] = {\"text\": x, \"cine\": r[\"cine\"], \"la\": r[\"la\"], \"inlocuita_cu\": \"; \".join(adaugate) or None}\n",
+  "inlocuire": "                pass\n",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p3.py::test_def_541_optiunea_nu_se_aplica_in_perioada_in_curs_si_jurnalul_arata_cine"
+ },
+ {
+  "fisier": "static/js/ecrane/spv_stare.js",
+  "ancora": "  if (ac === \"neverificat\") {\n    return { tip: \"avert\", spreConectare: false,\n      text: `SPV: încă nu se știe",
+  "inlocuire": "  if (ac === \"neverificat\") {\n    return { tip: \"info\", spreConectare: false,\n      text: `SPV: conectat. încă nu se știe",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p3.py::test_def_661_conectat_nu_inseamna_ca_certificatul_acopera_cui_ul"
+ }
+]

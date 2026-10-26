@@ -25,7 +25,7 @@ const CAMPURI = [
   // care pleacă pe declarații. Ce dispare e a doua CALE de scriere din ecranul ăsta.
   { k: "cui", e: "CUI", ob: true },
   { k: "reg_com", e: "Nr. registrul comer\u021bului", ob: true,
-    aj: "Din certificatul de \u00eenregistrare (ex. J40/1234/2020). Cerut la bilan\u021b." },
+    aj: "Din certificatul de \u00eenregistrare (ex. J40/1234/2020).", ajOb: "Cerut la bilan\u021b." },
   { k: "caen", e: "Cod CAEN", ob: true,
     aj: "4 cifre, din certificatul constatator. ANAF nu \u00eel d\u0103 pentru toate firmele \u2014 completeaz\u0103-l manual." },
   { k: "adresa", e: "Adresa", ob: true },
@@ -55,13 +55,13 @@ const CAMPURI = [
   // [lotul 10, C69, decizia Costin „Câmpuri noi + blocaj”] cerute de bilanț (bifa marilor contribuabili / codul județului și forma de
   // proprietate, din nomenclatorul ANAF); neales = „— alege —”, salvarea îl lasă necompletat, bilanțul îl cere (DS cap.17, pct.5)
   { k: "mare_contribuabil", e: "Mare contribuabil", ob: true, tip: "danu",
-    aj: "Da dacă firma e administrată de Direcția Generală de Administrare a Marilor Contribuabili. Cerut la bilanț." },
+    aj: "Da dacă firma e administrată de Direcția Generală de Administrare a Marilor Contribuabili.", ajOb: "Cerut la bilanț." },
   { k: "forma_proprietate", e: "Forma de proprietate", ob: true, tip: "lista", lista: "forme_proprietate",
-    aj: "Din nomenclatorul ANAF al bilanțului (ex. societăți cu răspundere limitată). Cerut la bilanț." },
+    aj: "Din nomenclatorul ANAF al bilanțului (ex. societăți cu răspundere limitată).", ajOb: "Cerut la bilanț." },
   // [lotul 11, decizia Costin 10.3 pct.4] „interesul public în Date firmă” — bilanțul: „15. interes_public Entitati de interes public N(1)
   // DA” (structura ANAF SC 1225); neales = „— alege —”, bilanțul îl cere (generatorul scria 0 oricărei firme)
   { k: "interes_public", e: "Entitate de interes public", ob: true, tip: "danu",
-    aj: "Da numai pentru entitățile de interes public definite de lege (ex. bănci, societăți de asigurare, societăți listate). Cerut la bilanț." },
+    aj: "Da numai pentru entitățile de interes public definite de lege (ex. bănci, societăți de asigurare, societăți listate).", ajOb: "Cerut la bilanț." },
 ];
 
 // [lotul 11, deficiența 442] câmpurile capitalului (blocul „Capital social”), cu numele lor în „Profil incomplet” — „blochează emiterea
@@ -193,7 +193,8 @@ const ETICHETE_JURNAL = { forma_juridica: "Forma juridică", capital_subscris: "
   inreg_art317: "Înregistrat cf. art.317", activitate_exceptata_amef: "Exceptată de la AMEF", activitate_amef: "Activitatea exceptată",
   cont_venit_implicit: "Cont venit implicit", luna_preluare: "Luna preluării", data_infiintare: "Data înființării",
   // [lotul 10, 428 / 431] regimul TVA la încasare (perioadele și „se aplică azi”), asociații și cotele
-  tva_incasare_perioade: "TVA la încasare (perioadele)", tva_la_incasare: "Aplică TVA la încasare azi", asociati: "Asociații și cotele" };
+  tva_incasare_perioade: "TVA la încasare (perioadele)", tva_la_incasare: "Aplică TVA la încasare azi", asociati: "Asociații și cotele",
+  tva_incasare_data_optiune: "TVA la încasare (data notificării)" };   // [lotul 13, 541]
 // [lotul 07.10 pct.19] valorile se arată cu eticheta pe care omul a ales-o pe ecran, nu cu cheia tehnică („cantitativ_valoric”):
 // aceleași liste pe care le randează formularul (`metode_stoc`, `forme_juridice`, `activitati_amef`, opțiunile periodicității),
 // iar „true” / „false” devin „da” / „nu”. O valoare fără etichetă cunoscută se arată așa cum e — nu se ghicește.
@@ -231,6 +232,11 @@ function _blocTvaIncasare(v) {
   const azi = t.aplica_azi ? "Azi firma aplică sistemul TVA la încasare." : (c ? "Azi firma nu aplică sistemul TVA la încasare." : "");
   const faraData = t.fara_data ? " Firma e marcată ca aplicând sistemul (din ANAF, la adăugare), dar fără dată: scrie data de la care se aplică." : "";
   const sursa = (p) => (p.sursa === "anaf" ? "ANAF" : "manual");
+  // [lotul 13, deficiența 541: „Jurnalul perioadelor […] nu arată cine și când a schimbat, iar «Șterge» scoate perioada fără urmă.”] cine
+  // și când, din jurnalul Date firmă (`regim_tva_incasare.istoric_perioade`, și pentru perioadele de dinainte); perioadele scoase rămân în
+  // tabel, marcate, fără acțiuni
+  const cineCand = (x) => (x ? `${esc(x.cine || "—")}, ${dataRo(x.la, "cu_ora")}` : "—");
+  const scoase = t.scoase || [];
   return `
     <div class="camp" id="vf-camp-tva_incasare">
       <label class="camp-eticheta" for="vf-tva_incasare">Aplică sistemul TVA la încasare (Cod fiscal art. 282)</label>
@@ -239,14 +245,21 @@ function _blocTvaIncasare(v) {
       ${azi || faraData ? `<span class="camp-ajutor" id="vf-tva_incasare-azi">${esc(azi + faraData)}</span>` : ""}
       <button type="button" class="buton-secundar" id="vf-tva-incasare-anaf" data-actiune="GET /tenants/{tenant_id}/tva-incasare/verifica-anaf">Verifică în registrul ANAF</button>
       <div id="vf-tva-incasare-anaf-rez"></div>
-      ${per.length ? `<table class="fd-tabel" id="vf-tva-incasare-perioade">
-        <thead><tr><th>De la</th><th>Până la</th><th>Sursa</th><th>Verificat la ANAF</th><th>Acțiune</th></tr></thead>
-        <tbody>${per.map((p) => `<tr><td>${dataRo(p.de_la)}</td><td>${p.pana_la ? dataRo(p.pana_la) : "în continuare"}</td><td>${sursa(p)}</td>
-          <td>${p.verificat_anaf_la ? dataRo(p.verificat_anaf_la) : "\u2014"}</td>
-          <td>${p.pana_la ? `<button type="button" class="buton-secundar" data-iesire="${esc(p.pana_la)}" data-actiune="GET /tenants/{tenant_id}/tva-incasare/neexigibile">Facturile rămase în sistem</button> ` : ""}<button type="button" class="buton-sters" data-perioada="${esc(p.id)}" data-actiune="DELETE /tenants/{tenant_id}/tva-incasare/{perioada_id}" aria-label="Șterge perioada de la ${esc(dataRo(p.de_la))}">Șterge</button></td></tr>`).join("")}</tbody></table>` : ""}
+      ${per.length || scoase.length ? `<table class="fd-tabel" id="vf-tva-incasare-perioade">
+        <thead><tr><th>De la</th><th>Până la</th><th>Sursa</th><th>Data notificării</th><th>Verificat la ANAF</th><th>Scrisă de, când</th><th>Acțiune</th></tr></thead>
+        <tbody>${per.map((p) => `<tr data-perioada-rand="${esc(p.id)}"><td>${dataRo(p.de_la)}</td><td>${p.pana_la ? dataRo(p.pana_la) : "în continuare"}</td><td>${sursa(p)}</td>
+          <td>${p.data_optiune ? dataRo(p.data_optiune) : "\u2014"}</td>
+          <td>${p.verificat_anaf_la ? dataRo(p.verificat_anaf_la) : "\u2014"}</td><td>${p.scrisa ? cineCand(p.scrisa) : (p.sursa === "anaf" ? "din ANAF, la adăugarea firmei" : "\u2014")}</td>
+          <td>${p.pana_la ? `<button type="button" class="buton-secundar" data-iesire="${esc(p.pana_la)}" data-actiune="GET /tenants/{tenant_id}/tva-incasare/neexigibile">Facturile rămase în sistem</button> ` : ""}<button type="button" class="buton-sters" data-perioada="${esc(p.id)}" data-actiune="DELETE /tenants/{tenant_id}/tva-incasare/{perioada_id}" aria-label="Șterge perioada de la ${esc(dataRo(p.de_la))}">Șterge</button></td></tr>`).join("")}${scoase.map((x) => `<tr class="df-perioada-scoasa" data-perioada-scoasa>
+          <td colspan="5"><s>${esc(x.text)}</s></td><td>${cineCand(x)}</td><td>${x.inlocuita_cu ? `înlocuită cu „${esc(x.inlocuita_cu)}”` : "ștearsă"}</td></tr>`).join("")}</tbody></table>` : ""}
       ${(t.avertismente || []).map((a) => `<span class="camp-ajutor">${esc(a)}</span>`).join("")}
       <div id="vf-tva-incasare-iesire"></div>
     </div>
+    <label class="camp" id="vf-camp-tva_incasare_data_optiune">
+      <span class="camp-eticheta">Data notificării (opțiunii) depuse la ANAF</span>
+      <span class="camp-ajutor">Sistemul se aplică de la prima zi a perioadei fiscale următoare celei în care s-a depus notificarea (art. 282 alin. (3^1) lit. a)). Cerută când „Aplică de la” cade în perioada fiscală în curs.</span>
+      <input type="date" class="camp-input" id="vf-tva_incasare_data_optiune" value="${esc((c && c.data_optiune) || "")}">
+    </label>
     <label class="camp" id="vf-camp-tva_incasare_de_la">
       <span class="camp-eticheta">Aplică de la<span class="oblig">*</span></span>
       <span class="camp-ajutor">Prima zi a perioadei fiscale de după opțiune, sau data înregistrării în scopuri de TVA (art. 282 alin. (3^1)).</span>
@@ -301,9 +314,17 @@ function _blocAsociati(a) {
       : `<div class="stare-goala stare-goala--inline" id="as-istoric-gol">Nicio cesiune înregistrată: structura de mai sus e cea de la început. O cesiune se înregistrează cu data ei, mai sus.</div>`}`;
 }
 
+// [lotul 13, deficiența C71.1, comanda 13.1: „La F4 PFA […] formularul marchează cu * câmpuri de SRL «cerute la bilanț» (Nr. registrul
+// comerțului, Mare contribuabil, Forma de proprietate, Entitate de interes public)”] `ob` e mulțimea maximă (= `OBLIGATORII`, gard
+// `core/test_g9_oblig_backend.py`); câte din ele cere FIRMA asta spune serverul, după forma ei (`firma_profil_api.campuri_forma`: aceeași
+// sursă cu „Profil incomplet”). Câmpurile numai-bilanț nu apar la o formă care nu întocmește bilanț (`fara_rost`); „Cerut la bilanț.”
+// (`ajOb`) numai unde chiar e cerut.
 function camp(c, val, d) {
-  const ob = c.ob ? '<span class="oblig">*</span>' : "";
-  const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
+  if (((d && d.fara_rost) || []).includes(c.k)) return "";
+  const cerut = c.ob && (!(d && d.obligatorii) || d.obligatorii.includes(c.k));
+  const ob = cerut ? '<span class="oblig">*</span>' : "";
+  const textAj = [c.aj, cerut ? c.ajOb : null].filter(Boolean).join(" ");
+  const aj = textAj ? `<span class="camp-ajutor">${esc(textAj)}</span>` : "";
   // [lotul 11, decizia 10.3] CUI-ul arătat cu „RO” numai la plătitorul de TVA (`cui_afisat`, regula din `core/cui_forma.afisare`)
   if (c.k === "cui" && val) return campCui(c, (d && d.profil && d.profil.cui_afisat) || val, ob);
   // [lotul 10, C69] Da / Nu (valoarea salvată, altfel „— alege —”) și lista din nomenclator (codul se trimite, denumirea se arată)
@@ -382,7 +403,16 @@ const VECTOR = [
     aj: "Data de la care firma e \u00eenregistrat\u0103 \u00een scopuri de TVA (de pe certificatul ANAF). Necesar\u0103 ca s\u0103 \u0219tim de c\u00e2nd se datoreaz\u0103 D300/D394/D406 \u2014 f\u0103r\u0103 ea, verdictele pe lunile trecute r\u0103m\u00e2n \u00abnecunoscut\u00bb." },
 ];
 
-function campVector(c, val) {
+function campVector(c, val, v) {
+  // [lotul 13, C71.1] „oferă Regim fiscal micro/profit (D100/D101), care nu privesc un PFA”: la partida simplă (`v.partida_simpla`, fapt
+  // unic al serverului — `vector_fiscal_api.citeste`, care refuză oricum un regim acolo) nu se oferă alegerea; se spune de ce. Câmpul
+  // ascuns ține forma cererii (`regim_fiscal` gol = NULL, cum îl salvează serverul la partida simplă).
+  if (c.k === "regim_fiscal" && v && v.partida_simpla) return `
+    <div class="camp" id="vf-camp-regim_fiscal">
+      <span class="camp-eticheta">${esc(c.e)}</span>
+      <span class="camp-ajutor">Nu se aplică: microîntreprinderea și impozitul pe profit (D100 / D101) privesc persoanele juridice. O firmă în partidă simplă (PFA, II, IF) declară venitul în Declarația unică (D212).</span>
+      <input type="hidden" id="vf-regim_fiscal" value="">
+    </div>`;
   const ob = (c.ob || c.alege) ? '<span class="oblig">*</span>' : "";
   const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
   let control;
@@ -473,7 +503,9 @@ function _blocProfil(d) {
 
 export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || null);
-  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
+  // [lotul 13, 525] redesenarea de după o acțiune (`peLoc`, ca DS cap.9 v2.102) nu trece prin „Se încarcă…”: conținutul nu scade la un
+  // rând, deci derularea nu cade la începutul ferestrei
+  if (!opt.peLoc) corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
 
   let d = { profil: {}, lipsuri: [] };
   let v = {};
@@ -502,7 +534,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
 
     <h2 class="pf-titlu" style="margin-top:26px">Vector fiscal</h2>
     <p class="pf-intro">Ce declara\u021bii datoreaz\u0103 firma. Termenele \u0219i controlul fiscal pornesc de aici.</p>
-    <div class="grila-doc">${VECTOR.map((c) => campVector(c, v[c.k]) + (c.k === "platitor_tva" ? _blocTvaIncasare(v) : "")).join("")}</div>
+    <div class="grila-doc">${VECTOR.map((c) => campVector(c, v[c.k], v) + (c.k === "platitor_tva" ? _blocTvaIncasare(v) : "")).join("")}</div>
 
     <h2 class="pf-titlu" style="margin-top:26px">Cont contabil</h2>
     <p class="pf-intro">Contul de venit folosit implicit la emiterea facturilor. Se poate schimba pe fiecare factur\u0103.</p>
@@ -527,10 +559,6 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     ${_blocJurnal(d)}
   `;
   if (aEroare && corp.querySelector("#as-msg")) arataMesaj(corp.querySelector("#as-msg"), aEroare, "eroare");
-  // [retest 08.10, completarea pct.2] deschis dintr-un refuz care numește câmpul (seria chitanțelor, metoda de stoc, forma juridică …):
-  // câmpul vine în vedere și primește focus — nu pagina de sus
-  const _tinta = opt.camp ? corp.querySelector("#" + CSS.escape(opt.camp)) : null;
-  if (_tinta) { _tinta.scrollIntoView({ block: "center" }); focusFaraSalt(_tinta); }
 
   const _btnCui = corp.querySelector("#df-cui-corecteaza");
   if (_btnCui) _btnCui.addEventListener("click", () => _corecturaCui(corp, nav, tenantId, opt));
@@ -549,6 +577,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     aratat("#vf-camp-tva_data_inceput", plat);
     aratat("#vf-camp-tva_incasare", plat);
     aratat("#vf-camp-tva_incasare_de_la", plat && _tvaiSel && _tvaiSel.value === "da");
+    aratat("#vf-camp-tva_incasare_data_optiune", plat && _tvaiSel && _tvaiSel.value === "da");   // [lotul 13, 541]
     aratat("#vf-camp-tva_incasare_pana_la", plat && _tvaiSel && _tvaiSel.value === "da");
   };
   if (_tvaSel) _tvaSel.addEventListener("change", _tvaToggle);
@@ -559,6 +588,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   // [lotul 12, 169] „Luna preluării” golită revine, la ieșirea din câmp, la propunere — nu rămâne „---------- ----” (luna goală în Chromium)
   const _lpIn = corp.querySelector("#df-luna_preluare");
   _lpIn.addEventListener("blur", () => { if (!_lpIn.value && _lpIn.dataset.propunere) _lpIn.value = _lpIn.dataset.propunere; });
+  _pozitioneaza(corp, opt);
 
   // [BLOC R, 28.08.2026] Legarea celor două casete de denumire a fost scoasă odată cu a doua
   // casetă. Era reparația corectă cât timp duplicatul exista; nu mai are ce lega.
@@ -651,7 +681,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       // nimeni n-a făcut-o). Confirmarea vizibilă stă în același bloc cu actul (DS cap.27).
       if (numePortofoliu !== ((t && t.nume) || "")) await api.put(`/tenants/${tenantId}`, { nume: numePortofoliu });
       redenumit = true;
-      await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });   // [retest 08.10] după salvare nu se mai sare la câmp
+      await _redeseneazaPeLoc(corp, nav, tenantId, opt);   // [retest 08.10] după salvare nu se mai sare la câmp; [525] rămâi unde lucrai
       // [427] „Salvat. Lipsesc X, Y — blochează D…” (din lipsurile întoarse de salvare); [428] avertismentele regimului + verificarea ANAF
       arataMesaj(corp.querySelector("#df-msg"), _mesajSalvat(rProfil, rTvai), ((rProfil && rProfil.lipsuri) || []).length
         || (rTvai && ((rTvai.avertismente || []).length || (rTvai.anaf && rTvai.anaf.fel !== "fapt"))) ? "avert" : "ok");
@@ -669,11 +699,31 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
         return;
       }
       // [LOTUL 11] Mesajul spune CE a apucat să intre: restul datelor e înregistrat și a căzut DOAR redenumirea.
-      await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });
+      await _redeseneazaPeLoc(corp, nav, tenantId, opt);
       arataMesaj(corp.querySelector("#df-msg"), "Restul datelor s-au salvat, dar denumirea nu: " + ((e && e.mesaj) || "a fost refuzată")
         + " Ecranul de mai jos arată ce e înregistrat acum.", "eroare");
     }
   });
+}
+
+// [lotul 13, deficiența 525, comanda 13.1: „«Deschide Date firmă» de la refuzul dividendelor deschide fereastra de la început, nu la
+// secțiunea Asociați; după Salvează fereastra sare la început. Trimiterea duce la locul de completat, iar după salvare rămâi unde lucrai.”]
+// Poziția ferestrei se pune DUPĂ ce s-a desenat tot ce îi schimbă înălțimea (tabelul asociaților, secțiunile vectorului ascunse / arătate):
+// pusă înainte (cum era), „+ Asociat” se muta după aducerea în vedere (măsurat în `core/test_lot13_portal_p3_ecrane.py`: derularea
+// 3305 px, butonul tot în afara ferestrei), iar omul vedea capul ferestrei.
+//   - `opt.camp`: câmpul cerut de refuzul care a trimis aici (`detail.camp_ecran`), adus la mijloc, cu focus (retest 08.10 pct.2);
+//   - `opt.sus`: derularea de dinaintea unei redesenări pe loc (`_redeseneazaPeLoc`) — omul rămâne unde lucra.
+function _pozitioneaza(corp, opt) {
+  const cadru = corp.closest(".fereastra-corp") || corp;
+  const _tinta = opt.camp ? corp.querySelector("#" + CSS.escape(opt.camp)) : null;
+  if (_tinta) { _tinta.scrollIntoView({ block: "center" }); focusFaraSalt(_tinta); } else if (opt.sus != null) cadru.scrollTop = opt.sus;
+}
+
+// [525] Redesenarea de după o acțiune (Salvează, ștergerea unei perioade, corectura CUI-ului): pe loc, fără „Se încarcă…” și fără să mai
+// sară la câmpul refuzului de la deschidere — derularea rămâne cea din clipa acțiunii.
+function _redeseneazaPeLoc(corp, nav, tenantId, opt) {
+  const cadru = corp.closest(".fereastra-corp") || corp;
+  return randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null, peLoc: true, sus: cadru.scrollTop });
 }
 
 // [427 / 428] Mesajul de după salvare: lipsurile profilului cu declarațiile pe care le blochează, avertismentele regimului TVA la încasare
@@ -732,9 +782,12 @@ function _tvaiDinFormular(corp, v, platitor) {
   // „Da” e cererea, deci data rămâne de scris.
   const de_la = aplica ? (corp.querySelector("#vf-tva_incasare_de_la").value || c.de_la || null) : null;
   const pana_la = aplica ? (corp.querySelector("#vf-tva_incasare_pana_la").value || null) : null;
+  // [lotul 13, 541] data notificării: verificată de server la „de la” nou sau schimbat (CF art.282 alin.(3^1) lit.a))
+  const data_optiune = aplica ? (corp.querySelector("#vf-tva_incasare_data_optiune").value || null) : null;
   const eraDa = !!t.curenta || !!t.fara_data;
-  if (aplica === eraDa && (!aplica || (de_la === (c.de_la || null) && pana_la === (c.pana_la || null)))) return null;
-  return { aplica, de_la, pana_la };
+  if (aplica === eraDa && (!aplica || (de_la === (c.de_la || null) && pana_la === (c.pana_la || null)
+    && data_optiune === (c.data_optiune || null)))) return null;
+  return { aplica, de_la, pana_la, data_optiune };
 }
 
 // [lotul 10, 428] „Verifică în registrul ANAF” (citire: propune datele, spune dacă diferă; nu scrie) și ștergerea unei perioade scrise greșit.
@@ -789,7 +842,7 @@ function _legaTvaIncasare(corp, nav, tenantId, opt) {
       async () => {
         try {
           await api.del(`/tenants/${tenantId}/tva-incasare/${b.dataset.perioada}`);
-          await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });
+          await _redeseneazaPeLoc(corp, nav, tenantId, opt);
           arataMesaj(corp.querySelector("#df-msg"), "Perioada a fost ștearsă. Schimbarea e în istoricul de mai jos.", "ok");
         } catch (e) { refuzPeRand(b, (e && e.mesaj) || "Perioada nu s-a putut șterge."); }
       }, { textOk: "Șterge perioada" });
@@ -866,7 +919,7 @@ function _corecturaCui(corp, nav, tenantId, opt) {
           const r2 = await api.post(`/tenants/${tenantId}/cui/corectura`, { cui: cuiScris(), confirmat: true });
           const a2 = r2.anaf || {};
           const preluate = (a2.schimbari || []).map((s) => s.eticheta).join(", ");
-          await randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null });
+          await _redeseneazaPeLoc(corp, nav, tenantId, opt);
           arataMesaj(corp.querySelector("#df-msg"), `CUI-ul a fost corectat: ${r2.cui}. ${a2.gasit ? (preluate ? `Din ANAF s-au preluat: ${preluate}.` : "")
             : (a2.mesaj || "")} Schimbarea e în jurnalul de mai jos.`, a2.gasit ? "ok" : "avert");
         } catch (e) { arataRefuzul(zona, e, msg, laCui(e)); }
@@ -881,7 +934,8 @@ function _corecturaCui(corp, nav, tenantId, opt) {
 function _dateDinFormular(corp) {
   const date = {};
   for (const c of CAMPURI) {
-    date[c.k] = (corp.querySelector(`#df-${c.k}`).value || "").trim();
+    const el = corp.querySelector(`#df-${c.k}`);   // [lotul 13, C71.1] un câmp fără rost pentru forma firmei nu e pe ecran: nu se trimite
+    if (el) date[c.k] = (el.value || "").trim();
   }
   date.cont_venit_implicit = corp.querySelector("#df-cont_venit").value;  // [F182] preferinta contabila la emitere
   // [lot 19 d12] forma juridică + capitalul (Legea 31/1990 art. 74 alin. (3)); lipsesc la PFA/II/IF

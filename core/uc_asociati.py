@@ -36,7 +36,8 @@ def _verifica(randuri):
     er = _as.erori_cota_lipsa(randuri)
     anaf = _imp.verificare_anaf(randuri) if not er else None
     if not er:
-        er = _as.erori_pe_campuri(_imp.verifica_randuri(randuri, anaf))
+        # [lotul 13, 526] totalul cotelor judecat pe rândurile scrise pe ecran, ca „Total cote” (`asociati_api.erori_ecran`)
+        er = _as.erori_pe_campuri(_as.erori_ecran(randuri, _imp.verifica_randuri(randuri, anaf)))
     if er:
         mesaj = "; ".join(e["mesaj"] for e in er[:6])
         raise _erori.DateInvalide({"mesaj": "Asociații nu s-au salvat: %s." % mesaj,

@@ -23,7 +23,7 @@ def revendica(cur, limita):
         return []
     cur.execute("UPDATE public.notificari SET de_livrat = false WHERE id = ANY(%s)", (ids,))
     cur.execute("SELECT n.id, n.tip, u.id, u.email, u.canal_notificari, u.telefon, u.telefon_confirmat_la IS NOT NULL, "
-                "u.acord_whatsapp_la IS NOT NULL, u.activ, u.notificari_tipuri FROM public.notificari n JOIN public.users u ON u.id = n.user_id "
+                "u.acord_whatsapp_la IS NOT NULL, u.activ, u.notificari_tipuri, n.text FROM public.notificari n JOIN public.users u ON u.id = n.user_id "
                 "WHERE n.id = ANY(%s) ORDER BY n.id", (ids,))
     return cur.fetchall()
 
@@ -42,3 +42,12 @@ def scrie_starea_mesajului(cur, mesaj_id, stare, detaliu):
 
 def marcheaza_rezerva(cur, mesaj_id):
     cur.execute("UPDATE public.notificari_jurnal SET rezerva_email = true WHERE mesaj_id = %s", (mesaj_id,))
+
+
+def textul(cur, nid):
+    """[567] Textul notificării din clopoțel (firma, elementul, motivul), pentru emailul de rezervă; None dacă notificarea nu mai există."""
+    if not nid:
+        return None
+    cur.execute("SELECT text FROM public.notificari WHERE id = %s", (nid,))
+    r = cur.fetchone()
+    return r[0] if r else None

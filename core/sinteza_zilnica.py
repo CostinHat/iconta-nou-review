@@ -2,101 +2,60 @@
 core/sinteza_zilnica.py — sinteza zilnica a activitatii din cabinet,
 trimisa seara patronului (admin_firma) pe email-ul de login.
 
-Rulat de cron (19:00 Bucharest, luni-vineri). Nu trimite daca ziua e goala.
+Rulat de cron (19:00 Bucharest, luni-vineri). Nu trimite daca ziua e goala SI nimic nu asteapta.
 Refoloseste observare.trimite_email_html (Brevo deja configurat pe iconta.eu).
+
+[lotul 13, deficiența 565: „Sinteza pe email nu apare în Setări cont → Notificări și n-a ajuns niciodată la administrator (5 zile verificate
+în inbox).”] CAUZA, citită în jurnalul jobului (`sinteza.log`, 16.10, 19.10, 22.10): „[email netrimis, registrul dezabonărilor nu s-a putut
+citi (RuntimeError: pool neinițializat — cheamă init_pool() la startup) …]”. De la 268 (lotul 5), emailul INFORMATIV întreabă registrul
+dezabonărilor prin `db.get_conn()` (pool-ul aplicației), iar jobul de cron lucra pe o conexiune brută și nu inițializa pool-ul -> fail-closed:
+niciun email nu pleca, iar logul spunea doar „ESUAT”. Acum jobul inițializează pool-ul și lucrează numai prin el (fără conexiune brută).
+Și: sinteza se trimite numai administratorilor care n-au debifat-o în Setări cont → Notificări (tipul `sinteza_zilnica`, bifat din oficiu),
+iar o zi fără activitate dar cu elemente care așteaptă validarea / sesizări fără răspuns NU e „goală” (568: coada contează, nu numai ziua).
 
 Test manual pe un singur destinatar:
   python3 -m core.sinteza_zilnica --test cineva@example.com
 """
-import os
 import sys
 import datetime
-import psycopg2
 import psycopg2.extras as _E
 from core.pdf_util import data_ro as _data_ro
 
+from core import db
 from core import observare
+from core import repo_sinteza_zilnica as _repo
 from core.common import esc as _esc_html   # [C39] text scris de om în HTML-ul emailurilor
 
 
-def _conn():
-    return psycopg2.connect(os.environ["DATABASE_URL"])
-
-
 def _patroni(conn):
-    """Patronii activi: id, email, nume, cabinet."""
+    """Patronii activi: id, email, nume, cabinet, bifele din Notificări (`notificari_tipuri`, 565)."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(
-            "SELECT id, email, prenume, nume, accounting_firm_id AS cabinet_id "
-            "  FROM public.users "
-            " WHERE rol = 'admin_firma' AND activ = true "
-            "   AND email IS NOT NULL AND email <> ''")
-        return cur.fetchall()
+        return _repo.patronii(cur)
+
+
+def dorita(patron):
+    """PURĂ. [565] Administratorul vrea sinteza? Bifa lui din Setări cont → Notificări; fără bifă salvată, implicitul (bifată)."""
+    from core import notificari as _n
+    return _n.dorit("sinteza_zilnica", patron.get("notificari_tipuri"))
 
 
 def _nume_cabinet(conn, cabinet_id):
     with conn.cursor() as cur:
-        cur.execute("SELECT nume FROM public.accounting_firms WHERE id = %s",
-                    (cabinet_id,))
-        r = cur.fetchone()
-    return (r[0] if r else "") or "cabinet"
+        return _repo.numele_cabinetului(cur, cabinet_id) or "cabinet"
 
 
 def sinteza_cabinet(conn, cabinet_id, zi):
     """Numara ce s-a petrecut azi (zi = date) + ce a ramas in asteptare.
-    Intoarce un dict cu cifre. Daca tot ce conteaza e 0 -> 'gol': True."""
-    d = {}
+    Intoarce un dict cu cifre. Daca tot ce conteaza e 0 -> 'gol': True.
+    [lotul 13] Instrucțiunile SQL stau în `core/repo_sinteza_zilnica.py` (depozitul primește cursorul): jobul își deschide acum singur
+    conexiunea din pool (565), deci e USE_CASE, iar contractul straturilor cere SQL-ul în depozit."""
     with conn.cursor() as cur:
-        # declaratii pe evenimentele zilei — [lotul 07.10 pct.4] pe PREGĂTIRE (documentul): „pregătite azi” = începute azi
-        # (o retrimitere nu e o pregătire nouă), iar notele aceleiași facturi se validează / resping o dată
-        # [lotul 11, 458] respinsă azi = de om: înlocuirea la „Generează din nou” nu e o respingere (`coada_api.sql_inlocuita`)
-        from core.coada_api import sql_cheie_pregatire as _cheie, sql_inlocuita
-        cur.execute(
-            "WITH p AS (SELECT " + _cheie("d") + " AS cheie, MIN(creat_la) AS creat_la, "
-            "  bool_or(aprobat_la::date = %(z)s) AS validata_azi, "
-            "  bool_or(respins_la::date = %(z)s AND NOT " + sql_inlocuita("d") + ") AS respinsa_azi, "
-            "  bool_or(depus_la::date = %(z)s) AS depusa_azi "
-            "  FROM public.declaratii_coada d WHERE cabinet_id = %(c)s GROUP BY 1) "
-            "SELECT "
-            "  COUNT(*) FILTER (WHERE creat_la::date = %(z)s) AS pregatite, "
-            "  COUNT(*) FILTER (WHERE validata_azi) AS validate, "
-            "  COUNT(*) FILTER (WHERE respinsa_azi) AS respinse, "
-            "  COUNT(*) FILTER (WHERE depusa_azi) AS depuse "
-            "  FROM p",
-            {"z": zi, "c": cabinet_id})
-        r = cur.fetchone()
-        d["pregatite"], d["validate"], d["respinse"], d["depuse"] = (
-            int(r[0]), int(r[1]), int(r[2]), int(r[3]))
-
-        # in asteptare ACUM: declaratii la senior (de validat)
-        cur.execute(
-            "SELECT COUNT(DISTINCT " + _cheie() + ") FROM public.declaratii_coada "
-            " WHERE cabinet_id = %s AND stare = 'la_senior'", (cabinet_id,))
-        d["de_validat"] = int(cur.fetchone()[0])
-
-        # sesizari clienti: noi azi + fara raspuns acum
-        cur.execute(
-            "SELECT "
-            "  COUNT(*) FILTER (WHERE creat_la::date = %(z)s) AS noi, "
-            "  COUNT(*) FILTER (WHERE stare = 'noua') AS fara_raspuns "
-            "  FROM public.raportari "
-            " WHERE cabinet_id = %(c)s AND pentru_admin = false",
-            {"z": zi, "c": cabinet_id})
-        r = cur.fetchone()
-        d["sesizari_noi"], d["sesizari_fara_raspuns"] = int(r[0]), int(r[1])
-
-        # pachete lunare trimise azi (leg tenant -> cabinet)
-        cur.execute(
-            "SELECT COUNT(*) FROM public.pachet_povestea p "
-            "  JOIN public.tenants t ON t.id = p.tenant_id "
-            " WHERE t.accounting_firm_id = %(c)s "
-            "   AND p.status = 'trimis' AND p.updated_at::date = %(z)s",
-            {"z": zi, "c": cabinet_id})
-        d["pachete_trimise"] = int(cur.fetchone()[0])
-
+        d = _repo.cifrele_zilei(cur, cabinet_id, zi)
     activitate = (d["pregatite"] + d["validate"] + d["respinse"] + d["depuse"]
                   + d["sesizari_noi"] + d["pachete_trimise"])  # [p68_doar_pozitive]
-    d["gol"] = (activitate == 0)
+    # [lotul 13, 568] ce așteaptă (coada întreagă, nu numai ce a intrat azi) face ziua „negoală”: 5 note de validat de pe 19.10 trebuie
+    # amintite și într-o seară fără activitate
+    d["gol"] = (activitate + d["de_validat"] + d["sesizari_fara_raspuns"] == 0)
     return d
 
 
@@ -160,33 +119,38 @@ def ruleaza(test_email=None):
     """Trimite sinteza catre toti patronii. Daca test_email e dat,
     trimite DOAR catre acel email (sinteza primului cabinet gasit), pentru proba."""
     zi = datetime.date.today()
-    trimise, sarite = 0, 0
-    conn = _conn()
-    try:
+    trimise, sarite, debifate = 0, 0, 0
+    # [565] pool-ul aplicației: registrul dezabonărilor (`observare.refuz_dezabonare`) se citește prin el; fără el niciun email nu pleca
+    db.init_pool()
+    with db.get_conn() as conn:
         patroni = _patroni(conn)
         if test_email:
             patroni = patroni[:1]  # un singur cabinet, pentru proba
+        de_trimis = []
         for p in patroni:
             cab = p["cabinet_id"]
             if not cab:
+                continue
+            if not test_email and not dorita(p):
+                debifate += 1
                 continue
             d = sinteza_cabinet(conn, cab, zi)
             if d["gol"] and not test_email:
                 sarite += 1
                 continue
             nume = _nume_cabinet(conn, cab)
-            html = _html(nume, zi, d)
-            subiect = "Sinteza zilei %s - %s" % (_data_ro(zi, "zi_luna"), nume)
-            catre = test_email or p["email"]
-            ok = observare.trimite_email_html(catre, subiect, html, informativ=True)   # [268] informativ: cu dezabonare
-            if ok:
-                trimise += 1
-                print("trimis ->", catre, "|", nume)
-            else:
-                print("ESUAT ->", catre, "|", nume)
-    finally:
-        conn.close()
-    print("Gata. Trimise: %d, sarite (zi goala): %d" % (trimise, sarite))
+            de_trimis.append((test_email or p["email"], nume, _html(nume, zi, d),
+                              "Sinteza zilei %s — %s" % (_data_ro(zi, "zi_luna"), nume)))
+        conn.rollback()   # numai citire; conexiunea se întoarce în pool înainte de trimiteri (registrul dezabonărilor ia alta)
+    for catre, nume, html, subiect in de_trimis:
+        ok = observare.trimite_email_html(catre, subiect, html, informativ=True)   # [268] informativ: cu dezabonare
+        if ok:
+            trimise += 1
+            print("trimis ->", catre, "|", nume)
+        else:
+            print("ESUAT ->", catre, "|", nume, "(motivul e în rândul de deasupra)")
+    print("Gata. Trimise: %d, sarite (zi goala): %d, debifate in Setari cont: %d" % (trimise, sarite, debifate))
+    return {"trimise": trimise, "sarite": sarite, "debifate": debifate}
 
 
 if __name__ == "__main__":

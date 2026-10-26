@@ -83,7 +83,7 @@ def platitor_tva_2(cur, schema):
 CAMPURI_REGIM_TVA = ("platitor_tva", "tip_decont", "inreg_art317", "tva_la_incasare")
 #: [428] câmpurile de jurnal ale regimului care NU sunt coloane ale `firma_profil`: perioadele sistemului TVA la încasare (tabela
 #: `tva_incasare_perioade`), jurnalizate ca text („de la 01.03.2026 până la 31.12.2026”), prin aceeași funcție
-CAMPURI_REGIM_TVA_JURNAL = CAMPURI_REGIM_TVA + ("tva_incasare_perioade",)
+CAMPURI_REGIM_TVA_JURNAL = CAMPURI_REGIM_TVA + ("tva_incasare_perioade", "tva_incasare_data_optiune")   # [lotul 13, 541] + data notificării
 
 
 def regim_tva_pentru_schimbare(cur):
@@ -131,12 +131,14 @@ def jurnalizeaza_campuri(cur, vechi, nou, user_id):
     return scrise
 
 
-def jurnal_firma(cur, limita=200):
+def jurnal_firma(cur, limita=200, camp=None):
     """[06.10.2026 §6.4] Jurnalul Date firmă, cel mai nou primul, cu cine a schimbat (vizibil cabinetului).
-    [lotul 07.10 pct.19] „cine” = numele persoanei (prenume nume), ca în Activitate cabinet; emailul numai dacă numele lipsește."""
+    [lotul 07.10 pct.19] „cine” = numele persoanei (prenume nume), ca în Activitate cabinet; emailul numai dacă numele lipsește.
+    [lotul 13, 541] `camp`: numai rândurile unui câmp (ex. perioadele sistemului TVA la încasare, `regim_tva_incasare.istoric_perioade`)."""
     cur.execute("SELECT j.camp, j.valoare_veche, j.valoare_noua, "
                 "COALESCE(NULLIF(TRIM(CONCAT_WS(' ', u.prenume, u.nume)), ''), u.email), j.la FROM firma_profil_jurnal j "
-                "LEFT JOIN public.users u ON u.id = j.user_id ORDER BY j.la DESC, j.id DESC LIMIT %s", (limita,))
+                "LEFT JOIN public.users u ON u.id = j.user_id WHERE (%s::text IS NULL OR j.camp = %s) "
+                "ORDER BY j.la DESC, j.id DESC LIMIT %s", (camp, camp, limita))
     return [{"camp": r[0], "vechi": r[1], "nou": r[2], "cine": r[3], "la": r[4].isoformat() if r[4] else None}
             for r in cur.fetchall()]
 

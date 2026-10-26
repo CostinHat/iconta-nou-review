@@ -91,12 +91,21 @@ TIPURI = {
                  "rand": "Când o notă sau o declarație pregătită de tine a fost validată.", "cine": "pregatire"},
     "respinsa": {"eticheta": "un element pregătit de tine a fost respins", "deschide": "notificari", "grup": "Validări",
                  "rand": "Când o notă sau o declarație pregătită de tine a fost respinsă, cu motivul.", "cine": "pregatire"},
+    # [lotul 13, deficiența 566: „«O solicitare nouă de la un client» e debifată implicit la administrator; mesajele clienților pot trece
+    # neobservate.”] bifat din oficiu (`implicit`), ca refuzul facturii recurente: mesajul clientului cere un răspuns al cabinetului.
+    # Datele existente (bifa salvată „nu” cât timp implicitul era greșit): `core/migrare_notificari_solicitare_client.py`
     "solicitare_client": {"eticheta": "o solicitare nouă de la un client", "deschide": "notificari", "grup": "Clienți",
-                          "rand": "Când un client îți scrie din portal.", "cine": "cabinet"},
+                          "rand": "Când un client îți scrie din portal.", "cine": "cabinet", "implicit": True},
     "pachet_lunar": {"eticheta": "raportul lunar al firmei e gata", "deschide": "notificari", "grup": "Clienți",
                      "rand": "Când contabilul aprobă raportul lunar al firmei (Povestea lunii).", "cine": "client"},
     "mesaj_cabinet": {"eticheta": "un mesaj nou de la cabinet", "deschide": "notificari", "grup": "Clienți",
                       "rand": "Când cabinetul îți scrie în Solicitări — de exemplu, îți cere documente.", "cine": "client"},
+    # [lotul 13, deficiența 565: „Sinteza pe email nu apare în Setări cont → Notificări”] emailul de seară al administratorului
+    # (`core/sinteza_zilnica.py`, cron 19:00, luni–vineri). NU e o notificare de clopoțel: pleacă numai pe email (`doar_email`), oricare ar
+    # fi canalul ales; bifa de aici o oprește sau o pornește. Bifat din oficiu: funcția e promisă pe site („Sinteza zilnică pe email”).
+    "sinteza_zilnica": {"eticheta": "sinteza zilei din cabinet", "deschide": "notificari", "grup": "Cont și echipă",
+                        "rand": "Seara, la 19:00, în zilele lucrătoare: ce s-a pregătit, validat, respins și depus azi și ce așteaptă "
+                                "validarea. Vine numai pe email.", "cine": "admin", "implicit": True, "doar_email": True},
     "asistent_activat": {"eticheta": "un coleg și-a activat contul", "deschide": "notificari", "grup": "Cont și echipă",
                          "rand": "Când un coleg invitat în Asistenți își activează contul.", "cine": "admin"},
     "sesizare": {"eticheta": "o sesizare nouă în Suport", "deschide": "raportari", "grup": "Platformă",
@@ -161,13 +170,44 @@ def pe_whatsapp(d):
     return bool(d and d["canal"] == "whatsapp" and d["telefon"] and d["confirmat"] and d["acord"])
 
 
-def html_email(tip):
+def _propozitie(t):
+    """„un element pregătit de tine a fost respins” -> „Un element pregătit de tine a fost respins.”"""
+    t = (t or "").strip()
+    return (t[:1].upper() + t[1:] + ("" if t.endswith((".", "!", "?")) else ".")) if t else ""
+
+
+def rezumat(text):
+    """PURĂ. [lotul 13, 567] Ce element și la ce firmă, din textul notificării din clopoțel — FĂRĂ conținutul fiscal (motivul respingerii,
+    avertismentul, sumele), care rămâne în aplicație (regula emailului de notificare: „eticheta, nu conținutul fiscal”, gărzile C109 /
+    C197). Textele clopoțelului au forma „<Firma>: <elementul> <ce s-a întâmplat>. Motiv: …” (`uc_comun._cu_firma`): se ia PRIMA
+    propoziție, fără ce urmează după „Motiv: ” / „Motivul: ” / „avertisment: ” (textul avertismentului, C197)."""
+    import re
+    t = " ".join(str(text or "").split())
+    if not t:
+        return ""
+    prop = re.split(r"(?<=[.!?])\s", t, maxsplit=1)[0]
+    m = re.search(r"\b(Motivul|Motiv|avertismente|avertisment): ", prop)
+    if m:   # „Motiv: …” pleacă cu tot cu cuvânt; „cu 1 avertisment: …” rămâne „cu 1 avertisment”
+        prop = prop[:m.start() if m.group(1).startswith("Motiv") else m.end() - 2]
+    prop = prop.rstrip(" ,;:.")
+    return prop if prop.endswith((".", "!", "?")) else prop + "."
+
+
+def html_email(tip, text=None):
+    """[lotul 13, deficiența 567: „Text stricat («Ai un element pregătit de tine a fost respins»); emailul nu spune ce element și la ce
+    firmă.”] Eticheta tipului e o PROPOZIȚIE de sine stătătoare (nu se mai lipește după „Ai …”, care strica jumătate din tipuri: „Ai un
+    coleg și-a activat contul”, „Ai raportul lunar al firmei e gata”), urmată de `rezumat(text)`: firma și elementul, din textul
+    notificării din clopoțel, fără conținutul fiscal (motivul, cifrele rămân în aplicație). Pe WhatsApp pleacă în continuare numai
+    eticheta (șablonul Meta)."""
+    rez = rezumat(text)
+    detaliu = ("<p style='background:#f3f6fa;border-left:3px solid #3d8fd6;padding:8px 12px'>%s</p>"
+               "<p style='color:#374151'>Detaliile sunt în aplicație.</p>" % _esc(rez)) if rez else ""
     return ("<div style='font-family:Arial,sans-serif;max-width:520px'>"
-            "<p>Ai %s în iConta.eu.</p>"
+            "<p><b>%s</b></p>%s"
             "<p><a href='%s' style='background:#3d8fd6;color:#fff;padding:9px 18px;border-radius:6px;text-decoration:none'>"
             "Deschide iConta.eu</a></p>"
             "<p style='color:#6b7280;font-size:12px'>Notificările tale vin pe email. Le poți primi pe WhatsApp din Setări cont → "
-            "Notificări.</p></div>") % (_esc(TIPURI[tip]["eticheta"]), _esc(link(tip)))
+            "Notificări.</p></div>") % (_esc(_propozitie(TIPURI[tip]["eticheta"])), detaliu, _esc(link(tip)))
 
 
 def subiect_email(tip):
@@ -183,7 +223,7 @@ def _jurnal(nid, user_id, tip, canal, stare, mesaj_id=None, rezerva=False, detal
 
 
 def _pe_email(nid, d, tip, rezerva=False, detaliu=None):
-    ok = _obs.trimite_email_html_sau_semnaleaza("notificare %s" % tip, d["email"], subiect_email(tip), html_email(tip))
+    ok = _obs.trimite_email_html_sau_semnaleaza("notificare %s" % tip, d["email"], subiect_email(tip), html_email(tip, d.get("text")))
     _jurnal(nid, d["uid"], tip, "email", "trimis" if ok else "netrimis", rezerva=rezerva, detaliu=detaliu)
     return "email" if ok else "netrimis"
 
@@ -213,7 +253,7 @@ def _revendica(limita):
                 return []
         conn.commit()
     return [(r[0], r[1], {"uid": r[2], "email": r[3], "canal": r[4], "telefon": r[5], "confirmat": r[6], "acord": r[7], "activ": r[8],
-                          "preferinte": r[9]})
+                          "preferinte": r[9], "text": r[10]})
             for r in randuri]
 
 
@@ -265,7 +305,7 @@ def stare_livrare(mesaj_id, stare, detaliu=None):
             if r and stare == "esuat" and not r[3] and r[2] in TIPURI:
                 _repo.marcheaza_rezerva(cur, mesaj_id)
                 e = _ru.emailul_contului(cur, r[1])
-                rezerva = (r[0], {"uid": r[1], "email": e[0]}, r[2]) if e else None
+                rezerva = (r[0], {"uid": r[1], "email": e[0], "text": _repo.textul(cur, r[0])}, r[2]) if e else None   # [567]
         conn.commit()
     if rezerva:
         _pe_email(rezerva[0], rezerva[1], rezerva[2], rezerva=True, detaliu="WhatsApp nu a livrat: %s" % (detaliu or "fără motiv"))

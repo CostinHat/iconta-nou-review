@@ -105,3 +105,10 @@ def preferintele(cur, uid):
 def scrie_preferintele(cur, uid, tipuri_json):
     """[320] Bifele din Notificări și momentul salvării (prima intrare le cere)."""
     cur.execute("UPDATE public.users SET notificari_tipuri = %s::jsonb, notificari_salvate_la = now() WHERE id = %s", (tipuri_json, uid))
+
+
+def emailul(cur, uid):
+    """[565] Adresa de email a contului (sinteza zilnică se trimite la ea; registrul dezabonărilor se întreabă pe ea)."""
+    cur.execute("SELECT email FROM public.users WHERE id = %s", (uid,))
+    r = cur.fetchone()
+    return r[0] if r else None

@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/pdf_util.py",
+  "ancora": "    return \"lei\" if not m or str(m).strip().upper() == \"RON\" else str(m).strip().upper()\n",
+  "inlocuire": "    return str(m or \"RON\").strip().upper()\n",
+  "test": "frontend_test/e2e/e2e_lot13_portal.py::test_def_c158_amintirea_scadentei_scrie_suma_in_lei_ca_scadentarul"
+ }
+]

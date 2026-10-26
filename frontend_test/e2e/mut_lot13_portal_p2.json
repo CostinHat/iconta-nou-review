@@ -1,0 +1,50 @@
+[
+ {
+  "fisier": "static/js/ecrane/setari.js",
+  "ancora": "if (msg && msg.dataset.cheieId === String(b.dataset.id)) {",
+  "inlocuire": "if (false) {",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p2.py::test_def_564_cheia_api_se_copiaza_spune_folosirea_si_dispare_la_revocare"
+ },
+ {
+  "fisier": "static/js/ecrane/setari.js",
+  "ancora": "\"folosită ultima dată \" + dataRo(c.ultima_folosire, \"cu_ora\")",
+  "inlocuire": "\"folosită: \" + c.ultima_folosire.slice(0, 16)",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p2.py::test_def_564_cheia_api_se_copiaza_spune_folosirea_si_dispare_la_revocare"
+ },
+ {
+  "fisier": "core/notificari.py",
+  "ancora": "    \"sinteza_zilnica\": {\"eticheta\": \"sinteza zilei din cabinet\"",
+  "inlocuire": "    \"sinteza_zilnica_oprita\": {\"eticheta\": \"sinteza zilei din cabinet\"",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p2.py::test_def_565_sinteza_zilnica_apare_in_notificari_si_se_poate_opri"
+ },
+ {
+  "fisier": "core/migrare_notificari_solicitare_client.py",
+  "ancora": "   AND notificari_tipuri->>'solicitare_client' = 'false'\n   AND (",
+  "inlocuire": "   AND false\n   AND (",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p2.py::test_def_566_solicitarea_clientului_bifata_si_la_bifele_salvate_inainte"
+ },
+ {
+  "fisier": "core/notificari.py",
+  "ancora": "            \"<p><b>%s</b></p>%s\"",
+  "inlocuire": "            \"<p>Ai %s în iConta.eu.</p>%s\"",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p2.py::test_def_567_emailul_notificarii_spune_elementul_si_firma"
+ },
+ {
+  "fisier": "static/js/ecrane/cabinet.js",
+  "ancora": "cifra(deValidat || 0, \"de validat\"",
+  "inlocuire": "cifra(t.in_asteptare || 0, \"de validat\"",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p2.py::test_def_568_sinteza_zilei_numara_toata_coada"
+ },
+ {
+  "fisier": "static/js/ecrane/cabinet.js",
+  "ancora": "${esc(e.eticheta || \"\")} ${e.firma",
+  "inlocuire": "${(e.tip||\"\").toUpperCase()} ${e.firma",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p2.py::test_def_569_evenimentele_sintezei_numesc_elementul"
+ },
+ {
+  "fisier": "static/js/ecrane/setari.js",
+  "ancora": "\"WhatsApp nu e disponibil acum; notificările vin pe email.\", \"avert\");",
+  "inlocuire": "\"WhatsApp nu e disponibil acum; notificările vin pe email.\", \"eroare\");",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p2.py::test_def_647_whatsapp_neinregistrat_avertisment_fara_nu_s_a_salvat"
+ }
+]

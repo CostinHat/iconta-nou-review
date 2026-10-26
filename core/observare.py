@@ -96,8 +96,10 @@ def _trimite_brevo(subiect, mesaj):
     if pm:
         import html as _h
         catre = cfg("ICONTA_ALERTA_EMAIL", _EMAIL_IMPLICIT)
-        return _trimite_postmark(pm, catre, "[iConta.eu] " + subiect,
-                                 "<pre style='font-family:sans-serif;white-space:pre-wrap'>%s</pre>" % _h.escape(mesaj), "iConta.eu Alerte")
+        if _trimite_postmark(pm, catre, "[iConta.eu] " + subiect,
+                             "<pre style='font-family:sans-serif;white-space:pre-wrap'>%s</pre>" % _h.escape(mesaj), "iConta.eu Alerte"):
+            return True
+        # [lotul 13, comanda 13.1 pct.1] Postmark a refuzat sau n-a răspuns (motivul e deja în jurnal): alerta pleacă pe Brevo, rezerva
     brevo_key = cfg("BREVO_API_KEY")
     if not brevo_key:
         # fără cheie (ex. local): doar log, nu crăpa aplicația
@@ -168,8 +170,14 @@ def _trimite_postmark(token, catre, subiect, html, expeditor_nume, reply_to=None
     logare) trec pe Postmark (DA, rezolvă 268).” Postmark (documentația „Email API”): `POST https://api.postmarkapp.com/email`, antetul
     `X-Postmark-Server-Token`, corpul `From` / `To` / `Subject` / `HtmlBody` / `MessageStream` („outbound” = fluxul tranzacțional);
     reușita = `ErrorCode` 0. Pe fluxul tranzacțional Postmark NU adaugă antetele List-Unsubscribe (le adaugă numai pe fluxurile
-    Broadcast) — exact ce cerea 268, pe care Brevo nu-l permite (îl pune singur). Întoarce True/False."""
+    Broadcast) — exact ce cerea 268, pe care Brevo nu-l permite (îl pune singur). Întoarce True/False.
+
+    [lotul 13, comanda 13.1 pct.1] Un refuz NU se pierde: Postmark răspunde la refuz cu HTTP 4xx și corpul `{"ErrorCode": N, "Message":
+    "..."}` (ex. contul în mod de test, „pending approval”, refuză destinatarii din afara domeniului expeditorului); codul și mesajul
+    Postmark se scriu în jurnal (`_jurnal_esec_postmark`), fără token — tokenul stă numai în antetul cererii, care nu se scrie nicăieri.
+    Apelantul trece atunci emailul pe Brevo (rezerva, decizia 12.2 pct.11: „Brevo rămâne rezervă și nu se scoate”)."""
     import json
+    import urllib.error
     import urllib.request
     corp = {"From": "%s <%s>" % (expeditor_nume, cfg("ICONTA_SENDER_EMAIL", _EMAIL_IMPLICIT)), "To": catre, "Subject": subiect,
             "HtmlBody": html, "MessageStream": cfg("POSTMARK_STREAM", "outbound")}
@@ -179,10 +187,36 @@ def _trimite_postmark(token, catre, subiect, html, expeditor_nume, reply_to=None
         "X-Postmark-Server-Token": token, "Accept": "application/json", "Content-Type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=15) as r:
-            return json.load(r).get("ErrorCode") == 0
-    except Exception as e:
-        print("[email esuat Postmark] %s -> %s: %s" % (subiect, catre, e))
+            raspuns = json.load(r)
+    except urllib.error.HTTPError as e:
+        _jurnal_esec_postmark(subiect, catre, "HTTP %s" % e.code, _corp_refuz_postmark(e))
         return False
+    except Exception as e:  # noqa: BLE001 — rețeaua / timpul de așteptare: motivul intră în jurnal, emailul trece pe Brevo
+        _jurnal_esec_postmark(subiect, catre, type(e).__name__, str(e))
+        return False
+    if raspuns.get("ErrorCode") == 0:
+        return True
+    _jurnal_esec_postmark(subiect, catre, "ErrorCode %s" % raspuns.get("ErrorCode"), raspuns.get("Message", ""))
+    return False
+
+
+def _corp_refuz_postmark(eroare_http):
+    """Codul și mesajul Postmark din corpul unui răspuns HTTP de refuz („ErrorCode 412: …”), sau textul brut scurtat."""
+    import json
+    try:
+        brut = eroare_http.read().decode("utf-8", "replace")
+    except Exception as e:  # noqa: BLE001 — corpul necitibil nu ascunde refuzul: se spune că lipsește
+        return "corpul răspunsului nu s-a putut citi (%s)" % type(e).__name__
+    try:
+        d = json.loads(brut)
+        return "ErrorCode %s: %s" % (d.get("ErrorCode"), d.get("Message", ""))
+    except ValueError:
+        return brut[:300]
+
+
+def _jurnal_esec_postmark(subiect, catre, cauza, detaliu):
+    """Rândul de jurnal al unui email pe care Postmark nu l-a primit. Fără token (nu e în argumente). Destinatarul apare, ca la Brevo."""
+    print("[email esuat Postmark, trece pe Brevo] %s -> %s: %s — %s" % (subiect, catre, cauza, detaliu), flush=True)
 
 
 def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
@@ -215,8 +249,11 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
         return _in_cutia_de_test(cutie, catre, subiect, html, antete)
     # [17.10.2026, lotul 7 pct.2.5] confirmarea contului, resetarea parolei, linkul de logare: pe Postmark când există tokenul serverului
     # Postmark; până atunci (contul îl face Costin) pleacă pe Brevo, ca înainte — nimic nu se pierde la trecere
+    # [lotul 13, comanda 13.1 pct.1] Postmark care refuză (cont în mod de test: destinatar din afara iconta.eu) sau nu răspunde = emailul
+    # pleacă pe Brevo, rezerva; refuzul Postmark e în jurnal (`_trimite_postmark`). Fără rezervă, linkul de logare nu ar mai ajunge.
     if postmark and not informativ and cfg("POSTMARK_SERVER_TOKEN") and not attachments:
-        return _trimite_postmark(cfg("POSTMARK_SERVER_TOKEN"), catre, subiect, html, expeditor_nume, reply_to)
+        if _trimite_postmark(cfg("POSTMARK_SERVER_TOKEN"), catre, subiect, html, expeditor_nume, reply_to):
+            return True
     brevo_key = cfg("BREVO_API_KEY")
     if not brevo_key:
         print("[email netrimis, fara BREVO_API_KEY] %s -> %s" % (subiect, catre))

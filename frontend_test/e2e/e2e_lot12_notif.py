@@ -80,7 +80,9 @@ def test_def_598_whatsapp_cazut_spune_ca_notificarile_vin_pe_email(patron, meta_
     m = pg.inner_text("#not-msg").strip()
     assert m == MESAJ_WA_ESUAT, m
     assert "pe email" in m and "număr" not in m.lower() and not TEHNIC.search(m), m
-    assert "msg-eroare" in (pg.get_attribute("#not-msg", "class") or "")
+    # [lotul 13, 647: „Afișare: «NU s-a salvat» deși numărul e salvat”] WhatsApp indisponibil e un avertisment, nu un refuz de salvare
+    assert "msg-avert" in (pg.get_attribute("#not-msg", "class") or "")
+    assert pg.locator(".fereastra:last-of-type .refuz-salvare").count() == 0
     assert sql("SELECT canal_notificari FROM public.users WHERE id = %s", (meta_refuza,))[0][0] == "email"
 
 

@@ -51,3 +51,21 @@ def adauga_solicitare_2(cur, tenant_id, mesaj, autor_rol):
     cur.execute("INSERT INTO public.solicitari_client (tenant_id, mesaj, autor_rol, autor_id) "
                 "VALUES (%s,%s,'cabinet',%s)",
                 (tenant_id, mesaj, autor_rol))
+
+
+# ── [lotul 13, comanda Costin 13.1] cifrele portalului pe aceeași bază ─────────────────────────────────────────────────────────────
+
+#: [559] „Portalul folosește aceeași bază peste tot.” Fragmentul SQL (pe `f`, tabela `facturi` a firmei) al facturilor care intră în cifrele
+#: clientului: cele cu nota contabilă VALIDATĂ de contabil (aceeași bază ca balanța — „evidența = ce a validat un om”, decizia Costin
+#: 08.10.2026 §6 pct.7) și facturile deschise preluate (soldul lor stă în balanța de deschidere). O factură cu nota încă ciornă nu intră nici
+#: în „De încasat”, nici în Scadențar, nici în previziune.
+CONDITIE_NOTA_VALIDATA = (" AND (f.tip = 'preluata' OR EXISTS (SELECT 1 FROM inregistrari i WHERE i.factura_id = f.id AND i.sursa = 'facturi'"
+                          " AND i.status = 'validata'))")   # 'preluata' = `nomenclator_status_factura.TIP_SOLD_PRELUAT` (gard în test_lot13)
+
+
+def facturi_deschise_validate(cur, directie):
+    """Facturile `directie` (emisa / primita) care mai au ceva de încasat / de plătit (`repo_facturi.de_incasat`, starea de încasare
+    unică), numai cele din `CONDITIE_NOTA_VALIDATA`. Cursorul e pe schema firmei."""
+    from core import repo_facturi as _rf
+    return _rf.de_incasat(cur, directie, CONDITIE_NOTA_VALIDATA)
+
