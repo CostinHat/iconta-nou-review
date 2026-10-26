@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie } from "../api.js?v=e38843b1ec";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=e38843b1ec";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -80,7 +80,7 @@ function _blocAmef(d) {
       <label class="camp">
         <span class="camp-eticheta">Activitate exceptată de la casa de marcat</span>
         <!-- [lotul 07.10 B, comanda Costin A.3] neales (NULL) = „— alege —”; se cere o dată, la prima chitanță fără factură / D394 -->
-        <select class="camp-input" id="df-activitate_exceptata_amef">${alegeDacaLipseste(p.activitate_exceptata_amef)}
+        <select class="camp-input" id="df-activitate_exceptata_amef" data-butoane="">${alegeDacaLipseste(p.activitate_exceptata_amef)}
           <option value="0"${p.activitate_exceptata_amef === false ? " selected" : ""}>Nu</option>
           <option value="1"${p.activitate_exceptata_amef === true ? " selected" : ""}>Da</option>
         </select>
@@ -241,7 +241,7 @@ function _blocTvaIncasare(v) {
     <div class="camp" id="vf-camp-tva_incasare">
       <label class="camp-eticheta" for="vf-tva_incasare">Aplică sistemul TVA la încasare (Cod fiscal art. 282)</label>
       <span class="camp-ajutor">TVA-ul facturilor emise devine exigibil la încasare, nu la facturare (art. 282 alin. (3)). Numai la firmele înregistrate în scopuri de TVA.</span>
-      <select class="camp-input" id="vf-tva_incasare"><option value="nu"${da ? "" : " selected"}>Nu</option><option value="da"${da ? " selected" : ""}>Da</option></select>
+      <select class="camp-input" id="vf-tva_incasare" data-butoane=""><option value="nu"${da ? "" : " selected"}>Nu</option><option value="da"${da ? " selected" : ""}>Da</option></select>
       ${azi || faraData ? `<span class="camp-ajutor" id="vf-tva_incasare-azi">${esc(azi + faraData)}</span>` : ""}
       <button type="button" class="buton-secundar" id="vf-tva-incasare-anaf" data-actiune="GET /tenants/{tenant_id}/tva-incasare/verifica-anaf">Verifică în registrul ANAF</button>
       <div id="vf-tva-incasare-anaf-rez"></div>
@@ -250,7 +250,7 @@ function _blocTvaIncasare(v) {
         <tbody>${per.map((p) => `<tr data-perioada-rand="${esc(p.id)}"><td>${dataRo(p.de_la)}</td><td>${p.pana_la ? dataRo(p.pana_la) : "în continuare"}</td><td>${sursa(p)}</td>
           <td>${p.data_optiune ? dataRo(p.data_optiune) : "\u2014"}</td>
           <td>${p.verificat_anaf_la ? dataRo(p.verificat_anaf_la) : "\u2014"}</td><td>${p.scrisa ? cineCand(p.scrisa) : (p.sursa === "anaf" ? "din ANAF, la adăugarea firmei" : "\u2014")}</td>
-          <td>${p.pana_la ? `<button type="button" class="buton-secundar" data-iesire="${esc(p.pana_la)}" data-actiune="GET /tenants/{tenant_id}/tva-incasare/neexigibile">Facturile rămase în sistem</button> ` : ""}<button type="button" class="buton-sters" data-perioada="${esc(p.id)}" data-actiune="DELETE /tenants/{tenant_id}/tva-incasare/{perioada_id}" aria-label="Șterge perioada de la ${esc(dataRo(p.de_la))}">Șterge</button></td></tr>`).join("")}${scoase.map((x) => `<tr class="df-perioada-scoasa" data-perioada-scoasa>
+          <td><button type="button" class="buton-secundar" data-iesire="${esc(p.pana_la || "")}" data-actiune="GET /tenants/{tenant_id}/tva-incasare/neexigibile"${p.pana_la ? "" : atributeInactiv("Perioada e încă în curs: facturile rămase cu TVA neexigibil se văd după ce perioada are data „până la”.")}>Facturile rămase în sistem</button> <button type="button" class="buton-sters" data-perioada="${esc(p.id)}" data-actiune="DELETE /tenants/{tenant_id}/tva-incasare/{perioada_id}" aria-label="Șterge perioada de la ${esc(dataRo(p.de_la))}">Șterge</button></td></tr>`).join("")}${scoase.map((x) => `<tr class="df-perioada-scoasa" data-perioada-scoasa>
           <td colspan="5"><s>${esc(x.text)}</s></td><td>${cineCand(x)}</td><td>${x.inlocuita_cu ? `înlocuită cu „${esc(x.inlocuita_cu)}”` : "ștearsă"}</td></tr>`).join("")}</tbody></table>` : ""}
       ${(t.avertismente || []).map((a) => `<span class="camp-ajutor">${esc(a)}</span>`).join("")}
       <div id="vf-tva-incasare-iesire"></div>
@@ -332,7 +332,7 @@ function camp(c, val, d) {
     <label class="camp">
       <span class="camp-eticheta">${esc(c.e)}${ob}</span>
       ${aj}
-      <select class="camp-input" id="df-${c.k}">${alegeDacaLipseste(val)}
+      <select class="camp-input" id="df-${c.k}" data-butoane="">${alegeDacaLipseste(val)}
         <option value="0"${val === false ? " selected" : ""}>Nu</option>
         <option value="1"${val === true ? " selected" : ""}>Da</option>
       </select>
@@ -861,7 +861,7 @@ function _legaAsociati(corp, a) {
     r.cota = (corp.querySelector(`#as-${i + 1}-cota`).value || "").trim();
   });
   const total = () => {
-    const s = model.reduce((x, r) => x + (parseFloat(String(r.cota).replace(",", ".")) || 0), 0);
+    const s = model.reduce((x, r) => x + (numarRo(r.cota).valoare || 0), 0);   // [655] cota scrisă de om, citită românește (DS cap.6)
     const el = corp.querySelector("#as-total");
     const txt = (Math.round(s * 100) / 100).toString().replace(".", ",");
     el.textContent = `Total cote: ${txt}%` + (Math.abs(s - 100) < 0.005 ? "" : " — cotele trebuie să însumeze 100% (tot capitalul social).");

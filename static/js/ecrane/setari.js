@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere } from "../api.js?v=e38843b1ec";
+import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=e38843b1ec";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";   // [lotul 11, decizia 10.3] întocmitorul bilanțului, sub Date cabinet
 
@@ -305,7 +305,7 @@ async function _incarcaChei(corp) {
         <div class="pf-frand-nume">${esc(c.nume) || "—"} · <code>${esc(c.prefix)}…</code></div>
         <div class="pf-frand-sub">${c.activ ? "activă" : "revocată"}${c.creat_la ? " · creată " + dataRo(c.creat_la, "cu_ora") : ""} · ${c.ultima_folosire ? "folosită ultima dată " + dataRo(c.ultima_folosire, "cu_ora") : "nefolosită încă"}</div>
       </div>
-      ${c.activ ? `<button type="button" class="buton-sters buton-mic set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}">Revocă</button>` : ""}
+      <button type="button" class="buton-sters buton-mic set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}"${c.activ ? "" : atributeInactiv("Cheia e deja revocată.")}>Revocă</button>
     </div>`).join("");
   zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", () => {
     confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicațiile care o folosesc nu vor mai avea acces.", async () => {
@@ -404,7 +404,7 @@ export async function panouNotificari(zona, opt = {}) {
       </div>
       <label class="camp">
         <span class="camp-eticheta">Primește notificările pe</span>
-        <select id="not-canal" class="camp-input">
+        <select id="not-canal" class="camp-input" data-butoane="">
           <option value="email">Email</option>
           <option value="whatsapp">WhatsApp</option>
         </select>
