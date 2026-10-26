@@ -11,6 +11,8 @@ Declaratii). Pe date putine, mediile sunt orientative -> intoarcem si N (mostre)
 import datetime
 import psycopg2.extras as _E
 
+from core.tipare_api import eticheta_tip
+
 
 # stari "in lucru" (nedepuse, nerespinse)
 _STARI_ACTIVE = ("la_senior", "ciorna", "in_coada_token")
@@ -158,6 +160,7 @@ def capacitate(conn, cabinet_id):
             total_n += n
             timp.append({
                 "tip": t["tip"],
+                "eticheta": eticheta_tip(t["tip"]),   # [694] „nota” e „Note contabile”, nu „NOTA” (aceeași regulă ca Tipare)
                 "durata_medie": _fmt_durata(float(t["sec_mediu"]) if t["sec_mediu"] else None),
                 "n": n,
             })

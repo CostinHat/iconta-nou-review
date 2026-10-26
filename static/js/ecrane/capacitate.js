@@ -105,7 +105,7 @@ export async function randeazaCapacitate(corp, nav) {
     timp.pe_tip.forEach((t) => {
       randuriTimp += `
         <tr>
-          <td>${(t.tip || "").toUpperCase()}</td>
+          <td>${esc(t.eticheta)}</td>
           <td class="cap-num">${t.durata_medie || "—"}</td>
           <td class="cap-num">${t.n}</td>
         </tr>`;
