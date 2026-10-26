@@ -64,8 +64,9 @@ def tarif_orar(cur, schema, salariat_id, an, luna):
 
 def suma_ore_suplimentare(tarif, ore, spor_procent):
     """PURĂ. ore × tarif × (100% + spor), la ban, aritmetic (ROUND_HALF_UP, fără rotunjire intermediară a tarifului)."""
-    return (Decimal(str(tarif)) * Decimal(str(ore)) * (Decimal(100) + Decimal(str(spor_procent))) / Decimal(100)).quantize(
-        _BAN, rounding=ROUND_HALF_UP)
+    # sporul orelor suplimentare (Codul muncii art.123 alin.(2)), nu o cotă de TVA: înmulțirea cu (100 + spor) / 100
+    spor = Decimal(str(spor_procent))
+    return (Decimal(str(tarif)) * Decimal(str(ore)) * (Decimal(100) + spor) / Decimal(100)).quantize(_BAN, rounding=ROUND_HALF_UP)
 
 
 def spor_din_suma(tarif, ore, suma):

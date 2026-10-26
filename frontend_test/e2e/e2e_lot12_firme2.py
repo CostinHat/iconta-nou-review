@@ -267,18 +267,18 @@ def test_def_c133_salariatul_scutit_cere_motivul_scutirii(patron, firma_f2):
         pg.fill(sel, v)
     for sel, v in (("#sn-tip_norma", "intreaga"), ("#sn-declaratie_copii", "false"), ("#sn-functie_baza", "true"),
                    ("#sn-scutit_contrib_minim", "false")):
-        pg.click("%s-grup [data-v='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
-    assert pg.locator("#sn-motiv_exceptare-grup").is_visible() is False
-    pg.click("#sn-scutit_contrib_minim-grup [data-v='true']")
-    assert pg.locator("#sn-motiv_exceptare-grup").is_visible() and pg.eval_on_selector("#sn-motiv_exceptare", "s => s.value") == ""
+        pg.click(".alegere-butoane:has(+ %s) button[data-valoare='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
+    assert pg.locator(".alegere-butoane:has(+ #sn-motiv_exceptare)").is_visible() is False
+    pg.click(".alegere-butoane:has(+ #sn-scutit_contrib_minim) button[data-valoare='true']")
+    assert pg.locator(".alegere-butoane:has(+ #sn-motiv_exceptare)").is_visible() and pg.eval_on_selector("#sn-motiv_exceptare", "s => s.value") == ""
     pg.fill("#sn-cor-cauta", "241107")
     pg.wait_for_selector("#sn-cor-rez [data-cod='241107']", timeout=20000)
     pg.click("#sn-cor-rez [data-cod='241107']")
     pg.click("#sn-salveaza")
-    pg.wait_for_selector('.msg-eroare[data-camp="sn-motiv_exceptare-grup"]', timeout=20000)
+    pg.wait_for_selector('.msg-eroare[data-camp="sn-motiv_exceptare"]', timeout=20000)
     patron.captura("motiv_cerut")
     assert sql('SELECT count(*) FROM "%s".salariati WHERE cnp = %%s' % f["schema"], (CNP_C133,)) == [(0,)]
-    pg.click("#sn-motiv_exceptare-grup [data-v='4']")
+    pg.click(".alegere-butoane:has(+ #sn-motiv_exceptare) button[data-valoare='4']")
     pg.click("#sn-salveaza")
     pg.wait_for_function("() => !(document.querySelector('#sn-nume') || {}).value", timeout=30000)
     patron.captura("salvat")
@@ -314,9 +314,9 @@ def test_def_c133_vechi_salariatul_scutit_fara_motiv_se_completeaza_din_de_verif
     assert "motivul scutirii de contribuția minimă de ales (D112 îl declară)" in patron.fereastra()
     patron.captura("vechi_stat_avertisment")
     pg.click("[data-verif='%s']" % sid)
-    pg.wait_for_selector("#dv-motiv-grup", timeout=20000)
-    assert pg.locator("#dv-motiv-grup").is_visible() and pg.eval_on_selector("#dv-motiv", "s => s.value") == ""
-    pg.click("#dv-motiv-grup [data-v='1']")
+    pg.wait_for_selector(".alegere-butoane:has(+ #dv-motiv)", timeout=20000)
+    assert pg.locator(".alegere-butoane:has(+ #dv-motiv)").is_visible() and pg.eval_on_selector("#dv-motiv", "s => s.value") == ""
+    pg.click(".alegere-butoane:has(+ #dv-motiv) button[data-valoare='1']")
     pg.click("#dv-save")
     pg.wait_for_function("() => document.body.innerText.includes('datele de verificat sunt confirmate')", timeout=20000)
     patron.captura("vechi_confirmat")

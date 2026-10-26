@@ -1146,7 +1146,7 @@ def test_pilot_19_salariatii(patron, firma_pilot):
             pg.fill(sel, v)
         for sel, v in (("#sn-tip_norma", "intreaga"), ("#sn-declaratie_copii", "false"), ("#sn-functie_baza", "true"),
                        ("#sn-scutit_contrib_minim", "false"), ("#sn-tip_contract", "nedeterminata")):
-            pg.click("%s-grup [data-v='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
+            pg.click(".alegere-butoane:has(+ %s) button[data-valoare='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
         pg.fill("#sn-cor-cauta", s["cor"])
         pg.wait_for_selector("#sn-cor-rez [data-cod='%s']" % s["cor"], timeout=20000)
         pg.click("#sn-cor-rez [data-cod='%s']" % s["cor"])
@@ -1181,7 +1181,7 @@ def test_pilot_20_statul_de_plata_cu_concediul_medical(patron, firma_pilot):
     pg.fill(_F + "#cm-sfarsit", zi(18).isoformat())
     _propunerea_zilelor(pg, ZILE_CM)                                    # 14–18.09.2026: luni–vineri, 5 zile lucrătoare
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
-        pg.click(_F + sel + "-grup [data-v='false']")                  # [lotul 13, 676] Da / Nu = butoane
+        pg.click(_F + ".alegere-butoane:has(+ " + sel + ") button[data-valoare='false']")                  # [lotul 13, 676] Da / Nu = butoane
     pg.fill(_F + "#cm-ven6", str(CM_VEN6))
     pg.fill(_F + "#cm-zile6", str(CM_ZILE6))
     pg.click(_F + "#cm-calc")
@@ -1691,7 +1691,7 @@ def test_pilot_37_concediul_cod_10_pe_luna_urmatoare(patron, firma_pilot):
     pg.fill(_F + "#cm-sfarsit", ds.isoformat())
     _propunerea_zilelor(pg, zile)
     for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
-        pg.click(_F + sel + "-grup [data-v='false']")                  # [lotul 13, 676] Da / Nu = butoane
+        pg.click(_F + ".alegere-butoane:has(+ " + sel + ") button[data-valoare='false']")                  # [lotul 13, 676] Da / Nu = butoane
     pg.fill(_F + "#cm-ven6", str(CM_VEN6))
     pg.fill(_F + "#cm-zile6", str(CM_ZILE6))
     pg.fill(_F + "#cm-urgenta", "4321")

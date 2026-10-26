@@ -252,7 +252,7 @@ def test_def_c67_salariat_nou_pastreaza_datele_deducerilor(patron, srl_nou):
         pg.fill(sel, v)
     for sel, v in (("#sn-tip_norma", "intreaga"), ("#sn-declaratie_copii", "true"), ("#sn-functie_baza", "true"),
                    ("#sn-scutit_contrib_minim", "false"), ("#sn-tip_contract", "nedeterminata")):
-        pg.click("%s-grup [data-v='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
+        pg.click(".alegere-butoane:has(+ %s) button[data-valoare='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
     pg.fill("#sn-cor-cauta", "241107")
     pg.wait_for_selector("#sn-cor-rez [data-cod='241107']", timeout=20000)
     pg.click("#sn-cor-rez [data-cod='241107']")

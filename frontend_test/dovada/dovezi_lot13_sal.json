@@ -86,7 +86,7 @@
     "zona": ".fereastra:last-of-type #pj-calendar thead"
    },
    {
-    "exista": ".fereastra:last-of-type #pj-marcaj-grup"
+    "exista": ".fereastra:last-of-type .alegere-butoane:has(+ #pj-marcaj)"
    },
    {
     "contine": "prezent",
@@ -176,10 +176,10 @@
     "click": ".fereastra:last-of-type #ss-butoane [data-elem]"
    },
    {
-    "asteapta": ".fereastra:last-of-type #el-tip-grup"
+    "asteapta": ".fereastra:last-of-type .alegere-butoane:has(+ #el-tip)"
    },
    {
-    "click": ".fereastra:last-of-type #el-tip-grup [data-v='ore_suplimentare']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #el-tip) button[data-valoare='ore_suplimentare']"
    },
    {
     "pauza": 300
@@ -266,7 +266,7 @@
     "click": ".fereastra:last-of-type #ss-butoane [data-calcul]"
    },
    {
-    "asteapta": ".fereastra:last-of-type #ed-fbaza-grup"
+    "asteapta": ".fereastra:last-of-type .alegere-butoane:has(+ #ed-fbaza)"
    },
    {
     "pauza": 1200
@@ -274,10 +274,10 @@
   ],
   "verifica": [
    {
-    "exista": ".fereastra:last-of-type #ed-norma-grup"
+    "exista": ".fereastra:last-of-type .alegere-butoane:has(+ #ed-norma)"
    },
    {
-    "exista": ".fereastra:last-of-type #ed-scutit-grup"
+    "exista": ".fereastra:last-of-type .alegere-butoane:has(+ #ed-scutit)"
    },
    {
     "valoare": ".fereastra:last-of-type #ed-fbaza",
@@ -526,7 +526,7 @@
     "click": ".fereastra:last-of-type #ss-butoane [data-calcul]"
    },
    {
-    "asteapta": ".fereastra:last-of-type #ed-fbaza-grup"
+    "asteapta": ".fereastra:last-of-type .alegere-butoane:has(+ #ed-fbaza)"
    },
    {
     "pauza": 1200
@@ -636,13 +636,13 @@
     "valoare": "8"
    },
    {
-    "click": ".fereastra:last-of-type #cm-continuare-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #cm-continuare) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #cm-spital-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #cm-spital) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #cm-program-national-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #cm-program-national) button[data-valoare='false']"
    },
    {
     "completeaza": ".fereastra:last-of-type #cm-ven6",
@@ -871,19 +871,19 @@
     "valoare": "B"
    },
    {
-    "click": ".fereastra:last-of-type #sn-tip_norma-grup [data-v='intreaga']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-tip_norma) button[data-valoare='intreaga']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-declaratie_copii-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-declaratie_copii) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-functie_baza-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-functie_baza) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-scutit_contrib_minim-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-scutit_contrib_minim) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-tip_contract-grup [data-v='nedeterminata']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-tip_contract) button[data-valoare='nedeterminata']"
    },
    {
     "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
@@ -942,19 +942,19 @@
     "valoare": "B"
    },
    {
-    "click": ".fereastra:last-of-type #sn-tip_norma-grup [data-v='intreaga']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-tip_norma) button[data-valoare='intreaga']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-declaratie_copii-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-declaratie_copii) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-functie_baza-grup [data-v='true']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-functie_baza) button[data-valoare='true']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-scutit_contrib_minim-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-scutit_contrib_minim) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-tip_contract-grup [data-v='nedeterminata']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-tip_contract) button[data-valoare='nedeterminata']"
    },
    {
     "completeaza": ".fereastra:last-of-type #sn-cor-cauta",
@@ -1017,19 +1017,19 @@
     "valoare": "4"
    },
    {
-    "click": ".fereastra:last-of-type #sn-tip_norma-grup [data-v='partiala']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-tip_norma) button[data-valoare='partiala']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-declaratie_copii-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-declaratie_copii) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-functie_baza-grup [data-v='true']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-functie_baza) button[data-valoare='true']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-scutit_contrib_minim-grup [data-v='false']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-scutit_contrib_minim) button[data-valoare='false']"
    },
    {
-    "click": ".fereastra:last-of-type #sn-tip_contract-grup [data-v='nedeterminata']"
+    "click": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-tip_contract) button[data-valoare='nedeterminata']"
    },
    {
     "completeaza": ".fereastra:last-of-type #sn-cor-cauta",

@@ -72,7 +72,7 @@ def test_def_c194_d112_din_coada_devine_depasita_dupa_corectarea_fisei_salariatu
         from e2e_lot13_sal_ajutor import alege, buton, deschide_salariat_id
         deschide_salariat_id(patron, sid)
         buton(patron, "calcul")
-        pg.wait_for_selector("#ed-scutit-grup", timeout=20000)
+        pg.wait_for_selector(".alegere-butoane:has(+ #ed-scutit)", timeout=20000)
         pg.wait_for_function("() => (document.querySelector('#ed-scutit') || {}).value !== ''", timeout=20000)
         alege(patron, "ed-scutit", "true")
         alege(patron, "ed-motiv", "5")

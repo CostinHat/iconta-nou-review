@@ -497,7 +497,7 @@ def test_pozitie_f078_salariatul_se_adauga_si_se_corecteaza_din_ecran(patron, fi
         pg.fill(sel, v)
     for sel, v in (("#sn-tip_norma", "intreaga"), ("#sn-declaratie_copii", "false"), ("#sn-functie_baza", "true"),
                    ("#sn-scutit_contrib_minim", "false"), ("#sn-tip_contract", "nedeterminata")):
-        pg.click("%s-grup [data-v='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
+        pg.click(".alegere-butoane:has(+ %s) button[data-valoare='%s']" % (sel, v))   # [lotul 13, 676] listele scurte = butoane alăturate
     pg.fill("#sn-cor-cauta", "241107")
     pg.wait_for_selector("#sn-cor-rez [data-cod='241107']", timeout=20000)
     pg.click("#sn-cor-rez [data-cod='241107']")
