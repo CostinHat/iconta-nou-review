@@ -1,9 +1,9 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, daNu, refuzPeRand, arataRefuzul, arataMesaj } from "../api.js?v=e38843b1ec";
+import { api, ultimaCerere, cate, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp, numarCuSerie, ALEGE, cereAlegerile, daNu, refuzPeRand, arataRefuzul, arataMesaj, selectDaNu, MESAJ_NUMAR_RO } from "../api.js?v=e38843b1ec";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267, clasa] ciorna formularelor lungi de creare
-import { alegereDaNu, legaAlegeri, cereButoane, sincronizeazaAlegeri, sumaRo, MESAJ_SUMA } from "./sal_alegeri.js?v=3c516dc10a";  // [lotul 13, 676 / 655]
+import { sumaRo } from "./sal_sume.js?v=lot13";  // [lotul 13, 655] suma scrisă de om, prin `numarRo`
 // [lotul 11, 440] numele câmpurilor din refuzul serverului (`salariati_api.salveaza_concediu`, corpul cererii) -> id-ul de pe ecran
 const CAMPURI_CONCEDIU = { serie: "cm-serie", numar: "cm-numar", cod: "cm-cod", cod_urgenta: "cm-urgenta", cnp_ingrijit: "cm-cnp-ingrijit",
   venit_realizat: "cm-venit", data_acordare: "cm-acord", data_inceput: "cm-inceput", data_sfarsit: "cm-sfarsit", diagnostic: "cm-diag",
@@ -106,7 +106,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare CM<span class="oblig">*</span></span><input type="number" id="cm-zile" class="camp-input" min="0" placeholder="ex. 8"><span id="cm-zile-avert" role="status"></span></label>
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Episod de boală</div>
-        <div class="camp" style="max-width:420px"><span class="camp-eticheta">Certificat de continuare (același episod de boală)<span class="oblig">*</span></span>${alegereDaNu("cm-continuare", null, "Certificat de continuare")}</div>
+        <div class="camp" style="max-width:420px"><span class="camp-eticheta">Certificat de continuare (același episod de boală)<span class="oblig">*</span></span>${selectDaNu('id="cm-continuare"', null, "Certificat de continuare")}</div>
         <div id="cm-episod-zona" style="display:none;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px">
           <label class="camp"><span class="camp-eticheta">Seria certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-serie-ini" class="camp-input" placeholder="ex. AB"><span class="camp-ajutor">Seria și numărul certificatului inițial al episodului (tipărite pe certificatul de continuare). Indemnizația se calculează pe durata întregului episod (OUG 158/2005 art.17(1)): adăugarea continuării poate ridica procentul certificatelor anterioare (procentul valabil se vede în dreptul codului).</span></label>
           <label class="camp"><span class="camp-eticheta">Numărul certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-numar-ini" class="camp-input" placeholder="ex. 1234567"></label>
@@ -117,8 +117,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare 6 luni<span class="oblig">*</span></span><input type="number" id="cm-zile6" class="camp-input" min="1" placeholder="ex. 126"><span class="camp-ajutor">Total zile lucr\u0103toare din acelea\u0219i 6 luni (ex. ~126 pentru 6 luni pline).</span></label>
           <label class="camp"><span class="camp-eticheta">Diagnostic (op\u021bional)</span><input type="text" id="cm-diag" class="camp-input"></label>
           <!-- [lotul 07.10 B, DS cap.17] DA/NU situaționale: alese de om, nu căsuțe nebifate („Nu” ales de ecran) -->
-          <div class="camp"><span class="camp-eticheta">Spitalizare (prima zi se plătește)<span class="oblig">*</span></span>${alegereDaNu("cm-spital", null, "Spitalizare")}</div>
-          <div class="camp"><span class="camp-eticheta">Pacient în program național de sănătate (D112 D_9a)<span class="oblig">*</span></span>${alegereDaNu("cm-program-national", null, "Pacient în program național de sănătate")}</div>
+          <div class="camp"><span class="camp-eticheta">Spitalizare (prima zi se plătește)<span class="oblig">*</span></span>${selectDaNu('id="cm-spital"', null, "Spitalizare")}</div>
+          <div class="camp"><span class="camp-eticheta">Pacient în program național de sănătate (D112 D_9a)<span class="oblig">*</span></span>${selectDaNu('id="cm-program-national"', null, "Pacient în program național de sănătate")}</div>
         </div>
         <div class="bara-fixa"><p style="margin-top:14px">
           <button class="buton-primar" id="cm-calc" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii">Calculeaz\u0103 \u0219i salveaz\u0103</button>
@@ -126,7 +126,6 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         </p>
         <div id="cm-rezultat"></div></div>
       </div>`;
-    legaAlegeri(zona);   // [lotul 13, 676]
     const selCod = zona.querySelector("#cm-cod");
     const venitZona = zona.querySelector("#cm-venit-zona");
     selCod.addEventListener("change", () => { venitZona.style.display = selCod.value === "10" ? "" : "none"; });  // [cod10] camp conditionat
@@ -165,7 +164,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       ["cm-serie", "cm-numar", "cm-cod", "cm-venit", "cm-urgenta", "cm-cnp-ingrijit", "cm-acord", "cm-inceput", "cm-sfarsit", "cm-zile",
        "cm-continuare", "cm-serie-ini", "cm-numar-ini", "cm-ven6", "cm-zile6", "cm-diag", "cm-spital", "cm-program-national"],
       { tenantId: t.id, formular: "concediu_medical:" + sal.id });
-    const refacute = () => { sincronizeazaAlegeri(zona); selCod.dispatchEvent(new Event("change")); chkCont.dispatchEvent(new Event("change")); };
+    const refacute = () => { selCod.dispatchEvent(new Event("change")); chkCont.dispatchEvent(new Event("change")); };
     if (ciorna.refacuta) refacute();
     ciorna.gata.then((deLaServer) => { if (deLaServer && zona.isConnected) refacute(); });
     zona.querySelector("#cm-renunta").addEventListener("click", () => { ciorna.sterge(); nav.inapoi(); });
@@ -217,11 +216,11 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       curataEroriCamp(zona);
       // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite; [lotul 11, 440] alegerile lipsă și câmpurile greșite se arată DEODATĂ (un singur `return`)
       let faraAlegere = false; if (cereAlegerile(zona, ["#cm-cod"])) faraAlegere = true;
-      if (cereButoane(zona, ["cm-continuare", "cm-spital", "cm-program-national"])) faraAlegere = true;   // [lotul 13, 676]
+      if (cereAlegerile(zona, ["#cm-continuare", "#cm-spital", "#cm-program-national"])) faraAlegere = true;   // [lotul 13, 676] Da / Nu = butoane alăturate (mecanismul comun)
       const inceput = zona.querySelector("#cm-inceput").value;
       const sfarsit = zona.querySelector("#cm-sfarsit").value;
       const zile = parseInt(zona.querySelector("#cm-zile").value, 10);
-      const ven6 = sumaRo(zona.querySelector("#cm-ven6").value);   // [lotul 13, 655] „30.000” = treizeci de mii
+      const ven6 = sumaRo(zona.querySelector("#cm-ven6"));   // [lotul 13, 655] „30.000” = treizeci de mii
       const zile6 = parseInt(zona.querySelector("#cm-zile6").value, 10);
       const codSel = zona.querySelector("#cm-cod").value;
       const urg = parseInt(zona.querySelector("#cm-urgenta").value, 10);
@@ -232,10 +231,10 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       if (!sfarsit) eC.push(["cm-sfarsit", "Completează data de sfârșit a concediului."]);
       else if (inceput && sfarsit < inceput) eC.push(["cm-sfarsit", "Data de sfârșit nu poate fi înaintea datei de început."]);
       if (!zile || zile < 1) eC.push(["cm-zile", "Zilele lucrătoare CM trebuie să fie cel puțin 1."]);
-      if (Number.isNaN(ven6)) eC.push(["cm-ven6", MESAJ_SUMA]);
+      if (Number.isNaN(ven6)) eC.push(["cm-ven6", MESAJ_NUMAR_RO]);
       else if (!ven6 || ven6 <= 0) eC.push(["cm-ven6", "Completează veniturile brute pe 6 luni (baza de calcul)."]);
-      const venitCod10 = sumaRo(zona.querySelector("#cm-venit").value);
-      if (codSel === "10" && Number.isNaN(venitCod10)) eC.push(["cm-venit", MESAJ_SUMA]);
+      const venitCod10 = sumaRo(zona.querySelector("#cm-venit"));
+      if (codSel === "10" && Number.isNaN(venitCod10)) eC.push(["cm-venit", MESAJ_NUMAR_RO]);
       if (!zile6 || zile6 < 1) eC.push(["cm-zile6", "Completează zilele lucrătoare din cele 6 luni."]);
       if (codSel === "06" && (!urg || urg < 1 || urg > 177)) eC.push(["cm-urgenta", "La codul 06 completează codul de urgență (1–177, HG 423/2020)."]);
       if (["05", "51"].includes(codSel) && !(urg >= 1 && urg <= 36)) eC.push(["cm-urgenta", "La codurile 05 și 51 completează codul bolii infecto-contagioase (1–36) — D112 îl cere (D_12)."]);  // [lotul 11, C92]

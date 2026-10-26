@@ -160,7 +160,7 @@ def test_salariat_edit_corecteaza_datele_trimite_campurile_deducerilor():
     i = FIR.index("function ecranDateCalcul(")
     bloc = FIR[i:FIR.index("\nfunction ", i + 1)]
     for camp in ('functie_baza: daNu(corp.querySelector("#ed-fbaza"))', 'declaratie_copii: daNu(corp.querySelector("#ed-declcopii"))',
-                 "deduceri.data_nastere", "deduceri.copii_scolarizati", '"ed-fbaza", "ed-declcopii"'):
+                 "deduceri.data_nastere", "deduceri.copii_scolarizati", '"#ed-fbaza", "#ed-declcopii"'):
         assert camp in bloc, camp
     # clasa 410: confirmarea după salvare numește salariatul și consecința, urmată de efectul corecturii scutirii în D112, condiționat
     # de răspunsul serverului (`rez && rez.scutire_corectata && rez.efect_d112`)

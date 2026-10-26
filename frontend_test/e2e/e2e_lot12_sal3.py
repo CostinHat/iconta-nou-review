@@ -47,7 +47,7 @@ def _deschide_corectarea(pg, sid):
         pg.click(".fereastra:last-of-type #sp-tabel tbody tr.sp-rand[data-sid='%s'] .sp-deschide" % sid)
         pg.wait_for_selector(".fereastra:last-of-type #ss-butoane", timeout=30000)
     pg.click(".fereastra:last-of-type #ss-butoane [data-calcul='%s']" % sid)
-    pg.wait_for_selector("#ed-scutit-grup", timeout=20000)
+    pg.wait_for_selector(".alegere-butoane:has(+ #ed-scutit)", timeout=20000)
     # fișa citită: scutirea salvată e pe câmp (datele deducerilor vin din aceeași cerere)
     pg.wait_for_function("() => (document.querySelector('#ed-scutit') || {}).value !== ''", timeout=20000)
 
@@ -74,13 +74,13 @@ def test_def_c133_scutirea_se_corecteaza_din_corecteaza_datele_cu_jurnal(patron,
     assert pg.eval_on_selector("#ed-scutit", "s => s.value") == "false"
     assert pg.locator("#ed-motiv").is_visible() is False
     patron.captura("vechi_corecteaza_datele_scutit_nu")
-    pg.click("#ed-scutit-grup [data-v='true']")   # [lotul 13, 676] Da / Nu = butoane
-    assert pg.locator("#ed-motiv-grup").is_visible() and pg.eval_on_selector("#ed-motiv", "s => s.value") == ""
+    pg.click(".alegere-butoane:has(+ #ed-scutit) button[data-valoare='true']")   # [lotul 13, 676] Da / Nu = butoane
+    assert pg.locator(".alegere-butoane:has(+ #ed-motiv)").is_visible() and pg.eval_on_selector("#ed-motiv", "s => s.value") == ""
     pg.click("#ed-save")
-    pg.wait_for_selector('.msg-eroare[data-camp="ed-motiv-grup"]', timeout=20000)
+    pg.wait_for_selector('.msg-eroare[data-camp="ed-motiv"]', timeout=20000)
     patron.captura("motiv_cerut")
     assert sql('SELECT scutit_contrib_minim, motiv_exceptare FROM "%s".salariati WHERE id = %%s' % s, (sid,)) == [(False, None)]
-    pg.click("#ed-motiv-grup [data-v='5']")
+    pg.click(".alegere-butoane:has(+ #ed-motiv) button[data-valoare='5']")
     pg.click("#ed-save")
     pg.wait_for_function("() => document.body.innerText.includes('Corectura scutirii intră')", timeout=30000)
     # mesajul întreg: salariatul, consecința și efectul în D112 (firma nouă n-are nicio D112 depusă) — în fereastra salariatului

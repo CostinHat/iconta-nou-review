@@ -476,7 +476,7 @@ def test_def_413_orele_suplimentare_propun_suma_si_semnaleaza_sporul_sub_75(patr
     pg = _stat(patron, firma_cv)
     deschide_salariat(patron, "IONESCU VASILE")
     buton(patron, "elem")
-    pg.wait_for_selector("#el-tip-grup", timeout=20000)
+    pg.wait_for_selector(".alegere-butoane:has(+ #el-tip)", timeout=20000)
     alege(patron, "el-tip", "ore_suplimentare")
     pg.fill("#el-denumire", "ore suplimentare")
     pg.fill("#el-ore", "10")

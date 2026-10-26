@@ -45,12 +45,12 @@ def test_def_412_adeverinta_precompleteaza_tipul_si_cim_din_fisa(patron, firma_c
         buton(patron, "date")
     pg.wait_for_function("() => (document.querySelector('#ed-nrcim') || {}).value === '12/2023'", timeout=20000)
     assert (pg.input_value("#ed-tipcim"), pg.input_value("#ed-datacim")) == ("determinata", "2023-12-20")
-    assert pg.get_attribute("#ed-tipcim-grup [data-v='determinata']", "aria-pressed") == "true"
+    assert pg.get_attribute(".alegere-butoane:has(+ #ed-tipcim) button[data-valoare='determinata']", "aria-checked") == "true"
     pg.click(".fereastra:last-of-type [data-renunta]")
     # adeverința le ia din fișă, modificabile
     pg.wait_for_selector("#ss-butoane", timeout=20000)
     buton(patron, "adev")
     pg.wait_for_function("() => (document.querySelector('#ad-nrcim') || {}).value === '12/2023'", timeout=20000)
     assert (pg.input_value("#ad-tip"), pg.input_value("#ad-datacim")) == ("determinata", "2023-12-20")
-    assert pg.is_editable("#ad-nrcim") and pg.is_enabled("#ad-tip-grup [data-v='nedeterminata']")
+    assert pg.is_editable("#ad-nrcim") and pg.is_enabled(".alegere-butoane:has(+ #ad-tip) button[data-valoare='nedeterminata']")
     patron.captura()

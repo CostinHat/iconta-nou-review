@@ -575,7 +575,7 @@ def _adauga_prima(ecran, denumire, suma):
     pg = ecran.pg
     deschide_salariat(ecran)
     buton(ecran, "elem")
-    pg.wait_for_selector(".fereastra:last-of-type #el-tip-grup", timeout=20000)
+    pg.wait_for_selector(".fereastra:last-of-type .alegere-butoane:has(+ #el-tip)", timeout=20000)
     alege(ecran, "el-tip", "prima")
     pg.fill(".fereastra:last-of-type #el-denumire", denumire)
     pg.fill(".fereastra:last-of-type #el-suma", str(suma).replace(".", ","))

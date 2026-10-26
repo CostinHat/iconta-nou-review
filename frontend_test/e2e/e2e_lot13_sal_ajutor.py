@@ -32,7 +32,7 @@ def buton(ecran, cheie):
 
 def alege(ecran, camp, valoare):
     """Lista scurtă (676): butonul cu valoarea `valoare` al grupului câmpului `camp`."""
-    ecran.pg.click(_F + "#%s-grup [data-v='%s']" % (camp, valoare))
+    ecran.pg.click(_F + ".alegere-butoane:has(+ #%s) button[data-valoare='%s']" % (camp, valoare))
 
 
 def coloane(ecran):

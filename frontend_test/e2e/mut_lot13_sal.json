@@ -31,7 +31,7 @@
  },
  {
   "fisier": "core/elemente_salariale.py",
-  "ancora": "(Decimal(100) + Decimal(str(spor_procent))) / Decimal(100)",
+  "ancora": "(Decimal(100) + spor) / Decimal(100)",
   "inlocuire": "Decimal(100) / Decimal(100)",
   "test": "frontend_test/e2e/e2e_lot13_sal.py::test_def_679_suma_orelor_suplimentare_se_calculeaza"
  },

@@ -108,7 +108,8 @@ def test_def_678_pontajul_e_calendar_si_se_apasa_doar_zilele_altfel(patron, firm
     pg.wait_for_selector(_F + "#pj-calendar", timeout=20000)
     capete = [x.strip() for x in pg.locator(_F + "#pj-calendar thead th").all_inner_texts()]
     assert capete == ["Luni", "Marți", "Miercuri", "Joi", "Vineri"], capete
-    assert pg.locator(_F + "select").count() == 0
+    # [676] nicio listă derulantă: fiecare listă scurtă e sursa butoanelor alăturate (mecanismul comun, `select.alegere-sursa`)
+    assert pg.locator(_F + "select:not(.alegere-sursa)").count() == 0 and pg.locator(_F + ".alegere-butoane").count() > 0
     zi = _marti_miercuri_joi()[0].isoformat()
     cel = _F + "#pj-calendar button[data-zi='%s']" % zi
     assert "prezent" in pg.inner_text(cel)
@@ -208,10 +209,11 @@ def test_def_675_acelasi_set_de_butoane_si_fereastra_noua_pentru_fiecare_actiune
     assert "Popescu" in pg.inner_text(_F + ".fereastra-fir"), pg.inner_text(_F + ".fereastra-fir")
     inchide(patron)
     buton(patron, "calcul")
-    pg.wait_for_selector(_F + "#ed-fbaza-grup", timeout=20000)
-    assert pg.locator(_F + "select").count() == 0
+    pg.wait_for_selector(_F + ".alegere-butoane:has(+ #ed-fbaza)", timeout=20000)
+    # [676] nicio listă derulantă: fiecare listă scurtă e sursa butoanelor alăturate (mecanismul comun, `select.alegere-sursa`)
+    assert pg.locator(_F + "select:not(.alegere-sursa)").count() == 0 and pg.locator(_F + ".alegere-butoane").count() > 0
     pg.wait_for_function("() => document.querySelector('.fereastra:last-of-type #ed-fbaza').value === 'true'", timeout=20000)
-    assert pg.get_attribute(_F + "#ed-fbaza-grup [data-v='true']", "aria-pressed") == "true"
+    assert pg.get_attribute(_F + ".alegere-butoane:has(+ #ed-fbaza) button[data-valoare='true']", "aria-checked") == "true"
     patron.captura("date_de_calcul")
 
 
@@ -226,7 +228,7 @@ def test_def_679_suma_orelor_suplimentare_se_calculeaza(patron, firma_sal):
     _stat_luna(patron, firma_sal, luni_inapoi=1)
     deschide_salariat(patron)
     buton(patron, "elem")
-    pg.wait_for_selector(_F + "#el-tip-grup", timeout=20000)
+    pg.wait_for_selector(_F + ".alegere-butoane:has(+ #el-tip)", timeout=20000)
     alege(patron, "el-tip", "ore_suplimentare")
     assert pg.locator(_F + "#el-suma").is_visible() is False
     assert pg.inner_text(_F + "#el-ore-camp .camp-eticheta").startswith("Orele suplimentare")
