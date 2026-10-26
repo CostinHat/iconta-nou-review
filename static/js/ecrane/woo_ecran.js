@@ -1,7 +1,7 @@
 // woo_ecran.js — ecranul WooCommerce (config + sincronizare), reutilizabil.  // wc_extras_v1
 // Extras din firme.js ca sa fie folosit si de cabinet (firme.js) si de contul gratuit
 // (facturi_ecran.js). O singura sursa (regula DS 0a). Semnatura pe tenantId, nu obiect firma.
-import { api, ultimaCerere, cate, arataMesaj, esc } from "../api.js?v=e38843b1ec";
+import { api, ultimaCerere, cate, arataMesaj, esc, atributeInactiv } from "../api.js?v=e38843b1ec";
 
 export async function ecranMagazin(corp, nav, tenantId) {
   let mesajSucces = "";
@@ -17,7 +17,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "configurat pentru " + cfg.url : "neconfigurat"}</p>
-      ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" data-actiune="POST /tenants/{tenant_id}/woocommerce/sincronizeaza" style="margin-bottom:12px">Sincronizează acum</button><br>' : ""}
+      <button class="buton-primar" id="wc-sinc" data-actiune="POST /tenants/{tenant_id}/woocommerce/sincronizeaza" style="margin-bottom:12px"${cfg.configurat ? "" : atributeInactiv("Magazinul nu e configurat: apasă „Configurează magazinul” și scrie URL-ul, Consumer Key și Consumer Secret.")}>Sincronizează acum</button><br>
       <button class="buton-secundar" id="wc-btn-config" data-actiune="PUT /tenants/{tenant_id}/woocommerce/config">${cfg.configurat ? "Modifică configurarea" : "Configurează magazinul"}</button>
       <div class="em-rezultat" id="wc-rezultat"></div>
     `;
