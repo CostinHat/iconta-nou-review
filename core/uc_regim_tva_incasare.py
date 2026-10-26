@@ -39,7 +39,7 @@ def _rtvai_firma(tenant_id):
 
 
 def tva_incasare_salveaza(tenant_id, corp, ctx):
-    """[428] Corpul rutei POST `/tenants/{tenant_id}/tva-incasare`: {aplica: da/nu, de_la, pana_la} — perioada curentă. După salvare,
+    """[428] Corpul rutei POST `/tenants/{tenant_id}/tva-incasare`: {aplica: da/nu, de_la, pana_la, data_optiune} — perioada curentă. După salvare,
     verificarea în registrul ANAF (ca la vector, F180: semnal, nu blocaj) se consemnează pe perioadă și se întoarce (`anaf`)."""
     corp = corp or {}
     try:
@@ -50,7 +50,9 @@ def tva_incasare_salveaza(tenant_id, corp, ctx):
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
     rtvai, _motiv, _x = _rtvai_firma(tenant_id) if aplica else (None, None, False)
     with db.get_conn(schema) as conn, conn.cursor() as cur:
-        r = _rti.salveaza(cur, aplica, corp.get("de_la"), corp.get("pana_la"), user_id=ctx["uid"])
+        # [lotul 13, 541] data notificării (opțiunea nu se aplică în perioada în curs) și data din registrul ANAF, citit mai sus
+        r = _rti.salveaza(cur, aplica, corp.get("de_la"), corp.get("pana_la"), user_id=ctx["uid"], data_optiune=corp.get("data_optiune"),
+                          de_la_anaf=(rtvai or {}).get("data_inceput"))
         if not r.get("ok"):
             raise _refuz(r)   # în blocul conexiunii: excepția anulează tranzacția
         if rtvai is not None:

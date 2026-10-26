@@ -1,0 +1,308 @@
+[
+ {
+  "nr": "564",
+  "firma": "tenant_9049",
+  "descriere": "Administratorul cabinetului copiei: Setări cont -> Chei API -> numele „Dovadă 564” -> „Generează cheie nouă”: mesajul cu cheia are butonul „Copiază”; rândul cheii spune „activă · creată <zz.ll.aaaa hh:mm> · nefolosită încă”, cu „Revocă” ca buton. Cheia rămâne activă pe copie (baza de TEST)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='setari'])"
+   },
+   {
+    "asteapta": "button.meniu-card",
+    "text": "Chei API"
+   },
+   {
+    "click": "button.meniu-card",
+    "text": "Chei API"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #set-cheie-noua"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #set-chei-lista .stare-goala, .fereastra:last-of-type #set-chei-lista .pf-frand"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #set-cheie-nume",
+    "valoare": "Dovadă 564"
+   },
+   {
+    "click": ".fereastra:last-of-type #set-cheie-noua"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #set-cheie-copiaza"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #set-msg-chei button#set-cheie-copiaza",
+    "text": "Copiază"
+   },
+   {
+    "contine": "nefolosită încă",
+    "zona": ".fereastra:last-of-type #set-chei-lista"
+   },
+   {
+    "contine": "· creată ",
+    "zona": ".fereastra:last-of-type #set-chei-lista"
+   },
+   {
+    "exista": ".fereastra:last-of-type #set-chei-lista button.set-cheie-revoca",
+    "text": "Revocă"
+   },
+   {
+    "contine": "Cheia ta (copiaz-o acum: nu se mai afișează):",
+    "zona": ".fereastra:last-of-type #set-msg-chei"
+   }
+  ],
+  "captura": "564_copie_cheie_noua_copiaza_nefolosita.png"
+ },
+ {
+  "nr": "564",
+  "firma": "tenant_9049",
+  "descriere": "Administratorul cabinetului copiei: Setări cont -> Chei API -> „Generează cheie nouă” („Dovadă 564 revocare”) -> „Revocă” pe rândul ei (ultimul) -> confirmare „Revocă”: cheia completă dispare de pe ecran, rândul spune „revocată”, fără buton",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='setari'])"
+   },
+   {
+    "asteapta": "button.meniu-card",
+    "text": "Chei API"
+   },
+   {
+    "click": "button.meniu-card",
+    "text": "Chei API"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #set-cheie-noua"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #set-chei-lista .stare-goala, .fereastra:last-of-type #set-chei-lista .pf-frand"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #set-cheie-nume",
+    "valoare": "Dovadă 564 revocare"
+   },
+   {
+    "click": ".fereastra:last-of-type #set-cheie-noua"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #set-cheie-copiaza"
+   },
+   {
+    "pauza": 600
+   },
+   {
+    "click": ".fereastra:last-of-type #set-chei-lista .pf-frand:last-child .set-cheie-revoca"
+   },
+   {
+    "asteapta": "#ca-ok"
+   },
+   {
+    "click": "#ca-ok"
+   },
+   {
+    "asteapta_text": "revocată"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Cheia ta",
+    "zona": ".fereastra:last-of-type #set-msg-chei"
+   },
+   {
+    "nu_contine": "ick_",
+    "zona": ".fereastra:last-of-type #set-msg-chei"
+   },
+   {
+    "contine": "revocată",
+    "zona": ".fereastra:last-of-type #set-chei-lista .pf-frand:last-child"
+   },
+   {
+    "nu_contine": "Revocă",
+    "zona": ".fereastra:last-of-type #set-chei-lista .pf-frand:last-child"
+   }
+  ],
+  "captura": "564_copie_revocata_cheia_dispare.png"
+ },
+ {
+  "nr": "565",
+  "firma": "tenant_9049",
+  "descriere": "Administratorul cabinetului copiei: Setări cont -> Notificări -> grupa „Cont și echipă”: „Sinteza zilei din cabinet”, cu rândul „Seara, la 19:00, în zilele lucrătoare: … Vine numai pe email.”, bifată din oficiu. Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='setari'])"
+   },
+   {
+    "asteapta": "button.meniu-card",
+    "text": "Notificări"
+   },
+   {
+    "click": "button.meniu-card",
+    "text": "Notificări"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #not-tipuri .not-grup"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #not-tipuri input[data-tip='sinteza_zilnica']"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #not-tipuri input[data-tip='sinteza_zilnica']:checked"
+   },
+   {
+    "contine": "Sinteza zilei din cabinet",
+    "zona": ".fereastra:last-of-type #not-tipuri"
+   },
+   {
+    "contine": "Seara, la 19:00, în zilele lucrătoare: ce s-a pregătit, validat, respins și depus azi și ce așteaptă validarea. Vine numai pe email.",
+    "zona": ".fereastra:last-of-type #not-tipuri"
+   }
+  ],
+  "captura": "565_copie_sinteza_in_notificari.png"
+ },
+ {
+  "nr": "566",
+  "firma": "tenant_9049",
+  "descriere": "Administratorul cabinetului copiei: Setări cont -> Notificări -> grupa „Clienți”: „O solicitare nouă de la un client” bifată din oficiu (înainte: debifată). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='setari'])"
+   },
+   {
+    "asteapta": "button.meniu-card",
+    "text": "Notificări"
+   },
+   {
+    "click": "button.meniu-card",
+    "text": "Notificări"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #not-tipuri .not-grup"
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type #not-tipuri input[data-tip='solicitare_client']"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #not-tipuri input[data-tip='solicitare_client']:checked"
+   },
+   {
+    "contine": "O solicitare nouă de la un client",
+    "zona": ".fereastra:last-of-type #not-tipuri"
+   }
+  ],
+  "captura": "566_copie_solicitare_client_bifata.png"
+ },
+ {
+  "nr": "568",
+  "firma": "tenant_9049",
+  "descriere": "Cabinetul copiei (coada copiată de pe producție: 7 note și declarații în așteptare, pregătite pe 19.10–22.10.2026, înainte de reparație): Sinteza zilei -> „de validat” 7 = toată coada de acum (înainte: 0 — numai ce intrase azi). Cere peticul l13_petice/portal_p2_1.json (cabinet.js, fișier al altui pachet)",
+  "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='brief'])"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .sa-cifra[data-ecran='validat'] .sa-num"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "7",
+    "zona": ".fereastra:last-of-type .sa-cifra[data-ecran='validat'] .sa-num"
+   },
+   {
+    "contine": "de validat",
+    "zona": ".fereastra:last-of-type .sa-cifra[data-ecran='validat']"
+   }
+  ],
+  "captura": "568_copie_vechi_de_validat_coada_intreaga.png"
+ }
+]

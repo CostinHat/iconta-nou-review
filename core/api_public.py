@@ -25,10 +25,12 @@ def lista(conn, firm_id):
         cur.execute("""SELECT id, prefix, nume, activ, ultima_folosire, creat_la
                        FROM public.api_chei WHERE accounting_firm_id=%s ORDER BY id""", (firm_id,))
         rows = [dict(r) for r in cur.fetchall()]
+    # [lotul 13, deficiența 564] momentele în ISO 8601 (`isoformat`, cu „T” și fusul orar): ecranul le scrie cu `dataRo(…, "cu_ora")`
+    # („25.10.2026 14:30”); forma `str()` („2026-10-25 14:30:00.123456+03:00”) ajungea pe ecran tăiată, în format ISO
     for r in rows:
         for c in ("ultima_folosire", "creat_la"):
             if r[c]:
-                r[c] = str(r[c])
+                r[c] = r[c].isoformat()
     return rows
 
 

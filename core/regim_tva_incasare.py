@@ -45,6 +45,16 @@ DE AICI, REGULILE (refuz = legea nu admite altfel; avertisment = legea admite ș
   refuz pe altă zi decât ultima a lunii; avertisment la decont trimestrial în afara capătului de trimestru;
 - ieșirea înainte de sfârșitul anului în care a optat — AVERTISMENT, nu refuz: alin.(5) admite excepția depășirii plafonului;
 - perioadele nu se suprapun — refuz (o zi e sau nu e în sistem).
+- [lotul 13, deficiența 541] OPȚIUNEA NU SE APLICĂ ÎN PERIOADA ÎN CURS (alin.(3^1) lit.a) teza a 2-a și lit.b) teza a 3-a: „începând cu
+  prima zi a perioadei fiscale următoare celei în care persoana impozabilă și-a exercitat opțiunea”). Data opțiunii (notificarea depusă la
+  ANAF) e un fapt pe care aplicația nu-l vede, deci se cere când contează: cu data notificării, „de la” trebuie să fie exact prima zi a
+  perioadei fiscale de după ea (luna sau trimestrul, după periodicitatea TVA a firmei) — sau data înregistrării în scopuri de TVA, dacă
+  notificarea s-a depus până la ea (lit.b teza a 2-a); altfel refuz, cu data corectă. Fără data notificării, un „de la” în perioada
+  fiscală în curs (începută, deci opțiunea ar fi trebuit exercitată în perioada anterioară) se refuză cu data corectă pentru o notificare
+  depusă acum (prima zi a perioadei următoare) și cererea datei notificării dacă s-a depus mai devreme; o dată din trecutul de dinaintea
+  perioadei în curs (firmă preluată, opțiune veche) și una viitoare trec. Comanda 13.1, verbatim: „Pe 22.10.2026 s-a salvat «Aplică de la
+  01.10.2026» fără avertisment: opțiunea nu se aplică retroactiv în perioada în curs, ci din prima zi a perioadei fiscale următoare
+  (art. 282; F2 trimestrială → 01.01.2027). Aplicația refuză sau propune data corectă.”
 """
 from __future__ import annotations
 
@@ -52,10 +62,12 @@ import datetime as _dt
 
 MODUL = "regim_tva_incasare"
 
-_COLOANE = ("id", "de_la", "pana_la", "sursa", "verificat_anaf_la", "stare_anaf")
+_COLOANE = ("id", "de_la", "pana_la", "sursa", "verificat_anaf_la", "stare_anaf", "data_optiune", "creat_la")
 
 #: câmpul de jurnal al perioadelor (text: „de la 01.03.2026 până la 31.12.2026; …”) — trece prin `jurnalizeaza_regim_tva`
 CAMP_JURNAL = "tva_incasare_perioade"
+#: [lotul 13, 541] data notificării (opțiunii) a perioadei curente, în jurnal („20.09.2026”)
+CAMP_JURNAL_OPTIUNE = "tva_incasare_data_optiune"
 COD_NEINREGISTRAT = "TVAI_FARA_INREGISTRARE_TVA"
 
 
@@ -78,7 +90,7 @@ def _rand(r):
 
 def perioade(cur):
     """Perioadele în care firma aplică sistemul TVA la încasare, în ordine cronologică (pana_la None = în curs)."""
-    cur.execute("SELECT id, de_la, pana_la, sursa, verificat_anaf_la, stare_anaf FROM tva_incasare_perioade ORDER BY de_la, id")
+    cur.execute("SELECT %s FROM tva_incasare_perioade ORDER BY de_la, id" % ", ".join(_COLOANE))
     return [dict(zip(_COLOANE, _rand(r))) for r in cur.fetchall()]
 
 
@@ -116,6 +128,64 @@ def text_perioade(lista):
                      for p in lista)
 
 
+def _trimestrial(tip_decont):
+    return str(tip_decont or "").strip().lower() in ("trimestrial", "t")
+
+
+def inceput_perioada(d, tip_decont):
+    """Prima zi a perioadei fiscale (luna sau trimestrul calendaristic — CF art.322 alin.(1)–(2)) care conține `d`."""
+    return _dt.date(d.year, (d.month - 1) // 3 * 3 + 1 if _trimestrial(tip_decont) else d.month, 1)
+
+
+def perioada_urmatoare(d, tip_decont):
+    """Prima zi a perioadei fiscale de DUPĂ cea care conține `d` (CF art.282 alin.(3^1) lit.a): „prima zi a perioadei fiscale următoare”)."""
+    i = inceput_perioada(d, tip_decont)
+    luni = 3 if _trimestrial(tip_decont) else 1
+    m = i.month - 1 + luni
+    return _dt.date(i.year + m // 12, m % 12 + 1, 1)
+
+
+def _nume_perioada(d, tip_decont):
+    """„trimestrul IV 2026” / „octombrie 2026” — perioada fiscală care conține `d`, în cuvinte."""
+    if _trimestrial(tip_decont):
+        return "trimestrul %s %d" % (("I", "II", "III", "IV")[(d.month - 1) // 3], d.year)
+    luni = ("ianuarie", "februarie", "martie", "aprilie", "mai", "iunie", "iulie", "august", "septembrie", "octombrie", "noiembrie",
+            "decembrie")
+    return "%s %d" % (luni[d.month - 1], d.year)
+
+
+def erori_optiune(de_la, data_optiune, tip_decont, tva_data_inceput, azi):
+    """PURĂ. [lotul 13, deficiența 541] [(camp, mesaj)] pentru data de la care se aplică opțiunea — regula și temeiul în antetul modulului
+    (CF art.282 alin.(3^1) lit.a) și lit.b)). `data_optiune` = data notificării depuse la ANAF (None = nescrisă)."""
+    tva_in = _data(tva_data_inceput) if tva_data_inceput else None
+    _TEMEI = "Cod fiscal art. 282 alin. (3^1) lit. a)"
+    if data_optiune is not None:
+        if data_optiune > azi:
+            return [("tva_incasare_data_optiune", "Data notificării (%s) e în viitor: scrie data la care s-a depus notificarea la ANAF."
+                     % _ro(data_optiune))]
+        if tva_in and data_optiune <= tva_in:
+            if de_la != tva_in:
+                return [("tva_incasare_de_la", "Cu notificarea depusă pe %s, până la înregistrarea în scopuri de TVA, sistemul TVA la încasare "
+                                               "se aplică de la data înregistrării, %s (Cod fiscal art. 282 alin. (3^1) lit. b)), nu de la %s."
+                         % (_ro(data_optiune), _ro(tva_in), _ro(de_la)))]
+            return []
+        corect = perioada_urmatoare(data_optiune, tip_decont)
+        if de_la != corect:
+            return [("tva_incasare_de_la", "Cu notificarea depusă pe %s (%s), sistemul TVA la încasare se aplică de la %s — prima zi a "
+                                           "perioadei fiscale următoare celei în care s-a exercitat opțiunea (%s), nu de la %s."
+                     % (_ro(data_optiune), _nume_perioada(data_optiune, tip_decont), _ro(corect), _TEMEI, _ro(de_la)))]
+        return []
+    if tva_in and de_la == tva_in:
+        return []   # lit.b) teza a 2-a: opțiunea de la înregistrarea în scopuri de TVA se aplică de la acea dată
+    curenta = inceput_perioada(azi, tip_decont)
+    if curenta <= de_la <= azi:
+        return [("tva_incasare_de_la", "„Aplică de la” %s cade în perioada fiscală în curs (%s): opțiunea se aplică de la prima zi a perioadei "
+                                       "fiscale următoare celei în care s-a depus notificarea (%s). O notificare depusă acum se aplică de la "
+                                       "%s. Dacă notificarea s-a depus înainte de %s, scrie data ei la „Data notificării”."
+                 % (_ro(de_la), _nume_perioada(azi, tip_decont), _TEMEI, _ro(perioada_urmatoare(azi, tip_decont)), _ro(curenta)))]
+    return []
+
+
 def valideaza(de_la, pana_la, platitor_tva, tva_data_inceput=None, tip_decont=None, altele=()):
     """PURĂ. (erori [(camp, mesaj)], avertismente [mesaj]) pentru o perioadă [de_la, pana_la]. `altele` = celelalte perioade.
     Temeiul fiecărei reguli: antetul modulului (CF art.282 alin.(3^1), (5))."""
@@ -128,7 +198,7 @@ def valideaza(de_la, pana_la, platitor_tva, tva_data_inceput=None, tip_decont=No
         er.append(("tva_incasare_de_la", "Scrie data de la care firma aplică sistemul TVA la încasare."))
         return er, av
     tva_in = _data(tva_data_inceput) if tva_data_inceput else None
-    trim = str(tip_decont or "").strip().lower() in ("trimestrial", "t")
+    trim = _trimestrial(tip_decont)
     if tva_in and de_la < tva_in:
         er.append(("tva_incasare_de_la", "Sistemul TVA la încasare nu se aplică înainte de înregistrarea în scopuri de TVA (%s): "
                                          "data „de la” e %s." % (_ro(tva_in), _ro(de_la))))
@@ -167,23 +237,72 @@ def _iso(d):
     return d.isoformat() if hasattr(d, "isoformat") else d
 
 
+def _parti(text):
+    """„de la 01.03.2026 până la 31.12.2026; de la 01.01.2027” -> perioadele, fiecare în forma ei de jurnal (`text_perioade`)."""
+    return [x.strip() for x in str(text or "").split(";") if x.strip()]
+
+
+def istoric_perioade(cur, actuale):
+    """[lotul 13, deficiența 541, comanda 13.1: „Jurnalul perioadelor există (de la / până la / sursă / verificat ANAF), dar nu arată cine și
+    când a schimbat, iar «Șterge» scoate perioada fără urmă.”] Cine și când, DERIVAT din jurnalul Date firmă (`firma_profil_jurnal`, câmpul
+    `tva_incasare_perioade`: fiecare salvare / ștergere scrie toate perioadele, vechi -> nou, cu autorul — PIVOT DECIZII 04.10.2026), deci
+    și pentru perioadele scrise înainte de această reparație. Întoarce ({text perioadă: {cine, la}} — ultima scriere a fiecărei perioade
+    de acum; [{text, cine, la, inlocuita_cu}] — perioadele care nu mai sunt, cu cine și când le-a scos, cea mai nouă prima). O perioadă
+    fără rând de jurnal (scrisă din ANAF la adăugarea firmei, fără autor) nu primește autor inventat."""
+    from core import repo_firma_profil as _rfp
+    jurnal = list(reversed(_rfp.jurnal_firma(cur, limita=500, camp=CAMP_JURNAL)))   # cronologic
+    scrise, scoase = {}, {}
+    for r in jurnal:
+        vechi, nou = _parti(r["vechi"]), _parti(r["nou"])
+        adaugate = [x for x in nou if x not in vechi]
+        for x in adaugate:
+            scrise[x] = {"cine": r["cine"], "la": r["la"]}
+            scoase.pop(x, None)
+        for x in vechi:
+            if x not in nou:
+                scoase[x] = {"text": x, "cine": r["cine"], "la": r["la"], "inlocuita_cu": "; ".join(adaugate) or None}
+    textele = {text_perioade([p]) for p in actuale}
+    return ({t: v for t, v in scrise.items() if t in textele},
+            sorted((v for t, v in scoase.items() if t not in textele), key=lambda v: v["la"] or "", reverse=True))
+
+
+def avertisment_optiune(p, tip_decont):
+    """[lotul 13, 541] Perioada scrisă de mână FĂRĂ data notificării, cu „de la” în aceeași perioadă fiscală în care a fost scrisă (după
+    începutul ei): opțiunea s-ar fi aplicat retroactiv în perioada în curs (CF art.282 alin.(3^1) lit.a)) — exact cazul F2 din 22.10.2026
+    („de la 01.10.2026”, scrisă pe 22.10, trimestrial). Datele existente: derivat din `creat_la`, nimic nu se rescrie. None altfel."""
+    if p.get("sursa") != "manual" or p.get("data_optiune") or not p.get("creat_la"):
+        return None
+    creat = p["creat_la"].date() if isinstance(p["creat_la"], _dt.datetime) else _data(p["creat_la"])
+    de_la = _data(p["de_la"])
+    if not (inceput_perioada(creat, tip_decont) <= de_la <= creat):
+        return None
+    return ("Perioada de la %s a fost scrisă pe %s, în aceeași perioadă fiscală (%s), fără data notificării: opțiunea se aplică de la "
+            "prima zi a perioadei fiscale următoare celei în care s-a depus notificarea (Cod fiscal art. 282 alin. (3^1) lit. a)). Dacă "
+            "notificarea s-a depus în %s, data corectă e %s; dacă s-a depus mai devreme, scrie data ei la „Data notificării” și salvează."
+            % (_ro(de_la), _ro(creat), _nume_perioada(creat, tip_decont), _nume_perioada(creat, tip_decont),
+               _ro(perioada_urmatoare(creat, tip_decont))))
+
+
 def stare(cur, azi=None):
     """Ce arată vectorul fiscal: perioadele (ISO), perioada curentă (ultima), dacă se aplică azi, plus `fara_data` (indicatorul
     vechi pus, nicio perioadă) și avertismentul firmei care nu mai e înregistrată în scopuri de TVA cu sistemul încă deschis."""
     azi = azi or _dt.date.today()
     lista = perioade(cur)
-    cur.execute("SELECT platitor_tva, COALESCE(tva_la_incasare, false) FROM firma_profil WHERE id = 1")
+    cur.execute("SELECT platitor_tva, COALESCE(tva_la_incasare, false), tip_decont FROM firma_profil WHERE id = 1")
     r = cur.fetchone()
-    platitor, indicator = (_rand(r) if r else (None, False))
+    platitor, indicator, decont = (_rand(r) if r else (None, False, None))
     ultima = lista[-1] if lista else None
     av = []
     if lista and platitor is False and any(p["pana_la"] is None or p["pana_la"] >= azi for p in lista):
         av.append("Firma nu mai e înregistrată în scopuri de TVA, dar sistemul TVA la încasare e încă deschis (%s): scrie data "
                   "„până la”." % text_perioade([ultima]))
+    av += [a for a in (avertisment_optiune(p, decont) for p in lista) if a]   # [lotul 13, 541]
+    scrise, scoase = istoric_perioade(cur, lista)   # [lotul 13, 541] cine și când, din jurnal
     return {"aplica_azi": aplica_la(cur, azi),
             "fara_data": (not lista) and bool(indicator),
             "curenta": ({**{k: _iso(v) for k, v in ultima.items()}} if ultima else None),
-            "perioade": [{k: _iso(v) for k, v in p.items()} for p in lista],
+            "perioade": [dict({k: _iso(v) for k, v in p.items()}, scrisa=scrise.get(text_perioade([p]))) for p in lista],
+            "scoase": scoase,
             # [lotul 11, 428] perioadele în cuvinte („de la 01.11.2026 până la 31.12.2028”) — „Configurare emitere” le arăta numai când
             # sistemul se aplica AZI; o perioadă care începe luna viitoare nu se vedea deloc
             "text": text_perioade(lista),
@@ -251,12 +370,16 @@ def _refuz_adunat(ef):
     return {"ok": False, "camp": prima, "mesaj": d["mesaj"], "erori_campuri": d["erori_campuri"]}
 
 
-def salveaza(cur, aplica, de_la=None, pana_la=None, user_id=None, azi=None):
+def salveaza(cur, aplica, de_la=None, pana_la=None, user_id=None, azi=None, data_optiune=None, de_la_anaf=None):
     """[428] Perioada CURENTĂ (ultima) a sistemului TVA la încasare: intrare, corectură, ieșire.
 
     - `aplica` False: fără perioade -> nimic de scris; cu perioade -> refuz (ieșirea are o dată: „până la”; o perioadă scrisă greșit
       se șterge, `sterge`).
     - `aplica` True: dacă ultima perioadă e deschisă sau `de_la` cade până la sfârșitul ei -> o corectează; altfel -> perioadă nouă.
+    - [lotul 13, 541] `data_optiune` = data notificării depuse la ANAF; se verifică (`erori_optiune`) la orice „de la” nou sau schimbat și
+      se păstrează pe perioadă (jurnalizată). `de_la_anaf` = data de început din Registrul persoanelor care aplică sistemul TVA la
+      încasare (citit chiar înainte, `uc_regim_tva_incasare`): un „de la” egal cu ea e faptul consemnat de ANAF, nu se mai judecă după
+      data notificării.
     Întoarce {ok, avertismente, stare} sau {ok: False, camp, mesaj}. Jurnalizat; indicatorul sincronizat. Nu comite."""
     from core import repo_firma_profil as _rfp
     if user_id is None:
@@ -287,6 +410,10 @@ def salveaza(cur, aplica, de_la=None, pana_la=None, user_id=None, azi=None):
         d2 = _data(pana_la) if pana_la not in (None, "") else None
     except ValueError:
         ef.camp("tva_incasare_pana_la", "Data „până la”: o dată (zi, lună, an).")
+    try:
+        d_opt = _data(data_optiune) if data_optiune not in (None, "") else None
+    except ValueError:
+        ef.camp("tva_incasare_data_optiune", "Data notificării: o dată (zi, lună, an).")
     if ef:
         return _refuz_adunat(ef)
     ultima = lista[-1] if lista else None
@@ -294,22 +421,30 @@ def salveaza(cur, aplica, de_la=None, pana_la=None, user_id=None, azi=None):
     altele = lista[:-1] if corecteaza else lista
     platitor, tva_in, decont = _context(cur)
     er, av = valideaza(d1, d2, platitor, tva_in, decont, altele)
+    # [lotul 13, 541] opțiunea nu se aplică în perioada în curs: verificată la orice „de la” nou sau schimbat, ori cu data notificării scrisă
+    _anaf = _data(de_la_anaf) if de_la_anaf else None
+    if not er and d1 and d1 != _anaf and (not corecteaza or ultima["de_la"] != d1 or d_opt is not None):
+        er = erori_optiune(d1, d_opt, decont, tva_in, azi or _dt.date.today())
     for _c, _m in er:
         ef.camp(_c, _m)
     if ef:
         return _refuz_adunat(ef)
-    if corecteaza and (ultima["de_la"], ultima["pana_la"]) == (d1, d2):
+    if d_opt is None and corecteaza and ultima["de_la"] == d1:
+        d_opt = ultima.get("data_optiune")   # corectura numai a ieșirii păstrează notificarea scrisă
+    if corecteaza and (ultima["de_la"], ultima["pana_la"], ultima.get("data_optiune")) == (d1, d2, d_opt):
         return {"ok": True, "avertismente": av, "stare": stare(cur, azi)}
     _rf = _refuz_luna_inchisa(cur, _prima_zi_schimbata((ultima["de_la"], ultima["pana_la"]) if corecteaza else None, (d1, d2)))
     if _rf:
         return _rf
     vechi = _rfp.regim_tva_pentru_schimbare(cur)
     if corecteaza:
-        cur.execute("UPDATE tva_incasare_perioade SET de_la = %s, pana_la = %s, sursa = 'manual' WHERE id = %s", (d1, d2, ultima["id"]))
+        cur.execute("UPDATE tva_incasare_perioade SET de_la = %s, pana_la = %s, sursa = 'manual', data_optiune = %s WHERE id = %s",
+                    (d1, d2, d_opt, ultima["id"]))
     else:
-        cur.execute("INSERT INTO tva_incasare_perioade (de_la, pana_la, sursa) VALUES (%s, %s, 'manual')", (d1, d2))
-    _rfp.jurnalizeaza_regim_tva(cur, dict(vechi or {}, **{CAMP_JURNAL: text_perioade(lista)}),
-                                {CAMP_JURNAL: text_perioade(perioade(cur))}, user_id)
+        cur.execute("INSERT INTO tva_incasare_perioade (de_la, pana_la, sursa, data_optiune) VALUES (%s, %s, 'manual', %s)", (d1, d2, d_opt))
+    _opt_vechi = _ro(ultima.get("data_optiune")) if (corecteaza and ultima.get("data_optiune")) else None
+    _rfp.jurnalizeaza_regim_tva(cur, dict(vechi or {}, **{CAMP_JURNAL: text_perioade(lista), CAMP_JURNAL_OPTIUNE: _opt_vechi}),
+                                {CAMP_JURNAL: text_perioade(perioade(cur)), CAMP_JURNAL_OPTIUNE: _ro(d_opt) if d_opt else None}, user_id)
     sincronizeaza(cur, user_id, azi)
     return {"ok": True, "avertismente": av, "stare": stare(cur, azi)}
 

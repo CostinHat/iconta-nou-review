@@ -293,6 +293,30 @@ def erori_declarant(prof):
     return erori
 
 
+#: [lotul 13, deficiența C71.1] câmpurile care există NUMAI pentru bilanț (structura ANAF SC 1225: „bifaMC”, „codPP”, „interes_public”):
+#: la o firmă care nu întocmește situații financiare anuale (partidă simplă — Legea 82/1991 art.28 alin.(1), citat în
+#: `control_fiscal_api._NEAP_FORMA_SIMPLA["bilant"]`) nu au niciun rost pe ecran. Nr. registrului comerțului și județul rămân (PFA are și
+#: el număr de înregistrare și adresă), dar fără „*”.
+NUMAI_BILANT = ("mare_contribuabil", "forma_proprietate", "interes_public")
+
+
+def _decl_aplicabile(decl, neap):
+    """Declarațiile din `decl` (OBLIGATORII) pe care forma firmei le poate datora (`neap` = `control_fiscal_api.neaplicabile_forma`)."""
+    return [d for d in decl if ("bilant" if d.startswith("Bilanț") else d.lower()) not in neap]
+
+
+def campuri_forma(tip_firma):
+    """PURĂ. [lotul 13, deficiența C71.1, comanda 13.1: „La F4 PFA caseta «Profil incomplet» cere corect doar Banca și IBAN, dar formularul
+    marchează cu * câmpuri de SRL «cerute la bilanț» (Nr. registrul comerțului, Mare contribuabil, Forma de proprietate, Entitate de
+    interes public) și oferă Regim fiscal micro/profit (D100/D101), care nu privesc un PFA.”] Ce marchează ecranul Date firmă, din
+    ACEEAȘI sursă cu „Profil incomplet” (`lipsuri`): {"obligatorii": câmpurile cerute de o declarație pe care forma o poate datora (cu „*”),
+    "fara_rost": câmpurile numai-bilanț la o formă care nu întocmește bilanț (nu se arată)}."""
+    from core.control_fiscal_api import neaplicabile_forma
+    neap = neaplicabile_forma(tip_firma)
+    return {"obligatorii": [c for c, decl in OBLIGATORII.items() if _decl_aplicabile(decl, neap)],
+            "fara_rost": [c for c in NUMAI_BILANT if "bilant" in neap]}
+
+
 def lipsuri(profil):
     """PURA: campurile obligatorii necompletate + ce declaratii blocheaza fiecare.
     Intoarce [{camp, declaratii}] - gol daca profilul e complet."""
@@ -304,7 +328,7 @@ def lipsuri(profil):
     # prin formă, `control_fiscal_api.neaplicabile_forma`)
     neap = neaplicabile_forma(profil.get("tip_firma"))
     for camp, decl in OBLIGATORII.items():
-        decl = [d for d in decl if ("bilant" if d.startswith("Bilanț") else d.lower()) not in neap]
+        decl = _decl_aplicabile(decl, neap)
         v = profil.get(camp)
         # [lotul 10, C69] `mare_contribuabil` = Nu (False) e o alegere făcută, nu o lipsă; lipsă e numai nedeclarat (NULL) sau gol
         if v is None or (not isinstance(v, bool) and not str(v).strip()):
@@ -565,6 +589,7 @@ def citeste_date(conn):
     with conn.cursor() as cur:   # [08.10 §6 pct.4] luna preluării: salvată / propusă (dedusă, plafonată la prima notă) / efectivă
         prof["luna_preluare"] = _lp.stare(_rfp.fapte_preluare(cur))
     return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT,
+            **campuri_forma(prof.get("tip_firma")),   # [lotul 13, C71.1] „*” și câmpurile fără rost, după forma firmei
             "forme_juridice": [[k, v[0]] for k, v in _cs.FORME.items()],
             "activitati_amef": [[k, v] for k, v in _activitati_amef().items()],
             "forme_proprietate": [[k, v] for k, v in _forme_proprietate().items()],   # [lotul 10, C69] nomenclatorul ANAF (bilanț codPP)

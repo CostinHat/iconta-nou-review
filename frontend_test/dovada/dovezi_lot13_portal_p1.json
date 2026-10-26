@@ -1,0 +1,339 @@
+[
+ {
+  "nr": "553",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1 (note și facturi din 09–10/2026, scrise înainte de reparație), clientul: «Cifrele firmei» — rezultatul negativ se citește «Pierdere înainte de impozit», fără minus; media cheltuielilor e făcută din lunile cu evidență (09–10/2026), cu salariile; săptămâna întâi a previziunii își spune componentele (plăți: furnizori fără factură 3.000, salarii nete 8.347, impozite și contribuții 5.866). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "button.cab-card",
+    "text": "Cifrele firmei"
+   },
+   {
+    "asteapta": "#cf-zona .pf-frand"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Pierdere înainte de impozit",
+    "zona": "#cf-rezultat"
+   },
+   {
+    "nu_contine": "−",
+    "zona": "#cf-rezultat"
+   },
+   {
+    "contine": "inclusiv salariile",
+    "zona": "#cf-intro"
+   },
+   {
+    "contine": "media pe lunile 09/2026–10/2026",
+    "zona": "#cf-intro"
+   },
+   {
+    "contine": "salarii nete 8.347",
+    "zona": "#cf-zona .pf-frand:first-child"
+   }
+  ],
+  "captura": "553_f1_vechi_cifre_pierdere_si_previziune.png"
+ },
+ {
+  "nr": "554",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul, pagina principală: panoul arată ce e de plătit la stat (sau că nu e nimic), în cuvintele clientului, fără codurile declarațiilor (înainte: «d300», «d394», «d406», literă mică, cu termenele de depunere). Pe 25–26.10.2026: contribuțiile și impozitul pe salarii 09/2026 (5.866 lei), impozitul micro T3/2026 și TVA 09/2026 (sume încă necalculate în balanță: «suma o calculează contabilul»). Nu se salvează nimic",
+  "pasi": [
+   {
+    "asteapta": "#pa-status .pa-titlu"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine_oricare": [
+     "De plătit la stat",
+     "Nimic de plătit la stat în perioada următoare"
+    ],
+    "zona": "#pa-status"
+   },
+   {
+    "nu_contine": "d300",
+    "zona": "#pa-status"
+   },
+   {
+    "nu_contine": "d394",
+    "zona": "#pa-status"
+   },
+   {
+    "nu_contine": "d406",
+    "zona": "#pa-status"
+   }
+  ],
+  "captura": "554_f1_vechi_de_platit_la_stat.png"
+ },
+ {
+  "nr": "555",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul: «Declarații depuse» — D406 01/2026 (depusă în afara iConta.eu pe 02.03.2026, marcată înainte de reparație): rândul are perioada, denumirea, data și recipisa (înainte: «d406 · » și «depusă » gol). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "button.cab-card",
+    "text": "Declarații depuse"
+   },
+   {
+    "asteapta": ".fereastra .pf-frand"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D406 · 01/2026"
+   },
+   {
+    "contine": "depusă pe 02.03.2026"
+   },
+   {
+    "contine": "recipisa TEST-1"
+   },
+   {
+    "contine": "Fișierul Standard de Control Fiscal (SAF-T) pentru România"
+   }
+  ],
+  "captura": "555_f1_vechi_declaratie_depusa_cu_recipisa.png"
+ },
+ {
+  "nr": "555",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul, pagina principală: cardul «Documente» spune ce are («Balanțele lunare, în PDF»), nu «Recipise, balanțe, bilanț»; cardul «Declarații depuse» spune «cu data și recipisa». Nu se salvează nimic",
+  "pasi": [
+   {
+    "asteapta": "button.cab-card"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Balanțele lunare, în PDF",
+    "zona": ".cab-grila"
+   },
+   {
+    "nu_contine": "Recipise, balanțe, bilanț",
+    "zona": ".cab-grila"
+   },
+   {
+    "contine": "Ce s-a depus la ANAF, cu data și recipisa",
+    "zona": ".cab-grila"
+   }
+  ],
+  "captura": "555_f1_vechi_carduri_documente.png"
+ },
+ {
+  "nr": "556",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul: «Documente» — balanța 10/2026 (luna deschisă, cu ciornele din 19–24.10.2026) e «provizorie — contabilul încă lucrează la ea (… înregistrări neverificate)», iar 09/2026 (închisă de contabil) e «definitivă» (înainte: amândouă fără stare). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "button.cab-card",
+    "text": "Documente"
+   },
+   {
+    "asteapta": ".fereastra .pf-frand[data-luna]"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra .pf-frand[data-luna=\"2026-10\"][data-definitiva=\"nu\"]"
+   },
+   {
+    "contine": "provizorie — contabilul încă lucrează la ea",
+    "zona": ".fereastra .pf-frand[data-luna=\"2026-10\"]"
+   },
+   {
+    "exista": ".fereastra .pf-frand[data-luna=\"2026-09\"][data-definitiva=\"da\"]"
+   },
+   {
+    "contine": "definitivă — luna e închisă de contabil",
+    "zona": ".fereastra .pf-frand[data-luna=\"2026-09\"]"
+   }
+  ],
+  "captura": "556_f1_vechi_balante_provizorie_definitiva.png"
+ },
+ {
+  "nr": "558",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul: «Povestea lunii» — povestea pe 09/2026 aprobată înainte de reparația 288 («încasări») e retrasă: rândul spune că textul se reface și dă cifrele lunii; fără comparație cu 08/2026 (prima lună în iConta.eu). CERE copia refăcută după peticul l13_petice/portal_p1_8.json (`pachet_povestea` copiat). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "button.cab-card",
+    "text": "Povestea lunii"
+   },
+   {
+    "asteapta": ".fereastra .pf-titlu"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Textul acestei luni a fost retras"
+   },
+   {
+    "nu_contine": "încasări"
+   },
+   {
+    "nu_contine": "față de luna anterioară"
+   }
+  ],
+  "captura": "558_f1_vechi_poveste_retrasa.png"
+ },
+ {
+  "nr": "559",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul: «Cifrele firmei» — «De încasat de la clienți» din facturile deschise cu nota validată, lei separat de euro (3.500,00 lei + 60,50 EUR), «aceleași ca în Scadențar», cu diferența față de balanță spusă (înainte: «De încasat 3.500» față de ~10.900 lei + 12,10 EUR în Scadențar). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "button.cab-card",
+    "text": "Cifrele firmei"
+   },
+   {
+    "asteapta": "#cf-zona .pf-frand"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "3.500,00 lei + 60,50 EUR",
+    "zona": "#cf-de-incasat"
+   },
+   {
+    "contine": "aceleași ca în Scadențar",
+    "zona": "#cf-de-incasat"
+   },
+   {
+    "contine": "balanța contabilă arată",
+    "zona": "#cf-de-incasat"
+   }
+  ],
+  "captura": "559_f1_vechi_de_incasat.png"
+ },
+ {
+  "nr": "559",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul: «Facturi» -> «Scadențar»: numai facturile cu nota validată și soldul preluat (F1A nr. 5, F1A nr. 6, F1A nr. 14, «Sold la 31.08.2026»); fără F1A nr. 15 (nota ciornă) și fără F1A nr. 12 (12,10 EUR, ciornă). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "button.cab-card",
+    "text": "Facturi"
+   },
+   {
+    "click": "#fac-scadentar"
+   },
+   {
+    "asteapta": ".sc-fact-btn"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "F1A nr. 5"
+   },
+   {
+    "contine": "F1A nr. 14"
+   },
+   {
+    "nu_contine": "F1A nr. 15"
+   },
+   {
+    "nu_contine": "F1A nr. 12"
+   }
+  ],
+  "captura": "559_f1_vechi_scadentar_aceeasi_baza.png"
+ },
+ {
+  "nr": "C113",
+  "portal": true,
+  "utilizator": 71511,
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul: «Cifrele firmei» -> «Previziune bani»: factura F1A14 (60,50 EUR, curs 5,3495, nota validată, scadentă pe 23.11.2026) intră în săptămâna scadenței cu 324 lei (în lei), nu cu 60,50. Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "button.cab-card",
+    "text": "Cifrele firmei"
+   },
+   {
+    "asteapta": "#cf-zona .pf-frand"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "facturi către clienți 324",
+    "zona": "#cf-zona"
+   },
+   {
+    "nu_contine": "facturi către clienți 61",
+    "zona": "#cf-zona"
+   }
+  ],
+  "captura": "c113_f1_vechi_previziune_in_lei.png"
+ },
+ {
+  "nr": "555",
+  "firma": "tenant_9050",
+  "descriere": "F2 (fără cont de client), contabilul: «Acces client» — «Previzualizează portalul» e inactiv, cu motivul scris lângă el (înainte: numai în `title`, invizibil pe un buton dezactivat). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-acces"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ac-btn-preview"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": ".fereastra:last-of-type #ac-btn-preview"
+   },
+   {
+    "contine": "Previzualizarea cere un cont de client",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "555_f2_previzualizare_inactiva_cu_motiv.png"
+ }
+]

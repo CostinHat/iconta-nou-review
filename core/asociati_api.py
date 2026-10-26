@@ -140,6 +140,27 @@ def erori_cota_lipsa(randuri):
             for r in randuri if r.get("cota") is None]
 
 
+def erori_ecran(randuri, erori):
+    """PURĂ. [lotul 13, deficiența 526] Respingerile verificării comune, așa cum le citește formularul din Date firmă.
+
+    Comanda 13.1, verbatim: „Cu CNP invalid pe rânduri (verificarea CNP corectă), lângă buton scrie «Total cote: 100%», iar mesajul roșu
+    spune «cotele însumează 0%, nu 100%». Mesajul de total nu apare când singura problemă e CNP-ul.” Verificarea comună adună cotele numai
+    pe rândurile care INTRĂ (`coerenta_cote`, deficiența 384: la IMPORT, rândurile respinse se lasă deoparte și restul se importă). În Date
+    firmă nu intră nimic cât timp un rând e respins (refuzul e al întregului tabel, `uc_asociati._verifica`), deci totalul pe care îl
+    judecă omul e cel scris pe ecran, pe TOATE rândurile — exact „Total cote” de lângă „+ Asociat”. Aici: refuzul de total se păstrează
+    numai dacă cotele scrise, toate, nu dau 100%, și spune suma lor; altfel (singura problemă e un CNP, un nume…) iese."""
+    from decimal import Decimal as _D
+    total = sum((_D(str(r["cota"])) for r in randuri or [] if isinstance(r.get("cota"), (int, float))), _D(0))
+    out = []
+    for e in erori or []:
+        if e.get("regula") == "cote_nu_dau_suta":
+            if total == 100:
+                continue
+            e = dict(e, mesaj="cotele asociaților însumează %s%%, nu 100%%" % _cota_text(total).replace(".", ","))
+        out.append(e)
+    return out
+
+
 def erori_pe_campuri(erori):
     """Respingerile verificării comune -> [{camp: 'as-<rand>-<coloana>' | None, mesaj}] (DS cap.24: `{prefix}{i}-{camp}`) pentru ecran (refuzul lângă câmp)."""
     out = []

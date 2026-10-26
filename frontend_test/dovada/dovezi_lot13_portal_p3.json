@@ -1,0 +1,200 @@
+[
+ {
+  "nr": "541",
+  "firma": "tenant_9050",
+  "descriere": "F2 (perioada TVA la încasare «de la 01.10.2026» scrisă pe 22.10.2026, înainte de reparație, trimestrial, fără data notificării): Date firmă -> tabelul perioadelor arată cine și când a scris-o (din jurnalul Date firmă) și avertismentul: opțiunea exercitată în trimestrul IV 2026 se aplică de la 01.01.2027 (CF art.282 alin.(3^1) lit.a)). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#vf-tva-incasare-perioade"
+   },
+   {
+    "deruleaza": "#vf-tva-incasare-perioade"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Scrisă de, când",
+    "zona": "#vf-tva-incasare-perioade"
+   },
+   {
+    "contine": "22.10.2026",
+    "zona": "#vf-tva-incasare-perioade tr[data-perioada-rand]"
+   },
+   {
+    "contine": "01.01.2027",
+    "zona": "#vf-camp-tva_incasare"
+   },
+   {
+    "contine": "art. 282 alin. (3^1) lit. a)",
+    "zona": "#vf-camp-tva_incasare"
+   },
+   {
+    "exista": "#vf-tva_incasare_data_optiune"
+   }
+  ],
+  "captura": "541_f2_vechi_perioada_retroactiva_autor_si_avertisment.png"
+ },
+ {
+  "nr": "C71.1",
+  "firma": "tenant_9052",
+  "descriere": "F4 PFA (profil creat înainte de reparație): Date firmă -> fără Mare contribuabil / Forma de proprietate / Entitate de interes public; Nr. registrul comerțului fără * și fără «Cerut la bilanț»; Regim fiscal fără micro / profit, cu motivul (D212). Nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#df-reg_com"
+   },
+   {
+    "deruleaza": "#df-reg_com"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Mare contribuabil",
+    "zona": ".camp-eticheta"
+   },
+   {
+    "nu_contine": "Forma de proprietate",
+    "zona": ".camp-eticheta"
+   },
+   {
+    "nu_contine": "Entitate de interes public",
+    "zona": ".camp-eticheta"
+   },
+   {
+    "nu_contine": "Cerut la bilanț",
+    "zona": ".camp:has(#df-reg_com)"
+   },
+   {
+    "nu_contine": "*",
+    "zona": ".camp:has(#df-reg_com)"
+   },
+   {
+    "contine": "*",
+    "zona": ".camp:has(#df-iban)"
+   },
+   {
+    "contine": "D212",
+    "zona": "#vf-camp-regim_fiscal"
+   },
+   {
+    "nu_contine": "Microîntreprindere",
+    "zona": "#vf-camp-regim_fiscal"
+   }
+  ],
+  "captura": "c71_1_f4_vechi_pfa_fara_campurile_bilantului.png"
+ },
+ {
+  "nr": "525",
+  "firma": "tenant_9049",
+  "descriere": "F1 (fără asociați, SRL): Operațiuni speciale -> Decontări asociați -> Dividend 10.000, hotărârea nr. 3 din 15.05.2026 -> refuzul propunerii are «Deschide Date firmă» -> clic: Date firmă se deschide la Asociați («+ Asociat» în fereastră), nu la început. Nu se generează nimic, nu se salvează nimic",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "[data-op]"
+   },
+   {
+    "click": "button[data-op='asociati']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "dividend"
+   },
+   {
+    "completeaza": "#op-brut",
+    "valoare": "10000"
+   },
+   {
+    "completeaza": "#op-numar_hotarare",
+    "valoare": "3"
+   },
+   {
+    "completeaza": "#op-data_hotarare",
+    "valoare": "2026-05-15"
+   },
+   {
+    "click": "#op-numar_hotarare"
+   },
+   {
+    "asteapta": "#op-propunere [data-ecran-destinatie='date_firma']"
+   },
+   {
+    "click": "#op-propunere [data-ecran-destinatie='date_firma']"
+   },
+   {
+    "asteapta": "#as-adauga"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#as-adauga"
+   },
+   {
+    "contine": "Asociați"
+   }
+  ],
+  "captura": "525_f1_vechi_deschide_date_firma_la_asociati.png"
+ },
+ {
+  "nr": "526",
+  "firma": "tenant_9050",
+  "descriere": "F2 (asociații 60% / 40%, scriși înainte de reparație): Date firmă -> Asociați: CNP-ul primului rând schimbat cu unul cu cifra de control greșită -> «Total cote: 100%» -> Salvează: refuzul numește CNP-ul, fără «cotele însumează 0%»; asociații nu se schimbă (refuzul nu scrie nimic)",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   },
+   {
+    "asteapta": "#as-1-cnp"
+   },
+   {
+    "completeaza": "#as-1-cnp",
+    "valoare": "1850101400018"
+   },
+   {
+    "click": "#df-salveaza"
+   },
+   {
+    "asteapta": ".msg-eroare[data-camp='as-1-cnp']"
+   },
+   {
+    "deruleaza": "#as-tabel"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Total cote: 100%",
+    "zona": "#as-total"
+   },
+   {
+    "contine": "CNP invalid",
+    "zona": "#df-msg"
+   },
+   {
+    "nu_contine": "însumează",
+    "zona": "#df-msg"
+   }
+  ],
+  "captura": "526_f2_vechi_cnp_invalid_fara_mesaj_de_total.png"
+ }
+]

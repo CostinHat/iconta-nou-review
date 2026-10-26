@@ -98,7 +98,10 @@ def test_notificarea_pleaca_o_data_pe_email_cu_eticheta_nu_cu_textul(baza):
     assert N.livreaza_in_asteptare() == {}, "a doua trecere nu mai trimite nimic"
     (catre, subiect, html), = baza["trimise"]["email"]
     assert (catre, subiect) == ("ztest_notif_a@invalid", "iConta.eu — un element nou de validat")
-    assert html == N.html_email("de_validat"), "afară pleacă eticheta și linkul, nu textul notificării (fără cifre, fără date fiscale)"
+    # [lotul 13, 567: „emailul nu spune ce element și la ce firmă”] emailul poartă eticheta ca propoziție + elementul și firma (prima
+    # propoziție a textului din clopoțel, `N.rezumat`; formele reale: core/test_lot13_portal_p2_notificari.py)
+    assert html == N.html_email("de_validat", "Declarația D300 (09/2026) a firmei X: 1.234 lei de plată, de validat."), html
+    assert "Un element nou de validat." in html and "Ai un element" not in html, html
     assert _sql(baza, "SELECT canal, stare, rezerva_email FROM public.notificari_jurnal WHERE user_id = %s", baza["uid"]) == [
         ("email", "trimis", False)]
 

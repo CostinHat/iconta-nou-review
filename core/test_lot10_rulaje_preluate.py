@@ -184,8 +184,9 @@ def test_kpi_venituri_cumulate_fara_inchiderea_in_121(cu_rulaje):
         rr = da.balanta(conn, SCH, 2026, 10)
     k = kpi_client.kpi_din_balanta(rr)
     assert (k["venituri"], k["cheltuieli"], k["profit"]) == (190000, 145675, 44325), k
-    # media lunară a cheltuielilor cash (cl.6 fără 68x și 641/645), pe 10 luni: (106.000 + 675) / 10
-    assert cashflow.cheltuieli_lunare_cash(rr, 10) == 10667.5
+    # media lunară a cheltuielilor cash (cl.6 fără 68x și fără grupa 69), pe 10 luni: (106.000 + 33.000 + 675) / 10 — [lotul 13, 553]
+    # salariile (641) intră: 421 / 431 din balanță acoperă numai luna trecută (înainte: fără 641, 10.667,5)
+    assert cashflow.cheltuieli_lunare_cash(rr, 10) == 13967.5
 
 
 def test_d101_2026_cuprinde_cifra_de_afaceri_preluata_si_e_valid_pe_duk(cu_rulaje):

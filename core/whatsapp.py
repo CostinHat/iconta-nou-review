@@ -166,6 +166,31 @@ def inregistreaza_numarul(pin):
     return _cere("%s/register" % _pnid(), {"messaging_product": "whatsapp", "pin": pin})
 
 
+#: [lotul 13, deficiența 647] câmpurile numărului expeditor citite de `stare_numar` (documentația Meta „WhatsApp Business Phone Number”:
+#: `status`; `platform_type` — CLOUD_API numai după `POST /<PHONE_NUMBER_ID>/register`; `code_verification_status` — verificarea numărului
+#: în WhatsApp Manager; `name_status` — aprobarea numelui afișat)
+CAMPURI_NUMAR = "display_phone_number,verified_name,status,platform_type,code_verification_status,name_status,quality_rating"
+
+
+def stare_numar():
+    """[647] `GET /<PHONE_NUMBER_ID>?fields=…` — NUMAI citire (nu trimite niciun mesaj, nu înregistrează): de ce Meta refuză trimiterea cu
+    133010 („Phone number not registered on the WhatsApp Business Platform”). Întoarce dict-ul Graph; ridică `Neconfigurat` / `Refuzat`."""
+    token = cfg("WHATSAPP_TOKEN")
+    if not token:
+        raise Neconfigurat("Trimiterea pe WhatsApp nu e configurată pe server.")
+    req = urllib.request.Request("https://graph.facebook.com/%s/%s?fields=%s" % (VERSIUNE_GRAPH, _pnid(), CAMPURI_NUMAR),
+                                 headers={"Authorization": "Bearer " + token})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            return json.load(r)
+    except urllib.error.HTTPError as e:
+        try:
+            err = json.load(e).get("error", {})
+        except ValueError:
+            err = {}
+        raise _refuz(e.code, err)
+
+
 def trimite_sablon_spre_aprobare(definitie):
     """`POST /<WABA_ID>/message_templates` — șablonul intră în revizuirea Meta."""
     return _cere("%s/message_templates" % cfg("WHATSAPP_WABA_ID", WABA_ID), definitie)

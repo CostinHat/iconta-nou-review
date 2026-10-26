@@ -448,6 +448,30 @@ def emitent_certificat(access_token_criptat):
         return None
 
 
+#: [lotul 13, deficiența 661] Ce se știe despre dreptul certificatului cabinetului pe CUI-ul unei firme (`acoperire_cui`).
+ACOPERIRI = ("neconectat", "acoperit", "neacoperit", "neverificat", "neconfirmat")
+
+
+def acoperire_cui(conectat, verificat_la, are_drept):
+    """PURĂ. [lotul 13, deficiența 661, comanda 13.1: „La F7 (CUI inventat) scrie «SPV: conectat»; conexiunea e a cabinetului, iar
+    certificatul nu acoperă acest CUI. Trebuie spus dacă certificatul acoperă CUI-ul firmei (clasa 289).”]
+
+    „Conectat” e o stare a CABINETULUI (tokenul activ, `stare_conexiune`); pentru FIRMĂ, întrebarea e dacă certificatul are drept în SPV pe
+    CUI-ul ei. ANAF nu dă lista CUI-urilor unui certificat (ARHITECTURA_SPV.md, „NICIO lista de CUI-uri”): dreptul se află EMPIRIC, la
+    citirea lui `spv_receive.citeste_firma` (lista de mesaje, chiar goală = are drept; „Nu aveti drept …” = n-are; FINDING 18.07.2026), scris
+    în `public.spv_cui_acoperit.are_drept` (True / False / None). De aici, cinci stări — niciuna nu spune „conectat” despre firmă:
+      neconectat  — cabinetul n-are conexiune activă;
+      acoperit    — ultima citire a CUI-ului a reușit (are_drept True);
+      neacoperit  — ANAF a răspuns că certificatul n-are drept pe CUI (are_drept False);
+      neverificat — CUI-ul n-a fost încă citit cu tokenul activ (niciun rând);
+      neconfirmat — ultima citire a eșuat altfel (ANAF n-a răspuns, alt mesaj): dreptul nu se știe (are_drept None)."""
+    if not conectat:
+        return "neconectat"
+    if not verificat_la:
+        return "neverificat"
+    return {True: "acoperit", False: "neacoperit"}.get(are_drept, "neconfirmat")
+
+
 def stare_firma(conn, principal, cui, acum_dt=None):
     """[lotul 6: 273a, 275c, 289b] Starea SPV a unei FIRME: conexiunea cabinetului (`stare_conexiune`) + ultima citire a CUI-ului ei
     (`public.spv_cui_acoperit`, scrisă de `spv_receive.citeste_firma`): `verificat_la`, `are_drept` (True / False / None = necunoscut),
@@ -468,6 +492,7 @@ def stare_firma(conn, principal, cui, acum_dt=None):
                        "eroare_de_la_anaf": bool(r[2]) and not e_motivul_aplicatiei(r[2])})
             if r[1] is False:
                 st["mesaj"] = mesaj_fara_drept(cui, r[2])   # [17.10.2026] spus la fel peste tot (spv_stare.js, refuzul trimiterii)
+    st["acoperire"] = acoperire_cui(st["conectat"], st["verificat_la"], st["are_drept"])   # [lotul 13, 661] citită de `spv_stare.js`
     return st
 
 

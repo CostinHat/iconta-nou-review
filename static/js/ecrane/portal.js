@@ -1,9 +1,8 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { verdictDinStare } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict din stare
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand } from "../api.js?v=e38843b1ec";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi } from "./facturi_ecran.js?v=ed7b7b85bf";  // [p116_facturi_modul]
+import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=ed7b7b85bf";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -24,13 +23,14 @@ export function desktopPortal(continut, nav) {
     { cheie: "facturi", titlu: "Facturi", icon: "facturi", ...CULORI_CARD.albastru,
       sinteza: "Vizualizează facturile emise și primite." },
     { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", ...CULORI_CARD.verde,
-      sinteza: "Profit, cash, încasări" },
+      sinteza: "Rezultat, bani disponibili, de încasat și de plătit" },
     { cheie: "solicitari", titlu: "Solicitări", icon: "solicitari", ...CULORI_CARD.piersica,
       sinteza: "Trimite o solicitare contabilului." },
     { cheie: "declaratii", titlu: "Declarații depuse", icon: "declaratii", ...CULORI_CARD.teal,
-      sinteza: "Ce s-a depus la ANAF pentru tine" },
+      sinteza: "Ce s-a depus la ANAF, cu data și recipisa" },
+    /* [lotul 13, 555] cardul promitea „Recipise, balanțe, bilanț”, dar avea numai balanțele și, a doua oară, declarațiile */
     { cheie: "documente", titlu: "Documente", icon: "documente", ...CULORI_CARD.ardezie,
-      sinteza: "Recipise, balanțe, bilanț" },
+      sinteza: "Balanțele lunare, în PDF" },
     { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", ...CULORI_CARD.violet,
       sinteza: "Raportul lunar de la contabil" },
     { cheie: "acces-cont", titlu: "Acces cont", icon: "solicitari", ...CULORI_CARD.ardezie,
@@ -199,7 +199,11 @@ async function ecranAccesCont(corp, nav) {
   randeazaEcran();
 }
 
-// ---------- PANOU STATUS ANAF (Acasa) ----------
+// ---------- PANOU DE PLĂTIT (Acasa) ----------
+/* [lotul 13, deficiența 554, comanda Costin 13.1] „Clientul vede codurile și termenele de depunere ale cabinetului («d300», «d394», literă
+   mică); decizia din 05.10: restanțele declarațiilor rămân alertă la cabinet. Clientul vede ce are de plătit și până când (TVA, impozit,
+   contribuții), cu sume, în cuvintele lui.” Serverul dă rândurile gata (`uc_portal.de_platit`): ce, perioada, termenul, suma din balanța
+   notelor validate (sau „o calculează contabilul”). Lista e informația panoului: se vede direct (DS cap.2: „informația de stare esențială”). */
 async function actualizeazaStatusAcasa(continut) {
   const zona = continut.querySelector("#pa-status");
   if (!zona) return;
@@ -210,10 +214,6 @@ async function actualizeazaStatusAcasa(continut) {
     zona.innerHTML = "";
     return;
   }
-  const luni = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"];
-  const restante = d.restante || [];
-  const urmarit = d.de_urmarit || [];
-
   if (d.mesaj === "vector fiscal necompletat" || d.stare === "gri") {
     zona.innerHTML = `<div class="pa-card pa-neutru">
       <div class="pa-titlu">Situația fiscală se configurează</div>
@@ -221,45 +221,18 @@ async function actualizeazaStatusAcasa(continut) {
     </div>`;
     return;
   }
-
-  let clasa, titlu, sub;
-  if (d.stare === "rosu") {
-    clasa = "pa-rosu"; titlu = cate(restante.length, "declarație trebuie depusă", "declarații trebuie depuse");
-    sub = "Contabilul tău se ocupă.";
-  } else if (d.stare === "galben") {
-    clasa = "pa-galben"; titlu = cate(urmarit.length, "termen apropiat", "termene apropiate");
-    sub = "Scadențe în perioada următoare.";
-  } else {
-    // [P13c] verdictul din stare, din PUNCTUL UNIC (verdict.js): verde EXPLICIT -> pozitiv; stare
-    // absentă (null) sau necunoscută -> gri, „nu se poate verifica" (niciodată verde din oficiu).
-    const v = verdictDinStare(d.stare, "portal");
-    clasa = v.pozitiv ? "pa-verde" : "pa-neutru";
-    titlu = v.titlu;
-    sub = v.pozitiv ? "Nicio declarație restantă. Contabilul tău are situația sub control." : "Situația nu a putut fi verificată la ANAF. Contabilul tău o clarifică.";
-  }
-
-  const linii = [...restante, ...urmarit];
-  let listaHtml = "";
-  if (linii.length) {
-    listaHtml = `<div class="pa-lista" id="pa-lista" hidden>` + linii.map((x) =>
-      `<div class="pa-rand">
-        <span class="pa-tip">${x.tip}</span>
-        <span class="pa-perioada">${x.perioada || ""}</span>
-        <span class="pa-termen">până pe ${dataRo(x.termen, "zi_luna_text")}</span>
-      </div>`).join("") + `</div>`;
-  }
-
-  zona.innerHTML = `<div class="pa-card ${clasa}" id="pa-card" style="${linii.length ? "cursor:pointer" : ""}">
-    <div class="pa-titlu">${titlu}</div>
-    <div class="pa-sub">${sub}</div>
-    ${listaHtml}
+  const plati = d.de_platit || [];
+  const rand = (x) => `
+      <div class="pa-rand">
+        <span class="pa-tip">${esc(x.ce)}</span>
+        <span class="pa-perioada">${esc(x.perioada || "")}</span>
+        <span class="pa-termen">${x.suma != null ? bani(x.suma) + " lei" : "suma o calculează contabilul"} · până pe ${dataRo(x.termen, "zi_luna_text")}</span>
+      </div>`;
+  zona.innerHTML = `<div class="pa-card pa-neutru" id="pa-card">
+    <div class="pa-titlu">${plati.length ? "De plătit la stat" : "Nimic de plătit la stat în perioada următoare"}</div>
+    <div class="pa-sub">${plati.length ? "Sumele vin din contabilitatea înregistrată de contabilul tău." : "Când apare o plată, o vezi aici, cu suma și termenul."}</div>
+    ${plati.length ? `<div class="pa-lista" id="pa-lista">${plati.map(rand).join("")}</div>` : ""}
   </div>`;
-
-  if (linii.length) {
-    const card = zona.querySelector("#pa-card");
-    const lista = zona.querySelector("#pa-lista");
-    card.addEventListener("click", () => { lista.hidden = !lista.hidden; });
-  }
 }
 
 // [p107_facturi_meniu] MENIU FACTURI: doua optiuni (Istoric / Emite)
@@ -282,6 +255,18 @@ async function deschideFacturi(corp, nav) {
 }
 
 // ---------- DECLARATII DEPUSE ----------
+/* [lotul 13, deficiența 555] „Rândul arată doar «d406 · depusă» (fără perioadă, dată, recipisă; gol după «·»)”: rândul citea câmpuri pe care
+   serverul nu le trimitea. Acum: codul și denumirea formularului, perioada, ziua depunerii și recipisa (`portal_api.declaratii_depuse`). */
+function randDeclaratie(d) {
+  return `
+      <div class="pf-frand">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(d.cod || "")} \u00b7 ${esc(d.perioada || "")}</div>
+          <div class="pf-frand-sub">${d.denumire ? esc(d.denumire) + " \u00b7 " : ""}depusă pe ${d.data ? dataRo(d.data) : "o dată necunoscută"}${d.recipisa ? " \u00b7 recipisa " + esc(d.recipisa) : ""}</div>
+        </div>
+        <span class="pf-frand-ok">\u2713 depusă</span>
+      </div>`;
+}
 async function ecranDeclaratii(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
   corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
@@ -294,14 +279,7 @@ async function ecranDeclaratii(corp, nav) {
     ? `<p class="msg-eroare">${esc(err.mesaj || "Nu s-au putut încărca declarațiile.")}</p>`
     : !lista.length
     ? `<div class="stare-goala">Nicio declarație depusă încă.</div>`
-    : lista.map((d) => `
-      <div class="pf-frand">
-        <div class="pf-frand-text">
-          <div class="pf-frand-nume">${d.tip || ""} \u00b7 ${d.perioada || ""}</div>
-          <div class="pf-frand-sub">depusă ${d.depus_la || d.data || ""}</div>
-        </div>
-        <span class="pf-frand-ok">\u2713 depusă</span>
-      </div>`).join("");
+    : lista.map(randDeclaratie).join("");
   corp.innerHTML = `
     <h2 class="pf-titlu">Declarații depuse</h2>
     <p class="pf-intro">Ce a fost depus la ANAF pentru firma ta.</p>
@@ -379,6 +357,12 @@ async function ecranPovestea(corp, nav) {
       <div class="stare-goala">Încă nu ai primit niciun raport lunar.</div>`;
     return;
   }
+  /* [lotul 13, deficiența 558] „la prima lună nu se face comparație”: `diferenta` lipsește (null) când luna trecută e dinaintea evidenței în
+     iConta.eu; povestea scrisă cu alți termeni decât cifrele (ex. „încasări” în loc de „venituri”) sau aprobată pe alte cifre e „retrasă”:
+     rândul arată cifrele lunii și spune că textul se reface, nu textul greșit. */
+  const textRand = (p) => p.retrasa
+    ? `Textul acestei luni a fost retras: folosea alți termeni decât cifrele lunii. Contabilul îl reface. Cifrele lunii: venituri ${bani(p.venituri)} lei, cheltuieli ${bani(p.cheltuieli)} lei, ${p.tip === "pierdere" ? "pierdere" : (p.tip === "profit" ? "profit" : "rezultat")} înainte de impozit ${bani(Math.abs(p.rezultat || 0))} lei.`
+    : (p.text || "");
   const fmtDif = (p) => {
     if (typeof p.diferenta !== "number") return "";
     const semn = p.diferenta > 0 ? "+" : "";
@@ -389,7 +373,7 @@ async function ecranPovestea(corp, nav) {
     <div class="pf-frand">
       <div class="pf-frand-text">
         <div class="pf-frand-nume">${dataRo(`${p.an}-${String(p.luna).padStart(2,"0")}`, "luna_an")}</div>
-        <div class="pf-frand-sub">${esc(p.text || "").slice(0, 80)}...</div>
+        <div class="pf-frand-sub">${p.retrasa ? esc(textRand(p)) : esc(p.text || "").slice(0, 80) + "..."}</div>
         <div class="pf-frand-sub">${fmtDif(p)}</div>
       </div>
     </div>`).join("");
@@ -405,7 +389,7 @@ async function ecranPovestea(corp, nav) {
       corp.querySelector("#pov-detaliu").innerHTML = `
         <div class="pov-card">
           <h3>${dataRo(`${p.an}-${String(p.luna).padStart(2,"0")}`, "luna_an")}</h3>
-          <div class="pov-text">${esc(p.text || "").replace(/\n/g, "<br>")}</div>
+          <div class="pov-text">${esc(textRand(p)).replace(/\n/g, "<br>")}</div>
           ${typeof p.diferenta === "number" ? `<div class="pov-dif">${fmtDif(p)}</div>` : ""}
         </div>`;
     });
@@ -464,73 +448,45 @@ async function ecranRecomanda(corp, nav) {
   });
 }
 
-// ---------- IN LUCRU (placeholder pentru cardurile ce urmeaza) ----------
+// ---------- DOCUMENTE: balanțele lunare ----------
+/* [lotul 13, deficiențele 555 + 556] Cardul are un singur conținut — balanțele (declarațiile au cardul lor) —, deci se deschide direct pe
+   listă, fără meniul cu două opțiuni. Fiecare lună își spune starea: „definitivă” (luna închisă de contabil) sau „provizorie” (încă se
+   lucrează la ea, cu câte înregistrări neverificate are): pe 22.10 clientul vedea octombrie, cu 42 de ciorne, ca definitivă. */
 async function ecranDocumente(corp, nav) {
-  function randeazaMeniu() {
-    nav.setInapoi(undefined);
-    corp.innerHTML = `
-      <h2 class="pf-titlu">Documente</h2>
-      <p class="pf-intro">Alege ce vrei să vezi.</p>
-      <button class="acces-card meniu-card" id="doc-balante">Balanțe lunare — generate automat din datele contabile</button>
-      <button class="acces-card meniu-card" id="doc-declaratii">Declarații depuse — ce s-a depus la ANAF, cu data depunerii</button>
-    `;
-    corp.querySelector("#doc-balante").addEventListener("click", randeazaBalante);
-    corp.querySelector("#doc-declaratii").addEventListener("click", randeazaDeclaratii);
-  }
-
-  async function randeazaBalante() {
-    nav.setInapoi(randeazaMeniu);
-    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-    let luni = [], err = null;
-    try { const r = await api.get("/portal/documente/luni"); luni = (r && r.luni) || []; } catch (e) { err = e; }
-    if (err) { corp.innerHTML = `<h2 class="pf-titlu">Balanțe lunare</h2><p class="msg-eroare">${esc(err.mesaj || "Nu s-a putut încărca lista.")}</p>`; return; }
-    const corpuri = !luni.length
-      ? `<div class="stare-goala">Nicio lună cu date contabile încă.</div>`
-      : luni.map((iso) => {
-        const [an, ll] = iso.split("-");   // pastrat pentru data-bal; eticheta trece prin dataRo (P1b)
-        return `
-        <div class="pf-frand">
+  nav.setInapoi(undefined);
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  let luni = [], err = null;
+  try { const r = await api.get("/portal/documente/luni"); luni = (r && r.luni) || []; } catch (e) { err = e; }
+  if (err) { corp.innerHTML = `<h2 class="pf-titlu">Balanțe lunare</h2><p class="msg-eroare">${esc(err.mesaj || "Nu s-a putut încărca lista.")}</p>`; return; }
+  const stare = (l) => l.definitiva ? "definitivă — luna e închisă de contabil"
+    : "provizorie — contabilul încă lucrează la ea" + (l.neverificate ? ` (${cate(l.neverificate, "înregistrare neverificată", "înregistrări neverificate")})` : "");
+  const corpuri = !luni.length
+    ? `<div class="stare-goala">Nicio lună cu date contabile încă.</div>`
+    : luni.map((l) => {
+      const [an, ll] = l.luna.split("-");   // pastrat pentru data-bal; eticheta trece prin dataRo (P1b)
+      return `
+        <div class="pf-frand" data-luna="${an}-${ll}" data-definitiva="${l.definitiva ? "da" : "nu"}">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">Balanța de verificare · ${dataRo(iso, "luna_an")}</div>
-            <div class="pf-frand-sub">generată automat din datele contabile</div>
+            <div class="pf-frand-nume">Balanța de verificare · ${dataRo(l.luna, "luna_an")}</div>
+            <div class="pf-frand-sub">${stare(l)}</div>
           </div>
           <button class="buton-primar" data-bal="${an}-${ll}">Descarcă PDF</button>
         </div>`;
-      }).join("");
-    corp.innerHTML = `
-      <h2 class="pf-titlu">Balanțe lunare</h2>
-      <div class="pf-lista zebra-lista">${corpuri}</div>`;
-    corp.querySelectorAll("[data-bal]").forEach((b) => {
-      b.addEventListener("click", async () => {
-        const [an, ll] = b.dataset.bal.split("-");
-        try {
-          await descarca(`/portal/documente/balanta?an=${an}&luna=${parseInt(ll)}`, `balanta_${an}_${ll}.pdf`);
-        } catch (e) {
-          refuzPeRand(b, (e && (e.mesaj || e.message)) || "eroare");   // [R131]
-        }
-      });
+    }).join("");
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Balanțe lunare</h2>
+    <p class="pf-intro">Generate din contabilitate. O lună provizorie se poate schimba până o închide contabilul.</p>
+    <div class="pf-lista zebra-lista">${corpuri}</div>`;
+  corp.querySelectorAll("[data-bal]").forEach((b) => {
+    b.addEventListener("click", async () => {
+      const [an, ll] = b.dataset.bal.split("-");
+      try {
+        await descarca(`/portal/documente/balanta?an=${an}&luna=${parseInt(ll)}`, `balanta_${an}_${ll}.pdf`);
+      } catch (e) {
+        refuzPeRand(b, (e && (e.mesaj || e.message)) || "eroare");   // [R131]
+      }
     });
-  }
-
-  async function randeazaDeclaratii() {
-    nav.setInapoi(randeazaMeniu);
-    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-    let decl = [], err = null;
-    try { const r = await api.get("/portal/documente/luni"); decl = (r && r.declaratii) || []; } catch (e) { err = e; }
-    if (err) { corp.innerHTML = `<h2 class="pf-titlu">Declarații depuse</h2><p class="msg-eroare">${esc(err.mesaj || "Nu s-a putut încărca lista.")}</p>`; return; }
-    corp.innerHTML = `
-      <h2 class="pf-titlu">Declarații depuse</h2>
-      <div class="pf-lista zebra-lista">${!decl.length ? '<div class="stare-goala">Nicio declarație depusă încă.</div>' : decl.map((d) => `
-        <div class="pf-frand">
-          <div class="pf-frand-text">
-            <div class="pf-frand-nume">${d.tip} · ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}-01`, "luna_an_numeric")}</div>
-            <div class="pf-frand-sub">depusă ${dataRo(d.data)}</div>
-          </div>
-          <span class="pf-frand-ok">✓ depusă</span>
-        </div>`).join("")}</div>`;
-  }
-
-  randeazaMeniu();
+  });
 }
 // [bon] Pozeaza bon - OCR cu AI + confirmare client  // bon_flux_e2_v1
 let _pozareMesaj = "";  // faza_b_traseu_v1
@@ -646,6 +602,21 @@ async function ecranBon(corp, nav) {
 
 
 // ---------- CIFRELE FIRMEI (KPI) ----------  // portal_kpi_fe_v1
+/* [lotul 13, deficiențele 553 + 559, comanda Costin 13.1]
+   553: „«Profit −6.075 lei» — la rezultat negativ clientul citește «Pierdere» (și e înainte de impozit)”: rândul spune felul rezultatului
+   (`kpi.tip`) și suma fără minus; cheltuielile nu cuprind impozitul pe profit / venit (grupa 69), ca rezultatul să fie înainte de impozit.
+   559: „De încasat” / „De plătit” = facturile deschise cu nota validată, aceleași rânduri ca Scadențarul portalului: lei separat de euro,
+   cu totalul în lei; ce arată balanța peste ele (sold preluat nedefalcat, avans) se spune pe rând, nu se adună tăcut. */
+function sumePeMoneda(f) {
+  const parti = (f.pe_moneda || []).filter((x) => Number(x.suma) > 0).map((x) => bani(x.suma) + " " + monedaScrisa(x.moneda));
+  return parti.length ? parti.join(" + ") : "0 lei";
+}
+function subFacturi(f) {
+  const strain = (f.pe_moneda || []).some((x) => x.moneda !== "RON" && Number(x.suma) > 0);
+  const dif = Number(f.fara_factura || 0);
+  return `${cate(f.nr || 0, "factură deschisă", "facturi deschise")}, aceleași ca în Scadențar${strain ? " · în total, în lei: " + bani(f.total_lei) + " lei" : ""}` +
+    (Math.abs(dif) >= 0.01 ? ` · balanța contabilă arată ${bani(f.balanta)} lei: ${bani(Math.abs(dif))} lei ${dif > 0 ? "nu sunt legați de o factură (sold preluat nedefalcat sau avans)" : "mai puțin decât facturile (încasări sau plăți neîmpărțite pe facturi)"}` : "");
+}
 async function ecranCifre(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
@@ -658,21 +629,25 @@ async function ecranCifre(corp, nav) {
   }
   const k = d.kpi || {};
   const lei = (v) => baniRotund(v) + " lei";
-  const rand = (eticheta, valoare, culoare) => `
-    <div class="pf-frand">
-      <div class="pf-frand-text"><div class="pf-frand-nume">${eticheta}</div></div>
+  const rand = (eticheta, valoare, culoare, sub, id) => `
+    <div class="pf-frand"${id ? ` id="${id}"` : ""}>
+      <div class="pf-frand-text"><div class="pf-frand-nume">${eticheta}</div>${sub ? `<div class="pf-frand-sub">${sub}</div>` : ""}</div>
       <span class="pf-frand-suma" style="${culoare ? "color:" + culoare : ""}">${valoare}</span>
     </div>`;
+  const felRez = k.tip === "pierdere" ? "Pierdere" : (k.tip === "profit" ? "Profit" : "Rezultat");
+  const provizorie = d.luna_definitiva === false
+    ? ` Luna ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}`, "luna_an")} e încă deschisă: cifrele sunt provizorii${d.neverificate ? ` (${cate(d.neverificate, "înregistrare neverificată", "înregistrări neverificate")} de contabil nu sunt cuprinse)` : ""}.`
+    : "";
   corp.innerHTML = `
     <h2 class="pf-titlu">Cifrele firmei</h2>
-    <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2,"0")}`, "luna_an")}. Date din contabilitate \u2014 lunile nedepuse pot lipsi.</p>
+    <p class="pf-intro" id="cf-perioada">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2,"0")}`, "luna_an")}, din înregistrările verificate de contabil.${provizorie}</p>
     <div class="pf-lista">
       ${rand("Venituri", lei(k.venituri))}
-      ${rand("Cheltuieli", lei(k.cheltuieli))}
-      ${rand("Profit", lei(k.profit), (k.profit || 0) >= 0 ? "var(--verde)" : "var(--rosu)")}
+      ${rand("Cheltuieli (fără impozitul pe profit sau pe venit)", lei(k.cheltuieli))}
+      ${rand(felRez + " înainte de impozit", lei(Math.abs(k.profit || 0)), k.tip === "pierdere" ? "var(--rosu)" : (k.tip === "profit" ? "var(--verde)" : null), "", "cf-rezultat")}
       ${rand("Bani disponibili (cas\u0103 + banc\u0103)", lei(k.cash))}
-      ${rand("De \u00eencasat de la clien\u021bi", lei(k.de_incasat))}
-      ${rand("De pl\u0103tit c\u0103tre furnizori", lei(k.de_platit))}
+      ${rand("De \u00eencasat de la clien\u021bi", sumePeMoneda(k.facturi_de_incasat || {}), null, subFacturi(k.facturi_de_incasat || {}), "cf-de-incasat")}
+      ${rand("De pl\u0103tit c\u0103tre furnizori", sumePeMoneda(k.facturi_de_platit || {}), null, subFacturi(k.facturi_de_platit || {}), "cf-de-platit")}
     </div>
     <h2 class="pf-titlu" style="margin-top:20px">Previziune bani (8 s\u0103pt\u0103m\u00e2ni) ${semnAjutor("F016")}</h2>
     <p class="pf-intro" id="cf-intro">Estimare pe scaden\u021bele facturilor \u2014 orientativ.</p>
@@ -680,6 +655,9 @@ async function ecranCifre(corp, nav) {
   incarcaForecast(corp, rand, lei);  // portal_cashflow_fe_v1
 }
 
+/* [lotul 13, 553] „În prima săptămână ies 15.423 lei fără explicație (furnizorii sunt 3.000) — fiecare rând spune din ce e format; media
+   cheltuielilor lunare «~117 lei» nu se potrivește cu cheltuielile anului”: rândul săptămânii își numește componentele (`componente` de la
+   server), iar media spune lunile din care e făcută. Componentele nu poartă „+… lei” (forma încasării pe rând). */
 async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
   const zona = corp.querySelector("#cf-zona");
   if (!zona) return;
@@ -688,14 +666,23 @@ async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
   catch (e) { zona.innerHTML = `<p class="msg-eroare">${esc(e.mesaj || "Previziunea este indisponibilă momentan.")}</p>`; return; }
   const intro = corp.querySelector("#cf-intro");  // portal_cashflow_fe_v2
   if (intro && d.medie_cheltuieli > 0) {
-    intro.textContent = "Estimare pe scaden\u021bele facturilor \u0219i obliga\u021biilor \u2014 presupun\u00e2nd c\u0103 cheltuielile lunare r\u0103m\u00e2n la ~" +
-      (Number(d.medie_cheltuieli) || 0).toLocaleString("ro-RO", { maximumFractionDigits: 0 }) + " lei (media anului).";
+    const ml = d.medie_luni || {};
+    const luni = ml.de_la && ml.pana_la && ml.de_la !== ml.pana_la
+      ? `lunile ${dataRo(ml.de_la + "-01", "luna_an_numeric")}–${dataRo(ml.pana_la + "-01", "luna_an_numeric")}`
+      : `luna ${dataRo((ml.pana_la || ml.de_la) + "-01", "luna_an_numeric")}`;
+    intro.textContent = "Estimare pe scaden\u021bele facturilor \u0219i obliga\u021biilor \u2014 presupun\u00e2nd c\u0103 cheltuielile lunare (inclusiv salariile) r\u0103m\u00e2n la ~" +
+      lei(d.medie_cheltuieli) + ", media pe " + luni + ".";
   }
   zona.innerHTML = (d.saptamani || []).map((w) => {
     const detaliu = (w.incasari ? "+" + lei(w.incasari) : "") +
       (w.incasari && w.plati ? " / " : "") + (w.plati ? "\u2212" + lei(w.plati) : "");
+    const parte = (sens, titlu) => {
+      const c = (w.componente || []).filter((x) => x.sens === sens);
+      return c.length ? titlu + ": " + c.map((x) => `${esc(x.ce)} ${baniRotund(x.suma)}`).join(", ") : "";
+    };
+    const din = [parte("+", "Încasări"), parte("-", "Plăți")].filter(Boolean).join(" · ");
     return rand("din " + dataRo(w.de_la, "zi_luna") + (detaliu ? " \u00b7 " + detaliu : ""),
-      lei(w.sold), w.sold < 0 ? "var(--rosu)" : null);
+      lei(w.sold), w.sold < 0 ? "var(--rosu)" : null, din);
   }).join("");
 }
 

@@ -90,7 +90,22 @@ def _stare(cur, uid):
     st["salvate"] = bool(p[1])
     st["complet"] = bool(p[5]) or (bool(r[0]) and bool(p[1]))
     st["nota_emailuri_cont"] = NOTA_EMAILURI_CONT
+    st["nota_sinteza"] = _nota_sinteza(cur, uid, st["grupuri"])
     return st
+
+
+#: [lotul 13, deficiența 565] sinteza zilnică e email INFORMATIV (core/dezabonare.py): adresa dezabonată din linkul emailului n-o mai
+#: primește, oricare ar fi bifa — se spune lângă bifă, ca bifa să nu promită un email care nu pleacă
+NOTA_SINTEZA_DEZABONAT = ("Adresa contului tău s-a dezabonat de la emailurile informative (din linkul „Dezabonează-te” al unui email), "
+                          "deci sinteza zilei nu pleacă, chiar dacă e bifată. Scrie-ne din Suport dacă vrei s-o primești din nou.")
+
+
+def _nota_sinteza(cur, uid, grupuri):
+    if not any(t["cheie"] == "sinteza_zilnica" for g in grupuri for t in g["tipuri"]):
+        return None
+    from core import dezabonare as _dez
+    email = _repo.emailul(cur, uid)
+    return NOTA_SINTEZA_DEZABONAT if email and _dez.e_dezabonata(cur, email) else None
 
 
 def stare(ctx):

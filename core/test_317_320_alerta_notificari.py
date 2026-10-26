@@ -82,7 +82,8 @@ def test_320_bifele_decid_canalul_clopotelul_ramane(monkeypatch):
     MUTAȚIE: ramura `elif not dorit(...)` scoasă din `livreaza_in_asteptare` -> pleacă -> pică."""
     plecate, jurnal = [], []
     d = {"uid": 5, "email": "x@exemplu.test", "canal": "email", "telefon": None, "confirmat": False, "acord": False, "activ": True}
-    monkeypatch.setattr(notificari, "_revendica", lambda limita: [(1, "solicitare_client", dict(d, preferinte=None)),
+    # [lotul 13, 566] `solicitare_client` e acum bifată din oficiu; tipul nebifat din oficiu al probei: `factura_primita` (Facturi și SPV)
+    monkeypatch.setattr(notificari, "_revendica", lambda limita: [(1, "factura_primita", dict(d, preferinte=None)),
                                                                  (2, "de_validat", dict(d, preferinte=None)),
                                                                  (3, "de_validat", dict(d, preferinte={"de_validat": False}))])
     monkeypatch.setattr(notificari, "livreaza", lambda nid, dd, tip: plecate.append((nid, tip)) or "email")

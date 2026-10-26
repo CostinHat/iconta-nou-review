@@ -1,26 +1,25 @@
 # -*- coding: utf-8 -*-
 import datetime
-from core.cashflow import aloca_sold, forecast
+from core.cashflow import din_facturi, forecast
 
 AZI = datetime.date(2026, 7, 6)
 
 
-def test_aloca_noi_intai():
-    f = [{"data_scadenta": "2026-01-15", "total": 100},
-         {"data_scadenta": "2026-06-15", "total": 200}]
-    d = aloca_sold(f, 200)
-    assert len(d) == 1 and d[0]["suma"] == 200 and d[0]["data_scadenta"] == "2026-06-15"
+# [lotul 13, 553 + 559] `aloca_sold` (soldul balanței împărțit pe facturi „de la cele mai noi”) s-a înlocuit cu `din_facturi`: facturile
+# deschise cu restul lor în lei, fiecare la scadența ei, iar ce arată balanța peste ele intră o dată, numit
+def test_din_facturi_fiecare_la_scadenta_ei():
+    f = [{"data_scadenta": "2026-01-15", "rest_lei": 100}, {"data_scadenta": "2026-06-15", "rest_lei": 200}]
+    d = din_facturi(f, 300, "facturi", "fără factură", AZI)
+    assert [(x["data_scadenta"], x["suma"], x["ce"]) for x in d] == [("2026-01-15", 100, "facturi"), ("2026-06-15", 200, "facturi")]
 
 
-def test_aloca_partial():
-    f = [{"data_scadenta": "2026-01-15", "total": 100},
-         {"data_scadenta": "2026-06-15", "total": 200}]
-    d = aloca_sold(f, 250)
-    assert d[0]["suma"] == 200 and d[1]["suma"] == 50
+def test_din_facturi_soldul_peste_facturi_intra_o_data_numit():
+    d = din_facturi([{"data_scadenta": None, "data_emitere": "2026-06-01", "rest_lei": 100}], 250, "facturi", "fără factură", AZI)
+    assert [(x["data_scadenta"], x["suma"], x["ce"]) for x in d] == [("2026-06-01", 100, "facturi"), ("2026-07-06", 150, "fără factură")]
 
 
-def test_aloca_zero():
-    assert aloca_sold([{"data_scadenta": "2026-06-15", "total": 100}], 0) == []
+def test_din_facturi_fara_sold_in_plus():
+    assert din_facturi([], 0, "facturi", "fără factură", AZI) == []
 
 
 def test_forecast_scadenta_trecuta_in_s1():
@@ -57,9 +56,10 @@ def test_obligatii():
 
 
 def test_cheltuieli_cash_exclude_amortizare():
+    """[lotul 13, 553] salariile (641) intră în medie — 421 / 431 din balanță acoperă numai luna trecută; amortizarea (6811) nu."""
     from core.cashflow import cheltuieli_lunare_cash
     bal = [_rb("628", rul_d=6000), _rb("6811", rul_d=1200), _rb("641", rul_d=9000)]
-    assert cheltuieli_lunare_cash(bal, 6) == 1000
+    assert cheltuieli_lunare_cash(bal, 6) == 2500
 
 
 def test_plati_estimate_scadente():

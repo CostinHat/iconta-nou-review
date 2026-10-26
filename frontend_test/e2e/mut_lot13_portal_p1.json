@@ -1,0 +1,68 @@
+[
+ {
+  "fisier": "static/js/ecrane/portal.js",
+  "ancora": "const felRez = k.tip === \"pierdere\" ? \"Pierdere\" : (k.tip === \"profit\" ? \"Profit\" : \"Rezultat\");",
+  "inlocuire": "const felRez = \"Profit\";",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_553_cifrele_spun_pierderea_si_previziunea_isi_explica_saptamana"
+ },
+ {
+  "fisier": "static/js/ecrane/portal.js",
+  "ancora": "${plati.length ? \"De plătit la stat\" : \"Nimic de plătit la stat în perioada următoare\"}",
+  "inlocuire": "${plati.length ? \"Termene apropiate\" : \"Totul în regulă\"}",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_554_clientul_vede_ce_are_de_platit_fara_codurile_declaratiilor"
+ },
+ {
+  "fisier": "static/js/ecrane/portal.js",
+  "ancora": "${d.recipisa ? \" \\u00b7 recipisa \" + esc(d.recipisa) : \"\"}",
+  "inlocuire": "${\"\"}",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_555_declaratia_depusa_are_perioada_data_si_recipisa"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "if (_pv && !cl.length) butonGenerat(_pv, \"Previzualizarea cere un cont de client: invită unul cu „Invită client nou”.\"); }",
+  "inlocuire": "if (_pv && !cl.length) { _pv.disabled = true; _pv.title = \"Nu există client. Invită un client întâi.\"; } }",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_555_previzualizarea_inactiva_isi_spune_motivul"
+ },
+ {
+  "fisier": "core/uc_portal.py",
+  "ancora": "        definitiva = (an, luna) in inchise\n",
+  "inlocuire": "        definitiva = True\n",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_556_luna_deschisa_e_provizorie_iar_cea_inchisa_definitiva"
+ },
+ {
+  "fisier": "core/uc_portal.py",
+  "ancora": "note_client=_note_balanta_client(conn, t[\"schema_name\"], an, luna))",
+  "inlocuire": "note_client=None)",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_557_pdf_balantei_clientului_fara_paragraful_pentru_contabil"
+ },
+ {
+  "fisier": "core/uc_portal.py",
+  "ancora": "r[\"retrasa\"] = bool(abateri or depasita)",
+  "inlocuire": "r[\"retrasa\"] = False",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_558_povestea_cu_termeni_gresiti_e_retrasa_si_prima_luna_fara_comparatie"
+ },
+ {
+  "fisier": "core/uc_portal.py",
+  "ancora": "if preluare and (an_p, luna_p) < tuple(preluare):",
+  "inlocuire": "if False:",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_558_povestea_cu_termeni_gresiti_e_retrasa_si_prima_luna_fara_comparatie"
+ },
+ {
+  "fisier": "core/repo_portal.py",
+  "ancora": "return _rf.de_incasat(cur, directie, CONDITIE_NOTA_VALIDATA)",
+  "inlocuire": "return _rf.de_incasat(cur, directie, \"\")",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_559_de_incasat_si_scadentarul_au_aceeasi_baza"
+ },
+ {
+  "fisier": "static/js/app.js",
+  "ancora": "window.addEventListener(\"hashchange\", () => {",
+  "inlocuire": "(() => {",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_560_linkul_invitatiei_intra_in_cont_si_in_fila_deja_deschisa"
+ },
+ {
+  "fisier": "core/uc_public.py",
+  "ancora": "            return \"Contul e deja activat — intră cu emailul și parola.\"\n",
+  "inlocuire": "            return \"link de activare invalid sau expirat\"\n",
+  "test": "frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_560_linkul_de_activare_folosit_spune_contul_e_deja_activat"
+ }
+]

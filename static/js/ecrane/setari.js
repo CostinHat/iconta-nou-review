@@ -295,17 +295,27 @@ async function _incarcaChei(corp) {
   let chei = [];
   try { const r = await api.get("/cabinet/api-chei"); chei = (r && r.chei) || []; } catch { zona.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca cheile API.</p>`; return; }
   if (!chei.length) { zona.innerHTML = `<div class="stare-goala">Nicio cheie generată încă.</div>`; return; }
+  // [lotul 13, deficiența 564: „lista nu arată ultima folosire (promisă în descriere)”] fiecare rând spune când a fost creată cheia și
+  // când a deschis ultima dată datele (sau că n-a fost folosită încă), cu data în forma aplicației (DS cap.4, `dataRo`), nu ISO.
+  // [674, clasă DS: „Orice acțiune e un buton, nu text pe care se dă click”] „Revocă” e buton (`.buton-sters buton-mic`, DS cap.1:
+  // „Ștergere/revocare/distructiv”); cheia revocată rămâne în listă, cu starea ei, fără acțiune.
   zona.innerHTML = chei.map((c) => `
-    <div class="pf-frand">
+    <div class="pf-frand" data-cheie-id="${c.id}">
       <div class="pf-frand-text">
-        <div class="pf-frand-nume">${esc(c.nume) || "—"} · <code>${c.prefix}…</code></div>
-        <div class="pf-frand-sub">${c.activ ? "activă" : "revocată"}${c.ultima_folosire ? " · folosită: " + c.ultima_folosire.slice(0, 16) : ""}</div>
+        <div class="pf-frand-nume">${esc(c.nume) || "—"} · <code>${esc(c.prefix)}…</code></div>
+        <div class="pf-frand-sub">${c.activ ? "activă" : "revocată"}${c.creat_la ? " · creată " + dataRo(c.creat_la, "cu_ora") : ""} · ${c.ultima_folosire ? "folosită ultima dată " + dataRo(c.ultima_folosire, "cu_ora") : "nefolosită încă"}</div>
       </div>
-      ${c.activ ? `<span class="btn-link set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}" style="color:var(--rosu)">Revocă</span>` : ""}
+      ${c.activ ? `<button type="button" class="buton-sters buton-mic set-cheie-revoca" data-actiune="DELETE /cabinet/api-chei/{kid}" data-id="${c.id}">Revocă</button>` : ""}
     </div>`).join("");
   zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", () => {
     confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicațiile care o folosesc nu vor mai avea acces.", async () => {
-      try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
+      try {
+        await api.del(`/cabinet/api-chei/${b.dataset.id}`);
+        // [564: „cheia completă rămâne afișată și după revocare”] cheia arătată la creare dispare odată cu revocarea ei
+        const msg = corp.querySelector("#set-msg-chei");
+        if (msg && msg.dataset.cheieId === String(b.dataset.id)) { msg.innerHTML = ""; msg.className = ""; delete msg.dataset.cheieId; }
+        _incarcaChei(corp);
+      }
       catch (e) {
         refuzPeRand(b, e.mesaj || "Nu s-a putut revoca cheia.");
       }
@@ -325,7 +335,15 @@ function _initChei(corp) {
       // [lotul 12, 45] mesajul cu cheia (HTML: cheia se copiază din <code>) e un mesaj de după buton: zonă de mesaj + adus în vedere,
       // ca orice mesaj din `arataMesaj` (o zonă fără clasă, scrisă direct, rămânea sub marginea ecranului)
       msg.className = "msg-ok";
-      msg.innerHTML = `Cheia ta (copiaz-o acum: nu se mai afișează):<br><code style="user-select:all;word-break:break-all">${esc(r.cheie)}</code>`;
+      // [564: „lipsește butonul Copiază”] cheia se copiază cu un buton (clipboard, ca „Copiază tot” din Suport), nu numai prin selecție
+      msg.innerHTML = `Cheia ta (copiaz-o acum: nu se mai afișează):<br><code id="set-cheie-text" style="user-select:all;word-break:break-all">${esc(r.cheie)}</code>
+        <div><button type="button" class="buton-secundar buton-mic" id="set-cheie-copiaza" data-fara-actiune>Copiază</button></div>`;
+      msg.dataset.cheieId = String(r.id);
+      const bc = msg.querySelector("#set-cheie-copiaza");
+      bc.addEventListener("click", () => {
+        navigator.clipboard.writeText(r.cheie).then(() => { bc.textContent = "Copiată"; setTimeout(() => { bc.textContent = "Copiază"; }, 1400); })
+          .catch(() => { bc.textContent = "Selectează cheia și copiaz-o"; });
+      });
       corp.querySelector("#set-cheie-nume").value = "";
       // [lotul 12, 45] lista cheilor (deasupra mesajului) se reîncarcă ÎNTÂI: altfel rândul cheii noi împingea mesajul sub margine după ce
       // fusese adus în vedere (cu multe chei, cu zeci de pixeli)
@@ -404,7 +422,8 @@ export async function panouNotificari(zona, opt = {}) {
       ${st.grupuri.map((g) => `<div class="not-grup"><div class="cf-grup-titlu">${esc(g.grup)}</div>
         ${g.tipuri.map((t) => `<label class="set-bifa not-tip"><input type="checkbox" data-tip="${esc(t.cheie)}"${t.bifat ? " checked" : ""}>
           <span><b>${esc(t.eticheta.charAt(0).toUpperCase() + t.eticheta.slice(1))}</b><br><span class="ecran-nota">${esc(t.rand)}</span></span></label>`).join("")}</div>`).join("")}
-      <p class="ecran-nota">${esc(st.nota_emailuri_cont || "")}</p></fieldset>` : "";
+      <p class="ecran-nota">${esc(st.nota_emailuri_cont || "")}</p>
+      ${st.nota_sinteza ? `<p class="ecran-nota" id="not-nota-sinteza">${esc(st.nota_sinteza)}</p>` : ""}</fieldset>` : "";
   const $ = (s) => zona.querySelector(s);
   const msg = $("#not-msg");
   function arata(s) {
@@ -430,7 +449,12 @@ export async function panouNotificari(zona, opt = {}) {
   });
   $("#not-cere-cod").addEventListener("click", async () => {
     try { const r = await api.post("/eu/telefon/cod", { acord: $("#not-acord").checked }); arataMesaj(msg, `Codul a plecat pe WhatsApp. E valabil ${cate(r.minute, "minut", "minute")}.`, "ok"); }
-    catch (e) { arataMesaj(msg, e.mesaj || "Codul nu a putut pleca.", "eroare"); }
+    // [lotul 13, deficiența 647: „Afișare: «NU s-a salvat» deși numărul e salvat”] WhatsApp indisponibil nu e un refuz al unei salvări:
+    // numărul și acordul sunt salvate, doar codul n-a plecat — avertisment, fără caseta „NU s-a salvat” (care se leagă numai de „eroare”)
+    catch (e) {
+      if ((e.detaliu || {}).cod === "WHATSAPP_INDISPONIBIL") arataMesaj(msg, e.mesaj || "WhatsApp nu e disponibil acum; notificările vin pe email.", "avert");
+      else arataRefuzul(zona, e, msg);
+    }
     try { arata(await api.get("/eu/notificari")); } catch { /* starea rămâne cea afișată */ }
   });
   $("#not-confirma").addEventListener("click", async () => {
