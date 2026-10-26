@@ -225,7 +225,7 @@
  {
   "nr": "637",
   "firma": "tenant_9049",
-  "descriere": "F1: D318, 2026 -> statul HU, titularul „A”, moneda HUF, BIC, fără nicio factură -> „Generează D318”: lângă buton numai „Adaugă cel puțin o factură.”; perioada, CUI-ul și IBAN-ul (venite din Date firmă) nu sunt cerute. Nimic generat.",
+  "descriere": "F1: D318, 2026 -> statul HU, titularul „A”, moneda HUF, BIC, fără nicio factură -> „Generează D318”: lângă buton, în caseta „NU s-a salvat.”, numai „Adaugă cel puțin o factură.”; perioada, CUI-ul și IBAN-ul (venite din Date firmă) nu sunt cerute. Nimic generat.",
   "pasi": [
    {
     "declaratie": "d318",
@@ -251,13 +251,13 @@
     "click": ".fereastra:last-of-type #d318-regen"
    },
    {
-    "asteapta": ".fereastra:last-of-type .dec-regen-msg"
+    "asteapta": ".fereastra:last-of-type .refuz-salvare .refuz-salvare-motiv"
    }
   ],
   "verifica": [
    {
     "contine": "Adaugă cel puțin o factură.",
-    "zona": ".fereastra:last-of-type .dec-regen-msg"
+    "zona": ".fereastra:last-of-type .refuz-salvare"
    },
    {
     "nu_contine": "completează perioada de rambursare, CUI-ul solicitantului, IBAN-ul"

@@ -17,13 +17,23 @@ from conftest import firma_noua, linie_nota, perioada_incheiata, sql
 LUNA = perioada_incheiata("lunar")
 
 
-def _text_langa_butoane(pg, zona):
-    """Textul zonei de mesaj FĂRĂ butoanele notelor (și fără eticheta notelor interne a partidei simple): ce citește contabilul ca
-    paragraf; plus etichetele butoanelor."""
-    return pg.evaluate("""(sel) => { const z = [...document.querySelectorAll(sel)].pop(); const c = z.cloneNode(true);
+#: [lotul 13, 515] butoanele refuzului cozii stau în rândul de imediat după zona mesajului (`coada_trimite._actiuniRefuz`)
+def butoane_refuz(zona):
+    return zona + " + .coada-actiuni-refuz .coada-note-refuz button"
+
+
+def text_langa_butoane(pg, zona):
+    """Textul refuzului FĂRĂ butoanele notelor (și fără eticheta notelor interne a partidei simple): ce citește contabilul ca paragraf;
+    plus etichetele butoanelor. [lotul 13, 515] Refuzul de lângă buton îl spune caseta „NU s-a salvat.” (zona lui stă ascunsă cât stă
+    caseta), iar butoanele stau în rândul de după zonă; o zonă care nu e lângă buton (Bilanț) își arată singură textul."""
+    return pg.evaluate("""(sel) => { const z = [...document.querySelectorAll(sel)].pop();
+        const a = z.nextElementSibling && z.nextElementSibling.classList.contains('coada-actiuni-refuz') ? z.nextElementSibling : null;
+        const f = z.closest('.fereastra') || document;
+        const motiv = z.hidden ? f.querySelector('.refuz-salvare .refuz-salvare-motiv') : null;
+        const c = z.cloneNode(true);
         c.querySelectorAll('.coada-note-refuz, .ecran-nota').forEach((x) => x.remove());
-        return {text: c.innerText.replace(/\\s+/g, ' ').trim(),
-                butoane: [...z.querySelectorAll('.coada-note-refuz button')].map((b) => b.innerText.trim())}; }""", zona)
+        return {text: (motiv ? motiv.textContent : c.textContent).replace(/\\s+/g, ' ').trim(), ascunsa: z.hidden,
+                butoane: a ? [...a.querySelectorAll('.coada-note-refuz button')].map((b) => b.innerText.trim()) : []}; }""", zona)
 
 
 def _nota(patron, firma, data, debit, credit, suma, descriere, document_ref, valideaza=False):
@@ -51,8 +61,8 @@ def _d300_trimite(patron, firma):
     from e2e_bloc_c import _declaratie_pas1, _trimite_si_asteapta
     _declaratie_pas1(patron, firma["nume"], "d300", LUNA.an, luna=LUNA.luna)
     _trimite_si_asteapta(patron)
-    patron.pg.wait_for_selector("#dec-coada-mesaj .coada-note-refuz button", timeout=30000)
-    return _text_langa_butoane(patron.pg, "#dec-coada-mesaj")
+    patron.pg.wait_for_selector(butoane_refuz("#dec-coada-mesaj"), timeout=30000)
+    return text_langa_butoane(patron.pg, "#dec-coada-mesaj")
 
 
 def test_def_436_coada_refuzul_nu_repeta_notele_ciorna_din_perioada(patron, firma_tva_g):
@@ -116,8 +126,8 @@ def test_def_436_coada_refuzul_nu_repeta_notele_bilantul_din_evidenta(patron, fi
     pg.dispatch_event("#bl-an", "change")
     pg.select_option("#bl-tip", "s1005")
     pg.click("#bl-coada")
-    pg.wait_for_selector("#bl-coada-mesaj .coada-note-refuz button", timeout=90000)
-    m = _text_langa_butoane(pg, "#bl-coada-mesaj")
+    pg.wait_for_selector(butoane_refuz("#bl-coada-mesaj"), timeout=90000)
+    m = text_langa_butoane(pg, "#bl-coada-mesaj")
     patron.captura()
     assert m["text"].startswith("Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde 1 notă nevalidată din perioada "
                                 "ei. Validează-le în Registrul jurnal, apoi generează din nou."), m

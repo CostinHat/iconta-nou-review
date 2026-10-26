@@ -357,9 +357,13 @@ def test_def_637_d318_refuzul_numeste_numai_ce_lipseste(patron, firma_l13):
     pg = _d318_pas2(patron, firma_l13)
     _d318_completat(pg, cu_factura=False)
     pg.click(_F + "#d318-regen")
-    pg.wait_for_selector(_F + ".dec-regen-msg", timeout=20000)
+    # [lotul 13, 515] refuzul de lângă „Generează D318” îl spune caseta „NU s-a salvat.” (zona lui, `.dec-regen-msg`, stă ascunsă cât stă
+    # caseta — același text, o dată)
+    pg.wait_for_selector(_F + ".refuz-salvare .refuz-salvare-motiv", timeout=20000)
     patron.captura("d318_fara_factura")
-    assert _txt(pg, ".dec-regen-msg") == "Adaugă cel puțin o factură."
+    caseta = pg.eval_on_selector_all(_F + ".refuz-salvare .refuz-salvare-lista > li",
+                                     "lis => lis.filter((li) => !li.hidden).map((li) => li.textContent.trim())")
+    assert caseta == ["Adaugă cel puțin o factură."], caseta
     assert pg.locator(_F + ".msg-eroare[data-camp]").count() == 0 and pg.locator(_F + "#dec-refuz").count() == 0
 
 

@@ -430,15 +430,19 @@ def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_si
     try:
         _declaratie_pas1(patron, firma_e2e["nume"], "d300", LUNA.an, luna=LUNA.luna)
         _trimite_si_asteapta(patron)
-        pg.wait_for_selector(".coada-note-refuz button", timeout=30000)
+        # [lotul 13, 515] textul refuzului îl spune caseta „NU s-a salvat.” de lângă buton; butoanele notelor stau în rândul de după zonă
+        from e2e_lot11_g import butoane_refuz, text_langa_butoane
+        pg.wait_for_selector(butoane_refuz("#dec-coada-mesaj"), timeout=30000)
         patron.captura("refuz")
-        mesaj = pg.inner_text("#dec-coada-mesaj")
-        assert "Diferența pe contul 4427 o explică 1 notă nevalidată." in mesaj and " — Factură " in mesaj, mesaj   # [lotul 11, 436] lângă buton, fraza numără nota; butonul o numește   # [302] ciorna n-are nr.
+        m = text_langa_butoane(pg, "#dec-coada-mesaj")
+        mesaj = m["text"]
+        assert "Diferența pe contul 4427 o explică 1 notă nevalidată." in mesaj, m   # [lotul 11, 436] lângă buton, fraza numără nota
+        assert len(m["butoane"]) == 1 and " — Factură " in m["butoane"][0], m          # butonul o numește   # [302] ciorna n-are nr.
         assert "se generează din nou și intră singură în coadă" in mesaj and "notă(e) nevalidată(e)" not in mesaj, mesaj
         asteptare = sql("SELECT id, note_ids FROM public.declaratii_in_asteptare WHERE tenant_id = %s AND rezolvata_la IS NULL", (tid,))
         assert len(asteptare) == 1, asteptare
         note = asteptare[0][1]
-        pg.click(".coada-note-refuz button")
+        pg.click(butoane_refuz("#dec-coada-mesaj"))
         pg.wait_for_selector(".val-evidentiat[data-nota-id='%d']" % note[0], timeout=30000)
         patron.captura("nota_evidentiata")
         for nid in note:
