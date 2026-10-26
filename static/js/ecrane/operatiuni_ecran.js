@@ -786,7 +786,8 @@ export async function ecranOperatiuni(corp, nav, t) {
     // [lotul 13, 506 / 633] partenerii firmei (Parteneri) în lista câmpului CUI; „Verifică” la ANAF / VIES aduce denumirea
     const campuriCui = [...corp.querySelectorAll(".op-cui")];
     if (campuriCui.length) {
-      api.get(`/tenants/${t.id}/parteneri`).then((r) => {
+      // partenerii din documentele firmei (`GET parteneri-firma`, ca fișa partenerului); `GET parteneri` e rezumatul soldurilor de preluare
+      api.get(`/tenants/${t.id}/parteneri-firma`).then((r) => {
         const ps = ((r && r.parteneri) || []).filter((p) => p.cui);
         campuriCui.forEach((inp) => {
           const dl = corp.querySelector(`#${inp.id}-lista`);
@@ -842,7 +843,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         } else {
           url = `/tenants/${t.id}/operatiuni-date?ce=facturi_neincasate&data=${encodeURIComponent((corp.querySelector("#op-data") || {}).value || "")}`;
           gol = "Nicio factură emisă neîncasată";
-          eticheta = (f) => `${esc(f.document)} · ${esc(f.partener || "")} · sold ${bani(f.sold)} lei${f.zile != null ? ` · ${cate(f.zile, "zi", "zile")} de la scadență` : " · fără scadență"}`;
+          eticheta = (f) => `${esc(f.document)} · ${esc(f.partener || "")} · sold ${bani(f.sold)} lei${f.zile == null ? " · fără scadență" : f.zile > 0 ? ` · ${cate(f.zile, "zi", "zile")} de la scadență` : f.zile < 0 ? ` · scadentă peste ${cate(-f.zile, "zi", "zile")}` : " · scadentă azi"}`;
         }
         try {
           const r = await api.get(url);

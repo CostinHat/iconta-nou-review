@@ -53,8 +53,8 @@ def _deschide_dividendul(e, firma, an=_AN):
 def test_def_430_dividendul_se_imparte_pe_asociati_din_profitul_preluat_pe_117(patron, f6):
     """430 a–f. Pașii: Operațiuni speciale -> „Decontări asociați” -> Dividend, 10.000 brut, hotărârea nr. 3 din 15.05 -> tabelul
     împărțirii apare ÎNAINTE de generare (POPESCU ION 60% 6.000,00 / 960,00 / 5.040,00; IONESCU MARIA 40% 4.000,00 / 640,00 / 3.360,00),
-    cu avertismentul că profitul e pe 117 fără analitic -> „Generează nota” -> confirmarea numește nota și conturile (117 = 457
-    10.000,00 lei; 457 = 446 1.600,00 lei), „Deschide nota … în Registrul jurnal” o deschide evidențiată, cu documentul „Hotărârea
+    cu avertismentul că profitul e pe 117 fără analitic -> „Generează nota” -> confirmarea numește nota și conturile ([lotul 13, 527]
+    117 = 1171 10.000,00 lei — profitul preluat pe sinteticul 117 trece întâi pe 1171 —, 1171 = 457 10.000,00 lei; 457 = 446 1.600,00 lei), „Deschide nota … în Registrul jurnal” o deschide evidențiată, cu documentul „Hotărârea
     adunării generale a asociaților nr 3 din 15.05.<an>” și sursa „operațiunile speciale”."""
     s = f6["schema"]
     _asociati(s)
@@ -71,11 +71,14 @@ def test_def_430_dividendul_se_imparte_pe_asociati_din_profitul_preluat_pe_117(p
     pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=20000)
     msg = pg.inner_text("#op-mesaj .caseta-ok")
     # [lotul 12, C78.1: „mesajul de confirmare repetă nota de trei ori”] confirmarea arată rândurile notei citite din Registrul jurnal, câte
-    # unul pe asociat (analiticul lui), fără să le repete într-o frază „Nota: …”; aceleași conturi și sume: 117 = 457 6.000 + 4.000 =
-    # 10.000,00 lei (dividendul brut), 457 = 446 960 + 640 = 1.600,00 lei (impozitul de 16% din tabelul împărțirii, verificat mai sus)
+    # unul pe asociat (analiticul lui), fără să le repete într-o frază „Nota: …”; aceleași conturi și sume: 1171 = 457 6.000 + 4.000 =
+    # 10.000,00 lei (dividendul brut), 457 = 446 960 + 640 = 1.600,00 lei (impozitul de 16% din tabelul împărțirii, verificat mai sus);
+    # [lotul 13, 527] profitul preluat pe sinteticul 117 se reclasifică întâi pe 1171 („Rezultatul reportat reprezentând profitul
+    # nerepartizat”), în aceeași notă: 117 = 1171 10.000,00 lei
     linii_msg = [" ".join(x.split()) for x in msg.splitlines()]
     assert "Notă generată" in msg and sorted(x for x in linii_msg if " = " in x) == sorted([
-        "117 = 457 · 6.000,00 lei", "457 = 446 · 960,00 lei", "117 = 457 · 4.000,00 lei", "457 = 446 · 640,00 lei"]), msg
+        "117 = 1171 · 10.000,00 lei", "1171 = 457 · 6.000,00 lei", "457 = 446 · 960,00 lei", "1171 = 457 · 4.000,00 lei",
+        "457 = 446 · 640,00 lei"]), msg
     assert "Nota:" not in msg, msg
     assert sql('SELECT sursa, document_ref FROM "%s".inregistrari' % s) == [
         ("operatiuni", "Hotărârea adunării generale a asociaților nr 3 din 15.05.%d" % _AN)]

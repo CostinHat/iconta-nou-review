@@ -8,6 +8,8 @@ există deja, iar mesajul spune ce s-a găsit deja și ce e nou.
 278, 279: dispoziția de casă legată de factură, avansul și plafonul în formular; starea reală a notei la salvare și pe rând."""
 import time
 
+import pytest
+
 from conftest import alege_tipul, sql, zile_de_acum
 from e2e_bloc_a import AZI, CLIENT, _card, emite_api, pregateste_firma
 
@@ -516,7 +518,18 @@ def test_def_272_cui_nu_se_modifica_din_date_firma_ci_prin_corectura_administrat
         sql("UPDATE public.users SET poate_valida = %s, poate_depune = %s WHERE id = %s", (era[0], era[1], uid))
 
 
-def test_def_281_amortizarea_restanta_dintr_o_actiune_si_inchiderea_cu_confirmare(patron, firma_e2e):
+@pytest.fixture()
+def firma_281(patron):
+    """[lotul 13, valul 5] O firmă NOUĂ numai a probei 281: „Ce oprește închiderea” trebuie să conțină NUMAI amortizarea lunilor anterioare
+    (butonul „Închide luna fără amortizarea lunilor anterioare” apare doar atunci). Pe firma fișierului, o probă anterioară picată la mijloc
+    (284: nota lunii trecute lăsată în ciornă) adăuga un blocaj neconfirmabil, iar 281 pica fără vina ei (plasa din 26.10.2026)."""
+    from conftest import firma_noua
+    for f in firma_noua():
+        pregateste_firma(patron, f, regim_fiscal="profit")
+        yield f
+
+
+def test_def_281_amortizarea_restanta_dintr_o_actiune_si_inchiderea_cu_confirmare(patron, firma_281):
     """281. Mijloace fixe / închidere: lunile de amortizare restante se generau lună cu lună, iar închiderea lunii nu se oprea.
     Pașii: un mijloc fix pus în funcțiune acum patru luni (100 lei pe lună), fără amortizare înregistrată; amortizarea lunii trecute
     generată și validată -> Închidere lună -> luna trecută: „Ce oprește închiderea” numește lunile anterioare (schimbă profitul), iar
@@ -525,7 +538,7 @@ def test_def_281_amortizarea_restanta_dintr_o_actiune_si_inchiderea_cu_confirmar
     import datetime as _dt
     from e2e_bloc_a import _api
     from e2e_bloc_e import _card, _la_luna, _mf
-    f = firma_e2e
+    f = firma_281
     tid, sch = f["tenant_id"], f["schema"]
     trecuta = AZI.replace(day=1) - _dt.timedelta(days=1)
     m = AZI.year * 12 + AZI.month - 1 - 4

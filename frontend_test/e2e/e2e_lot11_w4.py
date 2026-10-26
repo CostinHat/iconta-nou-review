@@ -119,7 +119,8 @@ def test_def_421_totalurile_registrului_jurnal_raman_in_vedere(ecran_mic, firma_
 def test_def_410_mesajul_ajustarii_sta_langa_buton(ecran_mic, firma_profit):  # noqa: F811 — fixtura din e2e_lot82
     """10.3: „mesajele lângă buton”. Pașii: firmă pe impozit pe profit (`e2e_lot82.firma_profit`), 25 de ajustări fiscale pe anul în curs ->
     Registrul de evidență fiscală (impozit pe profit), anul în curs ->
-    rândul D101 și trimestrul alese, suma goală -> „Adaugă ajustarea”: refuzul serverului apare în `#aj-mesaj`, lângă buton, în vedere
+    rândul D101 și trimestrul alese, suma goală -> „Adaugă ajustarea”: refuzul serverului apare lângă buton, în vedere (`#aj-mesaj`, sau
+    caseta „NU s-a salvat.” a butonului, care îl ține cât stă — lotul 13, 515)
     (înainte: sub lista celor 25 de ajustări, deasupra câmpurilor, departe de bara de jos)."""
     from e2e_bloc_a import _api, _ok, _card
     tid, an = firma_profit["tenant_id"], AZI.year
@@ -142,7 +143,10 @@ def test_def_410_mesajul_ajustarii_sta_langa_buton(ecran_mic, firma_profit):  # 
     pg.click("#aj-adauga")
     pg.wait_for_function("() => (document.querySelector('#aj-mesaj') || {}).innerText", timeout=20000)
     m = pg.evaluate("""() => { const c = %s, rc = c.getBoundingClientRect(), b = document.querySelector('#aj-adauga').getBoundingClientRect();
-      const z = document.querySelector('#aj-mesaj'), r = z.getBoundingClientRect();
+      // [lotul 13, 515] refuzul de lângă buton stă în caseta „NU s-a salvat.” a butonului (`api.arataRefuzul`: zona lui se ascunde cât stă
+      // caseta, același text o singură dată); se măsoară ce vede omul
+      const zm = document.querySelector('#aj-mesaj'), bt = document.querySelector('#aj-adauga');
+      const z = zm.hidden && bt._refuz && bt._refuz.isConnected ? bt._refuz : zm, r = z.getBoundingClientRect();
       return {in_corp: r.top >= rc.top - 1 && r.bottom <= rc.bottom + 1, distanta: Math.round(Math.max(0, r.top - b.bottom, b.top - r.bottom)),
               text: z.innerText.trim()}; }""" % _CORP)
     ecran_mic.captura()

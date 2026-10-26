@@ -171,3 +171,18 @@ def salariat(cur, schema, salariat_id):
     cur.execute("SELECT id, nume, prenume, cnp, data_angajare, data_incetare FROM %ssalariati WHERE id = %%s" % _p(schema), (salariat_id,))
     r = _rand(cur.fetchone())
     return dict(zip(("id", "nume", "prenume", "cnp", "data_angajare", "data_incetare"), r)) if r else None
+
+
+# ── mijlocul fix de pe factura primită (601) ─────────────────────────────────────────────────────────────────────────────────────────
+def linii_factura(cur, schema, factura_id):
+    """[(id, cantitate, pret_unitar, valoare_neta)] — liniile facturii, în ordinea lor (aceeași ordine ca `conturi` / `imobilizari`)."""
+    cur.execute("SELECT id, cantitate, pret_unitar, valoare_neta FROM %sfactura_linii WHERE factura_id = %%s ORDER BY id" % _p(schema),
+                (factura_id,))
+    return _randuri(cur)
+
+
+def moneda_si_cursul_facturii(cur, schema, factura_id):
+    """{id, moneda, curs_bnr} — ce cere `sume_lei.curs_factura`."""
+    cur.execute("SELECT id, moneda, curs_bnr FROM %sfacturi WHERE id = %%s" % _p(schema), (factura_id,))
+    r = _rand(cur.fetchone())
+    return {"id": r[0], "moneda": r[1], "curs_bnr": r[2]} if r else {"id": factura_id, "moneda": "RON", "curs_bnr": None}

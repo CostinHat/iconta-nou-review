@@ -37,7 +37,7 @@ def test_dovezile_folosesc_numai_pasii_si_verificarile_uneltei():
 def test_dovezile_pe_datele_dinainte_de_reparatie_au_vechi_in_nume():
     """CLAUDE.md §4: „inclusiv pe documentele create înainte de reparație” — captura lor poartă `vechi` (regula 3a)."""
     d = json.load(open(DOVEZI, encoding="utf-8"))
-    assert {x["nr"] for x in d if "vechi" in x["captura"]} >= {"522", "518", "527", "533", "541"}
+    assert {x["nr"] for x in d if "vechi" in x["captura"]} >= {"522", "518", "527", "533", "541", "516", "519", "670"}
 
 
 def test_mutatiile_au_ancora_unica_si_testul_lor():
@@ -49,3 +49,42 @@ def test_mutatiile_au_ancora_unica_si_testul_lor():
         assert x["inlocuire"] != x["ancora"]
         fis, nume = x["test"].split("::")
         assert fis == "frontend_test/e2e/e2e_lot13_ops.py" and ("def %s(" % nume) in teste, x["test"]
+
+
+#: [lotul 13, valul 4] numerele pachetului `ops` care cer dovada pe copia firmelor de test (`core/test_deficiente.py`: „rezolvată” = test
+#: e2e AL NUMĂRULUI + captură `<nr>_…_f<k>_….png`)
+NUMERE_VAL4 = ("505", "506", "507", "508", "511", "512", "513", "514", "516", "517", "519", "520", "521", "522", "528", "529", "533",
+               "548", "550", "552", "601", "631", "633", "670", "C116", "C129")
+#: numerele al căror test e2e e în alt fișier al plasei (rândul din registru îl numește)
+TEST_ALTUNDEVA = {"C116": "e2e_lot12_migr.py", "C129": "e2e_lot12_diverse.py"}
+
+
+def test_fiecare_numar_are_captura_pe_firma_de_test():
+    """Forma capturii din `core/test_deficiente._RE_CAPTURA`: numărul rândului la început, apoi firma copiei (`f1`…`f7`)."""
+    import re
+    d = json.load(open(DOVEZI, encoding="utf-8"))
+    capturi = {}
+    for x in d:
+        for c in [x["captura"]] + [p["captura"] for p in x["pasi"] if "captura" in p]:
+            capturi.setdefault(x["nr"], []).append(c)
+    for nr in NUMERE_VAL4:
+        forma = re.compile(r"^%s_(?:[a-z0-9]+_)*?f\d+(?:_[a-z0-9]+)*\.png$" % re.escape(nr.lower()))
+        bune = [c for c in capturi.get(nr, []) if forma.match(c)]
+        assert bune, "%s: nicio captură `%s_…_f<k>_….png` (are: %s)" % (nr, nr.lower(), capturi.get(nr))
+
+
+def test_fiecare_numar_are_testul_lui_si_fiecare_test_mutatia_lui():
+    """`test_def_505_507_508_…` acoperea numai 505 (`core/test_deficiente.plasa_e2e`): fiecare număr are testul lui, iar fiecare test din
+    fișier are o mutație care îl face roșu."""
+    import re
+    src = open(os.path.join(RAD, "frontend_test", "e2e", "e2e_lot13_ops.py"), encoding="utf-8").read()
+    teste = re.findall(r"^def (test_def_(\w+?)_[a-z]\w*)\(", src, re.M)
+    numere = {re.match(r"(c?\d+)", n).group(1).upper() for _t, n in teste}
+    for nr in NUMERE_VAL4:
+        if nr in TEST_ALTUNDEVA:
+            assert ("def test_def_%s_" % nr.lower()) in open(os.path.join(RAD, "frontend_test", "e2e", TEST_ALTUNDEVA[nr]), encoding="utf-8").read()
+            continue
+        assert nr in numere, "%s: niciun `test_def_%s_…` în e2e_lot13_ops.py" % (nr, nr.lower())
+    cu_mutatie = {x["test"].split("::")[1] for x in json.load(open(MUTATII, encoding="utf-8"))}
+    fara = sorted(t for t, _n in teste if t not in cu_mutatie)
+    assert not fara, "teste fără mutație în mut_lot13_ops.json: %s" % fara

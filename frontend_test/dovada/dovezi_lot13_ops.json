@@ -32,6 +32,260 @@
   "captura": "522_519_f2_registrul_pe_activ_vechi.png"
  },
  {
+  "nr": "519",
+  "firma": "tenant_9050",
+  "descriere": "F2, date existente (după migrarea core/migrare_mf_note.py, pașii 4–5): Mijloace fixe -> MF-001 «Utilaj productie» — casat pe producție de o ciornă de casare ștearsă apoi (519) — e «activ», cu acțiunile lui (Casează, Reevaluează, Înregistrează lunile lipsă) la vedere.",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type tr:has-text('Utilaj productie') td.mf-stare",
+    "text": "activ"
+   },
+   {
+    "activ": ".fereastra:last-of-type tr:has-text('Utilaj productie') [data-caseaza]"
+   },
+   {
+    "activ": ".fereastra:last-of-type tr:has-text('Utilaj productie') [data-reeval]"
+   }
+  ],
+  "captura": "519_f2_mf001_activ_vechi.png"
+ },
+ {
+  "nr": "516",
+  "firma": "tenant_9050",
+  "descriere": "F2, date existente: Mijloace fixe -> MF-001 -> «Reevaluează»: fereastra reevaluării spune «înregistrat pe activ 4.000,00 lei» = 2.200 din soldul preluat (02–12/2025) + 9 × 200 din notele 01–09/2026 — înainte verificarea reevaluării citea în 2813 numai notele din 2026 și refuza (516).",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type tr:has-text('Utilaj productie') [data-reeval]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #mf-f-justa"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "înregistrat pe activ 4.000,00 lei",
+    "zona": ".fereastra:last-of-type .pf-intro"
+   },
+   {
+    "contine": "Utilaj productie",
+    "zona": ".fereastra:last-of-type .pf-intro"
+   }
+  ],
+  "captura": "516_f2_vechi_reevaluarea_mf001_inregistrat_pe_activ.png"
+ },
+ {
+  "nr": "C116",
+  "firma": "tenant_9050",
+  "descriere": "F2: Mijloace fixe -> MF-001 -> «Reevaluează»: fereastra cere numai data și valoarea justă; rezerva din reevaluare (105) și pierderea anterioară (655) ale activului le ia aplicația din reevaluările lui (C116 / 511) — nu se mai scriu de mână.",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type tr:has-text('Utilaj productie') [data-reeval]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #mf-f-justa"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #mf-f-data"
+   },
+   {
+    "exista": ".fereastra:last-of-type #mf-f-justa"
+   },
+   {
+    "contine": "le ia aplicația din reevaluările lui"
+   },
+   {
+    "nu_contine": "Sold 105"
+   },
+   {
+    "nu_contine": "Pierdere 655"
+   }
+  ],
+  "captura": "c116_f2_reevaluarea_fara_105_655_de_mana.png"
+ },
+ {
+  "nr": "C129",
+  "firma": "tenant_9050",
+  "descriere": "F2: Mijloace fixe -> MF-001 -> «Reevaluează»: contul imobilizării (2131) și al amortizării (2813) nu se cer în fereastră — vin din fișa activului; o fișă fără contul imobilizării e refuzată la generare (C129, `amortizare_lunii.conturile_fisei`).",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": ".fereastra:last-of-type tr:has-text('Utilaj productie') [data-reeval]"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #mf-f-justa"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Cont imobilizare",
+    "zona": ".fereastra:last-of-type "
+   },
+   {
+    "nu_contine": "Cont amortizare",
+    "zona": ".fereastra:last-of-type "
+   },
+   {
+    "contine": "MF-001",
+    "zona": ".fereastra:last-of-type .pf-intro"
+   }
+  ],
+  "captura": "c129_f2_conturile_din_fisa_activului.png"
+ },
+ {
+  "nr": "517",
+  "firma": "tenant_9050",
+  "descriere": "F2: Mijloace fixe -> rândul MF-001 are acțiunea «Înregistrează lunile lipsă» (cu numărul lunilor lipsă când există; inactivă, cu motivul la hover, când toate lunile până la ultima lună încheiată sunt înregistrate — pe copie, 01–09/2026). Generarea lunilor lipsă ca ciorne e probată în e2e (test_def_517).",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type tr:has-text('Utilaj productie') [data-lipsa]",
+    "text": "Înregistrează lunile lipsă"
+   }
+  ],
+  "captura": "517_f2_actiunea_lunilor_lipsa_pe_rand.png"
+ },
+ {
+  "nr": "528",
+  "firma": "tenant_9050",
+  "descriere": "F2: Operațiuni speciale -> Subvenții -> Investiții: mijlocul fix finanțat se alege din registrul activelor (MF-001 «Utilaj productie»), ca subvenția să stea pe activ și reluarea 4751 = 7584 să se genereze odată cu amortizarea lui (528). Nimic nu se scrie.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='subventie']"
+   },
+   {
+    "click": "button[data-op='subventie']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "investitii"
+   },
+   {
+    "asteapta": "#op-mijloc_fix_id option:has-text('Utilaj productie')",
+    "stare": "attached"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#op-mijloc_fix_id option",
+    "text": "MF-001"
+   }
+  ],
+  "captura": "528_f2_subventia_pe_mijlocul_fix.png"
+ },
+ {
+  "nr": "631",
+  "firma": "tenant_9050",
+  "descriere": "F2: Închidere lună -> «Reevaluare valută» -> «Adaugă un cont»: moneda ajustării manuale se alege din listă (aceeași listă de coduri ca la factură), fără nimic ales — nu se mai scrie de mână (631).",
+  "pasi": [
+   {
+    "click": "#fa-inchidere"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #il-reevaluare"
+   },
+   {
+    "click": ".fereastra:last-of-type #il-reevaluare"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #rv-m-adauga"
+   },
+   {
+    "click": ".fereastra:last-of-type #rv-m-adauga"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #rv-m0-moneda"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type select#rv-m0-moneda"
+   },
+   {
+    "exista": ".fereastra:last-of-type #rv-m0-moneda option",
+    "text": "EUR"
+   },
+   {
+    "valoare": ".fereastra:last-of-type #rv-m0-moneda",
+    "egal": ""
+   }
+  ],
+  "captura": "631_f2_moneda_din_lista.png"
+ },
+ {
   "nr": "518",
   "firma": "tenant_9050",
   "descriere": "F2: Mijloace fixe -> MF-001 -> «Casează» -> fereastra casării: data 25.10.2026 -> «Generează nota de casare»: luna casării 6811 = 2813 200, 2813 = 2131 4.200 (soldul pe activ 4.000 + luna casării), 6583 = 2131 7.800; documentul e procesul-verbal de casare; activul rămâne în registru până la validarea notei (519).",
@@ -81,6 +335,29 @@
    }
   ],
   "captura": "518_f2_casarea_mf001_vechi.png"
+ },
+ {
+  "nr": "519",
+  "firma": "tenant_9050",
+  "descriere": "F2: după «Generează nota de casare» pe MF-001 (dovada 518), registrul arată «casarea e în ciorna …, de validat» — activul iese din registru numai la validarea notei, nu la generarea ei (519).",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type tr:has-text('Utilaj productie') td.mf-stare",
+    "text": "casarea e în ciorna"
+   }
+  ],
+  "captura": "519_f2_casarea_mf001_in_ciorna_vechi.png"
  },
  {
   "nr": "670",
@@ -1192,5 +1469,1084 @@
    }
   ],
   "captura": "532_f2_sponsorizarea_credit.png"
+ },
+ {
+  "nr": "505",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> Obiecte de inventar -> Achiziție: câmpul valorii se numește «Valoare fără TVA» (505).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='obiect_inv']"
+   },
+   {
+    "click": "button[data-op='obiect_inv']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "achizitie"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Valoare fără TVA",
+    "zona": ".camp:has(#op-valoare) .camp-eticheta"
+   }
+  ],
+  "captura": "505_f1_valoare_fara_tva.png"
+ },
+ {
+  "nr": "506",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> Obiecte de inventar -> Achiziție «Scaun birou dovadă», 350 lei, cota 21: lista câmpului «CUI furnizor» are partenerii firmei; DANTE (14399840) ales din ea -> denumirea vine singură; factura DOV-506 -> «Generează nota»: 303 = 401 / 4426 = 401 cu furnizorul, documentul e factura (506).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='obiect_inv']"
+   },
+   {
+    "click": "button[data-op='obiect_inv']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "achizitie"
+   },
+   {
+    "asteapta": "#op-furnizor_cui-lista option[value='14399840']",
+    "stare": "attached"
+   },
+   {
+    "completeaza": "#op-denumire",
+    "valoare": "Scaun birou dovadă"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "350"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "completeaza": "#op-furnizor_cui",
+    "valoare": "14399840"
+   },
+   {
+    "pauza": 500
+   },
+   {
+    "captura": "506_f1_furnizorul_din_partenerii_firmei.png"
+   },
+   {
+    "completeaza": "#op-numar",
+    "valoare": "DOV-506"
+   },
+   {
+    "alege": "#op-durata_sub_1_an",
+    "valoare": "false"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#op-furnizor_nume",
+    "egal": "DANTE INTERNATIONAL SA"
+   },
+   {
+    "contine": "303 = 401",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "DOV-506",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "506_f1_nota_cu_furnizorul_si_factura.png"
+ },
+ {
+  "nr": "507",
+  "firma": "tenant_9049",
+  "descriere": "F1: Registrul jurnal -> nota achiziției «Scaun birou dovadă» (dovada 506) validată -> Operațiuni speciale -> Obiecte de inventar -> Dare în folosință: obiectul ales din registru -> nota 603 = 303 350; caseta spune «8035 debit 350,00 lei (în afara bilanțului)» — fără 891, în afara rândurilor notei (507).",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "asteapta": "tbody.tn-nota:has-text('Achizitie obiect de inventar Scaun birou dovadă') [data-val]"
+   },
+   {
+    "deruleaza": "tbody.tn-nota:has-text('Achizitie obiect de inventar Scaun birou dovadă') [data-val]"
+   },
+   {
+    "click": "tbody.tn-nota:has-text('Achizitie obiect de inventar Scaun birou dovadă') [data-val]"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "asteapta": "tbody.tn-nota:has-text('Achizitie obiect de inventar Scaun birou dovadă') .tn-deschide"
+   },
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='obiect_inv']"
+   },
+   {
+    "click": "button[data-op='obiect_inv']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "dare_folosinta"
+   },
+   {
+    "asteapta": "#op-obiect_id option:has-text('Scaun birou dovadă')",
+    "stare": "attached"
+   },
+   {
+    "alege": "#op-obiect_id",
+    "valoare": "Scaun birou dovadă · 350,00 lei · intrat 2026-10-26"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "603 = 303",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "8035 debit 350,00 lei (în afara bilanțului)",
+    "zona": "#op-mesaj"
+   },
+   {
+    "nu_contine": "891",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "507_f1_dare_in_folosinta_8035_in_afara_bilantului.png"
+ },
+ {
+  "nr": "508",
+  "firma": "tenant_9049",
+  "descriere": "F1: nota dării în folosință (dovada 507) validată -> Obiecte de inventar -> Dare în folosință: «Scaun birou dovadă» nu mai e în listă -> Scoatere din folosință: e în listă, cu valoarea lui (350,00 lei) -> «Generează»: «Proces-verbal de scoatere din folosință», 8035 credit 350,00 lei (508).",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "asteapta": "tbody.tn-nota:has-text('Dare in folosinta Scaun birou dovadă') [data-val]"
+   },
+   {
+    "deruleaza": "tbody.tn-nota:has-text('Dare in folosinta Scaun birou dovadă') [data-val]"
+   },
+   {
+    "click": "tbody.tn-nota:has-text('Dare in folosinta Scaun birou dovadă') [data-val]"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "asteapta": "tbody.tn-nota:has-text('Dare in folosinta Scaun birou dovadă') .tn-deschide"
+   },
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='obiect_inv']"
+   },
+   {
+    "click": "button[data-op='obiect_inv']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "dare_folosinta"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "captura": "508_f1_obiectul_dat_nu_mai_e_la_dare.png"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "scoatere"
+   },
+   {
+    "asteapta": "#op-obiect_id option:has-text('Scaun birou dovadă')",
+    "stare": "attached"
+   },
+   {
+    "alege": "#op-obiect_id",
+    "valoare": "Scaun birou dovadă · 350,00 lei · intrat 2026-10-26"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Proces-verbal de scoatere din folosință",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "8035 credit 350,00 lei",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "508_f1_scoaterea_din_registru_cu_pv.png"
+ },
+ {
+  "nr": "511",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> Provizioane și ajustări -> Ajustare creanțe — constituire: factura se alege din lista facturilor emise neîncasate, cu soldul și scadența (F1A13 DANTE, sold 110,00 lei); suma și zilele nu se mai scriu (511).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='provizion']"
+   },
+   {
+    "click": "button[data-op='provizion']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "creanta"
+   },
+   {
+    "asteapta": "#op-factura_id option[value='64']",
+    "stare": "attached"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#op-factura_id option",
+    "text": "F1A13"
+   },
+   {
+    "exista": "#op-factura_id option",
+    "text": "sold 110,00 lei"
+   },
+   {
+    "nu_contine": "Zile de la scadență"
+   }
+  ],
+  "captura": "511_f1_factura_neincasata_din_lista.png"
+ },
+ {
+  "nr": "512",
+  "firma": "tenant_9049",
+  "descriere": "F1: Ajustare creanțe pe factura F1A13 (sold 110,00, scadentă în noiembrie) -> «Generează nota»: 6814 = 491 110,00; caseta spune partea deductibilă și pe cea nedeductibilă (sub 270 de zile de la scadență: 0% deductibil, CF art.26 alin.(1) lit.c)), iar nedeductibilul intră în ajustările D101 (rd.29) — 512.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='provizion']"
+   },
+   {
+    "click": "button[data-op='provizion']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "creanta"
+   },
+   {
+    "asteapta": "#op-factura_id option[value='64']",
+    "stare": "attached"
+   },
+   {
+    "alege": "#op-factura_id",
+    "valoare": "64"
+   },
+   {
+    "alege": "#op-garantata",
+    "valoare": "false"
+   },
+   {
+    "alege": "#op-afiliata",
+    "valoare": "false"
+   },
+   {
+    "alege": "#op-faliment",
+    "valoare": "false"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "6814 = 491",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "nedeductibil",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "512_f1_ajustarea_cu_partile_fiscale.png"
+ },
+ {
+  "nr": "513",
+  "firma": "tenant_9049",
+  "descriere": "F1: Provizioane și ajustări -> Provizion (151) -> Constituire: tipul are «Pensii și obligații similare (1515)» și «Terminarea contractului de muncă (1517)» (513).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='provizion']"
+   },
+   {
+    "click": "button[data-op='provizion']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "provizion"
+   },
+   {
+    "alege": "#op-actiune",
+    "valoare": "constituire"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#op-tip option",
+    "text": "(1515)"
+   },
+   {
+    "exista": "#op-tip option",
+    "text": "(1517)"
+   }
+  ],
+  "captura": "513_f1_tipurile_1515_1517.png"
+ },
+ {
+  "nr": "514",
+  "firma": "tenant_9049",
+  "descriere": "F1: Provizioane și ajustări -> Ajustare stocuri (39x): «Cont ajustare stocuri» e o listă 391–398, fără nimic ales (nu câmp liber, nu 397 precompletat) — 514.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='provizion']"
+   },
+   {
+    "click": "button[data-op='provizion']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "stoc"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "select#op-cont_ajustare"
+   },
+   {
+    "valoare": "#op-cont_ajustare",
+    "egal": ""
+   },
+   {
+    "exista": "#op-cont_ajustare option",
+    "text": "391"
+   },
+   {
+    "exista": "#op-cont_ajustare option",
+    "text": "398"
+   }
+  ],
+  "captura": "514_f1_contul_ajustarii_din_lista.png"
+ },
+ {
+  "nr": "520",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> Inventariere anuală -> Minus: întrebarea e «Lipsa e dovedită ca distrugere, pierdere sau furt» (CF art.304 alin.(2) lit.a), nu «asigurat sau distrus»; la imputarea pe salariat, salariatul se alege din salariații firmei (520).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='inventariere']"
+   },
+   {
+    "click": "button[data-op='inventariere']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "minus"
+   },
+   {
+    "alege": "#op-imputabil",
+    "valoare": "true"
+   },
+   {
+    "alege": "#op-vinovat",
+    "valoare": "salariat"
+   },
+   {
+    "asteapta": "#op-salariat_id option:nth-child(2)",
+    "stare": "attached"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Lipsa e dovedită ca distrugere, pierdere sau furt"
+   },
+   {
+    "nu_contine": "asigurat sau a fost distrus"
+   },
+   {
+    "exista": "select#op-salariat_id"
+   }
+  ],
+  "captura": "520_f1_lipsa_dovedita_si_salariatul_din_lista.png"
+ },
+ {
+  "nr": "521",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale -> Inventariere anuală -> Plus mijloc fix: codul din Catalogul HG 2139/2004 (2.2.9) aduce denumirea și plaja duratei («între 24 și 48 de luni»); conturile pornesc goale (521 / 504).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='inventariere']"
+   },
+   {
+    "click": "button[data-op='inventariere']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-operatie",
+    "valoare": "plus_mf"
+   },
+   {
+    "completeaza": "#op-cod_catalog",
+    "valoare": "2.2.9"
+   },
+   {
+    "asteapta_text": "între 24 și 48"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "între 24 și 48",
+    "zona": "#op-cod_catalog-stare"
+   },
+   {
+    "valoare": "#op-cont_imobilizare",
+    "egal": ""
+   }
+  ],
+  "captura": "521_f1_codul_din_catalog_cu_plaja.png"
+ },
+ {
+  "nr": "529",
+  "firma": "tenant_9050",
+  "descriere": "F2: Operațiuni speciale -> Chirii -> Chirie plătită unei persoane fizice, 1.000 lei -> «Generează nota»: caseta numește nota și conturile ei (612 = 462) -> alt «Fel» (Comodat): caseta veche dispare (529).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='chirie']"
+   },
+   {
+    "click": "button[data-op='chirie']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "chirie_platita"
+   },
+   {
+    "completeaza": "#op-furnizor_cui",
+    "valoare": "1700101400036"
+   },
+   {
+    "completeaza": "#op-furnizor_nume",
+    "valoare": "Proprietar Dovadă PF"
+   },
+   {
+    "completeaza": "#op-chirie",
+    "valoare": "1000"
+   },
+   {
+    "alege": "#op-proprietar",
+    "valoare": "pf"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "captura": "529_f2_nota_chiriei_numita.png"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "comodat"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "612 = 462",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "529_f2_mesajul_dispare_la_alt_fel.png"
+ },
+ {
+  "nr": "550",
+  "firma": "tenant_9051",
+  "descriere": "F3: Operațiuni speciale -> Livrare/prestare intracomunitară -> Servicii, codul IE1234567T, pentru care VIES (simulat pe copie, ca în plasă) răspunde MS_UNAVAILABLE: sub câmp «VIES n-a putut verifica acum codul … Nu înseamnă că codul e invalid» — nu «invalid în VIES, facturează cu TVA românesc» (550).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='vanzare_ic']"
+   },
+   {
+    "click": "button[data-op='vanzare_ic']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-tip",
+    "valoare": "servicii"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-cod_tva_client",
+    "valoare": "IE1234567T"
+   },
+   {
+    "asteapta_text": "VIES n-a putut verifica"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Nu înseamnă că codul e invalid",
+    "zona": "#op-cod_tva_client-vies"
+   },
+   {
+    "nu_contine": "invalid în VIES",
+    "zona": "#op-cod_tva_client-vies"
+   }
+  ],
+  "captura": "550_f3_vies_indisponibil.png"
+ },
+ {
+  "nr": "552",
+  "firma": "tenant_9051",
+  "descriere": "F3: Operațiuni speciale -> Import extracomunitar: numărul DVI DOV-552, furnizorul extern, valoarea vamală 10.000, taxa 10%, accesorii 500, cota 21 -> «Generează nota»: documentul e «DVI nr DOV-552», furnizorul pe 401, iar caseta spune că accesoriile intră în baza TVA și costul lor vine prin factura transportatorului (552).",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='import_ec']"
+   },
+   {
+    "click": "button[data-op='import_ec']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "completeaza": "#op-numar_dvi",
+    "valoare": "DOV-552"
+   },
+   {
+    "completeaza": "#op-furnizor_nume",
+    "valoare": "Supplier China Ltd"
+   },
+   {
+    "completeaza": "#op-valoare_vamala",
+    "valoare": "10000"
+   },
+   {
+    "completeaza": "#op-cont_destinatie",
+    "valoare": "371"
+   },
+   {
+    "completeaza": "#op-procent_taxa_vamala",
+    "valoare": "10"
+   },
+   {
+    "completeaza": "#op-accize",
+    "valoare": "0"
+   },
+   {
+    "completeaza": "#op-accesorii",
+    "valoare": "500"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "alege": "#op-certificat_amanare",
+    "valoare": "false"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": "#op-mesaj [data-dupa-generare], #op-mesaj.msg-eroare",
+    "stare": "attached"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "DVI nr DOV-552",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "factura transportatorului",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "552_f3_importul_cu_dvi_si_furnizorul.png"
+ },
+ {
+  "nr": "633",
+  "firma": "tenant_9050",
+  "anaf_real": true,
+  "descriere": "F2: Operațiuni speciale -> Chirii -> Chirie plătită: «CUI proprietar / furnizor» 14399840 -> «Verifică»: denumirea DANTE INTERNATIONAL SA vine de la ANAF în câmpul «Proprietarul / furnizorul», iar sub câmp «plătitor TVA» (633). Cere --anaf-real.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='chirie']"
+   },
+   {
+    "click": "button[data-op='chirie']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "chirie_platita"
+   },
+   {
+    "completeaza": "#op-furnizor_cui",
+    "valoare": "14399840"
+   },
+   {
+    "click": "#op-furnizor_cui-verifica"
+   },
+   {
+    "asteapta_text": "plătitor TVA"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#op-furnizor_nume",
+    "egal": "DANTE INTERNATIONAL SA"
+   },
+   {
+    "contine": "plătitor TVA",
+    "zona": "#op-furnizor_cui-stare"
+   }
+  ],
+  "captura": "633_f2_verifica_aduce_denumirea_de_la_anaf.png"
+ },
+ {
+  "nr": "670",
+  "firma": "tenant_9053",
+  "descriere": "F5, date existente: Registrul jurnal -> nota de decont din 20.10.2026 (625 = 542 900, 4426 = 542 126, 542 = 5311 26 — proba grupei 1) e neatinsă, cum cere comanda pct.8: decontul nou se aplică notelor noi. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "asteapta": "#j-nota-noua"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "asteapta": "[data-nota-id='7']"
+   },
+   {
+    "deruleaza": "[data-nota-id='7']"
+   },
+   {
+    "click": "tbody.tn-nota[data-nota-id='7'] .tn-deschide"
+   },
+   {
+    "asteapta": "tbody.tn-nota[data-nota-id='7'] tr.tn-detaliu"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Decont deplasare",
+    "zona": "tbody.tn-nota[data-nota-id='7']"
+   },
+   {
+    "contine": "900,00",
+    "zona": "tbody.tn-nota[data-nota-id='7']"
+   },
+   {
+    "contine": "Ciornă",
+    "zona": "tbody.tn-nota[data-nota-id='7']"
+   }
+  ],
+  "captura": "670_f5_vechi_decontul_din_20_10_neatins.png"
+ },
+ {
+  "nr": "601",
+  "firma": "tenant_9050",
+  "descriere": "F2: Facturi -> Facturi primite -> «Introdu factura de mână»: DANTE, DOV-601, linia «Laptop dovadă 601» 1 × 6.000, cota 21, contul liniei 2131 -> sub linie apar datele fișei mijlocului fix: codul din catalog 2.2.9 (plaja 24–48 de luni), 36 de luni, PIF, liniară; contul facturii 604 -> «Validează»: «Mijloace fixe din factură: MF-… «Laptop dovadă 601» 6.000,00 lei — intră în registru la validarea notei» (601, decizia Costin a). Pe copie ANAF e simulat, deci tipul furnizorului se alege de mână.",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-manual"
+   },
+   {
+    "click": "#fp-manual"
+   },
+   {
+    "asteapta": "#pm-valideaza"
+   },
+   {
+    "completeaza": "#pm-cui",
+    "valoare": "14399840"
+   },
+   {
+    "completeaza": "#pm-furnizor",
+    "valoare": "DANTE INTERNATIONAL SA"
+   },
+   {
+    "completeaza": "#pm-numar",
+    "valoare": "DOV-601"
+   },
+   {
+    "completeaza": "#pm-data",
+    "valoare": "2026-10-26"
+   },
+   {
+    "asteapta": "#pm-l1-cota option[value='21']",
+    "stare": "attached"
+   },
+   {
+    "completeaza": "#pm-l1-descriere",
+    "valoare": "Laptop dovadă 601"
+   },
+   {
+    "completeaza": "#pm-l1-cantitate",
+    "valoare": "1"
+   },
+   {
+    "completeaza": "#pm-l1-um",
+    "valoare": "buc"
+   },
+   {
+    "completeaza": "#pm-l1-pret",
+    "valoare": "6000"
+   },
+   {
+    "alege": "#pm-l1-cota",
+    "valoare": "21"
+   },
+   {
+    "completeaza": "#pm-l1-cont",
+    "valoare": "2131"
+   },
+   {
+    "asteapta": "#pm-mf1-cod_catalog"
+   },
+   {
+    "completeaza": "#pr-cont",
+    "valoare": "604"
+   },
+   {
+    "completeaza": "#pm-mf1-cod_catalog",
+    "valoare": "2.2.9"
+   },
+   {
+    "asteapta_text": "între 24 și 48"
+   },
+   {
+    "completeaza": "#pm-mf1-dnf_luni",
+    "valoare": "36"
+   },
+   {
+    "completeaza": "#pm-mf1-data_pif",
+    "valoare": "2026-10-26"
+   },
+   {
+    "alege": "#pm-mf1-metoda",
+    "valoare": "liniara"
+   },
+   {
+    "captura": "601_f2_fisa_mijlocului_fix_sub_linie.png"
+   },
+   {
+    "click": "#pm-valideaza"
+   },
+   {
+    "asteapta": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "pauza": 3000
+   },
+   {
+    "asteapta": "#pr-platitor",
+    "stare": "attached"
+   },
+   {
+    "alege": "#pr-platitor",
+    "valoare": "true"
+   },
+   {
+    "alege": "#pr-furnizor-incasare",
+    "valoare": "false"
+   },
+   {
+    "click": "#pm-valideaza"
+   },
+   {
+    "asteapta": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok"
+   },
+   {
+    "asteapta_text": "Mijloace fixe din factură"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Mijloace fixe din factură",
+    "zona": "#pr-zona"
+   },
+   {
+    "contine": "6.000,00 lei — intră în registru la validarea notei",
+    "zona": "#pr-zona"
+   }
+  ],
+  "captura": "601_f2_factura_validata_aduce_mijlocul_fix.png"
+ },
+ {
+  "nr": "601",
+  "firma": "tenant_9050",
+  "descriere": "F2: Mijloace fixe -> rândul «Laptop dovadă 601» (din factura DOV-601, dovada de mai sus) e în registru, «intră la validarea notei …»: devine activ când nota facturii e validată (519).",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type table.fd-tabel tbody tr"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type tr:has-text('Laptop dovadă 601') td.mf-stare",
+    "text": "intră la validarea notei"
+   }
+  ],
+  "captura": "601_f2_registrul_activul_din_factura.png"
  }
 ]
