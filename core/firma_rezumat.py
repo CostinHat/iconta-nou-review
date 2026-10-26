@@ -1108,8 +1108,12 @@ def _termene_una_firma(f, ctx, azi):
             from core import control_incrucisat as _ci_sal
             _f112 = lambda a, l: _ci_sal.are_salariat_activ_luna(cs, schema, a, l)   # [300] D112 din fapt, ca semaforul
             # [lotul 12, C162] la neplătitorul art.317, lunile D390 din aceeași sursă ca Control fiscal (`d390_luni_neplatitor`)
+            # [lotul 13, 538 / 591] și declarațiile datorate din operațiile înregistrate (D301, D205), ca la Control fiscal
+            from core import control_fiscal_api as _cf_fapt
             term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt, d112_fapt=_f112,
-                                             d390_luni_neplatitor=lambda a: _ci_sal.d390_luni_neplatitor(cs, schema, a, azi))
+                                             d390_luni_neplatitor=lambda a: _ci_sal.d390_luni_neplatitor(cs, schema, a, azi),
+                                             declaratii_fapt=lambda jos, zile: _cf_fapt.declaratii_fapt(cs, schema, vector, azi, jos=jos,
+                                                                                                       sus_zile=zile))
             for _t in term:   # [432] predicatul unic, `luna_preluare.inainte`
                 _t["inainte_de_preluare"] = _lp.inainte(_t["an"], _t.get("luna"), preluare)
             # [P2] deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} + [regim_card] regim_contabil

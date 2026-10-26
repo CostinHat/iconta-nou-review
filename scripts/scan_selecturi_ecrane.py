@@ -55,15 +55,9 @@ CLASIFICARE = {
     "declaratii.js:d710-cod": (FISCAL, "codul obligației rectificate D710 — " + _D),
     "declaratii.js:d307-tip": (FISCAL, "tipul operațiunii D307 — " + _D),
     "declaratii.js:d177-tip": (FISCAL, "tipul beneficiarului D177 — " + _D),
-    "declaratii.js:d200-categ": (FISCAL, "categoria de venit D200 — impozitul declarat"),
     "declaratii.js:d230-valab": (FISCAL, "valabilitatea redirecționării D230 (venea „Un an”) — " + _D),
-    "declaratii.js:d223-categ": (FISCAL, "categoria de venit D223 — " + _D),
-    "declaratii.js:d223-forma": (FISCAL, "forma de organizare D223 — " + _D),
-    "declaratii.js:d223-det": (FISCAL, "determinarea venitului D223 (real / normă) — baza impozitului"),
     "declaratii.js:d208-tip": (FISCAL, "tipul imobilului D208 (venea „Teren”) — " + _D),
     "declaratii.js:d208-bci": (FISCAL, "cota de impozit D208 (venea „3”) — impozitul declarat"),
-    "declaratii.js:d221-forma": (FISCAL, "forma de organizare D221 (venea „1 — individual”) — " + _D),
-    "declaratii.js:d221-opt": (FISCAL, "opțiunea normă / sistem real D221 (venea „0”) — baza impozitului"),
     "declaratii.js:d603-exc": (FISCAL, "categoria de exceptare CASS D603 (venea „2”) — contribuția declarată"),
     "declaratii.js:d110-temei": (FISCAL, "regularizare / cerere de restituire D110 (venea „Regularizare”) — " + _D),
     "declaratii.js:d110-cod": (FISCAL, "codul obligației D110 — " + _D),
@@ -142,8 +136,8 @@ DINAMICE = {
 #: select cu `alegeDacaLipseste(d.x)` arată „— alege —” numai dacă `x` pornește nul — altfel ecranul „răspunde” din stare (probat:
 #: D230 venea „Un an”, D208 „Teren”, D110 „Regularizare”, D318 „DE”/„A”, deși markup-ul avea „— alege —”).
 STARE_INITIALA = {
-    "d230": ["valabilitate_distribuire"], "d223": ["categ_venit", "forma_org", "det_venit"], "d208": ["tip_imobil", "mod_transfer"],
-    "d221": ["forma_org", "optiune"], "d603": ["exceptare"], "d110": ["d_temei"], "d398": ["moes_voes_imp", "e_int"],
+    "d230": ["valabilitate_distribuire"], "d208": ["tip_imobil", "mod_transfer"],
+    "d603": ["exceptare"], "d110": ["d_temei"], "d398": ["moes_voes_imp", "e_int"],
     "d318": ["refunding_country", "owner_type", "currency"], "d204": ["categ_venit", "forma_org"], "d212": ["din_rip"],
 }
 
@@ -250,11 +244,10 @@ def danu_necerute(fisiere=None):
 #: acordul D177, e_int D398, RIP / cota forfetară / CAS-CASS străinătate D212).
 _REC = "tipul declarației: „Rectificativă” nebifată = declarația inițială, cazul uzual (DS cap.17 corectat, (a)-(c)); se vede și se bifează"
 CASUTE = {
-    **{"declaratii.js:d%s-rec" % d: _REC for d in ("311", "307", "107", "177", "200", "201", "204", "223", "216", "208", "221", "104",
+    **{"declaratii.js:d%s-rec" % d: _REC for d in ("311", "307", "107", "177", "204", "216", "208", "104",
                                                     "114", "110", "212", "207")},
     "declaratii.js:d307-anul": "tipul declarației D307: „corectată după anularea rezervei verificării” e excepția, ca rectificativa; bifată cere temeiul",
     "declaratii.js:d318-annual": "(a) uzual: cererea anuală (1 ian – 31 dec), coerentă cu lunile 1–12; (b) vizibilă; (c) debifată cere lunile",
-    "declaratii.js:d600-cas": "D600 se depune NUMAI pentru opțiunea CAS: nebifată, generarea se refuză („Bifează cel puțin CAS”) — nu pleacă niciun „Nu”",
     "facturi_ecran.js:sc-optin": "opțiunea de notificări a scadențarului — setare a aplicației, nu fapt fiscal",
     "setari.js:cmp-preg": "drepturi de utilizator în cabinet — setare de acces, nu fapt fiscal",
     "setari.js:cmp-val": "idem",
@@ -267,6 +260,7 @@ CASUTE = {
     "asistenti.js:data-tid": "firmele alocate asistentului — setare de acces",
     "asistenti.js:data-perm": "drepturi pe firmă ale asistentului — setare de acces",
     "login.js:reg-termeni": "acceptarea termenilor — consimțământ; nebifată, înregistrarea se refuză",
+    "admin.js:an-toate": "destinatarii anunțului (646, decizia Costin 24.10): bifă explicită «Toate cabinetele»; nebifată și fără alt cabinet bifat, trimiterea se refuză — alegere de destinatari, nu fapt fiscal",
     "setari.js:not-acord": "acordul pentru mesaje pe WhatsApp (lotul 7, 2.2) — consimțământ; nebifată, nu pleacă nimic pe WhatsApp (nici codul) și canalul rămâne email",
     "migrare.js:data-i": "ce rânduri găsite se importă — selecție de lucru, fiecare rând e vizibil",
     "admin.js:sel-bifa": "selecție în administrare — nu fapt fiscal",

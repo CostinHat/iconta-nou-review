@@ -414,7 +414,18 @@ def test_numarul_de_instructiuni_se_conserva():
     #     emailul și parola”; citire NOUĂ;
     #   − repo_facturi.pentru_cashflow (uc_portal.portal_cashflow) — înlocuit de `repo_portal.facturi_deschise_validate` (559, C113).
     # Apelurile noi ale altor zone ale lotului se adaugă la integrare, fiecare numit.
-    assert _apeluri_catre_repository() == 403
+    # [lotul 13, comanda 13.1, zona decl] +2 (la integrare: 403 -> 405), citiri NOI în `uc_declaratii.declaratii_tipuri`:
+    #   + repo_declaratii.antet_firma (636 / 594: formularele manuale precompletate din Date firmă);
+    #   + repo_declaratii.monede_bnr (636: moneda D318 aleasă din lista BNR, nu scrisă de mână).
+    # [lotul 13, comanda 13.1, zona ops] +25 (la integrare: 405 -> 430), toate în `uc_tenants` (diferența față de a632ffa2, apel cu apel):
+    #   + repo_contabilitate.adauga_linie_partener ×12 (506 / 633: partenerul pe liniile notelor operațiunilor speciale — 401 / 4111 / 461 /
+    #     542 cu furnizorul, clientul, chiriașul, salariatul); + nota_operatiune_ciorna ×4 și search_path_firma ×4 (notele operațiunilor
+    #     scrise în aceeași tranzacție cu verificarea soldului, 524); + adauga_linie ×2 (−adauga_linie_2, −adauga_linie_cheltuiala_amortizare,
+    #     −adauga_linie_venit_marfa: forme unificate); + nota_amortizare_ciorna, nota_de_amortizare (517: lunile lipsă, ca ciorne);
+    #   + repo_mijloace_fixe.adauga_cu_reevaluare, seteaza_cod_catalog_schema ×2, toate ×2 (519 / 521 / 522 / 523: activul există în registru
+    #     numai după validarea notei, codul din catalog, amortizarea pe activ); −cod_liber, −scoate_din_evidenta;
+    #   + tranzactie.fixeaza_schema (670: decontul scrie și excedentul de diurnă al salariatului, în schema firmei).
+    assert _apeluri_catre_repository() == 430
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

@@ -748,21 +748,22 @@ def _dmy(iso):
     return "%s.%s.%s" % (s[8:10], s[5:7], s[0:4]) if len(s) == 10 else s
 
 
-def declaratii_fapt(conn_schema, schema, vector, azi):
+def declaratii_fapt(conn_schema, schema, vector, azi, *, jos=None, sus_zile=PRAG_URMARIT_ZILE):
     """Declaratiile care se datoreaza pe FAPT, nu pe vector: D205 (dividende = rulaj 457) si D301
     (operatiuni IC pe luna). Citeste faptul prin PUNTEA din control_incrucisat (motoare separate -
     DECIZII 18.07 B: semaforul CHEAMA functia de fapt, n-o absoarbe). Intoarce {datorate, neaplicabile,
     neclar}; datorate poarta `fapt` (de ce se datoreaza)."""
     from core import control_incrucisat as _ci, scadente
     an = azi.year
-    limita = azi + datetime.timedelta(days=PRAG_URMARIT_ZILE)
+    # [lotul 13, 538 / 591] `jos` / `sus_zile`: fereastra termenelor (privire înainte, `termene_api.termene_firma`); implicit, semaforul
+    limita = azi + datetime.timedelta(days=sus_zile)
     datorate, neaplicabile, neclar = [], [], []
     platitor_tva = vector.get("platitor_tva")
 
     # D205 — anuala pentru anul precedent (termen ultima zi februarie an curent). Fapt: rulaj 457.
     Y = an - 1
     term205 = scadente.scadenta_data("d205", Y)
-    if term205 <= limita:
+    if term205 <= limita and (jos is None or term205 >= jos):
         fapt205, are_note = _ci.dividende_distribuite(conn_schema, schema, Y)
         from core import d205 as _d205
         _prel205 = _d205.dividende_preluate(conn_schema, Y) if fapt205 else None
@@ -815,7 +816,7 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
         for a, m in [(an - 1, 12)] + [(an, mm) for mm in range(1, 13)]:
             if m in luni_an.get(a, set()):
                 term = scadente.scadenta_data("d301", a, luna=m)
-                if term <= limita:
+                if term <= limita and (jos is None or term >= jos):
                     datorate.append({"tip": "d301", "an": a, "luna": m, "perioada": perioada_canonica(a, m, "luna"),
                                      "termen": term.isoformat(),
                                      "fapt": f"operațiuni intracomunitare înregistrate în {perioada_canonica(a, m, 'luna')}"})
