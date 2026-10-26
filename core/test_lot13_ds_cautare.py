@@ -5,12 +5,18 @@ Verbatim: „Căsuță de căutare în antet, mereu vizibilă; scrii o funcție,
 și te duce în fereastra potrivită, pentru firma în lucru. Proba: «Decont deplasare / diurnă» nu se găsește azi fără să știi că e în
 Operațiuni → Personal și deconturi.”
 
+PRECIZAREA din 26.10.2026 (Costin, verbatim): „căutarea este a funcțiilor aplicației (scrii «D300», «stat de plată», «NIR» și te duce în
+fereastra respectivă), nu căutare de documente sau date. Căsuța trebuie să fie accesibilă din fiecare fereastră de lucru (pe bara de sus a
+ferestrei, lângă traseu), nu doar în antetul paginii, care e acoperit de ferestre; plus scurtătura Ctrl+K de oriunde.”
+
 CE FACE IMPOSIBIL:
   1. sursele să se rupă tăcut: cardurile ferestrei firmei și operațiunile speciale se citesc din `firme.js` / `operatiuni_ecran.js`; un
      registru redenumit sau mutat lasă căutarea fără ele -> pică (anti-vacuu: numărul lor, și „decont” cu titlul lui);
   2. proba lui Costin: „diurnă” / „diurna” / „decont deplasare” găsesc „Decont deplasare / diurnă” întâi;
-  3. „D112” găsește declarația firmei, „tichet” Salariații, numele unui salariat pe salariat;
-  4. firma altui cabinet să se poată citi prin căutare (ruta refuză ca orice rută a firmei).
+  3. „D112” găsește declarația firmei, „tichet” / „stat de plată” Salariații, „NIR” Stocurile; NICIO dată a firmei (numele unui salariat) nu se
+     caută și nu se citește (precizarea 26.10);
+  4. firma altui cabinet să se poată citi prin căutare (ruta refuză ca orice rută a firmei);
+  5. căsuța să lipsească dintr-o fereastră de lucru sau Ctrl+K să dispară (structural; comportamentul îl probează e2e).
 
 Temei: N/A — funcție de interfață (DS cap.9 „Căutarea globală”).
 """
@@ -18,7 +24,7 @@ import pytest
 
 from core import cautare as C
 
-FIRMA = {"tenant_id": 1, "tip_firma": "srl", "salariati": [{"id": 7, "nume": "Ionescu", "prenume": "Vasile"}]}
+FIRMA = {"tenant_id": 1, "tip_firma": "srl"}
 
 
 def test_sursele_se_citesc_din_ecrane():
@@ -42,14 +48,15 @@ def test_proba_lui_costin_decontul_de_deplasare_se_gaseste(q):
     assert r[0]["ruta"] == "nota-decont-deplasare"
 
 
-def test_declaratia_tichetul_si_salariatul():
+def test_declaratia_tichetul_statul_de_plata_si_nir():
     """3. MUTAȚIE: `SINONIME` golit -> „tichet” nu găsește Salariați -> pică."""
     d = C.cauta("D112", FIRMA)
     assert d[0]["fel"] == "declaratie" and d[0]["tip"] == "d112" and "contribuțiilor sociale" in d[0]["titlu"], d[:2]
     t = C.cauta("tichet", FIRMA)
     assert t[0]["fel"] == "card" and t[0]["cheie"] == "salariati", t
-    s = C.cauta("ionescu", FIRMA)
-    assert s == [{"fel": "salariat", "id": 7, "titlu": "Ionescu Vasile", "unde": "Salariați", "actiune": None}], s
+    assert C.cauta("stat de plată", FIRMA)[0]["cheie"] == "salariati"      # precizarea 26.10: «stat de plată»
+    assert C.cauta("NIR", FIRMA)[0]["cheie"] == "stocuri"                   # precizarea 26.10: «NIR»
+    assert C.cauta("D300", FIRMA)[0]["tip"] == "d300"                       # precizarea 26.10: «D300»
     assert C.cauta("casa", FIRMA)[0]["cheie"] == "casa"        # „casa” la început de cuvânt: Casă, nu „încasare”
     assert C.cauta("a", FIRMA) == []                            # un caracter nu caută
     # diacriticele din MIJLOCUL cuvântului: „decontari asociati” găsește „Decontări asociați”. MUTAȚIE: `normalizeaza` fără scoaterea
@@ -99,3 +106,27 @@ def test_ruta_citeste_numai_firma_cabinetului():
         r2 = c.get("/eu/cautare", params={"q": "diurnă", "tenant_id": strain}, headers=h)
         assert r2.status_code == 404, r2.text[:300]
     assert c.get("/eu/cautare", params={"q": "diurnă"}).status_code in (401, 403)
+
+
+def test_nicio_data_a_firmei_nu_se_cauta():
+    """5. Precizarea 26.10: căutarea e a FUNCȚIILOR. Un salariat pus de apelant în `firma` nu produce rezultat, iar `cauta_pentru` nu mai citește
+    lista salariaților. MUTAȚIE: `for sal in firma.get("salariati")` pus înapoi în `cauta` -> „ionescu” găsește un rezultat -> pică."""
+    firma = dict(FIRMA, salariati=[{"id": 7, "nume": "Ionescu", "prenume": "Vasile"}])
+    assert C.cauta("ionescu", firma) == []
+    import inspect
+    assert "salariati_api" not in inspect.getsource(C) and 'fel": "salariat"' not in inspect.getsource(C)
+
+
+def test_casuta_e_in_fiecare_fereastra_si_ctrl_k_exista():
+    """5. Structural (comportamentul îl probează e2e): navigatorul montează căsuța în bara de sus a FIECĂREI ferestre de lucru, lângă traseu
+    (numai fereastra mică de confirmare și clientul din portal n-o au), iar Ctrl+K e legat de `focuseazaCautarea`.
+    MUTAȚIA: scos apelul `puneCautarea(... cautare-fereastra ...)` din `randeazaFerestre` -> pică."""
+    import io, os
+    rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    nav = io.open(os.path.join(rad, "static", "js", "navigator.js"), encoding="utf-8").read()
+    i = nav.index("function randeazaFerestre()")
+    corp = nav[i:nav.index("\n  }\n", i)]
+    assert 'puneCautarea(fer.querySelector(".fereastra-antet")' in corp and '"cautare-fereastra"' in corp, "căsuța nu mai e în antetul ferestrei"
+    assert '!== "mic"' in corp and '!== "client"' in corp
+    js = io.open(os.path.join(rad, "static", "js", "cautare.js"), encoding="utf-8").read()
+    assert "export function focuseazaCautarea" in js and 'key).toLowerCase() === "k"' in js and "e.ctrlKey || e.metaKey" in js

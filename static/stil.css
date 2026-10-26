@@ -3163,6 +3163,12 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .cautare-camp { width: 100%; height: 34px; box-sizing: border-box; border: 1px solid #b9c2cf; border-radius: 8px; padding: 0 12px;
   font: inherit; font-size: var(--text-mic); background: #fff; color: var(--ardezie); }
 .cautare-camp:focus { outline: 2px solid #fff; outline-offset: 1px; }
+/* în bara de sus a unei ferestre de lucru (precizarea din 26.10.2026): lângă traseu, deasupra corpului ferestrei */
+.fereastra-antet .cautare-in-fereastra { z-index: 5; flex: 0 1 300px; margin-left: auto; margin-right: 0; }
+.fereastra-antet .cautare-in-fereastra + .fereastra-spatiu { flex: 0 0 0; }
+.fereastra-antet .cautare-in-fereastra .cautare-camp { border: 1.5px solid #b9c2cf; }
+.fereastra-antet .cautare-in-fereastra .cautare-camp:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+.fereastra-antet .cautare-in-fereastra .cautare-rez { right: 0; left: auto; z-index: 6; }
 .cautare-rez { position: absolute; top: calc(100% + 4px); left: 0; width: min(520px, calc(100vw - 32px)); max-height: 60vh; overflow-y: auto;
   background: #fff; border: 1px solid #b9c2cf; border-radius: var(--raza); box-shadow: 0 12px 32px rgba(20, 30, 45, 0.25); padding: 6px; }
 .cautare-rez[hidden] { display: none; }
@@ -3174,4 +3180,4 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .cautare-titlu { font-size: var(--text-mic); font-weight: 600; }
 .cautare-unde { font-size: var(--text-desc); color: var(--gri); }
 .cautare-mesaj { margin: 6px 8px; font-size: var(--text-mic); color: var(--gri); }
-@media (max-width: 560px) { .cautare-globala { flex-basis: 160px; margin-left: 4px; } }
+@media (max-width: 560px) { .cautare-globala { flex-basis: 160px; margin-left: 4px; } .fereastra-antet .cautare-in-fereastra { flex-basis: 140px; } }

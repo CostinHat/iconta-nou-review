@@ -531,12 +531,19 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   titlul ferestrei. Gard: `core/test_lot13_ds_ferestre.py`.
 - **Căutarea globală (v2.104, lotul 13, deficiența 681 — decizia Costin 25.10.2026, excepție de la „fără funcții noi”: „Căsuță de căutare în
   antet, mereu vizibilă; scrii o funcție, o declarație sau un nume («diurnă», «tichet», «D112», un salariat) și te duce în fereastra potrivită,
-  pentru firma în lucru.”).** O componentă, `static/js/cautare.js`, pusă de navigator în bara de sus (`#cautare-globala`, deasupra stratului
-  ferestrelor, ca „Versiune nouă”); rezultatele vin de la `GET /cautare` (`core/cautare.py`): cardurile ferestrei firmei, operațiunile
-  speciale (titlul și câmpurile lor), declarațiile firmei (cod și denumirea oficială), salariații firmei, cu diacriticele ignorate la căutare.
-  Lista de rezultate apare sub căsuță numai cât omul scrie; fiecare rezultat e un buton; alegerea (clic / Enter) deschide fereastra potrivită
-  PESTE ce e deschis (ce s-a tastat nu se pierde, cap.3), pe firma în lucru; fără firmă în lucru, rezultatele de firmă cer întâi firma.
-  Acțiunile refuzate rolului nu apar (`permis`, `drepturi.js`). Gard: `core/test_lot13_ds_cautare.py` + e2e `test_def_681_*`.
+  pentru firma în lucru.” — PRECIZATĂ de Costin la 26.10.2026, verbatim: „căutarea este a funcțiilor aplicației (scrii «D300», «stat de plată»,
+  «NIR» și te duce în fereastra respectivă), nu căutare de documente sau date. Căsuța trebuie să fie accesibilă din fiecare fereastră de lucru
+  (pe bara de sus a ferestrei, lângă traseu), nu doar în antetul paginii, care e acoperit de ferestre; plus scurtătura Ctrl+K de oriunde.”).**
+  (1) **Ce se caută: funcții.** Rezultatele vin de la `GET /eu/cautare` (`core/cautare.py`): cardurile ferestrei firmei, operațiunile speciale
+  (titlul și câmpurile lor) și declarațiile firmei (cod și denumirea oficială), cu diacriticele ignorate; NICIO dată a firmei (nume de
+  salariat, partener, document, sumă) nu se caută și nu se citește. (2) **Unde stă.** O componentă, `static/js/cautare.js`
+  (`puneCautarea`), montată în antetul paginii (`#cautare-globala`, deasupra stratului ferestrelor) ȘI în bara de sus a FIECĂREI ferestre
+  de lucru, între traseu și butonul de închidere (`#cautare-fereastra`, pusă de `randeazaFerestre`); fereastra mică (numai o confirmare) și
+  clientul din portal n-o au. (3) **Ctrl+K (Cmd+K) de oriunde** pune cursorul în căsuța ferestrei de sus, altfel în cea din antet.
+  (4) Lista de rezultate apare sub căsuță numai cât omul scrie; fiecare rezultat e un buton; alegerea (clic / Enter) deschide fereastra
+  potrivită PESTE ce e deschis (ce s-a tastat nu se pierde, cap.3), pe firma în lucru; fără firmă în lucru, rezultatele de firmă cer întâi
+  firma. Acțiunile refuzate rolului nu apar (`permis`, `drepturi.js`). Gard: `core/test_lot13_ds_cautare.py` (server + structură: căsuța în
+  fereastră, Ctrl+K, nicio dată căutată) + e2e `test_def_681_*` (inclusiv `test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste`).
 - **Rezumatul nu mănâncă tabelul (v2.102, lotul 12, 621; comanda Costin 12.2 pct.11, verbatim: „Balanța: casetele de sus ocupă jumătate
   din fereastră, se văd 2–3 rânduri de tabel; caseta «Importă…» nu are buton spre import.”; cerința: „Casetele nu mănâncă tabelul — regulă
   globală”).** (1) În rezumatul lipit sus (`.rezumat-fix`) stă numai ce trebuie văzut cât derulezi: titlul, perioada, cifrele, butoanele, zona

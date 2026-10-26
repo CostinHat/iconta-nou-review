@@ -5,13 +5,18 @@ Decizia Costin, 25.10.2026 (comanda 13.1, verbatim): „Căsuță de căutare î
 («diurnă», «tichet», «D112», un salariat) și te duce în fereastra potrivită, pentru firma în lucru. Proba: «Decont deplasare / diurnă» nu se
 găsește azi fără să știi că e în Operațiuni → Personal și deconturi.” Parte din pilot, excepție de la „fără funcții noi”.
 
+PRECIZAREA din 26.10.2026 (Costin, verbatim): „căutarea este a funcțiilor aplicației (scrii «D300», «stat de plată», «NIR» și te duce în
+fereastra respectivă), nu căutare de documente sau date. Căsuța trebuie să fie accesibilă din fiecare fereastră de lucru (pe bara de sus a
+ferestrei, lângă traseu), nu doar în antetul paginii, care e acoperit de ferestre; plus scurtătura Ctrl+K de oriunde.” SUPERSEDEAZĂ „un nume /
+un salariat” din decizia veche: numele unui salariat e DATĂ a firmei, nu funcție — nu se mai caută și nu se mai citește din firmă.
+
 DE UNDE VIN REZULTATELE — fiecare dintr-o sursă care există deja, nicio listă scrisă a doua oară:
   · cardurile ferestrei firmei: lista `optiuni` din `meniuFirma` (`static/js/ecrane/firme.js`) — cheia, regimul, grupul, titlul, descrierea;
   · operațiunile speciale: registrul `REGISTRU` din `static/js/ecrane/operatiuni_ecran.js` — titlul, categoria, ruta și etichetele
     câmpurilor („Diurna acordată pe zi” găsește decontul și când omul nu știe numele operației);
   · declarațiile firmei: `declaratii_api.tipuri()` cu filtrul formei firmei (ca `uc_declaratii.declaratii_tipuri`), denumirea oficială din
-    `core/dNNN.DENUMIRE_OFICIALA` (sursa listei publice, `scripts/genereaza_declaratii_lista.py`);
-  · salariații firmei în serviciu: `salariati_api.lista_salariati`.
+    `core/dNNN.DENUMIRE_OFICIALA` (sursa listei publice, `scripts/genereaza_declaratii_lista.py`).
+Din firma în lucru se citește numai forma ei (tipul de firmă: ce funcții are); nicio dată a firmei (nume, sume, documente) nu intră în căutare.
 Sursele JS se citesc o dată și se recitesc numai când fișierul s-a schimbat (data modificării). Căutarea ignoră diacriticele și majusculele;
 fiecare cuvânt scris trebuie să apară. `SINONIME` leagă cuvintele contabilului de fereastra în care lucrează („tichet” -> Salariați: tichetele
 se pun pe rândul salariatului), nu o listă de funcții.
@@ -143,7 +148,7 @@ def _potriveste(cuvinte, *texte):
 
 
 def cauta(q, firma=None):
-    """Rezultatele pentru textul `q`. `firma` = {"tenant_id", "tip_firma", "salariati": [...]} (citită de apelant, cu dreptul verificat),
+    """Rezultatele pentru textul `q`. `firma` = {"tenant_id", "tip_firma"} (citită de apelant, cu dreptul verificat),
     sau None (fără firmă în lucru: rezultatele de firmă cer întâi firma). [{fel, titlu, unde, …, actiune}], cel mult 12."""
     qn = normalizeaza(q)
     if len(qn) < 2:
@@ -174,11 +179,6 @@ def cauta(q, firma=None):
                 rez.append((s + (3 if normalizeaza(d["tip"]) == qn else 0),
                             {"fel": "declaratie", "tip": d["tip"], "titlu": "%s — %s" % (d["tip"].upper(), d["denumire"]) if d["denumire"]
                              else d["tip"].upper(), "unde": "Declarații", "actiune": None}))
-        for sal in firma.get("salariati") or []:
-            nume = " ".join(x for x in (sal.get("nume"), sal.get("prenume")) if x)
-            s = _potriveste(cuvinte, nume)
-            if s:
-                rez.append((s + 2, {"fel": "salariat", "id": sal.get("id"), "titlu": nume, "unde": "Salariați", "actiune": None}))
     rez.sort(key=lambda x: (-x[0], normalizeaza(x[1]["titlu"])))
     return [r for _s, r in rez][:12]   # cât încape în lista de sub căsuță fără derulare (nu e o valoare fiscală)
 
@@ -187,12 +187,11 @@ def cauta_pentru(q, tenant_id, ctx):
     """Corpul rutei `GET /cautare`: firma în lucru citită numai cu dreptul utilizatorului asupra ei (`_schema_sau_404`)."""
     firma = None
     if tenant_id is not None:
-        from core import db, repo_firma_profil, salariati_api
+        from core import db, repo_firma_profil
         from core.uc_comun import _schema_sau_404
         schema = _schema_sau_404(ctx, tenant_id)
         with db.get_conn(schema) as conn:
             with conn.cursor() as cur:
                 row = repo_firma_profil.profil_fiscal(cur)
-            salariati = salariati_api.lista_salariati(conn, True) if len(normalizeaza(q)) >= 2 else []
-        firma = {"tenant_id": tenant_id, "tip_firma": row[0] if row else None, "salariati": salariati}
+        firma = {"tenant_id": tenant_id, "tip_firma": row[0] if row else None}
     return {"rezultate": cauta(q, firma), "firma": tenant_id}

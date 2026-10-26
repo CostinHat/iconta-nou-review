@@ -3,12 +3,19 @@
 // potrivită, pentru firma în lucru. Proba: «Decont deplasare / diurnă» nu se găsește azi fără să știi că e în Operațiuni → Personal și
 // deconturi.”). DS cap.9 „Căutarea globală”.
 //
-// Rezultatele vin de la server (`GET /eu/cautare`, `core/cautare.py`): cardurile ferestrei firmei, operațiunile speciale (cu etichetele
-// câmpurilor lor), declarațiile și salariații firmei în lucru. Lista apare sub căsuță numai cât omul scrie (nimic nu se deschide singur);
-// fiecare rezultat e un buton (DS cap.2a, 674); alegerea (clic / Enter) deschide fereastra potrivită PESTE ce e deschis — ce s-a tastat
-// într-o fereastră de dedesubt se păstrează (DS cap.3, `nav` păstrează corpul ferestrei). Operațiunile refuzate rolului nu apar (`permis`).
-// Gard: `core/test_lot13_ds_cautare.py` (server) + e2e `frontend_test/e2e/e2e_lot13_ds.py::test_def_681_*`.
-import { api, esc, ultimaCerere } from "./api.js?v=cb524f997d";
+// PRECIZAREA din 26.10.2026 (Costin, comanda 13.1, verbatim): „căutarea este a funcțiilor aplicației (scrii «D300», «stat de plată», «NIR» și
+// te duce în fereastra respectivă), nu căutare de documente sau date. Căsuța trebuie să fie accesibilă din fiecare fereastră de lucru (pe bara
+// de sus a ferestrei, lângă traseu), nu doar în antetul paginii, care e acoperit de ferestre; plus scurtătura Ctrl+K de oriunde.” Deci:
+// (1) rezultatele sunt FUNCȚII — cardurile ferestrei firmei, operațiunile speciale, declarațiile (numele unui salariat e dată, nu se caută);
+// (2) aceeași componentă se montează în antetul paginii ȘI în bara de sus a fiecărei ferestre de lucru, lângă traseu (`puneCautarea` cu
+// `{ inainte, id }`, chemată de navigator la fiecare desenare a ferestrei); (3) Ctrl+K (Cmd+K) pune cursorul în căsuța ferestrei de sus, iar
+// fără ferestre în cea din antet.
+//
+// Rezultatele vin de la server (`GET /eu/cautare`, `core/cautare.py`). Lista apare sub căsuță numai cât omul scrie (nimic nu se deschide
+// singur); fiecare rezultat e un buton (DS cap.2a, 674); alegerea (clic / Enter) deschide fereastra potrivită PESTE ce e deschis — ce s-a
+// tastat într-o fereastră de dedesubt se păstrează (DS cap.3, `nav` păstrează corpul ferestrei). Operațiunile refuzate rolului nu apar (`permis`).
+// Gard: `core/test_lot13_ds_cautare.py` (server + structură) + e2e `frontend_test/e2e/e2e_lot13_ds.py::test_def_681_*`.
+import { api, esc, ultimaCerere } from "./api.js?v=9bcf50c899";
 import { permis } from "./drepturi.js?v=34d0fb0afd";
 
 const ASTEPTARE_MS = 200;
@@ -45,7 +52,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=e8ba418f34");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=4463b4d6cf");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
@@ -70,31 +77,27 @@ export async function deschideRezultatul(x, nav) {
   }
   if (x.fel === "declaratie") {
     await _fereastraFirmei(nav, t);
-    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=d7d80b5949");
+    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=b22d32280e");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, { tenant_id: t.id, nume: t.nume }, { tenant_id: t.id, tip: x.tip }),
       { lat: "tabel" });
     return;
   }
-  if (x.fel === "salariat") {
-    await _cardul(nav, t, "salariati");
-    const nume = String(x.titlu || "");
-    const f = await _asteapta("table, .pf-frand, .stat-rand");
-    const rand = [...f.closest(".fereastra").querySelectorAll("tr, .pf-frand")].find((r) => (r.innerText || "").includes(nume));
-    if (rand) { rand.classList.add("val-evidentiat"); rand.scrollIntoView({ block: "center" }); }
-  }
 }
 
-// căsuța de căutare, pusă de navigator în bara de sus (înaintea spațiului care împinge butoanele la dreapta)
-export function puneCautarea(bara, nav) {
+// Căsuța de căutare. `bara` = bara în care se montează (antetul paginii sau antetul unei ferestre); `opt.inainte` = elementul înaintea căruia
+// se pune (implicit spațiul care împinge butoanele la dreapta, în antetul paginii); `opt.id` = id-ul căsuței (unic pe pagină: antetul
+// paginii `cautare-globala`, fereastra `cautare-fereastra`).
+export function puneCautarea(bara, nav, opt = {}) {
+  const id = opt.id || "cautare-globala";
   const loc = document.createElement("div");
-  loc.className = "cautare-globala";
-  loc.innerHTML = `<input type="search" id="cautare-globala" class="cautare-camp" autocomplete="off" spellcheck="false"
-      placeholder="Caută: diurnă, D112, un salariat…" aria-label="Caută o funcție, o declarație sau un salariat"
-      role="combobox" aria-expanded="false" aria-controls="cautare-rez" aria-autocomplete="list">
-    <div class="cautare-rez" id="cautare-rez" role="listbox" aria-label="Rezultatele căutării" hidden></div>`;
-  bara.insertBefore(loc, bara.querySelector(".bara-spatiu"));
-  const inp = loc.querySelector("#cautare-globala");
-  const lista = loc.querySelector("#cautare-rez");
+  loc.className = "cautare-globala" + (opt.inainte ? " cautare-in-fereastra" : "");
+  loc.innerHTML = `<input type="search" id="${id}" class="cautare-camp" autocomplete="off" spellcheck="false"
+      placeholder="Caută o funcție: D300, stat de plată, NIR…" aria-label="Caută o funcție a aplicației (Ctrl+K)" title="Ctrl+K"
+      role="combobox" aria-expanded="false" aria-controls="${id}-rez" aria-autocomplete="list">
+    <div class="cautare-rez" id="${id}-rez" role="listbox" aria-label="Rezultatele căutării" hidden></div>`;
+  bara.insertBefore(loc, opt.inainte || bara.querySelector(".bara-spatiu"));
+  const inp = loc.querySelector("#" + id);
+  const lista = loc.querySelector("#" + id + "-rez");
   let ceas = null, rezultate = [], activ = -1;
   const cerereNoua = ultimaCerere();   // [C103] numai răspunsul ultimei căutări ajunge în listă
 
@@ -139,7 +142,7 @@ export function puneCautarea(bara, nav) {
     }
     if (!actuala()) return;   // a sosit răspunsul unei căutări mai vechi
     // acțiunea unei operațiuni se compune ca la butoanele ei (`actiuneOp`); cele refuzate rolului nu apar
-    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=0a8114ed64");
+    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=54dc44fa27");
     if (!actuala()) return;
     rezultate = ((r && r.rezultate) || []).filter((x) => (x.ruta ? permis(actiuneOp(x)) : (!x.actiune || permis(x.actiune))));
     const deFirma = rezultate.some((x) => x.fel !== "card" && x.fel !== "operatiune") || tid;
@@ -159,6 +162,26 @@ export function puneCautarea(bara, nav) {
     else if (e.key === "ArrowUp") { e.preventDefault(); activ = (activ - 1 + n) % n; marcheaza(); }
     else if (e.key === "Enter") { e.preventDefault(); alege(activ < 0 ? 0 : activ); }
   });
-  document.addEventListener("pointerdown", (e) => { if (!loc.contains(e.target)) inchide(); }, true);
+  // fereastra se redesenează (căsuța nouă, cea veche iese din DOM): ascultătorul vechi se scoate, nu se adună câte unul pe fiecare desenare
+  const laClic = (e) => {
+    if (!loc.isConnected) { document.removeEventListener("pointerdown", laClic, true); return; }
+    if (!loc.contains(e.target)) inchide();
+  };
+  document.addEventListener("pointerdown", laClic, true);
   return inp;
 }
+
+// Ctrl+K (Cmd+K) de oriunde: cursorul în căsuța ferestrei de sus (ferestrele acoperă antetul paginii), altfel în cea din antet. Fără nicio
+// căsuță (clientul din portal n-are căutare) tasta rămâne a browserului.
+export function focuseazaCautarea() {
+  const ferestre = [...document.querySelectorAll(".fereastra .cautare-camp")];
+  const inp = ferestre.length ? ferestre[ferestre.length - 1] : document.querySelector(".bara .cautare-camp");
+  if (!inp) return false;
+  inp.focus({ preventScroll: true });
+  inp.select();
+  return true;
+}
+
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && String(e.key).toLowerCase() === "k" && focuseazaCautarea()) e.preventDefault();
+});

@@ -10,9 +10,9 @@
 // validarea pe server, erorile lângă câmp — toate deodată, `erori_campuri`).
 // DS: tabelul `.fd-tabel` cu cifrele în `.fd-td-num` (cap.9), rezumatul lipit sus `.rezumat-fix`, acțiunea și mesajul ei lipite jos
 // `.bara-fixa` (cap.6, v2.92), confirmarea care numește nota și consecința rămâne pe ecran (cap.27).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=cb524f997d";
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=9bcf50c899";
 
-import { MONEDE } from "./operatiuni_ecran.js?v=0a8114ed64";   // [lotul 13, 631] aceeași listă de monede ca la factură
+import { MONEDE } from "./operatiuni_ecran.js?v=54dc44fa27";   // [lotul 13, 631] aceeași listă de monede ca la factură
 
 const FEL = { creanta: "Creanță", datorie: "Datorie", disponibil: "Disponibil" };
 // [lotul 13, deficiența 631] „Moneda se scrie de mână; trebuie aleasă din lista de coduri BNR, ca la factură”: select, nu text

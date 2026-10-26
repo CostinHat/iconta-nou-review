@@ -119,3 +119,12 @@ def test_mecanismele_reale_exista_si_fisierele_zonei_ds_sunt_curate(analiza, rea
     assert not [r for r in rez if r[0] in FISIERE_DS], [r for r in rez if r[0] in FISIERE_DS]
     # ANTI-VACUU: regulile văd ce măsoară (locurile din fișierele altor zone, raportate în l13_raport/ds.md)
     assert {r[2] for r in rez} >= {"LISTA_SCURTA", "BUTON_ASCUNS", "PRECOMPLETARE", "FEREASTRA_INLINE"} or not rez
+
+
+def test_cautare_fereastra_mecanismul_lipsa_e_prins(analiza, reale):
+    """681 (precizarea 26.10): căsuța de căutare în bara de sus a fiecărei ferestre. MUTAȚIA: navigatorul fără `puneCautarea(... cautare-fereastra`
+    -> verificatorul spune CAUTARE_FEREASTRA; cu navigatorul real -> nimic."""
+    fis, css, num = reale
+    assert [r for r in analiza(dict(fis), css, num) if r[2] == "CAUTARE_FEREASTRA"] == []
+    fara = dict(fis, **{"navigator.js": fis["navigator.js"].replace('"cautare-fereastra"', '"altceva"')})
+    assert [r for r in analiza(fara, css, num) if r[2] == "CAUTARE_FEREASTRA"], "mecanismul scos nu e prins"

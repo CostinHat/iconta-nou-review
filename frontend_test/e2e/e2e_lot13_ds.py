@@ -217,3 +217,39 @@ def test_def_681_cautarea_d112_deschide_declaratiile_cu_d112_ales(patron, firma_
     pg.wait_for_timeout(800)
     patron.captura("cautare_d112")
     assert pg.eval_on_selector(_F + "#dec-tip", "s => s.value") == "d112"
+
+
+def test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste(patron, firma_e2e):
+    """681, precizarea din 26.10.2026 (Costin, verbatim: „Căsuța trebuie să fie accesibilă din fiecare fereastră de lucru (pe bara de sus a
+    ferestrei, lângă traseu), nu doar în antetul paginii, care e acoperit de ferestre; plus scurtătura Ctrl+K de oriunde.” și „căutarea este a
+    funcțiilor aplicației […], nu căutare de documente sau date”). Pașii: firma în lucru -> fereastra Casă -> în bara ei de sus, lângă traseu,
+    e căsuța -> Ctrl+K pune cursorul în ea -> „stat de plată” -> primul rezultat „Salariați” -> clic: fereastra Salariați se deschide peste
+    Casă. Apoi numele firmei (dată, nu funcție) nu găsește nimic. MUTAȚIA: apelul `puneCautarea(... cautare-fereastra ...)` scos din
+    navigator -> căsuța lipsește din fereastră -> ROȘU."""
+    pg = patron.pg
+    patron.firma(firma_e2e["nume"])
+    _card(patron, "casa", _F + "#c-toggle")
+    pg.wait_for_selector(_F + ".fereastra-antet #cautare-fereastra", timeout=10000)
+    sus = pg.locator(_F + ".fereastra-antet")
+    # lângă traseu: în aceeași bară, după drumul ferestrei și înaintea butonului de închidere
+    ordine = sus.evaluate("a => [...a.children].map(c => c.className.split(' ')[0] + (c.querySelector('#cautare-fereastra') ? '*' : ''))")
+    assert ordine.index("cautare-globala*") > ordine.index("fereastra-fir") and ordine.index("cautare-globala*") < ordine.index("nav-x"), ordine
+    patron.captura("casuta_in_fereastra_casa")
+    pg.click(_F + ".fereastra-corp")
+    pg.keyboard.press("Control+k")
+    assert pg.evaluate("document.activeElement && document.activeElement.id") == "cautare-fereastra"
+    pg.keyboard.type("stat de plată")
+    pg.wait_for_selector(_F + "#cautare-fereastra-rez .cautare-item", timeout=15000)
+    primul = pg.inner_text(_F + "#cautare-fereastra-rez .cautare-item >> nth=0")
+    patron.captura("cautare_stat_de_plata_din_fereastra")
+    assert "Salariați" in primul, primul
+    pg.click(_F + "#cautare-fereastra-rez .cautare-item >> nth=0")
+    pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].length >= 2", timeout=30000)
+    # fereastra Casă a rămas dedesubt (căutarea deschide PESTE ce e deschis)
+    assert pg.locator(".fereastra").count() >= 2
+    # nu se caută date: numele firmei nu e o funcție
+    pg.keyboard.press("Control+k")
+    pg.keyboard.type(firma_e2e["nume"].split()[0])
+    pg.wait_for_selector(_F + "#cautare-fereastra-rez .cautare-mesaj", timeout=15000)
+    assert "Nimic găsit" in pg.inner_text(_F + "#cautare-fereastra-rez"), pg.inner_text(_F + "#cautare-fereastra-rez")
+    assert pg.locator(_F + "#cautare-fereastra-rez .cautare-item").count() == 0

@@ -17,8 +17,8 @@
 // însemna că n-a fost ce compara, sau că verificarea n-a rulat deloc. Ecranul le ține despărțite,
 // fiindcă exact aici se naște cifra validă și falsă.
 
-import { api, esc, dupaNumar, dataRo } from "../api.js?v=cb524f997d";
-import { randA as randConstatare } from "./control_verdict.js?v=1f610ac06a";
+import { api, esc, dupaNumar, dataRo } from "../api.js?v=9bcf50c899";
+import { randA as randConstatare } from "./control_verdict.js?v=3dc9eca249";
 
 function perioada(r) {
   return dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric");   // DS cap.4: „10/2026”, din formatorul unic

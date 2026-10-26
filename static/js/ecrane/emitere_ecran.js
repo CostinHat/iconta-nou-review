@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=cb524f997d";
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=9bcf50c899";
 import { textStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { optiuniTara as _optiuniTara, taraDinCui } from "./tari_partener.js?v=43a0fddc7d";   // [lotul 12, C160] sursa unică
@@ -15,7 +15,7 @@ import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";  // [lotul 
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444] numele ANAF vs fișa clientului
 import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF / VIES țin de CUI-ul lor
-import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=0000000000";   // [lotul 13, 536] centrul de cost al liniei
+import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());

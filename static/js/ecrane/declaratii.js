@@ -6,10 +6,10 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=cb524f997d";
-import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=a6ea6eafbc";
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=9bcf50c899";
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=6f3dd3794d";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";   // [lotul 10, 431] refuzul care trimite la ce lipsește
-import { cautaInLista } from "./emitere_ecran.js?v=412cfcfbc5";   // [lotul 13, 653] căutarea în lista țărilor (aceeași ca la articole)
+import { cautaInLista } from "./emitere_ecran.js?v=5b93aa95d0";   // [lotul 13, 653] căutarea în lista țărilor (aceeași ca la articole)
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
 const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic

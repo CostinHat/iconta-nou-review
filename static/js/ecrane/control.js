@@ -2,10 +2,10 @@
 // Nivel 1: lista firmelor cu pastila colorata (verde/galben/rosu).
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
-import { VERDICT_POZITIV } from "./verdict.js?v=59fd410a82";  // [P13c] punctul unic de verdict
-import { api, esc, cate } from "../api.js?v=cb524f997d";  /* esc_nc27 */
+import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
+import { api, esc, cate } from "../api.js?v=9bcf50c899";  /* esc_nc27 */
 import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=1f610ac06a";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=3dc9eca249";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {

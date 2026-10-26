@@ -3,17 +3,17 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=cb524f997d";  /* esc_nc27 */
-import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=0000000000";   // [lotul 13, 536] centrul de cost al liniei
+import { api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=9bcf50c899";  /* esc_nc27 */
+import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
 import { randeazaStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=412cfcfbc5";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=5b93aa95d0";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
 import { optiuniTara, taraDinCui } from "./tari_partener.js?v=43a0fddc7d";
-import { campuriMf, pornesteMf } from "./mf_din_factura.js?v=0000000000";   // [lotul 13, 601] mijlocul fix de pe linia de imobilizare   // [lotul 12, C160] țara clientului pe șablonul facturii recurente
+import { campuriMf, pornesteMf } from "./mf_din_factura.js?v=de15131629";   // [lotul 13, 601] mijlocul fix de pe linia de imobilizare   // [lotul 12, C160] țara clientului pe șablonul facturii recurente
 
 // [deficiența 418c, clasa 410, DS cap.27] după un act reușit, confirmarea rămâne pe ecran și drumul înapoi e un buton — nu o navigare
 // temporizată, care ștergea confirmarea înainte de a fi citită
@@ -315,7 +315,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=e8ba418f34");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=4463b4d6cf");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -1403,7 +1403,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const btnVeziNota = corp.querySelector("#fd-vezi-nota");
   if (btnVeziNota) btnVeziNota.addEventListener("click", async () => {
-    const { ecranJurnal } = await import("./firme.js?v=e8ba418f34");   // dinamic: firme.js importă deja ecranul facturilor
+    const { ecranJurnal } = await import("./firme.js?v=4463b4d6cf");   // dinamic: firme.js importă deja ecranul facturilor
     const [an, luna] = String(nc.data).split("-").map(Number);
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
   });

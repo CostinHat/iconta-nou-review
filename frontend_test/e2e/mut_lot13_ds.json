@@ -52,5 +52,11 @@
   "ancora": "    if regim in (None, \"dubla\"):   # operațiunile speciale",
   "inlocuire": "    if False and regim in (None, \"dubla\"):   # operațiunile speciale",
   "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_681_cautarea_gaseste_decontul_de_deplasare"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "    if ((sus.optiuni || {}).lat !== \"mic\" && (sesiune.user() || {}).rol !== \"client\") puneCautarea(fer.querySelector(\".fereastra-antet\"), nav,",
+  "inlocuire": "    if (false) puneCautarea(fer.querySelector(\".fereastra-antet\"), nav,",
+  "test": "frontend_test/e2e/e2e_lot13_ds.py::test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste"
  }
 ]

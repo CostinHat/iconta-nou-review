@@ -3,10 +3,10 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { api, ultimaCerere, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand, confirmaCaseta } from "../api.js?v=cb524f997d";
+import { api, ultimaCerere, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc, focusFaraSalt, cate, refuzPeRand, confirmaCaseta } from "../api.js?v=9bcf50c899";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=75ecec94e0";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=0f96afcd4e";
-import { randeazaAdminSanatate } from "./admin_sanatate.js?v=3d9355e5b6";
+import { randeazaAdminSanatate } from "./admin_sanatate.js?v=ad3794a4df";
 import { randeazaAdminAnalytics, marcheazaSesiuneInterna } from "./admin_analytics.js?v=440f824e89";
 import { numeDeSalut } from "./salut.js?v=f5a3ed7133";
 import { panouNotificari } from "./setari.js?v=ae0ddd2b13";   // [17.10.2026, lotul 7] același panou ca în Setări cont   // [269] numele din salut, același loc ca pagina principală

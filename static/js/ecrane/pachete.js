@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, ultimaCerere, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=cb524f997d";
+import { api, ultimaCerere, dataRo, esc, arataMesaj, cate, confirmaCaseta } from "../api.js?v=9bcf50c899";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",

@@ -2840,7 +2840,7 @@ def _l13_nr_elemente(corp):
 
 def analiza_lot13(fisiere, css="", numere_py=""):
     """[(fișier, linie, COD, text)] — codurile: SUMA_CITITA_BRUT, SUMA_TEXT (655), FEREASTRA_INLINE (673), ACTIUNE_FARA_BUTON (674),
-    BUTON_ASCUNS (675), LISTA_SCURTA (676), PRECOMPLETARE (504), GRILA_INLINE (509)."""
+    BUTON_ASCUNS (675), LISTA_SCURTA (676), PRECOMPLETARE (504), GRILA_INLINE (509), CAUTARE_FEREASTRA (681)."""
     import re as _re
     out = []
     api, nav = fisiere.get("api.js", ""), fisiere.get("navigator.js", "")
@@ -2856,6 +2856,8 @@ def analiza_lot13(fisiere, css="", numere_py=""):
         ("BUTON_ASCUNS", "export function inactiv(" in api and "export function atributeInactiv(" in api and '[aria-disabled="true"]' in api,
          "api.js: butonul inactiv cu motiv (`inactiv` / `atributeInactiv` + oprirea clicului) (675)"),
         ("FEREASTRA_INLINE", '"fer-lucru"' in nav, "navigator.js: fereastra deschisă peste alta e fereastră de lucru (`fer-lucru`) (673)"),
+        ("CAUTARE_FEREASTRA", 'puneCautarea(fer.querySelector(".fereastra-antet")' in nav and '"cautare-fereastra"' in nav,
+         "navigator.js: căsuța de căutare a funcțiilor în bara de sus a fiecărei ferestre de lucru (681, precizarea 26.10)"),
     ):
         if not ok:
             out.append(("api.js" if "api.js" in ce else ("navigator.js" if "navigator" in ce else "numere.py"), 0, cod, "mecanismul lipsește — " + ce))

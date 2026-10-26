@@ -3,7 +3,7 @@
 // puteau vedea, casa sau reevalua din interfata — iar casarea/reevaluarea cereau un mijloc_fix_id
 // pe care niciun ecran nu-l arata (casarea din formular dadea 422 garantat). Aici e sursa acelui id
 // + doua actiuni directe: casare (POST nota-inventariere) si reevaluare (POST reevaluare-imobilizare).
-import { api, cate, esc, arataMesaj, arataRefuzul, bani, dataRo, dupaGenerare, noteGenerate, stareNota, pasNota, eroareCamp, curataEroriCamp } from "../api.js?v=cb524f997d";
+import { api, cate, esc, arataMesaj, arataRefuzul, bani, dataRo, dupaGenerare, noteGenerate, stareNota, pasNota, eroareCamp, curataEroriCamp } from "../api.js?v=9bcf50c899";
 
 // ["01/2026", …, "08/2026", "11/2026"] -> "9 luni: 01–08/2026, 11/2026" (intervalele peste an: "11/2025–02/2026")
 export function luniScurte(luni) {

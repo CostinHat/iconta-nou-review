@@ -393,5 +393,37 @@
    }
   ],
   "captura": "c111_f1_inregistrarea_cabinetului_incape.png"
+ },
+ {
+  "nr": "681",
+  "firma": "tenant_9049",
+  "descriere": "F1 în lucru, precizarea din 26.10: fereastra Casă deschisă -> în bara ei de sus, lângă traseu, căsuța de căutare -> «stat de plată» -> primul rezultat «Salariați» (funcție, nu dată). Nu se generează nimic.",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #c-toggle"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cautare-fereastra",
+    "valoare": "stat de plată"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cautare-fereastra-rez .cautare-item"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type .fereastra-antet #cautare-fereastra"
+   },
+   {
+    "contine": "Salariați"
+   }
+  ],
+  "captura": "681_f1_casuta_in_fereastra_stat_de_plata.png"
  }
 ]

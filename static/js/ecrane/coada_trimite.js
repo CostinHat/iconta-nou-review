@@ -6,7 +6,7 @@
 //    `motiv_trecere`, păstrată cu numele omului); `ERORI_DUK` -> se arată, fără portiță.
 //  - C1: refuzul spune motivul REAL venit de la server, nu o presupunere („Poate există deja o declarație…” apărea și la o eroare 500).
 //  - C11: bilanțul intră în coadă pe același drum ca orice declarație.
-import { api, esc, arataMesaj, aduInVedere, TEXT_NOTA_INTERNA } from "../api.js?v=cb524f997d";
+import { api, esc, arataMesaj, aduInVedere, TEXT_NOTA_INTERNA } from "../api.js?v=9bcf50c899";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";   // [lotul 11, 445] refuzul care trimite la ecranul unde se repară
 
 // [deficiența 222, comanda Costin 10.10.2026] confirmarea intrării în coadă e ACEEAȘI casetă din orice ecran (Declarații, Bilanț) —
@@ -136,7 +136,7 @@ export function mesajLangaNote(cuNote, langa, intreg) {
 // luna notei, cu nota evidențiată (același drum ca legătura „jurnal:” din notificări). Ecranul declarației rămâne dedesubt.
 export async function deschideInCoada(coadaId, dinRefuz = false) {
   if (!window._navGlobal) return;
-  const { randeazaValidat } = await import("./validat.js?v=058e9d8957");
+  const { randeazaValidat } = await import("./validat.js?v=48387b50e9");
   // [lotul 11, 445] deschisă dintr-un refuz („Deschide declarația existentă”): declarația de dedesubt se păstrează, X / „← Înapoi” întorc la ea
   if (dinRefuz && window._navGlobal.dinRefuz) window._navGlobal.dinRefuz();
   window._navGlobal.deschide("Coada de validare și depunere", (corp, nn) => randeazaValidat(corp, nn, { evidentiaza: coadaId }), { nivel: "cabinet" });
@@ -162,7 +162,7 @@ export function legaturiNote(zona, tenantId, note) {
   lista.querySelectorAll("[data-nota]").forEach((b) => b.addEventListener("click", async () => {
     const n = note[parseInt(b.dataset.nota, 10)];
     const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=e8ba418f34");
+    const { ecranJurnal } = await import("./firme.js?v=4463b4d6cf");
     const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
     if (!t || !window._navGlobal) return;
     // [lotul 11, 445] nota se deschide dintr-un refuz: formularul / declarația de dedesubt se păstrează, săgeata și X întorc acolo

@@ -1,8 +1,8 @@
 // termene.js — scadente fiscale viitoare pe portofoliu (orizont 60 zile).
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
-import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=cb524f997d";
-import { deschideFirma } from "./firme.js?v=e8ba418f34";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=9bcf50c899";
+import { deschideFirma } from "./firme.js?v=4463b4d6cf";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
