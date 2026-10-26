@@ -251,8 +251,12 @@ def reconciliere_balanta(randuri, solduri):
     articol se numesc și ele. -> [{cont, registru, balanta, diferenta}]."""
     from decimal import Decimal as _D
     pe_cont = {}
-    for a in randuri or []:
-        if a.get("stare") == "respins":
+    # [lotul 13, 668 — e2e pe arborele integrat: „371: stoc inițial 0,00 lei”] se scot numai rândurile respinse pentru ALT motiv decât
+    # chiar această confruntare: previzualizarea etichetează întâi (`eticheteaza` pune `stare = respins` și pe rândurile contului
+    # nepotrivit), iar fără deosebire contul ar fi dat 0 — și ar fi apărut nepotrivit chiar după ce fișierul se corectează
+    alte = ({e["rand"] for e in verifica_randuri(randuri)} if any(a.get("stare") == "respins" for a in randuri or []) else set())
+    for i, a in enumerate(randuri or [], start=2):
+        if a.get("stare") == "respins" and _it.nr_rand(a, i) in alte:
             continue
         c = str(a.get("cont_stoc") or "").strip().split(".")[0]
         if c:
