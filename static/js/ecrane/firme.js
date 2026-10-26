@@ -1308,9 +1308,9 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
       const altfel = z.stare !== "prezent";
       const txt = `${String(z.zi_nr).padStart(2, "0")}<br><span class="tip-micut">${esc(z.eticheta)}</span>`;
       if (!z.editabil) {
-        return `<td><button type="button" class="buton-secundar pj-zi-blocata" data-zi="${z.zi}" data-stare="${esc(z.stare)}" disabled title="${esc(z.motiv)}" style="width:100%">${txt}</button></td>`;
+        return `<td><button type="button" class="buton-secundar pj-zi-blocata" data-zi="${z.zi}" data-stare="${esc(z.stare)}" disabled title="${esc((z.afirmatie && z.afirmatie.motiv) || "")}" style="width:100%">${txt}</button></td>`;
       }
-      return `<td><button type="button" class="pj-zi buton-secundar${altfel ? " buton-activ" : ""}" data-zi="${z.zi}" data-stare="${esc(z.stare)}" aria-pressed="${altfel}" data-actiune-camp="PUT /tenants/{tenant_id}/salariati/{salariat_id}/pontaj" title="${esc(z.motiv || z.eticheta)}" style="width:100%">${txt}</button></td>`;
+      return `<td><button type="button" class="pj-zi buton-secundar${altfel ? " buton-activ" : ""}" data-zi="${z.zi}" data-stare="${esc(z.stare)}" aria-pressed="${altfel}" data-actiune-camp="PUT /tenants/{tenant_id}/salariati/{salariat_id}/pontaj" title="${esc((z.afirmatie && z.afirmatie.motiv) || z.eticheta)}" style="width:100%">${txt}</button></td>`;
     };
     const pc = g.perioada_confirmata || {};
     const dataConf = pc.confirmat_la ? dataRo(String(pc.confirmat_la).slice(0, 10)) : "";

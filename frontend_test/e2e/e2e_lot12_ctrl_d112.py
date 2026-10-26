@@ -221,7 +221,8 @@ def test_def_482_cam_si_retinerile_din_indemnizatie(patron, firma_482):
     assert int(c4["C4_baza"]) == int(b1["B1_5"]), c4
     assert int(c4["C4_ct"]) == _leu(Decimal(c4["C4_baza"]) * Decimal("0.0225")), c4
     assert cam_stat == int(c4["C4_ct"]), (cam_stat, c4)
-    # reținerile din indemnizație = cele declarate (CAS + CASS + impozit ale salariatului) minus cele din salariu
-    ret_sal = -(comp["CAS (25%)"] + comp["CASS (10%)"] + comp["Impozit pe venit"])
+    # reținerile din indemnizație + cele din salariu = cele declarate (CAS B4_8 + CASS B4_6 + impozit E3_15 ale salariatului);
+    # [lotul 13, 677] în coloana „Rețineri” sumele sunt pozitive (înainte compoziția le arăta cu minus)
+    ret_sal = comp["CAS (25%)"] + comp["CASS (10%)"] + comp["Impozit pe venit"]
     e3 = _un(a, "asiguratE3")
-    assert -sum(ret) == int(b4["B4_8"]) + int(b4["B4_6"]) + int(e3["E3_15"]) - ret_sal, (ret, b4, e3, comp)
+    assert sum(ret) + ret_sal == int(b4["B4_8"]) + int(b4["B4_6"]) + int(e3["E3_15"]), (ret, b4, e3, comp)

@@ -53,6 +53,28 @@ def _p(schema):
     return ('"%s".' % str(schema).strip('"')) if schema else ""
 
 
+#: [P8, decizia 21.08.2026] de unde știe aplicația starea unei zile care nu se pontează (`fapt` cere temeiul completitudinii)
+_TEMEI_ZILEI = {
+    "zi_nelucratoare": "calendarul zilelor lucrătoare al aplicației (weekendurile și sărbătorile legale, `e_zi_lucratoare`)",
+    "zi_in_afara_contractului": "data angajării și data încetării din fișa salariatului",
+    "zi_concediu_medical": "certificatele de concediu medical ale salariatului, înregistrate în aplicație",
+    "zi_suspendare": "suspendările contractului salariatului, înregistrate în aplicație („Suspendare / CFP”)",
+}
+
+
+def _afirmatia_zilei(fel, tip, motiv, d):
+    """De ce ziua nu e o zi obișnuită de pontaj — afirmație TIPATĂ (`core/afirmatii.py`), nu proză în dicționar; None pe ziua
+    obișnuită. Ecranul arată `motiv`, iar refuzul lui `seteaza` îl citează."""
+    if not motiv:
+        return None
+    from core import afirmatii as _af
+    if fel == "neconformitate":
+        return _af.afirmatie(fel, tip, motiv, unde="ziua %s" % d.strftime("%d.%m.%Y"), an=d.year, luna=d.month,
+                             regula="ziua de concediu medical vine din certificat (comanda 13.1, deficiența 671)")
+    return _af.afirmatie(fel, tip, motiv, temei_completitudine=_TEMEI_ZILEI[tip], an=d.year, luna=d.month,
+                         unde="ziua %s" % d.strftime("%d.%m.%Y"))
+
+
 def grila_pura(an, luna, data_angajare, exceptii, data_incetare=None, certificate=(), suspendari=()):
     """PURĂ. Zilele lunii cu starea fiecăreia (vezi antetul modulului pentru ordinea surselor).
 
@@ -69,30 +91,33 @@ def grila_pura(an, luna, data_angajare, exceptii, data_incetare=None, certificat
         lucr = e_zi_lucratoare(d)
         in_activ = ((data_angajare is None or d >= _zi(data_angajare))
                     and (data_incetare is None or d <= _zi(data_incetare)))
-        sursa, editabil, motiv = None, False, ""
+        sursa, editabil, motiv, fel, tip = None, False, "", "fapt", None
         cert = next((c for c in certs if c["_a"] <= d <= c["_b"]), None)
         susp = next((x for x in suspendari or () if _zi(x[0]) <= d <= _zi(x[1])), None)
         if not lucr:
-            stare, motiv = "nelucratoare", "Weekend sau sărbătoare legală: nu se pontează."
+            stare, motiv, tip = "nelucratoare", "Weekend sau sărbătoare legală: nu se pontează.", "zi_nelucratoare"
         elif not in_activ:
             stare = "inainte_angajare" if (data_angajare is not None and d < _zi(data_angajare)) else "dupa_incetare"
-            motiv = "Contractul nu era în vigoare în ziua asta."
+            motiv, tip = "Contractul nu era în vigoare în ziua asta.", "zi_in_afara_contractului"
         elif cert is not None:
             stare, sursa = "concediu_medical", "certificat"
             motiv = ("Concediu medical din certificatul %s %s — se schimbă din certificat."
                      % (cert.get("serie") or "", cert.get("numar") or "")).replace("  ", " ")
+            tip = "zi_concediu_medical"
         elif susp is not None:
             stare, sursa = (susp[2] if susp[2] in ("cfp", "suspendare") else "suspendare"), "suspendare"
             motiv = "%s — se schimbă din „Suspendare / CFP”." % ETICHETE.get(stare, stare).capitalize()
+            tip = "zi_suspendare"
         else:
             stare = exceptii.get(d) or "prezent"
             sursa, editabil = ("pontaj" if stare != "prezent" else None), True
             if stare == "concediu_medical":   # marcat de mână înainte de 671: fără certificat
                 rezumat["cm_fara_certificat"] += 1
                 motiv = "Marcată concediu medical fără certificat: adaugă certificatul sau marchează ziua altfel."
+                fel, tip = "neconformitate", "zi_cm_fara_certificat"
         zile.append({"zi": d.isoformat(), "zi_nr": z, "zi_saptamana": d.weekday(), "lucratoare": lucr,
                      "in_activitate": in_activ, "stare": stare, "eticheta": ETICHETE.get(stare, stare),
-                     "sursa": sursa, "editabil": editabil, "motiv": motiv})
+                     "sursa": sursa, "editabil": editabil, "afirmatie": _afirmatia_zilei(fel, tip, motiv, d)})
         if stare in rezumat and not (stare == "concediu_medical" and sursa != "certificat"):
             rezumat[stare] += 1
     n_fara = rezumat["cm_fara_certificat"]
@@ -173,7 +198,7 @@ def seteaza(conn, schema, salariat_id, zi, stare, tenant_id=None):
         return {"ok": False, "mesaj": "Salariatul nu există."}
     ziua = next((x for x in g["zile"] if x["zi"] == d.isoformat()), None)
     if ziua is not None and not ziua["editabil"]:
-        return {"ok": False, "mesaj": "Ziua %s nu se marchează în pontaj. %s" % (d.strftime("%d.%m.%Y"), ziua["motiv"])}
+        return {"ok": False, "mesaj": "Ziua %s nu se marchează în pontaj. %s" % (d.strftime("%d.%m.%Y"), ziua["afirmatie"]["motiv"])}
     if not stare or stare == "prezent":
         with conn.cursor() as cur:
             cur.execute(f"DELETE FROM {_p(schema)}pontaj WHERE salariat_id = %s AND zi = %s", (salariat_id, d))

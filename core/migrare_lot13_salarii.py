@@ -3,6 +3,9 @@
 
 1. [670 b] `diurna_excedent`: excedentul de diurnă al salariatului, pe lună — venit asimilat salariilor (CF art.76 alin.(2) lit.k),
    citit de statul de plată, D112 și nota salariilor. DDL-ul e în `core/diurna_salariat.py` (sursa unică).
+1b. [684] `diurna_excedent.inregistrare_id` -> `inregistrari(id)` ON DELETE CASCADE: excedentul cade odată cu nota decontului, pe
+   orice drum de ștergere. Datele existente: rândurile scrise de decont (`decont-deplasare:<nota>`) primesc nota; cele a căror notă a
+   fost ștearsă înainte (orfanele defectului 684) se scot (`diurna_salariat.REPARA_LEGATURA`).
 2. [679] `elemente_salariale.spor_procent`: sporul orelor suplimentare, din care aplicația calculează suma (ore × tariful orar al
    salariului de bază × (100% + spor)); se arată pe ecran și pe fluturaș. Rândurile vechi rămân cu spor_procent NULL: suma lor a
    fost scrisă de contabil și nu se rescrie (ecranul arată sporul care rezultă din ea).
@@ -21,6 +24,8 @@ def aplica(conn, schema):
         raise ValueError("schema invalidă: %r" % schema)
     with conn.cursor() as cur:
         cur.execute(_ds.DDL.format(s=schema))
+        cur.execute(_ds.DDL_NOTA.format(s=schema))
+        cur.execute(_ds.REPARA_LEGATURA.format(s=schema))
         cur.execute(DDL_SPOR.format(s=schema))
 
 
@@ -28,6 +33,10 @@ def verifica(conn, schema):
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass(%s)", ("%s.diurna_excedent" % schema,))
         if cur.fetchone()[0] is None:
+            return False
+        cur.execute("SELECT 1 FROM information_schema.columns WHERE table_schema = %s AND table_name = 'diurna_excedent' "
+                    "AND column_name = 'inregistrare_id'", (schema,))
+        if cur.fetchone() is None:
             return False
         cur.execute("SELECT 1 FROM information_schema.columns WHERE table_schema = %s AND table_name = 'elemente_salariale' "
                     "AND column_name = 'spor_procent'", (schema,))
@@ -56,7 +65,7 @@ def _main():
         except Exception as e:   # noqa: BLE001 — o firmă eșuată se numără și se spune; rularea se oprește cu cod 1 la final
             esec.append(s)
             print("  ESEC %s: %s" % (s, e))
-    print("lot13 salarii (diurna_excedent, spor_procent): %d ok, %d esec" % (ok, len(esec)))
+    print("lot13 salarii (diurna_excedent + legătura de notă, spor_procent): %d ok, %d esec" % (ok, len(esec)))
     if esec:
         raise SystemExit(1)
 
