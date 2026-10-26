@@ -589,6 +589,10 @@ def _registru_luna(cur, schema, an, luna):
     ops = {}
     for o in cur.fetchall():
         ops.setdefault(o["inregistrare_id"], o)
+    # [lotul 13, 692 / clasa 603] felul documentului legat al notei (borderou ≠ factură): eticheta sursei „facturile” nu se pune pe nota borderoului
+    cur.execute(f"""SELECT i.id AS inregistrare_id, f.tip FROM {schema}.inregistrari i JOIN {schema}.facturi f ON f.id = i.factura_id
+                    WHERE i.id = ANY(%s)""", (ids,))
+    fel_document = {r["inregistrare_id"]: r["tip"] for r in cur.fetchall()}
     rows = []
     for n in note:
         o = ops.get(n["inregistrare_id"])
@@ -602,7 +606,7 @@ def _registru_luna(cur, schema, an, luna):
                          "inregistrare_id": n["inregistrare_id"], "chitanta_neclasificata": None, "chitanta_id": None,
                          "nota_status": n["status"], "stornata": False, "storno_de": None, "factura_numar": None, "avans": False,
                          "nir_doc": None, "alt_modul": True,
-                         "categorie_eticheta": "notă din %s" % (_eticheta_sursa(n["sursa"]) or "jurnal")})
+                         "categorie_eticheta": "notă din %s" % (_eticheta_sursa(n["sursa"], fel_document.get(n["inregistrare_id"])) or "jurnal")})
     return sold_initial, rows
 
 

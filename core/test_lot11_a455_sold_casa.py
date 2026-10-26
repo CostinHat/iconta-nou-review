@@ -219,3 +219,16 @@ def test_garda_prinde_al_doilea_calcul():
                     '    cur.execute("SELECT sum(l.suma) FROM inregistrari_linii l WHERE l.cont_debit = \'5311\'")\n'
                     '    return _m.registru_casa([], 0)\n')
     assert len(_incalcari([("core/kpi_client.py", rau)])) == 3
+
+
+def test_692_nota_borderoului_in_casa_nu_e_nota_din_facturile(conn):
+    """[lotul 13, 692 / clasa 603] Nota unui borderou de achiziție (sursa `facturi`, factură cu `tip = 'borderou'`) apărea în Registrul de casă
+    „notă din facturile”; borderoul (OMFP 2634/2015, cod 14-4-13) nu e o factură. Eticheta se ia și după documentul legat, ca în jurnal.
+    MUTAȚIA: `fel_document.get(...)` -> `None` în `casa_api` -> „notă din facturile” -> pică."""
+    iid = _nota(conn, "2026-10-12", "371", "5311", 150, "facturi", "Achiziție de la neînregistrat")
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO facturi (numar, data_emitere, tip, directie) VALUES ('BORD-1', '2026-10-12', 'borderou', 'primita') RETURNING id")
+        cur.execute("UPDATE inregistrari SET factura_id = %s WHERE id = %s", (cur.fetchone()[0], iid))
+    reg = _ca.registru(conn, _SCH, 2026, 10)
+    et = [o["categorie_eticheta"] for o in reg["operatiuni"] if o["alt_modul"]]
+    assert et == ["notă din borderoul de achiziție"], et
