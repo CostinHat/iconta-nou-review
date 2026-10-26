@@ -1,0 +1,47 @@
+{
+ "_despre": "[lotul 13, C199] Baza simulatorului VIES pentru plasă și dovezi (ca anaf_baza.json): codurile de TVA UE ale clienților din testele care EMIT livrări intracomunitare, răspunsul „valid” (verificarea pe server, la emitere). DE999999990 (codul invalid al probei C166) NU e aici: rămâne invalid. Testele pun peste ea vies.json.",
+ "raspunsuri": {
+  "DE123456789": {
+   "valid": true,
+   "stare": "valid",
+   "nume": "KUNDE HANDELS GMBH",
+   "adresa": "Hauptstrasse 1\n10115 Berlin",
+   "eroare": null
+  },
+  "DE811907980": {
+   "valid": true,
+   "stare": "valid",
+   "nume": "KUNDE E2E GMBH",
+   "adresa": "Berlin",
+   "eroare": null
+  },
+  "IE9999999ZZ": {
+   "valid": true,
+   "stare": "valid",
+   "nume": "CLIENT IRLANDA E2E LTD",
+   "adresa": "1 GRAND CANAL SQUARE\nDUBLIN 2",
+   "eroare": null
+  },
+  "IE6388047V": {
+   "valid": true,
+   "stare": "valid",
+   "nume": "GOOGLE IRELAND LIMITED",
+   "adresa": "GORDON HOUSE\nDUBLIN 4",
+   "eroare": null
+  },
+  "DE136695976": {
+   "valid": true,
+   "stare": "valid",
+   "nume": "CLIENT GERMANIA E2E GMBH",
+   "adresa": "Berlin",
+   "eroare": null
+  },
+  "ATU13585627": {
+   "valid": true,
+   "stare": "valid",
+   "nume": "CLIENT AUSTRIA E2E GMBH",
+   "adresa": "Wien",
+   "eroare": null
+  }
+ }
+}

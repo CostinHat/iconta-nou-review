@@ -105,3 +105,143 @@ def campuri_required_lipsa(corp):
         _sir(l.get("localitate"), f"{pre}-localitate", f"{nume}: Localitate")
         _sir(l.get("strada"), f"{pre}-strada", f"{nume}: Strada")
     return lipsa
+
+
+# ── [lotul 13, deficiența 534] NOTIFICAREA COMPLETATĂ DIN FACTURĂ SAU DIN NIR ──────────────────────────────────────────────────────────
+# „Notificarea se completează de la zero (bunuri, cod NC, cantități, greutăți, valoare, partener, adrese), deși datele sunt pe factură sau
+# NIR; locul de pornire nu vine din adresa firmei/gestiunii; «H87» și «RO» precompletate (504). Se completează din factură sau NIR.”
+# Ce aduce documentul: bunurile (denumirea, cantitatea, UM-ul în codul UN/ECE — aceeași hartă ca e-Factura, `efactura_send._UM`; o unitate
+# necunoscută rămâne GOALĂ, nu „H87” —, valoarea fără TVA în lei), partenerul (țara, codul, denumirea), locul de pornire și cel de sosire
+# (adresa firmei din Date firmă, adresa partenerului de pe document / din fișa lui) și tipul operațiunii dedus din direcție și țară
+# (vizibil și modificabil pe ecran). Ce NU e pe document rămâne gol, de completat: scopul, codul NC, greutățile, transportul.
+# Codurile tipului de operațiune: aceleași ca lista ecranului (10 AIC, 20 LIC, 30 transport național, 40 import, 50 export).
+
+_UE = ("AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "EL", "GR", "ES", "FI", "FR", "HR", "HU", "IE", "IT", "LT", "LU", "LV", "MT", "NL",
+       "PL", "PT", "SE", "SI", "SK")
+#: ce rămâne de completat după aducerea din document (nu e pe factură / NIR)
+DE_COMPLETAT = ("scopul fiecărui bun", "codul NC", "greutatea netă și brută", "vehiculul și transportatorul", "data transportului")
+
+
+def tip_operatiune(intrare, tara):
+    """Tipul operațiunii e-Transport dedus din direcție (`intrare` = marfa vine la firmă) și țara partenerului: RO -> 30; UE -> 10 / 20;
+    din afara UE -> 40 / 50."""
+    t = str(tara or "RO").strip().upper() or "RO"
+    if t == "RO":
+        return "30"
+    if t in _UE:
+        return "10" if intrare else "20"
+    return "40" if intrare else "50"
+
+
+def _tara_din_cod(cod, implicit="RO"):
+    c = str(cod or "").strip().upper()
+    return c[:2] if c[:2].isalpha() else implicit
+
+
+def _loc(adresa, oras, judet):
+    from core import efactura_send as _es
+    jc = _es._jud(judet)
+    return {"cod_judet": jc[3:] if jc else "", "localitate": str(oras or "").strip(), "strada": str(adresa or "").strip()}
+
+
+def _um_unece(um):
+    from core import efactura_send as _es
+    return _es._UM.get(_es._norm(um)) or ""
+
+
+def _bani(x):
+    from decimal import Decimal, ROUND_HALF_UP
+    return str(Decimal(str(x)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+
+
+def din_document(conn, schema, fel, doc_id):
+    """Propunerea notificării din factura `doc_id` (fel „factura”) sau din NIR-ul `doc_id` (fel „nir”): {cod_tip_operatiune, ref,
+    bunuri, partener, start, final, de_completat}; None dacă documentul nu există."""
+    from decimal import Decimal
+    from psycopg2.extras import RealDictCursor
+    from core import eticheta_nota as _et
+    s = '"%s".' % str(schema).strip('"')
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("SELECT nume, adresa, oras, judet FROM %sfirma_profil WHERE id = 1" % s)
+        firma = cur.fetchone() or {}
+        loc_firma = _loc(firma.get("adresa"), firma.get("oras"), firma.get("judet"))
+        if fel == "factura":
+            cur.execute("SELECT id, directie, tert_nume, tert_cui, tert_tara, tert_adresa, tert_oras, tert_judet, curs_bnr, moneda "
+                        "FROM %sfacturi WHERE id = %%s" % s, (doc_id,))
+            f = cur.fetchone()
+            if not f:
+                return None
+            cur.execute("SELECT descriere, cantitate, um, pret_unitar, valoare_neta FROM %sfactura_linii WHERE factura_id = %%s ORDER BY id"
+                        % s, (doc_id,))
+            curs = Decimal(str(f["curs_bnr"] or 1))
+            bunuri = [{"denumire": l["descriere"] or "", "cantitate": str(l["cantitate"]), "um": _um_unece(l["um"]),
+                       "valoare_fara_tva": _bani((Decimal(str(l["valoare_neta"])) if l["valoare_neta"] is not None
+                                                  else Decimal(str(l["cantitate"] or 0)) * Decimal(str(l["pret_unitar"] or 0))) * curs)}
+                      for l in cur.fetchall()]
+            tara = str(f["tert_tara"] or "").strip().upper() or _tara_din_cod(f["tert_cui"])
+            intrare = f["directie"] == "primita"
+            partener = {"cod_tara": tara, "cod": str(f["tert_cui"] or "").strip(), "denumire": f["tert_nume"] or ""}
+            loc_partener = _loc(f["tert_adresa"], f["tert_oras"], f["tert_judet"]) if tara == "RO" else \
+                {"cod_judet": "", "localitate": str(f["tert_oras"] or "").strip(), "strada": str(f["tert_adresa"] or "").strip()}
+            ref = _et.factura(cur, schema, doc_id)
+        elif fel == "nir":
+            cur.execute("SELECT id, numar, data, furnizor, cui FROM %snir WHERE id = %%s" % s, (doc_id,))
+            n = cur.fetchone()
+            if not n:
+                return None
+            cur.execute("SELECT l.denumire, l.cantitate, l.pret_achizitie, a.um FROM %snir_linii l LEFT JOIN %sarticole a ON a.id = l.articol_id "
+                        "WHERE l.nir_id = %%s ORDER BY l.id" % (s, s), (doc_id,))
+            bunuri = [{"denumire": l["denumire"] or "", "cantitate": str(l["cantitate"]), "um": _um_unece(l["um"]),
+                       "valoare_fara_tva": _bani(Decimal(str(l["cantitate"] or 0)) * Decimal(str(l["pret_achizitie"] or 0)))}
+                      for l in cur.fetchall()]
+            tara = _tara_din_cod(n["cui"])
+            intrare = True
+            partener = {"cod_tara": tara, "cod": str(n["cui"] or "").strip(), "denumire": n["furnizor"] or ""}
+            from core import cui_forma as _cf
+            cur.execute("SELECT adresa, oras, judet FROM %sfurnizori WHERE %s = %%s ORDER BY id LIMIT 1" % (s, _cf.SQL.format(c="cui")),
+                        (_cf.stocare(n["cui"]) or "",))
+            fz = cur.fetchone() or {}
+            loc_partener = _loc(fz.get("adresa"), fz.get("oras"), fz.get("judet"))
+            from core.pdf_util import data_ro
+            ref = "NIR %s din %s" % (n["numar"], data_ro(n["data"]))
+        else:
+            raise ValueError("Documentul din care se completează notificarea e o factură sau un NIR.")
+    return {"cod_tip_operatiune": tip_operatiune(intrare, tara), "ref": ref[:100], "bunuri": bunuri, "partener": partener,
+            "start": loc_partener if intrare else loc_firma, "final": loc_firma if intrare else loc_partener,
+            "de_completat": list(DE_COMPLETAT)}
+
+
+def documente_recente(conn, schema, zile=60):
+    """Documentele din care se poate completa notificarea: facturile (emise și primite, nu proforme) și NIR-urile din ultimele `zile`
+    zile, cele mai noi întâi — {facturi: [{id, eticheta, partener}], nir: [{id, eticheta, partener}]}."""
+    from psycopg2.extras import RealDictCursor
+    from core import eticheta_nota as _et
+    from core.pdf_util import data_ro
+    s = '"%s".' % str(schema).strip('"')
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("SELECT id, directie, tip, serie, numar, data_emitere, tert_nume FROM %sfacturi WHERE COALESCE(tip, 'factura') = 'factura' "
+                    "AND storno_din_id IS NULL AND COALESCE(status, '') NOT IN ('anulata', 'ciorna') "
+                    "AND data_emitere >= CURRENT_DATE - %%s ORDER BY data_emitere DESC, id DESC LIMIT 200" % s, (zile,))
+        facturi = [{"id": r["id"], "eticheta": _et.factura_din_rand(r), "partener": r["tert_nume"] or "",
+                    "directie": r["directie"]} for r in cur.fetchall()]
+        cur.execute("SELECT id, numar, data, furnizor FROM %snir WHERE data >= CURRENT_DATE - %%s ORDER BY data DESC, id DESC LIMIT 200" % s,
+                    (zile,))
+        nir = [{"id": r["id"], "eticheta": "NIR %s din %s" % (r["numar"], data_ro(r["data"])), "partener": r["furnizor"] or ""}
+               for r in cur.fetchall()]
+    return {"facturi": facturi, "nir": nir}
+
+
+def din_document_uc(tenant_id, fel, doc_id, ctx):
+    """Corpul rutei `GET /tenants/{tenant_id}/etransport/din-document` (fără `fel`: lista documentelor din care se poate completa)."""
+    from core import db, erori as _erori, uc_comun as _uc
+    schema = _uc._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        if not fel:
+            return documente_recente(conn, schema)
+        try:
+            r = din_document(conn, schema, fel, int(doc_id or 0))
+        except ValueError as e:
+            raise _erori.DateInvalide(str(e))
+    if r is None:
+        raise _erori.Inexistent("Documentul nu mai există.")
+    return r

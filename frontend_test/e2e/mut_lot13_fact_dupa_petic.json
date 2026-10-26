@@ -1,0 +1,9 @@
+[
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "(corp.get(\"descriere\") or \"Achiziție de la neînregistrat\")",
+  "inlocuire": "(corp.get(\"descriere\") or \"Achizitie de la neinregistrat\")",
+  "test": "frontend_test/e2e/e2e_lot13_fact.py::test_def_603_nota_borderoului_are_titlul_cu_diacritice_si_sursa_lui",
+  "nota": "ancora există numai după peticul l13_petice/fact_7_603_titluri_cu_diacritice.json"
+ }
+]

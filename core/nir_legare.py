@@ -56,8 +56,9 @@ CONT_MARFA = _fc.ACHIZITIE["marfa"]
 #: metodele pe care se leagă (decizia §6 pct.1: „aceeași alegere ca la celelalte metode”)
 METODE = (_ms.GV, _ms.CV)
 TEMEI = "OMFP 1802/2014 pct.69"
-#: mențiunea care rămâne în descrierea notei facturii când omul confirmă „altă livrare”
-MENTIUNE_ALTA_LIVRARE = " · altă livrare decât NIR-urile nelegate (confirmat)"
+#: [lotul 13, 634 (c)] confirmarea „altă livrare” NU mai intră în titlul notei facturii (titlul e al documentului); fostul text, păstrat pe
+#: notele scrise înainte (o notă validată nu se rescrie), ca gărzile să-l poată căuta
+MENTIUNE_ALTA_LIVRARE_VECHE = " · altă livrare decât NIR-urile nelegate (confirmat)"
 
 
 def _q2(x):

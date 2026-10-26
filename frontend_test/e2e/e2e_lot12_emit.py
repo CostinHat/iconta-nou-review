@@ -225,6 +225,12 @@ def _sablon_nou(e, firma, cui, nume):
     pg.fill("#fr-l0-pret_unitar", "100")
     pg.dispatch_event("#fr-l0-pret_unitar", "input")
     pg.fill("#fr-zi", "5")
+    # [lotul 13, 680] întrebările emiterii de pe șablon, alese explicit (scadența, perioada, modul, SPV)
+    pg.fill("#fr-scadenta", "15")
+    pg.fill("#fr-inceput", "2026-01-01")
+    pg.click("#fr-pana button[data-val='oprire']")
+    pg.click("#fr-mod button[data-val='automata']")
+    pg.click("#fr-spv button[data-val='false']")
 
 
 def test_def_462_sablonul_trece_prin_verificarile_facturii_obisnuite(patron, firma_emit):

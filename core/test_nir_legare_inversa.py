@@ -177,8 +177,9 @@ def test_forma_veche_se_leaga_prin_stornare_in_rosu(conn):
 
 
 def test_alta_livrare_confirmata_conteaza_normal_si_o_consemneaza(conn):
-    """„Dacă contabilul nu leagă, confirmă explicit «altă livrare»; nu se blochează.” MUTAȚIE: mențiunea scoasă din descriere
-    -> pică."""
+    """„Dacă contabilul nu leagă, confirmă explicit «altă livrare»; nu se blochează.” [lotul 13, 634 (c)] confirmarea e în răspuns
+    (`alta_livrare`), nu în titlul notei: „Titlul notei include «altă livrare decât NIR-urile nelegate (confirmat)»” e deficiența lui
+    Costin. MUTAȚIE: mențiunea pusă la loc în descriere -> pică."""
     from core import nir_legare as nl
     n = _nir(conn)
     fid = _factura(conn)
@@ -186,7 +187,7 @@ def test_alta_livrare_confirmata_conteaza_normal_si_o_consemneaza(conn):
     assert r["stare"] == "contata" and r.get("alta_livrare") is True
     with conn.cursor() as cur:
         cur.execute("SELECT descriere FROM inregistrari WHERE id = %s", (r["inregistrare_id"],))
-        assert cur.fetchone()[0].count(nl.MENTIUNE_ALTA_LIVRARE) == 1
+        assert nl.MENTIUNE_ALTA_LIVRARE_VECHE not in cur.fetchone()[0]
     assert _ids_nir(conn, n["id"])[1] is None              # NIR-ul rămâne nelegat
 
 

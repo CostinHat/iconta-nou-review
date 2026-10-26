@@ -47,6 +47,90 @@ import datetime
 from psycopg2.extras import RealDictCursor
 from core import facturi_api
 
+# ── [lotul 13, deficiența 680] ACELEAȘI ÎNTREBĂRI CA „EMITE FACTURĂ”, NIMIC IMPLICIT ────────────────────────────────────────────────────
+# Comanda 13.1, verbatim: „680: [...] lipsesc seria, scadența, perioada de valabilitate și, mai ales, dacă factura se emite singură sau ca
+# ciornă și dacă pleacă singură în SPV. Șablonul folosește aceleași controale ca Emite factură”. Pe șablon se cer, fiecare explicit:
+#   * scadența: termenul de plată în zile de la emitere (data scadenței facturii lunii = data emiterii + zilele; 0 = la emitere);
+#   * perioada de valabilitate: de la (obligatoriu) și până la — o dată, sau „până îl opresc”, ales (`valabil_pana`);
+#   * modul emiterii: „automata” (cronul emite factura în ziua ei) sau „ciorna” (cronul o pregătește și o anunță în clopoțel; contabilul o
+#     emite din listă, cu „Emite factura lunii” — pe același drum ca cronul, `emite_unul`);
+#   * trimiterea în SPV (numai la emiterea automată): factura emisă pleacă singură în RO e-Factura, sau o trimite contabilul.
+# Seria e cea a firmei (numerotarea facturilor, ca la „Emite factură”); ecranul o arată.
+MODURI = ("automata", "ciorna")
+MESAJ_MOD = "Alege cum se emite factura lunară: singură (automat, în ziua ei) sau ca ciornă pregătită, pe care o emiți tu."
+MESAJ_SPV = "Alege dacă factura emisă automat pleacă singură în SPV (RO e-Factura) sau o trimiți tu din Istoric facturi."
+MESAJ_SCADENTA = "Scrie termenul de plată, în zile de la emitere (0 = scadența în ziua emiterii)."
+MESAJ_INCEPUT = "Scrie data de la care e valabil șablonul (prima lună în care se emite factura)."
+MESAJ_PANA = "Alege până când e valabil șablonul: până la o dată, sau până îl oprești."
+MESAJ_SFARSIT = "Scrie data până la care e valabil șablonul (sau alege „până îl opresc”)."
+MESAJ_NU_E_DE_EMIS = ("Factura lunii din acest șablon nu e de emis azi (a fost emisă luna asta, ziua ei n-a venit, sau șablonul e inactiv / "
+                      "în afara perioadei de valabilitate).")
+#: [680] tipul notificării pentru ciorna pregătită (același tip ca avertismentul emiterii: e „de știut” despre factura recurentă)
+TIP_CIORNA = "factura_recurenta_avertisment"
+
+
+def _data_ceruta(v):
+    try:
+        return datetime.date.fromisoformat(str(v)[:10]) if v not in (None, "") else None
+    except ValueError:
+        return False
+
+
+def cere_emiterea(corp, er):
+    """[680] Întrebările șablonului (scadența, perioada, modul, SPV), toate deodată în `er`, fiecare lângă câmpul ei. Întoarce valorile
+    curate {scadenta_zile, data_inceput, data_sfarsit, mod_emitere, trimite_spv} (None unde lipsesc)."""
+    out = {"scadenta_zile": None, "data_inceput": None, "data_sfarsit": None, "mod_emitere": None, "trimite_spv": None}
+    z = corp.get("scadenta_zile")
+    try:
+        out["scadenta_zile"] = int(z) if z not in (None, "") else None
+    except (TypeError, ValueError):
+        er.camp("fr-scadenta", "Termenul de plată: %r nu e un număr de zile." % (z,))
+    else:
+        if out["scadenta_zile"] is None:
+            er.camp("fr-scadenta", MESAJ_SCADENTA)
+        elif not 0 <= out["scadenta_zile"] <= 365:
+            er.camp("fr-scadenta", "Termenul de plată e între 0 și 365 de zile.")
+    di = _data_ceruta(corp.get("data_inceput"))
+    if not di:
+        er.camp("fr-inceput", MESAJ_INCEPUT if di is None else "Data de început nu e o dată din calendar.")
+    out["data_inceput"] = di or None
+    pana = corp.get("valabil_pana")
+    if pana not in ("data", "oprire"):
+        er.camp("fr-pana", MESAJ_PANA)
+    elif pana == "data":
+        ds = _data_ceruta(corp.get("data_sfarsit"))
+        if not ds:
+            er.camp("fr-sfarsit", MESAJ_SFARSIT if ds is None else "Data de sfârșit nu e o dată din calendar.")
+        elif di and ds < di:
+            er.camp("fr-sfarsit", "Data de sfârșit e înaintea datei de început.")
+        out["data_sfarsit"] = ds or None
+    mod = corp.get("mod_emitere")
+    if mod not in MODURI:
+        er.camp("fr-mod", MESAJ_MOD)
+    out["mod_emitere"] = mod if mod in MODURI else None
+    if mod == "automata":
+        t = corp.get("trimite_spv")
+        if t not in (True, False):
+            er.camp("fr-spv", MESAJ_SPV)
+        out["trimite_spv"] = t if t in (True, False) else None
+    elif mod == "ciorna":
+        out["trimite_spv"] = False   # ciorna o emite contabilul; trimiterea în SPV o face tot el, după emitere
+    return out
+
+
+def in_valabilitate(s, azi):
+    """PURĂ. [680] Șablonul e valabil azi (`data_inceput` <= azi <= `data_sfarsit`; fără ele — șablonul de dinainte de 680 — oricând)."""
+    di, ds = s.get("data_inceput"), s.get("data_sfarsit")
+    di = datetime.date.fromisoformat(str(di)[:10]) if di else None
+    ds = datetime.date.fromisoformat(str(ds)[:10]) if ds else None
+    return (di is None or di <= azi) and (ds is None or azi <= ds)
+
+
+def scadenta(s, azi):
+    """PURĂ. [680] Data scadenței facturii emise azi din șablon (None fără termen: șablonul de dinainte de 680)."""
+    z = s.get("scadenta_zile")
+    return (azi + datetime.timedelta(days=int(z))).isoformat() if z is not None else None
+
 MESAJ_BENEFICIAR = "Scrie beneficiarul facturii (denumirea clientului)."
 MESAJ_ARTICOL_STOC = ("Linia %d are un articol de stoc: factura lunară se emite automat și nu poate întreba dacă marfa pleacă odată cu ea "
                       "(un răspuns ales de aplicație ar descărca gestiunea fără știrea ta, sau ar lăsa stocul greșit). Emite marfa din "
@@ -161,13 +245,17 @@ def _proba_emiterii(conn, schema, corp, raspunsuri_ai=None, azi=None):
 def lista(conn, schema):
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""SELECT id, client_id, tert_nume, tert_cui, tert_tara, linii, zi_emitere,
-                               moneda, activ, ultima_emitere, ultimul_refuz, ultimul_refuz_la, categorie_331
+                               moneda, activ, ultima_emitere, ultimul_refuz, ultimul_refuz_la, categorie_331,
+                               scadenta_zile, data_inceput, data_sfarsit, mod_emitere, trimite_spv, ultima_pregatire
                         FROM {schema}.facturi_recurente ORDER BY id""")
         rows = [dict(r) for r in cur.fetchall()]
+    azi = datetime.date.today()
     for r in rows:
         if isinstance(r["linii"], str):
             r["linii"] = json.loads(r["linii"])
-        for k in ("ultima_emitere", "ultimul_refuz_la"):
+        # [680] ciorna lunii: pregătită (scadentă azi, în valabilitate, neemisă luna asta) -> butonul „Emite factura lunii”
+        r["de_emis_acum"] = bool(r.get("mod_emitere") == "ciorna" and de_emis([r], azi, mod="ciorna"))
+        for k in ("ultima_emitere", "ultimul_refuz_la", "data_inceput", "data_sfarsit", "ultima_pregatire"):
             if r[k]:
                 r[k] = str(r[k])
     return rows
@@ -200,7 +288,9 @@ def adauga(conn, schema, corp, raspunsuri_ai=None, azi=None):
     # Un camp completat cu litere e o greseala de tastare, nu o cadere de sistem.
     _zi = corp.get("zi_emitere")
     try:
-        zi = int(_zi) if _zi not in (None, "") else 1
+        zi = int(_zi) if _zi not in (None, "") else None
+        if zi is None:   # [lotul 13, 680] nimic implicit: ziua emiterii se cere (era 1 din oficiu)
+            er.camp("fr-zi", "Scrie ziua din lună în care se emite factura (1–28).")
     except (TypeError, ValueError):
         zi = None
         er.camp("fr-zi", "Ziua emiterii: %r nu e un număr. Scrie o zi între 1 și 28." % (_zi,))
@@ -228,6 +318,7 @@ def adauga(conn, schema, corp, raspunsuri_ai=None, azi=None):
             facturi_api.cere_cod_partener(corp.get("tert_cui"), False, corp.get("tert_nume"))
         except ValueError as e:
             er.camp("fr-cui", str(e))
+    em = cere_emiterea(corp, er)   # [lotul 13, 680] scadența, perioada, modul, SPV — toate deodată, fiecare lângă câmpul ei
     c331 = _categorie_331(corp)
     if not er:
         for camp, mesaj in _proba_emiterii(conn, schema, dict(corp, categorie_331=c331), raspunsuri_ai, azi):
@@ -240,10 +331,12 @@ def adauga(conn, schema, corp, raspunsuri_ai=None, azi=None):
         return {"eroare": d["mesaj"], "erori_campuri": d["erori_campuri"]}
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.facturi_recurente
-            (client_id, tert_nume, tert_cui, tert_tara, linii, zi_emitere, moneda, categorie_331)
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+            (client_id, tert_nume, tert_cui, tert_tara, linii, zi_emitere, moneda, categorie_331,
+             scadenta_zile, data_inceput, data_sfarsit, mod_emitere, trimite_spv)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
             (corp.get("client_id"), corp.get("tert_nume"), corp.get("tert_cui"), tara,
-             json.dumps(linii), zi, corp.get("moneda", "RON"), c331))
+             json.dumps(linii), zi, corp.get("moneda", "RON"), c331,
+             em["scadenta_zile"], em["data_inceput"], em["data_sfarsit"], em["mod_emitere"], em["trimite_spv"]))
         rid = cur.fetchone()[0]
     conn.commit()
     return {"id": rid}
@@ -270,12 +363,16 @@ def sterge(conn, schema, sablon_id):
     return {"sters": sablon_id}
 
 
-def de_emis(sabloane, azi=None):
-    """PURA: filtreaza sabloanele scadente azi. sabloane: [{id, activ, zi_emitere, ultima_emitere}]."""
+def de_emis(sabloane, azi=None, mod="automata"):
+    """PURA: filtreaza sabloanele scadente azi. sabloane: [{id, activ, zi_emitere, ultima_emitere}].
+    [lotul 13, 680] numai cele cu modul `mod` (cronul emite „automata”; „ciorna” o pregătește) și în perioada de valabilitate; șablonul de
+    dinainte de 680 (fără mod, până la migrare) se emite automat, ca până acum."""
     azi = azi or datetime.date.today()
     rezultat = []
     for s in sabloane:
         if not s.get("activ"):
+            continue
+        if (s.get("mod_emitere") or "automata") != mod or not in_valabilitate(s, azi):
             continue
         if int(s["zi_emitere"]) > azi.day:
             continue
@@ -335,7 +432,7 @@ def _consemneaza_refuzul(conn, schema, s, motiv, azi):
         _obs.esec_secundar("consemnarea refuzului facturii recurente %s/%s" % (schema, s.get("id")), e)
 
 
-def emite_scadente(schema, azi=None):
+def emite_scadente(schema, azi=None, doar=None):
     """Emite facturile scadente pentru un tenant. Intoarce lista emisa.
 
     [R193, comanda Costin 10.10.2026 pct.2] Pe faze, ca `woocommerce.sincronizeaza`: (1) o citire scurta — abonamentele scadente,
@@ -349,11 +446,18 @@ def emite_scadente(schema, azi=None):
     from core import cote_tva, db, observare as _obs, uc_comun as _uc
     from core import uc_curs_bnr as _uc_cb
     azi = azi or datetime.date.today()
+    _mod = None if doar is None else "ciorna"   # [680] „Emite factura lunii” emite ciorna aleasă, pe drumul cronului
+    def _alese(sab):
+        if doar is None:
+            return de_emis(sab, azi)
+        return [x for x in de_emis(sab, azi, mod=_mod) + de_emis(sab, azi) if x["id"] == doar][:1]
     with db.get_conn(schema) as conn:
-        _scadente = de_emis(lista(conn, schema), azi)
+        _scadente = _alese(lista(conn, schema))
         platitor = _uc._platitor_tva_firma(conn)
         de_intrebat = [d for _s in _scadente for d in facturi_api.intrebari_model(conn, _s["linii"], platitor)]
     if not _scadente:
+        if doar is None:
+            _anunta_ciornele(schema, azi)   # [680] și când nimic nu se emite automat azi
         return []
     # [P5 val 3, 11.09.2026] Cursul BNR se aduce ACUM, pentru toate monedele lotului: `curs_pentru`
     # decide pe cache, iar descarcarea n-are ce cauta in mijlocul emiterii.
@@ -372,7 +476,7 @@ def emite_scadente(schema, azi=None):
     de_la = _uc_coada_ni.inceputul_scrierii()
     with db.get_conn(schema) as conn:
         platitor = _uc._platitor_tva_firma(conn)
-        for s in de_emis(lista(conn, schema), azi):   # REVALIDARE: scadente si acum
+        for s in _alese(lista(conn, schema)):   # REVALIDARE: scadente si acum
             rele = verificari_drum(s, platitor)   # [462] și pe șabloanele salvate înainte de 462: aceleași verificări ca drumul obișnuit
             if rele:
                 motiv = " ".join(m for _c, m in rele)
@@ -385,6 +489,7 @@ def emite_scadente(schema, azi=None):
                 r = facturi_api.emite_factura(conn, s["linii"], client_id=s.get("client_id"),
                         tert_nume=s.get("tert_nume"), tert_cui=s.get("tert_cui"), tert_tara=tara_sablonului(s),   # [C160]
                         data_emitere=azi.isoformat(), moneda=s.get("moneda") or "RON",
+                        data_scadenta=scadenta(s, azi),   # [lotul 13, 680] termenul de plată al șablonului
                         platitor_tva=platitor, raspunsuri_ai=raspunsuri_ai,
                         tert_platitor_tva=platitori_tert.get(s["id"]),
                         categorie_331=s.get("categorie_331"))   # [12.3 pct.9] categoria produsului, ca la factură
@@ -405,15 +510,95 @@ def emite_scadente(schema, azi=None):
                                               lambda nume, _s=s, _n=r.get("numar"), _a=_avert: text_avertisment(nume, _s, _n, _a, azi))
                 conn.commit()
                 emise.append({"sablon": s["id"], "factura": r.get("numar"), **({"avertismente": _avert} if _avert else {})})
+                if s.get("trimite_spv"):   # [lotul 13, 680] factura emisă automat pleacă singură în SPV (alegerea de pe șablon)
+                    emise[-1]["spv"] = _trimite_spv(conn, schema, s, r, azi)
             except Exception as e:  # noqa: BLE001 — refuzul unui șablon nu le oprește pe celelalte; se consemnează și se anunță
                 conn.rollback()
                 emise.append({"sablon": s["id"], "eroare": str(e)})   # jurnalul jobului: textul întreg
                 if not isinstance(e, ValueError):   # o cădere a aplicației, nu un refuz al emiterii: operatorul e anunțat
                     _obs.esec_secundar("emiterea facturii recurente %s/%s" % (schema, s["id"]), e)
                 _consemneaza_refuzul(conn, schema, s, motiv_refuzului(e) if isinstance(e, ValueError) else MESAJ_NEPREVAZUT, azi)
+    if doar is None:
+        _anunta_ciornele(schema, azi)
     if any("eroare" not in e for e in emise):
         _note_interne(schema, de_la, emise)
     return emise
+
+
+def _anunta_ciornele(schema, azi):
+    """[680] Ciornele lunii: pregătite (nu emise) — anunțate o dată pe lună, în clopoțel; contabilul le emite din listă."""
+    from core import db
+    with db.get_conn(schema) as conn:
+        for s in de_emis(lista(conn, schema), azi, mod="ciorna"):
+            if s.get("ultima_pregatire") and str(s["ultima_pregatire"])[:7] == azi.isoformat()[:7]:
+                continue
+            _anunta_ciorna(conn, schema, s, azi)
+
+
+def text_ciorna(nume_firma, s, azi):
+    """[680] Textul din clopoțel pentru ciorna pregătită a lunii."""
+    from core.pdf_util import data_ro
+    return ("%s: factura recurentă pentru %s e pregătită ca ciornă (%s). N-a fost emisă: o verifici și o emiți din Facturi → Facturi "
+            "recurente, cu „Emite factura lunii”." % (nume_firma, str(s.get("tert_nume") or "").strip() or "clientul șablonului",
+                                                     data_ro(azi.isoformat())))
+
+
+def _anunta_ciorna(conn, schema, s, azi):
+    """[680] Ciorna lunii, anunțată (clopoțel + email, ca refuzul C109) și consemnată pe șablon (`ultima_pregatire`), în aceeași tranzacție.
+    O cădere aici nu oprește cronul; se semnalează operatorului."""
+    from core import notificari_termene as _nt, observare as _obs
+    try:
+        with conn.cursor() as cur:
+            cur.execute(f"UPDATE {schema}.facturi_recurente SET ultima_pregatire=%s WHERE id=%s", (azi, s["id"]))
+        _nt.notifica_pe_conexiune(conn, schema, TIP_CIORNA, lambda nume: text_ciorna(nume, s, azi))
+        conn.commit()
+    except Exception as e:  # noqa: BLE001 — anunțul ciornei nu oprește cronul; eșecul nu e tăcut
+        conn.rollback()
+        _obs.esec_secundar("anunțul ciornei facturii recurente %s/%s" % (schema, s.get("id")), e)
+
+
+#: [680] stările trimiterii în SPV care înseamnă „a plecat” (`efactura_trimitere.trimite`)
+STARI_SPV_PLECATA = ("incarcat", "in_prelucrare", "ok", "deja_trimisa")
+
+
+def _trimite_spv(conn, schema, s, r, azi):
+    """[680] Trimiterea automată în SPV a facturii emise din șablon (`efactura_trimitere.trimite`, același drum ca butonul „Trimite în
+    SPV”, cu principalul firmei — cabinetul). Orice altceva decât „a plecat” (fără token, fără drept, date incomplete, ANAF căzut) se
+    anunță contabilului în clopoțel, cu motivul: factura rămâne emisă, iar trimiterea o face el din Istoric facturi."""
+    import os
+    from core import efactura_trimitere as _eft, notificari_termene as _nt, observare as _obs, spv_conector as _sc
+    try:
+        principal = _sc.principal_pentru_schema(conn, schema)
+        rez = _eft.trimite(schema, r["factura_id"], principal, mediu=os.environ.get("EFACTURA_MEDIU", "prod"))
+        stare, motiv = rez.get("stare"), rez.get("mesaj") or ("; ".join(rez.get("erori") or []) or rez.get("stare"))
+    except Exception as e:  # noqa: BLE001 — trimiterea nereușită nu desface emiterea; se anunță
+        _obs.esec_secundar("trimiterea în SPV a facturii recurente %s/%s" % (schema, s.get("id")), e)
+        stare, motiv = "eroare", (str(e) if isinstance(e, ValueError) else "trimiterea n-a reușit (echipa iConta.eu a fost anunțată)")
+    if stare not in STARI_SPV_PLECATA:
+        try:
+            _nt.notifica_pe_conexiune(conn, schema, TIP_AVERTISMENT, lambda nume: "%s: factura recurentă %s pentru %s s-a emis, dar n-a plecat "
+                                      "în SPV: %s. Trimite-o din Istoric facturi." % (nume, r.get("numar") or "", str(s.get("tert_nume") or ""),
+                                                                                     motiv))
+            conn.commit()
+        except Exception as e:  # noqa: BLE001
+            conn.rollback()
+            _obs.esec_secundar("anunțul trimiterii SPV a facturii recurente %s/%s" % (schema, s.get("id")), e)
+    return stare
+
+
+def emite_unul(schema, sablon_id, azi=None):
+    """[680] „Emite factura lunii” pe ciorna pregătită: aceeași emitere ca a cronului (`emite_scadente`: verificările drumului, cursul,
+    modelul, nota), numai pentru acest șablon, dacă e scadent azi. {factura, avertismente} sau {eroare}."""
+    azi = azi or datetime.date.today()
+    from core import db
+    with db.get_conn(schema) as conn:
+        s = next((x for x in lista(conn, schema) if x["id"] == int(sablon_id)), None)
+    if s is None:
+        return {"eroare": "Șablonul nu mai există."}
+    if not de_emis([s], azi, mod=s.get("mod_emitere") or "automata"):
+        return {"eroare": MESAJ_NU_E_DE_EMIS}
+    rez = emite_scadente(schema, azi, doar=int(sablon_id))
+    return next((x for x in rez if x.get("sablon") == int(sablon_id)), {"eroare": "Factura nu s-a emis."})
 
 
 def _note_interne(schema, de_la, emise):
@@ -450,3 +635,13 @@ def _main():
 if __name__ == "__main__":
     from core import cron
     cron.ruleaza("facturi_recurente", _main)
+
+
+def emite_unul_uc(tenant_id, sablon_id, ctx):
+    """[lotul 13, 680] Corpul rutei `POST /tenants/{tenant_id}/facturi-recurente/{sid}/emite` („Emite factura lunii” pe ciorna pregătită)."""
+    from core import erori as _erori, uc_comun as _uc
+    schema = _uc._schema_sau_404(ctx, tenant_id)
+    r = emite_unul(schema, sablon_id)
+    if r.get("eroare"):
+        raise _erori.DateInvalide(r["eroare"])
+    return r

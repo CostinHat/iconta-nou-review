@@ -1,0 +1,895 @@
+[
+ {
+  "nr": "545",
+  "firma": "tenant_9050",
+  "descriere": "F2, după cele două TI-1 din 20.10.2026 (documente vechi): Operațiuni › Taxare inversă internă › TI-1 de la DANTE (14399840), 30.000, 371, 21% -> refuzul „Factura TI-1 … e deja înregistrată”, nimic scris",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "[data-op]"
+   },
+   {
+    "click": "button[data-op]",
+    "text": "Taxare inversă internă"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-20"
+   },
+   {
+    "completeaza": "#op-furnizor_nume",
+    "valoare": "Furnizor test"
+   },
+   {
+    "completeaza": "#op-furnizor_cui",
+    "valoare": "14399840"
+   },
+   {
+    "completeaza": "#op-numar",
+    "valoare": "TI-1"
+   },
+   {
+    "alege": "#op-categorie",
+    "valoare": "deseuri"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "30000"
+   },
+   {
+    "completeaza": "#op-cont_destinatie",
+    "valoare": "371"
+   },
+   {
+    "completeaza": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "alege": "#op-furnizor_platitor_tva",
+    "valoare": "true"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta_text": "e deja înregistrată"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "e deja înregistrată",
+    "zona": "#op-mesaj"
+   },
+   {
+    "contine": "TI-1",
+    "zona": "#op-mesaj"
+   }
+  ],
+  "captura": "545_f2_vechi_ti1_a_treia_oara_refuzata.png"
+ },
+ {
+  "nr": "546",
+  "firma": "tenant_9050",
+  "descriere": "F2, factura veche TI-1 (id 3, 20.10.2026, salvată 36.300 / 6.300): detaliul arată „Total de plată 30.000,00” și TVA-ul de taxare inversă 6.300,00 separat, nu în total",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn[data-id='3']"
+   },
+   {
+    "click": ".fac-frand-btn[data-id='3']"
+   },
+   {
+    "asteapta": "#fd-pdf"
+   },
+   {
+    "asteapta": "#fd-total-de-plata"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "30.000,00",
+    "zona": "#fd-total-de-plata"
+   },
+   {
+    "contine": "6.300,00",
+    "zona": "#fd-tva-ti"
+   },
+   {
+    "contine": "nu se plătește furnizorului",
+    "zona": "#fd-tva-ti"
+   },
+   {
+    "nu_contine": "36.300,00",
+    "zona": ".fd-totaluri"
+   }
+  ],
+  "captura": "546_f2_vechi_ti1_total_de_plata.png"
+ },
+ {
+  "nr": "547",
+  "firma": "tenant_9050",
+  "descriere": "F2, a doua TI-1 din 20.10.2026 (id 4, nota ei ciornă — dublura lui 545): fără „Trimite pe email”; „Șterge factura” -> confirmare -> factura și nota ei ciornă șterse",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn[data-id='4']"
+   },
+   {
+    "click": ".fac-frand-btn[data-id='4']"
+   },
+   {
+    "asteapta": "#fd-pdf"
+   },
+   {
+    "asteapta": "#fd-sterge"
+   },
+   {
+    "captura": "547_f2_vechi_ti1_dublura_inainte"
+   },
+   {
+    "click": "#fd-sterge"
+   },
+   {
+    "click": "#ca-ok",
+    "text": "Șterge factura"
+   },
+   {
+    "asteapta": "#fd-sters-rez"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "au fost șterse",
+    "zona": "#fd-sters-rez"
+   }
+  ],
+  "captura": "547_f2_vechi_ti1_dublura_stearsa.png"
+ },
+ {
+  "nr": "542",
+  "firma": "tenant_9055",
+  "descriere": "F6 (seria F6 la numărul 3): Emite factură › Schimbă seria › „Nu, încep acum” › seria F6B -> „F6B · următorul număr: 1” (înainte: refuz „sub cel la care a ajuns seria (3)”)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-schimba-serie"
+   },
+   {
+    "click": "#em-schimba-serie"
+   },
+   {
+    "asteapta": "#em-nu"
+   },
+   {
+    "click": "#em-nu"
+   },
+   {
+    "completeaza": "#em-serie2",
+    "valoare": "F6B"
+   },
+   {
+    "click": "#em-salveaza-config2"
+   },
+   {
+    "asteapta_text": "F6B · următorul număr: 1"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "F6B · următorul număr: 1",
+    "zona": "#em-serie-nr"
+   }
+  ],
+  "captura": "542_f6_seria_noua_de_la_1.png"
+ },
+ {
+  "nr": "542",
+  "firma": "tenant_9055",
+  "descriere": "F6, înapoi la seria folosită: Schimbă seria › „Da, am mai emis” › F6, ultima 2 -> „F6 · următorul număr: 3” (continuă după F62, nu de la 1)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-schimba-serie"
+   },
+   {
+    "click": "#em-schimba-serie"
+   },
+   {
+    "asteapta": "#em-da"
+   },
+   {
+    "click": "#em-da"
+   },
+   {
+    "completeaza": "#em-serie",
+    "valoare": "F6"
+   },
+   {
+    "completeaza": "#em-ultim",
+    "valoare": "2"
+   },
+   {
+    "click": "#em-salveaza-config"
+   },
+   {
+    "asteapta_text": "F6 · următorul număr: 3"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "F6 · următorul număr: 3",
+    "zona": "#em-serie-nr"
+   }
+  ],
+  "captura": "542_f6_vechi_seria_f6_continua.png"
+ },
+ {
+  "nr": "543",
+  "firma": "tenant_9055",
+  "descriere": "F6 (fără seria chitanțelor), factura veche F62: „Emite chitanță” › „Emite” -> seria se cere pe loc (nu „Deschide Date firmă”) › F6C -> „Chitanța F6C nr. 1 a fost emisă”",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn[data-id='2']"
+   },
+   {
+    "click": ".fac-frand-btn[data-id='2']"
+   },
+   {
+    "asteapta": "#fd-pdf"
+   },
+   {
+    "click": "#fd-chitanta"
+   },
+   {
+    "asteapta": "#fd-chit-ok"
+   },
+   {
+    "click": "#fd-chit-ok"
+   },
+   {
+    "asteapta": "#ser-chit-serie"
+   },
+   {
+    "captura": "543_f6_vechi_seria_pe_loc"
+   },
+   {
+    "completeaza": "#ser-chit-serie",
+    "valoare": "F6C"
+   },
+   {
+    "click": "#ser-chit-ok"
+   },
+   {
+    "asteapta_text": "a fost emis"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Chitanța F6C nr. 1 a fost emisă"
+   }
+  ],
+  "captura": "543_f6_vechi_chitanta_emisa.png"
+ },
+ {
+  "nr": "C199",
+  "firma": "tenant_9049",
+  "anaf_real": true,
+  "descriere": "F1: Emite factură către DE999999990 (VIES real: invalid), linia 0% „livrare intracomunitară” -> refuzul lângă CUI „e invalid în VIES … TVA românesc”, nimic emis",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "completeaza": "#em-cui",
+    "valoare": "DE999999990"
+   },
+   {
+    "completeaza": "#em-nume",
+    "valoare": "Proba C199 GmbH"
+   },
+   {
+    "completeaza": "#em-adresa",
+    "valoare": "Hauptstrasse 1"
+   },
+   {
+    "completeaza": "#em-oras",
+    "valoare": "Berlin"
+   },
+   {
+    "completeaza": "#em-l0-descriere",
+    "valoare": "Servicii de consultanță UE"
+   },
+   {
+    "pauza": 1200
+   },
+   {
+    "completeaza": "#em-l0-cantitate",
+    "valoare": "1"
+   },
+   {
+    "completeaza": "#em-l0-pret_unitar",
+    "valoare": "100"
+   },
+   {
+    "alege": "#em-l0-cota",
+    "valoare": "0"
+   },
+   {
+    "alege": "#em-l0-categorie",
+    "valoare": "livrare_ic"
+   },
+   {
+    "click": "#em-emite"
+   },
+   {
+    "asteapta_text": "invalid în VIES"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "e invalid în VIES"
+   },
+   {
+    "contine": "TVA românesc"
+   }
+  ],
+  "captura": "c199_f1_cod_invalid_refuzat.png"
+ },
+ {
+  "nr": "634",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi primite din SPV › Importă XML UBL (PROBA-634, în EUR) › factura: TVA / total cu EUR, cursul BNR și TVA în lei / Total în lei înainte de validare",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-primite"
+   },
+   {
+    "click": "#fac-primite"
+   },
+   {
+    "asteapta": "#fp-xml",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#fp-xml",
+    "generator": "e2e_lot13_fact:fisier_xml_634_eur",
+    "nume": "PROBA-634.xml"
+   },
+   {
+    "asteapta": ".fac-primita-btn",
+    "text": "PROBA-634"
+   },
+   {
+    "click": ".fac-primita-btn",
+    "text": "PROBA-634"
+   },
+   {
+    "asteapta": "#pr-total-lei"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "TVA în lei",
+    "zona": "#pr-valuta"
+   },
+   {
+    "contine": "Total în lei",
+    "zona": "#pr-valuta"
+   },
+   {
+    "contine": "Curs BNR EUR",
+    "zona": "#pr-valuta"
+   }
+  ],
+  "captura": "634_f1_valuta_lei_inainte_de_validare.png"
+ },
+ {
+  "nr": "632",
+  "firma": "tenant_9049",
+  "descriere": "F1, Clienți: DANTE (fișă salvată înainte) arată numărul facturilor emise (9), nu gol; Google Ireland (IE6388047V) fără listă de județe („partener din alt stat”)",
+  "pasi": [
+   {
+    "click": "#fa-clienti"
+   },
+   {
+    "asteapta": "#cl-tabel"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "9",
+    "zona": "#cl-tabel tr:has-text('DANTE INTERNATIONAL SA') td.fd-td-num"
+   },
+   {
+    "contine": "partener din alt stat",
+    "zona": "#cl-tabel tr:has-text('IE6388047V')"
+   }
+  ],
+  "captura": "632_f1_vechi_clienti_facturi_si_strain.png"
+ },
+ {
+  "nr": "640",
+  "firma": "tenant_9049",
+  "descriere": "F1, Furnizori: „+ Furnizor nou”, căutarea („dante” lasă numai DANTE), Vasile Test (persoană fizică fără localitate) semnalat „D394 o cere”",
+  "pasi": [
+   {
+    "click": "#fa-furnizori"
+   },
+   {
+    "asteapta": "#fz-tabel"
+   },
+   {
+    "captura": "640_f1_vechi_furnizori_lista"
+   },
+   {
+    "completeaza": "#fz-cauta",
+    "valoare": "vasile"
+   },
+   {
+    "pauza": 300
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#fz-nou"
+   },
+   {
+    "contine": "D394 o cere",
+    "zona": "#fz-tabel"
+   },
+   {
+    "nu_contine": "Maria Ionescu",
+    "zona": "#fz-tabel"
+   }
+  ],
+  "captura": "640_f1_vechi_furnizori_cautare_pf.png"
+ },
+ {
+  "nr": "534",
+  "firma": "tenant_9049",
+  "descriere": "F1: e-Transport › „Din factură” › F1A nr. 14 -> bunurile, partenerul, locurile și tipul aduse din factură; „De completat: scopul, codul NC, greutățile…”; UM-ul și țara nu mai vin „H87” / „RO” pe formularul gol",
+  "pasi": [
+   {
+    "click": "#fa-etransport"
+   },
+   {
+    "asteapta": "#et-din-factura"
+   },
+   {
+    "captura": "534_f1_formular_gol"
+   },
+   {
+    "click": "#et-din-factura"
+   },
+   {
+    "asteapta": ".et-doc",
+    "text": "F1A nr. 14"
+   },
+   {
+    "click": ".et-doc",
+    "text": "F1A nr. 14"
+   },
+   {
+    "asteapta_text": "Completat din"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "De completat",
+    "zona": "#et-din-rez"
+   },
+   {
+    "contine": "F1A nr. 14",
+    "zona": "#et-din-rez"
+   }
+  ],
+  "captura": "534_f1_vechi_din_factura_f1a14.png"
+ },
+ {
+  "nr": "535",
+  "firma": "tenant_9049",
+  "descriere": "F1: e-Transport, formular gol › „Trimite UIT în SPV” -> toate câmpurile lipsă marcate deodată (liste și text: denumirea, vehiculul, transportatorul, localitățile), nimic trimis",
+  "pasi": [
+   {
+    "click": "#fa-etransport"
+   },
+   {
+    "asteapta": "#et-trimite"
+   },
+   {
+    "click": "#et-trimite"
+   },
+   {
+    "asteapta": "#b0-denumire[aria-invalid='true']"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#b0-denumire[aria-invalid='true']"
+   },
+   {
+    "exista": "#t-nr_vehicul[aria-invalid='true']"
+   },
+   {
+    "exista": "#et-tip[aria-invalid='true']"
+   },
+   {
+    "exista": "#s-localitate[aria-invalid='true']"
+   }
+  ],
+  "captura": "535_f1_toate_campurile_lipsa.png"
+ },
+ {
+  "nr": "680",
+  "firma": "tenant_9049",
+  "descriere": "F1: Facturi recurente › „+ Șablon nou”: clientul din listă / Verifică la ANAF, seria F1A afișată, ziua și moneda cu etichete, scadența, perioada, „Cum se emite factura lunii” — „Salvează” fără alegeri: fiecare întrebare cerută lângă ea, nimic salvat",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-recurente"
+   },
+   {
+    "click": "#fac-recurente"
+   },
+   {
+    "asteapta": "#fr-add"
+   },
+   {
+    "click": "#fr-add"
+   },
+   {
+    "asteapta": "#fr-mod"
+   },
+   {
+    "captura": "680_f1_sablon_nou"
+   },
+   {
+    "click": "#fr-salveaza"
+   },
+   {
+    "asteapta_text": "Alege cum se emite factura lunară"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "F1A",
+    "zona": "#fr-serie"
+   },
+   {
+    "exista": "#fr-anaf"
+   },
+   {
+    "exista": "#fr-client"
+   },
+   {
+    "contine": "Alege cum se emite factura lunară"
+   },
+   {
+    "contine": "Scrie termenul de plată"
+   }
+  ],
+  "captura": "680_f1_sablon_intrebari_cerute.png"
+ },
+ {
+  "nr": "603",
+  "firma": "tenant_9049",
+  "descriere": "F1, fișa articolului Marfa B (mișcările facturii F1A nr. 8 / 9, documente vechi): „Fișa:” cu diacritice, documentul „Factură F1A nr. 8 din …” (nu „Factură F1A8”)",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#cv-toggle"
+   },
+   {
+    "click": "#cv-toggle"
+   },
+   {
+    "asteapta": "#cv-art"
+   },
+   {
+    "alege": "#cv-art",
+    "valoare": "2"
+   },
+   {
+    "click": "#cv-fisa"
+   },
+   {
+    "asteapta_text": "Fișa: Marfa B"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Fișa: Marfa B",
+    "zona": "#cv-fisa-zona"
+   },
+   {
+    "nu_contine": "Factură F1A8",
+    "zona": "#cv-fisa-zona"
+   },
+   {
+    "contine": "F1A nr. 8",
+    "zona": "#cv-fisa-zona"
+   }
+  ],
+  "captura": "603_f1_vechi_fisa_marfa_b.png"
+ },
+ {
+  "nr": "604",
+  "firma": "tenant_9049",
+  "descriere": "F1: Operațiuni speciale fără „Achiziție de la neînregistrat … D394 op. N”; Stocuri › „Borderou de achiziție” lângă NIR",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "[data-op]"
+   },
+   {
+    "captura": "604_f1_operatiuni"
+   },
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#s-borderou"
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#s-borderou",
+    "text": "Borderou de achiziție"
+   },
+   {
+    "nu_contine": "op. N"
+   }
+  ],
+  "captura": "604_f1_borderoul_langa_nir.png"
+ },
+ {
+  "nr": "611",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri › Borderou de achiziție, vânzătorul, 120 lei pe 371, fără articol și cantitate › Generează -> „NU s-a salvat” numește „Articolul (din nomenclator)” și „Cantitatea”, cu ce lipsește",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": "#s-borderou"
+   },
+   {
+    "click": "#s-borderou"
+   },
+   {
+    "asteapta": "#op-furnizor_nume"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-25"
+   },
+   {
+    "completeaza": "#op-furnizor_nume",
+    "valoare": "Proba 611 Vanzator"
+   },
+   {
+    "completeaza": "#op-furnizor_adresa",
+    "valoare": "Str. Livezii 2, Buzău"
+   },
+   {
+    "completeaza": "#op-furnizor_act",
+    "valoare": "BZ 654321"
+   },
+   {
+    "completeaza": "#op-valoare",
+    "valoare": "120"
+   },
+   {
+    "completeaza": "#op-cont_cheltuiala",
+    "valoare": "371"
+   },
+   {
+    "alege": "#op-categorie",
+    "valoare": "alte_bunuri"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta": ".refuz-salvare"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Articolul (din nomenclator)",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "Cantitatea",
+    "zona": ".refuz-salvare"
+   },
+   {
+    "contine": "Alege articolul care intră în stoc"
+   }
+  ],
+  "captura": "611_f1_refuzul_numeste_ce_lipseste.png"
+ },
+ {
+  "nr": "615",
+  "firma": "tenant_9049",
+  "descriere": "F1, factura F1A nr. 15 (24.10.2026, document vechi): Stornează › Confirm -> „Storno creat” rămâne; fără reîmprospătare: nicăieri „Se stornează…”, factura „stornată”, fără „Stornează” / „Emite chitanță”",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-istoric"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "asteapta": ".fac-frand-btn[data-id='66']"
+   },
+   {
+    "click": ".fac-frand-btn[data-id='66']"
+   },
+   {
+    "asteapta": "#fd-pdf"
+   },
+   {
+    "click": "#fd-storno"
+   },
+   {
+    "asteapta": "#fd-storno-ok"
+   },
+   {
+    "pauza": 200
+   },
+   {
+    "click": "#fd-storno-ok"
+   },
+   {
+    "asteapta_text": "Storno creat"
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "Se stornează"
+   },
+   {
+    "contine": "stornată",
+    "zona": ".fd-antet-sus"
+   },
+   {
+    "nu_contine": "neîncasată",
+    "zona": ".fd-antet-sus"
+   }
+  ],
+  "captura": "615_f1_vechi_f1a15_stornata.png"
+ },
+ {
+  "nr": "C189",
+  "firma": "tenant_9049",
+  "descriere": "F1: Emite factură › denumirea „Servicii de consultanță C189” și, imediat, cota 11% aleasă pe linie -> după sosirea propunerii din nomenclator, cota rămâne 11% (propunerea nu o înlocuiește)",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-l0-descriere"
+   },
+   {
+    "completeaza": "#em-l0-descriere",
+    "valoare": "Servicii de consultanță C189"
+   },
+   {
+    "alege": "#em-l0-cota",
+    "valoare": "11"
+   },
+   {
+    "pauza": 2000
+   }
+  ],
+  "verifica": [
+   {
+    "valoare": "#em-l0-cota",
+    "egal": "11"
+   }
+  ],
+  "captura": "c189_f1_cota_aleasa_ramane.png"
+ },
+ {
+  "nr": "C153",
+  "firma": "tenant_9049",
+  "descriere": "F1: Rapoarte comerciale › fișa partenerului DANTE (14399840): factura veche F1A nr. 3, încasată cu chitanța CHF1-1 de dinainte de 278 (nota fără factură), apare „achitată”, nu deschisă",
+  "pasi": [
+   {
+    "click": "#fa-rapoarte"
+   },
+   {
+    "asteapta": "#r-fisa-sel"
+   },
+   {
+    "alege": "#r-fisa-sel",
+    "valoare": "14399840"
+   },
+   {
+    "asteapta_text": "F1A nr. 3"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "achitată",
+    "zona": "#r-fisa tr:has-text('F1A nr. 3')"
+   }
+  ],
+  "captura": "c153_f1_vechi_f1a3_achitata.png"
+ }
+]

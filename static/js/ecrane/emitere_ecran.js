@@ -212,6 +212,34 @@ export function intrebareDovadaTransport(zona, intrebare, laRaspuns, ids) {
 
 // [lotul 12, C157 / C84] avertismentele emiterii (`avertismente` din răspuns: neplătitorul neînregistrat art.317, livrarea fără dovada
 // transportului) sub confirmare, prin calea unică a mesajelor (DS cap.6, `arataMesaj(…, "avert")`) — factura e emisă, nu refuzată
+// [lotul 13, C199 / 550 — decizia Costin, verbatim: „VIES indisponibil = avertisment și reîncercare, nu refuz (550).”] Factura s-a emis cu
+// scutirea, iar VIES n-a răspuns: butonul reîncearcă verificarea codului clientului (aceeași rută ca „Verifică” de la client) și spune
+// rezultatul — valid, invalid (livrarea nu e scutită: corecția prin stornare) sau din nou indisponibil.
+function reverificaVies(zona, cod) {
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "buton-secundar"; b.id = "em-vies-reincearca"; b.textContent = "Reîncearcă verificarea în VIES";
+  b.dataset.actiune = "GET /tenants/{tenant_id}/verifica-vies";
+  const rez = document.createElement("div"); rez.id = "em-vies-rez";
+  zona.appendChild(b); zona.appendChild(rez);
+  b.addEventListener("click", async () => {
+    b.disabled = true;
+    try {
+      const v = await api.get(`/tenants/${zona.dataset.tenant}/verifica-vies?cod_tva=${encodeURIComponent(cod)}`);
+      const st = v.stare || (v.valid ? "valid" : "indisponibil");
+      if (st === "valid") arataMesaj(rez, `Codul ${cod} e valid în VIES${v.nume ? " (" + v.nume + ")" : ""}: scutirea livrării se păstrează.`, "ok");
+      else if (st === "invalid") arataMesaj(rez, `Codul ${cod} e invalid în VIES: livrarea nu e scutită (Cod fiscal art.294 alin.(2) lit.a). Corectează factura prin stornare și emite-o cu TVA românesc.`, "eroare");
+      else arataMesaj(rez, `VIES tot nu răspunde pentru ${cod}. Reîncearcă peste câteva minute.`, "avert");
+    } catch (e) { arataMesaj(rez, (e && e.mesaj) || "VIES nu răspunde acum. Reîncearcă peste câteva minute.", "avert"); }
+    b.disabled = false;
+  });
+}
+
+// [lotul 13, 680] monedele facturii — aceeași listă la „Emite factură” și pe șablonul facturii recurente (situații identice, soluții identice)
+export const MONEDE_FACTURA = [["RON", "RON (lei)"], ["EUR", "EUR"], ["USD", "USD"], ["GBP", "GBP"], ["CHF", "CHF"], ["HUF", "HUF"], ["PLN", "PLN"]];
+export function optiuniMoneda(aleasa) {
+  return MONEDE_FACTURA.map(([v, t]) => `<option value="${v}"${v === aleasa ? " selected" : ""}>${t}</option>`).join("");
+}
+
 export function arataAvertismenteEmitere(zona, avertismente) {
   (avertismente || []).forEach((a) => {
     const z = document.createElement("div");
@@ -410,13 +438,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     <div class="em-moneda-rand">
       <label class="em-moneda-eticheta" for="em-moneda">Monedă</label>
       <select class="camp-input" id="em-moneda" data-actiune-camp="POST /tenants/{tenant_id}/facturi/previzualizare-lei">
-        <option value="RON" selected>RON (lei)</option>
-        <option value="EUR">EUR</option>
-        <option value="USD">USD</option>
-        <option value="GBP">GBP</option>
-        <option value="CHF">CHF</option>
-        <option value="HUF">HUF</option>
-        <option value="PLN">PLN</option>
+        ${optiuniMoneda("RON")}
       </select>
       <span class="em-moneda-nota" id="em-moneda-nota"></span>
     </div>
@@ -1118,6 +1140,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const btn = corp.querySelector("#em-emite");
     if (btn) { btn.disabled = true; btn.textContent = "Se emite…"; }
     const rez2 = corp.querySelector("#em-rezultat");
+    rez2.dataset.tenant = String(tenantId);   // [lotul 13, C199] reîncercarea VIES de după emitere (`reverificaVies`)
     try {
       const selTip = corp.querySelector("#em-tip");
       if (selTip) payload.tip = selTip.value;
@@ -1131,6 +1154,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       rez2.innerHTML = `✓ Factura <b>${esc(numarCuSerie(r.serie, r.numar))}</b> emisă · total ${Number(r.total).toLocaleString("ro-RO", {minimumFractionDigits:2})} ${monedaSel}${notaStoc}${notaTvai}.${sesiune.rol() === "client" ? " A fost trimisă către contabil." : ""}`;
       rez2.className = "em-rezultat em-bun em-emisa";
       arataAvertismenteEmitere(rez2, r.avertismente);   // [lotul 12, C157 / C84] emisă, cu ce trebuie știut
+      if (r.vies_de_reverificat) reverificaVies(rez2, r.vies_de_reverificat);   // [lotul 13, C199 / 550] VIES n-a răspuns: reîncercarea
       if (btn) btn.textContent = "Emisă ✓";
       stergeCiorna(tenantId);   // [lotul 07.10 pct.2] emisă: ciorna și-a terminat rostul
       ciornaPornita = false;
@@ -1216,6 +1240,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <div class="em-curs-titlu">⚠ ${esc(det.mesaj || "")}</div>
         <label class="camp"><span class="camp-eticheta">Seria facturilor (ex: FCT)<span class="oblig">*</span></span>
           <input class="camp-input" id="em-serie-noua" autocomplete="off" maxlength="12"></label>
+        <label class="camp"><span class="camp-eticheta">Numărul primei facturi din serie (gol = 1; dacă seria a mai fost folosită, după ultima emisă în ea)</span>
+          <input class="camp-input" id="em-serie-start" type="number" min="1" step="1" autocomplete="off"></label>
         <div class="em-curs-actiuni">
           <button class="buton-primar" id="em-serie-si-emite" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare">Stabilește seria și emite</button>
         </div>
@@ -1227,9 +1253,16 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       const serie = inp.value.trim();
       if (!serie) { eroareCamp(rez, "em-serie-noua", "Completează seria (legea cere numărul facturii într-o serie)."); return; }
       if (/^\d+$/.test(serie)) { eroareCamp(rez, "em-serie-noua", "Seria e un prefix cu litere (ex: FCT), nu un număr."); return; }
+      // [lotul 13, 542] seria nouă pornește de la 1 (serverul: `facturi_api.urmatorul_in_serie`) sau de la numărul ales aici
+      const st = rez.querySelector("#em-serie-start").value.trim();
+      if (st && !(/^\d+$/.test(st) && Number(st) >= 1)) { eroareCamp(rez, "em-serie-start", "Numărul primei facturi e un număr întreg, de la 1."); return; }
       try {
-        await api.put(`/tenants/${tenantId}/facturi/numerotare`, { serie });   // numărul următor rămâne cel de acum
-      } catch (er) { eroareCamp(rez, "em-serie-noua", (er && er.mesaj) || "Seria nu s-a putut salva."); return; }
+        await api.put(`/tenants/${tenantId}/facturi/numerotare`, st ? { serie, numar_start: Number(st) } : { serie });
+      } catch (er) {
+        const ec = (er && er.erori_campuri) || [];
+        const pe = ec.find((x) => x.camp === "numar_start");
+        eroareCamp(rez, pe ? "em-serie-start" : "em-serie-noua", (pe && pe.mesaj) || (er && er.mesaj) || "Seria nu s-a putut salva."); return;
+      }
       await reincarcaPregatirea();
       porniEmitere();
     });

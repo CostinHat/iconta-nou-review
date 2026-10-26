@@ -91,7 +91,9 @@ def _numar(c, sql):
 
 def _adauga(c, **k):
     from core import facturi_recurente as fr
-    corp = dict({"tert_nume": "Client Recurent SRL", "tert_cui": CUI_CLIENT, "zi_emitere": 5, "moneda": "RON", "linii": [dict(LINIE)]}, **k)
+    # [lotul 13, 680] întrebările emiterii (scadența, perioada, modul, SPV), cerute explicit pe orice șablon
+    corp = dict({"tert_nume": "Client Recurent SRL", "tert_cui": CUI_CLIENT, "zi_emitere": 5, "moneda": "RON", "linii": [dict(LINIE)],
+                 "scadenta_zile": 15, "data_inceput": "2026-01-01", "valabil_pana": "oprire", "mod_emitere": "automata", "trimite_spv": False}, **k)
     return fr.adauga(c, _SCHEMA, corp, azi=AZI)
 
 

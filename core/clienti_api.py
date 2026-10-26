@@ -138,20 +138,63 @@ def _lista(conn, sql, val):
     return out
 
 
+#: [lotul 13, deficiențele 632 / 640] fișa „pereche” a aceluiași partener (client <-> furnizor): aceeași firmă / persoană, deci aceeași
+#: localitate și același județ — „Același partener (DANTE) are două fișe separate, client și furnizor, cu localitatea de completat de două
+#: ori (la furnizor era goală, deși aplicația o știa).”
+PERECHE = {"clienti": "furnizori", "furnizori": "clienti"}
+
+
+def _sql_lista(fel, extra=""):
+    """SELECT-ul listei de fișe `fel`: coloanele fișei + [632 a] numărul facturilor partenerului (emise la client, primite / borderouri la
+    furnizor; după `client_id`, același CUI sau, fără CUI, același nume — ca `sql_camp_fisa`) + [640] localitatea și județul din fișa
+    pereche cu același CUI (`oras_pereche`, `judet_pereche`)."""
+    cui_f, cui_p = _CUI_SQL.format(c="f.tert_cui"), _CUI_SQL.format(c="p.cui")
+    leg = ("(%(cf)s <> '' AND %(cf)s = %(cp)s) OR (%(cp)s = '' AND %(cf)s = '' AND upper(btrim(COALESCE(f.tert_nume, ''))) = "
+           "upper(btrim(p.nume)))" % {"cf": cui_f, "cp": cui_p})
+    if fel == "clienti":
+        leg = "f.client_id = p.id OR " + leg
+    cui_q = _CUI_SQL.format(c="q.cui")
+    return ("SELECT p.id, p.nume, p.cui, p.adresa, p.email, p.telefon, p.oras, p.judet, p.cod_postal, p.status" + extra + ", "
+            "(SELECT count(*) FROM facturi f WHERE " + _FACTURI_FEL[fel] + " AND (" + leg + ")) AS facturi, "
+            "(SELECT NULLIF(btrim(q.oras), '') FROM " + PERECHE[fel] + " q WHERE " + cui_p + " <> '' AND " + cui_q + " = " + cui_p
+            + " ORDER BY q.id LIMIT 1) AS oras_pereche, "
+            "(SELECT NULLIF(btrim(q.judet), '') FROM " + PERECHE[fel] + " q WHERE " + cui_p + " <> '' AND " + cui_q + " = " + cui_p
+            + " ORDER BY q.id LIMIT 1) AS judet_pereche "
+            "FROM " + fel + " p")
+
+
 def lista_clienti(conn, status=None):
-    """Toți clienții, opțional filtrați pe status (activ/inactiv)."""
+    """Toți clienții, opțional filtrați pe status (activ/inactiv). [lotul 13, 632 / 640] cu numărul facturilor emise către fiecare și cu
+    localitatea / județul din fișa de furnizor a aceluiași CUI (`oras_pereche`, `judet_pereche`)."""
     cond, val = "", []
     if status is not None:
-        cond = " WHERE status = %s"; val.append(status)
-    return _lista(conn, "SELECT " + _COLOANE_LISTA + ", afiliat FROM clienti" + cond + " ORDER BY nume", val)
+        cond = " WHERE p.status = %s"; val.append(status)
+    return _lista(conn, _sql_lista("clienti", ", p.afiliat") + cond + " ORDER BY p.nume", val)
 
 
 def lista_furnizori(conn, status=None):
-    """[lotul 11, decizia 10.3] Toți furnizorii (fișele), opțional filtrați pe status."""
+    """[lotul 11, decizia 10.3] Toți furnizorii (fișele), opțional filtrați pe status. [lotul 13, 632 / 640] cu numărul facturilor primite
+    (și al borderourilor) și cu localitatea / județul din fișa de client a aceluiași CUI."""
     cond, val = "", []
     if status is not None:
-        cond = " WHERE status = %s"; val.append(status)
-    return _lista(conn, "SELECT " + _COLOANE_LISTA + " FROM furnizori" + cond + " ORDER BY nume", val)
+        cond = " WHERE p.status = %s"; val.append(status)
+    return _lista(conn, _sql_lista("furnizori") + cond + " ORDER BY p.nume", val)
+
+
+def sincronizeaza_pereche(conn, fel, cui, oras=None, judet=None, campuri=("oras", "judet")):
+    """[lotul 13, 640] Localitatea / județul scrise pe fișa `fel` trec și pe fișa pereche a aceluiași CUI (același partener: client și
+    furnizor), ca să nu se completeze de două ori. Numai câmpurile trimise (`campuri`); fără CUI (persoane fizice: numele nu e o cheie
+    sigură între cele două liste) nu se atinge nimic. Întoarce numărul fișelor pereche actualizate."""
+    c = _cf.stocare(cui)
+    seturi, val = [], []
+    for k, v in (("oras", oras), ("judet", judet)):
+        if k in campuri:
+            seturi.append("%s = %%s" % k); val.append(v)
+    if not c or not seturi:
+        return 0
+    with conn.cursor() as cur:
+        cur.execute("UPDATE " + PERECHE[fel] + " SET " + ", ".join(seturi) + " WHERE " + _CUI_SQL.format(c="cui") + " = %s", val + [c])
+        return cur.rowcount
 
 
 # ============================================================
@@ -171,6 +214,7 @@ def creeaza_client(conn, nume, cui=None, adresa=None, email=None, telefon=None,
                 (c["nume"], c.get("cui"), c.get("adresa"), c.get("email"), c.get("telefon"), c.get("oras"), c.get("judet"),
                  c.get("cod_postal"), status, bool(afiliat)))
             client_id = cur.fetchone()[0]
+    _sincronizeaza_dupa(conn, "clienti", c)   # [lotul 13, 640]
     return {"ok": True, "client_id": client_id}
 
 
@@ -188,6 +232,7 @@ def creeaza_furnizor(conn, nume, cui=None, adresa=None, email=None, telefon=None
                 (c["nume"], c.get("cui"), c.get("adresa"), c.get("email"), c.get("telefon"), c.get("oras"), c.get("judet"),
                  c.get("cod_postal"), status))
             furnizor_id = cur.fetchone()[0]
+    _sincronizeaza_dupa(conn, "furnizori", c)   # [lotul 13, 640]
     return {"ok": True, "furnizor_id": furnizor_id}
 
 
@@ -271,6 +316,8 @@ def actualizeaza_client(conn, client_id, **campuri):
         with _chei.refuza_dublura(cur, (CONSTRANGERE_CUI,), _refuz_cui(client_id)):
             cur.execute("UPDATE clienti SET %s WHERE id = %%s" % ", ".join(seturi), valori)
             ok = cur.rowcount > 0
+    if ok:
+        _sincronizeaza_dupa(conn, "clienti", c, client_id)   # [lotul 13, 640]
     return {"ok": ok}
 
 
@@ -288,7 +335,24 @@ def actualizeaza_furnizor(conn, furnizor_id, **campuri):
         with _chei.refuza_dublura(cur, (CONSTRANGERE_CUI_FURNIZOR,), _refuz_cui_furnizor(furnizor_id)):
             cur.execute("UPDATE furnizori SET %s WHERE id = %%s" % ", ".join(seturi), valori)
             ok = cur.rowcount > 0
+    if ok:
+        _sincronizeaza_dupa(conn, "furnizori", c, furnizor_id)   # [lotul 13, 640]
     return {"ok": ok}
+
+
+def _sincronizeaza_dupa(conn, fel, c, fisa_id=None):
+    """[lotul 13, 640] După scrierea fișei `fel` (câmpurile curățate `c`): localitatea / județul scrise trec pe fișa pereche cu același
+    CUI (CUI-ul din cerere, altfel cel al fișei)."""
+    campuri = tuple(k for k in ("oras", "judet") if k in c)
+    if not campuri:
+        return 0
+    cui = c.get("cui")
+    if not cui and fisa_id is not None:
+        with conn.cursor() as cur:
+            cur.execute("SELECT cui FROM " + fel + " WHERE id = %s", (fisa_id,))
+            r = cur.fetchone()
+            cui = (r[0] if not isinstance(r, dict) else r["cui"]) if r else None
+    return sincronizeaza_pereche(conn, fel, cui, c.get("oras"), c.get("judet"), campuri)
 
 
 # ============================================================
@@ -298,14 +362,30 @@ def sterge_client(conn, client_id):
     """
     Șterge clientul DOAR dacă nu are facturi legate (FK ar bloca oricum).
     Verific întâi, ca să întorc mesaj clar fără să stric tranzacția.
+    [lotul 13, 640] „facturi legate” = cele numărate în listă (`client_id`, același CUI sau, fără CUI, același nume): fișa unui client cu
+    facturi ține localitatea și județul pe care D394 / D406 le citesc din ea (`sql_camp_fisa`), deci nu se șterge.
     """
+    return _sterge_fisa(conn, "clienti", client_id)
+
+
+def sterge_furnizor(conn, furnizor_id):
+    """[lotul 13, 640] Fișa furnizorului se șterge numai fără facturi primite / borderouri (aceeași regulă ca `sterge_client`)."""
+    return _sterge_fisa(conn, "furnizori", furnizor_id)
+
+
+def _sterge_fisa(conn, fel, fisa_id):
+    ce = "clientul" if fel == "clienti" else "furnizorul"
     with conn.cursor() as cur:
-        cur.execute("SELECT count(*) FROM facturi WHERE client_id = %s", (client_id,))
-        nr = cur.fetchone()[0]
+        cur.execute(_sql_lista(fel) + " WHERE p.id = %s", (fisa_id,))
+        r = cur.fetchone()
+        if not r:
+            return {"ok": False, "cod": "INEXISTENT", "mesaj": "Fișa nu mai există."}
+        nr = r["facturi"] if isinstance(r, dict) else r[10]
         if nr:
             return {"ok": False, "cod": "ARE_FACTURI",
-                    "mesaj": "clientul are %s — nu poate fi șters" % _cate(nr, "factură", "facturi")}
-        cur.execute("DELETE FROM clienti WHERE id = %s", (client_id,))
+                    "mesaj": "%s are %s — fișa nu se șterge: localitatea și județul din ea intră în D394 / D406." % (
+                        ce[0].upper() + ce[1:], _cate(nr, "factură", "facturi"))}
+        cur.execute("DELETE FROM " + fel + " WHERE id = %s", (fisa_id,))
         sters = cur.rowcount > 0
     return {"ok": sters}
 
@@ -353,10 +433,32 @@ def parteneri_fara_fisa(conn, fel="clienti"):
                     "upper(btrim(f.tert_nume)))) "
                     "GROUP BY " + grup + " ORDER BY 2, 1")
         out = [dict(r) for r in cur.fetchall()]
+    # [lotul 13, 640] fără localitate / județ pe facturi: cele din fișa pereche a aceluiași CUI (clientul care e și furnizor), ca propunere
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        for r in out:
+            if r["cui"] and not (r["oras"] and r["judet"]):
+                cur.execute("SELECT NULLIF(btrim(oras), '') AS oras, NULLIF(btrim(judet), '') AS judet FROM " + PERECHE[fel] + " WHERE "
+                            + _CUI_SQL.format(c="cui") + " = %s ORDER BY id LIMIT 1", (r["cui"],))
+                q = cur.fetchone()
+                if q:
+                    r["oras"], r["judet"] = r["oras"] or q["oras"], r["judet"] or q["judet"]
     for r in out:
         r["cui"] = r["cui"] or None
         r["cheie"] = cheie_partener(r["cui"], r["nume"])
     return out
+
+
+def furnizor_sterge_uc(tenant_id, furnizor_id, ctx):
+    """[lotul 13, 640] Corpul rutei `DELETE /tenants/{tenant_id}/furnizori/{furnizor_id}` (ca `uc_tenants.client_sterge`)."""
+    from core import db, erori as _erori, uc_comun as _uc
+    schema = _uc._schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = sterge_furnizor(conn, furnizor_id)
+    if not r.get("ok"):
+        if r.get("cod") == "INEXISTENT":
+            raise _erori.Inexistent(r["mesaj"])
+        raise _erori.Conflict(r["mesaj"])
+    return r
 
 
 def fise_dupa_cui(cur, cui):
@@ -398,10 +500,14 @@ def sql_camp_fisa(camp, f="f"):
     cui_f, cui_p = _CUI_SQL.format(c="%s.tert_cui" % f), _CUI_SQL.format(c="p.cui")
     potrivire = ("((%(cf)s <> '' AND %(cp)s = %(cf)s) OR (%(cf)s = '' AND %(cp)s = '' AND upper(btrim(p.nume)) = "
                  "upper(btrim(COALESCE(%(f)s.tert_nume, '')))))" % {"cf": cui_f, "cp": cui_p, "f": f})
-    return ("(CASE WHEN %(f)s.directie = 'emisa' THEN (SELECT NULLIF(btrim(p.%(c)s), '') FROM clienti p WHERE p.id = %(f)s.client_id "
-            "OR %(m)s ORDER BY (p.id = %(f)s.client_id) DESC NULLS LAST, p.id LIMIT 1) "
-            "ELSE (SELECT NULLIF(btrim(p.%(c)s), '') FROM furnizori p WHERE %(m)s ORDER BY p.id LIMIT 1) END)"
-            % {"f": f, "c": camp, "m": potrivire})
+    # [lotul 13, 640] fișa pereche (furnizorul / clientul cu același CUI) e același partener: când fișa directă n-are câmpul, se ia de acolo
+    pereche = "(%(cf)s <> '' AND %(cp)s = %(cf)s)" % {"cf": cui_f, "cp": cui_p}
+    return ("(CASE WHEN %(f)s.directie = 'emisa' THEN COALESCE((SELECT NULLIF(btrim(p.%(c)s), '') FROM clienti p WHERE p.id = %(f)s.client_id "
+            "OR %(m)s ORDER BY (p.id = %(f)s.client_id) DESC NULLS LAST, p.id LIMIT 1), "
+            "(SELECT NULLIF(btrim(p.%(c)s), '') FROM furnizori p WHERE %(pr)s ORDER BY p.id LIMIT 1)) "
+            "ELSE COALESCE((SELECT NULLIF(btrim(p.%(c)s), '') FROM furnizori p WHERE %(m)s ORDER BY p.id LIMIT 1), "
+            "(SELECT NULLIF(btrim(p.%(c)s), '') FROM clienti p WHERE %(pr)s ORDER BY p.id LIMIT 1)) END)"
+            % {"f": f, "c": camp, "m": potrivire, "pr": pereche})
 
 
 # ============================================================
@@ -453,8 +559,12 @@ def _surse(cur, schema):
         for r in c.fetchall():
             out.append((cheie_partener(r["cui"], r["nume"]), r["cui"], r["nume"], rol, dict(r, fel=fel), None))
     facturi = {}
+    # [lotul 13, 546] suma documentului = totalul DE PLATĂ (`facturi.SQL_TOTAL_DE_PLATA_LEI`): factura primită cu taxare inversă e datorată
+    # furnizorului fără TVA-ul determinat de beneficiar (CF art.331 alin.(3))
+    from core import facturi as _fc
     c.execute(f"SELECT id, serie, numar, data_emitere, directie, COALESCE(tip, 'factura') AS tip, status, storno_din_id, "
-              f"COALESCE(total_lei, total) AS total_lei, total, COALESCE(moneda, 'RON') AS moneda, tert_cui, tert_nume "
+              f"{_fc.SQL_TOTAL_DE_PLATA_LEI.format(a='facturi')} AS total_lei, total, tva, COALESCE(taxare_inversa, false) AS taxare_inversa, "
+              f"COALESCE(moneda, 'RON') AS moneda, tert_cui, tert_nume "
               f"FROM {s}.facturi ORDER BY data_emitere DESC, id DESC")
     for r in c.fetchall():
         k = cheie_partener(r["tert_cui"], r["tert_nume"])
@@ -463,7 +573,7 @@ def _surse(cur, schema):
                "fel": _fel_factura(r["directie"], r["tip"], r["storno_din_id"]),
                "document": " ".join(x for x in (r["serie"] or "", r["numar"] or "") if x).strip(),
                "suma": _bani(r["total_lei"]), "moneda": r["moneda"],
-               "suma_valuta": _bani(r["total"]) if r["moneda"] != "RON" else None,
+               "suma_valuta": _bani(_fc.total_de_plata(r, r["total"], r["tva"])) if r["moneda"] != "RON" else None,
                "stare": "anulată" if r["status"] == "anulata" else None}
         out.append((k, r["tert_cui"], r["tert_nume"], "client" if r["directie"] == "emisa" else "furnizor", None, doc))
     c.execute(f"SELECT data, tip, document, partener, cui, suma FROM {s}.casa_operatiuni "

@@ -707,11 +707,13 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             # [lotul 11, 443] `serie` pentru afișarea separată în Istoric („F6 nr. 1”, `numarCuSerie`), nu numărul lipit
-            "SELECT id, numar, serie, data_emitere, directie, total, tva, total_lei, status, "
+            "SELECT id, numar, serie, data_emitere, directie, total, tva, total_lei, tva_lei, status, "
+            "COALESCE(taxare_inversa, false) AS taxare_inversa, "   # [lotul 13, 546] totalul de plată al facturii primite cu taxare inversă
             "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id, platita_la, data_faptului_generator, tert_tara "
             "FROM facturi" + where +
             " ORDER BY data_emitere DESC, id DESC" + limitclause, val)
         out = [dict(r) for r in cur.fetchall()]
+        _cu_total_de_plata(out)
         _cu_stare_contare(cur, out)
         _cu_stare_incasare(cur, out)
         _cu_stare_spv(cur, out)   # [lotul 6 pct.5b, 275]
@@ -805,6 +807,15 @@ def _cu_stare_spv(cur, facturi):
                           "obligatorie": True, "eroare": err if stare in ("respinsa", "netrimisa") and st else None, "stare_tehnica": st}
 
 
+def _cu_total_de_plata(facturi):
+    """[lotul 13, 546] `total_de_plata` (în moneda facturii) și `tva_taxare_inversa` (TVA-ul determinat de beneficiar, care nu se plătește
+    furnizorului — CF art.331 alin.(3)) pe fiecare factură, pentru ecran (`facturi.total_de_plata`, aceeași definiție ca starea de plată)."""
+    from core import facturi as _fc_tp
+    for f in facturi:
+        f["total_de_plata"] = str(_fc_tp.total_de_plata(f, f.get("total"), f.get("tva")))
+        f["tva_taxare_inversa"] = str(f.get("tva") or 0) if _fc_tp.fara_tva_de_plata(f) else None
+
+
 def _cu_stare_incasare(cur, facturi):
     """[retest 08.10, completarea pct.1, comanda Costin] „starea de încasare (încasată / parțial / neîncasată) trebuie să fie vizibilă
     pe factură și în lista «Istoric facturi»” — F1A3, încasată integral prin CHF1-1, arăta numai „contabilizată”. O SINGURĂ definiție
@@ -813,6 +824,7 @@ def _cu_stare_incasare(cur, facturi):
     `platita_la` (pus de chitanța integrală, de bonul stins) = încasare integrală declarată. Comparat cu totalul în lei.
     `stare_incasare` = {stare: incasata | partial | neincasata | stornata, incasat, total[, stornat]}; None la proformă / aviz / storno."""
     from decimal import Decimal as _D
+    from core import facturi as _fc_tp
     from core import sume_lei as _sl
     from core import nomenclator_status_factura as _nsf
     # [lotul 12, 252] și factura deschisă preluată are stare de încasare (`TIPURI_CU_INCASARE`): banca, casa, compensarea o sting
@@ -854,8 +866,12 @@ def _cu_stare_incasare(cur, facturi):
         # (o factură de 1.000 EUR cu 2.000 lei încasați ieșea „încasată”)
         try:
             total = _D(str(f["total_lei"])) if f.get("total_lei") is not None else _sl.antet_lei(f)[0]
+            tva_lei = _D(str(f["tva_lei"])) if f.get("tva_lei") is not None else _sl.antet_lei(f)[1]
         except _sl.LipsaCurs:
-            total = _D(str(f.get("total") or 0))
+            total, tva_lei = _D(str(f.get("total") or 0)), _D(str(f.get("tva") or 0))
+        # [lotul 13, 546] factura primită cu taxare inversă: TVA-ul de pe antet e al beneficiarului (CF art.331 alin.(3)), nu se plătește
+        # furnizorului — totalul de plată e baza (`facturi.total_de_plata`, aceeași definiție peste tot)
+        total = _fc_tp.total_de_plata(f, total, tva_lei)
         st = stornat.get(f["id"], _D(0))
         if st and total + st <= _D(str(_rf_st.TOLERANTA_STORNATA)):
             f["stare_incasare"] = {"stare": "stornata", "incasat": "%.2f" % incasat.get(f["id"], _D(0)), "total": "%.2f" % total,
@@ -910,6 +926,7 @@ def detalii_factura(conn, factura_id):
             "valoare_neta "   # [lotul 11, C82] BT-131 de pe factura importată: valoarea liniei pe ecran și pe PDF (NULL = cantitate × preț)
             "FROM factura_linii WHERE factura_id = %s ORDER BY id", (factura_id,))
         f["linii"] = [dict(r) for r in cur.fetchall()]
+        _cu_total_de_plata([f])   # [lotul 13, 546]
         # [deficiența 306] detaliul arată categoria de TVA a liniei cu 0% (eticheta ei), nu numai „0%”; codul și adresa clientului ca pe PDF
         from core import categorii_tva as _ct, factura_pdf as _fp
         for l in f["linii"]:
@@ -1033,6 +1050,16 @@ def sterge_factura(conn, factura_id):
         nir_legat = cur.fetchone()
         from core import compensari_api as _cz
         compensata = _cz.ale_facturii(cur, "", factura_id)
+        cur.execute("SELECT directie, COALESCE(tip, 'factura') AS tip, serie, numar FROM facturi WHERE id = %s", (factura_id,))
+        _fp_ = cur.fetchone()
+        # [lotul 13, deficiența 547] factura PRIMITĂ introdusă greșit, cu notele ei (cele ale facturii: contarea, nota taxării inverse)
+        # încă ciornă — nimic din ea n-a intrat în evidență, deci se șterge cu notele ei; o notă validată, o plată, stocul, SPV-ul o opresc
+        primita_ciorna = bool(_fp_ and _fp_["directie"] == "primita" and _fp_["tip"] == "factura" and legate
+                              and all(x["status"] == "ciorna" and x.get("sursa") == "facturi" for x in legate))
+        stoc_primita = None
+        if primita_ciorna:
+            cur.execute("SELECT count(*) AS n FROM miscari_stoc WHERE factura_id = %s", (factura_id,))
+            stoc_primita = cur.fetchone()["n"]
     if compensata:
         # [lotul 10, 428] aceeași clasă ca NIR-ul legat: `compensari` ține factura printr-o cheie fără `ON DELETE` — refuzul o numește
         raise _cf.RefuzContare(
@@ -1059,6 +1086,8 @@ def sterge_factura(conn, factura_id):
             "Factura a venit din SPV (mesajul ANAF %s) și nu se șterge: e documentul furnizorului, păstrat așa cum a fost "
             "primit." % prim["id_mesaj_anaf"],
             detalii={"id_mesaj_anaf": prim["id_mesaj_anaf"], "iesire": "fara_stergere"})
+    if primita_ciorna:
+        return _sterge_primita_cu_notele_ciorna(conn, factura_id, legate, stoc_primita, _fp_)
     if not n and legate:
         # GĂSIT DE PROPRIA GARDĂ, la prima rulare, și nu era în comandă: cheia străină blochează
         # ștergerea pentru ORICE notă legată, nu doar pentru o contare. O notă de PLATĂ n-ar trebui
@@ -1111,6 +1140,56 @@ def sterge_factura(conn, factura_id):
     if sterse:
         _redeschide_luna(conn, _d)
     return {"ok": sterse > 0}
+
+
+#: [lotul 13, 547] refuzul ștergerii facturii primite care a adus marfă în stoc (fișa de magazie are deja intrarea)
+MESAJ_PRIMITA_CU_STOC = ("Factura %s a adus marfă în stoc (%s în fișa de magazie) și nu se șterge de aici: fișa ar rămâne cu marfa unei "
+                         "facturi care nu mai există. Respinge nota facturii din „De validat” (stocul ei se stornează) sau corectează "
+                         "factura prin stornare.")
+
+
+def _sterge_primita_cu_notele_ciorna(conn, factura_id, note, stoc, f):
+    """[lotul 13, deficiența 547 — „O factură primită introdusă greșit, cu nota încă nevalidată, nu are niciun buton de anulare sau
+    ștergere (nici nota derivată nu se poate șterge)”] Ștergerea facturii PRIMITE ale cărei note (cele scrise de factură, sursa
+    `facturi`) sunt toate ciornă: notele (cu liniile lor), operațiunea D301 legată (achiziția intracomunitară, `d301_operatiuni.factura_id`)
+    și factura, în aceeași tranzacție. Ciorna nu e evidență (o notă intră în evidență abia validată), deci nu lasă nicio gaură; o notă
+    validată, o plată, NIR-ul, SPV-ul și compensarea au refuzurile lor, mai sus. Nota din coada de validare și ciorna altui utilizator se
+    refuză numit (`coada_api.nota_la_validare`, regula din bază `DREPT_CIORNA`), nu cu o eroare de bază.
+    Temei: OMFP 2634/2015 anexa 1 pct.58 lit.c — „fiecare dată înregistrată în contabilitate trebuie să se regăsească în conținutul unui
+    document”; documentul introdus greșit nu e al firmei, iar ciorna lui nu a fost înregistrată în contabilitate."""
+    from core import contare_facturi as _cf, coada_api as _coada, jurnal_api as _j
+    from core.common import cate
+    from core.pdf_util import serie_nr as _sn
+    eticheta = _sn(f["serie"], f["numar"]) if f else str(factura_id)
+    if stoc:
+        raise _cf.RefuzContare("PRIMITA_CU_STOC", MESAJ_PRIMITA_CU_STOC % (eticheta, cate(stoc, "mișcare", "mișcări")),
+                               detalii={"iesire": "respinge_sau_storno"})
+    ids = [x["id"] for x in note]
+    with conn.cursor() as cur:
+        cur.execute("SELECT current_schema()")
+        schema = cur.fetchone()[0]
+        for nid in ids:
+            if _coada.nota_la_validare(cur, schema, nid):
+                raise _cf.RefuzContare(_coada.COD_NOTA_LA_VALIDARE, _coada.mesaj_nota_la_validare(cur, schema, nid))
+    _d = _luna_facturii(conn, factura_id)
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SAVEPOINT sterge_primita")
+            cur.execute("DELETE FROM d301_operatiuni WHERE factura_id = %s", (factura_id,))
+            cur.execute("DELETE FROM inregistrari WHERE id = ANY(%s) AND status = 'ciorna'", (ids,))
+            cur.execute("DELETE FROM facturi WHERE id = %s", (factura_id,))
+            sterse = cur.rowcount
+            cur.execute("RELEASE SAVEPOINT sterge_primita")
+    except Exception as e:   # noqa: BLE001 — numai refuzurile din bază se traduc; orice altceva urcă
+        motiv = _j._motiv_din_baza(e)
+        if motiv is None:
+            raise
+        with conn.cursor() as cur:
+            cur.execute("ROLLBACK TO SAVEPOINT sterge_primita")
+        raise _cf.RefuzContare(_j._cod_din_baza(e) or "REFUZ_BAZA", motiv)
+    if sterse:
+        _redeschide_luna(conn, _d)
+    return {"ok": sterse > 0, "note_sterse": len(ids)}
 
 
 # ============================================================
@@ -1274,6 +1353,16 @@ def _rezerva_numar(conn, tip="factura"):
     return serie, numar_int
 
 
+def urmatorul_in_serie(conn, serie):
+    """[lotul 13, 542] Primul număr liber al seriei `serie` pe facturile emise: 1 pentru o serie nefolosită, altfel ultimul număr emis în ea
+    + 1 (numărul facturii e seria lipită de numărul de ordine: „F2T3” -> 3)."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT numar FROM facturi WHERE directie = 'emisa' AND COALESCE(tip, 'factura') = 'factura' AND serie = %s", (serie,))
+        nr = [str(r[0] if not isinstance(r, dict) else r["numar"]) for r in cur.fetchall()]
+    cifre = [int(x[len(serie):]) for x in nr if x.startswith(serie) and x[len(serie):].isdigit()]
+    return (max(cifre) + 1) if cifre else 1
+
+
 def seteaza_numerotare(conn, serie=None, numar_start=None):
     """Configureaza seria + numarul de start (continuitate cu istoricul).
     Se apeleaza o data; dupa, numarul se auto-incrementeaza la emitere."""
@@ -1290,6 +1379,13 @@ def seteaza_numerotare(conn, serie=None, numar_start=None):
         _cur.execute("SELECT serie_factura, urmator_numar_factura FROM firma_profil LIMIT 1")
         _acum = _cur.fetchone() or (None, None)
     seturi, val = [], []
+    # [lotul 13, deficiența 542 — „Seria F2T stabilită la prima factură a pornit de la nr. 2 (contorul vechi), deci F2T1 lipsește și seria are
+    # o gaură. Seria nouă pornește de la 1 sau de la numărul ales de contabil.”] Contorul e al SERIEI: o serie nouă (alta decât cea de acum)
+    # pornește de la primul număr liber din ea (1, sau după ultima factură emisă vreodată în ea), nu de la contorul seriei vechi. CF art.319
+    # alin.(20) lit.a): factura cuprinde „numărul de ordine, în baza uneia sau mai multor serii, care identifică în mod unic factura”.
+    _serie_noua = str(serie).strip() if serie is not None and str(serie).strip() else None
+    _schimba_seria = _serie_noua is not None and _serie_noua != str(_acum[0] or "").strip()
+    _urm = urmatorul_in_serie(conn, _serie_noua) if _schimba_seria else _acum[1]
     if serie is not None:
         if not str(serie).strip():
             er.camp("serie", "Seria e goală (numai spații). Nu se poate ghici dacă "
@@ -1297,13 +1393,14 @@ def seteaza_numerotare(conn, serie=None, numar_start=None):
                              "firmei e pe documentele deja emise.")
         else:
             seturi.append("serie_factura = %s"); val.append(str(serie).strip())
+            if _schimba_seria and numar_start is None:
+                seturi.append("urmator_numar_factura = %s"); val.append(_urm)
     if numar_start is not None:
         try:
             _n = int(numar_start)
         except (TypeError, ValueError):
             _n = None
             er.camp("numar_start", "Numărul de start: %r nu e un număr întreg." % (numar_start,))
-        _urm = _acum[1]
         if _n is None:
             pass
         elif _n < 1:
@@ -1419,7 +1516,7 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
                   data_curs_manual=None, curs_manual_de=None, axa_ic=None,
                   bon_fiscal_nr=None, bon_fiscal_data=None, tert_platitor_tva=None, pleaca_marfa=None,
                   raspunsuri_ai=None, categorie_331=None, tert_oras=None, tert_judet=None,
-                  intreaba_dovada=False, dovada_transport=None):
+                  intreaba_dovada=False, dovada_transport=None, vies=None):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator / raspunsurile modelului, cerute INAINTEA conexiunii:
@@ -1462,7 +1559,15 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
         _e = ValueError(MESAJ_INTREABA_MARFA)
         _e.cod = COD_INTREABA_MARFA
         raise _e
-    _lic = tip == "factura" and any(_l.get("categorie_tva") == "livrare_ic" for _l in linii)
+    _lic = cere_vies(tip, linii)
+    _stare_vies = stare_vies(vies) if (_lic and vies is not None) else None
+    if _stare_vies == "invalid":
+        # [lotul 13, C199 — decizia Costin, verbatim: „C199: cu un cod TVA invalid în VIES se refuză scutirea; factura se emite doar cu TVA
+        # românesc. VIES indisponibil = avertisment și reîncercare, nu refuz (550).”] verificarea e pe server, la emitere, înaintea oricărei
+        # scrieri și înaintea întrebărilor (răspunsul la ele n-ar schimba refuzul)
+        _e = ValueError(MESAJ_VIES_INVALID % (str(tert_cui or "").strip(),))
+        _e.cod, _e.camp, _e.temei = COD_VIES_INVALID, "em-cui", "CF art.294 alin.(2) lit.a)"
+        raise _e
     if intreaba_dovada and _lic and dovada_transport is None:
         # [lotul 12, C84, decizia Costin 12.3 pct.7] întrebarea, după linii și după „Pleacă marfa acum?”, înaintea oricărei scrieri; răspunsul
         # nu oprește emiterea („avertisment la emitere, nu refuz”)
@@ -1569,6 +1674,9 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
         r["curs_manual_la"] = _urma_manual[1].isoformat()
     r["numar"] = numar
     r["serie"] = serie
+    if _stare_vies == "indisponibil":   # [lotul 13, C199 / 550] avertisment, nu refuz: codul se reverifică (ecranul oferă reîncercarea)
+        r["avertismente"] = list(r.get("avertismente") or []) + [AVERTISMENT_VIES_INDISPONIBIL % (str(tert_cui or "").strip(),)]
+        r["vies_de_reverificat"] = str(tert_cui or "").strip()
     if _lic and dovada_transport is not True:
         # [lotul 12, C84] emisă fără dovada transportului: ce lipsește și ce se întâmplă cu scutirea. [C197] Pe un drum care nu întreabă
         # (`intreaba_dovada=False`, răspunsul lipsă: factura recurentă din cron) avertismentul e tot acolo, cu textul a ce nu se știe
@@ -1576,6 +1684,53 @@ def emite_factura(conn, linii, client_id=None, intreaba_marfa=False, tert_nume=N
         r["avertismente"] = list(r.get("avertismente") or []) + [
             _ic.AVERTISMENT_LIC_FARA_DOVADA if dovada_transport is False else _ic.AVERTISMENT_LIC_NEINTREBAT]
     return r
+
+
+#: [lotul 13, C199] livrarea intracomunitară cu codul de TVA al clientului invalid în VIES: refuzul scutirii (CF art.294 alin.(2) lit.a: „către
+#: o persoană impozabilă [...] care îi comunică furnizorului un cod valabil de înregistrare în scopuri de TVA, atribuit de autoritățile fiscale
+#: din alt stat membru”)
+COD_VIES_INVALID = "VIES_INVALID"
+MESAJ_VIES_INVALID = ("Codul de TVA %s al clientului e invalid în VIES, deci livrarea nu e scutită: scutirea livrării intracomunitare cere un "
+                      "cod valabil (Cod fiscal art.294 alin.(2) lit.a). Factura se emite cu TVA românesc: alege pe linie cota de TVA în locul "
+                      "categoriei „livrare intracomunitară”. Dacă clientul are alt cod, corectează-l și verifică-l din nou.")
+#: [lotul 13, C199 / 550] VIES n-a răspuns (serviciul statului membru indisponibil, VIES căzut): nu e un cod invalid — avertisment, nu refuz
+AVERTISMENT_VIES_INDISPONIBIL = ("VIES nu a răspuns acum pentru codul %s (serviciul statului membru e indisponibil), deci codul de TVA al "
+                                 "clientului nu s-a putut verifica; factura s-a emis cu scutirea. Reverifică codul în VIES înainte de D390: "
+                                 "dacă iese invalid, livrarea nu e scutită și factura se corectează prin stornare.")
+
+
+def cere_vies(tip, linii):
+    """[lotul 13, C199] Emiterea cere verificarea în VIES a codului clientului: factura (nu proforma / avizul) cu o linie „livrare
+    intracomunitară” (categoria de TVA a liniei cu 0%)."""
+    return (tip or "factura") == "factura" and any(_l.get("categorie_tva") == "livrare_ic" for _l in (linii or []))
+
+
+def stare_vies(v):
+    """[lotul 13, C199] Starea răspunsului VIES: „valid” | „invalid” | „indisponibil” (câmpul `stare` al lui `intracomunitar.verifica_vies`,
+    lotul 13 — 550). Un răspuns fără `stare` nu e niciodată „invalid”: numai un cod spus invalid de VIES refuză scutirea."""
+    if not isinstance(v, dict):
+        return "indisponibil"
+    st = v.get("stare")
+    if st in ("valid", "invalid", "indisponibil"):
+        return st
+    return "valid" if v.get("valid") else "indisponibil"
+
+
+def verifica_vies_emitere(cod, tara=None):
+    """[lotul 13, C199] VIES pentru emitere, chemat de ruta emiterii ÎNAINTEA conexiunii (ca `vanzare_ic`, P5): răspunsul lui
+    `intracomunitar.verifica_vies`, sau `{"stare": "indisponibil"}` dacă serviciul nu răspunde (căderea nu refuză emiterea — 550); detaliul
+    căderii merge în jurnalul operatorului."""
+    from core import intracomunitar as _ic, observare as _obs
+    c = str(cod or "").strip().upper().replace(" ", "")
+    if c and not c[:2].isalpha() and tara:   # codul scris fără prefix, cu țara clientului aleasă pe factură
+        c = str(tara).strip().upper() + c
+    try:
+        return _ic.verifica_vies(c)
+    except ValueError:
+        return {"stare": "invalid", "valid": False}   # codul nu e un cod de TVA din UE (formă greșită): nu poate fi „valabil”
+    except Exception as e:   # noqa: BLE001 — VIES căzut: avertisment la emitere, nu refuz; nu e tăcut (jurnalul operatorului)
+        _obs.esec_secundar("vies_emitere", e)
+        return {"stare": "indisponibil", "valid": False}
 
 
 COD_CERE_RETUR = "CERE_RETUR"

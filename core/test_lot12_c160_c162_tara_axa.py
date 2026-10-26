@@ -142,7 +142,7 @@ def _adauga(c, **k):
     from core import facturi_recurente as fr
     _sql(c, "SELECT 1")
     corp = {"tert_cui": COD_CLIENT, "tert_nume": "KUNDE GMBH", "tert_tara": "DE", "linii": [_linie_serviciu(c)], "zi_emitere": 1,
-            "moneda": "RON"}
+            "moneda": "RON", "scadenta_zile": 15, "data_inceput": "2026-01-01", "valabil_pana": "oprire", "mod_emitere": "automata", "trimite_spv": False}   # [lotul 13, 680] întrebările emiterii
     corp.update(k)
     return fr.adauga(c, SCH, corp, azi=AZI_SALVARE)
 

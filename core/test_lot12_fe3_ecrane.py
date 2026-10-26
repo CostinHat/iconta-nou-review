@@ -258,10 +258,11 @@ def test_def_c109_lista_sabloanelor_arata_ultima_emitere_si_refuzul_cu_motivul(b
     pg.wait_for_selector(".pf-frand[data-id='3']", timeout=15000)
     txt = {i: " ".join(pg.inner_text(".pf-frand[data-id='%d'] .pf-frand-text" % i).split()) for i in (1, 2, 3)}
     # textul întreg al fiecărui rând (numele, ziua, ultima emitere, starea și, la cel refuzat, refuzul cu ziua și motivul), comparat cu `==`
-    assert txt == {1: "EMIS SRL ziua 5 · ultima factură emisă: 05.10.2026 · activ",
-                   2: "REFUZAT SRL ziua 5 · ultima factură emisă: 05.10.2026 · activ Emiterea automată refuzată la 06.11.2026: Firma nu e "
-                      "plătitoare de TVA, deci factura nu poate purta TVA.",
-                   3: "NOU SRL ziua 5 · nicio factură emisă încă · activ"}, txt
+    # [lotul 13, 680] plus rândul modului de emitere (șablonul fără `mod_emitere` = cel de dinainte de 680: „se emite singură”)
+    assert txt == {1: "EMIS SRL ziua 5 · ultima factură emisă: 05.10.2026 · activ se emite singură",
+                   2: "REFUZAT SRL ziua 5 · ultima factură emisă: 05.10.2026 · activ se emite singură Emiterea automată refuzată la "
+                      "06.11.2026: Firma nu e plătitoare de TVA, deci factura nu poate purta TVA.",
+                   3: "NOU SRL ziua 5 · nicio factură emisă încă · activ se emite singură"}, txt
     assert pg.eval_on_selector("#fr-refuz-2 span", "e => getComputedStyle(e).color") == pg.evaluate(
         "() => { const d = document.createElement('span'); d.style.color = 'var(--rosu)'; document.body.appendChild(d); "
         "const c = getComputedStyle(d).color; d.remove(); return c; }")
