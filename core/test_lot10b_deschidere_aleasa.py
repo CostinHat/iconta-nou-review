@@ -144,6 +144,7 @@ CLICURI_PROGRAMATICE = {
     "static/js/ecrane/etransport_ecran.js": (1, "descărcarea XML-ului cerut de om"),
     "static/js/ecrane/firme.js": (2, "descărcarea cerută de om; „Scanează cod de bare” deschide alegerea imaginii (input ascuns)"),
     "static/js/ecrane/validat.js": (1, "„Respinge nota” ales în caseta de confirmare apasă butonul de respingere al notei"),
+    "static/js/ecrane/declaratii.js": (1, "„Generează / Regenerează” apăsat de om adaugă întâi rândul completat și neadăugat (652): se apasă „+ adaugă” al rândului, cu verificările lui"),
 }
 
 

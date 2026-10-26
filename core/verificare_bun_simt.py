@@ -44,39 +44,68 @@ from core import common as _c
 from core.erori import RefuzGenerare
 
 _CF = "anaf_surse/cod_fiscal_227_2015_consolidat.html"
-#: cota impozitului pe dividende plătite nerezidenților (CF art.224 alin.(4) lit.b), pe anul distribuirii — numai anii verificați la sursă
-COTA_DIVIDENDE_NEREZIDENTI = _c.ancoreaza("verificare_bun_simt.COTA_DIVIDENDE_NEREZIDENTI", {2025: Decimal("0.10"), 2026: Decimal("0.16")},
-    _c.Temei("CF", art="224", alin="4", lit="b", data_in="2025-01-01", verificat_la="2026-10-25", de_cine="Code (lotul 13, 656)",
-             nivel_sursa="MO", url=_CF, text_citat="b) 16% pentru veniturile din dividende prevăzute la art. 223 alin. (1) lit. a) ;",
-             lant_acte="2026: Legea 141/2025 art.II pct.41 („se aplică veniturilor din dividende distribuite începând cu data de 1 ianuarie "
-                       "2026”); 2025: OUG 156/2024 art.LXIV pct.15, anaf_surse/oug_156_2024.txt: „b) 10% pentru veniturile din dividende "
-                       "prevăzute la art. 223 alin. (1) lit. a);”, în vigoare la 1 ianuarie 2025 (art.LXV alin.(1))"))
-#: celelalte venituri impozabile: lit.c^1 (10%, persoane fizice din UE / stat cu convenție), lit.d (16%), lit.c (50%, fără schimb de informații)
-COTE_ALTE_VENITURI = _c.ancoreaza("verificare_bun_simt.COTE_ALTE_VENITURI", (Decimal("0.10"), Decimal("0.16"), Decimal("0.50")),
-    _c.Temei("CF", art="224", alin="4", lit="d", data_in="2021-01-01", verificat_la="2026-10-25", de_cine="Code (lotul 13, 656)",
-             nivel_sursa="MO", url=_CF, text_citat="d) 16% în cazul oricăror altor venituri impozabile obținute din România, așa cum sunt "
-                                                  "enumerate la art. 223 alin. (1)",
-             lant_acte="lit.c^1 (10%): „10% în cazul veniturilor impozabile enumerate la art. 223 alin. (1) lit. b)- i) și k)-p) obținute din "
-                       "România de persoane fizice rezidente într-un stat membru al Uniunii Europene […]” (Legea 296/2020, de la "
-                       "01.01.2021); lit.c (50%): venituri plătite într-un stat fără instrument juridic de schimb de informații"))
+# Cotele CF art.224 alin.(4), în procente (cum le scrie legea), fiecare cu textul ei din corpus; fracția o face `_fr` la folosire.
+_ART224 = dict(art="224", alin="4", verificat_la="2026-10-25", de_cine="Code (lotul 13, 656)", nivel_sursa="MO", url=_CF)
+#: dividendele plătite nerezidenților distribuite în 2025 — OUG 156/2024 art.LXIV pct.15 (în vigoare la 1 ianuarie 2025, art.LXV alin.(1))
+COTA_DIVIDENDE_NEREZIDENTI_2025 = _c.ancoreaza("verificare_bun_simt.COTA_DIVIDENDE_NEREZIDENTI_2025", Decimal("10"),
+    _c.Temei("OUG", 156, 2024, art="LXIV", data_in="2025-01-01", verificat_la="2026-10-25", de_cine="Code (lotul 13, 656)",
+             nivel_sursa="MO", url="anaf_surse/oug_156_2024.txt",
+             text_citat="b) 10% pentru veniturile din dividende prevăzute la art. 223 alin. (1) lit. a);",
+             lant_acte="OUG 156/2024 art.LXIV pct.15: „La articolul 224 alineatul (4), litera b) se modifică”; înlocuită din 2026 de "
+                       "Legea 141/2025 (COTA_DIVIDENDE_NEREZIDENTI_2026)"))
+#: dividendele plătite nerezidenților distribuite din 2026 — CF art.224 alin.(4) lit.b, forma dată de Legea 141/2025 art.II pct.41
+COTA_DIVIDENDE_NEREZIDENTI_2026 = _c.ancoreaza("verificare_bun_simt.COTA_DIVIDENDE_NEREZIDENTI_2026", Decimal("16"),
+    _c.Temei("CF", lit="b", data_in="2026-01-01", text_citat="b) 16% pentru veniturile din dividende prevăzute la art. 223 alin. (1) lit. a)",
+             lant_acte="Legea 141/2025 art.II pct.41: „se aplică veniturilor din dividende distribuite începând cu data de 1 ianuarie 2026”",
+             **_ART224))
+#: celelalte venituri impozabile ale nerezidenților — CF art.224 alin.(4) lit.d
+COTA_ALTE_VENITURI_NEREZIDENTI = _c.ancoreaza("verificare_bun_simt.COTA_ALTE_VENITURI_NEREZIDENTI", Decimal("16"),
+    _c.Temei("CF", lit="d", data_in="2021-01-01",
+             text_citat="d) 16% în cazul oricăror altor venituri impozabile obținute din România, așa cum sunt enumerate la art. 223 alin. (1)",
+             **_ART224))
+#: aceleași venituri, la persoanele fizice rezidente în UE / într-un stat cu convenție — CF art.224 alin.(4) lit.c^1 (Legea 296/2020)
+COTA_VENITURI_NEREZIDENTI_PF_UE = _c.ancoreaza("verificare_bun_simt.COTA_VENITURI_NEREZIDENTI_PF_UE", Decimal("10"),
+    _c.Temei("CF", lit="lit.c^1", data_in="2021-01-01",   # `lit.` scris: formatul canonic nu are litera cu exponent
+             text_citat="10% în cazul veniturilor impozabile enumerate la art. 223 alin. (1) lit. b)- i) și k)-p) obținute din România de "
+                        "persoane fizice rezidente într-un stat membru al Uniunii Europene",
+             **_ART224))
+#: venituri plătite într-un stat fără instrument juridic de schimb de informații — CF art.224 alin.(4) lit.c
+COTA_VENITURI_FARA_SCHIMB_INFORMATII = _c.ancoreaza("verificare_bun_simt.COTA_VENITURI_FARA_SCHIMB_INFORMATII", Decimal("50"),
+    _c.Temei("CF", lit="c", data_in="2016-01-01",
+             text_citat="c) 50% pentru veniturile prevăzute la art. 223 alin. (1) lit. b)-g)",
+             lant_acte="… dacă veniturile sunt plătite într-un cont dintr-un stat cu care România nu are încheiat un instrument juridic în "
+                       "baza căruia să se realizeze schimbul de informații",
+             **_ART224))
+
+
+def _fr(cota_impozit):
+    """Cota impozitului (în procente, cum o scrie Codul fiscal) ca fracție a bazei — impozit pe venit, nu TVA."""
+    return cota_impozit / 100
+
+
+#: cota pe anul distribuirii dividendelor — numai anii verificați la sursă (pe ceilalți se verifică doar impozit ≤ bază)
+COTA_DIVIDENDE_NEREZIDENTI = {2025: _fr(COTA_DIVIDENDE_NEREZIDENTI_2025), 2026: _fr(COTA_DIVIDENDE_NEREZIDENTI_2026)}
+#: cotele Codului fiscal pentru celelalte venituri (lit.c^1, lit.d, lit.c)
+COTE_ALTE_VENITURI = (_fr(COTA_VENITURI_NEREZIDENTI_PF_UE), _fr(COTA_ALTE_VENITURI_NEREZIDENTI), _fr(COTA_VENITURI_FARA_SCHIMB_INFORMATII))
 #: art.230 alin.(1): convenția se aplică numai dacă e mai favorabilă — cota din Codul fiscal (lit.d) e plafonul
-COTA_MAXIMA_CONVENTIE_ALTE = COTE_ALTE_VENITURI[1]
+COTA_MAXIMA_CONVENTIE_ALTE = _fr(COTA_ALTE_VENITURI_NEREZIDENTI)
 
 #: D207: tipurile de venit care sunt chiar „cf. convenției” (nomenclatorul structurii D207): actul normativ nu poate fi Codul fiscal
 TIP_D207_CONVENTIE = {"22", "23", "24", "25"}
 TIP_D207_DIVIDENDE = {"01", "22"}
 TIP_D207_SCUTIT = {"%02d" % n for n in range(12, 22)}
 
-#: D318: pragul minim al cererii de rambursare, în euro (HG 1/2016 pct.73 alin.(13) și (14))
-_PRAG_D318 = _c.ancoreaza("verificare_bun_simt.PRAG_D318_EUR", {"perioada": Decimal("400"), "an": Decimal("50")},
-    _c.Temei("HG", 1, 2016, art="pct.73", alin="13", data_in="2016-01-13", verificat_la="2026-10-25", de_cine="Code (lotul 13, 638)",
-             nivel_sursa="MO", url="anaf_surse/hg_1_2016_norme_cod_fiscal.html",
+#: D318: pragul minim al cererii de rambursare, în euro — HG 1/2016 pct.73 alin.(13) (perioadă sub un an) și alin.(14) (an / rest de an)
+_PCT73 = dict(art="pct.73", verificat_la="2026-10-25", de_cine="Code (lotul 13, 638)", nivel_sursa="MO",
+              url="anaf_surse/hg_1_2016_norme_cod_fiscal.html")
+PRAG_D318_EUR_PERIOADA = _c.ancoreaza("verificare_bun_simt.PRAG_D318_EUR_PERIOADA", Decimal("400"),
+    _c.Temei("HG", 1, 2016, alin="13", data_in="2016-01-13",
              text_citat="cuantumul TVA pentru care se solicită o rambursare nu poate fi mai mic de 400 euro sau echivalentul acestei sume în "
-                        "moneda națională a statului de rambursare",
-             lant_acte="alin.(14): „În cazul în care cererea de rambursare se referă la o perioadă de rambursare de un an calendaristic sau la "
-                       "perioada rămasă dintr-un an calendaristic, cuantumul TVA nu poate fi mai mic de 50 euro”"))
-PRAG_D318_EUR_PERIOADA = _PRAG_D318["perioada"]
-PRAG_D318_EUR_AN = _PRAG_D318["an"]
+                        "moneda națională a statului de rambursare", **_PCT73))
+PRAG_D318_EUR_AN = _c.ancoreaza("verificare_bun_simt.PRAG_D318_EUR_AN", Decimal("50"),
+    _c.Temei("HG", 1, 2016, alin="14", data_in="2016-01-13",
+             text_citat="perioada rămasă dintr-un an calendaristic, cuantumul TVA nu poate fi mai mic de 50 euro sau echivalentul acestei sume",
+             **_PCT73))
 
 #: Declarațiile rare FĂRĂ cifre de bază și impozit pe care să le compare aplicația — cu motivul (proba automată le cere pe toate).
 FARA_CIFRE = {
