@@ -23792,3 +23792,350 @@ pe fereastră (ar fi acoperit conținutul; Costin a cerut bara de sus, lângă t
 marginea ferestrei (`.fereastra { overflow: hidden }`); ferestrele de lucru sunt cât ecranul, deci nu se vede în uz; căsuța din fereastră se
 redesenează odată cu fereastra (textul tastat nu se păstrează la redesenare). **Gărzi:** `core/test_lot13_ds_cautare.py` (11, cu mutații),
 verificatorul `CAUTARE_FEREASTRA`, e2e `test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste`. DS cap.9 „Căutarea globală” rescris.
+
+## 26.10.2026 — Lotul 13, comanda 13.1: deciziile sesiunii principale (din `l13_brief/DECIZII_DE_SCRIS.md`)
+
+- **Numerotarea deficiențelor noi.** Deficiențele găsite de Code în lotul 13 primesc numere din numerotarea comună, de la 682 (comanda 13.1
+  pct.11: „orice deficiență nouă găsită de tine (cu număr din numerotarea comună, de la 682)”), nu prefixul C. C1–C202 rămân cum sunt.
+  SUPERSEDEAZĂ, pentru numerele noi, prefixul C al deciziei din 10.10.2026 (CLAUDE.md §4). Limita: `core/test_deficiente.py` cere
+  numerotarea simplă continuă — 682–700 trebuie să intre toate (fără goluri).
+- **674 supersedează forma pliată din 158 (zona admin, aprobat de sesiunea principală).** Grupul „Înainte de preluare în iConta.eu” din
+  Control fiscal nu mai e `<details>` pliat: titlul rămâne pe ecran, butonul „Vezi declarațiile de dinainte de preluare (N)” deschide o
+  fereastră nouă (673) cu explicația lunii preluării, „Marchează toate…” și rândurile. TEMEI: comanda 13.1, 674 verbatim („Orice acțiune e un
+  buton, nu text pe care se dă click”); DS cap.2a. Din 158 rămâne: nedesfăcut din oficiu, „Marchează toate” în fereastră. Alternativa
+  respinsă: excepție în detectorul `ACTIUNE_FARA_BUTON`. Limita: dovada lui 121 nu mai are explicația în aceeași captură (e în 157).
+- **533 — cota impozitului pe venitul din lichidare rămâne 10%; conflict cu comanda, decizie în așteptare.** CF art.97 alin.(5), forma consolidată
+  (`anaf_surse/cod_fiscal_227_2015_consolidat.txt:3684`): „Venitul impozabil obținut din lichidarea unei persoane juridice de către
+  acționari/asociați persoane fizice […] se impun cu o cotă de 10%, impozitul fiind final.”; Legea 141/2025 art.II pct.5 modifică numai
+  alin.(7) (dividendele, 16%) — verificat de zona ops și în PDF-ul ANAF al legii. Costin a cerut 16% la 26.10.2026, dar sursa nu-l susține:
+  legea câștigă (CLAUDE.md §3), deci 16% NU s-a aplicat; conflictul e ridicat în intrarea din 26.10.2026 („deciziile lui Costin la lista din
+  26.10”, punctul 2). Alternativa respinsă: 16% fără text. Decizie în așteptare: actul care schimbă alin.(5) (sau confirmarea că se cer
+  dividendele din lichidare, caz în care se citează alin.(7)); atunci se aplică pe dată și se corectează nota și D100/D205.
+- **`sal_alegeri.js` dublat cu `api.alegereButoane` — se trece pe mecanismul comun** (CLAUDE.md §10, fără logică dublată). Zona sal a
+  șters `static/js/ecrane/sal_alegeri.js`; listele scurte ale salarizării trec prin `selectScurt` / `selectDaNu` + `api.alegereButoane`,
+  cererea la salvare prin `cereAlegerile`; suma prin `static/js/ecrane/sal_sume.js` -> `numarRo`. Gardă: `core/test_lot13_sal_alegeri.py`
+  (un singur mecanism; `sal_alegeri.js` pus înapoi -> ROȘU).
+- **C201 — termenele conexiunilor aplicației.** `lock_timeout` 30 s (sub cele 60 s după care nginx închide cererea cu 504 fără mesaj; peste
+  orice așteptare obișnuită), `idle_in_transaction_session_timeout` 10 min (peste cel mai lung apel extern ținut în tranzacție, 300 s), pe
+  pool (`core/db.py` `optiuni_sesiune`, deci și migrările și curățenia e2e); o conexiune pe cerere (Control fiscal + 19 locuri, peticele
+  `infra_2` … `infra_8`); pornirea fără termen (`SET LOCAL lock_timeout = 0`, numai în tranzacția ei); cererea oprită -> 503 cu textul
+  pentru contabil (`db.text_blocaj`). Respinse: `statement_timeout` (ar tăia calcule lungi legitime), `ALTER ROLE` (schimbare pe producție
+  neversionată), idle mai scurt (ar tăia apelurile ANAF). Două conexiuni permise numai la `firma_rezumat.recalculeaza_lot` (blocaj de
+  sesiune, fără tranzacție deschisă). Limite: un PgBouncer în modul tranzacție nu transmite `options` (valorile se mută atunci pe rol);
+  scanarea nu vede apelurile indirecte (funcție ca argument, `getattr`); firele pornite dintr-o cerere încep cu context gol.
+- **UM-ul gol al unei linii noi nu devine „buc”** (decizia sesiunii principale pe întrebarea zonei fact, raportul fact §14), verbatim: „UM
+  gol NU devine «buc» pe ascuns — se refuză, lângă câmp, cu o propoziție («Alege unitatea de măsură a liniei.»), în toate cele patru locuri
+  (linia nouă la emitere, linia facturii primite de mână, articolul nou din borderou, serverul — o singură regulă, server + ecran).
+  Excepție: o linie cu articol din nomenclator își ia UM-ul articolului (e vizibil pe linie). Datele existente: neafectate.” Temei: CLAUDE.md
+  §8 (datele contabilului duse nealterate), DS cap.6 v2.104 / 504. Alternativa respinsă: „buc” spus lângă câmp (ar fi pus pe factura către
+  client o unitate pe care n-a ales-o nimeni). Norma: `core/facturi.py` (`MESAJ_UM_LIPSA`, `um_linie`, `um_lipsa`), aplicată în
+  `facturi_api.um_lipsa_emitere` / `uc_tenants.facturi_emite`, `uc_factura_primita.factura_din_formular`, `uc_tenants.achizitie_neinregistrat`;
+  gărzi `core/test_lot13_fact_um.py`, `core/test_lot13_fact_um_borderou.py`, e2e `test_def_504_um_gol_la_emitere_se_refuza_langa_camp`.
+  Completarea (raportul fact §16): (2) șablonul recurent poartă UM-ul pe linie, aceeași regulă (`facturi_recurente.verificari_drum` la salvare
+  și la cron); șablonul vechi fără UM se oprește la emiterea lunii cu refuzul în clopoțel (C109), nu cu „buc”; date existente:
+  `core/migrare_sablon_um_articol.py` (UM-ul articolului pe liniile cu articol). (1) Corpul API fără cheia `um` rămâne cu implicitul „buc”
+  (contract pentru integrări: magazin / API public), spus în documentația rutei. (3) Produse: „UM (gol = buc)” rămâne, spus pe ecran.
+
+## 26.10.2026 — Lotul 13, comanda 13.1: implementarea — interpretările și deciziile de produs luate de Code (CLAUDE.md §8 pct.5: „pentru o decizie de produs, Code alege între timp varianta cea mai sigură pentru contabil și continuă”), cu temeiul și alternativa respinsă
+
+### Salarizare (zona sal)
+- **671 — ce e informativ și ce blochează.** Salariul se calculează din contract, certificatele medicale și suspendări (acte, nu pontaj),
+  deci statul nu așteaptă confirmarea pontajului; zilele marcate în pontaj (CO, delegație, absențe, învoiri) schimbă numai tichetele, care se
+  calculează după confirmare (D112 cu tichete se refuză neconfirmat — neschimbat). Fraza unică `pontaj.REGULA_PONTAJ`, aceeași în pontaj, în
+  stat și în răspunsul rutei. Temei: HG 1045/2018 art.10 alin.(3) (tichet pe zile efectiv lucrate); Codul muncii art.49 alin.(2). Alternativa
+  respinsă: statul, nota și D112 blocate până la confirmarea pontajului — ar răsturna decizia din 02.08.2026 (blocajul tot-sau-nimic ducea la
+  blocaj circular) și ar opri D112 la firmele fără tichete pentru o confirmare care nu schimbă nicio cifră a lor. Aplicat conform răspunsului lui Costin din 26.10.2026 („Restul celor 19: aplică varianta ta recomandată și raportează-le”), varianta recomandată; de raportat în raportul final.
+- **671 — concediul medical marcat de mână** (fără certificat) se refuză de acum; cel vechi se arată „de verificat” și nu dă tichet (o zi
+  „bolnav” nu e zi efectiv lucrată). Alternativa respinsă: ștergerea automată a marcajelor vechi (ar ascunde o lipsă de certificat).
+- **677 — PDF-ul fluturașului** rămâne pe `compozitie_fluturas` (cu rândul „Zile de concediu medical: N”, cerut de garda
+  `test_compozitie_fluturas`); comanda 677 privește fereastra salariatului. Ambele citesc aceleași câmpuri, fără calcul.
+- **679 — sporul orelor suplimentare sub 75%** se avertizează, nu se refuză: sporul îl stabilește contractul, iar Codul muncii art.123
+  alin.(2) („nu poate fi mai mic de 75% din salariul de bază”) e un minim pe care aplicația îl spune. Suma = ore × tarif orar × (100% + spor),
+  Decimal HALF_UP, fără rotunjire intermediară (alin.(1)). Rândurile vechi își arată sporul dedus din sumă; suma lor nu se rescrie.
+- **675 — „Corectează datele”** ține numai identitatea și contractul (nume, prenume, CNP, tip / nr. / dată CIM); tot ce schimbă cifrele e în
+  „Date de calcul” + Salariu + „+ masă”, cu valorile la vedere („Din ce se calculează”). Temei: comanda 13.1, 675 („Nicio setare care schimbă
+  cifre nu stă ascunsă într-un formular de corectare”).
+- **C174 — tichetele de masă intră în E3_8 / E1_1 / B1_sal2.** Decizia Costin 13.1 pct.4.2 („verifică la sursă … aplică ce scrie acolo și
+  citează temeiul”). Temei: OPANAF 605/2026 anexa 2, E.3: „Rândul 8 «Total venit brut, din care:» - se completează, cu suma reprezentând
+  venitul brut realizat, potrivit legii şi care reprezintă suma totală a veniturilor din salarii şi asimilate salariilor, prevăzute la art. 76
+  alin. (1) - (41) din Codul fiscal”; „Rândul 8.3.1. «Contravaloarea tichetelor de masă, acordate potrivit legii» - se completează cu valoarea
+  tichetelor de masă …”; structura `anaf_surse/structura_D112_0726_070926.txt` rd.129: „E3_8>= E3_61 + E3_59 + E3_60 + E3_69+E3_90”, „E3_60>=
+  E3_10 + …”. `core/d112.py` `brute` cuprinde toate avantajele 8.3 (masă, vacanță în plafon, culturale, creșă). Limita: D112 depuse nu se
+  rescriu (fără rectificative, 13.1 pct.4.6).
+- **C173 — B1_sal2 = E3_8**, INTERPRETARE CU TEMEI confirmată cu temeiul citat (13.1 pct.4.6): OPANAF 605/2026 anexa 2 descrie B1_sal2 cu
+  același text ca A_sal2 („se completează cu venitul brut realizat de persoana fizică în baza contractului individual de muncă …”); structura
+  rd.14b „A_sal2=E3_8-E3_69”; CF art.76 alin.(1) „… inclusiv indemnizațiile pentru incapacitate temporară de muncă”.
+- **670 (b) — excedentul de diurnă e venit salarial**, în brutul impozabil (CAS, CASS, CAM, impozit), nu în netul în bani (se plătește prin
+  decont): CF art.76 alin.(2) lit.k („… pentru partea care depășește plafonul neimpozabil”), art.139 alin.(1) lit.j, art.157 alin.(1) lit.m,
+  art.220^4 alin.(1) lit.h; OPANAF 605/2026 anexa 2, E.3 rd.8.2.1 (E3_59 = E3_52). Nota 641 = 421 nu-l mai cuprinde.
+- **684 — excedentul se leagă de nota decontului prin baza** (`diurna_excedent.inregistrare_id` -> `inregistrari(id)` `ON DELETE CASCADE`):
+  nota se poate șterge pe 6 drumuri, iar baza îl scoate pe oricare. Alternativa respinsă: `sterge_excedent(referinta)` chemat din
+  `jurnal_api.sterge` (ar fi rămas de uitat pe celelalte drumuri și pe orice drum nou). Datele existente: `REPARA_LEGATURA` (orfanele
+  scoase).
+
+### Operațiuni speciale, mijloace fixe, regimuri TVA (zona ops)
+- **670 — plafonul neimpozabil al diurnei** = min(2,5 × indemnizația legală × zile; 3 salarii de bază / zile lucrătoare × zile), extern:
+  2,5 × diurna legală × curs BNR, în limita a 3 salarii de bază. Temei: CF art.76 alin.(2) lit.k pct.(i)–(ii); Ordinul MF 1235/2023 (MO
+  261/29.03.2023): indemnizația de delegare 23 lei/zi de la 01.04.2023. Fiecare cheltuială are cota ei; transportul și cazarea pot lipsi.
+- **518 — luna ieșirii se amortizează** (INTERPRETARE CU TEMEI): motorul comun `d406_active.amortizat_la_data`; OMFP 1802/2014 pct.238
+  alin.(2), pct.243. Alternativa respinsă: fără luna ieșirii — ar schimba motorul folosit și de reevaluare și de D406.
+- **522 — amortizarea pe activ într-un tabel alăturat** (`mf_linii (linie_id, mijloc_fix_id)`), nu coloană pe `inregistrari_linii`:
+  rândurile notelor validate nu se schimbă (`trg_regula_linii_nota`), iar migrarea leagă rândurile vechi fără să le atingă. Alternativa
+  respinsă: coloana + ocolirea triggerului în migrare.
+- **519 — activul schimbat de o notă există în registru numai după validare**, prin triggerele bazei (`trg_mf_nota_status` /
+  `trg_mf_nota_sterge`), pe orice drum de validare; pe F2, migrarea reface MF-001 activ și scoate MF-PLUS (comanda: „De refăcut pe F2”).
+- **524 — orice plată / restituire / regularizare verifică soldul contului pe care îl stinge** (`core/ops_sold.py` `cere_sold`: preluare +
+  note validate; ciorna care creează soldul -> „valideaz-o întâi”). Temei: comanda 13.1 la 524, verbatim; regulă de integritate, fără act
+  normativ explicit. Constituirile nu sting nimic, deci nu se verifică.
+- **504 — PIVOT DS cap.17 v2.79 pct.(2)** („câmpul-cont vine precompletat vizibil”): câmpul din Operațiuni nu mai vine precompletat și nu
+  arată text gri; contul uzual se spune în explicație. Temei: comanda 13.1 la 504 („nu trebuie să fie precompletat nimic care să inducă în
+  eroare”). Petic `ops_ds.json` (DS) + gardă `scan_formulare_operatiuni.motor_fara_precompletare`.
+- **548 — vânzarea în regim de marjă rămâne notă din Operațiuni, nu factură emisă**: emiterea nu are regimul special al marjei (mențiunea,
+  TVA neevidențiat pe factură); s-a pus documentul vânzării și ieșirea din stoc (607 = 371). Factura în regim de marjă ar fi funcție nouă a
+  emiterii (regula 3c). Aplicat conform răspunsului lui Costin din 26.10.2026 („Restul celor 19: aplică varianta ta recomandată și raportează-le”), varianta recomandată; de raportat în raportul final.
+- **510 / 548 / 551 — stocul pe articol cere metoda cantitativ-valorică**: la global-valoric nu se poate lua costul unui bun anume; refuzul e
+  al metodei, cu butonul spre Date firmă (ca factura cu marfă).
+- **532 — reportul creditului de sponsorizare pe 7 ani** din comandă nu e în CF art.25 alin.(4) lit.i de azi (OUG 115/2023: „… scad sumele
+  aferente din impozitul pe profit datorat la nivelul valorii minime dintre …”); nu s-a construit (CLAUDE.md §3: unde nu e temei, nu se
+  construiește).
+- **537 — temeiul exigibilității AIC** e CF art.284 alin.(2) („la data emiterii facturii […] ori în cea de-a 15-a zi a lunii următoare”), nu
+  art.285 (importul), cum scrie comanda; cursul: CF art.290 alin.(2).
+- **544 — calitatea de plătitor TVA a furnizorului la taxarea inversă se cere strict de la ANAF** (CF art.331 alin.(1): „atât furnizorul,
+  cât și beneficiarul să fie înregistrați în scopuri de TVA”); ANAF căzut -> „reîncearcă”, nu presupunere.
+- **601 — nu există cale de achiziție a unui mijloc fix corporal**: s-a ales varianta (a), linia „imobilizare” pe factura primită (varianta
+  recomandată); varianta (b), „Achiziție mijloc fix” în Operațiuni, ar fi funcție nouă (regula 3c). Aplicat conform răspunsului lui Costin din 26.10.2026 („Restul celor 19: aplică varianta ta recomandată și raportează-le”), varianta recomandată; de raportat în raportul final. Contractul C5: `core/mf_registru.catalog()`
+  e o constantă imuabilă citită la import (nu mai deschide fișierul sub conexiune).
+
+- **695 — o sinteză zilnică netrimisă alertează administratorul platformei.** Aplicat conform răspunsului lui Costin din 26.10.2026 („Restul celor 19: aplică varianta ta recomandată și raportează-le”), varianta recomandată; de raportat în raportul final.
+
+### Declarații (zona decl)
+- **660 — formularele înlocuite de Declarația unică (D200, D201, D220, D221, D223, D600) sunt ȘTERSE din cod**, cu actul de abrogare citat
+  (decizia lui Costin 5 din 26.10.2026: „5 da, cu actul de abrogare citat pentru fiecare modul șters”; ramura `lucru/l13-sterge`). Actele
+  (toate prin OUG 128/2024): CF art.120, art.122 alin.(1), art.130 alin.(4), art.107 alin.(2), art.125 alin.(4), art.151 alin.(1) („Abrogat.”).
+  Interpretări / neverificat: la D223 textul abrogat nu numește D223 (legătura e prin art.151 alin.(1) și Declarația unică), iar la D220
+  titlul art.120 nu se poate citi în corpus. SUPERSEDEAZĂ „generatoarele rămân în cod, nechemate” din propunerea inițială. Alternativa respinsă:
+  păstrarea lor ca referință de structură (cod mort, CLAUDE.md „Reparație reală, nu patch”). D603 rămâne (numai la persoane fizice): actul care
+  o aprobă nu e în `anaf_surse/` [NEVERIFICABIL în corpus].
+- **656 — o cotă care nu e a Codului fiscal la actul „Cod fiscal” oprește generarea** (nu avertisment): cifra nu poate pleca la ANAF așa;
+  ieșirea contabilului e actul „Convenție” (atunci se cere numai cota ≤ cea a Codului, CF art.230 alin.(1)). Toleranța: 1 leu + 0,5% din
+  impozit (reținerea se rotunjește pe fiecare plată). Cotele: CF art.224 alin.(4) lit.b (16% dividende din 2026, Legea 141/2025), OUG
+  156/2024 art.LXIV pct.15 (10% în 2025), lit.c (50%), lit.c^1 (10%), lit.d (16%) — 7 constante ancorate în registrul unic, cu citatul.
+- **638 — pragul minim al cererii D318** (400 euro pe o perioadă sub un an, 50 euro anual: HG 1/2016 pct.73 alin.(13)–(14)) oprește
+  generarea; cu cursul BNR lipsă devine avertisment („nu s-a putut verifica”), nu oprire. Comanda numea Directiva 2008/9 art.17: temeiul
+  intern aplicat e HG 1/2016.
+- **595 — înregistrarea OSS se întreabă în Date firmă**, nu în formularul D398 (decizia lui Costin 6 din 26.10.2026; ramura `lucru/l13-oss`):
+  câmpul `firma_profil.inregistrat_oss` (NULL = nedeclarat); fără răspuns, generarea se refuză cu buton spre Date firmă (`core/d398.py`
+  `refuz_oss`, constantele `MOTIV_OSS_*`, `TEMEI_OSS`; migrarea `core/migrare_inregistrat_oss.py`); fără „Da” nu se generează (CF art.315
+  alin.(3)–(4)). `d398-eint` / `d398-moes` rămân în formular (sunt per declarație). SUPERSEDEAZĂ „595 — înregistrarea OSS se întreabă în
+  formularul D398” din propunere. Alternativa respinsă: a o deduce din art.317 (F3 are cod art.317 și n-are OSS).
+- **651 — formularele manuale nu mai cer serverul la deschidere** (nota neutră, generarea la „Generează DXXX”); e2e-ul vechi `test_def_190`
+  (D710) apasă acum „Generează” ca să obțină prima eroare.
+- **653 — „Stat de rezidență” (D207) = lista validatorului** (`Stat_R`, 249 de coduri, Grecia = GR, `D207Validator.jar` v3), cu mecanismul
+  de căutare comun; NU `tari_partener.js` (lista partenerului de factură, coduri VIES, Grecia = EL).
+- **539 — codul de TVA al furnizorului D301 se ține fără prefix**, normalizat o singură dată la scriere; datele vechi prin migrarea
+  `core/migrare_d301_cod_tva_fara_prefix.py`.
+- **C19 — diferențele dinaintea rectificativei extinse la D112** (decizia Costin 13.1 pct.4.5: „D300 și D100 după pilot”); temei OPANAF
+  605/2026 anexa 2 pct.2.4 („Declaraţia rectificativă se completează integral …”).
+
+### Preluarea (zona migr)
+- **663 — cu firma în lucru, pasul din Migrare cabinet se deschide DIRECT pe ea**; lista cabinetului (cu „Am terminat…”) prin „Altă firmă”.
+  Alternativa respinsă: lista cu firma în lucru marcată (cerea din nou firma — exact 668).
+- **662 — „Începe preluarea” e o casetă cu buton principal deasupra grupurilor, care NU se deschide singură** (CLAUDE.md §9); „Continuă
+  preluarea” numai cât preluarea e începută și nu e nicio notă / factură (altfel firmele vechi ar purta îndemnul la nesfârșit).
+- **666 — firma fără balanță -> Solduri parteneri „nu e cazul”**, cu motivul („Firma n-are balanță de deschidere: nu sunt solduri de terți de
+  defalcat”).
+- **588 — bunul sub plafon NU intră în registrul MF** (respins, „e obiect de inventar”); nu se creează automat obiectul de inventar (funcție
+  nouă). Plafonul: CF art.28 alin.(2) lit.b) în forma OUG 8/2026 art.6 pct.7 (5.000 lei), aplicabil din anul fiscal 2026 (art.10 alin.(2));
+  înainte 2.500 lei (HG 276/2013); bunurile 2.500–5.000 intrate până la 31.12.2025 rămân MF (CF art.45 alin.(21^3)).
+- **668 — „contul care nu se potrivește nu intră” aplicat stocului**; la mijloacele fixe confruntarea cu balanța rămâne informativă
+  (amortizarea preluată diferă legitim la reevaluări / metode). Aplicat conform răspunsului lui Costin din 26.10.2026 („Restul celor 19: aplică varianta ta recomandată și raportează-le”), varianta recomandată; de raportat în raportul final.
+- **609 — auditurile păstrate (primul audit, amprentat) NU se rescriu**: sunt dovada datată a ce s-a primit; afișarea le grupează (623), iar o
+  rulare nouă scrie fără minus.
+- **582 — balanța cu același cont de două ori rămâne refuz de fișier**, nu pe rând: două rânduri pe același cont nu se pot respinge pe rând
+  fără să dezechilibreze balanța (UNIQUE(cont)).
+- **252 — suma „TVA” din fișier se ia numai pentru facturile cu TVA la încasare** (la celelalte TVA-ul e deja exigibil); 0 ≤ TVA ≤ restul
+  facturii, altfel fișierul se refuză numit; „de verificat” rămâne până la o reîncărcare cu coloana. Aplică decizia Costin 13.1 pct.4.4.
+  Temei: CF art.282 alin.(8), art.291 alin.(1).
+- **585 — ora normei întregi (8) ancorată în registrul cotelor** (Legea 53/2003 art.112 alin.(1): „… durata normală a timpului de muncă
+  este de 8 ore pe zi și de 40 de ore pe săptămână”); salariul minim: HG 146/2026 art.1 (4.325 lei de la 01.07.2026). Limita: sursa e forma
+  consolidată a Codului muncii (republicată), nu forma din 2003.
+
+### Facturi (zona fact)
+- **546 — antetul facturii cu taxare inversă rămâne cum e** (36.300 / 6.300 — D406 confruntă antetul cu liniile, D300 / D394 citesc liniile);
+  „totalul de plată” (30.000) se derivă la citire și îl folosesc lista, detaliul, scadențarul, potrivirea extrasului, compensarea, fișa
+  partenerului. Temei: CF art.331 alin.(3). Alternativa respinsă: rescrierea antetului (ar fi stricat confruntarea D406 și ar fi cerut
+  validare DUK).
+- **547 — o factură PRIMITĂ cu toate notele ei ciornă se șterge cu notele** (SUPERSEDEAZĂ pentru primite varianta (i) din 29.08, „refuz +
+  storno”, la cererea explicită din 547); rămân refuzate: notă validată, plată legată, NIR, SPV, compensare, stoc.
+- **C199 / 550 — un răspuns VIES fără `stare` nu e niciodată „invalid”** (numai `stare == "invalid"` refuză scutirea); căderea VIES =
+  „indisponibil” = avertisment și reîncercare. Aplică decizia Costin 13.1 pct.4.1. Temei: CF art.294 alin.(2) lit.a („un cod valabil”).
+- **680 — „ciornă” = cronul NU emite**: anunță în clopoțel o dată pe lună și pune „Emite factura lunii” în listă (emiterea pe drumul
+  cronului). Alternativa respinsă: factura cu `status='ciorna'` și număr rezervat (nu există drum de finalizare a ciornei de factură —
+  funcție nouă — și ar lăsa goluri de numerotare). Trimiterea automată în SPV numai la emiterea automată; eșecul ei se anunță în clopoțel.
+  Șabloanele vechi: „automata”, fără SPV (ce făceau). Ziua emiterii nu mai e „1” din oficiu.
+- **640 — „aceeași fișă” pentru client și furnizor = două tabele sincronizate pe CUI** la localitate / județ, iar declarațiile citesc și fișa
+  pereche. Alternativa respinsă: unirea tabelelor (schimbare de schemă și a tuturor citirilor).
+- **634 (c) — confirmarea „altă livrare” rămâne în răspuns, nu în titlul notei**; notele validate își păstrează titlul.
+- **534 — tipul operațiunii e-Transport dedus** (RO -> 30, UE -> 10 / 20, din afara UE -> 40 / 50), vizibil și modificabil;
+  `documenteTransport` nu se completează (codurile `tipDocument` nu sunt la sursă locală) — referința factură / NIR intră în „Referința
+  internă”.
+- **C193 — „nu se aplică”**: retestul FACT1 (25.10.2026, 23:19) dă același `ERRIdentif` pe cumpărătorul nerezident, nicio altă eroare;
+  aplicația îl ocolește documentat din 274b (`extern=DA`).
+
+### Portalul clientului, notificări, Date firmă, SPV, emailuri (zona portal)
+- **Postmark numai pentru emailurile contului** (acces, invitații, confirmări, alerte); dacă Postmark refuză sau nu răspunde, emailul pleacă
+  pe Brevo (rezerva, nescoasă), cu eșecul în jurnal fără token. Emailurile trimise în numele firmei (facturi, amintiri, pachetul lunar) și
+  notificările din clopoțel rămân pe Brevo. Alternativa respinsă: toate emailurile tranzacționale pe Postmark (schimbă drumul facturilor
+  către clienți — atașamente, reply-to — fără să fi fost cerut). **Notificările din clopoțel pe email rămân pe Brevo**
+  (decizia lui Costin 7 din 26.10.2026); trecerea lor pe Postmark ar fi o linie (`postmark=True` în `_pe_email`), neaplicată. Limita [EXTERN]:
+  până la aprobarea contului Postmark, orice destinatar din afara iconta.eu pleacă pe Brevo (268.1, 560).
+- **554 — panoul clientului nu mai are semaforul declarațiilor** (nici „Totul e la zi”); arată numai plățile cu termen neîmplinit, cu suma
+  din balanță sau „suma o calculează contabilul”, nu 0. Temei: decizia 05.10 (restanțele declarațiilor rămân alertă la cabinet); termenele
+  din CF art.326 alin.(1), art.80 alin.(1), art.146 alin.(3), art.168 alin.(3), art.220^6 alin.(1), art.41 alin.(1).
+- **558 — povestea cu abateri sau aprobată pe alte cifre nu se arată clientului** (retrasă). Alternative respinse: afișarea cu avertisment
+  (textul greșit ar rămâne citit) și regenerarea automată (aprobarea e a contabilului).
+- **559 — baza comună a portalului = facturile cu nota validată** (ca balanța); diferența față de balanța 4111 / 401 se spune pe rând.
+  Alternativa respinsă: Cifrele pe toate facturile, cu ciorne (clientul ar vedea ce contabilul n-a verificat).
+- **553 — media cheltuielilor lunare include salariile și se împarte la lunile cu evidență**; rezultatul e „înainte de impozit” (fără grupa
+  69 / 79). Alternativa respinsă: media pe 12 luni sau pe luna calendaristică (prea optimistă la firmele noi).
+- **560 — linkurile folosite / expirate se păstrează 30 de zile** (numai amprenta), ca mesajul să poată spune „Contul e deja activat”.
+  Alternativa respinsă: păstrarea nelimitată.
+- **567 — emailul notificării spune firma și elementul, NU motivul și cifrele** (gărzile C109 / C197 „eticheta, nu conținutul fiscal” rămân).
+  Alternativa respinsă: textul întreg din clopoțel în email.
+- **566 — bifa „O solicitare nouă de la un client” repusă și la conturile care și-au salvat bifele cât implicitul era greșit** (alegerea nu se
+  poate deosebi de implicit). Alternativa respinsă: a lăsa bifele salvate. `factura_primita`, `asistent_activat` rămân nebifate din oficiu
+  (informative). Aplicat conform răspunsului lui Costin din 26.10.2026 („Restul celor 19: aplică varianta ta recomandată și raportează-le”), varianta recomandată; de raportat în raportul final.
+- **565 / 568 — sinteza pleacă și într-o seară fără activitate nouă dacă ceva așteaptă validarea sau sesizări fără răspuns**; e bifată din
+  oficiu la administrator. Alternativa respinsă: „zi goală” numai după activitate (5 note de pe 19.10 n-ar fi fost amintite).
+- **541 — data notificării opțiunii TVA la încasare se cere numai când contează**: un „de la” în perioada fiscală în curs se refuză fără
+  „Data notificării”, cu data corectă (CF art.282 alin.(3^1) lit.a: „… începând cu prima zi a perioadei fiscale următoare celei în care
+  persoana impozabilă și-a exercitat opțiunea …”; lit.b la înregistrare). Alternative respinse: refuzul oricărui „de la” ≤ azi (ar bloca
+  firmele preluate cu opțiune veche) și propunerea automată a lui 01.01.2027 în câmp (aplicația nu vede notificarea). Registrul ANAF
+  (RTVAI) bate data notificării. Perioada F2 din 22.10.2026 nu se schimbă automat (comanda: „Pe F2 rămâne ca date de test”); ecranul o
+  arată cu autorul și avertismentul.
+- **C71.1 — la PFA câmpurile numai-bilanț se ascund, iar nr. registrului și județul rămân fără `*`** (PFA are număr la Registrul
+  Comerțului); temei Legea 82/1991 art.28 alin.(1) (citat în cod, nerecitit azi la MO). Alternativa respinsă: ascunderea și a nr.
+  registrului.
+- **661 — „neverificat” e avertisment (galben), fără buton spre Conectare SPV** (nu e nimic de reparat acolo; citirea automată verifică de
+  două ori pe oră). Alternativa respinsă: „info” (ar părea că totul e în regulă).
+
+### Panou Admin, cabinet, suport, tipare (zona admin)
+- **562 — prezentarea nu se mai deschide singură pentru NICIUN rol** (CLAUDE.md §9), nu doar pentru asistent; „Înainte de a începe” (12b)
+  rămâne.
+- **578 — funcțiile găsite stricate ies de pe pagina publică până la retestul lui Costin** (sinteza zilnică, triajul AI, analiza AI), plus
+  cele ale platformei (înregistrarea, suspendarea cabinetelor); din dubluri rămân F005 / F115 / F204.
+- **576 — pragurile analizei AI a tiparelor**: 5 respingeri ale omului, „sistematic” de la 3 cazuri — alese prudent, nu sunt valori
+  fiscale.
+- **649 — vizitele dintr-o sesiune internă „nu se numără”** (nu „separat”): nicio coloană nouă și niciun semnal trimis serverului; constanta
+  `NUMARARE_FARA_INTERN_DE_LA` se potrivește la publicare.
+- **648 — emailul răspunsului la sesizare pleacă oricând pe canalul omului** (nu numai „dacă nu e conectat”: prezența nu se ține; mai sigur
+  să nu se piardă răspunsul). Aplicat conform răspunsului lui Costin din 26.10.2026 („Restul celor 19: aplică varianta ta recomandată și raportează-le”), varianta recomandată; de raportat în raportul final.
+- **645 / 646** — aplică decizia Costin + arhitect din 24.10 (anexa comenzii, verbatim): motivul suspendării din lista fixă, nota internă
+  nearătată, fără linie de contact, email către administratorul cabinetului, jurnalul; anunțul cere destinatari expliciți („Toate
+  cabinetele” bifat), fără bifă — refuz, confirmarea numărului de cabinete. Parola se verifică înaintea suspendării (motivul nu se arată cui
+  nu știe parola).
+- **Dovada pe copie pentru ecranele Panoului Admin (643, 644, 645, 646, 649, C101) și pentru pagina publică (578, 608)**: s-a făcut pe copie,
+  cu superadmin pe copie (captura există); NU se extinde decizia de la 642 la e2e. Excepția din `core/test_deficiente.py` (captura pe copie nu
+  se cere) rămâne numai pentru 642. SUPERSEDEAZĂ propunerea „dovada pe copie = e2e” pentru celelalte numere.
+
+### Design System, mecanismele comune, căutarea (zona ds)
+- **655 — punctul urmat de exact trei cifre** („4.975”, „1.500”) scris de om = separator de mii (regula românească cerută). Prețul: cine scrie
+  un curs sau o cantitate cu punct zecimal și trei zecimale primește mii — câmpul arată ce a înțeles; valorile puse de aplicație (cursul BNR,
+  cantitățile din server) nu sunt afectate. Alternativa respinsă: „1.500” = 1,5 (exact defectul din producție).
+- **655 — importurile pe aceeași regulă** (`numere.numar`): „1,234” într-un fișier devine 1,234 (era 1234); previzualizarea arată cifra
+  înainte de salvare. Alternativa respinsă: două reguli (ecran / fișier).
+- **673 — TOATE ferestrele deschise peste alta devin cât ecranul** (`fer-lucru`), inclusiv cele cerute `larg`; confirmarea care vrea
+  fereastră mică cere `{lat:"mic"}`. Alternativa respinsă: listă de ecrane „de lucru”.
+- **675 vs DS v2.64 — ascunderea acțiunilor refuzate ROLULUI rămâne** (decizia Costin 04.10.2026); numai acțiunile care nu se aplică STĂRII
+  stau inactive cu motivul.
+- **676 — lista scurtă e marcată explicit** (`data-butoane=""`), nu ghicită la rulare (o listă de firme cu 3 firme nu devine butoane).
+- **575 — drumul din antet primește nodul curent** (`.fir-acum`), iar titlul din corp rămâne (pe ferestrele cu părinți apare de două ori).
+  Alternativa respinsă: scoaterea titlului din corp (atinge toate ecranele). Răspunde propunerii zonei admin (decizia 2).
+- **681 — căutarea deschide PESTE ce e deschis** (nu închide nimic, ce s-a tastat rămâne); fără firmă în lucru, rezultatele de firmă cer
+  firma; ruta sub `/eu/` (fără traseu nou în `TRASEE.md`). Excepția de la „fără funcții noi”: decizia Costin 25.10 (anexa, 681).
+- **504 — PIVOT DS cap.17 v2.79 pct.(2)/(4)** (vezi zona ops).
+
+### Ecranele din `firme.js` (zona firme2)
+- **618 — notele Z validate păstrează explicația cu data ISO** (evidență; corectura = stornare); migrarea scrie numai ciornele. Alternativa
+  respinsă: UPDATE pe note validate (interzis de `trg_regula_nota`; OMFP 1802/2014 pct.69).
+- **606 — nota 171 de pe F1 (validată, „neimputabila”, scrisă de scriptul de date de test din lotul 10) nu s-a atins**: rămâne validată
+  (decizia lui Costin 4 din 26.10.2026). Alternativa respinsă: storno + notă nouă (firmă de test). Decontarea prin casa în valută: lista de
+  trezorerie 5124 / 5121 / 5314 confirmată (decizia lui Costin 8).
+- **610 — „De validat” (C182) neschimbat**: întrebarea care repetă explicația e design aprobat; în Registrul jurnal „Validează” pe nota fără
+  document e inactiv din lotul 10, acum cu motivul. Alternativa respinsă: schimbarea lui `validat.js` fără cerere. (Dubla explicație e designul aprobat; aplicat conform răspunsului lui Costin din 26.10.2026, de raportat.)
+- **607 — „Alege facturile” pe comisionul băncii stă INACTIV cu motiv**, nu ascuns (675).
+- **589 — adăugarea manuală în planul de conturi numai pentru analitice sub sintetic legal** (`plan_legal.refuz_adaugare_manuala`);
+  curățenia lui 731 de pe F6 la producție: scriptul `scripts/lot13_firme2_curata_731.py` (`--proba`, apoi `--scrie --productie`), numai cu
+  acordul lui Costin (regimul pilot).
+
+### Date existente, neafectate sau cu migrare (din `DECIZII_DE_SCRIS.md`)
+- **680** — pe firmele de test neafectate (niciun șablon recurent pe copii, SELECT 0 rânduri); pe producție migrările
+  `migrare_sablon_recurent_emitere` + `migrare_sablon_um_articol`.
+- **564** — neafectate: reparația schimbă ecranul cheilor API și forma momentelor; rândurile cheilor (`api_chei`, necopiate pe copie fiind
+  secrete) rămân neatinse.
+- **507 / 508 / 548** — neafectate pe firmele de test (0 note cu clasa 8 / 891 și 0 vânzări în regim de marjă pe copii); pe producție migrările
+  `migrare_extrabilant` / `migrare_vanzari_stoc`.
+
+## 26–27.10.2026 — Lotul 13, 13.1: 536 la NIR, varianta (a) — centrul de cost pe articolul de stoc
+
+**Decizie (Costin, 26.10.2026, punctul 1: „da: varianta (a), după git diff și testele rulate”).** Centrul de cost stă pe articolul de stoc
+(`articole.centru_cost_id`); ieșirea din stoc îl moștenește (`stocuri_cv_api.scrie_rand_stoc`, `centre_cost_api.centrul_articolului`), numai pe
+rândul de cheltuială / venit. Temei: comanda 13.1 la 536; decizia de produs a lui Costin. Alternativa respinsă: centrul ales la fiecare NIR
+(repetitiv, uită-se pe rânduri). Date existente: neafectate. Limita: intrarea în stoc (cont de clasa 3) nu poartă centru. Comit `d473873f`
+(`core/test_lot13_comp_536.py`).
+
+## 26–27.10.2026 — Lotul 13, 13.1: valul 6 — 683, 696 și codul mort scos
+
+- **683 — Casă › Avans spre decontare**: salariatul se alege din evidență, 542 pe persoană; punct unic `core/salariat_decont.py`, folosit și de
+  Operațiuni; stornarea copiază partenerul pe rândul inversat. Date vechi neschimbate.
+- **696 — trimiterea în SPV continuă cu avertisment** când dreptul pe CUI e „neverificat” / „neconfirmat”; refuzul „fără drept” rămâne.
+  Alternativa respinsă: refuzul și la „neverificat” (ar bloca firmele noi, la care dreptul încă nu s-a citit).
+- **Cod mort scos** (CLAUDE.md „Reparație reală, nu patch”): `repo_facturi.pentru_cashflow`, motoarele `avans_*` și `reclasificare_bilant` din
+  `casa.py` fără apelant, cheia `VERDICT_POZITIV.firme_toate` / `portal`. `verdictDinStare` rămâne — punctul unic al verdictului, păzit structural.
+
+## 26–27.10.2026 — Lotul 13, 13.1: contractul C5 (apel extern sub conexiune)
+
+`core/mf_registru.catalog()` e acum o constantă imuabilă citită la import: nu mai deschide fișierul sub conexiune (601). Clichetul
+contractului C5 rămâne 0. Alternativa respinsă: cache la prima cerere (tot citire de fișier într-o cerere).
+
+## 26–27.10.2026 — Lotul 13, 13.1: clichete urcate numai cu elementele numite, și coborâte
+
+- `core/straturi.py` rute 525 -> 526 (`PUT …/centre-cost/alocari`, 536).
+- `test_e2a_univers` MIGRARE_UNICA 161 -> 162 (`migrare_inregistrat_oss`).
+- `test_comparatii_clasificate` BASELINE 13 -> 10 (coboară).
+- 13 aserțiuni pe text noi rescrise pe structură; pinurile din `clichet_garzi_pe_text.json` NU s-au urcat.
+- Garda structurală pe sursa JS a căutării scoasă: o ține verificatorul `CAUTARE_FEREASTRA` (fără dublă gardă).
+
+## 26–27.10.2026 — Lotul 13, 13.1: plasa e2e a lotului
+
+La prima măsurare: 1117 verzi din 1129; 12 picături închise. Trei defecte reale: refuzul spre ecran din Operațiuni fără buton vizibil (701),
+caseta „NU s-a salvat” ajunsă după bara fixă (702, `api._randButon`), id-ul listei de rezultate al căutării. Nouă teste puse la zi cu UI-ul lotului
+(673 / 674 / 675 / 515), fără nicio slăbire (aserțiunea lui 310 restabilită). Regula 3d: niciun test slăbit, ocolit sau șters.
+
+## 26–27.10.2026 — Lotul 13, 13.1: uneltele vizuale (axe, profil telefon, interacțiune)
+
+- **703** — tabelul de note pe telefon ca rânduri-card (ținte >= 24 px, fără derulare laterală, DS cap.9).
+- Contrast pe rândul zebră cu albastrul închis #1a5a94 (regula existentă DS cap.15, nicio regulă nouă).
+- `mig-eq` cu înălțime de țintă.
+- Unealta `nav_ecrane._import_strat` apasă butonul stratului; `_mobil` numără title-only pe `textContent`.
+
+## 26–27.10.2026 — Lotul 13, 13.1: dovezile pe copie — unealta `pasi.py` și „imposibile azi”
+
+- `pasi.py` primește `{azi}` în „egal”, `posibila_pana` și `imposibila_motiv` (stare „imposibila_azi”, cu motivul scris).
+- **Imposibile azi:** 538 / 591 (termenul D301 26.10 a trecut), 593 / C43 / C76 (de la 01.11), 646 vechi (anunțul vechi era confirmat pe producție),
+  C110 (F3 n-are serie de facturare). 545–547 și 633 cer ANAF real (`--anaf-real`).
+- Cinci migrări ale lotului (`patron_email`, `portal`, `termen_informative_decembrie`, `termene_anuale`, `unic_numar_factura`) ies cu `sys.exit`
+  înainte de înregistrare: după rulare se marchează cu `core.migrari_registru marcheaza <fișier> <motiv>` (valabil și pe producție).
+
+## 27.10.2026 — Lotul 13, 13.1: Decizii / acțiuni cerute lui Costin la publicare (regimul pilot)
+
+Tot restul „[DECIZIE]”-urilor din propunere sunt închise (răspunsurile din 26.10.2026 sau varianta recomandată, raportate). Rămân cu adevărat
+ale lui Costin, la publicare (regimul pilot, CLAUDE.md pct.3; după backup și confirmarea că cabinetul nu lucrează):
+1. Rularea scriptului de citire C120 (`scripts/lot13_migr_c120_facturi_altei_firme.py`) pe producție — citire în datele cabinetului real.
+2. Scriptul 731 pe F6 (`scripts/lot13_firme2_curata_731.py`, `--proba`, apoi `--scrie --productie`) și migrarea
+   `core/migrare_explicatie_raport_z.py` (atinge și ciornele Z ale cabinetului real, dacă are) — după backup.
+3. Curățenia dublurii LIC-73 de pe F1 (691) și a datelor de test de pe producție.
+4. Pașii Meta pentru WhatsApp (647): verificarea firmei, numele afișat retrimis la aprobare, apoi `scripts/whatsapp_meta.py inregistreaza <PIN>`.
+5. Punerea tokenului Postmark în `api_keys.env`.
+6. 533 — actul pentru 16% (CF art.97 alin.(5) spune 10%; vezi intrarea din 26.10.2026).
+Rămân deschise din loturile anterioare, atinse fără schimbare: C104, C161, C86, C70.

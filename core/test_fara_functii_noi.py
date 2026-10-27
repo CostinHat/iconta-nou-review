@@ -67,6 +67,9 @@ EXCEPTII = {
     # [lotul 13, 536] centrul de cost pe salariați, mijloace fixe și (decizia Costin 26.10.2026, varianta (a)) articolele de stoc —
     # comanda 13.1 la 536: „Centrul se poate pune pe liniile facturilor, NIR-urilor, salariilor și pe mijloacele fixe”
     "PUT /tenants/{tenant_id}/centre-cost/alocari": "536",
+    # [lotul 13, 681] rândul din registru al căutării funcțiilor (ruta GET /eu/cautare are deja excepția 681)
+    "F268": "681",
+    "LIVE F268": "681",
 }
 #: sha256 al conținutului referinței (fără liniile de comentariu); se schimbă numai împreună cu referința (vezi docstring)
 #: [26.10.2026, lotul 13] referința s-a schimbat numai prin scoaterea din [live] a celor cinci formulare înlocuite de Declarația unică

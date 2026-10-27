@@ -42,7 +42,8 @@ EXPLICIT = {"F061": "Contabilitate", "F016": "Cabinet și portal client", "F143"
     "F262": "Contabilitate",
     # [lotul 10] cuvintele-cheie le puneau dupa SURSA, nu dupa ce face: regimul TVA la incasare cadea in „Facturare” (sursa numeste
     # `contare_facturi`), balanta de deschidere in „Fiscalitate” (sursa numeste `d101`)
-    "F265": "Fiscalitate", "F267": "Contabilitate"}
+    "F265": "Fiscalitate", "F267": "Contabilitate",
+    "F268": "Cabinet și portal client"}   # [lotul 13, 681] căutarea funcțiilor (Ctrl+K)
 # cross-check-urile fiscale -> Control fiscal (NU Fiscalitate, desi numele incepe cu declaratia)
 CROSS = {"F162", "F163", "F169", "F180", "F184"}
 # [lotul 13, deficiența 578 — „Pagina Funcționalități promite public funcții găsite stricate (sinteza zilnică, triaj AI); listează funcții de
