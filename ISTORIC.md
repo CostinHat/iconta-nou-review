@@ -3130,3 +3130,7 @@ note ca rânduri-card), navigarea uneltei pe Import date; `text_ecran` 179 de ec
 → 0, cu 7 „imposibile azi” numite (538 / 591, 593 / C43 / C76, 646 vechi, C110); un defect de UI nou prins de ele (câmpul CUI + „Verifică” fără wrap rupea mesajul de eroare) și reparat.
 Registrele: DEFICIENTE 249 rânduri (155 rezolvată / 67 parțial / 17 neverificat / 5 nerezolvată / 5 nu se aplică) + numerele noi 682–703; DECIZII; GARZI; CONFORMITATE (d223 șters);
 FUNCTIONALITATI (F268 căutarea funcțiilor, F248 corectat). **Deschis:** 533 (cota 10% rămâne; Costin cere 16%, fără act în corpus). Poarta și publicarea: urmează, cu confirmarea lui Costin.
+
+### 27.10.2026 — Lotul 13, după poarta 2: referința F1–F5, 533, cheia Anthropic
+Poarta 2 ROȘIE numai pe cifre; 74 de valori explicate (retest 42, D406/486 25, D394/C19 6, D112/C127 1), fiecare cu mutație; referința rescrisă (amprenta `2dd3e6d3…`). 533 închis de Costin (10%).
+Producția repornită la 11:52 cu cheia Anthropic nouă, după backup; AI verificat. Detalii în DECIZII 27.10.2026.

@@ -82,28 +82,28 @@
     }
    },
    "10/2026": {
-    "amprenta": "6c4e7686b53b93ffde84a82220b0041573024a02ca4838f293631b6a751e2c2d",
+    "amprenta": "05fa3c43333ef9ace8104331c34bc1539c618840aef3d0573c1f14e335c09746",
     "randuri": {
      "R10_1 (rândul 10, coloana Valoare)": "899",
      "R10_2 (rândul 10, coloana TVA)": "99",
-     "R17_1 (rândul 19, coloana Valoare)": "9052",
-     "R17_2 (rândul 19, coloana TVA)": "1286",
-     "R22_1 (rândul 24, coloana Valoare)": "500",
-     "R22_2 (rândul 24, coloana TVA)": "105",
-     "R23_1 (rândul 25, coloana Valoare)": "200",
-     "R23_2 (rândul 25, coloana TVA)": "22",
-     "R27_1 (rândul 30, coloana Valoare)": "700",
-     "R27_2 (rândul 30, coloana TVA)": "127",
-     "R28_2 (rândul 31, coloana TVA)": "127",
+     "R17_1 (rândul 19, coloana Valoare)": "9820",
+     "R17_2 (rândul 19, coloana TVA)": "1342",
+     "R22_1 (rândul 24, coloana Valoare)": "2981",
+     "R22_2 (rândul 24, coloana TVA)": "626",
+     "R23_1 (rândul 25, coloana Valoare)": "441",
+     "R23_2 (rândul 25, coloana TVA)": "48",
+     "R27_1 (rândul 30, coloana Valoare)": "3422",
+     "R27_2 (rândul 30, coloana TVA)": "674",
+     "R28_2 (rândul 31, coloana TVA)": "674",
      "R31_2 (rândul 34, coloana TVA)": "-43",
-     "R32_2 (rândul 35, coloana TVA)": "84",
-     "R34_2 (rândul 37, coloana TVA)": "1202",
-     "R37_2 (rândul 40, coloana TVA)": "1202",
-     "R3_1 (rândul 3, coloana Valoare)": "2500",
-     "R3_1_1 (rândul 3.1, coloana Valoare)": "2500",
-     "R41_2 (rândul 44, coloana TVA)": "1202",
-     "R9_1 (rândul 9, coloana Valoare)": "5653",
-     "R9_2 (rândul 9, coloana TVA)": "1187"
+     "R32_2 (rândul 35, coloana TVA)": "631",
+     "R34_2 (rândul 37, coloana TVA)": "711",
+     "R37_2 (rândul 40, coloana TVA)": "711",
+     "R3_1 (rândul 3, coloana Valoare)": "3000",
+     "R3_1_1 (rândul 3.1, coloana Valoare)": "3000",
+     "R41_2 (rândul 44, coloana TVA)": "711",
+     "R9_1 (rândul 9, coloana Valoare)": "5921",
+     "R9_2 (rândul 9, coloana TVA)": "1243"
     }
    }
   },
@@ -124,33 +124,45 @@
     ]
    },
    "10/2026": {
-    "amprenta": "ab85797e0ef7bca347fe41e4dc6c9335c8d1bcdb46ba8a26daee9b68699c7242",
+    "amprenta": "bf124737ea8db97e15e8ac026c3c4692bd2cb90540ccd27332b99bd62cc079e6",
     "antet": {
      "op_efectuate": "1",
      "sistemTVA": "0",
      "tip_D394": "L",
-     "totalPlata_A": "7056"
+     "totalPlata_A": "10045"
     },
     "rezumat1": [
-     " tip_partener=\"1\" cota=\"11\" bazaA=\"200\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"899\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"1\" tvaA=\"22\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"99\"/",
-     " tip_partener=\"1\" cota=\"21\" bazaA=\"500\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5253\" facturiA=\"1\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"7\" tvaA=\"105\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1103\"/",
+     " tip_partener=\"1\" cota=\"11\" bazaA=\"441\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"899\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"1\" tvaA=\"48\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"99\"/",
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"2981\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5521\" facturiA=\"4\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"8\" tvaA=\"626\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1159\"/",
      " tip_partener=\"2\" cota=\"0\" bazaLS=\"0\" bazaN=\"100\" document_N=\"1\" facturiLS=\"0\" facturiN=\"1\"",
-     " tip_partener=\"2\" cota=\"21\" bazaL=\"200\" facturiL=\"1\" tvaL=\"42\"/",
-     " tip_partener=\"3\" cota=\"0\" bazaLS=\"2500\" facturiLS=\"3\"/"
+     " tip_partener=\"2\" cota=\"21\" bazaL=\"200\" facturiL=\"1\" tvaL=\"42\"/"
     ],
     "rezumat2": [
      " cota=\"5\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
      " cota=\"9\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
-     " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"200\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"899\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"22\" tvaAI=\"0\" tvaL=\"99\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
+     " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"441\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"899\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"48\" tvaAI=\"0\" tvaL=\"99\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
      " cota=\"19\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
      " cota=\"20\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
-     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"500\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5453\" bazaL_PF=\"0\" baza_incasari_i1=\"200\" baza_incasari_i2=\"0\" nrFacturiA=\"1\" nrFacturiAI=\"0\" nrFacturiL=\"8\" tvaA=\"105\" tvaAI=\"0\" tvaL=\"1145\" tvaL_PF=\"0\" tva_incasari_i1=\"42\" tva_incasari_i2=\"0\"/"
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"2981\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5721\" bazaL_PF=\"0\" baza_incasari_i1=\"200\" baza_incasari_i2=\"0\" nrFacturiA=\"4\" nrFacturiAI=\"0\" nrFacturiL=\"9\" tvaA=\"626\" tvaAI=\"0\" tvaL=\"1201\" tvaL_PF=\"0\" tva_incasari_i1=\"42\" tva_incasari_i2=\"0\"/"
     ]
    }
   },
   "D406": {
    "09/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "6",
+     "TotalCredit": "25106.00",
+     "TotalDebit": "25106.00"
+    },
+    "amprenta": "c9306c656a546f6f8ebfb0c431b4f0721c939050dc7e6adcc998f27f53c32d05",
+    "facturi_emise": 1,
+    "facturi_primite": 1,
+    "jurnale": [
+     "BANCA",
+     "FACTURI",
+     "SALARII",
+     "STOCURI"
+    ]
    },
    "10/2026": {
     "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Vasile Test (facturile BA-3). Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
@@ -471,13 +483,13 @@
      "prec_d": 1000.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
-     "rul_c": 302.38,
+     "rul_c": 377.62,
      "rul_d": 1150.0,
      "sf_c": 0.0,
-     "sf_d": 6347.62,
+     "sf_d": 6272.38,
      "si_c": 0.0,
      "si_d": 5000.0,
-     "tot_c": 802.38,
+     "tot_c": 877.62,
      "tot_d": 7150.0
     },
     {
@@ -520,13 +532,13 @@
      "prel_c": 0.0,
      "prel_d": 0.0,
      "rul_c": 7422.0,
-     "rul_d": 8922.0,
+     "rul_d": 9890.24,
      "sf_c": 0.0,
-     "sf_d": 3500.0,
+     "sf_d": 4468.24,
      "si_c": 0.0,
      "si_d": 2000.0,
      "tot_c": 8632.0,
-     "tot_d": 12132.0
+     "tot_d": 13100.24
     },
     {
      "cont": "421",
@@ -615,13 +627,13 @@
      "prec_d": 0.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
-     "rul_c": 1318.14,
+     "rul_c": 1486.18,
      "rul_d": 0.0,
-     "sf_c": 1528.14,
+     "sf_c": 1696.18,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 1528.14,
+     "tot_c": 1696.18,
      "tot_d": 0.0
     },
     {
@@ -712,13 +724,13 @@
      "prel_c": 0.0,
      "prel_d": 0.0,
      "rul_c": 0.0,
-     "rul_d": 302.38,
+     "rul_d": 377.62,
      "sf_c": 0.0,
-     "sf_d": 802.38,
+     "sf_d": 877.62,
      "si_c": 0.0,
      "si_d": 0.0,
      "tot_c": 0.0,
-     "tot_d": 802.38
+     "tot_d": 877.62
     },
     {
      "cont": "627",
@@ -807,13 +819,13 @@
      "prec_d": 0.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
-     "rul_c": 6552.0,
+     "rul_c": 7352.2,
      "rul_d": 52.9,
-     "sf_c": 7499.1,
+     "sf_c": 8299.3,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 7552.0,
+     "tot_c": 8352.2,
      "tot_d": 52.9
     }
    ]
@@ -907,16 +919,15 @@
     ]
    },
    "T4/2026": {
-    "amprenta": "2f44f070bc68d10dda3f1a9a958eb91a22fae4954624b74ec06f58867d9c3fbd",
+    "amprenta": "9bd478fc345872533d3e61ea9f7f212f39be0241683066d59783b5ecfcf48870",
     "antet": {
      "op_efectuate": "1",
      "sistemTVA": "1",
      "tip_D394": "T",
-     "totalPlata_A": "61002"
+     "totalPlata_A": "61001"
     },
     "rezumat1": [
-     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"60000\" bazaL=\"1000\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"2\" facturiL=\"1\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"12600\" tvaL=\"210\"",
-     " tip_partener=\"3\" cota=\"0\" bazaLS=\"10000\" facturiLS=\"1\"/"
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"60000\" bazaL=\"1000\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"2\" facturiL=\"1\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"12600\" tvaL=\"210\""
     ],
     "rezumat2": [
      " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"60000\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"1000\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"2\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"12600\" tvaAI=\"0\" tvaL=\"210\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
@@ -925,13 +936,46 @@
   },
   "D406": {
    "T1/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L.. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "3",
+     "TotalCredit": "600.00",
+     "TotalDebit": "600.00"
+    },
+    "amprenta": "15da24cf220a039e10004457ae5e1b937c8e039264bc17f4dc8633bf51a7af6d",
+    "facturi_emise": 0,
+    "facturi_primite": 0,
+    "jurnale": [
+     "AMORTIZARE"
+    ]
    },
    "T2/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L.. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "3",
+     "TotalCredit": "600.00",
+     "TotalDebit": "600.00"
+    },
+    "amprenta": "c6172834e6298477ff29c190f96b6bd789a02bde18574b4a58b3d6ff4c901c43",
+    "facturi_emise": 0,
+    "facturi_primite": 0,
+    "jurnale": [
+     "AMORTIZARE"
+    ]
    },
    "T3/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L.. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "7",
+     "TotalCredit": "8250.00",
+     "TotalDebit": "8250.00"
+    },
+    "amprenta": "073fe6fd503a9f97ce0540aca35272e11e066505ff0c772833a3a3ffb4526c40",
+    "facturi_emise": 1,
+    "facturi_primite": 0,
+    "jurnale": [
+     "AMORTIZARE",
+     "CASA",
+     "DIVERSE",
+     "FACTURI"
+    ]
    },
    "T4/2026": {
     "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L. (facturile F2T3). Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
@@ -2178,7 +2222,17 @@
   "D394": "nu se aplică: neplătitor de TVA",
   "D406": {
    "T2/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Furnizor test UE. Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+    "GeneralLedgerEntries": {
+     "NumberOfEntries": "2",
+     "TotalCredit": "9075.00",
+     "TotalDebit": "9075.00"
+    },
+    "amprenta": "6654c9eead2cf7ed7e0eb354b4890be84cfd526e8f9873cf01970b36b4eae9e6",
+    "facturi_emise": 0,
+    "facturi_primite": 2,
+    "jurnale": [
+     "FACTURI"
+    ]
    },
    "T3/2026": {
     "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). Furnizor test UE (facturile IE-100). Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
@@ -2472,69 +2526,6 @@
       "A_datorat": "248",
       "A_deductibil": "0",
       "A_plata": "248",
-      "A_scutit": "0"
-     },
-     {
-      "A_codBugetar": "5503XXXXXX",
-      "A_codOblig": "458",
-      "A_datorat": "0",
-      "A_deductibil": "0",
-      "A_plata": "0",
-      "A_scutit": "0"
-     },
-     {
-      "A_codBugetar": "5503XXXXXX",
-      "A_codOblig": "459",
-      "A_datorat": "0",
-      "A_deductibil": "0",
-      "A_plata": "0",
-      "A_scutit": "0"
-     }
-    ]
-   },
-   "10/2026": {
-    "amprenta": "f2cdce07d8291ff2d99809e39afd244514366b8e5de4e5f40fba7978f687aa4a",
-    "angajatorB": [
-     {
-      "B_brutSalarii": "11860",
-      "B_cnp": "2",
-      "B_pensie": "2",
-      "B_sal": "2",
-      "B_sanatate": "2"
-     }
-    ],
-    "asigurati": 2,
-    "obligatii (angajatorA)": [
-     {
-      "A_codBugetar": "5503XXXXXX",
-      "A_codOblig": "602",
-      "A_datorat": "723",
-      "A_deductibil": "0",
-      "A_plata": "723",
-      "A_scutit": "0"
-     },
-     {
-      "A_codBugetar": "5503XXXXXX",
-      "A_codOblig": "412",
-      "A_datorat": "3031",
-      "A_deductibil": "0",
-      "A_plata": "3031",
-      "A_scutit": "0"
-     },
-     {
-      "A_codBugetar": "5503XXXXXX",
-      "A_codOblig": "432",
-      "A_datorat": "1213",
-      "A_deductibil": "0",
-      "A_plata": "1213",
-      "A_scutit": "0"
-     },
-     {
-      "A_codBugetar": "20470300XX",
-      "A_codOblig": "480",
-      "A_datorat": "267",
-      "A_deductibil": "0",
-      "A_plata": "267",
       "A_scutit": "0"
      },
      {

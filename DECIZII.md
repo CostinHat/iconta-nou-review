@@ -24157,3 +24157,32 @@ Poarta 1 (`1a8dc937`, 3 h 30) a ieșit ROȘIE pe trei părți: cifrele F1–F5, 
   datorate fixează trimestrul și anul), fără dată scrisă.
 - **Clichete, cu elementele numite:** `core/test_refuzuri.py` `core/d398.py` 0 → 1 (intrat în domeniu prin `TEMEI_OSS`; refuzul numărat e de FORMĂ) și norma 77 din CONFORMITATE
   190 → 191 / 24 → 25 fișiere; adnotările `*ce face:*` ale patru pași din `TRASEE_VERIFICARI.md` rescrise după instrument (`_d398` citește acum `firma_profil`; alocările de centre).
+
+## 27.10.2026 — Lotul 13, poarta 2: referința F1–F5 rescrisă după regula 7.3 pct.4; 533 închis; cheia Anthropic încărcată în producție
+
+**Referința cifrelor F1–F5 (`scripts/cifre_referinta_aprobate.json`), amprenta nouă `2dd3e6d3cbceec10d314fa37cd70b3af520abb1e5595ecc94828759d568635d5`** (veche: `537da5532c689970…`). Poarta 2
+(`a648c54c`) a ieșit ROȘIE numai pe cifre (pytest 11 908 verzi, plasa 1128 verzi, verificator 0). Regula 7.3 pct.4 (CLAUDE.md §5 pct.13): diferențele se explică INAINTE.
+Măsurat de trei ori pe baza producției (read-only, pe copia migrată): codul publicat (`d850db00`), codul lotului, și codul lotului cu câte un efect scos (mutație).
+Rezultat: 74 de diferențe la nivel de valoare (132 în numărătoarea porții), **0 neexplicate**:
+1. **Datele de retest de pe producție (42 de valori, identice și pe codul publicat):** F1 balanța 10/2026 (ex. 4427 sf_c 1528.14 → 1696.18) și celelalte valori din cifrele deja
+   modificate de retest; aceeași valoare nouă ieșe cu codul publicat, deci nu vine din lot.
+2. **D406 — 25 de valori (F1 09/2026; F2 T1, T2, T3; F3 T2), deficiența 486:** `MasterFiles` ia partenerii perioadei, nu tot istoricul facturilor. Până acum, factura F2T3 către AMAZON (20.10.2026,
+   fără localitate) intra ca partener în orice perioadă și oprea D406 pe T1–T3 / F3 T2 cu „lipsește localitatea”; acum apare numai în T4 (T4 rămâne refuzat, corect). Mutație: `d406.py`,
+   `repo_d406.py`, `d406_active.py` din codul publicat → cele 25 de diferențe dispar (și revine refuzul); mutația parțială „tot nomenclatorul” readuce numai F1 09/2026.
+   Temei: OPANAF 1783/2021 anexa 3 pct.11 și pct.27 (citate în docstring-ul `parteneri_perioadei_master`).
+3. **D394 — 6 valori (F1 10/2026, F2 T4/2026), C19:** livrările/prestările emise cu cota 0 către UE / non-UE nu mai intră ca LS (rândul `tip_partener="3" cota="0"` dispare, `totalPlata_A` scade cu 1
+   rândul); temei OPANAF 2194/2025 anexa 2 lit.E / F pct.10 (textul în `d394.py`). Mutație: `d394.py` din codul publicat → cele 6 dispar. Notă: la F1 10/2026 referința avea bazaLS 2500, pe producție
+   acum 3000 (retest) — în lot rândul lipsește oricum.
+4. **D112 F5 10/2026 (1 intrare), C127:** `migrare_note_luna_neincheiata` scoate ciorna „Salariile lunii 10/2026” scrisă pe 08.10.2026 (singura nota de salarii a lunii), deci 10/2026 iese din lunile
+   cu salarii. Mutație: `aplica` devine no-op → luna revine în cifre. (Cu mutația, valorile lunii diferă de referință — 12122 față de 11860 brut — din alte efecte ale lotului asupra salariilor; moot în lotul
+   real, luna nu mai e măsurată.)
+Alternativa respinsă: a cere aprobarea lui Costin înainte — regula 7.3 pct.4 o scutește exact pentru diferențe explicate; o diferență neexplicată ar fi oprit scrierea.
+
+**533 închis (Costin, 27.10.2026, verbatim):** *„13.1 — 533: corect, lichidarea rămâne 10% (art. 97 alin. (5) CF, nemodificat de L 141/2025, care schimbă doar alin. (7)). Închis, nu mai e deschis.”*
+Supersedează punctul 6 din „Decizii/acțiuni cerute lui Costin la publicare” și conflictul din intrarea 26.10.2026. Partea rămasă din 533 (închiderea veniturilor / cheltuielilor pe rezultatul lichidării,
+pașii din plan) rămâne „parțial” în DEFICIENTE.
+
+**Cheia Anthropic (Costin, 27.10.2026):** *„repornește acum doar serviciul de producție […] cu backup înainte, ca să intre fiscalos3; verifică pe producție că funcțiile AI răspund”.* Făcut: backup
+`~/backup_pre_restart_cheie_ai_20261027_1151.sql.gz` (pg_dump, 9 scheme), `systemctl restart iconta-nou` la 11:52 (cod neschimbat, `d850db00`), amprenta cheii din procesul viu = cea din `api_keys.env`
+(înainte diferea), `ai_client.genereaza_text` și `citeste_imagini` răspund cu cheia nouă. Apoi, mesaj ulterior: dacă poarta comună 12+13 iese verde, se publică azi (restartul separat nu mai e necesar),
+iar dacă nu iese verde până la 18:00, restartul făcut rămâne ca atare.

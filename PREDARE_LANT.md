@@ -19,8 +19,8 @@ generatoarelor D200 / D201 / D220 / D221 / D223 / D600 (660, cu actele de abroga
 suita pytest întreagă (11 932; 41 picături, toate reparate pe cauză, fără slăbiri — DECIZII „clichete urcate numai cu elementele numite”); plasa e2e întreagă (1 129; 12
 picături: 3 defecte reale 701 / 702 / id-ul căutării, 9 teste puse la zi cu UI-ul); uneltele vizuale (703: contrast pe zebră, ținte pe telefon); dovezile pe copia
 firmelor de test (211: 0 neîndeplinite, „imposibile azi” numite: 538 / 591 termenul D301 26.10 a trecut, 593 / C43 / C76 de la 01.11, 646 vechi, C110); registrele
-(DEFICIENTE 249 rânduri + 682–703; DECIZII; GARZI; CONFORMITATE; F268). **Deschis, în așteptarea lui Costin: 533** — cota impozitului pe lichidare rămâne 10%
-(CF art.97 alin.(5)); el cere 16%, dar nu există act în corpus care să schimbe alin.(5) (Legea 141/2025 art.II pct.5 modifică numai alin.(7), dividendele).
+(DEFICIENTE 249 rânduri + 682–703; DECIZII; GARZI; CONFORMITATE; F268). **533, închis de Costin la 27.10.2026:** cota impozitului pe lichidare rămâne 10%
+(CF art.97 alin.(5), nemodificat de Legea 141/2025, care schimbă numai alin.(7), dividendele).
 
 **Ce urmează (în ordine):** (1) regenerarea blocurilor din baza de test și a inventarului GARZI chiar înaintea porții (`l13_raport/regen_baza_test_garzi.py` din worktree-ul
 `iconta_l13_garzi`; `scripts/scan_garzi_inventar.py --md`); (2) poarta lotului: `sh scripts/poarta_lot.sh`, în fundal, timeout 7200000, arbore curat, pe roșu repar cauza și
@@ -36,7 +36,7 @@ rulez din nou (regula 3d); (3) cu poarta VERDE: backup al bazei chiar înainte, 
 aprobarea lui Costin (date ale cabinetului real). Tokenul Postmark se pune din `~/.iconta/postmark_de_activat.env` în `api_keys.env` NUMAI la publicare; cheia Anthropic „fiscalos3”
 e deja instalată (procesul de producție o ia la repornire; „fiscalos” expiră 28.10, o șterge Costin din Console).
 
-**Fronturi deschise:** 533 (decizie / act, mai sus); 693 (VIES pe API-ul public și magazin: nu există decizie); 647 (WhatsApp: pașii în Meta, ai lui Costin); 268.1 / 560 (Postmark:
+**Fronturi deschise:** 693 (VIES pe API-ul public și magazin: nu există decizie); 647 (WhatsApp: pașii în Meta, ai lui Costin); 268.1 / 560 (Postmark:
 contul în mod de test până la verificarea domeniului — DKIM / Return-Path la furnizorul DNS); dovezile care se pot face abia de la 01.11.2026 (593, C43, C76, C19 / 629 / C172 / C173 pe D112 10/2026);
 rămase din loturi vechi: C104, C161, C86, C70.
 
@@ -45,7 +45,7 @@ manifestul `dovezi/lot13/AMPRENTE.json` e în commit, imaginile intră în ZIP-u
 
 **Rămase la Costin (nu le poate face executorul):** confirmarea că cabinetul real nu lucrează și aprobarea SHA-ului pentru publicare; `POSTMARK_SERVER_TOKEN` (verificarea domeniului);
 ștergerea cheii vechi Anthropic din Console; pașii Meta pentru WhatsApp; comanda needrestart cu `sudo`; instalarea D112 J27.0.7 și crontab-ul `scripts/verifica_duk_publicat.py --zilnic`;
-actul pentru 533; deciziile din raportul 13.1 §6.
+deciziile din raportul 13.1 §6.
 
 ### Anterior (lotul 11, păstrat ca istorie scurtă)
 
