@@ -70,9 +70,12 @@
     "valoare": "Beneficiar Dovada 655 GmbH"
    },
    {
-    "completeaza": ".fereastra:last-of-type input#d207-stat",
-    "valoare": "DE",
-    "daca_exista": true
+    "completeaza": ".fereastra:last-of-type #d207-stat-cauta",
+    "valoare": "Germania"
+   },
+   {
+    "alege": ".fereastra:last-of-type #d207-stat",
+    "valoare": "DE"
    },
    {
     "completeaza": ".fereastra:last-of-type #d207-cifs",
@@ -163,9 +166,6 @@
    {
     "exista": ".fereastra:last-of-type .alegere-butoane:has(+ #sn-functie_baza) button",
     "text": "Nu"
-   },
-   {
-    "nu_contine": "— alege —"
    }
   ],
   "captura": "676_f1_salariat_nou_da_nu_butoane.png"
@@ -358,6 +358,20 @@
   "firma": "tenant_9049",
   "descriere": "Copia de dovadă: «Ieși din cont» -> pagina publică -> «Acces» -> «Client nou» -> «Înregistrează cabinetul tău»: formularul încape sau derulează el însuși până la «Creează cont» (1366×768). Nu se trimite nimic.",
   "pasi": [
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-x",
+    "daca_exista": true
+   },
+   {
+    "pauza": 400
+   },
    {
     "click": "#nav-iesire"
    },

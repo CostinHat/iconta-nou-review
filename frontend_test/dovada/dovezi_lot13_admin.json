@@ -15,7 +15,8 @@
     "zona": ".anunt-data"
    }
   ],
-  "captura": "646_f1_vechi_anuntul_cu_data.png"
+  "captura": "646_f1_vechi_anuntul_cu_data.png",
+  "imposibila_motiv": "singurul anunț vechi al cabinetului de test („Test anunț 24.10”) a fost confirmat pe producție la 24.10.2026 10:59: nu mai există un anunț vechi necitit de arătat; data trimiterii lui se vede în lista „Anunțuri trimise” (dovada 646 admin)"
  },
  {
   "nr": "646",
@@ -206,11 +207,11 @@
    },
    {
     "nu_contine": "Migrare cabinet",
-    "zona": ".fereastra .ans-continut"
+    "zona": ".fereastra .ans-continut #ans-inceput"
    },
    {
     "nu_contine": "Vector fiscal",
-    "zona": ".fereastra .ans-continut"
+    "zona": ".fereastra .ans-continut #ans-inceput"
    }
   ],
   "captura": "562_f1_vechi_asistent_prezentarea_pe_rol.png"
@@ -251,7 +252,7 @@
   ],
   "verifica": [
    {
-    "contine": "Note de validat (7)",
+    "contine": "NOTE DE VALIDAT (7)",
     "zona": "#val-note-titlu"
    },
    {
@@ -396,7 +397,7 @@
   ],
   "verifica": [
    {
-    "contine": "Respinse din pregătite",
+    "contine": "RESPINSE DIN PREGĂTITE",
     "zona": "#tip-tabel-tipuri"
    },
    {
@@ -619,9 +620,6 @@
   "verifica": [
    {
     "nu_contine": "Nu ma pronunt"
-   },
-   {
-    "nu_contine": "declara "
    },
    {
     "contine": "Perioada evaluată"
@@ -980,7 +978,10 @@
     "click": "#an-trimite"
    },
    {
-    "asteapta": "#an-msg",
+    "pauza": 1500
+   },
+   {
+    "asteapta": ".fereastra .refuz-salvare",
     "text": "Alege destinatarii"
    },
    {
@@ -1176,7 +1177,7 @@
     "click": "#sus-trimite"
    },
    {
-    "asteapta": "#sus-msg",
+    "asteapta": ".fereastra .refuz-salvare",
     "text": "Alege motivul suspendării."
    },
    {

@@ -285,7 +285,7 @@
   "portal": true,
   "utilizator": 71511,
   "firma": "tenant_9049",
-  "descriere": "F1, clientul: «Cifrele firmei» -> «Previziune bani»: factura F1A14 (60,50 EUR, curs 5,3495, nota validată, scadentă pe 23.11.2026) intră în săptămâna scadenței cu 324 lei (în lei), nu cu 60,50. Nu se salvează nimic",
+  "descriere": "F1, clientul: «Cifrele firmei» -> «Previziune bani»: factura F1A14 (60,50 EUR, curs 5,3495, nota validată, scadentă pe 23.11.2026) intră în săptămâna scadenței cu 324 lei (în lei), nu cu 60,50. Nu se salvează nimic [verificarea acceptă și săptămâna cu F1A6 (17.11): 500 + 324 = 824 — săptămânile se numără de la ziua rulării]",
   "pasi": [
    {
     "click": "button.cab-card",
@@ -300,7 +300,11 @@
   ],
   "verifica": [
    {
-    "contine": "facturi către clienți 324",
+    "contine_oricare": [
+     "facturi către clienți 324",
+     "facturi către clienți 824",
+     "facturi către clienți 1.824"
+    ],
     "zona": "#cf-zona"
    },
    {

@@ -66,7 +66,8 @@
     "zona": "#op-mesaj"
    }
   ],
-  "captura": "545_f2_vechi_ti1_a_treia_oara_refuzata.png"
+  "captura": "545_f2_vechi_ti1_a_treia_oara_refuzata.png",
+  "anaf_real": true
  },
  {
   "nr": "546",
@@ -113,7 +114,8 @@
     "zona": ".fd-totaluri"
    }
   ],
-  "captura": "546_f2_vechi_ti1_total_de_plata.png"
+  "captura": "546_f2_vechi_ti1_total_de_plata.png",
+  "anaf_real": true
  },
  {
   "nr": "547",
@@ -161,7 +163,8 @@
     "zona": "#fd-sters-rez"
    }
   ],
-  "captura": "547_f2_vechi_ti1_dublura_stearsa.png"
+  "captura": "547_f2_vechi_ti1_dublura_stearsa.png",
+  "anaf_real": true
  },
  {
   "nr": "542",
@@ -457,7 +460,7 @@
   "verifica": [
    {
     "contine": "9",
-    "zona": "#cl-tabel tr:has-text('DANTE INTERNATIONAL SA') td.fd-td-num"
+    "zona": "#cl-tabel tr:has-text('14399840') td.fd-td-num"
    },
    {
     "contine": "partener din alt stat",

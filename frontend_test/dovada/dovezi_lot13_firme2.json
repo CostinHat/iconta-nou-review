@@ -242,7 +242,7 @@
   "verifica": [
    {
     "valoare": "#je-data",
-    "egal": "2026-10-26"
+    "egal": "{azi}"
    },
    {
     "nu_contine": "nederivat"

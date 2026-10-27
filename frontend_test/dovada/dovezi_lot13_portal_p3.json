@@ -188,11 +188,11 @@
    },
    {
     "contine": "CNP invalid",
-    "zona": "#df-msg"
+    "zona": ".fereastra .refuz-salvare"
    },
    {
     "nu_contine": "însumează",
-    "zona": "#df-msg"
+    "zona": ".fereastra .refuz-salvare"
    }
   ],
   "captura": "526_f2_vechi_cnp_invalid_fara_mesaj_de_total.png"

@@ -1958,8 +1958,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .em-benef { display:flex; gap:8px; margin-bottom:8px; }
 /* [lotul 13, 633] câmpul „CUI + Verifică” dintr-o celulă a grilei de câmpuri: câmpul se strânge, butonul rămâne în celulă (înainte butonul ieșea peste eticheta
    câmpului vecin și îi acoperea clicul — cap.9, ferestre cu alinierea pierdută, 509) */
-.grila-campuri .camp .em-benef { flex-wrap:nowrap; align-items:center; margin-bottom:0; }
-.grila-campuri .camp .em-benef > .camp-input { flex:1 1 auto; width:auto; min-width:0; }
+.grila-campuri .camp .em-benef { flex-wrap:wrap; align-items:center; margin-bottom:0; }   /* wrap: mesajul de eroare al câmpului stă pe rând propriu (`.em-benef .msg-eroare`) */
+.grila-campuri .camp .em-benef > .camp-input { flex:1 1 80px; width:auto; min-width:0; }
 .grila-campuri .camp .em-benef > .buton-secundar { flex:0 0 auto; }
 .em-cui { flex:1; }
 .em-nume { width:100%; }

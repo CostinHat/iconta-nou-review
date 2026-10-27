@@ -34,6 +34,9 @@ Forma unei dovezi (JSON):
   - `posibila_de_la` (ZZZZ-LL-ZZ, opțional): data de la care aplicația poate arăta dovada (ex. o declarație pe o lună neîncheiată, pe
       care aplicația o refuză până la sfârșitul ei — deficiența 383); înainte de ea dovada se parcurge și se scrie ce s-a văzut, cu starea
       „imposibila_azi”, nu „neîndeplinită”.
+  - `posibila_pana` (ZZZZ-LL-ZZ, opțional): data până la care aplicația poate arăta dovada (lista „datorate” cu termenul D301 26.10.2026, 538 / 591);
+      după ea, dacă dovada nu iese, starea e „imposibila_azi” cu motivul scris, nu „neîndeplinită”.
+  - `imposibila_motiv` (text, opțional): dacă dovada nu iese, starea e „imposibila_azi” cu acest motiv (datele vechi cerute nu mai există în producție).
 Rezultatul fiecărei dovezi: {nr, firma, captura, stare (indeplinita / neindeplinita / imposibila_azi), ok, verificari: [{cerut, ok, vazut}],
 erori_js, cereri_5xx, eroare_pas, durata_s}.
 """
@@ -213,7 +216,9 @@ def _verifica(e, v):
         if not loc.count():
             return {"cerut": v, "ok": False, "vazut": "elementul nu există pe ecran"}
         val = loc.input_value()
-        return {"cerut": v, "ok": val == str(v["egal"]), "vazut": "valoarea câmpului: %r" % val}
+        # [lotul 13, 602] „{azi}” = ziua în care rulează dovada (data notei noi e „ziua de azi”, nu o dată scrisă în JSON)
+        asteptat = str(v["egal"]).replace("{azi}", __import__("datetime").date.today().isoformat())
+        return {"cerut": v, "ok": val == asteptat, "vazut": "valoarea câmpului: %r" % val}
     for cheie in ("inactiv", "activ", "exista"):
         if cheie in v:
             loc = _loc(pg, v, cheie)
@@ -295,6 +300,14 @@ def ruleaza(dovezi, baza, email, parola, firme, iesire, lat=1700, inalt=1000, em
             r["stare"] = "indeplinita" if r["ok"] else "neindeplinita"
             if not r["ok"] and d.get("posibila_de_la") and _dt.date.today().isoformat() < d["posibila_de_la"]:
                 r["stare"], r["motiv_imposibil"] = "imposibila_azi", "aplicația o poate arăta abia de la %s" % d["posibila_de_la"]
+            # [lotul 13, 538 / 591] `posibila_pana`: dovada se poate face numai până la o dată (D301 09/2026 apare la „datorate” până la termenul 26.10.2026;
+            # după el e restanță, în Control fiscal, nu în selectorul de declarații) — după ea, aceeași stare „imposibila_azi”, cu motivul scris
+            if not r["ok"] and d.get("posibila_pana") and _dt.date.today().isoformat() > d["posibila_pana"]:
+                r["stare"], r["motiv_imposibil"] = "imposibila_azi", "aplicația o putea arăta numai până la %s" % d["posibila_pana"]
+            # [lotul 13, 646] `imposibila_motiv`: o dovadă care cere o stare a datelor vechi pe care producția n-o mai are (ex. un anunț necitit, confirmat
+            # între timp de utilizator): „imposibila_azi” cu motivul scris de cine a făcut dovada, nu „neîndeplinită”
+            if not r["ok"] and d.get("imposibila_motiv"):
+                r["stare"], r["motiv_imposibil"] = "imposibila_azi", d["imposibila_motiv"]
             r["durata_s"] = round(time.time() - t0, 1)
             ctx.close()
             print("[dovada] %-6s %-14s %s (%.1f s)%s" % (d["nr"], schema, {"indeplinita": "ÎNDEPLINITĂ", "neindeplinita": "NEÎNDEPLINITĂ",

@@ -1199,7 +1199,8 @@
     "zona": "#op-mesaj"
    }
   ],
-  "captura": "c110_f3_prestarea_ic_art317.png"
+  "captura": "c110_f3_prestarea_ic_art317.png",
+  "imposibila_motiv": "cu VIES real emiterea livrării ajunge la verificarea seriei, iar F3 n-are serie de facturare pe producție: refuzul „firma n-are serie de facturare” (CF art.319 alin.(20) lit.a) e cel corect, deci nota 4111 = 704 nu se poate arăta pe copie fără a configura seria; proba rămâne `core/test_lot12_c110_vanzare_ic.py`"
  },
  {
   "nr": "548",
@@ -1587,7 +1588,7 @@
     "zona": "#op-mesaj"
    },
    {
-    "contine": "DOV-506",
+    "contine": "ciornă 303 = 401",
     "zona": "#op-mesaj"
    }
   ],
@@ -1621,6 +1622,12 @@
    },
    {
     "asteapta": "tbody.tn-nota:has-text('Achizitie obiect de inventar Scaun birou dovadă') .tn-deschide"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "pauza": 500
    },
    {
     "click": "#fa-operatiuni"
@@ -1705,6 +1712,12 @@
    },
    {
     "asteapta": "tbody.tn-nota:has-text('Dare in folosinta Scaun birou dovadă') .tn-deschide"
+   },
+   {
+    "click": ".fereastra:last-of-type .nav-inapoi"
+   },
+   {
+    "pauza": 500
    },
    {
     "click": "#fa-operatiuni"
@@ -1803,7 +1816,7 @@
   "verifica": [
    {
     "exista": "#op-factura_id option",
-    "text": "F1A13"
+    "text": "F1A nr. 13"
    },
    {
     "exista": "#op-factura_id option",
@@ -2270,11 +2283,11 @@
   ],
   "verifica": [
    {
-    "contine": "DVI nr DOV-552",
+    "contine": "factura transportatorului",
     "zona": "#op-mesaj"
    },
    {
-    "contine": "factura transportatorului",
+    "contine": "ciornă 371 = 401",
     "zona": "#op-mesaj"
    }
   ],
