@@ -46,17 +46,19 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
 
 ## În lucru acum
 
-- fir: **Lotul 13, comanda 13.1 (Costin 25.10.2026; deciziile din 26.10.2026 verbatim în DECIZII „Lotul 13: deciziile din 26.10”)** — loturile 12 + 13, o singură poartă;
-  worktree `/home/costin/iconta_lot12`, ramura `lucru/lot12-2026-10-23`, nepublicat; predarea completă: `~/ghid_incoming/stare_13_1.md`.
-  - ultim: (26.10.2026) 536 la NIR, varianta (a) comisă și unită (`d473873f`); T34 închis (`f017d75c`): antetul regenerat, blocul de verificare scris.
-  - urmator: ștergerea modulelor abrogate D200/D201/D220/D221/D223/D600 (ramura `lucru/l13-sterge`) și 595 în Date firmă (ramura `lucru/l13-oss`),
-    apoi valul 6 (deficiențele noi nerezolvate 683, 686, 692, 694, 696, codul mort), artefactele, suita, plasa, vizualul, dovezile, registrele, poarta. IN LUCRU
+- fir: **Lotul 13, comanda 13.1 (Costin 25.10.2026; deciziile din 26.10 și precizarea la 681 verbatim în DECIZII)** — loturile 12 + 13, o singură poartă;
+  worktree `/home/costin/iconta_lot12`, ramura `lucru/lot12-2026-10-23`, nepublicat; predarea completă: `PREDARE_LANT.md`.
+  - ultim: (27.10.2026) toate pasurile până la poartă făcute: 536 la NIR (a) `d473873f`; T34; ștergerea D200/D201/D220/D221/D223/D600 (660); 595 în Date firmă; valul 6
+    (683, 696, cod mort); 681 precizat (funcții, căsuța în fiecare fereastră, Ctrl+K); suita pytest (11 932, 41 picături reparate); plasa e2e (1 129, 12 picături
+    închise, 3 defecte reale: 701 / 702 și id-ul căutării); uneltele vizuale (703); dovezile pe copie (211, 0 neîndeplinite, 7 „imposibile azi” numite);
+    registrele (DEFICIENTE 249 rânduri + 682–703, DECIZII, GARZI, CONFORMITATE, FUNCTIONALITATI F268).
+  - urmator: poarta lotului (`sh scripts/poarta_lot.sh`, în fundal, timeout 7200000, arbore curat) -> pe roșu repar cauza și rulez din nou (regula 3d) -> pe VERDE: backup al
+    bazei chiar înainte, apoi OPRIRE până la confirmarea lui Costin (cabinetul real nu lucrează, aprobarea SHA-ului) pentru publicare. IN LUCRU
   - pasi:
-    L13-1. 536/NIR (a) — FĂCUT. L13-2. T34 — FĂCUT. L13-3. ștergerea D2xx abrogate (decizia 5, cu actul de abrogare citat). L13-4. 595 în Date firmă (decizia 6).
-    L13-5. valul 6: 683, 686, 692, 694, 696, 693 (după decizia C199), codul mort NOU-portal-p1-1/-2, scăderea `test_datorie._FARA_TERMEN_07_10`.
-    L13-6. `versioneaza_assets.py --scrie`, artefactele din browser, `regen_baza_test_garzi.py`. L13-7. suita pytest întreagă, apoi plasa e2e, apoi verificatorul.
-    L13-8. dovezile pe copie (`dovada_firme_test.py`), AMPRENTE. L13-9. registrele. L13-10. poarta, apoi STOP până la confirmarea lui Costin (backup, publicare).
-
+    L13-1. 536/NIR (a) — FĂCUT. L13-2. T34 — FĂCUT. L13-3. ștergerea D2xx abrogate (decizia 5) — FĂCUT. L13-4. 595 în Date firmă (decizia 6) — FĂCUT.
+    L13-5. valul 6: 683, 696, cod mort — FĂCUT (693 [DECIZIE] rămâne: VIES pe API-ul public / magazin). L13-6. versionarea assets, artefactele din browser, baza de test — FĂCUT.
+    L13-7. suita pytest, plasa e2e, verificatorul (TOTAL 0) — FĂCUT. L13-8. dovezile pe copie și AMPRENTE — FĂCUT. L13-9. registrele — FĂCUT (GARZI inventarul și blocurile
+    generate din baza de test se regenerează chiar înaintea porții). L13-10. poarta — ÎN CURS.
 - fir: **Lotul 11, comanda 11.1 (Costin 21.10.2026, verbatim în DECIZII „Comanda 11.1”)** — deciziile din „Comanda 10.3” pct.4, C75 (DA,
   migrare pe toate firmele, inclusiv cabinetul pilot), prioritarele C76, 428, 439, 451, 409, apoi 452, 450, 449, 429, 420, 424, 446, 447,
   440–445, 436 (afișare), măruntele (pct.23), dovada pe aplicație pentru C68, C69, C71–C74, 7g, 8b–8e, ghidurile 247 / 248 + sitemap;

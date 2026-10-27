@@ -9033,9 +9033,9 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1182 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1185 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 1142
+### `core/` — 1145
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9313,8 +9313,6 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_d177.py` — Teste D177 (redirectionare impozit pe profit catre entitati nonprofit).
 - `core/test_d177_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D177 gol NU produce declaratie.
 - `core/test_d1_import_integritate.py` — core/test_d1_import_integritate.py — GARD: importul de salariati BLOCHEAZA CNP invalid, NU sare tacut.
-- `core/test_d200_formular.py` — [Regula 4 + Regula 6 + METODA §23] GARDA: formularul D200 gol NU produce declaratie; regulile pe [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
-- `core/test_d201_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D201 gol NU produce declaratie; identitatea + sectiunile + [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
 - `core/test_d204_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D204 gol NU produce declaratie; asocierea + reprezentantul +
 - `core/test_d205.py` — Teste gardian pentru D205 - REFACUT A DOUA OARA 16.07.2026.
 - `core/test_d205_cesiune.py` — GARD — D205 împarte dividendele după cotele de la DATA DISTRIBUIRII, nu după cotele de azi (lot 19 pct.4e, 02.10.2026).
@@ -9341,11 +9339,6 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_d212_oblig_realizat.py` — D212 Etapa 4 — CAS, CASS, impozitul în sistem real și sumarul (oblig_realizat), din venitul declarat (02.10.2026).
 - `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
 - `core/test_d216_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D216 gol NU produce declaratie; antetul + cel putin un bun
-- `core/test_d220.py` — Teste D220 (venit estimat / norma de venit - persoane fizice). [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
-- `core/test_d221.py` — Teste D221 (venituri din activitati agricole impuse pe norme de venit - persoane fizice/asocieri). [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
-- `core/test_d221_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D221 gol NU produce declaratie; contribuabilul + activitatile [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
-- `core/test_d223.py` — Teste D223 (venituri estimate pentru asocieri fara personalitate juridica / transparenta fiscala). [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
-- `core/test_d223_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D223 gol NU produce declaratie; asocierea + responsabilul + [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
 - `core/test_d230.py` — Teste D230 (redirectionare pana la 3,5% din impozit catre ONG).
 - `core/test_d230_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D230 gol NU produce declaratie; identitatea PF + entitatea ONG
 - `core/test_d300.py` — Teste gardian pentru D300 — lantul de calcul R27->R42 lipsea complet.
@@ -9431,7 +9424,6 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_d406_supplierid.py` — GARD D406 SupplierID (10.08.2026): SupplierID/CustomerID pe factura NU poate fi "0".
 - `core/test_d406_taxcode_nota.py` — GARD D406 TaxCode nota contabila (10.08.2026): pe liniile din GeneralLedgerEntries
 - `core/test_d4_mutatie_prinsa.py` — [D4, 18.09.2026] GARDA-MUTAȚIE PERMANENTĂ. O rută nouă care dublează `facturi.total`, numită doar
-- `core/test_d600_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D600 gol NU produce declaratie; identitatea + cel putin o [citare-istorica: testul a fost șters în lotul 13 (660) odată cu generatorul formularului, înlocuit de Declarația unică — OUG 128/2024]
 - `core/test_d603_formular.py` — [Regula 4 + METODA §23] GARDA: formularul D603 gol NU produce declaratie; identitatea + categoria de
 - `core/test_d710.py` — Teste gardian pentru D710 (Declaratie rectificativa - corectie D100).
 - `core/test_d710_cod131_132.py` — GARD TURA 3 — D710 C5: cod_oblig 131/132 cer Data_I (data incheierii exercitiului financiar) pe care
@@ -9862,9 +9854,13 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot12_ui2_verificator.py` — [lotul 12, pachetul ui2] Regulile noi ale verificatorului — REZUMAT_CASETA (621) și TABEL_NOTE (617 / 622).
 - `core/test_lot12_verif_dovezi.py` — Lotul 12, comanda Costin 12.1 pct.13–14, pachetul `verif`: forma dovezilor și a mutațiilor pachetului, verificată fără browser.
 - `core/test_lot12_zsterge_c139.py` — Lotul 12, deficiența C139 — „Șterge raportul Z”: raportul Z nevalidat (importat din AMEF sau scris de mână) se șterge de pe rândul lui
+- `core/test_lot13_admin_importuri.py` — Lotul 13, zona admin (plasa e2e, 26.10.2026): „confirmaCaseta is not defined” în Panou Admin -> Anunțuri / Invitații — `admin.js`
 - `core/test_lot13_admin_suport.py` — Lotul 13 (comanda 13.1), zona admin — Suportul: triajul AI (572, 573), răspunsul echipei în clopoțel (648), notificarea de control
 - `core/test_lot13_admin_suspendare.py` — Lotul 13 (comanda 13.1), zona admin — suspendarea unui cabinet cu motiv (645), anunțurile (646), invitațiile retrase (646 e).
 - `core/test_lot13_admin_tipare.py` — Lotul 13 (comanda 13.1), zona admin — tiparele de erori (574, 576), calitatea echipei fără regenerări (458.1), „Declarații lucrate”
+- `core/test_lot13_capacitate_eticheta.py` — [lotul 13, 694 — „Tipare și Capacitate arată tipul intern `nota` ca «NOTA»”, clasa 569 / 163]
+- `core/test_lot13_comp_536.py` — [lotul 13, deficiența 536, comanda Costin 13.1] Centrul de cost pe tot ce se contează automat, pe schemă efemeră (ROLLBACK la capăt).
+- `core/test_lot13_comp_finale.py` — [lotul 13, zona comp — reparațiile finale înaintea porții] C15 pe interogările noi ale lotului 13, pe schemă efemeră (ROLLBACK).
 - `core/test_lot13_decl_logica.py` — [lotul 13, subagentul DECL] Logica numerelor 660, 650, 595, 635, 637, 653, 539, 538/591, 658 și C19, probată fără browser (e2e-ul lor e
 - `core/test_lot13_decl_rare.py` — [lotul 13, comanda 13.1 pct.5 + deficiența 656] PROBA AUTOMATĂ PE TOATE DECLARAȚIILE RARE: fiecare se generează pe date minime complete,
 - `core/test_lot13_ds_cautare.py` — Lotul 13 (comanda 13.1), deficiența 681 — căutarea globală din antet (decizia Costin 25.10.2026, excepție de la „fără funcții noi”).
@@ -9885,6 +9881,7 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot13_firme2_plan_conturi.py` — [lotul 13, zona firme2] Deficiența 589 — Plan de conturi.
 - `core/test_lot13_firme2_preluate.py` — [lotul 13, zona firme2] Deficiența 669 — soldurile pe parteneri preluate, în ofertele Casei și Băncii.
 - `core/test_lot13_firme2_raport_z.py` — [lotul 13, zona firme2] Raportul Z: 618 (explicația notei cu data ISO) și 605 (textele ecranului Raport Z).
+- `core/test_lot13_firme2_sablon.py` — [lotul 13, zona firme2, plasa: 577] GARD — orice tabelă de firmă creată de o migrare e și în șablonul firmei noi (`tenant_template.sql`).
 - `core/test_lot13_firme2_sume.py` — [lotul 13, zona firme2] Deficiența 655 în Compensări (clasa „suma cu punct de mii citită ca zecimal”).
 - `core/test_lot13_infra_blocaj.py` — Lotul 13, C201 — blocajul fără ieșire dintre o cerere care ține DOUĂ conexiuni și o operație de structură (DDL) pe aceeași firmă,
 - `core/test_lot13_infra_o_conexiune.py` — Lotul 13, C201 — GARDA: o cerere lucrează pe O SINGURĂ conexiune; conexiunile aplicației poartă termene.
@@ -9897,9 +9894,12 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot13_ops_dovezi.py` — [lotul 13, pachetul `ops`] Forma dovezilor pe copia firmelor de test (`frontend_test/dovada/dovezi_lot13_ops.json`) și a mutațiilor de
 - `core/test_lot13_ops_formular.py` — [lotul 13, pachetul `ops`] Gărzile formularelor din Operațiuni speciale, Mijloace fixe și Reevaluarea în valută.
 - `core/test_lot13_ops_mf.py` — [lotul 13, deficiențele 518 / 519 / 522 / 516 / 521, comanda Costin 13.1] Mijloacele fixe: activul schimbat de o notă numai prin
+- `core/test_lot13_ops_mf_factura.py` — [lotul 13, deficiența 601, decizia Costin (a)] Mijlocul fix cumpărat pe factură: linia facturii primite pe un cont de imobilizare
 - `core/test_lot13_ops_productie.py` — [lotul 13, deficiențele 510 / 548 / 551, comanda Costin 13.1] Producția, vânzarea în regim de marjă și aurul de investiții — din stoc.
+- `core/test_lot13_ops_provizion.py` — [lotul 13, deficiențele 511 / 512, valul 5] Ajustarea creanței pe factura aleasă din lista facturilor emise neîncasate.
 - `core/test_lot13_ops_schema.py` — [lotul 13, pachetul `ops`] Schema efemeră pe care rulează probele operațiunilor speciale (`uc_tenants`), în tranzacție anulată.
 - `core/test_lot13_ops_sold.py` — [lotul 13, deficiența 524, comanda Costin 13.1] „Orice plată, restituire sau regularizare verifică soldul contului pe care îl stinge,
+- `core/test_lot13_oss_date_firma.py` — [lotul 13, deficiența 595; decizia Costin 26.10.2026, verbatim: „6 da” la propunerea „595 — înregistrarea OSS se întreabă în Date firmă,
 - `core/test_lot13_portal_p1_cifre.py` — Lotul 13, comanda Costin 13.1 (verbatim în DECIZII „Comanda 13.1”) — portalul clientului, cifrele (fork P1 al subagentului PORTAL).
 - `core/test_lot13_portal_p1_forme.py` — Lotul 13 (comanda Costin 13.1), fork P1 al subagentului PORTAL — forma dovezilor și a mutațiilor (ca `test_lot12_verif_dovezi.py`):
 - `core/test_lot13_portal_p1_link.py` — Lotul 13, comanda Costin 13.1 (verbatim în DECIZII „Comanda 13.1”), deficiența 560 (fork P1 al subagentului PORTAL) — linkurile de acces.
@@ -9908,9 +9908,12 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot13_portal_p3_ecrane.py` — [lotul 13, comanda 13.1, subagentul PORTAL — partea Date firmă / SPV] Ecranele reale, în Chromium, cu rutele simulate (harness-ul din
 - `core/test_lot13_portal_p3_tva_incasare.py` — [lotul 13, comanda 13.1] Deficiența 541 — Date firmă → TVA la încasare.
 - `core/test_lot13_portal_postmark.py` — [lotul 13, comanda 13.1 pct.1 — Postmark] Emailurile tranzacționale (confirmare cont, resetare parolă, link de logare, invitații, alerte)
+- `core/test_lot13_portal_refuz_concurent.py` — [lotul 13, valul 5, zona portal] Refuzul unei scrieri pornite de un clic nu e șters de REUȘITA altei scrieri pornite de ACELAȘI clic.
 - `core/test_lot13_sal_alegeri.py` — GARD lotul 13 (676 + cap.17 „fapte fiscale fără default tacit”): listele scurte din ferestrele salarizării folosesc mecanismul COMUN al
 - `core/test_lot13_sal_e2e_ordine.py` — GARD lotul 13 (C89 pe e2e-ul integrat, 26.10.2026): compoziția netului se citește din fereastra salariatului, deschisă din rândul
 - `core/test_lot13_sal_salarizare.py` — Lotul 13 (comanda Costin 13.1), salarizarea: 671 (zilele lunii dintr-o singură sursă), 679 (suma orelor suplimentare calculată),
+- `core/test_lot13_val6_casa_avans.py` — [lotul 13, deficiența 683 — a lui Code] „Casă › Avans spre decontare nu pune salariatul pe rândul notei: 542 nu se urmărește pe
+- `core/test_lot13_val6_spv_avertisment.py` — [lotul 13, deficiența 696 — a lui Code] `efactura_trimitere.trimite` încărca factura în SPV și când dreptul certificatului pe CUI-ul
 - `core/test_luna_preluare.py` — GARDA deciziei Costin 08.10.2026 §6 pct.4 (verbatim în DECIZII):
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).
@@ -11129,7 +11132,7 @@ Comanda Costin 06.10.2026, partea 2. Raportul complet, punct cu punct (67), cu c
 | C11 bilanțul nu trece prin coadă și nu se persistă ca depus | 7. Integritate | DECIZIE de produs | ecranul Bilanț: validare + XML | — |
 | C12 declarația față de balanță nu e păzită (D100 59 fără 698/4418; D112 fără notă de salarii; D300 egal doar cu ciornele) | 3. Calcul fiscal | DESCHIS — limita afișată de aplicație („pentru asta e controlul încrucișat”) | cifrele în raport | o pereche de control încrucișat declarație ↔ balanță validată pentru D100/D112 |
 | C14 reevaluare pe MF fără cont de imobilizare → notă cu contul creditor GOL | 3. Calcul / 7. Integritate | DESCHIS | 655 = „” 119.000 | o probă pe schemă efemeră |
-| C15 F248 / ruta `jurnal-marja`: „fără ecran”, dar cardul există | registru | DESCHIS | captura `ecran_Marja_SH.png` | corectarea registrului (nu s-a făcut: comanda cere doar constatări) |
+| C15 F248 / ruta `jurnal-marja`: „fără ecran”, dar cardul există | registru | ÎNCHIS 27.10.2026 (lotul 13, 686) | captura `ecran_Marja_SH.png` | F248 în `FUNCTIONALITATI.csv` spune acum „Operațiuni speciale › Jurnal regim marjă”, stare LIVE; lista publică regenerată |
 | C16 achiziția intracomunitară acceptă un furnizor cu cod RO (RO14399840) și scrie operațiunea IC cu țara RO (factură + `d301_operatiuni`); livrarea IC refuză corect clientul RO | 3. Calcul fiscal | DESCHIS | Distributie Profit IC, factura 13 / operațiunea D301 #1 (șterse după probă) | o probă pe schemă efemeră (validarea stă în use-case) |
 
 Curățenia parcurgerii a scăpat inițial 4 rânduri scrise de operațiuni (2 facturi + 1 operațiune D301 pe `tenant_004`, 1 reevaluare pe
@@ -12031,3 +12034,25 @@ cu mutația în `frontend_test/e2e/mut_lot12_*.json`, rulată în campania lotul
 | GARDA C138 (lotul 12, scenariul pilot `frontend_test/e2e/e2e_pilot_luna.py::test_pilot_07`): propunerea NIR-ului „fără factură” | `core/test_lot12_triaj_pilot_nir.py` | probată la scriere (raportul lotului 12, §9) |
 | Lotul 12, comanda Costin 12.1 pct.13–14, pachetul `verif`: forma dovezilor și a mutațiilor pachetului, verificată fără browser. | `core/test_lot12_verif_dovezi.py` | probată la scriere (raportul lotului 12, §9) |
 | Lotul 12, deficiența C139 — „Șterge raportul Z”: raportul Z nevalidat (importat din AMEF sau scris de mână) se șterge de pe rândul lui din ecranul Raport Z, cu nota lui ciornă și cu descărcările lui din stoc încă necontate, într-o singură tranzacție; Z-ul vali | `core/test_lot12_zsterge_c139.py` | probată la scriere (raportul lotului 12, §9) |
+
+## 27.10.2026 — lotul 13, comanda 13.1 (505–703, C171–C202; pe ramură, înaintea porții, nepublicat)
+
+Gărzile noi ale lotului: 60 de fișiere `core/test_lot13_*.py` (inventarul generat din blocul `INVENTAR-GARZI`, regenerat înaintea porții) și, transversal, cu mutația probată:
+`core/test_lot13_ds_verificator.py` (analiza `lot13` a verificatorului: SUMA_CITITA_BRUT / SUMA_TEXT 655, FEREASTRA_INLINE 673, ACTIUNE_FARA_BUTON 674, BUTON_ASCUNS 675,
+LISTA_SCURTA 676, PRECOMPLETARE 504, GRILA_INLINE 509, **CAUTARE_FEREASTRA 681**: căsuța de căutare în bara de sus a fiecărei ferestre), `core/test_lot13_ds_cautare.py` (căutarea
+e a funcțiilor, nicio dată a firmei; 3 mutații roșii), `core/test_lot13_oss_date_firma.py` (595: nedeclarat / „Nu” / „Da”, nu în profil incomplet, migrare idempotentă),
+`core/test_lot13_val6_casa_avans.py` (683: salariatul pe 542 din Casă, storno păstrează partenerul), `core/test_lot13_val6_spv_avertisment.py` (696), `core/test_lot13_capacitate_eticheta.py` (694),
+`core/test_lot13_comp_536.py` (centrul pe salariați / mijloace fixe / articole de stoc), `core/test_lot13_infra_*` (C201: o conexiune pe cerere, `lock_timeout`, 503 cu mesaj),
+`core/test_lot13_decl_logica.py` + `core/verificare_bun_simt.py` (656: impozit ≤ bază și cota legii, înaintea validatorului).
+
+**Gărzi existente ridicate / coborâte, numai cu elementele numite:** rute 525 → 526 (`core/straturi.py`, PUT …/centre-cost/alocari, 536); `test_e2a_univers` MIGRARE_UNICA 161 → 162
+(`migrare_inregistrat_oss`); `test_comparatii_clasificate` BASELINE 13 → 10 (coboară); `core/test_p7_v2_scrieri.py` 461 → 460 (683: verificarea salariatului stă în `core/salariat_decont.py`);
+clichetele `clichet_garzi_pe_text.json` scăzute cu testele șterse la 660 (9 aserțiuni vacue, 17 totale), niciun pin urcat; `core/test_verdict_punct_unic.py` ANTI_VACUU 4 → 2 (chei fără cititor scoase).
+Contractul C5 (apel extern sub conexiune) rămâne 0: `core/mf_registru.catalog()` e constantă imuabilă citită la import (nu mai deschide fișierul sub conexiune, 601).
+
+**Plasa a prins ce gărzile statice nu vedeau (clase, cu locurile verificate):** (1) refuzul care trimite în alt ecran — butonul stătea în zona ascunsă a mesajului în formularul Operațiuni
+(701; acum după caseta „NU s-a salvat”, `coada_trimite.actiuniRefuz`); (2) butonul pus direct în `.bara-fixa` își ținea caseta de refuz după bară (702, `api._randButon`); (3) tabele pe telefon:
+ținte sub 24 px și contrast pe rândul zebră (703, `acoperire_vizuala.json`). Limita rămasă: nicio gardă statică nu verifică „orice formular cu `catch` care primește `detaliu.ecran` are buton
+vizibil” — o ține doar e2e (551 / 548 / 633 / 72) și `core/test_refuz_spre_ecran.py` pe emițători.
+
+**Dovezile pe copie (unealta `frontend_test/dovada/pasi.py`):** `{azi}` în „egal”, `posibila_pana`, `imposibila_motiv`; „imposibile azi” numite: 538, 591, 593, C43, C76, 646 vechi, C110.

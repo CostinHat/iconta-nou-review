@@ -3113,3 +3113,20 @@ structură (C201, nereparat, trecut în lotul 13). Emailurile tranzacționale tr
 completă și mutațiile rulează o singură dată, în poarta comună a loturilor 12 + 13, la finalul comenzii 13.1. Detalii: DECIZII „Lotul 12,
 comanda 12.2: implementarea”, „Lotul 12, comanda 12.3: implementarea”, „25.10.2026 — Postmark…” și „12.2 se închide fără plasa e2e
 completă”; starea fiecărui număr: DEFICIENTE.md.
+
+## 26–27.10.2026 — Lotul 13 (comanda 13.1): executat pe ramura loturilor 12 + 13, până la poartă; nepublicat
+
+După deciziile lui Costin din 26.10 (DECIZII „Comanda 13.1: deciziile lui Costin la lista din 26.10 — verbatim”) și precizarea la 681 (căutarea e a funcțiilor, căsuța în
+fiecare fereastră, Ctrl+K): 536 la NIR, varianta (a) (`d473873f`); T34 (antetul regenerat, blocul de verificare scris); ștergerea generatoarelor D200 / D201 / D220 / D221 /
+D223 / D600 (660, cu actele de abrogare citate, ramură `lucru/l13-sterge`); 595 în Date firmă (ramură `lucru/l13-oss`: coloana `firma_profil.inregistrat_oss`, refuz la
+generare cu buton spre Date firmă, migrare); valul 6 (683 Casă › Avans spre decontare pe salariat, 696 avertisment la trimiterea în SPV, cod mort scos); căutarea 681 refăcută
+(funcții, nu date; `#cautare-fereastra` în bara fiecărei ferestre; Ctrl+K).
+
+**Suita pytest întreagă** (11 932 de teste): 41 de picături, toate reparate pe cauză, fără slăbiri (clichete urcate numai cu elementele numite; 13 aserțiuni pe text rescrise pe
+structură; teste desincronizate puse la zi; contractul C5 readus la 0 prin `mf_registru.catalog()` constantă la import; aserțiunea 310 restabilită). **Plasa e2e întreagă**
+(1 129): 12 picături — 3 defecte reale (refuzul spre ecran fără buton vizibil în Operațiuni; caseta de refuz după bara fixă, la 1475 px; id-ul listei de rezultate al căutării) și 9
+teste puse la zi cu UI-ul lotului. **Uneltele vizuale** (axe, profil telefon, interacțiune): contrast pe zebră (4,13 → albastrul închis al DS), ținte sub 24 px pe telefon (tabelul de
+note ca rânduri-card), navigarea uneltei pe Import date; `text_ecran` 179 de ecrane, 0 defecte. **Dovezile pe copia firmelor de test** (211): 28 neîndeplinite la prima rulare reală
+→ 0, cu 7 „imposibile azi” numite (538 / 591, 593 / C43 / C76, 646 vechi, C110); un defect de UI nou prins de ele (câmpul CUI + „Verifică” fără wrap rupea mesajul de eroare) și reparat.
+Registrele: DEFICIENTE 249 rânduri (155 rezolvată / 67 parțial / 17 neverificat / 5 nerezolvată / 5 nu se aplică) + numerele noi 682–703; DECIZII; GARZI; CONFORMITATE (d223 șters);
+FUNCTIONALITATI (F268 căutarea funcțiilor, F248 corectat). **Deschis:** 533 (cota 10% rămâne; Costin cere 16%, fără act în corpus). Poarta și publicarea: urmează, cu confirmarea lui Costin.

@@ -19,7 +19,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-*clasa MECANIC · 21 rute · 13 schimba date · 12 firme il pot exercita azi*
+*clasa MECANIC · 21 rute · 13 schimba date · 9 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/coada`, `/coada/{coada_id}/continut`, `/control-fiscal`, `/control-fiscal/{tenant_id}`, `/declaratii/tipuri`, `/firme/{tenant_id}/verificari`, `/supervizor`, `/termene`*
 
@@ -155,7 +155,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T02 — Factura emisă — creare, contabilizare, ieșiri
 
-*clasa MANUAL · 22 rute · 16 schimba date · 18 firme il pot exercita azi*
+*clasa MANUAL · 22 rute · 16 schimba date · 13 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi-recurente`, `/tenants/{tenant_id}/facturi/numerotare`, `/tenants/{tenant_id}/facturi/{factura_id:int}`, `/tenants/{tenant_id}/facturi/{factura_id}/pdf`*
 
@@ -406,7 +406,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T04 — Concediul medical
 
-*clasa MECANIC · 5 rute · 3 schimba date · 5 firme il pot exercita azi*
+*clasa MECANIC · 5 rute · 3 schimba date · 4 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/concedii/coduri`, `/tenants/{tenant_id}/salariati/{salariat_id}/concedii`*
 
@@ -448,7 +448,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T05 — Nota contabilă — de la document la registrul-jurnal
 
-*clasa MECANIC · 40 rute · 29 schimba date · 28 firme il pot exercita azi*
+*clasa MECANIC · 40 rute · 29 schimba date · 20 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/dividende-impartire`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/jurnal/{nota_id}/depasita`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
 
@@ -811,7 +811,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T06 — Importul de e-Factura și transmiterea prin SPV
 
-*clasa MANUAL · 15 rute · 10 schimba date · 2 firme il pot exercita azi*
+*clasa MANUAL · 15 rute · 10 schimba date · 1 firme il pot exercita azi*
 
 *clasa MANUAL · 7 rute · 4 schimba date · nicio firma nu-l poate exercita azi*
 
@@ -923,7 +923,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T07 — Extrasul bancar și potrivirea
 
-*clasa MECANIC · 7 rute · 5 schimba date · 3 firme il pot exercita azi*
+*clasa MECANIC · 7 rute · 5 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/banca/reconciliere`, `/tenants/{tenant_id}/banca/reconciliere/facturi-deschise`*
 
@@ -986,7 +986,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T08 — NIR și recepția
 
-*clasa MECANIC · 3 rute · 1 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 3 rute · 1 schimba date · 0 firme il pot exercita azi*
 
 *clasa MECANIC · 2 rute · 1 schimba date · nicio firma nu-l poate exercita azi*
 
@@ -1007,7 +1007,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T09 — Casa și registrul de casă
 
-*clasa MECANIC · 6 rute · 5 schimba date · 4 firme il pot exercita azi*
+*clasa MECANIC · 6 rute · 5 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/casa/registru`*
 
@@ -1093,7 +1093,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T11 — Închiderea lunii
 
-*clasa MECANIC · 7 rute · 4 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 7 rute · 4 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi/perioada`, `/tenants/{tenant_id}/perioade-blocate`, `/tenants/{tenant_id}/perioade-blocate/istoric`*
 
@@ -1211,7 +1211,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T13 — Trecerea de regim fiscal
 
-*clasa MECANIC · 12 rute · 6 schimba date · 28 firme il pot exercita azi*
+*clasa MECANIC · 12 rute · 6 schimba date · 20 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/migrare/vector`, `/tenants/{tenant_id}/firma-profil`, `/tenants/{tenant_id}/firma-profil/date`, `/tenants/{tenant_id}/tva-incasare/neexigibile`, `/tenants/{tenant_id}/tva-incasare/verifica-anaf`, `/tenants/{tenant_id}/vector`*
 
@@ -1284,7 +1284,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T14 — Preluarea unei firme
 
-*clasa MECANIC · 39 rute · 22 schimba date · 11 firme il pot exercita azi*
+*clasa MECANIC · 39 rute · 22 schimba date · 5 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/control-fiscal/{tenant_id}/audit-preluare/istoric`, `/migrare/aplicatii`, `/migrare/asociati`, `/migrare/firme`, `/migrare/istoric-declaratii`, `/migrare/mijloace-fixe`, `/migrare/parteneri`, `/migrare/plan-conturi`, `/migrare/salariati`, `/migrare/solduri`, `/migrare/status`, `/migrare/straturi`, `/tenants/{tenant_id}/parteneri`, `/tenants/{tenant_id}/solduri`*
 
@@ -1506,7 +1506,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T15 — Salariatul — angajare, contract, adeverință, REGES
 
-*clasa MANUAL · 20 rute · 14 schimba date · 11 firme il pot exercita azi*
+*clasa MANUAL · 20 rute · 14 schimba date · 8 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/contracte/marcaje`, `/cor`, `/tenants/{tenant_id}/contracte/sabloane`, `/tenants/{tenant_id}/salariati`, `/tenants/{tenant_id}/salariati/{salariat_id}`, `/tenants/{tenant_id}/salariati/{salariat_id}/elemente`*
 
@@ -1703,7 +1703,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T18 — Chitanța și încasarea
 
-*clasa MECANIC · 6 rute · 3 schimba date · 3 firme il pot exercita azi*
+*clasa MECANIC · 6 rute · 3 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/chitante`, `/tenants/{tenant_id}/chitante/{chitanta_id}/pdf`, `/tenants/{tenant_id}/compensari/propunere`*
 
@@ -1787,7 +1787,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T20 — Mișcarea de stoc — intrare, ieșire, transfer, reclasificare
 
-*clasa MECANIC · 12 rute · 7 schimba date · 4 firme il pot exercita azi*
+*clasa MECANIC · 12 rute · 7 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/stocuri/analitica`, `/tenants/{tenant_id}/stocuri/articole`, `/tenants/{tenant_id}/stocuri/articole/{articol_id}/fisa`, `/tenants/{tenant_id}/stocuri/barcode/{cod}`, `/tenants/{tenant_id}/stocuri/locatii`*
 
@@ -1862,7 +1862,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T21 — Rețeta și producția
 
-*clasa MECANIC · 9 rute · 7 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 9 rute · 7 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/produse`, `/tenants/{tenant_id}/retete`*
 
@@ -1933,7 +1933,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T22 — Mijlocul fix și amortizarea
 
-*clasa MECANIC · 6 rute · 5 schimba date · 4 firme il pot exercita azi*
+*clasa MECANIC · 6 rute · 5 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/mijloace-fixe`*
 
@@ -2451,7 +2451,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ## T31 — Completările manuale la o declarație (D300, D301)
 
-*clasa MECANIC · 11 rute · 7 schimba date · 4 firme il pot exercita azi*
+*clasa MECANIC · 11 rute · 7 schimba date · 3 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/ajustari-fiscale`, `/tenants/{tenant_id}/d300-manual`, `/tenants/{tenant_id}/d301-operatiuni`, `/tenants/{tenant_id}/registru-evidenta-fiscala`*
 
@@ -2556,7 +2556,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 ## T32 — Registrul de încasări și plăți (partida simplă)
 
-*clasa MECANIC · 7 rute · 5 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 7 rute · 5 schimba date · 0 firme il pot exercita azi*
 
 *clasa MECANIC · 7 rute · 5 schimba date · nicio firma nu-l poate exercita azi*
 
@@ -2652,7 +2652,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 ## T34 — Rapoartele comerciale, centrele de cost și rapoartele salvate
 
-*clasa MECANIC · 15 rute · 6 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 15 rute · 6 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/ansamblu`, `/api/v1/firme/{tenant_id}/kpi`, `/cabinet/consolidare`, `/tenants/{tenant_id}/centre-cost`, `/tenants/{tenant_id}/centre-cost/raport`, `/tenants/{tenant_id}/centre-cost/varianta`, `/tenants/{tenant_id}/rapoarte-comerciale`, `/tenants/{tenant_id}/rapoarte-comerciale/fisa`, `/tenants/{tenant_id}/rapoarte-salvate`*
 
@@ -2717,7 +2717,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 ## T35 — Pachetul lunar către client și solicitările lui
 
-*clasa MECANIC · 39 rute · 17 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 39 rute · 17 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/pachete/{tenant_id}/poveste`, `/pachete/{tenant_id}/preview`, `/pachete/{tenant_id}/rezumat`, `/portal/acasa`, `/portal/acces-cont`, `/portal/cashflow`, `/portal/declaratii`, `/portal/documente/balanta`, `/portal/documente/luni`, `/portal/facturi`, `/portal/firma`, `/portal/firme`, `/portal/kpi`, `/portal/povesti`, `/portal/recomanda/preview`, `/portal/solicitari`, `/portal/solicitari/contor`, `/tenants/{tenant_id}/client-acces`, `/tenants/{tenant_id}/clienti`, `/tenants/{tenant_id}/clienti/{client_id}`, `/tenants/{tenant_id}/solicitari`, `/tenants/{tenant_id}/urme-portal`*
 
@@ -2923,7 +2923,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 ## T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
 
-*clasa MECANIC · 13 rute · 8 schimba date · 6 firme il pot exercita azi*
+*clasa MECANIC · 13 rute · 8 schimba date · 4 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/firme-scoase`, `/tenants`, `/tenants/{tenant_id}`, `/tenants/{tenant_id}/asociati`, `/tenants/{tenant_id}/scoatere`*
 

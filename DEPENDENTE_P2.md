@@ -68,13 +68,13 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 |---|---|---|---|---|
 | `solduri` | `solduri_initiale` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `plan_conturi` | `plan_conturi` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
-| `vector` | `firma_profil`, `tva_incasare_perioade` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 2 tabele; invalidat când suma se schimbă |
+| `vector` | `firma_profil`, `firma_profil_jurnal`, `tva_incasare_perioade` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 3 tabele; invalidat când suma se schimbă |
 | `parteneri` | `solduri_parteneri` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `salariati` | `salariati` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `asociati` | `asociati` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
 | `mijloace_fixe` | `mijloace_fixe` | — | nu depinde de ceas | `versiune_sursa` = suma contoarelor celor 1 tabele; invalidat când suma se schimbă |
-| `termene` | `clienti`, `d390_manual`, `facturi`, `firma_profil`, `inregistrari`, `salariati`, `solduri_initiale` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 8 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
-| `control_fiscal` | `ajustari_fiscale`, `articole`, `asociati`, `beneficii_lunare`, `bonuri`, `casa_operatiuni`, `chitante`, `clienti`, `compensari`, `concedii_medicale`, `d300_manual`, `d301_operatiuni`, `d390_manual`, `d390_reclasificare`, `efactura_primite`, `efactura_trimiteri`, `elemente_salariale`, `extras_linii`, `factura_linii`, `factura_tva_cote`, `facturi`, `firma_profil`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `perioada_confirmata`, `plan_conturi`, `pontaj`, `rapoarte_z_amef`, `rapoarte_z_cote`, `reevaluari`, `salariati`, `salariu_istoric`, `solduri_initiale`, `suspendari_contract`, `tva_incasare_perioade` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 39 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
+| `termene` | `clienti`, `d301_operatiuni`, `d390_manual`, `facturi`, `firma_profil`, `inregistrari`, `salariati`, `solduri_initiale` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 9 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
+| `control_fiscal` | `ajustari_fiscale`, `articole`, `asociati`, `beneficii_lunare`, `bonuri`, `casa_operatiuni`, `chitante`, `clienti`, `compensari`, `concedii_medicale`, `d300_manual`, `d301_operatiuni`, `d390_manual`, `d390_reclasificare`, `diurna_excedent`, `efactura_primite`, `efactura_trimiteri`, `elemente_salariale`, `extras_linii`, `factura_linii`, `factura_tva_cote`, `facturi`, `firma_profil`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `perioada_confirmata`, `plan_conturi`, `pontaj`, `rapoarte_z_amef`, `rapoarte_z_cote`, `reevaluari`, `salariati`, `salariu_istoric`, `solduri_initiale`, `suspendari_contract`, `tva_incasare_perioade` | `declaratii_depuse` | **ziua** (`YYYY-MM-DD`) | `versiune_sursa` = suma contoarelor celor 40 tabele; invalidat când suma se schimbă **sau** când se schimbă epoca |
 
 **Inversa** — ce invalidează o scriere într-un tabel:
 
@@ -91,9 +91,10 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `compensari` | `control_fiscal` |
 | `concedii_medicale` | `control_fiscal` |
 | `d300_manual` | `control_fiscal` |
-| `d301_operatiuni` | `control_fiscal` |
+| `d301_operatiuni` | `control_fiscal`, `termene` |
 | `d390_manual` | `control_fiscal`, `termene` |
 | `d390_reclasificare` | `control_fiscal` |
+| `diurna_excedent` | `control_fiscal` |
 | `efactura_primite` | `control_fiscal` |
 | `efactura_trimiteri` | `control_fiscal` |
 | `elemente_salariale` | `control_fiscal` |
@@ -102,6 +103,7 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `factura_tva_cote` | `control_fiscal` |
 | `facturi` | `control_fiscal`, `termene` |
 | `firma_profil` | `control_fiscal`, `termene`, `vector` |
+| `firma_profil_jurnal` | `vector` |
 | `furnizori` | `control_fiscal` |
 | `inregistrari` | `control_fiscal`, `termene` |
 | `inregistrari_linii` | `control_fiscal` |

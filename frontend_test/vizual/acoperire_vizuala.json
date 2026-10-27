@@ -1,5 +1,5 @@
 {
- "ui_hash": "4f50d9155d1a7997",
+ "ui_hash": "1c176de89a594598",
  "ecrane": {
   "supervizor": {
    "axe_desktop": [],
@@ -97,8 +97,23 @@
    }
   },
   "import_solduri_saga": {
-   "error": "Page.set_input_files: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#mig-file\")\n",
-   "error_mobil": "Page.set_input_files: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#mig-file\")\n"
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 8,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
   },
   "import_mijloace_saga": {
    "axe_desktop": [],
@@ -114,10 +129,7 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [
-     "mig-eq mig-eq-ok 110x23",
-     "mig-eq mig-eq-no 219x23"
-    ],
+    "tap_sub24": [],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -136,10 +148,7 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [
-     "mig-eq mig-eq-ok 131x23",
-     "mig-eq mig-eq-no 250x23"
-    ],
+    "tap_sub24": [],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -164,16 +173,7 @@
    }
   },
   "stat_plata": {
-   "axe_desktop": [
-    {
-     "id": "color-contrast",
-     "impact": "serious",
-     "n": 1,
-     "target": [
-      "button[data-sal=\"3\"]"
-     ]
-    }
-   ],
+   "axe_desktop": [],
    "apasare": {
     "vazute": 13,
     "apasate": 5,
@@ -186,10 +186,7 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [
-     "btn-link sp-deschide 19x144",
-     "btn-link sp-deschide 19x126"
-    ],
+    "tap_sub24": [],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -271,16 +268,7 @@
    }
   },
   "banca": {
-   "axe_desktop": [
-    {
-     "id": "color-contrast",
-     "impact": "serious",
-     "n": 11,
-     "target": [
-      "button[aria-controls=\"bk-det-11\"]"
-     ]
-    }
-   ],
+   "axe_desktop": [],
    "apasare": {
     "vazute": 54,
     "apasate": 5,
@@ -293,18 +281,7 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180",
-     "btn-link tn-deschide 10x180"
-    ],
+    "tap_sub24": [],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -500,16 +477,7 @@
    }
   },
   "clienti": {
-   "axe_desktop": [
-    {
-     "id": "color-contrast",
-     "impact": "serious",
-     "n": 1,
-     "target": [
-      "tr[data-partener=\"nume-AGENTIE_TURISM_MARJA_SRL\"] > td:nth-child(7) > .cl-actiuni > summary"
-     ]
-    }
-   ],
+   "axe_desktop": [],
    "apasare": {
     "vazute": 14,
     "apasate": 5,
@@ -524,20 +492,11 @@
    "mobil": {
     "tap_sub24": [],
     "overflow_x": false,
-    "title_unic": 3
+    "title_unic": 0
    }
   },
   "furnizori": {
-   "axe_desktop": [
-    {
-     "id": "color-contrast",
-     "impact": "serious",
-     "n": 1,
-     "target": [
-      "tr[data-partener=\"cui-95275466\"] > td:nth-child(6) > .fz-actiuni > summary"
-     ]
-    }
-   ],
+   "axe_desktop": [],
    "apasare": {
     "vazute": 10,
     "apasate": 5,
@@ -552,7 +511,7 @@
    "mobil": {
     "tap_sub24": [],
     "overflow_x": false,
-    "title_unic": 2
+    "title_unic": 0
    }
   },
   "parteneri": {
@@ -645,9 +604,7 @@
    },
    "axe_mobil": [],
    "mobil": {
-    "tap_sub24": [
-     "mig-eq mig-eq-ok 110x23"
-    ],
+    "tap_sub24": [],
     "overflow_x": false,
     "title_unic": 0
    }
@@ -769,7 +726,7 @@
   "ansamblu": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 165,
+    "vazute": 166,
     "apasate": 1,
     "console_errors": [],
     "layout_rupt_dupa_click": false

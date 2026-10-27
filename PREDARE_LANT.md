@@ -1,48 +1,51 @@
 Citește CLAUDE.md (versiunea din 23.10.2026 — singura sursă a regulilor de lucru: §3 lotul, §4 deficiențele, §5 testarea, §6 publicarea, §7 datele cabinetului real, §8 raportul), apoi acest PREDARE_LANT.md, înainte de a începe.
 
-# PREDARE LANȚ — **25.10.2026: lotul 12 (comenzile 12.1, 12.2 și 12.3) comis pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13, la finalul comenzii 13.1 (DECIZII „Comanda 13.1 în coadă”, „12.2 se închide fără plasa e2e completă”)**
+# PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-10-25**, la închiderea comenzilor 12.2 și 12.3 pe ramură (fără poartă, fără publicare), în commitul 12.2 —
-  nepublicat; producția rămâne pe `d850db00`.
-- **pe commit**: `d850db00` (producția, lotul 11 publicat; ultimul four-way al lotului 11 — DECIZII „Lotul 11, poarta 3”); pe ramură: 12.1 =
-  `ca518584`, 12.2 = commitul care conține această predare (SHA-ul în raportul 12.2).
+- **ultima rescriere**: **2026-10-27**, înaintea porții lotului 13 (loturile 12 + 13 pe ramură, fără poartă, fără publicare), în commitul care conține această
+  predare — nepublicat; producția rămâne pe `d850db00`.
+- **pe commit**: `d850db00` (producția, lotul 11 publicat; ultimul four-way al lotului 11 — DECIZII „Lotul 11, poarta 3”); pe ramură: lotul 12 = `ca518584` …
+  `a2e648f3`, lotul 13 = commiturile de după el până la cel care conține această predare (SHA-ul în raportul 13.1, §2 și §11).
 - **cine o rescrie și când**: se rescrie înainte de fiecare oprire (CLAUDE.md §8: registrele obligatorii DEFICIENTE, DECIZII, PREDARE_LANT).
   E fișier de STARE CURENTĂ, nu jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, starea fiecărui număr în `DEFICIENTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
 
-**25.10.2026 — COMENZILE 12.2 ȘI 12.3 ÎNCHISE PE RAMURĂ; NEPUBLICATE; EXECUTORUL OPRIT DUPĂ RAPORTUL 12.2.** Comanda 13.1
-(`~/ghid_incoming/comanda_13_1.txt`) începe NUMAI la o comandă nouă a lui Costin (DECIZII „25.10.2026 — Postmark…”: oprirea după raportul
-12.2 supersedează trecerea directă la 13.1). La finalul lui 13.1: poarta completă o singură dată pe loturile 12 + 13 (`sh scripts/poarta_lot.sh`,
-în fundal, timeout 7200000) — cu plasa e2e completă și cu TOATE mutațiile `frontend_test/e2e/mut_lot12_*.json` scrise în 12.2 / 12.3, nerulate
-încă (decizia Costin 25.10.2026) — apoi, cu poarta verde: backup al bazei chiar înainte, publicarea (ff pe `main`, post-commit, migrările
-`--productie`, four-way), raportul.
+**27.10.2026 — COMANDA 13.1 EXECUTATĂ PÂNĂ LA POARTĂ; NEPUBLICATĂ.** Costin a răspuns la 26.10 la lista de decizii (DECIZII „Comanda 13.1: deciziile lui Costin la lista din
+26.10 — verbatim”) și a precizat 681 (căutarea e a funcțiilor, căsuța în fiecare fereastră + Ctrl+K). Făcut în tura asta: 536 la NIR (a); T34; ștergerea
+generatoarelor D200 / D201 / D220 / D221 / D223 / D600 (660, cu actele de abrogare); 595 în Date firmă; valul 6 (683 Casă pe salariat, 696 avertisment SPV, cod mort);
+suita pytest întreagă (11 932; 41 picături, toate reparate pe cauză, fără slăbiri — DECIZII „clichete urcate numai cu elementele numite”); plasa e2e întreagă (1 129; 12
+picături: 3 defecte reale 701 / 702 / id-ul căutării, 9 teste puse la zi cu UI-ul); uneltele vizuale (703: contrast pe zebră, ținte pe telefon); dovezile pe copia
+firmelor de test (211: 0 neîndeplinite, „imposibile azi” numite: 538 / 591 termenul D301 26.10 a trecut, 593 / C43 / C76 de la 01.11, 646 vechi, C110); registrele
+(DEFICIENTE 249 rânduri + 682–703; DECIZII; GARZI; CONFORMITATE; F268). **Deschis, în așteptarea lui Costin: 533** — cota impozitului pe lichidare rămâne 10%
+(CF art.97 alin.(5)); el cere 16%, dar nu există act în corpus care să schimbe alin.(5) (Legea 141/2025 art.II pct.5 modifică numai alin.(7), dividendele).
 
-**La 12.2 au rulat numai testele țintite:** pytest pe fișierele atinse (I3: 817 fișiere, câte unul; după ultimele reparații: 139 de fișiere
-dependente, 1753 trecute), e2e-ul pachetelor 12.2 / 12.3 și al picăturilor din plasa 1 (toate verzi după reparații), uneltele vizuale,
-verificatorul, dovezile pe copia firmelor de test. Starea fiecărui număr: `DEFICIENTE.md` (41 trecute „rezolvată” în 12.2 / 12.3).
+**Ce urmează (în ordine):** (1) regenerarea blocurilor din baza de test și a inventarului GARZI chiar înaintea porții (`l13_raport/regen_baza_test_garzi.py` din worktree-ul
+`iconta_l13_garzi`; `scripts/scan_garzi_inventar.py --md`); (2) poarta lotului: `sh scripts/poarta_lot.sh`, în fundal, timeout 7200000, arbore curat, pe roșu repar cauza și
+rulez din nou (regula 3d); (3) cu poarta VERDE: backup al bazei chiar înainte, apoi OPRIRE — publicarea (ff pe `main` cu aprobarea SHA-ului, post-commit manual, migrările
+`--productie`, repornire, four-way) numai după ce Costin confirmă că cabinetul real nu lucrează (CLAUDE.md regimul pilot).
 
-**De făcut la publicare (operații pe producție, cu backup chiar înainte):** migrările lotului 12 cu `--productie` (inclusiv
-`migrare_sablon_recurent_stare`, `migrare_salariati_jurnal`, `migrare_termen_informative_decembrie`, `migrare_note_luna_neincheiata` cu amprenta
-nouă, `migrare_documente_preluate` cu amprenta nouă); pe F1 (`tenant_049`): `scripts/stoc2_409_1_dubluri_corectie.py --productie --scrie` și
-`scripts/stoc2_619_documente_pe_jumatate.py --productie --scrie`, ștergerea ciornelor LIC-73, deblocarea lunii 09/2026 cu motiv; curățenia
-datelor de test (`scratchpad/curatenie_date_test_lot12.py`: cabinetul 48768 „Cabinet Test Inregistrare”, contul 731 de pe F6, MF-001 / MF-PLUS și
-TI-1 de pe F2).
+**De făcut la publicare (operații pe producție, cu backup chiar înainte; lista migrărilor se verifică cu `python -m core.migrari_registru verifica HEAD`):** migrările lotului 12 + 13
+în ordinea registrului (cele 37 „nerulate pe producție”, între ele `migrare_inregistrat_oss`, `migrare_centru_cost_surse`, `migrare_lot13_salarii`, `migrare_vanzari_stoc`,
+`migrare_mf_note`); cinci dintre ele ies cu `sys.exit` înainte de înregistrare (`patron_email`, `portal`, `termen_informative_decembrie`, `termene_anuale`,
+`unic_numar_factura`): după rulare se marchează cu `python -m core.migrari_registru marcheaza <fișier> <motiv>`. Pe F1: `scripts/stoc2_409_1_dubluri_corectie.py --productie --scrie`,
+`scripts/stoc2_619_documente_pe_jumatate.py --productie --scrie`, ștergerea ciornelor LIC-73 (691), deblocarea lunii 09/2026 cu motiv; `scripts/lot13_firme2_curata_731.py --productie
+--proba`, apoi `--scrie --schema tenant_055` (confirmă schema F6); migrarea `core/migrare_explicatie_raport_z.py`; curățenia datelor de test; scriptul de citire C120 numai cu
+aprobarea lui Costin (date ale cabinetului real). Tokenul Postmark se pune din `~/.iconta/postmark_de_activat.env` în `api_keys.env` NUMAI la publicare; cheia Anthropic „fiscalos3”
+e deja instalată (procesul de producție o ia la repornire; „fiscalos” expiră 28.10, o șterge Costin din Console).
 
-**Fronturi deschise ale lotului 12 (detaliul în DEFICIENTE):** C201 (blocajul cerere cu mai multe conexiuni + DDL, fără `lock_timeout`) — de
-reparat în lotul 13, înaintea porții comune; C199 (VIES pe server la emiterea livrării IC — decizie cerută); C174 (tichetele în E3_8 — temei de
-verificat, decizie); C171 (borderourile de stornare — neverificabil pe copie); C193 [EXTERN] FACT1; 268.1 (tokenul Postmark, la Costin); dovezile
-care se pot face abia de la 31.10 / 01.11.2026 (C19 rectificativa, 629 / C172 / C173 pe D112 10/2026).
+**Fronturi deschise:** 533 (decizie / act, mai sus); 693 (VIES pe API-ul public și magazin: nu există decizie); 647 (WhatsApp: pașii în Meta, ai lui Costin); 268.1 / 560 (Postmark:
+contul în mod de test până la verificarea domeniului — DKIM / Return-Path la furnizorul DNS); dovezile care se pot face abia de la 01.11.2026 (593, C43, C76, C19 / 629 / C172 / C173 pe D112 10/2026);
+rămase din loturi vechi: C104, C161, C86, C70.
 
-**Copia firmelor de test** (`scripts/dovada_firme_test.py --cloneaza`, tenant_9049…9055, cabinetul 48765 „copie de dovadă”) e în baza de
-test și rămâne acolo peste poartă; pe ea au rulat și scripturile 409.1 / 619 și migrările noi. Capturile de dovadă NU sunt în repo: manifestul
-`dovezi/lot12/AMPRENTE.json` (488 de capturi) e în commit, imaginile intră în ZIP-ul lotului.
+**Copia firmelor de test** a fost ȘTEARSĂ din baza de test (`dovada_firme_test.py --sterge`) după dovezi; capturile (262) sunt în `dovezi/lot13/` (nu în repo, ignorate de git),
+manifestul `dovezi/lot13/AMPRENTE.json` e în commit, imaginile intră în ZIP-ul lotului.
 
-**Rămase la Costin (nu le poate face executorul):** `POSTMARK_SERVER_TOKEN` în `~/.iconta/api_keys.env` și domeniul iconta.eu în Postmark
-(12.3 pct.11); comanda needrestart cu `sudo`; instalarea D112 J27.0.7 și rândul de crontab pentru `scripts/verifica_duk_publicat.py --zilnic`
-(494); revizuirea contului WhatsApp Business în Meta (597); deciziile cerute în rapoartele 12.1 și 12.2.
+**Rămase la Costin (nu le poate face executorul):** confirmarea că cabinetul real nu lucrează și aprobarea SHA-ului pentru publicare; `POSTMARK_SERVER_TOKEN` (verificarea domeniului);
+ștergerea cheii vechi Anthropic din Console; pașii Meta pentru WhatsApp; comanda needrestart cu `sudo`; instalarea D112 J27.0.7 și crontab-ul `scripts/verifica_duk_publicat.py --zilnic`;
+actul pentru 533; deciziile din raportul 13.1 §6.
 
 ### Anterior (lotul 11, păstrat ca istorie scurtă)
 
@@ -609,8 +612,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **190** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **1394** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1362** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **1399** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1343** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **11** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -628,18 +631,18 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 
 | cifra | ce e |
 |---|---|
-| **27** | firme în portofoliu |
-| **27** | din care active |
+| **20** | firme în portofoliu |
+| **20** | din care active |
 | **15** | la cabinete reale |
-| **12** | la cabinete de test |
+| **5** | la cabinete de test |
 | **0** | perechi de firme cu același nume în același cabinet |
 
 **Cabinete**
 
 | cifra | ce e |
 |---|---|
-| **8** | cabinete |
-| **5** | din care declarate de test (tipar pe nume: TEST / PROBA) |
+| **7** | cabinete |
+| **4** | din care declarate de test (tipar pe nume: TEST / PROBA) |
 
 **Denumirea firmei (R81)**
 
@@ -647,7 +650,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 |---|---|
 | **0** | divergențe portofoliu ↔ fiscal, pe populația declarată |
 | **0** | divergențe pe TOATĂ populația, fără nicio excludere |
-| **3** | firme cu instantaneu ANAF (`nume_anaf`) |
+| **2** | firme cu instantaneu ANAF (`nume_anaf`) |
 | **2** | din care cu denumirea DIFERITĂ de cea de la ANAF |
 | **1** | din care cu alegerea deja consemnată (deci caseta nu apare) |
 
@@ -657,9 +660,9 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 |---|---|
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
-| **27** | scheme `tenant_NNN` în bază |
+| **20** | scheme `tenant_NNN` în bază |
 | **9057** | contorul `tenant_schema_seq` |
-| **9055** | maximul istoric de nume de schemă |
+| **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**
 
