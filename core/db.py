@@ -174,7 +174,12 @@ def optiuni_sesiune(env=None):
     for v in (lock, idle):
         if not _re.match(r"^[0-9]+(ms|s|min|h)?$", str(v)):
             raise ValueError("termen PostgreSQL invalid: %r (ex. 30s, 10min, 0)" % (v,))
-    return "-c lock_timeout=%s -c idle_in_transaction_session_timeout=%s" % (lock, idle)
+    # [lotul 13, poarta 1, clasa „options explicit calcă PGOPTIONS”] libpq: parametrul `options` al conexiunii ÎNLOCUIEȘTE variabila de mediu PGOPTIONS. Scripturile
+    # care citesc producția ca read-only (`cifre_referinta`, `amprente_declaratii`) își pun `PGOPTIONS=-c default_transaction_read_only=on` și apoi trec prin acest
+    # pool: fără ea aici, sesiunea lor ieșea read-WRITE și `SHOW default_transaction_read_only` (fail-closed) oprea cifrele F1–F5 ale porții. PGOPTIONS al mediului se
+    # adaugă ULTIMUL (ce cere explicit procesul bate implicitele aplicației).
+    explicit = str(env.get("PGOPTIONS") or "").strip()
+    return ("-c lock_timeout=%s -c idle_in_transaction_session_timeout=%s" % (lock, idle)) + ((" " + explicit) if explicit else "")
 
 
 def init_pool(cfg=None):

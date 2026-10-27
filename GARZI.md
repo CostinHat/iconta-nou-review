@@ -12056,3 +12056,7 @@ Contractul C5 (apel extern sub conexiune) rămâne 0: `core/mf_registru.catalog(
 vizibil” — o ține doar e2e (551 / 548 / 633 / 72) și `core/test_refuz_spre_ecran.py` pe emițători.
 
 **Dovezile pe copie (unealta `frontend_test/dovada/pasi.py`):** `{azi}` în „egal”, `posibila_pana`, `imposibila_motiv`; „imposibile azi” numite: 538, 591, 593, C43, C76, 646 vechi, C110.
+
+**Poarta 1 a lotului (27.10.2026, ROȘIE pe cifre / 3 pytest / 3 e2e) — gărzi adăugate sau ridicate:** `core/test_lot13_pgoptions_read_only.py` (705: pool-ul păstrează PGOPTIONS, o conexiune reală read-only; mutația
+roșie); `core/test_refuzuri.py` `core/d398.py` 1 (de FORMĂ, marcat lângă el) și norma 77 la 191 / 25 fișiere; adnotările TRASEE regenerate din instrument (4); e2e 121 / 283 fără dată scrisă; `declaratii.js` 704.
+Clasa „un script cu PGOPTIONS trece prin pool-ul aplicației” e apărată acum structural (șirul `optiuni_sesiune`); limita: o conexiune deschisă cu `psycopg2.connect(...)` direct în afara pool-ului nu trece pe aici.

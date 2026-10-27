@@ -24139,3 +24139,21 @@ ale lui Costin, la publicare (regimul pilot, CLAUDE.md pct.3; după backup și c
 5. Punerea tokenului Postmark în `api_keys.env`.
 6. 533 — actul pentru 16% (CF art.97 alin.(5) spune 10%; vezi intrarea din 26.10.2026).
 Rămân deschise din loturile anterioare, atinse fără schimbare: C104, C161, C86, C70.
+
+## 27.10.2026 — Lotul 13, poarta 1 ROȘIE: PGOPTIONS călcat de pool (705), preselecția din Declarații (704), teste legate de calendar, clichete
+
+Poarta 1 (`1a8dc937`, 3 h 30) a ieșit ROȘIE pe trei părți: cifrele F1–F5, 3 teste pytest și 3 teste e2e — toate cauzele reparate, fără slăbiri (regula 3d).
+- **Cifrele F1–F5 (705, defect real, de siguranță):** „sesiunea nu e read-only — refuz”. C201 a dat pool-ului `options="-c lock_timeout=… -c idle_in_transaction_session_timeout=…"`;
+  în libpq parametrul `options` ÎNLOCUIEȘTE variabila PGOPTIONS, deci scripturile care citesc producția ca read-only (`PGOPTIONS=-c default_transaction_read_only=on`:
+  `scripts/cifre_referinta.py`, `scripts/amprente_declaratii.py`) ieșeau read-WRITE; garda fail-closed a oprit cifrele (fără ea, un generator ar fi putut scrie pe producție).
+  Reparat în `core.db.optiuni_sesiune` (PGOPTIONS al mediului se adaugă ultimul); gard `core/test_lot13_pgoptions_read_only.py` (șirul de opțiuni + o conexiune reală din pool),
+  mutația scoate `explicit` și ambele teste pică. Alternativa respinsă: scoaterea `options` din pool și mutarea termenelor pe rolul bazei (`ALTER ROLE`) — schimbare pe producție,
+  neversionată, respinsă deja la C201. Clasa verificată: nu există alt loc care trece `options=` la conectare și se bazează pe PGOPTIONS (`ciorne_depasite`, `dovada_firme_test` își dau
+  `options` read-only explicit, pe conexiune proprie).
+- **704 (defect real):** De depus › „Generează din Declarații” deschidea Declarații fără tipul declarației când perioada din coadă nu mai era între cele datorate, iar firma avea altă
+  perioadă datorată a aceluiași tip (tipul simplu stă în „Alte declarații”, pliate) — `declaratii.js` deschide „Alte declarații” în acest caz. Probat de e2e 324 (verde).
+- **Teste legate de calendar (nu defecte de aplicație):** `test_def_121` (D112 pe luna preluării devine restanță după termenul ei, 26.10) și `test_def_283` (D300 T3/2026 iese din
+  „Datorate” după termen) numărau pe ziua în care fuseseră scrise; proprietatea probată rămâne aceeași (lunile dinaintea preluării nu sunt restanțe; alegerea unei declarații
+  datorate fixează trimestrul și anul), fără dată scrisă.
+- **Clichete, cu elementele numite:** `core/test_refuzuri.py` `core/d398.py` 0 → 1 (intrat în domeniu prin `TEMEI_OSS`; refuzul numărat e de FORMĂ) și norma 77 din CONFORMITATE
+  190 → 191 / 24 → 25 fișiere; adnotările `*ce face:*` ale patru pași din `TRASEE_VERIFICARI.md` rescrise după instrument (`_d398` citește acum `firma_profil`; alocările de centre).

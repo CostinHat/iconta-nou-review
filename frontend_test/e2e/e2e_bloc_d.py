@@ -711,7 +711,10 @@ def test_def_121_restantele_se_numara_de_la_luna_preluarii(patron, firma_sal):
                     % (LUNA_TRECUTA - _dt.timedelta(days=1)).strftime("%m/%Y"))),
                    None)
     assert inainte and any(r.startswith("D112 01/2026") for r in inainte), g
-    assert not [r for r in restante if r.startswith("D112")], g
+    # [lotul 13, poarta 1 — test legat de calendar] luna preluării (luna trecută) e prima luna numărată: D112 pe ea devine restanță după termenul ei
+    # (26.10.2026 pentru 09/2026) — proprietatea probată e că lunile DINAINTEA preluării nu sunt restanțe
+    luna_preluarii = LUNA_TRECUTA.strftime("%m/%Y")
+    assert not [r for r in restante if r.startswith("D112") and not r.startswith("D112 " + luna_preluarii)], g
 
 
 def test_def_122_declaratia_se_marcheaza_depusa_in_afara_iconta(patron, firma_sal):

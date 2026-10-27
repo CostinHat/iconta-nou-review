@@ -407,12 +407,17 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
     assert grupe == ["Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)", "Alte declarații"], grupe
     datorate = pg.eval_on_selector_all("#dec-tip optgroup:first-of-type option", "(os) => os.map((o) => o.textContent)")
-    d300 = [t for t in datorate if t.startswith("D300 · T3/2026 · termen ")]
-    assert d300, datorate
-    pg.select_option("#dec-tip", label=d300[0])
+    # [lotul 13, poarta 1 — test legat de calendar] D300 T3/2026 (termen 26.10.2026) a ieșit din „Datorate” în ziua de după termen (restanță, nu mai e
+    # „în următoarele 60 de zile”): se alege prima declarație TRIMESTRIALĂ datorată, oricare ar fi ea azi (D394 / D406 / D300), iar perioada ei
+    # trebuie să se fixeze în câmpuri (proprietatea probată: alegerea unei datorate fixează trimestrul și anul)
+    import re
+    trimestriale = [t for t in datorate if re.match(r"D\d+ · T\d/\d{4} · termen ", t)]
+    assert trimestriale, datorate
+    perioada = re.match(r"D\d+ · T(\d)/(\d{4}) · ", trimestriale[0])
+    pg.select_option("#dec-tip", label=trimestriale[0])
     pg.wait_for_selector("#dec-trim", timeout=10000)
     patron.captura("datorate")
-    assert (pg.input_value("#dec-trim"), pg.input_value("#dec-an")) == ("3", "2026")
+    assert (pg.input_value("#dec-trim"), pg.input_value("#dec-an")) == (perioada.group(1), perioada.group(2))
 
 
 def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_singura(patron, firma_e2e):

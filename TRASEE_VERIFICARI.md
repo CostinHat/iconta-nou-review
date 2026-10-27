@@ -27,7 +27,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`, `declaratii_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · declaratii_in_asteptare (INSERT/UPDATE) — prin `coada_api`, `declaratii_api`*
 
 - [x] declarația intră în coadă **numai cu verdict de validare păstrat** — altfel ruta refuză și spune de ce
 - rândul din coadă poartă: tip, perioadă, firmă, cine a pregătit, momentul
@@ -88,7 +88,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `declaratii_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · declaratii_in_asteptare (INSERT/UPDATE) — prin `declaratii_api`*
 
 - [x] fiecare operațiune din evidență care ar trebui să apară în declarație, apare — absența nu e vizibilă în structură
 - `operatiuni` conține și cele excluse, cu motivul și temeiul excluderii, nu doar cele incluse
@@ -99,7 +99,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `declaratii_api`*
+*ce face: Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · declaratii_in_asteptare (INSERT/UPDATE) — prin `declaratii_api`*
 
 - [x] verdictul se **păstrează**, cu momentul, versiunea validatorului și **amprenta fișierului validat**
 - un verdict pe un XML regenerat între timp nu mai e verdict — dacă amprenta diferă, se marchează stătut
@@ -2690,7 +2690,7 @@ registrul tine informatiile CARE STAU LA BAZA declaratiei.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: pune centrul de cost pe salariați, pe mijloacele fixe și pe articolele de stoc (`salariati` / `mijloace_fixe` / `articole`, UPDATE) — prin `centre_cost_api.seteaza_alocari`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
 
 - [x] un centru inactiv sau inexistent se refuză lângă rândul lui, iar din alocare nu se scrie nimic (`core/test_lot13_comp_536.py`)
 - [x] notele deja scrise nu se rescriu: centrul se vede numai pe notele generate după alocare (datele existente neafectate)

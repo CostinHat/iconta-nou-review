@@ -115,6 +115,9 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa, preset = null) {
     if (S.tenant_id) await incarcaTipuri(S.tenant_id);   // [G1] firma fixa -> tipurile+neaplicabile ale ei
     // [324] tipul dat e ales în listă: în grupa „Datorate” dacă perioada lui e acolo, altfel între celelalte
     if (S.presetPerioada) S.lunaDatorata = (S.datorate || []).some((d) => d.tip === S.tip && d.an === S.an && d.luna === S.luna) ? S.luna : null;
+    // [lotul 13, poarta 1 — 324] perioada dată nu e între datorate, dar firma mai are ALTĂ perioadă datorată a aceluiași tip (D300 09/2026 depășită, D300 10/2026
+    // datorată): tipul simplu stă în „Alte declarații”, pliate — fără ele deschise, tipul dat n-are nicio opțiune de ales și câmpul rămânea gol
+    if (S.presetPerioada && S.tip && S.lunaDatorata == null) S.alteDeschise = true;
   } catch {
     corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca firmele.</p>`;
     return;

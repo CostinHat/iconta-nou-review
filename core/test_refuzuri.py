@@ -186,6 +186,11 @@ BASELINE = {
     # de dinainte de lot, de FORMĂ sau de STARE: în `cere_z` — id-ul Z-ului nenumeric, Z-ul inexistent, Z-ul deja validat (descărcarea se
     # leagă numai de un Z nevalidat); în `marcheaza_fara_marfa` — Z-ul are deja ieșiri legate, deci nu poate fi „fără marfă”.
     "core/z_descarcare.py": 4,
+    # [lotul 13, 595] `d398.py` INTRAT ÎN DOMENIU, nu refuz normativ nou: `TEMEI_OSS` (CF art.315 alin.(3)) a apărut în modul odată cu mutarea întrebării OSS
+    # în Date firmă (`MOTIV_OSS_*`, `refuz_oss`), deci modulul „citează legea”. Singurul refuz numărat e de FORMĂ: `genereaza` oprește formularul cu
+    # lista `erori_generare` (regim, denumire, cod TVA, state, cote) — verificări de structură ale validatorului DUK, fără normă proprie; refuzul normativ
+    # (firma nu e înregistrată OSS) iese prin `refuz_oss` -> `RefuzGenerare`, cu temeiul în text.
+    "core/d398.py": 1,
 }
 
 #: Cele două cifre care NU se gardează, dar se scriu ca să nu se piardă. Dacă vreuna scade mult,
