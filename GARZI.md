@@ -9033,9 +9033,9 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1185 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1186 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 1145
+### `core/` — 1146
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9900,6 +9900,7 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot13_ops_schema.py` — [lotul 13, pachetul `ops`] Schema efemeră pe care rulează probele operațiunilor speciale (`uc_tenants`), în tranzacție anulată.
 - `core/test_lot13_ops_sold.py` — [lotul 13, deficiența 524, comanda Costin 13.1] „Orice plată, restituire sau regularizare verifică soldul contului pe care îl stinge,
 - `core/test_lot13_oss_date_firma.py` — [lotul 13, deficiența 595; decizia Costin 26.10.2026, verbatim: „6 da” la propunerea „595 — înregistrarea OSS se întreabă în Date firmă,
+- `core/test_lot13_pgoptions_read_only.py` — [lotul 13, poarta 1 (27.10.2026), clasa „`options` explicit calcă `PGOPTIONS`”] Scripturile care citesc producția ca read-only își pun
 - `core/test_lot13_portal_p1_cifre.py` — Lotul 13, comanda Costin 13.1 (verbatim în DECIZII „Comanda 13.1”) — portalul clientului, cifrele (fork P1 al subagentului PORTAL).
 - `core/test_lot13_portal_p1_forme.py` — Lotul 13 (comanda Costin 13.1), fork P1 al subagentului PORTAL — forma dovezilor și a mutațiilor (ca `test_lot12_verif_dovezi.py`):
 - `core/test_lot13_portal_p1_link.py` — Lotul 13, comanda Costin 13.1 (verbatim în DECIZII „Comanda 13.1”), deficiența 560 (fork P1 al subagentului PORTAL) — linkurile de acces.
