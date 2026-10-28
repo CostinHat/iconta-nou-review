@@ -1,0 +1,29 @@
+"""[712, comanda 14.2] Țara partenerului urmează codul lui fiscal. Un client cu cod „RO…” e în România; un cod de TVA cu prefixul altui stat al
+Uniunii („DE…”, „EL…”, „IE…”) e al acelui stat. Țara pusă altfel (lista se poate schimba cu mâna, ecranul o deduce doar la tastarea codului)
+ar duce factura în rândul greșit din D300 / D390 / D394, așa că emiterea se oprește cu motiv. Un cod numai din cifre nu spune țara (un număr
+fiscal străin poate fi numeric): fără verdict."""
+import re
+
+from core.d390 import TARI_UE
+
+_PREFIXE = set(TARI_UE) | {"RO"}
+_COD = re.compile(r"^([A-Z]{2})[0-9A-Z+*.\-]{2,}$")
+
+
+def tara_din_cod(cui):
+    """Prefixul de țară al unui cod de TVA („RO”, „DE”, „EL”…), sau None (fără prefix recunoscut: numai cifre, ori alt stat decât ale Uniunii)."""
+    c = re.sub(r"\s+", "", str(cui or "")).upper()
+    m = _COD.match(c)
+    if m and m.group(1) in _PREFIXE:
+        return m.group(1)
+    return None
+
+
+def nepotrivire(cui, tara):
+    """Motivul refuzului când țara aleasă nu e a codului fiscal, altfel None."""
+    din_cod = tara_din_cod(cui)
+    aleasa = (tara or "RO").strip().upper() or "RO"
+    if din_cod and din_cod != aleasa:
+        return ("Țara partenerului (%s) nu se potrivește cu codul fiscal %s, care e al țării %s. Alege țara %s sau corectează codul fiscal."
+                % (aleasa, re.sub(r"\s+", "", str(cui)).upper(), din_cod, din_cod))
+    return None

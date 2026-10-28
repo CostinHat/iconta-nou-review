@@ -257,6 +257,24 @@ def refuz_nota_tva_la_emitere(cur, schema, data, ce):
             "D394 (Cod fiscal art. 282 alin. (3)); nota de aici l-ar pune direct pe 4427, exigibil la emitere." % (data_ro(data), ce))
 
 
+def refuz_nota_tva_la_primire(cur, schema, data, linii):
+    """[14.2, 714] Mesajul refuzului pentru o notă din Operațiuni care ar scrie TVA-ul unei ACHIZIȚII direct în 4426 (4426 = 401 / 404:
+    factura utilităților refacturate, chiria plătită, rata de leasing) la o firmă care aplică sistemul TVA la încasare la `data`; None
+    altfel. Oglinda lui `refuz_nota_tva_la_emitere`. Temei: CF art.297 alin.(3) — dreptul de deducere a TVA aferente achizițiilor unei
+    persoane care aplică sistemul „este amânat până la data la care taxa […] a fost plătită furnizorului”; excepțiile (achiziții
+    intracomunitare, importuri, taxare inversă) nu trec prin notele de aici. Nota n-are factură, deci plata n-o poate muta din 4428 în
+    4426, iar D300 n-o vede amânată: achiziția intră pe drumul facturii primite, unde 4428 -> 4426 se face la plată, proporțional.
+    `linii` = (debit, credit, suma) ale notelor de scris."""
+    if not any(dd == "4426" and str(cc)[:3] in ("401", "404") for dd, cc, _s in linii):
+        return None
+    if not firma_in_sistem_la(cur, schema, data):
+        return None
+    from core.pdf_util import data_ro
+    return ("Firma aplică sistemul TVA la încasare la %s: factura furnizorului se înregistrează în Facturi primite, nu ca notă. Acolo TVA-ul "
+            "merge pe 4428 și se deduce (4426) abia când plătești factura, proporțional cu plata (Cod fiscal art. 297 alin. (3)); nota de "
+            "aici l-ar deduce imediat." % data_ro(data))
+
+
 def regim_emitere_la(cur, schema, data):
     """[lotul 11, 428] `text_regim_emitere` cu perioadele și decizia citite pe firmă — aceeași `regim_tva_incasare.aplica_la` ca motorul
     contării, nu o a doua definiție. Pentru ecranul de emitere (`facturi/numerotare?data=`)."""

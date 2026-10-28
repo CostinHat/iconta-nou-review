@@ -445,7 +445,9 @@ def test_numarul_de_instructiuni_se_conserva():
     #   suma măsurată pe arborele unit: 461 (fiecare apel numit mai sus).
     # [lotul 13, 683] −1 (461 -> 460): − repo_operatiuni.salariat (uc_tenants._salariat_decont) — mutat în `core/salariat_decont.alege`, comun cu
     #   Casa (verificarea salariatului stă într-un singur loc).
-    assert _apeluri_catre_repository() == 460
+    # [14.2, 595.1] +1 (460 -> 461): + repo_declaratii.inregistrat_oss în `uc_declaratii.declaratii_tipuri` (răspunsul „Înregistrată în OSS” din
+    #   Date firmă decide dacă D398 e gri la pasul 1; aceeași citire ca la generare, `declaratii_api._d398`).
+    assert _apeluri_catre_repository() == 461
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

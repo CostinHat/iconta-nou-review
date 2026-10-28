@@ -515,7 +515,7 @@ export function ecranLogin(radacina) {
       </label>
       <label class="camp">
         <span class="camp-eticheta">Email<span class="oblig">*</span></span>
-        <input type="email" class="camp-input" id="reg-email" autocomplete="off" placeholder="nume@firma.ro"${liber ? "" : " readonly"}>
+        <input type="email" class="camp-input" id="reg-email" autocomplete="email" placeholder="nume@firma.ro"${liber ? "" : " readonly"}>
         <span class="camp-ajutor">${liber ? "Aici vine linkul de confirmare — contul se activează după clic." : "Emailul din invitație — contul se creează cu el."}</span>
       </label>
       <label class="camp">
@@ -525,11 +525,11 @@ export function ecranLogin(radacina) {
       </label>
       <label class="camp">
         <span class="camp-eticheta">Parol\u0103<span class="oblig">*</span></span>
-        <input type="password" class="camp-input" id="reg-parola" autocomplete="off">
+        <input type="password" class="camp-input" id="reg-parola" autocomplete="new-password">
       </label>
       <label class="camp">
         <span class="camp-eticheta">Confirm\u0103 parola<span class="oblig">*</span></span>
-        <input type="password" class="camp-input" id="reg-parola2" autocomplete="off">
+        <input type="password" class="camp-input" id="reg-parola2" autocomplete="new-password">
       </label>
       <label class="camp">
         <span class="camp-eticheta">Nume administrator</span>

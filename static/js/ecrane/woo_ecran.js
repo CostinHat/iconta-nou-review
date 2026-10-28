@@ -50,7 +50,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
       </div>
       <div class="camp" style="margin-bottom:14px">
         <label for="wc-cs" class="camp-eticheta">Consumer Secret</label>
-        <input class="camp-input" id="wc-cs" placeholder="cs_..." type="password" autocomplete="off">
+        <input class="camp-input" id="wc-cs" placeholder="cs_..." type="password" autocomplete="off" data-bwignore="true">
       </div>
       <button class="buton-primar" id="wc-salveaza" data-actiune="PUT /tenants/{tenant_id}/woocommerce/config">Salvează</button>
       <button class="btn-link" id="wc-renunta" style="margin-left:10px">Renunță</button>

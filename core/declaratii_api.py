@@ -391,11 +391,13 @@ NEAPLICABILE_REGIM = {
 
 
 def neaplicabile_regim(vector):
-    """{tip: motiv} — din `NEAPLICABILE_REGIM`, după vectorul fiscal (`platitor_tva`, `inreg_art317`). Vector necompletat (None) -> nimic
+    """{tip: motiv} — din `NEAPLICABILE_REGIM`, după vectorul fiscal (`platitor_tva`, `inreg_art317`, `inregistrat_oss`). Vector necompletat (None) -> nimic
     blocat: un gol nu e un răspuns (ca `control_fiscal_api.neaplicabile_selector`)."""
     v = vector or {}
     platitor, art317 = v.get("platitor_tva"), v.get("inreg_art317")
     out = {}
+    if v.get("inregistrat_oss") is False:   # [595.1, 14.2] răspunsul „Nu” din Date firmă: D398 gri, cu același motiv ca la generare
+        out["d398"] = d398.MOTIV_OSS_NU
     if platitor is True:
         out["d311"] = NEAPLICABILE_REGIM["d311"]
     if platitor is False:

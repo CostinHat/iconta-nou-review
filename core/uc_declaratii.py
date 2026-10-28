@@ -32,9 +32,11 @@ def declaratii_tipuri(tenant_id, ctx):
             row = repo_firma_profil.profil_fiscal(cur)
             antet = repo_declaratii.antet_firma(cur)   # [lotul 13, 636 / 594] precompletarea formularelor manuale din Date firmă
             monede = repo_declaratii.monede_bnr(cur)   # [lotul 13, 636] moneda D318 din lista BNR
+            oss = repo_declaratii.inregistrat_oss(cur)   # [595.1, 14.2] „Înregistrată în regimul special OSS” din Date firmă
         _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2],
                  "operatiuni_ic": row[3], "regim_fiscal": row[4],   # [R94] regimul intra in vector
-                 "inreg_art317": antet["inreg_art317"]}            # [lotul 13, 595] D398 cere codul art.316 / art.317
+                 "inreg_art317": antet["inreg_art317"],            # [lotul 13, 595] D398 cere codul art.316 / art.317
+                 "inregistrat_oss": oss}                           # [595.1] ... și înregistrarea în regimul special
                 if row else {})
         # [21.08.2026] FAPTUL BATE VECTORUL: selectorul nu mai blocheaza D390/D301 pe bifa cand exista
         # operatiuni IC reale (sau cand evidenta e incompleta). Tiparul tenant_006. Sonda se cheama
@@ -55,9 +57,16 @@ def declaratii_tipuri(tenant_id, ctx):
             # [comanda Costin 9.1, A.3] obligațiile pe care le corectează formularul D710, cu denumirea oficială din nomenclator
             "obligatii_d710": _obligatii_d710(),
             # [lotul 13, 636 / 594] Date firmă pentru formularele manuale (D318, D398 …): ecranul le pune în câmpuri, vizibile și modificabile
-            "firma": {k: v for k, v in antet.items() if k not in ("platitor_tva", "inreg_art317")},
+            "firma": {**{k: v for k, v in antet.items() if k not in ("platitor_tva", "inreg_art317")}, "cod_tva": _cod_tva_firma(antet)},
             # [lotul 13, 653] statele de rezidență acceptate de validatorul D207 (lista cu căutare a formularului)
             "nomenclatoare": {"d207_stat_r": sorted(d207.STAT_R), "monede_bnr": ["RON"] + [m for m in monede if m != "RON"]}}
+
+
+def _cod_tva_firma(antet):
+    """[595.1, 14.2] Codul de TVA al firmei pentru formularele manuale: „RO” + CUI numai la firma care are cod de TVA românesc (plătitoare,
+    sau înregistrată conform art.317); altfel None — formularul nu pune din oficiu un cod pe care firma nu-l are (504)."""
+    cui = "".join(ch for ch in str(antet.get("cui") or "") if ch.isdigit())
+    return "RO" + cui if cui and (antet.get("platitor_tva") is True or antet.get("inreg_art317")) else None
 
 
 def aduce_localitati_parteneri(schema, tip):

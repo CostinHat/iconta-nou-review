@@ -266,7 +266,7 @@ async function randeazaAdminInvitatii(corp) {
     <p class="pf-intro">Invitația creează contul unui cabinet adus de tine, oricum ar fi setată înregistrarea (cardul „Înregistrare”). E valabilă 14 zile și se folosește o singură dată, numai cu emailul invitat.</p>
     <div class="rezumat-fix">   <!-- [lotul 10, 421 / 424, DS cap.9 v2.97 pct.5-6] invitația nouă și mesajul ei rămân sus cât derulezi lista -->
     <label class="camp" style="max-width:420px"><span class="camp-eticheta">Email cabinet <span class="oblig">*</span></span>
-      <input type="email" id="inv-email" class="camp-input" autocomplete="off" placeholder="nume@cabinet.ro"></label>
+      <input type="email" id="inv-email" class="camp-input" autocomplete="off" data-bwignore="true" placeholder="nume@cabinet.ro"></label>
     <button class="buton-primar" id="inv-trimite" data-actiune="POST /admin/invitatii">Trimite invitația</button>
     <div id="inv-msg" style="margin-top:10px"></div>
     </div>

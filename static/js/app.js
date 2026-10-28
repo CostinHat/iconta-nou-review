@@ -63,11 +63,11 @@ function ecranActivare(tok) {  /* activare_fe_v1 */
         <p class="ecran-nota" style="margin:0 0 16px">Seteaz\u0103-\u021bi parola pentru portalul iConta.eu.</p>
         <div class="camp" style="margin-bottom:12px">
           <label for="act-p1" class="camp-eticheta">Parol\u0103 nou\u0103 (minim 8 caractere)</label>
-          <input class="camp-input" type="password" id="act-p1">
+          <input class="camp-input" type="password" id="act-p1" autocomplete="new-password">
         </div>
         <div class="camp" style="margin-bottom:16px">
           <label for="act-p2" class="camp-eticheta">Repet\u0103 parola</label>
-          <input class="camp-input" type="password" id="act-p2">
+          <input class="camp-input" type="password" id="act-p2" autocomplete="new-password">
         </div>
         <p class="ecran-nota" id="act-msg" style="margin:0 0 10px"></p>
         <button class="buton-primar" id="act-btn" style="width:100%">Activeaz\u0103 contul</button>
@@ -97,11 +97,11 @@ function ecranResetParola(tok) {  /* [reset_parola_v1] setare parola noua din li
         <p class="ecran-nota" style="margin:0 0 16px">Setează o parolă nouă pentru contul tău iConta.eu.</p>
         <div class="camp" style="margin-bottom:12px">
           <label for="rst-p1" class="camp-eticheta">Parolă nouă (minim 8 caractere)</label>
-          <input class="camp-input" type="password" id="rst-p1">
+          <input class="camp-input" type="password" id="rst-p1" autocomplete="new-password">
         </div>
         <div class="camp" style="margin-bottom:16px">
           <label for="rst-p2" class="camp-eticheta">Repetă parola</label>
-          <input class="camp-input" type="password" id="rst-p2">
+          <input class="camp-input" type="password" id="rst-p2" autocomplete="new-password">
         </div>
         <p class="ecran-nota" id="rst-msg" style="margin:0 0 10px"></p>
         <button class="buton-primar" id="rst-btn" style="width:100%">Setează parola</button>

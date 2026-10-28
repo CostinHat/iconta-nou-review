@@ -339,7 +339,8 @@ def test_def_559_de_incasat_si_scadentarul_au_aceeasi_baza(patron, firma_559, br
             cp.wait_for_selector("#cf-de-incasat", timeout=30000)
             r = " ".join(cp.inner_text("#cf-de-incasat").split())
             assert "121,00 lei" in r and "242" not in r and "363" not in r, r
-            assert "1 factură deschisă, aceleași ca în Scadențar" in r, r
+            assert "1 factură deschisă: 121,00 lei" in r, r   # [559.1] cifra mare = contabilitatea; facturile deschise, detaliul de sub ea
+            assert "nedefalcat" not in r and "balanța" not in r and "avans" not in r, r   # explicațiile sunt ale contabilului, nu ale clientului
             c.captura("de_incasat")
             cp.keyboard.press("Escape")
             cp.goto(BAZA + "/", wait_until="domcontentloaded")

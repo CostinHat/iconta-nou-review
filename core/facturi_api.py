@@ -397,6 +397,10 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     if furnizor_incasare_v and directie != "primita":
         _er.append(("furnizor_tva_incasare", "TVA la încasare la furnizor se poate bifa doar pe facturile primite "
                                              "— pe cele emise nu se aplică."))
+    from core import tara_cod_fiscal as _tcf   # [712, 14.2] țara urmează codul fiscal al partenerului (D300 / D390 / D394 îl citesc din țară)
+    _nepotrivire_tara = _tcf.nepotrivire(tert_cui, tert_tara)
+    if _nepotrivire_tara:
+        _er.append(("tert_tara", _nepotrivire_tara))
     if _er:
         raise FacturaRefuzata(_er)
     _bon_nr, _bon_data = _marca_bon(directie, tip, bon_fiscal_nr, bon_fiscal_data, data_emitere)

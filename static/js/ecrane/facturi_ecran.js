@@ -1371,7 +1371,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div class="fd-email-box">
           <label for="fd-email-input" class="fd-email-eticheta">Trimite factura ${esc(numarCuSerie(f.serie, f.numar))} c\u0103tre:</label>
           <div class="fd-email-rand">
-            <input type="email" id="fd-email-input" class="camp-input fd-email-input" placeholder="email@client.ro" value="${esc(f.tert_email || "")}">
+            <input type="email" id="fd-email-input" class="camp-input fd-email-input" autocomplete="off" data-bwignore="true" placeholder="email@client.ro" value="${esc(f.tert_email || "")}">
             <button class="buton-primar fd-email-send" id="fd-email-send" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/email">Trimite</button>
           </div>
           <div class="em-rezultat" id="fd-email-rez"></div>

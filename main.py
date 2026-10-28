@@ -1522,6 +1522,7 @@ class SolduriIn(BaseModel):
     data_referinta: Optional[str] = None     # [C22] cerută la scriere (`solduri_api.data_balantei`); lipsa -> 422 numit
     inlocuieste: bool = False                # [426] confirmarea înlocuirii balanței existente; fără ea -> 409 cu totalurile
     metoda_stoc: Optional[str] = None        # [425] cerută când balanța are sold pe 371 și firma n-are metoda declarată
+    analitic_117: Optional[str] = None       # [527.1] cerut când balanța are sold pe sinteticul 117, fără analitic: 1171 / 1172 / 1174
 class DocumentPreluatRand(BaseModel):          # [lotul 12, 252] factura deschisă a partenerului, din forma pe facturi
     numar: str
     data: str

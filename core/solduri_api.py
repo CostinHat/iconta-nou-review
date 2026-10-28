@@ -397,6 +397,28 @@ def are_sold_marfa(randuri):
                and (_bani_d(r.get("debit")) != 0 or _bani_d(r.get("credit")) != 0) for r in (randuri or []))
 
 
+# [527.1, 14.2] Rezultatul reportat preluat pe sinteticul 117, fără analitic: soldul trebuie pus pe analiticul lui (OMFP 1802/2014, planul de conturi),
+# iar fișierul nu spune care — contabilul alege din cele trei care apar la preluare. 1171 = profitul nerepartizat / pierderea neacoperită
+# (cazul obișnuit; din el repartizează nota de dividende), 1172 = IAS (mai puțin IAS 29), 1174 = corectarea erorilor contabile.
+from core.plan_conturi_omfp import PLAN as _PLAN_OMFP   # noqa: E402
+ANALITICE_117 = tuple((c, _PLAN_OMFP[c][0]) for c in ("1171", "1172", "1174"))
+
+
+def cere_analitic_117(randuri):
+    """True dacă balanța are sold pe sinteticul `117` și niciun analitic al lui (117x): atunci contabilul alege analiticul (`muta_pe_analitic_117`)."""
+    are_analitic = any(str(r["cont"]).startswith("117") and r["cont"] != "117" for r in randuri)
+    return (not are_analitic) and any(r["cont"] == "117" and (r.get("debit") or r.get("credit")) for r in randuri)
+
+
+def muta_pe_analitic_117(randuri, analitic):
+    """Randurile cu soldul de pe `117` trecut pe analiticul ales (1171 / 1172 / 1174); celelalte rânduri neatinse. ValueError dacă alegerea nu e
+    una din `ANALITICE_117`."""
+    nume = dict(ANALITICE_117)
+    if analitic not in nume:
+        raise ValueError("Alege analiticul rezultatului reportat: %s." % ", ".join(c for c, _n in ANALITICE_117))
+    return [dict(r, cont=analitic, denumire=nume[analitic]) if r["cont"] == "117" else r for r in randuri]
+
+
 def extrage_balanta(continut, nume_fisier=""):
     """Întoarce [{cont, denumire, debit, credit}] — soldurile finale din balanță (vezi `extrage_balanta_detaliat`)."""
     return extrage_balanta_detaliat(continut, nume_fisier)["randuri"]

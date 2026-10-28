@@ -353,7 +353,12 @@ def solduri_salveaza(tenant_id, date, ctx):
             _er.fara_camp(MESAJ_CONT_IN_AFARA % ", ".join(afara))
         if cere_metoda and not (date.metoda_stoc or "").strip():
             _er.camp("metoda_stoc", MESAJ_METODA_STOC)
+        cere_117 = solduri_api.cere_analitic_117(randuri)   # [527.1] fără alegere -> refuz lângă câmp, înainte de orice scriere
+        if cere_117 and date.analitic_117 not in dict(solduri_api.ANALITICE_117):
+            _er.camp("analitic_117", MESAJ_ANALITIC_117)
         _er.refuza()
+        if cere_117:
+            randuri = solduri_api.muta_pe_analitic_117(randuri, date.analitic_117)
         try:
             rez = solduri_api.importa(conn, randuri, date.data_referinta, inlocuieste=bool(date.inlocuieste))
             if cere_metoda:
@@ -370,6 +375,12 @@ def solduri_salveaza(tenant_id, date, ctx):
 MESAJ_METODA_STOC = ("Balanța are sold pe mărfuri (371): alege metoda de stoc a firmei — global-valoric (preț cu amănuntul) sau "
                      "cantitativ-valoric (fișe de magazie, CMP). De ea depinde cum se descarcă marfa; fără ea nu se emite nicio factură cu "
                      "marfă.")
+
+
+#: [527.1] refuzul salvării unei balanțe cu sold pe sinteticul 117 (rezultat reportat), fără analitic
+MESAJ_ANALITIC_117 = ("Balanța are soldul rezultatului reportat pe contul 117, fără analitic: alege pe ce analitic se preia — 1171 (profit "
+                      "nerepartizat / pierdere neacoperită), 1172 (adoptarea IAS, mai puțin IAS 29) sau 1174 (corectarea erorilor contabile). "
+                      "Din 1171 se repartizează dividendele.")
 
 
 #: [343] refuzul contului care nu e în planul legal al normei firmei (OMFP 1802/2014 pct.594 la societăți)
@@ -422,6 +433,8 @@ def solduri_incarca(tenant_id, continut, nume_fisier, ctx):
             "rulaje": det.get("rulaje", False), "perechi": det.get("perechi", {}),
             "forma_rulaje": det.get("forma_rulaje"),   # [439] perechile cumulate: cu / fără soldul inițial al anului (din date)
             "avertisment_rulaje": None if det.get("rulaje") else solduri_api.avertisment_fara_rulaje(data_propusa),
+            "cere_analitic_117": solduri_api.cere_analitic_117(randuri),   # [527.1] soldul pe 117 se pune pe un analitic ales
+            "analitice_117": [list(a) for a in solduri_api.ANALITICE_117] if solduri_api.cere_analitic_117(randuri) else [],
             "cere_metoda_stoc": cere_metoda,
             "metode_stoc": [[_ms.GV, _ms.ETICHETE[_ms.GV]], [_ms.CV, _ms.ETICHETE[_ms.CV]]] if cere_metoda else [],
             # [426] balanța existentă (totalurile ei) și notele de după data balanței
@@ -5448,6 +5461,7 @@ def nota_leasing(tenant_id, corp, ctx):
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 212-217"
         info = {}
         with conn.cursor() as cur:
+            _refuza_deducere_imediata(cur, schema, corp["data"], r["linii"])   # [714]
             iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]
             mid = None
             if mf_reg:   # [523 / 519] bunul intră în registru, activ la validarea notei
@@ -6202,6 +6216,7 @@ def nota_obiect_inventar(tenant_id, corp, ctx):
                 if fact_exist:   # [506] factura e deja în Facturi primite, cu contarea ei: obiectul se leagă de ea, nicio notă nouă
                     info["factura_furnizor"] = "deja în Facturi primite (nr. %s): obiectul se leagă de ea, nu se înregistrează a doua oară" % corp["numar"]
                 else:
+                    _refuza_deducere_imediata(cur, schema, corp["data"], r["linii"])   # [714]
                     iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200],
                                                                     document_ref=_j.eticheta_document("Factura", corp["numar"], corp["data"]))[0]
                     for dd, cc, ss in r["linii"]:
@@ -6604,6 +6619,15 @@ def _partener_din_corp(cui, nume, cheie, eticheta):
     return _cz.cui_partener(cui) or cui, nume
 
 
+def _refuza_deducere_imediata(cur, schema, data, linii):
+    """[14.2, 714] Nota din Operațiuni care deduce TVA-ul unei achiziții pe loc (4426 = 401 / 404) nu se scrie la o firmă cu TVA la
+    încasare: refuz cu drumul corect (`tva_incasare.refuz_nota_tva_la_primire`)."""
+    from core import tva_incasare as _ti
+    motiv = _ti.refuz_nota_tva_la_primire(cur, schema, data, linii)
+    if motiv:
+        raise _erori.DateInvalide(motiv)
+
+
 def _emite_catre(conn, schema, corp, client, linie, ce):
     """[lotul 13, 506 / 530 / 531] Factura emisă către partener (chiria, refacturarea): documentul justificativ e factura din Facturi emise,
     cu numărul seriei firmei, iar nota e contarea ei de la emitere (o singură notă pe factură). Întoarce (factura_id, numar, nota_id)."""
@@ -6689,6 +6713,8 @@ def nota_chirie(tenant_id, corp, ctx):
             raise _erori.DateInvalide(_uc_comun._mesaj_intrare(e))
         ids = []
         with conn.cursor() as cur:
+            for _d0, linii, _part in note:
+                _refuza_deducere_imediata(cur, schema, corp["data"], linii)   # [714] înaintea oricărei scrieri
             for d0, linii, part in note:
                 descr = (corp.get("descriere") or d0)
                 iid = repo_contabilitate.nota_operatiune_ciorna(cur, schema, corp["data"], descr[:200])[0]

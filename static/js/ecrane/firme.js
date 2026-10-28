@@ -104,7 +104,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
         </div>
         <div class="camp" style="margin-bottom:14px">
           <label for="fn-email" class="camp-eticheta">Email client (primește automat acces la portal)</label>
-          <input class="camp-input" id="fn-email" type="email" placeholder="Opțional: emailul patronului — primește acces în portal" autocomplete="off">
+          <input class="camp-input" id="fn-email" type="email" placeholder="Opțional: emailul patronului — primește acces în portal" autocomplete="off" data-bwignore="true">
         </div>
         <button class="buton-primar" id="fn-salveaza" data-actiune="POST /tenants|POST /tenants/{tenant_id}/client-acces" disabled>Adaugă firma</button>
         <p id="fn-msg" role="alert" style="margin:8px 0 0"></p>
@@ -2338,8 +2338,8 @@ function ecranCheiReges(corp, nav, t) {
   corp.innerHTML = `<h2 class="pf-titlu">Chei API REGES</h2>
     <p class="pf-intro">Din aplicația REGES Angajator.</p>
     <div class="grila-campuri">
-      <label class="camp"><span class="camp-eticheta">Username</span><input type="text" id="rg-user" class="camp-input"></label>
-      <label class="camp"><span class="camp-eticheta">Parola</span><input type="password" id="rg-pass" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Username</span><input type="text" id="rg-user" class="camp-input" autocomplete="off" data-bwignore="true"></label>
+      <label class="camp"><span class="camp-eticheta">Parola</span><input type="password" id="rg-pass" class="camp-input" autocomplete="off" data-bwignore="true"></label>
       <div class="camp"><span class="camp-eticheta">Mediu<span class="oblig">*</span></span>${selectScurt("rg-mediu", [["test", "Test"], ["prod", "Producție"]], "", "Mediul REGES")}</div>
     </div>
     ${baraActiune(`<button class="buton-primar" id="rg-salveaza" data-actiune="POST /tenants/{tenant_id}/reges-config">Salvează</button>`, "rg-msg")}`;
@@ -7650,11 +7650,11 @@ async function ecranAccesClient(corp, nav, t) {
     corp.innerHTML = `
       <div class="camp" style="margin-bottom:12px">
         <label for="ac-email" class="camp-eticheta">Email client</label>
-        <input class="camp-input" id="ac-email" type="email" placeholder="client@firma.ro" autocomplete="off" autofocus>
+        <input class="camp-input" id="ac-email" type="email" placeholder="client@firma.ro" autocomplete="off" data-bwignore="true" autofocus>
       </div>
       <div class="camp" style="margin-bottom:14px">
         <label for="ac-nume" class="camp-eticheta">Nume (opțional)</label>
-        <input class="camp-input" id="ac-nume" placeholder="Numele persoanei">
+        <input class="camp-input" id="ac-nume" placeholder="Numele persoanei" autocomplete="off" data-bwignore="true">
       </div>
       <p class="ecran-nota" id="ac-msg" style="margin:0 0 10px"></p>
       <button class="buton-primar" id="ac-btn" data-actiune="POST /tenants/{tenant_id}/client-acces">Trimite invitația</button>

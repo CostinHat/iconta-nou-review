@@ -2309,7 +2309,7 @@ function randeazaFormularD398(corp, nav) {
   // atributelor XML (msid / msest / e_int); trimestrul e cel ales la pasul 1, spus cu numele lui
   const fd = S.firmaDate || {};
   if (!d.name && fd.nume) d.name = fd.nume;
-  if (!d.vat_id_no && fd.cui) d.vat_id_no = /^RO/i.test(String(fd.cui)) ? String(fd.cui).toUpperCase() : "RO" + String(fd.cui).replace(/\D/g, "");
+  if (!d.vat_id_no && fd.cod_tva) d.vat_id_no = fd.cod_tva;   // [595.1] numai codul pe care firma îl are; fără cod, câmpul rămâne gol
   zona.innerHTML = '<details class="dec-xml" open><summary>OSS — TVA regimuri speciale (' + cate(linii.length, "livrare", "livrări") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Contribuabilul și regimul</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-start;gap:10px;margin-bottom:8px">' +

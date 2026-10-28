@@ -610,17 +610,17 @@ async function ecranBon(corp, nav) {
 /* [lotul 13, deficiențele 553 + 559, comanda Costin 13.1]
    553: „«Profit −6.075 lei» — la rezultat negativ clientul citește «Pierdere» (și e înainte de impozit)”: rândul spune felul rezultatului
    (`kpi.tip`) și suma fără minus; cheltuielile nu cuprind impozitul pe profit / venit (grupa 69), ca rezultatul să fie înainte de impozit.
-   559: „De încasat” / „De plătit” = facturile deschise cu nota validată, aceleași rânduri ca Scadențarul portalului: lei separat de euro,
-   cu totalul în lei; ce arată balanța peste ele (sold preluat nedefalcat, avans) se spune pe rând, nu se adună tăcut. */
+   559: „De încasat” / „De plătit” = facturile deschise cu nota validată, aceleași rânduri ca Scadențarul portalului: lei separat de euro.
+   [559.1, 14.2, decizia Costin] Cifra mare e ce are firma de încasat / de plătit după contabilitate (4111 / 401); facturile deschise sunt
+   detaliul de sub ea, iar explicațiile diferenței (sold preluat nedefalcat, avans) nu apar în portal. */
 function sumePeMoneda(f) {
   const parti = (f.pe_moneda || []).filter((x) => Number(x.suma) > 0).map((x) => bani(x.suma) + " " + monedaScrisa(x.moneda));
   return parti.length ? parti.join(" + ") : "0 lei";
 }
 function subFacturi(f) {
-  const strain = (f.pe_moneda || []).some((x) => x.moneda !== "RON" && Number(x.suma) > 0);
-  const dif = Number(f.fara_factura || 0);
-  return `${cate(f.nr || 0, "factură deschisă", "facturi deschise")}, aceleași ca în Scadențar${strain ? " · în total, în lei: " + bani(f.total_lei) + " lei" : ""}` +
-    (Math.abs(dif) >= 0.01 ? ` · balanța contabilă arată ${bani(f.balanta)} lei: ${bani(Math.abs(dif))} lei ${dif > 0 ? "nu sunt legați de o factură (sold preluat nedefalcat sau avans)" : "mai puțin decât facturile (încasări sau plăți neîmpărțite pe facturi)"}` : "");
+  // [559.1, 14.2] detaliul de sub cifră: ce facturi deschise o alcătuiesc, pe monedă; fără facturi deschise nu se scrie nimic. Explicațiile
+  // diferenței față de contabilitate (sold preluat, avans) sunt ale contabilului, nu ale clientului.
+  return (f.nr || 0) > 0 ? `${cate(f.nr, "factură deschisă", "facturi deschise")}: ${sumePeMoneda(f)}` : "";
 }
 async function ecranCifre(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
@@ -650,8 +650,8 @@ async function ecranCifre(corp, nav) {
       ${rand("Cheltuieli (fără impozitul pe profit sau pe venit)", lei(k.cheltuieli))}
       ${rand(felRezultat(k.tip), lei(Math.abs(k.profit || 0)), k.tip === "pierdere" ? "var(--rosu)" : (k.tip === "profit" ? "var(--verde)" : null), "", "cf-rezultat")}
       ${rand("Bani disponibili (cas\u0103 + banc\u0103)", lei(k.cash))}
-      ${rand("De \u00eencasat de la clien\u021bi", sumePeMoneda(k.facturi_de_incasat || {}), null, subFacturi(k.facturi_de_incasat || {}), "cf-de-incasat")}
-      ${rand("De pl\u0103tit c\u0103tre furnizori", sumePeMoneda(k.facturi_de_platit || {}), null, subFacturi(k.facturi_de_platit || {}), "cf-de-platit")}
+      ${rand("De \u00eencasat de la clien\u021bi", bani(k.de_incasat) + " lei", null, subFacturi(k.facturi_de_incasat || {}), "cf-de-incasat")}
+      ${rand("De pl\u0103tit c\u0103tre furnizori", bani(k.de_platit) + " lei", null, subFacturi(k.facturi_de_platit || {}), "cf-de-platit")}
     </div>
     <h2 class="pf-titlu" style="margin-top:20px">Previziune bani (8 s\u0103pt\u0103m\u00e2ni) ${semnAjutor("F016")}</h2>
     <p class="pf-intro" id="cf-intro">Estimare pe scaden\u021bele facturilor \u2014 orientativ.</p>

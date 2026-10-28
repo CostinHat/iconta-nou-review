@@ -2997,8 +2997,47 @@ def analiza_lot13(fisiere, css="", numere_py=""):
     return out
 
 
+def analiza_lot14_2(fisiere):
+    """[(fișier, linie, COD, text)] — 708 (14.2): AUTOCOMPLETE_LOGIN. Managerul de parole completează numai formularul de autentificare și nu
+    mai propune „Actualizează autentificarea” pe formularele care nu sunt de autentificare. Regula, din atributele câmpurilor:
+      (a) formularul de autentificare (`login-form`, în `login.js`) are `autocomplete="username"` pe email și `current-password` pe parolă;
+      (b) `username` / `current-password` stau numai pe ecranele de autentificare (`login.js`, `reautentificare.js`) și pe parola curentă
+          din Setări cont; nicăieri altundeva;
+      (c) orice câmp de parolă are `current-password` / `new-password`, sau `autocomplete="off"` cu `data-bwignore="true"` (o cheie de
+          serviciu străin, nu parola contului);
+      (d) orice câmp de email scris pentru altă persoană (invitație, asistent, client) are `data-bwignore="true"` (sau `autocomplete="email"`:
+          adresa contului care se înregistrează) — altfel e citit ca formular de autentificare."""
+    import re as _re
+    out = []
+    login = fisiere.get("login.js", "")
+    m = _re.search(r'<form id="login-form"[\s\S]*?</form>', login)
+    if not m or 'id="login-email" autocomplete="username"' not in m.group(0) or 'autocomplete="current-password"' not in m.group(0):
+        out.append(("login.js", 0, "AUTOCOMPLETE_LOGIN", "formularul `login-form` nu are `username` / `current-password` pe câmpuri (708)"))
+    ecrane_login = ("login.js", "reautentificare.js")
+    for nume, t in sorted(fisiere.items()):
+        for mm in _re.finditer(r"<input\b[^>]*>", t):
+            tag = mm.group(0)
+            lin = t.count("\n", 0, mm.start()) + 1
+            ac = _re.search(r'autocomplete="([\w-]+)"', tag)
+            ac = ac.group(1) if ac else None
+            ty = _re.search(r'\btype="([\w-]+)"', tag)
+            ty = ty.group(1) if ty else "text"
+            ign = 'data-bwignore="true"' in tag
+            if ac == "username" and nume not in ecrane_login:
+                out.append((nume, lin, "AUTOCOMPLETE_LOGIN", "`autocomplete=\"username\"` în afara ecranelor de autentificare (708): " + tag[:70]))
+            if ac == "current-password" and nume not in ecrane_login and 'id="set-pv"' not in tag:
+                out.append((nume, lin, "AUTOCOMPLETE_LOGIN", "`autocomplete=\"current-password\"` în afara autentificării (708): " + tag[:70]))
+            if ty == "password" and not (ac in ("current-password", "new-password") or (ac == "off" and ign)):
+                out.append((nume, lin, "AUTOCOMPLETE_LOGIN", "câmp de parolă fără `current-password` / `new-password` (sau `off` + `data-bwignore`) (708): " + tag[:70]))
+            if ty == "email" and nume not in ecrane_login and not ign and ac != "email" and "readonly" not in tag:
+                out.append((nume, lin, "AUTOCOMPLETE_LOGIN", "câmp de email care poate fi citit ca autentificare: `data-bwignore=\"true\"` (708): " + tag[:70]))
+    return out
+
+
 rap["lot13"] = analiza_lot13(fisiere, open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read(),
                              open(os.path.join(BAZA_PY, "core", "numere.py"), encoding="utf-8").read())
+
+rap["lot14_2"] = analiza_lot14_2(fisiere)
 
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))

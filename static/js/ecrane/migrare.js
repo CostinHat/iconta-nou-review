@@ -1106,6 +1106,11 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
   const campMetoda = metode.length ? `<label class="camp"><span class="camp-eticheta">Metoda de stoc a firmei <span class="oblig">*</span></span>
       <select id="mig-metoda-stoc" class="camp-input">${ALEGE}${metode.map(([v, et]) => `<option value="${esc(v)}">${esc(et)}</option>`).join("")}</select>
       <span class="camp-ajutor">Balanța are sold pe 371; de metodă depinde descărcarea mărfii. Se scrie în Date firmă.</span></label>` : "";
+  // [527.1, 14.2] soldul de pe 117 (rezultat reportat) fără analitic: contabilul alege pe ce analitic se preia
+  const analitice117 = date.cere_analitic_117 ? (date.analitice_117 || []) : [];
+  const campAnalitic117 = analitice117.length ? `<label class="camp"><span class="camp-eticheta">Rezultatul reportat se preia pe <span class="oblig">*</span></span>
+      <select id="mig-analitic-117" class="camp-input">${ALEGE}${analitice117.map(([c, et]) => `<option value="${esc(c)}">${esc(c)} — ${esc(et)}</option>`).join("")}</select>
+      <span class="camp-ajutor">Balanța are soldul pe contul 117, fără analitic. Profitul nerepartizat sau pierderea neacoperită se preiau pe 1171; din 1171 se repartizează dividendele.</span></label>` : "";
   // [lotul 10, deficiența 426] „Înainte de înlocuire: spune că există deja o balanță, arată totalurile vechi și noi, cere confirmare”
   const existenta = date.existenta;
 
@@ -1119,11 +1124,11 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
     <div class="mig-avertismente">${_casetaFirma(date)}${_casetaInlocuire(date)}${_notaCititeBalanta(date)}</div>
     <div id="mig-rulaje"></div>
     ` + tabelPrevizualizare(coloane, randuri),
-    `<div class="grila-doc" style="grid-template-columns:${metode.length ? "minmax(220px, 1fr) minmax(240px, 1fr)" : "minmax(220px, 640px)"};margin-top:8px">
+    `<div class="grila-doc" style="grid-template-columns:${(metode.length || analitice117.length) ? "repeat(auto-fit, minmax(220px, 1fr))" : "minmax(220px, 640px)"};margin-top:8px">
       <label class="camp camp-pe-rand"><span class="camp-eticheta">Data balanței <span class="oblig">*</span></span>
       <input type="date" id="mig-data-bal" aria-label="Data balanței" class="camp-input" max="${dataIso()}" value="${esc(date.data_propusa || "")}" title="De obicei ultima zi a lunii dinaintea preluării; din ea se propune luna de început." aria-describedby="mig-data-bal-ajutor">
       <span class="camp-ajutor" id="mig-data-bal-ajutor" hidden>De obicei ultima zi a lunii dinaintea preluării; din ea se propune luna de început.</span></label>
-    ${campMetoda}</div>
+    ${campMetoda}${campAnalitic117}</div>
     <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-sold" data-actiune="POST /tenants/{tenant_id}/solduri">${existenta ? "Înlocuiește balanța" : "Salvează soldurile"}</button>`);
   nav.setInapoi(() => nav.reiaPasul());   // [C140] „←” = alegerea fișierului, în pasul lui
@@ -1153,10 +1158,11 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
       const buton = corp.querySelector("#mig-salveaza-sold");
       const data_referinta = corp.querySelector("#mig-data-bal").value;
       const metoda = corp.querySelector("#mig-metoda-stoc");
+      const analitic117 = corp.querySelector("#mig-analitic-117");
       buton.disabled = true; buton.textContent = "Salvez…";
       try {
         const rez = await api.post(`/tenants/${firma.tenant_id}/solduri`, { randuri, data_referinta, inlocuieste,
-          metoda_stoc: metoda ? metoda.value : null });
+          metoda_stoc: metoda ? metoda.value : null, analitic_117: analitic117 ? analitic117.value : null });
         // [423 a / 425 / 426, DS cap.27] confirmarea numește ce s-a scris și consecința: rulajele, balanța înlocuită, notele recalculate,
         // metoda de stoc; fără rulaje, lipsa lor se spune și după salvare
         const parti = [`${cate(rez.randuri, "cont salvat", "conturi salvate")}, cu soldurile la ${dataRo(data_referinta)}.`];
@@ -1164,6 +1170,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
         if (rez.inlocuita) parti.push(`Balanța veche (${cate(rez.inlocuita.randuri, "cont", "conturi")}${rez.inlocuita.data_referinta ? ", la " + dataRo(rez.inlocuita.data_referinta) : ""}) a fost înlocuită.`);
         if (rez.note_dupa && rez.note_dupa.numar) parti.push(`Soldurile ${rez.note_dupa.numar === 1 ? "notei" : "celor " + cate(rez.note_dupa.numar, "notă", "note")} de după ${dataRo(data_referinta)} se recalculează pe balanța nouă.`);
         if (rez.metoda_stoc) parti.push(`Metoda de stoc a firmei: ${(metode.find((m) => m[0] === rez.metoda_stoc) || [null, rez.metoda_stoc])[1]} (în Date firmă).`);
+        if (analitic117 && analitic117.value) parti.push(`Rezultatul reportat s-a preluat pe ${analitic117.value}.`);
         _migMesaj = parti.join(" ") + (rez.avertisment_rulaje ? "\n" + rez.avertisment_rulaje : "");
         _migTip = rez.avertisment_rulaje ? "avert" : "ok";
         await _adaugaUrmatorii(firma); nav.inapoiPas();   // [lotul 13, 664] „Salvarea trebuie să ducă la pașii următori necesari.”
@@ -1172,6 +1179,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
         // [426] balanța a apărut între timp (409): aceeași confirmare, cu totalurile spuse de server
         if (_inlocuire409(e, inlocuieste, eroare, "Înlocuiesc balanța", salveaza)) return;
         if (e && (e.erori_campuri || []).some((x) => x.camp === "metoda_stoc")) eroareCamp(corp, "mig-metoda-stoc", e.mesaj);
+        else if (e && (e.erori_campuri || []).some((x) => x.camp === "analitic_117")) eroareCamp(corp, "mig-analitic-117", e.mesaj);
         else arataMesaj(eroare, (e && e.mesaj) || "Eroare la salvare.", "eroare");
       }
     }

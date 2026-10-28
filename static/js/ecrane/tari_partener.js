@@ -29,3 +29,15 @@ export function taraDinCui(cui) {
   const pfx = c.slice(0, 2);
   return /^[A-Z]{2}/.test(c) && (TARI_UE_JS[pfx] || TARI_NONUE_JS[pfx]) ? pfx : null;
 }
+
+/** [712, 14.2] Motivul când țara aleasă nu e a codului fiscal (același verdict ca `core/tara_cod_fiscal.py`, care oprește emiterea):
+ *  prefixul „RO” sau al unui stat al Uniunii; un cod numai din cifre nu spune țara -> null. */
+export function nepotrivireTara(cui, tara) {
+  const c = (cui || "").replace(/\s+/g, "").toUpperCase();
+  const m = /^([A-Z]{2})[0-9A-Z+*.\-]{2,}$/.exec(c);
+  const dinCod = m && (m[1] === "RO" || TARI_UE_JS[m[1]]) ? m[1] : null;
+  const aleasa = (tara || "RO").toUpperCase();
+  return dinCod && dinCod !== aleasa
+    ? `Țara partenerului (${aleasa}) nu se potrivește cu codul fiscal ${c}, care e al țării ${dinCod}. Alege țara ${dinCod} sau corectează codul fiscal.`
+    : null;
+}
