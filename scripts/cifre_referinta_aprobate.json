@@ -82,12 +82,12 @@
     }
    },
    "10/2026": {
-    "amprenta": "05fa3c43333ef9ace8104331c34bc1539c618840aef3d0573c1f14e335c09746",
+    "amprenta": "6b494d0630ab0bcff65c9468e07df6bc3f42eb6551adee8176b679330ee6b94f",
     "randuri": {
      "R10_1 (rândul 10, coloana Valoare)": "899",
      "R10_2 (rândul 10, coloana TVA)": "99",
-     "R17_1 (rândul 19, coloana Valoare)": "9820",
-     "R17_2 (rândul 19, coloana TVA)": "1342",
+     "R17_1 (rândul 19, coloana Valoare)": "10820",
+     "R17_2 (rândul 19, coloana TVA)": "1552",
      "R22_1 (rândul 24, coloana Valoare)": "2981",
      "R22_2 (rândul 24, coloana TVA)": "626",
      "R23_1 (rândul 25, coloana Valoare)": "441",
@@ -97,13 +97,13 @@
      "R28_2 (rândul 31, coloana TVA)": "674",
      "R31_2 (rândul 34, coloana TVA)": "-43",
      "R32_2 (rândul 35, coloana TVA)": "631",
-     "R34_2 (rândul 37, coloana TVA)": "711",
-     "R37_2 (rândul 40, coloana TVA)": "711",
+     "R34_2 (rândul 37, coloana TVA)": "921",
+     "R37_2 (rândul 40, coloana TVA)": "921",
      "R3_1 (rândul 3, coloana Valoare)": "3000",
      "R3_1_1 (rândul 3.1, coloana Valoare)": "3000",
-     "R41_2 (rândul 44, coloana TVA)": "711",
-     "R9_1 (rândul 9, coloana Valoare)": "5921",
-     "R9_2 (rândul 9, coloana TVA)": "1243"
+     "R41_2 (rândul 44, coloana TVA)": "921",
+     "R9_1 (rândul 9, coloana Valoare)": "6921",
+     "R9_2 (rândul 9, coloana TVA)": "1453"
     }
    }
   },
@@ -124,16 +124,16 @@
     ]
    },
    "10/2026": {
-    "amprenta": "bf124737ea8db97e15e8ac026c3c4692bd2cb90540ccd27332b99bd62cc079e6",
+    "amprenta": "ce06ea625a386b7d95135238cbb7eee82de8372a88432b50a1a6fc257c217d3e",
     "antet": {
      "op_efectuate": "1",
      "sistemTVA": "0",
      "tip_D394": "L",
-     "totalPlata_A": "10045"
+     "totalPlata_A": "11045"
     },
     "rezumat1": [
      " tip_partener=\"1\" cota=\"11\" bazaA=\"441\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"899\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"1\" tvaA=\"48\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"99\"/",
-     " tip_partener=\"1\" cota=\"21\" bazaA=\"2981\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"5521\" facturiA=\"4\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"8\" tvaA=\"626\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1159\"/",
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"2981\" bazaAI=\"0\" bazaC=\"0\" bazaL=\"6521\" facturiA=\"4\" facturiAI=\"0\" facturiC=\"0\" facturiL=\"9\" tvaA=\"626\" tvaAI=\"0\" tvaC=\"0\" tvaL=\"1369\"/",
      " tip_partener=\"2\" cota=\"0\" bazaLS=\"0\" bazaN=\"100\" document_N=\"1\" facturiLS=\"0\" facturiN=\"1\"",
      " tip_partener=\"2\" cota=\"21\" bazaL=\"200\" facturiL=\"1\" tvaL=\"42\"/"
     ],
@@ -143,7 +143,7 @@
      " cota=\"11\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"441\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"899\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"48\" tvaAI=\"0\" tvaL=\"99\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
      " cota=\"19\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
      " cota=\"20\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"0\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"0\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"0\" nrFacturiAI=\"0\" nrFacturiL=\"0\" tvaA=\"0\" tvaAI=\"0\" tvaL=\"0\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/",
-     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"2981\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"5721\" bazaL_PF=\"0\" baza_incasari_i1=\"200\" baza_incasari_i2=\"0\" nrFacturiA=\"4\" nrFacturiAI=\"0\" nrFacturiL=\"9\" tvaA=\"626\" tvaAI=\"0\" tvaL=\"1201\" tvaL_PF=\"0\" tva_incasari_i1=\"42\" tva_incasari_i2=\"0\"/"
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"2981\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"6721\" bazaL_PF=\"0\" baza_incasari_i1=\"200\" baza_incasari_i2=\"0\" nrFacturiA=\"4\" nrFacturiAI=\"0\" nrFacturiL=\"10\" tvaA=\"626\" tvaAI=\"0\" tvaL=\"1411\" tvaL_PF=\"0\" tva_incasari_i1=\"42\" tva_incasari_i2=\"0\"/"
     ]
    }
   },
@@ -859,7 +859,7 @@
     }
    },
    "T4/2026": {
-    "amprenta": "dff9ace2446ca8446ecce69031181aa71c5f7ff8ee6659666edc3f8738dc7d26",
+    "amprenta": "d5b6bb45a366dc7862375afeae2124b55c2e048cbbad5927334f29b3fd578874",
     "randuri": {
      "R12_1 (rândul 12, coloana Valoare)": "60000",
      "R12_2 (rândul 12, coloana TVA)": "12600",
@@ -919,18 +919,18 @@
     ]
    },
    "T4/2026": {
-    "amprenta": "9bd478fc345872533d3e61ea9f7f212f39be0241683066d59783b5ecfcf48870",
+    "amprenta": "50d44b869dd516dddb3e7c5209468c4b11d9fc18a768f8be37c403cfb042351b",
     "antet": {
      "op_efectuate": "1",
      "sistemTVA": "1",
      "tip_D394": "T",
-     "totalPlata_A": "61001"
+     "totalPlata_A": "61402"
     },
     "rezumat1": [
-     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"60000\" bazaL=\"1000\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"2\" facturiL=\"1\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"12600\" tvaL=\"210\""
+     " tip_partener=\"1\" cota=\"21\" bazaA=\"0\" bazaAI=\"0\" bazaC=\"60000\" bazaL=\"1400\" facturiA=\"0\" facturiAI=\"0\" facturiC=\"2\" facturiL=\"2\" tvaA=\"0\" tvaAI=\"0\" tvaC=\"12600\" tvaL=\"294\""
     ],
     "rezumat2": [
-     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"60000\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"1000\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"2\" nrFacturiAI=\"0\" nrFacturiL=\"1\" tvaA=\"12600\" tvaAI=\"0\" tvaL=\"210\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
+     " cota=\"21\" TVABFAI=\"0\" TVAFSA=\"0\" TVAFSAI=\"0\" TVAFSL=\"0\" TVAFSLcod=\"0\" bazaA=\"60000\" bazaAI=\"0\" bazaBFAI=\"0\" bazaFSA=\"0\" bazaFSAI=\"0\" bazaFSL=\"0\" bazaFSLcod=\"0\" bazaL=\"1400\" bazaL_PF=\"0\" baza_incasari_i1=\"0\" baza_incasari_i2=\"0\" nrFacturiA=\"2\" nrFacturiAI=\"0\" nrFacturiL=\"2\" tvaA=\"12600\" tvaAI=\"0\" tvaL=\"294\" tvaL_PF=\"0\" tva_incasari_i1=\"0\" tva_incasari_i2=\"0\"/"
     ]
    }
   },
@@ -978,7 +978,7 @@
     ]
    },
    "T4/2026": {
-    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 1 partener — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L. (facturile F2T3). Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
+    "refuz": "RefuzGenerare: D406 nu se poate genera: lipsește localitatea pentru 2 parteneri — D406 cere adresa fiecărui partener (localitatea e obligatorie). AMAZON EUROPE CORE S.A R.L. (facturile F2T3); FISCALOS ICONTA S.R.L. (facturile F2T4). Pentru cei cu CUI românesc, ANAF n-a dat localitatea (nu a răspuns sau n-are adresa lor). Completează localitatea în fișa partenerului (Clienți / Furnizori) sau pe factura lui, apoi generează din nou."
    }
   },
   "balanta": {

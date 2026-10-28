@@ -8,6 +8,7 @@ from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from psycopg2.extras import RealDictCursor
 from core import stocuri_cv as _m
 from core import eticheta_nota as _et
+from core import common as _common
 from core import chei_unice as _chei   # [lotul 10, C73 / U2] cheia unică dublată -> refuz numit, nu 500
 
 
@@ -57,34 +58,32 @@ def articole(conn, schema):
                         "valoare_ciorna": None if val_v is None else str(Decimal(str(val)) - Decimal(str(val_v))),
                         "miscari_ciorna": sum(1 for m in miscari if clasa.get(m["id"]) == "ciorna"),
                         "locatii": locatii.get(a["id"], [])})
+        lex = _lexicon()
         for o in out:
-            o["observatii"] = observatii_articol(o)
+            o["observatii"] = observatii_articol(o, lex)
         return out
 
 
 #: [lotul 14, 696] unitățile de măsură care nu se fracționează: o cantitate cu zecimale la ele („Cafea boabe 2,5 buc”) e o unitate aleasă greșit
 UM_INTREGI = ("buc", "bucata", "bucăți", "bucati", "set", "pereche", "cutie", "pachet")
-_LEXICON = None
 
 
 def _lexicon():
-    global _LEXICON
-    if _LEXICON is None:
-        import json
-        import os
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "lexicon_diacritice.json"), encoding="utf-8") as f:
-            _LEXICON = json.load(f)
-    return _LEXICON
+    """Lexiconul de diacritice, citit din fișier (o singură dată pe cerere: `articole` îl dă mai departe, nu îl ține în memoria procesului)."""
+    import json
+    import os
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "lexicon_diacritice.json"), encoding="utf-8") as f:
+        return json.load(f)
 
 
-def observatii_articol(a):
+def observatii_articol(a, lex=None):
     """[lotul 14, 696] Ce e de verificat la un articol, ca listă de {fel, text}: denumirea începe cu literă mică; cuvinte scrise fără diacritice
     (numai cele pe care lexiconul corpusului legislativ le dovedește: „grau” -> „grâu”); cantitate cu zecimale la o unitate care nu se
     fracționează. Aplicația NU corectează singură denumirea (o denumire nu se rescrie fără omul care a scris-o): o semnalează, cu forma propusă."""
     den, um, out = str(a.get("denumire") or ""), str(a.get("um") or "").strip().lower(), []
     if den[:1].islower():
         out.append({"fel": "litera_mica", "text": "denumirea începe cu literă mică"})
-    lex = _lexicon()
+    lex = lex if lex is not None else _lexicon()
     cuvinte = re.findall(r"[A-Za-zĂÂÎȘȚăâîșțŞŢşţ]+", den)
     sugestii = []
     for w in cuvinte:
@@ -137,7 +136,7 @@ def reconciliere(conn, schema, articole_lista=None):
             q = lambda x: x.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
             dif = q(sold - v["valid"])
             out.append({"cont": cont, "sold_contabil": str(q(sold)), "valoare_validata": str(q(v["valid"])), "valoare_ciorna": str(q(v["ciorna"])),
-                        "diferenta": str(dif), "ok": abs(dif) <= Decimal("0.01") and not v["necalculat"], "necalculat": v["necalculat"]})
+                        "diferenta": str(dif), "ok": abs(dif) <= _common._CENT and not v["necalculat"], "necalculat": v["necalculat"]})
     return out
 
 

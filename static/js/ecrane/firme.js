@@ -45,12 +45,12 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=e37a4a688e";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
-import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=687eb87acb";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=516e78c4d3";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=15124b26d2";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=6b04f27d0c";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4c304d9be3";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=885f441ff4";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=4ad3a057bc";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=a3a52bcf20";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=891835ddea";  // [ecran_mf_v1]
 import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=bf9065cbb3";  // [lotul 10, 429]
 import { ecranCompensari } from "./compensari_ecran.js?v=ed3e73a2f0";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
@@ -2393,7 +2393,7 @@ function randeazaSituatiaStocului(corp, arts) {
   const are = (a) => !cuValid || a.valoare_validata != null;   // fără fișă validată calculabilă: „—”, nu o cifră inventată
   const val = (a) => (cuValid ? a.valoare_validata : a.valoare);
   const total = arts.reduce((s, a) => s + (are(a) ? Number(val(a)) || 0 : 0), 0);
-  const ciorna = arts.reduce((s, a) => s + (cuValid && are(a) ? Number(a.valoare_ciorna) || 0 : 0), 0);
+  const totCiorne = arts.reduce((s, a) => s + (cuValid && are(a) ? Number(a.valoare_ciorna) || 0 : 0), 0);
   z.innerHTML = `<table class="fd-tabel" id="s-situatie-tabel">
     <thead><tr><th>Articol</th><th>UM</th><th>Gestiune</th><th class="fd-td-num">Cantitate</th><th class="fd-td-num">CMP (lei)</th><th class="fd-td-num">Valoare (lei)</th><th class="fd-td-num">În ciornă (lei)</th></tr></thead>
     <tbody>${arts.map((a) => `<tr><td>${esc(a.denumire)}</td><td>${esc(a.um || "")}</td><td>${esc((a.locatii || []).join(", ") || "\u2014")}</td>
@@ -2401,7 +2401,7 @@ function randeazaSituatiaStocului(corp, arts) {
       <td class="fd-td-num">${!are(a) ? "\u2014" : (cuValid ? a.cmp_validat : a.cmp) == null ? "\u2014" : pretUnitar(cuValid ? a.cmp_validat : a.cmp)}</td>
       <td class="fd-td-num">${are(a) ? bani(val(a)) : "\u2014"}</td>
       <td class="fd-td-num">${cuValid && are(a) && Number(a.valoare_ciorna) ? bani(a.valoare_ciorna) : "\u2014"}</td></tr>`).join("")}</tbody>
-    <tfoot><tr><td colspan="5"><b>Total valoare stoc${cuValid ? " validat" : ""}</b></td><td class="fd-td-num"><b>${bani(total)}</b></td><td class="fd-td-num">${ciorna ? bani(ciorna) : "\u2014"}</td></tr></tfoot>
+    <tfoot><tr><td colspan="5"><b>Total valoare stoc${cuValid ? " validat" : ""}</b></td><td class="fd-td-num"><b>${bani(total)}</b></td><td class="fd-td-num">${totCiorne ? bani(totCiorne) : "\u2014"}</td></tr></tfoot>
   </table>`;
 }
 

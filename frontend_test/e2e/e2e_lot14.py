@@ -106,7 +106,7 @@ def test_def_c204_bilantul_refuza_fara_rulajele_preluate_si_le_foloseste_dupa_im
     assert "începe înainte de preluarea firmei" in msg and "Import date › Solduri inițiale" in msg, msg
     assert pg.locator(_F + " #bl-import-solduri").count() == 1
     # import: rulajele anului ale balanței de deschidere (date de pornire; formatul SAGA complet e probat de e2e_import_saga.py)
-    sql('UPDATE "%s".solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = sold_debitor, rulaj_an_credit = sold_creditor' % f["schema"])
+    sql('UPDATE "%s".solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = sold_debitor, rulaj_an_credit = sold_creditor' % f["schema"])   # date-de-pornire: rulajele anului ale balanței de deschidere (importul SAGA complet, cu rulaje, e probat de e2e_import_saga.py / e2e_lot10_balanta.py)
     pg.select_option(_F + " #bl-tip", "")
     pg.select_option(_F + " #bl-tip", "s1005")
     pg.wait_for_timeout(2500)
@@ -126,7 +126,7 @@ def test_def_c205_d100_pe_trimestrul_dinainte_de_preluare_se_refuza(patron, firm
     pg.wait_for_selector("#dec-trimite, #dec-gol-da, .dec-eroare", timeout=90000)
     patron.captura("d100_refuz")
     t = " ".join(patron.fereastra().split())
-    assert "D100 pe T3/%d nu se poate genera" % AZI.year in t and "Import date › Solduri inițiale" in t, t[:1500]
+    assert "D100 pe T3/%d nu se poate genera" % AZI.year in t and "Import date › Solduri inițiale" in t, t[:1500]   # AZI-dat-de-test: perioada D100 pe care o alege testul (T3 al anului curent), nu o dată pe care o produce aplicația acum
     assert pg.locator("#dec-trimite").count() == 0
 
 

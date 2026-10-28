@@ -76,6 +76,8 @@ def firma_micro(monkeypatch):
                         "declarant_nume,declarant_prenume,declarant_functie) "
                         "VALUES (1,'ZT MICRO SRL','14399840','Str 1','Cluj-Napoca','CJ','6202',"
                         "'micro','Popescu','Ion','admin')")
+            # [lotul 14, 695] firma de probă nu e preluată: luna preluării veche
+            cur.execute("UPDATE firma_profil SET luna_preluare = '2020-01-01' WHERE id = 1")
             # T1 2026: venit din exploatare 704=10.000; venit financiar 766=2.000; reducere 709 debit 500.
             _nota(cur, '2026-02-10', '4111', '704', 10000)
             _nota(cur, '2026-02-15', '5121', '766', 2000)

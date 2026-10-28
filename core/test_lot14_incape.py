@@ -100,5 +100,5 @@ def test_cardul_se_deschide_in_fereastra_lui(browser):
     pg.wait_for_selector("#in-card", timeout=5000)
     assert pg.locator(".fereastra").count() >= 1
     sus = pg.evaluate("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); return { cls: f.className, txt: f.innerText }; }")
-    assert "fer-lucru" in sus["cls"] and "Detaliul cardului" in sus["txt"], sus
+    assert "fer-lucru" in sus["cls"].split() and sus["txt"].count("Detaliul cardului") == 1, sus
     assert pg.evaluate("() => [...document.querySelectorAll('.card-rezumat')].every(b => b.tagName === 'BUTTON')")

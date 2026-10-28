@@ -243,10 +243,10 @@ def test_totalul_tabelului_ramane_in_vedere(browser, lat, inalt, ecran):
             pg.select_option("#rf-var", varianta)
         pg.wait_for_selector(sel, timeout=15000)
         pg.wait_for_timeout(300)
-        deruleaza = pg.evaluate("() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(); return c.scrollHeight - c.clientHeight; }")
+        deruleaza = pg.evaluate("() => { const c0 = [...document.querySelectorAll('.fereastra-corp')].pop(), c = c0.querySelector('.zona-derulare') || c0; return c.scrollHeight - c.clientHeight; }")   # [lotul 14, 687] tabelul derulează în zona lui
         vazut = {}
         for loc in ("inceput", "mijloc"):
-            pg.evaluate("""(loc) => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(), t = c.querySelector('table, .pf-lista');
+            pg.evaluate("""(loc) => { const c0 = [...document.querySelectorAll('.fereastra-corp')].pop(), c = c0.querySelector('.zona-derulare') || c0, t = c.querySelector('table, .pf-lista');
               c.scrollTop = loc === 'inceput' ? 0 : Math.max(0, t.offsetTop + t.offsetHeight / 2 - c.clientHeight / 2); }""", loc)
             pg.wait_for_timeout(50)
             vazut[loc] = pg.evaluate(_VEDE, sel)
@@ -277,8 +277,10 @@ def test_consolidarea_portofoliului_tine_totalul_in_vedere(browser):
 
 
 # ── 2 + 3. rezumatul lipit sus și mesajul lângă buton ─────────────────────────────────────────────────────────────────────────────
-_REZ = """(rezSel) => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(); c.scrollTop = c.scrollHeight;
-  const r = c.querySelector(rezSel); return r ? Math.round(r.getBoundingClientRect().top - c.getBoundingClientRect().top) : null; }"""
+_REZ = """(rezSel) => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(), z = c.querySelector('.zona-derulare') || c;
+  const r = c.querySelector(rezSel); if (!r) return null; const sus = () => Math.round(r.getBoundingClientRect().top - c.getBoundingClientRect().top);
+  const inainte = sus(); z.scrollTop = z.scrollHeight; c.scrollTop = c.scrollHeight;
+  return [inainte, sus(), z === c, c.scrollHeight - c.clientHeight]; }"""
 _LANGA = """([btn, msg]) => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(), rc = c.getBoundingClientRect();
   const b = document.querySelector(btn).getBoundingClientRect(), m = document.querySelector(msg).getBoundingClientRect();
   return {in_corp: m.top >= rc.top - 1 && m.bottom <= rc.bottom + 1, distanta: Math.round(Math.max(0, m.top - b.bottom, b.top - m.bottom)),
@@ -307,7 +309,7 @@ def test_stocuri_rezumatul_sus_si_mesajul_descarcarii_langa_buton(browser):
     finally:
         pg.close()
     assert not erori, erori
-    assert sus is not None and sus <= 1, sus                                # „rezumatul fix”: lipit sus după derularea la capăt
+    assert sus is not None and (sus[1] <= 1 or (sus[1] == sus[0] and sus[1] <= 80)), sus   # [lotul 14, 687] lipit sus (sticky) sau nemișcat în partea de sus la derularea zonei/corpului: [înainte, după, corpul e zona, cât derulează corpul]                                # „rezumatul fix”: lipit sus după derularea la capăt
     assert langa["in_corp"] and langa["distanta"] <= 80, langa               # „mesajele lângă buton”
 
 
@@ -320,7 +322,7 @@ def test_registru_jurnal_rezumatul_ramane_sus(browser):
     finally:
         pg.close()
     assert not erori, erori
-    assert sus is not None and sus <= 1, sus     # luna, butoanele ei și `#j-mesaj` rămân sus cât derulezi notele (10.3: „rezumatul fix”)
+    assert sus is not None and (sus[1] <= 1 or (sus[1] == sus[0] and sus[1] <= 80)), sus   # [lotul 14, 687] lipit sus (sticky) sau nemișcat în partea de sus la derularea zonei/corpului: [înainte, după, corpul e zona, cât derulează corpul]     # luna, butoanele ei și `#j-mesaj` rămân sus cât derulezi notele (10.3: „rezumatul fix”)
 
 
 def test_tipare_rezumatul_sus_si_analiza_langa_buton(browser):
@@ -342,7 +344,7 @@ def test_tipare_rezumatul_sus_si_analiza_langa_buton(browser):
     finally:
         pg.close()
     assert not erori, erori
-    assert sus is not None and sus <= 1, sus
+    assert sus is not None and (sus[1] <= 1 or (sus[1] == sus[0] and sus[1] <= 80)), sus   # [lotul 14, 687] lipit sus (sticky) sau nemișcat în partea de sus la derularea zonei/corpului: [înainte, după, corpul e zona, cât derulează corpul]
     assert langa["in_corp"] and langa["distanta"] <= 80, langa
 
 

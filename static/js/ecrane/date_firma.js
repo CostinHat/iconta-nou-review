@@ -717,9 +717,8 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     }
     let redenumit = false;
     try {
-      // [LOTUL 11, 04.09.2026] Denumirea (identitatea firmei) se scrie LA URMĂ și numai după ce restul a intrat: un act care se refuză nu
-      // lasă în urmă o firmă redenumită. Se trimite DOAR dacă s-a schimbat (un `PUT` la fiecare salvare ar consemna o „alegere" pe care
-      // nimeni n-a făcut-o). Confirmarea vizibilă stă în același bloc cu actul (DS cap.27).
+      // [LOTUL 11, 04.09.2026] Denumirea (identitatea firmei) se scrie LA URMĂ și numai după ce restul a intrat: un act care se refuză nu lasă în
+      // urmă o firmă redenumită; se trimite DOAR dacă s-a schimbat (un `PUT` la fiecare salvare ar consemna o „alegere" pe care nimeni n-a făcut-o).
       if (numePortofoliu !== ((t && t.nume) || "")) await api.put(`/tenants/${tenantId}`, { nume: numePortofoliu });
       redenumit = true;
       await _redeseneazaPeLoc(corp, nav, tenantId, opt);   // [retest 08.10] după salvare nu se mai sare la câmp; [525] rămâi unde lucrai

@@ -79,14 +79,15 @@ def test_rezumat_caseta_fisierele_reale_sunt_curate(reguli, reale):
 
 
 def test_rezumat_caseta_mutatia_balanta_veche_e_prinsa(reguli, reale):
-    """MUTAȚIA: caseta rulajelor pusă înapoi în rezumatul Balanței (forma de dinainte de 621) -> prinsă."""
+    """MUTAȚIA: caseta rulajelor pusă înapoi în rezumatul Balanței (forma de dinainte de 621; [lotul 14, 687] acum rulajele sunt card-rezumat
+    în `#b-carduri`, deci caseta se pune înapoi în `.rezumat-fix`, înaintea cardurilor) -> prinsă."""
     css, fis = reale
     f = fis["firme.js"]
-    ancora = "      ${randCiorne(b && b.ciorne)}\n      </div>\n      ${casetaRulaje}\n"
+    ancora = '      </div>\n      <div id="b-carduri"></div>\n      ${tabel}\n'
     assert f.count(ancora) == 1, "ANTI-VACUU: ancora Balanței lipsește"
-    mutat = f.replace(ancora, "      ${randCiorne(b && b.ciorne)}\n      ${casetaRulaje}\n      </div>\n")
+    mutat = f.replace(ancora, '      <div class="caseta-atentie" id="b-rulaje"><div class="ca-mesaj">rulaje lipsă</div></div>\n' + ancora)
     rez = _coduri(reguli["analiza_fereastra_tabel"](css, fis["navigator.js"], dict(fis, **{"firme.js": mutat})), "REZUMAT_CASETA")
-    assert [r[0] for r in rez] == ["firme.js"] and "casetaRulaje" in rez[0][3], rez
+    assert [r[0] for r in rez] == ["firme.js"] and "caseta-atentie" in rez[0][3], rez
 
 
 # ── TABEL_NOTE ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────

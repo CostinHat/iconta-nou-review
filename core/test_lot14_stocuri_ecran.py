@@ -7,7 +7,6 @@ MUTAȚII: cardurile scoase din `ecranStocuri` -> pică; tabelul pe valoarea înt
 """
 import json
 
-import pytest
 
 from core.test_stocuri_situatie import MOUNT, br  # noqa: F401 — harness-ul ecranului Stocuri
 
@@ -65,13 +64,14 @@ def test_cardurile_spun_reconcilierea_ciornele_si_articolele_de_verificat(br):
     pg = _pagina(b, port, REC)
     carduri = pg.eval_on_selector_all("#s-carduri .card-rezumat", "e => e.map(x => [x.tagName, x.dataset.card, x.innerText.trim()])")
     assert [c[:2] for c in carduri] == [["BUTTON", "reconciliere"], ["BUTTON", "ciorne"], ["BUTTON", "articole"], ["BUTTON", "nir"]], carduri
-    assert "cont 371, fișele cu 25,00 lei mai mult" in carduri[0][2], carduri
-    assert "2 mișcări de stoc în ciornă" in carduri[1][2] and "40,00 lei" in carduri[1][2], carduri
-    assert "2 articole de verificat" in carduri[2][2] or "3 articole de verificat" in carduri[2][2], carduri
+    assert [c[2] for c in carduri] == ["Stoc validat față de balanță: cont 371, fișele cu 25,00 lei mai mult",
+                                       "2 mișcări de stoc în ciornă (40,00 lei), nu intră în stocul validat",
+                                       "3 articole de verificat: dubluri, cantități cu zecimale, denumiri", "1 NIR în luna aleasă"], carduri
     pg.click("[data-card='reconciliere']")
     pg.wait_for_selector(".fer-proba .fd-tabel", timeout=5000)
-    assert "Sold în balanță" in pg.inner_text(".fer-proba") and "25,00" in pg.inner_text(".fer-proba")
+    capete = pg.eval_on_selector_all(".fer-proba .fd-tabel th", "e => e.map(x => x.innerText.trim())")
+    assert capete == ["Cont", "Sold în balanță (lei)", "Stoc validat în fișe (lei)", "Diferență (lei)", "În ciornă (lei)"], capete
     pg.close()
     pg = _pagina(b, port, [{"cont": "371", "sold_contabil": "425.00", "valoare_validata": "425.00", "valoare_ciorna": "40.00", "diferenta": "0.00", "ok": True, "necalculat": 0}])
     c0 = pg.inner_text("[data-card='reconciliere']")
-    assert "425,00" in c0 and "balanța 371" in c0 and "✓" in c0, c0
+    assert c0 == "Stoc validat 425,00 lei = balanța 371 ✓", c0

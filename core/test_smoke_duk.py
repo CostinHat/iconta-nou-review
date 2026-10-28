@@ -48,6 +48,8 @@ def conn_smoke():
                     "(1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','BCR','RO49RNCB0000000000000001',"
                     "'a@b.ro','0700000000','profit',true,'L','Pop','Ion','administrator',false) "
                     "ON CONFLICT (id) DO UPDATE SET nume=EXCLUDED.nume")
+                # [lotul 14, 695] firma de probă nu e preluată: luna preluării veche, ca firma să fie „întreagă în iConta"
+                cur.execute("UPDATE firma_profil SET luna_preluare = '2020-01-01' WHERE id = 1")
                 cur.execute("WITH s AS (INSERT INTO salariati (cnp,nume,prenume,data_angajare,ore_zi,judet_casa) VALUES ('1900101410011','POPESCU','ION','2024-01-01',8,'B') RETURNING id, data_angajare), i AS (INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) SELECT id, data_angajare, 5000 FROM s) SELECT id FROM s")
                 cur.execute("INSERT INTO asociati (nume,cnp,cota) VALUES ('ASOCIAT UNU','1900101410011',100)")
                 # nota venituri (704) + cheltuieli (607) in T2 -> d100 T2, d101 anual

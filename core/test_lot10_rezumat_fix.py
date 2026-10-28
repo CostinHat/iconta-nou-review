@@ -203,10 +203,13 @@ _LISTA_JS = """([cod, randuri]) => {
     new Function('_corp', 'fer', cod + '\\n_lateste();')(_corp, fer);
     const lista = document.querySelector('#lista');
     const r = (e) => Math.round(e.getBoundingClientRect().top), j = (e) => Math.round(e.getBoundingClientRect().bottom);
+    // [lotul 14, 687] lista derulează în zona ei proprie (`.zona-derulare`, pusă de navigator), nu în corpul ferestrei
+    const zona = lista.closest('.zona-derulare') || _corp;
     const o = {clase: [...fer.classList].sort(), listaOverflow: getComputedStyle(lista).overflowY, listaSh: lista.scrollHeight, listaCh: lista.clientHeight,
-               corpSh: _corp.scrollHeight, corpCh: _corp.clientHeight};
-    _corp.scrollTop = 1e7;
-    o.dupa = {corp: r(_corp), rez: r(document.querySelector('#rez')), rezJos: j(document.querySelector('#rez')), cap: r(document.querySelector('#cap'))};
+               corpSh: _corp.scrollHeight, corpCh: _corp.clientHeight, zonaSh: zona.scrollHeight, zonaCh: zona.clientHeight, zonaEsteCorp: zona === _corp};
+    const rez0 = r(document.querySelector('#rez'));
+    zona.scrollTop = 1e7;
+    o.dupa = {corp: r(_corp), rez: r(document.querySelector('#rez')), rezJos: j(document.querySelector('#rez')), cap: r(document.querySelector('#cap')), rez0, padSus: parseFloat(getComputedStyle(_corp).paddingTop) || 0};
     gata(o);
   }; });
 }"""
@@ -216,9 +219,12 @@ def test_jurnalul_activitatii_se_deruleaza_in_corp_cu_rezumatul_si_antetul_sus(p
     o = pagina.evaluate(_LISTA_JS, [_cod_lateste(), 120])
     # comanda 10.1 pct.5: „se derulează doar tabelul din mijloc” — prin corp: lista nu mai e cutie cu derulare proprie (avea 280 px)
     assert o["clase"] == ["fer-tabel", "fereastra"] and o["listaOverflow"] not in ("auto", "scroll") and o["listaSh"] <= o["listaCh"] + 1, o
-    assert o["corpSh"] > o["corpCh"] + 1000, o
+    # [lotul 14, 687] „se derulează doar tabelul”: zona listei derulează (nu corpul), iar corpul ferestrei rămâne nemișcat
+    assert not o["zonaEsteCorp"] and o["zonaSh"] > o["zonaCh"] + 1000 and o["corpSh"] <= o["corpCh"] + 1, o
     # „rezumatul stă fix sus”: după derularea la capăt, perioada și numărul evenimentelor sunt lipite sus, iar antetul listei sub ele
-    assert o["dupa"]["rez"] == o["dupa"]["corp"] and abs(o["dupa"]["cap"] - o["dupa"]["rezJos"]) <= 1, o
+    # [lotul 14, 687] rezumatul nu se mișcă la derulare (stă primul în corp, sub marginea lui de sus), iar antetul listei stă lipit sub el
+    d = o["dupa"]
+    assert d["rez"] == d["rez0"] == d["corp"] + d["padSus"] and abs(d["cap"] - d["rezJos"]) <= 1, o
 
 
 # ── 5. ACTIUNE_TABEL_NEFIXATA lărgită la ZONELE ferestrei cu tabel (DS cap.9 v2.97 pct.6) ──────────────────────────────────────────────

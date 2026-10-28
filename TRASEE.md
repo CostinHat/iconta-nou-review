@@ -1469,21 +1469,22 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T11 — Închiderea lunii
 
-**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 4) · **refuzuri explicite:** 13
+**Clasa:** MECANIC · **rute:** 8 (din care schimba date: 5) · **refuzuri explicite:** 22
 
-**Cine:** rol cerut: `admin_firma` · drept fin: `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 0 din 4.**
+**Cine:** rol cerut: `admin_firma` · drept fin: `poate_pregati`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 0 din 5.**
 
 **Pasii, din cod:**
 
 - `GET /tenants/{tenant_id}/facturi/perioada` — garda `cere_context`
 - `POST /tenants/{tenant_id}/facturi/perioada/confirma` — garda `cere_drept` drept:poate_valida
 - `POST /tenants/{tenant_id}/facturi/perioada/redeschide` — garda `cere_drept` rol:admin_firma
+- `POST /tenants/{tenant_id}/inchidere/regularizare-tva` — garda `cere_drept` drept:poate_pregati
 - `DELETE /tenants/{tenant_id}/perioade-blocate` — garda `cere_drept` rol:admin_firma
 - `GET /tenants/{tenant_id}/perioade-blocate` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/perioade-blocate` — garda `cere_drept` drept:poate_valida
 - `GET /tenants/{tenant_id}/perioade-blocate/istoric` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `inchidere_luna`, `mf_registru`, `migrare_inchideri`, `reevaluare_valuta`, `repo_contabilitate`, `repo_mijloace_fixe`, `uc_comun`
+**Module:** `afirmatii`, `inchidere_an`, `inchidere_luna`, `mf_registru`, `migrare_inchideri`, `reevaluare_valuta`, `repo_contabilitate`, `repo_mijloace_fixe`, `uc_comun`
 
 **Scrie in:** `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `mijloace_fixe_jurnal` (INSERT) · `perioade_blocate` (DELETE/INSERT) · `perioade_inchideri` (INSERT) · `plan_conturi` (DELETE/INSERT) · `rapoarte_z_amef` (INSERT) · `rapoarte_z_cote` (INSERT) · `reevaluari_valuta` (INSERT)
 
@@ -1493,7 +1494,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T12 — Închiderea anului și situațiile financiare
 
-**Clasa:** MECANIC · **rute:** 10 (din care schimba date: 5) · **refuzuri explicite:** 44
+**Clasa:** MECANIC · **rute:** 10 (din care schimba date: 5) · **refuzuri explicite:** 48
 
 **Cine:** rol cerut: `admin_firma`, `verificat-în-corp` · drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 5.**
 

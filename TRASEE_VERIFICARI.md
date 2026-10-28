@@ -448,7 +448,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T05 — Nota contabilă — de la document la registrul-jurnal
 
-*clasa MECANIC · 40 rute · 29 schimba date · 20 firme il pot exercita azi*
+*clasa MECANIC · 40 rute · 29 schimba date · 21 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/dividende-impartire`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/jurnal/{nota_id}/depasita`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
 
@@ -1093,7 +1093,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T11 — Închiderea lunii
 
-*clasa MECANIC · 7 rute · 4 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 8 rute · 5 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi/perioada`, `/tenants/{tenant_id}/perioade-blocate`, `/tenants/{tenant_id}/perioade-blocate/istoric`*
 
@@ -1137,7 +1137,7 @@ faptica, pe baza listelor de inventariere.
 
 *garda `cere_rol` · rol:admin_firma · scrie in perioade_blocate*
 
-*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_inchideri (INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · reevaluari_valuta (INSERT) — prin `migrare_inchideri`, `reevaluare_valuta`, `repo_contabilitate`, `repo_mijloace_fixe`*
+*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE) · mijloace_fixe_jurnal (INSERT) · perioade_inchideri (INSERT) · plan_conturi (DELETE/INSERT) · rapoarte_z_amef (INSERT) · rapoarte_z_cote (INSERT) · reevaluari_valuta (INSERT) — prin `inchidere_an`, `migrare_inchideri`, `reevaluare_valuta`, `repo_contabilitate`, `repo_mijloace_fixe`*
 
 - [x] închiderea e un act deliberat, cu **autor și moment** consemnate
 - după închidere, nicio scriere în perioada aceea nu mai trece — verificat pe toate cele 39 de operațiuni, nu doar pe cele testate
@@ -1147,6 +1147,17 @@ faptica, pe baza listelor de inventariere.
 - **și sunt DOUĂ acte de închidere, dintre care doar unul verifică.** `core/inchidere_luna.py` (21.08) verifică un blocaj real — e-Facturi primite și neînregistrate — și **refuză motivat**, iar o modificare **de-confirmă automat**. Dar el scrie în `perioada`, pe domeniul `facturi`: e o **afirmație** despre completitudine. **Poarta care oprește scrierile e `perioade_blocate`** (citită de `_cere_luna_deschisa` la fiecare notă) — și aceea nu verifică nimic. **Verificarea există, dar nu e pe poartă.**
 - **redeschiderea nu lasă urmă.** `DELETE /perioade-blocate` **șterge rândul**: dispare și `blocat_de`, și `blocat_la`, și faptul că perioada a fost vreodată închisă. Tabela n-are coloană de motiv. Asta e **interdicția 36** („o redeschidere de perioadă fără motiv consemnat”) și **P15** („redeschiderea e act consemnat, cu motiv”) — direct, nu prin analogie
 - **cifra care încadrează:** o singură perioadă e blocată azi, pe toate cele 17 firme (`tenant_001`). Deci efectul n-a fost produs — e prag 2, cauză unică, dovedită
+
+### `POST /tenants/{tenant_id}/inchidere/regularizare-tva`
+
+*garda `cere_drept` · **fara rol** · drept:poate_pregati*
+
+*ce face: [lotul 14, deficiența 688] Propune (ciornă) nota de regularizare a TVA — poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) — prin `inchidere_an`*
+
+- [x] propunerea scrie **numai o ciornă** (`sursa = regularizare_tva`, status `ciorna`), datată la sfârșitul perioadei fiscale a TVA; nota intră în evidență abia după validare, în Registrul jurnal — verificat de `core/test_lot14_regularizare_tva.py` (`test_luna_cu_4426_si_4427_cu_sold_nu_se_poate_inchide_si_aplicatia_propune_nota`) și de `frontend_test/e2e/e2e_lot14.py::test_def_c206_inchiderea_lunii_cere_regularizarea_tva_si_o_propune`
+- [x] a doua apăsare **înlocuiește** ciorna, nu o dublează — `test_ruta_propunerii_intoarce_nota_propusa_si_apare_in_blocaj`
+- [x] la plătitorul trimestrial propunerea există numai la sfârșitul trimestrului (3/6/9/12), iar o firmă neplătitoare sau o lună fără sold nu primește nimic — `test_trimestrial_regularizeaza_numai_la_sfarsitul_trimestrului`, `test_firma_neplatitoare_si_luna_fara_sold_nu_au_blocaj`
+- verificarea care rămâne de făcut cu contabilul: nota propusă pune diferența în 4423 (TVA de plată) sau 4424 (TVA de recuperat) — de confirmat pe firma-pilot, cu cifrele declarației D300 a lunii
 
 ## T12 — Închiderea anului și situațiile financiare
 
@@ -1211,7 +1222,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T13 — Trecerea de regim fiscal
 
-*clasa MECANIC · 12 rute · 6 schimba date · 20 firme il pot exercita azi*
+*clasa MECANIC · 12 rute · 6 schimba date · 21 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/migrare/vector`, `/tenants/{tenant_id}/firma-profil`, `/tenants/{tenant_id}/firma-profil/date`, `/tenants/{tenant_id}/tva-incasare/neexigibile`, `/tenants/{tenant_id}/tva-incasare/verifica-anaf`, `/tenants/{tenant_id}/vector`*
 
@@ -1862,7 +1873,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T21 — Rețeta și producția
 
-*clasa MECANIC · 9 rute · 7 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 9 rute · 7 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/produse`, `/tenants/{tenant_id}/retete`*
 

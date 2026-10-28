@@ -81,7 +81,7 @@ async function randeaza(corp, nav, mesajOk) {
       <label class="camp" style="max-width:340px;margin-bottom:10px"><span class="camp-eticheta">Caută cabinet</span><input type="text" id="ac-cauta" class="camp-input" placeholder="nume cabinet"></label>
       <div id="ac-mesaj"></div>
     </div>
-    <div class="pf-lista zebra-lista" id="ac-lista">${randuri}</div>
+    <div class="pf-lista zebra-lista" id="ac-lista" data-zona-derulare>${randuri}</div>
   `;
   if (mesajOk) arataMesaj(corp.querySelector("#ac-mesaj"), mesajOk, "ok");
 

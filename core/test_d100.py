@@ -136,6 +136,8 @@ def conn_schema_micro():
                     "regim_fiscal, platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
                     "VALUES (1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','micro',true,'L','Pop','Ion','administrator') "
                     "ON CONFLICT (id) DO UPDATE SET regim_fiscal=EXCLUDED.regim_fiscal")
+                # [lotul 14, 695] firma de probă nu e preluată: luna preluării veche
+                cur.execute("UPDATE firma_profil SET luna_preluare = '2020-01-01' WHERE id = 1")
                 cur.execute("INSERT INTO inregistrari (data, status, sursa) "
                             "VALUES ('2026-05-15','validata','test') RETURNING id")
                 iid = cur.fetchone()[0]

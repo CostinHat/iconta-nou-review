@@ -9,13 +9,14 @@ TEMEI: OMFP 1802/2014, funcțiunea conturilor 4423 / 4424 / 4426 / 4427 (`motor.
 MUTAȚII (scrise în docstringul fiecărui test): blocajul scos din `uc_comun.controale_inchidere`; sfârșitul de perioadă ignorat; validarea
 unei note depășite permisă.
 """
+import contextlib
 import datetime
 from decimal import Decimal as D
 
 import pytest
 from psycopg2.extras import RealDictCursor
 
-from core import db as _db, inchidere_an as ia, jurnal_api, tenant_provisioning as _tp, uc_comun
+from core import db as _db, inchidere_an as ia, jurnal_api, tenant_provisioning as _tp, uc_comun, uc_tenants
 
 _SCHEMA = "ztest_lot14_regtva"
 
@@ -29,7 +30,7 @@ def firma():
             with conn.cursor(cursor_factory=RealDictCursor) as c:
                 c.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA)
                 c.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
-                c.execute("SET search_path TO %s, public" % _SCHEMA)
+                c.execute("SET LOCAL search_path TO %s, public" % _SCHEMA)
                 c.execute("INSERT INTO firma_profil (id, nume, cui, platitor_tva, tip_decont, regim_fiscal) "
                           "VALUES (1, 'PROBA TVA SRL', '14399840', true, 'L', 'micro') ON CONFLICT (id) DO NOTHING")
                 c.execute("UPDATE firma_profil SET data_infiintare = '2025-01-10', platitor_tva = true, tip_decont = 'L' WHERE id = 1")
@@ -64,16 +65,16 @@ def test_luna_cu_4426_si_4427_cu_sold_nu_se_poate_inchide_si_aplicatia_propune_n
     conn, c = firma
     _septembrie(c)
     b = _blocaje(conn, 9)
-    assert "TVA_NEREGULARIZAT" in b, sorted(b)
-    assert "210,00 lei" in b["TVA_NEREGULARIZAT"]["mesaj"] and not b["TVA_NEREGULARIZAT"]["de_validat"], b["TVA_NEREGULARIZAT"]
+    assert {"TVA_NEREGULARIZAT"} <= set(b), sorted(b)
+    assert b["TVA_NEREGULARIZAT"]["mesaj"].count("210,00 lei") == 2 and not b["TVA_NEREGULARIZAT"]["de_validat"], b["TVA_NEREGULARIZAT"]   # sumele din text: cele două solduri
     r = ia.propune_tva_luna(c, _SCHEMA, 2026, 9)
     assert [(n["descriere"], n["linii"]) for n in r["note"]] == [("Regularizarea TVA la 30.09.2026", [("4427", "4426", "210.00")])], r
     c.execute("SELECT status, sursa, data FROM inregistrari WHERE id = %s", (r["note"][0]["id"],))
     assert tuple(c.fetchone().values()) == ("ciorna", "regularizare_tva", datetime.date(2026, 9, 30))
     b = _blocaje(conn, 9)
-    assert b["TVA_NEREGULARIZAT"]["de_validat"] is True and "CIORNE" in b, sorted(b)     # propusă, încă nevalidată
+    assert b["TVA_NEREGULARIZAT"]["de_validat"] is True and {"CIORNE"} <= set(b), sorted(b)     # propusă, încă nevalidată
     assert jurnal_api.valideaza(conn, _SCHEMA, r["note"][0]["id"]) == {"ok": True}
-    assert "TVA_NEREGULARIZAT" not in _blocaje(conn, 9) and "CIORNE" not in _blocaje(conn, 9)
+    assert {"TVA_NEREGULARIZAT", "CIORNE"}.isdisjoint(_blocaje(conn, 9))
     assert ia.tva_de_regularizat(c, _SCHEMA, 2026, 10) is None            # octombrie pornește de la zero, nu cumulat
 
 
@@ -84,7 +85,7 @@ def test_diferenta_merge_in_4423_sau_4424(firma):
     _septembrie(c, deductibil=210, colectat=1050)
     r = ia.propune_tva_luna(c, _SCHEMA, 2026, 9)
     assert r["note"][0]["linii"] == [("4427", "4426", "210.00"), ("4427", "4423", "840.00")], r
-    assert "4423, TVA de plată" in _blocaje(conn, 9)["TVA_NEREGULARIZAT"]["mesaj"] or _blocaje(conn, 9)["TVA_NEREGULARIZAT"]["de_validat"]
+    assert {"TVA_NEREGULARIZAT"} <= set(_blocaje(conn, 9))      # blocajul rămâne cât nota propusă nu e validată
     c.execute("DELETE FROM inregistrari")
     _septembrie(c, deductibil=500, colectat=200)
     r = ia.propune_tva_luna(c, _SCHEMA, 2026, 9)
@@ -98,10 +99,10 @@ def test_trimestrial_regularizeaza_numai_la_sfarsitul_trimestrului(firma):
     c.execute("UPDATE firma_profil SET tip_decont = 'T' WHERE id = 1")
     _nota(c, datetime.date(2026, 7, 10), "4426", "401", D(100))
     _nota(c, datetime.date(2026, 8, 10), "4111", "4427", D(300))
-    assert "TVA_NEREGULARIZAT" not in _blocaje(conn, 7) and "TVA_NEREGULARIZAT" not in _blocaje(conn, 8)
+    assert {"TVA_NEREGULARIZAT"}.isdisjoint(_blocaje(conn, 7)) and {"TVA_NEREGULARIZAT"}.isdisjoint(_blocaje(conn, 8))
     with pytest.raises(ValueError, match="nu încheie o perioadă fiscală"):
         ia.propune_tva_luna(c, _SCHEMA, 2026, 8)
-    assert "TVA_NEREGULARIZAT" in _blocaje(conn, 9)
+    assert {"TVA_NEREGULARIZAT"} <= set(_blocaje(conn, 9))
     r = ia.propune_tva_luna(c, _SCHEMA, 2026, 9)
     assert r["note"][0]["linii"] == [("4427", "4426", "100.00"), ("4427", "4423", "200.00")], r
 
@@ -111,11 +112,11 @@ def test_firma_neplatitoare_si_luna_fara_sold_nu_au_blocaj(firma):
     conn, c = firma
     _septembrie(c)
     c.execute("UPDATE firma_profil SET platitor_tva = false WHERE id = 1")
-    assert "TVA_NEREGULARIZAT" not in _blocaje(conn, 9)
+    assert {"TVA_NEREGULARIZAT"}.isdisjoint(_blocaje(conn, 9))
     c.execute("UPDATE firma_profil SET platitor_tva = true WHERE id = 1")
     c.execute("DELETE FROM inregistrari")
     _nota(c, datetime.date(2026, 9, 10), "5121", "707", D(100))
-    assert "TVA_NEREGULARIZAT" not in _blocaje(conn, 9)
+    assert {"TVA_NEREGULARIZAT"}.isdisjoint(_blocaje(conn, 9))
 
 
 def test_nota_depasita_nu_se_valideaza(firma):
@@ -131,3 +132,31 @@ def test_nota_depasita_nu_se_valideaza(firma):
     r2 = ia.propune_tva_luna(c, _SCHEMA, 2026, 9)
     assert r2["inlocuite"] == [n1] and r2["note"][0]["linii"] == [("4427", "4426", "210.00"), ("4427", "4423", "21.00")], r2
     assert jurnal_api.valideaza(conn, _SCHEMA, r2["note"][0]["id"]) == {"ok": True}
+
+
+class _FaraCommit:
+    """Conexiunea fixturii, cu `commit` fără efect: use-case-ul ei face commit, iar schema fixturii trăiește numai în tranzacția ei (rollback)."""
+
+    def __init__(self, conn):
+        self._conn = conn
+
+    def __getattr__(self, nume):
+        return getattr(self._conn, nume)
+
+    def commit(self):
+        pass
+
+
+def test_ruta_propunerii_intoarce_nota_propusa_si_apare_in_blocaj(firma, monkeypatch):
+    """688, ruta `POST /tenants/{id}/inchidere/regularizare-tva` (`uc_tenants.tenant_regularizare_tva_luna`): propune ciorna și o întoarce cu
+    liniile ei; o a doua apăsare o înlocuiește (nu o dublează). MUTAȚIE: `propune_tva_luna` scos din use-case -> pică."""
+    conn, c = firma
+    _septembrie(c)
+    monkeypatch.setattr(uc_tenants.db, "get_conn", lambda *a, **k: contextlib.nullcontext(_FaraCommit(conn)))
+    monkeypatch.setattr(uc_tenants.auth_api, "schema_tenant", lambda *a, **k: _SCHEMA)
+    r = uc_tenants.tenant_regularizare_tva_luna(1, 2026, 9, {"uid": 1})
+    assert r["ok"] and r["nimic"] is False, r
+    assert [n["linii"] for n in r["note"]] == [[{"debit": "4427", "credit": "4426", "suma": "210.00"}]], r["note"]
+    r2 = uc_tenants.tenant_regularizare_tva_luna(1, 2026, 9, {"uid": 1})
+    assert len(r2["note"]) == 1 and r2["inlocuite"], r2
+

@@ -69,8 +69,5 @@ def test_octombrie_compara_t3_nu_t4_in_curs(firma):
         d = ci.verifica_d390(conn, SCH, 2099, 10)
         conn.rollback()
     assert (r["an"], r["luna"], r["perioada"]) == (2099, 9, "T3/2099"), r
-    assert "Perioada comparată: T3/2099." in r["limita"] and "fereastra TVA curentă" not in r["limita"], r["limita"]
-    asupra_t4 = [c for c in r["constatari"] if "12.705" in str(c.get("mesaj")) or "12.600" in str(c.get("mesaj"))]
-    assert asupra_t4 == [], asupra_t4
+    assert [c for c in r["constatari"] if c["contabil"] or c["declarat"]] == [], r["constatari"]      # T3 coincide (0 cu 0): nicio diferență; mișcările din T4 în curs nu intră în comparație
     assert (d["an"], d["luna"], d["perioada"]) == (2099, 9, "T3/2099"), d
-    assert "fereastra TVA curentă" not in d.get("limita", ""), d.get("limita")

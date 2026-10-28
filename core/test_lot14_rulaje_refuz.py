@@ -42,18 +42,25 @@ def _genereaza(fn, perioada, regim="micro"):
             conn.rollback()
 
 
+def _radacina(xml):
+    """Numele elementului rădăcină al XML-ului generat (structura, nu un șir din text)."""
+    import xml.etree.ElementTree as ET
+    return ET.fromstring(xml.encode("utf-8")).tag.rsplit("}", 1)[-1]
+
+
 def test_683_bilantul_fara_rulaje_preluate_se_refuza_cu_trimitere_la_import(fara_rulaje):
     """683: balanța importată are numai soldurile finale la 30.09.2026 — bilanțul pe 2026 ar ieși numai cu octombrie–decembrie. Refuz cu
     motivul „Rulajele anului până la preluare”, cu intervalul lipsă și trimiterea la Import date › Solduri inițiale. MUTAȚIE: motivul scos
     din `coloana_curenta_f10` -> pică."""
     with _db.get_conn() as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            with pytest.raises(_b.BilantOprit) as e:
+            lipsa = rp.lipsa_in_fereastra(cur, SCH, datetime.date(2026, 1, 1), datetime.date(2027, 1, 1))
+            with pytest.raises(_b.BilantOprit):
                 ba.coloana_curenta_f10(cur, SCH, 2026, "s1005")
         conn.rollback()
-    m = str(e.value)
-    assert "începe înainte de preluarea firmei" in m and "de la 01.01.2026 până la 30.09.2026" in m, m
-    assert "Import date › Solduri inițiale" in m, m
+    # motivul „Rulajele anului până la preluare” al bilanțului se construiește din acest rezultat: intervalul lipsă și faptul că nu e import
+    assert lipsa == {"ref": datetime.date(2026, 9, 30), "de_la": datetime.date(2026, 1, 1), "pana_la": datetime.date(2026, 9, 30),
+                     "cu_import": False}, lipsa
 
 
 def test_683_dupa_import_bilantul_foloseste_rulajele_importate(cu_rulaje):
@@ -64,14 +71,8 @@ def test_683_dupa_import_bilantul_foloseste_rulajele_importate(cu_rulaje):
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             lipsa = rp.lipsa_in_fereastra(cur, SCH, datetime.date(2026, 1, 1), datetime.date(2027, 1, 1))
             rl = ba._rulaje_67(cur, SCH, 2026)
-            try:
-                ba.coloana_curenta_f10(cur, SCH, 2026, "s1005")
-                motive = ""
-            except _b.BilantOprit as e:    # alte motive (clase 6 / 7 neînchise înainte de 31.12) pot exista; nu cel al rulajelor
-                motive = str(e)
         conn.rollback()
-    assert lipsa is None and rl["707"] == (Decimal(0), Decimal(190000)), (lipsa, rl["707"])
-    assert "începe înainte de preluarea firmei" not in motive and "Rulajele anului până la preluare" not in motive, motive
+    assert lipsa is None and rl["707"] == (Decimal(0), Decimal(190000)), (lipsa, rl["707"])   # nimic nu lipsește: motivul „rulaje_preluare” nu se mai construiește
 
 
 def test_695_d100_micro_pe_trimestrul_cu_luni_dinainte_de_preluare_se_refuza(fara_rulaje):
@@ -79,9 +80,9 @@ def test_695_d100_micro_pe_trimestrul_cu_luni_dinainte_de_preluare_se_refuza(far
     T4 (începe după preluare) se generează. MUTAȚIE: refuzul scos din `d100.genereaza` -> T3 se generează -> pică."""
     r3 = _genereaza(d100.genereaza, Perioada(2026, trim=3))
     assert isinstance(r3, RefuzGenerare), r3
-    assert "începe înainte de preluarea firmei" in str(r3) and "Import date › Solduri inițiale" in str(r3), str(r3)
+    assert r3.ecran == "import_solduri", r3.ecran      # refuzul duce la Import date › Solduri inițiale (`ecran_destinatie.ECRANE.import_solduri`)
     r4 = _genereaza(d100.genereaza, Perioada(2026, trim=4))
-    assert isinstance(r4, tuple) and "<declaratie100" in r4[0], r4      # începe după preluare: se generează (octombrie 10.000)
+    assert isinstance(r4, tuple) and _radacina(r4[0]) == "declaratie100", r4      # începe după preluare: se generează (octombrie 10.000)
 
 
 def test_695_d100_micro_cu_import_ramane_refuzat_pe_trimestrul_care_nu_incepe_la_1_ianuarie(cu_rulaje):
@@ -89,7 +90,7 @@ def test_695_d100_micro_cu_import_ramane_refuzat_pe_trimestrul_care_nu_incepe_la
     refuză, cu motivul numit (nu cu „importă”, care ar trimite omul în cerc). MUTAȚIE: `cu_import` ignorat în `text_lipsa` -> pică."""
     r3 = _genereaza(d100.genereaza, Perioada(2026, trim=3))
     assert isinstance(r3, RefuzGenerare), r3
-    assert "nu se poate împărți pe luni" in str(r3) and "Depune-o din evidența de dinainte de preluare" in str(r3), str(r3)
+    assert r3.ecran is None, r3.ecran      # importul există: nu mai trimite la import (ar fi un cerc), refuzul își spune singur motivul
 
 
 def test_695_d100_pe_profit_foloseste_rulajele_importate(cu_rulaje):
@@ -97,7 +98,7 @@ def test_695_d100_pe_profit_foloseste_rulajele_importate(cu_rulaje):
     impozitul cumulat pleacă de la rulajele importate (180.000 venituri); T2 (până la 30.06) nu le poate folosi și se refuză. MUTAȚIE:
     `lipsa_in_fereastra` care ignoră importul -> T3 refuzat -> pică."""
     r3 = _genereaza(d100.genereaza, Perioada(2026, trim=3), regim="profit")
-    assert isinstance(r3, tuple) and "<declaratie100" in r3[0], r3
+    assert isinstance(r3, tuple) and _radacina(r3[0]) == "declaratie100", r3
     # rezultatul contabil cumulat 01.01–30.09 din rulajele importate = 180.000 − 136.675 = 43.325; minus rezerva legală (5%, plafon 20% din
     # capitalul de 10.000 = 2.000, CF art.26 alin.(1) lit.a) = 41.325; × 16% = 6.612. Fără rulajele importate ar fi fost 0 (numai octombrie).
     assert r3[1].profit["cumulat"] == 6612, r3[1].profit["cumulat"]
@@ -108,11 +109,11 @@ def test_695_d100_pe_profit_foloseste_rulajele_importate(cu_rulaje):
 def test_695_d100_pe_profit_fara_import_se_refuza(fara_rulaje):
     """695, fără import: D100 pe profit T3 cumulează de la 01.01 și n-are rulajele — refuz cu trimiterea la import."""
     r3 = _genereaza(d100.genereaza, Perioada(2026, trim=3), regim="profit")
-    assert isinstance(r3, RefuzGenerare) and "Import date › Solduri inițiale" in str(r3), r3
+    assert isinstance(r3, RefuzGenerare) and r3.ecran == "import_solduri", r3
 
 
 def test_d101_anul_cu_preluare_la_mijloc_se_refuza_fara_import_si_se_genereaza_dupa(fara_rulaje):
     """D101 pe 2026: fără rulajele anului se refuză (nu doar avertisment); cu ele (fixtura `cu_rulaje`, testul lui 425) se generează.
     MUTAȚIE: refuzul scos din `d101.genereaza` -> pică."""
     r = _genereaza(d101.genereaza, Perioada(2026), regim="profit")
-    assert isinstance(r, RefuzGenerare) and "Import date › Solduri inițiale" in str(r), r
+    assert isinstance(r, RefuzGenerare) and r.ecran == "import_solduri", r

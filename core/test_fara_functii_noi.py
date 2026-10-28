@@ -48,6 +48,8 @@ EXCEPTII = {
     "DELETE /tenants/{tenant_id}/ciorne-formular/{formular}": "495",
     # [lotul 12, C139] raportul Z importat greșit (ciornă) n-avea niciun drum de ștergere: jurnalul trimite nota Z-ului la ecranul Raport Z
     "DELETE /tenants/{tenant_id}/horeca/raport-z/{nota_id}": "C139",
+    # [lotul 14, C206 = 688] închiderea lunii propune nota de regularizare a TVA (4427 = 4426 + 4423/4424): fără ea luna se bloca cu TVA-ul neînchis
+    "POST /tenants/{tenant_id}/inchidere/regularizare-tva": "C206",
     # [lotul 13, 681] căutarea globală din antet — decizia Costin 25.10.2026 (comanda 13.1): „parte din pilot, excepție de la «fără funcții
     # noi»”
     "GET /eu/cautare": "681",

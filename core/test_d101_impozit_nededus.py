@@ -55,6 +55,8 @@ def _schema(cur, cu_691):
         "platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
         "VALUES (1,'PROBA NEDEDUS','14399840','Str. Test 1','Bucuresti','B','6202','real',"
         "true,'L','Pop','Ion','administrator')")
+    # [lotul 14, 695] firma de probă nu e preluată: luna preluării veche
+    cur.execute("UPDATE firma_profil SET luna_preluare = '2020-01-01' WHERE id = 1")
     # fixtura-sintetica-ok: schema EFEMERA, aruncata la rollback; anul e al fixturii, nu al bazei.
     cur.execute("INSERT INTO inregistrari (data, status, sursa, descriere) "
                 "VALUES ('2026-06-15','validata','test','Vanzare') RETURNING id")

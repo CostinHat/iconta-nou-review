@@ -78,7 +78,7 @@ def test_def_446_1_intrebarea_nu_e_rosie_si_tabelul_ramane_citibil(browser, monk
         pg.close()
     assert b["clase"] and "caseta-atentie" not in " ".join(b["clase"]) and "caseta-intrebare" in b["clase"], (pas, b["clase"])
     assert not (set(b["culori"]) & ROSU), (pas, b["culori"])                      # „întrebarea stă într-o casetă roșie”
-    assert b["text"].count(AVERT[:60]) == 1, pas                                  # avertismentul, tot o singură dată (446)
+    assert b["text"].count("Firma are deja date de acest fel") == 1 and b["text"].count(AVERT[:60]) == 0, pas   # avertismentul, tot o singură dată (446): [lotul 14, 687] cardul-rezumat; textul întreg stă în fereastra cardului
     assert b["bara"] - a["bara"] <= CRESTERE_MAX, (pas, a["bara"], b["bara"])       # întrebarea ia locul butonului, nu mai mult
     assert b["loc"] >= min(LOC_TABEL_MIN, b["tot"]), (pas, b["loc"], b["tot"])     # „tabelul se strânge la un rând tăiat”
 

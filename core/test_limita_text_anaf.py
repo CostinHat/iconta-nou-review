@@ -130,6 +130,8 @@ def firma_nume_lung():
                     "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', "
                     "'profit', '0700000000')",
                     (NUME_LUNG,))
+                # [lotul 14, 695] firma de probă nu e preluată: luna preluării veche, ca firma să fie „întreagă în iConta"
+                cur.execute("UPDATE firma_profil SET luna_preluare = '2020-01-01' WHERE id = 1")
                 _seamana_ca_sa_fie_datorate(cur)
             yield conn, SCHEMA_T
         finally:

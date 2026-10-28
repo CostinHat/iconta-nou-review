@@ -85,6 +85,8 @@ def firma_profit(monkeypatch):
                         "declarant_nume,declarant_prenume,declarant_functie) "
                         "VALUES (1,'ZT PROFIT SRL','14399840','Str 1','Cluj-Napoca','CJ','6202',"
                         "'profit','Popescu','Ion','admin')")
+            # [lotul 14, 695] firma de probă nu e preluată: luna preluării veche
+            cur.execute("UPDATE firma_profil SET luna_preluare = '2020-01-01' WHERE id = 1")
             # Q1 2026: venit 30.000, cheltuieli 80.000 -> pierdere trimestru -50.000.
             _nota(cur, '2026-02-10', '4111', '704', 30000)
             _nota(cur, '2026-03-05', '628', '401', 80000)

@@ -64,10 +64,13 @@ def test_def_562_prezentarea_nu_se_deschide_singura_iar_asistentul_nu_vede_pasii
         assert pg.query_selector(".bun-venit-overlay, .fereastra") is None, "s-a deschis o fereastră fără clic"
         e.captura("pagina_principala")
         pg.click("#nav-ghid")
-        pg.wait_for_selector(".fereastra .ans-continut #ans-inceput", timeout=30000)
+        pg.wait_for_selector(".fereastra .ans-continut [data-card='ans-card-inceput']", timeout=30000)   # [lotul 14, 687] „Primii pași” e un card, deschis la clic
         pg.wait_for_timeout(800)
         t = pg.inner_text(".fereastra .ans-continut")
         e.captura("prezentarea")
+        pg.click("[data-card='ans-card-inceput']")
+        pg.wait_for_selector(".fereastra #ans-inceput", timeout=30000)
+        pg.wait_for_timeout(800)
         assert pg.query_selector(".fereastra .ans-fir, .fereastra .ans-pas-titlu, #ans-alta-aplicatie") is None, \
             "asistentul primește firul de pași al administratorului"
         # pașii de preluare nu sunt la el (catalogul „Ce cuprinde aplicația” poate numi funcțiile — „Vector fiscal per firmă” —, nu pașii)

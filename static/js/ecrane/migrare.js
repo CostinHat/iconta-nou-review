@@ -1110,15 +1110,13 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
   const existenta = date.existenta;
 
   corp.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · balanță încărcată</p>
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · balanță încărcată</p><div class="mig-coer">${bandaStari(randuri)}</div></div>
     <div class="mig-sold-rezumat">
       <b>${randuri.length}</b> ${dupaNumar(randuri.length, "cont", "conturi")} · debit <b>${bani(date.total_debit)}</b> · credit <b>${bani(date.total_credit)}</b>
       ${!valida ? '<span class="mig-eq mig-eq-no">fișier nevalid</span>' : (echilibrat ? '<span class="mig-eq mig-eq-ok">echilibrat</span>' : '<span class="mig-eq mig-eq-no">neechilibrat</span>')}
-    </div>
-    <div class="mig-coer">${bandaStari(randuri)}</div>`,
+    </div>`,
     `
-    <div class="mig-avertismente">${_casetaFirma(date)}${_casetaInlocuire(date)}</div>
-    ${_notaCititeBalanta(date)}
+    <div class="mig-avertismente">${_casetaFirma(date)}${_casetaInlocuire(date)}${_notaCititeBalanta(date)}</div>
     <div id="mig-rulaje"></div>
     ` + tabelPrevizualizare(coloane, randuri),
     `<div class="grila-doc" style="grid-template-columns:${metode.length ? "minmax(220px, 1fr) minmax(240px, 1fr)" : "minmax(220px, 640px)"};margin-top:8px">
@@ -1540,11 +1538,10 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   // [lotul 13, 583: „Sus «4 parteneri · debit 1.700», în casetă «Fișierul nou: 0 parteneri, debit 0,00»”] rândurile citite și câte intră
   const intra = randuri.filter((r) => r.stare !== "respins").length;
   corp.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · parteneri încărcați</p>
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · parteneri încărcați</p><div class="mig-coer">${bandaStari(randuri)}</div></div>
     <div class="mig-sold-rezumat">
       <b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} (${intra === randuri.length ? "toate intră" : `${intra} intră`}) · debit <b>${bani(date.total_debit)}</b> · credit <b>${bani(date.total_credit)}</b>
-    </div>
-    <div class="mig-coer">${bandaStari(randuri)}</div>`,
+    </div>`,
     `
     <p class="ecran-nota" id="mig-nota-preluate">${NOTA_FACTURI_PRELUATE} ${NOTA_TVA_INCASARE}</p>
     <div class="mig-avertismente">${_casetaFirma(date)}${_casetaInlocuire(date)}</div>
@@ -1746,9 +1743,8 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
   ];
 
   corp.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · salariați încărcați</p>
-    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "salariat", "salariați")}</div>
-    <div class="mig-coer">${bandaStari(randuri)}</div>`,
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · salariați încărcați</p><div class="mig-coer">${bandaStari(randuri)}</div></div>
+    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "salariat", "salariați")}</div>`,
     `
     <div class="mig-avertismente">${_casetaFirma(date)}${_casetaInlocuire(date)}</div>
     ` + tabelPrevizualizare(coloane, randuri),
@@ -1920,9 +1916,8 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
   ];
 
   corp.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · asociați încărcați</p>
-    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")}</div>
-    <div class="mig-coer">${banda}</div>`,
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · asociați încărcați</p><div class="mig-coer">${banda}</div></div>
+    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")}</div>`,
     `
     <div class="mig-avertismente">${_casetaFirma(date)}${_casetaInlocuire(date)}</div>
     ` + tabelPrevizualizare(coloane, randuri),
@@ -2080,9 +2075,8 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
   const recHtml = casetaReconciliere(date.reconciliere, date.data_preluare, "registru", "conturile 2xx / 28xx",
     (c) => (c.fel === "imobilizare" ? "valoarea de intrare" : "amortizarea preluată"));
   corp.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · mijloace fixe încărcate${date.data_preluare ? ` · amortizarea preluată se compară la ${esc(dataRo(date.data_preluare))}, data balanței de deschidere` : ""}</p>
-    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} · valoare de intrare <b>${bani(date.total_valoare)}</b> lei</div>
-    <div class="mig-coer">${bandaStari(randuri)}</div>`,
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · mijloace fixe încărcate${date.data_preluare ? ` · amortizarea preluată se compară la ${esc(dataRo(date.data_preluare))}, data balanței de deschidere` : ""}</p><div class="mig-coer">${bandaStari(randuri)}</div></div>
+    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} · valoare de intrare <b>${bani(date.total_valoare)}</b> lei</div>`,
     `
     <div class="mig-avertismente">${_casetaFirma(date)}${_casetaInlocuire(date)}${recHtml}</div>
     ` + tabelPrevizualizare([   // [581] confruntarea cu balanța în pagină, nu în rezumatul lipit sus
@@ -2228,9 +2222,8 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
   const perioada = (r) => r.perioada ? r.perioada : r.anuala ? `anuală ${r.an || "—"}`
     : (r.luna >= 1 && r.luna <= 12 && r.an ? dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric") : `${r.luna || "—"} ${r.an || "—"}`);
   corp.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · istoric declarații</p>
-    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} din fișier</div>
-    <div class="mig-coer">${bandaStari(randuri)}</div>`,
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · istoric declarații</p><div class="mig-coer">${bandaStari(randuri)}</div></div>
+    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} din fișier</div>`,
     `
     <div class="mig-avertismente">${_casetaFirma(date)}${_casetaInlocuire(date)}</div>
     ` + tabelPrevizualizare([
@@ -2533,9 +2526,8 @@ function previzualizeazaRetete(corp, nav, firma, date) {
   // `#mig-preview`, iar intro-ul, modelul și zona de încărcare derulau deasupra lui (se derula toată fereastra, nu doar tabelul)
   const zona = corp;
   zona.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · rețete încărcate</p>
-    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} · ${cate(rez.valide || 0, "rețetă intră", "rețete intră")} din ${rez.total || 0}</div>
-    <div class="mig-coer">${bandaStari(randuri)}</div>`,
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · rețete încărcate</p><div class="mig-coer">${bandaStari(randuri)}</div></div>
+    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} · ${cate(rez.valide || 0, "rețetă intră", "rețete intră")} din ${rez.total || 0}</div>`,
     `
     ${_casetaFirma(date)}
     ` + tabelPrevizualizare([
@@ -2638,9 +2630,8 @@ function previzualizeazaArticole(corp, nav, firma, date) {
   // `#mig-preview`, iar intro-ul, modelul și zona de încărcare derulau deasupra lui (se derula toată fereastra, nu doar tabelul)
   const zona = corp;
   zona.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · articole încărcate</p>
-    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} · ${cate(rez.cu_stoc || 0, "articol cu stoc", "articole cu stoc")} · valoare <b>${bani(rez.valoare_totala || 0)}</b> lei${date.data_sold ? ` · stocul inițial la ${esc(dataRo(date.data_sold))}` : ""}</div>
-    <div class="mig-coer">${bandaStari(randuri)}</div>`,
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · articole încărcate</p><div class="mig-coer">${bandaStari(randuri)}</div></div>
+    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")} · ${cate(rez.cu_stoc || 0, "articol cu stoc", "articole cu stoc")} · valoare <b>${bani(rez.valoare_totala || 0)}</b> lei${date.data_sold ? ` · stocul inițial la ${esc(dataRo(date.data_sold))}` : ""}</div>`,
     `
     ${_casetaFirma(date)}
     ` + // [581] confruntarea cu balanța în pagină; [668] contul de cheltuială dedus, spus o singură dată
@@ -2734,9 +2725,8 @@ function previzualizeazaRip(corp, nav, firma, date) {
   // `#mig-preview`, iar intro-ul, modelul și zona de încărcare derulau deasupra lui (se derula toată fereastra, nu doar tabelul)
   const zona = corp;
   zona.innerHTML = _cadruPrev(`
-    <p class="mig-intro"><b>${esc(firma.nume)}</b> · registrul de încasări și plăți încărcat</p>
-    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")}</div>
-    <div class="mig-coer">${bandaStari(randuri)}</div>`,
+    <div class="mig-intro-rand"><p class="mig-intro"><b>${esc(firma.nume)}</b> · registrul de încasări și plăți încărcat</p><div class="mig-coer">${bandaStari(randuri)}</div></div>
+    <div class="mig-sold-rezumat"><b>${randuri.length}</b> ${dupaNumar(randuri.length, "rând citit", "rânduri citite")}</div>`,
     `
     ${_casetaFirma(date)}
     ` + tabelPrevizualizare(coloane, randuri),

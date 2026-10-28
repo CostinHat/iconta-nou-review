@@ -178,9 +178,10 @@ def _cod_lateste():
     """`_prealata`, `_cuTabel` și `_lateste`, exact cum stau în navigator.js (între prima definiție și primul apel)."""
     nav = _citeste("static/js/navigator.js")
     m = re.search(r"\n(\s*const _prealata = .*?\n\s*\};)\n\s*_lateste\(\);", nav, re.S)
+    # [lotul 14, 687] + `fer-mic` / `fer-lucru` (fereastra fără date, cea de lucru) și `_zonaDerulare` / `_marcheazaLantul`
     # ANTI-VACUU pe structura blocului: cele trei definiții, în ordine, și treptele de strângere, exact
-    assert m and re.findall(r"\bconst (_\w+) = ", m.group(1)) == ["_prealata", "_cuTabel", "_lateste"] \
-        and re.findall(r'"(fer-[a-z]+)"', m.group(1)) == ["fer-tabel", "fer-tabel", "fer-tabel", "fer-strans", "fer-rupt"], \
+    assert m and re.findall(r"\bconst (_\w+) = ", m.group(1)) == ["_prealata", "_cuTabel", "_zonaDerulare", "_marcheazaLantul", "_lateste"] \
+        and re.findall(r'"(fer-[a-z]+)"', m.group(1)) == ["fer-mic", "fer-tabel", "fer-lucru", "fer-tabel", "fer-tabel", "fer-tabel", "fer-strans", "fer-rupt"], \
         "ANTI-VACUU: blocul `_lateste` nu mai e în navigator.js"
     return m.group(1)
 
@@ -228,7 +229,8 @@ _FEREASTRA_JS = """([cod, randuri, coloane, suma, cuTabel]) => {
       laterale: [...fer.querySelectorAll('*')].filter((e) => ['auto', 'scroll'].includes(getComputedStyle(e).overflowX)
                                                          && e.scrollWidth > e.clientWidth + 1).map((e) => e.className),
       buton: r(document.querySelector('#b-pdf')), mesaj: r(document.querySelector('#b-mesaj')), corp: r(_corp)};
-    _corp.scrollTop = 1e7;
+    o.inainte = {rez: r(document.querySelector('#rez'))};
+    _corp.scrollTop = 1e7; (_corp.querySelector('.zona-derulare') || _corp).scrollTop = 1e7;   // [lotul 14, 687] tabelul derulează în zona lui
     o.dupa = {corp: r(_corp), rez: r(document.querySelector('#rez')), th: cuTabel ? r(document.querySelector('thead th')) : null};
     gata(o);
   }; });
@@ -237,22 +239,22 @@ _FEREASTRA_JS = """([cod, randuri, coloane, suma, cuTabel]) => {
 
 def test_fereastra_cu_tabelul_balantei_ia_ecranul_si_nu_deruleaza_lateral(pagina):
     o = pagina.evaluate(_FEREASTRA_JS, [_cod_lateste(), 80, 12, "1.234.567,89", True])
-    # „ferestrele cu tabele se deschid aproape pe tot ecranul”: 1366 - 2×24 = 1318, 768 - 2×24 = 720
-    assert (o["lat"], o["inalt"]) == (1318, 720), o
+    # „ferestrele cu tabele se deschid aproape pe tot ecranul”: [lotul 14, 687] 1366 - 2×12 = 1342, 768 - 2×12 = 744 (DS v2.105: marginea ferestrei 12 px)
+    assert (o["lat"], o["inalt"]) == (1342, 744), o
     # „niciodată lateral”: tabelul de 14 coloane cu sume de 7 cifre încape, strâns în trepte (măsurat: 1.654 px fără ele)
     # (clasele ferestrei, exact: lățită + ambele trepte de strângere — măsurat în Chromium, 1366×768)
     assert o["clase"] == ["fer-rupt", "fer-strans", "fer-tabel", "fereastra"] and o["sw"] <= o["cw"] + 1 and o["laterale"] == [], o
     # „acțiunea principală fix jos”: butonul și mesajul lui, în fereastră, fără derulare
     assert o["corp"]["sus"] < o["buton"]["sus"] and o["mesaj"]["jos"] <= o["corp"]["jos"] + 1, o
-    # „rezumatul stă fix sus”: după derularea tabelului la capăt, rezumatul e lipit de marginea de sus a corpului, iar antetul tabelului
+    # „rezumatul stă fix sus”: după derularea tabelului la capăt, rezumatul nu s-a mișcat ([lotul 14, 687]: tabelul derulează în zona lui), iar antetul tabelului
     # stă imediat sub el
-    assert o["dupa"]["rez"]["sus"] == o["dupa"]["corp"]["sus"] and abs(o["dupa"]["th"]["sus"] - o["dupa"]["rez"]["jos"]) <= 1, o
+    assert o["dupa"]["rez"] == o["inainte"]["rez"] and abs(o["dupa"]["th"]["sus"] - o["dupa"]["rez"]["jos"]) <= 1, o
 
 
 def test_un_tabel_care_incape_nu_e_strans(pagina):
     o = pagina.evaluate(_FEREASTRA_JS, [_cod_lateste(), 3, 3, "100,00", True])
     # fereastra tot ia ecranul (are tabel), dar tabelul nu e strâns degeaba: cuvintele scurte rămân întregi (331)
-    assert o["clase"] == ["fer-tabel", "fereastra"] and o["lat"] == 1318, o
+    assert o["clase"] == ["fer-tabel", "fereastra"] and o["lat"] == 1342, o
 
 
 def test_un_tabel_mediu_e_masurat_in_fereastra_lata_nu_in_timpul_latirii(pagina):

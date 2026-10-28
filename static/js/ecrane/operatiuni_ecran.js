@@ -666,7 +666,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=18e8e62ad1");
+      const { ecranJurnal } = await import("./firme.js?v=7d52dd4f91");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };

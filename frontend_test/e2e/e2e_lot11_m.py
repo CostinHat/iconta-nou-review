@@ -181,7 +181,7 @@ def test_def_424_importul_are_rezumatul_sus_actiunea_jos_si_deruleaza_numai_tabe
         o = pg.evaluate(MASOARA)
         patron.captura("articole_derulate")
         assert sus <= 80 and not pg.is_visible("#mig-drop"), sus           # deasupra rezumatului numai titlul, nu zona de încărcare
-        assert (o["rez_sus"], o["bara_jos"]) == (0, 0) and o["loc"] >= 240, o
+        assert 0 <= o["rez_sus"] <= 100 and o["bara_jos"] == 0 and o["loc"] >= 240, o   # [lotul 14, 687] rezumatul rămâne sub titlu, nu mai e lipit de marginea corpului
     finally:
         pg.set_viewport_size(vp)
 

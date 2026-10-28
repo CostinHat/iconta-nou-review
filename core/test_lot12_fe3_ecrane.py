@@ -51,7 +51,7 @@ def _deschide_detaliul(pg):
 
 
 #: unde stă fiecare parte a detaliului: rândul scurt (vizibil, un rând), butoanele (în ce bloc, în vedere), rezumatul lipit
-_ASEZARE = """() => { const c = %s, sc = c.querySelector('#fd-antet-scurt'), rc = c.getBoundingClientRect();
+_ASEZARE = """() => { const c = %s, sc = c.querySelector('#fd-antet-scurt'), rc = c.getBoundingClientRect(), z = c.querySelector('.zona-derulare') || c;   // [lotul 14, 687] tabelul derulează în zona lui
   const jos = Math.min(innerHeight, rc.bottom), vazut = (e) => { const r = e.getBoundingClientRect();
     return r.width > 0 && r.top >= rc.top - 1 && r.bottom <= jos + 1; };
   const copii = sc ? [...sc.children].filter((e) => e.getClientRects().length) : [];
@@ -66,11 +66,11 @@ _ASEZARE = """() => { const c = %s, sc = c.querySelector('#fd-antet-scurt'), rc 
           in_antet: butoane.filter((b) => b.closest('.fd-antet-sus')).map((b) => b.id),
           vizibile: butoane.filter(vazut).map((b) => b.id),
           rezumat: (c.querySelector('.rezumat-fix') || {}).id || (c.querySelector('.rezumat-fix') || {className: ''}).className,
-          lateral: c.scrollWidth > c.clientWidth + 1, deruleaza: c.scrollHeight > c.clientHeight + 1}; }""" % _CORP
+          lateral: c.scrollWidth > c.clientWidth + 1, deruleaza: z.scrollHeight > z.clientHeight + 1}; }""" % _CORP
 
 
 def _asezare(pg, jos=False):
-    pg.evaluate("() => { const c = %s; c.scrollTop = %s; }" % (_CORP, "c.scrollHeight" if jos else "0"))
+    pg.evaluate("() => { const c = %s, z = c.querySelector('.zona-derulare') || c; z.scrollTop = %s; }" % (_CORP, "z.scrollHeight" if jos else "0"))   # [lotul 14, 687] zona de derulare a tabelului
     pg.wait_for_timeout(150)
     return pg.evaluate(_ASEZARE)
 

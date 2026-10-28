@@ -9,12 +9,12 @@
 // navigator; iar după salvare, ecranul de destinație oferă singur „Înapoi la <formular>” (`inapoiLa`).
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
-import { randeazaDateFirma } from "./date_firma.js?v=4ad3a057bc";
+import { randeazaDateFirma } from "./date_firma.js?v=a3a52bcf20";
 import { panouConectareSPV } from "./setari.js?v=ae0ddd2b13";
 import { randeazaProduse } from "./produse_ecran.js?v=4c304d9be3";
 import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=91f9fce823";   // [lotul 11, decizia 10.3] fișa partenerului
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
-import { meniuMigrarePerFirma } from "./migrare.js?v=687eb87acb";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
+import { meniuMigrarePerFirma } from "./migrare.js?v=516e78c4d3";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export const ECRANE = {

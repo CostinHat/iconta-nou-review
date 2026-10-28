@@ -127,6 +127,7 @@ def test_fara_sursa_nu_se_genereaza_iar_manualul_se_spune(cur, monkeypatch):
                                                                           azi=_dt383.date(_dt383.date.today().year + 2, 1, 1)))
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    cur.execute("UPDATE solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = 0, rulaj_an_credit = 0")   # [lotul 14, 683] balanța preluată cu rulajele anului (zero): Bilanțul 2026 nu mai e refuzat, testul e despre coloana „An precedent”
     with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F10, F20, F30\)"):
         ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
     _manual(cur, "s1005", 2026, {"F10": _toate("F10", r8=4321), "F20": _toate("F20"), "F30": _toate("F30")})
@@ -166,6 +167,7 @@ def test_autorul_completarii_manuale_e_numit_nu_numerotat(cur):
     uid = cur.fetchone()["id"]
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    cur.execute("UPDATE solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = 0, rulaj_an_credit = 0")   # [lotul 14, 683] balanța preluată cu rulajele anului (zero): Bilanțul 2026 nu mai e refuzat, testul e despre coloana „An precedent”
     artefacte.pastreaza(cur.connection, _SCHEMA, ba.FEL_MANUAL, "s1005:2026",
                         json.dumps({"F10": _toate("F10"), "F20": _toate("F20"), "F30": _toate("F30")}), produs_de_id=uid, produs_de=str(uid))
     av = []
@@ -180,6 +182,7 @@ def test_bilantul_generat_de_defect_nu_e_bilantul_anului_precedent(cur):
     MUTAȚIE: verificarea scoasă (artefactul luat oricum) -> „An precedent” = soldurile de preluare, fără refuz -> pică."""
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    cur.execute("UPDATE solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = 0, rulaj_an_credit = 0")   # [lotul 14, 683] balanța preluată cu rulajele anului (zero): Bilanțul 2026 nu mai e refuzat, testul e despre coloana „An precedent”
     _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0081="10000" F10_0082="10000"/><F20/></Bilant1005>',
                         produs_de="Contabil", verdict="valid")
     cp = ba.coloana_precedenta(cur, _SCHEMA, "s1005", 2026)
@@ -196,6 +199,7 @@ def test_fiecare_an_din_mesaje_e_anul_lui(cur):
     sau anul din refuzul „nu se poate întocmi” -> `an - 1` -> pică."""
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    cur.execute("UPDATE solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = 0, rulaj_an_credit = 0")   # [lotul 14, 683] balanța preluată cu rulajele anului (zero): Bilanțul 2026 nu mai e refuzat, testul e despre coloana „An precedent”
     _bilant_pastrat(cur, "s1005", "2025", '<Bilant1005><F10 F10_0081="10000" F10_0082="10000"/><F20/></Bilant1005>',
                         produs_de="Contabil", verdict="valid")
     with pytest.raises(ValueError) as e:
@@ -244,6 +248,7 @@ def test_anii_de_pe_ecranul_bilant_sunt_ai_anului_precedent(cur, monkeypatch):
     uc = _ecranul(cur, monkeypatch)
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    cur.execute("UPDATE solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = 0, rulaj_an_credit = 0")   # [lotul 14, 683] balanța preluată cu rulajele anului (zero): Bilanțul 2026 nu mai e refuzat, testul e despre coloana „An precedent”
     a = uc.bilant_an_precedent(1, 2026, "s1005", {"uid": 1})["afirmatie"]
     assert (a["fel"], a["an"]) == ("absenta_observatie", 2025), a
     assert [re.findall(r"pe (\d{4})", s) for s in a["surse_consultate"]] == [["2025"], ["2025"]], a["surse_consultate"]
@@ -306,6 +311,7 @@ def test_firma_infiintata_inainte_cere_coloana_ca_pana_acum(cur):
     cur.execute("UPDATE firma_profil SET data_infiintare = '2020-05-04' WHERE id = 1")
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    cur.execute("UPDATE solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = 0, rulaj_an_credit = 0")   # [lotul 14, 683] balanța preluată cu rulajele anului (zero): Bilanțul 2026 nu mai e refuzat, testul e despre coloana „An precedent”
     with pytest.raises(ValueError, match=r"coloana „An precedent” goală \(F10, F20, F30\)"):
         ba.coloanele(cur, _SCHEMA, "s1005", 2026, [])
 
@@ -407,6 +413,7 @@ def test_def_c14_coloana_manuala_f30_se_potriveste_cu_f20(cur, monkeypatch):
     uc = _ecranul(cur, monkeypatch)
     cur.execute("INSERT INTO solduri_initiale (cont, denumire, sold_debitor, sold_creditor, data_referinta) VALUES "
                 "('5121', 'Banca', 10000, 0, '2026-08-31'), ('1012', 'Capital', 0, 10000, '2026-08-31')")
+    cur.execute("UPDATE solduri_initiale SET si_an_debit = 0, si_an_credit = 0, rulaj_an_debit = 0, rulaj_an_credit = 0")   # [lotul 14, 683] balanța preluată cu rulajele anului (zero): Bilanțul 2026 nu mai e refuzat, testul e despre coloana „An precedent”
     e = uc.bilant_an_precedent(1, 2026, "s1005", {"uid": 1})
     assert e["de_completat"] == ["F10", "F20", "F30"] and 167 in e["totaluri"]["F30"] and 168 in e["randuri"]["F30"], e["de_completat"]
     corp = {"F10": _toate("F10"), "F20": _toate("F20", r1=1000), "F30": _toate("F30", r168=900)}

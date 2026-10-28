@@ -65,6 +65,8 @@ def schema():
                     "platitor_tva, tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES "
                     "(1, 'PROBA SRL', '14399840', 'Str. Test 1', 'Bucuresti', 'B', '6202', true, 'L','Popescu','Ion','ADMINISTRATOR') "
                     "ON CONFLICT (id) DO UPDATE SET nume=EXCLUDED.nume, cui=EXCLUDED.cui")
+                # [lotul 14, 695] firma de probă nu e preluată: luna preluării veche, ca firma să fie „întreagă în iConta"
+                cur.execute("UPDATE firma_profil SET luna_preluare = '2020-01-01' WHERE id = 1")
             yield conn
         finally:
             conn.rollback()

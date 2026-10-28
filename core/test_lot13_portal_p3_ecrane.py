@@ -26,6 +26,7 @@ citat acolo); 541 — CF art.282 alin.(3^1) lit.a), citat în `core/regim_tva_in
 import json
 
 from core.test_lot12_ui2_ecrane import _pagina, browser  # noqa: F401 — fixture-ul harness-ului (Chromium + server static)
+from frontend_test.e2e.file_ui import _cu_filele_aratate  # [lotul 14, 687] câmpul dintr-o filă ascunsă: omul apasă fila
 
 
 def _asociati(n=6):
@@ -81,6 +82,9 @@ _IN_VEDERE = """(sel) => { const c = [...document.querySelectorAll('.fereastra-c
   const jos = b ? Math.min(k.bottom, b.getBoundingClientRect().top) : k.bottom; return r.top >= k.top && r.bottom <= jos; }"""
 
 
+_FILA_ACTIVA = "() => { const b = [...document.querySelectorAll('.fereastra-corp')].pop().querySelector('.rap-tab-activ[data-fila]'); return b && b.dataset.fila; }"
+
+
 def _deschide_din_refuz(pg, camp):
     """Ca butonul „Deschide Date firmă” al unui refuz (`ecran_destinatie.butonSpreEcran` -> `ECRANE.date_firma.deschide`), cu câmpul cerut
     de refuz (`detail.camp_ecran`, la dividende `as-adauga` — `core/mesaje.CAMP_ECRAN_PE_COD`)."""
@@ -99,12 +103,13 @@ def test_def_525_deschide_date_firma_din_refuz_duce_la_asociati(browser):
     pg, erori = _pagina(browser, _rute(_date(_profil()), _vector(), _asociati()))
     try:
         _deschide_din_refuz(pg, "as-adauga")
-        in_vedere = pg.evaluate(_IN_VEDERE, "#as-adauga")
-        sus = pg.evaluate("() => (" + _CORP + ")().scrollTop")
+        in_vedere = pg.evaluate(_IN_VEDERE, "#as-adauga") and pg.is_visible("#as-adauga")
+        fila = pg.evaluate(_FILA_ACTIVA)
     finally:
         pg.close()
     assert not erori, erori
-    assert sus > 0 and in_vedere, (sus, in_vedere)
+    # [lotul 14, 687] formularul e pe file: „adus în vedere” = fila Asociați s-a deschis singură (nu mai e nevoie de derulare) și butonul se vede
+    assert fila == "asociati" and in_vedere, (fila, in_vedere)
 
 
 def test_def_525_dupa_salveaza_fereastra_ramane_unde_lucrai(browser):
@@ -115,16 +120,19 @@ def test_def_525_dupa_salveaza_fereastra_ramane_unde_lucrai(browser):
     try:
         _deschide_din_refuz(pg, "as-adauga")
         inainte = pg.evaluate("() => (" + _CORP + ")().scrollTop")
+        fila_inainte = pg.evaluate(_FILA_ACTIVA)
         pg.click("#df-salveaza")
         pg.wait_for_function("() => /alvat/.test((document.querySelector('#df-msg') || {}).innerText || '')", timeout=15000)
         pg.wait_for_timeout(600)
         dupa = pg.evaluate("() => (" + _CORP + ")().scrollTop")
-        in_vedere = pg.evaluate(_IN_VEDERE, "#as-adauga")
+        in_vedere = pg.evaluate(_IN_VEDERE, "#as-adauga") and pg.is_visible("#as-adauga")
+        fila_dupa = pg.evaluate(_FILA_ACTIVA)
     finally:
         pg.close()
     assert not erori, erori
     assert any(m == "POST" and c.endswith("/firma-profil/date") for m, c, _b in cereri), cereri   # anti-vacuu: s-a salvat
-    assert inainte > 0 and abs(dupa - inainte) < 40 and in_vedere, (inainte, dupa, in_vedere)
+    # [lotul 14, 687] pe file, „unde lucrai” = aceeași filă (Asociați) și derularea nemișcată; butonul rămâne la vedere
+    assert fila_inainte == fila_dupa == "asociati" and abs(dupa - inainte) < 40 and in_vedere, (fila_inainte, fila_dupa, inainte, dupa, in_vedere)
 
 
 # ── C71.1 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -224,6 +232,7 @@ def test_def_541_perioadele_arata_cine_si_cand_iar_cea_stearsa_ramane(browser):
             "avertismente": ["Perioada de la 01.10.2026 a fost scrisă pe 22.10.2026, în aceeași perioadă fiscală (trimestrul IV 2026), fără data "
                              "notificării: […] data corectă e 01.01.2027 […]."]}
     pg, erori = _pagina(browser, _rute(_date(_profil()), _vector(tip_decont="trimestrial", tva_incasare=tvai), _asociati(2)))
+    _cu_filele_aratate(pg)
     try:
         pg.evaluate("""async () => { const d = await import('/static/js/ecrane/date_firma.js');
           window._nav.deschide('Date firmă', (c, n) => d.randeazaDateFirma(c, n, 1)); }""")

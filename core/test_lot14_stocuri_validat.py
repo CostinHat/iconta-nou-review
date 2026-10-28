@@ -10,7 +10,6 @@ MUTAȚII (în fiecare test): `clasa_miscarilor` care numără ciornele ca valida
 """
 import datetime
 import io
-from decimal import Decimal as D
 
 import pytest
 
@@ -39,7 +38,7 @@ def conn():
         with c.cursor() as cur:
             cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCH)
             cur.execute(_tprov.parametrizeaza_template(io.open("tenant_template.sql", encoding="utf-8").read(), SCH))
-            cur.execute("SET search_path TO %s, public" % SCH)
+            cur.execute("SET LOCAL search_path TO %s, public" % SCH)
             cur.execute("INSERT INTO firma_profil (id, nume, cui, platitor_tva, forma_juridica, capital_subscris, metoda_stoc) "
                         "VALUES (1, 'F1 SRL', '14399840', true, 'SRL', 200, 'cantitativ_valoric')")
         c.commit()
@@ -133,8 +132,8 @@ def test_observatii_dubluri_fractii_si_denumiri(conn):
     _intrare(conn, "Cafea boabe", 2.5, 10, um="buc")
     lista = cv.articole(conn, SCH)
     cafea, grau = _art(lista, "Cafea boabe"), _art(lista, "grau")
-    assert [o["fel"] for o in cafea["observatii"]] == ["fractie_um"] and "2,5" in cafea["observatii"][0]["text"], cafea["observatii"]
-    assert [o["fel"] for o in grau["observatii"]] == ["litera_mica", "fara_diacritice"] and "grau → grâu" in grau["observatii"][1]["text"], grau["observatii"]
+    assert [o["fel"] for o in cafea["observatii"]] == ["fractie_um"] and cafea["observatii"][0]["text"].count("2,5") == 1, cafea["observatii"]
+    assert [o["fel"] for o in grau["observatii"]] == ["litera_mica", "fara_diacritice"] and grau["observatii"][1]["text"] == "fără diacritice: grau → grâu", grau["observatii"]
     assert _art(lista, "Grâu")["observatii"] == [] and _art(lista, "Hârtie A4")["observatii"] == []
     d = cv.dubluri(lista)
     assert [(x["denumire"].lower() in ("grâu", "grau"), len(x["articole"])) for x in d] == [(True, 2)], d

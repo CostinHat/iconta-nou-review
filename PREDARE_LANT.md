@@ -620,7 +620,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 |---|---|---|---|
 | **77** | **190** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **1404** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1373** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1343** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **11** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

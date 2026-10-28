@@ -241,6 +241,9 @@ _INTRARI_NELEGABILE = {
     ("static/js/ecrane/cabinet.js", ("DELETE /asistenti/{uid}/firme/{tid}", "GET /capacitate") + _ASISTENTI[1:]): _DESKTOP_ADMIN,
     ("static/js/ecrane/cabinet.js", ("POST /eu/educatie/patru-ochi/vazut", "POST /eu/patru-ochi")):
         "indicatorul „Validarea în doi” din subbara desktopului administratorului (element construit), nu din a asistentului",
+    ("static/js/ecrane/date_firma.js", ("POST /tenants/{tenant_id}/cui/corectura",)):
+        "„Corectează CUI-ul” din Date firmă: legat prin variabila `_btnCui` (selector pe rândul de deasupra), la distanță mare de șablonul lui; "
+        "butonul poartă `data-actiune=\"POST /tenants/{tenant_id}/cui/corectura\"` în șablon (liniile cu `df-cui-corecteaza`)",
     ("static/js/ecrane/firme.js", ("POST /tenants/{tenant_id}/nume-ales",)):
         "„Ia denumirea de la ANAF” / „Păstrez denumirea mea”: legate printr-un selector din variabilă (`zona.querySelector(id)`); "
         "AMBELE butoane poartă `data-actiune=\"POST /tenants/{tenant_id}/nume-ales\"` în același șablon",

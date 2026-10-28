@@ -32,7 +32,7 @@ import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, f
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
 import { randA as randConstatare } from "./control_verdict.js?v=6b04f27d0c";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=18e8e62ad1";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=7d52dd4f91";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 

@@ -21,6 +21,7 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _RAD not in sys.path:
     sys.path.insert(0, _RAD)
 from core import etransport as E
+from frontend_test.e2e.file_ui import _cu_filele_aratate  # [lotul 14, 687] câmpul dintr-o filă ascunsă: omul apasă fila
 
 CUI = "12345674"
 
@@ -59,7 +60,7 @@ CANONICAL = _canonical(FILL)
 
 MOUNT = """async ([modUrl]) => {
   const m = await import(modUrl);
-  document.body.innerHTML = '<div id="mount"></div>';
+  document.body.innerHTML = '<div class="fereastra"><div id="mount"></div></div>';   /* [lotul 14, 687] filele își caută fereastra */
   const corp = document.getElementById('mount');
   await m.ecranEtransport(corp, { deschide(){}, inapoiPas(){} }, { id: 1 });
   return true;
@@ -136,6 +137,7 @@ def et_env():
 
     def make_page():
         pg = br.new_page()
+        _cu_filele_aratate(pg)   # [lotul 14, 687] câmpurile din file ascunse își arată fila
         pg.route("**/tenants/**", _handler(posted))
         pg.goto("http://127.0.0.1:%d/static/" % port)
         pg.evaluate(MOUNT, ["/static/js/ecrane/etransport_ecran.js"])

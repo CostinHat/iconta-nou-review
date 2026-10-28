@@ -742,6 +742,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .fereastra.fer-larg .mig-intro,
 .fereastra.fer-larg .mig-sold-rezumat,
 .fereastra.fer-larg .mig-coer,
+.fereastra.fer-larg .mig-intro-rand,
 .fereastra.fer-larg .mig-buton { flex: 0 0 auto; }
 
 /* ---------- FEREASTRA CU TABEL (DS cap.9 v2.96; lotul 10, deficiențele 421 și 424 — clasă, toată aplicația) ----------
@@ -837,7 +838,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
    bara de jos a unei previzualizări, blocurile stau strâns: cu marginile lor de pagină (16 + 24 + 12 px) rezumatul și bara luau
    împreună mai mult de jumătate din fereastră la 1280×720, iar tabelul dintre ele rămânea de câteva rânduri. */
 .fereastra-corp .rezumat-fix .mig-intro { margin: 0 0 4px; }
-.fereastra-corp .rezumat-fix .mig-sold-rezumat { margin: 4px 0; }
+.fereastra-corp .rezumat-fix .mig-sold-rezumat { margin: 4px 0; padding: 6px 13px; }   /* [lotul 14, 687] rezumatul strâns: tabelul păstrează loc */
 .fereastra-corp .rezumat-fix .mig-coer { margin: 4px 0 2px; }
 .fereastra-corp .bara-fixa .mig-buton { margin-top: 8px; }
 .mig-prev td { overflow-wrap: break-word; vertical-align: top; }
@@ -3259,7 +3260,11 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 /* [lotul 14, 687] cele două avertismente ale previzualizării unui import (firma din fișier, înlocuirea) sunt carduri pe același rând */
 .mig-avertismente { display: flex; flex-wrap: wrap; gap: 0 8px; }
 .mig-avertismente .sir-carduri { margin: 4px 0; }
+.mig-intro-rand { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 12px; }   /* [lotul 14, 687] titlul importului și banda lui de stări pe același rând */
+.mig-intro-rand .mig-intro, .mig-intro-rand .mig-coer { margin: 0; }
+.mig-intro-rand .mig-intro, .fereastra.fer-larg .mig-intro-rand .mig-intro { flex: 1 1 0; min-width: 0; }
 .mig-avertismente { align-items: flex-start; }
 .mig-avertismente > .caseta-info { flex: 1 1 240px; margin: 4px 0; }
+.mig-avertismente > details { margin: 0; }
 .mig-avertismente > .caseta-atentie { flex: 3 1 480px; margin: 4px 0; max-width: none; }
 .camp.camp-pe-rand { flex-direction: row; align-items: center; gap: 12px; }

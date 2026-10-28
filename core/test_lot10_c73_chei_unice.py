@@ -78,6 +78,9 @@ EXCEPTII = {
     ("core/inchidere_an.py", "propune", "inregistrari"):
         "`sursa` = `inchidere_an.SURSA` („inchidere_an”), în afara surselor raportului Z din predicatul indexului parțial "
         "(verificat de `test_apelantii_notei_cu_sursa_nu_scriu_un_raport_z`)",
+    ("core/inchidere_an.py", "propune_tva_luna", "inregistrari"):
+        "[lotul 14, 688] `sursa` = `inchidere_an.SURSA_TVA` („regularizare_tva”), în afara surselor raportului Z din predicatul indexului parțial "
+        "(verificat de `test_apelantii_notei_cu_sursa_nu_scriu_un_raport_z`)",
     ("core/repo_contabilitate.py", "adauga_z_cota", "rapoarte_z_cote"):
         "(nota, cotă): nota e cea abia scrisă în aceeași tranzacție (`horeca_raport_z`), iar cotele sunt cele două cote DISTINCTE ale "
         "datei (redusă, standard), câte un rând fiecare",
@@ -487,7 +490,7 @@ def test_apelantii_notei_cu_sursa_nu_scriu_un_raport_z():
     """Premisa excepțiilor `nota_cu_sursa_si_status` / `inchidere_an.propune`: sursa notei e un literal din afara surselor raportului Z
     (`raport_z.SURSE`, predicatul indexului `inregistrari_raport_z_unic`)."""
     from core import inchidere_an, raport_z
-    assert inchidere_an.SURSA not in raport_z.SURSE
+    assert inchidere_an.SURSA not in raport_z.SURSE and inchidere_an.SURSA_TVA not in raport_z.SURSE   # [lotul 14, 688] și nota de regularizare a TVA
     gasite = []
     for cale, sursa in _surse():
         arbore = ast.parse(sursa)

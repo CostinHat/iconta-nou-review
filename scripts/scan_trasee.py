@@ -115,7 +115,7 @@ TRASEE = [
       r"^/tenants/\{\}/verificare-stocuri", r"^/tenants/\{\}/d406-(active|stocuri)"],
      []),
     ("T11", "Închiderea lunii",
-     [r"^/tenants/\{\}/facturi/perioada", r"^/tenants/\{\}/perioade-blocate"],
+     [r"^/tenants/\{\}/facturi/perioada", r"^/tenants/\{\}/perioade-blocate", r"^/tenants/\{\}/inchidere/regularizare-tva$"],   # [lotul 14, 688] propunerea notei de regularizare a TVA
      ["perioade_blocate", "perioada_confirmata"]),
     ("T12", "Închiderea anului și situațiile financiare",
      # [R3, 30.08.2026] categoria de marime e PRECONDITIA celor doua: ea decide care situatie e

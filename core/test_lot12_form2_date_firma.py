@@ -21,12 +21,15 @@ import json
 import urllib.parse
 
 from core.test_lot11_m_ferestre_import import browser  # noqa: F401  (serverul static + Chromium)
+from frontend_test.e2e.file_ui import _cu_filele_aratate  # [lotul 14, 687] câmpurile din file: omul apasă fila
 
 PAGINA = """<!doctype html><html lang="ro"><head><meta charset="utf-8"><link rel="stylesheet" href="/static/stil.css"></head>
-<body><div id="app" class="fereastra-corp"></div><script type="module">
+<body><div class="fereastra"><div id="app" class="fereastra-corp"></div></div><script type="module">
 sessionStorage.setItem("iconta_user", JSON.stringify({rol: "admin_firma", nume: "Probă", bun_venit_vazut: true}));
 const m = await import("/static/js/ecrane/date_firma.js");
-await m.randeazaDateFirma(document.getElementById("app"), {setInapoi() {}}, 1);
+// [lotul 14, 687] cardul-rezumat își deschide fereastra prin `nav.deschide`: aici ea e un element `#fer-card` (textul întreg al cardului)
+const nav = {setInapoi() {}, deschide(titlu, f) { const d = document.createElement("div"); d.id = "fer-card"; document.body.appendChild(d); f(d); }};
+await m.randeazaDateFirma(document.getElementById("app"), nav, 1);
 window._gata = true;
 </script></body></html>"""
 
@@ -55,6 +58,7 @@ def _deschide(browser, cu_perioada=True, lipsuri_dupa=None, vector_refuzat=False
     a doua citire a profilului (după salvare); `vector_refuzat` = salvarea vectorului refuzată (salvare parțială)."""
     b, port = browser
     pg = b.new_page(viewport={"width": 1366, "height": 900})
+    _cu_filele_aratate(pg)   # [lotul 14, 687] câmpul dintr-o filă ascunsă își arată fila
     cereri, citiri = [], {"profil": 0}
     erori = []
     pg.on("pageerror", lambda e: erori.append(str(e)))
@@ -155,7 +159,9 @@ def test_def_627_salvarea_partiala_actualizeaza_profil_incomplet(browser):  # no
     -> pică."""
     pg, cereri, erori = _deschide(browser, vector_refuzat=True)
     try:
-        assert "Nr. registrul comerțului" in pg.inner_text("#df-profil-stare")
+        pg.click("#df-profil-stare [data-card]")                   # [lotul 14, 687] lista câmpurilor lipsă stă în fereastra cardului
+        assert "Nr. registrul comerțului" in pg.inner_text("#fer-card")
+        pg.evaluate("() => document.getElementById('fer-card').remove()")
         pg.fill("#df-reg_com", "J40/626/2020")
         _salveaza(pg)
         msg = pg.inner_text("#df-msg")

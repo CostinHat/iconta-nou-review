@@ -78,6 +78,8 @@ def conn_gen():
                     "declarant_prenume,declarant_functie) VALUES (1,'PROBA PERECHI','14399840',"
                     "'Str 1','Bucuresti','B','6202','BCR','RO49RNCB0000000000000001','0700000000',"
                     "true,true,'L','profit','Popescu','Ion','ADMINISTRATOR')")
+                # [lotul 14, 695] firma de probă nu e preluată: luna preluării veche, ca firma să fie „întreagă în iConta"
+                cur.execute("UPDATE firma_profil SET luna_preluare = '2020-01-01' WHERE id = 1")
                 zi = "%d-%02d-10" % (_AN, _LUNA)
                 # livrare intracomunitara (partener UE) -> D390 baza L, D300 rd.1.1
                 cur.execute("INSERT INTO facturi (numar,data_emitere,directie,tert_cui,tert_nume,"

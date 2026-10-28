@@ -16,7 +16,7 @@ import datetime as _dt
 
 import pytest
 
-from conftest import cui_cu_control, firma_noua, sql
+from conftest import cui_cu_control, firma_noua, sql, text_din_card
 from e2e_bloc_a import _api, _card, _ok, pregateste_firma
 from e2e_import_saga import _incarca, _pas
 
@@ -445,7 +445,7 @@ def test_def_583_inlocuirea_spune_zero_randuri_valide_din_cate_s_au_citit(patron
     _incarca(patron, "parteneri_583.csv", csv, "#mig-salveaza-part")
     patron.captura("zero_din_patru")
     assert "4 rânduri citite (0 intră)" in _txt(pg, ".mig-sold-rezumat")
-    assert "Fișierul nou: 0 rânduri valide din 4 — nu intră nimic." in _txt(pg, "#mig-inlocuire")
+    assert "Fișierul nou: 0 rânduri valide din 4 — nu intră nimic." in text_din_card(pg, "#mig-inlocuire")[0]   # [lotul 14, 687] textul întreg e în cardul deschis
 
 
 # ── 585 + 586 + 587 + 588 + 590 ──────────────────────────────────────────────────────────────────────────────────────────────────
