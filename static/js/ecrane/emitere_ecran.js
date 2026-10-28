@@ -1020,6 +1020,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     // [712, 14.2] țara schimbată cu mâna față de codul fiscal al clientului: motivul apare chiar atunci, nu abia la „Emite”
     const motiv = nepotrivireTara(corp.querySelector("#em-cui").value, corp.querySelector("#em-tara").value), st = corp.querySelector("#em-cui-stare");
     if (motiv && st) { st.textContent = motiv; st.className = "em-cui-stare em-cui-rau pe-randuri"; }
+    else if (st && /nu se potrivește cu codul fiscal/.test(st.textContent)) { st.textContent = ""; st.className = "em-cui-stare"; }   // țara a revenit la a codului
   });
   corp.querySelector("#em-nume").addEventListener("input", curataRefuzulClientului);
   // [lotul 12, 459.1, comanda Costin 12.2 pct.5] denumirea, adresa, localitatea și județul aduse de „Verifică” (ANAF sau VIES) țin de
