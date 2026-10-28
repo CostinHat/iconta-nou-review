@@ -24186,3 +24186,49 @@ pașii din plan) rămâne „parțial” în DEFICIENTE.
 `~/backup_pre_restart_cheie_ai_20261027_1151.sql.gz` (pg_dump, 9 scheme), `systemctl restart iconta-nou` la 11:52 (cod neschimbat, `d850db00`), amprenta cheii din procesul viu = cea din `api_keys.env`
 (înainte diferea), `ai_client.genereaza_text` și `citeste_imagini` răspund cu cheia nouă. Apoi, mesaj ulterior: dacă poarta comună 12+13 iese verde, se publică azi (restartul separat nu mai e necesar),
 iar dacă nu iese verde până la 18:00, restartul făcut rămâne ca atare.
+
+## 27.10.2026 — Comanda 14.1 (lotul 14 restrâns, înaintea pilotului): 687, 683, 695, 688, 694, 696
+
+**Comanda (Costin, 27.10.2026, verbatim, rezumat al punctelor):** „Rezolvă deficiențele 687, 683, 695, 688, 694, 696, în această ordine de prioritate (687 primul, e regulă de design
+pentru toate ferestrele). […] La 683 și 695 nu e nevoie de import nou: Import date › Solduri inițiale primește deja rulajele anului. Dovedește cu un test pe o balanță importată că, după
+import, bilanțul și D100 pe perioade dinainte de preluare folosesc rulajele importate. […] Cel mult 2 subagenți în paralel, pe Sonnet 5.5 […] la final: poarta completă a lotului 14 restrâns;
+dacă iese verde, backup și publicare […] Dacă poarta nu iese verde, nu publici; repari și reiei.”
+
+**Numerotare — coliziune de semnalat.** Numerele 683, 687, 688, 694, 695, 696 din documentul de retest al lui Costin (26.10) coincid cu numere pe care Code le dăduse în lotul 13 altor
+defecte (DEFICIENTE.md 682–703: Casă/avans 683, tichete 687, D200… 688, Tipare 694, sinteza zilnică 695, e-Factura 696). Nu se rescriu rândurile vechi (au teste și capturi legate de ele): cele șase
+din comanda 14.1 se înregistrează ca **C203 (=687)**, **C204 (=683)**, **C205 (=695)**, **C206 (=688)**, **C207 (=694)**, **C208 (=696)**, cu numărul lui Costin în text. Decizie cerută lui Costin:
+dacă numerotarea retestului trebuie reconciliată (renumerotarea rândurilor lotului 13 sau a celor din document).
+
+**687 (clasă) — varianta aleasă.** Regula (DS cap.9 v2.105): fereastra de lucru încape pe un ecran la 1920×1080 și 1366×768; tabelul / lista cea mai înaltă derulează într-o zonă proprie
+(`navigator._zonaDerulare`, `.zona-derulare`, `data-zona-derulare`), iar secundarul stă în carduri-rezumat (`carduri.js`). Măsurătoarea: `frontend_test/vizual/incape_ecran.py` →
+`incape_ecran.json` (ui_hash), păzită de `core/test_incape_ecran.py`: lista `DE_REORGANIZAT` (ferestre încă nereorganizate, cu motivul) coboară numai. *Alternativa respinsă:* corp fără derulare
+impus oricărei ferestre prin tăiere (ar ascunde mesaje de eroare). *Limită declarată:* se măsoară starea inițială a celor 68 de ecrane din `nav_ecrane`; ferestrele deschise din ele (formulare,
+rezultate) nu sunt toate în măsurătoare.
+
+**695 / 683 — D100 micro pe un trimestru care începe înainte de preluare.** Refuz (nu avertisment) pentru bilanț, D101 și D100 când fereastra cuprinde zile dinaintea preluării fără rulajele
+anului (`rulaje_preluate.lipsa_in_fereastra`). După import, bilanțul, D101 și D100 pe PROFIT (cumulat de la 01.01) folosesc rulajele importate. **D100 micro pe T3 rămâne refuzat și după import**
+(*INTERPRETARE:* rulajele importate sunt un singur cumul 01.01–data preluării, nu se pot împărți pe luni; veniturile iulie–august nu se pot separa de ianuarie–iunie). Decizie cerută lui Costin:
+sau se permite introducerea manuală a bazei lunilor dinainte de preluare, sau se importă balanța lunară (alt format).
+**Plafonul de microîntreprindere:** nu există în cod nicio verificare a lui (control_fiscal_api: „Aplicația NU cunoaște plafonul de ieșire din micro”) — nu s-a construit (CLAUDE.md §2: fără funcții
+noi până la pilot); rămâne nerezolvat, de decis.
+
+**688 — regularizarea TVA la închiderea lunii.** La plătitorul de TVA, în ultima lună a perioadei fiscale (lunar: orice lună; trimestrial: 3/6/9/12), cât 4426/4427 au sold în notele validate,
+luna nu se blochează (`TVA_NEREGULARIZAT`) și aplicația propune ciorna `4427 = 4426` + diferența în `4423` / `4424` (`inchidere_an.propune_tva_luna`, sursa `regularizare_tva`); validarea o refuză dacă
+nu mai corespunde soldurilor (`REGULARIZARE_TVA_NEVALIDABILA`). În decembrie propunerea e cea a închiderii anului (o singură pereche de note).
+
+**694 — perioada comparată.** `control_incrucisat.perioada_comparata`: ultima perioadă fiscală COMPLETĂ (T3 în octombrie), nu fereastra în curs (T4); fiecare comparație își arată perioada
+(„Perioada comparată: D300 T3/2026 · D112 09/2026 · D390 T3/2026”). Neatinse: reconcilierea, doar notele validate, 4428 semnalată, D390 fără notă, absența D300 depus (gri).
+
+**696 — Stocuri.** Tabelul arată stocul VALIDAT (mișcarea e în evidență când nota ei / a documentului ei e validată, sau nu are notă — soldul preluat), ciorna în coloană separată, gestiunea
+articolului, iar sub titlu cardurile: reconcilierea cu balanța (`stocuri_cv_api.reconciliere`), ciornele, articolele de verificat (dubluri, cantități cu zecimale la UM care nu se fracționează, denumiri
+cu literă mică / fără diacritice — cu forma propusă din lexicon, fără rescriere). *Limită:* reconcilierea la global-valoric (371 cu 378 / 4428) nu e făcută — ecranul Stocuri pe global-valoric nu are
+tabel de articole; de decis dacă se cere acolo.
+
+**Comanda 14.1 — adăugiri la închiderea lotului (28.10.2026).**
+- Testele e2e ale numerelor din lot s-au numit `test_def_c203_…` (C203 = 687, C204 = 683, C205 = 695, C206 = 688, C208 = 696), cum cere `core/test_deficiente.py` pentru prefixul C; dovezile pe copie: `dovezi/lot14/c20N_*.png` (PNG-urile sunt în ZIP, `AMPRENTE.json` și `dovezi.json` în git).
+- C203 trece `rezolvată`: scanul `incape_ecran.py` dă 0 din 68 ferestre care derulează la 1920×1080 și 1366×768; `DE_REORGANIZAT` rămâne gol.
+- Dovada 688 pe copie: luna 09/2026 a lui F1 e deja BLOCATĂ (din retestul lui Costin), deci butonul e «Deblochează luna»; dovada verifică ce se vede acum — motivul «TVA-ul perioadei nu e regularizat» și absența lui «Nimic nu oprește închiderea lunii»; «Blochează luna» inactiv pe o lună deschisă e în testul e2e.
+- `pilot_34_d100` (F026): firma-pilot e preluată la 31.08, deci D100 T3/2026 se REFUZĂ (era exact defectul 695); testul așteaptă refuzul. Decizie cerută lui Costin: cum se completează D100 micro pe trimestrul cu luni dinainte de preluare.
+- Găsită de Code: C209 (filele din Date firmă fără stil — clasa greșită în `date_firma.js`).
+- Accesibilitate la zonele noi: `.zona-derulare` primește `tabindex=0` (derulare de la tastatură); filele `.rap-tab` au minimum 24 px și text închis la contrast; `role=tablist` din Emitere nu mai conține nota de pregătire.
+

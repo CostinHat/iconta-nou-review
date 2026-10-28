@@ -1,9 +1,10 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
 import { api, ultimaCerere, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=c6c45aefe4";
+import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
-import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";   // [lotul 13, 551 / 548] refuzul care trimite în Date firmă are butonul lui
+import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";   // [lotul 13, 551 / 548] refuzul care trimite în Date firmă are butonul lui
 import { actiuniRefuz, scoateActiuniRefuz } from "./coada_trimite.js?v=50cade9fc8";   // rândul de butoane de lângă caseta „NU s-a salvat”
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
@@ -454,6 +455,9 @@ const GRUPURI = [
   ["rar", "Rare", "Operațiuni ocazionale: nota se completează din formular."],
 ];
 
+// [lotul 14, 687] ce propune aplicația singură (explicațiile lungi) stă în cardul de sub titlu, nu între butoane
+const CU_PROPUNERE = REGISTRU.filter((o) => o.propune);
+
 // [drepturi_rol 04.10.2026] Fiecare operațiune merge pe ruta ei (`POST /tenants/{tenant_id}/<ruta>`), deci acțiunea se
 // DERIVĂ din registru, nu se scrie a doua oară. Butonul o poartă ca `data-actiune` — poarta globală (drepturi.js)
 // îl scoate dacă serverul o refuză. `core/test_drepturi_ui.py` verifică: fiecare `ruta` din REGISTRU e o rută reală.
@@ -503,24 +507,39 @@ export async function ecranOperatiuni(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Opera\u021biuni speciale</h2>
       <p class="pf-intro">Note contabile pentru opera\u021biuni punctuale. Toate intr\u0103 drept <b>ciorn\u0103</b> \u2014 se valideaz\u0103 din Registru jurnal.</p>
-      ${GRUPURI.map(([frecventa, titlu, intro]) => `
-        <section class="op-grup" data-frecventa="${frecventa}">
-          <h3 class="pf-frand-nume">${esc(titlu)}</h3>
-          <p class="ecran-nota">${esc(intro)}</p>
+      <div id="op-carduri"></div>
+      <div class="rap-tabs" role="tablist" aria-label="Felul operațiunilor">${GRUPURI.map(([frecventa, titlu], i, _t, cls = i ? "rap-tab" : "rap-tab rap-tab-activ") =>
+        `<button type="button" class="${cls}" role="tab" aria-selected="${i === 0}" data-grup="${frecventa}" data-fara-actiune="alegerea listei — nu scrie nimic">${esc(titlu)}</button>`).join("")}</div>
+      ${GRUPURI.map(([frecventa, , intro], i) => `
+        <section class="op-grup" data-frecventa="${frecventa}" role="tabpanel"${i ? " hidden" : ""}>
+          ${i ? `<p class="ecran-nota">${esc(intro)}</p>` : ""}
+          <div style="columns:300px;column-gap:12px">
           ${CATEGORII.filter((cat) => REGISTRU.some((o) => o.cat === cat && o.frecventa === frecventa)).map((cat) => `
-            <div class="op-categorie" style="display:block;margin-bottom:12px;background:var(--fundal);border:1px solid var(--linie);border-radius:var(--raza);padding:14px">
-              <div class="pf-frand-nume" style="margin-bottom:8px">${esc(cat)}</div>
+            <div class="op-categorie" style="display:block;break-inside:avoid;margin-bottom:10px;background:var(--fundal);border:1px solid var(--linie);border-radius:var(--raza);padding:10px 14px">
+              <div class="pf-frand-nume" style="margin-bottom:6px">${esc(cat)}</div>
               <div style="display:flex;flex-wrap:wrap;gap:8px">
                 ${REGISTRU.filter((o) => o.cat === cat && o.frecventa === frecventa).map((o) =>
                   `<button class="buton-secundar" data-op="${o.cheie}" data-actiune="${actiuneOp(o)}">${esc(o.titlu)}</button>`).join("")}
               </div>
-              ${REGISTRU.filter((o) => o.cat === cat && o.frecventa === frecventa && o.propune).map((o) =>
-                `<p class="ecran-nota op-propune" data-propune="${o.cheie}"><b>${esc(o.titlu)}</b> — se propune automat: ${esc(o.propune)}</p>`).join("")}
             </div>`).join("")}
+          </div>
         </section>`).join("")}`;
+    siraCarduri(corp.querySelector("#op-carduri"), [{ id: "propune", ton: "info",
+      text: `Aplicația propune singură nota pentru ${cate(CU_PROPUNERE.length, "operațiune", "operațiuni")}`, titlu: "Ce propune aplicația singură",
+      deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Ce propune aplicația singură</h2><p class="ecran-nota">${esc(GRUPURI[0][2])}</p>
+        ${CU_PROPUNERE.map((o) => `<p class="ecran-nota op-propune" data-propune="${o.cheie}"><b>${esc(o.titlu)}</b> — se propune automat: ${esc(o.propune)}</p>`).join("")}`; } }], nav);
+    // [lotul 14, 687] două liste (lunare / rare) în file: una la vedere, ca fereastra să încapă pe ecran; prima fereastră deschisă e a lunarelor
+    corp.querySelectorAll(".rap-tab[data-grup]").forEach((b) => b.addEventListener("click", () => {
+      corp.querySelectorAll(".rap-tab[data-grup]").forEach((x) => {
+        const ales = x === b;
+        x.classList.toggle("rap-tab-activ", ales);
+        x.setAttribute("aria-selected", String(ales));
+      });
+      corp.querySelectorAll(".op-grup").forEach((g) => { g.hidden = g.dataset.frecventa !== b.dataset.grup; });
+    }));
     // [drepturi_rol 04.10.2026] Nicio operațiune permisă (asistent fără „Poate pregăti”): ecranul spune de ce e gol.
     if (!REGISTRU.some((o) => permis(actiuneOp(o)))) {
-      corp.querySelectorAll(".op-grup").forEach((g) => g.remove());
+      corp.querySelectorAll(".op-grup, .rap-tabs, #op-carduri").forEach((g) => g.remove());
       corp.insertAdjacentHTML("beforeend", `<p class="ecran-nota drept-motiv">Operațiunile speciale cer dreptul «Poate pregăti», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți.</p>`);
     }
     corp.querySelectorAll("[data-op]").forEach((b) => b.addEventListener("click", () => {
@@ -647,7 +666,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=b99ca91399");
+      const { ecranJurnal } = await import("./firme.js?v=18e8e62ad1");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };
@@ -704,7 +723,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     };
     const btnSpre = corp.querySelector("#op-spre-emitere-buton");
     if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
-      const { randeazaEmitere } = await import("./emitere_ecran.js?v=5b93aa95d0");
+      const { randeazaEmitere } = await import("./emitere_ecran.js?v=d4175d6e88");
       nav.deschide("Emite factură", (c2) => randeazaEmitere(c2, nav, t.id, { inapoi: () => nav.inapoi() }));
     });
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>

@@ -40,7 +40,7 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
     <input id="pr-cauta" class="camp-input" placeholder="Caut\u0103 produs..." aria-label="Caut\u0103 produs" style="margin-bottom:8px">
     <div id="pr-mesaj"></div>
     <div class="pr-form-zona" id="pr-form-zona"></div>
-    <div class="pr-lista" id="pr-lista"></div>
+    <div class="pr-lista" id="pr-lista" data-zona-derulare></div>
   `;
   // [435] `opt.mesaj` e al unei singure redesenări: reîncărcarea următoare nu-l mai arată
   const optFara = Object.assign({}, opt, { mesaj: null, dupaSalvare: false });

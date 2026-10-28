@@ -1417,9 +1417,10 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
+  min-height: 24px;
 }
 .rap-tab:hover { color: var(--ardezie); }
-.rap-tab-activ { color: var(--albastru); border-bottom-color: var(--albastru); font-weight: 600; }
+.rap-tab-activ { color: var(--albastru-inchis); border-bottom-color: var(--albastru); font-weight: 600; }
 .rap-tab-nr {
   display: inline-block;
   min-width: 18px;
@@ -3205,3 +3206,60 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
   #sp-tabel .sp-deschide { min-height: 24px; text-align: left; overflow-wrap: anywhere; }
   .mig-eq { min-height: 24px; display: inline-flex; align-items: center; }
 }
+
+
+/* ---------- [lotul 14, 687 — clasă, toate ferestrele de lucru] FIECARE FEREASTRĂ DE LUCRU ÎNCAPE PE UN ECRAN (DS cap.9 v2.105) ----------
+   Comanda Costin 14.1, verbatim: „Fereastra de lucru se deschide direct pe tot ecranul cu datele (tabel, formular), sub titlu și acțiunea
+   principală, vizibile fără derulare. Regula unică, măsurabilă: fiecare fereastră de lucru încape pe un singur ecran, fără derulare, la
+   1920 × 1080 și la 1366 × 768; dacă nu încape, se reorganizează (coloane, file, carduri pliate pentru secundar, lățimea întreagă), nu se
+   micșorează scrisul. Excepție: tabelele lungi (registre, balanțe) — se derulează doar tabelul, titlul, filtrele și acțiunile rămân fixe.”
+   (1) Fereastra de lucru ia ecranul minus o margine de 12 px (era 24): 24 px în plus pe fiecare axă. (2) Tabelul cel mare al ferestrei stă
+   într-o zonă proprie de derulare (`.zona-derulare`, pusă de navigator, `navigator._zonaDerulare`): corpul devine coloană (`.cu-zona`), tot
+   ce e în afara tabelului (titlu, filtre, carduri-rezumat, acțiuni) are înălțimea lui, iar zona ia restul și derulează ea; antetul și
+   totalul tabelului se lipesc în ea. Corpul rămâne `overflow-y: auto` numai ca plasă: o fereastră al cărei conținut din afara tabelului
+   nu încape derulează în corp, iar verificatorul o prinde (`incape_ecran`). */
+.fereastra-overlay:has(.fereastra.fer-lucru), .fereastra-overlay:has(.fereastra.fer-tabel) { padding: 12px; }
+.fereastra.fer-tabel, .fereastra.fer-lucru { width: calc(100vw - 24px); max-width: calc(100vw - 24px); height: calc(100vh - 24px); max-height: calc(100vh - 24px); }
+.fereastra.fer-tabel .fereastra-corp, .fereastra.fer-lucru .fereastra-corp { flex: 1 1 0; min-height: 0; }   /* corpul ia restul ferestrei: zona de derulare are o înălțime de care să se agațe */
+.fereastra-corp.cu-zona { display: flex; flex-direction: column; }
+.fereastra-corp.cu-zona > :not(.lant-zona):not(.zona-derulare), .lant-zona > :not(.lant-zona):not(.zona-derulare) { flex: 0 0 auto; }
+.fereastra-corp.cu-zona > .lant-zona, .lant-zona > .lant-zona { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }   /* `min-height` propriu: pus de navigator = ce are lanțul în afara zonei + înălțimea minimă a zonei (altfel conținutul din jurul zonei s-ar suprapune) */
+.fereastra-corp.cu-zona > .zona-derulare, .lant-zona > .zona-derulare { flex: 0 1 auto; min-height: 120px; overflow: auto; }
+.zona-derulare { max-width: 100%; }
+.fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel thead th { top: 0; }
+.fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot td, .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot th { bottom: 0; }
+.fereastra.fer-tabel .fereastra-corp .zona-derulare .mig-sold-tabel .ac-cap { top: 0; }
+@media (max-width: 560px) {
+  .fereastra-overlay:has(.fereastra.fer-lucru), .fereastra-overlay:has(.fereastra.fer-tabel) { padding: 0; }
+  .fereastra.fer-tabel, .fereastra.fer-lucru { width: 100%; max-width: none; height: 100%; max-height: none; }
+}
+
+/* [lotul 14, 687] Șirul de carduri-rezumat de sub titlu (`static/js/carduri.js`, DS cap.9 v2.105): un rând, fiecare card un buton cu punctul tonului
+   și o frază scurtă; textul care nu încape se taie cu „…” (cardul întreg se deschide în fereastra lui). Fără clasă de culoare nouă: punctul ia
+   culorile semaforului (DS cap.8). */
+.sir-carduri { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 8px; }
+.card-rezumat { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 32px; padding: 4px 12px; background: var(--alb);
+  border: 1px solid #b9c2cf; border-radius: 16px; font: inherit; font-size: var(--text-mic); color: var(--ardezie); cursor: pointer; text-align: left; }
+.card-rezumat:hover { background: var(--albastru-clar); }
+.card-rezumat[aria-disabled="true"] { opacity: .7; cursor: default; }
+.card-rezumat .card-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.card-rezumat .card-punct { flex: 0 0 10px; width: 10px; height: 10px; border-radius: 50%; background: var(--gri-semafor); }
+.card-rezumat.card-ok .card-punct { background: var(--verde); }
+.card-rezumat.card-atentie .card-punct { background: var(--galben); }
+.card-rezumat.card-eroare .card-punct { background: var(--rosu-semafor); }
+
+/* [lotul 14, 687] vederile alăturate ale unui raport (Rapoarte comerciale): un rând de butoane sub titlu, cel ales `.buton-activ` (DS cap.1 v2.101) */
+.rc-vederi { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 8px; }
+
+/* [lotul 14, 687] Emite factura: fila „Factură” pe două coloane (document + beneficiar | produse) și câmpurile documentului pe grilă (poziționare, fără culori) */
+.em-fila-doua { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 0 24px; align-items: start; }
+.em-grila-doc { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 20px; align-items: start; }
+.em-fila[hidden] { display: none; }
+
+/* [lotul 14, 687] cele două avertismente ale previzualizării unui import (firma din fișier, înlocuirea) sunt carduri pe același rând */
+.mig-avertismente { display: flex; flex-wrap: wrap; gap: 0 8px; }
+.mig-avertismente .sir-carduri { margin: 4px 0; }
+.mig-avertismente { align-items: flex-start; }
+.mig-avertismente > .caseta-info { flex: 1 1 240px; margin: 4px 0; }
+.mig-avertismente > .caseta-atentie { flex: 3 1 480px; margin: 4px 0; max-width: none; }
+.camp.camp-pe-rand { flex-direction: row; align-items: center; gap: 12px; }

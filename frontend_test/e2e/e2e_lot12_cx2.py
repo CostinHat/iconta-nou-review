@@ -824,10 +824,15 @@ def _c_note_nir_pe_ecran(patron, f, nir_id):
     """Stocuri -> „Deschide NIR-ul: articolele și notele” -> tabelul „Notele NIR-ului”: [(debit, credit, suma)], citite din celule."""
     patron.firma(f["nume"])
     pg = patron.pg
-    _card(patron, "stocuri", ".nir-deschide")
+    _card(patron, "stocuri", "[data-card='nir']")
+    # [lotul 14, 687] NIR-urile lunii stau în cardul „NIR-urile lunii”: contabilul îl deschide, apoi apasă „Deschide NIR-ul”
+    pg.click("[data-card='nir']")
+    pg.wait_for_selector(".fereastra:last-of-type .nir-deschide", timeout=25000)
     pg.click(".nir-deschide[data-nir='%d']" % nir_id)
     pg.wait_for_selector("#nir-detaliu-linii", timeout=25000)
-    randuri = pg.eval_on_selector_all("#nir-detaliu-linii ~ table.fd-tabel tbody tr",
+    # [lotul 14, 687] fereastra NIR-ului apare cu animația de fereastră nouă: se așteaptă rândurile notelor (nu rândul „—” gol), apoi se citesc
+    pg.wait_for_function("() => document.querySelectorAll('.fereastra:last-of-type table.fd-tabel:not(#nir-detaliu-linii) tbody tr td:nth-child(4)').length > 0", timeout=25000)
+    randuri = pg.eval_on_selector_all(".fereastra:last-of-type table.fd-tabel:not(#nir-detaliu-linii) tbody tr",
                                       "rs => rs.map(r => [...r.cells].map(c => c.innerText.trim()))")
     return [(r[1], r[2], _c_suma(r[3])) for r in randuri if len(r) >= 4]
 

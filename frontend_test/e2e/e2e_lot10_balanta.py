@@ -59,6 +59,7 @@ def firma_preluata():
 
 def _celule(pg, cont):
     rand = pg.locator("table.fd-tabel tr", has=pg.locator("td:text-is('%s')" % cont)).first
+    rand.wait_for(timeout=30000)   # [lotul 14, 687] după „înapoi” dintr-un card balanța se redesenează: omul așteaptă rândul
     return [" ".join(x.split()) for x in rand.locator("td").all_inner_texts()]
 
 
@@ -110,13 +111,21 @@ def test_def_425_numai_solduri_finale_balanta_si_d101_spun_ce_lipseste(patron, f
     _scrie_balanta(firma_preluata["schema"], False)
     pg = patron.pg
     _balanta(patron, firma_preluata, AN, 10)
+    # [lotul 14, 687] sold inițial 371 se citește din tabel ÎNAINTE de a deschide cardul: la întoarcerea din card balanța revine pe luna
+    # curentă (defect de produs, urmărit în e2e_lot14_luna_dupa_inapoi.py)
+    assert _celule(pg, "371")[2] == "30.000,00"
+    pg.wait_for_selector("[data-card='rulaje']", timeout=30000)   # avertismentul rulajelor stă în cardul lui
+    assert FRAZA_LIPSA in pg.inner_text("[data-card='rulaje']")
+    pg.click("[data-card='rulaje']")
     pg.wait_for_selector("#b-rulaje", timeout=30000)
     patron.captura("balanta_fara_rulaje")
     av = " ".join(pg.inner_text("#b-rulaje").split())
     assert av.startswith(FRAZA_LIPSA) and "«Sold inițial» arată soldul de la data preluării" in av, av
-    assert _celule(pg, "371")[2] == "30.000,00"
+    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
     _declaratie_pas1(patron, firma_preluata["nume"], "d101", AN)
     pg.wait_for_selector("#dec-trimite, #dec-gol-da, .dec-eroare", timeout=90000)
     patron.captura("d101_fara_rulaje")
     t = " ".join(patron.fereastra().split())
-    assert FRAZA_LIPSA in t and "cifra de afaceri, veniturile și cheltuielile anului" in t, t[:3000]
+    # [lotul 14, 683 / 695] D101 pe un an care începe înainte de preluare, fără rulajele lui, se REFUZĂ (nu doar avertizează), cu trimitere la import
+    assert "D101 pe %d nu se poate genera" % AN in t and "Import date › Solduri inițiale" in t, t[:3000]
+    assert "#dec-trimite" not in t and pg.locator("#dec-trimite").count() == 0, t[:600]

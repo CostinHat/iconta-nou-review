@@ -2,7 +2,7 @@
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
 import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=c6c45aefe4";
-import { deschideFirma } from "./firme.js?v=b99ca91399";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { deschideFirma } from "./firme.js?v=18e8e62ad1";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
@@ -32,12 +32,13 @@ export async function randeazaTermene(corp, nav) {
 
   corp.innerHTML = `
     <p class="mig-intro">Scadențele care urmează în următoarele 60 de zile, grupate pe dată. Click pe o declarație ca să vezi firmele.</p>
-    <div id="term-lista"></div>
-  `;
+    <div id="term-zona" data-zona-derulare><div id="term-lista"></div></div>
+  `;   // [lotul 14, 687] lista scadențelor derulează în zona ei; introducerea rămâne fixă sus
+  const zona = corp.querySelector("#term-zona");
   const lista = corp.querySelector("#term-lista");
   if (grupuri.length === 0) {
     lista.innerHTML = `<div class="stare-goala">Nicio scadență în următoarele 60 de zile.</div>`;
-    randeazaNeevaluate(corp, neeval);   // [T1] chiar si fara scadente, firmele neevaluate NU dispar tacut
+    randeazaNeevaluate(zona, neeval);   // [T1] chiar si fara scadente, firmele neevaluate NU dispar tacut
     return;
   }
 
@@ -68,7 +69,7 @@ export async function randeazaTermene(corp, nav) {
     lista.appendChild(bloc);
   });
 
-  randeazaNeevaluate(corp, neeval);   // [T1] gri cu temei, sub scadente
+  randeazaNeevaluate(zona, neeval);   // [T1] gri cu temei, sub scadente
 }
 
 // [T1] firmele care nu au putut fi evaluate — afisate explicit (gri cu temei), nu omise.

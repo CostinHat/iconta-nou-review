@@ -49,3 +49,21 @@ def ecrane_asteptate():
     if not nume:
         raise AssertionError("nav_ecrane.ECRANE e goala — gardul n-ar cere niciun ecran")
     return nume
+
+
+def ecrane_incape():
+    """[lotul 14, 687] Numele TUTUROR ecranelor pe care le măsoară `incape_ecran.py` (nav_ecrane.ECRANE + ECRANE_CAMPANIE + ECRANE_CABINET), prin
+    regex, fără browser. ECRANE_CAMPANIE se construiește din `_FA_CAMPANIE` (`fa-<nume>`), deci numele vin din acea listă."""
+    s = open(os.path.join(_HERE, "nav_ecrane.py"), encoding="utf-8").read()
+    out = []
+    for lista in ("ECRANE", "ECRANE_CABINET"):
+        bloc = re.search(r"^%s\s*=\s*\[(.*?)^\]" % lista, s, re.DOTALL | re.MULTILINE)
+        if not bloc:
+            raise AssertionError("nav_ecrane.py: nu gasesc lista %s" % lista)
+        out += re.findall(r'^\s*\("([a-z_0-9]+)"', "\n".join(l.split("#")[0] for l in bloc.group(1).split("\n")), re.MULTILINE)   # doar începutul rândului: nu și `_card_fn("raportari")`
+    camp = re.search(r"^_FA_CAMPANIE\s*=\s*\[(.*?)^\]", s, re.DOTALL | re.MULTILINE)
+    if camp:
+        out += [x[3:].replace("-", "_") for x in re.findall(r'"(fa-[a-z0-9-]+)"', "\n".join(l.split("#")[0] for l in camp.group(1).split("\n")))]
+    if not out:
+        raise AssertionError("nicio fereastra de masurat")
+    return list(dict.fromkeys(out))

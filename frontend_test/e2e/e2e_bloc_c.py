@@ -520,6 +520,9 @@ def test_def_86_nir_salvat_se_deschide(patron, firma_cv):
     articolele lui (cantitate, preț) și notele lui, fiecare cu starea."""
     pg = patron.pg
     _nir_cv_din_ecran(patron, firma_cv["nume"], "CV-86", "Articol 86 %s" % firma_cv["tenant_id"], cant="3", pret="7")
+    # [lotul 14, 687] NIR-urile lunii stau în cardul „NIR-urile lunii”: contabilul îl deschide și apasă „Deschide NIR-ul” pe NIR-ul salvat
+    pg.click("[data-card='nir']")
+    pg.wait_for_selector(".fereastra:last-of-type .nir-deschide", timeout=15000)
     btn = pg.locator(".nir-deschide[data-numar='CV-86']")
     btn.click()
     pg.wait_for_selector("text=Notele NIR-ului", timeout=15000)
@@ -541,7 +544,10 @@ def test_def_87_stocul_arata_intrarea_nir_imediat(patron, firma_cv):
     rand = pg.locator("#s-situatie-tabel tbody tr", has_text=art)
     assert rand.count() == 1
     td = [x.strip() for x in rand.locator("td").all_inner_texts()]
-    assert td[2] in ("4", "4,000", "4,00") and td[4] == "50,00", td
+    # [lotul 14, 687] tabelul arată stocul VALIDAT (cantitate, CMP, valoare) și, într-o coloană separată, valoarea din ciornă: NIR-ul salvat
+    # e în ciornă, deci articolul apare imediat (rândul există) cu 0 validat și 50,00 lei în „În ciornă”; coloanele: Articol, UM, Gestiune,
+    # Cantitate, CMP, Valoare, În ciornă
+    assert td[3] == "0" and td[5] == "0,00" and td[6] == "50,00", td
     patron.captura()
 
 
@@ -693,6 +699,10 @@ def test_def_94_metoda_de_stoc_nesuportata_refuzata_clar(patron):
 # ================================================================ 71, 75, 76, 78 — Operațiuni speciale
 def _operatiune(ecran, firma, titlu):
     _deschide(ecran, firma, "operatiuni", "[data-op]")
+    # [lotul 14, 687] operațiunile stau pe două liste (lunare / rare): contabilul apasă lista în care e operațiunea, apoi operațiunea
+    ecran.pg.evaluate("""(t) => { const b = [...document.querySelectorAll('button[data-op]')].find(x => x.textContent.includes(t));
+        const g = b && b.closest('.op-grup[hidden]'); if (!g) return;
+        document.querySelector('.rap-tab[data-grup="' + g.dataset.frecventa + '"]').click(); }""", titlu)
     ecran.pg.locator("button[data-op]", has_text=titlu).first.click()
     ecran.pg.wait_for_selector("#op-trimite", timeout=10000)
 

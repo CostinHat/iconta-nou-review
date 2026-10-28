@@ -598,6 +598,12 @@ def genereaza(conn, schema, perioada, manual=None):
     erori = erori_generare(prof)
     if erori:
         raise ValueError(" ".join(erori))
+    # [lotul 14, deficiențele 683 + 695] anul care începe înainte de preluare se refuză, afară de cazul în care balanța de deschidere a adus
+    # rulajele anului (`rulaje_preluate.refuza_fereastra`): avertismentul de mai jos nu mai e singurul semn
+    import psycopg2.extras as _E
+    from core import rulaje_preluate as _rp0
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as _cr:
+        _rp0.refuza_fereastra(_cr, schema, _date_v(perioada.an, 1, 1), _date_v(perioada.an + 1, 1, 1), "D101 pe %d" % perioada.an)
     intrari = {"P1": r.get("ven_expl", 0), "P2": r.get("chelt_expl", 0),
                "P4": r.get("ven_fin", 0), "P5": r.get("chelt_fin", 0)}
     intrari.update(manual)   # ajustarile fiscale ale contabilului completeaza/suprascriu baza

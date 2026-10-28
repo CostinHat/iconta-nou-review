@@ -7,6 +7,7 @@
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
 import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=c6c45aefe4";
+import { siraCarduri } from "../carduri.js?v=98c15a1738";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -78,11 +79,9 @@ function _blocAmef(d) {
   const p = d.profil || {};
   const act = d.activitati_amef || [];
   return `
-    <h2 class="pf-titlu" style="margin-top:26px">Casa de marcat</h2>
-    <p class="pf-intro">Firmele care încasează din activități exceptate de la casa de marcat (OUG 28/1999 art. 2) emit chitanțe fără factură; încasările lor se declară în D394, secțiunea Î2.</p>
-    <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Activitate exceptată de la casa de marcat</span>
+        <span class="camp-ajutor">Firmele care încasează din activități exceptate de la casa de marcat (OUG 28/1999 art. 2) emit chitanțe fără factură; încasările lor se declară în D394, secțiunea Î2.</span>
         <!-- [lotul 07.10 B, comanda Costin A.3] neales (NULL) = „— alege —”; se cere o dată, la prima chitanță fără factură / D394 -->
         <select class="camp-input" id="df-activitate_exceptata_amef" data-butoane="">${alegeDacaLipseste(p.activitate_exceptata_amef)}
           <option value="0"${p.activitate_exceptata_amef === false ? " selected" : ""}>Nu</option>
@@ -93,13 +92,12 @@ function _blocAmef(d) {
         <span class="camp-eticheta">Activitatea (OUG 28/1999 art. 2)<span class="oblig">*</span></span>
         <select class="camp-input" id="df-activitate_amef"><option value="">— alege —</option>${act.map(([k, t]) =>
           `<option value="${esc(k)}"${k === p.activitate_amef ? " selected" : ""}>${esc(k)}) ${esc(t)}</option>`).join("")}</select>
-      </label>
-    </div>`;
+      </label>`;
 }
 
 // [lot 19 d12] Capitalul social pe factură — Legea 31/1990 art. 74 alin. (3): SRL -> capitalul social; SA/SCA ->
 // capitalul subscris și cel vărsat. Fără ele, factura unei societăți nu se emite (decizia lui Costin, 03.10.2026).
-function _blocCapital(d) {
+function _blocFormaJuridica(d) {
   const p = d.profil || {};
   const forme = d.forme_juridice || [];
   // [comanda Costin 05.10.2026 pct.2] forma necompletată, dar neechivocă (ANAF / denumire): preselectată, cu sursa spusă — se
@@ -108,26 +106,26 @@ function _blocCapital(d) {
   const notaPropusa = !p.forma_juridica && d.forma_juridica_propusa
     ? `<span class="camp-ajutor" id="df-forma-propusa">Propusă din ${d.forma_juridica_sursa === "ANAF" ? "ANAF" : "denumirea firmei"}: ${esc(d.forma_juridica_propusa)} — verifică și salvează.</span>` : "";
   return `
-    <h2 class="pf-titlu" style="margin-top:26px">Capital social</h2>
-    <p class="pf-intro">Se tipărește pe facturi: la SRL capitalul social, la SA și SCA capitalul subscris și cel vărsat (Legea 31/1990 art. 74 alin. (3)). Fără el, factura unei societăți nu se emite.</p>
-    <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Forma juridică<span class="oblig">*</span></span>
         ${notaPropusa}
         <select class="camp-input" id="df-forma_juridica"><option value="">— alege —</option>${forme.map(([k, t]) =>
           `<option value="${esc(k)}"${k === formaAleasa ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
-      </label>
+      </label>`;
+}
+function _blocCapital(d) {
+  const p = d.profil || {};
+  return `
       <label class="camp">
         <span class="camp-eticheta">Capital social subscris (lei)</span>
-        <span class="camp-ajutor">Din actul constitutiv / certificatul constatator. La SRL, acesta e capitalul social.</span>
+        <span class="camp-ajutor">Din actul constitutiv / certificatul constatator. La SRL, acesta e capitalul social. Se tipărește pe facturi: la SRL capitalul social, la SA și SCA capitalul subscris și cel vărsat (Legea 31/1990 art. 74 alin. (3)); fără el, factura unei societăți nu se emite.</span>
         <input type="number" step="0.01" min="0" class="camp-input" id="df-capital_subscris" value="${esc(p.capital_subscris || "")}">
       </label>
       <label class="camp">
         <span class="camp-eticheta">Capital social vărsat (lei)</span>
         <span class="camp-ajutor">Obligatoriu la SA și SCA.</span>
         <input type="number" step="0.01" min="0" class="camp-input" id="df-capital_varsat" value="${esc(p.capital_varsat || "")}">
-      </label>
-    </div>`;
+      </label>`;
 }
 
 // [06.10.2026, comanda Costin §6.3] Metoda de stoc: setare EXPLICITĂ, fără implicit — până se alege, „nedeclarată”, iar ieșirile
@@ -137,27 +135,21 @@ function _blocCapital(d) {
 function _blocChitante(d) {
   const sc = (d.profil || {}).serie_chitanta || "";
   return `
-    <h2 class="pf-titlu" style="margin-top:26px">Chitanțe</h2>
-    <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Seria chitanțelor</span>
         <input class="camp-input" id="df-serie_chitanta" maxlength="10" value="${esc(sc)}" placeholder="litere și cifre, ex. seria din chitanțier" aria-label="Seria chitanțelor">
-      </label>
-    </div>`;
+      </label>`;
 }
 
 function _blocStoc(d) {
   const m = (d.profil || {}).metoda_stoc || "";
   return `
-    <h2 class="pf-titlu" style="margin-top:26px">Stoc</h2>
-    <p class="pf-intro">Cum ține firma evidența mărfii. Global-valoric: marfa se descarcă lunar, din toate vânzările (371/378/4428). Cantitativ-valoric: pe fiecare articol, la CMP (fișe de magazie, rețete). Fiecare ieșire se descarcă o singură dată.</p>
-    <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Metoda de stoc</span>
+        <span class="camp-ajutor">Cum ține firma evidența mărfii. Global-valoric: marfa se descarcă lunar, din toate vânzările (371/378/4428). Cantitativ-valoric: pe fiecare articol, la CMP (fișe de magazie, rețete). Fiecare ieșire se descarcă o singură dată.</span>
         <select class="camp-input" id="df-metoda_stoc">${m ? "" : `<option value="" selected>— nedeclarată —</option>`}${(d.metode_stoc || []).map(([k, t]) =>
           `<option value="${esc(k)}"${k === m ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
-      </label>
-    </div>`;
+      </label>`;
 }
 
 // [08.10.2026, decizia Costin §6 pct.4] „Luna preluării: editabilă în Date firmă, cu valoarea dedusă ca propunere, dar niciodată după
@@ -175,8 +167,6 @@ function _blocPreluare(d) {
   const plafonata = lp.plafonata
     ? ` Luna aleasă, ${ro(lp.salvata)}, e după prima notă din jurnal (${ro(lp.prima_nota)}, scrisă după alegere): luna preluării se socotește ${ro(lp.efectiva)}.` : "";
   return `
-    <h2 class="pf-titlu" style="margin-top:26px">Preluarea în iConta.eu</h2>
-    <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Luna preluării</span>
         <span class="camp-ajutor">De la ea se numără restanțele în Control fiscal.${lp.propunere ? ` ${lp.salvata ? "Propunerea iConta.eu" : "Completată cu propunerea"}: ${ro(lp.propunere)} — din soldurile de preluare sau data adăugării firmei, cel mult luna primei note.` : ""}${lp.prima_nota ? ` Nu poate fi după ${ro(lp.prima_nota)} (prima notă).` : ""}${plafonata}</span>
@@ -186,8 +176,7 @@ function _blocPreluare(d) {
         <span class="camp-eticheta">Data înființării</span>
         <span class="camp-ajutor">Din ANAF la adăugarea firmei. În anul înființării (primul exercițiu financiar) coloana „An precedent” a bilanțului rămâne goală.</span>
         <input type="date" class="camp-input" id="df-data_infiintare" value="${esc((d.profil || {}).data_infiintare || "")}">
-      </label>
-    </div>`;
+      </label>`;
 }
 
 // [06.10.2026, comanda Costin §6.4] „Orice modificare se jurnalizează (cine, când, valoare veche → nouă), inclusiv forma juridică
@@ -217,7 +206,6 @@ function _valoareJurnal(d, camp, x) {
 function _blocJurnal(d) {
   const j = d.jurnal || [];
   return `
-    <h2 class="pf-titlu" style="margin-top:26px">Istoricul modificărilor</h2>
     ${!j.length ? `<div class="stare-goala">Nicio modificare înregistrată încă.</div>` : `<div class="df-jurnal-cadru"><table class="fd-tabel df-jurnal" id="df-jurnal">
       <thead><tr><th>Când</th><th>Cine</th><th>Câmp</th><th>Valoare veche</th><th>Valoare nouă</th></tr></thead>
       <tbody>${j.map((r) => `<tr><td>${dataRo(r.la, "cu_ora")}</td><td>${esc(r.cine || "")}</td><td>${esc(ETICHETE_JURNAL[r.camp] || eticheta(r.camp))}</td>
@@ -242,7 +230,7 @@ function _blocTvaIncasare(v) {
   const cineCand = (x) => (x ? `${esc(x.cine || "—")}, ${dataRo(x.la, "cu_ora")}` : "—");
   const scoase = t.scoase || [];
   return `
-    <div class="camp" id="vf-camp-tva_incasare">
+    <div class="camp" id="vf-camp-tva_incasare"${per.length || scoase.length ? ' style="grid-column:1/-1"' : ""}>
       <label class="camp-eticheta" for="vf-tva_incasare">Aplică sistemul TVA la încasare (Cod fiscal art. 282)</label>
       <span class="camp-ajutor">TVA-ul facturilor emise devine exigibil la încasare, nu la facturare (art. 282 alin. (3)). Numai la firmele înregistrate în scopuri de TVA.</span>
       <select class="camp-input" id="vf-tva_incasare" data-butoane=""><option value="nu"${da ? "" : " selected"}>Nu</option><option value="da"${da ? " selected" : ""}>Da</option></select>
@@ -290,13 +278,10 @@ function _randuriAsociati(model) {
 }
 function _procent(x) { return String(x == null ? "" : x).replace(".", ",") + "%"; }
 function _blocAsociati(a) {
-  if (!a) return `
-    <h2 class="pf-titlu" style="margin-top:26px">Asociați</h2>
-    <div id="as-msg"></div>`;
+  if (!a) return `<div id="as-msg"></div>`;
   const ist = a.istoric || [];
   const perioada = (s) => (s.de_la ? `${dataRo(s.de_la)} – ${dataRo(s.pana_la)}` : `până la ${dataRo(s.pana_la)}`);
   return `
-    <h2 class="pf-titlu" style="margin-top:26px">Asociați</h2>
     <p class="pf-intro">Cine deține părțile sociale și în ce cotă (Legea 31/1990 art. 7 lit. d)). Dividendele se împart după cote (art. 67 alin. (2)), după structura de la data distribuirii.${a.valabila_de_la ? ` Structura de acum e valabilă de la ${dataRo(a.valabila_de_la)}.` : ""}</p>
     <table class="fd-tabel" id="as-tabel">
       <thead><tr><th>Nume</th><th>CNP / CUI</th><th>Cota (%)</th><th>Acțiune</th></tr></thead>
@@ -474,35 +459,85 @@ function _blocDenumire(t, profil) {
     : "";
 
   return `
-    <h2 class="pf-titlu">Denumirea firmei</h2>
     ${divergenta}
-    <div class="grila-doc">
-      <label class="camp">
+      <label class="camp" style="grid-column:span 2">
         <span class="camp-eticheta">Denumirea firmei<span class="oblig">*</span></span>
         <p class="camp-ajutor">Una singur\u0103, \u0219i se scrie \u00eentr-un singur loc: aceea\u0219i \u00een list\u0103, \u00een bara de sus \u0219i pe declara\u021bii (D100, D101, D205, D301, D390, D394, D406, bilan\u021b).</p>
         ${randAnaf}
         <input type="text" class="camp-input" id="df-nume-portofoliu" data-actiune-camp="PUT /tenants/{tenant_id}" value="${esc(nume)}">
-      </label>
-    </div>`;
+      </label>`;
 }
 
-// [lotul 12, deficiența 627 — comanda Costin 12.2 pct.14: „după o salvare parțială, «Profil incomplet» nu se actualizează”] lista
-// câmpurilor obligatorii lipsă (sau a blocajelor declarațiilor), din `GET …/firma-profil/date`; stă în `#df-profil-stare`, ca salvarea
-// parțială s-o poată reface din bază fără să redeseneze formularul (ce n-a intrat rămâne scris pe ecran, lângă refuzul lui).
-function _blocProfil(d) {
+// [lotul 14, 687] Starea profilului e un card-rezumat de un rând sub titlu (nu o casetă care împinge formularul în jos); lista câmpurilor
+// lipsă / a declarațiilor blocate stă în fereastra cardului. Cardul rămâne în `#df-profil-stare`, deci salvarea parțială îl reface
+// din bază fără să redeseneze formularul.
+function _carduriProfil(zona, d, nav) {
   const lipsa = d.lipsuri || [];
   const blocaje = d.blocaje || [];
-  return lipsa.length
-    ? `<div class="dec-avert">
-         <div class="dec-avert-cap">Profil incomplet \u2014 ${cate(lipsa.length, "c\u00e2mp obligatoriu", "c\u00e2mpuri obligatorii")} ${lipsa.length === 1 ? "lipse\u0219te" : "lipsesc"}</div>
-         <ul>${lipsa.map((l) => `<li><b>${esc(eticheta(l.camp))}</b> \u2014 blocheaz\u0103 ${esc(l.declaratii.join(", "))}</li>`).join("")}</ul>
-       </div>`
+  const card = lipsa.length
+    ? { id: "profil", ton: "atentie",
+        text: `Profil incomplet \u2014 ${cate(lipsa.length, "c\u00e2mp obligatoriu", "c\u00e2mpuri obligatorii")} ${lipsa.length === 1 ? "lipse\u0219te" : "lipsesc"}`,
+        titlu: "Profil incomplet",
+        deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Profil incomplet</h2>
+          <div class="dec-avert"><ul>${lipsa.map((l) => `<li><b>${esc(eticheta(l.camp))}</b> \u2014 blocheaz\u0103 ${esc(l.declaratii.join(", "))}</li>`).join("")}</ul></div>`; } }
     : blocaje.length
-    ? `<div class="dec-avert">
-         <div class="dec-avert-cap">C\u00e2mpurile obligatorii sunt completate, dar unele declara\u021bii nu se pot genera \u00eenc\u0103</div>
-         <ul>${blocaje.map((b) => `<li><b>${esc(b.declaratie)}</b> \u2014 ${esc(b.motiv)}</li>`).join("")}</ul>
-       </div>`
-    : `<div class="dec-ok">Profil complet. C\u00e2mpurile obligatorii sunt completate.</div>`;
+    ? { id: "profil", ton: "atentie",
+        text: `C\u00e2mpurile obligatorii sunt completate, dar ${cate(blocaje.length, "declara\u021bie nu se poate", "declara\u021bii nu se pot")} genera \u00eenc\u0103`,
+        titlu: "Declara\u021bii care nu se pot genera",
+        deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Declara\u021bii care nu se pot genera \u00eenc\u0103</h2>
+          <div class="dec-avert"><ul>${blocaje.map((b) => `<li><b>${esc(b.declaratie)}</b> \u2014 ${esc(b.motiv)}</li>`).join("")}</ul></div>`; } }
+    : { id: "profil", ton: "ok", text: "Profil complet \u2713 C\u00e2mpurile obligatorii sunt completate", motiv: "Nu e nimic de f\u0103cut aici." };
+  siraCarduri(zona, [card], nav);
+}
+
+// [lotul 14, 687] Formularul pe file: un singur panou la vedere, restul ascunse (toate câmpurile rămân în pagină, deci „Salvează” le
+// citește și le trimite pe toate); fila deschisă la început e prima, nimic nu se deschide singur. Fila cu un câmp refuzat se arată
+// singură (omul vede eroarea lângă câmp), iar eticheta filei poartă numărul câmpurilor refuzate.
+const FILE = [["firma", "Firma"], ["contact", "Contact \u0219i banc\u0103"], ["tva", "TVA \u0219i declara\u021bii"], ["tva_incasare", "Regimuri speciale TVA"], ["bilant", "Bilan\u021b"], ["evidenta", "Evidența firmei"],
+  ["asociati", "Asocia\u021bi"], ["istoric", "Istoricul modific\u0103rilor"]];
+// câmpurile filei „Contact și bancă”, în ordinea ei
+const CHEI_CONTACT = ["banca", "iban", "fara_cont_bancar", "telefon", "email", "patron_nume", "declarant_nume", "declarant_prenume", "declarant_functie"];
+const GRILA = 'class="grila-campuri" style="max-width:none;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));align-items:start"';
+const _cheiCampuri = (d, chei) => CAMPURI.filter((c) => chei.includes(c.k)).map((c) => camp(c, d.profil[c.k], d)).join("");
+
+function _arataFila(corp, fila) {
+  corp.querySelectorAll(".df-fila").forEach((p) => { p.hidden = p.dataset.fila !== fila; });
+  corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => {
+    const ales = b.dataset.fila === fila;
+    b.classList.toggle("rap-tab-activ", ales);
+    b.setAttribute("aria-selected", String(ales));
+  });
+  // navigatorul caută zona de derulare a tabelului la fiecare schimbare a conținutului (nu la `hidden`): fila nouă se anunță prin
+  // adăugarea unui nod gol, ca un tabel din ea (asociați, istoric) să primească zona lui
+  corp.appendChild(document.createComment("fila"));
+}
+const _filaActiva = (corp) => ((corp.querySelector(".rap-tab-activ[data-fila]") || {}).dataset || {}).fila || "firma";
+function _marcheazaFile(corp) {
+  corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => {
+    const n = corp.querySelectorAll(`#df-fila-${b.dataset.fila} .camp-invalid`).length;
+    const bd = b.querySelector(".rap-tab-nr");
+    if (bd) bd.textContent = n ? String(n) : "";
+    b.title = n ? `${cate(n, "c\u00e2mp refuzat", "c\u00e2mpuri refuzate")} \u00een aceast\u0103 fil\u0103` : "";
+  });
+}
+// fila cu primul câmp refuzat (dacă cea deschisă n-are niciunul) se arată: eroarea nu rămâne într-o filă ascunsă
+function _aduFilaCuEroare(corp) {
+  _marcheazaFile(corp);
+  if (corp.querySelector(`#df-fila-${_filaActiva(corp)} .camp-invalid`)) return;
+  const primul = FILE.map(([k]) => k).find((k) => corp.querySelector(`#df-fila-${k} .camp-invalid`));
+  if (primul) _arataFila(corp, primul);
+}
+function _legaFile(corp) {
+  corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => b.addEventListener("click", () => _arataFila(corp, b.dataset.fila)));
+  // trimiterea din caseta „NU s-a salvat” duce la câmp: dacă el e într-o filă ascunsă, fila se arată înaintea derulării și a focusului
+  corp.addEventListener("click", (ev) => {
+    const li = ev.target.closest && ev.target.closest(".refuz-salvare-lista > li");
+    const f = li && li._tinta && li._tinta.closest && li._tinta.closest(".df-fila");
+    if (f && f.hidden) _arataFila(corp, f.dataset.fila);
+  }, true);
+  // câmpul corectat își scoate eroarea (api.js, în captură); numărul de pe filă se reface după el
+  corp.addEventListener("input", () => setTimeout(() => _marcheazaFile(corp), 0));
+  corp.addEventListener("change", () => setTimeout(() => _marcheazaFile(corp), 0));
 }
 
 export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
@@ -529,39 +564,40 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     return;
   }
 
+  const pfa = d.profil.tip_firma === "pfa";
+  // fila „Bilanț” a unei firme care nu întocmește bilanț (PFA: toate câmpurile ei sunt „fără rost”) nu există
+  const bilant = `${_cheiCampuri(d, ["mare_contribuabil", "forma_proprietate", "interes_public"])}${pfa ? "" : _blocCapital(d)}`;
+  const file = FILE.filter(([k]) => !(pfa && k === "asociati") && !(k === "bilant" && !bilant.trim()));
+  const fila = file.some(([k]) => k === opt.fila) ? opt.fila : "firma";
+  const panou = (k, continut) => `<div class="df-fila" id="df-fila-${k}" data-fila="${k}" role="tabpanel"${k === fila ? "" : " hidden"}>${continut}</div>`;
   corp.innerHTML = `
     <h2 class="pf-titlu">Date firm\u0103</h2>
-    <p class="pf-intro">Datele pe care ANAF le cere în declarații. Câmpurile cu <span class="oblig">*</span> sunt obligatorii pentru declarații — ce lipsește nu oprește salvarea, ci declarațiile care îl cer (lista de mai jos).</p>
-    <div id="df-profil-stare">${_blocProfil(d)}</div>
-    ${_blocDenumire(t, d.profil)}
-    <div class="grila-doc">${CAMPURI.map((c) => camp(c, d.profil[c.k], d)).join("")}</div>
-
-    <h2 class="pf-titlu" style="margin-top:26px">Vector fiscal</h2>
-    <p class="pf-intro">Ce declara\u021bii datoreaz\u0103 firma. Termenele \u0219i controlul fiscal pornesc de aici.</p>
-    <div class="grila-doc">${VECTOR.map((c) => campVector(c, v[c.k], v) + (c.k === "platitor_tva" ? _blocTvaIncasare(v) : "")).join("")}</div>
-
-    <h2 class="pf-titlu" style="margin-top:26px">Cont contabil</h2>
-    <p class="pf-intro">Contul de venit folosit implicit la emiterea facturilor. Se poate schimba pe fiecare factur\u0103.</p>
-    <div class="grila-doc">
+    <p class="pf-intro">Datele pe care ANAF le cere în declarații. Câmpurile cu <span class="oblig">*</span> sunt obligatorii pentru declarații — ce lipsește nu oprește salvarea, ci declarațiile care îl cer (cardul de mai jos).</p>
+    <div id="df-profil-stare"></div>
+    <div class="rap-tabs" style="flex-wrap:wrap" role="tablist" aria-label="Secțiunile datelor firmei">${file.map(([k, e], _i, _t, cls = k === fila ? "rap-tab rap-tab-activ" : "rap-tab") =>
+      `<button type="button" class="${cls}" role="tab" aria-selected="${k === fila}" data-fila="${k}" data-fara-actiune="alegerea secțiunii — nu scrie nimic"${k === "tva" ? ' title="Ce declarații datorează firma. Termenele și controlul fiscal pornesc de aici."' : ""}>${e}<span class="rap-tab-nr"></span></button>`).join("")}</div>
+    ${panou("firma", `<div ${GRILA}>${_blocDenumire(t, d.profil)}${_cheiCampuri(d, ["cui", "reg_com", "caen"])}${pfa ? "" : _blocFormaJuridica(d)}${_cheiCampuri(d, ["adresa", "oras", "judet", "cod_postal"])}</div>`)}
+    ${panou("contact", `<div ${GRILA}>${_cheiCampuri(d, CHEI_CONTACT)}</div>`)}
+    ${panou("tva", `<div ${GRILA}>${VECTOR.map((c) => campVector(c, v[c.k], v)).join("")}</div>`)}
+    ${panou("tva_incasare", `<div ${GRILA}>${_blocTvaIncasare(v)}${_cheiCampuri(d, ["inregistrat_oss"])}</div>`)}
+    ${bilant.trim() ? panou("bilant", `<div ${GRILA}>${bilant}</div>`) : ""}
+    ${panou("evidenta", `<div ${GRILA}>
       <label class="camp">
         <span class="camp-eticheta">Cont venit implicit</span>
-        <span class="camp-ajutor">Clasa 70 (cifra de afaceri): 707 m\u0103rfuri, 704 servicii, 701 produse.</span>
+        <span class="camp-ajutor">Contul de venit folosit implicit la emiterea facturilor; se poate schimba pe fiecare factur\u0103. Clasa 70 (cifra de afaceri): 707 m\u0103rfuri, 704 servicii, 701 produse.</span>
         <select class="camp-input" id="df-cont_venit">${Object.entries(d.conturi_venit || {}).map(([k, t]) =>
           `<option value="${esc(k)}"${String(k) === String(d.profil.cont_venit_implicit) ? " selected" : ""}>${esc(k)} \u2014 ${esc(t)}</option>`).join("")}</select>
       </label>
-    </div>
-    ${d.profil.tip_firma === "pfa" ? "" : _blocCapital(d)}
-    ${d.profil.tip_firma === "pfa" ? "" : _blocAsociati(a)}
-    ${_blocAmef(d)}
-    ${_blocChitante(d)}
-    ${_blocStoc(d)}
-    ${_blocPreluare(d)}
+      ${_blocAmef(d)}${_blocChitante(d)}${_blocStoc(d)}${_blocPreluare(d)}</div>`)}
+    ${pfa ? "" : panou("asociati", _blocAsociati(a))}
+    ${panou("istoric", _blocJurnal(d))}
     <div class="bara-fixa"><div id="df-msg"></div>
     <div class="dec-bara">
       <button class="buton-primar" id="df-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/date|POST /tenants/{tenant_id}/vector|POST /tenants/{tenant_id}/tva-incasare|POST /tenants/{tenant_id}/asociati|POST /tenants/{tenant_id}/asociati/cesiune|PUT /tenants/{tenant_id}">Salvează</button>
     </div></div>
-    ${_blocJurnal(d)}
   `;
+  _carduriProfil(corp.querySelector("#df-profil-stare"), d, nav);
+  _legaFile(corp);
   if (aEroare && corp.querySelector("#as-msg")) arataMesaj(corp.querySelector("#as-msg"), aEroare, "eroare");
 
   const _btnCui = corp.querySelector("#df-cui-corecteaza");
@@ -663,6 +699,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
         : api.post(`/tenants/${tenantId}/asociati`, { randuri: as.randuri }), "");
     }
     const [rProfil, , rTvai] = await Promise.all([pProfil, pVector, pTvai, pAsoc]);
+    _aduFilaCuEroare(corp);   // [lotul 14, 687] un câmp refuzat dintr-o filă ascunsă: fila lui se arată
     if (refuzuriClient.length || faraCamp.length || salvate.length !== asteptate.length) {
       btn.disabled = false;
       btn.textContent = "Salveaz\u0103";
@@ -672,7 +709,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       // dacă recitirea cade, lista veche nu rămâne (ar spune lipsă un câmp tocmai salvat): în locul ei, de ce nu e la zi
       if (salvate.length) {
         const zp = corp.querySelector("#df-profil-stare");
-        try { zp.innerHTML = _blocProfil(await api.get(`/tenants/${tenantId}/firma-profil/date`)); }
+        try { _carduriProfil(zp, await api.get(`/tenants/${tenantId}/firma-profil/date`), nav); }
         catch (e) { arataMesaj(zp, "Lista câmpurilor obligatorii lipsă nu s-a putut reciti după salvare: " + ((e && e.mesaj) || "redeschide Date firmă."), "avert"); }
       }
       if (faraCamp.length || salvate.length) arataMesaj(msg, linii.join("\n"), "eroare");   // [410] nu tot s-a salvat = refuz, nu avertisment
@@ -720,14 +757,14 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
 function _pozitioneaza(corp, opt) {
   const cadru = corp.closest(".fereastra-corp") || corp;
   const _tinta = opt.camp ? corp.querySelector("#" + CSS.escape(opt.camp)) : null;
-  if (_tinta) { _tinta.scrollIntoView({ block: "center" }); focusFaraSalt(_tinta); } else if (opt.sus != null) cadru.scrollTop = opt.sus;
+  if (_tinta) { const f = _tinta.closest(".df-fila"); if (f && f.hidden) _arataFila(corp, f.dataset.fila); _tinta.scrollIntoView({ block: "center" }); focusFaraSalt(_tinta); } else if (opt.sus != null) cadru.scrollTop = opt.sus;
 }
 
 // [525] Redesenarea de după o acțiune (Salvează, ștergerea unei perioade, corectura CUI-ului): pe loc, fără „Se încarcă…” și fără să mai
 // sară la câmpul refuzului de la deschidere — derularea rămâne cea din clipa acțiunii.
 function _redeseneazaPeLoc(corp, nav, tenantId, opt) {
   const cadru = corp.closest(".fereastra-corp") || corp;
-  return randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null, peLoc: true, sus: cadru.scrollTop });
+  return randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null, peLoc: true, sus: cadru.scrollTop, fila: _filaActiva(corp) });
 }
 
 // [427 / 428] Mesajul de după salvare: lipsurile profilului cu declarațiile pe care le blochează, avertismentele regimului TVA la încasare

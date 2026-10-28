@@ -169,7 +169,9 @@ def test_def_426_clasa_ecranul_cere_confirmarea_la_fiecare_import_care_inlocuies
     assert [cod(c["test"]) for c in noduri(caseta, "ConditionalExpression")] == ["date.avertisment_inlocuire"]
     # [lotul 11, 446] zona avertismentului e goală în șablon și o umple `arataMesaj(…, "avert")` (DS cap.6: avertismentul, nu eroarea)
     assert elemente_html(caseta) == [("div", {"id": "mig-inlocuire", "role": "status"})]
-    assert apeluri(functia(arb, "_arataInlocuirea"), cod, "arataMesaj") == [("z", "date.avertisment_inlocuire", '"avert"')]
+    # [lotul 14, 687] textul serverului stă în fereastra cardului (`#mig-inlocuire-text`), tot ca avertisment; în zonă stă cardul (`siraCarduri`)
+    assert apeluri(functia(arb, "_arataInlocuirea"), cod, "arataMesaj") == [('c.querySelector("#mig-inlocuire-text")', "date.avertisment_inlocuire", '"avert"')]
+    assert [c[0] for c in apeluri(functia(arb, "_arataInlocuirea"), cod, "siraCarduri")] == ["z"]
     confirma = functia(arb, "_confirmaInlocuirea")
     # [446] confirmarea e întrebarea scurtă, nu încă o dată avertismentul (care stă deja sus)
     assert apeluri(confirma, cod, "_confirmaInLoculButonului") == [("zona", "esc(intrebare)", "textOk", "() => salveaza(true)")]

@@ -102,17 +102,26 @@ def test_def_421_totalurile_registrului_jurnal_raman_in_vedere(ecran_mic, firma_
     ecran_mic.firma(firma_w4["nume"])
     _card(ecran_mic, "jurnal", "#j-nota-noua")
     pg.wait_for_function("() => document.body.innerText.includes('Consum E2E W4 total 29')", timeout=20000)
-    vede = """(loc) => { const c = %s; c.scrollTop = loc ? Math.round((c.scrollHeight - c.clientHeight) / 2) : 0;
-      const t = [...c.querySelectorAll('.fd-totaluri .fd-tot-rand')].find((x) => x.innerText.startsWith('Total sume debitoare'));
-      if (!t) return null; const r = t.getBoundingClientRect(), rc = c.getBoundingClientRect(), el = document.elementFromPoint(r.left + 10, r.top + r.height / 2);
+    # [lotul 14, 687] corpul ferestrei nu mai derulează: lista notelor derulează în zona ei (`.zona-derulare`, pusă de navigator), iar rezumatul
+    # și totalurile rămân în corp; se derulează zona, se măsoară totalurile față de corp
+    vede = """(loc) => { const corp = %s; const c = corp.querySelector('.zona-derulare') || corp;
+      c.scrollTop = loc ? Math.round((c.scrollHeight - c.clientHeight) / 2) : 0;
+      const t = [...corp.querySelectorAll('.fd-totaluri .fd-tot-rand')].find((x) => x.innerText.startsWith('Total sume debitoare'));
+      if (!t) return null; const r = t.getBoundingClientRect(), rc = corp.getBoundingClientRect(), el = document.elementFromPoint(r.left + 10, r.top + r.height / 2);
       return {in_corp: r.top >= rc.top && r.bottom <= rc.bottom + 1, vizibil: !!(el && t.contains(el)), deruleaza: c.scrollHeight - c.clientHeight}; }""" % _CORP
     v0, v1 = pg.evaluate(vede, 0), pg.evaluate(vede, 1)
     ecran_mic.captura()
     assert v0 and v0["deruleaza"] > 300, v0                         # anti-vacuu: lista chiar derulează
     assert v0["in_corp"] and v0["vizibil"] and v1["in_corp"] and v1["vizibil"], (v0, v1)
     # „Registru jurnal” are rezumatul lipit sus: luna și butoanele rămân în vedere după derulare
-    assert pg.evaluate("() => { const c = %s; c.scrollTop = c.scrollHeight; return Math.round(c.querySelector('#j-rezumat')"
-                       ".getBoundingClientRect().top - c.getBoundingClientRect().top); }" % _CORP) <= 1
+    # [lotul 14, 687] rezumatul nu mai e lipit de marginea de sus a corpului (stă sub titlul ferestrei), ci rămâne FIX în afara zonei care
+    # derulează: după ce lista e derulată până la capăt, rezumatul e în același loc, în corp, și se vede (nu e acoperit)
+    poz = """() => { const c = %s; const z = c.querySelector('.zona-derulare') || c; const r = c.querySelector('#j-rezumat');
+      const mv = (s) => { z.scrollTop = s; const b = r.getBoundingClientRect(), cb = c.getBoundingClientRect(), el = document.elementFromPoint(b.left + 10, b.top + 10);
+        return {sus: Math.round(b.top - cb.top), in_corp: b.top >= cb.top && b.bottom <= cb.bottom + 1, vizibil: !!(el && r.contains(el))}; };
+      return [mv(0), mv(z.scrollHeight)]; }""" % _CORP
+    sus, jos = pg.evaluate(poz)
+    assert sus == jos and jos["in_corp"] and jos["vizibil"], (sus, jos)
 
 
 # ── un mesaj lângă buton ─────────────────────────────────────────────────────────────────────────────────────────────────────────

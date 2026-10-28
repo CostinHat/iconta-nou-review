@@ -294,7 +294,9 @@ def test_def_c181_fisa_partenerului_arata_seria_separat(patron, firma_e2e):
     asteptat = "%s nr. %s" % (serie, numar[len(serie):] if numar.startswith(serie) else numar)
     pg = patron.pg
     patron.firma(firma_e2e["nume"])
-    _card(patron, "rapoarte", "#r-fisa-sel")
+    _card(patron, "rapoarte", "#r-vederi")
+    pg.click("[data-vedere-r='fisa']")   # [lotul 14, 687] raportul are vederi alăturate; fișa partenerului e una dintre ele
+    pg.wait_for_selector("#r-fisa-sel", timeout=15000)
     pg.select_option("#r-fisa-sel", DANTE)
     pg.wait_for_selector("#r-fisa table.fd-tabel tbody tr", timeout=30000)
     numere = pg.eval_on_selector_all("#r-fisa table.fd-tabel tbody tr", "(rr) => rr.map((r) => r.cells[1].textContent.trim())")

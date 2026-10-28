@@ -1713,6 +1713,33 @@ def tenant_amortizare_restanta(tenant_id, an, luna, ctx):
             "deja_generate": sum(1 for x in out if x["ok"] and x.get("deja_generata"))}
 
 
+def tenant_regularizare_tva_luna(tenant_id, an, luna, ctx):
+    """[lotul 14, deficiența 688, comanda Costin 14.1, verbatim: „La plătitorii de TVA, închiderea trebuie să propună nota 4427 = 4426 +
+    4423/4424 pe perioada fiscală a firmei (lunar sau trimestrial)”] Propunerea notei de regularizare a TVA, ca ciornă, din Închidere lună
+    (`inchidere_an.propune_tva_luna`); validarea e cea a oricărei note (Registrul jurnal)."""
+    from psycopg2.extras import RealDictCursor
+    from core import inchidere_an as _ia
+    _uc_comun._cere_perioada(an, luna)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            try:
+                r = _ia.propune_tva_luna(cur, schema, an, luna)
+            except ValueError as e:
+                raise _erori.DateInvalide(str(e))
+        conn.commit()
+    note = [{"id": n["id"], "descriere": n["descriere"], "document": n["document"],
+             "linii": [{"debit": d, "credit": c, "suma": s} for d, c, s in n["linii"]]} for n in r["note"]]
+    if r["nimic"]:
+        mesaj = "Nu e nimic de regularizat: 4426 și 4427 n-au sold în notele validate la sfârșitul lunii."
+    else:
+        mesaj = ("Am propus: %s. Nota intră în evidență numai după validare, în Registrul jurnal, luna %02d/%d."
+                 % ("; ".join("%s (%s)" % (n["descriere"], n["document"] or "fără document") for n in note), luna, an))
+    return {"ok": True, "an": an, "luna": luna, "mesaj": mesaj, "nimic": r["nimic"], "inlocuite": r["inlocuite"], "note": note}
+
+
 def _amortizare_suplimentara(tenant_id, an, luna, ctx):
     """[lotul 13, 517] Nota lunii (an, luna) e validată, dar unor active le lipsește amortizarea lunii: o notă ciornă separată, cu rândurile
     lor (pe activ, `amortizare_lunii.linii_lipsa`). None dacă nota lunii nu e validată (o face `tenant_amortizare`, ca până acum)."""
@@ -3349,8 +3376,11 @@ def cv_articole(tenant_id, ctx):
         from core import horeca as _horeca
         with conn.cursor() as cur:
             _caen = repo_firma_profil.caen(cur, schema)
-        return {"articole": _s.articole(conn, schema), "retete_vizibile": _s.retete_vizibile(conn, schema),
-                "alimentatie_publica": _horeca.e_horeca(_caen)}
+        _arts = _s.articole(conn, schema)
+        return {"articole": _arts, "retete_vizibile": _s.retete_vizibile(conn, schema),
+                "alimentatie_publica": _horeca.e_horeca(_caen),
+                "reconciliere": _s.reconciliere(conn, schema, _arts),   # [lotul 14, 696] stocul validat față de balanță
+                "dubluri": _s.dubluri(_arts)}
 
 
 def cv_fisa(tenant_id, articol_id, ctx):

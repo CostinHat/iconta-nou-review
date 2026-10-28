@@ -17,22 +17,128 @@ def _miscari(cur, schema, articol_id):
 
 
 def articole(conn, schema):
-    """Articolele cu stocul curent (cantitate, valoare, CMP)."""
+    """Articolele cu stocul curent (cantitate, valoare, CMP). [lotul 14, deficiența 696] Pe lângă stocul din toate mișcările (`stoc`, `valoare`,
+    `cmp` — fișa de magazie întreagă), stocul VALIDAT (`stoc_validat`, `valoare_validata`, `cmp_validat` — mișcările în evidență și cele fără
+    notă, soldul preluat), ce stă în ciornă (`valoare_ciorna`, `miscari_ciorna`) și gestiunile articolului (`locatii`): ecranul Stocuri arată
+    stocul care se potrivește cu balanța, iar ciornele separat (aceeași regulă ca totalul Registrului jurnal, deficiența 176)."""
+    from core import repo_stocuri
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT * FROM {schema}.articole ORDER BY denumire")
+        arts = cur.fetchall()
+        clasa = repo_stocuri.clasa_miscarilor(cur, schema)
+        locatii = repo_stocuri.locatii_cu_stoc(cur, schema)
         out = []
-        for a in cur.fetchall():
-            fisa = _m.fisa_magazie(_miscari(cur, schema, a["id"]))
+        for a in arts:
+            miscari = _miscari(cur, schema, a["id"])
+            fisa = _m.fisa_magazie(miscari)
             if fisa:
                 cant, val, cmp = fisa[-1]["sold_cantitate"], fisa[-1]["sold_valoare"], fisa[-1]["cmp"]
             else:
                 cant = val = Decimal("0"); cmp = None
+            # stocul validat: fișa doar pe mișcările în evidență / fără notă; ce rămâne din ciorne e diferența, exact
+            valide = [m for m in miscari if clasa.get(m["id"], "fara_nota") != "ciorna"]
+            try:
+                fv = _m.fisa_magazie(valide)
+            except ValueError:   # ieșire din ciornă care ar depăși stocul validat: fără fișă validată (se spune, nu se ascunde)
+                fv = None
+            if fv is None:
+                cant_v = val_v = None; cmp_v = None
+            elif fv:
+                cant_v, val_v, cmp_v = fv[-1]["sold_cantitate"], fv[-1]["sold_valoare"], fv[-1]["cmp"]
+            else:
+                cant_v = val_v = Decimal("0"); cmp_v = None
             out.append({"id": a["id"], "denumire": a["denumire"], "um": a["um"],
                         "cont_stoc": a["cont_stoc"], "cont_cheltuiala": a["cont_cheltuiala"],
                         "barcode": a.get("barcode"), "nivel_minim": str(a["nivel_minim"]) if a.get("nivel_minim") is not None else None,
                         "stoc": str(cant), "valoare": str(val),
-                        "cmp": str(cmp) if cmp is not None else None})
+                        "cmp": str(cmp) if cmp is not None else None,
+                        "stoc_validat": None if cant_v is None else str(cant_v), "valoare_validata": None if val_v is None else str(val_v),
+                        "cmp_validat": str(cmp_v) if cmp_v is not None else None,
+                        "valoare_ciorna": None if val_v is None else str(Decimal(str(val)) - Decimal(str(val_v))),
+                        "miscari_ciorna": sum(1 for m in miscari if clasa.get(m["id"]) == "ciorna"),
+                        "locatii": locatii.get(a["id"], [])})
+        for o in out:
+            o["observatii"] = observatii_articol(o)
         return out
+
+
+#: [lotul 14, 696] unitățile de măsură care nu se fracționează: o cantitate cu zecimale la ele („Cafea boabe 2,5 buc”) e o unitate aleasă greșit
+UM_INTREGI = ("buc", "bucata", "bucăți", "bucati", "set", "pereche", "cutie", "pachet")
+_LEXICON = None
+
+
+def _lexicon():
+    global _LEXICON
+    if _LEXICON is None:
+        import json
+        import os
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "lexicon_diacritice.json"), encoding="utf-8") as f:
+            _LEXICON = json.load(f)
+    return _LEXICON
+
+
+def observatii_articol(a):
+    """[lotul 14, 696] Ce e de verificat la un articol, ca listă de {fel, text}: denumirea începe cu literă mică; cuvinte scrise fără diacritice
+    (numai cele pe care lexiconul corpusului legislativ le dovedește: „grau” -> „grâu”); cantitate cu zecimale la o unitate care nu se
+    fracționează. Aplicația NU corectează singură denumirea (o denumire nu se rescrie fără omul care a scris-o): o semnalează, cu forma propusă."""
+    den, um, out = str(a.get("denumire") or ""), str(a.get("um") or "").strip().lower(), []
+    if den[:1].islower():
+        out.append({"fel": "litera_mica", "text": "denumirea începe cu literă mică"})
+    lex = _lexicon()
+    cuvinte = re.findall(r"[A-Za-zĂÂÎȘȚăâîșțŞŢşţ]+", den)
+    sugestii = []
+    for w in cuvinte:
+        corect = lex.get(w.lower())
+        if corect and corect != w.lower():
+            sugestii.append((w, corect[:1].upper() + corect[1:] if w[:1].isupper() else corect))
+    if sugestii:
+        out.append({"fel": "fara_diacritice", "text": "fără diacritice: " + ", ".join("%s → %s" % s for s in sugestii)})
+    try:
+        cant = Decimal(str(a.get("stoc") if a.get("stoc") is not None else 0))
+    except InvalidOperation:
+        cant = Decimal("0")
+    if um in UM_INTREGI and cant != cant.to_integral_value():
+        out.append({"fel": "fractie_um", "text": "cantitate cu zecimale (%s) la unitatea „%s”, care nu se fracționează" % (
+            format(cant.normalize(), "f").replace(".", ","), a.get("um"))})
+    return out
+
+
+def dubluri(arts):
+    """[lotul 14, 696] Articolele cu aceeași denumire (aceeași cheie `produse_api.cheie_denumire`: fără deosebire de majuscule și diacritice):
+    [{denumire, articole: [id, …]}] — „grau” 200 kg și „grau” 10 kg arată ca același articol de două ori; coloana „Gestiune” le deosebește."""
+    from core import produse_api as _pa
+    grup = {}
+    for a in arts:
+        grup.setdefault(_pa.cheie_denumire(a["denumire"]), []).append(a)
+    return [{"denumire": v[0]["denumire"], "articole": [x["id"] for x in v]} for v in grup.values() if len(v) > 1]
+
+
+def reconciliere(conn, schema, articole_lista=None):
+    """[lotul 14, deficiența 696] Stocul validat din fișele de magazie față de balanță, pe contul de stoc al articolelor (371, 301, …):
+    [{cont, sold_contabil, valoare_validata, valoare_ciorna, diferenta, ok}]. Aceeași citire a soldului ca `uc_tenants.verificare_stocuri`
+    (soldul preluat + rulajul notelor VALIDATE): o diferență nenulă înseamnă o mișcare fără notă sau o notă fără mișcare, nu o ciornă —
+    ciornele sunt separate (`valoare_ciorna`)."""
+    from core import repo_contabilitate
+    arts = articole_lista if articole_lista is not None else articole(conn, schema)
+    pe_cont = {}
+    for a in arts:
+        c = pe_cont.setdefault(a["cont_stoc"], {"valid": Decimal("0"), "ciorna": Decimal("0"), "necalculat": 0})
+        if a["valoare_validata"] is None:
+            c["necalculat"] += 1
+            continue
+        c["valid"] += Decimal(a["valoare_validata"])
+        c["ciorna"] += Decimal(a["valoare_ciorna"])
+    out = []
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        for cont, v in sorted(pe_cont.items()):
+            sold = Decimal(str(repo_contabilitate.sold_initial_pe_cont(cur, schema, cont)["si"]))
+            r = repo_contabilitate.rulaj_pe_cont_stoc(cur, schema, cont, cont)
+            sold += Decimal(str(r["d"])) - Decimal(str(r["c"]))
+            q = lambda x: x.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            dif = q(sold - v["valid"])
+            out.append({"cont": cont, "sold_contabil": str(q(sold)), "valoare_validata": str(q(v["valid"])), "valoare_ciorna": str(q(v["ciorna"])),
+                        "diferenta": str(dif), "ok": abs(dif) <= Decimal("0.01") and not v["necalculat"], "necalculat": v["necalculat"]})
+    return out
 
 
 def retete_vizibile(conn, schema):

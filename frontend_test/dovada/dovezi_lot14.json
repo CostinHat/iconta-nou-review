@@ -1,0 +1,188 @@
+[
+ {
+  "nr": "688",
+  "firma": "tenant_9049",
+  "descriere": "F1: Închidere lună 09/2026 — 4426 D 210,00 și 4427 C 210,00 la sfârșitul lunii, fără 4423/4424: «Ce oprește închiderea» spune că TVA-ul perioadei nu e regularizat, iar luna, deja blocată pe copie (cum a rămas din retest), arată «Deblochează luna»; pe o lună deschisă «Blochează luna» e inactiv (testul e2e) (înainte: «Nimic nu oprește închiderea lunii»). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-inchidere"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #il-prev"
+   },
+   {
+    "click": ".fereastra:last-of-type #il-prev"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #il-controale"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "TVA-ul perioadei nu e regularizat",
+    "zona": ".fereastra:last-of-type #il-controale"
+   },
+   {
+    "exista": ".fereastra:last-of-type #il-tva-regularizare"
+   },
+   {
+    "nu_contine": "Nimic nu oprește închiderea lunii",
+    "zona": ".fereastra:last-of-type #il-controale"
+   }
+  ],
+  "captura": "c206_f1_vechi_inchidere_09_2026_tva.png"
+ },
+ {
+  "nr": "683",
+  "firma": "tenant_9049",
+  "descriere": "F1: Bilanț 2026, S1005 — evidența începe după 31.08.2026 și balanța n-are rulajele anului: bilanțul refuză, cu trimitere la Import date › Solduri inițiale și buton spre el (înainte: nicio semnalare, bilanț doar cu sept.–dec.). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #bl-an"
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #bl-an",
+    "valoare": 2026
+   },
+   {
+    "pauza": 3000
+   },
+   {
+    "alege": ".fereastra:last-of-type #bl-tip",
+    "valoare": "s1005"
+   },
+   {
+    "pauza": 4000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "începe înainte de preluarea firmei",
+    "zona": ".fereastra:last-of-type .bl-prec-refuz"
+   },
+   {
+    "contine": "Import date › Solduri inițiale",
+    "zona": ".fereastra:last-of-type .bl-prec-refuz"
+   },
+   {
+    "exista": ".fereastra:last-of-type #bl-import-solduri"
+   }
+  ],
+  "captura": "c204_f1_vechi_bilant_2026_rulaje_lipsa.png"
+ },
+ {
+  "nr": "695",
+  "firma": "tenant_9049",
+  "descriere": "F1: Declarații -> D100, T3/2026 (iul–sep) — evidența începe după 31.08: refuz cu trimitere la Import date › Solduri inițiale, fără «Trimite în coadă» (înainte: baza 707 = 1.000, doar septembrie, impozit 10 lei, validat). Numai citire.",
+  "pasi": [
+   {
+    "declaratie": "d100",
+    "an": 2026,
+    "trim": 3
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D100 pe T3/2026 nu se poate genera"
+   },
+   {
+    "contine": "Import date › Solduri inițiale"
+   },
+   {
+    "nu_contine": "Trimite în coadă"
+   }
+  ],
+  "captura": "c205_f1_vechi_d100_t3_2026_refuz.png"
+ },
+ {
+  "nr": "696",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri 10/2026 — tabelul arată stocul validat (coloanele Gestiune și În ciornă), iar sub titlu cardurile-rezumat: reconcilierea cu balanța (371), ciornele, articolele de verificat (înainte: total 8.983,74 față de 371 = 6.272,38, nesemnalat). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #s-carduri .card-rezumat"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Gestiune",
+    "zona": ".fereastra:last-of-type #s-situatie-tabel"
+   },
+   {
+    "contine": "În ciornă (lei)",
+    "zona": ".fereastra:last-of-type #s-situatie-tabel"
+   },
+   {
+    "exista": ".fereastra:last-of-type [data-card='reconciliere']"
+   }
+  ],
+  "captura": "c208_f1_vechi_stocuri_10_2026.png"
+ },
+ {
+  "nr": "694",
+  "firma": "tenant_9050",
+  "descriere": "F2: Control fiscal -> «Declarație vs contabilitate» — fiecare comparație își arată perioada: «Perioada comparată: D300 T3/2026», nu fereastra în curs T4 (înainte: 12.705 / 105 / 12.600 pe T4 neîncheiat). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Perioada comparată: D300 T3/2026",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   },
+   {
+    "nu_contine": "12.705,00",
+    "zona": ".fereastra:last-of-type #cf-incrucisat"
+   }
+  ],
+  "captura": "c207_f2_vechi_control_t3_2026.png"
+ },
+ {
+  "nr": "687",
+  "firma": "tenant_9049",
+  "descriere": "F1: Balanța 10/2026 — ciornele, rulajele lipsă și verdictul închiderii sunt carduri-rezumat sub titlu (nu casete deasupra tabelului), iar fereastra nu derulează în corp; tabelul derulează în zona lui. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-balanta"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #b-carduri .card-rezumat"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "exista": ".fereastra:last-of-type #b-carduri .card-rezumat"
+   },
+   {
+    "exista": ".fereastra:last-of-type .zona-derulare"
+   }
+  ],
+  "captura": "c203_f1_vechi_balanta_carduri.png"
+ }
+]

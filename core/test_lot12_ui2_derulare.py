@@ -50,8 +50,8 @@ def _pagina(browser, rute):  # noqa: F811
     return pg, erori
 
 
-_SUS = "() => [...document.querySelectorAll('.fereastra-corp')].pop().scrollTop"
-_LA = """(sel) => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(), r = c.querySelector(sel);
+_SUS = "() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(); return (c.querySelector('.zona-derulare') || c).scrollTop; }"   # [lotul 14, 687] zona tabelului, când există
+_LA = """(sel) => { const f = [...document.querySelectorAll('.fereastra-corp')].pop(), c = f.querySelector('.zona-derulare') || f, r = f.querySelector(sel);
   c.scrollTop += r.getBoundingClientRect().top - c.getBoundingClientRect().top - c.clientHeight / 2; return c.scrollTop; }"""
 
 # ecran sintetic, cu forma celor 56: lista se redesenează după acțiune prin „Se încarcă…”

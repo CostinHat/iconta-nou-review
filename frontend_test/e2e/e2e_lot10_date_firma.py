@@ -31,6 +31,21 @@ def _date_firma(patron, firma):
     return patron.pg
 
 
+def _panou_profil(pg, poate_lipsi=False):
+    """[lotul 14, 687] „Profil incomplet” e un card-rezumat sub titlul Datelor firmă; lista câmpurilor stă în fereastra lui. Contabilul apasă
+    cardul, citește fereastra (titlu + listă) și se întoarce la formular. `poate_lipsi`: cardul „Profil complet ✓” nu se deschide -> "".
+    Fereastra cardului: textul întreg al ferestrei din față (titlul „Profil incomplet” + lista din `.dec-avert`)."""
+    pg.wait_for_selector("#df-profil-stare [data-card='profil']", timeout=30000)
+    if poate_lipsi and pg.get_attribute("#df-profil-stare [data-card='profil']", "aria-disabled") == "true":
+        return ""
+    pg.click("#df-profil-stare [data-card='profil']")
+    pg.wait_for_selector(".fereastra:last-of-type .dec-avert", timeout=30000)
+    text = pg.inner_text(".fereastra:last-of-type")
+    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+    pg.wait_for_selector("#df-salveaza", timeout=30000)
+    return text
+
+
 def _salveaza_si_asteapta(pg, text, timeout=30000):
     """Ca omul: apasă „Salvează” când e activ (salvarea de dinainte s-a încheiat), apoi așteaptă mesajul ACESTEI salvări — nu pe cel
     rămas de la salvarea de dinainte (prins la prima rulare: „S-au salvat: …” vechi conținea textul căutat) — și butonul înapoi."""
@@ -73,7 +88,7 @@ def test_def_427_vectorul_se_salveaza_cat_timp_lipsesc_reg_com_caen_adresa(patro
     assert not pg.query_selector(".refuz-salvare"), "un câmp obligatoriu gol nu mai refuză salvarea"
     assert sql('SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, telefon FROM "%s".firma_profil' % s) == \
         [("micro", True, "lunar", False, "0722000427")]
-    panou = pg.inner_text(".dec-avert")
+    panou = _panou_profil(pg)
     assert "Profil incomplet" in panou and "Nr. registrul comerțului" in panou and "Cod CAEN" in panou and "Adresa" in panou, panou
 
 
@@ -104,6 +119,7 @@ def test_def_428_firma_se_declara_cu_tva_la_incasare_de_la_o_data(patron, firma_
     sql('UPDATE "%s".firma_profil SET platitor_tva = true, tip_decont = \'lunar\', regim_fiscal = \'micro\', operatiuni_ic = false, '
         'tva_la_incasare = false, platitor_tva_anaf_inceput = \'2025-01-01\' WHERE id = 1' % s)
     pg = _date_firma(patron, firma_df)
+    pg.wait_for_selector("#vf-tva_incasare", timeout=30000)   # [lotul 14, 687] câmpul stă pe fila „Regimuri speciale TVA”: omul o apasă
     assert pg.is_visible("#vf-tva_incasare") and pg.is_visible("#vf-tva-incasare-anaf")
     assert pg.input_value("#vf-tva_incasare") == "nu"
     pg.select_option("#vf-tva_incasare", "da")
@@ -134,6 +150,7 @@ def test_def_431_asociatii_si_cesiunea_in_date_firma(patron, firma_df):
     sql('DELETE FROM "%s".asociati_istoric' % s)
     sql('DELETE FROM "%s".asociati' % s)
     pg = _date_firma(patron, firma_df)
+    pg.wait_for_selector("#as-tabel", timeout=30000)   # [lotul 14, 687] asociații stau pe fila „Asociați”: omul o apasă
     assert pg.is_visible("#as-tabel") and pg.is_visible("#as-istoric-gol")
     pg.fill("#as-1-nume", "Ion Popescu")
     pg.fill("#as-1-cnp", CNP_A)
@@ -177,8 +194,7 @@ def test_def_c71_pfa_nu_vede_campurile_bilantului_in_profil_incomplet(patron, fi
     situații financiare anuale — Legea 82/1991 art.28 alin.(1) — și nu depune D101 / D406); numește în continuare ce datorează PFA.
     MUTAȚIA: filtrul formei scos din `firma_profil_api.lipsuri` -> ROȘU („Mare contribuabil — blochează Bilanț”)."""
     pg = _date_firma(patron, firma_pfa)
-    pg.wait_for_selector(".dec-avert", timeout=30000)
-    panou = " ".join(pg.inner_text(".dec-avert").split())
+    panou = " ".join(_panou_profil(pg).split())
     patron.captura()
     assert "Profil incomplet" in panou, panou
     assert "Mare contribuabil" not in panou and "Forma de proprietate" not in panou and "Bilanț" not in panou, panou

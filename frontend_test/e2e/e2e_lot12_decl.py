@@ -196,6 +196,9 @@ def test_def_c119_d100_micro_baza_fara_tva_ul_din_raportul_z(patron, firma_decl)
     Temei: CF art.53 alin.(1) — baza = veniturile; CF art.51 alin.(1) — 1%."""
     s = firma_decl["schema"]
     _profil(patron, firma_decl, regim="micro")
+    # [lotul 14, 687] D100 pe T3 care începe înainte de preluare se refuză: firma ține evidența de la începutul anului (luna preluării = 2026-01,
+    # salvată în Date firmă, pe ruta ecranului) — cea mai simplă dintre cele două căi (cealaltă: solduri inițiale la 31.12.2025)
+    _ok(_api(patron, "POST", "/tenants/%d/firma-profil/date" % firma_decl["tenant_id"], {"luna_preluare": "2026-01"}), "Luna preluării")
     # date-de-pornire: Z-ul din 31.08.2026 cu 5.826,00 brut și numai 126,00 TVA — formularul „Raport Z” (cote 11% / 21%) nu dă perechea asta
     nid = sql('INSERT INTO "%s".inregistrari (data, descriere, document_ref, status, sursa) VALUES (%%s, %%s, %%s, %%s, %%s) RETURNING id' % s,
               ("2026-08-31", "Raport Z 1", "Raport Z 1", "ciorna", "raport_z"))[0][0]

@@ -30,10 +30,11 @@
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=c6c45aefe4";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=3dc9eca249";
+import { randA as randConstatare } from "./control_verdict.js?v=6b04f27d0c";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=b99ca91399";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=18e8e62ad1";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
+import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
@@ -285,15 +286,16 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     <div class="rezumat-fix" id="val-rezumat">
       <h2 class="pf-titlu" id="val-titlu">${esc(titlu)}</h2>
       <p class="pf-intro" id="val-cautare">${htmlCautare("val", { valoare: corp._val.text, eticheta: "Caută: firmă, cont, document, partener, sumă, declarație" })}</p>
+      <div id="val-carduri"></div>
       <div id="val-confirmare"></div>
       <div class="mig-eroare" id="val-eroare"></div>
     </div>
+    <div id="val-zona" data-zona-derulare>
     <section id="val-note">
       <div class="cf-grup-titlu cf-galben" id="val-note-titlu">Note de validat (${noteDeValidatInCoada(noteDeValidat)})</div>
       ${noteDeValidat.length ? htmlTabelNote({ pre: "val-n", randuri: randuriCoada, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })
         : `<div class="stare-goala" id="val-note-gol">Nicio notă nu așteaptă validarea.</div>`}
     </section>
-    <p class="mig-intro" id="val-intro">${intro}</p>
     <section id="val-declaratii">
       <div class="cf-grup-titlu" id="val-decl-titlu">Declarații (${nDecl})</div>
       <div id="val-deValidat"></div>
@@ -308,7 +310,12 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
           ${htmlTabelNote({ pre: "val-c", randuri: randuriCiorne, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })}`
         : `<div class="stare-goala" id="val-ciorne-gol">Nicio notă de-a ta în ciornă.</div>`}
     </section>
+    </div>
   `;
+  // [lotul 14, 687] explicația de sub titlu (cine validează, cine depune) e un card-rezumat, deschis la clic; titlul, căutarea, cardul și
+  // mesajele stau fixe, iar secțiunile (note, declarații, ciorne) derulează în zona lor
+  siraCarduri(corp.querySelector("#val-carduri"), [{ id: "val-card-intro", ton: "info", text: "Cine validează și cine depune", titlu: "Cine validează și cine depune",
+    deschide: (c) => { c.innerHTML = `<p class="mig-intro" id="val-intro">${intro}</p>`; } }], nav);
   const tabele = [];
   if (noteDeValidat.length) {
     tabele.push({ titlu: corp.querySelector("#val-note-titlu"), nume: "Note de validat", note: true, zona: corp.querySelector("#val-note"), t: legaTabelNote(corp.querySelector("#val-note"),

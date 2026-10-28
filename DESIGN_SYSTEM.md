@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.104 · 25 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.105 · 27 octombrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -643,6 +643,28 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   aplicației alese stă pe două rânduri. În „Notă nouă” data, descrierea și documentul stau pe un rând (`.grila-campuri`, se rup pe
   telefon). Gard: `core/test_lot11_w4_ecrane.py` (1280×720 și 1366×768: fără aplicație, SAGA, SAGA + confirmarea unui pas, „Cum se
   face” deschis; nota nouă în partidă simplă și dublă, luna în curs) + e2e `frontend_test/e2e/e2e_lot11_w4.py::test_def_394_*`.
+
+- **Fiecare fereastră de lucru încape pe un singur ecran (v2.105, lotul 14, deficiența 687 — clasă, toate ferestrele; comanda Costin 14.1,
+  verbatim: „Fereastra de lucru se deschide direct pe tot ecranul cu datele (tabel, formular), sub titlu și acțiunea principală, vizibile
+  fără derulare. Tot ce e secundar (avertismente, verificări, explicații) devine un șir de carduri-rezumat de un rând sub titlu («45 de
+  ciorne nevalidate», «Lipsesc rulajele ian.–aug.», «Balanța se închide ✓»), fiecare deschis la clic pe tot ecranul; nicio casetă nu
+  împinge datele în jos. Citatele legale doar în cardul deschis; antet de tabel fix fără să acopere rânduri. Regula unică, măsurabilă:
+  fiecare fereastră de lucru încape pe un singur ecran, fără derulare, la 1920 × 1080 și la 1366 × 768; dacă nu încape, se reorganizează
+  (coloane, file, carduri pliate pentru secundar, lățimea întreagă), nu se micșorează scrisul. Excepție: tabelele lungi (registre,
+  balanțe) — se derulează doar tabelul, titlul, filtrele și acțiunile rămân fixe. Verificatorul face captura la ambele rezoluții și
+  blochează lotul la orice derulare.”).** (1) **Măsura:** corpul ferestrei (`.fereastra-corp`) nu derulează la 1920 × 1080 și la 1366 × 768
+  (`scrollHeight` ≤ `clientHeight`, fără derulare laterală); fereastra de lucru ia ecranul minus 12 px (era 24). (2) **Excepția:** tabelul cel
+  mai înalt al ferestrei sau lista declarată `data-zona-derulare` (ex. „Ce oprește închiderea”) stă într-o zonă proprie de derulare
+  (`.zona-derulare`, pusă de navigator — `navigator._zonaDerulare`; corpul devine coloană `.cu-zona`): titlul, filtrele, cardurile și
+  acțiunile din afara ei au înălțimea lor, antetul și totalul tabelului se lipesc în zonă. Zona are cel puțin 30% din înălțimea ferestrei
+  (altfel „datele sub titlu” nu se mai văd: se reorganizează). (3) **Secundarul = carduri-rezumat** (`static/js/carduri.js`, `siraCarduri`):
+  un șir de butoane de un rând sub titlu, fiecare o frază scurtă cu cifra („2 mișcări de stoc în ciornă”, „Stoc validat 11.620,00 lei =
+  balanța 371 ✓”), cu un punct de ton (`ok` verde, `atentie` galben, `eroare` roșu, `info` gri); clicul deschide conținutul în fereastra lui
+  (`{ lat: "lucru" }`, cap.2a). Explicația lungă, citatul legal, lista și acțiunile secundare stau numai în cardul deschis. Mesajul de
+  eroare și acțiunea principală rămân în vedere (cardul de eroare are punctul roșu și se vede mereu). (4) Nu se micșorează scrisul și nu
+  se ascunde un mesaj de eroare ca să încapă. Gard: `frontend_test/vizual/incape_ecran.py` (captura la ambele rezoluții, verdict pe fiecare
+  ecran din `nav_ecrane`) + `core/test_incape_ecran.py` (artefactul proaspăt, toate ecranele măsurate, nicio derulare; lista ferestrelor încă de
+  reorganizat coboară numai: o fereastră reparată iese din ea).
 
 ## 10. Escape și securitate
 
@@ -1297,6 +1319,10 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.105 (27.10.2026)** — lotul 14, comanda Costin 14.1, deficiența 687 (clasă): **cap.9 — „Fiecare fereastră de lucru încape pe un singur ecran”**
+(măsurat la 1920 × 1080 și 1366 × 768; zona de derulare a tabelului / a listei; șirul de carduri-rezumat `siraCarduri`). Gărzi: `frontend_test/vizual/
+incape_ecran.py`, `core/test_incape_ecran.py`, `core/test_lot14_incape.py`.
+
 **v2.104 (25.10.2026)** — lotul 13, comanda Costin 13.1 (grupa 1: 655; clasele DS 673–676; 504, 509, 515, 575, 581, 625, 654; căutarea 681):
 **cap.1** — „Comenzile se văd mereu” (675: `api.inactiv` / `atributeInactiv`, butonul inactiv cu motivul). **Cap.2a** — „Acțiunile din
 ferestre” (673: fereastră nouă, `fer-lucru` cât ecranul), „Orice acțiune e un buton” (674), „Listele scurte sunt butoane alăturate” (676:

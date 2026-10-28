@@ -36,7 +36,10 @@ def firma_r():
         tid = f["tenant_id"]
         _ruta("/tenants/%d/firma-profil/date" % tid,
               {"reg_com": "J40/1234/2020", "caen": "6920", "adresa": "Str. Probei nr. 1", "oras": "București", "judet": "București",
-               "declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "Administrator"}, "Date firmă")
+               "declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "Administrator",
+               # [lotul 14, 687] evidența începe cu luna primei note (06/2025), deci D101 pe 2025 ar începe înainte de preluare și s-ar REFUZA;
+               # contabilul salvează în Date firmă luna preluării la începutul anului (evidența firmei e întreagă pe 2025)
+               "luna_preluare": "2025-01"}, "Date firmă")
         _ruta("/tenants/%d/vector" % tid, {"regim_fiscal": "profit", "platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False},
               "vectorul fiscal")
         nid = _ruta("/tenants/%d/jurnal" % tid, {"data": "2025-06-15", "descriere": "probă C77", "document_ref": "NC E2E-C77",

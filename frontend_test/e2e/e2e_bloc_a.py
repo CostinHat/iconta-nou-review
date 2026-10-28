@@ -385,9 +385,13 @@ def test_def_5_ghidul_e_pe_rol_iar_asistentul_fara_firme_primeste_mesaj(browser,
         e.captura("asistent")
     patron.acasa()
     patron.pg.click("#nav-ghid")
-    patron.pg.wait_for_selector(".fereastra-corp .ans-pas-titlu", timeout=20000)
-    pasi_admin = patron.pg.eval_on_selector_all(".fereastra-corp .ans-pas-titlu", "els => els.map(e => e.textContent.trim())")
+    # [lotul 14, 687] firul de pași e în cardul „Firul de intrare”: contabilul îl deschide, citește pașii și se întoarce la ghid
+    patron.pg.click("[data-card='ans-card-fir']")
+    patron.pg.wait_for_selector(".fereastra:last-of-type .ans-pas-titlu", timeout=20000)
+    pasi_admin = patron.pg.eval_on_selector_all(".fereastra:last-of-type .ans-pas-titlu", "els => els.map(e => e.textContent.trim())")
     patron.captura("admin")
+    patron.pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+    patron.pg.wait_for_selector(".fereastra:last-of-type .ans-grupa-lista li", timeout=20000)
     assert pasi_admin[0] == "Firme", pasi_admin
     assert not pasi_asist, pasi_asist                                         # [562] niciun pas de administrator la asistent
     # catalogul „Ce cuprinde aplicația” poate numi funcțiile („Vector fiscal per firmă”); firul de preluare (pașii) nu e la asistent
@@ -905,6 +909,10 @@ def test_def_217_coada_nu_se_contrazice_despre_validarea_in_doi(browser, request
         _coada(patron)
         f = patron.fereastra()
         patron.captura("coada")
+        # [lotul 14, 687] explicația „cine validează și cine depune” e un card de sub titlu: contabilul îl deschide și o citește
+        patron.pg.click("[data-card='val-card-intro']")
+        patron.pg.wait_for_selector(".fereastra:last-of-type #val-intro", timeout=20000)
+        f += "\n" + patron.pg.inner_text(".fereastra:last-of-type #val-intro")
     finally:
         sql('DELETE FROM "%s".inregistrari WHERE id = %%s' % firma_e2e["schema"], (nota["id"],))
     assert "note de validat (" in f.lower(), f[:800]   # titlul grupului e cu majuscule din CSS
@@ -1181,8 +1189,12 @@ def test_def_20_forma_juridica_si_capitalul_se_cer_la_deschidere(browser, reques
     with cont_asistent(firme=(firma_e2e["tenant_id"],)) as a, ecran_cont(browser, request, a["email"]) as e:
         pg = e.pg
         _deschide_emiterea(e, firma_e2e["nume"])
-        pg.wait_for_selector("#em-pregatire .ca-mesaj", timeout=20000)
-        nota = pg.inner_text("#em-pregatire .ca-mesaj")
+        pg.wait_for_selector("#em-pregatire [data-card='lipsuri']", timeout=20000)
+        # [lotul 14, 687] lipsurile sunt un card de un rând; textul întreg e în fereastra lui, de unde contabilul se întoarce la factură
+        pg.click("#em-pregatire [data-card='lipsuri']")
+        pg.wait_for_selector(".fereastra:last-of-type .ca-mesaj", timeout=20000)
+        nota = pg.inner_text(".fereastra:last-of-type .ca-mesaj")
+        pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
         assert "forma juridică" in nota, nota
         assert pg.is_disabled("#em-emite") and "forma juridică" in (pg.get_attribute("#em-emite", "title") or "")
         e.captura("la_deschidere")
@@ -1408,13 +1420,16 @@ def test_def_28_stocuri_arata_situatia_si_fara_retete_la_comert(patron, firma_e2
     _card(patron, "stocuri", "#s-situatie-tabel")
     cap = pg.eval_on_selector_all("#s-situatie-tabel thead th", "els => els.map(e => e.textContent.trim())")
     rand = pg.eval_on_selector_all("#s-situatie-tabel tbody tr", "trs => trs.map(t => [...t.cells].map(c => c.textContent.trim()))")
-    assert cap == ["Articol", "UM", "Cantitate", "CMP (lei)", "Valoare (lei)"], cap
+    # [lotul 14, 687] tabelul are și „Gestiune” (după UM) și „În ciornă” (la sfârșit): coloanele de fond rămân, în aceeași ordine
+    assert cap[:6] == ["Articol", "UM", "Gestiune", "Cantitate", "CMP (lei)", "Valoare (lei)"], cap
     marfa = [r for r in rand if r[0] == ARTICOL]
-    assert marfa and marfa[0][1] == "buc" and marfa[0][3] == "12,50", marfa
+    assert marfa and marfa[0][1] == "buc" and marfa[0][4] == "12,50", marfa
     # [lotul 11, decizia Costin 10.3 pct.4 „Totalurile și rezumatul fix, mesajele lângă buton […]: da, reorganizezi ecranele”; DS cap.9
     # v2.100 pct.5 și 8] titlul, luna, „Descarcă gestiunea lunii” și `#s-mesaj` sunt acum rezumatul lipit sus; situația stocului e
     # primul lucru de sub el (deasupra formularelor — decizia 05.10.2026 pct.10), iar nimic altceva nu stă între titlu și situație.
-    assert pg.evaluate("() => { const s = document.querySelector('#s-situatie'); const r = s && s.previousElementSibling; "
+    # [lotul 14, 687] între rezumat și situație stă numai rândul cardurilor-rezumat (`#s-carduri`, o linie de butoane — fără tabele)
+    assert pg.evaluate("() => { const s = document.querySelector('#s-situatie'); let r = s && s.previousElementSibling; "
+                       "if (r && r.id === 's-carduri') r = r.previousElementSibling; "
                        "if (!r || !r.classList.contains('rezumat-fix')) return false; "
                        "const t = r.firstElementChild; "
                        "return !!t && t.classList.contains('pf-titlu') && !!r.querySelector('#s-desc') && !!r.querySelector('#s-mesaj') "

@@ -177,7 +177,14 @@ def test_def_266_coada_spune_dreptul_real_si_vorbeste_de_note(browser, request, 
             pg.wait_for_selector(".fereastra:last-of-type #val-note tbody.tn-nota", timeout=30000)   # [lotul 12, 622] rândul notei
             pg.wait_for_timeout(600)
             text = e.fereastra()
+            # [lotul 14, 687] explicația „cine validează și cine depune” e un card de sub titlu: contabilul îl deschide și o citește
+            pg.click("[data-card='val-card-intro']")
+            pg.wait_for_selector(".fereastra:last-of-type #val-intro", timeout=20000)
             intro = pg.eval_on_selector_all(".fereastra:last-of-type .mig-intro", "es => es.map(x => x.innerText)")
+            e.captura("coada_fara_depunere_card")
+            pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+            pg.wait_for_selector(".fereastra:last-of-type #val-note tbody.tn-nota", timeout=30000)   # coada se redesenează la întoarcere
+            pg.wait_for_timeout(600)
             valideaza = pg.evaluate("() => [...document.querySelectorAll('.fereastra:last-of-type .val-aproba')]"
                                     ".filter(b => b.offsetParent !== null).length")
             e.captura("coada_fara_depunere")
@@ -185,6 +192,7 @@ def test_def_266_coada_spune_dreptul_real_si_vorbeste_de_note(browser, request, 
         sql('DELETE FROM "%s".inregistrari WHERE id = %%s' % firma_e2e["schema"], (nota["id"],))
     low = text.lower()
     assert "note de validat (" in low and "Nota D266" in text and valideaza >= 1, (valideaza, text[:600])
+    text += " " + " ".join(intro)
     for fals in ("le depui tu", "depui singur", "pregătești și depui", "le pregătești și le depui"):
         assert fals not in text, "coada îi spune celui fără „Poate depune” că depune: %r în %s" % (fals, intro)
     toate = " ".join(intro)

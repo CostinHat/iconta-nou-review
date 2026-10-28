@@ -33,6 +33,16 @@ def _incarca(patron, nume, text, asteapta):
     return pg.inner_text("#bk-mesaj")
 
 
+def _text_din_card(pg, card, sel):
+    """[lotul 14, 687] Ce stă într-un card-rezumat al ferestrei (fereastra lui): deschide cardul, citește elementul, se întoarce la fereastra de dedesubt."""
+    pg.click("[data-card='%s']" % card)
+    pg.wait_for_selector(".fereastra:last-of-type " + sel, timeout=20000)
+    text = pg.inner_text(".fereastra:last-of-type " + sel)
+    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+    pg.wait_for_selector("#bk-fisier", timeout=20000)
+    return text
+
+
 def test_def_277_extrasul_nou_se_importa_iar_duplicatul_e_miscarea(patron, firma_e2e):
     """277. Bancă: extrasul MT940 nou respins ca „deja importat”.
     Pașii contabilului: încarcă extrasul MT940 din comandă — 2 linii importate, cu soldurile comparate; îl încarcă din nou — nicio linie
@@ -73,7 +83,7 @@ def test_def_276_banca_spune_formatele_si_compara_soldurile(patron, firma_e2e):
     patron.firma(firma_e2e["nume"])
     pg = patron.pg
     _card(patron, "banca", "#bk-fisier")
-    formate = pg.inner_text("#bk-formate")
+    formate = _text_din_card(pg, "formate", "#bk-formate")   # [lotul 14, 687] formatele stau în cardul lor
     assert "MT940" in formate and "ING" in formate and "Altă bancă" in formate, formate
     assert ".sta" in pg.get_attribute("#bk-fisier", "accept")
     pg.click("h2.pf-titlu [data-ajutor]")
@@ -274,6 +284,7 @@ def test_def_289_starea_spv_in_fereastra_firmei_setari_si_ghid(patron, firma_e2e
     assert "SPV: cabinetul nu e conectat" in linie and "Deschide Conectare SPV" in linie, linie
     patron.acasa()   # fereastra firmei se închide; „?” general e în bara de sus
     pg.click("#nav-ghid")
+    pg.click("[data-card='ans-card-spv']")   # [lotul 14, 687] pasul cabinetului stă în cardul lui, deschis la clic
     pg.wait_for_selector("#ans-spv", timeout=20000)
     ghid = pg.inner_text("#ans-spv")
     patron.captura("ghid")

@@ -70,7 +70,8 @@ def test_def_484_confruntarea_ruleaza_pe_luna_incheiata_si_arata_reconcilierea(p
     patron.captura("declaratie_vs_contabilitate")
     text = " ".join(pg.inner_text(".fereastra:last-of-type #cf-incrucisat").split())
     # CF art.323 alin.(1): azi se depune decontul lunii trecute — aceea se confruntă
-    assert "Luna confruntată: %s" % LUNA_TRECUTA.strftime("%m/%Y") in text, text
+    # [lotul 14, 694] fiecare comparație își arată perioada: firma lunară -> D300 pe luna trecută (nu „luna confruntată” generică)
+    assert "Perioada comparată: D300 %s" % LUNA_TRECUTA.strftime("%m/%Y") in text, text
     assert "TVA colectată: D300 și contul 4427 coincid." in text, text
     assert "Declarațiile recalculate din documente" in text, text
     assert "D300 (decont TVA): Recalculul din documentele perioadei confirmă cifrele declarației generate." in text, text

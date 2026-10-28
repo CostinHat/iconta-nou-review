@@ -128,7 +128,8 @@ def test_def_627_salvarea_partiala_actualizeaza_profil_incomplet(patron, firma_f
     sql('UPDATE "%s".firma_profil SET reg_com = NULL WHERE id = 1' % s)
     patron.firma(firma_f2["nume"])
     _card(patron, "datefirma", "#df-salveaza")
-    assert "Nr. registrul comerțului" in pg.inner_text("#df-profil-stare")
+    from e2e_lot10_date_firma import _panou_profil   # [lotul 14, 687] „Profil incomplet” e un card: se deschide, se citește lista, se revine
+    assert "Nr. registrul comerțului" in _panou_profil(pg)
     pg.fill("#df-reg_com", "J40/627/2026")
     pg.fill("#as-data-cesiune", "2026-10-01")
     pg.click("#df-salveaza")
@@ -136,7 +137,7 @@ def test_def_627_salvarea_partiala_actualizeaza_profil_incomplet(patron, firma_f
                          timeout=30000)
     pg.wait_for_selector("#df-salveaza:not([disabled])", timeout=30000)
     patron.captura("profil_actualizat")
-    bloc = pg.inner_text("#df-profil-stare")
+    bloc = _panou_profil(pg, poate_lipsi=True)
     assert "Nr. registrul comerțului" not in bloc, bloc
     assert pg.input_value("#as-data-cesiune") == "2026-10-01"           # ce n-a intrat rămâne scris
     assert sql('SELECT reg_com FROM "%s".firma_profil' % s) == [("J40/627/2026",)]

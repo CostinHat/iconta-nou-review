@@ -8,10 +8,11 @@
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=c6c45aefe4";
+import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { textStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { optiuniTara as _optiuniTara, taraDinCui } from "./tari_partener.js?v=43a0fddc7d";   // [lotul 12, C160] sursa unică
-import { butonSpreEcran } from "./ecran_destinatie.js?v=0a2b447df1";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
+import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444] numele ANAF vs fișa clientului
 import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF / VIES țin de CUI-ul lor
@@ -414,10 +415,18 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <h2 class="pf-titlu">Emite factură</h2>
       <span class="em-numar" id="em-numar">${num.serie ? `Seria <b>${esc(num.serie)}</b> · ` : ""}nr. <b>${esc(String(num.urmator_numar))}</b></span>
     </div>
-    <div class="em-pregatire" id="em-pregatire" role="note"></div>
-    <div class="em-sectiune em-date-doc">
+    <div class="rap-tabs" style="align-items:center">
+      <div role="tablist" aria-label="Părțile facturii" style="display:flex;gap:6px">
+      <button type="button" class="rap-tab rap-tab-activ" role="tab" aria-selected="true" data-fila="factura" data-fara-actiune="alegerea secțiunii — nu scrie nimic">Factură<span class="rap-tab-nr"></span></button>
+      <button type="button" class="rap-tab" role="tab" aria-selected="false" data-fila="tva" data-fara-actiune="alegerea secțiunii — nu scrie nimic">Clasificare TVA și bon fiscal<span class="rap-tab-nr"></span></button>
+      </div>
+      <div class="em-pregatire" id="em-pregatire" role="note" style="margin-left:auto;padding-bottom:4px"></div>
+    </div>
+    <div class="em-fila em-fila-doua" id="em-fila-factura" data-fila="factura" role="tabpanel">
+    <div>
+    <div class="em-sectiune em-date-doc" style="margin-top:4px">
       <div class="em-eticheta">Document (CF art. 319 alin. (20) lit. a–b)</div>
-      <div class="em-date-rand">
+      <div class="em-date-rand" style="grid-template-columns:minmax(250px,1.3fr) minmax(170px,1fr) minmax(170px,1fr)">
         <label class="camp"><span class="camp-eticheta">Seria și numărul</span>
           <span class="em-serie-nr" id="em-serie-nr">${num.serie ? esc(num.serie) + " · " : "fără serie (se cere la emitere) · "}următorul număr: ${esc(String(num.urmator_numar))}</span>
           <button type="button" class="btn-link" id="em-schimba-serie" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare">Schimbă seria / numerotarea</button></label>
@@ -430,7 +439,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="caseta-info" id="em-tva-incasare" role="note" hidden><div class="ci-mesaj"></div></div>
     </div>
 
-    <div class="em-sectiune">
+    <div class="em-sectiune" style="margin:12px 0 0">
       <div class="em-eticheta">Beneficiar</div>
       <label class="camp-eticheta" for="em-cui">CUI beneficiar</label>
       <div class="em-benef">
@@ -444,7 +453,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="em-cui-stare" id="em-cui-stare"></div>
     </div>
 
-    <div class="em-sectiune">
+    </div>
+    <div>
+    <div class="em-sectiune" style="margin-top:4px">
       <div class="em-eticheta">Produse și servicii</div>
       <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(la un articol din stoc, cota TVA vine din articol; la o linie fără articol, cota e propusă pe baza denumirii — verifică încadrarea și schimb-o din listă dacă e altfel; răspunderea corectitudinii cotei îți aparține, iar schimbarea se consemnează)"}</span></div>
       <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-um">UM</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
@@ -461,31 +472,38 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <span class="em-moneda-nota" id="em-moneda-nota"></span>
     </div>
     <div class="fd-valuta" id="em-valuta" aria-live="polite" hidden></div>
-    <div class="em-sectiune">
+    </div>
+    </div>
+    <div class="em-fila" id="em-fila-tva" data-fila="tva" role="tabpanel" hidden>
+    <div class="em-sectiune" style="margin-top:4px">
       <div class="em-eticheta">Clasificare TVA (D300)</div>
-      <label class="camp-eticheta" for="em-tara">Țara partenerului</label>
-      <select class="camp-input" id="em-tara">${optiuniTara}</select>
-      <label class="camp-eticheta" for="em-oras" id="em-oras-et">Localitatea clientului</label>
-      <input class="camp-input" id="em-oras" type="text" maxlength="100">
-      <label class="camp-eticheta em-ro" for="em-judet">Județul clientului</label>
-      <select class="camp-input em-ro" id="em-judet"><option value="">— alege —</option>${JUDETE_RO.map(([c, n]) => `<option value="${c}">${esc(n)}</option>`).join("")}</select>
-      <label class="camp-eticheta em-strain" for="em-regiune" hidden>Regiunea clientului (provincie, land, comitat)</label>
-      <input class="camp-input em-strain" id="em-regiune" type="text" maxlength="100" hidden>
-      <label class="camp-eticheta" for="em-c331" id="em-c331-et" hidden>Categoria produsului cu taxare inversă (art.331; codul din D394)</label>
-      <select class="camp-input" id="em-c331" hidden><option value="">— alege —</option>${C331.map((c) => `<option value="${esc(c.cod)}">${esc(c.eticheta)}</option>`).join("")}</select>
-      <label class="camp-eticheta" for="em-tipop">Tip operațiune</label>
+      <div class="em-grila-doc">
+      <div><label class="camp-eticheta" for="em-tara">Țara partenerului</label>
+      <select class="camp-input" id="em-tara">${optiuniTara}</select></div>
+      <div><label class="camp-eticheta" for="em-oras" id="em-oras-et">Localitatea clientului</label>
+      <input class="camp-input" id="em-oras" type="text" maxlength="100"></div>
+      <div><label class="camp-eticheta em-ro" for="em-judet">Județul clientului</label>
+      <select class="camp-input em-ro" id="em-judet"><option value="">— alege —</option>${JUDETE_RO.map(([c, n]) => `<option value="${c}">${esc(n)}</option>`).join("")}</select></div>
+      <div><label class="camp-eticheta" for="em-tipop">Tip operațiune</label>
       <select class="camp-input" id="em-tipop" data-butoane="">
         <option value="normal" selected>Operațiune normală</option>
         <option value="avans">Avans încasat</option>
         <option value="regularizare_avans">Regularizare avans</option>
-      </select>
-      <label class="camp-eticheta" for="em-bon-nr">Emisă pe baza bonului fiscal — nr. bon (dacă e cazul)</label>
-      <input class="camp-input" id="em-bon-nr" type="text" maxlength="30" placeholder="ex. 0042">
-      <label class="camp-eticheta" for="em-bon-data">Data bonului fiscal</label>
-      <input class="camp-input" id="em-bon-data" type="date">
+      </select></div>
+      <div><label class="camp-eticheta" for="em-bon-nr">Emisă pe baza bonului fiscal — nr. bon (dacă e cazul)</label>
+      <input class="camp-input" id="em-bon-nr" type="text" maxlength="30" placeholder="ex. 0042"></div>
+      <div><label class="camp-eticheta" for="em-bon-data">Data bonului fiscal</label>
+      <input class="camp-input" id="em-bon-data" type="date"></div>
+      <!-- câmpurile care apar numai la nevoie (regiunea clientului străin, categoria taxării inverse) stau la urmă: celula lor goală nu se vede -->
+      <div><label class="camp-eticheta em-strain" for="em-regiune" hidden>Regiunea clientului (provincie, land, comitat)</label>
+      <input class="camp-input em-strain" id="em-regiune" type="text" maxlength="100" hidden></div>
+      <div><label class="camp-eticheta" for="em-c331" id="em-c331-et" hidden>Categoria produsului cu taxare inversă (art.331; codul din D394)</label>
+      <select class="camp-input" id="em-c331" hidden><option value="">— alege —</option>${C331.map((c) => `<option value="${esc(c.cod)}">${esc(c.eticheta)}</option>`).join("")}</select></div>
+      </div>
       <p class="camp-ajutor">Pentru o factură cerută de client pentru un bon deja emis: vânzarea e în raportul Z, deci factura nu se mai numără a doua oară (D300, D394, evidență, stoc). Pe factură apare „conform bon fiscal nr./data”.</p>
     </div>
-    <div class="bara-fixa"><div class="em-rezultat" id="em-rezultat"></div><div class="em-actiuni">
+    </div>
+    <div class="bara-fixa"><div class="em-rezultat" id="em-rezultat"></div><div class="em-actiuni" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
       <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px" data-butoane="">
         <option value="factura" selected>Factură</option>
         <option value="proforma">Proforma</option>
@@ -498,13 +516,37 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // [comanda Costin 05.10.2026 pct.2] „Datele firmei care blochează emiterea se verifică la deschiderea «Emite factură», nu după
   // completarea întregului formular.” Lipsurile vin de la server (aceeași regulă ca refuzul emiterii, `capital_social.lipsa`).
   // „Emite” rămâne inactiv cu motivul vizibil; la revenirea din Date firmă (`nav:revenire`) se reverifică.
+  // [lotul 14, 687] formularul pe două file (un singur panou la vedere; toate câmpurile rămân în pagină). Un câmp refuzat dintr-o filă
+  // ascunsă aduce fila la vedere (eroarea nu se pierde), iar eticheta filei poartă numărul câmpurilor refuzate.
+  const arataFila = (fila) => {
+    corp.querySelectorAll(".em-fila").forEach((p) => { p.hidden = p.dataset.fila !== fila; });
+    corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => { b.classList.toggle("rap-tab-activ", b.dataset.fila === fila); b.setAttribute("aria-selected", String(b.dataset.fila === fila)); });
+  };
+  const marcheazaFile = () => corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => {
+    const n = corp.querySelectorAll(`#em-fila-${b.dataset.fila} .camp-invalid`).length;
+    const nr = b.querySelector(".rap-tab-nr"), txt = n ? String(n) : "";
+    if (nr.textContent !== txt) nr.textContent = txt;   // numai când se schimbă: scrierea aceluiași text ar chema din nou observatorul de mai jos
+  });
+  corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => b.addEventListener("click", () => arataFila(b.dataset.fila)));
+  new MutationObserver((ms) => {
+    for (const m of ms) for (const nod of m.addedNodes) {
+      const f = nod.nodeType === 1 && nod.matches(".msg-eroare") ? nod.closest(".em-fila") : null;
+      if (f && f.hidden && !corp.querySelector(".em-fila:not([hidden]) .camp-invalid")) arataFila(f.dataset.fila);
+    }
+    marcheazaFile();
+  }).observe(corp, { childList: true, subtree: true });
+  corp.addEventListener("input", () => setTimeout(marcheazaFile, 0));
+  corp.addEventListener("change", () => setTimeout(marcheazaFile, 0));
   const zonaPreg = corp.querySelector("#em-pregatire");
   const btnEmite = corp.querySelector("#em-emite");
   function aratăPregatirea(n) {
     const lipsuri = (n && n.lipsuri_firma) || [];
     if (!lipsuri.length) { zonaPreg.innerHTML = ""; btnEmite.disabled = false; btnEmite.title = ""; return; }
-    zonaPreg.innerHTML = `<div class="caseta-atentie"><div class="ca-mesaj pe-randuri">${esc(n.mesaj_lipsuri || "")}</div></div>
-      <div class="ca-actiuni" id="em-pregatire-actiuni"></div>`;
+    // [lotul 14, 687] lipsurile din Date firmă = un card de un rând (textul întreg în fereastra lui), cu butonul „Deschide Date firmă” alături
+    zonaPreg.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><div id="em-pregatire-card"></div><div class="ca-actiuni" id="em-pregatire-actiuni"></div></div>`;
+    siraCarduri(zonaPreg.querySelector("#em-pregatire-card"), [{ id: "lipsuri", ton: "eroare", titlu: "Înainte de a emite",
+      text: `Înainte de a emite lipsește din Date firmă: ${lipsuri.join(", ")}`,
+      deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Înainte de a emite</h2><div class="caseta-atentie"><div class="ca-mesaj pe-randuri">${esc(n.mesaj_lipsuri || "")}</div></div>`; } }], nav);
     btnEmite.disabled = true;
     btnEmite.title = "Completează întâi în Date firmă: " + lipsuri.join(", ");
     butonSpreEcran(zonaPreg.querySelector("#em-pregatire-actiuni"), "date_firma", nav, tenantId,

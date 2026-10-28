@@ -26,9 +26,10 @@ _F = ".fereastra:last-of-type"
 
 
 def _infiintata_2025(f):
-    """Primul exercițiu (înființată pe 10.01.2025): coloana „An precedent” e legal goală, deci bilanțul 2025 se validează fără ea."""
+    """Primul exercițiu (înființată pe 10.01.2025): coloana „An precedent” e legal goală, deci bilanțul 2025 se validează fără ea. [lotul 14, 687]
+    Luna preluării = 2025-01 (firma ține evidența de la înființare): bilanțul pe o perioadă care începe înainte de preluare se refuză acum."""
     _date_firma(f)
-    st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"data_infiintare": "2025-01-10"})
+    st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"data_infiintare": "2025-01-10", "luna_preluare": "2025-01"})
     assert st == 200 and r.get("ok") is not False, (st, r)
 
 

@@ -71,10 +71,11 @@ def test_situatia_stocului_e_prima_si_formularele_la_cerere(br):
     b, port = br
     pg = _pagina(b, port, horeca=False)
     randuri = pg.eval_on_selector_all("#s-situatie-tabel tbody tr", "e => e.map(r => [...r.cells].map(c => c.innerText.trim()))")
-    assert randuri == [["Pâine albă", "buc", "110", "2,00", "220,00"], ["Făină", "kg", "12,5", "3,00", "37,50"]]
-    assert pg.eval_on_selector("#s-situatie-tabel tfoot", "e => e.innerText.replace(/\\s+/g, ' ').trim()") == "Total valoare stoc 257,50"
-    # situația stă DEASUPRA formularelor; formularele sunt închise la deschidere
-    assert pg.evaluate("() => !!(document.querySelector('#s-situatie').compareDocumentPosition(document.querySelector('#sn-toggle')) & Node.DOCUMENT_POSITION_FOLLOWING)")
+    # [lotul 14, 687 / 696] coloana „Gestiune” și „În ciornă (lei)”; fără câmpurile validate ale serverului (răspuns vechi), valorile sunt cele ale fișei întregi
+    assert randuri == [["Pâine albă", "buc", "\u2014", "110", "2,00", "220,00", "\u2014"], ["Făină", "kg", "\u2014", "12,5", "3,00", "37,50", "\u2014"]]
+    assert pg.eval_on_selector("#s-situatie-tabel tfoot", "e => e.innerText.replace(/\\s+/g, ' ').trim()") == "Total valoare stoc 257,50 \u2014"
+    # [lotul 14, 687] acțiunile (+ NIR nou, Mișcări…) stau în rezumat, DEASUPRA situației; formularele sunt închise la deschidere
+    assert pg.evaluate("() => !!(document.querySelector('#sn-toggle').compareDocumentPosition(document.querySelector('#s-situatie')) & Node.DOCUMENT_POSITION_FOLLOWING)")
     assert pg.locator("#cv-art, #sn-numar").count() == 0, "formularele sunt deschise fără să fi fost cerute"
     pg.click("#cv-toggle")                                      # [lotul 13, 673] fereastra mișcărilor, peste Stocuri
     pg.wait_for_selector(".fer-proba #cv-zona #cv-art", state="attached", timeout=15000)

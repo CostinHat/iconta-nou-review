@@ -1,0 +1,235 @@
+{
+ "copia": {
+  "clonat_la": "2026-10-28 03:14:58",
+  "productie_la": "2026-10-28 03:14:50.726223+02:00",
+  "migrari": []
+ },
+ "etape_s": [
+  [
+   "aplicația din arbore pornită (port 60631)",
+   11.4
+  ],
+  [
+   "dovezi parcurse (6)",
+   38.5
+  ]
+ ],
+ "dovezi": [
+  {
+   "nr": "688",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Închidere lună 09/2026 — 4426 D 210,00 și 4427 C 210,00 la sfârșitul lunii, fără 4423/4424: «Ce oprește închiderea» spune că TVA-ul perioadei nu e regularizat, iar luna, deja blocată pe copie (cum a rămas din retest), arată «Deblochează luna»; pe o lună deschisă «Blochează luna» e inactiv (testul e2e) (înainte: «Nimic nu oprește închiderea lunii»). Numai citire.",
+   "captura": "dovezi/lot14/c206_f1_vechi_inchidere_09_2026_tva.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "TVA-ul perioadei nu e regularizat",
+      "zona": ".fereastra:last-of-type #il-controale"
+     },
+     "ok": true,
+     "vazut": "Ce oprește închiderea (1) TVA-ul perioadei nu e regularizat: la sfârșitul lunii contul 4426 (TVA deductibilă) are sold debitor 210,00 lei, iar 4427 (TVA colectată) sold creditor 210,00 lei. Propune nota de regularizare "
+    },
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type #il-tva-regularizare"
+     },
+     "ok": true,
+     "vazut": "Propune regularizarea TVA | dezactivat=False | title= | lângă: Propune regularizarea TVA"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Nimic nu oprește închiderea lunii",
+      "zona": ".fereastra:last-of-type #il-controale"
+     },
+     "ok": true,
+     "vazut": "Ce oprește închiderea (1) TVA-ul perioadei nu e regularizat: la sfârșitul lunii contul 4426 (TVA deductibilă) are sold debitor 210,00 lei, iar 4427 (TVA colectată) sold creditor 210,00 lei. Propune nota de regularizare (4427 = 4426, iar diferența în 4424, TVA de recuperat) și validează-o. Semnale (5) D100 pentru T3/2026, cu termen pe 26.10.2026, nu e depusă — depune-o sau marchează-o depusă în Con"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 6.2
+  },
+  {
+   "nr": "683",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Bilanț 2026, S1005 — evidența începe după 31.08.2026 și balanța n-are rulajele anului: bilanțul refuză, cu trimitere la Import date › Solduri inițiale și buton spre el (înainte: nicio semnalare, bilanț doar cu sept.–dec.). Numai citire.",
+   "captura": "dovezi/lot14/c204_f1_vechi_bilant_2026_rulaje_lipsa.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "începe înainte de preluarea firmei",
+      "zona": ".fereastra:last-of-type .bl-prec-refuz"
+     },
+     "ok": true,
+     "vazut": ", contul 4427: „taxa pe valoarea adăugată deductibilă, compensată la sfârșitul perioadei, potrivit legii (4426)”. 3. Rulajele anului până la preluare: perioada începe înainte de preluarea firmei în iConta.eu (evidența începe după 31.08.2026), iar rulajele de la 01.01.2026 până la 31.08.2026 lipsesc. Importă balanța de la 31.08.2026 cu soldurile inițial"
+    },
+    {
+     "cerut": {
+      "contine": "Import date › Solduri inițiale",
+      "zona": ".fereastra:last-of-type .bl-prec-refuz"
+     },
+     "ok": true,
+     "vazut": "cepe după 31.08.2026), iar rulajele de la 01.01.2026 până la 31.08.2026 lipsesc. Importă balanța de la 31.08.2026 cu soldurile inițiale ale anului și rulajele (Import date › Solduri inițiale), ca ele să intre ca sold inițial și sume precedente, apoi generează din nou. Deschide Import date › Solduri inițiale"
+    },
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type #bl-import-solduri"
+     },
+     "ok": true,
+     "vazut": "Deschide Import date › Solduri inițiale | dezactivat=False | title= | lângă: Deschide Import date › Solduri inițiale"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 10.4
+  },
+  {
+   "nr": "695",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Declarații -> D100, T3/2026 (iul–sep) — evidența începe după 31.08: refuz cu trimitere la Import date › Solduri inițiale, fără «Trimite în coadă» (înainte: baza 707 = 1.000, doar septembrie, impozit 10 lei, validat). Numai citire.",
+   "captura": "dovezi/lot14/c205_f1_vechi_d100_t3_2026_refuz.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "D100 pe T3/2026 nu se poate genera"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 › Declarații › Declarații ✕ Declarații Pasul 2 din 3 — generare D100 pe T3/2026 nu se poate genera: perioada începe înainte de preluarea firmei în iConta.eu (evidența începe după 31.08.2026), iar rulajele de la 01.07.2026 până la 31.08.2026 lipsesc. Importă "
+    },
+    {
+     "cerut": {
+      "contine": "Import date › Solduri inițiale"
+     },
+     "ok": true,
+     "vazut": "cepe după 31.08.2026), iar rulajele de la 01.07.2026 până la 31.08.2026 lipsesc. Importă balanța de la 31.08.2026 cu soldurile inițiale ale anului și rulajele (Import date › Solduri inițiale), ca ele să intre ca sold inițial și sume precedente, apoi generează din nou.Deschide Import date"
+    },
+    {
+     "cerut": {
+      "nu_contine": "Trimite în coadă"
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 › Declarații › Declarații ✕ Declarații Pasul 2 din 3 — generare D100 pe T3/2026 nu se poate genera: perioada începe înainte de preluarea firmei în iConta.eu (evidența începe după 31.08.2026), iar rulajele de la 01.07.2026 până la 31.08.2026 lipsesc. Importă balanța de la 31.08.2026 cu soldurile inițiale ale anului și rulajele (Import d"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 6.7
+  },
+  {
+   "nr": "696",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Stocuri 10/2026 — tabelul arată stocul validat (coloanele Gestiune și În ciornă), iar sub titlu cardurile-rezumat: reconcilierea cu balanța (371), ciornele, articolele de verificat (înainte: total 8.983,74 față de 371 = 6.272,38, nesemnalat). Numai citire.",
+   "captura": "dovezi/lot14/c208_f1_vechi_stocuri_10_2026.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Gestiune",
+      "zona": ".fereastra:last-of-type #s-situatie-tabel"
+     },
+     "ok": true,
+     "vazut": "Articol UM Gestiune Cantitate CMP (lei) Valoare (lei) În ciornă (lei) Cafea boabe buc — 0 — 0,00 90,00 Carte tehnica buc — 0 — 0,00 205,00 grau kg — 0 — 0,00 210,00 Marfa A buc — "
+    },
+    {
+     "cerut": {
+      "contine": "În ciornă (lei)",
+      "zona": ".fereastra:last-of-type #s-situatie-tabel"
+     },
+     "ok": true,
+     "vazut": "Articol UM Gestiune Cantitate CMP (lei) Valoare (lei) În ciornă (lei) Cafea boabe buc — 0 — 0,00 90,00 Carte tehnica buc — 0 — 0,00 205,00 grau kg — 0 — 0,00 210,00 Marfa A buc — 122 51,1905 6.245,24 1.341,00 Marfa B buc — 1 27,5"
+    },
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type [data-card='reconciliere']"
+     },
+     "ok": true,
+     "vazut": "Stoc validat față de balanță: cont 371, fișele cu 0,36 lei mai mult | dezactivat=False | title=Stoc validat față de balanță: cont 371, fișele cu 0,36 lei mai mult | lângă: Stoc validat față de balanță: cont 371, fișele cu 0,36 lei mai mult 22 de mișcări de stoc în ciornă (2.703,50 lei), nu intră în stocul validat 2 articole de verificat: cantități cu zecimale, denumiri 6 NIR-uri în luna aleasă"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.8
+  },
+  {
+   "nr": "694",
+   "firma": "tenant_9050",
+   "nume_firma": "F2 Profit Amortizare SRL",
+   "descriere": "F2: Control fiscal -> «Declarație vs contabilitate» — fiecare comparație își arată perioada: «Perioada comparată: D300 T3/2026», nu fereastra în curs T4 (înainte: 12.705 / 105 / 12.600 pe T4 neîncheiat). Numai citire.",
+   "captura": "dovezi/lot14/c207_f2_vechi_control_t3_2026.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Perioada comparată: D300 T3/2026",
+      "zona": ".fereastra:last-of-type #cf-incrucisat"
+     },
+     "ok": true,
+     "vazut": "Perioada comparată: D300 T3/2026 · D112 09/2026 · D390 T3/2026 — ultima perioadă încheiată, a cărei declarație se depune. TVA colectată: D300 și contul 4427 coincid. D300 rândul 19, coloana TV"
+    },
+    {
+     "cerut": {
+      "nu_contine": "12.705,00",
+      "zona": ".fereastra:last-of-type #cf-incrucisat"
+     },
+     "ok": true,
+     "vazut": "Perioada comparată: D300 T3/2026 · D112 09/2026 · D390 T3/2026 — ultima perioadă încheiată, a cărei declarație se depune. TVA colectată: D300 și contul 4427 coincid. D300 rândul 19, coloana TVA (comparat cu decontul generat azi din evidență, nu cu cel depus; facturi emise în lună, art. 281 CF) față de rulaj credit cont 4427 pe lună, numai note validate (ciorna e propunere, nu evidență). TVA deduct"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.8
+  },
+  {
+   "nr": "687",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Balanța 10/2026 — ciornele, rulajele lipsă și verdictul închiderii sunt carduri-rezumat sub titlu (nu casete deasupra tabelului), iar fereastra nu derulează în corp; tabelul derulează în zona lui. Numai citire.",
+   "captura": "dovezi/lot14/c203_f1_vechi_balanta_carduri.png",
+   "verificari": [
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type #b-carduri .card-rezumat"
+     },
+     "ok": true,
+     "vazut": "De unde vin cifrele | dezactivat=False | title=De unde vin cifrele | lângă: De unde vin cifrele 48 de ciorne nevalidate nu intră în balanță Rulajele de la 01.01.2026 până la 31.08.2026 lipsesc Balanța se închide pe toate cinci ✓ (24 de conturi)"
+    },
+    {
+     "cerut": {
+      "exista": ".fereastra:last-of-type .zona-derulare"
+     },
+     "ok": true,
+     "vazut": "Cont\tDenumire\tSold inițial D\tSold inițial C\tSume precedente D\tSume precedente C\tRulaj lună D\tRulaj lună C\tTotal sume D\tT | dezactivat=False | title= | lângă: Balanță de verificare Luna 10/2026 · 24 de conturi · 32 de note validate în luna asta ← luna luna → De unde vin cifrele 48 de ciorne nevalidate nu intră în balanță Rulajele de la 01.01.2026 până la 31.08.2026 lipsesc Balanța se închide pe toate cinci ✓ (24 de conturi) Cont Denumire Sold inițial D So"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.7
+  }
+ ]
+}

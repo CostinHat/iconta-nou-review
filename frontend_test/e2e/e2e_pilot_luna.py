@@ -763,10 +763,13 @@ def test_pilot_06_nir_cu_transport(patron, firma_pilot):
     # lunii” ei — nu mai e nevoie de „← luna” (înainte ecranul rămânea pe luna de azi)
     _asteapta_text(patron, "Luna %02d/%d" % (LUNA, AN))
     pg.wait_for_function(_GATA["#s-prev"], timeout=60000)
+    # [lotul 14, 687] NIR-urile lunii stau în cardul „NIR-urile lunii”: contabilul îl deschide, apoi apasă „Deschide NIR-ul”
+    pg.click("[data-card='nir']")
+    pg.wait_for_selector(".fereastra:last-of-type .nir-deschide", timeout=25000)
     pg.click(".nir-deschide[data-numar='1']")
     pg.wait_for_selector("#nir-detaliu-linii", timeout=20000)
     celule = pg.eval_on_selector_all("#nir-detaliu-linii tbody tr", "rs => rs.map(r => [...r.cells].map(c => c.innerText.trim()))")
-    note = pg.eval_on_selector_all("table.fd-tabel:last-of-type tbody tr", "rs => rs.map(r => [...r.cells].slice(1, 4).map(c => c.innerText.trim()))")
+    note = pg.eval_on_selector_all(".fereastra:last-of-type table.fd-tabel:not(#nir-detaliu-linii) tbody tr", "rs => rs.map(r => [...r.cells].slice(1, 4).map(c => c.innerText.trim()))")
     patron.captura("detaliu")
     # OMFP 1802/2014 pct.96: costul unitar = 3.200,00 / 20 = 160,00 (CMP)
     assert celule and celule[0][-3:] == [_bani(TRANSPORT), _bani(COST_NIR), _bani(CMP)], celule
@@ -1561,22 +1564,24 @@ def test_pilot_33_d406(patron, firma_pilot):
 
 @pozitii("F026")
 def test_pilot_34_d100(patron, firma_pilot):
-    """F026. Pașii: Declarații -> D100 -> T3/2026 -> „Continuă”: rezumatul „cont 704: 600,00 lei”, „cont 707: 5.400,00 lei” (3.000 + 1.500 +
-    600 din Z 0042 + 300 din Z 0041, FĂRĂ TVA-ul Z-urilor, 126 + 63), „Baza impozabilă: 6.000,00 lei × cota 1% = cod 121: 60 lei (rotunjit la
-    leu).”; XML-ul (cod 121, suma 60, cota 1) validat cu DUKIntegrator -> „Trimite în coadă” -> De validat -> „Confirmă depunerea” cu
-    indexul SPV: „— depusă.”"""
-    pg = _genereaza_declaratia(patron, firma_pilot, "d100", trim=3)
+    """F026 — [lotul 14, 695, comanda Costin 14.1: „D100 T3/2026 (iul–sep): baza = 707 1.000 (doar septembrie) […] fără niciun avertisment că veniturile
+    din iulie–august lipsesc (evidența începe după 31.08). Orice declarație […] a cărei perioadă începe înainte de preluare trebuie refuzată”].
+    Firma-pilot e preluată cu balanța de la 31.08.2026: D100 pe T3 (iulie–septembrie) ar declara numai septembrie. Pașii: Declarații -> D100 ->
+    T3/2026 -> „Continuă”: REFUZ („D100 pe T3/2026 nu se poate genera”, cu trimitere la Import date › Solduri inițiale), fără «Trimite în coadă».
+    Poziția F026 (D100 T3 cu cifra 60 lei) NU se mai poate arăta pe acest scenariu: de decis de Costin (preluare la 30.06, sau baza lunilor
+    dinainte de preluare scrisă manual) — DECIZII 27.10.2026, „Comanda 14.1”, 695."""
+    pg = patron.pg
+    patron.firma(firma_pilot["nume"])
+    pg.click("#fa-declaratii")
+    _asteapta_text(patron, "Pasul 1 din 3")
+    alege_tipul(pg, "d100", zona=_F)
+    alege_perioada(pg, AN, None, 3, zona=_F)
+    pg.click(_F + "#dec-continua")
+    pg.wait_for_function("() => !!document.querySelector('.fereastra:last-of-type .dec-eroare')", timeout=120000)
+    patron.captura("d100_refuz")
     t = " ".join(patron.fereastra().split())
-    # CF art.53 alin.(1): baza = veniturile (TVA colectată nu e venit: OMFP 1802/2014, funcțiunea contului 4427); art.51 alin.(1): 1%
-    assert "cont 704: %s lei" % _bani(V704) in t and "cont 707: %s lei" % _bani(V707) in t, t[:3000]
-    assert "Baza impozabilă: %s lei × cota 1%% = cod 121: %s lei (rotunjit la leu)." % (_bani(V707 + V704), D100_IMPOZIT) in t, t[:3000]
-    xml = _xml_pas2(pg)
-    assert re.search(r'cod_oblig="121"[^>]*suma_dat="%s"' % D100_IMPOZIT, xml) and 'cota="1"' in xml, xml[:3000]
-    _duk_valid(patron, xml, "d100", 9)
-    _trimite_in_coada(patron)
-    patron.captura("in_coada")
-    _depune(patron, firma_pilot, "D100", "PILOT-D100-T32026")
-    patron.captura("depusa")
+    assert "D100 pe T3/%d nu se poate genera" % AN in t and "Import date › Solduri inițiale" in t, t[:3000]
+    assert pg.locator(_F + "#dec-trimite").count() == 0
 
 
 # ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════

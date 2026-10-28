@@ -311,6 +311,7 @@ def test_def_147_luna_preluarii_editabila_niciodata_dupa_prima_nota(patron, firm
         assert sql('SELECT luna_preluare FROM "%s".firma_profil WHERE id = 1' % s) == [(_dt.date(2026, 5, 1),)]
         rand = pg.locator("#df-jurnal tr", has_text="Luna preluării").first.inner_text()
         assert "05/2026" in rand, rand
+        pg.wait_for_selector("#df-jurnal", timeout=20000)   # [lotul 14, 687] istoricul stă pe fila „Istoricul modificărilor”: omul o apasă
         pg.locator("#df-jurnal").scroll_into_view_if_needed()
         patron.captura("salvata_05_2026_in_istoric")
     finally:
@@ -440,11 +441,17 @@ def test_def_150_evidenta_e_ce_a_validat_un_om(patron, firma):
     try:
         pg = patron.pg
         _balanta(patron, firma, 2026, 7)
-        pg.wait_for_selector("#b-ciorne", timeout=30000)
+        # [lotul 14, 687] rulajul lunii se citește din tabel ÎNAINTE de a deschide cardul: la întoarcerea din card balanța revine pe luna curentă
+        # (defect de produs, urmărit separat în e2e_lot14_luna_dupa_inapoi.py), iar ce probează aici 150 e conținutul balanței lunii 07/2026
         rand = pg.locator("table.fd-tabel tr", has=pg.locator("td:text-is('5311')")).first
+        rand.wait_for(timeout=30000)
         celule = rand.locator("td").all_inner_texts()
         assert celule[6] == "1.000,00" and celule[7] == "0,00", celule   # rulaj lună D / C
+        pg.wait_for_selector("[data-card='ciorne']", timeout=30000)
+        pg.click("[data-card='ciorne']")   # ciornele stau în cardul lor
+        pg.wait_for_selector("#b-ciorne", timeout=30000)
         ciorne = pg.inner_text("#b-ciorne")
+        pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
         assert "1 ciornă nevalidată nu intră în balanță" in ciorne and "(1 în luna asta" in ciorne, ciorne
         patron.captura("balanta_validat_si_ciorna")
         # poarta: D300 07/2026 în coadă — avertisment, nu blocaj
@@ -664,7 +671,8 @@ def test_def_144_factura_dupa_nir_fara_factura_se_leaga_fara_a_doua_intrare(patr
     assert sql('SELECT factura_id FROM "%s".nir WHERE id = %%s' % firma["schema"], (nir_id,)) == [(fid,)]
     _card(patron, firma, "stocuri", "#s-situatie-tabel")
     rand = patron.pg.locator("#s-situatie-tabel tr", has_text="Marfa E144").first.locator("td").all_inner_texts()
-    assert rand[2] == "10" and rand[4] == "550,00", rand
+    # [lotul 14, 687] coloanele: Articol, UM, Gestiune, Cantitate, CMP, Valoare, În ciornă
+    assert rand[3] == "10" and rand[5] == "550,00", rand
     intrari = sql('SELECT count(*) FROM "%s".miscari_stoc m JOIN "%s".articole a ON a.id = m.articol_id '
                   "WHERE a.denumire = 'Marfa E144' AND m.tip = 'intrare'" % (firma["schema"], firma["schema"]))
     assert intrari == [(1,)], intrari

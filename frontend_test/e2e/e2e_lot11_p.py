@@ -126,24 +126,26 @@ def test_def_442_capitalul_lipsa_apare_in_profil_incomplet(patron, firma_p):
     """442. Pașii: Date firmă (SRL fără formă juridică și fără capital) -> „Profil incomplet”: „Forma juridică — blochează emiterea
     facturilor” -> Forma juridică: SRL -> Salvează -> „Capital social subscris — blochează emiterea facturilor” (și în mesajul de după
     salvare) -> capitalul 200 -> Salvează -> panoul nu mai spune nimic despre emiterea facturilor. (Legea 31/1990 art.74 alin.(3))"""
+    from e2e_lot10_date_firma import _panou_profil
     s = firma_p["schema"]
     # Date firmă -> forma juridică și capitalul goale -> Salvează (ruta formularului; pe firma nouă nu sunt completate încă)
     _ruta("/tenants/%d/firma-profil/date" % firma_p["tenant_id"], {"forma_juridica": None, "capital_subscris": None, "capital_varsat": None},
           "forma și capitalul goale")
     assert sql('SELECT forma_juridica, capital_subscris, capital_varsat FROM "%s".firma_profil' % s) == [(None, None, None)]
     pg = _date_firma(patron, firma_p)
-    panou = pg.inner_text(".dec-avert")
+    panou = _panou_profil(pg)
     assert "Forma juridică — blochează emiterea facturilor" in panou, panou
     patron.captura("forma_lipsa")
     pg.select_option("#df-forma_juridica", "SRL")
     _salveaza(pg)
-    panou = pg.inner_text(".dec-avert")
+    mesaj = pg.inner_text("#df-msg")   # mesajul de după salvare, citit înainte de a deschide cardul (la întoarcere formularul se redesenează)
+    panou = _panou_profil(pg)
     assert "Capital social subscris — blochează emiterea facturilor" in panou, panou
-    assert "emiterea facturilor" in pg.inner_text("#df-msg")
+    assert "emiterea facturilor" in mesaj, mesaj
     patron.captura("capital_lipsa")
     pg.fill("#df-capital_subscris", "200")
     _salveaza(pg)
-    assert "emiterea facturilor" not in (pg.inner_text(".dec-avert") if pg.query_selector(".dec-avert") else "")
+    assert "emiterea facturilor" not in _panou_profil(pg, poate_lipsi=True)
     assert sql('SELECT forma_juridica, capital_subscris FROM "%s".firma_profil' % s)[0][0] == "SRL"
 
 

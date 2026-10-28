@@ -481,7 +481,11 @@ def ecran_flux_concediu(pg):
     pg.click("#fa-salariati", timeout=8000)
     pg.wait_for_selector("h2.pf-titlu, .ecran-nota", timeout=14000)
     pg.wait_for_timeout(1200)
-    pg.get_by_text("Concedi", exact=False).first.click(timeout=8000)
+    # [lotul 14, 687] „Concedi…” găsea întâi textul din nota pontajului (statul de plată), nu butonul: ecranul măsurat era statul. Butonul „Concediu medical” e în
+    # fereastra salariatului (rândul lui din stat o deschide)
+    pg.locator("#sp-tabel .sp-deschide").first.click(timeout=8000)
+    pg.wait_for_selector("button:has-text('Concediu medical')", timeout=8000)
+    pg.locator("button:has-text('Concediu medical')").first.click(timeout=8000)
     pg.wait_for_timeout(1500)
 
 

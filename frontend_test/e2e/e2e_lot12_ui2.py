@@ -160,12 +160,14 @@ def test_def_621_balanta_rezumatul_nu_mananca_tabelul_si_importul_are_buton(patr
     pg.set_viewport_size({"width": 1280, "height": 720})
     try:
         _balanta(patron, firma_preluata, AN, 10)
-        pg.wait_for_selector("#b-rulaje-import", timeout=30000)
+        pg.wait_for_selector("[data-card='rulaje']", timeout=30000)   # [lotul 14, 687] avertismentul rulajelor stă în cardul lui
         pg.wait_for_timeout(400)
         m = pg.evaluate("() => { const c = (%s)(), r = c.querySelector('.rezumat-fix'); return {rez: r.offsetHeight, corp: c.clientHeight,"
                         " rulaje_in_rezumat: !!r.querySelector('#b-rulaje')}; }" % _CORP)
         patron.captura("balanta_1280")
         assert m["rez"] <= 0.25 * m["corp"] and not m["rulaje_in_rezumat"], m     # „Casetele nu mănâncă tabelul”
+        pg.click("[data-card='rulaje']")
+        pg.wait_for_selector("#b-rulaje-import", timeout=15000)
         pg.click("#b-rulaje-import")
         pg.wait_for_selector("#mig-pasi .mig-frand", timeout=20000)
         pasi = [x.strip() for x in pg.locator("#mig-pasi .mig-frand-nume").all_inner_texts()]

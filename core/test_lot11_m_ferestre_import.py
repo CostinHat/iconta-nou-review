@@ -250,7 +250,7 @@ def test_def_424_previzualizarea_are_rezumatul_sus_actiunea_jos_si_deruleaza_num
         o = pg.evaluate(MASOARA)
     finally:
         pg.close()
-    assert set(o["derulante"]) <= {"fereastra-corp"} and not o["lateral"], o["derulante"]  # un singur element derulează, niciodată lateral
+    assert set(o["derulante"]) <= {"fereastra-corp", "zona-derulare"} and not o["lateral"], o["derulante"]  # un singur element derulează, niciodată lateral
     # deasupra rezumatului stă numai titlul ferestrei (h2 ≈ 70 px): nu zona de încărcare, care ar derula înaintea tabelului
     assert o["deasupra"] <= 80, (pas, o["deasupra"])
     # după derularea la capăt, rezumatul și bara sunt încă în fereastră: „rezumat fix sus, acțiune fix jos” (lipite, dacă tabelul derulează)
@@ -268,14 +268,19 @@ def test_def_446_avertismentul_o_data_confirmarea_fara_al_doilea_buton(browser, 
     pg = _deschide(browser, pas, cu_existenta=True)
     try:
         o = pg.evaluate(MASOARA)
-        assert o["avert"] == ["msg-avert"], (pas, o["avert"])               # DS cap.6: avertismentul e galben, nu eroare
-        assert o["text"].count(AVERT[:60]) == 1, pas
+        # [lotul 14, 687] avertismentul e un card-rezumat sub titlu; textul serverului, galben (nu eroare), O SINGURĂ DATĂ, în fereastra cardului
+        assert o["avert"] == ["sir-carduri"], (pas, o["avert"])
+        pg.click("#mig-inlocuire [data-card]")
+        pg.wait_for_selector("#mig-inlocuire-text.msg-avert", timeout=5000)
+        assert pg.evaluate("() => [...document.querySelectorAll('.fereastra')].pop().innerText").count(AVERT[:60]) == 1, pas
+        pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+        pg.wait_for_selector("#mig-inlocuire [data-card]", timeout=5000)
         if pg.query_selector("#mig-metoda-stoc"):
             pg.select_option("#mig-metoda-stoc", "cantitativ_valoric")      # balanța cu sold pe 371 cere metoda înainte de salvare
         pg.click(PASI[pas][2])
         pg.wait_for_selector("#ca-ok", timeout=5000)
         c = pg.evaluate(MASOARA)
-        assert c["text"].count(AVERT[:60]) == 1, pas                         # „avertismentul apare de două ori”
+        assert c["text"].count(AVERT[:60]) <= 1, pas                         # „avertismentul apare de două ori” (acum: cardul, nu textul)
         assert c["principal_ascuns"], pas                                    # o singură acțiune activă
         assert c["loc"] >= LOC_MIN_CONFIRMARE, (pas, c["loc"])                # „tabelul se strânge la un rând”
         assert c["rez_sus"] >= 0 and c["bara_jos"] >= 0, (pas, c["rez_sus"], c["bara_jos"])

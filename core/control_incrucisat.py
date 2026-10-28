@@ -714,6 +714,8 @@ def verifica_tva(conn, schema, an, luna):
         _prof["platitor_tva"] = _row[0]
         if len(_row) > 1:
             _prof["tip_decont"] = _row[1]
+    # [lotul 14, 694] comparația e pe perioada fiscală COMPLETĂ care se depune (T3 în octombrie), nu pe fereastra în curs (T4)
+    an, luna, _perioada_txt = perioada_comparata(_prof.get("tip_decont"), an, luna)
     if _prof.get("platitor_tva") is False:
         return {"an": an, "luna": luna, "stare": "verde", "constatari": [], "facturi_necontabilizate": [],
                 "limita": "Firmă neplătitoare de TVA — D300 nu se datorează, nimic de verificat.",
@@ -747,7 +749,7 @@ def verifica_tva(conn, schema, an, luna):
         else:
             cauza = "Date lipsă sau profil fiscal incomplet."
             actiune = "Completează profilul firmei și reîncearcă."
-        return {"an": an, "luna": luna, "stare": "gri",
+        return {"an": an, "luna": luna, "perioada": _perioada_txt, "stare": "gri",
                 "constatari": [_gri_liber(
                     "d300", "TVA", "D300 nu s-a putut genera.",
                     f"Nu se poate verifica TVA-ul: decontul nu se poate calcula ({_fara_eticheta(e)}).", an, luna,
@@ -793,12 +795,13 @@ def verifica_tva(conn, schema, an, luna):
     else:
         stare = "verde"
     return {
-        "an": an, "luna": luna, "stare": stare, "constatari": constatari,
+        "an": an, "luna": luna, "perioada": _perioada_txt, "stare": stare, "constatari": constatari,
         "facturi_necontabilizate": necontate,
 
-        "limita": (("Verificat: D300 depus (rândurile salvate la depunere) față de conturile "
+        "limita": (("Perioada comparată: %s. " % _perioada_txt) +
+                   ("Verificat: D300 depus (rândurile salvate la depunere) față de conturile "
                     "4427/4426. " if sursa_declarat == "depus" else
-                    "Verificat: D300 generat azi din facturile lunii, nu cel depus — față de "   # [lotul 13, 571]
+                    "Verificat: D300 generat azi din facturile perioadei, nu cel depus — față de "   # [lotul 13, 571]
                     "conturile 4427/4426. ") +
                    "Evidența = note validate; ciornele nu intră în rulaj. "
                    "Neverificat: dacă D300 depus efectiv la ANAF coincide cu cel calculat aici "
@@ -860,6 +863,19 @@ def _fereastra_tva(tip_dec, an, luna):
     lm = luni[-1]
     data_pana = ("%04d-01-01" % (an + 1,)) if lm == 12 else ("%04d-%02d-01" % (an, lm + 1))
     return luni, data_de, data_pana, eticheta
+
+
+def perioada_comparata(tip_dec, an, luna):
+    """[lotul 14, deficiența 694, comanda Costin 14.1, verbatim: „Fiecare comparație își arată perioada, iar la scadență compară perioada
+    care se depune.”] Luna de ancoră (an, luna) a ULTIMEI PERIOADE FISCALE TVA COMPLETE până la luna `luna` inclusiv: lunar — luna însăși;
+    trimestrial — trimestrul încheiat (3 / 6 / 9 / 12; într-o lună din mijlocul unui trimestru, trimestrul dinainte), semestrial și anual la
+    fel. Comparația declarație–contabilitate pe perioada neîncheiată (T4 în octombrie: 12.705 / 105 / 12.600) compara un decont care încă nu
+    se depune cu o evidență pe jumătate. Returnează (an, luna, eticheta perioadei: „09/2026”, „T3/2026”, „semestrul 1/2026”, „2025”)."""
+    luni, _de, _pana, eticheta = _fereastra_tva(tip_dec, an, luna)
+    if luni[-1] != luna:
+        an, luna = (an, luni[0] - 1) if luni[0] > 1 else (an - 1, 12)
+        _l, _d, _p, eticheta = _fereastra_tva(tip_dec, an, luna)
+    return an, luna, eticheta
 
 
 def facturi_ic(conn, schema, data_de, data_pana, cu_servicii=False):
@@ -1166,6 +1182,7 @@ def verifica_d390(conn, schema, an, luna):
     with conn.cursor() as cur:
         row = _repo.select_firma_profil_2(cur, schema)
     tip_dec = row[0] if row else None
+    an, luna, _perioada_txt = perioada_comparata(tip_dec, an, luna)   # [lotul 14, 694] perioada fiscală completă, nu cea în curs
     luni, data_de, data_pana, fereastra = _fereastra_tva(tip_dec, an, luna)
     # [Retest 2, pct.9] „unde D300 nu se aplică, afișează «nu se aplică».” Neplătitorul (art.317) nu depune D300: confruntarea nu rulează.
     # [deficiența 195, proba blocului F: „pe o firmă fără declarant, rândul «D390 față de D300: nu se aplică» lipsește; în locul lui apare
@@ -1197,7 +1214,7 @@ def verifica_d390(conn, schema, an, luna):
         else:
             _cauza = "Date lipsă sau profil incomplet."
             _actiune = "Completează profilul firmei și facturile, apoi reîncearcă."
-        return {"an": an, "luna": luna, "fereastra": fereastra, "stare": "gri",
+        return {"an": an, "luna": luna, "perioada": _perioada_txt, "fereastra": fereastra, "stare": "gri",
                 # [01.09.2026] IESIRE TIMPURIE: comparatia ORIZONTALA nu s-a atins. Se DECLARA,
                 # ca supervizorul sa nu citeasca „n-am verificat" drept „n-am ce semnala".
                 "orizontal_rulat": False, "constatari": [_gri_liber(
@@ -1224,11 +1241,11 @@ def verifica_d390(conn, schema, an, luna):
         stare = "verde"
     necontate_tot = sum(1 for d in ("emisa", "primita")
                         for f in ic_facturi.get(d, []) if not f.get("contabilizata"))
-    return {"an": an, "luna": luna, "fereastra": fereastra, "stare": stare,
+    return {"an": an, "luna": luna, "perioada": _perioada_txt, "fereastra": fereastra, "stare": stare,
             "orizontal_rulat": not nu_se_aplica, "constatari": constatari, "nu_se_aplica": nu_se_aplica,
 
             "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, automat din facturi) față de (1) evidența "
-                       f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) și (2) D300 "
+                       f"contabilă validată a acelorași facturi pe perioada comparată ({fereastra}) și (2) D300 "
                        "depus (rândurile salvate la depunere), pe cea mai recentă perioadă efectiv depusă (afișată în "
                        "verdict, alta decât luna curentă — D300 se depune în luna următoare), cu baza D390 "
                        "recalculată pe acea perioadă. Ce se confruntă, exact: rândurile 1.1 și 5.1 ale D300 depus se "

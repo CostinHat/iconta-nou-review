@@ -40,7 +40,8 @@ def _incarca(patron, nume, continut, astept):
 
 
 def _caseta(pg):
-    return " ".join(pg.inner_text("#mig-inlocuire").split())
+    from conftest import text_din_card
+    return " ".join(text_din_card(pg, "#mig-inlocuire")[0].split())   # [lotul 14, 687] avertismentul stă în cardul lui
 
 
 def _renunta_apoi_confirma(patron, buton, text_ok, numara, inainte, mesaj):

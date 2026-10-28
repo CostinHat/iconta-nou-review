@@ -10,7 +10,7 @@
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=c6c45aefe4";  // esc canonic (cap.10): strip-html data-lossy inlocuit
-import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=40864142dd";  // [bun_venit_v1] "?" general (ansamblu)
+import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
 import { puneCautarea } from "./cautare.js?v=cfb40793e9";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -313,7 +313,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     } else {
       (sus.curent || sus.randator)(fer.querySelector(".fereastra-corp"), nav);  // traseu_automat_v1
     }
-    if (sus.scrollY) fer.querySelector(".fereastra-corp").scrollTop = sus.scrollY; /* scroll_memorat_v1 */
+    if (sus.scrollY) { const _cp = fer.querySelector(".fereastra-corp"); (_cp.querySelector(".zona-derulare") || _cp).scrollTop = sus.scrollY; } /* scroll_memorat_v1 */
     /* stelute_rosii_v2: orice * din etichete devine rosu, oricand apare */
     const _corp = fer.querySelector(".fereastra-corp");
     _marcheazaModificari(_corp);
@@ -358,6 +358,78 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // Fereastra se ia din corp, nu din închidere: la revenirea într-o fereastră păstrată (pct.1b) corpul stă într-o fereastră nouă.
     const _prealata = () => _corp.scrollWidth > _corp.clientWidth + 1;
     const _cuTabel = () => !!_corp.querySelector("table, .mig-sold-tabel");
+    // [lotul 14, 687 — clasă, toate ferestrele de lucru] Comanda Costin 14.1, verbatim: „fiecare fereastră de lucru încape pe un singur ecran,
+    // fără derulare […]. Excepție: tabelele lungi (registre, balanțe) — se derulează doar tabelul, titlul, filtrele și acțiunile rămân fixe.”
+    // Tabelul cel mai înalt al ferestrei de lucru (`table` sau lista-tabel `.mig-sold-tabel`, de nivel întâi, vizibil) își primește o zonă proprie
+    // de derulare (`.zona-derulare`: un div în jurul lui, dacă nu are deja una), iar strămoșii lui până la corp devin coloane (`.lant-zona`) și
+    // corpul `.cu-zona` (stil.css „FIECARE FEREASTRĂ DE LUCRU ÎNCAPE PE UN ECRAN”): titlul, filtrele, cardurile și acțiunile din afara tabelului au
+    // înălțimea lor, iar zona ia restul și derulează ea. Idempotent: rulează la fiecare schimbare a conținutului fără să mai schimbe nimic.
+    const _zonaDerulare = () => {
+      const f = _corp.closest(".fereastra") || fer;
+      if (f.classList.contains("fer-mic")) return;
+      const lucru = f.classList.contains("fer-tabel") || f.classList.contains("fer-lucru");
+      // o fereastră care nu e „de lucru” (prima fereastră, lățime implicită) primește zona numai când corpul ei chiar derulează
+      if (!lucru && !_corp.querySelector(".zona-derulare") && _corp.scrollHeight <= _corp.clientHeight + 1) return;
+      // zona o poate declara ecranul însuși (`data-zona-derulare`: o listă care nu e tabel — „Ce oprește închiderea”)
+      const marcata = [..._corp.querySelectorAll("[data-zona-derulare]")].find((x) => x.offsetParent !== null);
+      if (marcata) {
+        marcata.classList.add("zona-derulare");
+        _marcheazaLantul(marcata);
+        return;
+      }
+      // altfel: tabelul sau lista cea mai înaltă (un container cu cel puțin 8 copii de același fel, ex. `.pf-lista`, `.mig-lista`)
+      const nivel1 = (e) => !e.parentElement.closest("table") && !e.closest("template, details, .rezumat-fix, .bara-fixa") && e.offsetParent !== null;
+      const inalt = (e) => (e.closest(".zona-derulare") ? e.closest(".zona-derulare").scrollHeight : e.offsetHeight);
+      const candidate = [..._corp.querySelectorAll("table, .mig-sold-tabel")].filter(nivel1);
+      for (const e of [_corp, ..._corp.querySelectorAll("div, ul, ol, tbody")]) {
+        if (e.tagName === "TBODY" || (e !== _corp && !nivel1(e)) || e.children.length < 8) continue;
+        const semn = {};
+        for (const k of e.children) { const s = k.tagName + "." + String(k.className || "").split(" ")[0]; semn[s] = (semn[s] || 0) + 1; }
+        const [s, n] = Object.entries(semn).sort((a, b) => b[1] - a[1])[0];
+        if (/optiune|card/.test(s) || e.closest("[data-fara-zona]")) continue;
+        if (e !== _corp && e.querySelector("input:not([type=hidden]), select, textarea")) continue;   // o listă cu câmpuri (bife, formular) nu e „date de derulat”   // grilele de meniu și containerele marcate `data-fara-zona` (grila câmpurilor unui formular) nu sunt date de derulat   // grilele de meniu (butoane-card ale ferestrei firmei) nu sunt date de derulat
+        if (n >= 8 && e.offsetHeight >= 200) candidate.push(e === _corp ? { corp: true, semn: s } : e);
+      }
+      if (!candidate.length) { if (lucru) _corp.classList.remove("cu-zona"); return; }
+      const cuInaltime = candidate.filter((x) => !x.corp);
+      let tinta = cuInaltime.length ? cuInaltime.reduce((a, b) => (inalt(b) > inalt(a) ? b : a)) : null;
+      const doarCorp = candidate.find((x) => x.corp);
+      let zona = tinta && tinta.closest(".zona-derulare");
+      if (tinta && (!zona || !_corp.contains(zona))) {
+        if (tinta.offsetHeight < 120) { if (lucru) _corp.classList.remove("cu-zona"); return; }   // un tabel scurt nu cere zonă proprie
+        // o listă (nu tabel) devine ea însăși zona; un tabel primește un div în jurul lui
+        if (tinta.tagName === "TABLE" || tinta.matches(".mig-sold-tabel")) {
+          zona = document.createElement("div");
+          zona.className = "zona-derulare";
+          tinta.replaceWith(zona);
+          zona.appendChild(tinta);
+        } else { zona = tinta; zona.classList.add("zona-derulare"); }
+      } else if (!tinta && doarCorp) {
+        // copiii corpului însuși sunt lista (ex. firmele supervizorului): șirul lor se pune într-un div
+        const sir = [..._corp.children].filter((k) => k.tagName + "." + String(k.className || "").split(" ")[0] === doarCorp.semn);
+        if (sir.length < 8) return;
+        zona = _corp.querySelector(":scope > .zona-derulare");
+        if (!zona) { zona = document.createElement("div"); zona.className = "zona-derulare"; sir[0].before(zona); }
+        sir.forEach((k) => { if (k.parentElement !== zona) zona.appendChild(k); });
+      }
+      if (!zona) return;
+      _marcheazaLantul(zona);
+      // rândul evidențiat de ecran (`val-evidentiat`: deschis din notificare / din factură) a fost adus în vedere ÎNAINTE ca zona să existe; zona
+      // nouă începe sus, deci rândul se aduce din nou în vedere, o singură dată per zonă
+      if (!zona.__evidentiat) { zona.__evidentiat = true; const ev = zona.querySelector(".val-evidentiat"); if (ev) ev.scrollIntoView({ block: "center" }); }
+    };
+    // lanțul de strămoși ai zonei devine coloană (`.lant-zona`) și nu se strânge sub ce are în afara zonei plus înălțimea minimă a zonei: altfel
+    // conținutul din jurul ei s-ar suprapune, în loc să deruleze corpul
+    const _marcheazaLantul = (zona) => {
+      let nevoie = 120, copil = zona;
+      for (let p = zona.parentElement; p && p !== _corp; p = p.parentElement) {
+        p.classList.add("lant-zona");
+        for (const k of p.children) if (k !== copil && k.offsetParent !== null) nevoie += k.getBoundingClientRect().height;
+        p.style.minHeight = Math.ceil(nevoie) + "px";
+        copil = p;
+      }
+      _corp.classList.add("cu-zona");
+    };
     const _lateste = () => {
       const f = _corp.closest(".fereastra") || fer;
       if (!f.classList.contains("fer-tabel") && (_cuTabel() || _prealata())) f.classList.add("fer-tabel");
@@ -367,6 +439,8 @@ export function creeazaNavigator(radacina, desktopRandator) {
       // [lotul 11, decizia Costin 10.3: „Totalurile … fix”] rândul de total (`tfoot`) se lipește jos, deasupra barei de acțiune (DS cap.9 v2.100)
       const bara = [..._corp.querySelectorAll(".bara-fixa")].pop();
       if (bara) _corp.style.setProperty("--bara-h", bara.offsetHeight + "px"); else _corp.style.removeProperty("--bara-h");
+      _zonaDerulare();   // [lotul 14, 687]
+      _corp.querySelectorAll(".zona-derulare").forEach((z) => { if (!z.hasAttribute("tabindex")) z.tabIndex = 0; });   // o zonă care derulează se poate parcurge de la tastatură (a11y)
     };
     _lateste();
     // [lotul 12, comanda Costin 12.2 pct.9, deficiența 617 — clasa „după o acțiune pe rând fereastra sare sus”, DS cap.9 v2.102] Un ecran
@@ -376,21 +450,32 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // listă) și, dacă în cel mult 10 s ecranul trece prin „Se încarcă…”, o pune la loc când conținutul revine. Clicurile din rezumatul de
     // sus (luna ←/→, filtrele) nu intră: acolo vine altă listă. Gard: `core/test_lot12_ui2_derulare.py`.
     let _clicPeRand = null, _susDeRefacut = null;
+    // [lotul 14, 687] derularea o ține zona tabelului (`.zona-derulare`), nu corpul: se ține minte și se pune la loc pe cea care derulează
+    const _derulant = () => _corp.querySelector(".zona-derulare") || _corp;
     _corp.addEventListener("click", (e) => {
       if (e.target.closest("td, .tn-detaliu, .pf-frand, .val-card, .mig-sold-rand, li") && !e.target.closest(".rezumat-fix"))
-        _clicPeRand = { la: Date.now(), sus: _corp.scrollTop };
+        _clicPeRand = { la: Date.now(), sus: _derulant().scrollTop };
     }, true);
     const _seIncarca = () => { const k = [..._corp.children].filter((x) => !x.matches("h2[data-titlu-pus]"));
       return k.length === 1 && k[0].matches("p.ecran-nota"); };
+    let _zonaCurenta = null;
     const _derulare = () => {
       if (_seIncarca()) {
         if (_susDeRefacut == null && _clicPeRand && _clicPeRand.sus > 0 && Date.now() - _clicPeRand.la < 10000) _susDeRefacut = _clicPeRand.sus;
         _clicPeRand = null;
         return;
       }
-      if (_susDeRefacut != null) { const v = _susDeRefacut; _susDeRefacut = null; _corp.scrollTop = v; }
+      // [lotul 14, 687] redesenarea pe loc (fără „Se încarcă…”) înlocuiește și zona de derulare: dacă vine după un clic într-un rând (nu în rezumat),
+      // derularea zonei vechi se pune pe cea nouă — aceeași regulă ca pentru derularea corpului; fără clic (luna schimbată, altă listă) lista începe sus
+      const z = _corp.querySelector(".zona-derulare");
+      if (z && z !== _zonaCurenta) {
+        if (_zonaCurenta && _susDeRefacut == null && _clicPeRand && _clicPeRand.sus > 0 && Date.now() - _clicPeRand.la < 10000) _susDeRefacut = _clicPeRand.sus;
+        _zonaCurenta = z;
+        _clicPeRand = null;
+      }
+      if (_susDeRefacut != null) { const v = _susDeRefacut; _susDeRefacut = null; _derulant().scrollTop = v; }
     };
-    new MutationObserver(() => { _derulare(); _steaza(); _lateste(); }).observe(_corp, { childList: true, subtree: true });
+    new MutationObserver(() => { _steaza(); _lateste(); _derulare(); }).observe(_corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });   // [lotul 14] zona întâi, apoi derularea ei; și fila care se arată / se ascunde (`hidden`)
     if (window.ResizeObserver) new ResizeObserver(_lateste).observe(_corp);
   }
 
@@ -404,7 +489,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       let intoarcere = null;
       if (c && stiva.length) {
         const jos = stiva[stiva.length - 1];
-        jos.scrollY = c.scrollTop; /* scroll_memorat_v1 */
+        jos.scrollY = (c.querySelector(".zona-derulare") || c).scrollTop; /* scroll_memorat_v1; [lotul 14] zona, când tabelul derulează în ea */
         const p = _dePastrat(dinRefuz);   // [pct.1b] fereastra de dedesubt își păstrează ce s-a tastat în ea; [445] din refuz: oricum
         if (p) jos.pastrat = Object.assign(p, { pentru: jos.curent || jos.randator });
         if (dinRefuz) intoarcere = { titlu: String(jos.titluCurent || jos.titlu || "") };
@@ -435,7 +520,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       const sus = stiva[stiva.length - 1];
       const c = document.querySelector(".fereastra-corp");
       const p = _dePastrat();   // [pct.1b] pasul de dinainte își păstrează ce s-a tastat în el
-      sus.pasi.push({ randator: sus.curent || sus.randator, scrollY: c ? c.scrollTop : 0,
+      sus.pasi.push({ randator: sus.curent || sus.randator, scrollY: c ? (c.querySelector(".zona-derulare") || c).scrollTop : 0,
                       titlu: sus.titluCurent || sus.titlu || "",
                       pastrat: p ? Object.assign(p, { pentru: sus.curent || sus.randator }) : null,
                       inapoi: p ? sus.inapoi : null });   // [C140] pasul intern merge cu elementul păstrat
@@ -644,7 +729,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           else if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=48387b50e9");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=766c35b7f9");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide De validat:", e); }
@@ -654,7 +739,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=c6c45aefe4");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=b99ca91399");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=18e8e62ad1");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

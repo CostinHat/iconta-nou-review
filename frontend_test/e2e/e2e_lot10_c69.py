@@ -83,7 +83,8 @@ def test_def_c69_bilant_cere_mare_contribuabil_si_forma_de_proprietate(patron, f
     from e2e_bloc_e import _bilant
     s = firma_c69["schema"]
     pg = _date_firma(patron, firma_c69)
-    panou = pg.inner_text(".dec-avert")
+    from e2e_lot10_date_firma import _panou_profil
+    panou = _panou_profil(pg)
     assert "Mare contribuabil" in panou and "Forma de proprietate" in panou and "Bilanț" in panou, panou
     patron.captura("profil_incomplet")
     _bilant(patron, firma_c69, 2025, "s1005")

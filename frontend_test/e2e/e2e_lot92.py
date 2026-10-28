@@ -301,6 +301,9 @@ def _nir_salvat(patron, firma, numar):
     pg.select_option("#sn-transport-cota", "21")
     pg.click("#sn-salveaza")
     pg.wait_for_function("() => document.body.innerText.includes('NIR salvat')", timeout=30000)
+    # [lotul 14, 687] NIR-urile lunii stau în cardul „NIR-urile lunii”: contabilul îl deschide, apoi apasă „Deschide NIR-ul”
+    pg.click("[data-card='nir']")
+    pg.wait_for_selector(".fereastra:last-of-type .nir-deschide", timeout=25000)
     pg.click(".nir-deschide[data-numar='%s']" % numar)
     pg.wait_for_selector("#nir-detaliu-linii", timeout=20000)
     return pg
@@ -325,7 +328,7 @@ def test_def_399_nir_cere_factura_sosita_si_tva_transportului(patron, firma_cv):
 def test_def_398_toate_liniile_nir_pe_aceeasi_regula(patron, firma_cv):
     """398. Pașii: NIR cu factura nesosită și transport -> detaliul: notele marfa ȘI transportul pe 408, cu TVA-ul lor pe 4428.01."""
     pg = _nir_salvat(patron, firma_cv, "N398")
-    note = pg.eval_on_selector_all("table.fd-tabel:last-of-type tbody tr", "trs => trs.map(t => [...t.cells].slice(1, 4).map(c => c.innerText.trim()))")
+    note = pg.eval_on_selector_all(".fereastra:last-of-type table.fd-tabel:not(#nir-detaliu-linii) tbody tr", "trs => trs.map(t => [...t.cells].slice(1, 4).map(c => c.innerText.trim()))")
     patron.captura()
     assert sorted(note) == sorted([["371", "408", "50,00"], ["4428.01", "408", "10,50"], ["371", "408", "5,00"], ["4428.01", "408", "1,05"]]), note
 

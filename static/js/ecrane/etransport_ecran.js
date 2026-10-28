@@ -65,7 +65,7 @@ export async function ecranEtransport(corp, nav, t) {
   const randBun = (i) => {
     const b = bunuri[i];
     return `
-    <div class="grila-campuri grila-campuri-compacta" data-bun="${i}">
+    <div class="grila-campuri grila-campuri-compacta" data-bun="${i}" style="max-width:none">
       ${sel(`b${i}-cod_scop`, "Scop *", COD_SCOP, b.cod_scop)}
       ${inp(`b${i}-cod_tarifar`, "Cod tarifar (NC) *", "text", b.cod_tarifar)}
       ${inp(`b${i}-denumire`, "Denumire marfă *", "text", b.denumire)}
@@ -145,13 +145,18 @@ export async function ecranEtransport(corp, nav, t) {
         <button type="button" class="buton-secundar" id="et-din-nir" data-actiune="GET /tenants/{tenant_id}/etransport/din-document">Din NIR</button></p>
       <div id="et-din-rez"></div>
       <div class="pf-frand" style="display:block">
+        <div class="rap-tabs" role="tablist" aria-label="Părțile notificării">${[["bunuri", "Operațiune și bunuri"], ["partener", "Partener și transport"], ["locuri", "Locuri de pornire și sosire"], ["uit", "UIT-uri trimise"]].map(([k, e], i, _t, cls = i ? "rap-tab" : "rap-tab rap-tab-activ") =>
+          `<button type="button" class="${cls}" role="tab" aria-selected="${i === 0}" data-fila="${k}" data-fara-actiune="alegerea secțiunii — nu scrie nimic">${e}<span class="rap-tab-nr"></span></button>`).join("")}</div>
+        <div class="et-fila" id="et-fila-bunuri" data-fila="bunuri" role="tabpanel">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
           ${sel("et-tip", "Tip operațiune *", [["10","AIC - achiziție intracomunitară"],["20","LIC — livrare intracomunitară"],["30","Transport național"],["40","Import"],["50","Export"],["60","Tranzacție intracom. — intrare"],["70","Tranzacție intracom. — ieșire"]])}
           ${inp("et-ref", "Referința internă")}
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Bunuri transportate</div>
-        <div id="et-bunuri"></div>
+        <div id="et-bunuri" data-zona-derulare></div>
         <p><button type="button" class="buton-secundar" id="et-plus-bun" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Bun</button></p>
+        </div>
+        <div class="et-fila" id="et-fila-partener" data-fila="partener" role="tabpanel" hidden>
         <div class="pf-frand-nume" style="margin:12px 0 6px">Partener comercial</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
           ${inp("p-cod_tara", "Cod țară *", "text", "", 'placeholder="RO, DE…"')}
@@ -167,17 +172,46 @@ export async function ecranEtransport(corp, nav, t) {
           ${inp("t-denumire_org", "Denumire transportator *")}
           ${inp("t-data", "Data transport *", "date", ziAzi)}
         </div>
+        </div>
+        <div class="et-fila" id="et-fila-locuri" data-fila="locuri" role="tabpanel" hidden>
         ${blocLoc("s", "Loc de pornire")}
         ${blocLoc("f", "Loc de sosire")}
+        </div>
+        <div class="et-fila" id="et-fila-uit" data-fila="uit" role="tabpanel" hidden>
+        <div id="et-trimiteri"><p class="ecran-nota">Se încarcă…</p></div>
+        </div>
+        <div class="bara-fixa">
         <div id="et-fereastra" style="margin-top:12px"></div>
         <p style="margin-top:8px">
           <button type="button" class="buton-primar" id="et-trimite" data-actiune="POST /tenants/{tenant_id}/etransport/trimite|POST /tenants/{tenant_id}/etransport-xml">Trimite UIT în SPV</button>
           <button type="button" class="buton-secundar" id="et-genereaza" data-actiune="POST /tenants/{tenant_id}/etransport-xml" style="margin-left:8px">Doar generează XML (manual)</button>
         </p>
         <div id="et-mesaj"></div>
-        <div class="pf-frand-nume" style="margin:18px 0 6px">UIT-uri trimise</div>
-        <div id="et-trimiteri"><p class="ecran-nota">Se încarcă…</p></div>
+        </div>
       </div>`;
+
+    // [lotul 14, 687] formularul pe file (un singur panou la vedere; toate câmpurile rămân în pagină, deci trimiterea le citește pe toate).
+    // Un câmp refuzat dintr-o filă ascunsă aduce fila la vedere (eroarea nu se pierde); eticheta filei poartă numărul câmpurilor refuzate.
+    const arataFila = (fila) => {
+      corp.querySelectorAll(".et-fila").forEach((p) => { p.hidden = p.dataset.fila !== fila; });
+      corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => { b.classList.toggle("rap-tab-activ", b.dataset.fila === fila); b.setAttribute("aria-selected", String(b.dataset.fila === fila)); });
+      corp.appendChild(document.createComment("fila"));   // navigatorul își caută zonele de derulare la schimbarea conținutului, nu a lui `hidden`
+    };
+    const marcheazaFile = () => corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => {
+      const n = corp.querySelectorAll(`#et-fila-${b.dataset.fila} .camp-invalid`).length;
+      const nr = b.querySelector(".rap-tab-nr"), txt = n ? String(n) : "";
+      if (nr.textContent !== txt) nr.textContent = txt;   // numai când se schimbă: scrierea aceluiași text ar chema din nou observatorul de mai jos
+    });
+    corp.querySelectorAll(".rap-tab[data-fila]").forEach((b) => b.addEventListener("click", () => arataFila(b.dataset.fila)));
+    new MutationObserver((ms) => {
+      for (const m of ms) for (const nod of m.addedNodes) {
+        const f = nod.nodeType === 1 && nod.matches(".msg-eroare") ? nod.closest(".et-fila") : null;
+        if (f && f.hidden && !corp.querySelector(".et-fila:not([hidden]) .camp-invalid")) arataFila(f.dataset.fila);
+      }
+      marcheazaFile();
+    }).observe(corp, { childList: true, subtree: true });
+    corp.addEventListener("input", () => setTimeout(marcheazaFile, 0));
+    corp.addEventListener("change", () => setTimeout(marcheazaFile, 0));
 
     deseneazaBunuri();
 

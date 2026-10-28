@@ -12,10 +12,11 @@
 // ca butoanele. Asistentului fără firme i se spune asta, nu i se arată un fir pe care nu-l poate parcurge.
 // [pct.7] Termenul de rezolvare („se rezolvă în maximum 48 de ore”) a ieșit din fraza despre Suport: nu e un angajament
 // decis (Costin). Fraza rămâne, fără termen.
-import { api, esc, semnAjutor, inchidereDialog } from "../api.js?v=c6c45aefe4";
-import { STRATURI } from "./migrare.js?v=f6b23a2d2a";
+import { api, esc, semnAjutor, inchidereDialog, cate } from "../api.js?v=c6c45aefe4";
+import { STRATURI } from "./migrare.js?v=687eb87acb";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { siraCarduri } from "../carduri.js?v=98c15a1738";
 
 // [deficiența 230, comanda Costin 12.10.2026] numărul pasului e poziția lui în firul AFIȘAT, nu `nr` din STRATURI: pentru asistent
 // pasul „Firme” e al administratorului și lipsește, iar firul începea de la „2”.
@@ -85,26 +86,39 @@ async function _corpAnsamblu(corp) {
   const intro = asistent
     ? `<p class="ans-intro">Bun venit în iConta.eu. Lucrezi pe firmele pe care ți le alocă administratorul cabinetului; ce ai voie să faci pe ele stabilește tot el, în ecranul Asistenți. Mai jos sunt pașii tăi de început și ce cuprinde aplicația, după drepturile tale.</p>`
     : `<p class="ans-intro">Bun venit în iConta.eu. Mai jos e drumul de la preluarea unei firme până la operarea curentă — parcurge-l în ordine, începând cu migrarea. E o hartă a aplicației; n-o reține acum, o ai oricând la îndemână.</p>`;
+  // [lotul 14, 687] fereastra încape pe un ecran: explicațiile (conectarea SPV, firul de intrare) sunt carduri-rezumat, deschise la clic
+  // în fereastra lor (aceleași elemente, aceleași id-uri); numai catalogul de funcții derulează, în zona lui.
+  const carduri = [];
+  if (!asistent) carduri.push({ id: "ans-card-spv", ton: "info", text: "Primul pas al cabinetului: conectarea la SPV", titlu: "Primul pas al cabinetului",
+    deschide: (c) => { c.innerHTML = `<div class="ans-continut">${_sectiuneSpv()}</div>`; } });
+  if (!asistent && !faraFirme) carduri.push({ id: "ans-card-fir", ton: "info", text: `Firul de intrare: ${cate(pasi.length, "pas", "pași")}, în ordine`, titlu: "Firul de intrare",
+    deschide: (c) => { c.innerHTML = `<div class="ans-continut">${_sectiuneFir(pasi)}</div>`; } });
+  carduri.push({ id: "ans-card-inceput", ton: "info", text: "Primii pași în aplicație", titlu: "Primii pași",
+    deschide: (c) => {
+      c.innerHTML = `<div class="ans-continut"><section class="ans-sec" id="ans-inceput"></section></div>`;
+      import("./inceput.js?v=9a8b26bf4b").then((m) => m.ghidulDeInceput(c.querySelector("#ans-inceput"))).catch(() => {});
+    } });
   corp.innerHTML =
     `<div class="ans-continut">` +
       intro +
       `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează din „Suport”, sus pe pagina principală, lângă „Recomandă”.</p>`   /* [deficiența 225, 12.10.2026] bandă, nu card */ +
-      (asistent ? "" : _sectiuneSpv()) +
+      `<div id="ans-carduri"></div>` +
       (faraFirme
         ? `<p class="msg-avert ans-fara-firme" role="status">Nu ai firme asociate. Cere administratorului cabinetului să ți le aloce, din ecranul Asistenți.</p>`
-        : (asistent ? "" : _sectiuneFir(pasi))) +
+        : "") +
       // [deficiența 320] „ghidul de început rămâne în butonul de ajutor (?)”: cardurile de început ale omului, de citit, cu starea lor
-      `<section class="ans-sec" id="ans-inceput"></section>` +
+      // (acum în cardul „Primii pași în aplicație”)
       `<section class="ans-sectiune">` +
         `<h3 class="ans-sec-titlu">Ce cuprinde aplicația</h3>` +
-        `<div class="ans-grupe">${grupe.length ? _grupeHTML(grupe) : '<p class="ecran-nota">—</p>'}</div>` +
-      `</section>` +
+        `<div data-zona-derulare><div class="ans-grupe">${grupe.length ? _grupeHTML(grupe) : '<p class="ecran-nota">—</p>'}</div>` +
       `<p class="ans-inchidere">` +
         `Semnul <span class="ans-mostra ans-mostra--general">?</span> din bara de sus redeschide oricând această prezentare de ansamblu. ` +
         `Semnele <span class="ans-mostra ans-mostra--contextual">?</span> de pe ecrane explică fiecare funcționalitate în parte.` +
-      `</p>` +
+      `</p></div>` +
+      `</section>` +
     `</div>`;
-  import("./inceput.js?v=9a8b26bf4b").then((m) => m.ghidulDeInceput(corp.querySelector("#ans-inceput"))).catch(() => {});
+  if (carduri.length) siraCarduri(corp.querySelector("#ans-carduri"), carduri, window._navGlobal);
+  else corp.querySelector("#ans-carduri").remove();
 }
 
 // semnul "?" GENERAL din bara de stare -> modalul de ansamblu (oricand)

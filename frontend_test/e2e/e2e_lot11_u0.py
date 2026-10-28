@@ -63,6 +63,7 @@ def test_def_441_data_infiintarii_se_goleste_din_x_si_ramane_goala(patron, firma
     pg.click("#df-salveaza")
     pg.wait_for_function("() => /salvat/i.test((document.querySelector('#df-msg') || {}).textContent || '')", timeout=20000)
     assert str(sql('SELECT data_infiintare FROM "%s".firma_profil WHERE id = 1' % firma_u0["schema"])[0][0]) == "2020-05-01"
+    pg.wait_for_selector("#df-data_infiintare", timeout=20000)   # [lotul 14, 687] câmpul stă pe fila „Firma”: omul o apasă
     x = pg.locator("#df-data_infiintare + .data-goleste")
     assert x.is_visible() and x.get_attribute("aria-label") == "Golește data"
     patron.captura("cu_data")

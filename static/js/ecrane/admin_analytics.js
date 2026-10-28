@@ -2,6 +2,7 @@
 // Cifre ANONIME din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
 // Tabela nu contine niciun identificator (fara IP/UA/cookie/sesiune) -> fara date personale.
 import { api, esc, CULORI_CARD, cate, dupaNumar, dataRo } from "../api.js?v=c6c45aefe4";
+import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația despre date anonime e card, nu text pe ecran
 
 // [lotul 13, deficiența 649 — „Cifrele includ vizitele noastre de testare […]; nu se pot separa vizitatorii reali. Fără a adăuga
 // identificatori: evenimentele venite dintr-un browser cu sesiune iConta deschisă (cabinet sau admin) nu se numără, ori se arată separat.”]
@@ -65,17 +66,22 @@ export async function randeazaAdminAnalytics(corp, nav) {
     corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca cifrele.</p>`;
     return;
   }
+  // [lotul 14, 687] sus (fix): titlul, numărul de evenimente, cardul „Date anonime” și nota despre vizitele interne; cele trei liste stau
+  // pe trei coloane, iar zona lor derulează (lista pe zile are 30 de rânduri)
   corp.innerHTML = `
-    <div class="an-antet">
+    <div class="an-antet rezumat-fix">
       <h2 class="pf-titlu">Analytics public — ${d.zile === 1 ? "ultima zi" : "ultimele " + cate(d.zile, "zi", "zile")}</h2>
-      <p class="ecran-nota"><strong>${Number(d.total) || 0}</strong> ${dupaNumar(Number(d.total) || 0, "eveniment înregistrat", "evenimente înregistrate")}. Date anonime:
-        se rețin doar tipul evenimentului, pagina de proveniență și momentul. Fără IP, fără cookie, fără
-        amprentă de browser, fără niciun identificator de persoană.</p>
+      <p class="ecran-nota"><strong>${Number(d.total) || 0}</strong> ${dupaNumar(Number(d.total) || 0, "eveniment înregistrat", "evenimente înregistrate")}.</p>
+      <div id="an-carduri"></div>
       <p class="ecran-nota" id="an-intern">Nu se numără vizitele dintr-un browser în care e deschisă o sesiune iConta.eu (cabinet sau Panou
         Admin) — testele noastre. Zilele de dinainte de ${dataRo(NUMARARE_FARA_INTERN_DE_LA)} le cuprind încă.</p>
     </div>
-    ${sectiune("Pe eveniment", d.pe_eveniment, (r) => ETICHETE[r.tip] || r.tip)}
-    ${sectiune("Pe zi", d.pe_zi, (r) => dataRo(r.zi))}
-    ${sectiune("Pe pagină de proveniență", d.pe_pagina, (r) => r.pagina)}
+    <div data-zona-derulare><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:4px 24px">
+      <div>${sectiune("Pe eveniment", d.pe_eveniment, (r) => ETICHETE[r.tip] || r.tip)}</div>
+      <div>${sectiune("Pe zi", d.pe_zi, (r) => dataRo(r.zi))}</div>
+      <div>${sectiune("Pe pagină de proveniență", d.pe_pagina, (r) => r.pagina)}</div>
+    </div></div>
   `;
+  siraCarduri(corp.querySelector("#an-carduri"), [{ id: "an-card-anonime", ton: "ok", text: "Date anonime, fără identificatori", titlu: "Date anonime",
+    deschide: (c) => { c.innerHTML = `<p class="ecran-nota">Se rețin doar tipul evenimentului, pagina de proveniență și momentul. Fără IP, fără cookie, fără amprentă de browser, fără niciun identificator de persoană.</p>`; } }], nav);
 }

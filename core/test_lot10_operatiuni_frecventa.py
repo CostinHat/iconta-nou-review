@@ -63,9 +63,11 @@ def test_ecranul_separa_lunarele_de_cele_rare():
     fn = functia(ARB, "ecranOperatiuni")
     # fiecare grup (`<section data-frecventa>`) arată numai operațiunile frecvenței lui: condițiile filtrelor pe `REGISTRU`, exact
     filtre = [COD(c["arguments"][0]["body"]) for c in noduri(fn, "CallExpression") if COD(c["callee"]) in ("REGISTRU.filter", "REGISTRU.some")]
-    assert filtre == ["o.cat === cat && o.frecventa === frecventa"] * 2 + ["o.cat === cat && o.frecventa === frecventa && o.propune",
-                                                                       "permis(actiuneOp(o))"], filtre   # ultimul: lista goală explicată
-    assert [a for _t, a in elemente_html(fn) if a.get("class") in ("op-grup", "ecran-nota op-propune")] == [
+    # [lotul 14, 687] notele „se propune automat” stau în cardul ferestrei (`CU_PROPUNERE`, filtrul `o.propune`, la nivel de modul)
+    assert filtre == ["o.cat === cat && o.frecventa === frecventa"] * 2 + ["permis(actiuneOp(o))"], filtre   # ultimul: lista goală explicată
+    # [lotul 14, 687] grupul are și rolul de panou de filă și atributul `hidden` condiționat: se compară numai ce definește grupul
+    assert [{k: v for k, v in a.items() if k in ("class", "data-frecventa", "data-propune")} for _t, a in elemente_html(fn)
+            if a.get("class") in ("op-grup", "ecran-nota op-propune")] == [
         {"class": "op-grup", "data-frecventa": "\x00"}, {"class": "ecran-nota op-propune", "data-propune": "\x00"}]
     # nota lunarei: unde o propune aplicația (`o.propune`), după titlu
     nota = [([q["value"]["cooked"] for q in t["quasis"]], [COD(e) for e in t["expressions"]]) for t in noduri(fn, "TemplateLiteral")

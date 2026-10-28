@@ -162,3 +162,62 @@ def avertisment(cur, schema, an, cititor):
                 int(an), EFECTE[cititor], "Importă din nou" if cu_balanta else "Importă", data_ro(ref)))
     return _af.afirmatie("necunoastere", "rulaje_preluare", motiv,
                          domeniu_de="%04d-%02d" % (inceput.year, inceput.month), domeniu_pana="%04d-%02d" % (ref.year, ref.month))
+
+
+# ── REFUZUL DECLARAȚIILOR / SITUAȚIILOR CARE ÎNCEP ÎNAINTE DE PRELUARE (lotul 14, deficiențele 683 + 695) ─────────────────────────────────
+# Comanda Costin 14.1, verbatim: „683 — Bilanț. Fereastra nu semnalează lipsa rulajelor 01.01–31.08.2026 (balanța o semnalează): după 31.12
+# bilanțul pe 2026 ar ieși doar cu sept.–dec., fără avertisment. Trebuie refuz cu trimitere la Import date › Solduri inițiale; după import,
+# bilanțul folosește rulajele importate.” · „695 — D100 micro / preluare. F1, D100 T3/2026 (iul–sep): baza = 707 1.000 (doar septembrie),
+# impozit 10 lei la 1%, validat și gata de «Pune în De depus», fără niciun avertisment că veniturile din iulie–august lipsesc (evidența
+# începe după 31.08). Orice declarație sau situație a cărei perioadă începe înainte de preluare trebuie refuzată (sau completată cu
+# rulajele importate), cu trimitere la Import date › Solduri inițiale.”
+# Un avertisment (`avertisment`, lotul 10) se poate trece cu vederea; un document oficial cu cifre din jumătate de perioadă, nu. REGULA:
+# o fereastră [de_la, pana_la) care cuprinde zile dinaintea datei preluării (în care aplicația nu are nicio notă) se refuză, afară de
+# cazul în care balanța de deschidere a adus rulajele anului ȘI fereastra cuprinde întreg intervalul preluat [01.01, data preluării]
+# (regula ferestrei de mai sus: rulajele preluate sunt un singur cumul, nu se împart pe luni). Deci: bilanțul și D101 (anul întreg) și
+# D100 pe profit (cumulat de la 01.01) folosesc rulajele importate; D100 micro pe un trimestru care începe după 1 ianuarie nu le poate
+# folosi și rămâne refuzat — venitul lunilor dinaintea preluării nu se poate separa de al celorlalte luni din cumul.
+def lipsa_in_fereastra(cur, schema, de_la, pana_la):
+    """None când evidența (notele din iConta.eu plus rulajele preluate care intră în fereastră) acoperă fereastra [de_la, pana_la);
+    altfel {"ref": data preluării, "de_la": prima zi lipsă, "pana_la": ultima zi lipsă, "cu_import": balanța de deschidere a adus rulajele
+    anului preluării}. Zilele dinaintea înființării firmei nu lipsesc (nu există). `cur` = RealDictCursor."""
+    from core import bilant_api as _ba
+    ref = _ba.data_soldurilor(cur, schema)
+    if ref is None:
+        return None
+    infiintare = _ba.data_infiintare(cur, schema)
+    prima = max(de_la, infiintare) if infiintare else de_la
+    ultima = min(ref, pana_la - _dt.timedelta(days=1))
+    if prima > ultima:
+        return None
+    cu_import = are_rulaje(cur, schema, ref.year)
+    if cu_import and de_la <= _dt.date(ref.year, 1, 1) and ref < pana_la:
+        return None          # fereastra cuprinde întreg intervalul preluat [01.01, ref]: rulajele importate intră în calcul
+    return {"ref": ref, "de_la": prima, "pana_la": ultima, "cu_import": cu_import}
+
+
+def text_lipsa(lipsa, ce, prefix=True):
+    """Textul refuzului pentru `ce` (ex. „D100 pe T3/2026”), din rezultatul lui `lipsa_in_fereastra`. Trimite la Import date › Solduri
+    inițiale; când balanța importată are rulajele anului dar ele nu se pot împărți pe luni, spune asta. `prefix=False`: fără „<ce> nu se
+    poate genera:” în față (un motiv dintr-o listă de motive)."""
+    from core.pdf_util import data_ro
+    ref, a, b = lipsa["ref"], lipsa["de_la"], lipsa["pana_la"]
+    cap = ("%s nu se poate genera: " % ce) if prefix else ""
+    if lipsa["cu_import"]:
+        cum = ("Balanța importată are rulajele cumulate de la 01.01.%d la %s, dar un cumul nu se poate împărți pe luni: veniturile de la %s "
+               "la %s nu se pot separa de ale lunilor dinaintea lor, deci %s nu se poate calcula din ea."
+               % (ref.year, data_ro(ref), data_ro(a), data_ro(b), ce))
+        return ("%sperioada începe înainte de preluarea firmei în iConta.eu (evidența începe după %s). %s Depune-o din evidența de dinainte "
+                "de preluare; din iConta.eu se depun perioadele care încep după %s." % (cap, data_ro(ref), cum, data_ro(ref)))
+    return ("%sperioada începe înainte de preluarea firmei în iConta.eu (evidența începe după %s), iar rulajele de la %s până la %s lipsesc. "
+            "Importă balanța de la %s cu soldurile inițiale ale anului și rulajele (Import date › Solduri inițiale), ca ele să intre ca sold "
+            "inițial și sume precedente, apoi generează din nou." % (cap, data_ro(ref), data_ro(a), data_ro(b), data_ro(ref)))
+
+
+def refuza_fereastra(cur, schema, de_la, pana_la, ce):
+    """Ridică `RefuzGenerare` cu `text_lipsa` când fereastra începe înainte de preluare fără acoperire (vezi mai sus). `cur` = RealDictCursor."""
+    from core.erori import RefuzGenerare
+    lipsa = lipsa_in_fereastra(cur, schema, de_la, pana_la)
+    if lipsa:
+        # ecranul „Import date › Solduri inițiale” își are butonul lângă refuz (`ecran_destinatie.ECRANE.import_solduri`) când importul ajută
+        raise RefuzGenerare(text_lipsa(lipsa, ce), ecran=None if lipsa["cu_import"] else "import_solduri")

@@ -151,14 +151,15 @@ def test_def_pct9_operatiunile_lunare_sunt_separate_de_cele_rare(patron, f6):
     lunare, rare = pg.locator(".op-grup[data-frecventa='lunar']"), pg.locator(".op-grup[data-frecventa='rar']")
     for ch in ("tva_incasare", "avans"):
         assert lunare.locator("button[data-op='%s']" % ch).count() == 1, ch
-        assert lunare.locator("[data-propune='%s']" % ch).count() == 1, ch
-    # [lotul 11, 429, comanda Costin 11.1 pct.11: „reevaluarea în valută e neschimbată pe producție (formular manual, fără propunere, fără
-    # curs BNR […])”] formularul manual „Reevaluare lunară solduri valută” nu mai e în niciun grup — un singur drum, din Închidere lună
-    # (testul lui: e2e_lot11_v.py::test_def_429_un_singur_formular_…)
-    assert pg.locator("button[data-op='reeval_valuta'], [data-propune='reeval_valuta']").count() == 0
+    assert pg.locator("button[data-op='reeval_valuta']").count() == 0
     for ch in ("lichidare", "reevaluare"):
         assert rare.locator("button[data-op='%s']" % ch).count() == 1, ch
-    assert "se propune automat" in pg.inner_text("[data-propune='tva_incasare']")
+    # [lotul 14, 687] „se propune automat: …” stă în cardul „Ce propune aplicația singură”, deschis la clic, nu sub fiecare buton
+    pg.click("[data-card='propune']")
+    pg.wait_for_selector(".fereastra:last-of-type [data-propune]", timeout=20000)
+    for ch in ("tva_incasare", "avans"):
+        assert pg.locator(".fereastra:last-of-type [data-propune='%s']" % ch).count() == 1, ch
+    assert "se propune automat" in pg.inner_text(".fereastra:last-of-type [data-propune='tva_incasare']")
     patron.captura(intreaga=True)
 
 

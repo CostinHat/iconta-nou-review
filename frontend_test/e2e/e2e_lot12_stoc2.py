@@ -209,7 +209,7 @@ def _situatia(e):
     pg = e.pg
     pg.wait_for_selector(".fereastra:last-of-type #s-situatie-tabel", timeout=30000)
     return pg.evaluate("() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('#s-situatie-tabel tbody tr')]"
-                       ".map((r) => [r.cells[0].innerText.trim(), r.cells[1].innerText.trim(), r.cells[2].innerText.trim()])")
+                       ".map((r) => [r.cells[0].innerText.trim(), r.cells[1].innerText.trim(), r.cells[3].innerText.trim()])")   # [lotul 14, 687] coloane: Articol, UM, Gestiune, Cantitate
 
 
 def _stocuri(e, firma):

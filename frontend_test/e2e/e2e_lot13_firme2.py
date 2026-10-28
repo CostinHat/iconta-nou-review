@@ -75,6 +75,16 @@ def _incarca_extras(pg, csv_text, eticheta):
 
 
 # ── 669 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+def _text_din_card(pg, card, sel):
+    """[lotul 14, 687] Ce stă într-un card-rezumat al ferestrei (fereastra lui): deschide cardul, citește elementul, se întoarce la fereastra de dedesubt."""
+    pg.click("[data-card='%s']" % card)
+    pg.wait_for_selector(".fereastra:last-of-type " + sel, timeout=20000)
+    text = pg.inner_text(".fereastra:last-of-type " + sel)
+    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+    pg.wait_for_selector("#bk-fisier", timeout=20000)
+    return text
+
+
 def test_def_669_banca_alege_facturile_ofera_si_stinge_soldul_preluat(patron, firma_noua_test):
     """669: „Soldurile preluate pe parteneri trebuie să apară ca sume de încasat/plătit, ca să poată fi stinse în prima lună. Aceeași
     verificare la plata către furnizor și la potrivirea extrasului bancar.” Pașii: balanța la 30.09.2026 cu 4111 = 1.500 pe Alfa (date de
@@ -133,7 +143,8 @@ def test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte(patron, firma):
     patron.captura("comisionul")
     assert b[0][:2] == ["Contează 627=5121", False], b
     assert b[1][:2] == ["Alege facturile", True] and "operațiune a băncii" in b[1][2], b
-    assert _txt(pg, "#bk-explicatii").count("Operațiune a băncii (") == 1, _txt(pg, "#bk-explicatii")
+    expl = _text_din_card(pg, "explicatii", "#bk-explicatii")   # [lotul 14, 687] explicațiile semnelor stau în cardul lor
+    assert expl.count("Operațiune a băncii (") == 1, expl
     rch = pg.locator("#bk-lista tbody.tn-nota", has_text=chirie).first
     rch.locator(".tn-deschide").click()
     assert "Descrierea din extras: %s" % chirie in _txt(pg, "#bk-lista tbody.tn-nota[data-linie-id='%s'] .tn-detaliu" % rch.get_attribute("data-linie-id"))
@@ -478,6 +489,12 @@ def test_def_c177_doua_ferestre_stocuri_nu_isi_anuleaza_situatia(patron, firma):
     pg.click(_F + ".fereastra-antet .nav-inapoi")
     pg.wait_for_selector(_F + "#s-situatie", timeout=15000)
     jos = _F + "#s-situatie"
+    # [lotul 14, 687] Stocurile revenite se redesenează cu un pas după „înapoi” (fereastra păstrată își citește situația): se așteaptă tabelul,
+    # iar dacă răspunsul ținut n-a ajuns niciodată în corp, așteptarea expiră și testul pică pe „Se încarcă situația stocului…”
+    try:
+        pg.wait_for_selector(jos + " #s-situatie-tabel", state="attached", timeout=15000)
+    except Exception:  # noqa: BLE001 — mesajul de mai jos spune ce vede contabilul
+        pass
     assert pg.locator(jos + " #s-situatie-tabel").count() == 1, _txt(pg, jos)
     assert "Se încarcă situația stocului" not in _txt(pg, jos)
     assert "Articol E2E C177 %d" % t in _txt(pg, jos)

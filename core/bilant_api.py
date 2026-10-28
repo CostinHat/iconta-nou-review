@@ -86,6 +86,13 @@ def coloana_curenta_f10(cur, schema, an, tip=None):
         raise ValueError("Bilanțul pe %d nu se poate întocmi în iConta.eu: evidența firmei începe după soldurile de preluare de la %s, "
                          "deci soldurile de la %s nu sunt în aplicație." % (an, data_ro(ref), data_ro(datetime.date(an, 12, 31))))
     motive = _motive_31_12(cur, schema, s_c, an)   # [C15, 242] 6 / 7 închise în 121, soldurile cu loc în bilanț, rulajele — toate
+    # [lotul 14, deficiența 683] anul care începe înainte de preluare, fără rulajele lui importate: refuz cu trimitere la Import date ›
+    # Solduri inițiale (după import, rulajele intră în F20 prin `rulaje_67`)
+    from core import rulaje_preluate as _rp
+    _lipsa = _rp.lipsa_in_fereastra(cur, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1))
+    if _lipsa:
+        motive.append({"fel": "rulaje_preluare", "titlu": "Rulajele anului până la preluare", "text": _rp.text_lipsa(_lipsa, "Bilanțul pe %d" % an, False),
+                       "simplu": _rp.text_lipsa(_lipsa, "Bilanțul pe %d" % an)})
     if tip:
         m = motiv_rulaje(tip, _rulaje_67(cur, schema, an))
         motive += [m] if m else []

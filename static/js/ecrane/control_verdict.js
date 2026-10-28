@@ -233,9 +233,9 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const stari = cuFinding.map((v) => v.stare).concat(reconRand.map((c) => c.stare));
     const worst = stari.reduce((m, x) => ((RANG[x] || 0) > (RANG[m] || 0) ? x : m), "verde");
     const cls = (worst === "rosu" || worst === "galben") ? "cf-galben" : "";
-    const sursa = verificatori.find((v) => v.luna) || recon;
-    const luna = sursa && sursa.luna ? dataRo(new Date(sursa.an, sursa.luna - 1, 1), "luna_an_numeric") : "";
-    const antet = luna ? `<div class="cf-incr-temei">Luna confruntată: <b>${esc(luna)}</b> — ultima lună încheiată, a cărei declarație se depune acum.</div>` : "";
+    // [lotul 14, 694] fiecare comparație își arată perioada (D300 / D390 pe perioada fiscală completă, D112 pe lună), nu „luna în curs”
+    const perioade = [["D300", vc.tva_incrucisat], ["D112", vc.d112_incrucisat], ["D390", vc.d390_incrucisat]].filter(([, v]) => v && v.perioada);
+    const antet = perioade.length ? `<div class="cf-incr-temei" id="cf-perioade">Perioada comparată: ${perioade.map(([n, v]) => `<b>${esc(n)} ${esc(v.perioada)}</b>`).join(" · ")} — ultima perioadă încheiată, a cărei declarație se depune.</div>` : "";
     const blocuri = cuFinding.map((v) => (v.constatari || []).map(randConst).join("")
       + (v.limita ? `<div class="cf-incr-temei">${esc(v.limita)}</div>` : "")).join("")
       + neaplic.map((t) => `<div class="cf-incr-temei">${esc(t)}</div>`).join("");
@@ -338,8 +338,9 @@ export function randeazaCorpVerdict(d, opt = {}) {
       </details></div>`;
   })();
 
-  return declaratii + sectIncrucisat + sectCota + sectTva + sectDocumente + sectContabil + sectEfactura + gata
-       + sectLimite + audit;
+  // [lotul 14, 687] verdictul stă într-o zonă proprie de derulare (titlul și starea firmei rămân sus): fereastra nu derulează
+  return `<div class="cf-corp" data-zona-derulare>` + declaratii + sectIncrucisat + sectCota + sectTva + sectDocumente + sectContabil + sectEfactura + gata
+       + sectLimite + audit + `</div>`;
 }
 
 // Leaga evenimentele corpului dupa inserare (butoane remediu executabil + audit de preluare on-demand).

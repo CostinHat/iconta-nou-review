@@ -178,6 +178,7 @@ def test_pozitie_f006_asistentul_invitat_cu_drepturile_si_firmele_lui(patron, fi
         pg.fill("#asi-email", email)
         pg.fill("#asi-nume", nume)
         assert pg.is_checked("#asi-pregati") and not pg.is_checked("#asi-valida") and not pg.is_checked("#asi-depune")
+        patron.captura("formular_invitatie")
         pg.check(".asi-firma-noua[value='%d']" % tid)
         pg.click("#asi-trimite")
         pg.wait_for_selector("#asi-confirmare", timeout=30000)

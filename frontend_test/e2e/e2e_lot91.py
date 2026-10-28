@@ -160,9 +160,13 @@ def test_def_323_textul_de_depus_nu_vorbeste_de_note_care_nu_sunt(patron, firma_
         pg = patron.pg
         # textul de sus: fără cel al notelor de validat (#val-note) și al „Notele tale în ciornă” (#val-ciorne, 457: la capătul ferestrei,
         # numai când contabilul are ciorne, pe oricare firmă), ca în e2e_bloc_b (52)
+        # [lotul 14, 687] textul de sus (cine validează și cine depune) e în cardul lui, deschis la clic; fereastra cardului îl arată
+        pg.click("[data-card='val-card-intro']")
+        pg.wait_for_selector(".fereastra:last-of-type #val-intro", timeout=20000)
         intro = " ".join(" ".join(pg.eval_on_selector_all(
             ".fereastra:last-of-type .mig-intro",
             "es => es.filter(x => !x.closest('#val-note') && !x.closest('#val-ciorne')).map(x => x.innerText)")).split())
+        pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
         # [lotul 12, 622] notele de validat stau în tabelul de note al secțiunii lor (`#val-note tbody.tn-nota`), nu în carduri
         note = pg.locator(".fereastra:last-of-type #val-note tbody.tn-nota").count()
         patron.captura()

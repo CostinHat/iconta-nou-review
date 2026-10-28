@@ -51,7 +51,8 @@ def test_def_c69_d406_cere_telefonul_si_nu_inventeaza_antetul(patron, firma_d406
         'platitor_tva = true, tip_decont = %%s, operatiuni_ic = false WHERE id = 1' % s,
         ("Str. Probei 9", "Cluj-Napoca", "CJ", "6920", "BT", IBAN, "POPESCU", "ION", "ADMINISTRATOR", "J12/69/2020", "micro", "lunar"))
     pg = _date_firma(patron, firma_d406)
-    panou = pg.inner_text(".dec-avert")
+    from e2e_lot10_date_firma import _panou_profil
+    panou = _panou_profil(pg)
     assert "Profil incomplet" in panou and "Telefon" in panou and "D406" in panou, panou
     patron.captura("profil_incomplet")
 

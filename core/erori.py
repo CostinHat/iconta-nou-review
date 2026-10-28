@@ -119,7 +119,9 @@ TOATE = (Inexistent, FaraDrept, Neautentificat, DateInvalide, CerereGresita, Con
 UNDE_ECRAN = {"date_firma": "Date firmă", "conectare_spv": "Setări cont → Conectare SPV", "produse": "Produse",
               # [lotul 11, decizia Costin 10.3] refuzul D406 / D394 trimite la fișa partenerului, bilanțul la întocmitorul cabinetului
               "clienti": "Clienți (fișa clientului)", "furnizori": "Furnizori (fișa furnizorului)",
-              "date_cabinet": "Setări cont → Date cabinet"}
+              "date_cabinet": "Setări cont → Date cabinet",
+              # [lotul 14, 683 / 695] declarația sau bilanțul care începe înainte de preluare trimite la importul balanței cu rulajele anului
+              "import_solduri": "Import date › Solduri inițiale"}
 
 
 class ErorileFormularului:

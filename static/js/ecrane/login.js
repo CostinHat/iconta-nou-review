@@ -6,7 +6,7 @@ import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [pre
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267] ciorna formularului de înregistrare
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
-import { sesiuneInternaDeschisa } from "./admin_analytics.js?v=440f824e89";   // [lotul 13, 649] vizitele noastre nu se numără
+import { sesiuneInternaDeschisa } from "./admin_analytics.js?v=e2cdc3d028";   // [lotul 13, 649] vizitele noastre nu se numără
 
 function svgIcon(paths, w = 24) {
   return `<svg viewBox="0 0 24 24" width="${w}" height="${w}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;

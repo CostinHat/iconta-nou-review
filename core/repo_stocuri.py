@@ -81,3 +81,26 @@ def denumirea_articolului(cur, schema, articol_id):
     """Rândul cu `denumire` al articolului (sau None)."""
     cur.execute(f"SELECT denumire FROM {schema}.articole WHERE id = %s", (articol_id,))
     return cur.fetchone()
+
+
+def clasa_miscarilor(cur, schema):
+    """[lotul 14, deficiența 696] {id mișcare: 'validata' | 'ciorna' | 'fara_nota'}. `validata` = mișcarea e în evidență (nota ei sau o notă a
+    documentului ei e validată — `stocuri_anulare.IN_EVIDENTA`, aceeași definiție ca la respingere); `ciorna` = are notă (sau document cu
+    notă), dar niciuna validată; `fara_nota` = n-are nicio notă (soldul preluat la migrare, mișcarea unui document încă necontat)."""
+    from core.stocuri_anulare import IN_EVIDENTA
+    nevalidata = (IN_EVIDENTA.replace("i.status = 'validata'", "i.status <> 'validata'"))
+    cur.execute(("SELECT m.id, CASE WHEN " + IN_EVIDENTA + " THEN 'validata' WHEN " + nevalidata + " THEN 'ciorna' ELSE 'fara_nota' END AS clasa "
+                 "FROM {s}.miscari_stoc m").format(s=schema))
+    return {(r["id"] if isinstance(r, dict) else r[0]): (r["clasa"] if isinstance(r, dict) else r[1]) for r in cur.fetchall()}
+
+
+def locatii_cu_stoc(cur, schema):
+    """[lotul 14, deficiența 696] {articol_id: [locație, …]} — locațiile (gestiunile) în care articolul are mișcări, ca „Gestiune” în
+    situația stocului: două rânduri cu aceeași denumire se deosebesc prin ea. Mișcările fără locație nu apar."""
+    cur.execute(f"""SELECT articol_id, locatie FROM {schema}.miscari_stoc WHERE locatie IS NOT NULL AND btrim(locatie) <> ''
+                    GROUP BY articol_id, locatie ORDER BY articol_id, locatie""")
+    out = {}
+    for r in cur.fetchall():
+        a, l = (r["articol_id"], r["locatie"]) if isinstance(r, dict) else (r[0], r[1])
+        out.setdefault(a, []).append(l)
+    return out

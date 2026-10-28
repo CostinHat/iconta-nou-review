@@ -161,13 +161,27 @@ def _nir_respins(firma, numar, articol, motiv):
 
 def _stocuri(ecran, firma):
     ecran.firma(firma["nume"])
-    _deschide(ecran, "#fa-stocuri", "NIR-urile lunii")
+    ecran.pg.click("#fa-stocuri")
     ecran.pg.wait_for_selector(".fereastra:last-of-type #s-situatie-tabel, .fereastra:last-of-type #s-situatie .stare-goala",
                                timeout=20000)
+    ecran.pg.wait_for_selector(".fereastra:last-of-type [data-card='nir']", timeout=20000)   # [lotul 14, 687] cardurile ecranului
+
+
+def _nirurile_lunii(ecran):
+    """[lotul 14, 687] „NIR-urile lunii” stau în cardul `nir` al ecranului Stocuri: contabilul se întoarce (dacă e într-o fereastră de deasupra)
+    la ecranul Stocuri și deschide cardul, ca să vadă lista proaspătă."""
+    pg = ecran.pg
+    for _ in range(4):
+        if pg.locator(".fereastra:last-of-type [data-card='nir']").count():
+            break
+        pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+        pg.wait_for_timeout(500)
+    pg.click(".fereastra:last-of-type [data-card='nir']")
+    pg.wait_for_selector(".fereastra:last-of-type .pf-lista", timeout=20000)
 
 
 def _rand_stoc(ecran, articol):
-    """Rândul articolului din „Situația stocului”: [articol, UM, cantitate, CMP, valoare]."""
+    """Rândul articolului din „Situația stocului”: [articol, UM, gestiune, cantitate, CMP, valoare, în ciornă]."""
     return ecran.pg.evaluate("(a) => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
                              "const tr = [...f.querySelectorAll('#s-situatie-tabel tbody tr')].find((r) => r.cells[0].innerText.trim() === a); "
                              "return tr ? [...tr.cells].map((c) => c.innerText.trim()) : null; }", articol)
@@ -183,7 +197,9 @@ def test_def_99_nir_respins_scade_marfa_din_stoc(patron, firma_cv):
     pg = patron.pg
     _stocuri(patron, firma_cv)
     rand = _rand_stoc(patron, "Marfa D99")
-    assert (rand[2], rand[4]) == ("10", "550,00"), rand
+    # [lotul 14, 687] tabelul arată stocul VALIDAT și, separat, valoarea din ciornă: NIR-ul asistentului așteaptă validarea, deci apare cu 0
+    # validat și 550,00 în „În ciornă” (coloanele: Articol, UM, Gestiune, Cantitate, CMP, Valoare, În ciornă)
+    assert (rand[3], rand[5], rand[6]) == ("0", "0,00", "550,00"), rand
     patron.captura("inainte")
     _coada(patron)
     card = _card_coada(patron, firma_cv, "NIR nr D99 ")   # [lotul 12, 622] rândul NIR-ului în „Note de validat”, „Respinge” pe rând
@@ -194,7 +210,7 @@ def test_def_99_nir_respins_scade_marfa_din_stoc(patron, firma_cv):
     _stocuri(patron, firma_cv)
     rand = _rand_stoc(patron, "Marfa D99")
     patron.captura("dupa")
-    assert (rand[2], rand[4]) == ("0", "0,00"), rand
+    assert (rand[3], rand[5], rand[6]) == ("0", "0,00", "—"), rand      # respins: nici validat, nici în ciornă (intrarea stornată)
 
 
 def _card_coada(ecran, firma, text):
@@ -224,6 +240,7 @@ def test_def_100_nir_respins_are_stare_motiv_si_se_reface(patron, firma_cv):
     _nir_respins(firma_cv, "D100", "Marfa D100", "lipsește avizul D100")
     pg = patron.pg
     _stocuri(patron, firma_cv)
+    _nirurile_lunii(patron)
     rand = pg.locator(".fereastra:last-of-type .pf-lista .pf-frand", has_text="NIR D100 ")
     assert "Respins la validare: lipsește avizul D100." in rand.inner_text(), rand.inner_text()
     patron.captura("lista")
@@ -240,6 +257,7 @@ def test_def_112_refa_nir_precompleteaza_articolul_fara_zecimale_in_exces(patron
     _nir_respins(firma_cv, "D112", "Marfa D112", "preț greșit D112")
     pg = patron.pg
     _stocuri(patron, firma_cv)
+    _nirurile_lunii(patron)
     pg.locator(".fereastra:last-of-type .pf-lista .pf-frand", has_text="NIR D112 ").locator(".nir-reface").click()
     _asteapta_text(patron, "Refaci NIR-ul D112")
     f = ".fereastra:last-of-type "
@@ -254,13 +272,19 @@ def _refa_din_ecran(ecran, firma, numar, cantitate=None):
     """Contabilul apasă „Refă NIR-ul”, (opțional schimbă cantitatea), salvează; confirmă dacă e identic cu cel respins."""
     pg = ecran.pg
     _stocuri(ecran, firma)
+    _nirurile_lunii(ecran)
     pg.locator(".fereastra:last-of-type .pf-lista .pf-frand", has_text="NIR %s " % numar).locator(".nir-reface").click()
     _asteapta_text(ecran, "Refaci NIR-ul %s" % numar)
     if cantitate is not None:
         pg.fill(".fereastra:last-of-type #nir-l0-cantitate", str(cantitate))
     pg.select_option(".fereastra:last-of-type #sn-factura-sosita", "false")   # [399] factura nesosită, aleasă explicit
     pg.click(".fereastra:last-of-type #sn-salveaza")
-    _asteapta_text(ecran, "NIR salvat")
+    # [lotul 14, 687] formularul s-a deschis din fereastra cardului „NIR-urile lunii”: la salvare se închide și revine lista (veche, nereîmprospătată),
+    # FĂRĂ mesajul „NIR salvat” (defect de produs raportat: nici `#s-mesaj`, nici `#nir-mesaj` nu-l primesc). Salvarea se dovedește din bază:
+    # NIR-ul refăcut există, legat de cel respins; lista proaspătă o deschide apoi `_nirurile_lunii`.
+    pg.wait_for_selector(".fereastra:last-of-type #sn-salveaza", state="detached", timeout=20000)
+    from conftest import sql
+    assert sql('SELECT count(*) FROM "%s".nir WHERE numar = %%s AND refacut_din_id IS NOT NULL' % firma["schema"], (numar,)) == [(1,)]
 
 
 def test_def_113_nir_respins_si_refacut_o_linie_langa_cel_valabil(patron, firma_cv):
@@ -270,6 +294,7 @@ def test_def_113_nir_respins_si_refacut_o_linie_langa_cel_valabil(patron, firma_
     _nir_respins(firma_cv, "D113", "Marfa D113", "cantitate greșită D113")
     _refa_din_ecran(patron, firma_cv, "D113", 12)
     pg = patron.pg
+    _nirurile_lunii(patron)   # lista lunii, deschisă proaspăt după ce NIR-ul refăcut s-a salvat
     carduri = pg.locator(".fereastra:last-of-type .pf-lista .pf-frand", has_text="NIR D113 ")
     linii = pg.locator(".fereastra:last-of-type .pf-lista .nir-inlocuit", has_text="NIR D113 ")
     patron.captura()

@@ -13,6 +13,13 @@ Citește CLAUDE.md (versiunea din 23.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**28.10.2026 — COMANDA 14.1 (lotul 14) EXECUTATĂ PÂNĂ LA POARTĂ; NEPUBLICATĂ.** Lucrul e pe worktree `/home/costin/iconta_lot14`, ramura `lucru/lot14-2026-10-27`
+(din `52b63b73`, producția). Numerele din comandă (687, 683, 695, 688, 694, 696) au coliziune cu cele ale lotului 13 și sunt înregistrate ca C203–C208 (DECIZII).
+Rezolvate cu dovadă pe copia firmelor de test + test de capăt la capăt: C203 (687, mecanismul `navigator._zonaDerulare` + carduri; scan 0 din 68 ferestre
+derulează la 1920×1080 și 1366×768), C204 (683), C206 (688). Parțiale: C205 (695: D100 micro pe trimestrul cu luni dinainte de preluare rămâne refuzat și după import;
+plafonul micro nu există în cod), C207 (694: verdictul nu e pe carduri), C208 (696: lipsește reconcilierea la global-valoric). Artefactele de browser sunt regenerate pe UI-ul
+final. **Ce urmează:** comit pe nume, `sh scripts/poarta_lot.sh` (fundal, timeout 7200000); pe VERDE: backup, ff în `~/iconta_nou`, post-commit manual, restart, four-way, ZIP, raport.
+
 **27.10.2026 — COMANDA 13.1 EXECUTATĂ PÂNĂ LA POARTĂ; NEPUBLICATĂ.** Costin a răspuns la 26.10 la lista de decizii (DECIZII „Comanda 13.1: deciziile lui Costin la lista din
 26.10 — verbatim”) și a precizat 681 (căutarea e a funcțiilor, căsuța în fiecare fereastră + Ctrl+K). Făcut în tura asta: 536 la NIR (a); T34; ștergerea
 generatoarelor D200 / D201 / D220 / D221 / D223 / D600 (660, cu actele de abrogare); 595 în Date firmă; valul 6 (683 Casă pe salariat, 696 avertisment SPV, cod mort);
@@ -612,8 +619,8 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **190** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **1399** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1343** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **1404** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1373** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **11** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->

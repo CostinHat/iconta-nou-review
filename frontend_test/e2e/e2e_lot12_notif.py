@@ -168,6 +168,7 @@ def test_def_487_asistentul_nu_se_invita_fara_nicio_firma(patron):
         pg.fill("#asi-email", email)
         pg.fill("#asi-nume", "Asistent 487")
         assert pg.locator(".asi-firma-noua:checked").count() == 0
+        patron.captura("formular")
         pg.click("#asi-trimite")
         pg.wait_for_selector("#asi-firme-noi ~ .msg-eroare, #asi-firme-noi + .msg-eroare", timeout=20000)
         patron.captura("fara_firme")

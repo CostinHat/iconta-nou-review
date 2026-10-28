@@ -772,11 +772,18 @@ def test_def_53_notele_de_validat_deasupra_textului_declaratiilor(ana, patron, f
     _de_validat(patron)
     _card_nota(patron, firma_e2e, desc).first.wait_for(timeout=20000)
     patron.captura("fereastra")
+    # [lotul 14, 687] textul despre declarații (cine validează și depune) e acum în cardul „Cine validează și cine depune”, deschis la clic;
+    # pe fereastră rămân notele, apoi declarațiile: „Note de validat (N)” e deasupra secțiunii de declarații, iar textul nu mai stă pe ecran.
     ordine = pg.evaluate("""() => { const n = document.querySelector('#val-note .cf-grup-titlu');
+        const d = document.querySelector('#val-decl-titlu');
         const i = [...document.querySelectorAll('.fereastra-corp p.mig-intro')].find(p => !p.closest('#val-note') && !p.closest('#val-ciorne'));
-        return {note: n ? n.getBoundingClientRect().top : null, intro: i ? i.getBoundingClientRect().top : null}; }""")
-    assert ordine["note"] is not None and ordine["intro"] is not None, ordine
-    assert ordine["note"] < ordine["intro"], "notele de validat stau sub textul despre declarații: %s" % ordine
+        return {note: n ? n.getBoundingClientRect().top : null, decl: d ? d.getBoundingClientRect().top : null, intro: i ? i.textContent : null}; }""")
+    assert ordine["note"] is not None and ordine["decl"] is not None, ordine
+    assert ordine["note"] < ordine["decl"], "notele de validat stau sub declarații: %s" % ordine
+    assert ordine["intro"] is None, "textul despre declarații stă pe ecran în loc de card: %s" % ordine
+    pg.click("[data-card='val-card-intro']")
+    pg.wait_for_selector(".fereastra:last-of-type #val-intro", timeout=20000)
+    assert "Notele de mai sus le-au pregătit asistenții" in pg.inner_text(".fereastra:last-of-type #val-intro")
     assert "patru-ochi" not in patron.fereastra().lower()
 
 

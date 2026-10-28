@@ -93,8 +93,10 @@ def _pagina(browser, rute, cereri=None, lat=LAT, inalt=INALT):
 
 
 _CORP = "() => [...document.querySelectorAll('.fereastra-corp')].pop()"
+# [lotul 14, 687] ce derulează: zona tabelului (`.zona-derulare`), iar fără ea corpul ferestrei
+_DERULANT = "() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(); return c.querySelector('.zona-derulare') || c; }"
 # rândul ales adus la mijlocul ferestrei; întoarce derularea corpului
-_LA_MIJLOC = """() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(), r = c.querySelector("%s");
+_LA_MIJLOC = """() => { const f = [...document.querySelectorAll('.fereastra-corp')].pop(), c = f.querySelector('.zona-derulare') || f, r = f.querySelector("%s");
   c.scrollTop += r.getBoundingClientRect().top - c.getBoundingClientRect().top - c.clientHeight / 2; return c.scrollTop; }"""
 
 
@@ -216,7 +218,7 @@ def test_def_617_dupa_valideaza_ramane_pe_loc_cu_starea_noua_si_confirmarea(brow
         pg.wait_for_function("() => ((document.querySelector('#j-mesaj') || {}).textContent || '').includes('Ai validat')", timeout=5000)
         m = pg.evaluate("""() => { const c = (%s)(), rc = c.getBoundingClientRect(), z = c.querySelector('#j-mesaj').getBoundingClientRect();
           const r = c.querySelector("tbody[data-nota-id='1033']");
-          return {sus: c.scrollTop, mesaj: c.querySelector('#j-mesaj').textContent, in_vedere: z.top >= rc.top - 1 && z.bottom <= rc.bottom + 1,
+          return {sus: (c.querySelector('.zona-derulare') || c).scrollTop, mesaj: c.querySelector('#j-mesaj').textContent, in_vedere: z.top >= rc.top - 1 && z.bottom <= rc.bottom + 1,
                   stare: r.querySelector('.tn-rand').innerText, evid: r.classList.contains('val-evidentiat')}; }""" % _CORP)
     finally:
         pg.close()
@@ -327,7 +329,7 @@ def test_def_622_validarea_ramane_pe_loc_cu_confirmarea_in_rezumat(browser):
         pg.evaluate("() => document.querySelector(\"tbody[data-coada-ids='720'] .val-aproba\").click()")
         pg.wait_for_function("() => ((document.querySelector('#val-confirmare') || {}).textContent || '').includes('Ai validat')", timeout=5000)
         m = pg.evaluate("""() => { const c = (%s)(), rc = c.getBoundingClientRect(), z = c.querySelector('#val-confirmare').getBoundingClientRect();
-          return {sus: c.scrollTop, in_vedere: z.top >= rc.top - 1 && z.bottom <= rc.bottom + 1,
+          return {sus: (c.querySelector('.zona-derulare') || c).scrollTop, in_vedere: z.top >= rc.top - 1 && z.bottom <= rc.bottom + 1,
                   ramas: !!c.querySelector("tbody[data-coada-ids='720']"), titlu: c.querySelector('#val-note-titlu').textContent}; }""" % _CORP)
     finally:
         pg.close()
@@ -368,17 +370,19 @@ def test_def_621_balanta_rezumatul_lipit_ramane_mic_si_importul_are_buton(browse
           f.deschideFirma({id: 1, nume: 'Firma Probă SRL', cui: '1', regim_contabil: 'dubla', tip_firma: 'srl', platitor_tva: true}, window._nav); }""")
         pg.wait_for_selector("#fa-balanta", timeout=15000)
         pg.click("#fa-balanta")
-        pg.wait_for_selector("#b-rulaje-import", timeout=15000)
+        pg.wait_for_selector("[data-card='rulaje']", timeout=15000)   # [lotul 14, 687] avertismentul rulajelor stă în cardul lui
         pg.wait_for_timeout(300)
         m = pg.evaluate(_REZ)
-        pg.evaluate("() => { const c = (%s)(); c.scrollTop = c.scrollHeight / 2; }" % _CORP)
+        pg.evaluate("() => { const c = (%s)(); c.scrollTop = c.scrollHeight / 2; }" % _DERULANT)
         pg.wait_for_timeout(100)
         # cât derulezi, rândurile de tabel care se văd între rezumat și bara de jos
         randuri = pg.evaluate("""() => { const c = (%s)(), rc = c.getBoundingClientRect(), rez = c.querySelector('.rezumat-fix').getBoundingClientRect();
           const bara = [...c.querySelectorAll('.bara-fixa')].pop().getBoundingClientRect();
           return [...c.querySelectorAll('table.fd-tabel tbody tr')].filter((r) => { const b = r.getBoundingClientRect();
             return b.top >= rez.bottom - 1 && b.bottom <= Math.min(bara.top, rc.bottom) + 1; }).length; }""" % _CORP)
-        pg.evaluate("() => { (%s)().scrollTop = 0; }" % _CORP)
+        pg.evaluate("() => { (%s)().scrollTop = 0; }" % _DERULANT)
+        pg.click("[data-card='rulaje']")
+        pg.wait_for_selector("#b-rulaje-import", timeout=15000)
         pg.click("#b-rulaje-import")
         pg.wait_for_selector("#mig-pasi", timeout=10000)
         titlu = pg.inner_text("#mig-pasi")

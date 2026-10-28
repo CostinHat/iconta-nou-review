@@ -64,11 +64,12 @@ def _note_mari(patron, firma):
 
 
 def _situatia(patron):
-    """Rândurile situației stocului: [(articol, UM, cantitate)]."""
+    """Rândurile situației stocului: [(articol, UM, cantitate validată, valoare în ciornă)] (coloanele: Articol, UM, Gestiune, Cantitate, CMP,
+    Valoare, În ciornă — [lotul 14, 696] tabelul arată stocul VALIDAT, iar ce e încă în ciornă stă în coloana lui)."""
     pg = patron.pg
     pg.wait_for_selector(".fereastra:last-of-type #s-situatie-tabel", timeout=30000)
     return pg.evaluate("() => [...[...document.querySelectorAll('.fereastra')].pop().querySelectorAll('#s-situatie-tabel tbody tr')]"
-                       ".map((r) => [r.cells[0].innerText.trim(), r.cells[1].innerText.trim(), r.cells[2].innerText.trim()])")
+                       ".map((r) => [r.cells[0].innerText.trim(), r.cells[1].innerText.trim(), r.cells[3].innerText.trim(), r.cells[6].innerText.trim()])")
 
 
 # ── 475 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -100,7 +101,9 @@ def test_def_475_nirul_cu_doua_linii_ale_aceluiasi_articol_nou_face_un_singur_ar
     pg.wait_for_function("() => (document.querySelector('#s-mesaj') || {innerText: ''}).innerText.includes('NIR salvat')", timeout=30000)
     randuri = [r for r in _situatia(patron) if r[0].lower().replace("â", "a").startswith("grau e2e 475")]
     patron.captura()
-    assert len(randuri) == 1 and randuri[0][0] == "Grâu E2E 475" and re.match(r"^8(,0+)?$", randuri[0][2]), randuri
+    assert len(randuri) == 1 and randuri[0][0] == "Grâu E2E 475", randuri
+    # [lotul 14, 696] NIR-ul e în ciornă: stocul validat e 0, iar cele două linii (5 × 2 + 3 × 2,50) stau împreună, pe UN rând, în coloana „În ciornă”
+    assert randuri[0][2] == "0" and randuri[0][3] == "17,50", randuri
     assert sql('SELECT count(*) FROM "%s".articole WHERE lower(denumire) IN (%%s, %%s)' % firma_f2["schema"],
                ("grâu e2e 475", "grau e2e 475")) == [(1,)]
 
@@ -153,10 +156,11 @@ def test_def_498_antetul_balantei_spune_luna_si_cifrele_iar_sursa_lor_e_pliata(p
     intro = " ".join(pg.inner_text(".fereastra:last-of-type #b-intro").replace("← luna", "").replace("luna →", "").split())
     assert intro.startswith("Luna %s · " % LUNA) and intro.endswith("· 2 note validate în luna asta"), intro
     assert "Registrul jurnal" not in intro and "precedente" not in intro and "ciorne" not in intro, intro
-    assert pg.eval_on_selector(".fereastra:last-of-type #b-surse", "d => d.open") is False
-    assert pg.inner_text(".fereastra:last-of-type #b-surse summary").strip() == "De unde vin cifrele"
+    assert pg.inner_text(".fereastra:last-of-type [data-card='surse']").strip() == "De unde vin cifrele"   # [lotul 14, 687] cardul, închis la deschidere
+    assert pg.locator("#b-surse").count() == 0
     patron.captura("antet")
-    pg.click(".fereastra:last-of-type #b-surse summary")
+    pg.click(".fereastra:last-of-type [data-card='surse']")
+    pg.wait_for_selector(".fereastra:last-of-type #b-surse", timeout=15000)
     nota = " ".join(pg.inner_text(".fereastra:last-of-type #b-surse").split())
     patron.captura("de_unde_vin_cifrele")
     assert "aceleași pe care le arată Registrul jurnal pe luna asta; ciornele nu intră" in nota, nota

@@ -404,6 +404,9 @@ def valideaza(conn, schema, nota_id):
         _i = _ia.refuz_validare(cur, schema, nota_id)
         if _i:
             return {**_refuz(_i, "OMFP 1802/2014, contul 121"), "cod": "INCHIDERE_NEVALIDABILA"}
+        _t = _ia.refuz_validare_tva_luna(cur, schema, nota_id)   # [lotul 14, 688] regularizarea TVA a perioadei: încă a soldurilor validate
+        if _t:
+            return {**_refuz(_t, "OMFP 1802/2014, conturile 4423, 4424, 4426, 4427"), "cod": "REGULARIZARE_TVA_NEVALIDABILA"}
         # [lotul 11, deficiența 451, PRIORITAR] ciorna derivată dintr-o sursă se validează numai cât e ce ar scrie sursa ACUM (regenerarea
         # pe uscat: data, documentul, conturile, sumele) — o reparație a regulii nu mai lasă în urmă ciorne validabile cu regula veche
         from core import ciorne_depasite as _cd
@@ -524,6 +527,7 @@ ETICHETE_SURSA = {
     "horeca_z": "raportul Z",
     "amef": "raportul Z din casa de marcat",
     "inchidere_an": "închiderea anului",
+    "regularizare_tva": "regularizarea TVA a perioadei",   # [lotul 14, 688]
     # [lotul 10, deficiența 430d] notele din Operațiuni speciale (dividende, leasing, provizioane…): până azi „sursa: facturile”
     "operatiuni": "operațiunile speciale",
 }

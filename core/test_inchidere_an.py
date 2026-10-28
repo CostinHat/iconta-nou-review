@@ -66,7 +66,9 @@ def cur():
                 c.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
                 c.execute("SET search_path TO %s, public" % _SCHEMA)
                 c.execute("INSERT INTO firma_profil (id, nume, cui) VALUES (1, 'PROBA SRL', '14399840') ON CONFLICT (id) DO NOTHING")
-                c.execute("UPDATE firma_profil SET data_infiintare = '2025-01-10' WHERE id = 1")
+                # [lotul 14, 683] evidența firmei începe la înființare (luna preluării = ianuarie): fără ea, prima notă (iunie) ar fi data
+                # preluării, iar ianuarie–mai ar lipsi — bilanțul se refuză acum (`rulaje_preluate.lipsa_in_fereastra`), nu doar avertizează
+                c.execute("UPDATE firma_profil SET data_infiintare = '2025-01-10', luna_preluare = '2025-01-01' WHERE id = 1")
                 yield c
         finally:
             conn.rollback()

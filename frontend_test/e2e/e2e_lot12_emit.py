@@ -202,7 +202,9 @@ def test_def_470_nota_din_factura_se_deschide_pe_nota_ei(patron, firma_emit):
         assert "val-evidentiat" in (pg.get_attribute(rand, "class") or ""), "nota facturii nu e evidențiată"
         # rândul notei (`tr.tn-rand`) pe ecran; detaliul, deschis sub el, poate trece de marginea ferestrei
         pe_ecran = pg.eval_on_selector(rand + " tr.tn-rand", "el => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; }")
-        assert pe_ecran, "rândul notei facturii nu e pe ecran"
+        patron.captura("rand_factura_%d" % f["factura_id"])
+        assert pe_ecran, "rândul notei facturii nu e pe ecran: %s" % pg.eval_on_selector(
+            rand + " tr.tn-rand", "el => JSON.stringify([el.getBoundingClientRect(), innerHeight, (el.closest('[data-zona-derulare]') || {getBoundingClientRect: () => null}).getBoundingClientRect()])")
         assert pg.locator(".fereastra:last-of-type .val-evidentiat").count() == 1
         patron.captura("factura_%d" % f["factura_id"])
 

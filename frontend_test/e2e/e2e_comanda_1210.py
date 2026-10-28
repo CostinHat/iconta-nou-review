@@ -258,9 +258,10 @@ def test_def_229_primul_exercitiu_fara_an_precedent(patron, firma_infiintata_202
     assert st == 200 and r.get("ok") is not False, (st, r)
     patron.firma(f["nume"])
     pg.click("#fa-datefirma")
-    pg.wait_for_selector(".fereastra:last-of-type #df-data_infiintare", timeout=20000)
+    # [lotul 14, 687] câmpul e pe o filă a Datelor firmă: selectorul simplu lasă `conftest` să apese fila
+    pg.wait_for_selector("#df-data_infiintare", timeout=20000)
     patron.captura("date_firma")
-    assert pg.input_value(".fereastra:last-of-type #df-data_infiintare") == "2025-03-15"
+    assert pg.input_value("#df-data_infiintare") == "2025-03-15"
     _nota_validata(f, "2025-03-20", "5121", "1012", 1000, "Aport capital D229")
     patron.firma(f["nume"])
     _deschide(patron, "#fa-bilant", "Bilanț anual")
@@ -294,6 +295,7 @@ def test_def_230_firul_de_intrare_al_lui_ana_incepe_de_la_1(browser, request, pa
     with cont_asistent(firme=(T_COMERT,)) as a, ecran_cont(browser, request, a["email"]) as e:
         e.acasa()
         e.pg.click("#nav-ghid")
+        e.pg.click("[data-card='ans-card-inceput']")   # [lotul 14, 687] cardurile de început stau în cardul „Primii pași în aplicație”
         e.pg.wait_for_selector(".fereastra #ans-inceput", timeout=20000)
         e.pg.wait_for_timeout(600)
         nr = e.pg.eval_on_selector_all(".fereastra .ans-pas-nr", "els => els.map(x => x.innerText.trim())")
@@ -301,9 +303,10 @@ def test_def_230_firul_de_intrare_al_lui_ana_incepe_de_la_1(browser, request, pa
         assert nr == [], nr
     patron.acasa()
     patron.pg.click("#nav-ghid")
-    patron.pg.wait_for_selector(".fereastra .ans-pas-nr", timeout=20000)
-    nr = patron.pg.eval_on_selector_all(".fereastra .ans-pas-nr", "els => els.map(x => x.innerText.trim())")
-    titluri = patron.pg.eval_on_selector_all(".fereastra .ans-pas-titlu", "els => els.map(x => x.innerText.trim())")
+    patron.pg.click("[data-card='ans-card-fir']")   # [lotul 14, 687] firul de intrare stă în cardul lui
+    patron.pg.wait_for_selector(".fereastra:last-of-type .ans-pas-nr", timeout=20000)
+    nr = patron.pg.eval_on_selector_all(".fereastra:last-of-type .ans-pas-nr", "els => els.map(x => x.innerText.trim())")
+    titluri = patron.pg.eval_on_selector_all(".fereastra:last-of-type .ans-pas-titlu", "els => els.map(x => x.innerText.trim())")
     assert nr == [str(i) for i in range(1, len(nr) + 1)] and titluri[:1] == ["Firme"], (nr, titluri)
 
 
@@ -436,7 +439,17 @@ def firma_f10_manual():
     e dinaintea preluării, iar evidența nu acoperă 2024)."""
     for f in firma_noua():
         _date_firma(f)
-        _solduri(f, "2025-06-30")
+        # [lotul 14, 687] un bilanț pe 2025 al unei firme preluate la 30.06.2025 se REFUZĂ dacă balanța are numai soldurile finale (perioada
+        # începe înainte de preluare). Contabilul importă balanța COMPLETĂ (Import date › Solduri inițiale: soldurile inițiale ale anului și
+        # rulajele 01.01–30.06): bilanțul 2025 se generează, iar 31.12.2024 rămâne dinaintea preluării, deci F10 / F20 „An precedent” manual.
+        # Aceleași solduri finale ca înainte (bancă 10.000 = capital 10.000); capitalul vărsat intră ca rulaj al anului (clase 1 și 5: F20 neatins).
+        st, r = _api(PATRON, "POST", "/tenants/%d/solduri" % f["tenant_id"],
+                     {"data_referinta": "2025-06-30",
+                      "randuri": [{"cont": "5121", "denumire": "Conturi la bănci în lei", "debit": 10000,
+                                   "si_debit": 0, "si_credit": 0, "rulaj_debit": 10000, "rulaj_credit": 0},
+                                  {"cont": "1012", "denumire": "Capital subscris vărsat", "credit": 10000,
+                                   "si_debit": 0, "si_credit": 0, "rulaj_debit": 0, "rulaj_credit": 10000}]})
+        assert st == 200 and r.get("ok") is not False, (st, r)
         yield f
 
 
@@ -515,7 +528,10 @@ def test_def_234_denumirile_complete_curate_in_ordinea_formularului(patron, firm
 def firma_infiintata_2026():
     for f in firma_noua():
         _date_firma(f)
-        st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"data_infiintare": "2026-03-15"})
+        st, r = _api(PATRON, "POST", "/tenants/%d/firma-profil/date" % f["tenant_id"], {"data_infiintare": "2026-03-15",
+                                                                    # [lotul 14, 687] firma nu are note: luna preluării ar fi cea a creării ei (octombrie), iar bilanțul pe
+                                                                    # 2026 s-ar REFUZA (perioada începe înainte de preluare); evidența ei e întreagă de la înființare
+                                                                    "luna_preluare": "2026-03"})
         assert st == 200 and r.get("ok") is not False, (st, r)
         yield f
 

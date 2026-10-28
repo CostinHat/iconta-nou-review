@@ -112,9 +112,10 @@ def test_def_439_balanta_saga_cu_sold_initial_intra_si_a_doua_cere_confirmare(pa
     # 426 pe balanța SAGA: a doua balanță cere confirmarea
     _pas(patron, firma_m, "Solduri ini")
     _incarca(patron, "balanta_saga_2.csv", fisier("total_rulaje"), "#mig-salveaza-sold")
-    av = pg.locator("#mig-inlocuire")
-    assert av.get_attribute("class") == "msg-avert" and av.inner_text().startswith(
-        "Firma are deja o balanță de deschidere la 30.09.2026: 21 de conturi"), av.inner_text()
+    from conftest import text_din_card
+    av_text, av_cls = text_din_card(pg, "#mig-inlocuire")   # [lotul 14, 687] avertismentul stă în cardul lui
+    assert av_cls == "msg-avert" and av_text.startswith(
+        "Firma are deja o balanță de deschidere la 30.09.2026: 21 de conturi"), av_text
     pg.click("#mig-salveaza-sold")
     confirma_firma_fisierului(pg, ANTET_MIGRARE)   # [599] întâi firma din antet, apoi întrebarea înlocuirii (426)
     pg.wait_for_selector("#ca-ok", timeout=10000)
@@ -171,7 +172,7 @@ def test_def_424_importul_are_rezumatul_sus_actiunea_jos_si_deruleaza_numai_tabe
         _incarca(patron, "balanta_saga.csv", fisier("rulaje_precedente"), "#mig-salveaza-sold")
         o = pg.evaluate(MASOARA)
         patron.captura("balanta_derulata")
-        assert o["derulante"] == ["fereastra-corp"] and (o["rez_sus"], o["bara_jos"]) == (0, 0) and o["loc"] >= 240, o
+        assert o["derulante"] == ["zona-derulare"] and 0 <= o["rez_sus"] <= 100 and o["bara_jos"] == 0 and o["loc"] >= 240, o   # [lotul 14, 687] derulează numai zona tabelului; rezumatul rămâne sub titlu
         _pas(patron, firma_m, "Articole")
         _incarca(patron, "articole.csv", ("denumire;um;cantitate;pret;cont stoc;cont cheltuiala\n" + "".join(
             "Marfa %02d;buc;10;2,50;371;607\n" % i for i in range(30))).encode(), "#mig-importa")
@@ -235,15 +236,16 @@ def test_def_446_avertismentul_o_data_confirmarea_ia_locul_butonului(patron, fir
     pg.set_viewport_size(LAPTOP)
     try:
         _reimport(patron, firma_m)
-        av = pg.locator("#mig-inlocuire")
-        text = av.inner_text().strip()
-        assert av.get_attribute("class") == "msg-avert" and text.startswith("Firma are deja 2 salariați"), text
+        from conftest import text_din_card
+        text, av_cls = text_din_card(pg, "#mig-inlocuire")   # [lotul 14, 687] avertismentul stă în cardul lui
+        text = text.strip()
+        assert av_cls == "msg-avert" and text.startswith("Firma are deja 2 salariați"), text
         pg.click("#mig-salveaza-sal")
         pg.wait_for_selector("#ca-ok", timeout=10000)
         o = pg.evaluate(MASOARA)
         patron.captura("confirmare")
         f = patron.fereastra()
-        assert f.count(text[:60]) == 1, f[:2000]
+        assert f.count(text[:60]) == 0, f[:2000]   # [lotul 14, 687] avertismentul stă numai în cardul lui; confirmarea e întrebarea scurtă, nu a doua oară textul
         assert "Actualizezi fișele salariaților existenți cu datele din fișier?" in f
         assert not pg.is_visible("#mig-salveaza-sal") and pg.inner_text("#ca-ok").strip() == "Actualizez fișele"
         assert o["loc"] >= 150, o

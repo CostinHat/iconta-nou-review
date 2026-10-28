@@ -341,6 +341,23 @@ def controale_inchidere(conn, schema, an, luna):
                             "sau închide luna confirmând explicit: amortizarea lipsă schimbă profitul (D100/D101)" % (
                                 x["cont"], _cate(len(x["luni"]), "lună", "luni"), _mfr.luni_ca_interval(x["luni"]), _bani(x["total"])),
                             cont=x["cont"], confirmabil=True, luni=["%04d-%02d" % l for l in x["luni"]]))
+    # [lotul 14, deficiența 688, comanda Costin 14.1] închiderea lunii care încheie perioada fiscală TVA a unei firme plătitoare de TVA
+    # cere regularizarea 4426 / 4427 (OMFP 1802/2014): cât 4426 / 4427 au sold, luna nu se blochează. Propunerea notei: `inchidere_an`.
+    if not in_curs:
+        import psycopg2.extras as _E
+        from core import inchidere_an as _ia
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            _tva = _ia.tva_de_regularizat(cur, schema, an, luna)
+        if _tva:
+            _are4423 = any(n["credit"] == "4423" for n in _tva["note"])
+            blocaje.append(_ctl("TVA_NEREGULARIZAT",
+                                ("TVA-ul perioadei nu e regularizat: la sfârșitul lunii contul 4426 (TVA deductibilă) are sold debitor %s lei, iar "
+                                 "4427 (TVA colectată) sold creditor %s lei. %s"
+                                 % (_bani(_tva["sold_4426"]), _bani(_tva["sold_4427"]),
+                                    ("Nota de regularizare e propusă (ciornă): validează-o în Registrul jurnal." if _tva["ciorna"]
+                                     else "Propune nota de regularizare (4427 = 4426, iar diferența în %s) și validează-o."
+                                     % ("4423, TVA de plată" if _are4423 else "4424, TVA de recuperat")))),
+                                de_validat=bool(_tva["ciorna"]), an_incheiere=(luna == 12)))
     if sold_581:
         semnale.append(_ctl("SOLD_581", "contul 581 (viramente interne) are sold %s lei la sfârșitul lunii: un virament intern se "
                             "închide în aceeași perioadă — lipsește a doua parte (ridicarea sau depunerea)" % _bani(sold_581),
@@ -1195,7 +1212,11 @@ def _verificari_contabile(schema, an, luna, confruntare=None):
     def _incrucisat(fn, eticheta):
         try:
             with db.get_conn(schema) as _c:
-                return fn(_c, schema, an_c, luna_c)
+                _r = fn(_c, schema, an_c, luna_c)
+            # [lotul 14, 694] fiecare comparație își arată perioada: TVA și D390 pe perioada fiscală completă (T3/2026), celelalte pe lună
+            if isinstance(_r, dict):
+                _r.setdefault("perioada", "%02d/%d" % (_r.get("luna") or luna_c, _r.get("an") or an_c))
+            return _r
         except Exception as _e:
             # [P8] VERIFICARE RUPTA: motorul a crapat, nu datele lipsesc. Pe ecran ramane gri, in
             # date se DEOSEBESTE - cine numara „cate nu pot fi verificate" nu mai inghite si rupturile.
@@ -1210,7 +1231,7 @@ def _verificari_contabile(schema, an, luna, confruntare=None):
                                "actiune": "Reîncearcă; dacă persistă, verifică datele firmei.",
                                "facturi": []})
             _c["mesaj"] = _c["motiv"]
-            return {"an": an_c, "luna": luna_c, "stare": "gri", "constatari": [_c],
+            return {"an": an_c, "luna": luna_c, "perioada": "%02d/%d" % (luna_c, an_c), "stare": "gri", "constatari": [_c],
                     "limita": "Verificarea %s nu a rulat: %s" % (eticheta, _perioada.text_exceptie(_e))}
     tva_incr = _incrucisat(_ci.verifica_tva, "TVA")
     d112_incr = _incrucisat(_ci.verifica_d112, "salarii (D112)")

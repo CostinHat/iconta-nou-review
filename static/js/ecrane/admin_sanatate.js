@@ -113,60 +113,58 @@ export async function randeazaAdminSanatate(corp, nav) {
       <div class="cap-cifra-desc">${eticheta}</div>
     </div>`;
 
+  // [lotul 14, 687] titlul, acțiunea („Trimite alertă de test”) și mesajele (cursul BNR, rezultatul alertei) stau fixe sus; cifrele stau pe
+  // coloane, graficele pe două rânduri, iar tot ce depășește fereastra derulează în zona lui
+  const sectiune = (titlu, continut, id) => `<div${id ? ` id="${id}"` : ""}><h3 class="cap-titlu">${titlu}</h3>${continut}</div>`;
   corp.innerHTML = `
-    <h2 class="pf-titlu">Sănătate server</h2>
-
-    <h3 class="cap-titlu">Server</h3>
-    <div class="cap-cifre" id="san-server">
-      ${cifra(numar2(srv.load1), `încărcarea pe 1 minut · pe 15 minute: ${numar2(srv.load15)} · pragul de alertă: ${numar2(pr.load)} (media pe 15 minute, numărul de procesoare)`)}
-      ${cifra(procent(ram.folosit_procent), `RAM folosită (${numar2(ram.disponibil_mb)} MB liber din ${numar2(ram.total_mb)} MB) · pragul de alertă: ${procent(pr.ram_procent)}`, ram.folosit_procent)}
-      ${cifra(procent(disc.folosit_procent), `disc folosit (${numar2(disc.liber_gb)} GB liber din ${numar2(disc.total_gb)} GB) · pragul de alertă: ${procent(pr.disc_procent)}`, disc.folosit_procent)}
+    <div class="rezumat-fix">
+      <h2 class="pf-titlu">Sănătate server</h2>
+      <div>
+        <button class="buton-secundar" id="san-test-alerta">Trimite alert\u0103 de test</button>
+        <span id="san-test-msg"></span>
+      </div>
+      <div id="san-bnr-msg"></div>
     </div>
-
-    <h3 class="cap-titlu">Aplicație</h3>
-    <div class="cap-cifre">
-      ${cifra(fmtUptime(app.uptime_secunde), "activă de")}
-    </div>
-
-    <h3 class="cap-titlu">Curs BNR</h3>
-    <div class="cap-cifre" id="san-bnr">
-      ${cifra(bnr.ultima_zi ? dataRo(bnr.ultima_zi) : "—", "ultimul curs BNR din aplicație")}
-      ${cifra(bnr.asteptat ? dataRo(bnr.asteptat) : "—", "cursul de care au nevoie facturile de azi", bnr.lipsa ? 100 : bnr.lipsa === false ? 0 : null)}
-    </div>
-    <div id="san-bnr-msg"></div>
-
-    <h3 class="cap-titlu">Bază de date</h3>
-    <div class="cap-cifre">
-      ${cifra(bd.conexiuni ?? "—", `conexiuni active · pragul de alertă: ${pr.conexiuni_db ?? "—"}`)}
-      ${cifra(bd.marime ?? "—", "mărime bază de date")}
-    </div>
-
-    <h3 class="cap-titlu">Erori (ultimele 24h)</h3>
-    <div class="cap-cifre">
-      ${cifra(d.erori_24h ?? 0, "erori server (500+)", d.erori_24h > 0 ? 100 : 0)}
-    </div>
-    <div class="pf-lista zebra-lista" style="margin-top:12px">
-      ${erori.length
-        ? erori.map((e) => `
-          <div class="pf-frand">
-            <div class="pf-frand-text">
-              <div class="pf-frand-nume">${esc(e.actiune || "")}</div>
-              <div class="pf-frand-sub">status ${(e.detalii && e.detalii.status) || "?"} · ${dataRo(e.created_at, "cu_ora")}</div>
-            </div>
-          </div>`).join("")
-        : `<div class="stare-goala">Nicio eroare în ultimele 24h.</div>`}
-    </div>
-
-    <h3 class="cap-titlu">Evoluție (ultimele 24h)</h3>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-      ${grafic(istoric, "ram_procent", "RAM folosită", "#2563eb", 100, pr.ram_procent, procent)}
-      ${grafic(istoric, "disc_procent", "Disc folosit", "#7c3aed", 100, pr.disc_procent, procent)}
-      ${grafic(istoric, "load15", "Încărcarea (media pe 15 minute)", "var(--galben)", null, pr.load, numar2)}
-      ${grafic(istoric, "conexiuni_db", "Conexiuni DB", "#16a34a", null, pr.conexiuni_db, (v) => numar2(Math.round(v)))}
-    </div>
-    <div style="margin-top:16px">
-      <button class="buton-secundar" id="san-test-alerta">Trimite alert\u0103 de test</button>
-      <span id="san-test-msg"></span>
+    <div data-zona-derulare>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:4px 24px">
+        ${sectiune("Server", `<div class="cap-cifre" id="san-server">
+          ${cifra(numar2(srv.load1), `încărcarea pe 1 minut · pe 15 minute: ${numar2(srv.load15)} · pragul de alertă: ${numar2(pr.load)} (media pe 15 minute, numărul de procesoare)`)}
+          ${cifra(procent(ram.folosit_procent), `RAM folosită (${numar2(ram.disponibil_mb)} MB liber din ${numar2(ram.total_mb)} MB) · pragul de alertă: ${procent(pr.ram_procent)}`, ram.folosit_procent)}
+          ${cifra(procent(disc.folosit_procent), `disc folosit (${numar2(disc.liber_gb)} GB liber din ${numar2(disc.total_gb)} GB) · pragul de alertă: ${procent(pr.disc_procent)}`, disc.folosit_procent)}
+        </div>`)}
+        <div>
+          ${sectiune("Aplicație", `<div class="cap-cifre">${cifra(fmtUptime(app.uptime_secunde), "activă de")}</div>`)}
+          ${sectiune("Curs BNR", `<div class="cap-cifre" id="san-bnr">
+            ${cifra(bnr.ultima_zi ? dataRo(bnr.ultima_zi) : "—", "ultimul curs BNR din aplicație")}
+            ${cifra(bnr.asteptat ? dataRo(bnr.asteptat) : "—", "cursul de care au nevoie facturile de azi", bnr.lipsa ? 100 : bnr.lipsa === false ? 0 : null)}
+          </div>`)}
+        </div>
+        <div>
+          ${sectiune("Bază de date", `<div class="cap-cifre">
+            ${cifra(bd.conexiuni ?? "—", `conexiuni active · pragul de alertă: ${pr.conexiuni_db ?? "—"}`)}
+            ${cifra(bd.marime ?? "—", "mărime bază de date")}
+          </div>`)}
+          ${sectiune("Erori (ultimele 24h)", `<div class="cap-cifre">${cifra(d.erori_24h ?? 0, "erori server (500+)", d.erori_24h > 0 ? 100 : 0)}</div>`)}
+        </div>
+      </div>
+      <div class="pf-lista zebra-lista" style="margin-top:12px">
+        ${erori.length
+          ? erori.map((e) => `
+            <div class="pf-frand">
+              <div class="pf-frand-text">
+                <div class="pf-frand-nume">${esc(e.actiune || "")}</div>
+                <div class="pf-frand-sub">status ${(e.detalii && e.detalii.status) || "?"} · ${dataRo(e.created_at, "cu_ora")}</div>
+              </div>
+            </div>`).join("")
+          : `<div class="stare-goala">Nicio eroare în ultimele 24h.</div>`}
+      </div>
+      <h3 class="cap-titlu">Evoluție (ultimele 24h)</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        ${grafic(istoric, "ram_procent", "RAM folosită", "#2563eb", 100, pr.ram_procent, procent)}
+        ${grafic(istoric, "disc_procent", "Disc folosit", "#7c3aed", 100, pr.disc_procent, procent)}
+        ${grafic(istoric, "load15", "Încărcarea (media pe 15 minute)", "var(--galben)", null, pr.load, numar2)}
+        ${grafic(istoric, "conexiuni_db", "Conexiuni DB", "#16a34a", null, pr.conexiuni_db, (v) => numar2(Math.round(v)))}
+      </div>
     </div>
   `;
   // [460] cursul zilei lipsește: alertă pentru administratorul platformei (DS cap.6: `arataMesaj`, eroare), cu golurile anului

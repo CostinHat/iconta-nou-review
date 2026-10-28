@@ -129,7 +129,8 @@ def test_def_426_a_doua_balanta_arata_totalurile_si_cere_confirmare(patron, firm
     sql('INSERT INTO "%s".inregistrari (data, numar, descriere) VALUES (%%s, %%s, %%s)' % s, ("2026-10-05", "E2E-426", "probă 426"))
     _pas(patron, firma_mig, "Solduri ini")
     _incarca(patron, "balanta_solduri_finale.csv", _numai_solduri_finale(), "#mig-salveaza-sold")
-    caseta = " ".join(pg.inner_text("#mig-inlocuire").split())
+    from conftest import text_din_card
+    caseta = " ".join(text_din_card(pg, "#mig-inlocuire")[0].split())   # [lotul 14, 687] avertismentul stă în cardul lui
     patron.captura("avertisment")
     assert caseta.startswith("Firma are deja o balanță de deschidere la 30.09.2026: 19 conturi, debit 79.525,00 lei, credit 79.525,00 lei. "
                              "Balanța nouă la 30.09.2026: 9 conturi, debit 79.525,00 lei, credit 79.525,00 lei."), caseta

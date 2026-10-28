@@ -9033,9 +9033,9 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1186 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1193 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 1146
+### `core/` — 1153
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9574,6 +9574,7 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_import_saga.py` — core/test_import_saga.py — importul din SAGA (comanda Costin 14.10.2026, verbatim în DECIZII „Importul din SAGA”): C21–C25,
 - `core/test_importuri_nefolosite.py` — CLICHET pe importurile nefolosite (F401). Nu blochează codul existent; oprește creșterea.
 - `core/test_impozit_dividend.py` — PAS 0 versionare formule: cotele = COTE period-aware, nu petic 'if ref>=2026 else 10'.
+- `core/test_incape_ecran.py` — [lotul 14, deficiența 687] GARD: fiecare fereastră de lucru încape pe un singur ecran la 1920 × 1080 și la 1366 × 768 (comanda Costin 14.1,
 - `core/test_inchidere_an.py` — GARD — varianta (a), decizia Costin 13.10.2026 (verbatim în DECIZII): „Aplicația propune, la cererea contabilului, nota de închidere la
 - `core/test_inchidere_luna.py` — ACTUL DE ÎNCHIDERE a lunii pe domeniul `facturi` (21.08.2026) — DESIGN_SYSTEM cap.23.
 - `core/test_infra_vizuala.py` — GARDĂ: infrastructura de testare vizuală (frontend_test/vizual) nu poate dispărea tăcut.
@@ -9915,6 +9916,12 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot13_sal_salarizare.py` — Lotul 13 (comanda Costin 13.1), salarizarea: 671 (zilele lunii dintr-o singură sursă), 679 (suma orelor suplimentare calculată),
 - `core/test_lot13_val6_casa_avans.py` — [lotul 13, deficiența 683 — a lui Code] „Casă › Avans spre decontare nu pune salariatul pe rândul notei: 542 nu se urmărește pe
 - `core/test_lot13_val6_spv_avertisment.py` — [lotul 13, deficiența 696 — a lui Code] `efactura_trimitere.trimite` încărca factura în SPV și când dreptul certificatului pe CUI-ul
+- `core/test_lot14_incape.py` — [lotul 14, deficiența 687 — clasă] Fiecare fereastră de lucru încape pe un singur ecran, la 1920 × 1080 și la 1366 × 768; tabelele lungi
+- `core/test_lot14_perioada_comparata.py` — [lotul 14, deficiența 694] „Declarație vs contabilitate”: fiecare comparație își arată perioada, iar la scadență compară perioada care se
+- `core/test_lot14_regularizare_tva.py` — [lotul 14, deficiența 688] Închiderea lunii nu închidea TVA-ul (comanda Costin 14.1, verbatim): „F1 09/2026 e blocată cu «Nimic nu oprește
+- `core/test_lot14_rulaje_refuz.py` — [lotul 14, deficiențele 683 + 695] Declarația sau situația a cărei perioadă începe înainte de preluare se REFUZĂ (nu doar se avertizează),
+- `core/test_lot14_stocuri_ecran.py` — [lotul 14, deficiența 696 + 687] Ecranul Stocuri (real, `firme.ecranStocuri`) arată stocul VALIDAT, ciorna separat, gestiunea articolului și
+- `core/test_lot14_stocuri_validat.py` — [lotul 14, deficiența 696] Stocuri arăta 8.983,74 față de 371 = 6.272,38 (diferență 2.711,36, nesemnalată): fereastra număra mișcările
 - `core/test_luna_preluare.py` — GARDA deciziei Costin 08.10.2026 §6 pct.4 (verbatim în DECIZII):
 - `core/test_mandat_cam.py` — GARD [25.09.2026, bug CAM mandat]: CAM 2,25% se datorează pe remunerația administratorului și a
 - `core/test_manual_chei_consumate.py` — GARD — o cheie pe care ecranul Declarații o trimite în `manual` trebuie să fie citită de generator (02.10.2026).

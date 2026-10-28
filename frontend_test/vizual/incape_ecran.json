@@ -1,0 +1,2377 @@
+{
+ "ui_hash": "ca6190d113d5dd32",
+ "rezolutii": [
+  "1920x1080",
+  "1366x768"
+ ],
+ "ecrane": {
+  "supervizor": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 973,
+    "fer_h": 1032,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 10482
+     }
+    ],
+    "zona_h": 746,
+    "zona_cont": 11228,
+    "zona_depasire": 10482,
+    "titlu": "Supervizor",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 661,
+    "fer_h": 720,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 10794
+     }
+    ],
+    "zona_h": 434,
+    "zona_cont": 11228,
+    "zona_depasire": 10794,
+    "titlu": "Supervizor",
+    "verdict": "ok-tabel"
+   }
+  },
+  "import_mijloace_fixe": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Mijloace fixe",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Mijloace fixe",
+    "verdict": "ok"
+   }
+  },
+  "vector_fiscal": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Verificare fiscală",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Verificare fiscală",
+    "verdict": "ok"
+   }
+  },
+  "plan_conturi": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "mig-lista zona-derulare",
+      "id": "pc-rezultate",
+      "tabel": true,
+      "depasire": 36483
+     }
+    ],
+    "zona_h": 636,
+    "zona_cont": 37119,
+    "zona_depasire": 36483,
+    "titlu": "Plan de conturi",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "mig-lista zona-derulare",
+      "id": "pc-rezultate",
+      "tabel": true,
+      "depasire": 36831
+     }
+    ],
+    "zona_h": 324,
+    "zona_cont": 37155,
+    "zona_depasire": 36831,
+    "titlu": "Plan de conturi",
+    "verdict": "ok-tabel"
+   }
+  },
+  "solduri_parteneri": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Solduri parteneri",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Solduri parteneri",
+    "verdict": "ok"
+   }
+  },
+  "import_solduri_saga": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 200,
+    "zona_cont": 200,
+    "zona_depasire": 0,
+    "titlu": "Solduri inițiale",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 200,
+    "zona_cont": 200,
+    "zona_depasire": 0,
+    "titlu": "Solduri inițiale",
+    "verdict": "ok-tabel"
+   }
+  },
+  "import_mijloace_saga": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 221,
+    "zona_cont": 221,
+    "zona_depasire": 0,
+    "titlu": "Mijloace fixe",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 45
+     }
+    ],
+    "zona_h": 248,
+    "zona_cont": 293,
+    "zona_depasire": 45,
+    "titlu": "Mijloace fixe",
+    "verdict": "ok-tabel"
+   }
+  },
+  "import_istoric_saga": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 274,
+    "zona_cont": 274,
+    "zona_depasire": 0,
+    "titlu": "Istoric declarații",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 274,
+    "zona_cont": 274,
+    "zona_depasire": 0,
+    "titlu": "Istoric declarații",
+    "verdict": "ok-tabel"
+   }
+  },
+  "activitate_cabinet": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Activitate cabinet",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Activitate cabinet",
+    "verdict": "ok"
+   }
+  },
+  "stat_plata": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 177,
+    "zona_cont": 177,
+    "zona_depasire": 0,
+    "titlu": "Stat de plată ?",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 177,
+    "zona_cont": 177,
+    "zona_depasire": 0,
+    "titlu": "Stat de plată ?",
+    "verdict": "ok-tabel"
+   }
+  },
+  "declaratii": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Declarații",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Declarații",
+    "verdict": "ok"
+   }
+  },
+  "stocuri": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 410,
+    "zona_cont": 410,
+    "zona_depasire": 0,
+    "titlu": "Stocuri ?",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 410,
+    "zona_cont": 410,
+    "zona_depasire": 0,
+    "titlu": "Stocuri ?",
+    "verdict": "ok-tabel"
+   }
+  },
+  "inchidere_luna": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 195,
+    "zona_cont": 195,
+    "zona_depasire": 0,
+    "titlu": "Închidere lună",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 195,
+    "zona_cont": 195,
+    "zona_depasire": 0,
+    "titlu": "Închidere lună",
+    "verdict": "ok-tabel"
+   }
+  },
+  "registratura": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registratură",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registratură",
+    "verdict": "ok"
+   }
+  },
+  "banca": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 768,
+    "zona_cont": 768,
+    "zona_depasire": 0,
+    "titlu": "Bancă ?",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 280
+     }
+    ],
+    "zona_h": 510,
+    "zona_cont": 790,
+    "zona_depasire": 280,
+    "titlu": "Bancă ?",
+    "verdict": "ok-tabel"
+   }
+  },
+  "rapoarte": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 165,
+    "zona_cont": 165,
+    "zona_depasire": 0,
+    "titlu": "Rapoarte comerciale ?",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 165,
+    "zona_cont": 165,
+    "zona_depasire": 0,
+    "titlu": "Rapoarte comerciale ?",
+    "verdict": "ok-tabel"
+   }
+  },
+  "etransport": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 120,
+    "zona_cont": 120,
+    "zona_depasire": 0,
+    "titlu": "e-Transport",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 120,
+    "zona_cont": 120,
+    "zona_depasire": 0,
+    "titlu": "e-Transport",
+    "verdict": "ok-tabel"
+   }
+  },
+  "centrecost": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Centre de cost",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Centre de cost",
+    "verdict": "ok"
+   }
+  },
+  "planconturi": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "pf-lista zebra-lista zona-derulare",
+      "id": "pcf-lista",
+      "tabel": true,
+      "depasire": 55056
+     }
+    ],
+    "zona_h": 718,
+    "zona_cont": 55774,
+    "zona_depasire": 55056,
+    "titlu": "Plan de conturi",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "pf-lista zebra-lista zona-derulare",
+      "id": "pcf-lista",
+      "tabel": true,
+      "depasire": 55930
+     }
+    ],
+    "zona_h": 406,
+    "zona_cont": 56336,
+    "zona_depasire": 55930,
+    "titlu": "Plan de conturi",
+    "verdict": "ok-tabel"
+   }
+  },
+  "casa": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Casă ?",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Casă ?",
+    "verdict": "ok"
+   }
+  },
+  "verificari": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Verificări",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Verificări",
+    "verdict": "ok"
+   }
+  },
+  "datefirma": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 255,
+    "zona_cont": 255,
+    "zona_depasire": 0,
+    "titlu": "Date firmă",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 255,
+    "zona_cont": 255,
+    "zona_depasire": 0,
+    "titlu": "Date firmă",
+    "verdict": "ok-tabel"
+   }
+  },
+  "emitere": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Emite factură",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Emite factură",
+    "verdict": "ok"
+   }
+  },
+  "operatiuni": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Operațiuni speciale",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Operațiuni speciale",
+    "verdict": "ok"
+   }
+  },
+  "compensari": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Compensări",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Compensări",
+    "verdict": "ok"
+   }
+  },
+  "clienti": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 228,
+    "zona_cont": 228,
+    "zona_depasire": 0,
+    "titlu": "Clienți",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 261,
+    "zona_cont": 261,
+    "zona_depasire": 0,
+    "titlu": "Clienți",
+    "verdict": "ok-tabel"
+   }
+  },
+  "furnizori": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 222,
+    "zona_cont": 222,
+    "zona_depasire": 0,
+    "titlu": "Furnizori",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 222,
+    "zona_cont": 222,
+    "zona_depasire": 0,
+    "titlu": "Furnizori",
+    "verdict": "ok-tabel"
+   }
+  },
+  "parteneri": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 280,
+    "zona_cont": 280,
+    "zona_depasire": 0,
+    "titlu": "Parteneri",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 280,
+    "zona_cont": 280,
+    "zona_depasire": 0,
+    "titlu": "Parteneri",
+    "verdict": "ok-tabel"
+   }
+  },
+  "magazin": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Magazin online",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Magazin online",
+    "verdict": "ok"
+   }
+  },
+  "pachete": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 365,
+    "fer_h": 424,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Pachete lunare",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 365,
+    "fer_h": 424,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Pachete lunare",
+    "verdict": "ok"
+   }
+  },
+  "recomanda": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 307,
+    "fer_h": 366,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Recomandă",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 307,
+    "fer_h": 366,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Recomandă",
+    "verdict": "ok"
+   }
+  },
+  "import_asociati": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Asociați",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Asociați",
+    "verdict": "ok"
+   }
+  },
+  "raportz": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Raport Z",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Raport Z",
+    "verdict": "ok"
+   }
+  },
+  "mijloace": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Mijloace fixe",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Mijloace fixe",
+    "verdict": "ok"
+   }
+  },
+  "cabinet_desktop": {
+   "1920x1080": {
+    "fereastra": false,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "verdict": "fara-fereastra"
+   },
+   "1366x768": {
+    "fereastra": false,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "verdict": "fara-fereastra"
+   }
+  },
+  "control_portofoliu": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 973,
+    "fer_h": 1032,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "mig-lista zona-derulare",
+      "id": "cf-lista",
+      "tabel": true,
+      "depasire": 495
+     }
+    ],
+    "zona_h": 634,
+    "zona_cont": 1129,
+    "zona_depasire": 495,
+    "titlu": "Control fiscal",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 661,
+    "fer_h": 720,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "mig-lista zona-derulare",
+      "id": "cf-lista",
+      "tabel": true,
+      "depasire": 807
+     }
+    ],
+    "zona_h": 322,
+    "zona_cont": 1129,
+    "zona_depasire": 807,
+    "titlu": "Control fiscal",
+    "verdict": "ok-tabel"
+   }
+  },
+  "control_verdict": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "cf-corp zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 1282
+     }
+    ],
+    "zona_h": 862,
+    "zona_cont": 2144,
+    "zona_depasire": 1282,
+    "titlu": "Detaliu firmă",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "cf-corp zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 1888
+     }
+    ],
+    "zona_h": 550,
+    "zona_cont": 2438,
+    "zona_depasire": 1888,
+    "titlu": "Detaliu firmă",
+    "verdict": "ok-tabel"
+   }
+  },
+  "raporteaza": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 614,
+    "fer_h": 673,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Suport",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 614,
+    "fer_h": 673,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Suport",
+    "verdict": "ok"
+   }
+  },
+  "ansamblu": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 973,
+    "fer_h": 1032,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 1433
+     }
+    ],
+    "zona_h": 657,
+    "zona_cont": 2090,
+    "zona_depasire": 1433,
+    "titlu": "Prezentarea aplicației",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 661,
+    "fer_h": 720,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 1745
+     }
+    ],
+    "zona_h": 345,
+    "zona_cont": 2090,
+    "zona_depasire": 1745,
+    "titlu": "Prezentarea aplicației",
+    "verdict": "ok-tabel"
+   }
+  },
+  "bilant": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Bilanț anual ?",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Bilanț anual ?",
+    "verdict": "ok"
+   }
+  },
+  "jurnal": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registru jurnal ?",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registru jurnal ?",
+    "verdict": "ok"
+   }
+  },
+  "acces": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Acces client",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Acces client",
+    "verdict": "ok"
+   }
+  },
+  "balanta": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 200,
+    "zona_cont": 200,
+    "zona_depasire": 0,
+    "titlu": "Balanță de verificare",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "zona_h": 254,
+    "zona_cont": 254,
+    "zona_depasire": 0,
+    "titlu": "Balanță de verificare",
+    "verdict": "ok-tabel"
+   }
+  },
+  "bonuri": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Bonuri și chitanțe ?",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Bonuri și chitanțe ?",
+    "verdict": "ok"
+   }
+  },
+  "contracte": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Contracte",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Contracte",
+    "verdict": "ok"
+   }
+  },
+  "control": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "cf-corp zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 3570
+     }
+    ],
+    "zona_h": 810,
+    "zona_cont": 4380,
+    "zona_depasire": 3570,
+    "titlu": "Control fiscal ?",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "cf-corp zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 4255
+     }
+    ],
+    "zona_h": 498,
+    "zona_cont": 4753,
+    "zona_depasire": 4255,
+    "titlu": "Control fiscal ?",
+    "verdict": "ok-tabel"
+   }
+  },
+  "facturi": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Facturi ?",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Facturi ?",
+    "verdict": "ok"
+   }
+  },
+  "fisacont": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Cartea mare",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Cartea mare",
+    "verdict": "ok"
+   }
+  },
+  "marja": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Jurnal regim marjă",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Jurnal regim marjă",
+    "verdict": "ok"
+   }
+  },
+  "produse": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "pr-lista zona-derulare",
+      "id": "pr-lista",
+      "tabel": true,
+      "depasire": 32
+     }
+    ],
+    "zona_h": 788,
+    "zona_cont": 820,
+    "zona_depasire": 32,
+    "titlu": "Produse și servicii",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "pr-lista zona-derulare",
+      "id": "pr-lista",
+      "tabel": true,
+      "depasire": 812
+     }
+    ],
+    "zona_h": 476,
+    "zona_cont": 1288,
+    "zona_depasire": 812,
+    "titlu": "Produse și servicii",
+    "verdict": "ok-tabel"
+   }
+  },
+  "regfiscal": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registrul de evidență fiscală",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registrul de evidență fiscală",
+    "verdict": "ok"
+   }
+  },
+  "reginventar": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registrul-inventar",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registrul-inventar",
+    "verdict": "ok"
+   }
+  },
+  "registre321": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registre art. 321",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registre art. 321",
+    "verdict": "ok"
+   }
+  },
+  "solicitari": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Solicitări",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Solicitări",
+    "verdict": "ok"
+   }
+  },
+  "tipare": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Tipare",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Tipare",
+    "verdict": "ok"
+   }
+  },
+  "asistenti": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 593,
+    "fer_h": 652,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Asistenți",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 593,
+    "fer_h": 652,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Asistenți",
+    "verdict": "ok"
+   }
+  },
+  "capacitate": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 390,
+    "fer_h": 449,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Capacitate",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 390,
+    "fer_h": 449,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Capacitate",
+    "verdict": "ok"
+   }
+  },
+  "termene": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 802,
+    "fer_h": 861,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Termene",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 661,
+    "fer_h": 720,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "term-zona",
+      "tabel": true,
+      "depasire": 141
+     }
+    ],
+    "zona_h": 502,
+    "zona_cont": 643,
+    "zona_depasire": 141,
+    "titlu": "Termene",
+    "verdict": "ok-tabel"
+   }
+  },
+  "validat": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 973,
+    "fer_h": 1032,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "val-zona",
+      "tabel": true,
+      "depasire": 138
+     }
+    ],
+    "zona_h": 783,
+    "zona_cont": 921,
+    "zona_depasire": 138,
+    "titlu": "De depus",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 661,
+    "fer_h": 720,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "val-zona",
+      "tabel": true,
+      "depasire": 450
+     }
+    ],
+    "zona_h": 471,
+    "zona_cont": 921,
+    "zona_depasire": 450,
+    "titlu": "De depus",
+    "verdict": "ok-tabel"
+   }
+  },
+  "navigator_clopot": {
+   "1920x1080": {
+    "fereastra": false,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "verdict": "fara-fereastra"
+   },
+   "1366x768": {
+    "fereastra": false,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "verdict": "fara-fereastra"
+   }
+  },
+  "flux_concediu": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Concedii medicale",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Concedii medicale",
+    "verdict": "ok"
+   }
+  },
+  "admin_desktop": {
+   "1920x1080": {
+    "fereastra": false,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "verdict": "fara-fereastra"
+   },
+   "1366x768": {
+    "fereastra": false,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "verdict": "fara-fereastra"
+   }
+  },
+  "admin_anunturi": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 390,
+    "fer_h": 449,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Mesaj",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 390,
+    "fer_h": 449,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Mesaj",
+    "verdict": "ok"
+   }
+  },
+  "admin_raportari": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 390,
+    "fer_h": 449,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Raportări",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 390,
+    "fer_h": 449,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Raportări",
+    "verdict": "ok"
+   }
+  },
+  "admin_activitate": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 113,
+    "fer_h": 172,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Activitate cabinete",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 661,
+    "fer_h": 720,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "pf-lista zebra-lista zona-derulare",
+      "id": "ac-lista",
+      "tabel": true,
+      "depasire": 379
+     }
+    ],
+    "zona_h": 475,
+    "zona_cont": 854,
+    "zona_depasire": 379,
+    "titlu": "Cabinete",
+    "verdict": "ok-tabel"
+   }
+  },
+  "admin_analytics": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 973,
+    "fer_h": 1032,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 1616
+     }
+    ],
+    "zona_h": 785,
+    "zona_cont": 2401,
+    "zona_depasire": 1616,
+    "titlu": "Analytics public — ultimele 30 de zile",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 661,
+    "fer_h": 720,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 1928
+     }
+    ],
+    "zona_h": 473,
+    "zona_cont": 2401,
+    "zona_depasire": 1928,
+    "titlu": "Analytics public — ultimele 30 de zile",
+    "verdict": "ok-tabel"
+   }
+  },
+  "admin_sanatate": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 973,
+    "fer_h": 1032,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 4207
+     }
+    ],
+    "zona_h": 819,
+    "zona_cont": 5026,
+    "zona_depasire": 4207,
+    "titlu": "Sănătate server",
+    "verdict": "ok-tabel"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 0,
+    "depasire": 0,
+    "corp_h": 661,
+    "fer_h": 720,
+    "lateral": 0,
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "",
+      "tabel": true,
+      "depasire": 4519
+     }
+    ],
+    "zona_h": 507,
+    "zona_cont": 5026,
+    "zona_depasire": 4519,
+    "titlu": "Sănătate server",
+    "verdict": "ok-tabel"
+   }
+  },
+  "rip_pfa": {
+   "1920x1080": {
+    "fereastra": true,
+    "vw": 1920,
+    "vh": 1080,
+    "bara_pagina": 0,
+    "bara_desktop": 18,
+    "depasire": 0,
+    "corp_h": 997,
+    "fer_h": 1056,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registru încasări/plăți ?",
+    "verdict": "ok"
+   },
+   "1366x768": {
+    "fereastra": true,
+    "vw": 1366,
+    "vh": 768,
+    "bara_pagina": 0,
+    "bara_desktop": 330,
+    "depasire": 0,
+    "corp_h": 685,
+    "fer_h": 744,
+    "lateral": 0,
+    "cutii": [],
+    "titlu": "Registru încasări/plăți ?",
+    "verdict": "ok"
+   }
+  }
+ }
+}

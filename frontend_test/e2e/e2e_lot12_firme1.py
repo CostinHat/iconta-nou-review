@@ -71,13 +71,23 @@ def _mt940(zi, suma, descriere, ref="NONREF"):
 
 
 # ── 489 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+def _text_din_card(pg, card, sel):
+    """[lotul 14, 687] Ce stă într-un card-rezumat al ferestrei (fereastra lui): deschide cardul, citește elementul, se întoarce la fereastra de dedesubt."""
+    pg.click("[data-card='%s']" % card)
+    pg.wait_for_selector(".fereastra:last-of-type " + sel, timeout=20000)
+    text = pg.inner_text(".fereastra:last-of-type " + sel)
+    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+    pg.wait_for_selector("#bk-fisier", timeout=20000)
+    return text
+
+
 def test_def_489_ecranul_banca_spune_ca_accepta_mt940(patron, firma_e2e):
     """489. Pașii: firma -> „Bancă”: ecranul spune, pe bănci, formatele acceptate — MT940 (.sta, .940, .txt), ING, alt tabel — iar fereastra
     de alegere a fișierului primește și fișierele MT940."""
     pregateste_firma(patron, firma_e2e)
     _banca(patron, firma_e2e)
     pg = patron.pg
-    formate = pg.inner_text("#bk-formate")
+    formate = _text_din_card(pg, "formate", "#bk-formate")   # [lotul 14, 687] formatele stau în cardul lor
     patron.captura("formatele")
     assert "MT940" in formate and ".sta" in formate and ".940" in formate, formate
     acc = pg.get_attribute("#bk-fisier", "accept")
@@ -331,7 +341,10 @@ def test_def_476_tva_transportului_facturat_e_pe_4426(patron, firma_e2e):
     assert "eroare" not in r, r
     patron.firma(firma_e2e["nume"])
     pg = patron.pg
-    _card(patron, "stocuri", ".nir-deschide")
+    _card(patron, "stocuri", "[data-card='nir']")
+    # [lotul 14, 687] NIR-urile lunii stau în cardul „NIR-urile lunii”: contabilul îl deschide, apoi apasă „Deschide NIR-ul”
+    pg.click("[data-card='nir']")
+    pg.wait_for_selector(".fereastra:last-of-type .nir-deschide", timeout=25000)
     pg.locator(".nir-deschide[data-numar='E2E476']").click()
     pg.wait_for_selector("#nir-detaliu-linii", timeout=25000)
     text = patron.fereastra()

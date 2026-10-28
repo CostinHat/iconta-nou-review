@@ -116,9 +116,10 @@ def test_def_599_balanta_altei_firme_cere_confirmare_si_intra_cu_cifrele_425(pat
     s, nume = firma_m12["schema"], firma_m12["nume"]
     _pas(patron, firma_m12, "Solduri ini")
     _incarca(patron, "balanta_saga_completa.xlsx", fisier_costin(), "#mig-salveaza-sold", tip=XLSX)
-    av = _txt(pg, "#mig-firma-fisier")
+    from conftest import text_din_card
+    av, av_cls = text_din_card(pg, "#mig-firma-fisier")   # [lotul 14, 687] avertismentul stă în cardul lui
     patron.captura("avertisment_firma")
-    assert pg.locator("#mig-firma-fisier.msg-avert").count() == 1, av
+    assert av_cls == "msg-avert", av
     assert av.startswith(MESAJ_599 % nume), av
     # 425: rândurile previzualizării, cu soldul la 1 ianuarie și rulajele anului din fișier
     assert _randul(pg, 24) == "24 intră 707 Venituri din vânzarea mărfurilor — 180.000,00 180.000,00 0,00 0,00", _randul(pg, 24)
@@ -158,8 +159,9 @@ def test_def_426_a_doua_balanta_a_altei_firme_cere_ambele_confirmari(patron, fir
         pytest.skip("rulat singur: balanța de înlocuit o scrie testul 599 de mai sus")
     _pas(patron, firma_m12, "Solduri ini")
     _incarca(patron, "balanta_saga_completa.xlsx", fisier_costin(), "#mig-salveaza-sold", tip=XLSX)
-    assert _txt(pg, "#mig-firma-fisier").startswith(MESAJ_599 % nume)
-    assert _txt(pg, "#mig-inlocuire").startswith("Firma are deja o balanță de deschidere la 30.09.2026: 19 conturi, debit 79.525,00 lei, "
+    from conftest import text_din_card
+    assert text_din_card(pg, "#mig-firma-fisier")[0].startswith(MESAJ_599 % nume)
+    assert text_din_card(pg, "#mig-inlocuire")[0].startswith("Firma are deja o balanță de deschidere la 30.09.2026: 19 conturi, debit 79.525,00 lei, "
                                                  "credit 79.525,00 lei.")
     patron.captura("doua_avertismente")
     pg.fill("#mig-data-bal", "2026-09-30")
@@ -188,7 +190,8 @@ def test_def_599_partenerii_altei_firme_cer_confirmarea(patron, firma_m12):
     if not randuri:
         pytest.skip("rulat singur: soldurile conturilor de terți le scrie balanța din testul 599 de mai sus")
     _incarca(patron, "parteneri_alta_firma.csv", parteneri_altei_firme(randuri), "#mig-salveaza-part")
-    av = _txt(pg, "#mig-firma-fisier")
+    from conftest import text_din_card
+    av = text_din_card(pg, "#mig-firma-fisier")[0]
     patron.captura()
     assert av.startswith("Fișierul pare al altei firme: în antetul lui scrie CUI 4221306 („SC Firmă Probă Rulaje SRL”), iar firma "
                          "aleasă, %s, are CUI %s." % (nume, cui)), av
@@ -210,7 +213,7 @@ def test_def_599_fisierul_firmei_alese_nu_cere_confirmarea(patron, firma_m12):
     _pas(patron, firma_m12, "Solduri parteneri")
     _incarca(patron, "parteneri_firma_aleasa.csv", continut, "#mig-salveaza-part")
     patron.captura()
-    assert pg.locator("#mig-firma-fisier").count() == 0
+    assert pg.locator("#mig-firma-fisier [data-card]").count() == 0
     assert "pare al altei firme" not in patron.fereastra()
 
 

@@ -285,7 +285,10 @@ def test_def_221_an_precedent_e_soldul_anului_precedent(patron, firma_e2e, firma
     zona = _alege_bilant(patron, 2024)
     patron.captura("an_preluarii_fara_precedent")
     motiv = pg.inner_text(".fereastra:last-of-type #bl-actiuni-motiv")
-    assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and "(F10, F20, F30)" in motiv, (motiv, zona[:300])   # 2023 nu e în aplicație
+    # [lotul 14, 687] 2024 începe înainte de preluare (soldurile sunt la 31.12.2024): bilanțul se REFUZĂ, cu trimiterea la „Import date ›
+    # Solduri inițiale”, în loc să ceară coloana „An precedent” (2023 nu e în aplicație); „Validează” rămâne inactiv, ca înainte
+    assert pg.locator(".fereastra:last-of-type #bl-val").is_disabled() and motiv == "Inactive până se rezolvă refuzul:", (motiv, zona[:300])
+    assert "nu se poate genera: perioada începe înainte de preluarea firmei" in zona and "Solduri inițiale" in zona, zona[:600]
     pg.fill(".fereastra:last-of-type #bl-an", "2023")
     pg.dispatch_event(".fereastra:last-of-type #bl-an", "change")
     # [237] refuzul stă o dată, dedesubt; lângă butoane — de ce sunt inactive și unde e motivul

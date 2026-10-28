@@ -286,9 +286,14 @@ def test_fara_rulaje_comportamentul_ramane_si_avertismentul_spune_ce_lipseste(fa
         _p, r = d101.pull(conn, SCH, Perioada(2026))
         with conn.cursor() as cur:
             cur.execute("SET LOCAL search_path TO %s, public" % SCH)
-        _xml, res = d101.genereaza(conn, SCH, Perioada(2026))
+        # [lotul 14, 683 / 695] D101 pe un an care începe înainte de preluare, fără rulajele lui, se REFUZĂ (nu doar avertizează):
+        # textul refuzului e al aceleiași lipse (`rulaje_preluate.lipsa_in_fereastra`); avertismentul rămâne pe balanță și pe cititorii
+        # care nu generează un document oficial
+        with pytest.raises(Exception, match="începe înainte de preluarea firmei"):
+            d101.genereaza(conn, SCH, Perioada(2026))
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             av_f20 = ba.avertismente_rulaje(cur, SCH, 2026)
+            av_d101 = rp.avertisment(cur, SCH, 2026, "d101")
         with conn.cursor() as cur:
             av_2027 = rp.avertisment(cur, SCH, 2027, "balanta")
         conn.rollback()
@@ -301,7 +306,7 @@ def test_fara_rulaje_comportamentul_ramane_si_avertismentul_spune_ce_lipseste(fa
     assert av["motiv"].partition(": ")[0] == "Rulajele de la 01.01.2026 până la 30.09.2026 lipsesc", av["motiv"]
     assert av["motiv"].partition("Pe 2026, ")[2].partition(". Importă")[0] == rp.EFECTE["balanta"], av["motiv"]
     # aceeași afirmație ajunge la D101 și la F20, fiecare cu efectul ei (o singură sursă a textului: `rulaje_preluate.avertisment`)
-    assert av["motiv"].replace(rp.EFECTE["balanta"], rp.EFECTE["d101"]) in res.avertismente, res.avertismente
+    assert av_d101 and av["motiv"].replace(rp.EFECTE["balanta"], rp.EFECTE["d101"]) == av_d101["motiv"], av_d101
     assert av_f20 == [av["motiv"].replace(rp.EFECTE["balanta"], rp.EFECTE["bilant"])], av_f20
     assert av_2027 is None
 

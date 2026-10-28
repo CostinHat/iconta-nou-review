@@ -26,6 +26,8 @@ iar o nouă propunere închide numai ce a rămas cu sold."""
 import datetime
 from decimal import Decimal
 
+from core.pdf_util import data_ro as _data_ro
+
 from core import bilant_api as _ba
 from core import motor as _m
 from core import eticheta_nota as _et
@@ -160,3 +162,144 @@ def ciorne(cur, schema, an, azi=None):
         return None
     return {"an": an, "luna": 12, "note": [{"id": nid, "descriere": d, "eticheta": _et.nota(cur, schema, nid)} for nid, d in note],
             "la_zi": all(corespunde(cur, schema, nid, zi) for nid, _d in note), "incheiat": an_incheiat(an, azi)}
+
+
+# ── REGULARIZAREA TVA LA SFÂRȘITUL PERIOADEI FISCALE (lotul 14, deficiența 688) ──────────────────────────────────────────────────────
+# Comanda Costin 14.1, verbatim: „Închiderea lunii nu închide TVA-ul: F1 09/2026 e blocată cu «Nimic nu oprește închiderea», dar balanța
+# lunii are 4426 sold final D 210,00 și 4427 sold final C 210,00, fără 4423/4424; în octombrie soldurile se cumulează. La plătitorii de
+# TVA, închiderea trebuie să propună nota 4427 = 4426 + 4423/4424 pe perioada fiscală a firmei (lunar sau trimestrial) și să refuze
+# blocarea cât 4426/4427 au sold.” Aceeași regularizare ca la 31.12 (`motor.regularizare_tva`, OMFP 1802/2014, conturile 4423 / 4424 /
+# 4426 / 4427), dar pe ULTIMA LUNĂ A PERIOADEI FISCALE (luna, sau a treia lună a trimestrului): nota e ciornă, datată în ultima zi a
+# lunii, sursa `regularizare_tva`, și intră în evidență numai prin validare. În decembrie regularizarea e a închiderii anului (cele două
+# note ale lui `propune`): una singură, nu două.
+SURSA_TVA = "regularizare_tva"
+DESCRIERE_TVA_LUNA = "Regularizarea TVA la %s"
+
+
+def _profil_tva(cur, schema):
+    cur.execute(f"SELECT platitor_tva, tip_decont FROM {schema}.firma_profil WHERE id = 1")
+    r = cur.fetchone()
+    if not r:
+        return {}
+    return dict(r) if isinstance(r, dict) else {"platitor_tva": r[0], "tip_decont": r[1]}
+
+
+def sfarsit_de_perioada_tva(cur, schema, an, luna):
+    """True dacă `luna` încheie perioada fiscală TVA a unei firme PLĂTITOARE de TVA (lunar: orice lună; trimestrial: 3 / 6 / 9 / 12; semestrial
+    și anual: 6 / 12 și 12). Tipul perioadei necompletat se tratează ca lunar (cea mai strictă): controlul se aplică, nu se tace."""
+    from core.common import Perioada, fereastra_tva, perioada_tva_tip
+    prof = _profil_tva(cur, schema)
+    if prof.get("platitor_tva") is not True:
+        return False
+    try:
+        tip = perioada_tva_tip(prof)
+    except ValueError:
+        tip = "L"
+    _inc, sf = fereastra_tva(Perioada(an, luna=luna), tip)
+    ultima = sf - datetime.timedelta(days=1)
+    return (ultima.year, ultima.month) == (int(an), int(luna))
+
+
+def _sold_tva(solduri):
+    """(sold debitor 4426, sold creditor 4427) pe toate analiticele — pentru textul blocajului."""
+    d = sum((Decimal(str(sd or 0)) - Decimal(str(sc or 0)) for c, (sd, sc) in (solduri or {}).items() if str(c).split(".")[0] == "4426"),
+            Decimal("0"))
+    c = sum((Decimal(str(sc or 0)) - Decimal(str(sd or 0)) for ct, (sd, sc) in (solduri or {}).items() if str(ct).split(".")[0] == "4427"),
+            Decimal("0"))
+    return d, c
+
+
+def tva_de_regularizat(cur, schema, an, luna):
+    """None când nu e nimic de regularizat (firma nu plătește TVA, luna nu încheie perioada fiscală, luna e dinaintea soldurilor de preluare,
+    4426 / 4427 fără sold); altfel {"note": [notele regularizării], "sold_4426", "sold_4427", "ciorna": id sau None}. `cur` = RealDictCursor.
+    Soldurile sunt cele ale notelor VALIDATE la sfârșitul lunii (`bilant_api.sold_la`)."""
+    import calendar
+    if not sfarsit_de_perioada_tva(cur, schema, an, luna):
+        return None
+    zi = datetime.date(an, luna, calendar.monthrange(an, luna)[1])
+    s = _ba.sold_la(cur, schema, zi)
+    if s is None:
+        return None
+    note = _m.regularizare_tva(s)
+    if not note:
+        return None
+    d, c = _sold_tva(s)
+    ciorne = _ciorne_tva(cur, schema, zi, luna)
+    return {"note": note, "sold_4426": d, "sold_4427": c, "ciorna": ciorne[0][0] if ciorne else None}
+
+
+def _ciorne_tva(cur, schema, zi, luna):
+    """Ciornele regularizării perioadei: în decembrie cele ale închiderii anului (descrierea TVA), altfel cele cu sursa regularizării."""
+    if luna == 12:
+        cur.execute(f"SELECT id, descriere FROM {schema}.inregistrari WHERE sursa = %s AND data = %s AND status = 'ciorna' AND descriere = %s "
+                    "ORDER BY id", (SURSA, zi, DESCRIERE_TVA % zi.year))
+    else:
+        cur.execute(f"SELECT id, descriere FROM {schema}.inregistrari WHERE sursa = %s AND data = %s AND status = 'ciorna' ORDER BY id",
+                    (SURSA_TVA, zi))
+    return [(r["id"], r["descriere"]) if isinstance(r, dict) else (r[0], r[1]) for r in cur.fetchall()]
+
+
+def propune_tva_luna(cur, schema, an, luna):
+    """Scrie ciorna regularizării TVA a perioadei care se încheie cu (an, luna), datată în ultima zi a lunii (cursor RealDictCursor, în
+    tranzacția apelantului). Întoarce {"note": [{id, descriere, linii, document}], "inlocuite", "nimic"}. În decembrie: propunerea închiderii
+    anului (`propune`). ValueError cu motivul când nu se poate (luna în curs, luna nu încheie perioada fiscală, o ciornă la validare)."""
+    import calendar
+    from core import coada_api as _coada, inchidere_luna as _il
+    in_curs = _il.luna_in_curs(an, luna)
+    if in_curs:
+        raise ValueError("Regularizarea TVA se propune după ce luna s-a încheiat: " + in_curs)
+    if not sfarsit_de_perioada_tva(cur, schema, an, luna):
+        raise ValueError("Regularizarea TVA se face la sfârșitul perioadei fiscale a firmei (lunar, sau trimestrial în lunile 3, 6, 9, 12), "
+                         "iar firma e plătitoare de TVA: luna %02d/%d nu încheie o perioadă fiscală." % (luna, an))
+    if luna == 12:
+        return propune(cur, schema, an)
+    zi = datetime.date(an, luna, calendar.monthrange(an, luna)[1])
+    s = _ba.sold_la(cur, schema, zi)
+    if s is None:
+        raise ValueError("Regularizarea TVA nu se poate propune: soldurile de la %s nu sunt în aplicație (evidența firmei începe după "
+                         "soldurile de preluare)." % _data_ro(zi))
+    vechi = _ciorne_tva(cur, schema, zi, luna)
+    for nid, _d in vechi:
+        if _coada.nota_la_validare(cur, schema, nid):
+            raise ValueError("Propunerea de regularizare a TVA (nota %s) e la validare în coadă — nu se înlocuiește cât o verifică cabinetul."
+                             % _et.nota(cur, schema, nid))
+    doc_vechi = {d: _rc.documentul_notei(cur, schema, nid) for nid, d in vechi}
+    for nid, _d in vechi:
+        if _nd.respinsa(cur, schema, nid):
+            _nd.sterge_respinsa(cur, schema, nid)
+        else:
+            _nd.sterge_ciorna_inlocuita(cur, schema, nid)
+    linii = _m.regularizare_tva(s)
+    note = []
+    if linii:
+        descriere = DESCRIERE_TVA_LUNA % _data_ro(zi)
+        doc = doc_vechi.get(descriere)
+        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status, document_ref)
+                        VALUES (%s, %s, %s, 'ciorna', %s) RETURNING id""", (zi, descriere, SURSA_TVA, doc))
+        r = cur.fetchone()
+        nid = r["id"] if isinstance(r, dict) else r[0]
+        if not doc:
+            _rc._cu_document_intern(cur, schema, "nota_calcul", zi, r)
+        for n in linii:
+            _rc.adauga_linie(cur, schema, nid, n["debit"], n["credit"], n["suma"])
+        note.append({"id": nid, "descriere": descriere, "linii": [(n["debit"], n["credit"], str(n["suma"])) for n in linii],
+                     "document": _rc.documentul_notei(cur, schema, nid)})
+    return {"note": note, "inlocuite": [nid for nid, _d in vechi], "nimic": not note}
+
+
+def refuz_validare_tva_luna(cur, schema, nota_id):
+    """Motivul pentru care nota de regularizare a TVA `nota_id` (sursa `regularizare_tva`) nu se validează, sau None: ea trebuie să fie încă
+    regularizarea soldurilor 4426 / 4427 VALIDATE la sfârșitul lunii ei (o operațiune validată după propunere o face greșită; nota validată
+    nu se mai modifică). Chemat din `jurnal_api.valideaza`, ca `refuz_validare`."""
+    cur.execute(f"SELECT data, sursa FROM {schema}.inregistrari WHERE id = %s", (nota_id,))
+    r = cur.fetchone()
+    zi, sursa = (r["data"], r["sursa"]) if isinstance(r, dict) else (r or (None, None))
+    if sursa != SURSA_TVA:
+        return None
+    s = _ba.sold_la(cur, schema, zi)
+    p = _m.regularizare_tva(s) if s is not None else []
+    if _linii(cur, schema, nota_id) != sorted((n["debit"], n["credit"], Decimal(n["suma"])) for n in p):
+        return ("Nota de regularizare a TVA %s nu mai corespunde soldurilor 4426 / 4427 de la %s din notele validate: după propunere s-au "
+                "validat operațiuni ale lunii sau nota a fost modificată. Propune din nou regularizarea din Închidere lună — o recalculează "
+                "din soldurile de acum." % (_et.nota(cur, schema, nota_id), _data_ro(zi)))
+    return None

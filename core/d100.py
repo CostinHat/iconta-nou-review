@@ -580,6 +580,14 @@ def genereaza(conn, schema, perioada, manual=None):
     if erori:
         raise ValueError(" ".join(erori))
 
+    # [lotul 14, deficiența 695] perioada care începe înainte de preluare se refuză (sau se completează cu rulajele importate, când fereastra
+    # e cumulul de la 01.01 — impozitul pe profit): D100 micro pe T3 cu preluare la 31.08 declara numai septembrie, fără niciun semn
+    import psycopg2.extras as _E
+    from core import rulaje_preluate as _rp
+    _inc, _sf = (_DeLaInceputulAnului(an, perioada.trim) if (prof.get("regim_fiscal") or "").lower() == "profit" else perioada).interval()
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as _cr:
+        _rp.refuza_fereastra(_cr, schema, _inc, _sf, "D100 pe T%d/%d" % (perioada.trim, an))
+
     obligatii, detaliu = obligatii_perioada(conn, schema, perioada, prof, venituri, cheltuieli, cota)
 
     # [zero_base_refuz_v1 10.08.2026] D100 FĂRĂ secțiunea <obligatie> = XML respins de DUKIntegrator („lipsa sectiune obligatorie”).

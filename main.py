@@ -4098,6 +4098,13 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept
         return _uc_tenants.tenant_amortizare(tenant_id, an, luna, ctx)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
+@app.post("/tenants/{tenant_id}/inchidere/regularizare-tva")
+def tenant_regularizare_tva_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
+    """[lotul 14, deficiența 688] Propune (ciornă) nota de regularizare a TVA — 4427 = 4426, diferența în 4423 / 4424 — la sfârșitul perioadei fiscale."""
+    try:
+        return _uc_tenants.tenant_regularizare_tva_luna(tenant_id, an, luna, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
 @app.post("/tenants/{tenant_id}/amortizare/restanta")
 def tenant_amortizare_restanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_drept(_drepturi.PREGATI))):
     """[deficiența 281] Amortizarea tuturor lunilor restante până la (an, luna) inclusiv, o notă pe lună, dintr-o singură acțiune."""
