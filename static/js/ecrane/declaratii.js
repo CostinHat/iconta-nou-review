@@ -9,7 +9,7 @@
 import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=c6c45aefe4";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";   // [lotul 10, 431] refuzul care trimite la ce lipsește
-import { cautaInLista } from "./emitere_ecran.js?v=d4175d6e88";   // [lotul 13, 653] căutarea în lista țărilor (aceeași ca la articole)
+import { cautaInLista } from "./emitere_ecran.js?v=ec25cec559";   // [lotul 13, 653] căutarea în lista țărilor (aceeași ca la articole)
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
 const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic

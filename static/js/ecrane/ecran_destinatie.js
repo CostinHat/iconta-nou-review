@@ -14,7 +14,7 @@ import { panouConectareSPV } from "./setari.js?v=ae0ddd2b13";
 import { randeazaProduse } from "./produse_ecran.js?v=4c304d9be3";
 import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=91f9fce823";   // [lotul 11, decizia 10.3] fișa partenerului
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
-import { meniuMigrarePerFirma } from "./migrare.js?v=516e78c4d3";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
+import { meniuMigrarePerFirma } from "./migrare.js?v=ed944fc31a";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export const ECRANE = {

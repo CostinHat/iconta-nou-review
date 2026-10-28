@@ -1,5 +1,5 @@
 {
- "ui_hash": "08235d1bdf8b5fd6",
+ "ui_hash": "5f1a9b22d7aac511",
  "rezolutii": [
   "1920x1080",
   "1366x768"
@@ -22,12 +22,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 9664
+      "depasire": 10482
      }
     ],
     "zona_h": 746,
-    "zona_cont": 10410,
-    "zona_depasire": 9664,
+    "zona_cont": 11228,
+    "zona_depasire": 10482,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    },
@@ -47,12 +47,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 9976
+      "depasire": 10794
      }
     ],
     "zona_h": 434,
-    "zona_cont": 10410,
-    "zona_depasire": 9976,
+    "zona_cont": 11228,
+    "zona_depasire": 10794,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    }
@@ -2206,11 +2206,11 @@
     "bara_pagina": 0,
     "bara_desktop": 0,
     "depasire": 0,
-    "corp_h": 113,
-    "fer_h": 172,
+    "corp_h": 933,
+    "fer_h": 992,
     "lateral": 0,
     "cutii": [],
-    "titlu": "Activitate cabinete",
+    "titlu": "Cabinete",
     "verdict": "ok"
    },
    "1366x768": {
@@ -2256,12 +2256,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 1616
+      "depasire": 1540
      }
     ],
     "zona_h": 785,
-    "zona_cont": 2401,
-    "zona_depasire": 1616,
+    "zona_cont": 2325,
+    "zona_depasire": 1540,
     "titlu": "Analytics public — ultimele 30 de zile",
     "verdict": "ok-tabel"
    },
@@ -2281,12 +2281,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 1928
+      "depasire": 1852
      }
     ],
     "zona_h": 473,
-    "zona_cont": 2401,
-    "zona_depasire": 1928,
+    "zona_cont": 2325,
+    "zona_depasire": 1852,
     "titlu": "Analytics public — ultimele 30 de zile",
     "verdict": "ok-tabel"
    }
@@ -2308,12 +2308,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 4207
+      "depasire": 2902
      }
     ],
     "zona_h": 819,
-    "zona_cont": 5026,
-    "zona_depasire": 4207,
+    "zona_cont": 3721,
+    "zona_depasire": 2902,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    },
@@ -2333,12 +2333,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 4519
+      "depasire": 3214
      }
     ],
     "zona_h": 507,
-    "zona_cont": 5026,
-    "zona_depasire": 4519,
+    "zona_cont": 3721,
+    "zona_depasire": 3214,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    }

@@ -11,7 +11,7 @@ import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursVa
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { textStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { optiuniTara as _optiuniTara, taraDinCui, nepotrivireTara } from "./tari_partener.js?v=43a0fddc7d";   // [lotul 12, C160] sursa unică
+import { optiuniTara as _optiuniTara, taraDinCui, nepotrivireTara } from "./tari_partener.js?v=defa2c5990";   // [lotul 12, C160] sursa unică
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444] numele ANAF vs fișa clientului
 import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)

@@ -13,6 +13,14 @@ Citește CLAUDE.md (versiunea din 23.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**28.10.2026 seara — COMANDA 14.2 (lotul 14, completare) EXECUTATĂ PÂNĂ LA POARTĂ; NEPUBLICATĂ.** Lucrul e pe `/home/costin/iconta_lot14`, ramura `lucru/lot14-2`
+(din `f3793e5b`, producția după 14.1). Deciziile lui Costin la raportul 14.1 sunt în DECIZII „Comanda 14.2” (numerele lui de viață rămân 687, 683, 695, 688, 694, 696;
+plafonul micro, reconcilierea 371 și verdictul 694 pliat — după pilot). Rezolvate cu e2e + mutație + dovadă pe copia firmelor de test: 708, 712, 714, 559.1, 595.1;
+parțiale: 715 (dovada pe copie lipsește: jurnalul de audit nu se clonează), 268.2 ([EXTERN]: token Postmark + verificarea domeniului), 527.1 (soldurile deja preluate pe 117 rămân).
+Dovezile fără ecran (sinteza din 27.10, D301 09/2026 la F3) sunt în DECIZII. Artefactele vizuale sunt refăcute pe instanța izolată a plasei (nu pe statica producției:
+`publica_static.py --din-arbore` din worktree ar scrie în `/home/costin/iconta_publicat`, care e statica producției). **Ce urmează:** `sh scripts/poarta_lot.sh` (detașat); pe VERDE: backup,
+ff în `~/iconta_nou`, post-commit manual, restart, four-way, ZIP, raport. Nicio migrare nouă în 14.2.
+
 **28.10.2026 — COMANDA 14.1 (lotul 14) EXECUTATĂ PÂNĂ LA POARTĂ; NEPUBLICATĂ.** Lucrul e pe worktree `/home/costin/iconta_lot14`, ramura `lucru/lot14-2026-10-27`
 (din `52b63b73`, producția). Numerele din comandă (687, 683, 695, 688, 694, 696) au coliziune cu cele ale lotului 13 și sunt înregistrate ca C203–C208 (DECIZII).
 Rezolvate cu dovadă pe copia firmelor de test + test de capăt la capăt: C203 (687, mecanismul `navigator._zonaDerulare` + carduri; scan 0 din 68 ferestre
