@@ -273,3 +273,25 @@ def fisier_117():
     """Balanța cu 117 fără analitic, pentru dovada pe firmele de test (`frontend_test/dovada/dovezi_lot14_2.json`, pasul `incarca`): aceeași sursă."""
     from core.test_import_saga import _cp1250
     return _cp1250(BALANTA_117)
+
+
+# ── 595.1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_595_1():
+    for f in firma_noua():
+        yield f
+
+
+def test_def_595_1_d398_e_inactiva_cat_firma_nu_a_raspuns_da_la_oss(patron, firma_595_1):
+    """595.1. Pașii: firmă neplătitoare înregistrată art.317, fără răspuns la „Înregistrată în regimul special OSS” -> Declarații: D398 inactivă la
+    pasul 1, cu motivul (nu ai răspuns în Date firmă), ca D318. Proba completă a drumului (Nu / Da în Date firmă) e în
+    `e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma`. MUTAȚIA: D398 gri scos din `neaplicabile_regim` -> ROȘU."""
+    from e2e_lot13_decl import _F as _FD, _card, _optiune
+    from e2e_lot12_cx3 import _neplatitor_art317
+    f = firma_595_1
+    _neplatitor_art317(patron, f)
+    patron.firma(f["nume"])
+    _card(patron, "declaratii", _FD + "#dec-tip")
+    o = _optiune(patron.pg, "d398")
+    patron.captura("d398_gri")
+    assert o["dez"] and "nu ai răspuns" in o["titlu"] and "Date firmă" in o["titlu"], o

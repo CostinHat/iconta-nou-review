@@ -202,7 +202,7 @@
     "valoare": "400"
    },
    {
-    "alege": "#op-cota",
+    "completeaza": "#op-cota",
     "valoare": "21"
    },
    {
@@ -221,5 +221,67 @@
    }
   ],
   "captura": "714_f2_vechi_refuz_tva_la_incasare.png"
+ },
+ {
+  "nr": "708",
+  "public": true,
+  "descriere": "Pagina publică › Acces › Intră în cont › cabinet: formularul de autentificare are emailul cu autocomplete=username și parola cu current-password (managerul de parole îl recunoaște). Numai citire.",
+  "pasi": [
+   {
+    "click": "#pagina-acces-btn"
+   },
+   {
+    "click": "#acces-intra"
+   },
+   {
+    "click": "#lg-cabinet"
+   },
+   {
+    "asteapta": "#login-form #login-email"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#login-form #login-email[autocomplete='username']"
+   },
+   {
+    "exista": "#login-form #login-parola[autocomplete='current-password']"
+   }
+  ],
+  "captura": "708_public_autentificare_atribute.png"
+ },
+ {
+  "nr": "708",
+  "firma": "tenant_9049",
+  "descriere": "F1: Acces client › «Invită client nou»: emailul și numele invitatului cer managerului de parole să le ignore (data-bwignore) și nu au atribute de autentificare (înainte: Bitwarden propunea «Actualizează autentificarea existentă»). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-acces"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #ac-btn-invita"
+   },
+   {
+    "click": ".fereastra:last-of-type #ac-btn-invita"
+   },
+   {
+    "asteapta": "#ac-email"
+   },
+   {
+    "pauza": 400
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#ac-email[data-bwignore='true']"
+   },
+   {
+    "exista": "#ac-nume[data-bwignore='true']"
+   }
+  ],
+  "captura": "708_f1_invitatie_client_fara_autentificare.png"
  }
 ]
