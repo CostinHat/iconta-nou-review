@@ -448,7 +448,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T05 — Nota contabilă — de la document la registrul-jurnal
 
-*clasa MECANIC · 40 rute · 29 schimba date · 21 firme il pot exercita azi*
+*clasa MECANIC · 40 rute · 29 schimba date · 20 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/dividende-impartire`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/jurnal/{nota_id}/depasita`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
 
@@ -1222,7 +1222,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T13 — Trecerea de regim fiscal
 
-*clasa MECANIC · 12 rute · 6 schimba date · 21 firme il pot exercita azi*
+*clasa MECANIC · 12 rute · 6 schimba date · 20 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/migrare/vector`, `/tenants/{tenant_id}/firma-profil`, `/tenants/{tenant_id}/firma-profil/date`, `/tenants/{tenant_id}/tva-incasare/neexigibile`, `/tenants/{tenant_id}/tva-incasare/verifica-anaf`, `/tenants/{tenant_id}/vector`*
 
@@ -1873,7 +1873,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T21 — Rețeta și producția
 
-*clasa MECANIC · 9 rute · 7 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 9 rute · 7 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/produse`, `/tenants/{tenant_id}/retete`*
 
