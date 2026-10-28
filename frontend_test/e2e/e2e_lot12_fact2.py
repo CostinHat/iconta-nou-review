@@ -62,7 +62,7 @@ def _operatiune(patron, firma, cheie):
     pg = patron.pg
     pg.click("#fa-operatiuni")
     pg.wait_for_selector("[data-op]", timeout=20000)
-    pg.locator("button[data-op='%s']" % cheie).click()
+    pg.click("button[data-op='%s']" % cheie)   # [lotul 14, 687] prin pagină: fila cu operațiunea se arată ca omul
     pg.wait_for_selector("#op-trimite", timeout=10000)
     return pg
 

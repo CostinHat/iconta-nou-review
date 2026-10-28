@@ -526,7 +526,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         </section>`).join("")}`;
     siraCarduri(corp.querySelector("#op-carduri"), [{ id: "propune", ton: "info",
       text: `Aplicația propune singură nota pentru ${cate(CU_PROPUNERE.length, "operațiune", "operațiuni")}`, titlu: "Ce propune aplicația singură",
-      deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Ce propune aplicația singură</h2><p class="ecran-nota">${esc(GRUPURI[0][2])}</p>
+      deschide: (fer) => { fer.innerHTML = `<h2 class="pf-titlu">Ce propune aplicația singură</h2><p class="ecran-nota">${esc(GRUPURI[0][2])}</p>
         ${CU_PROPUNERE.map((o) => `<p class="ecran-nota op-propune" data-propune="${o.cheie}"><b>${esc(o.titlu)}</b> — se propune automat: ${esc(o.propune)}</p>`).join("")}`; } }], nav);
     // [lotul 14, 687] două liste (lunare / rare) în file: una la vedere, ca fereastra să încapă pe ecran; prima fereastră deschisă e a lunarelor
     corp.querySelectorAll(".rap-tab[data-grup]").forEach((b) => b.addEventListener("click", () => {

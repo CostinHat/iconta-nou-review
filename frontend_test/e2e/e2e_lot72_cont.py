@@ -125,6 +125,8 @@ def test_def_319_cardurile_administratorului_cu_textul_aprobat_se_bifeaza_din_ec
         assert pg.locator("#inceput-carduri .inceput-card").count() == 0, "toate făcute: cardurile dispar"
         e.captura("toate_facute")
         pg.click("#nav-ghid")
+        pg.wait_for_selector("[data-card='ans-card-inceput']", timeout=20000)   # [lotul 14, 687] „Primii pași” e un card al Prezentării
+        pg.click("[data-card='ans-card-inceput']")
         pg.wait_for_selector("#ans-inceput .inceput-card", timeout=20000)
         assert pg.locator("#ans-inceput .inceput-card.inceput-facut").count() == 3
         e.captura("ghidul_din_semnul_intrebarii")

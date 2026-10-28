@@ -1137,6 +1137,7 @@ def test_def_510_productia_intra_in_stoc_si_se_vinde_pe_factura(patron, firma_op
     pg = _op(patron, f, "productie")
     _completeaza(pg, [("data", D), ("operatie", "obtinere"), ("produs", "Masa E2E"), ("um", "buc"), ("cantitate", "10"),
                       ("cost_standard", "100"), ("cost_efectiv", "1100"), ("gestiune", "Magazia PF")])
+    pg.wait_for_function("() => ((document.querySelector('#op-produs-stare') || {}).innerText || '').trim() !== ''", timeout=15000)   # starea produsului vine după verificarea din nomenclator
     assert "Produs nou" in pg.inner_text("#op-produs-stare")
     ultima = _ultima(f)
     m = _genereaza(pg)

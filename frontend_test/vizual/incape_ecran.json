@@ -1,5 +1,5 @@
 {
- "ui_hash": "62328edddc36ac4f",
+ "ui_hash": "08235d1bdf8b5fd6",
  "rezolutii": [
   "1920x1080",
   "1366x768"
@@ -22,12 +22,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 10568
+      "depasire": 9664
      }
     ],
     "zona_h": 746,
-    "zona_cont": 11314,
-    "zona_depasire": 10568,
+    "zona_cont": 10410,
+    "zona_depasire": 9664,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    },
@@ -47,12 +47,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 10880
+      "depasire": 9976
      }
     ],
     "zona_h": 434,
-    "zona_cont": 11314,
-    "zona_depasire": 10880,
+    "zona_cont": 10410,
+    "zona_depasire": 9976,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    }
@@ -1220,12 +1220,12 @@
       "cls": "mig-lista zona-derulare",
       "id": "cf-lista",
       "tabel": true,
-      "depasire": 559
+      "depasire": 495
      }
     ],
     "zona_h": 634,
-    "zona_cont": 1193,
-    "zona_depasire": 559,
+    "zona_cont": 1129,
+    "zona_depasire": 495,
     "titlu": "Control fiscal",
     "verdict": "ok-tabel"
    },
@@ -1245,12 +1245,12 @@
       "cls": "mig-lista zona-derulare",
       "id": "cf-lista",
       "tabel": true,
-      "depasire": 871
+      "depasire": 807
      }
     ],
     "zona_h": 322,
-    "zona_cont": 1193,
-    "zona_depasire": 871,
+    "zona_cont": 1129,
+    "zona_depasire": 807,
     "titlu": "Control fiscal",
     "verdict": "ok-tabel"
    }
@@ -2308,12 +2308,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 3946
+      "depasire": 4207
      }
     ],
     "zona_h": 819,
-    "zona_cont": 4765,
-    "zona_depasire": 3946,
+    "zona_cont": 5026,
+    "zona_depasire": 4207,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    },
@@ -2333,12 +2333,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 4258
+      "depasire": 4519
      }
     ],
     "zona_h": 507,
-    "zona_cont": 4765,
-    "zona_depasire": 4258,
+    "zona_cont": 5026,
+    "zona_depasire": 4519,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    }

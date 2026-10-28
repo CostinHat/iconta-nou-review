@@ -25,7 +25,7 @@ from conftest import _ecran, cui_cu_control, sql
 from e2e_bloc_a import cabinet_separat, cont_asistent
 from e2e_bloc_b import (_articol_cu_stoc, _asigura_serie, _client, _coada_nota, _de_validat, _deschide_rand, _emitere, _firma_gata, _jurnal,
                         _linie, _nota_jn, _nota_prin_ecran, _respinge_din_coada, ana, ana_cont)  # noqa: F401 — fixture (ana, ana_cont)
-from e2e_bloc_d import _nir_lista, _nir_respins, _stocuri, firma_cv  # noqa: F401 — fixture (firma_cv)
+from e2e_bloc_d import _nir_lista, _nir_respins, _nirurile_lunii, _stocuri, firma_cv  # noqa: F401 — fixture (firma_cv)
 
 AZI = _dt.date.today()
 LUNA = (AZI.year, AZI.month)
@@ -64,6 +64,7 @@ def test_def_499_motivul_incheiat_de_om_nu_primeste_al_doilea_punct_pe_nir(patro
     motiv = "Lipsește avizul %s." % numar
     _nir_respins(firma_cv, numar, "Marfa %s" % numar, motiv)
     _stocuri(patron, firma_cv)
+    _nirurile_lunii(patron)   # [lotul 14, 687] „NIR-urile lunii” e un card al ecranului Stocuri, deschis la clic
     txt = " ".join(_nir_lista(patron).split())
     patron.captura("nir_respins")
     assert "Respins la validare: %s " % motiv in txt, txt

@@ -479,6 +479,8 @@ def test_def_320_primii_pasi_pe_cabinetul_nou_pas_cu_pas_verzi_dispar_si_raman_i
     assert pg.eval_on_selector("#inceput-carduri", "z => z.hidden") is True
     e.captura("5_toate_disparute")
     pg.click("#nav-ghid")
+    pg.wait_for_selector("[data-card='ans-card-inceput']", timeout=20000)   # [lotul 14, 687] „Primii pași” e un card al Prezentării
+    pg.click("[data-card='ans-card-inceput']")
     pg.wait_for_selector("#ans-inceput .inceput-card", timeout=20000)
     carduri = pg.eval_on_selector_all("#ans-inceput .inceput-card", "cs => cs.map((c) => [c.dataset.card, c.classList.contains('inceput-facut'), "
                                       "c.querySelectorAll('button[data-inceput]').length])")

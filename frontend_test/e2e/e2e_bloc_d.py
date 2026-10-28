@@ -172,10 +172,12 @@ def _nirurile_lunii(ecran):
     la ecranul Stocuri și deschide cardul, ca să vadă lista proaspătă."""
     pg = ecran.pg
     for _ in range(4):
-        if pg.locator(".fereastra:last-of-type [data-card='nir']").count():
+        try:
+            pg.wait_for_selector(".fereastra:last-of-type [data-card='nir']", timeout=4000)   # ecranul Stocuri se redesenează după salvare: se așteaptă cardul
             break
-        pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
-        pg.wait_for_timeout(500)
+        except Exception:  # noqa: BLE001 — Playwright TimeoutError: fereastra de deasupra se închide, ca omul
+            pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
+            pg.wait_for_timeout(500)
     pg.click(".fereastra:last-of-type [data-card='nir']")
     pg.wait_for_selector(".fereastra:last-of-type .pf-lista", timeout=20000)
 

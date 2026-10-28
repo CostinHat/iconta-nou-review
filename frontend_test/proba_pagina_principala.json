@@ -1,5 +1,5 @@
 {
- "ui_hash": "62328edddc36ac4f",
+ "ui_hash": "08235d1bdf8b5fd6",
  "roluri": {
   "cabinet": {
    "structura": [
@@ -53,7 +53,7 @@
    ],
    "control": {
     "h": 100,
-    "text": "8 5 0 2",
+    "text": "8 5 0 1",
     "lumini": [
      "rosu",
      "galben",

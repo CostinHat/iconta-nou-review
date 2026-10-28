@@ -668,7 +668,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **9057** | contorul `tenant_schema_seq` |
+| **9440** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**

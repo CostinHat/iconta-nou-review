@@ -47,7 +47,7 @@ from e2e_lot12_form2 import invitatie_642  # noqa: F401 — fixtură (C179, înr
 LUNA = (AZI.year, AZI.month)
 DANTE, DANTE_NUME = "14399840", "DANTE INTERNATIONAL SA"
 CUI_ALTUL = "1439984"            # CUI-ul tastat greșit (o cifră scoasă): ANAF n-a adus nimic pentru el
-_CORP = "() => [...document.querySelectorAll('.fereastra-corp')].pop()"
+_CORP = "() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(); return c.querySelector('.zona-derulare') || c; }"   # [lotul 14, 687] lista derulează în zona ei
 
 
 def _tag():

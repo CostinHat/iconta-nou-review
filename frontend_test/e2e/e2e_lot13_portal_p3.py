@@ -99,7 +99,7 @@ def test_def_525_din_refuzul_dividendului_la_asociati_si_ramai_acolo_dupa_salvar
         b.click()
         pg.wait_for_selector(".fereastra:last-of-type #as-adauga", timeout=25000)
         pg.wait_for_timeout(800)
-        assert pg.evaluate(_SUS) > 0 and pg.evaluate(_IN_VEDERE, "#as-adauga"), "Date firmă deschisă de la început, nu la Asociați"
+        assert pg.evaluate("() => ((document.querySelector('.fereastra:last-of-type .rap-tab-activ[data-fila]') || {}).dataset || {}).fila") == "asociati" and pg.evaluate(_IN_VEDERE, "#as-adauga"), "Date firmă deschisă de la început, nu la Asociați"   # [lotul 14, 687] fila Asociați e cea activă (nu mai derulează)
         patron.captura("deschisa_la_asociati")
         pg.fill("#as-1-nume", "Ion Popescu")
         pg.fill("#as-1-cnp", CNP_A)
@@ -162,9 +162,9 @@ def test_def_c71_1_pfa_fara_campurile_bilantului_si_fara_regim_micro_profit(patr
     assert pg.locator("select#vf-regim_fiscal").count() == 0
     regim = pg.inner_text("#vf-camp-regim_fiscal")
     assert "Nu se aplică" in regim and "D212" in regim, regim
-    pg.locator("#vf-camp-regim_fiscal").scroll_into_view_if_needed()
+    pg.eval_on_selector("#vf-camp-regim_fiscal", "e => e.scrollIntoView({block: 'center'})")   # [lotul 14, 687] prin pagină: fila câmpului se arată
     patron.captura("pfa_fara_regim_micro_profit")
-    pg.locator("#df-reg_com").scroll_into_view_if_needed()
+    pg.eval_on_selector("#df-reg_com", "e => e.scrollIntoView({block: 'center'})")
     patron.captura("pfa_fara_campurile_bilantului")
 
 

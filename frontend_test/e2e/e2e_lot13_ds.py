@@ -138,7 +138,7 @@ def test_def_673_509_operatiunea_se_deschide_in_fereastra_de_lucru_cat_ecranul(p
       return { clase: f.className, lat: b.width, inalt: b.height, vw: innerWidth, vh: innerHeight, lateral: c.scrollWidth - c.clientWidth }; }""")
     patron.captura("marja_turism_fereastra_de_lucru")
     assert "fer-lucru" in r["clase"], r
-    assert abs(r["lat"] - (r["vw"] - 48)) <= 2 and abs(r["inalt"] - (r["vh"] - 48)) <= 2, r
+    assert abs(r["lat"] - (r["vw"] - 24)) <= 2 and abs(r["inalt"] - (r["vh"] - 24)) <= 2, r   # [lotul 14, 687] marginea ferestrei de lucru: 12 px (DS v2.105)
     assert r["lateral"] <= 1, r
 
 
