@@ -296,7 +296,8 @@ def _json(r):
 def _corp(d, data, inlocuieste=False):
     import main
     return main.SolduriIn(randuri=[main.SoldRand(**{k: v for k, v in r.items() if k in main.SoldRand.model_fields}) for r in d["randuri"]],
-                          data_referinta=data, inlocuieste=inlocuieste)
+                          data_referinta=data, inlocuieste=inlocuieste,
+                          analitic_117="1171")   # [527.1] balanța de probă are 117 fără analitic: alegerea e a contabilului
 
 
 def test_def_439_426_balanta_saga_se_salveaza_si_a_doua_cere_confirmare(conn, monkeypatch):

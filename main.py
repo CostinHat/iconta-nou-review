@@ -23,7 +23,6 @@ from pydantic import BaseModel
 #: [P6 val 1, 12.09.2026] Casa comuna a starii business care nu mai are voie sa traiasca
 #: in memoria unui proces. V. docstringul modulului pentru masuratorile de dinainte.
 from core import stare_partajata as _stare_part
-from core import audit_automat as _audit_automat
 #: [P6 val 3, 12.09.2026] Ce trebuie sa stie un proces care nu mai e singur: cine instaleaza
 #: infrastructura, cine face munca de fundal, si cine poarta ce commit.
 from core import instante as _instante
@@ -623,7 +622,6 @@ def _inregistreaza_activitate(method, path, status, auth_header):
     if m:
         tenant_id = int(m.group(1))
     actiune = f"{method} {path}"
-    automat = _audit_automat.este_automata(method, path)   # [715, 14.2] cererile de pornire ale ecranelor: în jurnal, dar nu „acțiuni”
     try:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
@@ -638,7 +636,7 @@ def _inregistreaza_activitate(method, path, status, auth_header):
                 # `tenant_id NOT NULL` ar face stergerea IMPOSIBILA (NotNullViolation), iar pe cele
                 # nullable ar RESPINGE randul de dupa stergere, nu l-ar trece pe NULL. Adica linia
                 # de audit ar disparea in loc sa ramana orfana. Vezi R79.
-                _repo.insert_public(cur, uid, tenant_id, actiune, _json_audit, status, automat)
+                _repo.insert_public(cur, uid, tenant_id, actiune, _json_audit, status)
     except Exception as _e:
         _obs.esec_secundar("audit_log activitate", _e)  # inghitit, dar nu tacut (27.07.2026)
 

@@ -288,6 +288,10 @@ def test_def_425_metoda_de_stoc_se_cere_la_migrare(conn, monkeypatch):
         cur.execute("SELECT count(*) FROM solduri_initiale")
         assert cur.fetchone()[0] == 0
     corp.metoda_stoc = metoda_stoc.CV
+    with pytest.raises(erori.DateInvalide) as e2:   # [527.1] balanța are și 117 fără analitic: alegerea analiticului se cere la fel, lângă câmp
+        uc.solduri_salveaza(1, corp, {"uid": 7})
+    assert e2.value.args[0]["erori_campuri"][0]["camp"] == "analitic_117"
+    corp.analitic_117 = "1171"
     rez = uc.solduri_salveaza(1, corp, {"uid": 7})
     assert rez["metoda_stoc"] == metoda_stoc.CV and rez["rulaje"] is True
     with conn.cursor() as cur:

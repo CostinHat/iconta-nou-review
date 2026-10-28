@@ -4,7 +4,7 @@ scurta. NU blocheaza — doar semnaleaza (fals-pozitive OK, ratarea nu). Brevo l
 ICONTA_ALERTA_EMAIL, cu dedup PERSISTENT (public.alerte_acces_dedup) ca sa nu spameze
 intre rulari cron. Praguri configurabile prin env. Rulat din cron (la 15 min)."""
 import os
-from core import db, observare
+from core import audit_automat as _audit_automat, db, observare
 
 def _int(env, d):
     try: return max(1, int(os.environ.get(env, str(d))))
@@ -18,18 +18,18 @@ def praguri():
 
 def detecteaza(conn, fereastra_min, prag_tenanti, prag_actiuni):
     with conn.cursor() as cur:
-        # [715, 14.2] Numără acțiunile omului: cererile de pornire ale ecranelor (`automat`, vezi `core/audit_automat`) și conturile
+        # [715, 14.2] Numără acțiunile omului: cererile de pornire ale ecranelor (vezi `core/audit_automat`, regula la citire) și conturile
         # cabinetelor de test (testele noastre, verificatorul) nu intră. Fără ele, un singur ecran deschis însemna zeci de „acțiuni”.
         cur.execute("""SELECT l.user_id, count(DISTINCT l.tenant_id) AS t, count(*) AS a
                        FROM public.audit_log l
                        LEFT JOIN public.users u ON u.id = l.user_id
                        LEFT JOIN public.accounting_firms f ON f.id = u.accounting_firm_id
                        WHERE l.created_at > now() - make_interval(mins => %s) AND l.user_id IS NOT NULL
-                         AND COALESCE(l.detalii->>'automat', '') <> 'true'
+                         AND l.actiune !~ %s
                          AND COALESCE(f.nume, '') !~* '\\m(test|proba|probă)\\M'
                        GROUP BY l.user_id
                        HAVING count(DISTINCT l.tenant_id) >= %s OR count(*) >= %s
-                       ORDER BY t DESC, a DESC""", (fereastra_min, prag_tenanti, prag_actiuni))
+                       ORDER BY t DESC, a DESC""", (fereastra_min, _audit_automat.MODEL, prag_tenanti, prag_actiuni))
         flagged = [{"user_id": r[0], "tenanti": r[1], "actiuni": r[2]} for r in cur.fetchall()]
         for u in flagged:   # [715] alerta numește omul și cabinetul, nu doar numărul
             cur.execute("""SELECT trim(coalesce(u.prenume,'') || ' ' || coalesce(u.nume,'')), u.email, f.nume

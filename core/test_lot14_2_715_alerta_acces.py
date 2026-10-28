@@ -21,9 +21,9 @@ def _cabinet_cu_utilizator(cur, nume_cabinet, eticheta, cereri):
     cur.execute("INSERT INTO public.users (email, password_hash, nume, prenume, accounting_firm_id) VALUES (%s,'x','Ionescu','Ana',%s) RETURNING id",
                 ("ztest715_%s@exemplu.test" % eticheta, fid))
     uid = cur.fetchone()[0]
-    for actiune, automat in cereri:
+    for actiune, _automat in cereri:
         cur.execute("INSERT INTO public.audit_log (user_id, actiune, detalii) VALUES (%s,%s,%s)",
-                    (uid, actiune, json.dumps({"status": 200, "automat": True} if automat else {"status": 200})))
+                    (uid, actiune, json.dumps({"status": 200})))
     return uid
 
 

@@ -396,8 +396,8 @@ def neaplicabile_regim(vector):
     v = vector or {}
     platitor, art317 = v.get("platitor_tva"), v.get("inreg_art317")
     out = {}
-    if v.get("inregistrat_oss") is False:   # [595.1, 14.2] răspunsul „Nu” din Date firmă: D398 gri, cu același motiv ca la generare
-        out["d398"] = d398.MOTIV_OSS_NU
+    if "inregistrat_oss" in v and v["inregistrat_oss"] is not True:   # [595.1, 14.2] D398 numai cu „Da” în Date firmă; „Nu” și golul: gri, cu motivul de la generare
+        out["d398"] = d398.refuz_oss(v["inregistrat_oss"])
     if platitor is True:
         out["d311"] = NEAPLICABILE_REGIM["d311"]
     if platitor is False:

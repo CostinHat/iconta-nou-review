@@ -10,6 +10,7 @@ FIECARE FUNCȚIE PRIMEȘTE CURSORUL APELANTULUI. Nu deschide conexiuni, nu comit
 nu construiește `HTTPException` și nu decide niciun cod HTTP. *Așa rămâne întreagă tranzacția pe
 care o deține apelantul — contractul P4, care nu se redeschide aici.*
 """
+from core import audit_automat as _audit_automat   # [715, 14.2] cererile de pornire ale ecranelor nu sunt „acțiuni” (regula, la citire)
 
 
 #: [C101, lotul 12] contoarele de REZULTAT ale Panoului Admin (facturi emise, declarații depuse, recomandări) numără numai cererile
@@ -39,7 +40,7 @@ def activitate_pe_cabinete(cur):
                            COUNT(*) FILTER (WHERE a.actiune = 'login') AS nr_logari
                       FROM public.audit_log a JOIN public.users u ON u.id = a.user_id
                      WHERE u.accounting_firm_id IS NOT NULL
-                       AND COALESCE(a.detalii->>'automat', '') <> 'true'   -- [715, 14.2] cererile de pornire ale ecranelor nu sunt acțiuni
+                       AND a.actiune !~ %s   -- [715, 14.2] cererile de pornire ale ecranelor nu sunt acțiuni (`core/audit_automat`)
                      GROUP BY u.accounting_firm_id)
                 SELECT f.id, f.nume, f.activ, f.creat_la,
                        -- [15.10.2026, lotul 4 pct.4] pe ce cale a venit cabinetul (invitația lui sau înregistrarea liberă confirmată)
@@ -59,7 +60,7 @@ def activitate_pe_cabinete(cur):
                 FROM public.accounting_firms f
                 LEFT JOIN pe_cabinet p ON p.cabinet_id = f.id
                 ORDER BY f.nume
-            """)
+            """, (_audit_automat.MODEL,))
     return cur.fetchall()
 
 
@@ -80,11 +81,11 @@ def actiunile_cabinetului(cur, firm_id, limita):
                 FROM public.audit_log a
                 JOIN public.users u ON u.id = a.user_id
                 WHERE u.accounting_firm_id = %s
-                  AND COALESCE(a.detalii->>'automat', '') <> 'true'   -- [715, 14.2]
+                  AND a.actiune !~ %s   -- [715, 14.2]
                 ORDER BY a.created_at DESC
                 LIMIT %s
             """,
-                (firm_id, limita))
+                (firm_id, _audit_automat.MODEL, limita))
     return cur.fetchall()
 
 
