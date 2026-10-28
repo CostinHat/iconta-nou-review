@@ -39,6 +39,7 @@ def activitate_pe_cabinete(cur):
                            COUNT(*) FILTER (WHERE a.actiune = 'login') AS nr_logari
                       FROM public.audit_log a JOIN public.users u ON u.id = a.user_id
                      WHERE u.accounting_firm_id IS NOT NULL
+                       AND COALESCE(a.detalii->>'automat', '') <> 'true'   -- [715, 14.2] cererile de pornire ale ecranelor nu sunt acțiuni
                      GROUP BY u.accounting_firm_id)
                 SELECT f.id, f.nume, f.activ, f.creat_la,
                        -- [15.10.2026, lotul 4 pct.4] pe ce cale a venit cabinetul (invitația lui sau înregistrarea liberă confirmată)
@@ -79,6 +80,7 @@ def actiunile_cabinetului(cur, firm_id, limita):
                 FROM public.audit_log a
                 JOIN public.users u ON u.id = a.user_id
                 WHERE u.accounting_firm_id = %s
+                  AND COALESCE(a.detalii->>'automat', '') <> 'true'   -- [715, 14.2]
                 ORDER BY a.created_at DESC
                 LIMIT %s
             """,

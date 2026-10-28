@@ -106,7 +106,7 @@ def test_def_317_alertele_operatorului_au_diacritice():
     assert len(alerte) >= 13, ("[anti-vacuu] prea puține apeluri pe canalul de alertă: %d" % len(alerte), alerte)
     toate = " ".join(t for _, t in alerte)
     for fragment in ("Eșec pe cale secundară", "Job de fundal eșuat", "Următoarele joburi", "Reîmprospătarea accesului SPV a eșuat",
-                     "O valoare fiscală n-a mai fost confirmată", "Cerere de ștergere cont", "Acces anormal: utilizatorul"):
+                     "O valoare fiscală n-a mai fost confirmată", "Cerere de ștergere cont", "Acces anormal:", "acțiuni în %s min"):
         assert fragment in toate, ("[anti-vacuu] textul nu mai e urmărit până la apel: %s" % fragment)
     # căile și comenzile din alertă (`POST /gdpr/sterge-cabinet/…`, `%s/*.log`) sunt nume tehnice, nu text: se scot înainte de judecată
     gresite = [(loc, [w for fel, w in limba_ecran.defecte(re.sub(r"\S*/\S*", " ", t)) if fel == "diacritice"]) for loc, t in alerte]

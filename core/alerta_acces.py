@@ -18,13 +18,26 @@ def praguri():
 
 def detecteaza(conn, fereastra_min, prag_tenanti, prag_actiuni):
     with conn.cursor() as cur:
-        cur.execute("""SELECT user_id, count(DISTINCT tenant_id) AS t, count(*) AS a
-                       FROM public.audit_log
-                       WHERE created_at > now() - make_interval(mins => %s) AND user_id IS NOT NULL
-                       GROUP BY user_id
-                       HAVING count(DISTINCT tenant_id) >= %s OR count(*) >= %s
+        # [715, 14.2] Numără acțiunile omului: cererile de pornire ale ecranelor (`automat`, vezi `core/audit_automat`) și conturile
+        # cabinetelor de test (testele noastre, verificatorul) nu intră. Fără ele, un singur ecran deschis însemna zeci de „acțiuni”.
+        cur.execute("""SELECT l.user_id, count(DISTINCT l.tenant_id) AS t, count(*) AS a
+                       FROM public.audit_log l
+                       LEFT JOIN public.users u ON u.id = l.user_id
+                       LEFT JOIN public.accounting_firms f ON f.id = u.accounting_firm_id
+                       WHERE l.created_at > now() - make_interval(mins => %s) AND l.user_id IS NOT NULL
+                         AND COALESCE(l.detalii->>'automat', '') <> 'true'
+                         AND COALESCE(f.nume, '') !~* '\\m(test|proba|probă)\\M'
+                       GROUP BY l.user_id
+                       HAVING count(DISTINCT l.tenant_id) >= %s OR count(*) >= %s
                        ORDER BY t DESC, a DESC""", (fereastra_min, prag_tenanti, prag_actiuni))
-        return [{"user_id": r[0], "tenanti": r[1], "actiuni": r[2]} for r in cur.fetchall()]
+        flagged = [{"user_id": r[0], "tenanti": r[1], "actiuni": r[2]} for r in cur.fetchall()]
+        for u in flagged:   # [715] alerta numește omul și cabinetul, nu doar numărul
+            cur.execute("""SELECT trim(coalesce(u.prenume,'') || ' ' || coalesce(u.nume,'')), u.email, f.nume
+                           FROM public.users u LEFT JOIN public.accounting_firms f ON f.id = u.accounting_firm_id
+                           WHERE u.id = %s""", (u["user_id"],))
+            r = cur.fetchone()
+            u["nume"], u["email"], u["cabinet"] = (r or (None, None, None))
+        return flagged
 
 def _poate_trimite(cheie, dedup_min):
     """Rezerva fereastra de dedup pentru `cheie`, IN TRANZACTIA EI, comisa. [P4, 09.09.2026]
@@ -60,11 +73,14 @@ def ruleaza(trimite=None, **override):
     for u in flagged:
         cheie = "acces_anormal_user_%s" % u["user_id"]
         if _poate_trimite(cheie, p["dedup_min"]):
-            subiect = "Acces anormal: utilizatorul %s (%s firme, %s acțiuni în %s min)" % (   # [317, lotul 12] cu diacritice
-                u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"])
-            mesaj = ("Semnal automat (art.33): utilizatorul %s a atins %s firme distincte și %s acțiuni "
+            cine = "%s (%s)" % (u.get("nume") or "utilizator necunoscut", u.get("email") or "fără email")
+            cabinet = u.get("cabinet") or "fără cabinet"
+            firme = "%s %s" % (u["tenanti"], "firmă" if u["tenanti"] == 1 else "firme")   # [715] „1 firmă”
+            subiect = "Acces anormal: %s, cabinetul %s (%s, %s acțiuni în %s min)" % (   # [317, lotul 12] cu diacritice
+                cine, cabinet, firme, u["actiuni"], p["fereastra_min"])
+            mesaj = ("Semnal automat (art.33): utilizatorul %s, cabinetul %s (id %s), a atins %s distincte și %s acțiuni "
                      "în ultimele %s min (praguri %s firme / %s acțiuni). Nu s-a blocat nimic. Verifică manual."
-                     % (u["user_id"], u["tenanti"], u["actiuni"], p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"]))
+                     % (cine, cabinet, u["user_id"], firme, u["actiuni"], p["fereastra_min"], p["prag_tenanti"], p["prag_actiuni"]))
             de_trimis.append((subiect, mesaj))
     # [P5 val 3, 11.09.2026] TRIMITEREA, AICI: apelul la Brevo are termen de 10 s, iar forma
     # dinainte il facea in bucla, cu conexiunea in mana — cate 10 s pentru fiecare alerta. Ordinea

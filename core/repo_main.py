@@ -24,9 +24,9 @@ def select_u(cur, ctx):
     return cur.fetchone()
 
 
-def insert_public(cur, uid, tenant_id, actiune, _json_audit, status):
+def insert_public(cur, uid, tenant_id, actiune, _json_audit, status, automat=False):
     cur.execute("INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) "
-                "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), %s, %s)", (uid, tenant_id, actiune, _json_audit.dumps({"status": status})))
+                "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), %s, %s)", (uid, tenant_id, actiune, _json_audit.dumps({"status": status, "automat": True} if automat else {"status": status})))
 
 
 def select_pg_stat_activity(cur):
