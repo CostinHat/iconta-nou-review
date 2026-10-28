@@ -1,18 +1,50 @@
 [
- {"fisier": "core/audit_automat.py", "ancora": "    return metoda == \"GET\" and bool(_AUTOMATE.match(cale))", "inlocuire": "    return False",
-  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_715_cererile_automate_ale_ecranelor_nu_sunt_actiuni"},
- {"fisier": "core/facturi_api.py", "ancora": "    _nepotrivire_tara = _tcf.nepotrivire(tert_cui, tert_tara)", "inlocuire": "    _nepotrivire_tara = None",
-  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_712_tara_urmeaza_codul_fiscal_al_clientului"},
- {"fisier": "core/solduri_api.py", "ancora": "    return (not are_analitic) and any(r[\"cont\"] == \"117\" and (r.get(\"debit\") or r.get(\"credit\")) for r in randuri)", "inlocuire": "    return False",
-  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_527_1_preluarea_pune_rezultatul_reportat_pe_analiticul_ales"},
- {"fisier": "static/js/ecrane/portal.js", "ancora": "bani(k.de_incasat) + \" lei\", null", "inlocuire": "sumePeMoneda(k.facturi_de_incasat || {}), null",
-  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_559_1_cifra_mare_e_ce_arata_contabilitatea"},
- {"fisier": "static/js/ecrane/login.js", "ancora": "id=\"login-parola\" autocomplete=\"current-password\"", "inlocuire": "id=\"login-parola\"",
-  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_708_formularul_de_autentificare_are_atributele_standard"},
- {"fisier": "static/js/ecrane/firme.js", "ancora": "id=\"ac-email\" type=\"email\" placeholder=\"client@firma.ro\" autocomplete=\"off\" data-bwignore=\"true\"", "inlocuire": "id=\"ac-email\" type=\"email\" placeholder=\"client@firma.ro\" autocomplete=\"off\"",
-  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_708_formularul_de_invitatie_nu_e_citit_ca_autentificare"},
- {"fisier": "core/tva_incasare.py", "ancora": "    if not any(dd == \"4426\" and str(cc)[:3] in (\"401\", \"404\") for dd, cc, _s in linii):\n        return None", "inlocuire": "    return None",
-  "test": "core/test_lot14_2_714_tva_incasare_achizitii.py::test_nota_cu_4426_la_firma_in_sistem_e_refuzata_cu_drumul_corect"},
- {"fisier": "core/observare.py", "ancora": "    if not informativ and cfg(\"POSTMARK_SERVER_TOKEN\") and not attachments:", "inlocuire": "    if False and cfg(\"POSTMARK_SERVER_TOKEN\") and not attachments:",
-  "test": "core/test_lot13_portal_postmark.py::test_tranzactionalul_oarecare_pleaca_pe_postmark_iar_informativul_si_atasamentul_pe_brevo"}
+ {
+  "fisier": "core/audit_automat.py",
+  "ancora": "EXACTE = (\"GET /eu/drepturi\",",
+  "inlocuire": "EXACTE = (\"GET /nimic-nu-e-asta\",",
+  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_715_cererile_automate_ale_ecranelor_nu_sunt_actiuni"
+ },
+ {
+  "fisier": "core/facturi_api.py",
+  "ancora": "    _nepotrivire_tara = _tcf.nepotrivire(tert_cui, tert_tara)",
+  "inlocuire": "    _nepotrivire_tara = None",
+  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_712_tara_urmeaza_codul_fiscal_al_clientului"
+ },
+ {
+  "fisier": "core/solduri_api.py",
+  "ancora": "    return (not are_analitic) and any(r[\"cont\"] == \"117\" and (r.get(\"debit\") or r.get(\"credit\")) for r in randuri)",
+  "inlocuire": "    return False",
+  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_527_1_preluarea_pune_rezultatul_reportat_pe_analiticul_ales"
+ },
+ {
+  "fisier": "static/js/ecrane/portal.js",
+  "ancora": "bani(k.de_incasat) + \" lei\", null",
+  "inlocuire": "sumePeMoneda(k.facturi_de_incasat || {}), null",
+  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_559_1_cifra_mare_e_ce_arata_contabilitatea"
+ },
+ {
+  "fisier": "static/js/ecrane/login.js",
+  "ancora": "id=\"login-parola\" autocomplete=\"current-password\"",
+  "inlocuire": "id=\"login-parola\"",
+  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_708_formularul_de_autentificare_are_atributele_standard"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "id=\"ac-email\" type=\"email\" placeholder=\"client@firma.ro\" autocomplete=\"off\" data-bwignore=\"true\"",
+  "inlocuire": "id=\"ac-email\" type=\"email\" placeholder=\"client@firma.ro\" autocomplete=\"off\"",
+  "test": "frontend_test/e2e/e2e_lot14_2.py::test_def_708_formularul_de_invitatie_nu_e_citit_ca_autentificare"
+ },
+ {
+  "fisier": "core/tva_incasare.py",
+  "ancora": "    if not any(dd == \"4426\" and str(cc)[:3] in (\"401\", \"404\") for dd, cc, _s in linii):\n        return None",
+  "inlocuire": "    return None",
+  "test": "core/test_lot14_2_714_tva_incasare_achizitii.py::test_nota_cu_4426_la_firma_in_sistem_e_refuzata_cu_drumul_corect"
+ },
+ {
+  "fisier": "core/observare.py",
+  "ancora": "    if not informativ and cfg(\"POSTMARK_SERVER_TOKEN\") and not attachments:",
+  "inlocuire": "    if False and cfg(\"POSTMARK_SERVER_TOKEN\") and not attachments:",
+  "test": "core/test_lot13_portal_postmark.py::test_tranzactionalul_oarecare_pleaca_pe_postmark_iar_informativul_si_atasamentul_pe_brevo"
+ }
 ]

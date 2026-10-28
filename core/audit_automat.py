@@ -14,11 +14,6 @@ LIKE_SPV = "GET /tenants/%/spv/stare"
 # lista cabinetelor peste termenul de 30 s al probei.
 
 
-def este_automata(metoda, cale):
-    actiune = "%s %s" % (metoda, cale.rstrip("/") if cale != "/" else cale)
-    return actiune in EXACTE or (actiune.startswith("GET /tenants/") and actiune.endswith("/spv/stare") and actiune[13:-10].isdigit())
-
-
 def sql_actiune_omului(alias):
     """Predicatul SQL al acțiunilor omului, cu aliasul rândului de jurnal; are DOUĂ `%s`, în ordinea `PARAM_OMULUI`."""
     return "(%s.actiune <> ALL(%%s) AND %s.actiune NOT LIKE %%s)" % (alias, alias)

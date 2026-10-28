@@ -3,16 +3,22 @@ numește utilizatorul și cabinetul. Pe Postgres, în tranzacție anulată (firm
 import json
 import pytest
 from core import alerta_acces as AA, audit_automat as AU, db
+from core.test_lot11_t import conn_t  # noqa: F401 — fixtura schemei sintetice
 
 
-def test_cererile_de_pornire_sunt_automate_iar_scrierile_si_datele_nu():
-    for c in ("/eu/drepturi", "/asistenti/echipa/semafor", "/tenants", "/coada", "/termene", "/firme-scoase", "/spv/autorizare",
-              "/tenants/105779/spv/stare"):
-        assert AU.este_automata("GET", c), c
-    assert not AU.este_automata("PUT", "/tenants/1/ciorne-formular/factura")
-    assert not AU.este_automata("POST", "/coada")
-    assert not AU.este_automata("GET", "/tenants/1/facturi")
-    assert not AU.este_automata("GET", "/tenants/1/balanta")
+def _automata(cur, actiune):
+    """Aceeași regulă ca în interogările Fișei și alertei: `sql_actiune_omului` îl lasă pe loc doar ce NU e cerere automată."""
+    cur.execute("SELECT NOT (x.actiune <> ALL(%s) AND x.actiune NOT LIKE %s) FROM (SELECT %s AS actiune) x", (*AU.PARAM_OMULUI, actiune))
+    return cur.fetchone()[0]
+
+
+def test_cererile_de_pornire_sunt_automate_iar_scrierile_si_datele_nu(conn_t):
+    with conn_t.cursor() as cur:
+        for c in ("GET /eu/drepturi", "GET /asistenti/echipa/semafor", "GET /tenants", "GET /coada", "GET /termene", "GET /firme-scoase",
+                  "GET /spv/autorizare", "GET /tenants/105779/spv/stare"):
+            assert _automata(cur, c), c
+        for c in ("PUT /tenants/1/ciorne-formular/factura", "POST /coada", "GET /tenants/1/facturi", "GET /tenants/1/balanta"):
+            assert not _automata(cur, c), c
 
 
 def _cabinet_cu_utilizator(cur, nume_cabinet, eticheta, cereri):

@@ -102,6 +102,7 @@ def test_def_712_tara_urmeaza_codul_fiscal_al_clientului(patron, firma_712):
     pg.fill("#em-data", AZI.isoformat())
     pg.fill("#em-l0-descriere", "Servicii de consultanta")
     pg.wait_for_selector("#em-l0-cota", timeout=20000)
+    pg.wait_for_function("() => document.querySelector('#em-l0-cota').value === '21'", timeout=20000)   # cota propusă din denumire; fără ea emiterea se oprește oricum
     pg.fill("#em-l0-cantitate", "1")
     pg.fill("#em-l0-pret_unitar", "100")
     pg.fill("#em-l0-um", "ora")
