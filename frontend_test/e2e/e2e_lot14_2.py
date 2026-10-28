@@ -267,3 +267,9 @@ def test_def_714_achizitia_fara_factura_nu_deduce_tva_pe_loc_la_firma_cu_tva_la_
     assert "Facturi primite" in m and "art. 297 alin. (3)" in m and "4428" in m, m
     assert _ultima(f) == ultima, "nota s-a scris cu TVA-ul dedus pe loc"
     assert sql('SELECT count(*) FROM "%s".inregistrari_linii WHERE cont_debit = %%s' % f["schema"], ("4426",))[0][0] == 0
+
+
+def fisier_117():
+    """Balanța cu 117 fără analitic, pentru dovada pe firmele de test (`frontend_test/dovada/dovezi_lot14_2.json`, pasul `incarca`): aceeași sursă."""
+    from core.test_import_saga import _cp1250
+    return _cp1250(BALANTA_117)

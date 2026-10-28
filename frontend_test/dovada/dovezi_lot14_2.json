@@ -1,0 +1,225 @@
+[
+ {
+  "nr": "595.1",
+  "firma": "tenant_9051",
+  "descriere": "F3 (neplătitoare, art.317, fără răspuns la OSS în Date firmă): Declarații — D398 e inactivă, cu motivul «nu ai răspuns în Date firmă» (înainte: activă, «trimestrial», formularul se deschidea). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "click": ".fereastra:last-of-type #dec-alte",
+    "daca_exista": true
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "inactiv": ".fereastra:last-of-type #dec-tip option[value='d398']"
+   }
+  ],
+  "captura": "595_1_f3_vechi_d398_gri.png"
+ },
+ {
+  "nr": "712",
+  "firma": "tenant_9049",
+  "descriere": "F1: Emite factură — client cu codul RO14399840; țara schimbată în Irlanda: apare motivul «nu se potrivește cu codul fiscal … care e al țării RO» (înainte: nicio semnalare). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "completeaza": "#em-cui",
+    "valoare": "RO14399840"
+   },
+   {
+    "pauza": 400
+   },
+   {
+    "alege": "#em-tara",
+    "valoare": "IE"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu se potrivește cu codul fiscal RO14399840, care e al țării RO",
+    "zona": "#em-cui-stare"
+   }
+  ],
+  "captura": "712_f1_tara_nepotrivita.png"
+ },
+ {
+  "nr": "527.1",
+  "firma": "tenant_9057",
+  "descriere": "F7 (preluare): Import date › Solduri inițiale — balanța cu 117 «Rezultatul reportat» 14.000 lei fără analitic: ecranul întreabă «Rezultatul reportat se preia pe» (1171 / 1172 / 1174), nimic ales (înainte: soldul intra pe 117). Numai citire (fără salvare).",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "asteapta": ".mig-frand"
+   },
+   {
+    "click": ".mig-frand",
+    "text": "Solduri ini"
+   },
+   {
+    "asteapta": "#mig-file",
+    "stare": "attached"
+   },
+   {
+    "incarca": "#mig-file",
+    "generator": "e2e_lot14_2:fisier_117",
+    "nume": "balanta_117.csv"
+   },
+   {
+    "asteapta": "#mig-salveaza-sold"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "exista": "#mig-analitic-117"
+   },
+   {
+    "valoare": "#mig-analitic-117",
+    "egal": ""
+   }
+  ],
+  "captura": "527_1_f7_vechi_intrebare_analitic.png"
+ },
+ {
+  "nr": "559.1",
+  "firma": "tenant_9049",
+  "descriere": "F1, clientul, «Cifrele firmei»: «De încasat» = ce arată contabilitatea (4111), «De plătit» = 401; facturile deschise, detaliul de sub cifră; fără explicațiile contabilului (înainte: «0 lei» la furnizori și «3.500,00 lei + 60,50 EUR» la clienți).",
+  "pasi": [
+   {
+    "click": "button.cab-card",
+    "text": "Cifrele firmei"
+   },
+   {
+    "asteapta": "#cf-de-incasat"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "4.468,24 lei",
+    "zona": "#cf-de-incasat"
+   },
+   {
+    "contine": "3.000,00 lei",
+    "zona": "#cf-de-platit"
+   },
+   {
+    "nu_contine": "nedefalcat",
+    "zona": "#cf-de-incasat"
+   },
+   {
+    "nu_contine": "fără factură",
+    "zona": "#cf-de-platit"
+   }
+  ],
+  "captura": "559_1_f1_vechi_cifrele_firmei.png",
+  "portal": true,
+  "utilizator": 71511
+ },
+ {
+  "nr": "714",
+  "firma": "tenant_9050",
+  "descriere": "F2 (TVA la încasare din 01.10.2026): Operațiuni › Refacturare utilități (factura furnizorului 1.000 + 210): refuz — factura se înregistrează în Facturi primite, TVA-ul pe 4428, deductibil la plată (CF art.297 alin.(3)) (înainte: nota punea 4426 = 401 210 pe loc). Fără nicio notă scrisă.",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "asteapta": "button[data-op='chirie']"
+   },
+   {
+    "click": "button[data-op='chirie']"
+   },
+   {
+    "asteapta": "#op-trimite"
+   },
+   {
+    "completeaza": "#op-data",
+    "valoare": "2026-10-28"
+   },
+   {
+    "alege": "#op-fel",
+    "valoare": "refacturare"
+   },
+   {
+    "asteapta": "#op-furnizor_cui"
+   },
+   {
+    "completeaza": "#op-furnizor_cui",
+    "valoare": "31654471"
+   },
+   {
+    "completeaza": "#op-furnizor_nume",
+    "valoare": "Utilitati Proba SA"
+   },
+   {
+    "completeaza": "#op-client_cui",
+    "valoare": "18765430"
+   },
+   {
+    "completeaza": "#op-client_nume",
+    "valoare": "Chirias Proba SRL"
+   },
+   {
+    "completeaza": "#op-numar",
+    "valoare": "UT-1"
+   },
+   {
+    "completeaza": "#op-total_factura",
+    "valoare": "1000"
+   },
+   {
+    "completeaza": "#op-parte_refacturata",
+    "valoare": "400"
+   },
+   {
+    "alege": "#op-cota",
+    "valoare": "21"
+   },
+   {
+    "click": "#op-trimite"
+   },
+   {
+    "asteapta_text": "Facturi primite"
+   },
+   {
+    "pauza": 500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "art. 297 alin. (3)"
+   }
+  ],
+  "captura": "714_f2_vechi_refuz_tva_la_incasare.png"
+ }
+]
