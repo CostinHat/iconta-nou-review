@@ -339,7 +339,7 @@ def test_rutele_publice_ale_lotului(monkeypatch):
 
 # ── 6. Postmark ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_tranzactionalele_pe_postmark_cand_exista_tokenul(monkeypatch):
-    """MUTAȚIE: `postmark=True` scos din resetarea parolei -> pleacă pe Brevo -> pică (al doilea assert)."""
+    """MUTAȚIE: `not informativ and` scos din condiția Postmark -> informativul pleacă pe Postmark -> pică (al doilea assert)."""
     from core import observare as O
     cereri = []
 
@@ -359,8 +359,9 @@ def test_tranzactionalele_pe_postmark_cand_exista_tokenul(monkeypatch):
     monkeypatch.delenv("ICONTA_EMAIL_CUTIE", raising=False)
     monkeypatch.setenv("POSTMARK_SERVER_TOKEN", "pm")
     monkeypatch.setenv("BREVO_API_KEY", "bv")
-    assert O.trimite_email_html("a@b.ro", "Resetare", "<p>x</p>", postmark=True) is True
-    assert O.trimite_email_html("a@b.ro", "Sinteza", "<p>x</p>") is True
+    monkeypatch.setattr(O, "refuz_dezabonare", lambda catre: None)
+    assert O.trimite_email_html("a@b.ro", "Resetare", "<p>x</p>") is True
+    assert O.trimite_email_html("a@b.ro", "Sinteza", "<p>x</p>", informativ=True) is True
     assert [r.full_url for r in cereri] == ["https://api.postmarkapp.com/email", "https://api.brevo.com/v3/smtp/email"]
     assert cereri[0].headers["X-postmark-server-token"] == "pm"
     assert json.loads(cereri[0].data)["MessageStream"] == "outbound"
@@ -369,7 +370,7 @@ def test_tranzactionalele_pe_postmark_cand_exista_tokenul(monkeypatch):
     for eticheta in ("email resetare parola", "email link de logare", "email confirmare inregistrare"):
         apel = [n for n in ast.walk(ast.parse(src)) if isinstance(n, ast.Call) and n.args and isinstance(n.args[0], ast.Constant)
                 and n.args[0].value == eticheta]
-        assert apel and all(any(k.arg == "postmark" and getattr(k.value, "value", None) is True for k in a.keywords) for a in apel), eticheta
+        assert apel and not any(k.arg == "informativ" for a in apel for k in a.keywords), eticheta
 
 
 # ── 2.6 a doua sursă ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────

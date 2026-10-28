@@ -67,7 +67,7 @@ def test_def_268_1_fara_token_alerta_ramane_pe_brevo_fara_antetele_noastre(monke
 
 def test_def_268_1_emailul_test_alerta_nu_are_dezabonarea_noastra(monkeypatch):
     """Drumul real al butonului „Trimite alertă de test” (`main.admin_sanatate_test_alerta`), fără token: pe Brevo, fără subsol și fără
-    antete; cu token: pe Postmark (MUTAȚIE: `postmark=True` scos din apel -> pleacă pe Brevo -> pică)."""
+    antete; cu token: pe Postmark (MUTAȚIE: `informativ=True` pus pe apel -> subsol și antete -> pică)."""
     import main
     monkeypatch.setattr(main, "_email_superadmin", lambda: "admin@exemplu.test")
     cereri = _cereri(monkeypatch, None)
@@ -90,12 +90,13 @@ def _apeluri_alerta_sanatate():
             continue
         subiecte = [a.value for a in n.args if isinstance(a, ast.Constant) and isinstance(a.value, str) and a.value.endswith("sănătate server")]
         if subiecte:
-            out.append((n.lineno, subiecte[0], any(k.arg == "postmark" and getattr(k.value, "value", None) is True for k in n.keywords)))
+            out.append((n.lineno, subiecte[0], any(k.arg == "informativ" and getattr(k.value, "value", None) is True for k in n.keywords)))
     return out
 
 
 def test_def_268_1_ambele_alerte_de_sanatate_cer_drumul_fara_dezabonare():
-    """Alerta reală și alerta de test: amândouă cu `postmark=True` (cu token, fără antetul Brevo). Anti-vacuu: exact două apeluri."""
+    """Alerta reală și alerta de test: amândouă tranzacționale (fără `informativ=True`), deci cu token pleacă pe Postmark, fără antetul Brevo
+    [14.2: furnizorul nu mai e steag pe apel]. Anti-vacuu: exact două apeluri."""
     apeluri = _apeluri_alerta_sanatate()
     assert sorted(s for _l, s, _p in apeluri) == ["Alertă iConta.eu — sănătate server", "TEST Alertă iConta.eu — sănătate server"], apeluri
-    assert [a for a in apeluri if not a[2]] == [], apeluri
+    assert [a for a in apeluri if a[2]] == [], apeluri

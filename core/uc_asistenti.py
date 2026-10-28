@@ -234,7 +234,7 @@ def asistent_creeaza(date, ctx):
     # [R73] ALERTA: fara linkul de activare, asistentul nu are cont.
     # [lotul 13, 560 / 268] tranzacțional: pe Postmark (fără „Dezabonează-te”), Brevo rezervă
     if _obs.trimite_email_html_sau_semnaleaza("email invitatie asistent", email, "Acces asistent iConta.eu" + ((" — " + nume_cab) if nume_cab else ""),
-                                              html, alerta=True, postmark=True):
+                                              html, alerta=True):
         return {"ok": True, "user_id": uid}
     # [598, lotul 12 — clasa: eșecul unui canal extern spus contabilului, cu ce face aplicația în loc] ecranul spunea „Invitație trimisă”
     # și când emailul n-a plecat: contul e creat, linkul nu a ajuns la coleg

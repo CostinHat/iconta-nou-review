@@ -390,13 +390,13 @@ def portal_schimba_email(date, ctx):
         "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;"
         "padding:10px 22px;border-radius:6px;text-decoration:none'>Confirmă adresa</a></p>"
         "<p>Linkul e valabil 48 de ore. Dacă nu ai cerut tu, ignoră mesajul — "
-        "nu se schimbă nimic.</p>" % link, alerta=True, postmark=True)
+        "nu se schimbă nimic.</p>" % link, alerta=True)
     # Adresa VECHE afla, chiar daca nu ea confirma: altfel o mutare de cont ar fi tacuta
     # exact pentru cel care pierde accesul.
     _obs.trimite_email_html_sau_semnaleaza("email anunt adresa veche", email_vechi, "Cerere de schimbare a adresei — iConta.eu",
         "<p>Bună,</p><p>S-a cerut mutarea contului tău iConta.eu pe adresa "
         "<b>%s</b>.</p><p>Dacă nu ai cerut tu, spune-i cabinetului acum: "
-        "schimbarea se face doar după confirmarea de pe adresa nouă.</p>" % _common.esc(email_nou), postmark=True)
+        "schimbarea se face doar după confirmarea de pe adresa nouă.</p>" % _common.esc(email_nou))
     return {"ok": True, "confirmare_ceruta": True, "mesaj": MESAJ_EMAIL_DE_CONFIRMAT}
 
 
@@ -441,7 +441,7 @@ def portal_adauga_acces(date, ctx):
             "<p>Linkul e valabil 48 de ore.</p>") % (_common.esc(t.get("nume", "")), link)
     # [R73] ALERTA: linkul e singura usa a clientului in portal (ca linkul de logare)
     _obs.trimite_email_html_sau_semnaleaza("email acces portal", email, "Acces portal iConta.eu — " + t.get("nume", ""), html,
-                                           alerta=True, postmark=True)
+                                           alerta=True)
     return {"ok": True}
 
 

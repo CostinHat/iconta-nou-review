@@ -7453,7 +7453,7 @@ def client_acces_creeaza(tenant_id, date, ctx):
     # [R73] ALERTA: linkul e singura usa a clientului in portal (ca linkul de logare)
     # [lotul 13, 560 / 268] invitația e tranzacțională: pe Postmark (fără „Dezabonează-te”), Brevo rămâne rezervă (`observare`)
     _obs.trimite_email_html_sau_semnaleaza("email acces portal", email, "Acces portal iConta.eu — " + d.get("nume", ""), html,
-                                           alerta=True, postmark=True)
+                                           alerta=True)
     return {"ok": True, "user_id": uid}
 
 

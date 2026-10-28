@@ -983,7 +983,7 @@ def _verifica_si_alerta():
             "</ul><p>Fiecare rând spune ce faci. Vârfurile trecătoare (RAM, conexiuni, încărcare care scad singure) nu se trimit: le vezi "
             "în panoul „Sănătate server” din Panou Admin.</p></div>")
     # fara alerta: chiar asta e alerta (acelasi canal, Brevo) — esecul ramane in jurnal
-    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alertă iConta.eu — sănătate server", html, postmark=True)
+    _obs.trimite_email_html_sau_semnaleaza("email alerta sanatate", email, "Alertă iConta.eu — sănătate server", html)
 
 def _ciclu_sanatate():
     """Un ciclu al buclei de sanatate, cu mai multe procese in minte.
@@ -1048,7 +1048,7 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
     if not email:
         raise HTTPException(500, "email superadmin negăsit")
     r = _obs.trimite_email_html(email, "TEST Alertă iConta.eu — sănătate server",   # [317] diacritice, ca alerta reală
-        "<p>Test manual al alertei de sănătate. Dacă ai primit acest email, livrarea funcționează.</p>", postmark=True)
+        "<p>Test manual al alertei de sănătate. Dacă ai primit acest email, livrarea funcționează.</p>")
     return {"trimis_catre": email, "rezultat": str(r)}
 
 @app.get("/admin/sanatate/istoric")

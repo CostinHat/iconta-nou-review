@@ -220,7 +220,7 @@ def _jurnal_esec_postmark(subiect, catre, cauza, detaliu):
 
 
 def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
-                       expeditor_nume="iConta.eu", informativ=False, postmark=False):
+                       expeditor_nume="iConta.eu", informativ=False):
     """Email HTML catre un destinatar arbitrar (nu doar alerta interna).
     Refoloseste cheia Brevo + sender-ul (env, citit la apel). Intoarce True/False.
 
@@ -247,11 +247,14 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
     cutie = cfg("ICONTA_EMAIL_CUTIE")
     if cutie:
         return _in_cutia_de_test(cutie, catre, subiect, html, antete)
+    # [14.2, 268.2] Orice email TRANZACȚIONAL (tot ce nu e `informativ`) pleacă pe Postmark când există tokenul, fără steag pe fiecare apel:
+    # înainte, numai apelurile cu `postmark=True` (cele ale contului) — suspendarea cabinetului, răspunsul clientului, notificările, pachetele
+    # rămâneau pe Brevo, cu antetul lui List-Unsubscribe. Cu atașamente, pe Brevo (cererea Postmark de aici nu le trimite).
     # [17.10.2026, lotul 7 pct.2.5] confirmarea contului, resetarea parolei, linkul de logare: pe Postmark când există tokenul serverului
     # Postmark; până atunci (contul îl face Costin) pleacă pe Brevo, ca înainte — nimic nu se pierde la trecere
     # [lotul 13, comanda 13.1 pct.1] Postmark care refuză (cont în mod de test: destinatar din afara iconta.eu) sau nu răspunde = emailul
     # pleacă pe Brevo, rezerva; refuzul Postmark e în jurnal (`_trimite_postmark`). Fără rezervă, linkul de logare nu ar mai ajunge.
-    if postmark and not informativ and cfg("POSTMARK_SERVER_TOKEN") and not attachments:
+    if not informativ and cfg("POSTMARK_SERVER_TOKEN") and not attachments:
         if _trimite_postmark(cfg("POSTMARK_SERVER_TOKEN"), catre, subiect, html, expeditor_nume, reply_to):
             return True
     brevo_key = cfg("BREVO_API_KEY")
