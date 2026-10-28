@@ -40,7 +40,7 @@ def activitate_pe_cabinete(cur):
                            COUNT(*) FILTER (WHERE a.actiune = 'login') AS nr_logari
                       FROM public.audit_log a JOIN public.users u ON u.id = a.user_id
                      WHERE u.accounting_firm_id IS NOT NULL
-                       AND a.actiune !~ %s   -- [715, 14.2] cererile de pornire ale ecranelor nu sunt acțiuni (`core/audit_automat`)
+                       AND """ + _audit_automat.sql_actiune_omului("a") + """   -- [715, 14.2] cererile de pornire ale ecranelor nu sunt acțiuni
                      GROUP BY u.accounting_firm_id)
                 SELECT f.id, f.nume, f.activ, f.creat_la,
                        -- [15.10.2026, lotul 4 pct.4] pe ce cale a venit cabinetul (invitația lui sau înregistrarea liberă confirmată)
@@ -60,7 +60,7 @@ def activitate_pe_cabinete(cur):
                 FROM public.accounting_firms f
                 LEFT JOIN pe_cabinet p ON p.cabinet_id = f.id
                 ORDER BY f.nume
-            """, (_audit_automat.MODEL,))
+            """, _audit_automat.PARAM_OMULUI)
     return cur.fetchall()
 
 
@@ -81,11 +81,11 @@ def actiunile_cabinetului(cur, firm_id, limita):
                 FROM public.audit_log a
                 JOIN public.users u ON u.id = a.user_id
                 WHERE u.accounting_firm_id = %s
-                  AND a.actiune !~ %s   -- [715, 14.2]
+                  AND """ + _audit_automat.sql_actiune_omului("a") + """   -- [715, 14.2]
                 ORDER BY a.created_at DESC
                 LIMIT %s
             """,
-                (firm_id, _audit_automat.MODEL, limita))
+                (firm_id, *_audit_automat.PARAM_OMULUI, limita))
     return cur.fetchall()
 
 

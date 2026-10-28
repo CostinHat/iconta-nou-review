@@ -25,11 +25,11 @@ def detecteaza(conn, fereastra_min, prag_tenanti, prag_actiuni):
                        LEFT JOIN public.users u ON u.id = l.user_id
                        LEFT JOIN public.accounting_firms f ON f.id = u.accounting_firm_id
                        WHERE l.created_at > now() - make_interval(mins => %s) AND l.user_id IS NOT NULL
-                         AND l.actiune !~ %s
+                         AND """ + _audit_automat.sql_actiune_omului("l") + """
                          AND COALESCE(f.nume, '') !~* '\\m(test|proba|probă)\\M'
                        GROUP BY l.user_id
                        HAVING count(DISTINCT l.tenant_id) >= %s OR count(*) >= %s
-                       ORDER BY t DESC, a DESC""", (fereastra_min, _audit_automat.MODEL, prag_tenanti, prag_actiuni))
+                       ORDER BY t DESC, a DESC""", (fereastra_min, *_audit_automat.PARAM_OMULUI, prag_tenanti, prag_actiuni))
         flagged = [{"user_id": r[0], "tenanti": r[1], "actiuni": r[2]} for r in cur.fetchall()]
         for u in flagged:   # [715] alerta numește omul și cabinetul, nu doar numărul
             cur.execute("""SELECT trim(coalesce(u.prenume,'') || ' ' || coalesce(u.nume,'')), u.email, f.nume

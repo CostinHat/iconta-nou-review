@@ -48,7 +48,7 @@ def test_def_715_cererile_automate_ale_ecranelor_nu_sunt_actiuni(browser, reques
         c.pg.wait_for_timeout(1500)
         c.captura("ecranul_de_pornire")
     from core import audit_automat
-    automate = sql("SELECT count(*) FROM public.audit_log WHERE user_id = %s AND actiune ~ %s", (cab["uid"], audit_automat.MODEL))[0][0]
+    automate = sql("SELECT count(*) FROM public.audit_log WHERE user_id = %s AND actiune = ANY(%s)", (cab["uid"], list(audit_automat.EXACTE)))[0][0]
     toate = sql("SELECT count(*) FROM public.audit_log WHERE user_id = %s", (cab["uid"],))[0][0]
     assert automate >= 1 and toate >= automate, (automate, toate)
     with _db().get_conn() as conn:
@@ -158,6 +158,7 @@ def test_def_527_1_preluarea_pune_rezultatul_reportat_pe_analiticul_ales(patron,
     patron.captura("fara_alegere")
     pg.select_option("#mig-analitic-117", "1171")
     pg.click("#mig-salveaza-sold")
+    confirma_firma_fisierului(pg, ANTET_PROBA)   # [599] întrebarea firmei fișierului se pune la fiecare salvare
     pg.wait_for_function("() => document.body.innerText.includes('Rezultatul reportat s-a preluat pe 1171.')", timeout=30000)
     patron.captura("salvat_pe_1171")
     assert sql('SELECT cont, sold_creditor FROM "%s".solduri_initiale WHERE sold_creditor > 0' % f["schema"]) == [("1171", 14000)]
@@ -178,8 +179,8 @@ def test_def_559_1_cifra_mare_e_ce_arata_contabilitatea(patron, firma_559_1, bro
     f = firma_559_1
     pregateste_firma(patron, f)
     d = AZI.isoformat()
-    _nota(f, d, [{"debit": "4111", "credit": "707", "suma": "4468.24"}], descriere="Vânzare E2E 559.1", valideaza=True)
-    _nota(f, d, [{"debit": "607", "credit": "401", "suma": "3000.00"}], descriere="Achiziție E2E 559.1", valideaza=True)
+    _nota(f, d, [{"debit": "4111", "credit": "707", "suma": "4468.24", "partener_nume": "Client Probă SRL"}], descriere="Vânzare E2E 559.1", valideaza=True)
+    _nota(f, d, [{"debit": "607", "credit": "401", "suma": "3000.00", "partener_nume": "Furnizor Probă SRL"}], descriere="Achiziție E2E 559.1", valideaza=True)
     email = _client(patron, f, "5591")
     try:
         with ecran_cont(browser, request, email) as c:
