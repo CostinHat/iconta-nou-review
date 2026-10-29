@@ -1,5 +1,5 @@
 {
- "ui_hash": "5f1a9b22d7aac511",
+ "ui_hash": "dd569464b237e030",
  "rezolutii": [
   "1920x1080",
   "1366x768"
@@ -22,12 +22,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 10482
+      "depasire": 9664
      }
     ],
     "zona_h": 746,
-    "zona_cont": 11228,
-    "zona_depasire": 10482,
+    "zona_cont": 10410,
+    "zona_depasire": 9664,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    },
@@ -47,12 +47,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 10794
+      "depasire": 9976
      }
     ],
     "zona_h": 434,
-    "zona_cont": 11228,
-    "zona_depasire": 10794,
+    "zona_cont": 10410,
+    "zona_depasire": 9976,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    }
@@ -1987,8 +1987,8 @@
     "bara_pagina": 0,
     "bara_desktop": 18,
     "depasire": 0,
-    "corp_h": 802,
-    "fer_h": 861,
+    "corp_h": 897,
+    "fer_h": 956,
     "lateral": 0,
     "cutii": [],
     "titlu": "Termene",
@@ -2010,12 +2010,12 @@
       "cls": "zona-derulare",
       "id": "term-zona",
       "tabel": true,
-      "depasire": 141
+      "depasire": 236
      }
     ],
     "zona_h": 502,
-    "zona_cont": 643,
-    "zona_depasire": 141,
+    "zona_cont": 738,
+    "zona_depasire": 236,
     "titlu": "Termene",
     "verdict": "ok-tabel"
    }
@@ -2256,12 +2256,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 1540
+      "depasire": 1616
      }
     ],
     "zona_h": 785,
-    "zona_cont": 2325,
-    "zona_depasire": 1540,
+    "zona_cont": 2401,
+    "zona_depasire": 1616,
     "titlu": "Analytics public — ultimele 30 de zile",
     "verdict": "ok-tabel"
    },
@@ -2281,12 +2281,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 1852
+      "depasire": 1928
      }
     ],
     "zona_h": 473,
-    "zona_cont": 2325,
-    "zona_depasire": 1852,
+    "zona_cont": 2401,
+    "zona_depasire": 1928,
     "titlu": "Analytics public — ultimele 30 de zile",
     "verdict": "ok-tabel"
    }
@@ -2308,12 +2308,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 2902
+      "depasire": 3163
      }
     ],
     "zona_h": 819,
-    "zona_cont": 3721,
-    "zona_depasire": 2902,
+    "zona_cont": 3982,
+    "zona_depasire": 3163,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    },
@@ -2333,12 +2333,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 3214
+      "depasire": 3475
      }
     ],
     "zona_h": 507,
-    "zona_cont": 3721,
-    "zona_depasire": 3214,
+    "zona_cont": 3982,
+    "zona_depasire": 3475,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    }

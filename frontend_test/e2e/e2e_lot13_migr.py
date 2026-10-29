@@ -36,7 +36,7 @@ def _txt(pg, sel):
 def _balanta_api(patron, f, randuri=BALANTA_F7, metoda="cantitativ_valoric"):
     """Date de pornire: balanța de deschidere la 30.09.2026, pe ruta „Solduri inițiale” (ecranul ei e probat în test_def_664)."""
     _ok(_api(patron, "POST", "/tenants/%d/solduri" % f["tenant_id"], {
-        "data_referinta": DATA, "metoda_stoc": metoda,
+        "data_referinta": DATA, "metoda_stoc": metoda, "analitic_117": "1171",   # [527.1] balanța de probă are 117 fără analitic: alegerea e a contabilului
         "randuri": [{"cont": c, "debit": d, "credit": cr} for c, d, cr in randuri]}), "balanța de deschidere")
 
 
@@ -149,6 +149,7 @@ def test_def_664_salvarea_din_pasul_deschis_direct_numeste_pasii_urmatori(patron
     pg.wait_for_selector(_F + "#mig-salveaza-sold", timeout=20000)
     pg.fill(_F + "#mig-data-bal", DATA)
     pg.select_option(_F + "#mig-metoda-stoc", "cantitativ_valoric")
+    alege_analitic_117(pg)
     pg.click(_F + "#mig-salveaza-sold")
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop();"
                          " return !!f && !!f.querySelector('#mig-firma-lucru') && f.innerText.includes('Pașii următori necesari pentru'); }",

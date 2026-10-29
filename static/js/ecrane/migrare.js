@@ -1110,7 +1110,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
   const analitice117 = date.cere_analitic_117 ? (date.analitice_117 || []) : [];
   const campAnalitic117 = analitice117.length ? `<label class="camp"><span class="camp-eticheta">Rezultatul reportat se preia pe <span class="oblig">*</span></span>
       <select id="mig-analitic-117" class="camp-input">${ALEGE}${analitice117.map(([c, et]) => `<option value="${esc(c)}">${esc(c)} — ${esc(et)}</option>`).join("")}</select>
-      <span class="camp-ajutor">Balanța are soldul pe contul 117, fără analitic. Profitul nerepartizat sau pierderea neacoperită se preiau pe 1171; din 1171 se repartizează dividendele.</span></label>` : "";
+      <span class="camp-ajutor">Soldul e pe 117, fără analitic; din 1171 se repartizează dividendele.</span></label>` : "";
   // [lotul 10, deficiența 426] „Înainte de înlocuire: spune că există deja o balanță, arată totalurile vechi și noi, cere confirmare”
   const existenta = date.existenta;
 
