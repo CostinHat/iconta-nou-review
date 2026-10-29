@@ -413,10 +413,10 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
     intro = pg.inner_text(".mig-intro")
     assert intro == "Pasul 1 din 3 — alege tipul declarației și perioada.", intro
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
-    assert grupe == ["Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)"], grupe   # [301] „Alte declarații” pliată, la cerere
+    assert grupe[0].startswith("Datorate de firmă (") and not any(g == "Alte declarații" for g in grupe), grupe   # [301] „Alte declarații” pliată, la cerere
     pg.click("#dec-alte")
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
-    assert grupe == ["Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)", "Alte declarații"], grupe
+    assert grupe[0].startswith("Datorate de firmă (") and grupe[-1] == "Alte declarații", grupe
     datorate = pg.eval_on_selector_all("#dec-tip optgroup:first-of-type option", "(os) => os.map((o) => o.textContent)")
     # [lotul 13, poarta 1 — test legat de calendar] D300 T3/2026 (termen 26.10.2026) a ieșit din „Datorate” în ziua de după termen (restanță, nu mai e
     # „în următoarele 60 de zile”): se alege prima declarație TRIMESTRIALĂ datorată, oricare ar fi ea azi (D394 / D406 / D300), iar perioada ei
@@ -860,7 +860,7 @@ def test_def_294_perioada_implicita_e_cea_scadenta_si_nedepusa(patron):
     pg = patron.pg
     _deschide(patron, "Comert Micro TVA", "declaratii", "#dec-tip")
     t_curent = (AZI.month - 1) // 3 + 1
-    datorata = pg.eval_on_selector_all("#dec-tip option[value='d100'][data-an]", "(os) => os.map((o) => [o.dataset.an, o.dataset.luna])")
+    datorata = pg.eval_on_selector_all("#dec-tip optgroup[label^='Datorate de firmă ('] option[value='d100'][data-an]", "(os) => os.map((o) => [o.dataset.an, o.dataset.luna])")
     asteptat = (int(datorata[0][0]), (int(datorata[0][1]) - 1) // 3 + 1) if datorata else \
         ((AZI.year, t_curent - 1) if t_curent > 1 else (AZI.year - 1, 4))
     # [301, 17.10.2026] „Alte declarații” e pliată: se deschide ca omul, apoi se caută acolo D100 (opțiunea fără perioadă datorată)

@@ -135,8 +135,19 @@ def reconciliere(conn, schema, articole_lista=None):
             sold += Decimal(str(r["d"])) - Decimal(str(r["c"]))
             q = lambda x: x.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
             dif = q(sold - v["valid"])
+            # [696.1, comanda 14.3] când rămâne o diferență, cardul numește mișcările / notele care o produc, nu trimite contabilul să le caute
+            cauze = []
+            if abs(dif) > _common._CENT:
+                from core import repo_stocuri
+                clasa = repo_stocuri.clasa_miscarilor(cur, schema)
+                for m in repo_stocuri.miscari_pentru_diferenta(cur, schema, cont):
+                    if clasa.get(m["id"]) == "fara_nota":
+                        cauze.append({"fel": "fara_nota", "data": m["data"].isoformat(), "tip": m["tip"], "document": m["document"], "valoare": str(m["valoare"])})
+                    elif m["status_nota"] == "validata" and abs(Decimal(str(m["valoare_nota"])) - Decimal(str(m["valoare"]))) > _common._CENT:
+                        cauze.append({"fel": "alta_valoare_in_nota", "data": m["data"].isoformat(), "tip": m["tip"], "document": m["document"],
+                                      "valoare": str(m["valoare"]), "valoare_nota": str(m["valoare_nota"]), "nota_id": m["inregistrare_id"]})
             out.append({"cont": cont, "sold_contabil": str(q(sold)), "valoare_validata": str(q(v["valid"])), "valoare_ciorna": str(q(v["ciorna"])),
-                        "diferenta": str(dif), "ok": abs(dif) <= _common._CENT and not v["necalculat"], "necalculat": v["necalculat"]})
+                        "diferenta": str(dif), "ok": abs(dif) <= _common._CENT and not v["necalculat"], "necalculat": v["necalculat"], "cauze": cauze})
     return out
 
 

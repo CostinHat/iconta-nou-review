@@ -219,13 +219,12 @@ def _schimba_costul(cur, schema, sterse, articole):
     from core import repo_stocuri, stocuri_cv as _cv
     for aid in sorted(articole):
         m = repo_stocuri.miscari_ale_articolului(cur, schema, aid)
-        try:
-            inainte = {x["id"]: Decimal(str(x["valoare"])) for x in _cv.fisa_magazie(m)}
-        except ValueError:   # o fișă care nu se poate reface azi: comparația se face cu valorile scrise pe mișcări (cele din note)
-            inainte = {x["id"]: Decimal(str(x["valoare"] or 0)) for x in m}
+        # [696.1, 14.3] fișa de acum are ieșirile la valoarea din notă (cea scrisă pe mișcare); „ce-ar fi fără ele” se recalculează la CMP, ca să se vadă
+        # dacă ștergerea ar schimba costul unei ieșiri rămase față de nota ei
+        inainte = {x["id"]: Decimal(str(x["valoare"] or 0)) for x in m}
         ramase = [x for x in m if x["id"] not in sterse]
         try:
-            dupa = _cv.fisa_magazie(ramase)
+            dupa = _cv.fisa_magazie(ramase, recalculeaza=True)
         except ValueError:
             return aid, (ramase[0] if ramase else None)
         for x in dupa:

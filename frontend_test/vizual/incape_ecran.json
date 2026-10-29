@@ -1,5 +1,5 @@
 {
- "ui_hash": "dd569464b237e030",
+ "ui_hash": "d8e759d72aa14219",
  "rezolutii": [
   "1920x1080",
   "1366x768"
@@ -22,12 +22,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 9664
+      "depasire": 10482
      }
     ],
     "zona_h": 746,
-    "zona_cont": 10410,
-    "zona_depasire": 9664,
+    "zona_cont": 11228,
+    "zona_depasire": 10482,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    },
@@ -47,12 +47,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 9976
+      "depasire": 10794
      }
     ],
     "zona_h": 434,
-    "zona_cont": 10410,
-    "zona_depasire": 9976,
+    "zona_cont": 11228,
+    "zona_depasire": 10794,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    }
@@ -1272,12 +1272,12 @@
       "cls": "cf-corp zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 1282
+      "depasire": 1366
      }
     ],
     "zona_h": 862,
-    "zona_cont": 2144,
-    "zona_depasire": 1282,
+    "zona_cont": 2228,
+    "zona_depasire": 1366,
     "titlu": "Detaliu firmă",
     "verdict": "ok-tabel"
    },
@@ -1297,12 +1297,12 @@
       "cls": "cf-corp zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 1888
+      "depasire": 1972
      }
     ],
     "zona_h": 550,
-    "zona_cont": 2438,
-    "zona_depasire": 1888,
+    "zona_cont": 2522,
+    "zona_depasire": 1972,
     "titlu": "Detaliu firmă",
     "verdict": "ok-tabel"
    }
@@ -1592,12 +1592,12 @@
       "cls": "cf-corp zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 3570
+      "depasire": 3654
      }
     ],
     "zona_h": 810,
-    "zona_cont": 4380,
-    "zona_depasire": 3570,
+    "zona_cont": 4464,
+    "zona_depasire": 3654,
     "titlu": "Control fiscal ?",
     "verdict": "ok-tabel"
    },
@@ -1617,12 +1617,12 @@
       "cls": "cf-corp zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 4255
+      "depasire": 4339
      }
     ],
     "zona_h": 498,
-    "zona_cont": 4753,
-    "zona_depasire": 4255,
+    "zona_cont": 4837,
+    "zona_depasire": 4339,
     "titlu": "Control fiscal ?",
     "verdict": "ok-tabel"
    }
@@ -1987,12 +1987,23 @@
     "bara_pagina": 0,
     "bara_desktop": 18,
     "depasire": 0,
-    "corp_h": 897,
-    "fer_h": 956,
+    "corp_h": 973,
+    "fer_h": 1032,
     "lateral": 0,
-    "cutii": [],
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "zona-derulare",
+      "id": "term-zona",
+      "tabel": true,
+      "depasire": 2253
+     }
+    ],
+    "zona_h": 814,
+    "zona_cont": 3067,
+    "zona_depasire": 2253,
     "titlu": "Termene",
-    "verdict": "ok"
+    "verdict": "ok-tabel"
    },
    "1366x768": {
     "fereastra": true,
@@ -2010,12 +2021,12 @@
       "cls": "zona-derulare",
       "id": "term-zona",
       "tabel": true,
-      "depasire": 236
+      "depasire": 2565
      }
     ],
     "zona_h": 502,
-    "zona_cont": 738,
-    "zona_depasire": 236,
+    "zona_cont": 3067,
+    "zona_depasire": 2565,
     "titlu": "Termene",
     "verdict": "ok-tabel"
    }
@@ -2206,12 +2217,23 @@
     "bara_pagina": 0,
     "bara_desktop": 0,
     "depasire": 0,
-    "corp_h": 933,
-    "fer_h": 992,
+    "corp_h": 973,
+    "fer_h": 1032,
     "lateral": 0,
-    "cutii": [],
+    "cutii": [
+     {
+      "tag": "div",
+      "cls": "pf-lista zebra-lista zona-derulare",
+      "id": "ac-lista",
+      "tabel": true,
+      "depasire": 60
+     }
+    ],
+    "zona_h": 787,
+    "zona_cont": 847,
+    "zona_depasire": 60,
     "titlu": "Cabinete",
-    "verdict": "ok"
+    "verdict": "ok-tabel"
    },
    "1366x768": {
     "fereastra": true,
@@ -2229,12 +2251,12 @@
       "cls": "pf-lista zebra-lista zona-derulare",
       "id": "ac-lista",
       "tabel": true,
-      "depasire": 272
+      "depasire": 372
      }
     ],
     "zona_h": 475,
-    "zona_cont": 747,
-    "zona_depasire": 272,
+    "zona_cont": 847,
+    "zona_depasire": 372,
     "titlu": "Cabinete",
     "verdict": "ok-tabel"
    }
@@ -2308,12 +2330,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 3163
+      "depasire": 4033
      }
     ],
     "zona_h": 819,
-    "zona_cont": 3982,
-    "zona_depasire": 3163,
+    "zona_cont": 4852,
+    "zona_depasire": 4033,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    },
@@ -2333,12 +2355,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 3475
+      "depasire": 4345
      }
     ],
     "zona_h": 507,
-    "zona_cont": 3982,
-    "zona_depasire": 3475,
+    "zona_cont": 4852,
+    "zona_depasire": 4345,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    }

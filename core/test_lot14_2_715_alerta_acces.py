@@ -20,8 +20,8 @@ def test_cererile_de_pornire_sunt_automate_iar_scrierile_si_datele_nu(conn_t):
             assert not _automata(cur, c), c
 
 
-def _cabinet_cu_utilizator(cur, nume_cabinet, eticheta, cereri):
-    cur.execute("INSERT INTO public.accounting_firms (nume) VALUES (%s) RETURNING id", (nume_cabinet,))
+def _cabinet_cu_utilizator(cur, nume_cabinet, eticheta, cereri, de_test=False):
+    cur.execute("INSERT INTO public.accounting_firms (nume, de_test) VALUES (%s, %s) RETURNING id", (nume_cabinet, de_test))
     fid = cur.fetchone()[0]
     cur.execute("INSERT INTO public.users (email, password_hash, nume, prenume, accounting_firm_id) VALUES (%s,'x','Ionescu','Ana',%s) RETURNING id",
                 ("ztest715_%s@exemplu.test" % eticheta, fid))
@@ -38,7 +38,7 @@ def test_alerta_ignora_automatele_si_cabinetele_de_test_si_numeste_omul():
     try:
         with conn.cursor() as cur:
             u1 = _cabinet_cu_utilizator(cur, "Cabinet Real Ztest715 SRL", "a", cereri)
-            u2 = _cabinet_cu_utilizator(cur, "Cabinet Test Ztest715 SRL", "b", [("PUT /tenants/1/x", False)] * 400)
+            u2 = _cabinet_cu_utilizator(cur, "Cabinet Probe Ztest715 SRL", "b", [("PUT /tenants/1/x", False)] * 400, de_test=True)   # [715.1] marcat explicit
             u3 = _cabinet_cu_utilizator(cur, "Cabinet Real Doi Ztest715 SRL", "c", [("PUT /tenants/1/x", False)] * 400)
         gasiti = {u["user_id"]: u for u in AA.detecteaza(conn, 10, 8, 300)}
         assert u1 not in gasiti, "cele 400 de cereri automate nu sunt acțiuni"

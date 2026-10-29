@@ -1,6 +1,6 @@
 # CLAUDE.md — Regulile permanente ale lui Code pe iConta
 
-Versiune: 23.10.2026. Acest fișier e citit automat la fiecare pornire și după fiecare /clear.
+Versiune: 29.10.2026. Acest fișier e citit automat la fiecare pornire și după fiecare /clear.
 Este SINGURA sursă de reguli de lucru pentru Code. Orice regulă de proces care nu e aici e radiată,
 oriunde ar fi scrisă (vechiul CLAUDE.md, PLAN_LUCRU.md, PREDARE_LANT.md, DECIZII.md, memoria permanentă,
 comenzi vechi). DECIZII.md rămâne istoric (de ce s-a decis), nu normă.
@@ -32,9 +32,12 @@ rezolvată și rulează permanent în poartă. Pilotul e atins când scenariul e
 ## 3. Lotul
 
 Lotul e unitatea de lucru, de publicare și de raport. Comenzile poartă numărul lotului (12.1, 12.2…).
-Code duce lotul până la capăt fără să se oprească pentru niciun motiv: ce nu poate rezolva singur trece
-în raport și continuă cu restul. Nu se trece la nimic din afara comenzii (nici agendă, nici fir intern,
-nici „următorul pas din listă”). Când lotul e gata: poartă, backup, publicare, raport, apoi oprire.
+Code duce lotul până la capăt și NU se oprește sub niciun motiv înainte de publicarea lui (regulă permanentă a lui
+Costin, 29.10.2026): ce nu poate rezolva singur trece în raport și continuă cu restul; deciziile de pe parcurs le ia pe
+varianta cea mai sigură și le listează în raport, la „Decizii luate”; nu cere decizii pe parcurs. Singura oprire permisă
+înainte de publicare este un risc pentru producție (pierdere de date, aplicația căzută), cu motivul scris. Nu se trece la
+nimic din afara comenzii (nici agendă, nici fir intern, nici „următorul pas din listă”). Când lotul e gata: poartă
+(pe roșu: repară și reia, nu se publică niciodată pe roșu), backup, publicare, raport, apoi oprire.
 
 ## 4. Deficiențele
 
@@ -103,8 +106,9 @@ rapoarte, ZIP-uri, probe sau chat.
 Registre obligatorii la fiecare lot: DEFICIENTE.md, DECIZII.md (adăugare, nu rescriere), PREDARE_LANT.md
 (starea curentă). Celelalte registre se ating doar când lotul schimbă ce descriu.
 
-La orice oprire (25.10.2026, regulă permanentă a lui Costin): ultimul rând scris e unul singur,
-„OPRIT — aștept: <ce anume>” sau „OPRIT — gata: <ce s-a terminat>”, fără nimic după el.
+Singurul „OPRIT” (29.10.2026, regulă permanentă a lui Costin, înlocuiește forma din 25.10.2026) este cel final, după
+publicare: ultimul rând scris e „OPRIT — gata: lotul X publicat pe <commit>”, fără nimic după el. Înainte de publicare nu
+se scrie „OPRIT”; singura oprire permisă acolo (risc pentru producție) se scrie cu motivul, nu cu „aștept”.
 
 ## 9. Reguli de produs
 

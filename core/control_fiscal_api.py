@@ -1130,6 +1130,15 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     # neaplicabile = D100/D101/D406 (partida simpla, din declaratii_datorate) + D205/D301 pe fapt.
     neaplicabile = list(rez.get("neaplicabile", [])) + fapt["neaplicabile"]
     neclar += fapt["neclar"]
+    # [D2, comanda 14.3] firma cu cod de TVA românesc care n-a răspuns la „Înregistrată în regimul special OSS”: D398 apare „de lămurit”, cu trimitere directă
+    # la Date firmă — nu lipsește tăcut din verificare. „Nu” -> nu apare; „Da” -> se judecă ca orice declarație
+    if vector.get("platitor_tva") is True or vector.get("inreg_art317"):
+        from core import declaratii_api as _da, repo_declaratii as _rd
+        with conn_schema.cursor() as _cur:
+            _oss = _rd.inregistrat_oss(_cur)
+        if _da.starea_oss({"inregistrat_oss": _oss}) == "de_lamurit":
+            neclar.append(_af.afirmatie("necunoastere", "d398", "D398: " + _da.DE_LAMURIT_OSS + ". Fără răspuns nu se știe dacă firma are D398 de depus "
+                                        "(CF art.315 alin.(3)).", domeniu_de="%04d-%02d" % (azi.year, azi.month), domeniu_pana=None, ecran="date_firma", eticheta_ecran="Răspunde în Date firmă"))
 
     # depuse din public (cu data depunerii, pentru motivul verde)
     with conn_public.cursor() as cur:

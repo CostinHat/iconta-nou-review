@@ -1147,6 +1147,18 @@ def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 
+class CabinetDeTestIn(BaseModel):   # [715.1, 14.3] marcajul „cabinet de test”
+    de_test: bool
+
+
+@app.post("/admin/cabinete/{firm_id}/de-test")
+def admin_cabinet_de_test(firm_id: int, date: CabinetDeTestIn, ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_admin.admin_cabinet_de_test(firm_id, date.de_test, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.get("/admin/activitate/cabinet/{firm_id}")
 def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_cabinet)):
     try:

@@ -39,6 +39,8 @@ _STUB = {
     r'from "\./nir_legare\.js[^"]*"': 'from "data:text/javascript,export const cuLegareaNir=0,interogareLegare=0"',
     # [lotul 12, 463] starea SPV a firmei, randată după inserare (`legaVerdict`): corpul verdictului n-o atinge
     r'from "\./spv_stare\.js[^"]*"': 'from "data:text/javascript,export const randeazaStareSpv=0"',
+    # [14.3, D2] trimiterea „Răspunde în Date firmă” din verdict (`legaVerdict`): tabela ecranelor nu intră în randarea corpului
+    r'from "\./ecran_destinatie\.js[^"]*"': 'from "data:text/javascript,export const ECRANE={}"',
 }
 _ROSU = re.compile(r"cf-rosu|pct-rosu|cf-termen-rosu|--rosu-semafor|#ff8a80")
 

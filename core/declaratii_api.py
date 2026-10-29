@@ -390,14 +390,27 @@ NEAPLICABILE_REGIM = {
 }
 
 
+#: [D2, comanda 14.3] D398 și răspunsul OSS din Date firmă: „Nu” -> D398 nu apare deloc (nu e a firmei); „nedeclarat” (None) -> apare „de lămurit”,
+#: cu trimitere directă la Date firmă (nu gri și tăcut); „Da” -> fluxul din 26.10 (activă; generarea refuză cât lipsesc datele).
+DE_LAMURIT_OSS = "de lămurit — răspunde în Date firmă la „Înregistrată în regimul special OSS”"
+
+
+def starea_oss(vector):
+    """„ascunsa” (răspuns „Nu”: D398 nu se oferă), „de_lamurit” (nedeclarat, vector cu cod de TVA românesc) sau None (nimic special)."""
+    v = vector or {}
+    if "inregistrat_oss" not in v:
+        return None
+    if v["inregistrat_oss"] is False:
+        return "ascunsa"
+    return "de_lamurit" if v["inregistrat_oss"] is None else None
+
+
 def neaplicabile_regim(vector):
-    """{tip: motiv} — din `NEAPLICABILE_REGIM`, după vectorul fiscal (`platitor_tva`, `inreg_art317`, `inregistrat_oss`). Vector necompletat (None) -> nimic
+    """{tip: motiv} — din `NEAPLICABILE_REGIM`, după vectorul fiscal (`platitor_tva`, `inreg_art317`). Vector necompletat (None) -> nimic
     blocat: un gol nu e un răspuns (ca `control_fiscal_api.neaplicabile_selector`)."""
     v = vector or {}
     platitor, art317 = v.get("platitor_tva"), v.get("inreg_art317")
     out = {}
-    if "inregistrat_oss" in v and v["inregistrat_oss"] is not True:   # [595.1, 14.2] D398 numai cu „Da” în Date firmă; „Nu” și golul: gri, cu motivul de la generare
-        out["d398"] = d398.refuz_oss(v["inregistrat_oss"])
     if platitor is True:
         out["d311"] = NEAPLICABILE_REGIM["d311"]
     if platitor is False:

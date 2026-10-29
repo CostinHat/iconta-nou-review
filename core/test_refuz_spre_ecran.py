@@ -38,6 +38,9 @@ EMITATORI = {
     # [lotul 13, 595] D398 fără răspunsul OSS din Date firmă (nedeclarat / „Nu”) trimite la câmpul „Înregistrată în regimul special OSS”
     # (`d398.ECRAN_OSS` / `CAMP_OSS`, `RefuzGenerare`), fără cod propriu; câmpul `df-inregistrat_oss` e verificat în `core/test_lot13_oss_date_firma.py`
     "core/d398.py": set(),
+    # [lotul 14, D2, comanda 14.3] D398 „de lămurit” în Control fiscal: afirmația „necunoaștere” trimite la Date firmă (`ecran="date_firma"`, butonul
+    # „Răspunde în Date firmă”), fără cod propriu; probat în `core/test_lot14_3_d2_oss.py` și `e2e_lot14_3.py`
+    "core/control_fiscal_api.py": set(),
 }
 
 

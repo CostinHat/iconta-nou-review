@@ -1,0 +1,289 @@
+[
+ {
+  "nr": "716",
+  "firma": "tenant_9049",
+  "descriere": "F1: Declarații — în «Declarațiile firmei aflate deja în coadă», D300 10/2026 (luna nu s-a încheiat) e «în lucru — perioada nu s-a încheiat (termen 25.11.2026)», iar D300 09/2026 «depășită — termenul 26.10.2026 a trecut» (înainte: ambele «depășită, de generat din nou»). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .dec-existente"
+   },
+   {
+    "pauza": 1200
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D300 · 10/2026 · în lucru — perioada nu s-a încheiat (termen 25.11.2026)",
+    "zona": ".fereastra:last-of-type .dec-existente"
+   },
+   {
+    "contine": "D300 · 09/2026 · depășită — termenul 26.10.2026 a trecut",
+    "zona": ".fereastra:last-of-type .dec-existente"
+   },
+   {
+    "nu_contine": "de generat din nou",
+    "zona": ".fereastra:last-of-type .dec-existente"
+   }
+  ],
+  "captura": "716_f1_vechi_declaratii_coada.png"
+ },
+ {
+  "nr": "719",
+  "firma": "tenant_9051",
+  "descriere": "F3: Declarații — în «Datorate de firmă», D301 09/2026 (termenul 26.10.2026 a trecut) apare ca restanță, înaintea scadențelor viitoare (înainte: lipsea, lista arăta numai termene viitoare). Citirea listei din selector.",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #dec-tip"
+   },
+   {
+    "pauza": 1200
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D301 · 09/2026 · restanță — termenul a fost 26.10.2026",
+    "zona": ".fereastra:last-of-type #dec-tip"
+   }
+  ],
+  "captura": "719_f3_vechi_d301_restanta.png"
+ },
+ {
+  "nr": "717",
+  "firma": "tenant_9049",
+  "descriere": "F1: Închidere lună — luna anterioară (09/2026); «Registru jurnal» deschis din căutarea ferestrei vine pe luna 09/2026, nu pe cea curentă (înainte: pe luna curentă). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-inchidere"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #il-prev"
+   },
+   {
+    "click": ".fereastra:last-of-type #il-prev"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "completeaza": ".fereastra:last-of-type #cautare-fereastra",
+    "valoare": "Registru jurnal"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #cautare-fereastra-rez .cautare-item"
+   },
+   {
+    "click": ".fereastra:last-of-type #cautare-fereastra-rez .cautare-item"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #j-prev"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Luna 09/2026",
+    "zona": ".fereastra:last-of-type "
+   }
+  ],
+  "captura": "717_f1_vechi_jurnal_pe_luna_din_care_vii.png"
+ },
+ {
+  "nr": "688.1",
+  "firma": "tenant_9049",
+  "descriere": "F1: Închidere lună 09/2026 (blocată): un singur rând de stare și o singură acțiune («Deblochează luna»); «Propune regularizarea TVA» nu se oferă pe luna blocată. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-inchidere"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #il-prev"
+   },
+   {
+    "click": ".fereastra:last-of-type #il-prev"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #il-controale"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Luna e blocată: notele ei nu se mai modifică, nu se mai adaugă și nu se mai șterg.",
+    "zona": ".fereastra:last-of-type #il-stare-perioada"
+   },
+   {
+    "nu_contine": "Propune regularizarea TVA",
+    "zona": ".fereastra:last-of-type "
+   }
+  ],
+  "captura": "688_1_f1_vechi_inchidere_09_2026_blocata.png"
+ },
+ {
+  "nr": "694.1",
+  "firma": "tenant_9050",
+  "descriere": "F2: Control fiscal › Declarație vs contabilitate › «Coerență TVA (balanță)»: fiecare cifră își spune data soldului. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type .cf-verif",
+    "text": "TVA vs sold balanță"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "TVA vs sold balanță la",
+    "zona": ".fereastra:last-of-type"
+   }
+  ],
+  "captura": "694_1_f2_vechi_control_fiscal_coerenta_tva.png"
+ },
+ {
+  "nr": "696.1",
+  "firma": "tenant_9049",
+  "descriere": "F1: Stocuri 10/2026 — «Stoc validat 6.272,38 lei = balanța 371 ✓» (înainte: fișele 6.272,74 față de 371 6.272,38). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type #s-carduri .card-rezumat"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Stoc validat 6.272,38 lei = balanța 371",
+    "zona": ".fereastra:last-of-type #s-carduri"
+   }
+  ],
+  "captura": "696_1_f1_vechi_stocuri_10_2026.png"
+ },
+ {
+  "nr": "527.1",
+  "firma": "tenant_9057",
+  "descriere": "F7: Balanță 10/2026 — soldul de preluare de pe 117 a trecut pe 1171 prin nota de reclasificare 117 = 1171 (14.000 lei, document «Reclasificare 117 → 1171 (comanda 14.3, D1)»); 117 are soldul final 0. Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-balanta"
+   },
+   {
+    "pauza": 3000
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "Rezultatul reportat reprezentând profitul nerepartizat sau pierderea neacoperită",
+    "zona": ".fereastra:last-of-type "
+   }
+  ],
+  "captura": "527_1_f7_vechi_balanta_117_pe_1171.png"
+ },
+ {
+  "nr": "715.1",
+  "firma": "tenant_9049",
+  "acasa": true,
+  "utilizator": "superadmin",
+  "descriere": "Panou Admin › Activitate cabinete: cabinetul de test (copia) e marcat «de test» din buton, cu confirmare; rândul poartă «de test» și butonul devine «Scoate marcajul de test» (înainte: excepția de la alerta de acces o dădea numele cabinetului).",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   },
+   {
+    "asteapta": ".pf-frand"
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "deruleaza": ".pf-frand:has-text('copie de dovadă') "
+   },
+   {
+    "click": ".pf-frand:has-text('copie de dovadă') [data-de-test]"
+   },
+   {
+    "pauza": 800
+   },
+   {
+    "click": "#caseta-atentie-activa #ca-ok",
+    "daca_exista": true
+   },
+   {
+    "click": ".caseta-intrebare .buton-primar",
+    "daca_exista": true
+   },
+   {
+    "pauza": 1500
+   },
+   {
+    "deruleaza": ".pf-frand:has-text('copie de dovadă') "
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "de test",
+    "zona": ".pf-frand:has-text('copie de dovadă') "
+   },
+   {
+    "contine": "Scoate marcajul de test",
+    "zona": ".pf-frand:has-text('copie de dovadă') "
+   }
+  ],
+  "captura": "715_1_admin_vechi_cabinet_de_test_marcat.png"
+ },
+ {
+  "nr": "595.1",
+  "firma": "tenant_9051",
+  "descriere": "F3 (art.317, fără răspuns la OSS în Date firmă): Control fiscal › «Nu se poate verifica» — D398 «de lămurit — răspunde în Date firmă», cu butonul «Răspunde în Date firmă» (înainte: D398 gri, inactivă, fără trimitere). Numai citire.",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "deruleaza": ".fereastra:last-of-type .cf-decl:has(button[data-ecran-destinatie='date_firma'])"
+   },
+   {
+    "pauza": 600
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D398: de lămurit — răspunde în Date firmă",
+    "zona": ".fereastra:last-of-type "
+   },
+   {
+    "exista": ".fereastra:last-of-type button[data-ecran-destinatie='date_firma']",
+    "text": "Răspunde în Date firmă"
+   }
+  ],
+  "captura": "595_1_f3_vechi_d398_de_lamurit.png"
+ }
+]

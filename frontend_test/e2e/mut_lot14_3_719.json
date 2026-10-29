@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/termene_api.py",
+  "ancora": "restanta=str(d[\"termen\"])[:10] < azi.isoformat())",
+  "inlocuire": "restanta=False)",
+  "test": "frontend_test/e2e/e2e_lot14_3.py::test_def_719_restanta_apare_in_datorate_prima"
+ }
+]

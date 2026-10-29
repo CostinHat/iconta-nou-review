@@ -128,7 +128,7 @@ def test_def_639_termenul_d390_din_noiembrie_nu_trece_pe_21_decembrie(patron, fi
     patron.captura("datorate")
     termene = {}
     for o in optiuni:
-        m = re.match(r"(D\d+) · (.+?) · termen de depunere (\d\d)\.(\d\d)\.(\d{4})", o)
+        m = re.match(r"(D\d+) · (.+?) · (?:termen de depunere|restanță — termenul a fost) (\d\d)\.(\d\d)\.(\d{4})", o)
         if m:
             termene.setdefault(m.group(1), []).append((m.group(2), _dt.date(int(m.group(5)), int(m.group(4)), int(m.group(3)))))
     assert termene.get("D390"), optiuni

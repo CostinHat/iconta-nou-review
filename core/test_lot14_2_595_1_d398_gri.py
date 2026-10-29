@@ -1,26 +1,9 @@
-"""[595.1, comanda 14.2] D398 gri la pasul 1 când firma a răspuns „nu” la înregistrarea OSS; „Cod de TVA” al formularului vine numai de la o
-firmă care are cod de TVA românesc."""
+"""[595.1, comanda 14.2] „Cod de TVA” al formularului D398 vine numai de la o firmă care are cod de TVA românesc; generarea D398 refuză fără „Da” la OSS.
+[D2, comanda 14.3] D398 gri / de lămurit / ascunsă pe răspunsul OSS: `core/test_lot14_3_d2_oss.py`."""
 import pytest
 from core.erori import RefuzGenerare
-from core import declaratii_api as DA, d398, uc_declaratii as UD
+from core import declaratii_api as DA, uc_declaratii as UD
 from core.test_lot11_t import conn_t, _SCHEMA as _SCHEMA_PENTRU_TEST  # noqa: F401 — fixtura schemei sintetice
-
-
-def test_d398_gri_cu_motiv_cand_oss_e_nu():
-    n = DA.neaplicabile_regim({"platitor_tva": True, "inreg_art317": False, "inregistrat_oss": False})
-    assert n["d398"] == d398.MOTIV_OSS_NU, n
-
-
-def test_d398_gri_si_cand_oss_nu_e_declarat_dar_nu_cand_e_da():
-    n = DA.neaplicabile_regim({"platitor_tva": True, "inreg_art317": False, "inregistrat_oss": None})
-    assert n["d398"] == d398.MOTIV_OSS_NEDECLARAT, n
-    assert "d398" not in DA.neaplicabile_regim({"platitor_tva": True, "inreg_art317": False, "inregistrat_oss": True})
-    assert "d398" not in DA.neaplicabile_regim({"platitor_tva": True, "inreg_art317": False}), "vector fără cheia OSS (alți apelanți): neatins"
-
-
-def test_d398_gri_si_fara_cod_romanesc_ca_inainte():
-    n = DA.neaplicabile_regim({"platitor_tva": False, "inreg_art317": False, "inregistrat_oss": True})
-    assert n["d398"] == DA.NEAPLICABILE_REGIM["d398"], n
 
 
 def test_codul_de_tva_se_precompleteaza_numai_cu_cod_romanesc():

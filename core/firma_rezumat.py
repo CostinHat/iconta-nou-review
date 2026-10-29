@@ -206,7 +206,9 @@ TABELE_CONDITIONALE = ("efactura_primite",)
 #: [432, lotul 10] + luna preluării (`repo_firma_profil.fapte_preluare`: soldurile de preluare și prima notă) — marcajul „înainte de preluare”
 _T_TERMENE = ("clienti", "d390_manual", "facturi", "firma_profil", "salariati", "inregistrari", "solduri_initiale",
               # [lotul 13, 592] D390 la neplătitorul art.317: numai lunile cu operațiuni intracomunitare (`d301_operatiuni`)
-              "d301_operatiuni")
+              "d301_operatiuni",
+              # [14.3, 719] restanțele (fereastra fără limită jos) judecă și faptele din notele validate (D205 / D301): rândurile notelor
+              "inregistrari_linii")
 
 ASPECTE = {
     "solduri": {
@@ -1115,7 +1117,7 @@ def _termene_una_firma(f, ctx, azi):
             # [lotul 12, C162] la neplătitorul art.317, lunile D390 din aceeași sursă ca Control fiscal (`d390_luni_neplatitor`)
             # [lotul 13, 538 / 591] și declarațiile datorate din operațiile înregistrate (D301, D205), ca la Control fiscal
             from core import control_fiscal_api as _cf_fapt
-            term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt, d112_fapt=_f112,
+            term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt, d112_fapt=_f112, restante=True,   # [719]
                                              d390_luni_neplatitor=lambda a: _ci_sal.d390_luni_neplatitor(cs, schema, a, azi),
                                              declaratii_fapt=lambda jos, zile: _cf_fapt.declaratii_fapt(cs, schema, vector, azi, jos=jos,
                                                                                                        sus_zile=zile))

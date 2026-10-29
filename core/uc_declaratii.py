@@ -49,10 +49,18 @@ def declaratii_tipuri(tenant_id, ctx):
     # [deficiența 301] declarațiile pe care forma firmei nu le poate datora nici nu apar (persoanele fizice, la o persoană juridică)
     _forma = control_fiscal_api.neaplicabile_forma(row[0] if row else None)
     _tipuri = [t for t in declaratii_api.tipuri() if t not in control_fiscal_api._NEAP_PERSOANA_JURIDICA or t not in _forma]
+    # [D2, comanda 14.3] răspunsul OSS: „Nu” -> D398 dispare din selector; nedeclarat -> rămâne, marcat „de lămurit” (nu gri, nu tăcut)
+    _oss = declaratii_api.starea_oss(_vec)
+    _de_lamurit = {}
+    if _oss == "ascunsa":
+        _tipuri = [t for t in _tipuri if t != "d398"]
+    elif _oss == "de_lamurit" and "d398" in _tipuri and "d398" not in _neap:
+        _de_lamurit["d398"] = declaratii_api.DE_LAMURIT_OSS
     return {"tipuri": _tipuri,
             "periodicitate": {t: declaratii_api.periodicitate_firma(t, _vec if row else None) for t in _tipuri},
             "periodicitate_eticheta": {t: e for t, e in declaratii_api.ETICHETA_PERIODICITATE.items() if t in _tipuri},
             "neaplicabile": _neap,
+            "de_lamurit": _de_lamurit,
             "datorate": _datorate_firmei(tenant_id, ctx),
             # [comanda Costin 9.1, A.3] obligațiile pe care le corectează formularul D710, cu denumirea oficială din nomenclator
             "obligatii_d710": _obligatii_d710(),

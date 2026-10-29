@@ -42,7 +42,7 @@ def activitate_pe_cabinete(cur):
                      WHERE u.accounting_firm_id IS NOT NULL
                        AND """ + _audit_automat.sql_actiune_omului("a") + """   -- [715, 14.2] cererile de pornire ale ecranelor nu sunt acțiuni
                      GROUP BY u.accounting_firm_id)
-                SELECT f.id, f.nume, f.activ, f.creat_la,
+                SELECT f.id, f.nume, f.activ, f.creat_la, f.de_test,
                        -- [15.10.2026, lotul 4 pct.4] pe ce cale a venit cabinetul (invitația lui sau înregistrarea liberă confirmată)
                        CASE WHEN EXISTS (SELECT 1 FROM public.invitatii_cabinet ic WHERE ic.firm_id = f.id) THEN 'invitație'
                             WHEN EXISTS (SELECT 1 FROM public.inregistrari_in_asteptare ia WHERE ia.firm_id = f.id)
@@ -62,6 +62,12 @@ def activitate_pe_cabinete(cur):
                 ORDER BY f.nume
             """, _audit_automat.PARAM_OMULUI)
     return cur.fetchall()
+
+
+def seteaza_de_test(cur, firm_id, de_test):
+    """[715.1, 14.3] Marcajul „cabinet de test” (alerta de acces îl ocolește). Numărul de rânduri atinse."""
+    cur.execute("UPDATE public.accounting_firms SET de_test = %s WHERE id = %s", (bool(de_test), firm_id))
+    return cur.rowcount
 
 
 def ultimele_actiuni(cur):

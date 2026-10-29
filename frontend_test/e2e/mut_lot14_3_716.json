@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/coada_api.py",
+  "ancora": "            d[\"termen\"], d[\"termen_depasit\"] = _termen_cozii(d, activa=d[\"stare\"] in STARI_ACTIVE)",
+  "inlocuire": "            d[\"termen\"], d[\"termen_depasit\"] = d.get(\"termen\"), True",
+  "test": "frontend_test/e2e/e2e_lot14_3.py::test_def_716_depasita_numai_dupa_termen_perioada_neincheiata_nu_e_de_generat_din_nou"
+ }
+]

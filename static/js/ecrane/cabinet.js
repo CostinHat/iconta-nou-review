@@ -6,7 +6,7 @@ import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arat
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=084d4963d1";
+import { randeazaListaFirme } from "./firme.js?v=b7cceffab4";
 import { randeazaMigrare } from "./migrare.js?v=6d8714b398";
 import { randeazaControl } from "./control.js?v=680bf7a6fb";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=80b751d073"; // [p17_activitate]
@@ -14,7 +14,7 @@ import { randeazaSetari } from "./setari.js?v=ae0ddd2b13"; // [p28_setari]
 import { randeazaRaporteaza } from "./raporteaza.js?v=766651826e"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
-import { randeazaTermene } from "./termene.js?v=64889e06b3";
+import { randeazaTermene } from "./termene.js?v=4b1f2252e9";
 import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=766c35b7f9";
 import { randeazaSupervizor } from "./supervizor.js?v=33940e0a4c"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=56bbbb1bbc";
@@ -364,8 +364,13 @@ async function actualizeazaTermene(grila) {
   try {
     const r = await api.get("/termene");
     const u = r && r.urmatoarea;
+    const nrRestante = (r && r.restante) || 0;   // [719, 14.3] restanțele (termen trecut, nedepuse) sunt în /termene, primele
     if (u) {
-      zona.innerHTML = `Următoarea scadență: <b>${dataRo(u.termen, "zi_luna_text")}</b>`;   // [P1b] dataRo canonic, nu formator local
+      zona.innerHTML = `${nrRestante ? `<b class="tip-figura">${nrRestante}</b> ${dupaNumar(nrRestante, "restanță", "restanțe")} · ` : ""}Următoarea scadență: <b>${dataRo(u.termen, "zi_luna_text")}</b>`;   // [P1b] dataRo canonic, nu formator local
+      return;
+    }
+    if (nrRestante) {
+      zona.innerHTML = `<b class="tip-figura">${nrRestante}</b> ${dupaNumar(nrRestante, "restanță", "restanțe")} · nicio scadență în 60 de zile`;
       return;
     }
     // [reconciliere_termene 14.08.2026] "Nicio scadență apropiată" suna curat chiar cand exista restante:

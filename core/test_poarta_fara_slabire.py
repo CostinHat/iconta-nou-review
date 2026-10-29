@@ -38,23 +38,18 @@ _SLABIRI = {"skip", "skipif", "xfail", "importorskip"}
 _ASERTIUNI = {"raises", "fail", "warns"}
 #: [regula 3d] excepțiile motivate: {"<fișier>::<test>": "<motiv, cu decizia / deficiența numită>"}
 MOTIVATE = {
-    "core/test_lot13_portal_postmark.py::test_clasa_emailurile_de_acces_la_cont_pleaca_pe_postmark":
-        "schimbare decisă (comanda 14.2, 268.2): steagul `postmark=True` a dispărut de pe apeluri — orice email tranzacțional trece pe Postmark cu tokenul "
-        "activ, decis de `trimite_email_html` după `informativ`; regula „emailurile contului pleacă pe Postmark” e acum garantată prin construcție și păzită "
-        "de core/test_lot13_portal_postmark.py::test_niciun_apel_nu_alege_furnizorul_si_emailurile_contului_exista (niciun apel nu mai alege furnizorul) "
-        "și de ::test_tranzactionalul_oarecare_pleaca_pe_postmark_iar_informativul_si_atasamentul_pe_brevo (comportamentul, cu mutație)",
-    "core/test_lot13_portal_postmark.py::test_emailurile_numite_in_comanda_sunt_in_clasa":
-        "schimbare decisă (comanda 14.2, 268.2): vezi test_clasa_emailurile_de_acces_la_cont_pleaca_pe_postmark — emailurile numite în comanda 13.1 "
-        "(confirmare, resetare, link de logare, invitații) nu mai poartă steag; sunt tranzacționale și trec pe Postmark prin regula comună",
-    "core/test_lot13_portal_postmark.py::test_fara_postmark_true_emailul_ramane_pe_brevo":
-        "redenumit, nu scos (comanda 14.2, 268.2): regula veche („fără postmark=True rămâne pe Brevo”) s-a inversat — un tranzacțional fără steag pleacă "
-        "pe Postmark, informativul și emailul cu atașament rămân pe Brevo: core/test_lot13_portal_postmark.py::"
-        "test_tranzactionalul_oarecare_pleaca_pe_postmark_iar_informativul_si_atasamentul_pe_brevo",
-    "frontend_test/e2e/e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma":
-        "schimbare decisă (comanda 14.2, 595.1, cerința lui Costin „D398 trebuie gri la pasul 1, cu motiv, ca D318”): fluxul din 26.10 (D398 activă, refuz la "
-        "generare cu buton spre Date firmă) e înlocuit de D398 inactivă cât firma nu a răspuns „Da” la OSS; testul își schimbă pașii (inactivă -> Date firmă "
-        "-> Nu -> inactivă -> Da -> activă, generează) și pierde o aserțiune (refuzul de la generare nu mai e atins de pe ecran); refuzul de la generare e "
-        "păzit acum de core/test_lot14_2_595_1_d398_gri.py::test_generarea_d398_refuza_fara_oss_da (cu mutația mutată pe el)",
+    "core/test_lot14_2_595_1_d398_gri.py::test_d398_gri_cu_motiv_cand_oss_e_nu":
+        "schimbare decisă de Costin (comanda 14.3, D2): la răspunsul OSS „Nu” D398 nu mai e gri, ci dispare din lista tipurilor; regula o păzește "
+        "core/test_lot14_3_d2_oss.py::test_starea_oss_din_vector (și e2e `e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma`, pasul „Nu”)",
+    "core/test_lot14_2_595_1_d398_gri.py::test_d398_gri_si_cand_oss_nu_e_declarat_dar_nu_cand_e_da":
+        "schimbare decisă de Costin (comanda 14.3, D2): nedeclarat nu mai e gri și tăcut, ci „de lămurit” (activ, cu trimitere la Date firmă): "
+        "core/test_lot14_3_d2_oss.py::test_starea_oss_din_vector și e2e `e2e_lot14_2.py::test_def_595_1_d398_de_lamurit_cat_firma_nu_a_raspuns_la_oss`",
+    "core/test_lot14_2_595_1_d398_gri.py::test_d398_gri_si_fara_cod_romanesc_ca_inainte":
+        "mutat, nu scos (comanda 14.3, D2): regula veche (fără cod de TVA românesc D398 rămâne gri) e păzită de "
+        "core/test_lot14_3_d2_oss.py::test_d398_nu_mai_e_gri_pe_raspunsul_oss (ultima aserțiune), alături de noua regulă OSS",
+    "frontend_test/e2e/e2e_lot14_2.py::test_def_595_1_d398_e_inactiva_cat_firma_nu_a_raspuns_da_la_oss":
+        "redenumit și schimbat prin decizia lui Costin (comanda 14.3, D2): D398 fără răspuns OSS nu mai e inactivă, ci „de lămurit” (activă): "
+        "frontend_test/e2e/e2e_lot14_2.py::test_def_595_1_d398_de_lamurit_cat_firma_nu_a_raspuns_la_oss",
 }
 
 

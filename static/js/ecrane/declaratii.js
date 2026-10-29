@@ -138,6 +138,7 @@ async function incarcaTipuri(tenantId) {
     S.periodicitate = d.periodicitate || {};
     S.periodicitateEticheta = d.periodicitate_eticheta || {};
     S.neaplicabile = d.neaplicabile || {};
+    S.deLamurit = d.de_lamurit || {};   // [D2, 14.3] tip -> „de lămurit — …” (activ, cu trimitere): D398 fără răspuns OSS
     S.datorate = d.datorate || [];   // [283] ce datorează firma, cu termenul (motorul termenelor)
     S.obligatiiD710 = d.obligatii_d710 || [];   // [9.1 A.3] codurile D710 cu denumirea oficială din nomenclator
     S.firmaDate = d.firma || {};                 // [lotul 13, 636 / 594] Date firmă pentru precompletarea formularelor manuale
@@ -145,7 +146,7 @@ async function incarcaTipuri(tenantId) {
     S.tipuriEsuat = false;
   } catch {
     if (!actuala()) return false;
-    S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; S.datorate = []; S.firmaDate = {}; S.nomenclatoare = {}; S.tipuriEsuat = true;
+    S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; S.deLamurit = {}; S.datorate = []; S.firmaDate = {}; S.nomenclatoare = {}; S.tipuriEsuat = true;
   }
   return true;
 }
@@ -165,15 +166,16 @@ function pas1(corp, nav) {
     if (!S.tipuri.length) return `<option value="">— nicio declarație aplicabilă —</option>`;
     // [deficiența 283] întâi ce datorează firma în perioadă (din vectorul fiscal), cu termenul — alegerea fixează și perioada; restul separat
     const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip]);
+    // [719, 14.3] restanța (termenul a trecut, nedepusă) se spune ca restanță și stă prima: nu dispare din listă după termen
     const optDatorata = (d) => `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
-      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen de depunere ${esc(dataRo(d.termen))}${d.inainte_de_preluare ? " · înainte de preluare" : ""}</option>`;
+      + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · ${d.restanta ? "restanță — termenul a fost " : "termen de depunere "}${esc(dataRo(d.termen))}${d.inainte_de_preluare ? " · înainte de preluare" : ""}</option>`;
     // [lotul 10, deficiența 432] obligațiile pe perioade dinaintea preluării rămân vizibile (termenul cade după preluare), dar într-un grup
     // separat, marcate — regula de la 157 (decizia U2, 08.10); marcajul vine din motorul termenelor (`luna_preluare.inainte`)
     const deLaPreluare = datorate.filter((d) => !d.inainte_de_preluare), inainte = datorate.filter((d) => d.inainte_de_preluare);
-    const grupaDatorate = (deLaPreluare.length ? `<optgroup label="Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)">${deLaPreluare.map(optDatorata).join("")}</optgroup>` : "")
+    const grupaDatorate = (deLaPreluare.length ? `<optgroup label="Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)">${deLaPreluare.map(optDatorata).join("")}</optgroup>` : "")
       + (inainte.length ? `<optgroup label="Datorate de firmă — înainte de preluare în iConta.eu">${inainte.map(optDatorata).join("")}</optgroup>` : "");
     const alte = S.tipuri.map((tp) => {
-      const et = `${tp.toUpperCase()} · ${(S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""}`;   // [8.1 pct.6] D710: la cerere
+      const et = `${tp.toUpperCase()} · ${(S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""}${(S.deLamurit || {})[tp] ? " · " + S.deLamurit[tp] : ""}`;   // [8.1 pct.6] D710: la cerere; [D2, 14.3] „de lămurit”
       const neap = S.neaplicabile[tp];
       return neap
         ? `<option value="${tp}" disabled title="${esc(neap)}">${esc(neap)}</option>`
@@ -301,7 +303,12 @@ async function declaratiiExistente(zona, tenantId) {
                                          && (c.stare === "la_senior" || c.stare === "aprobata")); }
   catch { if (!actuala()) return; }   // refuzul cererii curente: coada rămâne goală -> ieșirea de mai jos
   if (!zona.isConnected || !coada.length) return;
-  const stare = (c) => c.depasita ? "depășită, de generat din nou" : c.stare === "aprobata" ? "validată, de depus" : "la validare";
+  // [716, 14.3] „depășită” numai după termen; o perioadă neîncheiată nu e „de generat din nou” (documentele ei se mai schimbă), iar o perioadă încheiată
+  // cu documente schimbate după generare spune asta, nu „depășită”
+  const stare = (c) => c.termen_depasit ? `depășită — termenul ${dataRo(c.termen)} a trecut`
+    : c.perioada_neincheiata ? `în lucru — perioada nu s-a încheiat${c.termen ? " (termen " + dataRo(c.termen) + ")" : ""}`
+    : c.depasita ? "documentele s-au schimbat după generare — de generat din nou"
+    : c.stare === "aprobata" ? "validată, de depus" : "la validare";
   zona.innerHTML = `<div class="caseta-info dec-existente"><div class="ci-mesaj"><b>Declarațiile firmei aflate deja în coadă</b>
       <ul>${coada.map((c, i) => `<li>${esc((c.tip || "").toUpperCase())} · ${esc(c.p_luna ? dataRo(new Date(c.p_an, c.p_luna - 1, 1), "luna_an_numeric")
         : c.p_trim ? `T${c.p_trim}/${c.p_an}` : `anul ${c.p_an}`)} · ${esc(stare(c))} · pregătită de ${esc(c.creat_de_nume || "—")}
@@ -313,7 +320,7 @@ async function declaratiiExistente(zona, tenantId) {
 // după termen — motorul termenelor, aceeași listă ca la 283); altfel ultima perioadă ÎNCHEIATĂ după periodicitatea tipului (luna trecută,
 // trimestrul trecut, anul trecut) — perioada în curs nu e scadentă. {an, luna}: la trimestru, luna de sfârșit.
 export function perioadaImplicita(tip, azi = new Date()) {
-  const d = (S.datorate || []).find((x) => x.tip === tip);
+  const d = (S.datorate || []).find((x) => x.tip === tip && !x.inainte_de_preluare);   // [719] restanțele de dinainte de preluare nu se propun
   if (d) return { an: d.an, luna: d.luna };
   const per = S.periodicitate[tip];
   const an = azi.getFullYear(), l = azi.getMonth() + 1;

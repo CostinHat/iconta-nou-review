@@ -207,7 +207,7 @@ def test_def_301_alte_declaratii_pliata_fara_cele_ale_persoanelor_fizice(patron,
     _deschide(patron, firma_e2e["nume"], "declaratii", "#dec-tip")
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
     if grupe:
-        assert grupe == ["Datorate de firmă (din vectorul fiscal și din operațiile înregistrate)"], grupe
+        assert grupe[0].startswith("Datorate de firmă (") and "Alte declarații" not in grupe, grupe
         patron.captura("pliata")
         pg.click("#dec-alte")
         pg.wait_for_function("() => [...document.querySelectorAll('#dec-tip optgroup')].some((g) => g.label === 'Alte declarații')",

@@ -163,7 +163,9 @@ def test_ANTI_VACUU_universul_e_cel_real():
     # rulate o dată prin `core.migrari_registru`.
     # [26.10.2026, lotul 13, 595] 161 -> 162: `migrare_inregistrat_oss` (câmpul „Înregistrată în regimul special OSS” în Date firmă, mutat din
     # formularul D398 — decizia Costin „6 da”); idempotentă (ADD COLUMN IF NOT EXISTS), rulată o dată prin `core.migrari_registru`.
-    assert 40 <= len(mg) <= 162, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
+    # [29.10.2026, lotul 14.3, 715.1] 162 -> 163: `migrare_cabinet_de_test` (coloana `accounting_firms.de_test`, marcajul cabinetului de test); idempotentă
+    # (ADD COLUMN IF NOT EXISTS), rulată o dată prin `core.migrari_registru`.
+    assert 40 <= len(mg) <= 163, ("clasa de excludere MIGRARE_UNICA are %d module — dacă crește "
                                  "necontrolat, universul se golește prin excludere" % len(mg))
     assert len(u) - len(mg) > 100, "universul de declarat s-a subțiat"
 

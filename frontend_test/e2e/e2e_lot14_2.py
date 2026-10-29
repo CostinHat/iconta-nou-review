@@ -282,10 +282,11 @@ def firma_595_1():
         yield f
 
 
-def test_def_595_1_d398_e_inactiva_cat_firma_nu_a_raspuns_da_la_oss(patron, firma_595_1):
-    """595.1. Pașii: firmă neplătitoare înregistrată art.317, fără răspuns la „Înregistrată în regimul special OSS” -> Declarații: D398 inactivă la
-    pasul 1, cu motivul (nu ai răspuns în Date firmă), ca D318. Proba completă a drumului (Nu / Da în Date firmă) e în
-    `e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma`. MUTAȚIA: D398 gri scos din `neaplicabile_regim` -> ROȘU."""
+def test_def_595_1_d398_de_lamurit_cat_firma_nu_a_raspuns_la_oss(patron, firma_595_1):
+    """595.1 + D2 (14.3). Pașii: firmă neplătitoare înregistrată art.317, fără răspuns la „Înregistrată în regimul special OSS” -> Declarații: D398 NU e
+    gri și tăcut — apare activă, marcată „de lămurit — răspunde în Date firmă …”; în Control fiscal, „Nu se poate verifica”: D398 „de lămurit”, cu butonul
+    „Răspunde în Date firmă”. Proba completă a drumului (Nu / Da în Date firmă) e în `e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma`.
+    MUTAȚIA: marcajul „de lămurit” scos din `uc_declaratii` -> ROȘU."""
     from e2e_lot13_decl import _F as _FD, _card, _optiune
     from e2e_lot12_cx3 import _neplatitor_art317
     f = firma_595_1
@@ -293,5 +294,5 @@ def test_def_595_1_d398_e_inactiva_cat_firma_nu_a_raspuns_da_la_oss(patron, firm
     patron.firma(f["nume"])
     _card(patron, "declaratii", _FD + "#dec-tip")
     o = _optiune(patron.pg, "d398")
-    patron.captura("d398_gri")
-    assert o["dez"] and "nu ai răspuns" in o["titlu"] and "Date firmă" in o["titlu"], o
+    patron.captura("d398_de_lamurit")
+    assert not o["dez"] and "de lămurit" in o["text"] and "Date firmă" in o["text"], o

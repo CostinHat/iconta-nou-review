@@ -494,7 +494,14 @@ export function creeazaNavigator(radacina, desktopRandator) {
         if (p) jos.pastrat = Object.assign(p, { pentru: jos.curent || jos.randator });
         if (dinRefuz) intoarcere = { titlu: String(jos.titluCurent || jos.titlu || "") };
       }
-      stiva.push({ titlu, randator, curent: randator, pasi: [], optiuni: optiuni || {}, intoarcere }); randeazaFerestre(); }, /* fereastra_optiuni_v1 + traseu_automat_v1 */
+      const parinte = stiva.length ? stiva[stiva.length - 1] : null;   // [717, 14.3] luna ferestrei din care se deschide aceasta (dacă își știe luna; o fereastră fără lună, ca fereastra firmei, o lasă să treacă mai departe)
+      stiva.push({ titlu, randator, curent: randator, pasi: [], optiuni: optiuni || {}, intoarcere, lunaParinte: parinte && (parinte.luna || parinte.lunaParinte) ? { ...(parinte.luna || parinte.lunaParinte) } : null }); randeazaFerestre(); },
+    // [717, 14.3] „Orice fereastră deschisă dintr-o altă fereastră păstrează luna din care vii”: fereastra cu lună o publică (`seteazaLuna`), cea nouă o citește
+    // (`lunaParinte`) ca lună de pornire, dacă apelantul nu i-a dat una; ecranele fără lună nu se ating
+    seteazaLuna(an, luna) { const s = stiva[stiva.length - 1]; if (s) s.luna = { an, luna }; },
+    // luna pe care o știe ACUM fereastra de sus (o redesenare a ferestrei — `randator` rechemat — nu o aruncă înapoi pe luna curentă)
+    lunaCurenta() { const s = stiva[stiva.length - 1]; return s && s.luna ? { ...s.luna } : null; },
+    lunaParinte() { const s = stiva[stiva.length - 1]; return s && s.lunaParinte ? { ...s.lunaParinte } : null; }, /* fereastra_optiuni_v1 + traseu_automat_v1 */
     // [445] următoarea `deschide` vine dintr-un buton „Deschide X” al unui refuz (`ecran_destinatie.butonSpreEcran`)
     dinRefuz() { _dinRefuz = Date.now(); },
     // [445] titlul ferestrei de sus (pasul curent), ca destinația să spună „Înapoi la <titlu>”
@@ -739,7 +746,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=c6c45aefe4");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=084d4963d1");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=b7cceffab4");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

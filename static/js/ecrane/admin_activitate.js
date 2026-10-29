@@ -59,7 +59,8 @@ async function randeaza(corp, nav, mesajOk) {
   // [lotul 13, 674 / 675] fiecare rând are aceleași două butoane, în aceeași ordine: „Fișa” (fereastră nouă — 673) și „Suspendă” /
   // „Reactivează”; textul rândului nu mai e o acțiune pe care se dă clic
   const randuri = cabinete.map((c, i) => {
-    const stare = c.activ ? "" : `<span class="mig-stare mig-rosu">suspendat</span>`;
+    const stare = (c.activ ? "" : `<span class="mig-stare mig-rosu">suspendat</span>`)
+      + (c.de_test ? `<span class="mig-stare mig-gri" title="Cabinet de test: alerta de acces anormal nu-l semnalează">de test</span>` : "");   // [715.1, 14.3]
     const cls = c.activ ? "buton-sters" : "buton-secundar";   // Suspendă (ștergere de acces) / Reactivează
     return `
       <div class="pf-frand" data-zebra="${i % 2}" data-cabinet="${c.id}">
@@ -70,6 +71,7 @@ async function randeaza(corp, nav, mesajOk) {
         </div>
         ${stare}
         <button class="buton-secundar" data-fisa="${i}" style="margin-left:10px" data-fara-actiune="deschide fișa cabinetului (citire)">Fișa</button>
+        <button class="buton-secundar" data-de-test="${i}" style="margin-left:8px" data-actiune="POST /admin/cabinete/{firm_id}/de-test">${c.de_test ? "Scoate marcajul de test" : "Marchează ca test"}</button>
         <button class="${cls}" data-toggle="${i}" style="margin-left:8px"
           data-actiune="${c.activ ? "POST /admin/cabinete/{firm_id}/suspenda" : "POST /admin/cabinete/{firm_id}/reactiveaza"}">${c.activ ? "Suspendă" : "Reactivează"}</button>
       </div>`;
@@ -97,6 +99,23 @@ async function randeaza(corp, nav, mesajOk) {
     nav.deschide(`Fișa cabinetului ${c.nume || ""}`, (corpF) => deschideFisa(corpF, c), { lat: "larg" });
   }));
 
+  // [715.1, comanda 14.3] marcajul „cabinet de test”: excepția alertei de acces urmează marcajul, nu numele cabinetului
+  corp.querySelectorAll("#ac-lista [data-de-test]").forEach((btn) => btn.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    const c = cabinete[Number(btn.dataset.deTest)];
+    const nou = !c.de_test;
+    confirmaCaseta(btn.parentElement || btn, nou
+      ? `Marchezi „${esc(c.nume)}” ca cabinet de test? Alerta de acces anormal nu-l va mai semnala.`
+      : `Scoți marcajul de test de la „${esc(c.nume)}”? Alerta de acces anormal îl va semnala din nou.`, async () => {
+      try {
+        await api.post(`/admin/cabinete/${c.id}/de-test`, { de_test: nou });
+        corp.innerHTML = `<p class="ecran-nota">Se actualizează...</p>`;
+        await randeaza(corp, nav, nou ? `Cabinetul „${c.nume}” e marcat ca test.` : `Marcajul de test a fost scos de la „${c.nume}”.`);
+      } catch (e) {
+        arataMesaj(corp.querySelector("#ac-mesaj"), (e && e.mesaj) || "Marcajul nu s-a putut schimba.", "eroare");
+      }
+    }, { textOk: nou ? "Marchează" : "Scoate marcajul" });
+  }));
   corp.querySelectorAll("#ac-lista [data-toggle]").forEach((btn) => {
     btn.addEventListener("click", (ev) => {
       ev.stopPropagation();

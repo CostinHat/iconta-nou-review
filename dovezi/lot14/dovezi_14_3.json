@@ -1,0 +1,222 @@
+{
+ "copia": {
+  "clonat_la": "2026-10-30 00:21:05",
+  "productie_la": "2026-10-30 00:20:57.116130+02:00",
+  "migrari": [
+   {
+    "fisier": "core/migrare_cabinet_de_test.py",
+    "amprenta": "7a35400ec28b",
+    "cod": 0,
+    "durata_s": 0.1,
+    "iesire": [
+     "migrare_cabinet_de_test: aplicată",
+     "registrul migrărilor: core/migrare_cabinet_de_test.py rulată (amprenta 7a35400ec28b)"
+    ]
+   }
+  ]
+ },
+ "etape_s": [
+  [
+   "aplicația din arbore pornită (port 44525)",
+   10.9
+  ],
+  [
+   "dovezi parcurse (7)",
+   41.6
+  ]
+ ],
+ "dovezi": [
+  {
+   "nr": "716",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Declarații — în «Declarațiile firmei aflate deja în coadă», D300 10/2026 (luna nu s-a încheiat) e «în lucru — perioada nu s-a încheiat (termen 25.11.2026)», iar D300 09/2026 «depășită — termenul 26.10.2026 a trecut» (înainte: ambele «depășită, de generat din nou»). Numai citire.",
+   "captura": "/tmp/claude-1000/-home-costin-iconta-nou/298f871c-0aa2-472e-8801-e562e022b3cf/scratchpad/dovf/716_f1_vechi_declaratii_coada.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "D300 · 10/2026 · în lucru — perioada nu s-a încheiat (termen 25.11.2026)",
+      "zona": ".fereastra:last-of-type .dec-existente"
+     },
+     "ok": true,
+     "vazut": "Declarațiile firmei aflate deja în coadă D300 · 09/2026 · depășită — termenul 26.10.2026 a trecut · pregătită de Contabil Sesiunea B Deschide D300 · 10/2026 · în lucru — perioada nu s-a încheiat (termen 25.11.2026) · pregătită de Contabil Sesiunea B Deschide"
+    },
+    {
+     "cerut": {
+      "contine": "D300 · 09/2026 · depășită — termenul 26.10.2026 a trecut",
+      "zona": ".fereastra:last-of-type .dec-existente"
+     },
+     "ok": true,
+     "vazut": "Declarațiile firmei aflate deja în coadă D300 · 09/2026 · depășită — termenul 26.10.2026 a trecut · pregătită de Contabil Sesiunea B Deschide D300 · 10/2026 · în lucru — perioada nu s-a încheiat (termen 25.11.2026) · pregătită de Contabil Sesiunea B Deschid"
+    },
+    {
+     "cerut": {
+      "nu_contine": "de generat din nou",
+      "zona": ".fereastra:last-of-type .dec-existente"
+     },
+     "ok": true,
+     "vazut": "Declarațiile firmei aflate deja în coadă D300 · 09/2026 · depășită — termenul 26.10.2026 a trecut · pregătită de Contabil Sesiunea B Deschide D300 · 10/2026 · în lucru — perioada nu s-a încheiat (termen 25.11.2026) · pregătită de Contabil Sesiunea B Deschide"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.5
+  },
+  {
+   "nr": "719",
+   "firma": "tenant_9051",
+   "nume_firma": "F3 Intracomunitar SRL",
+   "descriere": "F3: Declarații — în «Datorate de firmă», D301 09/2026 (termenul 26.10.2026 a trecut) apare ca restanță, înaintea scadențelor viitoare (înainte: lipsea, lista arăta numai termene viitoare). Citirea listei din selector.",
+   "captura": "/tmp/claude-1000/-home-costin-iconta-nou/298f871c-0aa2-472e-8801-e562e022b3cf/scratchpad/dovf/719_f3_vechi_d301_restanta.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "D301 · 09/2026 · restanță — termenul a fost 26.10.2026",
+      "zona": ".fereastra:last-of-type #dec-tip"
+     },
+     "ok": true,
+     "vazut": "· 06/2026 · restanță — termenul a fost 27.07.2026 D406 · T2/2026 · restanță — termenul a fost 31.07.2026 D100 · T3/2026 · restanță — termenul a fost 26.10.2026 D301 · 09/2026 · restanță — termenul a fost 26.10.2026 D390 · 09/2026 · restanță — termenul a fost 26.10.2026 D406 · T3/2026 · termen de depunere 02.11.2026 D100 · T4/2025 · restanță — termenul a fost 26.01.2026 · "
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.8
+  },
+  {
+   "nr": "717",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Închidere lună — luna anterioară (09/2026); «Registru jurnal» deschis din căutarea ferestrei vine pe luna 09/2026, nu pe cea curentă (înainte: pe luna curentă). Numai citire.",
+   "captura": "/tmp/claude-1000/-home-costin-iconta-nou/298f871c-0aa2-472e-8801-e562e022b3cf/scratchpad/dovf/717_f1_vechi_jurnal_pe_luna_din_care_vii.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Luna 09/2026",
+      "zona": ".fereastra:last-of-type "
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 › Închidere lună › F1 Comert Stoc SRL · CUI 401002001 › Registru jurnal ✕ Registru jurnal ? Luna 09/2026 · 7 note ← luna luna → Generează amortizarea + Notă nouă Deblochează luna? Toate stările Ciorne (nevalidate) Validate La validare în cabinet Respinse, de corec"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 7.6
+  },
+  {
+   "nr": "688.1",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Închidere lună 09/2026 (blocată): un singur rând de stare și o singură acțiune («Deblochează luna»); «Propune regularizarea TVA» nu se oferă pe luna blocată. Numai citire.",
+   "captura": "/tmp/claude-1000/-home-costin-iconta-nou/298f871c-0aa2-472e-8801-e562e022b3cf/scratchpad/dovf/688_1_f1_vechi_inchidere_09_2026_blocata.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Luna e blocată: notele ei nu se mai modifică, nu se mai adaugă și nu se mai șterg.",
+      "zona": ".fereastra:last-of-type #il-stare-perioada"
+     },
+     "ok": true,
+     "vazut": "Luna e blocată: notele ei nu se mai modifică, nu se mai adaugă și nu se mai șterg."
+    },
+    {
+     "cerut": {
+      "nu_contine": "Propune regularizarea TVA",
+      "zona": ".fereastra:last-of-type "
+     },
+     "ok": true,
+     "vazut": "← Firme › Firme existente › F1 Comert Stoc SRL · CUI 401002001 › Închidere lună ✕ Închidere lună Luna 09/2026 ← luna luna → Perioada contabilă Luna e blocată: notele ei nu se mai modifică, nu se mai adaugă și nu se mai șterg. Nimic nu oprește închiderea lunii. Semnale (9) D112 pentru 08/2026, cu termen pe 25.09.2026, nu e depusă — depune-o sau marchează-o depusă în Control fiscal D300 pentru 08/20"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 6.2
+  },
+  {
+   "nr": "694.1",
+   "firma": "tenant_9050",
+   "nume_firma": "F2 Profit Amortizare SRL",
+   "descriere": "F2: Control fiscal › Declarație vs contabilitate › «Coerență TVA (balanță)»: fiecare cifră își spune data soldului. Numai citire.",
+   "captura": "/tmp/claude-1000/-home-costin-iconta-nou/298f871c-0aa2-472e-8801-e562e022b3cf/scratchpad/dovf/694_1_f2_vechi_control_fiscal_coerenta_tva.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "TVA vs sold balanță la",
+      "zona": ".fereastra:last-of-type"
+     },
+     "ok": true,
+     "vazut": "data facturii. Neverificat: cotele reduse/scutit (legitim neschimbate); clasificarea de produs (dacă produsul chiar cere cota standard). COERENȚĂ TVA (BALANȚĂ) TVA vs sold balanță la 31.10.2026 de plată 945,00 lei — decontul D300 T3/2026 declară de plată 1.050,00 lei: perioade diferite sau diferență de regularizat DOCUMENTE POZATE Documente"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 6.5
+  },
+  {
+   "nr": "696.1",
+   "firma": "tenant_9049",
+   "nume_firma": "F1 Comert Stoc SRL",
+   "descriere": "F1: Stocuri 10/2026 — «Stoc validat 6.272,38 lei = balanța 371 ✓» (înainte: fișele 6.272,74 față de 371 6.272,38). Numai citire.",
+   "captura": "/tmp/claude-1000/-home-costin-iconta-nou/298f871c-0aa2-472e-8801-e562e022b3cf/scratchpad/dovf/696_1_f1_vechi_stocuri_10_2026.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Stoc validat 6.272,38 lei = balanța 371",
+      "zona": ".fereastra:last-of-type #s-carduri"
+     },
+     "ok": true,
+     "vazut": "Stoc validat 6.272,38 lei = balanța 371 ✓ 22 de mișcări de stoc în ciornă (2.703,86 lei), nu intră în stocul validat 2 articole de verificat: cantități cu zecimale, denumiri 6 NIR-uri în luna aleasă"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 4.8
+  },
+  {
+   "nr": "527.1",
+   "firma": "tenant_9057",
+   "nume_firma": "F7 Preluare Test SRL",
+   "descriere": "F7: Balanță 10/2026 — soldul de preluare de pe 117 a trecut pe 1171 prin nota de reclasificare 117 = 1171 (14.000 lei, document «Reclasificare 117 → 1171 (comanda 14.3, D1)»); 117 are soldul final 0. Numai citire.",
+   "captura": "/tmp/claude-1000/-home-costin-iconta-nou/298f871c-0aa2-472e-8801-e562e022b3cf/scratchpad/dovf/527_1_f7_vechi_balanta_117_pe_1171.png",
+   "verificari": [
+    {
+     "cerut": {
+      "contine": "Rezultatul reportat reprezentând profitul nerepartizat sau pierderea neacoperită",
+      "zona": ".fereastra:last-of-type "
+     },
+     "ok": true,
+     "vazut": "rsat 0,00 200,00 0,00 0,00 0,00 0,00 0,00 200,00 0,00 200,00 117 Rezultatul reportat 0,00 14.000,00 14.000,00 0,00 0,00 0,00 14.000,00 14.000,00 0,00 0,00 1171 Rezultatul reportat reprezentând profitul nerepartizat sau pierderea neacoperită 0,00 0,00 0,00 14.000,00 0,00 0,00 0,00 14.000,00 0,00 14.000,00 371 Mărfuri 4.200,00 0,00 0,00 0,00 0,00 0,00 4.200,00 0,00 4.200,00 0,00 401 Furnizori 0,00 3"
+    }
+   ],
+   "eroare_pas": null,
+   "erori_js": [],
+   "cereri_5xx": [],
+   "deschideri_fara_clic": [],
+   "ok": true,
+   "stare": "indeplinita",
+   "durata_s": 6.3
+  }
+ ]
+}

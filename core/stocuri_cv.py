@@ -43,11 +43,13 @@ def mesaj_peste_stoc(cantitate, stoc, um="", data=None):
     return "Ieșire de %s peste stocul de %s%s" % (_c(cantitate, um), _c(stoc, um), _la(data))
 
 
-def fisa_magazie(miscari, stoc_initial=None, um=""):
+def fisa_magazie(miscari, stoc_initial=None, um="", recalculeaza=False):
     """miscari: [{tip: 'intrare'|'iesire'|'ajustare' (de valoare, cantitate 0, `valoare`), cantitate, pret_unitar? (doar la intrare),
     data, document?}] in ordine cronologica.
     stoc_initial: {cantitate, valoare} sau None.
     um: unitatea de măsură a articolului — numai pentru mesajele de refuz (cantitatea „1.000 buc”).
+    recalculeaza: [696.1] True = TOATE ieșirile se evaluează la CMP, chiar și cele scrise (ce-ar fi dacă: ștergerea unui Z, refacerea); implicit, o ieșire scrisă
+    are valoarea din nota ei.
     Intoarce liniile fisei cu sold cantitate/valoare/CMP dupa fiecare miscare.
     Ridica ValueError la iesire peste stoc."""
     cant = _d((stoc_initial or {}).get("cantitate", 0))
@@ -97,7 +99,13 @@ def fisa_magazie(miscari, stoc_initial=None, um=""):
             if c > cant:
                 raise ValueError(mesaj_peste_stoc(c, cant, um, m.get("data")))
             cmp_curent = val / cant  # cant > 0 garantat de conditia de mai sus
-            v = _q(c * cmp_curent)
+            # [696.1, comanda 14.3] „Valoarea din fișă trebuie să fie exact suma notelor (ieșirea se evaluează la valoarea din notă; soldul fișei = intrări −
+            # ieșiri).” O mișcare deja scrisă (are `id` și `valoare`: valoarea notei 607 = 371) intră în fișă cu valoarea ei, nu recalculată la CMP-ul
+            # nerotunjit (122 × 51,1905… ≠ nota rotunjită la ban); mișcarea ipotetică (fără `id`) se evaluează la CMP, ca până acum
+            if not recalculeaza and m.get("id") is not None and m.get("valoare") is not None:
+                v = _q(m["valoare"])
+            else:
+                v = _q(c * cmp_curent)
             cant -= c
             val = _q(val - v) if cant > 0 else Decimal("0.00")
             if cant == 0:

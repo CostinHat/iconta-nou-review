@@ -46,6 +46,23 @@ def miscari_ale_articolului(cur, schema, articol_id):
 # ── [lotul 11, subagentul x — regula straturilor] SQL-ul NIR-ului cu număr repetat (decizia 10.3, `uc_tenants.stocuri_adauga` /
 # `_nir_cu_numarul`) și al articolului ales din nomenclator (450, `uc_tenants.achizitie_neinregistrat` / `borderou_storneaza`), mutat din
 # use-case fără schimbare de comportament.
+def miscari_pentru_diferenta(cur, schema, cont):
+    """[696.1, comanda 14.3] Mișcările de intrare / ieșire ale articolelor cu contul de stoc `cont`, cu valoarea notei lor pe cont: [{id, data, tip,
+    document, valoare, inregistrare_id, status_nota, valoare_nota}] — pentru a numi cauza unei diferențe între fișe și balanță (fără notă, sau
+    nota are altă valoare). `valoare_nota` = suma liniilor notei pe contul de stoc (debit la intrare, credit la ieșire)."""
+    cur.execute(f"""SELECT m.id, m.data, m.tip, m.document, m.valoare, m.inregistrare_id, i.status AS status_nota,
+                           (SELECT coalesce(sum(l.suma), 0) FROM {schema}.inregistrari_linii l
+                             WHERE l.inregistrare_id = m.inregistrare_id
+                               AND ((m.tip = 'intrare' AND l.cont_debit LIKE %s) OR (m.tip = 'iesire' AND l.cont_credit LIKE %s))) AS valoare_nota
+                      FROM {schema}.miscari_stoc m
+                      JOIN {schema}.articole a ON a.id = m.articol_id
+                      LEFT JOIN {schema}.inregistrari i ON i.id = m.inregistrare_id
+                     WHERE a.cont_stoc = %s AND m.tip IN ('intrare', 'iesire')
+                       AND m.data > coalesce((SELECT max(data_referinta) FROM {schema}.solduri_initiale), date '0001-01-01')   -- ce e după preluare: soldul preluat nu e o cauză
+                     ORDER BY m.data, m.id""", (cont + "%", cont + "%", cont))
+    return [dict(r) for r in cur.fetchall()]
+
+
 def blocheaza_nir_urile(cur, schema):
     """NIR-urile firmei se scriu unul după altul: lacăt pe tranzacție."""
     cur.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", (schema + ":nir",))

@@ -100,7 +100,7 @@ def test_stocul_validat_separa_ciorna_si_se_potriveste_cu_371(conn):
     assert g["locatii"] == ["Depozit 1", "Depozit 2"] and o["locatii"] == []
     rec = cv.reconciliere(conn, SCH, lista)
     assert rec == [{"cont": "371", "sold_contabil": "410.00", "valoare_validata": "410.00", "valoare_ciorna": "20.00", "diferenta": "0.00",
-                    "ok": True, "necalculat": 0}], rec
+                    "ok": True, "necalculat": 0, "cauze": []}], rec
 
 
 def test_validarea_notei_muta_ciorna_in_validat(conn):
@@ -137,3 +137,16 @@ def test_observatii_dubluri_fractii_si_denumiri(conn):
     assert _art(lista, "Grâu")["observatii"] == [] and _art(lista, "Hârtie A4")["observatii"] == []
     d = cv.dubluri(lista)
     assert [(x["denumire"].lower() in ("grâu", "grau"), len(x["articole"])) for x in d] == [(True, 2)], d
+
+
+def test_696_1_diferenta_numeste_miscarea_fara_nota(conn):
+    """[696.1, comanda 14.3] O intrare de stoc fără notă (3 kg × 2 = 6,00) produce diferența, iar reconcilierea o NUMEȘTE (data, documentul, valoarea),
+    nu trimite contabilul s-o caute. MUTAȚIE: `cauze` golit în `reconciliere` -> pică."""
+    _date(conn)
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM articole WHERE denumire = 'Grâu'")
+        aid = cur.fetchone()[0]
+        cur.execute("UPDATE solduri_initiale SET data_referinta = '2026-10-31'")   # preluarea: mișcările de până la ea (soldul preluat) nu sunt cauze
+        cur.execute("INSERT INTO miscari_stoc (articol_id, data, tip, cantitate, pret_unitar, valoare, document) VALUES (%s, '2099-10-05', 'intrare', 3, 2, 6, 'Intrare manuală')", (aid,))
+    rec = cv.reconciliere(conn, SCH)[0]
+    assert rec["ok"] is False and rec["cauze"] == [{"fel": "fara_nota", "data": "2099-10-05", "tip": "intrare", "document": "Intrare manuală", "valoare": "6.00"}], rec

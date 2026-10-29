@@ -811,6 +811,9 @@ def lista_coada(conn, cabinet_id, stare=None):
             # motivul stă pe rând, în locul butonului (o declarație intrată în coadă înainte de regulă, sau o notă trecută înapoi în ciornă)
             _bl = blocaj_note_nevalidate(d["tip"], d.get("surse_note")) if d["fel"] != "nota" else None
             d["blocaj_depunere"] = d["perioada_neincheiata"] or (_bl or {}).get("mesaj")
+            # [716, comanda 14.3] termenul legal al declarației și dacă a trecut: „depășită” se spune numai după termen, nu pentru o perioadă
+            # neîncheiată (documentele ei se mai schimbă) — ecranul citește `termen_depasit`, nu `depasita` (care e „documente schimbate”)
+            d["termen"], d["termen_depasit"] = _termen_cozii(d, activa=d["stare"] in STARI_ACTIVE)
             d["gata_de_depus"] = gata_de_depus(d["verdict_stare"]) and not d.get("depasita") and not d["blocaj_depunere"]
             out.append(d)
         # [lotul 07.10 pct.9-10] notele aceluiași document, în aceeași stare, sunt UN element (o validare, o cifră)
@@ -1243,6 +1246,20 @@ DECLARATII_IN_CURSUL_PERIOADEI = {
     "d169n": ("Legea 129/2019 art.19 alin.(7^1): „Entitățile raportoare, după consultarea registrelor centrale [...], informează autoritățile "
               "care gestionează aceste registre cu privire la orice neconcordanță”"),
 }  # [lotul 13, 660] D220 / D223 ieșite: formulare înlocuite de Declarația unică (`declaratii_api.FORMULARE_INLOCUITE`)
+
+
+def _termen_cozii(d, activa):
+    """(termen ISO | None, depășit: bool) — termenul legal al declarației din coadă (`scadente.scadenta_data`), pe perioada ei; depășit = termenul a
+    trecut (ziua României) și declarația nu e depusă. Declarațiile fără termen sursat (anuale fără termen, pe eveniment) și notele: (None, False)."""
+    from core import scadente
+    from core.common import azi_ro
+    if d["fel"] == "nota" or not d.get("p_an"):
+        return None, False
+    try:
+        t = scadente.scadenta_data(d["tip"], int(d["p_an"]), luna=d.get("p_luna"), trim=d.get("p_trim"))
+    except ValueError:
+        return None, False
+    return t.isoformat(), bool(activa and azi_ro() > t)
 
 
 def perioada_neincheiata(an, luna, trim=None, azi=None, tip=None, manual=None):

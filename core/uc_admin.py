@@ -220,6 +220,21 @@ def admin_cabinet_reactiveaza(firm_id, ctx):
     return {"ok": True}
 
 
+def admin_cabinet_de_test(firm_id, de_test, ctx):
+    """[715.1, comanda 14.3] Marcajul „cabinet de test”, pus / scos de superadmin: alerta de acces anormal ocolește numai cabinetele marcate."""
+    if ctx["rol"] != "superadmin":
+        raise _erori.FaraDrept(DOAR_ADMIN_ICONTA)
+    if not isinstance(de_test, bool):
+        raise _erori.DateInvalide("Alege dacă cabinetul e de test sau nu (da / nu).")
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            nume = repo_admin.numele_cabinetului(cur, firm_id)
+            if nume is None:
+                raise _erori.Inexistent("Nu există niciun cabinet cu numărul %d." % firm_id)
+            repo_admin.seteaza_de_test(cur, firm_id, de_test)
+    return {"ok": True, "de_test": de_test}
+
+
 def jurnal_suspendari(cur, firm_id):
     """[645] Jurnalul suspendărilor pentru fișa cabinetului: cine, când, motivul (eticheta), nota internă, reactivarea."""
     out = []

@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/control_incrucisat.py",
+  "ancora": "remediu={\"fel\": \"regularizare_tva\",",
+  "inlocuire": "remediu={\"fel\": \"investigatie\",",
+  "test": "frontend_test/e2e/e2e_lot14_3.py::test_def_694_1_neconcordanta_decontului_are_regularizarea_ca_actiune_iar_coerenta_tva_isi_spune_perioada"
+ }
+]

@@ -456,11 +456,13 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
             rez.append(dict(baza, stare="rosu",
                 mesaj=(f"{eticheta}: {declara('D300', sursa_declarat)} {_lei(decl)}, contul {cont} are {_lei(contabil)} "
                        f"(diferență {_lei(dif)})."),
-                remediu={"fel": "investigatie",
+                # [694.1 b, comanda 14.3] acțiunea potrivită e regularizarea TVA a perioadei (688: nota 4427 = 4426, diferența în 4423 / 4424),
+                # nu „Contabilizează facturile”: ecranul deschide Închidere lună pe luna de sfârșit a perioadei fiscale
+                remediu={"fel": "regularizare_tva",
                          "cauza": "Rezultatul decontului nu coincide cu nota de închidere TVA.",
-                         "actiune": (f"Verifică nota de închidere TVA a perioadei (4427/4426 → {cont}), "
-                                     f"regularizări și soldul reportat din perioada precedentă."),
-                         "facturi": []}))
+                         "actiune": (f"Regularizează TVA-ul perioadei: nota 4427 = 4426, iar diferența în {cont}; apoi verifică soldul reportat "
+                                     f"din perioada precedentă."),
+                         "facturi": [], "an": an, "luna": luna}))
 
     # SEMNAL pe 4428 (TVA neexigibilă): exigibilitate decalată (TVA la încasare / taxare inversă),
     # fără rând D300 corespondent direct. Dacă soldul net s-a mișcat în perioadă -> gri (informativ,

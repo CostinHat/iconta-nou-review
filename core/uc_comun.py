@@ -1171,6 +1171,33 @@ def _tva_balanta_sau_nu_se_aplica(schema, bal):
     return _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0))
 
 
+def _tva_cu_perioada(tva, tva_incr, an, luna):
+    """[694.1 c, comanda 14.3] „«Coerență TVA (balanță): TVA vs sold balanță de plată 945,00 lei» verde, în timp ce D300 T3/2026 dă 1.050,00 de plată —
+    fiecare cifră își spune perioada, iar o neconcordanță nu e verde.” Soldul din balanță poartă data lui (`la_data`, sfârșitul lunii verificate), iar
+    dacă decontul D300 al perioadei confruntate declară alt rezultat (de plată / de recuperat), verdictul nu mai e verde: `nepotrivire` numește perioada
+    decontului și cifra lui. Fără decont comparabil (nedepus, gri), nimic de adăugat. Modifică `tva` pe loc."""
+    import calendar as _cal
+    if not isinstance(tva, dict) or tva.get("nu_se_aplica"):
+        return
+    tva["la_data"] = "%04d-%02d-%02d" % (an, luna, _cal.monthrange(an, luna)[1])
+    if not isinstance(tva_incr, dict):
+        return
+    from decimal import Decimal as _D
+    for c in tva_incr.get("constatari") or []:
+        et = str(c.get("eticheta") or "")
+        decl = c.get("declarat")
+        if decl is None or not et.startswith(("TVA de plată", "TVA de recuperat")):
+            continue
+        rez = "de_plata" if et.startswith("TVA de plată") else "de_recuperat"
+        if _D(str(decl or 0)) == 0 and rez != tva.get("rezultat"):
+            continue
+        if rez == tva.get("rezultat") and abs(_D(str(decl)) - _D(str(tva.get("suma") or 0))) <= _D("0.01"):
+            continue
+        if _D(str(decl or 0)) != 0:
+            tva["nepotrivire"] = {"perioada": tva_incr.get("perioada"), "rezultat": rez, "declarat": str(decl)}
+            return
+
+
 def _verificari_contabile(schema, an, luna, confruntare=None):
     """Verificările contabile ale lunii (an, luna). `confruntare` = (an, luna) pe care rulează punțile declarație–contabilitate
     (D300 / D112 / D390 / cota TVA); implicit aceeași lună. [deficiența 484] Control fiscal o dă pe cea din
@@ -1234,6 +1261,8 @@ def _verificari_contabile(schema, an, luna, confruntare=None):
             return {"an": an_c, "luna": luna_c, "perioada": "%02d/%d" % (luna_c, an_c), "stare": "gri", "constatari": [_c],
                     "limita": "Verificarea %s nu a rulat: %s" % (eticheta, _perioada.text_exceptie(_e))}
     tva_incr = _incrucisat(_ci.verifica_tva, "TVA")
+    _tva_bal = _tva_balanta_sau_nu_se_aplica(schema, bal)
+    _tva_cu_perioada(_tva_bal, tva_incr, an, luna)   # [694.1 c, comanda 14.3]
     d112_incr = _incrucisat(_ci.verifica_d112, "salarii (D112)")
     d390_incr = _incrucisat(_ci.verifica_d390, "operatiuni intracomunitare (D390)")
     # [F184] conformitate cota TVA facturi emise vs cota standard pe perioada (value-aware, NU decl-vs-contab)
@@ -1246,7 +1275,7 @@ def _verificari_contabile(schema, an, luna, confruntare=None):
         "echilibru": _ep.verdict_echilibru(_ledger, _vf.verifica_balanta(bal),
                                            "%04d-%02d" % (an, luna)),
         "trezorerie": _vf.verifica_trezorerie(bal),
-        "tva": _tva_balanta_sau_nu_se_aplica(schema, bal),
+        "tva": _tva_bal,
         "note": len(note),
     }
     try:  # verif_doc_pozate_v1

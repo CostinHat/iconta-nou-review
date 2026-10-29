@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "lunaParinte() { const s = stiva[stiva.length - 1]; return s && s.lunaParinte ? { ...s.lunaParinte } : null; },",
+  "inlocuire": "lunaParinte() { return null; },",
+  "test": "frontend_test/e2e/e2e_lot14_3.py::test_def_717_registrul_jurnal_deschis_din_inchidere_luna_vine_pe_luna_ei"
+ }
+]

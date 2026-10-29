@@ -9033,9 +9033,9 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1198 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1204 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 1158
+### `core/` — 1164
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9917,10 +9917,16 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot13_val6_casa_avans.py` — [lotul 13, deficiența 683 — a lui Code] „Casă › Avans spre decontare nu pune salariatul pe rândul notei: 542 nu se urmărește pe
 - `core/test_lot13_val6_spv_avertisment.py` — [lotul 13, deficiența 696 — a lui Code] `efactura_trimitere.trimite` încărca factura în SPV și când dreptul certificatului pe CUI-ul
 - `core/test_lot14_2_527_1_rezultat_reportat.py` — [527.1, comanda 14.2] Preluarea: soldul de pe 117 (rezultat reportat) fără analitic se pune pe analiticul ales (1171 / 1172 / 1174).
-- `core/test_lot14_2_595_1_d398_gri.py` — [595.1, comanda 14.2] D398 gri la pasul 1 când firma a răspuns „nu” la înregistrarea OSS; „Cod de TVA” al formularului vine numai de la o
+- `core/test_lot14_2_595_1_d398_gri.py` — [595.1, comanda 14.2] „Cod de TVA” al formularului D398 vine numai de la o firmă care are cod de TVA românesc; generarea D398 refuză fără „Da” la OSS.
 - `core/test_lot14_2_712_tara_cod_fiscal.py` — [712, comanda 14.2] Țara partenerului urmează codul fiscal; nepotrivirea oprește emiterea cu motiv.
 - `core/test_lot14_2_714_tva_incasare_achizitii.py` — [714, comanda 14.2] CF art.297 alin.(3): la o firmă cu TVA la încasare, TVA-ul unei achiziții nu se deduce pe loc (4426 = 401 / 404) printr-o
 - `core/test_lot14_2_715_alerta_acces.py` — [715, comanda 14.2] Alerta de acces anormal numără acțiunile omului, nu cererile de pornire ale ecranelor și nu conturile de test;
+- `core/test_lot14_3_696_1_fisa_la_valoarea_notei.py` — [696.1, comanda 14.3] Fișa de magazie: ieșirea scrisă are valoarea ei din notă; soldul fișei = intrări − ieșiri, exact (fără 0,36 lei de rotunjire).
+- `core/test_lot14_3_715_1_de_test.py` — [715.1, comanda 14.3] Alerta de acces anormal ocolește numai cabinetele MARCATE „de test” (nu cele cu „test” în nume); marcajul îl pune superadminul.
+- `core/test_lot14_3_716_termen_cozii.py` — [716, comanda 14.3] „Depășită” numai după termen: coada dă termenul legal și `termen_depasit`; o perioadă neîncheiată nu e depășită.
+- `core/test_lot14_3_719_restante.py` — [719, comanda 14.3] O declarație datorată și nedepusă după termen apare ca restanță, prima, în „Datorate de firmă” și în Termene.
+- `core/test_lot14_3_d1_reclasare_117.py` — [D1, comanda 14.3] Reclasificarea soldului de preluare 117 -> 1171 la firmele de test: notă validată la data preluării, idempotentă, fără să rescri…
+- `core/test_lot14_3_d2_oss.py` — [D2, comanda 14.3] D398 și răspunsul OSS: „Nu” -> ascunsă; nedeclarat -> „de lămurit” (activă, cu trimitere); „Da” -> nimic special.
 - `core/test_lot14_incape.py` — [lotul 14, deficiența 687 — clasă] Fiecare fereastră de lucru încape pe un singur ecran, la 1920 × 1080 și la 1366 × 768; tabelele lungi
 - `core/test_lot14_perioada_comparata.py` — [lotul 14, deficiența 694] „Declarație vs contabilitate”: fiecare comparație își arată perioada, iar la scadență compară perioada care se
 - `core/test_lot14_regularizare_tva.py` — [lotul 14, deficiența 688] Închiderea lunii nu închidea TVA-ul (comanda Costin 14.1, verbatim): „F1 09/2026 e blocată cu «Nimic nu oprește

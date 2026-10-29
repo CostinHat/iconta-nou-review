@@ -1,4 +1,4 @@
-Citește CLAUDE.md (versiunea din 23.10.2026 — singura sursă a regulilor de lucru: §3 lotul, §4 deficiențele, §5 testarea, §6 publicarea, §7 datele cabinetului real, §8 raportul), apoi acest PREDARE_LANT.md, înainte de a începe.
+Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de lucru: §3 lotul, §4 deficiențele, §5 testarea, §6 publicarea, §7 datele cabinetului real, §8 raportul), apoi acest PREDARE_LANT.md, înainte de a începe.
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
@@ -12,6 +12,8 @@ Citește CLAUDE.md (versiunea din 23.10.2026 — singura sursă a regulilor de l
   E fișier de STARE CURENTĂ, nu jurnal — jurnalul e `ISTORIC.md`, deciziile în `DECIZII.md`, starea fiecărui număr în `DEFICIENTE.md`.
 
 ## ÎN CE STARE E PROIECTUL
+
+**30.10.2026 — COMANDA 14.3 (lotul 14, completare) EXECUTATĂ PÂNĂ LA POARTĂ; NEPUBLICATĂ încă.** Ramura `lucru/lot14-3` (worktree `/home/costin/iconta_lot14`). Rezolvate cu e2e + mutație + dovadă pe copie: 715.1, 716, 717, 719, 688.1, 595.1 (D2), 527.1 (D1); parțiale: 694.1 (a = aspect, lotul 15), 696.1 (fără e2e), 268.2 (activare la repornire); 718 „nu se aplică”; 687.1 amânat în lotul 15. D1 rulat pe producție (backup `iconta_v2_pre_lot14_3_d1_20261030_0028.dump`); referința F1–F5: amprenta `7865a79b…`. La publicare: backup, migrarea `core/migrare_cabinet_de_test.py --productie`, ff, post-commit, four-way. După publicare: OPRIRE și așteptare comanda 15.0 (înaintea lotului 15).
 
 **29.10.2026 — COMANDA 14.2 (lotul 14, completare) PUBLICATĂ pe `d88fa225408e202928c9619951fdc1a1063e6636`.** Poarta: completă (3 rulări roșii, fiecare 12.6xx s, cauze reparate pe fiecare) + compusă VERDE
 (2.576 s). Backup `/home/costin/backups_db/iconta_v2_pre_lot14_2_20261029_1637.dump`; four-way închis (HEAD = origin/main = backup/lant-2026-10-29 = procesul viu, 2 din 2); nicio migrare nouă.
@@ -625,7 +627,7 @@ raportează fals), `systemctl show iconta-nou -p ExecMainStartTimestamp` după d
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **191** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **1407** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **1408** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1343** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **11** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -674,7 +676,7 @@ rulare. **Descrie baza în care rulează poarta — `iconta_test` (din R68), nu 
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
 | **20** | scheme `tenant_NNN` în bază |
-| **9440** | contorul `tenant_schema_seq` |
+| **9442** | contorul `tenant_schema_seq` |
 | **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**

@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/repo_admin.py",
+  "ancora": "cur.execute(\"UPDATE public.accounting_firms SET de_test = %s WHERE id = %s\", (bool(de_test), firm_id))",
+  "inlocuire": "cur.execute(\"UPDATE public.accounting_firms SET de_test = %s WHERE id = %s\", (False, firm_id))",
+  "test": "frontend_test/e2e/e2e_lot14_3.py::test_def_715_1_cabinetul_de_test_se_marcheaza_in_panou_admin"
+ }
+]

@@ -19,14 +19,14 @@ def praguri():
 def detecteaza(conn, fereastra_min, prag_tenanti, prag_actiuni):
     with conn.cursor() as cur:
         # [715, 14.2] Numără acțiunile omului: cererile de pornire ale ecranelor (vezi `core/audit_automat`, regula la citire) și conturile
-        # cabinetelor de test (testele noastre, verificatorul) nu intră. Fără ele, un singur ecran deschis însemna zeci de „acțiuni”.
+        # cabinetelor marcate „de test” (testele noastre, verificatorul) nu intră. Fără ele, un singur ecran deschis însemna zeci de „acțiuni”.
         cur.execute("""SELECT l.user_id, count(DISTINCT l.tenant_id) AS t, count(*) AS a
                        FROM public.audit_log l
                        LEFT JOIN public.users u ON u.id = l.user_id
                        LEFT JOIN public.accounting_firms f ON f.id = u.accounting_firm_id
                        WHERE l.created_at > now() - make_interval(mins => %s) AND l.user_id IS NOT NULL
                          AND """ + _audit_automat.sql_actiune_omului("l") + """
-                         AND COALESCE(f.nume, '') !~* '\\m(test|proba|probă)\\M'
+                         AND NOT COALESCE(f.de_test, false)   -- [715.1, 14.3] cabinetul de test e MARCAT în Panou Admin, nu ghicit după nume
                        GROUP BY l.user_id
                        HAVING count(DISTINCT l.tenant_id) >= %s OR count(*) >= %s
                        ORDER BY t DESC, a DESC""", (fereastra_min, *_audit_automat.PARAM_OMULUI, prag_tenanti, prag_actiuni))

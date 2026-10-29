@@ -269,8 +269,6 @@ def test_def_594_d398_texte_si_date_din_date_firma(patron, firma_l13):
     firmă (RO + CUI), fără refuz roșu înainte de orice acțiune, fără numele interne („msest”, „msid”, „e_int”, „harta de componente”) și
     fără „perioada se ia din selectorul de sus”. MUTAȚIA: denumirea nu mai vine din Date firmă -> ROȘU."""
     _neplatitor(patron, firma_l13)
-    from e2e_lot13_oss import _oss_in_date_firma
-    _oss_in_date_firma(patron, firma_l13, "1")   # [595.1, 14.2] D398 e inactivă până firma răspunde „Da” la înregistrarea OSS, în Date firmă
     p = perioada_incheiata("trimestrial")
     pg = _continua_formular(patron, firma_l13, "d398", p.an, trim=p.trim)
     patron.captura("d398_formular")

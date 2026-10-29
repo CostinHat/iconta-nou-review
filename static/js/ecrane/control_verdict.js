@@ -8,6 +8,7 @@
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
 import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=c6c45aefe4";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
+import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=5152ec2b0a";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
@@ -63,6 +64,12 @@ export function randA(c) {
   </div>`;
 }
 
+// [D2, 14.3] o constatare care știe ecranul unde se lămurește („de lămurit”: răspunsul OSS din Date firmă) trimite acolo; una fără ecran nu are ce trimite
+function trimiteLaEcran(x) {
+  if (!x.ecran) return "";
+  return `<button type="button" class="btn-link" data-ecran-destinatie="${esc(x.ecran)}">${esc(x.eticheta_ecran || "Deschide")}</button>`;
+}
+
 // anatomie constatare cu remediu EXECUTABIL (buton «Contabilizeaza facturile») — pt cross-check-uri.
 function randConst(c) {
   const dot = CULORI[stareAfisata(c.stare)] ? CULORI[stareAfisata(c.stare)].dot : CULORI.gri.dot;
@@ -71,8 +78,11 @@ function randConst(c) {
     const r = c.remediu;
     // [lotul 13, 675 — DS cap.1] butonul stă la fiecare remediu; unde nu sunt facturi de contabilizat din aplicație, e inactiv, cu motivul
     const areFacturi = r.fel === "executabil" && (r.facturi || []).length > 0;
-    const buton = `<button class="buton-secundar cf-incr-btn" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-facturi="${esc((r.facturi || []).join(","))}" style="margin-top:8px"${
-      areFacturi ? "" : atributeInactiv("Constatarea nu are facturi de contabilizat din aplicație; remediul e cel scris mai sus.")}>Contabilizează facturile</button>`;
+    // [694.1 b, 14.3] neconcordanța rezultatului decontului cu nota de închidere TVA: acțiunea e regularizarea TVA a perioadei (Închidere lună), nu contarea facturilor
+    const buton = r.fel === "regularizare_tva"
+      ? `<button class="buton-secundar cf-regulariza-tva" data-actiune="POST /tenants/{tenant_id}/inchidere/regularizare-tva" data-an="${esc(String(r.an))}" data-luna="${esc(String(r.luna))}" style="margin-top:8px">Regularizează TVA-ul perioadei</button>`
+      : `<button class="buton-secundar cf-incr-btn" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-facturi="${esc((r.facturi || []).join(","))}" style="margin-top:8px"${
+        areFacturi ? "" : atributeInactiv("Constatarea nu are facturi de contabilizat din aplicație; remediul e cel scris mai sus.")}>Contabilizează facturile</button>`;
     extra = `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}<div>${buton}</div></div>`;
   }
   return `<div class="cf-incr-rand">
@@ -148,6 +158,7 @@ function randMotiv(arr, semnale = [], felCls = "") {
       <div class="cf-incr-cap"><span class="mig-sold-cont">${esc((x.tip || "").toUpperCase())}</span>${
         domeniuAfirmatie(x) ? `<span class="cf-perioada">${esc(domeniuAfirmatie(x))}</span>` : ""}</div>
       <div class="cf-incr-temei">${esc(x.motiv || "")}</div>
+      ${trimiteLaEcran(x)}
       ${x.surse_consultate ? `<div class="cf-incr-temei">Căutat în: ${esc(x.surse_consultate)}</div>` : ""}
       ${x.temei_completitudine ? `<div class="cf-incr-temei">Pe ce se sprijină: ${esc(x.temei_completitudine)}</div>` : ""}
       ${potrivite(x).map(randSemnal).join("")}
@@ -263,9 +274,13 @@ export function randeazaCorpVerdict(d, opt = {}) {
     if (!t) return "";
     // [deficiența 211] neplătitorul de TVA: verificarea nu are subiect — se spune, gri, fără bulină verde
     if (t.nu_se_aplica) return `<div class="cf-grup-titlu">Coerență TVA (balanță)</div><div class="cf-decl"><div class="cf-incr-temei">${esc(t.nu_se_aplica)}</div></div>`;
-    const ok = (t.suma === 0 || !!t.rezultat);
-    const det = `${t.rezultat === "de_plata" ? "de plată" : (t.rezultat === "de_recuperat" ? "de recuperat" : "")} ${bani(t.suma || 0)} lei`;
-    return `<div class="cf-grup-titlu">Coerență TVA (balanță)</div><div class="cf-decl">${randVerif("TVA vs sold balanță", ok, det)}</div>`;
+    // [694.1 c, 14.3] fiecare cifră își spune perioada, iar o neconcordanță cu decontul nu e verde
+    const np = t.nepotrivire;
+    const ok = (t.suma === 0 || !!t.rezultat) && !np;
+    const la = t.la_data ? ` la ${dataRo(t.la_data)}` : "";
+    const det = `${t.rezultat === "de_plata" ? "de plată" : (t.rezultat === "de_recuperat" ? "de recuperat" : "")} ${bani(t.suma || 0)} lei`
+      + (np ? ` — decontul D300 ${np.perioada ? esc(np.perioada) + " " : ""}declară ${np.rezultat === "de_plata" ? "de plată" : "de recuperat"} ${bani(np.declarat)} lei: perioade diferite sau diferență de regularizat` : "");
+    return `<div class="cf-grup-titlu">Coerență TVA (balanță)</div><div class="cf-decl">${randVerif(`TVA vs sold balanță${la}`, ok, det)}</div>`;
   })();
 
   // «Documente pozate» — vc.documente_pozate (bonuri/note de casa confirmate de client, necontate).
@@ -378,6 +393,16 @@ export function legaVerdict(corp, nav, firma) {
   // [lotul 13, e2e 122] o declarație marcată „depusă în afara iConta.eu” CU DATA nu mai e „înainte de preluare”: serverul o mută la „La zi”
   // / „Depuse cu întârziere” (`control_fiscal_api`: grupul cuprinde numai obligațiile NEDEPUSE dinaintea preluării). Rândul atins nu se
   // mai găsește în fereastra grupului, deci fereastra se închide și contabilul îl vede în Control fiscal, în grupul în care a ajuns.
+  // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
+  // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
+  corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
+    const { deschideInchidereLuna } = await import("./firme.js?v=b7cceffab4");
+    deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
+  }));
+  corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {
+    const e = ECRANE_DESTINATIE[b.dataset.ecranDestinatie];
+    if (e) e.deschide(nav, firma.tenant_id, null, null);
+  }));
   corp.querySelectorAll(".cf-inainte-btn").forEach((b) => b.addEventListener("click", () => {
     nav.deschide("Înainte de preluare în iConta.eu", (cc, nn) => {
       let atins = null;

@@ -136,6 +136,8 @@ def test_def_c162_declaratii_arata_d390_numai_pe_luna_cu_prestarea(patron, firma
     # [lotul 13] termenul D390 al lunii încheiate e cel al aplicației (`scadente`): 25 ale lunii de azi, mutat pe următoarea zi lucrătoare
     # când cade în weekend / sărbătoare (25.10.2026 = duminică -> 26.10.2026) — nu „ziua 25” scrisă în test
     termen = scadente.scadenta_data("d390", LUNA.an, luna=LUNA.luna)
-    asteptat = ["%02d/%d" % (LUNA.luna, LUNA.an)] if azi <= termen else []
+    # [719, 14.3] după termen luna prestării rămâne în listă, ca RESTANȚĂ (nu dispare tăcut): același D390, aceeași lună, cu eticheta ei
+    asteptat = ["%02d/%d" % (LUNA.luna, LUNA.an)]
     assert d390 == asteptat, datorate
+    assert any(t.startswith("D390 · %02d/%d · restanță" % (LUNA.luna, LUNA.an)) for t in datorate) == (azi > termen), datorate
     assert not any(t.startswith("D390 · %02d/%d" % (azi.month, azi.year)) for t in datorate), datorate

@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "core/control_fiscal_api.py",
+  "ancora": "if _da.starea_oss({\"inregistrat_oss\": _oss}) == \"de_lamurit\":",
+  "inlocuire": "if False and _da.starea_oss({\"inregistrat_oss\": _oss}) == \"de_lamurit\":",
+  "test": "frontend_test/e2e/e2e_lot14_3.py::test_def_595_1_d398_fara_raspuns_oss_apare_de_lamurit_in_control_fiscal"
+ }
+]

@@ -1,8 +1,8 @@
 [
  {
-  "fisier": "core/declaratii_api.py",
-  "ancora": "        _motiv = d398.refuz_oss(_repo.inregistrat_oss(cur))",
-  "inlocuire": "        _motiv = None",
+  "fisier": "core/uc_declaratii.py",
+  "ancora": "    if _oss == \"ascunsa\":",
+  "inlocuire": "    if False and _oss == \"ascunsa\":",
   "test": "core/test_lot14_2_595_1_d398_gri.py::test_generarea_d398_refuza_fara_oss_da"
  },
  {
@@ -12,9 +12,9 @@
   "test": "frontend_test/e2e/e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma"
  },
  {
-  "fisier": "core/declaratii_api.py",
-  "ancora": "    if \"inregistrat_oss\" in v and v[\"inregistrat_oss\"] is not True:",
-  "inlocuire": "    if False and \"inregistrat_oss\" in v and v[\"inregistrat_oss\"] is not True:",
+  "fisier": "core/uc_declaratii.py",
+  "ancora": "    if _oss == \"ascunsa\":",
+  "inlocuire": "    if False and _oss == \"ascunsa\":",
   "test": "frontend_test/e2e/e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma"
  }
 ]

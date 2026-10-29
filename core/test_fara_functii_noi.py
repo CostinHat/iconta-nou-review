@@ -50,6 +50,8 @@ EXCEPTII = {
     "DELETE /tenants/{tenant_id}/horeca/raport-z/{nota_id}": "C139",
     # [lotul 14, C206 = 688] închiderea lunii propune nota de regularizare a TVA (4427 = 4426 + 4423/4424): fără ea luna se bloca cu TVA-ul neînchis
     "POST /tenants/{tenant_id}/inchidere/regularizare-tva": "C206",
+    # [lotul 14.3, 715.1] alerta de acces nu mai ghicește cabinetul de test după nume: superadminul îl marchează în Panou Admin
+    "POST /admin/cabinete/{firm_id}/de-test": "715.1",
     # [lotul 13, 681] căutarea globală din antet — decizia Costin 25.10.2026 (comanda 13.1): „parte din pilot, excepție de la «fără funcții
     # noi»”
     "GET /eu/cautare": "681",

@@ -10,12 +10,12 @@ import { api, ICOANE, CULORI_CARD } from "../api.js?v=c6c45aefe4";
 import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaControl } from "./control.js?v=680bf7a6fb";
-import { randeazaTermene } from "./termene.js?v=64889e06b3";
+import { randeazaTermene } from "./termene.js?v=4b1f2252e9";
 import { randeazaValidat } from "./validat.js?v=766c35b7f9";
-import { randeazaListaFirme } from "./firme.js?v=084d4963d1";
+import { randeazaListaFirme } from "./firme.js?v=b7cceffab4";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=e8635bc253"; // [p44_declaratii]
+import { randeazaDeclaratii } from "./declaratii.js?v=496c44278f"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=ae0ddd2b13"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {

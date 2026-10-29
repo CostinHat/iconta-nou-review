@@ -1,13 +1,14 @@
-// termene.js — scadente fiscale viitoare pe portofoliu (orizont 60 zile).
+// termene.js — restantele (termen trecut, nedepuse) si scadentele fiscale viitoare pe portofoliu (orizont 60 zile).
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
 import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=c6c45aefe4";
-import { deschideFirma } from "./firme.js?v=084d4963d1";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { deschideFirma } from "./firme.js?v=b7cceffab4";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
 
 function etichetaZile(z) {
+  if (z < 0) return `restanță de ${cate(-z, "zi", "zile")}`;   // [719, 14.3] termenul a trecut și declarația nu e depusă: apare, prima
   if (z === 0) return "azi";
   if (z === 1) return "mâine";
   return `în ${cate(z, "zi", "zile")}`;
@@ -37,13 +38,13 @@ export async function randeazaTermene(corp, nav) {
   const zona = corp.querySelector("#term-zona");
   const lista = corp.querySelector("#term-lista");
   if (grupuri.length === 0) {
-    lista.innerHTML = `<div class="stare-goala">Nicio scadență în următoarele 60 de zile.</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio scadență în următoarele 60 de zile și nicio restanță.</div>`;
     randeazaNeevaluate(zona, neeval);   // [T1] chiar si fara scadente, firmele neevaluate NU dispar tacut
     return;
   }
 
   grupuri.forEach((g) => {
-    const urgent = g.zile <= 7;
+    const urgent = g.zile <= 7;   // și restanțele (zile negative)
     const bloc = document.createElement("div");
     bloc.className = "term-grup";
     bloc.innerHTML = `

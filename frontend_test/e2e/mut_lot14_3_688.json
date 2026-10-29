@@ -1,0 +1,8 @@
+[
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "const blocataCuTva = blocata && !!ctl &&",
+  "inlocuire": "const blocataCuTva = false && !!ctl &&",
+  "test": "frontend_test/e2e/e2e_lot14_3.py::test_def_688_1_luna_blocata_cu_tva_neregularizat_o_singura_actiune_deblocheaza_si_regularizeaza"
+ }
+]

@@ -86,7 +86,7 @@ export async function ecranBorderou(corp, nav, t) {
 
   const deschideNota = async (nid, data) => {
     const [a, l] = String(data || "").split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=084d4963d1");
+    const { ecranJurnal } = await import("./firme.js?v=b7cceffab4");
     nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
       Number.isFinite(a) && Number.isFinite(l) ? { an: a, luna: l } : {})), { lat: "tabel" });
   };
