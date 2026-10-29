@@ -29,8 +29,12 @@ def test_def_673_fereastra_deschisa_peste_alta_e_fereastra_de_lucru_cat_ecranul(
     r = pg.evaluate("""() => new Promise((rez) => {
       window._nav.deschide('Fereastra firmei', (c) => { c.innerHTML = '<p class="ecran-nota">Carduri</p>'; });
       window._nav.deschide('Salariu', (c) => { c.innerHTML = '<label class="camp"><span class="camp-eticheta">Salariu</span><input id="s" class="camp-input"></label>'; });
-      setTimeout(() => {
-        const f = [...document.querySelectorAll('.fereastra')].pop(), b = f.getBoundingClientRect();
+      // [14.2] se măsoară DUPĂ animația de apariție (`aparitie-fereastra`, 140 ms, translateY 8 -> 0): la 120 ms fereastra era încă în mișcare și,
+      // sub încărcarea porții, ieșea cu 2-3 px mai jos; geometria cerută (cât ecranul, centrată, ±2 px) rămâne aceeași
+      setTimeout(async () => {
+        const f = [...document.querySelectorAll('.fereastra')].pop();
+        await Promise.all(f.getAnimations().map((a) => a.finished));
+        const b = f.getBoundingClientRect();
         rez({ clase: f.className, lat: b.width, inalt: b.height, stanga: b.left, sus: b.top,
               fir: (f.querySelector('.fereastra-fir') || {}).innerText || '', acum: (f.querySelector('.fir-acum') || {}).innerText || '' });
       }, 120);
