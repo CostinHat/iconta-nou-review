@@ -246,7 +246,7 @@ def firma_714(patron):
         pregateste_firma(patron, f, regim_fiscal="profit")
         # date-de-pornire (declarate): firma aplică TVA la încasare din prima zi a lunii curente (aplicația scrie perioada prin Date firmă; aici,
         # direct în schemă, ca `e2e_lot10_tva_incasare.py`)
-        sql('INSERT INTO "%s".tva_incasare_perioade (de_la) VALUES (%%s)' % f["schema"], (AZI.replace(day=1).isoformat(),))
+        sql('INSERT INTO "%s".tva_incasare_perioade (de_la) VALUES (%%s)' % f["schema"], (AZI.replace(day=1).isoformat(),))   # date-de-pornire: perioada TVA la încasare a firmei (ca e2e_lot10_tva_incasare.py)
         yield f
 
 

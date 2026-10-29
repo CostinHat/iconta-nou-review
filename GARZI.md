@@ -9033,9 +9033,9 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**1193 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**1198 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 1153
+### `core/` — 1158
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -9916,6 +9916,11 @@ cu motiv: rutele oarbe / GRI 7 → 11 (R80), plafonul migrărilor 142 → 145 (t
 - `core/test_lot13_sal_salarizare.py` — Lotul 13 (comanda Costin 13.1), salarizarea: 671 (zilele lunii dintr-o singură sursă), 679 (suma orelor suplimentare calculată),
 - `core/test_lot13_val6_casa_avans.py` — [lotul 13, deficiența 683 — a lui Code] „Casă › Avans spre decontare nu pune salariatul pe rândul notei: 542 nu se urmărește pe
 - `core/test_lot13_val6_spv_avertisment.py` — [lotul 13, deficiența 696 — a lui Code] `efactura_trimitere.trimite` încărca factura în SPV și când dreptul certificatului pe CUI-ul
+- `core/test_lot14_2_527_1_rezultat_reportat.py` — [527.1, comanda 14.2] Preluarea: soldul de pe 117 (rezultat reportat) fără analitic se pune pe analiticul ales (1171 / 1172 / 1174).
+- `core/test_lot14_2_595_1_d398_gri.py` — [595.1, comanda 14.2] D398 gri la pasul 1 când firma a răspuns „nu” la înregistrarea OSS; „Cod de TVA” al formularului vine numai de la o
+- `core/test_lot14_2_712_tara_cod_fiscal.py` — [712, comanda 14.2] Țara partenerului urmează codul fiscal; nepotrivirea oprește emiterea cu motiv.
+- `core/test_lot14_2_714_tva_incasare_achizitii.py` — [714, comanda 14.2] CF art.297 alin.(3): la o firmă cu TVA la încasare, TVA-ul unei achiziții nu se deduce pe loc (4426 = 401 / 404) printr-o
+- `core/test_lot14_2_715_alerta_acces.py` — [715, comanda 14.2] Alerta de acces anormal numără acțiunile omului, nu cererile de pornire ale ecranelor și nu conturile de test;
 - `core/test_lot14_incape.py` — [lotul 14, deficiența 687 — clasă] Fiecare fereastră de lucru încape pe un singur ecran, la 1920 × 1080 și la 1366 × 768; tabelele lungi
 - `core/test_lot14_perioada_comparata.py` — [lotul 14, deficiența 694] „Declarație vs contabilitate”: fiecare comparație își arată perioada, iar la scadență compară perioada care se
 - `core/test_lot14_regularizare_tva.py` — [lotul 14, deficiența 688] Închiderea lunii nu închidea TVA-ul (comanda Costin 14.1, verbatim): „F1 09/2026 e blocată cu «Nimic nu oprește

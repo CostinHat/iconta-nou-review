@@ -15,6 +15,7 @@ Mutațiile: `frontend_test/e2e/mut_lot13_migr.json`. Dovezile pe firmele de test
 import datetime as _dt
 
 import pytest
+from e2e_lot12_migr import alege_analitic_117
 
 from conftest import cui_cu_control, firma_noua, sql, text_din_card
 from e2e_bloc_a import _api, _card, _ok, pregateste_firma
@@ -118,6 +119,7 @@ def test_def_664_salvarea_balantei_numeste_pasii_urmatori(patron, firma):
     _incarca(patron, "balanta_f7.csv", BALANTA_CSV, "#mig-salveaza-sold")
     pg.fill("#mig-data-bal", DATA)
     pg.select_option("#mig-metoda-stoc", "cantitativ_valoric")
+    alege_analitic_117(pg)
     pg.click("#mig-salveaza-sold")
     pg.wait_for_function("() => document.body.innerText.includes('Pașii următori necesari pentru')", timeout=30000)
     t = " ".join(patron.fereastra().split())

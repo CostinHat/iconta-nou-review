@@ -20,7 +20,6 @@ import json
 import os
 import urllib.error
 
-import pytest
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TOKEN = "pm-token-de-proba-0123456789"
@@ -156,11 +155,13 @@ def _apeluri():
 
 def test_niciun_apel_nu_alege_furnizorul_si_emailurile_contului_exista():
     """Furnizorul nu mai e un steag pe apel (`postmark=`): îl decide `trimite_email_html` după `informativ` și atașamente, deci un email nou
-    de acces nu poate uita Postmark. Anti-vacuu: cel puțin 20 de apeluri, iar cele ale contului există.
+    de acces nu poate uita Postmark. Anti-vacuu: cel puțin 20 de apeluri. Parametrii funcției și cuvintele-cheie folosite de apeluri, ca date.
     MUTAȚIE: `postmark=True` pus înapoi pe un apel -> ROȘU."""
-    apeluri = _apeluri()
-    assert len(apeluri) >= 20, len(apeluri)
-    assert [a for a in apeluri if "postmark" in a[2]] == []
     import inspect
     from core import observare as O
-    assert "postmark" not in inspect.signature(O.trimite_email_html).parameters
+    apeluri = _apeluri()
+    assert len(apeluri) >= 20, len(apeluri)
+    folosite = {k for a in apeluri for k in a[2]}
+    assert folosite <= {"alerta", "informativ", "attachments", "reply_to", "expeditor_nume"}, sorted(folosite)
+    assert list(inspect.signature(O.trimite_email_html).parameters) == [
+        "catre", "subiect", "html", "attachments", "reply_to", "expeditor_nume", "informativ"]

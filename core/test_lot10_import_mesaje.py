@@ -152,7 +152,8 @@ def test_426_inlocuirea_balantei_cere_confirmare_pe_ecran():
     post = [c["arguments"] for c in noduri(fn, "CallExpression") if COD_MIG(c["callee"]) == "api.post"]
     assert [(COD_MIG(a[0]), [(COD_MIG(p["key"]), COD_MIG(p["value"])) for p in a[1]["properties"]]) for a in post] == [
         ("`/tenants/${firma.tenant_id}/solduri`", [("randuri", "randuri"), ("data_referinta", "data_referinta"),
-                                                    ("inlocuieste", "inlocuieste"), ("metoda_stoc", "metoda ? metoda.value : null")])]
+                                                    ("inlocuieste", "inlocuieste"), ("metoda_stoc", "metoda ? metoda.value : null"),
+                                                    ("analitic_117", "analitic117 ? analitic117.value : null")])]
 
 
 def test_salariat_edit_corecteaza_datele_trimite_campurile_deducerilor():

@@ -150,15 +150,16 @@
   "D406": {
    "09/2026": {
     "GeneralLedgerEntries": {
-     "NumberOfEntries": "6",
-     "TotalCredit": "25106.00",
-     "TotalDebit": "25106.00"
+     "NumberOfEntries": "7",
+     "TotalCredit": "25316.00",
+     "TotalDebit": "25316.00"
     },
-    "amprenta": "c9306c656a546f6f8ebfb0c431b4f0721c939050dc7e6adcc998f27f53c32d05",
+    "amprenta": "61c91eeaacc7a316290e04ab6e7b3b3fe311209def8bab8293d0c42c4715c278",
     "facturi_emise": 1,
     "facturi_primite": 1,
     "jurnale": [
      "BANCA",
+     "DIVERSE",
      "FACTURI",
      "SALARII",
      "STOCURI"
@@ -321,13 +322,13 @@
      "prec_d": 0.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
-     "rul_c": 0.0,
+     "rul_c": 210.0,
      "rul_d": 210.0,
      "sf_c": 0.0,
-     "sf_d": 210.0,
+     "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
-     "tot_c": 0.0,
+     "tot_c": 210.0,
      "tot_d": 210.0
     },
     {
@@ -338,13 +339,13 @@
      "prel_c": 0.0,
      "prel_d": 0.0,
      "rul_c": 210.0,
-     "rul_d": 0.0,
-     "sf_c": 210.0,
+     "rul_d": 210.0,
+     "sf_c": 0.0,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
      "tot_c": 210.0,
-     "tot_d": 0.0
+     "tot_d": 210.0
     },
     {
      "cont": "444",
@@ -605,36 +606,20 @@
      "tot_d": 0.0
     },
     {
-     "cont": "4426",
-     "denumire": "TVA deductibilă",
-     "prec_c": 0.0,
-     "prec_d": 210.0,
-     "prel_c": 0.0,
-     "prel_d": 0.0,
-     "rul_c": 0.0,
-     "rul_d": 0.0,
-     "sf_c": 0.0,
-     "sf_d": 210.0,
-     "si_c": 0.0,
-     "si_d": 0.0,
-     "tot_c": 0.0,
-     "tot_d": 210.0
-    },
-    {
      "cont": "4427",
      "denumire": "TVA colectată",
      "prec_c": 210.0,
-     "prec_d": 0.0,
+     "prec_d": 210.0,
      "prel_c": 0.0,
      "prel_d": 0.0,
      "rul_c": 1486.18,
      "rul_d": 0.0,
-     "sf_c": 1696.18,
+     "sf_c": 1486.18,
      "sf_d": 0.0,
      "si_c": 0.0,
      "si_d": 0.0,
      "tot_c": 1696.18,
-     "tot_d": 0.0
+     "tot_d": 210.0
     },
     {
      "cont": "4428.01",

@@ -1,7 +1,6 @@
 """[715, comanda 14.2] Alerta de acces anormal numără acțiunile omului, nu cererile de pornire ale ecranelor și nu conturile de test;
 numește utilizatorul și cabinetul. Pe Postgres, în tranzacție anulată (firme și utilizatori sintetici)."""
 import json
-import pytest
 from core import alerta_acces as AA, audit_automat as AU, db
 from core.test_lot11_t import conn_t  # noqa: F401 — fixtura schemei sintetice
 
@@ -59,4 +58,6 @@ def test_subiectul_alertei_numeste_omul_cabinetul_si_scrie_firma_la_singular(mon
     monkeypatch.setattr(AA, "_poate_trimite", lambda *a, **k: True)
     AA.ruleaza(trimite=lambda s, m: trimise.append((s, m)))
     s, m = trimise[0]
-    assert "Ana Ionescu (a@x.ro)" in s and "Cabinet X SRL" in s and "1 firmă," in s and "Nu s-a blocat nimic" in m
+    assert s == "Acces anormal: Ana Ionescu (a@x.ro), cabinetul Cabinet X SRL (1 firmă, 350 acțiuni în 10 min)", s
+    assert m == ("Semnal automat (art.33): utilizatorul Ana Ionescu (a@x.ro), cabinetul Cabinet X SRL (id 1), a atins 1 firmă distincte și 350 "
+                 "acțiuni în ultimele 10 min (praguri 8 firme / 300 acțiuni). Nu s-a blocat nimic. Verifică manual."), m

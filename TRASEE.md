@@ -1550,7 +1550,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T14 — Preluarea unei firme
 
-**Clasa:** MECANIC · **rute:** 39 (din care schimba date: 22) · **refuzuri explicite:** 116
+**Clasa:** MECANIC · **rute:** 39 (din care schimba date: 22) · **refuzuri explicite:** 117
 
 **Cine:** rol cerut: `admin_firma` · drept fin: `poate_pregati`. **Rute care schimba date fara nicio verificare de rol: 0 din 22.**
 

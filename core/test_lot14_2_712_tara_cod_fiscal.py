@@ -16,8 +16,7 @@ def test_tara_urmeaza_codul(cui, tara, ok):
 
 
 def test_motivul_numeste_codul_si_tara():
-    m = T.nepotrivire("RO14399840", "IE")
-    assert "IE" in m and "RO14399840" in m and "țării RO" in m and "Alege țara RO" in m, m
+    assert T.nepotrivire("RO14399840", "IE") == "Țara partenerului (IE) nu se potrivește cu codul fiscal RO14399840, care e al țării RO. Alege țara RO sau corectează codul fiscal."
 
 
 def test_emiterea_se_opreste_cu_motiv_pe_campul_tarii(conn_t):
@@ -30,7 +29,7 @@ def test_emiterea_se_opreste_cu_motiv_pe_campul_tarii(conn_t):
     with pytest.raises(FacturaRefuzata) as e:
         F.emite_factura(conn_t, linii, tert_nume="DANTE INTERNATIONAL", tert_cui="RO14399840", tert_tara="IE",
                         data_emitere="2026-10-10", moneda="RON", platitor_tva=True, tip="factura")
-    assert any(c["camp"] == "tert_tara" and "RO14399840" in c["mesaj"] for c in e.value.erori_campuri), e.value.erori_campuri
+    assert e.value.erori_campuri == [{"camp": "tert_tara", "mesaj": "Țara partenerului (IE) nu se potrivește cu codul fiscal RO14399840, care e al țării RO. Alege țara RO sau corectează codul fiscal."}]
     with conn_t.cursor() as cur:
         cur.execute("SELECT count(*) FROM facturi")
         assert cur.fetchone()[0] == 0

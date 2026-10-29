@@ -22,7 +22,7 @@ import sys
 import pytest
 
 from conftest import firma_noua, sql
-from e2e_lot12_migr import confirma_firma_fisierului
+from e2e_lot12_migr import confirma_firma_fisierului, alege_analitic_117
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from core.test_lot11_m_balanta_saga import fisier, randuri, _ro   # noqa: E402
@@ -101,6 +101,7 @@ def test_def_439_balanta_saga_cu_sold_initial_intra_si_a_doua_cere_confirmare(pa
     assert "rulajele precedente (fără soldul inițial al anului) din „Rulaje precedente Debit” / „Rulaje precedente Credit”" in t, t[:2500]
     pg.fill("#mig-data-bal", "2026-09-30")
     pg.select_option("#mig-metoda-stoc", "cantitativ_valoric")
+    alege_analitic_117(pg)
     pg.click("#mig-salveaza-sold")
     confirma_firma_fisierului(pg, ANTET_MIGRARE)   # [lotul 12, 599] antetul balanței SAGA numește altă firmă: confirmarea, apoi salvarea
     pg.wait_for_function("() => document.body.innerText.includes('21 de conturi salvate, cu soldurile la 30.09.2026. Soldurile de la 1 "
@@ -116,6 +117,7 @@ def test_def_439_balanta_saga_cu_sold_initial_intra_si_a_doua_cere_confirmare(pa
     av_text, av_cls = text_din_card(pg, "#mig-inlocuire")   # [lotul 14, 687] avertismentul stă în cardul lui
     assert av_cls == "msg-avert" and av_text.startswith(
         "Firma are deja o balanță de deschidere la 30.09.2026: 21 de conturi"), av_text
+    alege_analitic_117(pg)
     pg.click("#mig-salveaza-sold")
     confirma_firma_fisierului(pg, ANTET_MIGRARE)   # [599] întâi firma din antet, apoi întrebarea înlocuirii (426)
     pg.wait_for_selector("#ca-ok", timeout=10000)
@@ -123,6 +125,7 @@ def test_def_439_balanta_saga_cu_sold_initial_intra_si_a_doua_cere_confirmare(pa
     patron.captura("confirmare")
     pg.click("#ca-nu")
     assert pg.is_visible("#mig-salveaza-sold") and sql('SELECT count(*) FROM "%s".solduri_initiale' % s)[0][0] == 21
+    alege_analitic_117(pg)
     pg.click("#mig-salveaza-sold")
     confirma_firma_fisierului(pg, ANTET_MIGRARE)
     pg.wait_for_function("() => (document.querySelector('#ca-ok') || {}).textContent === 'Înlocuiesc balanța'", timeout=10000)

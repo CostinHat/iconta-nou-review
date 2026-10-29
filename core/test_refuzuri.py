@@ -74,7 +74,7 @@ BASELINE = {
     # `seteaza_numerotare` — seria goală era `return {"ok": False, ...}` (umbra modului de eșec 4), acum e `er.camp("serie", ...)`, deci
     # se vede (FORMĂ, W3b B21); +1 în `_potriveste_linii` — refuzul produsului pe date (UM / preț peste coloană) dus mai departe (FORMĂ,
     # W3b). Plafonul vechi 27 avea un loc liber (26 măsurat): închis.
-    "core/facturi_api.py": 28,
+    "core/facturi_api.py": 29,   # [14.2, 712] +1: refuzul „țara nu se potrivește cu codul fiscal” (`tara_cod_fiscal`) — coerență între două câmpuri scrise de om, refuz de FORMĂ: nu există normă care să-l ceară, deci nu poartă temei; nu se inventează unul (CLAUDE.md §10)
     "core/bacsis.py": 2,
     "core/casa.py": 3,
     "core/taxare_inversa.py": 3,

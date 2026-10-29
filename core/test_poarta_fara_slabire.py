@@ -38,14 +38,23 @@ _SLABIRI = {"skip", "skipif", "xfail", "importorskip"}
 _ASERTIUNI = {"raises", "fail", "warns"}
 #: [regula 3d] excepțiile motivate: {"<fișier>::<test>": "<motiv, cu decizia / deficiența numită>"}
 MOTIVATE = {
-    "core/test_c1_pontaj_neconfirmat_gri.py::test_banner_pontaj_neconfirmat_e_caseta_info_nu_ecran_nota_rosu":
-        "redenumit, nu scos (lotul 14, 687): bannerul „pontaj neconfirmat” e acum un card-rezumat cu ton informativ; aceeași regulă (nu caseta roșie, "
-        "ton informativ, bulina gri), pe aceeași situație: core/test_c1_pontaj_neconfirmat_gri.py::"
-        "test_banner_pontaj_neconfirmat_e_card_informativ_nu_ecran_nota_rosu",
-    "frontend_test/e2e/e2e_pilot_luna.py::test_pilot_34_d100":
-        "schimbare decisă de comanda 14.1 (deficiența 695, C205): firma-pilot e preluată la 31.08.2026, deci D100 T3/2026 (începe 01.07, înainte de "
-        "preluare) se REFUZĂ cu trimiterea la Import date › Solduri inițiale, nu se mai generează; testul asertă refuzul (aplicația nu mai produce XML-ul, "
-        "impozitul și depunerea pe care le asertau celelalte două aserțiuni). Poziția F026 din planul pilotului cere decizia lui Costin (DECIZII 14.1)",
+    "core/test_lot13_portal_postmark.py::test_clasa_emailurile_de_acces_la_cont_pleaca_pe_postmark":
+        "schimbare decisă (comanda 14.2, 268.2): steagul `postmark=True` a dispărut de pe apeluri — orice email tranzacțional trece pe Postmark cu tokenul "
+        "activ, decis de `trimite_email_html` după `informativ`; regula „emailurile contului pleacă pe Postmark” e acum garantată prin construcție și păzită "
+        "de core/test_lot13_portal_postmark.py::test_niciun_apel_nu_alege_furnizorul_si_emailurile_contului_exista (niciun apel nu mai alege furnizorul) "
+        "și de ::test_tranzactionalul_oarecare_pleaca_pe_postmark_iar_informativul_si_atasamentul_pe_brevo (comportamentul, cu mutație)",
+    "core/test_lot13_portal_postmark.py::test_emailurile_numite_in_comanda_sunt_in_clasa":
+        "schimbare decisă (comanda 14.2, 268.2): vezi test_clasa_emailurile_de_acces_la_cont_pleaca_pe_postmark — emailurile numite în comanda 13.1 "
+        "(confirmare, resetare, link de logare, invitații) nu mai poartă steag; sunt tranzacționale și trec pe Postmark prin regula comună",
+    "core/test_lot13_portal_postmark.py::test_fara_postmark_true_emailul_ramane_pe_brevo":
+        "redenumit, nu scos (comanda 14.2, 268.2): regula veche („fără postmark=True rămâne pe Brevo”) s-a inversat — un tranzacțional fără steag pleacă "
+        "pe Postmark, informativul și emailul cu atașament rămân pe Brevo: core/test_lot13_portal_postmark.py::"
+        "test_tranzactionalul_oarecare_pleaca_pe_postmark_iar_informativul_si_atasamentul_pe_brevo",
+    "frontend_test/e2e/e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma":
+        "schimbare decisă (comanda 14.2, 595.1, cerința lui Costin „D398 trebuie gri la pasul 1, cu motiv, ca D318”): fluxul din 26.10 (D398 activă, refuz la "
+        "generare cu buton spre Date firmă) e înlocuit de D398 inactivă cât firma nu a răspuns „Da” la OSS; testul își schimbă pașii (inactivă -> Date firmă "
+        "-> Nu -> inactivă -> Da -> activă, generează) și pierde o aserțiune (refuzul de la generare nu mai e atins de pe ecran); refuzul de la generare e "
+        "păzit acum de core/test_lot14_2_595_1_d398_gri.py::test_generarea_d398_refuza_fara_oss_da (cu mutația mutată pe el)",
 }
 
 

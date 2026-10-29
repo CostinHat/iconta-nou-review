@@ -30,6 +30,14 @@ ANTET_COSTIN = "SC Firmă Probă Rulaje SRL"
 MESAJ_599 = "Fișierul pare al altei firme: în antetul lui scrie „SC Firmă Probă Rulaje SRL”, iar firma aleasă e %s."
 
 
+def alege_analitic_117(pg):
+    """[527.1, 14.2] Balanța are soldul rezultatului reportat pe 117, fără analitic: ecranul cere analiticul și refuză salvarea fără el. Probele
+    de import care nu probează 527.1 îl aleg ca omul — 1171 (profit nerepartizat / pierdere neacoperită) — înainte de „Salvează”."""
+    sel = pg.locator("#mig-analitic-117")
+    if sel.count() and not sel.input_value():
+        sel.select_option("1171")
+
+
 def confirma_firma_fisierului(pg, antet):
     """[599] Pasul contabilului după „Salvează …” pe un fișier al cărui antet numește ALTĂ firmă decât cea aleasă (fișierele de probă au
     antetul lor, „SC Firmă Probă SRL” / „SC Firmă Probă Rulaje SRL”, iar firma de test e „E2E Probă …”): întrebarea numește firma din
@@ -126,6 +134,7 @@ def test_def_599_balanta_altei_firme_cere_confirmare_si_intra_cu_cifrele_425(pat
     assert _randul(pg, 19) == "19 intră 5121 Conturi la bănci în lei 12.000,00 D 200.000,00 183.275,00 28.725,00 0,00"
     pg.fill("#mig-data-bal", "2026-09-30")
     pg.select_option("#mig-metoda-stoc", "cantitativ_valoric")
+    alege_analitic_117(pg)
     pg.click("#mig-salveaza-sold")
     pg.wait_for_selector("#ca-ok", timeout=10000)
     patron.captura("confirmare_firma")
@@ -136,6 +145,7 @@ def test_def_599_balanta_altei_firme_cere_confirmare_si_intra_cu_cifrele_425(pat
     pg.click("#ca-nu")
     pg.wait_for_timeout(500)
     assert sql('SELECT count(*) FROM "%s".solduri_initiale' % s)[0][0] == 0      # fără confirmare nu se scrie nimic
+    alege_analitic_117(pg)
     pg.click("#mig-salveaza-sold")
     pg.wait_for_selector("#ca-ok", timeout=10000)
     pg.click("#ca-ok")
@@ -165,6 +175,7 @@ def test_def_426_a_doua_balanta_a_altei_firme_cere_ambele_confirmari(patron, fir
                                                  "credit 79.525,00 lei.")
     patron.captura("doua_avertismente")
     pg.fill("#mig-data-bal", "2026-09-30")
+    alege_analitic_117(pg)
     pg.click("#mig-salveaza-sold")
     pg.wait_for_selector("#ca-ok", timeout=10000)
     assert pg.inner_text("#ca-ok").strip() == "Da, sunt ale acestei firme"

@@ -25,7 +25,7 @@ import pytest
 from conftest import BAZA, Ecran, firma_noua, sql
 from e2e_bloc_a import _card
 from e2e_lot11_m import ANTET_MIGRARE, _incarca, _pas
-from e2e_lot12_migr import confirma_firma_fisierului
+from e2e_lot12_migr import confirma_firma_fisierului, alege_analitic_117
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from core.test_lot11_m_balanta_saga import fisier   # noqa: E402
@@ -53,6 +53,7 @@ def test_def_446_1_intrebarea_inlocuirii_nu_e_rosie_iar_tabelul_ramane_citibil(p
     _incarca(patron, "balanta_saga.csv", fisier("rulaje_precedente"), "#mig-salveaza-sold")
     pg.fill("#mig-data-bal", "2026-09-30")
     pg.select_option("#mig-metoda-stoc", "cantitativ_valoric")
+    alege_analitic_117(pg)
     pg.click("#mig-salveaza-sold")
     confirma_firma_fisierului(pg, ANTET_MIGRARE)    # antetul fișierului numește altă firmă (599): întâi confirmarea firmei
     pg.wait_for_function("() => document.body.innerText.includes('21 de conturi salvate')", timeout=30000)
@@ -61,6 +62,7 @@ def test_def_446_1_intrebarea_inlocuirii_nu_e_rosie_iar_tabelul_ramane_citibil(p
     try:
         _pas(patron, firma_f2, "Solduri ini")
         _incarca(patron, "balanta_saga_2.csv", fisier("total_rulaje"), "#mig-salveaza-sold")
+        alege_analitic_117(pg)
         pg.click("#mig-salveaza-sold")
         confirma_firma_fisierului(pg, ANTET_MIGRARE)    # antetul fișierului numește altă firmă (599): întâi confirmarea firmei
         pg.wait_for_function("() => (document.querySelector('#ca-ok') || {}).textContent === 'Înlocuiesc balanța'", timeout=10000)
