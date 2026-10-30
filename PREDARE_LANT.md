@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**30.10.2026 — COMANDA 15.0 executată pe ramura `lucru/lot15-0`: 712.1 (verificator: NU TRECE înainte, TRECE după), regulile noi în CLAUDE.md, poarta cu `scripts/poarta_forma.txt`. Se publică după poarta completă. Apoi OPRIRE; 15.1 abia după confirmarea lui Costin.**
+
 **30.10.2026 — COMANDA 14.3 (lotul 14, completare) EXECUTATĂ PÂNĂ LA POARTĂ; NEPUBLICATĂ încă.** Ramura `lucru/lot14-3` (worktree `/home/costin/iconta_lot14`). Rezolvate cu e2e + mutație + dovadă pe copie: 715.1, 716, 717, 719, 688.1, 595.1 (D2), 527.1 (D1); parțiale: 694.1 (a = aspect, lotul 15), 696.1 (fără e2e), 268.2 (activare la repornire); 718 „nu se aplică”; 687.1 amânat în lotul 15. D1 rulat pe producție (backup `iconta_v2_pre_lot14_3_d1_20261030_0028.dump`); referința F1–F5: amprenta `7865a79b…`. La publicare: backup, migrarea `core/migrare_cabinet_de_test.py --productie`, ff, post-commit, four-way. După publicare: OPRIRE și așteptare comanda 15.0 (înaintea lotului 15).
 
 **29.10.2026 — COMANDA 14.2 (lotul 14, completare) PUBLICATĂ pe `d88fa225408e202928c9619951fdc1a1063e6636`.** Poarta: completă (3 rulări roșii, fiecare 12.6xx s, cauze reparate pe fiecare) + compusă VERDE

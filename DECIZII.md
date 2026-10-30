@@ -24282,3 +24282,9 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - Referința F1–F5 rescrisă după D1 (balanță 117 -> 1171, luni noi cu rulaj) și după o factură emisă nouă pe F1 în 10/2026 (+100 + TVA 21; D394 10/2026 totalPlata_A 11045 -> 11145), care apare și cu codul publicat `d88fa225` (deci date, nu cod; autorul facturii nu e stabilit din registre — de raportat). Amprenta noii referințe: `7865a79bca7f2dcdf17b06ad0f1592d79eb1875529ed454b9c47c6a368fa3278`.
 - Teste puse la zi cu comportamentul decis (nu slăbite): e2e_lot6 / lot72 / lot10_principal (grupul „Datorate de firmă (…)” începe cu restanțele), cx6 (D390 al lunii prestării rămâne în listă ca restanță după termen), reev2 (regex pentru „restanță — termenul a fost”); clichete numite: rute montate 527 -> 528, apeluri repository 461 -> 463, nelegate pe element 37 -> 38, migrări de excludere 162 -> 163, excepția rutei `de-test`.
 - Durate măsurate: poarta scurtă (suita derivată + e2e atinse) 14.434 s; scanurile vizuale 1.646 s; clonarea firmelor de test 8 s; dovezile pe copie 53 s; 7 mutații e2e între 42 și 136 s fiecare.
+
+## Comanda 15.0 (30.10.2026)
+- Regulile 1–8 ale comenzii scrise în CLAUDE.md (§4 procesul pe deficiență, §5 ce rămâne în poartă, §8 modelul de raport A–G), înlocuind formele vechi.
+- 712.1: un cod numai din cifre cu cifra de control de CUI corectă se tratează ca românesc (varianta cea mai sigură pentru D300/D390/D394); risc cunoscut: un număr fiscal străin numeric care întâmplător trece controlul de CUI cere țara RO — mesajul spune cum se corectează.
+- Poarta: `scripts/poarta_forma.txt` listează 14 fișiere de teste de formă, excluse din pytest prin `--ignore` (nu șterse). Probele de prospețime (`-k proaspat`) rămân în poartă, pentru că 7 gărzi ale porții le cer în ordine; ele rulează în secunde.
+- Verificatorul a rulat testul adăugat de Code (nu un scenariu scris separat); prima rulare (înainte) și-a scris propriul scenariu.

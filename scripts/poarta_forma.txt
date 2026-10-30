@@ -1,0 +1,15 @@
+# Testele care verifică doar FORMA codului (CLAUDE.md §5, 30.10.2026): nu rulează în poarta lotului. Nu sunt șterse; se pot rula la cerere cu pytest.
+core/test_importuri_nefolosite.py
+core/test_graf_importuri.py
+core/test_plural_dupa_numar.py
+core/test_e2e_azi_acum.py
+core/test_clichete_generate.py
+core/test_capturi_numite.py
+core/test_predare_proaspata.py
+core/test_garzi_inventar.py
+core/test_registru_functionalitati.py
+core/test_ghid_registru_sincron.py
+core/test_scan_registru.py
+core/test_ancore_in_cod.py
+core/test_ancore_rute.py
+core/test_poarta_proaspat.py

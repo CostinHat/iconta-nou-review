@@ -173,8 +173,12 @@ def test_poarta_ruleaza_toata_suita_in_paralel_fara_selectie():
     assert len(linii) == 1, linii
     arg = linii[0].split(">")[0].split()[3:]
     assert arg[:1] == ["-q"] and arg.count("-n") == 1 and arg.count("--dist") == 1 and arg[arg.index("--dist") + 1] == "loadfile", arg
-    straine = [a for a in arg if a not in ("-q", "-n", '"$NW"', "--dist", "loadfile")]
+    # [30.10.2026, CLAUDE.md §5] singura excepție: lista scripts/poarta_forma.txt (teste de formă), prin `$IGN`
+    straine = [a for a in arg if a not in ("-q", "-n", '"$NW"', "--dist", "loadfile", "$IGN")]
     assert straine == [], "pytest-ul porții alege teste: %s" % straine
+    lista = [x.strip() for x in io.open(os.path.join(_RAD, "scripts", "poarta_forma.txt"), encoding="utf-8")
+             if x.strip() and not x.startswith("#")]
+    assert lista and all(_re.match(r"^core/test_\w+\.py$", x) and os.path.isfile(os.path.join(_RAD, x)) for x in lista), lista
 
 
 def test_plasa_porneste_numai_dupa_verdictul_pytest():

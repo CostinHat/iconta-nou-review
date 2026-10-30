@@ -104,10 +104,12 @@ if [ -d core ]; then
         rosu "probe de prospetime" "$RC_PROASPAT" $J/precommit_proaspat.log
     fi
 fi
+# [30.10.2026, CLAUDE.md §5] testele care verifica doar forma codului (scripts/poarta_forma.txt) nu ruleaza in poarta; nu sunt sterse
+IGN=$(grep -E '^core/test_' scripts/poarta_forma.txt 2>/dev/null | sed 's/^/--ignore=/' | tr '\n' ' ')
 NW=${POARTA_PROCESE:-3}
 T_PYTEST0=$(date +%s)
 echo "[poarta] pytest (suita intreaga, $NW procese in paralel; verificatorul si cifrele ruleaza in acelasi timp, plasa dupa)..."
-"$PY" -m pytest -q -n "$NW" --dist loadfile > $J/precommit_pytest.log 2>&1 &
+"$PY" -m pytest -q -n "$NW" --dist loadfile $IGN > $J/precommit_pytest.log 2>&1 &
 PID_PYTEST=$!
 RC_PYTEST=""
 asteapta_pytest() {
