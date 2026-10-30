@@ -38,18 +38,9 @@ _SLABIRI = {"skip", "skipif", "xfail", "importorskip"}
 _ASERTIUNI = {"raises", "fail", "warns"}
 #: [regula 3d] excepțiile motivate: {"<fișier>::<test>": "<motiv, cu decizia / deficiența numită>"}
 MOTIVATE = {
-    "core/test_lot14_2_595_1_d398_gri.py::test_d398_gri_cu_motiv_cand_oss_e_nu":
-        "schimbare decisă de Costin (comanda 14.3, D2): la răspunsul OSS „Nu” D398 nu mai e gri, ci dispare din lista tipurilor; regula o păzește "
-        "core/test_lot14_3_d2_oss.py::test_starea_oss_din_vector (și e2e `e2e_lot13_oss.py::test_def_595_oss_se_alege_in_date_firma`, pasul „Nu”)",
-    "core/test_lot14_2_595_1_d398_gri.py::test_d398_gri_si_cand_oss_nu_e_declarat_dar_nu_cand_e_da":
-        "schimbare decisă de Costin (comanda 14.3, D2): nedeclarat nu mai e gri și tăcut, ci „de lămurit” (activ, cu trimitere la Date firmă): "
-        "core/test_lot14_3_d2_oss.py::test_starea_oss_din_vector și e2e `e2e_lot14_2.py::test_def_595_1_d398_de_lamurit_cat_firma_nu_a_raspuns_la_oss`",
-    "core/test_lot14_2_595_1_d398_gri.py::test_d398_gri_si_fara_cod_romanesc_ca_inainte":
-        "mutat, nu scos (comanda 14.3, D2): regula veche (fără cod de TVA românesc D398 rămâne gri) e păzită de "
-        "core/test_lot14_3_d2_oss.py::test_d398_nu_mai_e_gri_pe_raspunsul_oss (ultima aserțiune), alături de noua regulă OSS",
-    "frontend_test/e2e/e2e_lot14_2.py::test_def_595_1_d398_e_inactiva_cat_firma_nu_a_raspuns_da_la_oss":
-        "redenumit și schimbat prin decizia lui Costin (comanda 14.3, D2): D398 fără răspuns OSS nu mai e inactivă, ci „de lămurit” (activă): "
-        "frontend_test/e2e/e2e_lot14_2.py::test_def_595_1_d398_de_lamurit_cat_firma_nu_a_raspuns_la_oss",
+    "scripts/githooks/poarta-suita::<colectare>":
+        "schimbare decisă de Costin (comanda 15.0, pct.6, CLAUDE.md §5): testele care verifică doar forma codului ies din rulare prin "
+        "`--ignore` din scripts/poarta_forma.txt (fără să fie șterse); garda: core/test_poarta_ordine.py::test_poarta_ruleaza_toata_suita_in_paralel_fara_selectie",
 }
 
 

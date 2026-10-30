@@ -164,7 +164,10 @@ _FISCAL = _re.compile(r"(?i)\b\w*(tva|cota|baza|impozit|cas|cass|net|brut|deduc|
 # COBORAT 1→0 pe 05.10.2026, tot fără reparație fiscală: instanța rămasă (`facturi_ecran.js`, `Date.now() + 30 * 864e5`)
 # avea drept „cotă” același `10` din `.toISOString().slice(0, 10)` de pe rând. Clasa DATA_UTC (DS cap.4 v2.68) a înlocuit
 # forma cu `dataIso(...)`, deci rândul nu mai poartă niciun literal de cotă.
-NUME_NEUTRE_CLICHET = 0
+#
+# URCAT 0→1 pe 30.10.2026 (comanda 15.0, 712.1), cu elementul numit: `tari_partener.js::cuiNumericValid` — cifra de control a CUI
+# (ponderi 7-5-3-2-1…, modulo 11), oglinda lui `core/identitate.valideaza_cui`; nu e valoare fiscală (cotă, plafon, termen).
+NUME_NEUTRE_CLICHET = 1
 
 
 # Cititorul e COMUN din 04.09.2026 (`core/cititor_js.py`). Copia care traia aici purta

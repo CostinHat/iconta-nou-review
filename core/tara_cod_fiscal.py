@@ -6,7 +6,7 @@ cifra de control de CUI nu spune țara: fără verdict."""
 import re
 
 from core.d390 import TARI_UE
-from core.identitate import valideaza_cui
+from core import identitate as _id
 
 _PREFIXE = set(TARI_UE) | {"RO"}
 _COD = re.compile(r"^([A-Z]{2})[0-9A-Z+*.\-]{2,}$")
@@ -18,7 +18,7 @@ def tara_din_cod(cui):
     m = _COD.match(c)
     if m and m.group(1) in _PREFIXE:
         return m.group(1)
-    if c.isdigit() and valideaza_cui(c)[0]:
+    if c.isdigit() and _id.valideaza_cui(c)[0]:
         return "RO"
     return None
 

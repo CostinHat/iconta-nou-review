@@ -288,7 +288,8 @@ def probleme_suita(surse=None):
     if len(linii) != 1:
         return ["poarta nu mai rulează suita întreagă în forma cunoscută: %s" % linii]
     rest = linii[0].split("--dist loadfile", 1)[1]
-    if not re.match(r"^\s*>", rest):
+    # [30.10.2026, CLAUDE.md §5] singura excepție: `$IGN`, lista scripts/poarta_forma.txt (garda ei: core/test_poarta_ordine.py)
+    if not re.match(r"^\s*(\$IGN\s*)?>", rest):
         rele.append("suita porții primește argumente în plus (o cale, -k, -m): %r" % rest)
     for f in ("pytest.ini", "tox.ini", "setup.cfg"):
         if _citeste(f, surse) is not None:
