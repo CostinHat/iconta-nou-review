@@ -9,6 +9,12 @@ import re
 
 from e2e_lot92 import AZI, _lei, _nir_form, _numerar, firma_cv, firma_cv_noua   # noqa: F401 — fixturile modulului
 
+
+def _azi():
+    """Ziua de ACUM, nu cea de la import: o rulare care trece de miezul nopții găsește în aplicație data nouă (poarta 15.G, 31.10.2026)."""
+    import datetime
+    return datetime.date.today()
+
 CUI_DANTE = "14399840"
 
 
@@ -46,7 +52,7 @@ def test_def_405_platile_nirului_fara_factura_sunt_oferite_si_nota_e_4091(patron
     _numerar(patron, firma_cv)
     _nir_dante(patron, firma_cv, "N405")
     pg = _plata_dante(patron, firma_cv, "66.55")
-    eticheta = "NIR nr N405 din %s" % AZI.strftime("%d.%m.%Y")
+    eticheta = "NIR nr N405 din %s" % _azi().strftime("%d.%m.%Y")
     pg.wait_for_selector("#c-niruri", timeout=15000)
     rand = " ".join(pg.inner_text("#c-facturi").split())
     patron.captura("nir_oferit")
@@ -94,7 +100,7 @@ def test_def_404_lipsa_neimputabila_trece_la_ajustarile_fiscale(patron, firma_cv
     pg.click("#cvi-salveaza")
     pg.wait_for_function("() => document.body.innerText.includes('a trecut la ajustările fiscale')", timeout=20000)
     t = " ".join(pg.inner_text("body").split())
-    trim = "T%d/%d" % ((AZI.month - 1) // 3 + 1, AZI.year)
+    trim = "T%d/%d" % ((_azi().month - 1) // 3 + 1, _azi().year)
     m = re.search(r"Suma de ([\d.]+,\d\d) lei a trecut la ajustările fiscale \(Registrul de evidență fiscală, rd\.33 — alte cheltuieli "
                   r"nedeductibile, %s\)" % re.escape(trim), t)
     patron.captura("inventar")
@@ -103,12 +109,12 @@ def test_def_404_lipsa_neimputabila_trece_la_ajustarile_fiscale(patron, firma_cv
     patron.firma(firma_cv["nume"])
     pg.click("#fa-regfiscal")
     pg.wait_for_selector("#rf-an", timeout=60000)
-    pg.fill("#rf-an", str(AZI.year))
+    pg.fill("#rf-an", str(_azi().year))
     pg.dispatch_event("#rf-an", "change")
     pg.wait_for_selector("#rf-ajustari table.fd-tabel tbody tr", timeout=60000)
     randuri = pg.eval_on_selector_all("#rf-ajustari table.fd-tabel tbody tr", "trs => trs.map(t => [...t.cells].map(c => c.innerText.trim()))")
     patron.captura()
-    zi = AZI.strftime("%d.%m.%Y")
+    zi = _azi().strftime("%d.%m.%Y")
     lipsa = [r for r in randuri if len(r) > 4 and "Lipsă neimputabilă" in r[3]]
     assert len(lipsa) == 1 and lipsa[0][:3] == [trim, "rd.33 — alte cheltuieli nedeductibile", "%s lei" % suma], randuri
     assert lipsa[0][3].startswith("Lipsă neimputabilă la inventarul din %s — %s: cheltuiala" % (zi, ARTICOL)), lipsa
