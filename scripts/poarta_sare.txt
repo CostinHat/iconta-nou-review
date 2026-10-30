@@ -1,0 +1,45 @@
+# Testele care NU rulează cât POARTA_SARE=1 (scripts/poarta.env). Comanda 15.G pct.3, 30.10.2026. Nu se șterg și nu se modifică; rulează
+# numai în poarta de noapte (scripts/poarta_completa.sh), informativ. Se adaugă aici și fișierele din scripts/poarta_forma.txt.
+# O linie = o cale sau un tipar (fnmatch) față de rădăcină; `proaspat` = orice test cu „proaspat” în numele nodului.
+core/test_poarta_fara_slabire.py
+core/test_poarta_ordine.py
+core/test_pozitii_validate.py
+core/test_predare_cifre.py
+core/test_clichete_generate.py
+core/test_amprente_suita.py
+core/test_garzi_inventar.py
+core/test_trasee.py
+core/test_deficiente.py
+core/test_lista3.py
+core/test_pagina_principala.py
+core/test_acoperire_vizuala.py
+core/test_incape_ecran.py
+core/test_text_ecran.py
+core/test_text_afisat_limbaj.py
+core/test_plural_dupa_numar.py
+core/test_e2e_azi_acum.py
+core/test_e2e_fara_date_fabricate.py
+core/test_fara_functii_noi.py
+core/test_importuri_nefolosite.py
+core/test_dependente_ramuri.py
+core/test_dependente_masurate.py
+core/test_refuz_spre_ecran.py
+core/test_p7_v2_scrieri.py
+core/test_p7_straturi.py
+core/test_core_fara_main.py
+# scanurile vizuale și de text
+core/test_scan_*.py
+core/test_*vizual*.py
+core/test_text_*.py
+core/test_garzi_pe_text.py
+core/test_infra_vizuala.py
+core/test_selecturi_ecrane.py
+core/test_harta_ecrane.py
+core/test_reguli_ecran.py
+core/test_ds_verificator.py
+core/test_lot13_ds_verificator.py
+# gărzile care cer unul din fișierele de mai sus sau lucrurile schimbate de poarta nouă (regula 3: „garda intră și ea pe listă”)
+core/test_poarta_lot.py
+core/test_poarta_scurta.py
+core/test_cifre_referinta_poarta.py
+core/test_curatenie.py

@@ -405,3 +405,14 @@ def _drepturi_comune_neschimbate(_drepturi_initiale):
     pune()
     yield
     pune()
+
+
+# [30.10.2026, comanda 15.G] marcajul global de sărire (scripts/poarta.env): același mecanism ca în conftest.py de la rădăcină
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "scripts"))
+import poarta_sare as _sare  # noqa: E402
+
+
+def pytest_ignore_collect(collection_path, config):
+    if _sare.sare_fisier(str(collection_path)):
+        return True
+    return None

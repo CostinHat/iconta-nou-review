@@ -67,14 +67,17 @@ După fiecare sarcină din lot se testează imediat codul atins și tot ce depin
 (scripts/poarta_scurta.py). Când derivarea nu e sigură, se rulează tot ce poate fi atins. JS/CSS atins:
 e2e-ul ecranelor atinse, uneltele vizuale și verificatorul.
 
-La închiderea lotului, poarta completă rulează o singură dată (scripts/poarta_lot.sh).
+Poarta implicită este scripts/poarta_lot.sh (regulă permanentă, comanda 15.G, 30.10.2026) și rulează numai: testele picate la
+ultima rulare, testele fișierelor atinse de la ultima publicare, scenariile deficiențelor, testele de nucleu fiscal și calcul
+(declarații, TVA, solduri, stocuri, salarii) și verificatorul. Durata se măsoară și se scrie la final. Pe roșu: se repară cauza și
+se rulează din nou poarta implicită (ea reia singură testele picate). Rularea completă (tot pytest + toată plasa e2e) este doar cea
+de noapte, scripts/poarta_completa.sh: pornește numai cu cheia ~/ghid_incoming/cheie_poarta_completa_<lot>.txt, pe care o creează
+numai comanda arhitectului; Code nu o rulează în timpul comenzilor și nu creează cheia. Marcajul global de sărire (POARTA_SARE=1 în
+scripts/poarta.env) ține în afara porții testele din scripts/poarta_sare.txt și scripts/poarta_forma.txt; nu se oprește decât la
+cererea arhitectului. Un test nou verifică sensul (de exemplu „există restanța D301 09/2026 la F3”), nu un șir de caractere literal;
+datele și sumele din teste trec prin aceleași funcții de format ca aplicația.
 
 Un test care a trecut deja pe exact același commit nu se mai rulează a doua oară.
-
-Dacă poarta pică: se repară cauza, apoi se rulează testele căzute și tot ce depinde de reparație. Poarta
-completă se reia numai dacă reparația a atins piese folosite în mai multe locuri sau dacă perimetrul
-ei nu e sigur. Verdictul pentru commitul reparat se compune din rularea completă anterioară plus
-rerularea țintită.
 
 Dacă poarta pică numai pe cifrele de referință F1–F5 și diferențele se explică prin datele de retest și
 prin codul lotului, Code actualizează referința, o notează în DECIZII și continuă. Cifrele neexplicate

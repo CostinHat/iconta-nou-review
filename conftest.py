@@ -88,6 +88,26 @@ _mediu.verifica(os.environ)
 os.environ.setdefault("ICONTA_FIRE_FUNDAL", "0")
 
 
+# [30.10.2026, comanda 15.G] marcajul global de sărire (scripts/poarta.env): fișierele din scripts/poarta_sare.txt și poarta_forma.txt și
+# testele „proaspat” nu rulează; nu sunt șterse, iar poarta de noapte (POARTA_SARE=0) le rulează.
+import sys as _sys  # noqa: E402
+_sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
+import poarta_sare as _sare  # noqa: E402
+
+
+def pytest_ignore_collect(collection_path, config):
+    if _sare.sare_fisier(str(collection_path)):
+        return True
+    return None
+
+
+def pytest_collection_modifyitems(config, items):
+    sarite = [i for i in items if _sare.sare_nod(i.nodeid)]
+    if sarite:
+        config.hook.pytest_deselected(items=sarite)
+        items[:] = [i for i in items if i not in sarite]
+
+
 def pytest_configure(config):
     # skip-urile raman VIZIBILE ca semnal, indiferent de flag-urile de pornire (echiv. -rs)
     rc = getattr(config.option, "reportchars", "") or ""

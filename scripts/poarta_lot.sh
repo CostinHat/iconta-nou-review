@@ -1,41 +1,22 @@
 #!/bin/sh
-# poarta_lot.sh — POARTA LOTULUI, la inchiderea lui, inaintea publicarii pe productie: rularea COMPLETA (implicit) sau cea COMPUSA
-# (`--compus`), dupa o rulare completa rosie.
-#
-# [15.10.2026, comanda Costin, verbatim in DECIZII „Poarta o dată pe lot”] „Poarta completă: o singură dată pe lot, la închiderea
-# lotului, înainte de publicarea pe producție.” Intre comenzi: numai `scripts/poarta_scurta.py`.
-# [23.10.2026, CLAUDE.md §5; DECIZII 23.10.2026 „Comanda 12.1”] „La închiderea lotului, poarta completă rulează o singură dată
-# (scripts/poarta_lot.sh). Un test care a trecut deja pe exact același commit nu se mai rulează a doua oară. Dacă poarta pică: se repară
-# cauza, apoi se rulează testele căzute și tot ce depinde de reparație. Poarta completă se reia numai dacă reparația a atins piese
-# folosite în mai multe locuri sau dacă perimetrul ei nu e sigur. Verdictul pentru commitul reparat se compune din rularea completă
-# anterioară plus rerularea țintită.”
-#
-# RULAREA COMPLETA (fara argumente): pe ramura lotului (worktree), cu arborele CURAT (HEAD = commitul lotului; pytest citeste arborele,
-# deci verdictul e despre commit), ruleaza `scripts/githooks/poarta-suita` (prospetime, pytest, verificator, cifre F1–F5, plasa e2e —
-# toate, si dupa una rosie; inregistrarea in `<git-common-dir>/poarta_rulari/<sha>.json`) si scrie verdictul in
-# `<git-common-dir>/poarta_verdicte.log`:   VERDE|ROSU <sha complet> <ramura> <data>
-# RULAREA COMPUSA (`--compus`): X = ultima rulare COMPLETA ROSIE de pe ramura (randul cu patru campuri); `scripts/poarta_scurta.py
-# --compus=X` reruleaza testele cazute in X + perimetrul reparatiei (`git diff X`), e2e-ul cazut + cel derivat, prospetimea, verificatorul
-# si cifrele F1–F5, sau REFUZA (cod 2, niciun verdict) cand compunerea nu e sigura — atunci se ruleaza poarta completa. Verdictul:
-#                                    VERDE|ROSU <sha complet> <ramura> <data> compus:<X>
-# `scripts/githooks/reference-transaction` muta `main` numai la un SHA cu `VERDE <sha>` aici (complet sau compus; CLAUDE.md §6).
-# REFUZA, in ambele moduri: pe `main` / fara ramura; arbore murdar (modificari sau fisiere noi); un SHA deja VERDE (nimic de aflat); un
-# SHA deja ROSU (regula 3d, comanda Costin 11.2, 22.10.2026: pe rosu se repara codul — commit nou — si se ruleaza din nou, pana la verde;
-# fara limita de rulari). Compusul, in plus: fara rulare completa ROSIE pe ramura. Completa: ~70 de minute, in fundal.
-# Gard: core/test_poarta_lot.py (depozit temporar) + core/test_poarta_ordine.py (singurul care cheama `poarta-suita`).
-MOD=completa
-case "$1" in
-    "") ;;
-    --compus) MOD=compus ;;
-    *) echo "[poarta lot] REFUZ: argument necunoscut ${1} (singurul admis: --compus)."; exit 1 ;;
-esac
+# poarta_lot.sh — POARTA IMPLICITĂ (comanda 15.G, 30.10.2026). Mecanică: rulează NUMAI
+#   1. testele picate la ultima rulare (pytest --lf; plasa e2e: fișierele din poarta_e2e_cazute.txt),
+#   2. testele fișierelor atinse de la ultima publicare (scripts/poarta_selectie.py),
+#   3. scenariile deficiențelor (e2e-urile numerotate, core/test_lot*scenariu*),
+#   4. nucleul fiscal și de calcul (declarații, TVA, solduri, stocuri, salarii),
+#   5. verificatorul (verificator_conformitate.py).
+# Nimic altceva. Marcajul POARTA_SARE (scripts/poarta.env) sare peste testele din scripts/poarta_sare.txt și poarta_forma.txt.
+# Rularea completă (tot pytest + toată plasa e2e) există numai ca scripts/poarta_completa.sh, cu cheie de la arhitect.
+# Refuză: pe `main` / fără ramură; arbore murdar; un SHA deja VERDE sau ROȘU. Scrie `VERDE|ROSU <sha> <ramura> <data>` în
+# `<git-common-dir>/poarta_verdicte.log` (îl cere scripts/githooks/reference-transaction la mutarea lui `main`) și durata la final.
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
+[ -n "$1" ] && { echo "[poarta lot] REFUZ: poarta implicita nu are argumente (primit: $1)."; exit 1; }
 COMUN=$(git rev-parse --path-format=absolute --git-common-dir) || exit 1
 JV="$COMUN/poarta_verdicte.log"
 RAM=$(git symbolic-ref --short HEAD 2>/dev/null)
 if [ -z "$RAM" ] || [ "$RAM" = "main" ]; then
-    echo "[poarta lot] REFUZ: poarta lotului ruleaza pe ramura lotului, nu pe main / HEAD detasat (acum: ${RAM:-detasat})."
+    echo "[poarta lot] REFUZ: poarta ruleaza pe ramura lotului, nu pe main / HEAD detasat (acum: ${RAM:-detasat})."
     exit 1
 fi
 MURDAR=$(git status --porcelain --untracked-files=normal)
@@ -45,44 +26,78 @@ if [ -n "$MURDAR" ]; then
     exit 1
 fi
 SHA=$(git rev-parse HEAD)
-if grep -q "^VERDE $SHA " "$JV" 2>/dev/null; then
-    echo "[poarta lot] REFUZ: $SHA are deja poarta VERDE — o a doua rulare pe acelasi commit nu afla nimic nou."
-    exit 1
-fi
-if grep -q "^ROSU $SHA " "$JV" 2>/dev/null; then
-    echo "[poarta lot] REFUZ: $SHA are deja poarta ROSIE — regula 3d (comanda Costin 11.2): pe rosu se REPARA CODUL (commit nou) si se ruleaza din nou; aceeasi rulare pe acelasi commit nu repara nimic (si ar trece un test instabil pe noroc)."
-    exit 1
-fi
-N=$(awk -v r="$RAM" '$3 == r' "$JV" 2>/dev/null | wc -l)
+grep -q "^VERDE $SHA " "$JV" 2>/dev/null && { echo "[poarta lot] REFUZ: $SHA are deja poarta VERDE."; exit 1; }
+grep -q "^ROSU $SHA " "$JV" 2>/dev/null && { echo "[poarta lot] REFUZ: $SHA are deja poarta ROSIE — pe rosu se repara codul (commit nou) si se ruleaza din nou."; exit 1; }
+PY=./venv/bin/python
+[ -x "$PY" ] || PY=python3
+J=${POARTA_JURNALE:-/tmp}
+CAPTURI="$J/e2e_poarta_capturi"
+CAZUTE_E2E="$COMUN/poarta_e2e_cazute.txt"
+NW=${POARTA_PROCESE:-3}
+export POARTA_SARE=1
+ROSII=""
+rosu() { ROSII="$ROSII $1"; echo "[poarta lot] ROSU: $1"; }
 T0=$(date +%s)
-if [ "$MOD" = "compus" ]; then
-    X=$(awk -v r="$RAM" '$1 == "ROSU" && $3 == r && NF == 4 { x = $2 } END { print x }' "$JV" 2>/dev/null)
-    if [ -z "$X" ]; then
-        echo "[poarta lot] REFUZ: --compus cere o rulare COMPLETA ROSIE anterioara pe $RAM — nu exista; ruleaza poarta completa (sh scripts/poarta_lot.sh)."
-        exit 1
-    fi
-    PY=./venv/bin/python
-    [ -x "$PY" ] || PY=python3
-    echo "[poarta lot] rularea $((N + 1)) pe $RAM, commit $SHA: COMPUSA din rularea completa rosie a lui $X"
-    "$PY" scripts/poarta_scurta.py --compus="$X"
+echo "[poarta lot] $RAM, commit $SHA: poarta implicita (marcaj POARTA_SARE=1)"
+
+"$PY" scripts/poarta_selectie.py > "$J/poarta_selectie.json" || { echo "[poarta lot] selectia a esuat"; exit 1; }
+"$PY" - "$J/poarta_selectie.json" "$J" <<'PYE'
+import json, sys
+d = json.load(open(sys.argv[1], encoding="utf-8"))
+open(sys.argv[2] + "/poarta_pytest_fisiere.txt", "w").write("\n".join(d["pytest"]) + "\n")
+open(sys.argv[2] + "/poarta_e2e_fisiere.txt", "w").write("\n".join(d["e2e"]) + "\n")
+print("[poarta lot] selectie: %d fisiere pytest, %d fisiere e2e; perimetru incert (nu extinde): %s" % (len(d["pytest"]), len(d["e2e"]), d["incerte"] or "nimic"))
+PYE
+
+# verificatorul ruleaza cat ruleaza pytest (nu atinge baza de test)
+T_VERIF0=$(date +%s)
+"$PY" verificator_conformitate.py > "$J/poarta_verificator.log" 2>&1 &
+PID_VERIF=$!
+
+T_P0=$(date +%s)
+"$PY" -m pytest -q --lf --lfnf=none > "$J/poarta_pytest_lf.log" 2>&1
+RC=$?
+case "$RC" in 0|5) ;; *) rosu "pytest --lf (picate la ultima rulare)" ;; esac
+tail -1 "$J/poarta_pytest_lf.log"
+xargs "$PY" -m pytest -q -n "$NW" --dist loadfile < "$J/poarta_pytest_fisiere.txt" > "$J/poarta_pytest.log" 2>&1
+RC=$?
+[ "$RC" -ne 0 ] && rosu "pytest (atinse + nucleu + scenarii)"
+tail -1 "$J/poarta_pytest.log"
+T_PYTEST=$(( $(date +%s) - T_P0 ))
+
+wait "$PID_VERIF"
+T_VERIF=$(( $(date +%s) - T_VERIF0 ))
+TOT=$(grep -i "TOTAL" "$J/poarta_verificator.log")
+echo "[poarta lot] verificator: $TOT"
+case "$TOT" in *"TOTAL: 0"*) ;; *) rosu "verificator" ;; esac
+
+# plasa e2e: scenariile + fisierele atinse + cele cazute la rularea anterioara; dupa pytest (aceeasi baza de test)
+E2E="$(cat "$J/poarta_e2e_fisiere.txt")"
+[ -f "$CAZUTE_E2E" ] && E2E="$E2E
+$(cat "$CAZUTE_E2E")"
+ARG=""
+for f in $(echo "$E2E" | sort -u); do [ -n "$f" ] && ARG="$ARG --doar=$f"; done
+T_E0=$(date +%s)
+rm -f "$CAPTURI/pytest.log"
+if [ -n "$ARG" ]; then
+    # shellcheck disable=SC2086
+    "$PY" scripts/e2e_poarta.py $ARG "$CAPTURI" > "$J/poarta_e2e.log" 2>&1
     RC=$?
-    case "$RC" in
-        0|1) ;;
-        *) echo "[poarta lot] compusul n-a dat verdict (exit $RC) — niciun rand scris; ruleaza poarta completa (sh scripts/poarta_lot.sh)."
-           exit "$RC" ;;
-    esac
-    SUFIX=" compus:$X"
-else
-    echo "[poarta lot] rularea $((N + 1)) pe $RAM, commit $SHA (regula 3d: pana la verde, fara limita de rulari)"
-    sh scripts/githooks/poarta-suita
-    RC=$?
-    SUFIX=""
+    tail -1 "$J/poarta_e2e.log"
+    [ "$RC" -ne 0 ] && rosu "plasa e2e"
+    # cazutele plasei raman pentru urmatoarea rulare (echivalentul lui --lf)
+    grep -hE "^(FAILED|ERROR) " "$CAPTURI/pytest.log" "$J/poarta_e2e.log" 2>/dev/null | sed -E 's#^(FAILED|ERROR) ([^: ]*/)?([^:/ ]+\.py).*#\3#' | grep "\.py$" | sort -u > "$CAZUTE_E2E"
+    [ "$RC" -eq 0 ] && : > "$CAZUTE_E2E"
 fi
-if [ "$(git rev-parse HEAD)" != "$SHA" ]; then
-    echo "[poarta lot] HEAD s-a mutat cat a rulat poarta — verdictul nu mai e despre $SHA."
-    RC=1
+T_E2E=$(( $(date +%s) - T_E0 ))
+
+if [ "$(git rev-parse HEAD)" != "$SHA" ] || [ -n "$(git diff --name-only)" ]; then
+    echo "[poarta lot] arborele/HEAD s-au schimbat cat a rulat poarta — verdictul nu mai e despre $SHA."
+    rosu "arbore schimbat"
 fi
-if [ "$RC" -eq 0 ]; then V=VERDE; else V=ROSU; fi
-echo "$V $SHA $RAM $(date -Is)$SUFIX" >> "$JV"
-echo "[poarta lot] $V $SHA ($RAM${SUFIX}) -> $JV · durata $(( $(date +%s) - T0 ))s"
-exit $RC
+DUR="pytest ${T_PYTEST}s (verificator ${T_VERIF}s simultan) · plasa e2e ${T_E2E}s · total $(( $(date +%s) - T0 ))s"
+if [ -z "$ROSII" ]; then V=VERDE; RCF=0; else V=ROSU; RCF=1; fi
+echo "$V $SHA $RAM $(date -Is)" >> "$JV"
+echo "    DURATE: $(date -Is) $V ·$ROSII · poarta implicita · $DUR" >> "$ROOT/.poarta_jurnal.log"
+echo "[poarta lot] $V $SHA ($RAM) -> $JV · $DUR"
+exit $RCF

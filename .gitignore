@@ -28,6 +28,7 @@ uvicorn.log
 
 # secrete (sunt in ~/.iconta/ oricum, dar exclud preventiv)
 *.env
+!scripts/poarta.env
 api_keys.env
 db.env
 *.conf
