@@ -149,6 +149,27 @@ def test_def_712_1_cod_verificat_fara_prefix_tara_diferita_opreste_emiterea(patr
     pg.wait_for_function("() => document.body.innerText.includes('nu se potrivește cu codul fiscal')", timeout=60000)
     assert sql('SELECT count(*) FROM "%s".facturi' % s)[0][0] == inainte, "factura s-a emis cu țara nepotrivită"
 
+
+def test_def_723_cardurile_se_recalculeaza_singure_dupa_repornire(patron, firma_712):
+    """723. După o repornire cu cod nou toate rezumatele firmelor sunt învechite (epocă veche). Fără nicio acțiune a contabilului, cel mult 5
+    minute mai târziu, lucrătorul din aplicație le recalculează: cardul Control fiscal nu mai are firma „în recalculare”, iar cardul Termene
+    nu mai spune „nu au putut fi evaluate”. Epoca veche se pune direct în bază (aceeași stare ca după o publicare); nicio scriere pe ecran.
+    MUTAȚIA: `porneste_lucratorul_aplicatiei` scos din pornirea aplicației -> firma rămâne „în recalculare” -> ROȘU."""
+    f = firma_712
+    pregateste_firma(patron, f)
+    time.sleep(20)   # recalcularea pornită de scrierile pregătirii se termină; de aici încolo nicio scriere pe ecran
+    sql("UPDATE public.firma_rezumat SET epoca = 'cod-vechi' WHERE tenant_id = %d" % f["tenant_id"])
+    t0 = time.time()
+    stare = None
+    while time.time() - t0 < 330:
+        r = _ok(_api(patron, "GET", "/control-fiscal"), "Control fiscal")
+        x = next((y for y in (r.get("firme") or []) if y["tenant_id"] == f["tenant_id"]), None)
+        stare = (x or {}).get("prospetime", {}).get("stare")
+        if stare == "curent":
+            break
+        time.sleep(10)
+    assert stare == "curent", "după 5 minute firma e încă %r (în recalculare)" % stare
+
 # ── 527.1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 BALANTA_117 = (
     "Balanţă de verificare analitică;;;;;;;;\n"

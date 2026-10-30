@@ -12,7 +12,7 @@ import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataA
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
-import { optiuniTara, taraDinCui } from "./tari_partener.js?v=defa2c5990";
+import { optiuniTara, taraDinCui } from "./tari_partener.js?v=47a26608a6";
 import { campuriMf, pornesteMf } from "./mf_din_factura.js?v=de15131629";   // [lotul 13, 601] mijlocul fix de pe linia de imobilizare   // [lotul 12, C160] țara clientului pe șablonul facturii recurente
 
 // [deficiența 418c, clasa 410, DS cap.27] după un act reușit, confirmarea rămâne pe ecran și drumul înapoi e un buton — nu o navigare

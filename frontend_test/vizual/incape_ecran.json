@@ -1,5 +1,5 @@
 {
- "ui_hash": "d8e759d72aa14219",
+ "ui_hash": "dcf46734dcc214d9",
  "rezolutii": [
   "1920x1080",
   "1366x768"
@@ -22,12 +22,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 10482
+      "depasire": 9664
      }
     ],
     "zona_h": 746,
-    "zona_cont": 11228,
-    "zona_depasire": 10482,
+    "zona_cont": 10410,
+    "zona_depasire": 9664,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    },
@@ -47,12 +47,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 10794
+      "depasire": 9976
      }
     ],
     "zona_h": 434,
-    "zona_cont": 11228,
-    "zona_depasire": 10794,
+    "zona_cont": 10410,
+    "zona_depasire": 9976,
     "titlu": "Supervizor",
     "verdict": "ok-tabel"
    }
@@ -2278,12 +2278,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 1616
+      "depasire": 1540
      }
     ],
     "zona_h": 785,
-    "zona_cont": 2401,
-    "zona_depasire": 1616,
+    "zona_cont": 2325,
+    "zona_depasire": 1540,
     "titlu": "Analytics public — ultimele 30 de zile",
     "verdict": "ok-tabel"
    },
@@ -2303,12 +2303,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 1928
+      "depasire": 1852
      }
     ],
     "zona_h": 473,
-    "zona_cont": 2401,
-    "zona_depasire": 1928,
+    "zona_cont": 2325,
+    "zona_depasire": 1852,
     "titlu": "Analytics public — ultimele 30 de zile",
     "verdict": "ok-tabel"
    }
@@ -2330,12 +2330,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 4033
+      "depasire": 4381
      }
     ],
     "zona_h": 819,
-    "zona_cont": 4852,
-    "zona_depasire": 4033,
+    "zona_cont": 5200,
+    "zona_depasire": 4381,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    },
@@ -2355,12 +2355,12 @@
       "cls": "zona-derulare",
       "id": "",
       "tabel": true,
-      "depasire": 4345
+      "depasire": 4693
      }
     ],
     "zona_h": 507,
-    "zona_cont": 4852,
-    "zona_depasire": 4345,
+    "zona_cont": 5200,
+    "zona_depasire": 4693,
     "titlu": "Sănătate server",
     "verdict": "ok-tabel"
    }
