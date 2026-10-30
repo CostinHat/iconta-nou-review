@@ -115,6 +115,40 @@ def test_def_712_tara_urmeaza_codul_fiscal_al_clientului(patron, firma_712):
     pg.wait_for_function("() => !document.querySelector('#em-cui-stare').innerText.includes('nu se potrivește')", timeout=10000)
 
 
+
+def test_def_712_1_cod_verificat_fara_prefix_tara_diferita_opreste_emiterea(patron, firma_712):
+    """712.1 (scenariul verificatorului independent). Emite factură -> DANTE, cod 14399840 fără „RO”, „Verifică” (ANAF simulat al plasei): țara
+    devine România -> o schimb în Germania: apare motivul sub câmpul codului; „Emite factură” e refuzat cu același motiv; nicio factură nouă."""
+    f = firma_712
+    pregateste_firma(patron, f)
+    s = f["schema"]
+    inainte = sql('SELECT count(*) FROM "%s".facturi' % s)[0][0]
+    _deschide_emiterea(patron, f["nume"])
+    pg = patron.pg
+    pg.fill("#em-cui", "14399840")
+    pg.click("#em-verifica")
+    pg.wait_for_function("() => document.querySelector('#em-verifica').textContent === 'Verifică'", timeout=30000)
+    assert pg.input_value("#em-tara") == "RO"
+    pg.select_option("#em-tara", "DE")
+    pg.wait_for_function("() => document.querySelector('#em-cui-stare').innerText.includes('nu se potrivește')", timeout=10000)
+    motiv = " ".join(pg.inner_text("#em-cui-stare").split())
+    assert "14399840" in motiv and "care e al țării RO" in motiv, motiv
+    if not pg.input_value("#em-adresa"):
+        pg.fill("#em-adresa", "Str. Proba 1")
+    if not pg.input_value("#em-oras"):
+        pg.fill("#em-oras", "Berlin")
+    pg.fill("#em-data", AZI.isoformat())
+    pg.fill("#em-l0-descriere", "Servicii de consultanta")
+    pg.wait_for_selector("#em-l0-cota", timeout=20000)
+    pg.select_option("#em-l0-cota", "21")
+    pg.fill("#em-l0-cantitate", "1")
+    pg.fill("#em-l0-pret_unitar", "100")
+    pg.fill("#em-l0-um", "ora")
+    pg.wait_for_function("() => !document.querySelector('#em-emite').disabled", timeout=20000)
+    pg.click("#em-emite")
+    pg.wait_for_function("() => document.body.innerText.includes('nu se potrivește cu codul fiscal')", timeout=60000)
+    assert sql('SELECT count(*) FROM "%s".facturi' % s)[0][0] == inainte, "factura s-a emis cu țara nepotrivită"
+
 # ── 527.1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 BALANTA_117 = (
     "Balanţă de verificare analitică;;;;;;;;\n"

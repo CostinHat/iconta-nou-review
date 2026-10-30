@@ -30,12 +30,21 @@ export function taraDinCui(cui) {
   return /^[A-Z]{2}/.test(c) && (TARI_UE_JS[pfx] || TARI_NONUE_JS[pfx]) ? pfx : null;
 }
 
+/** [712.1] CUI românesc numeric valid (2-10 cifre, cifra de control; oglinda `core/identitate.valideaza_cui`). */
+function cuiNumericValid(c) {
+  if (!/^\d{2,10}$/.test(c)) return false;
+  const corp = c.slice(0, -1).padStart(9, "0"), cheie = [7, 5, 3, 2, 1, 7, 5, 3, 2];
+  let s = 0;
+  for (let i = 0; i < 9; i++) s += Number(corp[i]) * cheie[i];
+  return ((s * 10) % 11) % 10 === Number(c.slice(-1));
+}
+
 /** [712, 14.2] Motivul când țara aleasă nu e a codului fiscal (același verdict ca `core/tara_cod_fiscal.py`, care oprește emiterea):
- *  prefixul „RO” sau al unui stat al Uniunii; un cod numai din cifre nu spune țara -> null. */
+ *  prefixul „RO” sau al unui stat al Uniunii; [712.1] un cod numai din cifre, cu cifra de control de CUI, e al României. */
 export function nepotrivireTara(cui, tara) {
   const c = (cui || "").replace(/\s+/g, "").toUpperCase();
   const m = /^([A-Z]{2})[0-9A-Z+*.\-]{2,}$/.exec(c);
-  const dinCod = m && (m[1] === "RO" || TARI_UE_JS[m[1]]) ? m[1] : null;
+  const dinCod = m && (m[1] === "RO" || TARI_UE_JS[m[1]]) ? m[1] : (cuiNumericValid(c) ? "RO" : null);
   const aleasa = (tara || "RO").toUpperCase();
   return dinCod && dinCod !== aleasa
     ? `Țara partenerului (${aleasa}) nu se potrivește cu codul fiscal ${c}, care e al țării ${dinCod}. Alege țara ${dinCod} sau corectează codul fiscal.`

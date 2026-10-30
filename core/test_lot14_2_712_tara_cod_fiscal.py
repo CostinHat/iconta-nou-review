@@ -6,10 +6,10 @@ from core.test_lot11_t import conn_t  # noqa: F401 — fixtura schemei sintetice
 
 
 @pytest.mark.parametrize("cui,tara,ok", [
-    ("RO14399840", "RO", True), ("14399840", "RO", True), ("14399840", "IE", True),   # numai cifre: fără verdict
+    ("RO14399840", "RO", True), ("14399840", "RO", True), ("14399840", "IE", False),   # [712.1] CUI numeric valid = România
     ("RO14399840", "IE", False), ("ro 14399840", "DE", False),
     ("DE123456789", "DE", True), ("DE123456789", "RO", False), ("EL123456789", "EL", True), ("IE6388047V", "IE", True),
-    ("IE6388047V", "RO", False), ("US12345", "RO", True),                               # stat în afara Uniunii: fără verdict
+    ("IE6388047V", "RO", False), ("US12345", "RO", True), ("14399841", "DE", True),                            # stat în afara Uniunii: fără verdict
 ])
 def test_tara_urmeaza_codul(cui, tara, ok):
     assert (T.nepotrivire(cui, tara) is None) is ok, (cui, tara, T.nepotrivire(cui, tara))

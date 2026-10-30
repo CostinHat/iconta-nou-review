@@ -1,6 +1,6 @@
 # CLAUDE.md — Regulile permanente ale lui Code pe iConta
 
-Versiune: 29.10.2026. Acest fișier e citit automat la fiecare pornire și după fiecare /clear.
+Versiune: 30.10.2026. Acest fișier e citit automat la fiecare pornire și după fiecare /clear.
 Este SINGURA sursă de reguli de lucru pentru Code. Orice regulă de proces care nu e aici e radiată,
 oriunde ar fi scrisă (vechiul CLAUDE.md, PLAN_LUCRU.md, PREDARE_LANT.md, DECIZII.md, memoria permanentă,
 comenzi vechi). DECIZII.md rămâne istoric (de ce s-a decis), nu normă.
@@ -34,7 +34,7 @@ rezolvată și rulează permanent în poartă. Pilotul e atins când scenariul e
 Lotul e unitatea de lucru, de publicare și de raport. Comenzile poartă numărul lotului (12.1, 12.2…).
 Code duce lotul până la capăt și NU se oprește sub niciun motiv înainte de publicarea lui (regulă permanentă a lui
 Costin, 29.10.2026): ce nu poate rezolva singur trece în raport și continuă cu restul; deciziile de pe parcurs le ia pe
-varianta cea mai sigură și le listează în raport, la „Decizii luate”; nu cere decizii pe parcurs. Singura oprire permisă
+varianta cea mai sigură și le listează în raport, la E (Abateri); nu cere decizii pe parcurs. Singura oprire permisă
 înainte de publicare este un risc pentru producție (pierdere de date, aplicația căzută), cu motivul scris. Nu se trece la
 nimic din afara comenzii (nici agendă, nici fir intern, nici „următorul pas din listă”). Când lotul e gata: poartă
 (pe roșu: repară și reia, nu se publică niciodată pe roșu), backup, publicare, raport, apoi oprire.
@@ -43,8 +43,21 @@ nimic din afara comenzii (nici agendă, nici fir intern, nici „următorul pas 
 
 Fiecare deficiență are un număr pe viață, din DEFICIENTE.md: numerele simple sunt ale lui Costin,
 cele găsite de Code au prefixul C (următorul C liber din DEFICIENTE.md). Orice deficiență găsită de Code
-intră în raport, cu numărul ei, cu ce a găsit, ce a făcut și dovada; nu rămâne doar în registrele lui. „Rezolvată” înseamnă dovadă pe ecran, inclusiv pe documentele create înainte de
-reparație, plus test automat de capăt la capăt care rămâne permanent în poartă.
+intră în raport, cu numărul ei, cu ce a găsit și ce a făcut; nu rămâne doar în registrele lui.
+
+Procesul pe fiecare deficiență primită (regulă permanentă, 30.10.2026; motiv: deficiențe raportate „rezolvat” au picat la retestul
+lui Costin, pentru că testele lui Code îi confirmau propria interpretare — dovada nu mai vine de la Code):
+1. Înainte de orice modificare, Code scrie într-o frază cum a înțeles deficiența și ce rezultat urmărește. Fraza intră în raport, neschimbată.
+2. Scenariul deficienței (textul din comandă) se dă unui verificator independent: un subagent nou (Sonnet 5.5) al cărui prompt este
+   exact textul scenariului plus instrucțiunea fixă, nimic altceva — nu vede modificările, notele sau testele lui Code. Instrucțiunea fixă:
+   „Rulează scenariul de mai jos în aplicație, pe mediul de test, exact cum e scris, cu uneltele de capăt la capăt existente. Nu modifici
+   cod. Răspunzi doar cu: TRECE sau NU TRECE, pașii făcuți, ce ai văzut la fiecare pas, capturile de ecran, și orice abatere de la
+   scenariu.” Rulează înainte de reparație (trebuie NU TRECE; altfel deficiența e „nereprodusă” și nu se repară nimic în locul ei) și
+   după reparație, cu un subagent nou de fiecare dată. Răspunsul lui intră în raport cuvânt cu cuvânt.
+3. Se repară cauza oriunde se aplică aceeași regulă, nu doar în cazul din scenariu, iar locurile atinse se listează.
+4. Cel mult două runde pe o deficiență. Dacă după a doua tot NU TRECE, modificările ei se anulează și deficiența se raportează
+   nerezolvată, cu motivul. Nu blochează publicarea celorlalte.
+5. „Rezolvat” înseamnă doar TRECE de la verificator. Testele lui Code nu sunt dovadă. Scenariul deficienței rămâne test permanent.
 
 ## 5. Testarea
 
@@ -67,9 +80,13 @@ Dacă poarta pică numai pe cifrele de referință F1–F5 și diferențele se e
 prin codul lotului, Code actualizează referința, o notează în DECIZII și continuă. Cifrele neexplicate
 trec în raport.
 
-Testele nu se slăbesc ca să treacă. Un test se scoate numai pe dovadă (duplicat, funcție scoasă, gardă
-care nu poate cădea), iar raportul spune care și de ce. Durata fiecărei părți a porții se măsoară și se
-raportează.
+Testele nu se slăbesc ca să treacă. Durata fiecărei părți a porții se măsoară și se raportează.
+
+Ce rămâne în poartă (regulă permanentă, 30.10.2026): un test rămâne dacă verifică o cifră, o dată, o regulă fiscală, un lucru salvat
+sau ce vede contabilul pe ecran. Iese din rulare (fără să fie șters) dacă verifică doar forma codului: nume, importuri, funcții,
+plural, texte „azi/acum”, registre generate, capturi de referință, structuri de fișiere. Scenariile deficiențelor rămân teste
+permanente. Registrele generate și capturile de referință se refac o singură dată pe lot, la publicare. Un test rămas care pică se
+repară; un test scos care ar fi picat nu e motiv să fie pus la loc. Code nu adaugă verificări din proprie inițiativă.
 
 Testele grele (suita, poarta, e2e, uneltele vizuale, verificatorul) rulează una după alta, niciodată
 în paralel: serverul e și producția. Subagenții lucrează în paralel numai pe fișiere diferite și rulează
@@ -93,15 +110,18 @@ rapoarte, ZIP-uri, probe sau chat.
 
 ## 8. Raportul de lot
 
-În această ordine:
-1. Verdict: publicat sau nu, commitul publicat.
-2. Fiecare număr din comandă, punctual: rezolvat / nerezolvat, dovada, testul.
-3. Deficiențele noi găsite de Code, numerotate.
-4. Ce nu s-a putut face și de ce.
-5. Deciziile cerute lui Costin (pentru o decizie de produs, Code alege între timp varianta cea mai sigură
-   pentru contabil și continuă).
-6. Operațiile rulate, cu durata exactă măsurată a fiecăreia (fără estimări dinainte).
-7. Publicarea: four-way, backup, calea exactă a ZIP-ului cu tot ce s-a schimbat în lot.
+Modelul (regulă permanentă, 30.10.2026), obligatoriu la fiecare comandă, în această ordine, fără alte secțiuni:
+A. Rezultat: commitul publicat, backupul, calea ZIP-ului; câte deficiențe primite, câte TRECE, câte NU TRECE, câte nereproduse.
+B. Tabelul deficiențelor, un rând pe număr: numărul; fraza de la §4 punctul 1; reprodusă înainte (da/nu); cauza, într-o frază; locurile
+   atinse; verdictul verificatorului după (TRECE / NU TRECE / nereprodusă); runde; durata măsurată.
+C. Timp măsurat, pe comandă: de la pornire la „OPRIT”; pe reproducere, reparație, verificare, poartă, publicare; cel mai lung pas și de ce.
+D. Poarta: durata; câte teste au rulat; testele picate, fiecare cu „greșeală reală” sau „test de reparat”; verificări adăugate sau
+   scoase, cu motivul.
+E. Abateri de la comandă: orice s-a făcut în plus sau altfel decât scria, cu motivul; deciziile luate pe varianta cea mai sigură.
+F. Ce a lipsit din comandă sau din scenarii ca să fi mers mai repede sau mai sigur (o frază pe punct; „nimic” e un răspuns valid).
+G. Răspunsurile verificatorului, cuvânt cu cuvânt, ca anexă.
+Nimic altceva: fără rezumate ale propriilor teste, fără planuri de viitor, fără estimări. Pentru o decizie de produs, Code alege între
+timp varianta cea mai sigură pentru contabil și o listează la E.
 
 Registre obligatorii la fiecare lot: DEFICIENTE.md, DECIZII.md (adăugare, nu rescriere), PREDARE_LANT.md
 (starea curentă). Celelalte registre se ating doar când lotul schimbă ce descriu.
