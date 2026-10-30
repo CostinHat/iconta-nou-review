@@ -46,13 +46,13 @@ def termene_firma(vector, are_salariati, depuse, azi=None, *, d390_fapt=None, d1
     """
     azi = azi or azi_ro()   # [fus] fereastra termenelor decide ce apare -> zi RO, robust la OS TZ
     # [deficiența 300, 17.10.2026] D112 din FAPT (salariat activ în lună), ca semaforul — nu din „are salariați” azi aplicat oricărei luni
-    def _datorate(jos, fapt_admis):
-        rez = cf.obligatii_datorate(vector, are_salariati, azi, jos=jos, sus_zile=ORIZONT_ZILE, d390_fapt=d390_fapt, d112_fapt=d112_fapt,
+    def _datorate(limita, fapt_admis):
+        rez = cf.obligatii_datorate(vector, are_salariati, azi, jos=limita, sus_zile=ORIZONT_ZILE, d390_fapt=d390_fapt, d112_fapt=d112_fapt,
                                     d390_luni_neplatitor=d390_luni_neplatitor)
         out = list(rez["datorate"])
         if declaratii_fapt is not None:   # [lotul 13, 538 / 591] D301 / D205 din operațiile înregistrate, pe aceeași fereastră
             vazute = {(d["tip"], d["an"], d["luna"]) for d in out}
-            out += [d for d in (declaratii_fapt(jos, ORIZONT_ZILE) or {}).get("datorate", [])
+            out += [d for d in (declaratii_fapt(limita, ORIZONT_ZILE) or {}).get("datorate", [])
                     if (d["tip"], d["an"], d["luna"]) not in vazute and fapt_admis(d)]
         return out
     datorate = _datorate(azi, lambda d: azi.isoformat() <= d["termen"])
