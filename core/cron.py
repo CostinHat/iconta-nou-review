@@ -106,6 +106,9 @@ def ruleaza(nume, fn):
 #: nu munca totală — ce nu încape rămâne invalidat și intră în tura următoare.
 LOT_FIRMA_REZUMAT = 200
 
+#: [723] La cât timp lucrătorul `firma_rezumat` din aplicație reia tura (secunde) — aceeași cadență ca cronul (la 5 minute).
+INTERVAL_FIRMA_REZUMAT_APLICATIE_SEC = 300
+
 #: Pasul de reîncercare, în minute, după al n-lea eșec de calcul al unui aspect. Ultima valoare se
 #: repetă. Nu se abandonează niciodată complet: o eroare permanentă trebuie să rămână VIZIBILĂ, nu
 #: să dispară din coadă.

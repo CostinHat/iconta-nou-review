@@ -158,6 +158,7 @@ def test_def_723_cardurile_se_recalculeaza_singure_dupa_repornire(patron, firma_
     f = firma_712
     pregateste_firma(patron, f)
     time.sleep(20)   # recalcularea pornită de scrierile pregătirii se termină; de aici încolo nicio scriere pe ecran
+    # date-de-pornire: starea de după o publicare (epocă veche la toate rezumatele) nu se poate obține pe ecran; după ea contabilul nu face nimic
     sql("UPDATE public.firma_rezumat SET epoca = 'cod-vechi' WHERE tenant_id = %d" % f["tenant_id"])
     t0 = time.time()
     stare = None

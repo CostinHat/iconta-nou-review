@@ -1282,13 +1282,14 @@ def recalculeaza_in_fundal():
 # ============================================================================
 #  [723] LUCRĂTORUL DIN APLICAȚIE
 # ============================================================================
-#: La cât timp lucrătorul din aplicație reia tura (aceeași cadență ca cronul: `core/cron.RITMURI["firma_rezumat"]`, 5 minute).
-INTERVAL_LUCRATOR_APLICATIE_SEC = 300
+#: La cât timp lucrătorul din aplicație reia tura (aceeași cadență ca cronul, 5 minute): `core/cron.py`, lângă `LOT_FIRMA_REZUMAT`.
+INTERVAL_LUCRATOR_APLICATIE_SEC = _cron.INTERVAL_FIRMA_REZUMAT_APLICATIE_SEC
 
 
 def inregistreaza_cod_viu(conn):
     """Scrie amprenta codului acestui proces ca „cod viu” (la pornirea aplicației, în blocul fail-closed)."""
     with conn.cursor() as cur:
+        # upsert-ok: un singur rând (id = 1) — la fiecare pornire codul procesului viu îl înlocuiește pe al celui dinainte, intenționat
         cur.execute("INSERT INTO public.cod_aplicatie_viu (id, cod) VALUES (1, %s) "
                     "ON CONFLICT (id) DO UPDATE SET cod = EXCLUDED.cod, pornit_la = now()", (COD,))
 
