@@ -303,6 +303,7 @@ async def lifespan(app):
                        " · ".join("%s: %s" % (p["cod"], p["diagnostic"]) for p in _ver["probleme"]),
                        _ver["detaliu"]))
             _log_boot.info("[P2] infrastructură verificată: %s", _ver["detaliu"])
+            _fr_boot.inregistreaza_cod_viu(conn)   # [723] codul acestui proces, pentru cronul care citește alt cod de pe disc
             # [R61 / P5 val 1b] Unicitatea raportului Z, impusă în BAZĂ pe toate firmele
             # existente — nu doar pe cele create de acum înainte din template. Aceeași
             # purtare ca migrarea de mai sus: fiecare firmă în savepointul ei, iar un eșec
@@ -358,6 +359,8 @@ async def lifespan(app):
             _uc_comun.pune_sablon_tenant(f.read())
     except FileNotFoundError:
         _uc_comun.pune_sablon_tenant(None)   # creare tenant va da eroare clară până e pus
+    from core import firma_rezumat as _fr_lucrator
+    _fr_lucrator.porneste_lucratorul_aplicatiei()   # [723] rezumatele se recalculează și din aplicație, imediat după pornire
     yield
     db.inchide_pool()
 

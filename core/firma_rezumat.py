@@ -410,6 +410,15 @@ ALTER TABLE public.firma_rezumat ADD COLUMN IF NOT EXISTS epoca text NOT NULL DE
 ALTER TABLE public.firma_rezumat ADD COLUMN IF NOT EXISTS stare_calcul text NOT NULL DEFAULT 'ok';
 ALTER TABLE public.firma_rezumat ADD COLUMN IF NOT EXISTS incercari integer NOT NULL DEFAULT 0;
 ALTER TABLE public.firma_rezumat ADD COLUMN IF NOT EXISTS urmatoarea_incercare timestamptz;
+
+-- [723] Codul aplicației VII: amprenta pe care a calculat-o procesul care servește acum cererile (o scrie la pornire). Lucrătorul din cron
+-- citește codul de pe disc; dacă discul diferă de procesul viu, cele două ar rescrie pe rând epoca rezumatelor și cardurile ar rămâne
+-- la „în recalculare”. Un singur rând.
+CREATE TABLE IF NOT EXISTS public.cod_aplicatie_viu (
+    id        integer     PRIMARY KEY CHECK (id = 1),
+    cod       text        NOT NULL,
+    pornit_la timestamptz NOT NULL DEFAULT now()
+);
 """
 
 #: Funcțiile de trigger. Separate de DDL fiindcă se rescriu la fiecare pornire (`CREATE OR REPLACE`),
@@ -1271,6 +1280,63 @@ def recalculeaza_in_fundal():
 
 
 # ============================================================================
+#  [723] LUCRĂTORUL DIN APLICAȚIE
+# ============================================================================
+#: La cât timp lucrătorul din aplicație reia tura (aceeași cadență ca cronul: `core/cron.RITMURI["firma_rezumat"]`, 5 minute).
+INTERVAL_LUCRATOR_APLICATIE_SEC = 300
+
+
+def inregistreaza_cod_viu(conn):
+    """Scrie amprenta codului acestui proces ca „cod viu” (la pornirea aplicației, în blocul fail-closed)."""
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO public.cod_aplicatie_viu (id, cod) VALUES (1, %s) "
+                    "ON CONFLICT (id) DO UPDATE SET cod = EXCLUDED.cod, pornit_la = now()", (COD,))
+
+
+def cod_viu(conn):
+    """Amprenta codului procesului viu, sau None când nicio aplicație nu s-a înregistrat."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT cod FROM public.cod_aplicatie_viu WHERE id = 1")
+        r = cur.fetchone()
+    return r[0] if r else None
+
+
+def recalculeaza_supervizor():
+    """Tura supervizorului (`supervizor_cache`), pe luna confruntată în Control fiscal — aceeași pentru cron și pentru lucrătorul din
+    aplicație. Întoarce rezultatul lui `supervizor_cache.recalculeaza_lot` plus perioada (an, lună)."""
+    from core import supervizor_cache as _sc
+    from core.common import azi_ro as _azi_ro
+    from core.control_fiscal_api import luna_confruntata as _luna_confruntata
+    _azi = _azi_ro()
+    _an_s, _luna_s = _luna_confruntata(_azi.year, _azi.month)
+    return _an_s, _luna_s, _sc.recalculeaza_lot(_an_s, _luna_s)
+
+
+def porneste_lucratorul_aplicatiei():
+    """[723] Rezumatele firmelor se recalculează și din aplicație: o tură imediat după pornire, apoi la 5 minute, fără nicio acțiune a
+    contabilului. Înainte, după o repornire (cod nou = epocă nouă, toate rezumatele învechite) cardurile Termene și Control fiscal
+    așteptau numai cronul de pe discul serverului sau o scriere reușită; cât cronul nu mergea, sau citea alt cod decât procesul viu,
+    toate firmele rămâneau „în recalculare”. Calculează cu codul PROPRIU al procesului (`COD`), deci epoca scrisă e cea pe care o
+    verifică ecranele. Același `recalculeaza_lot` și același blocaj per firmă ca cronul: nicio firmă nu se calculează de două ori.
+    Oprit în suită (`ICONTA_FIRE_FUNDAL=0`). Întoarce True dacă a pornit firul."""
+    from core import db as _db_l
+    if not _db_l.fire_de_fundal_permise():
+        return False
+
+    def _lucru():
+        import time
+        while True:
+            try:
+                recalculeaza_lot()
+                recalculeaza_supervizor()
+            except Exception:  # noqa: BLE001 — firul nu are cui raporta; eroarea se LOGHEAZĂ, iar tura următoare o reia
+                _log().exception("[723] tura lucrătorului din aplicație a eșuat; o reia peste %d s", INTERVAL_LUCRATOR_APLICATIE_SEC)
+            time.sleep(INTERVAL_LUCRATOR_APLICATIE_SEC)
+
+    return _db_l.fir_de_fundal(_lucru, nume="firma_rezumat_aplicatie")
+
+
+# ============================================================================
 #  LUCRĂTORUL
 # ============================================================================
 #: Mărimea LOTULUI — `core/cron.py`, lângă `RITMURI`.
@@ -1554,6 +1620,13 @@ def main():
     from core import cron as _cron, db as _db
     _db.init_pool()
 
+    # [723] discul ≠ procesul viu: nu scriu epoca altui cod peste cea a aplicației (lucrătorul ei din aplicație calculează cu codul viu)
+    with _db.get_conn() as _c_viu:
+        _viu = cod_viu(_c_viu)
+    if _viu and _viu != COD:
+        print("[723] codul de pe disc (%s) nu e cel al aplicației vii (%s): nu recalculez; recalculează aplicația" % (COD, _viu))
+        return 0
+
     stop = {"cerut": False}
 
     def _cere_oprirea(semnal, cadru):
@@ -1590,12 +1663,7 @@ def main():
     # citește ecranul (`uc_supervizor`). Un eșec aici nu oprește modelul de portofoliu: se scrie, iar tura următoare reia firmele rămase.
     if not stop["cerut"]:
         try:
-            from core import supervizor_cache as _sc
-            from core.common import azi_ro as _azi_ro
-            from core.control_fiscal_api import luna_confruntata as _luna_confruntata
-            _azi = _azi_ro()
-            _an_s, _luna_s = _luna_confruntata(_azi.year, _azi.month)
-            _rs = _sc.recalculeaza_lot(_an_s, _luna_s)
+            _an_s, _luna_s, _rs = recalculeaza_supervizor()
             print("supervizor_perioada=%04d-%02d supervizor_invalidate=%d supervizor_recalculate=%d supervizor_fara_firma=%d"
                   % (_an_s, _luna_s, _rs["invalidate"], _rs["recalculate"], len(_rs["fara_firma"])))
         except Exception as e:      # noqa: BLE001 — eroarea se scrie; tura următoare o reia

@@ -1,0 +1,165 @@
+[
+ {
+  "nr": "712.1",
+  "firma": "tenant_9049",
+  "anaf_real": true,
+  "descriere": "F1: Emite factură — client DANTE, cod 14399840 fără RO, «Verifică» la ANAF; țara schimbată în Germania: apare motivul «nu se potrivește cu codul fiscal 14399840, care e al țării RO» (înainte: nicio semnalare). Numai citire. Cere --anaf-real",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "asteapta": "#fac-emite"
+   },
+   {
+    "click": "#fac-emite"
+   },
+   {
+    "asteapta": "#em-cui"
+   },
+   {
+    "completeaza": "#em-cui",
+    "valoare": "14399840"
+   },
+   {
+    "click": "#em-verifica"
+   },
+   {
+    "pauza": 4000
+   },
+   {
+    "alege": "#em-tara",
+    "valoare": "DE"
+   },
+   {
+    "pauza": 800
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "nu se potrivește cu codul fiscal 14399840, care e al țării RO",
+    "zona": "#em-cui-stare"
+   }
+  ],
+  "captura": "712_1_f1_vechi_tara_germania_fara_prefix.png"
+ },
+ {
+  "nr": "723",
+  "acasa": true,
+  "descriere": "Cabinet Sesiunea B (copie): ecranul principal la ~5 min după pornire, fără nicio acțiune; apoi Termene și Control fiscal",
+  "pasi": [
+   {
+    "captura": "723_f3_principal_imediat.png"
+   },
+   {
+    "pauza": 285000
+   },
+   {
+    "captura": "723_f3_principal_dupa_5min.png"
+   },
+   {
+    "click": "button.cab-card:has([data-cheie='termene'])"
+   },
+   {
+    "pauza": 2500
+   },
+   {
+    "captura": "723_f3_termene.png"
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "D301"
+   },
+   {
+    "contine": "26.10.2026"
+   },
+   {
+    "nu_contine": "nu au putut fi evaluate"
+   },
+   {
+    "nu_contine": "nu sunt încă recalculate"
+   },
+   {
+    "nu_contine": "Nicio scadență în următoarele 60 de zile și nicio restanță"
+   }
+  ],
+  "captura": "723_f3_termene_dupa_repornire.png"
+ },
+ {
+  "nr": "723",
+  "acasa": true,
+  "descriere": "Control fiscal cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='control'])"
+   },
+   {
+    "pauza": 2500,
+    "captura": "723_f3_control_fiscal.png"
+   },
+   {
+    "captura": "723_03_control_fiscal.png"
+   }
+  ],
+  "verifica": [
+   {
+    "nu_contine": "în recalculare"
+   },
+   {
+    "contine": "restanț"
+   }
+  ],
+  "captura": "723_f3_control_fiscal_dupa_repornire.png"
+ },
+ {
+  "nr": "723",
+  "firma": "tenant_9051",
+  "descriere": "Detaliu F3 Control fiscal",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "RESTANȚE ("
+   },
+   {
+    "contine": "D301"
+   }
+  ],
+  "captura": "723_f3_detaliu_firma.png"
+ },
+ {
+  "nr": "723",
+  "firma": "tenant_9049",
+  "descriere": "Detaliu F1 Control fiscal",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   },
+   {
+    "asteapta": ".fereastra:last-of-type .cf-grup-titlu"
+   },
+   {
+    "pauza": 1500
+   }
+  ],
+  "verifica": [
+   {
+    "contine": "RESTANȚE ("
+   },
+   {
+    "contine": "D300"
+   }
+  ],
+  "captura": "723_f1_detaliu_firma.png"
+ }
+]
