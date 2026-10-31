@@ -1,8 +1,8 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=c6c45aefe4";
+import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=7036a2d894";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
-import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=2e31f52e03";   // [15.1] piesele formularului grupat
+import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=8f1c77490a";   // [15.1] piesele formularului grupat
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1, 721] ciorna formularului, pe server
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
@@ -402,7 +402,7 @@ const REGISTRU = [
     C("numar", "Nr. factură utilități", "text", { lat: "s", grup: "Document", cond: { camp: "fel", val: "refacturare" } }),
     C("total_factura", "Total factură (fără TVA)", "numar", { cond: { camp: "fel", val: "refacturare" } }),
     C("parte_refacturata", "Parte refacturată (fără TVA)", "numar", { cond: { camp: "fel", val: "refacturare" } }),
-    C("cota", "Cota TVA", "cota_tva", { cond: { camp: "fel", val: ["chirie_platita", "chirie_incasata", "refacturare"] }, optional: true, ajutor: "Se cere la chiria taxabilă și la refacturare; nu la chiria de la persoană fizică sau la cea scutită." }),
+    C("cota", "Cota TVA", "cota_tva", { lat: "l", cond: { camp: "fel", val: ["chirie_platita", "chirie_incasata", "refacturare"] }, optional: true, ajutor: "Se cere la chiria taxabilă și la refacturare; nu la chiria de la persoană fizică sau la cea scutită." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Diverse", cheie: "perisabilitati", titlu: "Perisabilități și scăzăminte", ruta: "nota-perisabilitati", frecventa: "rar", campuri: [
     C("data", "Data", "data"),
@@ -445,6 +445,9 @@ const REGISTRU = [
     C("cota", "Cota TVA %", "numar", { cond: { camp: "operatie", val: "vanzare_activ" } }),
     C("descriere", "Descriere", "text", { optional: true, ajutor: "La partaj, capitalul, rezervele și profitul vin din soldurile conturilor, împărțite pe asociații din Date firmă." }) ] },
 ];
+
+// [15.1, DS: „cota TVA nicăieri tastată”] orice câmp „Cota TVA %” al registrului e grup de alegere cu cotele legale la data documentului (`cota_tva`), nu număr scris
+REGISTRU.forEach((o) => o.campuri.forEach((c) => { if (c.tip === "numar" && /^cota/.test(c.nume) && /TVA/.test(c.eticheta)) c.tip = "cota_tva"; }));
 
 const CATEGORII = [...new Set(REGISTRU.map((o) => o.cat))];
 // [lotul 10, pct.9, comanda Costin 20.10.2026] „separă-le pe cele lunare sau recurente (TVA la încasare, valută, avansuri și altele) de cele
@@ -671,7 +674,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=b7cceffab4");
+      const { ecranJurnal } = await import("./firme.js?v=eecc415409");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };
@@ -729,7 +732,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     };
     const btnSpre = corp.querySelector("#op-spre-emitere-buton");
     if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
-      const { randeazaEmitere } = await import("./emitere_ecran.js?v=ec25cec559");
+      const { randeazaEmitere } = await import("./emitere_ecran.js?v=ff34c195be");
       nav.deschide("Emite factură", (c2) => randeazaEmitere(c2, nav, t.id, { inapoi: () => nav.inapoi() }));
     });
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
@@ -747,20 +750,22 @@ export async function ecranOperatiuni(corp, nav, t) {
         const n = await api.get(`/tenants/${t.id}/facturi/numerotare?data=${encodeURIComponent(data)}`);
         if (!actuala()) return;
         const cote = (n && n.cote_permise) || [];
-        selCota.forEach((x) => {
+        selCota.forEach((x, i) => {
           const camp = x.closest(".camp");
-          let nota = camp.querySelector(".cota-la-data");
-          if (!nota) {   // ajutorul câmpului și data cotelor stau pe un singur rând
-            nota = document.createElement("span");
-            nota.className = "camp-ajutor cota-la-data";
-            const vechi = camp.querySelector(".camp-ajutor");
-            nota.dataset.baza = vechi ? vechi.textContent : "";
-            if (vechi) vechi.remove();
-            camp.appendChild(nota);
+          if (i === 0) {   // data cotelor se spune o singură dată pe formular, la prima cotă; ajutorul câmpului și data stau pe un singur rând
+            let nota = camp.querySelector(".cota-la-data");
+            if (!nota) {
+              nota = document.createElement("span");
+              nota.className = "camp-ajutor cota-la-data";
+              const vechi = camp.querySelector(".camp-ajutor");
+              nota.dataset.baza = vechi ? vechi.textContent : "";
+              if (vechi) vechi.remove();
+              camp.appendChild(nota);
+            }
+            nota.textContent = [`Cotele legale la ${dataRo(data)}${(corp.querySelector("#op-data") || {}).value ? "" : " (data de azi, până alegi data documentului)"}.`, nota.dataset.baza].filter(Boolean).join(" ");
           }
-          nota.textContent = [`Cotele legale la ${dataRo(data)}${(corp.querySelector("#op-data") || {}).value ? "" : " (data de azi, până alegi data documentului)"}.`, nota.dataset.baza].filter(Boolean).join(" ");
           const veche = x.value;
-          x.innerHTML = cote.length ? ALEGE_OPT + cote.map((q) => `<option value="${q}">${q}%</option>`).join("") : '<option value="" data-alege selected>Nicio cotă de TVA la această dată</option>';
+          x.innerHTML = ALEGE_OPT + (cote.length ? cote : [0]).map((q) => `<option value="${q}">${q}%</option>`).join("");   // firma fără cote la data aceea: doar „0%”
           if (cote.map(String).includes(veche)) x.value = veche;
         });
       } catch { if (!actuala()) return; selCota.forEach((x) => { x.innerHTML = '<option value="" data-alege selected>Cotele nu s-au putut citi — reîncearcă</option>'; }); }
@@ -784,7 +789,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         zonaRefuz.innerHTML = "";
         zonaRefuz.appendChild(cardRezumat({ text: "Firma aplică TVA la încasare: factura furnizorului se înregistrează în Facturi primite.", ton: "eroare",
           detalii: r.refuz, actiune: { eticheta: "Deschide Facturi primite", laClic: async () => {
-            const { primiteSPV } = await import("./facturi_ecran.js?v=eca02921e0");
+            const { primiteSPV } = await import("./facturi_ecran.js?v=0c578ed45f");
             nav.deschide("Facturi primite", (c2) => primiteSPV(c2, nav, t.id, {}));
           } } }));
         inactiv(btn, "Nota nu se poate genera: factura se înregistrează în Facturi primite.");
@@ -862,7 +867,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         const opt = sal.length
           ? `<option value="">— alege salariatul —</option>` + sal.map((x) =>
               `<option value="${x.id}">${esc([x.nume, x.prenume].filter(Boolean).join(" "))}</option>`).join("")
-          : `<option value="">Firma nu are salariați în Salarizare</option>`;
+          : `<option value="">Niciun salariat activ</option>`;
         selSal.forEach((s2) => { s2.innerHTML = opt; });
       }).catch(() => selSal.forEach((s2) => { s2.innerHTML = `<option value="">Salariații nu s-au putut încărca — reîncearcă</option>`; }));
     }

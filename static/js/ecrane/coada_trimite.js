@@ -6,7 +6,7 @@
 //    `motiv_trecere`, păstrată cu numele omului); `ERORI_DUK` -> se arată, fără portiță.
 //  - C1: refuzul spune motivul REAL venit de la server, nu o presupunere („Poate există deja o declarație…” apărea și la o eroare 500).
 //  - C11: bilanțul intră în coadă pe același drum ca orice declarație.
-import { api, esc, arataMesaj, aduInVedere, TEXT_NOTA_INTERNA } from "../api.js?v=c6c45aefe4";
+import { api, esc, arataMesaj, aduInVedere, TEXT_NOTA_INTERNA } from "../api.js?v=7036a2d894";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";   // [lotul 11, 445] refuzul care trimite la ecranul unde se repară
 
 // [deficiența 222, comanda Costin 10.10.2026] confirmarea intrării în coadă e ACEEAȘI casetă din orice ecran (Declarații, Bilanț) —
@@ -162,7 +162,7 @@ export function legaturiNote(zona, tenantId, note) {
   lista.querySelectorAll("[data-nota]").forEach((b) => b.addEventListener("click", async () => {
     const n = note[parseInt(b.dataset.nota, 10)];
     const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=b7cceffab4");
+    const { ecranJurnal } = await import("./firme.js?v=eecc415409");
     const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
     if (!t || !window._navGlobal) return;
     // [lotul 11, 445] nota se deschide dintr-un refuz: formularul / declarația de dedesubt se păstrează, săgeata și X întorc acolo

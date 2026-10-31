@@ -24304,3 +24304,11 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - `ds_butoane_campuri.html` lipsește din `~/ghid_incoming/`; s-a folosit Anexa C din comanda 15 (aceeași dimensiuni). Ce nu e în anexă a rămas la F.
 - Varianta cea mai sigură: fără dată aleasă, refuzul 714 și cotele TVA se calculează la data de azi și o spun lângă cotă; cotele afișate la Operațiuni sunt cele legale la dată (fără categoriile fără TVA, pe care ruta notelor nu le primește).
 - Verificatorul „după”: promptul fix + o singură propoziție cu calea arborelui de lucru (codul nu era încă publicat); un verdict „TRECE cu rezerve” care a rulat testul lui Code, nu scenariul, a fost respins și refăcut cu agent nou.
+
+## Comanda 15.1, zona B (31.10.2026)
+- Piese noi în DS: `listaCuCautare` (`ds_piese.js`, înlocuiește vizual orice `<select>` cu texte lungi; sursa valorii rămâne select-ul), fereastra de confirmare de 480 px (`confirmaCaseta`, în `api.js`: modală, centrată, „Renunță” + un singur principal), fereastra notei (`lat: "nota"`, 720 px), cardul-rezumat cu bandă laterală (`.card-rezumat`), rândurile de tabel de 44 px (`.fd-tabel`), grupul de alegere cu etichete scurte (`data-buton`).
+- Varianta cea mai sigură: cota TVA la Operațiuni și la linia facturii oferă cotele legale la data documentului plus „0%”; categoriile fără TVA (scutit cu/fără drept, taxare inversă, neimpozabil) rămân câmpuri proprii acolo unde ruta le cere (categoria cotei 0% la factură) — ruta notelor din Operațiuni nu primește categorii.
+- Fără dată aleasă, refuzul 714 și cotele se calculează la data de azi și o spun lângă cotă.
+- Verificatorii „înainte” pe 634.1 și 509 au dat TRECE: nereprodusă, nimic reparat. 634.1: ramura „altă livrare” nu a fost parcursă.
+- Verificatorii care au rulat testul lui Code (653.1, 673.1, 670) au dat TRECE după ce au analizat capturile; rezerva e în raport la E.
+- `core/test_deficiente.py` e în `scripts/poarta_sare.txt` (testul de formă); rândurile noi nu poartă „dovadă firme de test” cu PNG-uri, pentru că CLAUDE.md §4 pct. 5 face din TRECE-ul verificatorului singura dovadă.

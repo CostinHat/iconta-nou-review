@@ -696,11 +696,12 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .mig-eq { font-size: var(--text-mic); padding: 2px 8px; border-radius: 9px; margin-left: auto; }
 .mig-eq-ok { color: #0f6e56; background: #e1f5ee; }
 .mig-eq-no { color: #791f1f; background: #fcebeb; }
-.mig-sold-tabel { border: 0.5px solid var(--linie); border-radius: var(--raza); overflow: hidden; max-height: 280px; overflow-y: auto; }
+.mig-sold-tabel { border: 0.5px solid var(--linie); border-radius: var(--raza); overflow: hidden; max-height: 280px; min-height: 132px; overflow-y: auto; }
 .mig-sold-rand {
   display: grid; grid-template-columns: 100px 1fr 110px 110px; gap: 10px;
-  padding: 7px 12px; border-bottom: 0.5px solid var(--linie); font-size: 12.5px; align-items: center;
+  padding: 0 12px; min-height: 44px; box-sizing: border-box; border-bottom: 0.5px solid var(--linie); font-size: 15px; align-items: center;
 }
+.mig-sold-rand:nth-child(even) { background: var(--fundal); }   /* zebra (DS tabel) */
 .mig-sold-rand:last-child { border-bottom: none; }
 .mig-sold-cont { font-family: ui-monospace, monospace; font-weight: 600; color: #2f6fa6; }  /* [a11y 18.08 P3] codul de cont apare in preview-urile de migrare (solduri/parteneri/plan) pe panoul #e9edf3, NU doar pe alb: --albastru #347ab8 = 3.86 < 4.5 (axe: 5121/101 in preview parteneri). #2f6fa6 = 4.53 pe panou si ~4.9 pe alb. Asumptia din fix-ul Control fiscal era gresita. */
 
@@ -3239,15 +3240,15 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
    și o frază scurtă; textul care nu încape se taie cu „…” (cardul întreg se deschide în fereastra lui). Fără clasă de culoare nouă: punctul ia
    culorile semaforului (DS cap.8). */
 .sir-carduri { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 8px; }
-.card-rezumat { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 32px; padding: 4px 12px; background: var(--alb);
-  border: 1px solid #b9c2cf; border-radius: 16px; font: inherit; font-size: var(--text-mic); color: var(--ardezie); cursor: pointer; text-align: left; }
+.card-rezumat { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-height: 44px; box-sizing: border-box; padding: 0 16px; background: var(--alb);
+  border: 1px solid var(--linie); border-left: 4px solid var(--gri-semafor); border-radius: 12px; font: inherit; font-size: 14px; color: var(--ardezie); cursor: pointer; text-align: left; }
 .card-rezumat:hover { background: var(--albastru-clar); }
 .card-rezumat[aria-disabled="true"] { opacity: .7; cursor: default; }
 .card-rezumat .card-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.card-rezumat .card-punct { flex: 0 0 10px; width: 10px; height: 10px; border-radius: 50%; background: var(--gri-semafor); }
-.card-rezumat.card-ok .card-punct { background: var(--verde); }
-.card-rezumat.card-atentie .card-punct { background: var(--galben); }
-.card-rezumat.card-eroare .card-punct { background: var(--rosu-semafor); }
+.card-rezumat .card-punct { display: none; }   /* [15.1] culoarea e banda din stânga (portocaliu avertisment, roșu eroare, verde în regulă), nu punctul */
+.card-rezumat.card-ok { border-left-color: var(--verde); }
+.card-rezumat.card-atentie { border-left-color: var(--portocaliu); }
+.card-rezumat.card-eroare { border-left-color: var(--rosu); }
 
 /* [lotul 14, 687] vederile alăturate ale unui raport (Rapoarte comerciale): un rând de butoane sub titlu, cel ales `.buton-activ` (DS cap.1 v2.101) */
 .rc-vederi { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 8px; }
@@ -3275,22 +3276,23 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
    lățimi: XS 9 caractere, S 16, M 38, L jumătate, XL toată lățimea; eticheta 14 px pe un rând; eroarea 13 px sub câmp.
    ============================================================ */
 .ds-formular { display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; }
-.ds-grup { flex: 1 1 400px; min-width: 0; border: 1px solid var(--linie); border-radius: 12px; padding: 16px; background: var(--alb); }
+.ds-grup { flex: 1 1 400px; min-width: 0; border: 1px solid var(--linie); border-radius: 12px; padding: 8px 16px 12px; background: var(--alb); }
 .ds-grup-lat { flex-basis: 100%; }
 .ds-grup[hidden] { display: none; }
 .ds-grup-titlu { margin: 0 0 4px; font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--gri); }
 .ds-grup-campuri { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: flex-start; }
 .ds-grup-campuri > .camp { min-width: 0; gap: 4px; }
 .ds-grup-campuri > .camp.camp-dedus { display: none; }
-.ds-grup .camp-eticheta { margin: 0; font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ds-grup .camp-eticheta { margin: 0; font-size: 14px; line-height: 20px; white-space: nowrap; }   /* eticheta nu se taie: câmpul crește cât ea */
 .fereastra-corp .ds-grup .camp-input:not([type=checkbox]):not([type=radio]) { height: 44px; font-size: 16px; border-radius: 8px; box-sizing: border-box; max-width: 100%; }
 .ds-grup .camp-input[data-numar] { text-align: right; font-variant-numeric: tabular-nums; }
 /* lățimile în caractere, la 10 px pe caracter (text 16 px) + padding 28 px: XS 9 = 118, S 16 = 188, M 38 = 408 */
-.ds-lat-xs { width: 118px; }
-.ds-lat-s { width: 188px; }
-.ds-lat-m { width: 408px; max-width: 100%; }
-.ds-lat-l { flex: 1 1 240px; min-width: 0; max-width: 100%; }
-.ds-lat-xl { flex: 1 1 360px; min-width: 0; }
+.ds-lat-xs { flex: 0 0 auto; display: grid; grid-template-columns: minmax(118px, min-content); row-gap: 4px; align-content: start; }
+.ds-lat-s { flex: 0 0 auto; display: grid; grid-template-columns: minmax(188px, min-content); row-gap: 4px; align-content: start; }
+.ds-lat-m { flex: 0 0 auto; display: grid; grid-template-columns: minmax(408px, min-content); row-gap: 4px; align-content: start; max-width: 100%; }
+.ds-lat-l { flex: 1 1 200px; min-width: 0; max-width: 100%; }
+.ds-lat-xl { flex: 0 1 auto; min-width: 0; }   /* grup de alegere: lățimea butoanelor */
+.ds-lat-plin { flex: 1 1 100%; min-width: 0; }
 .ds-lat-cui { flex: 0 0 auto; width: 308px; }   /* câmp S 188 + 8 + buton S 104 + rezervă */
 .ds-grup .camp .em-benef > .camp-input { flex: 0 0 188px; }
 .ds-grup .camp .em-benef { flex-wrap: nowrap; gap: 8px; align-items: center; }
@@ -3299,7 +3301,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .ds-grup .camp .em-cui-stare:empty { display: none; }
 .ds-grup .camp .em-benef { margin-bottom: 0; }
 .ds-grup .alegere-butoane { min-height: 44px; gap: 8px; flex-wrap: wrap; }
-.ds-grup .alegere-butoane > button { height: 44px; padding: 0 16px; font-size: 16px; }
+.ds-grup .alegere-butoane > button { height: 44px; padding: 0 10px; font-size: 14px; }
 .ds-grup .alegere-butoane > button:active { transform: translateY(2px); }
 .ds-grup .alegere-butoane > button.buton-activ { color: #fff; background: var(--albastru); border-color: var(--albastru-inchis); box-shadow: inset 0 2px 3px rgba(0,0,0,.25); transform: translateY(1px); }
 /* card-rezumat (44 px): un rând, bandă stângă 4 px; detaliile pliate */
@@ -3316,4 +3318,61 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .ds-motiv-inactiv:empty { display: none; }
 
 .ds-grup[data-grup="Descriere"] .camp-eticheta { display: none; }   /* titlul grupului e deja eticheta; câmpul are aria-label */
-.ds-formular { gap: 12px; }
+.ds-formular { gap: 8px; }
+/* DS 15.1 — lista cu căutare: lățimea ferestrei, maxim 720 px; căutare 44 px sus, rânduri 44 px, text principal stânga, motiv scurt dreapta */
+.ds-lista-sursa { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.ds-lista { width: 100%; max-width: 720px; position: relative; }
+.ds-lista-titlu { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; height: 44px; text-align: left; background: var(--alb); cursor: pointer; box-sizing: border-box; }
+.ds-lista-ales { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-lista-panou { margin-top: 4px; border: 1px solid var(--linie); border-radius: 12px; background: var(--alb); padding: 8px; box-sizing: border-box; }
+.ds-lista-cauta { width: 100%; height: 44px; box-sizing: border-box; }
+.ds-lista-randuri { list-style: none; margin: 8px 0 0; padding: 0; max-height: 264px; overflow-y: auto; }
+.ds-lista-rand { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 44px; padding: 0 12px; box-sizing: border-box; cursor: pointer; border-radius: 8px; font-size: 16px; }
+.ds-lista-rand:hover { background: var(--fundal); }
+.ds-lista-ales-rand { background: var(--albastru-clar); font-weight: 600; }
+.ds-lista-inactiv { color: var(--gri); cursor: default; }
+.ds-lista-nume { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ds-lista-motiv { flex: 0 1 45%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--gri); text-align: right; }
+.ds-lista-grup { padding: 8px 12px 4px; font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--gri); }
+.ds-lista-detalii { padding: 4px 12px 8px; font-size: 14px; color: var(--gri); }
+.ds-lista-gol { padding: 8px 12px; font-size: 14px; color: var(--gri); }
+/* DS 15.1 — F-A: adresa beneficiarului crește cu textul (nimic tăiat); cota liniei = grup de alegere, coloana ei ia lățimea butoanelor */
+textarea.em-adresa { field-sizing: content; min-height: 44px; height: auto; padding-top: 10px; padding-bottom: 10px; resize: none; width: 100%; box-sizing: border-box; }
+.em-linie, .em-linie-antet { grid-template-columns: minmax(120px, 1fr) 60px 52px 84px 138px 36px; gap: 6px; }
+.em-linie .alegere-butoane { gap: 3px; min-height: 0; flex-wrap: nowrap; }
+.em-linie .alegere-butoane > button { height: 40px; padding: 0 4px; min-width: 0; flex: 1 1 0; font-size: 14px; }
+.em-linie .camp-input { min-width: 0; }
+.ds-detalii-linie { display: inline; font-weight: 400; }
+.ds-detalii-linie > summary { display: inline; cursor: pointer; color: var(--albastru); font-size: 14px; }
+.ds-detalii-linie[open] > summary { display: block; }
+/* DS 15.1 — F-A: denumirea liniei crește cu textul (nimic tăiat); ștergerea liniei rămâne pe același rând, aliniată sus */
+textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; resize: none; padding-top: 10px; padding-bottom: 10px; line-height: 22px; box-sizing: border-box; }
+.em-linie { align-items: start; }
+.em-linie .buton-sters.em-l-sterge { align-self: start; height: 44px; }
+/* DS 15.1 — nota deschisă: fereastra ei, centrată, 720 px (aceeași fereastră ca nota deschisă din listă) */
+.fereastra.fer-nota { width: 720px; max-width: calc(100vw - 32px); }
+/* DS 15.1 — fereastra de confirmare: 480 px, înălțimea după conținut, centrată pe fundal întunecat; întrebarea e titlul, „Renunță” M și un singur buton principal M */
+.ds-confirmare-fundal { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; background: rgba(20, 30, 45, .55); padding: 16px; box-sizing: border-box; }
+.ds-confirmare.caseta-intrebare { display: block; width: 480px; max-width: 100%; box-sizing: border-box; padding: 24px; border: 0; border-radius: 12px; background: var(--alb); box-shadow: 0 12px 40px rgba(0, 0, 0, .35); }
+.ds-confirmare .ds-confirmare-titlu { font-size: 20px; font-weight: 600; line-height: 1.35; margin: 0 0 24px; color: var(--ardezie); }
+.ds-confirmare .ca-actiuni { display: flex; justify-content: flex-end; gap: 8px; }
+.ds-confirmare .ca-actiuni button { height: 44px; padding: 0 20px; font-size: 16px; }
+
+.ds-lat-xs > .camp-input, .ds-lat-s > .camp-input, .ds-lat-m > .camp-input { width: 100%; min-width: 0; }
+.ds-lat-cota { flex: 0 0 auto; min-width: 0; }
+/* ajutorul de sub câmp nu lărgește câmpul: se rupe pe rânduri în lățimea câmpului */
+.ds-grup-campuri > .camp > .camp-ajutor { width: 0; min-width: 100%; }
+.ds-lat-l > select.camp-input, .ds-lat-l > input.camp-input { width: 100%; min-width: 0; }
+.pf-frand:has(> .ds-formular) { padding-top: 8px; padding-bottom: 8px; }
+.pf-frand:has(> .ds-formular) .bara-fixa { padding-top: 0; }
+.ds-grup .camp-ajutor { font-size: 13px; line-height: 16px; margin-top: 0; }
+.ds-grup-campuri { row-gap: 6px; }
+.ds-grup .alegere-butoane { min-height: 0; }
+.fereastra-corp > h2.pf-titlu:has(+ .pf-frand > .ds-formular) { margin-bottom: 8px; }
+.camp-rand-intreg { grid-column: 1 / -1; }
+/* butonul ales al unui grup de alegere rămâne albastru și la hover (altfel `.buton-secundar:hover` îl face alb pe alb) */
+.alegere-butoane > button.buton-activ:hover:not(:disabled) { color: #fff; background: var(--albastru-inchis); }
+/* DS 15.1 — tabelul: cap 40 px, rânduri de 44 px, un rând nu se rupe pe două linii; zebra pe rândurile pare */
+.fd-tabel thead th { height: 40px; padding-top: 0; padding-bottom: 0; vertical-align: middle; }
+.fd-tabel tbody tr:not(.mig-prev-motive) > td { height: 44px; padding-top: 0; padding-bottom: 0; vertical-align: middle; }
+.mig-prev .mig-prev-scurt { -webkit-line-clamp: 1; line-clamp: 1; }

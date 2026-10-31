@@ -1346,6 +1346,8 @@ def test_def_25_factura_spune_nota_propusa_si_duce_la_nota(patron, firma_e2e):
     assert sql('SELECT factura_id, status FROM "%s".inregistrari WHERE id = %%s' % firma_e2e["schema"], (nid,)) == \
         [(f["factura_id"], "ciorna")]
     pg.click("#fd-vezi-nota")
+    pg.wait_for_selector("#fd-nota-jurnal", timeout=20000)   # [15.1, 673.1] nota se deschide în fereastra ei; Registrul jurnal e un drum din ea
+    pg.click("#fd-nota-jurnal")
     pg.wait_for_selector(".fereastra:last-of-type [data-nota-id='%d']" % nid, timeout=20000)
     assert "Registru jurnal" in patron.fereastra()
     patron.captura("nota")

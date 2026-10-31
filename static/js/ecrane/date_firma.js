@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=c6c45aefe4";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=7036a2d894";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
@@ -144,11 +144,11 @@ function _blocChitante(d) {
 function _blocStoc(d) {
   const m = (d.profil || {}).metoda_stoc || "";
   return `
-      <label class="camp">
+      <label class="camp camp-rand-intreg">
         <span class="camp-eticheta">Metoda de stoc</span>
         <span class="camp-ajutor">Cum ține firma evidența mărfii. Global-valoric: marfa se descarcă lunar, din toate vânzările (371/378/4428). Cantitativ-valoric: pe fiecare articol, la CMP (fișe de magazie, rețete). Fiecare ieșire se descarcă o singură dată.</span>
-        <select class="camp-input" id="df-metoda_stoc">${m ? "" : `<option value="" selected>— nedeclarată —</option>`}${(d.metode_stoc || []).map(([k, t]) =>
-          `<option value="${esc(k)}"${k === m ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
+        <select class="camp-input" id="df-metoda_stoc" data-butoane="">${m ? "" : `<option value="" data-alege selected>— nedeclarată —</option>`}${(d.metode_stoc || []).map(([k, t]) =>
+          `<option value="${esc(k)}" data-buton="${esc(String(t).split(/ [(—]/)[0] + (/nesuportat/.test(t) ? " — nesuportat încă" : ""))}"${k === m ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>
       </label>`;
 }
 

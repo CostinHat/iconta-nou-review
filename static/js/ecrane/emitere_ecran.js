@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=c6c45aefe4";
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=7036a2d894";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { textStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -190,10 +190,16 @@ export function intrebarePleacaMarfa(zona, nrArticole, laRaspuns, ids) {
 export function clasaCotei(cota) {
   return cota == null ? "" : (cota === 11 ? " cota-11" : cota === 0 ? " cota-0" : " cota-21");
 }
+// [15.1, F-A] clasa de culoare a cotei se schimbă pe elementul existent: `className = …` ar șterge `alegere-sursa` (select-ul ascuns al grupului de butoane)
+export function seteazaClasaCota(el, cota) {
+  el.classList.remove("cota-0", "cota-11", "cota-21");
+  const c = clasaCotei(cota).trim();
+  if (c) el.classList.add(c);
+}
 export function htmlCotaLinie(id, l, cote, platitor) {
   if (!platitor) return `<span class="em-l-cota${clasaCotei(l.cota_tva)}" id="${id}" title="Cota TVA">${l.cota_tva == null ? "—" : l.cota_tva + "%"}</span>`;
-  return `<select class="camp-input em-l-cota-sel${clasaCotei(l.cota_tva)}" id="${id}" aria-label="Cota TVA" title="${l.cota_propusa == null ? "Cota TVA" : "Cota TVA — propusă: " + l.cota_propusa + "%"}">
-             <option value=""${l.cota_tva == null ? " selected" : ""}>—</option>
+  return `<select class="camp-input em-l-cota-sel${clasaCotei(l.cota_tva)}" id="${id}" aria-label="Cota TVA" data-butoane="" title="${l.cota_propusa == null ? "Cota TVA" : "Cota TVA — propusă: " + l.cota_propusa + "%"}">
+             <option value="" data-alege${l.cota_tva == null ? " selected" : ""}>—</option>
              ${cote.map((c) => `<option value="${c}"${l.cota_tva === c ? " selected" : ""}>${c}%</option>`).join("")}
            </select>`;
 }
@@ -425,7 +431,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     <div class="em-fila em-fila-doua" id="em-fila-factura" data-fila="factura" role="tabpanel">
     <div>
     <div class="em-sectiune em-date-doc" style="margin-top:4px">
-      <div class="em-eticheta">Document (CF art. 319 alin. (20) lit. a–b)</div>
+      <div class="em-eticheta">Document</div>
       <div class="em-date-rand" style="grid-template-columns:minmax(250px,1.3fr) minmax(170px,1fr) minmax(170px,1fr)">
         <label class="camp"><span class="camp-eticheta">Seria și numărul</span>
           <span class="em-serie-nr" id="em-serie-nr">${num.serie ? esc(num.serie) + " · " : "fără serie (se cere la emitere) · "}următorul număr: ${esc(String(num.urmator_numar))}</span>
@@ -440,7 +446,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     </div>
 
     <div class="em-sectiune" style="margin:12px 0 0">
-      <div class="em-eticheta">Beneficiar</div>
+      <div class="em-eticheta">Client</div>
       <label class="camp-eticheta" for="em-cui">CUI beneficiar</label>
       <div class="em-benef">
         <input class="camp-input em-cui" id="em-cui" placeholder="ex: RO12345678" autocomplete="off">
@@ -449,15 +455,15 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <label class="camp-eticheta" for="em-nume">Denumire beneficiar<span class="oblig">*</span></label>
       <input class="camp-input em-nume" id="em-nume" autocomplete="off">
       <label class="camp-eticheta" for="em-adresa">Adresă beneficiar (art. 319)</label>
-      <input class="camp-input em-adresa" id="em-adresa" autocomplete="off">
+      <textarea class="camp-input em-adresa" id="em-adresa" rows="1" autocomplete="off"></textarea>
       <div class="em-cui-stare" id="em-cui-stare"></div>
     </div>
 
     </div>
     <div>
     <div class="em-sectiune" style="margin-top:4px">
-      <div class="em-eticheta">Produse și servicii</div>
-      <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(la un articol din stoc, cota TVA vine din articol; la o linie fără articol, cota e propusă pe baza denumirii — verifică încadrarea și schimb-o din listă dacă e altfel; răspunderea corectitudinii cotei îți aparține, iar schimbarea se consemnează)"}</span></div>
+      <div class="em-eticheta">Sume</div>
+      <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <details class="ds-detalii-linie"><summary>▾ detalii</summary><span class="tip-micut">${opt.tvaProfil === false ? "(firma nu e plătitoare de TVA: liniile nu poartă TVA — regim special de scutire, art. 310 Cod fiscal)" : "(la un articol din stoc, cota TVA vine din articol; la o linie fără articol, cota e propusă pe baza denumirii — verifică încadrarea și schimb-o din listă dacă e altfel; răspunderea corectitudinii cotei îți aparține, iar schimbarea se consemnează)"}</span></details></div>
       <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-um">UM</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
       <div class="em-linii" id="em-linii"></div>
       <button class="buton-secundar em-buton-sec" id="em-add-linie" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Adaugă linie</button>
@@ -578,7 +584,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       aratăPregatirea(n); aratăNumarul(n); aratăRegimulTva(n);
       const cote = (n.cote_permise && n.cote_permise.length) ? n.cote_permise : [];
       // altă perioadă de cote -> lista pe fiecare linie; [C103] cantitatea / prețul scrise între timp pe o linie nu se pierd
-      if (cote.join(",") !== COTE.join(",")) { COTE = cote; pastreazaCampulActiv(corp, deseneazaLinii); }
+      if (cote.join(",") !== COTE.join(",")) {
+        COTE = cote;
+        // [15.1, F-A] o cotă care nu era valabilă la data nouă nu rămâne aplicată pe linie (21% la 15.06.2025): linia cere iar cota; 0% (fără TVA) rămâne
+        linii.forEach((l) => { if (l && l.cota_tva != null && l.cota_tva !== 0 && !cote.includes(l.cota_tva)) { l.cota_tva = null; l.cota_propusa = null; } });
+        pastreazaCampulActiv(corp, deseneazaLinii);
+      }
     } catch { if (!actuala()) return; /* rămâne starea de dinainte */ }
   }
   corp.addEventListener("nav:revenire", reincarcaPregatirea);
@@ -628,7 +639,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   function randLinie(i) {
     const l = linii[i];
     const inputsHtml = `
-      <input class="camp-input em-l-den" id="em-l${i}-descriere" data-actiune-camp="POST /tenants/{tenant_id}/produse/potriveste" value="${_val(l.descriere)}" placeholder="Denumire (ex: pâine, consultanță)" aria-label="Denumire articol" autocomplete="off">
+      <textarea class="camp-input em-l-den" id="em-l${i}-descriere" rows="1" data-actiune-camp="POST /tenants/{tenant_id}/produse/potriveste" placeholder="Denumire (ex: pâine, consultanță)" aria-label="Denumire articol" autocomplete="off">${_val(l.descriere)}</textarea>
       <input class="camp-input em-l-cant" id="em-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
       <input class="camp-input em-l-um" id="em-l${i}-um" maxlength="10" value="${_val(l.um)}" aria-label="Unitate de măsură" title="Unitate de măsură">
       <input class="camp-input em-l-pret" id="em-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
@@ -684,7 +695,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const cls = (cota === 11 ? " cota-11" : cota === 0 ? " cota-0" : cota != null ? " cota-21" : "");
     if (el.tagName === "SELECT") {   // plătitor: lista de cote, propunerea preselectată
       el.value = cota == null ? "" : String(cota);
-      el.className = "camp-input em-l-cota-sel" + cls;
+      seteazaClasaCota(el, cota);
       el.title = l.cota_propusa == null ? "Cota TVA" : "Cota TVA — propusă: " + l.cota_propusa + "%";
       return;
     }

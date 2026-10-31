@@ -80,7 +80,6 @@ def _beneficiar_d207(pg, baza, imp, tip="01", stat_cauta="germ", stat="DE"):
     z = _F
     pg.select_option(z + "#d207-tip", tip)
     pg.fill(z + "#d207-den", "KUNDE GMBH")
-    pg.fill(z + "#d207-stat-cauta", stat_cauta)
     pg.select_option(z + "#d207-stat", stat)
     pg.fill(z + "#d207-cifs", "DE811907980")
     pg.select_option(z + "#d207-act", "1")
@@ -207,9 +206,11 @@ def test_def_653_statul_de_rezidenta_lista_cu_cautare(patron, firma_l13):
     _platitor(patron, firma_l13)
     pg = _continua_formular(patron, firma_l13, "d207", AN_D207)
     assert "Cod de identificare fiscală * — completează măcar unul" in _txt(pg, "#dec-d207-form")   # înainte de orice eroare
-    pg.fill(_F + "#d207-stat-cauta", "germ")
-    pg.dispatch_event(_F + "#d207-stat-cauta", "input")
-    optiuni = pg.eval_on_selector_all(_F + "#d207-stat option", "os => os.filter(o => o.value).map(o => o.textContent)")
+    # [15.1, 653.1] un singur câmp de țară: lista cu căutare (nu o căsuță de căutare plus o listă sub ea)
+    assert pg.locator(_F + "#d207-stat-cauta").count() == 0
+    pg.click(_F + "#d207-stat + .ds-lista .ds-lista-titlu")
+    pg.fill(_F + ".ds-lista-cauta", "germ")
+    optiuni = pg.locator(_F + ".ds-lista-rand .ds-lista-nume").all_inner_texts()
     patron.captura("d207_stat_cautat")
     assert "Germania (DE)" in optiuni and not [o for o in optiuni if "(FR)" in o], optiuni
 

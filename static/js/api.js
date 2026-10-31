@@ -1081,7 +1081,8 @@ export function alegereButoane(sel) {
       b.setAttribute("role", "radio");
       b.dataset.valoare = o.value;
       b.dataset.faraActiune = "alegere în formular; salvarea formularului poartă acțiunea";
-      b.textContent = o.textContent.trim();
+      b.textContent = (o.dataset.buton || o.textContent).trim();   // [15.1] eticheta scurtă a butonului (`data-buton`); textul întreg rămâne în `title`
+      if (o.dataset.buton) b.title = o.textContent.trim();
       b.__optiune = o;
       b.addEventListener("click", () => {
         if (b.disabled || (_VALOARE_SELECT.get.call(sel) === o.value && !sel.options[_INDEX_SELECT.get.call(sel)].hasAttribute("data-alege"))) return;
@@ -1303,21 +1304,29 @@ export function textScurt(t, n) {
 // deasupra își păstrează locul. Id-urile (`#caseta-atentie-activa`, `#ca-ok`, `#ca-nu`, `.ca-mesaj`) rămân. Gard:
 // core/test_lot12_form2_confirmare.py.
 export function confirmaCaseta(zona, mesajHtml, laConfirm, optiuni = {}) {
+  // [15.1, 446.1] fereastra de confirmare a DS: 480 px, centrată pe fundal întunecat, întrebarea e titlul, „Renunță” M și un singur buton principal M.
+  // `zona` rămâne în semnătură (apelanții o dau), dar întrebarea nu mai stă lipită de un buton, ca o casetă în mijlocul paginii.
   const vechi = document.getElementById("caseta-atentie-activa");
   if (vechi) vechi.remove();
   const div = document.createElement("div");
   div.id = "caseta-atentie-activa";
+  div.className = "ds-confirmare-fundal";
+  div.setAttribute("role", "dialog");
+  div.setAttribute("aria-modal", "true");
   div.innerHTML = `
-    <div class="caseta-intrebare"><div class="ca-mesaj">${mesajHtml}</div>
+    <div class="ds-confirmare caseta-intrebare"><div class="ca-mesaj ds-confirmare-titlu">${mesajHtml}</div>
       <div class="ca-actiuni">
-        <button class="buton-primar" id="ca-ok">${optiuni.textOk || "Confirm"}</button>
         <button class="buton-secundar" id="ca-nu">${optiuni.textNu || "Renun\u021b\u0103"}</button>
+        <button class="buton-primar" id="ca-ok">${optiuni.textOk || "Confirm"}</button>
       </div>
     </div>`;
-  zona.parentNode.insertBefore(div, zona.nextSibling);
-  div.querySelector("#ca-nu").addEventListener("click", () => div.remove());
-  div.querySelector("#ca-ok").addEventListener("click", () => { div.remove(); laConfirm(); });
-  aduInVedere(div);   // [lotul 07.10 pct.3] același mecanism ca restul mesajelor de după un buton
+  document.body.appendChild(div);
+  const inchide = () => { div.remove(); document.removeEventListener("keydown", laTasta, true); };
+  const laTasta = (ev) => { if (ev.key === "Escape") { ev.stopPropagation(); div.querySelector("#ca-nu").click(); } };
+  document.addEventListener("keydown", laTasta, true);
+  div.querySelector("#ca-nu").addEventListener("click", inchide);
+  div.querySelector("#ca-ok").addEventListener("click", () => { inchide(); laConfirm(); });
+  div.querySelector("#ca-ok").focus({ preventScroll: true });
 }
 
 // ── [8c, decizia Costin 10.3: „8c: reparația centrală, cu DS cap. 6 actualizat.”] DUPĂ GENERAREA UNEI NOTE ─────────────────────────

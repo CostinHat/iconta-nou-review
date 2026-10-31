@@ -6,10 +6,10 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=c6c45aefe4";
+import { listaCuCautare } from "../ds_piese.js?v=8f1c77490a";   // [15.1, 722] lista cu căutare
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=7036a2d894";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";   // [lotul 10, 431] refuzul care trimite la ce lipsește
-import { cautaInLista } from "./emitere_ecran.js?v=ec25cec559";   // [lotul 13, 653] căutarea în lista țărilor (aceeași ca la articole)
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
 const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
@@ -167,7 +167,8 @@ function pas1(corp, nav) {
     // [deficiența 283] întâi ce datorează firma în perioadă (din vectorul fiscal), cu termenul — alegerea fixează și perioada; restul separat
     const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip]);
     // [719, 14.3] restanța (termenul a trecut, nedepusă) se spune ca restanță și stă prima: nu dispare din listă după termen
-    const optDatorata = (d) => `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
+    const optDatorata = (d) => `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}" data-nume="${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}"`
+      + ` data-motiv="${d.restanta ? "restanță" : d.inainte_de_preluare ? "înainte de preluare" : ""}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
       + `${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · ${d.restanta ? "restanță — termenul a fost " : "termen de depunere "}${esc(dataRo(d.termen))}${d.inainte_de_preluare ? " · înainte de preluare" : ""}</option>`;
     // [lotul 10, deficiența 432] obligațiile pe perioade dinaintea preluării rămân vizibile (termenul cade după preluare), dar într-un grup
     // separat, marcate — regula de la 157 (decizia U2, 08.10); marcajul vine din motorul termenelor (`luna_preluare.inainte`)
@@ -178,8 +179,8 @@ function pas1(corp, nav) {
       const et = `${tp.toUpperCase()} · ${(S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""}${(S.deLamurit || {})[tp] ? " · " + S.deLamurit[tp] : ""}`;   // [8.1 pct.6] D710: la cerere; [D2, 14.3] „de lămurit”
       const neap = S.neaplicabile[tp];
       return neap
-        ? `<option value="${tp}" disabled title="${esc(neap)}">${esc(neap)}</option>`
-        : `<option value="${tp}" ${tp === S.tip && !S.lunaDatorata ? "selected" : ""}>${et}</option>`;
+        ? `<option value="${tp}" disabled data-nume="${esc(tp.toUpperCase())}" data-motiv="nu se poate genera" data-detalii="${esc(neap)}" title="${esc(neap)}">${esc(neap)}</option>`
+        : `<option value="${tp}" data-nume="${esc(tp.toUpperCase() + " · " + ((S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""))}"${(S.deLamurit || {})[tp] ? ` data-motiv="de lămurit" data-detalii="${esc(S.deLamurit[tp])}"` : ""} ${tp === S.tip && !S.lunaDatorata ? "selected" : ""}>${et}</option>`;
     }).join("");
     // [deficiența 301, comanda Costin 17.10.2026 7.2] „«Alte declarații» pliată, deschisă doar la cerere”: cu datorate, selectorul le arată
     // numai pe ele; restul apare după „Arată alte declarații” (sau dacă tipul ales e deja unul dintre ele, întors din pasul 2)
@@ -220,6 +221,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
 
   const selFirma = corp.querySelector("#dec-firma");  // null cand firma e fixa [decl_firma_v1]
   const selTip = corp.querySelector("#dec-tip");
+  listaCuCautare(selTip, { gol: "Alege tipul declarației", cautare: "Caută declarația (D300, D394…)" });   // [15.1, 722] lista cu căutare pe lățimea ferestrei
   const cont = corp.querySelector("#dec-continua");
   const zonaP = corp.querySelector("#dec-perioada");
 
@@ -3201,7 +3203,6 @@ function randeazaFormularD207(corp, nav) {
         '<select id="d207-tip" class="camp-input">' + ALEGE + optTip + '</select></label>' +
       '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Nume / denumire beneficiar <span class="oblig">*</span></span><input id="d207-den" type="text" class="camp-input"></label>' +
       '<label class="camp" style="flex:1 1 240px"><span class="camp-eticheta">Stat de rezidență <span class="oblig">*</span></span>' +
-        '<input type="text" id="d207-stat-cauta" class="camp-input" data-cautare placeholder="Caută țara…" aria-label="Caută statul de rezidență" autocomplete="off" style="margin-bottom:6px">' +
         '<select id="d207-stat" class="camp-input" aria-label="Statul de rezidență">' + ALEGE + _optiuniStat((S.nomenclatoare || {}).d207_stat_r || []) + '</select></label>' +
     '</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-start;gap:10px">' +
@@ -3237,7 +3238,7 @@ function randeazaFormularD207(corp, nav) {
       ? "Tip de venit scutit — impozitul reținut și cel suportat de plătitor sunt 0 pentru acest beneficiar."
       : "";
   };
-  cautaInLista(gv("#d207-stat-cauta"), gv("#d207-stat"));   // [lotul 13, 653] lista țărilor cu căutare (aceeași căutare ca la articole)
+  listaCuCautare(gv("#d207-stat"), { gol: "Alege țara", cautare: "Caută țara…" });   // [15.1, 653.1] un singur câmp: lista cu căutare, aleasă o dată
   gv("#d207-tip").addEventListener("change", reflScutit);
   reflScutit();
   zona.querySelectorAll(".dec-d207-del").forEach((b) => b.addEventListener("click", () => {

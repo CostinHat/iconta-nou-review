@@ -196,6 +196,8 @@ def test_def_470_nota_din_factura_se_deschide_pe_nota_ei(patron, firma_emit):
         _factura_din_istoric(patron, firma_emit, f["factura_id"])   # prima factură e a 25-a din listă: „Vezi și … mai vechi”
         pg = patron.pg
         pg.click("#fd-vezi-nota")
+        pg.wait_for_selector("#fd-nota-jurnal", timeout=20000)   # [15.1, 673.1] fereastra notei; Registrul jurnal se deschide din ea
+        pg.click("#fd-nota-jurnal")
         rand = ".fereastra:last-of-type tbody.tn-nota[data-nota-id='%d']" % nid   # [lotul 12, 617] rândul notei în tabelul de note
         pg.wait_for_selector(rand, timeout=20000)
         pg.wait_for_timeout(600)

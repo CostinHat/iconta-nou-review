@@ -3,7 +3,7 @@
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual: [lotul 12, 472] pe rândul produsului salvat, „Corectează cota”
 // (PUT /produse/{id}, consemnat în `produse_cota_jurnal`); [471] articolele din stoc fără produs vin cu cota propusă (NIR / potrivire).
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=c6c45aefe4";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { api, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=7036a2d894";  /* cap6_catch_v1b + investigatie_identitate_v1 */
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [lotul 12, 471] propunerea automată a cotei, numai cu dreptul ei */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';

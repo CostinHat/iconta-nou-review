@@ -1,6 +1,6 @@
 // admin_sanatate.js — Admin iConta: sanatate infrastructura (doar superadmin).
 // Server (CPU/RAM/disk), aplicatie (uptime), baza de date, erori recente (500+), grafice istoric.
-import { dataRo, api, arataMesaj, esc, cantitate, pct } from "../api.js?v=c6c45aefe4";
+import { dataRo, api, arataMesaj, esc, cantitate, pct } from "../api.js?v=7036a2d894";
 
 // [lotul 13, deficiența 643 — „Load average afișat «1.53369140625» (11 zecimale, punct), fără pragul de alertă alături; graficele pe 24 h
 // fără scară verticală și fără linia pragului; «32.9» cu punct.”] Cifrele în format românesc (DS cap.4: virgula zecimală), încărcarea cu

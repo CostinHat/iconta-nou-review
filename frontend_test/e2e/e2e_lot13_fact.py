@@ -138,9 +138,8 @@ def test_def_547_factura_primita_cu_nota_ciorna_se_sterge(patron, firma_fact):
     fid = _ti_api(patron, firma_fact, "TI-547")
     _deschide_factura(patron, firma_fact, fid)
     pg = patron.pg
-    # [lotul 13, 675 — DS cap.1 v2.104] „Trimite pe email” stă la locul lui, inactiv, cu motivul: nu se aplică unei facturi primite
-    assert pg.get_attribute("#fd-email", "aria-disabled") == "true" and "primită" in pg.get_attribute("#fd-email", "title"), \
-        "„Trimite pe email” nu are rost la o factură primită"
+    # [15.1, 547.1 — înlocuiește 675 pentru acțiunile fără sens] „Trimite pe email” nu se afișează pe o factură primită
+    assert pg.locator("#fd-email").count() == 0, "„Trimite pe email” nu are rost la o factură primită"
     assert pg.is_enabled("#fd-sterge") and pg.get_attribute("#fd-sterge", "aria-disabled") is None
     pg.click("#fd-sterge")
     pg.locator("#ca-ok", has_text="Șterge factura").click()

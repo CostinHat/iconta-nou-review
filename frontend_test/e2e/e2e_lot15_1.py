@@ -46,8 +46,21 @@ def _alege(pg, camp, valoare):
 
 
 def _taiat(pg):
-    return pg.evaluate("""() => [...document.querySelectorAll('.fereastra:last-of-type .camp-input, .fereastra:last-of-type .camp-eticheta')]
-        .filter((e) => e.offsetParent && e.scrollWidth > e.clientWidth + 1).map((e) => e.id || e.textContent.trim())""")
+    """Câmpuri, etichete și texte alese în liste care nu încap în lățimea lor (un select nu raportează depășirea prin scrollWidth: se măsoară textul ales)."""
+    return pg.evaluate("""() => {
+      const lat = (txt, el) => { const s = document.createElement('span'); const c = getComputedStyle(el);
+        s.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:' + c.font; s.textContent = txt; document.body.appendChild(s);
+        const w = s.getBoundingClientRect().width; s.remove(); return w; };
+      const rau = [];
+      for (const e of document.querySelectorAll('.fereastra:last-of-type .camp-input, .fereastra:last-of-type .camp-eticheta')) {
+        if (!e.offsetParent) continue;
+        if (e.scrollWidth > e.clientWidth + 1) rau.push(e.id || e.textContent.trim());
+        if (e.tagName === 'SELECT' && !e.classList.contains('alegere-sursa')) {
+          const o = e.options[e.selectedIndex];
+          if (o && lat(o.text, e) > e.clientWidth - 36) rau.push((e.id || 'select') + ': ' + o.text);
+        }
+      }
+      return rau; }""")
 
 
 @pytest.mark.parametrize("lat,inalt", REZOLUTII)
@@ -123,3 +136,172 @@ def test_def_721_ciorna_pe_server(patron, firma_tvai):
     pg.wait_for_timeout(1500)
     _formular_chirie(patron, firma_tvai)
     assert pg.eval_on_selector("#op-fel", "e => e.value") == ""
+
+
+# ── zona B ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+@pytest.fixture()
+def firma_b(patron):
+    for f in firma_noua():
+        pregateste_firma(patron, f)
+        yield f
+
+
+@pytest.mark.parametrize("lat,inalt", REZOLUTII)
+def test_def_722_tip_declaratie_lista_cu_cautare(patron, firma_b, lat, inalt):
+    """722: „Tip declarație” e listă cu căutare pe lățimea ferestrei, rânduri de 44 px, nimic tăiat, la ambele rezoluții."""
+    from e2e_bloc_a import _card
+    pg = patron.pg
+    pg.set_viewport_size({"width": lat, "height": inalt})
+    patron.firma(firma_b["nume"])
+    _card(patron, "declaratii", "#dec-tip")
+    pg.wait_for_function("() => !!document.querySelector('#dec-tip') && !!document.querySelector('.ds-lista')", timeout=30000)
+    lista = pg.locator(".ds-lista")
+    assert lista.count() == 1 and pg.eval_on_selector("#dec-tip", "e => e.classList.contains('ds-lista-sursa')")
+    pg.click(".ds-lista-titlu")
+    pg.wait_for_selector(".ds-lista-cauta", timeout=5000)
+    cutie = pg.eval_on_selector(".ds-lista-panou", "e => { const r = e.getBoundingClientRect(); return [r.left, r.right, innerWidth]; }")
+    assert cutie[0] >= 0 and cutie[1] <= cutie[2], cutie   # niciodată mai lată decât ecranul
+    inalt_rand = pg.eval_on_selector_all(".ds-lista-rand", "es => es.map(e => Math.round(e.getBoundingClientRect().height))")
+    assert inalt_rand and set(inalt_rand) == {44}, inalt_rand
+    nume = pg.locator(".ds-lista-rand .ds-lista-nume").all_inner_texts()
+    assert any(t.upper().startswith("D300") for t in nume), nume
+    # căutarea filtrează după nume
+    pg.fill(".ds-lista-cauta", "d394")
+    filtrate = pg.locator(".ds-lista-rand .ds-lista-nume").all_inner_texts()
+    assert filtrate and all("D394" in t.upper() for t in filtrate), filtrate
+    patron.captura("l15_722_%d" % lat)
+    pg.click(".ds-lista-rand >> nth=0")   # alegerea trece în select-ul sursă
+    assert pg.eval_on_selector("#dec-tip", "e => e.value") == "d394"
+    assert pg.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 1")
+
+
+def test_def_fa_emite_factura_cota_grup_si_data(patron, firma_b):
+    """F-A: cota liniei e grup de alegere; la data 15.06.2025 grupul arată 19% / 9% / 5%, iar 21% nu se poate alege și nu rămâne aplicată;
+    cu 21% aleasă, TVA 210,00 și total 1.210,00; secțiunile se numesc Document / Client / Sume; după emitere butonul nu mai spune „Se emite…”."""
+    from e2e_bloc_a import _deschide_emiterea
+    pg = patron.pg
+    _deschide_emiterea(patron, firma_b["nume"])
+    titluri = pg.locator(".fereastra:last-of-type .em-eticheta").all_inner_texts()
+    assert [t.capitalize() for t in titluri[:3]] == ["Document", "Client", "Sume"], titluri   # CSS le afișează cu majuscule
+    pg.fill("#em-l0-descriere", "Serviciu test")
+    pg.fill("#em-l0-cantitate", "1")
+    pg.fill("#em-l0-pret_unitar", "1000")
+    pg.wait_for_selector("#em-l0-cota-sel, #em-l0-cota", timeout=10000)
+    grup = ".alegere-butoane:has(+ #em-l0-cota)"
+    assert pg.locator(grup).count() == 1, "cota liniei nu e grup de alegere"
+    assert pg.eval_on_selector("#em-l0-cota", "e => e.tagName") == "SELECT"
+    pg.click(grup + " > button:has-text('21%')")
+    assert pg.evaluate("() => document.body.innerText").count("1.210,00") >= 1
+    pg.fill("#em-data", "2025-06-15")
+    pg.dispatch_event("#em-data", "change")
+    pg.wait_for_function("() => [...document.querySelectorAll('.alegere-butoane:has(+ #em-l0-cota) > button')].some((b) => b.textContent.trim() === '19%')", timeout=15000)
+    cote = pg.locator(grup + " > button").all_inner_texts()
+    assert "19%" in cote and "9%" in cote and "5%" in cote and "21%" not in cote, cote
+    assert pg.eval_on_selector("#em-l0-cota", "e => e.value") == "", "21% a rămas aplicată la o dată în care nu era valabilă"
+    patron.captura("l15_fa_2025")
+
+
+def test_def_547_1_factura_primita_fara_butoanele_facturii_emise(patron, firma_b):
+    """547.1: factura primită arată numai acțiunile ei; niciun buton gri fără motiv."""
+    from e2e_lot13_fact import _ti_api
+    from e2e_bloc_a import _deschide_factura
+    fid = _ti_api(patron, firma_b, "TI-547-1")
+    _deschide_factura(patron, firma_b, fid)
+    pg = patron.pg
+    for b in ("#fd-email", "#fd-chitanta", "#fd-spv", "#fd-transforma", "#fd-storno", "#fd-saga"):
+        assert pg.locator(b).count() == 0, "%s apare pe o factură primită" % b
+    fara_motiv = pg.evaluate("""() => [...document.querySelectorAll('.fereastra:last-of-type button')].filter((b) => b.offsetParent
+        && (b.disabled || b.getAttribute('aria-disabled') === 'true') && !(b.getAttribute('data-motiv-inactiv') || b.title)).map((b) => b.textContent.trim())""")
+    assert fara_motiv == [], fara_motiv
+    patron.captura("l15_547_1")
+
+
+def test_def_673_1_nota_se_deschide_in_fereastra_ei(patron, firma_b):
+    """673.1: linkul „nota …” din detaliul facturii deschide nota în fereastra ei (720 px, centrată), cu liniile ei; „←” readuce detaliul."""
+    from e2e_lot13_fact import _ti_api
+    from e2e_bloc_a import _deschide_factura
+    fid = _ti_api(patron, firma_b, "TI-673-1")
+    _deschide_factura(patron, firma_b, fid)
+    pg = patron.pg
+    pg.click("#fd-vezi-nota")
+    pg.wait_for_selector("#fd-nota-linii", timeout=20000)
+    f = pg.eval_on_selector(".fereastra:last-of-type", "e => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.left + r.width / 2), innerWidth]; }")
+    assert f[0] == 720 and abs(f[1] - f[2] / 2) <= 2, f   # 720 px, centrată
+    assert "=" in pg.inner_text("#fd-nota-linii")
+    patron.captura("l15_673_1")
+    pg.locator(".fereastra:last-of-type .nav-inapoi").click()
+    pg.wait_for_selector("#fd-vezi-nota", timeout=15000)
+
+
+@pytest.fixture()
+def firma_fara_metoda():
+    for f in firma_noua():   # firmă nouă, fără profil pregătit: metoda de stoc nedeclarată
+        yield f
+
+
+def test_def_676_1_metoda_de_stoc_grup_de_alegere(patron, firma_fara_metoda):
+    """676.1: „Metoda de stoc” e grup de alegere pe un rând, nimic ales la început, fără „— alege —”; cel ales rămâne apăsat după salvare."""
+    from e2e_bloc_c import _deschide
+    _deschide(patron, firma_fara_metoda["nume"], "datefirma", "#df-metoda_stoc")
+    pg = patron.pg
+    grup = ".alegere-butoane:has(+ #df-metoda_stoc) > button"
+    assert pg.locator(grup).count() >= 2
+    assert not any("alege" in t.lower() for t in pg.locator(grup).all_inner_texts())
+    assert pg.locator(grup + "[aria-checked='true']").count() == 0, "metoda apare aleasă fără ca omul s-o fi ales"
+    ys = {round(b.bounding_box()["y"]) for b in pg.locator(grup).all()}
+    assert len(ys) == 1, "butoanele metodei nu stau pe un rând: %s" % ys
+    pg.locator(grup + ":has-text('global-valoric')").first.click()
+    assert pg.input_value("#df-metoda_stoc") != ""
+    assert pg.locator(grup + "[aria-checked='true']").count() == 1
+    patron.captura("l15_676_1")
+
+
+def _formular_operatie(patron, f, cheie, alegeri):
+    pg = patron.pg
+    patron.firma(f["nume"])
+    pg.click("#fa-operatiuni")
+    pg.wait_for_selector("button[data-op='%s']" % cheie, state="attached", timeout=25000)
+    pg.evaluate("""(c) => { const b = document.querySelector("button[data-op='" + c + "']"); const g = b.closest('.op-grup[hidden]');
+        if (g) document.querySelector('.rap-tab[data-grup="' + g.dataset.frecventa + '"]').click(); }""", cheie)
+    pg.click("button[data-op='%s']" % cheie)
+    pg.wait_for_selector("#op-trimite", timeout=20000)
+    pg.wait_for_timeout(1000)
+    for camp, val in alegeri:
+        _alege(pg, camp, val)
+    pg.wait_for_timeout(500)
+
+
+@pytest.mark.parametrize("cheie,alegeri", (("decont", (("fel", "decont"),)), ("marja_turism", ()), ("chirie", (("fel", "refacturare"),))))
+@pytest.mark.parametrize("lat,inalt", REZOLUTII)
+def test_def_670_509_formular_pe_piese_fara_derulare(patron, firma_b, cheie, alegeri, lat, inalt):
+    """670 / 509: formularul Operațiunilor (Decont deplasare — Decont final, Marjă agenții de turism, Refacturare) e pe grupuri, aliniat, etichete întregi pe un rând,
+    nimic tăiat și fără derulare la 1920 × 1080 și 1366 × 768."""
+    pg = patron.pg
+    pg.set_viewport_size({"width": lat, "height": inalt})
+    try:
+        _formular_operatie(patron, firma_b, cheie, alegeri)
+    except Exception:
+        pytest.skip("formularul %s nu se deschide în fixtura asta" % cheie)
+    assert _taiat(pg) == [], _taiat(pg)
+    et = pg.evaluate("() => [...document.querySelectorAll('.ds-grup .camp-eticheta')].filter((e) => e.offsetParent).map((e) => Math.round(e.getBoundingClientRect().height))")
+    assert et and max(et) <= 24, et   # o etichetă nu trece pe al doilea rând
+    derulare = pg.evaluate("() => [...document.querySelectorAll('.fereastra-corp')].filter((e) => e.offsetParent && e.scrollHeight > e.clientHeight + 1).map((e) => e.scrollHeight - e.clientHeight)")
+    assert derulare == [], "formularul se derulează: %s" % derulare
+    assert pg.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 1")
+    patron.captura("l15_670_%s_%d" % (cheie, lat))
+
+
+def test_def_653_1_tara_un_singur_camp_lista_cu_cautare(patron, firma_b):
+    """653.1: D207, „Stat de rezidență”: un singur câmp de țară, listă cu căutare, aleasă o dată (nu o căsuță de căutare plus o listă sub ea)."""
+    from e2e_lot13_decl import _F, _continua_formular, _platitor, AN_D207
+    _platitor(patron, firma_b)
+    pg = _continua_formular(patron, firma_b, "d207", AN_D207)
+    assert pg.locator(_F + "#d207-stat-cauta").count() == 0
+    assert pg.locator(_F + "#d207-stat + .ds-lista").count() == 1
+    pg.click(_F + "#d207-stat + .ds-lista .ds-lista-titlu")
+    assert pg.locator(_F + ".ds-lista-cauta").count() == 1
+    pg.fill(_F + ".ds-lista-cauta", "germ")
+    nume = pg.locator(_F + ".ds-lista-rand .ds-lista-nume").all_inner_texts()
+    assert "Germania (DE)" in nume and not [t for t in nume if "(FR)" in t], nume
+    pg.click(_F + ".ds-lista-rand >> nth=0")
+    assert pg.eval_on_selector(_F + "#d207-stat", "e => e.value") == "DE"

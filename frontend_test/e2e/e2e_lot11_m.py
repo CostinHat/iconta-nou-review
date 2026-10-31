@@ -249,6 +249,7 @@ def test_def_446_avertismentul_o_data_confirmarea_ia_locul_butonului(patron, fir
         patron.captura("confirmare")
         f = patron.fereastra()
         assert f.count(text[:60]) == 0, f[:2000]   # [lotul 14, 687] avertismentul stă numai în cardul lui; confirmarea e întrebarea scurtă, nu a doua oară textul
+        f += " " + pg.inner_text("#caseta-atentie-activa")   # [15.1, 446.1] întrebarea e fereastra de confirmare (în `body`), nu text al ferestrei de lucru
         assert "Actualizezi fișele salariaților existenți cu datele din fișier?" in f
         assert not pg.is_visible("#mig-salveaza-sal") and pg.inner_text("#ca-ok").strip() == "Actualizez fișele"
         assert o["loc"] >= 150, o

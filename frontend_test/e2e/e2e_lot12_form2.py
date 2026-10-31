@@ -72,10 +72,11 @@ def test_def_446_1_intrebarea_inlocuirii_nu_e_rosie_iar_tabelul_ramane_citibil(p
           const sus = Math.max(r(rez).bottom, th ? r(th).bottom : 0), jos = Math.min(r(bara).top, r(c).bottom);
           const randuri = [...c.querySelectorAll('table tbody tr')].filter((t) => r(t).top >= sus - 1 && r(t).bottom <= jos + 1).length;
           const cutie = document.querySelector('#caseta-atentie-activa').firstElementChild, st = getComputedStyle(cutie);
-          return {loc: Math.round(jos - sus), randuri, clasa: cutie.className, culori: [st.backgroundColor, st.borderTopColor],
+          return {loc: Math.round(jos - sus), randuri, clasa: cutie.className, larg: Math.round(r(cutie).width), culori: [st.backgroundColor, st.borderTopColor],
                   intrebare: cutie.innerText}; }""")
         patron.captura("intrebarea")
-        assert o["clasa"] == "caseta-intrebare" and not set(o["culori"]) & set(ROSU), o
+        # [15.1, 446.1] întrebarea e fereastra de confirmare a DS: 480 px, centrată pe fundal întunecat (nu o casetă lipită jos), neutră, nu roșie
+        assert "ds-confirmare" in o["clasa"] and o["larg"] == 480 and not set(o["culori"]) & set(ROSU), o
         assert "Înlocuiești balanța de deschidere a firmei cu cea din fișier?" in o["intrebare"], o
         assert o["loc"] >= 150 and o["randuri"] >= 3, o                  # „tabelul se strânge la un rând tăiat”
         pg.click("#ca-nu")
