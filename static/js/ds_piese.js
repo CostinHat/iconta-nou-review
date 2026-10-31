@@ -2,7 +2,7 @@
 // grupurile formularului (Document, Furnizor / Client, Sume, Descriere), lățimea câmpului după rol (XS 9, S 16, M 38, L jumătate, XL
 // toată lățimea) și cardul-rezumat de un rând cu detaliile pliate. Dimensiunile sunt în stil.css (`.ds-*`); aici stă numai alegerea
 // clasei, ca ecranele să nu mai aleagă singure lățimi și grupuri.
-import { esc } from "./api.js?v=7036a2d894";
+import { esc } from "./api.js?v=4364ee71f3";
 
 export const GRUPURI_FORMULAR = ["Document", "Furnizor / Client", "Sume", "Descriere"];
 
@@ -87,7 +87,7 @@ export function cardRezumat({ text, ton = "avertisment", detalii = "", actiune =
   return el;
 }
 
-/** [15.1, 722] Lista cu căutare (DS: lista cu căutare, 720 px, rânduri de 44 px): înlocuiește vizual un `<select>` cu texte lungi. `<select>`-ul
+/** [15.1, 722] Lista cu căutare (DS: lista cu căutare, 720 px, rânduri de 44 px): înlocuiește vizual o listă derulantă cu texte lungi. Lista derulantă
  *  rămâne sursa valorii (ascuns): `value`, `change` și `select_option` din teste merg ca înainte. Fiecare opțiune poate purta
  *  `data-nume` (textul principal, în stânga), `data-motiv` (motivul scurt, în dreapta) și `data-detalii` (textul întreg, la clic);
  *  fără ele, textul opțiunii e textul principal. Opțiunile `disabled` se văd, dar nu se aleg; clicul pe ele arată detaliile.
@@ -130,9 +130,9 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
               <span class="ds-lista-motiv">${esc(r.o.dataset.motiv || "")}</span></li>
             ${r.o.dataset.detalii ? `<li class="ds-lista-detalii" data-pentru="${i}" hidden>${esc(r.o.dataset.detalii)}</li>` : ""}`).join("")}
           ${potrivite.some((r) => !r.grup) ? "" : '<li class="ds-lista-gol">Nimic găsit. Schimbă textul căutat.</li>'}</ul></div>` : ""}`;
-    cutie.querySelector(".ds-lista-titlu").addEventListener("click", () => { deschisa = !deschisa; deseneaza(); if (deschisa) cutie.querySelector(".ds-lista-cauta").focus(); });
+    cutie.querySelector(".ds-lista-titlu").addEventListener("click", () => { deschisa = !deschisa; deseneaza(); if (deschisa) focusFaraSalt(cutie.querySelector(".ds-lista-cauta")); });
     const c = cutie.querySelector(".ds-lista-cauta");
-    if (c) c.addEventListener("input", () => { filtru = c.value; deseneaza(); const n = cutie.querySelector(".ds-lista-cauta"); n.focus(); n.setSelectionRange(n.value.length, n.value.length); });
+    if (c) c.addEventListener("input", () => { filtru = c.value; deseneaza(); const n = cutie.querySelector(".ds-lista-cauta"); focusFaraSalt(n); n.setSelectionRange(n.value.length, n.value.length); });
     cutie.querySelectorAll(".ds-lista-rand").forEach((li) => li.addEventListener("click", () => {
       const r = potrivite[Number(li.dataset.i)];
       const det = cutie.querySelector(`.ds-lista-detalii[data-pentru="${li.dataset.i}"]`);

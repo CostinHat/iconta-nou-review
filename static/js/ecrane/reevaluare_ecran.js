@@ -10,7 +10,7 @@
 // validarea pe server, erorile lângă câmp — toate deodată, `erori_campuri`).
 // DS: tabelul `.fd-tabel` cu cifrele în `.fd-td-num` (cap.9), rezumatul lipit sus `.rezumat-fix`, acțiunea și mesajul ei lipite jos
 // `.bara-fixa` (cap.6, v2.92), confirmarea care numește nota și consecința rămâne pe ecran (cap.27).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=7036a2d894";
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=4364ee71f3";
 
 import { MONEDE } from "./operatiuni_ecran.js?v=624b37f58d";   // [lotul 13, 631] aceeași listă de monede ca la factură
 

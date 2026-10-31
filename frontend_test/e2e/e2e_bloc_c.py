@@ -756,8 +756,10 @@ def test_def_78_conturile_pornesc_goale_cu_contul_uzual_in_explicatie(patron):
     assert "De regulă 2131." in pg.locator(".camp:has(#op-cont_imobilizare) .camp-ajutor").inner_text()
     patron.captura("gol")
     pg.fill("#op-data", AZI.isoformat())
-    for c in ("pret", "valoare_bruta", "amortizare_cumulata", "cota"):
-        pg.fill("#op-%s" % c, "21" if c == "cota" else "100")
+    for c in ("pret", "valoare_bruta", "amortizare_cumulata"):
+        pg.fill("#op-%s" % c, "100")
+    pg.wait_for_function("() => [...document.querySelector('#op-cota').options].some((o) => o.value === '21')", timeout=20000)   # [15.1] cota e grup de alegere
+    pg.select_option("#op-cota", "21")
     pg.click("#op-trimite")
     # [410] refuzul stă lângă câmpul gol (`eroareCamp`), nu în zona mesajului
     pg.wait_for_selector("#op-cont_imobilizare[aria-invalid='true']", timeout=5000)

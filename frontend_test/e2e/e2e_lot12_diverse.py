@@ -281,8 +281,10 @@ def test_def_c128_achizitia_intracomunitara_refuza_furnizorul_din_romania(patron
     pg = patron.pg
     _operatiunea(patron, f, "achizitie_ic")
     for camp, v in (("data", AZI.isoformat()), ("valoare", "1000"), ("cod_tva_furnizor", "RO14399840"), ("numar", "AIC-C128"),
-                    ("cota", "21"), ("data_faptului_generator", AZI.isoformat())):
+                    ("data_faptului_generator", AZI.isoformat())):
         pg.fill("#op-%s" % camp, v)
+    pg.wait_for_function("() => [...document.querySelector('#op-cota').options].some((o) => o.value === '21')", timeout=20000)   # [15.1] cota e grup de alegere
+    pg.select_option("#op-cota", "21")
     pg.select_option("#op-moneda", "RON")   # [lotul 13, 537] moneda facturii se alege
     pg.fill("#op-cont_destinatie", "371")
     pg.select_option("#op-tip", "bunuri")

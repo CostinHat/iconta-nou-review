@@ -1,7 +1,7 @@
 // tari_partener.js — [lotul 12, C160] Țara partenerului unei facturi emise, spusă la fel pe ecranele care o cer („Emite factură”, șablonul
 // facturii recurente): lista țărilor (grupul UE OGLINDEȘTE core/d390.TARI_UE, ca încadrarea să coincidă cu backendul; codurile sunt cele
 // de TVA / VIES — Grecia = EL) și deducerea țării din codul fiscal (DS cap.17: dedusă, vizibilă și modificabilă). O singură sursă.
-import { esc } from "../api.js?v=7036a2d894";
+import { esc } from "../api.js?v=4364ee71f3";
 
 export const TARI_UE_JS = { AT:"Austria", BE:"Belgia", BG:"Bulgaria", CY:"Cipru", CZ:"Cehia",
   DE:"Germania", DK:"Danemarca", EE:"Estonia", EL:"Grecia", ES:"Spania", FI:"Finlanda",

@@ -11,7 +11,7 @@
 // server). Transportul (`ciornaPeServer`) e același pentru ciorna facturii (`emitere_ecran.js`). Înregistrarea cabinetului rămâne în
 // browser: înaintea contului nu există utilizator pe server. Gard: core/test_ciorna_formular.py, core/test_lot12_emit_ciorna.py + e2e
 // test_def_267_*, test_def_495_*.
-import { api } from "./api.js?v=7036a2d894";
+import { api } from "./api.js?v=4364ee71f3";
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 
 const PASTRARE_ZILE = 7;

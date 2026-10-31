@@ -308,6 +308,7 @@ STRATURI = {
     ".fereastra-overlay": ".fereastra-corp",      # .fereastra are max-height = ecranul, corpul derulează
     ".pacm-overlay": ".pacm-preview",             # povestea lunii: înălțimea ecranului, previzualizarea derulează
     ".rec-overlay": ".rec-modal-corp",            # Recomandă: max-height = ecranul, corpul derulează
+    ".ds-confirmare-fundal": ".ds-confirmare",   # [15.1, 446.1] fereastra de confirmare: 480 px, înălțimea după conținut, max-height = ecranul
     ".acces-overlay": ".acces-modal",             # intrarea în cont și „Înregistrează cabinetul tău”
     ".lupa-overlay": None,                        # poza mărită (o imagine, cu rotița pentru zoom)
     ".reaut-overlay": ".reaut",                   # parola cerută peste ecran

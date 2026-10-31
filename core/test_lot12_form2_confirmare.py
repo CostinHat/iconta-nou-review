@@ -76,7 +76,7 @@ def test_def_446_1_intrebarea_nu_e_rosie_si_tabelul_ramane_citibil(browser, monk
         b = pg.evaluate(MASOARA)
     finally:
         pg.close()
-    assert b["clase"] and "caseta-atentie" not in " ".join(b["clase"]) and "caseta-intrebare" in b["clase"], (pas, b["clase"])
+    assert b["clase"] and "caseta-atentie" not in " ".join(b["clase"]) and any("caseta-intrebare" in c for c in b["clase"]), (pas, b["clase"])   # [15.1] fereastra de confirmare DS (`ds-confirmare caseta-intrebare`)
     assert not (set(b["culori"]) & ROSU), (pas, b["culori"])                      # „întrebarea stă într-o casetă roșie”
     assert b["text"].count("Firma are deja date de acest fel") == 1 and b["text"].count(AVERT[:60]) == 0, pas   # avertismentul, tot o singură dată (446): [lotul 14, 687] cardul-rezumat; textul întreg stă în fereastra cardului
     assert b["bara"] - a["bara"] <= CRESTERE_MAX, (pas, a["bara"], b["bara"])       # întrebarea ia locul butonului, nu mai mult
@@ -100,7 +100,7 @@ def test_def_446_1_confirmacaseta_are_o_singura_implementare_si_nu_e_rosie():
     t = surse["static/js/api.js"]
     corp = t[t.index("export function confirmaCaseta("):]
     corp = corp[:corp.index("\n}\n")]
-    assert 'class="caseta-intrebare"' in corp and "caseta-atentie\"" not in corp and "class=\"caseta-atentie" not in corp, corp
+    assert 'caseta-intrebare"' in corp and "ds-confirmare" in corp and "caseta-atentie\"" not in corp and "class=\"caseta-atentie" not in corp, corp
     apeluri = sum(len(re.findall(r"\bconfirmaCaseta\(", x)) for p, x in surse.items() if p != "static/js/api.js")
     assert apeluri >= 40, "anti-vacuu: apelurile confirmaCaseta nu mai sunt găsite (%d)" % apeluri
 

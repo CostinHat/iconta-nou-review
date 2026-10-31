@@ -90,7 +90,8 @@ def _ti_operatiuni(patron, firma, numar="TI-1", valoare="30000"):
     pg.select_option("#op-categorie", "deseuri")
     pg.fill("#op-valoare", valoare)
     pg.fill("#op-cont_destinatie", "371")
-    pg.fill("#op-cota", "21")
+    pg.wait_for_function("() => [...document.querySelector('#op-cota').options].some((o) => o.value === '21')", timeout=20000)   # [15.1] cota e grup de alegere
+    pg.select_option("#op-cota", "21")
     pg.click("#op-trimite")
     pg.wait_for_function("() => (document.querySelector('#op-mesaj') || {innerText: ''}).innerText.trim().length > 0", timeout=30000)
     pg.wait_for_timeout(400)

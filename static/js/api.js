@@ -1322,7 +1322,7 @@ export function confirmaCaseta(zona, mesajHtml, laConfirm, optiuni = {}) {
     </div>`;
   document.body.appendChild(div);
   const inchide = () => { div.remove(); document.removeEventListener("keydown", laTasta, true); };
-  const laTasta = (ev) => { if (ev.key === "Escape") { ev.stopPropagation(); div.querySelector("#ca-nu").click(); } };
+  const laTasta = (ev) => { if (ev.key === "Escape") { ev.stopPropagation(); div.querySelector("#ca-nu").dispatchEvent(new MouseEvent("click", { bubbles: true })); } };   // ca „Renunță” apăsat: ascultătorii lui (butonul ecranului revine) rulează
   document.addEventListener("keydown", laTasta, true);
   div.querySelector("#ca-nu").addEventListener("click", inchide);
   div.querySelector("#ca-ok").addEventListener("click", () => { inchide(); laConfirm(); });

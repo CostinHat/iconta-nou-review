@@ -3376,3 +3376,4 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .fd-tabel thead th { height: 40px; padding-top: 0; padding-bottom: 0; vertical-align: middle; }
 .fd-tabel tbody tr:not(.mig-prev-motive) > td { height: 44px; padding-top: 0; padding-bottom: 0; vertical-align: middle; }
 .mig-prev .mig-prev-scurt { -webkit-line-clamp: 1; line-clamp: 1; }
+.ds-confirmare { max-height: calc(100vh - 32px); overflow-y: auto; }

@@ -5,7 +5,7 @@
 // CF art.282 alin.(3), (8) — `core/compensari_api.py`.
 // DS: fereastra cu tabel (cap.9 v2.96): rezumatul lipit sus `.rezumat-fix` (partenerul, ordinul, totalul), tabelul `.fd-tabel` cu cifrele
 // în `.fd-td-num`, acțiunea și mesajul ei lipite jos `.bara-fixa`; confirmarea numește notele și trimite la ele (cap.27).
-import { api, ultimaCerere, arataMesaj, bani, curataEroriCamp, dataIso, dataRo, dupaGenerare, esc, eroareCamp, noteGenerate, ALEGE } from "../api.js?v=7036a2d894";
+import { api, ultimaCerere, arataMesaj, bani, curataEroriCamp, dataIso, dataRo, dupaGenerare, esc, eroareCamp, noteGenerate, ALEGE } from "../api.js?v=4364ee71f3";
 
 /** „CZ1 din 10.10.2026 · rest 1.210,00” — factura cum o citește omul. */
 function doc(f) {

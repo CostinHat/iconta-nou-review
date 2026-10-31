@@ -79,7 +79,8 @@ def _necorporala(patron, firma, numar):
     pg.fill("#op-furnizor_nume", "DANTE INTERNATIONAL SA")
     pg.fill("#op-furnizor_cui", CUI_DANTE)
     pg.fill("#op-numar", numar)
-    pg.fill("#op-cota", "21")
+    pg.wait_for_function("() => [...document.querySelector('#op-cota').options].some((o) => o.value === '21')", timeout=20000)   # [15.1] cota e grup de alegere
+    pg.select_option("#op-cota", "21")
     pg.click("#op-trimite")
     return pg
 

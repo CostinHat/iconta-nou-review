@@ -15,7 +15,7 @@
 // singur); fiecare rezultat e un buton (DS cap.2a, 674); alegerea (clic / Enter) deschide fereastra potrivită PESTE ce e deschis — ce s-a
 // tastat într-o fereastră de dedesubt se păstrează (DS cap.3, `nav` păstrează corpul ferestrei). Operațiunile refuzate rolului nu apar (`permis`).
 // Gard: `core/test_lot13_ds_cautare.py` (server + structură) + e2e `frontend_test/e2e/e2e_lot13_ds.py::test_def_681_*`.
-import { api, esc, ultimaCerere } from "./api.js?v=7036a2d894";
+import { api, esc, ultimaCerere } from "./api.js?v=4364ee71f3";
 import { permis } from "./drepturi.js?v=34d0fb0afd";
 
 const ASTEPTARE_MS = 200;
