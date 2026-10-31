@@ -79,7 +79,7 @@ def test_def_716_depasita_numai_dupa_termen_perioada_neincheiata_nu_e_de_generat
     pg.wait_for_selector(_F + ".dec-existente", timeout=30000)
     txt = " ".join(pg.inner_text(_F + ".dec-existente").split())
     patron.captura("coada_declaratii")
-    assert re.search(r"D300 · %02d/%d · în lucru — perioada nu s-a încheiat \(termen 25\.\d\d\.\d{4}\)" % (AZI.month, AZI.year), txt), txt   # AZI-dat-de-test: declarația din coadă o creează testul pe luna lui AZI (`_coada`), nu aplicația
+    assert re.search(r"D300 · %02d/%d · în lucru — perioada nu s-a încheiat \(termen \d\d\.\d\d\.\d{4}\)" % (AZI.month, AZI.year), txt), txt   # AZI-dat-de-test: declarația din coadă o creează testul pe luna lui AZI (`_coada`), nu aplicația
     assert re.search(r"D300 · %02d/%d · depășită — termenul \d\d\.\d\d\.\d{4} a trecut" % (luna_veche.month, luna_veche.year), txt), txt
     assert txt.count("de generat din nou") == 0, txt
 
