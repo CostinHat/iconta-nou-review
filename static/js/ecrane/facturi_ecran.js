@@ -148,7 +148,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 // [C103] „Verifică acum în SPV” și importul XML re-citesc aceeași fereastră: numai ultima citire ajunge pe ecran (contorul e pe `corp`,
 // deci două ferestre „Facturi primite” nu se anulează între ele), iar mesajul fiecărei operații se arată de citirea care termină ultima
 const _mesajePrimite = new WeakMap();
-async function primiteSPV(corp, nav, tenantId, opt, mesaj = null) {
+export async function primiteSPV(corp, nav, tenantId, opt, mesaj = null) {
   const actuala = ultimaCerere(corp)();
   if (mesaj) _mesajePrimite.set(corp, [...(_mesajePrimite.get(corp) || []), mesaj]);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;

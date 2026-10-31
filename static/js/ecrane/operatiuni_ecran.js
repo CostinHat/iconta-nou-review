@@ -1,7 +1,9 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=c6c45aefe4";
+import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=c6c45aefe4";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
+import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=4d175564c0";   // [15.1] piesele formularului grupat
+import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1, 721] ciorna formularului, pe server
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";   // [lotul 13, 551 / 548] refuzul care trimite în Date firmă are butonul lui
@@ -387,20 +389,20 @@ const REGISTRU = [
 { cat: "Diverse", cheie: "chirie", titlu: "Chirii / comodat / refacturări", ruta: "nota-chirie", frecventa: "lunar", faraPropunere: "contractele de chirie și comodat nu sunt înregistrate în aplicație (șabloanele de contract nu se păstrează)", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["comodat","Comodat"],["chirie_platita","Chirie plătită (612)"],["chirie_incasata","Chirie încasată (706)"],["refacturare","Refacturare utilități"]] }),
-    C("valoare", "Valoarea bunului", "numar", { cond: { camp: "fel", val: "comodat" } }),
-    C("moment", "Moment", "select", { cond: { camp: "fel", val: "comodat" }, optiuni: [["primire","Primire"],["restituire","Restituire"]] }),
-    C("furnizor_cui", "CUI proprietar / furnizor", "cui", { cond: { camp: "fel", val: ["chirie_platita", "refacturare"] }, numeCamp: "furnizor_nume" }),
-    C("furnizor_nume", "Proprietarul / furnizorul", "text", { cond: { camp: "fel", val: ["chirie_platita", "refacturare"] } }),
+    C("valoare", "Valoarea bunului", "numar", { grup: "Sume", cond: { camp: "fel", val: "comodat" } }),
+    C("moment", "Moment", "select", { grup: "Document", cond: { camp: "fel", val: "comodat" }, optiuni: [["primire","Primire"],["restituire","Restituire"]] }),
+    C("furnizor_cui", "CUI furnizor", "cui", { cond: { camp: "fel", val: ["chirie_platita", "refacturare"] }, numeCamp: "furnizor_nume" }),
+    C("furnizor_nume", "Denumire furnizor", "text", { cond: { camp: "fel", val: ["chirie_platita", "refacturare"] } }),
     C("client_cui", "CUI chiriaș", "cui", { cond: { camp: "fel", val: ["chirie_incasata", "refacturare"] }, numeCamp: "client_nume" }),
-    C("client_nume", "Chiriașul", "text", { cond: { camp: "fel", val: ["chirie_incasata", "refacturare"] } }),
+    C("client_nume", "Denumire chiriaș", "text", { cond: { camp: "fel", val: ["chirie_incasata", "refacturare"] } }),
     C("chirie", "Chiria (fără TVA)", "numar", { cond: { camp: "fel", val: ["chirie_platita", "chirie_incasata"] } }),
-    C("proprietar", "Proprietar", "select", { cond: { camp: "fel", val: "chirie_platita" }, optiuni: [["pj","Persoană juridică"],["pf","Persoană fizică"]] }),
-    C("tip_bun", "Bunul închiriat", "select", { cond: { camp: "fel", val: "chirie_incasata" }, optiuni: [["imobil","Bun imobil (clădire, teren, spațiu)"],["alt_bun","Alt bun (utilaj, mijloc de transport)"]] }),
+    C("proprietar", "Proprietar", "select", { grup: "Furnizor / Client", deduceDinCui: "furnizor_cui", valoareCuiVerificat: "pj", cond: { camp: "fel", val: "chirie_platita" }, optiuni: [["pj","Persoană juridică"],["pf","Persoană fizică"]] }),
+    C("tip_bun", "Bunul închiriat", "select", { grup: "Document", cond: { camp: "fel", val: "chirie_incasata" }, optiuni: [["imobil","Bun imobil (clădire, teren, spațiu)"],["alt_bun","Alt bun (utilaj, mijloc de transport)"]] }),
     DN("optiune_taxare", "Firma a optat pentru taxare (notificare art. 292 alin. (3))", { cond: { camp: "tip_bun", val: "imobil" }, ajutor: "Nu: chiria e scutită fără drept de deducere (art. 292 alin. (2) lit. e)), rândul 15 din D300." }),
-    C("numar", "Nr. facturii furnizorului de utilități", "text", { cond: { camp: "fel", val: "refacturare" } }),
-    C("total_factura", "Total factură utilități (fără TVA)", "numar", { cond: { camp: "fel", val: "refacturare" } }),
-    C("parte_refacturata", "Partea refacturată (fără TVA)", "numar", { cond: { camp: "fel", val: "refacturare" } }),
-    C("cota", "Cota TVA %", "numar", { cond: { camp: "fel", val: ["chirie_platita", "chirie_incasata", "refacturare"] }, optional: true, ajutor: "Se cere la chiria taxabilă și la refacturare; nu la chiria de la persoană fizică sau la cea scutită." }),
+    C("numar", "Nr. factură utilități", "text", { lat: "s", grup: "Document", cond: { camp: "fel", val: "refacturare" } }),
+    C("total_factura", "Total factură (fără TVA)", "numar", { cond: { camp: "fel", val: "refacturare" } }),
+    C("parte_refacturata", "Parte refacturată (fără TVA)", "numar", { cond: { camp: "fel", val: "refacturare" } }),
+    C("cota", "Cota TVA", "cota_tva", { cond: { camp: "fel", val: ["chirie_platita", "chirie_incasata", "refacturare"] }, optional: true, ajutor: "Se cere la chiria taxabilă și la refacturare; nu la chiria de la persoană fizică sau la cea scutită." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Diverse", cheie: "perisabilitati", titlu: "Perisabilități și scăzăminte", ruta: "nota-perisabilitati", frecventa: "rar", campuri: [
     C("data", "Data", "data"),
@@ -551,7 +553,7 @@ export async function ecranOperatiuni(corp, nav, t) {
   const formular = (corpNou) => {
     if (corpNou) corp = corpNou;
     const ziAzi = dataIso();
-    const camp = (c) => {
+    const camp = (c, clasaLat = "") => {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${[].concat(c.cond.val).join("|")}"` : "";
       let input;
       if (c.tip === "select") {
@@ -562,9 +564,12 @@ export async function ecranOperatiuni(corp, nav, t) {
         // [comanda Costin 07.10.2026, „Cele 33 de chei” — DS cap.17] Regula e acum a MOTORULUI: ORICE select obligatoriu
         // pornește cu „— alege —” (sau textul lui `neales`). Măsurat: 36 de selecturi obligatorii veneau cu prima opțiune aleasă
         // (felul operației, termenul creditului 519/162, metoda de amortizare) — o alegere fiscală făcută de ecran.
-        const gol = c.optional ? '<option value="">-</option>'
-          : `<option value="" selected>${esc(c.neales || "— alege —")}</option>`;
+        const gol = c.optional ? '<option value="" data-alege>-</option>'
+          : `<option value="" data-alege selected>${esc(c.neales || "— alege —")}</option>`;   // [15.1, 720] „— alege —” nu e buton: nimic ales la început
         input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" data-butoane="">${gol + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
+      } else if (c.tip === "cota_tva") {
+        // [15.1, 722 / 676.1] cota nu se tastează: grup de alegere cu cotele legale la data documentului (`facturi/numerotare?data=`)
+        input = `<select id="op-${c.nume}" class="camp-input op-cota-tva" aria-label="${esc(c.eticheta)}" data-butoane=""><option value="" data-alege selected>— alege —</option></select>`;
       } else if (c.tip === "mijloc_fix") {
         // [decizia Costin 07.10.2026, C4] „«ID mijloc fix» la reevaluare și casare: devine listă din registrul activelor firmei.”
         // Până azi era un câmp numeric: contabilul trebuia să știe ID-ul intern, iar refuzul îi cerea „alege-l din listă” fără listă.
@@ -608,19 +613,19 @@ export async function ecranOperatiuni(corp, nav, t) {
       const ajutor = c.ajutor || uzual ? `<span class="camp-ajutor">${esc([uzual, c.ajutor || ""].filter(Boolean).join(" "))}</span>` : "";
       // [lotul 12, C78.1] răspunsul VIES sub câmp: aceeași linie de stare ca la CUI-ul din „Emite factură” (`.em-cui-stare`; textul serverului cu `.pe-randuri`, DS cap.6 v2.100)
       const vies = c.vies ? `<div class="em-cui-stare" id="op-${c.nume}-vies" aria-live="polite"></div>` : "";
-      return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : '<span class="oblig">*</span>'}</label>${input}${ajutor}${vies}</div>`;
+      return `<div class="camp ${clasaLat}"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : '<span class="oblig">*</span>'}</label>${input}${ajutor}${vies}</div>`;
     };
     corp.innerHTML = `
       <h2 class="pf-titlu">${esc(opCurenta.titlu)}${_OP_AJUTOR[opCurenta.cheie] ? " " + semnAjutor(_OP_AJUTOR[opCurenta.cheie]) : ""}</h2>
       <div class="pf-frand" style="display:block">
-        <div class="grila-campuri">
-          ${opCurenta.campuri.map(camp).join("")}
-        </div>
+        <div id="op-refuz-fel"></div>
+        ${formularGrupat(opCurenta.campuri, camp)}
         ${opCurenta.multi ? `<div class="op-multi-bloc"${opCurenta.multiCond ? ` data-cond-camp="${opCurenta.multiCond.camp}" data-cond-val="${[].concat(opCurenta.multiCond.val).join("|")}"` : ""}><div class="pf-frand-nume" style="margin:12px 0 6px">${esc(opCurenta.multiTitlu || "Solduri")}</div><div id="op-multi"></div></div>` : ""}
         ${opCurenta.cheie === "asociati" ? '<div id="op-propunere"></div>' : ""}
         ${opCurenta.spreEmitere ? `<div class="caseta-info op-spre-emitere" id="op-spre-emitere" data-cond-camp="${opCurenta.spreEmitere.camp}" data-cond-val="${opCurenta.spreEmitere.val}" style="display:none"><span class="ci-mesaj">${esc(opCurenta.spreEmitere.text)}</span><p style="margin:8px 0 0"><button type="button" class="buton-secundar" id="op-spre-emitere-buton" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Deschide «Emite factură»</button></p></div>` : ""}
         <div class="bara-fixa">
-          <p style="margin-top:12px"><button class="buton-primar" id="op-trimite" data-genereaza-nota data-actiune="${actiuneOp(opCurenta)}">Genereaz\u0103 nota (ciorn\u0103)</button></p>
+          <p style="margin-top:4px"><button class="buton-secundar" id="op-renunta" data-fara-actiune="închide formularul fără să scrie nimic">Renunță</button> <button class="buton-primar" id="op-trimite" data-genereaza-nota data-actiune="${actiuneOp(opCurenta)}">Genereaz\u0103 nota (ciorn\u0103)</button></p>
+          <p class="ds-motiv-inactiv" id="op-motiv-inactiv" aria-live="polite"></p>
           <div id="op-mesaj"></div>
         </div>
       </div>`;
@@ -720,6 +725,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       // [C84] operațiunea care se face din «Emite factură» nu se generează de aici: butonul notei nu se oferă cât e aleasă
       const spre = corp.querySelector(".op-spre-emitere");
       corp.querySelector("#op-trimite").style.display = spre && spre.style.display !== "none" ? "none" : "";
+      actualizeazaGrupe(corp);   // [15.1] grupul fără câmp la vedere dispare; grupurile alăturate nu lasă jumătate de ecran goală
     };
     const btnSpre = corp.querySelector("#op-spre-emitere-buton");
     if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
@@ -729,6 +735,81 @@ export async function ecranOperatiuni(corp, nav, t) {
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
       corp.querySelector(`#op-${c.nume}`).addEventListener("change", actualizeazaCond));
     actualizeazaCond();
+    // [15.1, 722 / 676.1] cota TVA: grup de alegere cu cotele legale la DATA documentului; o cotă inexistentă la data aceea nu se poate alege
+    const selCota = [...corp.querySelectorAll(".op-cota-tva")];
+    const cerereCote = ultimaCerere();
+    const incarcaCote = async () => {
+      if (!selCota.length) return;
+      const actuala = cerereCote();
+      const data = (corp.querySelector("#op-data") || {}).value || dataIso();   // [15.1] data documentului; până e aleasă, azi (se spune lângă cotă)
+      const ALEGE_OPT = '<option value="" data-alege selected>— alege —</option>';
+      try {
+        const n = await api.get(`/tenants/${t.id}/facturi/numerotare?data=${encodeURIComponent(data)}`);
+        if (!actuala()) return;
+        const cote = (n && n.cote_permise) || [];
+        selCota.forEach((x) => {
+          const camp = x.closest(".camp");
+          let nota = camp.querySelector(".cota-la-data");
+          if (!nota) {   // ajutorul câmpului și data cotelor stau pe un singur rând
+            nota = document.createElement("span");
+            nota.className = "camp-ajutor cota-la-data";
+            const vechi = camp.querySelector(".camp-ajutor");
+            nota.dataset.baza = vechi ? vechi.textContent : "";
+            if (vechi) vechi.remove();
+            camp.appendChild(nota);
+          }
+          nota.textContent = [`Cotele legale la ${dataRo(data)}${(corp.querySelector("#op-data") || {}).value ? "" : " (data de azi, până alegi data documentului)"}.`, nota.dataset.baza].filter(Boolean).join(" ");
+          const veche = x.value;
+          x.innerHTML = cote.length ? ALEGE_OPT + cote.map((q) => `<option value="${q}">${q}%</option>`).join("") : '<option value="" data-alege selected>Nicio cotă de TVA la această dată</option>';
+          if (cote.map(String).includes(veche)) x.value = veche;
+        });
+      } catch { if (actuala()) selCota.forEach((x) => { x.innerHTML = '<option value="" data-alege selected>Cotele nu s-au putut citi — reîncearcă</option>'; }); }
+    };
+    // [15.1, 720] refuzul 714 se vede imediat după alegerea felului (și a datei), nu abia la „Generează nota”: card-rezumat de eroare, cu drum
+    // spre Facturi primite; „Generează nota” rămâne inactiv, cu motivul scris dedesubt
+    const zonaRefuz = corp.querySelector("#op-refuz-fel");
+    const cerereRefuz = ultimaCerere();
+    const verificaRefuz = async () => {
+      const actuala = cerereRefuz();
+      const fel = (corp.querySelector("#op-fel") || {}).value || "";
+      const data = (corp.querySelector("#op-data") || {}).value || dataIso();   // [15.1] fără dată aleasă, regimul de azi
+      const btn = corp.querySelector("#op-trimite");
+      const motivEl = corp.querySelector("#op-motiv-inactiv");
+      const curat = () => { zonaRefuz.innerHTML = ""; activ(btn); if (motivEl) motivEl.textContent = ""; };
+      if (opCurenta.cheie !== "chirie" || !fel || !data) { curat(); return; }
+      try {
+        const r = await api.get(`/tenants/${t.id}/operatiuni-date?ce=refuz_fel&tip=${encodeURIComponent(fel)}&data=${encodeURIComponent(data)}`);
+        if (!actuala()) return;
+        if (!r || !r.refuz) { curat(); return; }
+        zonaRefuz.innerHTML = "";
+        zonaRefuz.appendChild(cardRezumat({ text: "Firma aplică TVA la încasare: factura furnizorului se înregistrează în Facturi primite.", ton: "eroare",
+          detalii: r.refuz, actiune: { eticheta: "Deschide Facturi primite", laClic: async () => {
+            const { primiteSPV } = await import("./facturi_ecran.js?v=eca02921e0");
+            nav.deschide("Facturi primite", (c2) => primiteSPV(c2, nav, t.id, {}));
+          } } }));
+        inactiv(btn, "Nota nu se poate genera: factura se înregistrează în Facturi primite.");
+        if (motivEl) motivEl.textContent = "Nota nu se poate genera: factura se înregistrează în Facturi primite.";
+      } catch { if (actuala()) curat(); }
+    };
+    const dataEl = corp.querySelector("#op-data");
+    if (dataEl) dataEl.addEventListener("change", () => { incarcaCote(); verificaRefuz(); });
+    const felEl = corp.querySelector("#op-fel");
+    if (felEl && opCurenta.cheie === "chirie") felEl.addEventListener("change", verificaRefuz);
+    // [15.1, 721] ciorna pe server: formularul început se păstrează pe utilizator și firmă până la salvare sau „Renunță”; după refacere,
+    // câmpurile condiționate, cota și refuzul se recalculează din valorile refăcute
+    const dupaRefacere = async () => {
+      await incarcaCote();
+      actualizeazaCond();
+      verificaRefuz();
+    };
+    const idsCiorna = opCurenta.campuri.map((c) => "op-" + c.nume);
+    let ciorna = null;
+    incarcaCote().then(() => {
+      ciorna = ciornaFormular(corp, "iconta_ciorna_op_" + opCurenta.cheie, idsCiorna, { tenantId: t.id, formular: "op_" + opCurenta.cheie });
+      if (ciorna.refacuta) dupaRefacere();
+      ciorna.gata.then((r) => { if (r) dupaRefacere(); });
+    });
+    corp.querySelector("#op-renunta").addEventListener("click", () => { if (ciorna) ciorna.sterge(); nav.inapoiPas(); });
     // [lotul 12, C78.1, comanda Costin 12.2 pct.7: „ecranul nu arată rezultatul VIES (cod valid sau nu, numele firmei) înainte de
     // generare”] la ieșirea din câmpul codului de TVA, verificarea VIES (aceeași rută ca „Emite factură”, `GET …/verifica-vies`): valid, cu
     // statul și numele firmei; invalid; VIES căzut — înainte de „Generează nota”. Tastarea șterge răspunsul codului vechi, iar un răspuns
@@ -825,10 +906,22 @@ export async function ecranOperatiuni(corp, nav, t) {
         });
       }).catch(() => {});
     }
+    // [15.1, 720] câmpul care se deduce din CUI-ul verificat (tipul proprietarului) se ascunde cât CUI-ul e verificat și se cere iar dacă CUI-ul se schimbă
+    const deduDinCui = (inp, verificat) => {
+      opCurenta.campuri.filter((c) => c.deduceDinCui === inp.id.replace(/^op-/, "")).forEach((c) => {
+        const el = corp.querySelector(`#op-${c.nume}`);
+        if (!el) return;
+        if (verificat) el.value = c.valoareCuiVerificat;
+        else if (el.closest(".camp").classList.contains("camp-dedus")) el.value = "";
+        el.closest(".camp").classList.toggle("camp-dedus", verificat);
+      });
+      actualizeazaGrupe(corp);
+    };
     campuriCui.forEach((inp) => {
       const tinta = inp.dataset.numeCamp ? corp.querySelector(`#op-${inp.dataset.numeCamp}`) : null;
       const stare = corp.querySelector(`#${inp.id}-stare`);
       const anaf = legaDateAnaf(inp, [tinta], stare);
+      inp.addEventListener("input", () => deduDinCui(inp, false));
       const b = corp.querySelector(`#${inp.id}-verifica`);
       const cerere = ultimaCerere();
       b.addEventListener("click", async () => {
@@ -842,6 +935,7 @@ export async function ecranOperatiuni(corp, nav, t) {
           if (!actuala()) return;
           if (r && r.gasit) {
             anaf.pune([r.denumire], { suprascrie: true });
+            deduDinCui(inp, true);   // [15.1, 720] „Verifică” stabilește și tipul (persoană juridică): nu se mai cere separat
             stare.innerHTML = `<span class="em-cui-info">${r.platitor_tva ? "plătitor TVA" : "neplătitor TVA"}${r.inactiv ? " · inactivă fiscal" : ""}</span>`;
           } else { stare.textContent = "CUI negăsit la ANAF"; stare.className = "em-cui-stare em-cui-rau"; }
         } catch (e) {
@@ -967,7 +1061,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         if (ascuns) continue;
         const v = el.value;
         if (!v && !c.optional) { eroareCamp(corp, "op-" + c.nume, "Completează: " + c.eticheta + "."); lipsa++; continue; }
-        const val = c.tip === "numar" ? parseFloat(v) : c.tip === "mijloc_fix" ? parseInt(v, 10) : v;
+        const val = c.tip === "numar" || c.tip === "cota_tva" ? parseFloat(v) : c.tip === "mijloc_fix" ? parseInt(v, 10) : v;
         // `trimiteCa`: aceeași cheie, alt câmp (bacșiș: sursa are alte valori la distribuire); `lista`: serverul cere o listă
         if (v) corpReq[c.trimiteCa || c.nume] = c.lista ? [val] : val;
       }
@@ -986,6 +1080,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       }
       try {
         const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`, corpReq);
+        if (ciorna) ciorna.sterge();   // [15.1, 721] salvat: formularul se golește
         // [lot 19 defect 13] o operatie de CALCUL (ex. ONG › scutire) nu genereaza nota — nu se spune ca a generat
         // [C5, comanda Costin 07.10.2026] O rută scrie o notă (`inregistrare_id`) sau mai multe (`inregistrari`, ex. chiria cu
         // refacturare): ecranul le citește pe amândouă. Până azi „nicio notă” apărea și când nota-chirie scrisese ciorna (DS cap.27).

@@ -8767,6 +8767,11 @@ def operatiuni_date(tenant_id, ce, parametri, ctx):
                 return {"facturi": [{"id": f["id"], "document": _serie_nr(f.get("serie"), f["numar"]), "partener": f["tert_nume"],
                                      "sold": f["sold"], "scadenta": str(scad.get(f["id"]) or ""),
                                      "zile": (data - scad[f["id"]]).days if scad.get(f["id"]) else None} for f in fs]}
+            if ce == "refuz_fel":   # [15.1, 720] refuzul 714 se vede la alegerea felului, nu abia la generare (aceeași regulă ca nota)
+                from core import tva_incasare as _ti
+                fel = parametri.get("tip")
+                linii = [("4426", "401", 1)] if fel in ("chirie_platita", "refacturare") else []
+                return {"refuz": _ti.refuz_nota_tva_la_primire(cur, schema, data, linii) if linii else None}
             if ce == "conturi_trezorerie":   # [lotul 13, decizia după 524 / 504] contul decontării în valută, din planul firmei
                 return {"conturi": [{"id": c, "cont": c, "denumire": d} for c, d in conturi_trezorerie_decontare(cur, schema)]}
             if ce == "catalog":   # [lotul 13, 521] codul din Catalogul HG 2139/2004: denumirea și plaja duratei
@@ -8775,7 +8780,7 @@ def operatiuni_date(tenant_id, ce, parametri, ctx):
                 c = _mfr.catalog().get(cod)
                 return {"cod": cod, "gasit": bool(c), **({"denumire": c["denumire"], "ani_min": c["ani_min"], "ani_max": c["ani_max"]}
                                                         if c else {})}
-    raise _erori.DateInvalide(nomenclator_cerut("ce", "facturi_valuta|articole|obiecte|facturi_neincasate|catalog|conturi_trezorerie"))
+    raise _erori.DateInvalide(nomenclator_cerut("ce", "facturi_valuta|articole|obiecte|facturi_neincasate|catalog|conturi_trezorerie|refuz_fel"))
 
 
 #: [lotul 13, decizia Costin după 524 / 504] Conturile de trezorerie prin care se decontează o creanță / datorie în valută: 5124 „Conturi

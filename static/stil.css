@@ -3268,3 +3268,52 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .mig-avertismente > details { margin: 0; }
 .mig-avertismente > .caseta-atentie { flex: 3 1 480px; margin: 4px 0; max-width: none; }
 .camp.camp-pe-rand { flex-direction: row; align-items: center; gap: 12px; }
+
+/* ============================================================
+   DS 15.1 — piesele formularului (ds_butoane_campuri / ds_ferestre_tabele; dimensiuni impuse, grila de 8 px)
+   Formularul grupat: grupuri cu chenar 1 px, colțuri 12 px, padding 16 px, titlu 14 px majuscule gri; câmpuri de 44 px;
+   lățimi: XS 9 caractere, S 16, M 38, L jumătate, XL toată lățimea; eticheta 14 px pe un rând; eroarea 13 px sub câmp.
+   ============================================================ */
+.ds-formular { display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; }
+.ds-grup { flex: 1 1 400px; min-width: 0; border: 1px solid var(--linie); border-radius: 12px; padding: 16px; background: var(--alb); }
+.ds-grup-lat { flex-basis: 100%; }
+.ds-grup[hidden] { display: none; }
+.ds-grup-titlu { margin: 0 0 4px; font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--gri); }
+.ds-grup-campuri { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: flex-start; }
+.ds-grup-campuri > .camp { min-width: 0; gap: 4px; }
+.ds-grup-campuri > .camp.camp-dedus { display: none; }
+.ds-grup .camp-eticheta { margin: 0; font-size: 14px; line-height: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fereastra-corp .ds-grup .camp-input:not([type=checkbox]):not([type=radio]) { height: 44px; font-size: 16px; border-radius: 8px; box-sizing: border-box; max-width: 100%; }
+.ds-grup .camp-input[data-numar] { text-align: right; font-variant-numeric: tabular-nums; }
+/* lățimile în caractere, la 10 px pe caracter (text 16 px) + padding 28 px: XS 9 = 118, S 16 = 188, M 38 = 408 */
+.ds-lat-xs { width: 118px; }
+.ds-lat-s { width: 188px; }
+.ds-lat-m { width: 408px; max-width: 100%; }
+.ds-lat-l { flex: 1 1 240px; min-width: 0; max-width: 100%; }
+.ds-lat-xl { flex: 1 1 360px; min-width: 0; }
+.ds-lat-cui { flex: 0 0 auto; width: 308px; }   /* câmp S 188 + 8 + buton S 104 + rezervă */
+.ds-grup .camp .em-benef > .camp-input { flex: 0 0 188px; }
+.ds-grup .camp .em-benef { flex-wrap: nowrap; gap: 8px; align-items: center; }
+.ds-grup .camp .em-benef > .buton-secundar { flex: 0 0 auto; height: 36px; padding: 0 16px; }
+.ds-grup .camp .em-cui-stare { font-size: 13px; }
+.ds-grup .camp .em-cui-stare:empty { display: none; }
+.ds-grup .camp .em-benef { margin-bottom: 0; }
+.ds-grup .alegere-butoane { min-height: 44px; gap: 8px; flex-wrap: wrap; }
+.ds-grup .alegere-butoane > button { height: 44px; padding: 0 16px; font-size: 16px; }
+.ds-grup .alegere-butoane > button:active { transform: translateY(2px); }
+.ds-grup .alegere-butoane > button.buton-activ { background: var(--albastru-clar); border-color: var(--albastru); }
+/* card-rezumat (44 px): un rând, bandă stângă 4 px; detaliile pliate */
+.ds-rezumat { display: flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; padding: 0 16px; margin: 0 0 8px;
+  border: 1px solid var(--linie); border-left-width: 4px; border-radius: 12px; background: var(--alb); font-size: 14px; }
+.ds-rezumat-avertisment { border-left-color: var(--portocaliu); }
+.ds-rezumat-eroare { border-left-color: var(--rosu); }
+.ds-rezumat-ok { border-left-color: var(--verde); }
+.ds-rezumat-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-rezumat-detalii { margin: 0 0 16px; padding: 8px 16px; font-size: 14px; border: 1px solid var(--linie); border-radius: 12px; background: var(--alb); }
+.ds-rezumat-detalii[hidden] { display: none; }
+@media (max-width: 900px) { .ds-lat-s, .ds-lat-m, .ds-lat-xs, .ds-lat-l, .ds-lat-cui { width: 100%; flex-basis: 100%; } }
+.ds-motiv-inactiv { margin: 4px 0 0; font-size: 13px; color: var(--gri); min-height: 0; }
+.ds-motiv-inactiv:empty { display: none; }
+
+.ds-grup[data-grup="Descriere"] .camp-eticheta { display: none; }   /* titlul grupului e deja eticheta; câmpul are aria-label */
+.ds-formular { gap: 12px; }

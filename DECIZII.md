@@ -24298,3 +24298,9 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 ## Comanda 15.G2 (31.10.2026) — corecția porții implicite
 - Plasa e2e implicită: numai `~/ghid_incoming/scenarii_<comanda>.txt` (variabila `POARTA_COMANDA`; lipsă = gol), fluxurile atinse de la `main` după `scripts/poarta_harta.txt` (generată o dată din id-urile DOM ale JS-ului și din importurile `core.<modul>` ale e2e-urilor; 152 intrări, completabilă de mână) și căzutele rulării anterioare. `e2e_lot*.py` ies din poartă (rămân în poarta de noapte). Motiv: 84 de minute de plasă la 15.G.
 - `poarta_lot.sh` rulează și pe `main` (informativ: fără verdict scris, fără refuz pentru SHA deja VERDE), pentru rularea măsurată cerută de comandă. Integrarea în `main`: ff + push manual (origin, public, backup), fără `post-commit` (care repornește aplicația; codul aplicației nu s-a schimbat).
+
+## Comanda 15.1, zona A (31.10.2026)
+- Piesele DS ale formularului: `static/js/ds_piese.js` (grupuri, lățimi XS/S/M/L/XL, card-rezumat) și `.ds-*` în `static/stil.css`; randatorul generic al Operațiunilor (`operatiuni_ecran.js`) le folosește, deci toate formularele lui au grupuri, cota ca grup de alegere și ciorna pe server.
+- `ds_butoane_campuri.html` lipsește din `~/ghid_incoming/`; s-a folosit Anexa C din comanda 15 (aceeași dimensiuni). Ce nu e în anexă a rămas la F.
+- Varianta cea mai sigură: fără dată aleasă, refuzul 714 și cotele TVA se calculează la data de azi și o spun lângă cotă; cotele afișate la Operațiuni sunt cele legale la dată (fără categoriile fără TVA, pe care ruta notelor nu le primește).
+- Verificatorul „după”: promptul fix + o singură propoziție cu calea arborelui de lucru (codul nu era încă publicat); un verdict „TRECE cu rezerve” care a rulat testul lui Code, nu scenariul, a fost respins și refăcut cu agent nou.

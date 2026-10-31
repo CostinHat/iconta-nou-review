@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**31.10.2026 — COMANDA 15.1, ZONA A în lucru pe ramura `lucru/lot15-1` (worktree `/home/costin/iconta_lot15`): 720 și 721 TRECE la verificator; piesele DS în `static/js/ds_piese.js`. Zonele B–D urmează.**
+
 **30.10.2026 — COMANDA 15.G (poarta nouă, mecanică) comisă pe ramura `lucru/lot15-g` (worktree `/home/costin/iconta_lot15g`), NEPUBLICATĂ (nu schimbă aplicația).** `poarta_lot.sh` = poarta implicită țintită; `poarta_completa.sh` cere cheia arhitectului; marcajul `POARTA_SARE=1` (scripts/poarta.env). Aplicația rămâne pe 15.0.
 
 **30.10.2026 — COMANDA 15.0 executată pe ramura `lucru/lot15-0`: 712.1 (verificator: NU TRECE înainte, TRECE după), regulile noi în CLAUDE.md, poarta cu `scripts/poarta_forma.txt`. Se publică după poarta completă. Apoi OPRIRE; 15.1 abia după confirmarea lui Costin.**
