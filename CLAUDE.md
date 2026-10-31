@@ -80,6 +80,11 @@ scripts/poarta.env) ține în afara porții testele din scripts/poarta_sare.txt 
 cererea arhitectului. Un test nou verifică sensul (de exemplu „există restanța D301 09/2026 la F3”), nu un șir de caractere literal;
 datele și sumele din teste trec prin aceleași funcții de format ca aplicația.
 
+Ordinea porții și oprirea la prima treaptă roșie (regulă permanentă, 31.10.2026): poarta_lot.sh rulează în ordinea 1. verificatorul de design,
+2. pytest țintit, 3. plasa e2e. Prima treaptă roșie oprește poarta și scrie ROȘU imediat, fără să continue cu treptele de după. Înainte de orice
+commit se rulează scripts/inainte_de_commit.sh (verificatorul de design și pytest-ul țintit pe fișierele atinse); poarta pornește numai dacă
+amândouă sunt verzi. Nu se editează arborele cât rulează poarta (verdictul ar deveni „arbore schimbat”).
+
 Plasa de fluxuri atinse (b), limita de 20 (regulă permanentă, comanda 15.1, 31.10.2026; înlocuiește (b) de mai sus când depășește): dacă e2e-urile
 fluxurilor atinse după harta scripts/poarta_harta.txt depășesc 20 de fișiere, (b) se înlocuiește cu e2e-urile ecranelor numite în
 ~/ghid_incoming/scenarii_<comanda>.txt sub titlul FLUXURI (cel mult 20, scrise de arhitect sau de Code la începutul comenzii); lista completă

@@ -66,30 +66,39 @@ if [ -n "$DOAR_PLASA" ]; then
     echo "[poarta lot] DOAR PLASA e2e (pytest si verificatorul sunt verzi pe $DOAR_PLASA; fisiere schimbate de atunci: numai ale portii / registre)"
 fi
 
-# verificatorul ruleaza cat ruleaza pytest (nu atinge baza de test)
-T_VERIF0=$(date +%s)
-T_P0=$(date +%s)
+# Ordinea treptelor (regula 15.1, 31.10.2026): 1. verificatorul de design, 2. pytest țintit, 3. plasa e2e. Prima treaptă ROȘIE oprește poarta și
+# scrie ROȘU imediat (fără să continue), ca timpul să nu se piardă pe treptele de după.
+final() {   # scrie verdictul și iese
+    DUR="verificator ${T_VERIF:-0}s · pytest ${T_PYTEST:-0}s · plasa e2e ${T_E2E:-0}s · total $(( $(date +%s) - T0 ))s"
+    if [ -z "$ROSII" ]; then V=VERDE; RCF=0; else V=ROSU; RCF=1; fi
+    [ "$RAM" != "main" ] && echo "$V $SHA $RAM $(date -Is)" >> "$JV"
+    echo "    DURATE: $(date -Is) $V ·$ROSII · poarta implicita · $DUR" >> "$ROOT/.poarta_jurnal.log"
+    echo "[poarta lot] $V $SHA ($RAM) -> $JV · $DUR"
+    exit $RCF
+}
+T_VERIF=0; T_PYTEST=0; T_E2E=0
 if [ -z "$DOAR_PLASA" ]; then
-"$PY" verificator_conformitate.py > "$J/poarta_verificator.log" 2>&1 &
-PID_VERIF=$!
-
-"$PY" -m pytest -q --lf --lfnf=none > "$J/poarta_pytest_lf.log" 2>&1
-RC=$?
-case "$RC" in 0|5) ;; *) rosu "pytest --lf (picate la ultima rulare)" ;; esac
-tail -1 "$J/poarta_pytest_lf.log"
-xargs "$PY" -m pytest -q -n "$NW" --dist loadfile < "$J/poarta_pytest_fisiere.txt" > "$J/poarta_pytest.log" 2>&1
-RC=$?
-[ "$RC" -ne 0 ] && rosu "pytest (atinse + nucleu + scenarii)"
-tail -1 "$J/poarta_pytest.log"
-T_PYTEST=$(( $(date +%s) - T_P0 ))
-
-wait "$PID_VERIF"
-T_VERIF=$(( $(date +%s) - T_VERIF0 ))
-TOT=$(grep -i "TOTAL" "$J/poarta_verificator.log")
-echo "[poarta lot] verificator: $TOT"
-case "$TOT" in *"TOTAL: 0"*) ;; *) rosu "verificator" ;; esac
-else
-T_PYTEST=0; T_VERIF=0
+    # 1. verificatorul de design
+    T_V0=$(date +%s)
+    "$PY" verificator_conformitate.py > "$J/poarta_verificator.log" 2>&1
+    T_VERIF=$(( $(date +%s) - T_V0 ))
+    TOT=$(grep -i "TOTAL" "$J/poarta_verificator.log")
+    echo "[poarta lot] verificator: $TOT (${T_VERIF}s)"
+    case "$TOT" in *"TOTAL: 0"*) ;; *) rosu "verificator"; final ;; esac
+    # 2. pytest țintit (întâi cele picate la ultima rulare)
+    T_P0=$(date +%s)
+    "$PY" -m pytest -q --lf --lfnf=none > "$J/poarta_pytest_lf.log" 2>&1
+    RC=$?
+    case "$RC" in 0|5) ;; *) rosu "pytest --lf (picate la ultima rulare)" ;; esac
+    tail -1 "$J/poarta_pytest_lf.log"
+    if [ -z "$ROSII" ]; then
+        xargs "$PY" -m pytest -q -n "$NW" --dist loadfile < "$J/poarta_pytest_fisiere.txt" > "$J/poarta_pytest.log" 2>&1
+        RC=$?
+        [ "$RC" -ne 0 ] && rosu "pytest (atinse + nucleu + scenarii)"
+        tail -1 "$J/poarta_pytest.log"
+    fi
+    T_PYTEST=$(( $(date +%s) - T_P0 ))
+    [ -n "$ROSII" ] && final
 fi
 
 # plasa e2e: scenariile + fisierele atinse + cele cazute la rularea anterioara; dupa pytest (aceeasi baza de test)
@@ -116,9 +125,4 @@ if [ "$(git rev-parse HEAD)" != "$SHA" ] || [ -n "$(git diff --name-only)" ]; th
     echo "[poarta lot] arborele/HEAD s-au schimbat cat a rulat poarta — verdictul nu mai e despre $SHA."
     rosu "arbore schimbat"
 fi
-DUR="pytest ${T_PYTEST}s (verificator ${T_VERIF}s simultan) · plasa e2e ${T_E2E}s · total $(( $(date +%s) - T0 ))s"
-if [ -z "$ROSII" ]; then V=VERDE; RCF=0; else V=ROSU; RCF=1; fi
-[ "$RAM" != "main" ] && echo "$V $SHA $RAM $(date -Is)" >> "$JV"
-echo "    DURATE: $(date -Is) $V ·$ROSII · poarta implicita · $DUR" >> "$ROOT/.poarta_jurnal.log"
-echo "[poarta lot] $V $SHA ($RAM) -> $JV · $DUR"
-exit $RCF
+final

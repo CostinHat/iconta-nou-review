@@ -10,7 +10,7 @@
 // Ruta scrierii rămâne `POST /tenants/{tenant_id}/achizitie-neinregistrat` (operațiunea D394 N); câmpurile poartă id-urile din refuzurile
 // serverului (`op-*`). Gard: core/test_lot11_b_450_borderou.py (fiecare câmp citit de server are câmpul lui aici).
 import { api, ultimaCerere, esc, bani, cantitate, arataMesaj, dataIso, dataRo, stareNota, pasNota, eroareCamp, curataEroriCamp, confirmaCaseta,
-  dupaGenerare, atributeInactiv } from "../api.js?v=4364ee71f3";
+  dupaGenerare, atributeInactiv } from "../api.js?v=760be1b9f8";
 import { cautaInLista } from "./emitere_ecran.js?v=ff34c195be";   /* [lotul 12, 488] */
 
 /** Conturile pe care borderoul aduce marfa în gestiune (aceeași listă ca serverul, `uc_tenants.achizitie_neinregistrat`). */

@@ -125,10 +125,9 @@ def test_def_721_ciorna_pe_server(patron, firma_tvai):
     pg.wait_for_selector("#op-trimite", timeout=20000)
     pg.wait_for_function("() => document.querySelector('#op-fel').value === 'chirie_incasata'", timeout=15000)
     assert pg.input_value("#op-chirie") not in ("", None)
-    # F5: ciorna e pe server, deci formularul redeschis are aceleași valori
+    # F5: ciorna e pe server, iar fereastra revine singură (725): formularul are aceleași valori
     pg.reload(wait_until="domcontentloaded")
-    pg.wait_for_timeout(3000)
-    _formular_chirie(patron, firma_tvai)
+    pg.wait_for_selector("#op-trimite", state="attached", timeout=60000)
     pg.wait_for_function("() => document.querySelector('#op-fel').value === 'chirie_incasata'", timeout=15000)
     # „Renunță” golește ciorna
     pg.click("#op-renunta")
@@ -154,9 +153,9 @@ def test_def_722_tip_declaratie_lista_cu_cautare(patron, firma_b, lat, inalt):
     pg.set_viewport_size({"width": lat, "height": inalt})
     patron.firma(firma_b["nume"])
     _card(patron, "declaratii", "#dec-tip")
-    pg.wait_for_function("() => !!document.querySelector('#dec-tip') && !!document.querySelector('.ds-lista')", timeout=30000)
+    pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.classList.contains('ds-lista-sursa') && !!s.nextElementSibling && s.nextElementSibling.classList.contains('ds-lista'); }", timeout=30000)
     lista = pg.locator(".ds-lista")
-    assert lista.count() == 1 and pg.eval_on_selector("#dec-tip", "e => e.classList.contains('ds-lista-sursa')")
+    assert lista.count() == 1
     pg.click(".ds-lista-titlu")
     pg.wait_for_selector(".ds-lista-cauta", timeout=5000)
     cutie = pg.eval_on_selector(".ds-lista-panou", "e => { const r = e.getBoundingClientRect(); return [r.left, r.right, innerWidth]; }")
@@ -170,8 +169,8 @@ def test_def_722_tip_declaratie_lista_cu_cautare(patron, firma_b, lat, inalt):
     filtrate = pg.locator(".ds-lista-rand .ds-lista-nume").all_inner_texts()
     assert filtrate and all("D394" in t.upper() for t in filtrate), filtrate
     patron.captura("l15_722_%d" % lat)
-    pg.click(".ds-lista-rand >> nth=0")   # alegerea trece în select-ul sursă
-    assert pg.eval_on_selector("#dec-tip", "e => e.value") == "d394"
+    pg.locator(".ds-lista-rand").first.evaluate("e => e.click()")   # un singur clic (Playwright reîncearcă un clic al cărui țintă dispare în handler)
+    pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.value === 'd394'; }", timeout=15000)   # ecranul se redesenează după alegere
     assert pg.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 1")
 
 
@@ -303,5 +302,78 @@ def test_def_653_1_tara_un_singur_camp_lista_cu_cautare(patron, firma_b):
     pg.fill(_F + ".ds-lista-cauta", "germ")
     nume = pg.locator(_F + ".ds-lista-rand .ds-lista-nume").all_inner_texts()
     assert "Germania (DE)" in nume and not [t for t in nume if "(FR)" in t], nume
-    pg.click(_F + ".ds-lista-rand >> nth=0")
+    pg.locator(_F + ".ds-lista-rand").first.evaluate("e => e.click()")
     assert pg.eval_on_selector(_F + "#d207-stat", "e => e.value") == "DE"
+
+
+def test_def_184_2_suma_separatori_automati(patron, firma_b):
+    """184.2 (regula 3a): suma se scrie numai cu cifre; punctele la mii și virgula apar singure, „1000.50” și „1000,5” se corectează, iar la ieșirea din
+    câmp suma are două zecimale; valoarea citită de aplicație rămâne cea canonică."""
+    pg = patron.pg
+    _formular_chirie(patron, firma_b)
+    _alege(pg, "fel", "chirie_incasata")
+    camp = "#op-chirie"
+    pg.click(camp)
+    pg.keyboard.type("1000000")
+    assert pg.evaluate("(s) => Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').get.call(document.querySelector(s))", camp) == "1.000.000"
+    pg.keyboard.press("Tab")
+    assert pg.evaluate("(s) => Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').get.call(document.querySelector(s))", camp) == "1.000.000,00"
+    assert pg.eval_on_selector(camp, "e => e.value") == "1000000.00"   # valoarea citită de aplicație: canonică
+    for scris, afisat, canonic in (("1000.50", "1.000,50", "1000.50"), ("1000,5", "1.000,50", "1000.50"), ("12345,678", "12.345,678", "12345.678")):
+        pg.fill(camp, "")
+        pg.click(camp)
+        pg.keyboard.type(scris)
+        pg.keyboard.press("Tab")
+        assert pg.evaluate("(s) => Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').get.call(document.querySelector(s))", camp) == afisat, scris
+        assert pg.eval_on_selector(camp, "e => e.value") == canonic, scris
+    assert pg.eval_on_selector(camp, "e => getComputedStyle(e).textAlign") in ("right", "end")
+    patron.captura("l15_184_2")
+
+
+def test_def_725_f5_readuce_fereastra(patron, firma_tvai):
+    """725: după F5 aplicația redeschide aceeași fereastră (firma, Operațiuni speciale › Chirii), cu câmpurile cum au fost lăsate; „Proprietar”, dedus din
+    „Verifică”, nu reapare."""
+    pg = patron.pg
+    _formular_chirie(patron, firma_tvai)
+    _alege(pg, "fel", "chirie_platita")
+    pg.fill("#op-furnizor_cui", "14399840")
+    pg.click("#op-furnizor_cui-verifica")
+    pg.wait_for_function("() => document.querySelector('#op-furnizor_nume').value.length > 3", timeout=20000)
+    pg.fill("#op-chirie", "1000")
+    pg.dispatch_event("#op-chirie", "change")
+    pg.wait_for_timeout(2500)   # ciorna pleacă la server
+    pg.reload(wait_until="domcontentloaded")
+    pg.wait_for_selector("#op-trimite", state="attached", timeout=60000)   # nimeni nu a apăsat nimic: fereastra a revenit singură
+    pg.wait_for_function("() => document.querySelector('#op-fel') && document.querySelector('#op-fel').value === 'chirie_platita' && document.querySelector('#op-furnizor_nume').value.length > 3", timeout=30000)
+    assert pg.input_value("#op-furnizor_cui") == "14399840"
+    assert not pg.is_visible("#op-proprietar"), "Proprietar reapare la revenirea din ciornă"
+    # închisă de om (Renunță), F5 nu o mai redeschide
+    pg.click("#op-renunta")
+    pg.wait_for_function("() => !!document.querySelector(\"button[data-op='chirie']\")", timeout=20000)
+    pg.reload(wait_until="domcontentloaded")
+    pg.wait_for_timeout(4000)
+    assert pg.locator("#op-trimite").count() == 0
+
+
+def test_def_712_2_mesajul_tarii_o_singura_data(patron, firma_b):
+    """712.1 (observație retest 31.10): țara partenerului nepotrivită cu codul fiscal: după „Emite factură”, mesajul apare o singură dată pe ecran
+    (caseta „NU s-a salvat” îl păstrează, linia de stare de lângă CUI se ascunde cât stă caseta)."""
+    from e2e_bloc_a import _deschide_emiterea
+    pg = patron.pg
+    _deschide_emiterea(patron, firma_b["nume"])
+    pg.fill("#em-cui", "14399840")
+    pg.fill("#em-nume", "DANTE INTERNATIONAL SA")
+    pg.dispatch_event("#em-nume", "input")
+    pg.click(".rap-tab[data-fila='tva']")
+    pg.select_option("#em-tara", "DE")
+    pg.dispatch_event("#em-tara", "change")
+    pg.click(".rap-tab[data-fila='factura']")
+    pg.fill("#em-l0-descriere", "Serviciu")
+    pg.fill("#em-l0-cantitate", "1")
+    pg.fill("#em-l0-pret_unitar", "100")
+    pg.fill("#em-l0-um", "buc")
+    pg.click(".alegere-butoane:has(+ #em-l0-cota) > button:has-text('21%')")
+    pg.click("#em-emite")
+    pg.wait_for_selector(".refuz-salvare", timeout=20000)
+    text = pg.evaluate("() => document.body.innerText")
+    assert text.count("nu se potrivește cu codul fiscal") == 1, text.count("nu se potrivește cu codul fiscal")

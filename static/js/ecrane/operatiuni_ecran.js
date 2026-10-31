@@ -1,8 +1,9 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=4364ee71f3";
+import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=760be1b9f8";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
-import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=ed8dc3ee69";   // [15.1] piesele formularului grupat
+import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=7cebc59162";   // [15.1] piesele formularului grupat
+import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=6aba4a57c6";   // [15.1, 725] F5 readuce fereastra
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1, 721] ciorna formularului, pe server
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
@@ -508,6 +509,7 @@ export async function ecranOperatiuni(corp, nav, t) {
 
   const lista = (c) => {
     if (c) corp = c;
+    uitaFereastra();   // lista nu e un formular început: F5 nu o redeschide singură
     nav.setInapoi(undefined);
     corp.innerHTML = `
       <h2 class="pf-titlu">Opera\u021biuni speciale</h2>
@@ -555,6 +557,7 @@ export async function ecranOperatiuni(corp, nav, t) {
 
   const formular = (corpNou) => {
     if (corpNou) corp = corpNou;
+    memoreazaFereastra({ tenantId: t.id, nume: t.nume || t.denumire || "", ecran: "operatiuni", cheie: opCurenta.cheie });   // [15.1, 725] F5 readuce aceeași fereastră
     const ziAzi = dataIso();
     const camp = (c, clasaLat = "") => {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${[].concat(c.cond.val).join("|")}"` : "";
@@ -804,6 +807,11 @@ export async function ecranOperatiuni(corp, nav, t) {
     // câmpurile condiționate, cota și refuzul se recalculează din valorile refăcute
     const dupaRefacere = async () => {
       await incarcaCote();
+      // [15.1] „Proprietar” dedus din „Verifică” nu reapare la revenirea din ciornă: CUI scris + denumire + tip „persoană juridică” = verificat
+      opCurenta.campuri.filter((c) => c.deduceDinCui).forEach((c) => {
+        const cui = corp.querySelector(`#op-${c.deduceDinCui}`), el = corp.querySelector(`#op-${c.nume}`);
+        if (cui && el && cui.value.trim() && el.value === c.valoareCuiVerificat) deduDinCui(cui, true);
+      });
       actualizeazaCond();
       verificaRefuz();
     };
@@ -814,7 +822,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       if (pastrare.refacuta) dupaRefacere();
       pastrare.gata.then((r) => { if (r) dupaRefacere(); });
     });
-    corp.querySelector("#op-renunta").addEventListener("click", () => { if (pastrare) pastrare.sterge(); nav.inapoiPas(); });
+    corp.querySelector("#op-renunta").addEventListener("click", () => { if (pastrare) pastrare.sterge(); uitaFereastra(); nav.inapoiPas(); });
     // [lotul 12, C78.1, comanda Costin 12.2 pct.7: „ecranul nu arată rezultatul VIES (cod valid sau nu, numele firmei) înainte de
     // generare”] la ieșirea din câmpul codului de TVA, verificarea VIES (aceeași rută ca „Emite factură”, `GET …/verifica-vies`): valid, cu
     // statul și numele firmei; invalid; VIES căzut — înainte de „Generează nota”. Tastarea șterge răspunsul codului vechi, iar un răspuns
@@ -1086,6 +1094,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       try {
         const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`, corpReq);
         if (pastrare) pastrare.sterge();   // [15.1, 721] salvat: formularul se golește
+        uitaFereastra();
         // [lot 19 defect 13] o operatie de CALCUL (ex. ONG › scutire) nu genereaza nota — nu se spune ca a generat
         // [C5, comanda Costin 07.10.2026] O rută scrie o notă (`inregistrare_id`) sau mai multe (`inregistrari`, ex. chiria cu
         // refacturare): ecranul le citește pe amândouă. Până azi „nicio notă” apărea și când nota-chirie scrisese ciorna (DS cap.27).

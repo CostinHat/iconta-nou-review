@@ -5,7 +5,7 @@
 // butonul de ajutor (?).” + „La prima intrare, fiecare utilizator își pune obligatoriu telefonul, canalul (WhatsApp sau email) și bifele
 // de notificări înainte să ajungă în aplicație.”
 // Textul și starea fiecărui card vin de la server (`GET /eu/inceput`, `core/uc_inceput.py`): „făcut” e citit din bază, nu ținut aici.
-import { api, esc, arataMesaj } from "../api.js?v=4364ee71f3";
+import { api, esc, arataMesaj } from "../api.js?v=760be1b9f8";
 
 // [320] butoanele cardurilor: fiecare deschide ecranul REAL (aceleași funcții ca meniul aplicației)
 async function deschide(cheie, nav, laSchimbare) {

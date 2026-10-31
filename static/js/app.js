@@ -44,13 +44,14 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { api, arataMesaj, esc } from "./api.js?v=4364ee71f3";
+import { api, arataMesaj, esc } from "./api.js?v=760be1b9f8";
 import { ecranLogin } from "./ecrane/login.js?v=1046446310";
-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=1e6fea31c7";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=04560b389f";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=0689a3e8b1";
 import { desktopAsistent } from "./ecrane/asistent.js?v=ce29033087";
 import { desktopPortal } from "./ecrane/portal.js?v=213eeef71d";
 import { desktopAdmin } from "./ecrane/admin.js?v=6b8ca6e696"; // [p37_admin_desktop]
+import { restaureazaFereastra } from "./restaurare.js?v=6aba4a57c6";   // [15.1, 725]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=34d0fb0afd";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");
@@ -209,6 +210,7 @@ async function randeaza() {
   }
   // [17.10.2026, lotul 7 pct.2.1] linkul dintr-o notificare (`/deschide/<cheie>` -> `#deschide=<cheie>`): după autentificare, locul numit
   deschideDinAdresa();
+  restaureazaFereastra();   // [15.1, 725] F5 readuce fereastra în care erai
 
   // [lotul 13, deficiența 562] prezentarea de ansamblu NU se mai deschide singură la prima logare (CLAUDE.md §9: „Nimic nu se deschide
   // singur”; decizia 320: „ghidul de început rămâne în butonul de ajutor (?), nu se deschide singur, și e pe rol”) — o deschide „?”

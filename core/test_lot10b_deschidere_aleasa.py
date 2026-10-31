@@ -138,6 +138,7 @@ CLICURI_PROGRAMATICE = {
     "static/js/navigator.js": (1, "notificarea aleasă de om (clopoțel / e-mail): se apasă elementul pe care îl numește"),
     "static/js/ecrane/inceput.js": (2, "cardul „Suport” ales de om deschide raportarea și fila „Cerere import”"),
     "static/js/ecrane/login.js": (1, "Enter în câmpul de e-mail = apăsarea butonului de alături"),
+    "static/js/restaurare.js": (6, "[725] F5 readuce fereastra în care erai: aceiași pași pe care îi apasă omul (firma, cardul, butonul formularului), decizia lui Costin"),
     "static/js/ecrane/portal.js": (2, "„Fotografiază” / „Încarcă” deschid alegerea fișierului (input ascuns)"),
     "static/js/ecrane/raporteaza.js": (2, "„Adaugă poză” / „Adaugă fișier” deschid alegerea fișierului (input ascuns)"),
     "static/js/ecrane/migrare.js": (1, "descărcarea fișierului cerut de om"),

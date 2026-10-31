@@ -8,8 +8,9 @@
 //   ← stânga-sus -> UN PAS ÎNAPOI pe traseul parcurs (apare doar când există drum);
 //   X dreapta-sus -> ÎNCHIDE fereastra (acasă). Traseul e memorat de navigator (nav.mergi).
 
+import { uitaFereastra } from "./restaurare.js?v=6aba4a57c6";   // [15.1, 725]
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=4364ee71f3";  // esc canonic (cap.10): strip-html data-lossy inlocuit
+import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=760be1b9f8";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
 import { puneCautarea } from "./cautare.js?v=cfb40793e9";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
@@ -123,7 +124,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         const sumarAdmin = subbara.querySelector("[data-sumar-admin]");
         // [lotul 13, 644 a — clasa 286] „După suspendare bara de sus rămâne «2 cabinete active» până la reîncărcare”: centralizatorul se
         // recitește după orice scriere reușită pe un cabinet (`iconta:schimbare` din api.js, cu căile scrise), ca pagina principală (286)
-        const citesteSumarAdmin = () => import("./api.js?v=4364ee71f3").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
+        const citesteSumarAdmin = () => import("./api.js?v=760be1b9f8").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
           const cabinete = (r && r.cabinete) || [];
           const active = cabinete.filter((c) => c.activ).length;
           const firme = cabinete.reduce((s2, c) => s2 + (c.nr_firme || 0), 0);
@@ -542,7 +543,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       stiva[stiva.length - 1].inapoi = fn;
       _arataSageata();
     },
-    acasa() { stiva.length = 0; randeazaFerestre(); _versiune.laAcasa(); },   // [256] pagina principală se încarcă în versiunea nouă
+    acasa() { stiva.length = 0; uitaFereastra(); randeazaFerestre(); _versiune.laAcasa(); },   // [15.1, 725] închis de om: F5 nu o mai redeschide   // [256] pagina principală se încarcă în versiunea nouă
     // setează firma procesată (bara de jos) și re-randează desktopul
     setFirmaInLucru(nume, id = null) {
       firmaInLucru = nume; firmaInLucruId = nume ? id : null;
@@ -613,7 +614,7 @@ export function urmaresteBara3(bara3) {
     const actuala = cerereNoua();
     const _azi = new Date(), _de = `${_azi.getFullYear()}-${String(_azi.getMonth() + 1).padStart(2, "0")}-01`;
     let cal = null;
-    try { const { api } = await import("./api.js?v=4364ee71f3"); cal = await api.get(`/eu/calitate?de=${_de}`); } catch { cal = null; }
+    try { const { api } = await import("./api.js?v=760be1b9f8"); cal = await api.get(`/eu/calitate?de=${_de}`); } catch { cal = null; }
     if (!actuala()) return;
     // [p26_motivationale] iteram peste lista din backend - oricate, flexibil
     const lista = (cal && cal.ok && cal.motivationale) || [];
@@ -644,7 +645,7 @@ async function _clopotActualizeazaBadge(container) {  // [p66_badge_ref]
     }
   } catch {}
   try {
-    const { api } = await import("./api.js?v=4364ee71f3");
+    const { api } = await import("./api.js?v=760be1b9f8");
     const r = await api.get("/notificari/contor");
     const n = (r && r.necitite) || 0;
     badge.textContent = n > 0 ? (n > 9 ? "9+" : String(n)) : "";
@@ -704,7 +705,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
     panou.id = "nav-clopot-panou";
     panou.innerHTML = `<div class="clopot-cap"><span>Notificări</span></div><div class="clopot-lista" id="clopot-lista"><div class="clopot-gol">Se încarcă…</div></div>`;
     ecran.appendChild(panou);
-    const { api } = await import("./api.js?v=4364ee71f3");
+    const { api } = await import("./api.js?v=760be1b9f8");
     const lista = panou.querySelector("#clopot-lista");
     // [422] lista deschisă se reumple la o schimbare (o notificare rezolvată de validarea de alături, una nouă de la un coleg)
     const umple = async () => {
@@ -746,7 +747,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const [, tid, nid, an, luna] = n.link.split(":").map((x) => parseInt(x, 10));
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
-              const { api } = await import("./api.js?v=4364ee71f3");
+              const { api } = await import("./api.js?v=760be1b9f8");
               const { ecranJurnal } = await import("./ecrane/firme.js?v=eecc415409");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
@@ -798,7 +799,7 @@ function _sumarTextTip(tip, n) {
 async function _sumarLogin(ecran) {
   try {
     if (sessionStorage.getItem("iconta_sumar_aratat") === "1") return;
-    const { api } = await import("./api.js?v=4364ee71f3");
+    const { api } = await import("./api.js?v=760be1b9f8");
     const r = await api.get("/notificari/sumar");
     const total = (r && r.necitite) || 0;
     sessionStorage.setItem("iconta_sumar_aratat", "1");
@@ -834,7 +835,7 @@ async function _anunturiBanner(ecran) {
   if (u.rol === "client" || u.rol === "superadmin") return;
   let d;
   try {
-    const { api } = await import("./api.js?v=4364ee71f3");
+    const { api } = await import("./api.js?v=760be1b9f8");
     d = await api.get("/eu/anunturi");
   } catch { return; }
   const lista = (d && d.anunturi) || [];
@@ -861,7 +862,7 @@ async function _anunturiBanner(ecran) {
     // citirea — un X care închide fără confirmare ar fi o ușă înapoi spre același anunț la intrarea următoare.
     const confirma = async () => {
       try {
-        const { api } = await import("./api.js?v=4364ee71f3");
+        const { api } = await import("./api.js?v=760be1b9f8");
         await api.post(`/eu/anunturi/${a.id}/confirma`, {});
         el.remove();
       } catch (e) {

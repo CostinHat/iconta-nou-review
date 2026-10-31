@@ -13,7 +13,7 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
-**31.10.2026 — COMANDA 15.1: zona A PUBLICATĂ pe `0e1f09e4`; zona B (722, F-A, 547.1, 653.1, 676.1, 673.1, 446.1, 670; 634.1 și 509 nereproduse) pe ramura `lucru/lot15-1` (worktree `/home/costin/iconta_lot15`), la poartă. Zonele C și D urmează. Raportul A–G vine o singură dată, la sfârșitul lui 15.1.**
+**31.10.2026 — COMANDA 15.1: zona A PUBLICATĂ pe `0e1f09e4`; zona B (722, F-A, 547.1, 653.1, 676.1, 673.1, 446.1, 670, 184.2, 725 + observațiile retestului; 634.1 și 509 nereproduse) pe ramura `lucru/lot15-1` (worktree `/home/costin/iconta_lot15`), la poartă. Zonele C și D urmează. Raportul A–G vine o singură dată, la sfârșitul lui 15.1.**
 
 **30.10.2026 — COMANDA 15.G (poarta nouă, mecanică) comisă pe ramura `lucru/lot15-g` (worktree `/home/costin/iconta_lot15g`), NEPUBLICATĂ (nu schimbă aplicația).** `poarta_lot.sh` = poarta implicită țintită; `poarta_completa.sh` cere cheia arhitectului; marcajul `POARTA_SARE=1` (scripts/poarta.env). Aplicația rămâne pe 15.0.
 

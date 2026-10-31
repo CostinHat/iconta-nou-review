@@ -2,7 +2,7 @@
 // Banda de salut cu „Recomandă” și „Suport” (salut.js, aceeași la asistent) + cardurile pastel, fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=4364ee71f3";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=760be1b9f8";  /* esc_nc27 */
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias

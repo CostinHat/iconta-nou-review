@@ -24312,3 +24312,9 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - Verificatorii „înainte” pe 634.1 și 509 au dat TRECE: nereprodusă, nimic reparat. 634.1: ramura „altă livrare” nu a fost parcursă.
 - Verificatorii care au rulat testul lui Code (653.1, 673.1, 670) au dat TRECE după ce au analizat capturile; rezerva e în raport la E.
 - `core/test_deficiente.py` e în `scripts/poarta_sare.txt` (testul de formă); rândurile noi nu poartă „dovadă firme de test” cu PNG-uri, pentru că CLAUDE.md §4 pct. 5 face din TRECE-ul verificatorului singura dovadă.
+
+## Comanda 15.1, retestul zonei A (31.10.2026) — aplicat în zona B
+- 184.2 (separatori automați la sume) și 725 (F5 readuce fereastra) rezolvate; observațiile: „Proprietar” rămâne ascuns la revenirea din ciornă, bara de jos a formularului are 72 px (acțiunea principală 52 px, „Renunță” 44 px), mesajul 712.1 apare o singură dată (712.2).
+- Garda [325] a plasei e2e („nimic nu se deschide singur”) are o excepție: fereastra în care omul era înainte de F5 (decizia lui Costin la 725). `Ecran.acasa()` din harness uită memoria ferestrei.
+- Poarta: treptele au ordine (verificator, pytest țintit, plasa) și se opresc la prima roșie; `scripts/inainte_de_commit.sh` rulează verificatorul și pytest-ul țintit înainte de orice commit (CLAUDE.md §5).
+- Lecție de proces: cache-ul `lastfailed` al pytest cu un test din `poarta_sare.txt` făcea ca `--lf` să ruleze toată suita (50 de minute); cache-ul se curăță înainte de poartă. Arborele nu se editează cât rulează poarta.

@@ -150,6 +150,10 @@ class Ecran:
         pg.on("response", lambda r: self.cereri_rele.append((r.status, r.url)) if r.status >= 500 else None)
 
     def acasa(self):
+        try:   # [15.1, 725] „acasă” = omul a plecat din fereastra deschisă: F5 nu o mai readuce (memoria ferestrei se uită)
+            self.pg.evaluate("() => sessionStorage.removeItem('iconta_fereastra_deschisa')")
+        except Exception:  # noqa: BLE001 — pagina încă nu e încărcată (primul `goto`)
+            pass
         self.pg.goto(BAZA + "/", wait_until="domcontentloaded")
         self.pg.wait_for_selector(".cab-grila, .cab-card", timeout=30000)
         self.pg.wait_for_timeout(500)
@@ -184,7 +188,8 @@ class Ecran:
 #:   - orice `showPicker()` (deschide lista / calendarul din cod);
 #:   - orice fereastră (`role=dialog`, `.fereastra-overlay`) apărută ÎNAINTEA primului gest al omului pe pagină
 #:     (`navigator.userActivation.hasBeenActive`), afară de cele pe care aplicația le deschide singură prin decizie: bun venit,
-#:     anunțul iConta, reautentificarea (`data-deschidere="aplicatie"`) și linkul dintr-o notificare (`#deschide=`, omul a apăsat linkul).
+#:     anunțul iConta, reautentificarea (`data-deschidere="aplicatie"`), linkul dintr-o notificare (`#deschide=`, omul a apăsat linkul) și
+#:     fereastra în care omul era înainte de F5 (`iconta_fereastra_deschisa`, 725: „la F5 aplicația revine la fereastra în care erai”).
 #: Testul pică la final cu lista lor. LIMITA: o fereastră deschisă din cod DUPĂ un prim gest al omului nu se prinde (fără ceas de
 #: activare, care ar da alarme false la cererile lente); formularele / cardurile care se desfac în pagină se prind numai prin testele lor.
 GARDA_DESCHIDERI = r"""
@@ -203,7 +208,8 @@ GARDA_DESCHIDERI = r"""
       C.prototype.showPicker = function (...a) { note.push("showPicker pe " + id(this)); return vechi.apply(this, a); };
     }
   }
-  const dinLink = /^#deschide=/.test(location.hash);
+  const dinLink = /^#deschide=/.test(location.hash)
+    || (() => { try { return !!sessionStorage.getItem("iconta_fereastra_deschisa"); } catch { return false; } })();   // [15.1, 725] F5 readuce fereastra în care erai (decizia lui Costin)
   const verifica = (el) => {
     if (!(el instanceof Element) || dinLink || (navigator.userActivation && navigator.userActivation.hasBeenActive)) return;
     const f = el.matches('[role="dialog"], .fereastra-overlay') ? el : el.querySelector('[role="dialog"], .fereastra-overlay');

@@ -681,6 +681,17 @@ function _langaButon(zona, b) {
   return [vecin(rand, "nextElementSibling"), vecin(rand, "previousElementSibling")].some((x) => x && x.contains(zona)
     && !x.querySelector("input, select, textarea"));
 }
+// [15.1, 712.1 / „același mesaj o singură dată pe ecran”] când caseta „NU s-a salvat” spune un text, aceleași cuvinte puse deja lângă un câmp
+// (linia de stare a CUI-ului, eroarea câmpului) se ascund cât stă caseta: omul citește motivul o dată, nu de două ori
+function _ascundeDuplicatele(box, text) {
+  const t = String(text || "").replace(/\s+/g, " ").trim();
+  if (t.length < 20) return;   // numai fraze: un cuvânt („obligatoriu”) poate fi corect de două ori
+  const rad = box.closest(".fereastra") || document;
+  rad.querySelectorAll(".em-cui-stare").forEach((e) => {   // numai linia de stare: eroarea de câmp stă lângă câmp ȘI în rezumat (625)
+    if (box.contains(e) || e.hidden) return;
+    if (String(e.textContent || "").replace(/\s+/g, " ").trim() === t) { e.hidden = true; e.setAttribute("data-in-refuz", ""); }
+  });
+}
 export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
   const b = _butonScriere;
   if (!b || !b.isConnected || !_butonViu) return;
@@ -701,6 +712,7 @@ export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
     li.textContent = t;
     li._text = t;
     lista.appendChild(li);
+    _ascundeDuplicatele(box, t);
     aduInVedere(box);
     return;
   }
@@ -734,6 +746,7 @@ export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
     }
   }
   li._tinta = tinta;
+  _ascundeDuplicatele(box, camp ? txt : (mesaj.textContent || ""));
   a.addEventListener("click", () => {
     // un bloc închis care ține câmpul se deschide întâi (detalii pliate)
     for (let d = tinta.closest("details"); d; d = d.parentElement && d.parentElement.closest("details")) d.open = true;
@@ -984,6 +997,30 @@ function _canonicDinCod(v) {
   return r.eroare ? null : r.canonic;
 }
 const _afisareRo = (canonic) => String(canonic).replace(".", ",");
+// [15.1, 184.2, regula 3a] separatorii unei sume se pun singuri: contabilul tastează cifrele; punctele la mii și virgula apar pe măsură ce scrie
+// (1000000 -> 1.000.000), „1000.50” și „1000,5” se înțeleg și se corectează, iar la ieșirea din câmp suma are două zecimale (1.000,50). Nimic nu se
+// refuză pentru un separator lipsă sau greșit. Se aplică câmpurilor de sumă (`step="0.01"` sau `data-suma`), nu cantităților.
+export function formateazaSumaLive(text) {
+  let t = String(text == null ? "" : text).replace(/[^\d.,\-]/g, "");
+  const minus = t.startsWith("-"); t = t.replace(/-/g, "");
+  let zec = null, intreg = t;
+  const v = t.lastIndexOf(","), p = t.lastIndexOf(".");
+  if (v >= 0) { intreg = t.slice(0, v); zec = t.slice(v + 1); }
+  else if (p >= 0) {
+    const dupa = t.length - p - 1, inainte = t.indexOf(".");
+    // punct zecimal scris de om (1000.5, 12.50, 1000.) sau punct de mii pus de formatare (1.000, 1.0000 pe când se mai scriu cifre)
+    if (inainte > 3 || dupa <= 2) { intreg = t.slice(0, p); zec = t.slice(p + 1); }
+  }
+  intreg = intreg.replace(/[.,]/g, "").replace(/^0+(?=\d)/, "");
+  const grupat = intreg.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return (minus ? "-" : "") + grupat + (zec !== null ? "," + zec.replace(/[.,]/g, "") : "");
+}
+export function sumaCuDouaZecimale(text) {
+  const f = formateazaSumaLive(text);
+  if (!f || f === "-") return f;
+  const [i, z = ""] = f.split(",");
+  return (i || "0") + "," + (z.length >= 2 ? z : (z + "00").slice(0, 2));
+}
 const _VALOARE = typeof HTMLInputElement !== "undefined" ? Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value") : null;
 const _SELECTOR_NUMERIC = 'input[type="number"], input[inputmode="decimal"]';
 let _nrCampNumeric = 0;
@@ -996,6 +1033,7 @@ export function campNumericRo(inp) {
   const brut = _VALOARE.get.call(inp);
   const canonic = inp.getAttribute("data-numar") === "ro" ? numarRo(brut).canonic : _canonicDinCod(brut);
   inp.__numarRo = true;
+  if (inp.getAttribute("step") === "0.01") inp.setAttribute("data-suma", "");   // [15.1, 184.2] câmp de sumă: separatori automați, și la valorile puse din cod
   if (inp.type !== "text") inp.type = "text";
   inp.setAttribute("inputmode", "decimal");
   inp.setAttribute("data-numar", "ro");
@@ -1003,8 +1041,26 @@ export function campNumericRo(inp) {
   Object.defineProperty(inp, "value", {
     configurable: true,
     get() { const r = numarRo(_VALOARE.get.call(this)); return r.eroare ? "" : r.canonic; },
-    set(v) { const c = _canonicDinCod(v); _VALOARE.set.call(this, c === null ? String(v) : _afisareRo(c)); },
+    // [15.1, 3a] o sumă pusă din cod (ciorna refăcută, propunerea aplicației) arată ca una tastată: puncte la mii, două zecimale
+    set(v) { const c = _canonicDinCod(v); _VALOARE.set.call(this, c === null ? String(v) : (c !== "" && this.hasAttribute("data-suma") ? sumaCuDouaZecimale(_afisareRo(c)) : _afisareRo(c))); },
   });
+  if (inp.getAttribute("step") === "0.01" || inp.hasAttribute("data-suma")) {   // [15.1, 184.2] câmp de sumă: separatori automați
+    inp.setAttribute("data-suma", "");
+    inp.addEventListener("input", () => {
+      const brut = _VALOARE.get.call(inp), f = formateazaSumaLive(brut);
+      if (f === brut) return;
+      const dinSfarsit = brut.length - (inp.selectionStart == null ? brut.length : inp.selectionStart);
+      _VALOARE.set.call(inp, f);
+      const poz = Math.max(0, f.length - dinSfarsit);
+      try { inp.setSelectionRange(poz, poz); } catch { /* tip fără selecție */ }
+    });
+    inp.addEventListener("change", () => {
+      const brut = _VALOARE.get.call(inp);
+      if (!brut.trim() || numarRo(brut).eroare) return;
+      const f = sumaCuDouaZecimale(brut);
+      if (f !== brut) _VALOARE.set.call(inp, f);
+    });
+  }
   if (canonic !== null && brut !== "") {
     _VALOARE.set.call(inp, _afisareRo(canonic));
     if (inp.hasAttribute("value")) inp.setAttribute("value", _afisareRo(canonic));
@@ -1326,6 +1382,7 @@ export function confirmaCaseta(zona, mesajHtml, laConfirm, optiuni = {}) {
   document.addEventListener("keydown", laTasta, true);
   div.querySelector("#ca-nu").addEventListener("click", inchide);
   div.querySelector("#ca-ok").addEventListener("click", () => { inchide(); laConfirm(); });
+  aduInVedere(div);   // același mecanism ca restul mesajelor de după un buton
   div.querySelector("#ca-ok").focus({ preventScroll: true });
 }
 

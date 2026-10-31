@@ -2,7 +2,7 @@
 // grupurile formularului (Document, Furnizor / Client, Sume, Descriere), lățimea câmpului după rol (XS 9, S 16, M 38, L jumătate, XL
 // toată lățimea) și cardul-rezumat de un rând cu detaliile pliate. Dimensiunile sunt în stil.css (`.ds-*`); aici stă numai alegerea
 // clasei, ca ecranele să nu mai aleagă singure lățimi și grupuri.
-import { esc } from "./api.js?v=4364ee71f3";
+import { esc, focusFaraSalt } from "./api.js?v=760be1b9f8";
 
 export const GRUPURI_FORMULAR = ["Document", "Furnizor / Client", "Sume", "Descriere"];
 
@@ -121,7 +121,7 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
     const filtrate = randuri.filter((r) => r.grup || !f || (text(r.o) + " " + (r.o.dataset.motiv || "")).toLowerCase().includes(f));
     // un titlu de grup fără niciun rând sub el nu se arată
     const potrivite = filtrate.filter((r, i) => !r.grup || (filtrate[i + 1] && !filtrate[i + 1].grup));
-    cutie.innerHTML = `<button type="button" class="ds-lista-titlu camp-input" aria-expanded="${deschisa}" data-fara-actiune="deschide lista; alegerea din ea poartă acțiunea formularului"><span class="ds-lista-ales">${esc(alesTitlu())}</span><span aria-hidden="true">▾</span></button>
+    cutie.innerHTML = `<button type="button" class="ds-lista-titlu buton-secundar" aria-expanded="${deschisa}" data-fara-actiune="deschide lista; alegerea din ea poartă acțiunea formularului"><span class="ds-lista-ales">${esc(alesTitlu())}</span><span aria-hidden="true">▾</span></button>
       ${deschisa ? `<div class="ds-lista-panou"><input type="search" class="camp-input ds-lista-cauta" placeholder="${esc(cautare)}" aria-label="${esc(cautare)}" value="${esc(filtru)}">
         <ul class="ds-lista-randuri" role="listbox">${potrivite.map((r, i) => r.grup
           ? `<li class="ds-lista-grup" role="presentation">${esc(r.grup)}</li>`

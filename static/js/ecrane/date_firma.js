@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=4364ee71f3";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=760be1b9f8";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele

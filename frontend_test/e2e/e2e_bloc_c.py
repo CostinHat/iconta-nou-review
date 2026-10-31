@@ -305,7 +305,7 @@ def test_def_66_pretul_neales_de_om_nu_ramane_pe_rand(patron, firma_cv):
         _emite_factura(patron, firma_cv["nume"])
         pg.fill("#em-l0-descriere", "Produs Pret 100")
         pg.dispatch_event("#em-l0-descriere", "input")
-        pg.wait_for_function("() => document.querySelector('#em-l0-pret_unitar').value === '100'", timeout=15000)
+        pg.wait_for_function("() => document.querySelector('#em-l0-pret_unitar').value !== '' && Number(document.querySelector('#em-l0-pret_unitar').value) === 100", timeout=15000)
         patron.captura("propus")
         pg.fill("#em-l0-descriere", "Serviciu consultanta")
         pg.dispatch_event("#em-l0-descriere", "input")
