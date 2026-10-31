@@ -3,7 +3,7 @@
 // `spv_conector.stare_firma`). Când lipsește ceva ce se repară în Setări cont → Conectare SPV, mesajul are butonul spre acolo
 // (`ecran_destinatie.butonSpreEcran`). O singură sursă a textului — nu câte o frază pe ecran.
 import { api, arataMesaj, cate, dataRo } from "../api.js?v=ec2094fd4f";
-import { cardRezumat } from "../ds_piese.js?v=b915963b60";   // [15.1, 687.1-SPV]
+import { cardRezumat } from "../ds_piese.js?v=b8a15f7104";   // [15.1, 687.1-SPV]
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";
 
 const _ora = (iso) => { const d = new Date(iso); return `${dataRo(iso)}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };

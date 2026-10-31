@@ -413,10 +413,10 @@ def test_def_161_semnal_furnizor_cu_sold_debitor(patron, firma):
         pg = patron.pg
         _inchidere(patron, firma)
         _la_luna(patron, "#il-prev", 2026, 7)
-        pg.wait_for_function("() => (document.querySelector('#il-controale') || {}).innerText?.includes('Semnale')", timeout=60000)
-        z = pg.inner_text("#il-controale")
+        pg.wait_for_function("() => (document.querySelector('#il-controale') || {}).textContent?.includes('Semnale')", timeout=60000)
+        z = pg.eval_on_selector("#il-controale", "e => e.textContent")   # [15.1, 687.2] rândul semnalului + detaliile pliate
         assert "contul 401 (furnizori) are sold debitor de 500,00 lei la sfârșitul lunii" in z, z
-        semnale = pg.inner_text("#il-controale .caseta-info:has(b:text('Semnale'))")
+        semnale = pg.eval_on_selector("#il-sem-semnale", "e => e.textContent")
         assert "401" in semnale, semnale
         pg.locator("#il-controale").scroll_into_view_if_needed()
         patron.captura("semnal_401_debitor")
@@ -1041,15 +1041,12 @@ def test_def_159_marcarea_nu_muta_ecranul_de_pe_rand(patron, preluata_07):
     y2 = y()
     assert abs(y2 - y1) <= 4, "rândul a sărit după „Salvează”: %s -> %s px" % (y1, y2)
     pg.click(rand + " .cf-extern-anuleaza")
-    # caseta de confirmare apare sub rând; aplicația o aduce în vedere cu derulare minimă (`aduInVedere`, `nearest`, lină) —
-    # clicul vine după ce s-a oprit derularea, ca Playwright să nu mai mute el ținta în centru
-    pg.wait_for_function("() => { const b = document.querySelector('#ca-ok'); if (!b) return false; const r = b.getBoundingClientRect();"
-                         " const c = b.closest('.fereastra-corp').getBoundingClientRect(); const t = Math.round(r.top);"
-                         " const ok = r.bottom <= c.bottom + 1 && window._caY === t; window._caY = t; return ok; }", timeout=10000,
-                         polling=200)
-    caseta = pg.eval_on_selector("#caseta-atentie-activa", "e => Math.round(e.getBoundingClientRect().height)")
+    # [15.1, 446.1] întrebarea e fereastra de confirmare (modală, în `body`): nu mută nimic din pagină, deci rândul rămâne exact unde era
+    pg.wait_for_selector("#ca-ok", timeout=10000)
+    caseta = pg.eval_on_selector(".ds-confirmare", "e => Math.round(e.getBoundingClientRect().width)")
+    assert caseta == 480, caseta
     y3 = y()
-    assert y1 - y3 <= caseta + 16, "rândul a sărit la „Anulează marcarea”: %s -> %s px (caseta are %s px)" % (y1, y3, caseta)
+    assert abs(y3 - y1) <= 4, "rândul a sărit la „Anulează marcarea”: %s -> %s px" % (y1, y3)
     pg.click("#ca-ok")
     pg.wait_for_function("(s) => { const r = document.querySelector(s); return r && !r.querySelector('.cf-extern-anuleaza'); }",
                          arg=rand, timeout=60000)
@@ -1356,8 +1353,8 @@ def test_def_215_inchiderea_semnaleaza_amortizarea_lunilor_anterioare(patron, fi
         _card(patron, f, "inchidere", "#il-prev")
         _la_luna(patron, "#il-prev", trecuta.year, trecuta.month)
         pg.wait_for_function("() => { const z = [...document.querySelectorAll('.fereastra')].pop().querySelector('#il-controale');"
-                             " return z && z.querySelector('.caseta-info, .caseta-atentie'); }", timeout=90000)
-        zona = pg.inner_text(".fereastra:last-of-type #il-controale")
+                             " return z && z.querySelector('.ds-semnal'); }", timeout=90000)
+        zona = pg.eval_on_selector(".fereastra:last-of-type #il-controale", "e => e.textContent")   # [15.1, 687.2] rândurile + detaliile pliate
         patron.captura("inchidere")
     finally:
         sql('DELETE FROM "%s".mijloace_fixe WHERE id = %%s' % f["schema"], (mid,))

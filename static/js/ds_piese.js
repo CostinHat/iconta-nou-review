@@ -154,7 +154,7 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
  *  `limita` se arată primele și „încă n ▾”. `ton`: avertisment | eroare | ok (banda din stânga). Desenează în `zona`; întoarce elementul. */
 export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment", limita = 6 } = {}) {
   const lista = (items || []).map((x) => (typeof x === "string" ? { mesaj: x } : x)).filter((x) => x && x.mesaj);
-  const scurt = (t) => { const p = String(t).split(/(?<=[.;:])\s/)[0]; return p.length > 90 ? p.slice(0, 89) + "…" : p; };
+  const scurt = (t) => { const p = String(t).split(/(?<=\.)\s/)[0]; return p.length > 90 ? p.slice(0, 89) + "…" : p; };
   zona.innerHTML = `<section class="ds-semnale"><h3 class="ds-grup-titlu">${esc(titlu)} (${lista.length})</h3><ul class="ds-semnale-lista"></ul></section>`;
   const ul = zona.querySelector(".ds-semnale-lista");
   const buton = (clasa, text, laClic) => {   // butoanele se creează numai când au ce arăta: nu e o acțiune care dispare, ci una care nu există

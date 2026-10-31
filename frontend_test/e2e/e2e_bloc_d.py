@@ -966,11 +966,11 @@ def test_def_141_inchiderea_lunii_semnaleaza_581_cu_sold(patron, firma_mf):
     pg = patron.pg
     patron.firma(firma_mf["nume"])
     _deschide(patron, "#fa-inchidere", "Închidere lună")
-    pg.wait_for_selector(".fereastra:last-of-type #il-controale .ci-mesaj, .fereastra:last-of-type #il-controale .ca-mesaj", timeout=30000)
+    pg.wait_for_selector(".fereastra:last-of-type #il-controale .ds-semnal-text", timeout=30000)
     pg.click(".fereastra:last-of-type #il-prev")
     _asteapta_text(patron, "Luna %s" % LUNA_TRECUTA.strftime("%m/%Y"))
-    pg.wait_for_selector(".fereastra:last-of-type #il-controale .ci-mesaj, .fereastra:last-of-type #il-controale .ca-mesaj", timeout=30000)
-    text = pg.inner_text(".fereastra:last-of-type #il-controale")
+    pg.wait_for_selector(".fereastra:last-of-type #il-controale .ds-semnal-text", timeout=30000)
+    text = pg.eval_on_selector(".fereastra:last-of-type #il-controale", "e => e.textContent")   # [15.1, 687.2] semnalele: rândul + detaliile pliate
     patron.captura()
     assert "contul 581 (viramente interne) are sold 300,00 lei la sfârșitul lunii" in text, text
 
