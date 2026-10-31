@@ -58,18 +58,31 @@ export function cardRezumat({ text, ton = "avertisment", detalii = "", actiune =
   const el = document.createElement("div");
   el.className = "ds-rezumat-cutie";
   const scurt = String(text).length > 90 ? String(text).slice(0, 89) + "…" : String(text);
-  el.innerHTML = `<div class="ds-rezumat ds-rezumat-${esc(ton)}" role="status"><span class="ds-rezumat-text" title="${esc(text)}">${esc(scurt)}</span>
-      ${actiune ? `<button type="button" class="buton-secundar ds-rezumat-actiune" data-fara-actiune="navigare spre ecranul numit în buton">${esc(actiune.eticheta)}</button>` : ""}
-      ${detalii ? `<button type="button" class="buton-secundar ds-rezumat-plie" aria-expanded="false" data-fara-actiune="plierea detaliilor">▾ detalii</button>` : ""}</div>
-    ${detalii ? `<div class="ds-rezumat-detalii" hidden>${esc(detalii)}</div>` : ""}`;
-  const plie = el.querySelector(".ds-rezumat-plie");
-  if (plie) plie.addEventListener("click", () => {
-    const d = el.querySelector(".ds-rezumat-detalii");
-    d.hidden = !d.hidden;
-    plie.setAttribute("aria-expanded", String(!d.hidden));
-    plie.textContent = d.hidden ? "▾ detalii" : "▴ detalii";
-  });
-  const act = el.querySelector(".ds-rezumat-actiune");
-  if (act && actiune) act.addEventListener("click", actiune.laClic);
+  el.innerHTML = `<div class="ds-rezumat ds-rezumat-${esc(ton)}" role="status"><span class="ds-rezumat-text" title="${esc(text)}">${esc(scurt)}</span></div>`;
+  const rand = el.firstElementChild;
+  const buton = (clasa, eticheta, laClic) => {   // o piesă care nu are ce arăta nu pune buton deloc (nu e o acțiune care dispare: nu exista)
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "buton-secundar " + clasa;
+    b.dataset.faraActiune = "navigare sau pliere în fereastra curentă";
+    b.textContent = eticheta;
+    b.addEventListener("click", laClic);
+    rand.appendChild(b);
+    return b;
+  };
+  if (actiune) buton("ds-rezumat-actiune", actiune.eticheta, actiune.laClic);
+  if (detalii) {
+    const d = document.createElement("div");
+    d.className = "ds-rezumat-detalii";
+    d.hidden = true;
+    d.textContent = detalii;
+    el.appendChild(d);
+    const plie = buton("ds-rezumat-plie", "▾ detalii", () => {
+      d.hidden = !d.hidden;
+      plie.setAttribute("aria-expanded", String(!d.hidden));
+      plie.textContent = d.hidden ? "▾ detalii" : "▴ detalii";
+    });
+    plie.setAttribute("aria-expanded", "false");
+  }
   return el;
 }

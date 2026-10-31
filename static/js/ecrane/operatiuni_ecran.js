@@ -2,7 +2,7 @@
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
 import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=c6c45aefe4";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
-import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=4d175564c0";   // [15.1] piesele formularului grupat
+import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=2e31f52e03";   // [15.1] piesele formularului grupat
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1, 721] ciorna formularului, pe server
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
@@ -763,7 +763,7 @@ export async function ecranOperatiuni(corp, nav, t) {
           x.innerHTML = cote.length ? ALEGE_OPT + cote.map((q) => `<option value="${q}">${q}%</option>`).join("") : '<option value="" data-alege selected>Nicio cotă de TVA la această dată</option>';
           if (cote.map(String).includes(veche)) x.value = veche;
         });
-      } catch { if (actuala()) selCota.forEach((x) => { x.innerHTML = '<option value="" data-alege selected>Cotele nu s-au putut citi — reîncearcă</option>'; }); }
+      } catch { if (!actuala()) return; selCota.forEach((x) => { x.innerHTML = '<option value="" data-alege selected>Cotele nu s-au putut citi — reîncearcă</option>'; }); }
     };
     // [15.1, 720] refuzul 714 se vede imediat după alegerea felului (și a datei), nu abia la „Generează nota”: card-rezumat de eroare, cu drum
     // spre Facturi primite; „Generează nota” rămâne inactiv, cu motivul scris dedesubt
@@ -789,7 +789,7 @@ export async function ecranOperatiuni(corp, nav, t) {
           } } }));
         inactiv(btn, "Nota nu se poate genera: factura se înregistrează în Facturi primite.");
         if (motivEl) motivEl.textContent = "Nota nu se poate genera: factura se înregistrează în Facturi primite.";
-      } catch { if (actuala()) curat(); }
+      } catch { if (!actuala()) return; curat(); }
     };
     const dataEl = corp.querySelector("#op-data");
     if (dataEl) dataEl.addEventListener("change", () => { incarcaCote(); verificaRefuz(); });
@@ -802,14 +802,14 @@ export async function ecranOperatiuni(corp, nav, t) {
       actualizeazaCond();
       verificaRefuz();
     };
-    const idsCiorna = opCurenta.campuri.map((c) => "op-" + c.nume);
-    let ciorna = null;
+    const idsCiorna = opCurenta.campuri.map((c) => `op-${c.nume}`);
+    let pastrare = null;
     incarcaCote().then(() => {
-      ciorna = ciornaFormular(corp, "iconta_ciorna_op_" + opCurenta.cheie, idsCiorna, { tenantId: t.id, formular: "op_" + opCurenta.cheie });
-      if (ciorna.refacuta) dupaRefacere();
-      ciorna.gata.then((r) => { if (r) dupaRefacere(); });
+      pastrare = ciornaFormular(corp, "iconta_ciorna_op_" + opCurenta.cheie, idsCiorna, { tenantId: t.id, formular: "op_" + opCurenta.cheie });
+      if (pastrare.refacuta) dupaRefacere();
+      pastrare.gata.then((r) => { if (r) dupaRefacere(); });
     });
-    corp.querySelector("#op-renunta").addEventListener("click", () => { if (ciorna) ciorna.sterge(); nav.inapoiPas(); });
+    corp.querySelector("#op-renunta").addEventListener("click", () => { if (pastrare) pastrare.sterge(); nav.inapoiPas(); });
     // [lotul 12, C78.1, comanda Costin 12.2 pct.7: „ecranul nu arată rezultatul VIES (cod valid sau nu, numele firmei) înainte de
     // generare”] la ieșirea din câmpul codului de TVA, verificarea VIES (aceeași rută ca „Emite factură”, `GET …/verifica-vies`): valid, cu
     // statul și numele firmei; invalid; VIES căzut — înainte de „Generează nota”. Tastarea șterge răspunsul codului vechi, iar un răspuns
@@ -1080,7 +1080,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       }
       try {
         const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`, corpReq);
-        if (ciorna) ciorna.sterge();   // [15.1, 721] salvat: formularul se golește
+        if (pastrare) pastrare.sterge();   // [15.1, 721] salvat: formularul se golește
         // [lot 19 defect 13] o operatie de CALCUL (ex. ONG › scutire) nu genereaza nota — nu se spune ca a generat
         // [C5, comanda Costin 07.10.2026] O rută scrie o notă (`inregistrare_id`) sau mai multe (`inregistrari`, ex. chiria cu
         // refacturare): ecranul le citește pe amândouă. Până azi „nicio notă” apărea și când nota-chirie scrisese ciorna (DS cap.27).

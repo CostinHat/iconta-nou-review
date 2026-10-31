@@ -82,7 +82,7 @@ def _citeste(p):
 
 def motor_fara_preselectie(js):
     """Motorul formularului pune „— alege —” pe ORICE select obligatoriu? Se citește din codul lui, nu se presupune."""
-    return re.search(r'const gol = c\.optional \? \'<option value="">-</option>\'\s*:\s*`<option value="" selected>\$\{esc\(c\.neales \|\| "— alege —"\)\}</option>`;', js) is not None
+    return re.search(r'const gol = c\.optional \? \'<option value=""(?: data-alege)?>-</option>\'\s*:\s*`<option value="" (?:data-alege )?selected>\$\{esc\(c\.neales \|\| "— alege —"\)\}</option>`;', js) is not None
 
 
 def formulare(js):

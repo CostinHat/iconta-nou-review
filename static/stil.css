@@ -3301,7 +3301,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .ds-grup .alegere-butoane { min-height: 44px; gap: 8px; flex-wrap: wrap; }
 .ds-grup .alegere-butoane > button { height: 44px; padding: 0 16px; font-size: 16px; }
 .ds-grup .alegere-butoane > button:active { transform: translateY(2px); }
-.ds-grup .alegere-butoane > button.buton-activ { background: var(--albastru-clar); border-color: var(--albastru); }
+.ds-grup .alegere-butoane > button.buton-activ { color: #fff; background: var(--albastru); border-color: var(--albastru-inchis); box-shadow: inset 0 2px 3px rgba(0,0,0,.25); transform: translateY(1px); }
 /* card-rezumat (44 px): un rând, bandă stângă 4 px; detaliile pliate */
 .ds-rezumat { display: flex; align-items: center; gap: 8px; min-height: 44px; box-sizing: border-box; padding: 0 16px; margin: 0 0 8px;
   border: 1px solid var(--linie); border-left-width: 4px; border-radius: 12px; background: var(--alb); font-size: 14px; }

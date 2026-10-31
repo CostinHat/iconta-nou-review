@@ -318,9 +318,13 @@ def test_def_714_achizitia_fara_factura_nu_deduce_tva_pe_loc_la_firma_cu_tva_la_
                       ("client_cui", "18765430"), ("client_nume", "Chirias Proba SRL"), ("numar", "UT-1"), ("total_factura", "1000"),
                       ("parte_refacturata", "400"), ("cota", "21")])
     ultima = _ultima(f)
-    m = _genereaza(pg)
+    # [15.1, 720] refuzul se vede imediat, ca card-rezumat; „Generează nota” e inactiv, cu motiv (serverul refuză oricum o notă trimisă direct)
+    pg.wait_for_selector("#op-refuz-fel .ds-rezumat-eroare", timeout=15000)
+    pg.click("#op-refuz-fel .ds-rezumat-plie")
+    m = pg.inner_text("#op-refuz-fel")
     patron.captura("refuz_tva_la_incasare")
     assert "Facturi primite" in m and "art. 297 alin. (3)" in m and "4428" in m, m
+    assert pg.get_attribute("#op-trimite", "aria-disabled") == "true"
     assert _ultima(f) == ultima, "nota s-a scris cu TVA-ul dedus pe loc"
     assert sql('SELECT count(*) FROM "%s".inregistrari_linii WHERE cont_debit = %%s' % f["schema"], ("4426",))[0][0] == 0
 

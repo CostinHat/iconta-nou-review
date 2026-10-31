@@ -198,7 +198,7 @@ def test_CALIBRARE_ramura_ascunsa_e_prinsa():
 
 def test_CALIBRARE_preselectia_e_prinsa():
     js = _surse_()[0]
-    a = '`<option value="" selected>${esc(c.neales || "— alege —")}</option>`;'
+    a = '`<option value="" data-alege selected>${esc(c.neales || "— alege —")}</option>`;'
     assert js.count(a) == 1
     stricat = js.replace(a, '(c.neales ? `<option value="" selected>${esc(c.neales)}</option>` : "");')
     assert not motor_fara_preselectie(stricat)

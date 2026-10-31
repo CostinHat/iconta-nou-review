@@ -143,7 +143,7 @@ export function puneCautarea(bara, nav, opt = {}) {
     }
     if (!actuala()) return;   // a sosit răspunsul unei căutări mai vechi
     // acțiunea unei operațiuni se compune ca la butoanele ei (`actiuneOp`); cele refuzate rolului nu apar
-    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=47b4e2502d");
+    const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=68bf336f33");
     if (!actuala()) return;
     rezultate = ((r && r.rezultate) || []).filter((x) => (x.ruta ? permis(actiuneOp(x)) : (!x.actiune || permis(x.actiune))));
     const deFirma = rezultate.some((x) => x.fel !== "card" && x.fel !== "operatiune") || tid;
