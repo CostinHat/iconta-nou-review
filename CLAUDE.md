@@ -80,6 +80,13 @@ scripts/poarta.env) ține în afara porții testele din scripts/poarta_sare.txt 
 cererea arhitectului. Un test nou verifică sensul (de exemplu „există restanța D301 09/2026 la F3”), nu un șir de caractere literal;
 datele și sumele din teste trec prin aceleași funcții de format ca aplicația.
 
+Plasa de fluxuri atinse (b), limita de 20 (regulă permanentă, comanda 15.1, 31.10.2026; înlocuiește (b) de mai sus când depășește): dacă e2e-urile
+fluxurilor atinse după harta scripts/poarta_harta.txt depășesc 20 de fișiere, (b) se înlocuiește cu e2e-urile ecranelor numite în
+~/ghid_incoming/scenarii_<comanda>.txt sub titlul FLUXURI (cel mult 20, scrise de arhitect sau de Code la începutul comenzii); lista completă
+din hartă se scrie de poartă în poarta_flux_harta.txt și intră în raport la D. Raportul spune, la D, câte și care e2e-uri au picat la prima rulare
+roșie. Când pytest și verificatorul sunt deja verzi pe un commit și se reia numai plasa, se folosește POARTA_DOAR_PLASA=<sha>: poarta refuză dacă de
+atunci s-a schimbat altceva decât fișierele porții și registrele, iar verdictul e compus (pytest + verificator pe <sha>, plasa pe commitul curent).
+
 Un test care a trecut deja pe exact același commit nu se mai rulează a doua oară.
 
 Dacă poarta pică numai pe cifrele de referință F1–F5 și diferențele se explică prin datele de retest și

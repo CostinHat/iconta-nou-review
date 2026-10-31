@@ -49,14 +49,30 @@ d = json.load(open(sys.argv[1], encoding="utf-8"))
 open(sys.argv[2] + "/poarta_pytest_fisiere.txt", "w").write("\n".join(d["pytest"]) + "\n")
 open(sys.argv[2] + "/poarta_e2e_fisiere.txt", "w").write("\n".join(d["e2e"]) + "\n")
 print("[poarta lot] selectie: %d fisiere pytest, %d fisiere e2e; perimetru incert (nu extinde): %s" % (len(d["pytest"]), len(d["e2e"]), d["incerte"] or "nimic"))
+open(sys.argv[2] + "/poarta_flux_harta.txt", "w").write("\n".join(d["flux_harta"]) + "\n")   # lista completa a fluxurilor din harta (raport, D)
+print("[poarta lot] fluxuri atinse (b): %d fisiere din harta%s; lista completa: %s/poarta_flux_harta.txt" % (len(d["flux_harta"]),
+      " — peste 20: inlocuite cu cele numite sub FLUXURI in scenarii" if d["flux_inlocuit"] else "", sys.argv[2]))
 PYE
+
+# POARTA_DOAR_PLASA=<sha>: rerularea numai a plasei e2e, dupa o rulare in care pytest si verificatorul au fost VERZI pe <sha> (verdict compus, 15.1).
+# Permis numai daca diferenta <sha>..HEAD atinge exclusiv fisiere ale portii, CLAUDE.md sau registre (nicio schimbare de aplicatie).
+DOAR_PLASA="${POARTA_DOAR_PLASA:-}"
+if [ -n "$DOAR_PLASA" ]; then
+    ALTELE=$(git diff --name-only "$DOAR_PLASA" HEAD | grep -vE '^(scripts/poarta|CLAUDE\.md$|DECIZII\.md$|DEFICIENTE\.md$|PREDARE_LANT\.md$)' )
+    if [ -n "$ALTELE" ]; then
+        echo "[poarta lot] REFUZ: POARTA_DOAR_PLASA=$DOAR_PLASA, dar de atunci s-au schimbat si alte fisiere:"; echo "$ALTELE" | head -10 | sed 's/^/    /'
+        exit 1
+    fi
+    echo "[poarta lot] DOAR PLASA e2e (pytest si verificatorul sunt verzi pe $DOAR_PLASA; fisiere schimbate de atunci: numai ale portii / registre)"
+fi
 
 # verificatorul ruleaza cat ruleaza pytest (nu atinge baza de test)
 T_VERIF0=$(date +%s)
+T_P0=$(date +%s)
+if [ -z "$DOAR_PLASA" ]; then
 "$PY" verificator_conformitate.py > "$J/poarta_verificator.log" 2>&1 &
 PID_VERIF=$!
 
-T_P0=$(date +%s)
 "$PY" -m pytest -q --lf --lfnf=none > "$J/poarta_pytest_lf.log" 2>&1
 RC=$?
 case "$RC" in 0|5) ;; *) rosu "pytest --lf (picate la ultima rulare)" ;; esac
@@ -72,6 +88,9 @@ T_VERIF=$(( $(date +%s) - T_VERIF0 ))
 TOT=$(grep -i "TOTAL" "$J/poarta_verificator.log")
 echo "[poarta lot] verificator: $TOT"
 case "$TOT" in *"TOTAL: 0"*) ;; *) rosu "verificator" ;; esac
+else
+T_PYTEST=0; T_VERIF=0
+fi
 
 # plasa e2e: scenariile + fisierele atinse + cele cazute la rularea anterioara; dupa pytest (aceeasi baza de test)
 E2E="$(cat "$J/poarta_e2e_fisiere.txt")"

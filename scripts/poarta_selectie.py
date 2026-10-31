@@ -25,6 +25,10 @@ NUCLEU = re.compile(r"^test_(d\d{3}|.*(tva|sold|stoc|salar|declarat|balanta))")
 BAZA_PUBLICAT = "main"
 
 
+#: peste atâtea fișiere e2e aduse de hartă, (b) se înlocuiește cu cele numite sub FLUXURI în scenarii_<comanda>.txt (comanda 15.1, 31.10.2026)
+LIMITA_FLUXURI = 20
+
+
 def _rel(cale):
     return os.path.relpath(cale, RAD)
 
@@ -45,6 +49,9 @@ def selecteaza():
     def pune(f, de_ce):
         motive.setdefault(f, []).append(de_ce)
 
+    flux_harta = {}   # (b) e2e-urile fluxurilor atinse, după hartă: fișier -> fișierele atinse care l-au adus
+    flux_numite = []  # e2e-urile din scenarii_<comanda>.txt sub titlul FLUXURI
+
     baza = subprocess.run(["git", "merge-base", "HEAD", BAZA_PUBLICAT], cwd=RAD, capture_output=True, text=True).stdout.strip()
     incerte = []
     if baza:
@@ -58,23 +65,38 @@ def selecteaza():
             for cheie, fisiere in harta:
                 if a == cheie or (cheie.endswith("/") and a.startswith(cheie)):
                     for e in fisiere:
-                        pune("frontend_test/e2e/" + e, "flux atins: " + a)
+                        flux_harta.setdefault("frontend_test/e2e/" + e, []).append(a)
     for f in sorted(glob.glob(os.path.join(RAD, "core", "test_lot*scenariu*.py"))):
         pune(_rel(f), "scenariu")
     comanda = os.environ.get("POARTA_COMANDA", "").strip()
     cale = os.path.join(os.environ.get("GHID_INCOMING", os.path.expanduser("~/ghid_incoming")), "scenarii_%s.txt" % comanda)
     if comanda and os.path.isfile(cale):
+        in_fluxuri = False
         for ln in open(cale, encoding="utf-8"):
             ln = ln.strip()
-            if ln and not ln.startswith("#"):
-                pune("frontend_test/e2e/" + os.path.basename(ln), "scenariu al comenzii " + comanda)
+            if ln.lstrip("# ").upper() == "FLUXURI":   # titlul care desparte scenariile de e2e-urile ecranelor numite (regula 15.1, CLAUDE.md §5)
+                in_fluxuri = True
+            elif ln and not ln.startswith("#"):
+                if in_fluxuri:
+                    flux_numite.append("frontend_test/e2e/" + os.path.basename(ln))
+                else:
+                    pune("frontend_test/e2e/" + os.path.basename(ln), "scenariu al comenzii " + comanda)
+    # (b): peste LIMITA_FLUXURI fișiere, harta se înlocuiește cu fluxurile numite; lista completă a hărții se păstrează pentru raport (D)
+    inlocuit = len(flux_harta) > LIMITA_FLUXURI
+    if inlocuit:
+        for f in flux_numite[:LIMITA_FLUXURI]:
+            pune(f, "flux numit în scenarii (harta a adus peste %d)" % LIMITA_FLUXURI)
+    else:
+        for f, de_la in flux_harta.items():
+            pune(f, "flux atins: " + de_la[0])
     for f in sorted(glob.glob(os.path.join(RAD, "core", "test_*.py"))):
         if NUCLEU.match(os.path.basename(f)):
             pune(_rel(f), "nucleu fiscal / calcul")
     ramase = {f: m for f, m in motive.items() if os.path.isfile(os.path.join(RAD, f)) and not poarta_sare.sare_fisier(os.path.join(RAD, f))}
     return {"pytest": sorted(f for f in ramase if f.startswith("core/") and os.path.basename(f).startswith("test_")),
             "e2e": sorted(os.path.basename(f) for f in ramase if f.startswith("frontend_test/e2e/")),
-            "motive": ramase, "incerte": list(incerte), "baza": baza}
+            "motive": ramase, "incerte": list(incerte), "baza": baza,
+            "flux_harta": sorted(os.path.basename(f) for f in flux_harta), "flux_inlocuit": inlocuit}
 
 
 if __name__ == "__main__":
