@@ -2,12 +2,14 @@
 # poarta_lot.sh — POARTA IMPLICITĂ (comanda 15.G, 30.10.2026). Mecanică: rulează NUMAI
 #   1. testele picate la ultima rulare (pytest --lf; plasa e2e: fișierele din poarta_e2e_cazute.txt),
 #   2. testele fișierelor atinse de la ultima publicare (scripts/poarta_selectie.py),
-#   3. scenariile deficiențelor (e2e-urile numerotate, core/test_lot*scenariu*),
+#   3. scenariile deficiențelor: core/test_lot*scenariu* și plasa e2e numai din scenarii_<comanda>.txt (POARTA_COMANDA) + fluxurile atinse
+#      (scripts/poarta_harta.txt) + cele picate la ultima rulare,
 #   4. nucleul fiscal și de calcul (declarații, TVA, solduri, stocuri, salarii),
 #   5. verificatorul (verificator_conformitate.py).
 # Nimic altceva. Marcajul POARTA_SARE (scripts/poarta.env) sare peste testele din scripts/poarta_sare.txt și poarta_forma.txt.
 # Rularea completă (tot pytest + toată plasa e2e) există numai ca scripts/poarta_completa.sh, cu cheie de la arhitect.
-# Refuză: pe `main` / fără ramură; arbore murdar; un SHA deja VERDE sau ROȘU. Scrie `VERDE|ROSU <sha> <ramura> <data>` în
+# Refuză: fără ramură; arbore murdar; un SHA deja VERDE sau ROȘU. PE `main` (15.G2) rulează informativ, măsurat: fără verdict scris, fără refuz
+# pentru SHA deja VERDE. Scrie `VERDE|ROSU <sha> <ramura> <data>` în
 # `<git-common-dir>/poarta_verdicte.log` (îl cere scripts/githooks/reference-transaction la mutarea lui `main`) și durata la final.
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
@@ -15,8 +17,8 @@ cd "$ROOT" || exit 1
 COMUN=$(git rev-parse --path-format=absolute --git-common-dir) || exit 1
 JV="$COMUN/poarta_verdicte.log"
 RAM=$(git symbolic-ref --short HEAD 2>/dev/null)
-if [ -z "$RAM" ] || [ "$RAM" = "main" ]; then
-    echo "[poarta lot] REFUZ: poarta ruleaza pe ramura lotului, nu pe main / HEAD detasat (acum: ${RAM:-detasat})."
+if [ -z "$RAM" ]; then
+    echo "[poarta lot] REFUZ: poarta ruleaza pe o ramura (acum: HEAD detasat)."
     exit 1
 fi
 MURDAR=$(git status --porcelain --untracked-files=normal)
@@ -26,8 +28,8 @@ if [ -n "$MURDAR" ]; then
     exit 1
 fi
 SHA=$(git rev-parse HEAD)
-grep -q "^VERDE $SHA " "$JV" 2>/dev/null && { echo "[poarta lot] REFUZ: $SHA are deja poarta VERDE."; exit 1; }
-grep -q "^ROSU $SHA " "$JV" 2>/dev/null && { echo "[poarta lot] REFUZ: $SHA are deja poarta ROSIE — pe rosu se repara codul (commit nou) si se ruleaza din nou."; exit 1; }
+[ "$RAM" != "main" ] && grep -q "^VERDE $SHA " "$JV" 2>/dev/null && { echo "[poarta lot] REFUZ: $SHA are deja poarta VERDE."; exit 1; }
+[ "$RAM" != "main" ] && grep -q "^ROSU $SHA " "$JV" 2>/dev/null && { echo "[poarta lot] REFUZ: $SHA are deja poarta ROSIE — pe rosu se repara codul (commit nou) si se ruleaza din nou."; exit 1; }
 PY=./venv/bin/python
 [ -x "$PY" ] || PY=python3
 J=${POARTA_JURNALE:-/tmp}
@@ -97,7 +99,7 @@ if [ "$(git rev-parse HEAD)" != "$SHA" ] || [ -n "$(git diff --name-only)" ]; th
 fi
 DUR="pytest ${T_PYTEST}s (verificator ${T_VERIF}s simultan) · plasa e2e ${T_E2E}s · total $(( $(date +%s) - T0 ))s"
 if [ -z "$ROSII" ]; then V=VERDE; RCF=0; else V=ROSU; RCF=1; fi
-echo "$V $SHA $RAM $(date -Is)" >> "$JV"
+[ "$RAM" != "main" ] && echo "$V $SHA $RAM $(date -Is)" >> "$JV"
 echo "    DURATE: $(date -Is) $V ·$ROSII · poarta implicita · $DUR" >> "$ROOT/.poarta_jurnal.log"
 echo "[poarta lot] $V $SHA ($RAM) -> $JV · $DUR"
 exit $RCF

@@ -69,7 +69,10 @@ e2e-ul ecranelor atinse, uneltele vizuale și verificatorul.
 
 Poarta implicită este scripts/poarta_lot.sh (regulă permanentă, comanda 15.G, 30.10.2026) și rulează numai: testele picate la
 ultima rulare, testele fișierelor atinse de la ultima publicare, scenariile deficiențelor, testele de nucleu fiscal și calcul
-(declarații, TVA, solduri, stocuri, salarii) și verificatorul. Durata se măsoară și se scrie la final. Pe roșu: se repară cauza și
+(declarații, TVA, solduri, stocuri, salarii) și verificatorul. Plasa e2e implicită ia numai: (a) fișierele e2e numite în
+~/ghid_incoming/scenarii_<comanda>.txt (câte unul pe rând; îl scrie arhitectul sau Code la începutul comenzii, cu e2e-urile
+deficiențelor comenzii, îl pune în raport la D și pornește poarta cu POARTA_COMANDA=<comanda>; lipsă = (a) gol), (b) e2e-urile
+fluxurilor atinse de la main, după harta scripts/poarta_harta.txt, (c) cele picate la ultima rulare. Nimic altceva din plasă. Durata se măsoară și se scrie la final. Pe roșu: se repară cauza și
 se rulează din nou poarta implicită (ea reia singură testele picate). Rularea completă (tot pytest + toată plasa e2e) este doar cea
 de noapte, scripts/poarta_completa.sh: pornește numai cu cheia ~/ghid_incoming/cheie_poarta_completa_<lot>.txt, pe care o creează
 numai comanda arhitectului; Code nu o rulează în timpul comenzilor și nu creează cheia. Marcajul global de sărire (POARTA_SARE=1 în
