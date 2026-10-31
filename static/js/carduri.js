@@ -8,7 +8,7 @@
 // lucru a lui (`nav.deschide`, `{ lat: "lucru" }`: centrată, cât ecranul — DS cap.2a). Cardul e un BUTON (DS cap.2a „Orice acțiune e un
 // buton”); textul lui e O FRAZĂ SCURTĂ, cu cifra în ea; ce e mai lung (explicația, citatul legal, lista) stă în fereastra lui. Tonul
 // (`ok` / `info` / `atentie` / `eroare`) dă culoarea punctului, nu a textului; „ok” nu înseamnă „nimic de făcut”, ci „verificat și în regulă”.
-import { esc } from "./api.js?v=760be1b9f8";
+import { esc } from "./api.js?v=ec2094fd4f";
 
 /**
  * carduri: [{ id, ton, text, titlu?, deschide?(corp, nav), motiv? }]

@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=760be1b9f8";
+import { api, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=ec2094fd4f";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care

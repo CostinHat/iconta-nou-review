@@ -4,7 +4,7 @@
 // (`clienti_api.compara_cu_anaf`, sursa unică a comparației). Pentru fiecare fișă cu alt nume: același mesaj și același buton ca în
 // ecranul fișelor (`clienti_ecran.js`): „Numele de la ANAF diferă: «X» (în fișă: «Y»).” + „Actualizează fișa cu numele de la ANAF”.
 // DS cap.1 (`.buton-primar` = acțiunea principală a propunerii), cap.6 (refuzul cu textul serverului, lângă propunere).
-import { api, esc } from "../api.js?v=760be1b9f8";
+import { api, esc } from "../api.js?v=ec2094fd4f";
 
 // căile API scrise întregi (garda rutelor fără apelant le caută literal)
 const FISA = {

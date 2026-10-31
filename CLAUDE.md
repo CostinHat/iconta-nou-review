@@ -85,6 +85,11 @@ Ordinea porții și oprirea la prima treaptă roșie (regulă permanentă, 31.10
 commit se rulează scripts/inainte_de_commit.sh (verificatorul de design și pytest-ul țintit pe fișierele atinse); poarta pornește numai dacă
 amândouă sunt verzi. Nu se editează arborele cât rulează poarta (verdictul ar deveni „arbore schimbat”).
 
+Reluarea după roșu (regulă permanentă, 31.10.2026): la prima rulare a unei zone, „fișierele atinse” se socotesc față de main; la orice reluare după roșu,
+„atinse” înseamnă doar fișierele schimbate de la ultima rulare a porții (commitul ei se reține în scripts/poarta_ultima.txt, ignorat de git, scris
+de poarta_lot.sh pe ROȘU și șters pe VERDE), plus testele picate (--lf, fișierul de căzute al plasei). Scenariile și verificatorul rămân mereu. Durata
+fiecărei reluări se raportează la D.
+
 Plasa de fluxuri atinse (b), limita de 20 (regulă permanentă, comanda 15.1, 31.10.2026; înlocuiește (b) de mai sus când depășește): dacă e2e-urile
 fluxurilor atinse după harta scripts/poarta_harta.txt depășesc 20 de fișiere, (b) se înlocuiește cu e2e-urile ecranelor numite în
 ~/ghid_incoming/scenarii_<comanda>.txt sub titlul FLUXURI (cel mult 20, scrise de arhitect sau de Code la începutul comenzii); lista completă

@@ -1,7 +1,7 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj, arataRefuzul, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=760be1b9f8";
+import { api, arataMesaj, arataRefuzul, CULORI_CARD, ICOANE, esc, semnAjutor, inchidereDialog, focusFaraSalt, cate } from "../api.js?v=ec2094fd4f";
 import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  // [267] ciorna formularului de înregistrare

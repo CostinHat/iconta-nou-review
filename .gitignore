@@ -82,3 +82,4 @@ frontend_test/f[0-9]_*.png
 
 # capturile de dovadă nu intră în index (core/test_fara_probe_imagine.py, 03.09.2026); manifestul lor AMPRENTE.json intră
 dovezi/**/*.png
+scripts/poarta_ultima.txt

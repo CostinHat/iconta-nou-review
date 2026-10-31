@@ -1401,7 +1401,7 @@ def test_def_27_linia_facturii_cu_um_pret_din_nomenclator_si_fara_articol_semnal
     assert marfa and re.search(r"· stoc \d+(?:,\d{1,2})? buc$", marfa[0]) and ".000" not in marfa[0], marfa
     pg.fill("#em-l0-descriere", PRODUS)
     pg.wait_for_function("() => document.querySelector('#em-l0-pret_unitar').value !== ''", timeout=20000)
-    assert pg.input_value("#em-l0-pret_unitar") in ("150", "150.0", "150.00"), pg.input_value("#em-l0-pret_unitar")
+    assert pg.input_value("#em-l0-pret_unitar") in ("150", "150.0", "150.00", "150,00"), pg.input_value("#em-l0-pret_unitar")
     assert pg.input_value("#em-l0-um") == "ora"
     assert pg.is_visible("#em-l0-fara-articol") and "nu se descarcă din gestiune" in pg.inner_text("#em-l0-fara-articol")
     patron.captura("fara_articol")

@@ -43,6 +43,19 @@ def _harta():
     return out
 
 
+def _ultima_rulare():
+    """Commitul ultimei rulări ROȘII a porții pe zona curentă (scripts/poarta_ultima.txt), dacă există și e strămoș al lui HEAD; altfel None."""
+    cale = os.path.join(RAD, "scripts", "poarta_ultima.txt")
+    try:
+        sha = open(cale, encoding="utf-8").read().strip()
+    except OSError:
+        return None
+    if not re.fullmatch(r"[0-9a-f]{40}", sha):
+        return None
+    ok = subprocess.run(["git", "merge-base", "--is-ancestor", sha, "HEAD"], cwd=RAD, capture_output=True).returncode == 0
+    return sha if ok else None
+
+
 def selecteaza():
     motive = {}
 
@@ -53,6 +66,12 @@ def selecteaza():
     flux_numite = []  # e2e-urile din scenarii_<comanda>.txt sub titlul FLUXURI
 
     baza = subprocess.run(["git", "merge-base", "HEAD", BAZA_PUBLICAT], cwd=RAD, capture_output=True, text=True).stdout.strip()
+    # [15.1, 31.10.2026] prima rulare a unei zone: „atinse” = față de `main`; reluare după roșu: numai ce s-a schimbat de la ultima rulare a porții
+    # (commitul ei, reținut de poarta_lot.sh în scripts/poarta_ultima.txt cât timp zona e roșie) — plus cele picate (--lf / fișierul de căzute),
+    # scenariile și verificatorul, care rămân mereu
+    ultima = _ultima_rulare()
+    if ultima:
+        baza = ultima
     incerte = []
     if baza:
         P.BAZA = baza

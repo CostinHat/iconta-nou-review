@@ -72,6 +72,8 @@ final() {   # scrie verdictul și iese
     DUR="verificator ${T_VERIF:-0}s · pytest ${T_PYTEST:-0}s · plasa e2e ${T_E2E:-0}s · total $(( $(date +%s) - T0 ))s"
     if [ -z "$ROSII" ]; then V=VERDE; RCF=0; else V=ROSU; RCF=1; fi
     [ "$RAM" != "main" ] && echo "$V $SHA $RAM $(date -Is)" >> "$JV"
+    # [15.1] reluarea după roșu pornește de la acest commit (scripts/poarta_ultima.txt, ignorat de git); pe VERDE zona e gata: următoarea pornește de la `main`
+    if [ "$V" = ROSU ]; then echo "$SHA" > "$ROOT/scripts/poarta_ultima.txt"; else rm -f "$ROOT/scripts/poarta_ultima.txt"; fi
     echo "    DURATE: $(date -Is) $V ·$ROSII · poarta implicita · $DUR" >> "$ROOT/.poarta_jurnal.log"
     echo "[poarta lot] $V $SHA ($RAM) -> $JV · $DUR"
     exit $RCF

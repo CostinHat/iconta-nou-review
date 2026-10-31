@@ -37,8 +37,8 @@ def test_def_655_suma_cu_punct_de_mii_in_casa(patron, firma_e2e):
     pg.fill(_F + "#c-doc", "RB 655")
     # ce citește ECRANUL (lumea paginii, unde stă mecanismul din api.js): o mie cinci sute; `input_value` al Playwright citește din lumea
     # lui izolată textul scris de om („1.500”), care rămâne cum l-a scris
-    assert pg.eval_on_selector(_F + "#c-suma", "e => e.value") == "1500"
-    assert pg.input_value(_F + "#c-suma") == "1.500"
+    assert float(pg.eval_on_selector(_F + "#c-suma", "e => e.value")) == 1500.0
+    assert pg.input_value(_F + "#c-suma") == "1.500,00"   # [15.1, 184.2] suma arată cu separatori și două zecimale, ca în contabilitate
     assert pg.evaluate("() => document.querySelector('.fereastra:last-of-type #c-suma').getAttribute('inputmode')") == "decimal"
     patron.captura("casa_inainte_de_adauga")
     pg.click(_F + "#c-adauga")

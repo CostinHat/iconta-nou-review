@@ -1001,6 +1001,7 @@ const _afisareRo = (canonic) => String(canonic).replace(".", ",");
 // (1000000 -> 1.000.000), „1000.50” și „1000,5” se înțeleg și se corectează, iar la ieșirea din câmp suma are două zecimale (1.000,50). Nimic nu se
 // refuză pentru un separator lipsă sau greșit. Se aplică câmpurilor de sumă (`step="0.01"` sau `data-suma`), nu cantităților.
 export function formateazaSumaLive(text) {
+  if (/[^\d.,\-\s]/.test(String(text == null ? "" : text))) return String(text);   // litere: textul rămâne cum l-a scris omul, ca „nu e număr” (655) să-l refuze
   let t = String(text == null ? "" : text).replace(/[^\d.,\-]/g, "");
   const minus = t.startsWith("-"); t = t.replace(/-/g, "");
   let zec = null, intreg = t;

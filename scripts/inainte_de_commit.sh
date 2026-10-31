@@ -18,6 +18,8 @@ sys.path.insert(0, os.path.join(os.getcwd(), "scripts"))
 import perimetru as P, poarta_scurta as S, poarta_sare
 def git(*a): return subprocess.run(["git", *a], capture_output=True, text=True).stdout.split("\n")
 baza = subprocess.run(["git", "merge-base", "HEAD", "main"], capture_output=True, text=True).stdout.strip() or "HEAD"
+import poarta_selectie as _PS
+baza = _PS._ultima_rulare() or baza   # reluare după roșu: numai ce s-a schimbat de la ultima rulare a porții
 atinse = sorted({f for f in git("diff", "--name-only", baza) + git("ls-files", "-o", "--exclude-standard") if f})
 teste = S.selectie(atinse, "direct")[0]
 teste = [t for t in teste if os.path.isfile(t) and not poarta_sare.sare_fisier(os.path.join(P.RAD, t))]

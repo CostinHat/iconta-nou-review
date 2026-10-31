@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=760be1b9f8";
+import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=ec2094fd4f";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=7cebc59162";   // [15.1] piesele formularului grupat
 import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=6aba4a57c6";   // [15.1, 725] F5 readuce fereastra

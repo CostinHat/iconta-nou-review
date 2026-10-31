@@ -1,7 +1,7 @@
 // woo_ecran.js — ecranul WooCommerce (config + sincronizare), reutilizabil.  // wc_extras_v1
 // Extras din firme.js ca sa fie folosit si de cabinet (firme.js) si de contul gratuit
 // (facturi_ecran.js). O singura sursa (regula DS 0a). Semnatura pe tenantId, nu obiect firma.
-import { api, ultimaCerere, cate, arataMesaj, esc, atributeInactiv } from "../api.js?v=760be1b9f8";
+import { api, ultimaCerere, cate, arataMesaj, esc, atributeInactiv } from "../api.js?v=ec2094fd4f";
 
 export async function ecranMagazin(corp, nav, tenantId) {
   let mesajSucces = "";

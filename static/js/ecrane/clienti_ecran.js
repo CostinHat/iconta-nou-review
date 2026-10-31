@@ -18,7 +18,7 @@
 // parteneri_firmei`), cu căutare după nume sau cod fiscal; fișa partenerului (`ecranFisaPartener`): datele (verificarea la ANAF, ruta
 // existentă `verifica-cui`, cu propunerea numelui de la ANAF — 444), documentele lui și soldul din contabilitate, cu aceeași regulă ca balanța
 // (`clienti_api.sold_partener`: soldul de preluare + notele validate; ciornele separat). Nimic nu se recalculează în ecran.
-import { api, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv } from "../api.js?v=760be1b9f8";
+import { api, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv } from "../api.js?v=ec2094fd4f";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 640] datele aduse de la ANAF țin de CUI-ul lor
 
 const FEL = {

@@ -4,7 +4,7 @@
 // Catalogul HG 2139/2004 (cu plaja duratei), durata, data punerii în funcțiune, metoda. La validarea facturii, activul intră în registru
 // legat de nota ei și devine activ când nota e validată (serverul: `core/mf_din_factura.py`). Aceeași bucată pentru factura din XML (`pr`,
 // liniile de la 0) și pentru factura introdusă de mână (`pm`, liniile de la 1).
-import { api, ultimaCerere, cate, esc, ALEGE } from "../api.js?v=760be1b9f8";
+import { api, ultimaCerere, cate, esc, ALEGE } from "../api.js?v=ec2094fd4f";
 
 const GRUPE = ["203", "205", "208", "212", "213", "214"];
 export const eImobilizare = (cont) => GRUPE.includes(String(cont || "").trim().slice(0, 3));

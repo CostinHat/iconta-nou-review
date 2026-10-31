@@ -1,7 +1,7 @@
 // admin_analytics.js — Admin iConta: analytics public (doar superadmin).
 // Cifre ANONIME din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
 // Tabela nu contine niciun identificator (fara IP/UA/cookie/sesiune) -> fara date personale.
-import { api, esc, CULORI_CARD, cate, dupaNumar, dataRo } from "../api.js?v=760be1b9f8";
+import { api, esc, CULORI_CARD, cate, dupaNumar, dataRo } from "../api.js?v=ec2094fd4f";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația despre date anonime e card, nu text pe ecran
 
 // [lotul 13, deficiența 649 — „Cifrele includ vizitele noastre de testare […]; nu se pot separa vizitatorii reali. Fără a adăuga

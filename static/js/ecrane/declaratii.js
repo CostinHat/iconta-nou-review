@@ -7,7 +7,7 @@
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
 import { listaCuCautare } from "../ds_piese.js?v=7cebc59162";   // [15.1, 722] lista cu căutare
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=760be1b9f8";
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=ec2094fd4f";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
