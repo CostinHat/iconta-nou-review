@@ -149,3 +149,55 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
   deseneaza();
   return cutie;
 }
+
+/** [15.1, 687.1] Semnalele unei ferestre: un rând de 36 px pe semnal (cel mult 90 de caractere), „ce e de făcut” pliat sub el; fără derulare proprie: peste
+ *  `limita` se arată primele și „încă n ▾”. `ton`: avertisment | eroare | ok (banda din stânga). Desenează în `zona`; întoarce elementul. */
+export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment", limita = 6 } = {}) {
+  const lista = (items || []).map((x) => (typeof x === "string" ? { mesaj: x } : x)).filter((x) => x && x.mesaj);
+  const scurt = (t) => { const p = String(t).split(/(?<=[.;:])\s/)[0]; return p.length > 90 ? p.slice(0, 89) + "…" : p; };
+  zona.innerHTML = `<section class="ds-semnale"><h3 class="ds-grup-titlu">${esc(titlu)} (${lista.length})</h3><ul class="ds-semnale-lista"></ul></section>`;
+  const ul = zona.querySelector(".ds-semnale-lista");
+  const buton = (clasa, text, laClic) => {   // butoanele se creează numai când au ce arăta: nu e o acțiune care dispare, ci una care nu există
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "buton-secundar " + clasa;
+    b.dataset.faraActiune = "plierea / arătarea semnalelor în fereastra curentă";
+    b.textContent = text;
+    b.addEventListener("click", laClic);
+    return b;
+  };
+  lista.forEach((x, i) => {
+    const text = String(x.mesaj), s = scurt(text), are = text.trim() !== s.trim();
+    const li = document.createElement("li");
+    li.className = "ds-semnal-cutie";
+    if (i >= limita) li.hidden = true;
+    const rand = document.createElement("div");
+    rand.className = "ds-semnal ds-semnal-" + ton;
+    const sp = document.createElement("span");
+    sp.className = "ds-semnal-text";
+    sp.title = text;
+    sp.textContent = s;
+    rand.appendChild(sp);
+    li.appendChild(rand);
+    if (are) {
+      const det = document.createElement("div");
+      det.className = "ds-semnal-detalii";
+      det.hidden = true;
+      det.textContent = text;
+      const plie = buton("ds-semnal-plie", "▾ detalii", () => {
+        det.hidden = !det.hidden;
+        plie.setAttribute("aria-expanded", String(!det.hidden));
+        plie.textContent = det.hidden ? "▾ detalii" : "▴ detalii";
+      });
+      plie.setAttribute("aria-expanded", "false");
+      rand.appendChild(plie);
+      li.appendChild(det);
+    }
+    ul.appendChild(li);
+  });
+  if (lista.length > limita) {
+    const inca = buton("ds-semnale-inca", `încă ${lista.length - limita} ▾`, () => { ul.querySelectorAll(".ds-semnal-cutie[hidden]").forEach((e) => { e.hidden = false; }); inca.remove(); });
+    zona.querySelector(".ds-semnale").appendChild(inca);
+  }
+  return zona;
+}

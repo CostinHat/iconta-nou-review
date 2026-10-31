@@ -157,7 +157,7 @@ def test_inapoipas_si_x_nu_iau_pasul_intern_iar_intoarcerea_la_pas_e_intr_un_sin
     assert not [m for m in _aj.noduri(pe_x, "MemberExpression") if cod(m) == "sus.inapoi"], cod(pe_x)
     assert _aj.apeluri(pe_x, cod, "nav.acasa") == [()], cod(pe_x)
     apeluri = re.findall(r"(?<!function )_laPas\(sus, ", s)
-    assert "sus.pasi.pop()" not in s and len(apeluri) == 3, len(apeluri)
+    assert "sus.pasi.pop()" not in s and len(apeluri) == 2, len(apeluri)   # [15.1, 713] firul de traseu a ieșit din bara de sus: rămân săgeata și `inapoiPas`
 
 
 # ── 2. clasa: niciun ecran nu-și declară ca pas intern ecranul altei ferestre ────────────────────────────────────────────────────

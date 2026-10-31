@@ -3,6 +3,7 @@
 // `spv_conector.stare_firma`). Când lipsește ceva ce se repară în Setări cont → Conectare SPV, mesajul are butonul spre acolo
 // (`ecran_destinatie.butonSpreEcran`). O singură sursă a textului — nu câte o frază pe ecran.
 import { api, arataMesaj, cate, dataRo } from "../api.js?v=ec2094fd4f";
+import { cardRezumat } from "../ds_piese.js?v=b915963b60";   // [15.1, 687.1-SPV]
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";
 
 const _ora = (iso) => { const d = new Date(iso); return `${dataRo(iso)}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
@@ -49,8 +50,14 @@ export async function randeazaStareSpv(zona, nav, tenantId) {
     return null;
   }
   const t = textStareSpv(st);
-  zona.innerHTML = '<div class="spv-stare-text"></div>';
-  arataMesaj(zona.querySelector(".spv-stare-text"), t.text, t.tip);
-  if (t.spreConectare) butonSpreEcran(zona, "conectare_spv", nav, tenantId, { clasa: "buton-secundar" });
+  // [15.1, 687.1-SPV] starea SPV e un card-rezumat de un rând („SPV: fără drept pentru această firmă” + „Deschide Conectare SPV”); explicația și ce e de făcut,
+  // pliate sub „▾ detalii”
+  const [scurt, ...rest] = t.text.split(/(?<=\.)\s+/);
+  const detalii = rest.length ? rest.join(" ") : (t.text.length > 90 ? t.text : "");
+  zona.innerHTML = "";
+  const card = cardRezumat({ text: scurt.replace(/\.$/, ""), ton: t.tip === "ok" ? "ok" : "avertisment", detalii });
+  card.classList.add("spv-stare-text");
+  zona.appendChild(card);
+  if (t.spreConectare) butonSpreEcran(card.querySelector(".ds-rezumat"), "conectare_spv", nav, tenantId, { clasa: "buton-secundar" });
   return st;
 }

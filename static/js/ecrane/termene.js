@@ -2,7 +2,7 @@
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
 import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=ec2094fd4f";
-import { deschideFirma } from "./firme.js?v=eecc415409";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { deschideFirma } from "./firme.js?v=62225b6491";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
@@ -49,7 +49,7 @@ export async function randeazaTermene(corp, nav) {
     bloc.className = "term-grup";
     bloc.innerHTML = `
       <div class="term-data ${urgent ? "term-urgent" : ""}">
-        <span class="term-data-zi">${dataRo(g.termen, "lung")}</span>
+        <span class="term-data-zi">${dataRo(g.termen)}</span>   <!-- [15.1, 3a] data în formatul unic: 26.10.2026 -->
         <span class="term-data-cat">${etichetaZile(g.zile)}</span>
       </div>
       <div class="term-items"></div>

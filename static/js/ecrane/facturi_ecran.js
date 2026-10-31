@@ -5,7 +5,7 @@
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=ec2094fd4f";  /* esc_nc27 */
 import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
-import { randeazaStareSpv } from "./spv_stare.js?v=228cdfcde1";  /* [lotul 6: 273, 275] */
+import { randeazaStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=ff34c195be";
@@ -315,7 +315,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=eecc415409");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=62225b6491");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -1414,7 +1414,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=eecc415409");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=62225b6491");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });

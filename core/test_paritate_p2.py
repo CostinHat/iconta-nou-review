@@ -240,8 +240,13 @@ def test_paritate_termene(client, teren):
     # [E6] Blocul per firmă a plecat din `main.py` lângă singurul lui apelant. Proba cheamă
     # ACEEAȘI funcție, de la noua ei adresă — întrebarea ei (modelul dă ce dădea bucla) e neatinsă.
     ev, neev = [], []
+    from core import control_fiscal_api as _cf
     for f in toate:
-        e, n = _fr_paritate._termene_una_firma(f, ctx, azi)
+        # [15.1, 724] restanțele din Termene sunt cele din Control fiscal (`lipsa`): referința directă primește aceeași sursă ca recalcularea
+        with _db.get_conn(f["schema_name"]) as _cs:
+            _r = _cf.evalueaza_firma(_cs, _cs, f["id"], f["schema_name"], azi)
+        _rest = {(str(x["tip"]).lower(), x["an"], x.get("luna")) for x in (_r.get("lipsa") or [])}
+        e, n = _fr_paritate._termene_una_firma(f, ctx, azi, _rest)
         if e:
             ev.append(e)
         if n:

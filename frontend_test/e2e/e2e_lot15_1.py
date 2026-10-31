@@ -377,3 +377,85 @@ def test_def_712_2_mesajul_tarii_o_singura_data(patron, firma_b):
     pg.wait_for_selector(".refuz-salvare", timeout=20000)
     text = pg.evaluate("() => document.body.innerText")
     assert text.count("nu se potrivește cu codul fiscal") == 1, text.count("nu se potrivește cu codul fiscal")
+
+
+# ── zona C ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+def test_def_713_bara_de_sus_fara_traseu(patron, firma_b):
+    """713 / 681.1 / 701: bara de sus arată numai firma în lucru (nume · CUI) și numele ferestrei curente, fără traseu; „←” face un pas înapoi."""
+    pg = patron.pg
+    _formular_chirie(patron, firma_b)
+    antet = pg.eval_on_selector(".fereastra:last-of-type .fereastra-antet", "e => e.innerText")
+    assert "CUI" in antet and "Chirii" in antet, antet
+    assert pg.locator(".fereastra:last-of-type .fir-veriga").count() == 0, "traseul (Firme › Firme existente › …) nu mai apare în bara de sus"
+    assert "Firme existente" not in antet and "Operațiuni speciale" not in antet, antet
+    pg.locator(".fereastra:last-of-type .nav-inapoi").click()
+    pg.wait_for_function("() => !!document.querySelector(\"button[data-op='chirie']\")", timeout=20000)   # un pas înapoi: lista Operațiunilor
+    antet2 = pg.eval_on_selector(".fereastra:last-of-type .fereastra-antet", "e => e.innerText")
+    assert "Operațiuni speciale" in antet2 and "Chirii" not in antet2, antet2
+
+
+def test_def_681_1_istoric_gaseste_facturile(patron, firma_b):
+    """681.1: căutarea de funcții potrivește pe sens: „istoric” duce la fereastra Facturi (Istoric facturi), „stat de plată” nu dă D100."""
+    from e2e_bloc_d import PATRON, _api
+    st, r = _api(PATRON, "GET", "/eu/cautare?q=istoric&tenant_id=%d" % firma_b["tenant_id"])
+    assert st == 200, (st, r)
+    assert any(x.get("cheie") == "facturi" for x in r["rezultate"]), r["rezultate"]
+    st, r = _api(PATRON, "GET", "/eu/cautare?q=stat%%20de%%20plata&tenant_id=%d" % firma_b["tenant_id"])
+    assert st == 200 and not any(str(x.get("cheie") or x.get("titlu") or "").lower().startswith("d100") for x in r["rezultate"]), r["rezultate"]
+
+
+def test_def_687_2_inchidere_luna_semnale_si_amortizare(patron, firma_b):
+    """687.1-a: Închidere lună: semnalele pe un rând fiecare (detalii pliate, fără derulare internă), un singur buton principal, „Registru jurnal” pe luna
+    ferestrei, „Generează amortizarea” inactiv cu motiv când luna e blocată."""
+    from e2e_bloc_d import PATRON, _api
+    pg = patron.pg
+    pg.set_viewport_size({"width": 1366, "height": 768})
+    an, luna = (AZI.year, AZI.month - 1) if AZI.month > 1 else (AZI.year - 1, 12)
+    st, r = _api(PATRON, "POST", "/tenants/%d/perioade-blocate?an=%d&luna=%d" % (firma_b["tenant_id"], an, luna), {})
+    if st != 200:
+        pytest.skip("luna %02d/%d nu se poate bloca în fixtura asta: %s" % (luna, an, r))
+    patron.firma(firma_b["nume"])
+    pg.click("#fa-inchidere")
+    pg.wait_for_selector("#il-lock", timeout=20000)
+    pg.click("#il-prev")   # luna precedentă = blocată
+    pg.wait_for_function("() => document.querySelector('#il-lock') && document.querySelector('#il-lock').textContent.includes('Deblochează')", timeout=20000)
+    text = pg.evaluate("() => document.querySelector('.fereastra:last-of-type').innerText")
+    assert "Nimic nu oprește închiderea lunii" not in text, "luna blocată spune că nimic nu oprește închiderea"
+    assert pg.get_attribute("#il-amort", "aria-disabled") == "true" and pg.get_attribute("#il-amort", "data-motiv-inactiv")
+    assert pg.inner_text("#il-amort-motiv").strip()
+    assert pg.locator("#il-jurnal").count() == 1
+    assert pg.locator(".fereastra:last-of-type button.buton-primar:visible").count() == 1, "mai mult de o acțiune principală"
+    derulare = pg.evaluate("() => [...document.querySelectorAll('.fereastra-corp, .ds-semnale-lista, #il-controale')].filter((e) => e.offsetParent && e.scrollHeight > e.clientHeight + 1 && getComputedStyle(e).overflowY !== 'visible' && e.id !== '').length")
+    assert derulare == 0, "semnalele derulează intern"
+    patron.captura("l15_687_1_a")
+
+
+def test_def_687_3_spv_card_rezumat_pe_ecranul_firmei(patron, firma_b):
+    """687.1-SPV: starea SPV a firmei e un card-rezumat de un rând (≤ 52 px), cu explicația pliată sub „▾ detalii” și butonul spre Conectare SPV, nimic tăiat la 1366."""
+    pg = patron.pg
+    pg.set_viewport_size({"width": 1366, "height": 768})
+    patron.firma(firma_b["nume"])
+    pg.wait_for_selector("#firma-spv .ds-rezumat", timeout=30000)
+    h = pg.eval_on_selector("#firma-spv .ds-rezumat", "e => Math.round(e.getBoundingClientRect().height)")
+    assert h <= 52, h
+    if pg.locator("#firma-spv .ds-rezumat-plie").count():
+        pg.click("#firma-spv .ds-rezumat-plie")
+        assert pg.is_visible("#firma-spv .ds-rezumat-detalii")
+    patron.captura("l15_687_3")
+
+
+def test_def_724_restantele_din_termene_sunt_cele_din_control_fiscal():
+    """724: Termene arată exact restanțele din Control fiscal (`lipsa`): nicio perioadă dinaintea preluării, nicio declarație „nu se datorează”; aceeași sursă."""
+    import datetime as _dt
+    from conftest import _db
+    from core import control_fiscal_api as _cf
+    from core import firma_rezumat as FR
+    ctx = {"uid": None}
+    for f in firma_noua():
+        azi = _dt.date.today()
+        with _db().get_conn(f["schema"]) as cs:
+            r = _cf.evalueaza_firma(cs, cs, f["tenant_id"], f["schema"], azi)
+        rest = {(str(e["tip"]).lower(), e["an"], e.get("luna")) for e in (r.get("lipsa") or [])}
+        ev, _neev = FR._termene_una_firma({"id": f["tenant_id"], "nume": f["nume"], "cui": None}, ctx, azi, rest)
+        din_termene = {(str(t["tip"]).lower(), t["an"], t.get("luna")) for t in ((ev or {}).get("termene") or []) if t.get("restanta")}
+        assert din_termene <= rest, ("restanțe în Termene care nu sunt în Control fiscal", din_termene - rest)

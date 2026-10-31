@@ -84,7 +84,7 @@ def test_def_c140_migrare_firme_sageata_din_rezultate_intoarce_la_lista_lipita(p
     assert _fereastra(pg)[0] == "Firme" and pg.locator("#mig-lista").count() == 0
     _inapoi(pg, "#mig-meniu")
     patron.captura("inapoi_meniu")
-    assert _fereastra(pg) == drum_meniu == ["Migrare cabinet", ["Firme"]], (_fereastra(pg), drum_meniu)
+    assert _fereastra(pg) == drum_meniu == ["Migrare cabinet", []], (_fereastra(pg), drum_meniu)   # [15.1, 713] fără traseu în bara de sus
 
 
 def test_def_c140_migrare_pe_firma_sageata_din_previzualizare_intoarce_la_alegerea_fisierului(patron, firma_c140):

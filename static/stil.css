@@ -3385,3 +3385,13 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .pf-frand:has(> .ds-formular) .bara-fixa .ds-motiv-inactiv { order: -1; margin: 0 auto 0 0; }
 .pf-frand:has(> .ds-formular) .bara-fixa #op-mesaj { flex: 1 1 100%; }
 .pf-frand:has(> .ds-formular) { padding-top: 6px; padding-bottom: 2px; }
+/* DS 15.1 — semnale: rând de 36 px, banda din stânga, detaliile pliate; fără derulare proprie */
+.ds-semnale { margin: 8px 0; }
+.ds-semnale-lista { list-style: none; margin: 0; padding: 0; }
+.ds-semnal { display: flex; align-items: center; gap: 8px; min-height: 36px; box-sizing: border-box; padding: 0 12px; background: var(--alb); border: 1px solid var(--linie); border-left: 4px solid var(--portocaliu); border-radius: 8px; margin-bottom: 4px; font-size: 14px; }
+.ds-semnal-eroare { border-left-color: var(--rosu); }
+.ds-semnal-ok { border-left-color: var(--verde); }
+.ds-semnal-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-semnal-plie, .ds-semnale-inca { height: 28px; padding: 0 10px; font-size: 13px; border: 1px solid var(--linie); border-radius: 8px; background: var(--alb); cursor: pointer; }
+.ds-semnal-detalii { margin: 0 0 4px 16px; padding: 8px 12px; font-size: 14px; color: var(--ardezie); background: var(--fundal); border-radius: 8px; }
+.ds-semnal-cutie[hidden], .ds-semnal-detalii[hidden] { display: none; }

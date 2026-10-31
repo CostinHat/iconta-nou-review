@@ -247,18 +247,13 @@ export function creeazaNavigator(radacina, desktopRandator) {
     //  - mai multe ferestre pe stiva, SAU
     //  - ecranul curent isi defineste o functie interna 'inapoi' (ex: migrare in cascada)
     const areInapoi = stiva.length > 1 || typeof sus.inapoi === "function" || (sus.pasi && sus.pasi.length > 0);  // traseu_automat_v1
-    // breadcrumb_v1: drumul (breadcrumb) din traseul real — ferestre + pasi + curent
-    const drum = [];
-    for (let i = 0; i < stiva.length - 1; i++) drum.push({ text: stiva[i].titlu || "…", fereastra: i });
-    (sus.pasi || []).forEach((p, i) => { if (p.titlu) drum.push({ text: p.titlu, pas: i }); });
-    const drumHtml = drum.map((d, i) =>
-      `<button class="fir-veriga" data-fer="${d.fereastra ?? ''}" data-pas="${d.pas ?? ''}">${esc(String(d.text))}</button>` +
-      (i < drum.length - 1 ? `<span class="fir-sep" aria-hidden="true">›</span>` : "")
-    ).join("") + (drum.length ? `<span class="fir-sep" aria-hidden="true">›</span><span class="fir-acum" aria-current="page">${
-      esc(String(sus.titluCurent || sus.titlu || ""))}</span>` : "");
-    // [lotul 13, deficiența 575 — partea de afișare; comanda 13.1: „titlul «Firme › Firme existente» la Adaugă firmă și în fereastra
-    // firmei”] drumul din antet se încheie cu fereastra în care ești (`.fir-acum`, nu se apasă): fără el, ultimul părinte („Firme
-    // existente”) se citea ca titlul ferestrei. Părinții rămân butoane (`.fir-veriga`); fereastra fără părinți nu are drum.
+    // [15.1, 713 / 681.1 / 701] bara de sus: numai firma în lucru (nume · CUI) și numele ferestrei curente, FĂRĂ traseu (nu acumulează ecranele vizitate);
+    // „←” face un pas înapoi. Firma: titlul ferestrei ei din stivă („<nume> · CUI <cod>”), altfel firma în lucru a navigatorului.
+    const _titluFirma = (stiva.map((x) => String(x.titlu || "")).find((t) => /· CUI /.test(t))) || firmaInLucru || "";
+    const _curent = String(sus.titluCurent || sus.titlu || "");
+    const _doarFirma = _titluFirma && (_curent === _titluFirma || /· CUI /.test(_curent));
+    const drumHtml = (_titluFirma && !_doarFirma ? `<span class="fir-firma">${esc(_titluFirma)}</span><span class="fir-sep" aria-hidden="true">›</span>` : "")
+      + `<span class="fir-acum" aria-current="page">${esc(_doarFirma ? _titluFirma : _curent)}</span>`;
     fer.innerHTML = `
       <div class="fereastra-antet">
         ${_butonInapoi(sus, areInapoi)}
@@ -272,15 +267,6 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // traseu (antetul paginii e acoperit de ferestre). Fereastra mică (numai o confirmare) n-o are; clientul din portal n-are căutare deloc.
     if ((sus.optiuni || {}).lat !== "mic" && (sesiune.user() || {}).rol !== "client") puneCautarea(fer.querySelector(".fereastra-antet"), nav,
       { id: "cautare-fereastra", inainte: fer.querySelector(".fereastra-spatiu") });
-    fer.querySelectorAll(".fir-veriga").forEach((b) => b.addEventListener("click", () => {
-      if (b.dataset.fer !== "") {  // sari la o fereastra de dedesubt
-        stiva.length = Number(b.dataset.fer) + 1;
-        randeazaFerestre();
-        return;
-      }
-      _laPas(sus, Number(b.dataset.pas));  // sari la un pas de pe traseu
-      randeazaFerestre();
-    }));
     const bInapoi = fer.querySelector(".nav-inapoi");
     if (bInapoi) {
       bInapoi.addEventListener("click", () => {  // traseu_automat_v1
@@ -748,7 +734,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=ec2094fd4f");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=eecc415409");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=62225b6491");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

@@ -245,8 +245,9 @@ def test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste(patron, firma
     assert "Salariați" in primul, primul
     pg.click(_F + "#cautare-fereastra-rez .cautare-item >> nth=0")
     pg.wait_for_selector(_F + "#sp-salariat-nou", timeout=30000)   # fereastra Salariați, deschisă de rezultat
-    # fereastra Casă a rămas dedesubt (căutarea deschide PESTE ce e deschis): traseul o numește, ca pe un pas de întoarcere
-    assert pg.locator(_F + ".fereastra-fir .fir-veriga", has_text="Casă").count() >= 1
+    # [15.1, 713] bara de sus arată numai firma și fereastra curentă (fără traseu); „←” readuce fereastra Casă, rămasă dedesubt
+    assert pg.locator(_F + ".fereastra-fir .fir-veriga").count() == 0
+    assert "Salariați" in pg.inner_text(_F + ".fereastra-fir .fir-acum")
     # nu se caută date: numele firmei nu e o funcție
     pg.keyboard.press("Control+k")
     pg.keyboard.type(firma_e2e["nume"].split()[0])

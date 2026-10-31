@@ -24318,3 +24318,10 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - Garda [325] a plasei e2e („nimic nu se deschide singur”) are o excepție: fereastra în care omul era înainte de F5 (decizia lui Costin la 725). `Ecran.acasa()` din harness uită memoria ferestrei.
 - Poarta: treptele au ordine (verificator, pytest țintit, plasa) și se opresc la prima roșie; `scripts/inainte_de_commit.sh` rulează verificatorul și pytest-ul țintit înainte de orice commit (CLAUDE.md §5).
 - Lecție de proces: cache-ul `lastfailed` al pytest cu un test din `poarta_sare.txt` făcea ca `--lf` să ruleze toată suita (50 de minute); cache-ul se curăță înainte de poartă. Arborele nu se editează cât rulează poarta.
+
+## Comanda 15.1, zona C (31.10.2026)
+- Piese noi: `semnaleDS` (rând de 36 px pe semnal, detaliile pliate, „încă n ▾”, limita 6, 3 sub 800 px înălțime), `cardRezumat` pe starea SPV (`spv_stare.js`), bara de sus fără traseu (`navigator.js`: firma în lucru + fereastra curentă; firul de traseu și `.fir-veriga` scoase din cod; regula CSS `.fir-veriga` rămâne până la curățenia CSS din zona D).
+- 724: restanțele din Termene sunt `lipsa` din Control fiscal (`restante_cf`): o singură sursă, nu un al doilea calcul; termenele viitoare rămân cele ale lui `termene_api`.
+- 681.1: „istoric” duce la fereastra Facturi (cardul care conține Istoric facturi); când interogarea e un sinonim, rezultatele altor cuvinte comune se ascund.
+- Excepția gărzii [325] pentru F5 (725) se aplică și acum; `Ecran.acasa()` uită fereastra memorată.
+- Nelucrat în zona C, trecut la zona D / raport (E): Control fiscal și Detaliu firmă pe tot ecranul, Bilanț (citate OMFP, denumiri copiate brut), Registru jurnal ca tabel zebra, Reconciliere TVA (694.1 a), Balanța F8 (621), Mijloace fixe (162, 601.1), Tipare (575), Registrul de încasări/plăți F4 (702–704, 701), Pontaj (678), analitica de stoc (697), Istoric facturi ca tabel cu căutare (624), 685, 686, 683, 695.

@@ -2,7 +2,7 @@
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
 import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=ec2094fd4f";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
-import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=7cebc59162";   // [15.1] piesele formularului grupat
+import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=b915963b60";   // [15.1] piesele formularului grupat
 import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=6aba4a57c6";   // [15.1, 725] F5 readuce fereastra
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1, 721] ciorna formularului, pe server
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
@@ -677,7 +677,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=eecc415409");
+      const { ecranJurnal } = await import("./firme.js?v=62225b6491");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };

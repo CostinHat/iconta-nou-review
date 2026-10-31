@@ -43,6 +43,7 @@ SINONIME = {
     "salariu": "salariati", "angajat": "salariati", "nir": "stocuri", "gestiune": "stocuri", "inventar": "stocuri",
     "amortizare": "mijloace", "casare": "mijloace", "extras": "banca", "nota contabila": "jurnal", "note contabile": "jurnal",
     "chitanta": "casa", "dispozitie": "casa", "factura": "facturi", "facturi": "facturi", "spv": "facturi", "efactura": "facturi",
+    "istoric": "facturi", "istoric facturi": "facturi",   # [15.1, 681.1] „istoric” duce la Istoric facturi (fereastra Facturi)
     "balanta": "balanta", "fisa de cont": "fisacont", "sold initial": "import", "preluare": "import", "solduri": "import",
 }
 
@@ -179,6 +180,8 @@ def cauta(q, firma=None):
                 rez.append((s + (3 if normalizeaza(d["tip"]) == qn else 0),
                             {"fel": "declaratie", "tip": d["tip"], "titlu": "%s — %s" % (d["tip"].upper(), d["denumire"]) if d["denumire"]
                              else d["tip"].upper(), "unde": "Declarații", "actiune": None}))
+    if sinonim:   # [15.1, 681.1] sensul bate cuvântul comun: „stat de plată” duce la Salariați, nu la D100 („…obligațiile de plată la bugetul de stat”)
+        rez = [x for x in rez if x[1].get("fel") == "card" and x[1].get("cheie") == sinonim] or rez
     rez.sort(key=lambda x: (-x[0], normalizeaza(x[1]["titlu"])))
     return [r for _s, r in rez][:12]   # cât încape în lista de sub căsuță fără derulare (nu e o valoare fiscală)
 

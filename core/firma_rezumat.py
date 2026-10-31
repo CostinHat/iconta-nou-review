@@ -1055,7 +1055,7 @@ def recalculeaza_firma(tenant_id, schema, aspecte=None, deschide=None, azi=None)
 #
 # Corpul e neatins, literă cu literă. Numele care erau globale în `main` se leagă mai jos local, la
 # aceleași module și sub aceleași nume — inclusiv canalul de log `iconta.verdict`.
-def _termene_una_firma(f, ctx, azi):
+def _termene_una_firma(f, ctx, azi, restante_cf=None):
     """Blocul per firmă al lui `/termene`, MUTAT din buclă — cuvânt cu cuvânt.
 
     [P2, 08.09.2026] Nu mai rulează într-o cerere interactivă: îl cheamă calea de
@@ -1132,6 +1132,10 @@ def _termene_una_firma(f, ctx, azi):
                                                                                                        sus_zile=zile))
             for _t in term:   # [432] predicatul unic, `luna_preluare.inainte`
                 _t["inainte_de_preluare"] = _lp.inainte(_t["an"], _t.get("luna"), preluare)
+            # [15.1, 724] restanțele din Termene sunt EXACT cele din Control fiscal (`lipsa`: după luna preluării, fără „nu se datorează”, fără „de lămurit”):
+            # aceeași sursă, nu un al doilea calcul. Termenele viitoare rămân cum erau.
+            if restante_cf is not None:
+                term = [_t for _t in term if not _t.get("restanta") or (str(_t["tip"]).lower(), _t["an"], _t.get("luna")) in restante_cf]
             # [P2] deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} + [regim_card] regim_contabil
             # (contract STRICT in meniuFirma pe amandoua). Le avem din firma_profil (vector) prin primitiva.
             firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
@@ -1195,6 +1199,7 @@ def recalculeaza_greu(tenant_id, schema, azi=None, ctx=None, nume=None, cui=None
             ctx = {"uid": r[0]} if r else {"uid": None}
 
     valori, erori = {}, {}
+    restante_cf = None   # [15.1, 724] restanțele din Control fiscal, pentru Termene (None = Control fiscal n-a putut fi evaluat)
 
     # ── control_fiscal ─────────────────────────────────────────────────────
     try:
@@ -1209,6 +1214,7 @@ def recalculeaza_greu(tenant_id, schema, azi=None, ctx=None, nume=None, cui=None
             r = _cf.evalueaza_firma(cs, cs, tenant_id, schema, azi)
         contabil, _vc = _uc_comun._construieste_contabil(schema, tenant_id, ctx, azi.year, azi.month,
                                                          r.get("regim_tva_anaf"))
+        restante_cf = {(str(e["tip"]).lower(), e["an"], e.get("luna")) for e in (r.get("lipsa") or [])}
         valori["control_fiscal"] = {
             "stare": pastila_firma(r["stare"], contabil),
             "lipsa": len(r.get("lipsa") or []), "urmarit": len(r.get("urmarit") or []),
@@ -1218,7 +1224,7 @@ def recalculeaza_greu(tenant_id, schema, azi=None, ctx=None, nume=None, cui=None
 
     # ── termene — prin blocul EXTRAS din rută; el își deschide singur conexiunile ──
     try:
-        ev, neev = _termene_una_firma({"id": tenant_id, "nume": nume, "cui": cui}, ctx, azi)
+        ev, neev = _termene_una_firma({"id": tenant_id, "nume": nume, "cui": cui}, ctx, azi, restante_cf)
         valori["termene"] = {"eval": ev, "neevaluat": neev}
     except Exception as e:      # noqa: BLE001
         erori["termene"] = "%s: %s" % (type(e).__name__, e)
