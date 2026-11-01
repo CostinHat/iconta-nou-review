@@ -355,14 +355,14 @@ def test_def_197_blocheaza_luna_inactiv_cat_timp_ceva_opreste_inchiderea(patron)
     pg.click("#fa-inchidere")
     pg.wait_for_selector(_fata(pg) + " #il-prev", timeout=30000)
     gata = ("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const z = f.querySelector('#il-controale');"
-            " return z && z.querySelector('.caseta-info, .caseta-atentie'); }")
+            " return z && z.querySelector('.caseta-info, .caseta-atentie, .ds-semnale, .ds-rezumat-cutie'); }")
     vazute = []
     for i in range(3):
         pg.wait_for_function(gata, timeout=90000)
         pg.wait_for_timeout(1500)   # ce se mai desenează după controale (dreptul, legarea blocării) a avut timp să ruleze
         st = pg.evaluate("""() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const b = f.querySelector('#il-lock');
           const z = f.querySelector('#il-controale');
-          return {luna: f.querySelector('.pf-intro').innerText.slice(0, 40), blocaj: !!z.querySelector('.caseta-atentie'),
+          return {luna: f.querySelector('.pf-intro').innerText.slice(0, 40), blocaj: !!z.querySelector('.caseta-atentie, .ds-semnal-eroare'),
                   activ: !!b && b.isConnected && !b.disabled && !b.hidden && b.offsetParent !== null, text: b ? b.innerText : null}; }""")
         vazute.append(st)
         if i < 2:
@@ -439,7 +439,7 @@ def test_def_181_inchiderea_lunii_avertizeaza_declaratiile_lunii_nedepuse(patron
     pg.click("#fa-inchidere")
     pg.wait_for_selector(_fata(pg) + " #il-prev", timeout=30000)
     gata = ("(l) => { const f = [...document.querySelectorAll('.fereastra')].pop(); const z = f.querySelector('#il-controale');"
-            " return f.querySelector('.pf-intro').innerText.includes('Luna ' + l) && z && z.querySelector('.caseta-info, .caseta-atentie'); }")
+            " return f.querySelector('.pf-intro').innerText.includes('Luna ' + l) && z && z.querySelector('.caseta-info, .caseta-atentie, .ds-semnale, .ds-rezumat-cutie'); }")
     azi = _dt.date.today()
     pg.wait_for_function(gata, arg="%02d/%d" % (azi.month, azi.year), timeout=90000)
     pg.click(_fata(pg) + " #il-prev")
