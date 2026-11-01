@@ -11,7 +11,7 @@ from e2e_bloc_a import ORDINE_CABINET, cont_asistent, ecran_cont   # noqa: F401 
 from e2e_bloc_d import PATRON, _api, _date_firma, _deschide, _nota_validata
 
 AZI = _dt.date.today()
-_ROSU = re.compile(r"#ff8a80|rosu-semafor|cf-rosu|pct-rosu")
+_ROSU = re.compile(r"#ff8a80|ds-pastila-eroare|rosu-semafor|cf-rosu|pct-rosu")
 
 
 def _fereastra_html(pg):
@@ -36,11 +36,11 @@ def _lista_control(ecran):
     _rezumate_la_zi()
     ecran.acasa()
     pg.click("button.cab-card:has([data-cheie='control'])")
-    pg.wait_for_selector("#cf-lista .mig-frand", timeout=120000)
-    assert not pg.locator("#cf-lista .mig-frand-sub", has_text="în recalculare").count(), "rezumatele nu sunt la zi după tura lucrătorului"
-    return pg.eval_on_selector_all("#cf-lista .mig-frand", """es => es.map(e => ({nume: e.querySelector('.mig-frand-nume').innerText,
-        eticheta: e.querySelector('.cf-stare').innerText.trim(), dot: e.querySelector('.cf-stare .cf-dot').getAttribute('style'),
-        sub: e.querySelector('.mig-frand-sub').innerText}))""")
+    pg.wait_for_selector("#cf-lista tbody tr", timeout=120000)
+    assert not pg.locator("#cf-lista tbody tr", has_text="în recalculare").count(), "rezumatele nu sunt la zi după tura lucrătorului"
+    return pg.eval_on_selector_all("#cf-lista tbody tr", """es => es.map(e => ({nume: e.cells[0].innerText,
+        eticheta: e.querySelector('.ds-pastila').innerText.trim(), dot: e.querySelector('.ds-pastila').className,
+        sub: e.cells[1].innerText}))""")
 
 
 # ── 220 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -60,7 +60,7 @@ def test_def_220_rosu_numai_cu_termen_depasit(patron):
     assert any(r["eticheta"] == "restanță" for r in randuri), "anti-vacuu: firmele de test au restanțe reale"
     cu_neconcordanta = [r for r in randuri if "nedeclarat" in r["sub"]]
     assert cu_neconcordanta, "anti-vacuu: firmele de test au constatări încrucișate"
-    pg.locator("#cf-lista .mig-frand", has_text=cu_neconcordanta[0]["nume"]).first.click()
+    pg.locator("#cf-lista tbody tr", has_text=cu_neconcordanta[0]["nume"]).first.click()
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); return f && f.querySelector('#cf-audit-run'); }",
                          timeout=120000)
     pg.wait_for_timeout(500)

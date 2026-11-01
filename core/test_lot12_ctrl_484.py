@@ -152,6 +152,7 @@ def test_supervizorul_calculeaza_si_citeste_luna_incheiata(monkeypatch):
     monkeypatch.setattr(firma_rezumat, "recalculeaza_lot", lambda **k: collections.defaultdict(int))
     monkeypatch.setattr(cron, "bate", lambda nume: None)
     monkeypatch.setattr(common, "azi_ro", lambda: AZI)
+    monkeypatch.setattr(firma_rezumat, "cod_viu", lambda conn: None)   # [723] testul nu depinde de codul aplicației vii de pe mașina care îl rulează
     monkeypatch.setattr(supervizor_cache, "recalculeaza_lot",
                         lambda an, luna: calculat.append((an, luna)) or {"invalidate": 0, "recalculate": 0, "fara_firma": []})
     vechi = {s: signal.getsignal(s) for s in (signal.SIGTERM, signal.SIGINT)}

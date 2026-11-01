@@ -1140,6 +1140,21 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             neclar.append(_af.afirmatie("necunoastere", "d398", "D398: " + _da.DE_LAMURIT_OSS + ". Fără răspuns nu se știe dacă firma are D398 de depus "
                                         "(CF art.315 alin.(3)).", domeniu_de="%04d-%02d" % (azi.year, azi.month), domeniu_pana=None, ecran="date_firma", eticheta_ecran="Răspunde în Date firmă"))
 
+    # [15.1-D, 3f/3k] nimic nu se datorează pentru perioade dinaintea înființării firmei (Date firmă › Data înființării): D101/2025 la o firmă înființată
+    # pe 15.03.2026 nu e restanță. Același predicat ca „înainte de preluare” (o perioadă care cuprinde luna înființării SE datorează)
+    from core import bilant_api as _ba_inf, luna_preluare as _lp_inf   # alias propriu: `_lp` e variabilă locală (importul de mai jos) în toată funcția
+    with conn_schema.cursor() as _cur_inf:
+        _infiintare = _ba_inf.data_infiintare(_cur_inf, schema)
+    if _infiintare:
+        datorate = [d for d in datorate if not _lp_inf.inainte(d["an"], d.get("luna"), (_infiintare.year, _infiintare.month))]
+        def _dupa_infiintare(a_):   # o necunoaștere cu domeniu (AAAA sau AAAA-LL) care se termină înainte de înființare nu se mai arată
+            dom = str(a_.get("domeniu_pana") or a_.get("domeniu_de") or "")
+            if not dom[:4].isdigit():
+                return True
+            luna_ = int(dom[5:7]) if len(dom) >= 7 and dom[5:7].isdigit() else 12
+            return not _lp_inf.inainte(int(dom[:4]), luna_, (_infiintare.year, _infiintare.month))
+        neclar = [x for x in neclar if _dupa_infiintare(x)]
+
     # depuse din public (cu data depunerii, pentru motivul verde)
     with conn_public.cursor() as cur:
         _repo.select_public_2(cur, tenant_id)

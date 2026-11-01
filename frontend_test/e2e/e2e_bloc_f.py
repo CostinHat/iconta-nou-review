@@ -49,14 +49,14 @@ def _control_fiscal(ecran):
     pg = ecran.pg
     ecran.acasa()
     pg.click("button.cab-card:has([data-cheie='control'])")
-    pg.wait_for_selector("#cf-lista .mig-frand", timeout=60000)
+    pg.wait_for_selector("#cf-lista tbody tr", timeout=60000)
 
 
 def _detaliu_fiscal(ecran, nume):
     """Control fiscal -> clic pe rândul firmei -> detaliul ei fiscal (așteaptă corpul verdictului)."""
     pg = ecran.pg
     _control_fiscal(ecran)
-    pg.locator("#cf-lista .mig-frand", has_text=nume).first.click()
+    pg.locator("#cf-lista tbody tr", has_text=nume).first.click()
     pg.wait_for_function("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
                          "return f && f.querySelector('#cf-audit-run'); }", timeout=90000)
 
@@ -126,11 +126,11 @@ def test_def_173_contoarele_de_sus_numara_dupa_aceeasi_regula_ca_randurile(patro
       return {lumini: Object.fromEntries([...f.querySelectorAll('.cf-sumar .cab-stare')].map(e => [e.dataset.stare,
                 parseInt(e.querySelector('.tip-figura').innerText, 10)])),
               nota: (f.querySelector('.cf-sumar + .ecran-nota') || {}).innerText || '',
-              randuri: [...f.querySelectorAll('#cf-lista .mig-frand')].map(r => ({
-                sub: r.querySelector('.mig-frand-sub').innerText, punct: r.querySelector('.cf-stare .cf-dot').getAttribute('style')}))}; }""")
+              randuri: [...f.querySelectorAll('#cf-lista tbody tr')].map(r => ({
+                sub: r.cells[1].innerText, punct: r.querySelector('.ds-pastila').className}))}; }""")
     patron.captura()
     rr = d["randuri"]
-    culoare = lambda r: next((s for c, s in (("#ff8a80", "rosu"), ("#f0cd7a", "galben"), ("#6fc494", "verde")) if c in r["punct"]), "gri")  # noqa: E731
+    culoare = lambda r: next((s for c, s in (("ds-pastila-eroare", "rosu"), ("ds-pastila-avertisment", "galben"), ("ds-pastila-ok", "verde")) if c in r["punct"]), "gri")  # noqa: E731
     pe_randuri = {s: sum(1 for r in rr if culoare(r) == s) for s in ("rosu", "galben", "verde", "gri")}
     assert "Din %d firme" % len(rr) in d["nota"], d["nota"]
     assert d["lumini"] == pe_randuri, "luminile %s, rândurile de dedesubt %s" % (d["lumini"], pe_randuri)

@@ -39,7 +39,7 @@ def _deschide_detaliul(patron, firma, cu_firma_blocata=False):
     deschiderea se vede pe conținut, nu pe numărul ferestrelor. Cu firma ținută de o operație de structură, fereastra detaliului trebuie
     să apară IMEDIAT, cu „Se încarcă…” (contabilul vede că s-a întâmplat ceva), iar mesajul vine în ea când răspunde cererea."""
     _control(patron)
-    patron.pg.locator(".fereastra:last-of-type #cf-lista .mig-frand", has_text=firma["nume"]).first.click()
+    patron.pg.locator(".fereastra:last-of-type #cf-lista tbody tr", has_text=firma["nume"]).first.click()
     if cu_firma_blocata:
         patron.pg.wait_for_function(
             "() => { const f = [...document.querySelectorAll('.fereastra')].pop(); return !!f && !f.querySelector('#cf-lista') && "

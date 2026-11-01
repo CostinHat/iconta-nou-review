@@ -9,10 +9,10 @@
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=9f24ba7549";
 import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaControl } from "./control.js?v=680bf7a6fb";
+import { randeazaControl } from "./control.js?v=0c599db27d";
 import { randeazaTermene } from "./termene.js?v=11ef5e0b25";
 import { randeazaValidat } from "./validat.js?v=766c35b7f9";
-import { randeazaListaFirme } from "./firme.js?v=62225b6491";
+import { randeazaListaFirme } from "./firme.js?v=c518f62d95";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js?v=da50b57fd8"; // [p44_declaratii]

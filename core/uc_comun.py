@@ -61,7 +61,7 @@ import json as _json_audit
 import logging as _logging
 from core import raport_z as _raport_z
 from core import common as _common
-from core.common import stare_din_nivel
+from core.common import stare_din_nivel, BLOCANT, AVERTISMENT
 from core import perioada as _perioada   # [lotul 12] textul pentru om al mesajului unei excepții (`text_exceptie`)
 
 
@@ -1742,8 +1742,10 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
             contabil.append(_flag_constatare(stare_din_nivel(ech.get("nivel")), "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei"), an, luna))
         tz = vc.get("trezorerie") or []
         tz_probleme = tz if isinstance(tz, list) else ([tz] if isinstance(tz, dict) and not tz.get("ok", True) else [])
-        for p in tz_probleme:
-            contabil.append(_flag_constatare(stare_din_nivel(p.get("nivel")), "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei"), an, luna))
+        if tz_probleme:   # [15.1-D, 3c] o singură constatare „Solduri creditoare trezorerie”, cu toate conturile ei, nu una pe cont (apărea de două ori la F5)
+            nivel = max((p.get("nivel") for p in tz_probleme), key=lambda n: {BLOCANT: 2, AVERTISMENT: 1}.get(n, 0))
+            mesaj = tz_probleme[0].get("mesaj") if len(tz_probleme) == 1 else "; ".join(str(p.get("mesaj") or "") for p in tz_probleme)
+            contabil.append(_flag_constatare(stare_din_nivel(nivel), "Solduri creditoare trezorerie", mesaj, tz_probleme[0].get("temei"), an, luna))
         # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta. Constatarea INTREAGA e in «Declaratie vs
         # contabilitate»; aici doar sumarul (eticheta + temei). Etichete = EXACT cele filtrate in control.js.
         for cheie in ("tva_incrucisat", "d112_incrucisat", "d390_incrucisat", "cota_tva_conformitate",):   # = ETICHETE_INCRUCISAT (VERDICT_PARITATE citește cheile literale)

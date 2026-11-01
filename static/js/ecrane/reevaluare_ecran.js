@@ -12,7 +12,7 @@
 // `.bara-fixa` (cap.6, v2.92), confirmarea care numește nota și consecința rămâne pe ecran (cap.27).
 import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, bani, cursValutar as curs, dataIso, dupaGenerare, esc, dataRo, eroareCamp, noteGenerate, stareNota, pasNota, selectDaNu, daNu, cereAlegerile, focusFaraSalt } from "../api.js?v=9f24ba7549";
 
-import { MONEDE } from "./operatiuni_ecran.js?v=3d27533e0a";   // [lotul 13, 631] aceeași listă de monede ca la factură
+import { MONEDE } from "./operatiuni_ecran.js?v=d8b4e86b8e";   // [lotul 13, 631] aceeași listă de monede ca la factură
 
 const FEL = { creanta: "Creanță", datorie: "Datorie", disponibil: "Disponibil" };
 // [lotul 13, deficiența 631] „Moneda se scrie de mână; trebuie aleasă din lista de coduri BNR, ca la factură”: select, nu text

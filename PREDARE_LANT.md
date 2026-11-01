@@ -584,7 +584,7 @@ nu e local). (3) Cheile Meta / WhatsApp, Postmark și exporturile Search Console
 
 ## STAREA LA PREDARE
 
-**01.11.2026 — comanda 15.1, zona D: D1 (Control fiscal pe tot ecranul) publicat pe 711bbf2a; D2 = marginea ferestrei de lucru 16 px (verificator: NU TRECE înainte, TRECE după), fluturașul nereprodus. Rămân: restul listei de ecrane din zona D, ZIP-ul cu capturi și raportul A–G unic.**
+**01.11.2026 — comanda 15.1, zona D: D1 (Control fiscal pe tot ecranul) pe 711bbf2a; D2 (marginea 16 px) pe 04f125c8; D3 în lucru pe ramura lucru/lot15-1g: Control fiscal și Detaliu firmă (3a, 3b, 3c, 3d, 3g, 3f/3k, 3j TRECE; 3e, 3h, 3i nemigrate, cu motiv în DECIZII), titlurile Operațiuni/Bilanț/Închidere lună. Rămân: restul ecranelor de firmă din D3, apoi D4 (cabinet, Panou Admin, emailuri, PDF-uri, fluturaș, ZIP) și raportul A–G unic.**
 
 **01.11.2026 — comanda 15.1, retestul zonei B (publicat după poartă): 673.2, 446.2, 634.2, 725.1, 726, F-A.1 — TRECE la verificator (726 și 446.2 în runda 2). Zona D (restul aplicației) și raportul A–G sunt următoarele; răspunsurile verificatorilor sunt în `~/lot15_1_verificator/zona_B_retest/`.**
 

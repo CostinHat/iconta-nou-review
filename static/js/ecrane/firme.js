@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS } from "../ds_piese.js?v=56a370e4aa";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { semnaleDS, cardRezumat } from "../ds_piese.js?v=081e2a850b";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=9f24ba7549";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=9f24ba7549";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
@@ -42,13 +42,13 @@ import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=7
 import { cautaInLista } from "./emitere_ecran.js?v=a36c576fe8";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=b9fdb13bcc";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=50cade9fc8";  /* [C11, 07.10.2026] bilanțul prin coadă */
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=3d27533e0a";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=d8b4e86b8e";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
 import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=6d8714b398";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=da50b57fd8";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=933e036bea";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2a7b3fae69";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4c304d9be3";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=fb35651dd9";  // [date_firma_v1]
@@ -3659,12 +3659,7 @@ function _casetaCategorie(c) {
   if (cat === "primul_exercitiu") {
     return `<div class="caseta-info" style="margin-top:10px"><span class="ci-mesaj">${esc(c.motiv || "")}</span></div>`;
   }
-  if (cat === "nedeterminata") {
-    return `<div class="caseta-atentie" style="margin-top:10px">
-        <div class="ca-mesaj"><b>Categoria de m\u0103rime nu se poate determina, deci aplica\u021bia nu poate \u0219ti care situa\u021bie financiar\u0103 e datorat\u0103.</b>
-          ${esc(c.motiv || "")}. Alege tipul mai jos pe r\u0103spunderea ta, sau completeaz\u0103 eviden\u021ba exerci\u021biului precedent.</div>
-      </div>${tabel}`;
-  }
+  if (cat === "nedeterminata") return tabel;   // [15.1-D] avertismentul e card-rezumat de un rând (`cardRezumat`, pus de ecran deasupra), nu zid de text roșu
   return `<div class="caseta-info" style="margin-top:10px"><span class="ci-mesaj">
       Din date, firma e <b>${esc(numit[cat] || cat)}</b> \u2014 ${esc(c.motiv || "")}.
       ${c.decis_de_numarul_de_salariati ? "<b>Aten\u021bie:</b> \u00eencadrarea depinde de num\u0103rul mediu de salaria\u021bi, care e o aproximare lunar\u0103, nu num\u0103rul mediu din metodologia oficial\u0103." : ""}
@@ -3684,7 +3679,7 @@ async function ecranBilant(corp, nav, t) {
         </select></label>
         <button class="buton-primar" id="bl-val" data-actiune="POST /tenants/{tenant_id}/s1003-valideaza|POST /tenants/{tenant_id}/s1005-valideaza">Valideaz\u0103 (ANAF)</button>
         <button class="buton-secundar" id="bl-xml">Descarc\u0103 XML</button>
-        <button class="buton-primar" id="bl-coada" data-actiune="POST /coada">Trimite \u00een coad\u0103 \u2192</button>
+        <button class="buton-secundar" id="bl-coada" data-actiune="POST /coada">Trimite \u00een coad\u0103 \u2192</button>
         <span class="ecran-nota" id="bl-actiuni-motiv" role="status" style="align-self:center"></span>
       </div>
       <div id="bl-categorie"></div>
@@ -3709,6 +3704,10 @@ async function ecranBilant(corp, nav, t) {
         const c = await api.get(`/tenants/${t.id}/categorie-marime?an=${an}`);
         if (!actuala()) return;   // un an schimbat între timp își aduce propria casetă
         zonaCat.innerHTML = _casetaCategorie(c);
+        if (c && c.categorie === "nedeterminata") {
+          zonaCat.prepend(cardRezumat({ text: "Categoria de mărime nu se poate determina: alege tipul mai jos pe răspunderea ta",
+            detalii: `${c.motiv || ""}. Aplicația nu poate ști care situație financiară e datorată; alege tipul pe răspunderea ta sau completează evidența exercițiului precedent.` }));
+        }
       } catch (e) {
         if (!actuala()) return;
         anCategorie = null;
@@ -6061,7 +6060,7 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
         if (amort.length) {
           // [15.1, 687.1-a] acțiunea principală a ferestrei e blocarea lunii: amortizarea e secundară, iar pe luna blocată stă inactivă, cu motivul scris dedesubt
           const motivAmort = blocata ? "Luna e blocată: deblochează-o ca să generezi amortizarea." : "";
-          zc.insertAdjacentHTML("beforeend", `<p style="margin-top:8px"><button class="buton-secundar" id="il-amort-restanta" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/amortizare/restanta"${motivAmort ? atributeInactiv(motivAmort) : ""}>Generează amortizarea restantă</button>${motivAmort ? ` <span class="ds-motiv-inactiv" id="il-amort-restanta-motiv">${esc(motivAmort)}</span>` : ""}</p>`);
+          zc.insertAdjacentHTML("beforeend", `<p class="ds-actiuni-rand"><button class="buton-secundar" id="il-amort-restanta" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/amortizare/restanta"${motivAmort ? atributeInactiv(motivAmort) : ""}>Generează amortizarea restantă</button>${motivAmort ? ` <span class="ds-motiv-inactiv" id="il-amort-restanta-motiv">${esc(motivAmort)}</span>` : ""}</p>`);
           zc.querySelector("#il-amort-restanta").addEventListener("click", async () => {
             try {
               const r = await api.post(`/tenants/${t.id}/amortizare/restanta?an=${an}&luna=${luna}`, {});
@@ -6104,7 +6103,7 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
         {
           const opreste = ctl.blocaje.some((b) => b.cod === "REEVALUARE_VALUTA");
           const cls = opreste ? "buton-primar" : "buton-secundar";   // clasa DS cap.1 aleasă înainte (regula BUTOANE citește clasa din atribut)
-          zc.insertAdjacentHTML("beforeend", `<p style="margin-top:8px"><button class="${cls}" id="il-reevaluare" data-actiune="GET /tenants/{tenant_id}/reevaluare-valuta">Reevaluare valută</button></p>`);
+          zc.insertAdjacentHTML("beforeend", `<p class="ds-actiuni-rand"><button class="${cls}" id="il-reevaluare" data-actiune="GET /tenants/{tenant_id}/reevaluare-valuta">Reevaluare valută</button></p>`);
           zc.querySelector("#il-reevaluare").addEventListener("click", () => nav.deschide("Reevaluare valută",
             (c2) => ecranReevaluareValuta(c2, nav, t, an, luna, { jurnal: (o) => nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, t, o), { lat: "tabel" }) }),
             { lat: "tabel" }));

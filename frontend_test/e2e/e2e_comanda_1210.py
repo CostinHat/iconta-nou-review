@@ -62,7 +62,7 @@ def test_def_224_cardul_control_fiscal_semafor_cu_patru_lumini(browser, request,
     # rândul de lumini e cu ~2 px mai înalt decât un rând de text; o listă adaugă cel puțin un rând (~27 px): pragul e sub o jumătate de rând
     assert abs(nat["ctl"] - sorted(nat["hs"])[len(nat["hs"]) // 2]) <= 12, nat
     randuri = _lista_control(patron)
-    culoare = lambda r: ("rosu" if "#ff8a80" in r["dot"] else "galben" if "#f0cd7a" in r["dot"] else "verde" if "#6fc494" in r["dot"]   # noqa: E731
+    culoare = lambda r: ("rosu" if "ds-pastila-eroare" in r["dot"] else "galben" if "ds-pastila-avertisment" in r["dot"] else "verde" if "ds-pastila-ok" in r["dot"]   # noqa: E731
                          else "gri")
     assert dict(zip(c["lumini"], c["numere"])) == {s: sum(1 for r in randuri if culoare(r) == s) for s in STARI}, (c, randuri)
     fereastra = patron.pg.inner_text(".fereastra:last-of-type .cf-sumar")
@@ -128,13 +128,13 @@ def test_def_226_eticheta_firmei_e_una_din_cele_patru_stari(patron, firma_e2e):
     MUTAȚIA din plasă: eticheta gri cu numărul („2 nu se pot verifica”) -> ROȘU."""
     randuri = _lista_control(patron)
     patron.captura()
-    culoare = lambda r: ("rosu" if "#ff8a80" in r["dot"] else "galben" if "#f0cd7a" in r["dot"] else "verde" if "#6fc494" in r["dot"]   # noqa: E731
+    culoare = lambda r: ("rosu" if "ds-pastila-eroare" in r["dot"] else "galben" if "ds-pastila-avertisment" in r["dot"] else "verde" if "ds-pastila-ok" in r["dot"]   # noqa: E731
                          else "gri")
     rele = [(r["nume"], r["eticheta"]) for r in randuri if r["eticheta"] != STARI[culoare(r)]]
     assert not rele, rele
     gri_cu_numar = [r for r in randuri if culoare(r) == "gri" and re.search(r"\d+ declarați", r["sub"])]
     assert gri_cu_numar, [(r["nume"], r["eticheta"], r["sub"]) for r in randuri]   # anti-vacuu: cazul „2 nu se pot verifica” e pe ecran
-    patron.pg.locator(".fereastra:last-of-type #cf-lista .mig-frand", has_text=gri_cu_numar[0]["nume"]).first.click()
+    patron.pg.locator(".fereastra:last-of-type #cf-lista tbody tr", has_text=gri_cu_numar[0]["nume"]).first.click()
     patron.pg.wait_for_selector(".fereastra:last-of-type .mig-intro", timeout=60000)
     antet = patron.pg.inner_text(".fereastra:last-of-type .mig-intro")
     patron.captura("detaliu")

@@ -525,3 +525,52 @@ def test_def_d1_control_fiscal_cabinet_pe_tot_ecranul(patron, firma_b):
     pg.wait_for_selector(".fereastra-overlay:not(.fundal) .fereastra.fer-lucru", timeout=30000)
     r = pg.eval_on_selector(".fereastra-overlay:not(.fundal) .fereastra", "e => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.width), innerWidth]; }")
     assert r[0] == 16 and r[1] == r[2] - 32, r   # 15.1-D: marginea ferestrei de lucru e 16 px, exact, pe fiecare parte
+
+
+def _corp_derulat(pg):
+    return pg.evaluate("() => { const c = document.querySelector('.fereastra-overlay:not(.fundal) .fereastra-corp'); return c ? c.scrollHeight - c.clientHeight : -1; }")
+
+
+@pytest.mark.parametrize("lat,inalt", REZOLUTII)
+def test_def_d3_operatiuni_speciale_fara_derulare_titluri_ds(patron, firma_b, lat, inalt):
+    """D3: Operațiuni speciale încape pe ecran fără derulare (1366 × 768 și 1920 × 1080); titlurile categoriilor sunt titluri de grup DS."""
+    pg = patron.pg
+    pg.set_viewport_size({"width": lat, "height": inalt})
+    patron.firma(firma_b["nume"])
+    pg.locator("#fa-operatiuni").evaluate("e => e.click()")
+    pg.wait_for_selector(".op-categorie .ds-grup-titlu", timeout=25000)
+    assert _corp_derulat(pg) <= 1, _corp_derulat(pg)
+    assert pg.locator(".op-categorie .pf-frand-nume").count() == 0
+
+
+def test_def_d3_bilant_avertisment_card_si_un_singur_buton_principal(patron, firma_b):
+    """D3: Bilanț anual — categoria nedeterminată e un card-rezumat de un rând (nu zid de text roșu), iar fereastra are un singur buton principal."""
+    pg = patron.pg
+    patron.firma(firma_b["nume"])
+    pg.locator("#fa-bilant").evaluate("e => e.click()")
+    pg.wait_for_selector("#bl-val", timeout=25000)
+    pg.wait_for_function("() => !!document.querySelector('#bl-categorie .ds-rezumat') || !!document.querySelector('#bl-categorie .caseta-info')", timeout=30000)
+    assert pg.locator("#bl-categorie .caseta-atentie").count() == 0
+    principale = pg.evaluate("() => [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra .buton-primar')].filter((b) => b.offsetParent).length")
+    assert principale <= 1, principale
+
+
+def test_def_d3_control_fiscal_lista_tabel_ds_si_titluri_fara_majuscule(patron, firma_b):
+    """D3 (3a, 3b, 3d, 3g): Control fiscal de la cabinet — bara ferestrei spune cabinetul; lista firmelor e tabel DS (cap, rânduri, pastila în coloana Stare, buton
+    „Deschide”); titlurile de secțiune din Detaliu firmă nu sunt scrise cu majuscule."""
+    pg = patron.pg
+    patron.acasa()
+    pg.click("button.cab-card:has([data-cheie='control'])")
+    pg.wait_for_selector("#cf-lista .ds-tabel tbody tr", timeout=60000)
+    bara = pg.inner_text(".fereastra-overlay:not(.fundal) .fereastra-fir")
+    assert "Cabinet" in bara and bara.rstrip().endswith("Control fiscal"), bara   # cabinetul + numele ferestrei curente, fără traseu de ecrane
+    assert pg.locator(".fereastra-overlay:not(.fundal) .fereastra-fir .fir-firma").count() == 1
+    assert pg.locator("#cf-lista thead th").count() == 4
+    assert pg.locator("#cf-lista tbody tr:first-child .ds-pastila").count() == 1
+    assert pg.locator("#cf-lista tbody tr:first-child button", has_text="Deschide").count() == 1
+    inalt = pg.eval_on_selector_all("#cf-lista tbody tr", "es => [...new Set(es.map(e => Math.round(e.getBoundingClientRect().height)))]")
+    assert inalt == [44], inalt
+    pg.locator("#cf-lista tbody tr:first-child button", has_text="Deschide").evaluate("e => e.click()")
+    pg.wait_for_selector(".cf-grup-titlu", timeout=60000)
+    transformari = pg.eval_on_selector_all(".cf-grup-titlu", "es => [...new Set(es.map(e => getComputedStyle(e).textTransform))]")
+    assert transformari == ["none"], transformari

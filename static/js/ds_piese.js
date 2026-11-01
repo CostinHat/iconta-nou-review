@@ -156,7 +156,7 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
 export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment", limita = 6 } = {}) {
   const lista = (items || []).map((x) => (typeof x === "string" ? { mesaj: x } : x)).filter((x) => x && x.mesaj);
   const scurt = (t) => { const p = String(t).split(/(?<=\.)\s/)[0]; return p.length > 90 ? p.slice(0, 89) + "…" : p; };
-  zona.innerHTML = `<section class="ds-semnale"><h3 class="ds-grup-titlu">${esc(titlu)} (${lista.length})</h3><ul class="ds-semnale-lista"></ul></section>`;
+  zona.innerHTML = `<section class="ds-semnale"><h3 class="ds-sectiune-titlu">${esc(titlu)} (${lista.length})</h3><ul class="ds-semnale-lista"></ul></section>`;
   const ul = zona.querySelector(".ds-semnale-lista");
   const buton = (clasa, text, laClic) => {   // butoanele se creează numai când au ce arăta: nu e o acțiune care dispare, ci una care nu există
     const b = document.createElement("button");
@@ -201,4 +201,66 @@ export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment",
     zona.querySelector(".ds-semnale").appendChild(inca);
   }
   return zona;
+}
+
+
+/** Tabelul DS (15.1-D): cap de 40 px fix, rânduri de 44 px, zebra pe rândurile pare, starea numai ca pastilă în coloana „Stare”, acțiunile ca butoane XS în
+ *  ultima coloană, un rând nu se rupe pe două linii (textul lung se taie cu „…”, întreg în `title`). Un rând întreg poate fi apăsabil (`laClic`).
+ *  coloane: [{ cheie, titlu, tip: "text" | "num" | "stare" | "actiuni" }]
+ *  randuri: [{ celule: { cheie: text }, stare: { text, ton: "eroare" | "avertisment" | "ok" | "info" }, actiuni: [{ eticheta, laClic, motivInactiv }], laClic }] */
+export function tabelDS(zona, { coloane, randuri, gol = "Nimic de arătat." }) {
+  zona.innerHTML = "";
+  if (!randuri || !randuri.length) {
+    const p = document.createElement("p");
+    p.className = "ds-tabel-gol";
+    p.textContent = gol;
+    zona.appendChild(p);
+    return null;
+  }
+  const cutie = document.createElement("div");
+  cutie.className = "ds-tabel-cutie";
+  const tabel = document.createElement("table");
+  tabel.className = "ds-tabel";
+  const cap = tabel.createTHead().insertRow();
+  coloane.forEach((c) => {
+    const th = document.createElement("th");
+    th.scope = "col";
+    th.className = "ds-tabel-" + (c.tip || "text");
+    th.textContent = c.titlu || "";
+    cap.appendChild(th);
+  });
+  const corp = tabel.createTBody();
+  randuri.forEach((r) => {
+    const tr = corp.insertRow();
+    if (r.laClic) { tr.classList.add("ds-tabel-apasabil"); tr.tabIndex = 0; tr.addEventListener("click", r.laClic); tr.addEventListener("keydown", (e) => { if (e.key === "Enter") r.laClic(); }); }
+    coloane.forEach((c) => {
+      const td = tr.insertCell();
+      td.className = "ds-tabel-" + (c.tip || "text");
+      if (c.tip === "stare") {
+        const st = r.stare || {};
+        const sp = document.createElement("span");
+        sp.className = "ds-pastila ds-pastila-" + (st.ton || "info");
+        sp.textContent = st.text || "";
+        td.appendChild(sp);
+      } else if (c.tip === "actiuni") {
+        (r.actiuni || []).forEach((a) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "buton-secundar buton-xs";
+          b.textContent = a.eticheta;
+          b.dataset.faraActiune = a.faraActiune || "navigare în fereastra curentă";
+          if (a.motivInactiv) { b.setAttribute("aria-disabled", "true"); b.dataset.motivInactiv = a.motivInactiv; b.title = a.motivInactiv; }
+          else b.addEventListener("click", (e) => { e.stopPropagation(); a.laClic(e); });
+          td.appendChild(b);
+        });
+      } else {
+        const t = String((r.celule || {})[c.cheie] ?? "");
+        td.textContent = t;
+        td.title = t;
+      }
+    });
+  });
+  cutie.appendChild(tabel);
+  zona.appendChild(cutie);
+  return tabel;
 }

@@ -864,7 +864,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   display: inline-flex; align-items: center; gap: 7px;
   padding: 5px 12px; border-radius: 999px; font-size: var(--text-mic); font-weight: 600; white-space: nowrap;
 }
-.cf-grup-titlu { font-size: var(--text-mic); font-weight: 700; margin: 14px 0 8px; text-transform: uppercase; letter-spacing: .3px; }
+.cf-grup-titlu { font-size: 20px; font-weight: 600; margin: 16px 0 8px; }   /* [15.1-D] titlu de secțiune DS: 20 px, fără majuscule */
 .cf-rosu { color: #c0392b; }
 .cf-galben { color: #92500a; }
 .cf-verde { color: var(--verde); }
@@ -3401,3 +3401,26 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .ds-datorate { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 8px 0; }
 .ds-datorata, .ds-datorate-inca { height: 44px; padding: 0 16px; font-size: 16px; max-width: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; font-variant-numeric: tabular-nums; }
 .ds-datorata.buton-activ { color: #fff; background: var(--albastru); border-color: var(--albastru-inchis); }
+/* DS 15.1-D — acțiunile aceluiași ecran, pe un singur rând (în loc de un paragraf pe acțiune) */
+.ds-actiuni-rand { display: inline-block; margin: 8px 8px 0 0; }
+
+/* DS 15.1-D — titlu de secțiune (fără majuscule), tabelul DS și pastila de stare */
+.ds-sectiune-titlu { margin: 16px 0 8px; font-size: 20px; font-weight: 600; color: var(--ardezie); text-transform: none; }
+.ds-tabel-cutie { width: 100%; overflow-x: hidden; border: 1px solid var(--linie); border-radius: 12px; background: var(--alb); }
+.ds-tabel { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; }
+.ds-tabel thead th { height: 40px; padding: 0 12px; text-align: left; font-weight: 600; font-size: 15px; background: var(--fundal); position: sticky; top: 0; border-bottom: 1px solid var(--linie); }
+.ds-tabel tbody td { height: 44px; padding: 0 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-bottom: 1px solid var(--linie); }
+.ds-tabel tbody tr:nth-child(even) { background: var(--fundal); }
+.ds-tabel-apasabil { cursor: pointer; }
+.ds-tabel-apasabil:hover, .ds-tabel-apasabil:focus-visible { outline: 2px solid var(--albastru); outline-offset: -2px; }
+.ds-tabel .ds-tabel-num { text-align: right; font-variant-numeric: tabular-nums; }
+.ds-tabel .ds-tabel-stare { width: 216px; }
+.ds-tabel .ds-tabel-actiuni { width: 112px; white-space: nowrap; text-align: right; }
+.ds-tabel .ds-tabel-actiuni .buton-xs { margin-left: 8px; }
+.buton-xs { height: 28px; padding: 0 10px; font-size: 13px; border-radius: 8px; }
+.ds-tabel-gol { margin: 8px 0; color: var(--gri); }
+.ds-pastila { display: inline-block; height: 28px; line-height: 28px; padding: 0 12px; border-radius: 999px; font-size: 14px; font-weight: 600; white-space: nowrap; }
+.ds-pastila-eroare { background: #fbe3e1; color: #8a2a22; }
+.ds-pastila-avertisment { background: #fdeccd; color: #7a4b05; }
+.ds-pastila-ok { background: #dff3e4; color: #1e6b36; }
+.ds-pastila-info { background: #e3ebf7; color: #2f4a73; }

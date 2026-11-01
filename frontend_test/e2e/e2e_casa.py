@@ -55,9 +55,9 @@ def _rezumat_cf(firma, date, epoca):
 def _rand_cf(e, nume):
     e.acasa()
     e.pg.click("button.cab-card:has([data-cheie='control'])")
-    e.pg.wait_for_selector("#cf-lista .mig-frand", timeout=120000)
-    return e.pg.evaluate("""(n) => { const r = [...document.querySelectorAll('#cf-lista .mig-frand')].find(x => x.innerText.includes(n));
-      return r ? {sub: r.querySelector('.mig-frand-sub').innerText, et: r.querySelector('.cf-stare').innerText.trim()} : null; }""", nume)
+    e.pg.wait_for_selector("#cf-lista tbody tr", timeout=120000)
+    return e.pg.evaluate("""(n) => { const r = [...document.querySelectorAll('#cf-lista tbody tr')].find(x => x.innerText.includes(n));
+      return r ? {sub: r.cells[1].innerText, et: r.querySelector('.ds-pastila').innerText.trim()} : null; }""", nume)
 
 
 def test_def_156_lista_nu_arata_un_rezumat_calculat_de_alt_cod(patron, firma_e2e):
@@ -91,8 +91,8 @@ def test_def_173_randul_spune_ce_numara_contorul(patron, firma_e2e):
     # lumina gri = rândurile cu punctul gri. Ce se păstrează din 173: rândul firmei SPUNE ce nu se poate verifica, la orice stare.
     d = patron.pg.evaluate("""() => { const f = [...document.querySelectorAll('.fereastra')].pop();
       const l = f.querySelector('.cf-sumar .cab-stare[data-stare=gri] .tip-figura');
-      const gri = [...f.querySelectorAll('#cf-lista .mig-frand .cf-stare .cf-dot')].filter(
-        (e) => !/#ff8a80|#f0cd7a|#6fc494/.test(e.getAttribute('style') || '')).length;
+      const gri = [...f.querySelectorAll('#cf-lista tbody tr .ds-pastila')].filter(
+        (e) => !/ds-pastila-(eroare|avertisment|ok)/.test(e.className || '')).length;
       return {lumina: l ? parseInt(l.innerText, 10) : null, randuri: gri}; }""")
     patron.captura("lista")
     assert r and "nu se poate verifica" in r["sub"], r

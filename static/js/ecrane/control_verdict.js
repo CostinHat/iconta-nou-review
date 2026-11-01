@@ -79,7 +79,10 @@ function randConst(c) {
     // [lotul 13, 675 — DS cap.1] butonul stă la fiecare remediu; unde nu sunt facturi de contabilizat din aplicație, e inactiv, cu motivul
     const areFacturi = r.fel === "executabil" && (r.facturi || []).length > 0;
     // [694.1 b, 14.3] neconcordanța rezultatului decontului cu nota de închidere TVA: acțiunea e regularizarea TVA a perioadei (Închidere lună), nu contarea facturilor
-    const buton = r.fel === "regularizare_tva"
+    // [15.1-D, 3j] „Date sau profil fiscal incomplet. Completează datele firmei”: nu e nimic de contabilizat — acțiunea e deschiderea Date firmă
+    const buton = (r.fel === "investigatie" && /profil fiscal incomplet/i.test(r.cauza || ""))
+      ? `<button type="button" class="buton-secundar" data-ecran-destinatie="date_firma">Deschide Date firmă</button>`
+      : r.fel === "regularizare_tva"
       ? `<button class="buton-secundar cf-regulariza-tva" data-actiune="POST /tenants/{tenant_id}/inchidere/regularizare-tva" data-an="${esc(String(r.an))}" data-luna="${esc(String(r.luna))}" style="margin-top:8px">Regularizează TVA-ul perioadei</button>`
       : `<button class="buton-secundar cf-incr-btn" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-facturi="${esc((r.facturi || []).join(","))}" style="margin-top:8px"${
         areFacturi ? "" : atributeInactiv("Constatarea nu are facturi de contabilizat din aplicație; remediul e cel scris mai sus.")}>Contabilizează facturile</button>`;
@@ -396,7 +399,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=62225b6491");
+    const { deschideInchidereLuna } = await import("./firme.js?v=c518f62d95");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

@@ -704,7 +704,7 @@ def test_def_491_constatarea_salarii_nedeclarate_urca_firma_cel_mult_la_galben(p
     assert _b_rosii_in_afara_restantelor(pg) == []
     randuri = [r for r in _lista_control(patron) if f["nume"] in r["nume"]]
     patron.captura("lista_control_fiscal")
-    assert len(randuri) == 1 and not re.search(r"#ff8a80|rosu-semafor", randuri[0]["dot"] or ""), randuri
+    assert len(randuri) == 1 and not re.search(r"#ff8a80|ds-pastila-eroare|rosu-semafor", randuri[0]["dot"] or ""), randuri
 
 
 # ── 497 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

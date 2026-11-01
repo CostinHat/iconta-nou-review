@@ -1205,9 +1205,9 @@ def test_def_156_contoarele_si_eticheta_pe_fapte(patron):
     pg = patron.pg
     patron.acasa()
     pg.click("button.cab-card:has([data-cheie='control'])")
-    pg.wait_for_selector("#cf-lista .mig-frand", timeout=120000)
-    randuri = pg.evaluate("() => [...document.querySelectorAll('#cf-lista .mig-frand')].map((r) => ({nume: r.querySelector('.mig-frand-nume').innerText,"
-                          " sub: r.querySelector('.mig-frand-sub').innerText, et: r.querySelector('.cf-stare').innerText.trim()}))")
+    pg.wait_for_selector("#cf-lista tbody tr", timeout=120000)
+    randuri = pg.evaluate("() => [...document.querySelectorAll('#cf-lista tbody tr')].map((r) => ({nume: r.cells[0].innerText,"
+                          " sub: r.cells[1].innerText, et: r.querySelector('.ds-pastila').innerText.trim()}))")
     for r in randuri:
         if r["et"] == "restanță":
             assert _re.search(r"\b[1-9]\d* (?:de )?restanț", r["sub"]), r
@@ -1218,7 +1218,7 @@ def test_def_156_contoarele_si_eticheta_pe_fapte(patron):
     assert cu_urmarit, "nicio firmă cu declarații de urmărit în portofoliul de test"
     r0 = cu_urmarit[0]
     n = int(_re.search(r"\b([1-9]\d*) de urmărit", r0["sub"]).group(1))
-    pg.locator("#cf-lista .mig-frand", has_text=r0["nume"]).first.click()
+    pg.locator("#cf-lista tbody tr", has_text=r0["nume"]).first.click()
     pg.wait_for_function("() => [...document.querySelectorAll('.cf-grup-titlu')].some((t) => t.textContent.trim().startsWith('Audit de preluare'))",
                          timeout=120000)   # titlurile grupurilor sunt cu majuscule din CSS: se citește textul, nu randarea
     pg.wait_for_function("() => [...document.querySelectorAll('.cf-grup-titlu')].some((t) => t.textContent.trim().startsWith('De urmărit ('))",

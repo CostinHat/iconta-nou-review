@@ -18,7 +18,7 @@
 // fiindcă exact aici se naște cifra validă și falsă.
 
 import { api, esc, dupaNumar, dataRo } from "../api.js?v=9f24ba7549";
-import { randA as randConstatare } from "./control_verdict.js?v=933e036bea";
+import { randA as randConstatare } from "./control_verdict.js?v=2a7b3fae69";
 
 function perioada(r) {
   return dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric");   // DS cap.4: „10/2026”, din formatorul unic

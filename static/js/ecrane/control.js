@@ -2,10 +2,11 @@
 // Nivel 1: lista firmelor cu pastila colorata (verde/galben/rosu).
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
+import { tabelDS } from "../ds_piese.js?v=081e2a850b";   // [15.1-D] lista firmelor pe tabelul DS
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
 import { api, esc, cate } from "../api.js?v=9f24ba7549";  /* esc_nc27 */
 import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=933e036bea";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2a7b3fae69";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -40,31 +41,22 @@ export async function randeazaControl(corp, nav, tidAuto) {
   const ord = { rosu: 0, galben: 1, verde: 2, gri: 3 };
   firme.sort((a, b) => (ord[a.stare] ?? 9) - (ord[b.stare] ?? 9));
 
-  firme.forEach((f) => {
-    const col = CULORI[f.stare] || CULORI.gri;
+  const TON = { rosu: "eroare", galben: "avertisment", verde: "ok", gri: "info" };
+  const randuri = firme.map((f) => {
     // [08.10.2026, retest pct.7] detaliul numără faptele (restanțe, de urmărit, neverificabile), nu repetă culoarea
-    // [deficiențele 156/173, retestul Costin 09.10] „nu se poate verifica” vine de la server (același predicat ca contorul de sus), iar
-    // verificările contabile gri sunt spuse acolo — aici rămân numai cele cu constatare (roșu / galben)
+    // [deficiențele 156/173, retestul Costin 09.10] „nu se poate verifica” vine de la server (același predicat ca contorul de sus), iar verificările
+    // contabile gri sunt spuse acolo — aici rămân numai cele cu constatare (roșu / galben)
     const fapte = [(f.lipsa || 0) ? cate(f.lipsa, "restanță", "restanțe") : "",
       (f.urmarit || 0) ? `${f.urmarit} de urmărit` : "",
-      f.neverificabil ? esc(f.neverificabil) : ""].filter(Boolean);
+      f.neverificabil || ""].filter(Boolean);
     let detaliu = fapte.length ? fapte.join(" · ") : (f.stare === "verde" ? VERDICT_POZITIV.control_firma : "");
     const cuConstatare = (f.contabil || []).filter((c) => !(c && c.stare === "gri"));
-    if (cuConstatare.length) detaliu += (detaliu ? " · " : "") + cuConstatare.map((c) => esc((c && c.eticheta) || c)).join(" · ");
-    const rand = document.createElement("button");
-    rand.className = "mig-frand";
-    rand.innerHTML = `
-      <div class="mig-frand-text">
-        <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">${detaliu}</div>
-      </div>
-      <span class="cf-stare" style="background:${col.bg}">
-        <span class="cf-dot" style="background:${col.dot}"></span>${etichetaStare(f.stare)}
-      </span>
-    `;
-    rand.addEventListener("click", () => deschideDetaliu(nav, f));  // [p122_nav_stiva] [396]
-    lista.appendChild(rand);
+    if (cuConstatare.length) detaliu += (detaliu ? " · " : "") + cuConstatare.map((c) => (c && c.eticheta) || c).join(" · ");
+    const deschide = () => deschideDetaliu(nav, f);   // [p122_nav_stiva] [396]
+    return { celule: { firma: f.nume, constatari: detaliu }, stare: { text: etichetaStare(f.stare), ton: TON[f.stare] || "info" },
+             actiuni: [{ eticheta: "Deschide", laClic: deschide }], laClic: deschide };
   });
+  tabelDS(lista, { coloane: [{ cheie: "firma", titlu: "Firma" }, { cheie: "constatari", titlu: "Constatări" }, { tip: "stare", titlu: "Stare" }, { tip: "actiuni", titlu: "" }], randuri });
 
   // [F164_routing] deschis din notificarea de control fiscal (link control-fiscal:{tid}) -> auto-drill in
   // detaliul FIRMEI, reutilizand exact click-ul de rand (acelasi obiect firma: nume+contabil, aceeasi stiva

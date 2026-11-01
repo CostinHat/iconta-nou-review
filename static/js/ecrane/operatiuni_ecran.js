@@ -2,7 +2,7 @@
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
 import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=9f24ba7549";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
-import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=56a370e4aa";   // [15.1] piesele formularului grupat
+import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=081e2a850b";   // [15.1] piesele formularului grupat
 import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=5bb0840a64";   // [15.1, 725] F5 readuce fereastra
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1, 721] ciorna formularului, pe server
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
@@ -523,7 +523,7 @@ export async function ecranOperatiuni(corp, nav, t) {
           <div style="columns:300px;column-gap:12px">
           ${CATEGORII.filter((cat) => REGISTRU.some((o) => o.cat === cat && o.frecventa === frecventa)).map((cat) => `
             <div class="op-categorie" style="display:block;break-inside:avoid;margin-bottom:10px;background:var(--fundal);border:1px solid var(--linie);border-radius:var(--raza);padding:10px 14px">
-              <div class="pf-frand-nume" style="margin-bottom:6px">${esc(cat)}</div>
+              <div class="ds-grup-titlu">${esc(cat)}</div>   <!-- [15.1-D] titlul de grup al DS: 14 px, majuscule, gri -->
               <div style="display:flex;flex-wrap:wrap;gap:8px">
                 ${REGISTRU.filter((o) => o.cat === cat && o.frecventa === frecventa).map((o) =>
                   `<button class="buton-secundar" data-op="${o.cheie}" data-actiune="${actiuneOp(o)}">${esc(o.titlu)}</button>`).join("")}
@@ -677,7 +677,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=62225b6491");
+      const { ecranJurnal } = await import("./firme.js?v=c518f62d95");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };

@@ -710,12 +710,12 @@ def test_def_109_dupa_prima_ciorna_veche_se_inlocuieste_si_merge_la_validare(asi
 def _control(ecran):
     ecran.acasa()
     ecran.pg.click("button.cab-card:has([data-cheie='control'])")
-    ecran.pg.wait_for_selector(".fereastra:last-of-type #cf-lista .mig-frand", timeout=60000)
+    ecran.pg.wait_for_selector(".fereastra:last-of-type #cf-lista tbody tr", timeout=60000)
 
 
 def _control_firma(ecran, firma):
     _control(ecran)
-    ecran.pg.locator(".fereastra:last-of-type #cf-lista .mig-frand", has_text=firma["nume"]).first.click()
+    ecran.pg.locator(".fereastra:last-of-type #cf-lista tbody tr", has_text=firma["nume"]).first.click()
     ecran.pg.wait_for_selector(".fereastra:last-of-type .cf-decl, .fereastra:last-of-type .cf-grup-titlu", timeout=60000)
 
 
@@ -819,17 +819,17 @@ def test_def_125_cardul_arata_aceleasi_cifre_ca_fereastra(patron, firma_sal):
     # plasă 11.10: card 7 / 2, fereastra 8 / 1). Cardul cu o citire veche — simulată aici — trebuie să ajungă la citirea ferestrei.
     pg.evaluate("() => document.querySelectorAll(\"[data-cheie='control'] .tip-figura\").forEach((e) => { e.innerText = '99'; })")
     pg.click("button.cab-card:has([data-cheie='control'])")             # direct pe card, fără a reîncărca pagina principală
-    pg.wait_for_selector(".fereastra:last-of-type #cf-lista .mig-frand", timeout=60000)
+    pg.wait_for_selector(".fereastra:last-of-type #cf-lista tbody tr", timeout=60000)
     pg.wait_for_selector(".fereastra:last-of-type .cf-sumar .cab-semafor4", timeout=30000)
     fereastra = _lumini_din(pg, ".fereastra:last-of-type .cf-sumar")
     card = _lumini_din(pg, "[data-cheie='control']")
     ordine = pg.eval_on_selector_all(".fereastra:last-of-type .cf-sumar .cab-stare", "es => es.map(e => e.dataset.stare)")
-    puncte = pg.eval_on_selector_all(".fereastra:last-of-type #cf-lista .mig-frand .cf-stare .cf-dot", "es => es.map(e => e.getAttribute('style'))")
-    rand = pg.locator(".fereastra:last-of-type #cf-lista .mig-frand", has_text=firma_sal["nume"]).first.inner_text()
+    puncte = pg.eval_on_selector_all(".fereastra:last-of-type #cf-lista tbody tr .ds-pastila", "es => es.map(e => e.className)")   # [15.1-D] starea = pastila DS
+    rand = pg.locator(".fereastra:last-of-type #cf-lista tbody tr", has_text=firma_sal["nume"]).first.inner_text()
     patron.captura()
     pe_randuri = {s: 0 for s in ("rosu", "galben", "verde", "gri")}
     for st in puncte:
-        pe_randuri[next((s for c, s in _STARE_DIN_PUNCT if c in st), "gri")] += 1
+        pe_randuri[next((s for c, s in (("ds-pastila-eroare", "rosu"), ("ds-pastila-avertisment", "galben"), ("ds-pastila-ok", "verde")) if c in st), "gri")] += 1
     assert ordine == ["rosu", "galben", "verde", "gri"], ordine
     assert fereastra == card, "cardul %s, fereastra %s" % (card, fereastra)
     assert fereastra == pe_randuri, "luminile ferestrei %s, rândurile de dedesubt %s" % (fereastra, pe_randuri)
