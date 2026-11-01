@@ -17,6 +17,9 @@ from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioad
 
 AZI = _dt.date.today()
 LUNA_TRECUTA = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)
+# D406 se depune pe trimestru, iar un trimestru neîncheiat nu se generează: ultima lună a ultimului trimestru încheiat (în octombrie-decembrie, septembrie etc.)
+_ULT_TRIM = _dt.date(AZI.year, 3 * ((AZI.month - 1) // 3) + 1, 1) - _dt.timedelta(days=1)
+LUNA_TRIM_INCHEIAT = _ULT_TRIM.replace(day=1)
 PATRON, ASISTENT = "patron@prisma-cont.test", "asistent@prisma-cont.test"
 
 
@@ -1108,7 +1111,10 @@ def test_def_136_componentele_d406_arata_cont_debit_credit_suma(patron, firma_mf
     Pașii contabilului: Declarații -> D406 pe luna trecută (nota 581=5311 300,00 validată) -> pasul 2 -> „Din ce e făcută declarația”:
     coloana „linii” arată „581 · debit 300,00” și „5311 · credit 300,00”, niciodată „[object Object]”."""
     _date_firma(firma_mf)
-    _genereaza(patron, firma_mf, "d406", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
+    # D406 e trimestrial: depunerea de numerar a fixture-ului e în luna trecută, care poate fi într-un trimestru neîncheiat; perechea ei, în ultimul trimestru încheiat
+    _nota_validata(firma_mf, LUNA_TRIM_INCHEIAT.replace(day=19).isoformat(), "5311", "1012", 300, "Aport numerar D136")
+    _nota_validata(firma_mf, LUNA_TRIM_INCHEIAT.replace(day=20).isoformat(), "581", "5311", 300, "Depunere numerar D136")
+    _genereaza(patron, firma_mf, "d406", LUNA_TRIM_INCHEIAT.year, LUNA_TRIM_INCHEIAT.month)
     pg = patron.pg
     rez = pg.locator(".fereastra:last-of-type details.dec-xml summary", has_text="Din ce e făcută declarația")
     assert rez.count() == 1, patron.fereastra()[:2000]
