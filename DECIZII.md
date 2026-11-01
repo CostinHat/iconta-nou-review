@@ -24332,3 +24332,6 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - 725.1: `restaurare.js` memorează un `drum` de selectori (butoane apăsate de om), nu un nume de ecran.
 - F-A.1 (etichetă din comandă, fără număr în registru): „Fără TVA” în grupul de cote, categorii cu listă de căutare, card SPV, întrebarea „Pleacă marfa?” o singură dată (`_refuzNevazut` ignoră `INTREABA_*`), anunțul ciornei golit după emitere.
 - 726: declarațiile datorate sunt butoane directe, restanțele întâi, apoi restul; în fiecare grup rămâne ordinea din listă.
+
+## Comanda 15.1, zona D, tranșa D1 (01.11.2026)
+- Control fiscal de la cabinet (card, asistent, căutarea globală) se deschide cu `lat: "lucru"`: fereastră de lucru pe tot ecranul, nu fereastră mică la nivelul 1. Detaliu firmă era deja pe tot ecranul (nivelul 2). Verificator independent: NU TRECE înainte, TRECE după (runda 1). Test: `test_def_d1_control_fiscal_cabinet_pe_tot_ecranul`. Rest din lista zonei D rămâne netrecut în tranșa aceasta.

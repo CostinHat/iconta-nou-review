@@ -584,6 +584,8 @@ nu e local). (3) Cheile Meta / WhatsApp, Postmark și exporturile Search Console
 
 ## STAREA LA PREDARE
 
+**01.11.2026 — comanda 15.1, zona D, tranșa D1: Control fiscal de la cabinet pe tot ecranul (verificator: NU TRECE înainte, TRECE după). Restul listei zonei D (ecran cu ecran), fluturașul (deducerea personală) și raportul A–G unic rămân.**
+
 **01.11.2026 — comanda 15.1, retestul zonei B (publicat după poartă): 673.2, 446.2, 634.2, 725.1, 726, F-A.1 — TRECE la verificator (726 și 446.2 în runda 2). Zona D (restul aplicației) și raportul A–G sunt următoarele; răspunsurile verificatorilor sunt în `~/lot15_1_verificator/zona_B_retest/`.**
 
 **Ultima poartă completă a unui lot: `22c71846` (21.10.2026, lotul 10, rularea 2)** — `9567 passed, 10 skipped, 15 xfailed in

@@ -760,7 +760,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link control-fiscal malformat:", n.link); return; }
             try {
               const { randeazaControl } = await import("./ecrane/control.js?v=680bf7a6fb");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
-              window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet" });
+              window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet", lat: "lucru" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide control fiscal:", e); }
           }
         });

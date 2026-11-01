@@ -29,7 +29,7 @@ const NODURI = {
     deschide: (nav) => nav.deschide("Firme", (corp) => randeazaListaFirme(corp, nav, () => nav.inapoi())) },
   control: { titlu: "Control fiscal", icon: "shield", ...CULORI_CARD.teal,
     sinteza: "Starea fiscală a firmelor tale",
-    deschide: (nav) => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav)) },
+    deschide: (nav) => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav), { lat: "lucru" }) },
   termene: { titlu: "Termene", icon: "calendar", ...CULORI_CARD.verde,
     sinteza: "Scadențele firmelor tale",
     deschide: (nav) => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav)) },

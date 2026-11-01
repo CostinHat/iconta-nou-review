@@ -198,7 +198,7 @@ function randeazaPanou(continut, nav) {
     if (c.cheie === "firme") {
       card.addEventListener("click", () => nav.deschide("Firme", (corp) => randeazaMeniuFirme(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "control") {
-      card.addEventListener("click", () => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav), { nivel: "cabinet" }));
+      card.addEventListener("click", () => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav), { nivel: "cabinet", lat: "lucru" }));
     } else if (c.cheie === "termene") {
       card.addEventListener("click", () => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "validat") {

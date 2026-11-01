@@ -515,3 +515,13 @@ def test_def_726_declaratiile_datorate_sunt_butoane_directe(patron, firma_b):
     assert restanta == sorted(restanta, reverse=True), "restanțele nu sunt toate înaintea celorlalte: %s" % texte
     assert all("termen" in t for t in texte), texte
     assert pg.eval_on_selector(".ds-lista", "e => e.hidden"), "căutarea apare fără „Arată alte declarații”"
+
+
+def test_def_d1_control_fiscal_cabinet_pe_tot_ecranul(patron, firma_b):
+    """D1 (zona C, pct.2): Control fiscal de la cabinet e fereastră de lucru pe tot ecranul (margine 16 px), nu fereastră mică centrată."""
+    pg = patron.pg
+    patron.acasa()
+    pg.click("button.cab-card:has([data-cheie='control'])")
+    pg.wait_for_selector(".fereastra-overlay:not(.fundal) .fereastra.fer-lucru", timeout=30000)
+    r = pg.eval_on_selector(".fereastra-overlay:not(.fundal) .fereastra", "e => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.width), innerWidth]; }")
+    assert r[0] <= 16 and r[1] >= r[2] - 40, r
