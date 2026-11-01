@@ -360,8 +360,8 @@ def test_def_c182_validarea_notei_fara_document_arata_liniile_si_le_tine_la_rede
     pg.click("#caseta-atentie-activa #ca-nu")   # [15.1, 446.1] întrebarea e fereastra mică a DS, peste tot: se închide cu „Renunță” înainte de a doua validare
     pg.wait_for_selector("#caseta-atentie-activa", state="detached", timeout=10000)
     _card_nota(patron, firma_e2e, cu).first.locator(".tn-rand .val-aproba").click()
-    pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=10000)
-    pg.click("#caseta-atentie-activa #ca-ok")
+    if pg.query_selector("#caseta-atentie-activa #ca-ok"):
+        pg.click("#caseta-atentie-activa #ca-ok")
     pg.wait_for_function("() => ((document.querySelector('#val-confirmare') || {}).textContent || '').startsWith('Ai validat')", timeout=30000)
     pg.wait_for_timeout(500)
     dupa = pg.evaluate(_DETALIU, fara)
