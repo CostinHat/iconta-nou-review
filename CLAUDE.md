@@ -13,6 +13,8 @@ O regulă nouă intră numai aici, în secțiunea ei, iar cea pe care o înlocui
 Înainte de orice altceva, Code citește PREDARE_LANT.md (unde a rămas lucrul) și comanda în curs, din
 ~/ghid_incoming/. Nimic altceva nu e obligatoriu de citit: regulile sunt toate în acest fișier.
 
+R9. La începutul fiecărui lot: /clear, apoi citești CLAUDE.md, comanda lotului și corectii_<lot>.txt dacă există. Nu pornești un lot cu contextul lotului anterior.
+
 ## 1. Rolurile
 
 Costin decide direcția și produsul. Arhitectul (Claude în chat) decide arhitectura și formulează comenzile.
@@ -39,6 +41,8 @@ varianta cea mai sigură și le listează în raport, la E (Abateri); nu cere de
 nimic din afara comenzii (nici agendă, nici fir intern, nici „următorul pas din listă”). Când lotul e gata: poartă
 (pe roșu: repară și reia, nu se publică niciodată pe roșu), backup, publicare, raport, apoi oprire.
 
+R2. Un lot = o singură poartă și o singură publicare, la sfârșit. Nu publici pe zonă, pe ecran sau pe etapă, chiar dacă o comandă veche spune altfel. Înainte de a începe lotul rulezi poarta de bază pe main: dacă e roșie, repari întâi testele vechi, pe nume, într-un commit separat „teste de bază: <nume>”, și abia apoi începi lotul.
+
 ## 4. Deficiențele
 
 Fiecare deficiență are un număr pe viață, din DEFICIENTE.md: numerele simple sunt ale lui Costin,
@@ -58,6 +62,10 @@ lui Costin, pentru că testele lui Code îi confirmau propria interpretare — d
 4. Cel mult două runde pe o deficiență. Dacă după a doua tot NU TRECE, modificările ei se anulează și deficiența se raportează
    nerezolvată, cu motivul. Nu blochează publicarea celorlalte.
 5. „Rezolvat” înseamnă doar TRECE de la verificator. Testele lui Code nu sunt dovadă. Scenariul deficienței rămâne test permanent.
+
+R5. Orice criteriu de produs primit de la arhitect (ce înseamnă „migrat”, „pe piese”, „corect”) intră în același commit în promptul fix al verificatorului sau într-un script care refuză; nu rămâne doar aplicat de mână. Orice corecție primită în chat o scrii întâi, cuvânt cu cuvânt, în ~/ghid_incoming/corectii_<lot>.txt, apoi o aplici; după /clear o recitești de acolo.
+
+R6. Verificatorii independenți nu rulează niciodată pe producție; rulează pe serverul de lucru (port 8019). Verificatorul „înainte” e obligatoriu la fiecare lot; fără el nu există „după”.
 
 ## 5. Testarea
 
@@ -85,10 +93,9 @@ Ordinea porții și oprirea la prima treaptă roșie (regulă permanentă, 31.10
 commit se rulează scripts/inainte_de_commit.sh (verificatorul de design și pytest-ul țintit pe fișierele atinse); poarta pornește numai dacă
 amândouă sunt verzi. Nu se editează arborele cât rulează poarta (verdictul ar deveni „arbore schimbat”).
 
-Sfârșitul turei (regulă permanentă, 31.10.2026, completată 01.11.2026; înlocuiește forma din 31.10.2026): o tură se încheie numai cu „publicat zona X pe <commit>”
-sau cu „OPRIT — gata”, niciodată cu o intenție („continui”, „urmează”, „aștept”) și niciodată cu un răspuns la o întrebare: o întrebare a lui Costin se
-răspunde în rând cu lucrul, iar lucrul continuă în aceeași tură. Dacă ai de așteptat o poartă, aștepți în aceeași tură cu o singură comandă shell care citește
-logul la 60 s și iese la verdict sau după 90 min (fără monitor), iar din log citești doar ultimele linii și liniile FAILED.
+R1. Turul se încheie numai cu „publicat <lot> pe <commit>” sau „OPRIT — gata: <lot>”. La o întrebare primită în prompt răspunzi într-un rând și continui lucrul în același tur. Nu te oprești după un răspuns, după o intenție („continui cu…”) sau după un monitor expirat.
+
+R3. Cât rulează o poartă sau un test lung nu folosești monitor și nu aștepți pasiv. Aștepți cu o singură comandă shell blocantă care citește logul la 60 de secunde și iese la verdict sau după 90 de minute. Din loguri citești numai ultimele 40 de linii și liniile FAILED. Cel mult un subagent, pe Sonnet 5.5, oprit și raportat dacă nu are rezultat după o oră.
 
 Reluarea după roșu (regulă permanentă, 31.10.2026): la prima rulare a unei zone, „fișierele atinse” se socotesc față de main; la orice reluare după roșu,
 „atinse” înseamnă doar fișierele schimbate de la ultima rulare a porții (commitul ei se reține în scripts/poarta_ultima.txt, ignorat de git, scris
@@ -117,12 +124,9 @@ permanente. Registrele generate și capturile de referință se refac o singură
 repară; un test scos care ar fi picat nu e motiv să fie pus la loc. Code nu adaugă verificări din proprie inițiativă.
 
 Testele grele (suita, poarta, e2e, uneltele vizuale, verificatorul) rulează una după alta, niciodată
-în paralel: serverul e și producția. Subagenții lucrează în paralel numai pe fișiere diferite și rulează
-doar teste pe fișiere individuale.
+în paralel: serverul e și producția.
 
-Subagenții (regulă permanentă a lui Costin, 26.10.2026): cel mult 2 în paralel, toți pe Sonnet 5.5; Opus numai dacă Costin
-îl cere explicit. Un subagent care nu a dat niciun rezultat după 1 oră se oprește, iar oprirea se raportează (ce rămăsese
-neterminat).
+R10. Testele legate de data de azi primesc un moment de referință fix în fixture, nu data calendarului.
 
 ## 6. Publicarea
 
@@ -151,11 +155,13 @@ G. Răspunsurile verificatorului, cuvânt cu cuvânt, ca anexă.
 Nimic altceva: fără rezumate ale propriilor teste, fără planuri de viitor, fără estimări. Pentru o decizie de produs, Code alege între
 timp varianta cea mai sigură pentru contabil și o listează la E.
 
+R4. Cronometru: pentru fiecare număr de deficiență notezi ora de început și de sfârșit; pentru fiecare poartă, durata exactă și verdictul. Raportul lotului dă pe fiecare număr durata și, la final, ore pe deficiență și ore în porți.
+
 Registre obligatorii la fiecare lot: DEFICIENTE.md, DECIZII.md (adăugare, nu rescriere), PREDARE_LANT.md
 (starea curentă). Celelalte registre se ating doar când lotul schimbă ce descriu.
 
 Singurul „OPRIT” (29.10.2026, regulă permanentă a lui Costin, înlocuiește forma din 25.10.2026) este cel final, după
-publicare: ultimul rând scris e „OPRIT — gata: lotul X publicat pe <commit>”, fără nimic după el. Înainte de publicare nu
+publicare: ultimul rând scris e „publicat <lot> pe <commit>” sau „OPRIT — gata: <lot>” (R1), fără nimic după el. Înainte de publicare nu
 se scrie „OPRIT”; singura oprire permisă acolo (risc pentru producție) se scrie cu motivul, nu cu „aștept”.
 
 ## 9. Reguli de produs
@@ -165,6 +171,10 @@ se scrie „OPRIT”; singura oprire permisă acolo (risc pentru producție) se 
 - Nimic precompletat sau afișat care poate induce în eroare contabilul.
 - Textele dau instrucțiuni directe, în limba contabilului, cu diacritice; fără termeni de programator.
 - Orice regulă vizuală stă în DESIGN_SYSTEM.md și în verificator; situații identice, soluții identice.
+
+R7. Un ecran e migrat numai când verificatorul de design dă TRECE pe toate rândurile criteriului „migrat” din promptul lui (bara de sus, fereastra de lucru cu bara de jos fixă, tabelul DS, card-rezumat și semnale pe rând, acțiune = buton, titluri și texte din catalog, funcția unică de format, cota TVA ca grup cu categorii). Un singur PICĂ înseamnă nemigrat. Pixelii (derulare, margini, text tăiat) nu înlocuiesc piesele.
+
+R8. Nicio reparație de aspect cu stil scris direct în ecran (inline style, sed pe un fișier de ecran). Defectul se repară o dată, în piesa sau clasa DS, și toate ecranele o iau. Dacă piesa lipsește din modele, o întrebi la F în raport, nu o inventezi.
 
 ## 10. Reguli tehnice (lecții plătite)
 
