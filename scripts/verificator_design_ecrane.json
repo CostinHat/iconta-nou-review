@@ -1,0 +1,1150 @@
+[
+ {
+  "nume": "De validat",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='validat'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Control fiscal",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='control'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Termene",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='termene'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Firme",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Sinteza zilei",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='brief'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Activitate",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Pachete lunare",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='pachete'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Supervizor",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='supervizor'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Capacitate",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='capacitate'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Consolidare",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='consolidare'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Asistenți",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='asistenti'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Setări cont",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='setari'])"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Firme existente",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "click": "#opt-existente"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Migrare cabinet",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "click": "#opt-migrare"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Declarații lucrate",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   },
+   {
+    "click": "#opt-jurnal"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Tipare de erori",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='activitate'])"
+   },
+   {
+    "click": "#opt-tipare"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Detaliu firmă F2",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='control'])"
+   },
+   {
+    "click": "button",
+    "text": "Deschide",
+    "index_rand": "F2 Profit"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Panou Admin — Raportări",
+  "nivel": "admin",
+  "pasi": [
+   {
+    "click": ".cab-card",
+    "text": "Raportări"
+   }
+  ],
+  "grup": "admin",
+  "utilizator": "superadmin"
+ },
+ {
+  "nume": "Panou Admin — Activitate cabinete",
+  "nivel": "admin",
+  "pasi": [
+   {
+    "click": ".cab-card",
+    "text": "Activitate cabinete"
+   }
+  ],
+  "grup": "admin",
+  "utilizator": "superadmin"
+ },
+ {
+  "nume": "Panou Admin — Anunțuri",
+  "nivel": "admin",
+  "pasi": [
+   {
+    "click": ".cab-card",
+    "text": "Anunțuri"
+   }
+  ],
+  "grup": "admin",
+  "utilizator": "superadmin"
+ },
+ {
+  "nume": "Panou Admin — Analytics",
+  "nivel": "admin",
+  "pasi": [
+   {
+    "click": ".cab-card",
+    "text": "Analytics public"
+   }
+  ],
+  "grup": "admin",
+  "utilizator": "superadmin"
+ },
+ {
+  "nume": "Panou Admin — Sănătate server",
+  "nivel": "admin",
+  "pasi": [
+   {
+    "click": ".cab-card",
+    "text": "Sănătate server"
+   }
+  ],
+  "grup": "admin",
+  "utilizator": "superadmin"
+ },
+ {
+  "nume": "Panou Admin — Invitații",
+  "nivel": "admin",
+  "pasi": [
+   {
+    "click": ".cab-card",
+    "text": "Invitații cabinete"
+   }
+  ],
+  "grup": "admin",
+  "utilizator": "superadmin"
+ },
+ {
+  "nume": "Panou Admin — Notificări",
+  "nivel": "admin",
+  "pasi": [
+   {
+    "click": ".cab-card",
+    "text": "Notificări"
+   }
+  ],
+  "grup": "admin",
+  "utilizator": "superadmin"
+ },
+ {
+  "nume": "Panou Admin — Înregistrare",
+  "nivel": "admin",
+  "pasi": [
+   {
+    "click": ".cab-card",
+    "text": "Înregistrare"
+   }
+  ],
+  "grup": "admin",
+  "utilizator": "superadmin"
+ },
+ {
+  "nume": "Facturi F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Stat de plată F5",
+  "nivel": "firma",
+  "firma": "F5",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Bonuri și chitanțe F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-bonuri"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Raport Z F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-raportz"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Stocuri F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Închidere lună F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-inchidere"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Casă F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "e-Transport F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-etransport"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Compensări F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-compensari"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Bancă F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-banca"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Magazin online F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-magazin"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Solicitări client F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-solicitari"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Registratură F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-registratura"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Registru jurnal F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Cartea mare F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-fisacont"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Registrul de evidență fiscală F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-regfiscal"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Registrul-inventar F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-reginventar"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Balanță de verificare F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-balanta"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Mijloace fixe F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Control fiscal (firmă) F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-control"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Bilanț anual F2",
+  "nivel": "firma",
+  "firma": "F2",
+  "pasi": [
+   {
+    "click": "#fa-bilant"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Verificări F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-verificari"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Rapoarte comerciale F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-rapoarte"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Jurnal regim marjă F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-marja"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Registre art. 321 F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-registre321"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Operațiuni speciale F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Produse F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-produse"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Clienți F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-clienti"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Furnizori F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-furnizori"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Parteneri F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-parteneri"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Acces client F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-acces"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Import date F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Date firmă F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-datefirma"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Contracte F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-contracte"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Plan de conturi F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-planconturi"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Centre de cost F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-centrecost"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Emite factură F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "click": "#fac-emite"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Istoric facturi F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "click": "#fac-istoric"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Scadențar F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "click": "#fac-scadentar"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Facturi primite F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "click": "#fac-primite"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Model factură F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "click": "#fac-model"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Facturi recurente F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "click": "#fac-recurente"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Fișa salariatului F5",
+  "nivel": "firma",
+  "firma": "F5",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "click": "button,tr,td",
+    "text": "Ionescu Ion"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Stat de plată F5"
+ },
+ {
+  "nume": "NIR nou F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "click": "#sn-toggle"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Mișcări și fișe de magazie F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "click": "#cv-toggle"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Analitică stoc F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "click": "#cv-toggle"
+   },
+   {
+    "click": "#cv-ana"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Borderou de achiziție F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-stocuri"
+   },
+   {
+    "click": "#s-borderou"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Registru încasări/plăți F4 + Operațiune nouă",
+  "nivel": "firma",
+  "firma": "F4",
+  "pasi": [
+   {
+    "click": "#fa-rip"
+   },
+   {
+    "click": "button",
+    "text": "Operațiune nouă"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Registru încasări/plăți F4",
+  "nivel": "firma",
+  "firma": "F4",
+  "pasi": [
+   {
+    "click": "#fa-rip"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Chirii / comodat / refacturări F2",
+  "nivel": "firma",
+  "firma": "F2",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "click": "button",
+    "text": "Chirii / comodat"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Casă — dispoziție nouă F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-casa"
+   },
+   {
+    "click": "#c-toggle"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Registru jurnal — notă nouă F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-jurnal"
+   },
+   {
+    "click": "#j-nota-noua"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Import date — Solduri inițiale F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "click": "button",
+    "text": "Solduri inițiale"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Import date — Audit de preluare F7",
+  "nivel": "firma",
+  "firma": "F7",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "click": "button",
+    "text": "Audit de preluare"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Mijloace fixe — Leasing F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-operatiuni"
+   },
+   {
+    "click": "button",
+    "text": "Leasing"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Declarații F1 pasul 1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   }
+  ],
+  "grup": "firma"
+ },
+ {
+  "nume": "Fluturaș F5",
+  "nivel": "firma",
+  "firma": "F5",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "cauta": "fluturaș"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Stat de plată F5"
+ },
+ {
+  "nume": "Certificat CM F5",
+  "nivel": "firma",
+  "firma": "F5",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "cauta": "certificat concediu medical"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Stat de plată F5"
+ },
+ {
+  "nume": "Pontaj F5",
+  "nivel": "firma",
+  "firma": "F5",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "cauta": "pontaj"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Stat de plată F5"
+ },
+ {
+  "nume": "Ore suplimentare F5",
+  "nivel": "firma",
+  "firma": "F5",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "cauta": "ore suplimentare"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Stat de plată F5"
+ },
+ {
+  "nume": "Import salariați F5",
+  "nivel": "firma",
+  "firma": "F5",
+  "pasi": [
+   {
+    "click": "#fa-salariati"
+   },
+   {
+    "cauta": "import salariați"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Stat de plată F5"
+ },
+ {
+  "nume": "Casare mijloace fixe F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-mijloace"
+   },
+   {
+    "cauta": "casare"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Mijloace fixe F1"
+ },
+ {
+  "nume": "Coada de declarații F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "cauta": "coada"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Declarații F1 pasul 1"
+ },
+ {
+  "nume": "Import date — Preluare F7",
+  "nivel": "firma",
+  "firma": "F7",
+  "pasi": [
+   {
+    "click": "#fa-import"
+   },
+   {
+    "click": "button",
+    "text": "Preluare"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Import date — Audit de preluare F7"
+ },
+ {
+  "nume": "Detaliu factură F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "cauta": "detaliu factură"
+   }
+  ],
+  "grup": "firma",
+  "acelasi_ca": "Facturi F1"
+ },
+ {
+  "nume": "Chei API",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='setari'])"
+   },
+   {
+    "click": "button",
+    "text": "Chei API"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Firmă nouă",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='firme'])"
+   },
+   {
+    "click": "button",
+    "text": "Firmă nouă"
+   }
+  ],
+  "grup": "cabinet",
+  "acelasi_ca": "Firme"
+ },
+ {
+  "nume": "Ghiduri",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "#nav-ghid"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Primii pași",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "cauta": "primii pași"
+   }
+  ],
+  "grup": "cabinet"
+ }
+]
