@@ -357,15 +357,17 @@ def test_def_c182_validarea_notei_fara_document_arata_liniile_si_le_tine_la_rede
     pg.wait_for_function(_LINII_INCARCATE, arg=fara, timeout=20000)
     la_intrebare = pg.evaluate(_DETALIU, fara)
     patron.captura("intrebarea_cu_liniile")
+    pg.click("#caseta-atentie-activa #ca-nu")   # [15.1, 446.1] întrebarea e fereastra mică a DS, peste tot: se închide cu „Renunță” înainte de a doua validare
+    pg.wait_for_selector("#caseta-atentie-activa", state="detached", timeout=10000)
     _card_nota(patron, firma_e2e, cu).first.locator(".tn-rand .val-aproba").click()
-    if pg.query_selector("#caseta-atentie-activa #ca-ok") and not pg.evaluate(_DETALIU, fara)["intrebare_in_detaliu"]:
-        pg.click("#caseta-atentie-activa #ca-ok")
+    pg.wait_for_selector("#caseta-atentie-activa #ca-ok", timeout=10000)
+    pg.click("#caseta-atentie-activa #ca-ok")
     pg.wait_for_function("() => ((document.querySelector('#val-confirmare') || {}).textContent || '').startsWith('Ai validat')", timeout=30000)
     pg.wait_for_timeout(500)
     dupa = pg.evaluate(_DETALIU, fara)
     patron.captura("dupa_redesenare")
     assert inchis is False
-    assert (la_intrebare["intrebare"], la_intrebare["intrebare_in_detaliu"]) == (INTREBAREA_FARA_DOC, True), la_intrebare
+    assert la_intrebare["intrebare"] == INTREBAREA_FARA_DOC, la_intrebare
     assert (la_intrebare["deschis"], la_intrebare["se_incarca"], la_intrebare["linii"]) == (True, False, [LINIA_ANEI]), la_intrebare
     assert (dupa["deschis"], dupa["se_incarca"], dupa["linii"]) == (True, False, [LINIA_ANEI]), dupa
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % firma_e2e["schema"], (nid_cu,)) == [("validata",)]

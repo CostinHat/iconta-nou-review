@@ -80,6 +80,8 @@ def test_def_276_banca_spune_formatele_si_compara_soldurile(patron, firma_e2e):
     factură e „Fără potrivire”, nu „Fără match”."""
     tag = "E2E276-%d" % time.time()
     pregateste_firma(patron, firma_e2e)
+    # extrasul e din octombrie: luna de preluare a firmei de test (luna creării ei) nu poate fi după el, altfel soldul contabil e „necunoscut”
+    sql('UPDATE "%s".firma_profil SET luna_preluare = %%s WHERE id = 1' % firma_e2e["schema"], ("2026-01-01",))
     patron.firma(firma_e2e["nume"])
     pg = patron.pg
     _card(patron, "banca", "#bk-fisier")
@@ -318,14 +320,14 @@ def test_def_289_certificatul_fara_drept_pe_cui_e_spus_exact_peste_tot(patron, f
         patron.firma(firma_e2e["nume"])
         pg = patron.pg
         pg.wait_for_selector("#firma-spv .spv-stare-text", timeout=20000)
-        linie = pg.inner_text("#firma-spv")
+        linie = " ".join(pg.text_content("#firma-spv").split())   # [15.1] semnal DS: detaliul stă pliat sub rezumat
         patron.captura("fereastra_firmei")
-        assert linie.startswith("SPV: fără drept pentru această firmă. " + asteptat) and "conectat" not in linie.replace(
+        assert linie.startswith("SPV: fără drept pentru această firmă") and " ".join(asteptat.split()) in linie and "conectat" not in linie.replace(
             "Certificatul conectat", "").replace("conectezi cabinetul", "").replace("Conectare SPV", ""), linie
         _deschide_factura(patron, firma_e2e, f["factura_id"])
         pg.click("#fd-spv")
         pg.click("#ca-ok")
-        pg.wait_for_function("(t) => (document.querySelector('#fd-spv-zona') || {innerText: ''}).innerText.includes(t)",
+        pg.wait_for_function("(t) => (document.querySelector('#fd-spv-zona') || {textContent: ''}).textContent.includes(t)",
                              arg=asteptat[:60], timeout=20000)
         pg.wait_for_selector("#fd-spv-zona [data-ecran-destinatie='conectare_spv']", timeout=20000)
         patron.captura("refuz_trimite")
@@ -431,7 +433,16 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
     assert (pg.input_value("#dec-trim"), pg.input_value("#dec-an")) == (perioada.group(1), perioada.group(2))
 
 
-def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_singura(patron, firma_e2e):
+@pytest.fixture()
+def firma_284(patron):
+    """[15.1] O firmă NOUĂ numai a probei 284: „1 notă nevalidată” numără doar nota facturii ei, nu ciornele lăsate de alte probe ale fișierului
+    în luna încheiată (de la 1 noiembrie luna încheiată e octombrie, în care sunt datate și celelalte probe)."""
+    from conftest import firma_noua
+    for f in firma_noua():
+        yield f
+
+
+def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_singura(patron, firma_284):
     """284. D300 / control: refuzul de la „Trimite în coadă” spunea „4 note nevalidate”, fără să le numească.
     Pașii administratorului: o factură emisă (nota ei e ciornă) -> Declarații -> D300 pe luna ei, încheiată -> „Trimite în coadă →”: refuzul
     numără nota („Diferența pe contul 4427 o explică 1 notă nevalidată”), iar butonul o numește, cu butonul spre ea; butonul deschide Registrul jurnal cu nota
@@ -440,13 +451,13 @@ def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_si
     from e2e_bloc_a import _api
     from e2e_bloc_c import _curata_coada, _declaratie_pas1, _trimite_si_asteapta
     from e2e_lot72_declaratii import LUNA, ZI   # [lotul 10, 383] luna în curs nu se generează: factura și D300 pe luna încheiată
-    pregateste_firma(patron, firma_e2e)
-    emite_api(patron, firma_e2e, data_emitere=ZI)
-    tid = firma_e2e["tenant_id"]
+    pregateste_firma(patron, firma_284)
+    emite_api(patron, firma_284, data_emitere=ZI)
+    tid = firma_284["tenant_id"]
     peste = sql("SELECT COALESCE(max(id), 0) FROM public.declaratii_coada")[0][0]
     pg = patron.pg
     try:
-        _declaratie_pas1(patron, firma_e2e["nume"], "d300", LUNA.an, luna=LUNA.luna)
+        _declaratie_pas1(patron, firma_284["nume"], "d300", LUNA.an, luna=LUNA.luna)
         _trimite_si_asteapta(patron)
         # [lotul 13, 515] textul refuzului îl spune caseta „NU s-a salvat.” de lângă buton; butoanele notelor stau în rândul de după zonă
         from e2e_lot11_g import butoane_refuz, text_langa_butoane
@@ -476,7 +487,7 @@ def test_def_284_refuzul_d300_numeste_nota_iar_dupa_validare_declaratia_intra_si
         notif = sql("SELECT text FROM public.notificari WHERE tip = 'declaratie_reluata' AND link = %s", ("validat:%d" % intrata[0][0],))
         assert notif and "notele au fost validate, declarația s-a generat din nou" in notif[0][0], notif
     finally:
-        sql("DELETE FROM public.notificari WHERE tip = 'declaratie_reluata' AND text LIKE %s", ("%" + firma_e2e["nume"] + "%",))
+        sql("DELETE FROM public.notificari WHERE tip = 'declaratie_reluata' AND text LIKE %s", ("%" + firma_284["nume"] + "%",))
         sql("DELETE FROM public.declaratii_in_asteptare WHERE tenant_id = %s", (tid,))
         _curata_coada(tid, peste)
 
@@ -568,7 +579,7 @@ def test_def_281_amortizarea_restanta_dintr_o_actiune_si_inchiderea_cu_confirmar
         _card(patron, f, "inchidere", "#il-prev")
         _la_luna(patron, "#il-prev", trecuta.year, trecuta.month)
         pg.wait_for_selector(".fereastra:last-of-type #il-lock-confirma", timeout=60000)
-        zona = pg.inner_text(".fereastra:last-of-type #il-controale")
+        zona = pg.text_content(".fereastra:last-of-type #il-controale")   # [15.1] detaliul semnalului e pliat: textul e în pagină, nu vizibil
         assert "Ce oprește închiderea (1)" in zona and "amortizarea lunilor anterioare nu e înregistrată pe contul 2813" in zona, zona
         assert "schimbă profitul (D100/D101)" in zona, zona
         patron.captura("blocaj_confirmabil")
