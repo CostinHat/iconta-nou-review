@@ -113,7 +113,7 @@ def test_428_in_sistem_4428_mentiunea_incasarea_d300_d394(conn_428):
 def test_428_factura_inainte_de_intrare_ramane_pe_4427_si_ecranul_o_spune(conn_428):
     from core import regim_tva_incasare as _rg, tva_incasare as _tvi
     with conn_428.cursor() as cur:
-        assert _rg.salveaza(cur, True, de_la="2026-11-01", user_id=1)["ok"]
+        assert _rg.salveaza(cur, True, de_la="2026-11-01", user_id=1, azi=_dt.date(2026, 10, 20))["ok"]
         msg = _tvi.regim_emitere_la(cur, None, _dt.date(2026, 10, 21))
     r = _emite(conn_428, "2026-10-21")
     # CF art.282 alin.(7) lit.a): factura emisă înainte de intrarea în sistem -> regulile generale: 4427, fără mențiune

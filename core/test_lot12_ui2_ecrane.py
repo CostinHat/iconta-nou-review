@@ -390,7 +390,7 @@ def test_def_621_balanta_rezumatul_lipit_ramane_mic_si_importul_are_buton(browse
         pg.close()
     assert not erori, erori
     assert m["rez"] <= 0.25 * m["corp"], m                       # „Casetele nu mănâncă tabelul”
-    assert randuri >= 10, randuri                                 # cât derulezi se văd cel puțin 10 rânduri (erau 2–3)
+    assert randuri >= 9, randuri                                  # cât derulezi se văd cel puțin 9 rânduri (erau 2–3; 10 înainte de marginea de 16 px, 15.1-D, D2)
     assert "Solduri inițiale" in titlu, titlu                     # „«Importă…» are butonul spre ecranul de import”
 
 

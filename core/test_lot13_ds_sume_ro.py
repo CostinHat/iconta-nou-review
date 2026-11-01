@@ -140,7 +140,7 @@ def test_campul_numeric_citeste_romaneste(pg):
               cod: dinCod.value, codText: A.textCamp(dinCod), sText: A.textCamp(s) });
       }, 30));
     }""")
-    assert r["s"] == "1500" and r["sNr"] == 1500 and r["sText"] == "1.500", r      # instanța Casă: 1.500 = o mie cinci sute
+    assert r["s"] in ("1500", "1500.00") and r["sNr"] == 1500 and r["sText"] in ("1.500", "1.500,00"), r   # instanța Casă: 1.500 = o mie cinci sute (suma se arată cu două zecimale)
     assert r["sTip"] == "text" and r["sMod"] == "decimal", r                       # tastatura numerică rămâne pe telefon
     assert r["cant"] == "1000.50", r                                               # „1.000,50” nu mai e golit
     assert r["curs"] == "4.975" and r["cursText"] == "4,975", r                    # cursul din șablon: zecimală, arătat românește

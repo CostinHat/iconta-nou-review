@@ -62,7 +62,7 @@ def test_tabelul_lung_deruleaza_in_zona_lui_nu_fereastra(browser, lat, inalt):
     assert m["corp_dep"] <= 1 and m["lateral"] <= 1, m
     assert m["cu_zona"] and m["zona_dep"] > 100 and m["zona_in_corp"], m                  # tabelul derulează în zona lui
     assert m["zona_h"] >= 0.3 * m["fer_h"] and m["actiune_vizibila"], m
-    assert m["fer_h"] >= inalt - 24 - 1, m                                               # fereastra ia ecranul minus 12 px pe margine
+    assert m["fer_h"] >= inalt - 32 - 1, m                                               # fereastra ia ecranul minus 16 px pe margine (15.1-D, D2)
     assert erori == []
 
 

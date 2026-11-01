@@ -50,11 +50,14 @@ def test_def_673_confirmarea_ramane_fereastra_mica_si_prima_fereastra_nu_se_schi
     r = pg.evaluate("""() => new Promise((rez) => {
       window._nav.deschide('Prima', (c) => { c.innerHTML = '<p class="ecran-nota">x</p>'; });
       const prima = [...document.querySelectorAll('.fereastra')].pop().className;
+      const prima0 = document.querySelector('.fereastra').className;
       window._nav.deschide('Confirmare', (c) => { c.innerHTML = '<p class="ecran-nota">Sigur?</p>'; }, { lat: 'mic' });
-      setTimeout(() => rez({ prima, mica: [...document.querySelectorAll('.fereastra')].pop().className,
+      setTimeout(() => rez({ prima, prima_dupa: document.querySelector('.fereastra').className, mica: [...document.querySelectorAll('.fereastra')].pop().className,
                              acum: !!document.querySelector('.fereastra .fir-acum') }), 80);
     })""")
-    assert "fer-lucru" not in r["prima"] and "fer-lucru" not in r["mica"], r
+    # 15.1-D4: orice fereastră de lucru ia ecranul; confirmarea rămâne mică, iar prima nu se schimbă când se deschide ea
+    assert "fer-lucru" in r["prima"] and "fer-lucru" not in r["mica"] and "fer-mic" in r["mica"], r
+    assert r["prima_dupa"] == r["prima"], r
 
 
 _LISTE = """() => new Promise((rez) => {

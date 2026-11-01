@@ -174,7 +174,7 @@ def test_9_sablonul_platitorului_alege_cota_si_categoria_pe_linie_ca_la_factura(
             "/produse/potriveste": {"ok": True, "cota": 21}, "/facturi-recurente": salveaza}
     pg, erori = _pagina(browser, rute, lat=1280, inalt=720)
     _deschide_sablonul(pg)
-    assert pg.eval_on_selector("#fr-l0-cota", "e => [e.tagName, [...e.options].map((o) => o.textContent)]") == ["SELECT", ["—", "21%", "11%", "0%"]]
+    assert pg.eval_on_selector("#fr-l0-cota", "e => [e.tagName, [...e.options].map((o) => o.textContent)]") == ["SELECT", ["—", "21%", "11%", "Fără TVA"]]   # 15.1 F-A.1: „Fără TVA” în grupul de cote
     assert pg.is_hidden("#fr-l0-categorie") and pg.is_hidden("#fr-c331")
     pg.fill("#fr-cui", "DE811907980")
     pg.dispatch_event("#fr-cui", "change")
