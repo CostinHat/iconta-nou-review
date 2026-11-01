@@ -85,8 +85,10 @@ Ordinea porții și oprirea la prima treaptă roșie (regulă permanentă, 31.10
 commit se rulează scripts/inainte_de_commit.sh (verificatorul de design și pytest-ul țintit pe fișierele atinse); poarta pornește numai dacă
 amândouă sunt verzi. Nu se editează arborele cât rulează poarta (verdictul ar deveni „arbore schimbat”).
 
-Sfârșitul turei (regulă permanentă, 31.10.2026): o tură nu se încheie niciodată cu o intenție („continui”, „urmează”, „aștept”) — se încheie
-doar cu „publicat zona X pe <commit>” sau „OPRIT — gata”. Dacă ai de așteptat o poartă, aștepți în aceeași tură, verificând logul la 10 minute.
+Sfârșitul turei (regulă permanentă, 31.10.2026, completată 01.11.2026; înlocuiește forma din 31.10.2026): o tură se încheie numai cu „publicat zona X pe <commit>”
+sau cu „OPRIT — gata”, niciodată cu o intenție („continui”, „urmează”, „aștept”) și niciodată cu un răspuns la o întrebare: o întrebare a lui Costin se
+răspunde în rând cu lucrul, iar lucrul continuă în aceeași tură. Dacă ai de așteptat o poartă, aștepți în aceeași tură cu o singură comandă shell care citește
+logul la 60 s și iese la verdict sau după 90 min (fără monitor), iar din log citești doar ultimele linii și liniile FAILED.
 
 Reluarea după roșu (regulă permanentă, 31.10.2026): la prima rulare a unei zone, „fișierele atinse” se socotesc față de main; la orice reluare după roșu,
 „atinse” înseamnă doar fișierele schimbate de la ultima rulare a porții (commitul ei se reține în scripts/poarta_ultima.txt, ignorat de git, scris

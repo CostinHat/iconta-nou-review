@@ -574,3 +574,29 @@ def test_def_d3_control_fiscal_lista_tabel_ds_si_titluri_fara_majuscule(patron, 
     pg.wait_for_selector(".cf-grup-titlu", timeout=60000)
     transformari = pg.eval_on_selector_all(".cf-grup-titlu", "es => [...new Set(es.map(e => getComputedStyle(e).textTransform))]")
     assert transformari == ["none"], transformari
+
+
+@pytest.mark.parametrize("cheie", ["validat", "termene", "firme", "activitate", "pachete", "supervizor", "capacitate", "consolidare", "asistenti", "setari", "brief"])
+def test_def_d4_ecranele_de_cabinet_sunt_ferestre_de_lucru_pe_tot_ecranul(patron, firma_b, cheie):
+    """D4: fiecare ecran de cabinet (De validat, Termene, Firme, Activitate, Pachete lunare, Supervizor, Capacitate, Consolidare, Asistenți, Setări cont, Sinteza zilei) e fereastră
+    de lucru pe tot ecranul (margine 16 px), cu bara de sus „Cabinet › numele ferestrei”, fără traseu și fără titluri de secțiune scrise cu majuscule."""
+    pg = patron.pg
+    patron.acasa()
+    pg.locator("button.cab-card:has([data-cheie='%s'])" % cheie).first.evaluate("e => e.click()")
+    pg.wait_for_selector(".fereastra-overlay:not(.fundal) .fereastra.fer-lucru", timeout=30000)
+    r = pg.eval_on_selector(".fereastra-overlay:not(.fundal) .fereastra", """async e => { await Promise.all(e.getAnimations().map((a) => a.finished));
+        const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.top), Math.round(b.width), innerWidth]; }""")
+    assert r[0] == 16 and r[1] == 16 and r[2] == r[3] - 32, r
+    bara = pg.inner_text(".fereastra-overlay:not(.fundal) .fereastra-fir")
+    assert bara.count("›") == 1 and bara.startswith("Cabinet"), bara
+    maj = pg.evaluate("""() => [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra-corp *')].filter((e) => e.offsetParent && e.children.length === 0
+        && (e.textContent || '').trim().length > 2 && getComputedStyle(e).textTransform === 'uppercase').map((e) => String(e.className).split(' ')[0])""")
+    assert maj == [], maj
+
+
+def test_def_d4_ecranele_din_panoul_admin_sunt_ferestre_de_lucru():
+    """D4: regula ferestrei de lucru e în navigator (fără excepție pe nivel): orice fereastră în afară de confirmare, notă și tabel ia ecranul."""
+    import re
+    src = open("static/js/navigator.js", encoding="utf-8").read()
+    m = re.search(r'fer\.classList\.toggle\("fer-lucru", ([^;]+)\);', src)
+    assert m and 'stiva.length' not in m.group(1) and all(x in m.group(1) for x in ('"mic"', '"tabel"', '"nota"')), m and m.group(1)

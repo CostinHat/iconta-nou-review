@@ -304,7 +304,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // fereastră, `{ lat: "mic" }` o ține mică (numai o confirmare). Deficiența 509 („ferestrele care își pierd alinierea … se redimensionează
     // să folosească ecranul”, ex. Marjă agenții de turism) e aceeași regulă: fereastra deschisă din fereastra firmei nu mai e de 680 px.
     const _lat = (sus.optiuni || {}).lat;
-    fer.classList.toggle("fer-lucru", _lat === "lucru" || (stiva.length > 1 && _lat !== "mic" && _lat !== "tabel" && _lat !== "nota"));
+    fer.classList.toggle("fer-lucru", _lat === "lucru" || (_lat !== "mic" && _lat !== "tabel" && _lat !== "nota"));   // [15.1-D4] orice fereastră de lucru, de la orice nivel (cabinet, Panou Admin, firmă), ia ecranul; numai confirmarea, nota și tabelul pe tot ecranul au regula lor
     fer.classList.toggle("fer-nota", _lat === "nota");
     fer.classList.toggle("fer-mic", _lat === "mic");   // [15.1, 673.1] nota deschisă dintr-o listă sau dintr-un document: fereastra ei, centrată, de 720 px
     if (pastrat) {   // [pct.1b] revenire la o fereastră în care omul lucra: elementul ei, nu o redesenare

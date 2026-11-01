@@ -915,7 +915,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .term-nr { color: #44516b; }
 .term-chev { color: var(--gri); }
 /* [P4] eticheta text 10px a starii gri (cap.8: bulina + eticheta text) pentru D390 pe perioada deschisa */
-.term-posibil { font-size: 10px; color: var(--gri); margin-left: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+.term-posibil { font-size: 13px; color: var(--gri); margin-left: 6px; }   /* [15.1-D4] fără majuscule */
 
 
 /* ---------- DE VALIDAT ---------- */
@@ -1139,7 +1139,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .ac-tabel .ac-rand, .ac-tabel .ac-cap {
   display:grid; grid-template-columns:130px 1fr 120px 1fr 1fr; gap:8px; align-items:center;
 }
-.ac-cap { font-size: var(--text-mic); text-transform:uppercase; letter-spacing:.04em; color:var(--gri); font-weight:600;   /* a11y: #8a8f98 = 3,3:1 (axe 06.10) */
+.ac-cap { font-size:20px; text-transform:none;  color:var(--gri); font-weight:600;   /* a11y: #8a8f98 = 3,3:1 (axe 06.10) */
           position:sticky; top:0; background:#fff; z-index:1; }
 .ac-cand { color:#5f5e5a; font-size:12.5px; }
 .ac-cine { font-weight:600; color:#22324f; }
@@ -1796,7 +1796,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 
 /* [p71_capacitate] ecran Capacitate */
 .cap-ecran { padding: 4px 2px; }
-.cap-titlu { font-size: var(--text); text-transform: uppercase; letter-spacing: .04em;
+.cap-titlu { font-size:20px; text-transform:none; 
   color: #6b6b6b;  /* a11y contrast 19.08: era #888=3.5:1 */ margin: 22px 0 10px; }
 .cap-titlu:first-child { margin-top: 4px; }
 .cap-cifre { display: flex; gap: 28px; flex-wrap: wrap; }
@@ -1818,7 +1818,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 
 /* [p72_tipare] ecran Tipare */
 .tip-ecran { padding: 4px 2px; }
-.tip-titlu { font-size: var(--text-mic); text-transform: uppercase; letter-spacing: .04em;
+.tip-titlu { font-size:20px; text-transform:none; 
   color: #888; margin: 22px 0 10px; }
 .tip-titlu:first-child { margin-top: 4px; }
 .tip-bara-cel { width: 120px; }
@@ -1830,7 +1830,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .sa-gazda { margin: 0 0 20px; }
 .sa-panou { display: flex; flex-direction: column; gap: 16px; }
 .sa-sectiune { background: #fff; border: 1px solid #b9c2cf; border-radius: 12px; padding: 16px 18px; }
-.sa-cap { font-size: var(--text-mic); text-transform: uppercase; letter-spacing: .05em; color: #999; font-weight: 600; margin-bottom: 12px; }
+.sa-cap { font-size: 20px; font-weight: 600; color: var(--ardezie); margin-bottom: 12px; }   /* [15.1-D4] titlu de secțiune DS: fără majuscule */
 .sa-cap-rand { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .sa-cap-rand .sa-cap { margin-bottom: 0; }
 .sa-cifre { display: flex; gap: 10px; flex-wrap: wrap; }
