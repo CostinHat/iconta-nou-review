@@ -3219,8 +3219,8 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
    ce e în afara tabelului (titlu, filtre, carduri-rezumat, acțiuni) are înălțimea lui, iar zona ia restul și derulează ea; antetul și
    totalul tabelului se lipesc în ea. Corpul rămâne `overflow-y: auto` numai ca plasă: o fereastră al cărei conținut din afara tabelului
    nu încape derulează în corp, iar verificatorul o prinde (`incape_ecran`). */
-.fereastra-overlay:has(.fereastra.fer-lucru), .fereastra-overlay:has(.fereastra.fer-tabel) { padding: 12px; }
-.fereastra.fer-tabel, .fereastra.fer-lucru { width: calc(100vw - 24px); max-width: calc(100vw - 24px); height: calc(100vh - 24px); max-height: calc(100vh - 24px); }
+.fereastra-overlay:has(.fereastra.fer-lucru), .fereastra-overlay:has(.fereastra.fer-tabel) { padding: 16px; }
+.fereastra.fer-tabel, .fereastra.fer-lucru { width: calc(100vw - 32px); max-width: calc(100vw - 32px); height: calc(100vh - 32px); max-height: calc(100vh - 32px); }
 .fereastra.fer-tabel .fereastra-corp, .fereastra.fer-lucru .fereastra-corp { flex: 1 1 0; min-height: 0; }   /* corpul ia restul ferestrei: zona de derulare are o înălțime de care să se agațe */
 .fereastra-corp.cu-zona { display: flex; flex-direction: column; }
 .fereastra-corp.cu-zona > :not(.lant-zona):not(.zona-derulare), .lant-zona > :not(.lant-zona):not(.zona-derulare) { flex: 0 0 auto; }
@@ -3275,7 +3275,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
    lățimi: XS 9 caractere, S 16, M 38, L jumătate, XL toată lățimea; eticheta 14 px pe un rând; eroarea 13 px sub câmp.
    ============================================================ */
 .ds-formular { display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; }
-.ds-grup { flex: 1 1 400px; min-width: 0; border: 1px solid var(--linie); border-radius: 12px; padding: 8px 16px 12px; background: var(--alb); }
+.ds-grup { flex: 1 1 400px; min-width: 0; border: 1px solid var(--linie); border-radius: 12px; padding: 8px 16px 8px; background: var(--alb); }
 .ds-grup-lat { flex-basis: 100%; }
 .ds-grup[hidden] { display: none; }
 .ds-grup-titlu { margin: 0 0 4px; font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--gri); }

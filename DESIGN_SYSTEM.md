@@ -653,7 +653,7 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   (coloane, file, carduri pliate pentru secundar, lățimea întreagă), nu se micșorează scrisul. Excepție: tabelele lungi (registre,
   balanțe) — se derulează doar tabelul, titlul, filtrele și acțiunile rămân fixe. Verificatorul face captura la ambele rezoluții și
   blochează lotul la orice derulare.”).** (1) **Măsura:** corpul ferestrei (`.fereastra-corp`) nu derulează la 1920 × 1080 și la 1366 × 768
-  (`scrollHeight` ≤ `clientHeight`, fără derulare laterală); fereastra de lucru ia ecranul minus 12 px (era 24). (2) **Excepția:** tabelul cel
+  (`scrollHeight` ≤ `clientHeight`, fără derulare laterală); fereastra de lucru ia ecranul minus 16 px (modelul DS, 15.1-D; era 12, înainte 24). (2) **Excepția:** tabelul cel
   mai înalt al ferestrei sau lista declarată `data-zona-derulare` (ex. „Ce oprește închiderea”) stă într-o zonă proprie de derulare
   (`.zona-derulare`, pusă de navigator — `navigator._zonaDerulare`; corpul devine coloană `.cu-zona`): titlul, filtrele, cardurile și
   acțiunile din afara ei au înălțimea lor, antetul și totalul tabelului se lipesc în zonă. Zona are cel puțin 30% din înălțimea ferestrei

@@ -24335,3 +24335,7 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 
 ## Comanda 15.1, zona D, tranșa D1 (01.11.2026)
 - Control fiscal de la cabinet (card, asistent, căutarea globală) se deschide cu `lat: "lucru"`: fereastră de lucru pe tot ecranul, nu fereastră mică la nivelul 1. Detaliu firmă era deja pe tot ecranul (nivelul 2). Verificator independent: NU TRECE înainte, TRECE după (runda 1). Test: `test_def_d1_control_fiscal_cabinet_pe_tot_ecranul`. Rest din lista zonei D rămâne netrecut în tranșa aceasta.
+
+## Comanda 15.1-D, punctele 1–2 (01.11.2026)
+- Marginea ferestrei de lucru e 16 px pe fiecare latură, în `static/stil.css` (`.fereastra-overlay:has(.fer-lucru, .fer-tabel)` padding 16 px; lățime și înălțime = ecranul minus 32 px), conform modelului DS. Verificator independent (măsurat în DOM): NU TRECE înainte (12 px), TRECE după (16 px, ambele rezoluții). `.ds-grup` pierde 4 px de padding jos (12→8) ca „decont” să încapă fără derulare la 1366×768 cu marginea nouă. Testele cu cifra veche (1342/744, 24) sunt aduse la model, nu slăbite: `test_lot10_fereastra_tabel.py`, `test_lot13_ds_ferestre.py`, `e2e_lot13_ds.py`, `DESIGN_SYSTEM.md`.
+- Fluturașul (deducerea personală ca reducere a bazei): nereprodusă — verificator independent: TRECE înainte; ecranul și PDF-ul arată deja „în calculul impozitului, scade baza (nu se reține): deducere personală”, în afara „Total rețineri”, fără minus (deficiența 411). Nimic reparat.

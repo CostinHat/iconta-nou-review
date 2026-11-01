@@ -239,8 +239,8 @@ _FEREASTRA_JS = """([cod, randuri, coloane, suma, cuTabel]) => {
 
 def test_fereastra_cu_tabelul_balantei_ia_ecranul_si_nu_deruleaza_lateral(pagina):
     o = pagina.evaluate(_FEREASTRA_JS, [_cod_lateste(), 80, 12, "1.234.567,89", True])
-    # „ferestrele cu tabele se deschid aproape pe tot ecranul”: [lotul 14, 687] 1366 - 2×12 = 1342, 768 - 2×12 = 744 (DS v2.105: marginea ferestrei 12 px)
-    assert (o["lat"], o["inalt"]) == (1342, 744), o
+    # „ferestrele cu tabele se deschid aproape pe tot ecranul”: [lotul 14, 687] 1366 - 2×16 = 1334, 768 - 2×16 = 736 (modelul DS: marginea ferestrei de lucru 16 px; 15.1-D)
+    assert (o["lat"], o["inalt"]) == (1334, 736), o
     # „niciodată lateral”: tabelul de 14 coloane cu sume de 7 cifre încape, strâns în trepte (măsurat: 1.654 px fără ele)
     # (clasele ferestrei, exact: lățită + ambele trepte de strângere — măsurat în Chromium, 1366×768)
     assert o["clase"] == ["fer-rupt", "fer-strans", "fer-tabel", "fereastra"] and o["sw"] <= o["cw"] + 1 and o["laterale"] == [], o
@@ -254,7 +254,7 @@ def test_fereastra_cu_tabelul_balantei_ia_ecranul_si_nu_deruleaza_lateral(pagina
 def test_un_tabel_care_incape_nu_e_strans(pagina):
     o = pagina.evaluate(_FEREASTRA_JS, [_cod_lateste(), 3, 3, "100,00", True])
     # fereastra tot ia ecranul (are tabel), dar tabelul nu e strâns degeaba: cuvintele scurte rămân întregi (331)
-    assert o["clase"] == ["fer-tabel", "fereastra"] and o["lat"] == 1342, o
+    assert o["clase"] == ["fer-tabel", "fereastra"] and o["lat"] == 1334, o
 
 
 def test_un_tabel_mediu_e_masurat_in_fereastra_lata_nu_in_timpul_latirii(pagina):

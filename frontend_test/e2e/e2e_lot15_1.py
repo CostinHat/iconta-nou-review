@@ -524,4 +524,4 @@ def test_def_d1_control_fiscal_cabinet_pe_tot_ecranul(patron, firma_b):
     pg.click("button.cab-card:has([data-cheie='control'])")
     pg.wait_for_selector(".fereastra-overlay:not(.fundal) .fereastra.fer-lucru", timeout=30000)
     r = pg.eval_on_selector(".fereastra-overlay:not(.fundal) .fereastra", "e => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.width), innerWidth]; }")
-    assert r[0] <= 16 and r[1] >= r[2] - 40, r
+    assert r[0] == 16 and r[1] == r[2] - 32, r   # 15.1-D: marginea ferestrei de lucru e 16 px, exact, pe fiecare parte
