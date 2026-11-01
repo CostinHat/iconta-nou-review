@@ -7,7 +7,8 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=ec2094fd4f";
+import { cardRezumat, listaCuCautare } from "../ds_piese.js?v=56a370e4aa";   // [15.1, F-A.1] caseta SPV de după emitere
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=9f24ba7549";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { textStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -200,7 +201,7 @@ export function htmlCotaLinie(id, l, cote, platitor) {
   if (!platitor) return `<span class="em-l-cota${clasaCotei(l.cota_tva)}" id="${id}" title="Cota TVA">${l.cota_tva == null ? "—" : l.cota_tva + "%"}</span>`;
   return `<select class="camp-input em-l-cota-sel${clasaCotei(l.cota_tva)}" id="${id}" aria-label="Cota TVA" data-butoane="" title="${l.cota_propusa == null ? "Cota TVA" : "Cota TVA — propusă: " + l.cota_propusa + "%"}">
              <option value="" data-alege${l.cota_tva == null ? " selected" : ""}>—</option>
-             ${cote.map((c) => `<option value="${c}"${l.cota_tva === c ? " selected" : ""}>${c}%</option>`).join("")}
+             ${cote.map((c) => `<option value="${c}"${l.cota_tva === c ? " selected" : ""}>${c === 0 ? "Fără TVA" : c + "%"}</option>`).join("")}
            </select>`;
 }
 // categoria de TVA a liniei cu cota 0% (la plătitor; lista vine de la server, `categorii_tva`), ascunsă cât cota nu e 0
@@ -850,6 +851,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // ramase supravietuiesc (sunt in model). Se re-leaga listenerii cu indici proaspeti.
   function deseneazaLinii() {
     zonaLinii.innerHTML = linii.map((_, i) => randLinie(i)).join("");
+    // [15.1, F-A.1] categoriile fără TVA (scutit cu / fără drept, taxare inversă, neimpozabil …): listă cu căutare, apare când e aleasă „Fără TVA”
+    zonaLinii.querySelectorAll(".em-l-categorie").forEach((c) => listaCuCautare(c, { gol: "Alege categoria fără TVA", cautare: "Caută categoria…" }));
     linii.forEach((_, i) => legaLinie(i));
     recalc();
   }
@@ -1242,6 +1245,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       if (r.vies_de_reverificat) reverificaVies(rez2, r.vies_de_reverificat);   // [lotul 13, C199 / 550] VIES n-a răspuns: reîncercarea
       if (btn) btn.textContent = "Emisă ✓";
       stergeCiorna(tenantId);   // [lotul 07.10 pct.2] emisă: ciorna și-a terminat rostul
+      { const zcEmisa = corp.querySelector("#em-ciorna"); if (zcEmisa) zcEmisa.innerHTML = ""; }   // [15.1, F-A.1] anunțul „Factura începută… a fost păstrată” nu rămâne după emitere
       ciornaPornita = false;
       // [391, retestul 19.10.2026: „după emitere (F1A7) e încă oferit «Renunță la factură», cu mesajul fals «Ce ai scris se șterge; nu se
       // emite nimic»”] factura e emisă: nu mai e nimic la care să renunți
@@ -1259,17 +1263,20 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       }
       const tSpv = stSpv ? textStareSpv(stSpv) : null;
       if (tSpv && tSpv.spreConectare) {
-        const z = document.createElement("div");
-        z.className = "caseta-atentie";
-        z.style.marginTop = "8px";
+        // [15.1, F-A.1] starea SPV de după emitere: card-rezumat de un rând („SPV: fără drept pentru această firmă” + „Deschide Conectare SPV”), explicația și
+        // termenul de transmitere pliate sub „▾ detalii” — nu un zid de text roșu
         // [307] termenul de 5 zile e al facturii OBLIGATORII (client stabilit / înregistrat în scopuri de TVA în România)
         const strain = ((corp.querySelector("#em-tara") || {}).value || "RO").toUpperCase() !== "RO"
           && !/^(RO|\d)/i.test(((corp.querySelector("#em-cui") || {}).value || "").trim());
-        z.innerHTML = `<div class="ca-mesaj">${esc(tSpv.text)} Factura emisă rămâne netrimisă în SPV; ${strain
+        const [scurtSpv, ...restSpv] = String(tSpv.text).split(/(?<=\.)\s+/);
+        const detaliiSpv = [restSpv.join(" "), "Factura emisă rămâne netrimisă în SPV; " + (strain
           ? "pentru un client care nu e stabilit în România, transmiterea în RO e-Factura nu e obligatorie (OUG 120/2021 art.10 alin.(1))."
-          : "termenul de transmitere e de 5 zile lucrătoare de la emitere (OUG 120/2021 art.10 alin.(7))."}</div>`;
+          : "termenul de transmitere e de 5 zile lucrătoare de la emitere (OUG 120/2021 art.10 alin.(7)).")].filter(Boolean).join(" ");
+        const z = cardRezumat({ text: scurtSpv.replace(/\.$/, ""), ton: "avertisment", detalii: detaliiSpv });
+        z.style.marginTop = "8px";
         rez2.appendChild(z);
-        butonSpreEcran(z, "conectare_spv", nav, tenantId, { clasa: "buton-secundar" });
+        const rand = z.querySelector(".ds-rezumat");
+        butonSpreEcran(rand, "conectare_spv", nav, tenantId, { clasa: "buton-secundar" });
       }
       // [418c / 410, DS cap.27] confirmarea emiterii rămâne pe ecran; istoricul se deschide la cererea omului, nu singur după 1,2 s
       if (opt.dupaEmitere) {

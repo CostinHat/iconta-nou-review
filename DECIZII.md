@@ -24325,3 +24325,10 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - 681.1: „istoric” duce la fereastra Facturi (cardul care conține Istoric facturi); când interogarea e un sinonim, rezultatele altor cuvinte comune se ascund.
 - Excepția gărzii [325] pentru F5 (725) se aplică și acum; `Ecran.acasa()` uită fereastra memorată.
 - Nelucrat în zona C, trecut la zona D / raport (E): Control fiscal și Detaliu firmă pe tot ecranul, Bilanț (citate OMFP, denumiri copiate brut), Registru jurnal ca tabel zebra, Reconciliere TVA (694.1 a), Balanța F8 (621), Mijloace fixe (162, 601.1), Tipare (575), Registrul de încasări/plăți F4 (702–704, 701), Pontaj (678), analitica de stoc (697), Istoric facturi ca tabel cu căutare (624), 685, 686, 683, 695.
+
+## Comanda 15.1, retestul zonei B (01.11.2026)
+- 673.2 / 446.2: ferestrele mici (nota, stornarea) se desenează peste fereastra anterioară, nu peste ecranul cabinetului: `navigator.js` păstrează overlay-ul de dedesubt cu clasa `.fundal` (inert, transparent la clic). Bara ferestrei mici nu poartă firma.
+- 634.2: titlul notei se curăță la afișare; nota validată rămâne neschimbată în bază (OMFP 1802/2014 pct.69), fără migrare.
+- 725.1: `restaurare.js` memorează un `drum` de selectori (butoane apăsate de om), nu un nume de ecran.
+- F-A.1 (etichetă din comandă, fără număr în registru): „Fără TVA” în grupul de cote, categorii cu listă de căutare, card SPV, întrebarea „Pleacă marfa?” o singură dată (`_refuzNevazut` ignoră `INTREABA_*`), anunțul ciornei golit după emitere.
+- 726: declarațiile datorate sunt butoane directe, restanțele întâi, apoi restul; în fiecare grup rămâne ordinea din listă.

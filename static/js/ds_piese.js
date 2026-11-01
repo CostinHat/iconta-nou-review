@@ -2,7 +2,7 @@
 // grupurile formularului (Document, Furnizor / Client, Sume, Descriere), lățimea câmpului după rol (XS 9, S 16, M 38, L jumătate, XL
 // toată lățimea) și cardul-rezumat de un rând cu detaliile pliate. Dimensiunile sunt în stil.css (`.ds-*`); aici stă numai alegerea
 // clasei, ca ecranele să nu mai aleagă singure lățimi și grupuri.
-import { esc, focusFaraSalt } from "./api.js?v=ec2094fd4f";
+import { esc, focusFaraSalt } from "./api.js?v=9f24ba7549";
 
 export const GRUPURI_FORMULAR = ["Document", "Furnizor / Client", "Sume", "Descriere"];
 
@@ -92,7 +92,7 @@ export function cardRezumat({ text, ton = "avertisment", detalii = "", actiune =
  *  `data-nume` (textul principal, în stânga), `data-motiv` (motivul scurt, în dreapta) și `data-detalii` (textul întreg, la clic);
  *  fără ele, textul opțiunii e textul principal. Opțiunile `disabled` se văd, dar nu se aleg; clicul pe ele arată detaliile.
  *  Nimic nu se deschide singur: lista se deschide la clic pe câmpul-titlu. Se redesenează când opțiunile select-ului se schimbă. */
-export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caută în listă…" } = {}) {
+export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caută în listă…", doarCare = null, ascuns = null } = {}) {
   if (!sel || sel.__lista) return null;
   sel.__lista = true;
   const cutie = document.createElement("div");
@@ -103,13 +103,14 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
   sel.setAttribute("aria-hidden", "true");
   let deschisa = false;
   let filtru = "";
-  const opt = () => [...sel.options].filter((o) => !o.hasAttribute("data-alege") && o.value !== "");
+  const opt = () => [...sel.options].filter((o) => !o.hasAttribute("data-alege") && o.value !== "" && (!doarCare || doarCare(o)));
   const text = (o) => (o.dataset.nume || o.textContent || "").trim();
   const alesTitlu = () => {
     const o = sel.options[sel.selectedIndex];
     return o && o.value ? text(o) : gol;
   };
   const deseneaza = () => {
+    cutie.hidden = sel.hidden || (ascuns ? !!ascuns() : false);   // lista urmează select-ul sursă: ascuns / arătat de ecran (ex. categoria cotei 0%)
     const randuri = [];
     let grup = null;
     for (const o of opt()) {
@@ -144,7 +145,7 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
       deseneaza();
     }));
   };
-  new MutationObserver(deseneaza).observe(sel, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "selected"] });
+  new MutationObserver(deseneaza).observe(sel, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "selected", "hidden"] });
   sel.addEventListener("change", deseneaza);
   deseneaza();
   return cutie;

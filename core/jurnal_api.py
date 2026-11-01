@@ -733,4 +733,15 @@ def note_fara_serie_lipita(cur, schema, nota_ids):
     out = {}
     for nid, _st, _d, camp, _vechi, nou in note_cu_serie_lipita(cur, schema, nota_ids):
         out.setdefault(nid, {})["document" if camp == "document_ref" else camp] = nou
+    # [15.1, 634.2 — datele existente] titlul notei scris înainte de reparația lui 634 (c) poartă „· altă livrare decât NIR-urile nelegate (confirmat)”:
+    # titlul e al documentului, nu al unei alegeri de pe ecran; nota validată nu se modifică (OMFP 1802/2014 pct.69), deci ecranul o arată curățată
+    from core.nir_legare import MENTIUNE_ALTA_LIVRARE_VECHE as _M
+    ids = [int(i) for i in (nota_ids or []) if i]
+    if ids:
+        p = ('"%s".' % str(schema).strip('"')) if schema else ""
+        cur.execute(f"SELECT id, descriere FROM {p}inregistrari WHERE id = ANY(%s) AND descriere LIKE %s", (ids, "%" + _M))
+        for r in cur.fetchall():
+            nid, descr = (r["id"], r["descriere"]) if isinstance(r, dict) else (r[0], r[1])
+            baza = out.get(nid, {}).get("descriere", descr)
+            out.setdefault(nid, {})["descriere"] = baza.replace(_M, "")
     return out

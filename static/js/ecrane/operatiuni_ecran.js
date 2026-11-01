@@ -1,9 +1,9 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=ec2094fd4f";
+import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=9f24ba7549";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
-import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=b8a15f7104";   // [15.1] piesele formularului grupat
-import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=6aba4a57c6";   // [15.1, 725] F5 readuce fereastra
+import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=56a370e4aa";   // [15.1] piesele formularului grupat
+import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=5bb0840a64";   // [15.1, 725] F5 readuce fereastra
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1, 721] ciorna formularului, pe server
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
@@ -557,7 +557,7 @@ export async function ecranOperatiuni(corp, nav, t) {
 
   const formular = (corpNou) => {
     if (corpNou) corp = corpNou;
-    memoreazaFereastra({ tenantId: t.id, nume: t.nume || t.denumire || "", ecran: "operatiuni", cheie: opCurenta.cheie });   // [15.1, 725] F5 readuce aceeași fereastră
+    memoreazaFereastra({ nume: t.nume || t.denumire || "", drum: ["#fa-operatiuni", `button[data-op="${String(opCurenta.cheie).replace(/[^\w-]/g, "")}"]`] });   // [15.1, 725] F5 readuce aceeași fereastră
     const ziAzi = dataIso();
     const camp = (c, clasaLat = "") => {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${[].concat(c.cond.val).join("|")}"` : "";
@@ -735,7 +735,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     };
     const btnSpre = corp.querySelector("#op-spre-emitere-buton");
     if (btnSpre) btnSpre.addEventListener("click", async () => {   // [C84] peste formular: „←” readuce operațiunea
-      const { randeazaEmitere } = await import("./emitere_ecran.js?v=ff34c195be");
+      const { randeazaEmitere } = await import("./emitere_ecran.js?v=a36c576fe8");
       nav.deschide("Emite factură", (c2) => randeazaEmitere(c2, nav, t.id, { inapoi: () => nav.inapoi() }));
     });
     opCurenta.campuri.filter((c) => c.tip === "select").forEach((c) =>
@@ -792,7 +792,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         zonaRefuz.innerHTML = "";
         zonaRefuz.appendChild(cardRezumat({ text: "Firma aplică TVA la încasare: factura furnizorului se înregistrează în Facturi primite.", ton: "eroare",
           detalii: r.refuz, actiune: { eticheta: "Deschide Facturi primite", laClic: async () => {
-            const { primiteSPV } = await import("./facturi_ecran.js?v=0c578ed45f");
+            const { primiteSPV } = await import("./facturi_ecran.js?v=76e5cf6b76");
             nav.deschide("Facturi primite", (c2) => primiteSPV(c2, nav, t.id, {}));
           } } }));
         inactiv(btn, "Nota nu se poate genera: factura se înregistrează în Facturi primite.");

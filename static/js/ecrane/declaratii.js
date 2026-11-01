@@ -6,8 +6,8 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare } from "../ds_piese.js?v=b8a15f7104";   // [15.1, 722] lista cu căutare
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=ec2094fd4f";
+import { listaCuCautare } from "../ds_piese.js?v=56a370e4aa";   // [15.1, 722] lista cu căutare
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=9f24ba7549";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
@@ -210,6 +210,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
         <span class="camp-eticheta">Tip declarație <span id="dec-ajutor"></span></span>
         <select id="dec-tip" class="camp-input">${optiuniTip()}</select>
       </label>
+      <div id="dec-datorate" class="ds-datorate"></div>
       <div id="dec-alte-zona">${butonAlte()}</div>
       <div id="dec-perioada">${randPerioada(per)}</div>
     </div>
@@ -221,7 +222,47 @@ ${S.firmaFixa ? "" : `      <label class="camp">
 
   const selFirma = corp.querySelector("#dec-firma");  // null cand firma e fixa [decl_firma_v1]
   const selTip = corp.querySelector("#dec-tip");
-  listaCuCautare(selTip, { gol: "Alege tipul declarației", cautare: "Caută declarația (D300, D394…)" });   // [15.1, 722] lista cu căutare pe lățimea ferestrei
+  // [15.1, 726] declarațiile datorate sunt butoane directe („D112 · 08/2026 · termen 25.09.2026 · restanță”), restanțele întâi; lista cu căutare (`listaCuCautare`)
+  // apare numai sub „Arată alte declarații”, pentru restul tipurilor
+  const _datorata = (o) => o.hasAttribute("data-an");
+  const _alteDeschise = () => { const b = corp.querySelector("#dec-alte"); return !!b && b.getAttribute("aria-expanded") === "true"; };
+  listaCuCautare(selTip, { gol: "Caută alte declarații", cautare: "Caută declarația (D300, D394…)", doarCare: (o) => !_datorata(o),
+    ascuns: () => [...selTip.options].some(_datorata) && !_alteDeschise() });
+  const zonaDat = corp.querySelector("#dec-datorate");
+  let toateDat = false;
+  const deseneazaDatorate = () => {
+    if (!zonaDat) return;
+    const _restanta = (o) => /restan/i.test(o.dataset.motiv || "");
+    // restanțele întâi, apoi restul declarațiilor datorate; în fiecare grup rămâne ordinea din listă
+    const dat = [...selTip.options].map((o, i) => [o, i]).filter(([o]) => _datorata(o)).sort((x, y) => Number(_restanta(y[0])) - Number(_restanta(x[0])) || x[1] - y[1]);
+    zonaDat.innerHTML = "";
+    if (!dat.length) return;
+    const limita = window.innerHeight < 800 ? 5 : 8;
+    dat.forEach(([o, i], k) => {
+      if (k >= limita && !toateDat) return;
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "buton-secundar ds-datorata" + (selTip.selectedIndex === i ? " buton-activ" : "");
+      b.setAttribute("aria-pressed", String(selTip.selectedIndex === i));
+      b.dataset.faraActiune = "alegerea declarației; generarea ei se face la „Continuă”";
+      b.textContent = (o.dataset.nume || o.textContent).trim() + (o.dataset.motiv ? " · " + o.dataset.motiv : "");
+      b.title = b.textContent;
+      b.addEventListener("click", () => { selTip.selectedIndex = i; selTip.dispatchEvent(new Event("change", { bubbles: true })); });
+      zonaDat.appendChild(b);
+    });
+    if (dat.length > limita && !toateDat) {
+      const restul = document.createElement("button");
+      restul.type = "button";
+      restul.className = "buton-secundar ds-datorate-inca";
+      restul.dataset.faraActiune = "arată restul declarațiilor datorate";
+      restul.textContent = `încă ${dat.length - limita} ▾`;
+      restul.addEventListener("click", () => { toateDat = true; deseneazaDatorate(); });
+      zonaDat.appendChild(restul);
+    }
+  };
+  new MutationObserver(deseneazaDatorate).observe(selTip, { childList: true, subtree: true });
+  selTip.addEventListener("change", deseneazaDatorate);
+  deseneazaDatorate();
   const cont = corp.querySelector("#dec-continua");
   const zonaP = corp.querySelector("#dec-perioada");
 

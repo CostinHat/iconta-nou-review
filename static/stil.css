@@ -2179,9 +2179,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .fd-storno-btn { cursor: pointer; white-space: nowrap; }
 .fd-storno-zona { margin-top: 8px; }
 .fd-storno-box .mig-buton { width: auto; margin-top: 0; }
-.fd-storno-box { max-width: 560px; background: #fdf3f3; border: 2px solid #d98c8c; margin: 14px 0; border-radius: var(--raza);
-  padding: 12px; background: #fdf3f3; max-width: 440px; }
-.fd-storno-avert { font-size: var(--text-mic); color: #7a2020; margin-bottom: 12px; line-height: 1.4; }
+.fd-storno-box { margin: 0; }   /* [15.1, 446.2] întrebarea de stornare stă în fereastra ei mică, fără casetă roșie */
+.fd-storno-avert { font-size: var(--text-mic); color: var(--ardezie); margin-bottom: 12px; line-height: 1.4; }   /* [15.1, 446.2] confirmarea nu e o casetă roșie */
 .fd-storno-actiuni { display: flex; gap: 8px; }
 
 /* ICRD_SOLICITARI_FRONT_V1 - chat solicitari client<->cabinet */
@@ -3395,3 +3394,10 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .ds-semnal-plie, .ds-semnale-inca { height: 28px; padding: 0 10px; font-size: 13px; border: 1px solid var(--linie); border-radius: 8px; background: var(--alb); cursor: pointer; }
 .ds-semnal-detalii { margin: 0 0 4px 16px; padding: 8px 12px; font-size: 14px; color: var(--ardezie); background: var(--fundal); border-radius: 8px; }
 .ds-semnal-cutie[hidden], .ds-semnal-detalii[hidden] { display: none; }
+/* DS 15.1 — fereastra mică stă peste fereastra de dedesubt (vizibilă, inertă), nu peste ecranul cabinetului */
+.fereastra-overlay.fundal { background: transparent; pointer-events: none; }
+.fereastra.fer-mic { width: 480px; max-width: calc(100vw - 32px); }
+/* DS 15.1 — declarațiile datorate: butoane directe, câte unul pe rând, text 44 px, restanța întâi */
+.ds-datorate { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin: 8px 0; }
+.ds-datorata, .ds-datorate-inca { height: 44px; padding: 0 16px; font-size: 16px; max-width: 100%; box-sizing: border-box; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; font-variant-numeric: tabular-nums; }
+.ds-datorata.buton-activ { color: #fff; background: var(--albastru); border-color: var(--albastru-inchis); }

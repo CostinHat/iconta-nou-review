@@ -3,12 +3,13 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=ec2094fd4f";  /* esc_nc27 */
+import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=5bb0840a64";   // [15.1, 725.1]
+import { noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=9f24ba7549";  /* esc_nc27 */
 import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
 import { randeazaStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=ff34c195be";
+import { randeazaEmitere, intrebarePleacaMarfa, intrebareDovadaTransport, arataAvertismenteEmitere, textDescarcare, textTvaIncasare, tvaDocument, clasaCotei, seteazaClasaCota, htmlCotaLinie, htmlCategorieLinie, optiuniMoneda, UM_SERVICIU } from "./emitere_ecran.js?v=a36c576fe8";
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444]
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
@@ -83,6 +84,7 @@ export function randeazaFacturi(corp, nav, tenantId, opt = {}) {
 
 // ---------- MENIU (Istoric / Emite / Model) ----------
 function meniuFacturi(corp, nav, tenantId, opt) {
+  uitaFereastra();   // meniul Facturi nu e un ecran de lucru de readus după F5
   if (nav.setInapoi) nav.setInapoi(undefined);
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
   const titluInapoi = opt.titluInapoi || "Înapoi";
@@ -634,6 +636,7 @@ export function etichetaSpv(f) {
 
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
 async function istoricFacturi(corp, nav, tenantId, opt) {
+  memoreazaFereastra({ nume: (() => { try { return (JSON.parse(sessionStorage.getItem("iconta_firma_in_lucru") || "null") || {}).nume || ""; } catch { return ""; } })(), drum: ["#fa-facturi", "#fac-istoric"] });   // [15.1, 725.1] F5 readuce Istoric facturi
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;

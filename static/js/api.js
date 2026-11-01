@@ -316,6 +316,8 @@ function _butonSpreEcran(eroare, cale) {
 function _faraSpatii(t) { return String(t || "").replace(/\s+/g, " ").trim(); }
 function _refuzNevazut(eroare, metoda, cale) {
   if (metoda === "GET") return;
+  // [15.1, F-A.1] o ÎNTREBARE a serverului („Pleacă marfa acum?”, `INTREABA_*`) nu e un refuz: ecranul o pune într-o casetă-poartă, deci nu mai apare și în bannerul roșu
+  if (eroare && eroare.detaliu && /^INTREABA_/.test(String(eroare.detaliu.cod || ""))) return;
   const m = String((eroare && eroare.mesaj) || "").trim();
   if (!m) return;
   setTimeout(() => {

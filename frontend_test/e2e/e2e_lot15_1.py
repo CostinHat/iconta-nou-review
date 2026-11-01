@@ -52,7 +52,7 @@ def _taiat(pg):
         s.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:' + c.font; s.textContent = txt; document.body.appendChild(s);
         const w = s.getBoundingClientRect().width; s.remove(); return w; };
       const rau = [];
-      for (const e of document.querySelectorAll('.fereastra:last-of-type .camp-input, .fereastra:last-of-type .camp-eticheta')) {
+      for (const e of document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra .camp-input, .fereastra-overlay:not(.fundal) .fereastra .camp-eticheta')) {
         if (!e.offsetParent) continue;
         if (e.scrollWidth > e.clientWidth + 1) rau.push(e.id || e.textContent.trim());
         if (e.tagName === 'SELECT' && !e.classList.contains('alegere-sursa')) {
@@ -147,30 +147,38 @@ def firma_b(patron):
 
 @pytest.mark.parametrize("lat,inalt", REZOLUTII)
 def test_def_722_tip_declaratie_lista_cu_cautare(patron, firma_b, lat, inalt):
-    """722: „Tip declarație” e listă cu căutare pe lățimea ferestrei, rânduri de 44 px, nimic tăiat, la ambele rezoluții."""
+    """722 / 726: declarațiile datorate sunt butoane directe („D300 · 10/2026 · termen 25.11.2026 · restanță”), fără „Alege tipul declarației”; lista cu căutare pe
+    lățimea ferestrei (rânduri de 44 px, nimic tăiat) apare numai sub „Arată alte declarații”."""
     from e2e_bloc_a import _card
     pg = patron.pg
     pg.set_viewport_size({"width": lat, "height": inalt})
     patron.firma(firma_b["nume"])
     _card(patron, "declaratii", "#dec-tip")
     pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.classList.contains('ds-lista-sursa') && !!s.nextElementSibling && s.nextElementSibling.classList.contains('ds-lista'); }", timeout=30000)
-    lista = pg.locator(".ds-lista")
-    assert lista.count() == 1
+    dat = pg.locator("#dec-datorate .ds-datorata")
+    if dat.count():
+        assert pg.eval_on_selector(".ds-lista", "e => e.hidden"), "lista cu căutare apare fără „Arată alte declarații”"
+        assert "Alege tipul declarației" not in pg.evaluate("() => document.body.innerText")
+        inalt_b = pg.eval_on_selector_all("#dec-datorate .ds-datorata", "es => es.map(e => Math.round(e.getBoundingClientRect().height))")
+        assert set(inalt_b) == {44}, inalt_b
+        text0 = dat.first.inner_text()
+        assert text0.upper().startswith("D") and "termen" in text0, text0
+        dat.first.evaluate("e => e.click()")
+        pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.value !== ''; }", timeout=15000)
+        pg.click("#dec-alte")
+        pg.wait_for_function("() => { const l = document.querySelector('.ds-lista'); return !!l && !l.hidden; }", timeout=15000)
     pg.click(".ds-lista-titlu")
     pg.wait_for_selector(".ds-lista-cauta", timeout=5000)
     cutie = pg.eval_on_selector(".ds-lista-panou", "e => { const r = e.getBoundingClientRect(); return [r.left, r.right, innerWidth]; }")
     assert cutie[0] >= 0 and cutie[1] <= cutie[2], cutie   # niciodată mai lată decât ecranul
     inalt_rand = pg.eval_on_selector_all(".ds-lista-rand", "es => es.map(e => Math.round(e.getBoundingClientRect().height))")
     assert inalt_rand and set(inalt_rand) == {44}, inalt_rand
-    nume = pg.locator(".ds-lista-rand .ds-lista-nume").all_inner_texts()
-    assert any(t.upper().startswith("D300") for t in nume), nume
-    # căutarea filtrează după nume
-    pg.fill(".ds-lista-cauta", "d394")
+    pg.fill(".ds-lista-cauta", "d104")
     filtrate = pg.locator(".ds-lista-rand .ds-lista-nume").all_inner_texts()
-    assert filtrate and all("D394" in t.upper() for t in filtrate), filtrate
+    assert filtrate and all("D104" in t.upper() for t in filtrate), filtrate
     patron.captura("l15_722_%d" % lat)
     pg.locator(".ds-lista-rand").first.evaluate("e => e.click()")   # un singur clic (Playwright reîncearcă un clic al cărui țintă dispare în handler)
-    pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.value === 'd394'; }", timeout=15000)   # ecranul se redesenează după alegere
+    pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.value === 'd104'; }", timeout=15000)   # ecranul se redesenează după alegere
     assert pg.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 1")
 
 
@@ -180,7 +188,7 @@ def test_def_fa_emite_factura_cota_grup_si_data(patron, firma_b):
     from e2e_bloc_a import _deschide_emiterea
     pg = patron.pg
     _deschide_emiterea(patron, firma_b["nume"])
-    titluri = pg.locator(".fereastra:last-of-type .em-eticheta").all_inner_texts()
+    titluri = pg.locator(".fereastra-overlay:not(.fundal) .fereastra .em-eticheta").all_inner_texts()
     assert [t.capitalize() for t in titluri[:3]] == ["Document", "Client", "Sume"], titluri   # CSS le afișează cu majuscule
     pg.fill("#em-l0-descriere", "Serviciu test")
     pg.fill("#em-l0-cantitate", "1")
@@ -209,7 +217,7 @@ def test_def_547_1_factura_primita_fara_butoanele_facturii_emise(patron, firma_b
     pg = patron.pg
     for b in ("#fd-email", "#fd-chitanta", "#fd-spv", "#fd-transforma", "#fd-storno", "#fd-saga"):
         assert pg.locator(b).count() == 0, "%s apare pe o factură primită" % b
-    fara_motiv = pg.evaluate("""() => [...document.querySelectorAll('.fereastra:last-of-type button')].filter((b) => b.offsetParent
+    fara_motiv = pg.evaluate("""() => [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra button')].filter((b) => b.offsetParent
         && (b.disabled || b.getAttribute('aria-disabled') === 'true') && !(b.getAttribute('data-motiv-inactiv') || b.title)).map((b) => b.textContent.trim())""")
     assert fara_motiv == [], fara_motiv
     patron.captura("l15_547_1")
@@ -224,11 +232,11 @@ def test_def_673_1_nota_se_deschide_in_fereastra_ei(patron, firma_b):
     pg = patron.pg
     pg.click("#fd-vezi-nota")
     pg.wait_for_selector("#fd-nota-linii", timeout=20000)
-    f = pg.eval_on_selector(".fereastra:last-of-type", "e => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.left + r.width / 2), innerWidth]; }")
+    f = pg.eval_on_selector(".fereastra-overlay:not(.fundal) .fereastra", "e => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.left + r.width / 2), innerWidth]; }")
     assert f[0] == 720 and abs(f[1] - f[2] / 2) <= 2, f   # 720 px, centrată
     assert "=" in pg.inner_text("#fd-nota-linii")
     patron.captura("l15_673_1")
-    pg.locator(".fereastra:last-of-type .nav-inapoi").click()
+    pg.locator(".fereastra-overlay:not(.fundal) .fereastra .nav-inapoi").click()
     pg.wait_for_selector("#fd-vezi-nota", timeout=15000)
 
 
@@ -384,13 +392,13 @@ def test_def_713_bara_de_sus_fara_traseu(patron, firma_b):
     """713 / 681.1 / 701: bara de sus arată numai firma în lucru (nume · CUI) și numele ferestrei curente, fără traseu; „←” face un pas înapoi."""
     pg = patron.pg
     _formular_chirie(patron, firma_b)
-    antet = pg.eval_on_selector(".fereastra:last-of-type .fereastra-antet", "e => e.innerText")
+    antet = pg.eval_on_selector(".fereastra-overlay:not(.fundal) .fereastra .fereastra-antet", "e => e.innerText")
     assert "CUI" in antet and "Chirii" in antet, antet
-    assert pg.locator(".fereastra:last-of-type .fir-veriga").count() == 0, "traseul (Firme › Firme existente › …) nu mai apare în bara de sus"
+    assert pg.locator(".fereastra-overlay:not(.fundal) .fereastra .fir-veriga").count() == 0, "traseul (Firme › Firme existente › …) nu mai apare în bara de sus"
     assert "Firme existente" not in antet and "Operațiuni speciale" not in antet, antet
-    pg.locator(".fereastra:last-of-type .nav-inapoi").click()
+    pg.locator(".fereastra-overlay:not(.fundal) .fereastra .nav-inapoi").click()
     pg.wait_for_function("() => !!document.querySelector(\"button[data-op='chirie']\")", timeout=20000)   # un pas înapoi: lista Operațiunilor
-    antet2 = pg.eval_on_selector(".fereastra:last-of-type .fereastra-antet", "e => e.innerText")
+    antet2 = pg.eval_on_selector(".fereastra-overlay:not(.fundal) .fereastra .fereastra-antet", "e => e.innerText")
     assert "Operațiuni speciale" in antet2 and "Chirii" not in antet2, antet2
 
 
@@ -419,12 +427,12 @@ def test_def_687_2_inchidere_luna_semnale_si_amortizare(patron, firma_b):
     pg.wait_for_selector("#il-lock", timeout=20000)
     pg.click("#il-prev")   # luna precedentă = blocată
     pg.wait_for_function("() => document.querySelector('#il-lock') && document.querySelector('#il-lock').textContent.includes('Deblochează')", timeout=20000)
-    text = pg.evaluate("() => document.querySelector('.fereastra:last-of-type').innerText")
+    text = pg.evaluate("() => document.querySelector('.fereastra-overlay:not(.fundal) .fereastra').innerText")
     assert "Nimic nu oprește închiderea lunii" not in text, "luna blocată spune că nimic nu oprește închiderea"
     assert pg.get_attribute("#il-amort", "aria-disabled") == "true" and pg.get_attribute("#il-amort", "data-motiv-inactiv")
     assert pg.inner_text("#il-amort-motiv").strip()
     assert pg.locator("#il-jurnal").count() == 1
-    assert pg.locator(".fereastra:last-of-type button.buton-primar:visible").count() == 1, "mai mult de o acțiune principală"
+    assert pg.locator(".fereastra-overlay:not(.fundal) .fereastra button.buton-primar:visible").count() == 1, "mai mult de o acțiune principală"
     derulare = pg.evaluate("() => [...document.querySelectorAll('.fereastra-corp, .ds-semnale-lista, #il-controale')].filter((e) => e.offsetParent && e.scrollHeight > e.clientHeight + 1 && getComputedStyle(e).overflowY !== 'visible' && e.id !== '').length")
     assert derulare == 0, "semnalele derulează intern"
     patron.captura("l15_687_1_a")
@@ -459,3 +467,51 @@ def test_def_724_restantele_din_termene_sunt_cele_din_control_fiscal():
         ev, _neev = FR._termene_una_firma({"id": f["tenant_id"], "nume": f["nume"], "cui": None}, ctx, azi, rest)
         din_termene = {(str(t["tip"]).lower(), t["an"], t.get("luna")) for t in ((ev or {}).get("termene") or []) if t.get("restanta")}
         assert din_termene <= rest, ("restanțe în Termene care nu sunt în Control fiscal", din_termene - rest)
+
+
+def test_def_673_2_nota_peste_fereastra_facturii_nu_peste_cabinet(patron, firma_b):
+    """673.2 / 446.2: fereastra mică (nota, 720 px) se deschide peste fereastra facturii, nu peste ecranul cabinetului; bara ei nu poartă firul de navigare."""
+    from e2e_lot13_fact import _ti_api
+    from e2e_bloc_a import _deschide_factura
+    fid = _ti_api(patron, firma_b, "TI-673-2")
+    _deschide_factura(patron, firma_b, fid)
+    pg = patron.pg
+    pg.click("#fd-vezi-nota")
+    pg.wait_for_selector("#fd-nota-linii", timeout=20000)
+    fundal = pg.locator(".fereastra-overlay.fundal")
+    assert fundal.count() == 1, "sub nota deschisă trebuie să se vadă fereastra facturii"
+    assert fundal.locator("#fd-vezi-nota").count() == 1, "fundalul nu e fereastra facturii"
+    assert fundal.get_attribute("inert") is not None
+    sus = pg.eval_on_selector(".fereastra-overlay:not(.fundal) .fereastra-antet", "e => e.innerText")
+    assert "Firme" not in sus and "›" not in sus, sus
+    pg.locator(".fereastra-overlay:not(.fundal) .fereastra .nav-inapoi").click()
+    pg.wait_for_selector("#fd-vezi-nota", timeout=15000)
+    assert pg.locator(".fereastra-overlay.fundal").count() == 0
+
+
+def test_def_725_1_f5_din_istoric_facturi_readuce_istoricul(patron, firma_b):
+    """725.1: Ctrl+R din Istoric facturi readuce Istoric facturi, nu ecranul cabinetului."""
+    pg = patron.pg
+    patron.firma(firma_b["nume"])
+    pg.click("#fa-facturi")
+    pg.click("#fac-istoric")
+    pg.wait_for_function("() => /Istoric/i.test(document.querySelector('.fereastra-overlay:not(.fundal) .fereastra-antet').innerText)", timeout=30000)
+    pg.reload(wait_until="domcontentloaded")
+    pg.wait_for_function("() => { const a = document.querySelector('.fereastra-overlay:not(.fundal) .fereastra-antet'); return !!a && /Istoric/i.test(a.innerText); }", timeout=60000)
+
+
+def test_def_726_declaratiile_datorate_sunt_butoane_directe(patron, firma_b):
+    """726: declarațiile datorate sunt butoane directe („D112 · 08/2026 · termen … · restanță”), restanțele întâi; fără „Alege tipul declarației” și fără casetă cu
+    derulare proprie; căutarea apare numai sub „Arată alte declarații”."""
+    from e2e_bloc_a import _card
+    pg = patron.pg
+    patron.firma(firma_b["nume"])
+    _card(patron, "declaratii", "#dec-tip")
+    pg.wait_for_selector("#dec-datorate", state="attached", timeout=30000)
+    texte = pg.locator("#dec-datorate .ds-datorata").all_inner_texts()
+    assert texte, "firma de test n-are declarații datorate"
+    assert "Alege tipul declarației" not in pg.evaluate("() => document.body.innerText")
+    restanta = ["restan" in t.lower() for t in texte]
+    assert restanta == sorted(restanta, reverse=True), "restanțele nu sunt toate înaintea celorlalte: %s" % texte
+    assert all("termen" in t for t in texte), texte
+    assert pg.eval_on_selector(".ds-lista", "e => e.hidden"), "căutarea apare fără „Arată alte declarații”"
