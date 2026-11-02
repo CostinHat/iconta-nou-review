@@ -78,8 +78,10 @@ def _rute(date, vector, asociati, cereri=None):
 _CORP = "() => [...document.querySelectorAll('.fereastra-corp')].pop()"
 # elementul e în zona vizibilă a ferestrei (între marginile corpului ei, sub nimic din bara lipită de jos)
 _IN_VEDERE = """(sel) => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(), e = c.querySelector(sel);
-  const r = e.getBoundingClientRect(), k = c.getBoundingClientRect(), b = c.querySelector('.bara-fixa');
-  const jos = b ? Math.min(k.bottom, b.getBoundingClientRect().top) : k.bottom; return r.top >= k.top && r.bottom <= jos; }"""
+  const r = e.getBoundingClientRect(), k = c.getBoundingClientRect(), b = c.querySelector('.bara-fixa:not(.fj-gol)'), j = c.querySelector('.fereastra-jos');
+  // [15.1-E2] marginea de jos a locului de lucru: mesajele (`.bara-fixa`) și bara de jos a ferestrei; o acțiune din bara de jos se vede dacă e în fereastră
+  const jos = e.closest('.fereastra-jos') ? k.bottom : Math.min(k.bottom, b ? b.getBoundingClientRect().top : k.bottom, j ? j.getBoundingClientRect().top : k.bottom);
+  return r.top >= k.top && r.bottom <= jos; }"""
 
 
 _FILA_ACTIVA = "() => { const b = [...document.querySelectorAll('.fereastra-corp')].pop().querySelector('.rap-tab-activ[data-fila]'); return b && b.dataset.fila; }"

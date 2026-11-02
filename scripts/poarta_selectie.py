@@ -79,6 +79,15 @@ def selecteaza():
         teste, incerte, _e2e, _front, _nev = S.selectie(atinse, "direct")
         for t in teste:
             pune(t, "atins de la ultima publicare")
+        # [15.1-E2] JS / CSS atins: testele de browser ale ecranelor (pytest care încarcă `/static/`) — derivarea din importuri nu le vede, iar cadrul
+        # ferestrei din 15.1-E2 a rupt 21 dintre ele fără ca poarta să le fi rulat (CLAUDE.md §5: „JS/CSS atins: e2e-ul ecranelor atinse”)
+        if any(a.startswith("static/") for a in atinse):
+            for f in sorted(glob.glob(os.path.join(RAD, "core", "test_*.py"))):
+                try:
+                    if re.search(r"playwright|chromium", open(f, encoding="utf-8").read()):
+                        pune(_rel(f), "browser: JS/CSS atins")
+                except OSError:
+                    pass
         harta = _harta()
         for a in atinse:
             for cheie, fisiere in harta:

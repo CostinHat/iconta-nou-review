@@ -3470,3 +3470,6 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .fereastra-corp:has(> .fereastra-jos) .pf-frand:has(> .ds-formular) .bara-fixa { min-height: 0; padding: 4px 16px 8px; }
 /* butonul principal inactiv din bara de jos (câmp obligatoriu gol): arată ca un buton inactiv, dar apăsat arată refuzul ecranului (cadru.js) */
 .fj-butoane .fj-principal[data-cadru-inactiv] { background: var(--gri-clar); cursor: default; transform: none; box-shadow: none; }
+.fj-motiv { flex: 1 1 0; overflow: hidden; }
+/* butoanele ecranului trecute în bară pierd așezarea lor locală (lățime întreagă, margini de sus / stânga puse pe clasă sau pe stil) */
+.fj-butoane > button { white-space: nowrap; width: auto !important; max-width: none !important; margin: 0 !important; flex: 0 0 auto; }

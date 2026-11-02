@@ -61,7 +61,7 @@ MASOARA = """() => {
   const deasupra = Math.round(rez.getBoundingClientRect().top - c.getBoundingClientRect().top);   // ce stă deasupra rezumatului
   c.scrollTop = 1e7;
   const r = (e) => e.getBoundingClientRect();
-  const principal = bara && bara.querySelector('button.mig-buton');
+  const principal = (bara && bara.querySelector('button.mig-buton')) || c.querySelector('.fereastra-jos button.mig-buton');   // [15.1-E2] acțiunea principală stă în bara de jos a ferestrei
   return {derulante: derul.map((e) => e.className || e.tagName), lateral: c.scrollWidth > c.clientWidth + 1,
           rez_sus: Math.round(r(rez).top - r(c).top), bara_jos: Math.round(r(c).bottom - r(bara).bottom),
           deruleaza, deasupra,

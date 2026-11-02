@@ -89,14 +89,24 @@ if [ -z "$DOAR_PLASA" ]; then
     case "$TOT" in *"TOTAL: 0"*) ;; *) rosu "verificator"; final ;; esac
     # 2. pytest țintit (întâi cele picate la ultima rulare)
     T_P0=$(date +%s)
-    # [15.1-E2, pct.1] fără teste picate memorate `--lf` ar rula tot suitul (11.553 de teste): treapta se sare, cu un rând în log
-    if [ -s .pytest_cache/v/cache/lastfailed ] && [ "$(tr -d ' \n' < .pytest_cache/v/cache/lastfailed)" != "{}" ]; then
-        "$PY" -m pytest -q --lf --lfnf=none > "$J/poarta_pytest_lf.log" 2>&1
+    # [15.1-E2, pct.1] picatele memorate se rulează PE NUME (`--lf` cu o memorie veche a rulat tot suitul, 11.553 de teste, 1 h 43 min, pe cod neschimbat);
+    # fără nicio nume memorat, treapta se sare, cu un rând în log
+    "$PY" - > "$J/poarta_lf_ids.txt" <<'PYE'
+import json, os
+p = ".pytest_cache/v/cache/lastfailed"
+d = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
+for k in d:
+    f = k.split("::")[0]
+    if os.path.isfile(f):
+        print(k)
+PYE
+    if [ -s "$J/poarta_lf_ids.txt" ]; then
+        tr '\n' '\0' < "$J/poarta_lf_ids.txt" | xargs -0 "$PY" -m pytest -q > "$J/poarta_pytest_lf.log" 2>&1
         RC=$?
-        case "$RC" in 0|5) ;; *) rosu "pytest --lf (picate la ultima rulare)" ;; esac
+        case "$RC" in 0|5) ;; *) rosu "pytest picate la ultima rulare" ;; esac
         tail -1 "$J/poarta_pytest_lf.log"
     else
-        echo "[poarta lot] pytest --lf: SARIT — niciun test picat memorat (fara asta --lf ar rula tot suitul)"
+        echo "[poarta lot] pytest picate la ultima rulare: SARIT — niciun test picat memorat"
     fi
     if [ -z "$ROSII" ]; then
         xargs "$PY" -m pytest -q -n "$NW" --dist loadfile < "$J/poarta_pytest_fisiere.txt" > "$J/poarta_pytest.log" 2>&1

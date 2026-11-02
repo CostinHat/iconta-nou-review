@@ -208,7 +208,7 @@ def test_def_617_cautarea_si_filtrul_de_stare(browser, cautat, stare, asteptat):
 
 def test_def_617_dupa_valideaza_ramane_pe_loc_cu_starea_noua_si_confirmarea(browser):
     """ROȘU înainte: „Validează” chema `deseneaza()` — fereastra trecea prin „Se încarcă…” și sărea sus (scrollTop 0), fără confirmare."""
-    stare = {"note": _note_jurnal()}
+    stare = {"note": _note_jurnal() + [_nota(i) for i in range(35, 47)]}   # [15.1-E2] rânduri și după cel validat: cu zona mai joasă (bara de jos), „mijlocul” nu mai cade la capătul listei, unde derularea se strânge singură
     pg, erori = _pagina(browser, _rute_jurnal(stare))
     try:
         _deschide_jurnal(pg)
@@ -377,7 +377,7 @@ def test_def_621_balanta_rezumatul_lipit_ramane_mic_si_importul_are_buton(browse
         pg.wait_for_timeout(100)
         # cât derulezi, rândurile de tabel care se văd între rezumat și bara de jos
         randuri = pg.evaluate("""() => { const c = (%s)(), rc = c.getBoundingClientRect(), rez = c.querySelector('.rezumat-fix').getBoundingClientRect();
-          const bara = [...c.querySelectorAll('.bara-fixa')].pop().getBoundingClientRect();
+          const bara = (c.querySelector('.fereastra-jos') || [...c.querySelectorAll('.bara-fixa')].pop()).getBoundingClientRect();   // [15.1-E2] bara de jos a ferestrei
           return [...c.querySelectorAll('table.fd-tabel tbody tr')].filter((r) => { const b = r.getBoundingClientRect();
             return b.top >= rez.bottom - 1 && b.bottom <= Math.min(bara.top, rc.bottom) + 1; }).length; }""" % _CORP)
         pg.evaluate("() => { (%s)().scrollTop = 0; }" % _DERULANT)

@@ -10,7 +10,7 @@ import { api, esc, arataMesaj } from "../api.js?v=34dd3552eb";
 // [320] butoanele cardurilor: fiecare deschide ecranul REAL (aceleași funcții ca meniul aplicației)
 async function deschide(cheie, nav, laSchimbare) {
   if (cheie === "migrare") {
-    const { randeazaMigrare } = await import("./migrare.js?v=e84f2be14e");
+    const { randeazaMigrare } = await import("./migrare.js?v=65855075af");
     nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" });
   } else if (cheie === "suport_import") {
     // banda „Suport” de pe pagina principală, apoi fila „Cerere import din altă aplicație”

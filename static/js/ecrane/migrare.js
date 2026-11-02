@@ -118,7 +118,8 @@ function _arataFirma(corp, date, nav) {
 }
 function _confirmaInLoculButonului(zona, mesajHtml, textOk, laConfirm) {
   const bara = zona.closest(".bara-fixa");
-  const buton = bara ? bara.querySelector("button.mig-buton") : null;
+  const corp = zona.closest(".fereastra-corp");
+  const buton = (bara && bara.querySelector("button.mig-buton")) || (corp && corp.querySelector(".fereastra-jos button.mig-buton")) || null;   // [15.1-E2] butonul principal stă în bara de jos a ferestrei
   if (buton) buton.hidden = true;
   confirmaCaseta(zona, mesajHtml, () => { if (buton) buton.hidden = false; laConfirm(); }, { textOk });
   const nu = document.getElementById("ca-nu");

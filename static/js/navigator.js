@@ -335,7 +335,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       // panou — „Conectare SPV” apărea de două ori); clasa: orice ecran care se încarcă într-un copil și își pune singur titlul
       const pus = _corp.querySelector(":scope > h2[data-titlu-pus]");
       if (pus && _corp.querySelectorAll("h2").length > 1) pus.remove();
-      if (!_corp.querySelector("h2") && (sus.titluCurent || sus.titlu) && _corp.children.length) {
+      if (!_corp.querySelector("h2") && (sus.titluCurent || sus.titlu) && [..._corp.children].some((x) => !x.matches(".fereastra-jos"))) {
         const h = document.createElement("h2");
         h.dataset.titluPus = "navigator";
         h.className = "pf-titlu";
@@ -400,7 +400,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         const [s, n] = Object.entries(semn).sort((a, b) => b[1] - a[1])[0];
         if (/optiune|card/.test(s) || e.closest("[data-fara-zona]")) continue;
         if (e !== _corp && e.querySelector("input:not([type=hidden]), select, textarea")) continue;   // o listă cu câmpuri (bife, formular) nu e „date de derulat”   // grilele de meniu și containerele marcate `data-fara-zona` (grila câmpurilor unui formular) nu sunt date de derulat   // grilele de meniu (butoane-card ale ferestrei firmei) nu sunt date de derulat
-        if (n >= 8 && e.offsetHeight >= 200) candidate.push(e === _corp ? { corp: true, semn: s } : e);
+        if (n >= 8 && (e.offsetHeight >= 200 || e.classList.contains("zona-derulare"))) candidate.push(e === _corp ? { corp: true, semn: s } : e);
       }
       if (!candidate.length) { if (lucru) _corp.classList.remove("cu-zona"); return; }
       const cuInaltime = candidate.filter((x) => !x.corp);
@@ -468,7 +468,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       if (e.target.closest("td, .tn-detaliu, .pf-frand, .val-card, .mig-sold-rand, li") && !e.target.closest(".rezumat-fix"))
         _clicPeRand = { la: Date.now(), sus: _derulant().scrollTop };
     }, true);
-    const _seIncarca = () => { const k = [..._corp.children].filter((x) => !x.matches("h2[data-titlu-pus]"));
+    const _seIncarca = () => { const k = [..._corp.children].filter((x) => !x.matches("h2[data-titlu-pus], .fereastra-jos"));
       return k.length === 1 && k[0].matches("p.ecran-nota"); };
     let _zonaCurenta = null;
     const _derulare = () => {
