@@ -3456,3 +3456,17 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel thead th, .fereastra.fer-tabel .fereastra-corp .zona-derulare .mig-sold-tabel .ac-cap { top: 0; }
 /* titlul ferestrei de lucru: rând de 48 px, text de 20 px semibold (DS, secțiunea 1) */
 .fereastra.fer-lucru .fereastra-corp > h2.pf-titlu, .fereastra.fer-tabel .fereastra-corp > h2.pf-titlu { min-height: 48px; margin: 0; display: flex; align-items: center; font-size: 20px; font-weight: 600; }
+/* Operațiuni speciale: categoriile pe coloane de cel puțin 240 px (la 1366 × 768 încap cinci, fereastra rămâne fără derulare sub bara de jos) */
+.op-coloane { columns: 300px; column-gap: 12px; }
+.op-categorie { display: block; break-inside: avoid; margin-bottom: 8px; background: var(--fundal); border: 1px solid var(--linie); border-radius: var(--raza); padding: 8px 12px; }
+.op-butoane { display: flex; flex-wrap: wrap; gap: 8px; }
+/* rândurile ferestrei de lucru stau pe grila de 8 px: nicio distanță între titlu, rezumat, file și conținut peste 8 px (DS, secțiunea 1); marginea de sus a corpului o dă rândul titlului */
+.fereastra.fer-lucru .fereastra-corp, .fereastra.fer-tabel .fereastra-corp { padding-top: 8px; }
+.fereastra.fer-lucru .fereastra-corp > .pf-intro, .fereastra.fer-tabel .fereastra-corp > .pf-intro { margin-bottom: 8px; }
+.fereastra.fer-lucru .fereastra-corp > .sir-carduri, .fereastra.fer-tabel .fereastra-corp > .sir-carduri { margin: 0 0 8px; }
+.fereastra.fer-lucru .fereastra-corp > .rap-tabs, .fereastra.fer-tabel .fereastra-corp > .rap-tabs { margin-bottom: 8px; }
+.fereastra-corp .bara-fixa.fj-gol { display: none; }
+/* bara de jos a formularului e acum a ferestrei (cadru.js): zona de mesaje de deasupra ei nu mai ține loc de 72 px */
+.fereastra-corp:has(> .fereastra-jos) .pf-frand:has(> .ds-formular) .bara-fixa { min-height: 0; padding: 4px 16px 8px; }
+/* butonul principal inactiv din bara de jos (câmp obligatoriu gol): arată ca un buton inactiv, dar apăsat arată refuzul ecranului (cadru.js) */
+.fj-butoane .fj-principal[data-cadru-inactiv] { background: var(--gri-clar); cursor: default; transform: none; box-shadow: none; }

@@ -36,10 +36,10 @@ ROSU = {"rgb(253, 243, 243)", "rgb(217, 140, 140)", "rgb(252, 232, 230)", "rgb(1
 
 MASOARA = """() => {
   const c = [...document.querySelectorAll('.fereastra-corp')].pop();
-  const rez = c.querySelector('.rezumat-fix'), bara = c.querySelector('.bara-fixa'), th = c.querySelector('table thead');
+  const rez = c.querySelector('.rezumat-fix'), bara = c.querySelector('.fereastra-jos') || c.querySelector('.bara-fixa'), th = c.querySelector('table thead');   // [15.1-E2] bara de jos a ferestrei (cadru.js)
   const r = (e) => e.getBoundingClientRect();
   c.scrollTop = 1e7;
-  const sus = Math.max(r(rez).bottom, th ? r(th).bottom : 0), jos = Math.min(r(bara).top, r(c).bottom);
+  const sus = Math.max(r(rez).bottom, th ? r(th).bottom : 0), jos = Math.min(...[...c.querySelectorAll('.bara-fixa, .fereastra-jos')].filter((e) => e.offsetParent).map((e) => r(e).top), r(c).bottom);
   const tb = c.querySelector('table tbody'), tot = tb ? r(tb).height : 0;
   const cas = document.querySelector('#caseta-atentie-activa');
   const cutie = cas && cas.firstElementChild, st = cutie && getComputedStyle(cutie);

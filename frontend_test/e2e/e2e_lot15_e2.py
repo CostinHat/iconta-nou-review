@@ -31,7 +31,7 @@ def _masuri(pg):
         fir: ant.querySelector('.fereastra-fir').innerText.replace(/\\s+/g, ' ').trim(), separatori: ant.querySelectorAll('.fir-sep').length, verigi: ant.querySelectorAll('.fir-veriga').length,
         jos: jos && r(jos), jos_ultimul: !!jos && corp.lastElementChild === jos,
         jos_jos: jos && Math.round(F.getBoundingClientRect().bottom - jos.getBoundingClientRect().bottom),
-        principale: pr && pr.map((b) => [b.innerText.trim(), r(b)[1], b.disabled]), renunta: ren && [ren.innerText.trim(), r(ren)[1]],
+        principale: pr && pr.map((b) => [b.innerText.trim(), r(b)[1], b.disabled || !!b.dataset.cadruInactiv]), renunta: ren && [ren.innerText.trim(), r(ren)[1]],
         motiv: jos && jos.querySelector('.fj-motiv').innerText.trim() }; }""")
 
 

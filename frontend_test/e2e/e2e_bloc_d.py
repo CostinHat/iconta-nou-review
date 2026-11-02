@@ -676,7 +676,7 @@ def test_def_109_dupa_prima_ciorna_veche_se_inlocuieste_si_merge_la_validare(asi
     pg.wait_for_selector(".fereastra:last-of-type #sp-contare-scrie", timeout=30000)
     pg.click(".fereastra:last-of-type #sp-contare-scrie")
     pg.wait_for_function("() => { const z = [...document.querySelectorAll('.fereastra')].pop().querySelector('#sp-contare-zona');"
-                         " return z && !z.querySelector('#sp-contare-scrie'); }", timeout=30000)
+                         " return z && !document.querySelector('.fereastra:last-of-type #sp-contare-scrie'); }", timeout=30000)
     s = firma_sal["schema"]
     vechi = sql('SELECT id FROM "%s".inregistrari WHERE status = \'ciorna\' AND sursa = \'salarii\'' % s)
     assert len(vechi) == 1, vechi

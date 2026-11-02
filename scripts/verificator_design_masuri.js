@@ -79,7 +79,7 @@
     b.butoane_principale = principale.length;
     if (principale.length !== 1) pica.b.push("bara de jos are " + principale.length + " butoane principale, nu unul");
     if (!butoane.some((x) => norm(x.innerText) === "Renunță")) pica.b.push("bara de jos nu are „Renunță”");
-    const dez = principale.filter((x) => x.disabled);
+    const dez = principale.filter((x) => x.disabled || x.dataset.cadruInactiv);
     b.principal_inactiv_fara_motiv = dez.filter((x) => !(x.title || x.getAttribute("aria-describedby") || bj.querySelector(".bara-motiv"))).length;
     if (b.principal_inactiv_fara_motiv) pica.b.push("butonul principal inactiv fără motiv");
   }

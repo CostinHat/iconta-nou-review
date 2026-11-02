@@ -41,7 +41,7 @@ def test_def_448_ciorna_salariilor_depasita_se_reface_din_stat_si_se_valideaza(p
     pg.wait_for_selector(_F + "#sp-contare-scrie", timeout=30000)
     pg.click(_F + "#sp-contare-scrie")
     pg.wait_for_function("() => { const z = [...document.querySelectorAll('.fereastra')].pop().querySelector('#sp-contare-zona');"
-                         " return z && !z.querySelector('#sp-contare-scrie'); }", timeout=30000)
+                         " return z && !document.querySelector('.fereastra:last-of-type #sp-contare-scrie'); }", timeout=30000)
     vechi = _ciorne_salarii(s)
     assert len(vechi) == 1 and float(vechi[0][1]) == 5000.0, vechi
     nid = vechi[0][0]

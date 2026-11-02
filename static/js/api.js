@@ -670,10 +670,18 @@ function _etichetaCamp(inp) {
 // (`{txt}`) intră cu textul ei. Gard: verificator ERORI_TOATE (fără „motivul e mai”) + e2e `test_def_440_*`.
 // [lotul 13, plasa 410] butonul pus DIRECT în bara fixă (`.bara-fixa`, jos în fereastră) își ține caseta în bara însăși: rândul lui e butonul, nu bara
 // (altfel caseta ajungea după bară, la capătul conținutului, la sute de pixeli de buton, în afara ferestrei vizibile)
-function _randButon(b) { return b.parentElement && !b.parentElement.matches(".fereastra-corp, .bara-fixa, body") ? b.parentElement : b; }
+// [15.1-E2] butonul principal stă în bara de jos a ferestrei (`.fereastra-jos`, cadru.js): caseta lui stă DEASUPRA barei, în zona de mesaje (`.bara-fixa`), nu în bară
+function _randButon(b) { return b.closest(".fereastra-jos") || (b.parentElement && !b.parentElement.matches(".fereastra-corp, .bara-fixa, body") ? b.parentElement : b); }
+function _puneLangaButon(rand, box) {
+  if (!rand.matches(".fereastra-jos")) { rand.insertAdjacentElement("afterend", box); return; }
+  let zona = rand.previousElementSibling;
+  if (!zona || !zona.matches(".bara-fixa")) { zona = document.createElement("div"); zona.className = "bara-fixa"; rand.before(zona); }
+  zona.appendChild(box);
+}
 function _langaButon(zona, b) {
   const rand = _randButon(b);
   if (rand.contains(zona)) return true;
+  if (rand.matches(".fereastra-jos")) { const z = rand.previousElementSibling; return !!z && z.matches(".bara-fixa") && z.contains(zona); }   // [15.1-E2] zona de mesaje de deasupra barei
   // vecinul imediat al rândului butonului (sus sau jos; caseta însăși și elementele goale nu se numără) ține zona
   const vecin = (el, dir) => {
     let x = el[dir];
@@ -703,7 +711,7 @@ export function refuzSalvare({ camp = null, txt = "", mesaj = null } = {}) {
     box.className = "refuz-salvare";
     box.setAttribute("role", "alert");
     box.innerHTML = '<b>NU s-a salvat.</b><ul class="refuz-salvare-lista"></ul>';
-    _randButon(b).insertAdjacentElement("afterend", box);
+    _puneLangaButon(_randButon(b), box);
     b._refuz = box;
   }
   const lista = box.querySelector(".refuz-salvare-lista");

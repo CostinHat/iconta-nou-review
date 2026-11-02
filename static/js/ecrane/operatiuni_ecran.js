@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=9f24ba7549";
+import { api, ultimaCerere, activ, inactiv, dataRo, cate, cantitate, esc, bani, arataMesaj, semnAjutor, dataIso, stareNota, pasNota, eroareCamp, curataEroriCamp, dupaGenerare, noteGenerate } from "../api.js?v=34dd3552eb";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { formularGrupat, actualizeazaGrupe, cardRezumat } from "../ds_piese.js?v=081e2a850b";   // [15.1] piesele formularului grupat
 import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=5bb0840a64";   // [15.1, 725] F5 readuce fereastra
@@ -520,11 +520,11 @@ export async function ecranOperatiuni(corp, nav, t) {
       ${GRUPURI.map(([frecventa, , intro], i) => `
         <section class="op-grup" data-frecventa="${frecventa}" role="tabpanel"${i ? " hidden" : ""}>
           ${i ? `<p class="ecran-nota">${esc(intro)}</p>` : ""}
-          <div style="columns:300px;column-gap:12px">
+          <div class="op-coloane">
           ${CATEGORII.filter((cat) => REGISTRU.some((o) => o.cat === cat && o.frecventa === frecventa)).map((cat) => `
-            <div class="op-categorie" style="display:block;break-inside:avoid;margin-bottom:10px;background:var(--fundal);border:1px solid var(--linie);border-radius:var(--raza);padding:10px 14px">
+            <div class="op-categorie">
               <div class="ds-grup-titlu">${esc(cat)}</div>   <!-- [15.1-D] titlul de grup al DS: 14 px, majuscule, gri -->
-              <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <div class="op-butoane">
                 ${REGISTRU.filter((o) => o.cat === cat && o.frecventa === frecventa).map((o) =>
                   `<button class="buton-secundar" data-op="${o.cheie}" data-actiune="${actiuneOp(o)}">${esc(o.titlu)}</button>`).join("")}
               </div>

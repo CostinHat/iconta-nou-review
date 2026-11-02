@@ -43,19 +43,31 @@ function _alege(corp, bara) {
   if (marcat) return marcat;
   const fixe = [...corp.querySelectorAll(".bara-fixa .buton-primar")].filter((b) => b.tagName === "BUTTON");
   if (fixe.length) return fixe[fixe.length - 1];
-  const formular = [...corp.querySelectorAll("form .buton-primar, .ds-formular ~ * .buton-primar, .pf-frand .buton-primar")]
-    .filter((b) => b.tagName === "BUTTON" && !bara.contains(b) && !b.closest("table, template, details, .tn-actiuni"));
-  return formular.length ? formular[formular.length - 1] : null;
+  const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && !b.closest("table, template, details, .tn-actiuni, .rezumat-fix");
+  const formular = [...corp.querySelectorAll("form .buton-primar, .ds-formular ~ * .buton-primar, .pf-frand:has(> .ds-formular) .buton-primar")].filter(eligibil);
+  if (formular.length) return formular[formular.length - 1];
+  return null;
 }
+
+// o urmă (comentariu) lăsată în locul din care butonul trece în bară: dispare odată cu zona pe care ecranul o redesenează
+function _urma(b) { const u = document.createComment("fj"); b.before(u); return u; }
+
+// containerul de formular din care vine butonul: numai câmpurile lui hotărăsc dacă butonul e inactiv (nu etichetele altor părți ale ferestrei)
+const _formularul = (b) => b.closest("form, .ds-formular, .pf-frand:has(> .ds-formular)");
 
 /** Pune bara de jos pe fereastra `fer`; întoarce `{ sincronizeaza, inchide }`. `renunta` = ce face „Renunță” (un pas înapoi / închide). */
 export function baraDeJos(fer, corp, { renunta }) {
   const bara = document.createElement("div");
   bara.className = "fereastra-jos";
-  bara.innerHTML = `<span class="fj-motiv" aria-live="polite"></span><span class="fj-butoane"><button type="button" class="buton-secundar fj-renunta">Renunță</button></span>`;
+  bara.innerHTML = `<span class="fj-motiv" aria-live="polite"></span><span class="fj-butoane"></span>`;
   const loc = bara.querySelector(".fj-butoane");
   const motiv = bara.querySelector(".fj-motiv");
-  bara.querySelector(".fj-renunta").addEventListener("click", () => renunta());
+  const renuntaPiesei = () => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "buton-secundar fj-renunta"; b.textContent = "Renunță";
+    b.addEventListener("click", () => renunta());
+    return b;
+  };
   let principal = null, inchide = null;
 
   const _actiuneImplicita = () => {   // fereastra fără acțiune proprie
@@ -70,46 +82,85 @@ export function baraDeJos(fer, corp, { renunta }) {
   function sincronizeaza() {
     if (!corp.isConnected) return;
     if (bara.parentElement !== corp || corp.lastElementChild !== bara) corp.appendChild(bara);
+    // acțiunea al cărei loc de origine (zona ecranului) a fost redesenat de ecran e veche: ecranul a scos-o odată cu zona (ex. „Scrie nota” după scriere)
+    for (const b of [...loc.children]) if (b.__origine && !b.__origine.isConnected) { b.remove(); if (b === principal) principal = null; }
     const candidat = _alege(corp, bara);
     if (candidat && candidat !== principal) {
       if (principal && principal !== inchide) principal.remove();   // ecranul și-a redesenat acțiunea: cea veche rămâne fără rost
       if (inchide) inchide.remove();
       principal = candidat;
+      principal.__formular = _formularul(candidat);   // înainte de mutare
+      principal.__origine = _urma(candidat);   // locul lui din ecran; dacă ecranul îl redesenează, urma dispare și acțiunea e veche
       principal.classList.add("fj-principal");
       loc.appendChild(principal);
     } else if (!candidat && (!principal || !principal.isConnected || principal === inchide)) {
       principal = _actiuneImplicita();
       if (!principal.isConnected) loc.appendChild(principal);
+    }
+    if (principal === inchide) {   // „Închide” e acțiunea principală numai dacă fereastra n-are alta: un singur buton principal pe fereastră
+      const alta = [...corp.querySelectorAll(".buton-primar")].some((x) => !bara.contains(x) && _vizibil(x) && !x.closest("template, details"));
+      inchide.classList.toggle("buton-primar", !alta); inchide.classList.toggle("buton-secundar", alta);
     } else if (principal && !principal.isConnected) {
       principal = null;
       sincronizeaza();
       return;
     }
+    // „Renunță” al ecranului (de lângă butonul principal, resetează formularul lui) ia locul celui al piesei: o singură „Renunță” în bară
+    const renuntaEcran = [...corp.querySelectorAll(".bara-fixa button, form button")].find((x) => !bara.contains(x) && x.textContent.trim() === "Renunță");
+    if (renuntaEcran) {
+      const mea = loc.querySelector(".fj-renunta:not(.fj-al-ecranului)");
+      if (mea) mea.remove();
+      renuntaEcran.__origine = _urma(renuntaEcran);
+      renuntaEcran.classList.add("fj-renunta", "fj-al-ecranului");
+      loc.prepend(renuntaEcran);
+    } else if (!loc.querySelector(".fj-renunta")) {
+      loc.prepend(renuntaPiesei());
+    }
+    // zona de mesaje rămasă fără nimic în ea (butoanele au trecut în bară) nu ține loc
+    for (const z of corp.querySelectorAll(".bara-fixa")) z.classList.toggle("fj-gol", !z.textContent.trim() && !z.querySelector("button, input, select, textarea, table, img"));
+    // ce a pus ecranul lângă butonul principal (motivul butonului inactiv, mesajul unui refuz): nimic altceva în bară — motivul trece în stânga,
+    // mesajul deasupra barei, în zona de mesaje
+    for (const x of [...loc.children]) {
+      if (x === principal || x.classList.contains("fj-renunta")) continue;
+      if (/motiv/.test(x.className) || x.hasAttribute("data-motiv-generat")) motiv.appendChild(x);
+      else {
+        let zona = bara.previousElementSibling;
+        if (!zona || !zona.matches(".bara-fixa")) { zona = document.createElement("div"); zona.className = "bara-fixa"; bara.before(zona); }
+        zona.appendChild(x);
+      }
+    }
     // motivul: al ecranului (`.ds-motiv-inactiv` existent, mutat în bară) dacă îl are, altfel al piesei
     for (const m of corp.querySelectorAll(".ds-motiv-inactiv")) if (!bara.contains(m) && !m.classList.contains("fj-text")) motiv.appendChild(m);
-    const lipsa = principal === inchide ? [] : _lipsuri(corp);
+    const lipsa = principal === inchide || !principal.__formular || !principal.__formular.isConnected ? [] : _lipsuri(principal.__formular);
     if (principal !== inchide) {
-      if (lipsa.length) { principal.disabled = true; principal.dataset.cadruInactiv = "1"; }
-      else if (principal.dataset.cadruInactiv) { principal.disabled = false; delete principal.dataset.cadruInactiv; }
+      // inactiv = cenușiu, cu motivul în bară (`data-cadru-inactiv`), nu `disabled`: apăsat, butonul arată refuzul întreg al ecranului, cu lista
+      // câmpurilor lipsă (scenariile 535, 520, 611 — „trimiterea cu formularul gol arată toate câmpurile lipsă”)
+      if (lipsa.length) { principal.dataset.cadruInactiv = "1"; principal.setAttribute("aria-describedby", "fj-motiv-text"); }
+      else if (principal.dataset.cadruInactiv) { delete principal.dataset.cadruInactiv; principal.removeAttribute("aria-describedby"); }
     }
     for (const m of motiv.querySelectorAll(".ds-motiv-inactiv")) m.classList.toggle("bara-motiv", !!m.textContent.trim());
     const alEcranului = [...motiv.querySelectorAll(".ds-motiv-inactiv:not(.fj-text)")].some((m) => m.textContent.trim());
     let text = "";
     if (lipsa.length) text = "Completează: " + lipsa.join(", ");
-    else if (principal.disabled && !alEcranului) text = principal.title || principal.getAttribute("aria-description") || "Completează datele cerute în fereastră, ca să poți continua.";
+    else if (principal.disabled && !alEcranului) {
+      // motivul pus de ecran pe buton (`title`), dacă nu e deja scris în fereastră (același mesaj o singură dată pe ecran); altfel cel general
+      const dinEcran = principal.title || principal.getAttribute("aria-description") || "";
+      const scrisDeja = dinEcran && [...corp.children].some((x) => x !== bara && !x.contains(principal) && (x.innerText || "").includes(dinEcran));
+      text = dinEcran && !scrisDeja ? dinEcran : "Completează datele cerute în fereastră, ca să poți continua.";
+    }
     let sp = motiv.querySelector(".fj-text");
     if (text) {
-      if (!sp) { sp = document.createElement("span"); sp.className = "fj-text ds-motiv-inactiv bara-motiv"; motiv.prepend(sp); }
+      if (!sp) { sp = document.createElement("span"); sp.className = "fj-text ds-motiv-inactiv bara-motiv"; sp.id = "fj-motiv-text"; motiv.prepend(sp); }
       if (sp.textContent !== text) sp.textContent = text;
     } else if (sp) sp.remove();
-    bara.classList.toggle("fj-inactiv", !!principal.disabled);
+    bara.classList.toggle("fj-inactiv", !!principal.disabled || !!principal.dataset.cadruInactiv);
   }
 
   let plan = 0;
   const programeaza = () => { if (!plan) plan = requestAnimationFrame(() => { plan = 0; sincronizeaza(); }); };
   corp.addEventListener("input", programeaza, true);
   corp.addEventListener("change", programeaza, true);
-  new MutationObserver((muts) => { if (muts.some((m) => !bara.contains(m.target) || m.target === bara)) programeaza(); })
+  new MutationObserver((muts) => { if (muts.some((m) => !bara.contains(m.target) || m.target === bara || m.target === loc)) programeaza(); })
     .observe(corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "class", "style"] });
   sincronizeaza();
   return { sincronizeaza, bara };

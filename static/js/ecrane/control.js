@@ -4,7 +4,7 @@
 
 import { tabelDS } from "../ds_piese.js?v=081e2a850b";   // [15.1-D] lista firmelor pe tabelul DS
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
-import { api, esc, cate } from "../api.js?v=9f24ba7549";  /* esc_nc27 */
+import { api, esc, cate } from "../api.js?v=34dd3552eb";  /* esc_nc27 */
 import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului
 import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2a7b3fae69";  // renderer unic al verdictului (DS cap.20)
 
