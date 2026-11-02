@@ -106,14 +106,16 @@ PYE
     if [ -s "$J/poarta_lf_ids.txt" ]; then
         lf_ruleaza "$J/poarta_lf_ids.txt" > "$J/poarta_pytest_lf.log" 2>&1
         RC=$?
-        if [ "$RC" -eq 4 ]; then   # nume memorate care nu mai există (parametri schimbați): se scot și se rulează o dată restul
+        # nume memorate care nu mai există (parametri schimbați): pytest se oprește la primul; se scot pe rând (cel mult 100 de ori) și se rulează restul
+        cp "$J/poarta_lf_ids.txt" "$J/poarta_lf_curente.txt"; ITER=0
+        while [ "$RC" -eq 4 ] && [ "$ITER" -lt 100 ]; do
+            ITER=$((ITER + 1))
             grep '^ERROR: not found: ' "$J/poarta_pytest_lf.log" | sed 's#^ERROR: not found: ##; s#^'"$ROOT"'/##' | sort -u > "$J/poarta_lf_lipsa.txt"
-            grep -vxFf "$J/poarta_lf_lipsa.txt" "$J/poarta_lf_ids.txt" > "$J/poarta_lf_ids2.txt"
-            if [ -s "$J/poarta_lf_ids2.txt" ]; then
-                lf_ruleaza "$J/poarta_lf_ids2.txt" > "$J/poarta_pytest_lf.log" 2>&1
-                RC=$?
-            else RC=0; fi
-        fi
+            [ -s "$J/poarta_lf_lipsa.txt" ] || break
+            grep -vxFf "$J/poarta_lf_lipsa.txt" "$J/poarta_lf_curente.txt" > "$J/poarta_lf_noi.txt"
+            mv "$J/poarta_lf_noi.txt" "$J/poarta_lf_curente.txt"
+            if [ -s "$J/poarta_lf_curente.txt" ]; then lf_ruleaza "$J/poarta_lf_curente.txt" > "$J/poarta_pytest_lf.log" 2>&1; RC=$?; else RC=0; fi
+        done
         case "$RC" in 0|5) ;; *) rosu "pytest picate la ultima rulare" ;; esac
         tail -1 "$J/poarta_pytest_lf.log"
     else
