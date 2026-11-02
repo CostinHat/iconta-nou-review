@@ -296,7 +296,9 @@ def test_def_602_563_610_registrul_jurnal(browser):
         # [602 / 563 / 673] nota nouă: fereastra ei, data de azi
         pg.click("#j-nota-noua")
         pg.wait_for_selector("#je-data")
-        assert pg.input_value("#je-data") == AZI.isoformat() and pg.locator("#jn-tabel").count() == 0
+        # R10: „data de azi” e a ceasului paginii (aceeași sursă ca ecranul), nu `AZI` fixat la importul modulului — o rulare care trece de miezul nopții n-o schimbă
+        azi_pagina = pg.evaluate("() => { const d = new Date(); return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-'); }")
+        assert pg.input_value("#je-data") == azi_pagina and pg.locator("#jn-tabel").count() == 0
         pg.fill("#je-desc", "Probă 563")
         pg.fill("#je-doc", "PV 9")
         pg.fill(".je-deb", "612")
