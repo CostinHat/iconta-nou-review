@@ -7,7 +7,7 @@
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
 import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=83fcf3ce06";
-import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=73e4db2850";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
+import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=9362f18cf3";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=c781636333";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
@@ -138,12 +138,12 @@ function randDecl(arr, stare, marcabil = false) {
     : (!marcabil || !x.luna) ? "" : `
       <button type="button" class="buton-secundar buton-xs cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern" ${atr(x)}>Marchează depusă în afara iConta.eu</button>`;
   return tabelDSHtml({
-    coloane: [{ titlu: "Declarație", latime: "12ch" }, { titlu: "Perioadă", latime: "14ch" }, { titlu: "Termen", latime: "14ch" },
-      { titlu: "Stare", tip: "stare", latime: "230px" }, { titlu: "", tip: "actiuni", latime: "330px" }],
+    coloane: [{ titlu: "Declarație", latime: "12ch", cls: "mig-sold-cont" }, { titlu: "Perioadă", latime: "14ch", cls: "cf-perioada" }, { titlu: "Termen", latime: "14ch", cls: "cf-termen" },
+      { titlu: "Stare", tip: "stare", latime: "auto" }, { titlu: "", tip: "actiuni", latime: "400px" }],
     randuri: arr.map((x) => ({ atribute: { "data-cheie": `${x.tip || ""}-${x.an || ""}-${x.luna || ""}` },
-      celule: [(x.tip || "").toUpperCase(), x.perioada || "", dataRo(x.termen)],
+      celule: [(x.tip || "").toUpperCase(), x.perioada || "", "termen " + dataRo(x.termen)],
       stare: Object.assign({ titlu: x.motiv || "" }, typeof stare === "function" ? stare(x) : stare), actiuniHtml: marcare(x) })),
-    subsol: cate(arr.length, "declarație", "declarații"),
+    subsol: cate(arr.length, "declarație", "declarații"), randCls: "cf-rand-decl",
   });
 }
 // rand de declaratie fara termen (Nu se poate verifica / Nu se datoreaza) — doar tip + motiv.
@@ -205,7 +205,7 @@ function randVerif(eticheta, ok, detaliu) {
 
 const RANG = { rosu: 3, galben: 2, gri: 1, verde: 0 };
 // [15.1-E3, 733] un grup al verdictului: titlu de grup DS (14 px, majuscule, gri) într-un chenar de 1 px cu colțuri de 12 px; culoarea stării stă în pastilă / banda semnalului, nu în titlu
-const grup = (titlu, corp, { id = "", cls = "" } = {}) => `<section class="ds-grup cf-grup ${cls}"${id ? ` id="${id}"` : ""}><h3 class="ds-grup-titlu cf-grup-titlu">${titlu}</h3>${corp}</section>`;
+const grup = (titlu, corp, { id = "", cls = "", stare = "" } = {}) => `<section class="ds-grup cf-grup ${cls}"${id ? ` id="${id}"` : ""}><h3 class="ds-grup-titlu cf-grup-titlu ${stare} ${cls}">${titlu}</h3>${corp}</section>`;   // `stare` rămâne pe titlu ca marcaj (clasa de stare a grupului); culoarea o dă pastila, titlul de grup e gri
 // etichetele constatarilor incrucisate care apar deja in «Declaratie vs contabilitate» -> filtrate din
 // «Verificari contabile» ca sa nu se dubleze (sumarul lor e in contabil, constatarea intreaga e in incrucisat).
 // [08.10, decizia Costin U2] și variantele „nedeclarat” (nimic depus pe perioadă) — oglinda lui uc_comun.ETICHETE_INCRUCISAT
@@ -242,22 +242,22 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const ST_RESTANTA = { text: "restanță", ton: "eroare" }, ST_URMARIT = { text: "de urmărit", ton: "avertisment" }, ST_INTARZIERE = { text: "depusă cu întârziere", ton: "avertisment" },
     ST_LA_ZI = { text: "la zi", ton: "ok" }, ST_INAINTE = { text: "înainte de preluare", ton: "info" };
   const declaratii = `
-    ${lipsa.length ? grup(`Restanțe (${lipsa.length})`, randDecl(lipsa, ST_RESTANTA, true)) : ""}
-    ${urmarit.length ? grup(`De urmărit (${urmarit.length})`, randDecl(urmarit, ST_URMARIT)) : ""}
+    ${lipsa.length ? grup(`Restanțe (${lipsa.length})`, `<div class="cf-decl">${randDecl(lipsa, ST_RESTANTA, true)}</div>`, { stare: "cf-rosu" }) : ""}
+    ${urmarit.length ? grup(`De urmărit (${urmarit.length})`, `<div class="cf-decl">${randDecl(urmarit, ST_URMARIT)}</div>`, { stare: "cf-galben" }) : ""}
     ${neclar.length || opinii.length ? grup(`Nu se poate verifica (${neclar.length})`, `<div class="cf-decl">${randMotiv(neclar, opinii, "cf-semnal-opinie")}</div>`) : ""}
     ${neaplicabile.length || contraziceri.length ? grup(`Nu se datorează (${neaplicabile.length})`, `<div class="cf-decl">${randMotiv(neaplicabile, contraziceri, "cf-semnal-contra")}</div>`) : ""}
-    ${cu_intarziere.length ? grup(`Depuse cu întârziere (${cu_intarziere.length})`, randDecl(cu_intarziere, ST_INTARZIERE)) : ""}
-    ${confirmate.length ? grup(`La zi (${confirmate.length})`, randDecl(confirmate, ST_LA_ZI)) : ""}
+    ${cu_intarziere.length ? grup(`Depuse cu întârziere (${cu_intarziere.length})`, `<div class="cf-decl">${randDecl(cu_intarziere, ST_INTARZIERE)}</div>`, { stare: "cf-galben" }) : ""}
+    ${confirmate.length ? grup(`La zi (${confirmate.length})`, `<div class="cf-decl">${randDecl(confirmate, ST_LA_ZI)}</div>`, { stare: "cf-verde" }) : ""}
     ${inainte.length ? grup(`Înainte de preluare în iConta.eu — până la ${esc(d.luna_inainte_de_preluare || "")} (${inainte.length}, nu se numără la restanțe)`,
       semnalHtml({ ton: "info", text: `Dinainte de preluare: ${cate(inainte.length, "declarație", "declarații")} — nu se numără la restanțe`,
-        actiuneHtml: `<button type="button" class="buton-secundar buton-s cf-inainte-btn" data-fara-actiune="deschide declarațiile de dinainte de preluare, în fereastra lor">Vezi declarațiile</button>
-          <button type="button" class="buton-secundar buton-s cf-anterior-toate" data-actiune="POST /control-fiscal/{tenant_id}/depuse-anterior"
-            data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'${
-            /* [lotul 13, 675 — DS cap.1] butonul stă și când nu mai e nimic de marcat: inactiv, cu motivul */
-            inainte.some((x) => x.luna && !x.extern) ? "" : atributeInactiv("Toate declarațiile de dinainte de preluare sunt marcate.")}>Marchează toate</button>` })
+        actiuneHtml: `<button type="button" class="buton-secundar buton-s cf-inainte-btn" data-fara-actiune="deschide declarațiile de dinainte de preluare, în fereastra lor">Vezi declarațiile</button>` })
       + `<template class="cf-inainte-sablon"><div class="cf-inainte">
         <p class="cf-incr-temei">Luna preluării în iConta.eu e ${esc(d.luna_preluare || "")}${d.luna_preluare_din ? ` (${esc(d.luna_preluare_din)})` : ""}: declarațiile pe ${esc(d.luna_preluare || "")} și după se numără la restanțe, cele până la ${esc(d.luna_inainte_de_preluare || "")} nu se numără la restanțe. O declarație depusă în afara iConta.eu sau de contabilul anterior se marchează pe rândul ei.</p>
-        ${randDecl(inainte, ST_INAINTE, true)}</div></template>`, { cls: "cf-inainte-titlu" }) : ""}`;
+        <div class="dec-bara"><button class="buton-secundar buton-s cf-anterior-toate" data-actiune="POST /control-fiscal/{tenant_id}/depuse-anterior"
+          data-perioade='${esc(JSON.stringify(inainte.filter((x) => x.luna && !x.extern).map((x) => ({ tip: x.tip, an: x.an, luna: x.luna }))))}'${
+          /* [lotul 13, 675 — DS cap.1] butonul stă și când nu mai e nimic de marcat: inactiv, cu motivul */
+          inainte.some((x) => x.luna && !x.extern) ? "" : atributeInactiv("Toate declarațiile de dinainte de preluare sunt marcate.")}>Marchează toate ca depuse de contabilul anterior</button></div>
+        <div class="cf-decl">${randDecl(inainte, ST_INAINTE, true)}</div></div></template>`, { cls: "cf-inainte-titlu" }) : ""}`;
 
   // «Declaratie vs contabilitate» — vc.tva_incrucisat/d112_incrucisat/d390_incrucisat (aceeasi anatomie) + d.reconciliere_surse.
   // [deficiența 484, lotul 12: „Control încrucișat: confruntarea declarații–contabilitate nu rulează”] (1) confruntarea rula pe luna în
@@ -281,9 +281,10 @@ export function randeazaCorpVerdict(d, opt = {}) {
     // fiecare rând al reconcilierii poartă numele declarației: „D300 (decont TVA): Recalculul … confirmă cifrele declarației.”
     const cuNume = (c) => (c.eticheta && !String(c.mesaj || "").startsWith(c.eticheta)
       ? Object.assign({}, c, { mesaj: `${c.eticheta}: ${c.mesaj || ""}` }) : c);
-    const constatari = cuFinding.flatMap((v) => v.constatari || []).concat(reconRand.map(cuNume));
     const limite = cuFinding.map((v) => v.limita).concat(recon && recon.limita ? [recon.limita] : []).filter(Boolean);
-    return grup("Declarație vs contabilitate", `<div class="cf-decl" id="cf-incrucisat">${antet}${constatariPeRanduri(constatari)}${
+    const dinConstatari = cuFinding.flatMap((v) => v.constatari || []);
+    return grup("Declarație vs contabilitate", `<div class="cf-decl" id="cf-incrucisat">${antet}${constatariPeRanduri(dinConstatari)}${
+      reconRand.length ? info("Declarațiile recalculate din documente") + constatariPeRanduri(reconRand.map(cuNume)) : ""}${
       neaplic.map((t) => info(t)).join("")}${limite.map((t) => info(t)).join("")}</div>`);
   })();
 
@@ -445,7 +446,7 @@ export function legaVerdict(corp, nav, firma) {
   // [08.10, decizia Costin U2] „depusă în afara iConta”: data depunerii (de pe recipisă) obligatorie, numărul recipisei opțional
   corp.querySelectorAll(".cf-extern-btn").forEach((b) => b.addEventListener("click", () => {
     const item = b.closest(".cf-decl-item");   // rândul tabelului; formularul stă într-un rând propriu, sub el
-    if (item.nextElementSibling && item.nextElementSibling.classList.contains("cf-extern-rand")) return;
+    if (item.querySelector(".cf-extern-form")) return;
     const per = perioadaButonului(b);
     const f = document.createElement("div");
     f.className = "cf-extern-form";
@@ -454,16 +455,11 @@ export function legaVerdict(corp, nav, firma) {
       <input type="text" class="camp-input cf-extern-recipisa" maxlength="100" placeholder="nr. recipisă (opțional)" aria-label="Număr recipisă ${esc(b.dataset.tip.toUpperCase())} ${per}">
       <button class="buton-primar cf-extern-salveaza" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern">Salvează</button>
       <button class="buton-secundar cf-extern-renunta" type="button">Renunță</button>`;
-    const rf = document.createElement("tr");
-    rf.className = "cf-extern-rand";
-    const tdf = rf.insertCell();
-    tdf.colSpan = item.cells.length;
-    tdf.appendChild(f);
-    item.after(rf);
+    item.cells[item.cells.length - 1].appendChild(f);   // formularul stă în celula de acțiuni a rândului (rândul crește cât e deschis)
     const data = f.querySelector("input[type=date]"), rec = f.querySelector("input[type=text]");
     const ok = f.querySelector(".cf-extern-salveaza"), nu = f.querySelector(".cf-extern-renunta");
     focusFaraSalt(data);
-    nu.addEventListener("click", () => rf.remove());
+    nu.addEventListener("click", () => f.remove());
     // [retest 08.10 pct.10] mesajul „Scrie data” dispare odată ce data e scrisă (rămânea după completare)
     data.addEventListener("input", () => { const m = f.querySelector(".msg-in-formular"); if (m && data.value) m.remove(); });
     ok.addEventListener("click", async () => {

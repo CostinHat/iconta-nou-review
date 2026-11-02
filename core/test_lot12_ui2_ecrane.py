@@ -356,7 +356,11 @@ def _balanta(inchide=True):
             "inchidere": {"stare": "se_inchide" if inchide else "nu_se_inchide", "randuri": 40, "perechi": perechi}}
 
 
-_REZ = """() => { const c = (%s)(), r = c.querySelector('.rezumat-fix'); return {rez: r ? r.offsetHeight : null, corp: c.clientHeight}; }""" % _CORP
+# [15.1-E3] rezumatul fără controalele lui: filtrul scurt (până la 6 stări) e acum grup de butoane (676 / piesa „listă”), iar un control nu e o casetă de text: „casetele nu mănâncă tabelul”
+# măsoară textele și casetele, nu rândul filtrului
+_REZ = """() => { const c = (%s)(), r = c.querySelector('.rezumat-fix');
+  const controale = r ? [...r.querySelectorAll('.alegere-butoane')].reduce((s, g) => s + g.offsetHeight + 12, 0) : 0;
+  return {rez: r ? r.offsetHeight - controale : null, corp: c.clientHeight}; }""" % _CORP
 
 
 @pytest.mark.parametrize("inchide", [True, False])

@@ -68,7 +68,7 @@ def test_def_484_confruntarea_ruleaza_pe_luna_incheiata_si_arata_reconcilierea(p
     pg.wait_for_selector(".fereastra:last-of-type #cf-incrucisat", timeout=60000)
     pg.locator(".fereastra:last-of-type #cf-incrucisat").scroll_into_view_if_needed()
     patron.captura("declaratie_vs_contabilitate")
-    text = " ".join(pg.inner_text(".fereastra:last-of-type #cf-incrucisat").split())
+    text = " ".join(pg.text_content(".fereastra:last-of-type #cf-incrucisat").split())   # [15.1-E3] mesajul întreg stă și în detaliile pliate (text_content le cuprinde)
     # CF art.323 alin.(1): azi se depune decontul lunii trecute — aceea se confruntă
     # [lotul 14, 694] fiecare comparație își arată perioada: firma lunară -> D300 pe luna trecută (nu „luna confruntată” generică)
     assert "Perioada comparată: D300 %s" % LUNA_TRECUTA.strftime("%m/%Y") in text, text

@@ -114,7 +114,7 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
     const randuri = [];
     let grup = null;
     for (const o of opt()) {
-      const g = o.parentElement && o.parentElement.tagName === "OPTGROUP" ? o.parentElement.label : "";
+      const g = o.parentElement && o.parentElement.tagName === "OPTGROUP" ? (o.parentElement.dataset.titlu || o.parentElement.label) : "";   // `data-titlu`: titlul scurt al grupului (eticheta lungă rămâne în opțiunea-sursă)
       if (g !== grup) { grup = g; if (g) randuri.push({ grup: g }); }
       randuri.push({ o });
     }
@@ -311,20 +311,20 @@ export function legaSemnale(radacina) {
 
 /** Tabelul DS ca text HTML (aceleași clase ca `tabelDS`): `coloane` [{ titlu, tip, latime? }], `randuri` [{ atribute?, celule: [text | { html }], stare?: { text, ton }, actiuniHtml? }];
  *  `subsol` = textul subsolului de 44 px (totalul). Celulele de text sunt scăpate aici; butoanele XS vin gata făcute în `actiuniHtml`. */
-export function tabelDSHtml({ coloane, randuri, subsol = "" }) {
-  const col = coloane.map((c) => `<col${c.latime ? ` style="width:${c.latime}"` : ""}>`).join("");
-  const cap = coloane.map((c) => `<th scope="col" class="ds-tabel-${esc(c.tip || "text")}">${esc(c.titlu || "")}</th>`).join("");
+export function tabelDSHtml({ coloane, randuri, subsol = "", randCls = "" }) {
+  const cap = coloane.map((c) => `<th scope="col" class="ds-tabel-${esc(c.tip || "text")}"${c.latime ? ` style="width:${esc(c.latime)}"` : ""}>${esc(c.titlu || "")}</th>`).join("");   // lățimea pe antet (bate regula pe clasă a coloanei „Acțiuni” / „Stare”)
   const corp = randuri.map((r) => {
     let k = 0;
-    return `<tr class="cf-decl-item"${Object.entries(r.atribute || {}).map(([a, v]) => ` ${a}="${esc(String(v))}"`).join("")}>${coloane.map((c) => {
-      if (c.tip === "stare") { const st = r.stare || {}; return `<td class="ds-tabel-stare"><span class="ds-pastila ds-pastila-${esc(st.ton || "info")}"${st.titlu ? ` title="${esc(st.titlu)}"` : ""}>${esc(st.text || "")}</span></td>`; }
+    return `<tr class="cf-decl-item${randCls ? " " + esc(randCls) : ""}"${Object.entries(r.atribute || {}).map(([a, v]) => ` ${a}="${esc(String(v))}"`).join("")}>${coloane.map((c) => {
+      if (c.tip === "stare") { const st = r.stare || {}; return `<td class="ds-tabel-stare"><span class="ds-pastila ds-pastila-${esc(st.ton || "info")}"${st.titlu ? ` title="${esc(st.titlu)}"` : ""}>${esc(st.text || "")}</span>${
+        st.titlu ? ` <span class="ds-tabel-motiv" title="${esc(st.titlu)}">${esc(st.titlu)}</span>` : ""} </td>`; }   // motivul rândului, lângă pastilă (o linie, întreg în title)
       if (c.tip === "actiuni") return `<td class="ds-tabel-actiuni">${r.actiuniHtml || ""}</td>`;
       const v = (r.celule || [])[k++];
       const t = v && typeof v === "object" ? v.html : esc(v ?? "");
-      return `<td class="ds-tabel-${esc(c.tip || "text")}" title="${esc(v && typeof v === "object" ? v.text || "" : v ?? "")}">${t}</td>`;
+      return `<td class="ds-tabel-${esc(c.tip || "text")}${c.cls ? " " + esc(c.cls) : ""}" title="${esc(v && typeof v === "object" ? v.text || "" : v ?? "")}">${t} </td>`;   // spațiul de după text: coloanele se citesc cu spațiu între ele (textContent, copiere)
     }).join("")}</tr>`;
   }).join("");
-  return `<div class="ds-tabel-cutie"><table class="ds-tabel"><colgroup>${col}</colgroup><thead><tr>${cap}</tr></thead><tbody>${corp}</tbody></table>${
+  return `<div class="ds-tabel-cutie"><table class="ds-tabel"><thead><tr>${cap}</tr></thead><tbody>${corp}</tbody></table>${
     `<div class="ds-tabel-subsol">${esc(subsol || cate(randuri.length, "rând", "rânduri"))}</div>`}</div>`;
 }
 

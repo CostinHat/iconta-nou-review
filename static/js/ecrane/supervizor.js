@@ -18,8 +18,8 @@
 // fiindcă exact aici se naște cifra validă și falsă.
 
 import { api, esc, dupaNumar, dataRo } from "../api.js?v=83fcf3ce06";
-import { randA as randConstatare } from "./control_verdict.js?v=923f42fcf4";
-import { semnalHtml, legaSemnale } from "../ds_piese.js?v=73e4db2850";   // [15.1-E3] semnale pe rând
+import { randA as randConstatare } from "./control_verdict.js?v=6cc9e5c30e";
+import { semnalHtml, legaSemnale } from "../ds_piese.js?v=9362f18cf3";   // [15.1-E3] semnale pe rând
 
 function perioada(r) {
   return dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric");   // DS cap.4: „10/2026”, din formatorul unic
@@ -59,7 +59,8 @@ function blocFirma(f) {
 
 function blocNeverificate(firme) {
   if (!firme.length) return "";
-  const randuri = firme.map((f) => semnalHtml({ ton: "info", text: `${f.nume || "Firmă"} — ${(f.neverificat && f.neverificat.eroare) || "neverificată"}` }) + etichetaVechi(f)).join("");
+  const randuri = firme.map((f) => semnalHtml({ ton: (f.prospetime || {}).stare === "invalidat" ? "avertisment" : "info", text: `${f.nume || "Firmă"} — ${(f.neverificat && f.neverificat.eroare) || "neverificată"}`,
+    detaliiHtml: etichetaVechi(f) })).join("");   // rezultatul vechi (ciornă „calculat înaintea ultimei schimbări”) stă în rândul firmei, pliat sub „▾ detalii”
   return `<section class="sv-firma sv-firma--neverif">
     <h3 class="sv-firma-nume">Firme pe care verificarea nu a rulat</h3>
     ${semnalHtml({ ton: "info", text: "Nu înseamnă «e în regulă» — înseamnă că nu s-a putut verifica.",

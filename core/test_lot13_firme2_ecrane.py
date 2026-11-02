@@ -359,8 +359,11 @@ def test_def_605_raport_z(browser):
         assert " ".join(pg.inner_text("[data-z='77'] .pf-frand-nume").split()).startswith("Raport Z nr 0042 · casa 8000000001")
         assert "Z-8000000001" not in pg.inner_text("#z-descarcare")
         assert pg.inner_text("#z-et-11") == "Total 11%" and pg.inner_text("#z-et-21") == "Total 21%"
-        assert pg.evaluate("() => !!(document.querySelector('#z-salveaza').compareDocumentPosition(document.querySelector('#z-rezultat'))"
-                           " & Node.DOCUMENT_POSITION_FOLLOWING)")
+        # [15.1-E3] butonul „Generează notă” stă în bara de jos a ferestrei (cadru.js), deci confirmarea (`#z-rezultat`, în conținut) stă DEASUPRA barei, lipită de ea: aceeași
+        # regulă — confirmarea nu stă deasupra formularului, ci lângă butonul care a cerut-o (sub formular, la capătul conținutului, vizibilă înaintea barei)
+        pg.wait_for_selector("#z-salveaza", state="attached")
+        assert pg.evaluate("""() => { const b = document.querySelector('#z-salveaza'), r = document.querySelector('#z-rezultat'), f = document.querySelector('#z-card');
+            return !!b.closest('.fereastra-jos') && !!(f.compareDocumentPosition(r) & Node.DOCUMENT_POSITION_FOLLOWING); }""")
         v = _butoane(pg, "#zd-val-77")[0]
         assert v[1] and v[2].startswith("Descarcă întâi marfa vândută"), v
         assert not erori, erori

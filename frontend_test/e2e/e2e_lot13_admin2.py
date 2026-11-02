@@ -160,7 +160,7 @@ def test_def_571_control_fiscal_spune_ca_se_compara_cu_declaratia_generata_azi(p
     pg = patron.pg
     pg.wait_for_selector(".fereastra:last-of-type #cf-incrucisat", timeout=60000)
     pg.locator(".fereastra:last-of-type #cf-incrucisat").scroll_into_view_if_needed()
-    text = " ".join(pg.inner_text(".fereastra:last-of-type").split())
+    text = " ".join(pg.text_content(".fereastra:last-of-type").split())   # [15.1-E3] temeiul stă în detaliile pliate ale semnalului (text_content le cuprinde)
     patron.captura()
     assert "comparat cu decontul generat azi din evidență, nu cu cel depus" in text, text[-1500:]
     assert "nu s-a păstrat" not in text, text[-1500:]

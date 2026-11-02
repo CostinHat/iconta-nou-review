@@ -14,7 +14,7 @@
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
 import { alegereButoane } from "./api.js?v=83fcf3ce06";
-import { listaCuCautare } from "./ds_piese.js?v=73e4db2850";
+import { listaCuCautare } from "./ds_piese.js?v=9362f18cf3";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);
@@ -85,10 +85,7 @@ function _alege(corp, bara) {
   const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && !b.closest("table, template, details, .tn-actiuni, .rezumat-fix");
   const formular = [...corp.querySelectorAll("form .buton-primar, .ds-formular ~ * .buton-primar, .pf-frand:has(> .ds-formular) .buton-primar")].filter(eligibil);
   if (formular.length) return formular[formular.length - 1];
-  // [15.1-E3, 732] fereastra al cărei buton principal nu stă într-un formular și nu e marcat: ultimul buton principal vizibil din conținut (nu din tabel, șablon, pliant
-  // sau listă de rezumate) — același element, mutat în bară; un singur principal pe fereastră, ceilalți rămân (vizual) secundari prin `.fereastra-corp .buton-primar:not(.fj-principal)`
-  const orice = [...corp.querySelectorAll(".buton-primar")].filter((b) => eligibil(b) && _vizibil(b) && !b.closest(".ds-rezumat, .ds-semnal, .ds-lista, .cf-extern-form, .ds-confirmare, [hidden]"));
-  return orice.length ? orice[orice.length - 1] : null;
+  return null;
 }
 
 // o urmă (comentariu) lăsată în locul din care butonul trece în bară: dispare odată cu zona pe care ecranul o redesenează
@@ -142,8 +139,9 @@ export function baraDeJos(fer, corp, { renunta }) {
       principal = _actiuneImplicita();
       if (!principal.isConnected) loc.appendChild(principal);
     }
-    if (principal === inchide) {   // [15.1-E3] „Închide” e acțiunea principală a ferestrei fără altă acțiune principală (ce e în tabele rămâne secundar prin CSS): bara are mereu UN principal
-      inchide.classList.add("buton-primar"); inchide.classList.remove("buton-secundar");
+    if (principal === inchide) {   // „Închide” e acțiunea principală numai dacă fereastra n-are alta: un singur buton principal pe fereastră
+      const alta = [...corp.querySelectorAll(".buton-primar")].some((x) => !bara.contains(x) && _vizibil(x) && !x.closest("template, details"));
+      inchide.classList.toggle("buton-primar", !alta); inchide.classList.toggle("buton-secundar", alta);
     } else if (principal && !principal.isConnected) {
       principal = null;
       sincronizeaza();
@@ -198,6 +196,7 @@ export function baraDeJos(fer, corp, { renunta }) {
       if (sp.textContent !== text) sp.textContent = text;
     } else if (sp) sp.remove();
     bara.classList.toggle("fj-inactiv", !!principal.disabled || !!principal.dataset.cadruInactiv);
+    corp.classList.toggle("fj-are-principal", principal !== inchide);   // [15.1-E3] fereastra are acțiunea principală în bară: restul butoanelor principale din conținut arată ca secundare (CSS)
   }
 
   let plan = 0;

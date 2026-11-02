@@ -147,32 +147,24 @@ def firma_b(patron):
 
 @pytest.mark.parametrize("lat,inalt", REZOLUTII)
 def test_def_722_tip_declaratie_lista_cu_cautare(patron, firma_b, lat, inalt):
-    """722 / 726: declarațiile datorate sunt butoane directe („D300 · 10/2026 · termen 25.11.2026 · restanță”), fără „Alege tipul declarației”; lista cu căutare pe
-    lățimea ferestrei (rânduri de 44 px, nimic tăiat) apare numai sub „Arată alte declarații”."""
+    """722 / 726 (refăcut la 15.1-E3, 722 / 727.1): lista „Tip declarație” e lista cu căutare PERMANENTĂ pe lățimea ferestrei (căutare de 44 px, rânduri de 44 px, nimic tăiat):
+    datoratele sus (restanțele întâi), restul dedesubt, fără butoane stivuite, fără „încă n” și fără „Arată alte declarații”."""
     from e2e_bloc_a import _card
     pg = patron.pg
     pg.set_viewport_size({"width": lat, "height": inalt})
     patron.firma(firma_b["nume"])
     _card(patron, "declaratii", "#dec-tip")
-    pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.classList.contains('ds-lista-sursa') && !!s.nextElementSibling && s.nextElementSibling.classList.contains('ds-lista'); }", timeout=30000)
-    dat = pg.locator("#dec-datorate .ds-datorata")
-    if dat.count():
-        assert pg.eval_on_selector(".ds-lista", "e => e.hidden"), "lista cu căutare apare fără „Arată alte declarații”"
-        assert "Alege tipul declarației" not in pg.evaluate("() => document.body.innerText")
-        inalt_b = pg.eval_on_selector_all("#dec-datorate .ds-datorata", "es => es.map(e => Math.round(e.getBoundingClientRect().height))")
-        assert set(inalt_b) == {44}, inalt_b
-        text0 = dat.first.inner_text()
-        assert text0.upper().startswith("D") and "termen" in text0, text0
-        dat.first.evaluate("e => e.click()")
-        pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.value !== ''; }", timeout=15000)
-        pg.click("#dec-alte")
-        pg.wait_for_function("() => { const l = document.querySelector('.ds-lista'); return !!l && !l.hidden; }", timeout=15000)
-    pg.click(".ds-lista-titlu")
-    pg.wait_for_selector(".ds-lista-cauta", timeout=5000)
-    cutie = pg.eval_on_selector(".ds-lista-panou", "e => { const r = e.getBoundingClientRect(); return [r.left, r.right, innerWidth]; }")
-    assert cutie[0] >= 0 and cutie[1] <= cutie[2], cutie   # niciodată mai lată decât ecranul
+    pg.wait_for_function("() => { const s = document.querySelector('#dec-tip'); return !!s && s.classList.contains('ds-lista-sursa') && !!s.nextElementSibling && s.nextElementSibling.classList.contains('ds-lista-permanenta'); }", timeout=30000)
+    assert pg.locator("#dec-datorate, #dec-alte, .ds-datorata, .ds-datorate-inca").count() == 0, "butoanele stivuite / „Arată alte declarații” au rămas"
+    assert "Alege tipul declarației" not in pg.evaluate("() => document.body.innerText")
+    cutie = pg.eval_on_selector(".ds-lista-panou", "e => { const r = e.getBoundingClientRect(); return [r.left, r.right, innerWidth, r.width]; }")
+    assert cutie[0] >= 0 and cutie[1] <= cutie[2] and cutie[3] <= 720, cutie   # niciodată mai lată decât ecranul, cel mult 720 px
+    assert pg.eval_on_selector(".ds-lista-cauta", "e => Math.round(e.getBoundingClientRect().height)") == 44
     inalt_rand = pg.eval_on_selector_all(".ds-lista-rand", "es => es.map(e => Math.round(e.getBoundingClientRect().height))")
     assert inalt_rand and set(inalt_rand) == {44}, inalt_rand
+    grupuri = pg.locator(".ds-lista-grup").all_inner_texts()
+    if len(grupuri) > 1:   # datoratele întâi, „Alte declarații” la urmă
+        assert grupuri[-1].strip().lower() == "alte declarații", grupuri
     pg.fill(".ds-lista-cauta", "d104")
     filtrate = pg.locator(".ds-lista-rand .ds-lista-nume").all_inner_texts()
     assert filtrate and all("D104" in t.upper() for t in filtrate), filtrate
@@ -409,7 +401,7 @@ def test_def_681_1_istoric_gaseste_facturile(patron, firma_b):
     assert st == 200, (st, r)
     assert any(x.get("cheie") == "facturi" for x in r["rezultate"]), r["rezultate"]
     st, r = _api(PATRON, "GET", "/eu/cautare?q=stat%%20de%%20plata&tenant_id=%d" % firma_b["tenant_id"])
-    assert st == 200 and not any(str(x.get("cheie") or x.get("titlu") or "").lower().startswith("d100") for x in r["rezultate"]), r["rezultate"]
+    assert st == 200 and r["rezultate"] and r["rezultate"][0]["titlu"] == "Stat de plată", r["rezultate"]   # [15.1-E3, 681.2] sensul bate cuvântul comun: Stat de plată e primul, D100 (…„bugetul de stat”) vine după
 
 
 def test_def_687_2_inchidere_luna_semnale_si_amortizare(patron, firma_b):
@@ -500,21 +492,26 @@ def test_def_725_1_f5_din_istoric_facturi_readuce_istoricul(patron, firma_b):
     pg.wait_for_function("() => { const a = document.querySelector('.fereastra-overlay:not(.fundal) .fereastra-antet'); return !!a && /Istoric/i.test(a.innerText); }", timeout=60000)
 
 
-def test_def_726_declaratiile_datorate_sunt_butoane_directe(patron, firma_b):
-    """726: declarațiile datorate sunt butoane directe („D112 · 08/2026 · termen … · restanță”), restanțele întâi; fără „Alege tipul declarației” și fără casetă cu
-    derulare proprie; căutarea apare numai sub „Arată alte declarații”."""
+def test_def_726_declaratiile_datorate_sunt_primele_din_lista(patron, firma_b):
+    """726 (refăcut la 15.1-E3): declarațiile datorate („D112 · 08/2026 · termen …”, motivul „restanță” în dreapta) sunt primele rânduri ale listei cu căutare,
+    restanțele întâi; fără „Alege tipul declarației”."""
     from e2e_bloc_a import _card
     pg = patron.pg
     patron.firma(firma_b["nume"])
     _card(patron, "declaratii", "#dec-tip")
-    pg.wait_for_selector("#dec-datorate", state="attached", timeout=30000)
-    texte = pg.locator("#dec-datorate .ds-datorata").all_inner_texts()
-    assert texte, "firma de test n-are declarații datorate"
+    pg.wait_for_selector(".ds-lista-permanenta .ds-lista-rand", state="attached", timeout=30000)
+    primul_grup = pg.evaluate("""() => { const u = document.querySelector('.ds-lista-randuri'); const r = []; let g = null;
+        for (const li of u.children) { if (li.classList.contains('ds-lista-grup')) { g = li.textContent.trim(); continue; }
+          if (li.classList.contains('ds-lista-rand')) r.push({ g, nume: li.querySelector('.ds-lista-nume').textContent, motiv: li.querySelector('.ds-lista-motiv').textContent }); }
+        return r; }""")
+    datorate = [x for x in primul_grup if x["g"] and "datorate" in x["g"].lower()]
+    assert datorate, "firma de test n-are declarații datorate: %s" % primul_grup
     assert "Alege tipul declarației" not in pg.evaluate("() => document.body.innerText")
-    restanta = ["restan" in t.lower() for t in texte]
-    assert restanta == sorted(restanta, reverse=True), "restanțele nu sunt toate înaintea celorlalte: %s" % texte
-    assert all("termen" in t for t in texte), texte
-    assert pg.eval_on_selector(".ds-lista", "e => e.hidden"), "căutarea apare fără „Arată alte declarații”"
+    for g in {x["g"] for x in datorate}:   # în fiecare grup al datoratelor, restanțele sunt înaintea celorlalte
+        restanta = ["restan" in x["motiv"].lower() for x in datorate if x["g"] == g]
+        assert restanta == sorted(restanta, reverse=True), "restanțele nu sunt toate înaintea celorlalte în %s: %s" % (g, datorate)
+    assert all("termen" in x["nume"] for x in datorate), datorate
+    assert primul_grup.index(datorate[0]) == 0, "datoratele nu sunt primele"
 
 
 def test_def_d1_control_fiscal_cabinet_pe_tot_ecranul(patron, firma_b):
@@ -573,7 +570,7 @@ def test_def_d3_control_fiscal_lista_tabel_ds_si_titluri_fara_majuscule(patron, 
     pg.locator("#cf-lista tbody tr:first-child button", has_text="Deschide").evaluate("e => e.click()")
     pg.wait_for_selector(".cf-grup-titlu", timeout=60000)
     transformari = pg.eval_on_selector_all(".cf-grup-titlu", "es => [...new Set(es.map(e => getComputedStyle(e).textTransform))]")
-    assert transformari == ["none"], transformari
+    assert transformari == ["uppercase"], transformari   # [15.1-E3, 733] titlurile de grup: 14 px, majuscule, gri (titlul de secțiune de 20 px nu mai e în Detaliu firmă)
 
 
 @pytest.mark.parametrize("cheie", ["validat", "termene", "firme", "activitate", "pachete", "supervizor", "capacitate", "consolidare", "asistenti", "setari", "brief"])
@@ -590,7 +587,8 @@ def test_def_d4_ecranele_de_cabinet_sunt_ferestre_de_lucru_pe_tot_ecranul(patron
     bara = pg.inner_text(".fereastra-overlay:not(.fundal) .fereastra-fir")
     assert bara.count("›") == 1 and bara.startswith("Cabinet"), bara
     maj = pg.evaluate("""() => [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra-corp *')].filter((e) => e.offsetParent && e.children.length === 0
-        && (e.textContent || '').trim().length > 2 && getComputedStyle(e).textTransform === 'uppercase').map((e) => String(e.className).split(' ')[0])""")
+        && (e.textContent || '').trim().length > 2 && getComputedStyle(e).textTransform === 'uppercase'
+        && !e.matches('.ds-grup-titlu, .cf-grup-titlu, .em-eticheta, .mf-eticheta, .ans-grupa-titlu, .ds-lista-grup')).map((e) => String(e.className).split(' ')[0])""")   # [15.1-E3, 733] titlurile de grup (14 px, majuscule, gri) sunt singurele permise
     assert maj == [], maj
 
 

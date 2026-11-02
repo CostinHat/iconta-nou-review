@@ -12,7 +12,7 @@ import { uitaFereastra, memoreazaFereastra, memoreazaCampul } from "./restaurare
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=83fcf3ce06";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
-import { baraDeJos } from "./cadru.js?v=df3b257fa4";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+import { baraDeJos } from "./cadru.js?v=da6461e7fe";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
 import { puneCautarea } from "./cautare.js?v=39e412d714";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -515,7 +515,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     if (!intrari.length || intrari.some((s) => !s.pasRestaurare)) { uitaFereastra(); return; }
     memoreazaFereastra({ nume: iFirma >= 0 ? (firmaInLucru || "") : "", drum: intrari.map((s) => s.pasRestaurare), campuri: {} });
   };
-  const _laCamp = (e) => { const f = document.querySelector(".fereastra:last-of-type"); if (f && e.target instanceof Element && f.contains(e.target)) memoreazaCampul(e.target); };
+  const _laCamp = (e) => { if (!e.isTrusted) return; const f = document.querySelector(".fereastra:last-of-type"); if (f && e.target instanceof Element && f.contains(e.target)) memoreazaCampul(e.target); };
   document.addEventListener("input", _laCamp, true);
   document.addEventListener("change", _laCamp, true);
 

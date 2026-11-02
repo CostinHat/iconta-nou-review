@@ -3504,7 +3504,7 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .cf-extern-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; }
 .cf-extern-data { max-width: 170px; }
 .cf-extern-recipisa { max-width: 220px; }
-.ds-tabel tr.cf-extern-rand td { height: auto; white-space: normal; background: var(--alb); }
+
 .cf-audit-titlu { font-size: 16px; margin: 12px 0 4px; }
 .ds-rezumat-cutie > .ds-rezumat > .buton-s { flex: 0 0 auto; }
 .ds-rezumat .ds-rezumat-plie { height: 28px; padding: 0 10px; font-size: 13px; border-radius: 8px; flex: 0 0 auto; }
@@ -3517,7 +3517,7 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 
 /* [15.1-E3, 674.1 / 163] PIESA „BUTON”: orice acțiune scrisă ca text apăsabil e buton. `.btn-link` (peste tot în aplicație) și titlurile de pliere (`summary`) arată ca butonul XS al DS
    (28 px, colțuri 8 px, chenar); o regulă, toate ecranele o iau. */
-.btn-link:not(.cautare-item), .fereastra-corp details > summary, .dec-xml > summary {
+.btn-link:not(.cautare-item), .fereastra-corp details > summary {
   display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; box-sizing: border-box; font-size: 13px; font-weight: 500; line-height: 1;
   color: var(--ardezie); background: var(--alb); border: 1px solid var(--linie); border-radius: 8px; text-decoration: none; cursor: pointer; list-style: none; }
 .fereastra-corp details > summary::-webkit-details-marker { display: none; }
@@ -3552,8 +3552,8 @@ textarea.em-adresa { overflow: hidden; }
 .em-client-grila .em-benef > .buton-secundar { flex: 0 0 auto; }
 
 /* [15.1-E3, 732] un singur buton principal pe fereastră: cel din bara de jos (`.fj-principal`); orice alt `.buton-primar` din conținut arată ca butonul secundar (aceeași clasă în cod, ca testele și ascultătorii să nu se schimbe) */
-.fereastra-corp .buton-primar:not(.fj-principal):not(.ds-confirmare *) { border: 1px solid #b9c2cf; background: var(--alb); color: var(--ardezie); box-shadow: none; }
-.fereastra-corp .buton-primar:not(.fj-principal):not(.ds-confirmare *):hover:not(:disabled) { background: var(--fundal); }
+.fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *) { border: 1px solid #b9c2cf; background: var(--alb); color: var(--ardezie); box-shadow: none; }
+.fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *):hover:not(:disabled) { background: var(--fundal); }
 
 /* [15.1-E3] explicația de sub câmp: un rând (textul întreg în title, pus de cadru.js); la focus pe câmp se arată întreagă */
 .fereastra-corp .camp-ajutor { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
@@ -3568,3 +3568,13 @@ textarea.em-adresa { overflow: hidden; }
 .vf-lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
 @media (max-width: 899px) { .vf-lista { grid-template-columns: 1fr; } }
 .cv-bloc { margin-bottom: 0; }
+.ds-tabel td.ds-tabel-actiuni:has(.cf-extern-form) { height: auto; white-space: normal; }
+.cf-extern-form { justify-content: flex-end; }
+.cf-extern-form input[type="date"], .cf-extern-form input[type="text"] { height: 36px; }
+.ds-tabel-motiv { margin-left: 8px; font-size: 13px; color: var(--gri); }
+.ds-tabel td.ds-tabel-stare { overflow: hidden; text-overflow: ellipsis; }
+.cf-grup .ds-tabel .ds-tabel-stare { width: auto; }
+.cf-grup .ds-tabel td.ds-tabel-actiuni { overflow: visible; }
+/* [15.1-E3] rândul de declarație din tabelul DS păstrează clasele vechi (`cf-rand-decl`, `mig-sold-cont`, `cf-perioada`, `cf-termen`) ca marcaje, nu ca aspect */
+.ds-tabel tr.cf-rand-decl { display: table-row; padding: 0; gap: 0; border-bottom: 0; }
+.ds-tabel td.cf-perioada, .ds-tabel td.cf-termen { font-size: 15px; white-space: nowrap; }

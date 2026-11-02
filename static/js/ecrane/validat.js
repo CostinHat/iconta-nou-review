@@ -30,8 +30,8 @@
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=83fcf3ce06";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=923f42fcf4";
-import { legaSemnale } from "../ds_piese.js?v=73e4db2850";   // [15.1-E3] pliarea semnalelor constatărilor
+import { randA as randConstatare } from "./control_verdict.js?v=6cc9e5c30e";
+import { legaSemnale } from "../ds_piese.js?v=9362f18cf3";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { deschideFirma, ecranJurnal } from "./firme.js?v=c7705caf4c";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
@@ -857,7 +857,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=6a32c6e6ae");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=4f03524f33");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

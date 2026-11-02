@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=73e4db2850";   // [15.1, 722] lista cu căutare
+import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=9362f18cf3";   // [15.1, 722] lista cu căutare
 import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=83fcf3ce06";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";   // [lotul 10, 431] refuzul care trimite la ce lipsește
@@ -171,8 +171,8 @@ function pas1(corp, nav) {
     // [lotul 10, deficiența 432] obligațiile pe perioade dinaintea preluării rămân vizibile (termenul cade după preluare), dar într-un grup
     // separat, marcate — regula de la 157 (decizia U2, 08.10); marcajul vine din motorul termenelor (`luna_preluare.inainte`)
     const deLaPreluare = datorate.filter((d) => !d.inainte_de_preluare), inainte = datorate.filter((d) => d.inainte_de_preluare);
-    const grupaDatorate = (deLaPreluare.length ? `<optgroup label="Datorate acum">${deLaPreluare.map(optDatorata).join("")}</optgroup>` : "")
-      + (inainte.length ? `<optgroup label="Datorate înainte de preluarea în iConta.eu">${inainte.map(optDatorata).join("")}</optgroup>` : "");
+    const grupaDatorate = (deLaPreluare.length ? `<optgroup label="Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)" data-titlu="Datorate acum">${deLaPreluare.map(optDatorata).join("")}</optgroup>` : "")
+      + (inainte.length ? `<optgroup label="Datorate de firmă — înainte de preluare în iConta.eu" data-titlu="Datorate înainte de preluarea în iConta.eu">${inainte.map(optDatorata).join("")}</optgroup>` : "");
     const alte = S.tipuri.map((tp) => {
       const et = `${tp.toUpperCase()} · ${(S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""}${(S.deLamurit || {})[tp] ? " · " + S.deLamurit[tp] : ""}`;   // [8.1 pct.6] D710: la cerere; [D2, 14.3] „de lămurit”
       const neap = S.neaplicabile[tp];
@@ -281,6 +281,7 @@ async function declaratiiExistente(zona, tenantId) {
     : c.depasita ? "documentele s-au schimbat după generare — de generat din nou"
     : c.stare === "aprobata" ? "validată, de depus" : "la validare";
   // [15.1-E3, 731 / 7] un card-rezumat de 44 px; rândurile stau pliate sub „▾ detalii”, într-un tabel DS cu butonul XS „Deschide” pe fiecare rând (nu text apăsabil în text)
+  zona.classList.add("dec-existente");
   const lista = document.createElement("div");
   tabelDS(lista, {
     coloane: [{ cheie: "decl", titlu: "Declarație" }, { cheie: "perioada", titlu: "Perioadă" }, { tip: "stare", titlu: "Stare" }, { cheie: "de", titlu: "Pregătită de" }, { tip: "actiuni", titlu: "" }],

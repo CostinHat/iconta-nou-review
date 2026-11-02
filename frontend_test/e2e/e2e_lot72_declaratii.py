@@ -146,8 +146,8 @@ def test_def_299_refuzul_spune_perioada_deschide_si_inlocuieste(patron, firma_e2
         pg = patron.pg
         _deschide(patron, firma_e2e["nume"], "declaratii", "#dec-tip")
         pg.wait_for_selector(".dec-existente", timeout=20000)
-        ex = pg.inner_text(".dec-existente")
-        assert "D300 · " + per in ex, ex
+        ex = " ".join(pg.eval_on_selector(".dec-existente", "e => [...e.querySelectorAll('tr')].map((r) => [...r.children].map((c) => c.textContent.trim()).join(' ')).join(' | ')").split())   # [15.1-E3] coada e un tabel DS în detaliile pliate ale cardului (coloanele: Declarație · Perioadă · …)
+        assert "D300 " + per in ex, ex
         _declaratie_pas1(patron, firma_e2e["nume"], "d300", LUNA.an, luna=LUNA.luna)
         pg.wait_for_selector("#dec-trimite", timeout=90000)
         pg.click("#dec-trimite")
@@ -199,19 +199,15 @@ def test_def_300_d390_datorat_in_luna_deschisa_cu_factura_ic_si_fara_d112_fara_s
 def test_def_301_alte_declaratii_pliata_fara_cele_ale_persoanelor_fizice(patron, firma_e2e):
     """301. „Alte declarații” cuprindea declarațiile persoanelor fizice (D204, D212, D216, D230; D200, D201, D221, D223 au ieșit din aplicație, 660). Decizia: pliată,
     deschisă la cerere, numai declarațiile pe care un SRL le poate datora.
-    Pașii: Declarații pe SRL: selectorul arată numai „Datorate de firmă”; „Arată alte declarații” -> apare grupa „Alte declarații”, fără
-    niciuna dintre declarațiile persoanelor fizice."""
+    Pașii: Declarații pe SRL: lista arată „Datorate de firmă”, apoi grupa „Alte declarații”, fără niciuna dintre declarațiile persoanelor fizice."""
     from e2e_bloc_c import _deschide
     pregateste_firma(patron, firma_e2e)
     pg = patron.pg
     _deschide(patron, firma_e2e["nume"], "declaratii", "#dec-tip")
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
-    if grupe:
-        assert grupe[0].startswith("Datorate de firmă (") and "Alte declarații" not in grupe, grupe
-        patron.captura("pliata")
-        pg.click("#dec-alte")
-        pg.wait_for_function("() => [...document.querySelectorAll('#dec-tip optgroup')].some((g) => g.label === 'Alte declarații')",
-                             timeout=10000)
+    if grupe:   # [15.1-E3, 722] o singură listă cu căutare: datoratele sus, „Alte declarații” dedesubt (nu mai e pliată sub „Arată alte declarații”)
+        assert grupe[0].startswith("Datorate de firmă (") and grupe[-1] == "Alte declarații", grupe
+        patron.captura("lista")
     tipuri = pg.eval_on_selector_all("#dec-tip option", "(os) => os.map((o) => o.value)")
     patron.captura("deschisa")
     for t in ("d204", "d212", "d216", "d230"):

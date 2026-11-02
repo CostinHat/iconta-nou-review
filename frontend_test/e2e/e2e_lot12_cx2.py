@@ -492,7 +492,7 @@ def _b_ecran_supervizor(patron):
 def _b_neverificate_cu(patron, firma, eroare):
     """Câte rânduri din blocul „Firme pe care verificarea nu a rulat” numesc firma ȘI poartă cauza `eroare` (textul vine din răspunsul
     serverului, nu din test)."""
-    return patron.pg.locator(_B_F + ".sv-firma--neverif .cf-incr-rand", has_text=firma["nume"]).filter(has_text=eroare).count()
+    return patron.pg.locator(_B_F + ".sv-firma--neverif .ds-semnal-cutie", has_text=firma["nume"]).filter(has_text=eroare).count()
 
 
 @pytest.fixture()
@@ -564,7 +564,7 @@ def test_def_c147_rezultatul_calculat_cu_regulile_vechi_nu_ramane_curent(patron,
     _b_ecran_supervizor(patron)
     assert _b_neverificate_cu(patron, f, _B_CAUZA_VECHE) == 1          # anti-vacuu: rezultatul vechi chiar e pe ecran
     # rezultatul vechi e ETICHETAT pe ecran (nu arată ca unul curent): marcajul stării lui, pe rândul firmei
-    assert patron.pg.locator(".sv-firma--neverif .cf-incr-rand", has_text=f["nume"]).locator("[data-prospetime='invalidat']").count() == 1
+    assert patron.pg.locator(".sv-firma--neverif .ds-semnal-cutie", has_text=f["nume"]).locator("[data-prospetime='invalidat']").count() == 1
     patron.captura("rezultat_vechi")
     _b_tura_lucratorului()
     dupa = _b_rand_supervizor(patron, f)
@@ -577,7 +577,7 @@ def test_def_c147_rezultatul_calculat_cu_regulile_vechi_nu_ramane_curent(patron,
     patron.captura("recalculat")
     assert _b_neverificate_cu(patron, f, _B_CAUZA_VECHE) == 0
     # recalculat: nicio etichetă de rezultat vechi pe firma lui
-    assert patron.pg.locator(".sv-firma, .sv-firma--neverif .cf-incr-rand", has_text=f["nume"]).locator("[data-prospetime='invalidat']").count() == 0
+    assert patron.pg.locator(".sv-firma, .sv-firma--neverif .ds-semnal-cutie", has_text=f["nume"]).locator("[data-prospetime='invalidat']").count() == 0
 
 
 # ── C131 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -608,8 +608,9 @@ def test_def_c131_fiecare_declaratie_datorata_are_randul_reconcilierii_cu_numele
     pg.locator(_B_F + "#cf-incrucisat").scroll_into_view_if_needed()
     patron.captura("reconcilierea_pe_declaratii")
     # rândurile reconcilierii sunt ultimele rânduri ale secțiunii (`reconBloc`, după constatările confruntării)
-    capete = pg.eval_on_selector_all(_B_F + "#cf-incrucisat .cf-incr-rand .cf-incr-cap",
-                                     "es => es.map(e => e.innerText.replace(/\\s+/g, ' ').trim())")
+    # [15.1-E3] fiecare rând e un semnal pe rând (36 px): textul întreg al mesajului e în `title`-ul rândului, restul de peste 90 de caractere se pliază
+    capete = pg.eval_on_selector_all(_B_F + "#cf-incrucisat .ds-semnal:not(.ds-semnal-info) .ds-semnal-text",
+                                     "es => es.map(e => e.title.replace(/\\s+/g, ' ').trim())")
     assert capete[-len(recon):] == [" ".join(_b_cu_nume(c).split()) for c in recon], (capete, recon)
 
 

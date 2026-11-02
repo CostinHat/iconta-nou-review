@@ -77,10 +77,10 @@ def test_def_716_depasita_numai_dupa_termen_perioada_neincheiata_nu_e_de_generat
     patron.firma(f["nume"])
     _card(patron, "declaratii", _F + "#dec-tip")
     pg.wait_for_selector(_F + ".dec-existente", timeout=30000)
-    txt = " ".join(pg.inner_text(_F + ".dec-existente").split())
+    txt = " ".join(pg.eval_on_selector(_F + ".dec-existente", "e => [...e.querySelectorAll('tr')].map((r) => [...r.children].map((c) => c.textContent.trim()).join(' ')).join(' | ')").split())   # [15.1-E3] coada e un tabel DS în detaliile pliate ale cardului: coloanele se citesc una după alta (text_content cuprinde și ce e pliat)
     patron.captura("coada_declaratii")
-    assert re.search(r"D300 · %02d/%d · în lucru — perioada nu s-a încheiat \(termen \d\d\.\d\d\.\d{4}\)" % (AZI.month, AZI.year), txt), txt   # AZI-dat-de-test: declarația din coadă o creează testul pe luna lui AZI (`_coada`), nu aplicația
-    assert re.search(r"D300 · %02d/%d · depășită — termenul \d\d\.\d\d\.\d{4} a trecut" % (luna_veche.month, luna_veche.year), txt), txt
+    assert re.search(r"D300 %02d/%d în lucru — perioada nu s-a încheiat \(termen \d\d\.\d\d\.\d{4}\)" % (AZI.month, AZI.year), txt), txt   # AZI-dat-de-test: declarația din coadă o creează testul pe luna lui AZI (`_coada`), nu aplicația
+    assert re.search(r"D300 %02d/%d depășită — termenul \d\d\.\d\d\.\d{4} a trecut" % (luna_veche.month, luna_veche.year), txt), txt
     assert txt.count("de generat din nou") == 0, txt
 
 
@@ -246,9 +246,10 @@ def test_def_694_1_neconcordanta_decontului_are_regularizarea_ca_actiune_iar_coe
     pg.click("#fa-control")
     pg.wait_for_selector(_F + "button.cf-regulariza-tva", timeout=90000)
     patron.captura("control_regularizeaza")
-    txt = " ".join(pg.inner_text(_F + ".cf-incr-remediu:has(button.cf-regulariza-tva)").split())
+    # [15.1-E3, 732] acțiunea e butonul S lângă semnalul ei (același rând, nu o casetă în text): butonul „Regularizează…” și niciun „Contabilizează facturile” lângă el
+    txt = " ".join(pg.text_content(_F + ".ds-semnal-cutie:has(button.cf-regulariza-tva)").split())
     assert "Regularizează TVA-ul perioadei" in txt and "Contabilizează facturile" not in txt, txt
-    coerenta = " ".join(pg.inner_text(_F + ".cf-verif:has-text('TVA vs sold balanță')").split())
+    coerenta = " ".join(pg.text_content(_F + ".ds-semnal-cutie:has-text('TVA vs sold balanță')").split())
     assert re.search(r"TVA vs sold balanță la \d\d\.\d\d\.\d{4}", coerenta), coerenta
     pg.click(_F + "button.cf-regulariza-tva")
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('Închidere lună')", timeout=30000)
