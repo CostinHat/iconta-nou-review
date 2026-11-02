@@ -104,6 +104,14 @@ PYE
     if [ -s "$J/poarta_lf_ids.txt" ]; then
         tr '\n' '\0' < "$J/poarta_lf_ids.txt" | xargs -0 "$PY" -m pytest -q > "$J/poarta_pytest_lf.log" 2>&1
         RC=$?
+        if [ "$RC" -eq 4 ]; then   # nume memorate care nu mai există (parametri schimbați): se scot și se rulează o dată restul
+            grep '^ERROR: not found: ' "$J/poarta_pytest_lf.log" | sed 's#^ERROR: not found: ##; s#^'"$ROOT"'/##' | sort -u > "$J/poarta_lf_lipsa.txt"
+            grep -vxFf "$J/poarta_lf_lipsa.txt" "$J/poarta_lf_ids.txt" > "$J/poarta_lf_ids2.txt"
+            if [ -s "$J/poarta_lf_ids2.txt" ]; then
+                tr '\n' '\0' < "$J/poarta_lf_ids2.txt" | xargs -0 "$PY" -m pytest -q > "$J/poarta_pytest_lf.log" 2>&1
+                RC=$?
+            else RC=0; fi
+        fi
         case "$RC" in 0|5) ;; *) rosu "pytest picate la ultima rulare" ;; esac
         tail -1 "$J/poarta_pytest_lf.log"
     else
