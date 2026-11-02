@@ -89,10 +89,15 @@ if [ -z "$DOAR_PLASA" ]; then
     case "$TOT" in *"TOTAL: 0"*) ;; *) rosu "verificator"; final ;; esac
     # 2. pytest țintit (întâi cele picate la ultima rulare)
     T_P0=$(date +%s)
-    "$PY" -m pytest -q --lf --lfnf=none > "$J/poarta_pytest_lf.log" 2>&1
-    RC=$?
-    case "$RC" in 0|5) ;; *) rosu "pytest --lf (picate la ultima rulare)" ;; esac
-    tail -1 "$J/poarta_pytest_lf.log"
+    # [15.1-E2, pct.1] fără teste picate memorate `--lf` ar rula tot suitul (11.553 de teste): treapta se sare, cu un rând în log
+    if [ -s .pytest_cache/v/cache/lastfailed ] && [ "$(tr -d ' \n' < .pytest_cache/v/cache/lastfailed)" != "{}" ]; then
+        "$PY" -m pytest -q --lf --lfnf=none > "$J/poarta_pytest_lf.log" 2>&1
+        RC=$?
+        case "$RC" in 0|5) ;; *) rosu "pytest --lf (picate la ultima rulare)" ;; esac
+        tail -1 "$J/poarta_pytest_lf.log"
+    else
+        echo "[poarta lot] pytest --lf: SARIT — niciun test picat memorat (fara asta --lf ar rula tot suitul)"
+    fi
     if [ -z "$ROSII" ]; then
         xargs "$PY" -m pytest -q -n "$NW" --dist loadfile < "$J/poarta_pytest_fisiere.txt" > "$J/poarta_pytest.log" 2>&1
         RC=$?
