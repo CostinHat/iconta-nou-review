@@ -116,7 +116,8 @@ PYE
             mv "$J/poarta_lf_noi.txt" "$J/poarta_lf_curente.txt"
             if [ -s "$J/poarta_lf_curente.txt" ]; then lf_ruleaza "$J/poarta_lf_curente.txt" > "$J/poarta_pytest_lf.log" 2>&1; RC=$?; else RC=0; fi
         done
-        case "$RC" in 0|5) ;; *) rosu "pytest picate la ultima rulare" ;; esac
+        [ "$RC" -eq 4 ] && echo "[poarta lot] pytest picate la ultima rulare: nume memorate vechi, care nu mai există (cod 4) — nu sunt teste picate"
+        case "$RC" in 0|4|5) ;; *) rosu "pytest picate la ultima rulare" ;; esac
         tail -1 "$J/poarta_pytest_lf.log"
     else
         echo "[poarta lot] pytest picate la ultima rulare: SARIT — niciun test picat memorat"
