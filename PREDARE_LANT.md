@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**02.11.2026 — COMANDA 15.1-E2 (cadrul ferestrei) gata pe ramura `lucru/lot15-e2` (worktree `/home/costin/iconta_lot15e2`): bara de sus (56 px, fără traseu, firma / cabinetul cu CUI) în navigator, bara de jos (72 px, `static/js/cadru.js`), poarta sare `--lf` fără teste picate, `~/alerta_veghe.sh` (cronul de verificare pe log rămâne de instalat de Costin). Măsurat înainte de publicare pe cele 83 de ecrane (94 de intrări): a TRECE pe toate în afară de „Primii pași” (nu e fereastră); b pică pe 13 ecrane la 1366×768 / Analitică stoc la ambele (conținut care nu încape — E3). Urmează E3 (reparațiile pe numere).**
+
 **01.11.2026 — COMANDA 15.1-E1 (verificatorul de design pe „migrat”) gata pe ramura `lucru/lot15-r`: poarta de bază VERDE pe `de4f5456`; unelte `scripts/verificator_design*`; măsurat: 0 ecrane migrate din 83 (34 + 49). Aplicația nu s-a schimbat. Urmează comanda E2 (reparațiile), scrisă de arhitect după tabelul din raport.**
 
 **31.10.2026 — COMANDA 15.1: zonele A (`0e1f09e4`) și B (`a082c5b4`) PUBLICATE; zona C (687.1-a, 687.1-SPV, 713, 724 și 681.1) pe ramura `lucru/lot15-1c` (worktree `/home/costin/iconta_lot15`), la poartă. Rămân de făcut: retestul zonei B (673.2, 446.2, 634.2, 725.1, F-A.1, 726) și zona D. Raportul A–G vine o singură dată, la sfârșitul lui 15.1.**

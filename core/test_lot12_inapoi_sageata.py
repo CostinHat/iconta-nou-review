@@ -122,7 +122,7 @@ def test_sageata_ia_intai_pasul_intern_o_singura_data():
     """DS cap.3: „←” = un pas înapoi în ierarhia ECRANULUI — întâi pasul declarat de ecran, consumat înainte de chemare (o singură dată),
     apoi traseul, apoi fereastra."""
     s = _citeste(NAV)
-    h = _bucata(s, 'bInapoi.addEventListener("click"', "\n    }\n")
+    h = _bucata(s, "const _pasInapoi = () => {", "\n    };\n")   # [15.1-E2] „←” și „Renunță” (bara de jos) au același pas
     i_intern = h.index('typeof sus.inapoi === "function"')
     assert i_intern < h.index("sus.pasi && sus.pasi.length") < h.index("nav.inapoi()"), h
     assert re.search(r"const (\w+) = sus\.inapoi;\s*sus\.inapoi = null;\s*\1\(\)", h), "pasul intern nu se consumă înainte de chemare:\n" + h

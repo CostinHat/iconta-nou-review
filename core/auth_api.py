@@ -129,7 +129,7 @@ def sesiune_pentru_user(conn, user_id, secret=None):
         cur.execute(
             "SELECT u.id, u.email, u.nume, u.prenume, u.rol, u.accounting_firm_id, u.activ, "
             "u.poate_pregati, u.poate_valida, u.poate_depune, u.bun_venit_vazut_la, "
-            "af.nume AS nume_firma, af.activ AS firma_activa "
+            "af.nume AS nume_firma, af.cui AS cui_firma, af.activ AS firma_activa "
             "FROM public.users u "
             "LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id "
             "WHERE u.id = %s", (user_id,))
@@ -146,6 +146,7 @@ def sesiune_pentru_user(conn, user_id, secret=None):
                      "nume": u.get("nume"), "prenume": u.get("prenume"),
                      "firm": u["accounting_firm_id"],
                      "nume_firma": u.get("nume_firma"),
+                     "cui_firma": u.get("cui_firma"),   # [15.1-E2] bara de sus a ferestrei: cabinetul cu CUI
                      "nume_tenant": nume_tenant,
                      "tenant_are_cabinet": tenant_are_cabinet,
                      "poate_pregati": bool(u.get("poate_pregati")),
@@ -166,7 +167,7 @@ def login(conn, email, parola, secret=None):
             "SELECT u.id, u.email, u.password_hash, u.nume, u.prenume, u.rol, "
             "u.accounting_firm_id, u.activ, "
             "u.poate_pregati, u.poate_valida, u.poate_depune, u.bun_venit_vazut_la, "
-            "af.nume AS nume_firma, af.activ AS firma_activa "  # ICRD_CABINETE_CONSOLIDAT_LOGIN_V1
+            "af.nume AS nume_firma, af.cui AS cui_firma, af.activ AS firma_activa "  # ICRD_CABINETE_CONSOLIDAT_LOGIN_V1
             "FROM public.users u "
             "LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id "
             "WHERE u.email = %s",
@@ -190,6 +191,7 @@ def login(conn, email, parola, secret=None):
                      "nume": u.get("nume"), "prenume": u.get("prenume"),
                      "firm": u["accounting_firm_id"],
                      "nume_firma": u.get("nume_firma"),
+                     "cui_firma": u.get("cui_firma"),   # [15.1-E2] bara de sus a ferestrei: cabinetul cu CUI
                      "nume_tenant": nume_tenant,
                      "tenant_are_cabinet": tenant_are_cabinet,
                      "poate_pregati": bool(u.get("poate_pregati")),
@@ -229,14 +231,16 @@ def actualizeaza_profil(conn, user_id, nume=None, prenume=None):
         return {"ok": False, "cod": "USER_INEXISTENT"}
     # nume_firma pentru sursa unica (bara 1)
     with conn.cursor() as cur:
-        cur.execute("SELECT nume FROM public.accounting_firms WHERE id = %s",
+        cur.execute("SELECT nume, cui FROM public.accounting_firms WHERE id = %s",
                     (u["accounting_firm_id"],))
         r = cur.fetchone()
         nume_firma = r[0] if r else None
+        cui_firma = r[1] if r else None
     return {"ok": True, "user": {
         "id": u["id"], "rol": u["rol"], "nume": u.get("nume"),
         "prenume": u.get("prenume"), "firm": u["accounting_firm_id"],
         "nume_firma": nume_firma,
+        "cui_firma": cui_firma,
         "poate_pregati": bool(u.get("poate_pregati")),
         "poate_valida": bool(u.get("poate_valida")),
         "poate_depune": bool(u.get("poate_depune")),

@@ -27,15 +27,18 @@
   if (!ant) pica.a.push("nu există bara de sus (.fereastra-antet)");
   else {
     if (Math.abs(a.inaltime - 56) > 1) pica.a.push("bara de sus are " + a.inaltime + " px, nu 56");
-    const traseu = ant.querySelectorAll(".fir-veriga, .fir-sep");
-    a.traseu = traseu.length;
-    if (traseu.length) pica.a.push("bara de sus are traseu (" + norm(ant.querySelector(".fereastra-fir")?.innerText) + ")");
+    // [15.1-E2, pct.5] traseu = două sau mai multe ecrane vizitate înșiruite; „firma › numele ferestrei” (un singur „›”) NU e traseu
+    const traseu = [...ant.querySelectorAll(".fir-veriga")];
+    const separatori = ant.querySelectorAll(".fir-sep").length;
+    a.traseu = traseu.length + (separatori > 1 ? separatori : 0);
+    if (traseu.length || separatori > 1) pica.a.push("bara de sus are traseu (" + norm(ant.querySelector(".fereastra-fir")?.innerText) + ")");
     const inapoi = ant.querySelector(".nav-inapoi");
     a.sageata = !!inapoi && norm(inapoi.innerText) === "←";
     if (!a.sageata) pica.a.push("lipsește „←” (un pas înapoi)");
     const fir = norm(ant.querySelector(".fereastra-fir")?.innerText);
     a.firma_sau_cabinet = fir;
-    if (!/CUI\s*\S+/.test(fir)) pica.a.push("firma sau cabinetul în lucru nu apare cu CUI în bara de sus");
+    // [15.1-E2] Panou Admin n-are firmă sau cabinet în lucru: contextul ei e „Panou Admin”, fără CUI (decizie în raport, E)
+    if (!/CUI\s*\S+/.test(fir) && !/^Panou Admin\b/.test(fir)) pica.a.push("firma sau cabinetul în lucru nu apare cu CUI în bara de sus");
     const nume = ant.querySelector(".fereastra-nume, .fir-acum");
     a.numele_ferestrei = nume ? norm(nume.innerText) : null;
     if (!nume) pica.a.push("numele ferestrei nu e în bara de sus");

@@ -210,7 +210,7 @@ async function wizardFirmeStrat(corp, nav, st) {
     rand.addEventListener("click", () => {
       // [396, clasa: ecranul unei firme deschis de la nivelul cabinetului] firma ale cărei date se importă devine firma în lucru, înainte
       // de pas (meniul firmei, `#fa-import`, o are deja: e deschis din fereastra ei)
-      if (nav.setFirmaInLucru && (!nav.firmaInLucruId || nav.firmaInLucruId() !== f.tenant_id)) nav.setFirmaInLucru(f.nume || "", f.tenant_id);
+      if (nav.setFirmaInLucru && (!nav.firmaInLucruId || nav.firmaInLucruId() !== f.tenant_id)) nav.setFirmaInLucru(f.nume || "", f.tenant_id, f.cui || "");
       nav.mergi(st.titlu + " \u00b7 " + (f.nume || ""), (c) => st.peFirma(c, nav, f));
     });
     lista.appendChild(rand);

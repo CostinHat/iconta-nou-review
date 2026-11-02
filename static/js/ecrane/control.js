@@ -75,7 +75,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
 // devine firma în lucru — ÎNAINTE de deschiderea ferestrei, ca la `deschideFirma` (bara se redesenează cu tot desktopul; chemată din
 // randarea ferestrei, ar redesena-o la nesfârșit)
 function deschideDetaliu(nav, f) {
-  if (nav.setFirmaInLucru && (!nav.firmaInLucruId || nav.firmaInLucruId() !== f.tenant_id)) nav.setFirmaInLucru(f.nume || "", f.tenant_id);
+  if (nav.setFirmaInLucru && (!nav.firmaInLucruId || nav.firmaInLucruId() !== f.tenant_id)) nav.setFirmaInLucru(f.nume || "", f.tenant_id, f.cui || "");
   nav.deschide("Detaliu firmă", (cc, nn) => detaliuFirma(cc, nn, f));
 }
 

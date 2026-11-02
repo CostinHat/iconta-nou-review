@@ -46,7 +46,7 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=d8b4e86b8e";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
-import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=6d8714b398";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=e84f2be14e";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=da50b57fd8";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2a7b3fae69";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4c304d9be3";  // [produse_firma_v1]
@@ -450,7 +450,7 @@ export function deschideFirma(t, nav) {   // [P2] reutilizat din termene.js — 
   // [deficiența 320] asistentul a deschis una dintre firmele lui: cardul de început „Firmele tale și ce ai voie să faci” e făcut (în
   // ecranul real, nu la apăsarea cardului); o singură dată, fără să aștepte răspunsul
   if (sesiune.rol() === "angajat" && !deschideFirma._vazut) { deschideFirma._vazut = true; api.post("/eu/inceput/firme-vazute", {}).catch(() => {}); }
-  nav.setFirmaInLucru(t.nume || "", t.id);
+  nav.setFirmaInLucru(t.nume || "", t.id, t.cui || "");
   nav.deschide((t.nume || "Firmă") + " \u00b7 CUI " + (t.cui || ""), (corp) => meniuFirma(corp, nav, t), { lat: "larg" });
 }
 

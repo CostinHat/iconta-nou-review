@@ -37,7 +37,9 @@ MASURI = os.path.join(RAD, "scripts", "verificator_design_masuri.js")
 
 #: Criteriul „migrat” (comanda 15.1-E1 pct.2, R7), cuvânt cu cuvânt. Cheia = litera rândului.
 RANDURI = {
-    "a": "bara de sus: 56 px, fără traseu, „←”, firma sau cabinetul în lucru cu CUI, numele ferestrei, căutarea",
+    "a": "bara de sus: 56 px, fără traseu, „←”, firma sau cabinetul în lucru cu CUI, numele ferestrei, căutarea; traseu înseamnă două sau mai multe "
+         "ecrane vizitate înșiruite — un singur „›” urmat de numele ferestrei curente NU e traseu; la Panou Admin, unde nu e nicio firmă sau "
+         "cabinet în lucru, contextul e „Panou Admin”, fără CUI",
     "b": "fereastra de lucru pe tot ecranul la 1920 × 1080 și 1366 × 768, un singur loc de derulare (tabelul lung), bara de jos fixă 72 px "
          "cu un singur buton principal L și „Renunță” M; butonul principal inactiv cu motiv cât timp acțiunea nu e posibilă",
     "c": "orice listă de înregistrări e tabelul DS: cap 40 px, rânduri 44 px, zebra, starea doar în coloana „Stare”, cel mult 2 acțiuni XS pe "

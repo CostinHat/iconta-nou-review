@@ -419,7 +419,8 @@ def cloneaza(_argv):
         parola = secrets.token_urlsafe(18)
         n = {}
         n["accounting_firms"] = _copiaza_randuri(cp, ct, "accounting_firms", "id = %s", (cabinet_id,),
-                                                 {"nume": lambda v: v + MARCAJ_CABINET}, exclude=("creat_la",))
+                                                 {"nume": lambda v: v + MARCAJ_CABINET, "cui": lambda v: v or "12345674"},   # [15.1-E2] bara de sus cere cabinetul cu CUI; CUI de test cu cifra de control verificată
+                                                 exclude=("creat_la",))
         hash_parola = nucleu.hash_parola(parola)
         email = {}
         for uid in utilizatori:

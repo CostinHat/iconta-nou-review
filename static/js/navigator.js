@@ -12,6 +12,7 @@ import { uitaFereastra } from "./restaurare.js?v=5bb0840a64";   // [15.1, 725]
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=9f24ba7549";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
+import { baraDeJos } from "./cadru.js?v=552cea685e";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
 import { puneCautarea } from "./cautare.js?v=cfb40793e9";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -72,7 +73,9 @@ export function creeazaNavigator(radacina, desktopRandator) {
   const CHEIE_FIRMA_LUCRU = "iconta_firma_in_lucru";
   let firmaInLucru = null; // numele firmei-client procesate (bara de jos)
   let firmaInLucruId = null;
-  try { const v = JSON.parse(sessionStorage.getItem(CHEIE_FIRMA_LUCRU) || "null"); if (v && v.nume) { firmaInLucru = v.nume; firmaInLucruId = v.id || null; } } catch { /* sesiune fără stocare: pornește fără firmă */ }
+  let firmaInLucruCui = "";
+  let _firmaNoua = false;   // [15.1-E2] o firmă a fost pusă în lucru de la ultima fereastră deschisă: fereastra următoare e a ei (bara de sus)
+  try { const v = JSON.parse(sessionStorage.getItem(CHEIE_FIRMA_LUCRU) || "null"); if (v && v.nume) { firmaInLucru = v.nume; firmaInLucruId = v.id || null; firmaInLucruCui = v.cui || ""; } } catch { /* sesiune fără stocare: pornește fără firmă */ }
 
   function randeazaDesktop() {
     radacina.innerHTML = "";
@@ -257,10 +260,14 @@ export function creeazaNavigator(radacina, desktopRandator) {
     const areInapoi = stiva.length > 1 || typeof sus.inapoi === "function" || (sus.pasi && sus.pasi.length > 0);  // traseu_automat_v1
     // [15.1, 713 / 681.1 / 701] bara de sus: numai firma în lucru (nume · CUI) și numele ferestrei curente, FĂRĂ traseu (nu acumulează ecranele vizitate);
     // „←” face un pas înapoi. Firma: titlul ferestrei ei din stivă („<nume> · CUI <cod>”), altfel firma în lucru a navigatorului.
-    // [15.1-D, 3a] fereastra de cabinet (nivelul întâi, ex. Control fiscal) nu poartă firma în lucru de dinainte: bara spune cabinetul
-    const _laCabinet = stiva.length === 1 && (stiva[0].optiuni || {}).nivel === "cabinet";
-    const _titluFirma = _laCabinet ? String((sesiune.user() || {}).nume_firma || "")
-      : ((stiva.map((x) => String(x.titlu || "")).find((t) => /· CUI /.test(t))) || firmaInLucru || "");
+    // [15.1-D, 3a] fereastra de cabinet nu poartă firma în lucru de dinainte: bara spune cabinetul. Contextul barei: firma ferestrei (titlul ei „<nume> · CUI <cod>” sau firma pusă în lucru la deschidere); altfel, la cabinet, numele
+    // cabinetului cu CUI; la Panou Admin (fără firmă sau cabinet în lucru), „Panou Admin”; clientul din portal, firma lui
+    const _u = sesiune.user() || {};
+    const _deFirma = stiva.map((x) => String(x.titlu || "")).find((t) => /· CUI /.test(t))
+      || (sus.firma ? sus.firma.nume + (sus.firma.cui ? " · CUI " + sus.firma.cui : "") : "");
+    const _titluFirma = _deFirma || (_u.rol === "client" ? firmaInLucru || ""
+      : _u.rol === "superadmin" ? "Panou Admin"
+      : String(_u.nume_firma || "") + (_u.nume_firma && _u.cui_firma ? " · CUI " + _u.cui_firma : ""));
     const _curent = String(sus.titluCurent || sus.titlu || "");
     const _doarFirma = _titluFirma && (_curent === _titluFirma || /· CUI /.test(_curent));
     const _fereastraMica = _latSus === "mic" || _latSus === "nota";   // fereastra mică n-are firul firmei: numai numele ei
@@ -280,16 +287,16 @@ export function creeazaNavigator(radacina, desktopRandator) {
     if ((sus.optiuni || {}).lat !== "mic" && (sesiune.user() || {}).rol !== "client") puneCautarea(fer.querySelector(".fereastra-antet"), nav,
       { id: "cautare-fereastra", inainte: fer.querySelector(".fereastra-spatiu") });
     const bInapoi = fer.querySelector(".nav-inapoi");
-    if (bInapoi) {
-      bInapoi.addEventListener("click", () => {  // traseu_automat_v1
+    // [15.1-E2] „←” și „Renunță” (bara de jos) fac același pas înapoi
+    const _pasInapoi = () => {  // traseu_automat_v1
         // [C140] ordinea: pasul intern al ecranului (o dată) -> pasul de pe traseu -> fereastra. [fir_pop_v1 10.08.2026] Acumularea de
         // ferestre / pași venea din ecrane care-și declarau ca pas intern ecranul ferestrei de dedesubt; rădăcina unei ferestre sau a unui
         // pas nu-și declară pas intern (DS cap.3) — garda `core/test_lot12_inapoi_sageata.py` o face imposibilă.
         if (typeof sus.inapoi === "function") { const f = sus.inapoi; sus.inapoi = null; f(); _arataSageata(); return; }
         if (sus.pasi && sus.pasi.length) { _laPas(sus, sus.pasi.length - 1); randeazaFerestre(); return; }
         nav.inapoi();
-      });
-    }
+    };
+    if (bInapoi) bInapoi.addEventListener("click", _pasInapoi);
     // [445] fereastra deschisă dintr-un refuz: X o închide pe ea și întoarce la formularul de plecare (păstrat), nu aruncă tot drumul
     fer.querySelector(".nav-x").addEventListener("click", () => (sus.intoarcere && stiva.length > 1 ? nav.inapoi() : nav.acasa()));
     overlay.appendChild(fer);
@@ -318,6 +325,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
     /* stelute_rosii_v2: orice * din etichete devine rosu, oricand apare */
     const _corp = fer.querySelector(".fereastra-corp");
     _marcheazaModificari(_corp);
+    // [15.1-E2, pct.3] bara de jos a ferestrei de lucru (72 px, acțiunea principală L + „Renunță” M): o singură piesă, aici, pe orice fereastră de
+    // lucru; „Renunță” face ce face „←” (pasul intern, pasul de pe traseu, fereastra). Confirmarea și nota (fereastra mică) n-o au.
+    if ((fer.classList.contains("fer-lucru") || fer.classList.contains("fer-tabel")) && !_corp.__baraJos)
+      _corp.__baraJos = baraDeJos(fer, _corp, { renunta: () => _pasInapoi() });
     if (pastrat && _corp.__steaza) return;   // observatorul elementului păstrat merge deja
     const _steaza = () => { /* titlu_firma_v2 + titlu_global_v1 */
       // [deficiența 331, 18.10.2026] titlul pus aici cât ecranul se încarcă iese când ecranul își scrie titlul lui (mai adânc, într-un
@@ -379,7 +390,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         return;
       }
       // altfel: tabelul sau lista cea mai înaltă (un container cu cel puțin 8 copii de același fel, ex. `.pf-lista`, `.mig-lista`)
-      const nivel1 = (e) => !e.parentElement.closest("table") && !e.closest("template, details, .rezumat-fix, .bara-fixa") && e.offsetParent !== null;
+      const nivel1 = (e) => !e.parentElement.closest("table") && !e.closest("template, details, .rezumat-fix, .bara-fixa, .fereastra-jos") && e.offsetParent !== null;
       const inalt = (e) => (e.closest(".zona-derulare") ? e.closest(".zona-derulare").scrollHeight : e.offsetHeight);
       const candidate = [..._corp.querySelectorAll("table, .mig-sold-tabel")].filter(nivel1);
       for (const e of [_corp, ..._corp.querySelectorAll("div, ul, ol, tbody")]) {
@@ -496,7 +507,11 @@ export function creeazaNavigator(radacina, desktopRandator) {
         if (dinRefuz) intoarcere = { titlu: String(jos.titluCurent || jos.titlu || "") };
       }
       const parinte = stiva.length ? stiva[stiva.length - 1] : null;   // [717, 14.3] luna ferestrei din care se deschide aceasta (dacă își știe luna; o fereastră fără lună, ca fereastra firmei, o lasă să treacă mai departe)
-      stiva.push({ titlu, randator, curent: randator, pasi: [], optiuni: optiuni || {}, intoarcere, lunaParinte: parinte && (parinte.luna || parinte.lunaParinte) ? { ...(parinte.luna || parinte.lunaParinte) } : null }); randeazaFerestre(); },
+      // [15.1-E2] firma ferestrei (bara de sus): cea pusă în lucru chiar înainte de deschidere, altfel a ferestrei din care se deschide aceasta;
+      // fereastra de cabinet (deschisă fără firmă) n-o are și bara spune cabinetul, nu ultima firmă lucrată
+      const firma = _firmaNoua && firmaInLucru ? { nume: firmaInLucru, cui: firmaInLucruCui } : (parinte && parinte.firma) || null;
+      _firmaNoua = false;
+      stiva.push({ titlu, randator, curent: randator, pasi: [], optiuni: optiuni || {}, intoarcere, firma, lunaParinte: parinte && (parinte.luna || parinte.lunaParinte) ? { ...(parinte.luna || parinte.lunaParinte) } : null }); randeazaFerestre(); },
     // [717, 14.3] „Orice fereastră deschisă dintr-o altă fereastră păstrează luna din care vii”: fereastra cu lună o publică (`seteazaLuna`), cea nouă o citește
     // (`lunaParinte`) ca lună de pornire, dacă apelantul nu i-a dat una; ecranele fără lună nu se ating
     seteazaLuna(an, luna) { const s = stiva[stiva.length - 1]; if (s) s.luna = { an, luna }; },
@@ -542,11 +557,11 @@ export function creeazaNavigator(radacina, desktopRandator) {
       stiva[stiva.length - 1].inapoi = fn;
       _arataSageata();
     },
-    acasa() { stiva.length = 0; uitaFereastra(); randeazaFerestre(); _versiune.laAcasa(); },   // [15.1, 725] închis de om: F5 nu o mai redeschide   // [256] pagina principală se încarcă în versiunea nouă
+    acasa() { stiva.length = 0; _firmaNoua = false; uitaFereastra(); randeazaFerestre(); _versiune.laAcasa(); },   // [15.1, 725] închis de om: F5 nu o mai redeschide   // [256] pagina principală se încarcă în versiunea nouă
     // setează firma procesată (bara de jos) și re-randează desktopul
-    setFirmaInLucru(nume, id = null) {
-      firmaInLucru = nume; firmaInLucruId = nume ? id : null;
-      try { if (nume) sessionStorage.setItem(CHEIE_FIRMA_LUCRU, JSON.stringify({ nume, id: firmaInLucruId })); else sessionStorage.removeItem(CHEIE_FIRMA_LUCRU); } catch { /* fără stocare */ }
+    setFirmaInLucru(nume, id = null, cui = "") {
+      firmaInLucru = nume; firmaInLucruId = nume ? id : null; firmaInLucruCui = nume ? String(cui || "") : ""; _firmaNoua = !!nume;
+      try { if (nume) sessionStorage.setItem(CHEIE_FIRMA_LUCRU, JSON.stringify({ nume, id: firmaInLucruId, cui: firmaInLucruCui })); else sessionStorage.removeItem(CHEIE_FIRMA_LUCRU); } catch { /* fără stocare */ }
       randeazaDesktop();
     },
     firmaInLucruId() { return firmaInLucruId; },
@@ -747,7 +762,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=9f24ba7549");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=c518f62d95");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=146d4e823b");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();
@@ -762,7 +777,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const tid = parseInt(n.link.slice("control-fiscal:".length), 10);
             if (!Number.isFinite(tid)) { console.warn("[clopot] link control-fiscal malformat:", n.link); return; }
             try {
-              const { randeazaControl } = await import("./ecrane/control.js?v=0c599db27d");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
+              const { randeazaControl } = await import("./ecrane/control.js?v=c027ce0ad1");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
               window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet", lat: "lucru" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide control fiscal:", e); }
           }

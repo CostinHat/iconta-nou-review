@@ -52,7 +52,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=c518f62d95");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=146d4e823b");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }

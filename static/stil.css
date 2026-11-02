@@ -3424,3 +3424,35 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .ds-pastila-avertisment { background: #fdeccd; color: #7a4b05; }
 .ds-pastila-ok { background: #dff3e4; color: #1e6b36; }
 .ds-pastila-info { background: #e3ebf7; color: #2f4a73; }
+
+
+/* ---------- [15.1-E2] CADRUL FERESTREI DE LUCRU (DS ferestre și tabele, secțiunea 1) ----------
+   Bara de sus: 56 px, fixă; „←” 40 × 40, firma (nume · CUI) sau cabinetul, „›” și numele ferestrei, căutarea 320 × 40.
+   Bara de jos (`static/js/cadru.js`, o singură piesă): 72 px, fixă, ultimul copil al corpului; acțiunea principală L (52 px) în dreapta,
+   „Renunță” M (44 px) lângă ea, motivul butonului inactiv în stânga. Mesajele (`.bara-fixa`) stau deasupra ei. */
+.fereastra-antet { box-sizing: border-box; height: 56px; padding: 0 16px; flex: 0 0 auto; }
+.fereastra-antet .nav-sageata { width: 40px; height: 40px; }
+.fereastra-antet .nav-sageata.nav-inapoi-la { width: auto; }
+.fereastra-antet .cautare-in-fereastra { flex: 0 1 320px; }
+.fereastra-antet .cautare-in-fereastra .cautare-camp { height: 40px; }
+.fereastra-corp:has(> .fereastra-jos) { display: flex; flex-direction: column; }
+.fereastra-corp:has(> .fereastra-jos):not(.cu-zona) > * { flex: 0 0 auto; }
+.fereastra-corp > .fereastra-jos { position: sticky; bottom: -16px; z-index: 3; box-sizing: border-box; height: 72px; margin: auto -16px -16px; padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #e9edf3; border-top: 1px solid var(--linie); flex: 0 0 auto; }
+.fj-motiv { flex: 1 1 auto; min-width: 0; font-size: 14px; color: var(--gri); }
+.fj-motiv .ds-motiv-inactiv { margin: 0; }
+.fj-butoane { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
+.fj-butoane .fj-renunta { order: 1; height: 44px; padding: 0 20px; font-size: 16px; margin: 0; }
+.fj-butoane .fj-principal { order: 2; height: 52px; padding: 0 24px; font-size: 16px; margin: 0; }
+.fereastra-corp:has(> .fereastra-jos) .bara-fixa { bottom: 56px; }
+@media (max-width: 560px) { .fereastra-antet { height: auto; min-height: 56px; } }
+/* marginea ferestrei de lucru: 16 px (DS, secțiunea 1), nu 24; aceleași reguli ca ale corpului de telefon (mai sus), pe orice fereastră de lucru */
+.fereastra.fer-lucru .fereastra-corp, .fereastra.fer-tabel .fereastra-corp { padding: 16px; }
+.fereastra.fer-lucru .fereastra-corp .rezumat-fix, .fereastra.fer-tabel .fereastra-corp .rezumat-fix { top: -16px; margin: 0 -16px; padding: 8px 16px; }
+.fereastra.fer-lucru .fereastra-corp .bara-fixa, .fereastra.fer-tabel .fereastra-corp .bara-fixa { bottom: -16px; margin: 0 -16px -16px; padding: 4px 16px 16px; }
+.fereastra.fer-lucru .fereastra-corp:has(> .fereastra-jos) .bara-fixa, .fereastra.fer-tabel .fereastra-corp:has(> .fereastra-jos) .bara-fixa { bottom: 56px; margin-bottom: 0; padding-bottom: 8px; }   /* deasupra barei de jos: nu mai are de ținut distanța până la marginea ferestrei */
+.fereastra.fer-tabel .fereastra-corp .fd-tabel thead th { top: calc(var(--rezumat-h, 0px) - 16px); }
+.fereastra.fer-tabel .fereastra-corp .mig-sold-tabel .ac-cap { top: calc(var(--rezumat-h, 0px) - 16px); }
+.fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel thead th, .fereastra.fer-tabel .fereastra-corp .zona-derulare .mig-sold-tabel .ac-cap { top: 0; }
+/* titlul ferestrei de lucru: rând de 48 px, text de 20 px semibold (DS, secțiunea 1) */
+.fereastra.fer-lucru .fereastra-corp > h2.pf-titlu, .fereastra.fer-tabel .fereastra-corp > h2.pf-titlu { min-height: 48px; margin: 0; display: flex; align-items: center; font-size: 20px; font-weight: 600; }
