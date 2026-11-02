@@ -96,8 +96,9 @@ import json, os
 p = ".pytest_cache/v/cache/lastfailed"
 d = json.load(open(p, encoding="utf-8")) if os.path.exists(p) else {}
 for k in d:
-    f = k.split("::")[0]
-    if os.path.isfile(f):
+    f = k.split("::")
+    # numai testele care mai există (o memorie veche poate numi funcții șterse: pytest le-ar refuza cu „not found” și poarta ar fi roșie degeaba)
+    if os.path.isfile(f[0]) and (len(f) < 2 or ("def " + f[-1].split("[")[0].split("::")[-1]) in open(f[0], encoding="utf-8").read()):
         print(k)
 PYE
     if [ -s "$J/poarta_lf_ids.txt" ]; then
