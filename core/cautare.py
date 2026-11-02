@@ -14,6 +14,10 @@ DE UNDE VIN REZULTATELE — fiecare dintr-o sursă care există deja, nicio list
   · cardurile ferestrei firmei: lista `optiuni` din `meniuFirma` (`static/js/ecrane/firme.js`) — cheia, regimul, grupul, titlul, descrierea;
   · operațiunile speciale: registrul `REGISTRU` din `static/js/ecrane/operatiuni_ecran.js` — titlul, categoria, ruta și etichetele
     câmpurilor („Diurna acordată pe zi” găsește decontul și când omul nu știe numele operației);
+  · ecranele care nu sunt carduri ale ferestrei firmei (cele ale cabinetului, ecranele deschise din alt ecran: Istoric facturi, Audit de
+    preluare, Povestea lunii…) și numele funcțiilor („Stat de plată”): `core/catalog_ecrane.json` — ACELAȘI fișier din care verificatorul de
+    design își ia lista ecranelor (intrările cu cheia `catalog`); fiecare poartă titlul, locul, cuvintele contabilului și pașii prin care se
+    deschide ecranul (cei ai verificatorului: clic pe card, clic pe buton), repetați de ecran la alegere [15.1-E3, 681.2];
   · declarațiile firmei: `declaratii_api.tipuri()` cu filtrul formei firmei (ca `uc_declaratii.declaratii_tipuri`), denumirea oficială din
     `core/dNNN.DENUMIRE_OFICIALA` (sursa listei publice, `scripts/genereaza_declaratii_lista.py`).
 Din firma în lucru se citește numai forma ei (tipul de firmă: ce funcții are); nicio dată a firmei (nume, sume, documente) nu intră în căutare.
@@ -35,6 +39,7 @@ from core.cache_declarat import Declaratie as _Dec
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SURSA_CARDURI = os.path.join(_RAD, "static", "js", "ecrane", "firme.js")
 SURSA_OPERATIUNI = os.path.join(_RAD, "static", "js", "ecrane", "operatiuni_ecran.js")
+SURSA_CATALOG = os.path.join(_RAD, "core", "catalog_ecrane.json")
 
 #: cuvântul contabilului -> cardul ferestrei firmei unde se face lucrul (nu e un titlu de card)
 SINONIME = {
@@ -44,6 +49,7 @@ SINONIME = {
     "amortizare": "mijloace", "casare": "mijloace", "extras": "banca", "nota contabila": "jurnal", "note contabile": "jurnal",
     "chitanta": "casa", "dispozitie": "casa", "factura": "facturi", "facturi": "facturi", "spv": "facturi", "efactura": "facturi",
     "istoric": "facturi", "istoric facturi": "facturi",   # [15.1, 681.1] „istoric” duce la Istoric facturi (fereastra Facturi)
+    "reg": ["rip", "jurnal", "reginventar"],   # [15.1-E3, 681.2] „reg” = registru: întâi Registru încasări/plăți, Registru jurnal, Registrul-inventar
     "balanta": "balanta", "fisa de cont": "fisacont", "sold initial": "import", "preluare": "import", "solduri": "import",
 }
 
@@ -89,6 +95,18 @@ def _citeste(cale):
             v = (m, h.read())
         _cache[cale] = v
     return v[1]
+
+
+def ecrane_catalog():
+    """Ecranele din catalog: [{id, titlu, unde, cuvinte, regim, firma, pasi}] — intrările `core/catalog_ecrane.json` care au cheia `catalog`."""
+    out = []
+    for e in json.loads(_citeste(SURSA_CATALOG)):
+        c = e.get("catalog")
+        if not c:
+            continue
+        out.append({"id": e["nume"], "titlu": c["titlu"], "unde": c["unde"], "cuvinte": c.get("cuvinte", []), "regim": c.get("regim", "ambele"),
+                    "firma": bool(c.get("firma")), "pasi": e["pasi"], "inlocuieste_card": c.get("inlocuieste_card")})
+    return out
 
 
 def carduri_firma():
@@ -159,13 +177,29 @@ def cauta(q, firma=None):
     regim = regim_contabil(firma.get("tip_firma")) if firma else None
     rez = []
     sinonim = SINONIME.get(qn)
+    boost = (lambda cheie: 0) if not sinonim else (lambda cheie: 6 if sinonim == cheie else
+                                                   (9 - sinonim.index(cheie) if isinstance(sinonim, list) and cheie in sinonim else 0))
+    cat = ecrane_catalog()
+    # un card al ferestrei firmei pe care o intrare din catalog îl înlocuiește (același ecran, cu numele lui întreg: `inlocuieste_card`) nu se arată de două ori
+    acoperite = {e["inlocuieste_card"] for e in cat if e.get("inlocuieste_card")}
     for c in carduri_firma():
         if regim and c["regim"] not in ("ambele", regim):
             continue
-        s = _potriveste(cuvinte, c["titlu"], c["desc"], c["grup_titlu"]) + (6 if sinonim == c["cheie"] else 0)
+        if c["cheie"] in acoperite:
+            continue
+        s = _potriveste(cuvinte, c["titlu"], c["desc"], c["grup_titlu"]) + boost(c["cheie"])
         if s:
             rez.append((s, {"fel": "card", "cheie": c["cheie"], "titlu": c["titlu"], "unde": "Fereastra firmei › %s" % c["grup_titlu"],
                             "desc": c["desc"], "actiune": None}))
+    for e in cat:   # [15.1-E3, 681.2] toate ecranele, după titlul lor și după cuvintele contabilului; potrivirea pe sens: cuvântul întreg dat de catalog bate un cuvânt comun
+        if regim and e["regim"] not in ("ambele", regim):
+            continue
+        s = _potriveste(cuvinte, e["titlu"], e["unde"], " ".join(e["cuvinte"]))
+        if s:
+            s += 6 if qn in [normalizeaza(x) for x in e["cuvinte"]] else 0
+            s += 3 if normalizeaza(e["titlu"]) == qn else 0
+            rez.append((s + 1, {"fel": "ecran", "id": e["id"], "titlu": e["titlu"], "unde": e["unde"], "pasi": e["pasi"], "firma": e["firma"],
+                                "actiune": None}))
     if regim in (None, "dubla"):   # operațiunile speciale sunt ale partidei duble (cardul `operatiuni`, regim „dubla”)
         for o in operatiuni():
             s = _potriveste(cuvinte, o["titlu"], o["cat"], " ".join(o["campuri"]))
@@ -180,8 +214,6 @@ def cauta(q, firma=None):
                 rez.append((s + (3 if normalizeaza(d["tip"]) == qn else 0),
                             {"fel": "declaratie", "tip": d["tip"], "titlu": "%s — %s" % (d["tip"].upper(), d["denumire"]) if d["denumire"]
                              else d["tip"].upper(), "unde": "Declarații", "actiune": None}))
-    if sinonim:   # [15.1, 681.1] sensul bate cuvântul comun: „stat de plată” duce la Salariați, nu la D100 („…obligațiile de plată la bugetul de stat”)
-        rez = [x for x in rez if x[1].get("fel") == "card" and x[1].get("cheie") == sinonim] or rez
     rez.sort(key=lambda x: (-x[0], normalizeaza(x[1]["titlu"])))
     return [r for _s, r in rez][:12]   # cât încape în lista de sub căsuță fără derulare (nu e o valoare fiscală)
 

@@ -408,7 +408,7 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
                     cauza += f", iar {_cate(len(cu_ciorna), 'factură are notă', 'facturi au note')} în ciornă, neconfirmate"
                 cauza += f"; TVA-ul lor ({_lei(tva_grup)}) explică exact diferența."
                 rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
-                    "fel": "executabil", "cauza": cauza,
+                    "fel": "executabil", "cod": "contabilizeaza_facturi", "cauza": cauza,
                     "actiune": "Contabilizează facturile listate.",
                     "facturi": [f["id"] for f in fara_nota],
                 }))
@@ -458,7 +458,7 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
                        f"(diferență {_lei(dif)})."),
                 # [694.1 b, comanda 14.3] acțiunea potrivită e regularizarea TVA a perioadei (688: nota 4427 = 4426, diferența în 4423 / 4424),
                 # nu „Contabilizează facturile”: ecranul deschide Închidere lună pe luna de sfârșit a perioadei fiscale
-                remediu={"fel": "regularizare_tva",
+                remediu={"fel": "regularizare_tva", "cod": "regularizeaza_tva",
                          "cauza": "Rezultatul decontului nu coincide cu nota de închidere TVA.",
                          "actiune": (f"Regularizează TVA-ul perioadei: nota 4427 = 4426, iar diferența în {cont}; apoi verifică soldul reportat "
                                      f"din perioada precedentă."),
@@ -568,7 +568,7 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=Tru
             }))
         elif contabil == 0 and decl > 0 and not note_ciorna:
             rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
-                "fel": "executabil",
+                "fel": "executabil", "cod": "contabilizeaza_stat",
                 "cauza": f"Statul de plată nu este contabilizat: contul {cont} nu are rulaj în lună.",
                 "actiune": "Contabilizează statul de plată.", "facturi": [],
             }))

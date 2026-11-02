@@ -104,7 +104,7 @@ def _preluare(cur):
     Control fiscal; None când nu se știe."""
     from core import luna_preluare as _lp
     fp = repo_firma_profil.fapte_preluare(cur)
-    return _lp.efectiva(fp["salvata"], fp["creat_la"], fp["data_solduri"], fp["prima_nota"])
+    return _lp.din_fapte(fp)
 
 
 def _starea_lunilor(conn, schema, luni):

@@ -10,7 +10,7 @@ identice). Un singur rând PICĂ = ecranul e nemigrat.
   python scripts/verificator_design.py porneste            serverul de lucru pe 8019, din commitul curent (arbore curat), pe baza de TEST
   python scripts/verificator_design.py opreste
   python scripts/verificator_design.py prompt <director> <ecran>...   promptul fix, cu lista de ecrane și directorul capturilor
-  python scripts/verificator_design.py lista               ecranele din registru (scripts/verificator_design_ecrane.json)
+  python scripts/verificator_design.py lista               ecranele din registru (core/catalog_ecrane.json)
   python scripts/verificator_design.py ecran "<nume>" <LATxINALT> <director>
                                                            deschide ecranul ca un contabil, scrie `<director>/<slug>_<LAT>x<INALT>.png` și `.json`
                                                            (măsurătorile și verdictul mecanic pe rândurile a–h) și le tipărește
@@ -32,7 +32,7 @@ PORT = 8019
 TEMP = "/tmp/verificator_design"
 STARE = os.path.join(TEMP, "stare.json")
 STARE_COPIE = os.path.expanduser("~/.cache/iconta_dovada")
-REGISTRU = os.path.join(RAD, "scripts", "verificator_design_ecrane.json")
+REGISTRU = os.path.join(RAD, "core", "catalog_ecrane.json")
 MASURI = os.path.join(RAD, "scripts", "verificator_design_masuri.js")
 
 #: Criteriul „migrat” (comanda 15.1-E1 pct.2, R7), cuvânt cu cuvânt. Cheia = litera rândului.

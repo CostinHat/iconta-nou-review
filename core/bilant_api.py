@@ -20,12 +20,13 @@ def data_soldurilor(cur, schema):
                            (SELECT creat_la FROM public.tenants WHERE schema_name = %s) AS creat_la,
                            (SELECT max(data_referinta) FROM {schema}.solduri_initiale) AS data_solduri,
                            (SELECT min(data) FROM {schema}.inregistrari) AS prima_nota,
+                           (SELECT data_infiintare FROM {schema}.firma_profil WHERE id = 1) AS infiintare,
                            (SELECT count(*) FROM {schema}.solduri_initiale) AS n_solduri""", (schema,))
     r = dict(cur.fetchone())
     if r["data_solduri"]:
         return r["data_solduri"]
     c = r["creat_la"]
-    ef = _lp.efectiva(r["salvata"], c.date() if hasattr(c, "date") else c, None, r["prima_nota"])
+    ef = _lp.efectiva(r["salvata"], c.date() if hasattr(c, "date") else c, None, r["prima_nota"], r["infiintare"])
     if not ef:
         return None
     return datetime.date(ef[0], ef[1], 1) - datetime.timedelta(days=1)

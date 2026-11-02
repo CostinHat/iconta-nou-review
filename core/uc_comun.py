@@ -1198,17 +1198,23 @@ def _tva_cu_perioada(tva, tva_incr, an, luna):
             return
 
 
-def _verificari_contabile(schema, an, luna, confruntare=None):
-    """Verificările contabile ale lunii (an, luna). `confruntare` = (an, luna) pe care rulează punțile declarație–contabilitate
-    (D300 / D112 / D390 / cota TVA); implicit aceeași lună. [deficiența 484] Control fiscal o dă pe cea din
-    `control_fiscal_api.luna_confruntata` — luna încheiată, a cărei declarație e datorată —, nu luna în curs."""
+def _balanta_lunii(schema, an, luna):
+    """(balanța, notele) la sfârșitul lunii (an, luna): conturile cu rulaje și solduri din notele validate până la prima zi a lunii următoare + soldurile inițiale."""
     from core import verificatoare as _vf
     from datetime import date as _date
     sfarsit = _date(an + (luna == 12), (luna % 12) + 1, 1)
     with db.get_conn() as conn, conn.cursor() as cur:
         note = [{"debit": r[0], "credit": r[1], "suma": r[2]} for r in _repo.select_inregistrari_linii(cur, schema, sfarsit)]
         si = {r[0]: r[1] for r in _repo.select_solduri_initiale(cur, schema)}
-    bal = _vf.balanta(note, si)
+    return _vf.balanta(note, si), note
+
+
+def _verificari_contabile(schema, an, luna, confruntare=None):
+    """Verificările contabile ale lunii (an, luna). `confruntare` = (an, luna) pe care rulează punțile declarație–contabilitate
+    (D300 / D112 / D390 / cota TVA); implicit aceeași lună. [deficiența 484] Control fiscal o dă pe cea din
+    `control_fiscal_api.luna_confruntata` — luna încheiată, a cărei declarație e datorată —, nu luna în curs."""
+    from core import verificatoare as _vf
+    bal, note = _balanta_lunii(schema, an, luna)
     # [R33 varianta b'', 26.08.2026] ECHILIBRUL E UN VERDICT COMPUS DIN DOUA VERIFICARI.
     # Pana azi aici rula doar `verifica_balanta`, iar `core/echilibru_perioada` -- scris, testat,
     # cu garda proprie -- nu era chemat de nimeni. Se credea ca e "a doua implementare a aceleiasi
@@ -1261,8 +1267,12 @@ def _verificari_contabile(schema, an, luna, confruntare=None):
             return {"an": an_c, "luna": luna_c, "perioada": "%02d/%d" % (luna_c, an_c), "stare": "gri", "constatari": [_c],
                     "limita": "Verificarea %s nu a rulat: %s" % (eticheta, _perioada.text_exceptie(_e))}
     tva_incr = _incrucisat(_ci.verifica_tva, "TVA")
-    _tva_bal = _tva_balanta_sau_nu_se_aplica(schema, bal)
-    _tva_cu_perioada(_tva_bal, tva_incr, an, luna)   # [694.1 c, comanda 14.3]
+    # [15.1-E3, 734] REGULA: nicio verificare nu se raportează la o dată din viitor. Coerența TVA din balanță se judecă la sfârșitul ULTIMEI LUNI ÎNCHEIATE (cea a
+    # confruntării, `control_fiscal_api.luna_confruntata`), nu la sfârșitul lunii în curs („TVA vs sold balanță la 30.11.2026” când azi e 02.11.2026): soldul e cel al lunii
+    # încheiate, iar data din text e ultima ei zi.
+    _bal_tva = bal if (an_c, luna_c) == (an, luna) else _balanta_lunii(schema, an_c, luna_c)[0]
+    _tva_bal = _tva_balanta_sau_nu_se_aplica(schema, _bal_tva)
+    _tva_cu_perioada(_tva_bal, tva_incr, an_c, luna_c)   # [694.1 c, comanda 14.3]
     d112_incr = _incrucisat(_ci.verifica_d112, "salarii (D112)")
     d390_incr = _incrucisat(_ci.verifica_d390, "operatiuni intracomunitare (D390)")
     # [F184] conformitate cota TVA facturi emise vs cota standard pe perioada (value-aware, NU decl-vs-contab)
@@ -1676,7 +1686,7 @@ def efactura_spv_firma(schema, azi=None):
     with db.get_conn(schema) as cs:
         with cs.cursor() as cur:
             fp = _rfp.fapte_preluare(cur)
-        preluare = _lp.efectiva(fp["salvata"], fp["creat_la"], fp["data_solduri"], fp["prima_nota"])
+        preluare = _lp.din_fapte(fp)
         return _cf.facturi_spv_netransmise(cs, preluare, azi or _azi_ro()), preluare
 
 

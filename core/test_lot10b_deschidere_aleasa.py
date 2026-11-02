@@ -138,7 +138,7 @@ CLICURI_PROGRAMATICE = {
     "static/js/navigator.js": (1, "notificarea aleasă de om (clopoțel / e-mail): se apasă elementul pe care îl numește"),
     "static/js/ecrane/inceput.js": (2, "cardul „Suport” ales de om deschide raportarea și fila „Cerere import”"),
     "static/js/ecrane/login.js": (1, "Enter în câmpul de e-mail = apăsarea butonului de alături"),
-    "static/js/restaurare.js": (5, "[725, 725.1] F5 readuce fereastra în care erai: aceiași pași pe care îi apasă omul (firma, cardul, fiecare buton din drum, fila listei), decizia lui Costin"),
+    "static/js/restaurare.js": (6, "[725.3] și bifa unui câmp redat la revenirea ferestrei (aceeași alegere a omului, făcută înainte de F5); [725, 725.1] F5 readuce fereastra în care erai: aceiași pași pe care îi apasă omul (firma, cardul, fiecare buton din drum, fila listei), decizia lui Costin"),
     "static/js/ecrane/portal.js": (2, "„Fotografiază” / „Încarcă” deschid alegerea fișierului (input ascuns)"),
     "static/js/ecrane/raporteaza.js": (2, "„Adaugă poză” / „Adaugă fișier” deschid alegerea fișierului (input ascuns)"),
     "static/js/ecrane/migrare.js": (1, "descărcarea fișierului cerut de om"),
@@ -146,7 +146,7 @@ CLICURI_PROGRAMATICE = {
     "static/js/ecrane/firme.js": (2, "descărcarea cerută de om; „Scanează cod de bare” deschide alegerea imaginii (input ascuns)"),
     # [lotul 13, 681] rezultatul ales de om în căutarea din antet apasă cardul ferestrei firmei și butonul operației pe care le numește
     # — aceleași elemente pe care omul le-ar fi apăsat, cu ascultătorii și drepturile lor (nu o a doua cale de deschidere)
-    "static/js/cautare.js": (2, "rezultatul căutării ales de om apasă cardul firmei / butonul operației pe care îl numește"),
+    "static/js/cautare.js": (3, "rezultatul căutării ales de om apasă cardul firmei / butonul operației pe care îl numește / butoanele ecranului din catalog (681.2: aceiași pași pe care i-ar face omul)"),
     "static/js/ecrane/validat.js": (1, "„Respinge nota” ales în caseta de confirmare apasă butonul de respingere al notei"),
     "static/js/ecrane/declaratii.js": (1, "„Generează / Regenerează” apăsat de om adaugă întâi rândul completat și neadăugat (652): se apasă „+ adaugă” al rândului, cu verificările lui"),
 }

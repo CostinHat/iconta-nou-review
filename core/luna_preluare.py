@@ -22,6 +22,11 @@ import datetime
 
 CAMP = "luna_preluare"
 
+# [15.1-E3, 724.2] REGULA ALEASĂ: luna preluării nu poate fi înaintea lunii în care a fost înființată firma (`firma_profil.data_infiintare`, Date firmă) — o firmă
+# nu are evidență înainte să existe. Dacă data înființării nu se știe, regula nu se aplică. Data vine din Date firmă (câmpul „Data înființării”), nu din altă parte;
+# o notă mai veche decât înființarea (F2: înființată 15.03.2026, o notă din 12/2025) nu mută luna preluării înaintea ei, iar luna salvată mai veche se ridică la
+# luna înființării. Exemplul care a arătat defectul: F2, înființată 15.03.2026, intrată în iConta 21.09.2026 — textul spunea 12/2025.
+
 
 def _luna(d):
     return (d.year, d.month) if d else None
@@ -34,12 +39,16 @@ def deduse(creat_la, data_solduri=None):
     return _luna(creat_la)
 
 
-def propunere(creat_la, data_solduri=None, prima_nota=None):
-    """Dedusa, plafonată la luna primei note."""
+def _nu_inainte(luna, infiintare):
+    """[724.2] `luna` ((an, lună) sau None), ridicată la luna înființării firmei când e mai veche."""
+    i = _luna(infiintare)
+    return max(luna, i) if luna and i else luna
+
+
+def propunere(creat_la, data_solduri=None, prima_nota=None, infiintare=None):
+    """Dedusa, plafonată la luna primei note, niciodată înaintea lunii înființării."""
     d, p = deduse(creat_la, data_solduri), _luna(prima_nota)
-    if d and p:
-        return min(d, p)
-    return d or p
+    return _nu_inainte(min(d, p) if d and p else d or p, infiintare)
 
 
 def plafonata(salvata, prima_nota):
@@ -47,15 +56,29 @@ def plafonata(salvata, prima_nota):
     return bool(_luna(salvata) and _luna(prima_nota) and _luna(salvata) > _luna(prima_nota))
 
 
-def efectiva(salvata, creat_la, data_solduri=None, prima_nota=None):
-    """Luna salvată în Date firmă, altfel propunerea — niciodată după luna primei note (`plafonata`)."""
+def efectiva(salvata, creat_la, data_solduri=None, prima_nota=None, infiintare=None):
+    """Luna salvată în Date firmă, altfel propunerea — niciodată după luna primei note (`plafonata`) și niciodată înaintea lunii înființării (724.2)."""
     if plafonata(salvata, prima_nota):
-        return _luna(prima_nota)
-    return _luna(salvata) or propunere(creat_la, data_solduri, prima_nota)
+        return _nu_inainte(_luna(prima_nota), infiintare)
+    return _nu_inainte(_luna(salvata), infiintare) or propunere(creat_la, data_solduri, prima_nota, infiintare)
 
 
-def eroare(luna, prima_nota):
-    """Mesajul refuzului, sau None: luna preluării nu poate fi după luna primei note."""
+def din_fapte(fapte, creat_la=None):
+    """Luna efectivă din faptele preluării (`repo_firma_profil.fapte_preluare`): UN SINGUR apel pentru toate locurile care o socotesc (Control fiscal, termene, SPV,
+    portal, bilanț, Date firmă) — regula înființării (724.2) nu se mai poate uita într-unul dintre ele. `creat_la` = data adăugării, dacă faptele n-o au."""
+    return efectiva(fapte.get("salvata"), fapte.get("creat_la") or creat_la, fapte.get("data_solduri"), fapte.get("prima_nota"), fapte.get("infiintare"))
+
+
+def de_unde_fapte(fapte, creat_la=None):
+    """Textul „de unde vine luna” pentru aceleași fapte (Control fiscal, Date firmă)."""
+    return de_unde(fapte.get("salvata"), fapte.get("creat_la") or creat_la, fapte.get("data_solduri"), fapte.get("prima_nota"), fapte.get("infiintare"))
+
+
+def eroare(luna, prima_nota, infiintare=None):
+    """Mesajul refuzului, sau None: luna preluării nu poate fi după luna primei note și nici înaintea lunii înființării firmei (724.2)."""
+    if luna and infiintare and _luna(luna) < _luna(infiintare):
+        return ("Luna preluării nu poate fi înaintea lunii înființării firmei (%02d/%d). Alege %02d/%d sau o lună mai nouă." % (
+            infiintare.month, infiintare.year, infiintare.month, infiintare.year))
     if luna and prima_nota and _luna(luna) > _luna(prima_nota):
         return ("Luna preluării nu poate fi după luna primei note din jurnal (%02d/%d): nota arată că evidența era deja în iConta.eu. "
                 "Alege %02d/%d sau o lună mai veche." % (prima_nota.month, prima_nota.year, prima_nota.month, prima_nota.year))
@@ -73,10 +96,15 @@ def din_text(v):
         raise ValueError("Luna preluării se scrie ca lună și an (ex. 06/2026).")
 
 
-def de_unde(salvata, creat_la, data_solduri=None, prima_nota=None):
+def de_unde(salvata, creat_la, data_solduri=None, prima_nota=None, infiintare=None):
     """[deficiența 232, comanda Costin 12.10.2026: „Stabilește din datele firmei care e luna preluării și fă cele două locuri
     consecvente.”] Faptul din care vine luna EFECTIVĂ, ca text pentru ecran — aceeași ordine ca `efectiva` / `propunere`."""
     zi = (lambda d: "%02d.%02d.%d" % (d.day, d.month, d.year))
+    inf = _luna(infiintare)
+    d0, p0 = deduse(creat_la, data_solduri), _luna(prima_nota)
+    brut = min(d0, p0) if d0 and p0 else d0 or p0
+    if inf and not _luna(salvata) and brut and brut < inf:   # [724.2] propunerea ar cădea înaintea înființării: luna înființării
+        return "luna înființării firmei, %s (data soldurilor sau prima notă din jurnal ar fi înaintea ei)" % zi(infiintare)
     if plafonata(salvata, prima_nota):   # [147] luna aleasă e după prima notă: se socotește luna notei
         return "luna primei note din jurnal, %s (luna aleasă în Date firmă, %02d/%d, e după ea)" % (zi(prima_nota), salvata.month,
                                                                                                     salvata.year)
@@ -108,7 +136,7 @@ def luna_dinainte(luna):
 def stare(fapte):
     """`fapte` = `repo_firma_profil.fapte_preluare` -> {salvata, propunere, efectiva, prima_nota} ca „AAAA-LL” (pentru ecran) și
     `plafonata` (147: luna salvată e după prima notă, deci efectiva e luna primei note)."""
-    s, c, d, p = fapte.get("salvata"), fapte.get("creat_la"), fapte.get("data_solduri"), fapte.get("prima_nota")
+    s, c, d, p, i = fapte.get("salvata"), fapte.get("creat_la"), fapte.get("data_solduri"), fapte.get("prima_nota"), fapte.get("infiintare")
     t = (lambda x: "%04d-%02d" % x if x else None)
-    return {"salvata": t(_luna(s)), "propunere": t(propunere(c, d, p)), "efectiva": t(efectiva(s, c, d, p)),
-            "prima_nota": t(_luna(p)), "plafonata": plafonata(s, p)}
+    return {"salvata": t(_luna(s)), "propunere": t(propunere(c, d, p, i)), "efectiva": t(efectiva(s, c, d, p, i)),
+            "prima_nota": t(_luna(p)), "plafonata": plafonata(s, p), "infiintare": t(_luna(i))}

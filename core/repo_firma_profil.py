@@ -164,8 +164,9 @@ def fapte_preluare(cur):
     cur.execute("""SELECT (SELECT luna_preluare FROM firma_profil WHERE id = 1),
                           (SELECT creat_la FROM public.tenants WHERE schema_name = current_schema()),
                           (SELECT max(data_referinta) FROM solduri_initiale),
-                          (SELECT min(data) FROM inregistrari)""")
+                          (SELECT min(data) FROM inregistrari),
+                          (SELECT data_infiintare FROM firma_profil WHERE id = 1)""")
     r = cur.fetchone()
     v = list(r.values()) if isinstance(r, dict) else list(r)
     c = v[1]
-    return {"salvata": v[0], "creat_la": c.date() if hasattr(c, "date") else c, "data_solduri": v[2], "prima_nota": v[3]}
+    return {"salvata": v[0], "creat_la": c.date() if hasattr(c, "date") else c, "data_solduri": v[2], "prima_nota": v[3], "infiintare": v[4]}

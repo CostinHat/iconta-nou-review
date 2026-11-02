@@ -190,7 +190,7 @@ def control_fiscal_depuse_anterior(tenant_id, corp, ctx):
         raise _erori.DateInvalide("Alege între 1 și 200 de perioade de marcat.")
     with db.get_conn(schema) as cs, cs.cursor() as cur:
         f = _rfp.fapte_preluare(cur)
-        preluare = _lp.efectiva(f["salvata"], f["creat_la"], f["data_solduri"], f["prima_nota"])
+        preluare = _lp.din_fapte(f)
         cs.rollback()
     from core import afirmatii as _af
     marcate, sarite = 0, []

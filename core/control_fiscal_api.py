@@ -1171,7 +1171,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     from core import luna_preluare as _lp, repo_firma_profil as _rfp
     with conn_schema.cursor() as _cur_p:
         _fp = _rfp.fapte_preluare(_cur_p)
-    preluare = _lp.efectiva(_fp["salvata"], _fp["creat_la"] or _creat_la, _fp["data_solduri"], _fp["prima_nota"])
+    preluare = _lp.din_fapte(_fp, _creat_la)
     lipsa, urmarit, inainte_de_preluare = separa_inainte_de_preluare(lipsa, urmarit, preluare)
     neclar, _neclar_inainte = separa_neclar_inainte_de_preluare(neclar, preluare)   # [retest 08.10 pct.8]
     inainte_de_preluare += _neclar_inainte
@@ -1267,7 +1267,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             # [deficiența 232] grupul „Înainte de preluare” = perioadele PÂNĂ LA luna dinaintea preluării; luna preluării se numără.
             # Antetul spune ultima lună dinainte și de unde vine luna preluării (datele firmei), ca să nu se citească invers.
             "luna_inainte_de_preluare": ("%02d/%d" % tuple(reversed(_lp.luna_dinainte(preluare)))) if preluare else None,
-            "luna_preluare_din": _lp.de_unde(_fp["salvata"], _fp["creat_la"] or _creat_la, _fp["data_solduri"], _fp["prima_nota"])
+            "luna_preluare_din": _lp.de_unde_fapte(_fp, _creat_la)
                                  if preluare else None,
             "neclar": neclar_m, "neaplicabile": neaplicabile,
             "regim_tva_anaf": regim_tva_anaf,

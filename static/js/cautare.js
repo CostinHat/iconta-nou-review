@@ -15,7 +15,7 @@
 // singur); fiecare rezultat e un buton (DS cap.2a, 674); alegerea (clic / Enter) deschide fereastra potrivită PESTE ce e deschis — ce s-a
 // tastat într-o fereastră de dedesubt se păstrează (DS cap.3, `nav` păstrează corpul ferestrei). Operațiunile refuzate rolului nu apar (`permis`).
 // Gard: `core/test_lot13_ds_cautare.py` (server + structură) + e2e `frontend_test/e2e/e2e_lot13_ds.py::test_def_681_*`.
-import { api, esc, ultimaCerere } from "./api.js?v=34dd3552eb";
+import { api, esc, ultimaCerere } from "./api.js?v=83fcf3ce06";
 import { permis } from "./drepturi.js?v=34d0fb0afd";
 
 const ASTEPTARE_MS = 200;
@@ -52,7 +52,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=146d4e823b");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=c7705caf4c");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
@@ -65,10 +65,37 @@ async function _cardul(nav, t, cheie) {
   b.click();
 }
 
+// [15.1-E3, 681.2] un ecran din catalog se deschide prin pașii lui (aceiași pe care îi face contabilul: clic pe card, clic pe buton). Un pas e
+// `{click: CSS, text?}` sau `{text}`; elementul se caută întâi în fereastra de sus, apoi în pagină (cardurile cabinetului stau în pagină).
+async function _pasiiEcranului(pasi) {
+  for (const p of pasi) {
+    const t0 = Date.now();
+    let el = null;
+    while (!el) {
+      const sus = _fereastraSus();
+      const caut = (r) => {
+        if (!r) return null;
+        const lista = p.click ? [...r.querySelectorAll(p.click)] : [...r.querySelectorAll("button, a")];
+        const dupa = p.text ? lista.filter((e) => (e.textContent || "").includes(p.text)) : lista;
+        return dupa.find((e) => !e.disabled) || null;
+      };
+      el = caut(sus) || caut(document);
+      if (!el) {
+        if (Date.now() - t0 > 20000) throw new Error("Fereastra „" + (p.text || p.click) + "” nu s-a putut deschide din căutare.");
+        await new Promise((r) => setTimeout(r, 80));
+      }
+    }
+    el.click();
+    await new Promise((r) => setTimeout(r, 250));
+  }
+}
+
 // alegerea unui rezultat: fereastra potrivită, pe firma în lucru
 export async function deschideRezultatul(x, nav) {
+  if (x.fel === "ecran" && !x.firma) { await _pasiiEcranului(x.pasi); return; }   // ecranele cabinetului nu cer o firmă în lucru
   const t = await _firmaInLucru(nav);
   if (!t) throw new Error(TEXT_FARA_FIRMA);
+  if (x.fel === "ecran") { await _fereastraFirmei(nav, t); await _pasiiEcranului(x.pasi); return; }
   if (x.fel === "card") { await _cardul(nav, t, x.cheie); return; }
   if (x.fel === "operatiune") {
     await _cardul(nav, t, "operatiuni");
@@ -77,7 +104,7 @@ export async function deschideRezultatul(x, nav) {
   }
   if (x.fel === "declaratie") {
     await _fereastraFirmei(nav, t);
-    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=da50b57fd8");
+    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=6a32c6e6ae");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, { tenant_id: t.id, nume: t.nume }, { tenant_id: t.id, tip: x.tip }),
       { lat: "tabel" });
     return;
@@ -146,7 +173,7 @@ export function puneCautarea(bara, nav, opt = {}) {
     const { actiuneOp } = await import("./ecrane/operatiuni_ecran.js?v=4980b3a17f");
     if (!actuala()) return;
     rezultate = ((r && r.rezultate) || []).filter((x) => (x.ruta ? permis(actiuneOp(x)) : (!x.actiune || permis(x.actiune))));
-    const deFirma = rezultate.some((x) => x.fel !== "card" && x.fel !== "operatiune") || tid;
+    const deFirma = rezultate.some((x) => (x.fel !== "card" && x.fel !== "operatiune" && x.fel !== "ecran") || (x.fel === "ecran" && !x.firma)) || tid;
     deseneaza(rezultate.length ? (deFirma ? "" : TEXT_FARA_FIRMA) : `Nimic găsit pentru „${q}”.`);
   };
   inp.addEventListener("input", () => {

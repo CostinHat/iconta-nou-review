@@ -3225,7 +3225,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .fereastra-corp.cu-zona { display: flex; flex-direction: column; }
 .fereastra-corp.cu-zona > :not(.lant-zona):not(.zona-derulare), .lant-zona > :not(.lant-zona):not(.zona-derulare) { flex: 0 0 auto; }
 .fereastra-corp.cu-zona > .lant-zona, .lant-zona > .lant-zona { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }   /* `min-height` propriu: pus de navigator = ce are lanțul în afara zonei + înălțimea minimă a zonei (altfel conținutul din jurul zonei s-ar suprapune) */
-.fereastra-corp.cu-zona > .zona-derulare, .lant-zona > .zona-derulare { flex: 0 1 auto; min-height: 120px; overflow: auto; }
+.fereastra-corp.cu-zona > .zona-derulare, .lant-zona > .zona-derulare { flex: 0 1 auto; min-height: 88px; overflow: auto; }
 .zona-derulare { max-width: 100%; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel thead th { top: 0; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot td, .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot th { bottom: 0; }
@@ -3473,3 +3473,98 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .fj-motiv { flex: 1 1 0; overflow: hidden; }
 /* butoanele ecranului trecute în bară pierd așezarea lor locală (lățime întreagă, margini de sus / stânga puse pe clasă sau pe stil) */
 .fj-butoane > button { white-space: nowrap; width: auto !important; max-width: none !important; margin: 0 !important; flex: 0 0 auto; }
+
+/* [15.1-E3, 722] lista cu căutare permanentă (Declarații, pasul 1): căutarea de 44 px și rândurile de 44 px la vedere; derulează numai lista, nu fereastra */
+.ds-lista-permanenta .ds-lista-panou { margin-top: 0; padding: 8px; }
+.ds-lista-permanenta .ds-lista-randuri { max-height: 220px; margin-top: 8px; }
+.fereastra-corp .ds-lista input.ds-lista-cauta:not([type=checkbox]):not([type=radio]):not([type=file]) { height: 44px; }   /* câmpul de căutare al listei: 44 px (DS), peste regula generală a câmpurilor din fereastră */
+.ds-lista-permanenta .ds-lista-grup { padding: 8px 12px 4px; }
+.dec-existente-lista { list-style: none; margin: 0; padding: 0; max-height: 132px; overflow-y: auto; }
+.dec-existente-lista li { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
+
+/* [15.1-E3, 681.2] căutarea din bara de sus: 320 × 40, textul de îndemn întreg („Caută o funcție: D300, stat de plată, NIR…”) încape pe un rând */
+.fereastra-antet .cautare-in-fereastra { flex: 0 0 320px; width: 320px; }
+.fereastra-antet .cautare-in-fereastra .cautare-camp { font-size: 14px; padding: 0 10px; }
+.fereastra-antet .cautare-in-fereastra .cautare-camp::placeholder { text-overflow: clip; }
+
+/* [15.1-E3, 731 / 732] semnalul cu acțiune: rândul de 36 px și butonul S de 36 px alăturat; subsolul tabelului DS */
+.ds-semnal-cutie { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 4px; }
+.ds-semnal-cutie > .ds-semnal { flex: 1 1 0; min-width: 0; margin-bottom: 0; }
+.ds-semnal-cutie > .ds-semnal-detalii { flex: 1 0 100%; margin: 0 0 4px 16px; }
+.ds-semnal-intreg { margin: 4px 0 0; }
+.buton-s { height: 36px; padding: 0 12px; font-size: 14px; border-radius: 8px; flex: 0 0 auto; white-space: nowrap; }
+.ds-tabel-subsol { height: 44px; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 14px; color: var(--gri); border-top: 1px solid var(--linie); background: var(--fundal); border-radius: 0 0 12px 12px; }
+.ds-tabel .ds-tabel-actiuni.ds-tabel-lat, .ds-tabel th.ds-tabel-actiuni { white-space: nowrap; }
+
+/* [15.1-E3, 731] verdictul de control fiscal pe piese DS: grup în chenar (titlul de grup gri), formularul de marcare în rândul lui, semnal informativ */
+.ds-semnal-info { border-left-color: var(--gri); }
+.cf-grup { flex: none; width: 100%; box-sizing: border-box; margin: 0 0 12px; padding: 8px 16px 12px; }
+.cf-grup .ds-grup-titlu { margin: 4px 0 8px; color: var(--gri); }
+.cf-grup .ds-tabel-cutie { margin: 0; }
+.cf-extern-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 0; }
+.cf-extern-data { max-width: 170px; }
+.cf-extern-recipisa { max-width: 220px; }
+.ds-tabel tr.cf-extern-rand td { height: auto; white-space: normal; background: var(--alb); }
+.cf-audit-titlu { font-size: 16px; margin: 12px 0 4px; }
+.ds-rezumat-cutie > .ds-rezumat > .buton-s { flex: 0 0 auto; }
+.ds-rezumat .ds-rezumat-plie { height: 28px; padding: 0 10px; font-size: 13px; border-radius: 8px; flex: 0 0 auto; }
+
+/* [15.1-E3, 733] TITLUL DE GRUP — o singură regulă pentru toate clasele de titlu de grup ale aplicației: 14 px, majuscule, gri; grupul stă în chenar de 1 px cu colțuri de 12 px și padding 16 px.
+   (Titlul de secțiune de pe ecranul principal rămâne 20 px: `.ds-sectiune-titlu`.) */
+.ds-grup-titlu, .em-eticheta, .mf-eticheta, .ans-grupa-titlu, .cf-grup-titlu, .ds-lista-grup {
+  font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--gri); }
+.em-sectiune, .mf-grup, .ans-grupa { border: 1px solid var(--linie); border-radius: 12px; padding: 16px; box-sizing: border-box; background: var(--alb); }
+
+/* [15.1-E3, 674.1 / 163] PIESA „BUTON”: orice acțiune scrisă ca text apăsabil e buton. `.btn-link` (peste tot în aplicație) și titlurile de pliere (`summary`) arată ca butonul XS al DS
+   (28 px, colțuri 8 px, chenar); o regulă, toate ecranele o iau. */
+.btn-link:not(.cautare-item), .fereastra-corp details > summary, .dec-xml > summary {
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; box-sizing: border-box; font-size: 13px; font-weight: 500; line-height: 1;
+  color: var(--ardezie); background: var(--alb); border: 1px solid var(--linie); border-radius: 8px; text-decoration: none; cursor: pointer; list-style: none; }
+.fereastra-corp details > summary::-webkit-details-marker { display: none; }
+.fereastra-corp details > summary::before { content: "▾"; font-size: 12px; }
+.fereastra-corp details[open] > summary::before { content: "▴"; }
+.btn-link:not(.cautare-item):hover, .fereastra-corp details > summary:hover { background: var(--fundal); }
+.btn-link:not(.cautare-item):focus-visible, .fereastra-corp details > summary:focus-visible { outline: 2px solid var(--albastru); outline-offset: 1px; }
+
+/* [15.1-E3, F-A.3] Emite factură pe grila ferestrei: tipul documentului (grup de butoane) în grupul Document, clientul pe două coloane, fără rând de butoane în conținut */
+.em-doc-antet { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.em-doc-antet .em-eticheta { margin: 0; }
+.em-tip-rand { display: flex; align-items: center; gap: 12px; margin: 4px 0 8px; }
+.em-tip-rand .camp-eticheta { margin: 0; flex: 0 0 auto; }
+.em-tip-rand .alegere-butoane { min-height: 44px; }
+.em-tip-rand .alegere-butoane > button { height: 44px; }
+.em-date-rand { grid-template-columns: minmax(200px, 1.3fr) minmax(150px, 1fr) minmax(150px, 1fr); }
+.em-client-grila { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 16px; }
+.em-client-lat { grid-column: 1 / -1; }
+textarea.em-adresa { overflow: hidden; }
+.em-actiuni { margin: 0; }
+/* alegerea dintr-un grup de butoane se vede prin fond deschis și chenar, nu prin albastrul butonului principal: pe fereastră rămâne un singur buton principal */
+.alegere-butoane > button.buton-activ, .ds-grup .alegere-butoane > button.buton-activ { color: var(--albastru-inchis) !important; background: var(--albastru-clar) !important; border: 2px solid var(--albastru) !important; box-shadow: none !important; transform: none !important; }
+.alegere-butoane > button.buton-activ:hover:not(:disabled) { color: var(--albastru-inchis); background: var(--albastru-clar); }
+.em-linie, .em-linie-antet { grid-template-columns: minmax(120px, 1fr) 60px 52px 84px 188px 36px; }
+.em-linie .alegere-butoane > button { white-space: nowrap; }
+.em-linie .em-l-categorie + .alegere-butoane, .em-linie .alegere-butoane:has(+ .em-l-categorie) { grid-column: 1 / -1; grid-row: 2; flex-wrap: wrap; }
+.em-linie .alegere-butoane:has(+ .em-l-categorie) > button { flex: 0 1 auto; padding: 0 12px; font-size: 14px; }
+.em-linie textarea.camp-input { overflow: hidden; resize: none; }
+.em-client-grila { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+.em-client-grila .em-benef { flex-wrap: nowrap; }
+.em-client-grila .em-benef > .em-cui { flex: 1 1 auto; min-width: 0; }
+.em-client-grila .em-benef > .buton-secundar { flex: 0 0 auto; }
+
+/* [15.1-E3, 732] un singur buton principal pe fereastră: cel din bara de jos (`.fj-principal`); orice alt `.buton-primar` din conținut arată ca butonul secundar (aceeași clasă în cod, ca testele și ascultătorii să nu se schimbe) */
+.fereastra-corp .buton-primar:not(.fj-principal):not(.ds-confirmare *) { border: 1px solid #b9c2cf; background: var(--alb); color: var(--ardezie); box-shadow: none; }
+.fereastra-corp .buton-primar:not(.fj-principal):not(.ds-confirmare *):hover:not(:disabled) { background: var(--fundal); }
+
+/* [15.1-E3] explicația de sub câmp: un rând (textul întreg în title, pus de cadru.js); la focus pe câmp se arată întreagă */
+.fereastra-corp .camp-ajutor { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.fereastra-corp .camp:focus-within .camp-ajutor { white-space: normal; overflow: visible; }
+
+/* [15.1-E3, 12] Setări cont: butoanele de meniu pe grila ferestrei (două coloane de la 900 px), nu stivuite — fereastra încape la 1366 × 768 fără derulare */
+.set-meniu { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 8px 12px; }
+.set-meniu .meniu-card { margin: 0; text-align: left; }
+@media (max-width: 899px) { .set-meniu { grid-template-columns: 1fr; } }
+
+/* [15.1-E3, 12] Verificări: cardurile verificărilor pe grila ferestrei (două coloane de la 900 px) — fereastra încape la 1366 × 768 fără derulare */
+.vf-lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+@media (max-width: 899px) { .vf-lista { grid-template-columns: 1fr; } }
+.cv-bloc { margin-bottom: 0; }

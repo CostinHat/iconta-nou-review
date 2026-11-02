@@ -7,7 +7,16 @@
     "click": "button.cab-card:has([data-cheie='validat'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "De validat",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "validare",
+    "ciorne"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Control fiscal",
@@ -17,7 +26,16 @@
     "click": "button.cab-card:has([data-cheie='control'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Control fiscal pe toate firmele",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "semafor",
+    "conformare"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Termene",
@@ -27,7 +45,16 @@
     "click": "button.cab-card:has([data-cheie='termene'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Termene",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "scadente",
+    "calendar fiscal"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Firme",
@@ -37,7 +64,15 @@
     "click": "button.cab-card:has([data-cheie='firme'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Firme",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "firmele cabinetului"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Sinteza zilei",
@@ -47,7 +82,16 @@
     "click": "button.cab-card:has([data-cheie='brief'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Sinteza zilei",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "brief",
+    "sinteza"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Activitate",
@@ -57,7 +101,15 @@
     "click": "button.cab-card:has([data-cheie='activitate'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Activitate",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "jurnal activitate"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Pachete lunare",
@@ -67,7 +119,17 @@
     "click": "button.cab-card:has([data-cheie='pachete'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Pachete lunare — povestea lunii",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "povestea",
+    "povestea lunii",
+    "pachet"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Supervizor",
@@ -77,7 +139,15 @@
     "click": "button.cab-card:has([data-cheie='supervizor'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Supervizor",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "supervizare"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Capacitate",
@@ -87,7 +157,16 @@
     "click": "button.cab-card:has([data-cheie='capacitate'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Capacitate",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "incarcare",
+    "cate firme"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Consolidare",
@@ -97,7 +176,15 @@
     "click": "button.cab-card:has([data-cheie='consolidare'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Consolidare",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "grup de firme"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Asistenți",
@@ -107,7 +194,16 @@
     "click": "button.cab-card:has([data-cheie='asistenti'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Asistenți",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "asistent",
+    "colegi"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Setări cont",
@@ -117,7 +213,17 @@
     "click": "button.cab-card:has([data-cheie='setari'])"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Setări cont",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "setari",
+    "cont",
+    "parola"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Firme existente",
@@ -130,7 +236,15 @@
     "click": "#opt-existente"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Firme existente",
+   "unde": "Cabinet › Firme",
+   "cuvinte": [
+    "lista firme"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Migrare cabinet",
@@ -143,7 +257,16 @@
     "click": "#opt-migrare"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Migrare cabinet",
+   "unde": "Cabinet › Firme",
+   "cuvinte": [
+    "migrare",
+    "preluare cabinet"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Declarații lucrate",
@@ -156,7 +279,16 @@
     "click": "#opt-jurnal"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Declarații lucrate",
+   "unde": "Cabinet › Activitate",
+   "cuvinte": [
+    "jurnal declaratii",
+    "activitate cabinet"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Tipare de erori",
@@ -169,7 +301,16 @@
     "click": "#opt-tipare"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Tipare de erori",
+   "unde": "Cabinet › Activitate",
+   "cuvinte": [
+    "tipare",
+    "erori repetate"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Detaliu firmă F2",
@@ -182,6 +323,21 @@
     "click": "button",
     "text": "Deschide",
     "index_rand": "F2 Profit"
+   }
+  ],
+  "grup": "cabinet"
+ },
+ {
+  "nume": "Detaliu firmă F5",
+  "nivel": "cabinet",
+  "pasi": [
+   {
+    "click": "button.cab-card:has([data-cheie='control'])"
+   },
+   {
+    "click": "button",
+    "text": "Deschide",
+    "index_rand": "F5 SRL"
    }
   ],
   "grup": "cabinet"
@@ -302,7 +458,19 @@
     "click": "#fa-salariati"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Stat de plată",
+   "unde": "Salariați",
+   "cuvinte": [
+    "stat",
+    "state",
+    "salarii",
+    "contabilizare stat"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Bonuri și chitanțe F1",
@@ -690,7 +858,16 @@
     "click": "#fac-emite"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Emite factură",
+   "unde": "Facturi",
+   "cuvinte": [
+    "factura noua"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Istoric facturi F1",
@@ -704,7 +881,17 @@
     "click": "#fac-istoric"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Istoric facturi",
+   "unde": "Facturi",
+   "cuvinte": [
+    "istoric",
+    "facturi emise"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Scadențar F1",
@@ -718,7 +905,17 @@
     "click": "#fac-scadentar"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Scadențar",
+   "unde": "Facturi",
+   "cuvinte": [
+    "scadente",
+    "restante"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Facturi primite F1",
@@ -732,7 +929,17 @@
     "click": "#fac-primite"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Facturi primite",
+   "unde": "Facturi",
+   "cuvinte": [
+    "furnizori facturi",
+    "achizitii"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Model factură F1",
@@ -746,7 +953,17 @@
     "click": "#fac-model"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Model factură",
+   "unde": "Facturi",
+   "cuvinte": [
+    "sablon factura",
+    "antet"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Facturi recurente F1",
@@ -760,7 +977,17 @@
     "click": "#fac-recurente"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Facturi recurente",
+   "unde": "Facturi",
+   "cuvinte": [
+    "abonamente",
+    "periodice"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Fișa salariatului F5",
@@ -790,7 +1017,17 @@
     "click": "#sn-toggle"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "NIR nou",
+   "unde": "Stocuri",
+   "cuvinte": [
+    "receptie",
+    "nota de intrare receptie"
+   ],
+   "regim": "dubla",
+   "firma": true
+  }
  },
  {
   "nume": "Mișcări și fișe de magazie F1",
@@ -804,7 +1041,17 @@
     "click": "#cv-toggle"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Mișcări, fișe de magazie, coduri, nivel minim",
+   "unde": "Stocuri",
+   "cuvinte": [
+    "fise magazie",
+    "miscari stoc"
+   ],
+   "regim": "dubla",
+   "firma": true
+  }
  },
  {
   "nume": "Analitică stoc F1",
@@ -821,7 +1068,17 @@
     "click": "#cv-ana"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Analitică stoc",
+   "unde": "Stocuri › Mișcări",
+   "cuvinte": [
+    "analitica",
+    "rotatie stoc"
+   ],
+   "regim": "dubla",
+   "firma": true
+  }
  },
  {
   "nume": "Borderou de achiziție F1",
@@ -835,7 +1092,16 @@
     "click": "#s-borderou"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Borderou de achiziție",
+   "unde": "Stocuri",
+   "cuvinte": [
+    "achizitie persoana fizica"
+   ],
+   "regim": "dubla",
+   "firma": true
+  }
  },
  {
   "nume": "Registru încasări/plăți F4 + Operațiune nouă",
@@ -861,7 +1127,17 @@
     "click": "#fa-rip"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Registru încasări/plăți",
+   "unde": "Încasări/plăți",
+   "cuvinte": [
+    "reg"
+   ],
+   "regim": "simpla",
+   "firma": true,
+   "inlocuieste_card": "rip"
+  }
  },
  {
   "nume": "Chirii / comodat / refacturări F2",
@@ -876,7 +1152,18 @@
     "text": "Chirii / comodat"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Chirii / comodat / refacturări",
+   "unde": "Operațiuni speciale",
+   "cuvinte": [
+    "comodat",
+    "refacturare",
+    "chirie"
+   ],
+   "regim": "dubla",
+   "firma": true
+  }
  },
  {
   "nume": "Casă — dispoziție nouă F1",
@@ -890,7 +1177,18 @@
     "click": "#c-toggle"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Dispoziție nouă",
+   "unde": "Casă",
+   "cuvinte": [
+    "dispozitie",
+    "chitanta",
+    "incasare numerar"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Registru jurnal — notă nouă F1",
@@ -904,7 +1202,17 @@
     "click": "#j-nota-noua"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Notă nouă",
+   "unde": "Registru jurnal",
+   "cuvinte": [
+    "nota contabila",
+    "nota noua"
+   ],
+   "regim": "dubla",
+   "firma": true
+  }
  },
  {
   "nume": "Import date — Solduri inițiale F1",
@@ -919,7 +1227,17 @@
     "text": "Solduri inițiale"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Solduri inițiale",
+   "unde": "Import date",
+   "cuvinte": [
+    "solduri",
+    "sold initial"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Import date — Audit de preluare F7",
@@ -934,7 +1252,17 @@
     "text": "Audit de preluare"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Audit de preluare",
+   "unde": "Import date",
+   "cuvinte": [
+    "audit",
+    "verificare preluare"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Mijloace fixe — Leasing F1",
@@ -949,7 +1277,16 @@
     "text": "Leasing"
    }
   ],
-  "grup": "firma"
+  "grup": "firma",
+  "catalog": {
+   "titlu": "Leasing",
+   "unde": "Operațiuni speciale",
+   "cuvinte": [
+    "leasing"
+   ],
+   "regim": "dubla",
+   "firma": true
+  }
  },
  {
   "nume": "Declarații F1 pasul 1",
@@ -1081,7 +1418,17 @@
    }
   ],
   "grup": "firma",
-  "acelasi_ca": "Import date — Audit de preluare F7"
+  "acelasi_ca": "Import date — Audit de preluare F7",
+  "catalog": {
+   "titlu": "Preluare",
+   "unde": "Import date",
+   "cuvinte": [
+    "preluare date",
+    "migrare"
+   ],
+   "regim": "ambele",
+   "firma": true
+  }
  },
  {
   "nume": "Detaliu factură F1",
@@ -1110,7 +1457,16 @@
     "text": "Chei API"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Chei API",
+   "unde": "Cabinet › Setări cont",
+   "cuvinte": [
+    "api",
+    "chei"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Firmă nouă",
@@ -1125,7 +1481,16 @@
    }
   ],
   "grup": "cabinet",
-  "acelasi_ca": "Firme"
+  "acelasi_ca": "Firme",
+  "catalog": {
+   "titlu": "Firmă nouă",
+   "unde": "Cabinet › Firme",
+   "cuvinte": [
+    "adauga firma",
+    "inregistrare firma"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Ghiduri",
@@ -1135,7 +1500,17 @@
     "click": "#nav-ghid"
    }
   ],
-  "grup": "cabinet"
+  "grup": "cabinet",
+  "catalog": {
+   "titlu": "Prezentarea aplicației",
+   "unde": "Cabinet",
+   "cuvinte": [
+    "ghid",
+    "ghiduri",
+    "prezentare"
+   ],
+   "firma": false
+  }
  },
  {
   "nume": "Primii pași",

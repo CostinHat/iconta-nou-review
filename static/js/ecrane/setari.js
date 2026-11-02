@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=34dd3552eb";
+import { api, esc, confirmaCaseta, arataMesaj, arataRefuzul, dataRo, semnAjutor, descarca, refuzPeRand, cate, eroareCamp, aduInVedere, atributeInactiv } from "../api.js?v=83fcf3ce06";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";   // [lotul 11, decizia 10.3] întocmitorul bilanțului, sub Date cabinet
 
@@ -381,7 +381,7 @@ export async function panouNotificari(zona, opt = {}) {
     : !s.confirmat ? "WhatsApp: numărul nu e confirmat încă — confirmă-l cu codul primit pe WhatsApp."
     : "WhatsApp: bifează acordul pentru mesaje.");
   zona.innerHTML = `
-    <div class="panou">
+    <div class="panou" data-zona-derulare>
       <h2 class="pf-titlu">Notificări</h2>
       <p class="ecran-nota">Notificările din clopoțel îți vin și pe canalul ales aici. Pe WhatsApp primești un mesaj scurt, fără date fiscale, cu linkul spre aplicație. Confirmarea contului, resetarea parolei și linkul de logare vin mereu pe email.</p>
       <label class="camp">

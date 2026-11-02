@@ -248,6 +248,11 @@ def avertismente_emitere(platitor, art317, axa, tert_tara, tert_cui):
     return [AVERTISMENT_ART317_NEALES if art317 is None else AVERTISMENT_FARA_ART317]
 
 
+#: [15.1-E3, F-A.3] eticheta scurtă a butonului din grupul de alegere (eticheta întreagă, cu temeiul, rămâne în `title`)
+ETICHETA_BUTON = {"taxare_inversa": "Taxare inversă", "scutit_cu_drept": "Scutit cu drept", "scutit_fara_drept": "Scutit fără drept",
+                  "livrare_ic": "Livrare intracomunitară", "serviciu_extern": "Serviciu extern", "export": "Export", "in_afara_sferei": "În afara sferei"}
+
+
 def pentru_formular(platitor):
-    """Ce afișează formularul de emitere: lista (cod, etichetă) în ordinea de mai sus, numai pentru plătitor."""
-    return [{"cod": k, "eticheta": v["eticheta"]} for k, v in CATEGORII.items()] if platitor is not False else []
+    """Ce afișează formularul de emitere: lista (cod, etichetă, etichetă pentru buton) în ordinea de mai sus, numai pentru plătitor."""
+    return [{"cod": k, "eticheta": v["eticheta"], "buton": ETICHETA_BUTON.get(k, v["eticheta"])} for k, v in CATEGORII.items()] if platitor is not False else []

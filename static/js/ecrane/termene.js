@@ -1,8 +1,9 @@
 // termene.js — restantele (termen trecut, nedepuse) si scadentele fiscale viitoare pe portofoliu (orizont 60 zile).
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
-import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=34dd3552eb";
-import { deschideFirma } from "./firme.js?v=146d4e823b";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=83fcf3ce06";
+import { tabelDS } from "../ds_piese.js?v=73e4db2850";   // [15.1-E3] lista scadențelor pe tabelul DS
+import { deschideFirma } from "./firme.js?v=c7705caf4c";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
@@ -32,7 +33,7 @@ export async function randeazaTermene(corp, nav) {
   const neeval = date.neevaluate || [];
 
   corp.innerHTML = `
-    <p class="mig-intro">Scadențele care urmează în următoarele 60 de zile, grupate pe dată. Click pe o declarație ca să vezi firmele.</p>
+    <p class="mig-intro">Scadențele care urmează în următoarele 60 de zile, pe dată.</p>
     <div id="term-zona" data-zona-derulare><div id="term-lista"></div></div>
   `;   // [lotul 14, 687] lista scadențelor derulează în zona ei; introducerea rămâne fixă sus
   const zona = corp.querySelector("#term-zona");
@@ -43,32 +44,14 @@ export async function randeazaTermene(corp, nav) {
     return;
   }
 
-  grupuri.forEach((g) => {
-    const urgent = g.zile <= 7;   // și restanțele (zile negative)
-    const bloc = document.createElement("div");
-    bloc.className = "term-grup";
-    bloc.innerHTML = `
-      <div class="term-data ${urgent ? "term-urgent" : ""}">
-        <span class="term-data-zi">${dataRo(g.termen)}</span>   <!-- [15.1, 3a] data în formatul unic: 26.10.2026 -->
-        <span class="term-data-cat">${etichetaZile(g.zile)}</span>
-      </div>
-      <div class="term-items"></div>
-    `;
-    const cont = bloc.querySelector(".term-items");
-    g.items.forEach((it) => {
-      const incert = !!it.incert;   // [P4] perioada DESCHISA -> D390 posibil, nu ferm
-      const rand = document.createElement("button");
-      rand.className = "term-item";
-      rand.innerHTML = `
-        <span class="term-tip">${(it.tip||"").toUpperCase()}</span>
-        <span class="term-nr">${incert ? '<span class="cab-pct pct-gri" title="Perioadă deschisă — D390 se datorează doar dacă apar operațiuni intracomunitare în lună"></span>' : ""}${cate(it.nr_firme, "firmă", "firme")}${incert ? '<span class="term-posibil">posibil</span>' : ""}</span>
-        <svg class="term-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      `;
-      rand.addEventListener("click", () => nav.deschide("Detaliu termen", (cc, nn) => detaliuTermen(cc, nn, g, it)));  // [p122_nav_stiva]
-      cont.appendChild(rand);
-    });
-    lista.appendChild(bloc);
-  });
+  // [15.1-E3, 7] lista scadențelor = tabelul DS: Termen · Declarație · Firme · Stare (pastila) · butonul XS „Deschide” pe fiecare rând (nu rând apăsabil cu „Click pe o declarație”)
+  const randuri = grupuri.flatMap((g) => g.items.map((it) => ({
+    celule: { termen: dataRo(g.termen), decl: (it.tip || "").toUpperCase(),
+      firme: cate(it.nr_firme, "firmă", "firme") + (it.incert ? " (posibil — perioadă deschisă)" : "") },   // [P4] perioada DESCHISĂ -> D390 posibil, nu ferm
+    stare: { text: etichetaZile(g.zile), ton: g.zile < 0 ? "eroare" : g.zile <= 7 ? "avertisment" : "info" },   // și restanțele (zile negative)
+    actiuni: [{ eticheta: "Deschide", laClic: () => nav.deschide("Detaliu termen", (cc, nn) => detaliuTermen(cc, nn, g, it)), faraActiune: "deschide firmele cu acest termen" }] })));  // [p122_nav_stiva]
+  tabelDS(lista, { coloane: [{ cheie: "termen", titlu: "Termen" }, { cheie: "decl", titlu: "Declarație" }, { cheie: "firme", titlu: "Firme" }, { tip: "stare", titlu: "Stare" }, { tip: "actiuni", titlu: "" }],
+    randuri, subsol: cate(randuri.length, "scadență", "scadențe") });
 
   randeazaNeevaluate(zona, neeval);   // [T1] gri cu temei, sub scadente
 }

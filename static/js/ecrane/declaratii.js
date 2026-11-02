@@ -6,10 +6,10 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare } from "../ds_piese.js?v=081e2a850b";   // [15.1, 722] lista cu căutare
-import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=34dd3552eb";
+import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=73e4db2850";   // [15.1, 722] lista cu căutare
+import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=83fcf3ce06";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";
-import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";   // [lotul 10, 431] refuzul care trimite la ce lipsește
+import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
 const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
@@ -115,9 +115,6 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa, preset = null) {
     if (S.tenant_id) await incarcaTipuri(S.tenant_id);   // [G1] firma fixa -> tipurile+neaplicabile ale ei
     // [324] tipul dat e ales în listă: în grupa „Datorate” dacă perioada lui e acolo, altfel între celelalte
     if (S.presetPerioada) S.lunaDatorata = (S.datorate || []).some((d) => d.tip === S.tip && d.an === S.an && d.luna === S.luna) ? S.luna : null;
-    // [lotul 13, poarta 1 — 324] perioada dată nu e între datorate, dar firma mai are ALTĂ perioadă datorată a aceluiași tip (D300 09/2026 depășită, D300 10/2026
-    // datorată): tipul simplu stă în „Alte declarații”, pliate — fără ele deschise, tipul dat n-are nicio opțiune de ales și câmpul rămânea gol
-    if (S.presetPerioada && S.tip && S.lunaDatorata == null) S.alteDeschise = true;
   } catch {
     corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca firmele.</p>`;
     return;
@@ -165,7 +162,8 @@ function pas1(corp, nav) {
     if (S.tipuriEsuat) return `<option value="">— nu s-au putut încărca tipurile — reîncarcă firma —</option>`;
     if (!S.tipuri.length) return `<option value="">— nicio declarație aplicabilă —</option>`;
     // [deficiența 283] întâi ce datorează firma în perioadă (din vectorul fiscal), cu termenul — alegerea fixează și perioada; restul separat
-    const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip]);
+    const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip])
+      .map((d, i) => [d, i]).sort((x, y) => Number(!!y[0].restanta) - Number(!!x[0].restanta) || x[1] - y[1]).map(([d]) => d);
     // [719, 14.3] restanța (termenul a trecut, nedepusă) se spune ca restanță și stă prima: nu dispare din listă după termen
     const optDatorata = (d) => `<option value="${d.tip}" data-an="${d.an}" data-luna="${d.luna}" data-nume="${esc(d.tip.toUpperCase())} · ${esc(d.perioada)} · termen ${esc(dataRo(d.termen))}"`
       + ` data-motiv="${d.restanta ? "restanță" : d.inainte_de_preluare ? "înainte de preluare" : ""}"${d.tip === S.tip && d.an === S.an && d.luna === S.lunaDatorata ? " selected" : ""}>`
@@ -173,8 +171,8 @@ function pas1(corp, nav) {
     // [lotul 10, deficiența 432] obligațiile pe perioade dinaintea preluării rămân vizibile (termenul cade după preluare), dar într-un grup
     // separat, marcate — regula de la 157 (decizia U2, 08.10); marcajul vine din motorul termenelor (`luna_preluare.inainte`)
     const deLaPreluare = datorate.filter((d) => !d.inainte_de_preluare), inainte = datorate.filter((d) => d.inainte_de_preluare);
-    const grupaDatorate = (deLaPreluare.length ? `<optgroup label="Datorate de firmă (restanțele întâi; din vectorul fiscal și din operațiile înregistrate)">${deLaPreluare.map(optDatorata).join("")}</optgroup>` : "")
-      + (inainte.length ? `<optgroup label="Datorate de firmă — înainte de preluare în iConta.eu">${inainte.map(optDatorata).join("")}</optgroup>` : "");
+    const grupaDatorate = (deLaPreluare.length ? `<optgroup label="Datorate acum">${deLaPreluare.map(optDatorata).join("")}</optgroup>` : "")
+      + (inainte.length ? `<optgroup label="Datorate înainte de preluarea în iConta.eu">${inainte.map(optDatorata).join("")}</optgroup>` : "");
     const alte = S.tipuri.map((tp) => {
       const et = `${tp.toUpperCase()} · ${(S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""}${(S.deLamurit || {})[tp] ? " · " + S.deLamurit[tp] : ""}`;   // [8.1 pct.6] D710: la cerere; [D2, 14.3] „de lămurit”
       const neap = S.neaplicabile[tp];
@@ -182,18 +180,8 @@ function pas1(corp, nav) {
         ? `<option value="${tp}" disabled data-nume="${esc(tp.toUpperCase())}" data-motiv="nu se poate genera" data-detalii="${esc(neap)}" title="${esc(neap)}">${esc(neap)}</option>`
         : `<option value="${tp}" data-nume="${esc(tp.toUpperCase() + " · " + ((S.periodicitateEticheta || {})[tp] || S.periodicitate[tp] || ""))}"${(S.deLamurit || {})[tp] ? ` data-motiv="de lămurit" data-detalii="${esc(S.deLamurit[tp])}"` : ""} ${tp === S.tip && !S.lunaDatorata ? "selected" : ""}>${et}</option>`;
     }).join("");
-    // [deficiența 301, comanda Costin 17.10.2026 7.2] „«Alte declarații» pliată, deschisă doar la cerere”: cu datorate, selectorul le arată
-    // numai pe ele; restul apare după „Arată alte declarații” (sau dacă tipul ales e deja unul dintre ele, întors din pasul 2)
-    const alteDeschise = !datorate.length || S.alteDeschise || (S.tip && !datorate.some((d) => d.tip === S.tip));
-    return `<option value="">— alege tipul —</option>` + grupaDatorate
-      + (!datorate.length ? alte : alteDeschise ? `<optgroup label="Alte declarații">${alte}</optgroup>` : "");
-  }
-  function butonAlte() {
-    const datorate = (S.datorate || []).filter((d) => S.tipuri.includes(d.tip) && !S.neaplicabile[d.tip]);
-    if (!S.tenant_id || !datorate.length) return "";
-    const deschise = S.alteDeschise || (S.tip && !datorate.some((d) => d.tip === S.tip));
-    return `<button type="button" class="btn-link" id="dec-alte" aria-expanded="${deschise ? "true" : "false"}">${deschise
-      ? "Ascunde celelalte declarații" : "Arată alte declarații"}</button>`;
+    // [15.1-E3, 722] o singură listă cu căutare: datoratele sus (restanțele întâi), restul dedesubt; nimic pliat, nimic care apare după un clic pe „alte declarații”
+    return `<option value="">— alege tipul —</option>` + grupaDatorate + (alte ? `<optgroup label="Alte declarații">${alte}</optgroup>` : "");
   }
 
   corp.innerHTML = `
@@ -207,62 +195,21 @@ ${S.firmaFixa ? "" : `      <label class="camp">
         </select>
       </label>`}
       <label class="camp">
-        <span class="camp-eticheta">Tip declarație <span id="dec-ajutor"></span></span>
+        <span class="camp-eticheta">Tip declarație <span class="oblig">*</span> <span id="dec-ajutor"></span></span>
         <select id="dec-tip" class="camp-input">${optiuniTip()}</select>
       </label>
-      <div id="dec-datorate" class="ds-datorate"></div>
-      <div id="dec-alte-zona">${butonAlte()}</div>
       <div id="dec-perioada">${randPerioada(per)}</div>
     </div>
     <div id="dec-existente"></div>
     <div class="dec-bara">
-      <button class="buton-primar" id="dec-continua" data-actiune="POST /declaratii/{tip}/valideaza" disabled>Continuă →</button>
+      <button class="buton-primar" id="dec-continua" data-actiune-principala data-actiune="POST /declaratii/{tip}/valideaza" disabled>Continuă →</button>
     </div>
   `;
 
   const selFirma = corp.querySelector("#dec-firma");  // null cand firma e fixa [decl_firma_v1]
   const selTip = corp.querySelector("#dec-tip");
-  // [15.1, 726] declarațiile datorate sunt butoane directe („D112 · 08/2026 · termen 25.09.2026 · restanță”), restanțele întâi; lista cu căutare (`listaCuCautare`)
-  // apare numai sub „Arată alte declarații”, pentru restul tipurilor
-  const _datorata = (o) => o.hasAttribute("data-an");
-  const _alteDeschise = () => { const b = corp.querySelector("#dec-alte"); return !!b && b.getAttribute("aria-expanded") === "true"; };
-  listaCuCautare(selTip, { gol: "Caută alte declarații", cautare: "Caută declarația (D300, D394…)", doarCare: (o) => !_datorata(o),
-    ascuns: () => [...selTip.options].some(_datorata) && !_alteDeschise() });
-  const zonaDat = corp.querySelector("#dec-datorate");
-  let toateDat = false;
-  const deseneazaDatorate = () => {
-    if (!zonaDat) return;
-    const _restanta = (o) => /restan/i.test(o.dataset.motiv || "");
-    // restanțele întâi, apoi restul declarațiilor datorate; în fiecare grup rămâne ordinea din listă
-    const dat = [...selTip.options].map((o, i) => [o, i]).filter(([o]) => _datorata(o)).sort((x, y) => Number(_restanta(y[0])) - Number(_restanta(x[0])) || x[1] - y[1]);
-    zonaDat.innerHTML = "";
-    if (!dat.length) return;
-    const limita = window.innerHeight < 800 ? 5 : 8;
-    dat.forEach(([o, i], k) => {
-      if (k >= limita && !toateDat) return;
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "buton-secundar ds-datorata" + (selTip.selectedIndex === i ? " buton-activ" : "");
-      b.setAttribute("aria-pressed", String(selTip.selectedIndex === i));
-      b.dataset.faraActiune = "alegerea declarației; generarea ei se face la „Continuă”";
-      b.textContent = (o.dataset.nume || o.textContent).trim() + (o.dataset.motiv ? " · " + o.dataset.motiv : "");
-      b.title = b.textContent;
-      b.addEventListener("click", () => { selTip.selectedIndex = i; selTip.dispatchEvent(new Event("change", { bubbles: true })); });
-      zonaDat.appendChild(b);
-    });
-    if (dat.length > limita && !toateDat) {
-      const restul = document.createElement("button");
-      restul.type = "button";
-      restul.className = "buton-secundar ds-datorate-inca";
-      restul.dataset.faraActiune = "arată restul declarațiilor datorate";
-      restul.textContent = `încă ${dat.length - limita} ▾`;
-      restul.addEventListener("click", () => { toateDat = true; deseneazaDatorate(); });
-      zonaDat.appendChild(restul);
-    }
-  };
-  new MutationObserver(deseneazaDatorate).observe(selTip, { childList: true, subtree: true });
-  selTip.addEventListener("change", deseneazaDatorate);
-  deseneazaDatorate();
+  // [15.1-E3, 722] lista cu căutare permanentă: datoratele sus, restul dedesubt, rândul ales rămâne evidențiat
+  listaCuCautare(selTip, { gol: "Alege declarația", cautare: "Caută declarația: D300, D394, stat…", permanenta: true });
   const cont = corp.querySelector("#dec-continua");
   const zonaP = corp.querySelector("#dec-perioada");
 
@@ -274,12 +221,10 @@ ${S.firmaFixa ? "" : `      <label class="camp">
         S.tenant_id = nou; S.tip = null;
         if (nou) { if (!(await incarcaTipuri(nou))) return; }   // [C103] o firmă aleasă între timp: refresh-ul ei desenează
         else { cerereTipuri(); S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; }   // [C103] fără firmă: tipurile cerute înainte nu mai ajung
-        S.alteDeschise = false;
         selTip.innerHTML = optiuniTip();
         declaratiiExistente(corp.querySelector("#dec-existente"), nou);
       }
     }
-    legaAlte();
     S.tip = selTip.value || null;
     // [283] o obligație datorată aleasă din grupa de sus aduce și perioada ei (luna; la trimestru, luna de sfârșit)
     const o = selTip.selectedOptions[0];
@@ -302,23 +247,6 @@ ${S.firmaFixa ? "" : `      <label class="camp">
     cont.disabled = !(S.tenant_id && S.tip);
     const _za = corp.querySelector("#dec-ajutor");  // [ajutor] "?" urmareste tipul ales
     if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? semnAjutor(_DECL_AJUTOR[S.tip]) : "";
-  }
-  function legaAlte() {
-    const z = corp.querySelector("#dec-alte-zona");
-    if (!z) return;
-    z.innerHTML = butonAlte();
-    const b = z.querySelector("#dec-alte");
-    if (b) b.addEventListener("click", () => {
-      S.alteDeschise = b.getAttribute("aria-expanded") !== "true";
-      const ales = selTip.value;
-      selTip.innerHTML = optiuniTip();
-      if (ales) selTip.value = ales;
-      legaAlte();
-      // [deficiența 325, 18.10.2026] focusul rămâne pe buton, NU pe listă: un focus pe lista derulantă îi deschide lista (pe telefon, și cu
-      // tastatura) fără clicul omului. Regula: nicio listă / fereastră / formular nu se deschide singură (garda din plasa e2e).
-      const b2 = z.querySelector("#dec-alte");
-      if (b2) focusFaraSalt(b2);
-    });
   }
   if (S.tenant_id) declaratiiExistente(corp.querySelector("#dec-existente"), S.tenant_id);
   if (selFirma) selFirma.addEventListener("change", refresh);
@@ -352,11 +280,17 @@ async function declaratiiExistente(zona, tenantId) {
     : c.perioada_neincheiata ? `în lucru — perioada nu s-a încheiat${c.termen ? " (termen " + dataRo(c.termen) + ")" : ""}`
     : c.depasita ? "documentele s-au schimbat după generare — de generat din nou"
     : c.stare === "aprobata" ? "validată, de depus" : "la validare";
-  zona.innerHTML = `<div class="caseta-info dec-existente"><div class="ci-mesaj"><b>Declarațiile firmei aflate deja în coadă</b>
-      <ul>${coada.map((c, i) => `<li>${esc((c.tip || "").toUpperCase())} · ${esc(c.p_luna ? dataRo(new Date(c.p_an, c.p_luna - 1, 1), "luna_an_numeric")
-        : c.p_trim ? `T${c.p_trim}/${c.p_an}` : `anul ${c.p_an}`)} · ${esc(stare(c))} · pregătită de ${esc(c.creat_de_nume || "—")}
-        <button type="button" class="btn-link" data-coada="${i}">Deschide</button></li>`).join("")}</ul></div></div>`;
-  zona.querySelectorAll("[data-coada]").forEach((b) => b.addEventListener("click", () => deschideInCoada(coada[Number(b.dataset.coada)].id)));
+  // [15.1-E3, 731 / 7] un card-rezumat de 44 px; rândurile stau pliate sub „▾ detalii”, într-un tabel DS cu butonul XS „Deschide” pe fiecare rând (nu text apăsabil în text)
+  const lista = document.createElement("div");
+  tabelDS(lista, {
+    coloane: [{ cheie: "decl", titlu: "Declarație" }, { cheie: "perioada", titlu: "Perioadă" }, { tip: "stare", titlu: "Stare" }, { cheie: "de", titlu: "Pregătită de" }, { tip: "actiuni", titlu: "" }],
+    randuri: coada.map((c) => ({
+      celule: { decl: (c.tip || "").toUpperCase(), perioada: c.p_luna ? dataRo(new Date(c.p_an, c.p_luna - 1, 1), "luna_an_numeric") : c.p_trim ? `T${c.p_trim}/${c.p_an}` : `anul ${c.p_an}`, de: c.creat_de_nume || "—" },
+      stare: { text: stare(c), ton: c.termen_depasit ? "eroare" : "avertisment" },
+      actiuni: [{ eticheta: "Deschide", laClic: () => deschideInCoada(c.id), faraActiune: "deschide declarația din coadă" }] })),
+    subsol: cate(coada.length, "declarație în coadă", "declarații în coadă"),
+  });
+  zona.appendChild(cardRezumat({ text: `Deja în coadă: ${cate(coada.length, "declarație", "declarații")} ale firmei`, ton: "avertisment", detalii: lista }));
 }
 
 // [deficiența 294] Perioada propusă pentru un tip: cea mai apropiată perioadă scadentă și nedepusă din vectorul fiscal (`S.datorate`, sortată

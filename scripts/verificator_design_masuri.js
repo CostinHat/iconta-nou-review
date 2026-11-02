@@ -207,7 +207,7 @@
   // ── h. cota TVA și listele derulante ────────────────────────────────────────────────────────────────────────────────────────────────
   const hh = { liste_sub_7: [], alege: [], cota_tva_ca_lista: [] };
   for (const s of F.querySelectorAll("select")) {
-    if (!vizibil(s)) continue;
+    if (!vizibil(s) || s.classList.contains("ds-lista-sursa") || s.classList.contains("alegere-sursa")) continue;   // 15.1-E3: select-ul înlocuit de lista cu căutare sau de grupul de butoane e doar sursa valorii; omul vede lista / butoanele
     const opt = [...s.options].map((o) => norm(o.text));
     const nume = s.id || s.name || "(select)";
     if (opt.length < 7) hh.liste_sub_7.push(nume + " (" + opt.length + ")");

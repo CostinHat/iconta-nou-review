@@ -298,7 +298,7 @@ function _butonSpreEcran(eroare, cale) {
     // (`coada_trimite._actiuniRefuz`): un buton spre ecran pus acolo e „butonul de lângă refuz”, nu se mai adaugă al doilea, ascuns
     const dupa = el.nextElementSibling;
     if (cadru.querySelector("[data-ecran-destinatie]") || (dupa && dupa.querySelector("[data-ecran-destinatie]"))) return true;
-    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=5152ec2b0a");
+    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=c781636333");
     const z = document.createElement("span");
     z.className = "ecran-destinatie";
     el.appendChild(z);
@@ -1134,11 +1134,11 @@ export function alegereButoane(sel) {
   };
   const deseneaza = () => {
     const reale = _optiuniReale(sel);
-    const butoane = reale.length > 0 && reale.length <= MAX_BUTOANE;
+    const butoane = reale.length > 0 && reale.length <= (Number(sel.getAttribute("data-butoane")) || MAX_BUTOANE);   // [15.1-E3, F-A.3] `data-butoane="7"`: o listă scurtă de 7 (categoriile fără TVA) rămâne grup de butoane
     sel.classList.toggle("alegere-sursa", butoane);
     if (butoane) { sel.setAttribute("tabindex", "-1"); sel.setAttribute("aria-hidden", "true"); }
     else { sel.removeAttribute("tabindex"); sel.removeAttribute("aria-hidden"); }
-    grup.hidden = !butoane;
+    grup.hidden = !butoane || sel.hidden;   // [15.1-E3] grupul urmează lista-sursă: ascunsă (categoria cotei 0% cât cota nu e 0) -> grupul nu se vede
     grup.innerHTML = "";
     if (!butoane) return;
     for (const o of reale) {

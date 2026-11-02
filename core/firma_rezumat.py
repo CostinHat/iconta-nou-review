@@ -1098,7 +1098,7 @@ def _termene_una_firma(f, ctx, azi, restante_cf=None):
                 # rămân în listă (termenul cade după preluare), marcate „înainte de preluare” — regula de la 157 (decizia U2, 08.10)
                 from core import luna_preluare as _lp, repo_firma_profil as _rfp
                 _fpr = _rfp.fapte_preluare(cur)
-                preluare = _lp.efectiva(_fpr["salvata"], _fpr["creat_la"], _fpr["data_solduri"], _fpr["prima_nota"])
+                preluare = _lp.din_fapte(_fpr)
             if not vector:
                 # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
                 # [P8] NECUNOASTERE declarata, nu o cauza in proza: „nu pot evalua" e o afirmatie

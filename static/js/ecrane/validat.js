@@ -28,11 +28,12 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=34dd3552eb";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=83fcf3ce06";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=2a7b3fae69";
+import { randA as randConstatare } from "./control_verdict.js?v=923f42fcf4";
+import { legaSemnale } from "../ds_piese.js?v=73e4db2850";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=146d4e823b";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=c7705caf4c";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -856,7 +857,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=da50b57fd8");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=6a32c6e6ae");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;
@@ -1039,6 +1040,7 @@ function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, pe
         <button type="button" class="buton-secundar val-btn" id="val-conf-renunt">Renunță</button>
         <button type="button" class="val-btn val-depune" id="val-conf-ok" data-actiune="POST /coada/{coada_id}/depune">Confirmă și depune</button>
       </div>`;
+    legaSemnale(fc);
     const er = fc.querySelector("#val-conf-eroare");
     const btn = fc.querySelector("#val-conf-ok");
     fc.querySelector("#val-conf-renunt").addEventListener("click", () => nav.inapoiPas());

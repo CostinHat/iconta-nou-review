@@ -711,7 +711,8 @@ def salveaza_date(conn, date, tenant_id=None, user_id=None):
             er.camp("luna_preluare", str(e))
         else:
             with conn.cursor() as _cur:
-                _erl = _lp.eroare(_l, _rfp.fapte_preluare(_cur)["prima_nota"])
+                _fapte_l = _rfp.fapte_preluare(_cur)
+                _erl = _lp.eroare(_l, _fapte_l["prima_nota"], _fapte_l["infiintare"])
             if _erl:
                 er.camp("luna_preluare", _erl)
             else:

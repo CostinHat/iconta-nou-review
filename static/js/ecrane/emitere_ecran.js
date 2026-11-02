@@ -7,13 +7,13 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { cardRezumat, listaCuCautare } from "../ds_piese.js?v=081e2a850b";   // [15.1, F-A.1] caseta SPV de după emitere
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=34dd3552eb";
+import { cardRezumat } from "../ds_piese.js?v=73e4db2850";   // [15.1, F-A.1] caseta SPV de după emitere
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=83fcf3ce06";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { textStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { optiuniTara as _optiuniTara, taraDinCui, nepotrivireTara } from "./tari_partener.js?v=47a26608a6";   // [lotul 12, C160] sursa unică
-import { butonSpreEcran } from "./ecran_destinatie.js?v=5152ec2b0a";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
+import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444] numele ANAF vs fișa clientului
 import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF / VIES țin de CUI-ul lor
@@ -207,9 +207,10 @@ export function htmlCotaLinie(id, l, cote, platitor) {
 // categoria de TVA a liniei cu cota 0% (la plătitor; lista vine de la server, `categorii_tva`), ascunsă cât cota nu e 0
 export function htmlCategorieLinie(id, l, categ) {
   if (!categ.length) return "";
-  return `<select class="camp-input em-l-categorie" id="${id}" aria-label="Categoria de TVA a liniei cu cota 0%"${l.cota_tva === 0 ? "" : " hidden"}>
-             <option value="">— categoria de TVA (cota 0%) —</option>
-             ${categ.map((c) => `<option value="${esc(c.cod)}"${l.categorie_tva === c.cod ? " selected" : ""}>${esc(c.eticheta)}</option>`).join("")}
+  // [15.1-E3, F-A.3] grup de butoane (cele 7 categorii fără TVA, pe un rând care se rupe), nu listă derulantă: lista rămâne sursa valorii, nevăzută
+  return `<select class="camp-input em-l-categorie" id="${id}" aria-label="Categoria de TVA a liniei cu cota 0%"${l.cota_tva === 0 ? "" : " hidden"} data-butoane="7">
+             <option value="" data-alege>—</option>
+             ${categ.map((c) => `<option value="${esc(c.cod)}" data-buton="${esc(c.buton || c.eticheta)}"${l.categorie_tva === c.cod ? " selected" : ""}>${esc(c.eticheta)}</option>`).join("")}
            </select>`;
 }
 
@@ -432,8 +433,15 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     <div class="em-fila em-fila-doua" id="em-fila-factura" data-fila="factura" role="tabpanel">
     <div>
     <div class="em-sectiune em-date-doc" style="margin-top:4px">
-      <div class="em-eticheta">Document</div>
-      <div class="em-date-rand" style="grid-template-columns:minmax(250px,1.3fr) minmax(170px,1fr) minmax(170px,1fr)">
+      <div class="em-doc-antet"><div class="em-eticheta">Document</div>
+        <button type="button" class="buton-secundar buton-s" id="em-renunta" data-fara-actiune="ciorna e a celui care o scrie: oricine vede formularul poate renunța la ciorna lui, fără un drept anume">Renunță la factură</button></div>
+      <div class="em-tip-rand"><span class="camp-eticheta" id="em-tip-et">Tipul documentului</span>
+        <select id="em-tip" class="camp-input" aria-labelledby="em-tip-et" data-butoane="">
+          <option value="factura" selected>Factură</option>
+          <option value="proforma">Proforma</option>
+          <option value="aviz">Aviz de însoțire</option>
+        </select></div>
+      <div class="em-date-rand">
         <label class="camp"><span class="camp-eticheta">Seria și numărul</span>
           <span class="em-serie-nr" id="em-serie-nr">${num.serie ? esc(num.serie) + " · " : "fără serie (se cere la emitere) · "}următorul număr: ${esc(String(num.urmator_numar))}</span>
           <button type="button" class="btn-link" id="em-schimba-serie" data-actiune="PUT /tenants/{tenant_id}/facturi/numerotare">Schimbă seria / numerotarea</button></label>
@@ -442,21 +450,23 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <label class="camp"><span class="camp-eticheta">Data scadenței</span>
           <input class="camp-input" id="em-scadenta" type="date"></label>
       </div>
-      <p class="camp-ajutor" id="em-scadenta-ajutor">${num.scadenta_zile ? `Propusă la ${cate(num.scadenta_zile, "zi", "zile")} de la emitere — termenul din lege când contractul nu prevede altul (${esc(num.scadenta_temei || "")}). O poți schimba; ` : ""}scadența intră în scadențar; o factură fără scadență nu are termen de plată urmărit.</p>
+      <p class="camp-ajutor" id="em-scadenta-ajutor" title="Scadența intră în scadențar; o factură fără scadență nu are termen de plată urmărit.">${num.scadenta_zile ? `Propusă la ${cate(num.scadenta_zile, "zi", "zile")} de la emitere (${esc(num.scadenta_temei || "")}); o poți schimba.` : "Scadența intră în scadențar; fără ea, factura nu are termen de plată urmărit."}</p>
       <div class="caseta-info" id="em-tva-incasare" role="note" hidden><div class="ci-mesaj"></div></div>
     </div>
 
     <div class="em-sectiune" style="margin:12px 0 0">
       <div class="em-eticheta">Client</div>
-      <label class="camp-eticheta" for="em-cui">CUI beneficiar</label>
+      <div class="em-client-grila">
+      <div><label class="camp-eticheta" for="em-cui">CUI beneficiar</label>
       <div class="em-benef">
         <input class="camp-input em-cui" id="em-cui" placeholder="ex: RO12345678" autocomplete="off">
         <button class="buton-secundar em-buton-sec" id="em-verifica">Verifică</button>  <!-- [p114_buton_anaf: eticheta neutra, acopera ANAF+VIES] -->
+      </div></div>
+      <div><label class="camp-eticheta" for="em-nume">Denumire beneficiar<span class="oblig">*</span></label>
+      <input class="camp-input em-nume" id="em-nume" autocomplete="off"></div>
+      <div class="em-client-lat"><label class="camp-eticheta" for="em-adresa">Adresă beneficiar (art. 319)</label>
+      <textarea class="camp-input em-adresa" id="em-adresa" rows="1" autocomplete="off"></textarea></div>
       </div>
-      <label class="camp-eticheta" for="em-nume">Denumire beneficiar<span class="oblig">*</span></label>
-      <input class="camp-input em-nume" id="em-nume" autocomplete="off">
-      <label class="camp-eticheta" for="em-adresa">Adresă beneficiar (art. 319)</label>
-      <textarea class="camp-input em-adresa" id="em-adresa" rows="1" autocomplete="off"></textarea>
       <div class="em-cui-stare" id="em-cui-stare"></div>
     </div>
 
@@ -510,14 +520,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <p class="camp-ajutor">Pentru o factură cerută de client pentru un bon deja emis: vânzarea e în raportul Z, deci factura nu se mai numără a doua oară (D300, D394, evidență, stoc). Pe factură apare „conform bon fiscal nr./data”.</p>
     </div>
     </div>
-    <div class="bara-fixa"><div class="em-rezultat" id="em-rezultat"></div><div class="em-actiuni" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
-      <select id="em-tip" class="camp-input" aria-label="Tipul documentului emis" style="max-width:180px;margin-right:8px" data-butoane="">
-        <option value="factura" selected>Factură</option>
-        <option value="proforma">Proforma</option>
-        <option value="aviz">Aviz de însoțire</option>
-      </select>
+    <div class="bara-fixa"><div class="em-rezultat" id="em-rezultat"></div><div class="em-actiuni">
       <button class="buton-primar em-emite" id="em-emite" data-actiune="POST /tenants/{tenant_id}/facturi/emite">Emite factură</button>
-      <button class="buton-secundar" id="em-renunta" data-fara-actiune="ciorna e a celui care o scrie: oricine vede formularul poate renunța la ciorna lui, fără un drept anume" style="margin-left:8px">Renunță la factură</button>
     </div></div>`;
 
   // [comanda Costin 05.10.2026 pct.2] „Datele firmei care blochează emiterea se verifică la deschiderea «Emite factură», nu după
@@ -851,8 +855,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   // ramase supravietuiesc (sunt in model). Se re-leaga listenerii cu indici proaspeti.
   function deseneazaLinii() {
     zonaLinii.innerHTML = linii.map((_, i) => randLinie(i)).join("");
-    // [15.1, F-A.1] categoriile fără TVA (scutit cu / fără drept, taxare inversă, neimpozabil …): listă cu căutare, apare când e aleasă „Fără TVA”
-    zonaLinii.querySelectorAll(".em-l-categorie").forEach((c) => listaCuCautare(c, { gol: "Alege categoria fără TVA", cautare: "Caută categoria…" }));
+    // [15.1-E3, F-A.3] categoriile fără TVA sunt grup de butoane (`data-butoane`, desenat de `alegereButoane`), apar când e aleasă „Fără TVA”
     linii.forEach((_, i) => legaLinie(i));
     recalc();
   }

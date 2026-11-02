@@ -44,14 +44,14 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { api, arataMesaj, esc } from "./api.js?v=34dd3552eb";
+import { api, arataMesaj, esc } from "./api.js?v=83fcf3ce06";
 import { ecranLogin } from "./ecrane/login.js?v=1046446310";
-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=0d93eca8c7";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=44a19d3aad";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=3a1dfe24b2";
 import { desktopAsistent } from "./ecrane/asistent.js?v=4d62696ccb";
 import { desktopPortal } from "./ecrane/portal.js?v=213eeef71d";
 import { desktopAdmin } from "./ecrane/admin.js?v=6b8ca6e696"; // [p37_admin_desktop]
-import { restaureazaFereastra } from "./restaurare.js?v=5bb0840a64";   // [15.1, 725]
+import { restaureazaFereastra } from "./restaurare.js?v=2e679a8748";   // [15.1, 725]
 import { incarcaDrepturi, pornestePoarta } from "./drepturi.js?v=34d0fb0afd";  // [drepturi_rol 04.10.2026] interfata urmeaza serverul
 
 const radacina = document.getElementById("app");

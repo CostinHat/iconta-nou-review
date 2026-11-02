@@ -17,7 +17,7 @@
 //
 // Garda statică: `core/test_drepturi_ui.py` — orice fișier care cheamă o rută restrânsă își declară
 // marcajul (scanerul `scripts/scan_drepturi_ui.py`).
-import { api } from "./api.js?v=34dd3552eb";
+import { api } from "./api.js?v=83fcf3ce06";
 
 let _refuzate = new Set();
 let _motive = {};          // „METODĂ /cale” -> nivelul refuzat (poate_pregati / poate_valida / poate_depune / admin_cabinet / rol)

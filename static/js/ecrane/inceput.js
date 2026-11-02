@@ -5,7 +5,7 @@
 // butonul de ajutor (?).” + „La prima intrare, fiecare utilizator își pune obligatoriu telefonul, canalul (WhatsApp sau email) și bifele
 // de notificări înainte să ajungă în aplicație.”
 // Textul și starea fiecărui card vin de la server (`GET /eu/inceput`, `core/uc_inceput.py`): „făcut” e citit din bază, nu ținut aici.
-import { api, esc, arataMesaj } from "../api.js?v=34dd3552eb";
+import { api, esc, arataMesaj } from "../api.js?v=83fcf3ce06";
 
 // [320] butoanele cardurilor: fiecare deschide ecranul REAL (aceleași funcții ca meniul aplicației)
 async function deschide(cheie, nav, laSchimbare) {
@@ -17,16 +17,16 @@ async function deschide(cheie, nav, laSchimbare) {
     const b = document.querySelector('[data-deschide="raport"]');
     if (b) { b.click(); setTimeout(() => { const t = document.querySelector('.rap-tab[data-tab="import"]'); if (t) t.click(); }, 300); }
   } else if (cheie === "setari_spv") {
-    const { panouConectareSPV } = await import("./setari.js?v=ae0ddd2b13");
+    const { panouConectareSPV } = await import("./setari.js?v=c896258ed5");
     nav.deschide("Conectare SPV", (c) => panouConectareSPV(c), { nivel: "cabinet" });
   } else if (cheie === "setari_notificari" || cheie === "notificari_portal") {
-    const { panouNotificari } = await import("./setari.js?v=ae0ddd2b13");
+    const { panouNotificari } = await import("./setari.js?v=c896258ed5");
     nav.deschide("Notificări", (c) => panouNotificari(c, { dupaSalvare: laSchimbare }));
   } else if (cheie === "asistenti") {
     const { randeazaAsistenti } = await import("./asistenti.js?v=56bbbb1bbc");
     nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
   } else if (cheie === "firme") {
-    const { randeazaListaFirme } = await import("./firme.js?v=146d4e823b");
+    const { randeazaListaFirme } = await import("./firme.js?v=c7705caf4c");
     nav.deschide("Firmele tale alocate", (c) => randeazaListaFirme(c, nav, null), { nivel: "cabinet" });
   }
 }
@@ -146,7 +146,7 @@ export async function ecranPrimaIntrare(radacina, gata) {
     try { verifica(await stareaNotificarilor()); } catch { /* rândul rămâne */ }
   };
   window.addEventListener("iconta:schimbare", laSchimbare);
-  const { panouNotificari } = await import("./setari.js?v=ae0ddd2b13");
+  const { panouNotificari } = await import("./setari.js?v=c896258ed5");
   await panouNotificari(radacina.querySelector("#pi-notificari"), { dupaSalvare: verifica });
   try { verifica(await stareaNotificarilor()); } catch { /* rândul rămâne cel de la început */ }
 }

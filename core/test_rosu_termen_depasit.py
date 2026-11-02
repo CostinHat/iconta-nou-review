@@ -37,12 +37,14 @@ _STUB = {
                                  'export const atributeInactiv=()=>String();'   # [lotul 13, 675] butonul inactiv cu motiv
                                  'export const esc=(s)=>String(s);export const dataRo=(s)=>String(s);export const bani=(n)=>String(n)"'),
     r'from "\./nir_legare\.js[^"]*"': 'from "data:text/javascript,export const cuLegareaNir=0,interogareLegare=0"',
+    # [15.1-E3] piesele DS (semnale pe rând, card-rezumat, tabel DS): copia din `ds_piese.js`, cu api.js stubuit, e scrisă lângă modul în `_randeaza`
+    r'from "\.\./ds_piese\.js[^"]*"': 'from "./ds_piese_copie.mjs"',
     # [lotul 12, 463] starea SPV a firmei, randată după inserare (`legaVerdict`): corpul verdictului n-o atinge
     r'from "\./spv_stare\.js[^"]*"': 'from "data:text/javascript,export const randeazaStareSpv=0"',
     # [14.3, D2] trimiterea „Răspunde în Date firmă” din verdict (`legaVerdict`): tabela ecranelor nu intră în randarea corpului
     r'from "\./ecran_destinatie\.js[^"]*"': 'from "data:text/javascript,export const ECRANE={}"',
 }
-_ROSU = re.compile(r"cf-rosu|pct-rosu|cf-termen-rosu|--rosu-semafor|#ff8a80")
+_ROSU = re.compile(r"cf-rosu|pct-rosu|cf-termen-rosu|--rosu-semafor|#ff8a80|ds-semnal-eroare")   # [15.1-E3] + semnalul roșu al unei constatări
 
 
 def _randeaza(tmp_path, payload):
@@ -55,6 +57,10 @@ def _randeaza(tmp_path, payload):
     src, n = re.subn(r'export const bani=\(n\)=>String\(n\)"', lambda m: m.group(0)[:-1] + ';export {cate,dupaNumar} from %%22%s%%22"'
                      % (tmp_path / "plural.mjs").as_uri(), src)
     assert n == 1
+    ds = io.open(os.path.join(RAD, "static/js/ds_piese.js"), encoding="utf-8").read()
+    ds, n = re.subn(r'from "\./api\.js[^"]*"', 'from "data:text/javascript,export const esc=(s)=>String(s),focusFaraSalt=0;export {cate} from %22' + (tmp_path / "plural.mjs").as_uri() + '%22"', ds)
+    assert n == 1
+    (tmp_path / "ds_piese_copie.mjs").write_text(ds, encoding="utf-8")
     (tmp_path / "cv.mjs").write_text(src, encoding="utf-8")
     cod = "import('%s').then((m) => console.log(m.randeazaCorpVerdict(%s)))" % ((tmp_path / "cv.mjs").as_posix(), json.dumps(payload))
     r = subprocess.run(["node", "-e", cod], capture_output=True, text=True, timeout=60)
@@ -75,4 +81,5 @@ def test_detaliul_nu_coloreaza_rosu_decat_restantele(tmp_path):
     assert not _ROSU.search(html), _ROSU.search(html).group(0)
     p["lipsa"] = [{"tip": "d112", "an": 2026, "luna": 8, "perioada": "08/2026", "termen": "2026-09-25"}]
     html = _randeaza(tmp_path, p)
-    assert re.search(r'cf-grup-titlu cf-rosu">Restanțe \(1\)', html), html[:600]
+    # [15.1-E3] restanța se vede roșie în pastila ei din tabelul DS (`ds-pastila-eroare`), nu în titlul grupului; celelalte stări nu sunt roșii
+    assert "Restanțe (1)" in html and re.search(r'ds-pastila ds-pastila-eroare"[^>]*>restanță<', html), html[:600]

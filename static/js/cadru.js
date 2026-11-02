@@ -13,6 +13,9 @@
 // Starea o dă piesa: câmpurile obligatorii ale ecranului sunt etichetele cu „*”; cât un câmp vizibil de acest fel e gol, butonul principal e
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
+import { alegereButoane } from "./api.js?v=83fcf3ce06";
+import { listaCuCautare } from "./ds_piese.js?v=73e4db2850";
+
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);
 
@@ -38,6 +41,42 @@ function _lipsuri(corp) {
   return out;
 }
 
+// [15.1-E3, 729] PIESA „câmp obligatoriu”: orice câmp pe care ecranul îl cere (`required` / `aria-required`) poartă „*” în etichetă, ca bara de jos să-și poată
+// face treaba (butonul principal cenușiu cu „Completează: …”); ecranul nu mai scrie „*” de mână pe fiecare câmp. Etichetele care îl au deja nu se ating.
+function _marcheazaObligatorii(corp) {
+  for (const c of corp.querySelectorAll("input[required], select[required], textarea[required], [aria-required='true']")) {
+    if (c.type === "hidden" || c.closest("template, [hidden]")) continue;
+    const et = (c.id && document.querySelector(`label[for="${CSS.escape(c.id)}"]`)) || c.closest("label") || (c.previousElementSibling && c.previousElementSibling.matches(".camp-eticheta") ? c.previousElementSibling : null);
+    if (!et || /\*/.test(et.textContent)) continue;
+    const ast = document.createElement("span");
+    ast.className = "oblig";
+    ast.textContent = "*";
+    const prim = et.querySelector(".camp-eticheta") || et;
+    const control = prim.querySelector("input, select, textarea");
+    if (control) prim.insertBefore(ast, control); else prim.appendChild(ast);   // „*” în etichetă, nu după câmp
+  }
+}
+
+// [15.1-E3, 722 / F-A.3] PIESA „listă”: orice listă derulantă a ferestrei de lucru e fie grup de butoane (până la 6 variante scurte, 676), fie lista cu căutare (peste 6
+// variante sau texte lungi); lista derulantă rămâne în pagină, nevăzută, ca sursă a valorii (`value`, `change`, `select_option` merg ca înainte). Nu se ating: listele
+// din tabele (alegerea pe rând), cele deja înlocuite, cele cu `data-fara-piesa`, listele multiple.
+function _listeDerulante(corp) {
+  for (const sel of corp.querySelectorAll("select")) {
+    if (sel.__lista || sel.__butoane || sel.multiple || !_vizibil(sel) || sel.closest("table, .fereastra-antet, .cautare-globala, [data-fara-piesa], template")) continue;
+    if (sel.classList.contains("ds-lista-sursa") || sel.classList.contains("alegere-sursa")) continue;
+    const reale = [...sel.options].filter((o) => !o.hasAttribute("data-alege") && o.value !== "" && !o.hidden);
+    if (!reale.length) continue;
+    const lung = reale.some((o) => (o.dataset.buton || o.textContent || "").trim().length > 28);
+    if (reale.length > 6 || lung) listaCuCautare(sel, { gol: "Alege din listă", cautare: "Caută în listă…" });
+    else alegereButoane(sel);
+  }
+}
+
+// [15.1-E3] explicația de sub un câmp (`.camp-ajutor`) stă pe un rând, cu textul întreg în `title`; câmpul focusat o arată întreagă (CSS) — nu paragrafe lungi în formular
+function _ajutoareScurte(corp) {
+  for (const a of corp.querySelectorAll(".camp-ajutor")) if (!a.title && a.textContent.trim()) a.title = a.textContent.trim();
+}
+
 function _alege(corp, bara) {
   const marcat = [...corp.querySelectorAll("[data-actiune-principala]")].filter((b) => !bara.contains(b)).pop();
   if (marcat) return marcat;
@@ -46,7 +85,10 @@ function _alege(corp, bara) {
   const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && !b.closest("table, template, details, .tn-actiuni, .rezumat-fix");
   const formular = [...corp.querySelectorAll("form .buton-primar, .ds-formular ~ * .buton-primar, .pf-frand:has(> .ds-formular) .buton-primar")].filter(eligibil);
   if (formular.length) return formular[formular.length - 1];
-  return null;
+  // [15.1-E3, 732] fereastra al cărei buton principal nu stă într-un formular și nu e marcat: ultimul buton principal vizibil din conținut (nu din tabel, șablon, pliant
+  // sau listă de rezumate) — același element, mutat în bară; un singur principal pe fereastră, ceilalți rămân (vizual) secundari prin `.fereastra-corp .buton-primar:not(.fj-principal)`
+  const orice = [...corp.querySelectorAll(".buton-primar")].filter((b) => eligibil(b) && _vizibil(b) && !b.closest(".ds-rezumat, .ds-semnal, .ds-lista, .cf-extern-form, .ds-confirmare, [hidden]"));
+  return orice.length ? orice[orice.length - 1] : null;
 }
 
 // o urmă (comentariu) lăsată în locul din care butonul trece în bară: dispare odată cu zona pe care ecranul o redesenează
@@ -81,6 +123,9 @@ export function baraDeJos(fer, corp, { renunta }) {
 
   function sincronizeaza() {
     if (!corp.isConnected) return;
+    _marcheazaObligatorii(corp);
+    _ajutoareScurte(corp);
+    _listeDerulante(corp);
     if (bara.parentElement !== corp || corp.lastElementChild !== bara) corp.appendChild(bara);
     // acțiunea al cărei loc de origine (zona ecranului) a fost redesenat de ecran e veche: ecranul a scos-o odată cu zona (ex. „Scrie nota” după scriere)
     for (const b of [...loc.children]) if (b.__origine && !b.__origine.isConnected) { b.remove(); if (b === principal) principal = null; }
@@ -97,9 +142,8 @@ export function baraDeJos(fer, corp, { renunta }) {
       principal = _actiuneImplicita();
       if (!principal.isConnected) loc.appendChild(principal);
     }
-    if (principal === inchide) {   // „Închide” e acțiunea principală numai dacă fereastra n-are alta: un singur buton principal pe fereastră
-      const alta = [...corp.querySelectorAll(".buton-primar")].some((x) => !bara.contains(x) && _vizibil(x) && !x.closest("template, details"));
-      inchide.classList.toggle("buton-primar", !alta); inchide.classList.toggle("buton-secundar", alta);
+    if (principal === inchide) {   // [15.1-E3] „Închide” e acțiunea principală a ferestrei fără altă acțiune principală (ce e în tabele rămâne secundar prin CSS): bara are mereu UN principal
+      inchide.classList.add("buton-primar"); inchide.classList.remove("buton-secundar");
     } else if (principal && !principal.isConnected) {
       principal = null;
       sincronizeaza();

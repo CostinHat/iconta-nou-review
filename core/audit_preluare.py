@@ -137,7 +137,8 @@ def _gri(et, temei, mesaj, actiune, cauza="Lipsește un document necesar verific
     return _imbraca(
         _af.afirmatie("absenta_observatie", et, mesaj, surse_consultate=cauza),
         "gri", et, temei,
-        {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})
+        dict({"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []},
+             **({"cod": "importa_solduri"} if actiune.startswith("Importă soldurile") else {})))   # [15.1-E3, 732] butonul „Importă soldurile” vine din catalogul de acțiuni
 
 
 def _rosu(et, temei, mesaj, cauza, actiune, fel="investigatie"):
