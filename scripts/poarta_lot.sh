@@ -78,6 +78,8 @@ final() {   # scrie verdictul și iese
     echo "[poarta lot] $V $SHA ($RAM) -> $JV · $DUR"
     exit $RCF
 }
+# pytest pe o listă de nume (un nume pe rând), cu codul de ieșire real al lui pytest (xargs îl strică: 123)
+lf_ruleaza() { "$PY" -c 'import subprocess, sys; ids = [i for i in open(sys.argv[1], encoding="utf-8").read().split("\n") if i]; sys.exit(subprocess.call([sys.executable, "-m", "pytest", "-q"] + ids))' "$1"; }
 T_VERIF=0; T_PYTEST=0; T_E2E=0
 if [ -z "$DOAR_PLASA" ]; then
     # 1. verificatorul de design
@@ -102,13 +104,13 @@ for k in d:
         print(k)
 PYE
     if [ -s "$J/poarta_lf_ids.txt" ]; then
-        tr '\n' '\0' < "$J/poarta_lf_ids.txt" | xargs -0 "$PY" -m pytest -q > "$J/poarta_pytest_lf.log" 2>&1
+        lf_ruleaza "$J/poarta_lf_ids.txt" > "$J/poarta_pytest_lf.log" 2>&1
         RC=$?
         if [ "$RC" -eq 4 ]; then   # nume memorate care nu mai există (parametri schimbați): se scot și se rulează o dată restul
             grep '^ERROR: not found: ' "$J/poarta_pytest_lf.log" | sed 's#^ERROR: not found: ##; s#^'"$ROOT"'/##' | sort -u > "$J/poarta_lf_lipsa.txt"
             grep -vxFf "$J/poarta_lf_lipsa.txt" "$J/poarta_lf_ids.txt" > "$J/poarta_lf_ids2.txt"
             if [ -s "$J/poarta_lf_ids2.txt" ]; then
-                tr '\n' '\0' < "$J/poarta_lf_ids2.txt" | xargs -0 "$PY" -m pytest -q > "$J/poarta_pytest_lf.log" 2>&1
+                lf_ruleaza "$J/poarta_lf_ids2.txt" > "$J/poarta_pytest_lf.log" 2>&1
                 RC=$?
             else RC=0; fi
         fi
