@@ -350,14 +350,14 @@ def test_def_4_bun_venit_se_inchide_din_x_si_cu_esc(browser, request):
             e.captura("fara_fereastra")
             pg.click("#nav-ghid")
             pg.wait_for_selector(".fereastra .ans-continut", timeout=20000)
-            assert pg.is_visible(".fereastra .fereastra-antet button.nav-x[aria-label='Închide']"), "fără X în antet"
+            assert pg.is_visible(".fereastra .fereastra-antet button.nav-inapoi") and not pg.query_selector(".fereastra .fereastra-antet .nav-x"), "„←” în antet, fără X"   # [15.1-E5]
             e.captura("prezentarea_deschisa")
             pg.keyboard.press("Escape")
             pg.wait_for_selector(".fereastra .ans-continut", state="detached", timeout=10000)
             e.captura("prezentarea_dupa_esc")
             pg.click("#nav-ghid")
             pg.wait_for_selector(".fereastra .ans-continut", timeout=20000)
-            pg.click(".fereastra .fereastra-antet .nav-x")
+            pg.click(".fereastra .fereastra-antet .nav-inapoi")
             pg.wait_for_selector(".fereastra .ans-continut", state="detached", timeout=10000)
             e.captura("dupa_x")
         _asteapta(lambda: sql("SELECT bun_venit_vazut_la IS NOT NULL FROM public.users WHERE id = %s", (a["id"],)) == [(True,)])

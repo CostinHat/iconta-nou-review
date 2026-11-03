@@ -133,7 +133,7 @@ def proba(pw, baza, asistent, validator, firma, pasi, iesire):
     r["A_refuz_in_vedere"] = _in_vedere(pg, "#em-rezultat .em-curs-box, #em-rezultat")
     pg.screenshot(path=iesire + "_A_refuz.png", full_page=False)
     r["A_formular_inainte"] = _stare_formular(pg)
-    pg.click(".nav-x")                       # X: acasă (drumul care, înainte, pierdea formularul)
+    pg.click(".nav-inapoi")                       # X: acasă (drumul care, înainte, pierdea formularul)
     pg.wait_for_timeout(800)
     _emitere(pg, baza, firma)
     r["A_formular_dupa_X"] = _stare_formular(pg)

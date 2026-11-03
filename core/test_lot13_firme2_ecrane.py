@@ -363,8 +363,8 @@ def test_def_605_raport_z(browser):
         assert " ".join(pg.inner_text("[data-z='77'] .pf-frand-nume").split()).startswith("Raport Z nr 0042 · casa 8000000001")
         assert "Z-8000000001" not in pg.inner_text("#z-descarcare")
         assert pg.inner_text("#z-et-11") == "Total 11%" and pg.inner_text("#z-et-21") == "Total 21%"
-        assert pg.evaluate("() => !!(document.querySelector('#z-salveaza').compareDocumentPosition(document.querySelector('#z-rezultat'))"
-                           " & Node.DOCUMENT_POSITION_FOLLOWING)")
+        # [15.1-E5] „Generează notă” e acțiunea principală a ferestrei: stă în bara de jos, iar rezultatul rămâne în fereastră, deasupra ei
+        assert pg.evaluate("() => !!document.querySelector('.fereastra-jos #z-salveaza') && !!document.querySelector('#z-rezultat').offsetParent")
         v = _butoane(pg, "#zd-val-77")[0]
         assert v[1] and v[2].startswith("Descarcă întâi marfa vândută"), v
         assert not erori, erori

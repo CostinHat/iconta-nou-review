@@ -490,7 +490,11 @@ export function creeazaNavigator(radacina, desktopRandator) {
         _zonaCurenta = z;
         _clicPeRand = null;
       }
-      if (_susDeRefacut != null) { const v = _susDeRefacut; _susDeRefacut = null; _derulant().scrollTop = v; }
+      if (_susDeRefacut != null) {
+        const v = _susDeRefacut; _susDeRefacut = null; _derulant().scrollTop = v;
+        // [15.1-E5] cadrul (tabelul DS, grupurile) mai rearanjează conținutul în cadrul următor: dacă derularea a căzut între timp la 0, se pune iar la loc
+        requestAnimationFrame(() => requestAnimationFrame(() => { const d = _derulant(); if (v > 0 && d.scrollTop === 0 && d.scrollHeight > v) d.scrollTop = v; }));
+      }
     };
     new MutationObserver(() => { _steaza(); _lateste(); _derulare(); }).observe(_corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });   // [lotul 14] zona întâi, apoi derularea ei; și fila care se arată / se ascunde (`hidden`)
     if (window.ResizeObserver) new ResizeObserver(_lateste).observe(_corp);

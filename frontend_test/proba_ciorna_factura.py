@@ -314,7 +314,7 @@ def proba(pw, baza, dir_capturi, rp, r):
             _completeaza(pg, {}, None)
 
     asigura_completat()
-    _iesire(pg, baza, "a2_x_acasa", lambda: (pg.click(".nav-x"), pg.wait_for_timeout(700)), r, dir_capturi)
+    _iesire(pg, baza, "a2_x_acasa", lambda: (pg.click(".nav-inapoi"), pg.wait_for_timeout(700)), r, dir_capturi)
     asigura_completat()
     _iesire(pg, baza, "a3_reincarcare", lambda: (pg.reload(wait_until="domcontentloaded"), pg.wait_for_selector(".asi-arbore, .cab-grila", timeout=20000)), r, dir_capturi)
     asigura_completat()
@@ -346,13 +346,13 @@ def proba(pw, baza, dir_capturi, rp, r):
     asigura_completat()
 
     # altă firmă: ciorna Panificatie NU apare la Coafor; înapoi la Panificatie, e acolo
-    pg.click(".nav-x"); pg.wait_for_timeout(600)
+    pg.click(".nav-inapoi"); pg.wait_for_timeout(600)
     _firma(pg, baza, ALTA_FIRMA)
     _deschide_emitere(pg)
     st = _stare(pg)
     r["a7_alta_firma"] = {"gol": _gol(st), "anunt": bool(st["anunt"]), "stare": st}
     pg.screenshot(path=os.path.join(dir_capturi, "a7_alta_firma.png"), full_page=True)
-    pg.click(".nav-x"); pg.wait_for_timeout(600)
+    pg.click(".nav-inapoi"); pg.wait_for_timeout(600)
     _firma(pg, baza, FIRMA)
     _deschide_emitere(pg)
     r["a7_inapoi_la_firma"] = {"pastrat": _complet(_stare(pg))}
@@ -381,7 +381,7 @@ def proba(pw, baza, dir_capturi, rp, r):
         pg.fill("#em-l0-cantitate", "1")      # o tastă după renunțare: ciorna veche nu are voie să învie
         pg.wait_for_timeout(400)
         r["a9_ciorne_dupa_o_tasta"] = _ciorne(pg)
-        pg.click(".nav-x"); pg.wait_for_timeout(600)
+        pg.click(".nav-inapoi"); pg.wait_for_timeout(600)
         _firma(pg, baza, FIRMA)
         _deschide_emitere(pg)
         st = _stare(pg)

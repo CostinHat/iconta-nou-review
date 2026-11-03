@@ -132,7 +132,7 @@ def test_def_265_ecranul_urmeaza_drepturile_fara_reautentificare(browser, reques
             sql("UPDATE public.users SET poate_valida = true WHERE id = %s", (a["id"],))
             _semnal_vizibilitate(pg)
             _asteapta_265(pg, nota["id"], eticheta="Asistent senior", valideaza=True)
-            pg.click(".fereastra:last-of-type .nav-x")
+            pg.click(".fereastra:last-of-type .nav-inapoi")
             _asteapta_265(pg, nota["id"], card_validat=True)
             acasa_senior = _stare_265(pg, nota["id"])
             e.captura("senior_acasa")

@@ -343,11 +343,13 @@ def test_tipare_rezumatul_sus_si_analiza_langa_buton(browser):
         pg.click("#tip-ai")
         pg.wait_for_function("() => (document.querySelector('#tip-ai-rez') || {}).innerText", timeout=5000)
         langa = pg.evaluate(_LANGA, ["#tip-ai", "#tip-ai-rez"])
+        in_bara = pg.evaluate("() => !!document.querySelector('.fereastra-jos #tip-ai')")
     finally:
         pg.close()
     assert not erori, erori
     assert sus is not None and (sus[1] <= 1 or (sus[1] == sus[0] and sus[1] <= 80)), sus   # [lotul 14, 687] lipit sus (sticky) sau nemișcat în partea de sus la derularea zonei/corpului: [înainte, după, corpul e zona, cât derulează corpul]
-    assert langa["in_corp"] and langa["distanta"] <= 80, langa
+    # [15.1-E5, pct.1] „Generează analiză AI” e acțiunea principală a ferestrei: stă în bara de jos, iar rezultatul ei se vede în fereastră
+    assert in_bara and langa["in_corp"], (in_bara, langa)
 
 
 def test_inregistrare_confirmarea_retrimiterii_langa_tabel_sus(browser):

@@ -232,7 +232,7 @@ def test_def_c166_raspunsul_negativ_al_verificarii_cui_ramane_la_revenire(patron
             pg.fill("#em-cui", cod)
             pg.click("#em-verifica")
             pg.wait_for_function("(t) => document.querySelector('#em-cui-stare').innerText === t", arg=raspuns, timeout=20000)
-            pg.click(".fereastra:last-of-type .nav-x")                     # pleacă imediat după răspuns
+            pg.click(".fereastra:last-of-type .nav-inapoi")                     # pleacă imediat după răspuns
             pg.wait_for_selector("#em-cui", state="detached", timeout=10000)
             _deschide_emiterea(patron, firma_f2["nume"])
             pg.wait_for_function("() => (document.querySelector('#em-ciorna') || {innerText: ''}).innerText.includes('a fost păstrată')",
@@ -243,7 +243,7 @@ def test_def_c166_raspunsul_negativ_al_verificarii_cui_ramane_la_revenire(patron
             pg.click("#em-renunta")
             pg.locator("button", has_text="Da, renunț la factură").click()
             pg.wait_for_timeout(800)
-            pg.click(".fereastra:last-of-type .nav-x")
+            pg.click(".fereastra:last-of-type .nav-inapoi")
     finally:
         pg.unroute("**/verifica-cui/**")
         pg.unroute("**/verifica-vies**")

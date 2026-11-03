@@ -3552,7 +3552,7 @@ textarea.em-adresa { overflow: hidden; }
 .em-client-grila .em-benef > .buton-secundar { flex: 0 0 auto; }
 
 /* [15.1-E3, 732] un singur buton principal pe fereastră: cel din bara de jos (`.fj-principal`); orice alt `.buton-primar` din conținut arată ca butonul secundar (aceeași clasă în cod, ca testele și ascultătorii să nu se schimbe) */
-.fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *) { border: 1px solid #b9c2cf; background: var(--alb); color: var(--ardezie); box-shadow: none; }
+.fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *) { background: var(--alb); color: var(--ardezie); box-shadow: inset 0 0 0 1px #b9c2cf; }   /* chenarul din umbră interioară: butonul secundar nu crește cu 2 px (15.1-E5) */
 .fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *):hover:not(:disabled) { background: var(--fundal); }
 
 /* [15.1-E3] explicația de sub câmp: un rând (textul întreg în title, pus de cadru.js); la focus pe câmp se arată întreagă */

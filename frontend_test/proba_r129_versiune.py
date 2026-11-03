@@ -163,7 +163,7 @@ with sync_playwright() as p:
     # formularul pe care decizia il apara.*
     pg.click("#dlg-anuleaza")
     pg.wait_for_timeout(400)
-    pg.click(".nav-x")                       # inchide si fereastra cozii -> inapoi la desktop
+    pg.click(".nav-inapoi")                       # inchide si fereastra cozii -> inapoi la desktop
     pg.wait_for_selector(".cab-card", timeout=15000)
     pg.wait_for_timeout(300)
     pg.click(".versiune-noua")

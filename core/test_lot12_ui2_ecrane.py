@@ -326,15 +326,20 @@ def test_def_622_validarea_ramane_pe_loc_cu_confirmarea_in_rezumat(browser):
         _deschide_validat(pg)
         inainte = pg.evaluate(_LA_MIJLOC % "tbody[data-coada-ids='720']")
         assert inainte > 300, inainte
+        # [15.1-E5] acțiunea principală a ferestrei a trecut în bara de jos: conținutul de deasupra tabelului s-a scurtat cu rândul ei de butoane, deci „pe loc” se
+        # măsoară pe rândul de după cel validat (poziția lui față de zona de derulare), nu pe `scrollTop`
+        rel = "() => { const z = (document.querySelector('.fereastra-corp:last-of-type .zona-derulare') || [...document.querySelectorAll('.fereastra-corp')].pop()), t = [...z.querySelectorAll('tbody[data-coada-ids]')]; const i = t.findIndex((x) => x.dataset.coadaIds === '720'); window.__vecin = t[i + 1].dataset.coadaIds; return t[i + 1].getBoundingClientRect().top - z.getBoundingClientRect().top; }"
+        vecin0 = pg.evaluate(rel)
         pg.evaluate("() => document.querySelector(\"tbody[data-coada-ids='720'] .val-aproba\").click()")
         pg.wait_for_function("() => ((document.querySelector('#val-confirmare') || {}).textContent || '').includes('Ai validat')", timeout=5000)
+        vecin1 = pg.evaluate("() => { const z = (document.querySelector('.fereastra-corp:last-of-type .zona-derulare') || [...document.querySelectorAll('.fereastra-corp')].pop()); return z.querySelector(`tbody[data-coada-ids='${window.__vecin}']`).getBoundingClientRect().top - z.getBoundingClientRect().top; }")
         m = pg.evaluate("""() => { const c = (%s)(), rc = c.getBoundingClientRect(), z = c.querySelector('#val-confirmare').getBoundingClientRect();
           return {sus: (c.querySelector('.zona-derulare') || c).scrollTop, in_vedere: z.top >= rc.top - 1 && z.bottom <= rc.bottom + 1,
                   ramas: !!c.querySelector("tbody[data-coada-ids='720']"), titlu: c.querySelector('#val-note-titlu').textContent}; }""" % _CORP)
     finally:
         pg.close()
     assert not erori, erori
-    assert abs(m["sus"] - inainte) <= 80, (inainte, m)        # pe loc (rândul validat iese din listă: cel mult înălțimea lui)
+    assert abs(vecin1 - vecin0) <= 80, (vecin0, vecin1, m)     # pe loc (rândul validat iese din listă: cel mult înălțimea lui)
     assert m["in_vedere"] and not m["ramas"] and m["titlu"] == "Note de validat (32)", m
 
 
