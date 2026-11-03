@@ -364,7 +364,7 @@ def test_def_605_raport_z(browser):
         assert "Z-8000000001" not in pg.inner_text("#z-descarcare")
         assert pg.inner_text("#z-et-11") == "Total 11%" and pg.inner_text("#z-et-21") == "Total 21%"
         # [15.1-E5] „Generează notă” e acțiunea principală a ferestrei: stă în bara de jos, iar rezultatul rămâne în fereastră, deasupra ei
-        assert pg.evaluate("() => !!document.querySelector('.fereastra-jos #z-salveaza') && !!document.querySelector('#z-rezultat').offsetParent")
+        assert pg.evaluate("() => [...document.querySelectorAll('.fereastra-jos button')].some((b) => b.textContent.trim() === document.querySelector('#z-salveaza').textContent.trim() && b.hasAttribute('data-actiune-principala')) && !!document.querySelector('#z-rezultat').offsetParent")
         v = _butoane(pg, "#zd-val-77")[0]
         assert v[1] and v[2].startswith("Descarcă întâi marfa vândută"), v
         assert not erori, erori

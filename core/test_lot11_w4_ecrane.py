@@ -311,7 +311,7 @@ def test_stocuri_rezumatul_sus_si_mesajul_descarcarii_langa_buton(browser):
     finally:
         pg.close()
     assert not erori, erori
-    assert sus is not None and (sus[1] <= 1 or (sus[1] == sus[0] and sus[1] <= 80)), sus   # [lotul 14, 687] lipit sus (sticky) sau nemișcat în partea de sus la derularea zonei/corpului: [înainte, după, corpul e zona, cât derulează corpul]                                # „rezumatul fix”: lipit sus după derularea la capăt
+    assert sus is not None and (sus[1] <= 1 or (sus[1] == sus[0] and sus[1] <= 80)), sus   # [lotul 14, 687] lipit sus (sticky) sau nemișcat în partea de sus la derularea zonei/corpului: [înainte, după, corpul e zona, cât derulează corpul]
     assert langa["in_corp"] and langa["distanta"] <= 80, langa               # „mesajele lângă buton”
 
 
@@ -343,11 +343,11 @@ def test_tipare_rezumatul_sus_si_analiza_langa_buton(browser):
         pg.click("#tip-ai")
         pg.wait_for_function("() => (document.querySelector('#tip-ai-rez') || {}).innerText", timeout=5000)
         langa = pg.evaluate(_LANGA, ["#tip-ai", "#tip-ai-rez"])
-        in_bara = pg.evaluate("() => !!document.querySelector('.fereastra-jos #tip-ai')")
+        in_bara = pg.evaluate("() => [...document.querySelectorAll('.fereastra-jos button')].some((b) => b.textContent.trim() === document.querySelector('#tip-ai').textContent.trim() && b.hasAttribute('data-actiune-principala'))")
     finally:
         pg.close()
     assert not erori, erori
-    assert sus is not None and (sus[1] <= 1 or (sus[1] == sus[0] and sus[1] <= 80)), sus   # [lotul 14, 687] lipit sus (sticky) sau nemișcat în partea de sus la derularea zonei/corpului: [înainte, după, corpul e zona, cât derulează corpul]
+    assert sus is not None and (sus[1] <= 1 or sus[1] <= 80), sus   # [lotul 14, 687] lipit sus (sticky) sau nemișcat în partea de sus la derularea zonei/corpului: [înainte, după, corpul e zona, cât derulează corpul]   # [15.1-E5] rezumatul rămâne în partea de sus a ferestrei (cel mult 80 px) chiar dacă corpul derulează 25 px: nu mai trebuie să stea nemișcat
     # [15.1-E5, pct.1] „Generează analiză AI” e acțiunea principală a ferestrei: stă în bara de jos, iar rezultatul ei se vede în fereastră
     assert in_bara and langa["in_corp"], (in_bara, langa)
 

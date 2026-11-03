@@ -3639,3 +3639,5 @@ textarea.em-adresa { overflow: hidden; }
 @media print { body.tipareste-tabel .tipareste-tinta .fereastra-jos { display: none !important; } }
 /* 15.1-E5: explicatia sta lipita sub grup */
 .alegere-butoane ~ .camp-ajutor { margin-top: -4px; }
+.fj-sursa { position: absolute !important; width: 1px !important; height: 1px !important; min-width: 0 !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; border: 0 !important; overflow: hidden !important; opacity: .01; }
+

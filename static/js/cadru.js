@@ -135,12 +135,15 @@ function _dinCatalog(corp, bara) {
   return null;
 }
 
+const _scoate = (p) => { if (p.__sursa) p.__sursa.classList.remove("fj-sursa"); p.remove(); };
+
 function _proxy(sursa) {
   const p = document.createElement("button");
   p.type = "button";
   p.dataset.faraActiune = "apasă butonul din fereastră care face această acțiune";
   p.textContent = _normalizeaza(sursa.textContent);
   p.__sursa = sursa;
+  sursa.classList.add("fj-sursa");   // originalul rămâne în pagină (ecranul îl caută după id), dar nu mai ia loc: acțiunea se vede o singură dată, în bară
   p.addEventListener("click", () => sursa.click());
   return p;
 }
@@ -210,7 +213,7 @@ export function baraDeJos(fer, corp, { renunta }) {
     const faraPrincipal = FARA_ACTIUNE_PRINCIPALA.test(titlu) || _esteMeniu(corp, bara);   // ecran de stare sau meniu de butoane: bara rămâne, fără principal și fără „Renunță”
     if (principal && !principal.isConnected) principal = null;
     // acțiunea de bară care are un original în ecran (găsit de catalog): dacă originalul a dispărut sau nu se mai vede, și butonul din bară pleacă odată cu el
-    if (principal && principal.__sursa && (!principal.__sursa.isConnected || !_vizibil(principal.__sursa))) { principal.remove(); principal = null; }
+    if (principal && principal.__sursa && (!principal.__sursa.isConnected || !_vizibil(principal.__sursa))) { _scoate(principal); principal = null; }
     let candidat = faraPrincipal ? null : _alege(corp, bara, principal && principal.__slab ? undefined : !!principal, titlu);
     if (candidat && candidat.__catalog) {
       // [15.1-E5] acțiune găsită de catalog: în bară stă un buton-proxy (apasă originalul), iar originalul rămâne în ecran — ecranele își caută butoanele în containerul lor
@@ -219,7 +222,7 @@ export function baraDeJos(fer, corp, { renunta }) {
     }
     if (principal && principal.__sursa) { principal.textContent = _normalizeaza(principal.__sursa.textContent); principal.disabled = !!principal.__sursa.disabled; principal.title = principal.__sursa.title || ""; }
     if (candidat && candidat !== principal) {
-      if (principal) principal.remove();   // ecranul și-a redesenat acțiunea: cea veche rămâne fără rost
+      if (principal) _scoate(principal);   // ecranul și-a redesenat acțiunea: cea veche rămâne fără rost
       principal = candidat;
       principal.__formular = _formularul(principal.__sursa || candidat);   // înainte de mutare
       if (!principal.__sursa) principal.__origine = _urma(candidat);   // locul lui din ecran; dacă ecranul îl redesenează, urma dispare și acțiunea e veche
