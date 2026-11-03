@@ -141,6 +141,7 @@ function _proxy(sursa) {
   p.dataset.faraActiune = "apasă butonul din fereastră care face această acțiune";
   p.textContent = _normalizeaza(sursa.textContent);
   p.__sursa = sursa;
+  sursa.classList.remove("buton-primar"); sursa.classList.add("buton-secundar");   // în fereastră rămâne ca buton secundar: un singur buton principal, cel din bară
   p.addEventListener("click", () => sursa.click());
   return p;
 }
@@ -236,7 +237,7 @@ export function baraDeJos(fer, corp, { renunta }) {
     }
     bara.classList.toggle("fj-fara-principal", !principal);
     // fereastra cu formular: acțiunea principală vine dintr-un formular sau fereastra are câmpuri de completat (în afara tabelelor, listelor și căutării)
-    const cuFormular = !!principal && (!!principal.__formular || [...corp.querySelectorAll("input:not([type=hidden]):not([type=search]):not([type=checkbox]):not([type=radio]), textarea, select")]
+    const cuFormular = !!principal && (!!principal.__formular || /^Continuă(\s|$)/.test(_normalizeaza(principal.textContent)) || [...corp.querySelectorAll("input:not([type=hidden]):not([type=search]):not([type=checkbox]):not([type=radio]), textarea, select")]
       .some((x) => _vizibil(x) && !x.closest("table, template, .fj-butoane, .fereastra-antet, .ds-lista, [data-fara-piesa]") && !x.classList.contains("alegere-sursa") && !x.classList.contains("ds-lista-sursa")));
     // „Renunță” al ecranului (de lângă butonul principal, resetează formularul lui) ia locul celui al piesei: o singură „Renunță” în bară
     const renuntaEcran = [...corp.querySelectorAll(".bara-fixa button, form button")].find((x) => !bara.contains(x) && x.textContent.trim() === "Renunță");
