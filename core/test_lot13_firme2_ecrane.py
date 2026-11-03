@@ -36,7 +36,9 @@ import pytest
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LAT, INALT = 1280, 720
-AZI = datetime.date.today()
+from core.ceas_proba import DATA_REF, pagina_cu_ceas_fix  # noqa: E402
+
+AZI = DATA_REF   # R10: ziua de referință fixă; pagina are același ceas (pagina_cu_ceas_fix)
 T = {"id": 1, "nume": "Probă SRL", "cui": "14399840", "regim_contabil": "dubla", "tip_firma": "srl"}
 
 PAGINA = """<!doctype html><html lang="ro"><head><meta charset="utf-8"><link rel="stylesheet" href="/static/stil.css"></head>
@@ -75,7 +77,7 @@ def browser():
 def _pagina(browser, rute, cereri=None, firma=T):
     """`rute`: {sufixul căii: corpul JSON | funcție(metoda, cale, interogare, corp) -> corpul}; firma deschisă în fereastra ei."""
     b, port = browser
-    pg = b.new_page(viewport={"width": LAT, "height": INALT})
+    pg = pagina_cu_ceas_fix(b, viewport={"width": LAT, "height": INALT})
     erori = []
     pg.on("pageerror", lambda e: erori.append(str(e)))
 

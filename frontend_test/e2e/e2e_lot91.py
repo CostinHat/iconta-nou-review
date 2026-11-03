@@ -413,8 +413,8 @@ def test_def_391_dupa_emitere_nu_mai_e_renunta(patron, firma_tva_luna):
     from e2e_bloc_a import _completeaza_factura, _deschide_emiterea
     _deschide_emiterea(patron, firma_tva_luna["nume"])
     pg = patron.pg
-    assert pg.locator("#em-renunta").count() == 1   # înainte de emitere: renunțarea are rost
     _completeaza_factura(pg, cantitate="1")
+    assert pg.locator("#em-renunta").count() == 1   # înainte de emitere (ciorna există): renunțarea are rost; [15.1-E5] e butonul cardului ciornei
     pg.wait_for_function("() => !document.querySelector('#em-emite').disabled", timeout=20000)
     pg.click("#em-emite")
     pg.wait_for_function("() => document.querySelector('#em-rezultat').innerText.includes('emisă')", timeout=60000)

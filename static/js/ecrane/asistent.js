@@ -6,13 +6,13 @@
 // principală are aceeași structură la ambele roluri.” PIVOT pe [p90_arbore 06.09.2026] (arborele de navigare din stânga): banda de
 // sus și benzile „Recomandă” / „Suport” vin din salut.js, ca la cabinet; dedesubt, numai grila de carduri.
 
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=83fcf3ce06";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=257b15589c";
 import { semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaTermene } from "./termene.js?v=c7e152f4e6";
 import { randeazaValidat } from "./validat.js?v=c9f42e8159";
-import { randeazaListaFirme } from "./firme.js?v=835874525f";
+import { randeazaListaFirme } from "./firme.js?v=9096d880bc";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js?v=4f03524f33"; // [p44_declaratii]

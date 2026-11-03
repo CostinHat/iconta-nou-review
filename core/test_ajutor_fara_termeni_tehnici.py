@@ -72,3 +72,15 @@ def test_frazele_ecranelor_nu_au_termeni_de_programator():
     rele = [(loc[0], f) for f, loc in s.inventar().items()
             if TERMENI.search(f) and not re.match(r"^(GET|POST|PUT|PATCH|DELETE) /", f)]
     assert rele == [], rele
+
+
+def test_ajutorul_declaratiilor_fara_coduri_interne():
+    """[15.1-E5, 163.1] Ferestrele de ajutor ale declarațiilor (cele din `_DECL_AJUTOR`, declaratii.js) vorbesc cu numele câmpului din formular și
+    citează ordinul cu numărul lui: fără nume interne de câmp („prsAfiliat”, „op11”, „categ_venit”) și fără „OPANAF (D394)” fără număr.
+    MUTAȚIE: „(prsAfiliat)” pus înapoi în ajutorul F034 -> pică."""
+    js = io.open(os.path.join(_RAD, "static", "js", "ecrane", "declaratii.js"), encoding="utf-8").read()
+    ids = set(re.findall(r'"(F\d{3})"', re.search(r"const _DECL_AJUTOR = \{(.*?)\};", js, re.S).group(1)))
+    assert len(ids) >= 20, ids
+    intern = re.compile(r"\w*Validator\w*|\.jar\b|\b[a-z]+[A-Z]\w*\b|\bop\d+\b|\b[a-z]+_[a-z_]+\b|OPANAF\s*\((?!\s*nr)[^)]*\)")
+    rele = [(r["ID"], m.group(0)) for r in _registru() if r["ID"] in ids for m in intern.finditer(r.get("ajutor") or "")]
+    assert rele == [], rele

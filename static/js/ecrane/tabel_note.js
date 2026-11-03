@@ -15,7 +15,7 @@
 // Ecranul dă rândurile deja pregătite (`randuri`), componenta le desenează, le filtrează și deschide detaliul. Ce face fiecare buton îl
 // leagă ecranul (după `html`, pe elementele cu atributele lui) — componenta nu cheamă serverul, în afară de `incarcaLinii` (încărcarea
 // liniilor unui rând care nu le are, la deschiderea detaliului sau la prima căutare).
-import { esc, bani, dataRo, cate } from "../api.js?v=83fcf3ce06";
+import { esc, bani, dataRo, cate } from "../api.js?v=257b15589c";
 
 /** Textul fără diacritice, cu litere mici — forma în care se compară căutarea. */
 export function normalizeaza(x) {

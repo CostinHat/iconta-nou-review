@@ -15,7 +15,7 @@
 // singur); fiecare rezultat e un buton (DS cap.2a, 674); alegerea (clic / Enter) deschide fereastra potrivită PESTE ce e deschis — ce s-a
 // tastat într-o fereastră de dedesubt se păstrează (DS cap.3, `nav` păstrează corpul ferestrei). Operațiunile refuzate rolului nu apar (`permis`).
 // Gard: `core/test_lot13_ds_cautare.py` (server + structură) + e2e `frontend_test/e2e/e2e_lot13_ds.py::test_def_681_*`.
-import { api, esc, ultimaCerere } from "./api.js?v=83fcf3ce06";
+import { api, esc, ultimaCerere } from "./api.js?v=257b15589c";
 import { permis } from "./drepturi.js?v=34d0fb0afd";
 
 const ASTEPTARE_MS = 200;
@@ -52,7 +52,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=835874525f");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=9096d880bc");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }

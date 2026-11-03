@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=83fcf3ce06";
+import { api, ultimaCerere, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta, cantitate, focusFaraSalt, eroareCamp, curataEroriCamp, ALEGE, dataIso, cate, dupaNumar, selectDaNu, daNu, cereAlegerile, alegeDacaLipseste } from "../api.js?v=257b15589c";
 
 // C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
 // firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
@@ -2444,7 +2444,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=835874525f"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=9096d880bc"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat

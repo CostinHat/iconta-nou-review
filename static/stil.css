@@ -3387,10 +3387,10 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 /* DS 15.1 — semnale: rând de 36 px, banda din stânga, detaliile pliate; fără derulare proprie */
 .ds-semnale { margin: 8px 0; }
 .ds-semnale-lista { list-style: none; margin: 0; padding: 0; }
-.ds-semnal { display: flex; align-items: center; gap: 8px; min-height: 36px; box-sizing: border-box; padding: 0 12px; background: var(--alb); border: 1px solid var(--linie); border-left: 4px solid var(--portocaliu); border-radius: 8px; margin-bottom: 4px; font-size: 14px; }
+.ds-semnal { display: flex; align-items: center; gap: 8px; min-height: 36px; box-sizing: border-box; padding: 6px 12px; background: var(--alb); border: 1px solid var(--linie); border-left: 4px solid var(--portocaliu); border-radius: 8px; margin-bottom: 4px; font-size: 14px; }
 .ds-semnal-eroare { border-left-color: var(--rosu); }
 .ds-semnal-ok { border-left-color: var(--verde); }
-.ds-semnal-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-semnal-text { flex: 1 1 auto; min-width: 0; line-height: 18px; white-space: normal; overflow-wrap: anywhere; }   /* [15.1-E5, 740] cel mult două rânduri, fără tăiere */
 .ds-semnal-plie, .ds-semnale-inca { height: 28px; padding: 0 10px; font-size: 13px; border: 1px solid var(--linie); border-radius: 8px; background: var(--alb); cursor: pointer; }
 .ds-semnal-detalii { margin: 0 0 4px 16px; padding: 8px 12px; font-size: 14px; color: var(--ardezie); background: var(--fundal); border-radius: 8px; }
 .ds-semnal-cutie[hidden], .ds-semnal-detalii[hidden] { display: none; }
@@ -3476,7 +3476,7 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 
 /* [15.1-E3, 722] lista cu căutare permanentă (Declarații, pasul 1): căutarea de 44 px și rândurile de 44 px la vedere; derulează numai lista, nu fereastra */
 .ds-lista-permanenta .ds-lista-panou { margin-top: 0; padding: 8px; }
-.ds-lista-permanenta .ds-lista-randuri { max-height: 220px; margin-top: 8px; }
+.ds-lista-permanenta .ds-lista-randuri { max-height: max(352px, calc(100vh - 420px)); margin-top: 8px; }   /* [15.1-E5, 742] umple fereastra: minimum 8 rânduri la 1366×768, mai multe pe ecran mai înalt; derulare internă numai peste */
 .fereastra-corp .ds-lista input.ds-lista-cauta:not([type=checkbox]):not([type=radio]):not([type=file]) { height: 44px; }   /* câmpul de căutare al listei: 44 px (DS), peste regula generală a câmpurilor din fereastră */
 .ds-lista-permanenta .ds-lista-grup { padding: 8px 12px 4px; }
 .dec-existente-lista { list-style: none; margin: 0; padding: 0; max-height: 132px; overflow-y: auto; }
@@ -3619,3 +3619,23 @@ textarea.em-adresa { overflow: hidden; }
 .ds-tabel-lat { overflow-x: visible; }
 .ds-tabel-lat .ds-tabel { table-layout: auto; }
 .rezumat-fix .ds-rezumat { margin-bottom: 4px; }
+
+/* [15.1-E5, pct.2] PIESA „GRUP DE BUTOANE” (DS: butoane M 44 px alăturate, spațiu 8 px, cel ales principal albastru, restul secundare), o singură regulă pe TOATE
+   ferestrele, nu doar în `.ds-grup`; nu încape pe un rând la 1366 px -> două rânduri egale (`.alegere-doua`, pus de cadru), nu listă. Comutatorul XS (28 px, două
+   stări) ține locul grupului în rândurile de tabel; alegerea cu o singură variantă e text. */
+.alegere-butoane { gap: 8px; min-height: 44px; }
+.alegere-butoane > button { height: 44px; padding: 0 16px; font-size: 14px; border-radius: 8px; }
+.alegere-butoane > button.buton-activ { color: #fff; background: var(--albastru); border-color: var(--albastru-inchis); }
+.alegere-butoane.alegere-doua { display: grid; grid-template-columns: repeat(var(--alegere-col, 3), minmax(0, 1fr)); }
+.alegere-comutator { height: 28px; padding: 0 10px; font-size: 13px; border-radius: 8px; border: 1px solid var(--linie); background: var(--alb); cursor: pointer; white-space: nowrap; }
+.alegere-comutator[aria-checked="true"] { color: #fff; background: var(--albastru); border-color: var(--albastru-inchis); }
+.alegere-text { font-size: 16px; }
+
+/* [15.1-E5, pct.1] „Descarcă PDF” al unui tabel fără export propriu: se tipărește numai tabelul (restul ferestrei nu intră pe hârtie) */
+@media print {
+  body.tipareste-tabel :not(.tipareste-tinta):not(.tipareste-tinta *):not(:has(.tipareste-tinta)) { display: none !important; }
+  body.tipareste-tabel .fereastra, body.tipareste-tabel .fereastra-corp, body.tipareste-tabel .zona-derulare, body.tipareste-tabel .ds-tabel-cutie { position: static !important; overflow: visible !important; height: auto !important; max-height: none !important; width: auto !important; }
+}
+@media print { body.tipareste-tabel .tipareste-tinta .fereastra-jos { display: none !important; } }
+/* 15.1-E5: explicatia sta lipita sub grup */
+.alegere-butoane ~ .camp-ajutor { margin-top: -4px; }

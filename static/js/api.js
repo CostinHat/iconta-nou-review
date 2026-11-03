@@ -1110,7 +1110,59 @@ if (typeof MutationObserver !== "undefined" && typeof document !== "undefined") 
 export const MAX_BUTOANE = 6;
 const _VALOARE_SELECT = typeof HTMLSelectElement !== "undefined" ? Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value") : null;
 const _INDEX_SELECT = typeof HTMLSelectElement !== "undefined" ? Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "selectedIndex") : null;
-const _optiuniReale = (sel) => [...sel.options].filter((o) => !o.hasAttribute("data-alege") && !o.hidden);
+// [15.1-E5] „— alege —” (cu `data-alege` sau cu valoare goală) nu e variantă: nu devine buton, iar cu el selectat nu e nimic ales
+export const esteAlege = (o) => o.hasAttribute("data-alege") || (o.value === "" && (!o.textContent.trim() || /^[—–-]+\s*alege/i.test(o.textContent.trim())));
+const _optiuniReale = (sel) => [...sel.options].filter((o) => !esteAlege(o) && !o.hidden);
+/** [15.1-E5, pct.2] Comutatorul XS (28 px, două stări) pentru alegerea cu DOUĂ variante dintr-un rând de tabel: butonul arată varianta aleasă, apăsat o trece pe cealaltă.
+ *  Lista rămâne în pagină, nevăzută (aceeași sursă a valorii ca la `alegereButoane`). */
+export function alegereComutator(sel) {
+  if (!sel || sel.__butoane || sel.multiple || sel.tagName !== "SELECT") return null;
+  const reale = _optiuniReale(sel);
+  if (reale.length !== 2) return null;
+  sel.__butoane = true;
+  sel.classList.add("alegere-sursa");
+  sel.setAttribute("tabindex", "-1"); sel.setAttribute("aria-hidden", "true");
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "alegere-comutator";
+  b.setAttribute("role", "switch");
+  b.dataset.faraActiune = "alegere în rând; salvarea rândului poartă acțiunea";
+  const arata = () => {
+    const o = sel.options[sel.selectedIndex];
+    b.textContent = (o.dataset.buton || o.textContent).trim();
+    b.setAttribute("aria-checked", String(o === reale[1]));
+    b.disabled = sel.disabled;
+  };
+  b.addEventListener("click", () => {
+    const acum = sel.options[sel.selectedIndex];
+    sel.value = (acum === reale[0] ? reale[1] : reale[0]).value;
+    arata();
+    sel.dispatchEvent(new Event("input", { bubbles: true }));
+    sel.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  sel.insertAdjacentElement("beforebegin", b);
+  sel.addEventListener("change", arata);
+  new MutationObserver(arata).observe(sel, { attributes: true, attributeFilter: ["disabled"] });
+  arata();
+  return b;
+}
+
+/** [15.1-E5, pct.2] Alegerea cu o singură variantă e text, fără control (valoarea rămâne în lista nevăzută). */
+export function alegereText(sel) {
+  if (!sel || sel.__butoane || sel.multiple || sel.tagName !== "SELECT") return null;
+  const reale = _optiuniReale(sel);
+  if (reale.length !== 1) return null;
+  sel.__butoane = true;
+  sel.classList.add("alegere-sursa");
+  sel.setAttribute("tabindex", "-1"); sel.setAttribute("aria-hidden", "true");
+  if (!sel.value) sel.value = reale[0].value;
+  const t = document.createElement("span");
+  t.className = "alegere-text";
+  t.textContent = (reale[0].dataset.buton || reale[0].textContent).trim();
+  sel.insertAdjacentElement("beforebegin", t);
+  return t;
+}
+
 export function alegereButoane(sel) {
   if (!_VALOARE_SELECT || !sel || sel.__butoane || sel.multiple || sel.tagName !== "SELECT") return null;
   sel.__butoane = true;
@@ -1124,7 +1176,7 @@ export function alegereButoane(sel) {
   if (l) l.addEventListener("click", (e) => { if (!(e.target instanceof Element) || !e.target.closest("button, select")) e.preventDefault(); });
   const marcheaza = () => {
     const o = sel.options[_INDEX_SELECT.get.call(sel)];
-    const v = o && !o.hasAttribute("data-alege") ? _VALOARE_SELECT.get.call(sel) : null;
+    const v = o && !esteAlege(o) ? _VALOARE_SELECT.get.call(sel) : null;
     grup.querySelectorAll("button").forEach((b) => {
       const ales = v !== null && b.dataset.valoare === v;
       b.classList.toggle("buton-activ", ales);
@@ -1152,7 +1204,7 @@ export function alegereButoane(sel) {
       if (o.dataset.buton) b.title = o.textContent.trim();
       b.__optiune = o;
       b.addEventListener("click", () => {
-        if (b.disabled || (_VALOARE_SELECT.get.call(sel) === o.value && !sel.options[_INDEX_SELECT.get.call(sel)].hasAttribute("data-alege"))) return;
+        if (b.disabled || (_VALOARE_SELECT.get.call(sel) === o.value && !esteAlege(sel.options[_INDEX_SELECT.get.call(sel)]))) return;
         _VALOARE_SELECT.set.call(sel, o.value);
         marcheaza();
         sel.dispatchEvent(new Event("input", { bubbles: true }));

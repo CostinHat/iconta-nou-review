@@ -2,7 +2,7 @@
 // grupurile formularului (Document, Furnizor / Client, Sume, Descriere), lățimea câmpului după rol (XS 9, S 16, M 38, L jumătate, XL
 // toată lățimea) și cardul-rezumat de un rând cu detaliile pliate. Dimensiunile sunt în stil.css (`.ds-*`); aici stă numai alegerea
 // clasei, ca ecranele să nu mai aleagă singure lățimi și grupuri.
-import { esc, focusFaraSalt, cate } from "./api.js?v=83fcf3ce06";
+import { esc, focusFaraSalt, cate } from "./api.js?v=257b15589c";
 
 export const GRUPURI_FORMULAR = ["Document", "Furnizor / Client", "Sume", "Descriere"];
 
@@ -135,6 +135,13 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
     const titlu = cutie.querySelector(".ds-lista-titlu");
     if (titlu) titlu.addEventListener("click", () => { deschisa = !deschisa; deseneaza(); if (deschisa) focusFaraSalt(cutie.querySelector(".ds-lista-cauta")); });
     const c = cutie.querySelector(".ds-lista-cauta");
+    // [15.1-E5, 727.2] Enter în căutare alege primul rând din filtru (nu trimite formularul și nu deschide nimic)
+    if (c) c.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Enter") return;
+      ev.preventDefault();
+      const primul = cutie.querySelector(".ds-lista-rand:not(.ds-lista-inactiv)");
+      if (primul) primul.click();
+    });
     if (c) c.addEventListener("input", () => { filtru = c.value; deseneaza(); const n = cutie.querySelector(".ds-lista-cauta"); focusFaraSalt(n); n.setSelectionRange(n.value.length, n.value.length); });
     cutie.querySelectorAll(".ds-lista-rand").forEach((li) => li.addEventListener("click", () => {
       const r = potrivite[Number(li.dataset.i)];
@@ -147,17 +154,30 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
       deseneaza();
     }));
   };
+  // [15.1-E5, 727.2] lista stă în eticheta câmpului: un clic pe rând (text, nu control) ar fi dat de browser primului control din etichetă — „?” de lângă titlu,
+  // care deschide ajutorul. Clicul în listă nu activează eticheta; ajutorul se deschide numai din „?”.
+  cutie.addEventListener("click", (ev) => { if (!(ev.target instanceof Element) || !ev.target.closest("button, input")) ev.preventDefault(); });
   new MutationObserver(deseneaza).observe(sel, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "selected", "hidden"] });
   sel.addEventListener("change", deseneaza);
   deseneaza();
   return cutie;
 }
 
-/** [15.1, 687.1] Semnalele unei ferestre: un rând de 36 px pe semnal (cel mult 90 de caractere), „ce e de făcut” pliat sub el; fără derulare proprie: peste
+/** [15.1-E5, 740] Textul unui semnal: prima propoziție ÎNTREAGĂ, pe cel mult două rânduri (până la 200 de caractere); o propoziție mai lungă se rupte la
+ *  ultimul cuvânt dinainte de limită, fără „…”, iar restul trece în detalii (textul întreg). */
+export function textSemnal(t) {
+  const prima = String(t).split(/(?<=\.)\s/)[0];
+  if (prima.length <= 200) return prima;
+  const taiat = prima.slice(0, 200);
+  const sp = taiat.lastIndexOf(" ");
+  return (sp > 120 ? taiat.slice(0, sp) : taiat).replace(/[\s,;—–-]+$/, "");
+}
+
+/** [15.1, 687.1] Semnalele unei ferestre: un rând de 36 px pe semnal (textul pe cel mult două rânduri, fără tăiere), „ce e de făcut” pliat sub el; fără derulare proprie: peste
  *  `limita` se arată primele și „încă n ▾”. `ton`: avertisment | eroare | ok (banda din stânga). Desenează în `zona`; întoarce elementul. */
 export function semnaleDS(zona, items, { titlu = "Semnale", ton = "avertisment", limita = 6 } = {}) {
   const lista = (items || []).map((x) => (typeof x === "string" ? { mesaj: x } : x)).filter((x) => x && x.mesaj);
-  const scurt = (t) => { const p = String(t).split(/(?<=\.)\s/)[0]; return p.length > 90 ? p.slice(0, 89) + "…" : p; };
+  const scurt = textSemnal;
   zona.innerHTML = `<section class="ds-semnale"><h3 class="ds-sectiune-titlu">${esc(titlu)} (${lista.length})</h3><ul class="ds-semnale-lista"></ul></section>`;
   const ul = zona.querySelector(".ds-semnale-lista");
   const buton = (clasa, text, laClic) => {   // butoanele se creează numai când au ce arăta: nu e o acțiune care dispare, ci una care nu există
@@ -279,14 +299,13 @@ export function tabelDS(zona, { coloane, randuri, gol = "Nimic de arătat.", sub
 
 /** [15.1-E3, 731 / 732] Un semnal ca text HTML (pentru ecranele care își compun corpul ca șir): același rând de 36 px ca `semnaleDS`, cu „ce e de făcut” pliat
  *  (`detaliiHtml`, deja scăpat) și, când are acțiune, butonul S lângă rând (`actiuneHtml`, un `<button class="buton-secundar buton-s">`). Pliarea o leagă
- *  `legaSemnale(radacina)`. `text` mai lung de 90 de caractere se taie la prima propoziție; textul întreg trece în detalii. */
+ *  `legaSemnale(radacina)`. `text` mai lung de 200 de caractere se rupe la ultimul cuvânt dinainte; textul întreg trece în detalii. */
 // butonul de pliere al unui semnal / card: o singură funcție, chemată numai când sunt detalii de arătat (nu e o acțiune care dispare: nu există fără detalii)
 const _butonPlie = (clasa) => `<button type="button" class="buton-secundar ${clasa}" aria-expanded="false" data-fara-actiune="plierea / arătarea detaliilor în fereastra curentă">▾ detalii</button>`;
 
 export function semnalHtml({ ton = "avertisment", text, detaliiHtml = "", actiuneHtml = "" }) {
   const t = String(text || "");
-  const prima = t.split(/(?<=\.)\s/)[0];
-  const scurt = prima.length > 90 ? prima.slice(0, 89) + "…" : prima;
+  const scurt = textSemnal(t);
   const are = detaliiHtml || t.trim() !== scurt.trim();
   const detalii = (detaliiHtml || "") + (t.trim() !== scurt.trim() ? `<p class="ds-semnal-intreg">${esc(t)}</p>` : "");
   return `<div class="ds-semnal-cutie"><div class="ds-semnal ds-semnal-${esc(ton)}"><span class="ds-semnal-text" title="${esc(t)}">${esc(scurt)}</span>${
@@ -359,6 +378,33 @@ function _latimeColoana(th, celule) {
   }
   if (th.classList.contains("ds-tabel-num")) return "14ch";
   return "";
+}
+
+// [15.1-E5, 741] O celulă cu dată sau sumă nu se taie niciodată: coloana ei are lățimea celei mai late valori (nu mai puțin decât a fost cerută). Textul lung
+// se taie numai în coloanele de descriere.
+const _DATA_SAU_SUMA = /\b\d{1,2}\.\d{1,2}\.\d{4}\b|(^|[^\d.,])-?\d{1,3}(\.\d{3})*,\d{2}(\s|$)/;
+export function coloaneDateSumeAplica(corp) {
+  for (const t of corp.querySelectorAll("table.ds-tabel")) {
+    if (!_vizibilDS(t) || !t.tHead) continue;
+    const cap = [...t.tHead.rows[0].cells];
+    cap.forEach((th, i) => {
+      const celule = [...t.tBodies].flatMap((b) => [...b.rows]).map((r) => r.cells[i]).filter((c) => c && _vizibilDS(c) && _DATA_SAU_SUMA.test(c.textContent));
+      if (!celule.length) return;
+      const nevoie = Math.max(...celule.map((c) => c.scrollWidth)) + 2;
+      if (celule.some((c) => c.scrollWidth > c.clientWidth + 1) && nevoie > th.getBoundingClientRect().width) th.style.width = nevoie + "px";
+    });
+  }
+}
+
+/** [15.1-E5, pct.1] Exportul tabelului DS: tipărește numai tabelul ferestrei (restul ferestrei e ascuns la tipărire, `@media print` din stil.css); din dialogul
+ *  de tipărire se alege „Salvează ca PDF”. */
+export function tiparesteTabel(corp) {
+  const cutie = [...corp.querySelectorAll(".ds-tabel-cutie")].find(_vizibilDS) || [...corp.querySelectorAll("table")].find(_vizibilDS) || corp;   // fără tabel: conținutul ferestrei
+  cutie.classList.add("tipareste-tinta");
+  document.body.classList.add("tipareste-tabel");
+  const gata = () => { cutie.classList.remove("tipareste-tinta"); document.body.classList.remove("tipareste-tabel"); window.removeEventListener("afterprint", gata); };
+  window.addEventListener("afterprint", gata);
+  window.print();
 }
 
 /** Tabelul vechi (`table` fără `ds-tabel`) devine tabelul DS: cutie cu subsol de 44 px (contorul de rânduri sau totalurile din `tfoot`), cap 40 px,

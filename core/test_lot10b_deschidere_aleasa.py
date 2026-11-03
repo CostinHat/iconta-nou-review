@@ -146,6 +146,7 @@ CLICURI_PROGRAMATICE = {
     "static/js/ecrane/firme.js": (2, "descărcarea cerută de om; „Scanează cod de bare” deschide alegerea imaginii (input ascuns)"),
     # [lotul 13, 681] rezultatul ales de om în căutarea din antet apasă cardul ferestrei firmei și butonul operației pe care le numește
     # — aceleași elemente pe care omul le-ar fi apăsat, cu ascultătorii și drepturile lor (nu o a doua cale de deschidere)
+    "static/js/ds_piese.js": (1, "Enter în căutarea listei apasă primul rând din filtru (15.1-E5, 727.2): alegerea e a omului, rândul e cel pe care l-ar fi apăsat cu mouse-ul"),
     "static/js/cautare.js": (3, "rezultatul căutării ales de om apasă cardul firmei / butonul operației pe care îl numește / butoanele ecranului din catalog (681.2: aceiași pași pe care i-ar face omul)"),
     "static/js/ecrane/validat.js": (1, "„Respinge nota” ales în caseta de confirmare apasă butonul de respingere al notei"),
     "static/js/ecrane/declaratii.js": (1, "„Generează / Regenerează” apăsat de om adaugă întâi rândul completat și neadăugat (652): se apasă „+ adaugă” al rândului, cu verificările lui"),

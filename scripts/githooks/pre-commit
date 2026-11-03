@@ -39,3 +39,10 @@ if [ -x "$RUFF" ]; then
 else
     echo "[pre-commit] ATENTIE: ruff neinstalat in venv - poarta undefined-name (F821/F822/F823) SARITA. Ruleaza: ./venv/bin/pip install ruff"
 fi
+# [15.1-E5, din raportul E3 abaterea 2] `inainte_de_commit.sh` (verificatorul de design + pytest-ul țintit pe fișierele atinse) e parte din hook: commitul
+# se REFUZĂ când e roșu, nu se raportează doar. `POARTA_FARA_INAINTE=1` nu există: nu se poate ocoli.
+echo "[pre-commit] inainte_de_commit.sh (verificator de design + pytest tintit)..."
+if ! sh scripts/inainte_de_commit.sh; then
+    echo "[pre-commit] RESPINS: inainte_de_commit.sh este rosu; repara cauza si comite din nou."
+    exit 1
+fi

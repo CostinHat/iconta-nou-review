@@ -37,6 +37,9 @@
     const inapoi = ant.querySelector(".nav-inapoi");
     a.sageata = !!inapoi && norm(inapoi.innerText) === "←";
     if (!a.sageata) pica.a.push("lipsește „←” (un pas înapoi)");
+    // [15.1-E5, 713.1 / pct.3] „←” e vizibil, 40 × 40, pe fiecare fereastră de lucru; „✕” nu mai e în bara de sus
+    if (inapoi) { const r = inapoi.getBoundingClientRect(); a.sageata_dim = [Math.round(r.width), Math.round(r.height)]; if (!vizibil(inapoi) || Math.abs(r.width - 40) > 1 || Math.abs(r.height - 40) > 1) pica.a.push("„←” nu e vizibil de 40 × 40 (" + a.sageata_dim.join(" × ") + ")"); }
+    if ([...ant.querySelectorAll("button")].some((x) => vizibil(x) && /^✕$/.test(norm(x.innerText)))) pica.a.push("„✕” în bara de sus");
     const fir = norm(ant.querySelector(".fereastra-fir")?.innerText);
     a.firma_sau_cabinet = fir;
     // [15.1-E2] Panou Admin n-are firmă sau cabinet în lucru: contextul ei e „Panou Admin”, fără CUI (decizie în raport, E)
@@ -71,16 +74,38 @@
   if (vert.length > 1) pica.b.push(vert.length + " locuri de derulare verticală: " + vert.map((d) => d.loc).join(", "));
   if (vert.some((d) => !d.tabel)) pica.b.push("derulează conținutul ferestrei, nu tabelul: " + vert.filter((d) => !d.tabel).map((d) => d.loc).join(", "));
   // bara de jos fixă: un rând de butoane lipit de marginea de jos a ferestrei, de 72 px
-  const bj = [...F.querySelectorAll("*")].filter((el) => vizibil(el) && el.querySelector("button") && el.getBoundingClientRect().bottom >= rF.bottom - 2
+  const bjCadru = F.querySelector(".fereastra-jos");   // [15.1-E5] bara de jos a cadrului există și fără butoane (ferestre de stare / meniu)
+  const bj = (bjCadru && vizibil(bjCadru) && Math.abs(h(bjCadru) - 72) <= 1 && bjCadru.getBoundingClientRect().bottom >= rF.bottom - 2) ? bjCadru : [...F.querySelectorAll("*")].filter((el) => vizibil(el) && el.querySelector("button") && el.getBoundingClientRect().bottom >= rF.bottom - 2
     && Math.abs(h(el) - 72) <= 1 && el.getBoundingClientRect().width >= rF.width - 40).pop() || null;
   b.bara_jos = bj ? { clase: String(bj.className), inaltime: h(bj) } : null;
   if (!bj) pica.b.push("nu există bara de jos fixă de 72 px");
   else {
     const butoane = [...bj.querySelectorAll("button")].filter(vizibil);
-    const principale = butoane.filter((x) => /buton-primar|buton-principal/.test(x.className));
+    // [15.1-E5, pct.1] „Închide” și „Renunță” nu sunt acțiune principală, oricum ar fi colorate
+    const nuPrincipal = (x) => /^(Închide|Renunță)$/.test(norm(x.innerText));
+    const colorate = butoane.filter((x) => /buton-primar|buton-principal/.test(x.className));
+    const principale = colorate.filter((x) => !nuPrincipal(x));
+    const inchideColorat = colorate.filter(nuPrincipal).map((x) => norm(x.innerText));
+    const exceptie = window.__exceptieB || null;   // „stare” | „meniu”: ecranul pe lista de excepții din raport (scripts/verificator_design.py::EXCEPTII_B)
+    b.exceptie = exceptie;
     b.butoane_principale = principale.length;
-    if (principale.length !== 1) pica.b.push("bara de jos are " + principale.length + " butoane principale, nu unul");
-    if (!butoane.some((x) => norm(x.innerText) === "Renunță")) pica.b.push("bara de jos nu are „Renunță”");
+    b.actiune_principala = principale.length ? norm(principale[0].innerText) : null;
+    b.cu_atribut = [...F.querySelectorAll("[data-actiune-principala]")].filter(vizibil).map((x) => norm(x.innerText));
+    if (inchideColorat.length) pica.b.push("„" + inchideColorat[0] + "” colorat ca acțiune principală (nu e: fereastra se închide din „←”)");
+    if (exceptie) {
+      if (principale.length) pica.b.push("ecran din lista de excepții (" + exceptie + ") cu buton principal în bară: „" + b.actiune_principala + "”");
+      if (butoane.some((x) => norm(x.innerText) === "Renunță")) pica.b.push("ecran din lista de excepții cu „Renunță” în bară");
+    } else {
+      if (principale.length !== 1) pica.b.push("bara de jos are " + principale.length + " butoane principale, nu unul");
+      if (b.cu_atribut.length !== 1) pica.b.push("ferestrele de lucru au exact un buton cu data-actiune-principala: aici " + b.cu_atribut.length);
+      // „Renunță” numai pe ferestrele cu formular: butonul principal a venit dintr-un formular
+      const dinFormular = bj.dataset.cuFormular === "1";
+      const areRenunta = butoane.some((x) => norm(x.innerText) === "Renunță");
+      b.renunta = areRenunta; b.din_formular = dinFormular;
+      if (dinFormular && !areRenunta) pica.b.push("fereastra cu formular nu are „Renunță” în bara de jos");
+      if (!dinFormular && areRenunta && !butoane.some((x) => x.classList.contains("fj-al-ecranului"))) pica.b.push("„Renunță” pe o fereastră fără formular");
+    }
+    if (butoane.some((x) => norm(x.innerText) === "✕")) pica.b.push("„✕” în bara de jos");
     const dez = principale.filter((x) => x.disabled || x.dataset.cadruInactiv);
     b.principal_inactiv_fara_motiv = dez.filter((x) => !(x.title || x.getAttribute("aria-describedby") || bj.querySelector(".bara-motiv"))).length;
     if (b.principal_inactiv_fara_motiv) pica.b.push("butonul principal inactiv fără motiv");
@@ -106,6 +131,13 @@
     if (!sub) pica.c.push("tabelul nu are subsol de 44 px");
     else if (Math.abs(h(sub) - 44) > 1) pica.c.push("subsolul tabelului are " + h(sub) + " px, nu 44");
   }
+  // [15.1-E5, 741] nicio celulă cu dată sau sumă nu e tăiată în niciun tabel DS
+  c.celule_taiate = [];
+  for (const td of F.querySelectorAll("table.ds-tabel td")) {
+    if (!vizibil(td)) continue;
+    if (/\b\d{1,2}\.\d{1,2}\.\d{4}\b|(^|[^\d.,])-?\d{1,3}(\.\d{3})*,\d{2}(\s|$)/.test(td.textContent) && td.scrollWidth > td.clientWidth + 1) c.celule_taiate.push(norm(td.innerText).slice(0, 30));
+  }
+  if (c.celule_taiate.length) pica.c.push("dată sau sumă tăiată în celulă: " + [...new Set(c.celule_taiate)].slice(0, 3).join(" · "));
   if (c.tabele_vechi.length) pica.c.push(c.tabele_vechi.length + " tabel(e) care nu sunt tabelul DS: " + [...new Set(c.tabele_vechi)].join(", "));
   // liste de rânduri-buton (aceeași clasă repetată, ≥3, în afara tabelelor)
   const grupe = new Map();
@@ -138,7 +170,12 @@
   const d = { rezumat_ds: 0, semnale_ds: 0, carduri_vechi: 0, paragrafe_lungi: [] };
   // [15.1-E4] cardul de eroare își arată textul întreg, pe câte linii e nevoie: peste 44 px numai la eroare
   for (const r of F.querySelectorAll(".ds-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (Math.abs(h(r) - 44) > 1 && !(r.classList.contains("ds-rezumat-eroare") && h(r) > 44)) pica.d.push("card-rezumat de " + h(r) + " px, nu 44"); }
-  for (const s of F.querySelectorAll(".ds-semnal")) { if (!vizibil(s)) continue; d.semnale_ds++; if (Math.abs(h(s) - 36) > 1) pica.d.push("semnal de " + h(s) + " px, nu 36"); }
+  for (const s of F.querySelectorAll(".ds-semnal")) {   // [15.1-E5, 740] 36 px pe un rând, cel mult două rânduri (56 px), textul întreg, fără „…”
+    if (!vizibil(s)) continue; d.semnale_ds++;
+    if (h(s) < 35 || h(s) > 52) pica.d.push("semnal de " + h(s) + " px (36 pe un rând, cel mult 50 pe două)");
+    const tx = s.querySelector(".ds-semnal-text");
+    if (tx && (/…$/.test(norm(tx.innerText)) || tx.scrollWidth > tx.clientWidth + 1 || getComputedStyle(tx).textOverflow === "ellipsis")) pica.d.push("semnal tăiat: „" + norm(tx.innerText).slice(-30) + "”");
+  }
   for (const r of F.querySelectorAll(".card-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (Math.abs(h(r) - 44) > 1) pica.d.push("card-rezumat de " + h(r) + " px, nu 44"); }
   // [15.1-E4, pct.4] cardurile de eroare rămân mereu la vedere și nu se numără; celelalte cel mult 2 la vedere (restul sub „Semnale (n)”); un card gri (informativ) e card valid
   const nonErori = [...F.querySelectorAll(".ds-rezumat")].filter((r) => vizibil(r) && !r.classList.contains("ds-rezumat-eroare") && !r.closest(".ds-semnale"));
@@ -169,7 +206,7 @@
   // ── e. acțiuni în text ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
   const e = { in_text: [], casete_cu_actiuni: [] };
   for (const el of F.querySelectorAll("p button, p a[href], li button, textarea ~ button")) {
-    if (!vizibil(el) || el.closest(".ds-actiuni-rand, .pf-intro, .fereastra-antet, .ds-rezumat, .ds-semnal")) continue;
+    if (!vizibil(el) || el.matches(".ajutor-btn") || el.closest(".ds-actiuni-rand, .pf-intro, .fereastra-antet, .ds-rezumat, .ds-semnal")) continue;   // [15.1-E5] „?” de lângă un nume e buton, nu text apăsabil
     const p = el.closest("p, li");
     if (p && proprio(p).length > 12) e.in_text.push(norm(el.innerText).slice(0, 30));
   }
@@ -232,7 +269,7 @@
   const reSuma = /(?<![\d.,/-])\d{4,}\.\d{2}(?![\d.])|(?<![\d.])\d+,\d{3}(?![\d.,])/g;
   for (let m; (m = reSuma.exec(text));) {
     const inainte = text.slice(Math.max(0, m.index - 14), m.index), dupa = text.slice(m.index + m[0].length, m.index + m[0].length + 24);
-    const cod = /^[1-8]\d{3}\.\d{2}$/.test(m[0]) && (/\b(cont\w*|cod|simbol|analitic)\W*$/i.test(inainte) || (/^\s*[—–·•-]?\s*[A-Za-zĂÂÎȘȚăâîșț]{3,}/.test(dupa) && !/^\s*(lei|ron|eur|usd|mdl)\b/i.test(dupa)) || /^\s*(=|\/|→|=>)\s*\d{3}/.test(dupa) || /\b[1-8]\d{2,3}(\.\d{2})?\s+$/.test(inainte));   // și lângă alte conturi: „4428.01 = 408”, listă de conturi
+    const cod = /^[1-8]\d{3}\.\d{2}$/.test(m[0]) && (/\b(cont\w*|cod|simbol|analitic)\W*$/i.test(inainte) || (/^\s*[—–·•-]?\s*[A-Za-zĂÂÎȘȚăâîșț]{3,}/.test(dupa) && !/^\s*(lei|ron|eur|usd|mdl)\b/i.test(dupa)) || /^\s*(=|\/|→|=>)\s*\d{3}/.test(dupa) || /\b[1-8]\d{2,3}(\.\d{2})?\s+$/.test(inainte) || /^\s*[,;]\s*[1-8]\d{2,3}\.\d{2}/.test(dupa) || /[1-8]\d{2,3}\.\d{2}\s*[,;]\s*$/.test(inainte));   // și lângă alte conturi: „4428.01 = 408”, listă de conturi
     if (!cod) { sumeBrute.push(m[0]); (g.contexte = g.contexte || []).push(text.slice(Math.max(0, m.index - 30), m.index + 30)); }
   }
   for (const td of F.querySelectorAll("td")) {   // celula unică din coloana „Cont”/„Cod”: cod, nu sumă
@@ -260,6 +297,9 @@
   if (hh.liste_sub_7.length) pica.h.push("listă derulantă cu sub 7 variante: " + hh.liste_sub_7.slice(0, 4).join(", "));
   if (hh.alege.length) pica.h.push("„— alege —” / opțiune goală în: " + hh.alege.slice(0, 4).join(", "));
   if (hh.cota_tva_ca_lista.length) pica.h.push("cota TVA e listă derulantă, nu grup de alegere: " + hh.cota_tva_ca_lista.join(", "));
+  hh.grupuri_butoane = [...F.querySelectorAll(".alegere-butoane")].filter(vizibil).length;   // [15.1-E5, abaterea 4 din raportul E3] listele și grupurile înlocuite se numără
+  hh.liste_cu_cautare = [...F.querySelectorAll(".ds-lista")].filter(vizibil).length;
+  hh.liste_inlocuite = [...F.querySelectorAll("select.alegere-sursa, select.ds-lista-sursa")].length;
   fapte.h = hh;
 
   return { fapte, pica };

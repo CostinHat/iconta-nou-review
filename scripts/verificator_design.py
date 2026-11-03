@@ -39,12 +39,14 @@ MASURI = os.path.join(RAD, "scripts", "verificator_design_masuri.js")
 RANDURI = {
     "a": "bara de sus: 56 px, fără traseu, „←”, firma sau cabinetul în lucru cu CUI, numele ferestrei, căutarea; traseu înseamnă două sau mai multe "
          "ecrane vizitate înșiruite — un singur „›” urmat de numele ferestrei curente NU e traseu; la Panou Admin, unde nu e nicio firmă sau "
-         "cabinet în lucru, contextul e „Panou Admin”, fără CUI",
+         "cabinet în lucru, contextul e „Panou Admin”, fără CUI; „←” vizibil de 40 × 40 pe fiecare fereastră; „✕” nu apare în bara de sus",
     "b": "fereastra de lucru pe tot ecranul la 1920 × 1080 și 1366 × 768, un singur loc de derulare (tabelul lung), bara de jos fixă 72 px "
-         "cu un singur buton principal L și „Renunță” M; butonul principal inactiv cu motiv cât timp acțiunea nu e posibilă",
+         "cu un singur buton principal L (cu data-actiune-principala) și „Renunță” M numai pe ferestrele cu formular; „Închide” și „Renunță” nu sunt "
+         "acțiune principală, oricum ar fi colorate; butonul principal inactiv cu motiv cât timp acțiunea nu e posibilă; excepție (stare sau meniu "
+         "de butoane, pe nume, lista din raport): bara fără buton principal și fără „Renunță”",
     "c": "orice listă de înregistrări e tabelul DS: cap 40 px, rânduri 44 px, zebra, starea doar în coloana „Stare”, cel mult 2 acțiuni XS pe "
-         "rând, subsol 44 px (rândul de totaluri fix, bara-fixa, nu e o listă de înregistrări)",
-    "d": "orice avertisment sau explicație secundară e card-rezumat de 44 px cu detaliile pliate; orice semnal e un rând de 36 px cu „ce e de "
+         "rând, subsol 44 px (rândul de totaluri fix, bara-fixa, nu e o listă de înregistrări); nicio celulă cu dată sau sumă tăiată",
+    "d": "orice avertisment sau explicație secundară e card-rezumat de 44 px cu detaliile pliate; orice semnal e un rând de 36 px (cel mult două rânduri, textul întreg, fără „…”) cu „ce e de "
          "făcut” pliat; niciun paragraf explicativ mai lung de un rând nepliat; un card-rezumat gri (neutru, informativ) e valid; cardurile de eroare "
          "rămân la vedere și nu se numără, din celelalte cel mult 2 la vedere (restul sub „Semnale (n)”); un semnal sau card al cărui text spune "
          "„deschide X” sau „mergi la X” are butonul care deschide X",
@@ -52,8 +54,15 @@ RANDURI = {
     "f": "titlurile de secțiune fără majuscule (numele proprii — firme, cabinete — nu sunt titluri); titlurile de grup 14 px majuscule gri; textele din catalog, cu diacritice, pluralul după număr, "
          "același mesaj o singură dată pe ecran",
     "g": "date, sume, perioade, firma prin funcția unică (un cod de cont analitic, ca 4428.01, nu e o sumă)",
-    "h": "cota TVA ca grup cu cotele la data documentului plus categoriile fără TVA; nicio listă derulantă sub 7 variante; nimic „— alege —”",
+    "h": "cota TVA ca grup cu cotele la data documentului plus categoriile fără TVA; nicio listă derulantă sub 7 variante; nimic „— alege —” sau opțiune goală",
 }
+
+
+#: Ecranele fără acțiune principală (stare sau meniu de butoane), pe nume — comanda 15.1-E5 pct.1; lista intră în raport. Aceleași ferestre ca
+#: `static/js/cadru.js::FARA_ACTIUNE_PRINCIPALA`.
+EXCEPTII_B = {"Sinteza zilei": "stare", "Capacitate": "stare", "Supervizor": "stare", "Declarații lucrate": "stare",
+              "Firme": "meniu", "Facturi F1": "meniu", "Operațiuni speciale F1": "meniu", "Activitate": "meniu", "Setări cont": "meniu",
+              "Migrare cabinet": "meniu", "Ghiduri": "meniu", "Panou Admin — Anunțuri": "meniu"}
 
 
 # ── serverul de lucru ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -179,6 +188,7 @@ def ecran(nume, rez, director):
             pg.wait_for_timeout(800)
         except Exception as ex:  # noqa: BLE001 — un ecran care nu se deschide e un rezultat, nu o oprire
             eroare = str(ex).splitlines()[0][:300]
+        pg.evaluate("(e) => { window.__exceptieB = e; }", EXCEPTII_B.get(nume))
         masuri = pg.evaluate(open(MASURI, encoding="utf-8").read())
         masuri.update({"ecran": nume, "rezolutie": rez, "firma": e.get("firma"), "nivel": e.get("nivel"), "eroare_deschidere": eroare or None,
                        "erori_js": erori + ec.erori})

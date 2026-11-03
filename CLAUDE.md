@@ -1,6 +1,6 @@
 # CLAUDE.md — Regulile permanente ale lui Code pe iConta
 
-Versiune: 30.10.2026. Acest fișier e citit automat la fiecare pornire și după fiecare /clear.
+Versiune: 03.11.2026. Acest fișier e citit automat la fiecare pornire și după fiecare /clear.
 Este SINGURA sursă de reguli de lucru pentru Code. Orice regulă de proces care nu e aici e radiată,
 oriunde ar fi scrisă (vechiul CLAUDE.md, PLAN_LUCRU.md, PREDARE_LANT.md, DECIZII.md, memoria permanentă,
 comenzi vechi). DECIZII.md rămâne istoric (de ce s-a decis), nu normă.
@@ -89,9 +89,9 @@ cererea arhitectului. Un test nou verifică sensul (de exemplu „există restan
 datele și sumele din teste trec prin aceleași funcții de format ca aplicația.
 
 Ordinea porții și oprirea la prima treaptă roșie (regulă permanentă, 31.10.2026): poarta_lot.sh rulează în ordinea 1. verificatorul de design,
-2. pytest țintit, 3. plasa e2e. Prima treaptă roșie oprește poarta și scrie ROȘU imediat, fără să continue cu treptele de după. Înainte de orice
-commit se rulează scripts/inainte_de_commit.sh (verificatorul de design și pytest-ul țintit pe fișierele atinse); poarta pornește numai dacă
-amândouă sunt verzi. Nu se editează arborele cât rulează poarta (verdictul ar deveni „arbore schimbat”).
+2. pytest țintit, 3. plasa e2e. Prima treaptă roșie oprește poarta și scrie ROȘU imediat, fără să continue cu treptele de după. scripts/inainte_de_commit.sh
+(verificatorul de design și pytest-ul țintit pe fișierele atinse) este parte din hook-ul de git `pre-commit` (regulă permanentă, 03.11.2026): commitul se
+refuză cât scriptul e roșu; poarta pornește numai pe un commit care l-a trecut. Nu se editează arborele cât rulează poarta (verdictul ar deveni „arbore schimbat”).
 
 R1. Turul se încheie numai cu „publicat <lot> pe <commit>” sau „OPRIT — gata: <lot>”. La o întrebare primită în prompt răspunzi într-un rând și continui lucrul în același tur. Nu te oprești după un răspuns, după o intenție („continui cu…”) sau după un monitor expirat.
 
@@ -126,7 +126,8 @@ repară; un test scos care ar fi picat nu e motiv să fie pus la loc. Code nu ad
 Testele grele (suita, poarta, e2e, uneltele vizuale, verificatorul) rulează una după alta, niciodată
 în paralel: serverul e și producția.
 
-R10. Testele legate de data de azi primesc un moment de referință fix în fixture, nu data calendarului.
+R10. Testele legate de data de azi primesc un moment de referință fix, nu data calendarului (regulă permanentă, 03.11.2026): testele de browser din core/ iau ziua din
+`core.ceas_proba.DATA_REF`, iar pagina primește același ceas fix (`pagina_cu_ceas_fix`); gard: core/test_ceas_fix.py.
 
 R11. Înainte de primul commit al unui lot, poarta rulează în modul „listează” (`sh scripts/poarta_lot.sh --lista [fișier…]`, fără fișiere: cele atinse față de `main`; implementare: `scripts/poarta_selectie.py::lista`) și scrie ce teste va rula pentru fișierele pe care lotul le va atinge: testele de browser din core/ ȘI fluxurile e2e (frontend_test/e2e, după hartă și FLUXURI din scenarii), cel mult 20 de fișiere. O atingere a lui stil.css, navigator.js, api.js sau cadru.js înseamnă „toate ecranele”: plafonul întreg. Dacă zona atinsă nu e acoperită (ieșire 1), harta scripts/poarta_harta.txt se extinde întâi, abia apoi începe lotul. Lista intră în raport la D.
 

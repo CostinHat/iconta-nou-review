@@ -7,8 +7,8 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { cardRezumat } from "../ds_piese.js?v=f1b63f5e15";   // [15.1, F-A.1] caseta SPV de după emitere
-import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=83fcf3ce06";
+import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=aa7dc6dda7";   // [15.1, F-A.1] caseta SPV de după emitere
+import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=257b15589c";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { textStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -18,6 +18,10 @@ import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 4
 import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF / VIES țin de CUI-ul lor
 import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
+
+// [15.1-E5, pct.1] cardul ciornei: card-rezumat informativ cu butonul S „Renunță la factură” (confirmarea și ștergerea ciornei o face ecranul, la clic)
+const cardCiorna = (text) => rezumatHtml({ ton: "info", text,
+  actiuneHtml: '<button type="button" class="buton-secundar buton-s" id="em-renunta" data-fara-actiune="ciorna e a celui care o scrie: oricine vede formularul poate renunța la ciorna lui, fără un drept anume">Renunță la factură</button>' });
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -433,8 +437,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     <div class="em-fila em-fila-doua" id="em-fila-factura" data-fila="factura" role="tabpanel">
     <div>
     <div class="em-sectiune em-date-doc" style="margin-top:4px">
-      <div class="em-doc-antet"><div class="em-eticheta">Document</div>
-        <button type="button" class="buton-secundar buton-s" id="em-renunta" data-fara-actiune="ciorna e a celui care o scrie: oricine vede formularul poate renunța la ciorna lui, fără un drept anume">Renunță la factură</button></div>
+      <div class="em-doc-antet"><div class="em-eticheta">Document</div></div>
       <div class="em-tip-rand"><span class="camp-eticheta" id="em-tip-et">Tipul documentului</span>
         <select id="em-tip" class="camp-input" aria-labelledby="em-tip-et" data-butoane="">
           <option value="factura" selected>Factură</option>
@@ -965,7 +968,10 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   let ciornaPornita = false;   // nimic nu se scrie până nu s-a citit (altfel prima redesenare ar suprascrie ciorna cu gol)
   function salveazaCiorna() {
     if (!ciornaPornita) return;
-    if (!areContinut()) { stergeCiorna(tenantId); return; }
+    if (!areContinut()) { stergeCiorna(tenantId); const z0 = corp.querySelector("#em-ciorna"); if (z0) z0.innerHTML = ""; return; }
+    // [15.1-E5, pct.1] „Renunță la factură” e butonul S al cardului ciornei, nu un buton din mijlocul formularului: cardul apare cât există o ciornă
+    const zc0 = corp.querySelector("#em-ciorna");
+    if (zc0 && !zc0.querySelector("#em-renunta")) zc0.innerHTML = cardCiorna("Factura începută se păstrează singură. Rămâne până o emiți sau apeși „Renunță la factură”.");
     // [lotul 07.10 B, C12a] și ce a spus ANAF despre client (plătitor / neplătitor TVA): restaurarea îl arată din nou, ca text
     // [lotul 12, C166] la fel răspunsurile negative (CUI negăsit, cod invalid în VIES, ANAF / VIES care nu răspund); „se verifică…” nu e un
     // răspuns: o ciornă lăsată în timpul verificării nu-l păstrează (la revenire n-ar mai veni nimic după el)
@@ -991,7 +997,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     semnMarfa = ciorna.semnMarfa || null;
     const zc = corp.querySelector("#em-ciorna");
     const cand = ciorna.salvat_la ? new Date(ciorna.salvat_la) : null;
-    zc.innerHTML = `<div class="caseta-info"><span class="ci-mesaj">Factura începută${cand ? " (ultima modificare: " + esc(dataRo(ciorna.salvat_la.slice(0, 10))) + ", " + String(cand.getHours()).padStart(2, "0") + ":" + String(cand.getMinutes()).padStart(2, "0") + ")" : ""} a fost păstrată, așa cum ai lăsat-o. Rămâne până o emiți sau apeși „Renunță la factură”.</span></div>`;
+    zc.innerHTML = cardCiorna(`Factura începută${cand ? " (ultima modificare: " + dataRo(ciorna.salvat_la.slice(0, 10)) + ", " + String(cand.getHours()).padStart(2, "0") + ":" + String(cand.getMinutes()).padStart(2, "0") + ")" : ""} a fost păstrată, așa cum ai lăsat-o. Rămâne până o emiți sau apeși „Renunță la factură”.`);
     // [lotul 11, 428] data restaurată din ciornă (alta decât azi): ce depinde de dată — regimul TVA la încasare, cotele — se recitește la ea
     const dataCiorna = (ciorna.campuri || {})["em-data"];
     if (dataCiorna && dataCiorna !== dataIso()) reincarcaPregatirea();
@@ -1002,8 +1008,10 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   ciornaPornita = true;
   corp.addEventListener("input", salveazaCiorna);
   corp.addEventListener("change", salveazaCiorna);
-  corp.querySelector("#em-renunta").addEventListener("click", (ev) => {
-    confirmaCaseta(ev.currentTarget, "Renunți la factura începută? Ce ai scris pe ea se șterge; nu se emite nimic.", () => {
+  corp.querySelector("#em-ciorna").addEventListener("click", (ev) => {
+    const bR = ev.target instanceof Element && ev.target.closest("#em-renunta");
+    if (!bR) return;
+    confirmaCaseta(bR, "Renunți la factura începută? Ce ai scris pe ea se șterge; nu se emite nimic.", () => {
       stergeCiorna(tenantId);
       randeazaEmitere(corp, nav, tenantId, opt);
     }, { textOk: "Da, renunț la factură", textNu: "Continui factura" });   // [330] nu două „Renunță” alăturate

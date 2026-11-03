@@ -6,8 +6,8 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
-import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=83fcf3ce06";
-import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=f1b63f5e15";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
+import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=257b15589c";
+import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=aa7dc6dda7";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=c781636333";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
@@ -138,7 +138,7 @@ function randDecl(arr, stare, marcabil = false) {
     : (!marcabil || !x.luna) ? "" : `
       <button type="button" class="buton-secundar buton-xs cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern" ${atr(x)}>Marchează depusă în afara iConta.eu</button>`;
   return tabelDSHtml({
-    coloane: [{ titlu: "Declarație", latime: "12ch", cls: "mig-sold-cont" }, { titlu: "Perioadă", latime: "14ch", cls: "cf-perioada" }, { titlu: "Termen", latime: "14ch", cls: "cf-termen" },
+    coloane: [{ titlu: "Declarație", latime: "12ch", cls: "mig-sold-cont" }, { titlu: "Perioadă", latime: "14ch", cls: "cf-perioada" }, { titlu: "Termen", latime: "20ch", cls: "cf-termen" },
       { titlu: "Stare", tip: "stare", latime: "auto" }, { titlu: "", tip: "actiuni", latime: "400px" }],
     randuri: arr.map((x) => ({ atribute: { "data-cheie": `${x.tip || ""}-${x.an || ""}-${x.luna || ""}` },
       celule: [(x.tip || "").toUpperCase(), x.perioada || "", "termen " + dataRo(x.termen)],
@@ -418,7 +418,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=835874525f");
+    const { deschideInchidereLuna } = await import("./firme.js?v=9096d880bc");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

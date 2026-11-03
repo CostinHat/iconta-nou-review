@@ -28,6 +28,8 @@ import http.server
 import json
 import urllib.parse
 import os
+
+from core.ceas_proba import DATA_REF, pagina_cu_ceas_fix
 import socketserver
 import threading
 
@@ -72,7 +74,7 @@ def browser():
 
 def _pagina(browser, lat, inalt, rute):
     b, port = browser
-    pg = b.new_page(viewport={"width": lat, "height": inalt})
+    pg = pagina_cu_ceas_fix(b, viewport={"width": lat, "height": inalt})
     erori = []
     pg.on("pageerror", lambda e: erori.append(str(e)))
 
@@ -164,7 +166,7 @@ def _deschide_firma(pg, card):
 def test_def_394_nota_noua_nu_deruleaza(browser, lat, inalt, regim):
     """ROȘU înainte: 1280×720, partidă simplă, luna în curs (rândul „notele sunt interne” + motivul amortizării): 621 px de conținut
     într-un corp de 613 (8 px de derulare). Acum data, descrierea și documentul stau pe un rând (`.grila-campuri`)."""
-    azi = datetime.date.today()
+    azi = DATA_REF   # R10: ziua de referință fixă (pagina are același ceas)
     pg, erori = _pagina(browser, lat, inalt, {"/jurnal": {"note": [_nota(i, "ciorna") for i in range(8)], "total_debit": 0,
                                                           "total_credit": 0, "ciorne": {"note": 8, "total": 100}},
                                               "/centre-cost": {"centre": []}})

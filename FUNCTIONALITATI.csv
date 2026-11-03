@@ -544,7 +544,7 @@ XML SAF-T (structura v2.4.9) - valid pe DUKIntegrator pe DATE REALE (linii reale
 ## Greșeli frecvente
 - Presupunerea că D406 raportează și plățile (Payments) - încă nu; depunabil pe zero-plăți, PARȚIAL pentru firme cu plăți.
 ## Reguli fiscale
-OPANAF (SAF-T); schema oficială ANAF v2.4.9. Vezi și termenele specifice de raportare SAF-T."
+Ordinul ANAF nr. 1783/2021 (SAF-T); schema oficială ANAF v2.4.9. Vezi și termenele specifice de raportare SAF-T."
 D406 Active (SAF-T anual),"D406 Active (SAF-T anual, secțiunea Assets): generator pe structura saft.xsd oficial (Asset cu Valuations: costuri achiziție început/sfârșit, durată, adăugiri/transferuri/cedări, valoare contabilă, metodă+procent amortizare, amortizarea perioadei); alimentat din mijloace_fixe. Probat pe DATE REALE (tenant_013: 2 Asset emise, reconciliat cu GL 2131=10800). Amortizare pe 4 metode (liniară/degresivă/accelerată/superaccelerată, art.28 CF) — motor unic core.d406_active consumat de ecranul MF, nota lunară, casare și reevaluare (16.08). RĂMAS: fragment (endpoint separat, nu în AuditFile-ul lunar).",F036,firma,Declaratii D406,core/d406_active.py,schema SAF-T ANAF,PARTIAL 11.08.2026,pe XSD oficial,,
 D406 Stocuri (la cerere),"D406 Stocuri (SAF-T la cerere ANAF, secțiunea PhysicalStock): generator pe saft.xsd oficial (PhysicalStockEntry cu depozit, cod produs, cont de stoc, UM+factor conversie, preț unitar, cantități/valori deschidere-închidere); soldurile din cumulul mișcărilor de stoc. Probat pe DATE REALE (tenant_013: 3 PhysicalStockEntry). RĂMAS: fragment (endpoint separat, nu încorporat în AuditFile-ul lunar - de confirmat dacă fragmentul la cererea ANAF e suficient).",F037,firma,Declaratii D406,core/d406_stocuri.py,schema SAF-T ANAF,PARTIAL 11.08.2026,pe XSD oficial,,
 "Generarea declarațiilor (tip, periodicitate, formular)","Punct unic pentru cele 9 declarații: tipuri, periodicitate (lunar/trimestrial/anual), validarea cererii, rutarea către generatorul potrivit - o singură rută HTTP pentru toate.",F038,transversal,Declaratii (toate intrarile),core/declaratii_api.py,,LIVE,,,"## Ce face
@@ -1626,7 +1626,7 @@ Declarația informativă D394 - livrările/achizițiile pe teritoriul național 
 Lunar sau trimestrial (după perioada TVA), pentru plătitorii de TVA, cu tranzacțiile interne cu alți plătitori.
 ## Ce trebuie pregătit înainte
 - Facturile interne (emise și primite) cu parteneri plătitori de TVA.
-- Operațiunile cu numerar peste prag, dacă e cazul (op11).
+- Operațiunile cu numerar peste prag, dacă e cazul (rândul „Operațiuni cu numerar” din formular).
 ## Pas cu pas
 1. Înregistrează facturile interne.
 2. Declarații -> D394 -> perioada.
@@ -1635,10 +1635,10 @@ Lunar sau trimestrial (după perioada TVA), pentru plătitorii de TVA, cu tranza
 ## Ce iese la capăt
 XML D394 validat, cu tranzacțiile interne între plătitori de TVA.
 ## Greșeli frecvente
-- Operațiuni cu parteneri afiliați nemarcate (prsAfiliat).
-- Operațiunile în numerar (op11) neincluse manual unde e cazul.
+- Operațiuni cu parteneri afiliați nemarcate (bifa „partener afiliat” de la partener).
+- Operațiunile în numerar neincluse manual, unde e cazul (rândul „Operațiuni cu numerar” din formular).
 ## Reguli fiscale
-OPANAF (D394); nomenclator coduri produse D394. Termen: la fel ca D300 (perioada TVA)."
+Ordinul ANAF nr. 3769/2015, modificat prin Ordinul nr. 2194/2025 (D394); nomenclator coduri produse D394. Termen: la fel ca D300 (perioada TVA)."
 Notificare e-Transport,"Generează XML-ul notificării v2 (UIT) pe structura oficială, pentru încărcare manuală în SPV: operațiune, bunuri cu cod tarifar/greutăți/valoare, partener, puncte încărcare/descărcare, vehicul.",F044,firma,card e-Transport,core/etransport.py,schema mfp v2,"LIVE 18.07 (mai putin proba live pending drept): genereaza XML-ul UIT v2 (core/etransport.py) SI il trimite direct prin API (F121, butonul Trimite UIT pe card) - nu doar upload manual. XML-ul merge la ANAF prin conectorul principal. Nota veche 'blocaj SPVWS2' DEPASITA (aia tinea de F128 mesaje SPV, nu e-Transport). LIMITA: trimiterea live = pending drept e-Transport pe CIF real (ca F176).",vizual + backend HTTP (POST etransport/trimite: poarta de timp blocheaza prea-devreme; GET trimiteri: semafor timp separat de trimitere),,"## Ce face
 Pregătește notificarea e-Transport (obținerea codului UIT) generând fișierul XML în structura oficială v2: operațiunea, bunurile cu cod tarifar, greutăți și valoare, partenerul, punctele de încărcare/descărcare și vehiculul. Fișierul se încarcă apoi manual în SPV.
 ## Cum ajungi la ea
@@ -2037,7 +2037,7 @@ XML D710 validat, cu obligația corectată, legată de declarația inițială.
 ## Greșeli frecvente
 - Rectificarea prin re-depunerea D100 în loc de D710.
 ## Reguli fiscale
-OPANAF (D710 rectificativă D100). Se depune la constatarea erorii."
+Ordinul ANAF nr. 649/2025 (D710, rectificativa D100). Se depune la constatarea erorii."
 Declarația D392 (informativă livrări sub plafon TVA) - RESPINS,RESPINS 20.07: depunerea D392A/392B este SUSPENDATĂ prin lege până la 31.12.2026 (art. LXII OUG 115/2023). Nu se construiește motor pentru o declarație a cărei depunere e suspendată legal. Reevaluare doar dacă suspendarea nu se prelungește în 2027. Vezi DECIZII.md 20.07.,F194,firma,—,—,art. LXII OUG 115/2023 (suspendare); OPANAF 392A/B,RESPINS 20.07.2026,—,,
 Declarația D094 (cifra afaceri trimestru) - RESPINS,"RESPINS 20.07: formularul 094 nu mai există de sine-stătător - a fost înglobat în D700 (secțiunea B.II, mențiuni schimbare perioada fiscală). Confirmat la sursă: lipsește din nomenclatorul DUK (versiuni.xml). Obligația se satisface prin D700. Vezi DECIZII.md 20.07.",F195,firma,—,—,abrogat; inglobat in D700 (OPANAF 631/2016 istoric),RESPINS 20.07.2026,—,,
 Declarația D700 (mențiuni vector fiscal) - RESPINS,"RESPINS 20.07: declarație de mențiuni ADMINISTRATIVE (modificare vector fiscal / domiciliu / perioada fiscală), depusă direct în SPV la schimbare (15 zile) - nu se generează din evidența contabilă. Aliniat deciziei 'nivel 4' din 17.07 (D010/D060/D093 administrative, RESPINSE). Vezi DECIZII.md 20.07.",F196,firma,—,—,OPANAF 15/2026 (mentiuni vector),RESPINS 20.07.2026,—,,
@@ -2178,7 +2178,7 @@ XML D230 validat, cu opțiunea de redirecționare a până la 3,5% către ONG.
 - Procent peste 3,5%.
 - Datele ONG (CIF/IBAN) greșite - suma nu ajunge la beneficiar.
 ## Reguli fiscale
-OPANAF (D230); Cod fiscal (redirecționarea a până la 3,5% din impozitul pe venit către entități nonprofit / unități de cult). Termen: 25 mai a anului următor."
+Ordinul ANAF nr. 103/2025 (D230); Codul fiscal (redirecționarea a până la 3,5% din impozitul pe venit către entități nonprofit / unități de cult). Termen: 25 mai a anului următor."
 Declarația D207 (impozit reținut nerezidenți),"D207: Declarație informativă privind impozitul reținut la sursă pe beneficiari de venit NEREZIDENȚI (dividende, dobânzi, redevențe etc. plătite de firma către nerezidenți). MANUALĂ - prin corp de cerere/dispatch (ca d230/d311): lista de beneficiari (den, stat rezidență, cif, baza, impozit reținut, tip venit) din input; secțiunea II (agregate pe tip venit) și suma de control se calculează. STRUCTURA din VALIDATORUL oficial (D207Validator.jar, v2 în vigoare; imps1/Timps confirmate de mesajele validatorului). SEMANTICĂ din ACT în corpus: OPANAF_179_2022_D207.pdf + structura_D207_2025.pdf (nomenclator tip_venit 01=dividende art.223(1)a etc., reguli impozabil 01-11/22 vs scutit 12-21). PROBAT: DUKIntegrator -v D207 'valid'. Limitări: codul tip_venit + Act_N + statul se aleg de contabil din nomenclator (nu se ghicesc); ecran manual (azi API).",F209,firma,Declaratii,"core/d207.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",OPANAF 179/2022; Cod fiscal art.223 (impozit nerezidenti); structura D207 din D207Validator.jar (v2),"LIVE 18.08.2026 (formular manual in UI: lista beneficiari nerezidenti - tip venit din nomenclator impozabile/scutite, stat rezidenta, cod fiscal RO/strainatate, act normativ, baza+impozit retinut/suportat; scutit -> impozit 0; suma de control calculata; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid)","core/test_d207.py + core/test_d207_formular.py (garda formular gol + fara nume interne, RED-probat) + DUKIntegrator -v D207 'valid' + Playwright real (ALFA MICRO): DUK valid, axe curat, mobil OK",,"## Ce face
 Declarația informativă D207 - impozitul reținut la sursă (sau suportat de plătitor) pe veniturile plătite către beneficiari NEREZIDENȚI: dividende, dobânzi, redevențe, servicii etc. Aplicația agregă pe tip de venit și calculează suma de control; generează XML validat pe DUK.
 ## Când se folosește
@@ -2356,7 +2356,7 @@ XML D307 validat, cu sumele de TVA defalcate pe tip (transfer active / leasing /
 - Uitarea codului fiscal sau a denumirii operatorului.
 - Bifarea „corectată după anularea rezervei"" fără a alege temeiul legal.
 ## Reguli fiscale
-OPANAF 793/2016; Cod fiscal art. 270 alin. (7) (transfer de active), art. 324, art. 316 alin. (11) (anulare cod TVA). Structura din validatorul oficial ANAF (D307Validator.jar)."
+OPANAF 793/2016; Cod fiscal art. 270 alin. (7) (transfer de active), art. 324, art. 316 alin. (11) (anulare cod TVA). Structura din programul de validare oficial ANAF pentru D307."
 Declarația D393 (bilete transport rutier internațional de persoane),"D393 - declarație informativă anuală privind biletele de călătorie pentru transportul rutier internațional de persoane, în format XML validat de DUKIntegrator. Generator MANUAL (core/d393.py): datele operatorului și veniturile din bilete vin din input; totalPlata_A = Venituri_bilete (suma de control). Structura din D393Validator.jar (rădăcina d393, ns declarație:v1); actul OPANAF nu e în corpus - semantică din etichetele oficiale ale validatorului.",F218,firma,Declaratii,core/d393.py,OPANAF (model D393); structura din D393Validator.jar (ns declaratie:v1),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot2_duk.py + DUKIntegrator -v D393 'valid',,"## Ce face
 Generează D393 (informativă, bilete transport rutier internațional de persoane) în XML acceptat de validatorul oficial ANAF.
 ## Când se depune
@@ -2402,7 +2402,7 @@ Generează D204 (asocieri fără personalitate juridică), depusă de asociatul 
 ## Când se depune
 Anual.
 ## De completat
-Asocierea (denumire, CUI, adresa), reprezentantul, activitatea (categ_venit, CAEN, contract, venit brut și cheltuieli - net/pierdere se calculează) și asociații (cota %, venit și pierdere repartizate). Suma cotelor = 100; suma veniturilor repartizate = venitul net.
+Asocierea (denumire, CUI, adresa), reprezentantul, activitatea (categoria de venit, CAEN, contract, venit brut și cheltuieli - net/pierdere se calculează) și asociații (cota %, venit și pierdere repartizate). Suma cotelor = 100; suma veniturilor repartizate = venitul net.
 ## Cum ajungi la ea
 Din ecranul principal → firma → Declarații → alegi D204 la „Tip declarație” și perioada → Continuă → completezi formularul de sub declarație → Regenerează D204. XML-ul generat e verificat cu validatorul oficial ANAF rulat local, iar rezultatul apare pe ecran înainte să-l descarci."
 Declarația D208 (transfer proprietăți imobiliare - notari),"D208 - declarație informativă lunară a notarilor (CF art. 113) privind impozitul pe veniturile din transferul proprietăților imobiliare din patrimoniul personal. Generator MANUAL (core/d208.py): tranzacții -> imobile -> beneficiari (cote suma=100) + părți; totalurile și totalPlata_A se calculează. Structura din D208Validator.jar (rădăcina declarație208, ns declarație:v1); act nu e în corpus.",F224,firma,Declaratii,"core/d208.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",OPANAF (model D208); Cod fiscal art.111 (transfer proprietati imobiliare); structura din D208Validator.jar,"LIVE 24.09.2026 (formular manual in UI: transfer proprietati imobiliare - notari, semestriala - antet birou notarial (nume, CIF, domiciliu, intocmit) + o tranzactie (nr act notarial, taxa notar) + un imobil (judet numeric, localitate, cod SIRUTA, nr cadastral, tip teren/cladire/unitate, valori) + doua liste: beneficiari (CUI/CNP, cota, cotaImpozit 0/1/3, baza, impozit, scutit) si parti contractante (CUI/CNP, cota); Sigma cote=100 pe fiecare, verificate live; totalurile antetului agregate din liste; gol refuzat cu mesaj de contabil; scos din _DOAR_API; backend+DUK valid; multi-tranzactie/multi-imobil = increment viitor)","core/test_declaratii_lot2_duk.py + core/test_d208_formular.py (garda formular gol + structura XML prin ElementTree, nu 'sir' in xml; Sigma cote=100, cotaImpozit, impozit agregat) + DUKIntegrator -v D208 'valid'",,"## Ce face

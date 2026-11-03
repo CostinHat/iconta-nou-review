@@ -10,9 +10,9 @@
 
 import { uitaFereastra, memoreazaFereastra, memoreazaCampul } from "./restaurare.js?v=2e679a8748";   // [15.1, 725; 15.1-E3, 725.3]
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=83fcf3ce06";  // esc canonic (cap.10): strip-html data-lossy inlocuit
+import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=257b15589c";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
-import { baraDeJos } from "./cadru.js?v=54f19deacb";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+import { baraDeJos } from "./cadru.js?v=07fa4a05d7";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
 import { puneCautarea } from "./cautare.js?v=39e412d714";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -127,7 +127,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         const sumarAdmin = subbara.querySelector("[data-sumar-admin]");
         // [lotul 13, 644 a — clasa 286] „După suspendare bara de sus rămâne «2 cabinete active» până la reîncărcare”: centralizatorul se
         // recitește după orice scriere reușită pe un cabinet (`iconta:schimbare` din api.js, cu căile scrise), ca pagina principală (286)
-        const citesteSumarAdmin = () => import("./api.js?v=83fcf3ce06").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
+        const citesteSumarAdmin = () => import("./api.js?v=257b15589c").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
           const cabinete = (r && r.cabinete) || [];
           const active = cabinete.filter((c) => c.activ).length;
           const firme = cabinete.reduce((s2, c) => s2 + (c.nr_firme || 0), 0);
@@ -217,7 +217,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
   function _arataSageata() {
     const b = radacina.querySelector(".nav-inapoi");
     const sus = stiva[stiva.length - 1];
-    if (b && sus) b.style.display = (typeof sus.inapoi === "function" || stiva.length > 1 || (sus.pasi && sus.pasi.length > 0)) ? "" : "none";  // traseu_automat_v1
+    if (b && sus) b.style.display = (!["mic", "nota"].includes((sus.optiuni || {}).lat) || typeof sus.inapoi === "function" || stiva.length > 1 || (sus.pasi && sus.pasi.length > 0)) ? "" : "none";  // traseu_automat_v1
   }
   function _laPas(sus, idx) {   // întoarcerea la pasul `idx` de pe traseu (săgeata, firul, `inapoiPas`)
     const p = sus.pasi[idx];
@@ -257,7 +257,8 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // Sageata apare DOAR cand exista un "inapoi" real:
     //  - mai multe ferestre pe stiva, SAU
     //  - ecranul curent isi defineste o functie interna 'inapoi' (ex: migrare in cascada)
-    const areInapoi = stiva.length > 1 || typeof sus.inapoi === "function" || (sus.pasi && sus.pasi.length > 0);  // traseu_automat_v1
+    const _lucruInapoi = !(["mic", "nota"].includes((sus.optiuni || {}).lat));   // [15.1-E5, 713.1] „←” e pe fiecare fereastră de lucru, fără excepție: pe prima fereastră închide (închiderea nu mai are „✕”)
+    const areInapoi = _lucruInapoi || stiva.length > 1 || typeof sus.inapoi === "function" || (sus.pasi && sus.pasi.length > 0);  // traseu_automat_v1
     // [15.1, 713 / 681.1 / 701] bara de sus: numai firma în lucru (nume · CUI) și numele ferestrei curente, FĂRĂ traseu (nu acumulează ecranele vizitate);
     // „←” face un pas înapoi. Firma: titlul ferestrei ei din stivă („<nume> · CUI <cod>”), altfel firma în lucru a navigatorului.
     // [15.1-D, 3a] fereastra de cabinet nu poartă firma în lucru de dinainte: bara spune cabinetul. Contextul barei: firma ferestrei (titlul ei „<nume> · CUI <cod>” sau firma pusă în lucru la deschidere); altfel, la cabinet, numele
@@ -273,12 +274,15 @@ export function creeazaNavigator(radacina, desktopRandator) {
     const _fereastraMica = _latSus === "mic" || _latSus === "nota";   // fereastra mică n-are firul firmei: numai numele ei
     const drumHtml = (_titluFirma && !_doarFirma && !_fereastraMica ? `<span class="fir-firma">${esc(_titluFirma)}</span><span class="fir-sep" aria-hidden="true">›</span>` : "")
       + `<span class="fir-acum" aria-current="page">${esc(_doarFirma ? _titluFirma : _curent)}</span>`;
+    // [15.1-E5, pct.3] bara de sus a ferestrei de lucru: numai „←”, firma sau cabinetul, „›” fereastra curentă și căutarea; închiderea e „←”. „✕” rămâne numai
+    // pe fereastra mică (confirmarea, nota), care n-are bară de jos și nici căutare.
+    const _xMica = (sus.optiuni || {}).lat === "mic" || (sus.optiuni || {}).lat === "nota";
     fer.innerHTML = `
       <div class="fereastra-antet">
         ${_butonInapoi(sus, areInapoi)}
         <span class="fereastra-fir">${drumHtml}</span>
         <span class="fereastra-spatiu"></span>
-        <button class="nav-x" title="Închide" aria-label="Închide"><span aria-hidden="true">✕</span></button>
+        ${_xMica ? '<button class="nav-x" title="Închide" aria-label="Închide"><span aria-hidden="true">✕</span></button>' : ""}
       </div>
       <div class="fereastra-corp" tabindex="0"></div>
     `;
@@ -298,7 +302,8 @@ export function creeazaNavigator(radacina, desktopRandator) {
     };
     if (bInapoi) bInapoi.addEventListener("click", _pasInapoi);
     // [445] fereastra deschisă dintr-un refuz: X o închide pe ea și întoarce la formularul de plecare (păstrat), nu aruncă tot drumul
-    fer.querySelector(".nav-x").addEventListener("click", () => (sus.intoarcere && stiva.length > 1 ? nav.inapoi() : nav.acasa()));
+    const _bX = fer.querySelector(".nav-x");
+    if (_bX) _bX.addEventListener("click", () => (sus.intoarcere && stiva.length > 1 ? nav.inapoi() : nav.acasa()));
     overlay.appendChild(fer);
     radacina.appendChild(overlay);
     fer.classList.toggle("fer-larg", (sus.optiuni || {}).lat === "larg");
@@ -658,7 +663,7 @@ export function urmaresteBara3(bara3) {
     const actuala = cerereNoua();
     const _azi = new Date(), _de = `${_azi.getFullYear()}-${String(_azi.getMonth() + 1).padStart(2, "0")}-01`;
     let cal = null;
-    try { const { api } = await import("./api.js?v=83fcf3ce06"); cal = await api.get(`/eu/calitate?de=${_de}`); } catch { cal = null; }
+    try { const { api } = await import("./api.js?v=257b15589c"); cal = await api.get(`/eu/calitate?de=${_de}`); } catch { cal = null; }
     if (!actuala()) return;
     // [p26_motivationale] iteram peste lista din backend - oricate, flexibil
     const lista = (cal && cal.ok && cal.motivationale) || [];
@@ -689,7 +694,7 @@ async function _clopotActualizeazaBadge(container) {  // [p66_badge_ref]
     }
   } catch {}
   try {
-    const { api } = await import("./api.js?v=83fcf3ce06");
+    const { api } = await import("./api.js?v=257b15589c");
     const r = await api.get("/notificari/contor");
     const n = (r && r.necitite) || 0;
     badge.textContent = n > 0 ? (n > 9 ? "9+" : String(n)) : "";
@@ -749,7 +754,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
     panou.id = "nav-clopot-panou";
     panou.innerHTML = `<div class="clopot-cap"><span>Notificări</span></div><div class="clopot-lista" id="clopot-lista"><div class="clopot-gol">Se încarcă…</div></div>`;
     ecran.appendChild(panou);
-    const { api } = await import("./api.js?v=83fcf3ce06");
+    const { api } = await import("./api.js?v=257b15589c");
     const lista = panou.querySelector("#clopot-lista");
     // [422] lista deschisă se reumple la o schimbare (o notificare rezolvată de validarea de alături, una nouă de la un coleg)
     const umple = async () => {
@@ -791,8 +796,8 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const [, tid, nid, an, luna] = n.link.split(":").map((x) => parseInt(x, 10));
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
-              const { api } = await import("./api.js?v=83fcf3ce06");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=835874525f");
+              const { api } = await import("./api.js?v=257b15589c");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=9096d880bc");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();
@@ -843,7 +848,7 @@ function _sumarTextTip(tip, n) {
 async function _sumarLogin(ecran) {
   try {
     if (sessionStorage.getItem("iconta_sumar_aratat") === "1") return;
-    const { api } = await import("./api.js?v=83fcf3ce06");
+    const { api } = await import("./api.js?v=257b15589c");
     const r = await api.get("/notificari/sumar");
     const total = (r && r.necitite) || 0;
     sessionStorage.setItem("iconta_sumar_aratat", "1");
@@ -879,7 +884,7 @@ async function _anunturiBanner(ecran) {
   if (u.rol === "client" || u.rol === "superadmin") return;
   let d;
   try {
-    const { api } = await import("./api.js?v=83fcf3ce06");
+    const { api } = await import("./api.js?v=257b15589c");
     d = await api.get("/eu/anunturi");
   } catch { return; }
   const lista = (d && d.anunturi) || [];
@@ -906,7 +911,7 @@ async function _anunturiBanner(ecran) {
     // citirea — un X care închide fără confirmare ar fi o ușă înapoi spre același anunț la intrarea următoare.
     const confirma = async () => {
       try {
-        const { api } = await import("./api.js?v=83fcf3ce06");
+        const { api } = await import("./api.js?v=257b15589c");
         await api.post(`/eu/anunturi/${a.id}/confirma`, {});
         el.remove();
       } catch (e) {

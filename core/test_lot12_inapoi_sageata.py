@@ -151,7 +151,7 @@ def test_inapoipas_si_x_nu_iau_pasul_intern_iar_intoarcerea_la_pas_e_intr_un_sin
     s = _citeste(NAV)
     assert "sus.inapoi" not in _bucata(s, "inapoiPas() {", "reiaPasul() {")
     arb, cod = _aj.arbore_js(NAV)
-    x = [c for c in _aj.noduri(arb, "CallExpression") if cod(c["callee"]) == 'fer.querySelector(".nav-x").addEventListener']
+    x = [c for c in _aj.noduri(arb, "CallExpression") if cod(c["callee"]) == '_bX.addEventListener']
     assert [cod(c["arguments"][0]) for c in x] == ['"click"'], [cod(c) for c in x]
     pe_x = x[0]["arguments"][1]
     assert not [m for m in _aj.noduri(pe_x, "MemberExpression") if cod(m) == "sus.inapoi"], cod(pe_x)
