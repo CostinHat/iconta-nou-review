@@ -14,7 +14,7 @@
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
 import { alegereButoane } from "./api.js?v=83fcf3ce06";
-import { listaCuCautare } from "./ds_piese.js?v=9362f18cf3";
+import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica } from "./ds_piese.js?v=382a0f239f";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);
@@ -123,6 +123,9 @@ export function baraDeJos(fer, corp, { renunta }) {
     _marcheazaObligatorii(corp);
     _ajutoareScurte(corp);
     _listeDerulante(corp);
+    listeDSAplica(corp);   // [15.1-E4] lista de înregistrări → tabelul DS
+    tabeleDSAplica(corp);   // [15.1-E4] tabelul DS, o singură dată pentru toate ecranele
+    carduriDSAplica(corp);   // [15.1-E4] cardul-rezumat, o singură dată pentru toate ecranele
     if (bara.parentElement !== corp || corp.lastElementChild !== bara) corp.appendChild(bara);
     // acțiunea al cărei loc de origine (zona ecranului) a fost redesenat de ecran e veche: ecranul a scos-o odată cu zona (ex. „Scrie nota” după scriere)
     for (const b of [...loc.children]) if (b.__origine && !b.__origine.isConnected) { b.remove(); if (b === principal) principal = null; }
@@ -204,7 +207,7 @@ export function baraDeJos(fer, corp, { renunta }) {
   corp.addEventListener("input", programeaza, true);
   corp.addEventListener("change", programeaza, true);
   new MutationObserver((muts) => { if (muts.some((m) => !bara.contains(m.target) || m.target === bara || m.target === loc)) programeaza(); })
-    .observe(corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "class", "style"] });
+    .observe(corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "class", "style", "open"] });
   sincronizeaza();
   return { sincronizeaza, bara };
 }

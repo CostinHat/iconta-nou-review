@@ -336,3 +336,259 @@ export function rezumatHtml({ ton = "avertisment", text, detaliiHtml = "", actiu
     detaliiHtml ? _butonPlie("ds-rezumat-plie") : ""}</div>${
     detaliiHtml ? `<div class="ds-rezumat-detalii" hidden>${detaliiHtml}</div>` : ""}</div>`;
 }
+
+
+// ── [15.1-E4] PIESELE APLICATE FERESTREI: tabelul DS și cardul-rezumat, o singură dată, pentru toate ecranele ───────────────────────────────────────
+// Ecranele își desenează în continuare tabelele (`table`) și notele (`.ecran-nota`, `.caseta-info`, `.caseta-atentie`, paragrafele explicative); cadrul
+// (`cadru.js`, la fiecare sincronizare, idempotent) le dă forma DS: aceeași clasă de piesă (`ds-tabel`, `ds-rezumat`), nu o reparație pe ecran (R8).
+// Clasele vechi rămân pe element ca marcaje (clic pe rând, editare în celulă, id-uri, teste), nu ca aspect.
+
+const _vizibilDS = (el) => !!(el.offsetParent || el.getClientRects().length);
+const _txt = (t) => String(t || "").replace(/\s+/g, " ").trim();
+
+// lățimile coloanelor după rol, aceleași în toate tabelele (Nr. crt. 7ch, Dată 12ch, Perioadă 10ch, Sumă 14ch, Stare 12ch, Acțiuni 12ch pe buton)
+function _latimeColoana(th, celule) {
+  const t = _txt(th.textContent);
+  if (/^nr\.?\s*crt/i.test(t) || t === "Nr.") return "7ch";
+  if (/^dat[ăa]\b/i.test(t)) return "12ch";
+  if (/^perioad/i.test(t)) return "10ch";
+  if (/^stare\b/i.test(t)) return "12ch";
+  if (/^ac[țt]iuni\b/i.test(t) || (celule.length && celule.every((c) => c.querySelector("button") && _txt(c.textContent).length < 40))) {
+    const n = Math.max(1, ...celule.map((c) => c.querySelectorAll("button").length));
+    return 12 * n + "ch";
+  }
+  if (th.classList.contains("ds-tabel-num")) return "14ch";
+  return "";
+}
+
+/** Tabelul vechi (`table` fără `ds-tabel`) devine tabelul DS: cutie cu subsol de 44 px (contorul de rânduri sau totalurile din `tfoot`), cap 40 px,
+ *  rânduri 44 px, zebra, coloanele numerice la dreapta, lățimile după rol. Tabelele din `template`, din `[data-fara-piesa]` și cele cu structură
+ *  de formular (fără `thead`) nu se ating. Subsolul își reîmprospătează contorul la fiecare sincronizare (rândurile filtrate nu se numără). */
+export function tabeleDSAplica(corp) {
+  for (const t of corp.querySelectorAll("table:not(.ds-tabel)")) {
+    if (t.closest("template, [data-fara-piesa], .fereastra-antet, .ds-tabel-cutie:not(.ds-tabel-lista)") || !t.tHead || !_vizibilDS(t)) continue;
+    t.classList.add("ds-tabel");
+    const cap = [...t.tHead.rows[0].cells];
+    cap.forEach((th, i) => {
+      const celule = [...t.tBodies].flatMap((b) => [...b.rows]).map((r) => r.cells[i]).filter(Boolean);
+      const numeric = th.classList.contains("fd-td-num") || (celule.length && celule.every((c) => c.classList.contains("fd-td-num") || /^[−-]?[\d.\s]+(,\d+)?$/.test(_txt(c.textContent)) && _txt(c.textContent) !== ""));
+      if (numeric) { th.classList.add("ds-tabel-num"); celule.forEach((c) => c.classList.add("ds-tabel-num")); }
+      const lat = _latimeColoana(th, celule);
+      if (lat) th.style.width = lat;
+    });
+    const cutie = document.createElement("div");
+    cutie.className = "ds-tabel-cutie ds-tabel-vechi";
+    t.replaceWith(cutie);
+    cutie.appendChild(t);
+    const sub = document.createElement("div");
+    sub.className = "ds-tabel-subsol";
+    cutie.appendChild(sub);
+  }
+  for (const cutie of corp.querySelectorAll(".ds-tabel-vechi")) {
+    const t = cutie.querySelector("table");
+    const sub = cutie.querySelector(":scope > .ds-tabel-subsol");
+    if (!t || !sub) continue;
+    const randuri = [...t.tBodies].flatMap((b) => [...b.rows]).filter((r) => r.style.display !== "none" && !r.hidden && !r.classList.contains("fd-rand-gol"));
+    const nou = cate(randuri.length, "rând", "rânduri");
+    if (sub.textContent !== nou) sub.textContent = nou;
+  }
+}
+
+const _TON = [
+  [/caseta-atentie|msg-eroare|\beroare\b|mig-eroare/, "eroare"],
+  [/avert|galben|dec-avert/, "avertisment"],
+  [/caseta-ok|msg-ok|\bsucces\b/, "ok"],
+];
+const _SELECTOR_CARD = ".ecran-nota, .caseta-info, .caseta-atentie, .caseta-avertisment, .avertisment, .msg-info, .pf-intro, .tip-micut, .mig-intro";
+// explicațiile (nu notele): numai când se rup pe mai multe rânduri — o explicație de un rând rămâne text
+const _EXPLICATIE = ".pf-intro, .tip-micut, .mig-intro";
+const _FARA_CARD = "template, [data-fara-piesa], .ds-rezumat-cutie, .ds-semnal, .ds-semnale, .ds-rezumat-detalii, .ds-semnal-detalii, table, button, .fereastra-antet, .fereastra-jos, details:not([open]), [hidden], .cautare-rez, .bara-fixa";
+const _RANG = { avertisment: 0, ok: 1, info: 2 };
+
+function _tonCard(el) {
+  const c = String(el.className);
+  for (const [re, ton] of _TON) if (re.test(c)) return ton;
+  return "info";
+}
+
+/** Nota sau explicația devine cardul-rezumat (DS: 44 px, o linie, bandă stângă 4 px: portocaliu avertisment, roșu eroare, verde în regulă, gri informativ).
+ *  Textul de peste 90 de caractere se taie cu „…” pe linia vizibilă și rămâne ÎNTREG sub „▾ detalii” (cu temeiul legal); eroarea își arată textul întreg,
+ *  pe cât mai multe linii cât trebuie, mereu la vedere. Butoanele din notă rămân în rând, la dreapta (S). Din cardurile care nu sunt erori, cel mult 2 sunt
+ *  la vedere (în ordinea avertisment, în regulă, informativ); restul stau sub „Semnale (n)”. Idempotent. */
+export function carduriDSAplica(corp) {
+  const vazute = [];
+  // paragraful explicativ care se rupe pe mai multe rânduri (nu un câmp, nu o celulă) e tot o explicație: devine card
+  const lungi = [...corp.querySelectorAll("p")].filter((p) => !p.matches(_SELECTOR_CARD) && !p.classList.contains("ds-rezumat") && !p.closest(_FARA_CARD + ", form, .ds-formular, .ds-grup, .ds-lista, .ds-semnale, .pf-frand") && _vizibilDS(p)
+    && _txt(p.textContent).length >= 40 && p.getBoundingClientRect().height > (parseFloat(getComputedStyle(p).lineHeight) || 20) * 1.5);
+  for (const el of new Set([...corp.querySelectorAll(_SELECTOR_CARD), ...lungi, ...corp.querySelectorAll(".ds-rezumat")])) {   // și cardurile făcute direct cu piesa (`cardRezumat`, `rezumatHtml`) intră în regula „cel mult 2”
+    if (el.closest(_FARA_CARD) && !el.classList.contains("ds-rezumat")) continue;
+    if (el.classList.contains("ds-rezumat") && el.closest(".ds-semnale, .ds-rezumat-detalii")) continue;
+    if (!el.classList.contains("ds-rezumat") && (el.closest("label") || el.tagName === "SPAN")) continue;   // explicația dintr-o etichetă / bifă e text de câmp, nu card
+    if (!el.classList.contains("ds-rezumat") && el.querySelector("input, select, textarea, table")) continue;   // rândul de filtre / câmpuri nu e o explicație
+    if (el.parentElement && el.parentElement.closest(".ds-rezumat")) continue;
+    if (!_vizibilDS(el) && !el.classList.contains("ds-rezumat-sub")) continue;
+    // textul propriu: fără butoane și câmpuri (rândul de acțiuni nu e text)
+    let text = el.classList.contains("ds-rezumat") ? _txt((el.querySelector(":scope > .ds-rezumat-text") || el).textContent) : "";
+    if (!el.classList.contains("ds-rezumat")) {
+      const c = el.cloneNode(true);
+      c.querySelectorAll("button, a.buton-secundar, select, input, textarea, .ajutor-btn").forEach((x) => x.remove());
+      text = _txt(c.textContent);
+      if (text.length < 8) continue;   // mesajul gol sau „…” de încărcare nu devine card
+      if (el.matches(_EXPLICATIE) && !el.matches(".ecran-nota, .caseta-info, .caseta-atentie") && el.getBoundingClientRect().height <= (parseFloat(getComputedStyle(el).lineHeight) || 20) * 1.5) continue;
+      if (el.matches(".tip-micut") && (el.closest(".pov-card, [class*=grafic], [class*=scara], [class*=legenda]") || text.length < 40)) continue;   // etichetele graficelor nu sunt explicații
+    }
+    const ton = el.classList.contains("ds-rezumat") ? [...el.classList].find((k) => /^ds-rezumat-(avertisment|eroare|ok|info)$/.test(k)).slice(11) : _tonCard(el);
+    if (!el.classList.contains("ds-rezumat")) {
+      el.classList.add("ds-rezumat", "ds-rezumat-" + ton);
+      const sp = document.createElement("span");
+      sp.className = "ds-rezumat-text";
+      const mut = [...el.childNodes].filter((n) => !(n.nodeType === 1 && n.matches("button, a.buton-secundar, .ca-actiuni")));
+      mut.forEach((n) => sp.appendChild(n));
+      el.prepend(sp);
+      el.querySelectorAll("button, a.buton-secundar").forEach((b) => { b.classList.add("buton-s"); });
+    }
+    const sp = el.querySelector(":scope > .ds-rezumat-text");
+    if (!sp) continue;
+    // textul de pe linia vizibilă: întreg dacă încape în 90 de caractere; altfel tăiat cu „…” (CSS), întreg sub „▾ detalii”
+    const intreg = _txt(sp.textContent);
+    sp.title = intreg;
+    if (ton !== "eroare" && intreg.length > 90 && !el.querySelector(":scope > .ds-rezumat-plie")) {
+      const det = document.createElement("div");
+      det.className = "ds-rezumat-detalii ds-rezumat-detalii-card";
+      det.hidden = true;
+      el.after(det);
+      const plie = document.createElement("button");
+      plie.type = "button";
+      plie.className = "buton-secundar ds-rezumat-plie";
+      plie.dataset.faraActiune = "plierea / arătarea detaliilor în fereastra curentă";
+      plie.setAttribute("aria-expanded", "false");
+      plie.textContent = "▾ detalii";
+      plie.addEventListener("click", () => {
+        det.hidden = !det.hidden;
+        plie.setAttribute("aria-expanded", String(!det.hidden));
+        plie.textContent = det.hidden ? "▾ detalii" : "▴ detalii";
+      });
+      el.appendChild(plie);
+      el.__detalii = det;
+    }
+    if (el.__detalii && el.__detalii.textContent !== intreg) el.__detalii.textContent = intreg;
+    if (ton !== "eroare") vazute.push({ el, ton });
+  }
+  // cel mult 2 la vedere (cardurile de eroare nu se numără); restul sub „Semnale (n)”
+  const ordonate = vazute.map((v, i) => ({ ...v, i })).sort((a, b) => (_RANG[a.ton] - _RANG[b.ton]) || (a.i - b.i));
+  const de_ascuns = new Set(ordonate.slice(2).map((v) => v.el));
+  let intrerupator = corp.querySelector(":scope > .ds-semnale-sub");
+  for (const { el } of vazute) {
+    const ascuns = de_ascuns.has(el);
+    el.classList.toggle("ds-rezumat-sub", ascuns && !(intrerupator && intrerupator.getAttribute("aria-expanded") === "true"));
+    el.classList.toggle("ds-rezumat-sub-grup", ascuns);
+    if (el.__detalii && ascuns) el.__detalii.hidden = true;
+  }
+  if (de_ascuns.size) {
+    if (!intrerupator) {
+      intrerupator = document.createElement("button");
+      intrerupator.type = "button";
+      intrerupator.className = "buton-secundar buton-s ds-semnale-sub";
+      intrerupator.dataset.faraActiune = "plierea / arătarea semnalelor în fereastra curentă";
+      intrerupator.setAttribute("aria-expanded", "false");
+      intrerupator.addEventListener("click", () => {
+        const deschis = intrerupator.getAttribute("aria-expanded") !== "true";
+        intrerupator.setAttribute("aria-expanded", String(deschis));
+        corp.querySelectorAll(".ds-rezumat-sub-grup").forEach((x) => x.classList.toggle("ds-rezumat-sub", !deschis));
+        intrerupator.textContent = intrerupator.dataset.eticheta + (deschis ? " ▴" : " ▾");
+      });
+      const primul = [...de_ascuns][0];
+      primul.before(intrerupator);
+    }
+    const eticheta = `Semnale (${de_ascuns.size})`;
+    if (intrerupator.dataset.eticheta !== eticheta) {
+      intrerupator.dataset.eticheta = eticheta;
+      intrerupator.textContent = eticheta + (intrerupator.getAttribute("aria-expanded") === "true" ? " ▴" : " ▾");
+    }
+  } else if (intrerupator) {
+    intrerupator.remove();
+  }
+}
+
+// ── [15.1-E4] lista de înregistrări → tabelul DS ───────────────────────────────────────────────────────────────────────────────────────────────────
+// Listele făcute din rânduri (cu buton, cu text pe două linii) sunt înlocuite de aceeași piesă ca tabelele: `table.ds-tabel` cu cap de 40 px, rânduri de
+// 44 px, zebra, subsol cu contorul de rânduri; peste 20 de rânduri, căutare de 44 px deasupra. Rândul vechi (elementul însuși, cu clasa, id-ul, clicul și
+// butoanele lui) trece ca CONȚINUT al celulei, deci clicul pe rând, editarea în celulă și testele ecranului merg ca înainte. Derularea o dă navigatorul
+// (zona de derulare din jurul tabelului). Idempotent: rândurile adăugate după aceea intră în același tabel.
+const LISTE_ASTEA = ".pf-lista, .mig-lista, .jn-lista, .pr-lista, .firme-lista, .sa-asist-lista, .rap-col-lista, .term-grup, .zebra-lista";
+const _NU_LISTA = /(card|categorie|tab\b|-tab|pastila|optiune|nav-|op-|cab-|buton|alegere|camp|rap-|ds-|bara-fixa|fj-)/i;
+
+function _titluColoana(lista, sub) {
+  const t = lista.dataset.titlu || lista.getAttribute("aria-label");
+  if (t) return t;
+  const cap = lista.previousElementSibling && lista.previousElementSibling.matches("h2, h3, h4, .ds-sectiune-titlu, .ds-grup-titlu") ? _txt(lista.previousElementSibling.textContent) : "";
+  return cap || sub;
+}
+
+export function listeDSAplica(corp) {
+  // 1. listele cunoscute (orice număr de rânduri) și grupurile de ≥3 frați cu aceeași clasă, fiecare cu text și acțiune (ca în verificator)
+  const candidate = new Set([...corp.querySelectorAll(LISTE_ASTEA)]);
+  for (const p of corp.querySelectorAll("*")) {
+    if (p.closest("table, .cautare-rez, select, .ds-tabel-cutie, .ds-semnale, .ds-rezumat, .ds-rezumat-detalii, template, [data-fara-piesa], .ds-grup, .ds-lista") || !_vizibilDS(p)) continue;
+    const grupe = new Map();
+    for (const k of p.children) { const cl = k.tagName + "." + String(k.className).split(" ")[0]; grupe.set(cl, [...(grupe.get(cl) || []), k]); }
+    for (const [cl, ks] of grupe) {
+      if (ks.length < 3 || _NU_LISTA.test(cl)) continue;
+      if (ks.every((k) => k.querySelector("button, a") && _txt(k.textContent).length > 10 && k.getBoundingClientRect().height > 30)) candidate.add(p);
+    }
+  }
+  for (const lista of candidate) {
+    if (lista.closest("template, [data-fara-piesa], .ds-tabel-cutie, table, .fereastra-antet, .ds-lista, .ds-semnale") || lista.matches(".bara-fixa")) continue;
+    if (lista.querySelector(":scope > .ds-tabel-cutie:not(.ds-tabel-lista), :scope > table")) continue;   // ecranul și-a desenat deja tabelul DS în listă
+    let cutie = lista.querySelector(":scope > .ds-tabel-cutie.ds-tabel-lista");
+    const straine = [...lista.children].filter((k) => k !== cutie && !k.matches(".ds-tabel-cauta-rand, .ds-tabel-cutie, table, .ecran-nota, .ds-rezumat, .ds-rezumat-detalii, .ds-semnale-sub, .ds-grup-titlu, h2, h3, h4, .ds-sectiune-titlu, script, style, template") && !k.hidden && k.tagName !== "P");
+    if (!straine.length && !cutie) continue;
+    if (!cutie) {
+      if (!_vizibilDS(lista)) continue;
+      cutie = document.createElement("div");
+      cutie.className = "ds-tabel-cutie ds-tabel-lista";
+      const t = document.createElement("table");
+      t.className = "ds-tabel ds-tabel-lista-tabel";
+      const th = document.createElement("th");
+      th.scope = "col";
+      th.textContent = _titluColoana(lista, "Înregistrare");
+      t.createTHead().insertRow().appendChild(th);
+      t.createTBody();
+      cutie.appendChild(t);
+      const sub = document.createElement("div");
+      sub.className = "ds-tabel-subsol";
+      cutie.appendChild(sub);
+      lista.appendChild(cutie);
+      // derularea e a tabelului (navigatorul pune zona în jurul lui), nu a listei: capul și subsolul rămân la vedere
+      lista.classList.remove("zona-derulare");
+      lista.removeAttribute("data-zona-derulare");
+    }
+    const corpT = cutie.querySelector("tbody");
+    for (const r of straine) {
+      const tr = corpT.insertRow();
+      tr.className = "ds-tabel-rand-lista";
+      tr.insertCell().appendChild(r);   // rândul vechi, neschimbat, devine conținutul celulei
+    }
+    // contorul din subsol și căutarea (peste 20 de rânduri)
+    const randuri = [...corpT.rows];
+    const afisate = randuri.filter((tr) => !tr.hidden && tr.style.display !== "none");
+    const sub = cutie.querySelector(":scope > .ds-tabel-subsol");
+    const nou = cate(afisate.length, "rând", "rânduri");
+    if (sub.textContent !== nou) sub.textContent = nou;
+    for (const tr of randuri) if (!tr.firstElementChild.firstElementChild) tr.remove();   // rândul pe care ecranul l-a șters din celulă
+    const arataCautare = randuri.length > 20;
+    let rand = lista.querySelector(":scope > .ds-tabel-cauta-rand");
+    if (arataCautare && !rand && !corp.querySelector("input[type=search], input[placeholder*='Caută' i]")) {
+      rand = document.createElement("div");
+      rand.className = "ds-tabel-cauta-rand";
+      rand.innerHTML = `<input type="search" class="camp-input ds-tabel-cauta" placeholder="Caută în listă…" aria-label="Caută în listă">`;
+      cutie.before(rand);
+      rand.firstElementChild.addEventListener("input", (e) => {
+        const f = e.target.value.trim().toLowerCase();
+        for (const tr of corpT.rows) tr.hidden = !!f && !tr.textContent.toLowerCase().includes(f);
+        const n = [...corpT.rows].filter((tr) => !tr.hidden).length;
+        sub.textContent = cate(n, "rând", "rânduri");
+      });
+    }
+  }
+}

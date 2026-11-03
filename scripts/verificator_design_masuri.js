@@ -10,7 +10,9 @@
   const norm = (t) => (t || "").replace(/\s+/g, " ").trim();
   // textul propriu al unui element, fără butoanele/linkurile/câmpurile din el (un rând de acțiuni nu e un paragraf explicativ)
   const proprio = (el) => { const c = el.cloneNode(true); c.querySelectorAll("button, a, select, input, textarea, .ajutor-btn").forEach((x) => x.remove()); return norm(c.innerText || c.textContent); };
-  const vizibil = (el) => !!(el.offsetParent || el.getClientRects().length) && getComputedStyle(el).visibility !== "hidden";
+  // [15.1-E4] conținutul unui <details> închis nu e la vedere (Chromium îi dă totuși dreptunghiuri): nu se măsoară
+  const inDetaliiInchise = (el) => { const d = el.closest("details:not([open])"); return !!d && !el.closest("summary"); };
+  const vizibil = (el) => !!(el.offsetParent || el.getClientRects().length) && getComputedStyle(el).visibility !== "hidden" && !inDetaliiInchise(el);
   const h = (el) => Math.round(el.getBoundingClientRect().height);
   if (!F) {
     for (const r of Object.keys(pica)) pica[r].push("nicio fereastră de lucru deschisă");
@@ -114,7 +116,7 @@
     grupe.set(cl, (grupe.get(cl) || 0) + 1);
   }
   for (const [cl, n] of grupe) if (n >= 3) { c.liste_rand_buton.push(cl + " ×" + n); }
-  c.liste_vechi = [...F.querySelectorAll("[class]")].filter((x) => vizibil(x) && !x.closest("table, .cautare-rez, .ds-tabel-cutie")
+  c.liste_vechi = [...F.querySelectorAll("[class]")].filter((x) => vizibil(x) && !x.matches(".bara-fixa") && [...x.children].some((k) => k.tagName !== "P" && !/stare-goala|ecran-nota|ds-/.test(String(k.className))) && !(x.querySelector(":scope > .ds-tabel-cutie") && ![...x.children].some((k) => !k.matches(".ds-tabel-cutie, .ds-tabel-cauta-rand") && vizibil(k) && k.querySelector("button"))) && !x.closest("table, .cautare-rez, .ds-tabel-cutie")   // [15.1-E4, pct.2] bara-fixa e rândul de totaluri fix, nu o listă de înregistrări
     && [...x.classList].some((k) => /(^|-)lista$|^zebra-lista$|^pf-lista$/.test(k) && !/^(ds-|cautare|firma-lista-fisiere)/.test(k))).map((x) => String(x.className).split(" ")[0]);
   c.liste_vechi = [...new Set(c.liste_vechi)];
   // rânduri repetate (≥3 frați cu aceeași etichetă și clasă, fiecare cu text și cu cel puțin o acțiune) în afara tabelului DS = listă de înregistrări
@@ -123,7 +125,7 @@
     const grupe2 = new Map();
     for (const k of p.children) { const cl = k.tagName + "." + String(k.className).split(" ")[0]; if (vizibil(k)) grupe2.set(cl, [...(grupe2.get(cl) || []), k]); }
     for (const [cl, ks] of grupe2) {
-      if (ks.length < 3 || /(card|categorie|tab\b|-tab|pastila|optiune|nav-|op-|cab-|buton|alegere|camp|rap-|ds-)/i.test(cl)) continue;
+      if (ks.length < 3 || /(card|categorie|tab\b|-tab|pastila|optiune|nav-|op-|cab-|buton|alegere|camp|rap-|ds-|bara-fixa|fj-)/i.test(cl)) continue;
       if (ks.every((k) => k.querySelector("button, a") && norm(k.innerText).length > 10 && h(k) > 30)) c.liste_vechi.push(cl.toLowerCase() + " ×" + ks.length);
     }
   }
@@ -134,14 +136,28 @@
 
   // ── d. avertismente și semnale ──────────────────────────────────────────────────────────────────────────────────────────────────────
   const d = { rezumat_ds: 0, semnale_ds: 0, carduri_vechi: 0, paragrafe_lungi: [] };
-  for (const r of F.querySelectorAll(".ds-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (Math.abs(h(r) - 44) > 1) pica.d.push("card-rezumat de " + h(r) + " px, nu 44"); }
+  // [15.1-E4] cardul de eroare își arată textul întreg, pe câte linii e nevoie: peste 44 px numai la eroare
+  for (const r of F.querySelectorAll(".ds-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (Math.abs(h(r) - 44) > 1 && !(r.classList.contains("ds-rezumat-eroare") && h(r) > 44)) pica.d.push("card-rezumat de " + h(r) + " px, nu 44"); }
   for (const s of F.querySelectorAll(".ds-semnal")) { if (!vizibil(s)) continue; d.semnale_ds++; if (Math.abs(h(s) - 36) > 1) pica.d.push("semnal de " + h(s) + " px, nu 36"); }
   for (const r of F.querySelectorAll(".card-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (Math.abs(h(r) - 44) > 1) pica.d.push("card-rezumat de " + h(r) + " px, nu 44"); }
-  const vechi = [...F.querySelectorAll(".cf-semnal, .caseta-info, .ecran-nota, .caseta-avertisment, .avertisment, .dec-avert-cap, .msg-info")].filter(vizibil);
+  // [15.1-E4, pct.4] cardurile de eroare rămân mereu la vedere și nu se numără; celelalte cel mult 2 la vedere (restul sub „Semnale (n)”); un card gri (informativ) e card valid
+  const nonErori = [...F.querySelectorAll(".ds-rezumat")].filter((r) => vizibil(r) && !r.classList.contains("ds-rezumat-eroare") && !r.closest(".ds-semnale"));
+  d.rezumate_la_vedere = nonErori.length;
+  if (nonErori.length > 2) pica.d.push(nonErori.length + " carduri-rezumat care nu sunt erori la vedere, nu cel mult 2 (restul sub „Semnale (n)”)");
+  // un semnal sau un card al cărui text spune „deschide X” / „mergi la X” are butonul care deschide X (736)
+  d.fara_buton = [];
+  for (const cutie of F.querySelectorAll(".ds-rezumat-cutie, .ds-semnal-cutie")) {
+    if (!vizibil(cutie)) continue;
+    const txt = norm(cutie.innerText);
+    const are = [...cutie.querySelectorAll("button, a[href]")].some((b) => !b.matches(".ds-rezumat-plie, .ds-semnal-plie"));
+    if (/(deschide|mergi la|intră în)\s+[„"«]/i.test(txt) && !are) d.fara_buton.push((txt.match(/[„"«][^”"»]+[”"»]/) || [txt.slice(0, 30)])[0]);
+  }
+  if (d.fara_buton.length) pica.d.push("semnal/card care numește un ecran fără butonul care îl deschide: " + [...new Set(d.fara_buton)].slice(0, 3).join(", "));
+  const vechi = [...F.querySelectorAll(".cf-semnal, .caseta-info, .ecran-nota, .caseta-avertisment, .avertisment, .dec-avert-cap, .msg-info")].filter((x) => vizibil(x) && !x.classList.contains("ds-rezumat") && !x.closest("label, .camp-eticheta") && x.tagName !== "SPAN");   // [15.1-E4] explicația dintr-o etichetă / bifă e text de câmp (ca .camp-ajutor), nu avertisment
   d.carduri_vechi = vechi.length;
   if (vechi.length) pica.d.push(vechi.length + " avertismente/semnale care nu sunt piese DS (" + [...new Set(vechi.map((x) => String(x.className).split(" ")[0]))].join(", ") + ")");
   for (const p of F.querySelectorAll("p, .pf-intro, .tip-micut, .ecran-nota, .camp-ajutor")) {
-    if (!vizibil(p) || p.closest("[hidden], .ds-rezumat-detalii, .ds-semnal-detalii, details:not([open])")) continue;
+    if (!vizibil(p) || p.classList.contains("ds-rezumat") || p.querySelector("input, select, textarea") || p.closest("[hidden], .ds-rezumat-detalii, .ds-semnal-detalii, details:not([open])")) continue;   // [15.1-E4] paragraful devenit card-rezumat e cardul, nu un paragraf nepliat
     const txt = proprio(p);
     if (txt.length < 40) continue;
     const lh = parseFloat(getComputedStyle(p).lineHeight) || 20;
@@ -153,7 +169,7 @@
   // ── e. acțiuni în text ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
   const e = { in_text: [], casete_cu_actiuni: [] };
   for (const el of F.querySelectorAll("p button, p a[href], li button, textarea ~ button")) {
-    if (!vizibil(el) || el.closest(".ds-actiuni-rand, .pf-intro, .fereastra-antet")) continue;
+    if (!vizibil(el) || el.closest(".ds-actiuni-rand, .pf-intro, .fereastra-antet, .ds-rezumat, .ds-semnal")) continue;
     const p = el.closest("p, li");
     if (p && proprio(p).length > 12) e.in_text.push(norm(el.innerText).slice(0, 30));
   }
@@ -165,11 +181,15 @@
   fapte.e = e;
 
   // ── f. titluri și texte ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  const antetFir = norm((F.querySelector(".fereastra-antet .fereastra-fir") || {}).innerText || "").toUpperCase();
   const f = { titluri_cu_majuscule: [], fara_diacritice: [], plural: [], mesaje_duble: [] };
   for (const t of F.querySelectorAll("h1, h2, h3, h4, .pf-titlu, .pf-subtitlu, .ds-sectiune-titlu, [class*=-cap], [class*=titlu]")) {
     if (!vizibil(t) || t.closest(".fereastra-antet, table, button")) continue;
-    const grup = t.matches(".ds-grup-titlu, .op-categorie > :first-child, [class*=grup-titlu]");
+    const grup = t.matches(".ds-grup-titlu, .op-categorie > :first-child, [class*=grup-titlu], [class*=grupa-titlu], .em-eticheta, .mf-eticheta, .ds-lista-grup");   // [15.1-E4] aceeași regulă CSS de titlu de grup
     const cs = getComputedStyle(t), txt = norm(t.innerText);
+    // [15.1-E4, pct.2] numele proprii (firme, cabinete) nu sunt titluri de secțiune: formă juridică în nume sau numele firmei / cabinetului din bara de sus
+    if (/(\bS\.?R\.?L\.?|\bS\.A\.|\bSA|\bP\.?F\.?A\.?|\bS\.?C\.?S\.?|\bONG|\bASOCIA[ȚT]IA|\bFUNDA[ȚT]IA)$/.test(txt.toUpperCase()) && /\s/.test(txt)) continue;   // numele se termină cu forma juridică
+    if (antetFir && txt.length > 6 && antetFir.includes(txt.toUpperCase())) continue;
     const maj = cs.textTransform === "uppercase" || (txt.length > 3 && /[A-ZĂÂÎȘȚ]/.test(txt) && txt === txt.toUpperCase() && /[A-ZĂÂÎȘȚ]{3}/.test(txt));
     if (!maj) continue;
     if (grup) { if (Math.abs(parseFloat(cs.fontSize) - 14) > 0.5) pica.f.push("titlu de grup majuscule de " + cs.fontSize + ", nu 14 px: „" + txt.slice(0, 30) + "”"); }
@@ -178,15 +198,26 @@
   if (f.titluri_cu_majuscule.length) pica.f.push("titluri de secțiune cu majuscule: " + [...new Set(f.titluri_cu_majuscule)].slice(0, 4).join(" · "));
   const text = norm(F.innerText);
   // numai etichete de interfață (nu numele firmelor sau datele din rânduri): butoane, etichete, capete de tabel, titluri de secțiune
-  const interfata = [...F.querySelectorAll("button, label, th, h2, h3, h4, .ds-sectiune-titlu, .ds-grup-titlu")].filter((x) => vizibil(x) && !x.closest(".fereastra-antet") && !x.matches(".pf-titlu")).map((x) => norm(x.innerText)).join(" | ");
+  const interfata = [...F.querySelectorAll("button, label, th, h2, h3, h4, .ds-sectiune-titlu, .ds-grup-titlu")].filter((x) => vizibil(x) && !x.closest(".fereastra-antet") && !x.matches(".pf-titlu")).map((x) => { const c = x.cloneNode(true); c.querySelectorAll("select, option").forEach((o) => o.remove()); return norm(c.innerText || c.textContent); })
+    .filter((x) => !/\b(S\.?R\.?L\.?|S\.A\.|PFA|CUI\s*\d)/.test(x)).join(" | ");   // [15.1-E4] numele firmei (ex. „F5 SRL Salariati SRL”) e dată introdusă de utilizator, nu text de interfață
   const fara = interfata.match(/\b(Salariati|Fara|Tara|Inapoi|Inchide|Generare|Validare|Dupa|Pana|Cauta|Actiuni|Optiuni|Rezumat)\b/g);
   if (fara) { f.fara_diacritice = [...new Set(fara)]; pica.f.push("text fără diacritice: " + f.fara_diacritice.join(", ")); }
-  const pl = text.match(/\b1 (note|facturi|salariați|firme|declarații|documente|articole|mișcări|operațiuni|conturi)\b|\b(\d+) (notă|factură|salariat|firmă|declarație|document|articol)\b(?! de)/gi);
+  // [15.1-E4] pluralul se judecă în același text: un număr și substantivul din același nod, sau numărul pus între <b>/<strong> chiar înaintea textului cu substantivul;
+  // „1” al unui pas și „Firme” al titlului lui (elemente vecine) nu sunt „1 Firme”
+  const frunze = [];
+  { const w = document.createTreeWalker(F, NodeFilter.SHOW_TEXT);
+    for (let n; (n = w.nextNode());) {
+      if (!n.parentElement || n.parentElement.closest(".fereastra-antet, script, style, template") || !vizibil(n.parentElement)) continue;
+      let t = n.data;
+      if (/^\s*\d+\s*$/.test(t) && /^(B|STRONG)$/.test(n.parentElement.tagName) && n.parentElement.nextSibling && n.parentElement.nextSibling.nodeType === 3) t += n.parentElement.nextSibling.data;
+      frunze.push(norm(t));
+    } }
+  const pl = frunze.join(" | ").match(/\b1 (note|facturi|salariați|firme|declarații|documente|articole|mișcări|operațiuni|conturi)\b|\b(\d+) (notă|factură|salariat|firmă|declarație|document|articol)\b(?! de)/gi);
   if (pl) {
     const rele = pl.filter((x) => { const m = x.match(/^(\d+) /); return m && ((m[1] === "1" && /(note|facturi|salariați|firme|declarații|documente|articole|mișcări|operațiuni|conturi)$/i.test(x)) || (m[1] !== "1" && /(notă|factură|salariat|firmă|declarație|document|articol)$/i.test(x))); });
     if (rele.length) { f.plural = rele; pica.f.push("pluralul nu urmează numărul: " + rele.slice(0, 3).join(", ")); }
   }
-  const blocuri = [...F.querySelectorAll(".ds-rezumat-text, .ds-semnal-text, .card-text, .msg-info, .msg-eroare, .pf-intro")].filter(vizibil).map((x) => norm(x.innerText)).filter((x) => x.length > 20);
+  const blocuri = [...F.querySelectorAll(".ds-rezumat-text, .ds-semnal-text, .card-text, .msg-info, .msg-eroare, .pf-intro")].filter((x) => vizibil(x) && !x.classList.contains("ds-rezumat")).map((x) => norm(x.innerText)).filter((x) => x.length > 20);
   const numar = {}; for (const x of blocuri) numar[x] = (numar[x] || 0) + 1;
   f.mesaje_duble = Object.keys(numar).filter((k) => numar[k] > 1);
   if (f.mesaje_duble.length) pica.f.push("același mesaj de mai multe ori: „" + f.mesaje_duble[0].slice(0, 50) + "”");
@@ -196,7 +227,19 @@
   const g = { date_iso: [], sume_neformatate: [], perioade_ciudate: [], valori_goale: [] };
   g.date_iso = [...new Set(text.match(/\b\d{4}-\d{2}-\d{2}\b/g) || [])];
   if (g.date_iso.length) pica.g.push("date în format ISO pe ecran: " + g.date_iso.slice(0, 3).join(", "));
-  g.sume_neformatate = [...new Set((text.match(/(?<![\d.,/-])\d{4,}\.\d{2}(?![\d.])|(?<![\d.])\d+,\d{3}(?![\d.,])/g) || []))];
+  // [15.1-E4, pct.2] un cod de cont analitic (4428.01, 4111.01) nu e o sumă: e cod când e în coloana „Cont” / „Cod”, când urmează după „cont” sau când după el vine denumirea contului
+  const sumeBrute = [];
+  const reSuma = /(?<![\d.,/-])\d{4,}\.\d{2}(?![\d.])|(?<![\d.])\d+,\d{3}(?![\d.,])/g;
+  for (let m; (m = reSuma.exec(text));) {
+    const inainte = text.slice(Math.max(0, m.index - 14), m.index), dupa = text.slice(m.index + m[0].length, m.index + m[0].length + 24);
+    const cod = /^[1-8]\d{3}\.\d{2}$/.test(m[0]) && (/\b(cont\w*|cod|simbol|analitic)\W*$/i.test(inainte) || (/^\s*[—–·•-]?\s*[A-Za-zĂÂÎȘȚăâîșț]{3,}/.test(dupa) && !/^\s*(lei|ron|eur|usd|mdl)\b/i.test(dupa)) || /^\s*(=|\/|→|=>)\s*\d{3}/.test(dupa) || /\b[1-8]\d{2,3}(\.\d{2})?\s+$/.test(inainte));   // și lângă alte conturi: „4428.01 = 408”, listă de conturi
+    if (!cod) { sumeBrute.push(m[0]); (g.contexte = g.contexte || []).push(text.slice(Math.max(0, m.index - 30), m.index + 30)); }
+  }
+  for (const td of F.querySelectorAll("td")) {   // celula unică din coloana „Cont”/„Cod”: cod, nu sumă
+    const t = norm(td.innerText), cap = td.closest("table")?.querySelectorAll("thead th")[td.cellIndex];
+    if (/^[1-8]\d{3}\.\d{2}$/.test(t) && cap && /^(cont|cod|simbol|analitic)/i.test(norm(cap.innerText))) { const i = sumeBrute.indexOf(t); if (i >= 0) sumeBrute.splice(i, 1); }
+  }
+  g.sume_neformatate = [...new Set(sumeBrute)];
   if (g.sume_neformatate.length) pica.g.push("sume care nu trec prin formatul unic (1.234,56): " + g.sume_neformatate.slice(0, 3).join(", "));
   g.valori_goale = [...new Set(text.match(/\b(undefined|null|NaN|None)\b/g) || [])];
   if (g.valori_goale.length) pica.g.push("valoare lipsă afișată brut: " + g.valori_goale.join(", "));

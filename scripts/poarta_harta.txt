@@ -154,3 +154,16 @@ core/uc_portal.py => e2e_lot13_portal_p1.py
 core/uc_tenants.py => e2e_bloc_c.py e2e_lot10b_stoc.py e2e_lot11_b.py e2e_lot11_x.py e2e_lot12_migr.py e2e_lot92.py e2e_lot93a.py
 core/vector_fiscal_api.py => e2e_bloc_b.py e2e_bloc_e.py e2e_d406_perioada.py e2e_magazin.py
 core/verificare_bun_simt.py => e2e_lot13_decl.py
+# [15.1-E4, R11] fișierele „toate ecranele”: stil.css și cadru.js au aceleași fluxuri ca navigatorul
+static/stil.css => e2e_bloc_a.py e2e_bloc_b.py e2e_bloc_c.py e2e_bloc_d.py e2e_comanda_1010.py e2e_comanda_1210.py e2e_lot11_j.py e2e_lot12_cx7.py e2e_lot12_fe3.py e2e_lot12_int3.py e2e_lot12_start.py e2e_lot13_admin2.py e2e_lot6.py e2e_lot7.py e2e_lot72_cont.py
+static/js/cadru.js => e2e_bloc_a.py e2e_bloc_b.py e2e_bloc_c.py e2e_bloc_d.py e2e_comanda_1010.py e2e_comanda_1210.py e2e_lot11_j.py e2e_lot12_cx7.py e2e_lot12_fe3.py e2e_lot12_int3.py e2e_lot12_start.py e2e_lot13_admin2.py e2e_lot6.py e2e_lot7.py e2e_lot72_cont.py
+static/js/ds_piese.js => e2e_bloc_a.py e2e_bloc_b.py e2e_bloc_c.py e2e_bloc_d.py e2e_comanda_1010.py e2e_comanda_1210.py e2e_lot11_j.py e2e_lot12_cx7.py e2e_lot12_fe3.py e2e_lot12_int3.py e2e_lot12_start.py e2e_lot13_admin2.py e2e_lot6.py e2e_lot7.py e2e_lot72_cont.py
+# [15.1-E4, R11] zone neacoperite aflate de `poarta_lot.sh --lista`: ecranele fără intrare (reeștampilarea `?v=` le atinge pe toate)
+static/js/ecrane/supervizor.js => e2e_bloc_a.py e2e_lot12_cx2.py e2e_lot12_texte.py e2e_lot15_1.py
+static/js/ecrane/termene.js => e2e_bloc_a.py e2e_lot12_ctrl.py e2e_lot12_cx2.py e2e_lot12_decl.py
+static/js/ecrane/spv_stare.js => e2e_lot13_portal_p3.py
+static/js/ecrane/asistent.js => e2e_bloc_a.py e2e_bloc_c.py e2e_bloc_e.py e2e_comanda_1210.py
+static/js/ecrane/ecran_destinatie.js => e2e_lot15_e3.py e2e_lot12_ctrl.py e2e_lot15_e4.py
+static/js/cautare.js => e2e_bloc_f.py e2e_lot12_emit.py e2e_lot13_decl.py e2e_lot13_ds.py
+static/index.html => e2e_lot12_notif.py e2e_lot13_portal_p1.py
+static/spv_callback.html => e2e_lot13_portal_p3.py

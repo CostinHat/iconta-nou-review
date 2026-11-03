@@ -1248,7 +1248,7 @@
     "click": "#fa-import"
    },
    {
-    "click": "button",
+    "click": ".mig-frand",
     "text": "Audit de preluare"
    }
   ],
@@ -1511,15 +1511,5 @@
    ],
    "firma": false
   }
- },
- {
-  "nume": "Primii pași",
-  "nivel": "cabinet",
-  "pasi": [
-   {
-    "cauta": "primii pași"
-   }
-  ],
-  "grup": "cabinet"
  }
 ]

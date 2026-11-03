@@ -128,6 +128,8 @@ Testele grele (suita, poarta, e2e, uneltele vizuale, verificatorul) rulează una
 
 R10. Testele legate de data de azi primesc un moment de referință fix în fixture, nu data calendarului.
 
+R11. Înainte de primul commit al unui lot, poarta rulează în modul „listează” (`sh scripts/poarta_lot.sh --lista [fișier…]`, fără fișiere: cele atinse față de `main`; implementare: `scripts/poarta_selectie.py::lista`) și scrie ce teste va rula pentru fișierele pe care lotul le va atinge: testele de browser din core/ ȘI fluxurile e2e (frontend_test/e2e, după hartă și FLUXURI din scenarii), cel mult 20 de fișiere. O atingere a lui stil.css, navigator.js, api.js sau cadru.js înseamnă „toate ecranele”: plafonul întreg. Dacă zona atinsă nu e acoperită (ieșire 1), harta scripts/poarta_harta.txt se extinde întâi, abia apoi începe lotul. Lista intră în raport la D.
+
 ## 6. Publicarea
 
 După poarta verde, Code publică imediat, fără să aștepte confirmare: backup al bazei chiar înainte,

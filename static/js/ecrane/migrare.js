@@ -2443,11 +2443,13 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Import RIP", desc: "Registru \u00eencas\u0103ri-pl\u0103\u021bi (istoric PFA, partid\u0103 simpl\u0103)", strat: "rip", fn: (c, n) => importRipFirma(c, n, firma) },
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
+    // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=835874525f"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat
   // non-null aici (altfel am iesit mai sus cu stare-goala) -> filtram mereu, fara "arata tot".
-  const pasiVizibili = PASI.filter((p) => aplicabile.includes(p.strat));
+  const pasiVizibili = PASI.filter((p) => aplicabile.includes(p.strat) || p.strat === "audit_preluare");
   // [lotul 13, 663 / 580 / 664] starea fiecărui pas al firmei (gata / obligatoriu / nu e cazul / dacă e cazul) și ce s-a adus deja
   const stare = await _starePreluare(firma.tenant_id);
   const pasi = (stare && stare.pasi) || {};
@@ -2467,6 +2469,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     // importuri fără strat, scrisă pe pas; poarta din drepturi.js ascunde pasul refuzat rolului
     const _act = p.actiune || (STRATURI.find((s) => s.cheie === p.strat) || {}).actiune;
     if (_act) rand.dataset.actiune = _act;
+    if (p.strat === "audit_preluare") rand.dataset.faraActiune = "navigare la Control fiscal al firmei; auditul de acolo poartă acțiunea";
     const ps = pasi[p.strat];
     rand.innerHTML = `
       <div class="mig-frand-text">
@@ -2475,12 +2478,12 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
       </div>
       ${_badgePas(ps)}
     `;
-    rand.addEventListener("click", () => nav.mergi(p.titlu, (c) => p.fn(c, nav)));  // titlul = pasul; firma e in antet (fisa) sau in intro (drum cabinet) - DS cap.1
+    rand.addEventListener("click", () => (p.strat === "audit_preluare" ? p.fn() : nav.mergi(p.titlu, (c) => p.fn(c, nav))));  // titlul = pasul; firma e in antet (fisa) sau in intro (drum cabinet) - DS cap.1
     lista.appendChild(rand);
   });
   // [drepturi_rol 04.10.2026] Niciun pas permis (asistent fără „Poate pregăti”): ecranul spune DE CE e gol și cine dă
   // dreptul, în loc de „Alege ce vrei să aduci” deasupra unei liste goale.
-  if (!pasiVizibili.some((p) => permis(p.actiune || (STRATURI.find((s) => s.cheie === p.strat) || {}).actiune))) {
+  if (!pasiVizibili.filter((p) => p.strat !== "audit_preluare").some((p) => permis(p.actiune || (STRATURI.find((s) => s.cheie === p.strat) || {}).actiune))) {
     lista.insertAdjacentHTML("afterend", `<p class="ecran-nota drept-motiv" id="mig-fara-drept">Importul datelor firmei cere dreptul «Poate pregăti», pe care nu-l ai. Îl acordă administratorul cabinetului, din ecranul Asistenți.</p>`);
   }
   _consumaMigMesaj(corp);

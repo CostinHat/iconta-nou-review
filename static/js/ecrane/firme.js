@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat } from "../ds_piese.js?v=9362f18cf3";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { semnaleDS, cardRezumat } from "../ds_piese.js?v=382a0f239f";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=83fcf3ce06";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=83fcf3ce06";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
@@ -46,7 +46,7 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
-import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=65855075af";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=a78d0fe5b3";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=4f03524f33";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=6cc9e5c30e";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4c304d9be3";  // [produse_firma_v1]
@@ -5935,6 +5935,13 @@ export async function deschideInchidereLuna(nav, tenantId, an, luna) {
   nav.deschide("Închidere lună", (c2) => ecranInchidereLuna(c2, nav, t, { an, luna }));
 }
 
+// [15.1-E4] Control fiscal al firmei (cu „Audit de preluare”) deschis din alt ecran: butonul „Audit de preluare” din Import date
+export async function deschideControlFirma(nav, tenantId) {
+  const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
+  if (!t) return;
+  nav.deschide("Control fiscal", (c2) => ecranControlFirma(c2, nav, t));
+}
+
 // [15.1-E3, 728.1] Salariați deschis din alt ecran (butonul „Contabilizează statul de plată” al constatării din Control fiscal)
 export async function deschideSalariati(nav, tenantId) {
   const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
@@ -6056,7 +6063,12 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
       if (ctl) {
         // [15.1, 687.1-a] semnalele ferestrei: un rând pe semnal, „ce e de făcut” pliat, fără derulare proprie; pe luna blocată nu se spune „nimic nu oprește”
         zc.innerHTML = '<div id="il-sem-blocaje"></div><div id="il-sem-semnale"></div>';
-        if (ctl.blocaje.length) semnaleDS(zc.querySelector("#il-sem-blocaje"), ctl.blocaje.map((x) => x.mesaj), { titlu: "Ce oprește închiderea", ton: "eroare", limita: window.innerHeight < 800 ? 3 : 6 });
+        const deschideReevaluare = () => nav.deschide("Reevaluare valută",
+          (c2) => ecranReevaluareValuta(c2, nav, t, an, luna, { jurnal: (o) => nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, t, o), { lat: "tabel" }) }),
+          { lat: "tabel" });
+        // [15.1-E4, 736] semnalul care spune „deschide „X”” are butonul S care deschide X (ACTIUNI_BLOCAJ_ECRAN: codul blocajului → butonul; același ecran ca butonul fix de mai jos)
+        const ACTIUNI_BLOCAJ_ECRAN = { REEVALUARE_VALUTA: { eticheta: "Reevaluare valută", faraActiune: "navigare la Reevaluare valută; reevaluarea de acolo poartă acțiunea", laClic: () => deschideReevaluare() } };
+        if (ctl.blocaje.length) semnaleDS(zc.querySelector("#il-sem-blocaje"), ctl.blocaje.map((x) => ({ mesaj: x.mesaj, actiune: ACTIUNI_BLOCAJ_ECRAN[x.cod] })), { titlu: "Ce oprește închiderea", ton: "eroare", limita: window.innerHeight < 800 ? 3 : 6 });
         else if (!blocata) zc.querySelector("#il-sem-blocaje").innerHTML = `<div class="ds-semnal ds-semnal-ok"><span class="ds-semnal-text">Nimic nu oprește închiderea lunii.</span></div>`;
         if (ctl.semnale.length) semnaleDS(zc.querySelector("#il-sem-semnale"), ctl.semnale.map((x) => x.mesaj), { titlu: "Semnale", ton: "avertisment", limita: window.innerHeight < 800 ? 3 : 6 });
         // [deficiența 281, comanda Costin 16.10.2026] amortizarea restantă dintr-o singură acțiune (o notă pe lună); iar când NUMAI ea
@@ -6111,9 +6123,7 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
           const opreste = ctl.blocaje.some((b) => b.cod === "REEVALUARE_VALUTA");
           const cls = opreste ? "buton-primar" : "buton-secundar";   // clasa DS cap.1 aleasă înainte (regula BUTOANE citește clasa din atribut)
           zc.insertAdjacentHTML("beforeend", `<p class="ds-actiuni-rand"><button class="${cls}" id="il-reevaluare" data-actiune="GET /tenants/{tenant_id}/reevaluare-valuta">Reevaluare valută</button></p>`);
-          zc.querySelector("#il-reevaluare").addEventListener("click", () => nav.deschide("Reevaluare valută",
-            (c2) => ecranReevaluareValuta(c2, nav, t, an, luna, { jurnal: (o) => nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, t, o), { lat: "tabel" }) }),
-            { lat: "tabel" }));
+          zc.querySelector("#il-reevaluare").addEventListener("click", deschideReevaluare);
         }
         const confirmabile = ctl.blocaje.filter((b) => b.confirmabil);
         if (!blocata && confirmabile.length && confirmabile.length === ctl.blocaje.length) {

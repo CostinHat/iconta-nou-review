@@ -13,6 +13,14 @@
 # `<git-common-dir>/poarta_verdicte.log` (îl cere scripts/githooks/reference-transaction la mutarea lui `main`) și durata la final.
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
+# R11 (15.1-E4): `poarta_lot.sh --lista [fisier...]` — modul „listează”, înainte de primul commit al lotului: scrie ce teste de browser și ce fluxuri e2e
+# va rula poarta pentru fișierele pe care lotul le va atinge (fără argumente: cele atinse față de `main`), cel mult 20; stil.css / navigator.js / api.js /
+# cadru.js = „toate ecranele” (plafonul întreg). Ieșire 1 = zonă neacoperită: harta (scripts/poarta_harta.txt) se extinde întâi, apoi începe lotul.
+if [ "$1" = "--lista" ]; then
+    shift
+    PYL=./venv/bin/python; [ -x "$PYL" ] || PYL=python3
+    exec "$PYL" scripts/poarta_selectie.py --lista "$@"
+fi
 [ -n "$1" ] && { echo "[poarta lot] REFUZ: poarta implicita nu are argumente (primit: $1)."; exit 1; }
 COMUN=$(git rev-parse --path-format=absolute --git-common-dir) || exit 1
 JV="$COMUN/poarta_verdicte.log"

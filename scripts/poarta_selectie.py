@@ -127,5 +127,59 @@ def selecteaza():
             "flux_harta": sorted(os.path.basename(f) for f in flux_harta), "flux_inlocuit": inlocuit}
 
 
+#: fișierele a căror atingere înseamnă „toate ecranele” (R11): plafonul întreg de teste de browser și fluxuri
+TOATE_ECRANELE = ("static/stil.css", "static/js/navigator.js", "static/js/api.js", "static/js/cadru.js")
+#: plafonul testelor de browser din core/ și al fluxurilor e2e luate împreună (R11)
+PLAFON_LISTA = 20
+
+
+def lista(fisiere):
+    """[R11, 15.1-E4] Ce va rula poarta pentru fișierele pe care lotul le va atinge, înainte de primul commit: testele de browser din core/ ȘI fluxurile
+    e2e (harta + FLUXURI din scenarii_<comanda>.txt), cel mult PLAFON_LISTA fișiere. O atingere a lui stil.css / navigator.js / api.js / cadru.js
+    înseamnă „toate ecranele”: plafonul întreg. Un fișier static/ fără nicio intrare în hartă e zonă neacoperită: `neacoperite` nu e gol,
+    iar harta se extinde întâi (scripts/poarta_harta.txt), abia apoi începe lotul."""
+    fisiere = [f.replace(os.sep, "/") for f in fisiere]
+    harta = _harta()
+    toate = any(f in TOATE_ECRANELE for f in fisiere)
+    din_harta, neacoperite = [], []
+    for f in fisiere:
+        gasit = [e for cheie, es in harta if f == cheie or (cheie.endswith("/") and f.startswith(cheie)) for e in es]
+        for e in gasit:
+            if e not in din_harta:
+                din_harta.append(e)
+        if f.startswith("static/") and not gasit:
+            neacoperite.append(f)
+    comanda = os.environ.get("POARTA_COMANDA", "").strip()
+    cale = os.path.join(os.environ.get("GHID_INCOMING", os.path.expanduser("~/ghid_incoming")), "scenarii_%s.txt" % comanda)
+    numite, in_fluxuri = [], False
+    if comanda and os.path.isfile(cale):
+        for ln in open(cale, encoding="utf-8"):
+            ln = ln.strip()
+            if ln.lstrip("# ").upper() == "FLUXURI":
+                in_fluxuri = True
+            elif ln and not ln.startswith("#") and in_fluxuri:
+                numite.append(os.path.basename(ln))
+    browser = []
+    if any(f.startswith("static/") for f in fisiere):
+        for f in sorted(glob.glob(os.path.join(RAD, "core", "test_*.py"))):
+            try:
+                if re.search(r"playwright|chromium", open(f, encoding="utf-8").read()):
+                    browser.append(_rel(f))
+            except OSError:
+                pass
+    # ordinea: fluxurile numite, apoi 6 teste de browser (ele păzesc cadrul, nu un singur flux), apoi harta, apoi restul testelor de browser
+    candidate = ["frontend_test/e2e/" + e for e in numite] + browser[:6] + ["frontend_test/e2e/" + e for e in din_harta] + browser[6:]
+    unice = []
+    for c in candidate:
+        if c not in unice and os.path.isfile(os.path.join(RAD, c)) and not poarta_sare.sare_fisier(os.path.join(RAD, c)):
+            unice.append(c)
+    return {"fisiere": fisiere, "toate_ecranele": toate, "plafon": PLAFON_LISTA, "candidate": len(unice), "lista": unice[:PLAFON_LISTA],
+            "taiate": unice[PLAFON_LISTA:], "neacoperite": neacoperite}
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--lista":
+        rez = lista(sys.argv[2:] or list(P.atinse_din_git()))
+        print(json.dumps(rez, ensure_ascii=False, indent=1))
+        sys.exit(1 if rez["neacoperite"] else 0)
     print(json.dumps(selecteaza(), ensure_ascii=False, indent=1))

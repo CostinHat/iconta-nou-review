@@ -43,13 +43,15 @@ RANDURI = {
     "b": "fereastra de lucru pe tot ecranul la 1920 × 1080 și 1366 × 768, un singur loc de derulare (tabelul lung), bara de jos fixă 72 px "
          "cu un singur buton principal L și „Renunță” M; butonul principal inactiv cu motiv cât timp acțiunea nu e posibilă",
     "c": "orice listă de înregistrări e tabelul DS: cap 40 px, rânduri 44 px, zebra, starea doar în coloana „Stare”, cel mult 2 acțiuni XS pe "
-         "rând, subsol 44 px",
+         "rând, subsol 44 px (rândul de totaluri fix, bara-fixa, nu e o listă de înregistrări)",
     "d": "orice avertisment sau explicație secundară e card-rezumat de 44 px cu detaliile pliate; orice semnal e un rând de 36 px cu „ce e de "
-         "făcut” pliat; niciun paragraf explicativ mai lung de un rând nepliat",
+         "făcut” pliat; niciun paragraf explicativ mai lung de un rând nepliat; un card-rezumat gri (neutru, informativ) e valid; cardurile de eroare "
+         "rămân la vedere și nu se numără, din celelalte cel mult 2 la vedere (restul sub „Semnale (n)”); un semnal sau card al cărui text spune "
+         "„deschide X” sau „mergi la X” are butonul care deschide X",
     "e": "nicio acțiune în casete de text sau în mijlocul conținutului; acțiune = buton, navigare = link",
-    "f": "titlurile de secțiune fără majuscule; titlurile de grup 14 px majuscule gri; textele din catalog, cu diacritice, pluralul după număr, "
+    "f": "titlurile de secțiune fără majuscule (numele proprii — firme, cabinete — nu sunt titluri); titlurile de grup 14 px majuscule gri; textele din catalog, cu diacritice, pluralul după număr, "
          "același mesaj o singură dată pe ecran",
-    "g": "date, sume, perioade, firma prin funcția unică",
+    "g": "date, sume, perioade, firma prin funcția unică (un cod de cont analitic, ca 4428.01, nu e o sumă)",
     "h": "cota TVA ca grup cu cotele la data documentului plus categoriile fără TVA; nicio listă derulantă sub 7 variante; nimic „— alege —”",
 }
 

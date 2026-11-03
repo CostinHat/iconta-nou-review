@@ -3578,3 +3578,38 @@ textarea.em-adresa { overflow: hidden; }
 /* [15.1-E3] rândul de declarație din tabelul DS păstrează clasele vechi (`cf-rand-decl`, `mig-sold-cont`, `cf-perioada`, `cf-termen`) ca marcaje, nu ca aspect */
 .ds-tabel tr.cf-rand-decl { display: table-row; padding: 0; gap: 0; border-bottom: 0; }
 .ds-tabel td.cf-perioada, .ds-tabel td.cf-termen { font-size: 15px; white-space: nowrap; }
+
+/* [15.1-E4] cardul-rezumat aplicat notelor existente (`carduriDSAplica`, ds_piese.js): aceeași piesă, peste clasele vechi ale notelor */
+.fereastra .ds-rezumat { max-width: none; width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; margin: 0 0 8px;
+  border: 1px solid var(--linie); border-left-width: 4px; border-radius: 12px; background: var(--alb); color: var(--ardezie); font-size: 14px; line-height: 20px; white-space: normal; }
+.fereastra .ds-rezumat-info { border-left-color: var(--gri); }
+.fereastra .ds-rezumat-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fereastra .ds-rezumat-text > * { display: inline; margin: 0; }
+.fereastra .ds-rezumat-eroare { height: auto; padding: 8px 16px; color: #7a2020; background: #fdf1f0; align-items: flex-start; }
+.fereastra .ds-rezumat-eroare .ds-rezumat-text { overflow: visible; text-overflow: clip; white-space: pre-line; overflow-wrap: anywhere; }
+.fereastra .ds-rezumat-eroare .ds-rezumat-text > * { display: block; }
+.fereastra .ds-rezumat .buton-s { height: 36px; }
+.fereastra .ds-rezumat-detalii-card { margin: -4px 0 8px; }
+.fereastra .ds-rezumat-sub { display: none; }
+.fereastra .ds-semnale-sub { align-self: flex-start; margin: 0 0 8px; }
+.ds-rezumat-text .ci-mesaj, .ds-rezumat-text .ca-mesaj { margin: 0; display: inline; font-size: inherit; color: inherit; line-height: inherit; }
+.ds-tabel-vechi { margin: 0 0 12px; }
+.ds-tabel-vechi > table { margin: 0; }
+/* [15.1-E4] lista de înregistrări în tabelul DS: rândul vechi stă pe o linie în celulă; cele două linii (nume, detalii) se așază alăturat, tăiate cu „…” */
+.ds-tabel-lista-tabel th { text-align: left; }
+.ds-tabel-lista-tabel tbody td { padding: 0; }
+.ds-tabel-lista-tabel tbody td > * { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; min-height: 44px; box-sizing: border-box; margin: 0; padding: 0 12px; border: 0; border-radius: 0; background: transparent; box-shadow: none; text-align: left; overflow: hidden; }
+.ds-tabel-lista-tabel tbody td > * > * { min-width: 0; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ds-tabel-lista-tabel tbody td > * > button, .ds-tabel-lista-tabel tbody td > * > a { flex: 0 0 auto; }
+.ds-tabel-cauta-rand { margin: 0 0 8px; }
+.ds-tabel-cauta { height: 44px; width: 100%; max-width: 480px; }
+.ds-tabel-lista { margin: 0 0 8px; }
+.ds-tabel-lista-tabel tbody td > * > *:not(button):not(a) { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+.ds-tabel-lista-tabel tbody td > * *:not(button):not(a):not(input):not(select) { font-size: 15px; line-height: 20px; }
+.ds-tabel-lista-tabel tbody td > * > * > * { min-width: 0; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; }
+.ds-tabel-lista-tabel tbody td button { height: 28px; font-size: 13px; padding: 0 10px; }
+.fereastra .ds-rezumat-text br { display: none; }
+.fereastra .ds-rezumat-text small { font-size: inherit; }
+.ds-tabel thead th { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* [15.1-E4] căutarea de deasupra unui tabel / listă: 44 px (DS: tabelul) */
+.fereastra .fereastra-corp input[type="search"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input.ds-tabel-cauta:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input[aria-label^="Caut"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input[placeholder^="Caut"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]) { height: 44px; box-sizing: border-box; }
