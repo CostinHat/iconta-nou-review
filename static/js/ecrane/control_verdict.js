@@ -7,7 +7,7 @@
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
 import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=83fcf3ce06";
-import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=382a0f239f";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
+import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=6c53e28e8f";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=c781636333";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */

@@ -31,7 +31,7 @@
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=83fcf3ce06";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
 import { randA as randConstatare } from "./control_verdict.js?v=6cc9e5c30e";
-import { legaSemnale } from "../ds_piese.js?v=382a0f239f";   // [15.1-E3] pliarea semnalelor constatărilor
+import { legaSemnale } from "../ds_piese.js?v=6c53e28e8f";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { deschideFirma, ecranJurnal } from "./firme.js?v=835874525f";
 import { permis } from "../drepturi.js?v=34d0fb0afd";

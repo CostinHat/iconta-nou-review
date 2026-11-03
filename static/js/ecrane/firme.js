@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat } from "../ds_piese.js?v=382a0f239f";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { semnaleDS, cardRezumat } from "../ds_piese.js?v=6c53e28e8f";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=83fcf3ce06";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=83fcf3ce06";  /* [8c] după generarea unei note — DS cap.6 v2.98 */

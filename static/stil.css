@@ -3613,3 +3613,8 @@ textarea.em-adresa { overflow: hidden; }
 .ds-tabel thead th { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* [15.1-E4] căutarea de deasupra unui tabel / listă: 44 px (DS: tabelul) */
 .fereastra .fereastra-corp input[type="search"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input.ds-tabel-cauta:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input[aria-label^="Caut"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input[placeholder^="Caut"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]) { height: 44px; box-sizing: border-box; }
+.ds-rezumat-plie-auto::before { content: "▾ detalii"; }
+.ds-rezumat-plie-auto[aria-expanded="true"]::before { content: "▴ detalii"; }
+.ds-tabel-lat .ds-tabel tbody td { height: auto; min-height: 44px; white-space: normal; overflow: visible; text-overflow: clip; }
+.ds-tabel-lat { overflow-x: visible; }
+.ds-tabel-lat .ds-tabel { table-layout: auto; }
