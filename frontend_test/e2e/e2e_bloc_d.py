@@ -986,7 +986,7 @@ def test_def_126_inchiderea_lunii_are_card_in_zilnic(patron, firma_mf):
     patron.firma(firma_mf["nume"])
     grup = pg.evaluate("() => { const b = document.querySelector('#fa-inchidere'); const s = b && b.closest('section.firme-grup');"
                        " return s ? s.querySelector('h3').innerText.trim() : null; }")
-    assert grup == "Zilnic", grup
+    assert grup.lower() == "zilnic", grup   # [15.1-E5, 733.1] titlul de grup e cu majuscule (CSS)
     patron.captura("card")
     _deschide(patron, "#fa-inchidere", "Evidența facturilor")
     text = patron.fereastra()

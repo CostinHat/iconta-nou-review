@@ -17,9 +17,9 @@
 // însemna că n-a fost ce compara, sau că verificarea n-a rulat deloc. Ecranul le ține despărțite,
 // fiindcă exact aici se naște cifra validă și falsă.
 
-import { api, esc, dupaNumar, dataRo } from "../api.js?v=257b15589c";
+import { api, esc, dupaNumar, dataRo } from "../api.js?v=0b48920b43";
 import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";
-import { semnalHtml, legaSemnale } from "../ds_piese.js?v=aa7dc6dda7";   // [15.1-E3] semnale pe rând
+import { semnalHtml, legaSemnale } from "../ds_piese.js?v=9134560fa9";   // [15.1-E3] semnale pe rând
 
 function perioada(r) {
   return dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric");   // DS cap.4: „10/2026”, din formatorul unic

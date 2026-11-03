@@ -415,8 +415,7 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
     intro = pg.inner_text(".mig-intro")
     assert intro == "Pasul 1 din 3 — alege tipul declarației și perioada.", intro
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
-    assert grupe[0].startswith("Datorate de firmă (") and not any(g == "Alte declarații" for g in grupe), grupe   # [301] „Alte declarații” pliată, la cerere
-    pg.click("#dec-alte")
+    assert grupe[0].startswith("Datorate de firmă ("), grupe   # [15.1-E3, 722] lista permanentă: „Alte declarații” e al doilea grup al ei, nu o secțiune pliată
     grupe = pg.eval_on_selector_all("#dec-tip optgroup", "(gs) => gs.map((g) => g.label)")
     assert grupe[0].startswith("Datorate de firmă (") and grupe[-1] == "Alte declarații", grupe
     datorate = pg.eval_on_selector_all("#dec-tip optgroup:first-of-type option", "(os) => os.map((o) => o.textContent)")

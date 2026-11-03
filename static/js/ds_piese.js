@@ -2,7 +2,7 @@
 // grupurile formularului (Document, Furnizor / Client, Sume, Descriere), lățimea câmpului după rol (XS 9, S 16, M 38, L jumătate, XL
 // toată lățimea) și cardul-rezumat de un rând cu detaliile pliate. Dimensiunile sunt în stil.css (`.ds-*`); aici stă numai alegerea
 // clasei, ca ecranele să nu mai aleagă singure lățimi și grupuri.
-import { esc, focusFaraSalt, cate } from "./api.js?v=257b15589c";
+import { esc, focusFaraSalt, cate } from "./api.js?v=0b48920b43";
 
 export const GRUPURI_FORMULAR = ["Document", "Furnizor / Client", "Sume", "Descriere"];
 
@@ -541,14 +541,14 @@ export function carduriDSAplica(corp) {
       el.__detalii = det;
     }
     if (el.__detalii && el.__detalii.textContent !== intreg) el.__detalii.textContent = intreg;
-    if (ton !== "eroare") vazute.push({ el, ton });
+    if (ton !== "eroare") vazute.push({ el, ton, expl: el.matches(".msg-info, .msg-ok, .msg-avert, .msg-avertisment, .msg-eroare") ? 0 : 1 });
   }
   // cel mult 2 la vedere (cardurile de eroare nu se numără); restul sub „Semnale (n)”
-  const ordonate = vazute.map((v, i) => ({ ...v, i })).sort((a, b) => (_RANG[a.ton] - _RANG[b.ton]) || (a.i - b.i));
+  const ordonate = vazute.map((v, i) => ({ ...v, i })).sort((a, b) => (a.expl - b.expl) || (_RANG[a.ton] - _RANG[b.ton]) || (a.i - b.i));   // [15.1-E5] starea / rezultatul (mesajul ecranului) înaintea explicațiilor: „Neconectat” nu intră sub „Semnale (n)”
   // un card cu acțiune (buton, legătură, câmp) nu se ascunde sub „Semnale (n)”: acțiunea (ex. „Blochează luna”, „Deschide «Emite factură»”) trebuie să rămână la îndemână
   const cuActiune = (el) => !!el.querySelector("button:not(.ds-rezumat-plie), a[href], input, select, textarea");
   const de_ascuns = new Set(ordonate.slice(2).map((v) => v.el).filter((el) => !cuActiune(el)));
-  let intrerupator = corp.querySelector(":scope > .ds-semnale-sub");
+  let intrerupator = corp.querySelector(".ds-semnale-sub");   // [15.1-E5] oriunde în fereastră (comutatorul stă înaintea primului card ascuns, nu neapărat sub corp): altfel se făcea unul nou la fiecare sincronizare
   for (const { el } of vazute) {
     const ascuns = de_ascuns.has(el);
     el.classList.toggle("ds-rezumat-sub", ascuns && !(intrerupator && intrerupator.getAttribute("aria-expanded") === "true"));

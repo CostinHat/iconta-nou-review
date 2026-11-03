@@ -28,10 +28,10 @@
 // AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
-import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=257b15589c";
+import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=0b48920b43";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
 import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";
-import { legaSemnale } from "../ds_piese.js?v=aa7dc6dda7";   // [15.1-E3] pliarea semnalelor constatărilor
+import { legaSemnale } from "../ds_piese.js?v=9134560fa9";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { deschideFirma, ecranJurnal } from "./firme.js?v=9096d880bc";
 import { permis } from "../drepturi.js?v=34d0fb0afd";

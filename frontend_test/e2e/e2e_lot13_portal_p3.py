@@ -235,7 +235,7 @@ def test_def_661_conectat_nu_inseamna_ca_certificatul_acopera_cui_ul(patron, fir
     def linie():
         patron.firma(firma_srl["nume"])
         pg.wait_for_selector("#firma-spv .spv-stare-text", timeout=20000)
-        return " ".join(pg.inner_text("#firma-spv").split())
+        return " ".join(pg.eval_on_selector("#firma-spv", "e => e.textContent + ' ' + [...e.querySelectorAll('[title]')].map(x => x.title).join(' ')").split())   # [15.1-E5] cardul arată 90 de caractere, textul întreg e sub „detalii”
     try:
         t = linie()
         patron.captura("neverificat")

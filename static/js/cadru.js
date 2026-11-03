@@ -15,8 +15,8 @@
 // Starea o dă piesa: câmpurile obligatorii ale ecranului sunt etichetele cu „*”; cât un câmp vizibil de acest fel e gol, butonul principal e
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
-import { alegereButoane, alegereComutator, alegereText, esteAlege } from "./api.js?v=257b15589c";
-import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel } from "./ds_piese.js?v=aa7dc6dda7";
+import { alegereButoane, alegereComutator, alegereText, esteAlege } from "./api.js?v=0b48920b43";
+import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel } from "./ds_piese.js?v=9134560fa9";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);
@@ -130,9 +130,19 @@ function _dinCatalog(corp, bara) {
   const butoane = [...corp.querySelectorAll("button")].filter(eligibil);
   for (const rx of CATALOG_ACTIUNE_PRINCIPALA) {
     const g = butoane.find((b) => rx.test(_normalizeaza(b.textContent)));
-    if (g) return g;
+    if (g) { g.__catalog = true; return g; }
   }
   return null;
+}
+
+function _proxy(sursa) {
+  const p = document.createElement("button");
+  p.type = "button";
+  p.dataset.faraActiune = "apasă butonul din fereastră care face această acțiune";
+  p.textContent = _normalizeaza(sursa.textContent);
+  p.__sursa = sursa;
+  p.addEventListener("click", () => sursa.click());
+  return p;
 }
 
 function _alege(corp, bara, areDeja, titlu) {
@@ -199,12 +209,20 @@ export function baraDeJos(fer, corp, { renunta }) {
     const titlu = _normalizeaza((fer.querySelector(".fir-acum") || {}).textContent);
     const faraPrincipal = FARA_ACTIUNE_PRINCIPALA.test(titlu) || _esteMeniu(corp, bara);   // ecran de stare sau meniu de butoane: bara rămâne, fără principal și fără „Renunță”
     if (principal && !principal.isConnected) principal = null;
-    const candidat = faraPrincipal ? null : _alege(corp, bara, principal && principal.__slab ? undefined : !!principal, titlu);
+    // acțiunea de bară care are un original în ecran (găsit de catalog): dacă originalul a dispărut sau nu se mai vede, și butonul din bară pleacă odată cu el
+    if (principal && principal.__sursa && (!principal.__sursa.isConnected || !_vizibil(principal.__sursa))) { principal.remove(); principal = null; }
+    let candidat = faraPrincipal ? null : _alege(corp, bara, principal && principal.__slab ? undefined : !!principal, titlu);
+    if (candidat && candidat.__catalog) {
+      // [15.1-E5] acțiune găsită de catalog: în bară stă un buton-proxy (apasă originalul), iar originalul rămâne în ecran — ecranele își caută butoanele în containerul lor
+      // (`form.querySelector(...)`) și pică dacă li se mută; originalul se vede ca buton secundar (`fj-are-principal`)
+      candidat = principal && principal.__sursa === candidat ? principal : _proxy(candidat);
+    }
+    if (principal && principal.__sursa) { principal.textContent = _normalizeaza(principal.__sursa.textContent); principal.disabled = !!principal.__sursa.disabled; principal.title = principal.__sursa.title || ""; }
     if (candidat && candidat !== principal) {
       if (principal) principal.remove();   // ecranul și-a redesenat acțiunea: cea veche rămâne fără rost
       principal = candidat;
-      principal.__formular = _formularul(candidat);   // înainte de mutare
-      principal.__origine = _urma(candidat);   // locul lui din ecran; dacă ecranul îl redesenează, urma dispare și acțiunea e veche
+      principal.__formular = _formularul(principal.__sursa || candidat);   // înainte de mutare
+      if (!principal.__sursa) principal.__origine = _urma(candidat);   // locul lui din ecran; dacă ecranul îl redesenează, urma dispare și acțiunea e veche
       principal.classList.add("fj-principal", "buton-primar");   // butonul principal L: clasa piesei, oricum a fost desenat în ecran
       principal.classList.remove("buton-secundar", "buton-s", "buton-xs", "buton-mic");
       principal.setAttribute("data-actiune-principala", "");   // [15.1-E5] pe orice fereastră: exact un buton cu atributul

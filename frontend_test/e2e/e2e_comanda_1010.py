@@ -213,7 +213,7 @@ def _valideaza_bilant(ecran, an, alege=True):
       [...tr.querySelectorAll('td')].map(td => td.innerText.trim()))""")
     # „rândul 08” / „rândul 06a (301)” (codul formularului, 234): numărul rândului e cel din paranteză, altfel codul
     nr = lambda r: int(r.split("(")[-1].rstrip(")")) if "(" in r else int(r.split()[-1])   # noqa: E731
-    return pg.inner_text(".fereastra:last-of-type #bl-rez"), {(f, nr(r)): (p, c) for f, r, _den, p, c in randuri}
+    return pg.eval_on_selector(".fereastra:last-of-type #bl-rez", "e => e.textContent"), {(f, nr(r)): (p, c) for f, r, _den, p, c in randuri}
 
 
 @pytest.fixture()

@@ -1775,7 +1775,7 @@ function _randeazaAjutor(a) {
     if (!l.trim()) return "";
     return `<p class="aj-p">${esc(l)}</p>`;
   }).join("");
-  return `<div class="aj-continut">${corp || '<p class="aj-p">Fără text de ajutor.</p>'}</div>`;
+  return `<div class="aj-continut" data-fara-piesa>${corp || '<p class="aj-p">Fără text de ajutor.</p>'}</div>`;
 }
 
 // [ajutor_prelogin_v1] Pe ecranele pre-autentificare (landing/login/inregistrare) shell-ul
