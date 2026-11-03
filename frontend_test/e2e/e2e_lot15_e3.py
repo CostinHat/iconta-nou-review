@@ -36,8 +36,14 @@ def test_def_722_declaratii_lista_cu_cautare(patron, firma_e3):
     pg.fill(".ds-lista-cauta", "D300")                                          # căutarea filtrează lista, fără să o închidă
     pg.wait_for_timeout(300)
     assert pg.locator(".ds-lista-rand").count() >= 1 and pg.locator(".ds-lista-cauta").is_visible()
-    pg.locator(".ds-lista-rand").first.click()                                  # alegerea unui rând = tipul ales
-    pg.wait_for_function("() => document.querySelector('#dec-tip') && document.querySelector('#dec-tip').value !== ''", timeout=10000)
+    for incercare in range(3):                                                  # alegerea unui rând = tipul ales (lista se redesenează după căutare: un clic pierdut în redesenare se repetă)
+        pg.locator(".ds-lista-rand:not(.ds-lista-inactiv)").first.click()
+        try:
+            pg.wait_for_function("() => document.querySelector('#dec-tip') && document.querySelector('#dec-tip').value !== ''", timeout=4000 if incercare < 2 else 10000)
+            break
+        except Exception:  # noqa: BLE001 — Playwright TimeoutError
+            if incercare == 2:
+                raise
     patron.captura("l15_722_declaratii")
 
 
