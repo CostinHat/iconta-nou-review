@@ -3618,3 +3618,4 @@ textarea.em-adresa { overflow: hidden; }
 .ds-tabel-lat .ds-tabel tbody td { height: auto; min-height: 44px; white-space: normal; overflow: visible; text-overflow: clip; }
 .ds-tabel-lat { overflow-x: visible; }
 .ds-tabel-lat .ds-tabel { table-layout: auto; }
+.rezumat-fix .ds-rezumat { margin-bottom: 4px; }

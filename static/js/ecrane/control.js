@@ -2,7 +2,7 @@
 // Nivel 1: lista firmelor cu pastila colorata (verde/galben/rosu).
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
-import { tabelDS } from "../ds_piese.js?v=6c53e28e8f";   // [15.1-D] lista firmelor pe tabelul DS
+import { tabelDS } from "../ds_piese.js?v=f1b63f5e15";   // [15.1-D] lista firmelor pe tabelul DS
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
 import { api, esc, cate } from "../api.js?v=83fcf3ce06";  /* esc_nc27 */
 import { semaforPatruLumini, publicaSumarControl } from "./semafor.js?v=60f4db5322";  // [125 + 224] aceleași patru lumini ca ale cardului

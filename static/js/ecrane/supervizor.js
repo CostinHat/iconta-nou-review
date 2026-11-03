@@ -19,7 +19,7 @@
 
 import { api, esc, dupaNumar, dataRo } from "../api.js?v=83fcf3ce06";
 import { randA as randConstatare } from "./control_verdict.js?v=6cc9e5c30e";
-import { semnalHtml, legaSemnale } from "../ds_piese.js?v=6c53e28e8f";   // [15.1-E3] semnale pe rând
+import { semnalHtml, legaSemnale } from "../ds_piese.js?v=f1b63f5e15";   // [15.1-E3] semnale pe rând
 
 function perioada(r) {
   return dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric");   // DS cap.4: „10/2026”, din formatorul unic

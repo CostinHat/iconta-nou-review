@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { cardRezumat } from "../ds_piese.js?v=6c53e28e8f";   // [15.1, F-A.1] caseta SPV de după emitere
+import { cardRezumat } from "../ds_piese.js?v=f1b63f5e15";   // [15.1, F-A.1] caseta SPV de după emitere
 import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=83fcf3ce06";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
 import { textStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [lotul 6, 275c] */

@@ -370,6 +370,9 @@ export function tabeleDSAplica(corp) {
     if (ingust || t.closest("template, [data-fara-piesa], .fereastra-antet, .ds-tabel-cutie:not(.ds-tabel-lista)") || !t.tHead || !_vizibilDS(t)) continue;
     // tabelul cu mai multe `tbody` (un tbody pe notă, rând detaliu care se desface: Registru jurnal, De validat) nu e o listă de rânduri de 44 px
     if (t.tBodies.length > 1 || t.querySelector("tbody.tn-nota, tr.tn-detaliu, tr[hidden]")) continue;
+    // numai tabelul de citit: cel cu rând de totaluri (`tfoot`: lipit jos de ecran), cu câmpuri, cu butoane pe rând (ștergere, deschidere, bife) sau deja
+    // într-o zonă de derulare rămâne cum e — conversia lui nu poate dovedi că totalul, bifa sau butonul rămân la vedere și la îndemână
+    if (t.tFoot || t.querySelector("input, select, textarea") || t.tBodies[0].querySelector("button, a[href]") || t.closest(".zona-derulare")) continue;
     t.classList.add("ds-tabel");
     const cap = [...t.tHead.rows[0].cells];
     cap.forEach((th, i) => {
@@ -563,6 +566,8 @@ export function listeDSAplica(corp) {
   }
   for (const lista of candidate) {
     if (lista.closest("template, [data-fara-piesa], .ds-tabel-cutie, table, .fereastra-antet, .ds-lista, .ds-semnale") || lista.matches(".bara-fixa")) continue;
+    // rândurile cu câmpuri (bife, câmpuri de editat) sau cu mai mult de două butoane nu intră în tabel: rămân cum sunt
+    if (lista.querySelector("input, select, textarea") || [...lista.children].some((r) => r.querySelectorAll("button").length > 2)) continue;
     if (lista.querySelector(":scope > .ds-tabel-cutie:not(.ds-tabel-lista), :scope > table")) continue;   // ecranul și-a desenat deja tabelul DS în listă
     let cutie = lista.querySelector(":scope > .ds-tabel-cutie.ds-tabel-lista");
     const straine = [...lista.children].filter((k) => k !== cutie && !k.matches(".ds-tabel-cauta-rand, .ds-tabel-cutie, table, .ecran-nota, .ds-rezumat, .ds-rezumat-detalii, .ds-semnale-sub, .ds-grup-titlu, h2, h3, h4, .ds-sectiune-titlu, script, style, template") && !k.hidden && k.tagName !== "P");
