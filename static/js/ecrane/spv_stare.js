@@ -53,7 +53,7 @@ export async function randeazaStareSpv(zona, nav, tenantId) {
   // [15.1, 687.1-SPV] starea SPV e un card-rezumat de un rând („SPV: fără drept pentru această firmă” + „Deschide Conectare SPV”); explicația și ce e de făcut,
   // pliate sub „▾ detalii”
   const [scurt, ...rest] = t.text.split(/(?<=\.)\s+/);
-  const detalii = rest.length ? rest.join(" ") : (t.text.length > 90 ? t.text : "");
+  const detalii = rest.length && scurt.length <= 90 ? rest.join(" ") : (t.text.length > 90 ? t.text : "");   // [15.1-E5] prima propoziție tăiată la 90 de caractere (CUI-ul de la capăt) se citește întreagă sub „detalii”
   zona.innerHTML = "";
   const card = cardRezumat({ text: scurt.replace(/\.$/, ""), ton: t.tip === "ok" ? "ok" : "avertisment", detalii });
   card.classList.add("spv-stare-text");

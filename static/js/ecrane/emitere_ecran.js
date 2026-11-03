@@ -10,7 +10,7 @@
 import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=9134560fa9";   // [15.1, F-A.1] caseta SPV de după emitere
 import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=0b48920b43";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";
-import { textStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [lotul 6, 275c] */
+import { textStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { optiuniTara as _optiuniTara, taraDinCui, nepotrivireTara } from "./tari_partener.js?v=47a26608a6";   // [lotul 12, C160] sursa unică
 import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el

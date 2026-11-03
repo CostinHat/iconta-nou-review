@@ -43,7 +43,7 @@ _STRICAT = {CNP_A: CNP_A[:-1] + str((int(CNP_A[-1]) + 1) % 10), CNP_B: CNP_B[:-1
 
 _IN_VEDERE = """(sel) => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(), e = c.querySelector(sel);
   const r = e.getBoundingClientRect(), k = c.getBoundingClientRect(), b = c.querySelector('.bara-fixa');
-  const jos = b ? Math.min(k.bottom, b.getBoundingClientRect().top) : k.bottom; return r.top >= k.top && r.bottom <= jos; }"""
+  const bj = c.querySelector('.fereastra-jos'), jos = Math.min(k.bottom, b && b.getBoundingClientRect().height ? b.getBoundingClientRect().top : k.bottom, bj ? bj.getBoundingClientRect().top : k.bottom); return r.top >= k.top && r.bottom <= jos; }   // [15.1-E5] și bara de jos a ferestrei acoperă conținutul"""
 _SUS = "() => [...document.querySelectorAll('.fereastra-corp')].pop().scrollTop"
 
 

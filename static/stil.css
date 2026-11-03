@@ -3557,7 +3557,7 @@ textarea.em-adresa { overflow: hidden; }
 
 /* [15.1-E3] explicația de sub câmp: un rând (textul întreg în title, pus de cadru.js); la focus pe câmp se arată întreagă */
 .fereastra-corp .camp-ajutor { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-.fereastra-corp .camp:focus-within .camp-ajutor { white-space: normal; overflow: visible; }
+/* [15.1-E5] explicația de sub câmp rămâne pe un rând (textul întreg în `title`): nu se desface la focus, fiindcă la apăsarea unui buton de sub câmp (care ia focusul) rândurile s-ar muta între apăsare și ridicare și clicul s-ar pierde */
 
 /* [15.1-E3, 12] Setări cont: butoanele de meniu pe grila ferestrei (două coloane de la 900 px), nu stivuite — fereastra încape la 1366 × 768 fără derulare */
 .set-meniu { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 8px 12px; }
@@ -3639,5 +3639,4 @@ textarea.em-adresa { overflow: hidden; }
 @media print { body.tipareste-tabel .tipareste-tinta .fereastra-jos { display: none !important; } }
 /* 15.1-E5: explicatia sta lipita sub grup */
 .alegere-butoane ~ .camp-ajutor { margin-top: -4px; }
-.fj-sursa { position: absolute !important; width: 1px !important; height: 1px !important; min-width: 0 !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; border: 0 !important; overflow: hidden !important; opacity: .01; }
-
+.fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *):disabled { opacity: .5; }

@@ -135,25 +135,23 @@ function _dinCatalog(corp, bara) {
   return null;
 }
 
-const _scoate = (p) => { if (p.__sursa) p.__sursa.classList.remove("fj-sursa"); p.remove(); };
-
 function _proxy(sursa) {
   const p = document.createElement("button");
   p.type = "button";
   p.dataset.faraActiune = "apasă butonul din fereastră care face această acțiune";
   p.textContent = _normalizeaza(sursa.textContent);
   p.__sursa = sursa;
-  sursa.classList.add("fj-sursa");   // originalul rămâne în pagină (ecranul îl caută după id), dar nu mai ia loc: acțiunea se vede o singură dată, în bară
   p.addEventListener("click", () => sursa.click());
   return p;
 }
 
 function _alege(corp, bara, areDeja, titlu) {
-  const marcat = [...corp.querySelectorAll("[data-actiune-principala]")].filter((b) => !bara.contains(b)).pop();
+  const liber = (b) => !(b.__retras && areDeja !== false);   // o acțiune retrasă din bară nu o ia înapoi cât alta e în bară (altfel s-ar schimba la nesfârșit)
+  const marcat = [...corp.querySelectorAll("[data-actiune-principala]")].filter((b) => !bara.contains(b) && liber(b)).pop();
   if (marcat) return marcat;
-  const fixe = [...corp.querySelectorAll(".bara-fixa .buton-primar")].filter((b) => b.tagName === "BUTTON");
+  const fixe = [...corp.querySelectorAll(".bara-fixa .buton-primar")].filter((b) => b.tagName === "BUTTON" && liber(b));
   if (fixe.length) return fixe[fixe.length - 1];
-  const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && !b.closest("table, template, details, .tn-actiuni, .rezumat-fix");
+  const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && liber(b) && !b.closest("table, template, details, .tn-actiuni, .rezumat-fix");
   const formular = [...corp.querySelectorAll("form .buton-primar, .ds-formular ~ * .buton-primar, .pf-frand:has(> .ds-formular) .buton-primar")].filter(eligibil);
   if (formular.length) return formular[formular.length - 1];
   if (areDeja === true) return null;   // catalogul nu înlocuiește o acțiune deja în bară (în afară de exportul de rezervă, care cedează locul)
@@ -213,7 +211,7 @@ export function baraDeJos(fer, corp, { renunta }) {
     const faraPrincipal = FARA_ACTIUNE_PRINCIPALA.test(titlu) || _esteMeniu(corp, bara);   // ecran de stare sau meniu de butoane: bara rămâne, fără principal și fără „Renunță”
     if (principal && !principal.isConnected) principal = null;
     // acțiunea de bară care are un original în ecran (găsit de catalog): dacă originalul a dispărut sau nu se mai vede, și butonul din bară pleacă odată cu el
-    if (principal && principal.__sursa && (!principal.__sursa.isConnected || !_vizibil(principal.__sursa))) { _scoate(principal); principal = null; }
+    if (principal && principal.__sursa && (!principal.__sursa.isConnected || !_vizibil(principal.__sursa))) { principal.remove(); principal = null; }
     let candidat = faraPrincipal ? null : _alege(corp, bara, principal && principal.__slab ? undefined : !!principal, titlu);
     if (candidat && candidat.__catalog) {
       // [15.1-E5] acțiune găsită de catalog: în bară stă un buton-proxy (apasă originalul), iar originalul rămâne în ecran — ecranele își caută butoanele în containerul lor
@@ -222,7 +220,12 @@ export function baraDeJos(fer, corp, { renunta }) {
     }
     if (principal && principal.__sursa) { principal.textContent = _normalizeaza(principal.__sursa.textContent); principal.disabled = !!principal.__sursa.disabled; principal.title = principal.__sursa.title || ""; }
     if (candidat && candidat !== principal) {
-      if (principal) _scoate(principal);   // ecranul și-a redesenat acțiunea: cea veche rămâne fără rost
+      if (principal) {
+        // acțiunea veche nu se aruncă dacă ecranul ei încă există (urma lui e în pagină): se întoarce la locul ei, ca ecranul să-și găsească butonul când revine (ex. „Emite factură” după „Deschide Date firmă”)
+        const urma = principal.__origine;
+        if (urma && urma.isConnected && !principal.__sursa) { principal.classList.remove("fj-principal"); principal.removeAttribute("data-actiune-principala"); principal.__retras = true; urma.after(principal); }
+        else principal.remove();   // ecranul și-a redesenat acțiunea: cea veche rămâne fără rost
+      }
       principal = candidat;
       principal.__formular = _formularul(principal.__sursa || candidat);   // înainte de mutare
       if (!principal.__sursa) principal.__origine = _urma(candidat);   // locul lui din ecran; dacă ecranul îl redesenează, urma dispare și acțiunea e veche

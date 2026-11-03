@@ -10,7 +10,7 @@ import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt
 import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=9134560fa9";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=c781636333";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
-import { randeazaStareSpv } from "./spv_stare.js?v=f9f7211231";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
+import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {

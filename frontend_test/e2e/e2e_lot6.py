@@ -423,9 +423,9 @@ def test_def_283_declaratii_intai_ce_datoreaza_firma_cu_termenul(patron):
     # „în următoarele 60 de zile”): se alege prima declarație TRIMESTRIALĂ datorată, oricare ar fi ea azi (D394 / D406 / D300), iar perioada ei
     # trebuie să se fixeze în câmpuri (proprietatea probată: alegerea unei datorate fixează trimestrul și anul)
     import re
-    trimestriale = [t for t in datorate if re.match(r"D\d+ · T\d/\d{4} · termen ", t)]
+    trimestriale = [t for t in datorate if re.match(r"D\d+ · T\d/\d{4} · (termen |restanță)", t)]
     assert trimestriale, datorate
-    perioada = re.match(r"D\d+ · T(\d)/(\d{4}) · ", trimestriale[0])
+    perioada = re.match(r"D\d+ · T(\d)/(\d{4}) · ", trimestriale[0])   # [15.1-E5] după termen eticheta spune „restanță — termenul a fost …”
     pg.select_option("#dec-tip", label=trimestriale[0])
     pg.wait_for_selector("#dec-trim", timeout=10000)
     patron.captura("datorate")
@@ -669,9 +669,9 @@ def test_def_285_nicio_fereastra_cu_derulare_laterala_iar_actiunea_se_vede(patro
     pg.wait_for_timeout(500)
     vede = pg.evaluate("""() => { const f = [...document.querySelectorAll('.fereastra')].pop().querySelector('.fereastra-corp');
         const c = f.getBoundingClientRect(), b = document.querySelector('#dec-trimite').getBoundingClientRect();
-        const z = document.querySelector('.bara-fixa').getBoundingClientRect();
+        const z = f.querySelector('.bara-fixa').getBoundingClientRect();
         return {derulabil: f.scrollHeight > f.clientHeight, inauntru: b.top >= c.top && b.bottom <= c.bottom + 1,
-                lipita_jos: Math.abs(z.bottom - c.bottom) <= 1}; }""")
+                lipita_jos: !!f.querySelector('.fereastra-jos #dec-trimite') || Math.abs(z.bottom - c.bottom) <= 1}; }""")   # [15.1-E5] acțiunea a trecut în bara de jos a ferestrei (zona de mesaje rămâne goală)
     patron.captura("d300_lung")
     assert vede == {"derulabil": True, "inauntru": True, "lipita_jos": True}, vede   # nimic din conținut nu se vede sub zona fixă
 
