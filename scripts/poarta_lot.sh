@@ -21,6 +21,11 @@ if [ "$1" = "--lista" ]; then
     PYL=./venv/bin/python; [ -x "$PYL" ] || PYL=python3
     exec "$PYL" scripts/poarta_selectie.py --lista "$@"
 fi
+# 16.1 pct.1a: `poarta_lot.sh --baza` — rularea completă pe un worktree curat al commitului de bază; scrie docs/dovezi/16_1/baza.json (scripts/poarta_baza.py).
+if [ "$1" = "--baza" ]; then
+    PYB=./venv/bin/python; [ -x "$PYB" ] || PYB=python3
+    exec "$PYB" scripts/poarta_baza.py
+fi
 [ -n "$1" ] && { echo "[poarta lot] REFUZ: poarta implicita nu are argumente (primit: $1)."; exit 1; }
 COMUN=$(git rev-parse --path-format=absolute --git-common-dir) || exit 1
 JV="$COMUN/poarta_verdicte.log"
