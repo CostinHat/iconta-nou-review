@@ -1,35 +1,30 @@
 #!/bin/sh
-# inainte_de_commit.sh — regula 15.1 (31.10.2026): înainte de orice commit se rulează verificatorul de design și pytest-ul țintit pe fișierele
-# atinse (de la ultima publicare, plus ce e necomis); poarta (`poarta_lot.sh`) pornește numai dacă amândouă sunt verzi. Nu primește fișiere în argv
-# (lista atinselor vine numai din git). Ieșire: 0 = ambele verzi (se poate comite și porni poarta), 1 = cel puțin una roșie.
+# inainte_de_commit.sh — hook-ul pre-commit, partea rapidă (comanda 15.1-E7, pct.4): verificatorul de design, sintaxa fișierelor atinse și testul
+# registrului de deficiențe; în total sub 2 minute. Pytest-ul țintit și plasa e2e rulează o singură dată, în poarta de publicare (`poarta_lot.sh`):
+# o poartă per lot, nu una per commit (E5 a plătit 7 commituri × ~18 min). Nu primește argumente (lista atinselor vine numai din git).
+# Ieșire: 0 = verde (se poate comite), 1 = roșu.
 ROOT=$(git rev-parse --show-toplevel) || exit 1
 cd "$ROOT" || exit 1
 [ -n "$1" ] && { echo "[inainte de commit] REFUZ: scriptul nu are argumente (primit: $1)."; exit 1; }
 PY=./venv/bin/python
 [ -x "$PY" ] || PY=python3
 J=${POARTA_JURNALE:-/tmp}
+T0=$(date +%s)
+# 1. sintaxa fișierelor atinse (în index): JS cu `node --check` (module), Python cu py_compile
+git diff --cached --name-only --diff-filter=ACM > "$J/inainte_atinse.txt"
+for f in $(grep -E '\.js$' "$J/inainte_atinse.txt"); do
+    cp "$f" "$J/inainte_sintaxa.mjs" && node --check "$J/inainte_sintaxa.mjs" > "$J/inainte_sintaxa.log" 2>&1 || { cat "$J/inainte_sintaxa.log"; echo "[inainte de commit] ROSU: sintaxa $f"; exit 1; }
+done
+for f in $(grep -E '\.py$' "$J/inainte_atinse.txt"); do
+    "$PY" -m py_compile "$f" || { echo "[inainte de commit] ROSU: sintaxa $f"; exit 1; }
+done
+echo "[inainte de commit] sintaxa: $(grep -cE '\.(js|py)$' "$J/inainte_atinse.txt") fisiere"
+# 2. testul registrului de deficiențe
+"$PY" -m pytest -q core/test_deficiente.py > "$J/inainte_registru.log" 2>&1 || { tail -15 "$J/inainte_registru.log"; echo "[inainte de commit] ROSU: registrul de deficiente (vezi $J/inainte_registru.log)"; exit 1; }
+echo "[inainte de commit] registrul: $(tail -1 "$J/inainte_registru.log")"
+# 3. verificatorul de design
 "$PY" verificator_conformitate.py > "$J/inainte_verificator.log" 2>&1
 TOT=$(grep -i "TOTAL" "$J/inainte_verificator.log")
 echo "[inainte de commit] verificator de design: $TOT"
 case "$TOT" in *"TOTAL: 0"*) ;; *) echo "[inainte de commit] ROSU: verificator (vezi $J/inainte_verificator.log)"; exit 1 ;; esac
-"$PY" - "$J/inainte_pytest_fisiere.txt" <<'PYE' || exit 1
-import os, subprocess, sys
-sys.path.insert(0, os.path.join(os.getcwd(), "scripts"))
-import perimetru as P, poarta_scurta as S, poarta_sare
-def git(*a): return subprocess.run(["git", *a], capture_output=True, text=True).stdout.split("\n")
-baza = subprocess.run(["git", "merge-base", "HEAD", "main"], capture_output=True, text=True).stdout.strip() or "HEAD"
-import poarta_selectie as _PS
-baza = _PS._ultima_rulare() or baza   # reluare după roșu: numai ce s-a schimbat de la ultima rulare a porții
-atinse = sorted({f for f in git("diff", "--name-only", baza) + git("ls-files", "-o", "--exclude-standard") if f})
-teste = S.selectie(atinse, "direct")[0]
-teste = [t for t in teste if os.path.isfile(t) and not poarta_sare.sare_fisier(os.path.join(P.RAD, t))]
-open(sys.argv[1], "w").write("\n".join(teste) + "\n")
-print("[inainte de commit] %d fisiere atinse, %d fisiere pytest" % (len(atinse), len(teste)))
-PYE
-if [ -s "$J/inainte_pytest_fisiere.txt" ] && [ "$(grep -c . "$J/inainte_pytest_fisiere.txt")" -gt 0 ]; then
-    xargs "$PY" -m pytest -q -n "${POARTA_PROCESE:-3}" --dist loadfile < "$J/inainte_pytest_fisiere.txt" > "$J/inainte_pytest.log" 2>&1
-    RC=$?
-    tail -1 "$J/inainte_pytest.log"
-    [ "$RC" -ne 0 ] && { echo "[inainte de commit] ROSU: pytest pe fisierele atinse (vezi $J/inainte_pytest.log)"; exit 1; }
-fi
-echo "[inainte de commit] VERDE: verificator si pytest tintit; se poate comite si porni poarta."
+echo "[inainte de commit] VERDE in $(( $(date +%s) - T0 )) s: sintaxa, registrul si verificatorul de design; pytest tintit si plasa e2e ruleaza in poarta."

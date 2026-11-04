@@ -41,7 +41,7 @@ else
 fi
 # [15.1-E5, din raportul E3 abaterea 2] `inainte_de_commit.sh` (verificatorul de design + pytest-ul țintit pe fișierele atinse) e parte din hook: commitul
 # se REFUZĂ când e roșu, nu se raportează doar. `POARTA_FARA_INAINTE=1` nu există: nu se poate ocoli.
-echo "[pre-commit] inainte_de_commit.sh (verificator de design + pytest tintit)..."
+echo "[pre-commit] inainte_de_commit.sh (sintaxa + registrul + verificatorul de design, sub 2 minute)..."
 if ! sh scripts/inainte_de_commit.sh; then
     echo "[pre-commit] RESPINS: inainte_de_commit.sh este rosu; repara cauza si comite din nou."
     exit 1
