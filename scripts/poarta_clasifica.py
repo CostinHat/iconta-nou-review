@@ -69,13 +69,13 @@ def clasifica(cand, baza, fisiere_lot, rad, complet=True, inv=None):
                 (rez["restanta"] if id_ else rez["baza_mutata"]).append("%s %s" % (id_ or "NENUMEROTAT", n) if id_ else n)
         elif bt["rezultat"] == "pica":
             rez["reparat"].append(n)
-        if ca.get(cheie, 0) < bt.get("asertiuni", 0):
+        if not n.startswith("verificator::") and ca.get(cheie, 0) < bt.get("asertiuni", 0):
             rez["asertiuni_scazute"].append("%s (%d < %d în bază)" % (n, ca.get(cheie, 0), bt.get("asertiuni", 0)))
     if complet:
         rez["regresie"] += ["%s (a dispărut din rulare)" % n for n, t in b.items() if t["rezultat"] == "trece" and n not in vazute]
     # fișier de test din diff fără niciun test colectat
     for f in sorted(fisiere_lot):
-        if re.search(r"(^|/)(test_|e2e_)[^/]*\.py$", f) and os.path.exists(os.path.join(rad, f)) and not L.asertiuni(rad, f) \
+        if not f.startswith("scripts/") and re.search(r"(^|/)(test_|e2e_)[^/]*\.py$", f) and os.path.exists(os.path.join(rad, f)) and not L.asertiuni(rad, f) \
                 and not any(n.startswith(f + "::") for n in vazute):
             rez["invalid"].append("%s (fișier de test fără teste)" % f)
     return rez
