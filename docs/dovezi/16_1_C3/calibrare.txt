@@ -1,0 +1,95 @@
+ATINS  1 verifica_pas: operator egal, valoare '1210.00', observat 1210.0 => trece  trece 
+ATINS  1 verifica_pas: operator egal, valoare '1210.00', observat 1209.99 => pica  pica găsit 1209.99, așteptat 1210.00
+ATINS  1 verifica_pas: operator contine, valoare 'F1A', observat 'Factura F1A 18' => trece  trece 
+ATINS  1 verifica_pas: operator contine, valoare 'F1A', observat 'Factura 18' => pica  pica 'F1A' nu apare în 'Factura 18'
+ATINS  1 verifica_pas: operator nr_randuri, valoare '2', observat [1, 2] => trece  trece 
+ATINS  1 verifica_pas: operator nr_randuri, valoare '2', observat [1] => pica  pica găsit 1, așteptat 2
+ATINS  1 verifica_pas: operator lipseste, valoare 'incasata', observat 'neincasata' => pica  pica 'incasata' apare în 'neincasata'
+ATINS  1 verifica_pas: operator lipseste, valoare 'incasata', observat 'deschisa' => trece  trece 
+ATINS  1 verifica_pas: operator interval_px, valoare '43-45', observat [43, 44.5] => trece  trece 
+ATINS  1 verifica_pas: operator interval_px, valoare '43-45', observat [43, 47] => pica  pica în afara 43-45: [47]
+ATINS  1 verifica_pas: operator activ, valoare 'true', observat True => trece  trece 
+ATINS  1 verifica_pas: operator activ, valoare 'true', observat False => pica  pica găsit false, așteptat true
+ATINS  1 verifica_pas: operator text_contine, valoare 'CHF1', observat 'Chitanta CHF1 nr 2' => trece  trece 
+ATINS  1 verifica_pas: operator text_contine, valoare 'CHF1', observat 'Chitanta F2C' => pica  pica 'CHF1' nu apare în 'Chitanta F2C'
+ATINS  1 pasi_16_2.txt (arhitect) se parsează fără erori, toți operatorii definiți  52 aserțiuni, erori=[]
+ATINS  1 pasi.json cu operatori și valori copiate literal = trece  []
+ATINS  1 pasi.json: valoare schimbată = refuz cu aserțiunea numită  ["aserțiunea b.3: operator/valoare diferă de fișierul arhitectului (nr_randuri '9999' în pasi.json, nr_randuri '0' la arhitect)"]
+ATINS  1 pasi.json: operator schimbat = refuz cu aserțiunea numită  ["aserțiunea b.3: operator/valoare diferă de fișierul arhitectului (contine '0' în pasi.json, nr_randuri '0' la arhitect)"]
+ATINS  1 pasi.json: aserțiune lipsă = refuz cu aserțiunea numită  ['aserțiunea b.3 lipsește din pasi.json']
+ATINS  1 pasi.json: aserțiune în plus = refuz cu aserțiunea numită  ['aserțiunea z.9 e în pasi.json, dar nu în fișierul arhitectului']
+ATINS  1 coada scrie în „pornire” hash-ul pasi_<lot>.txt al arhitectului  praguri=praguri_PROBA_C3.txt praguri_sha256=36b88f7484794342426555bd7ea7dd62e3c45ebf53a862721d7f336768017c23 pasi=pasi_PROBA_C3.txt pasi_sha
+ATINS  1 publica_lot: fișierul nemodificat + pasi.json copiat literal = fără STOP  []
+ATINS  1 publica_lot: o valoare schimbată în pasi.json = STOP „oracol modificat” cu aserțiunea numită  ["oracol modificat: aserțiunea b.5: operator/valoare diferă de fișierul arhitectului (interval_px 'x' în pasi.json, interval_px '43-45' la arhitect)"]
+ATINS  1 publica_lot: fișierul arhitectului modificat după pornire = STOP „oracol modificat” (hash diferit)  ['oracol modificat: hash-ul curent al pasi_PROBA_C3.txt diferă de cel din rândul „pornire”']
+ATINS  1 publica_lot: fișierul arhitectului dispărut după pornire = STOP  ['oracol modificat: fișierul arhitectului pasi_PROBA_C3.txt a dispărut după pornire']
+ATINS  1 lot de unelte fără fișier al arhitectului = fără oracol (fără STOP)  
+ATINS  1 lot de produs fără fișier al arhitectului = STOP  ['lipsește pasi_PROBA_C3.txt al arhitectului (un lot de produs are oracol)']
+ATINS  3 rând corect pe sha-ul bazei, cu captură = trece  []
+ATINS  3 rând fără captură = refuz  ['rândul pasului a) (P1) pe baza 4840dba4f0d2: captura docs/dovezi/PROBA_C3/capturi/lipsa.png lipsește']
+ATINS  3 rând pe orice alt sha (nici baza, nici C) = refuz, cu sha-urile numite  ['rândul pasului a) (P1) e pe 80262c06b85d, nu pe commitul de bază 4840dba4f0d2 (se produce înainte de primul commit, pe baza lotului)']
+ATINS  3 rând pe baza cu verdict „pica” = refuz  ['rândul pasului a) (P1) pe baza 4840dba4f0d2: verdict „pica”']
+ATINS  3 lot cu faza „proba_contract” verde = fără STOP  
+ATINS  3 lot fără fază „proba_contract” = STOP  ['faza „proba_contract” lipsește (contractul se probează la primul commit al lotului, de scripts/githooks/post-commit)']
+ATINS  3 lot cu „proba_contract” roșie = STOP  ['faza „proba_contract” nu e verde (rosu)']
+ATINS  3 post-commit (hook) la primul commit pe lucru/*: rând pe baza lotului => faza „proba_contract” verde  verde | [publica_lot --proba] verde: rândul pasului a) e pe commitul de bază, cu captură
+ATINS  3 post-commit: la al doilea commit nu mai scrie faza „proba_contract”  2 -> 2 rânduri
+ATINS  3 post-commit (hook) la primul commit pe lucru/*: fără rând => faza „proba_contract” rosu  rosu | rificare.csv [post-commit] proba_contract ROȘIE: lotul nu se poate publica până la rândul pasului a) pe commitul de bază
+ATINS  4 incheie_lot.sh PROBA-C3 publicat => OPRIT_PROBA-C3.txt cu rândul corect  OPRIT — gata: PROBA-C3 publicat abc123 2026-11-04T22:59:29+02:00
+ATINS  4 stare nevalidă = refuz, niciun fișier scris  [incheie_lot] REFUZ: stare 'ghicit' (publicat | nepublicat)
+ATINS  4 număr de lot nevalid = refuz, niciun fișier scris  [incheie_lot] REFUZ: număr de lot invalid: '../x'
+ATINS  4 apelat din nou, fișierul se rescrie atomic (o singură linie, starea nouă)  OPRIT — gata: PROBA-C3 nepublicat - 2026-11-04T22:59:29+02:00
+ATINS  5 maparea a/b/c -> restanță, d/f -> nu există în poartă, e -> invalid  {'a': 'restanta', 'b': 'restanta', 'c': 'restanta', 'd': None, 'e': 'invalid', 'f': None}
+ATINS  5 test invalid (clasa e) pus într-un manifest de probă = refuz cu numele fișierului  ['e2e_proba_invalid.py: în manifest, dar inventarul îl numește invalid (clasa e: R901)']
+ATINS  5 același test invalid în afara manifestului: manifestul rămâne curat (nu refuză)  
+ATINS  5 un test cu rând „e” care rulează = invalid în clasificare  ['e2e_proba_invalid.py::test_a (clasa e din inventar: R901)']
+ATINS  5 un test cu rând „e” care NU rulează (în afara manifestului) = nu apare nicăieri  []
+ATINS  5 rând „b” care pică și pe bază = restanță numerotată (nu invalid, nu regresie)  ['R902 e2e_proba_res.py::test_b']
+ATINS  5 manifestul din repo nu conține teste invalide după inventarul din repo (cele 8 rânduri e sunt în afara lui)  []
+ATINS  5 treaptă cu picături numai restanțe numerotate = „verde_cu_restante”  verde_cu_restante
+ATINS  5 treaptă cu o picătură nenumerotată = „rosu_1”  
+ATINS  5 treaptă cu infrastructură = „rosu_1”  
+ATINS  5 treaptă fără picături (cod 0) = „verde”  
+ATINS  5 rândurile vechi ale jurnalului nu se rescriu (jurnalul se scrie numai prin adăugare, mod „a”)  
+ATINS  2 două porniri simultane: a doua (baza_test.sh salveaza) refuzată cu pid-ul primei  [lacat_test] REFUZ: iconta_test și serverul 8019 sunt ținute de pid 3611105 (tine_lacatul.sh); așteaptă-l sau oprește-l.
+ATINS  2 a doua refuzată nu a scris niciun snapshot de probă  
+ATINS  2 apel imbricat (baza_test.sh salveaza pornit de deținătorul lacătului) = trece  yctvjdr8/dump_proba/iconta_test.dump sha256=7733a0b5acd94c3cca33be750cc4eeeb7d0edcc0ddc1cf4392d1731139b2a3bb in 12s rc=0
+ATINS  2 pid mort în fișier = lacăt preluat (salveaza trece)  pid 3611195 mort; p sha256=141a149308640825284a35e8a06bd44a1965da5ef32fa49c26ca0ef838ed4221 in 13s
+ATINS  2 pid refolosit (viu, ora de start diferită) = lacăt preluat (salveaza trece)  pid 3610981 viu, ora de start falsă; p sha256=b57e9d6d234fa76a26153ef31537266141dd1de4aaa4c6ecfb3b9af33b821ca5 in 12s
+ATINS  2 pid viu cu ora de start coincidentă = refuz cu pid-ul lui  [lacat_test] REFUZ: iconta_test și serverul 8019 sunt ținute de pid 3610981 (acest-proces); așteaptă-l sau oprește-l.
+ATINS  2 poarta_lot.sh și lanseaza_verificator.py iau lacătul (cod)  
+ATINS  6 baza restaurată (baza_test.sh restaureaza)  eeași bază (iconta_test:29) [baza_test] verifica: precondiții căzute: 0 [baza_test] restaurat în 79s
+ATINS  6 pe baza restaurată toate rândurile F017 corectate TREC (9 rânduri OK)  OK=9 PICĂ=[]
+ATINS  6 rândurile vechi (nr. 15 / 500 / sold 2.000) au dispărut  
+ATINS  6 chitanță de probă pe nr. 18 inserată (pe iconta_test, sub lacăt, nu pe snapshot)  
+ATINS  6 cu chitanța de probă pe nr. 18, rândul lui PICĂ  ["[verifica] PICĂ  F1A nr. 18: client 410001005, total 1210,00, platita_la null, 0 chitanțe nenulate: găsit '0', așteptat '1'", "[verifica] PICĂ  F1: exact o chitanță în total, CHF1 nr. 1 (nenulată): 
+ATINS  6 cu chitanța de probă, rândul lui nr. 19 TRECE (nu e atins)  
+ATINS  6 după restaurare rândul nr. 18 TRECE din nou  PICĂ=[]
+ATINS  7 core.migrari_registru marcheaza --productie fără PASS pentru main = refuz (cod 1), nimic scris  rc=1 rânduri 0 -> 0
+ATINS  7 core.migrari_registru ruleaza --productie fără PASS = refuz, migrarea nu rulează  rc=1
+ATINS  7 jurnal de verdicte lipsă = refuz  
+ATINS  7 core.migrari_registru marcheaza --productie cu PASS pentru main = trece, rândul scris pe baza de probă  rc=0 rânduri 0 -> 1
+ATINS  7 verifica (citire) nu cere PASS: cod diferit de refuzul PASS  
+ATINS  7 scripts/lot13_firme2_curata_731.py --productie: cere_pass fără PASS = refuz  (ce72f25a) în /tmp/calibrare_16_1_C3_yctvjdr8/pass_gol.log; nimic nu se scrie pe producție
+ATINS  7 scripts/lot13_firme2_curata_731.py cheamă cere_pass înaintea citirii DSN-ului de producție  
+ATINS  7 scripts/lot14_3_reclaseaza_117.py --productie: cere_pass fără PASS = refuz  (ce72f25a) în /tmp/calibrare_16_1_C3_yctvjdr8/pass_gol.log; nimic nu se scrie pe producție
+ATINS  7 scripts/lot14_3_reclaseaza_117.py cheamă cere_pass înaintea citirii DSN-ului de producție  
+ATINS  7 scripts/stoc2_409_1_dubluri_corectie.py --productie: cere_pass fără PASS = refuz  (ce72f25a) în /tmp/calibrare_16_1_C3_yctvjdr8/pass_gol.log; nimic nu se scrie pe producție
+ATINS  7 scripts/stoc2_409_1_dubluri_corectie.py cheamă cere_pass înaintea citirii DSN-ului de producție  
+ATINS  7 scripts/stoc2_619_documente_pe_jumatate.py --productie: cere_pass fără PASS = refuz  (ce72f25a) în /tmp/calibrare_16_1_C3_yctvjdr8/pass_gol.log; nimic nu se scrie pe producție
+ATINS  7 scripts/stoc2_619_documente_pe_jumatate.py cheamă cere_pass înaintea citirii DSN-ului de producție  
+ATINS  7 scripts/valideaza_note_interne_pfa.py --productie: cere_pass fără PASS = refuz  (ce72f25a) în /tmp/calibrare_16_1_C3_yctvjdr8/pass_gol.log; nimic nu se scrie pe producție
+ATINS  7 scripts/valideaza_note_interne_pfa.py cheamă cere_pass înaintea citirii DSN-ului de producție  
+ATINS  7 cere_pass cu PASS pentru main = trece  trece
+ATINS  7 publica_prod.sh (restart) fără PASS pentru HEAD = refuz (cod 1), restartul NU se execută  [publica_prod] restartul producției NU s-a făcut (fără verdictul PASS al lui scripts/publica_lot.sh pentru 53918d59a94c4b6747c3ad1494c37da4c5f4ec50); four-way nu se rulează.
+ATINS  7 publica_prod.sh cu PASS pe ALT sha = refuz, restartul NU se execută  
+ATINS  7 publica_prod.sh (restart) cu PASS pentru HEAD = trece pasul de restart (se execută comanda de restart a serverului de lucru)  zolva bratul lipsa (de obicei: git push origin main) ## Sentinela .git/FOUR_WAY_NEINCHIS scrisa - raportul NU e 'incheiat' cat timp exista. ############################################################
+ATINS  7 cu PASS, restartul pornit de publica_prod.sh repornește serverul de lucru 8019 (răspunde după restart)  8019 viu=True
+ATINS  7 post-commit nu mai conține restartul producției (nici `systemctl`, nici four-way)  
+ATINS  2 lansator: pornește subagentul cu modelul Haiku 5.5  -p --model claude-haiku-5-5 --allowedTools Bash(/tmp/verificator_wfvidg1f/verifica.sh:*) --disallowedTools Read Edit Write Grep Glob WebFetch WebSearch Notebook
+ATINS  2 lansator: directorul de lucru al agentului nu e depozit git și nu e depozitul lotului  /tmp/verificator_wfvidg1f
+ATINS  2 lansator: agentul primește numai Bash pe învelișul verifica.sh (celelalte unelte interzise)  
+ATINS  2 lansator: a ținut lacătul și l-a pasat copilului (LACAT_TEST_PID)  
+ATINS  2 lansator: promptul conține scenariul, pașii arhitectului și instrucțiunea fixă  
+ATINS  2 lansator: lacăt ținut de alt proces = refuz cu pid-ul lui, agentul nu pornește  [lacat_test] REFUZ: iconta_test și serverul 8019 sunt ținute de pid 3613768 (altcineva); așteaptă-l sau oprește-l.
+ATINS  2 lansator: un fișier .diff dat agentului = refuz (fără acces la diff)  [lanseaza_verificator] REFUZ: /tmp/calibrare_16_1_C3_yctvjdr8/lot.diff: diff sau cale din .git — agentul nu are acces la diff
