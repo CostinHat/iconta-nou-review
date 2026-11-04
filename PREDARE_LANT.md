@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**04.11.2026 — COMANDA 16.0 (lot de unelte) gata pe ramura `lucru/lot16-p0a` (worktree `/home/costin/iconta_lot16`): `scripts/baza_test.sh` (salveaza / restaureaza / stare / verifica / identitate, refuz pe orice bază alta decât `iconta_test`), `scripts/porneste_8019.sh`, plasa fixă `scripts/plasa_16_2.manifest` cu `POARTA_PLASA_FIX` în `poarta_lot.sh`, inventarul restanței `scripts/poarta_e2e_restante.txt` (R001–R036). Poarta pe plasa fixă VERDE pe `3bccd8b1`. Aplicația nu s-a schimbat. Lotul E7 rămâne nepublicat pe `lucru/lot15-e7`.**
+
 **03.11.2026 — COMANDA 15.1-E5 (bara de jos: acțiunea principală, grupul de butoane, bara de sus, lista cu căutare; 713.1, 727.2, 742, 740, 741, 733.1, 163.1) pe ramura `lucru/lot15-e5` (worktree `/home/costin/iconta_lot15e5`), la poartă; NEPUBLICATĂ încă.** `cadru.js`: catalogul acțiunii principale + excepții; `api.js`: comutator XS / text / `esteAlege`; hook `pre-commit` rulează `inainte_de_commit.sh`; `core/ceas_proba.py` (R10).
 
 **03.11.2026 — COMANDA 15.1-E4 (piesele de afișare) pe ramura `lucru/lot15-e4` (worktree `/home/costin/iconta_lot15e4`), la poartă; NEPUBLICATĂ încă.** Tabelul DS și card-rezumatul sunt aplicate o singură dată, în `cadru.js` (`ds_piese.js::listeDSAplica / tabeleDSAplica / carduriDSAplica`); corecțiile verificatorului (RANDURI + `verificator_design_masuri.js`); R11 (`poarta_lot.sh --lista`); 736 (butonul Reevaluare valută lângă semnal); C210 (Audit de preluare în Import date). Măsurat pe registru la 1366×768 / 1920×1080: MIGRAT 42 din 94 (erau 23) — vezi raportul E4. Rămân: rândurile cu mai mult de 2 acțiuni, butonul principal din bara de jos (E5).
