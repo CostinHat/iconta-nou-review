@@ -39,6 +39,8 @@ def valideaza_schema(conn, schema):
 def main(argv):
     proba = "--proba" in argv
     if "--productie" in argv:
+        from scripts.productie_pass import cere_pass   # 16.1-C3 pct.7: scriere pe producție numai cu PASS pe commitul curent al lui main
+        cere_pass()
         from core import mediu_test
         os.environ["DATABASE_URL"] = mediu_test.dsn_productie()
     from core import db

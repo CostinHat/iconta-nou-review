@@ -23,7 +23,9 @@ def lot_fisier(lot):
 
 
 def lot_baza(lot):
-    """Lotul a cărui bază (docs/dovezi/<lot>/baza.json) o folosește: un lot de corecție (`16.1-C2`) moștenește baza lotului de bază (`16.1`)."""
+    """Lotul a cărui bază (docs/dovezi/<lot>/baza.json) o folosește: lotul însuși când își are baza (16.1-C3), altfel un lot de corecție (`16.1-C2`) moștenește baza lotului de bază (`16.1`)."""
+    if os.path.exists(os.path.join(RAD, "docs", "dovezi", lot_fisier(lot), "baza.json")):
+        return lot
     return lot.split("-")[0]
 
 
@@ -178,6 +180,20 @@ def faza(lot, nume, detalii=""):
         J.sfarsit(lot, nume, id_, rez["rezultat"])
 
 
+def rezultat_treapta(rc, teste, inv=None):
+    """Eticheta jurnalului pentru o treaptă (16.1-C3, pct.5): `verde` (cod 0); `verde_cu_restante` când toate picăturile treptei sunt restanțe numerotate (clasele a/b/c din inventar,
+    nicio infrastructură); altfel `rosu_<cod>`. O treaptă `verde_cu_restante` rămâne o rulare completă la contorul de rulări (contorul numără rulările, nu etichetele); rândurile
+    vechi ale jurnalului nu se rescriu."""
+    if rc == 0:
+        return "verde"
+    import poarta_clasifica as C
+    inv = C._inventar() if inv is None else inv
+    pica = [t for t in teste if t["rezultat"] == "pica"]
+    if pica and all(not t.get("infra") and C._numarat(t["nume"], inv) for t in pica):
+        return "verde_cu_restante"
+    return "rosu_%d" % rc
+
+
 def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="3", detalii="", verificator=True):
     """-> (durate pe treaptă, teste). `pytest_ids`/`e2e_fisiere` None = tot (nucleul / manifestul); listă = numai acelea (reluarea). Baza de test se restaurează înainte de
     pytest și înainte de plasa e2e (niciodată per test). Toate treptele rulează, și după una roșie."""
@@ -199,9 +215,9 @@ def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="
             _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_pytest.log"))
             jx = os.path.join(J, "poarta_pytest.xml")
             rc, d = _rulare([py, "-m", "pytest", "-q", "-n", procese, "--dist", "loadfile", "--junitxml=" + jx] + ids, wt, env, os.path.join(J, "poarta_pytest.log"))
-            f["rezultat"] = "verde" if rc == 0 else "rosu_%d" % rc
+            r = citeste_junit(jx, wt)
+            f["rezultat"] = rezultat_treapta(rc, r)
         trepte["pytest"] = d
-        r = citeste_junit(jx, wt)
         teste += [dict(t, treapta="pytest") for t in r]
         if rc not in (0, 1) and not r:   # pytest n-a ajuns să ruleze nimic (interpretare, import, interrupt): infrastructură, nu test
             teste.append({"nume": "pytest::sesiune", "treapta": "pytest", "rezultat": "pica", "infra": True, "durata": d, "mesaj": "cod %d fără raport junit" % rc})
@@ -212,9 +228,9 @@ def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="
             jx = os.path.join(J, "poarta_e2e.xml")
             rc, d = _rulare([py, "scripts/e2e_poarta.py"] + ["--doar=" + x for x in fis] + [os.path.join(J, "e2e_poarta_capturi")],
                             wt, dict(env, PYTEST_ADDOPTS="--junitxml=" + jx), os.path.join(J, "poarta_e2e.log"))
-            f["rezultat"] = "verde" if rc == 0 else "rosu_%d" % rc
+            r = citeste_junit(jx, wt)
+            f["rezultat"] = rezultat_treapta(rc, r)
         trepte["plasa_e2e"] = d
-        r = citeste_junit(jx, wt)
         teste += [dict(t, treapta="plasa_e2e") for t in r]
         if rc not in (0, 1) and not r:   # 3 = aplicația n-a pornit
             teste.append({"nume": "plasa_e2e::sesiune", "treapta": "plasa_e2e", "rezultat": "pica", "infra": True, "durata": d, "mesaj": "cod %d fără raport junit" % rc})

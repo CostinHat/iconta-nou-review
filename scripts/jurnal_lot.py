@@ -162,7 +162,7 @@ def marca_valida(rand, lot):
 
 
 def pornire_coada(lot, praguri, cheie_fisier=None, comanda=None):
-    """Lansarea din coadă (~/coada_code.sh): rândul „pornire” cu ora reală, hash-ul pragurilor (copia din ~/ghid_incoming), hash-urile scripturilor porții și marcajul
+    """Lansarea din coadă (~/coada_code.sh): rândul „pornire” cu ora reală, hash-ul pragurilor (copia din ~/ghid_incoming), hash-ul pasi_<lot>.txt al arhitectului (dacă există), hash-urile scripturilor porții și marcajul
     de proveniență. Un lot real (NN.M sau NN.M-X) fixează și lotul curent; un lot de probă (PROBA-…) nu."""
     global _ORA_IMPUSA
     if cheie_fisier:
@@ -176,7 +176,10 @@ def pornire_coada(lot, praguri, cheie_fisier=None, comanda=None):
     _ORA_IMPUSA = ora
     try:
         ph = L.hash_fisier(praguri)
-        id_ = inceput(lot, "pornire", "praguri=%s praguri_sha256=%s coada=1 marca=%s comanda=%s" % (os.path.basename(praguri), ph, marca(cheie, lot, ora), os.path.basename(comanda or "-")),
+        # 16.1-C3 pct.1: hash-ul fișierului arhitectului pasi_<lot>.txt (lângă praguri, în ~/ghid_incoming), dacă există; publica_lot îl compară cu cel de la publicare
+        pasi = os.path.join(os.path.dirname(os.path.abspath(praguri)), "pasi_%s.txt" % L.lot_fisier(lot))
+        ps = " pasi=%s pasi_sha256=%s" % (os.path.basename(pasi), L.hash_fisier(pasi)) if os.path.exists(pasi) else ""
+        id_ = inceput(lot, "pornire", "praguri=%s praguri_sha256=%s%s coada=1 marca=%s comanda=%s" % (os.path.basename(praguri), ph, ps, marca(cheie, lot, ora), os.path.basename(comanda or "-")),
                       pid=os.getpid())
         if re.fullmatch(r"\d+\.\d+(-[A-Z]\d*)?", lot):
             open(os.path.join(comun(), "lot_curent.txt"), "w", encoding="utf-8").write(lot + "\n")

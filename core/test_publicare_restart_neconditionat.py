@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Gard: pasul de restart din ritualul de publicare (scripts/githooks/post-commit) e NECONDITIONAT de continut.
+"""Gard: pasul de restart din ritualul de publicare (scripts/publica_prod.sh, ex-post-commit) e NECONDITIONAT de continut.
 
 DE CE (11.08.2026): publicarea decidea singura daca restarteaza dupa TIPUL commitului -> un commit de DOCS a
 lasat procesul viu pe commitul anterior => RUNNING != HEAD (divergenta prinsa: RUNNING b0ccc40 vs HEAD f504f00).
@@ -19,7 +19,7 @@ import re
 import io
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-HOOK = os.path.join(_RAD, "scripts", "githooks", "post-commit")
+HOOK = os.path.join(_RAD, "scripts", "publica_prod.sh")   # 16.1-C3: restartul a mutat din post-commit în scripts/publica_prod.sh (chemat numai de publica_lot.sh, după PASS)
 
 
 def _text():
@@ -63,14 +63,14 @@ def test_singura_conditie_a_restartului_e_verificarea_migrarilor():
     d0abd48f: ecranul Casă căzut), iar aceasta e singura conditie: niciun alt `if` nu inconjoara restartul.
     MUTAȚIE: verificarea scoasa din hook -> pica; un al doilea `if` pe restart -> pica."""
     t = _text()
-    m = re.search(r'^if .*-m core\.migrari_registru verifica "\$HEAD_SHA".*; then$', t, re.M)   # linia executată, nu comentariul
+    m = re.search(r'^(?:el)?if .*-m core\.migrari_registru verifica "\$HEAD_SHA".*; then$', t, re.M)   # linia executată, nu comentariul
     i_ver = m.start() if m else -1
-    i_rs = t.find("systemctl restart iconta-nou >")
+    i_rs = t.find("$RESTART_CMD > /tmp/restart_iconta.log")
     assert i_ver != -1, "post-commit nu mai verifica migrarile inaintea restartului (comanda Costin 09.10 pct.2)"
     assert i_ver < i_rs, "verificarea migrarilor trebuie sa vina INAINTEA restartului"
     bloc = t[i_ver:i_rs]
     conditii = re.findall(r"^\s*(?:if|elif)\b", bloc, re.M)
-    assert re.search(r"^\s*if sudo -n systemctl restart iconta-nou > /tmp/restart_iconta\.log 2>&1; then$", t, re.M), (
+    assert re.search(r"^\s*if \$RESTART_CMD > /tmp/restart_iconta\.log 2>&1; then$", t, re.M), (
         "linia restartului s-a schimbat: o conditie lipita de `sudo` ar conditiona restartul pe altceva decat migrarile")
     assert len(conditii) == 2, ("restartul trebuie sa fie conditionat NUMAI de verificarea migrarilor (+ reusita lui sudo): %s"
                                 % conditii)
@@ -80,35 +80,30 @@ def test_statica_se_publica_numai_odata_cu_restartul():
     """[10.10.2026, lotul „Retestul plasei”] Cu restartul oprit de o migrare nerulată, post-commit publica totuși statica: JS-ul
     commitului nou ajungea în browser peste backendul vechi (445f9932 servit de procesul pe 60c716d1). Statica se publică NUMAI pe
     ramura în care procesul viu preia același commit — sub verificarea migrărilor, înaintea restartului —, iar rulatorul migrărilor
-    o publică înaintea restartului lui. MUTAȚIE: apelul mutat înaintea verificării -> pică; publicarea scoasă din rulator -> pică."""
+    o publică tot scripts/publica_prod.sh (rulatorul îl cheamă, nu publică el). MUTAȚIE: apelul mutat înaintea verificării -> pică."""
     t = _text()
-    m = re.search(r'^if .*-m core\.migrari_registru verifica "\$HEAD_SHA".*; then$', t, re.M)
-    i_rs = t.find("systemctl restart iconta-nou >")
+    m = re.search(r'^(?:el)?if .*-m core\.migrari_registru verifica "\$HEAD_SHA".*; then$', t, re.M)
+    i_rs = t.find("$RESTART_CMD > /tmp/restart_iconta.log")
     apeluri = [x.start() for x in re.finditer(r"^\s*publica_statica\b(?!\(\))", t, re.M)]
     assert len(apeluri) == 1 and m and m.start() < apeluri[0] < i_rs, (
         "statica trebuie publicată o singură dată, între verificarea migrărilor și restart: %s" % apeluri)
     directe = [x.start() for x in re.finditer(r"scripts/publica_static\.py >", t)]
     f = t.find("publica_statica() {")
     assert len(directe) == 1 and f < directe[0] < t.find("\n}", f), "publica_static.py chemat în afara funcției publica_statica"
-    import inspect
-    from core import migrari_registru as mr
-    src = inspect.getsource(mr._reporneste_daca_e_cazul)
-    apel = re.search(r'subprocess\.run\(\[sys\.executable, os\.path\.join\(RAD, "scripts", "publica_static\.py"\)\]', src)
-    assert apel and apel.start() < src.find('"systemctl", "restart"'), (
-        "rulatorul migrărilor trebuie să publice statica ÎNAINTEA restartului")
 
 
-def test_rulatorul_migrarilor_inchide_four_way_dupa_restartul_amanat():
-    """[12.10.2026, prins la migrarea data_infiintare] Cu restartul oprit de o migrare, post-commit scrie .git/FOUR_WAY_NEINCHIS; după
-    rularea migrării, rulatorul publică statica și repornește — dar four-way-ul nu se reevalua, deci sentinela rămânea deși toate brațele
-    se închiseseră. Acum rulatorul cheamă același script ca post-commit (`scripts/githooks/four-way`), DUPĂ restart. MUTAȚIE: apelul
-    scos din `_reporneste_daca_e_cazul` (sau pus înaintea restartului) -> pică."""
+def test_rulatorul_migrarilor_deleaga_restartul_amanat_lui_publica_prod():
+    """[16.1-C3, pct.7; înainte 12.10.2026] Restartul amânat de o migrare, după rularea ei pe producție, îl face numai scripts/publica_prod.sh (cere PASS, verifică migrările, publică statica
+    înaintea restartului, apoi four-way-ul care scrie sau șterge .git/FOUR_WAY_NEINCHIS). Rulatorul nu mai cheamă `systemctl` și nu mai publică statica el. MUTAȚIE: un `systemctl` readus
+    în `_reporneste_daca_e_cazul` -> pică; apelul spre publica_prod.sh scos -> pică."""
     import ast
     src = io.open(os.path.join(_RAD, "core", "migrari_registru.py"), encoding="utf-8").read()
     fn = next(n for n in ast.parse(src).body if isinstance(n, ast.FunctionDef) and n.name == "_reporneste_daca_e_cazul")
     corp = ast.get_source_segment(src, fn)
-    i_restart, i_4w = corp.find('"systemctl", "restart", "iconta-nou"'), corp.find('"githooks", "four-way"')
-    assert i_restart != -1 and i_4w > i_restart, "rulatorul nu cheamă four-way după restart"
+    assert '"publica_prod.sh"' in corp, "rulatorul nu cheamă scripts/publica_prod.sh"
+    assert "systemctl" not in corp.split('"""')[-1], "rulatorul repornește el însuși producția (ocolește PASS)"
+    t = _text()
+    assert t.find('sh "$ROOT/scripts/githooks/four-way"') > t.find("$RESTART_CMD > /tmp/restart_iconta.log"), "four-way nu vine după restart în publica_prod.sh"
     assert os.access(os.path.join(_RAD, "scripts", "githooks", "four-way"), os.X_OK), "scripts/githooks/four-way lipsește sau nu e executabil"
 
 

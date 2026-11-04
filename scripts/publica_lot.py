@@ -6,6 +6,11 @@ iar restartul din post-commit refuză. Sfârșitul fazei „publicare” îl scr
 Regula strămoșului (16.1-C1, 16.1-C2 pct.4): verdictul VERDE al rulării complete finale și rândurile din jurnal_verificare.csv sunt produse pe un commit C (ultima rulare completă din
 starea lotului) și rămân valabile pentru HEAD numai dacă C e strămoș al lui HEAD și diff-ul C..HEAD atinge numai căile din `ancestor_refuzuri`. Apelabilă separat, fără publicare:
   publica_lot.py --verifica <C> <HEAD> [lot]   (lotul din LOT sau din ramura curentă; hook-urile reference-transaction și pre-push o chemă cu lotul din rândul PASS)
+  publica_lot.py --proba [lot]                 (16.1-C3, pct.3) contractul la început: rândul pasului a) din jurnal_verificare.csv există, are captură, verdict „trece” și sha = commitul de bază (merge-base cu
+                                               main); scrie faza „proba_contract” în jurnal. O declanșează scripts/githooks/post-commit pe ramurile lucru/* la primul commit după merge-base. Un lot fără
+                                               „proba_contract” verde = STOP la publicare.
+Oracolul pașilor (16.1-C3, pct.1): ~/ghid_incoming/pasi_<lot>.txt (al arhitectului) are hash-ul din rândul „pornire”, iar docs/dovezi/<lot>/pasi.json copiază literal operator + valoare ale fiecărei aserțiuni, altfel
+STOP „oracol modificat”. Lotul de produs cere fișierul; lotul de unelte fără fișier nu are oracol.
 Ieșire: 0 = PASS, 1 = STOP (nepublicat, cu cifra sau motivul)."""
 import csv
 import json
@@ -18,6 +23,7 @@ import zipfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import jurnal_lot as JL  # noqa: E402
 import poarta_clasifica as C  # noqa: E402
+import oracol_pasi as OP  # noqa: E402
 import poarta_lib as L  # noqa: E402
 
 RAD = L.RAD
@@ -87,6 +93,79 @@ def pornire_stop(pornire, lot, unelte):
     return []
 
 
+#: directorul arhitectului (fișierele pasi_<lot>.txt, exceptii_<lot>.txt); GHID_INCOMING îl mută numai în calibrări
+def _ghid():
+    return os.environ.get("GHID_INCOMING") or os.path.join(ACASA, "ghid_incoming")
+
+
+def oracol_stop(lotf, unelte, pornire, rad=None):
+    """Oracolul pașilor (16.1-C3, pct.1). `pornire` = rândul „pornire” (început). -> motivele de STOP „oracol modificat” (sau lipsa fișierului la un lot de produs)."""
+    arh = os.path.join(_ghid(), "pasi_%s.txt" % lotf)
+    h_jurnal = re.search(r"\bpasi_sha256=([0-9a-f]{64})\b", pornire[8] if len(pornire) > 8 else "")
+    if not os.path.exists(arh):
+        if h_jurnal:
+            return ["oracol modificat: fișierul arhitectului pasi_%s.txt a dispărut după pornire" % lotf]
+        return [] if unelte else ["lipsește pasi_%s.txt al arhitectului (un lot de produs are oracol)" % lotf]
+    if not h_jurnal:
+        return ["oracol modificat: pasi_%s.txt există, dar rândul „pornire” nu are hash-ul lui (fișierul a apărut sau s-a schimbat după pornire)" % lotf]
+    if L.hash_fisier(arh) != h_jurnal.group(1):
+        return ["oracol modificat: hash-ul curent al pasi_%s.txt diferă de cel din rândul „pornire”" % lotf]
+    cale = os.path.join(rad or RAD, "docs", "dovezi", lotf, "pasi.json")
+    if not os.path.exists(cale):
+        return ["oracol modificat: lipsește docs/dovezi/%s/pasi.json" % lotf]
+    return ["oracol modificat: " + m for m in OP.refuzuri(open(arh, encoding="utf-8").read(), json.load(open(cale, encoding="utf-8")))]
+
+
+def proba_stop(rows, lot):
+    """Faza „proba_contract” (16.1-C3, pct.3): ultimul ei sfârșit trebuie „verde”. -> motivele de STOP."""
+    sf = [r for r in rows if r[0] == lot and r[1] == "proba_contract" and r[2] == "sfarsit"]
+    if not sf:
+        return ["faza „proba_contract” lipsește (contractul se probează la primul commit al lotului, de scripts/githooks/post-commit)"]
+    return [] if sf[-1][5] == "verde" else ["faza „proba_contract” nu e verde (%s)" % sf[-1][5]]
+
+
+def proba_refuzuri(rad, lot, main="main"):
+    """Rândul pasului a) (primul pas din docs/dovezi/<lot>/pasi.txt) din jurnal_verificare.csv: există, captura există, verdict „trece”, sha = commitul de bază (merge-base cu main). -> refuzurile."""
+    lotf = L.lot_fisier(lot)
+    d = os.path.join(rad, "docs", "dovezi", lotf)
+    g = lambda *a: subprocess.run(["git", *a], cwd=rad, capture_output=True, text=True).stdout.strip()   # noqa: E731
+    baza = g("merge-base", "HEAD", main)
+    if not baza:
+        return ["nu există merge-base cu %s" % main]
+    try:
+        pasi = [ln.strip() for ln in open(os.path.join(d, "pasi.txt"), encoding="utf-8") if ln.strip()]
+        rr = list(csv.DictReader(open(os.path.join(d, "jurnal_verificare.csv"), encoding="utf-8")))
+    except OSError as e:
+        return ["lipsește %s" % os.path.relpath(e.filename, rad)]
+    if not pasi:
+        return ["pasi.txt e gol: nu există pasul a)"]
+    pas = pasi[0]
+    ale = [r for r in rr if r["pas"] == pas]
+    if not ale:
+        return ["nu există rândul pasului a) (%s) în jurnal_verificare.csv" % pas]
+    pe_baza = [r for r in ale if r["commit"] == baza]
+    if not pe_baza:
+        return ["rândul pasului a) (%s) e pe %s, nu pe commitul de bază %s (se produce înainte de primul commit, pe baza lotului)" % (
+            pas, ", ".join(sorted({r["commit"][:12] for r in ale})), baza[:12])]
+    exista = lambda r: os.path.exists(r["captura"] if os.path.isabs(r["captura"]) else os.path.join(rad, r["captura"]))   # noqa: E731
+    if any(r["verdict"] == "trece" and exista(r) for r in pe_baza):
+        return []
+    return ["rândul pasului a) (%s) pe baza %s: %s" % (pas, baza[:12], "; ".join("verdict „%s”" % r["verdict"] if r["verdict"] != "trece" else "captura %s lipsește" % r["captura"] for r in pe_baza))]
+
+
+def main_proba(lot=None):
+    """`--proba [lot]`: rulează contractul la început și scrie faza „proba_contract” (verde sau rosu). Ieșire 0 = verde."""
+    lot = lot or JL.lot_curent()
+    ref = proba_refuzuri(RAD, lot)
+    id_ = JL.inceput(lot, "proba_contract", "baza=%s" % git("merge-base", "HEAD", "main")[:12], pid=os.getpid())
+    JL.sfarsit(lot, "proba_contract", id_, "rosu" if ref else "verde", "; ".join(ref))
+    for m in ref:
+        print("[publica_lot --proba] REFUZ: " + m)
+    if not ref:
+        print("[publica_lot --proba] verde: rândul pasului a) e pe commitul de bază, cu captură")
+    return 1 if ref else 0
+
+
 def jurnal_verificare_stop(rr, pasi, c, baza, mx, rad=None):
     """Jurnalul verificării pe pas (16.1-C2 pct.3): rândurile pe alt sha decât C sunt ignorate; rândurile pe C trebuie „trece” cu captură existentă, iar fiecare pas are rând pe C;
     rundele verificatorului independent (sha distincte, ≠ baza, cu verificator=Haiku, pe pașii „după”) nu depășesc `mx`. -> motivele de STOP."""
@@ -120,6 +199,8 @@ def verifica(lot, sha, comun, sirul_zip):
         stop.append("pragurile s-au modificat după pornire (hash diferit de cel din jurnal)")
     unelte = open(praguri, encoding="utf-8").readline().strip().lower() == "unelte"
     stop += pornire_stop(pornire, lot, unelte)
+    stop += oracol_stop(lotf, unelte, pornire[-1])
+    stop += proba_stop(rows, lot)
     # poarta: VERDE pe HEAD, rulare completă finală, zero regresii, lot neoprit
     f_stare = os.path.join(comun, "lot_stare_%s.json" % lotf)
     stare = json.load(open(f_stare)) if os.path.exists(f_stare) else {}
@@ -255,6 +336,8 @@ def main_verifica(c, head, lot=None):
 
 
 def main():
+    if len(sys.argv) in (2, 3) and sys.argv[1] == "--proba":
+        return main_proba(sys.argv[2] if len(sys.argv) == 3 else None)
     if len(sys.argv) in (4, 5) and sys.argv[1] == "--verifica":
         return main_verifica(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) == 5 else None)
     lot = JL.lot_curent()

@@ -28,6 +28,8 @@ CLI (rulat de om, cu `--productie` pentru baza de producție din `~/.iconta/db.e
   python -m core.migrari_registru marcheaza [--productie] core/migrare_x.py "motiv"
   python -m core.migrari_registru verifica <sha>                           -> 0 = poate reporni; 1 = nerulate / drift; 2 = nu se știe
   python -m core.migrari_registru baza --productie <sha>                    -> baza registrului (o dată)
+[16.1-C3, pct.7] ORICE comandă cu `--productie` (ruleaza, marcheaza, baza) REFUZĂ fără verdictul `PASS <sha>` al lui scripts/publica_lot.py pentru commitul curent al lui `main`
+(<git-common-dir>/publica_verdicte.log). `verifica` (citire, sub ROLLBACK) nu e păzită. Restartul amânat de o migrare îl face scripts/publica_prod.sh (cere și el PASS), nu rulatorul.
 După o rulare reușită pe producție, dacă hook-ul a oprit restartul (`.git/RESTART_OPRIT_MIGRARE`) și HEAD nu mai are nimic de rulat,
 rulatorul repornește aplicația — exact pasul pe care hook-ul l-a amânat.
 """
@@ -39,6 +41,7 @@ import sys
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SENTINELA = os.path.join(RAD, ".git", "RESTART_OPRIT_MIGRARE")
+PASS_LOG = None   # None = <git-common-dir>/publica_verdicte.log; numai calibrarea îl mută (pe o bază de probă)
 _RE_FISIER = re.compile(r"^core/migrare_[a-z0-9_]+\.py$")
 
 DDL = ("CREATE TABLE IF NOT EXISTS public.migrari_rulate (fisier text NOT NULL, amprenta text NOT NULL, "
@@ -238,31 +241,24 @@ def _cu_registrul(scrie):
 
 
 def _reporneste_daca_e_cazul(productie):
+    """[16.1-C3, pct.7] Restartul amânat de o migrare îl face numai scripts/publica_prod.sh (cere PASS pentru HEAD, verifică migrările, publică statica ÎNAINTEA restartului, apoi
+    restartul și four-way-ul; își scrie singur sentinelele)."""
     if not (productie and os.path.exists(SENTINELA)):
         return
-    head = _git("rev-parse", "HEAD").strip()
-    cod, linii = verifica(head)
-    if cod != 0:
-        print("restartul rămâne oprit — HEAD %s mai are de rulat:\n  %s" % (head[:8], "\n  ".join(linii)))
-        return
-    # [10.10.2026, lotul „Retestul plasei”] statica HEAD-ului se publică ÎNAINTEA restartului, aici: cu restartul oprit, post-commit n-o
-    # mai publică (ar fi ajuns JS-ul commitului peste backendul vechi), deci procesul nou ar porni altfel pe statica commitului anterior
-    ps = subprocess.run([sys.executable, os.path.join(RAD, "scripts", "publica_static.py")], capture_output=True, text=True, cwd=RAD)
-    if ps.returncode != 0:
-        print("restartul rămâne oprit — statica lui %s nu s-a publicat (%s); rulează: ./venv/bin/python scripts/publica_static.py, "
-              "apoi: sudo systemctl restart iconta-nou" % (head[:8], (ps.stdout or ps.stderr).strip().splitlines()[-1:] or "?"))
-        return
-    print("statica publicată: %s" % ((ps.stdout or "").strip().splitlines()[-1:] or ["?"])[0])
-    r = subprocess.run(["sudo", "-n", "systemctl", "restart", "iconta-nou"], capture_output=True, text=True)
-    if r.returncode == 0:
-        os.remove(SENTINELA)
-        print("toate migrările lui %s sunt rulate pe producție: iconta-nou repornit, preia HEAD" % head[:8])
-        # [12.10.2026] publicarea se închide abia cu four-way-ul: același script ca post-commit (scrie sau șterge .git/FOUR_WAY_NEINCHIS);
-        # fără el sentinela scrisă de post-commit la restartul oprit rămânea după ce toate brațele se închiseseră
-        fw = subprocess.run(["sh", os.path.join(RAD, "scripts", "githooks", "four-way")], capture_output=True, text=True, cwd=RAD)
-        print((fw.stdout + fw.stderr).strip())
-    else:
-        print("restartul a eșuat (%s) — rulează: sudo systemctl restart iconta-nou" % (r.stderr.strip() or r.stdout.strip()))
+    r = subprocess.run(["sh", os.path.join(RAD, "scripts", "publica_prod.sh")], capture_output=True, text=True, cwd=RAD)
+    print((r.stdout + r.stderr).strip())
+
+
+def refuz_fara_pass(log=None, main="main"):
+    """[16.1-C3, pct.7] None dacă `log` (implicit <git-common-dir>/publica_verdicte.log) are `PASS <sha>` pentru commitul curent al lui `main`; altfel motivul refuzului."""
+    sha = _git("rev-parse", main).strip()
+    if log is None:
+        log = os.path.join(_git("rev-parse", "--path-format=absolute", "--git-common-dir").strip(), "publica_verdicte.log")
+    try:
+        ok = any(ln.startswith("PASS %s " % sha) for ln in open(log, encoding="utf-8"))
+    except OSError:
+        ok = False
+    return None if ok else "REFUZ: fără verdictul PASS al lui scripts/publica_lot.py pentru commitul curent al lui %s (%s) în %s; nimic nu se scrie pe producție" % (main, sha[:8], log)
 
 
 def main(argv):
@@ -278,6 +274,10 @@ def main(argv):
             print(ln)
         return cod
     if productie:
+        motiv = refuz_fara_pass(PASS_LOG)
+        if motiv:
+            print(motiv)
+            return 1
         _env_productie()
     commit = _git("rev-parse", "--short", "HEAD").strip()
     if cmd == "baza":

@@ -12,10 +12,10 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import jurnal_lot as JL  # noqa: E402
 import poarta_lib as L  # noqa: E402
 
 RAD = L.RAD
-IESIRE = os.path.join(RAD, "docs", "dovezi", "16_1", "baza.json")
 
 
 def _versiune_pytest(wt):
@@ -24,6 +24,7 @@ def _versiune_pytest(wt):
 
 
 def main():
+    IESIRE = os.path.join(RAD, "docs", "dovezi", L.lot_fisier(JL.lot_curent()), "baza.json")   # 16.1-C3: fiecare lot își are baza lui
     baza = subprocess.run(["git", "merge-base", "HEAD", "main"], cwd=RAD, capture_output=True, text=True).stdout.strip()
     if not baza:
         print("[baza] REFUZ: nu există merge-base cu main.")
