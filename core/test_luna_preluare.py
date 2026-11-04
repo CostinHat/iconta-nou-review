@@ -93,7 +93,8 @@ def test_control_fiscal_citeste_luna_efectiva():
     apeluri = {(n.func.value.id if isinstance(n.func, ast.Attribute) and isinstance(n.func.value, ast.Name) else None,
                 n.func.attr if isinstance(n.func, ast.Attribute) else getattr(n.func, "id", None))
                for n in ast.walk(ast.parse(inspect.getsource(cf))) if isinstance(n, ast.Call)}
-    assert ("_lp", "efectiva") in apeluri and ("_lp", "deduse") not in apeluri
+    # [16.0, teste de bază] `efectiva` a trecut în `luna_preluare.din_fapte` (E3: luna preluării ≥ înființarea): Control fiscal citește luna prin ea, nu prin `deduse`
+    assert ("_lp", "din_fapte") in apeluri and ("_lp", "deduse") not in apeluri
 
 
 def test_data_infiintarii_se_salveaza_se_refuza_in_viitor_si_se_jurnalizeaza(conn):

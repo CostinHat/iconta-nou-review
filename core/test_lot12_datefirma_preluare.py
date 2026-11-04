@@ -75,7 +75,8 @@ def test_def_147_luna_aleasa_dupa_o_nota_mai_veche_se_plafoneaza_la_prima_nota()
     # fără notă: nimic de plafonat
     assert lp.efectiva(aleasa, creat, None, None) == (2099, 8) and lp.plafonata(aleasa, None) is False
     assert lp.stare({"salvata": aleasa, "creat_la": creat, "data_solduri": None, "prima_nota": prima}) == {
-        "salvata": "2099-08", "propunere": "2099-06", "efectiva": "2099-06", "prima_nota": "2099-06", "plafonata": True}
+        "salvata": "2099-08", "propunere": "2099-06", "efectiva": "2099-06", "prima_nota": "2099-06", "plafonata": True,
+        "infiintare": None}   # [16.0, teste de bază] `stare` poartă și data înființării (E3)
 
 
 def test_def_147_nota_scrisa_dupa_alegere_muta_luna_efectiva_la_toti_cititorii(cur):
