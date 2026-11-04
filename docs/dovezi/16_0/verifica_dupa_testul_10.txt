@@ -1,0 +1,18 @@
+[verifica] PICĂ  F1A nr. 15, 500,00 lei, 24.10.2026, neîncasată (fără chitanță anulabilă pe ea): găsit '0', așteptat '1'
+[verifica] PICĂ  Client Test SRL (410001005) sold preluat 2000,00 la 31.08.2026: găsit '0', așteptat '1'
+[verifica] PICĂ  F1 fără serie de chitanță: găsit 'CHF1', așteptat '-'
+[verifica] integrare: ICONTA_ANAF_SIMULAT setată de e2e_poarta.py la pornirea serverului de lucru
+[verifica] integrare: ICONTA_AI_SIMULAT setată de e2e_poarta.py la pornirea serverului de lucru
+[verifica] integrare: ICONTA_WHATSAPP_SIMULAT setată de e2e_poarta.py la pornirea serverului de lucru
+[verifica] integrare: ICONTA_EMAIL_CUTIE setată de e2e_poarta.py la pornirea serverului de lucru
+[verifica] integrare: ICONTA_BON_DIR setată de e2e_poarta.py la pornirea serverului de lucru
+[verifica] integrare: ICONTA_FISIERE_DIR setată de e2e_poarta.py la pornirea serverului de lucru
+[verifica] cheie BREVO_API_KEY: în fișierele de mediu, SCOASĂ de e2e_poarta.py din mediul serverului de lucru
+[verifica] cheie POSTMARK_SERVER_TOKEN: în fișierele de mediu, SCOASĂ de e2e_poarta.py din mediul serverului de lucru
+[verifica] cheie WHATSAPP_TOKEN: în fișierele de mediu, SCOASĂ de e2e_poarta.py din mediul serverului de lucru
+[verifica] cheie ANTHROPIC_API_KEY: în fișierele de mediu, SCOASĂ de e2e_poarta.py din mediul serverului de lucru
+[verifica] SPV (spv_token în public): 0 rânduri; BNR: public.curs_bnr_zilnic 7844 rânduri (din snapshot)
+[verifica] data înghețată: core/ceas_proba.py::DATA_REF (constantă Python a testelor de browser, nu variabilă de mediu): DATA_REF = datetime.date(2026, 11, 3)
+[verifica] luna 10/2026 (regula din cod: core/contare_facturi.py:153 luna_blocata, aplicată pe data notei la :792): nicio perioadă blocată
+
+ieșire verifica: 1 (0 = țin, 1 = nu țin)

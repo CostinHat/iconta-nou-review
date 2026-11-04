@@ -1,0 +1,8 @@
+{
+ "id": "iconta_test-20261104-171456",
+ "arhiva_sha256": "00c6da4ae1352d4e8cdbe2fc13873a3cf300aecc3b6734098b2e685d9ad7a3d6",
+ "readme_sha256": "7cd724037c8243739492de2249794880d99e86eff6aab5db331b299920c47a72",
+ "data": "2026-11-04T17:14:56",
+ "commit": "b870724c01f57bcd9517c78c66a495f33b488a1e",
+ "data_inghetata_teste": "core/ceas_proba.py::DATA_REF = 2026-11-03"
+}
