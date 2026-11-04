@@ -181,6 +181,17 @@ def _main(argv):
             open(cale, "w", encoding="utf-8").write(text.replace(mu["ancora"], mu["inlocuire"], 1))
             print("[e2e] MUTAȚIE aplicată pe copie: %s" % mu["fisier"])
     env = _env_test()
+    # [16.0, pct.G] serverul de lucru refuză să pornească dacă baza conexiunii nu e `iconta_test` (SELECT current_database())
+    import psycopg2
+    try:
+        with psycopg2.connect(env["DATABASE_URL"]) as _c, _c.cursor() as _cur:
+            _cur.execute("SELECT current_database()")
+            _baza = _cur.fetchone()[0]
+    except Exception as e:      # noqa: BLE001 — fără conexiune dovedită la iconta_test nu pornește
+        _baza = "necunoscută (%s)" % type(e).__name__
+    if _baza != "iconta_test":
+        print("[e2e] REFUZ: serverul de lucru pornește numai pe iconta_test; baza conexiunii: %s" % _baza)
+        return 3
     os.makedirs(env["ICONTA_AI_SIMULAT"], exist_ok=True)
     os.makedirs(env["ICONTA_ANAF_SIMULAT"], exist_ok=True)
     os.makedirs(env["ICONTA_WHATSAPP_SIMULAT"], exist_ok=True)   # [598] fără răspunsul simulat al unei rulări vechi

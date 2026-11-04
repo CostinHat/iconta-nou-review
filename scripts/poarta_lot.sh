@@ -62,6 +62,22 @@ print("[poarta lot] fluxuri atinse (b): %d fisiere din harta%s; lista completa: 
       " — peste 20: inlocuite cu cele numite sub FLUXURI in scenarii" if d["flux_inlocuit"] else "", sys.argv[2]))
 PYE
 
+# POARTA_PLASA_FIX=<manifest> (16.0, pct.K): plasa fixă a măsurătorii. Manifestul (scripts/plasa_16_2.manifest: cale, sha256, teste descoperite, comandă) se verifică ÎNAINTE
+# de orice treaptă; un fișier lipsă, un hash diferit sau un număr de teste descoperite diferit = REFUZ, cu numele fișierului. Selecția veche nu se folosește: pytest rulează
+# lista scripts/poarta_nucleu.txt, plasa e2e rulează fișierele manifestului. Baza de test se restaurează înainte de pytest și înainte de plasa e2e (scripts/baza_test.sh).
+# Hash-ul manifestului intră în verdict.
+FIX="${POARTA_PLASA_FIX:-}"
+MANIFEST_HASH=""
+if [ -n "$FIX" ]; then
+    [ -f "$FIX" ] || { echo "[poarta lot] REFUZ: POARTA_PLASA_FIX=$FIX nu există."; exit 1; }
+    "$PY" scripts/genereaza_manifest_plasa.py --verifica "$FIX" || { echo "[poarta lot] REFUZ: manifestul $FIX nu se potrivește cu fișierele (vezi mai sus)."; exit 1; }
+    MANIFEST_HASH=$(sha256sum "$FIX" | cut -d' ' -f1)
+    grep -v '^#' scripts/poarta_nucleu.txt | grep . > "$J/poarta_pytest_fisiere.txt"
+    grep -v '^#' "$FIX" | cut -f1 | xargs -n1 basename > "$J/poarta_e2e_fisiere.txt"
+    echo "[poarta lot] PLASA FIXĂ $FIX (sha256 $MANIFEST_HASH): $(grep -c . "$J/poarta_pytest_fisiere.txt") fișiere pytest (nucleu), $(grep -c . "$J/poarta_e2e_fisiere.txt") fișiere e2e"
+fi
+restaureaza_baza() { [ -n "$FIX" ] && { sh scripts/baza_test.sh restaureaza > "$J/poarta_baza_restaurare.log" 2>&1 || { echo "[poarta lot] REFUZ: restaurarea bazei a eșuat"; tail -3 "$J/poarta_baza_restaurare.log"; rosu "restaurarea bazei"; final; }; }; }
+
 # POARTA_DOAR_PLASA=<sha>: rerularea numai a plasei e2e, dupa o rulare in care pytest si verificatorul au fost VERZI pe <sha> (verdict compus, 15.1).
 # Permis numai daca diferenta <sha>..HEAD atinge exclusiv fisiere ale portii, CLAUDE.md sau registre (nicio schimbare de aplicatie).
 DOAR_PLASA="${POARTA_DOAR_PLASA:-}"
@@ -79,7 +95,7 @@ fi
 final() {   # scrie verdictul și iese
     DUR="verificator ${T_VERIF:-0}s · pytest ${T_PYTEST:-0}s · plasa e2e ${T_E2E:-0}s · total $(( $(date +%s) - T0 ))s"
     if [ -z "$ROSII" ]; then V=VERDE; RCF=0; else V=ROSU; RCF=1; fi
-    [ "$RAM" != "main" ] && echo "$V $SHA $RAM $(date -Is)" >> "$JV"
+    [ "$RAM" != "main" ] && echo "$V $SHA $RAM $(date -Is)${MANIFEST_HASH:+ manifest=$MANIFEST_HASH}" >> "$JV"
     # [15.1] reluarea după roșu pornește de la acest commit (scripts/poarta_ultima.txt, ignorat de git); pe VERDE zona e gata: următoarea pornește de la `main`
     if [ "$V" = ROSU ]; then echo "$SHA" > "$ROOT/scripts/poarta_ultima.txt"; else rm -f "$ROOT/scripts/poarta_ultima.txt"; fi
     echo "    DURATE: $(date -Is) $V ·$ROSII · poarta implicita · $DUR" >> "$ROOT/.poarta_jurnal.log"
@@ -111,6 +127,7 @@ for k in d:
     if os.path.isfile(f[0]) and (len(f) < 2 or ("def " + f[-1].split("[")[0].split("::")[-1]) in open(f[0], encoding="utf-8").read()):
         print(k)
 PYE
+    [ -n "$FIX" ] && : > "$J/poarta_lf_ids.txt"
     if [ -s "$J/poarta_lf_ids.txt" ]; then
         lf_ruleaza "$J/poarta_lf_ids.txt" > "$J/poarta_pytest_lf.log" 2>&1
         RC=$?
@@ -131,6 +148,7 @@ PYE
         echo "[poarta lot] pytest picate la ultima rulare: SARIT — niciun test picat memorat"
     fi
     if [ -z "$ROSII" ]; then
+        restaureaza_baza
         xargs "$PY" -m pytest -q -n "$NW" --dist loadfile < "$J/poarta_pytest_fisiere.txt" > "$J/poarta_pytest.log" 2>&1
         RC=$?
         [ "$RC" -ne 0 ] && rosu "pytest (atinse + nucleu + scenarii)"
@@ -142,13 +160,14 @@ fi
 
 # plasa e2e: scenariile + fisierele atinse + cele cazute la rularea anterioara; dupa pytest (aceeasi baza de test)
 E2E="$(cat "$J/poarta_e2e_fisiere.txt")"
-[ -f "$CAZUTE_E2E" ] && E2E="$E2E
+[ -f "$CAZUTE_E2E" ] && [ -z "$FIX" ] && E2E="$E2E
 $(cat "$CAZUTE_E2E")"
 ARG=""
 for f in $(echo "$E2E" | sort -u); do [ -n "$f" ] && ARG="$ARG --doar=$f"; done
 T_E0=$(date +%s)
 rm -f "$CAPTURI/pytest.log"
 if [ -n "$ARG" ]; then
+    restaureaza_baza
     # shellcheck disable=SC2086
     "$PY" scripts/e2e_poarta.py $ARG "$CAPTURI" > "$J/poarta_e2e.log" 2>&1
     RC=$?

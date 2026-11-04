@@ -15,6 +15,9 @@ import sys
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(RAD, "scripts"))
 MANIFEST = os.path.join(RAD, "scripts", "plasa_16_2.manifest")
+_arg = [a for a in sys.argv[1:] if not a.startswith("--")]
+if _arg:
+    MANIFEST = os.path.abspath(_arg[0])
 SCENARII = os.path.join(os.environ.get("GHID_INCOMING", os.path.expanduser("~/ghid_incoming")), "scenarii_pilot.txt")
 PILOT = "frontend_test/e2e/e2e_pilot_luna.py"
 PY = os.path.join(RAD, "venv", "bin", "python")
