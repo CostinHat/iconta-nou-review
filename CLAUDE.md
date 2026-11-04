@@ -34,12 +34,13 @@ rezolvată și rulează permanent în poartă. Pilotul e atins când scenariul e
 ## 3. Lotul
 
 Lotul e unitatea de lucru, de publicare și de raport. Comenzile poartă numărul lotului (12.1, 12.2…).
-Code duce lotul până la capăt și NU se oprește sub niciun motiv înainte de publicarea lui (regulă permanentă a lui
-Costin, 29.10.2026): ce nu poate rezolva singur trece în raport și continuă cu restul; deciziile de pe parcurs le ia pe
-varianta cea mai sigură și le listează în raport, la E (Abateri); nu cere decizii pe parcurs. Singura oprire permisă
-înainte de publicare este un risc pentru producție (pierdere de date, aplicația căzută), cu motivul scris. Nu se trece la
-nimic din afara comenzii (nici agendă, nici fir intern, nici „următorul pas din listă”). Când lotul e gata: poartă
-(pe roșu: repară și reia, nu se publică niciodată pe roșu), backup, publicare, raport, apoi oprire.
+Code duce lotul până la capăt: ce nu poate rezolva singur trece în raport și continuă cu restul; deciziile de pe parcurs le
+ia pe varianta cea mai sigură și le listează în raport, la E (Abateri). Nu se trece la nimic din afara comenzii (nici agendă,
+nici fir intern, nici „următorul pas din listă”). Un lot = o poartă completă + reluări numai pe numele picate; a doua regresie
+de lot nouă = oprire, nepublicat (comanda 16.0, 04.11.2026). Un test roșu și pe main, nenumerotat în
+scripts/poarta_e2e_restante.txt, oprește lotul: baza s-a mișcat. Restaurarea bazei de test înainte de fiecare treaptă a porții
+și de fiecare parcurgere a verificatorului (scripts/baza_test.sh restaureaza). Când lotul e gata: poartă (pe roșu: repară
+și reia, nu se publică niciodată pe roșu), backup, publicare, raport, apoi oprire.
 
 R2. Un lot = o singură poartă și o singură publicare, la sfârșit. Nu publici pe zonă, pe ecran sau pe etapă, chiar dacă o comandă veche spune altfel. Înainte de a începe lotul rulezi poarta de bază pe main: dacă e roșie, repari întâi testele vechi, pe nume, într-un commit separat „teste de bază: <nume>”, și abia apoi începi lotul.
 
@@ -135,8 +136,7 @@ R11. Înainte de primul commit al unui lot, poarta rulează în modul „listeaz
 
 După poarta verde, Code publică imediat, fără să aștepte confirmare: backup al bazei chiar înainte,
 migrările pe producție, repornirea, verificarea four-way (disc = origin/main = backup = procesul viu).
-Dacă verificarea de după publicare pică, Code repară și publică din nou până trece; nu revine la
-versiunea anterioară. Push pe oglinda GitHub după fiecare publicare.
+Push pe oglinda GitHub după fiecare publicare.
 
 ## 7. Cabinetul real
 
