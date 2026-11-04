@@ -1,0 +1,2 @@
+lot,commit,verificator,inceput,sfarsit,pas,actiune,verdict,captura,motiv
+16.1-C2,7f484b69ed24ad5589dd0027e6c57bee325fb606,scripts/verifica_pas.py v1,2026-11-04T22:00:53+02:00,2026-11-04T22:00:54+02:00,P1,Deschid pagina principală pe serverul de lucru (8019) și cer configurația publică,trece,docs/dovezi/16_1_C2/capturi/16_1_C2_P1.png,

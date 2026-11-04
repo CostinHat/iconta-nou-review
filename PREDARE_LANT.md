@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**04.11.2026 — COMANDA 16.1-C2 (lot de unelte) gata pe `lucru/lot16-1` (worktree `/home/costin/iconta_lot16_1`), C = `7f484b69ed24ad5589dd0027e6c57bee325fb606` cu VERDE complet; se publică împreună cu 16.1-C1 și 16.1 prin `scripts/publica_lot.sh`. Aplicația nu s-a schimbat.** `~/coada_code.sh` scrie rândul „pornire” cu marcaj (cheia din `~/ghid_incoming/cheie_coada.txt`); ~/iconta_nou are rămășițe ale publicării eșuate a lui C1 în arborele de lucru (indexul = arborele lui 8ec9f557), de curățat înainte de ff.
+
 **04.11.2026 — COMANDA 16.1-C1 (lot de unelte): regula strămoșului în `scripts/publica_lot.py` (`--verifica`), C = `623fe734952a` cu VERDE complet (a treia rulare, autorizată în exceptii_16_1.txt); publicare prin `scripts/publica_lot.sh` din `lucru/lot16-1` (worktree `/home/costin/iconta_lot16_1`). Aplicația nu s-a schimbat.**
 
 **04.11.2026 — COMANDA 16.0 (lot de unelte) gata pe ramura `lucru/lot16-p0a` (worktree `/home/costin/iconta_lot16`): `scripts/baza_test.sh` (salveaza / restaureaza / stare / verifica / identitate, refuz pe orice bază alta decât `iconta_test`), `scripts/porneste_8019.sh`, plasa fixă `scripts/plasa_16_2.manifest` cu `POARTA_PLASA_FIX` în `poarta_lot.sh`, inventarul restanței `scripts/poarta_e2e_restante.txt` (R001–R036). Poarta pe plasa fixă VERDE pe `3bccd8b1`. Aplicația nu s-a schimbat. Lotul E7 rămâne nepublicat pe `lucru/lot15-e7`.**

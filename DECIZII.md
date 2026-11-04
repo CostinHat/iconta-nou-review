@@ -24416,3 +24416,13 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - Circularitatea din 16.1 (rândul jurnalului de verificare descrie commitul pe care a rulat, dar fișierul se comite după) se rezolvă prin regula strămoșului: `publica_lot.py --verifica <C> <HEAD>`; C = ultima rulare completă (623fe734952a), HEAD diferă de C numai prin căile permise (CSV doar adăugat, capturi/*.png, registre, CLAUDE.md). Raportul numește numai C.
 - A treia rulare completă: numai cu rândul „rulare_completa 3 | motiv: …” din exceptii_<lot>.txt, o singură dată, hash în jurnal. „pornire” reconstituită: `jurnal_lot.py pornire --ora-reala`.
 - Rândurile P1/N1 și vechiul jurnal_verificare_calibrare.csv (pe 2415a878) au fost scoase din C și regenerate pe C; N1 (pică, control negativ) stă în raport, cu captura în capturi/.
+
+## 04.11.2026 — Comanda 16.1-C2 (lot de unelte, „unelte” în scripts/praguri_16_1_C2.txt)
+- C = `7f484b69ed24ad5589dd0027e6c57bee325fb606` (rularea completă finală, VERDE, 1126 s; o singură rulare completă, baza docs/dovezi/16_1/baza.json de pe f2e64c1b). Se publică împreună cu 16.1-C1 și 16.1.
+- Hook-urile reference-transaction și pre-push acceptă VERDE pe C numai cu PASS pe HEAD care numește C și trece `publica_lot.py --verifica` (aceeași funcție `ancestor_refuzuri`); `scripts/githooks/verde-prin-pass.sh` e funcția comună.
+- Manifestul crește numai cu rânduri pentru fișiere de test noi (`poarta_lib.manifest_refuzuri`); un test nou de poziție pilot e fișier nou (`e2e_pilot_<poziție>.py`).
+- Rândul „pornire” îl scrie coada (`jurnal_lot.py pornire-coada`, marcaj din ~/ghid_incoming/cheie_coada.txt, 600); `reconstituit` numai în lot „unelte” și fără alt rând „pornire”. Lot de produs din prompt = fără marcaj = nepublicat.
+- Rândurile CSV pe alt sha decât C sunt ignorate; runda verificatorului = sha distinct cu Haiku pe pașii „după”; `runde_verificator_max` lipsă = 0.
+- CLAUDE.md iese din lista căilor permise după C. Numele lotului în căi: `16.1-C2` -> `16_1_C2` (`poarta_lib.lot_fisier`); baza unui lot de corecție = baza lotului de bază (`lot_baza`).
+- core/test_garda_main.py era roșu de la 16.1 (hook-ul cere PASS, testul nu-l scria): fixtura scrie acum PASS și copiază `verde-prin-pass.sh`.
+
