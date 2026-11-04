@@ -22,7 +22,10 @@ import sys
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # [17.10.2026, decizia Costin pct.3 — „Marchează 268 în DEFICIENTE ca amânată, cu motivul”] + `amânată`: amânare DECISĂ de Costin, cu motiv
-STARI = {"rezolvată", "parțial", "nerezolvată", "nu se aplică", "neverificat", "amânată"}
+# [15.1-E7, pct.5] + `reparat, fără dovadă pe ecran`: reparat în cod, fără un test e2e pe ecran numit în harta porții; devine `rezolvată` numai când primește scenariul
+# (plasa pilot din E6 sau lotul care o retestează); termen: lotul E8, apoi revine pe `nerezolvată`
+STARE_FARA_DOVADA = "reparat, fără dovadă pe ecran"
+STARI = {"rezolvată", "parțial", "nerezolvată", "nu se aplică", "neverificat", "amânată", STARE_FARA_DOVADA}
 STARI_N = {"reală", "nu e reală", "neverificat"}
 #: [CLAUDE.md §2.3 pct.10] rândul rezolvat în commitul care îl conține
 AUTO_COMMIT = "commitul care conține această intrare"
@@ -107,6 +110,32 @@ def test_rezolvata_are_commit_si_test_de_capat_la_capat():
     assert not rele, "\n".join(rele)
 
 
+def plasa_publicarii():
+    """Fișierele e2e pe care le rulează plasa de publicare: tot ce numește harta porții (`scripts/poarta_harta.txt`) plus plasa fixă pilot (15.1-E7, pct.5)."""
+    import glob as _g
+    out = set()
+    for ln in io.open(os.path.join(_RAD, "scripts", "poarta_harta.txt"), encoding="utf-8"):
+        if "=>" in ln and not ln.startswith("#"):
+            out.update(ln.split("=>", 1)[1].split())
+    out.update(os.path.basename(f) for f in _g.glob(os.path.join(_RAD, "frontend_test", "e2e", "e2e_pilot*.py")))
+    out.add("e2e_pozitii_validate.py")
+    return out
+
+
+def test_rezolvata_are_testul_e2e_in_harta_portii():
+    """[15.1-E7, pct.5] „rezolvată” = numele unui test e2e pe ecran, existent ÎN HARTA porții (plasa de publicare îl rulează, deci e verde la ultima rulare): un test pytest
+    pe funcție nu e dovadă pentru un număr văzut pe ecran. MUTAȚIE: un test numit care nu e în hartă (sau un `rezolvată` fără test) -> pică."""
+    in_harta = plasa_publicarii()
+    rele = []
+    for r in randuri():
+        if r["stare"] != "rezolvată":
+            continue
+        for t in re.findall(r"`([^`]+::test_def_[^`]+)`", r["test"]):
+            if os.path.basename(t.split("::")[0]) not in in_harta:
+                rele.append("%s: testul %s nu e în harta porții (scripts/poarta_harta.txt)" % (r["nr"], t))
+    assert not rele, "\n".join(rele)
+
+
 def test_fiecare_test_al_plasei_e_al_unei_deficiente_din_registru():
     stari = {r["nr"]: r["stare"] for r in randuri()}
     rele = ["%s (%s)" % (t, nr) for nr, ts in plasa_e2e().items() for t in ts if nr not in stari]
@@ -158,6 +187,8 @@ def test_poarta_ruleaza_plasa(tmp_path):
 # lotul 11 sau după), SAU (c) e un număr lucrat în comenzile 11.1 / 11.2 (`ATINSE_LOT11`), chiar dacă rândul a rămas cu textul lotului 10.
 # Rândurile rezolvate înainte de lotul 11 și neatinse de atunci rămân pe regula veche (registrul nu poate dovedi trecutul).
 REF_LOT11 = "381c82df"
+#: primul număr al lotului 15 (retesturile din 25.10.2026 încoace): dovada lui e e2e-ul din harta porții, nu capturile lotului 11
+NUMAR_LOT15 = 712
 #: [Comanda 11.1 pct.1–25 și 11.2 pct.2] numerele lucrate în lotul 11 (cele cu textul lotului 10 care trebuie redovedite: 425 / 426 după
 #: 439, 428, 429, 409, 436 afișarea, C68–C74 „dă dovada pe aplicație”, 420, 424; restul sunt noi, dar intră și pe criteriul (a))
 ATINSE_LOT11 = frozenset(
@@ -215,6 +246,10 @@ def randuri_la_pornirea_lotului_11():
 def cere_dovada(r, vechi):
     """PURĂ. Rândul `r` (stare rezolvată) cere dovada pe firmele de test? `vechi` = rândurile de la pornirea lotului 11."""
     if r["stare"] != "rezolvată" or r["nr"].startswith("N"):
+        return False
+    # [15.1-E7, pct.5] numerele lotului 15 (712 și următoarele) sunt „rezolvate” numai cu testul e2e pe ecran din harta porții (`test_rezolvata_are_testul_e2e_in_harta_portii`),
+    # nu cu capturi pe firmele de test: regula 11.2 rămâne pentru numerele mai vechi
+    if re.match(r"^(\d+)", r["nr"]) and int(re.match(r"^(\d+)", r["nr"]).group(1)) >= NUMAR_LOT15:
         return False
     v = vechi.get(r["nr"])
     if v is None or r["nr"] in ATINSE_LOT11:
