@@ -36,20 +36,35 @@ rezolvată și rulează permanent în poartă. Pilotul e atins când scenariul e
 Lotul e unitatea de lucru, de publicare și de raport. Comenzile poartă numărul lotului (12.1, 12.2…).
 Code duce lotul până la capăt: ce nu poate rezolva singur trece în raport și continuă cu restul; deciziile de pe parcurs le
 ia pe varianta cea mai sigură și le listează în raport, la E (Abateri). Nu se trece la nimic din afara comenzii (nici agendă,
-nici fir intern, nici „următorul pas din listă”). Un lot = o rulare completă a porții + reluări numai pe numele picate; verdictul de publicare îl dă numai rularea
-completă finală, cu zero regresii de lot; a doua regresie de lot nouă = oprire, nepublicat (comanda 16.0, 04.11.2026).
-Un test roșu și pe bază, nenumerotat în inventarul scripts/poarta_e2e_restante.txt, oprește lotul: baza s-a mișcat.
-Restaurarea bazei de test (scripts/baza_test.sh restaureaza) se face înainte de fiecare treaptă a porții și de fiecare
-parcurgere a verificatorului, niciodată per test. „Zero restanțe” = zero picături neclasificate și nenumerotate pe plasa
-completă, nu zero picături absolute. Limitele declarate: jurnalul porții e dovadă pentru fazele înregistrate, nu registru
-absolut; autorul fișierului de excepții al arhitectului nu e autentificat mecanic.
+nici fir intern, nici „următorul pas din listă”). Poarta de publicare, jurnalul și publicarea sunt scripturi; scriptul e regula, textul doar o numește (comanda 16.1):
+- Baza: `sh scripts/poarta_lot.sh --baza` rulează poarta completă pe un worktree curat al commitului de bază și scrie docs/dovezi/<lot>/baza.json (rezultat, durată și
+  aserțiuni pe test; sha-ul bazei, hash-ul manifestului, snapshotul, mediul). Fără baza.json, cu alt merge-base sau cu alt manifest, poarta refuză.
+- Poarta: `POARTA_PLASA_FIX=scripts/plasa_16_2.manifest sh scripts/poarta_lot.sh` (scripts/poarta_rulare.py): verificator, pytest (nucleul + testele atinse), plasa e2e din
+  manifest, baza restaurată înainte de pytest și înainte de plasa e2e (niciodată per test), toate treptele rulează, și după una roșie. Clasificarea o scrie poarta
+  (scripts/poarta_clasifica.py): regresie de lot, restanță numerotată, test nou, test invalid, eroare de infrastructură (reluată o dată, apoi oprire). Un test roșu și pe
+  bază, nenumerotat în scripts/poarta_e2e_restante.txt, oprește lotul: baza s-a mișcat; a doua regresie de lot nouă oprește lotul. „Zero restanțe” = zero picături
+  neclasificate și nenumerotate, nu zero picături absolute. Selecția veche după fișiere atinse există numai ca diagnostic (`POARTA_DIAGNOSTIC=1`), niciodată pentru publicare.
+- Reluarea după roșu: `sh scripts/poarta_lot.sh --reia` rulează numai numele picate și testele fișierelor schimbate de la commitul roșu; cel mult două pe lot; refuză
+  (cu numele fișierului) orice fișier din `git diff --name-only <roșu>..HEAD` care nu era în diff-ul lotului la commitul roșu, nu e al unui test picat (cu aserțiunile
+  nescăzute față de bază) sau nu e în ~/ghid_incoming/exceptii_<lot>.txt (scris de arhitect; un rând = fișier + motiv; hash-ul în jurnal). Reluarea e diagnostic, nu rulare
+  completă. Cu cel puțin o reluare, raportul are secțiunea „diff-ul reluărilor” și fraza de risc din scripts/publica_lot.py. Verdictul de publicare îl dă numai rularea completă
+  finală (cel mult două pe lot), cu zero regresii de lot; picături noi la o reluare opresc lotul, nepublicat.
+- Jurnalul: scripts/jurnal_lot.py scrie în ~/iconta_nou/.lot_jurnal.log începutul și sfârșitul fiecărei faze obligatorii (pornire, hook, verificator, treptele porții,
+  publicare); pluginul pytest din conftest.py, scripts/cronometru.sh și scripts/bin/{pytest,playwright} înregistrează rulările; o fază fără sfârșit e „intrerupt”.
+  Duratele din raport sunt copia ieșirii `python scripts/defalcare.py <lot>`. Verificarea pe pas: docs/dovezi/<lot>/jurnal_verificare.csv, scris de
+  scripts/verifica_pas.py (verdictul vine din compararea JSON-ului ecranului cu așteptarea) și controlat încrucișat de scripts/jurnal_verificator.sh.
+- Publicarea: numai `sh scripts/publica_lot.sh` (ZIP, verificări, `PASS <sha>`, push, sfârșitul fazei „publicare”). Hook-ul reference-transaction, pre-push și restartul din
+  post-commit refuză fără PASS; poarta, publica_lot.sh, baza_test.sh, nucleul, conftest.py nu se ating în afara loturilor marcate „unelte” în scripts/praguri_<lot>.txt.
+- Limite declarate: jurnalul dovedește fazele obligatorii înregistrate (început și sfârșit), nu toate execuțiile posibile pe un server cu shell (o comandă cu cale absolută
+  ocolește PATH-ul); publicarea e condiționată de înregistrarea fazelor obligatorii, nu de interceptarea tuturor execuțiilor. Autorul fișierului de excepții al arhitectului
+  nu e autentificat mecanic (un singur utilizator pe server).
 Plasa fixă (scripts/plasa_16_2.manifest, hash în verdict): de la 16.2 un lot pilot poate adăuga sau actualiza în manifest numai
 fișierele de test pe care le atinge, cu hash-ul în același commit; nicio ștergere din manifest fără fișierul de excepții al
-arhitectului (~/ghid_incoming/exceptii_<lot>.txt); verificarea diff-ului manifestului o face publica_lot.sh (16.1).
+arhitectului (~/ghid_incoming/exceptii_<lot>.txt); verificarea diff-ului manifestului o face scripts/publica_lot.sh.
 Când lotul e gata: poartă (pe roșu: repară
 și reia, nu se publică niciodată pe roșu), backup, publicare, raport, apoi oprire.
 
-R2. Un lot = o singură poartă și o singură publicare, la sfârșit. Nu publici pe zonă, pe ecran sau pe etapă, chiar dacă o comandă veche spune altfel. Înainte de a începe lotul rulezi poarta de bază pe main: dacă e roșie, repari întâi testele vechi, pe nume, într-un commit separat „teste de bază: <nume>”, și abia apoi începi lotul.
+R2. Un lot = o singură poartă și o singură publicare, la sfârșit. Nu publici pe zonă, pe ecran sau pe etapă, chiar dacă o comandă veche spune altfel. Starea bazei o fixează baza.json (§3): ce e roșu pe bază nu se repară în lot și nu se numără ca regresie; dacă e nenumerotat în inventar, lotul se oprește.
 
 ## 4. Deficiențele
 
@@ -83,7 +98,7 @@ După fiecare sarcină din lot se testează imediat codul atins și tot ce depin
 (scripts/poarta_scurta.py). Când derivarea nu e sigură, se rulează tot ce poate fi atins. JS/CSS atins:
 e2e-ul ecranelor atinse, uneltele vizuale și verificatorul.
 
-Poarta implicită este scripts/poarta_lot.sh (regulă permanentă, comanda 15.G, 30.10.2026) și rulează numai: testele picate la
+Poarta DIAGNOSTIC (`POARTA_DIAGNOSTIC=1 sh scripts/poarta_lot.sh`; poarta de publicare e cea din §3, pe plasa fixă) este scripts/poarta_lot.sh (regulă permanentă, comanda 15.G, 30.10.2026) și rulează numai: testele picate la
 ultima rulare, testele fișierelor atinse de la ultima publicare, scenariile deficiențelor, testele de nucleu fiscal și calcul
 (declarații, TVA, solduri, stocuri, salarii) și verificatorul. Plasa e2e implicită ia numai: (a) fișierele e2e numite în
 ~/ghid_incoming/scenarii_<comanda>.txt (câte unul pe rând; îl scrie arhitectul sau Code la începutul comenzii, cu e2e-urile
@@ -141,7 +156,7 @@ R11. Înainte de primul commit al unui lot, poarta rulează în modul „listeaz
 
 ## 6. Publicarea
 
-După poarta verde, Code publică imediat, fără să aștepte confirmare: backup al bazei chiar înainte,
+După poarta verde, Code publică imediat, fără să aștepte confirmare, numai prin `sh scripts/publica_lot.sh` (§3): backup al bazei chiar înainte,
 migrările pe producție, repornirea, verificarea four-way (disc = origin/main = backup = procesul viu).
 Push pe oglinda GitHub după fiecare publicare.
 

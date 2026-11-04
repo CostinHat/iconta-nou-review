@@ -130,7 +130,11 @@ publica_statica() {
 # Gardat de core/test_publicare_restart_neconditionat.py (verificarea e singura conditie; alta reaparuta -> pica).
 S_RS=".git/RESTART_ESUAT"; rm -f "$S_RS"
 S_MG=".git/RESTART_OPRIT_MIGRARE"; rm -f "$S_MG"
-if "$PWD/venv/bin/python" -m core.migrari_registru verifica "$HEAD_SHA" > /tmp/migrari_verifica.log 2>&1; then
+# [16.1, pct.4] restartul producției refuză fără verdictul PASS al lui scripts/publica_lot.sh pentru acest SHA (scriptul de restart = acest hook; rulatorul migrărilor
+# din core/ reporneste el însuși și nu e păzit de acest rând — limită declarată în raportul 16.1).
+if ! grep -q "^PASS $HEAD_SHA " "$(git rev-parse --path-format=absolute --git-common-dir)/publica_verdicte.log" 2>/dev/null; then
+    banner "iconta-nou (restart REFUZAT)" "$S_RS" "fără verdictul PASS al lui scripts/publica_lot.sh pentru $HEAD_SHA" "sh scripts/publica_lot.sh din ramura lotului"
+elif "$PWD/venv/bin/python" -m core.migrari_registru verifica "$HEAD_SHA" > /tmp/migrari_verifica.log 2>&1; then
     publica_statica   # statica commitului, înaintea restartului (pasul 2b)
     if sudo -n systemctl restart iconta-nou > /tmp/restart_iconta.log 2>&1; then
         echo "[post-commit] iconta-nou restartat -> procesul viu preia $(git rev-parse --short HEAD)"

@@ -1,0 +1,7 @@
+#!/bin/sh
+# scripts/bin/playwright — învelișul cronometrat al lui playwright (comanda 16.1, pct.2): scrie faza în jurnal și rulează playwright-ul real (primul din PATH, în afara acestui director).
+AICI=$(cd "$(dirname "$0")" && pwd)
+REAL=$(PATH=$(echo "$PATH" | tr ':' '\n' | grep -vxF "$AICI" | paste -sd:) command -v playwright)
+[ -n "$REAL" ] || { echo "playwright negăsit în PATH"; exit 127; }
+LOT=$("$AICI/../../venv/bin/python" "$AICI/../jurnal_lot.py" lot-curent)
+exec sh "$AICI/../cronometru.sh" "$LOT" playwright -- "$REAL" "$@"

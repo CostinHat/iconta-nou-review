@@ -1,0 +1,7 @@
+#!/bin/sh
+# scripts/bin/pytest — învelișul cronometrat al lui pytest (comanda 16.1, pct.2): scrie faza în jurnal și rulează pytest-ul real (primul din PATH, în afara acestui director).
+AICI=$(cd "$(dirname "$0")" && pwd)
+REAL=$(PATH=$(echo "$PATH" | tr ':' '\n' | grep -vxF "$AICI" | paste -sd:) command -v pytest)
+[ -n "$REAL" ] || { echo "pytest negăsit în PATH"; exit 127; }
+LOT=$("$AICI/../../venv/bin/python" "$AICI/../jurnal_lot.py" lot-curent)
+exec sh "$AICI/../cronometru.sh" "$LOT" pytest -- "$REAL" "$@"

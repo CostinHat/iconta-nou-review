@@ -226,10 +226,10 @@ def _main(argv):
             return 3
         print("[e2e] aplicația din %s pornită pe %d în %ds" % ("arbore" if din_arbore else "index", PORT, time.time() - t0))
         env.update({"PROBA_BAZA": "http://127.0.0.1:%d" % PORT, "E2E_CAPTURI": iesire, "E2E_TEMP": TEMP,
-                    "PYTHONPATH": "%s:%s/frontend_test" % (arb, arb), "PYTHONDONTWRITEBYTECODE": "1"})
+                    "PYTHONPATH": "%s:%s/frontend_test:%s/scripts" % (arb, arb, arb), "PYTHONDONTWRITEBYTECODE": "1"})
         dir_e2e = os.path.join(arb, "frontend_test", "e2e")
         tinte = [os.path.join(dir_e2e, d) for d in doar] or [dir_e2e]
-        r = subprocess.run([py, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-o", "python_files=e2e_*.py",
+        r = subprocess.run([py, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "lot_plugin_pytest", "-o", "python_files=e2e_*.py",
                             "--rootdir", dir_e2e] + tinte,
                            cwd=arb, env=env, capture_output=True, text=True)
         out = r.stdout + r.stderr

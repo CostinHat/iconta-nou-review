@@ -71,3 +71,10 @@ Publica automat pe origin/main SI pe backup/lant-<data> dupa mutarea lui `main` 
 Fast-forward, NICIODATA `--force`. Daca origin/main a avansat sub tine -> se opreste si cere `pull --rebase`.
 Esec de publicare -> banner + sentinela (`.git/PUSH_MAIN_ESUAT`, `.git/PUSH_BACKUP_ESUAT`; vizibil, nu tacut).
 Backup: fast-forward, FARA --force, creeaza ramura zilei daca nu exista. Cableaza CLAUDE.md §2.3 pct.8.
+
+## Publicarea condiționată de PASS (comanda 16.1, pct.4)
+`main` se mută (reference-transaction), se împinge pe un remote (pre-push) și producția se repornește (post-commit) numai pentru un SHA care are `VERDE` (rularea completă finală,
+`scripts/poarta_rulare.py`) ȘI `PASS` (`scripts/publica_lot.sh`) în `<git-common-dir>/poarta_verdicte.log`, respectiv `publica_verdicte.log`. Singura cale de publicare:
+`sh scripts/publica_lot.sh` din ramura lotului. `pre-commit` scrie faza „hook” în `.lot_jurnal.log` (început, sfârșit). Calibrarea: `docs/dovezi/16_1/calibrare.txt`.
+Mecanismul de instalare al hook-urilor rămâne cel din 15.1-R: `git config core.hooksPath scripts/githooks` (nimic nu se copiază în `.git/hooks`).
+Limită declarată: rulatorul migrărilor (`core/migrari_registru.py ... ruleaza --productie`) își reporneste singur aplicația și nu e păzit de PASS.

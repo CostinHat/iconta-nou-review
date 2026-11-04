@@ -26,6 +26,13 @@ if [ "$1" = "--baza" ]; then
     PYB=./venv/bin/python; [ -x "$PYB" ] || PYB=python3
     exec "$PYB" scripts/poarta_baza.py
 fi
+# 16.1 pct.1: poarta de publicare = scripts/poarta_rulare.py — rularea completă (fără argumente) și reluarea după roșu (--reia), pe ramura lotului, cu
+# POARTA_PLASA_FIX=scripts/plasa_16_2.manifest. Selecția veche (mai jos) rămâne numai diagnostic (POARTA_DIAGNOSTIC=1) și pe `main`, niciodată pentru publicare:
+# nu scrie VERDE, ci DIAGNOSTIC_VERDE / DIAGNOSTIC_ROSU, pe care garda de pe `main` nu le primește.
+if [ "$1" = "--reia" ] || { [ -z "$1" ] && [ "${POARTA_DIAGNOSTIC:-}" != "1" ] && [ "$(git symbolic-ref --short HEAD 2>/dev/null)" != "main" ]; }; then
+    PYR=./venv/bin/python; [ -x "$PYR" ] || PYR=python3
+    exec "$PYR" scripts/poarta_rulare.py "$@"
+fi
 [ -n "$1" ] && { echo "[poarta lot] REFUZ: poarta implicita nu are argumente (primit: $1)."; exit 1; }
 COMUN=$(git rev-parse --path-format=absolute --git-common-dir) || exit 1
 JV="$COMUN/poarta_verdicte.log"
@@ -104,7 +111,7 @@ final() {   # scrie verdictul și iese
     RESTANTE=""; [ -s "$J/poarta_restante_scazute.txt" ] && RESTANTE=" · $(grep -c '^restanță' "$J/poarta_restante_scazute.txt") restanțe scăzute: $(grep '^restanță' "$J/poarta_restante_scazute.txt" | cut -d' ' -f2 | tr '\n' ',')"
     DUR="verificator ${T_VERIF:-0}s · pytest ${T_PYTEST:-0}s · plasa e2e ${T_E2E:-0}s · total $(( $(date +%s) - T0 ))s${MANIFEST_HASH:+ · manifest $MANIFEST_HASH}$RESTANTE"
     if [ -z "$ROSII" ]; then V=VERDE; RCF=0; else V=ROSU; RCF=1; fi
-    [ "$RAM" != "main" ] && echo "$V $SHA $RAM $(date -Is)${MANIFEST_HASH:+ manifest=$MANIFEST_HASH}" >> "$JV"
+    [ "$RAM" != "main" ] && echo "DIAGNOSTIC_$V $SHA $RAM $(date -Is)${MANIFEST_HASH:+ manifest=$MANIFEST_HASH}" >> "$JV"
     # [15.1] reluarea după roșu pornește de la acest commit (scripts/poarta_ultima.txt, ignorat de git); pe VERDE zona e gata: următoarea pornește de la `main`
     if [ "$V" = ROSU ]; then echo "$SHA" > "$ROOT/scripts/poarta_ultima.txt"; else rm -f "$ROOT/scripts/poarta_ultima.txt"; fi
     echo "    DURATE: $(date -Is) $V ·$ROSII · poarta implicita · $DUR" >> "$ROOT/.poarta_jurnal.log"

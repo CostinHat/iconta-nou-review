@@ -12,6 +12,7 @@
 # consumarea ei la reușită (`APROBARE_MAIN.folosita-<sha>`). Verdictul VERDE e singura condiție; un fișier `APROBARE_MAIN` rămas pe disc
 # nu mai e citit, nici mutat. (Istoric: 14.10 aprobarea; 15.10 „main acceptă un commit doar dacă jurnalul porții îl arată verde” s-a
 # adăugat lângă ea; 23.10 aprobarea a ieșit.)
+# 16.1 pct.4: pe lângă VERDE se cere `PASS <sha>` în <git-common-dir>/publica_verdicte.log, scris numai de scripts/publica_lot.sh.
 # Lucrul se face pe ramuri, în worktree; publicarea = fast-forward la SHA-ul verde + post-commit.
 # Gard: core/test_garda_main.py (depozit temporar; mutațiile „verdictul nu se cere”, „ștergerea trece”, „aprobarea scrisă cerută înapoi”
 # -> ROȘU).
@@ -29,6 +30,14 @@ while read -r VECHI NOU REF; do
         echo "" >&2
         echo "############################################################" >&2
         echo "## [garda main] REFUZAT: ștergerea lui refs/heads/main (versiunea publicată)." >&2
+        echo "############################################################" >&2
+        COD=1
+    elif ! grep -q "^PASS $NOU " "$COMUN/publica_verdicte.log" 2>/dev/null; then
+        # 16.1 pct.4: publicarea e condiționată de verdictul PASS al lui scripts/publica_lot.sh (raport, poartă, jurnal, perimetru, bază, ZIP) — bariera, nu regula
+        echo "" >&2
+        echo "############################################################" >&2
+        echo "## [garda main] REFUZAT: refs/heads/main -> ${NOU} fără verdictul PASS al lui scripts/publica_lot.sh." >&2
+        echo "## Singura cale de publicare: sh scripts/publica_lot.sh (din ramura lotului). Verdictul în $COMUN/publica_verdicte.log." >&2
         echo "############################################################" >&2
         COD=1
     elif ! grep -q "^VERDE $NOU " "$JV" 2>/dev/null; then

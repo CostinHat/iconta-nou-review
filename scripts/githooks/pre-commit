@@ -27,6 +27,9 @@ if [ "$(git symbolic-ref --short HEAD 2>/dev/null)" = "main" ]; then
 fi
 PY=./venv/bin/python
 [ -x "$PY" ] || PY=python3
+# [16.1, pct.2] faza „hook” în jurnalul lotului: început aici, sfârșit la ieșire (cu rezultatul); un hook omorât rămâne „intrerupt”
+LOTJ=$("$PY" scripts/jurnal_lot.py lot-curent 2>/dev/null); HID=$("$PY" scripts/jurnal_lot.py inceput "$LOTJ" hook 2>/dev/null)
+trap 'RCH=$?; if [ "$RCH" -eq 0 ]; then RJ=verde; else RJ=rosu_$RCH; fi; "$PY" scripts/jurnal_lot.py sfarsit "$LOTJ" hook "$HID" "$RJ" 2>/dev/null' EXIT
 RUFF=./venv/bin/ruff
 if [ -x "$RUFF" ]; then
     echo "[pre-commit] ruff (undefined-name F821/F822/F823)..."

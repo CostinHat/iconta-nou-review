@@ -20,8 +20,13 @@ A doua incuietoare, cea tare, e la PostgreSQL: rolul `iconta_test_user` nu are `
 `iconta_v2`, deci refuzul vine de la server chiar daca cineva ocoleste codul de aici.
 """
 import os
+import sys
 
 import pytest
+
+# [16.1, pct.2] jurnalul lotului: pluginul scrie începutul și sfârșitul fiecărei sesiuni pytest în .lot_jurnal.log (scripts/lot_plugin_pytest.py)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts"))
+pytest_plugins = ["lot_plugin_pytest"]
 
 CALE_TEST_ENV = os.path.expanduser("~/.iconta/test.env")
 

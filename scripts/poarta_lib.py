@@ -84,3 +84,89 @@ def cheie_asertiuni(nume):
     """`cale::[Clasa::]test[param]` -> (cale, `[Clasa::]test`)."""
     p = nume.split("::")
     return p[0], "::".join(p[1:]).split("[")[0]
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------
+# rularea treptelor (comună bazei și candidatului): verificatorul de design, pytest pe nucleu, plasa e2e din manifest — fără oprire la prima roșie
+# ---------------------------------------------------------------------------------------------------------------------------------------------
+import contextlib   # noqa: E402
+import subprocess   # noqa: E402
+import sys   # noqa: E402
+import time   # noqa: E402
+
+MANIFEST = "scripts/plasa_16_2.manifest"
+NUCLEU = "scripts/poarta_nucleu.txt"
+
+
+def _rulare(cmd, cwd, env, log):
+    t0 = time.time()
+    with open(log, "w") as f:
+        r = subprocess.run(cmd, cwd=cwd, env=env, stdout=f, stderr=subprocess.STDOUT)
+    return r.returncode, round(time.time() - t0, 1)
+
+
+def fisiere_nucleu(wt):
+    return [ln.strip() for ln in open(os.path.join(wt, NUCLEU), encoding="utf-8") if ln.strip() and not ln.startswith("#")]
+
+
+def fisiere_manifest(wt):
+    return [ln.split("\t")[0] for ln in open(os.path.join(wt, MANIFEST), encoding="utf-8") if ln.strip() and not ln.startswith("#")]
+
+
+@contextlib.contextmanager
+def faza(lot, nume, detalii=""):
+    """Faza în jurnalul lotului (început, sfârșit); lot None = fără jurnal (calibrări, baza)."""
+    if lot is None:
+        yield {}
+        return
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import jurnal_lot as J
+    id_ = J.inceput(lot, nume, detalii, pid=os.getpid())
+    rez = {"rezultat": "intrerupt"}
+    try:
+        yield rez
+    finally:
+        J.sfarsit(lot, nume, id_, rez["rezultat"])
+
+
+def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="3", detalii="", verificator=True):
+    """-> (durate pe treaptă, teste). `pytest_ids`/`e2e_fisiere` None = tot (nucleul / manifestul); listă = numai acelea (reluarea). Baza de test se restaurează înainte de
+    pytest și înainte de plasa e2e (niciodată per test). Toate treptele rulează, și după una roșie."""
+    py = "./venv/bin/python"
+    env = dict(os.environ, POARTA_SARE="1", PATH=os.path.join(wt, "scripts", "bin") + ":" + os.environ.get("PATH", ""))
+    trepte, teste = {}, []
+    if verificator:
+        with faza(lot, "poarta_verificator", detalii) as f:
+            _, d = _rulare([py, "verificator_conformitate.py"], wt, env, os.path.join(J, "poarta_verificator.log"))
+            tot = [ln for ln in open(os.path.join(J, "poarta_verificator.log"), errors="replace") if "TOTAL" in ln.upper()]
+            trece = bool(tot) and "TOTAL: 0" in tot[-1]
+            f["rezultat"] = "verde" if trece else "rosu"
+        trepte["verificator"] = d
+        teste.append({"nume": "verificator::TOTAL", "treapta": "verificator", "rezultat": "trece" if trece else "pica", "infra": False, "durata": d,
+                      "mesaj": "" if trece else (tot[-1].strip() if tot else "fără TOTAL")})
+    ids = fisiere_nucleu(wt) if pytest_ids is None else pytest_ids
+    if ids:
+        with faza(lot, "poarta_pytest", detalii) as f:
+            _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_pytest.log"))
+            jx = os.path.join(J, "poarta_pytest.xml")
+            rc, d = _rulare([py, "-m", "pytest", "-q", "-n", procese, "--dist", "loadfile", "--junitxml=" + jx] + ids, wt, env, os.path.join(J, "poarta_pytest.log"))
+            f["rezultat"] = "verde" if rc == 0 else "rosu_%d" % rc
+        trepte["pytest"] = d
+        r = citeste_junit(jx, wt)
+        teste += [dict(t, treapta="pytest") for t in r]
+        if rc not in (0, 1) and not r:   # pytest n-a ajuns să ruleze nimic (interpretare, import, interrupt): infrastructură, nu test
+            teste.append({"nume": "pytest::sesiune", "treapta": "pytest", "rezultat": "pica", "infra": True, "durata": d, "mesaj": "cod %d fără raport junit" % rc})
+    fis = [os.path.basename(x) for x in fisiere_manifest(wt)] if e2e_fisiere is None else e2e_fisiere
+    if fis:
+        with faza(lot, "poarta_plasa", detalii) as f:
+            _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_e2e.log"))
+            jx = os.path.join(J, "poarta_e2e.xml")
+            rc, d = _rulare([py, "scripts/e2e_poarta.py"] + ["--doar=" + x for x in fis] + [os.path.join(J, "e2e_poarta_capturi")],
+                            wt, dict(env, PYTEST_ADDOPTS="--junitxml=" + jx), os.path.join(J, "poarta_e2e.log"))
+            f["rezultat"] = "verde" if rc == 0 else "rosu_%d" % rc
+        trepte["plasa_e2e"] = d
+        r = citeste_junit(jx, wt)
+        teste += [dict(t, treapta="plasa_e2e") for t in r]
+        if rc not in (0, 1) and not r:   # 3 = aplicația n-a pornit
+            teste.append({"nume": "plasa_e2e::sesiune", "treapta": "plasa_e2e", "rezultat": "pica", "infra": True, "durata": d, "mesaj": "cod %d fără raport junit" % rc})
+    return trepte, teste
