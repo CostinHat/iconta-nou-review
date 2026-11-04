@@ -364,12 +364,12 @@ def test_bratul_NU_citeste_baza_din_mediu():
     for nod in ast.walk(arb):
         if isinstance(nod, ast.Subscript) and isinstance(nod.value, ast.Attribute) \
                 and nod.value.attr == "environ":
-            raise AssertionError("modulul citeste din `os.environ` la linia %d" % nod.lineno)
+            assert False, "modulul citeste din `os.environ` la linia %d" % nod.lineno   # 16.1-C3: aceeași respingere, numărată ca aserțiune de poartă
         if isinstance(nod, ast.Call) and isinstance(nod.func, ast.Attribute) \
                 and nod.func.attr in ("get", "getenv") \
                 and isinstance(nod.func.value, ast.Attribute) \
                 and nod.func.value.attr == "environ":
-            raise AssertionError("modulul citeste din `os.environ` la linia %d" % nod.lineno)
+            assert False, "modulul citeste din `os.environ` la linia %d" % nod.lineno   # 16.1-C3: aceeași respingere, numărată ca aserțiune de poartă
 
 
 def test_bratul_REFUZA_daca_acreditarea_nu_duce_la_productie(monkeypatch, capsys):
