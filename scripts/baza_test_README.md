@@ -35,3 +35,86 @@ Durata: ~80 s (peste ținta de 2 minute nu e).
 ## Dovada de identitate
 `stare` = hash pe fiecare tabel (count + md5 al rândurilor sortate, independent de ordinea fizică) + hash pe valorile secvențelor + hash pe inventarul fișierelor generate.
 Identitatea snapshotului: `docs/dovezi/16_0/snapshot.json`.
+
+## Tabelele comune (schema `public`) — lista exactă
+Criteriul: toate tabelele din `public` pe care codul aplicației le citește pentru cabinetul de test (utilizatori, registrul cabinetelor și firmelor, notificări, cozi,
+`cod_aplicatie_viu`, rezumate). Lista a fost găsită prin căutare în cod (`FROM|JOIN|INTO|UPDATE|TABLE|EXISTS public.<tabel>`); în dreapta, fișierele cu cele mai multe referiri.
+Tabele **recalculate** (excluse din amprentă; le rescrie lucrătorul de recalculare sau pornirea serverului): `firma_rezumat`, `firma_aspect_sursa`, `firma_sursa_versiune`,
+`supervizor_rezultat`, `supervizor_sursa`, `sursa_supervizor`, `cod_aplicatie_viu`, `cron_batai`, `metrici_sanatate`.
+
+| tabel | fișiere |
+|---|---|
+| `accounting_firms` | `core/migrare_intocmitor_bilant.py`, `core/auth_api.py` |
+| `acord_termeni` | `core/repo_utilizatori.py` |
+| `alerte_acces_dedup` | `core/alerta_acces.py` |
+| `alerte_control_emise` | `core/migrare_alerte_control_emise.py`, `core/alerte_control_fiscal.py` |
+| `alerte_cooldown` | `core/stare_partajata.py` |
+| `alerte_emise` | `core/repo_monitor_fiscal.py` |
+| `alerte_fiscale` | `core/repo_monitor_fiscal.py`, `core/migrare_anunturi_trimiteri.py` |
+| `anunturi_cabinet` | `core/migrare_anunturi_trimiteri.py`, `core/repo_admin.py` |
+| `api_chei` | `core/api_public.py` |
+| `audit_log` | `core/repo_admin.py`, `core/tenant_stergere.py` |
+| `cereri_ritm` | `core/stare_partajata.py` |
+| `ciorne_formular` | `core/migrare_ciorne_formular.py`, `core/repo_ciorne_formular.py` |
+| `cod_aplicatie_viu` | `core/firma_rezumat.py` |
+| `cor_ocupatii` | `core/cor_api.py` |
+| `cron_batai` | `core/cron.py`, `core/sonda_web.py` |
+| `curs_bnr_zilnic` | `core/migrare_curs_precizie.py`, `core/curs_bnr.py` |
+| `declaratii_coada` | `core/coada_api.py`, `core/migrare_verdict_validare.py` |
+| `declaratii_depuse` | `core/migrare_declaratii_depuse_versiune.py`, `core/coada_api.py` |
+| `declaratii_in_asteptare` | `core/migrare_declaratii_asteptare.py`, `core/repo_declaratii.py` |
+| `emailuri_dezabonate` | `core/migrare_emailuri_dezabonate.py`, `core/dezabonare.py` |
+| `eveniment_public` | `core/migrare_eveniment_public.py`, `core/repo_admin.py` |
+| `firma_aspect_sursa` | `core/firma_rezumat.py` |
+| `firma_rezumat` | `core/firma_rezumat.py` |
+| `firma_sursa_versiune` | `core/firma_rezumat.py` |
+| `firma_tip` | `core/firma_rezumat.py`, `core/auth_api.py` |
+| `firme_scoase` | `core/migrare_firme_scoase.py`, `core/tenant_stergere.py` |
+| `fisiere_private` | `core/migrare_fisiere_private.py`, `core/gdpr_sterge.py` |
+| `gdpr_cereri_stergere` | `core/gdpr_cerere.py` |
+| `gdpr_stergeri` | `core/gdpr_sterge.py` |
+| `inregistrari_in_asteptare` | `core/inregistrare_libera.py`, `core/migrare_inregistrari_email.py` |
+| `instante` | `core/instante.py` |
+| `instante_lider` | `core/instante.py` |
+| `invitatii_cabinet` | `core/invitatii.py`, `core/migrare_invitatii_cabinet.py` |
+| `invitatii_cont` | — (neatins de cod în afara migrărilor) |
+| `login_esecuri` | `core/stare_partajata.py` |
+| `metrici_sanatate` | `core/migrare_sanatate_load15.py`, `core/repo_main.py` |
+| `migrare_status` | `core/migrare_api.py` |
+| `migrari_rulate` | `core/migrari_registru.py`, `core/migrare_notificari_solicitare_client.py` |
+| `notificari` | `core/migrare_canal_notificari.py`, `core/migrare_decizii_0810.py` |
+| `notificari_jurnal` | `core/migrare_canal_notificari.py`, `core/repo_notificari_livrare.py` |
+| `pachet_povestea` | `core/pachete_api.py`, `core/migrare_poveste_amprenta.py` |
+| `plata_referinte` | `core/migrare_plata_referinte.py`, `core/plati.py` |
+| `raportari` | `core/raportari_api.py`, `core/migrare_fisiere_private.py` |
+| `raportari_mesaje` | `core/raportari_api.py`, `core/migrare_fisiere_private.py` |
+| `reges_chei` | `core/repo_salariati.py` |
+| `reges_mesaje` | `core/repo_salariati.py` |
+| `reset_parola_token` | `core/migrare_reset_parola.py`, `core/reset_parola.py` |
+| `schimbari_email` | `core/migrare_portal.py`, `core/repo_utilizatori.py` |
+| `setari_platforma` | `core/setari_platforma.py`, `core/migrare_inregistrare_libera.py` |
+| `solicitari_client` | `core/repo_portal.py` |
+| `sonda_izolare` | — (neatins de cod în afara migrărilor) |
+| `spv_cui_acoperit` | `core/migrare_mesaje_spv_tehnice.py`, `core/migrare_spv_citiri.py` |
+| `spv_token` | `core/migrare_spv_token_principal.py`, `core/spv_conector.py` |
+| `supervizor_confirmari` | `core/migrare_supervizor_confirmari.py`, `core/supervizor.py` |
+| `supervizor_rezultat` | `core/supervizor_cache.py` |
+| `supervizor_sursa` | `core/supervizor_cache.py`, `core/firma_rezumat.py` |
+| `sursa_supervizor` | `core/firma_rezumat.py` |
+| `suspendari_cabinet` | `core/migrare_suspendari_cabinet.py`, `core/repo_admin.py` |
+| `telefon_coduri` | `core/repo_cont_notificari.py`, `core/migrare_canal_notificari.py` |
+| `tenants` | `core/tenant_provisioning.py`, `core/auth_api.py` |
+| `tokene_activare` | `core/repo_utilizatori.py`, `core/repo_main.py` |
+| `urme_portal` | `core/migrare_portal.py`, `core/repo_utilizatori.py` |
+| `user_tenants` | `core/repo_utilizatori.py`, `core/auth_api.py` |
+| `users` | `core/migrare_canal_notificari.py`, `core/repo_utilizatori.py` |
+
+## Schemele din `iconta_test` (copiate din producție numai pentru cabinetul de test)
+`public`, `tenant_9049`…`tenant_9055`, `tenant_9057` (copiile F1–F7 + FISCALOS), plus schemele create de suita pytest: `tenant_001`…`tenant_018`, `tenant_045`, `tenant_048`, `tenant_9731`.
+Nu există nicio schemă a cabinetului real.
+
+## Calea directoarelor (copia de lucru, nu producția)
+`E2E_TEMP` = `/tmp/e2e_poarta` (generat de `scripts/e2e_poarta.py`; șters la fiecare restaurare). Serverul de lucru 8019: `scripts/porneste_8019.sh` (mediul `~/.iconta/test.env`).
+Punctul de intrare sincron al lucrătorului de recalculare (723): `python -m core.firma_rezumat` (`core/firma_rezumat.py::main`).
+Variabila ceasului înghețat: nu există variabilă de mediu — `core.ceas_proba.DATA_REF` (constantă Python, 03.11.2026) o folosesc testele de browser; aplicația citește ceasul real.
+Cod de produs care ar permite o dată înghețată în aplicație: **imposibil fără cod de produs** (de notat pentru un lot de produs).
