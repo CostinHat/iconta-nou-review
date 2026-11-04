@@ -67,7 +67,8 @@ def test_amprenta_identica_dupa_doua_restaurari_consecutive():
 
 def test_preconditiile_f017_dupa_testul_10_al_lantului_se_inregistreaza():
     """Rulat în aceeași sesiune cu testele 00–10 ale lanțului pilot (`--doar=e2e_pilot_luna.py::test_pilot_00…` … `::test_pilot_10…` apoi acest test): scrie în
-    docs/dovezi/16_0/verifica_dupa_testul_10.txt rezultatul lui `baza_test.sh verifica` (țin / nu țin la poziția 11). Nu decide nimic: decizia e a lui 16.2."""
+    <E2E_CAPTURI>/verifica_dupa_testul_10.txt (apoi copiat în docs/dovezi/16_0/) rezultatul lui `baza_test.sh verifica` (țin / nu țin la poziția 11). Nu decide nimic: decizia e a lui 16.2."""
     r = subprocess.run(["sh", BAZA_SH, "verifica"], cwd=RAD, env=_env(), capture_output=True, text=True)
-    os.makedirs(DOVEZI, exist_ok=True)
-    open(os.path.join(DOVEZI, "verifica_dupa_testul_10.txt"), "w", encoding="utf-8").write(r.stdout + "\nieșire verifica: %d (0 = țin, 1 = nu țin)\n" % r.returncode)
+    iesire = os.environ.get("E2E_CAPTURI", DOVEZI)      # sub e2e_poarta.py RAD e copia exportată: rezultatul se scrie în directorul capturilor
+    os.makedirs(iesire, exist_ok=True)
+    open(os.path.join(iesire, "verifica_dupa_testul_10.txt"), "w", encoding="utf-8").write(r.stdout + "\nieșire verifica: %d (0 = țin, 1 = nu țin)\n" % r.returncode)
