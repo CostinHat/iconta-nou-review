@@ -1,0 +1,2 @@
+lot,commit,verificator,inceput,sfarsit,pas,actiune,verdict,captura,motiv
+16.1,2415a87875f5fcbfbdaf3354672f5f5578c14a95,scripts/verifica_pas.py v1,2026-11-04T19:05:19+02:00,2026-11-04T19:05:20+02:00,N1,control negativ: așteptare falsă (beta=true),pica,docs/dovezi/16_1/capturi/16_1_N1.png,"beta: găsit False, așteptat True"

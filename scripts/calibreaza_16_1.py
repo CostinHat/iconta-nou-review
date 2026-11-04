@@ -12,8 +12,10 @@ import tempfile
 import time
 
 AICI = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, AICI)
 RAD = os.path.dirname(AICI)
 REZ = []
+HOME_REAL = os.environ["HOME"]
 
 
 def caz(nume, ok, detaliu=""):
@@ -26,6 +28,7 @@ def sh(cmd, cwd, env=None, intrare=None):
 
 
 def depozit(tmp):
+    os.makedirs(tmp, exist_ok=True)
     d = os.path.join(tmp, "dep")
     sh(["git", "init", "-q", "-b", "main", d], tmp)
     for k, v in (("user.email", "c@c"), ("user.name", "c"), ("core.hooksPath", os.path.join(RAD, "scripts", "githooks"))):
@@ -54,7 +57,10 @@ def clasificare():
     caz("1h un test roșu pe main și nenumerotat = oprire (baza s-a mișcat)", r["baza_mutata"] == ["core/test_b.py::test_rosu_nenumerotat"] and not C.este_curat(r), str(r["baza_mutata"]))
     r = C.clasifica(baza[:1] + [sh_("core/test_nou.py::test_nou", "trece")], baza[:1], set(), RAD, True, inv)
     caz("1a test absent din bază, fișierul lui în afara diff-ului = test invalid", any("test_nou" in x for x in r["invalid"]), str(r["invalid"]))
-    r = C.clasifica(baza[:1] + [sh_("core/test_nou.py::test_nou", "pica")], baza[:1], {"core/test_nou.py"}, RAD, True, inv)
+    with tempfile.TemporaryDirectory() as rad_t:
+        os.makedirs(os.path.join(rad_t, "core"))
+        open(os.path.join(rad_t, "core", "test_nou.py"), "w").write("def test_nou():\n    assert False\n")
+        r = C.clasifica(baza[:1] + [sh_("core/test_nou.py::test_nou", "pica")], baza[:1], {"core/test_nou.py"}, rad_t, True, inv)
     caz("1a test nou cu fișierul în diff, roșu = regresie de lot", r["nou_regresie"] == ["core/test_nou.py::test_nou"], str(r["nou_regresie"]))
     r = C.clasifica([sh_("core/test_a.py::test_verde", "pica", infra=True)], baza[:1], set(), RAD, False, inv)
     caz("1a eroare de infrastructură = clasă proprie (nu regresie)", r["infra"] == ["core/test_a.py::test_verde"] and not r["regresie"], str(r["infra"]))
@@ -145,6 +151,7 @@ def publicare(tmp):
     sh(["git", "clone", "-q", "--no-hardlinks", RAD, cl], tmp)
     sh(["git", "checkout", "-q", "-b", "lucru/lot16-1"], cl)
     os.symlink(os.path.join(os.path.expanduser("~/iconta_nou"), "venv"), os.path.join(cl, "venv"))
+    os.symlink(os.path.join(os.path.expanduser("~/iconta_nou"), "import_fiscalos"), os.path.join(cl, "import_fiscalos"))
     acasa = os.path.join(tmp, "acasa")
     os.makedirs(acasa)
     jur = os.path.join(tmp, "j.log")
@@ -200,6 +207,77 @@ def publicare(tmp):
     jurnalul_complet()
     r = ruleaza()
     caz("4 lot fără marcajul „unelte” care atinge scripts/poarta_lot.sh = STOP", r.returncode == 1 and "scripts/poarta_lot.sh" in r.stdout, [x for x in r.stdout.splitlines() if "unelte" in x][:1].__str__()[:110])
+    sh(["git", "checkout", "-q", "scripts/praguri_16_1.txt"], cl)
+    refuzuri_poarta(cl, py, env)
+
+
+def refuzuri_poarta(cl, py, env):
+    """Refuzurile de început ale lui scripts/poarta_rulare.py (pct.1a, 1e), pe copia depozitului; niciun test nu rulează."""
+    def poarta(plasa=True):
+        e = dict(env, HOME=HOME_REAL, POARTA_PLASA_FIX="scripts/plasa_16_2.manifest") if plasa else dict(env, HOME=HOME_REAL)
+        return sh(["sh", "scripts/poarta_lot.sh"], cl, e)
+    r = poarta(False)
+    caz("1e fără manifest (POARTA_PLASA_FIX) poarta refuză publicarea", r.returncode == 1 and "REFUZ" in r.stdout and "POARTA_PLASA_FIX" in r.stdout, r.stdout.strip()[:110])
+    cb = os.path.join(cl, "docs", "dovezi", "16_1", "baza.json")
+    ok = open(cb, encoding="utf-8").read()
+    os.remove(cb)
+    r = poarta()
+    caz("1a lipsa lui baza.json = refuz", r.returncode == 1 and "baza.json" in r.stdout, r.stdout.strip().splitlines()[-1][:110])
+    b = json.loads(ok)
+    b["antet"]["commit_baza"] = "0" * 40
+    open(cb, "w").write(json.dumps(b))
+    r = poarta()
+    caz("1a sha din baza.json care nu e merge-base cu main = refuz", r.returncode == 1 and "merge-base" in r.stdout, r.stdout.strip().splitlines()[-1][:110])
+    b = json.loads(ok)
+    b["antet"]["manifest_sha256"] = "0" * 64
+    open(cb, "w").write(json.dumps(b))
+    r = poarta()
+    caz("1a hash-ul manifestului din baza.json diferă de cel curent = refuz", r.returncode == 1 and "manifestului" in r.stdout, r.stdout.strip().splitlines()[-1][:110])
+    open(cb, "w").write(ok)
+    man = os.path.join(cl, "scripts", "plasa_16_2.manifest")
+    orig = open(man, encoding="utf-8").read()
+    linii = orig.splitlines()
+    i = next(n for n, ln in enumerate(linii) if ln and not ln.startswith("#"))
+    c = linii[i].split("\t")
+    c[1] = "0" * 64
+    linii[i] = "\t".join(c)
+    open(man, "w").write("\n".join(linii) + "\n")
+    r = poarta()
+    caz("1e manifest cu hash diferit de fișier = refuz care numește fișierul", r.returncode == 1 and os.path.basename(c[0]) in r.stdout, [x for x in r.stdout.splitlines() if os.path.basename(c[0]) in x][:1].__str__()[:120])
+    open(man, "w").write(orig)
+
+
+def verificare_pe_pas(tmp):
+    """Controlul încrucișat al lui scripts/jurnal_verificator.sh (pct.3) pe CSV-uri sintetice; rândurile reale (trece / pică) sunt în docs/dovezi/16_1/jurnal_verificare*.csv."""
+    import csv
+    import datetime
+    d = os.path.join(tmp, "ver")
+    os.makedirs(d)
+    cap = os.path.join(d, "ok.png")
+    open(cap, "wb").write(b"x")
+    acum = datetime.datetime.now().astimezone()
+    iso = lambda t: t.isoformat(timespec="seconds")   # noqa: E731
+    camp = ["lot", "commit", "verificator", "inceput", "sfarsit", "pas", "actiune", "verdict", "captura", "motiv"]
+
+    def rand(pas, captura, a, b, verdict="trece"):
+        return ["16.1", "c", "v", iso(a), iso(b), pas, "x", verdict, captura, ""]
+
+    def controleaza(randuri):
+        f = os.path.join(d, "t.csv")
+        with open(f, "w", newline="") as fh:
+            w = csv.writer(fh)
+            w.writerow(camp)
+            w.writerows(randuri)
+        return sh(["sh", os.path.join(AICI, "jurnal_verificator.sh"), "controleaza", f], RAD)
+    r = controleaza([rand("A", cap, acum - datetime.timedelta(seconds=5), acum + datetime.timedelta(seconds=5))])
+    caz("3 rând cu captură existentă, mtime în intervalul declarat = acceptat", r.returncode == 0, r.stdout.strip())
+    r = controleaza([rand("B", os.path.join(d, "lipsa.png"), acum, acum)])
+    caz("3 rând fără captură existentă = refuzat", r.returncode == 1 and "fără captură existentă" in r.stdout, r.stdout.strip())
+    r = controleaza([rand("C", cap, acum - datetime.timedelta(hours=3), acum - datetime.timedelta(hours=2))])
+    caz("3 rând cu captura în afara intervalului declarat (mtime) = refuzat", r.returncode == 1 and "în afara intervalului" in r.stdout, r.stdout.strip()[:120])
+    from verifica_pas import compara
+    caz("3 verdictul rândului vine din compararea JSON-ului ecranului cu așteptarea: potrivire = trece", compara({"a": {"b": 1}}, {"a.b": 1})[0] == "trece")
+    caz("3 verdictul rândului: valoare diferită = pică; cheie lipsă = pică", compara({"a": 1}, {"a": 2})[0] == "pica" and compara({"a": 1}, {"b": 1})[0] == "pica")
 
 
 def main():
@@ -210,6 +288,7 @@ def main():
         hook_uri(os.path.join(tmp))
         jurnal(tmp)
         publicare(tmp)
+        verificare_pe_pas(tmp)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     iesire = os.path.join(RAD, "docs", "dovezi", "16_1", "calibrare.txt")

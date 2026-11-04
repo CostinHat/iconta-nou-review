@@ -71,7 +71,7 @@ def main(a):
     t1 = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
     nou = not os.path.exists(csv_)
     with open(csv_, "a", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         if nou:
             w.writerow(CAMPURI)
         w.writerow([o.lot, subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip(), o.verificator, t0, t1, o.pas, o.actiune,

@@ -1,0 +1,35 @@
+ATINS  1h/1a verde pe bază și roșu pe candidat = regresie de lot  regresii=['core/test_a.py::test_verde']
+ATINS  1h un test roșu pe main și numerotat în inventar = restanță, nu regresie  ['R999 frontend_test/e2e/e2e_x.py::test_numerotat']
+ATINS  1h un test roșu pe main și nenumerotat = oprire (baza s-a mișcat)  ['core/test_b.py::test_rosu_nenumerotat']
+ATINS  1a test absent din bază, fișierul lui în afara diff-ului = test invalid  ['core/test_nou.py::test_nou (test nou în afara diff-ului lotului)']
+ATINS  1a test nou cu fișierul în diff, roșu = regresie de lot  ['core/test_nou.py::test_nou']
+ATINS  1a eroare de infrastructură = clasă proprie (nu regresie)  ['core/test_a.py::test_verde']
+ATINS  1h reluare curată (fișier deja în diff-ul lotului) = trece  
+ATINS  1h reluare cu un fișier nou în diff = refuz, cu numele lui  reluarea atinge fișiere care nu erau în diff-ul lotului la commitul roșu, nici ale testelor picate, nici în exceptii: scripts/nou.py
+ATINS  1c același fișier în exceptii_<lot>.txt (rând cu motiv) = permis  None
+ATINS  1h aserțiuni scăzute într-un test picat = refuz  numărul de aserțiuni din core/test_t.py::test_t a scăzut față de bază.
+ATINS  4 încercare de mutare a lui main fără verdict = refuzată de hook  ## [garda main] REFUZAT: refs/heads/main -> 49c5b2a5eb741bc1b100264276eab1c5c6eb9433 fără 
+ATINS  4 numai VERDE (fără PASS) = refuzată de hook  
+ATINS  4 VERDE + PASS = hook-ul lasă main să se mute  
+ATINS  4 push pe main fără PASS = refuzat de pre-push  [pre-push] REFUZAT: 49c5b2a5eb741bc1b100264276eab1c5c6eb9433 nu are VERDE (poarta) și PASS
+ATINS  4 push pe main cu VERDE + PASS = trece  To /tmp/calibrare_16_1_vu_ajcm_/dist.git
+ * [new branch]      lot -> main
+ATINS  4 push pe altă ramură (backup/…) nu e păzit  
+ATINS  2 un proces omorât în timpul rulării apare în jurnal ca „intrerupt” (cronometru.sh)  proba_omorata        intrerupt  2026-11-04T19:06:14+02:00 -> 2026-11-04T19:06:17+02:00  3s
+ATINS  2 o sesiune pytest omorâtă (pluginul din conftest) apare în jurnal ca „intrerupt”  pytest               intrerupt  2026-11-04T19:06:17+02:00 -> 2026-11-04T19:06:23+02:00  6s
+ATINS  2 sesiune pytest încheiată: două rânduri (început, sfârșit „verde”) cu lot, fază, ora ISO, sha  2 rânduri
+ATINS  4 praguri lipsă la pornire = „OPRIT — gata: 16.1 nepublicat, lipsă praguri”  OPRIT — gata: 16.1 nepublicat, lipsă praguri
+ATINS  4 raport lipsă (fișier lipsă) = refuz  ['[publica_lot] STOP: lipsește raportul /tmp/calibrare_16_1_vu_ajcm_/acasa/lot_16_1_raport.md']
+ATINS  4 completă și coerentă (poartă VERDE pe HEAD, faze în jurnal, bază, ZIP cu sha și lista diff-ului, backup, perimetru „unelte”) = PASS  [publica_lot] PASS 2415a87875f5fcbfbdaf3354672f5f5578c14a95 (lot 16.1); ZIP /tmp/calibrare_16_1_vu_a
+ATINS  4 praguri modificate după pornire = STOP  ['[publica_lot] STOP: pragurile s-au modificat după pornire (hash diferit de cel din jurnal)']
+ATINS  4 lot fără marcajul „unelte” care atinge scripts/poarta_lot.sh = STOP  ['[publica_lot] STOP: lotul nu e marcat „unelte”, dar atinge: scripts/poarta_lot.sh, scripts/publica_lot.sh, c
+ATINS  1e fără manifest (POARTA_PLASA_FIX) poarta refuză publicarea  [poarta] REFUZ: fără POARTA_PLASA_FIX=scripts/plasa_16_2.manifest nu există publicare (selecția veche rămâne d
+ATINS  1a lipsa lui baza.json = refuz  [poarta] REFUZ: lipsește docs/dovezi/16_1/baza.json (se produce cu `sh scripts/poarta_lot.sh --baza`).
+ATINS  1a sha din baza.json care nu e merge-base cu main = refuz  [poarta] REFUZ: sha-ul din baza.json (00000000) nu e merge-base cu main (f2e64c1b).
+ATINS  1a hash-ul manifestului din baza.json diferă de cel curent = refuz  [poarta] REFUZ: hash-ul manifestului din baza.json diferă de cel curent.
+ATINS  1e manifest cu hash diferit de fișier = refuz care numește fișierul  ['[plasa fixa] REFUZ frontend_test/e2e/e2e_lot12_verif.py: hash diferit']
+ATINS  3 rând cu captură existentă, mtime în intervalul declarat = acceptat  
+ATINS  3 rând fără captură existentă = refuzat  REFUZ: rândul B fără captură existentă (/tmp/calibrare_16_1_vu_ajcm_/ver/lipsa.png)
+ATINS  3 rând cu captura în afara intervalului declarat (mtime) = refuzat  REFUZ: rândul C: captura are mtime 2026-11-04T19:06:38+02:00, în afara intervalului 2026-11-04T16:06:38+02:00 – 2026-11-
+ATINS  3 verdictul rândului vine din compararea JSON-ului ecranului cu așteptarea: potrivire = trece  
+ATINS  3 verdictul rândului: valoare diferită = pică; cheie lipsă = pică  
