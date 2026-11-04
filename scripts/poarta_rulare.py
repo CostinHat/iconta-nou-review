@@ -125,11 +125,15 @@ def main(argv):
         motiv = motiv_refuz_reluare(RAD, an["commit_baza"], rosu, picate, ex, bt)
         if motiv:
             return refuz(motiv)
-        import poarta_selectie as SEL
-        sel = SEL.selecteaza()
+        # testele fișierelor schimbate de la commitul roșu (derivate din cod, nivelul „direct”), numai cele comparabile cu baza (nucleul sau fișiere din diff-ul lotului)
+        import perimetru as P
+        import poarta_scurta as S
+        P.BAZA = rosu
+        derivate, _incerte, *_ = S.selectie(P.atinse_din_git(), "direct")
+        comparabile = set(L.fisiere_nucleu(RAD)) | fisiere_lot
         man = {os.path.basename(x) for x in L.fisiere_manifest(RAD)}
-        ids = sorted({n for n in picate if not n.startswith(("verificator", "pytest::")) and "e2e_" not in n} | set(sel["pytest"]))
-        e2e = sorted({os.path.basename(L.cheie_asertiuni(n)[0]) for n in picate if "e2e_" in n} | {x for x in sel["e2e"] if x in man})
+        ids = sorted({n for n in picate if not n.startswith(("verificator", "pytest::")) and "e2e_" not in n} | {t for t in derivate if t in comparabile})
+        e2e = sorted({os.path.basename(L.cheie_asertiuni(n)[0]) for n in picate if "e2e_" in n} | {os.path.basename(x) for x in fisiere_lot if os.path.basename(x) in man})
         trepte, cand = L.ruleaza_trepte(RAD, J, lot, ids, e2e, detalii=detalii)
         complet = False
     else:
