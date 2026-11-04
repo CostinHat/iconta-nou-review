@@ -1,8 +1,11 @@
 # poarta_e2e_restante.txt — INVENTARUL CANONIC al restanței e2e (comanda 16.0, pct.3). Un rând pe element, câmpuri separate prin ' | ':
 # ID | fișier::test | clasa | număr DEFICIENTE (obligatoriu la c) | commitul de bază măsurat | motivul (mesajul picăturii)
 # Clase: a = test prost (verifică forma veche), b = depinde de starea bazei sau de dată, c = defect de cod (număr de la 760), d = fără sens/dublat (șters),
-# e = verde pe iconta_test restaurată (iese din restanțe), f = inexistent ca test (iese din inventar). Poarta refuză un rând fără ID, clasă sau (la c) număr;
-# rândurile a/b/c rulează și apar în verdict ca „restanță <număr/ID>”, fără să facă verdictul ROȘU. Măsurat pe iconta_test restaurată, vezi docs/dovezi/16_0/restante/.
+# e = verde pe iconta_test restaurată, fără aserțiuni, f = inexistent ca test. Poarta refuză un rând fără ID, clasă sau (la c) număr.
+# MAPAREA CLASELOR INVENTARULUI LA CLASELE PORȚII (scrisă de arhitect, 16.1-C3 pct.5; aceeași în scripts/poarta_clasifica.py::CLASE_INVENTAR și în CLAUDE.md):
+#   a -> restanță · b -> restanță · c -> restanță (rulează și apar în verdict ca „restanță <număr/ID>”, fără să facă verdictul ROȘU) · d (șters) -> nu există în poartă ·
+#   e (verde fără aserțiuni) -> invalid (un test „e” care rulează = invalid; un manifest care conține un fișier cu rând „e” e refuzat) · f (inexistent) -> nu există în poartă.
+#   Clasele porții: regresie / restanță / invalid / infra / nou. Măsurat pe iconta_test restaurată, vezi docs/dovezi/16_0/restante/.
 R001 | e2e_inregistrare_libera.py::test_def_253_inregistrarea_libera_contul_apare_numai_dupa_clicul_pe_linkul_din_email | a | - | 35080f7f | Timeout la click pe button.cab-card:has([data-cheie='activitate'])
 R002 | e2e_inregistrare_libera.py::test_def_256_pagina_principala_si_ecranele_se_incarca_in_versiunea_noua | a | - | 35080f7f | Timeout la click pe .fereastra-antet .nav-x
 R003 | e2e_lot10b_declaratii.py::test_def_436_d100_cu_note_nevalidate_nu_se_pune_in_de_depus | a | - | 35080f7f | playwright._impl._errors.Error: Page.evaluate: TypeError: Cannot read properties of null (reading 'contains') / at eval (eval at evaluate (:311:30), <anonymous>:1:67) / at UtilityScript.evaluate (<anonymous>:318:18)

@@ -84,9 +84,12 @@ def main(argv):
         return refuz("manifestul nu se potrivește cu fișierele (vezi mai sus).")
     if subprocess.run(["./venv/bin/python", "scripts/inventar_restante.py", "valideaza"], cwd=RAD).returncode:
         return refuz("inventarul scripts/poarta_e2e_restante.txt are rânduri fără ID, clasă sau număr.")
+    inv_ref = C.manifest_invalide(os.path.join(RAD, L.MANIFEST))
+    if inv_ref:
+        return refuz("manifestul conține teste invalide după inventar (16.1-C3, pct.5): " + "; ".join(inv_ref))
     if subprocess.run(["sh", "scripts/verifica_plasa_pilot.sh"], cwd=RAD, capture_output=True).returncode:
         return refuz("verifica_plasa_pilot (poziții pilot ok fără test).")
-    cb = os.path.join(RAD, "docs", "dovezi", L.lot_fisier(L.lot_baza(lot)), "baza.json")   # un lot de corecție (16.1-C2) folosește baza lotului de bază
+    cb = os.path.join(RAD, "docs", "dovezi", L.lot_fisier(L.lot_baza(lot)), "baza.json")   # lotul își are baza lui (16.1-C3) sau, ca un lot de corecție (16.1-C2), moștenește baza lotului de bază
     if not os.path.exists(cb):
         return refuz("lipsește %s (se produce cu `sh scripts/poarta_lot.sh --baza`)." % os.path.relpath(cb, RAD))
     baza = json.load(open(cb, encoding="utf-8"))

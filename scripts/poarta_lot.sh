@@ -21,6 +21,9 @@ if [ "$1" = "--lista" ]; then
     PYL=./venv/bin/python; [ -x "$PYL" ] || PYL=python3
     exec "$PYL" scripts/poarta_selectie.py --lista "$@"
 fi
+# 16.1-C3 pct.2: de aici în jos poarta (și --baza, --reia, rularea completă, diagnosticul) atinge iconta_test și serverul 8019: intră numai cu lacătul (scripts/lacat_test.py)
+. "$ROOT/scripts/lacat_test.sh"
+lacat_test_ia
 # 16.1 pct.1a: `poarta_lot.sh --baza` — rularea completă pe un worktree curat al commitului de bază; scrie docs/dovezi/16_1/baza.json (scripts/poarta_baza.py).
 if [ "$1" = "--baza" ]; then
     PYB=./venv/bin/python; [ -x "$PYB" ] || PYB=python3

@@ -8,8 +8,11 @@
 # Restaurarea: baza, apoi golirea directorului generat al serverului 8019 (E2E_TEMP, implicit /tmp/e2e_poarta) și a cozilor, apoi lucrătorul de
 # recalculare sincron (core.firma_rezumat, 723). Detalii în scripts/baza_test_README.md.
 set -u
+. "$(dirname "$0")/lacat_test.sh"
 ACTIUNE="${1:-}"
 case "$ACTIUNE" in salveaza|restaureaza|stare|verifica|identitate) ;; *) echo "[baza_test] folosire: baza_test.sh salveaza|restaureaza [--fara-lucrator]|stare|verifica|identitate"; exit 2 ;; esac
+# 16.1-C3 pct.2: salveaza / restaureaza (și verifica, care citește baza) intră numai cu lacătul pe iconta_test și 8019 (reentrant sub poarta_lot.sh)
+case "$ACTIUNE" in salveaza|restaureaza) lacat_test_ia ;; esac
 ENV_FILE="${BAZA_TEST_ENV:-$HOME/.iconta/test.env}"
 set -a; . "$ENV_FILE"; set +a
 export PGPASSWORD="$DB_PASSWORD"
@@ -40,9 +43,24 @@ if [ "$ACTIUNE" = verifica ]; then
     # precondițiile scenariului F017 (comanda 16.0, pct.2d + N), pe firma F1 (schema copiei: tenant_9049); rulează după fiecare restaurare și după testul 10 al lanțului
     SCH="${F1_SCHEMA:-tenant_9049}"; RC=0
     chk() { R=$(Q "$2"); if [ "$R" = "$3" ]; then echo "[verifica] OK    $1 ($R)"; else echo "[verifica] PICĂ  $1: găsit '$R', așteptat '$3'"; RC=1; fi; }
-    chk "F1A nr. 15, 500,00 lei, 24.10.2026, neîncasată (fără chitanță anulabilă pe ea)" "SELECT count(*) FROM $SCH.facturi f WHERE f.numar='F1A15' AND f.total=500 AND f.data_emitere='2026-10-24' AND f.tert_cui='410001005' AND NOT EXISTS (SELECT 1 FROM $SCH.chitante c WHERE c.factura_id=f.id AND NOT c.anulata)" 1
-    chk "Client Test SRL (410001005) sold preluat 2000,00 la 31.08.2026" "SELECT count(*) FROM $SCH.solduri_parteneri WHERE cui='410001005' AND sold_debitor=2000 AND data_referinta='2026-08-31'" 1
-    chk "F1 fără serie de chitanță" "SELECT coalesce(nullif(serie_chitanta,''),'-') FROM $SCH.firma_profil LIMIT 1" "-"
+    # 16.1-C3 pct.6: rândurile F017 corectate după starea măsurată de arhitect pe 04.11.2026 (~/ghid_incoming/stare_iconta_test_04.11.txt); fiecare cu interogarea-sursă citată.
+    NEINC="SELECT count(*) FROM $SCH.facturi f WHERE f.numar='%s' AND f.tert_cui='410001005' AND f.total=1210.00 AND f.platita_la IS NULL AND NOT EXISTS (SELECT 1 FROM $SCH.chitante c WHERE c.factura_id=f.id AND NOT c.anulata)"
+    # sursa: stare 04.11, secțiunea „NEINCASATE F1A18/19 (platita_la, chitante nenulate)”: F1A18|-|0 și F1A19|-|0; secțiunea FACT: numar, tert_cui 410001005, total 1210.00
+    chk "F1A nr. 18: client 410001005, total 1210,00, platita_la null, 0 chitanțe nenulate" "$(printf "$NEINC" F1A18)" 1
+    chk "F1A nr. 19: client 410001005, total 1210,00, platita_la null, 0 chitanțe nenulate" "$(printf "$NEINC" F1A19)" 1
+    # sursa: stare 04.11, secțiunea SERII: „tenant_9049: F1 Comert Stoc SRL | serie_chit=CHF1 | chitante=1”; secțiunea CHIT: CHF1|1|2026-10-08|242.00|49|F1A3|f
+    chk "F1 are seria de chitanță CHF1" "SELECT coalesce(nullif(serie_chitanta,''),'-') FROM $SCH.firma_profil LIMIT 1" CHF1
+    chk "F1: exact o chitanță în total, CHF1 nr. 1 (nenulată)" "SELECT count(*)||':'||coalesce(max(numar),0)||':'||count(*) FILTER (WHERE serie='CHF1' AND numar=1 AND NOT anulata) FROM $SCH.chitante" "1:1:1"
+    # sursa: stare 04.11, secțiunea SERII: „tenant_9053: F5 SRL Salariati | serie_chit=- | chitante=0” și secțiunea F5: „0”
+    F5="${F5_SCHEMA:-tenant_9053}"
+    chk "F5 (SRL Salariați) fără serie de chitanță" "SELECT coalesce(nullif(serie_chitanta,''),'-') FROM $F5.firma_profil LIMIT 1" "-"
+    chk "F5: zero chitanțe" "SELECT count(*) FROM $F5.chitante" 0
+    # sursa: stare 04.11, interogarea de la 22:05 „select id,nume,cui,status from tenant_9049.clienti where cui like %14399840%”: 1|DANTE INTERNATIONAL SA|14399840|activ
+    chk "DANTE INTERNATIONAL SA (CUI 14399840) în clienți: id 1, activ" "SELECT count(*) FROM $SCH.clienti WHERE id=1 AND cui='14399840' AND nume='DANTE INTERNATIONAL SA' AND status='activ'" 1
+    # sursa: stare 04.11, interogarea „select data,tip,categorie,document,partener,suma from tenant_9049.casa_operatiuni where partener like %DANTE% order by data”: DP-1 (09.10), DP-2 (19.10), DP-3 (20.10)
+    chk "DANTE: plățile din casă DP-1, DP-2, DP-3" "SELECT coalesce(string_agg(document, ',' ORDER BY data, document), '-') FROM $SCH.casa_operatiuni WHERE partener LIKE '%DANTE%' AND document IN ('DP-1','DP-2','DP-3')" "DP-1,DP-2,DP-3"
+    # sursa: stare 04.11, interogarea „select count(*) from tenant_9049.facturi where directie=primita and tert_cui like %14399840%”: 4
+    chk "DANTE: 4 facturi primite" "SELECT count(*) FROM $SCH.facturi WHERE directie='primita' AND tert_cui LIKE '%14399840%'" 4
     for V in ICONTA_ANAF_SIMULAT ICONTA_AI_SIMULAT ICONTA_WHATSAPP_SIMULAT ICONTA_EMAIL_CUTIE ICONTA_BON_DIR ICONTA_FISIERE_DIR; do
         if grep -q "env\\[\"$V\"\\]" "$(dirname "$0")/e2e_poarta.py"; then echo "[verifica] integrare: $V setată de e2e_poarta.py la pornirea serverului de lucru"; else echo "[verifica] integrare: $V LIPSĂ din e2e_poarta.py"; RC=1; fi
     done
