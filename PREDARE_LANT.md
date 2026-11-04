@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**05.11.2026 — COMANDA 16.1-C3 (lot de unelte) gata pe `lucru/lot16-1c3` (worktree `/home/costin/iconta_lot16_1c3`), C = `fe447bd13b80d163d5dd581155f807c8b98c15d4` cu VERDE complet; se publică prin `scripts/publica_lot.sh`. Aplicația nu s-a schimbat.** Nou: baza proprie a lotului, oracolul pașilor (pasi_<lot>.txt al arhitectului), `publica_lot.py --proba`, lacătul ~/.iconta/lacat_test, `scripts/lanseaza_verificator.py`, `scripts/incheie_lot.sh` (fișierul-semnal OPRIT_<nr>.txt citit de coadă), restartul producției numai prin `scripts/publica_prod.sh`. Ultimul pas al lotului: înlocuirea ~/coada_code.sh și ~/veghe_code.sh (copii `.inainte_C3`). Dovada cozii: pornirea lui 16.2 din OPRIT_16.1-C3.txt.
+
 **04.11.2026 — COMANDA 16.1-C2 (lot de unelte) gata pe `lucru/lot16-1` (worktree `/home/costin/iconta_lot16_1`), C = `7f484b69ed24ad5589dd0027e6c57bee325fb606` cu VERDE complet; se publică împreună cu 16.1-C1 și 16.1 prin `scripts/publica_lot.sh`. Aplicația nu s-a schimbat.** `~/coada_code.sh` scrie rândul „pornire” cu marcaj (cheia din `~/ghid_incoming/cheie_coada.txt`); ~/iconta_nou are rămășițe ale publicării eșuate a lui C1 în arborele de lucru (indexul = arborele lui 8ec9f557), de curățat înainte de ff.
 
 **04.11.2026 — COMANDA 16.1-C1 (lot de unelte): regula strămoșului în `scripts/publica_lot.py` (`--verifica`), C = `623fe734952a` cu VERDE complet (a treia rulare, autorizată în exceptii_16_1.txt); publicare prin `scripts/publica_lot.sh` din `lucru/lot16-1` (worktree `/home/costin/iconta_lot16_1`). Aplicația nu s-a schimbat.**

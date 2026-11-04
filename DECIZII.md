@@ -24426,3 +24426,13 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - CLAUDE.md iese din lista căilor permise după C. Numele lotului în căi: `16.1-C2` -> `16_1_C2` (`poarta_lib.lot_fisier`); baza unui lot de corecție = baza lotului de bază (`lot_baza`).
 - core/test_garda_main.py era roșu de la 16.1 (hook-ul cere PASS, testul nu-l scria): fixtura scrie acum PASS și copiază `verde-prin-pass.sh`.
 
+
+## 05.11.2026 — Comanda 16.1-C3 (lot de unelte, „unelte” în scripts/praguri_16_1_C3.txt)
+- C = `fe447bd13b80d163d5dd581155f807c8b98c15d4` (rularea completă finală, VERDE, 1129 s; prima rulare completă a lotului, pe 741448f1, a dat ROȘU 1142 s cu un singur test invalid, `test_wave3_instante.py::test_bratul_NU_citeste_baza_din_mediu`, a cărui respingere `raise AssertionError` nu se numără ca aserțiune: scrisă `assert False, …`). Baza proprie a lotului: docs/dovezi/16_1_C3/baza.json (1925 s, 1885 teste, aceleași 2 picături ca în 16.1).
+- Oracolul pașilor e al arhitectului (pasi_<lot>.txt, hash în „pornire”, scris de coadă); pasi.json copiază literal operator + valoare; publica_lot refuză cu „oracol modificat”. Un lot de produs cere fișierul; un lot de unelte fără fișier nu are oracol.
+- Contractul la început: `publica_lot.py --proba`, declanșat de post-commit la primul commit al ramurii lucru/*; fază „proba_contract” în jurnal, cerută verde la publicare.
+- Lacătul ~/.iconta/lacat_test (pid + ora de start din /proc) pe iconta_test și 8019; lansatorul verificatorului independent (scripts/lanseaza_verificator.py) creat aici.
+- Clasele inventarului = clasele porții (e → invalid; manifest cu test invalid → refuz); eticheta „verde_cu_restante”.
+- Restartul producției numai prin scripts/publica_prod.sh (pas „restart” în publica_lot.sh, cere PASS); post-commit nu mai repornește; `core/migrari_registru.py --productie` și cele cinci scripturi care scriu pe producție cer PASS.
+- Coada citește fișierul-semnal OPRIT_<nr>.txt scris de scripts/incheie_lot.sh și tura inactivă din tmux; fișierul se mută în ~/ghid_incoming/oprite/ înainte de pornire. Scripturile cozii (~/coada_code.sh, ~/veghe_code.sh) se înlocuiesc ca ultim pas, după publicare.
+- Baza de probă a calibrării migrărilor: iconta_test (rolul de test nu poate crea baze și nu are CONNECT pe iconta_v2), sub lacăt, restaurată din snapshot după probă; nicio scriere în producție.
