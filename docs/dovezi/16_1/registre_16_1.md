@@ -12,3 +12,6 @@ Perimetrul comenzii 16.1 (punctul 0) exclude orice fișier din afara scripts/, c
 ## PREDARE_LANT (stare curentă)
 - 16.1 gata pe ramura lucru/lot16-1 (worktree ~/iconta_lot16_1), unelte; aplicația nu s-a schimbat. Următoarea comandă: 16.2 (primul lot cu scenariul pilotului; auditul extern cerut de Costin la 04.11 16:59).
 - Pentru lotul următor: producerea bazei (`sh scripts/poarta_lot.sh --baza`) din primul commit, exceptii_<lot>.txt scris de arhitect numai dacă apare reluare.
+
+## 16.1-C1
+- Registrele DECIZII.md și PREDARE_LANT.md au primit la 16.1-C1 rândurile comenzii (regula strămoșului, a treia rulare completă); notele de mai sus rămân valabile.
