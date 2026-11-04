@@ -138,7 +138,14 @@ def main(argv):
         complet = False
     else:
         if len(stare["complete"]) >= 2:
-            return refuz("a treia rulare completă pe lot (cel mult două: prima și finala).")
+            # 16.1-C1 pct.4: a treia rulare completă numai cu rândul „rulare_completa 3 | motiv: …” din exceptii_<lot>.txt (scris de arhitect); hash-ul intră în jurnal
+            ex, hex_ = excepții(lotf)
+            if len(stare["complete"]) > 2 or not ex or not ex.get("rulare_completa 3", "").startswith("motiv:") or stare.get("rulare3_exceptii_sha"):
+                return refuz("a treia rulare completă pe lot (cel mult două: prima și finala; a treia numai cu rândul „rulare_completa 3 | motiv: …” din exceptii_%s.txt, o singură dată)." % lotf)
+            stare["rulare3_exceptii_sha"] = hex_
+            json.dump(stare, open(f_stare, "w"), indent=1)
+            with L.faza(lot, "exceptii", "rulare_completa_3 exceptii_sha256=%s" % hex_) as f:
+                f["rezultat"] = "ok"
         nucleu = L.fisiere_nucleu(RAD)
         atinse = sorted(x for x in fisiere_lot if x.endswith(".py") and os.path.basename(x).startswith("test_") and x not in nucleu and os.path.exists(os.path.join(RAD, x)))
         trepte, cand = L.ruleaza_trepte(RAD, J, lot, nucleu + atinse, None, detalii=detalii)

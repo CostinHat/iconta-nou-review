@@ -6,7 +6,8 @@ O fază cu început fără sfârșit, al cărei proces nu mai trăiește, e marc
 Fazele obligatorii (aceeași listă la publica_lot.sh): pornire, hook, verificator, verificator_poarta, pytest, plasa_e2e, publicare.
   inceput <lot> <faza> [detalii]            scrie începutul, tipărește id-ul rulării
   sfarsit <lot> <faza> <id> <rezultat> [detalii]
-  pornire <lot> [fișier-praguri]            scrie începutul și sfârșitul fazei „pornire”, cu hash-ul pragurilor și al scripturilor porții; fixează lotul curent
+  pornire <lot> [fișier-praguri] [--ora-reala <ISO>]   scrie începutul și sfârșitul fazei „pornire”, cu hash-ul pragurilor și al scripturilor porții; fixează lotul curent.
+                                            Cu --ora-reala (lotul care introduce jurnalul): rândurile poartă ora dată și „reconstituit” în detalii
   rezumat <lot>                             duratele pe fază (copia din raport)
   lot-curent                                tipărește lotul (LOT, ramura lucru/lotNN-M, fișierul lot_curent din depozit)"""
 import datetime
@@ -79,8 +80,12 @@ def _scrie(cale, campuri):
         f.write("\t".join(str(c).replace("\t", " ").replace("\n", " ") for c in campuri) + "\n")
 
 
+#: ora impusă rândurilor scrise de `pornire --ora-reala` (None = ora ceasului)
+_ORA_IMPUSA = None
+
+
 def _acum():
-    return datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+    return _ORA_IMPUSA or datetime.datetime.now().astimezone().isoformat(timespec="seconds")
 
 
 def marcheaza_intrerupte(cale=None):
@@ -115,12 +120,19 @@ def hash_scripturi(rad=None):
     return " ".join("%s=%s" % (os.path.basename(s), L.hash_fisier(os.path.join(rad, s))[:16]) for s in SCRIPTURI_POARTA)
 
 
-def pornire(lot, praguri=None):
+def pornire(lot, praguri=None, ora_reala=None):
+    global _ORA_IMPUSA
     rad = _git("rev-parse", "--show-toplevel")
     praguri = praguri or os.path.join(rad, "scripts", "praguri_%s.txt" % lot.replace(".", "_"))
-    id_ = inceput(lot, "pornire", "praguri=%s praguri_sha256=%s" % (os.path.basename(praguri), L.hash_fisier(praguri)), pid=os.getpid())
-    open(os.path.join(comun(), "lot_curent.txt"), "w", encoding="utf-8").write(lot + "\n")
-    sfarsit(lot, "pornire", id_, "ok" if os.path.exists(praguri) else "lipsa_praguri", "scripturi_poarta: " + hash_scripturi(rad))
+    marca = " reconstituit ora_reala=%s" % ora_reala if ora_reala else ""
+    if ora_reala:
+        _ORA_IMPUSA = datetime.datetime.fromisoformat(ora_reala).astimezone().isoformat(timespec="seconds")
+    try:
+        id_ = inceput(lot, "pornire", "praguri=%s praguri_sha256=%s%s" % (os.path.basename(praguri), L.hash_fisier(praguri), marca), pid=os.getpid())
+        open(os.path.join(comun(), "lot_curent.txt"), "w", encoding="utf-8").write(lot + "\n")
+        sfarsit(lot, "pornire", id_, "ok" if os.path.exists(praguri) else "lipsa_praguri", "scripturi_poarta: " + hash_scripturi(rad) + marca)
+    finally:
+        _ORA_IMPUSA = None
     return 0 if os.path.exists(praguri) else 1
 
 
@@ -153,7 +165,9 @@ def main(a):
     elif a[0] == "sfarsit":
         sfarsit(a[1], a[2], a[3], a[4], " ".join(a[5:]))
     elif a[0] == "pornire":
-        return pornire(a[1], a[2] if len(a) > 2 else None)
+        ora = a[a.index("--ora-reala") + 1] if "--ora-reala" in a else None
+        pozitionale = [x for i, x in enumerate(a[1:], 1) if x != "--ora-reala" and a[i - 1] != "--ora-reala"]
+        return pornire(a[1], pozitionale[1] if len(pozitionale) > 1 else None, ora)
     elif a[0] == "rezumat":
         for f, i, b, s, r, sec in durate(a[1]):
             print("%-20s %-10s %s -> %s  %ss" % (f, r, b, s, sec))

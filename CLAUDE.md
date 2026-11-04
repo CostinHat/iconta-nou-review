@@ -48,7 +48,10 @@ nici fir intern, nici „următorul pas din listă”). Poarta de publicare, jur
   (cu numele fișierului) orice fișier din `git diff --name-only <roșu>..HEAD` care nu era în diff-ul lotului la commitul roșu, nu e al unui test picat (cu aserțiunile
   nescăzute față de bază) sau nu e în ~/ghid_incoming/exceptii_<lot>.txt (scris de arhitect; un rând = fișier + motiv; hash-ul în jurnal). Reluarea e diagnostic, nu rulare
   completă. Cu cel puțin o reluare, raportul are secțiunea „diff-ul reluărilor” și fraza de risc din scripts/publica_lot.py. Verdictul de publicare îl dă numai rularea completă
-  finală (cel mult două pe lot), cu zero regresii de lot; picături noi la o reluare opresc lotul, nepublicat.
+  finală (cel mult două pe lot; a treia numai cu rândul „rulare_completa 3 | motiv: …” din exceptii_<lot>.txt, o singură dată, hash în jurnal), cu zero regresii de lot; picături
+  noi la o reluare opresc lotul, nepublicat. Regula strămoșului (`publica_lot.py --verifica <C> <HEAD>`): verdictul și rândurile jurnal_verificare.csv produse pe C (ultima rulare
+  completă) sunt valabile pentru HEAD dacă C e strămoș al lui HEAD și `git diff --name-only --no-renames C..HEAD` atinge numai jurnal_verificare.csv (rânduri adăugate), capturi/*.png,
+  registre_<lot>.md, DEFICIENTE.md, DECIZII.md, PREDARE_LANT.md, CLAUDE.md; raportul (în afara repo-ului) numește numai C.
 - Jurnalul: scripts/jurnal_lot.py scrie în ~/iconta_nou/.lot_jurnal.log începutul și sfârșitul fiecărei faze obligatorii (pornire, hook, verificator, treptele porții,
   publicare); pluginul pytest din conftest.py, scripts/cronometru.sh și scripts/bin/{pytest,playwright} înregistrează rulările; o fază fără sfârșit e „intrerupt”.
   Duratele din raport sunt copia ieșirii `python scripts/defalcare.py <lot>`. Verificarea pe pas: docs/dovezi/<lot>/jurnal_verificare.csv, scris de

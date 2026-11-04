@@ -3,6 +3,9 @@
 (raport, poartă, jurnal, perimetru, bază, reluări, jurnalul verificării), verdictul PASS/STOP calculat din jurnal față de scripts/praguri_<lot>.txt, `PASS <sha>` în
 <git-common-dir>/publica_verdicte.log. Fără PASS nu se mută `main` (scripts/githooks/reference-transaction) și nu se împinge pe main (scripts/githooks/pre-push),
 iar restartul din post-commit refuză. Sfârșitul fazei „publicare” îl scrie publica_lot.sh după push.
+Regula strămoșului (16.1-C1): verdictul VERDE al rulării complete finale și rândurile din jurnal_verificare.csv sunt produse pe un commit C (ultima rulare completă din
+starea lotului) și rămân valabile pentru HEAD numai dacă C e strămoș al lui HEAD și diff-ul C..HEAD atinge numai căile din `ancestor_refuzuri`. Apelabilă separat, fără publicare:
+  publica_lot.py --verifica <C> <HEAD>      (lotul din LOT sau din ramura curentă)
 Ieșire: 0 = PASS, 1 = STOP (nepublicat, cu cifra sau motivul)."""
 import csv
 import json
@@ -29,6 +32,43 @@ def git(*a):
     return subprocess.run(["git", *a], cwd=RAD, capture_output=True, text=True).stdout.strip()
 
 
+def _git_brut(*a):
+    return subprocess.run(["git", *a], cwd=RAD, capture_output=True, text=True)
+
+
+def _fisier_la(commit, cale):
+    r = _git_brut("show", "%s:%s" % (commit, cale))
+    return r.stdout.splitlines() if r.returncode == 0 else None
+
+
+def ancestor_refuzuri(c, head, lotf):
+    """Regula strămoșului: -> (refuzuri, fișierele din diff); refuzuri goale = verdictul și rândurile produse pe C sunt valabile pentru HEAD."""
+    if _git_brut("cat-file", "-e", c + "^{commit}").returncode or _git_brut("cat-file", "-e", head + "^{commit}").returncode:
+        return ["C (%s) sau HEAD (%s) nu e commit" % (c[:12], head[:12])], []
+    if _git_brut("merge-base", "--is-ancestor", c, head).returncode:
+        return ["C (%s) nu e strămoș al lui HEAD (%s)" % (c[:12], head[:12])], []
+    dovezi = "docs/dovezi/%s/" % lotf
+    csv_cale = dovezi + "jurnal_verificare.csv"
+    exacte = {csv_cale, dovezi + "registre_%s.md" % lotf, "DEFICIENTE.md", "DECIZII.md", "PREDARE_LANT.md", "CLAUDE.md"}
+    iesire = _git_brut("diff", "--raw", "-z", "--no-renames", c, head).stdout.split("\0")
+    refuzuri, fisiere = [], []
+    for meta, cale in zip(iesire[0::2], iesire[1::2]):
+        mod_vechi, mod_nou, _, _, stare = meta.lstrip(":").split()
+        fisiere.append(cale)
+        capturi = cale.startswith(dovezi + "capturi/") and cale.endswith(".png") and "/" not in cale[len(dovezi + "capturi/"):]
+        if cale not in exacte and not capturi:
+            refuzuri.append("%s: cale în afara listei permise" % cale)
+        elif stare not in ("A", "M"):
+            refuzuri.append("%s: schimbare %s (numai adăugare sau modificare)" % (cale, stare))
+        elif mod_nou != "100644" or (stare == "M" and mod_vechi != mod_nou):
+            refuzuri.append("%s: mod %s -> %s (fișier obișnuit, mod neschimbat)" % (cale, mod_vechi, mod_nou))
+    if csv_cale in fisiere:
+        vechi, nou = _fisier_la(c, csv_cale) or [], _fisier_la(head, csv_cale) or []
+        if nou[:len(vechi)] != vechi:
+            refuzuri.append("%s: un rând existent la C a fost modificat sau șters" % csv_cale)
+    return refuzuri, fisiere
+
+
 def verifica(lot, sha, comun, sirul_zip):
     """-> listă de motive de STOP (goală = PASS)."""
     lotf = lot.replace(".", "_")
@@ -37,23 +77,33 @@ def verifica(lot, sha, comun, sirul_zip):
     praguri = os.path.join(RAD, "scripts", "praguri_%s.txt" % lotf)
     rows = [r for r in JL._citeste(JL.cale_jurnal()) if r[0] == lot and len(r) > 8]
     pornire = [r for r in rows if r[1] == "pornire" and r[2] == "inceput"]
+    pornire = [r for r in pornire if "reconstituit" in r[8]] or pornire
     if not os.path.exists(praguri) or not pornire or "lipsa_praguri" in [r[5] for r in rows if r[1] == "pornire" and r[2] == "sfarsit"]:
         return ["lipsă praguri"]
     if "praguri_sha256=%s" % L.hash_fisier(praguri) not in pornire[-1][8]:
         stop.append("pragurile s-au modificat după pornire (hash diferit de cel din jurnal)")
     unelte = open(praguri, encoding="utf-8").readline().strip().lower() == "unelte"
+    # poarta: VERDE pe HEAD, rulare completă finală, zero regresii, lot neoprit
+    f_stare = os.path.join(comun, "lot_stare_%s.json" % lotf)
+    stare = json.load(open(f_stare)) if os.path.exists(f_stare) else {}
+    if not stare or stare.get("oprit") or not stare["complete"] or not stare["complete"][-1]["curat"]:
+        stop.append("starea lotului nu arată o rulare completă curată (oprit=%s)" % stare.get("oprit"))
+    c = stare["complete"][-1]["sha"] if stare and stare["complete"] else sha
+    refuzuri, fisiere_c = ancestor_refuzuri(c, sha, lotf)
+    stop += ["regula strămoșului: " + m for m in refuzuri]
     # raportul
     raport = os.path.join(ACASA, "lot_%s_raport.md" % lotf)
     if not os.path.exists(raport) or not os.path.getsize(raport):
         stop.append("lipsește raportul %s" % raport)
-    # poarta: VERDE pe HEAD, rulare completă finală, zero regresii, lot neoprit
+    else:
+        text = open(raport, encoding="utf-8").read()
+        if c not in text:
+            stop.append("raportul nu conține sha-ul lui C (%s)" % c)
+        if c != sha and (sha in text or sha[:8] in text):
+            stop.append("raportul conține sha-ul lui HEAD (%s); numește numai C" % sha[:8])
     jv = os.path.join(comun, "poarta_verdicte.log")
-    if not any(ln.startswith("VERDE %s " % sha) and " completa " in ln for ln in open(jv, encoding="utf-8")) if os.path.exists(jv) else True:
-        stop.append("lipsește verdictul VERDE al rulării complete finale pe %s" % sha[:8])
-    f_stare = os.path.join(comun, "lot_stare_%s.json" % lotf)
-    stare = json.load(open(f_stare)) if os.path.exists(f_stare) else {}
-    if not stare or stare.get("oprit") or not stare["complete"] or stare["complete"][-1]["sha"] != sha or not stare["complete"][-1]["curat"]:
-        stop.append("starea lotului nu arată o rulare completă curată pe HEAD (oprit=%s)" % stare.get("oprit"))
+    if not any(ln.startswith("VERDE %s " % c) and " completa " in ln for ln in open(jv, encoding="utf-8")) if os.path.exists(jv) else True:
+        stop.append("lipsește verdictul VERDE al rulării complete finale pe %s" % c[:8])
     try:
         clase = json.load(open(os.path.join(comun, "lot_picate_%s.json" % lotf)))["clase"]
         for k in C.CURAT:
@@ -69,7 +119,9 @@ def verifica(lot, sha, comun, sirul_zip):
                 stop.append("faza „publicare” nu are început")
             continue
         sf = {r[6]: r for r in ev if r[2] == "sfarsit"}
-        ultimul = [r for r in ev if r[2] == "inceput"][-1:] 
+        ultimul = [r for r in ev if r[2] == "inceput"][-1:]
+        if faza == "pornire":   # rândul „reconstituit” (16.1-C1, pct.3) e valabil indiferent de poziția lui
+            ultimul = ([r for r in ev if r[2] == "inceput" and "reconstituit" in r[8]] or ultimul)[-1:]
         if not ultimul:
             stop.append("faza „%s” lipsește din jurnal" % faza)
         elif ultimul[0][6] not in sf or sf[ultimul[0][6]][5] == "intrerupt":
@@ -110,9 +162,8 @@ def verifica(lot, sha, comun, sirul_zip):
         pasi = [ln.strip() for ln in open(pasi_f, encoding="utf-8") if ln.strip()] if os.path.exists(pasi_f) else []
         rr = list(csv.DictReader(open(cv, encoding="utf-8")))
         for r in rr:
-            ok_commit = r["commit"] == sha or all(f.startswith(("docs/dovezi/%s/" % lotf, "DECIZII.md", "DEFICIENTE.md", "PREDARE_LANT.md")) for f in git("diff", "--name-only", r["commit"], sha).splitlines())
-            if not ok_commit:
-                stop.append("rândul %s din jurnal_verificare.csv e pe alt cod (%s)" % (r["pas"], r["commit"][:8]))
+            if r["commit"] != c:
+                stop.append("rândul %s din jurnal_verificare.csv e pe alt cod (%s), nu pe C (%s)" % (r["pas"], r["commit"][:8], c[:8]))
             if r["verdict"] != "trece":
                 stop.append("rândul %s din jurnal_verificare.csv: %s" % (r["pas"], r["verdict"]))
             if not os.path.exists(r["captura"] if os.path.isabs(r["captura"]) else os.path.join(RAD, r["captura"])):
@@ -158,7 +209,23 @@ def zip_lot(lot, sha, cale):
         z.writestr("jurnal_lot.txt", "\n".join("%-20s %-10s %s -> %s  %ss" % (f, r, b, s, sec) for f, i, b, s, r, sec in JL.durate(lot)) + "\n")
 
 
+def main_verifica(c, head):
+    """`--verifica <C> <HEAD>`: numai regula strămoșului, fără publicare, fără scrieri."""
+    lotf = JL.lot_curent().replace(".", "_")
+    head = git("rev-parse", head)
+    c = git("rev-parse", c)
+    refuzuri, fisiere = ancestor_refuzuri(c, head, lotf)
+    for m in refuzuri:
+        print("[publica_lot --verifica] REFUZ: " + m)
+    if refuzuri:
+        return 1
+    print("[publica_lot --verifica] PASS C=%s HEAD=%s fisiere=%s" % (c, head, ",".join(fisiere) or "-"))
+    return 0
+
+
 def main():
+    if len(sys.argv) == 4 and sys.argv[1] == "--verifica":
+        return main_verifica(sys.argv[2], sys.argv[3])
     lot = JL.lot_curent()
     lotf = lot.replace(".", "_")
     sha = git("rev-parse", "HEAD")
@@ -166,13 +233,16 @@ def main():
     sirul_zip = os.path.join(ACASA, "lot_%s.zip" % lotf)
     zip_lot(lot, sha, sirul_zip)
     stop = verifica(lot, sha, comun, sirul_zip)
+    f_stare = os.path.join(comun, "lot_stare_%s.json" % lotf)
+    stare = json.load(open(f_stare)) if os.path.exists(f_stare) else {}
+    c = stare["complete"][-1]["sha"] if stare.get("complete") else sha
     if stop:
         for m in stop:
             print("[publica_lot] STOP: " + m)
         print("OPRIT — gata: %s nepublicat, %s" % (lot, stop[0]))
         return 1
     with open(os.path.join(comun, "publica_verdicte.log"), "a", encoding="utf-8") as f:
-        f.write("PASS %s %s %s\n" % (sha, lot, JL._acum()))
+        f.write("PASS %s %s %s C=%s fisiere=%s\n" % (sha, lot, JL._acum(), c, ",".join(ancestor_refuzuri(c, sha, lotf)[1]) or "-"))
     print("[publica_lot] PASS %s (lot %s); ZIP %s" % (sha, lot, sirul_zip))
     return 0
 
