@@ -1,0 +1,5 @@
+# plasa_16_2.manifest — plasa fixă a măsurătorii 16.0 (completarea 2, pct.H). Câmpuri separate prin TAB: cale, sha256, teste descoperite, comanda.
+frontend_test/e2e/e2e_lot12_verif.py	84759b4ffed101c5c7d87411e747a7778bd5936f4355d99aff8c35365f1c7e28	4	python -m pytest -q frontend_test/e2e/e2e_lot12_verif.py
+frontend_test/e2e/e2e_lot72_facturi.py	bf1fabf1158c77bbbc36f76357da834a44c8dbebaa4787fd5b8176308d7dfea2	7	python -m pytest -q frontend_test/e2e/e2e_lot72_facturi.py
+frontend_test/e2e/e2e_pilot_luna.py	871f6cc131a65326df8cf650dc4dacbf2785bbf2ba441b1e94fee7043b84cc08	40	python -m pytest -q frontend_test/e2e/e2e_pilot_luna.py
+frontend_test/e2e/e2e_pozitii_validate.py	19cb73d30e52de26a42365eef1d1bd43b9ed47e61f3891241c4e601445215384	17	python -m pytest -q frontend_test/e2e/e2e_pozitii_validate.py

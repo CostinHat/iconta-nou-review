@@ -1,0 +1,8 @@
+# Pozițiile pilot marcate „ok” în scenarii_pilot.txt (03.11.2026) care la 15.1-E7 NU au în plasa de publicare un test cu ID-ul ȘI cifrele scenariului
+# (găsite de scripts/verifica_plasa_pilot.py la prima rulare). Lista e restanță VIZIBILĂ, nu scutire: scriptul pică dacă o poziție de aici are acum testul complet
+# (trebuie scoasă de aici) și pică pentru ORICE altă poziție „ok” fără test. Rezolvarea (teste noi cu cifrele din scenariu) e a plasei pilot (E6); decizia
+# de a păstra „ok” în scenarii_pilot.txt pentru ele e a arhitectului. Format: <ID> · motiv.
+X02 · niciun test din plasă nu citează poziția (fereastra de bun venit a asistentului junior)
+F015 · testele casei sunt pe 09/2026; cifrele scenariului 358,46 și 558,46 (casa 10/2026) lipsesc din teste
+F061 · testele balanței sunt pe 09/2026; cifrele scenariului (19.544,50 / 43.889,98 / 75.660,50, balanța 10/2026) lipsesc din teste
+F139 · testul NIR nu conține cifra 27,50 din scenariu (transportul repartizat)
