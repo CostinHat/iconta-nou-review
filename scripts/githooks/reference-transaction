@@ -12,10 +12,13 @@
 # consumarea ei la reușită (`APROBARE_MAIN.folosita-<sha>`). Verdictul VERDE e singura condiție; un fișier `APROBARE_MAIN` rămas pe disc
 # nu mai e citit, nici mutat. (Istoric: 14.10 aprobarea; 15.10 „main acceptă un commit doar dacă jurnalul porții îl arată verde” s-a
 # adăugat lângă ea; 23.10 aprobarea a ieșit.)
+# 16.1-C2 pct.0: VERDE se acceptă și pe C (ultima rulare completă), când PASS-ul lui HEAD îl numește și diff-ul C..HEAD respectă regula strămoșului.
 # 16.1 pct.4: pe lângă VERDE se cere `PASS <sha>` în <git-common-dir>/publica_verdicte.log, scris numai de scripts/publica_lot.sh.
 # Lucrul se face pe ramuri, în worktree; publicarea = fast-forward la SHA-ul verde + post-commit.
 # Gard: core/test_garda_main.py (depozit temporar; mutațiile „verdictul nu se cere”, „ștergerea trece”, „aprobarea scrisă cerută înapoi”
 # -> ROȘU).
+# 16.1-C2 pct.0: VERDE exact pe SHA sau, cu PASS pe SHA care numește C, VERDE pe C cu regula strămoșului (scripts/githooks/verde-prin-pass.sh).
+. "$(dirname "$0")/verde-prin-pass.sh"
 STARE="$1"
 [ "$STARE" = "prepared" ] || exit 0
 COMUN=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) || exit 0
@@ -40,7 +43,7 @@ while read -r VECHI NOU REF; do
         echo "## Singura cale de publicare: sh scripts/publica_lot.sh (din ramura lotului). Verdictul în $COMUN/publica_verdicte.log." >&2
         echo "############################################################" >&2
         COD=1
-    elif ! grep -q "^VERDE $NOU " "$JV" 2>/dev/null; then
+    elif ! verde_pe_head "$NOU" "$JV" "$COMUN/publica_verdicte.log"; then
         echo "" >&2
         echo "############################################################" >&2
         echo "## [garda main] REFUZAT: refs/heads/main -> ${NOU} fără poarta VERDE a lotului pentru acest SHA." >&2

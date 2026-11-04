@@ -70,7 +70,7 @@ def motiv_refuz_reluare(rad, baza, rosu, picate, ex, bt):
 def main(argv):
     reia = "--reia" in argv
     lot = JL.lot_curent()
-    lotf = lot.replace(".", "_")
+    lotf = L.lot_fisier(lot)
     comun = git("rev-parse", "--path-format=absolute", "--git-common-dir")
     f_stare, f_picate = os.path.join(comun, "lot_stare_%s.json" % lotf), os.path.join(comun, "lot_picate_%s.json" % lotf)
     stare = json.load(open(f_stare)) if os.path.exists(f_stare) else {"complete": [], "reluari": [], "regresii": [], "oprit": None}
@@ -86,7 +86,7 @@ def main(argv):
         return refuz("inventarul scripts/poarta_e2e_restante.txt are rânduri fără ID, clasă sau număr.")
     if subprocess.run(["sh", "scripts/verifica_plasa_pilot.sh"], cwd=RAD, capture_output=True).returncode:
         return refuz("verifica_plasa_pilot (poziții pilot ok fără test).")
-    cb = os.path.join(RAD, "docs", "dovezi", lotf, "baza.json")
+    cb = os.path.join(RAD, "docs", "dovezi", L.lot_fisier(L.lot_baza(lot)), "baza.json")   # un lot de corecție (16.1-C2) folosește baza lotului de bază
     if not os.path.exists(cb):
         return refuz("lipsește %s (se produce cu `sh scripts/poarta_lot.sh --baza`)." % os.path.relpath(cb, RAD))
     baza = json.load(open(cb, encoding="utf-8"))
@@ -94,7 +94,10 @@ def main(argv):
     if git("merge-base", "HEAD", "main") != an["commit_baza"]:
         return refuz("sha-ul din baza.json (%s) nu e merge-base cu main (%s)." % (an["commit_baza"][:8], git("merge-base", "HEAD", "main")[:8]))
     if an["manifest_sha256"] != L.hash_fisier(os.path.join(RAD, L.MANIFEST)):
-        return refuz("hash-ul manifestului din baza.json diferă de cel curent.")
+        # 16.1-C2 pct.1: manifestul poate crește numai cu rânduri pentru fișiere de test noi (prezente în diff, absente pe main)
+        ref = L.manifest_refuzuri(RAD, an["commit_baza"])
+        if ref:
+            return refuz("manifestul curent diferă de cel din baza.json altfel decât prin fișiere noi: " + "; ".join(ref))
     if git("status", "--porcelain", "--untracked-files=normal"):
         return refuz("arborele nu e curat — poarta judecă commitul lotului.")
     if stare["oprit"]:

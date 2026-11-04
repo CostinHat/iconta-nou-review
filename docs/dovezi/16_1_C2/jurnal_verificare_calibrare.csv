@@ -1,0 +1,2 @@
+lot,commit,verificator,inceput,sfarsit,pas,actiune,verdict,captura,motiv
+16.1-C2,8ec9f5574d1cc63f558435e3b62bfbfeccaee34a,scripts/verifica_pas.py v1,2026-11-04T21:37:34+02:00,2026-11-04T21:37:35+02:00,N1,Control negativ: aceeași cerere /public/config cu așteptarea greșită {beta: true}; verdictul trebuie să fie «pica»,pica,docs/dovezi/16_1_C2/capturi/16_1_C2_N1.png,"beta: găsit False, așteptat True"

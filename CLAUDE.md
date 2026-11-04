@@ -1,6 +1,6 @@
 # CLAUDE.md — Regulile permanente ale lui Code pe iConta
 
-Versiune: 03.11.2026. Acest fișier e citit automat la fiecare pornire și după fiecare /clear.
+Versiune: 04.11.2026. Acest fișier e citit automat la fiecare pornire și după fiecare /clear.
 Este SINGURA sursă de reguli de lucru pentru Code. Orice regulă de proces care nu e aici e radiată,
 oriunde ar fi scrisă (vechiul CLAUDE.md, PLAN_LUCRU.md, PREDARE_LANT.md, DECIZII.md, memoria permanentă,
 comenzi vechi). DECIZII.md rămâne istoric (de ce s-a decis), nu normă.
@@ -51,19 +51,26 @@ nici fir intern, nici „următorul pas din listă”). Poarta de publicare, jur
   finală (cel mult două pe lot; a treia numai cu rândul „rulare_completa 3 | motiv: …” din exceptii_<lot>.txt, o singură dată, hash în jurnal), cu zero regresii de lot; picături
   noi la o reluare opresc lotul, nepublicat. Regula strămoșului (`publica_lot.py --verifica <C> <HEAD>`): verdictul și rândurile jurnal_verificare.csv produse pe C (ultima rulare
   completă) sunt valabile pentru HEAD dacă C e strămoș al lui HEAD și `git diff --name-only --no-renames C..HEAD` atinge numai jurnal_verificare.csv (rânduri adăugate), capturi/*.png,
-  registre_<lot>.md, DEFICIENTE.md, DECIZII.md, PREDARE_LANT.md, CLAUDE.md; raportul (în afara repo-ului) numește numai C.
+  registre_<lot>.md, DEFICIENTE.md, DECIZII.md, PREDARE_LANT.md. Raportul numește C (commitul verificat); HEAD e în verdictul PASS. Commiturile de după C ating numai dovezile și registrele, niciodată CLAUDE.md.
+  Hook-urile reference-transaction și pre-push acceptă VERDE pe C numai cu PASS pe HEAD care numește C și trece aceeași funcție `--verifica`; fără PASS pe HEAD refuză.
 - Jurnalul: scripts/jurnal_lot.py scrie în ~/iconta_nou/.lot_jurnal.log începutul și sfârșitul fiecărei faze obligatorii (pornire, hook, verificator, treptele porții,
   publicare); pluginul pytest din conftest.py, scripts/cronometru.sh și scripts/bin/{pytest,playwright} înregistrează rulările; o fază fără sfârșit e „intrerupt”.
   Duratele din raport sunt copia ieșirii `python scripts/defalcare.py <lot>`. Verificarea pe pas: docs/dovezi/<lot>/jurnal_verificare.csv, scris de
-  scripts/verifica_pas.py (verdictul vine din compararea JSON-ului ecranului cu așteptarea) și controlat încrucișat de scripts/jurnal_verificator.sh.
+  scripts/verifica_pas.py (verdictul vine din compararea JSON-ului ecranului cu așteptarea) și controlat încrucișat de scripts/jurnal_verificator.sh. Rândurile pe alt sha decât C rămân în
+  fișier, sunt ignorate de verdict și pot avea orice verdict; numai rândurile pe C trebuie „trece” și fiecare pas al scenariului are rând pe C. O rundă a verificatorului independent = un sha
+  distinct cu rânduri verificator=Haiku pe pașii „după”; parcurgerea „înainte” pe commitul de bază nu e rundă; publica_lot le numără din CSV față de `runde_verificator_max` din
+  scripts/praguri_<lot>.txt (cheie lipsă = 0 runde permise, lot fără verificator, cum sunt loturile de unelte).
+  Un lot de produs pornește numai din coadă; o comandă lipită direct în prompt nu are rândul «pornire» cu marcaj și nu se publică. ~/coada_code.sh scrie rândul „pornire” (scripts/jurnal_lot.py
+  pornire-coada: ora reală, hash-ul pragurilor și al scripturilor porții, marcaj de proveniență din ~/ghid_incoming/cheie_coada.txt); publica_lot cere pentru un lot de produs unul singur, cu marcaj
+  valid (lipsa lui = STOP „lipsă pornire”); rândul „reconstituit” (--ora-reala) se acceptă numai când scripts/praguri_<lot>.txt e „unelte” și nu există alt rând „pornire”.
 - Publicarea: numai `sh scripts/publica_lot.sh` (ZIP, verificări, `PASS <sha>`, push, sfârșitul fazei „publicare”). Hook-ul reference-transaction, pre-push și restartul din
   post-commit refuză fără PASS; poarta, publica_lot.sh, baza_test.sh, nucleul, conftest.py nu se ating în afara loturilor marcate „unelte” în scripts/praguri_<lot>.txt.
 - Limite declarate: jurnalul dovedește fazele obligatorii înregistrate (început și sfârșit), nu toate execuțiile posibile pe un server cu shell (o comandă cu cale absolută
   ocolește PATH-ul); publicarea e condiționată de înregistrarea fazelor obligatorii, nu de interceptarea tuturor execuțiilor. Autorul fișierului de excepții al arhitectului
   nu e autentificat mecanic (un singur utilizator pe server).
-Plasa fixă (scripts/plasa_16_2.manifest, hash în verdict): de la 16.2 un lot pilot poate adăuga sau actualiza în manifest numai
-fișierele de test pe care le atinge, cu hash-ul în același commit; nicio ștergere din manifest fără fișierul de excepții al
-arhitectului (~/ghid_incoming/exceptii_<lot>.txt); verificarea diff-ului manifestului o face scripts/publica_lot.sh.
+Plasa fixă (scripts/plasa_16_2.manifest, hash în verdict): manifestul poate crește în lot numai prin rânduri adăugate pentru fișiere de test noi, prezente în diff-ul lotului față de
+main și absente pe main; orice rând lipsă, modificat (inclusiv numărul de teste al unui fișier existent) sau adăugat pentru un fișier existent pe main = refuz cu numele lui (poarta și
+scripts/publica_lot.sh, aceeași funcție `poarta_lib.manifest_refuzuri`). Un test nou de poziție pilot e deci fișier nou (e2e_pilot_<poziție>.py), nu test adăugat într-un fișier din manifest.
 Când lotul e gata: poartă (pe roșu: repară
 și reia, nu se publică niciodată pe roșu), backup, publicare, raport, apoi oprire.
 

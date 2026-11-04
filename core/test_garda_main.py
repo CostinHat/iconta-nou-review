@@ -42,11 +42,14 @@ def depozit(tmp_path):
     hooks.mkdir()
     shutil.copy(HOOK, hooks / "reference-transaction")
     os.chmod(hooks / "reference-transaction", 0o755)
+    shutil.copy(os.path.join(RAD, "scripts", "githooks", "verde-prin-pass.sh"), hooks / "verde-prin-pass.sh")   # funcția comună (16.1-C2, pct.0)
     _git(d, "config", "core.hooksPath", str(hooks))
     _git(d, "checkout", "-q", "-b", "lucru")
     _git(d, "commit", "-q", "--allow-empty", "-m", "lot")
     sha = _git(d, "rev-parse", "HEAD").stdout.strip()
     _git(d, "checkout", "-q", "main")
+    # garda PASS (16.1, pct.4) e a lui scripts/publica_lot.py și se calibrează separat; aici lotul are PASS, iar testele judecă garda VERDE
+    (d / ".git" / "publica_verdicte.log").write_text("PASS %s 16.1 2026-10-15T20:00:00+03:00\n" % sha)
     return d, sha
 
 

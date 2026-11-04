@@ -7,6 +7,7 @@ import ast
 import hashlib
 import os
 import re
+import subprocess
 import xml.etree.ElementTree as ET
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -14,6 +15,55 @@ RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def hash_fisier(cale):
     return hashlib.sha256(open(cale, "rb").read()).hexdigest() if os.path.exists(cale) else "lipsa"
+
+
+def lot_fisier(lot):
+    """Numele lotului în căi și fișiere de stare: `16.1-C2` -> `16_1_C2`."""
+    return re.sub(r"[.\-]", "_", lot)
+
+
+def lot_baza(lot):
+    """Lotul a cărui bază (docs/dovezi/<lot>/baza.json) o folosește: un lot de corecție (`16.1-C2`) moștenește baza lotului de bază (`16.1`)."""
+    return lot.split("-")[0]
+
+
+def _git_text(rad, *a):
+    r = subprocess.run(["git", *a], cwd=rad, capture_output=True, text=True)
+    return r.stdout if r.returncode == 0 else None
+
+
+def manifest_refuzuri(rad, commit_baza, main="main", cale_manifest=None):
+    """Creșterea manifestului în lot (16.1-C2, pct.1): manifestul curent diferă de cel de la commitul bazei numai prin rânduri ADĂUGATE pentru fișiere de test noi,
+    prezente în diff-ul lotului față de `main` și absente pe `main`. Orice rând lipsă, modificat (și numărul de teste al unui fișier existent) sau adăugat pentru un
+    fișier existent pe main ori în afara diff-ului = refuz cu numele fișierului. -> lista refuzurilor (goală = acceptat)."""
+    def randuri(text):
+        date, alte = {}, []
+        for ln in text.splitlines():
+            if ln.strip() and not ln.startswith("#"):
+                date[ln.split("\t")[0]] = ln
+            else:
+                alte.append(ln)
+        return date, alte
+    vechi_t = _git_text(rad, "show", "%s:%s" % (commit_baza, MANIFEST))
+    if vechi_t is None:
+        return ["manifestul nu există la commitul bazei (%s)" % commit_baza[:8]]
+    vechi, alte_v = randuri(vechi_t)
+    nou, alte_n = randuri(open(cale_manifest or os.path.join(rad, MANIFEST), encoding="utf-8").read())
+    diff = set((_git_text(rad, "diff", "--name-only", commit_baza, "HEAD") or "").split())
+    ref = []
+    if alte_v != alte_n:
+        ref.append("%s: liniile de antet / comentarii s-au schimbat" % MANIFEST)
+    for f in sorted(vechi):
+        if f not in nou:
+            ref.append("%s: rând lipsă" % f)
+        elif nou[f] != vechi[f]:
+            ref.append("%s: rând modificat (hash, număr de teste sau comandă)" % f)
+    for f in sorted(set(nou) - set(vechi)):
+        if subprocess.run(["git", "cat-file", "-e", "%s:%s" % (main, f)], cwd=rad, capture_output=True).returncode == 0:
+            ref.append("%s: rând adăugat pentru un fișier existent pe %s" % (f, main))
+        elif f not in diff:
+            ref.append("%s: rând adăugat pentru un fișier care nu e în diff-ul lotului" % f)
+    return ref
 
 
 def nume_stabil(classname, name, rad):
@@ -90,7 +140,6 @@ def cheie_asertiuni(nume):
 # rularea treptelor (comună bazei și candidatului): verificatorul de design, pytest pe nucleu, plasa e2e din manifest — fără oprire la prima roșie
 # ---------------------------------------------------------------------------------------------------------------------------------------------
 import contextlib   # noqa: E402
-import subprocess   # noqa: E402
 import sys   # noqa: E402
 import time   # noqa: E402
 

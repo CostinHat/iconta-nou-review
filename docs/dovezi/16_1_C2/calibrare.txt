@@ -1,0 +1,41 @@
+ATINS  0 PASS pe HEAD (care numește C) + VERDE pe C, HEAD = C + rând CSV: reference-transaction lasă main să se mute  [publica_lot --verifica] PASS C=26f190df6848479dee661db2c3bca24b79009682 HEAD=13a120447c5996ec01f361
+ATINS  0 același caz: pre-push lasă push-ul pe main să treacă   * [new branch]        13a120447c5996ec01f361681092f0b127c2275e -> main
+ATINS  0 VERDE pe C fără PASS pe HEAD: reference-transaction refuză  fatal: ref updates aborted by hook
+ATINS  0 VERDE pe C fără PASS pe HEAD: pre-push refuză  error: failed to push some refs to '/tmp/calibrare_16_1_C2_z8nl539e/tmp9wr29mh6'
+ATINS  0 PASS pe alt HEAD (VERDE pe C): reference-transaction refuză  fatal: ref updates aborted by hook
+ATINS  0 PASS pe alt HEAD (VERDE pe C): pre-push refuză  error: failed to push some refs to '/tmp/calibrare_16_1_C2_z8nl539e/tmppk27mxj5'
+ATINS  4(d) HEAD care diferă de C prin CLAUDE.md, cu PASS și VERDE pe C: reference-transaction refuză  fatal: ref updates aborted by hook
+ATINS  4(d) același caz: pre-push refuză  error: failed to push some refs to '/tmp/calibrare_16_1_C2_z8nl539e/tmpb3lop6f7'
+ATINS  4(f) fișier non-.png sub docs/dovezi/<lot>/capturi/ în diff-ul C..HEAD: reference-transaction refuză  fatal: ref updates aborted by hook
+ATINS  0 VERDE exact pe HEAD + PASS pe HEAD (fără C diferit) rămâne acceptat  -
+ATINS  0 PASS pe HEAD care numește un C fără VERDE în jurnalul porții: refuză  fatal: ref updates aborted by hook
+ATINS  1 rând adăugat pentru un fișier de test nou (în diff, absent pe main) = trece  []
+ATINS  1 rând adăugat pentru un fișier existent pe main = refuz cu numele lui  ['frontend_test/e2e/e2e_pe_main.py: rând adăugat pentru un fișier existent pe main']
+ATINS  1 rând modificat (numărul de teste al unui fișier existent) = refuz cu numele lui  ['frontend_test/e2e/e2e_vechi.py: rând modificat (hash, număr de teste sau comandă)']
+ATINS  1 rând modificat (hash-ul) = refuz cu numele lui  ['frontend_test/e2e/e2e_vechi.py: rând modificat (hash, număr de teste sau comandă)']
+ATINS  1 rând lipsă = refuz cu numele lui  ['frontend_test/e2e/e2e_vechi.py: rând lipsă']
+ATINS  1 rând adăugat pentru un fișier care nu e în diff-ul lotului = refuz cu numele lui  ['frontend_test/e2e/e2e_fantoma.py: rând adăugat pentru un fișier care nu e în diff-ul lotului']
+ATINS  2 coada scrie rândul „pornire” cu marcaj (coada=1 marca=<hash>), ora reală și hash-ul pragurilor  praguri=praguri.txt praguri_sha256=0a2d2a0fe27c647996ab900b78508c980f0
+ATINS  2 marcajul se recalculează din cheie + lot + ora rândului = valid  
+ATINS  2 rând cu marcaj falsificat = nevalid  
+ATINS  2 rând cu ora schimbată după scriere = nevalid  
+ATINS  2 aceeași linie cu altă cheie = nevalid (marcajul nu se poate pune fără cheia cozii)  
+ATINS  2 lot de produs cu rând de pornire cu marcaj valid, unul singur = acceptat  
+ATINS  2 lot de produs fără rând „pornire” = STOP „lipsă pornire”  
+ATINS  2 lot de produs cu pornire fără marcaj (comandă lipită direct în prompt) = STOP  
+ATINS  2 lot de produs cu pornire reconstituită = STOP  
+ATINS  2 lot „unelte” cu o singură pornire reconstituită = acceptat  
+ATINS  2 lot „unelte” cu pornire reconstituită și alt rând „pornire” = STOP  
+ATINS  2 doi rânduri „pornire” valide într-un lot de produs = STOP (unul singur)  
+ATINS  3(e) rând pe alt sha decât C, cu verdict „pica”, ignorat; rândul pe C „trece” = trece  
+ATINS  3 pas fără rând pe C (rândul e pe alt sha) = STOP „nu are rând pe C”  ['pasul „P1” nu are rând pe C în jurnal_verificare.csv']
+ATINS  3 rând pe C cu verdict „pica” = STOP  ['rândul P1 din jurnal_verificare.csv (pe C): pica']
+ATINS  3 rând pe C cu captură lipsă = STOP  ['rândul P1: captura lipsește']
+ATINS  3 runde: parcurgerea „înainte” pe commitul de bază nu e rundă (o rundă pe C, maxim 1) = trece  []
+ATINS  3 runde: două sha distincte cu Haiku pe pașii „după” (maxim 1) = STOP  ['rundele verificatorului: 2 > runde_verificator_max 1 (cheie lipsă = 0)']
+ATINS  3 runde: cheie lipsă (maxim 0) și un rând Haiku = STOP (lot fără verificator)  ['rundele verificatorului: 1 > runde_verificator_max 0 (cheie lipsă = 0)']
+ATINS  3 scripts/praguri_16_1_C2.txt declară runde_verificator_max: 0  [0]
+ATINS  4 CLAUDE.md nu mai e în lista căilor permise după C  ['CLAUDE.md: cale în afara listei permise']
+ATINS  4 captură .png sub capturi/ = permisă  []
+ATINS  4(f) fișier non-.png sub capturi/ = refuz cu numele lui  ['docs/dovezi/16_1_C2/capturi/p.txt: cale în afara listei permise']
+ATINS  4 jurnal_verificare.csv adăugat = permis  []

@@ -78,3 +78,9 @@ Backup: fast-forward, FARA --force, creeaza ramura zilei daca nu exista. Cableaz
 `sh scripts/publica_lot.sh` din ramura lotului. `pre-commit` scrie faza „hook” în `.lot_jurnal.log` (început, sfârșit). Calibrarea: `docs/dovezi/16_1/calibrare.txt`.
 Mecanismul de instalare al hook-urilor rămâne cel din 15.1-R: `git config core.hooksPath scripts/githooks` (nimic nu se copiază în `.git/hooks`).
 Limită declarată: rulatorul migrărilor (`core/migrari_registru.py ... ruleaza --productie`) își reporneste singur aplicația și nu e păzit de PASS.
+
+## 16.1-C2: VERDE pe C prin PASS (pct.0)
+
+`reference-transaction` și `pre-push` încarcă `verde-prin-pass.sh` (`verde_pe_head`): un SHA trece dacă poarta are VERDE exact pe el, SAU dacă `publica_verdicte.log` are `PASS <sha> <lot> … C=<C>` care numește un C cu
+`VERDE <C> … completa`, iar `scripts/publica_lot.py --verifica <C> <sha> <lot>` (aceeași funcție `ancestor_refuzuri` ca în publicare) dă PASS. Fără PASS pe SHA se refuză, cu orice VERDE. Calibrarea, pe un
+`git clone` local și un depozit la distanță temporar: `scripts/calibreaza_16_1_C2.py` → `docs/dovezi/16_1_C2/calibrare.txt`.

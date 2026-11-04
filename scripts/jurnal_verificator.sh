@@ -31,7 +31,7 @@ case "$1" in
     incepe) ID=$("$PY" scripts/jurnal_lot.py inceput "$2" verificator) && echo "$ID" > "$COMUN/verificator_$2.id" ;;
     pas)
         LOT="$2"; PAS="$3"; ACT="$4"; URL="$5"; AST="$6"; PAG="${7:-/}"
-        CSV=${JURNAL_VERIFICARE_CSV:-docs/dovezi/$(echo "$LOT" | tr . _)/jurnal_verificare.csv}
+        CSV=${JURNAL_VERIFICARE_CSV:-docs/dovezi/$(echo "$LOT" | tr ".-" "__")/jurnal_verificare.csv}
         "$PY" scripts/verifica_pas.py --lot "$LOT" --pas "$PAS" --actiune "$ACT" --json-url "$URL" --asteptare "$AST" --pagina "$PAG" --csv "$CSV"
         RC=$?
         controleaza "$CSV" || exit 1

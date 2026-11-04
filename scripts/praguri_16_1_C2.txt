@@ -1,0 +1,3 @@
+unelte
+lot: 16.1-C2
+fara praguri numerice (lot de unelte, se masoara); runde_verificator_max: 0

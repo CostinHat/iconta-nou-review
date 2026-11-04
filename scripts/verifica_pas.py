@@ -56,7 +56,7 @@ def main(a):
     ap.add_argument("--csv", default=None)
     ap.add_argument("--verificator", default="scripts/verifica_pas.py v1")
     o = ap.parse_args(a)
-    lotf = o.lot.replace(".", "_")
+    lotf = JL.L.lot_fisier(o.lot)
     csv_ = o.csv or os.path.join(RAD, "docs", "dovezi", lotf, "jurnal_verificare.csv")
     cap = os.path.join(os.path.dirname(csv_), "capturi", "%s_%s.png" % (lotf, o.pas))
     os.makedirs(os.path.dirname(cap), exist_ok=True)
