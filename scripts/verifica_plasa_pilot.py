@@ -11,7 +11,7 @@ import sys
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(RAD, "scripts"))
 sys.path.insert(0, RAD)
-SCENARII = os.path.join(os.environ.get("GHID_INCOMING", os.path.expanduser("~/ghid_incoming")), "scenarii_pilot.txt")
+SCENARII = os.path.join(RAD, "docs", "scenarii_pilot.txt")   # copia din repo (16.0 pct.4), nu fișierul din afara git-ului
 _SUMA = re.compile(r"(?<![\d.,])\d{1,3}(?:\.\d{3})*,\d{2}(?![\d,])")
 
 

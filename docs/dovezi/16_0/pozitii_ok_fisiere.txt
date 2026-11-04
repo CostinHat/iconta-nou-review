@@ -1,0 +1,19 @@
+X02: FĂRĂ TEST pe main
+F012: e2e_pilot_luna.py
+F015: e2e_lot12_verif.py, e2e_pilot_luna.py
+F026: e2e_pilot_luna.py, e2e_pozitii_validate.py
+F028: e2e_pilot_luna.py, e2e_pozitii_validate.py
+F043: e2e_lot72_facturi.py, e2e_pilot_luna.py
+F045: e2e_pilot_luna.py
+F061: e2e_pilot_luna.py
+F070: e2e_pilot_luna.py
+F073: e2e_pilot_luna.py, e2e_pozitii_validate.py
+F078: e2e_pilot_luna.py, e2e_pozitii_validate.py
+F080: e2e_pilot_luna.py, e2e_pozitii_validate.py
+F081: e2e_pilot_luna.py, e2e_pozitii_validate.py
+F118: e2e_pilot_luna.py
+F122: e2e_pilot_luna.py
+F134: e2e_pilot_luna.py, e2e_pozitii_validate.py
+F139: e2e_pilot_luna.py
+F252: e2e_pilot_luna.py, e2e_pozitii_validate.py
+F254: e2e_pilot_luna.py, e2e_pozitii_validate.py

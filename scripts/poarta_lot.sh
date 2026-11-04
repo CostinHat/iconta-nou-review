@@ -66,11 +66,14 @@ PYE
 # de orice treaptă; un fișier lipsă, un hash diferit sau un număr de teste descoperite diferit = REFUZ, cu numele fișierului. Selecția veche nu se folosește: pytest rulează
 # lista scripts/poarta_nucleu.txt, plasa e2e rulează fișierele manifestului. Baza de test se restaurează înainte de pytest și înainte de plasa e2e (scripts/baza_test.sh).
 # Hash-ul manifestului intră în verdict.
+rm -f "$J/poarta_restante_scazute.txt"
 FIX="${POARTA_PLASA_FIX:-}"
 MANIFEST_HASH=""
 if [ -n "$FIX" ]; then
     [ -f "$FIX" ] || { echo "[poarta lot] REFUZ: POARTA_PLASA_FIX=$FIX nu există."; exit 1; }
     "$PY" scripts/genereaza_manifest_plasa.py --verifica "$FIX" || { echo "[poarta lot] REFUZ: manifestul $FIX nu se potrivește cu fișierele (vezi mai sus)."; exit 1; }
+    "$PY" scripts/inventar_restante.py valideaza || { echo "[poarta lot] REFUZ: inventarul scripts/poarta_e2e_restante.txt are rânduri fără ID, clasă sau număr."; exit 1; }
+    sh scripts/verifica_plasa_pilot.sh || { echo "[poarta lot] REFUZ: verifica_plasa_pilot (pozitii pilot ok fara test)."; exit 1; }
     MANIFEST_HASH=$(sha256sum "$FIX" | cut -d' ' -f1)
     grep -v '^#' scripts/poarta_nucleu.txt | grep . > "$J/poarta_pytest_fisiere.txt"
     grep -v '^#' "$FIX" | cut -f1 | xargs -n1 basename > "$J/poarta_e2e_fisiere.txt"
@@ -93,7 +96,8 @@ fi
 # Ordinea treptelor (regula 15.1, 31.10.2026): 1. verificatorul de design, 2. pytest țintit, 3. plasa e2e. Prima treaptă ROȘIE oprește poarta și
 # scrie ROȘU imediat (fără să continue), ca timpul să nu se piardă pe treptele de după.
 final() {   # scrie verdictul și iese
-    DUR="verificator ${T_VERIF:-0}s · pytest ${T_PYTEST:-0}s · plasa e2e ${T_E2E:-0}s · total $(( $(date +%s) - T0 ))s"
+    RESTANTE=""; [ -s "$J/poarta_restante_scazute.txt" ] && RESTANTE=" · $(grep -c '^restanță' "$J/poarta_restante_scazute.txt") restanțe scăzute: $(grep '^restanță' "$J/poarta_restante_scazute.txt" | cut -d' ' -f2 | tr '\n' ',')"
+    DUR="verificator ${T_VERIF:-0}s · pytest ${T_PYTEST:-0}s · plasa e2e ${T_E2E:-0}s · total $(( $(date +%s) - T0 ))s${MANIFEST_HASH:+ · manifest $MANIFEST_HASH}$RESTANTE"
     if [ -z "$ROSII" ]; then V=VERDE; RCF=0; else V=ROSU; RCF=1; fi
     [ "$RAM" != "main" ] && echo "$V $SHA $RAM $(date -Is)${MANIFEST_HASH:+ manifest=$MANIFEST_HASH}" >> "$JV"
     # [15.1] reluarea după roșu pornește de la acest commit (scripts/poarta_ultima.txt, ignorat de git); pe VERDE zona e gata: următoarea pornește de la `main`
@@ -172,6 +176,11 @@ if [ -n "$ARG" ]; then
     "$PY" scripts/e2e_poarta.py $ARG "$CAPTURI" > "$J/poarta_e2e.log" 2>&1
     RC=$?
     tail -1 "$J/poarta_e2e.log"
+    if [ "$RC" -ne 0 ] && [ -n "$FIX" ]; then
+        # plasa fixă: picăturile cu rând a/b/c în inventar sunt „restanță <ID>” (nu fac ROȘU); orice altă picătură = baza s-a mișcat
+        "$PY" scripts/inventar_restante.py scade "$J/poarta_e2e.log" "$CAPTURI/pytest.log" | tee "$J/poarta_restante_scazute.txt" | tail -40
+        grep -q "PICĂ FĂRĂ RÂND" "$J/poarta_restante_scazute.txt" || RC=0
+    fi
     [ "$RC" -ne 0 ] && rosu "plasa e2e"
     # cazutele plasei raman pentru urmatoarea rulare (echivalentul lui --lf)
     grep -hE "^(FAILED|ERROR) " "$CAPTURI/pytest.log" "$J/poarta_e2e.log" 2>/dev/null | sed -E 's#^(FAILED|ERROR) ([^: ]*/)?([^:/ ]+\.py).*#\3#' | grep "\.py$" | sort -u > "$CAZUTE_E2E"

@@ -36,10 +36,17 @@ rezolvată și rulează permanent în poartă. Pilotul e atins când scenariul e
 Lotul e unitatea de lucru, de publicare și de raport. Comenzile poartă numărul lotului (12.1, 12.2…).
 Code duce lotul până la capăt: ce nu poate rezolva singur trece în raport și continuă cu restul; deciziile de pe parcurs le
 ia pe varianta cea mai sigură și le listează în raport, la E (Abateri). Nu se trece la nimic din afara comenzii (nici agendă,
-nici fir intern, nici „următorul pas din listă”). Un lot = o poartă completă + reluări numai pe numele picate; a doua regresie
-de lot nouă = oprire, nepublicat (comanda 16.0, 04.11.2026). Un test roșu și pe main, nenumerotat în
-scripts/poarta_e2e_restante.txt, oprește lotul: baza s-a mișcat. Restaurarea bazei de test înainte de fiecare treaptă a porții
-și de fiecare parcurgere a verificatorului (scripts/baza_test.sh restaureaza). Când lotul e gata: poartă (pe roșu: repară
+nici fir intern, nici „următorul pas din listă”). Un lot = o rulare completă a porții + reluări numai pe numele picate; verdictul de publicare îl dă numai rularea
+completă finală, cu zero regresii de lot; a doua regresie de lot nouă = oprire, nepublicat (comanda 16.0, 04.11.2026).
+Un test roșu și pe bază, nenumerotat în inventarul scripts/poarta_e2e_restante.txt, oprește lotul: baza s-a mișcat.
+Restaurarea bazei de test (scripts/baza_test.sh restaureaza) se face înainte de fiecare treaptă a porții și de fiecare
+parcurgere a verificatorului, niciodată per test. „Zero restanțe” = zero picături neclasificate și nenumerotate pe plasa
+completă, nu zero picături absolute. Limitele declarate: jurnalul porții e dovadă pentru fazele înregistrate, nu registru
+absolut; autorul fișierului de excepții al arhitectului nu e autentificat mecanic.
+Plasa fixă (scripts/plasa_16_2.manifest, hash în verdict): de la 16.2 un lot pilot poate adăuga sau actualiza în manifest numai
+fișierele de test pe care le atinge, cu hash-ul în același commit; nicio ștergere din manifest fără fișierul de excepții al
+arhitectului (~/ghid_incoming/exceptii_<lot>.txt); verificarea diff-ului manifestului o face publica_lot.sh (16.1).
+Când lotul e gata: poartă (pe roșu: repară
 și reia, nu se publică niciodată pe roșu), backup, publicare, raport, apoi oprire.
 
 R2. Un lot = o singură poartă și o singură publicare, la sfârșit. Nu publici pe zonă, pe ecran sau pe etapă, chiar dacă o comandă veche spune altfel. Înainte de a începe lotul rulezi poarta de bază pe main: dacă e roșie, repari întâi testele vechi, pe nume, într-un commit separat „teste de bază: <nume>”, și abia apoi începi lotul.

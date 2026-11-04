@@ -1,0 +1,105 @@
+SCENARII PILOT — una pe poziție din planul de testare (44 poziții marcate pilot), scrise 03.11.2026. Același scenariu e folosit de trei ori: la retestul pe ecran (Costin + Claude), de verificatorul independent, și de Code ca test e2e permanent în poartă (regula din 23.10: fiecare poziție validată are test automat). O poziție e „ok” numai când scenariul a fost parcurs pe ecran după ultima publicare și e verde în poartă. Cabinetul: Cabinet Test Sesiunea B SRL. Format: firmă · pași · așteptat (cifre exacte unde există). Reguli pentru testele automate: cabinetul de test cu datele lui fixe, ceas înghețat, răspunsuri fixe în locul ANAF/SPV/BNR; unde scenariul nu dă o cifră, Code o ia din datele de test la prima rulare verde și o scrie aici ca așteptare, raportat; F126, F176, F179 sunt în afara plasei până la activarea SPV. Poziții „ok” la 03.11 (cu test obligatoriu în hartă): X02, F012, F015, F026, F028, F043, F045, F061, F070, F073, F078, F080, F081, F118, F122, F134, F139, F252, F254. Numerele din paranteze sunt deficiențele care au apărut pe poziție; scenariul le acoperă.
+
+g02 — intrare
+
+X02 · Fereastra de bun venit · Ana (asistent junior), prima autentificare · fereastra apare o singură dată, la prima intrare, nu se deschide singură ulterior (562); se închide cu X, Esc și butonul de jos (4); ghidul e cel al asistentului, nu pașii administratorului (5); nu promite „48 de ore” (7).
+
+g03 — preluare
+
+F084 · Import solduri inițiale · F7 Preluare Test · Migrare › Import date › balanta_proba_preluare.xlsx · 7 conturi citite, balanța echilibrată, data 30.09.2026, metoda de stoc cerută explicit (36); stările pașilor sunt pe firmă, nu pe cabinet (663); paragraful explicativ o singură dată pe secțiune (623.1); conturile analitice intră în plan.
+
+F085 · Import solduri parteneri · F7 · parteneri_proba_preluare.xlsx · 4111 potrivit intră; 401 cu diferență de 100 e refuzat cu motiv și se salvează numai rândurile bune; pasul nu e „gata” cât 401 e nedefalcat (665); la firma fără solduri pasul spune „nu e cazul”, fără casetă roșie, mesaj o dată (666.1); soldurile preluate pe parteneri apar în Scadențar cu scadența = data preluării + termenul implicit (738).
+
+F183 · Audit de preluare · F6 · Control fiscal › Detaliu firmă › Audit de preluare · balanța coerentă (111.170), divergențele 2131, 2813, 371 cu acțiune fiecare; soldurile creditoare afișate ca C, nu cu minus (609); paragraful explicativ o singură dată (623.1); „Rulează din nou” produce același verdict pe aceleași date.
+
+g04 — facturare și vânzări
+
+F003 · Import Raport Z · F1 · card Raport Z › Z-0050 (NUI 8000000001, 20.10.2026) · nota 5311/5125 = 707 și 707 = 4427 52,90, baze 99,10 / 200,00; NUI + nr. Z dublate sunt refuzate; descărcarea pe articol e cerută înainte de validare la cantitativ-valoric (96); textele notei fără etichete HoReCa (605); titlul „Raport Z din 20.10.2026” (618).
+
+F017 · Chitanțe emise · F1 · Casă › + Dispoziție nouă › Încasare client › Client Test SRL (410001005) › F1A nr. 15 (500 lei) · lista facturilor neîncasate apare din evidența proprie, cu sau fără RO (278.1); seria chitanței e cerută la prima folosire, nu „CH” din oficiu (98); chitanța primește serie și număr, PDF cu suma în litere; nota 5311 = 4111 500, factura trece pe „încasată”, soldul casei crește cu 500 (455).
+
+F018 · Parteneri · F1 · Clienți și Furnizori · un partener are o singură fișă (client și furnizor), localitatea cerută o singură dată; există adăugare, ștergere (refuzată când partenerul are documente) și căutare (640.1); „Verifică” la ANAF completează denumire și tip pe orice formular cu CUI de partener (633.1); persoana fizică fără localitate e semnalată (D394).
+
+F023 · Regula cotelor · F1 · Emite factură › + Adaugă linie › Marfa A · cota articolului vine preselectată (21%), nu „Fără TVA” (274.1); cotele oferite sunt 21% / 11% / 0% pentru o dată din 2026 (745); contabilul poate schimba cota cu urmă (21); „Fără TVA” cere o categorie din cele 7 (F-A.3) și refuză emiterea fără ea.
+
+F025 · Curs BNR · F1 · Emite factură în EUR, data de azi · cursul propus e al zilei bancare precedente (460), afișat cu data lui; Închidere lună › semnalul „solduri în valută” are butonul „Reevaluare valută” în cardul lui (736.1); reevaluarea produce o notă 665/765 cu cursul de la sfârșitul lunii (630/631).
+
+F043 · Import e-Factura (UBL) · F1 · Facturi › import XML DANTE 827 lei (21% + 11%) · număr, dată, scadență, părți, linii citite; intrare în stoc și CMP corecte; a doua încărcare a aceluiași XML e refuzată; statutul TVA al furnizorului vine din XML, nu se cere manual (418).
+
+F045 · PDF factură · F1 · Istoric facturi › F1A nr. 20 › PDF · denumiri, adrese, cantități, UM, preț, bază/TVA pe cote, capital; codul de TVA cu RO la furnizor și beneficiar (23, 186); seria și numărul, data emiterii și scadența; fișierul se numește după serie și număr, nu „(anonymous)”.
+
+F046 · Contare + storno · F1 · Istoric facturi › stornare cu retur a unei facturi cu ieșire din stoc · o singură notă de stornare și o singură ieșire inversă, titlu „Stornare factura F1A nr. N din zz.ll.aaaa” (409.1); nota de stornare nu se validează înaintea documentului stornat, se validează împreună (619); PDF-ul storno trimite la factura inițială (417); originalul trece pe starea de încasare corectă (416).
+
+F070 · Nomenclator produse + AI · F1 · Produse › + Adaugă produs › „Pâine albă” · propunerea „TVA 11% · AI” cu temei (art. 291 (2) b), text cu diacritice (737); în listă rămâne „TVA 11% · AI”, motivarea sub „▾ detalii”, nu ca descriere; numele intern EXCEPTII_21 nu apare (471).
+
+F126 · e-Factura SPV · FISCALOS ICONTA (după activarea SPV) · emite o factură B2B › Trimite în SPV · trimiterea reușește, starea apare în Istoric facturi și în detaliu (netrimisă / trimisă / acceptată / respinsă) (275); fără conexiune, refuzul numește locul conectării (289).
+
+F131 · Scadențar și alerte · F1 · Scadențar · facturile încasate apar încasate (466); contoarele „restanțe · scadențe apropiate · în termen · fără scadență” numără toate rândurile (738); Fișă client deschide clientul și factura (467); totalul pe client nu adună lei cu euro (468).
+
+F172 · Punte factură → stoc · F1 · Emite factură cu Marfa A, „Pleacă marfa acum? DA” · nota 607 = 371 la CMP, legată de factură (document justificativ = factura, nu „nederivat”); cantitățile fără zecimale în exces (27); la NU, factura e pur fiscală, fără mișcare de stoc.
+
+F252 · Clasificare TVA · F1 · Emite factură către Google Ireland (IE6388047V) · țara și tipul operațiunii dirijează rândul D300 (rd. 3/3.1), cota 0% cu temei art. 278 (2), PDF cu „Taxare inversă”, ambele coduri de TVA; nota 4111 = 704 fără TVA; D390 primește P.
+
+F254 · Factură pe bon · F1 · Emite factură „emisă pe baza bonului fiscal” 0002/22.10.2026 (Z-0050) · PDF cu „conform bon fiscal nr./data”; nu intră în D300, nu primește notă de vânzare, nu descarcă stocul a doua oară; „Contează” refuză cu explicație.
+
+g05 — stocuri
+
+F089 · Stocuri CMP · F1 · Stocuri › Marfa A · tabelul arată articol, UM, cantitate, CMP, valoare, total egal cu 371 din balanță (6.272,38 la 31.10.2026); o ieșire peste stocul la data ei e refuzată; Borderou și fișa articolului cu diacritice, fiecare mișcare o dată (603).
+
+F139 · Landed cost pe NIR · F1 · NIR nou cu transport 100 + 21% · transportul repartizat proporțional în costul articolelor (55 / 27,50 pe exemplul din 19.10), marfa pe 408/4428.01 când nu are factură, transportul pe 401/4426 (398, 399); detaliul NIR arată costul accesoriu (400); numărul NIR propus (următorul liber), dublatul refuzat (739).
+
+F176 · Conector SPV · FISCALOS ICONTA · Setări cont › Conectare SPV · fereastra firmei arată starea conexiunii și emitentul certificatului (289); token-ul se reîmprospătează singur; expirarea certificatului e semnalată cu data.
+
+F179 · Primire e-Factura din SPV · FISCALOS ICONTA · după activare, o factură primită în SPV · apare în „Facturi primite din SPV” în cel mult 30 de minute, ca ciornă; ecranul spune dacă firma e conectată și are „Verifică acum în SPV” (273).
+
+g06 — bancă și casă
+
+F011 · Contabilizare extras · F1 · Bancă › import extras cu încasare de factură și comision · nota 5121 = 4111 cu documentul factura; comisionul 627 = 5121 cu „Alege facturile” inactiv (607.1); mesajul de după import numără la fel ca cipul (751); liniile din 5121 fără linie în extras sunt listate sub diferență (276.1).
+
+F012 · Parser extras · F2 · Bancă › același extras .csv și .xlsx (dată Excel) · ambele citite, 5 linii, aceleași date (478); reîncărcarea aceluiași extras pe F1 spune „nicio linie nouă” și listează cele găsite (479); formatele acceptate sunt scrise pe ecran, pe bănci (276.1).
+
+F015 · Registru de casă · F1 · Casă 10/2026 · soldul curent pe fiecare rând se leagă (242 → 142 → 6.142 → 142 → −58 → 142 → 42 → 173 → 294 → 358,46 → 558,46); fișa 5311 pe note validate = 442 = balanța; plata peste sold e refuzată; avertismentul de plafon (Legea 70/2015) apare în formular, înainte de salvare (278c); avansul la furnizor merge pe 4091 (407).
+
+F073 · Reconciliere · F1 · Bancă › extras cu plata 827 DNT-TEST-1019 · potrivire exactă pe factură (401 = 5121); încasare parțială alocată pe mai multe facturi; Google Ireland fără potrivire automată rămâne „alege factura”.
+
+g07 — salarii
+
+F078 · Salariați CRUD · F5 · Salariați › + Salariat nou · CNP invalid refuzat cu motiv; toate erorile apar deodată, câmpurile obligatorii cu steluță (454); salariatul venit prin import cere funcția de bază, scutirea și norma (97); schimbarea salariului intră în istoric cu „valabil de la”.
+
+F080 · Calcul salarii · F5 · Stat de plată 11/2026 · 20 zile lucrătoare; Ionescu 5.000 → CAS 1.250, CASS 500, deducere 560, impozit 269, net 2.981; Popescu 7.000 → deducere 0, impozit 455, net 4.095; CAM 270 pe total, cost 12.270.
+
+F087 · Stat + fluturași · F5 · Stat de plată 10/2026 › Fluturaș Ionescu · brut 5.700,34 (4.318,18 + diurnă 885 + ore suplimentare 497,16), CAS 1.425, CASS 570, deducere 151, impozit 355, net de plată 2.618,34, cost 5.211,34; fluturașul egal cu statul; în stat brutul salarial și diurna separat (752); „Contabilizează statul” e acțiunea principală (730).
+
+F122 · CM în flux · F5 · Concedii › Ionescu CM cod 01, 13–15.10.2026 · indemnizația 262 brut → 153 net (CAS 66, CASS 26, impozit 17); netul de plată și costul includ CM (411); nota 6458 = 423 262; zilele CM scad din zilele lucrate (19 din 22).
+
+F134 · Plata pe card · F5 · Stat de plată 11/2026 › Fișier plată card (SEPA) · pain.001 cu totalul neturilor celor cu IBAN (2.981 + 4.095 = 7.076 dacă ambii au IBAN); salariatul fără IBAN e exclus cu avertisment și cale de completare; „1 plată” nu „1 plată/plăți”.
+
+g10 — evidență și control
+
+F019 · Coada de validare · cabinet · De validat · aceeași cifră „de validat” pe card, în Registru jurnal, în fereastră și în clopoțel (563); o singură formă de listă, fiecare notă o dată, căutare, Validează/Respinge pe rând (622); ciornele contabilului apar într-o coadă la vedere (457); contoarele se actualizează fără reîncărcare (286).
+
+F022 · Semafor fiscal · F2 · Control fiscal › Detaliu firmă · luna preluării 03/2026 (înființată 15.03.2026), restanțele încep cu T1/2026, nimic din 2025 (724.2); „De urmărit” numără scadențele apropiate (124); cardul și fereastra arată aceleași cifre (125); semnalele întregi, nu tăiate cu „…” (740); coloana Termen cu data întreagă (741).
+
+F054 · Editor note · F1 · Registru jurnal › + Notă nouă · data propusă = azi, editabilă; într-o lună blocată propune ultima zi deschisă și spune de ce (602.1); nota validată e imutabilă; nota la validare nu are Editează/Șterge (48); refuzul apare o singură dată (610).
+
+F061 · Motor contabil · F1 · Balanță 10/2026 · se închide pe toate cinci (17.000 / 39.116 / 19.544,50 / 75.660,50 / 43.889,98); 371 D 6.272,38, 4111 D 4.468,24, 408 C 1.391,50, 4428.01 D 241,50, 5311 D 442, 5121 D 17.165; ciornele nu intră; PDF cu CUI (cu RO) și data generării în antet (167, 186).
+
+F081 · Scadențe · cabinet · Termene · termenele lunii mutate de la duminică/sărbătoare la prima zi lucrătoare (26.10, 30.10, 02.11 pentru 09/2026); tabel DS cu coloana „Grup” (punctul 2 din E7); Termene citește aceeași sursă ca Control fiscal (724).
+
+F118 · Blocare perioade · F1 · Registru jurnal 09/2026 · „Blochează luna” inactiv pe luna în curs; nota datată în luna blocată e refuzată cu mesaj clar; „Deblochează luna” cere motiv obligatoriu, butonul inactiv cât motivul e gol (729.1), motivul rămâne în istoric cu nume și oră (483).
+
+F162 · Control D112 vs contabilitate · F5 · Control fiscal › Detaliu firmă › Declarație vs contabilitate · D112 09/2026 (impozit 646, CAS 2.750, CASS 1.100, CAM 248) confruntată cu rulajele creditoare 444 / 4315 / 4316 / 436 din notele validate; verdict verde/roșu/gri cu cifrele fiecărei părți (484).
+
+F169 · Control D300 vs contabilitate · F1 · același ecran · D300 09/2026 confruntată cu 4427 / 4426; diferența explicată cu notele care o produc, cu link spre ele (694.1a); luna comparată alegeabilă, nu doar ultima (484).
+
+g11 — declarații
+
+F026 · D100 · F1 · Declarații › D100 T3/2026 · baza 1.000 din 707 (note validate), cota 1% (OUG 89/2025), cod 121 = 10 lei, DUK fără erori; confruntarea cu contabilitatea rulează (484); clicul pe rând alege declarația, nu deschide ajutorul (727.2).
+
+F028 · D112 · F5 · Declarații › D112 10/2026 · cifrele din statul 10/2026 (impozit 355 + 17 + Popescu, CAS, CASS, CAM 134 + Popescu), CM cu asigurat B3, DUK fără erori; D112 09/2026 rămâne: impozit 646, CAS 2.750, CASS 1.100, CAM 248.
+
+F031 · D300 · F1 · Declarații › D300 10/2026 · TVA colectată 1.486,18 (4427), deductibilă 0 pe NIR-urile fără factură (408/4428.01), rezultat conform balanței; „Trimite în coadă” oprit cât o notă nevalidată explică diferența, cu nota numită și link (284); explicațiile ca semnale, nu paragrafe (694.1a); DUK fără erori.
+
+F034 · D394 · F1 · Declarații › D394 10/2026 · livrările și achizițiile pe parteneri egale cu facturile lunii (130); rândul pe 11% numără facturile corect (131); factura fără serie e semnalată (155); codurile „tip” și „tip partener” explicate (N14/500); DUK fără erori.
+
+F035 · D406 · F1 · Declarații › D406 10/2026 · toate notele validate ale lunii (salarii, bancă, stocuri în jurnalul lor, nu DIVERSE) (132, 134); totalurile egale cu rulajele balanței (133); fără „[object Object]” (136); caseta Rezumat vizibilă (165); DUK fără erori.
