@@ -3640,3 +3640,7 @@ textarea.em-adresa { overflow: hidden; }
 /* 15.1-E5: explicatia sta lipita sub grup */
 .alegere-butoane ~ .camp-ajutor { margin-top: -4px; }
 .fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *):disabled { opacity: .5; }
+/* [16.6-C1, 610 / 48] butonul primar din conținut, cu `aria-disabled="true"` (Validează din tabelul notelor): regula de stare de la `.buton-primar[aria-disabled]`
+   (specificitate mai mică) era acoperită de regula de mai sus, care îl face să arate ca butonul secundar, alb; inactiv rămâne gri-clar, fără hover și fără umbră. */
+.fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *)[aria-disabled="true"],
+.fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *)[aria-disabled="true"]:hover { background: var(--gri-clar); color: var(--alb); box-shadow: none; cursor: not-allowed; transform: none; }
