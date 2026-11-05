@@ -10,10 +10,18 @@ PASI = ("a", "b", "c", "p", "q")
 
 
 def _firma_casa(pg):
-    """Din cabinet: Firme › F1 Comert Stoc › Casă (luna curentă a ceasului fix, 11/2026)."""
-    pg.goto(pg.evaluate("location.origin") + "/", wait_until="domcontentloaded")
-    pg.wait_for_selector(".cab-grila, .cab-card", timeout=30000)
-    pg.click("button.cab-card:has([data-cheie='firme'])")
+    """Din cabinet: Firme › F1 Comert Stoc › Casă (luna curentă a ceasului fix, 11/2026). Dacă cabinetul nu răspunde la clic (după o filă deschisă de PDF), pagina se reîncarcă și pasul se reia, de cel mult trei ori."""
+    for incercare in range(3):
+        try:
+            pg.goto(pg.evaluate("location.origin") + "/", wait_until="domcontentloaded")
+            pg.wait_for_selector(".cab-grila, .cab-card", timeout=30000)
+            pg.wait_for_timeout(800)
+            pg.click("button.cab-card:has([data-cheie='firme'])", timeout=10000)
+            break
+        except Exception:   # noqa: BLE001 — se reia de la începutul cabinetului
+            if incercare == 2:
+                raise
+            pg.reload(wait_until="domcontentloaded")
     pg.wait_for_timeout(600)
     if pg.query_selector("#opt-existente"):
         pg.click("#opt-existente")
