@@ -1,0 +1,31 @@
+[lacat_test] lacăt preluat de la pid 145016 (mort sau refolosit)
+[parcurs] pasul a: neexecutat [('a', 'neexecutat', "pasul 'a' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul b: neexecutat [('b', 'neexecutat', "pasul 'b' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul c: neexecutat [('c', 'neexecutat', "pasul 'c' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul d: neexecutat [('d', 'neexecutat', "pasul 'd' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul e: neexecutat [('e', 'neexecutat', "pasul 'e' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul f: trece [('f.2', 'trece', '')]
+[parcurs] pasul g: neexecutat [('g', 'neexecutat', "pasul 'g' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul h: neexecutat [('h', 'neexecutat', "pasul 'h' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul i: neexecutat [('i', 'neexecutat', "pasul 'i' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul j: neexecutat [('j', 'neexecutat', "pasul 'j' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul k: neexecutat [('k', 'neexecutat', "pasul 'k' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul l: neexecutat [('l', 'neexecutat', "pasul 'l' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul m: neexecutat [('m', 'neexecutat', "pasul 'm' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul n: neexecutat [('n', 'neexecutat', "pasul 'n' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul o: neexecutat [('o', 'neexecutat', "pasul 'o' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul p: neexecutat [('p', 'neexecutat', "pasul 'p' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul q: neexecutat [('q', 'neexecutat', "pasul 'q' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul r: neexecutat [('r', 'neexecutat', "pasul 'r' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul s: neexecutat [('s', 'neexecutat', "pasul 's' nu are aserțiuni în pasi_proba.json")]
+[parcurs] pasul t: trece [('t.4', 'trece', ''), ('t.7', 'trece', '')]
+[haiku, instanța 1] cod 0
+**f.2**: Pe ecran, „Validează” de la nota 207 are fundal gri plin, spre deosebire de „+ Notă nouă”, care e albastru și activ. Cu „Trimite la validare” alăturat, stilul e cel al unui buton dezactivat. Motivul nu e vizibil, dar descrierea cere doar starea inactiv.
+
+**t.4**: „Validează” apare gri, ca inactiv, dar captura nu arată niciun motiv. În detaliul notei 203 nu apare niciun text despre nota validată, iar descrierea cere și motivul.
+
+**t.7**: „Validează” are fundal gri, iar „Editează” și „Șterge” apar estompate, cu contur și text gri. Toate trei par inactive. „Refă din sursă” arată la fel, dar descrierea nu îl numără.
+
+[{"id": "f.2", "raspuns": "corespunde", "motiv": "„Validează” de la nota 207 are fundal gri, spre deosebire de butonul albastru activ „+ Notă nouă”, deci pare inactiv."}, {"id": "t.4", "raspuns": "nejudecabil", "motiv": "„Validează” apare gri, deci inactiv, dar captura nu arată motivul că nota e validată."}, {"id": "t.7", "raspuns": "corespunde", "motiv": "„Validează”, „Editează” și „Șterge” apar toate inactive: gri plin sau estompate, cu text gri."}]
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: f.2=corespunde; t.4=nejudecabil; t.7=corespunde | nejudecabile: 1 din 3

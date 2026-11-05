@@ -1,0 +1,4 @@
+Format: aserțiune | pas | ecran | operator | valoare | descriere | sursa valorii
+f.2 | f | Registru jurnal F1, nota 207 deschisă | activ | false | „Validează” pe nota 207 este inactiv | 610; firme.js:6283, api.js:1233–1262 inactiv()
+t.4 | t | Registru jurnal F1, luna 08/2026, nota 203 validată deschisă | nr_randuri | 1 | „Validează” inactiv, cu motivul că nota e validată | 48; firme.js:6282
+t.7 | t | Registru jurnal F1, luna 08/2026, nota 203 validată deschisă | activ | false | cele trei butoane ale notei validate sunt inactive | 48

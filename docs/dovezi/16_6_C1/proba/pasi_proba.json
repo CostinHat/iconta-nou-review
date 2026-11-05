@@ -1,0 +1,25 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.2",
+   "pas": "f",
+   "operator": "activ",
+   "valoare": "false",
+   "cheie": "dom:tbody.tn-nota[data-nota-id=\"207\"] [data-val]|activ"
+  },
+  {
+   "id": "t.4",
+   "pas": "t",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:tbody.tn-nota[data-nota-id=\"203\"] [data-val][aria-disabled=\"true\"][data-motiv-inactiv=\"Nota e validată: a intrat în evidență.\"]|numar"
+  },
+  {
+   "id": "t.7",
+   "pas": "t",
+   "operator": "activ",
+   "valoare": "false",
+   "cheie": "dom:tbody.tn-nota[data-nota-id=\"203\"] [data-val], tbody.tn-nota[data-nota-id=\"203\"] [data-edit], tbody.tn-nota[data-nota-id=\"203\"] [data-del]|activ"
+  }
+ ]
+}
