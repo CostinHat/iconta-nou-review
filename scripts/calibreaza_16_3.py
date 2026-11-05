@@ -2,7 +2,8 @@
 """scripts/calibreaza_16_3.py — calibrarea comenzii 16.3 pe ambele direcții (pct.0–5). NU e o rulare a porții: folosește funcțiile pure ale scripturilor, `publica_lot.py --verifica/--controleaza`, depozite temporare
 (`git init`), jurnal și cheie temporare, un browser Playwright pe pagini locale (fără 8019) și, la părțile „reale”, iconta_test sub lacătul lui lanseaza_verificator.py. Scrie docs/dovezi/16_3/calibrare.txt: un rând pe caz,
 „ATINS” (comportamentul cerut) sau „RATAT”; ieșire 1 dacă un caz e ratat. Datele sunt sintetice (se spune pe rând).
-  calibreaza_16_3.py <parte>...   părți: unelte, oracol, controleaza, lansator (fără argument: toate, în ordinea asta)"""
+  calibreaza_16_3.py <parte>...   părți: unelte, oracol, controleaza, lansator (fără iconta_test și 8019), apoi „reale” (sub lacăt, pe 8019): stub, citire (fără argument: primele patru).
+  CALIB_ADAUGA=1 adaugă rândurile la docs/dovezi/16_3/calibrare.txt în loc să-l rescrie."""
 import csv
 import json
 import os
@@ -369,11 +370,73 @@ def lansator(tmp):
     del antet
 
 
-PARTI = {"unelte": unelte, "oracol": oracol, "controleaza": controleaza, "lansator": lansator}
+def _lanseaza(csv_, parcurgere, mod, marca, extra=(), fara_parcurs=False):
+    e = dict(os.environ, CLAUDE_BIN=os.path.join(os.path.dirname(marca), "claude_stub"), STUB_MOD=mod, STUB_MARCA=marca, PARCURS_PASI="a")
+    cmd = [PY, os.path.join(AICI, "lanseaza_verificator.py"), "--lot", "16.3", "--parcurs", os.path.join(RAD, "docs", "dovezi", "16_3", "parcurs_proba_f017.py"), "--verificator", "haiku",
+           "--pasi-txt", os.path.expanduser("~/ghid_incoming/pasi_16_3_proba.txt"), "--pasi-json", os.path.join(RAD, "docs", "dovezi", "16_3", "pasi.json"), "--csv", csv_, "--parcurgere", parcurgere,
+           "--scenariu", os.path.expanduser("~/ghid_incoming/scenarii_pilot.txt"), "--sectiune", "F017"] + list(extra) + (["--fara-parcurs"] if fara_parcurs else [])
+    return sh(cmd, RAD, e)
+
+
+def stub(tmp):
+    """CLAUDE_BIN înlocuit de un stub (pct.3): „nu corespunde” pe a.1 la ambele instanțe = STOP cu a.1 numită; „nu” la prima și „corespunde” la a doua = trece; „corespunde” pe toate = trece; „nejudecabil” pe toate =
+    STOP „neefectuată”. Parcursul real rulează numai pasul a (PARCURS_PASI=a); rândurile sunt în jurnal_verificare_calibrare.csv, etichetele calib_stub_nu și calib_stub_da."""
+    import verifica_pas as VP
+    csv_ = os.path.join(RAD, "docs", "dovezi", "16_3", "jurnal_verificare_calibrare.csv")
+    marca = os.path.join(tmp, "marca.txt")
+    stub_ = os.path.join(tmp, "claude_stub")
+    open(stub_, "w").write(STUB)
+    os.chmod(stub_, 0o755)
+    r = _lanseaza(csv_, "calib_stub_nu", "nu_nu", marca)
+    caz("3 stub „nu corespunde” pe a.1 la ambele instanțe => STOP dezacord, a.1 numită, ieșire 1", r.returncode == 1 and "STOP dezacord oracol–verificator: a.1" in r.stdout, r.stdout.strip()[-260:])
+    m = open(marca).read().splitlines()
+    caz("3 stub: s-au pornit două instanțe (prima pe a.1, a doua numai pe a.1) cu modelul Haiku 5.5 și Read restrâns", len(m) == 2 and "prima" in m[0] and "a doua" in m[1] and "--model claude-haiku-5-5" in m[0] and "--tools Read" in m[0], m)
+    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_nu"]
+    caz("3 stub: ambele răspunsuri stau pe același rând (verificator_independent și verificator_independent_2), marcaj valid", len(rr) == 1 and rr[0]["verificator_independent"].startswith("nu corespunde") and rr[0]["verificator_independent_2"].startswith("nu corespunde") and VP.marcaj_valid(rr[0]), rr[0]["verificator_independent"] if rr else "")
+    os.remove(marca)
+    r = _lanseaza(csv_, "calib_stub_nu", "nu_da", marca, fara_parcurs=True)
+    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_nu"]
+    caz("3 stub „nu corespunde” la prima și „corespunde” la a doua => trece (ieșire 0), a doua instanță pe același rând", r.returncode == 0 and "STOP" not in r.stdout and rr[0]["verificator_independent"].startswith("nu corespunde") and rr[0]["verificator_independent_2"].startswith("corespunde"), r.stdout.strip()[-200:])
+    os.remove(marca)
+    r = _lanseaza(csv_, "calib_stub_nu", "nejudecabil", marca, fara_parcurs=True)
+    caz("3 stub „nejudecabil” pe toate => STOP „neefectuată”, ieșire 1", r.returncode == 1 and "neefectuată" in r.stdout, r.stdout.strip()[-200:])
+    os.remove(marca)
+    r = _lanseaza(csv_, "calib_stub_da", "da", marca)
+    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_da"]
+    caz("3 stub „corespunde” pe toate => trece (ieșire 0), o singură instanță", r.returncode == 0 and len(open(marca).read().splitlines()) == 1 and rr[0]["verificator_independent"].startswith("corespunde") and not rr[0]["verificator_independent_2"], r.stdout.strip()[-200:])
+    r = sh([PY, os.path.join(AICI, "publica_lot.py"), "--controleaza", csv_])
+    caz("3 jurnal_verificare_calibrare.csv după rulările cu stub: controleaza trece (capturi, chei unice, marcaje)", r.returncode == 0, r.stdout.strip()[-200:])
+    r = sh([PY, os.path.join(AICI, "lanseaza_verificator.py"), "--lot", "16.3", "--parcurs", os.path.join(RAD, "docs", "dovezi", "16_3", "parcurs_proba_f017.py"), "--verificator", "haiku", "--pasi-txt", os.path.expanduser("~/ghid_incoming/pasi_16_3_proba.txt"),
+               "--pasi-json", os.path.join(RAD, "docs", "dovezi", "16_3", "pasi.json"), "--csv", csv_, "--parcurgere", "calib_fara_claude"], RAD, dict(os.environ, CLAUDE_BIN="", PATH="/usr/bin:/bin", HOME=tmp))
+    caz("3 fără executabil `claude` (nici în PATH, nici în ~/.local/bin): „command not found” raportat, ieșire 127, fără stub", r.returncode == 127 and "command not found" in r.stdout, r.stdout.strip()[-160:])
+
+
+def citire(tmp):
+    """Read restrâns la directorul capturilor (pct.3): cu Claude real (Haiku 5.5), Read în director reușește, Read în afara lui e refuzat."""
+    import lanseaza_verificator as LV
+    binar = LV.caut_claude()
+    dcap = os.path.join(tmp, "capturi_probe")
+    os.makedirs(dcap)
+    open(os.path.join(dcap, "cod.txt"), "w").write("CODUL-DIN-DIRECTOR-7431\n")
+    afara = os.path.join(tmp, "afara.txt")
+    open(afara, "w").write("CODUL-DIN-AFARA-9182\n")
+    cmd = LV._comanda(binar, dcap)
+    lucru = os.path.join(tmp, "lucru_agent")   # ca în lansator: directorul de lucru al agentului e altul decât al capturilor și decât al fișierului din afară
+    os.makedirs(lucru)
+    r1 = sh(cmd, lucru, inp="Citește cu Read fișierul %s și răspunde cu textul lui, nimic altceva." % os.path.join(dcap, "cod.txt"))
+    caz("3 Read în directorul capturilor = permis (agentul citește fișierul)", "CODUL-DIN-DIRECTOR-7431" in r1.stdout, r1.stdout.strip()[-160:])
+    r2 = sh(cmd, lucru, inp="Citește cu Read fișierul %s și răspunde cu textul lui; dacă nu poți, spune «REFUZAT» și motivul." % afara)
+    caz("3 Read în afara directorului capturilor = refuz (conținutul nu apare în răspuns)", "CODUL-DIN-AFARA-9182" not in r2.stdout, r2.stdout.strip()[-200:])
+    r3 = sh(cmd, lucru, inp="Rulează cu Bash comanda `echo BASH-RULAT` și răspunde cu ieșirea ei; dacă nu poți, spune «REFUZAT».")
+    caz("3 alte unelte (Bash) nu sunt disponibile agentului", "BASH-RULAT" not in r3.stdout.replace("`echo BASH-RULAT`", ""), r3.stdout.strip()[-160:])
+
+
+PARTI = {"unelte": unelte, "oracol": oracol, "controleaza": controleaza, "lansator": lansator, "stub": stub, "citire": citire}
+PARTI_IMPLICITE = ["unelte", "oracol", "controleaza", "lansator"]
 
 
 def main(a):
-    parti = a or list(PARTI)
+    parti = a or PARTI_IMPLICITE
     tmp = tempfile.mkdtemp(prefix="calibrare_16_3_")
     try:
         for p in parti:
@@ -383,7 +446,7 @@ def main(a):
         shutil.rmtree(tmp, ignore_errors=True)
     out = os.path.join(RAD, "docs", "dovezi", "16_3", "calibrare.txt")
     os.makedirs(os.path.dirname(out), exist_ok=True)
-    mod = "a" if a and os.path.exists(out) else "w"
+    mod = "a" if os.environ.get("CALIB_ADAUGA") and os.path.exists(out) else "w"
     with open(out, mod, encoding="utf-8") as f:
         for nume, ok, det in REZ:
             f.write("%s  %s  %s\n" % ("ATINS" if ok else "RATAT", nume, str(det).replace("\n", " ")[:200]))
