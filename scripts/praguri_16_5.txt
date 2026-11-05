@@ -1,0 +1,12 @@
+unelte
+lot: 16.5
+fara praguri numerice pe durate (lot de unelte, se masoara); referinta (16.4, 05.11): rulare completa 1252 s (verificator 82, pytest 551, plasa e2e 619); hook 90 s; consecinta la raport: o rulare completa > 1500 s = numar nou de unelte in DEFICIENTE.md, nu blocheaza publicarea
+runde_verificator_max: 0
+limitele de rulari: 2 rulari complete si 2 reluari, aplicate de scripts/poarta_rulare.py (:116, :146; stare json), nu de acest fisier; cerinta de raport: cel mult 1 reluare
+fisiere_permise (informativ; perimetrul real la un lot unelte = unelte_refuzuri, publica_lot.py:254-267: UNELTE_PERMISE, docs/dovezi/<lot>/, fisierele de test din core, intrarile cu / din aceasta lista; orice altceva = refuz cu numele lui):
+  scripts/
+  CLAUDE.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/16_5/
