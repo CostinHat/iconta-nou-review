@@ -141,7 +141,7 @@ refuză cât scriptul e roșu; poarta pornește numai pe un commit care l-a trec
 
 R1. Turul se încheie numai cu „publicat <lot> pe <commit>” sau „OPRIT — gata: <lot>”, după ce scripts/incheie_lot.sh a fost apelat (§3). La o întrebare primită în prompt răspunzi într-un rând și continui lucrul în același tur. Nu te oprești după un răspuns, după o intenție („continui cu…”) sau după un monitor expirat.
 
-R3. Cât rulează o poartă sau un test lung nu folosești monitor și nu aștepți pasiv. Aștepți cu o singură comandă shell blocantă care citește logul la 60 de secunde și iese la verdict sau după 90 de minute. Din loguri citești numai ultimele 40 de linii și liniile FAILED. Cel mult un subagent, pe Sonnet 5.5, oprit și raportat dacă nu are rezultat după o oră.
+R3. Un tur nu se încheie cu o intenție („aștept notificarea”, „continui când notifică”). Cât lucrează un proces lung, aștepți în apeluri blocante de cel mult 9 minute, într-o buclă, până apare rezultatul. Din loguri citești numai ultimele 40 de linii și liniile FAILED. Cel mult 2 subagenți în paralel, toți pe Sonnet 5.5, opriți și raportați dacă n-au rezultat după o oră.
 
 Reluarea după roșu (regulă permanentă, 31.10.2026): la prima rulare a unei zone, „fișierele atinse” se socotesc față de main; la orice reluare după roșu,
 „atinse” înseamnă doar fișierele schimbate de la ultima rulare a porții (commitul ei se reține în scripts/poarta_ultima.txt, ignorat de git, scris
