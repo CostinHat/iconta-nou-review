@@ -195,7 +195,7 @@ def verificator_independent(a, ctx, csv_, binar, iesire):
                 de_judecat.append(d)
         if de_judecat:
             r1, proc = judeca(binar, de_judecat, dir_cap, scenariu, txt, lucru)
-            rapoarte.append("[haiku, instanța 1] cod %s\n%s" % (proc.returncode, (proc.stdout + proc.stderr).strip()[-2000:]))
+            rapoarte.append("[haiku, instanța 1] cod %s\n%s" % (proc.returncode, (proc.stdout + proc.stderr).strip()[-8000:]))
             for d in de_judecat:
                 rez1[d["id"]] = r1.get(d["id"], ("fara_raspuns", "agentul n-a răspuns pe această aserțiune"))
         stare = {r["pas"]: r for r in randuri}

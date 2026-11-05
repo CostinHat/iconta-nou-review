@@ -131,6 +131,9 @@ class PaginaFalsa:
     def screenshot(self, path):
         open(path, "wb").write(b"\x89PNG")
 
+    def wait_for_timeout(self, ms):
+        pass
+
 
 def oracol(tmp):
     os.environ["CHEIE_ORACOL_FISIER"] = os.path.join(tmp, "cheie_oracol")

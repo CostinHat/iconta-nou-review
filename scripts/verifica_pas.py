@@ -36,6 +36,7 @@ CAMPURI_VECHI = ["lot", "commit", "verificator", "inceput", "sfarsit", "pas", "a
 #: coloanele noi (16.3) stau la sfârșitul antetului; rândurile vechi (docs/dovezi/16_1_C3/) se citesc cu r.get
 CAMPURI = CAMPURI_VECHI + ["parcurgere", "marcaj", "verificator_independent", "verificator_independent_2", "mediu"]
 CHEIE_ORACOL = os.environ.get("CHEIE_ORACOL_FISIER") or os.path.expanduser("~/.iconta/cheie_oracol")
+SETTLE_MS = 1200
 MASURI = ("text", "numar", "activ", "inaltime_px", "distanta_px", "diferenta_latime_px", "depasire")
 
 
@@ -330,6 +331,7 @@ def verifica_pagina(pagina, lot, pas, parcurgere, verificator, pasi_json, csv):
         try:
             if os.path.exists(cap):
                 raise ValueError("captura %s există deja pentru cheia (%s, %s, %s, %s, %s); nu se suprascrie" % (cap, lot, parcurgere, a["id"], sha[:8], verificator))
+            pagina.wait_for_timeout(SETTLE_MS)   # ecranul se așază (tranzițiile aplicației) înainte de citire și de captură: prima rulare Haiku a primit o captură la jumătatea unei tranziții (cabinetul peste fereastră)
             gasit, obs = observa_pagina(pagina, a["cheie"], directorul)
             verdict, motiv = compara(a, obs) if gasit else ("pica", "cheia %s lipsește din pagină" % a["cheie"])
             os.makedirs(os.path.dirname(cap), exist_ok=True)

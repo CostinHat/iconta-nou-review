@@ -1,0 +1,9 @@
+[haiku, instanța 1] cod 0
+Verdictele, judecate doar după descriere și captură:
+
+```json
+[{"id": "a.1", "raspuns": "nu corespunde", "motiv": "Pe ecran 558,46 apare doar ca „sold la început”; soldul final afișat este 568,46, iar descrierea cere soldul afișat de 558,46."}, {"id": "b.9", "raspuns": "nejudecabil", "motiv": "Captura arată butonul Adaugă sub un overlay de bun venit care estompează tot ecranul, deci nu se poate deosebi starea inactivă de estomparea overlay-ului."}, {"id": "b.10", "raspuns": "nu corespunde", "motiv": "Butonul Adaugă are textul „Adaugă”, nu „Completează:”, și arată ca activ."}, {"id": "c.1", "raspuns": "nu corespunde", "motiv": "Ecranul afișează „Nicio factură emisă neîncasată și niciun sold preluat”, fără nicio factură listată, deci nu apar F1A18 sau F1A19."}, {"id": "p.1", "raspuns": "nejudecabil", "motiv": "Captura arată lista Casă cu rândul CHF1-1 și butonul „PDF chitanță”, nu textul extras din PDF-ul descărcat."}, {"id": "q.1", "raspuns": "corespunde", "motiv": "Față de a.1 apare un rând nou („Depunere de numerar în bancă”, 1,00), iar ecranul confirmă „Dispoziția a fost salvată”."}, {"id": "q.2", "raspuns": "nu corespunde", "motiv": "Ecranul arată soldul final 567,46 (și 567,46 pe rând), nu 557,46; diferența de 10 lei din nota din alt ecran nu e luată în calcul în descriere."}]
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+[haiku, instanța 2 pe a.1] ('corespunde', 'Valoarea 558,46 lei apare pe ecran, ca „sold la început” al lunii 11/2026; soldul final afișat este însă 568,46 lei, ceea ce ar contrazice dacă „soldul” se referă la cel final.')
+răspunsuri: a.1=nu corespunde; b.9=nejudecabil; b.10=nu corespunde; c.1=nu corespunde; p.1=nejudecabil; q.1=corespunde; q.2=nu corespunde | nejudecabile: 2 din 7
