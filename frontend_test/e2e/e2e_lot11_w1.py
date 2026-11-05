@@ -42,12 +42,17 @@ def test_def_440_nota_noua_arata_toate_erorile_liniilor_deodata(patron, firma_w1
     r2.locator(".je-cre").fill("5121")
     r2.locator(".je-sum").fill("-5")
     n0 = sql('SELECT count(*) FROM "%s".inregistrari' % s)[0][0]
+    # [16.6, 729.2] contul creditor lipsă și 401 fără partener nu mai ajung la server: „Salvează” e inactiv și le numește
+    assert pg.get_attribute("#je-salveaza", "data-motiv-inactiv") == "Completează: linia 1: contul credit; linia 2: partenerul"
+    r1.locator(".je-cre").fill("5121")
+    r2.locator(".je-pnume").fill("Furnizor Test SRL")
+    assert pg.get_attribute("#je-salveaza", "aria-disabled") is None
     pg.click("#je-salveaza")
-    pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('linia 2 e pe contul 401')",
+    pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('linia 2 are suma -5')",
                          timeout=20000)
     patron.captura()
     text = pg.inner_text(".fereastra:last-of-type")
-    for bucata in ("linia 1: Contul 9999", "linia 1 n-are contul creditor", "linia 2 are suma -5", "linia 2 e pe contul 401"):
+    for bucata in ("linia 1: Contul 9999", "linia 2 are suma -5"):
         assert bucata in text, (bucata, text)                                     # 440: „toate erorile apar deodată, fiecare cu textul ei”
     assert "mai sus" not in text and "mai jos" not in text, text
     campuri = pg.evaluate("""() => ['je-sum-1', 'je-deb-0', 'je-cre-0'].map((id) => {
@@ -58,7 +63,6 @@ def test_def_440_nota_noua_arata_toate_erorile_liniilor_deodata(patron, firma_w1
       })""")
     assert campuri[0][1] == "true" and any("linia 2 are suma -5" in t for t in campuri[0][2]), campuri   # „lângă câmp”
     assert campuri[1][1] == "true" and any("Contul 9999" in t for t in campuri[1][2]), campuri
-    assert campuri[2][1] == "true" and any("n-are contul creditor" in t for t in campuri[2][2]), campuri
     assert sql('SELECT count(*) FROM "%s".inregistrari' % s)[0][0] == n0                                  # nota nu s-a scris
 
 

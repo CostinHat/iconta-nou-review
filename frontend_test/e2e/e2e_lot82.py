@@ -739,8 +739,9 @@ def test_def_381_nota_pe_401_cere_partenerul_si_d406_il_poarta(patron, firma_tva
     pg.fill("#je-linii .je-deb", "401")
     pg.fill("#je-linii .je-cre", "5311")
     pg.fill("#je-linii .je-sum", "500")
-    pg.click("#je-salveaza")
-    pg.wait_for_function("() => document.body.innerText.includes('scrie partenerul')", timeout=20000)
+    # [16.6, 729.2] 401 fără partener nu mai ajunge la server: „Salvează” e inactiv și cere partenerul
+    assert pg.get_attribute("#je-salveaza", "data-motiv-inactiv") == "Completează: partenerul"
+    pg.click("#je-salveaza", force=True)
     patron.captura("refuz")
     assert sql('SELECT count(*) FROM "%s".inregistrari WHERE descriere = %%s' % firma_tva["schema"], ("Plata furnizor E2E 381",))[0][0] == 0
     pg.fill("#je-linii .je-pcui", CUI_DANTE)

@@ -309,6 +309,10 @@ def test_def_602_563_610_registrul_jurnal(browser):
         pg.fill(".je-deb", "612")
         pg.fill(".je-cre", "401")
         pg.fill(".je-sum", "123")
+        # [16.6, 729.2] 401 cere partener: până îl scrii, „Salvează” e inactiv și îl numește
+        assert pg.get_attribute("#je-salveaza", "data-motiv-inactiv") == "Completează: partenerul"
+        pg.fill(".je-pnume", "Furnizor Test SRL")
+        assert pg.get_attribute("#je-salveaza", "aria-disabled") is None
         pg.click("#je-salveaza")
         # [563 / 529] după salvare: registrul, cu confirmarea în rezumat și rândul notei evidențiat
         pg.wait_for_selector("tbody[data-nota-id='1100'].val-evidentiat", timeout=10000)

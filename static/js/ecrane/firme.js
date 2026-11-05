@@ -6583,6 +6583,38 @@ function ecranEditorNota(corp, nav, t, n, centre, cheie) {
     zona.appendChild(d); leaga();
   });
   corp.querySelector("#je-renunta").addEventListener("click", () => nav.inapoi());
+  // [16.6, 729.2] „Salvează” e inactiv cât formularul e incomplet și numește ce lipsește („Completează: data; linia 1: contul debit, suma”);
+  // se recalculează la deschidere, la orice modificare și la adăugarea / ștergerea unei linii. Textul lung se vede întreg, pe mai multe rânduri.
+  const bSalveaza = corp.querySelector("#je-salveaza"), textSalveaza = bSalveaza.textContent;
+  const STIL_MOTIV = [["white-space", "normal"], ["max-width", "640px"], ["height", "auto"], ["min-height", "52px"], ["line-height", "1.25"]];
+  const actualizeazaSalveaza = () => {
+    const segmente = [];
+    if (!_jeData.value.trim()) segmente.push("data");
+    const linii = [...zona.children];
+    const lipsuriLinie = linii.map((r) => {
+      const val = (sel) => r.querySelector(sel).value.trim();
+      const lip = [];
+      if (!val(".je-deb")) lip.push("contul debit");
+      if (!val(".je-cre")) lip.push("contul credit");
+      if (!val(".je-sum")) lip.push("suma");
+      const tert = (c) => ["401", "4111"].includes(c.split(".")[0]);   // ca `_cont_tert` din core/jurnal_api.py
+      if ((tert(val(".je-deb")) || tert(val(".je-cre"))) && !val(".je-pnume") && !val(".je-pcui")) lip.push("partenerul");
+      return lip;
+    });
+    lipsuriLinie.forEach((lip, i) => { if (lip.length) segmente.push((linii.length > 1 ? `linia ${i + 1}: ` : "") + lip.join(", ")); });
+    if (segmente.length) {
+      const motiv = `Completează: ${segmente.join("; ")}`;
+      bSalveaza.textContent = motiv; inactiv(bSalveaza, motiv);
+      STIL_MOTIV.forEach(([k, v]) => bSalveaza.style.setProperty(k, v, "important"));
+    } else {
+      bSalveaza.textContent = textSalveaza; activ(bSalveaza);
+      STIL_MOTIV.forEach(([k]) => bSalveaza.style.removeProperty(k));
+    }
+  };
+  [_jeData, zona].forEach((x) => ["input", "change"].forEach((ev) => x.addEventListener(ev, actualizeazaSalveaza)));
+  corp.querySelector("#je-plus").addEventListener("click", actualizeazaSalveaza);
+  zona.addEventListener("click", (e) => { if (e.target.closest(".je-scoate")) actualizeazaSalveaza(); });
+  actualizeazaSalveaza();
   focusFaraSalt(nou ? _jeData : corp.querySelector("#je-desc"));
   corp.querySelector("#je-salveaza").addEventListener("click", async () => {
     const zonaMesaj = corp.querySelector("#je-mesaj");

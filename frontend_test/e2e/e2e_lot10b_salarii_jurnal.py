@@ -76,9 +76,10 @@ def test_def_sumagoala_nota_noua_are_suma_goala_si_o_cere(patron, firma_jurnal):
     pg.fill("#je-linii .je-deb", "6022")
     pg.fill("#je-linii .je-cre", "5311")
     n0 = sql('SELECT count(*) FROM "%s".inregistrari' % s)[0][0]
-    pg.click("#je-salveaza")
-    pg.wait_for_selector("#je-linii .msg-eroare", timeout=10000)
-    assert "Scrie suma liniei." in pg.inner_text("#je-linii")
+    # [16.6, 729.2] suma lipsă nu mai ajunge la server: „Salvează” e inactiv și o numește
+    assert pg.get_attribute("#je-salveaza", "data-motiv-inactiv") == "Completează: suma"
+    pg.click("#je-salveaza", force=True)
+    assert pg.inner_text("#je-mesaj").strip() == ""
     patron.captura("ceruta")
     assert sql('SELECT count(*) FROM "%s".inregistrari' % s)[0][0] == n0   # nu s-a scris o notă cu suma 0
     pg.fill("#je-linii .je-sum", "45")

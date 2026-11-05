@@ -125,14 +125,14 @@ def test_7h_suma_goala_e_ceruta_langa_camp_nu_trimisa_drept_zero(pagina):
     pg.fill("#je-linii .je-deb", "6022")
     pg.fill("#je-linii .je-cre", "5311")
     n0 = len(cereri)
-    pg.click("#je-salveaza")
+    # [16.6, 729.2] suma necompletată nu pleacă drept 0: „Salvează” e inactiv și numește lipsa (nu mai ajunge nici la refuzul de lângă câmp)
+    atr = pg.eval_on_selector("#je-salveaza", "e => [e.getAttribute('aria-disabled'), e.dataset.motivInactiv, e.textContent.trim()]")
+    assert atr == ["true", "Completează: suma", "Completează: suma"], atr
+    pg.click("#je-salveaza", force=True)
     pg.wait_for_timeout(300)
-    # suma necompletată nu pleacă drept 0: refuzul stă lângă câmpul ei, iar nicio cerere nu pleacă
+    # clicul pe butonul inactiv nu trimite nimic și nu scrie niciun mesaj
     assert len(cereri) == n0, cereri[n0:]
-    assert pg.eval_on_selector("#je-linii .je-sum", "e => e.classList.contains('camp-invalid')")
-    # mesajul stă lângă câmpul sumei (`eroareCamp`: `.msg-eroare` legat de câmp prin `data-camp`), numai pe linia cu suma goală
-    assert pg.eval_on_selector_all("#je-linii .msg-eroare", "e => e.map((x) => [x.dataset.camp, x.textContent.trim() !== ''])") == [
-        ["je-sum-0", True]]
+    assert pg.inner_text("#je-mesaj").strip() == ""
     pg.fill("#je-linii .je-sum", "45")
     pg.click("#je-salveaza")
     pg.wait_for_timeout(300)
