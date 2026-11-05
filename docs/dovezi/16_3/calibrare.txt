@@ -1,0 +1,79 @@
+ATINS  0 lot „unelte” fără pasi.txt: proba_refuzuri = fără refuz  []
+ATINS  0 lot „unelte” fără pasi.txt: --proba iese 0, faza „proba_contract | verde | unelte, fără oracol”  rc=0, ['verde', '3747072-1793842063501', '3747072', 'unelte, fără oracol']
+ATINS  0 proba_stop pe jurnalul acestui lot = fără STOP  
+ATINS  0 lot de produs (fără „unelte”) cu pasi.txt și fără rândul a) = refuz  ['lipsește docs/dovezi/PROBA_163/jurnal_verificare.csv']
+ATINS  0 lot de produs fără pasi.txt și fără rând a) = refuz (nu e scutit)  ['lipsește docs/dovezi/PROBA_163/pasi.txt']
+ATINS  0 lot „unelte” cu scripts/, core/test_*.py și docs/dovezi/<lot>/ în diff = trece  [publica_lot --verifica] PASS C=a6494d5bd41770bff3c54577a744d628cb1786bc HEAD=a6494d5bd41770bff3c54577a744d628cb1786bc fisiere=-
+ATINS  0 lot „unelte” cu static/js/x.js în diff = STOP cu fișierul numit  [publica_lot --verifica] REFUZ: static/js/x.js: lotul „unelte” nu are voie să atingă acest fișier (static/, core/, templates/, frontend_test/ numai dacă e numit în scripts/praguri_PROBA_163.txt)
+ATINS  0 lot „unelte” cu core/x.py în diff = STOP cu fișierul numit  atic/js/x.js: lotul „unelte” nu are voie să atingă acest fișier (static/, core/, templates/, frontend_test/ numai dacă e numit în scripts/praguri_PROBA_163.txt)
+ATINS  0 lot „unelte” cu templates/x.html în diff = STOP cu fișierul numit  lates/x.html: lotul „unelte” nu are voie să atingă acest fișier (static/, core/, templates/, frontend_test/ numai dacă e numit în scripts/praguri_PROBA_163.txt)
+ATINS  0 lot „unelte” cu frontend_test/e2e/e2e_x.py în diff = STOP cu fișierul numit  lates/x.html: lotul „unelte” nu are voie să atingă acest fișier (static/, core/, templates/, frontend_test/ numai dacă e numit în scripts/praguri_PROBA_163.txt)
+ATINS  0 aceleași fișiere numite în scripts/praguri_<lot>.txt = trece  [publica_lot --verifica] PASS C=efd5f9ae7f3981d1173ebf0a37994a7264982a69 HEAD=efd5f9ae7f3981d1173ebf0a37994a7264982a69 fisiere=-
+ATINS  0 lot de produs cu static/js/x.js în diff = trece (lista permisă e numai a uneltelor)  [publica_lot --verifica] PASS C=fd202e6f63a6e1f3dc29a67e85fe9a5225de4311 HEAD=fd202e6f63a6e1f3dc29a67e85fe9a5225de4311 fisiere=-
+ATINS  1 măsura text: dom:.l|text egal 'unu doi,trei' pe 'unu doi,trei' => trece  trece 
+ATINS  1 măsura text: dom:.l|text egal 'unu  doi,trei' pe 'unu doi,trei' => pica  pica găsit 'unu doi,trei', așteptat 'unu  doi,trei'
+ATINS  1 măsura numar: dom:.b|numar nr_randuri '3' pe ['Adaugă', 'Completează:', 'Gata'] => trece  trece 
+ATINS  1 măsura numar: dom:.b|numar nr_randuri '2' pe ['Adaugă', 'Completează:', 'Gata'] => pica  pica găsit 3, așteptat 2
+ATINS  1 măsura activ (primul activ): dom:.b:nth-child(1)|activ activ 'true' pe True => trece  trece 
+ATINS  1 măsura activ (disabled): dom:.b:nth-child(2)|activ activ 'false' pe False => trece  trece 
+ATINS  1 măsura activ (aria-disabled): dom:.b:nth-child(3)|activ activ 'false' pe False => trece  trece 
+ATINS  1 măsura activ (disabled cerut true): dom:.b:nth-child(2)|activ activ 'true' pe False => pica  pica găsit false, așteptat true
+ATINS  1 măsura inaltime_px: dom:.b|inaltime_px interval_px '40-44' pe [40, 40, 44] => trece  trece 
+ATINS  1 măsura inaltime_px: dom:.b|inaltime_px interval_px '40-41' pe [40, 40, 44] => pica  pica în afara 40-41: [44]
+ATINS  1 măsura distanta_px: dom:.b|distanta_px interval_px '8-8' pe [8, 8] => trece  trece 
+ATINS  1 măsura distanta_px: dom:.b|distanta_px interval_px '10-12' pe [8, 8] => pica  pica în afara 10-12: [8, 8]
+ATINS  1 măsura diferenta_latime_px: dom:.b|diferenta_latime_px interval_px '20-20' pe [20] => trece  trece 
+ATINS  1 măsura diferenta_latime_px: dom:.b|diferenta_latime_px interval_px '0-5' pe [20] => pica  pica în afara 0-5: [20]
+ATINS  1 măsura depasire: dom:#lat|depasire egal '1' pe 1 => trece  trece 
+ATINS  1 măsura depasire: dom:#ok|depasire egal '1' pe 0 => pica  pica găsit '0', așteptat '1'
+ATINS  1 măsura text pe un singur element: dom:#ok|text contine 'Fine' pe 'Fine' => trece  trece 
+ATINS  1 măsura text pe un singur element: dom:#ok|text contine 'Gata' pe 'Fine' => pica  pica 'Gata' nu apare în 'Fine'
+ATINS  1 măsură necunoscută = refuz cu numele ei  cheie dom: fără măsură cunoscută (text, numar, activ, inaltime_px, distanta_px, diferenta_latime_px, depasire): 'dom:.b|
+ATINS  1 json:<url>|<cale> cu cuib și index de listă  
+ATINS  1 pdf:fisier: extrage textul PDF-ului descărcat  Chitanta CHF1 de la DANTE INTERNATIONAL SA 
+ATINS  1 pdf:fisier: în afara directorului parcurgerii = refuz  pdf:fisier: în afara directorului parcurgerii: '../x.pdf'
+ATINS  1 verifica_pagina: pasul a (a.1 = 558.46) => trece, un rând, captura sub <parcurgere>/<verificator>/capturi/<lot>_<parcurgere>_<pas>_<sha8>.png  [('a.1', 'trece', '')]
+ATINS  1 verifica_pagina: pasul b (Adaugă activ, așteptat false) => pica, fără excepție; parcursul continuă  [('b.9', 'pica', 'găsit true, așteptat false')]
+ATINS  1 verifica_pagina: aceeași cheie (lot, parcurgere, pas, sha, verificator) a doua oară = neexecutat cu captura numită, nimic suprascris  [('a.1', 'neexecutat', 'ValueError: captura /tmp/calibrare_16_3_93j3bj8d/dovezi/calib_x/code/capturi/PROBA_163_calib_x_a.1_aaaaaaaa.png există deja pentru cheia (PROBA-163, calib_x, a.1, aaaaaaaa, cod
+ATINS  1 rândurile scrise de oracol au marcaj valid  ['1e184e8d', 'af4ff16e']
+ATINS  1 un rând modificat de mână (verdict schimbat) are marcaj nevalid  
+ATINS  1 un rând fără marcaj e nevalid  
+ATINS  1 --verifica --csv: un rând scris de mână (fără marcaj) = refuz, rândul numit  [publica_lot --verifica] REFUZ: verdict în afara oracolului: rândul z.9 (sha bbbbbbbb, parcurgerea calib_x) nu are marcaj valid
+ATINS  1 --verifica --csv: rândurile cu marcaj valid (scrise de oracol) = trece  [publica_lot --verifica] PASS C=f3fd594281a3010ca3af7183d3975093da5ec2bd HEAD=f3fd594281a3010ca3af7183d3975093da5ec2bd fisiere=-
+ATINS  1 --verifica --csv: lotul scutit (16.1-C3) cu rând fără marcaj = trece  [publica_lot --verifica] PASS C=f3fd594281a3010ca3af7183d3975093da5ec2bd HEAD=f3fd594281a3010ca3af7183d3975093da5ec2bd fisiere=-
+ATINS  1 „--csv” la publicare (fără --verifica) = refuz  [publica_lot] REFUZ: „--csv” e numai pentru calibrări (--verifica); la publicare se folosește jurnalul lotului
+ATINS  1 completeaza_independent: coloana se scrie, rândul rămâne cu marcaj valid  
+ATINS  1 parcurs cu playwright, biblioteca standard și verifica_pas = importuri permise  (['os', 're', 'json', 'playwright.sync_api', 'verifica_pas'], [])
+ATINS  1 parcurs cu alte importuri = refuz la lansare, cu numele modulului  ['requests', 'core']
+ATINS  1 lansatorul refuză parcursul cu import nepermis (numele modulului în ieșire), fără să ia lacătul  [lanseaza_verificator] REFUZ: parcursul importă module nepermise: core, requests (permise: playwright, biblioteca standard, verifica_pas)
+ATINS  2 același pas pe două sha-uri: două rânduri, două capturi distincte  ['PROBA_163_calib_sha_a.1_11111111.png', 'PROBA_163_calib_sha_a.1_22222222.png']
+ATINS  2 controleaza trece pe două rânduri ale aceluiași pas, deși mtime-ul capturilor e în afara intervalului  
+ATINS  2 jurnal_verificator.sh controleaza (calea scriptului) = trece  
+ATINS  2 aceeași cheie de două ori în CSV = refuz cu numele capturii  a ('PROBA-163', 'calib_sha', 'a.1', '1111111111111111111111111111111111111111', 'code') repetată (captura /tmp/calibrare_16_3_93j3bj8d/dov2/calib_sha/code/capturi/PROBA_163_calib_sha_a.1_11111111.png)
+ATINS  2 captura lipsă => refuz cu rândul numit  REFUZ: rândul a.1: captura /tmp/calibrare_16_3_93j3bj8d/dov2/calib_sha/code/capturi/PROBA_163_calib_sha_a.1_11111111.png lipsește
+ATINS  2 verifica_pagina pe aceeași cheie = nu suprascrie (neexecutat)  [('a.1', 'neexecutat', 'ValueError: captura /tmp/calibrare_16_3_93j3bj8d/dov2/calib_sha/code/capturi/PROBA_163_calib_sha_a.1_22222222.png există deja pentru cheia (PROBA-163, calib_sha, a.1, 22222222,
+ATINS  2 jurnal_verificator.sh pas = ieșirea „folosire: …” cu exit 2  'folosire: jurnal_verificator.sh incepe|incheie|controleaza …\n'
+ATINS  2 controleaza pe docs/dovezi/16_1_C3/jurnal_verificare.csv (rânduri scutite, fără marcaj) = trece  
+ATINS  3 dezacord: oracol trece, ambele instanțe „nu corespunde” => STOP cu aserțiunea numită  ['dezacord oracol–verificator: aserțiunea a.1 (oracolul: trece; ambele instanțe Haiku: nu corespunde)']
+ATINS  3 prima „nu corespunde”, a doua „corespunde” => fără STOP  []
+ATINS  3 toate „corespunde” => fără STOP  
+ATINS  3 toate „nejudecabil” => STOP „neefectuată”  ['faza verificatorului independent este „neefectuată” (parcurgerea dupa: toate aserțiunile sunt nejudecabile)']
+ATINS  3 o aserțiune „nejudecabil”, restul „corespunde” => fără STOP (numărul nejudecabilelor e măsurătoare)  
+ATINS  3 fără răspuns al verificatorului pe o aserțiune => STOP  
+ATINS  3 a doua instanță nu e rundă nouă: două rânduri cu a doua instanță, același sha și parcurgere = o rundă (runde_verificator_max 1 => fără STOP)  
+ATINS  3 runde = sha și parcurgere: aceeași sha pe două parcurgeri Haiku = 2 runde (> max 1 => STOP)  
+ATINS  3 rând fără marcaj în jurnal => STOP „verdict în afara oracolului”  
+ATINS  3 lot de produs: «trece» în coloana descriere = STOP  ['oracol modificat: descrierea aserțiunii a.1 conține cuvintele de verdict trece (nu sunt permise într-un lot de produs)']
+ATINS  3 lot de unelte: «trece» în descriere (fișier de probă) = fără STOP  []
+ATINS  3 lot de produs: descriere fără cuvinte de verdict = fără STOP  []
+ATINS  3 stub „nu corespunde” pe a.1 la ambele instanțe => STOP dezacord, a.1 numită, ieșire 1  trece [('a.1', 'trece', '')] [haiku, instanța 1] cod 0 [{"id": "a.1", "raspuns": "nu corespunde", "motiv": "stub"}] [haiku, instanța 2 pe a.1] ('nu corespunde', 'stub') STOP dezacord oracol–verificato
+ATINS  3 stub: s-au pornit două instanțe (prima pe a.1, a doua numai pe a.1) cu modelul Haiku 5.5 și Read restrâns  ['-p --model claude-haiku-5-5 --tools Read --allowedTools Read(//home/costin/iconta_lot16_3/docs/dovezi/16_3/calib_stub_nu/haiku/capturi/**) --permission-mode dontAsk --no-session-persistence | prima 
+ATINS  3 stub: ambele răspunsuri stau pe același rând (verificator_independent și verificator_independent_2), marcaj valid  nu corespunde: stub
+ATINS  3 stub „nu corespunde” la prima și „corespunde” la a doua => trece (ieșire 0), a doua instanță pe același rând  [haiku, instanța 1] cod 0 [{"id": "a.1", "raspuns": "nu corespunde", "motiv": "stub"}] [haiku, instanța 2 pe a.1] ('corespunde', 'stub') răspunsuri: a.1=nu corespunde | nejudecabile: 0 din 1
+ATINS  3 stub „nejudecabil” pe toate => STOP „neefectuată”, ieșire 1  d": "a.1", "raspuns": "nejudecabil", "motiv": "stub"}] STOP verificatorul independent: neefectuată (toate aserțiunile judecabile sunt „nejudecabil”) răspunsuri: a.1=nejudecabil | nejudecabile: 1 din 1
+ATINS  3 stub „corespunde” pe toate => trece (ieșire 0), o singură instanță  [parcurs] pasul a: trece [('a.1', 'trece', '')] [haiku, instanța 1] cod 0 [{"id": "a.1", "raspuns": "corespunde", "motiv": "stub"}] răspunsuri: a.1=corespunde | nejudecabile: 0 din 1
+ATINS  3 jurnal_verificare_calibrare.csv după rulările cu stub: controleaza trece (capturi, chei unice, marcaje)  
+ATINS  3 fără executabil `claude` (nici în PATH, nici în ~/.local/bin): „command not found” raportat, ieșire 127, fără stub  [lanseaza_verificator] claude: command not found (nici în PATH, nici în ~/.local/bin) — se raportează
+ATINS  3 Read în directorul capturilor = permis (agentul citește fișierul)  CODUL-DIN-DIRECTOR-7431
+ATINS  3 Read în afara directorului capturilor = refuz (conținutul nu apare în răspuns)  erul local, așa că nu l-am putut deschide. Dacă vrei să continui, permite Read pentru `/tmp/calibrare_16_3_ezgy12lx/afara.txt` sau rulează din nou cererea cu un mod de permisiuni care permite citirea.
+ATINS  3 alte unelte (Bash) nu sunt disponibile agentului  REFUZAT  Nu am un instrument Bash în sesiunea aceasta; singurul instrument disponibil este Read, care citește fișiere și nu poate executa comenzi.

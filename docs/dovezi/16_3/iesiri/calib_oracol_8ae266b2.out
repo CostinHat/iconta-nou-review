@@ -1,0 +1,7 @@
+[lacat_test] lacăt preluat de la pid 3738702 (mort sau refolosit)
+[parcurs] pasul a: trece [('a.1', 'trece', '')]
+[parcurs] pasul b: pica [('b.9', 'pica', 'găsit true, așteptat false'), ('b.10', 'pica', "'Completeaza:' nu apare în 'Adaugă'")]
+[parcurs] pasul c: pica [('c.1', 'pica', 'găsit 0, așteptat 2')]
+[parcurs] pasul p: trece [('p.1', 'trece', '')]
+[parcurs] pasul q: pica [('q.1', 'trece', ''), ('q.2', 'pica', 'găsit 567.46, așteptat 557.46')]
+

@@ -1,0 +1,11 @@
+== pct.4: mecanismele noi pe lotul publicat anterior (HEAD 8ae266b2)
+-- jurnal_verificator.sh controleaza VECHI (3983147f), pe worktree nou, docs/dovezi/16_1_C3/jurnal_verificare.csv:
+== jurnal_verificator.sh controleaza, VECHI (3983147f) pe docs/dovezi/16_1_C3/jurnal_verificare.csv, worktree nou:
+REFUZ: rândul P1: captura are mtime 2026-11-05T02:23:08+02:00, în afara intervalului 2026-11-04T22:11:36+02:00 – 2026-11-04T22:11:37+02:00
+REFUZ: rândul P1: captura are mtime 2026-11-05T02:23:08+02:00, în afara intervalului 2026-11-05T00:06:32+02:00 – 2026-11-05T00:06:34+02:00
+rc=1
+-- publica_lot.py --verifica fe447bd1 3983147f 16.1-C3:
+[publica_lot --verifica] PASS C=fe447bd13b80d163d5dd581155f807c8b98c15d4 HEAD=3983147f181fdd30b27c235d58de5f4f3a6423a7 fisiere=DECIZII.md,DEFICIENTE.md,PREDARE_LANT.md,docs/dovezi/16_1_C3/jurnal_verificare.csv
+rc=0
+-- jurnal_verificator.sh controleaza NOU pe același CSV:
+rc=0

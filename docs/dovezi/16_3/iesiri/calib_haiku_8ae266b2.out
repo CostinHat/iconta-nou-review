@@ -1,0 +1,14 @@
+[haiku, instanța 1] cod 0
+Verificare pe cele 7 capturi, judecată doar după descriere și ecran:
+
+- **a.1**: ecranul arată „sold la început 558,46 lei”, deci valoarea cerută apare. Soldul final afișat este 568,46, dar descrierea cere 558,46.
+- **b.9**: butonul Adaugă apare plin, albastru, ca un buton activ, nu inactiv.
+- **b.10**: butonul spune „Adaugă”, nu „Completează:”.
+- **c.1**: ecranul afișează „Nicio factură emisă neîncasată și niciun sold preluat”, deci nu sunt oferite facturi.
+- **p.1**: captura arată lista Casei cu rândul CHF1-1 (242,00, DANTE INTERNATIONAL SA) și butonul „PDF chitanță”, dar nu conținutul PDF-ului descărcat, deci nu se poate verifica textul extras.
+- **q.1**: față de starea inițială (un singur rând, test 610) apare un rând nou, „Depunere de numerar în bancă”, 1,00.
+- **q.2**: soldul afișat după depunere este 567,46, nu 557,46.
+
+[{"id": "a.1", "raspuns": "corespunde", "motiv": "Ecranul afișează „sold la început 558,46 lei”, valoarea cerută; soldul final afișat este 568,46, dar descrierea se referă la 558,46."}, {"id": "b.9", "raspuns": "nu corespunde", "motiv": "Butonul Adaugă apare plin și albastru, ca unul activ, nu inactiv."}, {"id": "b.10", "raspuns": "nu corespunde", "motiv": "Butonul are textul „Adaugă”, nu „Completează:”."}, {"id": "c.1", "raspuns": "nu corespunde", "motiv": "Ecranul spune „Nicio factură emisă neîncasată și niciun sold preluat”, deci nu sunt oferite facturi F1A18/F1A19."}, {"id": "p.1", "raspuns": "nejudecabil", "motiv": "Captura arată lista Casei și butonul „PDF chitanță”, dar nu conținutul textului extras din PDF."}, {"id": "q.1", "raspuns": "corespunde", "motiv": "Față de starea inițială apare un rând nou „Depunere de numerar în bancă”, 1,00, deci un rând nou în Casă."}, {"id": "q.2", "raspuns": "nu corespunde", "motiv": "Soldul afișat după depunere este 567,46, nu 557,46 cerut de descriere."}]
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: a.1=corespunde; b.9=nu corespunde; b.10=nu corespunde; c.1=nu corespunde; p.1=nejudecabil; q.1=corespunde; q.2=nu corespunde | nejudecabile: 1 din 7
