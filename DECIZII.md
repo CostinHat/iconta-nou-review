@@ -24464,3 +24464,9 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - Produsul din 16.2-B (F017 Chitanțe emise) se republică neschimbat: C = ec4f3cd3, adus cu `git checkout lucru/lot16-2b -- .`; `git diff --stat lucru/lot16-2b C` (în afara fișierelor lotului 16.2-C) = 0 fișiere. 16.2-B s-a oprit numai din pragul `poarta_plasa 520` (620 s măsurat); pragurile 16.2-C: plasa 750, pytest 665, verificator 101.
 - Poarta pe C: VERDE, 1895 teste, regresie 0, restanțe 2 (R021, R027). Haiku (haiku_1) și parcurgerea „după” (cod): 51/51 „trece”, niciun „nu corespunde”.
 - Stările numerelor rămân cele din 16.2-B: 753, 729.1, 758 „rezolvată”; 278.1 „parțial” (regula 11.2, de decis de arhitect); 456, 98, 455, C221 neschimbate.
+
+## 05.11.2026 — comanda 16.4 (lot de unelte)
+- Decizia arhitectului (05.11, în baza regulii lui Costin din 04.11): 278.1 se adaugă la `DOVADA_PRIN_E2E` (mulțime închisă: 642, 278.1) cu motivul „decizia arhitectului 05.11, regula Costin 04.11”; dovada lui e testul `test_pilot_F017` + pașii oracolului din docs/dovezi/16_2_C/jurnal_verificare.csv (`lipsuri_dovada_pilot`, `DOVADA_PRIN_PILOT`). Orice alt număr < 712 rămâne pe regula capturilor; 278.1 trece în «rezolvată».
+- C221: lansatorul instalează un handler SIGTERM înainte de începutul fazei; sfârșitul «intrerupt» marcat se scrie la SIGTERM. Rămâne «neverificat» (un lot de unelte nu poate pune «rezolvată»); C222 nou, același statut.
+- Calibrarea (docs/dovezi/16_4/calibrare.txt, 13 cazuri ATINS): lista rândurilor refuzate de regula 11.2 înainte / după e identică (0 / 0, în afara lui 278.1); `faze_stop` pe jurnalele reale: 16.2-C fără STOP, 16.3 «scrisă de mână», 16.3-A «lipsește din jurnal»; lansatorul real oprit cu SIGTERM scrie «intrerupt» (ieșire 143), copia de la 8b969d6e nu scrie sfârșitul.
+- C = c5080343213cfc7932f4891bc5286f586452357a: poarta VERDE (1894 teste, regresie 0, restanțe 2, noi verzi 8).
