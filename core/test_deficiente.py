@@ -12,6 +12,7 @@
     plasei nu se face”.
 """
 import ast
+import csv
 import glob
 import io
 import json
@@ -207,11 +208,14 @@ DATE_EXISTENTE = "date existente:"
 # [lotul 13, cerut de sesiunea principală] contextul capturii: firma de test (`f<k>`, FISCALOS `fiscalos_f9054`) SAU, cuvânt întreg, `admin`
 # (ecran al Panoului Admin, fără firmă) / `public` (pagina publică, fără sesiune) — `administrator`, `publicat` nu trec
 _RE_CAPTURA = r"^dovezi/lot\d+/%s_(?:[a-z0-9]+_)*?(?:f\d+|admin|public)(?:_[a-z0-9]+)*\.png$"
-#: Numerele a căror dovadă e e2e-ul, prin decizia SCRISĂ a lui Costin — mulțime ÎNCHISĂ (calibrarea pică dacă alt număr o folosește):
+#: Numerele a căror dovadă e e2e-ul, prin decizia SCRISĂ a lui Costin sau a arhitectului — mulțime ÎNCHISĂ (calibrarea pică dacă alt număr o folosește):
 #: „rezolvată” fără captură, cu testul e2e cerut în continuare (`test_rezolvata_are_commit_si_test_de_capat_la_capat`).
 DOVADA_PRIN_E2E = {
     "642": "decizia Costin 13.1 pct.4.7: „642: e2e-ul e dovada potrivită pentru înregistrarea unui cabinet.”",
+    "278.1": "decizia arhitectului 05.11, regula Costin 04.11",
 }
+#: dintre ele, cele a căror dovadă e un test pilot + pașii oracolului (16.4 pct.1); restul cer un `test_def_…`
+DOVADA_PRIN_PILOT = frozenset({"278.1"})
 _FORME_DATE = ("migrare", "script", "cod", "neafectate, pentru că")
 
 
@@ -264,9 +268,62 @@ def cere_dovada(r, vechi):
     return any(r[k] != v[k] for k in ("stare", "lipsa", "test"))
 
 
-def lipsuri_dovada(r, exista=_captura_amprentata):
-    """PURĂ (cu `exista` injectat). Ce lipsește din dovada rândului rezolvat — [] dacă e completă."""
+#: [16.4 pct.1] formatul fix al coloanei „ce lipsește” pentru dovada unui test pilot: fișierul CSV al oracolului și pașii, enumerați (fără intervale)
+_RE_DOVADA_PILOT = re.compile(r"dovada e2e: (docs/dovezi/[\w.-]+/jurnal_verificare\.csv); pasi: ([a-z]\.\d+(?:, [a-z]\.\d+)*)")
+
+
+def _randuri_csv(cale):
+    """Rândurile CSV-ului oracolului `cale`, dacă e în index; altfel None."""
+    if not _exista_in_index(cale):
+        return None
+    with io.open(os.path.join(_RAD, cale), encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def lipsuri_dovada_pilot(r, plasa, publicare, rows=None, in_index=_exista_in_index):
+    """PURĂ (cu plasa e2e, plasa de publicare, rândurile CSV și `in_index` injectate). [16.4 pct.1] Dovada unui număr din DOVADA_PRIN_PILOT:
+    (a) coloana testului numește numai `test_pilot_…`, fiecare în `plasa[nr]` și într-un fișier din `publicare`; (b) „ce lipsește” are exact formatul
+    `dovada e2e: <csv>; pasi: a.1, a.2`, iar pentru fiecare pas CSV-ul are, pe același commit, un rând code / dupa / trece și un rând haiku / haiku_1 / trece
+    cu verificator_independent începând cu „corespunde”, ambele cu captura în index. -> ce lipsește ([] dacă e completă)."""
+    nr = r["nr"]
+    numite = re.findall(r"`([^`]+)`", r.get("test") or "")
+    rele = []
+    if not numite:
+        rele.append("%s: dovada prin test pilot cere testul numit în coloana testului" % nr)
+    for t in numite:
+        if "::test_pilot_" not in t:
+            rele.append("%s: testul %s nu e `test_pilot_…` (dovada prin test pilot nu amestecă alte teste)" % (nr, t))
+        elif t not in plasa.get(nr, []):
+            rele.append("%s: testul %s nu există în plasa e2e a numărului" % (nr, t))
+        elif os.path.basename(t.split("::")[0]) not in publicare:
+            rele.append("%s: testul %s nu e în plasa de publicare" % (nr, t))
+    m = _RE_DOVADA_PILOT.fullmatch((r.get("lipsa") or "").strip())
+    if not m:
+        rele.append("%s: „ce lipsește” nu are formatul exact `dovada e2e: docs/dovezi/<lot>/jurnal_verificare.csv; pasi: a.1, a.2, …` (pașii enumerați, fără intervale)" % nr)
+        return rele
+    cale, pasi = m.group(1), m.group(2).split(", ")
+    rr = rows if rows is not None else _randuri_csv(cale)
+    if rr is None:
+        return rele + ["%s: %s nu e în index" % (nr, cale)]
+    for pas in pasi:
+        def bun(verificator, parcurgere):
+            return {x["commit"] for x in rr if x["pas"] == pas and x["verificator"] == verificator and x["parcurgere"] == parcurgere and x["verdict"] == "trece"
+                    and (verificator != "haiku" or (x.get("verificator_independent") or "").startswith("corespunde")) and in_index(x["captura"])}
+        code, haiku = bun("code", "dupa"), bun("haiku", "haiku_1")
+        if not code:
+            rele.append("%s: pasul %s nu are rând code / dupa / trece cu captura în index în %s" % (nr, pas, cale))
+        elif not haiku:
+            rele.append("%s: pasul %s nu are rând haiku / haiku_1 / trece cu verificator_independent «corespunde» și captura în index în %s" % (nr, pas, cale))
+        elif not code & haiku:
+            rele.append("%s: pasul %s: rândurile code / dupa și haiku / haiku_1 nu sunt pe același commit în %s" % (nr, pas, cale))
+    return rele
+
+
+def lipsuri_dovada(r, exista=_captura_amprentata, plasa=None, publicare=None, rows=None, in_index=_exista_in_index):
+    """PURĂ (cu `exista`, plasa e2e, plasa de publicare, rândurile CSV și `in_index` injectate). Ce lipsește din dovada rândului rezolvat — [] dacă e completă."""
     nr, t = r["nr"], r["lipsa"]
+    if nr in DOVADA_PRIN_PILOT:   # [16.4 pct.1] dovada prin test pilot și pașii oracolului
+        return lipsuri_dovada_pilot(r, plasa_e2e() if plasa is None else plasa, plasa_publicarii() if publicare is None else publicare, rows, in_index)
     if nr in DOVADA_PRIN_E2E:   # dovada e e2e-ul (decizia scrisă din DOVADA_PRIN_E2E); testul de capăt la capăt rămâne cerut
         return [] if re.search(r"`[^`]+::test_def_[^`]+`", r.get("test") or "") else [
             "%s: dovada prin e2e (%s) cere testul de capăt la capăt numit în coloana testului" % (nr, DOVADA_PRIN_E2E[nr])]
@@ -342,7 +399,7 @@ def test_garda_dovezii_nu_e_vida():
     assert lipsuri_dovada(dict(bun, lipsa="dovadă firme de test: `dovezi/lot11/439_administrator_x.png`" + _ne), are), \
         "`administrator` a trecut drept contextul `admin`"
     # [lotul 13] excepția dovezii prin e2e e ÎNCHISĂ: numai numerele din DOVADA_PRIN_E2E, și numai cu testul e2e numit
-    assert set(DOVADA_PRIN_E2E) == {"642"}, "alt număr folosește excepția dovezii prin e2e fără decizia scrisă: %s" % sorted(DOVADA_PRIN_E2E)
+    assert set(DOVADA_PRIN_E2E) == {"642", "278.1"}, "alt număr folosește excepția dovezii prin e2e fără decizia scrisă: %s" % sorted(DOVADA_PRIN_E2E)
     fara_captura = dict(bun, lipsa="lotul 12, reparat; dovada pe firmele de test nu se aplică",
                         test="`frontend_test/e2e/e2e_lot12_form2.py::test_def_642_x`")
     assert lipsuri_dovada(dict(fara_captura, nr="642"), are) == []
@@ -371,6 +428,46 @@ def test_garda_dovezii_nu_e_vida():
     assert not cere_dovada(dict(bun, nr="300"), vechi), "rândul vechi, neatins, rămâne pe regula de dinainte"
     assert cere_dovada(dict(bun, nr="300", lipsa="altceva"), vechi), "rândul vechi redeclarat (motiv schimbat) trebuie să ceară dovada"
     assert not cere_dovada(dict(bun, nr="460", stare="parțial"), vechi)
+
+
+def test_dovada_prin_test_pilot_a_lui_278_1_se_calibreaza_in_ambele_directii():
+    """[16.4 pct.1] 278.1 e scutit de captura regulii 11.2 numai cu test pilot + pașii oracolului citați; orice alt număr < 712 rămâne pe regula veche.
+    Calibrare (i)–(vii) pe plasa, plasa de publicare, rândurile CSV și indexul injectate. MUTAȚIE: condiția (a) sau (b) scoasă -> pică."""
+    T = "frontend_test/e2e/e2e_pilot_f017.py::test_pilot_F017"
+    plasa, publicare = {"278.1": [T], "300": [T]}, {"e2e_pilot_f017.py"}
+    pasi = ["c.1", "d.1"]
+    cit = "dovada e2e: docs/dovezi/16_2_C/jurnal_verificare.csv; pasi: c.1, d.1"
+
+    def rand(pas, verificator, parcurgere, verdict="trece", ind="", commit="a" * 40):
+        return dict(commit=commit, pas=pas, verificator=verificator, parcurgere=parcurgere, verdict=verdict, verificator_independent=ind, captura="c/%s_%s.png" % (pas, verificator))
+    csv_bun = [x for p in pasi for x in (rand(p, "code", "dupa"), rand(p, "haiku", "haiku_1", ind="corespunde: ok"), rand(p, "code", "inainte", "pica"))]
+    r = dict(nr="278.1", stare="rezolvată", test="`%s`" % T, lipsa=cit)
+
+    def lipsuri(rd=r, rows=csv_bun, pl=plasa, pub=publicare, in_index=lambda c: True):
+        return lipsuri_dovada(rd, plasa=pl, publicare=pub, rows=rows, in_index=in_index)
+    assert lipsuri() == [], "(i) 278.1 cu test pilot și pașii în CSV trebuie să treacă"
+    # (ii) alt număr < 712, cu test pilot, fără captură: refuzat ca până acum (regula capturilor)
+    assert lipsuri(dict(r, nr="300")), "(ii) alt număr < 712 a scăpat de regula capturilor"
+    assert not cere_dovada(dict(r, nr="900"), {}), "numerele ≥ 712 rămân pe e2e-ul din hartă"
+    # (iii) test_def_ amestecat cu test_pilot_
+    amestec = dict(r, test="`%s`, `frontend_test/e2e/e2e_x.py::test_def_278_1_x`" % T)
+    assert any("test_def_278_1_x" in x for x in lipsuri(amestec, pl={"278.1": [T, "frontend_test/e2e/e2e_x.py::test_def_278_1_x"]}))
+    # (iv) pas inexistent sau doar pe «inainte» (pică)
+    assert any("c.9" in x for x in lipsuri(dict(r, lipsa=cit.replace("d.1", "c.9"))))
+    assert any("d.1" in x for x in lipsuri(rows=[x for x in csv_bun if not (x["pas"] == "d.1" and x["parcurgere"] != "inainte")]))
+    # (v) test numit, dar absent din plasa de publicare
+    assert any("e2e_pilot_f017" in x for x in lipsuri(pub={"altul.py"}))
+    # (vi) Haiku «nu corespunde» / «nejudecabil» pe un pas citat; captură în afara indexului; rânduri pe commituri diferite
+    for ind in ("nu corespunde: x", "nejudecabil din captură"):
+        rau = [dict(x, verificator_independent=ind) if (x["pas"] == "c.1" and x["verificator"] == "haiku") else x for x in csv_bun]
+        assert any("c.1" in x for x in lipsuri(rows=rau)), "(vi) haiku %r a trecut" % ind
+    assert any("c.1" in x for x in lipsuri(in_index=lambda c: False))
+    separat = [dict(x, commit="b" * 40) if x["verificator"] == "haiku" else x for x in csv_bun]
+    assert any("același commit" in x for x in lipsuri(rows=separat))
+    # (vii) fără citarea din «ce lipsește», cu pași în interval sau cu text în plus
+    for lipsa in ("văzut pe ecran", cit.replace("c.1, d.1", "c.1-d.1"), cit + " (verificat)", ""):
+        assert lipsuri(dict(r, lipsa=lipsa)), "(vii) formatul %r a trecut" % lipsa
+    assert set(DOVADA_PRIN_PILOT) <= set(DOVADA_PRIN_E2E)
 
 
 def test_manifestul_capturilor_descrie_discul():

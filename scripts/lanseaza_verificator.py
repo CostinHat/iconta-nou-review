@@ -22,6 +22,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -233,6 +234,10 @@ def verificator_independent(a, ctx, csv_, binar, iesire):
         shutil.rmtree(lucru, ignore_errors=True)
 
 
+def _la_sigterm(semnal, cadru):
+    raise SystemExit(128 + semnal)
+
+
 def main(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("--lot", required=True)
@@ -256,6 +261,8 @@ def main(argv):
     import verifica_pas as VP
     sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
     faza = "verificator" if a.verificator == "haiku" else "parcurs_code"
+    # 16.4 pct.2 (C221): SIGTERM devine ieșire normală, ca `finally` să scrie sfârșitul „intrerupt” marcat (fără handler procesul moare fără sfârșit)
+    signal.signal(signal.SIGTERM, _la_sigterm)
     id_ = VP.scrie_faza(a.lot, faza, "inceput", detalii="parcurgere=%s" % a.parcurgere, sha=sha)
     rezultat, detalii = "intrerupt", "lansatorul a ieșit cu eroare"
     try:

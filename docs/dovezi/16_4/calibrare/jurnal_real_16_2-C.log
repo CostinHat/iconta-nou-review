@@ -1,0 +1,50 @@
+16.2-C	pornire	inceput	2026-11-05T11:40:01+02:00	f259ca24647c	-	3995114-1793871601734	3995114	praguri=praguri_16_2_C.txt praguri_sha256=10561d44f30d30133eb4438ea53ebc731e0bfd8b9cf64eeb6fb2da27ae2c2283 pasi=pasi_16_2_C.txt pasi_sha256=cbe2c0f9c9fb4cd8a364498780b8a7ab5f2e8346d40c6413b3108cdedf1a192a coada=1 marca=71d16207af2970e00badef9eae75c3a37aa3f0d3369423cf60887e3b150a68a6 comanda=comanda_16_2_C.txt
+16.2-C	pornire	sfarsit	2026-11-05T11:40:01+02:00	f259ca24647c	ok	3995114-1793871601734	3995114	scripturi_poarta: poarta_lot.sh=3f589d8ee562ac5f publica_lot.sh=77d83e4aeb1af67f baza_test.sh=dbb174600682aa70 poarta_nucleu.txt=dc8772309409c722 plasa_16_2.manifest=02d71e0110fc6c75 poarta_clasifica.py=e03f28f50eb19d42 poarta_lib.py=669de7a968d79471 conftest.py=c4f98c88a806f967 coada=1
+16.2-C	parcurs_code	inceput	2026-11-05T11:42:15+02:00	f259ca24647c	-	3996024-1793871735475	3996024	parcurgere=inainte marca=0a96e2fa724fe90faafa8da1d21c601ac70aabda866e600d824842c5b597695b
+16.2-C	parcurs_code	sfarsit	2026-11-05T11:42:16+02:00	f259ca24647c	intrerupt	3996024-1793871735475	3996024	lansatorul a ieșit cu eroare marca=7e95c425b20494216bd7698ac6d6ad539a66deb46f1b7c4d83c078d5c2df3147
+16.2-C	parcurs_code	inceput	2026-11-05T11:42:41+02:00	f259ca24647c	-	3997076-1793871761027	3997076	parcurgere=inainte marca=508fc50683e89ba3779e0ebd859c36e9fcfa205fdce698fdb14c8a2a89aa3593
+16.2-C	parcurs_code	sfarsit	2026-11-05T11:45:22+02:00	f259ca24647c	parcurs	3997076-1793871761027	3997076	corespunde/nu corespunde/nejudecabil=0/0/0 parcurgere=inainte marca=a518e5524e6d01387abbcca1338cb643094aa0fc04a4012e6eaaa28ba59bc246
+16.2-C	hook	inceput	2026-11-05T11:46:31+02:00	f259ca24647c	-	3998469-1793871991738	3998461	
+16.2-C	pytest	inceput	2026-11-05T11:46:32+02:00	f259ca24647c	-	3998535-1793871992613	3998535	argumente=-q core/test_deficiente.py
+16.2-C	pytest	sfarsit	2026-11-05T11:46:37+02:00	f259ca24647c	verde	3998535-1793871992613	3998535	
+16.2-C	hook	sfarsit	2026-11-05T11:48:01+02:00	f259ca24647c	verde	3998469-1793871991738	3998461	
+16.2-C	hook	inceput	2026-11-05T11:48:09+02:00	f259ca24647c	-	3999828-1793872089783	3999822	
+16.2-C	pytest	inceput	2026-11-05T11:48:10+02:00	f259ca24647c	-	3999844-1793872090192	3999844	argumente=-q core/test_deficiente.py
+16.2-C	pytest	sfarsit	2026-11-05T11:48:14+02:00	f259ca24647c	verde	3999844-1793872090192	3999844	
+16.2-C	hook	sfarsit	2026-11-05T11:49:37+02:00	f259ca24647c	verde	3999828-1793872089783	3999822	
+16.2-C	proba_contract	inceput	2026-11-05T11:49:38+02:00	34065ec7b9a5	-	4000856-1793872178810	4000856	baza=f259ca24647c
+16.2-C	proba_contract	sfarsit	2026-11-05T11:49:38+02:00	34065ec7b9a5	verde	4000856-1793872178810	4000856	
+16.2-C	hook	inceput	2026-11-05T11:49:50+02:00	34065ec7b9a5	-	4001093-1793872190015	4001087	
+16.2-C	pytest	inceput	2026-11-05T11:49:51+02:00	34065ec7b9a5	-	4001296-1793872191872	4001296	argumente=-q core/test_deficiente.py
+16.2-C	pytest	sfarsit	2026-11-05T11:49:57+02:00	34065ec7b9a5	verde	4001296-1793872191872	4001296	
+16.2-C	hook	sfarsit	2026-11-05T11:51:20+02:00	34065ec7b9a5	verde	4001093-1793872190015	4001087	
+16.2-C	pytest	inceput	2026-11-05T11:51:32+02:00	ec4f3cd3c6fa	-	4002456-1793872292721	4002456	argumente=--collect-only -q frontend_test/e2e/e2e_lot12_verif.py
+16.2-C	pytest	sfarsit	2026-11-05T11:51:33+02:00	ec4f3cd3c6fa	verde	4002456-1793872292721	4002456	
+16.2-C	pytest	inceput	2026-11-05T11:51:33+02:00	ec4f3cd3c6fa	-	4002465-1793872293263	4002465	argumente=--collect-only -q frontend_test/e2e/e2e_lot72_facturi.py
+16.2-C	pytest	sfarsit	2026-11-05T11:51:33+02:00	ec4f3cd3c6fa	verde	4002465-1793872293263	4002465	
+16.2-C	pytest	inceput	2026-11-05T11:51:33+02:00	ec4f3cd3c6fa	-	4002472-1793872293668	4002472	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_luna.py
+16.2-C	pytest	sfarsit	2026-11-05T11:51:34+02:00	ec4f3cd3c6fa	verde	4002472-1793872293668	4002472	
+16.2-C	pytest	inceput	2026-11-05T11:51:34+02:00	ec4f3cd3c6fa	-	4002480-1793872294309	4002480	argumente=--collect-only -q frontend_test/e2e/e2e_pozitii_validate.py
+16.2-C	pytest	sfarsit	2026-11-05T11:51:34+02:00	ec4f3cd3c6fa	verde	4002480-1793872294309	4002480	
+16.2-C	pytest	inceput	2026-11-05T11:51:34+02:00	ec4f3cd3c6fa	-	4002489-1793872294797	4002489	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_f017.py
+16.2-C	pytest	sfarsit	2026-11-05T11:51:34+02:00	ec4f3cd3c6fa	verde	4002489-1793872294797	4002489	
+16.2-C	poarta_verificator	inceput	2026-11-05T11:51:36+02:00	ec4f3cd3c6fa	-	4002416-1793872296135	4002416	scripturi_poarta: poarta_lot.sh=3f589d8ee562ac5f publica_lot.sh=77d83e4aeb1af67f baza_test.sh=dbb174600682aa70 poarta_nucleu.txt=dc8772309409c722 plasa_16_2.manifest=cd383cdf5bcd0ca9 poarta_clasifica.py=e03f28f50eb19d42 poarta_lib.py=669de7a968d79471 conftest.py=c4f98c88a806f967
+16.2-C	poarta_verificator	sfarsit	2026-11-05T11:52:58+02:00	ec4f3cd3c6fa	verde	4002416-1793872296135	4002416	
+16.2-C	poarta_pytest	inceput	2026-11-05T11:52:58+02:00	ec4f3cd3c6fa	-	4002416-1793872378282	4002416	scripturi_poarta: poarta_lot.sh=3f589d8ee562ac5f publica_lot.sh=77d83e4aeb1af67f baza_test.sh=dbb174600682aa70 poarta_nucleu.txt=dc8772309409c722 plasa_16_2.manifest=cd383cdf5bcd0ca9 poarta_clasifica.py=e03f28f50eb19d42 poarta_lib.py=669de7a968d79471 conftest.py=c4f98c88a806f967
+16.2-C	pytest	inceput	2026-11-05T11:54:16+02:00	ec4f3cd3c6fa	-	4002965-1793872456211	4002965	argumente=-q -n 3 --dist loadfile --junitxml=/tmp/poarta_pytest.xml core/test_12_salariu_minim_luna.py core/test_274b_categorii_tva.py core/test_281_amortizare_restanta.py core/test_295_rezumat_d100.py core/test_359_amortizare_preluata.py core/test_380_381_d406_surse.py core/test_384_cote_asociati.py core/tes
+16.2-C	pytest	sfarsit	2026-11-05T12:02:21+02:00	ec4f3cd3c6fa	verde	4002965-1793872456211	4002965	
+16.2-C	poarta_pytest	sfarsit	2026-11-05T12:02:21+02:00	ec4f3cd3c6fa	verde	4002416-1793872378282	4002416	
+16.2-C	poarta_plasa	inceput	2026-11-05T12:02:22+02:00	ec4f3cd3c6fa	-	4002416-1793872942005	4002416	scripturi_poarta: poarta_lot.sh=3f589d8ee562ac5f publica_lot.sh=77d83e4aeb1af67f baza_test.sh=dbb174600682aa70 poarta_nucleu.txt=dc8772309409c722 plasa_16_2.manifest=cd383cdf5bcd0ca9 poarta_clasifica.py=e03f28f50eb19d42 poarta_lib.py=669de7a968d79471 conftest.py=c4f98c88a806f967
+16.2-C	poarta_plasa	sfarsit	2026-11-05T12:12:44+02:00	ec4f3cd3c6fa	verde_cu_restante	4002416-1793872942005	4002416	
+16.2-C	verificator	inceput	2026-11-05T12:16:39+02:00	ec4f3cd3c6fa	-	4022712-1793873799253	4022712	parcurgere=haiku_1 marca=f328b1e8109ab65e55af8e13d0cc276301f5a222e07170886440e9951529fd2a
+16.2-C	verificator	sfarsit	2026-11-05T12:19:46+02:00	ec4f3cd3c6fa	parcurs	4022712-1793873799253	4022712	corespunde/nu corespunde/nejudecabil=36/0/15 parcurgere=haiku_1 marca=27207a911153fb5d0612df1d74cba18635b7597c674629a38af7fac266c6e847
+16.2-C	parcurs_code	inceput	2026-11-05T12:27:08+02:00	ec4f3cd3c6fa	-	4025296-1793874428081	4025296	parcurgere=dupa marca=20b93df8a70f0ae32a1592eed61cfc7d61a40f15300be4e92a620171698f0a44
+16.2-C	parcurs_code	sfarsit	2026-11-05T12:29:02+02:00	ec4f3cd3c6fa	parcurs	4025296-1793874428081	4025296	corespunde/nu corespunde/nejudecabil=0/0/0 parcurgere=dupa marca=44f217fbbd36c8a72aa01464638916f8b4755b2a05e09cbcdf1de515b832512d
+16.2-C	hook	inceput	2026-11-05T12:31:23+02:00	ec4f3cd3c6fa	-	4027298-1793874683869	4027292	
+16.2-C	pytest	inceput	2026-11-05T12:31:24+02:00	ec4f3cd3c6fa	-	4027313-1793874684273	4027313	argumente=-q core/test_deficiente.py
+16.2-C	pytest	sfarsit	2026-11-05T12:31:30+02:00	ec4f3cd3c6fa	verde	4027313-1793874684273	4027313	
+16.2-C	hook	sfarsit	2026-11-05T12:32:53+02:00	ec4f3cd3c6fa	verde	4027298-1793874683869	4027292	
+16.2-C	publicare	inceput	2026-11-05T12:33:04+02:00	8b969d6eecb6	-	4028443-1793874784271	4028413	script_sha256=77d83e4aeb1af67f
+16.2-C	restart	inceput	2026-11-05T12:33:21+02:00	8b969d6eecb6	-	4028711-1793874801501	4028413	
+16.2-C	restart	sfarsit	2026-11-05T12:33:40+02:00	8b969d6eecb6	ok	4028711-1793874801501	4028413	
+16.2-C	publicare	sfarsit	2026-11-05T12:33:41+02:00	8b969d6eecb6	publicat	4028443-1793874784271	4028413	

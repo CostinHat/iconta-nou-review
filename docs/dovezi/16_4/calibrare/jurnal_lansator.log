@@ -1,0 +1,5 @@
+16.4	pytest	inceput	2026-11-05T13:43:31+02:00	8b969d6eecb6	-	4065261-1793879011109	4065261	argumente=-q -p no:cacheprovider core/test_deficiente.py -k test_rezolvata_are_commit_si_test_de_capat_la_capat or test_rezolvata_are_testul_e2e_in_harta_portii or test_garda_dovezii_nu_e_vida or test_dovada_prin_test_pilot
+16.4	pytest	sfarsit	2026-11-05T13:43:33+02:00	8b969d6eecb6	verde	4065261-1793879011109	4065261	
+16.4	parcurs_code	inceput	2026-11-05T13:43:33+02:00	8b969d6eecb6	-	4065448-1793879013302	4065448	parcurgere=calib_sigterm_nou marca=aa2684cfae40e3de3d6747d5379b851e26159a26dc396818fec2cb4fd828bd1b
+16.4	parcurs_code	sfarsit	2026-11-05T13:43:34+02:00	8b969d6eecb6	intrerupt	4065448-1793879013302	4065448	lansatorul a ieșit cu eroare marca=f1fe1301b5b6622672f8f1acc6c149dd21e3986ac1f8bb5a2a7b157478033549
+16.4	parcurs_code	inceput	2026-11-05T13:43:34+02:00	8b969d6eecb6	-	4065521-1793879014441	4065521	parcurgere=calib_sigterm_vechi marca=692ad25a7fe2c175002ae00bbf02eba6d5a47494f52acb396eb5aeccd3ddc8ac

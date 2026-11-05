@@ -1,0 +1,13 @@
+ATINS  1 rânduri care cer dovada: înainte 373, după 374; în plus după: ['278.1']  
+ATINS  1 rânduri refuzate înainte / după (în afara lui 278.1): 0 / 0, identice  înainte [] | după []
+ATINS  1 278.1 după: cere dovada și nu e refuzat  []
+ATINS  1 codul vechi pe registrul nou refuză 278.1 (fără captură pe firmele de test): 2 motive  
+ATINS  1 testele :96/:132/:318–324 și calibrarea 278.1 verzi  4 passed, 6 deselected in 2.01s
+ATINS  jurnalul comun, rânduri lot=16.4 înainte / după partea «dovada»: 22 / 22 (diferența zero)  
+ATINS  2 faze_stop(unelte=False) pe jurnalul real al lotului 16.2-C (docs/dovezi/16_4/calibrare/jurnal_real_16_2-C.log, 50 rânduri): fără STOP  []
+ATINS  2 faze_stop(unelte=False) pe jurnalul real al lotului 16.3 (docs/dovezi/16_4/calibrare/jurnal_real_16_3.log, 81 rânduri): STOP «scrisă de mână»  ['faza verificator scrisă de mână (fără marcajul lansatorului; copiată sau editată = nevalid): o scrie numai scripts/lanseaza_verificator.py']
+ATINS  2 faze_stop(unelte=False) pe jurnalul real al lotului 16.3-A (docs/dovezi/16_4/calibrare/jurnal_real_16_3-A.log, 60 rânduri): STOP «lipsește din jurnal»  ['faza „verificator” lipsește din jurnal']
+ATINS  jurnalul comun, rânduri lot=16.4 înainte / după partea «jurnale»: 22 / 22 (diferența zero)  
+ATINS  2 (v) cu handler (lansatorul lotului): parcursul fals oprit cu SIGTERM -> sfârșit «intrerupt» marcat (ieșire 143)  [lacat_test] lacăt preluat de la pid 4063402 (mort sau refolosit) 
+ATINS  2 (v) fără handler (copia de la 8b969d6e): fără sfârșit în jurnal (ieșire -15)  [lacat_test] lacăt preluat de la pid 4065448 (mort sau refolosit) 
+ATINS  jurnalul comun, rânduri lot=16.4 înainte / după partea «sigterm»: 22 / 22 (diferența zero)  

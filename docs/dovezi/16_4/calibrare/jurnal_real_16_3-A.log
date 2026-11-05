@@ -1,0 +1,60 @@
+16.3-A	pornire	inceput	2026-11-05T05:50:01+02:00	d43f69d0231a	-	3792017-1793850601893	3792017	praguri=praguri_16_3_A.txt praguri_sha256=7344cea3340505e0751a7f13ae09dcb33c8de8a8d23bf9fc6935c6e8297f4e3a coada=1 marca=73a4e9d7d7a5c1ae1c6459180e88d6f7dc2ba93883182c9a296fde3a9315a238 comanda=comanda_16_3_A.txt
+16.3-A	pornire	sfarsit	2026-11-05T05:50:01+02:00	d43f69d0231a	ok	3792017-1793850601893	3792017	scripturi_poarta: poarta_lot.sh=3f589d8ee562ac5f publica_lot.sh=77d83e4aeb1af67f baza_test.sh=dbb174600682aa70 poarta_nucleu.txt=dc8772309409c722 plasa_16_2.manifest=02d71e0110fc6c75 poarta_clasifica.py=e03f28f50eb19d42 poarta_lib.py=669de7a968d79471 conftest.py=c4f98c88a806f967 coada=1
+16.3-A	pytest	inceput	2026-11-05T05:53:44+02:00	d43f69d0231a	-	3793473-1793850824702	3793473	argumente=--collect-only -q frontend_test/e2e/e2e_lot12_verif.py
+16.3-A	pytest	sfarsit	2026-11-05T05:53:45+02:00	d43f69d0231a	verde	3793473-1793850824702	3793473	
+16.3-A	pytest	inceput	2026-11-05T05:53:45+02:00	d43f69d0231a	-	3793480-1793850825249	3793480	argumente=--collect-only -q frontend_test/e2e/e2e_lot72_facturi.py
+16.3-A	pytest	sfarsit	2026-11-05T05:53:45+02:00	d43f69d0231a	verde	3793480-1793850825249	3793480	
+16.3-A	pytest	inceput	2026-11-05T05:53:45+02:00	d43f69d0231a	-	3793487-1793850825633	3793487	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_luna.py
+16.3-A	pytest	sfarsit	2026-11-05T05:53:46+02:00	d43f69d0231a	verde	3793487-1793850825633	3793487	
+16.3-A	pytest	inceput	2026-11-05T05:53:46+02:00	d43f69d0231a	-	3793495-1793850826279	3793495	argumente=--collect-only -q frontend_test/e2e/e2e_pozitii_validate.py
+16.3-A	pytest	sfarsit	2026-11-05T05:53:46+02:00	d43f69d0231a	verde	3793495-1793850826279	3793495	
+16.3-A	pytest	inceput	2026-11-05T05:56:30+02:00	d43f69d0231a	-	3794241-1793850990215	3794241	argumente=-q -n 3 --dist loadfile --junitxml=/tmp/poarta_pytest.xml core/test_12_salariu_minim_luna.py core/test_274b_categorii_tva.py core/test_281_amortizare_restanta.py core/test_295_rezumat_d100.py core/test_359_amortizare_preluata.py core/test_380_381_d406_surse.py core/test_384_cote_asociati.py core/tes
+16.3-A	pytest	sfarsit	2026-11-05T06:04:04+02:00	d43f69d0231a	verde	3794241-1793850990215	3794241	
+16.3-A	hook	inceput	2026-11-05T06:17:18+02:00	d43f69d0231a	-	3811583-1793852238473	3811577	
+16.3-A	pytest	inceput	2026-11-05T06:17:19+02:00	d43f69d0231a	-	3811598-1793852239258	3811598	argumente=-q core/test_deficiente.py
+16.3-A	pytest	sfarsit	2026-11-05T06:17:20+02:00	d43f69d0231a	rosu_1	3811598-1793852239258	3811598	
+16.3-A	hook	sfarsit	2026-11-05T06:17:20+02:00	d43f69d0231a	rosu_1	3811583-1793852238473	3811577	
+16.3-A	pytest	inceput	2026-11-05T06:17:34+02:00	d43f69d0231a	-	3811767-1793852254155	3811767	argumente=core/test_deficiente.py -q
+16.3-A	pytest	sfarsit	2026-11-05T06:17:38+02:00	d43f69d0231a	verde	3811767-1793852254155	3811767	
+16.3-A	hook	inceput	2026-11-05T06:17:44+02:00	d43f69d0231a	-	3812661-1793852264894	3812655	
+16.3-A	pytest	inceput	2026-11-05T06:17:45+02:00	d43f69d0231a	-	3812676-1793852265276	3812676	argumente=-q core/test_deficiente.py
+16.3-A	pytest	sfarsit	2026-11-05T06:17:49+02:00	d43f69d0231a	verde	3812676-1793852265276	3812676	
+16.3-A	hook	sfarsit	2026-11-05T06:19:11+02:00	d43f69d0231a	verde	3812661-1793852264894	3812655	
+16.3-A	proba_contract	inceput	2026-11-05T06:19:12+02:00	af4bde9459ba	-	3813699-1793852352667	3813699	baza=d43f69d0231a
+16.3-A	proba_contract	sfarsit	2026-11-05T06:19:12+02:00	af4bde9459ba	verde	3813699-1793852352667	3813699	unelte, fără oracol
+16.3-A	hook	inceput	2026-11-05T06:19:38+02:00	af4bde9459ba	-	3814301-1793852378035	3814295	
+16.3-A	pytest	inceput	2026-11-05T06:19:38+02:00	af4bde9459ba	-	3814320-1793852378566	3814320	argumente=-q core/test_deficiente.py
+16.3-A	pytest	sfarsit	2026-11-05T06:19:43+02:00	af4bde9459ba	verde	3814320-1793852378566	3814320	
+16.3-A	hook	sfarsit	2026-11-05T06:21:11+02:00	af4bde9459ba	verde	3814301-1793852378035	3814295	
+16.3-A	hook	inceput	2026-11-05T06:21:19+02:00	af4bde9459ba	-	3815499-1793852479742	3815493	
+16.3-A	pytest	inceput	2026-11-05T06:21:20+02:00	af4bde9459ba	-	3815518-1793852480252	3815518	argumente=-q core/test_deficiente.py
+16.3-A	pytest	sfarsit	2026-11-05T06:21:24+02:00	af4bde9459ba	verde	3815518-1793852480252	3815518	
+16.3-A	hook	sfarsit	2026-11-05T06:22:47+02:00	af4bde9459ba	verde	3815499-1793852479742	3815493	
+16.3-A	hook	inceput	2026-11-05T06:27:22+02:00	95d29f4bedb9	-	3819783-1793852842223	3819777	
+16.3-A	pytest	inceput	2026-11-05T06:27:22+02:00	95d29f4bedb9	-	3819799-1793852842642	3819799	argumente=-q core/test_deficiente.py
+16.3-A	pytest	sfarsit	2026-11-05T06:27:27+02:00	95d29f4bedb9	verde	3819799-1793852842642	3819799	
+16.3-A	hook	sfarsit	2026-11-05T06:28:51+02:00	95d29f4bedb9	verde	3819783-1793852842223	3819777	
+16.3-A	hook	inceput	2026-11-05T06:28:55+02:00	95d29f4bedb9	-	3820916-1793852935646	3820910	
+16.3-A	pytest	inceput	2026-11-05T06:28:56+02:00	95d29f4bedb9	-	3820932-1793852936056	3820932	argumente=-q core/test_deficiente.py
+16.3-A	pytest	sfarsit	2026-11-05T06:29:00+02:00	95d29f4bedb9	verde	3820932-1793852936056	3820932	
+16.3-A	hook	sfarsit	2026-11-05T06:30:23+02:00	95d29f4bedb9	verde	3820916-1793852935646	3820910	
+16.3-A	pytest	inceput	2026-11-05T06:30:30+02:00	f259ca24647c	-	3822099-1793853030637	3822099	argumente=--collect-only -q frontend_test/e2e/e2e_lot12_verif.py
+16.3-A	pytest	sfarsit	2026-11-05T06:30:30+02:00	f259ca24647c	verde	3822099-1793853030637	3822099	
+16.3-A	pytest	inceput	2026-11-05T06:30:31+02:00	f259ca24647c	-	3822106-1793853031166	3822106	argumente=--collect-only -q frontend_test/e2e/e2e_lot72_facturi.py
+16.3-A	pytest	sfarsit	2026-11-05T06:30:31+02:00	f259ca24647c	verde	3822106-1793853031166	3822106	
+16.3-A	pytest	inceput	2026-11-05T06:30:31+02:00	f259ca24647c	-	3822113-1793853031551	3822113	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_luna.py
+16.3-A	pytest	sfarsit	2026-11-05T06:30:31+02:00	f259ca24647c	verde	3822113-1793853031551	3822113	
+16.3-A	pytest	inceput	2026-11-05T06:30:32+02:00	f259ca24647c	-	3822123-1793853032194	3822123	argumente=--collect-only -q frontend_test/e2e/e2e_pozitii_validate.py
+16.3-A	pytest	sfarsit	2026-11-05T06:30:32+02:00	f259ca24647c	verde	3822123-1793853032194	3822123	
+16.3-A	poarta_verificator	inceput	2026-11-05T06:30:33+02:00	f259ca24647c	-	3822085-1793853033626	3822085	scripturi_poarta: poarta_lot.sh=3f589d8ee562ac5f publica_lot.sh=77d83e4aeb1af67f baza_test.sh=dbb174600682aa70 poarta_nucleu.txt=dc8772309409c722 plasa_16_2.manifest=02d71e0110fc6c75 poarta_clasifica.py=e03f28f50eb19d42 poarta_lib.py=669de7a968d79471 conftest.py=c4f98c88a806f967
+16.3-A	poarta_verificator	sfarsit	2026-11-05T06:31:56+02:00	f259ca24647c	verde	3822085-1793853033626	3822085	
+16.3-A	poarta_pytest	inceput	2026-11-05T06:31:56+02:00	f259ca24647c	-	3822085-1793853116158	3822085	scripturi_poarta: poarta_lot.sh=3f589d8ee562ac5f publica_lot.sh=77d83e4aeb1af67f baza_test.sh=dbb174600682aa70 poarta_nucleu.txt=dc8772309409c722 plasa_16_2.manifest=02d71e0110fc6c75 poarta_clasifica.py=e03f28f50eb19d42 poarta_lib.py=669de7a968d79471 conftest.py=c4f98c88a806f967
+16.3-A	pytest	inceput	2026-11-05T06:33:18+02:00	f259ca24647c	-	3822636-1793853198575	3822636	argumente=-q -n 3 --dist loadfile --junitxml=/tmp/poarta_pytest.xml core/test_12_salariu_minim_luna.py core/test_274b_categorii_tva.py core/test_281_amortizare_restanta.py core/test_295_rezumat_d100.py core/test_359_amortizare_preluata.py core/test_380_381_d406_surse.py core/test_384_cote_asociati.py core/tes
+16.3-A	pytest	sfarsit	2026-11-05T06:41:01+02:00	f259ca24647c	verde	3822636-1793853198575	3822636	
+16.3-A	poarta_pytest	sfarsit	2026-11-05T06:41:01+02:00	f259ca24647c	verde	3822085-1793853116158	3822085	
+16.3-A	poarta_plasa	inceput	2026-11-05T06:41:01+02:00	f259ca24647c	-	3822085-1793853661489	3822085	scripturi_poarta: poarta_lot.sh=3f589d8ee562ac5f publica_lot.sh=77d83e4aeb1af67f baza_test.sh=dbb174600682aa70 poarta_nucleu.txt=dc8772309409c722 plasa_16_2.manifest=02d71e0110fc6c75 poarta_clasifica.py=e03f28f50eb19d42 poarta_lib.py=669de7a968d79471 conftest.py=c4f98c88a806f967
+16.3-A	poarta_plasa	sfarsit	2026-11-05T06:49:35+02:00	f259ca24647c	verde_cu_restante	3822085-1793853661489	3822085	
+16.3-A	publicare	inceput	2026-11-05T06:59:19+02:00	f259ca24647c	-	3841377-1793854759723	3841349	script_sha256=77d83e4aeb1af67f
+16.3-A	restart	inceput	2026-11-05T06:59:33+02:00	f259ca24647c	-	3841539-1793854773186	3841349	
+16.3-A	restart	sfarsit	2026-11-05T06:59:46+02:00	f259ca24647c	ok	3841539-1793854773186	3841349	
+16.3-A	publicare	sfarsit	2026-11-05T06:59:46+02:00	f259ca24647c	publicat	3841377-1793854759723	3841349	
