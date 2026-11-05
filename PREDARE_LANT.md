@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**05.11.2026 — COMANDA 16.2-C (produs, F017; republicarea lui 16.2-B pe prag corectat) pe `lucru/lot16-2c` (worktree `/home/costin/iconta_lot16_2c`), C = `ec4f3cd3` cu VERDE; parcurgerile haiku_1 și dupa 51/51 „trece”; se publică prin `scripts/publica_lot.sh`. Produsul e identic cu 16.2-B (0 fișiere diferență).**
+
 **05.11.2026 — COMANDA 16.2-B (produs, F017) pe `lucru/lot16-2b` (worktree `/home/costin/iconta_lot16_2b`), C = `3334015e` cu VERDE; parcurgerile haiku_1 și dupa 51/51 „trece”; se publică prin `scripts/publica_lot.sh`; reia 16.2-A (nepublicat, `lucru/lot16-2a`). Pornit de la `f259ca24`.**
 
 **05.11.2026 — COMANDA 16.3-A (lot de unelte) pe `lucru/lot16-3a` (worktree `/home/costin/iconta_lot16_3a`). Aplicația nu s-a schimbat.** Nou: faza „verificator” o scrie lansatorul cu marcaj (C216), `pdf:` nejudecabil ca interval_px (C217), *.pdf și *.out după C (C218), lista `fisiere_permise` și la lotul „produs” (C219), STOP fără parcurgere haiku pe C la publicare (C220). 16.2-A (produs, F017) pornește din coadă numai după publicarea acestui lot. Calibrarea: `scripts/calibreaza_16_3_a.py` → `docs/dovezi/16_3_A/calibrare.txt`.
