@@ -1,0 +1,10 @@
+produs
+lot: PROBA-163A
+comentariu liber, cu fisiere_permise în mijloc
+fisiere_permise (aplicata pe diff; text între paranteze ignorat):
+  scripts/plasa_16_2.manifest (plasa fixa; creste numai cu randul fisierului nou)
+  scripts/praguri_PROBA_163A.txt
+  docs/dovezi/PROBA_163A/
+  DEFICIENTE.md
+  CLAUDE.md (numai inainte de C)
+  core/casa.py

@@ -1,0 +1,8 @@
+[haiku, instanța 1] cod 0
+Pe captură, la „Luna 11/2026 · sold la început **558,46 lei**”, apare valoarea 558,46 cerută de aserțiune. Soldul final afișat este 568,46, dar aserțiunea se referă la 558,46, deci nu contrazice descrierea.
+
+```json
+[{"id": "a.1", "raspuns": "corespunde", "motiv": "Pe ecran, pentru Casa F1 luna 11/2026, apare soldul la început 558,46 lei, adică valoarea 558,46 din descriere; soldul final afișat (568,46) nu e cel la care se referă aserțiunea."}]
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: p.1=nejudecabil din captură (pdf); a.1=corespunde | nejudecabile: 0 din 2

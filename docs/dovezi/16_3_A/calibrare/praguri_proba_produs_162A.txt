@@ -1,0 +1,38 @@
+produs
+lot: 16.2-A
+sursa pragurilor: raportul 16.3 (05.11.2026 03:54), rularea completa finala pe d43f69d0: poarta_verificator 82 s, poarta_pytest 459 s (540 s cu colectarea), poarta_plasa 432 s, total 1137 s; hook 87-90 s; restaurare ~80 s. Regula: masurat + 20%. Pragurile mecanice au forma `max <faza> <secunde>` (singura citita de publica_lot.py, fazele din .lot_jurnal.log):
+max hook 120
+max poarta_verificator 99
+max poarta_pytest 650
+max poarta_plasa 520
+runde_verificator_max: 2
+limite aplicate de scripts/poarta_rulare.py (:116, :146), nu de acest fisier: 2 rulari complete, 2 reluari; teste invalide = 0 aplicat de poarta_clasifica (clasa invalid = rosu)
+cerinte de raport, cu cifra (nu intra in PASS/STOP mecanic): durata totala a lotului de la randul „pornire” la sfarsitul fazei „publicare” ≤ 6 h; restaurarea bazei ≤ 96 s per restaurare; rulari complete rosii ≤ 1 (a doua rosie = nepublicat, regula din CLAUDE.md); aserțiuni cu captura si verdict pe C: 100% din id-urile din docs/dovezi/16_2_A/pasi.txt (aplicat mecanic de publica_lot, :355-357)
+acceptarea_arhitectului (nu intra in PASS/STOP): F017 inchisa net - pozitia trece la retestul arhitectului pe commitul publicat, nicio pozitie pilot deja inchisa redeschisa
+pozitii: F017
+numere: 278.1, 456, 98, 455, 753, 729.1, 758
+fisiere_permise (aplicata mecanic de publica_lot la --verifica si la publicare pe diff-ul merge-base..HEAD, din 16.3-A pct.4; orice alt fisier = refuz cu numele; un fisier necesar si absent de aici se cere arhitectului ca rand in ~/ghid_incoming/exceptii_16_2_A.txt, nu se adauga de Code):
+  frontend_test/e2e/e2e_pilot_f017.py
+  scripts/plasa_16_2.manifest (plasa fixa existenta din 16.0; creste numai cu randul fisierului nou)
+  scripts/praguri_16_2_A.txt
+  docs/dovezi/16_2_A/
+  docs/scenarii_pilot.txt
+  DEFICIENTE.md
+  DECIZII.md
+  CLAUDE.md (numai inainte de C)
+  PREDARE_LANT.md
+  core/casa_api.py
+  core/casa.py
+  core/casa_sold.py
+  core/repo_casa.py
+  core/chitante.py
+  core/cui_forma.py
+  core/contare_facturi.py
+  core/solduri_parteneri_api.py
+  core/test_lot11_a455_chitanta_incasare.py
+  core/test_lot11_a455_sold_casa.py
+  core/test_lot12_c135_casa_serie.py
+  core/test_lot12_datefirma_chitanta.py
+  core/test_deficiente.py
+  static/js/ecrane/firme.js
+  static/js/ecrane/facturi_ecran.js

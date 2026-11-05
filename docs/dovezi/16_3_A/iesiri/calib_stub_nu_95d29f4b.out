@@ -1,0 +1,5 @@
+[haiku, instanța 1] cod 0
+[{"id": "a.1", "raspuns": "nu corespunde", "motiv": "stub"}]
+[haiku, instanța 2 pe a.1] ('nu corespunde', 'stub')
+STOP dezacord oracol–verificator: a.1
+răspunsuri: a.1=nu corespunde | nejudecabile: 0 din 1

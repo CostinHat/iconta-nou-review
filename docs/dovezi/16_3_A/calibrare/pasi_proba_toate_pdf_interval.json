@@ -1,0 +1,25 @@
+{
+ "asertiuni": [
+  {
+   "id": "p.1",
+   "pas": "p",
+   "operator": "text_contine",
+   "valoare": "X",
+   "cheie": "pdf:fisier:x.pdf"
+  },
+  {
+   "id": "p.2",
+   "pas": "p",
+   "operator": "text_contine",
+   "valoare": "Y",
+   "cheie": "pdf:/chitanta/1"
+  },
+  {
+   "id": "b.5",
+   "pas": "b",
+   "operator": "interval_px",
+   "valoare": "40-44",
+   "cheie": "dom:.b|inaltime_px"
+  }
+ ]
+}

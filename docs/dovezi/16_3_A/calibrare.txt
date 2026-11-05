@@ -1,0 +1,51 @@
+ATINS  1 (iv) jurnal_fara_faza.log pe lot «produs» = STOP (faza lipsește)  ['faza „verificator” lipsește din jurnal']
+ATINS  1 (v) jurnal_faza_de_mana.log (scris cu JL.inceput/JL.sfarsit, ca jurnal_verificator.sh) pe lot «produs» = STOP «scrisă de mână»  ['faza verificator scrisă de mână (fără marcajul lansatorului; copiată sau editată = nevalid): o scrie numai scripts/lanseaza_verificator.py']
+ATINS  1 (vi) jurnal_faza_copiata.log (textul marcajului copiat de la alt rând) pe lot «produs» = STOP  ['faza verificator scrisă de mână (fără marcajul lansatorului; copiată sau editată = nevalid): o scrie numai scripts/lanseaza_verificator.py']
+ATINS  1 (vii) jurnal_faza_de_mana.log pe lot «unelte» = fără STOP  []
+ATINS  1 (vii) jurnal_fara_faza.log pe lot «unelte» = fără STOP (faza nu se cere)  []
+ATINS  1 (viii) jurnal_faza_lansator.log + CSV cu rânduri haiku pe C, lot «produs» = PASS (fără STOP din faze_stop + csv_stop + fara_haiku_stop)  []
+ATINS  1 (ix) CSV cu rânduri haiku numai pe alt sha decât C = STOP «fără verificator independent pe C»  ['fără verificator independent pe C: jurnal_verificare.csv nu are nicio parcurgere cu verificator=haiku pe cccccccccccc']
+ATINS  1 (ix) CSV cu rânduri numai ale verificatorului code pe C = STOP «fără verificator independent pe C»  ['fără verificator independent pe C: jurnal_verificare.csv nu are nicio parcurgere cu verificator=haiku pe cccccccccccc']
+ATINS  1 (ix) `--verifica` (hook-urile) pe lot «produs», CSV fără rând haiku pe C = PASS (verificarea haiku e numai la publicare)  [publica_lot --verifica] PASS C=ff17ea1120ee2a507406d787475265bd3303930f HEAD=ff17ea1120ee2a507406d787475265bd3303930f fisiere=-
+ATINS  1 (x) extrasul rândurilor lot=16.3 din jurnalul comun (81 rânduri; 16.3 e «unelte», faza «verificator» scrisă de mână nu se cere) = fără STOP  []
+ATINS  1 (x) aceleași rânduri judecate ca lot «produs» = STOP (faza lor «verificator» e scrisă de mână, fără marcaj): regula nouă ar fi prins §E din raportul 16.3  ['faza verificator scrisă de mână (fără marcajul lansatorului; copiată sau editată = nevalid): o scrie numai scripts/lanseaza_verificator.py']
+ATINS  2 (ii) excluse prin cheie (pdf:) și operator (interval_px), nu prin text: ['b.5', 'p.1', 'p.2']  ['b.5', 'p.1', 'p.2']
+ATINS  2 (ii) pasi.json cu toate aserțiunile pdf: și interval_px, toate «nejudecabil» = faza nu e «neefectuată», fără STOP  []
+ATINS  2 (ii) același caz cu textul «nejudecabil» simplu pe pdf:/interval_px (excluderea e prin cheie și operator) = fără STOP  []
+ATINS  2 (iii) o aserțiune dom: «nejudecabil» + restul pdf:/interval_px = faza «neefectuată» = STOP  ['faza verificatorului independent este „neefectuată” (parcurgerea haiku_1: toate aserțiunile sunt nejudecabile)']
+ATINS  2 (iv) o aserțiune dom: «corespunde» + restul pdf:/interval_px = fără STOP  []
+ATINS  2 (v) aserțiune pdf: cu verdictul oracolului «pica» pe C = STOP (rândul p.1 numit)  ['rândul p.1 din jurnal_verificare.csv (pe C): pica']
+ATINS  2 (v) aceeași aserțiune pdf: cu verdictul «trece» = fără STOP  []
+ATINS  3 (i) .pdf sub docs/dovezi/<lot>/dupa/code/ după C = trece  []
+ATINS  3 .out adăugat sub docs/dovezi/<lot>/haiku_1/haiku/ după C = trece  []
+ATINS  3 (ii) .pdf direct în docs/dovezi/<lot>/ = refuz cu numele  ['docs/dovezi/PROBA_163A/chitanta_direct.pdf: cale în afara listei permise']
+ATINS  3 (ii) .pdf în alt director = refuz cu numele  ['docs/alt_director/chitanta.pdf: cale în afara listei permise']
+ATINS  3 (ii) .pdf mai adânc decât <parcurgere>/<verificator>/ = refuz cu numele  ['docs/dovezi/PROBA_163A/dupa/code/adanc/chitanta.pdf: cale în afara listei permise']
+ATINS  3 (ii) .pdf sub un verificator în afara code/haiku = refuz cu numele  ['docs/dovezi/PROBA_163A/dupa/altul/chitanta.pdf: cale în afara listei permise']
+ATINS  3 (iii) .out modificat (M) = refuz cu numele  ['docs/dovezi/PROBA_163A/dupa/code/vechi.out: schimbare M (ieșirile .out numai se adaugă)']
+ATINS  3 (iv) .png în capturi/ după C = trece, ca până acum  []
+ATINS  3 alt fișier sub <parcurgere>/<verificator>/ (nici .pdf, nici .out, nici capturi/*.png) = refuz cu numele  ['docs/dovezi/PROBA_163A/dupa/code/script.sh: cale în afara listei permise']
+ATINS  4 lista: liniile cu fisier sau director (cu «/» la sfârșit); textul dintre paranteze se ignoră  ['scripts/plasa_16_2.manifest', 'scripts/praguri_PROBA_163A.txt', 'docs/dovezi/PROBA_163A/', 'DEFICIENTE.md', 'CLAUDE.md', 'core/casa.py']
+ATINS  4 (i) lot «produs» cu diff numai din listă = PASS (fără refuz)  []
+ATINS  4 (i) `publica_lot.py --verifica C HEAD` pe același depozit = PASS  [publica_lot --verifica] PASS C=c2057fdc91112a56623c207a11cda5387e976ade HEAD=c2057fdc91112a56623c207a11cda5387e976ade fisiere=-
+ATINS  4 (ii) un fișier în plus (static/js/api.js) = refuz cu numele  ['static/js/api.js: fișier în afara listei fisiere_permise din scripts/praguri_PROBA_163A.txt']
+ATINS  4 (ii) `--verifica` pe același depozit = refuz (ieșire 1) cu static/js/api.js numit  [publica_lot --verifica] REFUZ: static/js/api.js: fișier în afara listei fisiere_permise din scripts/praguri_PROBA_163A.txt
+ATINS  4 (iii) fișiere dintr-un director listat (docs/dovezi/<lot>/x și în subdirector) = trece  []
+ATINS  4 directorul listat nu acoperă un director cu prefix comun (docs/dovezi/PROBA_163A_altul/x) = refuz cu numele  ['docs/dovezi/PROBA_163A_altul/x: fișier în afara listei fisiere_permise din scripts/praguri_PROBA_163A.txt']
+ATINS  4 lot «produs» fără lista fisiere_permise în praguri = refuz (lista e cerută)  ['scripts/praguri_PROBA_163A.txt nu are lista fisiere_permise (un lot «produs» o cere)']
+ATINS  4 (iv) lot «unelte»: fișier din core/ numit în praguri + scripts/ + registre = trece  []
+ATINS  4 (iv) lot «unelte»: static/js/api.js nenumit = refuz cu numele  ['static/js/api.js: lotul „unelte” nu are voie să atingă acest fișier (static/, core/, templates/, frontend_test/ numai dacă e numit în scripts/praguri_PROBA_163A.txt)']
+ATINS  4 pe lotul publicat 16.3 (praguri_16_3.txt, diff 3983147f..d43f69d0): lista uneltelor = fără refuz  []
+ATINS  4 praguri de probă «produs» (lista lui 16.2-A) pe diff-ul lui 16.3 = refuz cu fișierele scripts/ ale lui 16.3 numite (65 fișiere)  ['docs/dovezi/16_3/baza.json: fișier în afara listei fisiere_permise din scripts/praguri_16_3_A_probe.txt', 'docs/dovezi/16_3/calib_haiku/haiku/capturi/16_3_calib_haiku_a.1_8ae266b2.png: fișier în afa
+ATINS  1 (i) lansator real --verificator haiku, PARCURS_PASI=a,p: faza «verificator» scrisă de lansator (inceput + sfarsit «parcurs»), durata reală 17.0s > 0  ['parcurs']
+ATINS  1 (i) marcajul fazei valid pe ambele rânduri (cheia reală a oracolului)  
+ATINS  1 (i) detaliile cu numărul răspunsurilor (corespunde/nu corespunde/nejudecabil)  corespunde/nu corespunde/nejudecabil=1/0/1 parcurgere=calib_haiku_pdf marca=8733fe53eb16548c7e3f58c9
+ATINS  1 (i) rândul p.1 = «nejudecabil din captură (pdf)», marcaj valid; a.1 judecat de Haiku  {'a.1': 'corespunde: Pe ecran, pentru Casa F1 luna 11/2026, apare sol', 'p.1': 'nejudecabil din captură (pdf)'}
+ATINS  2 (i) pasi.json 16.3 (7 id-uri), stub «corespunde»: Haiku primește 6 (fără p.1) într-o singură instanță: a.1,b.9,b.10,c.1,q.1,q.2  ['-p --model claude-haiku-5-5 --tools Read --allowedTools Read(//home/costin/iconta_lot16_3a/docs/dovezi/16_3_A/calib_stub_pdf/haiku/capturi/**) --permission-mode dontAsk --no-session-persistence | pr
+ATINS  2 (i) rândul p.1 are «nejudecabil din captură (pdf)» cu marcaj valid; celelalte 6 «corespunde»; ieșire 0, fără STOP  : "corespunde", "motiv": "stub"}] răspunsuri: p.1=nejudecabil din captură (pdf); a.1=corespunde; b.9=corespunde; b.10=corespunde; c.1=corespunde; q.1=corespunde; q.2=corespunde | nejudecabile: 0 din 7
+ATINS  2 (i) faza «verificator» a rulării cu stub: detalii 6/0/1 (6 corespunde, 0 nu corespunde, 1 nejudecabil)  corespunde/nu corespunde/nejudecabil=6/0/1 parcurgere=calib_stub_pdf marca=97964476eb2398b
+ATINS  1 (ii) stub «nu corespunde» la ambele instanțe pe a.1: faza «parcurs», detalii 0/1/0, STOP dezacord (ieșire 1)  parcurs | corespunde/nu corespunde/nejudecabil=0/1/0 parcurgere=calib_stub_nu marca=6dedee
+ATINS  1 (iii) lansator oprit cu eroare (parcurs cu import nepermis): faza «verificator» = «intrerupt», marcaj valid  intrerupt | arcursul importă module nepermise: requests (permise: playwright, biblioteca standard, verifica_pas)
+ATINS  1 --verificator code scrie la fel faza «parcurs_code» (marcaj valid, rezultat «parcurs»)  ['parcurs']
+ATINS  1 jurnal_verificare_calibrare.csv după rulările: controleaza trece (capturi, chei unice, marcaje)  
+ATINS  1 nicio fază «verificator» / «parcurs_code» a calibrărilor în jurnalul comun (lot=16.3-A): 0 rânduri  []
