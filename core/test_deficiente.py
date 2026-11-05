@@ -213,9 +213,10 @@ _RE_CAPTURA = r"^dovezi/lot\d+/%s_(?:[a-z0-9]+_)*?(?:f\d+|admin|public)(?:_[a-z0
 DOVADA_PRIN_E2E = {
     "642": "decizia Costin 13.1 pct.4.7: „642: e2e-ul e dovada potrivită pentru înregistrarea unui cabinet.”",
     "278.1": "decizia arhitectului 05.11, regula Costin 04.11",
+    "602.1": "decizia arhitectului 05.11, regula Costin 04.11",
 }
 #: dintre ele, cele a căror dovadă e un test pilot + pașii oracolului (16.4 pct.1); restul cer un `test_def_…`
-DOVADA_PRIN_PILOT = frozenset({"278.1"})
+DOVADA_PRIN_PILOT = frozenset({"278.1", "602.1"})
 _FORME_DATE = ("migrare", "script", "cod", "neafectate, pentru că")
 
 
@@ -399,7 +400,7 @@ def test_garda_dovezii_nu_e_vida():
     assert lipsuri_dovada(dict(bun, lipsa="dovadă firme de test: `dovezi/lot11/439_administrator_x.png`" + _ne), are), \
         "`administrator` a trecut drept contextul `admin`"
     # [lotul 13] excepția dovezii prin e2e e ÎNCHISĂ: numai numerele din DOVADA_PRIN_E2E, și numai cu testul e2e numit
-    assert set(DOVADA_PRIN_E2E) == {"642", "278.1"}, "alt număr folosește excepția dovezii prin e2e fără decizia scrisă: %s" % sorted(DOVADA_PRIN_E2E)
+    assert set(DOVADA_PRIN_E2E) == {"642", "278.1", "602.1"}, "alt număr folosește excepția dovezii prin e2e fără decizia scrisă: %s" % sorted(DOVADA_PRIN_E2E)
     fara_captura = dict(bun, lipsa="lotul 12, reparat; dovada pe firmele de test nu se aplică",
                         test="`frontend_test/e2e/e2e_lot12_form2.py::test_def_642_x`")
     assert lipsuri_dovada(dict(fara_captura, nr="642"), are) == []
@@ -467,6 +468,10 @@ def test_dovada_prin_test_pilot_a_lui_278_1_se_calibreaza_in_ambele_directii():
     # (vii) fără citarea din «ce lipsește», cu pași în interval sau cu text în plus
     for lipsa in ("văzut pe ecran", cit.replace("c.1, d.1", "c.1-d.1"), cit + " (verificat)", ""):
         assert lipsuri(dict(r, lipsa=lipsa)), "(vii) formatul %r a trecut" % lipsa
+    # [16.6] 602.1 trece pe aceeași cale, 602.2 (alt număr < 712) rămâne refuzat
+    r6 = dict(r, nr="602.1", lipsa=cit)
+    assert lipsuri(r6, pl={"602.1": [T]}) == [], "602.1 cu test pilot și pașii în CSV trebuie să treacă"
+    assert lipsuri(dict(r6, nr="602.2"), pl={"602.2": [T]}), "602.2 a scăpat de regula capturilor"
     assert set(DOVADA_PRIN_PILOT) <= set(DOVADA_PRIN_E2E)
 
 
