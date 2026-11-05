@@ -1,0 +1,53 @@
+produs
+lot: 16.6-C1
+sursa pragurilor 16.6-C1: maximul fiecarei faze din jurnalul lotului 16.6 pe masina de acum (raportul 16.6, 05.11.2026 21:17): hook 162 s, poarta_verificator 146 s, poarta_pytest 819 s, poarta_plasa 909 s, +20% = 195 / 176 / 983 / 1091. Sursa veche (16.5, masina mai rapida): jurnalul fazelor din raportul 16.5 (05.11.2026): hook 89-91 s, poarta_verificator 82 s, poarta_pytest 546 s, poarta_plasa 623 s (cifrele 82/468/542 tipărite de poartă la sfârșit sunt altă numărătoare: faza pytest din jurnal include colectarea, faza plasei include restaurarea bazei, ~78 s). Regula: măsurat + 20%, pe faze. Plasa primește testul nou F054 (două sesiuni, 78 de aserțiuni, ~2,25 s pe aserțiune cât a măsurat F017 în raportul XML: 114,5 s pentru 51; estimat ~180 s cu navigările): (623 + 180) x 1,2 = 964. Pragurile mecanice au forma `max <faza> <secunde>` (singura citită de publica_lot.py, fazele din .lot_jurnal.log):
+max hook 195
+max poarta_verificator 176
+max poarta_pytest 983
+max poarta_plasa 1091
+runde_verificator_max: 4
+explicația rundelor: F054 are două parcurgeri pe Haiku (administratorul și angajatul), iar publica_lot.py numără o rundă la fiecare pereche (commit, parcurgere) cu rânduri Haiku (:341-345) și compară cu această cifră (:434): două runde de verificare x două parcurgeri = 4.
+limite aplicate de scripts/poarta_rulare.py (:116, :146), nu de acest fisier: 2 rulari complete, 2 reluari; teste invalide = 0 aplicat de poarta_clasifica (clasa invalid = rosu)
+cerinte de raport, cu cifra (nu intra in PASS/STOP mecanic): durata totala a lotului de la randul „pornire” până la scrierea raportului, înainte de publicare ≤ 6 h; restaurarea bazei ≤ 96 s per restaurare; rulari complete rosii ≤ 1 (a doua rosie = nepublicat, regula din CLAUDE.md); aserțiuni cu captura si verdict pe C: 100% din id-urile din docs/dovezi/16_6_C1/pasi.txt (aplicat mecanic de publica_lot.py:336-342: fiecare id are rând „trece” pe C în orice parcurgere a jurnalului, deci pașii u-x din „dupa_angajat” / „haiku_1_angajat” îl satisfac; rundele = perechi (commit, parcurgere) cu rânduri Haiku, :343-346, maximum 4); durata masurata a lui e2e_pilot_f054 din raportul XML al plasei fata de marja prevazuta pentru el (965 - 623 = 342 s; estimarea de ~180 s e doar o ipoteza, nu un prag); ordinea efectiva in care plasa a rulat fisierele (din jurnalul poarta_lot.sh:185, ordine alfabetica)
+acceptarea_arhitectului (nu intra in PASS/STOP): F054 inchisa net - pozitia trece la retestul arhitectului pe commitul publicat, nicio pozitie pilot deja inchisa redeschisa
+pozitii: F054
+numere: 729.2, 602.1, 610, 617, 48
+fisiere_permise (aplicata mecanic de publica_lot la --verifica si la publicare pe diff-ul merge-base..HEAD, din 16.3-A pct.4; orice alt fisier = refuz cu numele; un fisier necesar si absent de aici = oprire „OPRIT — gata: 16.6-C1 nepublicat, lipsă fișier permis <fișier>” (exceptiile arhitectului se aplica numai reluarilor portii, poarta_rulare.py:39-62)):
+  frontend_test/e2e/e2e_pilot_f054.py
+  scripts/plasa_16_2.manifest (plasa fixa existenta din 16.0; creste numai cu randul fisierului nou)
+  scripts/praguri_16_6.txt
+  scripts/praguri_16_6_C1.txt (nou)
+  docs/dovezi/16_6_C1/
+  static/stil.css (numai regula de aspect a butonului inactiv, aria-disabled)
+  static/js/cadru.js (numai daca cauza e acolo, linia numita in raport)
+  static/index.html (numai linia ?v= a lui stil.css)
+  static/spv_callback.html (numai linia ?v= a lui stil.css)
+  docs/dovezi/16_6/
+  docs/scenarii_pilot.txt
+  DEFICIENTE.md
+  DECIZII.md
+  CLAUDE.md (numai inainte de C)
+  PREDARE_LANT.md
+  core/test_deficiente.py
+  static/js/ecrane/firme.js
+  core/test_lot10b_jurnal_nota_noua.py (numai test_7h_suma_goala_e_ceruta_langa_camp_nu_trimisa_drept_zero: suma goala nu mai poate fi trimisa din buton, pentru ca Salvează e inactiv pe formular incomplet — 729.2; aserțiunea modificata listata in raport cu numarul)
+  core/test_lot13_firme2_ecrane.py (numai test_def_602_563_610_registrul_jurnal: partenerul se completeaza inainte de Salveaza, pentru ca butonul e inactiv fara el — 729.2; aserțiunea modificata listata in raport cu numarul)
+  frontend_test/e2e/e2e_lot11_w1.py (numai locurile care apasa Salveaza pe formular incomplet — 729.2; listate in raport)
+  frontend_test/e2e/e2e_lot82.py (la fel)
+  frontend_test/e2e/e2e_lot10b_salarii_jurnal.py (la fel)
+  core/test_lot11_w4_ecrane.py (numai daca un test pica din cauza lui 729.2)
+  core/test_lot11_w1_440_nota_toate_erorile.py (numai daca un test pica din cauza lui 729.2)
+  static/js/cautare.js (numai linia ?v= rescrisa de versioneaza_assets.py --scrie, ceruta de core/test_versionare_assets.py)
+  static/js/navigator.js (numai linia ?v=)
+  static/js/ecrane/asistent.js (numai linia ?v=)
+  static/js/ecrane/borderou_ecran.js (numai linia ?v=)
+  static/js/ecrane/cabinet.js (numai linia ?v=)
+  static/js/ecrane/coada_trimite.js (numai linia ?v=)
+  static/js/ecrane/control_verdict.js (numai linia ?v=)
+  static/js/ecrane/ecran_destinatie.js (numai linia ?v=)
+  static/js/ecrane/inceput.js (numai linia ?v=)
+  static/js/ecrane/migrare.js (numai linia ?v=)
+  static/js/ecrane/operatiuni_ecran.js (numai linia ?v=)
+  static/js/ecrane/termene.js (numai linia ?v=)
+  static/js/ecrane/validat.js (numai linia ?v=)
+  static/js/ecrane/facturi_ecran.js (numai liniile ?v=, doua locuri)
