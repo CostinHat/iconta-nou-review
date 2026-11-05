@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**05.11.2026 — COMANDA 16.6-C1 (produs; corecție la 16.6) pe `lucru/lot16-6` (worktree `/home/costin/iconta_lot16_6`), C = `c98ebb468cdfc110867a5aa6ec83f3df64986470`, poarta VERDE, oracolul 78/78 «trece», Haiku fără «nu corespunde».** Remediul 610 / 48 în `static/stil.css` (regula ferestrei cu buton principal acoperea starea inactivă), R3 nou, 759→781. Starea publicării: vezi `~/lot_16_6_C1_raport.md`.
+
 **05.11.2026 — COMANDA 16.6 (produs, F054) pe `lucru/lot16-6` (worktree `/home/costin/iconta_lot16_6`), C = `d2175e6052fd8709913e19ab33cc2c1144845d16`, poarta VERDE, NEPUBLICAT.** 729.2 reparat în `ecranEditorNota` («Salvează» inactiv cu «Completează: …»); parcurgerile pe C trec la oracol, dar Haiku (ambele instanțe) dă «nu corespunde» pe f.2 și t.4: «Validează» inactiv (aria-disabled) arată activ pe ecran în tabelul notelor (cauza e în CSS/cadru, în afara listei permise) → STOP «dezacord oracol–verificator»; plus pragurile de durată depășite. Starea 729.2 / 602.1 rămâne «reparat, fără dovadă pe ecran»; 759 nou, nerezolvat.
 
 **05.11.2026 — COMANDA 16.5 (lot de unelte) pe `lucru/lot16-5` (worktree `/home/costin/iconta_lot16_5`), publicată prin `scripts/publica_lot.sh`. Aplicația nu s-a schimbat.** Nou: măsura «valoare» în `scripts/verifica_pas.py` (C223), `core/test_oracol_valoare_16_5.py`, `scripts/calibreaza_16_5.py` → `docs/dovezi/16_5/calibrare/`. Urmează 16.6 (F054, produs).

@@ -24478,3 +24478,8 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 
 ## 16.6 (05.11.2026) — oprire, nepublicat
 Poarta verde pe C `d2175e60`; publicarea refuzată de `publica_lot.py --verifica`: dezacord oracol–verificator pe f.2 și t.4 («Validează» inactiv arată activ în tabelul notelor; remediul e în stil.css / cadru.js, fișiere absente din lista permisă, fără excepție). Varianta cea mai sigură: nu se publică, nu se atinge în afara listei. Pragurile de durată (hook 162 s > 109, poarta_verificator 146 > 99, poarta_pytest 819 > 656) depășite pe o mașină mai lentă decât la 16.5 (baza: verificator 147 s față de 82 s).
+
+## 16.6-C1 (05.11.2026) — remediul pentru 610 și 48, C = c98ebb468cdfc110867a5aa6ec83f3df64986470
+- Cauza lui 610 / 48: `static/stil.css` (regula ferestrei cu buton principal, `.fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *)`, specificitate (0,5,0)) făcea orice alt `.buton-primar` din conținut să arate ca butonul secundar (alb, umbră interioară) și acoperea `.buton-primar[aria-disabled="true"]` (0,2,0); `:hover` (0,7,0) îl reactiva. Remediul: o regulă de stare în același loc (gri-clar, text alb, fără umbră, `not-allowed`, fără transform, și la :hover). Regula generală pe toate clasele rămâne pentru 16.7.
+- R3 din CLAUDE.md înlocuită (comanda 16.6-C1 pct.7). 759 → număr rezervat, observația lunii blocate la 781; 759–780 «nu se aplică».
+- Poarta VERDE pe C (1902 teste, regresie 0, restanțe 2). Oracolul 78/78 «trece» pe C, Haiku fără «nu corespunde». Publicarea: pragul `hook` (195 s) depășit în jurnalul lotului (618 s, rulare întreruptă de un commit omorât de mine printr-un pipe; 237 s, commitul stilului) — vezi raportul.
