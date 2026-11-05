@@ -6,6 +6,7 @@ import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschi
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=0b48920b43";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
 import { arataRefuzul, cereCompletate, ultimaCerere, pastreazaCampulActiv } from "../api.js?v=0b48920b43";  /* [lotul 11, 440] refuzul serverului / câmpurile goale: toate deodată */
+import { inactiv, activ } from "../api.js?v=0b48920b43";  /* [16.2-A, 729.1] „Adaugă” inactiv, cu „Completează: …” */
 // [lotul 11, 440] „Corectează datele” salariatului (PUT /salariati): numele câmpurilor din refuzul serverului (`valideaza_salariat`, corpul
 // cererii) -> id-ul de pe ecran, pentru `arataRefuzul`
 const CAMPURI_ED_SALARIAT = { nume: "ed-nume", prenume: "ed-pren", cnp: "ed-cnp", data_angajare: "ed-ang", tip_norma: "ed-norma", ore_zi: "ed-orezi",
@@ -38,7 +39,7 @@ import { fluxConcediu } from "./flux_concediu.js?v=fc0dc15c22";  /* cm_flux_v1 *
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=0b48920b43";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=76e5cf6b76";   // [lotul 13, 543] seria chitanțelor pe loc
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=f2c279c591";   // [lotul 13, 543] seria chitanțelor pe loc
 import { cautaInLista } from "./emitere_ecran.js?v=0cbbc9ae46";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=b9fdb13bcc";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=50cade9fc8";  /* [C11, 07.10.2026] bilanțul prin coadă */
@@ -4631,7 +4632,8 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
     <h2 class="pf-titlu">Dispoziție nouă</h2>
     <div class="grila-campuri" id="c-campuri" data-actiune="POST /tenants/{tenant_id}/casa/previzualizare">
       <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input" value="${dataIso()}"></label>
-      <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input" data-butoane>${ALEGE}${CATEGORII_CASA.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
+      <!-- [16.2-A, 753] „Tip” = un singur grup de 5 butoane pe tot rândul ferestrei (modelul M, ca „Tipul documentului” de la emitere): lista rămâne în pagină, nevăzută, ca sursă a valorii -->
+      <div class="camp em-tip-rand" id="c-l-cat" style="grid-column:1 / -1"><span class="camp-eticheta" id="c-cat-et">Tip<span class="oblig">*</span></span><select id="c-cat" class="camp-input" aria-labelledby="c-cat-et" data-butoane data-fara-piesa>${ALEGE}${CATEGORII_CASA.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></div>
       <label class="camp"><span class="camp-eticheta">Suma (lei)</span><input type="number" step="0.01" id="c-suma" class="camp-input"></label>
       <label class="camp" id="c-l-part"><span class="camp-eticheta">Partener</span><input type="text" id="c-part" class="camp-input"></label>
       <label class="camp" id="c-l-cui">
@@ -4759,6 +4761,29 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
   // [lotul 11, 440] zona desenată ultima oară: o previzualizare care nu schimbă nimic NU rescrie zona. `change`-ul de la PĂRĂSIREA
   // câmpului (CUI, document) vine chiar la clicul pe „Adaugă” și pornește previzualizarea; rescrierea zonei, la 250 ms după refuzul
   // serverului, ștergea eroarea de lângă „Avansul e pentru” (`c-avans-dest`) — se vedea o clipă, apoi dispărea.
+  // [16.2-A, 278.1] bifarea unei poziții completează suma: restul de plată al pozițiilor bifate; suma scrisă de om rămâne a lui
+  let sumaPusa = "";
+  const completeazaSuma = () => {
+    const camp = corp.querySelector("#c-suma");
+    if (camp.value && camp.value !== sumaPusa) return;
+    const tot = facturiPart.filter((f) => alese.has(f.id)).reduce((a, f) => a + parseFloat(f.sold), 0);
+    camp.value = sumaPusa = tot > 0 ? tot.toFixed(2) : "";
+  };
+  // [16.2-A, 729.1] „Adaugă” e activ numai când data, tipul, partenerul și suma > 0 sunt completate și, la încasare / plată, e bifată o poziție sau „Avans, fără factură”;
+  // altfel e inactiv și numește ce lipsește: „Completează: …”
+  const bAdauga = corp.querySelector("#c-adauga"), textAdauga = bAdauga.textContent;
+  const actualizeazaAdauga = () => {
+    const cat = corp.querySelector("#c-cat").value;
+    const lipsa = [];
+    if (!corp.querySelector("#c-data").value) lipsa.push("data");
+    if (!cat) lipsa.push("tipul");
+    if (cat === "avans_decontare") { if (!selSal.value) lipsa.push("salariatul"); }
+    else if (cuFacturi() && !(corp.querySelector("#c-cui").value.trim() || corp.querySelector("#c-part").value.trim())) lipsa.push("partenerul");   // numai încasarea și plata au partener; depunerea / ridicarea de la bancă nu
+    if (cat && !(parseFloat(corp.querySelector("#c-suma").value) > 0)) lipsa.push("suma");
+    if (cuFacturi() && !alese.size && !aleseNir.size && !avansFaraFactura) lipsa.push("poziția din listă sau „Avans, fără factură”");
+    if (lipsa.length) { bAdauga.textContent = `Completează: ${lipsa.join(", ")}`; inactiv(bAdauga, `Completează: ${lipsa.join(", ")}`); }
+    else { bAdauga.textContent = textAdauga; activ(bAdauga); }
+  };
   let htmlFact = "";
   const deseneazaFacturi = () => {
     if (!cuFacturi()) { zFact.hidden = true; zFact.innerHTML = ""; htmlFact = ""; return; }
@@ -4792,6 +4817,7 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
         corp.querySelector("#c-part").value = f.tert_nume || "";
         corp.querySelector("#c-cui").value = f.tert_cui || "";
       }
+      completeazaSuma();
       programeazaPreviz();
     }));
     zFact.querySelectorAll("[data-cn]").forEach((c) => c.addEventListener("change", () => {   // [405]
@@ -4805,7 +4831,7 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
       programeazaPreviz();
     }));
     const ca = zFact.querySelector("#c-avans");
-    ca.addEventListener("change", () => { avansFaraFactura = ca.checked; programeazaPreviz(); });
+    ca.addEventListener("change", () => { avansFaraFactura = ca.checked; actualizeazaAdauga(); programeazaPreviz(); });
     const cd = zFact.querySelector("#c-avans-dest");
     // [440] alegerea destinației schimbă operațiunea propusă: previzualizarea se reface (alegerea golește, ca orice corectare — 290 —,
     // refuzul de formular al zonei, deci și „nu încape în casă” de sub formular, care altfel nu mai revenea)
@@ -4825,7 +4851,9 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
       // programat la ultima tastare poate porni DUPĂ ce „Adaugă” a salvat și a închis fereastra: formularul ei nu mai e — se oprește
       if (!zCampuri.isConnected) return;
       const op = opPropusa();
-      if (!op.data || !op.categorie || !(op.suma > 0)) { zPrev.innerHTML = ""; deseneazaFacturi(); return; }
+      // [16.2-A, 278.1] lista pozițiilor deschise apare de îndată ce partenerul e identificat (CUI, cu sau fără RO), înainte de orice sumă
+      const faraSuma = !(op.suma > 0);
+      if (!op.data || !op.categorie || (faraSuma && !(cuFacturi() && op.cui))) { zPrev.innerHTML = ""; deseneazaFacturi(); actualizeazaAdauga(); return; }
       let r;
       try { r = await api.post(`/tenants/${t.id}/casa/previzualizare`, op); if (!actuala()) return; } catch (e) {
         if (!actuala()) return;
@@ -4842,6 +4870,8 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
       niruriPart = r.niruri || [];   // [405]
       [...aleseNir].forEach((id) => { if (!niruriPart.some((n) => n.id === id)) aleseNir.delete(id); });
       pastreazaCampulActiv(corp, deseneazaFacturi);   // [C103] suma scrisă pe o factură cât sosește previzualizarea nu se pierde
+      actualizeazaAdauga();
+      if (faraSuma) { zPrev.innerHTML = ""; return; }   // [278.1] fără sumă nu există avans, plafon sau refuz de spus: numai lista
       const linii = [...(r.avans ? [r.avans.mesaj] : []), ...(r.semnale || []),
         ...(r.avertismente || []).map((a) => (a.mesaj || a.cod || "") + (a.temei ? " · " + a.temei : ""))];
       zPrev.innerHTML = linii.length ? `<div class="caseta-atentie" id="c-previz-avert">${linii.map((x) => `<div class="ca-mesaj">${esc(x)}</div>`).join("")}</div>` : "";
@@ -4850,6 +4880,9 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
     }, 250);
   });
   zCampuri.addEventListener("input", programeazaPreviz);
+  zCampuri.addEventListener("input", actualizeazaAdauga);   // [16.2-A, 729.1] butonul urmează fiecare câmp
+  zCampuri.addEventListener("change", actualizeazaAdauga);
+  actualizeazaAdauga();
   // [R161, 05.09.2026] Butonul nu mai sta STINS cu motivul in `title`. Se apasa mereu, iar
   // refuzul se aseaza langa campul vinovat (`eroareCamp`: contur rosu + `aria-invalid` +
   // mesaj ancorat) — acelasi ajutor ca in restul aplicatiei. *Un buton care nu se poate

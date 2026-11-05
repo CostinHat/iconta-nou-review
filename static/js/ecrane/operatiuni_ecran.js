@@ -677,7 +677,7 @@ export async function ecranOperatiuni(corp, nav, t) {
     // nota și conturile ei, iar butonul o deschide în Registrul jurnal, în luna ei, evidențiată (același drum ca legătura din notificări)
     const deschideNota = async (nid, data) => {
       const [an, luna] = String(data || "").split("-").map((x) => parseInt(x, 10));
-      const { ecranJurnal } = await import("./firme.js?v=9096d880bc");
+      const { ecranJurnal } = await import("./firme.js?v=636f0452e2");
       nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t, Object.assign({ evidentiaza: nid },
         Number.isFinite(an) && Number.isFinite(luna) ? { an, luna } : {})), { lat: "tabel" });   // [394] Registrul jurnal se deschide lat
     };
@@ -792,7 +792,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         zonaRefuz.innerHTML = "";
         zonaRefuz.appendChild(cardRezumat({ text: "Firma aplică TVA la încasare: factura furnizorului se înregistrează în Facturi primite.", ton: "eroare",
           detalii: r.refuz, actiune: { eticheta: "Deschide Facturi primite", laClic: async () => {
-            const { primiteSPV } = await import("./facturi_ecran.js?v=76e5cf6b76");
+            const { primiteSPV } = await import("./facturi_ecran.js?v=f2c279c591");
             nav.deschide("Facturi primite", (c2) => primiteSPV(c2, nav, t.id, {}));
           } } }));
         inactiv(btn, "Nota nu se poate genera: factura se înregistrează în Facturi primite.");

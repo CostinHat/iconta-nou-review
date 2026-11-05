@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**05.11.2026 — COMANDA 16.2-B (produs, F017) pe `lucru/lot16-2b` (worktree `/home/costin/iconta_lot16_2b`), C = `3334015e` cu VERDE; parcurgerile haiku_1 și dupa 51/51 „trece”; se publică prin `scripts/publica_lot.sh`; reia 16.2-A (nepublicat, `lucru/lot16-2a`). Pornit de la `f259ca24`.**
+
 **05.11.2026 — COMANDA 16.3-A (lot de unelte) pe `lucru/lot16-3a` (worktree `/home/costin/iconta_lot16_3a`). Aplicația nu s-a schimbat.** Nou: faza „verificator” o scrie lansatorul cu marcaj (C216), `pdf:` nejudecabil ca interval_px (C217), *.pdf și *.out după C (C218), lista `fisiere_permise` și la lotul „produs” (C219), STOP fără parcurgere haiku pe C la publicare (C220). 16.2-A (produs, F017) pornește din coadă numai după publicarea acestui lot. Calibrarea: `scripts/calibreaza_16_3_a.py` → `docs/dovezi/16_3_A/calibrare.txt`.
 
 **05.11.2026 — COMANDA 16.3 (lot de unelte) pe `lucru/lot16-3` (worktree `/home/costin/iconta_lot16_3`; ramura și worktree-ul lui 16.2 șterse, rămășițele în `~/ghid_incoming/ramasite_16_2/`). Aplicația nu s-a schimbat.** Nou: parcursul (`docs/dovezi/<lot>/parcurs_<lot>.py`) + `verifica_pas.verifica_pagina` (starea paginii vii în sesiune autentificată), marcajul HMAC al rândurilor, capturi cu sha și cheie unică, verificatorul independent cu a doua instanță, contractul unelte fără oracol, lista permisă a uneltelor. 16.2a (produs, F017) pornește numai după publicarea lui 16.3, dintr-un worktree nou.

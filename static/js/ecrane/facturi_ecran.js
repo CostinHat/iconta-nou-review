@@ -317,7 +317,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=9096d880bc");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=636f0452e2");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -669,13 +669,13 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
           const dir = dirEticheta(f.directie);
           const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
           const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
-          const incasare = f.stare_incasare ? " \u00b7 " + esc(etichetaIncasare(f)) : "";   // [retest 08.10, completarea pct.1]
+          const stareInc = f.stare_incasare ? ` \u00b7 <span class="fac-stare">${esc(etichetaIncasare(f))}</span>` : "";   // [retest 08.10, completarea pct.1]
           const spv = f.stare_spv ? ` \u00b7 <span class="${f.stare_spv.depasit || f.stare_spv.stare === "respinsa" ? "msg-avert" : ""}">${esc(etichetaSpv(f))}</span>` : "";   // [275b]
           return `
-        <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}">
+        <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}" data-doc="${esc(f.numar || "")}">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${f.numar ? esc(numarCuSerie(f.serie, f.numar)) : "\u2014"}${f.tert_nume ? " \u00b7 " + esc(f.tert_nume) : ""}</div>
-            <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}${incasare}${spv}</div>
+            <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}${stareInc}${spv}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
           ${(!opt.client && !f.nota_contare) ? `<span class="btn-link fac-cont" data-actiune="POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
@@ -1417,7 +1417,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=9096d880bc");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=636f0452e2");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });

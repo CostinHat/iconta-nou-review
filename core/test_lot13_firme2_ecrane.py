@@ -206,6 +206,9 @@ def test_440_dispozitia_refuzata_pastreaza_ambele_erori_dupa_previzualizare(brow
         pg.fill("#c-cui", "14399840")
         pg.dispatch_event("#c-campuri", "change")
         pg.wait_for_selector("#c-avans-dest", state="attached", timeout=10000)
+        pg.evaluate("() => { window.__av = document.getElementById('c-avans'); }")
+        pg.check("#c-avans")   # 729.1: „Adaugă” e activ abia după data, tip, partener, sumă și o poziție bifată sau „Avans, fără factură”; refuzul testat rămâne al serverului
+        pg.wait_for_function("() => { const x = document.getElementById('c-avans'); return !!x && x !== window.__av && x.checked; }", timeout=10000)   # zona se redesenează cu bifa, înainte de refuz
         pg.click("#c-adauga")
         pg.wait_for_function("() => document.getElementById('c-avans-dest').getAttribute('aria-invalid') === 'true'", timeout=10000)
         pg.evaluate("() => { window.__p = document.getElementById('c-previz-refuz'); }")

@@ -49,7 +49,7 @@ def randuri(text=None):
 
 
 def plasa_e2e():
-    """{nr: [cale::funcție]} — testele `test_def_<nr>_…` din plasă."""
+    """{nr: [cale::funcție]} — testele `test_def_<nr>_…` din plasă și testele `test_pilot_…` ale căror numere sunt declarate în `DEFICIENTE_PROBATE`."""
     out = {}
     for f in sorted(glob.glob(os.path.join(_RAD, "frontend_test", "e2e", "e2e_*.py"))):
         for n in ast.walk(ast.parse(io.open(f, encoding="utf-8").read())):
@@ -58,6 +58,13 @@ def plasa_e2e():
                 m = re.match(r"^test_def_((?:\d+|n\d+|c\d+)(?:_\d(?=_))?)_", n.name)
                 if m:
                     out.setdefault(m.group(1).upper().replace("_", "."), []).append("%s::%s" % (os.path.relpath(f, _RAD), n.name))
+        # [16.2-B] testul unei poziții pilot (`test_pilot_<poziție>`) declară numerele pe care le dovedește: `DEFICIENTE_PROBATE = ("278.1", …)` la nivel de modul
+        arbore = ast.parse(io.open(f, encoding="utf-8").read())
+        for n in arbore.body:
+            if isinstance(n, ast.Assign) and any(getattr(t, "id", "") == "DEFICIENTE_PROBATE" for t in n.targets):
+                for nr in ast.literal_eval(n.value):
+                    out.setdefault(str(nr).upper(), []).extend("%s::%s" % (os.path.relpath(f, _RAD), x.name) for x in arbore.body
+                                                               if isinstance(x, ast.FunctionDef) and x.name.startswith("test_pilot_"))
     return out
 
 
@@ -93,7 +100,7 @@ def test_rezolvata_are_commit_si_test_de_capat_la_capat():
     for r in randuri():
         if r["stare"] != "rezolvată":
             continue
-        numite = re.findall(r"`([^`]+::test_def_[^`]+)`", r["test"])
+        numite = re.findall(r"`([^`]+::test_(?:def|pilot)_[^`]+)`", r["test"])
         if not numite:
             rele.append("%s: rezolvată fără test de capăt la capăt" % r["nr"])
         for t in numite:
@@ -130,7 +137,7 @@ def test_rezolvata_are_testul_e2e_in_harta_portii():
     for r in randuri():
         if r["stare"] != "rezolvată":
             continue
-        for t in re.findall(r"`([^`]+::test_def_[^`]+)`", r["test"]):
+        for t in re.findall(r"`([^`]+::test_(?:def|pilot)_[^`]+)`", r["test"]):
             if os.path.basename(t.split("::")[0]) not in in_harta:
                 rele.append("%s: testul %s nu e în harta porții (scripts/poarta_harta.txt)" % (r["nr"], t))
     assert not rele, "\n".join(rele)

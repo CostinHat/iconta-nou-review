@@ -120,7 +120,7 @@ def pdf_chitanta(emitent, ch):
                   (" · " + emitent["adresa"]) if emitent.get("adresa") else ""), mic),
         Spacer(1, 8 * mm),
         Paragraph("CHITANȚĂ seria %s nr. %s" % (ch["serie"], ch["numar"]), titlu),
-        Paragraph("din data de %s" % ch["data"], mic),
+        Paragraph("din data de %s" % _pu.data_ro(ch["data"]), mic),   # [758] zz.ll.aaaa, funcția unică de format (nu ISO)
         Spacer(1, 6 * mm),
         Paragraph("Am primit de la <b>%s</b>%s" % (
             ch.get("client_nume") or "................................",
