@@ -1,0 +1,29 @@
+ATINS  comparator regresie: pereche identică (detalii diferite) = fără diferență  
+ATINS  comparator regresie: un caz lipsă = diferență  
+ATINS  comparator regresie: un caz în plus = diferență  
+ATINS  comparator regresie: un RATAT = diferență  
+ATINS  comparator regresie: nume schimbat = diferență  
+ATINS  comparator hartă: verdictele corecte = ieșire 0  []
+ATINS  comparator hartă: inainte.1 «pică» = ieșire 1 cu pasul numit  ["inainte.1: verdict 'pica' în loc de 'trece'"]
+ATINS  comparator hartă: inainte_pica.1 «trece» = ieșire 1  
+ATINS  comparator hartă: rând pe alt sha sau lipsă = ieșire 1  
+ATINS  (i) input cu valoare: dom:#d|valoare egal '2026-11-03' pe '2026-11-03' => trece  trece 
+ATINS  (ii) aceeași valoare, altă dată: dom:#d|valoare egal '2026-11-04' pe '2026-11-03' => pica  pica găsit '2026-11-03', așteptat '2026-11-04'
+ATINS  (iii) input gol, șirul gol: dom:#gol|valoare egal '' pe '' => trece  trece 
+ATINS  (iii) măsura «text» pe același input rămâne goală  ''
+ATINS  (iv) textarea: dom:#t|valoare egal 'primul rând\nal doilea' pe 'primul rând\nal doilea' => trece  trece 
+ATINS  (v) select cu a doua opțiune aleasă: dom:#s|valoare egal 'b' pe 'b' => trece  trece 
+ATINS  (v) select: nu valoarea primei opțiuni: dom:#s|valoare egal 'a' pe 'b' => pica  pica găsit 'b', așteptat 'a'
+ATINS  (vi) div: dom:#dv|valoare egal 'text în div' pe {'__fara_valoare__': 'elementul nu are valoare'} => pica  pica elementul nu are valoare
+ATINS  (vii) două input-uri, separate prin virgulă: dom:.p|valoare contine 'unu,doi' pe 'unu,doi' => trece  trece 
+ATINS  (x) selector inexistent: dom:#nu-exista|valoare egal '' pe {'__fara_valoare__': 'niciun element pentru selector'} => pica  pica niciun element pentru selector
+ATINS  (x) selector inexistent, operator «lipseste»: dom:#nu-exista|valoare lipseste 'x' pe {'__fara_valoare__': 'niciun element pentru selector'} => pica  pica niciun element pentru selector
+ATINS  (xi) două elemente, unul fără valoare: dom:.m, .m input|valoare contine 'x' pe {'__fara_valoare__': 'elementul nu are valoare'} => pica  pica elementul nu are valoare
+ATINS  (xii) buton: dom:#b|valoare egal '' pe {'__fara_valoare__': 'elementul nu are valoare'} => pica  pica elementul nu are valoare
+ATINS  (xiii) checkbox: dom:#c|valoare egal 'on' pe {'__fara_valoare__': 'elementul nu are valoare'} => pica  pica elementul nu are valoare
+ATINS  (viii) măsură necunoscută rămâne refuzată, cu «valoare» în mesaj  cheie dom: fără măsură cunoscută (text, numar, activ, inaltime_px, distanta_px, diferenta_latime_px, depasire, valoare): 'dom:#d|culoare'
+ATINS  (ix) calea veche cu «|valoare» ridică excepție de selector (Error)  Page.query_selector_all: Unexpected token "|" while parsing css selector "#x|valoare". Did you mean to CSS.escape it?
+ATINS  testul pur pe verifica_pas.py de la 2616e4cb = roșu  15 failed, 2 passed in 0.09s
+ATINS  testul pur pe verifica_pas.py nou = verde  17 passed in 0.74s
+ATINS  regresie oracol: înainte 36 ATINS / 0 RATAT, după 36 ATINS / 0 RATAT; fără diferență de stare, nume sau număr  []
+ATINS  jurnalul comun, rânduri lot=16.5 înainte / după partea «pct1»: 26 / 26 (diferența zero)  

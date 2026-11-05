@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**05.11.2026 — COMANDA 16.5 (lot de unelte) pe `lucru/lot16-5` (worktree `/home/costin/iconta_lot16_5`), publicată prin `scripts/publica_lot.sh`. Aplicația nu s-a schimbat.** Nou: măsura «valoare» în `scripts/verifica_pas.py` (C223), `core/test_oracol_valoare_16_5.py`, `scripts/calibreaza_16_5.py` → `docs/dovezi/16_5/calibrare/`. Urmează 16.6 (F054, produs).
+
 **05.11.2026 — COMANDA 16.4 (lot de unelte) pe `lucru/lot16-4` (worktree `/home/costin/iconta_lot16_4`), C = `c5080343213cfc7932f4891bc5286f586452357a` cu VERDE; se publică prin `scripts/publica_lot.sh`. Aplicația nu s-a schimbat.** Nou: 278.1 «rezolvată» prin DOVADA_PRIN_E2E + DOVADA_PRIN_PILOT (test pilot + pașii oracolului, `core/test_deficiente.py`), handler SIGTERM în `scripts/lanseaza_verificator.py` (C221), C222; calibrarea: `scripts/calibreaza_16_4.py` → `docs/dovezi/16_4/calibrare.txt`.
 
 **05.11.2026 — COMANDA 16.2-C (produs, F017; republicarea lui 16.2-B pe prag corectat) pe `lucru/lot16-2c` (worktree `/home/costin/iconta_lot16_2c`), C = `ec4f3cd3` cu VERDE; parcurgerile haiku_1 și dupa 51/51 „trece”; se publică prin `scripts/publica_lot.sh`. Produsul e identic cu 16.2-B (0 fișiere diferență).**

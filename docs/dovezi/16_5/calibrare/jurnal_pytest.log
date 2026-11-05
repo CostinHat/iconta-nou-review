@@ -1,0 +1,2 @@
+16.5	pytest	inceput	2026-11-05T16:08:02+02:00	1787e4c05aa7	-	4139562-1793887682009	4139562	argumente=-q -p no:cacheprovider core/test_oracol_valoare_16_5.py
+16.5	pytest	sfarsit	2026-11-05T16:08:02+02:00	1787e4c05aa7	verde	4139562-1793887682009	4139562	

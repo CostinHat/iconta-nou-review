@@ -1,0 +1,7 @@
+ATINS  lansatorul a ieșit cu 0  0
+ATINS  harta verdictelor pe 1787e4c0: inainte.1 trece, inainte_pica.1 pică (cu «2026-11-03» în motiv), dupa_fill.1 trece  []
+ATINS  rând CSV inainte.1: verdict trece, captura docs/dovezi/16_5/calibrare/valoare/code/capturi/16_5_valoare_inainte.1_1787e4c0.png  
+ATINS  rând CSV inainte_pica.1: verdict pica, captura docs/dovezi/16_5/calibrare/valoare/code/capturi/16_5_valoare_inainte_pica.1_1787e4c0.png  găsit '2026-11-03', așteptat '2026-11-04'
+ATINS  rând CSV dupa_fill.1: verdict trece, captura docs/dovezi/16_5/calibrare/valoare/code/capturi/16_5_valoare_dupa_fill.1_1787e4c0.png  
+ATINS  comparator hartă (pct.2): verdicte corecte = 0, un verdict greșit = 1  
+ATINS  jurnalul comun, rânduri lot=16.5 înainte / după partea «pct2»: 26 / 26 (diferența zero)  

@@ -24470,3 +24470,8 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - C221: lansatorul instalează un handler SIGTERM înainte de începutul fazei; sfârșitul «intrerupt» marcat se scrie la SIGTERM. Rămâne «neverificat» (un lot de unelte nu poate pune «rezolvată»); C222 nou, același statut.
 - Calibrarea (docs/dovezi/16_4/calibrare.txt, 13 cazuri ATINS): lista rândurilor refuzate de regula 11.2 înainte / după e identică (0 / 0, în afara lui 278.1); `faze_stop` pe jurnalele reale: 16.2-C fără STOP, 16.3 «scrisă de mână», 16.3-A «lipsește din jurnal»; lansatorul real oprit cu SIGTERM scrie «intrerupt» (ieșire 143), copia de la 8b969d6e nu scrie sfârșitul.
 - C = c5080343213cfc7932f4891bc5286f586452357a: poarta VERDE (1894 teste, regresie 0, restanțe 2, noi verzi 8).
+
+
+## Comanda 16.5 (unelte), 05.11.2026 — măsura «valoare» în oracol (C223)
+- scripts/verifica_pas.py: cheia `dom:<selector>|valoare` citește `.value` (input fără checkbox/radio/button/submit/reset/image/file, textarea, select); element fără valoare / fără element = sentinela `__fara_valoare__` → «pică» cu motiv pentru orice operator (prinsă prima în `compara_asertiune`, după cheie, nu «orice dict»). Calea veche `observa` nu se extinde. Produsul F054 vine în 16.6.
+- Calibrare: docs/dovezi/16_5/calibrare/ (pct.1: 29 cazuri ATINS, regresia părții oracol 36/0 înainte și după; pct.2: pasul real Notă nouă pe 8019 prin lansator, inainte.1 trece, inainte_pica.1 pică așteptat, dupa_fill.1 trece). Regresia «înainte» s-a rulat într-un worktree temporar pe 2616e4cb.

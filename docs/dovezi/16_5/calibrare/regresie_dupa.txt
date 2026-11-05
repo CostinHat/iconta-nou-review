@@ -1,0 +1,40 @@
+
+== oracol ==
+ATINS  1 măsura text: dom:.l|text egal 'unu doi,trei' pe 'unu doi,trei' => trece  trece 
+ATINS  1 măsura text: dom:.l|text egal 'unu  doi,trei' pe 'unu doi,trei' => pica  pica găsit 'unu doi,trei', așteptat 'unu  doi,trei'
+ATINS  1 măsura numar: dom:.b|numar nr_randuri '3' pe ['Adaugă', 'Completează:', 'Gata'] => trece  trece 
+ATINS  1 măsura numar: dom:.b|numar nr_randuri '2' pe ['Adaugă', 'Completează:', 'Gata'] => pica  pica găsit 3, așteptat 2
+ATINS  1 măsura activ (primul activ): dom:.b:nth-child(1)|activ activ 'true' pe True => trece  trece 
+ATINS  1 măsura activ (disabled): dom:.b:nth-child(2)|activ activ 'false' pe False => trece  trece 
+ATINS  1 măsura activ (aria-disabled): dom:.b:nth-child(3)|activ activ 'false' pe False => trece  trece 
+ATINS  1 măsura activ (disabled cerut true): dom:.b:nth-child(2)|activ activ 'true' pe False => pica  pica găsit false, așteptat true
+ATINS  1 măsura inaltime_px: dom:.b|inaltime_px interval_px '40-44' pe [40, 40, 44] => trece  trece 
+ATINS  1 măsura inaltime_px: dom:.b|inaltime_px interval_px '40-41' pe [40, 40, 44] => pica  pica în afara 40-41: [44]
+ATINS  1 măsura distanta_px: dom:.b|distanta_px interval_px '8-8' pe [8, 8] => trece  trece 
+ATINS  1 măsura distanta_px: dom:.b|distanta_px interval_px '10-12' pe [8, 8] => pica  pica în afara 10-12: [8, 8]
+ATINS  1 măsura diferenta_latime_px: dom:.b|diferenta_latime_px interval_px '20-20' pe [20] => trece  trece 
+ATINS  1 măsura diferenta_latime_px: dom:.b|diferenta_latime_px interval_px '0-5' pe [20] => pica  pica în afara 0-5: [20]
+ATINS  1 măsura depasire: dom:#lat|depasire egal '1' pe 1 => trece  trece 
+ATINS  1 măsura depasire: dom:#ok|depasire egal '1' pe 0 => pica  pica găsit '0', așteptat '1'
+ATINS  1 măsura text pe un singur element: dom:#ok|text contine 'Fine' pe 'Fine' => trece  trece 
+ATINS  1 măsura text pe un singur element: dom:#ok|text contine 'Gata' pe 'Fine' => pica  pica 'Gata' nu apare în 'Fine'
+ATINS  1 măsură necunoscută = refuz cu numele ei  cheie dom: fără măsură cunoscută (text, numar, activ, inaltime_px, distanta_px, diferenta_latime_px, depasire, valoare):
+ATINS  1 json:<url>|<cale> cu cuib și index de listă  
+ATINS  1 pdf:fisier: extrage textul PDF-ului descărcat  Chitanta CHF1 de la DANTE INTERNATIONAL SA 
+ATINS  1 pdf:fisier: în afara directorului parcurgerii = refuz  pdf:fisier: în afara directorului parcurgerii: '../x.pdf'
+ATINS  1 verifica_pagina: pasul a (a.1 = 558.46) => trece, un rând, captura sub <parcurgere>/<verificator>/capturi/<lot>_<parcurgere>_<pas>_<sha8>.png  [('a.1', 'trece', '')]
+ATINS  1 verifica_pagina: pasul b (Adaugă activ, așteptat false) => pica, fără excepție; parcursul continuă  [('b.9', 'pica', 'găsit true, așteptat false')]
+ATINS  1 verifica_pagina: aceeași cheie (lot, parcurgere, pas, sha, verificator) a doua oară = neexecutat cu captura numită, nimic suprascris  [('a.1', 'neexecutat', 'ValueError: captura /tmp/calibrare_16_3_fceyc93u/dovezi/calib_x/code/capturi/PROBA_163_calib_x_a.1_aaaaaaaa.png există deja pentru cheia (PROBA-163, calib_x, a.1, aaaaaaaa, code); nu se suprascrie
+ATINS  1 rândurile scrise de oracol au marcaj valid  ['a55b7df9', '7bca8af7']
+ATINS  1 un rând modificat de mână (verdict schimbat) are marcaj nevalid  
+ATINS  1 un rând fără marcaj e nevalid  
+ATINS  1 --verifica --csv: un rând scris de mână (fără marcaj) = refuz, rândul numit  [publica_lot --verifica] REFUZ: verdict în afara oracolului: rândul z.9 (sha bbbbbbbb, parcurgerea calib_x) nu are marcaj valid
+ATINS  1 --verifica --csv: rândurile cu marcaj valid (scrise de oracol) = trece  [publica_lot --verifica] PASS C=f923e466fd6cee35a11da1a66a663aeae23e1005 HEAD=f923e466fd6cee35a11da1a66a663aeae23e1005 fisiere=-
+ATINS  1 --verifica --csv: lotul scutit (16.1-C3) cu rând fără marcaj = trece  [publica_lot --verifica] PASS C=f923e466fd6cee35a11da1a66a663aeae23e1005 HEAD=f923e466fd6cee35a11da1a66a663aeae23e1005 fisiere=-
+ATINS  1 „--csv” la publicare (fără --verifica) = refuz  [publica_lot] REFUZ: „--csv” e numai pentru calibrări (--verifica); la publicare se folosește jurnalul lotului
+ATINS  1 completeaza_independent: coloana se scrie, rândul rămâne cu marcaj valid  
+ATINS  1 parcurs cu playwright, biblioteca standard și verifica_pas = importuri permise  (['os', 're', 'json', 'playwright.sync_api', 'verifica_pas'], [])
+ATINS  1 parcurs cu alte importuri = refuz la lansare, cu numele modulului  ['requests', 'core']
+ATINS  1 lansatorul refuză parcursul cu import nepermis (numele modulului în ieșire), fără să ia lacătul  [lanseaza_verificator] REFUZ: parcursul importă module nepermise: core, requests (permise: playwright, biblioteca standard, verifica_pas)
+
+36 cazuri, 0 ratate -> docs/dovezi/16_3/calibrare.txt
