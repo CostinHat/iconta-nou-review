@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """scripts/lanseaza_verificator.py — lansatorul parcursului și al verificatorului independent (16.1-C3 pct.2, rescris în 16.3 pct.1 și 3). Un parcurs pornește numai de aici (Code nu rulează Playwright pe 8019 altfel).
   lanseaza_verificator.py --lot <lot> --parcurs <fișier> --parcurgere <etichetă> --verificator code|haiku --pasi-txt <fișier> --pasi-json <fișier> [--csv <fișier>] [--utilizator <email>]
-                          [--baza http://127.0.0.1:8019] [--scenariu <fișier> --sectiune F017] [--formate <fișier>...] [--iesire <fișier>]
+                          [--baza http://127.0.0.1:8019] [--scenariu <fișier> --sectiune F017] [--formate <fișier>...] [--iesire <fișier>] [--jurnal <fișier>]
 Ia lacătul pe iconta_test și 8019 (scripts/lacat_test.py). Parcursul (docs/dovezi/<lot>/parcurs_<lot>.py, al lui Code) are punctul de intrare `ruleaza(pagina, ctx)`; importă numai playwright, biblioteca standard și
 scripts/verifica_pas.py (orice alt import = refuz la lansare, cu numele modulului). Pagina e deschisă aici, pe 8019, cu sesiunea contului injectată (scripts/sesiune_test.py), cu ceasul fix al probelor (core/ceas_proba.py) și cu
 variabilele de mediu ale probei (aceleași ca scripts/e2e_poarta.py::_env_test); ctx = lot, parcurgere, verificator, pasi_json, csv, sha (PARCURS_SHA, din HEAD al worktree-ului), director (unde parcursul salvează ce
@@ -10,6 +10,9 @@ Cu --verificator haiku, după parcurs, agentul Haiku 5.5 primește scenariul, pa
 nejudecabil din captură (interval_px = nejudecabil automat). Răspunsul intră în coloana „verificator_independent” (prin oracol, cu marcaj). La „nu corespunde” pe o aserțiune cu verdictul „trece”, o a doua instanță, cu context
 proaspăt, primește numai aserțiunea și captura ei (coloana „verificator_independent_2”); STOP (dezacord oracol–verificator) numai dacă și a doua spune „nu corespunde”. Dacă toate aserțiunile judecabile sunt „nejudecabil”: faza
 verificatorului e „neefectuată” = STOP.
+Faza în jurnal (16.3-A pct.1): lansatorul scrie el, cu marcaj HMAC (verifica_pas.scrie_faza), „verificator | inceput” înainte de parcurs și „verificator | sfarsit” după răspunsul ultimei instanțe Haiku (rezultat „parcurs” =
+toate răspunsurile primite; „intrerupt” = lansatorul a ieșit cu eroare), cu numărul aserțiunilor corespunde / nu corespunde / nejudecabil în detalii; la --verificator code scrie la fel faza „parcurs_code”. --jurnal = alt fișier
+decât jurnalul comun (calibrări). Aserțiunile cu cheia pdf: se scriu direct „nejudecabil din captură (pdf)”, ca interval_px: nu se dau agentului (16.3-A pct.2).
 Limită declarată (CLAUDE.md): „fără acces la diff” = directorul de lucru nu e depozit și nu conține diff; agentul rulează ca utilizatorul, pe același server, deci e o izolare de proces, nu o barieră.
 CLAUDE_BIN (calibrare) înlocuiește executabilul `claude`; fără el, executabilul se caută în PATH și în ~/.local/bin."""
 import argparse
@@ -175,9 +178,10 @@ def verificator_independent(a, ctx, csv_, binar, iesire):
     rapoarte = []
     randuri = [r for r in VP.randuri_csv(csv_) if (r["lot"], r.get("parcurgere"), r["commit"], r["verificator"]) == (ctx.lot, ctx.parcurgere, ctx.sha, ctx.verificator)]
     if not randuri:
-        return 1, ["verificatorul independent: parcursul n-a scris niciun rând (parcurgere %s, sha %s)" % (ctx.parcurgere, ctx.sha[:8])]
+        return 1, ["verificatorul independent: parcursul n-a scris niciun rând (parcurgere %s, sha %s)" % (ctx.parcurgere, ctx.sha[:8])], None
     txt = open(a.pasi_txt, encoding="utf-8").read()
     desc = descrieri(txt)
+    chei = {x["id"]: x.get("cheie", "") for x in json.load(open(a.pasi_json, encoding="utf-8"))["asertiuni"]}
     dir_cap = os.path.abspath(os.path.join(ctx.director, "capturi"))
     scenariu = sectiune(open(a.scenariu, encoding="utf-8").read(), a.sectiune) if a.scenariu and a.sectiune else (open(a.scenariu, encoding="utf-8").read() if a.scenariu else "")
     lucru = tempfile.mkdtemp(prefix="verificator_")
@@ -189,6 +193,8 @@ def verificator_independent(a, ctx, csv_, binar, iesire):
             d["_cap"] = os.path.abspath(cap)
             if d.get("operator") == "interval_px":
                 rez1[r["pas"]] = ("nejudecabil", "interval_px: măsurat de oracol, nu se judecă din captură")
+            elif chei.get(r["pas"], "").startswith("pdf:"):
+                rez1[r["pas"]] = ("nejudecabil din captură (pdf)", "")
             elif r["verdict"] == "neexecutat" or not os.path.exists(cap):
                 rez1[r["pas"]] = ("nejudecabil", "pasul nu s-a executat sau captura lipsește")
             else:
@@ -209,15 +215,20 @@ def verificator_independent(a, ctx, csv_, binar, iesire):
                                        ("%s: %s" % rez2[i] if rez2[i][1] else rez2[i][0]) if i in rez2 else None)
         judecate = [rez1[d["id"]][0] for d in de_judecat]
         dezacorduri = [i for i in rez2 if rez2[i][0] == "nu corespunde"]
+        # numai aserțiunile care se dau agentului contează pentru „neefectuată”; interval_px și pdf: sunt excluse prin operator și cheie (nu prin textul răspunsului)
+        exclus = lambda i: desc.get(i, {}).get("operator") == "interval_px" or chei.get(i, "").startswith("pdf:")   # noqa: E731
+        de_dat = [r["pas"] for r in randuri if not exclus(r["pas"])]
+        final = [rez2[i][0] if i in rez2 else rez1[i][0] for i in rez1]
+        contor = (final.count("corespunde"), final.count("nu corespunde"), sum(1 for x in final if x.startswith("nejudecabil")), final.count("fara_raspuns"))
         cod = 0
         if dezacorduri:
             rapoarte.append("STOP dezacord oracol–verificator: %s" % ", ".join(dezacorduri))
             cod = 1
-        if not judecate or all(x == "nejudecabil" for x in judecate):
+        if de_dat and (not judecate or all(x == "nejudecabil" for x in judecate)):
             rapoarte.append("STOP verificatorul independent: neefectuată (toate aserțiunile judecabile sunt „nejudecabil”)")
             cod = 1
         rapoarte.append("răspunsuri: " + "; ".join("%s=%s" % (i, rez1[i][0]) for i in rez1) + " | nejudecabile: %d din %d" % (sum(1 for x in rez1.values() if x[0] == "nejudecabil"), len(rez1)))
-        return cod, rapoarte
+        return cod, rapoarte, contor
     finally:
         shutil.rmtree(lucru, ignore_errors=True)
 
@@ -237,18 +248,36 @@ def main(argv):
     ap.add_argument("--sectiune", default=None)
     ap.add_argument("--formate", nargs="*", default=[])
     ap.add_argument("--iesire", default=None)
+    ap.add_argument("--jurnal", default=None, help="jurnalul de faze al calibrărilor (implicit jurnalul comun)")
     ap.add_argument("--fara-parcurs", action="store_true", help="numai verificatorul independent, peste rândurile deja scrise (reluare)")
     a = ap.parse_args(argv)
+    if a.jurnal:
+        os.environ["LOT_JURNAL"] = os.path.abspath(a.jurnal)
+    import verifica_pas as VP
+    sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
+    faza = "verificator" if a.verificator == "haiku" else "parcurs_code"
+    id_ = VP.scrie_faza(a.lot, faza, "inceput", detalii="parcurgere=%s" % a.parcurgere, sha=sha)
+    rezultat, detalii = "intrerupt", "lansatorul a ieșit cu eroare"
+    try:
+        cod, complet, contor = _lanseaza(a, sha, VP)
+        if complet:
+            rezultat, detalii = "parcurs", "corespunde/nu corespunde/nejudecabil=%d/%d/%d parcurgere=%s" % (contor[:3] + (a.parcurgere,))
+        return cod
+    finally:
+        VP.scrie_faza(a.lot, faza, "sfarsit", rezultat, id_, detalii, sha=sha)
+
+
+def _lanseaza(a, sha, VP):
+    """-> (cod de ieșire, faza e completă: parcursul n-a căzut și, la haiku, toate răspunsurile au venit, contorul corespunde / nu corespunde / nejudecabil)."""
     cai = [a.parcurs, a.pasi_txt, a.pasi_json] + ([a.scenariu] if a.scenariu else []) + a.formate
     ref = refuzuri_fisiere(cai)
     if ref:
         print("[lanseaza_verificator] REFUZ: " + "; ".join(ref))
-        return 1
+        return 1, False, (0, 0, 0, 0)
     _, nepermise = importuri_parcurs(a.parcurs)
     if nepermise:
         print("[lanseaza_verificator] REFUZ: parcursul importă module nepermise: %s (permise: playwright, biblioteca standard, verifica_pas)" % ", ".join(sorted(set(nepermise))))
-        return 1
-    import verifica_pas as VP
+        return 1, False, (0, 0, 0, 0)
     lotf = VP.JL.L.lot_fisier(a.lot)
     csv_ = os.path.abspath(a.csv or os.path.join(RAD, "docs", "dovezi", lotf, "jurnal_verificare.csv"))
     binar = None
@@ -256,33 +285,34 @@ def main(argv):
         binar = caut_claude()
         if not binar:
             print("[lanseaza_verificator] claude: command not found (nici în PATH, nici în ~/.local/bin) — se raportează")
-            return 127
+            return 127, False, (0, 0, 0, 0)
     if LT.ia(os.getpid(), "lanseaza_verificator.py"):   # refuz cu pid-ul care ține lacătul (mesajul îl tipărește lacat_test)
-        return 1
+        return 1, False, (0, 0, 0, 0)
     os.environ["LACAT_TEST_PID"] = str(os.getpid())
-    sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
     os.environ["PARCURS_SHA"] = sha          # citit de verifica_pas.sha_curent(): nimeni altcineva nu-l dă
     os.environ["ICONTA_RAD"] = RAD
     mediu, ceas = mediul_probei("/tmp/verificator_design")
     os.environ.update(mediu)
     ctx = types.SimpleNamespace(lot=a.lot, parcurgere=a.parcurgere, verificator=a.verificator, pasi_json=os.path.abspath(a.pasi_json), csv=csv_, sha=sha,
                                 director=VP.director_parcurgere(csv_, a.parcurgere, a.verificator))
-    cod, iesire = 0, []
+    cod, iesire, complet, contor = 0, [], True, (0, 0, 0, 0)
     if not a.fara_parcurs:
         try:
             ruleaza_parcurs(a, ctx, mediu, ceas)
         except Exception as e:   # noqa: BLE001 — parcursul a căzut: se raportează, rândurile deja scrise rămân  # invariant-intern-ok: lansator
             iesire.append("parcursul a căzut: %s: %s" % (type(e).__name__, e))
-            cod = 1
+            cod, complet = 1, False
     if a.verificator == "haiku":
-        c2, rap = verificator_independent(a, ctx, csv_, binar, a.iesire)
+        c2, rap, contor = verificator_independent(a, ctx, csv_, binar, a.iesire)
         cod = cod or c2
         iesire += rap
+        if contor is None or contor[3]:   # niciun rând de judecat sau o aserțiune fără răspuns: nu toate răspunsurile au venit
+            complet = False
     text = "\n".join(iesire)
     if a.iesire:
         open(a.iesire, "w", encoding="utf-8").write(text + "\n")
     print(text)
-    return cod
+    return cod, complet, contor
 
 
 if __name__ == "__main__":

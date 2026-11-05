@@ -26,6 +26,7 @@ import secrets
 import shutil
 import subprocess
 import sys
+import time
 import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -159,6 +160,30 @@ def marcaj_valid(rand):
     if not m or cheie_secreta(creeaza=False) is None:
         return False
     return hmac.compare_digest(m, marcaj_rand(rand))
+
+
+def marcaj_faza(rand):
+    """HMAC-SHA256 (aceeași cheie) pe un rând al jurnalului de faze (lot, faza, eveniment, ora, sha, rezultat, id, pid, detalii fără „marca=”). 16.3-A pct.1."""
+    camp = list(rand) + [""] * (9 - len(rand))
+    detalii = re.sub(r"\s?marca=[0-9a-f]{64}$", "", camp[8])
+    return hmac.new(cheie_secreta(), "\x1f".join(map(str, camp[:8] + [detalii])).encode("utf-8"), hashlib.sha256).hexdigest()
+
+
+def scrie_faza(lot, faza, eveniment, rezultat="-", id_=None, detalii="", sha=None, pid=None):
+    """Scrie în jurnalul de faze (cale_jurnal(): LOT_JURNAL sau jurnalul comun) un rând cu marcaj de oracol — numai lansatorul scrie așa faza „verificator” (16.3-A pct.1). -> id-ul rulării."""
+    id_ = id_ or "%d-%d" % (os.getpid(), time.time() * 1000)
+    rand = [lot, faza, eveniment, JL._acum(), (sha or JL._sha())[:12], rezultat, id_, str(pid or os.getpid()), detalii]
+    rand[8] = (detalii + " marca=" + marcaj_faza(rand)).strip()
+    JL._scrie(JL.cale_jurnal(), rand)
+    return id_
+
+
+def faza_marcata_valida(rand):
+    """Rândul de jurnal are marcajul scris de `scrie_faza` (scris de mână sau copiat de la alt rând = nevalid)."""
+    m = re.search(r"marca=([0-9a-f]{64})$", rand[8] if len(rand) > 8 else "")
+    if not m or cheie_secreta(creeaza=False) is None:
+        return False
+    return hmac.compare_digest(m.group(1), marcaj_faza(rand))
 
 
 def cheia_unica(rand):

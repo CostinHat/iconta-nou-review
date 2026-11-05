@@ -13,6 +13,8 @@ starea lotului) și rămân valabile pentru HEAD numai dacă C e strămoș al lu
                                                dacă sunt numite în scripts/praguri_<lot>.txt) și rândurile din jurnal_verificare.csv au marcaj valid (STOP „verdict în afara oracolului”; scutite: LOTURI_FARA_MARCAJ).
                                                --csv numai pentru calibrări; la publicare, „--csv” = refuz.
   publica_lot.py --controleaza <csv>           (16.3, pct.2) controlul încrucișat pe un CSV: captura există, cheia (lot, parcurgere, pas, sha, verificator) e unică, marcajul e valid (scris de jurnal_verificator.sh controleaza).
+Lotul „produs” (16.3-A): faza „verificator” trebuie scrisă de lansator (marcaj HMAC; scrisă de mână sau copiată = STOP), la publicare trebuie o parcurgere haiku pe C în jurnal_verificare.csv, lista
+`fisiere_permise` din scripts/praguri_<lot>.txt se aplică pe diff-ul merge-base..HEAD, iar aserțiunile cu cheia pdf: și operatorul interval_px nu se numără la „neefectuată”.
 Oracolul pașilor (16.1-C3, pct.1): ~/ghid_incoming/pasi_<lot>.txt (al arhitectului) are hash-ul din rândul „pornire”, iar docs/dovezi/<lot>/pasi.json copiază literal operator + valoare ale fiecărei aserțiuni, altfel
 STOP „oracol modificat”. Lotul de produs cere fișierul; lotul de unelte fără fișier nu are oracol.
 Ieșire: 0 = PASS, 1 = STOP (nepublicat, cu cifra sau motivul)."""
@@ -77,10 +79,14 @@ def ancestor_refuzuri(c, head, lotf):
         mod_vechi, mod_nou, _, _, stare = meta.lstrip(":").split()
         fisiere.append(cale)
         capturi = cale.startswith(dovezi) and cale.endswith(".png") and "/capturi/" in cale[len(dovezi) - 1:] and ".." not in cale.split("/")
-        if cale not in exacte and not capturi:
+        # 16.3-A pct.3: fișierele descărcate de parcurs (*.pdf) și ieșirile lansatorului (*.out) stau exact în docs/dovezi/<lot>/<parcurgere>/<verificator>/
+        parti = cale[len(dovezi):].split("/") if cale.startswith(dovezi) else []
+        produse = len(parti) == 3 and parti[1] in ("code", "haiku") and ".." not in parti and parti[2].endswith((".pdf", ".out"))
+        doar_adaugat = produse and parti[2].endswith(".out")
+        if cale not in exacte and not capturi and not produse:
             refuzuri.append("%s: cale în afara listei permise" % cale)
-        elif stare not in ("A", "M"):
-            refuzuri.append("%s: schimbare %s (numai adăugare sau modificare)" % (cale, stare))
+        elif stare not in ("A", "M") or (doar_adaugat and stare != "A"):
+            refuzuri.append("%s: schimbare %s (%s)" % (cale, stare, "ieșirile .out numai se adaugă" if doar_adaugat else "numai adăugare sau modificare"))
         elif mod_nou != "100644" or (stare == "M" and mod_vechi != mod_nou):
             refuzuri.append("%s: mod %s -> %s (fișier obișnuit, mod neschimbat)" % (cale, mod_vechi, mod_nou))
     if csv_cale in fisiere:
@@ -203,7 +209,18 @@ def _raspuns(x):
     return (x or "").split(":")[0].strip().lower()
 
 
-def csv_stop(rr, lot, c=None):
+def asertiuni_excluse(pasi_json):
+    """Id-urile aserțiunilor pe care verificatorul independent nu le judecă din captură: cheia pdf: sau operatorul interval_px (16.3-A pct.2). `pasi_json` = conținutul lui pasi.json (dict) sau None."""
+    return {x["id"] for x in (pasi_json or {}).get("asertiuni", []) if str(x.get("cheie", "")).startswith("pdf:") or x.get("operator") == "interval_px"}
+
+
+def pasi_json_la(commit, lotf):
+    """docs/dovezi/<lot>/pasi.json de la `commit` (None dacă nu există)."""
+    t = _fisier_la(commit, "docs/dovezi/%s/pasi.json" % lotf)
+    return json.loads("\n".join(t)) if t else None
+
+
+def csv_stop(rr, lot, c=None, excluse=frozenset()):
     """Rândurile jurnalului (16.3): marcajul HMAC al oracolului valid pe fiecare rând (STOP „verdict în afara oracolului”; scutite loturile din LOTURI_FARA_MARCAJ), cheia unică, iar pe rândurile lui C ale verificatorului
     independent: dezacordul oracol–verificator (verdict „trece”, ambele instanțe „nu corespunde”) și faza „neefectuată” (toate aserțiunile judecabile „nejudecabil”) sau fără răspuns. -> motivele de STOP."""
     if lot in LOTURI_FARA_MARCAJ:
@@ -227,7 +244,9 @@ def csv_stop(rr, lot, c=None):
                 stop.append("verificatorul independent n-a răspuns pe aserțiunea %s (parcurgerea %s)" % (r["pas"], parc))
             if r["verdict"] == "trece" and r1 == "nu corespunde" and r2 == "nu corespunde":
                 stop.append("dezacord oracol–verificator: aserțiunea %s (oracolul: trece; ambele instanțe Haiku: nu corespunde)" % r["pas"])
-        if all(_raspuns(r.get("verificator_independent")) == "nejudecabil" for r in rands):
+        # aserțiunile excluse (pdf:, interval_px) nu se numără: cheie și operator, nu textul răspunsului; dacă toate sunt excluse, faza nu e „neefectuată”
+        judecabile = [r for r in rands if r.get("pas") not in excluse]
+        if judecabile and all(_raspuns(r.get("verificator_independent")) == "nejudecabil" for r in judecabile):
             stop.append("faza verificatorului independent este „neefectuată” (parcurgerea %s: toate aserțiunile sunt nejudecabile)" % parc)
     return stop
 
@@ -245,6 +264,68 @@ def unelte_refuzuri(head, lotf, main="main"):
         if not permis and f.startswith(UNELTE_INTERZISE) and f not in numite:
             ref.append("%s: lotul „unelte” nu are voie să atingă acest fișier (static/, core/, templates/, frontend_test/ numai dacă e numit în scripts/praguri_%s.txt)" % (f, lotf))
     return ref
+
+
+def lista_permisa(text):
+    """Intrările listei `fisiere_permise` din scripts/praguri_<lot>.txt (16.3-A pct.4): liniile de după rândul care începe cu „fisiere_permise”; textul dintre paranteze se ignoră; o intrare cu „/” la sfârșit e un director.
+    -> lista intrărilor, sau None dacă fișierul nu are lista."""
+    in_lista, intrari = False, []
+    for ln in text.splitlines():
+        if ln.startswith("fisiere_permise"):
+            in_lista = True
+        elif in_lista and ln.strip():
+            if not ln[0].isspace():
+                break
+            intrare = re.sub(r"\(.*?\)", "", ln).strip().split()
+            if intrare:
+                intrari.append(intrare[0])
+    return intrari if in_lista else None
+
+
+def produs_refuzuri(head, lotf, main="main", text=None):
+    """Lotul „produs”: diff-ul merge-base..HEAD atinge numai fișierele din lista `fisiere_permise` a pragurilor lotului (fișier exact sau director cu „/” la sfârșit); orice altceva = refuz cu numele. „CLAUDE.md (numai
+    inainte de C)” e permis aici (în diff-ul până la HEAD); după C îl refuză regula strămoșului. `text` = alt conținut al pragurilor (numai calibrări). -> motivele de refuz."""
+    if text is None:
+        linii = _fisier_la(head, "scripts/praguri_%s.txt" % lotf)
+        if linii is None:
+            return []
+        text = "\n".join(linii)
+    lista = lista_permisa(text)
+    if lista is None:
+        return ["scripts/praguri_%s.txt nu are lista fisiere_permise (un lot «produs» o cere)" % lotf]
+    baza = git("merge-base", head, main)
+    diff = git("diff", "--name-only", "--no-renames", baza, head).splitlines() if baza else []
+    return ["%s: fișier în afara listei fisiere_permise din scripts/praguri_%s.txt" % (f, lotf) for f in diff if not any(f == i or (i.endswith("/") and f.startswith(i)) for i in lista)]
+
+
+def faze_stop(rows, unelte):
+    """Fazele obligatorii din jurnal (rândurile lotului): început și sfârșit neîntrerupt; „publicare” numai cu început. Faza „verificator” (16.3-A pct.1): la un lot „unelte” nu se cere; la un lot «produs» începutul și
+    sfârșitul ultimei rulări trebuie să poarte marcajul scris de lansator (scrisă de mână sau copiată = STOP). -> motivele de STOP."""
+    stop = []
+    for faza in JL.FAZE_OBLIGATORII:
+        ev = [r for r in rows if r[1] == faza]
+        if faza == "publicare":
+            if not any(r[2] == "inceput" for r in ev):
+                stop.append("faza „publicare” nu are început")
+            continue
+        if faza == "verificator" and unelte:
+            continue
+        sf = {r[6]: r for r in ev if r[2] == "sfarsit"}
+        ultimul = [r for r in ev if r[2] == "inceput"][-1:]
+        if not ultimul:
+            stop.append("faza „%s” lipsește din jurnal" % faza)
+        elif ultimul[0][6] not in sf or sf[ultimul[0][6]][5] == "intrerupt":
+            stop.append("faza „%s” e fără sfârșit sau întreruptă" % faza)
+        elif faza == "verificator" and not (VP.faza_marcata_valida(ultimul[0]) and VP.faza_marcata_valida(sf[ultimul[0][6]])):
+            stop.append("faza verificator scrisă de mână (fără marcajul lansatorului; copiată sau editată = nevalid): o scrie numai scripts/lanseaza_verificator.py")
+    return stop
+
+
+def fara_haiku_stop(rr, c):
+    """Lotul «produs», la publicare (nu la `--verifica`): jurnalul trebuie să aibă rânduri ale unei parcurgeri cu verificator=haiku pe C (16.3-A pct.1b). -> motivele de STOP."""
+    if any(r.get("commit") == c and "haiku" in (r.get("verificator") or "").lower() for r in rr):
+        return []
+    return ["fără verificator independent pe C: jurnal_verificare.csv nu are nicio parcurgere cu verificator=haiku pe %s" % c[:12]]
 
 
 def jurnal_verificare_stop(rr, pasi, c, baza, mx, rad=None):
@@ -312,18 +393,7 @@ def verifica(lot, sha, comun, sirul_zip):
     except OSError:
         stop.append("lipsește clasificarea porții")
     # faze obligatorii în jurnal
-    for faza in JL.FAZE_OBLIGATORII:
-        ev = [r for r in rows if r[1] == faza]
-        if faza == "publicare":
-            if not any(r[2] == "inceput" for r in ev):
-                stop.append("faza „publicare” nu are început")
-            continue
-        sf = {r[6]: r for r in ev if r[2] == "sfarsit"}
-        ultimul = [r for r in ev if r[2] == "inceput"][-1:]
-        if not ultimul:
-            stop.append("faza „%s” lipsește din jurnal" % faza)
-        elif ultimul[0][6] not in sf or sf[ultimul[0][6]][5] == "intrerupt":
-            stop.append("faza „%s” e fără sfârșit sau întreruptă" % faza)
+    stop += faze_stop(rows, unelte)
     # perimetrul uneltelor
     cb = os.path.join(RAD, "docs", "dovezi", L.lot_fisier(L.lot_baza(lot)), "baza.json")
     baza = git("merge-base", sha, "main")
@@ -334,6 +404,8 @@ def verifica(lot, sha, comun, sirul_zip):
             stop.append("lotul nu e marcat „unelte”, dar atinge: " + ", ".join(atinse))
     else:
         stop += unelte_refuzuri(sha, lotf)
+    if not unelte:
+        stop += produs_refuzuri(sha, lotf)
     # manifestul (16.1-C2 pct.1): poate crește numai cu rânduri pentru fișiere de test noi (prezente în diff, absente pe main); orice altă diferență = refuz cu numele
     if os.path.exists(cb):
         ab = json.load(open(cb, encoding="utf-8"))["antet"]
@@ -363,7 +435,9 @@ def verifica(lot, sha, comun, sirul_zip):
             if m:
                 mx = int(m.group(1))
         stop += jurnal_verificare_stop(rr, pasi, c, baza, mx)
-        stop += csv_stop(rr, lot, c)
+        stop += csv_stop(rr, lot, c, asertiuni_excluse(pasi_json_la(c, lotf)))
+        if not unelte:
+            stop += fara_haiku_stop(rr, c)
     elif not unelte:
         stop.append("lipsește jurnal_verificare.csv")
     # backup-ul uneltelor
@@ -417,9 +491,11 @@ def main_verifica(c, head, lot=None, csv_cale=None):
     praguri = _fisier_la(head, "scripts/praguri_%s.txt" % lotf) or [""]
     if praguri[0].strip().lower() == "unelte":
         refuzuri += unelte_refuzuri(head, lotf)
+    else:
+        refuzuri += produs_refuzuri(head, lotf)
     cv = csv_cale or os.path.join(DEP, "docs", "dovezi", lotf, "jurnal_verificare.csv")
     if os.path.exists(cv):
-        refuzuri += csv_stop(list(csv.DictReader(open(cv, encoding="utf-8"))), lot, c)
+        refuzuri += csv_stop(list(csv.DictReader(open(cv, encoding="utf-8"))), lot, c, asertiuni_excluse(pasi_json_la(head, lotf)))
     for m in refuzuri:
         print("[publica_lot --verifica] REFUZ: " + m)
     if refuzuri:

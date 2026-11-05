@@ -24445,3 +24445,11 @@ Costin (29.10.2026, verbatim): „687.1 (aspectul ecranelor) și 720 nu le mai f
 - Verificatorul independent (Haiku 5.5) judecă față de „descriere” și captură: corespunde / nu corespunde / nejudecabil; a doua instanță la „nu corespunde” pe un „trece”; STOP numai la dezacord confirmat de ambele instanțe sau la faza „neefectuată”.
 - Lotul „unelte” are contract fără oracol (`proba_contract | verde | unelte, fără oracol`) și o listă permisă de fișiere, aplicată de `publica_lot.py --verifica` și la publicare.
 - Decizii pe varianta cea mai sigură: `verifica_pagina` așteaptă 1200 ms înainte de citire și captură (prima rulare Haiku a primit o captură la jumătatea unei tranziții; ieșirea ei e păstrată în docs/dovezi/16_3/calib_haiku_rularea1_d325b45f.out); cheia lui q.1 numără numai rândurile din `casa_operatiuni` (`tbody.tn-nota[data-op-id]`), pentru că registrul Casei din 11/2026 mai are un rând de notă manuală (ciornă, 10,00 lei) care nu e dispoziție.
+
+## 05.11.2026 — Comanda 16.3-A (lot de unelte, „unelte” în scripts/praguri_16_3_A.txt)
+
+- Faza „verificator” o scrie numai lansatorul (marcaj HMAC pe rând, aceeași cheie ca rândurile CSV); la un lot „produs” fără marcaj valid = STOP; la „unelte” nu se cere (C216). Marcajul e urmă, nu barieră: cheia e citibilă de Code.
+- La publicare (nu la `--verifica`) un lot „produs” cere o parcurgere haiku pe C în jurnal_verificare.csv (C220).
+- Aserțiunile `pdf:` sunt „nejudecabil din captură (pdf)” scrise de lansator și excluse, ca interval_px, din „neefectuată” prin cheie și operator (C217).
+- Regula strămoșului: *.pdf și *.out numai exact sub docs/dovezi/<lot>/<parcurgere>/<verificator>/, *.out numai adăugat (C218). Lista `fisiere_permise` se aplică și lotului „produs” (C219).
+- Decizie pe varianta cea mai sigură: praguri de „produs” fără listă `fisiere_permise` = refuz (nu „fără restricție”). Fișierul de excepții al arhitectului nu e citit de lista permisă (comanda nu l-a cerut): un fișier necesar și absent din listă oprește lotul.
