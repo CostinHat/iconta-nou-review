@@ -1,0 +1,5 @@
+PASI DE CALIBRARE 16.5 — dovada masurii „valoare” a oracolului pe un pas real (Registru jurnal > Nota noua, F1 Comert Stoc, luna 11/2026, ceas fix 2026-11-03). Operatorii ca in pasi_16_2.txt.
+Format: aserțiune | pas | ecran | operator | valoare | descriere | sursa valorii
+inainte.1 | inainte | Registru jurnal 11/2026, fereastra Nota noua, la deschidere | egal | 2026-11-03 | valoarea campului Data notei la deschidere este data de azi a ceasului fix | firme.js: data propusa = ziua de azi pe luna curenta
+inainte_pica.1 | inainte_pica | Registru jurnal 11/2026, fereastra Nota noua, la deschidere | egal | 2026-11-04 | aceeasi valoare comparata cu ziua urmatoare; pica asteptat, cu valoarea citita in motiv | calibrare: aserțiune inversa
+dupa_fill.1 | dupa_fill | Registru jurnal 11/2026, fereastra Nota noua, dupa ce contabilul scrie data 2026-10-15 | egal | 2026-10-15 | valoarea campului Data notei dupa completare este data scrisa | calibrare: valoarea scrisa in camp

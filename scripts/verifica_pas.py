@@ -7,10 +7,11 @@ declarat (inceput–sfarsit), se refuză (control încrucișat în scripts/jurna
 Oracolul (16.1-C3, pct.1): așteptarea vine din pasi.json, nu din linia de comandă. Fiecare asertiune are „operator” și „valoare” (copiate literal din pasi_<lot>.txt al arhitectului: acolo sunt
 singurele coloane comparate, „descriere” nu) și „cheie” (a lui Code): cheia JSON a ecranului (cu puncte pentru cuib) sau o sursă `text:<url>` (corpul răspunsului) / `dom:<selector css>`
 (elementele paginii: nr_randuri = câte sunt, activ = primul e activ, interval_px = înălțimile lor, text = textul lor). Compararea e `compara_asertiune(operator, valoare, observat)`, fără altă interpretare.
-Operatori: egal / contine / nr_randuri / lipseste / interval_px / activ / text_contine (definiți în antetul pasi_<lot>.txt).
+„valoare” (16.5) = valoarea curentă brută (`.value`, fără trim) a câmpurilor de formular (input în afara checkbox/radio/button/submit/reset/image/file, textarea, select); un câmp se judecă prin valoare, nu prin text
+(„text” citește `textContent`, gol la <input>); un element fără valoare sau niciun element = „pică” cu motiv, pentru orice operator. Operatori: egal / contine / nr_randuri / lipseste / interval_px / activ / text_contine (definiți în antetul pasi_<lot>.txt).
 Parcursul (16.3, pct.1): `verifica_pagina(pagina, lot, pas, parcurgere, verificator, pasi_json, csv)` citește starea paginii VII (sesiune autentificată, după acțiunile parcursului lui Code) prin
 cheia fiecărei aserțiuni a pasului și o compară cu `compara_asertiune`; scrie câte un rând pe aserțiune (coloana „pas” = id-ul aserțiunii) și captura, ambele cu marcaj HMAC. Chei: `dom:<selector>|<masura>`
-(text, numar, activ, inaltime_px, distanta_px, diferenta_latime_px, depasire), `json:<url>|<cale.in.json>` (cerut din contextul paginii, cu sesiunea ei), `pdf:<url>` sau `pdf:fisier:<cale relativă la directorul
+(text, numar, activ, inaltime_px, distanta_px, diferenta_latime_px, depasire, valoare), `json:<url>|<cale.in.json>` (cerut din contextul paginii, cu sesiunea ei), `pdf:<url>` sau `pdf:fisier:<cale relativă la directorul
 parcurgerii>`. Marcajul: HMAC-SHA256 pe rând cu ~/.iconta/cheie_oracol (600, în afara depozitului) — urmă, nu barieră: cheia e citibilă de Code."""
 import argparse
 import csv
@@ -38,7 +39,9 @@ CAMPURI_VECHI = ["lot", "commit", "verificator", "inceput", "sfarsit", "pas", "a
 CAMPURI = CAMPURI_VECHI + ["parcurgere", "marcaj", "verificator_independent", "verificator_independent_2", "mediu"]
 CHEIE_ORACOL = os.environ.get("CHEIE_ORACOL_FISIER") or os.path.expanduser("~/.iconta/cheie_oracol")
 SETTLE_MS = 1200
-MASURI = ("text", "numar", "activ", "inaltime_px", "distanta_px", "diferenta_latime_px", "depasire")
+MASURI = ("text", "numar", "activ", "inaltime_px", "distanta_px", "diferenta_latime_px", "depasire", "valoare")
+#: cheia obiectului întors de măsura „valoare” când elementul n-are valoare sau selectorul n-are niciun element
+CHEIE_FARA_VALOARE = "__fara_valoare__"
 
 
 OPERATORI = ("egal", "contine", "nr_randuri", "lipseste", "interval_px", "activ", "text_contine")
@@ -55,6 +58,8 @@ def _text(x):
 def compara_asertiune(operator, valoare, observat):
     """Singura comparație a oracolului: operator + valoare (literale din fișierul arhitectului) față de ce s-a citit prin cheie. -> (verdict, motiv)."""
     val = str(valoare)
+    if isinstance(observat, dict) and CHEIE_FARA_VALOARE in observat:   # măsura „valoare” pe un element fără valoare: pică pentru orice operator
+        return "pica", str(observat[CHEIE_FARA_VALOARE])
     if operator == "egal":
         o = _text(observat)
         try:   # numere: cu punct și 2 zecimale, comparate ca valori exacte (1210.00 = 1210.0), nu ca text
@@ -282,6 +287,13 @@ _JS_MASURA = """([sel, masura]) => {
   if (masura === 'distanta_px') { const d = []; for (let i = 1; i < el.length; i++) { const a = cut(el[i - 1]), b = cut(el[i]); if (rand(a, b)) d.push(b.left - a.right); } return d; }
   if (masura === 'diferenta_latime_px') return grupe().map(g => Math.max(...g.map(r => r.width)) - Math.min(...g.map(r => r.width)));
   if (masura === 'depasire') return el.filter(e => e.scrollWidth > e.clientWidth).length;
+  if (masura === 'valoare') {
+    if (!el.length) return {__fara_valoare__: 'niciun element pentru selector'};
+    const fara = ['checkbox', 'radio', 'button', 'submit', 'reset', 'image', 'file'];
+    const areValoare = e => e.tagName === 'TEXTAREA' || e.tagName === 'SELECT' || (e.tagName === 'INPUT' && !fara.includes((e.type || '').toLowerCase()));
+    if (!el.every(areValoare)) return {__fara_valoare__: 'elementul nu are valoare'};
+    return el.map(e => e.value).join(',');
+  }
   throw new Error('măsură necunoscută: ' + masura);
 }"""
 

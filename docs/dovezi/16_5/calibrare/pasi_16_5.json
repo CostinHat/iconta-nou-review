@@ -1,0 +1,25 @@
+{
+ "asertiuni": [
+  {
+   "id": "inainte.1",
+   "pas": "inainte",
+   "operator": "egal",
+   "valoare": "2026-11-03",
+   "cheie": "dom:#je-data|valoare"
+  },
+  {
+   "id": "inainte_pica.1",
+   "pas": "inainte_pica",
+   "operator": "egal",
+   "valoare": "2026-11-04",
+   "cheie": "dom:#je-data|valoare"
+  },
+  {
+   "id": "dupa_fill.1",
+   "pas": "dupa_fill",
+   "operator": "egal",
+   "valoare": "2026-10-15",
+   "cheie": "dom:#je-data|valoare"
+  }
+ ]
+}
