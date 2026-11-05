@@ -1,0 +1,53 @@
+{
+ "asertiuni": [
+  {
+   "id": "a.1",
+   "pas": "a",
+   "operator": "egal",
+   "valoare": "558.46",
+   "cheie": "json:/tenants/105779/casa/registru?an=2026&luna=11|sold_initial"
+  },
+  {
+   "id": "b.9",
+   "pas": "b",
+   "operator": "activ",
+   "valoare": "false",
+   "cheie": "dom:#c-adauga|activ"
+  },
+  {
+   "id": "b.10",
+   "pas": "b",
+   "operator": "contine",
+   "valoare": "Completeaza:",
+   "cheie": "dom:#c-adauga|text"
+  },
+  {
+   "id": "c.1",
+   "pas": "c",
+   "operator": "nr_randuri",
+   "valoare": "2",
+   "cheie": "dom:#c-facturi [data-cf]|numar"
+  },
+  {
+   "id": "p.1",
+   "pas": "p",
+   "operator": "text_contine",
+   "valoare": "DANTE INTERNATIONAL",
+   "cheie": "pdf:fisier:chitanta_CHF1_1.pdf"
+  },
+  {
+   "id": "q.1",
+   "pas": "q",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:#c-tabel tbody.tn-nota[data-op-id]|numar"
+  },
+  {
+   "id": "q.2",
+   "pas": "q",
+   "operator": "egal",
+   "valoare": "557.46",
+   "cheie": "json:/tenants/105779/casa/registru?an=2026&luna=11|sold_final"
+  }
+ ]
+}
