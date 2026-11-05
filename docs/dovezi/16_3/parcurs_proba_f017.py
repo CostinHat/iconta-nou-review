@@ -10,9 +10,10 @@ PASI = ("a", "b", "c", "p", "q")
 
 
 def _firma_casa(pg):
-    """Din cabinet: Firme › F1 Comert Stoc › Casă (luna curentă a ceasului fix, 11/2026). Dacă cabinetul nu răspunde la clic (după o filă deschisă de PDF), pagina se reîncarcă și pasul se reia, de cel mult trei ori."""
+    """Din cabinet: Firme › F1 Comert Stoc › Casă (luna curentă a ceasului fix, 11/2026). Memoria ferestrei deschise (restaurare.js) se șterge întâi, ca pasul să înceapă din cabinet; dacă cabinetul nu răspunde la clic, pagina se reîncarcă și pasul se reia, de cel mult trei ori."""
     for incercare in range(3):
         try:
+            pg.evaluate("sessionStorage.removeItem('iconta_fereastra_deschisa')")   # altfel aplicația redeschide fereastra pasului dinainte (restaurare.js), nu cabinetul
             pg.goto(pg.evaluate("location.origin") + "/", wait_until="domcontentloaded")
             pg.wait_for_selector(".cab-grila, .cab-card", timeout=30000)
             pg.wait_for_timeout(800)
