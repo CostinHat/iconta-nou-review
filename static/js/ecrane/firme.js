@@ -6601,9 +6601,11 @@ function ecranEditorNota(corp, nav, t, n, centre, cheie) {
       if ((tert(val(".je-deb")) || tert(val(".je-cre"))) && !val(".je-pnume") && !val(".je-pcui")) lip.push("partenerul");
       return lip;
     });
-    lipsuriLinie.forEach((lip, i) => { if (lip.length) segmente.push((linii.length > 1 ? `linia ${i + 1}: ` : "") + lip.join(", ")); });
-    if (segmente.length) {
-      const motiv = `Completează: ${segmente.join("; ")}`;
+    // o singură linie: fără prefix, lipsurile după dată cu virgulă; mai multe linii: „linia N: …”, segmentele despărțite prin „; ”
+    if (linii.length > 1) lipsuriLinie.forEach((lip, i) => { if (lip.length) segmente.push(`linia ${i + 1}: ${lip.join(", ")}`); });
+    const dupaData = linii.length > 1 ? segmente : segmente.concat(lipsuriLinie[0]);
+    if (dupaData.length) {
+      const motiv = `Completează: ${dupaData.join(linii.length > 1 ? "; " : ", ")}`;
       bSalveaza.textContent = motiv; inactiv(bSalveaza, motiv);
       STIL_MOTIV.forEach(([k, v]) => bSalveaza.style.setProperty(k, v, "important"));
     } else {
