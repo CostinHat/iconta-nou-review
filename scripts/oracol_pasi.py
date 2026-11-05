@@ -54,7 +54,7 @@ def schelet(cale_txt, cale_json):
     if erori:
         print("\n".join(erori))
         return 1
-    json.dump({"asertiuni": [{"id": a["id"], "operator": a["operator"], "valoare": a["valoare"], "cheie": ""} for a in arh]}, open(cale_json, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+    json.dump({"asertiuni": [{"id": a["id"], "pas": a["pas"], "operator": a["operator"], "valoare": a["valoare"], "cheie": ""} for a in arh]}, open(cale_json, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
     print("[oracol_pasi] %d aserțiuni -> %s" % (len(arh), cale_json))
     return 0
 

@@ -8,7 +8,11 @@ starea lotului) și rămân valabile pentru HEAD numai dacă C e strămoș al lu
   publica_lot.py --verifica <C> <HEAD> [lot]   (lotul din LOT sau din ramura curentă; hook-urile reference-transaction și pre-push o chemă cu lotul din rândul PASS)
   publica_lot.py --proba [lot]                 (16.1-C3, pct.3) contractul la început: rândul pasului a) din jurnal_verificare.csv există, are captură, verdict „trece” și sha = commitul de bază (merge-base cu
                                                main); scrie faza „proba_contract” în jurnal. O declanșează scripts/githooks/post-commit pe ramurile lucru/* la primul commit după merge-base. Un lot fără
-                                               „proba_contract” verde = STOP la publicare.
+                                               „proba_contract” verde = STOP la publicare. (16.3, pct.0) Un lot „unelte” fără pasi.txt trece verde cu eticheta „unelte, fără oracol”; un lot de produs fără rândul a) rămâne roșu.
+  publica_lot.py --verifica <C> <HEAD> [lot] [--csv <fișier>]   (16.3) pe lângă regula strămoșului: lotul „unelte” are lista permisă de fișiere (UNELTE_PERMISE; static/, core/ în afara test_*, templates/, frontend_test/ numai
+                                               dacă sunt numite în scripts/praguri_<lot>.txt) și rândurile din jurnal_verificare.csv au marcaj valid (STOP „verdict în afara oracolului”; scutite: LOTURI_FARA_MARCAJ).
+                                               --csv numai pentru calibrări; la publicare, „--csv” = refuz.
+  publica_lot.py --controleaza <csv>           (16.3, pct.2) controlul încrucișat pe un CSV: captura există, cheia (lot, parcurgere, pas, sha, verificator) e unică, marcajul e valid (scris de jurnal_verificator.sh controleaza).
 Oracolul pașilor (16.1-C3, pct.1): ~/ghid_incoming/pasi_<lot>.txt (al arhitectului) are hash-ul din rândul „pornire”, iar docs/dovezi/<lot>/pasi.json copiază literal operator + valoare ale fiecărei aserțiuni, altfel
 STOP „oracol modificat”. Lotul de produs cere fișierul; lotul de unelte fără fișier nu are oracol.
 Ieșire: 0 = PASS, 1 = STOP (nepublicat, cu cifra sau motivul)."""
@@ -25,9 +29,15 @@ import jurnal_lot as JL  # noqa: E402
 import poarta_clasifica as C  # noqa: E402
 import oracol_pasi as OP  # noqa: E402
 import poarta_lib as L  # noqa: E402
+import verifica_pas as VP  # noqa: E402
 
 RAD = L.RAD
 ACASA = os.path.expanduser("~")
+#: loturile dinaintea marcajului HMAC al rândurilor (16.3, pct.1): lista fixă; orice alt lot cu un rând fără marcaj valid = STOP „verdict în afara oracolului”
+LOTURI_FARA_MARCAJ = ("16.1", "16.1-C2", "16.1-C3")
+#: lista permisă implicită a unui lot „unelte” (16.3, pct.0); orice alt fișier din static/, core/ (în afara test_*), templates/ sau frontend_test/ trebuie numit în scripts/praguri_<lot>.txt
+UNELTE_PERMISE = ("scripts/", "frontend_test/e2e/conftest.py", "CLAUDE.md", "DEFICIENTE.md", "DECIZII.md", "PREDARE_LANT.md")
+UNELTE_INTERZISE = ("static/", "core/", "templates/", "frontend_test/")
 #: fișierele porții și ale contractului: nu se ating în afara loturilor marcate „unelte” în scripts/praguri_<lot>.txt
 PAZITE = ("scripts/poarta_lot.sh", "scripts/publica_lot.sh", "scripts/baza_test.sh", "scripts/poarta_nucleu.txt", "conftest.py")
 FRAZA_RISC = ("confinarea la fișiere deja atinse nu dovedește că fiecare modificare e legată de testul picat; "
@@ -66,7 +76,7 @@ def ancestor_refuzuri(c, head, lotf):
     for meta, cale in zip(iesire[0::2], iesire[1::2]):
         mod_vechi, mod_nou, _, _, stare = meta.lstrip(":").split()
         fisiere.append(cale)
-        capturi = cale.startswith(dovezi + "capturi/") and cale.endswith(".png") and "/" not in cale[len(dovezi + "capturi/"):]
+        capturi = cale.startswith(dovezi) and cale.endswith(".png") and "/capturi/" in cale[len(dovezi) - 1:] and ".." not in cale.split("/")
         if cale not in exacte and not capturi:
             refuzuri.append("%s: cale în afara listei permise" % cale)
         elif stare not in ("A", "M"):
@@ -110,6 +120,11 @@ def oracol_stop(lotf, unelte, pornire, rad=None):
         return ["oracol modificat: pasi_%s.txt există, dar rândul „pornire” nu are hash-ul lui (fișierul a apărut sau s-a schimbat după pornire)" % lotf]
     if L.hash_fisier(arh) != h_jurnal.group(1):
         return ["oracol modificat: hash-ul curent al pasi_%s.txt diferă de cel din rândul „pornire”" % lotf]
+    if not unelte:   # 16.3: în pasi_<lot>.txt al unui lot de produs, „descriere” nu conține verdicte (le-ar sufla verificatorului independent)
+        for x in OP.parseaza(open(arh, encoding="utf-8").read())[0]:
+            gasite = [c for c in ("trece", "pică", "pica", "corespunde") if re.search(r"\b%s\b" % c, x["descriere"], re.I)]
+            if gasite:
+                return ["oracol modificat: descrierea aserțiunii %s conține cuvintele de verdict %s (nu sunt permise într-un lot de produs)" % (x["id"], ", ".join(gasite))]
     cale = os.path.join(rad or RAD, "docs", "dovezi", lotf, "pasi.json")
     if not os.path.exists(cale):
         return ["oracol modificat: lipsește docs/dovezi/%s/pasi.json" % lotf]
@@ -124,9 +139,26 @@ def proba_stop(rows, lot):
     return [] if sf[-1][5] == "verde" else ["faza „proba_contract” nu e verde (%s)" % sf[-1][5]]
 
 
-def proba_refuzuri(rad, lot, main="main"):
-    """Rândul pasului a) (primul pas din docs/dovezi/<lot>/pasi.txt) din jurnal_verificare.csv: există, captura există, verdict „trece”, sha = commitul de bază (merge-base cu main). -> refuzurile."""
+def lot_unelte(rad, lotf):
+    """Lotul e marcat „unelte” (prima linie din scripts/praguri_<lot>.txt, în arborele de lucru `rad`)."""
+    try:
+        return open(os.path.join(rad, "scripts", "praguri_%s.txt" % lotf), encoding="utf-8").readline().strip().lower() == "unelte"
+    except OSError:
+        return False
+
+
+def proba_fara_oracol(rad, lot):
+    """Lot „unelte” fără docs/dovezi/<lot>/pasi.txt: nu are pasul a), deci nici rând de probat (16.3, pct.0)."""
     lotf = L.lot_fisier(lot)
+    return lot_unelte(rad, lotf) and not os.path.exists(os.path.join(rad, "docs", "dovezi", lotf, "pasi.txt"))
+
+
+def proba_refuzuri(rad, lot, main="main"):
+    """Rândul pasului a) (primul pas din docs/dovezi/<lot>/pasi.txt) din jurnal_verificare.csv: există, captura există, verdict „trece”, sha = commitul de bază (merge-base cu main). -> refuzurile.
+    Un lot „unelte” fără pasi.txt nu are ce proba (16.3, pct.0): fără refuz; un lot de produs fără rândul a) rămâne refuzat."""
+    lotf = L.lot_fisier(lot)
+    if proba_fara_oracol(rad, lot):
+        return []
     d = os.path.join(rad, "docs", "dovezi", lotf)
     g = lambda *a: subprocess.run(["git", *a], cwd=rad, capture_output=True, text=True).stdout.strip()   # noqa: E731
     baza = g("merge-base", "HEAD", main)
@@ -157,13 +189,62 @@ def main_proba(lot=None):
     """`--proba [lot]`: rulează contractul la început și scrie faza „proba_contract” (verde sau rosu). Ieșire 0 = verde."""
     lot = lot or JL.lot_curent()
     ref = proba_refuzuri(RAD, lot)
+    fara = proba_fara_oracol(RAD, lot)
     id_ = JL.inceput(lot, "proba_contract", "baza=%s" % git("merge-base", "HEAD", "main")[:12], pid=os.getpid())
-    JL.sfarsit(lot, "proba_contract", id_, "rosu" if ref else "verde", "; ".join(ref))
+    JL.sfarsit(lot, "proba_contract", id_, "rosu" if ref else "verde", "; ".join(ref) or ("unelte, fără oracol" if fara else ""))
     for m in ref:
         print("[publica_lot --proba] REFUZ: " + m)
     if not ref:
-        print("[publica_lot --proba] verde: rândul pasului a) e pe commitul de bază, cu captură")
+        print("[publica_lot --proba] verde: " + ("unelte, fără oracol" if fara else "rândul pasului a) e pe commitul de bază, cu captură"))
     return 1 if ref else 0
+
+
+def _raspuns(x):
+    return (x or "").split(":")[0].strip().lower()
+
+
+def csv_stop(rr, lot, c=None):
+    """Rândurile jurnalului (16.3): marcajul HMAC al oracolului valid pe fiecare rând (STOP „verdict în afara oracolului”; scutite loturile din LOTURI_FARA_MARCAJ), cheia unică, iar pe rândurile lui C ale verificatorului
+    independent: dezacordul oracol–verificator (verdict „trece”, ambele instanțe „nu corespunde”) și faza „neefectuată” (toate aserțiunile judecabile „nejudecabil”) sau fără răspuns. -> motivele de STOP."""
+    if lot in LOTURI_FARA_MARCAJ:
+        return []
+    stop, vazute = [], set()
+    for r in rr:
+        if not VP.marcaj_valid(r):
+            stop.append("verdict în afara oracolului: rândul %s (sha %s, parcurgerea %s) nu are marcaj valid" % (r.get("pas"), (r.get("commit") or "")[:8], r.get("parcurgere") or "-"))
+        k = VP.cheia_unica(r)
+        if k in vazute:
+            stop.append("cheia %s repetată (captura %s)" % (k, r.get("captura")))
+        vazute.add(k)
+    grupe = {}
+    for r in rr:
+        if c and r.get("commit") == c and "haiku" in (r.get("verificator") or "").lower():
+            grupe.setdefault(r.get("parcurgere") or "", []).append(r)
+    for parc, rands in grupe.items():
+        for r in rands:
+            r1, r2 = _raspuns(r.get("verificator_independent")), _raspuns(r.get("verificator_independent_2"))
+            if not r1 or r1 == "fara_raspuns":
+                stop.append("verificatorul independent n-a răspuns pe aserțiunea %s (parcurgerea %s)" % (r["pas"], parc))
+            if r["verdict"] == "trece" and r1 == "nu corespunde" and r2 == "nu corespunde":
+                stop.append("dezacord oracol–verificator: aserțiunea %s (oracolul: trece; ambele instanțe Haiku: nu corespunde)" % r["pas"])
+        if all(_raspuns(r.get("verificator_independent")) == "nejudecabil" for r in rands):
+            stop.append("faza verificatorului independent este „neefectuată” (parcurgerea %s: toate aserțiunile sunt nejudecabile)" % parc)
+    return stop
+
+
+def unelte_refuzuri(head, lotf, main="main"):
+    """Lotul „unelte” are o listă permisă de fișiere, fixă aici (16.3, pct.0): diff-ul față de merge-base atinge numai căile din UNELTE_PERMISE, docs/dovezi/<lot>/, testele core/test_*.py și ce e numit în
+    scripts/praguri_<lot>.txt; un fișier din static/, core/ (altul decât test_*), templates/ sau frontend_test/ nenumit = refuz cu numele lui. -> motivele de refuz."""
+    baza = git("merge-base", head, main)
+    diff = git("diff", "--name-only", "--no-renames", baza, head).splitlines() if baza else []
+    text = "\n".join(_fisier_la(head, "scripts/praguri_%s.txt" % lotf) or [])
+    numite = {ln.split()[0] for ln in text.splitlines()[1:] if ln.strip() and "/" in ln.split()[0]}
+    ref = []
+    for f in diff:
+        permis = f.startswith(UNELTE_PERMISE) or f.startswith("docs/dovezi/%s/" % lotf) or (f.startswith("core/test_") and "/" not in f[5:])
+        if not permis and f.startswith(UNELTE_INTERZISE) and f not in numite:
+            ref.append("%s: lotul „unelte” nu are voie să atingă acest fișier (static/, core/, templates/, frontend_test/ numai dacă e numit în scripts/praguri_%s.txt)" % (f, lotf))
+    return ref
 
 
 def jurnal_verificare_stop(rr, pasi, c, baza, mx, rad=None):
@@ -177,7 +258,8 @@ def jurnal_verificare_stop(rr, pasi, c, baza, mx, rad=None):
         if not os.path.exists(r["captura"] if os.path.isabs(r["captura"]) else os.path.join(rad or RAD, r["captura"])):
             stop.append("rândul %s: captura lipsește" % r["pas"])
     stop += ["pasul „%s” nu are rând pe C în jurnal_verificare.csv" % p for p in pasi if p not in {r["pas"] for r in pe_c}]
-    runde = {r["commit"] for r in rr if "haiku" in r["verificator"].lower() and r["commit"] != baza and (not pasi or r["pas"] in pasi)}
+    # runda = (sha, parcurgere) distinct cu rânduri Haiku pe pașii „după”; a doua instanță Haiku stă pe același rând și nu e rundă nouă (16.3, pct.3)
+    runde = {(r["commit"], r.get("parcurgere") or "") for r in rr if "haiku" in r["verificator"].lower() and r["commit"] != baza and (not pasi or r["pas"] in pasi)}
     if len(runde) > mx:
         stop.append("rundele verificatorului: %d > runde_verificator_max %d (cheie lipsă = 0)" % (len(runde), mx))
     return stop
@@ -250,6 +332,8 @@ def verifica(lot, sha, comun, sirul_zip):
         atinse = [f for f in PAZITE if f in diff]
         if atinse:
             stop.append("lotul nu e marcat „unelte”, dar atinge: " + ", ".join(atinse))
+    else:
+        stop += unelte_refuzuri(sha, lotf)
     # manifestul (16.1-C2 pct.1): poate crește numai cu rânduri pentru fișiere de test noi (prezente în diff, absente pe main); orice altă diferență = refuz cu numele
     if os.path.exists(cb):
         ab = json.load(open(cb, encoding="utf-8"))["antet"]
@@ -279,6 +363,7 @@ def verifica(lot, sha, comun, sirul_zip):
             if m:
                 mx = int(m.group(1))
         stop += jurnal_verificare_stop(rr, pasi, c, baza, mx)
+        stop += csv_stop(rr, lot, c)
     elif not unelte:
         stop.append("lipsește jurnal_verificare.csv")
     # backup-ul uneltelor
@@ -319,14 +404,22 @@ def zip_lot(lot, sha, cale):
         z.writestr("jurnal_lot.txt", "\n".join("%-20s %-10s %s -> %s  %ss" % (f, r, b, s, sec) for f, i, b, s, r, sec in JL.durate(lot)) + "\n")
 
 
-def main_verifica(c, head, lot=None):
-    """`--verifica <C> <HEAD> [lot]`: numai regula strămoșului, fără publicare, fără scrieri; judecă depozitul din directorul curent (hook-urile git o chemă de aici)."""
+def main_verifica(c, head, lot=None, csv_cale=None):
+    """`--verifica <C> <HEAD> [lot] [--csv fișier]`: regula strămoșului, lista permisă a lotului „unelte” și marcajul rândurilor din jurnalul verificării; fără publicare, fără scrieri; judecă depozitul din
+    directorul curent (hook-urile git o chemă de aici). `--csv` (numai calibrări) ia alt jurnal decât al lotului."""
     global DEP
     DEP = os.getcwd()
-    lotf = L.lot_fisier(lot or JL.lot_curent())
+    lot = lot or JL.lot_curent()
+    lotf = L.lot_fisier(lot)
     head = git("rev-parse", head)
     c = git("rev-parse", c)
     refuzuri, fisiere = ancestor_refuzuri(c, head, lotf)
+    praguri = _fisier_la(head, "scripts/praguri_%s.txt" % lotf) or [""]
+    if praguri[0].strip().lower() == "unelte":
+        refuzuri += unelte_refuzuri(head, lotf)
+    cv = csv_cale or os.path.join(DEP, "docs", "dovezi", lotf, "jurnal_verificare.csv")
+    if os.path.exists(cv):
+        refuzuri += csv_stop(list(csv.DictReader(open(cv, encoding="utf-8"))), lot, c)
     for m in refuzuri:
         print("[publica_lot --verifica] REFUZ: " + m)
     if refuzuri:
@@ -335,11 +428,40 @@ def main_verifica(c, head, lot=None):
     return 0
 
 
+def controleaza_csv(cale):
+    """`--controleaza <csv>`: controlul încrucișat (captura există, cheia unică, marcajul valid; loturile scutite numai după existența capturii). Ieșire 1 + rândul numit la prima abatere."""
+    rr = list(csv.DictReader(open(cale, encoding="utf-8")))
+    ref = []
+    for r in rr:
+        ref += VP.refuzuri_rand(r, RAD, exceptat=r.get("lot") in LOTURI_FARA_MARCAJ)
+    vazute = set()
+    for r in rr:
+        if r.get("parcurgere"):
+            k = VP.cheia_unica(r)
+            if k in vazute:
+                ref.append("cheia %s repetată (captura %s)" % (k, r.get("captura")))
+            vazute.add(k)
+    for m in ref:
+        print("REFUZ: " + m)
+    return 1 if ref else 0
+
+
 def main():
+    if "--csv" in sys.argv and "--verifica" not in sys.argv:
+        print("[publica_lot] REFUZ: „--csv” e numai pentru calibrări (--verifica); la publicare se folosește jurnalul lotului")
+        return 1
+    if len(sys.argv) == 3 and sys.argv[1] == "--controleaza":
+        return controleaza_csv(sys.argv[2])
     if len(sys.argv) in (2, 3) and sys.argv[1] == "--proba":
         return main_proba(sys.argv[2] if len(sys.argv) == 3 else None)
-    if len(sys.argv) in (4, 5) and sys.argv[1] == "--verifica":
-        return main_verifica(sys.argv[2], sys.argv[3], sys.argv[4] if len(sys.argv) == 5 else None)
+    if len(sys.argv) >= 4 and sys.argv[1] == "--verifica":
+        a = sys.argv[2:]
+        cv = None
+        if "--csv" in a:
+            i = a.index("--csv")
+            cv = a[i + 1] if i + 1 < len(a) else None
+            a = a[:i] + a[i + 2:]
+        return main_verifica(a[0], a[1], a[2] if len(a) > 2 else None, cv)
     lot = JL.lot_curent()
     lotf = L.lot_fisier(lot)
     sha = git("rev-parse", "HEAD")
