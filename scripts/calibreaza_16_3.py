@@ -383,6 +383,7 @@ def stub(tmp):
     STOP „neefectuată”. Parcursul real rulează numai pasul a (PARCURS_PASI=a); rândurile sunt în jurnal_verificare_calibrare.csv, etichetele calib_stub_nu și calib_stub_da."""
     import verifica_pas as VP
     csv_ = os.path.join(RAD, "docs", "dovezi", "16_3", "jurnal_verificare_calibrare.csv")
+    sha = g(RAD, "rev-parse", "HEAD").stdout.strip()
     marca = os.path.join(tmp, "marca.txt")
     stub_ = os.path.join(tmp, "claude_stub")
     open(stub_, "w").write(STUB)
@@ -391,18 +392,18 @@ def stub(tmp):
     caz("3 stub „nu corespunde” pe a.1 la ambele instanțe => STOP dezacord, a.1 numită, ieșire 1", r.returncode == 1 and "STOP dezacord oracol–verificator: a.1" in r.stdout, r.stdout.strip()[-260:])
     m = open(marca).read().splitlines()
     caz("3 stub: s-au pornit două instanțe (prima pe a.1, a doua numai pe a.1) cu modelul Haiku 5.5 și Read restrâns", len(m) == 2 and "prima" in m[0] and "a doua" in m[1] and "--model claude-haiku-5-5" in m[0] and "--tools Read" in m[0], m)
-    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_nu"]
+    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_nu" and x["commit"] == sha]
     caz("3 stub: ambele răspunsuri stau pe același rând (verificator_independent și verificator_independent_2), marcaj valid", len(rr) == 1 and rr[0]["verificator_independent"].startswith("nu corespunde") and rr[0]["verificator_independent_2"].startswith("nu corespunde") and VP.marcaj_valid(rr[0]), rr[0]["verificator_independent"] if rr else "")
     os.remove(marca)
     r = _lanseaza(csv_, "calib_stub_nu", "nu_da", marca, fara_parcurs=True)
-    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_nu"]
+    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_nu" and x["commit"] == sha]
     caz("3 stub „nu corespunde” la prima și „corespunde” la a doua => trece (ieșire 0), a doua instanță pe același rând", r.returncode == 0 and "STOP" not in r.stdout and rr[0]["verificator_independent"].startswith("nu corespunde") and rr[0]["verificator_independent_2"].startswith("corespunde"), r.stdout.strip()[-200:])
     os.remove(marca)
     r = _lanseaza(csv_, "calib_stub_nu", "nejudecabil", marca, fara_parcurs=True)
     caz("3 stub „nejudecabil” pe toate => STOP „neefectuată”, ieșire 1", r.returncode == 1 and "neefectuată" in r.stdout, r.stdout.strip()[-200:])
     os.remove(marca)
     r = _lanseaza(csv_, "calib_stub_da", "da", marca)
-    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_da"]
+    rr = [x for x in VP.randuri_csv(csv_) if x["parcurgere"] == "calib_stub_da" and x["commit"] == sha]
     caz("3 stub „corespunde” pe toate => trece (ieșire 0), o singură instanță", r.returncode == 0 and len(open(marca).read().splitlines()) == 1 and rr[0]["verificator_independent"].startswith("corespunde") and not rr[0]["verificator_independent_2"], r.stdout.strip()[-200:])
     r = sh([PY, os.path.join(AICI, "publica_lot.py"), "--controleaza", csv_])
     caz("3 jurnal_verificare_calibrare.csv după rulările cu stub: controleaza trece (capturi, chei unice, marcaje)", r.returncode == 0, r.stdout.strip()[-200:])

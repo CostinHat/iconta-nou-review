@@ -214,8 +214,7 @@ def completeaza_independent(csv_, lot, parcurgere, sha, verificator, pas, r1, r2
     for r in randuri:
         if cheia_unica(r) == (lot, parcurgere, pas, sha, verificator):
             r["verificator_independent"] = r1
-            if r2 is not None:
-                r["verificator_independent_2"] = r2
+            r["verificator_independent_2"] = r2 or ""   # o reluare a verificatorului nu păstrează a doua instanță a răspunsului dinainte
             r["marcaj"] = marcaj_rand(r)
             gasit = True
     if not gasit:
