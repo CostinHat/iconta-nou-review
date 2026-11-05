@@ -1,0 +1,16 @@
+FORMATE FIXATE LA PARCURGEREA „ÎNAINTE” (comanda 16.2-B, pct.1) — baza f259ca24, iconta_test restaurată din snapshotul 16.0, F1 Comert Stoc SRL, 1366×768, ceas fix 03.11.2026.
+Un format fixat aici nu poate fi obiectul unei deficiențe din acest lot. Sursa: lansator.out + capturile din docs/dovezi/16_2_B/inainte/code/capturi/ (și textul din cod, la care parcursul „înainte” n-a ajuns).
+
+1. Rândul din Casă (captura a.3): coloane Data | Document | Partener · operațiunea | Încasare (lei) | Plată (lei) | Sold (lei) | Nota | Acțiune. Rândul existent:
+   „02.11.2026 | fără document | test 610 — notă din introducere manuală | 10,00 | (gol) | 568,46 | ● notă ciornă — din alt ecran | Stornează Șterge”.
+   Sumele: separator de mii punct, zecimale virgulă („1.210,00”); data zz.ll.aaaa; documentul chitanței apare „CHF1-<număr>” (cum a fost găsit rândul CHF1-1 în proba 16.3).
+2. Antetul Casei: „Luna 11/2026 · sold la început 558,46 lei · sold final 568,46 lei (din care în contabilitate, pe notele validate — fișa contului 5311: 442,00 lei; …)”.
+3. Zona pozițiilor deschise (lista de la c), așa cum o desenează aplicația fără poziții, citită la „înainte”:
+   „Factura încasată (sau soldul preluat al clientului) / Nicio factură emisă neîncasată și niciun sold preluat de încasat pentru acest CUI. / Avans, fără factură (factura de avans se emite după)”.
+   Forma unui rând de poziție (din cod, firme.js deseneazaFacturi): „<număr document> · <client> · rămas <suma în format ro-RO> lei”, cu casetă de bifat.
+4. Refuzul pe F5 SRL Salariati (captura e.5): caseta „⚠ Încasarea nu s-a salvat: încasarea în numerar de la client se face cu chitanță (OMFP 2634/2015, cod 14-4-1), emisă de aplicație. Chitanța nu s-a emis: firma n-are serie pentru chitanțe. Seria o stabilește firma (OMFP 2634/2015 anexa 1 pct.24) — scrie-o în Date firmă, la «Chitanțe», o singură dată; numerotarea continuă pe ea.”, cu câmpul „Seria chitanțelor (ex: CH)” și butonul „Stabilește seria și emite chitanța”. Caseta stă lângă zona #c-mesaj (în bara fixă), nu în ea (facturi_ecran.js cereSeriaChitanteiPeLoc, 543).
+5. Mesajul de confirmare după Adaugă (din cod, firme.js adaugaOperatiaCasa): „Dispoziția a fost salvată. Nota <nr> e <stare>. … Chitanța <serie> nr. <număr> a fost emisă.”, în #c-confirmare, verde, deasupra antetului Casei.
+4b. Istoric facturi (din cod, facturi_ecran.js): sub numele facturii, „<data> · <direcție> · <încasată | neîncasată>” — starea apărea în același text cu data.
+
+6. Adăugat la parcurgerea „înainte” a lui 16.2-B (lansator, [format]): notele lunii 11/2026 pe F1 la deschidere — 5 note ciornă (5311/7588:10; 371/408:500; 4428.01/408:105; 371/401:100; 4426/401:21), niciuna 5311/4111; mesajul de refuz al plății de 1.779,46 lei: „Plată către furnizor de 1.779,46 lei nu încape în casă (contul 531…” (core/casa_sold.py:114), cifra soldului în formatul ro-RO; zona pozițiilor la „înainte”: fără poziții, fără sumă (b.8 găsește 5 butoane cu text depășit, b.9 „Adaugă” activ pe formular gol, c.1 0 poziții).
+Pe baza f259ca24 pașii f, g, h, i, j nu pot fi parcurși (nu se emite chitanța: lista pozițiilor e goală fără sumă); g.9 e deci neexecutat, nu „trece”.
