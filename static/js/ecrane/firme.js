@@ -39,7 +39,7 @@ import { fluxConcediu } from "./flux_concediu.js?v=fc0dc15c22";  /* cm_flux_v1 *
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=0b48920b43";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=f2c279c591";   // [lotul 13, 543] seria chitanțelor pe loc
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=98d7beb362";   // [lotul 13, 543] seria chitanțelor pe loc
 import { cautaInLista } from "./emitere_ecran.js?v=0cbbc9ae46";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=b9fdb13bcc";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=50cade9fc8";  /* [C11, 07.10.2026] bilanțul prin coadă */
@@ -5443,7 +5443,7 @@ async function ecranScoateFirma(corp, nav, t) {
        de sub „Firme dezactivate" o aduci înapoi oricând, în starea de dinainte.</p>
     <button class="buton-primar" id="sf-dezactiveaza" data-actiune="POST /tenants/{tenant_id}/activare">Dezactivează firma (reversibil)</button>`;
   zona.querySelector("#sf-dezactiveaza").addEventListener("click", async () => {
-    const b = zona.querySelector("#sf-dezactiveaza");
+    const b = zona.querySelector("#sf-dezactiveaza") || document.getElementById("sf-dezactiveaza");   // [16.8, 760] butonul a trecut în bara de jos (același nod)
     b.disabled = true; b.textContent = "Se dezactivează…";
     try {
       await api.post(`/tenants/${t.id}/activare`, { activ: false });

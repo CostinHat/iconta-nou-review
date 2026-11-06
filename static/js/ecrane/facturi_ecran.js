@@ -317,7 +317,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=ca2c1064ed");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=d6163dcf72");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -1307,7 +1307,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       form.querySelector("#fd-chit-nu").addEventListener("click", () => nav.inapoi());
       // funcția are nume: după seria stabilită pe loc (543) emiterea se reia chemând-o, nu printr-un clic dat de cod
       form.querySelector("#fd-chit-ok").addEventListener("click", async function emiteChitanta() {
-        const b = form.querySelector("#fd-chit-ok"), msg = form.querySelector("#fd-chit-msg");
+        const b = form.querySelector("#fd-chit-ok") || document.getElementById("fd-chit-ok"), msg = form.querySelector("#fd-chit-msg");   // [16.8, 760] „Emite” a trecut în bara de jos (același nod, în afara formularului)
         const suma = parseFloat(form.querySelector("#fd-chit-suma").value) || 0;
         const data = form.querySelector("#fd-chit-data").value;
         // [lotul 11, 440] toate câmpurile deodată, fiecare lângă el (`cereCompletate` / `eroareCamp`), nu primul în zona de jos
@@ -1417,7 +1417,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=ca2c1064ed");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=d6163dcf72");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });

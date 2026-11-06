@@ -125,11 +125,29 @@ export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Capacitate|Operațiuni s
 const _esteMeniu = (corp, bara) => !![...corp.querySelectorAll(".firme-optiune")].find(_vizibil)
   && ![...corp.querySelectorAll(".buton-primar")].some((b) => !bara.contains(b) && _vizibil(b) && !b.closest("table, template, details"));
 
-// [16.8, 760] id-urile butoanelor găsite de catalog care NU se mută în bară (rămân în conținut; în bară stă un proxy care apasă originalul): ecranele lor își caută
-// butonul într-un container care nu conține bara, după mutare, într-un fișier în care lotul 16.8 nu are voie să schimbe logica (cascada ?v= ar ieși din lista de
-// fișiere permise). Fiecare id are comentariul cu fișier:linie al căutării. Ecranele lor rămân roșii la rândul b: limită declarată, le închide lotul 16.9.
+// [16.8, 760] NU_MUTA = id-urile butoanelor găsite de catalog care NU se mută în bară (rămân în conținut; în bară stă un proxy care apasă originalul, `sursa.click()`).
+// Motivul fiecăruia: ecranul (sau testul) își caută butonul într-un container care nu conține bara, după mutare, într-un fișier în care lotul 16.8 nu are voie să schimbe
+// logica (scrierea `?v=` în cascadă ar ieși din lista de fișiere permise) sau într-un test din plasa fixă, care nu se modifică. Un buton fără `id` nu se mută niciodată
+// (ecranul nu-l poate căuta; rând dintr-o listă, ex. `.val-aproba`): proxy. Ecranele lor rămân roșii la rândul b: limită declarată, le închide lotul 16.9.
 const NU_MUTA = new Set([
+  "cab-salveaza-intocmitor",   // static/js/ecrane/intocmitor_bilant.js:66 (zona.querySelector)
+  "op-trimite",               // static/js/ecrane/borderou_ecran.js:169 (f.querySelector)
+  "rap-trimite",              // static/js/ecrane/admin_raportari.js:196, :246, :251 (fir.querySelector); frontend_test/e2e/e2e_pozitii_validate.py:656 („#rap-fir #rap-trimite”, plasa fixă)
+  "spv-conecteaza",           // static/js/ecrane/setari.js:498 (zona.querySelector)
+  "nir-leaga",                // static/js/ecrane/nir_legare.js:34 (zona.querySelector)
+  "pr-salveaza",              // static/js/ecrane/produse_ecran.js:311 (zona.querySelector)
+  "asi-salveaza",             // static/js/ecrane/asistenti.js:284, :286 (box.querySelector)
+  "pp-anaf-aplica",           // static/js/ecrane/clienti_ecran.js:442 (st.querySelector)
+  "cm-calc",                  // static/js/ecrane/flux_concediu.js:213 (zona.querySelector)
+  "mig-importa",              // static/js/ecrane/migrare.js:2557, :2664, :2665 (zona.querySelector)
+  "mig-salveaza-rip",         // static/js/ecrane/migrare.js:2751, :2753 (zona.querySelector)
+  "df-cui-continua",          // static/js/ecrane/date_firma.js:943 (zona.querySelector)
+  "df-cui-confirma",          // static/js/ecrane/date_firma.js:957 (zona.querySelector)
+  "an-trimite",               // static/js/ecrane/admin.js:206 (c.querySelector)
+  "coada-confirma",           // static/js/ecrane/coada_trimite.js:80 (zona.querySelector)
+  "coada-deja-inlocuieste",   // static/js/ecrane/coada_trimite.js:99 (b.querySelector)
 ]);
+const _nuSeMuta = (b) => !b.id || NU_MUTA.has(b.id);
 
 // un buton dintr-un `<details>` închis nu se vede, dar există și poate fi acțiunea ferestrei: se judecă după `<details>`-ul lui, nu după el
 const _vizibilSauInDetails = (b) => {
@@ -230,7 +248,7 @@ export function baraDeJos(fer, corp, { renunta }) {
     if (candidat && candidat.__catalog) {
       // [16.8, 760] acțiune găsită de catalog: același nod (id, ascultători) se mută în bară, ca butonul marcat; un singur element vizibil pe ecran. Numai id-urile din
       // NU_MUTA păstrează proxy-ul: originalul rămâne în conținut, ca buton secundar (`fj-are-principal`)
-      if (NU_MUTA.has(candidat.id)) candidat = principal && principal.__sursa === candidat ? principal : _proxy(candidat);
+      if (_nuSeMuta(candidat)) candidat = principal && principal.__sursa === candidat ? principal : _proxy(candidat);
     }
     if (principal && principal.__sursa) { principal.textContent = _normalizeaza(principal.__sursa.textContent); principal.disabled = !!principal.__sursa.disabled; principal.title = principal.__sursa.title || ""; }
     if (candidat && candidat !== principal) {

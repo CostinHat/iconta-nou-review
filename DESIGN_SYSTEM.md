@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.105 · 27 octombrie 2026 (editabil prin SSH)*
+*Document normativ · v2.106 · 6 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -140,7 +140,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Săgeata portocalie (`.btn-nav`) duce MEREU exact un pas înapoi în ierarhia ecranului.
 - Mecanismul: `nav.setInapoi(fn)` — obligatoriu apelat la începutul FIECĂRUI sub-ecran: rădăcina cu undefined/null, sub-ecranele cu funcția părinte.
 - Ordinea la „←” (lotul 12, C140): (1) pasul intern declarat de ecran cu `setInapoi(fn)`, o singură dată; (2) pasul de pe traseu (`nav.mergi`); (3) fereastra. Rădăcina = ecranul dat lui `nav.deschide` / `nav.mergi`; ea NU declară ca pas intern ecranul altei ferestre (gard `core/test_lot12_inapoi_sageata.py`). Un ecran redesenat de la început pornește fără pas intern; `nav.reiaPasul()` redesenează pasul curent de la început.
-- X-ul închide fereastra de oriunde. Săgeata nu ține locul lui X.
+- X-ul închide fereastra de oriunde. Săgeata nu ține locul lui X. „✕” de 40 × 40 e în dreapta sus pe FIECARE fereastră de lucru (prima, deschisă peste alta, mare sau mică); „←” de 40 × 40 apare numai unde există un pas înapoi real (altă fereastră dedesubt, pas intern al ecranului, pas pe traseu), o singură condiție în `navigator.js` pentru desen și pentru `setInapoi`; pe prima fereastră fără pas intern bara are numai „✕”. Acțiunea principală a ferestrei apare o singură dată pe ecran: butonul din conținut se mută în bara de jos (același nod, același id), nu se ascunde și nu se copiază. Ieșirea din cont a dashboardului e o pictogramă de ieșire de 40 × 40, nu „←”; în previzualizarea portalului client butonul se numește „Închide previzualizarea”.
 - Ecranele-poartă (configurare obligatorie) primesc `setInapoi(undefined)` ca să evite bucla.
 - **Ce s-a tastat nu se pierde (v2.67, comanda Costin 05.10.2026).** Gard `PASTRARE_FORMULAR`. O fereastră sau un pas în care omul a
   tastat (`input`/`change`) își păstrează elementul `.fereastra-corp` când se deschide altceva peste el (`nav.deschide`, `nav.mergi`) și îl primește înapoi la
@@ -544,7 +544,7 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   potrivită PESTE ce e deschis (ce s-a tastat nu se pierde, cap.3), pe firma în lucru; fără firmă în lucru, rezultatele de firmă cer întâi
   firma. Acțiunile refuzate rolului nu apar (`permis`, `drepturi.js`). Gard: `core/test_lot13_ds_cautare.py` (server + structură: căsuța în
   fereastră, Ctrl+K, nicio dată căutată) + e2e `test_def_681_*` (inclusiv `test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste`).
-- **Bara de sus a ferestrei: „✕” sus-dreapta (v2.105, lotul 16.7, deficiența 759; regula permanentă a lui Costin, iulie 2026).** bara de sus: 56 px, fără traseu, firma sau cabinetul în lucru cu CUI, numele ferestrei, căutarea; „✕” (închidere) de 40 × 40, exact unul, ultimul element din bară, în dreapta sus, pe FIECARE fereastră de lucru și pe cele mici; „←” nu se judecă: apare numai unde există un pas înapoi real (fereastră deschisă din alta sau cu pas intern), altfel fereastra are numai „✕”. Gard: rândul `a` din `RANDURI` (`.fereastra-antet`, `.nav-x`, verificator) și `core/test_verificator_design_16_7.py`. Acțiunea principală a ferestrei apare o singură dată pe ecran (759/760): rândul `b` din `RANDURI`.
+- **Bara de sus a ferestrei: „✕” sus-dreapta (v2.105, lotul 16.7, deficiența 759; regula permanentă a lui Costin, iulie 2026).** bara de sus: 56 px, fără traseu, firma sau cabinetul în lucru cu CUI, numele ferestrei, căutarea; „✕” (închidere) de 40 × 40, exact unul, ultimul element din bară, în dreapta sus, pe FIECARE fereastră de lucru și pe cele mici; „←” nu se judecă: apare numai unde există un pas înapoi real (fereastră deschisă din alta sau cu pas intern), altfel fereastra are numai „✕”. Gard: rândul `a` din `RANDURI` (`.fereastra-antet`, `.nav-x`, verificator) și `core/test_verificator_design_16_7.py`. Acțiunea principală a ferestrei apare o singură dată pe ecran (759/760): rândul `b` din `RANDURI`. [v2.106, lotul 16.8] Când acțiunea o găsește catalogul din `cadru.js` (inclusiv un buton dintr-un `<details>` închis, ca „Generează / Regenerează Dxxx”), nodul original se mută în bara de jos și devine butonul principal (`.fj-principal`, 52 px); în conținut nu rămâne niciun element cu același id; singurele excepții sunt id-urile din `NU_MUTA` (`cadru.js`), care păstrează un proxy. Bannerul de eroare al aplicației are „✕” de 40 × 40 care îl închide; o eroare nouă după închidere îl arată din nou.
 - **Rezumatul nu mănâncă tabelul (v2.102, lotul 12, 621; comanda Costin 12.2 pct.11, verbatim: „Balanța: casetele de sus ocupă jumătate
   din fereastră, se văd 2–3 rânduri de tabel; caseta «Importă…» nu are buton spre import.”; cerința: „Casetele nu mănâncă tabelul — regulă
   globală”).** (1) În rezumatul lipit sus (`.rezumat-fix`) stă numai ce trebuie văzut cât derulezi: titlul, perioada, cifrele, butoanele, zona
@@ -1320,6 +1320,7 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.106 (06.11.2026)** — lotul 16.8 (produs), deficiențele 759, 760, 786: „✕” de 40 × 40 pe fiecare fereastră de lucru, „←” numai unde există un pas înapoi real (o singură condiție), acțiunea principală mutată în bara de jos o singură dată (nodul original, nu proxy; catalogul acceptă butoane din `<details>` și „Regenerează”), ieșirea din cont cu pictogramă de 40 × 40 și „Închide previzualizarea” în portalul client, „✕” pe bannerul de eroare; `.nav-x` e 40 × 40 pentru toți consumatorii clasei (o clasă, o dimensiune).
 **v2.105 (27.10.2026)** — lotul 14, comanda Costin 14.1, deficiența 687 (clasă): **cap.9 — „Fiecare fereastră de lucru încape pe un singur ecran”**
 (măsurat la 1920 × 1080 și 1366 × 768; zona de derulare a tabelului / a listei; șirul de carduri-rezumat `siraCarduri`). Gărzi: `frontend_test/vizual/
 incape_ecran.py`, `core/test_incape_ecran.py`, `core/test_lot14_incape.py`.
