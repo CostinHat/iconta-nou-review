@@ -15,7 +15,7 @@
 // Starea o dă piesa: câmpurile obligatorii ale ecranului sunt etichetele cu „*”; cât un câmp vizibil de acest fel e gol, butonul principal e
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
-import { alegereButoane, alegereComutator, alegereText, esteAlege } from "./api.js?v=0b48920b43";
+import { alegereButoane, alegereComutator, alegereText, esteAlege, MAX_BUTOANE } from "./api.js?v=0b48920b43";
 import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel } from "./ds_piese.js?v=9134560fa9";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
@@ -79,7 +79,9 @@ function _listeDerulante(corp) {
     }
     if (reale.length === 1) { alegereText(sel); continue; }   // [15.1-E5] o singură variantă = text, fără control
     const lung = reale.some((o) => (o.dataset.buton || o.textContent || "").trim().length > 30);
-    if (reale.length >= 7 || lung) listaCuCautare(sel, { gol: "Alege din listă", cautare: "Caută în listă…" });
+    // [16.8-C1, 760] lista cerută în șablon ca grup de butoane (`data-butoane`) rămâne grup: nu primește și lista cu căutare (două controale pentru aceeași alegere)
+    const cerutButoane = sel.hasAttribute("data-butoane") && reale.length <= (Number(sel.getAttribute("data-butoane")) || MAX_BUTOANE);
+    if ((reale.length >= 7 || lung) && !cerutButoane) listaCuCautare(sel, { gol: "Alege din listă", cautare: "Caută în listă…" });
     else alegereButoane(sel);
   }
 }
