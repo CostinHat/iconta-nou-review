@@ -213,7 +213,11 @@ def _sterge(cale):
 
 def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="3", detalii="", verificator=True, sonda_8019=None, opreste_8019=None):
     """-> (durate pe treaptă, teste). `pytest_ids`/`e2e_fisiere` None = tot (nucleul / manifestul); listă = numai acelea (reluarea). Baza de test se restaurează înainte de
-    pytest și înainte de plasa e2e (niciodată per test). Toate treptele rulează, și după una roșie."""
+    pytest și înainte de plasa e2e (niciodată per test). Toate treptele rulează, și după una roșie.
+    [16.7] Xml-ul unei trepte se șterge înainte de ea, iar un cod nenul fără raport junit proaspăt e ROȘU (o picătură de infrastructură); plasa nu pornește cât 8019
+    răspunde (`sonda_8019`, implicit sonda reală): o oprește (`opreste_8019`) și continuă."""
+    sonda_8019 = sonda_8019 or _sonda_8019
+    opreste_8019 = opreste_8019 or _opreste_8019
     py = "./venv/bin/python"
     env = dict(os.environ, POARTA_SARE="1", PATH=os.path.join(wt, "scripts", "bin") + ":" + os.environ.get("PATH", ""))
     trepte, teste = {}, []

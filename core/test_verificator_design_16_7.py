@@ -195,3 +195,14 @@ def test_plasa_opreste_8019_cand_raspunde_si_continua(tmp_path):
     opriri.clear()
     L.ruleaza_trepte(wt, j, pytest_ids=[], e2e_fisiere=["e2e_x.py"], verificator=False, sonda_8019=lambda: False, opreste_8019=lambda: opriri.append(1))
     assert opriri == []
+
+
+@SARE_CU_RAD
+def test_plasa_foloseste_sonda_si_oprirea_implicite_cand_nu_se_dau(tmp_path, monkeypatch):
+    import poarta_lib as L
+    wt, j = _wt(tmp_path, 3)
+    opriri = []
+    monkeypatch.setattr(L, "_sonda_8019", lambda: True)
+    monkeypatch.setattr(L, "_opreste_8019", lambda: opriri.append(1))
+    L.ruleaza_trepte(wt, j, pytest_ids=[], e2e_fisiere=["e2e_x.py"], verificator=False)
+    assert opriri == [1]
