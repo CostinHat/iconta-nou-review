@@ -1,0 +1,3 @@
+coduri în fixtura pilot: 44 | cu text diferit vechi/nou: 1 | [('X02', 0, 315)] | identice: 43
+X05 vechi: 0 nou: 1812
+X06 vechi: 0 nou: 3125

@@ -1,0 +1,6 @@
+# baza
+[liste exceptii] VERDE: 5 titluri în cadru.js, 12 intrări în EXCEPTII_B, 7 numai în EXCEPTII_B (DOAR_PY)
+cod de ieșire: 0
+# ada64bef
+[liste exceptii] VERDE: 5 titluri în cadru.js, 12 intrări în EXCEPTII_B, 7 numai în EXCEPTII_B (DOAR_PY)
+cod de ieșire: 0

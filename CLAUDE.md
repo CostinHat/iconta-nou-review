@@ -220,6 +220,8 @@ se scrie „OPRIT”; singura oprire permisă acolo (risc pentru producție) se 
 - Textele dau instrucțiuni directe, în limba contabilului, cu diacritice; fără termeni de programator.
 - Orice regulă vizuală stă în DESIGN_SYSTEM.md și în verificator; situații identice, soluții identice.
 - Rândurile a (bara de sus: „✕” 40 × 40 în dreapta sus pe orice fereastră; „←” numai unde există un pas înapoi real, nejudecat) și b (acțiunea principală o singură dată pe ecran) sunt în scripts/verificator_design.py::RANDURI. O comandă care scoate sau mută un element pe toate ecranele se verifică întâi cu regula permanentă a lui Costin; regula nouă intră în RANDURI și se rulează pe tot registrul (scripts/matrice_16_7.py) înainte de comandă.
+- Lista ferestrelor fără acțiune principală există în două locuri, static/js/cadru.js::FARA_ACTIUNE_PRINCIPALA și scripts/verificator_design.py::EXCEPTII_B; scripts/verifica_liste_exceptii.py le compară la fiecare commit (hook) și refuză orice diferență neînscrisă în DOAR_PY. O fereastră cu acțiune („Generează …”, „Trimite …”) nu se exceptează: acțiunea se repară în bara de jos.
+- Opțiunea --sectiune a lanseaza_verificator.py acceptă orice cod de forma F123 sau X05 (literă + 2–3 cifre); o secțiune negăsită este refuz la lansare, nu scenariu gol.
 - Raportul fiecărui lot dă numărul rulărilor „intrerupt” pe fază.
 
 R7. Un ecran e migrat numai când verificatorul de design dă TRECE pe toate rândurile criteriului „migrat” din promptul lui (bara de sus, fereastra de lucru cu bara de jos fixă, tabelul DS, card-rezumat și semnale pe rând, acțiune = buton, titluri și texte din catalog, funcția unică de format, cota TVA ca grup cu categorii). Un singur PICĂ înseamnă nemigrat. Pixelii (derulare, margini, text tăiat) nu înlocuiesc piesele.

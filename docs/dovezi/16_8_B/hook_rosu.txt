@@ -1,0 +1,5 @@
+# static/js/cadru.js fără «Capacitate» în FARA_ACTIUNE_PRINCIPALA (arbore de lucru, necomis); sh scripts/inainte_de_commit.sh
+[liste exceptii] REFUZ: „Capacitate” din EXCEPTII_B nu are titlu în cadru.js și nu e în DOAR_PY
+[inainte de commit] ROSU: listele de exceptii (cadru.js / EXCEPTII_B)
+cod de ieșire: 1
+durată: 0 s
