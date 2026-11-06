@@ -1282,7 +1282,7 @@ function randeazaFormularD177(corp, nav) {
     </div>
     ${grila}
     <div class="camp-eticheta" style="margin:12px 0 4px">Adaugă beneficiar:</div>
-    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">
+    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end">
       <label class="camp" style="flex:1 1 320px"><span class="camp-eticheta">Tipul beneficiarului <span class="oblig">*</span></span>
         <select id="d177-tip" class="camp-input" data-butoane="">${ALEGE}${_D177_TIPB.map((t) => `<option value="${t.val}">${esc(t.et)}</option>`).join("")}</select></label>
       <label class="camp" style="width:160px"><span class="camp-eticheta" id="d177-cui-et">CUI beneficiar <span class="oblig">*</span></span><input id="d177-cui" type="text" class="camp-input"></label>
