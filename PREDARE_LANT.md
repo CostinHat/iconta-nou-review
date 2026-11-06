@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**06.11.2026 — COMANDA 16.8 (produs) pe `lucru/lot16-8` (worktree `/home/costin/iconta_lot16_8`), NEPUBLICAT.** Candidat bba5a7e2: matricea completă are 0 la a și b în afara lui Tipare de erori (fără date), Fișa salariatului F5, D177 și D398 (derulare la 1366 × 768) și a ferestrei mici; poarta ROȘIE numai pe test_pilot_X05 (a.6: oracolul cere „←” ascuns pe fereastra firmei, care are 3 ferestre dedesubt). Lipsește o decizie a arhitectului asupra a.6; vezi DECIZII „Comanda 16.8”.
+
 **06.11.2026 — COMANDA 16.7 (unelte) pe `lucru/lot16-7` (worktree `/home/costin/iconta_lot16_7`), C = `237225c503d0a245807a4af960f7e2851947a0c1`, poarta VERDE (1905 teste, regresie 0).** Rândurile a (bara de sus: „✕”) și b (acțiunea principală o singură dată) ale verificatorului sunt calibrate; matricea pe tot registrul (105 intrări) e în `docs/dovezi/16_7/matrice_inainte.csv` și dă lista lotului de produs 16.8 (759, 760). Starea publicării: vezi `~/lot_16_7_raport.md`.
 
 **05.11.2026 — COMANDA 16.6-C1 (produs; corecție la 16.6) pe `lucru/lot16-6` (worktree `/home/costin/iconta_lot16_6`), C = `c98ebb468cdfc110867a5aa6ec83f3df64986470`, poarta VERDE, oracolul 78/78 «trece», Haiku fără «nu corespunde».** Remediul 610 / 48 în `static/stil.css` (regula ferestrei cu buton principal acoperea starea inactivă), R3 nou, 759→781. Starea publicării: vezi `~/lot_16_6_C1_raport.md`.
