@@ -3150,6 +3150,10 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 .alegere-butoane { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 40px; }
 .alegere-butoane[hidden] { display: none !important; }
 .alegere-butoane > button { padding: 7px 14px; }
+/* [16.8-C1, 760] Câmpul cu butoane alăturate dintr-un formular de declarație (`.dec-man-form`) ia lățimea butoanelor, nu lățimea fixă a
+   coloanei de câmpuri: într-o coloană de 130–230 px butoanele se așezau unul sub altul (D398: trei rânduri pentru „Regim special”, șase pentru
+   „De unde pleacă livrarea”) și fereastra declarației derula. Câmpul își păstrează eticheta, ordinea și opțiunile. */
+.dec-man-form > .camp:has(> .alegere-butoane) { width: auto !important; flex: 0 1 auto !important; }
 .alegere-butoane > button[aria-checked="true"] { font-weight: 600; }
 .alegere-butoane:has(+ select.camp-invalid) > button { border-color: var(--rosu); }
 select.alegere-sursa { position: absolute !important; width: 1px !important; height: 1px !important; min-width: 0 !important;
