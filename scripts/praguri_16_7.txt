@@ -1,0 +1,18 @@
+unelte
+lot: 16.7
+fara praguri numerice pe durate (lot de unelte, se masoara); referinta (16.6, 05.11, a doua rulare completa verde pe d2175e60, din ~/lot_16_6_raport.md): 1882 s = totalul portii (146, 736 si 825 sunt faze; verificatorul ruleaza in paralel cu pytest); raportul 16.7 compara si cu raportul lui 16.6-C2, daca exista; hook 162 s; matricea (registrul pe ambele rezolutii) nu are referinta anterioara, i se masoara durata; consecinta la raport: o rulare completa > 2258 s (= 1882 x 1,2) sau o matrice mai lunga decat o rulare completa a portii = numar nou de unelte in DEFICIENTE.md (starea neverificat), scris de Code la urmatorul C liber, intr-un commit dupa C; nu blocheaza publicarea
+runde_verificator_max: 0
+limitele de rulari: 2 rulari complete si 2 reluari, aplicate de scripts/poarta_rulare.py (:116, :146; stare json), nu de acest fisier; cerinta de raport: cel mult 1 reluare
+fisiere_permise (informativ; perimetrul real la un lot unelte = unelte_refuzuri, publica_lot.py:254-267: UNELTE_PERMISE, docs/dovezi/<lot>/, fisierele de test din core, intrarile cu / din aceasta lista; orice altceva = refuz cu numele lui):
+  scripts/
+  scripts/publica_lot.py
+  scripts/poarta_lib.py
+  scripts/poarta_lot.sh
+  scripts/inventar_restante.py
+  core/catalog_ecrane.json
+  DESIGN_SYSTEM.md
+  CLAUDE.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/16_7/
