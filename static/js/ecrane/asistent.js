@@ -15,7 +15,7 @@ import { randeazaValidat } from "./validat.js?v=c9f42e8159";
 import { randeazaListaFirme } from "./firme.js?v=ca2c1064ed";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=b0012ef39e"; // [p44_declaratii]
+import { randeazaDeclaratii } from "./declaratii.js?v=742fe1cd1d"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=c896258ed5"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {

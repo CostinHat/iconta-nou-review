@@ -104,7 +104,7 @@ export async function deschideRezultatul(x, nav) {
   }
   if (x.fel === "declaratie") {
     await _fereastraFirmei(nav, t);
-    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=b0012ef39e");
+    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=742fe1cd1d");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, { tenant_id: t.id, nume: t.nume }, { tenant_id: t.id, tip: x.tip }),
       { lat: "tabel" });
     return;
