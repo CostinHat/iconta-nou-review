@@ -46,6 +46,6 @@ def test_solduri_transparenta_conturi_noi():
 
 
 def test_import_in_masa_descoperibil_din_firme():
-    js = _read("static/js/ecrane/firme.js")
-    assert "firme-import-masa" in js, "importul in masa nu e descoperibil din lista de firme (Q4)"
-    assert "randeazaMigrare" in js, "butonul de import in masa nu deschide migrarea cabinetului"
+    js = _read("static/js/ecrane/cabinet.js")   # [17.1] o singură intrare spre Migrare cabinet: opțiunea din meniul „Firme” (butonul din „Firme existente” a dispărut)
+    assert "opt-migrare" in js, "importul in masa nu e descoperibil din meniul Firme (Q4)"
+    assert "randeazaMigrare" in js, "optiunea de import in masa nu deschide migrarea cabinetului"

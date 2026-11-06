@@ -32,7 +32,7 @@ def test_sursele_se_citesc_din_ecrane():
     """1. MUTAȚIE: `const REGISTRU = [` redenumit în `operatiuni_ecran.js` -> nicio operațiune -> pică."""
     carduri = {c["cheie"]: c for c in C.carduri_firma()}
     assert len(carduri) >= 30, len(carduri)
-    assert carduri["casa"]["titlu"] == "Casă" and carduri["salariati"]["grup_titlu"] == "Zilnic", carduri["casa"]
+    assert carduri["casa"]["titlu"] == "Casă" and carduri["salariati"]["grup_titlu"] == "Personal și stocuri", carduri["casa"]
     ops = {o["cheie"]: o for o in C.operatiuni()}
     assert len(ops) >= 25, len(ops)
     assert ops["decont"]["titlu"] == "Decont deplasare / diurnă" and ops["decont"]["cat"] == "Personal și deconturi", ops["decont"]

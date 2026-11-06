@@ -246,7 +246,7 @@ def test_inchiderea_lunii_cere_amortizarea_lunii_si_semnaleaza_581(cu_mf, monkey
 def test_inchiderea_lunii_are_cardul_ei_in_grupul_zilnic():
     firme = _js("static/js/ecrane/firme.js")
     m = re.search(r'\{ cheie: "inchidere", regim: "[a-z]+", grup: "([a-z]+)", titlu: "([^"]+)"', firme)
-    assert m and m.group(1) == "zilnic" and m.group(2) == "\\u00cenchidere lun\\u0103", m and m.groups()
+    assert m and m.group(1) == "termene" and m.group(2) == "\\u00cenchidere lun\\u0103", m and m.groups()   # [17.1] cardul stă în grupul Termene (numele testului și docstringul spun încă „Zilnic”)
     # cardul deschide ecranul închiderii (cu controalele lunii, aceleași ca poarta)
     assert re.search(r'bInchidere\.addEventListener\("click", \(\) => \{ nav\.deschide\("Închidere lună", \(c2\) => ecranInchidereLuna\(', firme)
 

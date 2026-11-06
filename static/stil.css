@@ -462,6 +462,15 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 /* lista de firme */
 .firme-cap { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
 .firme-spatiu { flex: 1; }
+.firme-cap-butoane { display: flex; align-items: center; gap: 12px; }
+/* [17.1, 788] nota „Scoate” stă pe un rând; „▾ detalii” (piesa details > summary a DS) deschide restul textului pe rândul de sub ea */
+.firme-nota { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin: 0 0 10px; }
+.firme-nota details[open] { flex-basis: 100%; }
+/* [17.1] Titlul grupului din fereastra firmei e un buton (aria-expanded) de 40 px pe toată lățimea secțiunii; își ia mărimea, greutatea, majusculele și culoarea din `.ds-grup-titlu`. Săgeata arată spre dreapta când grupul e pliat și în jos când e deschis. */
+.firme-grup-btn { display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+.firme-grup-btn:hover { color: var(--ardezie); }
+.firme-grup-sageata { flex: 0 0 16px; width: 16px; height: 16px; }
+.firme-grup-btn[aria-expanded="true"] .firme-grup-sageata { transform: rotate(90deg); }
 .firme-cautare { margin-bottom: 14px; }
 .firme-cautare input {
   width: 100%; height: 38px; padding: 0 12px;
@@ -3447,6 +3456,9 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
    „Renunță” M (44 px) lângă ea, motivul butonului inactiv în stânga. Mesajele (`.bara-fixa`) stau deasupra ei. */
 .fereastra-antet { box-sizing: border-box; height: 56px; padding: 0 16px; flex: 0 0 auto; }
 .fereastra-antet .nav-sageata { width: 40px; height: 40px; }
+/* [17.1, 790] „←” și „✕” au lățime minimă 40 px: nu se strâng când titlul, numele firmei și căutarea nu mai încap (titlul se taie cu „…”, căutarea se strânge, vezi mai jos) */
+.fereastra-antet .nav-sageata:not(.nav-inapoi-la), .fereastra-antet .nav-x { min-width: 40px; flex-shrink: 0; }
+.fereastra-antet .fereastra-titlu { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fereastra-antet .nav-sageata.nav-inapoi-la { width: auto; }
 .fereastra-antet .cautare-in-fereastra { flex: 0 1 320px; }
 .fereastra-antet .cautare-in-fereastra .cautare-camp { height: 40px; }
@@ -3498,7 +3510,7 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .dec-existente-lista li { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; }
 
 /* [15.1-E3, 681.2] căutarea din bara de sus: 320 × 40, textul de îndemn întreg („Caută o funcție: D300, stat de plată, NIR…”) încape pe un rând */
-.fereastra-antet .cautare-in-fereastra { flex: 0 0 320px; width: 320px; }
+.fereastra-antet .cautare-in-fereastra { flex: 0 1 320px; width: 320px; min-width: 160px; }   /* [17.1, 790] păstrează 320 px și se strânge până la 160 px, fără flex-grow */
 .fereastra-antet .cautare-in-fereastra .cautare-camp { font-size: 14px; padding: 0 10px; }
 .fereastra-antet .cautare-in-fereastra .cautare-camp::placeholder { text-overflow: clip; }
 

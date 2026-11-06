@@ -47,7 +47,7 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
-import { meniuMigrarePerFirma, randeazaMigrare, randeazaPreluareFirma } from "./migrare.js?v=a78d0fe5b3";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=a78d0fe5b3";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=6aff736b0c";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=cea4f49410";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=4c304d9be3";  // [produse_firma_v1]
@@ -65,24 +65,21 @@ import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locIn
 export function randeazaListaFirme(container, nav, inapoi) {
   container.innerHTML = `
     <div class="firme-cap">
+      <div class="firme-cap-butoane" id="firme-dezactivate"></div>
       <span class="firme-spatiu"></span>
-      <button class="buton-secundar" id="firme-import-masa" data-actiune="POST /migrare/importa">Import în masă (CSV)</button>
       <button class="buton-primar" id="firme-adauga" data-actiune="POST /tenants">+ Adaugă firmă</button>
     </div>
-    <p class="ecran-nota" data-actiune="POST /tenants/{tenant_id}/activare|DELETE /tenants/{tenant_id}" style="margin:0 0 10px">Butonul <strong>Scoate</strong> de pe fiecare rând
-       deschide o previzualizare, nu șterge. Acolo se vede care act e care:
+    <div class="ecran-nota firme-nota" data-actiune="POST /tenants/{tenant_id}/activare|DELETE /tenants/{tenant_id}">
+      <span>Butonul <strong>Scoate</strong> de pe fiecare rând deschide o previzualizare, nu șterge.</span>
+      <details><summary>detalii</summary>Acolo se vede care act e care:
        <strong>dezactivarea</strong> e reversibilă (firma iese din listă, datele rămân),
-       <strong>ștergerea</strong> nu e — și se poate doar dacă firma n-a produs niciun document.</p>
-    <div class="firme-cautare">
-      <label class="camp-eticheta" for="firme-q">Caut\u0103</label>
-      <input type="text" id="firme-q" class="camp-input" placeholder="Caută după nume sau CUI" autocomplete="off">
+       <strong>ștergerea</strong> nu e — și se poate doar dacă firma n-a produs niciun document.</details>
     </div>
-    <div class="firme-lista" id="firme-lista"><div class="ecran-nota">Se încarcă firmele…</div></div>
-    <div id="firme-dezactivate"></div>
+    <div class="firme-cautare">
+      <input type="text" id="firme-q" class="camp-input" placeholder="Caută după nume sau CUI" aria-label="Caută după nume sau CUI" autocomplete="off">
+    </div>
+    <div class="firme-lista" id="firme-lista" data-zona-derulare><div class="ecran-nota">Se încarcă firmele…</div></div>
   `;
-
-  container.querySelector("#firme-import-masa")?.addEventListener("click", () =>
-    nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" }));
 
   container.querySelector("#firme-adauga").addEventListener("click", () => {
     nav.deschide("Adaugă firmă", (corp) => {  /* firma_noua_v1 */
@@ -269,11 +266,8 @@ export function randeazaListaFirme(container, nav, inapoi) {
     if (!zonaDez) return;
     // [lotul 13, 675] cele două butoane stau mereu la locul lor; fără firme, inactive, cu motivul (DS cap.1 v2.104)
     zonaDez.innerHTML = `
-      <div class="firme-cap" style="margin-top:18px">
-        <span class="firme-spatiu"></span>
         <button class="buton-secundar" id="firme-vezi-dez" data-actiune="POST /tenants/{tenant_id}/activare"${dezactivate.length ? "" : atributeInactiv("Nicio firmă dezactivată.")}>Firme dezactivate (${dezactivate.length})</button>
-        <button class="buton-secundar" id="firme-vezi-scoase" data-actiune="GET /firme-scoase"${scoase.length ? "" : atributeInactiv("Nicio firmă scoasă din portofoliu.")}>Firme scoase (${scoase.length})</button>
-      </div>`;
+        <button class="buton-secundar" id="firme-vezi-scoase" data-actiune="GET /firme-scoase"${scoase.length ? "" : atributeInactiv("Nicio firmă scoasă din portofoliu.")}>Firme scoase (${scoase.length})</button>`;
     // [27.08.2026] O urmă pe care n-o poate deschide nimeni fără `psql` nu e urmă pentru cabinet,
     // e urmă pentru administratorul serverului. (Costin) După o ștergere, asta e singura dovadă
     // că firma a existat.
@@ -460,12 +454,22 @@ export function deschideFirma(t, nav) {   // [P2] reutilizat din termene.js — 
 // (cheie de aici); ordinea titlurilor e ordinea de aici; un titlu fără niciun card vizibil nu apare. Fără arbore: titlu + carduri.
 // DS cap.18 (v2.71) + verificator `GRUP_FIRMA`.
 export const GRUPURI_FIRMA = [
-  ["zilnic", "Zilnic"],
+  ["zilnic", "Zi de zi"],
+  ["personal", "Personal și stocuri"],
+  ["contabilitate", "Contabilitate"],
   ["registre", "Registre"],
-  ["raportari", "Raportări și declarații"],
-  ["speciale", "Operațiuni speciale"],
-  ["firma", "Firma"],
+  ["termene", "Termene"],
+  ["parteneri", "Parteneri"],
+  ["configurare", "Configurare"],
 ];
+
+// [17.1] Grupurile deschise ale ferestrei firmei, numai în memorie (nu în localStorage, sesiune sau adresă): cât aceeași firmă e deschisă,
+// „←”, „✕” și intrarea într-un card le lasă cum le-a lăsat omul; altă firmă și reîncărcarea paginii pornesc numai cu „Zi de zi” deschis.
+let _grupuriFirma = { firma: null, deschise: new Set(["zilnic"]) };
+function grupuriDeschise(firmaId) {
+  if (_grupuriFirma.firma !== firmaId) _grupuriFirma = { firma: firmaId, deschise: new Set(["zilnic"]) };
+  return _grupuriFirma.deschise;
+}
 
 // Cardurile vizibile, pe grupuri, în ordinea din GRUPURI_FIRMA; grupurile fără niciun card vizibil nu apar.
 export function grupeazaCarduri(vizibile) {
@@ -477,46 +481,75 @@ function meniuFirma(corp, nav, t) {
     { cheie: "facturi", regim: "ambele", grup: "zilnic", titlu: "Facturi", desc: "Emite și vezi facturile firmei",
       ...CULORI_CARD.albastru,
       icon: '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h4"/>', activ: true },
-    { cheie: "produse", regim: "ambele", grup: "firma", titlu: "Produse", desc: "Nomenclator cu cote TVA, potrivire AI",
-      ...CULORI_CARD.teal,   // [05.10.2026] lipsea: iconița ieșea pe fundal „undefined” (DS cap.12)
-      icon: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>', activ: true },  // [produse_firma_v1]
-    // [lotul 13, deficiența 577, comanda Costin 13.1: „F4 PFA: cardurile au descrieri de SRL — Declarații «D101», Verificări «Echilibru»,
-    // Registrul de evidență fiscală «Profit · art. 19»”] la partida simplă cardul spune ce are PFA-ul (`descSimpla`): D101 / D100 / D406 nu se
-    // aplică formei (`control_fiscal_api.neaplicabile_forma`), D212 e declarația lui
-    { cheie: "declaratii", regim: "ambele", grup: "raportari", titlu: "Declarații", desc: "D112, D300, D101 și restul",
-      descSimpla: "D212 (declarația unică), D300, D112 și restul",
-      ...CULORI_CARD.verde,
-      icon: '<path d="M9 13h6M9 17h4M9 9h1"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>', activ: true },
-    { cheie: "control", regim: "ambele", grup: "raportari", titlu: "Control fiscal", desc: "Semafor conformare pe firmă",
-      ...CULORI_CARD.teal,
-      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', activ: true },
-    { cheie: "salariati", regim: "ambele", grup: "zilnic", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
-      ...CULORI_CARD.piersica,
-      icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: true },
     { cheie: "bonuri", regim: "ambele", grup: "zilnic", titlu: "Bonuri și chitanțe", desc: "Pozate de client \u2014 certifică și contează",
       ...CULORI_CARD.piersica,
       icon: '<path d="M9 11l3 3 8-8"/><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>', activ: true },
-    { cheie: "jurnal", regim: "dubla", grup: "registre", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
-      ...CULORI_CARD.ardezie,
-      icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', activ: true },
     // [368, lotul 9] la PFA nu există note contabile: Z-ul intră în registrul de încasări și plăți (`descSimpla`)
     { cheie: "raportz", regim: "ambele", grup: "zilnic", titlu: "Raport Z", desc: "Încasări zilnice \u2192 notă automată",
       descSimpla: "Încasări zilnice \u2192 registrul de încasări și plăți",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M4 4h16M4 4l16 16M4 20h16"/>', activ: true },
-    { cheie: "stocuri", regim: "dubla", grup: "zilnic", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
+    { cheie: "casa", regim: "ambele", grup: "zilnic", titlu: "Cas\u0103", desc: "Registru de cas\u0103, plafoane numerar",
+      ...CULORI_CARD.verde,
+      icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>', activ: true },
+    { cheie: "banca", regim: "ambele", grup: "zilnic", titlu: "Banc\u0103", desc: "Import extras, propuneri contare",
+      ...CULORI_CARD.albastru,
+      icon: '<path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M2 9l10-6 10 6"/>', activ: true },
+    // [lotul 10, 428, deciziile Costin 20.10.2026] compensarea facturilor emise și primite ale aceluiași partener (stinge ambele, mută TVA-ul la
+    // încasare ca banca și casa) și fișele clienților (bifa „persoană afiliată”, CF art.282 alin.(6) lit.d)
+    { cheie: "compensari", regim: "dubla", grup: "zilnic", titlu: "Compensări", desc: "Facturi emise și primite ale aceluiași partener",
+      ...CULORI_CARD.violet,
+      icon: '<path d="M7 7h10l-3-3M17 17H7l3 3"/>', activ: true },
+    { cheie: "etransport", regim: "ambele", grup: "zilnic", titlu: "e-Transport", desc: "Notificare UIT, XML pentru SPV",
+      ...CULORI_CARD.chihlimbar,
+      icon: '<path d="M1 8h13v8H1zM14 11h4l3 3v2h-7z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>', activ: true },
+    { cheie: "magazin", regim: "ambele", grup: "zilnic", titlu: "Magazin online", desc: "WooCommerce \u2192 facturi automate",
+      ...CULORI_CARD.violet,
+      icon: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>', activ: true },  // wc_fe_v1
+    { cheie: "solicitari", regim: "ambele", grup: "zilnic", titlu: "Solicitări client", desc: "Mesaje primite de la firma-client",
+      ...CULORI_CARD.piersica,
+      icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>', activ: true },
+    { cheie: "registratura", regim: "ambele", grup: "zilnic", titlu: "Registratură", desc: "Numere de intrare/ieșire pe documente",  // registratura_v1
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M8 13h6M8 16h6"/>', activ: true },
+    { cheie: "rip", regim: "simpla", grup: "zilnic", titlu: "Încasări/plăți", desc: "Partidă simplă PFA/II/IF, Fișă D212",
+      ...CULORI_CARD.verde,
+      icon: '<path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', activ: true },
+    { cheie: "salariati", regim: "ambele", grup: "personal", titlu: "Salariați", desc: "Stat de plată și fluturași",
+      ...CULORI_CARD.piersica,
+      icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: true },
+    { cheie: "stocuri", regim: "dubla", grup: "personal", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', activ: true },
-    // [08.10.2026, decizia Costin U3] „Închidere lună”: card separat, în grupul Zilnic
-    { cheie: "inchidere", regim: "ambele", grup: "zilnic", titlu: "\u00cenchidere lun\u0103", desc: "Blocarea perioadei \u0219i \u00eenchiderea eviden\u021bei facturilor",
-      ...CULORI_CARD.teal,
-      icon: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>', activ: true },
-    { cheie: "fisacont", regim: "dubla", grup: "registre", titlu: "Cartea mare", desc: "Fi\u0219\u0103 de cont 14-6-22, pe cont \u0219i perioad\u0103",
+    // [368, lotul 9 — decizia Costin 8.2: „Mijloace fixe rămâne vizibil și la PFA”] registrul activelor e și al PFA (amortizarea fiscală în
+    // D212); casarea și reevaluarea, care scriu note, nu se oferă la partidă simplă (`ecranMijloace`, opt.simpla)
+    { cheie: "mijloace", regim: "ambele", grup: "personal", titlu: "Mijloace fixe", desc: "Registrul activelor: valoare, amortizat, casare, reevaluare",
+      ...CULORI_CARD.chihlimbar,
+      icon: '<rect x="3" y="4" width="18" height="6" rx="1"/><path d="M5 10v10h14V10"/><path d="M9 14h6M12 10v10"/>', activ: true },
+    { cheie: "operatiuni", regim: "dubla", grup: "personal", titlu: "Operațiuni speciale", desc: "Leasing, marjă, IC, sponsorizări și altele",
+      ...CULORI_CARD.violet,
+      icon: '<path d="M12 2l2 4 4 .5-3 3 .8 4.5L12 12l-3.8 2 .8-4.5-3-3 4-.5z"/><path d="M5 18h14M5 21h14"/>', activ: true },
+    { cheie: "jurnal", regim: "dubla", grup: "contabilitate", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', activ: true },
+    { cheie: "fisacont", regim: "dubla", grup: "contabilitate", titlu: "Cartea mare", desc: "Fi\u0219\u0103 de cont 14-6-22, pe cont \u0219i perioad\u0103",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/>', activ: true },
-    { cheie: "marja", regim: "dubla", grup: "speciale", titlu: "Jurnal regim marj\u0103", desc: "Art. 312 second-hand \u00b7 art. 311 turism",
-      ...CULORI_CARD.piersica,
-      icon: '<path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>', activ: true },
+    { cheie: "balanta", regim: "dubla", grup: "contabilitate", titlu: "Balan\u021b\u0103 de verificare", desc: "Solduri \u0219i rulaje pe ecran, cu \u00eenchiderea soldurilor",
+      ...CULORI_CARD.albastru,
+      icon: '<path d="M12 3v18M3 7h18M6 7l-3 5h6l-3-5zM18 7l-3 5h6l-3-5z"/>', activ: true },
+    // [Retest 2 pct.13, decizia Costin O12] „listă cu căutare după cont sau denumire, analiticele afișate sub contul sintetic, adăugare
+    // de analitic de către contabil, iar un cont folosit în note nu se poate șterge”
+    { cheie: "planconturi", regim: "dubla", grup: "contabilitate", titlu: "Plan de conturi", desc: "Conturile firmei, cu analiticele sub sintetic",
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M4 4h16v4H4z"/><path d="M8 12h12M8 16h12M8 20h12"/><path d="M4 12h.01M4 16h.01M4 20h.01"/>', activ: true },
+    { cheie: "centrecost", regim: "dubla", grup: "contabilitate", titlu: "Centre de cost", desc: "Venituri și cheltuieli pe centre: note, facturi, salarii, mijloace fixe, stoc",  // [F143]
+      ...CULORI_CARD.teal,
+      icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', activ: true },
+    { cheie: "verificari", regim: "ambele", grup: "contabilitate", titlu: "Verific\u0103ri", desc: "Echilibru, trezorerie, TVA",
+      descSimpla: "Trezorerie, TVA, documente pozate",   // [577] la partida simplă evidența e registrul de încasări și plăți
+      ...CULORI_CARD.albastru,
+      icon: '<path d="M9 11l3 3 8-8"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/>', activ: true },
     { cheie: "regfiscal", regim: "ambele", grup: "registre", titlu: "Registrul de eviden\u021b\u0103 fiscal\u0103", desc: "Profit \u00b7 art. 19 \u00b7 persoane fizice \u00b7 art. 68",
       descSimpla: "Venituri și cheltuieli · persoane fizice · art. 68",   // [577]
       ...CULORI_CARD.albastru,
@@ -524,91 +557,62 @@ function meniuFirma(corp, nav, t) {
     { cheie: "reginventar", regim: "dubla", grup: "registre", titlu: "Registrul-inventar", desc: "Cod 14-1-2 \u00b7 rezultatele inventarierii",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M9 2h6v4H9z"/><rect x="4" y="6" width="16" height="16" rx="2"/><path d="M8 12h8M8 16h5"/>', activ: true },
-    { cheie: "registre321", regim: "ambele", grup: "speciale", titlu: "Registre art. 321", desc: "Nontransferuri \u00b7 bunuri primite pentru lucr\u0103ri",
+    { cheie: "marja", regim: "dubla", grup: "registre", titlu: "Jurnal regim marj\u0103", desc: "Art. 312 second-hand \u00b7 art. 311 turism",
+      ...CULORI_CARD.piersica,
+      icon: '<path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>', activ: true },
+    { cheie: "registre321", regim: "ambele", grup: "registre", titlu: "Registre art. 321", desc: "Nontransferuri \u00b7 bunuri primite pentru lucr\u0103ri",
       ...CULORI_CARD.piersica,
       icon: '<path d="M3 7h18v13H3z"/><path d="M3 7l3-4h12l3 4"/><path d="M9 12h6"/>', activ: true },
-    { cheie: "balanta", regim: "dubla", grup: "registre", titlu: "Balan\u021b\u0103 de verificare", desc: "Solduri \u0219i rulaje pe ecran, cu \u00eenchiderea soldurilor",
-      ...CULORI_CARD.albastru,
-      icon: '<path d="M12 3v18M3 7h18M6 7l-3 5h6l-3-5zM18 7l-3 5h6l-3-5z"/>', activ: true },
-    { cheie: "bilant", regim: "dubla", grup: "raportari", titlu: "Bilan\u021b anual", desc: "S1005 micro / S1003 mici, validare ANAF",
+    // [lotul 13, deficiența 577, comanda Costin 13.1: „F4 PFA: cardurile au descrieri de SRL — Declarații «D101», Verificări «Echilibru»,
+    // Registrul de evidență fiscală «Profit · art. 19»”] la partida simplă cardul spune ce are PFA-ul (`descSimpla`): D101 / D100 / D406 nu se
+    // aplică formei (`control_fiscal_api.neaplicabile_forma`), D212 e declarația lui
+    { cheie: "declaratii", regim: "ambele", grup: "termene", titlu: "Declarații", desc: "D112, D300, D101 și restul",
+      descSimpla: "D212 (declarația unică), D300, D112 și restul",
+      ...CULORI_CARD.verde,
+      icon: '<path d="M9 13h6M9 17h4M9 9h1"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>', activ: true },
+    { cheie: "control", regim: "ambele", grup: "termene", titlu: "Control fiscal", desc: "Semafor conformare pe firmă",
+      ...CULORI_CARD.teal,
+      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', activ: true },
+    // [08.10.2026, decizia Costin U3] „Închidere lună”: card separat, în grupul Termene
+    { cheie: "inchidere", regim: "ambele", grup: "termene", titlu: "\u00cenchidere lun\u0103", desc: "Blocarea perioadei \u0219i \u00eenchiderea eviden\u021bei facturilor",
+      ...CULORI_CARD.teal,
+      icon: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>', activ: true },
+    { cheie: "bilant", regim: "dubla", grup: "termene", titlu: "Bilan\u021b anual", desc: "S1005 micro / S1003 mici, validare ANAF",
       ...CULORI_CARD.albastru,
       icon: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>', activ: true },
-    { cheie: "casa", regim: "ambele", grup: "zilnic", titlu: "Cas\u0103", desc: "Registru de cas\u0103, plafoane numerar",
-      ...CULORI_CARD.verde,
-      icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>', activ: true },
-    { cheie: "etransport", regim: "ambele", grup: "zilnic", titlu: "e-Transport", desc: "Notificare UIT, XML pentru SPV",
-      ...CULORI_CARD.chihlimbar,
-      icon: '<path d="M1 8h13v8H1zM14 11h4l3 3v2h-7z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>', activ: true },
-    { cheie: "operatiuni", regim: "dubla", grup: "speciale", titlu: "Operațiuni speciale", desc: "Leasing, marjă, IC, sponsorizări și altele",
-      ...CULORI_CARD.violet,
-      icon: '<path d="M12 2l2 4 4 .5-3 3 .8 4.5L12 12l-3.8 2 .8-4.5-3-3 4-.5z"/><path d="M5 18h14M5 21h14"/>', activ: true },
-    // [lotul 10, 428, deciziile Costin 20.10.2026] compensarea facturilor emise și primite ale aceluiași partener (stinge ambele, mută TVA-ul la
-    // încasare ca banca și casa) și fișele clienților (bifa „persoană afiliată”, CF art.282 alin.(6) lit.d)
-    { cheie: "compensari", regim: "dubla", grup: "zilnic", titlu: "Compensări", desc: "Facturi emise și primite ale aceluiași partener",
-      ...CULORI_CARD.violet,
-      icon: '<path d="M7 7h10l-3-3M17 17H7l3 3"/>', activ: true },
-    { cheie: "clienti", regim: "ambele", grup: "firma", titlu: "Clienți", desc: "Fișele clienților, persoane afiliate",
+    { cheie: "clienti", regim: "ambele", grup: "parteneri", titlu: "Clienți", desc: "Fișele clienților, persoane afiliate",
       ...CULORI_CARD.teal,
       icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/>', activ: true },
     // [lotul 11, decizia Costin 10.3 pct.4] fișele furnizorilor: localitatea și județul (D406 / D394 le citesc din fișă când factura nu le are)
-    { cheie: "furnizori", regim: "ambele", grup: "firma", titlu: "Furnizori", desc: "Fișele furnizorilor: localitate, județ",
+    { cheie: "furnizori", regim: "ambele", grup: "parteneri", titlu: "Furnizori", desc: "Fișele furnizorilor: localitate, județ",
       ...CULORI_CARD.teal,
       icon: '<path d="M1 8h13v8H1zM14 11h4l3 3v2h-7z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>', activ: true },
     // [lotul 12, deficiența 461, comanda Costin 12.1 pct.8] partenerii firmei
-    { cheie: "parteneri", regim: "ambele", grup: "firma", titlu: "Parteneri", desc: "Clienți și furnizori: fișa, documentele, soldul",
+    { cheie: "parteneri", regim: "ambele", grup: "parteneri", titlu: "Parteneri", desc: "Clienți și furnizori: fișa, documentele, soldul",
       ...CULORI_CARD.teal,
       icon: '<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M2 20v-1a6 6 0 0 1 12 0v1M10 20v-1a6 6 0 0 1 12 0v1"/>', activ: true },
-    // [368, lotul 9 — decizia Costin 8.2: „Mijloace fixe rămâne vizibil și la PFA”] registrul activelor e și al PFA (amortizarea fiscală în
-    // D212); casarea și reevaluarea, care scriu note, nu se oferă la partidă simplă (`ecranMijloace`, opt.simpla)
-    { cheie: "mijloace", regim: "ambele", grup: "registre", titlu: "Mijloace fixe", desc: "Registrul activelor: valoare, amortizat, casare, reevaluare",
-      ...CULORI_CARD.chihlimbar,
-      icon: '<rect x="3" y="4" width="18" height="6" rx="1"/><path d="M5 10v10h14V10"/><path d="M9 14h6M12 10v10"/>', activ: true },
-    { cheie: "rip", regim: "simpla", grup: "zilnic", titlu: "Încasări/plăți", desc: "Partidă simplă PFA/II/IF, Fișă D212",
-      ...CULORI_CARD.verde,
-      icon: '<path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', activ: true },
-    { cheie: "banca", regim: "ambele", grup: "zilnic", titlu: "Banc\u0103", desc: "Import extras, propuneri contare",
-      ...CULORI_CARD.albastru,
-      icon: '<path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M2 9l10-6 10 6"/>', activ: true },
-    { cheie: "magazin", regim: "ambele", grup: "zilnic", titlu: "Magazin online", desc: "WooCommerce \u2192 facturi automate",
-      ...CULORI_CARD.violet,
-      icon: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>', activ: true },  // wc_fe_v1
-    { cheie: "verificari", regim: "ambele", grup: "raportari", titlu: "Verific\u0103ri", desc: "Echilibru, trezorerie, TVA",
-      descSimpla: "Trezorerie, TVA, documente pozate",   // [577] la partida simplă evidența e registrul de încasări și plăți
-      ...CULORI_CARD.albastru,
-      icon: '<path d="M9 11l3 3 8-8"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/>', activ: true },
-    { cheie: "solicitari", regim: "ambele", grup: "zilnic", titlu: "Solicitări client", desc: "Mesaje primite de la firma-client",
-      ...CULORI_CARD.piersica,
-      icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>', activ: true },
-    { cheie: "acces", regim: "ambele", grup: "firma", titlu: "Acces client", desc: "Invită clientul în portal",
+    { cheie: "acces", regim: "ambele", grup: "parteneri", titlu: "Acces client", desc: "Invită clientul în portal",
       ...CULORI_CARD.verde,
       icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/>', activ: true },
-    { cheie: "import", regim: "ambele", grup: "firma", titlu: "Import date", desc: "Toate straturile de migrare, pentru aceast\u0103 firm\u0103",
-      ...CULORI_CARD.albastru,
-      icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>', activ: true },
+    { cheie: "contracte", regim: "ambele", grup: "parteneri", titlu: "Contracte", desc: "Generează din șabloane cu datele partenerului",  // contracte_v1
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M9 13l2 2 4-4"/>', activ: true },
     // [date_firma_v1] Datele pe care ANAF le cere in declaratii (CUI, denumire, CAEN,
     // adresa, banca, IBAN, telefon, reg.com). Pana acum nu se puteau completa din
     // interfata deloc - firma_profil_api salva doar font/culoare/logo. O firma noua
     // nu putea depune nimic pana nu se intervenea direct in baza de date.
-    { cheie: "datefirma", regim: "ambele", grup: "firma", titlu: "Date firm\u0103", desc: "Datele cerute de ANAF \u00een declara\u021bii",
+    { cheie: "datefirma", regim: "ambele", grup: "configurare", titlu: "Date firm\u0103", desc: "Datele cerute de ANAF \u00een declara\u021bii",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>', activ: true },
-    { cheie: "rapoarte", regim: "ambele", grup: "raportari", titlu: "Rapoarte comerciale", desc: "Vânzări pe partener, durata de încasare, fișă client",  // rap_com_v1
+    { cheie: "produse", regim: "ambele", grup: "configurare", titlu: "Produse", desc: "Nomenclator cu cote TVA, potrivire AI",
+      ...CULORI_CARD.teal,   // [05.10.2026] lipsea: iconița ieșea pe fundal „undefined” (DS cap.12)
+      icon: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>', activ: true },  // [produse_firma_v1]
+    { cheie: "import", regim: "ambele", grup: "configurare", titlu: "Import date", desc: "Toate straturile de migrare, pentru aceast\u0103 firm\u0103",
+      ...CULORI_CARD.albastru,
+      icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>', activ: true },
+    { cheie: "rapoarte", regim: "ambele", grup: "configurare", titlu: "Rapoarte comerciale", desc: "Vânzări pe partener, durata de încasare, fișă client",  // rap_com_v1
       ...CULORI_CARD.violet,
       icon: '<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/>', activ: true },
-    { cheie: "registratura", regim: "ambele", grup: "zilnic", titlu: "Registratură", desc: "Numere de intrare/ieșire pe documente",  // registratura_v1
-      ...CULORI_CARD.ardezie,
-      icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M8 13h6M8 16h6"/>', activ: true },
-    { cheie: "contracte", regim: "ambele", grup: "firma", titlu: "Contracte", desc: "Generează din șabloane cu datele partenerului",  // contracte_v1
-      ...CULORI_CARD.ardezie,
-      icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M9 13l2 2 4-4"/>', activ: true },
-    // [Retest 2 pct.13, decizia Costin O12] „listă cu căutare după cont sau denumire, analiticele afișate sub contul sintetic, adăugare
-    // de analitic de către contabil, iar un cont folosit în note nu se poate șterge”
-    { cheie: "planconturi", regim: "dubla", grup: "firma", titlu: "Plan de conturi", desc: "Conturile firmei, cu analiticele sub sintetic",
-      ...CULORI_CARD.ardezie,
-      icon: '<path d="M4 4h16v4H4z"/><path d="M8 12h12M8 16h12M8 20h12"/><path d="M4 12h.01M4 16h.01M4 20h.01"/>', activ: true },
-    { cheie: "centrecost", regim: "dubla", grup: "firma", titlu: "Centre de cost", desc: "Venituri și cheltuieli pe centre: note, facturi, salarii, mijloace fixe, stoc",  // [F143]
-      ...CULORI_CARD.teal,
-      icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', activ: true },
   ];
 
   // [regim_card 23.07] Vizibilitatea cardurilor deriva prin regim_contabil (O SURSA, ca STRATURI_META), NU din
@@ -635,9 +639,10 @@ function meniuFirma(corp, nav, t) {
     <div id="firma-spv" style="margin-bottom:12px"></div>
     <div id="firma-preluare"></div>
     ${grupeazaCarduri(vizibile).map(([g, titluGrup, carduri]) => {
+      const deschis = grupuriDeschise(t.id).has(g);
       return `<section class="firme-grup" aria-labelledby="fg-${g}">
-      <h3 class="pf-subtitlu ds-grup-titlu" id="fg-${g}">${titluGrup}</h3>
-      <div class="firme-optiuni">
+      <h3 class="pf-subtitlu ds-grup-titlu" id="fg-${g}"><button type="button" class="firme-grup-btn" aria-expanded="${deschis}" aria-controls="fgc-${g}"><svg class="firme-grup-sageata" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg><span>${titluGrup}</span></button></h3>
+      <div class="firme-optiuni" id="fgc-${g}"${deschis ? "" : " hidden"}>
       ${carduri.map((o) => `
         <button class="firme-optiune" id="fa-${o.cheie}"${o.activ ? "" : ' disabled style="opacity:.55;cursor:default"'}>
           <div class="firme-optiune-icon" style="background:${o.bg}; color:${o.fg}">
@@ -655,6 +660,14 @@ function meniuFirma(corp, nav, t) {
          <strong>ștergerea</strong> nu e (firma dispare cu totul, și se poate doar dacă n-a produs
          niciun document). Ecranul următor spune care se poate și de ce.</p>
     </div>`;
+
+  corp.querySelectorAll(".firme-grup-btn").forEach((b) => b.addEventListener("click", () => {
+    const deschide = b.getAttribute("aria-expanded") !== "true";
+    b.setAttribute("aria-expanded", String(deschide));
+    corp.querySelector("#" + b.getAttribute("aria-controls")).hidden = !deschide;
+    const g = b.getAttribute("aria-controls").replace(/^fgc-/, "");
+    if (deschide) grupuriDeschise(t.id).add(g); else grupuriDeschise(t.id).delete(g);
+  }));
 
   _randDivergentaNume(corp, nav, t);   // [nume_anaf_v1]
   randeazaStareSpv(corp.querySelector("#firma-spv"), nav, t.id);   // [deficiența 289b] starea SPV a firmei, cu drum spre Conectare SPV

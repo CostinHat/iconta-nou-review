@@ -52,14 +52,18 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=d6163dcf72");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=24fa4b5837");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
 
+// [17.1] un card dintr-un grup pliat al ferestrei firmei nu se vede: grupul se deschide prin butonul lui de titlu (aceeași stare ca la clicul omului) și rămâne deschis
+function _deschideGrupul(el) { const c = el.closest('.firme-optiuni[hidden]'); const b = c && c.id ? document.querySelector('.firme-grup-btn[aria-controls="' + CSS.escape(c.id) + '"]') : null; if (b && b.getAttribute("aria-expanded") === "false") b.click(); }
+
 async function _cardul(nav, t, cheie) {
   await _fereastraFirmei(nav, t);
   const b = await _asteapta("#fa-" + cheie);
+  _deschideGrupul(b);
   if (b.disabled || b.offsetParent === null) throw new Error("Fereastra „" + (b.textContent || cheie).trim().split("\n")[0]
     + "” nu se poate deschide pentru firma aceasta sau pentru rolul tău.");
   b.click();
@@ -85,6 +89,7 @@ async function _pasiiEcranului(pasi) {
         await new Promise((r) => setTimeout(r, 80));
       }
     }
+    _deschideGrupul(el);
     el.click();
     await new Promise((r) => setTimeout(r, 250));
   }

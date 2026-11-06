@@ -42,7 +42,7 @@ def test_grupul_fara_card_vizibil_nu_apare(pg):
       return m.grupeazaCarduri([{ cheie: 'a', grup: 'registre' }, { cheie: 'b', grup: 'zilnic' }, { cheie: 'c', grup: 'zilnic' }])
               .map(([g, t, c]) => [g, c.map((x) => x.cheie)]);
     }""")
-    assert r == [["zilnic", ["b", "c"]], ["registre", ["a"]]], r   # ordinea din GRUPURI_FIRMA; fără „raportari/speciale/firma”
+    assert r == [["zilnic", ["b", "c"]], ["registre", ["a"]]], r   # ordinea din GRUPURI_FIRMA; fără personal/contabilitate/termene/parteneri/configurare
 
 
 @pytest.mark.parametrize("regim", ["dubla", "simpla"])
@@ -59,7 +59,7 @@ def test_fereastra_firmei_are_titluri_cu_carduri_si_niciun_arbore(pg, regim):
                imbricate: document.querySelectorAll('.firme-grup .firme-grup').length,
                inAfaraGrupurilor: [...document.querySelectorAll('#fereastra .firme-optiune')].filter((b) => !b.closest('.firme-grup')).length };
     }""", regim)
-    assert [t.lower() for t in r["titluri"]] == ["zilnic", "registre", "raportări și declarații", "operațiuni speciale", "firma"], r   # [15.1-E5, 733.1] titlul de grup e cu majuscule (CSS)
+    assert [t.lower() for t in r["titluri"]] == ["zi de zi", "personal și stocuri", "contabilitate", "registre", "termene", "parteneri", "configurare"], r   # [15.1-E5, 733.1] titlul de grup e cu majuscule (CSS); [17.1] 7 grupuri
     assert all(n > 0 for n in r["carduri"]) and r["imbricate"] == 0 and r["inAfaraGrupurilor"] == 0, r
     # 33 de carduri: 23 „ambele”, 9 „dubla”, 1 „simpla” — [08.10.2026, decizia Costin U3] „Închidere lună” (ambele), în Zilnic;
     # [368, lotul 9] „Mijloace fixe” trece la „ambele” (decizia Costin 8.2: „Mijloace fixe rămâne vizibil și la PFA”)
