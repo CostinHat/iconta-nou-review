@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**06.11.2026 — COMANDA 16.8-C1 (produs; continuă 16.8) pe `lucru/lot16-8` (worktree `/home/costin/iconta_lot16_8`), C = `a5040c22c8745468f0e0403f2c9263a5cd96769d`, poarta VERDE (1899 teste, regresie 0), oracolul 84/84 «trece», Haiku fără «nu corespunde» confirmat.** 759 și 786 rezolvate; 760 nerezolvată (NU_MUTA cu 16 id-uri, D177 derulează cu 161 px la 1366 × 768). Starea publicării: vezi `~/lot_16_8_C1_raport.md`.
+
 **06.11.2026 — COMANDA 16.8 (produs) pe `lucru/lot16-8` (worktree `/home/costin/iconta_lot16_8`), NEPUBLICAT.** Candidat bba5a7e2: matricea completă are 0 la a și b în afara lui Tipare de erori (fără date), Fișa salariatului F5, D177 și D398 (derulare la 1366 × 768) și a ferestrei mici; poarta ROȘIE numai pe test_pilot_X05 (a.6: oracolul cere „←” ascuns pe fereastra firmei, care are 3 ferestre dedesubt). Lipsește o decizie a arhitectului asupra a.6; vezi DECIZII „Comanda 16.8”.
 
 **06.11.2026 — COMANDA 16.7 (unelte) pe `lucru/lot16-7` (worktree `/home/costin/iconta_lot16_7`), C = `237225c503d0a245807a4af960f7e2851947a0c1`, poarta VERDE (1905 teste, regresie 0).** Rândurile a (bara de sus: „✕”) și b (acțiunea principală o singură dată) ale verificatorului sunt calibrate; matricea pe tot registrul (105 intrări) e în `docs/dovezi/16_7/matrice_inainte.csv` și dă lista lotului de produs 16.8 (759, 760). Starea publicării: vezi `~/lot_16_7_raport.md`.
