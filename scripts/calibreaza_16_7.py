@@ -86,20 +86,20 @@ def ruleaza_pe_server(nume, corp, scrie_sha=None):
 
 # ── harta ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 _F = "const F=[...document.querySelectorAll('.fereastra')].pop();"
-_X40 = _F + ("F.querySelectorAll('.fereastra-antet .nav-x').forEach(x=>{x.style.boxSizing='border-box';x.style.padding='0';x.style.flex='none';"
+_X40 = ("F.querySelectorAll('.fereastra-antet .nav-x').forEach(x=>{x.style.boxSizing='border-box';x.style.padding='0';x.style.flex='none';"
              "x.style.width='40px';x.style.height='40px';x.style.minWidth='40px';x.style.minHeight='40px';});")
-_REVERSE = _F + "F.querySelector('.fereastra-antet').style.flexDirection='row-reverse';"
-_CLONA = _F + "const x=F.querySelector('.fereastra-antet .nav-x');x.parentNode.appendChild(x.cloneNode(true));"
-_ADAUGA_X = _F + ("const a=F.querySelector('.fereastra-antet');const x=document.createElement('button');x.className='nav-x';x.textContent='✕';"
+_REVERSE = "F.querySelector('.fereastra-antet').style.flexDirection='row-reverse';"
+_CLONA = "const x=F.querySelector('.fereastra-antet .nav-x');x.parentNode.appendChild(x.cloneNode(true));"
+_ADAUGA_X = ("const a=F.querySelector('.fereastra-antet');const x=document.createElement('button');x.className='nav-x';x.textContent='✕';"
                   "x.style.cssText='box-sizing:border-box;padding:0;flex:none;width:40px;height:40px;min-width:40px;min-height:40px;';a.appendChild(x);")
 
 
 def _buton_in_continut(text):
-    return _F + ("const c=F.querySelector('.fereastra-corp');const b=document.createElement('button');b.textContent='%s';c.appendChild(b);" % text)
+    return ("const c=F.querySelector('.fereastra-corp');const b=document.createElement('button');b.textContent='%s';c.appendChild(b);" % text)
 
 
 def _buton_in_details_si_tabel(text):
-    return _F + ("const c=F.querySelector('.fereastra-corp');const d=document.createElement('details');d.open=true;"
+    return ("const c=F.querySelector('.fereastra-corp');const d=document.createElement('details');d.open=true;"
                  "d.innerHTML='<summary>detalii</summary><button>%s</button>';c.appendChild(d);"
                  "const t=document.createElement('table');t.innerHTML='<tbody><tr><td><button>%s</button></td></tr></tbody>';c.appendChild(t);" % (text, text))
 
@@ -181,7 +181,9 @@ MARTORI = ["Registru jurnal F1", "Stat de plată F5", "Stocuri F1", "Raport Z F1
 
 
 def deschide(nume, rez, interventie=None, masuri_alt=None):
-    """-> js (măsurătorile) sau None; JSON-ul vechi se șterge întâi."""
+    """-> js (măsurătorile) sau None; JSON-ul vechi se șterge întâi. Intervenția (corp JS) se învelește într-o funcție cu `F` = ultima fereastră de lucru."""
+    if interventie:
+        interventie = "(() => {" + _F + interventie + "})()"
     cale = os.path.join(CAPTURI, "%s_%s.json" % (VD.slug(nume), rez))
     if os.path.exists(cale):
         os.remove(cale)
