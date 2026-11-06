@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**06.11.2026 — COMANDA 16.8-B (lot de unelte) pe `lucru/lot16-8b` (worktree `/home/costin/iconta_lot16_8b`), C = `dab347a71756a40f381b6d93baf28d7048558e0a`, poarta VERDE (1908 teste, regresie 0). Aplicația nu s-a schimbat.** Nou: `lanseaza_verificator.py::sectiune` acceptă orice cod literă + 2–3 cifre (C225) și `text_scenariu` refuză la lansare secțiunea negăsită; `scripts/verifica_liste_exceptii.py` compară în hook `cadru.js::FARA_ACTIUNE_PRINCIPALA` cu `EXCEPTII_B` (C226). «Tipare de erori» și «Panou Admin — Sănătate server» rămân roșii la b până la 17.3. Starea publicării: vezi `~/lot_16_8_B_raport.md`.
+
 **06.11.2026 — COMANDA 16.8-C1 (produs; continuă 16.8) pe `lucru/lot16-8` (worktree `/home/costin/iconta_lot16_8`), C = `a5040c22c8745468f0e0403f2c9263a5cd96769d`, poarta VERDE (1899 teste, regresie 0), oracolul 84/84 «trece», Haiku fără «nu corespunde» confirmat.** 759 și 786 rezolvate; 760 nerezolvată (NU_MUTA cu 16 id-uri, D177 derulează cu 161 px la 1366 × 768). Starea publicării: vezi `~/lot_16_8_C1_raport.md`.
 
 **06.11.2026 — COMANDA 16.8 (produs) pe `lucru/lot16-8` (worktree `/home/costin/iconta_lot16_8`), NEPUBLICAT.** Candidat bba5a7e2: matricea completă are 0 la a și b în afara lui Tipare de erori (fără date), Fișa salariatului F5, D177 și D398 (derulare la 1366 × 768) și a ferestrei mici; poarta ROȘIE numai pe test_pilot_X05 (a.6: oracolul cere „←” ascuns pe fereastra firmei, care are 3 ferestre dedesubt). Lipsește o decizie a arhitectului asupra a.6; vezi DECIZII „Comanda 16.8”.
