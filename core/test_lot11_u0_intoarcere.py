@@ -86,7 +86,7 @@ def test_x_din_destinatie_intoarce_la_formular_nu_pe_pagina_principala(pg):
     pg.click("[data-ecran-destinatie=produse]")
     pg.click(".fereastra .nav-inapoi")
     assert _stare(pg) == {"cota": "21", "data": "2026-10-21", "refuz": "acelasi-element", "acasa": False}
-    pg.click(".fereastra .nav-inapoi")                                                       # X pe formular: pagina principală, ca înainte
+    pg.click(".fereastra .nav-x")                                                            # [16.8] X pe formular (prima fereastră: numai „✕”, „←” ascuns): pagina principală, ca înainte
     assert _stare(pg)["acasa"] is True
 
 
@@ -95,7 +95,7 @@ def test_fereastra_deschisa_altfel_nu_se_schimba(pg):
     pg.evaluate(_PORNIRE)
     pg.evaluate("() => window.NAV.deschide('Altceva', (c) => { c.innerHTML = '<p>x</p>'; })")
     assert pg.get_attribute(".fereastra .nav-inapoi", "aria-label") == "Înapoi"
-    pg.click(".fereastra .nav-inapoi")                                                   # [15.1-E5] fără „✕”, închiderea e „←”: un pas înapoi, la formularul de dedesubt
+    pg.click(".fereastra .nav-inapoi")                                                   # [16.8] fereastra e peste alta: „←” face un pas înapoi, la formularul de dedesubt
     assert _stare(pg)["acasa"] is False
-    pg.click(".fereastra .nav-inapoi")
+    pg.click(".fereastra .nav-x")                                                        # [16.8] prima fereastră are numai „✕”: pagina principală
     assert _stare(pg)["acasa"] is True

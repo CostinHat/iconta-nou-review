@@ -40,10 +40,10 @@ def test_727_2_clic_pe_rand_alege_enter_alege_primul_si_lista_umple_fereastra(pa
 def test_bara_de_sus_fara_x_si_bara_de_jos_a_ferestrei_firmei_fara_principal(patron, firma_e5):
     pg = patron.pg
     patron.firma(firma_e5["nume"])
-    m = pg.evaluate("""() => { const F = [...document.querySelectorAll('.fereastra')].pop(), s = F.querySelector('.nav-inapoi').getBoundingClientRect();
-      return { x: !!F.querySelector('.fereastra-antet .nav-x'), sag: [Math.round(s.width), Math.round(s.height)], principale: F.querySelectorAll('.fereastra-jos .buton-primar').length,
+    m = pg.evaluate("""() => { const F = [...document.querySelectorAll('.fereastra')].pop(), s = F.querySelector('.nav-inapoi'), x = F.querySelector('.fereastra-antet .nav-x'), r = x ? x.getBoundingClientRect() : null;
+      return { x: !!x && [Math.round(r.width), Math.round(r.height)], sag: !s || getComputedStyle(s).display === 'none' || !s.getBoundingClientRect().height, principale: F.querySelectorAll('.fereastra-jos .buton-primar').length,
                butoane: [...F.querySelectorAll('.fereastra-jos button')].map((b) => b.innerText.trim()) }; }""")
-    assert m["x"] is False and m["sag"] == [40, 40], m                              # 713.1 + pct.3
+    assert m["x"] == [40, 40] and m["sag"] is True, m                               # [16.8] fereastra firmei e prima fereastră: „✕” 40 × 40, „←” nevăzut (nu există pas înapoi)
     assert m["principale"] == 0 and m["butoane"] == [], m                           # fereastra firmei: bara fără principal, fără „Renunță”, fără „Închide”
 
 

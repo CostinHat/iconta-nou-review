@@ -5,8 +5,16 @@ function _bannerEroareGlobala(detaliu) {
   if (document.getElementById("eroare-globala")) return;  // un singur banner o data
   const b = document.createElement("div");
   b.id = "eroare-globala";
-  b.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#fdf3f3;border-top:2px solid #d98c8c;color:#7a2020;padding:12px 20px;font-size:var(--text-mic);font-family:'Segoe UI',system-ui,sans-serif;text-align:center;";
-  b.textContent = "A ap\u0103rut o eroare nea\u0219teptat\u0103. Reinc\u0103rca\u021bi pagina (Ctrl+F5). Dac\u0103 problema persist\u0103, anun\u021ba\u021bi.";
+  b.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#fdf3f3;border-top:2px solid #d98c8c;color:#7a2020;padding:12px 64px;min-height:64px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-size:var(--text-mic);font-family:'Segoe UI',system-ui,sans-serif;text-align:center;";
+  const t = document.createElement("span");
+  t.textContent = "A ap\u0103rut o eroare nea\u0219teptat\u0103. Reinc\u0103rca\u021bi pagina (Ctrl+F5). Dac\u0103 problema persist\u0103, anun\u021ba\u021bi.";
+  b.appendChild(t);
+  // [16.8, 786] bannerul se poate închide: „✕” de 40 × 40 în dreapta (clasa .nav-x, o dimensiune); o eroare nouă după închidere îl arată din nou
+  const x = document.createElement("button");
+  x.type = "button"; x.className = "nav-x"; x.title = "Închide"; x.setAttribute("aria-label", "Închide");
+  x.innerHTML = '<span aria-hidden="true">\u2715</span>';
+  x.addEventListener("click", () => b.remove());
+  b.appendChild(x);
   document.body.appendChild(b);
   console.error("[eroare_globala]", detaliu);
 }
@@ -46,7 +54,7 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { api, arataMesaj, esc } from "./api.js?v=0b48920b43";
 import { ecranLogin } from "./ecrane/login.js?v=1046446310";
-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=11d78edfaf";
+import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=736e4c8b2e";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=3a1dfe24b2";
 import { desktopAsistent } from "./ecrane/asistent.js?v=4d62696ccb";
 import { desktopPortal } from "./ecrane/portal.js?v=213eeef71d";

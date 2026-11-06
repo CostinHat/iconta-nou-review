@@ -408,10 +408,14 @@ function regenereaza(corp, nav) { S.cerutGenerare = true; pas2(corp, nav); }
 
 // [lotul 13, 652 / 637] refuzul formularului care nu ține de un câmp (lista goală: „Adaugă cel puțin un beneficiar”) stă lângă butonul de
 // generare, nu pe câmpul „Nume” completat corect; o singură dată (zona e în rândul butonului, deci caseta „NU s-a salvat” n-o repetă)
+// [16.8, 760] butonul „Generează / Regenerează” e acțiunea principală a ferestrei și trece în bara de jos (același nod): îl caut și acolo; mesajul pus lângă el
+// îl ia piesa barei deasupra ei (zona de mesaje), deci o găsesc ca să nu o repet
 function _refuzLangaRegen(zona, mesaj) {
-  const b = zona.querySelector('button[id$="-regen"]');
+  const corp = zona.closest(".fereastra-corp") || zona;
+  const b = zona.querySelector('button[id$="-regen"]') || corp.querySelector('.fereastra-jos button[id$="-regen"]');
   if (!b) return;
-  let z = b.parentElement.querySelector(":scope > .dec-regen-msg");
+  const laBara = !!b.closest(".fereastra-jos");
+  let z = laBara ? corp.querySelector(".dec-regen-msg") : b.parentElement.querySelector(":scope > .dec-regen-msg");
   if (!z) { z = document.createElement("span"); z.className = "dec-regen-msg"; z.setAttribute("role", "alert"); b.parentElement.appendChild(z); }
   arataMesaj(z, mesaj, "eroare");
 }

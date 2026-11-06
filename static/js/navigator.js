@@ -12,7 +12,7 @@ import { uitaFereastra, memoreazaFereastra, memoreazaCampul } from "./restaurare
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=0b48920b43";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
-import { baraDeJos } from "./cadru.js?v=1129787281";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+import { baraDeJos } from "./cadru.js?v=de5801be6e";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
 import { puneCautarea } from "./cautare.js?v=39e412d714";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -66,6 +66,13 @@ function _butonInapoi(sus, areInapoi) {
   return `<button class="nav-sageata nav-inapoi" title="Înapoi" aria-label="Înapoi"${ascuns}><span aria-hidden="true">←</span></button>`;
 }
 
+// [16.8, 759] ieșirea din cont NU arată ca „înapoi”: pictogramă de ieșire (săgeată care iese dintr-un cadru, ca pictogramele vecine); în previzualizarea portalului
+// client butonul închide previzualizarea și o spune cu text (sesiune.iesi() închide fila)
+function _ieseDinCont() {
+  if (sesiune.estePreview()) return `<button class="nav-iesire nav-iesire-preview" id="nav-iesire" title="Închide previzualizarea" aria-label="Închide previzualizarea">Închide previzualizarea</button>`;
+  return `<button class="nav-iesire" id="nav-iesire" title="Ieși din cont" aria-label="Ieși din cont"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>`;
+}
+
 export function creeazaNavigator(radacina, desktopRandator) {
   const stiva = [];        // ferestre deschise
   // [deficiența 207, retestul Costin 09.10: „Pachete lunare: câmpul «Firmă» nu vine cu firma în lucru”] firma în lucru are și id-ul,
@@ -102,7 +109,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       <span class="bara-spatiu"></span>
       <button class="nav-ghid" id="nav-ghid" title="Prezentarea aplicației (ansamblu)" aria-label="Prezentarea aplicației (ansamblu)"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg><span class="nav-ghid-q">?</span></button>
       <button class="nav-clopot" id="nav-clopot" data-deschide="notificari" title="Notificări" aria-label="Notificări"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="nav-clopot-badge" id="nav-clopot-badge"></span></button>
-      <button class="nav-iesire" id="nav-iesire" title="Ieși din cont" aria-label="Ieși din cont"><span aria-hidden="true">←</span></button>
+      ${_ieseDinCont()}
     `;
     bara.querySelector("#nav-iesire").addEventListener("click", () => sesiune.iesi());
     // [lotul 13, deficiența 681] căutarea globală: în antet, mereu vizibilă, pentru contabil și asistent (nu pentru clientul din portal)
@@ -214,10 +221,13 @@ export function creeazaNavigator(radacina, desktopRandator) {
   // desenat de la început pornește fără pas intern (rădăcina își spune singură, DS cap.3), iar pasul / fereastra la care se revine cu
   // elementul păstrat (pct.1b) își primește înapoi și pasul intern. X nu se schimbă: închide fereastra (deficiența 4); Esc nu închide
   // ferestrele de lucru (DECIZII 04.10.2026). Garda: `core/test_lot12_inapoi_sageata.py` + e2e `test_def_c140_*`.
+  // [16.8, 759] UNA singură condiția „←”: apare numai când există un pas înapoi real (altă fereastră dedesubt, pas intern al ecranului sau pas pe traseu);
+  // altfel fereastra are numai „✕”. O folosesc și desenul barei, și actualizarea după `setInapoi`.
+  const _areInapoiReal = (sus) => stiva.length > 1 || typeof sus.inapoi === "function" || !!(sus.pasi && sus.pasi.length > 0);   // traseu_automat_v1
   function _arataSageata() {
     const b = radacina.querySelector(".nav-inapoi");
     const sus = stiva[stiva.length - 1];
-    if (b && sus) b.style.display = (!["mic", "nota"].includes((sus.optiuni || {}).lat) || typeof sus.inapoi === "function" || stiva.length > 1 || (sus.pasi && sus.pasi.length > 0)) ? "" : "none";  // traseu_automat_v1
+    if (b && sus) b.style.display = _areInapoiReal(sus) ? "" : "none";
   }
   function _laPas(sus, idx) {   // întoarcerea la pasul `idx` de pe traseu (săgeata, firul, `inapoiPas`)
     const p = sus.pasi[idx];
@@ -254,11 +264,8 @@ export function creeazaNavigator(radacina, desktopRandator) {
     fer.setAttribute("role", "dialog");
     fer.setAttribute("aria-modal", "true");
     fer.setAttribute("aria-label", String(sus.titluCurent || sus.titlu || "Fereastră de lucru"));
-    // Sageata apare DOAR cand exista un "inapoi" real:
-    //  - mai multe ferestre pe stiva, SAU
-    //  - ecranul curent isi defineste o functie interna 'inapoi' (ex: migrare in cascada)
-    const _lucruInapoi = !(["mic", "nota"].includes((sus.optiuni || {}).lat));   // [15.1-E5, 713.1] „←” e pe fiecare fereastră de lucru, fără excepție: pe prima fereastră închide (închiderea nu mai are „✕”)
-    const areInapoi = _lucruInapoi || stiva.length > 1 || typeof sus.inapoi === "function" || (sus.pasi && sus.pasi.length > 0);  // traseu_automat_v1
+    // Sageata apare DOAR cand exista un "inapoi" real (`_areInapoiReal`): mai multe ferestre pe stiva, un pas pe traseu sau o functie interna 'inapoi' (ex: migrare in cascada)
+    const areInapoi = _areInapoiReal(sus);
     // [15.1, 713 / 681.1 / 701] bara de sus: numai firma în lucru (nume · CUI) și numele ferestrei curente, FĂRĂ traseu (nu acumulează ecranele vizitate);
     // „←” face un pas înapoi. Firma: titlul ferestrei ei din stivă („<nume> · CUI <cod>”), altfel firma în lucru a navigatorului.
     // [15.1-D, 3a] fereastra de cabinet nu poartă firma în lucru de dinainte: bara spune cabinetul. Contextul barei: firma ferestrei (titlul ei „<nume> · CUI <cod>” sau firma pusă în lucru la deschidere); altfel, la cabinet, numele
@@ -274,15 +281,14 @@ export function creeazaNavigator(radacina, desktopRandator) {
     const _fereastraMica = _latSus === "mic" || _latSus === "nota";   // fereastra mică n-are firul firmei: numai numele ei
     const drumHtml = (_titluFirma && !_doarFirma && !_fereastraMica ? `<span class="fir-firma">${esc(_titluFirma)}</span><span class="fir-sep" aria-hidden="true">›</span>` : "")
       + `<span class="fir-acum" aria-current="page">${esc(_doarFirma ? _titluFirma : _curent)}</span>`;
-    // [15.1-E5, pct.3] bara de sus a ferestrei de lucru: numai „←”, firma sau cabinetul, „›” fereastra curentă și căutarea; închiderea e „←”. „✕” rămâne numai
-    // pe fereastra mică (confirmarea, nota), care n-are bară de jos și nici căutare.
-    const _xMica = (sus.optiuni || {}).lat === "mic" || (sus.optiuni || {}).lat === "nota";
+    // [16.8, 759] bara de sus a ferestrei de lucru: „←” numai unde există un pas înapoi real, firma sau cabinetul, „›” fereastra curentă, căutarea și „✕” (închiderea,
+    // 40 × 40, ultimul element din bară, pe orice fereastră: prima, deschisă peste alta, mare sau mică).
     fer.innerHTML = `
       <div class="fereastra-antet">
         ${_butonInapoi(sus, areInapoi)}
         <span class="fereastra-fir">${drumHtml}</span>
         <span class="fereastra-spatiu"></span>
-        ${_xMica ? '<button class="nav-x" title="Închide" aria-label="Închide"><span aria-hidden="true">✕</span></button>' : ""}
+        <button class="nav-x" title="Închide" aria-label="Închide"><span aria-hidden="true">✕</span></button>
       </div>
       <div class="fereastra-corp" tabindex="0"></div>
     `;

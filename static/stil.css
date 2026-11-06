@@ -232,7 +232,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 
 /* butonul de ieșire (portocaliu, dreapta) */
 .nav-iesire {
-  width: 32px; height: 32px;
+  width: 40px; height: 40px;
   border: none; border-radius: var(--raza);
   background: var(--portocaliu); color: var(--alb);
   font-size: var(--text); cursor: pointer;
@@ -240,6 +240,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   transition: background 0.15s;
 }
 .nav-iesire:hover { background: #a8520f; }
+/* [16.8, 759] în previzualizarea portalului client butonul spune ce face: „Închide previzualizarea” (același loc, aceeași culoare, 40 px înălțime) */
+.nav-iesire.nav-iesire-preview { width: auto; padding: 0 14px; font-size: var(--text-mic); font-weight: 600; white-space: nowrap; }
 
 /* bara albastru-gri (firma în lucru) */
 .subbara {
@@ -299,7 +301,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .fereastra-titlu { flex: 1; font-size: var(--text-mic); font-weight: 600; color: var(--ardezie); }
 
 .nav-x {
-  width: 34px; height: 34px;
+  width: 40px; height: 40px;
   border: none; border-radius: var(--raza);
   background: none; color: var(--gri);
   font-size: var(--text); cursor: pointer;
@@ -307,6 +309,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   transition: background 0.15s, color 0.15s;
 }
 .nav-x:hover { background: var(--rosu-fundal); color: var(--rosu); }
+/* [16.8, 786] „✕” al bannerului de eroare: în dreapta, centrat pe verticală (bannerul e fix la marginea de jos, min-height 64 px) */
+#eroare-globala .nav-x { position: absolute; right: 12px; top: 12px; }
 
 .fereastra-corp { padding: 24px; overflow-y: auto; }
 /* PANOU canonic (DS cap.16): caseta alba de continut pe corpul gri al ferestrei */

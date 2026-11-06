@@ -110,7 +110,7 @@ export const CATALOG_ACTIUNE_PRINCIPALA = [
   /^(Salvează|Emite|Contabilizează|Închide luna|Înregistrează|Înscrie|Trimite|Importă|Aplică|Sincronizează|Validează \(ANAF\)|Rulează|Verifică)(?=\s|$)/,
   /^Continuă(?=\s|$)/,
   /^(\+ )?(Operațiune nouă|Import extras|Adaugă|Invită|Descarcă model)(?=\s|$)|^(\+ )?[\p{L} ]{2,30} (nou|nouă)$/u,
-  /^Generează(?=\s|$)/,
+  /^(Generează|Regenerează)(?=\s|$)/,
   /^Descarcă PDF(?=\s|$)/,
 ];
 
@@ -125,8 +125,21 @@ export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Capacitate|Operațiuni s
 const _esteMeniu = (corp, bara) => !![...corp.querySelectorAll(".firme-optiune")].find(_vizibil)
   && ![...corp.querySelectorAll(".buton-primar")].some((b) => !bara.contains(b) && _vizibil(b) && !b.closest("table, template, details"));
 
+// [16.8, 760] id-urile butoanelor găsite de catalog care NU se mută în bară (rămân în conținut; în bară stă un proxy care apasă originalul): ecranele lor își caută
+// butonul într-un container care nu conține bara, după mutare, într-un fișier în care lotul 16.8 nu are voie să schimbe logica (cascada ?v= ar ieși din lista de
+// fișiere permise). Fiecare id are comentariul cu fișier:linie al căutării. Ecranele lor rămân roșii la rândul b: limită declarată, le închide lotul 16.9.
+const NU_MUTA = new Set([
+]);
+
+// un buton dintr-un `<details>` închis nu se vede, dar există și poate fi acțiunea ferestrei: se judecă după `<details>`-ul lui, nu după el
+const _vizibilSauInDetails = (b) => {
+  if (_vizibil(b)) return true;
+  const d = b.closest("details:not([open])");
+  return !!d && _vizibil(d);
+};
+
 function _dinCatalog(corp, bara) {
-  const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && _vizibil(b) && !b.closest("table, template, details, .tn-actiuni, .fereastra-antet, .ds-semnal-cutie, .ds-rezumat-cutie");
+  const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && _vizibilSauInDetails(b) && !b.closest("table, template, .tn-actiuni, .fereastra-antet, .ds-semnal-cutie, .ds-rezumat-cutie");
   const butoane = [...corp.querySelectorAll("button")].filter(eligibil);
   for (const rx of CATALOG_ACTIUNE_PRINCIPALA) {
     const g = butoane.find((b) => rx.test(_normalizeaza(b.textContent)));
@@ -215,9 +228,9 @@ export function baraDeJos(fer, corp, { renunta }) {
     if (principal && principal.__sursa && (!principal.__sursa.isConnected || !_vizibil(principal.__sursa))) { principal.remove(); principal = null; }
     let candidat = faraPrincipal ? null : _alege(corp, bara, principal && principal.__slab ? undefined : !!principal, titlu);
     if (candidat && candidat.__catalog) {
-      // [15.1-E5] acțiune găsită de catalog: în bară stă un buton-proxy (apasă originalul), iar originalul rămâne în ecran — ecranele își caută butoanele în containerul lor
-      // (`form.querySelector(...)`) și pică dacă li se mută; originalul se vede ca buton secundar (`fj-are-principal`)
-      candidat = principal && principal.__sursa === candidat ? principal : _proxy(candidat);
+      // [16.8, 760] acțiune găsită de catalog: același nod (id, ascultători) se mută în bară, ca butonul marcat; un singur element vizibil pe ecran. Numai id-urile din
+      // NU_MUTA păstrează proxy-ul: originalul rămâne în conținut, ca buton secundar (`fj-are-principal`)
+      if (NU_MUTA.has(candidat.id)) candidat = principal && principal.__sursa === candidat ? principal : _proxy(candidat);
     }
     if (principal && principal.__sursa) { principal.textContent = _normalizeaza(principal.__sursa.textContent); principal.disabled = !!principal.__sursa.disabled; principal.title = principal.__sursa.title || ""; }
     if (candidat && candidat !== principal) {

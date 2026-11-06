@@ -233,7 +233,7 @@ def test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste(patron, firma
     sus = pg.locator(_F + ".fereastra-antet")
     # lângă traseu: în aceeași bară, după drumul ferestrei și înaintea butonului de închidere
     ordine = sus.evaluate("a => [...a.children].map(c => c.className.split(' ')[0] + (c.querySelector('#cautare-fereastra') ? '*' : ''))")
-    assert ordine.index("cautare-globala*") > ordine.index("fereastra-fir") and "nav-x" not in ordine, ordine   # [15.1-E5] bara de sus nu mai are „✕”
+    assert ordine.index("cautare-globala*") > ordine.index("fereastra-fir") and ordine[-1] == "nav-x", ordine   # [16.8] „✕” e ultimul element al barei, după căutare
     patron.captura("casuta_in_fereastra_casa")
     pg.click(_F + ".fereastra-corp")
     pg.keyboard.press("Control+k")
