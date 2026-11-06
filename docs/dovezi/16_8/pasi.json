@@ -39,7 +39,7 @@
    "id": "a.6",
    "pas": "a",
    "operator": "interval_px",
-   "valoare": "0-0",
+   "valoare": "39-41",
    "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .nav-inapoi|inaltime_px"
   },
   {

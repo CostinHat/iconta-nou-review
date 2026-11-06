@@ -1,0 +1,61 @@
+produs
+lot: 16.8-C1
+sursa pragurilor 16.8-C1: cele ale lui 16.8 (praguri_16_8.txt), NESCHIMBATE: nicio cifra numerica nu se schimba fara o masuratoare care o depaseste. Maximele fazelor TERMINATE din jurnalul lotului 16.8 (.lot_jurnal.log, 06.11.2026, rularea completa rosie 13:12-13:38): hook 162 s (prag 285), poarta_verificator 83 s (prag 179), poarta_pytest 549 s (prag 988), poarta_plasa 890 s (prag 1500); toate sunt sub prag, deci praguri_16_8.txt le acopera. Un lot nou are jurnal nou: fazele se masoara din nou, de la zero. Schimbarile fata de praguri_16_8.txt sunt numai cele de nume al lotului si de cale (docs/dovezi/16_8_C1/ in loc de docs/dovezi/16_8/ la matrice si la pasi.txt) si doua intrari noi in fisiere_permise (scripts/praguri_16_8_C1.txt, docs/dovezi/16_8_C1/).
+max hook 285
+max poarta_verificator 179
+max poarta_pytest 988
+max poarta_plasa 1500
+runde_verificator_max: 2
+explicația rundelor: poziția X05 are o singură parcurgere pe Haiku (administratorul); publica_lot.py numără o rundă la fiecare pereche (commit, parcurgere) cu rânduri Haiku (:342-345) și compară cu această cifră (:344): două runde de verificare x o parcurgere = 2.
+limite aplicate de scripts/poarta_rulare.py (:116, :146), nu de acest fisier: 2 rulari complete, 2 reluari; teste invalide = 0 aplicat de poarta_clasifica (clasa invalid = rosu)
+cerinte de raport, cu cifra (nu intra in PASS/STOP mecanic): durata totala a lotului de la randul „pornire” pana la scrierea raportului, inainte de publicare ≤ 300 min (cerinta de raport: depasirea nu opreste lotul, se raporteaza cu cauza); restaurarea bazei ≤ 112 s per restaurare (maximul masurat 93 s in ~/lot_16_6_C1_raport.md, 81-86 s in ~/lot_16_6_C2_raport.md, x 1,2; raportul 16.7 nu da durata restaurarii, iar .lot_jurnal.log nu are faza de restaurare); rulari complete rosii ≤ 1; asertiuni cu captura si verdict pe C: 100% din id-urile din docs/dovezi/16_8_C1/pasi.txt (aplicat mecanic de publica_lot.py: fiecare id are rand „trece” pe C); durata fiecarei rulari a matricei complete (referinta 16.7: 1432 s pe 105 intrari); ecrane ROSII la randul a si la b in matricea de pe C = 0 si 0, fara intrarea ferestrei mici, fara ecranele din lista NU_MUTA din cadru.js (numarul lor intra in raport si in jurnal; le inchide lotul 16.9) si, daca raman, fara cele doua ecrane (EXCEPTII_B din scripts/verificator_design.py NU le contine pe main (Tipare de erori; Panou Admin — Sănătate server): raman ROSU la b si se adauga in EXCEPTII_B in corectia de unelte 16.8b; limita declarata (vii)); matricea de pe C se comite ca docs/dovezi/16_8_C1/matrice_dupa/code/matrice_dupa.out (singurul loc permis de regula stramosului, publica_lot.py:75, :83-87).
+acceptarea_arhitectului (nu intra in PASS/STOP): X05 inchisa pe 759 si 786 la retestul arhitectului pe productie; 760 ramane deschisa pana la 16.9, cu numarul ecranelor proxy; nicio pozitie pilot deja inchisa redeschisa; inchiderea previzualizarii portalului verificata de arhitect pe productie.
+pozitii: X05
+numere: 759, 760, 786, 787
+fisiere_permise (aplicata mecanic de publica_lot la --verifica si la publicare pe diff-ul merge-base..HEAD; orice alt fisier = refuz cu numele; un fisier necesar si absent de aici = oprire „OPRIT — gata: 16.8-C1 nepublicat, lipsă fișier permis <fișier>”). Sursa listei: matricea 16.7 (docs/dovezi/16_7/matrice_inainte.csv, ada64bef): 99 ROSU la a (98 + fereastra mica), 47 la b, 6 NEDESCHIS. Motivele a (✕ lipsa) vin din navigator.js; cele 35 de dubluri b („apare si in continut”) din cadru.js (_proxy/_alege); cele 12 „bara de jos are 0 butoane principale” (D104, D107, D110, D114, D177, D205, D307, D398, D710, D301 F3, Tipare de erori, Panou Admin — Sănătate server) din cadru.js (_dinCatalog exclude details si cere vizibilitate); aspectul din stil.css; „deruleaza continutul ferestrei” la D104, D177, D398 la 1366x768 — cauza o numeste Code in raport (declaratii.js, firme.js, stil.css permise). Testele din plasa fixa (scripts/plasa_16_2.manifest, e2e_pilot_luna.py, e2e_pozitii_validate.py etc.) NU se modifica si NU sunt in lista: manifestul le refuza (poarta_lib.py:58-62), se repara codul.
+  frontend_test/e2e/e2e_pilot_x05.py (nou)
+  scripts/plasa_16_2.manifest (plasa fixa existenta; creste numai cu randul fisierului nou)
+  scripts/praguri_16_8.txt (nou)
+  scripts/praguri_16_8_C1.txt (nou)
+  docs/dovezi/16_8/ (nou; in 16.8-C1 se schimba in el numai pasi.json, aserțiunea a.6)
+  docs/dovezi/16_8_C1/ (nou)
+  static/js/navigator.js
+  static/js/cadru.js
+  static/stil.css
+  static/js/app.js
+  static/js/api.js (numai linia ?v=, prin versioneaza_assets.py --scrie; cascada reautentificare.js)
+  static/js/ecrane/portal.js (numai linia ?v=, prin versioneaza_assets.py --scrie; cascada facturi_ecran.js)
+  static/js/ecrane/declaratii.js
+  static/js/ecrane/firme.js (numai pentru o cauza numita in raport)
+  static/js/ecrane/facturi_ecran.js (la fel)
+  static/js/ecrane/emitere_ecran.js (la fel)
+  static/js/ecrane/tipare.js (la fel)
+  static/js/reautentificare.js (la fel, #reaut-x)
+  static/js/ecrane/login.js (la fel)
+  static/index.html (numai linia ?v=)
+  static/spv_callback.html (numai linia ?v=)
+  static/js/cautare.js (numai linia ?v=)
+  static/js/ecrane/asistent.js (numai linia ?v=)
+  static/js/ecrane/borderou_ecran.js (numai linia ?v=)
+  static/js/ecrane/cabinet.js (numai linia ?v=)
+  static/js/ecrane/coada_trimite.js (numai linia ?v=)
+  static/js/ecrane/control_verdict.js (numai linia ?v=)
+  static/js/ecrane/ecran_destinatie.js (numai linia ?v=)
+  static/js/ecrane/inceput.js (numai linia ?v=)
+  static/js/ecrane/migrare.js (numai linia ?v=)
+  static/js/ecrane/operatiuni_ecran.js (numai linia ?v=)
+  static/js/ecrane/termene.js (numai linia ?v=)
+  static/js/ecrane/validat.js (numai linia ?v=)
+  frontend_test/e2e/e2e_lot13_ds.py (numai aserțiunea absenței lui „✕”, :236)
+  frontend_test/e2e/e2e_lot15_e5.py (numai aserțiunile „✕”/„←” ale ferestrei firmei, :40-47)
+  core/test_lot11_u0_intoarcere.py (numai :89 si :100)
+  core/test_lot10b_deschidere_aleasa.py (numai constanta CLICURI_PROGRAMATICE, :136-149)
+  core/test_lot12_inapoi_sageata.py (numai constantele/numararea din :117-160, proprietatea verificata ramane)
+  core/test_lot11_m_ferestre_import.py (numai daca un test pica din cauza lotului)
+  core/test_lot10b_jurnal_nota_noua.py (numai daca un test pica din cauza lotului)
+  core/catalog_ecrane.json (orice intrare NEDESCHIS corectata sau a carei cale se schimba din cauza lotului, numita in raport)
+  docs/dovezi/16_7/
+  DESIGN_SYSTEM.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md

@@ -1,0 +1,592 @@
+{
+ "asertiuni": [
+  {
+   "id": "a.1",
+   "pas": "a",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "a.2",
+   "pas": "a",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|numar"
+  },
+  {
+   "id": "a.3",
+   "pas": "a",
+   "operator": "egal",
+   "valoare": "✕",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|text"
+  },
+  {
+   "id": "a.4",
+   "pas": "a",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|inaltime_px"
+  },
+  {
+   "id": "a.5",
+   "pas": "a",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "a.6",
+   "pas": "a",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .nav-inapoi|inaltime_px"
+  },
+  {
+   "id": "b.1",
+   "pas": "b",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|numar"
+  },
+  {
+   "id": "b.2",
+   "pas": "b",
+   "operator": "egal",
+   "valoare": "✕",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|text"
+  },
+  {
+   "id": "b.3",
+   "pas": "b",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|inaltime_px"
+  },
+  {
+   "id": "b.4",
+   "pas": "b",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "b.5",
+   "pas": "b",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .nav-inapoi|inaltime_px"
+  },
+  {
+   "id": "b.6",
+   "pas": "b",
+   "operator": "egal",
+   "valoare": "+ Notă nouă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "b.7",
+   "pas": "b",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "b.8",
+   "pas": "b",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #j-nota-noua|numar"
+  },
+  {
+   "id": "b.9",
+   "pas": "b",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #j-nota-noua|numar"
+  },
+  {
+   "id": "b.10",
+   "pas": "b",
+   "operator": "interval_px",
+   "valoare": "51-53",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #j-nota-noua|inaltime_px"
+  },
+  {
+   "id": "c.1",
+   "pas": "c",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|numar"
+  },
+  {
+   "id": "c.2",
+   "pas": "c",
+   "operator": "egal",
+   "valoare": "✕",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|text"
+  },
+  {
+   "id": "c.3",
+   "pas": "c",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|inaltime_px"
+  },
+  {
+   "id": "c.4",
+   "pas": "c",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "c.5",
+   "pas": "c",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .nav-inapoi|inaltime_px"
+  },
+  {
+   "id": "c.6",
+   "pas": "c",
+   "operator": "egal",
+   "valoare": "Emite factură",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "c.7",
+   "pas": "c",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "c.8",
+   "pas": "c",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #em-emite|numar"
+  },
+  {
+   "id": "c.9",
+   "pas": "c",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #em-emite|numar"
+  },
+  {
+   "id": "c.10",
+   "pas": "c",
+   "operator": "interval_px",
+   "valoare": "51-53",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #em-emite|inaltime_px"
+  },
+  {
+   "id": "d.1",
+   "pas": "d",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|numar"
+  },
+  {
+   "id": "d.2",
+   "pas": "d",
+   "operator": "egal",
+   "valoare": "✕",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|text"
+  },
+  {
+   "id": "d.3",
+   "pas": "d",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|inaltime_px"
+  },
+  {
+   "id": "d.4",
+   "pas": "d",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "d.5",
+   "pas": "d",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .nav-inapoi|inaltime_px"
+  },
+  {
+   "id": "d.6",
+   "pas": "d",
+   "operator": "egal",
+   "valoare": "Contabilizează statul",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "d.7",
+   "pas": "d",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "d.8",
+   "pas": "d",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #sp-contare|numar"
+  },
+  {
+   "id": "d.9",
+   "pas": "d",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #sp-contare|numar"
+  },
+  {
+   "id": "d.10",
+   "pas": "d",
+   "operator": "interval_px",
+   "valoare": "51-53",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #sp-contare|inaltime_px"
+  },
+  {
+   "id": "e.1",
+   "pas": "e",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|numar"
+  },
+  {
+   "id": "e.2",
+   "pas": "e",
+   "operator": "egal",
+   "valoare": "✕",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|text"
+  },
+  {
+   "id": "e.3",
+   "pas": "e",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|inaltime_px"
+  },
+  {
+   "id": "e.4",
+   "pas": "e",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "e.5",
+   "pas": "e",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .nav-inapoi|inaltime_px"
+  },
+  {
+   "id": "e.6",
+   "pas": "e",
+   "operator": "egal",
+   "valoare": "Adaugă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "e.7",
+   "pas": "e",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "e.8",
+   "pas": "e",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #pcf-adauga|numar"
+  },
+  {
+   "id": "e.9",
+   "pas": "e",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #pcf-adauga|numar"
+  },
+  {
+   "id": "e.10",
+   "pas": "e",
+   "operator": "interval_px",
+   "valoare": "51-53",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #pcf-adauga|inaltime_px"
+  },
+  {
+   "id": "f.1",
+   "pas": "f",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|numar"
+  },
+  {
+   "id": "f.2",
+   "pas": "f",
+   "operator": "egal",
+   "valoare": "✕",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|text"
+  },
+  {
+   "id": "f.3",
+   "pas": "f",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|inaltime_px"
+  },
+  {
+   "id": "f.4",
+   "pas": "f",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "f.5",
+   "pas": "f",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .nav-inapoi|inaltime_px"
+  },
+  {
+   "id": "f.6",
+   "pas": "f",
+   "operator": "egal",
+   "valoare": "Salvează",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "f.7",
+   "pas": "f",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "f.8",
+   "pas": "f",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #mf-salveaza|numar"
+  },
+  {
+   "id": "f.9",
+   "pas": "f",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #mf-salveaza|numar"
+  },
+  {
+   "id": "f.10",
+   "pas": "f",
+   "operator": "interval_px",
+   "valoare": "51-53",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #mf-salveaza|inaltime_px"
+  },
+  {
+   "id": "g.1",
+   "pas": "g",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|numar"
+  },
+  {
+   "id": "g.2",
+   "pas": "g",
+   "operator": "egal",
+   "valoare": "✕",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|text"
+  },
+  {
+   "id": "g.3",
+   "pas": "g",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|inaltime_px"
+  },
+  {
+   "id": "g.4",
+   "pas": "g",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "g.5",
+   "pas": "g",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .nav-inapoi|inaltime_px"
+  },
+  {
+   "id": "g.6",
+   "pas": "g",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #je-salveaza|numar"
+  },
+  {
+   "id": "g.7",
+   "pas": "g",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #je-salveaza|numar"
+  },
+  {
+   "id": "g.8",
+   "pas": "g",
+   "operator": "activ",
+   "valoare": "false",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #je-salveaza|activ"
+  },
+  {
+   "id": "h.1",
+   "pas": "h",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|numar"
+  },
+  {
+   "id": "h.2",
+   "pas": "h",
+   "operator": "egal",
+   "valoare": "✕",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|text"
+  },
+  {
+   "id": "h.3",
+   "pas": "h",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x|inaltime_px"
+  },
+  {
+   "id": "h.4",
+   "pas": "h",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "i.1",
+   "pas": "i",
+   "operator": "egal",
+   "valoare": "Generează D104",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "i.2",
+   "pas": "i",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "i.3",
+   "pas": "i",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #d104-regen|numar"
+  },
+  {
+   "id": "i.4",
+   "pas": "i",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #d104-regen|numar"
+  },
+  {
+   "id": "i.5",
+   "pas": "i",
+   "operator": "interval_px",
+   "valoare": "51-53",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #d104-regen|inaltime_px"
+  },
+  {
+   "id": "i.6",
+   "pas": "i",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet > .nav-x:last-child|numar"
+  },
+  {
+   "id": "j.1",
+   "pas": "j",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #d104-regen|numar"
+  },
+  {
+   "id": "j.2",
+   "pas": "j",
+   "operator": "interval_px",
+   "valoare": "51-53",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane #d104-regen|inaltime_px"
+  },
+  {
+   "id": "j.3",
+   "pas": "j",
+   "operator": "egal",
+   "valoare": "Generează D104",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "k.1",
+   "pas": "k",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:#nav-iesire|inaltime_px"
+  },
+  {
+   "id": "k.2",
+   "pas": "k",
+   "operator": "lipseste",
+   "valoare": "←",
+   "cheie": "dom:#nav-iesire|text"
+  },
+  {
+   "id": "k.3",
+   "pas": "k",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:#nav-iesire svg|numar"
+  },
+  {
+   "id": "l.1",
+   "pas": "l",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:#eroare-globala .nav-x|numar"
+  },
+  {
+   "id": "l.2",
+   "pas": "l",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:#eroare-globala .nav-x|inaltime_px"
+  },
+  {
+   "id": "m.1",
+   "pas": "m",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:#eroare-globala|numar"
+  },
+  {
+   "id": "n.1",
+   "pas": "n",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:#eroare-globala|numar"
+  }
+ ]
+}

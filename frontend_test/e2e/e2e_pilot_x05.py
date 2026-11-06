@@ -30,7 +30,7 @@ DEFICIENTE_PROBATE = ("759", "760", "786")   # core/test_deficiente.py::plasa_e2
 
 # pasul -> (deficiențele dovedite, ce se vede)
 HARTA = {
-    "a": ("759", "X05 (1): fereastra firmei, prima fereastră: un „✕” în dreapta sus, „←” nevăzut, fără acțiune în bară"),
+    "a": ("759", "X05 (1): fereastra firmei, a treia fereastră (peste Firme existente): un „✕” în dreapta sus, „←” vizibil, fără acțiune în bară"),
     "b": ("759, 760", "X05 (2)+(3): Registru jurnal: „✕” și „←”, „+ Notă nouă” o singură dată, în bară"),
     "c": ("759, 760", "X05 (2)+(3): Emite factură (regresie: era deja verde)"),
     "d": ("759, 760", "X05 (2)+(3): Stat de plată F5: „Contabilizează statul” o singură dată, în bară"),
