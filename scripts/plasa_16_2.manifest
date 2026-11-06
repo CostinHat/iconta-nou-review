@@ -6,3 +6,4 @@ frontend_test/e2e/e2e_pozitii_validate.py	19cb73d30e52de26a42365eef1d1bd43b9ed47
 frontend_test/e2e/e2e_pilot_f017.py	2c9b4fab2bfb3d9f833ea5afc6f5ed45b3e7a08b097a6c5dcd4a2fd061c4315e	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f017.py
 frontend_test/e2e/e2e_pilot_f054.py	affc7c95b8b8f7ff036364f76e96a2ea8252cd4fa79b3e8cba15ea823e259c50	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f054.py
 frontend_test/e2e/e2e_pilot_x05.py	6a328da7c56f60694bf085412bb9c28bc7899939b0e8267fb6d65d2e0296b2f6	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x05.py
+frontend_test/e2e/e2e_pilot_x06.py	f87b2ddfb4e2c0cb8b206d2d6a305993c2251faa746170e698a72f36e58bc966	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x06.py
