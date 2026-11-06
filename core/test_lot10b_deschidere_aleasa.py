@@ -146,7 +146,7 @@ CLICURI_PROGRAMATICE = {
     "static/js/ecrane/firme.js": (2, "descărcarea cerută de om; „Scanează cod de bare” deschide alegerea imaginii (input ascuns)"),
     # [lotul 13, 681] rezultatul ales de om în căutarea din antet apasă cardul ferestrei firmei și butonul operației pe care le numește
     # — aceleași elemente pe care omul le-ar fi apăsat, cu ascultătorii și drepturile lor (nu o a doua cale de deschidere)
-    "static/js/cadru.js": (1, "butonul principal din bara de jos apasă butonul din fereastră pe care l-a ales omul (15.1-E5): clicul e al omului pe bară, originalul e cel pe care l-ar fi apăsat în ecran"),
+    "static/js/cadru.js": (1, "NU_MUTA (16.8): numai pentru id-urile din NU_MUTA și butoanele fără id, butonul principal din bara de jos (proxy) apasă butonul din fereastră pe care l-a ales omul; clicul e al omului pe bară, originalul e cel pe care l-ar fi apăsat în ecran; celelalte acțiuni principale se mută în bară (același nod) și nu au clic programatic"),
     "static/js/ds_piese.js": (1, "Enter în căutarea listei apasă primul rând din filtru (15.1-E5, 727.2): alegerea e a omului, rândul e cel pe care l-ar fi apăsat cu mouse-ul"),
     "static/js/cautare.js": (3, "rezultatul căutării ales de om apasă cardul firmei / butonul operației pe care îl numește / butoanele ecranului din catalog (681.2: aceiași pași pe care i-ar face omul)"),
     "static/js/ecrane/validat.js": (1, "„Respinge nota” ales în caseta de confirmare apasă butonul de respingere al notei"),

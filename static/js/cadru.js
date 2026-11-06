@@ -125,7 +125,7 @@ export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Capacitate|Operațiuni s
 const _esteMeniu = (corp, bara) => !![...corp.querySelectorAll(".firme-optiune")].find(_vizibil)
   && ![...corp.querySelectorAll(".buton-primar")].some((b) => !bara.contains(b) && _vizibil(b) && !b.closest("table, template, details"));
 
-// [16.8, 760] NU_MUTA = id-urile butoanelor găsite de catalog care NU se mută în bară (rămân în conținut; în bară stă un proxy care apasă originalul, `sursa.click()`).
+// [16.8, 760] NU_MUTA = id-urile butoanelor găsite de catalog care NU se mută în bară (rămân în conținut; în bară stă un proxy care apasă originalul).
 // Motivul fiecăruia: ecranul (sau testul) își caută butonul într-un container care nu conține bara, după mutare, într-un fișier în care lotul 16.8 nu are voie să schimbe
 // logica (scrierea `?v=` în cascadă ar ieși din lista de fișiere permise) sau într-un test din plasa fixă, care nu se modifică. Un buton fără `id` nu se mută niciodată
 // (ecranul nu-l poate căuta; rând dintr-o listă, ex. `.val-aproba`): proxy. Ecranele lor rămân roșii la rândul b: limită declarată, le închide lotul 16.9.
