@@ -157,6 +157,7 @@ def _deschide_firma(e, nume):
     pg.wait_for_selector("#firme-lista button.firme-rand", timeout=20000)
     pg.locator("#firme-lista button.firme-rand", has_text=nume).first.click()
     pg.wait_for_selector("#fa-facturi", timeout=20000)
+    pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=\"false\"]').forEach((b) => b.click())")
 
 
 def _emitere(e, firma):

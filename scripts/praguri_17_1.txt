@@ -19,6 +19,7 @@ fisiere_permise (aplicata mecanic de publica_lot la --verifica si la publicare p
   docs/dovezi/17_1/ (nou)
   docs/dovezi/16_8/parcurs_16_8.py (numai functia firma(): deschiderea grupurilor pliate; parcursul lui X05)
   frontend_test/e2e/conftest.py (numai Ecran.firma(): deschiderea grupurilor pliate)
+  frontend_test/e2e/e2e_bloc_b.py (numai linia idempotenta care deschide grupurile ferestrei firmei, dupa asteptarea lui #fa-facturi in _deschide_firma, fara alte schimbari in fisier; nu se rescriu teste)
   docs/dovezi/16_2_B/parcurs_16_2_B.py (numai _firma(): deschiderea grupurilor pliate; parcursul plasei fixe e2e_pilot_f017)
   docs/dovezi/16_6/parcurs_16_6.py (numai _jurnal(): deschiderea grupurilor pliate; parcursul plasei fixe e2e_pilot_f054)
   docs/dovezi/16_6/parcurs_16_6_angajat.py (numai deschiderea grupurilor pliate, înainte de #fa-jurnal; plasa fixă e2e_pilot_f054)
