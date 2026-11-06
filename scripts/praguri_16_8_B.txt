@@ -1,0 +1,22 @@
+unelte
+lot: 16.8-B
+fara praguri numerice pe durate in aceasta schema (lot de unelte; niciun rand `max <faza> <secunde>`: scripts/publica_lot.py:470-475 compara numai randurile `max`); referintele de mai jos sunt cerinte de raport, cu cifra, si nu opresc publicarea. Sursa tuturor: ~/lot_16_8_raport.md pct.C (baza 1888 teste: verificator 148 s, pytest 724 s, plasa 818 s; poarta pe candidat: verificator 83 s, pytest ≈9 min, plasa ≈15 min) si .lot_jurnal.log, randurile lot=16.8 din 06.11.2026 (rularea completa rosie 13:12-13:38: poarta_verificator 83 s, poarta_pytest 549 s, poarta_plasa 890 s; hook: 8 rulari verzi, 5 de 152-162 s si 3 de 91-93 s; maximul 162 s), fiecare × 1,2:
+  rularea completa a portii (verificator + pytest + plasa) ≤ 1826 s (= (83 + 549 + 890) × 1,2 = 1522 × 1,2; plasa de 890 s e dintr-o rulare rosie, neterminata curat, deci cifra e un maxim observat, nu o medie)
+  proba pe baza (`poarta_lot.sh --baza`) ≤ 2028 s (= (148 + 724 + 818) × 1,2 = 1690 × 1,2)
+  hook-ul intreg pe un commit ≤ 194 s (= 162 × 1,2); cerinta arhitectului: nimic care ruleaza pe un commit nu depaseste 2 min (CLAUDE.md, lectia E5), deci un hook peste 120 s se raporteaza cu cauza (5 din cele 8 rulari verzi ale lotului 16.8 au depasit 150 s; lotul nu inrautateste asta, pasul nou citeste doua fisiere)
+  restaurarea bazei ≤ 112 s per restaurare (maximul masurat 93 s in ~/lot_16_6_C1_raport.md, 81-86 s in ~/lot_16_6_C2_raport.md, × 1,2; la fel ca in praguri_16_8.txt)
+  pasul nou din hook (scripts/verifica_liste_exceptii.py, citire a doua fisiere si comparatie, fara browser) ≤ 10 s, cerinta de raport (nu prag; nu exista masuratoare anterioara, se raporteaza durata masurata)
+  durata totala a lotului, de la randul „pornire” pana la scrierea raportului: tinta lotului ≤ 4 h (tinta din lectiile de lot, nu o cifra masurata; lotul are proba pe baza si doua rulari complete cel mult, fara matrice si fara calibrare pe 8019), cerinta de raport, nu prag
+  consecinta la raport: o cerinta depasita se scrie cu cifra ei si cauza; o rulare completa > 1826 s = numar nou de unelte in DEFICIENTE.md (starea neverificat), scris la urmatorul C liber intr-un commit dupa C; nu blocheaza publicarea
+runde_verificator_max: 0
+limitele de rulari: 2 rulari complete si 2 reluari, aplicate de scripts/poarta_rulare.py (:116, :146-150; stare json), nu de acest fisier; cerinta de raport: cel mult 1 reluare
+acceptarea_arhitectului (nu intra in PASS/STOP): lotul nu atinge produsul; „Tipare de erori” si „Panou Admin — Sanatate server” raman ROSU la randul b pana la lotul 17.3 si nu intra in EXCEPTII_B; verificatorul independent primeste scenariul in aceasta forma (cu --sectiune) la comenzile care il cer, nu gol.
+fisiere_permise (informativ; perimetrul real la un lot unelte = unelte_refuzuri, publica_lot.py:254-267: UNELTE_PERMISE, docs/dovezi/<lot>/, fisierele de test din core, intrarile cu / din aceasta lista; orice altceva = refuz cu numele lui):
+  scripts/
+  core/test_lanseaza_sectiune_16_8_B.py (nou)
+  core/test_liste_exceptii_16_8_B.py (nou)
+  CLAUDE.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/16_8_B/
