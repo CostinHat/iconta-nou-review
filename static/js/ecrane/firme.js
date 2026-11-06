@@ -64,19 +64,14 @@ import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locIn
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
   container.innerHTML = `
-    <div class="firme-cap">
-      <div class="firme-cap-butoane" id="firme-dezactivate"></div>
-      <span class="firme-spatiu"></span>
-      <button class="buton-primar" id="firme-adauga" data-actiune="POST /tenants">+ Adaugă firmă</button>
-    </div>
-    <div class="ecran-nota firme-nota" data-actiune="POST /tenants/{tenant_id}/activare|DELETE /tenants/{tenant_id}">
-      <span>Butonul <strong>Scoate</strong> de pe fiecare rând deschide o previzualizare, nu șterge.</span>
-      <details><summary>detalii</summary>Acolo se vede care act e care:
+    <p class="ecran-nota" data-actiune="POST /tenants/{tenant_id}/activare|DELETE /tenants/{tenant_id}" style="margin:0 0 10px">Butonul <strong>Scoate</strong> de pe fiecare rând
+       deschide o previzualizare, nu șterge. Acolo se vede care act e care:
        <strong>dezactivarea</strong> e reversibilă (firma iese din listă, datele rămân),
-       <strong>ștergerea</strong> nu e — și se poate doar dacă firma n-a produs niciun document.</details>
-    </div>
+       <strong>ștergerea</strong> nu e — și se poate doar dacă firma n-a produs niciun document.</p>
     <div class="firme-cautare">
       <input type="text" id="firme-q" class="camp-input" placeholder="Caută după nume sau CUI" aria-label="Caută după nume sau CUI" autocomplete="off">
+      <span id="firme-dezactivate"></span>
+      <button class="buton-primar" id="firme-adauga" data-actiune="POST /tenants">+ Adaugă firmă</button>
     </div>
     <div class="firme-lista" id="firme-lista" data-zona-derulare><div class="ecran-nota">Se încarcă firmele…</div></div>
   `;

@@ -462,10 +462,9 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 /* lista de firme */
 .firme-cap { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
 .firme-spatiu { flex: 1; }
-.firme-cap-butoane { display: flex; align-items: center; gap: 12px; }
-/* [17.1, 788] nota „Scoate” stă pe un rând; „▾ detalii” (piesa details > summary a DS) deschide restul textului pe rândul de sub ea */
-.firme-nota { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin: 0 0 10px; }
-.firme-nota details[open] { flex-basis: 100%; }
+/* [17.1, 788] căutarea și cele două butoane („Firme dezactivate”, „Firme scoase”) stau pe același rând; câmpul de căutare ia restul */
+.firme-cautare { display: flex; align-items: center; gap: 12px; }
+#firme-dezactivate { display: flex; align-items: center; gap: 12px; }
 /* [17.1] Titlul grupului din fereastra firmei e un buton (aria-expanded) de 40 px pe toată lățimea secțiunii; își ia mărimea, greutatea, majusculele și culoarea din `.ds-grup-titlu`. Săgeata arată spre dreapta când grupul e pliat și în jos când e deschis. */
 .firme-grup-btn { display: flex; align-items: center; gap: 8px; width: 100%; height: 40px; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
 .firme-grup-btn:hover { color: var(--ardezie); }
@@ -473,7 +472,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .firme-grup-btn[aria-expanded="true"] .firme-grup-sageata { transform: rotate(90deg); }
 .firme-cautare { margin-bottom: 14px; }
 .firme-cautare input {
-  width: 100%; height: 38px; padding: 0 12px;
+  flex: 1 1 0; min-width: 0; height: 38px; padding: 0 12px;
   border: 0.5px solid var(--linie); border-radius: var(--raza);
   font-size: var(--text-mic); font-family: inherit; box-sizing: border-box;
 }
