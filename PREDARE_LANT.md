@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**06.11.2026 — COMANDA 16.7 (unelte) pe `lucru/lot16-7` (worktree `/home/costin/iconta_lot16_7`), C = `237225c503d0a245807a4af960f7e2851947a0c1`, poarta VERDE (1905 teste, regresie 0).** Rândurile a (bara de sus: „✕”) și b (acțiunea principală o singură dată) ale verificatorului sunt calibrate; matricea pe tot registrul (105 intrări) e în `docs/dovezi/16_7/matrice_inainte.csv` și dă lista lotului de produs 16.8 (759, 760). Starea publicării: vezi `~/lot_16_7_raport.md`.
+
 **05.11.2026 — COMANDA 16.6-C1 (produs; corecție la 16.6) pe `lucru/lot16-6` (worktree `/home/costin/iconta_lot16_6`), C = `c98ebb468cdfc110867a5aa6ec83f3df64986470`, poarta VERDE, oracolul 78/78 «trece», Haiku fără «nu corespunde».** Remediul 610 / 48 în `static/stil.css` (regula ferestrei cu buton principal acoperea starea inactivă), R3 nou, 759→781. Starea publicării: vezi `~/lot_16_6_C1_raport.md`.
 
 **05.11.2026 — COMANDA 16.6 (produs, F054) pe `lucru/lot16-6` (worktree `/home/costin/iconta_lot16_6`), C = `d2175e6052fd8709913e19ab33cc2c1144845d16`, poarta VERDE, NEPUBLICAT.** 729.2 reparat în `ecranEditorNota` («Salvează» inactiv cu «Completează: …»); parcurgerile pe C trec la oracol, dar Haiku (ambele instanțe) dă «nu corespunde» pe f.2 și t.4: «Validează» inactiv (aria-disabled) arată activ pe ecran în tabelul notelor (cauza e în CSS/cadru, în afara listei permise) → STOP «dezacord oracol–verificator»; plus pragurile de durată depășite. Starea 729.2 / 602.1 rămâne «reparat, fără dovadă pe ecran»; 759 nou, nerezolvat.
