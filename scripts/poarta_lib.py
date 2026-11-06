@@ -194,7 +194,24 @@ def rezultat_treapta(rc, teste, inv=None):
     return "rosu_%d" % rc
 
 
-def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="3", detalii="", verificator=True):
+def _sonda_8019():
+    import verificator_design as VD
+    return VD._raspunde()
+
+
+def _opreste_8019():
+    import verificator_design as VD
+    VD.opreste()
+
+
+def _sterge(cale):
+    try:
+        os.remove(cale)
+    except FileNotFoundError:
+        pass
+
+
+def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="3", detalii="", verificator=True, sonda_8019=None, opreste_8019=None):
     """-> (durate pe treaptă, teste). `pytest_ids`/`e2e_fisiere` None = tot (nucleul / manifestul); listă = numai acelea (reluarea). Baza de test se restaurează înainte de
     pytest și înainte de plasa e2e (niciodată per test). Toate treptele rulează, și după una roșie."""
     py = "./venv/bin/python"
@@ -214,24 +231,28 @@ def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="
         with faza(lot, "poarta_pytest", detalii) as f:
             _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_pytest.log"))
             jx = os.path.join(J, "poarta_pytest.xml")
+            _sterge(jx)
             rc, d = _rulare([py, "-m", "pytest", "-q", "-n", procese, "--dist", "loadfile", "--junitxml=" + jx] + ids, wt, env, os.path.join(J, "poarta_pytest.log"))
             r = citeste_junit(jx, wt)
             f["rezultat"] = rezultat_treapta(rc, r)
         trepte["pytest"] = d
         teste += [dict(t, treapta="pytest") for t in r]
-        if rc not in (0, 1) and not r:   # pytest n-a ajuns să ruleze nimic (interpretare, import, interrupt): infrastructură, nu test
+        if rc != 0 and not r:   # fără raport junit proaspăt (pytest n-a ajuns să ruleze nimic (interpretare, import, interrupt): infrastructură, nu test
             teste.append({"nume": "pytest::sesiune", "treapta": "pytest", "rezultat": "pica", "infra": True, "durata": d, "mesaj": "cod %d fără raport junit" % rc})
     fis = [os.path.basename(x) for x in fisiere_manifest(wt)] if e2e_fisiere is None else e2e_fisiere
     if fis:
         with faza(lot, "poarta_plasa", detalii) as f:
             _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_e2e.log"))
             jx = os.path.join(J, "poarta_e2e.xml")
+            _sterge(jx)
+            if sonda_8019():
+                opreste_8019()
             rc, d = _rulare([py, "scripts/e2e_poarta.py"] + ["--doar=" + x for x in fis] + [os.path.join(J, "e2e_poarta_capturi")],
                             wt, dict(env, PYTEST_ADDOPTS="--junitxml=" + jx), os.path.join(J, "poarta_e2e.log"))
             r = citeste_junit(jx, wt)
             f["rezultat"] = rezultat_treapta(rc, r)
         trepte["plasa_e2e"] = d
         teste += [dict(t, treapta="plasa_e2e") for t in r]
-        if rc not in (0, 1) and not r:   # 3 = aplicația n-a pornit
+        if rc != 0 and not r:   # fără raport junit proaspăt (3 = aplicația n-a pornit
             teste.append({"nume": "plasa_e2e::sesiune", "treapta": "plasa_e2e", "rezultat": "pica", "infra": True, "durata": d, "mesaj": "cod %d fără raport junit" % rc})
     return trepte, teste

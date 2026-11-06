@@ -1439,11 +1439,16 @@
     "click": "#fa-facturi"
    },
    {
-    "cauta": "detaliu factură"
+    "click": "#fac-istoric"
+   },
+   {
+    "click": "#fac-prev"
+   },
+   {
+    "click": "button.fac-frand-btn"
    }
   ],
-  "grup": "firma",
-  "acelasi_ca": "Facturi F1"
+  "grup": "firma"
  },
  {
   "nume": "Chei API",
@@ -1511,5 +1516,208 @@
    ],
    "firma": false
   }
+ },
+ {
+  "nume": "Declarație D104 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D104"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D107 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D107"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D110 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D110"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D114 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D114"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D177 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D177"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D205 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D205"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D307 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D307"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D398 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D398"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D710 F1 pasul 2",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D710"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Declarație D301 F3 pasul 2",
+  "nivel": "firma",
+  "firma": "F3",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-declaratii"
+   },
+   {
+    "click": "li.ds-lista-rand",
+    "text": "D301"
+   },
+   {
+    "click": "#dec-continua"
+   }
+  ]
+ },
+ {
+  "nume": "Fereastră mică — confirmare storno F1",
+  "nivel": "firma",
+  "firma": "F1",
+  "grup": "firma",
+  "pasi": [
+   {
+    "click": "#fa-facturi"
+   },
+   {
+    "click": "#fac-istoric"
+   },
+   {
+    "click": "#fac-prev"
+   },
+   {
+    "click": "button.fac-frand-btn"
+   },
+   {
+    "click": "#fd-storno"
+   }
+  ]
  }
 ]

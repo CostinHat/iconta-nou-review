@@ -11,7 +11,7 @@ identice). Un singur rând PICĂ = ecranul e nemigrat.
   python scripts/verificator_design.py opreste
   python scripts/verificator_design.py prompt <director> <ecran>...   promptul fix, cu lista de ecrane și directorul capturilor
   python scripts/verificator_design.py lista               ecranele din registru (core/catalog_ecrane.json)
-  python scripts/verificator_design.py ecran "<nume>" <LATxINALT> <director>
+  python scripts/verificator_design.py ecran "<nume>" <LATxINALT> <director> [<director_png>]
                                                            deschide ecranul ca un contabil, scrie `<director>/<slug>_<LAT>x<INALT>.png` și `.json`
                                                            (măsurătorile și verdictul mecanic pe rândurile a–h) și le tipărește
 """
@@ -37,12 +37,16 @@ MASURI = os.path.join(RAD, "scripts", "verificator_design_masuri.js")
 
 #: Criteriul „migrat” (comanda 15.1-E1 pct.2, R7), cuvânt cu cuvânt. Cheia = litera rândului.
 RANDURI = {
-    "a": "bara de sus: 56 px, fără traseu, „←”, firma sau cabinetul în lucru cu CUI, numele ferestrei, căutarea; traseu înseamnă două sau mai multe "
+    "a": "bara de sus: 56 px, fără traseu, firma sau cabinetul în lucru cu CUI, numele ferestrei, căutarea; traseu înseamnă două sau mai multe "
          "ecrane vizitate înșiruite — un singur „›” urmat de numele ferestrei curente NU e traseu; la Panou Admin, unde nu e nicio firmă sau "
-         "cabinet în lucru, contextul e „Panou Admin”, fără CUI; „←” vizibil de 40 × 40 pe fiecare fereastră; „✕” nu apare în bara de sus",
+         "cabinet în lucru, contextul e „Panou Admin”, fără CUI; „✕” (închidere) de 40 × 40, exact unul, ultimul element din bară, în dreapta sus, "
+         "pe FIECARE fereastră de lucru și pe cele mici; „←” nu se judecă: apare numai unde există un pas înapoi real (fereastră deschisă din alta "
+         "sau cu pas intern), altfel fereastra are numai „✕”",
     "b": "fereastra de lucru pe tot ecranul la 1920 × 1080 și 1366 × 768, un singur loc de derulare (tabelul lung), bara de jos fixă 72 px "
          "cu un singur buton principal L (cu data-actiune-principala) și „Renunță” M numai pe ferestrele cu formular; „Închide” și „Renunță” nu sunt "
-         "acțiune principală, oricum ar fi colorate; butonul principal inactiv cu motiv cât timp acțiunea nu e posibilă; excepție (stare sau meniu "
+         "acțiune principală, oricum ar fi colorate; butonul principal inactiv cu motiv cât timp acțiunea nu e posibilă; acțiunea principală a ferestrei "
+         "apare o singură dată pe ecran: niciun buton vizibil din conținut (în afara tabelelor, template și details) nu are același text ca butonul "
+         "principal din bara de jos; excepție (stare sau meniu "
          "de butoane, pe nume, lista din raport): bara fără buton principal și fără „Renunță”",
     "c": "orice listă de înregistrări e tabelul DS: cap 40 px, rânduri 44 px, zebra, starea doar în coloana „Stare”, cel mult 2 acțiuni XS pe "
          "rând, subsol 44 px (rândul de totaluri fix, bara-fixa, nu e o listă de înregistrări); nicio celulă cu dată sau sumă tăiată",
@@ -149,8 +153,9 @@ def _sesiune(utilizator):
     return pasi.autentifica("http://127.0.0.1:%d" % PORT, email, parola), stare["firme"]
 
 
-def ecran(nume, rez, director):
-    """Deschide ecranul `nume` din registru la rezoluția `LATxINALT`; scrie captura și măsurătorile."""
+def ecran(nume, rez, director, interventie=None, masuri_alt=None, director_png=None):
+    """Deschide ecranul `nume` din registru la rezoluția `LATxINALT`; scrie captura și măsurătorile. [16.7] `interventie` = JS rulat după pași,
+    înaintea măsurării; `masuri_alt` = a doua cale .js evaluată pe aceeași pagină (rezultat în cheia `masuri_alt`); `director_png` = directorul capturilor."""
     from playwright.sync_api import sync_playwright
     intrari = [e for e in registru() if e["nume"] == nume]
     if not intrari:
@@ -159,6 +164,8 @@ def ecran(nume, rez, director):
     e = intrari[0]
     lat, inalt = (int(x) for x in rez.split("x"))
     os.makedirs(director, exist_ok=True)
+    if director_png:
+        os.makedirs(director_png, exist_ok=True)
     os.environ["PROBA_BAZA"] = "http://127.0.0.1:%d" % PORT
     os.environ["E2E_CAPTURI"] = director
     sys.path.insert(0, os.path.join(RAD, "frontend_test", "dovada"))
@@ -186,14 +193,19 @@ def ecran(nume, rez, director):
             for pas in e.get("pasi", []):
                 _pas(pg, pas)
             pg.wait_for_timeout(800)
+            if interventie:
+                pg.evaluate(interventie)
+                pg.wait_for_timeout(300)
         except Exception as ex:  # noqa: BLE001 — un ecran care nu se deschide e un rezultat, nu o oprire
             eroare = str(ex).splitlines()[0][:300]
         pg.evaluate("(e) => { window.__exceptieB = e; }", EXCEPTII_B.get(nume))
         masuri = pg.evaluate(open(MASURI, encoding="utf-8").read())
+        if masuri_alt:
+            masuri["masuri_alt"] = pg.evaluate(open(masuri_alt, encoding="utf-8").read())
         masuri.update({"ecran": nume, "rezolutie": rez, "firma": e.get("firma"), "nivel": e.get("nivel"), "eroare_deschidere": eroare or None,
                        "erori_js": erori + ec.erori})
         baza = os.path.join(director, "%s_%s" % (slug(nume), rez))
-        pg.screenshot(path=baza + ".png")
+        pg.screenshot(path=os.path.join(director_png or director, os.path.basename(baza) + ".png"))
         b.close()
     masuri["verdict_mecanic"] = verdict_mecanic(masuri)
     json.dump(masuri, open(baza + ".json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
@@ -262,8 +274,8 @@ def main(argv):
         for e in registru():
             print("%-14s %-34s %s" % (e.get("nivel", "?"), e["nume"], e.get("firma", "")))
         return 0
-    if argv[0] == "ecran" and len(argv) == 4:
-        return ecran(argv[1], argv[2], argv[3])
+    if argv[0] == "ecran" and len(argv) in (4, 5):
+        return ecran(argv[1], argv[2], argv[3], director_png=argv[4] if len(argv) == 5 else None)
     print(__doc__)
     return 2
 

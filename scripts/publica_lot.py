@@ -453,13 +453,27 @@ def verifica(lot, sha, comun, sirul_zip):
         if sorted(z.read("fisiere_diff.txt").decode().split()) != sorted(diff):
             stop.append("lista fișierelor din ZIP diferă de diff-ul față de main")
     # praguri numerice: `max <faza> <secunde>`; în lotul de unelte nu sunt
-    for ln in open(praguri, encoding="utf-8"):
+    depasiri, intrerupte = depasiri_praguri(JL.durate(lot), open(praguri, encoding="utf-8").read().splitlines())
+    stop += depasiri
+    if os.path.exists(raport) and "Rulări „intrerupt” pe fază" not in open(raport, encoding="utf-8").read():
+        stop.append("raportul nu dă numărul rulărilor „intrerupt” pe fază (%s)" % (", ".join("%s=%d" % kv for kv in sorted(intrerupte.items())) or "niciuna"))
+    return stop
+
+
+def depasiri_praguri(durate, linii_praguri):
+    """-> (STOP-uri, {faza: număr de rulări „intrerupt”}). Comparația `max <faza> <secunde>` ignoră rulările cu rezultatul „intrerupt” (x[4]) [16.7]: o rulare
+    întreruptă nu e o rulare terminată peste prag; numărul lor pe fază intră în raport."""
+    stop, intrerupte = [], {}
+    for x in durate:
+        if x[4] == "intrerupt":
+            intrerupte[x[0]] = intrerupte.get(x[0], 0) + 1
+    for ln in linii_praguri:
         m = re.match(r"max\s+(\S+)\s+(\d+)", ln)
         if m:
-            d = [x[5] for x in JL.durate(lot) if x[0] == m.group(1) and x[5] != ""]
+            d = [x[5] for x in durate if x[0] == m.group(1) and x[5] != "" and x[4] != "intrerupt"]
             if d and max(d) > int(m.group(2)):
                 stop.append("pragul „%s” depășit: %ss > %ss" % (m.group(1), max(d), m.group(2)))
-    return stop
+    return stop, intrerupte
 
 
 def zip_lot(lot, sha, cale):

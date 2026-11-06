@@ -36,10 +36,22 @@
     if (traseu.length || separatori > 1) pica.a.push("bara de sus are traseu (" + norm(ant.querySelector(".fereastra-fir")?.innerText) + ")");
     const inapoi = ant.querySelector(".nav-inapoi");
     a.sageata = !!inapoi && norm(inapoi.innerText) === "←";
-    if (!a.sageata) pica.a.push("lipsește „←” (un pas înapoi)");
-    // [15.1-E5, 713.1 / pct.3] „←” e vizibil, 40 × 40, pe fiecare fereastră de lucru; „✕” nu mai e în bara de sus
-    if (inapoi) { const r = inapoi.getBoundingClientRect(); a.sageata_dim = [Math.round(r.width), Math.round(r.height)]; if (!vizibil(inapoi) || Math.abs(r.width - 40) > 1 || Math.abs(r.height - 40) > 1) pica.a.push("„←” nu e vizibil de 40 × 40 (" + a.sageata_dim.join(" × ") + ")"); }
-    if ([...ant.querySelectorAll("button")].some((x) => vizibil(x) && /^✕$/.test(norm(x.innerText)))) pica.a.push("„✕” în bara de sus");
+    // [16.7] „←” rămâne fapt măsurat, nejudecat: apare numai unde există un pas înapoi real. „✕” (închidere), exact unul, 40 × 40, ultimul element din bară
+    if (inapoi) { const r = inapoi.getBoundingClientRect(); a.sageata_dim = [Math.round(r.width), Math.round(r.height)]; }
+    const inchideri = [...ant.querySelectorAll("button")].filter((x) => vizibil(x) && norm(x.innerText) === "✕");
+    a.x = inchideri.length;
+    a.x_dim = null;
+    if (a.x === 0) pica.a.push("lipsește „✕” (închidere) în dreapta sus a barei de sus");
+    else if (a.x > 1) pica.a.push(a.x + " butoane „✕” în bara de sus, nu unul");
+    else {
+      const x = inchideri[0], rx = x.getBoundingClientRect(), rA = ant.getBoundingClientRect();
+      a.x_dim = [Math.round(rx.width), Math.round(rx.height)];
+      if (Math.abs(a.x_dim[0] - 40) > 1 || Math.abs(a.x_dim[1] - 40) > 1) pica.a.push("„✕” nu e de 40 × 40 (" + a.x_dim.join(" × ") + ")");
+      const sus = rx.top >= rA.top - 1 && rx.bottom <= rA.bottom + 1;
+      const dreapta = rx.left + rx.width / 2 > rF.left + rF.width / 2;
+      const alt = [...ant.querySelectorAll("button, input, select, a[href]")].filter((y) => y !== x && vizibil(y) && !y.closest(".cautare-rezultate, #cautare-fereastra-rez") && y.getBoundingClientRect().right > rx.right + 1);
+      if (!sus || !dreapta || alt.length) pica.a.push("„✕” nu e în dreapta sus a barei de sus (ultimul element din bară)");
+    }
     const fir = norm(ant.querySelector(".fereastra-fir")?.innerText);
     a.firma_sau_cabinet = fir;
     // [15.1-E2] Panou Admin n-are firmă sau cabinet în lucru: contextul ei e „Panou Admin”, fără CUI (decizie în raport, E)
@@ -104,6 +116,15 @@
       b.renunta = areRenunta; b.din_formular = dinFormular;
       if (dinFormular && !areRenunta) pica.b.push("fereastra cu formular nu are „Renunță” în bara de jos");
       if (!dinFormular && areRenunta && !butoane.some((x) => x.classList.contains("fj-al-ecranului"))) pica.b.push("„Renunță” pe o fereastră fără formular");
+    }
+    // [16.7] acțiunea principală o singură dată pe ecran: niciun buton din conținut cu același text ca butonul principal din bara de jos
+    b.actiune_dubla = 0;
+    if (!exceptie && principale.length) {
+      const texte = principale.map((x) => norm(x.innerText));
+      const inConinut = [...F.querySelectorAll('button, a.buton-primar, a.buton-secundar, [role="button"]')].filter((x) => vizibil(x) && !bj.contains(x) && !(ant && ant.contains(x)) && !x.closest("table, template, details"));
+      const dubluri = inConinut.filter((x) => texte.includes(norm(x.innerText)));
+      b.actiune_dubla = dubluri.length;
+      for (const t of new Set(dubluri.map((x) => norm(x.innerText)))) pica.b.push("acțiunea principală „" + t + "” apare și în conținut (" + (dubluri.filter((x) => norm(x.innerText) === t).length + 1) + " ori pe ecran)");
     }
     if (butoane.some((x) => norm(x.innerText) === "✕")) pica.b.push("„✕” în bara de jos");
     const dez = principale.filter((x) => x.disabled || x.dataset.cadruInactiv);
