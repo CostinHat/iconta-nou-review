@@ -167,6 +167,7 @@ class Ecran:
         self.pg.wait_for_selector("#firme-lista button.firme-rand", timeout=20000)
         self.pg.locator("#firme-lista button.firme-rand", has_text=nume).first.click()
         self.pg.wait_for_selector("#fa-facturi", timeout=20000)
+        self.pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=\"false\"]').forEach((b) => b.click())")
 
     def fereastra(self):
         """Textul ferestrei din față (ce citește contabilul)."""

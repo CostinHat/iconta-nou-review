@@ -35,6 +35,8 @@ def _firma(pg, nume, buton):
     """Cabinet › Firme › firma `nume` › butonul ei (#fa-casa, #fa-facturi, #fa-jurnal)."""
     _cabinet(pg)
     pg.locator("#firme-lista button.firme-rand", has_text=nume).first.click()
+    pg.wait_for_selector(".fereastra-overlay:not(.fundal) .firme-grup-btn", timeout=20000)
+    pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=\"false\"]').forEach((b) => b.click())")
     pg.wait_for_selector(buton, timeout=20000)
     pg.click(buton)
 

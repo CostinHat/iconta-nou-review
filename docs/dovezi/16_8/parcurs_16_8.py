@@ -33,7 +33,8 @@ def firma(pg, nume="F1 Comert Stoc"):
     """Fereastra firmei `nume`, pornită de la cabinet; așteaptă butoanele ei."""
     _cabinet(pg)
     pg.locator("#firme-lista button.firme-rand", has_text=nume).first.click()
-    pg.wait_for_selector("#fa-jurnal", timeout=20000)
+    pg.wait_for_selector("#fa-facturi", timeout=20000)
+    pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=\"false\"]').forEach((b) => b.click())")
     pg.wait_for_timeout(500)
 
 

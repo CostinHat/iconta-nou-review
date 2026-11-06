@@ -16,7 +16,7 @@ RE_CUV = re.compile(r'[">\s(](' + "|".join(CUVINTE) + r')[\s.,:!?<")]', re.IGNOR
 CLASE_BUTON_OK = {"buton-primar", "buton-secundar", "buton-sters", "buton-verde",
                   "buton-mic", "btn-link", "btn-nav", "buton-activ", "ajutor-btn"}
 # componente structurale si selectoare de optiune — limbaj propriu, nu butoane de actiune (Design System v1.1)
-CLASE_COMPONENTA_OK = {"firme-optiune", "cab-card", "acces-card", "meniu-card", "sub-inapoi",
+CLASE_COMPONENTA_OK = {"firme-optiune", "firme-grup-btn", "cab-card", "acces-card", "meniu-card", "sub-inapoi",
                        "firme-inapoi", "rap-tab", "ac-per", "mig-dec", "vf-opt", "sa-asist",
                        "val-btn", "mf-font-opt", "mf-culoare-opt", "pagina-card-buton",
                        "card-rezumat", "pagina-bara-acces", "pacm-x", "acces-x", "rec-modal-x", "pf-frand", "func-card"}  # func-card = selector card grupa (F203), ca cab-card/acces-card/meniu-card

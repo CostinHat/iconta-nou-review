@@ -34,6 +34,8 @@ def _jurnal(pg, luni_inapoi=0):
     """Registrul jurnal al lui F1, pornit mereu de la cabinet (luna curentă 11/2026); `luni_inapoi` clicuri pe „← luna”, fiecare așteptând răspunsul lunii cerute."""
     _cabinet(pg)
     pg.locator("#firme-lista button.firme-rand", has_text="F1 Comert Stoc").first.click()
+    pg.wait_for_selector(".fereastra-overlay:not(.fundal) .firme-grup-btn", timeout=20000)
+    pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=\"false\"]').forEach((b) => b.click())")
     pg.wait_for_selector("#fa-jurnal", timeout=20000)
     pg.click("#fa-jurnal")
     pg.wait_for_selector("#j-nota-noua", timeout=20000)
