@@ -999,7 +999,7 @@
    },
    {
     "click": "button,tr,td",
-    "text": "Ionescu Ion"
+    "text": "Ionescu Vasile"
    }
   ],
   "grup": "firma",
@@ -1323,7 +1323,12 @@
     "click": "#fa-salariati"
    },
    {
-    "cauta": "certificat concediu medical"
+    "click": "button,tr,td",
+    "text": "Ionescu Vasile"
+   },
+   {
+    "click": "button",
+    "text": "Concediu medical"
    }
   ],
   "grup": "firma",
@@ -1353,7 +1358,12 @@
     "click": "#fa-salariati"
    },
    {
-    "cauta": "ore suplimentare"
+    "click": "button,tr,td",
+    "text": "Ionescu Vasile"
+   },
+   {
+    "click": "button",
+    "text": "Prime, sporuri, ore supl."
    }
   ],
   "grup": "firma",
@@ -1365,10 +1375,11 @@
   "firma": "F5",
   "pasi": [
    {
-    "click": "#fa-salariati"
+    "cauta": "import date"
    },
    {
-    "cauta": "import salariați"
+    "click": "button",
+    "text": "Salariați"
    }
   ],
   "grup": "firma",
@@ -1398,7 +1409,7 @@
     "click": "#fa-declaratii"
    },
    {
-    "cauta": "coada"
+    "cauta": "validare"
    }
   ],
   "grup": "firma",
@@ -1481,8 +1492,11 @@
     "click": "button.cab-card:has([data-cheie='firme'])"
    },
    {
+    "click": "#opt-existente"
+   },
+   {
     "click": "button",
-    "text": "Firmă nouă"
+    "text": "Adaugă firmă"
    }
   ],
   "grup": "cabinet",
