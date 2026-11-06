@@ -40,46 +40,48 @@ def test_fisierele_reale_sunt_verzi_si_numerele_se_potrivesc():
     assert len(marcaje) == len(VL.MARCAJE)
 
 
-def _refuza(cadru, verificator, *cuvinte):
-    motive = VL.verifica(cadru, verificator)
-    assert motive, "trebuia refuz"
-    for c in cuvinte:
-        assert any(c in m for m in motive), (c, motive)
+def _refuza(cadru, verificator):
+    """-> motivele de refuz; aserțiunile stau în corpul testelor (poarta numără aserțiunile pe test)."""
+    return VL.verifica(cadru, verificator)
+
+
+def _are(motive, *cuvinte):
+    return bool(motive) and all(any(c in m for m in motive) for c in cuvinte)
 
 
 def test_refuza_capacitate_scos_din_cadru():
-    _refuza(_inlocuieste(TC, "|Capacitate|", "|"), TV, "Capacitate")
+    assert _are(_refuza(_inlocuieste(TC, "|Capacitate|", "|"), TV), "Capacitate")
 
 
 def test_refuza_titlu_adaugat_in_cadru():
-    _refuza(_inlocuieste(TC, "^(Sinteza zilei|", "^(Raportări|Sinteza zilei|"), TV, "Raportări")
+    assert _are(_refuza(_inlocuieste(TC, "^(Sinteza zilei|", "^(Raportări|Sinteza zilei|"), TV), "Raportări")
 
 
 def test_refuza_intrare_scoasa_sau_adaugata_in_exceptii():
-    _refuza(TC, _inlocuieste(TV, '"Sinteza zilei": "stare", ', ""), "Sinteza zilei")
-    _refuza(TC, _inlocuieste(TV, 'EXCEPTII_B = {', 'EXCEPTII_B = {"Contracte": "stare", '), "Contracte")
+    assert _are(_refuza(TC, _inlocuieste(TV, '"Sinteza zilei": "stare", ', "")), "Sinteza zilei")
+    assert _are(_refuza(TC, _inlocuieste(TV, 'EXCEPTII_B = {', 'EXCEPTII_B = {"Contracte": "stare", ')), "Contracte")
 
 
 def test_refuza_categorie_diferita_si_supervizor():
-    _refuza(TC, _inlocuieste(TV, '"Ghiduri": "meniu"', '"Ghiduri": "stare"'), "Ghiduri", "categoria")
-    _refuza(TC, _inlocuieste(TV, '"Supervizor": "stare", ', ""), "Supervizor", "DOAR_PY")
-    _refuza(_inlocuieste(TC, "^(Sinteza zilei|", "^(Supervizor|Sinteza zilei|"), TV, "Supervizor", "scoate-l din DOAR_PY")
+    assert _are(_refuza(TC, _inlocuieste(TV, '"Ghiduri": "meniu"', '"Ghiduri": "stare"')), "Ghiduri", "categoria")
+    assert _are(_refuza(TC, _inlocuieste(TV, '"Supervizor": "stare", ', "")), "Supervizor", "DOAR_PY")
+    assert _are(_refuza(_inlocuieste(TC, "^(Sinteza zilei|", "^(Supervizor|Sinteza zilei|"), TV), "Supervizor", "scoate-l din DOAR_PY")
 
 
 def test_refuza_marcaj_si_conditie_meniu():
-    _refuza(_inlocuieste(TC, "· CUI /", "· CIF /"), TV, "marcajele")
-    _refuza(_inlocuieste(TC, "|| _esteMeniu(corp, bara);", ";"), TV, "_esteMeniu")
+    assert _are(_refuza(_inlocuieste(TC, "· CUI /", "· CIF /"), TV), "marcajele")
+    assert _are(_refuza(_inlocuieste(TC, "|| _esteMeniu(corp, bara);", ";"), TV), "_esteMeniu")
 
 
 def test_refuza_ecranele_cu_actiune():
-    _refuza(TC, _inlocuieste(TV, 'EXCEPTII_B = {', 'EXCEPTII_B = {"Tipare de erori": "stare", '), "Tipare de erori", "17.3")
-    _refuza(_inlocuieste(TC, "^(Sinteza zilei|", "^(Panou Admin — Sănătate server|Sinteza zilei|"), TV, "Panou Admin — Sănătate server", "17.3")
+    assert _are(_refuza(TC, _inlocuieste(TV, 'EXCEPTII_B = {', 'EXCEPTII_B = {"Tipare de erori": "stare", ')), "Tipare de erori", "17.3")
+    assert _are(_refuza(_inlocuieste(TC, "^(Sinteza zilei|", "^(Panou Admin — Sănătate server|Sinteza zilei|"), TV), "Panou Admin — Sănătate server", "17.3")
 
 
 def test_refuza_forma_nerecunoscuta_si_valoare_straina():
     expr = "/^(Sinteza zilei|Capacitate|Operațiuni speciale|Facturi|Firme)$|· CUI /;"
-    _refuza(_inlocuieste(TC, expr, 'new Set(["Capacitate"]);'), TV, "nu e recunoscută")
-    _refuza(TC, _inlocuieste(TV, '"Capacitate": "stare"', '"Capacitate": "altceva"'), "altceva")
+    assert _are(_refuza(_inlocuieste(TC, expr, 'new Set(["Capacitate"]);'), TV), "nu e recunoscută")
+    assert _are(_refuza(TC, _inlocuieste(TV, '"Capacitate": "stare"', '"Capacitate": "altceva"')), "altceva")
 
 
 def test_cli_cu_copii_in_director_temporar(tmp_path):
