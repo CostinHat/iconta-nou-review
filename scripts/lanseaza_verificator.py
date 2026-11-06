@@ -83,14 +83,29 @@ def importuri_parcurs(cale):
 
 
 def sectiune(text, cod):
-    """Rândurile scenariului de la cel care începe cu `cod` până la următorul rând de forma „F123 · …”."""
+    """Rândurile scenariului de la antetul cu codul EXACT `cod` până la următorul antet (literă + 2–3 cifre + „ · ”: F017, X05); cod negăsit = text gol."""
     rez, in_ = [], False
     for ln in text.splitlines():
-        if re.match(r"F\d{3} · ", ln):
-            in_ = ln.startswith(cod)
+        m = re.match(r"([A-Z]\d{2,3}) · ", ln)
+        if m:
+            in_ = m.group(1) == cod
         if in_:
             rez.append(ln)
     return "\n".join(rez)
+
+
+def text_scenariu(cale, cod):
+    """-> (textul scenariului, motivul refuzului sau None): fără cod fișierul întreg, cu cod numai secțiunea lui; singura sursă a regulii."""
+    if not cod:
+        return (open(cale, encoding="utf-8").read() if cale else ""), None
+    if not cale:
+        return "", "--sectiune cere --scenariu"
+    text = open(cale, encoding="utf-8").read()
+    sec = sectiune(text, cod)
+    if sec:
+        return sec, None
+    coduri = [m.group(1) for m in (re.match(r"([A-Z]\d{2,3}) · ", ln) for ln in text.splitlines()) if m]
+    return "", "secțiunea %s nu e în %s (coduri găsite: %s)" % (cod, cale, ", ".join(coduri))
 
 
 def mediul_probei(baza_temp):
@@ -184,7 +199,7 @@ def verificator_independent(a, ctx, csv_, binar, iesire):
     desc = descrieri(txt)
     chei = {x["id"]: x.get("cheie", "") for x in json.load(open(a.pasi_json, encoding="utf-8"))["asertiuni"]}
     dir_cap = os.path.abspath(os.path.join(ctx.director, "capturi"))
-    scenariu = sectiune(open(a.scenariu, encoding="utf-8").read(), a.sectiune) if a.scenariu and a.sectiune else (open(a.scenariu, encoding="utf-8").read() if a.scenariu else "")
+    scenariu = text_scenariu(a.scenariu, a.sectiune)[0]
     lucru = tempfile.mkdtemp(prefix="verificator_")
     try:
         de_judecat, rez1, rez2 = [], {}, {}
@@ -280,6 +295,10 @@ def _lanseaza(a, sha, VP):
     ref = refuzuri_fisiere(cai)
     if ref:
         print("[lanseaza_verificator] REFUZ: " + "; ".join(ref))
+        return 1, False, (0, 0, 0, 0)
+    _, motiv = text_scenariu(a.scenariu, a.sectiune)
+    if motiv:
+        print("[lanseaza_verificator] REFUZ: " + motiv)
         return 1, False, (0, 0, 0, 0)
     _, nepermise = importuri_parcurs(a.parcurs)
     if nepermise:

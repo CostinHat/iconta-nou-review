@@ -10,6 +10,9 @@ PY=./venv/bin/python
 [ -x "$PY" ] || PY=python3
 J=${POARTA_JURNALE:-/tmp}
 T0=$(date +%s)
+# 0. listele ferestrelor fără acțiune principală (cadru.js / EXCEPTII_B), comanda 16.8-B: primul pas, ca roșul să iasă în secunde
+LISTE=$("$PY" scripts/verifica_liste_exceptii.py) || { echo "$LISTE"; echo "[inainte de commit] ROSU: listele de exceptii (cadru.js / EXCEPTII_B)"; exit 1; }
+echo "$LISTE"
 # 1. sintaxa fișierelor atinse (în index): JS cu `node --check` (module), Python cu py_compile
 git diff --cached --name-only --diff-filter=ACM > "$J/inainte_atinse.txt"
 for f in $(grep -E '\.js$' "$J/inainte_atinse.txt"); do
