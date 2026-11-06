@@ -219,6 +219,8 @@ se scrie „OPRIT”; singura oprire permisă acolo (risc pentru producție) se 
 - Nimic precompletat sau afișat care poate induce în eroare contabilul.
 - Textele dau instrucțiuni directe, în limba contabilului, cu diacritice; fără termeni de programator.
 - Orice regulă vizuală stă în DESIGN_SYSTEM.md și în verificator; situații identice, soluții identice.
+- Rândurile a (bara de sus: „✕” 40 × 40 în dreapta sus pe orice fereastră; „←” numai unde există un pas înapoi real, nejudecat) și b (acțiunea principală o singură dată pe ecran) sunt în scripts/verificator_design.py::RANDURI. O comandă care scoate sau mută un element pe toate ecranele se verifică întâi cu regula permanentă a lui Costin; regula nouă intră în RANDURI și se rulează pe tot registrul (scripts/matrice_16_7.py) înainte de comandă.
+- Raportul fiecărui lot dă numărul rulărilor „intrerupt” pe fază.
 
 R7. Un ecran e migrat numai când verificatorul de design dă TRECE pe toate rândurile criteriului „migrat” din promptul lui (bara de sus, fereastra de lucru cu bara de jos fixă, tabelul DS, card-rezumat și semnale pe rând, acțiune = buton, titluri și texte din catalog, funcția unică de format, cota TVA ca grup cu categorii). Un singur PICĂ înseamnă nemigrat. Pixelii (derulare, margini, text tăiat) nu înlocuiesc piesele.
 

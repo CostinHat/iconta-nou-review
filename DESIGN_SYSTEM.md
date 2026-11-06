@@ -538,12 +538,13 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   (titlul și câmpurile lor) și declarațiile firmei (cod și denumirea oficială), cu diacriticele ignorate; NICIO dată a firmei (nume de
   salariat, partener, document, sumă) nu se caută și nu se citește. (2) **Unde stă.** O componentă, `static/js/cautare.js`
   (`puneCautarea`), montată în antetul paginii (`#cautare-globala`, deasupra stratului ferestrelor) ȘI în bara de sus a FIECĂREI ferestre
-  de lucru, între traseu și butonul de închidere (`#cautare-fereastra`, pusă de `randeazaFerestre`); fereastra mică (numai o confirmare) și
+  de lucru, între numele ferestrei și „✕” (închidere, ultimul element din bară) (`#cautare-fereastra`, pusă de `randeazaFerestre`); fereastra mică (numai o confirmare) și
   clientul din portal n-o au. (3) **Ctrl+K (Cmd+K) de oriunde** pune cursorul în căsuța ferestrei de sus, altfel în cea din antet.
   (4) Lista de rezultate apare sub căsuță numai cât omul scrie; fiecare rezultat e un buton; alegerea (clic / Enter) deschide fereastra
   potrivită PESTE ce e deschis (ce s-a tastat nu se pierde, cap.3), pe firma în lucru; fără firmă în lucru, rezultatele de firmă cer întâi
   firma. Acțiunile refuzate rolului nu apar (`permis`, `drepturi.js`). Gard: `core/test_lot13_ds_cautare.py` (server + structură: căsuța în
   fereastră, Ctrl+K, nicio dată căutată) + e2e `test_def_681_*` (inclusiv `test_def_681_casuta_e_in_fiecare_fereastra_si_ctrl_k_o_gaseste`).
+- **Bara de sus a ferestrei: „✕” sus-dreapta (v2.105, lotul 16.7, deficiența 759; regula permanentă a lui Costin, iulie 2026).** bara de sus: 56 px, fără traseu, firma sau cabinetul în lucru cu CUI, numele ferestrei, căutarea; „✕” (închidere) de 40 × 40, exact unul, ultimul element din bară, în dreapta sus, pe FIECARE fereastră de lucru și pe cele mici; „←” nu se judecă: apare numai unde există un pas înapoi real (fereastră deschisă din alta sau cu pas intern), altfel fereastra are numai „✕”. Gard: rândul `a` din `RANDURI` (`.fereastra-antet`, `.nav-x`, verificator) și `core/test_verificator_design_16_7.py`. Acțiunea principală a ferestrei apare o singură dată pe ecran (759/760): rândul `b` din `RANDURI`.
 - **Rezumatul nu mănâncă tabelul (v2.102, lotul 12, 621; comanda Costin 12.2 pct.11, verbatim: „Balanța: casetele de sus ocupă jumătate
   din fereastră, se văd 2–3 rânduri de tabel; caseta «Importă…» nu are buton spre import.”; cerința: „Casetele nu mănâncă tabelul — regulă
   globală”).** (1) În rezumatul lipit sus (`.rezumat-fix`) stă numai ce trebuie văzut cât derulezi: titlul, perioada, cifrele, butoanele, zona

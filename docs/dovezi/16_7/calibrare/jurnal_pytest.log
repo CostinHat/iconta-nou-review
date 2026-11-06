@@ -1,0 +1,8 @@
+16.7	pytest	inceput	2026-11-06T03:51:09+02:00	98ed00d0c10c	-	338773-1793929869570	338773	argumente=-q -p no:cacheprovider /home/costin/iconta_lot16_7/core/test_verificator_design_16_7.py
+16.7	pytest	sfarsit	2026-11-06T03:51:10+02:00	98ed00d0c10c	rosu_1	338773-1793929869570	338773	
+16.7	pytest	inceput	2026-11-06T03:51:11+02:00	98ed00d0c10c	-	338789-1793929871235	338789	argumente=-q -p no:cacheprovider /home/costin/iconta_lot16_7/core/test_verificator_design_16_7.py
+16.7	pytest	sfarsit	2026-11-06T03:51:12+02:00	98ed00d0c10c	verde	338789-1793929871235	338789	
+16.7	pytest	inceput	2026-11-06T04:03:03+02:00	997979c1fa14	-	349608-1793930583317	349608	argumente=-q -p no:cacheprovider /home/costin/iconta_lot16_7/core/test_verificator_design_16_7.py
+16.7	pytest	sfarsit	2026-11-06T04:03:04+02:00	997979c1fa14	rosu_1	349608-1793930583317	349608	
+16.7	pytest	inceput	2026-11-06T04:03:04+02:00	997979c1fa14	-	349622-1793930584988	349622	argumente=-q -p no:cacheprovider /home/costin/iconta_lot16_7/core/test_verificator_design_16_7.py
+16.7	pytest	sfarsit	2026-11-06T04:03:05+02:00	997979c1fa14	verde	349622-1793930584988	349622	

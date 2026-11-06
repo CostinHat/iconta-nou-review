@@ -1,0 +1,151 @@
+{
+ "fapte": {
+  "viewport": [
+   1366,
+   768
+  ],
+  "ferestre_deschise": 1,
+  "fereastra": {
+   "clase": "fereastra fer-lucru fer-tabel",
+   "lat": 1334,
+   "inalt": 736,
+   "stanga": 16,
+   "sus": 16
+  },
+  "titlul_ferestrei": "Acces client",
+  "a": {
+   "inaltime": 56,
+   "traseu": 0,
+   "sageata": true,
+   "sageata_dim": [
+    40,
+    40
+   ],
+   "x": 0,
+   "x_dim": null,
+   "firma_sau_cabinet": "F1 Comert Stoc SRL · CUI 401002001 › Acces client",
+   "numele_ferestrei": "Acces client",
+   "cautare": true
+  },
+  "b": {
+   "pe_tot_ecranul": true,
+   "derulari": [],
+   "bara_jos": {
+    "clase": "fereastra-jos",
+    "inaltime": 72
+   },
+   "exceptie": null,
+   "butoane_principale": 1,
+   "actiune_principala": "Invită client nou",
+   "cu_atribut": [
+    "Invită client nou"
+   ],
+   "renunta": false,
+   "din_formular": false,
+   "actiune_dubla": 1,
+   "principal_inactiv_fara_motiv": 0
+  },
+  "c": {
+   "tabele_ds": 1,
+   "tabele_vechi": [],
+   "liste_rand_buton": [],
+   "celule_taiate": [],
+   "liste_vechi": []
+  },
+  "d": {
+   "rezumat_ds": 0,
+   "semnale_ds": 0,
+   "carduri_vechi": 0,
+   "paragrafe_lungi": [],
+   "rezumate_la_vedere": 0,
+   "fara_buton": []
+  },
+  "e": {
+   "in_text": [],
+   "casete_cu_actiuni": []
+  },
+  "f": {
+   "titluri_cu_majuscule": [],
+   "fara_diacritice": [],
+   "plural": [],
+   "mesaje_duble": []
+  },
+  "g": {
+   "date_iso": [],
+   "sume_neformatate": [],
+   "perioade_ciudate": [],
+   "valori_goale": [],
+   "azi_acum": []
+  },
+  "h": {
+   "liste_sub_7": [],
+   "alege": [],
+   "cota_tva_ca_lista": [],
+   "grupuri_butoane": 0,
+   "liste_cu_cautare": 0,
+   "liste_inlocuite": 0
+  }
+ },
+ "pica": {
+  "a": [
+   "lipsește „✕” (închidere) în dreapta sus a barei de sus"
+  ],
+  "b": [
+   "acțiunea principală „Invită client nou” apare și în conținut (2 ori pe ecran)"
+  ],
+  "c": [
+   "rândurile tabelului au 50 px, nu 44"
+  ],
+  "d": [],
+  "e": [],
+  "f": [],
+  "g": [],
+  "h": []
+ },
+ "ecran": "Acces client F1",
+ "rezolutie": "1366x768",
+ "firma": "F1",
+ "nivel": "firma",
+ "eroare_deschidere": null,
+ "erori_js": [],
+ "verdict_mecanic": {
+  "a": {
+   "verdict": "PICĂ",
+   "motive": [
+    "lipsește „✕” (închidere) în dreapta sus a barei de sus"
+   ]
+  },
+  "b": {
+   "verdict": "PICĂ",
+   "motive": [
+    "acțiunea principală „Invită client nou” apare și în conținut (2 ori pe ecran)"
+   ]
+  },
+  "c": {
+   "verdict": "PICĂ",
+   "motive": [
+    "rândurile tabelului au 50 px, nu 44"
+   ]
+  },
+  "d": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "e": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "f": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "g": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "h": {
+   "verdict": "TRECE",
+   "motive": []
+  }
+ }
+}

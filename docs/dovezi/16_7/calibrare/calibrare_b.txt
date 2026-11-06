@@ -1,0 +1,24 @@
+sha=997979c1fa14569abadaadf73f1c64402c8a6644 scripts/verificator_design.py=05016b01ada712608980605148e8a1a6877429a581805f1125b3fc8f16d85a3f scripts/verificator_design_masuri.js=9428ed7c404206083bae0bf9ea53ce6056a85687f54d589d72451b81af9b9379
+calibrare b (acțiunea principală o singură dată)
+b.1 | Stocuri F1 | 1920x1080 | ATINS | acțiunea principală „+ NIR nou” apare și în conținut (2 ori pe ecran)
+b.1 | Stocuri F1 | 1366x768 | ATINS | acțiunea principală „+ NIR nou” apare și în conținut (2 ori pe ecran)
+b.2 | Raport Z F1 | 1920x1080 | ATINS | acțiunea principală „Generează notă” apare și în conținut (2 ori pe ecran)
+b.2 | Raport Z F1 | 1366x768 | ATINS | acțiunea principală „Generează notă” apare și în conținut (2 ori pe ecran)
+b.3 | Registru jurnal F1 | 1920x1080 | ATINS | acțiunea principală „+ Notă nouă” apare și în conținut (2 ori pe ecran)
+b.3 | Registru jurnal F1 | 1366x768 | ATINS | acțiunea principală „+ Notă nouă” apare și în conținut (2 ori pe ecran)
+b.4 | Stat de plată F5 | 1920x1080 | ATINS | acțiunea principală „Contabilizează statul” apare și în conținut (2 ori pe ecran)
+b.4 | Stat de plată F5 | 1366x768 | ATINS | acțiunea principală „Contabilizează statul” apare și în conținut (2 ori pe ecran)
+b.5 | Cartea mare F1 | 1920x1080 | ATINS | acțiunea principală „Descarcă PDF” apare și în conținut (2 ori pe ecran)
+b.5 | Cartea mare F1 | 1366x768 | ATINS | acțiunea principală „Descarcă PDF” apare și în conținut (2 ori pe ecran)
+b.6 | Cartea mare F1 | 1920x1080 | ATINS | rândul b TRECE
+b.6 | Cartea mare F1 | 1366x768 | ATINS | rândul b TRECE
+b.7 | Închidere lună F1 | 1920x1080 | ATINS | rândul b TRECE
+b.7 | Închidere lună F1 | 1366x768 | ATINS | rândul b TRECE
+b.8 | Cartea mare F1 | 1920x1080 | ATINS | fără motiv de dublare
+b.8 | Cartea mare F1 | 1366x768 | ATINS | fără motiv de dublare
+b.9 | Firme | 1920x1080 | ATINS | fără motiv de dublare
+b.9 | Firme | 1366x768 | ATINS | fără motiv de dublare
+
+testul nou (core/test_verificator_design_16_7.py):
+testul nou, roșu pe verificatorul de la bază: ATINS (cod 1; 1 failed, 8 passed, 7 skipped in 1.09s); rânduri lot=16.7 în jurnalul comun înainte 46, după 46, diferență 0
+testul nou, verde pe verificatorul nou: ATINS (cod 0; 9 passed, 7 skipped in 0.99s); rânduri lot=16.7 în jurnalul comun înainte 46, după 46, diferență 0

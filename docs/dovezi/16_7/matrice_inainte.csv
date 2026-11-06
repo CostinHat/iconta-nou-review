@@ -1,0 +1,106 @@
+ecran,rand a,rand b,motiv
+De validat,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Control fiscal,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Termene,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Firme,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Sinteza zilei,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Activitate,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Pachete lunare,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Continuă →” apare și în conținut (2 ori pe ecran)
+Supervizor,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Capacitate,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Consolidare,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Asistenți,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Adaugă asistent” apare și în conținut (2 ori pe ecran)
+Setări cont,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Firme existente,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Adaugă firmă” apare și în conținut (2 ori pe ecran)
+Migrare cabinet,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Declarații lucrate,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Tipare de erori,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Detaliu firmă F2,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Detaliu firmă F5,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Panou Admin — Raportări,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Panou Admin — Activitate cabinete,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Panou Admin — Anunțuri,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Panou Admin — Analytics,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Panou Admin — Sănătate server,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Panou Admin — Invitații,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Trimite invitația” apare și în conținut (2 ori pe ecran)
+Panou Admin — Notificări,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Salvează numărul” apare și în conținut (2 ori pe ecran)
+Panou Admin — Înregistrare,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Salvează” apare și în conținut (2 ori pe ecran)
+Facturi F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Stat de plată F5,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Contabilizează statul” apare și în conținut (2 ori pe ecran)
+Bonuri și chitanțe F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Adaugă document (pozează / încarcă)” apare și în conținut (2 ori pe ecran)
+Raport Z F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Generează notă” apare și în conținut (2 ori pe ecran)
+Stocuri F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ NIR nou” apare și în conținut (2 ori pe ecran)
+Închidere lună F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Casă F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Dispoziție nouă” apare și în conținut (2 ori pe ecran)
+e-Transport F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Compensări F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Bancă F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Magazin online F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Sincronizează acum” apare și în conținut (2 ori pe ecran)
+Solicitări client F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Trimite” apare și în conținut (2 ori pe ecran)
+Registratură F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Înregistrează” apare și în conținut (2 ori pe ecran)
+Registru jurnal F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Notă nouă” apare și în conținut (2 ori pe ecran)
+Cartea mare F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Registrul de evidență fiscală F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Registrul-inventar F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Balanță de verificare F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Mijloace fixe F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Control fiscal (firmă) F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Bilanț anual F2,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Validează (ANAF)” apare și în conținut (2 ori pe ecran)
+Verificări F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Rapoarte comerciale F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Jurnal regim marjă F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Registre art. 321 F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Operațiuni speciale F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Produse F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Adaugă produs” apare și în conținut (2 ori pe ecran)
+Clienți F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Client nou” apare și în conținut (2 ori pe ecran)
+Furnizori F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Furnizor nou” apare și în conținut (2 ori pe ecran)
+Parteneri F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Acces client F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Invită client nou” apare și în conținut (2 ori pe ecran)
+Import date F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Date firmă F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Contracte F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Șablon nou” apare și în conținut (2 ori pe ecran)
+Plan de conturi F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Adaugă” apare și în conținut (2 ori pe ecran)
+Centre de cost F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Adaugă” apare și în conținut (2 ori pe ecran)
+Emite factură F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Istoric facturi F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Scadențar F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Facturi primite F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Verifică acum în SPV” apare și în conținut (2 ori pe ecran)
+Model factură F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Salvează” apare și în conținut (2 ori pe ecran)
+Facturi recurente F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Șablon nou” apare și în conținut (2 ori pe ecran)
+Fișa salariatului F5,NEDESCHIS,NEDESCHIS,a: Locator.click: Timeout 20000ms exceeded. | b: Locator.click: Timeout 20000ms exceeded.
+NIR nou F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Mișcări și fișe de magazie F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Salvează nivelul minim” apare și în conținut (2 ori pe ecran)
+Analitică stoc F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Salvează nivelul minim” apare și în conținut (2 ori pe ecran)
+Borderou de achiziție F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Registru încasări/plăți F4 + Operațiune nouă,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Operațiune nouă” apare și în conținut (2 ori pe ecran)
+Registru încasări/plăți F4,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „+ Operațiune nouă” apare și în conținut (2 ori pe ecran)
+Chirii / comodat / refacturări F2,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Casă — dispoziție nouă F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Registru jurnal — notă nouă F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Import date — Solduri inițiale F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Descarcă model (CSV)” apare și în conținut (2 ori pe ecran)
+Import date — Audit de preluare F7,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Mijloace fixe — Leasing F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Declarații F1 pasul 1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Fluturaș F5,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Contabilizează statul” apare și în conținut (2 ori pe ecran)
+Certificat CM F5,NEDESCHIS,NEDESCHIS,a: Locator.click: Timeout 20000ms exceeded. | b: Locator.click: Timeout 20000ms exceeded.
+Pontaj F5,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Contabilizează statul” apare și în conținut (2 ori pe ecran)
+Ore suplimentare F5,NEDESCHIS,NEDESCHIS,a: Locator.click: Timeout 20000ms exceeded. | b: Locator.click: Timeout 20000ms exceeded.
+Import salariați F5,NEDESCHIS,NEDESCHIS,a: Locator.click: Timeout 20000ms exceeded. | b: Locator.click: Timeout 20000ms exceeded.
+Casare mijloace fixe F1,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Coada de declarații F1,NEDESCHIS,NEDESCHIS,a: Locator.click: Timeout 20000ms exceeded. | b: Locator.click: Timeout 20000ms exceeded.
+Import date — Preluare F7,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Detaliu factură F1,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Trimite pe email” apare și în conținut (2 ori pe ecran)
+Chei API,ROSU,ROSU,a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: acțiunea principală „Generează cheie nouă” apare și în conținut (2 ori pe ecran)
+Firmă nouă,NEDESCHIS,NEDESCHIS,a: Locator.click: Timeout 20000ms exceeded. | b: Locator.click: Timeout 20000ms exceeded.
+Ghiduri,ROSU,VERDE,a: lipsește „✕” (închidere) în dreapta sus a barei de sus
+Declarație D104 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b (1920x1080): bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0; b (1366x768): derulează conținutul ferestrei, nu tabelul: div.fereastra-corp; bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D107 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D110 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D114 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D177 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b (1920x1080): bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0; b (1366x768): derulează conținutul ferestrei, nu tabelul: div.fereastra-corp; bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D205 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D307 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D398 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b (1920x1080): bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0; b (1366x768): derulează conținutul ferestrei, nu tabelul: div.fereastra-corp; bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D710 F1 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Declarație D301 F3 pasul 2,ROSU,ROSU,"a: lipsește „✕” (închidere) în dreapta sus a barei de sus | b: bara de jos are 0 butoane principale, nu unul; ferestrele de lucru au exact un buton cu data-actiune-principala: aici 0"
+Fereastră mică — confirmare storno F1,ROSU,-,a: „✕” nu e de 40 × 40 (34 × 34)

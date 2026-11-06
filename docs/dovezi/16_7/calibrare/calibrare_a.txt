@@ -1,0 +1,16 @@
+sha=997979c1fa14569abadaadf73f1c64402c8a6644 scripts/verificator_design.py=05016b01ada712608980605148e8a1a6877429a581805f1125b3fc8f16d85a3f scripts/verificator_design_masuri.js=9428ed7c404206083bae0bf9ea53ce6056a85687f54d589d72451b81af9b9379
+calibrare a (bara de sus: „✕”), fiecare caz la 1920x1080 și 1366x768
+a.1 | Registru jurnal F1 | 1920x1080 | ATINS | lipsește „✕” (închidere) în dreapta sus a barei de sus
+a.1 | Registru jurnal F1 | 1366x768 | ATINS | lipsește „✕” (închidere) în dreapta sus a barei de sus
+a.2 | Stat de plată F5 | 1920x1080 | ATINS | lipsește „✕” (închidere) în dreapta sus a barei de sus
+a.2 | Stat de plată F5 | 1366x768 | ATINS | lipsește „✕” (închidere) în dreapta sus a barei de sus
+a.3 | Fereastră mică — confirmare storno F1 | 1920x1080 | ATINS | x=1; „✕” nu e de 40 × 40 (34 × 34)
+a.3 | Fereastră mică — confirmare storno F1 | 1366x768 | ATINS | x=1; „✕” nu e de 40 × 40 (34 × 34)
+a.4 | Fereastră mică — confirmare storno F1 | 1920x1080 | ATINS | niciun motiv ✕
+a.4 | Fereastră mică — confirmare storno F1 | 1366x768 | ATINS | niciun motiv ✕
+a.5 | Fereastră mică — confirmare storno F1 | 1920x1080 | ATINS | „✕” nu e în dreapta sus a barei de sus (ultimul element din bară)
+a.5 | Fereastră mică — confirmare storno F1 | 1366x768 | ATINS | „✕” nu e în dreapta sus a barei de sus (ultimul element din bară)
+a.6 | Fereastră mică — confirmare storno F1 | 1920x1080 | ATINS | 2 butoane „✕” în bara de sus, nu unul
+a.6 | Fereastră mică — confirmare storno F1 | 1366x768 | ATINS | 2 butoane „✕” în bara de sus, nu unul
+a.7 | Registru jurnal F1 | 1920x1080 | ATINS | rândul a TRECE
+a.7 | Registru jurnal F1 | 1366x768 | ATINS | rândul a TRECE

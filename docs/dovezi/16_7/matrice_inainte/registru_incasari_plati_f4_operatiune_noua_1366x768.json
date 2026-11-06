@@ -1,0 +1,154 @@
+{
+ "fapte": {
+  "viewport": [
+   1366,
+   768
+  ],
+  "ferestre_deschise": 1,
+  "fereastra": {
+   "clase": "fereastra fer-lucru fer-tabel",
+   "lat": 1334,
+   "inalt": 736,
+   "stanga": 16,
+   "sus": 16
+  },
+  "titlul_ferestrei": "Registru încasări/plăți ?",
+  "a": {
+   "inaltime": 56,
+   "traseu": 0,
+   "sageata": true,
+   "sageata_dim": [
+    40,
+    40
+   ],
+   "x": 0,
+   "x_dim": null,
+   "firma_sau_cabinet": "F4 PFA Sistem Real · CUI 40410000 › Încasări/plăți",
+   "numele_ferestrei": "Încasări/plăți",
+   "cautare": true
+  },
+  "b": {
+   "pe_tot_ecranul": true,
+   "derulari": [
+    {
+     "loc": "div.fereastra-corp",
+     "fel": "vertical",
+     "ascuns": 91,
+     "tabel": true
+    }
+   ],
+   "bara_jos": {
+    "clase": "fereastra-jos",
+    "inaltime": 72
+   },
+   "exceptie": null,
+   "butoane_principale": 1,
+   "actiune_principala": "+ Operațiune nouă",
+   "cu_atribut": [
+    "+ Operațiune nouă"
+   ],
+   "renunta": true,
+   "din_formular": true,
+   "actiune_dubla": 1,
+   "principal_inactiv_fara_motiv": 0
+  },
+  "c": {
+   "tabele_ds": 1,
+   "tabele_vechi": [],
+   "liste_rand_buton": [],
+   "celule_taiate": [],
+   "liste_vechi": []
+  },
+  "d": {
+   "rezumat_ds": 1,
+   "semnale_ds": 0,
+   "carduri_vechi": 0,
+   "paragrafe_lungi": [],
+   "rezumate_la_vedere": 1,
+   "fara_buton": []
+  },
+  "e": {
+   "in_text": [],
+   "casete_cu_actiuni": []
+  },
+  "f": {
+   "titluri_cu_majuscule": [],
+   "fara_diacritice": [],
+   "plural": [],
+   "mesaje_duble": []
+  },
+  "g": {
+   "date_iso": [],
+   "sume_neformatate": [],
+   "perioade_ciudate": [],
+   "valori_goale": [],
+   "azi_acum": []
+  },
+  "h": {
+   "liste_sub_7": [],
+   "alege": [],
+   "cota_tva_ca_lista": [],
+   "grupuri_butoane": 3,
+   "liste_cu_cautare": 0,
+   "liste_inlocuite": 4
+  }
+ },
+ "pica": {
+  "a": [
+   "lipsește „✕” (închidere) în dreapta sus a barei de sus"
+  ],
+  "b": [
+   "acțiunea principală „+ Operațiune nouă” apare și în conținut (2 ori pe ecran)"
+  ],
+  "c": [],
+  "d": [],
+  "e": [],
+  "f": [],
+  "g": [],
+  "h": []
+ },
+ "ecran": "Registru încasări/plăți F4 + Operațiune nouă",
+ "rezolutie": "1366x768",
+ "firma": "F4",
+ "nivel": "firma",
+ "eroare_deschidere": null,
+ "erori_js": [],
+ "verdict_mecanic": {
+  "a": {
+   "verdict": "PICĂ",
+   "motive": [
+    "lipsește „✕” (închidere) în dreapta sus a barei de sus"
+   ]
+  },
+  "b": {
+   "verdict": "PICĂ",
+   "motive": [
+    "acțiunea principală „+ Operațiune nouă” apare și în conținut (2 ori pe ecran)"
+   ]
+  },
+  "c": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "d": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "e": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "f": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "g": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "h": {
+   "verdict": "TRECE",
+   "motive": []
+  }
+ }
+}
