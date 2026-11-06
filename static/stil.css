@@ -3235,6 +3235,11 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .fereastra-corp.cu-zona > .lant-zona, .lant-zona > .lant-zona { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }   /* `min-height` propriu: pus de navigator = ce are lanțul în afara zonei + înălțimea minimă a zonei (altfel conținutul din jurul zonei s-ar suprapune) */
 .fereastra-corp.cu-zona > .zona-derulare, .lant-zona > .zona-derulare { flex: 0 1 auto; min-height: 88px; overflow: auto; }
 .zona-derulare { max-width: 100%; }
+/* [16.8-C1, 760, Fișa salariatului] într-o fereastră cu zonă de derulare, subtitlurile și tabelele de compoziție din afara zonei stau strânse (marginile
+   implicite ale lui h3 — 20 px sus și jos — și cele 8 + 16 px ale tabelelor din grila de coloane ocupau cei 62 px care făceau corpul să deruleze
+   peste zona tabelului): derulează numai zona. Textul, ordinea și etichetele rămân. */
+.fereastra-corp.cu-zona .pf-subtitlu { margin: 12px 0 4px; }
+.fereastra-corp.cu-zona .grila-doc > .fd-tabel { margin: 0; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel thead th { top: 0; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot td, .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot th { bottom: 0; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .mig-sold-tabel .ac-cap { top: 0; }
