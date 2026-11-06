@@ -3238,8 +3238,10 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 /* [16.8-C1, 760, Fișa salariatului] într-o fereastră cu zonă de derulare, subtitlurile și tabelele de compoziție din afara zonei stau strânse (marginile
    implicite ale lui h3 — 20 px sus și jos — și cele 8 + 16 px ale tabelelor din grila de coloane ocupau cei 62 px care făceau corpul să deruleze
    peste zona tabelului): derulează numai zona. Textul, ordinea și etichetele rămân. */
-.fereastra-corp.cu-zona .pf-subtitlu { margin: 12px 0 4px; }
+.fereastra-corp.cu-zona .pf-subtitlu { margin: 8px 0 2px; }
 .fereastra-corp.cu-zona .grila-doc > .fd-tabel { margin: 0; }
+.fereastra-corp.cu-zona .rezumat-fix > :empty { display: none; }   /* blocul gol din rezumat (ex. `.cf-sumar` fără pastile) nu mai ia 4 px de margine */
+.fereastra.fer-tabel .fereastra-corp.cu-zona .rezumat-fix { padding-top: 5px; padding-bottom: 5px; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel thead th { top: 0; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot td, .fereastra.fer-tabel .fereastra-corp .zona-derulare .fd-tabel tfoot th { bottom: 0; }
 .fereastra.fer-tabel .fereastra-corp .zona-derulare .mig-sold-tabel .ac-cap { top: 0; }
