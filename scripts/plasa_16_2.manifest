@@ -5,4 +5,4 @@ frontend_test/e2e/e2e_pilot_luna.py	871f6cc131a65326df8cf650dc4dacbf2785bbf2ba44
 frontend_test/e2e/e2e_pozitii_validate.py	19cb73d30e52de26a42365eef1d1bd43b9ed47e61f3891241c4e601445215384	17	python -m pytest -q frontend_test/e2e/e2e_pozitii_validate.py
 frontend_test/e2e/e2e_pilot_f017.py	2c9b4fab2bfb3d9f833ea5afc6f5ed45b3e7a08b097a6c5dcd4a2fd061c4315e	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f017.py
 frontend_test/e2e/e2e_pilot_f054.py	affc7c95b8b8f7ff036364f76e96a2ea8252cd4fa79b3e8cba15ea823e259c50	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f054.py
-frontend_test/e2e/e2e_pilot_x05.py	01f678d70008f5be5b8677afb5896acee199351e378d1f85f1027bcca6556ca7	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x05.py
+frontend_test/e2e/e2e_pilot_x05.py	95a64c04c0abc04e85eeca36611f64ea1f18364baee85e66aea88d52b77d70c3	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x05.py

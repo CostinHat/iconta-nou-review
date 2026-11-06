@@ -51,7 +51,7 @@ JS_FEREASTRA = """() => {
   const F = document.querySelector('.fereastra-overlay:not(.fundal) .fereastra'); if (!F) return {fereastra: false};
   const vizibil = (e) => !!(e.offsetParent || e.getClientRects().length) && getComputedStyle(e).visibility !== 'hidden';
   const ant = F.querySelector('.fereastra-antet');
-  const xs = [...ant.querySelectorAll('button')].filter((b) => vizibil(b) && b.innerText.replace(/\\s+/g, ' ').trim() === '✕';
+  const xs = [...ant.querySelectorAll('button')].filter((b) => vizibil(b) && b.innerText.replace(/\\s+/g, ' ').trim() === '✕');
   const r = xs.length === 1 ? xs[0].getBoundingClientRect() : null;
   const alte = [...ant.querySelectorAll('button, input, select, a[href]')].filter((e) => vizibil(e) && e !== xs[0] && !e.closest('#cautare-fereastra-rez'));
   const jos = F.querySelector('.fereastra-jos');
