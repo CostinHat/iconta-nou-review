@@ -109,7 +109,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
     // [lotul 17.2] o cifră zero nu e acțiune: se desenează ca text; butonul apare numai la cifră > 0
     const eButon = Boolean(cheie) && val > 0;
     const eticheta_ = eButon ? "button" : "span";
-    return `<${eticheta_} class="${eButon ? "sa-cifra sa-clic" : "sa-cifra"}" data-ecran="${cheie || ""}">
+    return `<${eticheta_} class="sa-cifra${eButon ? " sa-clic" : ""}" data-ecran="${cheie || ""}">
       <span class="sa-num" style="color:${cc}">${val}</span>
       <span class="sa-desc">${eticheta}</span></${eticheta_}>`;
   }
