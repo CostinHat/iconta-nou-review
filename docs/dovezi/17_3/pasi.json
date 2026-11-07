@@ -1,0 +1,102 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "12",
+   "cheie": "dom:.cab-grila button.cab-card|numar"
+  },
+  {
+   "id": "a.1",
+   "pas": "control",
+   "operator": "egal",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-lista .ds-tabel tbody td|depasire"
+  },
+  {
+   "id": "f.2",
+   "pas": "control",
+   "operator": "interval_px",
+   "valoare": "43-4000",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-lista .ds-tabel tbody td|inaltime_px"
+  },
+  {
+   "id": "c.1",
+   "pas": "parola",
+   "operator": "egal",
+   "valoare": "Schimbă parola",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos .fj-butoane button|text"
+  },
+  {
+   "id": "c.2",
+   "pas": "parola",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos .fj-renunta|numar"
+  },
+  {
+   "id": "f.3",
+   "pas": "parola",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos[data-cu-formular=\"1\"]|numar"
+  },
+  {
+   "id": "f.4",
+   "pas": "parola",
+   "operator": "interval_px",
+   "valoare": "30-50",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-antet .nav-inapoi|inaltime_px"
+  },
+  {
+   "id": "a.2",
+   "pas": "control603",
+   "operator": "egal",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-lista .ds-tabel tbody td|depasire"
+  },
+  {
+   "id": "a.3",
+   "pas": "control603",
+   "operator": "egal",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-lista .ds-tabel thead th|depasire"
+  },
+  {
+   "id": "d.1",
+   "pas": "control603",
+   "operator": "egal",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-antet .fereastra-fir|depasire"
+  },
+  {
+   "id": "d.2",
+   "pas": "control603",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cautare-fereastra[placeholder=\"Caută\"]|numar"
+  },
+  {
+   "id": "f.5",
+   "pas": "control603",
+   "operator": "interval_px",
+   "valoare": "55-57",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-antet|inaltime_px"
+  },
+  {
+   "id": "b.1",
+   "pas": "firme603",
+   "operator": "egal",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #firme-lista td, .fereastra-overlay:not(.fundal) #firme-lista .firme-rand-nume, .fereastra-overlay:not(.fundal) #firme-lista .firme-rand-cui|depasire"
+  },
+  {
+   "id": "f.6",
+   "pas": "firme603",
+   "operator": "interval_px",
+   "valoare": "44-4000",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #firme-lista button.firme-rand|inaltime_px"
+  }
+ ]
+}
