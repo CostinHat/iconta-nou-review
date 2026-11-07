@@ -93,7 +93,7 @@ def test_def_662_firma_noua_se_deschide_cu_incepe_preluarea(patron, firma):
     assert _txt(pg, "#fa-preluare") == "Începe preluarea"
     assert _txt(pg, "#firma-preluare .ca-mesaj").startswith("Firma e nouă în iConta.eu: nu are încă nimic adus din programul vechi")
     # deasupra primului grup („Zilnic”): zona preluării vine înaintea cardurilor în fereastră
-    assert pg.evaluate("() => { const z = document.querySelector('#firma-preluare'), g = document.querySelector('.firme-grup');"
+    assert pg.evaluate("() => { const z = document.querySelector('#firma-preluare'), g = document.querySelector('.fereastra-overlay:not(.fundal) .firme-grup');"
                        " return !!(z && g && (z.compareDocumentPosition(g) & Node.DOCUMENT_POSITION_FOLLOWING)); }")
     pg.click("#fa-preluare")
     pg.wait_for_selector("#mig-pasi .mig-frand[data-strat='solduri'] [data-stare-pas]", timeout=20000)

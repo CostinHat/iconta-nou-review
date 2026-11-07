@@ -571,6 +571,8 @@ def test_def_11_reges_trimiterea_la_poate_depune_credentialele_la_administrator(
             # [lotul 13, 675] „REGES” e un buton al ferestrei salariatului (același set la fiecare salariat)
             from e2e_lot13_sal_ajutor import deschide_salariat
             deschide_salariat(e)
+            e.pg.evaluate("(s) => { const e = document.querySelector(s); const d = e && e.closest('details'); if (d) d.open = true; }",
+                          "[data-reges]")   # [17.2] REGES stă în „Mai multe” (<details> închis)
             r["[data-reges]"] = _vizibile(e.pg, "[data-reges]")
             r["text_chei"] = r["text_chei"] or "Chei REGES" in e.fereastra()
             e.captura("depune" if a.get("depune") else "pregatire")
@@ -977,8 +979,8 @@ def test_def_202_prezentarea_trimite_la_cardul_care_exista(patron, asistent):
 
 #: [deficiența 203] ordinea cardurilor cabinetului după lucrul zilnic: întâi ce cere acțiune azi (de validat, restanțe, scadențe), apoi
 #: lucrul pe firme și ziua, apoi lunarul, apoi echipa și contul, la urmă sesizările
-ORDINE_CABINET = ["validat", "control", "termene", "firme", "brief", "activitate", "pachete", "supervizor", "capacitate",
-                  "consolidare", "asistenti", "setari"]   # „Suport” (raport) e banda de sus din 12.10.2026 (deficiența 225)
+ORDINE_CABINET = ["validat", "control", "termene", "firme", "brief", "setari", "activitate", "pachete", "supervizor", "capacitate",
+                  "consolidare", "asistenti"]   # „Suport” (raport) e banda de sus din 12.10.2026 (deficiența 225)
 
 
 def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
@@ -1448,7 +1450,7 @@ def test_def_29_fereastra_firmei_grupata_sub_titluri(patron):
     Operațiuni speciale · Firma; „Facturi” e la Zilnic, „Registru jurnal” la Registre, „Declarații” la Raportări."""
     patron.firma("Comert Micro TVA")
     pg = patron.pg
-    grupuri = pg.eval_on_selector_all("section.firme-grup", """els => els.map(s => [s.querySelector('h3').textContent.trim(),
+    grupuri = pg.eval_on_selector_all(".fereastra-overlay:not(.fundal) section.firme-grup", """els => els.map(s => [s.querySelector('h3').textContent.trim(),
         [...s.querySelectorAll('.firme-optiune-titlu')].map(t => t.textContent.trim())])""")
     patron.captura(intreaga=True)
     titluri = [g[0] for g in grupuri]

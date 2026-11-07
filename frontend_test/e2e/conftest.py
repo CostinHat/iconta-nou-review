@@ -157,6 +157,8 @@ class Ecran:
         self.pg.goto(BAZA + "/", wait_until="domcontentloaded")
         self.pg.wait_for_selector(".cab-grila, .cab-card", timeout=30000)
         self.pg.wait_for_timeout(500)
+        # [17.2] cardurile de conducere stau în secțiunea pliată „Pentru șeful de cabinet”: o deschide (idempotent), ca apăsările de carduri să le găsească
+        self.pg.evaluate("() => { const b = document.querySelector('.cab-grila > .firme-grup .firme-grup-btn[aria-expanded=\"false\"]'); if (b) b.click(); }")
 
     def firma(self, nume="Comert Micro TVA"):
         self.acasa()

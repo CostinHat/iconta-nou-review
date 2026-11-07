@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.107 · 6 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.108 · 7 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -123,6 +123,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   —, una lângă alta, scunde), apoi grila de carduri `.cab-grila`. FĂRĂ meniu lateral; „Recomandă” și „Suport” nu sunt carduri în grilă.
   Un singur loc o scrie: `salut.js` (`paginaPrincipala`, `legaBenzile`). Gard `PAGINA_PRINCIPALA_UNA` (verificator) + proba în browser
   `frontend_test/proba_pagina_principala.py` / `core/test_pagina_principala.py` (structura, benzile deasupra cardurilor, înălțimile).
+  [v2.108, lotul 17.2] Cardurile de conducere a cabinetului (Activitate, Pachete lunare, Supervizor, Capacitate, Consolidare, Asistenți) stau în secțiunea «Pentru șeful de cabinet», ultimul element al grilei `.cab-grila`, pliată implicit: a doua utilizare a piesei de pliere a titlului de grup introdusă de 17.1 (`.firme-grup-btn`, aceeași piesă, fără clasă nouă). Starea (deschis/pliat) se ține numai într-o variabilă de modul, nu în localStorage, sessionStorage, cookie sau adresă: «✕» o păstrează, reîncărcarea paginii o pliază. Secțiunea nu se desenează dacă toate cele 6 carduri sunt ascunse prin drepturi.
 
 - **Antetul aplicației rămâne fix la derulare (lotul 8, 18.10.2026 — comanda Costin 7.3 pct.3).** `.bara-antet` (bara de sus, bara de stare, bara 3) are `position: sticky; top: 0` în `.desktop`, care derulează el însuși (cap.22 §7, 321): anunțul „Versiune nouă” din bara de stare rămâne pe ecran oricât se derulează. Gard `BARA_ANTET_FIXA` (verificator). **Excepție (19.10.2026):** cât e deschisă o fereastră, antetul revine la `position: relative` (`body:has(.fereastra-overlay)`) — `sticky` cu z-index ar face din el un context de suprapunere, iar „Versiune nouă” n-ar mai fi apăsabil peste stratul ferestrei (deficiența 191, e2e `test_def_191_…`).
 - **Barele aplicației au înălțime minimă, nu fixă (v2.87, 11.10.2026, deficiența C8).** `.bara`, `.subbara`, `.bara3`, `.subbara--admin`: `min-height`, iar bara de stare se rupe pe rânduri (`flex-wrap`). Pe telefon un mesaj lung din bara de stare ieșea din bara de 40 px și acoperea „?” din bara de sus (atingerea ajungea la mesaj). Gard `BARA_INALTIME_MINIMA` (verificator) + plasa `e2e_comanda_1010.py::test_def_c8_…` (pe 393 px, atingerea din mijlocul fiecărui buton al barelor ajunge la el).
@@ -598,6 +599,8 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   nu libere pe rând: butoanele libere lățesc coloana până când fereastra derulează lateral și acțiunile ies din vedere (Mijloace fixe
   F2, ~1700 px). Zero clase noi — e toggle-ul secundar al Declarațiilor (v2.54). Datele scurte (PIF) nu se rup pe două rânduri, iar
   o listă lungă de luni se strânge în intervale („8 luni: 01–08/2026”). Gard: `ACTIUNI_RAND_LIBERE` în verificator.
+  [v2.108, lotul 17.2] Aceeași piesă (`details.dec-xml` cu `summary`) servește și acțiunilor rare sau înrudite ale unei ferestre: în fișa salariatului, «+ Beneficiu» (masă, vacanță, cadou, cultural, creșă) și «Mai multe» (Încetare, Adeverință, REGES), ambele pliate la fiecare desenare; butoanele rămân în `#ss-butoane`.
+- **O cifră zero nu e acțiune (v2.108, lotul 17.2).** Într-un panou de cifre (Sinteza zilei) cifra se desenează ca buton numai când e mai mare ca zero; la zero e text (`span.sa-cifra`, același aspect, fără mână și fără ascultător).
 - **Pe un rând stau cifrele, nu antetele (v2.86, 09.10.2026, deficiența 162).** `.fd-td-num` ține cifra pe un rând; antetul coloanei
   numerice și nota de sub cifră (`.tip-desc`, ex. „neînregistrate: 8 luni: 02–09/2026”) se rup pe rânduri — un antet lung ținut pe un
   rând („Amortizat (calculat, până la 09/2026)”, 335 px) lățea Mijloacele fixe până la derulare laterală la 1700 px. Gard:
@@ -684,7 +687,7 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
 ## 12. Culori de card (meniu)
 
 - **Cardurile-hub** (cele 9 carduri din panoul cabinetului `.cab-card` + meniurile-hub gen Firme/Activitate) folosesc EXCLUSIV paleta canonică de 7 culori-concept din `CULORI_CARD` (api.js). Fiecare card-hub: `bg` (fundal pastel) + `fg` (titlu/icon saturat).
-- **Itemii-listă** (`.acces-card`/`.meniu-card` folosiți ca opțiuni înrudite într-un submeniu: Setări, portal documente, login) NU poartă culori-concept — au fundalul albastru-pal uniform al clasei `.acces-card`. Culorile-concept sunt pentru puncte de intrare majore, nu pentru liste de opțiuni.
+- **Itemii-listă** (`.acces-card`/`.meniu-card` folosiți ca opțiuni înrudite într-un submeniu: Setări, portal documente, login) NU poartă culori-concept — au fundalul albastru-pal uniform al clasei `.acces-card`. Culorile-concept sunt pentru puncte de intrare majore, nu pentru liste de opțiuni. [v2.108, lotul 17.2] Meniul Setări cont are secțiuni statice (Contul meu, Cabinet, Conexiuni), fiecare cu titlu `h3.ds-grup-titlu` urmat de grila `.set-meniu`; o secțiune fără nicio intrare vizibilă nu se desenează.
 - Paleta: **albastru** #e9f0fe/#1d4ed8 (firme, facturi, pachete) · **verde** #e6f6ec/#117f39 (termene, capacitate, cifre) · **teal** #dff4f2/#097a76 (control fiscal, declarații) · **violet** #efebfe/#6d28d9 (sinteză, raportări) · **piersică** #faece7/#993c1d (de validat, asistenți, activitate) · **chihlimbar** #fbeedd/#92500a (recomandă, anunțuri) · **ardezie** #eaeef6/#45597f (consolidare, documente, setări, suport).
 - INTERZIS hex de card ad-hoc în afara paletei. Nuanțele apropiate NU se multiplică — un singur verde, un singur violet etc.
 - Cardurile REFERĂ paleta, nu o copiază: `...CULORI_CARD.cheie` (import din api.js), NICIODATĂ `bg:"#..."` literal — chiar dacă valoarea coincide cu paleta. Excepție: semaforul (control.js, obiecte cu `dot:`). Prins de regula CULOARE_CARD_HEX în verificator.
@@ -1321,6 +1324,7 @@ clasifică. Instanța: A12b — destinația TVA per linie pe `facturi_ecran.prim
 `verificator_conformitate.py` (un `<select>` cu `destinatie` în markup trebuie să poarte `.camp-input`).
 
 ## Changelog
+**v2.108 (07.11.2026)** — lotul 17.2 (produs), val 2 al reorganizării ecranelor: pagina principală a cabinetului are cele 6 carduri de conducere în secțiunea pliabilă «Pentru șeful de cabinet» (piesa `.firme-grup-btn`, starea în memorie); Setări cont în trei secțiuni statice; cifrele zero din Sinteza zilei sunt text; în lista Asistenților numele deschide fișa (fără «Vizualizează»); fișa salariatului are «+ Beneficiu» și «Mai multe» ca `details.dec-xml`.
 **v2.107 (06.11.2026)** — lotul 17.1 (produs), deficiențele 788 și 790: fereastra firmei are 7 grupuri pliabile (implicit deschis numai „Zi de zi”, starea în memorie cât aceeași firmă e deschisă), cardul Salariați spune „Stat de plată și fluturași”, „Firme existente” are o singură intrare spre Migrare cabinet și lista ca singur loc de derulare, modelul „o fereastră are un singur loc de derulare” (stările A și B), „←” și „✕” de minimum 40 px cu căutarea elastică din antet.
 **v2.106 (06.11.2026)** — lotul 16.8 (produs), deficiențele 759, 760, 786: „✕” de 40 × 40 pe fiecare fereastră de lucru, „←” numai unde există un pas înapoi real (o singură condiție), acțiunea principală mutată în bara de jos o singură dată (nodul original, nu proxy; catalogul acceptă butoane din `<details>` și „Regenerează”), ieșirea din cont cu pictogramă de 40 × 40 și „Închide previzualizarea” în portalul client, „✕” pe bannerul de eroare; `.nav-x` e 40 × 40 pentru toți consumatorii clasei (o clasă, o dimensiune).
 **v2.105 (27.10.2026)** — lotul 14, comanda Costin 14.1, deficiența 687 (clasă): **cap.9 — „Fiecare fereastră de lucru încape pe un singur ecran”**
