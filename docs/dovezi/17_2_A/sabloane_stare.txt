@@ -1,0 +1,3 @@
+iconta_notificare PENDING UTILITY ro
+iconta_alerta_lot PENDING UTILITY ro
+hello_world APPROVED UTILITY en_US

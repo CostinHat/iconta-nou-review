@@ -1,0 +1,3 @@
+iconta_alerta_lot ok
+iconta_cod_confirmare refuz HTTP 400 cod 100/2388060
+iconta_notificare ok

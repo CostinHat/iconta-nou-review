@@ -1,0 +1,7 @@
+Calibrarea testului core/test_alerta_whatsapp_17_2_A.py (40 de teste), 07.11.2026
+baza 06137c4c (worktree de proba ~/verif_17_2_A/baza): 1 picat (AssertionError: test_incheie_sintaxa_sh_curata), 39 erori de incarcare (FileNotFoundError: scripts/alerta_whatsapp.py lipseste) = 40 din 40 rosii
+HEAD (P=79d99510): 40 passed in 2.16s
+S1 (alerta chemata fara garda OPRIT_DIR/ALERTA_CMD): rosu test_incheie_fara_alerta_cand_oprit_dir_e_setat_fara_alerta_cmd (13)
+S2 (lant fara email la nepublicat): rosu test_lant_nepublicat_trimite_si_email_dupa_whatsapp (7)
+S3 (lant fara text liber): rosu test_lant_sablon_refuzat_text_reusit (5), test_lant_totul_refuzat_ajunge_la_email (6)
+S4 (lant fara email de rezerva): rosu test_lant_totul_refuzat_ajunge_la_email (6), test_lant_destinatar_lipsa_sau_invalid x2 (8), test_lant_email_cazut_nu_ridica x2 (9)

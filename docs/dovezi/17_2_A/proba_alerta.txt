@@ -1,0 +1,2 @@
+[alerta] sablon: Meta a refuzat cererea (HTTP 404, cod 132001): (#132001) Template name does not exist in the translation
+[alerta] text: ok wamid.HBgLNDA3MjIzNjAwMDkVAgARGBJCRUU4NUFBQzBBRUYxNjc2QTcA
