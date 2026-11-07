@@ -1,0 +1,459 @@
+{
+ "asertiuni": [
+  {
+   "id": "a.1",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "12",
+   "cheie": "dom:.cab-grila button.cab-card|numar"
+  },
+  {
+   "id": "a.2",
+   "pas": "implicit",
+   "operator": "egal",
+   "valoare": "Control fiscal,Termene,Firme,Sinteza zilei,Setări cont,Activitate,Pachete lunare,Supervizor,Capacitate,Consolidare,Asistenți",
+   "cheie": "dom:.cab-grila button.cab-card:not(:has([data-cheie=\"validat\"])) .cab-card-titlu|text"
+  },
+  {
+   "id": "a.3",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.cab-grila > section.firme-grup|numar"
+  },
+  {
+   "id": "a.4",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "6",
+   "cheie": "dom:.cab-grila:not([id]) > button.cab-card|numar"
+  },
+  {
+   "id": "a.5",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "6",
+   "cheie": "dom:.cab-grila section.firme-grup button.cab-card|numar"
+  },
+  {
+   "id": "a.6",
+   "pas": "implicit",
+   "operator": "egal",
+   "valoare": "Activitate,Pachete lunare,Supervizor,Capacitate,Consolidare,Asistenți",
+   "cheie": "dom:.cab-grila section.firme-grup button.cab-card .cab-card-titlu|text"
+  },
+  {
+   "id": "a.7",
+   "pas": "implicit",
+   "operator": "egal",
+   "valoare": "Pentru șeful de cabinet",
+   "cheie": "dom:.cab-grila section.firme-grup h3 > button.firme-grup-btn|text"
+  },
+  {
+   "id": "a.8",
+   "pas": "implicit",
+   "operator": "interval_px",
+   "valoare": "39-41",
+   "cheie": "dom:.cab-grila section.firme-grup h3 > button.firme-grup-btn|inaltime_px"
+  },
+  {
+   "id": "a.9",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.cab-grila section.firme-grup h3 > button.firme-grup-btn[aria-expanded=\"false\"]|numar"
+  },
+  {
+   "id": "a.10",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.cab-grila section.firme-grup > div.cab-grila[hidden]|numar"
+  },
+  {
+   "id": "a.11",
+   "pas": "implicit",
+   "operator": "interval_px",
+   "valoare": "0-0",
+   "cheie": "dom:.cab-grila section.firme-grup > div.cab-grila|inaltime_px"
+  },
+  {
+   "id": "a.12",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.cab-grila section.firme-grup h3 > button.firme-grup-btn > svg.firme-grup-sageata|numar"
+  },
+  {
+   "id": "a.13",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "6",
+   "cheie": "dom:.cab-grila section.firme-grup button.cab-card [data-cheie]|numar"
+  },
+  {
+   "id": "a.14",
+   "pas": "deschis",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.cab-grila section.firme-grup h3 > button.firme-grup-btn[aria-expanded=\"true\"]|numar"
+  },
+  {
+   "id": "a.15",
+   "pas": "deschis",
+   "operator": "interval_px",
+   "valoare": "100-1500",
+   "cheie": "dom:.cab-grila section.firme-grup > div.cab-grila|inaltime_px"
+  },
+  {
+   "id": "a.16",
+   "pas": "deschis",
+   "operator": "interval_px",
+   "valoare": "30-400",
+   "cheie": "dom:.cab-grila section.firme-grup button.cab-card|inaltime_px"
+  },
+  {
+   "id": "a.17",
+   "pas": "pliat",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.cab-grila section.firme-grup h3 > button.firme-grup-btn[aria-expanded=\"false\"]|numar"
+  },
+  {
+   "id": "a.18",
+   "pas": "pliat",
+   "operator": "interval_px",
+   "valoare": "0-0",
+   "cheie": "dom:.cab-grila section.firme-grup > div.cab-grila|inaltime_px"
+  },
+  {
+   "id": "a.19",
+   "pas": "dupa_x",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.cab-grila section.firme-grup h3 > button.firme-grup-btn[aria-expanded=\"true\"]|numar"
+  },
+  {
+   "id": "a.20",
+   "pas": "dupa_x",
+   "operator": "interval_px",
+   "valoare": "100-1500",
+   "cheie": "dom:.cab-grila section.firme-grup > div.cab-grila|inaltime_px"
+  },
+  {
+   "id": "a.21",
+   "pas": "dupa_goto",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.cab-grila section.firme-grup h3 > button.firme-grup-btn[aria-expanded=\"false\"]|numar"
+  },
+  {
+   "id": "a.22",
+   "pas": "dupa_goto",
+   "operator": "interval_px",
+   "valoare": "0-0",
+   "cheie": "dom:.cab-grila section.firme-grup > div.cab-grila|inaltime_px"
+  },
+  {
+   "id": "b.1",
+   "pas": "setari",
+   "operator": "egal",
+   "valoare": "Contul meu,Cabinet,Conexiuni",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) h3.ds-grup-titlu|text"
+  },
+  {
+   "id": "b.2",
+   "pas": "setari",
+   "operator": "nr_randuri",
+   "valoare": "3",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) div.set-meniu|numar"
+  },
+  {
+   "id": "b.3",
+   "pas": "setari",
+   "operator": "egal",
+   "valoare": "Date profil,Schimbă parola,Notificări",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) h3.ds-grup-titlu:nth-of-type(1) + .set-meniu .meniu-card|text"
+  },
+  {
+   "id": "b.4",
+   "pas": "setari",
+   "operator": "egal",
+   "valoare": "Date cabinet,Ce pot face,Datele cabinetului (GDPR)",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) h3.ds-grup-titlu:nth-of-type(2) + .set-meniu .meniu-card|text"
+  },
+  {
+   "id": "b.5",
+   "pas": "setari",
+   "operator": "egal",
+   "valoare": "Chei API,Conectare SPV",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) h3.ds-grup-titlu:nth-of-type(3) + .set-meniu .meniu-card|text"
+  },
+  {
+   "id": "c.1",
+   "pas": "sinteza",
+   "operator": "interval_px",
+   "valoare": "10-200",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) span.sa-cifra|inaltime_px"
+  },
+  {
+   "id": "d.1",
+   "pas": "asistenti",
+   "operator": "lipseste",
+   "valoare": "Vizualizează",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #asi-lista > .val-card|text"
+  },
+  {
+   "id": "d.2",
+   "pas": "asistenti",
+   "operator": "lipseste",
+   "valoare": "Vizualizează",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #asi-lista [data-act=\"vezi\"]|text"
+  },
+  {
+   "id": "d.3",
+   "pas": "asistenti",
+   "operator": "interval_px",
+   "valoare": "10-60",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #asi-lista > .val-card .asi-nume button.btn-link[data-act=\"vezi\"]|inaltime_px"
+  },
+  {
+   "id": "e.1",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "13",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > *|numar"
+  },
+  {
+   "id": "e.2",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "2",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > details.dec-xml|numar"
+  },
+  {
+   "id": "e.3",
+   "pas": "salariat",
+   "operator": "egal",
+   "valoare": "+ Beneficiu",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > details#ss-benef:nth-child(7) > summary|text"
+  },
+  {
+   "id": "e.4",
+   "pas": "salariat",
+   "operator": "egal",
+   "valoare": "Mai multe",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > details#ss-mai-multe:nth-child(13) > summary|text"
+  },
+  {
+   "id": "e.5",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "5",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-benef button.buton-secundar|numar"
+  },
+  {
+   "id": "e.6",
+   "pas": "salariat",
+   "operator": "egal",
+   "valoare": "+ masă,+ vacanță,+ cadou,+ cultural,+ creșă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-benef button|text"
+  },
+  {
+   "id": "e.7",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "3",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-mai-multe button.buton-secundar|numar"
+  },
+  {
+   "id": "e.8",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-benef:not([open])|numar"
+  },
+  {
+   "id": "e.9",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-mai-multe:not([open])|numar"
+  },
+  {
+   "id": "e.10",
+   "pas": "salariat",
+   "operator": "egal",
+   "valoare": "Date de calcul",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(8)|text"
+  },
+  {
+   "id": "e.11",
+   "pas": "salariat",
+   "operator": "egal",
+   "valoare": "Corectează datele",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(9)|text"
+  },
+  {
+   "id": "e.12",
+   "pas": "benef",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-benef[open]|numar"
+  },
+  {
+   "id": "e.13",
+   "pas": "benef",
+   "operator": "interval_px",
+   "valoare": "20-60",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-benef button|inaltime_px"
+  },
+  {
+   "id": "e.14",
+   "pas": "inapoi",
+   "operator": "nr_randuri",
+   "valoare": "13",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > *|numar"
+  },
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "egal",
+   "valoare": "Setări cont",
+   "cheie": "dom:button.cab-card:has([data-cheie=\"setari\"]) .cab-card-titlu|text"
+  },
+  {
+   "id": "f.2",
+   "pas": "implicit",
+   "operator": "egal",
+   "valoare": "Control fiscal",
+   "cheie": "dom:button.cab-card:has([data-cheie=\"control\"]) .cab-card-titlu|text"
+  },
+  {
+   "id": "f.3",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "12",
+   "cheie": "dom:.cab-grila button.cab-card [data-cheie]|numar"
+  },
+  {
+   "id": "f.4",
+   "pas": "setari",
+   "operator": "nr_randuri",
+   "valoare": "8",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .set-meniu .meniu-card|numar"
+  },
+  {
+   "id": "f.5",
+   "pas": "sinteza",
+   "operator": "nr_randuri",
+   "valoare": "6",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .sa-cifra|numar"
+  },
+  {
+   "id": "f.6",
+   "pas": "asistenti",
+   "operator": "interval_px",
+   "valoare": "10-60",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #asi-lista > .val-card [data-act=\"edit\"]|inaltime_px"
+  },
+  {
+   "id": "f.7",
+   "pas": "asistenti",
+   "operator": "contine",
+   "valoare": "Editează",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #asi-lista > .val-card [data-act=\"edit\"]|text"
+  },
+  {
+   "id": "f.8",
+   "pas": "editare",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #asi-reactiveaza[aria-disabled=\"true\"]|numar"
+  },
+  {
+   "id": "f.9",
+   "pas": "editare",
+   "operator": "egal",
+   "valoare": "Reactivează",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #asi-reactiveaza|text"
+  },
+  {
+   "id": "f.10",
+   "pas": "fisa_asi",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .asi-nivel-badge|numar"
+  },
+  {
+   "id": "f.11",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "19",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane button|numar"
+  },
+  {
+   "id": "f.12",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > [data-flut]|numar"
+  },
+  {
+   "id": "f.13",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > [data-cm]|numar"
+  },
+  {
+   "id": "f.14",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > [data-iban]|numar"
+  },
+  {
+   "id": "f.15",
+   "pas": "salariat",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > [data-date]|numar"
+  },
+  {
+   "id": "f.16",
+   "pas": "salariat",
+   "operator": "egal",
+   "valoare": "Fluturaș",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(1)|text"
+  },
+  {
+   "id": "f.17",
+   "pas": "salariat",
+   "operator": "egal",
+   "valoare": "Salariu",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(6)|text"
+  },
+  {
+   "id": "f.18",
+   "pas": "masa",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #masa-input|numar"
+  },
+  {
+   "id": "f.19",
+   "pas": "sinteza",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) span.sa-cifra.sa-clic|numar"
+  },
+  {
+   "id": "f.20",
+   "pas": "editare",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #asi-salveaza|numar"
+  }
+ ]
+}

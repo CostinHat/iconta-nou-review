@@ -1,0 +1,48 @@
+produs
+lot: 17.2
+max hook 285
+max poarta_verificator 179
+max poarta_pytest 1100
+max poarta_plasa 1700
+sursa pragurilor 17.2: maximele lotului 17.1 (hook 91 s, poarta_verificator 84 s, poarta_pytest 602 s, poarta_plasa 1024 s); poarta_pytest 1100: fara test_*.py core in diff (atinse = nimic), asteptat 550-600 s; poarta_plasa 1700: 1024 s plus testul X07 (circa 200-250 s). Depasirea unui `max <faza>` opreste mecanic publicarea (publica_lot.py:456–476); text de oprire: OPRIT — gata: 17.2 nepublicat, prag <fază>.
+runde_verificator_max: 2
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+cerinte de raport: durata totala, restaurarea bazei, rularile rosii, durata fiecarei faze fata de prag, rulari intrerupt pe faza, nucleul din afara portii (informativ).
+acceptarea_arhitectului: pozitii: X07 numere: niciunul
+fisiere_permise:
+  scripts/praguri_17_2.txt
+  scripts/plasa_16_2.manifest
+  frontend_test/e2e/e2e_pilot_x07.py
+  frontend_test/e2e/conftest.py
+  frontend_test/e2e/e2e_lot13_sal_ajutor.py
+  frontend_test/e2e/e2e_bloc_a.py
+  frontend_test/e2e/e2e_lot13_migr.py (numai linia 96, test_def_662: document.querySelector('.firme-grup') scopat la `.fereastra-overlay:not(.fundal) .firme-grup`; altfel ia noua sectiune de pe pagina de start)
+  static/js/ecrane/cabinet.js
+  static/js/ecrane/setari.js
+  static/js/ecrane/asistenti.js
+  static/js/ecrane/firme.js
+  static/stil.css
+  static/index.html
+  static/spv_callback.html
+  static/js/app.js
+  static/js/cautare.js
+  static/js/navigator.js
+  static/js/ecrane/admin.js
+  static/js/ecrane/asistent.js
+  static/js/ecrane/borderou_ecran.js
+  static/js/ecrane/capacitate.js
+  static/js/ecrane/coada_trimite.js
+  static/js/ecrane/control_verdict.js
+  static/js/ecrane/ecran_destinatie.js
+  static/js/ecrane/facturi_ecran.js
+  static/js/ecrane/inceput.js
+  static/js/ecrane/migrare.js
+  static/js/ecrane/operatiuni_ecran.js
+  static/js/ecrane/termene.js
+  static/js/ecrane/validat.js
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_2/
+  jurnal_verificare.csv
+  registre_17_2.md
