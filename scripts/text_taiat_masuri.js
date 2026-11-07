@@ -26,15 +26,13 @@
   const elemente = [F, ...F.querySelectorAll("*")].filter((el) => !ascuns(el));
 
   // (c) iesit: textul propriu al elementului iese din strămoșul cel mai apropiat cu overflow-x hidden/clip sau din ecran; un strămoș auto/scroll între ele = conținut derulat
+  // lanțul de strămoși care pot tăia: un element fixed nu e tăiat de niciun strămoș, unul absolute numai de blocul lui de conținut (offsetParent) și de strămoșii acestuia
+  const urmator = (c) => { const pz = getComputedStyle(c).position; return pz === "fixed" ? null : pz === "absolute" ? c.offsetParent : c.parentElement; };
   const iesit = new Map();   // element -> strămoșul care taie
   for (const el of elemente) {
     if (!textPropriu(el)) continue;
     let taietor = null, derulat = false;
-    // un element fixed nu e tăiat de niciun strămoș; unul absolute e tăiat numai de blocul lui de conținut (offsetParent) și de strămoșii acestuia
-    const pozitie = getComputedStyle(el).position;
-    let p = pozitie === "fixed" ? null : el.parentElement;
-    if (pozitie === "absolute") while (p && p !== el.offsetParent) p = p.parentElement;
-    for (; p; p = p.parentElement) {
+    for (let p = urmator(el); p; p = urmator(p)) {
       const ox = getComputedStyle(p).overflowX;
       if (ox === "auto" || ox === "scroll") { derulat = true; break; }
       if (!taietor && taie(ox)) taietor = p;
