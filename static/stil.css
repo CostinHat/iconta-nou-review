@@ -3696,6 +3696,7 @@ fieldset { min-width: 0; }
   .em-linie, .em-linie-antet { grid-template-columns: minmax(80px, 1fr) 56px 48px 72px 138px 36px; }
   /* tabelul DS sub 700 px: coloanele își împart lățimea ferestrei (lățimile în ch / px puse de ecrane nu mai ies din cutie) */
   .ds-tabel { table-layout: auto; }
-  .ds-tabel :is(th, td) { width: auto !important; padding-left: 6px; padding-right: 6px; }
+  .ds-tabel :is(th, td) { width: auto !important; }
+  .ds-tabel thead th, .ds-tabel tbody td { padding-left: 6px; padding-right: 6px; }
   .ds-tabel :is(th, td).ds-tabel-actiuni, .ds-tabel td.cf-perioada, .ds-tabel td.cf-termen { white-space: normal; }   /* acțiunile și perioada se rup sub 700 px: tabelul încape în fereastră */
 }
