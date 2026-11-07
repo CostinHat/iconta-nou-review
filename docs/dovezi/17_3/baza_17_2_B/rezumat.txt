@@ -1,0 +1,20 @@
+baza
+ecrane: 105, deschideri: 315, durata: 1504 s
+603x590: deschideri=105 ok=105 nedeschis=0 timeout=0 | tăieturi=576 (lat=276 inalt=3 iesit=297) | ecrane cu cel puțin o tăietură=105
+1366x768: deschideri=105 ok=105 nedeschis=0 timeout=0 | tăieturi=415 (lat=378 inalt=16 iesit=21) | ecrane cu cel puțin o tăietură=36
+2133x1111: deschideri=105 ok=105 nedeschis=0 timeout=0 | tăieturi=374 (lat=354 inalt=16 iesit=4) | ecrane cu cel puțin o tăietură=20
+ecrane cu cel puțin o tăietură la oricare rezoluție: 105
+
+ecrane cu stare diferită de ok (0 deschideri):
+
+primele 10 ecrane după numărul de tăieturi (suma pe cele 3 rezoluții):
+  Plan de conturi F1 | 559 | 603x590=3 1366x768=278 2133x1111=278
+  Termene | 172 | 603x590=98 1366x768=37 2133x1111=37
+  Control fiscal | 57 | 603x590=29 1366x768=16 2133x1111=12
+  Declarații F1 pasul 1 | 53 | 603x590=51 1366x768=1 2133x1111=1
+  Control fiscal (firmă) F1 | 37 | 603x590=34 1366x768=3 2133x1111=0
+  Detaliu firmă F2 | 30 | 603x590=29 1366x768=1 2133x1111=0
+  Borderou de achiziție F1 | 22 | 603x590=15 1366x768=4 2133x1111=3
+  Panou Admin — Raportări | 22 | 603x590=12 1366x768=5 2133x1111=5
+  Date firmă F1 | 21 | 603x590=9 1366x768=6 2133x1111=6
+  Firme existente | 21 | 603x590=4 1366x768=9 2133x1111=8

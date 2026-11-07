@@ -1,0 +1,7 @@
+# cifre_inainte_dupa.txt (17.3): text tăiat pe cele 105 intrări × 3 rezoluții — înainte = docs/dovezi/17_2_B (baza_17_2_B/), după = matrice/ (calibrare.txt: abateri: 0, pe P = a5fd7b387f73026617e82a7c6b147e4ebbdf07d5)
+rezoluție | înainte (lat / inalt / iesit) | după | intrări «nedeschis» înainte → după
+603x590 | 576 (276 / 3 / 297) | 0 | 0 → 0
+1366x768 | 415 (378 / 16 / 21) | 0 | 0 → 0
+2133x1111 | 374 (354 / 16 / 4) | 0 | 0 → 0
+ecrane cu cel puțin o tăietură la oricare rezoluție: 105 → 0
+durata matricei «dupa»: 1508 s (față de 2580 s ținta din praguri)

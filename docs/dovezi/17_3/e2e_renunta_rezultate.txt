@@ -1,0 +1,47 @@
+# e2e_renunta_rezultate.txt (17.3, pct.4.4): testele e2e din teste_renunta.txt, rulate prin scripts/e2e_poarta.py --doar=<fișier> pe indexul lui P (a5fd7b38), baza restaurată înainte; comparate cu aceleași fișiere pe commitul de bază cdef226f (main).
+# fișier | exit | durată | rezultat
+e2e_lot10b_salarii_jurnal.py exit=1 63s [e2e] 2 failed, 2 passed in 49.36s (62s; capturi în /tmp/e2e_final_capturi)
+e2e_lot10_inlocuire.py exit=0 39s [e2e] 5 passed in 24.28s (37s; capturi în /tmp/e2e_final_capturi)
+e2e_lot10_migrare.py exit=1 42s [e2e] 1 failed, 5 passed in 28.32s (41s; capturi în /tmp/e2e_final_capturi)
+e2e_lot11_m.py exit=1 42s [e2e] 1 failed, 5 passed in 27.91s (41s; capturi în /tmp/e2e_final_capturi)
+e2e_lot11_w4.py exit=1 60s [e2e] 1 failed, 3 passed in 45.80s (59s; capturi în /tmp/e2e_final_capturi)
+e2e_lot12_cx7.py exit=0 83s [e2e] 14 passed in 69.12s (0:01:09) (82s; capturi în /tmp/e2e_final_capturi)
+e2e_lot12_emit.py exit=0 76s [e2e] 6 passed in 61.35s (0:01:01) (74s; capturi în /tmp/e2e_final_capturi)
+e2e_lot12_firme1.py exit=1 107s [e2e] 1 failed, 12 passed in 93.15s (0:01:33) (106s; capturi în /tmp/e2e_final_capturi)
+e2e_lot12_form2.py exit=0 33s [e2e] 5 passed in 19.38s (32s; capturi în /tmp/e2e_final_capturi)
+e2e_lot12_migr.py exit=0 58s [e2e] 9 passed in 43.21s (56s; capturi în /tmp/e2e_final_capturi)
+e2e_lot13_admin.py exit=0 79s [e2e] 11 passed in 64.89s (0:01:04) (78s; capturi în /tmp/e2e_final_capturi)
+e2e_lot15_1.py exit=0 218s [e2e] 44 passed in 203.63s (0:03:23) (216s; capturi în /tmp/e2e_final_capturi)
+e2e_lot15_e2.py exit=1 29s [e2e] 2 failed, 2 passed in 15.44s (28s; capturi în /tmp/e2e_final_capturi)
+e2e_lot15_e3.py exit=0 31s [e2e] 3 passed in 17.03s (30s; capturi în /tmp/e2e_final_capturi)
+e2e_lot15_e5.py exit=0 32s [e2e] 3 passed, 1 skipped in 18.40s (31s; capturi în /tmp/e2e_final_capturi)
+e2e_lot6.py exit=1 351s [e2e] 2 failed, 23 passed in 336.57s (0:05:36) (349s; capturi în /tmp/e2e_final_capturi)
+e2e_lot72_contab.py exit=1 68s [e2e] 2 failed, 5 passed in 54.67s (67s; capturi în /tmp/e2e_final_capturi)
+e2e_lot72_declaratii.py exit=0 77s [e2e] 6 passed in 62.63s (0:01:02) (75s; capturi în /tmp/e2e_final_capturi)
+e2e_lot81.py exit=1 144s [e2e] 3 failed, 21 passed, 1 skipped in 130.14s (0:02:10) (143s; capturi în /tmp/e2e_fina
+e2e_lot91.py exit=1 139s [e2e] 1 failed, 28 passed in 124.18s (0:02:04) (137s; capturi în /tmp/e2e_final_capturi)
+e2e_lot92.py exit=1 198s [e2e] 4 failed, 23 passed in 183.99s (0:03:03) (197s; capturi în /tmp/e2e_final_capturi)
+E2E durata=2047s
+GATA
+
+# picate pe P și clasificarea lor față de baza cdef226f (rulată cu aceeași comandă) și față de scripts/poarta_e2e_restante.txt:
+e2e_lot10b_salarii_jurnal.py::test_def_394_nota_noua_nu_deruleaza_cu_note_in_luna | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
+e2e_lot10b_salarii_jurnal.py::test_def_433_dupa_contabilizarea_statului_nu_se_deschide_formularul_cor | REGRESIE DE LOT, limită declarată: testul (în afara fisiere_permise) apasă un buton «Renunță» scos din bară (data-renunta / #je-renunta); nu se atinge
+e2e_lot10_migrare.py::test_def_425_numai_soldurile_finale_spune_ce_lipseste_si_ce_afecteaza | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
+e2e_lot11_m.py::test_def_424_importul_are_rezumatul_sus_actiunea_jos_si_deruleaza_numai_tabelul | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
+e2e_lot11_w4.py::test_def_394_nota_noua_incape_la_1280x720 | REGRESIE DE LOT, limită declarată: testul (în afara fisiere_permise) apasă un buton «Renunță» scos din bară (data-renunta / #je-renunta); nu se atinge
+e2e_lot12_firme1.py::test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta | roșu și pe bază (rulat pe cdef226f), fără rând în inventar
+e2e_lot15_e2.py::test_cadrul_ferestrei_de_firma[1366-768] | roșu și pe bază (principale == [] , nu [«Închide»]): nu e al lotului; aserțiunea «Renunță» a fost pusă la zi
+e2e_lot15_e2.py::test_cadrul_ferestrei_de_firma[1920-1080] | roșu și pe bază (principale == [] , nu [«Închide»]): nu e al lotului; aserțiunea «Renunță» a fost pusă la zi
+e2e_lot6.py::test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand | roșu și pe bază (rulat pe cdef226f), fără rând în inventar
+e2e_lot6.py::test_def_292_fereastra_cozii_poarta_titlul_cardului | roșu și pe bază (rulat pe cdef226f), fără rând în inventar
+e2e_lot72_contab.py::test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
+e2e_lot72_contab.py::test_def_312_dupa_generare_de_validat_iar_401_debitor_spre_4091_4092 | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
+e2e_lot81.py::test_def_323_depasita_are_grupul_ei_si_fereastra_o_numeste | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
+e2e_lot81.py::test_def_329_avertismentul_vechi_dispare_dupa_validare_si_nota_o_singura_data | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
+e2e_lot81.py::test_def_c51_previzualizarea_programata_nu_citeste_casa_cat_se_reincarca | roșu și pe bază (rulat pe cdef226f), fără rând în inventar
+e2e_lot91.py::test_def_394_jurnalul_e_lat_si_motivul_amortizarii_nu_rupe_butoanele | roșu și pe bază (rulat pe cdef226f), fără rând în inventar
+e2e_lot92.py::test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare | roșu și pe bază (rulat pe cdef226f), fără rând în inventar
+e2e_lot92.py::test_def_407_avansul_platit_furnizorului_cere_destinatia_si_e_409x | roșu și pe bază (rulat pe cdef226f), fără rând în inventar
+e2e_lot92.py::test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
+e2e_lot92.py::test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa | restanță numerotată din poarta_e2e_restante.txt (roșu și pe bază)
