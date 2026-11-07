@@ -101,6 +101,11 @@ _LA_MIJLOC = """() => { const f = [...document.querySelectorAll('.fereastra-corp
 
 
 # ── datele Registrului jurnal ─────────────────────────────────────────────────────────────────────────────────────────────────────
+def _grupuri_deschise(pg):
+    """Grupurile ferestrei firmei sunt pliate la deschidere (17.1): le desface ca omul, apăsând butonul de titlu."""
+    pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=false]').forEach((b) => b.click())")
+
+
 def _nota(i, status="validata", **x):
     n = {"id": 1000 + i, "nr_curent": i if status == "validata" else None, "data": "2026-09-%02d" % (i % 28 + 1), "numar": None,
          "descriere": "Notă de probă %d" % i, "sursa": "manual", "status": status, "factura_id": None,
@@ -377,6 +382,8 @@ def test_def_621_balanta_rezumatul_lipit_ramane_mic_si_importul_are_buton(browse
     try:
         pg.evaluate("""async () => { const f = await import('/static/js/ecrane/firme.js');
           f.deschideFirma({id: 1, nume: 'Firma Probă SRL', cui: '1', regim_contabil: 'dubla', tip_firma: 'srl', platitor_tva: true}, window._nav); }""")
+        pg.wait_for_selector("#fa-balanta", state="attached", timeout=15000)
+        _grupuri_deschise(pg)
         pg.wait_for_selector("#fa-balanta", timeout=15000)
         pg.click("#fa-balanta")
         pg.wait_for_selector("[data-card='rulaje']", timeout=15000)   # [lotul 14, 687] avertismentul rulajelor stă în cardul lui
@@ -426,6 +433,8 @@ def test_def_621_rezumatul_ecranelor_cu_tabel_ramane_sub_un_sfert_din_fereastra(
     try:
         pg.evaluate("""async () => { const f = await import('/static/js/ecrane/firme.js');
           f.deschideFirma({id: 1, nume: 'Firma Probă SRL', cui: '1', regim_contabil: 'dubla', tip_firma: 'srl', platitor_tva: true}, window._nav); }""")
+        pg.wait_for_selector(card, state="attached", timeout=15000)
+        _grupuri_deschise(pg)
         pg.wait_for_selector(card, timeout=15000)
         pg.click(card)
         pg.wait_for_selector(".fereastra-corp .rezumat-fix", timeout=15000)
@@ -519,6 +528,8 @@ def test_ajustarea_fiscala_se_sterge_dupa_confirmare(browser):
     try:
         pg.evaluate("""async () => { const f = await import('/static/js/ecrane/firme.js');
           f.deschideFirma({id: 1, nume: 'Firma Probă SRL', cui: '1', regim_contabil: 'dubla', tip_firma: 'srl', platitor_tva: true}, window._nav); }""")
+        pg.wait_for_selector("#fa-regfiscal", state="attached", timeout=15000)
+        _grupuri_deschise(pg)
         pg.wait_for_selector("#fa-regfiscal", timeout=15000)
         pg.click("#fa-regfiscal")
         pg.wait_for_selector("[data-aj-sterge='77']", timeout=15000)

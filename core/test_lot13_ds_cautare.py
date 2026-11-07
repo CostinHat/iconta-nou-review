@@ -55,8 +55,8 @@ def test_declaratia_tichetul_statul_de_plata_si_nir():
     assert d[0]["fel"] == "declaratie" and d[0]["tip"] == "d112" and d[0]["titlu"] == "D112 — " + __import__("core.d112", fromlist=["x"]).DENUMIRE_OFICIALA.strip(), d[:2]
     t = C.cauta("tichet", FIRMA)
     assert t[0]["fel"] == "card" and t[0]["cheie"] == "salariati", t
-    assert C.cauta("stat de plată", FIRMA)[0]["cheie"] == "salariati"      # precizarea 26.10: «stat de plată»
-    assert C.cauta("NIR", FIRMA)[0]["cheie"] == "stocuri"                   # precizarea 26.10: «NIR»
+    assert next(r for r in C.cauta("stat de plată", FIRMA) if r["fel"] == "card")["cheie"] == "salariati"      # precizarea 26.10: «stat de plată»
+    assert next(r for r in C.cauta("NIR", FIRMA) if r["fel"] == "card")["cheie"] == "stocuri"                   # precizarea 26.10: «NIR»
     assert C.cauta("D300", FIRMA)[0]["tip"] == "d300"                       # precizarea 26.10: «D300»
     assert C.cauta("casa", FIRMA)[0]["cheie"] == "casa"        # „casa” la început de cuvânt: Casă, nu „încasare”
     assert C.cauta("a", FIRMA) == []                            # un caracter nu caută

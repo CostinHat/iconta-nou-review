@@ -339,7 +339,7 @@ def test_pct13_planul_de_conturi_analitice_sub_sintetic_si_stergerea(lume, monke
     assert ut.motiv_nestergere("4119", set(), set(), {"4119"}, ["4119"]) is None              # fără analitice: se șterge
     assert ut.tenant_plan_conturi_sterge(1, "4111.02", ctx) == {"ok": True, "simbol": "4111.02"}
     js = io.open("static/js/ecrane/firme.js", encoding="utf-8").read()
-    assert re.findall(r'cheie: "(planconturi)", regim: "(\w+)", grup: "(\w+)"', js) == [("planconturi", "dubla", "firma")]
+    assert re.findall(r'cheie: "(planconturi)", regim: "(\w+)", grup: "(\w+)"', js) == [("planconturi", "dubla", "contabilitate")]
     assert re.findall(r'nav\.deschide\("Plan de conturi", \(c2\) => (\w+)\(c2, nav, t\)\)', js) == ["ecranPlanConturi"]
 
 

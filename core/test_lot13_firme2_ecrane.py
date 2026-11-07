@@ -103,6 +103,8 @@ def _pagina(browser, rute, cereri=None, firma=T):
     pg.goto("http://127.0.0.1:%d/harness.html" % port)
     pg.wait_for_function("() => window._gata === true", timeout=20000)
     pg.evaluate("async (t) => { const f = await import('/static/js/ecrane/firme.js'); f.deschideFirma(t, window._nav); }", firma)
+    pg.wait_for_selector(".firme-optiune", state="attached", timeout=20000)
+    pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=false]').forEach((b) => b.click())")
     pg.wait_for_selector(".firme-optiune", timeout=20000)
     return pg, erori
 

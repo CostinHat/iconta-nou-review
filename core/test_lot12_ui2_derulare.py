@@ -98,6 +98,8 @@ def test_def_617_ecran_real_centre_de_cost_ramane_pe_loc_dupa_dezactivare(browse
     try:
         pg.evaluate("""async () => { const f = await import('/static/js/ecrane/firme.js');
           f.deschideFirma({id: 1, nume: 'Firma Probă SRL', cui: '1', regim_contabil: 'dubla', tip_firma: 'srl', platitor_tva: true}, window._nav); }""")
+        pg.wait_for_selector("#fa-centrecost", state="attached", timeout=15000)
+        pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=false]').forEach((b) => b.click())")
         pg.wait_for_selector("#fa-centrecost", timeout=15000)
         pg.click("#fa-centrecost")
         pg.wait_for_selector("[data-toggle='40']", timeout=15000)

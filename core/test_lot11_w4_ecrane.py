@@ -156,6 +156,8 @@ _VEDE = """(sel) => { const c = [...document.querySelectorAll('.fereastra-corp')
 
 def _deschide_firma(pg, card):
     pg.evaluate("async () => { const f = await import('/static/js/ecrane/firme.js'); f.deschideFirma(%s, window._nav); }" % FIRMA)
+    pg.wait_for_selector(".fereastra-overlay:not(.fundal) .firme-grup-btn", state="attached", timeout=15000)
+    pg.evaluate("() => document.querySelectorAll('.fereastra-overlay:not(.fundal) .firme-grup-btn[aria-expanded=false]').forEach((b) => b.click())")
     pg.wait_for_selector(card, timeout=15000)
     pg.click(card)
 
