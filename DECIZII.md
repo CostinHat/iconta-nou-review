@@ -24518,3 +24518,13 @@ Poarta verde pe C `d2175e60`; publicarea refuzată de `publica_lot.py --verifica
 - O fereastră are o singură derulare (fără zonă: derulează corpul; cu zonă: corpul nu derulează, zona are cel puțin 50% din corp, 40% la 603 × 590 px). Lista „Firme existente” este zona de derulare, fereastra fixă (788).
 - „←” și „✕” au lățime minimă de 40 px (790); căutarea din antet e elastică (flex 0 1 320px, min-width 160px).
 - Poarta VERDE în rularea 2 (2042 teste, regresie 0, restanță 2); rularea 1 a fost roșie pe un test roșu și pe bază, absent din baza.json (nou_regresie), iar cele 7 fișiere de test învechite de grupurile pliabile au fost adaptate (aserțiunea înlocuită, nu ștearsă). 788 și 790 rezolvate; 789, 791, 792, 793 nefăcute intenționat (17.2/17.3).
+
+## Comanda 17.2 (produs), 07.11.2026 — val 2 al reorganizării ecranelor, C = c59fc6893c8eb51bf843c82d22b9d506fdee423f
+- Cardurile de conducere a cabinetului (Activitate, Pachete lunare, Supervizor, Capacitate, Consolidare, Asistenți) stau într-o secțiune pliabilă „Pentru șeful de cabinet”, implicit pliată, ultimul element al grilei de pe pagina principală (piesa .firme-grup-btn a lui 17.1; cabinet.js, stil.css).
+- Starea secțiunii pliabile a paginii principale se reține numai în memorie (variabilă de modul în cabinet.js); revine pliată la reîncărcarea paginii.
+- Setări cont în trei secțiuni statice (Contul meu, Cabinet, Conexiuni), cu titlul din piesa .ds-grup-titlu; secțiunea fără intrare vizibilă nu apare (setari.js).
+- Cifrele zero din Sinteza zilei sunt text, nu butoane; butonul apare numai când cifra e mai mare ca zero (cabinet.js).
+- Numele asistentului deschide fișa lui; „Vizualizează” a dispărut, „Editează” rămâne pe rând (asistenti.js).
+- Fișa salariatului: „+ Beneficiu” (masă, vacanță, cadou, cultural, creșă) și „Mai multe” (Încetare, Adeverință, REGES) sunt details.dec-xml pliate (firme.js).
+- Ajutorul de test: clicul pe #ss-butoane [data-…] deschide <details>-ul care conține butonul (frontend_test/e2e/conftest.py, împachetarea lui Page.click); e2e_lot13_sal_ajutor.py a rămas identic cu main, fiindcă poarta clasifica „invalid” un e2e_*.py din diff fără teste (rularea 1 roșie, repornire decisă de arhitect).
+- Poarta VERDE în rularea 2 (1891 teste, regresie 0, restanță 2: R021, R027); oracolul X07 65/65 „trece” pe C la Code și la Haiku, fără „nu corespunde”. Lotul nu închide deficiențe numerotate (derogare de la comandă).
