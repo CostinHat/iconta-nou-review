@@ -51,7 +51,7 @@ RANDURI = {
          "de butoane, pe nume, lista din raport): bara fără buton principal și fără „Renunță”",
     "c": "orice listă de înregistrări e tabelul DS: cap ≥ 40 px, rând ≥ 44 px (cu rândul care se rupe, înălțimea crește), zebra, starea doar în coloana „Stare”, cel mult 2 acțiuni XS pe "
          "rând, subsol 44 px (rândul de totaluri fix, bara-fixa, nu e o listă de înregistrări); nicio celulă cu dată sau sumă tăiată",
-    "d": "orice avertisment sau explicație secundară e card-rezumat de 44 px cu detaliile pliate; orice semnal e un rând de 36 px (cel mult două rânduri, textul întreg, fără „…”) cu „ce e de "
+    "d": "orice avertisment sau explicație secundară e card-rezumat ≥ 44 px (cu textul rupt, înălțimea crește) cu detaliile pliate; orice semnal e un rând de 36 px (cel mult două rânduri, textul întreg, fără „…”) cu „ce e de "
          "făcut” pliat; niciun paragraf explicativ mai lung de un rând nepliat; un card-rezumat gri (neutru, informativ) e valid; cardurile de eroare "
          "rămân la vedere și nu se numără, din celelalte cel mult 2 la vedere (restul sub „Semnale (n)”); un semnal sau card al cărui text spune "
          "„deschide X” sau „mergi la X” are butonul care deschide X",

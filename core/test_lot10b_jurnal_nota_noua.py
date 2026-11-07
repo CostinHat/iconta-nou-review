@@ -154,7 +154,7 @@ def test_7i_394_fereastra_notei_noi_nu_deruleaza(pagina, luna_curenta, regim):
     assert m["sh"] <= m["ch"] + 1 and m["jos_salveaza"] <= m["jos_corp"], m
     # linia notei stă pe un rând (debit = credit · sumă · centru · partener · −), nu pe trei, cum o rupea lista îngustă (640 px)
     assert len(set(pg.eval_on_selector_all("#je-linii > div > *", "e => e.map((x) => Math.round(x.getBoundingClientRect().top + x.getBoundingClientRect().height / 2))"))) == 1
-    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")   # [17.3] revenirea e „←” din antet: bara de jos nu mai are „Renunță”
+    pg.locator(".fereastra-antet .nav-inapoi").last.click()   # [17.3] revenirea e „←” din antet: bara de jos nu mai are „Renunță”
     pg.wait_for_selector("[data-nota-id]", timeout=5000)
     # după „←” registrul arată din nou notele lunii (și derulează: lista e lungă)
     assert pg.eval_on_selector_all("[data-nota-id]", "e => e.length") == 8

@@ -3309,7 +3309,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .ds-grup-campuri { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: flex-start; }
 .ds-grup-campuri > .camp { min-width: 0; gap: 4px; }
 .ds-grup-campuri > .camp.camp-dedus { display: none; }
-.ds-grup .camp-eticheta { margin: 0; font-size: 14px; line-height: 20px; white-space: normal; overflow-wrap: anywhere; }   /* [17.3] eticheta se rupe pe linia următoare, nu lărgește câmpul */
+.ds-grup .camp-eticheta { margin: 0; font-size: 14px; line-height: 20px; white-space: nowrap; }   /* eticheta nu se taie: câmpul crește cât ea (peste 700 px; sub 700 px se rupe, vezi blocul de la sfârșit) */
 .fereastra-corp .ds-grup .camp-input:not([type=checkbox]):not([type=radio]) { height: 44px; font-size: 16px; border-radius: 8px; box-sizing: border-box; max-width: 100%; }
 .ds-grup .camp-input[data-numar] { text-align: right; font-variant-numeric: tabular-nums; }
 /* lățimile în caractere, la 10 px pe caracter (text 16 px) + padding 28 px: XS 9 = 118, S 16 = 188, M 38 = 408 */
@@ -3596,6 +3596,8 @@ textarea.em-adresa { overflow: hidden; }
 
 /* [15.1-E3] explicația de sub câmp: un rând (textul întreg în title, pus de cadru.js); la focus pe câmp se arată întreagă */
 .fereastra-corp .camp-ajutor { display: block; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; max-width: 100%; }
+/* [15.1-E3] sub câmpurile formularelor pe grupuri (`.ds-grup`) explicația rămâne pe un rând (textul întreg în `title`, întreagă la focus): formularul încape în fereastră fără derulare (e2e_lot15_1, 670/509) */
+.fereastra-corp .ds-grup .camp-ajutor { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* [15.1-E5] explicația de sub câmp rămâne pe un rând (textul întreg în `title`): nu se desface la focus, fiindcă la apăsarea unui buton de sub câmp (care ia focusul) rândurile s-ar muta între apăsare și ridicare și clicul s-ar pierde */
 
 /* [15.1-E3, 12] Setări cont: butoanele de meniu pe grila ferestrei (două coloane de la 900 px), nu stivuite — fereastra încape la 1366 × 768 fără derulare */
@@ -3620,7 +3622,6 @@ textarea.em-adresa { overflow: hidden; }
 /* [15.1-E4] cardul-rezumat aplicat notelor existente (`carduriDSAplica`, ds_piese.js): aceeași piesă, peste clasele vechi ale notelor */
 .fereastra .ds-rezumat { max-width: none; width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; margin: 0 0 8px;
   border: 1px solid var(--linie); border-left-width: 4px; border-radius: 12px; background: var(--alb); color: var(--ardezie); font-size: 14px; line-height: 20px; white-space: normal; }
-.fereastra .ds-rezumat { flex-wrap: wrap; }   /* [17.3] textul și acțiunile cardului nu ies din fereastră: acțiunea coboară pe linia următoare */
 .fereastra .ds-rezumat-info { border-left-color: var(--gri); }
 .fereastra .ds-rezumat-text { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
 .fereastra .ds-rezumat-text > * { display: inline; margin: 0; }
@@ -3688,10 +3689,11 @@ textarea.em-adresa { overflow: hidden; }
 /* [17.3] fieldset-ul nu se lărgește peste fereastră cât conținutul lui (min-width implicit = min-content): câmpurile se așază în lățimea ferestrei */
 fieldset { min-width: 0; }
 /* [17.3] Model factură: formularul și previzualizarea stau pe rând (lanțul zonei de derulare le făcea coloane: previzualizarea ieșea din fereastră); sub 700 px coboară una sub alta */
-.mf-layout.lant-zona { flex-direction: row; flex-wrap: nowrap; }
-.mf-preview-wrap { min-width: 0; }
+.mf-preview-wrap { max-width: calc(100% - 344px); }   /* a doua coloană (previzualizarea) nu iese din fereastră: lanțul zonei de derulare face din `.mf-layout` o coloană cu wrap */
 @media (max-width: 700px) {
-  .mf-layout.lant-zona { flex-wrap: wrap; }
+  .mf-preview-wrap { max-width: 100%; }
+  .fereastra .ds-rezumat { flex-wrap: wrap; }   /* textul și acțiunile cardului nu ies din fereastră: acțiunea coboară pe linia următoare */
+  .ds-grup .camp-eticheta { white-space: normal; overflow-wrap: anywhere; }   /* eticheta se rupe pe linia următoare, nu lărgește câmpul peste fereastră */
   /* liniile facturii încap în 505 px: coloana cotei de 138 px, nu 188 px */
   .em-linie, .em-linie-antet { grid-template-columns: minmax(80px, 1fr) 56px 48px 72px 138px 36px; }
   /* tabelul DS sub 700 px: coloanele își împart lățimea ferestrei (lățimile în ch / px puse de ecrane nu mai ies din cutie) */

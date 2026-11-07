@@ -566,7 +566,7 @@ def test_def_d3_control_fiscal_lista_tabel_ds_si_titluri_fara_majuscule(patron, 
     assert pg.locator("#cf-lista tbody tr:first-child .ds-pastila").count() == 1
     assert pg.locator("#cf-lista tbody tr:first-child button", has_text="Deschide").count() == 1
     inalt = pg.eval_on_selector_all("#cf-lista tbody tr", "es => [...new Set(es.map(e => Math.round(e.getBoundingClientRect().height)))]")
-    assert inalt == [44], inalt
+    assert inalt and min(inalt) >= 44, inalt   # [17.3] rând ≥ 44 px: un rând cu text lung crește, nu se taie cu „…”
     pg.locator("#cf-lista tbody tr:first-child button", has_text="Deschide").evaluate("e => e.click()")
     pg.wait_for_selector(".cf-grup-titlu", timeout=60000)
     transformari = pg.eval_on_selector_all(".cf-grup-titlu", "es => [...new Set(es.map(e => getComputedStyle(e).textTransform))]")

@@ -164,7 +164,7 @@ const _vizibilSauInDetails = (b) => {
 };
 
 function _dinCatalog(corp, bara) {
-  const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && _vizibilSauInDetails(b) && !b.closest("table, template, .tn-actiuni, .fereastra-antet, .ds-semnal-cutie, .ds-rezumat-cutie");
+  const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && _vizibilSauInDetails(b) && !b.closest("table, template, .tn-actiuni, .fereastra-antet, .ds-semnal-cutie, .ds-rezumat-cutie, .set-meniu");   // [17.3] intrarea „Schimbă parola” din meniul Setări cont nu e acțiunea ferestrei
   const butoane = [...corp.querySelectorAll("button")].filter(eligibil);
   for (const rx of CATALOG_ACTIUNE_PRINCIPALA) {
     const g = butoane.find((b) => rx.test(_normalizeaza(b.textContent)));

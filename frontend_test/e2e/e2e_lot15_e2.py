@@ -74,6 +74,6 @@ def test_principalul_inactiv_cu_motiv_din_etichetele_cu_stea(patron, firma_cadru
     m = _masuri(pg)
     assert m["principale"][0][2] is True and m["motiv"], m                      # inactiv, cu motiv în bară
     assert pg.eval_on_selector("#op-trimite", "e => !!e.closest('.fereastra-jos')")   # același buton al ecranului, mutat în bară
-    pg.locator(".fereastra:last-of-type .nav-inapoi").click()                    # [17.3] „←” întoarce un pas (bara de jos nu mai are „Renunță”)
+    pg.locator(".fereastra-antet .nav-inapoi").last.click()                  # [17.3] „←” întoarce un pas (bara de jos nu mai are „Renunță”)
     pg.wait_for_selector("button[data-op='chirie']", state="attached", timeout=20000)
     assert pg.locator("#op-trimite").count() == 0                                # fereastra formularului s-a închis

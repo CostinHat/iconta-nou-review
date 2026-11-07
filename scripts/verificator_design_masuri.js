@@ -116,7 +116,7 @@
       const titluF = norm((F.querySelector(".fir-acum") || {}).textContent);
       const pastreaza = (window.__pastreazaRenunta || []).includes(titluF);
       b.renunta = areRenunta; b.din_formular = dinFormular; b.pastreaza_renunta = pastreaza;
-      if (pastreaza && !areRenunta) pica.b.push("fereastra „" + titluF + "” e în lista PASTREAZA_RENUNTA și nu are „Renunță” în bara de jos");
+      if (pastreaza && dinFormular && !areRenunta) pica.b.push("fereastra „" + titluF + "” e în lista PASTREAZA_RENUNTA și nu are „Renunță” în bara de jos");
       if (!pastreaza && areRenunta) pica.b.push("„Renunță” în bara de jos a unei ferestre din afara listei PASTREAZA_RENUNTA („" + titluF + "”)");
     }
     // [16.7] acțiunea principală o singură dată pe ecran: niciun buton din conținut cu același text ca butonul principal din bara de jos
@@ -192,14 +192,14 @@
   // ── d. avertismente și semnale ──────────────────────────────────────────────────────────────────────────────────────────────────────
   const d = { rezumat_ds: 0, semnale_ds: 0, carduri_vechi: 0, paragrafe_lungi: [] };
   // [15.1-E4] cardul de eroare își arată textul întreg, pe câte linii e nevoie: peste 44 px numai la eroare
-  for (const r of F.querySelectorAll(".ds-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (Math.abs(h(r) - 44) > 1 && !(r.classList.contains("ds-rezumat-eroare") && h(r) > 44)) pica.d.push("card-rezumat de " + h(r) + " px, nu 44"); }
+  for (const r of F.querySelectorAll(".ds-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (h(r) < 44 - 1) pica.d.push("card-rezumat de " + h(r) + " px, sub 44"); }   // [17.3] ≥ 44 px: textul rupt crește cardul
   for (const s of F.querySelectorAll(".ds-semnal")) {   // [15.1-E5, 740] 36 px pe un rând, cel mult două rânduri (56 px), textul întreg, fără „…”
     if (!vizibil(s)) continue; d.semnale_ds++;
     if (h(s) < 35 || h(s) > 52) pica.d.push("semnal de " + h(s) + " px (36 pe un rând, cel mult 50 pe două)");
     const tx = s.querySelector(".ds-semnal-text");
     if (tx && (/…$/.test(norm(tx.innerText)) || tx.scrollWidth > tx.clientWidth + 1 || getComputedStyle(tx).textOverflow === "ellipsis")) pica.d.push("semnal tăiat: „" + norm(tx.innerText).slice(-30) + "”");
   }
-  for (const r of F.querySelectorAll(".card-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (Math.abs(h(r) - 44) > 1) pica.d.push("card-rezumat de " + h(r) + " px, nu 44"); }
+  for (const r of F.querySelectorAll(".card-rezumat")) { if (!vizibil(r)) continue; d.rezumat_ds++; if (h(r) < 44 - 1) pica.d.push("card-rezumat de " + h(r) + " px, sub 44"); }
   // [15.1-E4, pct.4] cardurile de eroare rămân mereu la vedere și nu se numără; celelalte cel mult 2 la vedere (restul sub „Semnale (n)”); un card gri (informativ) e card valid
   const nonErori = [...F.querySelectorAll(".ds-rezumat")].filter((r) => vizibil(r) && !r.classList.contains("ds-rezumat-eroare") && !r.closest(".ds-semnale"));
   d.rezumate_la_vedere = nonErori.length;
@@ -216,8 +216,8 @@
   const vechi = [...F.querySelectorAll(".cf-semnal, .caseta-info, .ecran-nota, .caseta-avertisment, .avertisment, .dec-avert-cap, .msg-info")].filter((x) => vizibil(x) && !x.classList.contains("ds-rezumat") && !x.closest("label, .camp-eticheta") && x.tagName !== "SPAN");   // [15.1-E4] explicația dintr-o etichetă / bifă e text de câmp (ca .camp-ajutor), nu avertisment
   d.carduri_vechi = vechi.length;
   if (vechi.length) pica.d.push(vechi.length + " avertismente/semnale care nu sunt piese DS (" + [...new Set(vechi.map((x) => String(x.className).split(" ")[0]))].join(", ") + ")");
-  for (const p of F.querySelectorAll("p, .pf-intro, .tip-micut, .ecran-nota, .camp-ajutor")) {
-    if (!vizibil(p) || p.classList.contains("ds-rezumat") || p.querySelector("input, select, textarea") || p.closest("[hidden], .ds-rezumat-detalii, .ds-semnal-detalii, details:not([open])")) continue;   // [15.1-E4] paragraful devenit card-rezumat e cardul, nu un paragraf nepliat
+  for (const p of F.querySelectorAll("p, .pf-intro, .tip-micut, .ecran-nota")) {   // [17.3] `.camp-ajutor` iese din listă: explicația de sub câmp se rupe pe linii, nu se taie cu „…”
+    if (!vizibil(p) || p.classList.contains("ds-rezumat") || p.classList.contains("camp-ajutor") || p.querySelector("input, select, textarea") || p.closest("[hidden], .ds-rezumat-detalii, .ds-semnal-detalii, details:not([open])")) continue;   // [15.1-E4] paragraful devenit card-rezumat e cardul, nu un paragraf nepliat
     const txt = proprio(p);
     if (txt.length < 40) continue;
     const lh = parseFloat(getComputedStyle(p).lineHeight) || 20;

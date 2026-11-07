@@ -11,14 +11,14 @@
 .ds-tabel-lista-tabel tbody td > * > * | nowrap, hidden, ellipsis (:3630) | white-space normal, overflow visible, clip, overflow-wrap anywhere
 .ds-tabel-lista-tabel tbody td > * > * > * | nowrap, hidden, ellipsis (:3637) | la fel
 .ds-rezumat-text | nowrap, hidden, ellipsis (:3337) | rupe textul
-.fereastra .ds-rezumat-text | nowrap, hidden, ellipsis (:3614) | rupe textul; `.fereastra .ds-rezumat` primește flex-wrap: wrap
+.fereastra .ds-rezumat-text | nowrap, hidden, ellipsis (:3614) | rupe textul; sub 700 px `.fereastra .ds-rezumat` primește flex-wrap: wrap
 .ds-lista-ales | nowrap, hidden, ellipsis (:3350) | rupe textul
 .ds-lista-nume | nowrap, hidden, ellipsis (:3358) | rupe textul
 .ds-lista-motiv | nowrap, hidden, ellipsis (:3359) | rupe textul
-.fereastra-corp .camp-ajutor | nowrap, hidden, ellipsis (:3587) | rupe textul
+.fereastra-corp .camp-ajutor | nowrap, hidden, ellipsis (:3587) | rupe textul (Date firmă); în `.ds-grup` rămâne pe un rând cu «…» (regulă scoasă din lista de mai sus: `.fereastra-corp .ds-grup .camp-ajutor`, DS 15.1-E3: formularele din Operațiuni nu derulează la 1366×768, e2e_lot15_1 670/509)
 .rap-subiect | nowrap, hidden, ellipsis (:1319, Panou Admin — Raportări) | rupe textul
 .rap-rand-jos | nowrap, hidden, ellipsis (:1326) | rupe textul
-.ds-grup .camp-eticheta | nowrap (:3319) | white-space normal, overflow-wrap anywhere
+.ds-grup .camp-eticheta | nowrap (:3319) | rămâne nowrap peste 700 px (câmpul crește cât eticheta); sub 700 px white-space normal, overflow-wrap anywhere
 .firme-rand | fără înălțime fixă, dar `button` o fixa la 28 px (inalt 28/35 la «Firme existente») | height auto, min-height 44, white-space normal, overflow-wrap anywhere
 .mig-lista:has(> .ds-tabel-cutie) | chenar dublu (zona de derulare tăiată cu 2 px la 603×590) | fără chenar propriu, overflow visible
 .ds-tabel .ds-tabel-actiuni .buton-xs | nowrap (din .buton-xs) | white-space normal, height auto: eticheta lungă se rupe
@@ -26,6 +26,6 @@
 .fereastra-corp .fd-antet-scurt > * | overflow hidden, ellipsis, nowrap (:2061; «Detaliu factură» la 603×590: clientul și starea SPV tăiate) | copiii rândului scurt se rup (white-space normal, overflow visible, clip, overflow-wrap anywhere); rândul rămâne `flex-wrap: nowrap` (regula ANTET_SCUND, DS cap.9 v2.103)
 .fereastra.fer-tabel .fereastra-corp .fd-tabel | overflow clip (tăia 4–29 px pe verticală la 603×590: Bancă, Clienți) | overflow-x clip, overflow-y visible
 fieldset | min-width: min-content (câmpurile lărgeau fieldset-ul la 990 px: «Borderou de achiziție» la 603×590) | min-width 0
-.mf-layout.lant-zona | lanțul zonei de derulare îl făcea coloană cu wrap (previzualizarea ieșea din fereastră la 1366×768) | flex-direction row; sub 700 px wrap
+.mf-preview-wrap | lanțul zonei de derulare face din `.mf-layout` o coloană cu wrap: previzualizarea (a doua coloană) ieșea din fereastră la 1366×768 | max-width calc(100% - 344px); sub 700 px 100%
 .em-linie | coloane de 570 px în 505 px la 603×590 («Emite factură», butonul «×» ieșit) | sub 700 px: minmax(80px, 1fr) 56px 48px 72px 138px 36px
 .ds-tabel (sub 700 px) | table-layout fixed cu lățimi în ch/px puse de ecrane (Control fiscal pe firmă: 880 px în 505 px, coloana Stare de 0 px) | table-layout auto, lățimi auto, padding 8 px
