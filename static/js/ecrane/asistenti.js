@@ -158,20 +158,25 @@ function randActor(a, corp, nav) {
   div.innerHTML = `
     <div class="asi-rand-sus">
       <div>
-        <div class="asi-nume">${esc(nume)} ${inactivBadge}</div>
+        <div class="asi-nume"><button type="button" class="btn-link" data-act="vezi" data-fara-actiune="deschide fișa asistentului">${esc(nume)}</button> ${inactivBadge}</div>
         <div class="asi-rol">${rolText} · ${cate(a.nr_firme, "firmă", "firme")}</div>
       </div>
       <div class="asi-actiuni-rand">
         <button class="buton-mic mig-buton-mic" data-act="edit">Editează</button>
-        <button class="buton-mic mig-buton-mic" data-act="vezi">Vizualizează</button>
       </div>
     </div>
     <div class="asi-perms">${perms}</div>
   `;
   div.querySelector('[data-act="edit"]').onclick = () =>
     deschideEditare(a.id, corp, nav);
-  div.querySelector('[data-act="vezi"]').onclick = () =>
+  // [lotul 17.2] numele deschide fișa (în locul butonului „Vizualizează”); un clic oriunde pe rând, în afara lui „Editează”, la fel
+  div.querySelector('[data-act="vezi"]').onclick = (ev) => {
+    ev.stopPropagation();
     deschideVizualizare(a.id, nav);
+  };
+  div.addEventListener("click", (ev) => {
+    if (!ev.target.closest('[data-act="edit"]')) deschideVizualizare(a.id, nav);
+  });
   return div;
 }
 

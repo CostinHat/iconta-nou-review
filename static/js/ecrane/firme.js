@@ -1485,6 +1485,7 @@ function butoaneSalariat(s, regesOk) {
   // ce nu se aplică: `atributeInactiv` (DS cap.1, 675) — rămâne focusabil, motivul la trecerea cu mouse-ul (un `disabled` nu arată `title`)
   const b = (cheie, text, actiune, opt = {}) => `<button class="buton-secundar" data-${cheie}="${s.id}" data-nume="${esc(nume)}"`
     + `${actiune ? ` data-actiune="${actiune}"` : ""}${opt.inactiv ? atributeInactiv(opt.inactiv) : (opt.titlu ? ` title="${esc(opt.titlu)}"` : "")}>${text}</button>`;
+  const meniu = (id, titlu, butoane) => `<details class="dec-xml" id="${id}"><summary>${titlu}</summary>${butoane.join("")}</details>`;
   const dv = (s.de_verificat || []).length;
   return [
     `<button class="buton-primar" data-flut="${s.id}" data-nume="${esc(nume)}" data-actiune="GET /tenants/{tenant_id}/fluturas/{salariat_id}">Fluturaș</button>`,
@@ -1493,21 +1494,26 @@ function butoaneSalariat(s, regesOk) {
     b("susp", (s.suspendari || []).length ? `Suspendare / CFP (${s.suspendari.length})` : "Suspendare / CFP", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
     b("elem", `Prime, sporuri, ore supl.${(s.elemente || []).length ? ` (${s.elemente.length})` : ""}`, "POST /tenants/{tenant_id}/salariati/{salariat_id}/elemente"),
     b("salariu", "Salariu", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
-    b("masa", "+ masă", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
-    b("vac", "+ vacanță", "PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar"),
-    b("cadou", "+ cadou", "PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar"),
-    b("cult", "+ cultural", "PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar"),
-    b("cresa", "+ creșă", "PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar"),
+    // [lotul 17.2] beneficiile și acțiunile rare stau în două meniuri pliate (piesa details.dec-xml); butoanele rămân toate în #ss-butoane
+    meniu("ss-benef", "+ Beneficiu", [
+      b("masa", "+ masă", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
+      b("vac", "+ vacanță", "PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar"),
+      b("cadou", "+ cadou", "PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar"),
+      b("cult", "+ cultural", "PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar"),
+      b("cresa", "+ creșă", "PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar"),
+    ]),
     b("calcul", "Date de calcul", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
     b("date", "Corectează datele", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
     b("iban", `IBAN ${s.iban ? "✓" : "⚠"}`, "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
     b("cor", `COR ${s.cor ? "✓" : "⚠"}`, "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
-    b("incet", s.data_incetare ? "Plecat " + dataRo(s.data_incetare) : "Încetare", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
-    b("adev", "Adeverință", ""),   // deschide formularul; „Generează PDF” poartă acțiunea
-    b("reges", "REGES", "POST /tenants/{tenant_id}/reges-trimite-salariat",
-      { inactiv: regesOk ? "" : "Cheile REGES nu sunt configurate: se pun din statul de plată, cu „Chei REGES”." }),
     b("verif", dv ? `De verificat (${dv})` : "De verificat", "PUT /tenants/{tenant_id}/salariati/{salariat_id}",
       { inactiv: dv ? "" : "Salariatul nu are date importate de confirmat." }),
+    meniu("ss-mai-multe", "Mai multe", [
+      b("incet", s.data_incetare ? "Plecat " + dataRo(s.data_incetare) : "Încetare", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
+      b("adev", "Adeverință", ""),   // deschide formularul; „Generează PDF” poartă acțiunea
+      b("reges", "REGES", "POST /tenants/{tenant_id}/reges-trimite-salariat",
+        { inactiv: regesOk ? "" : "Cheile REGES nu sunt configurate: se pun din statul de plată, cu „Chei REGES”." }),
+    ]),
   ].join("");
 }
 

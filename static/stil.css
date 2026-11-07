@@ -404,6 +404,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   gap: 12px;
   align-items: start;  /* [p77_inaltime] fiecare card exact cat continutul, fara spatiu gol */
 }
+.cab-grila > .firme-grup { grid-column: 1 / -1; }   /* [lotul 17.2] secțiunea „Pentru șeful de cabinet” ocupă rândul întreg */
+.cab-grila[hidden] { display: none; }   /* .cab-grila are display:grid și ar bate atributul hidden */
 .cab-card {
   text-align: left;
   border: 2px solid rgba(0,0,0,0.18);  /* [p78_bordura_groasa] bordura mai vizibila */

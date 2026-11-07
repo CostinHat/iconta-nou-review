@@ -9,26 +9,38 @@ export async function randeazaSetari(corp, nav) {
 
   function randeazaMeniu() {
     nav.setInapoi(undefined);
-    const itemi = [];
-    if (eAdmin) itemi.push({ cheie: "cabinet", titlu: "Date cabinet" });
-    if (eAdmin) itemi.push({ cheie: "competente", titlu: "Ce pot face" });
-    if (eAdmin) itemi.push({ cheie: "chei", titlu: "Chei API" });
-    if (eAdmin) itemi.push({ cheie: "spv", titlu: "Conectare SPV" });
-    if (eAdmin) itemi.push({ cheie: "gdpr", titlu: "Datele cabinetului (GDPR)" });
-    itemi.push({ cheie: "profil", titlu: "Date profil" });
-    itemi.push({ cheie: "parola", titlu: "Schimbă parola" });
-    itemi.push({ cheie: "notificari", titlu: "Notificări" });   // [17.10.2026, lotul 7 pct.2.2]
+    // [lotul 17.2] cele opt intrări în trei secțiuni statice; secțiunea fără nicio intrare vizibilă nu se desenează
+    const sectiuni = [
+      { titlu: "Contul meu", itemi: [
+        { cheie: "profil", titlu: "Date profil" },
+        { cheie: "parola", titlu: "Schimbă parola" },
+        { cheie: "notificari", titlu: "Notificări" },   // [17.10.2026, lotul 7 pct.2.2]
+      ] },
+      { titlu: "Cabinet", itemi: eAdmin ? [
+        { cheie: "cabinet", titlu: "Date cabinet" },
+        { cheie: "competente", titlu: "Ce pot face" },
+        { cheie: "gdpr", titlu: "Datele cabinetului (GDPR)" },
+      ] : [] },
+      { titlu: "Conexiuni", itemi: eAdmin ? [
+        { cheie: "chei", titlu: "Chei API" },
+        { cheie: "spv", titlu: "Conectare SPV" },
+      ] : [] },
+    ].filter((sec) => sec.itemi.length);
     corp.innerHTML = `
       <p class="mig-intro">Datele contului tău și setările cabinetului.</p>
-      <div class="set-meniu"></div>
+      ${sectiuni.map(() => `<h3 class="pf-subtitlu ds-grup-titlu"></h3><div class="set-meniu"></div>`).join("")}
     `;
-    const meniu = corp.querySelector(".set-meniu");
-    itemi.forEach((it) => {
-      const b = document.createElement("button");
-      b.className = "acces-card meniu-card";
-      b.textContent = it.titlu;
-      b.addEventListener("click", () => nav.mergi(it.titlu, (c) => { corp = c; deschide(it.cheie); }));  // faza_b2_traseu_v1
-      meniu.appendChild(b);
+    const titluri = corp.querySelectorAll("h3.ds-grup-titlu");
+    const meniuri = corp.querySelectorAll(".set-meniu");
+    sectiuni.forEach((sec, i) => {
+      titluri[i].textContent = sec.titlu;
+      sec.itemi.forEach((it) => {
+        const b = document.createElement("button");
+        b.className = "acces-card meniu-card";
+        b.textContent = it.titlu;
+        b.addEventListener("click", () => nav.mergi(it.titlu, (c) => { corp = c; deschide(it.cheie); }));  // faza_b2_traseu_v1
+        meniuri[i].appendChild(b);
+      });
     });
   }
 

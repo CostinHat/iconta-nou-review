@@ -6,18 +6,18 @@ import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arat
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=5f37678290";
+import { randeazaListaFirme } from "./firme.js?v=a0786811f2";
 import { randeazaMigrare } from "./migrare.js?v=a78d0fe5b3";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=80b751d073"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=c896258ed5"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=f2b6af690f"; // [p28_setari]
 import { randeazaRaporteaza } from "./raporteaza.js?v=766651826e"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=c7e152f4e6";
 import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=c9f42e8159";
 import { randeazaSupervizor } from "./supervizor.js?v=b70acba4cb"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=56bbbb1bbc";
+import { randeazaAsistenti } from "./asistenti.js?v=cb40ff883b";
 import { randeazaCapacitate } from "./capacitate.js?v=c524462593"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=17e6393b39"; // [p72_tipare]
 
@@ -105,11 +105,13 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   const aziLung = dataRo(new Date(), "lung");
 
   function cifra(val, eticheta, cheie, accent) {
-    const cls = cheie ? "sa-cifra sa-clic" : "sa-cifra";
     const cc = accent || "#1a1d21";
-    return `<button class="${cls}" data-ecran="${cheie || ""}">
+    // [lotul 17.2] o cifră zero nu e acțiune: se desenează ca text; butonul apare numai la cifră > 0
+    const eButon = Boolean(cheie) && val > 0;
+    const eticheta_ = eButon ? "button" : "span";
+    return `<${eticheta_} class="${eButon ? "sa-cifra sa-clic" : "sa-cifra"}" data-ecran="${cheie || ""}">
       <span class="sa-num" style="color:${cc}">${val}</span>
-      <span class="sa-desc">${eticheta}</span></button>`;
+      <span class="sa-desc">${eticheta}</span></${eticheta_}>`;
   }
   const cifre = [
     cifra(t.create || 0, "preg\u0103tite", "activitate"),
@@ -168,7 +170,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
             <ul class="sa-jurnal">${jurnal}</ul>
           </div>
         </div>`;
-  corp.querySelectorAll("[data-ecran]").forEach((el) => {
+  corp.querySelectorAll("button[data-ecran]").forEach((el) => {
     const cheie = el.getAttribute("data-ecran");
     if (!cheie) return;
     el.addEventListener("click", () => deschideEcran(cheie, nav, corp));
@@ -180,11 +182,32 @@ export function desktopCabinet(continut, nav) {
   // [p74_brief_modal] Sinteza zilei: doar la click pe card, NU automat (decis 12.07.2026)
 }
 
+// [lotul 17.2] cardurile de conducere a cabinetului stau într-o secțiune pliabilă (piesa .firme-grup-btn a lotului 17.1), pliată
+// implicit; starea se ține numai în memorie (variabilă de modul): „✕” dintr-o fereastră o păstrează, reîncărcarea paginii o pliază
+const CARDURI_SEF = ["activitate", "pachete", "supervizor", "capacitate", "consolidare", "asistenti"];
+let _sefDeschis = false;
+function desenazaSectiuneaSefului(grila, carduri) {
+  if (![...carduri.children].some((c) => !c.hidden)) return;   // toate ascunse prin drepturi: secțiunea nu se desenează
+  const sec = document.createElement("section");
+  sec.className = "firme-grup";
+  sec.setAttribute("aria-labelledby", "fg-sef");
+  sec.innerHTML = `<h3 class="pf-subtitlu ds-grup-titlu" id="fg-sef"><button type="button" class="firme-grup-btn" aria-expanded="${_sefDeschis}" aria-controls="fgc-sef"><svg class="firme-grup-sageata" viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg><span>Pentru șeful de cabinet</span></button></h3><div class="cab-grila" id="fgc-sef"${_sefDeschis ? "" : " hidden"}></div>`;
+  sec.querySelector("#fgc-sef").appendChild(carduri);
+  const btn = sec.querySelector(".firme-grup-btn");
+  btn.addEventListener("click", () => {
+    _sefDeschis = btn.getAttribute("aria-expanded") !== "true";
+    btn.setAttribute("aria-expanded", String(_sefDeschis));
+    sec.querySelector("#fgc-sef").hidden = !_sefDeschis;
+  });
+  grila.appendChild(sec);
+}
+
 // VEDEREA 1: panoul cu cele 9 carduri
 function randeazaPanou(continut, nav) {
   continut.innerHTML = paginaPrincipala(sesiune.user());   // [269] numele din salut: `numeDeSalut` (salut.js)
   legaBenzile(continut, nav, "cabinet");
   const grila = continut.querySelector(".cab-grila");
+  const cardurileSefului = document.createDocumentFragment();
   DEF.forEach((c) => {
     const card = document.createElement("button");
     card.className = "cab-card";
@@ -222,8 +245,9 @@ function randeazaPanou(continut, nav) {
     } else {
       card.addEventListener("click", () => c.actiune(nav));
     }
-    grila.appendChild(card);
+    (CARDURI_SEF.includes(c.cheie) ? cardurileSefului : grila).appendChild(card);
   });
+  desenazaSectiuneaSefului(grila, cardurileSefului);
 
   const contoare = () => {
     actualizeazaFirme(grila);
