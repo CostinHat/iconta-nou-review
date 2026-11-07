@@ -27,9 +27,6 @@ def deschide_salariat_id(ecran, sid):
 
 def buton(ecran, cheie):
     """Un buton al fereastra salariatului (`data-<cheie>`), apăsat: fiecare deschide o fereastră nouă (673)."""
-    # [17.2] butoanele din „+ Beneficiu” și „Mai multe” stau în <details> închis: îl deschide (idempotent) înainte de clic
-    ecran.pg.evaluate("(s) => { const e = document.querySelector(s); const d = e && e.closest('details'); if (d) d.open = true; }",
-                      _F + "#ss-butoane [data-%s]" % cheie)
     ecran.pg.click(_F + "#ss-butoane [data-%s]" % cheie)
 
 

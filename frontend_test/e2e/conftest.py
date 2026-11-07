@@ -137,6 +137,22 @@ def text_din_card(pg, zona):
 from file_ui import _cu_filele_aratate  # noqa: E402,F401 — [lotul 14, 687] filele apăsate ca omul (definiția e în file_ui.py)
 
 
+def _clic_cu_details_deschis(clic_original):
+    """[17.2] Butoanele ferestrei salariatului din „+ Beneficiu” și „Mai multe” stau în <details> închis: înaintea clicului pe un element
+    „#ss-butoane [data-…]” îl deschide (idempotent, nu închide nimic); doar la clic, starea implicită rămâne pliată."""
+    def clic(self, selector, *args, **kwargs):
+        if isinstance(selector, str) and "#ss-butoane [data-" in selector:
+            self.evaluate("(s) => { const e = document.querySelector(s); const d = e && e.closest('details'); if (d) d.open = true; }", selector)
+        return clic_original(self, selector, *args, **kwargs)
+    return clic
+
+
+from playwright.sync_api import Page as _Page  # noqa: E402
+if not getattr(_Page.click, "_cu_details", False):
+    _Page.click = _clic_cu_details_deschis(_Page.click)
+    _Page.click._cu_details = True
+
+
 class Ecran:
     """O pagină cu un cont logat + ce a observat (erori JS, cereri eșuate) + captura numită după deficiență."""
 
