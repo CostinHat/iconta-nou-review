@@ -24509,3 +24509,12 @@ Poarta verde pe C `d2175e60`; publicarea refuzată de `publica_lot.py --verifica
 - Risc numit: «Supervizor» și «Declarații lucrate» sunt în EXCEPTII_B («stare») fără titlu în cadru.js (DOAR_PY), fără efect real azi (supervizor.js nu are niciun <button>), dar exceptarea ar ascunde o acțiune adăugată ulterior; scriptul nu poate vedea asta.
 - 16.8-C1 și 17.1 rulează fără --sectiune; reparația lui `sectiune` nu le modifică.
 - Decizie de lot: aserțiunile testului listelor stau în corpul fiecărui test (prima rulare completă a dat 7 × «test nou fără aserțiuni» cu aserțiunea în funcția-ajutor); commit de test refăcut înaintea lui C, a doua rulare completă VERDE.
+
+## Comanda 17.1 (produs), 07.11.2026 — meniul firmei pe 7 grupuri pliabile, C = 0d7dad78fc860aaf48ae977c1b8a8a571205a931
+- 7 grupuri pliabile în fereastra firmei, implicit deschis numai „Zi de zi” (F1: 7 grupuri, 37 de carduri; F4: 7 grupuri, 27); titlul grupului e un buton de 40 px cu aria-expanded, clasa `firme-grup-btn` componentă structurală (firme.js:meniuFirma, stil.css).
+- O singură intrare spre Migrare cabinet: „Import în masă (CSV)” din „Firme existente” dispare, deschidea același ecran ca „Migrare cabinet”.
+- Căutarea din antet deschide grupul cardului ales și îl lasă deschis, în aceeași stare din memorie (cautare.js).
+- Starea grupurilor se reține numai în memorie (variabilă de modul), cât aceeași firmă e deschisă; se resetează la altă firmă și la reîncărcarea paginii.
+- O fereastră are o singură derulare (fără zonă: derulează corpul; cu zonă: corpul nu derulează, zona are cel puțin 50% din corp, 40% la 603 × 590 px). Lista „Firme existente” este zona de derulare, fereastra fixă (788).
+- „←” și „✕” au lățime minimă de 40 px (790); căutarea din antet e elastică (flex 0 1 320px, min-width 160px).
+- Poarta VERDE în rularea 2 (2042 teste, regresie 0, restanță 2); rularea 1 a fost roșie pe un test roșu și pe bază, absent din baza.json (nou_regresie), iar cele 7 fișiere de test învechite de grupurile pliabile au fost adaptate (aserțiunea înlocuită, nu ștearsă). 788 și 790 rezolvate; 789, 791, 792, 793 nefăcute intenționat (17.2/17.3).

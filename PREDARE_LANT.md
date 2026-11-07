@@ -13,6 +13,8 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 ## ÎN CE STARE E PROIECTUL
 
+**07.11.2026 — COMANDA 17.1 (produs) pe `lucru/lot17-1` (worktree `/home/costin/iconta_lot17_1`), C = `0d7dad78fc860aaf48ae977c1b8a8a571205a931`, poarta VERDE (rularea 2: 2042 teste, regresie 0, restanță 2), oracolul 66/66 „trece” pe C, Haiku fără „nu corespunde”.** Fereastra firmei are 7 grupuri pliabile (implicit deschis „Zi de zi”), „Import în masă (CSV)” a dispărut din „Firme existente”, lista „Firme existente” e singura derulare (788), „←” și „✕” au 40 px (790). 788 și 790 rezolvate; 789, 791, 792, 793 nerezolvate, pentru 17.2/17.3. Starea publicării: vezi raportul ~/lot_17_1_raport.md.
+
 **06.11.2026 — COMANDA 16.8-B (lot de unelte) pe `lucru/lot16-8b` (worktree `/home/costin/iconta_lot16_8b`), C = `dab347a71756a40f381b6d93baf28d7048558e0a`, poarta VERDE (1908 teste, regresie 0). Aplicația nu s-a schimbat.** Nou: `lanseaza_verificator.py::sectiune` acceptă orice cod literă + 2–3 cifre (C225) și `text_scenariu` refuză la lansare secțiunea negăsită; `scripts/verifica_liste_exceptii.py` compară în hook `cadru.js::FARA_ACTIUNE_PRINCIPALA` cu `EXCEPTII_B` (C226). «Tipare de erori» și «Panou Admin — Sănătate server» rămân roșii la b până la 17.3. Starea publicării: vezi `~/lot_16_8_B_raport.md`.
 
 **06.11.2026 — COMANDA 16.8-C1 (produs; continuă 16.8) pe `lucru/lot16-8` (worktree `/home/costin/iconta_lot16_8`), C = `a5040c22c8745468f0e0403f2c9263a5cd96769d`, poarta VERDE (1899 teste, regresie 0), oracolul 84/84 «trece», Haiku fără «nu corespunde» confirmat.** 759 și 786 rezolvate; 760 nerezolvată (NU_MUTA cu 16 id-uri, D177 derulează cu 161 px la 1366 × 768). Starea publicării: vezi `~/lot_16_8_C1_raport.md`.
