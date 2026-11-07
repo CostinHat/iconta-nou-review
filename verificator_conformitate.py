@@ -3034,10 +3034,36 @@ def analiza_lot14_2(fisiere):
     return out
 
 
+REGULA_FARA_RENUNTA_IN_BARA = ("Bara de jos a ferestrei cu formular nu are «Renunță»: revenirea este «←» din antet, iar «✕» închide fereastra. Excepții: ferestrele fără «←» activ "
+                              "în starea formularului și acțiunile cu efect propriu, listate în PASTREAZA_RENUNTA; dialogurile de confirmare au «Renunță».")
+
+
+def regula_fara_renunta_in_bara(fisiere):
+    """[(fișier, linie, COD, text)] — 17.3: FARA_RENUNTA_IN_BARA. Textul regulii e `REGULA_FARA_RENUNTA_IN_BARA` (identic în DESIGN_SYSTEM.md). Mecanic: (a) un buton «Renunță»
+    cu `data-renunta` (închide fereastra, fără alt efect) nu există; (b) un buton «Renunță» al cărui ascultător doar face un pas înapoi (`nav.inapoi()` / `nav.inapoiPas()`)
+    nu există; (c) `cadru.js` poartă lista PASTREAZA_RENUNTA și o folosește la bara de jos."""
+    import re as _re
+    out = []
+    for nume, t in sorted(fisiere.items()):
+        ids = set(_re.findall(r'id="([\w-]+)"[^>]*>Renunță</button>', t))   # butoanele cu textul «Renunță» (un id care doar poartă numele «-renunta» pe un buton «Închide» nu intră)
+        for i, lin in enumerate(t.split("\n"), 1):
+            if _re.search(r"data-renunta[^>]*>Renunță</button>", lin):
+                out.append((nume, i, "FARA_RENUNTA_IN_BARA", "buton «Renunță» care doar închide fereastra (data-renunta): revenirea e «←» din antet (17.3)"))
+            m = _re.search(r'#([\w-]+)"\)\.addEventListener\("click", \(\) => nav\.(inapoi|inapoiPas)\(\)\)', lin)
+            if m and m.group(1) in ids and "-conf-" not in m.group(1):   # dialogul de confirmare (id cu «-conf-») are «Renunță»
+                out.append((nume, i, "FARA_RENUNTA_IN_BARA", "«Renunță» al cărui ascultător doar face un pas înapoi (17.3)"))
+    cadru = fisiere.get("cadru.js", "")
+    if "export const PASTREAZA_RENUNTA" not in cadru or "PASTREAZA_RENUNTA.includes(" not in cadru:
+        out.append(("cadru.js", 0, "FARA_RENUNTA_IN_BARA", "lipsește lista PASTREAZA_RENUNTA sau folosirea ei în bara de jos (17.3)"))
+    return out
+
+
 rap["lot13"] = analiza_lot13(fisiere, open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read(),
                              open(os.path.join(BAZA_PY, "core", "numere.py"), encoding="utf-8").read())
 
 rap["lot14_2"] = analiza_lot14_2(fisiere)
+
+rap["lot17_3"] = regula_fara_renunta_in_bara(fisiere)
 
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))

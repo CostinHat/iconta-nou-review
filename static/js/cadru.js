@@ -1,7 +1,7 @@
 // cadru.js — BARA DE JOS a ferestrei de lucru (comanda 15.1-E2, pct.3; DS ferestre și tabele, secțiunea 1): o singură piesă, chemată de navigator
 // la fiecare fereastră de lucru; ecranele nu o desenează.
 //
-//   72 px, fixă, mereu vizibilă, ultimul copil al corpului ferestrei; acțiunea principală L (52 px) în dreapta, „Renunță” M lângă ea; un singur
+//   72 px, fixă, mereu vizibilă, ultimul copil al corpului ferestrei; acțiunea principală L (52 px) în dreapta, „Renunță” M lângă ea numai pe ferestrele din PASTREAZA_RENUNTA; un singur
 //   buton principal; nimic altceva în bară. Motivul butonului inactiv (729) stă în stânga, în bară. Mesajele de refuz și de eroare ale acțiunii
 //   (`.bara-fixa`, rezumatul totalurilor) rămân DEASUPRA barei, fără derulare.
 //
@@ -10,13 +10,13 @@
 // de fereastră (salvează / emite -> coadă -> continuă -> creare / import -> „Descarcă PDF”). Același element, nu o copie: identificatorul, ascultătorii și
 // testele ecranului rămân neschimbate; el se mută în bară și poartă `data-actiune-principala`. „Închide” nu e acțiune principală (fereastra se închide din „←”);
 // ferestrele de stare și meniurile de butoane (`FARA_ACTIUNE_PRINCIPALA`) au bara fără buton principal și fără „Renunță”. „Renunță” (un pas înapoi, ca „←”)
-// apare numai pe ferestrele cu formular.
+// apare numai pe ferestrele cu formular din PASTREAZA_RENUNTA (fără „←” activ sau cu „Renunță” cu efect propriu).
 //
 // Starea o dă piesa: câmpurile obligatorii ale ecranului sunt etichetele cu „*”; cât un câmp vizibil de acest fel e gol, butonul principal e
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
 import { alegereButoane, alegereComutator, alegereText, esteAlege, MAX_BUTOANE } from "./api.js?v=0b48920b43";
-import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel } from "./ds_piese.js?v=9134560fa9";
+import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel } from "./ds_piese.js?v=6f954e94a0";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);
@@ -109,7 +109,7 @@ function _ajutoareScurte(corp) {
 // de formular; prima potrivire, în ordinea catalogului, în ordinea din fereastră.
 export const CATALOG_ACTIUNE_PRINCIPALA = [
   /^(Validează toate|Validează selectate|Aprobă|Răspunde)(?=\s|$)/,
-  /^(Salvează|Emite|Contabilizează|Închide luna|Înregistrează|Înscrie|Trimite|Importă|Aplică|Sincronizează|Validează \(ANAF\)|Rulează|Verifică)(?=\s|$)/,
+  /^(Salvează|Emite|Contabilizează|Închide luna|Înregistrează|Înscrie|Trimite|Importă|Aplică|Sincronizează|Validează \(ANAF\)|Rulează|Verifică|Schimbă parola)(?=\s|$)/,
   /^Continuă(?=\s|$)/,
   /^(\+ )?(Operațiune nouă|Import extras|Adaugă|Invită|Descarcă model)(?=\s|$)|^(\+ )?[\p{L} ]{2,30} (nou|nouă)$/u,
   /^(Generează|Regenerează)(?=\s|$)/,
@@ -122,6 +122,11 @@ export const EXPORT_PDF = /^(Cartea mare|Balanță de verificare|Rapoarte comerc
 // Ferestrele fără acțiune principală: ecran de stare fără nicio acțiune sau meniu de butoane care doar deschide alte ferestre. Bara rămâne, fără buton principal și
 // fără „Renunță”; închiderea e „←”. Lista pe nume (verificatorul o are la rândul b): `scripts/verificator_design.py::EXCEPTII_B`.
 export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Capacitate|Operațiuni speciale|Facturi|Firme)$|· CUI /;   // „· CUI ” = fereastra firmei (titlul ei: nume · CUI cod)
+
+// [17.3, decizia arhitectului] Bara de jos a ferestrei cu formular nu are „Renunță”: revenirea este „←” din antet, iar „✕” închide fereastra. Păstrează „Renunță” numai
+// fereastra al cărei formular deschis nu are „←” activ (altfel n-ar rămâne cu cale înapoi) și cea cu o „Renunță” cu efect propriu (golește ciorna de pe server). Lista pe nume
+// (titlul din `.fir-acum`), identică cu `scripts/verificator_design.py::PASTREAZA_RENUNTA` și cu numele din docs/dovezi/17_3/inapoi.txt; dialogurile de confirmare au „Renunță” oricum.
+export const PASTREAZA_RENUNTA = ["Încasări/plăți", "Invitații cabinete", "Notificări", "Pachete lunare"];
 
 // meniu de butoane: fereastra al cărei conținut sunt cardurile care deschid alte ferestre (`.firme-optiune`), fără altă acțiune proprie
 const _esteMeniu = (corp, bara) => !![...corp.querySelectorAll(".firme-optiune")].find(_vizibil)
@@ -213,7 +218,7 @@ function _urma(b) { const u = document.createComment("fj"); b.before(u); return 
 // containerul de formular din care vine butonul: numai câmpurile lui hotărăsc dacă butonul e inactiv (nu etichetele altor părți ale ferestrei)
 const _formularul = (b) => b.closest("form, .ds-formular, .pf-frand:has(> .ds-formular)");
 
-/** Pune bara de jos pe fereastra `fer`; întoarce `{ sincronizeaza, bara }`. `renunta` = ce face „Renunță” (un pas înapoi / închide). */
+/** Pune bara de jos pe fereastra `fer`; întoarce `{ sincronizeaza, bara }`. `renunta` = ce face „Renunță” (un pas înapoi / închide) pe ferestrele din PASTREAZA_RENUNTA. */
 export function baraDeJos(fer, corp, { renunta }) {
   const bara = document.createElement("div");
   bara.className = "fereastra-jos";
@@ -272,17 +277,18 @@ export function baraDeJos(fer, corp, { renunta }) {
     // fereastra cu formular: acțiunea principală vine dintr-un formular sau fereastra are câmpuri de completat (în afara tabelelor, listelor și căutării)
     const cuFormular = !!principal && (!!principal.__formular || /^Continuă(\s|$)/.test(_normalizeaza(principal.textContent)) || [...corp.querySelectorAll("input:not([type=hidden]):not([type=search]):not([type=checkbox]):not([type=radio]), textarea, select")]
       .some((x) => _vizibil(x) && !x.closest("table, template, .fj-butoane, .fereastra-antet, .ds-lista, [data-fara-piesa]") && !x.classList.contains("alegere-sursa") && !x.classList.contains("ds-lista-sursa")));
-    // „Renunță” al ecranului (de lângă butonul principal, resetează formularul lui) ia locul celui al piesei: o singură „Renunță” în bară
-    const renuntaEcran = [...corp.querySelectorAll(".bara-fixa button, form button")].find((x) => !bara.contains(x) && x.textContent.trim() === "Renunță");
+    // „Renunță” rămâne numai pe ferestrele din PASTREAZA_RENUNTA: al ecranului (cu efect propriu) ia locul celui al piesei, altfel îl pune piesa (o singură „Renunță” în bară)
+    const inLista = PASTREAZA_RENUNTA.includes(titlu);
+    const renuntaEcran = inLista ? [...corp.querySelectorAll(".bara-fixa button, form button, #op-renunta")].find((x) => !bara.contains(x) && x.textContent.trim() === "Renunță") : null;
     if (renuntaEcran) {
       const mea = loc.querySelector(".fj-renunta:not(.fj-al-ecranului)");
       if (mea) mea.remove();
       renuntaEcran.__origine = _urma(renuntaEcran);
       renuntaEcran.classList.add("fj-renunta", "fj-al-ecranului");
       loc.prepend(renuntaEcran);
-    } else if (cuFormular && !loc.querySelector(".fj-renunta")) {
-      loc.prepend(renuntaPiesei());   // „Renunță” numai pe ferestrele cu formular (nu pe cele doar de citit, nu pe cele cu o singură acțiune)
-    } else if (!cuFormular) {
+    } else if (cuFormular && inLista) {
+      if (!loc.querySelector(".fj-renunta")) loc.prepend(renuntaPiesei());
+    } else {
       loc.querySelectorAll(".fj-renunta:not(.fj-al-ecranului)").forEach((x) => x.remove());
     }
     bara.dataset.cuFormular = cuFormular ? "1" : "";

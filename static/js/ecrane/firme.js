@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat } from "../ds_piese.js?v=9134560fa9";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { semnaleDS, cardRezumat } from "../ds_piese.js?v=6f954e94a0";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=0b48920b43";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=0b48920b43";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
@@ -1413,9 +1413,8 @@ function formularAdeverinta(corp, nav, t, sid, nume, an, luna, cor = "") {
       <label class="camp"><span class="camp-eticheta">Data ieșirii</span><input type="date" id="ad-data" class="camp-input"></label>
     </div>
     <label class="camp" style="max-width:820px;margin-top:10px"><span class="camp-eticheta">Mențiuni (opțional)</span><textarea id="ad-mentiuni" class="camp-input" rows="2"></textarea></label>
-    <div class="bara-fixa"><p style="margin-top:14px"><button class="buton-primar" id="ad-gen" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta">Generează PDF</button> <button class="buton-secundar" id="ad-renunta" style="margin-left:8px">Renunță</button></p>
+    <div class="bara-fixa"><p style="margin-top:14px"><button class="buton-primar" id="ad-gen" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta">Generează PDF</button></p>
     <div id="ad-msg"></div></div>`;
-  corp.querySelector("#ad-renunta").addEventListener("click", () => nav.inapoi());
   // [deficiența 412] funcția din fișa salariatului: denumirea ocupației COR a lui (nomenclatorul COR), precompletată și modificabilă
   if (cor) api.get(`/cor?q=${encodeURIComponent(cor)}`).then((r) => {
     const o = ((r && (r.ocupatii || r.rezultate)) || (Array.isArray(r) ? r : [])).find((x) => String(x.cod) === String(cor));
@@ -1695,8 +1694,7 @@ async function ecranSalariat(corp, nav, t, sid) {
 // Butoanele de la capătul unei ferestre de lucru: acțiunea principală lipită jos, cu „Renunță” care închide fereastra (DS cap.9 pct.6)
 // (butonul se scrie întreg la locul chemării, cu `id` și `data-actiune` în clar: drepturile îl leagă de handlerul lui — `scan_drepturi_ui`)
 const baraActiune = (buton, idMsg) => `<div class="bara-fixa"><p style="margin-top:10px">
-  ${buton}
-  <button class="buton-secundar" data-renunta style="margin-left:6px">Renunță</button></p><div id="${idMsg}"></div></div>`;
+  ${buton}</p><div id="${idMsg}"></div></div>`;
 const legaRenunta = (corp, nav) => corp.querySelectorAll("[data-renunta]").forEach((b) => b.addEventListener("click", () => nav.inapoi()));
 
 // [salariu_edit] editarea salariului de baza (schimbare de salariu -> intrare noua in salariu_istoric).
@@ -1714,7 +1712,6 @@ function ecranSalariuBaza(corp, nav, t, s, an, luna, dupa) {
     </div>
     <div id="salariu-istoric" class="camp-eticheta" style="margin-top:6px"></div>
     ${baraActiune(`<button class="buton-primar" id="salariu-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "salariu-msg")}`;
-  legaRenunta(corp, nav);
   focusFaraSalt(corp.querySelector("#salariu-input"));
   // [salariul în timp, decizia Costin 04.10.2026] istoricul vizibil: ce date sunt deja ocupate
   api.get(`/tenants/${t.id}/salariati/${sid}`).then((d) => {
@@ -1763,7 +1760,6 @@ function ecranTichetMasa(corp, nav, t, s, dupa) {
       <label class="camp"><span class="camp-eticheta">Valoarea tichetului (lei pe zi)<span class="oblig">*</span></span><input type="text" inputmode="decimal" id="masa-input" class="camp-input" value="${esc(String(s.tichet_masa_valoare ?? ""))}"></label>
     </div>
     ${baraActiune(`<button class="buton-primar" id="masa-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "masa-msg")}`;
-  legaRenunta(corp, nav);
   focusFaraSalt(corp.querySelector("#masa-input"));
   corp.querySelector("#masa-save").addEventListener("click", async () => {
     curataEroriCamp(corp);
@@ -1796,7 +1792,6 @@ function ecranBeneficiu(corp, nav, t, s, an, luna, tip, dupa) {
       <label class="camp"><span class="camp-eticheta">Valoarea (lei)<span class="oblig">*</span></span><input type="text" inputmode="decimal" id="ben-input" class="camp-input" value="${esc(valInit)}"></label>
     </div>
     ${baraActiune(`<button class="buton-primar" id="ben-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar">Salvează</button>`, "ben-msg")}`;
-  legaRenunta(corp, nav);
   focusFaraSalt(corp.querySelector("#ben-input"));
   corp.querySelector("#ben-save").addEventListener("click", async () => {
     curataEroriCamp(corp);
@@ -1826,7 +1821,6 @@ function ecranIbanSalariat(corp, nav, t, s, dupa) {
     <p class="pf-intro">IBAN românesc (RO + 22 caractere); gol = fără plată pe card.</p>
     <div class="grila-campuri"><label class="camp"><span class="camp-eticheta">IBAN</span><input type="text" id="iban-input" class="camp-input" value="${esc(s.iban || "")}" placeholder="RO.. cont pe card"></label></div>
     ${baraActiune(`<button class="buton-primar" id="iban-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "iban-msg")}`;
-  legaRenunta(corp, nav);
   focusFaraSalt(corp.querySelector("#iban-input"));
   corp.querySelector("#iban-save").addEventListener("click", async () => {
     const iban = corp.querySelector("#iban-input").value.trim().replace(/\s/g, "").toUpperCase();
@@ -1843,7 +1837,6 @@ function ecranCorSalariat(corp, nav, t, s, dupa) {
     <div style="max-width:520px">${campCorLookup("cor-edit")}</div>
     ${baraActiune(`<button class="buton-primar" id="cor-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "cor-msg")}`;
   legaCorLookup(corp, "cor-edit", s.cor || "");
-  legaRenunta(corp, nav);
   corp.querySelector("#cor-save").addEventListener("click", async () => {
     const cor = corp.querySelector("#cor-edit-cor").value.trim();
     try {
@@ -1859,7 +1852,6 @@ function ecranIncetare(corp, nav, t, s, dupa) {
     <p class="pf-intro">Gol = contract activ. La plecare salariatul nu se șterge: se completează data încetării.</p>
     <div class="grila-campuri"><label class="camp"><span class="camp-eticheta">Data încetării</span><input type="date" id="incet-input" class="camp-input" value="${esc(s.data_incetare || "")}"></label></div>
     ${baraActiune(`<button class="buton-primar" id="incet-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "incet-msg")}`;
-  legaRenunta(corp, nav);
   focusFaraSalt(corp.querySelector("#incet-input"));
   corp.querySelector("#incet-save").addEventListener("click", async () => {
     const data_incetare = corp.querySelector("#incet-input").value || null;
@@ -1886,7 +1878,6 @@ function ecranCorecteazaDatele(corp, nav, t, s, dupa) {
       <label class="camp"><span class="camp-eticheta">Dată CIM</span><input type="date" id="ed-datacim" class="camp-input"></label>
     </div>
     ${baraActiune(`<button class="buton-primar" id="ed-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "ed-msg")}`;
-  legaRenunta(corp, nav);
   focusFaraSalt(corp.querySelector("#ed-nume"));
   // [412] contractul individual de muncă din fișă (Codul muncii art.12, art.16): se arată cel salvat; până nu s-a citit, salvarea
   // nu-l trimite (un câmp gol pentru că fișa n-a venit încă nu golește ce era salvat)
@@ -1950,7 +1941,6 @@ function ecranDateCalcul(corp, nav, t, s, dupa) {
     </div>
     <div id="ed-jurnal-scutire"></div>
     ${baraActiune(`<button class="buton-primar" id="ed-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "ed-msg")}`;
-  legaRenunta(corp, nav);
   const oreCamp = corp.querySelector("#ed-orezi-camp");
   const aratOre = () => { oreCamp.hidden = corp.querySelector("#ed-norma").value !== "partiala"; };
   corp.querySelector("#ed-norma").addEventListener("change", aratOre);
@@ -2036,7 +2026,6 @@ function ecranDeVerificat(corp, nav, t, s0, dupa) {
         <span class="camp-ajutor">Fișierul importat n-o avea; s-a propus „Da”. Deducerea personală se acordă numai la funcția de bază (CF art. 77 alin. (1)).</span></div>` : ""}
     </div>
     ${baraActiune(`<button class="buton-primar" id="dv-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Confirmă</button>`, "dv-msg")}`;
-  legaRenunta(corp, nav);
   // [C133] motivul scutirii: cerut când scutirea se alege „Da” aici, sau direct (salariatul e deja scutit, fără motiv)
   if (corp.querySelector("#dv-motiv")) legaMotivScutire(corp, "dv-scutit", "dv-motiv", !dv.includes("scutit_contrib_minim"));
   // [lotul 10, 420] orele pe zi se cer numai la norma parțială
@@ -2189,7 +2178,6 @@ function ecranSuspendari(corp, nav, t, sal, dupa) {
       <div id="susp-lista">${lista}</div>
       <p style="margin-top:8px"><button class="buton-secundar" id="susp-adauga" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ Adaugă</button></p>
       ${baraActiune(`<button class="buton-primar" id="susp-save" data-actiune="PUT /tenants/{tenant_id}/salariati/{salariat_id}">Salvează</button>`, "susp-msg")}`;
-    legaRenunta(corp, nav);
     corp.querySelectorAll("[data-susp-sterge]").forEach((x) => x.addEventListener("click", () => {
       citeste(); model.splice(Number(x.dataset.suspSterge), 1); randeaza();
     }));
@@ -2220,7 +2208,6 @@ function ecranRegesSalariat(corp, nav, t, s) {
       <input type="text" id="rg-adresa" class="camp-input" placeholder="strada, nr., localitate, județ">
       <span class="camp-ajutor">Obligatorie pentru transmiterea în REGES.</span></label></div>
     ${baraActiune(`<button class="buton-primar" id="rg-trimite" data-actiune="POST /tenants/{tenant_id}/reges-trimite-salariat">Trimite în REGES</button>`, "rg-rez")}`;
-  legaRenunta(corp, nav);
   corp.querySelector("#rg-trimite").addEventListener("click", async () => {
     const adresa = corp.querySelector("#rg-adresa").value.trim();
     const rez = corp.querySelector("#rg-rez");
@@ -2361,7 +2348,6 @@ function ecranCheiReges(corp, nav, t) {
       <div class="camp"><span class="camp-eticheta">Mediu<span class="oblig">*</span></span>${selectScurt("rg-mediu", [["test", "Test"], ["prod", "Producție"]], "", "Mediul REGES")}</div>
     </div>
     ${baraActiune(`<button class="buton-primar" id="rg-salveaza" data-actiune="POST /tenants/{tenant_id}/reges-config">Salvează</button>`, "rg-msg")}`;
-  legaRenunta(corp, nav);
   corp.querySelector("#rg-salveaza").addEventListener("click", async () => {
     const m = corp.querySelector("#rg-msg");
     curataEroriCamp(corp);
@@ -2501,10 +2487,8 @@ function ecranInventarCV(corp, nav, t, arts, cheie) {
           <label class="camp"><span class="camp-eticheta">Suma imputată, la lipsa imputabilă (lei)</span><input type="number" step="0.01" class="camp-input" id="cvi-a${a.id}-imputat" aria-label="Suma imputată ${esc(a.denumire)}"></label>
         </div></td></tr></tbody>`).join("")}
     </table>`}
-    <div class="bara-fixa"><p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Salvează inventarul (note ciorne)</button>
-      <button type="button" class="buton-secundar" data-renunta data-fara-actiune="închide fereastra, fără scriere" style="margin-left:6px">Renunță</button></p>
+    <div class="bara-fixa"><p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Salvează inventarul (note ciorne)</button></p>
     <div id="cvi-mesaj"></div></div>`;
-  legaRenunta(corp, nav);
   // [deficiența 404] faptic sub scriptic = lipsă: încadrarea ei (imputabilă / neimputabilă / justificată) se cere pe rândul de sub articol
   corp.querySelectorAll(".cvi-faptic").forEach((i) => i.addEventListener("input", () => {
     const lipsa = i.value.trim() !== "" && Number(i.value) < Number((arts.find((x) => String(x.id) === i.dataset.aid) || {}).stoc);
@@ -2811,10 +2795,8 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
         <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="tr-data" aria-label="Data transferului" class="camp-input" value="${dataIso()}"></label>
       </div>
       <datalist id="cv-loc-list">${[...new Set((locInit || []).map((x) => x.locatie).filter((l) => l && l !== "(nespecificat)"))].map((l) => `<option value="${esc(l)}">`).join("")}</datalist>
-      <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="tr-ok" data-actiune="POST /tenants/{tenant_id}/stocuri/transfer">Transferă</button>
-        <button type="button" class="buton-secundar" data-renunta data-fara-actiune="închide fereastra, fără scriere" style="margin-left:6px">Renunță</button></p>
+      <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="tr-ok" data-actiune="POST /tenants/{tenant_id}/stocuri/transfer">Transferă</button></p>
       <div id="tr-mesaj"></div></div>`;
-    legaRenunta(c2, nav);
     c2.querySelector("#tr-ok").addEventListener("click", async () => {
       const g = (id) => c2.querySelector(id).value;
       const zm = c2.querySelector("#tr-mesaj");
@@ -2838,10 +2820,8 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
         <label class="camp"><span class="camp-eticheta">Contul de cheltuială nou</span><input type="text" id="rc-chelt" class="camp-input" placeholder="ex. 607" aria-label="Cont cheltuială nou"></label>
         <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="rc-data" aria-label="Data reclasificării" class="camp-input" value="${dataIso()}"></label>
       </div>
-      <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="rc-ok" data-actiune="POST /tenants/{tenant_id}/stocuri/reclasificare">Reclasifică</button>
-        <button type="button" class="buton-secundar" data-renunta data-fara-actiune="închide fereastra, fără scriere" style="margin-left:6px">Renunță</button></p>
+      <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="rc-ok" data-actiune="POST /tenants/{tenant_id}/stocuri/reclasificare">Reclasifică</button></p>
       <div id="rc-mesaj"></div></div>`;
-    legaRenunta(c2, nav);
     c2.querySelector("#rc-ok").addEventListener("click", async () => {
       const g = (id) => c2.querySelector(id).value;
       const zm = c2.querySelector("#rc-mesaj");
@@ -2877,10 +2857,8 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
         </div>
         <div id="im-hint" class="camp-eticheta" style="margin-top:4px"></div>
         <div class="pf-lista" style="margin-top:8px">${randList() || '<div class="stare-goala">Nimic numărat încă.</div>'}</div>
-        <div class="bara-fixa"><p style="margin-top:8px"><button class="buton-primar" id="im-fin" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Finalizează inventarul (note ciorne)</button>
-          <button type="button" class="buton-secundar" data-renunta data-fara-actiune="închide fereastra, fără scriere" style="margin-left:6px">Renunță</button></p>
+        <div class="bara-fixa"><p style="margin-top:8px"><button class="buton-primar" id="im-fin" data-genereaza-nota="redesenat" data-actiune="POST /tenants/{tenant_id}/stocuri/inventar">Finalizează inventarul (note ciorne)</button></p>
         <div id="im-mesaj"></div></div>`;
-      legaRenunta(fm, nav);
       const scan = fm.querySelector("#im-scan");
       focusFaraSalt(scan);
       const adauga = async () => {
@@ -4197,11 +4175,9 @@ function ecranNirNou(corp, nav, t, ctx) {
           <input type="text" id="sn-cont-taxe" class="camp-input" placeholder="cont taxe (ex. 446)" aria-label="Cont credit taxe" style="width:150px">   <!-- [lotul 13, 504] gol: contul îl scrie contabilul, nu vine ales -->
         </div>
         <p><button class="buton-secundar" id="sn-plus" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ articol</button></p>
-        <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="sn-salveaza" data-actiune="POST /tenants/{tenant_id}/stocuri/nir">Salveaz\u0103 NIR (note ciorne)</button>
-          <button type="button" class="buton-secundar" data-renunta data-fara-actiune="închide fereastra, fără scriere" style="margin-left:6px">Renunță</button></p>
+        <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="sn-salveaza" data-actiune="POST /tenants/{tenant_id}/stocuri/nir">Salveaz\u0103 NIR (note ciorne)</button></p>
         <div id="s-mesaj"></div></div>
 `;
-  legaRenunta(corp, nav);
   const zonaM = corp.querySelector("#s-mesaj");
   const zonaL = corp.querySelector("#sn-linii");
   // model NIR: input-urile scriu in liniiNir (fara re-randare la tastare); add/delete re-randeaza integral
@@ -4668,11 +4644,9 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
     <div class="em-cui-stare" id="c-cui-stare"></div>
     <div id="c-facturi" hidden style="margin-top:10px"></div>
     <div id="c-previz" style="margin-top:10px"></div>
-    <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="c-adauga" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni">Adaugă</button>
-      <button type="button" class="buton-secundar" id="c-renunta" data-fara-actiune="închide fereastra, fără scriere">Renunță</button></p>
+    <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="c-adauga" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni">Adaugă</button></p>
     <div id="c-mesaj"></div></div>`;
   // [deficiența 310] „formularul «Dispoziție nouă» n-are Renunță”: închide fereastra, fără scriere
-  corp.querySelector("#c-renunta").addEventListener("click", () => nav.inapoi());
   const bCv = corp.querySelector("#c-cui-verif");
   // [lotul 12, 459.1] numele partenerului adus de la ANAF dispare când se schimbă CUI-ul (cel scris de om rămâne)
   const anafC = legaDateAnaf(corp.querySelector("#c-cui"), [corp.querySelector("#c-part")], corp.querySelector("#c-cui-stare"));
@@ -4952,10 +4926,8 @@ function ecranChitantaFaraFactura(corp, nav, t, cheie) {
       <label class="camp"><span class="camp-eticheta">Client</span><input type="text" id="ch-client" class="camp-input"></label>
       <label class="camp"><span class="camp-eticheta">Reprezentând</span><input type="text" id="ch-repr" class="camp-input"></label>
     </div>
-    <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="ch-emite" data-actiune="POST /tenants/{tenant_id}/chitante">Emite chitanța</button>
-      <button type="button" class="buton-secundar" id="ch-renunta" data-fara-actiune="închide fereastra, fără scriere">Renunță</button></p>
+    <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="ch-emite" data-actiune="POST /tenants/{tenant_id}/chitante">Emite chitanța</button></p>
     <div id="ch-mesaj"></div></div>`;
-  corp.querySelector("#ch-renunta").addEventListener("click", () => nav.inapoi());
   // [lotul 13, 543] funcția are nume: după seria stabilită pe loc, emiterea se reia chemând-o, nu printr-un clic dat de cod
   corp.querySelector("#ch-emite").addEventListener("click", async function emiteChitantaCasa() {
     const zonaM = corp.querySelector("#ch-mesaj");
@@ -4996,9 +4968,8 @@ function ecranLeagaDeFactura(corp, nav, t, cheie, op, fs) {
     <div class="c-leaga-zona">${fs.length ? fs.map((f) => `
       <button type="button" class="buton-secundar" data-leaga-f="${f.id}" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni/{op_id}/leaga" style="margin:0 6px 6px 0">${numeDocDeschis(f)} · ${esc(f.tert_nume || "")} · rămas ${bani(f.sold)} lei</button>`).join("")
       : `<div class="stare-goala" id="c-leaga-gol">Nicio factură deschisă a partenerului (și niciun sold preluat) cu rămas de cel puțin ${bani(op.suma)} lei.</div>`}</div>
-    <div class="bara-fixa"><p style="margin-top:10px"><button type="button" class="buton-secundar" id="c-leaga-renunta" data-fara-actiune="închide fereastra, fără scriere">Renunță</button></p>
+    <div class="bara-fixa">
     <div id="c-leaga-mesaj"></div></div>`;
-  corp.querySelector("#c-leaga-renunta").addEventListener("click", () => nav.inapoi());
   corp.querySelectorAll("[data-leaga-f]").forEach((x) => x.addEventListener("click", async () => {
     try {
       const r = await api.post(`/tenants/${t.id}/casa/operatiuni/${op.id}/leaga`, { factura_id: Number(x.dataset.leagaF) });
@@ -5297,10 +5268,8 @@ async function ecranAlegeFacturiBanca(corp, nav, t, cheie, l, pre) {
       <tbody>${facturi.map((f) => `<tr><td><input type="checkbox" data-fid="${f.id}" data-sold="${f.sold}" aria-label="Alege ${esc(numarCuSerie(f.serie, f.numar))}"></td>
         <td>${numeDocDeschis(cuSerieSiNumar(f), false)}</td><td>${esc(f.tert_nume || "")}</td><td>${esc(f.tert_cui || "")}</td><td>${dataRo(f.data_emitere)}</td><td class="fd-td-num">${bani(f.sold)}</td></tr>`).join("")}</tbody></table>`
       : `<div class="stare-goala" id="bk-pk-gol">${inc ? "Nicio factură emisă neîncasată" : "Nicio factură primită neplătită"} și niciun sold preluat deschis.</div>`}
-    <div class="bara-fixa"><p class="dec-bara"><button class="buton-primar" id="bk-pk-ok" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza"${facturi.length ? "" : atributeInactiv("Nu e nicio factură deschisă de ales pe această direcție.")}>Contează selectate</button>
-      <button type="button" class="buton-secundar" id="bk-pk-nu" data-fara-actiune="închide fereastra, fără scriere" style="margin-left:6px">Renunță</button></p>
+    <div class="bara-fixa"><p class="dec-bara"><button class="buton-primar" id="bk-pk-ok" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza"${facturi.length ? "" : atributeInactiv("Nu e nicio factură deschisă de ales pe această direcție.")}>Contează selectate</button></p>
     <div id="bk-pk-mesaj"></div></div>`;
-  corp.querySelector("#bk-pk-nu").addEventListener("click", () => nav.inapoi());
   corp.querySelector("#bk-pk-ok").addEventListener("click", async () => {
     const zm = corp.querySelector("#bk-pk-mesaj");
     let rest = parseFloat(l.suma);
@@ -6575,7 +6544,6 @@ function ecranEditorNota(corp, nav, t, n, centre, cheie) {
     <p><button type="button" class="buton-secundar" id="je-plus" data-fara-actiune="rând în formular; salvarea formularului poartă acțiunea">+ linie</button></p>
     <div class="bara-fixa"><p style="margin-top:10px">
       <button class="buton-primar" id="je-salveaza" data-actiune="POST /tenants/{tenant_id}/jurnal|PUT /tenants/{tenant_id}/jurnal/{nota_id}">Salvează</button>
-      <button type="button" class="buton-secundar" id="je-renunta" data-fara-actiune="închide fereastra, fără scriere" style="margin-left:6px">Renunță</button>
     </p><div id="je-mesaj"></div></div>`;
   // [deficiența 260] titlul editorului urmează data aleasă (era data de la deschidere: „Notă nouă · 01.10.2026”)
   const _jeData = corp.querySelector("#je-data");
@@ -6596,7 +6564,6 @@ function ecranEditorNota(corp, nav, t, n, centre, cheie) {
     d.innerHTML = linieNota();
     zona.appendChild(d); leaga();
   });
-  corp.querySelector("#je-renunta").addEventListener("click", () => nav.inapoi());
   // [16.6, 729.2] „Salvează” e inactiv cât formularul e incomplet și numește ce lipsește („Completează: data; linia 1: contul debit, suma”);
   // se recalculează la deschidere, la orice modificare și la adăugarea / ștergerea unei linii. Textul lung se vede întreg, pe mai multe rânduri.
   const bSalveaza = corp.querySelector("#je-salveaza"), textSalveaza = bSalveaza.textContent;
@@ -6965,9 +6932,7 @@ async function ecranAlocariCentre(corp, nav, t) {
             "Centrul de cost al mijlocului fix " + (x.denumire || x.cod || ""))), "Firma n-are mijloace fixe în registru.")}
     ${tabel("Articole de stoc", "Articol", (al.articole || []).map((x) => rand("art", x, esc([x.denumire, x.um, x.cont_stoc].filter(Boolean).join(" · ")),
             "Centrul de cost al articolului " + (x.denumire || ""))), "Firma n-are articole de stoc (ieșirea pe articol e a firmelor cu stocul la cost).")}
-    <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="cc-aloc-salveaza" data-actiune="PUT /tenants/{tenant_id}/centre-cost/alocari"${active.length ? "" : atributeInactiv("Firma n-are niciun centru de cost activ.")}>Salvează alocarea</button>
-      <button class="buton-secundar" data-renunta style="margin-left:6px">Renunță</button></p><div id="cc-aloc-mesaj"></div></div>`;
-  legaRenunta(corp, nav);
+    <div class="bara-fixa"><p style="margin-top:10px"><button class="buton-primar" id="cc-aloc-salveaza" data-actiune="PUT /tenants/{tenant_id}/centre-cost/alocari"${active.length ? "" : atributeInactiv("Firma n-are niciun centru de cost activ.")}>Salvează alocarea</button></p><div id="cc-aloc-mesaj"></div></div>`;
   const msg = corp.querySelector("#cc-aloc-mesaj");
   corp.querySelector("#cc-aloc-salveaza").addEventListener("click", async () => {
     curataEroriCamp(corp);
@@ -7110,13 +7075,11 @@ async function ecranBonuri(corp, nav, t) {
             </div>`).join("")}</div>`}
       <div style="margin-top:14px">
         <button class="buton-verde" id="d-certifica" data-actiune="${eChitanta ? "POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge" : "POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba"}">${eChitanta ? "Certifică plata (401 = 5311)" : "Certifică și contează"}</button>
-        <button class="btn-link" id="d-renunta" style="margin-left:10px">Renunță</button>
         <span class="msg-eroare" id="d-msg" style="margin-left:10px"></span>
       </div>
       </div>
       </div>`;
 
-    corp.querySelector("#d-renunta").addEventListener("click", () => nav.inapoiPas());  // faza_b_traseu_v1
 
     // pozele: mari, fixe langa date; rotita = zoom, tragere = mutare, dublu-click = ecran complet  // bon_flux_e8_v1
     (async () => {

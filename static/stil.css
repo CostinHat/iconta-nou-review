@@ -485,6 +485,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
   border: none; border-bottom: 0.5px solid var(--linie);
   padding: 14px 16px; cursor: pointer; font-family: inherit;
   display: flex; align-items: center; gap: 12px;
+  height: auto; min-height: 44px; white-space: normal; overflow-wrap: anywhere;   /* [17.3] rândul se rupe pe mai multe linii și crește cu conținutul */
   transition: background 0.12s;
 }
 /* [R78, 27.08.2026] Actiunea de scoatere sta LANGA rand, nu in el.
@@ -578,6 +579,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 
 /* lista rezultate */
 .mig-lista { border: 0.5px solid var(--linie); border-radius: var(--raza); overflow: hidden; }
+/* [17.3] tabelul DS are chenarul lui: lista care îl conține nu mai are al doilea chenar (care tăia 2 px din zona de derulare) */
+.mig-lista:has(> .ds-tabel-cutie) { border: 0; border-radius: 0; overflow: visible; }
 .mig-rand {
   display: flex; align-items: center; gap: 11px; padding: 11px 13px;
   border-bottom: 0.5px solid var(--linie); cursor: pointer;
@@ -795,7 +798,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .fereastra-corp .rezumat-fix > :last-child { margin-bottom: 0; }
 /* antetul tabelului canonic rămâne în vedere sub rezumat (`--rezumat-h` = înălțimea rezumatului, pusă de navigator pe corp); `clip`, nu
    `hidden`: colțurile rotunjite rămân tăiate, dar tabelul nu devine el însuși cutie de derulare (lipirea antetului s-ar raporta la el) */
-.fereastra.fer-tabel .fereastra-corp .fd-tabel { overflow: clip; }
+.fereastra.fer-tabel .fereastra-corp .fd-tabel { overflow-x: clip; overflow-y: visible; }   /* [17.3] numai pe orizontală: pe verticală `clip` tăia 4–29 px din tabelul îngust */
 .fereastra.fer-tabel .fereastra-corp .fd-tabel thead th { position: sticky; top: calc(var(--rezumat-h, 0px) - 24px); z-index: 1; }
 /* [lotul 10, 421 / 424 — DS cap.9 v2.97 pct.3 și 5] lista-tabel (`.mig-sold-tabel`, Activitate cabinet) nu mai derulează ea însăși în
    fereastra cu tabel: cu `max-height: 280px; overflow-y: auto` corpul nu avea ce derula, deci rezumatul lipit sus n-avea ce ține în vedere,
@@ -1316,14 +1319,14 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 }
 .rap-subiect {
   font-size: var(--text-mic); font-weight: 600; color: var(--ardezie);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere;
 }
 .rap-cand { flex: 0 0 auto; font-size: var(--text-mic); color: var(--gri); }
 .rap-rand-jos {
   display: block;
   font-size: var(--text-mic); color: var(--gri);
   margin-top: 2px;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere;
 }
 
 /* ----- firul sesizarii (dreapta) ----- */
@@ -2058,7 +2061,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 :root { --antet-scund: 0; }
 @media (max-height: 700px), (max-width: 560px) { :root { --antet-scund: 1; } }
 .fd-antet-scurt { display: flex; align-items: baseline; gap: 12px; flex-wrap: nowrap; white-space: nowrap; overflow: hidden; }
-.fereastra-corp .fd-antet-scurt > * { margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fereastra-corp .fd-antet-scurt > * { margin: 0; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }   /* [17.3] clientul și starea SPV se rup, nu se taie */
 .fd-antet-scurt .pf-titlu { flex: none; font-size: var(--text); }
 .fd-scurt-client { flex: 1 1 auto; color: var(--ardezie); }
 .fd-scurt-total { flex: none; font-weight: 600; }
@@ -2559,7 +2562,6 @@ select.camp-invalid, textarea.camp-invalid { border-color: #a3231c !important; }
 .fir-parinti { color: #5b6b7c; font-size: 13px; font-weight: 500; }  /* parintii in titlurile de panou */
 /* titlu-entitate eliminat v1.1: entitatea traieste in bara mare de sus */
 .fir-acum { color: #1d3a5f; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
-
 /* [STANDARD_BUTON_ACTIV] starea "apasat/deschis" pentru butoane cu zone toggle */
 .buton-activ { background: #1a5a94 !important; color: #fff !important; border-color: #1a5a94 !important;
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.25) !important; transform: none !important; }
@@ -3307,7 +3309,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .ds-grup-campuri { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: flex-start; }
 .ds-grup-campuri > .camp { min-width: 0; gap: 4px; }
 .ds-grup-campuri > .camp.camp-dedus { display: none; }
-.ds-grup .camp-eticheta { margin: 0; font-size: 14px; line-height: 20px; white-space: nowrap; }   /* eticheta nu se taie: câmpul crește cât ea */
+.ds-grup .camp-eticheta { margin: 0; font-size: 14px; line-height: 20px; white-space: normal; overflow-wrap: anywhere; }   /* [17.3] eticheta se rupe pe linia următoare, nu lărgește câmpul */
 .fereastra-corp .ds-grup .camp-input:not([type=checkbox]):not([type=radio]) { height: 44px; font-size: 16px; border-radius: 8px; box-sizing: border-box; max-width: 100%; }
 .ds-grup .camp-input[data-numar] { text-align: right; font-variant-numeric: tabular-nums; }
 /* lățimile în caractere, la 10 px pe caracter (text 16 px) + padding 28 px: XS 9 = 118, S 16 = 188, M 38 = 408 */
@@ -3334,7 +3336,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .ds-rezumat-avertisment { border-left-color: var(--portocaliu); }
 .ds-rezumat-eroare { border-left-color: var(--rosu); }
 .ds-rezumat-ok { border-left-color: var(--verde); }
-.ds-rezumat-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-rezumat-text { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
 .ds-rezumat-detalii { margin: 0 0 16px; padding: 8px 16px; font-size: 14px; border: 1px solid var(--linie); border-radius: 12px; background: var(--alb); }
 .ds-rezumat-detalii[hidden] { display: none; }
 @media (max-width: 900px) { .ds-lat-s, .ds-lat-m, .ds-lat-xs, .ds-lat-l, .ds-lat-cui { width: 100%; flex-basis: 100%; } }
@@ -3346,17 +3348,17 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 /* DS 15.1 — lista cu căutare: lățimea ferestrei, maxim 720 px; căutare 44 px sus, rânduri 44 px, text principal stânga, motiv scurt dreapta */
 .ds-lista-sursa { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .ds-lista { width: 100%; max-width: 720px; position: relative; }
-.ds-lista-titlu { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; height: 44px; padding: 0 12px; text-align: left; font-size: 16px; box-sizing: border-box; }
-.ds-lista-ales { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds-lista-titlu { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 44px; padding: 0 12px; text-align: left; font-size: 16px; box-sizing: border-box; }
+.ds-lista-ales { min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
 .ds-lista-panou { margin-top: 4px; border: 1px solid var(--linie); border-radius: 12px; background: var(--alb); padding: 8px; box-sizing: border-box; }
 .ds-lista-cauta { width: 100%; height: 44px; box-sizing: border-box; }
 .ds-lista-randuri { list-style: none; margin: 8px 0 0; padding: 0; max-height: 264px; overflow-y: auto; }
-.ds-lista-rand { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 44px; padding: 0 12px; box-sizing: border-box; cursor: pointer; border-radius: 8px; font-size: 16px; }
+.ds-lista-rand { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 12px; box-sizing: border-box; cursor: pointer; border-radius: 8px; font-size: 16px; }
 .ds-lista-rand:hover { background: var(--fundal); }
 .ds-lista-ales-rand { background: var(--albastru-clar); font-weight: 600; }
 .ds-lista-inactiv { color: var(--gri); cursor: default; }
-.ds-lista-nume { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.ds-lista-motiv { flex: 0 1 45%; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--gri); text-align: right; }
+.ds-lista-nume { flex: 0 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.ds-lista-motiv { flex: 0 1 45%; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; font-size: 14px; color: var(--gri); text-align: right; }
 .ds-lista-grup { padding: 8px 12px 4px; font-size: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--gri); }
 .ds-lista-detalii { padding: 4px 12px 8px; font-size: 14px; color: var(--gri); }
 .ds-lista-gol { padding: 8px 12px; font-size: 14px; color: var(--gri); }
@@ -3434,17 +3436,19 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .ds-tabel-cutie { width: 100%; overflow-x: hidden; border: 1px solid var(--linie); border-radius: 12px; background: var(--alb); }
 .ds-tabel { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; }
 .ds-tabel thead th { height: 40px; padding: 0 12px; text-align: left; font-weight: 600; font-size: 15px; background: var(--fundal); position: sticky; top: 0; border-bottom: 1px solid var(--linie); }
-.ds-tabel tbody td { height: 44px; padding: 0 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-bottom: 1px solid var(--linie); }
+.ds-tabel tbody td { height: 44px; padding: 0 12px; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; border-bottom: 1px solid var(--linie); }
 .ds-tabel tbody tr:nth-child(even) { background: var(--fundal); }
 .ds-tabel-apasabil { cursor: pointer; }
 .ds-tabel-apasabil:hover, .ds-tabel-apasabil:focus-visible { outline: 2px solid var(--albastru); outline-offset: -2px; }
 .ds-tabel .ds-tabel-num { text-align: right; font-variant-numeric: tabular-nums; }
-.ds-tabel .ds-tabel-stare { width: 216px; }
-.ds-tabel .ds-tabel-actiuni { width: 112px; white-space: nowrap; text-align: right; }
-.ds-tabel .ds-tabel-actiuni .buton-xs { margin-left: 8px; }
+.ds-tabel .ds-tabel-stare { width: 256px; }
+.ds-tabel .ds-tabel-actiuni { width: 152px; text-align: right; }
+.ds-tabel .ds-tabel-actiuni .buton-xs { margin-left: 8px; white-space: normal; height: auto; min-height: 28px; line-height: 18px; padding-top: 4px; padding-bottom: 4px; }   /* [17.3] eticheta lungă a butonului se rupe */
 .buton-xs { height: 28px; padding: 0 10px; font-size: 13px; border-radius: 8px; }
 .ds-tabel-gol { margin: 8px 0; color: var(--gri); }
 .ds-pastila { display: inline-block; height: 28px; line-height: 28px; padding: 0 12px; border-radius: 999px; font-size: 14px; font-weight: 600; white-space: nowrap; }
+/* [17.3] starea din tabel: textul lung al pastilei (motiv, dată) se rupe pe linia următoare, în loc să iasă din coloană */
+.ds-tabel td.ds-tabel-stare .ds-pastila { white-space: normal; height: auto; min-height: 28px; line-height: 18px; padding-top: 5px; padding-bottom: 5px; overflow-wrap: anywhere; }
 .ds-pastila-eroare { background: #fbe3e1; color: #8a2a22; }
 .ds-pastila-avertisment { background: #fdeccd; color: #7a4b05; }
 .ds-pastila-ok { background: #dff3e4; color: #1e6b36; }
@@ -3514,6 +3518,14 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .fereastra-antet .cautare-in-fereastra { flex: 0 1 320px; width: 320px; min-width: 160px; }   /* [17.1, 790] păstrează 320 px și se strânge până la 160 px, fără flex-grow */
 .fereastra-antet .cautare-in-fereastra .cautare-camp { font-size: 14px; padding: 0 10px; }
 .fereastra-antet .cautare-in-fereastra .cautare-camp::placeholder { text-overflow: clip; }
+/* [17.3] sub 700 px calea arată numai fereastra curentă (veriga, firma și separatorul se ascund; calea întreagă e în `title`), nu se rupe pe a doua linie; căutarea se strânge la 120 px */
+@media (max-width: 700px) {
+  .fereastra-fir .fir-veriga, .fereastra-fir .fir-firma, .fereastra-fir .fir-sep { display: none; }
+  .fereastra-fir { white-space: normal; }
+  .fir-acum { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; line-height: 15px; }   /* titlul lung al ferestrei coboară pe linia a doua, în bara de 56 px */
+  .fereastra-antet .cautare-in-fereastra { flex: 0 1 120px; width: 120px; min-width: 120px; }   /* după regula de 320 px de mai sus, ca să o înlocuiască */
+}
+
 
 /* [15.1-E3, 731 / 732] semnalul cu acțiune: rândul de 36 px și butonul S de 36 px alăturat; subsolul tabelului DS */
 .ds-semnal-cutie { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 4px; }
@@ -3522,7 +3534,6 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .ds-semnal-intreg { margin: 4px 0 0; }
 .buton-s { height: 36px; padding: 0 12px; font-size: 14px; border-radius: 8px; flex: 0 0 auto; white-space: nowrap; }
 .ds-tabel-subsol { height: 44px; display: flex; align-items: center; padding: 0 12px; box-sizing: border-box; font-size: 14px; color: var(--gri); border-top: 1px solid var(--linie); background: var(--fundal); border-radius: 0 0 12px 12px; }
-.ds-tabel .ds-tabel-actiuni.ds-tabel-lat, .ds-tabel th.ds-tabel-actiuni { white-space: nowrap; }
 
 /* [15.1-E3, 731] verdictul de control fiscal pe piese DS: grup în chenar (titlul de grup gri), formularul de marcare în rândul lui, semnal informativ */
 .ds-semnal-info { border-left-color: var(--gri); }
@@ -3584,7 +3595,7 @@ textarea.em-adresa { overflow: hidden; }
 .fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *):hover:not(:disabled) { background: var(--fundal); }
 
 /* [15.1-E3] explicația de sub câmp: un rând (textul întreg în title, pus de cadru.js); la focus pe câmp se arată întreagă */
-.fereastra-corp .camp-ajutor { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.fereastra-corp .camp-ajutor { display: block; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; max-width: 100%; }
 /* [15.1-E5] explicația de sub câmp rămâne pe un rând (textul întreg în `title`): nu se desface la focus, fiindcă la apăsarea unui buton de sub câmp (care ia focusul) rândurile s-ar muta între apăsare și ridicare și clicul s-ar pierde */
 
 /* [15.1-E3, 12] Setări cont: butoanele de meniu pe grila ferestrei (două coloane de la 900 px), nu stivuite — fereastra încape la 1366 × 768 fără derulare */
@@ -3600,7 +3611,6 @@ textarea.em-adresa { overflow: hidden; }
 .cf-extern-form { justify-content: flex-end; }
 .cf-extern-form input[type="date"], .cf-extern-form input[type="text"] { height: 36px; }
 .ds-tabel-motiv { margin-left: 8px; font-size: 13px; color: var(--gri); }
-.ds-tabel td.ds-tabel-stare { overflow: hidden; text-overflow: ellipsis; }
 .cf-grup .ds-tabel .ds-tabel-stare { width: auto; }
 .cf-grup .ds-tabel td.ds-tabel-actiuni { overflow: visible; }
 /* [15.1-E3] rândul de declarație din tabelul DS păstrează clasele vechi (`cf-rand-decl`, `mig-sold-cont`, `cf-perioada`, `cf-termen`) ca marcaje, nu ca aspect */
@@ -3610,8 +3620,9 @@ textarea.em-adresa { overflow: hidden; }
 /* [15.1-E4] cardul-rezumat aplicat notelor existente (`carduriDSAplica`, ds_piese.js): aceeași piesă, peste clasele vechi ale notelor */
 .fereastra .ds-rezumat { max-width: none; width: 100%; box-sizing: border-box; display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; margin: 0 0 8px;
   border: 1px solid var(--linie); border-left-width: 4px; border-radius: 12px; background: var(--alb); color: var(--ardezie); font-size: 14px; line-height: 20px; white-space: normal; }
+.fereastra .ds-rezumat { flex-wrap: wrap; }   /* [17.3] textul și acțiunile cardului nu ies din fereastră: acțiunea coboară pe linia următoare */
 .fereastra .ds-rezumat-info { border-left-color: var(--gri); }
-.fereastra .ds-rezumat-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fereastra .ds-rezumat-text { flex: 1 1 auto; min-width: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
 .fereastra .ds-rezumat-text > * { display: inline; margin: 0; }
 .fereastra .ds-rezumat-eroare { height: auto; padding: 8px 16px; color: #7a2020; background: #fdf1f0; align-items: flex-start; }
 .fereastra .ds-rezumat-eroare .ds-rezumat-text { overflow: visible; text-overflow: clip; white-space: pre-line; overflow-wrap: anywhere; }
@@ -3626,24 +3637,25 @@ textarea.em-adresa { overflow: hidden; }
 /* [15.1-E4] lista de înregistrări în tabelul DS: rândul vechi stă pe o linie în celulă; cele două linii (nume, detalii) se așază alăturat, tăiate cu „…” */
 .ds-tabel-lista-tabel th { text-align: left; }
 .ds-tabel-lista-tabel tbody td { padding: 0; }
-.ds-tabel-lista-tabel tbody td > * { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; min-height: 44px; box-sizing: border-box; margin: 0; padding: 0 12px; border: 0; border-radius: 0; background: transparent; box-shadow: none; text-align: left; overflow: hidden; }
-.ds-tabel-lista-tabel tbody td > * > * { min-width: 0; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ds-tabel-lista-tabel tbody td > * { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; width: 100%; min-height: 44px; box-sizing: border-box; margin: 0; padding: 0 12px; border: 0; border-radius: 0; background: transparent; box-shadow: none; text-align: left; overflow: visible; }
+.ds-tabel-lista-tabel tbody td > * > * { min-width: 0; margin: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
 .ds-tabel-lista-tabel tbody td > * > button, .ds-tabel-lista-tabel tbody td > * > a { flex: 0 0 auto; }
 .ds-tabel-cauta-rand { margin: 0 0 8px; }
 .ds-tabel-cauta { height: 44px; width: 100%; max-width: 480px; }
 .ds-tabel-lista { margin: 0 0 8px; }
 .ds-tabel-lista-tabel tbody td > * > *:not(button):not(a) { display: flex; flex-direction: row; align-items: center; gap: 8px; }
 .ds-tabel-lista-tabel tbody td > * *:not(button):not(a):not(input):not(select) { font-size: 15px; line-height: 20px; }
-.ds-tabel-lista-tabel tbody td > * > * > * { min-width: 0; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; }
+.ds-tabel-lista-tabel tbody td > * > * > * { min-width: 0; margin: 0; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; flex: 0 1 auto; }
 .ds-tabel-lista-tabel tbody td button { height: 28px; font-size: 13px; padding: 0 10px; }
 .fereastra .ds-rezumat-text br { display: none; }
 .fereastra .ds-rezumat-text small { font-size: inherit; }
-.ds-tabel thead th { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ds-tabel thead th { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
+/* [17.3] coloanele al căror conținut nu se rupe ca sens (cifră, dată, sumă, acțiuni) rămân pe o linie, fără „…”: dacă nu încap, detectorul de text tăiat le numără */
+.ds-tabel :is(th, td).ds-tabel-num, .ds-tabel :is(th, td).ds-tabel-actiuni, .ds-tabel td.ds-tabel-fix, .ds-tabel td.cf-perioada, .ds-tabel td.cf-termen { white-space: nowrap; overflow: hidden; text-overflow: clip; overflow-wrap: normal; }
 /* [15.1-E4] căutarea de deasupra unui tabel / listă: 44 px (DS: tabelul) */
 .fereastra .fereastra-corp input[type="search"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input.ds-tabel-cauta:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input[aria-label^="Caut"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]), .fereastra .fereastra-corp input[placeholder^="Caut"]:not([type="checkbox"]):not([type="radio"]):not([type="file"]) { height: 44px; box-sizing: border-box; }
 .ds-rezumat-plie-auto::before { content: "▾ detalii"; }
 .ds-rezumat-plie-auto[aria-expanded="true"]::before { content: "▴ detalii"; }
-.ds-tabel-lat .ds-tabel tbody td { height: auto; min-height: 44px; white-space: normal; overflow: visible; text-overflow: clip; }
 .ds-tabel-lat { overflow-x: visible; }
 .ds-tabel-lat .ds-tabel { table-layout: auto; }
 .rezumat-fix .ds-rezumat { margin-bottom: 4px; }
@@ -3672,3 +3684,18 @@ textarea.em-adresa { overflow: hidden; }
    (specificitate mai mică) era acoperită de regula de mai sus, care îl face să arate ca butonul secundar, alb; inactiv rămâne gri-clar, fără hover și fără umbră. */
 .fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *)[aria-disabled="true"],
 .fereastra-corp.fj-are-principal .buton-primar:not(.fj-principal):not(.ds-confirmare *)[aria-disabled="true"]:hover { background: var(--gri-clar); color: var(--alb); box-shadow: none; cursor: not-allowed; transform: none; }
+
+/* [17.3] fieldset-ul nu se lărgește peste fereastră cât conținutul lui (min-width implicit = min-content): câmpurile se așază în lățimea ferestrei */
+fieldset { min-width: 0; }
+/* [17.3] Model factură: formularul și previzualizarea stau pe rând (lanțul zonei de derulare le făcea coloane: previzualizarea ieșea din fereastră); sub 700 px coboară una sub alta */
+.mf-layout.lant-zona { flex-direction: row; flex-wrap: nowrap; }
+.mf-preview-wrap { min-width: 0; }
+@media (max-width: 700px) {
+  .mf-layout.lant-zona { flex-wrap: wrap; }
+  /* liniile facturii încap în 505 px: coloana cotei de 138 px, nu 188 px */
+  .em-linie, .em-linie-antet { grid-template-columns: minmax(80px, 1fr) 56px 48px 72px 138px 36px; }
+  /* tabelul DS sub 700 px: coloanele își împart lățimea ferestrei (lățimile în ch / px puse de ecrane nu mai ies din cutie) */
+  .ds-tabel { table-layout: auto; }
+  .ds-tabel :is(th, td) { width: auto !important; padding-left: 6px; padding-right: 6px; }
+  .ds-tabel :is(th, td).ds-tabel-actiuni, .ds-tabel td.cf-perioada, .ds-tabel td.cf-termen { white-space: normal; }   /* acțiunile și perioada se rup sub 700 px: tabelul încape în fereastră */
+}

@@ -76,5 +76,5 @@ def test_def_725_3_ctrl_r_readuce_declaratiile(patron, firma_e3):
     pg.reload(wait_until="domcontentloaded")                                    # Ctrl+R
     pg.wait_for_selector(".ds-lista-permanenta", state="attached", timeout=60000)   # nimeni nu a apăsat nimic: Declarațiile au revenit singure
     assert pg.locator(".fereastra .pf-titlu", has_text="Declarații").count() >= 1
-    pg.locator(".fereastra-jos .fj-renunta").click()                            # închisă de om: Ctrl+R nu o mai redeschide
+    pg.locator(".fereastra:last-of-type .nav-inapoi").click()                   # [17.3] închisă de om (cu „←”; bara de jos nu mai are „Renunță”): Ctrl+R nu o mai redeschide
     pg.wait_for_function("() => !document.querySelector('.ds-lista-permanenta') || document.querySelectorAll('.fereastra').length <= 1", timeout=20000)

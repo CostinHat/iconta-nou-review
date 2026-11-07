@@ -12,8 +12,8 @@ import { uitaFereastra, memoreazaFereastra, memoreazaCampul } from "./restaurare
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=0b48920b43";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
-import { baraDeJos } from "./cadru.js?v=28852ae57e";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
-import { puneCautarea } from "./cautare.js?v=5930d15619";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
+import { baraDeJos } from "./cadru.js?v=5d828b94a2";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+import { puneCautarea } from "./cautare.js?v=40db9aeffa";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
 import { numeDeSalut } from "./ecrane/salut.js?v=f5a3ed7133";   // [269] numele din salut, același loc ca pagina principală
@@ -286,7 +286,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     fer.innerHTML = `
       <div class="fereastra-antet">
         ${_butonInapoi(sus, areInapoi)}
-        <span class="fereastra-fir">${drumHtml}</span>
+        <span class="fereastra-fir" title="${esc((_titluFirma && !_doarFirma && !_fereastraMica ? _titluFirma + " › " : "") + (_doarFirma ? _titluFirma : _curent))}">${drumHtml}</span>
         <span class="fereastra-spatiu"></span>
         <button class="nav-x" title="Închide" aria-label="Închide"><span aria-hidden="true">✕</span></button>
       </div>
@@ -807,7 +807,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=0b48920b43");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=a0786811f2");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=812fa90102");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

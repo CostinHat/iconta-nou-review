@@ -110,12 +110,14 @@
     } else {
       if (principale.length !== 1) pica.b.push("bara de jos are " + principale.length + " butoane principale, nu unul");
       if (b.cu_atribut.length !== 1) pica.b.push("ferestrele de lucru au exact un buton cu data-actiune-principala: aici " + b.cu_atribut.length);
-      // „Renunță” numai pe ferestrele cu formular: butonul principal a venit dintr-un formular
+      // [17.3] „Renunță” numai pe ferestrele din PASTREAZA_RENUNTA (fără „←” activ în starea formularului sau cu „Renunță” cu efect propriu), transmisă în pagină ca window.__pastreazaRenunta
       const dinFormular = bj.dataset.cuFormular === "1";
       const areRenunta = butoane.some((x) => norm(x.innerText) === "Renunță");
-      b.renunta = areRenunta; b.din_formular = dinFormular;
-      if (dinFormular && !areRenunta) pica.b.push("fereastra cu formular nu are „Renunță” în bara de jos");
-      if (!dinFormular && areRenunta && !butoane.some((x) => x.classList.contains("fj-al-ecranului"))) pica.b.push("„Renunță” pe o fereastră fără formular");
+      const titluF = norm((F.querySelector(".fir-acum") || {}).textContent);
+      const pastreaza = (window.__pastreazaRenunta || []).includes(titluF);
+      b.renunta = areRenunta; b.din_formular = dinFormular; b.pastreaza_renunta = pastreaza;
+      if (pastreaza && !areRenunta) pica.b.push("fereastra „" + titluF + "” e în lista PASTREAZA_RENUNTA și nu are „Renunță” în bara de jos");
+      if (!pastreaza && areRenunta) pica.b.push("„Renunță” în bara de jos a unei ferestre din afara listei PASTREAZA_RENUNTA („" + titluF + "”)");
     }
     // [16.7] acțiunea principală o singură dată pe ecran: niciun buton din conținut cu același text ca butonul principal din bara de jos
     b.actiune_dubla = 0;
@@ -141,8 +143,8 @@
     if (!ds) { c.tabele_vechi.push(String(t.className) || "(fără clasă)"); continue; }
     c.tabele_ds++;
     const th = t.querySelector("thead th"), td = t.querySelector("tbody td");
-    if (th && Math.abs(h(th) - 40) > 1) pica.c.push("capul tabelului are " + h(th) + " px, nu 40");
-    if (td && Math.abs(h(td) - 44) > 1) pica.c.push("rândurile tabelului au " + h(td) + " px, nu 44");
+    if (th && h(th) < 40 - 1) pica.c.push("capul tabelului are " + h(th) + " px, sub 40");   // [17.3] cap ≥ 40 px, rând ≥ 44 px (un rând care se rupe crește)
+    if (td && h(td) < 44 - 1) pica.c.push("rândurile tabelului au " + h(td) + " px, sub 44");
     const randuri = [...t.querySelectorAll("tbody tr")];
     if (randuri.length > 1 && getComputedStyle(randuri[0]).backgroundColor === getComputedStyle(randuri[1]).backgroundColor) pica.c.push("tabel fără zebra");
     const antete = [...t.querySelectorAll("thead th")].map((x) => norm(x.innerText));

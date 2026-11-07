@@ -1,0 +1,12 @@
+# stari.txt (17.3, pct.2 a): valorile pastilei `ds-pastila` (starea din coloana «Stare» a tabelului DS) din static/js, cu lungimea textului.
+# Comanda cere ca `.ds-tabel-stare` să încapă cel mai lung text. Cel mai lung text nu e mărginit: `stareNotaCasa` adaugă motivul respingerii (text liber), iar `declaratii.js:279` scrie
+# data termenului în text. Lățimea nu poate încăpea orice text; decizia (la E în raport): coloana crește de la 216 la 256 px (încape «restanță de 1000 de zile», cel mai lung text fix),
+# iar textul mai lung se rupe în pastilă (`.ds-tabel td.ds-tabel-stare .ds-pastila`: white-space normal, înălțime minimă 28 px), fără «…» și fără text tăiat.
+# fișier:linie | text (șablon) | caractere | cum se citește
+termene.js:12 | restanță de {N} zile / {N} de zile | 23 la N=194; 24 la N=1000 | etichetaZile (stare din tabelDS)
+termene.js:13-15 | azi / mâine / în {N} zile | 3-12 | etichetaZile
+declaratii.js:279 | depășită — termenul {dd.mm.aaaa} a trecut | 38 | stare din tabelDS, Declarații
+firme.js:4334-4339 | notă internă / notă validată / notă la validare în cabinet / notă respinsă la validare{: motiv} / notă ciornă | 9-30 (+ motiv liber) | stareNotaCasa
+control_verdict.js:242-243 | restanță / de urmărit / depusă cu întârziere / la zi / înainte de preluare | 5-20 | ST_* (Control fiscal)
+control.js:56 | etichetaStare(f.stare) | ≤ 12 | Control fiscal, tabelul firmelor
+firme.js:5115 | st.text (starea liniei de extras) | ≤ 30 | Bancă

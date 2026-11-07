@@ -57,7 +57,7 @@ def test_emite_factura_tipul_documentului_si_renunta_pe_cardul_ciornei(patron, f
     pg.fill("#em-nume", "Client E5")
     pg.wait_for_selector("#em-ciorna .ds-rezumat #em-renunta", timeout=10000)       # ... ci buton S pe cardul ciornei
     m = pg.evaluate("() => { const F = [...document.querySelectorAll('.fereastra')].pop(); return [...F.querySelectorAll('.fereastra-jos button')].map((b) => b.innerText.trim()); }")
-    assert m == ["Renunță", "Emite factură"], m
+    assert m == ["Emite factură"], m   # [17.3] bara de jos fără „Renunță” (revenirea e „←”)
 
 
 def test_clienti_afiliat_comutator_xs_in_rand(patron, firma_e5):

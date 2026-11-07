@@ -390,6 +390,7 @@ export function coloaneDateSumeAplica(corp) {
     cap.forEach((th, i) => {
       const celule = [...t.tBodies].flatMap((b) => [...b.rows]).map((r) => r.cells[i]).filter((c) => c && _vizibilDS(c) && _DATA_SAU_SUMA.test(c.textContent));
       if (!celule.length) return;
+      celule.filter((c) => _txt(c.textContent).length <= 24).forEach((c) => c.classList.add("ds-tabel-fix"));   // [17.3] data și suma rămân pe o linie (regula `.ds-tabel-fix` din stil.css), fără „…”
       const nevoie = Math.max(...celule.map((c) => c.scrollWidth)) + 2;
       if (celule.some((c) => c.scrollWidth > c.clientWidth + 1) && nevoie > th.getBoundingClientRect().width) th.style.width = nevoie + "px";
     });

@@ -52,7 +52,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=a0786811f2");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=812fa90102");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
@@ -125,7 +125,7 @@ export function puneCautarea(bara, nav, opt = {}) {
   const loc = document.createElement("div");
   loc.className = "cautare-globala" + (opt.inainte ? " cautare-in-fereastra" : "");
   loc.innerHTML = `<input type="search" id="${id}" class="cautare-camp" autocomplete="off" spellcheck="false"
-      placeholder="Caută o funcție: D300, stat de plată, NIR…" aria-label="Caută o funcție a aplicației (Ctrl+K)" title="Ctrl+K"
+      placeholder="${innerWidth < 700 ? "Caută" : "Caută o funcție: D300, stat de plată, NIR…"}" aria-label="Caută o funcție a aplicației (Ctrl+K)" title="Ctrl+K"
       role="combobox" aria-expanded="false" aria-controls="${idRez}" aria-autocomplete="list">
     <div class="cautare-rez" id="${idRez}" role="listbox" aria-label="Rezultatele căutării" hidden></div>`;
   bara.insertBefore(loc, opt.inainte || bara.querySelector(".bara-spatiu"));

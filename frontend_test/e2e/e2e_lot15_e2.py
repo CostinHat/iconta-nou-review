@@ -3,8 +3,8 @@
 
   * bara de sus: 56 px, „←” 40 × 40, fără traseu (un singur „›” urmat de numele ferestrei NU e traseu), căutarea 320 × 40; la o fereastră de firmă
     „<nume> · CUI <cod>”, la una de cabinet numele cabinetului;
-  * bara de jos: 72 px, fixă, ultimul copil al corpului, un singur buton principal L (52 px) în dreapta și „Renunță” M (44 px) lângă el; fereastra fără
-    acțiune proprie are „Închide”; „Renunță” întoarce un pas;
+  * bara de jos: 72 px, fixă, ultimul copil al corpului, un singur buton principal L (52 px) în dreapta fără „Renunță” (17.3: revenirea e „←”); fereastra fără
+    acțiune proprie are „Închide”; „←” întoarce un pas;
   * butonul principal e inactiv cât un câmp obligatoriu (etichetă cu „*”) vizibil e gol, cu motivul „Completează: …” în bară (729).
 Firma e NOUĂ (`firma_noua`)."""
 import pytest
@@ -46,7 +46,7 @@ def test_cadrul_ferestrei_de_firma(patron, firma_cadru, lat, inalt):
     assert m["antet"][1] == 56 and m["sageata"] == [40, 40] and m["cautare"] == [320, 40], m
     assert m["verigi"] == 0 and m["separatori"] == 1 and "· CUI " in m["fir"] and m["fir"].endswith("Operațiuni speciale"), m
     assert m["jos"][1] == 72 and m["jos_ultimul"] and m["jos_jos"] == 0, m
-    assert m["principale"] == [["Închide", 52, False]] and m["renunta"] == ["Renunță", 44], m
+    assert m["principale"] == [["Închide", 52, False]] and m["renunta"] is None, m   # [17.3] bara nu mai are „Renunță”: revenirea e „←”
 
 
 def test_cabinetul_in_bara_de_sus(patron):
@@ -74,6 +74,6 @@ def test_principalul_inactiv_cu_motiv_din_etichetele_cu_stea(patron, firma_cadru
     m = _masuri(pg)
     assert m["principale"][0][2] is True and m["motiv"], m                      # inactiv, cu motiv în bară
     assert pg.eval_on_selector("#op-trimite", "e => !!e.closest('.fereastra-jos')")   # același buton al ecranului, mutat în bară
-    pg.locator(".fereastra-jos .fj-renunta").click()                             # „Renunță” întoarce un pas
+    pg.locator(".fereastra:last-of-type .nav-inapoi").click()                    # [17.3] „←” întoarce un pas (bara de jos nu mai are „Renunță”)
     pg.wait_for_selector("button[data-op='chirie']", state="attached", timeout=20000)
     assert pg.locator("#op-trimite").count() == 0                                # fereastra formularului s-a închis

@@ -1,0 +1,71 @@
+# renunta.txt (17.3, pct.2 d): fiecare linie cu «Renunț» / fj-renunta / renuntaPiesei / fj-al-ecranului din static/js, pe commitul de bază cdef226f (numerele de linie sunt ale lui).
+# fișier:linie | clasa | motiv
+api.js:1415 | comentariu, neatins | text în comentariu
+api.js:1416 | comentariu, neatins | text în comentariu
+api.js:1417 | comentariu, neatins | text în comentariu
+api.js:1426 | comentariu, neatins | text în comentariu
+api.js:1444 | comentariu, neatins | text în comentariu
+cadru.js:4 | comentariu, neatins | text în comentariu
+cadru.js:12 | comentariu, neatins | text în comentariu
+cadru.js:123 | comentariu, neatins | text în comentariu
+cadru.js:216 | comentariu, neatins | text în comentariu
+cadru.js:223 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+cadru.js:225 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+cadru.js:245 | comentariu, neatins | text în comentariu
+cadru.js:275 | comentariu, neatins | text în comentariu
+cadru.js:276 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+cadru.js:278 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+cadru.js:281 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+cadru.js:283 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+cadru.js:284 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+cadru.js:286 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+cadru.js:294 | păstrat: fereastră fără ← | bara generează «Renunță» numai pentru ferestrele din PASTREAZA_RENUNTA (cod al piesei)
+ecrane/control_verdict.js:457 | păstrat: acțiune cu efect propriu | câmp inline: închide formularul extern al rândului
+ecrane/emitere_ecran.js:22 | comentariu, neatins | text în comentariu
+ecrane/emitere_ecran.js:24 | păstrat: acțiune cu efect propriu | cardul ciornei: șterge ciorna de pe server (confirmare)
+ecrane/emitere_ecran.js:338 | comentariu, neatins | text în comentariu
+ecrane/emitere_ecran.js:972 | comentariu, neatins | text în comentariu
+ecrane/emitere_ecran.js:974 | păstrat: acțiune cu efect propriu | cardul ciornei (em-renunta)
+ecrane/emitere_ecran.js:1000 | păstrat: acțiune cu efect propriu | cardul ciornei (em-renunta)
+ecrane/emitere_ecran.js:1014 | păstrat: dialog de confirmare | dialogul de confirmare are «Renunță» (da/nu)
+ecrane/emitere_ecran.js:1017 | comentariu, neatins | text în comentariu
+ecrane/emitere_ecran.js:1261 | comentariu, neatins | text în comentariu
+ecrane/firme.js:1416 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:1695 | comentariu, neatins | text în comentariu
+ecrane/firme.js:1699 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:2505 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:2815 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:2842 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:2881 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:4201 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:4672 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:4674 | comentariu, neatins | text în comentariu
+ecrane/firme.js:4956 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:4999 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:5301 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:5928 | comentariu, neatins | text în comentariu
+ecrane/firme.js:5946 | păstrat: acțiune cu efect propriu | câmp inline: închide câmpul motivului
+ecrane/firme.js:6578 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:6969 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:7113 | scos din bară | butonul doar închide fereastra / face un pas înapoi (nav.inapoi / nav.inapoiPas); revenirea e «←» din antet (fereastră cu «←» în starea ei)
+ecrane/firme.js:7718 | păstrat: acțiune cu efect propriu | câmp inline: redesenează ecranul principal
+ecrane/flux_concediu.js:162 | comentariu, neatins | text în comentariu
+ecrane/migrare.js:92 | comentariu, neatins | text în comentariu
+ecrane/operatiuni_ecran.js:633 | păstrat: acțiune cu efect propriu | #op-renunta golește ciorna de pe server (PASTREAZA_RENUNTA: Încasări/plăți)
+ecrane/operatiuni_ecran.js:806 | comentariu, neatins | text în comentariu
+ecrane/portal.js:152 | păstrat: acțiune cu efect propriu | câmp inline: redesenează ecranul
+ecrane/portal.js:180 | păstrat: acțiune cu efect propriu | câmp inline: redesenează ecranul
+ecrane/produse_ecran.js:146 | păstrat: acțiune cu efect propriu | câmp inline: închide corectura cotei
+ecrane/validat.js:817 | comentariu, neatins | text în comentariu
+ecrane/validat.js:819 | comentariu, neatins | text în comentariu
+ecrane/validat.js:822 | păstrat: acțiune cu efect propriu | retrage declarația proprie (POST /coada/{coada_id}/respinge)
+ecrane/validat.js:877 | păstrat: dialog de confirmare | dialogul de confirmare are «Renunță» (da/nu)
+ecrane/validat.js:881 | păstrat: dialog de confirmare | dialogul de confirmare are «Renunță» (da/nu)
+ecrane/validat.js:1040 | păstrat: dialog de confirmare | dialogul de confirmare are «Renunță» (da/nu)
+ecrane/woo_ecran.js:8 | comentariu, neatins | text în comentariu
+ecrane/woo_ecran.js:56 | păstrat: acțiune cu efect propriu | câmp inline: redesenează ecranul
+navigator.js:300 | comentariu, neatins | text în comentariu
+navigator.js:339 | comentariu, neatins | text în comentariu
+navigator.js:340 | comentariu, neatins | text în comentariu
+restaurare.js:2 | comentariu, neatins | text în comentariu
+# totaluri: comentariu, neatins=29, păstrat: acțiune cu efect propriu=12, păstrat: dialog de confirmare=4, păstrat: fereastră fără ←=9, scos din bară=14

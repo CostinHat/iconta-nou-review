@@ -43,12 +43,13 @@ RANDURI = {
          "pe FIECARE fereastră de lucru și pe cele mici; „←” nu se judecă: apare numai unde există un pas înapoi real (fereastră deschisă din alta "
          "sau cu pas intern), altfel fereastra are numai „✕”",
     "b": "fereastra de lucru pe tot ecranul la 1920 × 1080 și 1366 × 768, un singur loc de derulare (tabelul lung), bara de jos fixă 72 px "
-         "cu un singur buton principal L (cu data-actiune-principala) și „Renunță” M numai pe ferestrele cu formular; „Închide” și „Renunță” nu sunt "
+         "cu un singur buton principal L (cu data-actiune-principala); bara nu are „Renunță”, în afara ferestrelor din PASTREAZA_RENUNTA (fără „←” activ "
+         "în starea formularului sau cu „Renunță” cu efect propriu; revenirea e „←” din antet, „✕” închide); „Închide” și „Renunță” nu sunt "
          "acțiune principală, oricum ar fi colorate; butonul principal inactiv cu motiv cât timp acțiunea nu e posibilă; acțiunea principală a ferestrei "
          "apare o singură dată pe ecran: niciun buton vizibil din conținut (în afara tabelelor, template și details) nu are același text ca butonul "
          "principal din bara de jos; excepție (stare sau meniu "
          "de butoane, pe nume, lista din raport): bara fără buton principal și fără „Renunță”",
-    "c": "orice listă de înregistrări e tabelul DS: cap 40 px, rânduri 44 px, zebra, starea doar în coloana „Stare”, cel mult 2 acțiuni XS pe "
+    "c": "orice listă de înregistrări e tabelul DS: cap ≥ 40 px, rând ≥ 44 px (cu rândul care se rupe, înălțimea crește), zebra, starea doar în coloana „Stare”, cel mult 2 acțiuni XS pe "
          "rând, subsol 44 px (rândul de totaluri fix, bara-fixa, nu e o listă de înregistrări); nicio celulă cu dată sau sumă tăiată",
     "d": "orice avertisment sau explicație secundară e card-rezumat de 44 px cu detaliile pliate; orice semnal e un rând de 36 px (cel mult două rânduri, textul întreg, fără „…”) cu „ce e de "
          "făcut” pliat; niciun paragraf explicativ mai lung de un rând nepliat; un card-rezumat gri (neutru, informativ) e valid; cardurile de eroare "
@@ -60,6 +61,11 @@ RANDURI = {
     "g": "date, sume, perioade, firma prin funcția unică (un cod de cont analitic, ca 4428.01, nu e o sumă)",
     "h": "cota TVA ca grup cu cotele la data documentului plus categoriile fără TVA; nicio listă derulantă sub 7 variante; nimic „— alege —” sau opțiune goală",
 }
+
+
+#: [17.3] Ferestrele care păstrează „Renunță” în bara de jos, pe titlul din `.fir-acum`: aceleași ca `static/js/cadru.js::PASTREAZA_RENUNTA` și ca rândurile «fără ←» / «efect propriu: da»
+#: din docs/dovezi/17_3/inapoi.txt. Intersecția cu EXCEPTII_B e goală; dacă nu, EXCEPTII_B are prioritate.
+PASTREAZA_RENUNTA = ["Încasări/plăți", "Invitații cabinete", "Notificări", "Pachete lunare"]
 
 
 #: Ecranele fără acțiune principală (stare sau meniu de butoane), pe nume — comanda 15.1-E5 pct.1; lista intră în raport. Aceleași ferestre ca
@@ -199,6 +205,7 @@ def ecran(nume, rez, director, interventie=None, masuri_alt=None, director_png=N
         except Exception as ex:  # noqa: BLE001 — un ecran care nu se deschide e un rezultat, nu o oprire
             eroare = str(ex).splitlines()[0][:300]
         pg.evaluate("(e) => { window.__exceptieB = e; }", EXCEPTII_B.get(nume))
+        pg.evaluate("(l) => { window.__pastreazaRenunta = l; }", PASTREAZA_RENUNTA)
         masuri = pg.evaluate(open(MASURI, encoding="utf-8").read())
         if masuri_alt:
             masuri["masuri_alt"] = pg.evaluate(open(masuri_alt, encoding="utf-8").read())

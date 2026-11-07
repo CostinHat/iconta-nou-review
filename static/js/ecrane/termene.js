@@ -2,8 +2,8 @@
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
 import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=0b48920b43";
-import { tabelDS } from "../ds_piese.js?v=9134560fa9";   // [15.1-E3] lista scadențelor pe tabelul DS
-import { deschideFirma } from "./firme.js?v=a0786811f2";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { tabelDS } from "../ds_piese.js?v=6f954e94a0";   // [15.1-E3] lista scadențelor pe tabelul DS
+import { deschideFirma } from "./firme.js?v=812fa90102";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();

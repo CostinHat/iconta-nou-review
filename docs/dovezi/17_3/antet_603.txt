@@ -1,0 +1,9 @@
+# antet_603.txt (17.3, pct.2 c): bara de sus la 603×590; criteriu: placeholder == «Caută» și scrollWidth <= clientWidth pe .fereastra-fir; ce nu iese se declară ca limită, pe nume.
+# ecran | placeholder | fir scrollWidth/clientWidth | încape | segmente vizibile | înălțime antet | înălțime fir | cale întreagă (title)
+Control fiscal | Caută | 333/333 | da | fir-acum: Control fiscal | 56 px | 15 px | Cabinet Test Sesiunea B SRL — copie de dovadă · CUI 12345674 › Control fiscal
+Firme existente | Caută | 281/281 | da | fir-acum: Firme existente | 56 px | 15 px | Cabinet Test Sesiunea B SRL — copie de dovadă · CUI 12345674 › Firme existente
+Plan de conturi F1 | Caută | 281/281 | da | fir-acum: Plan de conturi | 56 px | 15 px | F1 Comert Stoc SRL · CUI 401002001 › Plan de conturi
+Mișcări și fișe de magazie F1 | Caută | 281/281 | da | fir-acum: Mișcări, fișe de magazie, coduri, nivel minim | 56 px | 30 px | F1 Comert Stoc SRL · CUI 401002001 › Mișcări, fișe de magazie, coduri, nivel minim
+Ore suplimentare F5 | Caută | 281/281 | da | fir-acum: Prime, sporuri, ore suplimentare · Ionescu Vasile | 56 px | 30 px | F5 SRL Salariati SRL · CUI 40510009 › Prime, sporuri, ore suplimentare · Ionescu Vasile
+Panou Admin — Raportări | Caută | 333/333 | da | fir-acum: Raportări | 56 px | 15 px | Panou Admin › Raportări
+Detaliu firmă F2 | Caută | 281/281 | da | fir-acum: Detaliu firmă | 56 px | 15 px | F2 Profit Amortizare SRL · CUI 403000015 › Detaliu firmă
