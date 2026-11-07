@@ -1,0 +1,15 @@
+# 6.1 (înainte de calibrare, notat din sesiune): 8019 liber, git status scripts core gol — vezi calibrare.txt (refuzul ar fi ieșit cu 1)
+# 6.4
+rânduri CSV: 315 (așteptat 315): ok
+nedeschis/timeout cu motiv gol: 0: ok
+603x590: totalul din rezumat = suma din CSV: ok
+1366x768: totalul din rezumat = suma din CSV: ok
+2133x1111: totalul din rezumat = suma din CSV: ok
+VERIFICARE: ok
+exit=0
+# 6.5
+8019 liber (ss nu găsește nimic)
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (iconta_test:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 80s
+restaureaza exit=0
