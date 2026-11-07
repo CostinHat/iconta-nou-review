@@ -161,6 +161,11 @@ def marca_valida(rand, lot):
     return bool(m and cheie and m.group(1) == marca(cheie, rand[0], rand[3]))
 
 
+def _coada_reala(praguri):
+    """Praguri din ~/ghid_incoming (lansarea reală din coadă); calibrările și testele cheamă `pornire-coada` cu fișiere din directoare temporare."""
+    return os.path.dirname(os.path.abspath(praguri)) == os.path.expanduser("~/ghid_incoming")
+
+
 def pornire_coada(lot, praguri, cheie_fisier=None, comanda=None):
     """Lansarea din coadă (~/coada_code.sh): rândul „pornire” cu ora reală, hash-ul pragurilor (copia din ~/ghid_incoming), hash-ul pasi_<lot>.txt al arhitectului (dacă există), hash-urile scripturilor porții și marcajul
     de proveniență. Un lot real (NN.M sau NN.M-X) fixează și lotul curent; un lot de probă (PROBA-…) nu."""
@@ -186,7 +191,14 @@ def pornire_coada(lot, praguri, cheie_fisier=None, comanda=None):
         sfarsit(lot, "pornire", id_, "ok" if os.path.exists(praguri) else "lipsa_praguri", "scripturi_poarta: " + hash_scripturi(rad) + " coada=1")
     finally:
         _ORA_IMPUSA = None
-    return 0 if os.path.exists(praguri) else 1
+    rezultat = 0 if os.path.exists(praguri) else 1
+    if rezultat == 0 and re.fullmatch(r"\d+\.\d+(-[A-Z]\d*)?", lot) and _coada_reala(praguri):
+        # 17.2-A: alerta PORNIT către Costin (lanț WhatsApp/email, până la 90 s); nu schimbă nici valoarea întoarsă, nici rândurile din jurnal
+        try:
+            subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "alerta_whatsapp.py"), "lot", lot, "PORNIT"], timeout=90)
+        except Exception as e:  # noqa: BLE001
+            print("[jurnal_lot] alerta nu a plecat: %s" % type(e).__name__)
+    return rezultat
 
 
 def durate(lot, cale=None):
