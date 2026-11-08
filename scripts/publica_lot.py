@@ -476,6 +476,25 @@ def depasiri_praguri(durate, linii_praguri):
     return stop, intrerupte
 
 
+def lucru_si_timp(lot):
+    """17.5-A: fazele timpului de lucru (`jurnal_lot.py lucru`) și raportul de timp ~/lot_<lot>_timp.md, înaintea ZIP-ului. Nu oprește niciodată publicarea: orice eroare se tipărește (și intră în raportul lotului),
+    iar derivarea scrie rândurile într-o singură scriere, deci nu lasă rânduri pe jumătate. -> lista mesajelor (erorile încep cu «EROARE»)."""
+    mesaje = []
+    try:
+        mesaje.append("lucru %s: %d rânduri noi" % (lot, JL.lucru(lot)))
+    except Exception as e:  # noqa: BLE001
+        mesaje.append("EROARE lucru %s: %s: %s" % (lot, type(e).__name__, e))
+    try:
+        import raport_timp_lot as RT
+        text, fisier = RT.scrie(lot)
+        mesaje.append("raport de timp: %s" % (fisier or "lotul nu are rânduri în jurnal"))
+    except Exception as e:  # noqa: BLE001
+        mesaje.append("EROARE raport de timp %s: %s: %s" % (lot, type(e).__name__, e))
+    for m in mesaje:
+        print("[publica_lot] " + m)
+    return mesaje
+
+
 def zip_lot(lot, sha, cale):
     baza = git("merge-base", sha, "main")
     diff = git("diff", "--name-only", baza, sha).splitlines()
@@ -486,7 +505,7 @@ def zip_lot(lot, sha, cale):
         for f in diff:
             if os.path.exists(os.path.join(RAD, f)):
                 z.write(os.path.join(RAD, f), "fisiere/" + f)
-        for extra in (os.path.join(ACASA, "lot_%s_raport.md" % lotf),):
+        for extra in (os.path.join(ACASA, "lot_%s_raport.md" % lotf), os.path.join(ACASA, "lot_%s_timp.md" % lotf)):
             if os.path.exists(extra):
                 z.write(extra, os.path.basename(extra))
         z.writestr("jurnal_lot.txt", "\n".join("%-20s %-10s %s -> %s  %ss" % (f, r, b, s, sec) for f, i, b, s, r, sec in JL.durate(lot)) + "\n")
@@ -557,6 +576,7 @@ def main():
     sha = git("rev-parse", "HEAD")
     comun = git("rev-parse", "--path-format=absolute", "--git-common-dir")
     sirul_zip = os.path.join(ACASA, "lot_%s.zip" % lotf)
+    lucru_si_timp(lot)
     zip_lot(lot, sha, sirul_zip)
     stop = verifica(lot, sha, comun, sirul_zip)
     f_stare = os.path.join(comun, "lot_stare_%s.json" % lotf)

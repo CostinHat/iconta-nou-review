@@ -10,6 +10,7 @@ Fazele obligatorii (aceeași listă la publica_lot.sh): pornire, hook, verificat
                                             Cu --ora-reala (lotul care introduce jurnalul): rândurile poartă ora dată și „reconstituit” în detalii
   pornire-coada <lot> <praguri> [<cheie> [<comandă>]]   lansarea din coadă: rândul „pornire” cu marcaj de proveniență (coada=1 marca=<hash>), unul singur pe lot
   rezumat <lot>                             duratele pe fază (copia din raport)
+  lucru <lot>                               scrie fazele timpului de lucru ale lui Code (derivate din marcajele jurnalului; idempotent; 17.5-A)
   lot-curent                                tipărește lotul (LOT, ramura lucru/lotNN-M, fișierul lot_curent din depozit)"""
 import datetime
 import fcntl
@@ -219,6 +220,164 @@ def durate(lot, cale=None):
     return iesire
 
 
+# --- 17.5-A: citirea pură a jurnalului și fazele timpului de lucru al lui Code (derivate, nu măsurate de hook) ---
+FAZE_LUCRU = ("lucru_pana_la_commit", "lucru_pana_la_poarta", "asteptare_poarta", "reparatie_dupa_rosu", "dupa_verde", "pana_la_publicare", "pytest_intre_commituri")
+_FAZE_POARTA = ("poarta_verificator", "poarta_pytest", "poarta_plasa")
+
+
+def _t(ora):
+    return datetime.datetime.fromisoformat(ora)
+
+
+def _sec(a, b):
+    return round((_t(b) - _t(a)).total_seconds())
+
+
+def citeste_jurnal(cale=None):
+    """Citire pură: rândurile jurnalului, fără `marcheaza_intrerupte` (care scrie)."""
+    return _citeste(cale or cale_jurnal())
+
+
+def rulari(rows, lot):
+    """Rulările lotului, fără scrieri: pereche început/sfârșit cu același id (două rânduri «sfarsit» pe același id: ultimul).
+    -> [{faza, id, inceput, sfarsit, rezultat, secunde, complet, intrerupt, pid, detalii}] în ordinea începuturilor.
+    «intrerupt» = sfârșit cu rezultatul «intrerupt» sau început fără sfârșit al cărui proces nu mai trăiește; «complet» = pereche fără «intrerupt»."""
+    rl = [r for r in rows if len(r) > 6 and r[0] == lot]
+    sf = {r[6]: r for r in rl if r[2] == "sfarsit"}
+    iesire = []
+    for r in rl:
+        if r[2] != "inceput":
+            continue
+        s = sf.get(r[6])
+        pid = r[7] if len(r) > 7 else ""
+        rez = s[5] if s else ("intrerupt" if not _viu(pid) else "in_curs")
+        iesire.append({"faza": r[1], "id": r[6], "inceput": r[3], "sfarsit": s[3] if s else None, "rezultat": rez,
+                       "secunde": _sec(r[3], s[3]) if s else None, "complet": bool(s) and rez != "intrerupt",
+                       "intrerupt": rez == "intrerupt", "pid": pid, "detalii": r[8] if len(r) > 8 else ""})
+    return iesire
+
+
+def _rez_run(rezultate):
+    """«verde» dacă toate rezultatele finale sunt verde / verde_cu_restante, altfel «rosu» (rosu_N, intrerupt, stop și orice altceva)."""
+    return "verde" if rezultate and all(x == "verde" or x.startswith("verde_") for x in rezultate) else "rosu"
+
+
+def _utc(ora):
+    return _t(ora).astimezone(datetime.timezone.utc).strftime("%Y%m%dT%H%M%S")
+
+
+def intervale_hook_poarta(rows, lot):
+    """Intervalele închise [început, sfârșit] ale fazelor hook și poarta_* ale lotului; o fază fără sfârșit are interval de lungime 0 (limită declarată)."""
+    return [(x["inceput"], x["sfarsit"] or x["inceput"]) for x in rulari(rows, lot) if x["faza"] == "hook" or x["faza"] in _FAZE_POARTA]
+
+
+def sesiuni_pytest(rows, lot):
+    """Sesiunile fazei «pytest»: lista rulărilor cu cheile `colectare` (--collect-only în argumente) și `in_faza` (pornită în interiorul unei faze hook sau poarta_*, intervale închise)."""
+    iv = [(_t(a), _t(b)) for a, b in intervale_hook_poarta(rows, lot)]
+    iesire = []
+    for x in rulari(rows, lot):
+        if x["faza"] != "pytest":
+            continue
+        p = _t(x["inceput"])
+        iesire.append(dict(x, colectare="--collect-only" in x["detalii"], in_faza=any(a <= p <= b for a, b in iv)))
+    return iesire
+
+
+def runde_poarta(rows, lot):
+    """Rulările de poartă ale lotului: începe la fiecare «inceput» al lui poarta_verificator și ține până la ultimul «sfarsit» poarta_* dinaintea următorului (în ordinea rândurilor din fișier).
+    -> [{inceput, sfarsit (verdictul), rezultat (verde|rosu)}]; reluarea de infrastructură (poarta_pytest / poarta_plasa a doua oară) rămâne în aceeași rulare."""
+    rl = [r for r in rows if len(r) > 6 and r[0] == lot]
+    starturi = [i for i, r in enumerate(rl) if r[1] == "poarta_verificator" and r[2] == "inceput"]
+    iesire = []
+    for k, i0 in enumerate(starturi):
+        i1 = starturi[k + 1] if k + 1 < len(starturi) else len(rl)
+        parte = [r for r in rl[i0:i1] if r[1] in _FAZE_POARTA]
+        sfarsituri = [r for r in parte if r[2] == "sfarsit"]
+        inchise = {r[6] for r in sfarsituri}
+        finale = {}
+        for r in sfarsituri:
+            finale[r[1]] = r[5]
+        for r in parte:
+            if r[2] == "inceput" and r[6] not in inchise and r[1] not in finale:
+                finale[r[1]] = "intrerupt"
+        verdict = max((r[3] for r in sfarsituri), key=_t) if sfarsituri else max((r[3] for r in parte), key=_t)
+        iesire.append({"inceput": rl[i0][3], "sfarsit": verdict, "rezultat": _rez_run(list(finale.values()))})
+    return iesire
+
+
+def _publicare_dupa(rows, lot, ora):
+    """Primul rând «inceput» al fazei «publicare» cu ora ≥ `ora` (ordinea rândurilor din fișier la ore egale) și numărul rândurilor «inceput» ale fazei."""
+    pub = [r for r in rows if len(r) > 6 and r[0] == lot and r[1] == "publicare" and r[2] == "inceput"]
+    dupa = [r for r in pub if _t(r[3]) >= _t(ora)]
+    return (dupa[0] if dupa else None), len(pub)
+
+
+def deriva_lucru(rows, lot):
+    """Funcția pură a fazelor timpului de lucru (17.5-A, pct.3): rândurile jurnalului -> [{faza, inceput, sfarsit, rezultat, detalii}], fără scrieri.
+    Marcajele: început de lot = primul rând al lotului; commit = «inceput» al fazei hook; poartă = rulările din `runde_poarta`."""
+    rl = [r for r in rows if len(r) > 6 and r[0] == lot]
+    if not rl:
+        return []
+    t0 = rl[0][3]
+    commituri = sorted((r[3] for r in rl if r[1] == "hook" and r[2] == "inceput"), key=_t)
+    runde = runde_poarta(rows, lot)
+    sesiuni = sesiuni_pytest(rows, lot)
+    iesire = []
+
+    def adauga(faza, a, b, rezultat="ok", detalii=""):
+        if _t(b) >= _t(a):
+            iesire.append({"faza": faza, "inceput": a, "sfarsit": b, "rezultat": rezultat, "detalii": detalii})
+
+    if commituri:
+        adauga("lucru_pana_la_commit", t0, commituri[0])
+        if runde:
+            adauga("lucru_pana_la_poarta", commituri[0], runde[0]["inceput"])
+    for k, run in enumerate(runde):
+        adauga("asteptare_poarta", run["inceput"], run["sfarsit"], run["rezultat"])
+        if k + 1 < len(runde):
+            adauga("reparatie_dupa_rosu" if run["rezultat"] == "rosu" else "dupa_verde", run["sfarsit"], runde[k + 1]["inceput"])
+    if runde:
+        pub, _ = _publicare_dupa(rows, lot, runde[-1]["sfarsit"])
+        if pub:
+            adauga("pana_la_publicare", runde[-1]["sfarsit"], pub[3])
+    limite = [t0] + commituri
+    if runde and commituri and _t(commituri[-1]) <= _t(runde[0]["inceput"]):
+        limite.append(runde[0]["inceput"])
+    for a, b in zip(limite, limite[1:]):
+        n = sum(1 for s in sesiuni if not s["colectare"] and not s["in_faza"] and _t(a) <= _t(s["inceput"]) < _t(b))
+        m = sum(1 for s in sesiuni if s["colectare"] and _t(a) <= _t(s["inceput"]) < _t(b))
+        adauga("pytest_intre_commituri", a, b, "ok", "rulari=%d colectari=%d" % (n, m))
+    return iesire
+
+
+def _id_derivat(lot, faza, ora):
+    return "derivat-%s-%s-%s" % (lot, faza, _utc(ora))
+
+
+def lucru(lot, cale=None):
+    """Scrie în jurnal rândurile fazelor de lucru care lipsesc (perechi început/sfârșit, o singură scriere, ora = marcajele); idempotentă. -> numărul rândurilor scrise."""
+    cale = cale or cale_jurnal()
+    rows = _citeste(cale)
+    existente = {r[6] for r in rows if len(r) > 6}
+    sha = _sha()
+    linii, vazute = [], set(existente)
+    for x in deriva_lucru(rows, lot):
+        id_ = _id_derivat(lot, x["faza"], x["inceput"])
+        if id_ in vazute:
+            continue
+        vazute.add(id_)
+        detalii = ("derivat=1 " + x["detalii"]).strip()
+        linii.append([lot, x["faza"], "inceput", x["inceput"], sha, "-", id_, os.getpid(), detalii])
+        linii.append([lot, x["faza"], "sfarsit", x["sfarsit"], sha, x["rezultat"], id_, os.getpid(), detalii])
+    if linii:
+        os.makedirs(os.path.dirname(cale) or ".", exist_ok=True)
+        text = "".join("\t".join(str(c).replace("\t", " ").replace("\n", " ") for c in l) + "\n" for l in linii)
+        with open(cale, "a", encoding="utf-8") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
+            f.write(text)
+    return len(linii)
+
+
 def main(a):
     if not a:
         print(__doc__)
@@ -238,6 +397,8 @@ def main(a):
     elif a[0] == "rezumat":
         for f, i, b, s, r, sec in durate(a[1]):
             print("%-20s %-10s %s -> %s  %ss" % (f, r, b, s, sec))
+    elif a[0] == "lucru":   # lucru <lot>: fazele timpului de lucru (17.5-A), idempotent
+        print("%d rânduri noi" % lucru(a[1]))
     else:
         print(__doc__)
         return 2
