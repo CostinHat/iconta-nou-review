@@ -59,7 +59,7 @@ import { ecranCompensari } from "./compensari_ecran.js?v=ed3e73a2f0";  // [lotul
 import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=89ded88a66";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
-import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
+import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=4fde44bc3c";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -6339,11 +6339,11 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
     // [lotul 11, decizia Costin 10.3: „Totalurile … fix”] totalizarea lunii stă în bara de jos, în vedere cât derulezi notele (DS cap.9 v2.100)
     const totalizare = !note.length ? "" : `
       <div class="bara-fixa"><div class="fd-totaluri">
-        <div class="fd-tot-rand"><span>Note validate în lună</span><span>${note.length - ((jur.ciorne || {}).note || 0)}</span></div>
-        ${jur.note_fara_document ? `<div class="fd-tot-rand"><span title="Notele lunii fără numărul unui document scris pe ele și fără factură legată (OMFP 2634/2015: registrul-jurnal arată documentul justificativ al fiecărei note)">Note fără document justificativ (nici document scris, nici factură legată)</span><span>${jur.note_fara_document}</span></div>` : ""}
+        <div class="fd-tot-rand" data-secundar><span>Note validate în lună</span><span>${note.length - ((jur.ciorne || {}).note || 0)}</span></div>
+        ${jur.note_fara_document ? `<div class="fd-tot-rand" data-secundar><span title="Notele lunii fără numărul unui document scris pe ele și fără factură legată (OMFP 2634/2015: registrul-jurnal arată documentul justificativ al fiecărei note)">Note fără document justificativ (nici document scris, nici factură legată)</span><span>${jur.note_fara_document}</span></div>` : ""}
         <div class="fd-tot-rand fd-tot-final"><span>Total sume debitoare (note validate)</span><span>${bani(jur.total_debit)} lei</span></div>
         <div class="fd-tot-rand"><span>Total sume creditoare (note validate)</span><span>${bani(jur.total_credit)} lei</span></div>
-        ${(jur.ciorne || {}).note ? `<div class="fd-tot-rand"><span>Ciorne în lună (nu intră în total)</span><span>${jur.ciorne.note} · ${bani(jur.ciorne.total)} lei</span></div>` : ""}
+        ${(jur.ciorne || {}).note ? `<div class="fd-tot-rand" data-secundar><span>Ciorne în lună (nu intră în total)</span><span>${jur.ciorne.note} · ${bani(jur.ciorne.total)} lei</span></div>` : ""}
       </div></div>`;
     // [deficiența 333, 18.10.2026] luna în curs (sau viitoare): serverul refuză generarea amortizării până după ultima zi a lunii
     // (`uc_comun._cere_luna_incheiata`); butonul nu se mai oferă ca să fie refuzat — spune de ce
@@ -6358,15 +6358,15 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
       : notaAm ? `Amortizarea lunii e generată (ciornă din ${dataRo(notaAm.data)}, mai jos). „Regenerează” o înlocuiește numai dacă registrul mijloacelor fixe s-a schimbat.`
       : "";
     corp.innerHTML = `
-      <h2 class="pf-titlu">Registru jurnal ${semnAjutor("F061")}</h2>
       ${t.regim_contabil === "simpla" ? `<p class="ecran-nota" id="j-interne">Firmă în partidă simplă: notele sunt interne. ${esc(TEXT_NOTA_INTERNA)}</p>` : ""}
       <div class="rezumat-fix" id="j-rezumat">   <!-- [lotul 11, decizia Costin 10.3: „rezumatul fix”] luna, butoanele ei și zona lor de mesaj rămân sus cât derulezi notele (DS cap.9 v2.100) -->
+      <h2 class="pf-titlu">Registru jurnal ${semnAjutor("F061")}</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} · ${cate(note.length, "notă", "note")}${partiCiorne ? ` · <span id="j-numaratoare" style="color:var(--galben-text);font-weight:600">${partiCiorne}</span>` : ""}
-        <button class="buton-secundar" id="j-prev" style="margin-left:12px">← luna</button>
+        <button class="buton-secundar" id="j-prev">← luna</button>
         <button class="buton-secundar" id="j-next">luna →</button>
-        <button class="buton-primar" id="j-amort" data-genereaza-nota data-actiune="POST /tenants/{tenant_id}/amortizare" style="margin-left:12px"${lunaInCurs || amValidata ? " disabled" : ""}${motivAm ? ` aria-describedby="j-amort-motiv"` : ""}>${notaAm && !amValidata ? "Regenerează amortizarea" : "Generează amortizarea"}</button>
-        <button class="buton-secundar" id="j-nota-noua" data-actiune="POST /tenants/{tenant_id}/jurnal" style="margin-left:6px">+ Notă nouă</button>
-        <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button>${semnAjutor("F118")}
+        <button class="buton-primar" id="j-amort" data-genereaza-nota data-actiune="POST /tenants/{tenant_id}/amortizare"${lunaInCurs || amValidata ? " disabled" : ""}${motivAm ? ` aria-describedby="j-amort-motiv"` : ""}>${notaAm && !amValidata ? "Regenerează amortizarea" : "Generează amortizarea"}</button>
+        <button class="buton-secundar" id="j-nota-noua" data-actiune="POST /tenants/{tenant_id}/jurnal">+ Notă nouă</button>
+        <button class="buton-secundar" id="j-lock"></button>${semnAjutor("F118")}
         ${randuriJn.length ? `<span id="j-cautare" style="margin-left:12px">${htmlCautare("jn", { stari: STARI_JN, valoare: filtru.text, stare: filtru.stare })}</span>` : ""}</p>
       ${motivAm ? `<p class="tip-micut" id="j-amort-motiv">${esc(motivAm)}</p>` : ""}
       <div id="j-mesaj"></div>

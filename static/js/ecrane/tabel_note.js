@@ -233,8 +233,8 @@ export function locInDetaliu(buton) {
 /** Câmpul de căutare și filtrul de stare (în rezumatul lipit sus). `stari` = [[cheie, eticheta]] (fără filtru: căutarea singură). */
 export function htmlCautare(pre, { stari = null, valoare = "", stare = "", eticheta = "Caută: cont, document, partener, sumă, nr. crt." } = {}) {
   return `<span class="tn-cautare">
-    <input type="search" id="${pre}-cauta" class="camp-input" style="max-width:340px" placeholder="${esc(eticheta)}" aria-label="${esc(eticheta)}" autocomplete="off" value="${esc(valoare)}">
-    ${stari ? `<select id="${pre}-stare" class="camp-input" style="max-width:220px" aria-label="Starea notelor arătate">${stari.map(([k, e]) => `<option value="${esc(k)}"${k === stare ? " selected" : ""}>${esc(e)}</option>`).join("")}</select>` : ""}
+    <input type="search" id="${pre}-cauta" class="camp-input" placeholder="${esc(eticheta)}" aria-label="${esc(eticheta)}" autocomplete="off" value="${esc(valoare)}">
+    ${stari ? `<select id="${pre}-stare" class="camp-input" aria-label="Starea notelor arătate">${stari.map(([k, e]) => `<option value="${esc(k)}"${k === stare ? " selected" : ""}>${esc(e)}</option>`).join("")}</select>` : ""}
     <span class="tip-desc" id="${pre}-numar" aria-live="polite"></span></span>`;
 }
 

@@ -178,9 +178,9 @@ def _cod_lateste():
     """`_prealata`, `_cuTabel` și `_lateste`, exact cum stau în navigator.js (între prima definiție și primul apel)."""
     nav = _citeste("static/js/navigator.js")
     m = re.search(r"\n(\s*const _prealata = .*?\n\s*\};)\n\s*_lateste\(\);", nav, re.S)
-    # [lotul 14, 687] + `fer-mic` / `fer-lucru` (fereastra fără date, cea de lucru) și `_zonaDerulare` / `_marcheazaLantul`
+    # [lotul 14, 687] + `fer-mic` / `fer-lucru` (fereastra fără date, cea de lucru) și `_zonaDerulare` / `_marcheazaLantul` ([17.5-B] + `_noteInZona`)
     # ANTI-VACUU pe structura blocului: cele trei definiții, în ordine, și treptele de strângere, exact
-    assert m and re.findall(r"\bconst (_\w+) = ", m.group(1)) == ["_prealata", "_cuTabel", "_zonaDerulare", "_marcheazaLantul", "_lateste"] \
+    assert m and re.findall(r"\bconst (_\w+) = ", m.group(1)) == ["_prealata", "_cuTabel", "_zonaDerulare", "_marcheazaLantul", "_noteInZona", "_lateste"] \
         and re.findall(r'"(fer-[a-z]+)"', m.group(1)) == ["fer-mic", "fer-tabel", "fer-lucru", "fer-tabel", "fer-tabel", "fer-tabel", "fer-strans", "fer-rupt"], \
         "ANTI-VACUU: blocul `_lateste` nu mai e în navigator.js"
     return m.group(1)

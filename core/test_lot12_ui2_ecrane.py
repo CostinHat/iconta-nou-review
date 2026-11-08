@@ -100,6 +100,10 @@ _LA_MIJLOC = """() => { const f = [...document.querySelectorAll('.fereastra-corp
   c.scrollTop += r.getBoundingClientRect().top - c.getBoundingClientRect().top - c.clientHeight / 2; return c.scrollTop; }"""
 
 
+_LOC_RAND = """() => { const f = [...document.querySelectorAll('.fereastra-corp')].pop(), c = f.querySelector('.zona-derulare') || f, r = f.querySelector("%s");
+  return Math.round(r.getBoundingClientRect().top - f.getBoundingClientRect().top); }"""
+
+
 # ── datele Registrului jurnal ─────────────────────────────────────────────────────────────────────────────────────────────────────
 def _grupuri_deschise(pg):
     """Grupurile ferestrei firmei sunt pliate la deschidere (17.1): le desface ca omul, apăsând butonul de titlu."""
@@ -219,16 +223,19 @@ def test_def_617_dupa_valideaza_ramane_pe_loc_cu_starea_noua_si_confirmarea(brow
         _deschide_jurnal(pg)
         inainte = pg.evaluate(_LA_MIJLOC % "tbody[data-nota-id='1033']")
         assert inainte > 300, inainte                                          # anti-vacuu: fereastra chiar e derulată
+        loc_inainte = pg.evaluate(_LOC_RAND % "tbody[data-nota-id='1033']")    # [17.5-B] unde se vede rândul în fereastră, nu cât e derulată zona: notele mutate în zonă (navigator._noteInZona) cresc deasupra rândului, iar derularea urmărește rândul
         pg.evaluate("() => document.querySelector(\"[data-val='1033']\").click()")   # clicul omului, fără derularea lui Playwright
         pg.wait_for_function("() => ((document.querySelector('#j-mesaj') || {}).textContent || '').includes('Ai validat')", timeout=5000)
         m = pg.evaluate("""() => { const c = (%s)(), rc = c.getBoundingClientRect(), z = c.querySelector('#j-mesaj').getBoundingClientRect();
           const r = c.querySelector("tbody[data-nota-id='1033']");
-          return {sus: (c.querySelector('.zona-derulare') || c).scrollTop, mesaj: c.querySelector('#j-mesaj').textContent, in_vedere: z.top >= rc.top - 1 && z.bottom <= rc.bottom + 1,
+          return {sus: (c.querySelector('.zona-derulare') || c).scrollTop, loc: Math.round(r.getBoundingClientRect().top - c.getBoundingClientRect().top), corp_h: c.clientHeight, mesaj: c.querySelector('#j-mesaj').textContent, in_vedere: z.top >= rc.top - 1 && z.bottom <= rc.bottom + 1,
                   stare: r.querySelector('.tn-rand').innerText, evid: r.classList.contains('val-evidentiat')}; }""" % _CORP)
     finally:
         pg.close()
     assert not erori, erori
-    assert abs(m["sus"] - inainte) <= 40, (inainte, m)                        # „pagina sare sus” -> rămâne pe loc (± rândul mesajului)
+    # „pagina sare sus” -> zona rămâne derulată, iar rândul rămâne în vedere în fereastră; [17.5-B] nu mai cu aceeași poziție în pixeli: mesajul nou coboară zona sub prag
+    # și navigatorul mută în zonă notele de deasupra ei (`_noteInZona`), deci rândul se mișcă cu cel mult înălțimea notelor mutate
+    assert m["sus"] > 300 and 0 <= m["loc"] <= m["corp_h"] - 40 and abs(m["loc"] - loc_inainte) <= 120, (loc_inainte, m)
     assert "Ai validat nota nr. crt. 99" in m["mesaj"] and m["in_vedere"], m   # confirmarea, în vedere
     assert "Validată" in m["stare"] and m["evid"], m                           # rândul arată starea nouă
 

@@ -444,7 +444,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // lanțul de strămoși ai zonei devine coloană (`.lant-zona`) și nu se strânge sub ce are în afara zonei plus înălțimea minimă a zonei: altfel
     // conținutul din jurul ei s-ar suprapune, în loc să deruleze corpul
     const _marcheazaLantul = (zona) => {
-      let nevoie = 88, copil = zona;   // [15.1-E3, 12] zona are cel puțin două rânduri (88 px); 120 lăsa „Mișcări, fișe de magazie” cu derularea paginii la 1366 × 768
+      let nevoie = parseFloat(getComputedStyle(zona).minHeight) || 88, copil = zona;   // [15.1-E3, 12] zona are cel puțin două rânduri (88 px); 120 lăsa „Mișcări, fișe de magazie” cu derularea paginii la 1366 × 768; [17.5-B] sau pragul pus de `_noteInZona`
       for (let p = zona.parentElement; p && p !== _corp; p = p.parentElement) {
         p.classList.add("lant-zona");
         for (const k of p.children) if (k !== copil && k.offsetParent !== null) nevoie += k.getBoundingClientRect().height;
@@ -452,6 +452,55 @@ export function creeazaNavigator(radacina, desktopRandator) {
         copil = p;
       }
       _corp.classList.add("cu-zona");
+    };
+    // [17.5-B, 814 / 815 / 793 — clasă, toate ferestrele cu zonă de derulare, DS cap.9 v2.111] Zona de derulare nu rămâne sub prag (40% din corp sub 700 px, 50% peste;
+    // la 17.5-B peste 700 px pragul doar declanșează mutarea): ce stă în afara ei și nu e acțiune se mută în zonă, în ordinea asta — (1) notele (`p.ecran-nota`, `.tn-explicatii`),
+    // (2) secțiunile vecine zonei pe lanțul ei (subtitluri, grile, „puse deoparte”), cele mai apropiate întâi, (3) carduri-rezumat și casete de informare din rezumatul lipit sus, (4) căutarea și filtrul rezumatului, (5) rândurile de total marcate `data-secundar` (contoare, nu sume) din bara fixă —
+    // câte una, până zona atinge pragul. Elementele își păstrează ordinea și id-urile (ecranul le găsește tot prin `querySelector`); un element mutat rămâne în zonă
+    // (nu se pune la loc: fereastra se deschide din nou la fiecare drum). Zona scurtă, fără ce muta, primește pragul ca minim (`--zona-min`) numai dacă încape fără ca
+    // fereastra să deruleze.
+    const _noteInZona = () => {
+      const zona = _corp.querySelector(".zona-derulare");
+      if (!zona || !zona.offsetParent || !_corp.classList.contains("cu-zona")) return;
+      const deruleaza = () => _corp.scrollHeight > _corp.clientHeight + 2;
+      if (zona.style.getPropertyValue("--zona-min") && deruleaza()) { zona.style.removeProperty("--zona-min"); _marcheazaLantul(zona); }   // minimul pus mai devreme nu mai încape (conținutul de jos a crescut între timp)
+      const prag = (window.innerWidth <= 700 ? 0.4 : 0.5) * _corp.clientHeight;
+      if (!(prag > 0) || zona.clientHeight >= prag - 0.5) return;
+      const taiata = () => zona.scrollHeight > zona.clientHeight + 2;
+      // un element se mută numai dacă are conținut la vedere acum și nu e zonă de mesaj / rezultat (ele se umplu după o acțiune și trebuie să rămână lângă butonul lor)
+      const vazut = (e) => (e.offsetParent !== null || e.getClientRects().length > 0) && e.offsetHeight >= 16 && !e.matches('[aria-live], [role="status"], [role="alert"], [id$="-mesaj"], [id$="-msg"], [id$="-rez"]');
+      const SARIT = ".rezumat-fix, .bara-fixa, .fereastra-jos, .zona-derulare, h2";
+      const dinZona = (e) => zona.contains(e) || e.contains(zona);
+      const urmatorul = () => {
+        const note = [..._corp.querySelectorAll("p.ecran-nota, .tn-explicatii")].filter((e) => !dinZona(e) && !e.closest(".rezumat-fix, .bara-fixa, .fereastra-jos") && vazut(e));
+        if (note.length) return { e: note[0], dupa: !!(zona.compareDocumentPosition(note[0]) & Node.DOCUMENT_POSITION_FOLLOWING) };
+        const vecini = [];
+        for (let copil = zona, p = zona.parentElement; copil !== _corp && p; copil = p, p = p.parentElement) {
+          const frati = [...p.children], i = frati.indexOf(copil);
+          for (let j = i - 1; j >= 0; j--) vecini.push({ e: frati[j], dupa: false });
+          for (let j = i + 1; j < frati.length; j++) vecini.push({ e: frati[j], dupa: true });
+        }
+        const v = vecini.find((x) => !x.e.matches(SARIT) && vazut(x.e) && !x.e.closest("[data-fara-zona]") && !x.e.querySelector("input, select, textarea, form, [data-fara-zona]"));   // câmpurile de formular rămân în afara zonei
+        if (v) return v;
+        const rez = _corp.querySelector(".rezumat-fix");
+        const sus = rez ? [...rez.children].reverse().find((e) => vazut(e) && (e.matches(".sir-carduri, .cf-sumar") || (e.matches(".ds-rezumat") && !e.querySelector("input, select, button:not(.ds-rezumat-plie)")))) : null;
+        if (sus) return { e: sus, dupa: false };
+        const caut = rez ? [...rez.querySelectorAll(".tn-cautare")].reverse().find(vazut) : null;   // (4) la urmă, căutarea și filtrul rezumatului (două rânduri de 44 px sub 700 px)
+        const sec = [..._corp.querySelectorAll(".bara-fixa .fd-tot-rand[data-secundar]")].reverse().find(vazut);   // (5) totalurile secundare ale barei fixe (contoare: ele nu sunt sume) — vezi `data-secundar`
+        if (sec) return { e: sec, dupa: false };
+        return caut ? { e: caut.parentElement.tagName === "SPAN" && caut.parentElement.children.length === 1 ? caut.parentElement : caut, dupa: false } : null;
+      };
+      let urm;
+      while (taiata() && zona.clientHeight < prag - 0.5 && (urm = urmatorul())) {
+        urm.e.setAttribute("data-in-zona", "");   // marcă: ce a mutat `_noteInZona` (diagnostic; stilul nu se sprijină pe ea)
+        if (urm.dupa) zona.append(urm.e); else zona.prepend(urm.e);
+        _marcheazaLantul(zona);
+      }
+      if (zona.clientHeight < prag - 0.5) {   // nu mai e nimic de mutat (sau zona nu e tăiată): pragul devine minim doar dacă încape fără să deruleze fereastra
+        zona.style.setProperty("--zona-min", Math.ceil(prag) + "px");
+        _marcheazaLantul(zona);
+        if (deruleaza()) { zona.style.removeProperty("--zona-min"); _marcheazaLantul(zona); }
+      }
     };
     const _lateste = () => {
       const f = _corp.closest(".fereastra") || fer;
@@ -463,6 +512,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       const bara = [..._corp.querySelectorAll(".bara-fixa")].pop();
       if (bara) _corp.style.setProperty("--bara-h", bara.offsetHeight + "px"); else _corp.style.removeProperty("--bara-h");
       _zonaDerulare();   // [lotul 14, 687]
+      _noteInZona();   // [17.5-B]
       _corp.querySelectorAll(".zona-derulare").forEach((z) => { if (!z.hasAttribute("tabindex")) z.tabIndex = 0; });   // o zonă care derulează se poate parcurge de la tastatură (a11y)
     };
     _lateste();
@@ -807,7 +857,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=0b48920b43");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=e8c8358666");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=d9b247ae4e");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

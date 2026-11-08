@@ -2100,6 +2100,9 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .tn-tabel .tn-semn { margin-top: 2px; }
 .tn-tabel .tn-actiuni { white-space: nowrap; }
 .tn-tabel .tn-actiuni .buton-primar, .tn-tabel .tn-actiuni .buton-secundar, .tn-tabel .tn-actiuni .buton-sters { margin: 2px 0; }
+/* [17.5-B, 815 — clasă, meniul „Acțiuni” al oricărui rând de tabel] meniul pliat nu are casete în pagină (butoanele lui nu mai ies din fereastră la dreapta, în celula fără rupere de rând), iar deschis își așază butoanele unul sub altul, în coloana lui */
+table details.dec-xml:not([open]) > :not(summary) { display: none; }
+table details.dec-xml[open] > button, table details.dec-xml[open] > a.buton-secundar { display: block; width: 100%; box-sizing: border-box; margin: 4px 0 0; }
 /* tabelul liniilor din detaliu: antetul lui nu se lipește sub rezumat (se lipește numai antetul tabelului de note) */
 .fereastra.fer-tabel .fereastra-corp .tn-tabel .tn-linii thead th { position: static; }
 .tn-tabel .tn-linii { margin: 6px 0 8px; max-width: 900px; }
@@ -2110,6 +2113,21 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .tn-explicatii .caseta-atentie, .tn-explicatii .caseta-info { margin: 6px 0; }
 .tn-explicatie + .tn-explicatie { margin-top: 4px; }
 .tn-cautare { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.tn-cautare > input.camp-input { max-width: 340px; }
+.tn-cautare > select.camp-input { max-width: 220px; }
+/* [17.5-B, 814 / 815] bara fixă de deasupra barei de jos nu mai ia 12 px de margine goală, iar sub 700 px rezumatul își strânge marginile și butoanele ca rândul de butoane să încapă pe o singură linie (Registru jurnal: patru butoane + ajutor) */
+.fereastra-corp.cu-zona .bara-fixa:has(+ .fereastra-jos) { padding-bottom: 4px; }
+@media (max-width: 700px) {
+  .fereastra-corp.cu-zona .rezumat-fix .ds-rezumat { padding-left: 8px; padding-right: 8px; gap: 4px 6px; }
+  .fereastra-corp.cu-zona .rezumat-fix .ds-rezumat > .buton-s { padding-left: 10px; padding-right: 10px; }
+  .fereastra-corp.cu-zona .rezumat-fix .ds-rezumat > .ajutor-btn { margin-left: 0; }
+}
+/* [17.5-B, 814 / 815] sub 700 px câmpul și filtrul stau pe aceeași linie (se împart lățimea), numărul sub ele numai dacă nu mai încape: căutarea nu mai ia trei linii din rezumatul lipit sus */
+@media (max-width: 700px) {
+  .tn-cautare { display: flex; flex: 1 1 100%; }
+  .tn-cautare > input.camp-input { flex: 1 1 160px; min-width: 0; }
+  .tn-cautare > select.camp-input { flex: 1 1 120px; min-width: 0; }
+}
 .fd-totaluri { max-width: 320px; margin-left: auto; background: #fff; border: 1px solid var(--linie);
   border-radius: var(--raza); padding: 12px 9px; }
 .fd-totaluri .fd-tot-rand span:last-child, .fd-totaluri .fd-tot-final span:last-child { text-align: right; min-width: 130px; }
@@ -3246,7 +3264,7 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 .fereastra-corp.cu-zona { display: flex; flex-direction: column; }
 .fereastra-corp.cu-zona > :not(.lant-zona):not(.zona-derulare), .lant-zona > :not(.lant-zona):not(.zona-derulare) { flex: 0 0 auto; }
 .fereastra-corp.cu-zona > .lant-zona, .lant-zona > .lant-zona { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }   /* `min-height` propriu: pus de navigator = ce are lanțul în afara zonei + înălțimea minimă a zonei (altfel conținutul din jurul zonei s-ar suprapune) */
-.fereastra-corp.cu-zona > .zona-derulare, .lant-zona > .zona-derulare { flex: 0 1 auto; min-height: 88px; overflow: auto; }
+.fereastra-corp.cu-zona > .zona-derulare, .lant-zona > .zona-derulare { flex: 0 1 auto; min-height: var(--zona-min, 88px); overflow: auto; }   /* [17.5-B] `--zona-min` o pune navigatorul (`_noteInZona`) când zona scurtă are loc de prag */
 .zona-derulare { max-width: 100%; }
 /* [16.8-C1, 760, Fișa salariatului] într-o fereastră cu zonă de derulare, subtitlurile și tabelele de compoziție din afara zonei stau strânse (marginile
    implicite ale lui h3 — 20 px sus și jos — și cele 8 + 16 px ale tabelelor din grila de coloane ocupau cei 62 px care făceau corpul să deruleze
