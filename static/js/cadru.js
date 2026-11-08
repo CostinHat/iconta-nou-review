@@ -203,13 +203,13 @@ const _eligibilPrincipal = (bara, liber, cuRezumat = false) => (b) => b.tagName 
 // [15.1-E5, pct.1] fereastra doar de citit, cu tabel și fără export: „Descarcă PDF” se adaugă ca export al tabelului (tipărirea tabelului, „Salvează ca PDF”)
 // [17.5, 791 / 793] când fereastra are un singur buton principal al ei (eligibil, `buton-primar`, altul decât „Descarcă PDF”), acela e acțiunea ferestrei: PDF-ul de
 // rezervă nu mai e ales. Aici rezumatul lipit sus (`.rezumat-fix`) nu exclude butonul: „Fluturaș” al fișei salariatului stă în `#ss-butoane`, în rezumat. Mai multe sau
-// niciunul: rezerva rămâne. Ferestrele din EXPORT_PDF rămân cu PDF-ul (la ele chiar el e acțiunea). Butonul ales trece prin același drum ca unul găsit de catalog
-// (`__catalog`: cu id în afara NU_MUTA se mută în bară, fără id rămâne în fereastră și în bară stă un proxy).
+// niciunul: rezerva rămâne. Ferestrele din EXPORT_PDF rămân cu PDF-ul (la ele chiar el e acțiunea). Butonul ales urcă în bară ca unul marcat (același nod, cu ascultătorii lui):
+// un proxy ar lăsa „Fluturaș” de două ori pe ecran (rândul b din RANDURI).
 function _exportTabel(corp, titlu, bara, liber) {
   if (!EXPORT_PDF.test(titlu || "")) {
     const eligibil = _eligibilPrincipal(bara, liber, true);
     const proprii = [...corp.querySelectorAll("button.buton-primar")].filter((b) => eligibil(b) && _normalizeaza(b.textContent) !== "Descarcă PDF");
-    if (proprii.length === 1) { proprii[0].__catalog = true; return proprii[0]; }
+    if (proprii.length === 1) return proprii[0];
   }
   const tabel = [...corp.querySelectorAll("table")].find((x) => _vizibil(x) && !x.closest("template, details"));
   if (!tabel && !EXPORT_PDF.test(titlu || "")) return null;
