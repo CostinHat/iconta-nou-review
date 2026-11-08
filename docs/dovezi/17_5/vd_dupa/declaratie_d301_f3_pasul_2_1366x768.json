@@ -32,26 +32,19 @@
   },
   "b": {
    "pe_tot_ecranul": true,
-   "derulari": [
-    {
-     "loc": "div.fereastra-corp",
-     "fel": "vertical",
-     "ascuns": 276,
-     "tabel": true
-    }
-   ],
+   "derulari": [],
    "bara_jos": {
     "clase": "fereastra-jos",
     "inaltime": 72
    },
    "exceptie": null,
    "butoane_principale": 1,
-   "actiune_principala": "Pune în „De depus” →",
+   "actiune_principala": "Trimite în coadă →",
    "cu_atribut": [
-    "Pune în „De depus” →"
+    "Trimite în coadă →"
    ],
    "renunta": false,
-   "din_formular": true,
+   "din_formular": false,
    "pastreaza_renunta": false,
    "actiune_dubla": 0,
    "principal_inactiv_fara_motiv": 0
@@ -64,11 +57,11 @@
    "liste_vechi": []
   },
   "d": {
-   "rezumat_ds": 3,
+   "rezumat_ds": 1,
    "semnale_ds": 0,
    "carduri_vechi": 2,
    "paragrafe_lungi": [],
-   "rezumate_la_vedere": 3,
+   "rezumate_la_vedere": 1,
    "fara_buton": []
   },
   "e": {
@@ -92,9 +85,9 @@
    "liste_sub_7": [],
    "alege": [],
    "cota_tva_ca_lista": [],
-   "grupuri_butoane": 1,
-   "liste_cu_cautare": 2,
-   "liste_inlocuite": 3
+   "grupuri_butoane": 0,
+   "liste_cu_cautare": 0,
+   "liste_inlocuite": 0
   }
  },
  "pica": {
@@ -102,7 +95,6 @@
   "b": [],
   "c": [],
   "d": [
-   "3 carduri-rezumat care nu sunt erori la vedere, nu cel mult 2 (restul sub „Semnale (n)”)",
    "2 avertismente/semnale care nu sunt piese DS (caseta-info, dec-avert-cap)"
   ],
   "e": [],
@@ -132,7 +124,6 @@
   "d": {
    "verdict": "PICĂ",
    "motive": [
-    "3 carduri-rezumat care nu sunt erori la vedere, nu cel mult 2 (restul sub „Semnale (n)”)",
     "2 avertismente/semnale care nu sunt piese DS (caseta-info, dec-avert-cap)"
    ]
   },

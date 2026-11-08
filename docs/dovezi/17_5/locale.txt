@@ -15,7 +15,7 @@ Formula benzii (789): după derularea corpului până jos (corp.scrollTop = corp
   Valoarea întreagă a datei se vede (input 112 px, tip date). „Renunță” din bannerul „Factura începută” rămâne (comanda 17.3 a scos-o numai din bară); banner neverificat în starea cu ciornă (fără ciornă în baza de test).
 
 793 — Fișa salariatului (F5, primul salariat din stat)
-  `#ss-butoane`: scrollHeight/clientHeight 82/82 → 82/82 (19 butoane, două meniuri pliate din 17.2: nu derulează nici înainte, nici după);  acțiunea din bară: „Descarcă PDF” → „Fluturaș”.
+  `#ss-butoane`: scrollHeight/clientHeight 82/82 → 82/82 (19 butoane, două meniuri pliate din 17.2: nu derulează nici înainte, nici după);  acțiunea din bară: „Descarcă PDF” → „Fluturaș” (proxy; originalul rămâne în #ss-butoane, vezi DECIZII: rândul b al verificatorului de design pică la Fișa F5 din acest motiv).
   Rămas declarat: zona de derulare `#ss-calcul` („Din ce se calculează”, tabel) 421 din 96 px (1366×768: 421/96 → 421/98) și 421/88 la 603×590. Nu e zona butoanelor.
 
 794 — Setări › Schimbă parola

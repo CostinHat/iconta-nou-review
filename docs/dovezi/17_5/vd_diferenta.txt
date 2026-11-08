@@ -1,5 +1,12 @@
 ferestre catalog: 105 105
 ferestre cu cel puțin o literă a–h picată (1920×1080 / 1366×768): înainte 28 / 29, după 27 / 28
-litere a–h picate în total (1920 / 1366): înainte 29 / 30, după 28 / 29
+litere a–h picate în total (1920 / 1366): înainte 29 / 30, după 31 / 30
 ferestre cu literă a–h sau buton principal schimbat, înainte → după:
   Tipare de erori | .b...... .b...... → ........ ........
+  Fișa salariatului F5 | ..c..... ..c..... → .bc..... .bc.....
+  Declarație D301 F3 pasul 2 | ...d.... ...d.... → ...de..h ...d....
+
+Note:
+- Tipare de erori: b trece după (în starea fără date, „Generează analiză AI” e în bară, inactiv, cu motivul).
+- Fișa salariatului F5: b pică după, deoarece „Fluturaș” e acum acțiunea principală din bară (cerută de aserțiunea g.2), iar originalul rămâne în #ss-butoane (cerut de oracolul X07 e.1, 13 copii direcți, și de e2e_pilot_luna.py:1249); rândul b („acțiunea principală o singură dată pe ecran”) vede cele două. Pe bază „Descarcă PDF” era principal și b trecea. Decizia între cele două cerințe e a arhitectului (DECIZII 17.5).
+- Declarație D301 F3 pasul 2 (1920×1080): „de..h” în rularea completă după, dar „...d....” de 4 ori la rând când fereastra se măsoară singură, pe lot (af2019fb) ca și pe bază (25610dbf), deci starea apare numai în rularea completă (depinde de ordinea ferestrelor), nu din codul lotului; la 1366×768 neschimbat.
