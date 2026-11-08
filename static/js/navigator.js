@@ -469,7 +469,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       const taiata = () => zona.scrollHeight > zona.clientHeight + 2;
       // un element se mută numai dacă are conținut la vedere acum și nu e zonă de mesaj / rezultat (ele se umplu după o acțiune și trebuie să rămână lângă butonul lor)
       const vazut = (e) => (e.offsetParent !== null || e.getClientRects().length > 0) && e.offsetHeight >= 16 && !e.matches('[aria-live], [role="status"], [role="alert"], [id$="-mesaj"], [id$="-msg"], [id$="-rez"]');
-      const SARIT = ".rezumat-fix, .bara-fixa, .fereastra-jos, .zona-derulare, h2";
+      const SARIT = ".rezumat-fix, .bara-fixa, .fereastra-jos, .zona-derulare, h2, [class*='ds-tabel']";   // piesele tabelului DS (subsolul cu totalul, cutia) rămân lipite de tabel
       const dinZona = (e) => zona.contains(e) || e.contains(zona);
       const urmatorul = () => {
         const note = [..._corp.querySelectorAll("p.ecran-nota, .tn-explicatii")].filter((e) => !dinZona(e) && !e.closest(".rezumat-fix, .bara-fixa, .fereastra-jos") && vazut(e));
