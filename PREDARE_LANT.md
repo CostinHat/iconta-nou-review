@@ -2,6 +2,11 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-A (unelte, 08.11.2026) — praguri și timp de lot
+- Praguri pentru un lot nou: `./venv/bin/python scripts/praguri_automate.py <lot> <produs|unelte> [--inainte-de <lot>] [--adauga <fișier>]` (scrie ~/ghid_incoming/praguri_<lot>.txt; `--suprascrie` rescrie). Pentru «produs» fisiere_permise vin prin `--adauga`.
+- Timp: `./venv/bin/python scripts/raport_timp_lot.py <lot>` → ~/lot_<lot>_timp.md (se produce și la publicare); fazele de lucru: `jurnal_lot.py lucru <lot>`.
+- Calibrare: docs/dovezi/17_5_A/ (control_independent.sh, comparatie.py, proba_B.py, strici.txt); fazele reale se probează la publicarea lui 17.6.
+
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-10-27**, înaintea porții lotului 13 (loturile 12 + 13 pe ramură, fără poartă, fără publicare), în commitul care conține această
