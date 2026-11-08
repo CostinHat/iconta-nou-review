@@ -178,6 +178,7 @@ function _proxy(sursa) {
   p.dataset.faraActiune = "apasă butonul din fereastră care face această acțiune";
   p.textContent = _normalizeaza(sursa.textContent);
   p.__sursa = sursa;
+  if (sursa.__slab) p.__slab = true;   // proxy-ul unui buton slab rămâne slab (înlocuibil de catalog)
   sursa.classList.remove("buton-primar"); sursa.classList.add("buton-secundar");   // în fereastră rămâne ca buton secundar: un singur buton principal, cel din bară
   p.addEventListener("click", () => sursa.click());
   return p;
@@ -203,13 +204,13 @@ const _eligibilPrincipal = (bara, liber, cuRezumat = false) => (b) => b.tagName 
 // [15.1-E5, pct.1] fereastra doar de citit, cu tabel și fără export: „Descarcă PDF” se adaugă ca export al tabelului (tipărirea tabelului, „Salvează ca PDF”)
 // [17.5, 791 / 793] când fereastra are un singur buton principal al ei (eligibil, `buton-primar`, altul decât „Descarcă PDF”), acela e acțiunea ferestrei: PDF-ul de
 // rezervă nu mai e ales. Aici rezumatul lipit sus (`.rezumat-fix`) nu exclude butonul: „Fluturaș” al fișei salariatului stă în `#ss-butoane`, în rezumat. Mai multe sau
-// niciunul: rezerva rămâne. Ferestrele din EXPORT_PDF rămân cu PDF-ul (la ele chiar el e acțiunea). Butonul ales urcă în bară ca unul marcat (același nod, cu ascultătorii lui):
-// un proxy ar lăsa „Fluturaș” de două ori pe ecran (rândul b din RANDURI).
+// niciunul: rezerva rămâne. Ferestrele din EXPORT_PDF rămân cu PDF-ul (la ele chiar el e acțiunea). Butonul ales trece prin drumul unuia găsit de catalog (`__catalog`: cu id în
+// afara NU_MUTA se mută în bară, fără id rămâne în fereastră și în bară stă un proxy): „Fluturaș” rămâne în #ss-butoane (oracolul X07, e.1: 13 copii direcți; e2e_pilot_luna îl apasă acolo).
 function _exportTabel(corp, titlu, bara, liber) {
   if (!EXPORT_PDF.test(titlu || "")) {
     const eligibil = _eligibilPrincipal(bara, liber, true);
     const proprii = [...corp.querySelectorAll("button.buton-primar")].filter((b) => eligibil(b) && _normalizeaza(b.textContent) !== "Descarcă PDF");
-    if (proprii.length === 1) { proprii[0].__slab = true; return proprii[0]; }   // slab, ca PDF-ul: o acțiune găsită ulterior în catalog îl înlocuiește (un buton trecător din timpul încărcării nu ține locul)
+    if (proprii.length === 1) { proprii[0].__slab = true; proprii[0].__catalog = true; return proprii[0]; }   // slab, ca PDF-ul: o acțiune găsită ulterior în catalog îl înlocuiește (un buton trecător din timpul încărcării nu ține locul)
   }
   const tabel = [...corp.querySelectorAll("table")].find((x) => _vizibil(x) && !x.closest("template, details"));
   if (!tabel && !EXPORT_PDF.test(titlu || "")) return null;

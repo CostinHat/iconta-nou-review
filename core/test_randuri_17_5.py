@@ -129,5 +129,5 @@ def test_export_pdf_nu_ia_locul_actiunii_proprii():
     cadru = _sursa("cadru.js")
     f = _bloc(cadru, "function _exportTabel(", "// o urmă (comentariu)")
     assert "EXPORT_PDF.test(titlu" in f and "proprii.length === 1" in f and 'button.buton-primar' in f
-    assert "__slab = true" in f and "__catalog" not in f   # butonul propriu urcă în bară ca nod, nu ca proxy: „Fluturaș” nu apare de două ori pe ecran
+    assert "__slab = true" in f and "__catalog = true" in f   # drumul butoanelor găsite de catalog: fără id rămâne în fereastră (X07 e.1: 13 copii în #ss-butoane), în bară stă un proxy
     assert "_eligibilPrincipal(bara, liber)" in cadru
