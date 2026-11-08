@@ -1,0 +1,49 @@
+produs
+lot: 17.5-B
+max hook 112
+max poarta_verificator 105
+max poarta_pytest 660
+max poarta_plasa 1629
+sursa pragurilor 17.5-B: scripts/praguri_automate.py 17.5-B produs (08.11.2026 14:52, loturile 17.3-B, 17.5, 17.5-A): hook 112, poarta_verificator 105, poarta_pytest 660, poarta_plasa 1389; plasa + 240 s pentru e2e_pilot_x09.py (măsurat 58,94 s) = 1629. Calculul anterior: maximele rularilor complete (perechi inceput/sfarsit cu acelasi id, fara «intrerupt») ale lotului 17.5 din .lot_jurnal.log: hook 93 s (10 rulari), poarta_verificator 84 s (2), poarta_pytest 550 s (2), poarta_plasa 1147 s (2: prima rosie 916 s, a doua verde_cu_restante 1147 s); × 1,2 rotunjit in sus la secunda intreaga: 112, 101, 660, 1377. poarta_plasa 1617 = 1377 + 240: testul X09 măsurat de arhitect pe main 8dd4a104: 58,94 s (verificare_arhitect_17_5_B.txt); 240 s rămân marjă; text de oprire: OPRIT — gata: 17.5-B nepublicat, prag <fază>.
+runde_verificator_max: 2
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+acceptarea_arhitectului: pozitii: F012, F073 (Banca), F118 (Registru jurnal), F015 (Casa), F061 (Balanta), F089 (Stocuri), F087 si F080 (Stat de plata), F018 (Clienti) numere: 814, 815, 793; dupa publicare: retestul arhitectului pe productie, la 603x590 si 1366x768, pe cele noua ferestre ale lui e2e_pilot_x09.py.
+cerinte de raport: pe fiecare dintre cele noua ferestre si pe fiecare rezolutie, inaltimea zonei, locurile de derulare si elementele iesite din fereastra, inainte si dupa; e2e_pilot_x09 si e2e_pilot_x06 inainte si dupa; durata fiecarei faze fata de prag; rulari intrerupt pe faza; lista ferestrelor pe care piesa comuna le-a schimbat.
+fisiere_permise:
+  scripts/praguri_17_5_B.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_pilot_x09.py)
+  static/stil.css
+  static/js/cadru.js
+  static/js/navigator.js
+  static/js/ds_piese.js
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html
+  scripts/poarta_harta.txt (numai dacă `sh scripts/poarta_lot.sh --lista` iese cu 1, CLAUDE.md R11)
+  static/spv_callback.html (numai linia stil.css?v= rescrisă de versioneaza_assets.py --scrie)
+  static/js/app.js
+  static/js/ecrane/firme.js
+  static/js/ecrane/clienti_ecran.js
+  static/js/ecrane/tabel_note.js
+  frontend_test/e2e/e2e_pilot_x09.py (nou)
+  DESIGN_SYSTEM.md
+  CLAUDE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_B/
+  docs/dovezi/17_5_B/jurnal_verificare.csv
+  docs/dovezi/17_5_B/baza.json
+  core/test_lot10_fereastra_tabel.py
+  core/test_lot14_incape.py
+  core/test_lot12_ui2_derulare.py
+  core/test_lot12_ui2_ecrane.py
+  core/test_lot11_w4_ecrane.py
+  core/test_lot12_fe3_ecrane.py
+  core/test_lot11_m_ferestre_import.py
+  core/test_lot10_rezumat_fix.py
+  frontend_test/e2e/e2e_lot14.py
+  frontend_test/e2e/e2e_lot15_e3.py
+  frontend_test/e2e/e2e_lot15_e4.py
+  frontend_test/e2e/e2e_lot12_emit.py
+  frontend_test/e2e/e2e_lot11_m.py
+  frontend_test/e2e/e2e_lot11_w4.py
+  frontend_test/e2e/e2e_lot12_cx7.py

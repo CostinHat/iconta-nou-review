@@ -1,0 +1,32 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "12",
+   "cheie": "dom:.cab-grila button.cab-card|numar"
+  },
+  {
+   "id": "a.1",
+   "pas": "banca603",
+   "operator": "interval_px",
+   "valoare": "201-4000",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .zona-derulare|inaltime_px"
+  },
+  {
+   "id": "a.2",
+   "pas": "stocuri603",
+   "operator": "interval_px",
+   "valoare": "201-4000",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .zona-derulare|inaltime_px"
+  },
+  {
+   "id": "a.3",
+   "pas": "jurnal603",
+   "operator": "interval_px",
+   "valoare": "201-4000",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .zona-derulare|inaltime_px"
+  }
+ ]
+}
