@@ -56,7 +56,7 @@ def test_def_394_nota_noua_incape_la_1280x720(ecran_mic, firma_w4):
               un_rand: new Set(sus).size === 1}; }""" % _CORP)
     ecran_mic.captura()
     assert m["sh"] <= m["ch"] + 1 and m["jos_s"] <= m["jos_c"] and m["un_rand"], m
-    pg.click("#je-renunta")
+    pg.click(".fereastra:last-of-type .nav-inapoi")   # [17.3-B] „←” din antet = vechiul „Renunță”
     pg.wait_for_function("() => document.body.innerText.includes('Comision E2E W4 7')", timeout=20000)
 
 

@@ -182,6 +182,11 @@ export function randeazaListaFirme(container, nav, inapoi) {
   });
 
   const lista = container.querySelector("#firme-lista");
+  // [17.3-B] sub 700 px nota de sus intră în zona de derulare, ca prim element al ei: textul rămâne întreg și lista are loc; `innerHTML` al zonei o scoate la fiecare desen, deci se pune la loc după fiecare
+  const nota = container.querySelector("p.ecran-nota"), ingust = window.matchMedia("(max-width: 700px)");
+  const asezaNota = () => { if (ingust.matches) lista.prepend(nota); else if (nota.parentNode !== container) container.prepend(nota); };
+  ingust.addEventListener("change", asezaNota);
+  asezaNota();
   const cautare = container.querySelector("#firme-q");
   const zonaDez = container.querySelector("#firme-dezactivate");
   let toate = [], dezactivate = [], scoase = [];
@@ -193,13 +198,16 @@ export function randeazaListaFirme(container, nav, inapoi) {
     );
     if (toate.length === 0) {
       lista.innerHTML = `<div class="firme-gol">Nicio firmă încă. Adaugă prima firmă din portofoliu.</div>`;
+      asezaNota();
       return;
     }
     if (vizibile.length === 0) {
       lista.innerHTML = `<div class="firme-gol">Nicio firmă nu se potrivește cu „${filtru}".</div>`;
+      asezaNota();
       return;
     }
     lista.innerHTML = "";
+    asezaNota();
     vizibile.forEach((t) => {
       // [R78, 27.08.2026] Decizia de a scoate o firmă se ia UNDE VEZI PORTOFOLIUL, nu după ce
       // intri în firmă și derulezi 26 de carduri de lucru. Măsurat înainte: butonul de dinainte
@@ -249,6 +257,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       dezactivate = lst.filter((t) => t.activ === false);
     } catch {
       lista.innerHTML = `<div class="firme-gol">Firmele nu au putut fi încărcate.</div>`;
+      asezaNota();
       return;
     }
     // [drepturi_rol] istoricul scoaterilor e al întregului cabinet -> doar administratorul (nu se mai cere, ca să fie refuzat)

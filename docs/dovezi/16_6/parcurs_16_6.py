@@ -90,7 +90,7 @@ def ruleaza(pagina, ctx):
     pas("h")
     pg.click("#je-salveaza", force=True)
     pas("i")
-    pg.click("#je-renunta")
+    pg.click(".fereastra:last-of-type .nav-inapoi")   # [17.3-B] „←” din antet = vechiul „Renunță” (revine la lista jurnalului)
     pg.wait_for_selector("#j-nota-noua", timeout=20000)
     _jurnal(pg, 1)
     _nota_noua(pg)
@@ -115,7 +115,7 @@ def ruleaza(pagina, ctx):
     pg.fill("#je-data", "")
     pg.dispatch_event("#je-data", "change")
     pas("s")
-    pg.click("#je-renunta")
+    pg.click(".fereastra:last-of-type .nav-inapoi")   # [17.3-B] „←” din antet = vechiul „Renunță”
     pg.wait_for_selector("#j-nota-noua", timeout=20000)
     _jurnal(pg, 3)
     pg.click(NOTA_203 + " .tn-deschide")

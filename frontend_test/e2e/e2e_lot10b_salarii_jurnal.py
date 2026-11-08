@@ -32,7 +32,7 @@ def test_def_433_dupa_contabilizarea_statului_nu_se_deschide_formularul_cor(patr
     deschide_salariat(patron, _RAND)
     buton(patron, "vac")
     pg.fill("#ben-input", "100")          # fereastra a primit o tastare
-    pg.click(".fereastra:last-of-type [data-renunta]")
+    pg.click(".fereastra:last-of-type .nav-inapoi")
     pg.wait_for_selector("#ss-butoane", timeout=20000)
     buton(patron, "adev")
     pg.wait_for_selector("#ad-functie", timeout=20000)
