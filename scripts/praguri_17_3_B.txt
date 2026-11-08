@@ -1,0 +1,63 @@
+produs
+lot: 17.3-B
+max hook 285
+max poarta_verificator 179
+max poarta_pytest 1100
+max poarta_plasa 1700
+sursa pragurilor 17.3-B (aceleasi cu 17.3, care au tinut in rularea 1: hook 8 rulari, poarta_verificator 84 s, poarta_pytest 550 s, poarta_plasa 1096 s): maximele lotului 17.1 (hook 91 s, poarta_verificator 84 s, poarta_pytest 602 s, poarta_plasa 1024 s); poarta_pytest 1100: nucleul + test nou + testele din teste_renunta.txt, asteptat 600-700 s; matrice_dupa informativ: 1508 s in 17.3 (plus o rulare anterioara de 1513 s); poarta_plasa 1700: 1024 s plus testul X07 (circa 200-250 s). Depasirea unui `max <faza>` opreste mecanic publicarea (publica_lot.py:456–476); text de oprire: OPRIT — gata: 17.3 nepublicat, prag <fază>.
+runde_verificator_max: 2
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+cerinte de raport: durata totala, restaurarea bazei, rularile rosii, durata fiecarei faze fata de prag, rulari intrerupt pe faza, nucleul din afara portii (informativ).
+acceptarea_arhitectului: pozitii: X07 numere: niciunul
+acceptarea_arhitectului: dupa publicare: rezumatul matricei «dupa» (numar text taiat pe 3 rezolutii, tinta 0).
+cerinte de raport: numarul de text taiat inainte si dupa pe fiecare rezolutie; ferestrele care si-au pastrat «Renunta»; intrarile ramase > 0 cu cauza.
+fisiere_permise:
+  scripts/praguri_17_3.txt
+  scripts/praguri_17_3_B.txt
+  scripts/verificator_design.py
+  scripts/verificator_design_masuri.js
+  verificator_conformitate.py
+  static/stil.css
+  static/js/cadru.js
+  static/js/api.js
+  static/js/navigator.js
+  static/js/restaurare.js
+  static/js/cautare.js
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html
+  static/spv_callback.html
+  static/js/app.js
+  static/js/ecrane/control_verdict.js
+  static/js/ecrane/emitere_ecran.js
+  static/js/ecrane/firme.js
+  static/js/ecrane/flux_concediu.js
+  static/js/ecrane/migrare.js
+  static/js/ecrane/operatiuni_ecran.js
+  static/js/ecrane/portal.js
+  static/js/ecrane/produse_ecran.js
+  static/js/ecrane/validat.js
+  static/js/ecrane/woo_ecran.js
+  core/test_taiat_17_3.py (nou)
+  frontend_test/e2e/e2e_lot15_e2.py
+  frontend_test/e2e/e2e_lot15_e3.py
+  frontend_test/e2e/e2e_lot15_e5.py
+  frontend_test/e2e/e2e_lot15_1.py
+  DESIGN_SYSTEM.md
+  CLAUDE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_3/
+  docs/dovezi/17_3/jurnal_verificare.csv
+  core/test_lot10b_jurnal_nota_noua.py
+  core/test_lot11_m_ferestre_import.py
+  core/test_lot12_inapoi_sageata.py
+  core/test_330_confirmari.py
+  core/test_293_renunta_altui.py
+  core/test_lot0710_ui.py
+  docs/dovezi/17_3/baza.json
+  docs/dovezi/17_3_B/
+  docs/dovezi/17_3_B/jurnal_verificare.csv
+  docs/dovezi/16_6/parcurs_16_6.py
+  docs/dovezi/16_6/parcurs_16_6_angajat.py
+  frontend_test/e2e/e2e_lot10b_salarii_jurnal.py
+  frontend_test/e2e/e2e_lot11_w4.py
