@@ -1,0 +1,6 @@
+# x06_603.txt (17.3-B, pct.2 b): fereastra „Firme existente” la 603×590, pe P = d4a9d41b, măsurată cu scripts/verificator_design.py (ecran + masuri_alt)
+div.firme-lista (zona de derulare): 316 px din 502 px ai corpului ferestrei = 62,9% (cerut: cel puțin 40%; înainte: 186 px = 37%)
+elemente cu overflow-y auto/scroll și scrollHeight > clientHeight + 2, în fereastră: 1 (div.firme-lista zona-derulare); în afara ferestrei, DIV.desktop (fundalul paginii, neatins de lot) derulează și el, ca în e2e_pilot_x06.py, care numără numai în fereastră
+p.ecran-nota: prima în div.firme-lista (da), înălțime 118 px, derulează împreună cu lista
+matricea «dupa» la 603×590: 0 tăieturi (docs/dovezi/17_3_B/matrice/rezumat.txt)
+e2e_pilot_x06.py: verde (docs/dovezi/17_3_B/e2e_rezultate.txt)

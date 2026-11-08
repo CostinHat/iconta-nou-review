@@ -1,0 +1,6 @@
+# e2e_rezultate.txt (17.3-B, pct.4.2): fișier | exit | durată | rezultat; rulate prin scripts/e2e_poarta.py --doar=<fișier> pe indexul lui P (d4a9d41b), baza restaurată înainte
+e2e_pilot_f054.py exit=0 133s [e2e] 1 passed in 118.36s (0:01:58) (131s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/27b698fd-3c62-4bb7-b435-7b5a2a0ca2c4/scratchpad/cap2)
+e2e_pilot_x06.py exit=0 144s [e2e] 1 passed in 130.79s (0:02:10) (143s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/27b698fd-3c62-4bb7-b435-7b5a2a0ca2c4/scratchpad/cap2)
+e2e_lot10b_salarii_jurnal.py exit=1 35s [e2e] 1 failed, 3 passed in 20.37s (33s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/27b698fd-3c62-4bb7-b435-7b5a2a0ca2c4/scratchpad/cap2)
+FAILED frontend_test/e2e/e2e_lot10b_salarii_jurnal.py::test_def_394_nota_noua_nu_deruleaza_cu_note_in_luna
+e2e_lot11_w4.py exit=0 30s [e2e] 4 passed in 16.43s (29s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/27b698fd-3c62-4bb7-b435-7b5a2a0ca2c4/scratchpad/cap2)

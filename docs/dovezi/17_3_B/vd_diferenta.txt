@@ -1,0 +1,8 @@
+# vd_diferenta.txt (17.3-B, pct.3 a / 4.4): per fereastră, verificatorul de design pe P (d4a9d41b) față de docs/dovezi/17_3/verificator_design_dupa.txt (17.3); coloane: 1920x1080 | 1366x768; litera = rând care pică
+ferestre în 17.3: 105; în 17.3-B: 105
+Fișa salariatului F5                                 17.3: ..c..... .bc..... -> 17.3-B: ..c..... ..c.....
+Declarație D301 F3 pasul 2                           17.3: ...d.... ...d.... -> 17.3-B: ...d.... ...de..h
+ferestre cu rând roșu nou (verde în 17.3): 2 [('Declarație D301 F3 pasul 2', 1, 'e'), ('Declarație D301 F3 pasul 2', 1, 'h')]
+ferestre cu rând devenit verde: 1 [('Fișa salariatului F5', 1, 'b')]
+Notă: „Declarație D301 F3 pasul 2” la 1366x768 a dat «...de..h» în rularea --toate și «...d....» în două rulări separate ale aceleiași ferestre (identic cu 17.3, ...d.... la ambele rezoluții): variație între rulări în starea ferestrei, nu efect al lotului (lotul nu atinge D301); rândul nou roșu e deci nereprodus la reluare.
+Rezultat pct.3 a: Fișa salariatului F5 la 1366x768, rândul b: roșu -> verde; nicio altă fereastră verde pe b în 17.3 nu a devenit roșie pe b.
