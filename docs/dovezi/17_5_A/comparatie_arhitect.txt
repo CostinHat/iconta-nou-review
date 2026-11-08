@@ -1,0 +1,40 @@
+lot      măsură                 arhitect       script         control        dif.min   verdict
+17.1     timp_total             602.0 min      602.0 min      602.0 min      +0.0      ok
+17.1     pytest                 154 min × 41   154.2 min × 41 154.2 min × 41 +0.2      ok
+17.1     hook                   12 min × 8     12.2 min × 8   12.2 min × 8   +0.2      ok
+17.1     poarta_pytest          19 min × 2     19.1 min × 2   19.1 min × 2   +0.1      ok
+17.1     poarta_plasa           34 min × 2     34.0 min × 2   34.0 min × 2   +0.0      ok
+17.2     timp_total             303.0 min      303.0 min      303.0 min      +0.0      ok
+17.2     pytest                 87 min × 40    86.7 min × 40  86.7 min × 40  -0.3      ok
+17.2     hook                   —              10.6 min × 7   10.6 min × 7   —         ok
+17.2     poarta_pytest          —              18.1 min × 2   18.1 min × 2   —         ok
+17.2     poarta_plasa           38 min × 2     38.1 min × 2   38.1 min × 2   +0.1      ok
+17.2-A   timp_total             —              129.2 min      129.2 min      —         ok
+17.2-A   pytest                 —              21.0 min × 38  21.0 min × 38  —         ok
+17.2-A   hook                   —              6.1 min × 4    6.1 min × 4    —         ok
+17.2-A   poarta_pytest          —              8.9 min × 1    8.9 min × 1    —         ok
+17.2-A   poarta_plasa           —              19.0 min × 1   19.0 min × 1   —         ok
+17.2-B   timp_total             —              133.3 min      133.3 min      —         ok
+17.2-B   pytest                 —              23.2 min × 31  23.2 min × 31  —         ok
+17.2-B   hook                   —              7.5 min × 5    7.5 min × 5    —         ok
+17.2-B   poarta_pytest          —              9.1 min × 1    9.1 min × 1    —         ok
+17.2-B   poarta_plasa           —              19.1 min × 1   19.1 min × 1   —         ok
+17.3     timp_total             —              479.2 min      479.2 min      —         ok
+17.3     pytest                 —              23.1 min × 43  23.1 min × 43  —         ok
+17.3     hook                   —              12.3 min × 8   12.3 min × 8   —         ok
+17.3     poarta_pytest          —              9.2 min × 1    9.2 min × 1    —         ok
+17.3     poarta_plasa           —              18.3 min × 1   18.3 min × 1   —         ok
+
+abateri peste toleranță: 0
+
+## 5(d) direcția a doua
+### 16.7 — rândurile fazelor hook și poarta_plasa
+| hook | 6 | 1 | 0 | 15.8 | 160 |
+| poarta_plasa | 1 | 1 | 0 | 15.2 | 909 |
+(minutele sunt ale rulărilor complete; cele 117 s și 88 s ale rulărilor «intrerupt» nu apar)
+### 17.1 — «pytest Code» față de «pytest, toate sesiunile»
+- pytest, toate sesiunile: 41 sesiuni, 154.2 min (include sesiunile «intrerupt»; numără de două ori sesiunile din poartă)
+  - din care întrerupte: 1, 57.0 min
+- fără dublă numărătoare (reuniune de intervale): poartă 55.9 min; pytest Code 136.8 min; restul 409.3 min (= timp total − reuniunea poartă ∪ pytest Code)
+- sesiuni pytest: colectări 23; pornite în hook 8; pornite în poartă 2; ale lui Code 8
+Explicație: 154,2 min × 41 numără toate sesiunile, inclusiv 23 de colectări, cele 8 din hook, 2 din poartă (dublă numărătoare cu poarta_pytest) și 1 întreruptă de 57,0 min; «pytest Code» = reuniunea intervalelor celor 8 sesiuni ale lui Code (fără colectări, hook, poartă) = 136,8 min, din care sesiunea întreruptă de 57 min este una a lui Code.

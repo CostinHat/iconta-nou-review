@@ -1,0 +1,26 @@
+# 7.5 fișier generat pentru 17.6 (produs), citit de publica_lot.depasiri_praguri
+loturi folosite: 17.2-B, 17.3-B, 17.5 (3)
+faza                   maxim lot         complete   intrerupte    prag
+hook                      93 17.5              19            0     112
+poarta_verificator        84 17.5               4            0     101
+poarta_pytest            550 17.5               4            0     660
+poarta_plasa            1147 17.5               4            0    1377
+scris /tmp/_p176/praguri_17_6.txt
+produs
+lot: 17.6
+max hook 112
+max poarta_verificator 101
+max poarta_pytest 660
+max poarta_plasa 1377
+runde_verificator_max: 2
+sursa pragurilor 17.6: generate de scripts/praguri_automate.py la 2026-11-08T12:58:55+02:00 din .lot_jurnal.log; loturi folosite: 17.2-B, 17.3-B, 17.5 (3)
+  hook: maxim 93 s (lotul 17.5, rularea 2782040-1794115301891) din 19 rulari complete, 0 rulari «intrerupt» ignorate, prag 112 s
+  poarta_verificator: maxim 84 s (lotul 17.5, rularea 2956078-1794124523556) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 101 s
+  poarta_pytest: maxim 550 s (lotul 17.5, rularea 3063327-1794130048454) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 660 s
+  poarta_plasa: maxim 1147 s (lotul 17.5, rularea 3063327-1794130598748) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 1377 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise
+  scripts/exemplu.py
+depasiri_praguri(hook 113 s, poarta_plasa 1229 s) = (['pragul „hook” depășit: 113s > 112s'], {})
+depasiri_praguri(hook 114 s) = (['pragul „hook” depășit: 114s > 112s'], {})
+lista_permisa = ['scripts/exemplu.py']

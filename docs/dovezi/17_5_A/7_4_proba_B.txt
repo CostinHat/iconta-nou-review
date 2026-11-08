@@ -1,0 +1,30 @@
+lucru 17.1: 28 rânduri noi
+lucru 17.2: 26 rânduri noi
+lucru 17.2-B: 20 rânduri noi
+a doua chemare: 17.1 0 rânduri noi, 17.2 0 rânduri noi, 17.2-B 0 rânduri noi
+(iv) rândurile vechi identice octet cu octet cu jurnalul real: DA (copia = vechi + 11603 octeți)
+(i) 17.1: suma fazelor 30556 s; până la începutul publicării 30556 s; diferență 0 s; (ii) reparatie_dupa_rosu = 1
+(i) 17.2: suma fazelor 18149 s; până la începutul publicării 18149 s; diferență 0 s; (ii) reparatie_dupa_rosu = 0
+(i) 17.2-B: suma fazelor 7973 s; până la începutul publicării 7973 s; diferență 0 s; (ii) reparatie_dupa_rosu = 0
+(v) 17.1 rezumat                              identic înainte/după lucru: DA
+(v) 17.1 durate(faze vechi)                   identic înainte/după lucru: DA
+(v) 17.1 jurnal_lot.py rezumat (subproces)    identic înainte/după lucru: DA
+(v) 17.1 defalcare.py                         identic înainte/după lucru: DA
+(v) 17.1 faze_stop(unelte)                    identic înainte/după lucru: DA
+(v) 17.1 faze_stop(produs)                    identic înainte/după lucru: DA
+(v) 17.1 depasiri_praguri(sintetic)           identic înainte/după lucru: DA
+(v) 17.2 rezumat                              identic înainte/după lucru: DA
+(v) 17.2 durate(faze vechi)                   identic înainte/după lucru: DA
+(v) 17.2 jurnal_lot.py rezumat (subproces)    identic înainte/după lucru: DA
+(v) 17.2 defalcare.py                         identic înainte/după lucru: DA
+(v) 17.2 faze_stop(unelte)                    identic înainte/după lucru: DA
+(v) 17.2 faze_stop(produs)                    identic înainte/după lucru: DA
+(v) 17.2 depasiri_praguri(sintetic)           identic înainte/după lucru: DA
+(v) 17.2-B rezumat                              identic înainte/după lucru: DA
+(v) 17.2-B durate(faze vechi)                   identic înainte/după lucru: DA
+(v) 17.2-B jurnal_lot.py rezumat (subproces)    identic înainte/după lucru: DA
+(v) 17.2-B defalcare.py                         identic înainte/după lucru: DA
+(v) 17.2-B faze_stop(unelte)                    identic înainte/după lucru: DA
+(v) 17.2-B faze_stop(produs)                    identic înainte/după lucru: DA
+(v) 17.2-B depasiri_praguri(sintetic)           identic înainte/după lucru: DA
+REZULTAT: TOATE VERZI

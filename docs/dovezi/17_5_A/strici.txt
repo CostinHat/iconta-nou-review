@@ -1,0 +1,19 @@
+== S1 intrerupt numarate in maxim
+test_rularea_intrerupt_nu_intra_in_maxim_dar_se_numara_iar_cea_rosie_completa_intra
+1 failed, 25 passed, 1 skipped in 0.87s
+== S2 rotunjire in jos
+test_rularea_intrerupt_nu_intra_in_maxim_dar_se_numara_iar_cea_rosie_completa_intra
+test_pragul_este_maximul_inmultit_cu_unu_virgula_doi_rotunjit_in_sus[92-111]
+test_pragul_este_maximul_inmultit_cu_unu_virgula_doi_rotunjit_in_sus[84-101]
+test_pragul_este_maximul_inmultit_cu_unu_virgula_doi_rotunjit_in_sus[602-723]
+test_formatul_produs_si_unelte_fara_text_de_completat_iar_adauga_vine_la_sfarsit
+test_fisierul_generat_este_citit_de_publica_lot_fara_modificari
+6 failed, 20 passed, 1 skipped in 1.01s
+== S3 colectari numarate ca pytest Code
+test_numaratoarea_pytest_exclude_colectarile_hook_ul_si_poarta_iar_intervalul_hook_e_inchis
+test_raportul_de_timp_imparte_fara_dubla_numaratoare_si_nu_da_minute_rularilor_intrerupt
+2 failed, 24 passed, 1 skipped in 0.98s
+== S4 hook numarat ca pytest Code
+test_numaratoarea_pytest_exclude_colectarile_hook_ul_si_poarta_iar_intervalul_hook_e_inchis
+test_raportul_de_timp_imparte_fara_dubla_numaratoare_si_nu_da_minute_rularilor_intrerupt
+2 failed, 24 passed, 1 skipped in 0.98s

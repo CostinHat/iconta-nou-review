@@ -1,0 +1,5 @@
+# 7.1 starea înainte (2026-11-08T12:57:53+02:00)
+P=7288d0eeba6d162e0eb1c5901a975fd9257664f1
+lacat: liber
+8019 liber
+git status --porcelain --untracked-files=no -- scripts core: []

@@ -1,0 +1,9 @@
+# 7.7 starea după (2026-11-08T13:06:12+02:00)
+lacat: liber
+8019 liber
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (iconta_test:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 79s
+exit restaureaza=0
+lacat după: liber
+8019 liber

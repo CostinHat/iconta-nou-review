@@ -1,0 +1,5 @@
+     14 module 'jurnal_lot_17_5a_3056549218301793665' has no attribute 'deriva_lucru'
+     14 '/home/costin/verif_17_5_A/wt_baza/scripts/praguri_automate.py'
+      3 '/home/costin/verif_17_5_A/wt_baza/scripts/raport_timp_lot.py'
+      2 module 'publica_lot_17_5a_3056549218301793665' has no attribute 'lucru_si_timp'
+      2 module 'jurnal_lot_17_5a_3056549218301793665' has no attribute 'lucru'
