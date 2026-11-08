@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.109 · 7 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.110 · 8 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -596,11 +596,15 @@ motivul regulii, iar nota rămâne ciornă. Registrul jurnal deschis la PFA o sp
   starea nouă (evidențiat, `.val-evidentiat`), iar confirmarea („Ai validat nota nr. crt. 12 …”) stă în zona de mesaj din rezumatul lipit
   sus. Un ecran care trece totuși prin „Se încarcă…” după un clic într-un rând își regăsește derularea prin navigator (mecanismul de la
   observatorul ferestrei). Gard: `core/test_lot12_ui2_ecrane.py` (jurnal, coadă) + `core/test_lot12_ui2_derulare.py` (navigatorul).
-- **Acțiunile unui rând de tabel stau într-un meniu (v2.83, 08.10.2026, comanda Costin „Retest 08.10” pct.13).** O celulă cu trei
-  sau mai multe butoane le ține într-un `<details class="dec-xml"><summary>Acțiuni</summary>` (butoanele unul sub altul la deschidere),
-  nu libere pe rând: butoanele libere lățesc coloana până când fereastra derulează lateral și acțiunile ies din vedere (Mijloace fixe
-  F2, ~1700 px). Zero clase noi — e toggle-ul secundar al Declarațiilor (v2.54). Datele scurte (PIF) nu se rup pe două rânduri, iar
-  o listă lungă de luni se strânge în intervale („8 luni: 01–08/2026”). Gard: `ACTIUNI_RAND_LIBERE` în verificator.
+- **Acțiunile unui rând stau într-un meniu (v2.83, 08.10.2026; rescris în v2.110, lotul 17.5).** O celulă de tabel sau un rând de listă cu două sau mai multe acțiuni ține una
+  singură la vedere, cea obișnuită, cu clasa pe care o are (nu se introduce `buton-xs`); restul stau în `<details class="dec-xml"><summary>Acțiuni</summary>` (butoanele unul sub
+  altul la deschidere), desenat de piesa comună `meniuActiuni` din `static/js/ds_piese.js`. Acțiunile distructive (Șterge, Scoate, Revocă, Casează, Respinge, Stornează) stau
+  numai în meniu, ultimele, cu confirmarea de azi; dacă toate acțiunile rândului sunt distructive, rândul are numai meniul. Aceeași acțiune nu apare și în pagină, și în bară: rămâne
+  cea din bară. Un mesaj informativ nu se desenează ca buton. Butoanele libere lățesc coloana până când fereastra derulează lateral și acțiunile ies din vedere (Mijloace fixe F2,
+  ~1700 px). Pragul de verificare e DOUĂ butoane pe fișierele ecranelor martor (Clienți, Produse, De validat; Plan de conturi și Casă, în `firme.js`, prin testul static
+  `core/test_randuri_17_5.py`) și rămâne trei în restul fișierelor, până când le ajunge rândul (lista rămasă: `docs/dovezi/17_5/randuri.txt`). Zero clase noi — e toggle-ul secundar al
+  Declarațiilor (v2.54). Datele scurte (PIF) nu se rup pe două rânduri, iar o listă lungă de luni se strânge în intervale („8 luni: 01–08/2026”). Gard: `ACTIUNI_RAND_LIBERE` în verificator.
+  Limita gardului: vede celulele scrise ca `<td …>…</td>` literal într-un șablon; o celulă construită din bucăți sau cu `butonRand(...)` nu se vede.
   [v2.108, lotul 17.2] Aceeași piesă (`details.dec-xml` cu `summary`) servește și acțiunilor rare sau înrudite ale unei ferestre: în fișa salariatului, «+ Beneficiu» (masă, vacanță, cadou, cultural, creșă) și «Mai multe» (Încetare, Adeverință, REGES), ambele pliate la fiecare desenare; butoanele rămân în `#ss-butoane`.
 - **O cifră zero nu e acțiune (v2.108, lotul 17.2).** Într-un panou de cifre (Sinteza zilei) cifra se desenează ca buton numai când e mai mare ca zero; la zero e text (`span.sa-cifra`, același aspect, fără mână și fără ascultător).
 - **Pe un rând stau cifrele, nu antetele (v2.86, 09.10.2026, deficiența 162).** `.fd-td-num` ține cifra pe un rând; antetul coloanei

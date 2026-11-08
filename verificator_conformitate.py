@@ -1823,10 +1823,16 @@ if "grupeazaCarduri(vizibile)" not in _ff or "${vizibile.map((o) =>" in _ff:
 #     butoanele libere lățesc coloana până când fereastra derulează lateral și acțiunile ies din vedere (Mijloace fixe F2, ~1700 px).
 #     Mutația care o probează: `<details class="dec-xml"><summary>Acțiuni</summary>` scos din mijloace_ecran.js -> TOTAL > 0.
 #     LIMITĂ: vede celulele scrise ca `<td …>…</td>` literal într-un șablon; o celulă construită din bucăți (`"<td>" + x`) nu se vede.
+#     [17.5, DS v2.110] Pragul e DOUĂ butoane pe fișierele ecranelor martor (ACTIUNI_RAND_MARTOR: Clienți, Produse, De validat); în restul fișierelor rămâne
+#     trei. Meniul poate fi scris literal (`<details`) sau prin piesa comună `meniuActiuni(` din ds_piese.js. Casă și Plan de conturi (firme.js) construiesc
+#     butoanele prin `butonRand(...)`, deci nu se văd aici: le păzește `core/test_randuri_17_5.py`. Mutația care o probează (17.5): `meniuActiuni(` scos din
+#     clienti_ecran.js -> TOTAL > 0, apoi pus la loc.
+ACTIUNI_RAND_MARTOR = {"clienti_ecran.js", "produse_ecran.js", "validat.js"}
 rap["actiuni_rand_libere"] = []
 for _fis, _txt in sorted(fisiere.items()):
+    _prag = 2 if _fis in ACTIUNI_RAND_MARTOR else 3
     for _m in re.finditer(r"<td\b[^>]*>(.*?)</td>", _txt, re.S):
-        if len(re.findall(r"<button\b", _m.group(1))) >= 3 and "<details" not in _m.group(1):
+        if len(re.findall(r"<button\b", _m.group(1))) >= _prag and "<details" not in _m.group(1) and "meniuActiuni(" not in _m.group(1):
             rap["actiuni_rand_libere"].append((_fis, _txt[:_m.start()].count("\n") + 1, "ACTIUNI_RAND", _m.group(1).strip()[:60]))
 
 # --- FER_LARG_STRIVIT (DS cap.9 v2.84, 08.10.2026, comanda Costin „Retest 08.10” pct.15): in fereastra larga (corp = coloana flex)

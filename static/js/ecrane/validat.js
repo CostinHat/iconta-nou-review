@@ -31,9 +31,9 @@
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=0b48920b43";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 622] tabelul comun de note
 import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";
-import { legaSemnale } from "../ds_piese.js?v=6f954e94a0";   // [15.1-E3] pliarea semnalelor constatărilor
+import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=fb823092ed";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=2e0d518065";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=e8c8358666";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -435,7 +435,7 @@ function randNotaCoada(c, firme, perm) {
     actiuni = `<span class="val-nota-perm">ai pregătit-o tu — o validează altcineva</span>`;
   } else {
     actiuni = `<button class="buton-primar val-btn val-aproba" data-act="valideaza-nota" data-actiune="POST /coada/{coada_id}/aproba">Validează</button>
-      <button class="buton-sters val-btn val-respinge" data-act="respinge-nota" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`;
+      ${meniuActiuni([`<button class="buton-sters val-btn val-respinge" data-act="respinge-nota" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`])}`;
     selectabila = true;
   }
   const descr = (n.descrieri && n.descrieri.length > 1) ? [...new Set(n.descrieri.filter(Boolean))].join(" · ") : n.descriere;
@@ -787,7 +787,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     }
     // Respinge — oricine cu drept de validare (și care n-a pregătit-o, când patru-ochi e activ)
     if (perm.poate_valida && !euAmPregatit) {
-      actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`;
+      actiuni += meniuActiuni([`<button class="buton-sters val-btn val-respinge" data-act="respinge" data-actiune="POST /coada/{coada_id}/respinge">Respinge</button>`]);   // [17.5] distructivă: numai în meniu
     }
   } else {
     // depune -> "Confirmă depunerea". Cu patru-ochi OFF, un item la_senior se aprobă automat înainte de depunere.
@@ -857,7 +857,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=6aff736b0c");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=44bda2cb62");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

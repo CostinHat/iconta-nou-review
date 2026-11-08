@@ -26,11 +26,12 @@ def test_def_174_operatiunea_cu_nota_validata_se_storneaza_nu_se_sterge(patron, 
     pg = patron.pg
     patron.firma(firma_e2e["nume"])
     pg.click("#fa-casa")
-    pg.wait_for_selector(".fereastra:last-of-type [data-storno='%s']" % oid, timeout=20000)
+    pg.wait_for_selector(".fereastra:last-of-type [data-storno='%s']" % oid, state="attached", timeout=20000)
     # [lotul 13, 675] „Șterge” stă la locul lui, inactiv, cu motivul: nu e activ
     assert pg.locator(".fereastra:last-of-type [data-del='%s']:not([aria-disabled='true'])" % oid).count() == 0, "operațiunea cu notă validată are „Șterge” activ"
     assert "1.250,00" in patron.fereastra()
     patron.captura("inainte")
+    pg.click(".fereastra:last-of-type tbody[data-op-id='%s'] .tn-actiuni summary" % oid)   # [17.5] „Stornează” stă în meniul „Acțiuni” al rândului
     pg.click(".fereastra:last-of-type [data-storno='%s']" % oid)
     pg.click("#ca-ok")
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('−1.250,00')",

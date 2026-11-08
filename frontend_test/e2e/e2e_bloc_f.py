@@ -565,7 +565,9 @@ def test_def_183_planul_de_conturi_are_ecran_cu_cautare_analitic_si_stergere_paz
     pg.fill(f + " #pcf-simbol", "4111.08")
     pg.fill(f + " #pcf-denumire", "Analitic de șters E2E")
     pg.click(f + " #pcf-adauga")
-    pg.wait_for_selector(f + " #pcf-lista [data-simbol='4111.08'] [data-sterge]", timeout=20000)
+    pg.wait_for_selector(f + " #pcf-lista [data-simbol='4111.08'] [data-sterge]", state="attached", timeout=20000)
+    pg.wait_for_timeout(800)   # [17.5] lista se redesenează după adăugare: meniul se deschide pe lista stabilă
+    pg.click(f + " #pcf-lista [data-simbol='4111.08'] summary")   # [17.5] „Șterge” stă în meniul „Acțiuni” al rândului
     pg.click(f + " #pcf-lista [data-simbol='4111.08'] [data-sterge]")
     pg.click("#ca-ok")
     pg.wait_for_selector(f + " #pcf-lista [data-simbol='4111.08']", state="detached", timeout=20000)

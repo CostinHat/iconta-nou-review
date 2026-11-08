@@ -18,6 +18,7 @@
 // parteneri_firmei`), cu căutare după nume sau cod fiscal; fișa partenerului (`ecranFisaPartener`): datele (verificarea la ANAF, ruta
 // existentă `verifica-cui`, cu propunerea numelui de la ANAF — 444), documentele lui și soldul din contabilitate, cu aceeași regulă ca balanța
 // (`clienti_api.sold_partener`: soldul de preluare + notele validate; ciornele separat). Nimic nu se recalculează în ecran.
+import { meniuActiuni } from "../ds_piese.js?v=fb823092ed";
 import { api, arataMesaj, esc, selectDaNu, daNu, eroareCamp, curataEroriCamp, focusFaraSalt, bani, dataRo, cate, confirmaCaseta, cereAlegerile, atributeInactiv } from "../api.js?v=0b48920b43";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 640] datele aduse de la ANAF țin de CUI-ul lor
 
@@ -99,13 +100,12 @@ async function ecranParteneri(corp, nav, t, fel, opt) {
             id="${P}-salveaza-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}" disabled data-actiune="${actiune(x)}">Salvează</button>
           <!-- [lotul 13, 675 — DS cap.1 v2.104] fiecare rând are aceleași acțiuni, în aceeași ordine; cea care nu se aplică stă inactivă, cu
                motivul. Trei butoane pe rând -> „Salvează” (al formularului rândului) rămâne la vedere, celelalte în meniul „Acțiuni” (DS cap.9 v2.83) -->
-          <details class="dec-xml ${P}-actiuni"><summary>Acțiuni</summary>
-            <button type="button" class="buton-secundar ${P}-anaf fisa-anaf" id="${P}-anaf-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}"
-              data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}"${x.cui ? "" : atributeInactiv("Partenerul n-are cod fiscal: ANAF n-are ce verifica.")}>Verifică la ANAF</button>
-            <button type="button" class="buton-secundar ${P}-sterge" id="${P}-sterge-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}"
+          ${meniuActiuni([`<button type="button" class="buton-secundar ${P}-anaf fisa-anaf" id="${P}-anaf-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}"
+              data-actiune="GET /tenants/{tenant_id}/verifica-cui/{cui}"${x.cui ? "" : atributeInactiv("Partenerul n-are cod fiscal: ANAF n-are ce verifica.")}>Verifică la ANAF</button>`,
+            `<button type="button" class="buton-secundar ${P}-sterge" id="${P}-sterge-${esc(x.cheie)}" data-cheie="${esc(x.cheie)}"
               data-actiune="${F.actSterge}"${!x.id ? atributeInactiv("Partenerul n-are fișă: datele lui vin din facturi, nu e nimic de șters.")
-                : (x.facturi ? atributeInactiv(`Are ${cate(x.facturi, "factură", "facturi")}: fișa ține localitatea și județul din D394 / D406, deci nu se șterge.`) : "")}>Șterge</button>
-          </details>
+                : (x.facturi ? atributeInactiv(`Are ${cate(x.facturi, "factură", "facturi")}: fișa ține localitatea și județul din D394 / D406, deci nu se șterge.`) : "")}>Șterge</button>`],
+            { clasa: `${P}-actiuni` })}
           <div id="${P}-anaf-stare-${esc(x.cheie)}"></div></td>
       </tr>`;
     // [lotul 13, 640] căutarea după nume sau cod fiscal (fără diacritice)

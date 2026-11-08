@@ -16,7 +16,7 @@
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
 import { alegereButoane, alegereComutator, alegereText, esteAlege, MAX_BUTOANE } from "./api.js?v=0b48920b43";
-import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel } from "./ds_piese.js?v=6f954e94a0";
+import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel } from "./ds_piese.js?v=fb823092ed";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);
@@ -140,7 +140,6 @@ const NU_MUTA = new Set([
   "cab-salveaza-intocmitor",   // static/js/ecrane/intocmitor_bilant.js:66 (zona.querySelector)
   "op-trimite",               // static/js/ecrane/borderou_ecran.js:169 (f.querySelector)
   "rap-trimite",              // static/js/ecrane/admin_raportari.js:196, :246, :251 (fir.querySelector); frontend_test/e2e/e2e_pozitii_validate.py:656 („#rap-fir #rap-trimite”, plasa fixă)
-  "spv-conecteaza",           // static/js/ecrane/setari.js:498 (zona.querySelector)
   "nir-leaga",                // static/js/ecrane/nir_legare.js:34 (zona.querySelector)
   "pr-salveaza",              // static/js/ecrane/produse_ecran.js:311 (zona.querySelector)
   "asi-salveaza",             // static/js/ecrane/asistenti.js:284, :286 (box.querySelector)
@@ -190,15 +189,28 @@ function _alege(corp, bara, areDeja, titlu) {
   if (marcat) return marcat;
   const fixe = [...corp.querySelectorAll(".bara-fixa .buton-primar")].filter((b) => b.tagName === "BUTTON" && liber(b));
   if (fixe.length) return fixe[fixe.length - 1];
-  const eligibil = (b) => b.tagName === "BUTTON" && !bara.contains(b) && liber(b) && !b.closest("table, template, details, .tn-actiuni, .rezumat-fix");
+  const eligibil = _eligibilPrincipal(bara, liber);
   const formular = [...corp.querySelectorAll("form .buton-primar, .ds-formular ~ * .buton-primar, .pf-frand:has(> .ds-formular) .buton-primar")].filter(eligibil);
   if (formular.length) return formular[formular.length - 1];
   if (areDeja === true) return null;   // catalogul nu înlocuiește o acțiune deja în bară (în afară de exportul de rezervă, care cedează locul)
-  return _dinCatalog(corp, bara) || (areDeja === false ? _exportTabel(corp, titlu) : null);
+  return _dinCatalog(corp, bara) || (areDeja === false ? _exportTabel(corp, titlu, bara, liber) : null);
 }
 
+// butonul care poate urca în bară: în conținut (nu în bară), nu retras, în afara tabelului, a șabloanelor, a meniurilor și a rezumatului lipit
+const _eligibilPrincipal = (bara, liber, cuRezumat = false) => (b) => b.tagName === "BUTTON" && !bara.contains(b) && liber(b)
+  && !b.closest(cuRezumat ? "table, template, details, .tn-actiuni" : "table, template, details, .tn-actiuni, .rezumat-fix");
+
 // [15.1-E5, pct.1] fereastra doar de citit, cu tabel și fără export: „Descarcă PDF” se adaugă ca export al tabelului (tipărirea tabelului, „Salvează ca PDF”)
-function _exportTabel(corp, titlu) {
+// [17.5, 791 / 793] când fereastra are un singur buton principal al ei (eligibil, `buton-primar`, altul decât „Descarcă PDF”), acela e acțiunea ferestrei: PDF-ul de
+// rezervă nu mai e ales. Aici rezumatul lipit sus (`.rezumat-fix`) nu exclude butonul: „Fluturaș” al fișei salariatului stă în `#ss-butoane`, în rezumat. Mai multe sau
+// niciunul: rezerva rămâne. Ferestrele din EXPORT_PDF rămân cu PDF-ul (la ele chiar el e acțiunea). Butonul ales trece prin același drum ca unul găsit de catalog
+// (`__catalog`: cu id în afara NU_MUTA se mută în bară, fără id rămâne în fereastră și în bară stă un proxy).
+function _exportTabel(corp, titlu, bara, liber) {
+  if (!EXPORT_PDF.test(titlu || "")) {
+    const eligibil = _eligibilPrincipal(bara, liber, true);
+    const proprii = [...corp.querySelectorAll("button.buton-primar")].filter((b) => eligibil(b) && _normalizeaza(b.textContent) !== "Descarcă PDF");
+    if (proprii.length === 1) { proprii[0].__catalog = true; return proprii[0]; }
+  }
   const tabel = [...corp.querySelectorAll("table")].find((x) => _vizibil(x) && !x.closest("template, details"));
   if (!tabel && !EXPORT_PDF.test(titlu || "")) return null;
   if (!corp.__exportPdf) {

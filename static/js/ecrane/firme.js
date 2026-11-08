@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat } from "../ds_piese.js?v=6f954e94a0";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=fb823092ed";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=0b48920b43";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=0b48920b43";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
@@ -48,15 +48,15 @@ import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] �
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
 import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=a78d0fe5b3";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=6aff736b0c";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=44bda2cb62";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=cea4f49410";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=4c304d9be3";  // [produse_firma_v1]
+import { randeazaProduse } from "./produse_ecran.js?v=2b4b10dbf6";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=fb35651dd9";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=891835ddea";  // [ecran_mf_v1]
 import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=bf9065cbb3";  // [lotul 10, 429]
 import { ecranCompensari } from "./compensari_ecran.js?v=ed3e73a2f0";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
-import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=91f9fce823";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
+import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=89ded88a66";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
 import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=1ba09ef3b2";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
@@ -1493,7 +1493,7 @@ function butoaneSalariat(s, regesOk) {
   // ce nu se aplică: `atributeInactiv` (DS cap.1, 675) — rămâne focusabil, motivul la trecerea cu mouse-ul (un `disabled` nu arată `title`)
   const b = (cheie, text, actiune, opt = {}) => `<button class="buton-secundar" data-${cheie}="${s.id}" data-nume="${esc(nume)}"`
     + `${actiune ? ` data-actiune="${actiune}"` : ""}${opt.inactiv ? atributeInactiv(opt.inactiv) : (opt.titlu ? ` title="${esc(opt.titlu)}"` : "")}>${text}</button>`;
-  const meniu = (id, titlu, butoane) => `<details class="dec-xml" id="${id}"><summary>${titlu}</summary>${butoane.join("")}</details>`;
+  const meniu = (id, titlu, butoane) => meniuActiuni(butoane, { id, titlu });
   const dv = (s.de_verificat || []).length;
   return [
     `<button class="buton-primar" data-flut="${s.id}" data-nume="${esc(nume)}" data-actiune="GET /tenants/{tenant_id}/fluturas/{salariat_id}">Fluturaș</button>`,
@@ -4525,8 +4525,8 @@ async function ecranCasa(corp, nav, t) {
           <td class="fd-td-num">${o.tip === "plata" ? suma : ""}</td>
           <td class="fd-td-num">${bani(o.sold)}</td>
           <td><span style="color:${culoare[r.fel]};font-weight:600">● ${esc(r.respinsa ? "notă respinsă la validare" : stareNotaCasa(o, t))}</span>${r.semne.filter((s) => s.fel !== "respinsa").map((s) => `<div class="tip-desc tn-semn" data-semn="${esc(s.fel)}">${esc(s.text)}</div>`).join("")}</td>
-          <td class="tn-actiuni">${butonRand("buton-secundar", `data-storno="${o.id || ""}" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni/{op_id}/storneaza"`, "Stornează", m.storno)}
-            ${butonRand("buton-secundar", `data-del="${o.id || ""}" data-actiune="DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}"`, "Șterge", m.sterge)}</td>
+          <td class="tn-actiuni">${meniuActiuni([butonRand("buton-secundar", `data-storno="${o.id || ""}" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni/{op_id}/storneaza"`, "Stornează", m.storno),
+              butonRand("buton-secundar", `data-del="${o.id || ""}" data-actiune="DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}"`, "Șterge", m.sterge)])}</td>
         </tr>
         <tr class="tn-detaliu" id="c-det-${k}"${deschis ? "" : " hidden"}><td colspan="8">${obs}${r.respinsa ? `<div class="caseta-atentie"><div class="ca-mesaj">Respinsă la validare: ${esc(motivInFraza(o.motiv_respingere))}</div></div>` : ""}<p class="tn-detaliu-actiuni">${actDetaliu}</p></td></tr>
       </tbody>`;
@@ -6687,8 +6687,8 @@ async function ecranPlanConturi(corp, nav, t) {
       <div class="pf-frand-butoane">
       ${butonRand("buton-secundar buton-mic", `data-analitic="${esc(c.simbol)}" data-fara-actiune="completează formularul de mai sus; Adaugă poartă acțiunea"`, "Adaugă analitic",
         analitic ? "Analiticul nou se adaugă de pe rândul contului sintetic." : c.in_afara_planului ? "Contul nu e în planul legal al normei firmei: sub el nu se adaugă analitice." : null)}
-      ${butonRand("buton-secundar buton-mic", `data-sterge="${esc(c.simbol)}" data-actiune="DELETE /tenants/{tenant_id}/plan-conturi/{simbol}"`, "Șterge",
-        c.nu_se_sterge ? `Contul nu se șterge: ${c.nu_se_sterge}.` : null)}
+      ${meniuActiuni([butonRand("buton-secundar buton-mic", `data-sterge="${esc(c.simbol)}" data-actiune="DELETE /tenants/{tenant_id}/plan-conturi/{simbol}"`, "Șterge",
+        c.nu_se_sterge ? `Contul nu se șterge: ${c.nu_se_sterge}.` : null)])}
       </div>
     </div>`;
   // [589] „avertismentul apare după salvare”: aceeași regulă ca serverul (`plan_legal.refuz_adaugare_manuala`), spusă cât scrii simbolul,

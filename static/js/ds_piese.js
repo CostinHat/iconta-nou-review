@@ -297,6 +297,15 @@ export function tabelDS(zona, { coloane, randuri, gol = "Nimic de arătat.", sub
 }
 
 
+/** [17.5, DS v2.110] Meniul „Acțiuni” al unui rând: butoanele rare sau distructive ale rândului, pliate sub un singur titlu (piesa `details.dec-xml`, aceeași
+ *  ca la Declarații și la Fișa salariatului). `butoane` sunt șiruri HTML deja scăpate; cele false/goale se ignoră. Acțiunile distructive (Șterge, Scoate, Revocă,
+ *  Casează, Respinge, Stornează) se dau ultimele. `clasa` se adaugă clasei `dec-xml`; `titlu` e eticheta meniului. Comportamentul butoanelor nu se schimbă. */
+export function meniuActiuni(butoane, { clasa = "", titlu = "Acțiuni", id = "" } = {}) {
+  const b = (butoane || []).filter(Boolean);
+  if (!b.length) return "";
+  return `<details class="dec-xml${clasa ? " " + clasa : ""}"${id ? ` id="${id}"` : ""}><summary>${titlu}</summary>${b.join("")}</details>`;
+}
+
 /** [15.1-E3, 731 / 732] Un semnal ca text HTML (pentru ecranele care își compun corpul ca șir): același rând de 36 px ca `semnaleDS`, cu „ce e de făcut” pliat
  *  (`detaliiHtml`, deja scăpat) și, când are acțiune, butonul S lângă rând (`actiuneHtml`, un `<button class="buton-secundar buton-s">`). Pliarea o leagă
  *  `legaSemnale(radacina)`. `text` mai lung de 200 de caractere se rupe la ultimul cuvânt dinainte; textul întreg trece în detalii. */

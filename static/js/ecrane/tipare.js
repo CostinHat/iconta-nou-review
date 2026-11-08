@@ -2,7 +2,7 @@
 // Trei sectiuni statistice: motive de respingere, tipuri cu rata, firme cu respingeri.
 // Plus [F120] buton "Genereaza analiza AI" care cere lui Claude explicatii + recomandari.
 // Doar patron (regula 4).
-import { api, esc } from "../api.js?v=0b48920b43";
+import { api, esc, atributeInactiv } from "../api.js?v=0b48920b43";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 // [574] cum se numește felul pregătirii (aceeași regulă ca `tipare_api.eticheta_tip`)
@@ -34,6 +34,8 @@ export async function randeazaTipare(corp, nav) {
           <p class="cap-nota">Pe măsură ce echipa pregătește și validează declarații și note, aici apar
           motivele pentru care colegii le-au respins, felurile cu cea mai mare rată de respingere și firmele
           care cer mai multă atenție. Regenerările automate nu se numără. Datele se adună singure din munca de zi cu zi.</p>
+          <!-- [17.5] acțiunea ferestrei stă în bară și fără date, inactivă, cu motivul (DS cap.1, 675): „Generează analiză AI” are ce analiza numai după prima respingere -->
+          <button class="buton-primar" id="tip-ai" data-actiune="GET /tipare/ai"${atributeInactiv("Nu există încă nicio respingere de analizat: analiza AI se poate genera după prima.")}>Generează analiză AI</button>
         </div>
       </div>`;
     return;

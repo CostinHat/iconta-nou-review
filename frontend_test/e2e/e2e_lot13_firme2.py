@@ -370,14 +370,16 @@ def test_def_589_sinteticul_refuzat_inainte_de_salvare_si_contul_nelegal_se_ster
     patron.firma(f["nume"])
     _card(patron, "planconturi", "#pcf-adauga")
     pg.fill(_F + "#pcf-cauta", "731")
-    pg.wait_for_selector(_F + "#pcf-lista [data-simbol='731'] [data-sterge]", timeout=10000)
+    pg.wait_for_selector(_F + "#pcf-lista [data-simbol='731'] [data-sterge]", state="attached", timeout=10000)
     assert _butoane(pg, _F + "#pcf-lista [data-simbol='731'] [data-sterge]")[0][:2] == ["Șterge", False]
+    pg.wait_for_timeout(800)   # [17.5] lista se redesenează după căutare: meniul se deschide pe lista stabilă
+    pg.click(_F + "#pcf-lista [data-simbol='731'] summary")   # [17.5] „Șterge” stă în meniul „Acțiuni” al rândului
     pg.click(_F + "#pcf-lista [data-simbol='731'] [data-sterge]")
     pg.click("#ca-ok")
     pg.wait_for_selector(_F + "#pcf-lista [data-simbol='731']", state="detached", timeout=20000)
     assert sql('SELECT count(*) FROM "%s".plan_conturi WHERE simbol = \'731\'' % s) == [(0,)]
     pg.fill(_F + "#pcf-cauta", "4111")
-    pg.wait_for_selector(_F + "#pcf-lista [data-simbol='4111'] [data-sterge]", timeout=10000)
+    pg.wait_for_selector(_F + "#pcf-lista [data-simbol='4111'] [data-sterge]", state="attached", timeout=10000)
     b = _butoane(pg, _F + "#pcf-lista [data-simbol='4111'] [data-sterge]")[0]
     patron.captura("sters")
     assert b[1] and b[2].startswith("Contul nu se șterge:"), b

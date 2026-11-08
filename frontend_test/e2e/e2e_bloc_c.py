@@ -642,6 +642,7 @@ def test_def_92_butonul_respinge_din_dialog_e_rosu_plin(patron, firma_gv, asiste
     card.wait_for(timeout=15000)
     stil = "(e) => { const s = getComputedStyle(e); return [s.backgroundColor, s.color, s.opacity]; }"
     pe_card = card.locator(".val-respinge").evaluate(stil)
+    card.locator("summary", has_text="Acțiuni").click()   # [17.5] „Respinge” stă în meniul „Acțiuni” al rândului
     card.locator(".val-respinge").click()
     pg.wait_for_selector("#dlg-ok", timeout=10000)
     in_dialog = pg.locator("#dlg-ok").evaluate(stil)
@@ -662,6 +663,7 @@ def test_def_91_respingerea_e_confirmata_pe_ecran(patron, firma_gv, asistent_pre
     _coada(patron)
     card = pg.locator("#val-note tbody.tn-nota", has_text="Furnizor Coada 91").first   # [lotul 12, 622] rândul notei, „Respinge” pe rând
     card.wait_for(timeout=15000)
+    card.locator("summary", has_text="Acțiuni").click()   # [17.5] „Respinge” stă în meniul „Acțiuni” al rândului
     card.locator(".val-respinge").click()
     pg.wait_for_selector("#dlg-input", timeout=10000)
     pg.fill("#dlg-input", "lipsește factura")

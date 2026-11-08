@@ -319,6 +319,7 @@ def _respinge_din_coada(e, firma, text, motiv, coada_id=None):
     _de_validat(e)
     card = _card_element(e, coada_id) if coada_id else _card_nota(e, firma, text).first
     card.wait_for(timeout=20000)
+    card.locator("summary", has_text="Acțiuni").click()   # [17.5] „Respinge” stă în meniul „Acțiuni” al rândului
     card.locator(".val-respinge").click()
     camp = pg.locator(".fereastra-corp textarea, .fereastra-corp input.camp-input").last
     camp.wait_for(timeout=10000)

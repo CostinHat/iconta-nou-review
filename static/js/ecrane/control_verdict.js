@@ -7,7 +7,7 @@
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
 import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=0b48920b43";
-import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=6f954e94a0";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
+import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=fb823092ed";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=c781636333";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
@@ -418,7 +418,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=2e0d518065");
+    const { deschideInchidereLuna } = await import("./firme.js?v=e8c8358666");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

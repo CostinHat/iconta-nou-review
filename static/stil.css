@@ -315,6 +315,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .fereastra-corp { padding: 24px; overflow-y: auto; }
 /* PANOU canonic (DS cap.16): caseta alba de continut pe corpul gri al ferestrei */
 .panou { background: var(--alb); border: 1px solid #b9c2cf; border-radius: var(--raza); padding: 12px 14px; }
+/* [17.5, 795] titlul de la începutul panoului nu mai adaugă marginea de sus a titlului de ecran peste umplutura panoului */
+.panou > .pf-titlu:first-child { margin-top: 0; }
 /* [contrast_ferestre_v1] toate zonele de completat din ferestre: bordura unica vizibila */
 .fereastra-corp input:not([type=checkbox]):not([type=radio]):not([type=file]),
 .fereastra-corp textarea,
@@ -1960,8 +1962,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 /* [R29] cota NECOMPLETATA - nu e 0%, e absenta. Gri de stare (DS cap.8); textul e #5c6675,
    nu --gri-semafor (#9aa3b2 = 2.16 contrast, sub AA - vezi DS v2.43). */
 .prc-lipsa { background:var(--gri-fundal-semafor); color:#5c6675; }
-.pr-sterge { background:none; border:none; color:#cbd5e1; font-size: var(--text-titlu); line-height:1; cursor:pointer; padding:0 4px; }
-.pr-sterge:hover { color:#ef4444; }
+/* [17.5] „Șterge” stă în meniul „Acțiuni” al rândului, ca buton obișnuit (era „×” liber pe rând): nu mai are stil propriu */
 
 /* [p105_emitere_css] ecran emitere facturi */
 .em-config { max-width:520px; margin-top:8px; }
@@ -3148,7 +3149,7 @@ body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-t
 .not-tip { align-items: flex-start; margin: 6px 0; }
 .not-grup { margin: 8px 0 4px; }
 .spv-cuiuri-lista { margin: 8px 0 0 18px; padding: 0; }
-.spv-cuiuri-lista li { margin: 4px 0; }
+.spv-cuiuri-lista li { margin: 2px 0; }   /* [17.5, 796] rândurile mai strânse: lista de firme încape fără derulare internă la 1366 × 768 */
 .spv-cui-fara { color: var(--rosu); }
 
 /* [lotul 10, 421/424] lista rezultatelor căutării COR: derulare verticală proprie (o listă de sugestii, nu un tabel) — fostul stil inline
@@ -3473,6 +3474,8 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .fereastra-corp:has(> .fereastra-jos):not(.cu-zona) > * { flex: 0 0 auto; }
 .fereastra-corp > .fereastra-jos { position: sticky; bottom: -16px; z-index: 3; box-sizing: border-box; height: 72px; margin: auto -16px -16px; padding: 0 16px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #e9edf3; border-top: 1px solid var(--linie); flex: 0 0 auto; }
+/* [17.5, 789] bara fără nicio acțiune și fără motiv (ferestre de stare și meniuri) rămâne la locul ei, de 72 px, dar nu mai acoperă conținutul: fără fundal și fără linie, neclicabilă */
+.fereastra-corp > .fereastra-jos.fj-fara-principal:not(:has(button)):has(.fj-motiv:empty) { background: transparent; border-top-color: transparent; pointer-events: none; }
 .fj-motiv { flex: 1 1 auto; min-width: 0; font-size: 14px; color: var(--gri); }
 .fj-motiv .ds-motiv-inactiv { margin: 0; }
 .fj-butoane { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
@@ -3575,7 +3578,7 @@ textarea.em-l-den { field-sizing: content; min-height: 44px; max-height: 132px; 
 .em-tip-rand .camp-eticheta { margin: 0; flex: 0 0 auto; }
 .em-tip-rand .alegere-butoane { min-height: 44px; }
 .em-tip-rand .alegere-butoane > button { height: 44px; }
-.em-date-rand { grid-template-columns: minmax(200px, 1.3fr) minmax(150px, 1fr) minmax(150px, 1fr); }
+.em-date-rand { grid-template-columns: minmax(150px, 1.3fr) minmax(150px, 1fr) minmax(150px, 1fr); }   /* [17.5, 792] 3 × 150 px + goluri încape în 505 px: „Data scadenței” nu mai e tăiată la 603 px */
 .em-client-grila { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 16px; }
 .em-client-lat { grid-column: 1 / -1; }
 textarea.em-adresa { overflow: hidden; }

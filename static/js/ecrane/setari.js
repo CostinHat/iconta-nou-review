@@ -178,14 +178,14 @@ export async function randeazaSetari(corp, nav) {
       <div class="panou" style="margin-top:16px">
         <div class="cap-titlu">Cerere de ștergere cont ${semnAjutor("F205")}</div>
         <div class="caseta-atentie"><div class="ca-mesaj">
-          <b>Ștergerea este ireversibilă.</b> Se șterg definitiv toate firmele cabinetului, utilizatorii, facturile, declarațiile, documentele și fișierele — prin distrugerea completă a bazei de date a cabinetului.<br><br>
-          <b>Ce nu se poate șterge imediat:</b> copiile de siguranță (backup) rămân până la 30 de zile, apoi se suprascriu automat. Ștergerea selectivă dintr-un backup nu e posibilă tehnic.<br><br>
+          <b>Ștergerea este ireversibilă.</b> Se șterg definitiv toate firmele cabinetului, utilizatorii, facturile, declarațiile, documentele și fișierele — prin distrugerea completă a bazei de date a cabinetului.<br>
+          <b>Ce nu se poate șterge imediat:</b> copiile de siguranță (backup) rămân până la 30 de zile, apoi se suprascriu automat. Ștergerea selectivă dintr-un backup nu e posibilă tehnic.<br>
           Nu se șterge nimic acum. Depui o cerere; o executăm noi manual, după verificare.
         </div></div>
         <div class="caseta-info"><span class="ci-mesaj">Îți răspundem în cel mult 5 zile lucrătoare de la depunere. Termenul legal maxim de răspuns este de 30 de zile (GDPR art. 12).</span></div>
         <label class="camp">
           <span class="camp-eticheta">Motivul cererii (opțional)</span>
-          <textarea id="gdpr-motiv" class="camp-input" rows="3" placeholder="ex: încetăm activitatea"></textarea>
+          <textarea id="gdpr-motiv" class="camp-input" rows="2" placeholder="ex: încetăm activitatea"></textarea>
         </label>
         <label class="camp">
           <span class="camp-eticheta">Pentru confirmare, retastează denumirea exactă a cabinetului: <b>${esc(numeCab)}</b></span>
@@ -502,7 +502,7 @@ export async function panouConectareSPV(zona) {
       <p class="ecran-nota">Autorizezi iConta.eu să lucreze cu SPV/ANAF (e-Factura, e-Transport) folosind certificatul tău. Autorizarea se face o singură dată pentru tot cabinetul și acoperă firmele pentru care certificatul are împuternicire la ANAF.</p>
       <div class="caseta-info"><span class="ci-mesaj">După înrolarea certificatului în SPV, așteaptă 24 de ore înainte de prima conectare. Altfel ANAF răspunde cu eroare, deși totul e configurat corect.</span></div>
       <div id="spv-stare" style="margin:10px 0"></div>
-      ${eAdmin ? `<button class="buton-primar" id="spv-conecteaza">Conectează SPV</button>
+      ${eAdmin ? `<button class="buton-primar" id="spv-conecteaza" data-actiune-principala>Conectează SPV</button>
       <span class="camp-ajutor">Certificatul cloud (vToken instalat local) e acceptat, la fel ca cel pe token USB.</span>`
         : `<p class="ecran-nota">Conectarea o face administratorul cabinetului, din Setări cont → Conectare SPV.</p>`}
     </div>`;

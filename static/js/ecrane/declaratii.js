@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=6f954e94a0";   // [15.1, 722] lista cu căutare
+import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=fb823092ed";   // [15.1, 722] lista cu căutare
 import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=0b48920b43";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";   // [lotul 10, 431] refuzul care trimite la ce lipsește
@@ -2012,7 +2012,7 @@ function randeazaFormularD104(corp, nav) {
       '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Denumire asociere <span class="oblig">*</span></span><input id="d104-aden" type="text" class="camp-input" value="' + esc(a.den || "") + '"></label>' +
       '<label class="camp" style="width:160px"><span class="camp-eticheta">CUI asociere <span class="oblig">*</span></span><input id="d104-acui" type="text" class="camp-input" value="' + esc(a.cui || "") + '"></label>' +
       '<label class="camp" style="flex:1 1 220px"><span class="camp-eticheta">Adresă asociere <span class="oblig">*</span></span><input id="d104-aadr" type="text" class="camp-input" value="' + esc(a.adresa || "") + '"></label>' +
-      '<label class="camp" style="width:170px"><span class="camp-eticheta" title="Profit cu plus, pierdere cu minus">Profit / pierdere <span class="oblig">*</span></span><input id="d104-profit" type="number" step="1" class="camp-input" value="' + esc(String(d.profit_pierd === "" ? "" : (d.profit_pierd || 0))) + '"></label>' +
+      '<label class="camp" style="width:190px"><span class="camp-eticheta">Profit(+)/pierdere(-) <span class="oblig">*</span></span><input id="d104-profit" type="number" step="1" class="camp-input" value="' + esc(String(d.profit_pierd === "" ? "" : (d.profit_pierd || 0))) + '"></label>' +
     "</div>" +
     '<div class="camp-eticheta" style="margin:8px 0 4px">Asociați (distribuția)</div>' +
     grila +

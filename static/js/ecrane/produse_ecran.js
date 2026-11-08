@@ -4,6 +4,7 @@
 // (PUT /produse/{id}, consemnat în `produse_cota_jurnal`); [471] articolele din stoc fără produs vin cu cota propusă (NIR / potrivire).
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
 import { api, ultimaCerere, arataMesaj, confirmaCaseta, esc, bani, focusFaraSalt, eroareCamp, curataEroriCamp, arataRefuzul, cereCompletate } from "../api.js?v=0b48920b43";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { meniuActiuni } from "../ds_piese.js?v=fb823092ed";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [lotul 12, 471] propunerea automată a cotei, numai cu dreptul ei */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
@@ -145,7 +146,7 @@ function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu, cat) {
           <button class="buton-primar pr-corectura-salveaza" id="pr-corectura-salveaza-${p.id}" data-id="${p.id}" data-actiune="PUT /tenants/{tenant_id}/produse/{produs_id}">Salvează cota</button>
           <button class="buton-secundar pr-corectura-renunta" data-id="${p.id}" data-fara-actiune="închide corectura cotei">Renunță</button>
         </span>
-        <button class="buton-sters pr-sterge" data-id="${p.id}" data-actiune="DELETE /tenants/{tenant_id}/produse/{produs_id}" title="\u0218terge" aria-label="\u0218terge">\u00d7</button>`}
+        ${meniuActiuni([`<button class="buton-sters pr-sterge" data-id="${p.id}" data-actiune="DELETE /tenants/{tenant_id}/produse/{produs_id}">\u0218terge</button>`])}`}
       </div>
     </div>`).join("");
   // [lotul 12, deficiența 471] rândul din stoc vine cu cota propusă: din NIR-ul articolului (server, `propunere_din_nir` — aceeași regulă ca
@@ -243,7 +244,7 @@ function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu, cat) {
     b.addEventListener("click", (e) => {
       e.stopPropagation();
       const id = b.dataset.id;
-      confirmaCaseta(b.parentElement || b, "\u0218tergi produsul?", async () => {
+      confirmaCaseta(b.closest(".pr-rand-drept") || b, "\u0218tergi produsul?", async () => {
         try { await api.del(`/tenants/${tenantId}/produse/${id}`); reincarca(); }
         catch (er) { arataMesaj(corp.querySelector("#pr-mesaj"), er.mesaj || "Nu s-a putut \u0219terge produsul.", "eroare"); }   // [435] zona era căutată în listă (null): refuzul nu se vedea
       });

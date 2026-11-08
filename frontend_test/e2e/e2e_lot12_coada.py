@@ -109,6 +109,7 @@ def test_def_92_respinge_ramane_rosu_plin_si_activ_cu_motivul_completat(ana, pat
     card.wait_for(timeout=20000)
     stil = "(e) => { const s = getComputedStyle(e); return [s.backgroundColor, s.color, s.opacity]; }"
     pe_card = card.locator(".val-respinge").evaluate(stil)
+    card.locator("summary", has_text="Acțiuni").click()   # [17.5] „Respinge” stă în meniul „Acțiuni” al rândului
     card.locator(".val-respinge").click()
     pg.wait_for_selector("#dlg-input", timeout=10000)
     pg.locator("#dlg-input").press_sequentially("lipsește contractul", delay=20)   # tastat, ca omul (fiecare literă)
@@ -190,6 +191,7 @@ def test_def_52_cardul_si_fereastra_numara_exact_notele_de_validat(browser, requ
             assert _cifre_fereastra(sef) == (2, 2)
             sef.captura("fereastra_2")
             card = pg.locator("#val-note tbody.tn-nota", has_text=desc[1]).first
+            card.locator("summary", has_text="Acțiuni").click()   # [17.5] „Respinge” stă în meniul „Acțiuni” al rândului
             card.locator(".val-respinge").click()
             pg.fill("#dlg-input", "lipsește documentul 52")
             pg.click("#dlg-ok")

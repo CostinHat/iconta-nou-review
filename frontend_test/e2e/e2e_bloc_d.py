@@ -208,6 +208,7 @@ def test_def_99_nir_respins_scade_marfa_din_stoc(patron, firma_cv):
     patron.captura("inainte")
     _coada(patron)
     card = _card_coada(patron, firma_cv, "NIR nr D99 ")   # [lotul 12, 622] rândul NIR-ului în „Note de validat”, „Respinge” pe rând
+    card.locator("summary", has_text="Acțiuni").click()   # [17.5] „Respinge” stă în meniul „Acțiuni” al rândului
     card.locator(".val-respinge").click()
     pg.fill("#dlg-input", "NIR greșit D99")
     pg.click("#dlg-ok")
@@ -545,7 +546,7 @@ def test_def_129_detaliul_notei_are_valideaza_si_respinge(patron, firma_gv):
     card = _deschis(patron, _card_coada(patron, firma_gv, "Telefon D129"))
     f = card.locator("tr.tn-rand")
     assert f.locator(".val-aproba").inner_text().strip() == "Validează"
-    assert f.locator(".val-respinge").inner_text().strip() == "Respinge"
+    assert f.locator(".val-respinge").text_content().strip() == "Respinge"
     patron.captura("detaliu")
     f.locator(".val-aproba").click()
     _asteapta_text(patron, "Ai validat")
@@ -1233,6 +1234,7 @@ def test_def_106_notificarea_de_validat_se_rezolva_la_respingere(patron, firma_g
                                             coada_id=cid)
     pg = patron.pg
     _coada(patron)
+    _card_coada(patron, firma_gv, "Curier D106").locator("summary", has_text="Acțiuni").click()   # [17.5] „Respinge” stă în meniul „Acțiuni” al rândului
     _card_coada(patron, firma_gv, "Curier D106").locator(".val-respinge").click()
     pg.fill("#dlg-input", "fără factură D106")
     pg.click("#dlg-ok")
