@@ -1,0 +1,26 @@
+unelte
+lot: 17.5-A
+fara praguri numerice pe durate in aceasta schema (lot de unelte; niciun rand `max <faza> <secunde>`: scripts/publica_lot.py:470-475 compara numai randurile `max`); referintele de mai jos sunt cerinte de raport, cu cifra si cu sursa ei
+  rularea completa a portii (verificator + pytest + plasa) ≤ 2130 s (= (83 + 545 + 1147) × 1,2 = 1775 × 1,2; sursa: maximele rularilor complete din 17.2 (poarta_pytest 545 s, poarta_plasa 1147 s), 17.2-A si 17.2-B (poarta_verificator 83 s), .lot_jurnal.log, rularile «intrerupt» excluse)
+  proba pe baza (`poarta_lot.sh --baza`) ≤ 2028 s (= (148 + 724 + 818) × 1,2 = 1690 × 1,2; sursa: praguri_16_8_B.txt, copiat in praguri_17_2_B.txt; proba pe baza nu are faza proprie in .lot_jurnal.log, deci cifra nu se re-masoara din jurnal; Code raporteaza durata masurata)
+  hook-ul intreg pe un commit ≤ 113 s (= 94 × 1,2; sursa: maximul hook-ului in 17.2, 17.2-A si 17.2-B, 94 s, 17.2-A); cerinta arhitectului: nimic care ruleaza pe un commit nu depaseste 2 min (CLAUDE.md, lectia E5), deci nimic nou pe commit in acest lot
+  restaurarea bazei ≤ 112 s per restaurare (maximul masurat 93 s × 1,2; sursa: praguri_16_8_B.txt; restaurarea nu are faza proprie in jurnal; Code raporteaza durata masurata)
+  testul nou core/test_praguri_timp_17_5_A.py: durata masurata se raporteaza (nu exista masuratoare anterioara; cerinta de raport, nu prag)
+  durata totala a lotului, de la primul rand al lotului din jurnal pana la scrierea raportului: tinta lotului ≤ 4 h (tinta din lectiile de lot, nu o cifra masurata)
+  consecinta la raport: o cerinta depasita se scrie cu cifra ei si cauza; o rulare completa > 2130 s = numar nou de unelte in DEFICIENTE.md (starea neverificat), scris la urmatorul C liber intr-un commit dupa C; nu blocheaza publicarea
+runde_verificator_max: 0
+sursa pragurilor 17.5-A: arhitect, 07.11.2026, maximele rularilor complete (fara «intrerupt») din .lot_jurnal.log la 17.2, 17.2-A si 17.2-B: hook 94 s (17.2-A), poarta_verificator 83 s (17.2-B), poarta_pytest 545 s (17.2), poarta_plasa 1147 s (17.2); × 1,2 rotunjit in sus: 113, 100, 654, 1377 s. Proba pe baza si restaurarea bazei nu au faza in jurnal: cifrele raman cele din praguri_16_8_B.txt. 17.3 era in curs la data alegerii si nu intra.
+limitele de rulari: 2 rulari complete si 2 reluari, aplicate de scripts/poarta_rulare.py (:116, :146-150; stare json), nu de acest fisier; cerinta de raport: cel mult 1 reluare
+acceptarea_arhitectului (nu intra in PASS/STOP): lotul nu atinge produsul; dupa publicare arhitectul (1) compara cu mana tabelul din ~/lot_17_5_A_timp.md si docs/dovezi/17_5_A/comparatie_arhitect.txt cu cifrele lui 17.1 si 17.2; (2) la publicarea lui 17.6 citeste in .lot_jurnal.log randurile fazelor lucru_pana_la_commit, lucru_pana_la_poarta, asteptare_poarta, reparatie_dupa_rosu, dupa_verde, pana_la_publicare, pytest_intre_commituri si tabelul din ~/lot_17_6_timp.md (proba lui B, nu se poate face in lotul care il construieste); (3) genereaza cu scripts/praguri_automate.py pragurile lui 17.7 si 17.8 si le compara cu cele scrise de mana.
+fisiere_permise (informativ; perimetrul real la un lot unelte = unelte_refuzuri, publica_lot.py:254-267: UNELTE_PERMISE, docs/dovezi/<lot>/, fisierele de test din core, intrarile cu / din aceasta lista; orice altceva = refuz)
+  scripts/praguri_automate.py (nou)
+  scripts/raport_timp_lot.py (nou)
+  scripts/jurnal_lot.py
+  scripts/publica_lot.py
+  scripts/praguri_17_5_A.txt (nou)
+  core/test_praguri_timp_17_5_A.py (nou)
+  CLAUDE.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_A/
