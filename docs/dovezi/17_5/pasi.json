@@ -1,0 +1,95 @@
+{
+  "asertiuni": [
+    {
+      "id": "f.1",
+      "pas": "plan",
+      "operator": "contine",
+      "valoare": "5311 · Casa în lei",
+      "cheie": "dom:#pcf-lista .pf-frand-nume|text"
+    },
+    {
+      "id": "a.1",
+      "pas": "plan",
+      "operator": "lipseste",
+      "valoare": "Șterge",
+      "cheie": "dom:#pcf-lista .pf-frand-butoane > button|text"
+    },
+    {
+      "id": "a.2",
+      "pas": "plan",
+      "operator": "contine",
+      "valoare": "Acțiuni",
+      "cheie": "dom:#pcf-lista .pf-frand-butoane > details.dec-xml:has(> summary)|text"
+    },
+    {
+      "id": "f.3",
+      "pas": "clienti",
+      "operator": "contine",
+      "valoare": "Acțiuni",
+      "cheie": "dom:#cl-tabel tbody tr > td:last-child > details.dec-xml:has(> summary)|text"
+    },
+    {
+      "id": "c.1",
+      "pas": "casa",
+      "operator": "nr_randuri",
+      "valoare": "0",
+      "cheie": "dom:#c-tabel td.tn-actiuni > [data-del]|numar"
+    },
+    {
+      "id": "c.2",
+      "pas": "casa",
+      "operator": "contine",
+      "valoare": "Acțiuni",
+      "cheie": "dom:#c-tabel td.tn-actiuni > details.dec-xml:has(> summary)|text"
+    },
+    {
+      "id": "d.1",
+      "pas": "produse",
+      "operator": "nr_randuri",
+      "valoare": "0",
+      "cheie": "dom:#pr-lista .pr-rand-drept > button.pr-sterge|numar"
+    },
+    {
+      "id": "d.2",
+      "pas": "produse",
+      "operator": "contine",
+      "valoare": "Acțiuni",
+      "cheie": "dom:#pr-lista .pr-rand-drept > details.dec-xml:has(> summary)|text"
+    },
+    {
+      "id": "f.2",
+      "pas": "tipare",
+      "operator": "nr_randuri",
+      "valoare": "1",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos [data-actiune-principala]|numar"
+    },
+    {
+      "id": "g.1",
+      "pas": "salariat",
+      "operator": "lipseste",
+      "valoare": "Descarcă PDF",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos [data-actiune-principala]|text"
+    },
+    {
+      "id": "g.2",
+      "pas": "salariat",
+      "operator": "egal",
+      "valoare": "Fluturaș",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos [data-actiune-principala]|text"
+    },
+    {
+      "id": "h.1",
+      "pas": "d104",
+      "operator": "contine",
+      "valoare": "Profit(+)/pierdere(-)",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) label.camp:has(#d104-profit) > .camp-eticheta|text"
+    },
+    {
+      "id": "i.1",
+      "pas": "parola",
+      "operator": "egal",
+      "valoare": "Schimbă parola",
+      "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos [data-actiune-principala]|text"
+    }
+  ]
+}

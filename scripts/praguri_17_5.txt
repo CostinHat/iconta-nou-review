@@ -1,0 +1,58 @@
+produs
+lot: 17.5
+max hook 285
+max poarta_verificator 179
+max poarta_pytest 1100
+max poarta_plasa 1700
+sursa pragurilor 17.5: maximele lotului 17.1 (hook 91 s, poarta_verificator 84 s, poarta_pytest 602 s, poarta_plasa 1024 s); poarta_pytest 1100: nucleul + test nou, asteptat 550-600 s; poarta_plasa 1700: 1024 s plus testul X07 (circa 200-250 s). Depasirea unui `max <faza>` opreste mecanic publicarea (publica_lot.py:456–476); text de oprire: OPRIT — gata: 17.5 nepublicat, prag <fază>.
+runde_verificator_max: 2
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+acceptarea_arhitectului: dupa publicare: ferestrele atinse cu reguli a-h picate inainte/dupa si randuri.txt.
+cerinte de raport: ferestre atinse cu reguli a-h picate inainte si dupa; text taiat pe 3 rezolutii (tinta 0); durata fiecarei faze fata de prag; matrice_dupa informativ 2580 s (17.2-B).
+fisiere_permise:
+  scripts/praguri_17_5.txt
+  static/stil.css
+  static/js/cadru.js
+  static/js/ecrane/ (numai fisierele ecranelor numite in comanda: Plan de conturi, De validat, Clienti, Casa, Produse, Tipare de erori, Sanatate server, Setari, Emite factura, Fisa salariatului, Declaratii D104/D177/D398)
+  static/js/ds_piese.js
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html
+  static/spv_callback.html
+  DESIGN_SYSTEM.md
+  verificator_conformitate.py
+  core/test_decizii_0810_uvw.py
+  core/test_drepturi_ui.py
+  core/test_lot10b_deschidere_aleasa.py
+  core/test_lot10_rezumat_fix.py
+  core/test_lot12_diverse_c136_ce_dispare.py
+  core/test_lot12_ui2_ecrane.py
+  core/test_lot12_ui2_verificator.py
+  core/test_lot13_firme2_ecrane.py
+  core/test_plural_dupa_numar.py
+  core/test_retest_0810_s6.py
+  core/test_randuri_17_5.py (nou)
+  frontend_test/e2e/e2e_bloc_a.py
+  frontend_test/e2e/e2e_bloc_b.py
+  frontend_test/e2e/e2e_bloc_c.py
+  frontend_test/e2e/e2e_bloc_d.py
+  frontend_test/e2e/e2e_bloc_e.py
+  frontend_test/e2e/e2e_bloc_f.py
+  frontend_test/e2e/e2e_casa.py
+  frontend_test/e2e/e2e_lot11_a458.py
+  frontend_test/e2e/e2e_lot12_coada.py
+  frontend_test/e2e/e2e_lot12_cx7.py
+  frontend_test/e2e/e2e_lot12_prod.py
+  frontend_test/e2e/e2e_lot12_stoc2.py
+  frontend_test/e2e/e2e_lot12_ui2.py
+  frontend_test/e2e/e2e_lot13_fact.py
+  frontend_test/e2e/e2e_lot13_firme2.py
+  frontend_test/e2e/e2e_lot13_portal_p2.py
+  frontend_test/e2e/e2e_lot5_roluri.py
+  frontend_test/e2e/e2e_lot6.py
+  frontend_test/e2e/e2e_lot72_declaratii.py
+  CLAUDE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5/
+  docs/dovezi/17_5/jurnal_verificare.csv
+  docs/dovezi/17_5/baza.json
