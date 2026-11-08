@@ -1,0 +1,11 @@
+# Apăsări pe 8019 (comanda 17.5, pct.8.4): fiecare acțiune din rând apăsată o dată pe cele patru ecrane martor cu date (De validat: apăsările „Respinge” din meniu sunt în e2e_bloc_b/c/d și e2e_lot12_coada); baza restaurată înainte de fiecare caz cu efect; cererile de scriere trimise (GET numai la ANAF).
+Plan de conturi · Adaugă analitic (sintetic) | (nicio cerere de scriere)
+Plan de conturi · Șterge | DELETE /tenants/105779/plan-conturi/4428.02 
+Clienți · Verifică la ANAF | GET /tenants/105779/verifica-cui/14399840 
+Clienți · Salvează (după modificarea localității) | PUT /tenants/105779/clienti/1 {"oras":"Cluj-Napoca"}
+Clienți · Șterge | INACTIV: Are 11 facturi: fișa ține localitatea și județul din D394 / D406, deci nu se șterge. (cereri: niciuna)
+Casă · Stornează | INACTIV: Rândul e scris din alt ecran (raportul Z, statul de plată, o notă din Registru jurnal): se (cereri: niciuna)
+Casă · Șterge | INACTIV: Rândul e scris din alt ecran (raportul Z, statul de plată, o notă din Registru jurnal): se (cereri: niciuna)
+Produse · Salvează cota (după Corectează cota) | (nicio cerere de scriere)
+Produse · Șterge | DELETE /tenants/105779/produse/7 ; POST /tenants/105779/produse/potriveste {"denumire":"Cafea boabe"}
+# Limite declarate: Clienți · Șterge (toți clienții din F1 au facturi: butonul e inactiv, cu motivul), Casă · Stornează / Șterge (toate rândurile din octombrie sunt scrise din alt ecran: butoane inactive, cu motivul) și Produse · Salvează cota (valoarea aleasă nu schimbă cota: nicio cerere) n-au putut fi apăsate cu efect pe datele de test; la Casă, „Stornează” apăsat din meniu e acoperit de e2e_casa.py::test_def_174 (trece), „Șterge” din Plan de conturi și Produse e apăsat mai sus. Cererile sunt identice cu ale codului de pe main în toate cele 9 cazuri (apasari_main.txt).

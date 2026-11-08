@@ -1,0 +1,6 @@
+fișier:linie | ecran | număr butoane | distructive da/nu
+static/js/ecrane/admin.js:236 | admin | 2 | nu
+static/js/ecrane/date_firma.js:245 | date_firma | 2 | da
+TOTAL celule: 2 (pragul 2; martorii clienti_ecran.js, produse_ecran.js, validat.js nu apar: au meniu)
+Limită declarată: scanarea vede numai celulele `<td …>…</td>` scrise literal într-un șablon (la fel ca gardul ACTIUNI_RAND_LIBERE); rândurile de listă (div) și celulele construite din bucăți
+sau numai cu `butonRand(...)` nu se văd. Cele două de mai sus rămân pe pragul 3 al gardului (două butoane într-un td, exact la pragul 2 al scanării) și nu se ating în acest lot.

@@ -1,0 +1,66 @@
+E2E din praguri_17_5.txt (19 fișiere, 317 teste), pe 8019, cu e2e_poarta.py (aplicația pornită din index), baza restaurată înainte de fiecare rulare.
+
+Rularea 1 (cu lotul, înainte de actualizarea testelor): 22 picate + 34 erori din 317 (2123 s).
+Rularea pe baza 25610dbf a fișierelor cu picături (11 fișiere): 10 picate + 33 erori (1244 s).
+Picate numai cu lotul (nu și pe bază) la rularea 1: 13 teste:
+  ERROR frontend_test/e2e/e2e_lot13_firme2.py::test_def_577_cardurile_firmei_pfa_descriu_ce_are_pfa
+  FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_46_retrimiterea_nu_e_pregatire_noua
+  FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_56_jurnalul_nu_numara_nota_respinsa_de_validat
+  FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_57_respingerea_se_vede_pe_stat_la_deschidere
+  FAILED frontend_test/e2e/e2e_bloc_c.py::test_def_91_respingerea_e_confirmata_pe_ecran
+  FAILED frontend_test/e2e/e2e_bloc_c.py::test_def_92_butonul_respinge_din_dialog_e_rosu_plin
+  FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_99_nir_respins_scade_marfa_din_stoc
+  FAILED frontend_test/e2e/e2e_bloc_f.py::test_def_183_planul_de_conturi_are_ecran_cu_cautare_analitic_si_stergere_pazita
+  FAILED frontend_test/e2e/e2e_casa.py::test_def_174_operatiunea_cu_nota_validata_se_storneaza_nu_se_sterge
+  FAILED frontend_test/e2e/e2e_lot12_coada.py::test_def_499_motivul_incheiat_de_om_nu_primeste_al_doilea_punct_pe_nota
+  FAILED frontend_test/e2e/e2e_lot12_coada.py::test_def_52_cardul_si_fereastra_numara_exact_notele_de_validat
+  FAILED frontend_test/e2e/e2e_lot12_coada.py::test_def_92_respinge_ramane_rosu_plin_si_activ_cu_motivul_completat
+  FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_589_sinteticul_refuzat_inainte_de_salvare_si_contul_nelegal_se_sterge
+
+După actualizarea celor 7 fișiere (deschid întâi meniul „Acțiuni”), rularea 3 (bloc_f, lot13_firme2, bloc_d): 1 picat + 33 erori; picături care nu sunt și pe bază:
+  (niciuna)
+
+Picăturile de pe bază (nu din lot): lista completă a testelor picate/eronate pe bază:
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_101_titlul_documentului_in_coada_e_scurt
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_102_prima_intra_in_brut_si_pe_fluturas
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_103_salariu_de_la_e_prima_zi_a_lunii_lucrate
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_104_retrimiterea_notei_neschimbate_cere_confirmare
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_105_cardul_notei_retrimise_spune_retrimisa_si_motivul
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_106_notificarea_de_validat_se_rezolva_la_respingere
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_107_factura_dupa_nir_fara_factura_nu_incarca_371_a_doua_oara
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_109_dupa_prima_ciorna_veche_se_inlocuieste_si_merge_la_validare
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_110_costul_pe_salariat_are_cam_pe_prima
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_115_factura_incasata_prin_chitanta_spune_incasata
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_116_refuzul_chitantei_duce_la_campul_seriei
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_119_tva_din_nir_fara_factura_nu_e_pe_4426_deci_d300_se_potriveste
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_120_d300_nu_intra_in_coada_cand_4426_are_tva_neinclus_chiar_cu_ciorne_in_luna
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_121_restantele_se_numara_de_la_luna_preluarii
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_122_declaratia_se_marcheaza_depusa_in_afara_iconta
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_123_fara_declaratie_spune_nedeclarat
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_124_de_urmarit_are_scadentele_din_30_de_zile
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_125_cardul_arata_aceleasi_cifre_ca_fereastra
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_126_inchiderea_lunii_are_card_in_zilnic
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_127_fereastra_cozii_spune_ce_contine
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_128_nota_chitantei_arata_factura_stinsa
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_129_detaliul_notei_are_valideaza_si_respinge
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_131_factura_multi_cota_spune_regula_anaf_in_rezumat
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_134_notele_de_stoc_au_jurnalul_lor_in_d406
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_136_componentele_d406_arata_cont_debit_credit_suma
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_137_rezumatul_declaratiei_nu_e_avertisment
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_138_balanta_lunii_are_numai_notele_lunii
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_139_registrul_mf_arata_amortizarea_inregistrata_si_diferenta
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_140_registrul_mf_are_durata_catalogul_si_planul_lunar
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_141_inchiderea_lunii_semnaleaza_581_cu_sold
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_143_ferestrele_cu_tabele_fara_derulare_laterala_la_1920
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza
+  ERROR frontend_test/e2e/e2e_bloc_d.py::test_def_210_d394_nu_intra_in_coada_cu_diferenta_tva_si_ciorne_in_luna
+  FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_193_cardurile_cozii_au_latimea_ferestrei
+  FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+  FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_29_fereastra_firmei_grupata_sub_titluri
+  FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_4_bun_venit_se_inchide_din_x_si_cu_esc
+  FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica
+  FAILED frontend_test/e2e/e2e_lot12_prod.py::test_def_461_lista_partenerilor_din_toate_documentele_cu_cautare
+  FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton
+  FAILED frontend_test/e2e/e2e_lot5_roluri.py::test_def_265_ecranul_urmeaza_drepturile_fara_reautentificare
+  FAILED frontend_test/e2e/e2e_lot6.py::test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand
+  FAILED frontend_test/e2e/e2e_lot6.py::test_def_292_fereastra_cozii_poarta_titlul_cardului

@@ -1,0 +1,34 @@
+LOCALE 17.5 — criteriile de închidere ale deficiențelor locale, în px, înainte → după (rapoartele pe 603×590 și 1366×768)
+Înainte = baza 25610dbf (8019 pornit din ~/iconta_nou, baza restaurată); după = P c6f9b479 (8019 pornit din ~/iconta_lot17_5, baza restaurată).
+Comanda: ./venv/bin/python docs/dovezi/17_5/masoara_locale.py <LxÎ> <țintă>… (contul dovada.71507, ceas înghețat 03.11.2026, sesiune injectată; țintele: firma, facturi, emite, salariat, cabinet, gdpr, spv, spvc, d104 …). Brut: locale_inainte_brut.txt, locale_inainte_brut2.txt, locale_dupa_brut.txt.
+Formula benzii (789): după derularea corpului până jos (corp.scrollTop = corp.scrollHeight), distanța verticală dintre marginea de jos a ultimului copil vizibil din `.fereastra-corp` (în afara barei) și marginea de sus a `.fereastra-jos` (getBoundingClientRect). Ținta: ≤ padding-ul corpului (16 px) sau 0.
+
+789 — banda goală sub conținutul ferestrelor fără acțiune principală
+  Facturi 603×590:               banda 0 → 0;  corpul derulează 531/502 → 531/502;  bara: fundal rgb(233,237,243), linie rgb(226,229,234), clicuri da → fundal transparent, linie transparentă, clicuri nu
+  Fereastra firmei 603×590:      banda 0 → 0;  corpul derulează 3829/502 → 3829/502;  aceeași schimbare a barei
+  Facturi 1366×768:              banda 333 → 333 (meniu scurt: conținutul se termină la 333 px de bara fixată jos, nu derulează);  bara opacă → transparentă
+  Fereastra firmei 1366×768:     banda 0 → 0;  corpul derulează 1980/680 → 1980/680
+  Ce s-a făcut: bara de 72 px fără acțiune și fără motiv nu mai are fundal, linie și clicuri, deci nu mai acoperă cardurile la derulare (stil.css, `.fj-fara-principal:not(:has(button))`). Ce rămâne: bara de 72 px rămâne în fluxul de derulare, fiindcă rândul b din verificatorul de design (scripts/verificator_design_masuri.js) cere bara de 72 px lipită jos și pe ferestrele fără acțiune; scripts/ nu intră în lista permisă a lotului. Măsura formulei din comandă era 0 și înainte la 603×590 (ținta atinsă), iar la 1366×768 benzile 333 și 0 sunt ale conținutului scurt, nu ale barei. Ce a numit comanda „bandă de ~85 px” = bara opacă de 72 px (+ 13 px de margine); declarat: spațiul ei de 72 px rămâne.
+
+792 — Emite factură la 603×590, „Data scadenței”
+  container `.em-date-rand`: scrollWidth/clientWidth 528/505 → 505/505;  input: 112/112 → 112/112;  marginea dreaptă a câmpului 541 → 518 px (corpul se termină la 587 px)
+  Valoarea întreagă a datei se vede (input 112 px, tip date). „Renunță” din bannerul „Factura începută” rămâne (comanda 17.3 a scos-o numai din bară); banner neverificat în starea cu ciornă (fără ciornă în baza de test).
+
+793 — Fișa salariatului (F5, primul salariat din stat)
+  `#ss-butoane`: scrollHeight/clientHeight 82/82 → 82/82 (19 butoane, două meniuri pliate din 17.2: nu derulează nici înainte, nici după);  acțiunea din bară: „Descarcă PDF” → „Fluturaș”.
+  Rămas declarat: zona de derulare `#ss-calcul` („Din ce se calculează”, tabel) 421 din 96 px (1366×768: 421/96 → 421/98) și 421/88 la 603×590. Nu e zona butoanelor.
+
+794 — Setări › Schimbă parola
+  Acțiunea principală din bară: „Schimbă parola” → „Schimbă parola” (era deja în bară pe baza 25610dbf; aserțiunea i.1 trece și înainte). Nimic atins.
+
+795 — Setări › Date cabinet / Datele cabinetului (GDPR)
+  Date cabinet 1366×768: corpul 682/680 → 680/680 (derulare 2 px → 0);  603×590: 752/502 → 740/502 (derulează oricum: conținut lung)
+  Datele cabinetului (GDPR) 1366×768: 745/680 → 745/680 (derulare 65 px, neschimbată);  603×590: 1023/502 → 1023/502.
+  Rămas declarat: GDPR (două panouri cu text lung și câmpuri); eticheta „Pentru confirmare…” și casetele nu au loc în 680 px fără a scoate text.
+
+796 — Setări › Conectare SPV (stare conectată, 12 firme simulate prin interceptarea cererii /spv/stare, în script)
+  Lista de CUI (`ul.spv-cuiuri-lista`) 1366×768: 280/223 → fără derulare internă (corpul 680/680, lista nu mai derulează); 603×590: 508/88 + corpul 569/502 → 482/88 + corpul 544/502 (derulare dublă rămâne la panou).
+  Acțiunea principală în bară: niciuna → „Reconectează SPV” (starea neconectată: „Conectează SPV”).
+
+802 — D104 pasul 2, 1366×768
+  eticheta vizibilă: „Profit / pierdere *” → „Profit(+)/pierdere(-) *” (o linie: 18 px, rândul de 64 px); fereastra 680/680 (fără derulare), la lățimea câmpului de 190 px (170 și 180 px rup eticheta pe două rânduri: rândul de 82 px). Vezi d104.txt.

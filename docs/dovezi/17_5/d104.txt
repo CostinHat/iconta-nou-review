@@ -1,0 +1,7 @@
+D104, pasul 2 (F1 › Declarații › D104 › Continuă), 1366×768, eticheta vizibilă „Profit(+)/pierdere(-) *”, ./venv/bin/python docs/dovezi/17_5/masoara_locale.py 1366x768 d104 cu EXTRA care schimbă lățimea:
+  lățime câmp  170 px: eticheta 36 px (două rânduri), rândul 82 px
+  lățime câmp  180 px: eticheta 36 px (două rânduri), rândul 82 px
+  lățime câmp  190 px: eticheta 18 px (un rând),       rândul 64 px   ← aleasă
+  lățime câmp  200 px: eticheta 18 px (un rând),       rândul 64 px
+  lățime câmp  210 px: eticheta 18 px (un rând),       rândul 64 px
+Fereastra D104 cu 190 px: corpul 680/680 (fără derulare), banda 13 px. Înainte (starea de pe baza 25610dbf, cu „Profit / pierdere”): 680/680.

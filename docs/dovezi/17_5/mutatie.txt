@@ -1,0 +1,1 @@
+mutație: ACTIUNI_RAND_LIBERE 0 -> 1 cu meniuActiuni( scos din celula Clienți (clienti_ecran.js:99), restaurat din copie, __pycache__ șters

@@ -1,0 +1,33 @@
+Teste atinse (lot 17.5, pct.7): limita declarată a grep-ului din comandă.
+
+1. Fișiere e2e care conțin Șterge|Scoate|Revoc|Casează|Stornează|Respinge și NU sunt în lista celor 19 din praguri_17_5.txt (nu se ating; nicio apăsare pe butoanele mutate în meniu, verificat cu grep pe selectorii .val-respinge, .pr-sterge, [data-del], [data-storno], [data-sterge] și pe apăsări după text):
+   frontend_test/e2e/e2e_ciorne_proprii.py
+   frontend_test/e2e/e2e_lot10b_facturi.py
+   frontend_test/e2e/e2e_lot10b_raport_z.py
+   frontend_test/e2e/e2e_lot11_b.py
+   frontend_test/e2e/e2e_lot11_j2.py
+   frontend_test/e2e/e2e_lot11_q.py
+   frontend_test/e2e/e2e_lot12_cx2.py
+   frontend_test/e2e/e2e_lot12_diverse.py
+   frontend_test/e2e/e2e_lot12_fact2.py
+   frontend_test/e2e/e2e_lot12_fe3.py
+   frontend_test/e2e/e2e_lot12_p252.py
+   frontend_test/e2e/e2e_lot12_reev2.py
+   frontend_test/e2e/e2e_lot12_texte.py
+   frontend_test/e2e/e2e_lot12_zsterge.py
+   frontend_test/e2e/e2e_lot13_ops.py
+   frontend_test/e2e/e2e_lot13_portal_p3.py
+   frontend_test/e2e/e2e_lot14_3.py
+   frontend_test/e2e/e2e_lot5_migrare.py
+   frontend_test/e2e/e2e_lot81.py
+   frontend_test/e2e/e2e_lot91.py
+   frontend_test/e2e/e2e_lot92.py
+   frontend_test/e2e/e2e_pilot_f054.py
+
+   Dintre ele, în plasa fixă (scripts/plasa_16_2.manifest): e2e_pilot_f054.py (nu apasă nicio acțiune mutată).
+
+2. Teste core: grep-ul pe sursa JS a ecranelor atinse (val-respinge|pr-sterge|data-sterge|data-storno|data-del|respinge-nota) în core/test_*.py:
+   core/test_legari_await.py
+   core/test_lot13_firme2_ecrane.py
+
+   Cele 10 teste din core numite în praguri_17_5.txt trec toate pe lucrul curent, în afară de 4 teste roșii și pe baza 25610dbf (nu din lot): test_lot10b_deschidere_aleasa.py::test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor, ::test_formularul_cor_ales_vine_cu_codul_salariatului, test_lot13_firme2_ecrane.py::test_def_673_676_dispozitia_noua_in_fereastra_ei_cu_tipul_din_butoane, test_plural_dupa_numar.py::test_scanul_ecranului_cunoaste_toate_pluralele_din_cod.

@@ -1,0 +1,32 @@
+Etichetele vizibile ale formularelor (din git): înainte = starea de la 052d0d59^ pentru D104 și de la 4e67aa50 (17.1) pentru D177, D398 și Fișa salariatului; după = lucrul curent (P).
+
+== D104 (static/js/ecrane/declaratii.js::randeazaFormularD104; înainte = 052d0d59^)
+  înainte: Declarantul (reprezentantul asocierii) | Prenume * | Funcție * | Asocierea (fără personalitate juridică) | CUI asociere * | Adresă asociere * | Profit(+)/pierdere(-) * | Asociați (distribuția) | CUI/CNP | Cotă % | Venit | Cheltuieli | Impozit datorat | Impozit declarat | șterge | Distribuire venituri/cheltuieli pe asociați ( | + asociat
+  după:    Declarantul (reprezentantul asocierii) | Prenume * | Funcție * | Asocierea (fără personalitate juridică) | CUI asociere * | Adresă asociere * | Profit(+)/pierdere(-) * | Asociați (distribuția) | CUI/CNP | Cotă % | Venit | Cheltuieli | Impozit datorat | Impozit declarat | șterge | Distribuire venituri/cheltuieli pe asociați ( | + asociat
+  scoase față de înainte: —
+  adăugate față de înainte: —
+
+== D177 (static/js/ecrane/declaratii.js::randeazaFormularD177; înainte = 4e67aa50)
+  înainte: Perioada de la * | până la * | Suma maximă redirecționabilă (lei) * | Redirecționată anterior (lei) | Rămasă de redirecționat (lei) * | Declarație rectificativă | Adaugă beneficiar: Tipul beneficiarului * | CUI beneficiar * | Denumire / nume beneficiar * | IBAN (RO…) * | Suma redirecționată (lei) * | Nr. și data contractului * | Adresa beneficiar | Acord pentru informarea beneficiarului * | șterge | Redirecționarea impozitului pe profit (…) | + adaugă | …
+  după:    Perioada de la * | până la * | Suma maximă redirecționabilă (lei) * | Redirecționată anterior (lei) | Rămasă de redirecționat (lei) * | Declarație rectificativă | Adaugă beneficiar: Tipul beneficiarului * | CUI beneficiar * | Denumire / nume beneficiar * | IBAN (RO…) * | Suma redirecționată (lei) * | Nr. și data contractului * | Adresa beneficiar | Acord pentru informarea beneficiarului * | șterge | Redirecționarea impozitului pe profit (…) | + adaugă | …
+  scoase față de înainte: —
+  adăugate față de înainte: —
+
+== D398 (static/js/ecrane/declaratii.js::randeazaFormularD398; înainte = 4e67aa50)
+  înainte: Contribuabilul și regimul | Denumire * | Cod de TVA * | Monedă | Are sedii fixe în alte state membre? * | Stat de consum | Ce se livrează | De unde pleacă livrarea | Tip cotă | Cotă % | Bază impozabilă | Codul de TVA al sediului fix | șterge | OSS — TVA regimuri speciale ( | + livrare
+  după:    Contribuabilul și regimul | Denumire * | Cod de TVA * | Monedă | Are sedii fixe în alte state membre? * | Stat de consum | Ce se livrează | De unde pleacă livrarea | Tip cotă | Cotă % | Bază impozabilă | Codul de TVA al sediului fix | șterge | OSS — TVA regimuri speciale ( | + livrare
+  scoase față de înainte: —
+  adăugate față de înainte: —
+
+== Fișa salariatului (butoane) (static/js/ecrane/firme.js::butoaneSalariat; înainte = 4e67aa50)
+  înainte: … | Fluturaș | Pontaj | Concediu medical | Prime, sporuri, ore supl.…)` : ""} | Salariu | + masă | + vacanță | + cadou | + cultural | + creșă | Date de calcul | Corectează datele | IBAN … | COR … | Adeverință | REGES
+  după:    … | Fluturaș | Pontaj | Concediu medical | Prime, sporuri, ore supl.…)` : ""} | Salariu | + masă | + vacanță | + cadou | + cultural | + creșă | Date de calcul | Corectează datele | IBAN … | COR … | Adeverință | REGES | + Beneficiu | Mai multe
+  scoase față de înainte: —
+  adăugate față de înainte: + Beneficiu | Mai multe
+
+== Fișa salariatului (ecran) (static/js/ecrane/firme.js::ecranFisaSalariat; înainte = 4e67aa50)
+  înainte: Salariul de bază brut (lei)* | De la* | Renunță | Salvează | Înlocuiește salariul de la … (… → … lei) | Fișa salariatului · … | Compoziția netului | Din ce se calculează | Salariu de bază
+  după:    Salariul de bază brut (lei)* | De la* | Salvează | Înlocuiește salariul de la … (… → … lei) | Fișa salariatului · … | Compoziția netului | Din ce se calculează | Salariu de bază
+  scoase față de înainte: Renunță
+  adăugate față de înainte: —
+
