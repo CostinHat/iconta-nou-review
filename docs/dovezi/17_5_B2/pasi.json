@@ -1,0 +1,53 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text"
+  },
+  {
+   "id": "a.1",
+   "pas": "banca603",
+   "operator": "interval_px",
+   "valoare": "201-4000",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .zona-derulare|inaltime_px"
+  },
+  {
+   "id": "a.2",
+   "pas": "stocuri603",
+   "operator": "interval_px",
+   "valoare": "201-4000",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .zona-derulare|inaltime_px"
+  },
+  {
+   "id": "a.3",
+   "pas": "jurnal603",
+   "operator": "interval_px",
+   "valoare": "201-4000",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .zona-derulare|inaltime_px"
+  },
+  {
+   "id": "h.1",
+   "pas": "banca603",
+   "operator": "text_contine",
+   "valoare": "Toate liniile",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "h.2",
+   "pas": "stocuri603",
+   "operator": "text_contine",
+   "valoare": "Stoc validat",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "h.3",
+   "pas": "jurnal603",
+   "operator": "text_contine",
+   "valoare": "Note validate în lună",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  }
+ ]
+}
