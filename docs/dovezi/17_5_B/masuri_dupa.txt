@@ -1,0 +1,20 @@
+# ./venv/bin/python docs/dovezi/17_5_B/masoara_17_5_B.py masuri_dupa.txt
+# fereastră | rezoluție | luna | corp (px) | prag (px) | zone (px) | locuri de derulare | elemente ieșite | derulări orizontale (Casă)
+Bancă | 603x590 | - | 502 | 201 | 265 | 1 (div.zona-derulare) | 0 (-) | n/a
+Casă | 603x590 | 10/2026 | 502 | 201 | 241 | 1 (div.zona-derulare) | 0 (-) | 0
+Registru jurnal | 603x590 | 10/2026 | 502 | 201 | 220 | 1 (div.zona-derulare) | 0 (-) | n/a
+Balanță de verificare | 603x590 | 10/2026 | 502 | 201 | 328 | 1 (div.zona-derulare) | 0 (-) | n/a
+Clienți | 603x590 | - | 502 | 201 | 342 | 1 (div.zona-derulare) | 0 (-) | n/a
+Stocuri | 603x590 | 10/2026 | 502 | 201 | 261 | 1 (div.zona-derulare) | 0 (-) | n/a
+Salariați F1 | 603x590 | 10/2026 | 502 | 201 | 303 | 1 (div.zona-derulare) | 0 (-) | n/a
+Salariați F5 | 603x590 | 10/2026 | 502 | 201 | 201 | 0 (-) | 0 (-) | n/a
+Fișa salariatului Ionescu F5 | 603x590 | - | 502 | 201 | 216 | 1 (div.zona-derulare) | 0 (-) | n/a
+Bancă | 1366x768 | - | 680 | 340 (informativ, 816) | 471 | 1 (div.zona-derulare) | 0 (-) | n/a
+Casă | 1366x768 | 10/2026 | 680 | 340 (informativ, 816) | 471 | 1 (div.zona-derulare) | 0 (-) | 0
+Registru jurnal | 1366x768 | 10/2026 | 680 | 340 (informativ, 816) | 399 | 1 (div.zona-derulare) | 0 (-) | n/a
+Balanță de verificare | 1366x768 | 10/2026 | 680 | 340 (informativ, 816) | 420 | 1 (div.zona-derulare) | 0 (-) | n/a
+Clienți | 1366x768 | - | 680 | 340 (informativ, 816) | 365 | 0 (-) | 0 (-) | n/a
+Stocuri | 1366x768 | 10/2026 | 680 | 340 (informativ, 816) | 364 | 0 (-) | 0 (-) | n/a
+Salariați F1 | 1366x768 | 10/2026 | 680 | 340 (informativ, 816) | 340 | 0 (-) | 0 (-) | n/a
+Salariați F5 | 1366x768 | 10/2026 | 680 | 340 (informativ, 816) | 340 | 0 (-) | 0 (-) | n/a
+Fișa salariatului Ionescu F5 | 1366x768 | - | 680 | 340 (informativ, 816) | 433 | 1 (div.zona-derulare) | 0 (-) | n/a

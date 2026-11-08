@@ -1,0 +1,6 @@
+# ./venv/bin/python scripts/verificator_design_lot.py docs/dovezi/17_5_B/vd_inainte --toate   (baza 103e6fa2)
+# ./venv/bin/python scripts/verificator_design_lot.py docs/dovezi/17_5_B/vd_dupa --toate      (P = fe2ccb23)
+# Ferestre din cele 105 ale catalogului a căror literă a–h (la 1920×1080 sau 1366×768) ori al căror buton principal (fapte.b.actiune_principala) se schimbă, înainte → după:
+Declarație D301 F3 pasul 2 | litere 1366×768: ...de..h → ...d.... ; 1920×1080: ...d.... → ...d.... ; buton principal 1920×1080: „Pune în „De depus” →” → „Trimite în coadă →”
+# Celelalte 104 ferestre: litere și buton principal identice înainte și după (nouă ferestre ale lotului: Bancă, Casă, Registru jurnal, Balanță de verificare, Clienți, Stocuri, Salariați și Fișa salariatului — nicio literă și niciun buton principal schimbat).
+# Notă: fereastra D301 F3 pasul 2 nu e între cele nouă și nu are zonă de derulare mutată de piesa comună (nu există `data-in-zona` pe ea în nicio rulare, neverificat direct); litere/buton observate în trei rulări: baza 103e6fa2 `...d.... / ...de..h`, P 76e8eefb `.b...... / ...d....`, P fe2ccb23 `...d.... / ...d....` — cauza diferenței dintre rulări nu e stabilită (stare a declarației în catalog sau cod); raportată ca limită declarată.

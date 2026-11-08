@@ -1,0 +1,15 @@
+                except Exception:   # noqa: BLE001
+                    m = None
+                _judeca("Fișa salariatului Ionescu F5 %dx%d" % (w, h), w, m, rele)
+        finally:
+            b.close()
+>       assert not rele, "măsurători X09: %s" % "; ".join(rele)
+E       AssertionError: măsurători X09: Bancă 603x590: 2 locuri de derulare verticală (div.fereastra-corp, div.zona-derulare); Bancă 603x590: fereastra derulează (749 px de conținut în 502 px) deși are zonă de derulare; Bancă 603x590: zona div.zona-derulare are 88 px din 502 px ai corpului (cel puțin 40%); Casă 603x590: 2 elemente cu text ies din fereastră la dreapta (Stornează, Șterge); Registru jurnal 603x590: 2 locuri de derulare verticală (div.fereastra-corp, div.zona-derulare); Registru jurnal 603x590: fereastra derulează (855 px de conținut în 502 px) deși are zonă de derulare; Registru jurnal 603x590: zona div.zona-derulare are 88 px din 502 px ai corpului (cel puțin 40%); Balanță de verificare 603x590: zona div.zona-derulare are 152 px din 502 px ai corpului (cel puțin 40%); Clienți 603x590: zona div.zona-derulare are 160 px din 502 px ai corpului (cel puțin 40%); Stocuri 603x590: 2 locuri de derulare verticală (div.fereastra-corp, div.zona-derulare); Stocuri 603x590: fereastra derulează (597 px de conținut în 502 px) deși are zonă de derulare; Stocuri 603x590: zona div.zona-derulare are 88 px din 502 px ai corpului (cel puțin 40%); Salariați F1 603x590: zona div.zona-derulare are 195 px din 502 px ai corpului (cel puțin 40%); Salariați F5 603x590: zona div.zona-derulare are 200 px din 502 px ai corpului (cel puțin 40%); Fișa salariatului Ionescu F5 603x590: 2 locuri de derulare verticală (div.fereastra-corp, div.zona-derulare); Fișa salariatului Ionescu F5 603x590: fereastra derulează (1007 px de conținut în 502 px) deși are zonă de derulare; Fișa salariatului Ionescu F5 603x590: zona div.zona-derulare are 88 px din 502 px ai corpului (cel puțin 40%); Casă 1366x768: 1 elemente cu text ies din fereastră la dreapta (Șterge)
+E       assert not ['Bancă 603x590: 2 locuri de derulare verticală (div.fereastra-corp, div.zona-derulare)', 'Bancă 603x590: fereastra de...rulare)', 'Registru jurnal 603x590: fereastra derulează (855 px de conținut în 502 px) deși are zonă de derulare', ...]
+
+frontend_test/e2e/e2e_pilot_x09.py:124: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_pilot_x09.py::test_pilot_X09 - AssertionError: m...
+1 failed in 59.75s
+Command exited with non-zero status 1
+durata 60.03 s

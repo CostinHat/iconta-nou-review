@@ -1,0 +1,18 @@
+# 4.5 — testele care citesc locurile schimbate (zona de derulare). Lista scoasă cu:
+#   grep -l "zona-derulare\|cu-zona\|_zonaDerulare" core/test_*.py                                     (8 fișiere, toate în fisiere_permise)
+#   grep -l "zona-derulare\|cu-zona\|_zonaDerulare" frontend_test/e2e/e2e_*.py (fără e2e_pilot_x06.py, e2e_pilot_x09.py)   (7 fișiere, toate în fisiere_permise)
+# Nimic din ele nu e în scripts/poarta_nucleu.txt. Ce mai găsește același grep în afara listei: nimic (15 din 15 în fisiere_permise).
+# Rulate pe P final = fe2ccb23, core cu `./venv/bin/python -m pytest -q -p no:cacheprovider -rf <lista>`, e2e pe 8019 cu baza restaurată înainte de fiecare fișier.
+# fișier:linie al primei apariții a grep-ului | pe bază 103e6fa2 | pe P fe2ccb23 | durată
+core (8 fișiere, 161 teste): pe bază verde (cele 9 roșii ale primei trecere pe P — vezi mai jos — treceau pe bază) | VERDE 161 passed | 197 s
+frontend_test/e2e/e2e_lot11_w4.py: verde | verde 4 passed | 17,6 s
+frontend_test/e2e/e2e_lot12_cx7.py: 6 picate (test_def_c179_* ×5, test_def_c181_*) + 8 verzi | la fel: 6 picate + 8 verzi | 219,6 s — restanță de bază, nu regresie, nu se repară
+frontend_test/e2e/e2e_lot12_emit.py: 1 picat (test_def_c84_…) + 1 eroare de teardown (audit_log 2→3) + 5 verzi | la fel | 86,1 s — restanță de bază
+frontend_test/e2e/e2e_lot11_m.py: 1 picat (test_def_424_importul_…) + 1 eroare (test_def_447_…) + 5 verzi | la fel | 32,0 s — restanță de bază
+frontend_test/e2e/e2e_lot14.py: verde | verde 6 passed | 48,8 s
+frontend_test/e2e/e2e_lot15_e4.py: verde 3 passed | VERDE 3 passed | 27,6 s (pe prima trecere P 76e8eefb pica test_tabel_ds_plan_de_conturi…: subsolul tabelului DS fusese mutat în zonă; reparat în P final)
+frontend_test/e2e/e2e_lot15_e3.py: 3 verzi + 1 eroare (test_def_725_3_…) | la fel | 18,7 s — restanță de bază
+# Teste actualizate la comportamentul nou (în fisiere_permise; aserțiunea rămâne, se schimbă ce măsoară):
+core/test_lot10_fereastra_tabel.py::_cod_lateste — lista blocului din navigator.js: + `_noteInZona` (4 teste picau doar din asta)
+core/test_lot12_ui2_ecrane.py::test_def_617_dupa_valideaza_ramane_pe_loc_… — „rândul rămâne în vedere în fereastră, zona rămâne derulată (scrollTop > 300) și rândul s-a mișcat cu cel mult 120 px” în loc de „scrollTop identic ± 40”: mesajul nou coboară zona sub prag și `_noteInZona` mută notele deasupra rândului (baza: 386 → 403; P: 297 → 244 față de marginea de sus a corpului)
+# Prima trecere pe P (arborele de dinainte de 76e8eefb): core 9 picate, toate verzi pe bază: 5 prin structura blocului `_lateste` (test actualizat: test_lot10_fereastra_tabel ×4 și test_lot10_rezumat_fix ×1 — același bloc); 3 prin cod reparat în piesă (m_ferestre_import[balanta]: minimul zonei nu mai încape după ce bara de jos a crescut — se renunță la minim; w4_ecrane::test_tipare…: zona de rezultat a analizei era mutată în zonă — elementele cu `-rez`/`-mesaj`/`aria-live` și cele fără înălțime nu se mută; lot12_ui2_derulare 617: trecut odată cu aceleași două reparații); 1 prin test actualizat (test_lot12_ui2_ecrane 617, mai sus). După: 161 din 161 verzi (197 s), pe fe2ccb23.

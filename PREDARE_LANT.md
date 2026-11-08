@@ -2,6 +2,10 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-B (produs, 08.11.2026) — o singură derulare pe ferestrele de lucru (814, 815, 793)
+- Piesa comună: `navigator._noteInZona` (static/js/navigator.js) + `--zona-min`, `.tn-cautare`, meniul „Acțiuni” pliat (static/stil.css); DS v2.111. Registru jurnal: `data-secundar` pe contoarele din bara fixă (firme.js). Dovezi: docs/dovezi/17_5_B/ (masuri_inainte.txt, masuri_dupa.txt, x09_*.txt, x06_*.txt, vd_diferenta.txt, teste_atinse.txt, matrice/).
+- Rămase: pragul de 50% peste 700 px (816); Salariați F5 la 603×590 are zona de 201 px = chiar pragul (minim pus de piesă); testele e2e roșii și pe bază, neatinse: e2e_lot12_cx7 (6), e2e_lot12_emit (c84 + teardown), e2e_lot11_m (424, 447), e2e_lot15_e3 (725.3).
+
 ## LOTUL 17.5-A (unelte, 08.11.2026) — praguri și timp de lot
 - Praguri pentru un lot nou: `./venv/bin/python scripts/praguri_automate.py <lot> <produs|unelte> [--inainte-de <lot>] [--adauga <fișier>]` (scrie ~/ghid_incoming/praguri_<lot>.txt; `--suprascrie` rescrie). Pentru «produs» fisiere_permise vin prin `--adauga`.
 - Timp: `./venv/bin/python scripts/raport_timp_lot.py <lot>` → ~/lot_<lot>_timp.md (se produce și la publicare); fazele de lucru: `jurnal_lot.py lucru <lot>`.
