@@ -209,7 +209,7 @@ function _exportTabel(corp, titlu, bara, liber) {
   if (!EXPORT_PDF.test(titlu || "")) {
     const eligibil = _eligibilPrincipal(bara, liber, true);
     const proprii = [...corp.querySelectorAll("button.buton-primar")].filter((b) => eligibil(b) && _normalizeaza(b.textContent) !== "Descarcă PDF");
-    if (proprii.length === 1) return proprii[0];
+    if (proprii.length === 1) { proprii[0].__slab = true; return proprii[0]; }   // slab, ca PDF-ul: o acțiune găsită ulterior în catalog îl înlocuiește (un buton trecător din timpul încărcării nu ține locul)
   }
   const tabel = [...corp.querySelectorAll("table")].find((x) => _vizibil(x) && !x.closest("template, details"));
   if (!tabel && !EXPORT_PDF.test(titlu || "")) return null;
