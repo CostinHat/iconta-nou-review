@@ -1,0 +1,25 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "12",
+   "cheie": "dom:.cab-grila button.cab-card|numar"
+  },
+  {
+   "id": "a.1",
+   "pas": "compensari",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cz-alege|numar"
+  },
+  {
+   "id": "a.2",
+   "pas": "compensari",
+   "operator": "text_contine",
+   "valoare": "de încasat de la partener",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cz-total|text"
+  }
+ ]
+}

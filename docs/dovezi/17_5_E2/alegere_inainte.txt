@@ -1,0 +1,50 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________________________ test_alegere_unica_17_5_E ___________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_alegere_unica_17_5_E(browser):
+        from core import ceas_proba
+        rele = []
+        # (2) intrarea din catalog
+        cat = json.load(open(os.path.join(RAD, "core", "catalog_ecrane.json"), encoding="utf-8"))
+        intr = [e for e in cat if e.get("nume") == "Import date — Preluare F7"]
+        texte = [p.get("text") for e in intr for p in e.get("pasi", []) if p.get("text")]
+        if not intr or texte != ["Audit de preluare"]:
+            rele.append("(2) intrarea „Import date — Preluare F7” caută %s, nu „Audit de preluare”" % texte)
+        # (1) Compensări cu un singur partener
+        parcurs = _incarca_parcurs_17_1()
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            parcurs.firma(pg, F1)
+            if pg.evaluate(JS_DESCHIDE_CARD, "#fa-compensari") != "ok":
+                rele.append("(1) cardul Compensări lipsește")
+            else:
+                pg.click(TOP + "#fa-compensari", timeout=10000)
+                try:
+                    pg.wait_for_selector(TOP + "#cz-rezumat", timeout=25000)
+                except Exception:   # noqa: BLE001
+                    pass
+                pg.wait_for_timeout(2500)
+                alege = pg.locator(TOP + "#cz-alege").count()
+                total = " ".join(pg.inner_text(TOP + "#cz-total").split()) if pg.locator(TOP + "#cz-total").count() else ""
+                if alege:
+                    rele.append("(1) Compensări cere încă „Alege partenerul” deși F1 are un singur partener")
+                if "de încasat de la partener" not in total:
+                    rele.append("(1) Compensări nu arată sumele partenerului: «%s»" % total[:120])
+        finally:
+            b.close()
+>       assert not rele, "alegerea unică 17.5-E: %s" % "; ".join(rele)
+E       AssertionError: alegerea unică 17.5-E: (2) intrarea „Import date — Preluare F7” caută ['Preluare'], nu „Audit de preluare”; (1) Compensări cere încă „Alege partenerul” deși F1 are un singur partener; (1) Compensări nu arată sumele partenerului: «De compensat: 0,00 lei»
+E       assert not ["(2) intrarea „Import date — Preluare F7” caută ['Preluare'], nu „Audit de preluare”", '(1) Compensări cere încă „Alege partenerul” deși F1 are un singur partener', '(1) Compensări nu arată sumele partenerului: «De compensat: 0,00 lei»']
+
+frontend_test/e2e/e2e_alegere_unica_17_5_E.py:72: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_alegere_unica_17_5_E.py::test_alegere_unica_17_5_E
+1 failed in 7.49s
+exit=1 durata=8s

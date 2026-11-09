@@ -11,3 +11,4 @@ frontend_test/e2e/e2e_pilot_x06.py	f87b2ddfb4e2c0cb8b206d2d6a305993c2251faa74617
 frontend_test/e2e/e2e_pilot_x07.py	aac36b293578912a6cbacd2f5f07538717f8725782a9af87a1d1d2bacec39f00	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x07.py
 frontend_test/e2e/e2e_luna_lucru_17_5_C.py	6554d43464e57050568e4c8c00b3c5edca0730a2f1eada4a78f2a634eca5e7ae	1	python -m pytest -q frontend_test/e2e/e2e_luna_lucru_17_5_C.py
 frontend_test/e2e/e2e_actiune_principala_17_5_D.py	bef4f7aebfc875b58bb04ef6b276f6df28562d9e209b580bb211802909e3545b	1	python -m pytest -q frontend_test/e2e/e2e_actiune_principala_17_5_D.py
+frontend_test/e2e/e2e_alegere_unica_17_5_E.py	6db1d160a8224d7fb566d646a7d270e0c49487f769db6205f534cfe14f0aaf6e	1	python -m pytest -q frontend_test/e2e/e2e_alegere_unica_17_5_E.py
