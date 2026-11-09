@@ -4,6 +4,7 @@
 PARCURS_PASI=a,b,... (variabilă de mediu) alege pașii rulați; implicit toți, în ordinea PASI. Pașii „c-ro”, „e-98” și „j-refuz” sunt momente ale aceluiași pas din scenariu (c: aceeași listă cu RO în fața CUI-ului;
 e-98: firma F5 fără serie; j: refuzul plății), cu aserțiunile lor în pasi.json. După pasul e-98 fereastra lui F1 e refăcută (schimbarea firmei o închide)."""
 import os
+import re
 
 import verifica_pas as VP
 
@@ -44,6 +45,7 @@ def _firma(pg, nume, buton):
 def _casa(pg, nume="F1 Comert Stoc"):
     _firma(pg, nume, "#fa-casa")
     pg.wait_for_selector("#c-sold-inceput", timeout=20000)
+    _la_luna(pg, 2026, 11, "c", "#c-sold-inceput")
 
 
 def _dispozitie(pg):
@@ -143,10 +145,33 @@ def _pas_h(pg, ctx):
     pg.wait_for_selector("button.fac-frand-btn", timeout=20000)
 
 
+_JS_LUNA = ("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
+            "const m = f && f.innerText.match(/Luna (\\d{2})\\/(\\d{4})/); return m ? [+m[2], +m[1]] : null; }")
+
+
+def _la_luna(pg, an, luna, prefix, gata):
+    """Din luna AFIȘATĂ a ecranului (se deschide pe luna de lucru, nu pe luna de azi) până la `luna/an`: „← luna” (`#<prefix>-prev`) sau „luna →” (`#<prefix>-next`),
+    fiecare așteptând antetul lunii noi („Luna LL/AAAA”) și elementul `gata` al ecranului redesenat."""
+    pg.wait_for_function(_JS_LUNA, timeout=20000)
+    cur = pg.evaluate(_JS_LUNA)
+    cur = cur[0] * 12 + cur[1] - 1
+    tinta = an * 12 + luna - 1
+    for _ in range(24):
+        if cur == tinta:
+            break
+        inapoi = cur > tinta
+        cur += -1 if inapoi else 1
+        pg.click("#%s-%s" % (prefix, "prev" if inapoi else "next"))
+        pg.wait_for_function("(t) => document.body.innerText.includes(t)", arg="Luna %02d/%d" % (cur % 12 + 1, cur // 12), timeout=20000)
+        pg.wait_for_selector(gata, timeout=20000)
+        pg.wait_for_timeout(500)
+
+
 def _pas_i(pg, ctx):
     """Registru jurnal 11/2026, notele cu contul 4111 (câmpul de căutare al tabelului de note)."""
     _firma(pg, "F1 Comert Stoc", "#fa-jurnal")
     pg.wait_for_selector("#jn-cauta", timeout=20000)
+    _la_luna(pg, 2026, 11, "j", "#jn-cauta")
     pg.fill("#jn-cauta", "4111")
     pg.dispatch_event("#jn-cauta", "input")
     pg.wait_for_timeout(1500)

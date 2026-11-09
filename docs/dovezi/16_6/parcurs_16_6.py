@@ -31,7 +31,7 @@ def _cabinet(pg):
 
 
 def _jurnal(pg, luni_inapoi=0):
-    """Registrul jurnal al lui F1, pornit mereu de la cabinet (luna curentă 11/2026); `luni_inapoi` clicuri pe „← luna”, fiecare așteptând răspunsul lunii cerute."""
+    """Registrul jurnal al lui F1, pornit mereu de la cabinet; ajunge la 11/2026 − `luni_inapoi` din luna afișată (`_la_luna`)."""
     _cabinet(pg)
     pg.locator("#firme-lista button.firme-rand", has_text="F1 Comert Stoc").first.click()
     pg.wait_for_selector(".fereastra-overlay:not(.fundal) .firme-grup-btn", timeout=20000)
@@ -39,12 +39,27 @@ def _jurnal(pg, luni_inapoi=0):
     pg.wait_for_selector("#fa-jurnal", timeout=20000)
     pg.click("#fa-jurnal")
     pg.wait_for_selector("#j-nota-noua", timeout=20000)
-    luna = 11
-    for _ in range(luni_inapoi):
-        luna -= 1
-        tinta = re.compile(r"/jurnal\?[^ ]*luna=%d(&|$)" % luna)
-        with pg.expect_response(lambda r: bool(tinta.search(r.url)), timeout=20000):
-            pg.click("#j-prev")
+    _la_luna(pg, 2026, 11 - luni_inapoi)
+
+
+_JS_LUNA = ("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
+            "const m = f && f.innerText.match(/Luna (\\d{2})\\/(\\d{4})/); return m ? [+m[2], +m[1]] : null; }")
+
+
+def _la_luna(pg, an, luna):
+    """Din luna AFIȘATĂ a registrului (se deschide pe luna de lucru, nu pe luna de azi) până la `luna/an`: „← luna” sau „luna →”, fiecare așteptând răspunsul lunii cerute."""
+    pg.wait_for_function(_JS_LUNA, timeout=20000)
+    cur = pg.evaluate(_JS_LUNA)
+    cur = cur[0] * 12 + cur[1] - 1
+    tinta = an * 12 + luna - 1
+    for _ in range(24):
+        if cur == tinta:
+            break
+        inapoi = cur > tinta
+        cur += -1 if inapoi else 1
+        rg = re.compile(r"/jurnal\?[^ ]*luna=%d(&|$)" % (cur % 12 + 1))
+        with pg.expect_response(lambda r: bool(rg.search(r.url)), timeout=20000):
+            pg.click("#j-prev" if inapoi else "#j-next")
         pg.wait_for_selector("#j-nota-noua", timeout=20000)
         pg.wait_for_timeout(500)
 

@@ -5,6 +5,7 @@ max poarta_verificator 107
 max poarta_pytest 724
 max poarta_plasa 1454
 runde_verificator_max: 2
+plasa_modificabile frontend_test/e2e/e2e_pozitii_validate.py frontend_test/e2e/e2e_pilot_f054.py frontend_test/e2e/e2e_pilot_f017.py
 sursa pragurilor 17.5-C: generate de scripts/praguri_automate.py la 2026-11-09T04:41:16+02:00 din .lot_jurnal.log; loturi folosite: 17.5-A, 17.5-B2, 17.5-C0 (3)
   hook: maxim 97 s (lotul 17.5-C0, rularea 1108200-1794185623954) din 11 rulari complete, 0 rulari «intrerupt» ignorate, prag 117 s
   poarta_verificator: maxim 89 s (lotul 17.5-B2, rularea 974525-1794179585474) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 107 s
@@ -13,7 +14,15 @@ sursa pragurilor 17.5-C: generate de scripts/praguri_automate.py la 2026-11-09T0
 limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
 fisiere_permise:
   scripts/praguri_17_5_C.txt (nou)
-  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_luna_lucru_17_5_C.py)
+  scripts/plasa_16_2.manifest (rândul nou al lui e2e_luna_lucru_17_5_C.py și rândurile modificate ale celor trei fișiere din plasa_modificabile)
+  frontend_test/e2e/e2e_pozitii_validate.py
+  frontend_test/e2e/e2e_pilot_f054.py
+  frontend_test/e2e/e2e_pilot_f017.py
+  frontend_test/e2e/e2e_bloc_a.py
+  frontend_test/e2e/e2e_bloc_e.py
+  docs/dovezi/16_6/parcurs_16_6.py (numai luna și navigarea la lună)
+  docs/dovezi/16_6/parcurs_16_6_angajat.py (numai luna și navigarea la lună)
+  docs/dovezi/16_2_B/parcurs_16_2_B.py (numai luna și navigarea la lună)
   static/js/luna_lucru.js (nou)
   static/js/ecrane/firme.js
   static/js/ecrane/emitere_ecran.js

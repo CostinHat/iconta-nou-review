@@ -1297,6 +1297,8 @@ def test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_ce
                                                                                                      "suma": "11.00"}]}), "nota")["id"]
     pg.click(".nav-sageata.nav-inapoi")
     _card(patron, "jurnal", "#j-nota-noua")
+    from e2e_bloc_b import _mergi_la_luna   # Registrul se deschide pe luna de lucru; notele testului sunt de azi
+    _mergi_la_luna(patron, AZI.year, AZI.month)
     pg.wait_for_timeout(500)
     stoc = sql('SELECT i.id FROM "%s".inregistrari i JOIN "%s".inregistrari_linii l ON l.inregistrare_id = i.id '
                "WHERE l.cont_debit = '607' AND l.cont_credit = '371' AND i.data = %%s ORDER BY i.id DESC LIMIT 1" % (s, s), (AZI,))

@@ -2,6 +2,8 @@
 """Parcursul lotului 16.6 (poziția F054, editorul de note contabile), cu contul unui angajat fără dreptul de validare (dovada.71508): cabinet › Firme › F1 Comert Stoc › Registru jurnal ›
 luna 11/2026 › Notă nouă (data propusă, formularul complet), salvarea notei (628 = 5121, 25,00) și detaliul notei salvate, care așteaptă validarea în cabinet. Salvează o notă: baza se
 restaurează înaintea fiecărei parcurgeri. După fiecare pas predă pagina oracolului (verifica_pas.verifica_pagina). Nu compară nimic și nu scrie verdicte. Importă numai biblioteca standard și verifica_pas."""
+import re
+
 import verifica_pas as VP
 
 ULTIMA_NOTA = "tbody.tn-nota:last-of-type"
@@ -27,6 +29,28 @@ def _cabinet(pg):
     pg.wait_for_selector("#firme-lista button.firme-rand", timeout=20000)
 
 
+_JS_LUNA = ("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
+            "const m = f && f.innerText.match(/Luna (\\d{2})\\/(\\d{4})/); return m ? [+m[2], +m[1]] : null; }")
+
+
+def _la_luna(pg, an, luna):
+    """Din luna AFIȘATĂ a registrului (se deschide pe luna de lucru, nu pe luna de azi) până la `luna/an`: „← luna” sau „luna →”, fiecare așteptând răspunsul lunii cerute."""
+    pg.wait_for_function(_JS_LUNA, timeout=20000)
+    cur = pg.evaluate(_JS_LUNA)
+    cur = cur[0] * 12 + cur[1] - 1
+    tinta = an * 12 + luna - 1
+    for _ in range(24):
+        if cur == tinta:
+            break
+        inapoi = cur > tinta
+        cur += -1 if inapoi else 1
+        rg = re.compile(r"/jurnal\?[^ ]*luna=%d(&|$)" % (cur % 12 + 1))
+        with pg.expect_response(lambda r: bool(rg.search(r.url)), timeout=20000):
+            pg.click("#j-prev" if inapoi else "#j-next")
+        pg.wait_for_selector("#j-nota-noua", timeout=20000)
+        pg.wait_for_timeout(500)
+
+
 def ruleaza(pagina, ctx):
     pg = pagina
 
@@ -41,6 +65,7 @@ def ruleaza(pagina, ctx):
     pg.wait_for_selector("#fa-jurnal", timeout=20000)
     pg.click("#fa-jurnal")
     pg.wait_for_selector("#j-nota-noua", timeout=20000)
+    _la_luna(pg, 2026, 11)
     pg.click("#j-nota-noua")
     pg.wait_for_selector("#je-data", timeout=20000)
     pas("u")

@@ -375,6 +375,7 @@ def test_def_160_luna_in_curs_nu_se_inchide_un_singur_loc(patron, firma):
     și trimiterea la cardul „Închidere lună”."""
     pg = patron.pg
     _inchidere(patron, firma)
+    _la_luna(patron, "#il-prev", AZI.year, AZI.month)   # Închidere lună se deschide pe luna de lucru; întâi luna în curs
     curenta = "%02d/%d" % (AZI.month, AZI.year)
     blocaje = pg.inner_text("#il-controale")
     assert "luna %s nu s-a încheiat" % curenta in blocaje, blocaje
@@ -570,6 +571,7 @@ def test_def_168_nota_chitantei_numeste_chitanta_si_factura(patron, firma, factu
     assert len(ch) == 1, ch
     eticheta_ch = "%s-%s" % ch[0]
     _card(patron, firma, "jurnal", "#j-prev")
+    _la_luna(patron, "#j-prev", AZI.year, AZI.month)   # Registrul se deschide pe luna de lucru; chitanța e de azi
     _asteapta_text(patron, "chitanța " + eticheta_ch)
     nota = [n for n in _randuri_jurnal(patron) if ("chitanța " + eticheta_ch) in n[0]]
     assert len(nota) == 1, _randuri_jurnal(patron)

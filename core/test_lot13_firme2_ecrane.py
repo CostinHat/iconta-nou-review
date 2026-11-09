@@ -177,7 +177,7 @@ def test_def_673_676_dispozitia_noua_in_fereastra_ei_cu_tipul_din_butoane(browse
         assert [x[0] for x in _butoane(pg, ".alegere-butoane:has(+ #c-cat) button")] == [
             "Încasare client (5311=4111)", "Plată furnizor (401=5311)", "Ridicare de la bancă (5311=581)", "Depunere la bancă (581=5311)",
             "Avans spre decontare (542=5311)"]
-        pg.click("#c-renunta")
+        pg.click(".fereastra:last-of-type .nav-inapoi")   # [17.3] „Renunță” a ieșit din bara de jos: ieșirea din fereastră e „←” din antet
         pg.wait_for_selector("#c-tabel")
         assert not erori, erori
     finally:

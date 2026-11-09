@@ -2,7 +2,7 @@
 frontend_test/e2e/e2e_lot12_verif.py	ea5dd13306e84f7a0065746a12387339deb9e6b85efcc8a773aa31f97050c353	4	python -m pytest -q frontend_test/e2e/e2e_lot12_verif.py
 frontend_test/e2e/e2e_lot72_facturi.py	bf1fabf1158c77bbbc36f76357da834a44c8dbebaa4787fd5b8176308d7dfea2	7	python -m pytest -q frontend_test/e2e/e2e_lot72_facturi.py
 frontend_test/e2e/e2e_pilot_luna.py	818be5ac8c7c06428fda2c64ae90852def01c4594fd516396f7f33ab3b80e447	40	python -m pytest -q frontend_test/e2e/e2e_pilot_luna.py
-frontend_test/e2e/e2e_pozitii_validate.py	19cb73d30e52de26a42365eef1d1bd43b9ed47e61f3891241c4e601445215384	17	python -m pytest -q frontend_test/e2e/e2e_pozitii_validate.py
+frontend_test/e2e/e2e_pozitii_validate.py	a938060938623f541900b17e36f7802acd0c14ad4ec15c24a2ff14f6b3ba3e67	17	python -m pytest -q frontend_test/e2e/e2e_pozitii_validate.py
 frontend_test/e2e/e2e_pilot_x09.py	11bfa9c059b5362a82506dbe807a759ca6e4b8875be734df50cf7d376c491fc3	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x09.py
 frontend_test/e2e/e2e_pilot_f017.py	2c9b4fab2bfb3d9f833ea5afc6f5ed45b3e7a08b097a6c5dcd4a2fd061c4315e	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f017.py
 frontend_test/e2e/e2e_pilot_f054.py	affc7c95b8b8f7ff036364f76e96a2ea8252cd4fa79b3e8cba15ea823e259c50	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f054.py

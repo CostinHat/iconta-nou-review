@@ -359,12 +359,31 @@ def test_pozitie_f019_validarea_in_doi_pregatitorul_nu_aproba_altul_aproba_si_de
             sql("DELETE FROM public.notificari WHERE link = %s", ("validat:%d" % i,))
 
 
+def _stat_pe_luna_trecuta(ecran, firma):
+    """Statul de plată pe LUNA_TRECUTA, pornind din luna AFIȘATĂ (Statul se deschide pe luna de lucru, nu pe luna de azi): „← luna” / „luna →” până la ea,
+    cu aserțiunea explicită a lunii din antet (`.pf-intro`, „Luna LL/AAAA”) după fiecare apăsare."""
+    pg = ecran.pg
+    _stat_luna(ecran, firma)
+    tinta = LUNA_TRECUTA.year * 12 + LUNA_TRECUTA.month - 1
+    for _ in range(24):
+        m = re.search(r"(\d{2})/(\d{4})", pg.inner_text(".fereastra:last-of-type .pf-intro"))
+        assert m, ecran.fereastra()[:1500]
+        cur = int(m.group(2)) * 12 + int(m.group(1)) - 1
+        if cur == tinta:
+            return
+        prev = pg.inner_text(".fereastra:last-of-type .pf-intro")
+        pg.click(".fereastra:last-of-type #sp-prev" if cur > tinta else ".fereastra:last-of-type #sp-next")
+        pg.wait_for_function("(p) => { const f = [...document.querySelectorAll('.fereastra')].pop(); const i = f.querySelector('.pf-intro');"
+                             " return i && i.innerText !== p && f.querySelector('#sp-tabel tbody tr.sp-rand'); }", arg=prev, timeout=30000)
+    raise AssertionError("Statul nu a ajuns pe %02d/%d în 24 de apăsări" % (LUNA_TRECUTA.month, LUNA_TRECUTA.year))
+
+
 # ── F028 — Declarația D112 ───────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_pozitie_f028_d112_din_statul_de_plata_e_valida_la_duk_cu_sumele_statului(patron, firma_sal):
     """F028. Pașii: salariatul (5.000 lei brut, normă întreagă, adăugat pe ruta salariaților) -> Salariați -> statul lunii trecute: CAS,
     CASS, impozit pe rând -> Declarații -> D112 pe luna trecută -> pasul 2: „Validat cu DUKIntegrator (validatorul oficial ANAF rulat
     local), fără erori”, iar rezumatul „D112: 1 salariat - impozit …, CAS …, CASS …” are exact sumele de pe statul de plată."""
-    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    _stat_pe_luna_trecuta(patron, firma_sal)
     s = _sume_salariat(patron)
     _genereaza(patron, firma_sal, "d112", LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     pg = patron.pg
@@ -383,7 +402,7 @@ def test_pozitie_f028_d112_din_statul_de_plata_e_valida_la_duk_cu_sumele_statulu
 def test_pozitie_f080_statul_calculeaza_contributiile_si_netul_din_brut(patron, firma_sal):
     """F080. Pașii: Salariați -> statul lunii trecute, salariatul cu 5.000 lei brut, normă întreagă, funcția de bază, fără persoane în
     întreținere: pe rând CAS = 25% din brut, CASS = 10% din brut, impozitul în lei întregi, iar netul = brut − CAS − CASS − impozit."""
-    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    _stat_pe_luna_trecuta(patron, firma_sal)
     s = _sume_salariat(patron)
     patron.captura()
     brut = s["brut"][0]
@@ -446,7 +465,7 @@ def test_pozitie_f134_fisierul_de_plata_pe_card_are_netul_si_iban_ul_salariatulu
     din IBAN-ul firmei (ordonatorul)."""
     from lxml import etree
     iban = _iban_ro("BTRL", "RONCRT00F1340001")
-    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    _stat_pe_luna_trecuta(patron, firma_sal)
     pg = patron.pg
     net = _sume_salariat(patron)["net"]
     # [lotul 13, 673 / 677] fereastra salariatului -> „IBAN ⚠” (fereastra lui); înapoi la stat -> „Fișier plată card” (fereastra lui)
@@ -738,7 +757,7 @@ def test_pozitie_f087_fluturasul_si_nota_statului_au_netul_statului(patron, firm
     """F087. Pașii: Salariați -> statul lunii trecute (salariatul cu 5.000 lei brut) -> „Fluturaș”: PDF-ul „Fluturaș de salariu — LL/AAAA”,
     cu „Salariu brut” = brutul și „Salariu net” = netul de pe rândul statului, CAS (25%) -> „Contabilizează statul”: „Contul 421 se
     soldează exact cu netul fluturașilor (<netul> lei).”"""
-    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    _stat_pe_luna_trecuta(patron, firma_sal)
     s = _sume_salariat(patron)
     pg = patron.pg
     from e2e_lot13_sal_ajutor import buton, deschide_salariat, inchide
