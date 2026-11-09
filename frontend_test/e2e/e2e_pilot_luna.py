@@ -474,17 +474,12 @@ def _depune(patron, f, eticheta, index):
 
 
 def _stat_09(patron, f, an=AN, luna=LUNA):
-    """Salariați -> statul de plată, înapoi de la luna de azi până la „Luna LL/AAAA” (implicit 09/2026)."""
+    """Salariați -> statul de plată, de la luna afișată la deschidere până la „Luna LL/AAAA” (implicit 09/2026)."""
     pg = patron.pg
     patron.firma(f["nume"])
     pg.click("#fa-salariati")
     pg.wait_for_selector("#sp-contare", timeout=30000)
-    azi = _dt.date.today()
-    for _ in range((azi.year - an) * 12 + azi.month - luna):
-        prev = pg.inner_text(_F + ".pf-intro")
-        pg.click(_F + "#sp-prev")
-        pg.wait_for_function("(p) => { const i = [...document.querySelectorAll('.fereastra')].pop().querySelector('.pf-intro'); "
-                             "return i && i.innerText !== p; }", arg=prev, timeout=30000)
+    _la_luna(patron, "#sp-prev", an, luna)
     _asteapta_text(patron, "Luna %02d/%d" % (luna, an))
     pg.wait_for_selector(_F + "#sp-tabel tbody tr.sp-rand", timeout=30000)   # [lotul 13, 677] statul = tabel, un rând pe salariat
     return pg

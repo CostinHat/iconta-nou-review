@@ -53,6 +53,10 @@ def _incarca_parcurs_17_1():
     return modul
 
 
+LUNA_PILOT = "Luna 10/2026"
+JS_ARE_LUNA = "(t) => { const f = [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra')].pop(); return !!f && f.innerText.includes(t); }"
+JS_LUNA_AFISATA = "() => { const f = [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra')].pop(); const m = f && f.innerText.match(/Luna \\d{2}\\/\\d{4}/); return m ? m[0] : null; }"
+
 def _masoara(pg):
     pg.wait_for_timeout(900)
     return {"derulari": pg.evaluate(JS_DERULARI), "iesite": pg.evaluate(JS_IESITE), "orizontale": pg.evaluate(JS_ORIZONTALE)}
@@ -67,17 +71,28 @@ def _card(pg, parcurs, firma, sel):
         pg.wait_for_selector("#fa-facturi", state="detached", timeout=20000)
     except Exception:   # noqa: BLE001 — fereastra nu s-a schimbat: se măsoară ce e desenat, rezultatul pică
         pass
-    # ceasul înghețat e 03.11.2026 (core/ceas_proba.py:7), iar datele lunii de lucru a Pilotului sunt în 10/2026: unde fereastra are „← luna”, se apasă o dată
+    # ceasul înghețat e 03.11.2026 (core/ceas_proba.py:7), iar datele lunii de lucru a Pilotului sunt în 10/2026. [17.5-C0] Luna de pornire a ferestrei
+    # nu se presupune (17.5-C o schimbă): unde fereastra are „← luna”, se apasă până când textul ferestrei arată „Luna 10/2026”, cel mult 3 apăsări
     luna = pg.locator(TOP + ".fereastra-corp button", has_text="← luna")
     if luna.count():
-        luna.first.click(timeout=10000)
-        pg.wait_for_timeout(1500)
+        for _ in range(3):
+            if pg.evaluate(JS_ARE_LUNA, LUNA_PILOT):
+                break
+            inainte = pg.evaluate(JS_LUNA_AFISATA)
+            luna.first.click(timeout=10000)
+            try:   # se așteaptă schimbarea antetului „Luna LL/AAAA”, nu un timp fix (o încărcare lentă nu duce la o apăsare în plus)
+                pg.wait_for_function("(p) => (%s)() !== p" % JS_LUNA_AFISATA, arg=inainte, timeout=15000)
+            except Exception:   # noqa: BLE001 — antetul nu s-a schimbat: se verifică mai jos
+                pass
+            pg.wait_for_timeout(600)
+        if not pg.evaluate(JS_ARE_LUNA, LUNA_PILOT):
+            return None   # fereastra n-a ajuns pe 10/2026 în 3 apăsări: _judeca o raportează ca fereastră nedeschisă
     return _masoara(pg)
 
 
 def _judeca(nume, latime, m, rele):
     if m is None:
-        rele.append("%s: cardul nu există sau nu s-a deschis" % nume)
+        rele.append("%s: cardul nu există, nu s-a deschis sau n-a ajuns pe Luna 10/2026" % nume)
         return
     d = m["derulari"]
     if not d or not d.get("fereastra"):

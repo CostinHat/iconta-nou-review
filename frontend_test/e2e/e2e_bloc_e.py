@@ -222,23 +222,44 @@ _GATA = {"#il-prev": "() => (document.querySelector('#il-stare-perioada') || {})
          "#s-prev": "() => { const x = document.querySelector('#s-situatie'); return x && !x.innerText.startsWith('Se încarcă'); }"}
 
 
+_JS_LUNA = ("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
+            "const m = f && f.innerText.match(/Luna (\\d{2})\\/(\\d{4})/); return m ? [+m[2], +m[1]] : null; }")
+
+
+def _luna_afisata(ecran, timeout=30000):
+    """Luna din primul „Luna LL/AAAA” al ferestrei din față (an * 12 + luna - 1), după ce antetul apare."""
+    try:
+        ecran.pg.wait_for_function(_JS_LUNA, timeout=timeout)
+    except Exception:
+        ecran.captura("negasit")
+        raise AssertionError("fereastra din față nu arată un antet „Luna LL/AAAA”; arată: %s" % ecran.fereastra()[-1500:])
+    an, luna = ecran.pg.evaluate(_JS_LUNA)
+    return an * 12 + luna - 1
+
+
 def _la_luna(ecran, buton_inapoi, an, luna):
-    """Din luna curentă, înapoi lună cu lună până la `luna/an`, așteptând antetul fiecărei luni („Luna LL/AAAA”) și sfârșitul
-    desenării (butoanele se leagă după cererile ecranului; un clic dat înainte s-ar pierde)."""
-    cur = AZI.year * 12 + AZI.month - 1
+    """Din luna AFIȘATĂ (nu din azi) până la `luna/an`, în ambele direcții: înapoi cu `*-prev`, înainte cu perechea `*-next`; după fiecare apăsare
+    așteaptă antetul lunii noi („Luna LL/AAAA”) și sfârșitul desenării (butoanele se leagă după cererile ecranului; un clic dat înainte s-ar pierde).
+    Cel mult 24 de apăsări."""
     tinta = an * 12 + luna - 1
     gata = _GATA.get(buton_inapoi)
+    buton_inainte = buton_inapoi.replace("-prev", "-next")
 
     def asteapta(c):
         _asteapta_text(ecran, "Luna %02d/%d" % (c % 12 + 1, c // 12))
         if gata:
             ecran.pg.wait_for_function(gata, timeout=60000)
         ecran.pg.wait_for_timeout(300)
+    cur = _luna_afisata(ecran)
     asteapta(cur)
-    while cur > tinta:
-        cur -= 1
-        ecran.pg.click(buton_inapoi)
+    for _ in range(24):
+        if cur == tinta:
+            return
+        ecran.pg.click(buton_inapoi if cur > tinta else buton_inainte)
+        cur += -1 if cur > tinta else 1
         asteapta(cur)
+    if cur != tinta:
+        raise AssertionError("după 24 de apăsări fereastra arată luna %02d/%d, ținta e %02d/%d" % (cur % 12 + 1, cur // 12, luna, an))
 
 
 def _card(ecran, f, cheie, asteapta):

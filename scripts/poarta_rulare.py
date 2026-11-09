@@ -98,7 +98,7 @@ def main(argv):
         return refuz("sha-ul din baza.json (%s) nu e merge-base cu main (%s)." % (an["commit_baza"][:8], git("merge-base", "HEAD", "main")[:8]))
     if an["manifest_sha256"] != L.hash_fisier(os.path.join(RAD, L.MANIFEST)):
         # 16.1-C2 pct.1: manifestul poate crește numai cu rânduri pentru fișiere de test noi (prezente în diff, absente pe main)
-        ref = L.manifest_refuzuri(RAD, an["commit_baza"])
+        ref = L.manifest_refuzuri(RAD, an["commit_baza"], modificabile=L.plasa_modificabile(RAD, lotf))
         if ref:
             return refuz("manifestul curent diferă de cel din baza.json altfel decât prin fișiere noi: " + "; ".join(ref))
     if git("status", "--porcelain", "--untracked-files=normal"):

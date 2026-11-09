@@ -410,7 +410,7 @@ def verifica(lot, sha, comun, sirul_zip):
     if os.path.exists(cb):
         ab = json.load(open(cb, encoding="utf-8"))["antet"]
         if ab["manifest_sha256"] != L.hash_fisier(os.path.join(RAD, L.MANIFEST)):
-            stop += ["manifestul: " + m for m in L.manifest_refuzuri(DEP or RAD, ab["commit_baza"])]
+            stop += ["manifestul: " + m for m in L.manifest_refuzuri(DEP or RAD, ab["commit_baza"], modificabile=L.plasa_modificabile(DEP or RAD, lotf, sha))]
     # baza
     if not os.path.exists(cb):
         stop.append("lipsește baza.json")

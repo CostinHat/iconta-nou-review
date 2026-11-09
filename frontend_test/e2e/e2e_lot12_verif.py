@@ -33,7 +33,7 @@ from e2e_bloc_a import _api as _api_e
 from e2e_bloc_a import _card as _card_firma
 from e2e_bloc_b import _cnp
 from e2e_bloc_d import PATRON, _api, _deschide
-from e2e_bloc_e import _nota
+from e2e_bloc_e import _la_luna, _nota
 from e2e_pozitii_validate import _atr, _pas2, _valideaza_notele
 from e2e_bloc_d import _stat as _stat_luna
 from e2e_lot11_s9 import _F, _d112_xml, _firma_cu_salariat, _randuri_compozitie, _un
@@ -223,6 +223,7 @@ def test_def_c60_registrul_de_casa_porneste_de_la_preluare_si_de_la_notele_lunii
     _card_firma(patron, "casa", "#c-toggle")
     pg = patron.pg
     pg.wait_for_selector("#c-sold-inceput", timeout=20000)
+    _la_luna(patron, "#c-prev", AZI.year, AZI.month)   # fereastra pe luna curentă a ceasului testului, oricare ar fi luna propusă la deschidere
     patron.captura("luna_curenta")
     assert pg.inner_text("#c-sold-inceput").strip() == "1.550,00 lei", pg.inner_text("#c-sold-inceput")
     assert pg.inner_text("#c-sold-final").strip() == "1.550,00 lei", pg.inner_text("#c-sold-final")

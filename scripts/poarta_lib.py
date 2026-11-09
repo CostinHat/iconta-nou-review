@@ -34,10 +34,23 @@ def _git_text(rad, *a):
     return r.stdout if r.returncode == 0 else None
 
 
-def manifest_refuzuri(rad, commit_baza, main="main", cale_manifest=None):
+def plasa_modificabile(rad, lotf, head="HEAD"):
+    """Căile numite de arhitect pe liniile `plasa_modificabile` din scripts/praguri_<lotf>.txt, citite la commitul `head` (17.5-C0) -> mulțime; fără linie = goală."""
+    text = _git_text(rad, "show", "%s:scripts/praguri_%s.txt" % (head, lotf)) or ""
+    cai = set()
+    for ln in text.splitlines():
+        parti = ln.split()
+        if parti and parti[0] == "plasa_modificabile":
+            cai.update(parti[1:])
+    return cai
+
+
+def manifest_refuzuri(rad, commit_baza, main="main", cale_manifest=None, modificabile=()):
     """Creșterea manifestului în lot (16.1-C2, pct.1): manifestul curent diferă de cel de la commitul bazei numai prin rânduri ADĂUGATE pentru fișiere de test noi,
     prezente în diff-ul lotului față de `main` și absente pe `main`. Orice rând lipsă, modificat (și numărul de teste al unui fișier existent) sau adăugat pentru un
-    fișier existent pe main ori în afara diff-ului = refuz cu numele fișierului. -> lista refuzurilor (goală = acceptat)."""
+    fișier existent pe main ori în afara diff-ului = refuz cu numele fișierului. -> lista refuzurilor (goală = acceptat).
+    Excepția 17.5-C0: un rând MODIFICAT pentru o cale din `modificabile` (numită de arhitect în praguri) se acceptă numai dacă fișierul e în diff, comanda e aceeași,
+    numărul de teste nu a scăzut și sha256 din rând e hash-ul fișierului din arborele de lucru."""
     def randuri(text):
         date, alte = {}, []
         for ln in text.splitlines():
@@ -59,13 +72,34 @@ def manifest_refuzuri(rad, commit_baza, main="main", cale_manifest=None):
         if f not in nou:
             ref.append("%s: rând lipsă" % f)
         elif nou[f] != vechi[f]:
-            ref.append("%s: rând modificat (hash, număr de teste sau comandă)" % f)
+            motiv = _motiv_modificare(rad, f, vechi[f], nou[f], diff) if f in modificabile else "hash, număr de teste sau comandă"
+            if motiv:
+                ref.append("%s: rând modificat (%s)" % (f, motiv))
     for f in sorted(set(nou) - set(vechi)):
         if subprocess.run(["git", "cat-file", "-e", "%s:%s" % (main, f)], cwd=rad, capture_output=True).returncode == 0:
             ref.append("%s: rând adăugat pentru un fișier existent pe %s" % (f, main))
         elif f not in diff:
             ref.append("%s: rând adăugat pentru un fișier care nu e în diff-ul lotului" % f)
     return ref
+
+
+def _motiv_modificare(rad, f, rand_vechi, rand_nou, diff):
+    """Motivul pentru care un rând modificat al unei căi din `modificabile` rămâne refuz; None = modificarea e permisă."""
+    v, n = rand_vechi.split("\t"), rand_nou.split("\t")
+    if len(v) < 4 or len(n) < 4:
+        return "rând cu mai puțin de patru câmpuri"
+    if f not in diff:
+        return "fișierul nu e în diff-ul lotului"
+    if n[3] != v[3]:
+        return "comanda s-a schimbat"
+    try:
+        if int(n[2]) < int(v[2]):
+            return "numărul de teste a scăzut %s -> %s" % (v[2], n[2])
+    except ValueError:
+        return "număr de teste ilizibil"
+    if n[1] != hash_fisier(os.path.join(rad, f)):
+        return "sha256 diferit de hash-ul fișierului"
+    return None
 
 
 def nume_stabil(classname, name, rad):

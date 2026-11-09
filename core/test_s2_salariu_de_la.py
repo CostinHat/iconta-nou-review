@@ -11,6 +11,7 @@ import functools
 import http.server
 import json
 import os
+import re
 import socketserver
 import threading
 from urllib.parse import urlparse
@@ -67,6 +68,6 @@ def test_salariul_de_la_porneste_cu_prima_zi_a_lunii_afisate(pagina):
     # [lotul 13, 677] rândul deschide fereastra salariatului; „Salariu” e unul din butoanele ei (675)
     pg.click("#mount .sp-deschide"); pg.wait_for_selector(".fer-proba [data-salariu]")
     pg.click(".fer-proba [data-salariu]"); pg.wait_for_selector("#salariu-data")
-    azi = datetime.date.today()
-    prima_lunii_trecute = (azi.replace(day=1) - datetime.timedelta(days=1)).replace(day=1)
-    assert pg.input_value("#salariu-data") == prima_lunii_trecute.isoformat()   # luna lucrată (afișată), ziua 1
+    # luna lucrată = luna din antetul statului afișat („Luna LL/AAAA”), nu luna de azi minus una
+    luna, an = re.search(r"Luna (\d{2})/(\d{4})", pg.inner_text("#mount")).groups()
+    assert pg.input_value("#salariu-data") == datetime.date(int(an), int(luna), 1).isoformat()   # luna lucrată (afișată), ziua 1
