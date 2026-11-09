@@ -6,6 +6,9 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 - Piesa comună: `navigator._noteInZona` (static/js/navigator.js) + `--zona-min`, `.tn-cautare`, meniul „Acțiuni” pliat (static/stil.css); DS v2.111. Registru jurnal: `data-secundar` pe contoarele din bara fixă (firme.js). Dovezi: docs/dovezi/17_5_B/ (masuri_inainte.txt, masuri_dupa.txt, x09_*.txt, x06_*.txt, vd_diferenta.txt, teste_atinse.txt, matrice/).
 - Rămase: pragul de 50% peste 700 px (816); Salariați F5 la 603×590 are zona de 201 px = chiar pragul (minim pus de piesă); testele e2e roșii și pe bază, neatinse: e2e_lot12_cx7 (6), e2e_lot12_emit (c84 + teardown), e2e_lot11_m (424, 447), e2e_lot15_e3 (725.3).
 
+## LOTUL 17.5-B2 (produs, 09.11.2026) — continuă 17.5-B pe același cod (P = fe2ccb23)
+- Numai oracolul s-a schimbat (f.1 rescrisă, h.1–h.3 noi); poarta VERDE pe C = 5e14d8f3, haiku_1 și dupa 14/14 «trece». Starea publicării: vezi ~/lot_17_5_B2_raport.md. Retestul pe producție îl face arhitectul.
+
 ## LOTUL 17.5-A (unelte, 08.11.2026) — praguri și timp de lot
 - Praguri pentru un lot nou: `./venv/bin/python scripts/praguri_automate.py <lot> <produs|unelte> [--inainte-de <lot>] [--adauga <fișier>]` (scrie ~/ghid_incoming/praguri_<lot>.txt; `--suprascrie` rescrie). Pentru «produs» fisiere_permise vin prin `--adauga`.
 - Timp: `./venv/bin/python scripts/raport_timp_lot.py <lot>` → ~/lot_<lot>_timp.md (se produce și la publicare); fazele de lucru: `jurnal_lot.py lucru <lot>`.
