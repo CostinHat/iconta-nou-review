@@ -1,0 +1,32 @@
+unelte
+lot: 17.5-C0
+fara praguri numerice pe durate in aceasta schema (lot de unelte; niciun rand `max <faza> <secunde>`: scripts/publica_lot.py compara numai randurile `max`); referintele de mai jos sunt cerinte de raport, cu cifra si cu sursa ei
+  hook ≤ 112 s (= 93 × 1,2; sursa: lotul 17.5-A, rularea 3170793-1794137990739, 18 rulari complete)
+  poarta_verificator ≤ 105 s (= 87 × 1,2; sursa: lotul 17.5-A, rularea 3136054-1794136172717, 4 rulari complete)
+  poarta_pytest ≤ 660 s (= 550 × 1,2; sursa: lotul 17.5, rularea 3063327-1794130048454, 4 rulari complete)
+  poarta_plasa ≤ 1389 s (= 1157 × 1,2; sursa: lotul 17.5-A, rularea 3136054-1794136802015, 4 rulari complete)
+runde_verificator_max: 0
+sursa pragurilor 17.5-C0: generate de scripts/praguri_automate.py la 2026-11-08T16:04:45+02:00 din .lot_jurnal.log; loturi folosite: 17.3-B, 17.5, 17.5-A (3)
+  hook: maxim 93 s (lotul 17.5-A, rularea 3170793-1794137990739) din 18 rulari complete, 0 rulari «intrerupt» ignorate, prag 112 s
+  poarta_verificator: maxim 87 s (lotul 17.5-A, rularea 3136054-1794136172717) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 105 s
+  poarta_pytest: maxim 550 s (lotul 17.5, rularea 3063327-1794130048454) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 660 s
+  poarta_plasa: maxim 1157 s (lotul 17.5-A, rularea 3136054-1794136802015) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 1389 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+plasa_modificabile frontend_test/e2e/e2e_pilot_luna.py frontend_test/e2e/e2e_lot12_verif.py frontend_test/e2e/e2e_pilot_x09.py
+fisiere_permise (informativ; perimetrul real la un lot unelte = unelte_refuzuri, publica_lot.py:254-267; fisierele frontend_test de mai jos sunt numite aici ca sa fie permise)
+  frontend_test/e2e/e2e_bloc_e.py
+  frontend_test/e2e/e2e_pilot_luna.py
+  frontend_test/e2e/e2e_lot12_verif.py
+  frontend_test/e2e/e2e_pilot_x09.py
+  core/test_s2_salariu_de_la.py
+  scripts/poarta_lib.py
+  scripts/poarta_rulare.py
+  scripts/publica_lot.py
+  scripts/plasa_16_2.manifest
+  scripts/praguri_17_5_C0.txt (nou)
+  core/test_plasa_modificabile_17_5_C0.py (nou)
+  CLAUDE.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_C0/
