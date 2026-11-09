@@ -2,6 +2,10 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-C0 (unelte, 09.11.2026) — plasa fixă cu rânduri modificabile numite de arhitect; testele de plasă din luna afișată
+- `poarta_lib.plasa_modificabile` + `manifest_refuzuri(modificabile=)`; linia `plasa_modificabile` din praguri e a arhitectului (R14 în CLAUDE.md). `_la_luna` merge în ambele direcții din luna afișată; x09, C60, `_stat_09` și core/test_s2_salariu_de_la.py nu mai presupun luna de azi. Dovezi: docs/dovezi/17_5_C0/. Starea publicării: ~/lot_17_5_C0_raport.md.
+- Rămase: fișierele din docs/dovezi/17_5_C0/neatinse.txt (în afara plasei, presupun luna de azi; comandă separată după 17.5-C); dovada că cele trei teste de plasă trec și cu luna nouă vine la 17.5-C.
+
 ## LOTUL 17.5-B (produs, 08.11.2026) — o singură derulare pe ferestrele de lucru (814, 815, 793)
 - Piesa comună: `navigator._noteInZona` (static/js/navigator.js) + `--zona-min`, `.tn-cautare`, meniul „Acțiuni” pliat (static/stil.css); DS v2.111. Registru jurnal: `data-secundar` pe contoarele din bara fixă (firme.js). Dovezi: docs/dovezi/17_5_B/ (masuri_inainte.txt, masuri_dupa.txt, x09_*.txt, x06_*.txt, vd_diferenta.txt, teste_atinse.txt, matrice/).
 - Rămase: pragul de 50% peste 700 px (816); Salariați F5 la 603×590 are zona de 201 px = chiar pragul (minim pus de piesă); testele e2e roșii și pe bază, neatinse: e2e_lot12_cx7 (6), e2e_lot12_emit (c84 + teardown), e2e_lot11_m (424, 447), e2e_lot15_e3 (725.3).

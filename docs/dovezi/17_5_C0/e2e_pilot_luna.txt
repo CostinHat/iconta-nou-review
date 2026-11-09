@@ -1,0 +1,5 @@
+2026-11-09T03:08:04+02:00
+[e2e] aplicația din arbore pornită pe 8019 în 12s
+
+[e2e] 40 passed in 255.03s (0:04:15) (267s; capturi în /tmp/e2e_17_5_C0_e2e_pilot_luna)
+durata 268.71 s

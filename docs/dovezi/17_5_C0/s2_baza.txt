@@ -1,0 +1,4 @@
+== 6.3 s2 pe baza
+.                                                                        [100%]
+1 passed in 2.09s
+durata 2.51 s

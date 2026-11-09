@@ -1,0 +1,6 @@
+[lacat_test] lacăt preluat de la pid 1121389 (mort sau refolosit)
+ERROR:  permission denied to terminate process
+DETAIL:  Only roles with the SUPERUSER attribute may terminate processes of roles with the SUPERUSER attribute.
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (iconta_test:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 82s

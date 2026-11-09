@@ -1,0 +1,26 @@
+# fișiere e2e cu apăsări „*-prev” / „← luna” fără _la_luna (în afara plasei, neatinse); număr de apariții (grep -cE), minus cele patru atinse și minus cele care ajung la lună numai prin _la_luna / _mergi_la_luna
+# coloane: fișier | apariții total | apariții pe linii fără _la_luna/_mergi_la_luna
+frontend_test/e2e/e2e_bloc_b.py	3	3
+frontend_test/e2e/e2e_bloc_c.py	1	1
+frontend_test/e2e/e2e_bloc_d.py	5	5
+frontend_test/e2e/e2e_bloc_f.py	4	4
+frontend_test/e2e/e2e_comanda_1410.py	1	1
+frontend_test/e2e/e2e_lot10_valuta.py	2	2
+frontend_test/e2e/e2e_lot11_c88.py	1	1
+frontend_test/e2e/e2e_lot11_j.py	2	2
+frontend_test/e2e/e2e_lot11_q.py	1	1
+frontend_test/e2e/e2e_lot11_v.py	2	2
+frontend_test/e2e/e2e_lot11_z.py	4	4
+frontend_test/e2e/e2e_lot12_cx1.py	1	1
+frontend_test/e2e/e2e_lot12_cx2.py	9	9
+frontend_test/e2e/e2e_lot12_fe3.py	1	1
+frontend_test/e2e/e2e_lot12_firme1.py	3	3
+frontend_test/e2e/e2e_lot12_firme2.py	2	2
+frontend_test/e2e/e2e_lot12_reev3.py	1	1
+frontend_test/e2e/e2e_lot14_3.py	7	7
+frontend_test/e2e/e2e_lot14.py	2	2
+frontend_test/e2e/e2e_lot15_1.py	1	1
+frontend_test/e2e/e2e_lot6.py	4	2
+frontend_test/e2e/e2e_lot72_contab.py	4	2
+frontend_test/e2e/e2e_lot81.py	1	1
+frontend_test/e2e/e2e_lot91.py	1	1

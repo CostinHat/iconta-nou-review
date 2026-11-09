@@ -1,0 +1,5 @@
+2026-11-09T03:05:59+02:00
+[e2e] aplicația din arbore pornită pe 8019 în 12s
+
+[e2e] 4 passed in 29.83s (42s; capturi în /tmp/e2e_17_5_C0_e2e_lot12_verif)
+durata 43.50 s

@@ -1,0 +1,9 @@
+frontend_test/e2e/e2e_bloc_e.py:14
+frontend_test/e2e/e2e_lot11_c88.py:1
+frontend_test/e2e/e2e_lot12_diverse.py:1
+frontend_test/e2e/e2e_lot12_fx3.py:2
+frontend_test/e2e/e2e_lot12_fisc3.py:1
+frontend_test/e2e/e2e_lot12_verif.py:1
+frontend_test/e2e/e2e_lot72_contab.py:2
+frontend_test/e2e/e2e_lot6.py:2
+frontend_test/e2e/e2e_pilot_luna.py:6

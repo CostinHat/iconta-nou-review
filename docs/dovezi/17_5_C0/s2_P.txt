@@ -1,0 +1,4 @@
+== 6.3 core/test_s2_salariu_de_la.py pe P
+.                                                                        [100%]
+1 passed in 2.10s
+durata 2.55 s

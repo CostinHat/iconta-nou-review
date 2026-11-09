@@ -1,0 +1,30 @@
+== 6.2
+..........                                                               [100%]
+10 passed in 1.36s
+durata 1.79 s
+== 6.2 pe baza 594b72a9
+
+depozit = ('/tmp/tmplumk1zl5/dep', '92dcb2bfb8e6538627d3d131d889f9664aa3c605')
+
+    def test_9_rand_lipsa_pentru_o_cale_modificabila_ramane_refuz(depozit):
+        d, baza = depozit
+        _commit(d, F, "def test_a():\n    assert 2\n")
+        open(os.path.join(d, L.MANIFEST), "w").write(ANTET)
+>       r = L.manifest_refuzuri(d, baza, modificabile={F})
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: manifest_refuzuri() got an unexpected keyword argument 'modificabile'
+
+core/test_plasa_modificabile_17_5_C0.py:146: TypeError
+=========================== short test summary info ============================
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_1_rand_modificat_pentru_cale_modificabila_e_acceptat
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_2_aceeasi_modificare_fara_cale_in_modificabile_e_refuz
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_3_numarul_de_teste_scazut_e_refuz_cu_ambele_numere
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_3b_numarul_de_teste_crescut_e_acceptat
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_4_comanda_schimbata_e_refuz
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_5_cale_modificabila_dar_fisierul_nu_e_in_diff_e_refuz
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_6_sha256_diferit_de_hash_ul_fisierului_e_refuz
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_8_plasa_modificabile_citeste_linii_si_cai
+FAILED core/test_plasa_modificabile_17_5_C0.py::test_9_rand_lipsa_pentru_o_cale_modificabila_ramane_refuz
+9 failed, 1 passed in 1.27s
+Command exited with non-zero status 1
+durata 1.75 s

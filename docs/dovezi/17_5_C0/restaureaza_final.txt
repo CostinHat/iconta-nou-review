@@ -1,0 +1,4 @@
+[lacat_test] lacăt preluat de la pid 1138277 (mort sau refolosit)
+[baza_test] martor: psql și lucrătorul citesc aceeași bază (iconta_test:29)
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 78s

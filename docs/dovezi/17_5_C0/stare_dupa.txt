@@ -1,0 +1,5 @@
+== 6.5 după
+(gol)
+liber
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 78s

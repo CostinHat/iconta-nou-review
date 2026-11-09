@@ -1,0 +1,6 @@
+== 6.4 genereaza_manifest_plasa --verifica
+exit 0
+== cu modificabile (P, praguri la HEAD)
+[]
+== fără modificabile
+['frontend_test/e2e/e2e_lot12_verif.py: rând modificat (hash, număr de teste sau comandă)', 'frontend_test/e2e/e2e_pilot_luna.py: rând modificat (hash, număr de teste sau comandă)', 'frontend_test/e2e/e2e_pilot_x09.py: rând modificat (hash, număr de teste sau comandă)']
