@@ -52,7 +52,7 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=898215e0ee";
-import { api, arataMesaj, esc } from "./api.js?v=0b48920b43";
+import { api, arataMesaj, esc } from "./api.js?v=7396e03327";
 import { ecranLogin } from "./ecrane/login.js?v=1046446310";
 import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=bd1a5189a3";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=4a6112a625";

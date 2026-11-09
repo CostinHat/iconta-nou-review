@@ -1155,7 +1155,12 @@ export function alegereText(sel) {
   sel.__butoane = true;
   sel.classList.add("alegere-sursa");
   sel.setAttribute("tabindex", "-1"); sel.setAttribute("aria-hidden", "true");
-  if (!sel.value) sel.value = reale[0].value;
+  if (!sel.value) {
+    sel.value = reale[0].value;
+    // [17.5-E, 820] ecranul află alegerea ca la omul care alege: `change` (urcă), după ce ecranul și-a legat ascultătorii (task amânat), o singură dată; lista care avea deja valoarea nu trimite nimic
+    const pusa = sel.value;
+    setTimeout(() => { if (sel.isConnected && sel.value === pusa) sel.dispatchEvent(new Event("change", { bubbles: true })); }, 0);
+  }
   const t = document.createElement("span");
   t.className = "alegere-text";
   t.textContent = (reale[0].dataset.buton || reale[0].textContent).trim();

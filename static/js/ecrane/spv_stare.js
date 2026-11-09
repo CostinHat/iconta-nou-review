@@ -2,7 +2,7 @@
 // emisă): conexiunea cabinetului, ultima citire a CUI-ului firmei și răspunsul ANAF (`GET /tenants/{id}/spv/stare`,
 // `spv_conector.stare_firma`). Când lipsește ceva ce se repară în Setări cont → Conectare SPV, mesajul are butonul spre acolo
 // (`ecran_destinatie.butonSpreEcran`). O singură sursă a textului — nu câte o frază pe ecran.
-import { api, arataMesaj, cate, dataRo } from "../api.js?v=0b48920b43";
+import { api, arataMesaj, cate, dataRo } from "../api.js?v=7396e03327";
 import { cardRezumat } from "../ds_piese.js?v=fb823092ed";   // [15.1, 687.1-SPV]
 import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";
 

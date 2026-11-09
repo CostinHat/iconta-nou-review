@@ -17,7 +17,7 @@
 // însemna că n-a fost ce compara, sau că verificarea n-a rulat deloc. Ecranul le ține despărțite,
 // fiindcă exact aici se naște cifra validă și falsă.
 
-import { api, esc, dupaNumar, dataRo } from "../api.js?v=0b48920b43";
+import { api, esc, dupaNumar, dataRo } from "../api.js?v=7396e03327";
 import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";
 import { semnalHtml, legaSemnale } from "../ds_piese.js?v=fb823092ed";   // [15.1-E3] semnale pe rând
 
