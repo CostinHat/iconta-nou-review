@@ -1,0 +1,11 @@
+ferestre cu litera sau butonul principal schimbat (înainte -> după; coloane 1920x1080, 1366x768)
+Panou Admin — Sănătate server: .b...... ........ -> .b...... .b......
+Declarație D301 F3 pasul 2: ...d.... ...d.... -> ...d.... .b......
+ferestre cu litera b pică: înainte 5, după 6 (din 105 / 105)
+lipsă în după: []
+Cele două diferențe de mai sus nu țin de ferestrele lotului și sunt instabile: rerulate izolat, de două ori, pe același P (39d45031), cele două ferestre dau
+  Panou Admin — Sănătate server: ........ ........  și  Declarație D301 F3 pasul 2: ...d.... ...d....  (fără litera b; la «inainte» Sănătate server avea b numai la 1920×1080).
+Ferestrele lotului (înainte -> după, ambele rezoluții): Bancă F1 ..c..... -> ..c.....; Rapoarte comerciale F1 ..c..... -> ..c.....; Import date F1 ........ -> ........;
+  Mișcări și fișe de magazie F1 ........ -> ........; Import date — Solduri inițiale F1 ........ -> ........ (litera b nu pică la nicio fereastră a lotului, înainte sau după).
+Butonul principal (din e2e_actiune_principala_17_5_D.py, înainte -> după): Bancă «Descarcă PDF» -> «Importă extras»; Mișcări «Salvează nivelul minim» -> «Descarcă PDF»;
+  Rapoarte comerciale «Salvează varianta curentă» -> «Descarcă PDF»; Import date (meniul) «Descarcă PDF» -> niciunul; Solduri inițiale «Descarcă model (CSV)» -> «Încarcă balanța».

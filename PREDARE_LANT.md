@@ -2,6 +2,10 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-D (produs, 09.11.2026) — acțiunea principală a ferestrei (819), ramura `lucru/lot17-5d` (worktree `~/iconta_lot17_5d`)
+- `static/js/cadru.js`: `_alege` dă „Descarcă PDF” ferestrelor din `EXPORT_PDF` (`_pdfulFerestrei`, `_exportPdf`); „Import date” în `FARA_ACTIUNE_PRINCIPALA` și `EXCEPTII_B` („Import date F1”). Butoane de alegere a fișierului: Bancă „Importă extras” (`firme.js`, `#bk-alege`), cele 10 zone de import din `migrare.js` prin `_butonAlegeFisier` („Încarcă balanța” la Solduri inițiale); inputurile de fișier rămân în pagină, ascunse.
+- Ferestre schimbate (docs/dovezi/17_5_D/vd_diferenta.txt): Bancă, Mișcări și fișe de magazie, Rapoarte comerciale, Import date (meniul), Import date › Solduri inițiale și celelalte importuri cu `.mig-drop`. Limită: trei teste e2e vechi (e2e_lot12_firme1 def_489, e2e_lot13_firme2 def_607_624, e2e_lot6 def_276) așteaptă `#bk-fisier` vizibil, nenumite în lista permisă (vezi teste_atinse.txt). Starea publicării: ~/lot_17_5_D_raport.md. 819 îl scrie arhitectul în DEFICIENTE.md după retest.
+
 ## LOTUL 17.5-C2 (produs, 09.11.2026) — continuă 17.5-C pe același cod P (615e295f), ramura `lucru/lot17-5c2` (worktree `~/iconta_lot17_5c2`)
 - Cauza continuării: două rânduri „pornire” în jurnalul lui 17.5-C (publica_lot.py:103–104); decizia arhitectului: lot de continuare, jurnalul neatins. Fără modificare de produs. Poarta VERDE pe C, haiku_1 și dupa pe C; starea publicării: vezi ~/lot_17_5_C2_raport.md. Retestul pe producție îl face arhitectul; limitele lui 17.5-C rămân cele din ~/lot_17_5_C_raport.md.
 

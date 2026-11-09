@@ -1,0 +1,44 @@
+aceleași fișiere roșii pe P, rulate pe bază (main d7326c0e54ee8c5f5cb7762205fcdb15f01b45c6)
+e2e_bloc_a | exit=1 | 231s | [e2e] 5 failed, 39 passed in 214.68s (0:03:34) (229s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_4_bun_venit_se_inchide_din_x_si_cu_esc
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_193_cardurile_cozii_au_latimea_ferestrei
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_29_fereastra_firmei_grupata_sub_titluri
+e2e_lot11_m | exit=1 | 47s | [e2e] 1 failed, 5 passed in 30.99s (45s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot11_m.py::test_def_424_importul_are_rezumatul_sus_actiunea_jos_si_deruleaza_numai_tabelul
+e2e_lot12_cx1 | exit=1 | 212s | [e2e] 4 failed, 10 passed in 196.38s (0:03:16) (210s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c135_nota_de_casa_a_facturii_arata_seria_separat
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c144_banca_si_casa_nu_ofera_proforma
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_chitanta_fara_cota_numeste_data_zz_ll_aaaa
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_incasarea_fara_chitanta_numeste_felul_in_cuvinte
+e2e_lot12_firme1 | exit=1 | 171s | [e2e] 3 failed, 10 passed in 155.28s (0:02:35) (169s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot12_firme1.py::test_def_481_numerarul_din_z_intra_in_registrul_de_casa
+FAILED frontend_test/e2e/e2e_lot12_firme1.py::test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta
+FAILED frontend_test/e2e/e2e_lot12_firme1.py::test_def_476_tva_transportului_facturat_e_pe_4426
+e2e_lot13_firme2 | exit=1 | 115s | [e2e] 4 failed, 8 passed in 99.30s (0:01:39) (113s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_618_explicatia_notei_z_are_data_romaneasca
+e2e_lot15_e2 | exit=1 | 33s | [e2e] 2 failed, 2 passed in 17.31s (32s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot15_e2.py::test_cadrul_ferestrei_de_firma[1920-1080]
+FAILED frontend_test/e2e/e2e_lot15_e2.py::test_cadrul_ferestrei_de_firma[1366-768]
+e2e_lot6 | exit=1 | 361s | [e2e] 3 failed, 22 passed in 344.45s (0:05:44) (359s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_277_extrasul_nou_se_importa_iar_duplicatul_e_miscarea
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_292_fereastra_cozii_poarta_titlul_cardului
+e2e_lot72_contab | exit=1 | 113s | [e2e] 4 failed, 3 passed in 97.07s (0:01:37) (112s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot72_contab.py::test_def_302_numarul_notei_validate_nu_se_schimba
+FAILED frontend_test/e2e/e2e_lot72_contab.py::test_def_c48_avansul_pentru_servicii_se_inregistreaza_pe_4092
+FAILED frontend_test/e2e/e2e_lot72_contab.py::test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta
+FAILED frontend_test/e2e/e2e_lot72_contab.py::test_def_312_dupa_generare_de_validat_iar_401_debitor_spre_4091_4092
+e2e_lot81 | exit=1 | 205s | [e2e] 4 failed, 20 passed, 1 skipped in 189.36s (0:03:09) (204s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_323_depasita_are_grupul_ei_si_fereastra_o_numeste
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_329_avertismentul_vechi_dispare_dupa_validare_si_nota_o_singura_data
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_333_amortizarea_lunii_in_curs_nu_e_ceruta_si_nu_e_oferita
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_c51_previzualizarea_programata_nu_citeste_casa_cat_se_reincarca
+e2e_lot91 | exit=1 | 172s | [e2e] 2 failed, 27 passed in 156.19s (0:02:36) (170s; capturi în /tmp/claude-1000/capt_b)
+FAILED frontend_test/e2e/e2e_lot91.py::test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare
+FAILED frontend_test/e2e/e2e_lot91.py::test_def_394_jurnalul_e_lat_si_motivul_amortizarii_nu_rupe_butoanele
+FIN

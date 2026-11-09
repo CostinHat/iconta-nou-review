@@ -1,0 +1,60 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________________ test_actiune_principala_17_5_D ________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_actiune_principala_17_5_D(browser):
+        from core import ceas_proba
+        parcurs = _incarca_parcurs_17_1()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            asteptat = []
+            # Bancă
+            _card(pg, parcurs, "#fa-banca")
+            asteptat.append(("Bancă", _principal(pg), (1, "Importă extras")))
+            # Mișcări, fișe de magazie (din Stocuri)
+            if _card(pg, parcurs, "#fa-stocuri"):
+                try:
+                    pg.click(TOP + "#cv-toggle", timeout=10000)
+                    pg.wait_for_timeout(2000)
+                except Exception:   # noqa: BLE001
+                    pass
+            asteptat.append(("Mișcări, fișe de magazie", _principal(pg), (1, "Descarcă PDF")))
+            # Rapoarte comerciale
+            _card(pg, parcurs, "#fa-rapoarte")
+            asteptat.append(("Rapoarte comerciale", _principal(pg), (1, "Descarcă PDF")))
+            # Import date (meniul) și Solduri inițiale
+            _card(pg, parcurs, "#fa-import")
+            try:
+                pg.wait_for_selector(TOP + "#mig-pasi", timeout=20000)
+                pg.wait_for_timeout(1000)
+            except Exception:   # noqa: BLE001
+                pass
+            asteptat.append(("Import date (meniul)", _principal(pg), (0, "")))
+            try:
+                pg.locator(TOP + "#mig-pasi >> text=Solduri inițiale").first.click(timeout=10000)
+                pg.wait_for_selector(TOP + "#mig-drop", state="attached", timeout=20000)
+                pg.wait_for_timeout(1500)
+            except Exception:   # noqa: BLE001
+                pass
+            asteptat.append(("Import date › Solduri inițiale", _principal(pg), (1, "Încarcă balanța")))
+            for nume, (n, text), (n_ok, text_ok) in asteptat:
+                if n != n_ok or (n_ok and text != text_ok):
+                    rele.append("%s: %d buton(e) principal(e) «%s», așteptat %d «%s»" % (nume, n, text, n_ok, text_ok))
+        finally:
+            b.close()
+>       assert not rele, "acțiunea principală 17.5-D: %s" % "; ".join(rele)
+E       AssertionError: acțiunea principală 17.5-D: Bancă: 1 buton(e) principal(e) «Descarcă PDF», așteptat 1 «Importă extras»; Mișcări, fișe de magazie: 1 buton(e) principal(e) «Salvează nivelul minim», așteptat 1 «Descarcă PDF»; Rapoarte comerciale: 1 buton(e) principal(e) «Salvează varianta curentă», așteptat 1 «Descarcă PDF»; Import date (meniul): 1 buton(e) principal(e) «Descarcă PDF», așteptat 0 «»; Import date › Solduri inițiale: 1 buton(e) principal(e) «Descarcă model (CSV)», așteptat 1 «Încarcă balanța»
+E       assert not ['Bancă: 1 buton(e) principal(e) «Descarcă PDF», așteptat 1 «Importă extras»', 'Mișcări, fișe de magazie: 1 buton(e) p... 0 «»', 'Import date › Solduri inițiale: 1 buton(e) principal(e) «Descarcă model (CSV)», așteptat 1 «Încarcă balanța»']
+
+frontend_test/e2e/e2e_actiune_principala_17_5_D.py:101: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_actiune_principala_17_5_D.py::test_actiune_principala_17_5_D
+1 failed in 24.95s
+exit=1 durata=26s

@@ -24610,3 +24610,12 @@ Poarta verde pe C `d2175e60`; publicarea refuzată de `publica_lot.py --verifica
 - 17.5-C a ieșit VERDE pe P, dar publicarea a fost refuzată de scripts/publica_lot.py:103–104: jurnalul lotului 17.5-C avea două rânduri „pornire” (runda întâi și a doua), iar scriptul cere unul singur.
 - Decizia arhitectului (Costin): jurnalul nu se atinge și scriptul nu se ocolește; un lot oprit nepublicat se publică printr-un lot de continuare. 17.5-C2 are exact codul lui P (în afara scripts/praguri_17_5_C2.txt și docs/dovezi/17_5_C2/ nu diferă nimic), jurnal cu un singur rând „pornire” scris de coadă, poartă și verificare independentă refăcute pe C.
 - Ramura `lucru/lot17-5c` și worktree-ul `~/iconta_lot17_5c` rămân neatinse; 17.5-C2 lucrează pe `lucru/lot17-5c2` (`~/iconta_lot17_5c2`), pornită din P. DEFICIENTE.md nu se atinge (lotul nu închide numere).
+
+## 17.5-D — acțiunea principală a ferestrei (arhitect, 08.11.2026 17:05; decizii_17_5_D.txt pct.2, verbatim)
+2. Decizii:
+   a) În ferestrele EXPORT_PDF, „Descarcă PDF” e acțiunea principală imediat după marcatul explicit, înaintea barei fixe, formularului și catalogului, și nu e slab; propriul PDF al ferestrei are întâietate (audit 17.5-D: la Rapoarte cauza e bara fixă, nu catalogul).
+   b) SUPRASCRIS (audit 17.5-D, «Încarcă din galerie» din portal.js s-ar schimba): catalogul nu se schimbă; butoanele noi de fișier sunt marcate data-actiune-principala.
+   c) Bancă: buton vizibil „Importă extras”, marcat principal, care deschide #bk-fisier; inputul rămâne atașat (testele îl folosesc), ajutorul e2e_bloc_a._card îl așteaptă «attached».
+   d) Import date (meniul): în FARA_ACTIUNE_PRINCIPALA după «Firme»; EXCEPTII_B cu cheile «Import date F<n>» din catalog_ecrane.json; nu _esteMeniu.
+- Corecția 1 (arhitect, 09.11.2026 14:56): referința matricei textului tăiat = docs/dovezi/17_5_C/matrice/rezumat.txt (17.5-C2 nu are director matrice).
+- Decizie de implementare (Code, varianta sigură): `_exportTabel` pierde ramurile EXPORT_PDF (nu mai sunt atinse, fiindcă `_alege` dă PDF-ul ferestrelor de export); PDF-ul de rezervă e creat de `_exportPdf`, comun.

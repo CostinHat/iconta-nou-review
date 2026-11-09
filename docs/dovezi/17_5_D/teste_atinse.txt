@@ -1,0 +1,69 @@
+teste_atinse 17.5-D pe P 39d45031eb9d5abc81314a37917d06ab7deb0608 — 21 fișiere (lista: lista_4_5.txt)
+core/test_liste_exceptii_16_8_B.py | exit=0 | 2s | 10 passed, 1 skipped in 1.52s
+core/test_randuri_17_5.py | exit=1 | 2s | 1 failed, 9 passed in 1.45s
+FAILED core/test_randuri_17_5.py::test_export_pdf_nu_ia_locul_actiunii_proprii
+frontend_test/e2e/e2e_actiune_principala_17_5_D.py | în plasa fixă: o rulează poarta
+frontend_test/e2e/e2e_bloc_a.py | exit=1 | 228s | [e2e] 5 failed, 39 passed in 212.19s (0:03:32) (227s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_4_bun_venit_se_inchide_din_x_si_cu_esc
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_193_cardurile_cozii_au_latimea_ferestrei
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_29_fereastra_firmei_grupata_sub_titluri
+frontend_test/e2e/e2e_lot11_a457.py | exit=0 | 32s | [e2e] 2 passed in 16.15s (30s; capturi în /tmp/claude-1000/capt)
+frontend_test/e2e/e2e_lot11_m.py | exit=1 | 46s | [e2e] 1 failed, 5 passed in 30.21s (44s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot11_m.py::test_def_424_importul_are_rezumatul_sus_actiunea_jos_si_deruleaza_numai_tabelul
+frontend_test/e2e/e2e_lot12_c150.py | exit=0 | 24s | [e2e] 1 passed in 8.21s (22s; capturi în /tmp/claude-1000/capt)
+frontend_test/e2e/e2e_lot12_cx1.py | exit=1 | 209s | [e2e] 4 failed, 10 passed in 193.18s (0:03:13) (207s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c135_nota_de_casa_a_facturii_arata_seria_separat
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c144_banca_si_casa_nu_ofera_proforma
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_chitanta_fara_cota_numeste_data_zz_ll_aaaa
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_incasarea_fara_chitanta_numeste_felul_in_cuvinte
+frontend_test/e2e/e2e_lot12_cx3.py | exit=0 | 39s | [e2e] 3 passed in 24.06s (38s; capturi în /tmp/claude-1000/capt)
+frontend_test/e2e/e2e_lot12_firme1.py | exit=1 | 191s | [e2e] 4 failed, 9 passed in 175.88s (0:02:55) (190s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot12_firme1.py::test_def_489_ecranul_banca_spune_ca_accepta_mt940
+FAILED frontend_test/e2e/e2e_lot12_firme1.py::test_def_481_numerarul_din_z_intra_in_registrul_de_casa
+FAILED frontend_test/e2e/e2e_lot12_firme1.py::test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta
+FAILED frontend_test/e2e/e2e_lot12_firme1.py::test_def_476_tva_transportului_facturat_e_pe_4426
+frontend_test/e2e/e2e_lot12_migr3.py | exit=0 | 30s | [e2e] 2 passed in 14.60s (29s; capturi în /tmp/claude-1000/capt)
+frontend_test/e2e/e2e_lot12_p252.py | exit=0 | 36s | [e2e] 2 passed in 20.43s (34s; capturi în /tmp/claude-1000/capt)
+frontend_test/e2e/e2e_lot13_firme2.py | exit=1 | 135s | [e2e] 5 failed, 7 passed in 119.43s (0:01:59) (133s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_618_explicatia_notei_z_are_data_romaneasca
+frontend_test/e2e/e2e_lot15_e2.py | exit=1 | 35s | [e2e] 2 failed, 2 passed in 20.14s (34s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot15_e2.py::test_cadrul_ferestrei_de_firma[1920-1080]
+FAILED frontend_test/e2e/e2e_lot15_e2.py::test_cadrul_ferestrei_de_firma[1366-768]
+frontend_test/e2e/e2e_lot6.py | exit=1 | 375s | [e2e] 3 failed, 22 passed in 359.13s (0:05:59) (374s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_276_banca_spune_formatele_si_compara_soldurile
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_292_fereastra_cozii_poarta_titlul_cardului
+frontend_test/e2e/e2e_lot72_contab.py | exit=1 | 110s | [e2e] 4 failed, 3 passed in 94.90s (0:01:34) (109s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot72_contab.py::test_def_302_numarul_notei_validate_nu_se_schimba
+FAILED frontend_test/e2e/e2e_lot72_contab.py::test_def_c48_avansul_pentru_servicii_se_inregistreaza_pe_4092
+FAILED frontend_test/e2e/e2e_lot72_contab.py::test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta
+FAILED frontend_test/e2e/e2e_lot72_contab.py::test_def_312_dupa_generare_de_validat_iar_401_debitor_spre_4091_4092
+frontend_test/e2e/e2e_lot81.py | exit=1 | 209s | [e2e] 4 failed, 20 passed, 1 skipped in 192.77s (0:03:12) (207s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_323_depasita_are_grupul_ei_si_fereastra_o_numeste
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_329_avertismentul_vechi_dispare_dupa_validare_si_nota_o_singura_data
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_333_amortizarea_lunii_in_curs_nu_e_ceruta_si_nu_e_oferita
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_c51_previzualizarea_programata_nu_citeste_casa_cat_se_reincarca
+frontend_test/e2e/e2e_lot91.py | exit=1 | 169s | [e2e] 2 failed, 27 passed in 153.58s (0:02:33) (167s; capturi în /tmp/claude-1000/capt)
+FAILED frontend_test/e2e/e2e_lot91.py::test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare
+FAILED frontend_test/e2e/e2e_lot91.py::test_def_394_jurnalul_e_lat_si_motivul_amortizarii_nu_rupe_butoanele
+frontend_test/e2e/e2e_pilot_luna.py | în plasa fixă: o rulează poarta
+frontend_test/e2e/e2e_pilot_x05.py | în plasa fixă: o rulează poarta
+frontend_test/e2e/e2e_pozitii_validate.py | în plasa fixă: o rulează poarta
+FIN
+
+CONCLUZII 4.5 (rulări pe P 39d45031, iar bază = main d7326c0e; listele FAILED complete: teste_atinse.txt pe P, teste_atinse_baza.txt pe bază)
+- core/test_liste_exceptii_16_8_B.py: verde (10 passed, 1 skipped), actualizat în P pentru regexul cu „Import date”.
+- core/test_randuri_17_5.py::test_export_pdf_nu_ia_locul_actiunii_proprii: roșu numai pe P (testul citea `EXPORT_PDF.test(titlu` în `_exportTabel`, de unde a plecat); numit în fisiere_permise,
+  actualizat la comportamentul nou (aceeași aserțiune mutată pe `_alege`, plus ordinea față de `_dinCatalog`); după actualizare 10 passed (commit P2, numai acest fișier).
+- e2e din plasa fixă (e2e_actiune_principala_17_5_D, e2e_pilot_luna, e2e_pilot_x05, e2e_pozitii_validate): le rulează poarta.
+- e2e roșii și pe bază (restanțe de bază, nu se repară): e2e_bloc_a (5), e2e_lot11_m (1), e2e_lot12_cx1 (4), e2e_lot12_firme1 (3), e2e_lot13_firme2 (4), e2e_lot15_e2 (2), e2e_lot6 (2 comune), e2e_lot72_contab (4), e2e_lot81 (4), e2e_lot91 (2).
+- e2e_lot6::test_def_277: roșu numai pe bază, verde pe P (instabil, fără legătură cu lotul).
+- LIMITĂ DECLARATĂ: trei teste e2e, roșii numai pe P, nenumite în fisiere_permise: e2e_lot12_firme1::test_def_489_ecranul_banca_spune_ca_accepta_mt940, e2e_lot13_firme2::test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte,
+  e2e_lot6::test_def_276_banca_spune_formatele_si_compara_soldurile. Cauza: așteaptă `#bk-fisier` vizibil (wait_for_selector implicit), iar comanda cere ca inputul să rămână în pagină dar să nu se mai vadă (pct.3, „attached”).
+  Nu se repară în produs: o clasă „doar pentru cititor de ecran” ar cere stil.css, absent din fisiere_permise, iar stilul pe element e interzis (R8). Nu se modifică aserțiuni în afara e2e_bloc_a.py.
