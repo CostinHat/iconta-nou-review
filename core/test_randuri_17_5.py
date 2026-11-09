@@ -125,9 +125,11 @@ def test_un_singur_data_actiune_principala_pe_ferestrele_cu_marcaj():
 
 
 def test_export_pdf_nu_ia_locul_actiunii_proprii():
-    """`_exportTabel` alege butonul principal propriu al ferestrei (unul singur, eligibil, nu „Descarcă PDF”) și lasă ferestrele din EXPORT_PDF cu PDF-ul."""
+    """`_exportTabel` alege butonul principal propriu al ferestrei (unul singur, eligibil, nu „Descarcă PDF”); ferestrele din EXPORT_PDF nu trec pe aici: `_alege` le dă PDF-ul (17.5-D, 819)."""
     cadru = _sursa("cadru.js")
     f = _bloc(cadru, "function _exportTabel(", "// o urmă (comentariu)")
-    assert "EXPORT_PDF.test(titlu" in f and "proprii.length === 1" in f and 'button.buton-primar' in f
+    assert "proprii.length === 1" in f and 'button.buton-primar' in f
+    a = _bloc(cadru, "function _alege(", "// butonul care poate urca")
+    assert "EXPORT_PDF.test(titlu" in a and "_pdfulFerestrei(" in a and a.index("_pdfulFerestrei(") < a.index("_dinCatalog(")
     assert "__slab = true" in f and "__catalog = true" in f   # drumul butoanelor găsite de catalog: fără id rămâne în fereastră (X07 e.1: 13 copii în #ss-butoane), în bară stă un proxy
     assert "_eligibilPrincipal(bara, liber)" in cadru
