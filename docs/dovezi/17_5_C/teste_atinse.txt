@@ -1,0 +1,45 @@
+# teste_atinse.txt — 17.5-C pct.4.5 (P = fea3c373; baza = 9bbc57ff)
+grep core cu expresia exactă: 9 fișiere; grep core cu filtrul MOUNT (firme.js / emitere_ecran.js): 14; union 22; grep e2e: 36 fișiere
+
+## core (22 de fișiere, o rulare pe P, 6m08s: 229 verzi, 4 roșii)
+roșii pe P: core/test_lot10b_deschidere_aleasa.py::test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor, ::test_formularul_cor_ales_vine_cu_codul_salariatului, core/test_lot13_firme2_ecrane.py::test_def_673_676_dispozitia_noua_in_fereastra_ei_cu_tipul_din_butoane, ::test_def_602_563_610_registrul_jurnal
+pe bază (9bbc57ff, 1m13s, fișierele celor patru): primele trei ROȘII și pe bază (restanțe de bază, nereparate): TimeoutError .fer-proba [data-adev] ascuns / #c-renunta; test_def_602_563_610_registrul_jurnal VERDE pe bază
+test_def_602_563_610_registrul_jurnal: roșu numai pe P (Registrul se deschide pe 10/2026, nota nouă primește data goală pe altă lună decât cea curentă); numit în fisiere_permise; actualizat: după deschidere trece la luna de azi cu „luna →” (aserțiunile neschimbate); verde după (8 trecute, 1 restanță de bază în același fișier)
+
+## e2e din afara plasei, fără 4.4 și fără cele din docs/dovezi/17_5_C0/neatinse.txt (13 fișiere, câte unul prin scripts/e2e_poarta.py --doar)
+=== e2e_bloc_a.py
+e2e_bloc_a.py rc=1 durata=249s: [e2e] 6 failed, 38 passed in 233.38s (0:03:53) (247s; capturi în <scratchpad>/capt4
+=== e2e_bloc_e.py
+e2e_bloc_e.py rc=1 durata=288s: [e2e] 2 failed, 33 passed in 273.27s (0:04:33) (287s; capturi în <scratchpad>/capt4
+=== e2e_lot10b_facturi.py
+e2e_lot10b_facturi.py rc=0 durata=48s: [e2e] 6 passed in 33.07s (47s; capturi în <scratchpad>/capt45)
+=== e2e_lot11_a460.py
+e2e_lot11_a460.py rc=0 durata=34s: [e2e] 3 passed in 18.99s (32s; capturi în <scratchpad>/capt45)
+=== e2e_lot11_t.py
+e2e_lot11_t.py rc=0 durata=57s: [e2e] 3 passed in 42.13s (56s; capturi în <scratchpad>/capt45)
+=== e2e_lot12_cx5.py
+e2e_lot12_cx5.py rc=1 durata=34s: [e2e] 1 failed, 1 passed in 19.25s (33s; capturi în <scratchpad>/capt45)
+=== e2e_lot12_diverse.py
+e2e_lot12_diverse.py rc=0 durata=62s: [e2e] 8 passed in 46.27s (60s; capturi în <scratchpad>/capt45)
+=== e2e_lot12_emit.py
+e2e_lot12_emit.py rc=0 durata=76s: [e2e] 6 passed in 60.97s (0:01:00) (75s; capturi în <scratchpad>/capt45)
+=== e2e_lot12_fact2.py
+e2e_lot12_fact2.py rc=0 durata=62s: [e2e] 5 passed in 47.61s (61s; capturi în <scratchpad>/capt45)
+=== e2e_lot12_fisc3.py
+e2e_lot12_fisc3.py rc=0 durata=54s: [e2e] 5 passed in 37.59s (52s; capturi în <scratchpad>/capt45)
+=== e2e_lot12_fx3.py
+e2e_lot12_fx3.py rc=0 durata=45s: [e2e] 5 passed in 29.89s (44s; capturi în <scratchpad>/capt45)
+=== e2e_lot14_2.py
+e2e_lot14_2.py rc=0 durata=340s: [e2e] 10 passed in 324.61s (0:05:24) (338s; capturi în <scratchpad>/capt45)
+=== e2e_lot15_e5.py
+e2e_lot15_e5.py rc=0 durata=34s: [e2e] 3 passed, 1 skipped in 18.48s (32s; capturi în <scratchpad>/capt45)
+
+e2e_pozitii_validate.py (în plasa fixă): rulat de poartă, nu aici.
+
+## roșii pe P, rulate o dată pe bază (din ~/iconta_nou, 9bbc57ff)
+e2e_bloc_a.py: bază 5 picate (test_def_4, 8, 193, 203, 29 — restanțe de bază); P 6 picate = cele 5 + test_def_24_notele_automate_poarta_documentul_iar_validarea_fara_document_cere_confirmare (roșu numai pe P)
+e2e_bloc_e.py: bază 35 verzi; P 2 picate: test_def_160_luna_in_curs_nu_se_inchide_un_singur_loc, test_def_168_nota_chitantei_numeste_chitanta_si_factura (roșii numai pe P)
+e2e_lot12_cx5.py: bază 1 picat (test_def_c155_luna_cu_prestarea_ic_e_d390_datorat_in_control_fiscal), P același picat — restanță de bază, nereparată
+
+## limită declarată: roșii numai pe P, nereparate
+Cele trei (e2e_bloc_a::test_def_24, e2e_bloc_e::test_def_160, ::test_def_168) deschid Registrul jurnal sau Închiderea de lună fără lună și așteaptă luna de azi (11/2026): citit în cod, 160 caută „luna 11/2026 nu s-a încheiat” în controalele Închiderii; 168 caută nota chitanței în Registrul jurnal al lunii curente. Cauza e comportamentul cerut de decizia Costin 08.11.2026 (luna de lucru = luna trecută), nu o greșeală a piesei; fișierele nu sunt în fisiere_permise, aserțiunile nu s-au atins. Nu sunt în plasa fixă, deci poarta nu le rulează. Aducerea lor la luna afișată (`_la_luna`) rămâne comandă de unelte. Cauza nu s-a confirmat printr-o rulare separată a fiecărui test cu mesajul (rulat numai fișierul întreg, cu ieșirea FAILED fără mesaj).

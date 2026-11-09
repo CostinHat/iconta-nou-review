@@ -1,0 +1,7 @@
+[e2e] aplicația din index pornită pe 8019 în 13s
+
+[e2e] 40 passed in 245.56s (0:04:05) (259s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/c414199d-1e56-434c-b04e-90820aa12907/scratchpad/capt_pilot_luna)
+
+real	4m20.875s
+user	1m33.806s
+sys	0m23.998s

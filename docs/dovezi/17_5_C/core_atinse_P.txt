@@ -1,0 +1,289 @@
+........................................................................ [ 30%]
+...................FF................................................... [ 61%]
+................F..F.................................................... [ 92%]
+.................                                                        [100%]
+=================================== FAILURES ===================================
+_________ test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor __________
+
+pagina = <Page url='http://127.0.0.1:37213/static/'>
+
+    def test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor(pagina):
+        pg = pagina
+>       _montat(pg)
+
+core/test_lot10b_deschidere_aleasa.py:224: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+core/test_lot10b_deschidere_aleasa.py:219: in _montat
+    pg.wait_for_selector(".fer-proba [data-adev]", timeout=15000)
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7830a752f350>
+cb = <function Channel.send.<locals>.<lambda> at 0x7830a75fdb20>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 15000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fer-proba [data-adev]") to be visible
+E               33 × locator resolved to hidden <button data-adev="7" class="buton-secundar" data-nume="IONESCU VASILE">Adeverință</button>
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+---------------------------- Captured stderr setup -----------------------------
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/ HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/stil.css?v=3dfa8ec767 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/app.js?v=3f69c48ae1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/sesiune.js?v=898215e0ee HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/api.js?v=0b48920b43 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/login.js?v=1046446310 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/navigator.js?v=bd1a5189a3 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/cabinet.js?v=4a6112a625 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/asistent.js?v=4d62696ccb HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/portal.js?v=213eeef71d HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/admin.js?v=6b8ca6e696 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/restaurare.js?v=2e679a8748 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/drepturi.js?v=34d0fb0afd HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/semafor.js?v=60f4db5322 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/control.js?v=c027ce0ad1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/termene.js?v=c7e152f4e6 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/validat.js?v=0bce9c8abc HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/firme.js?v=6e15678cf8 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/salut.js?v=f5a3ed7133 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/pachete.js?v=9228e3b2d1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/declaratii.js?v=44bda2cb62 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/setari.js?v=37902f6231 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/coaja.js?v=2776271008 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/migrare.js?v=a78d0fe5b3 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/activitate_cabinet.js?v=80b751d073 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/raporteaza.js?v=766651826e HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/supervizor.js?v=b70acba4cb HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/asistenti.js?v=cb40ff883b HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/capacitate.js?v=c524462593 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/tipare.js?v=a3648839d3 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/reautentificare.js?v=6d1ca7e110 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/plural.js?v=6353d42450 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/preturi.js?v=0e00a65657 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ciorna_formular.js?v=461bec469f HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/date_anaf.js?v=503d474ed1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/admin_analytics.js?v=e2cdc3d028 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/ansamblu.js?v=ce01321ac1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/cadru.js?v=fd70da716e HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/cautare.js?v=40db9aeffa HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/versiune.js?v=9a0ee2174b HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/facturi_ecran.js?v=98d7beb362 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/admin_raportari.js?v=75ecec94e0 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/admin_activitate.js?v=b52bf936b9 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/admin_sanatate.js?v=165b0a348c HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ds_piese.js?v=fb823092ed HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/verdict.js?v=fb322c8d48 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/control_verdict.js?v=cea4f49410 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/recomanda.js?v=e5354ffd52 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/tabel_note.js?v=4fde44bc3c HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/carduri.js?v=98c15a1738 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/intocmitor_bilant.js?v=5d705395fe HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/coada_trimite.js?v=50cade9fc8 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/ecran_destinatie.js?v=c781636333 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/centre_cost_linie.js?v=d776200e2b HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/luna_lucru.js?v=04c41c46c1 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/flux_concediu.js?v=fc0dc15c22 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/sal_sume.js?v=cd0be29c82 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/spv_stare.js?v=85bc22c9ed HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/emitere_ecran.js?v=d0a3cb9a62 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/rip_ecran.js?v=b9fdb13bcc HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/operatiuni_ecran.js?v=4980b3a17f HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/borderou_ecran.js?v=6c00f2b8cf HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/etransport_ecran.js?v=9a69d8bf56 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/produse_ecran.js?v=2b4b10dbf6 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/woo_ecran.js?v=bc2611f4e7 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/date_firma.js?v=fb35651dd9 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/mijloace_ecran.js?v=891835ddea HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/reevaluare_ecran.js?v=bf9065cbb3 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/compensari_ecran.js?v=ed3e73a2f0 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/clienti_ecran.js?v=89ded88a66 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/nume_anaf.js?v=d59cd56b02 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/nir_legare.js?v=b34abfe2ec HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/tari_partener.js?v=47a26608a6 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/mf_din_factura.js?v=de15131629 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] code 404, message File not found
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/.publicat.json HTTP/1.1" 404 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/logo_simbol.png HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2026 07:03:15] code 501, message Unsupported method ('POST')
+127.0.0.1 - - [09/Nov/2026 07:03:15] "POST /api/eveniment-public HTTP/1.1" 501 -
+----------------------------- Captured stderr call -----------------------------
+127.0.0.1 - - [09/Nov/2026 07:03:15] "GET /static/js/ecrane/firme.js HTTP/1.1" 200 -
+_____________ test_formularul_cor_ales_vine_cu_codul_salariatului ______________
+
+pagina = <Page url='http://127.0.0.1:37213/static/'>
+
+    def test_formularul_cor_ales_vine_cu_codul_salariatului(pagina):
+        pg = pagina
+>       _montat(pg)
+
+core/test_lot10b_deschidere_aleasa.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+core/test_lot10b_deschidere_aleasa.py:219: in _montat
+    pg.wait_for_selector(".fer-proba [data-adev]", timeout=15000)
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7830a752f350>
+cb = <function Channel.send.<locals>.<lambda> at 0x7830a75fd260>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 15000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fer-proba [data-adev]") to be visible
+E               33 × locator resolved to hidden <button data-adev="7" class="buton-secundar" data-nume="IONESCU VASILE">Adeverință</button>
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____ test_def_673_676_dispozitia_noua_in_fereastra_ei_cu_tipul_din_butoane _____
+
+browser = (<Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>, 50409)
+
+    def test_def_673_676_dispozitia_noua_in_fereastra_ei_cu_tipul_din_butoane(browser):
+        """ROȘU înainte: „+ Dispoziție nouă” desfăcea formularul în pagina Casei; „Tip” era o listă derulantă de cinci opțiuni."""
+        pg, erori = _pagina(browser, {"/casa/registru": REG_CASA, "/firma-profil/date": {"profil": {}}})
+        try:
+            pg.click("#fa-casa")
+            pg.wait_for_selector("#c-tabel")
+            n = pg.locator(".fereastra").count()
+            pg.click("#c-toggle")
+            pg.wait_for_selector("#c-campuri")
+            assert pg.locator(".fereastra").count() == n and "Dispoziție nouă" in pg.inner_text(".fereastra .fereastra-antet, .fereastra h2")
+            assert pg.locator("#c-tabel").count() == 0                                     # fereastra nouă, peste Casă
+            assert [x[0] for x in _butoane(pg, ".alegere-butoane:has(+ #c-cat) button")] == [
+                "Încasare client (5311=4111)", "Plată furnizor (401=5311)", "Ridicare de la bancă (5311=581)", "Depunere la bancă (581=5311)",
+                "Avans spre decontare (542=5311)"]
+>           pg.click("#c-renunta")
+
+core/test_lot13_firme2_ecrane.py:180: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7830a4a15400>
+cb = <function Channel.send.<locals>.<lambda> at 0x7830a4afba60>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("#c-renunta")
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____________________ test_def_602_563_610_registrul_jurnal _____________________
+
+browser = (<Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>, 50409)
+
+    def test_def_602_563_610_registrul_jurnal(browser):
+        """ROȘU înainte: nota nouă venea cu data 1 a lunii, editorul se deschidea în pagină, după salvare lista sărea la început fără rândul
+        notei; „Validează” pe nota fără document era `disabled`, fără motiv la trecerea cu mouse-ul."""
+        stare = {"salvate": [], "note": [
+            {"id": 1002, "nr_curent": None, "data": AZI.replace(day=1).isoformat(), "numar": None, "descriere": "Fără document", "sursa": "manual",
+             "status": "ciorna", "document_ref": None, "document": None, "linii": [{"debit": "612", "credit": "401", "suma": 100}]},
+            {"id": 1001, "nr_curent": 1, "data": AZI.replace(day=1).isoformat(), "numar": None, "descriere": "Comision", "sursa": "manual",
+             "status": "validata", "document_ref": "Extras 1", "document": "Extras 1", "linii": [{"debit": "627", "credit": "5121", "suma": 12.5}]}]}
+        pg, erori = _pagina(browser, _jurnal_rute(stare))
+        try:
+            pg.click("#fa-jurnal")
+            pg.wait_for_selector("#jn-tabel")
+            # [610 / 675] „Validează” inactiv, cu pasul notei la trecerea cu mouse-ul; „nederivat” nu apare nicăieri (602)
+            v = _butoane(pg, "[data-val='1002']")[0]
+            assert v[1] and v[2].startswith("Notă fără document justificativ. Scrie referința"), v
+            assert "nederivat" not in pg.inner_text("body")
+            # [675] nota validată: aceleași butoane, inactive, cu motivul
+            assert [x[0] for x in _butoane(pg, "tbody[data-nota-id='1001'] .tn-actiuni button")] == ["Validează", "Trimite la validare"]
+            assert all(x[1] for x in _butoane(pg, "tbody[data-nota-id='1001'] button[data-edit], tbody[data-nota-id='1001'] button[data-del]"))
+            # [602 / 563 / 673] nota nouă: fereastra ei, data de azi
+            pg.click("#j-nota-noua")
+            pg.wait_for_selector("#je-data")
+            # R10: „data de azi” e a ceasului paginii (aceeași sursă ca ecranul), nu `AZI` fixat la importul modulului — o rulare care trece de miezul nopții n-o schimbă
+            azi_pagina = pg.evaluate("() => { const d = new Date(); return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-'); }")
+>           assert pg.input_value("#je-data") == azi_pagina and pg.locator("#jn-tabel").count() == 0
+E           AssertionError: assert ('' == '2026-11-03'
+E             
+E             - 2026-11-03)
+
+core/test_lot13_firme2_ecrane.py:308: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_lot10b_deschidere_aleasa.py::test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor
+FAILED core/test_lot10b_deschidere_aleasa.py::test_formularul_cor_ales_vine_cu_codul_salariatului
+FAILED core/test_lot13_firme2_ecrane.py::test_def_673_676_dispozitia_noua_in_fereastra_ei_cu_tipul_din_butoane
+FAILED core/test_lot13_firme2_ecrane.py::test_def_602_563_610_registrul_jurnal
+4 failed, 229 passed in 366.83s (0:06:06)
+
+real	6m7.694s
+user	3m49.195s
+sys	0m14.678s

@@ -1,0 +1,4 @@
+....                                                                     [100%]
+4 passed in 30.47s
+4.55user 1.48system 0:31.00elapsed 19%CPU (0avgtext+0avgdata 180668maxresident)k
+3000inputs+48048outputs (824major+107637minor)pagefaults 0swaps

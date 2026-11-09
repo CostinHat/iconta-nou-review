@@ -1,0 +1,166 @@
+{
+ "fapte": {
+  "viewport": [
+   1920,
+   1080
+  ],
+  "ferestre_deschise": 1,
+  "fereastra": {
+   "clase": "fereastra fer-lucru",
+   "lat": 1888,
+   "inalt": 1048,
+   "stanga": 16,
+   "sus": 16
+  },
+  "titlul_ferestrei": "Închidere lună",
+  "a": {
+   "inaltime": 56,
+   "traseu": 0,
+   "sageata": true,
+   "sageata_dim": [
+    40,
+    40
+   ],
+   "x": 1,
+   "x_dim": [
+    40,
+    40
+   ],
+   "firma_sau_cabinet": "F1 Comert Stoc SRL · CUI 401002001 › Închidere lună",
+   "numele_ferestrei": "Închidere lună",
+   "cautare": true
+  },
+  "b": {
+   "pe_tot_ecranul": true,
+   "derulari": [
+    {
+     "loc": "ul.ds-semnale-lista",
+     "fel": "vertical",
+     "ascuns": 93,
+     "tabel": true
+    }
+   ],
+   "bara_jos": {
+    "clase": "fereastra-jos fj-inactiv",
+    "inaltime": 72
+   },
+   "exceptie": null,
+   "butoane_principale": 1,
+   "actiune_principala": "Blochează luna",
+   "cu_atribut": [
+    "Blochează luna"
+   ],
+   "renunta": false,
+   "din_formular": false,
+   "pastreaza_renunta": false,
+   "actiune_dubla": 0,
+   "principal_inactiv_fara_motiv": 0
+  },
+  "c": {
+   "tabele_ds": 0,
+   "tabele_vechi": [],
+   "liste_rand_buton": [],
+   "celule_taiate": [],
+   "liste_vechi": []
+  },
+  "d": {
+   "rezumat_ds": 1,
+   "semnale_ds": 9,
+   "carduri_vechi": 1,
+   "paragrafe_lungi": [],
+   "rezumate_la_vedere": 1,
+   "fara_buton": []
+  },
+  "e": {
+   "in_text": [
+    "Reevaluare valută"
+   ],
+   "casete_cu_actiuni": [
+    "caseta-info"
+   ]
+  },
+  "f": {
+   "titluri_cu_majuscule": [],
+   "fara_diacritice": [],
+   "plural": [],
+   "mesaje_duble": []
+  },
+  "g": {
+   "date_iso": [],
+   "sume_neformatate": [],
+   "perioade_ciudate": [],
+   "valori_goale": [],
+   "azi_acum": [
+    "ieri"
+   ]
+  },
+  "h": {
+   "liste_sub_7": [],
+   "alege": [],
+   "cota_tva_ca_lista": [],
+   "grupuri_butoane": 0,
+   "liste_cu_cautare": 0,
+   "liste_inlocuite": 0
+  }
+ },
+ "pica": {
+  "a": [],
+  "b": [],
+  "c": [],
+  "d": [
+   "1 avertismente/semnale care nu sunt piese DS (caseta-info)"
+  ],
+  "e": [
+   "acțiune în mijlocul unui text: Reevaluare valută",
+   "acțiuni în casete colorate: caseta-info"
+  ],
+  "f": [],
+  "g": [],
+  "h": []
+ },
+ "ecran": "Închidere lună F1",
+ "rezolutie": "1920x1080",
+ "firma": "F1",
+ "nivel": "firma",
+ "eroare_deschidere": null,
+ "erori_js": [],
+ "verdict_mecanic": {
+  "a": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "b": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "c": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "d": {
+   "verdict": "PICĂ",
+   "motive": [
+    "1 avertismente/semnale care nu sunt piese DS (caseta-info)"
+   ]
+  },
+  "e": {
+   "verdict": "PICĂ",
+   "motive": [
+    "acțiune în mijlocul unui text: Reevaluare valută",
+    "acțiuni în casete colorate: caseta-info"
+   ]
+  },
+  "f": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "g": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "h": {
+   "verdict": "TRECE",
+   "motive": []
+  }
+ }
+}

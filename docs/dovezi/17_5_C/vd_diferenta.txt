@@ -1,0 +1,6 @@
+# vd_diferenta 17.5-C: ferestrele catalogului a căror literă a–h sau al căror buton principal se schimbă (înainte → după)
+Casă F1: ['..c.....', '..c.....'] -> ['..c...g.', '..c...g.']
+Ore suplimentare F5: ['........', '........'] -> ['..c.....', '..c.....']
+Registru jurnal F1: ['..c.....', '..c.....'] -> ['..c...g.', '..c...g.']
+Închidere lună F1: ['...d....', '...d....'] -> ['...de...', '.b.de...']
+ferestre schimbate: 4 din 106 (înainte) / 106 (după)

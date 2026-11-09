@@ -1,0 +1,20 @@
+dupa
+ecrane: 105, deschideri: 315, durata: 1513 s
+603x590: deschideri=105 ok=105 nedeschis=0 timeout=0 | tăieturi=0 (lat=0 inalt=0 iesit=0) | ecrane cu cel puțin o tăietură=0
+1366x768: deschideri=105 ok=105 nedeschis=0 timeout=0 | tăieturi=0 (lat=0 inalt=0 iesit=0) | ecrane cu cel puțin o tăietură=0
+2133x1111: deschideri=105 ok=105 nedeschis=0 timeout=0 | tăieturi=0 (lat=0 inalt=0 iesit=0) | ecrane cu cel puțin o tăietură=0
+ecrane cu cel puțin o tăietură la oricare rezoluție: 0
+
+ecrane cu stare diferită de ok (0 deschideri):
+
+primele 10 ecrane după numărul de tăieturi (suma pe cele 3 rezoluții):
+  Acces client F1 | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Activitate | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Analitică stoc F1 | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Asistenți | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Balanță de verificare F1 | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Bancă F1 | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Bilanț anual F2 | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Bonuri și chitanțe F1 | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Borderou de achiziție F1 | 0 | 603x590=0 1366x768=0 2133x1111=0
+  Capacitate | 0 | 603x590=0 1366x768=0 2133x1111=0
