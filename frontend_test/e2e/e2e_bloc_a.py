@@ -139,7 +139,7 @@ def _deschide_firme(e):
 
 def _card(e, cheie, asteapta):
     e.pg.click("#fa-" + cheie)
-    e.pg.wait_for_selector(asteapta, timeout=25000)
+    e.pg.wait_for_selector(asteapta, state="attached" if asteapta == "#bk-fisier" else "visible", timeout=25000)
 
 
 def _deschide_emiterea(e, nume):

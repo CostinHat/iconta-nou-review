@@ -121,7 +121,7 @@ export const EXPORT_PDF = /^(Cartea mare|Balanță de verificare|Rapoarte comerc
 
 // Ferestrele fără acțiune principală: ecran de stare fără nicio acțiune sau meniu de butoane care doar deschide alte ferestre. Bara rămâne, fără buton principal și
 // fără „Renunță”; închiderea e „←”. Lista pe nume (verificatorul o are la rândul b): `scripts/verificator_design.py::EXCEPTII_B`.
-export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Capacitate|Operațiuni speciale|Facturi|Firme)$|· CUI /;   // „· CUI ” = fereastra firmei (titlul ei: nume · CUI cod)
+export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Capacitate|Operațiuni speciale|Facturi|Firme|Import date)$|· CUI /;   // „· CUI ” = fereastra firmei (titlul ei: nume · CUI cod)
 
 // [17.3, decizia arhitectului] Bara de jos a ferestrei cu formular nu are „Renunță”: revenirea este „←” din antet, iar „✕” închide fereastra. Păstrează „Renunță” numai
 // fereastra al cărei formular deschis nu are „←” activ (altfel n-ar rămâne cu cale înapoi) și cea cu o „Renunță” cu efect propriu (golește ciorna de pe server). Lista pe nume
@@ -188,13 +188,14 @@ function _alege(corp, bara, areDeja, titlu) {
   const liber = (b) => !(b.__retras && areDeja !== false);   // o acțiune retrasă din bară nu o ia înapoi cât alta e în bară (altfel s-ar schimba la nesfârșit)
   const marcat = [...corp.querySelectorAll("[data-actiune-principala]")].filter((b) => !bara.contains(b) && liber(b)).pop();
   if (marcat) return marcat;
+  if (EXPORT_PDF.test(titlu || "")) return _pdfulFerestrei(corp, bara, liber);   // [17.5-D, 819] în ferestrele de export PDF-ul e acțiunea, înaintea barei fixe, a formularului și a catalogului
   const fixe = [...corp.querySelectorAll(".bara-fixa .buton-primar")].filter((b) => b.tagName === "BUTTON" && liber(b));
   if (fixe.length) return fixe[fixe.length - 1];
   const eligibil = _eligibilPrincipal(bara, liber);
   const formular = [...corp.querySelectorAll("form .buton-primar, .ds-formular ~ * .buton-primar, .pf-frand:has(> .ds-formular) .buton-primar")].filter(eligibil);
   if (formular.length) return formular[formular.length - 1];
   if (areDeja === true) return null;   // catalogul nu înlocuiește o acțiune deja în bară (în afară de exportul de rezervă, care cedează locul)
-  return _dinCatalog(corp, bara) || (areDeja === false ? _exportTabel(corp, titlu, bara, liber) : null);
+  return _dinCatalog(corp, bara) || (areDeja === false ? _exportTabel(corp, bara, liber) : null);
 }
 
 // butonul care poate urca în bară: în conținut (nu în bară), nu retras, în afara tabelului, a șabloanelor, a meniurilor și a rezumatului lipit
@@ -206,23 +207,35 @@ const _eligibilPrincipal = (bara, liber, cuRezumat = false) => (b) => b.tagName 
 // rezervă nu mai e ales. Aici rezumatul lipit sus (`.rezumat-fix`) nu exclude butonul: „Fluturaș” al fișei salariatului stă în `#ss-butoane`, în rezumat. Mai multe sau
 // niciunul: rezerva rămâne. Ferestrele din EXPORT_PDF rămân cu PDF-ul (la ele chiar el e acțiunea). Butonul ales trece prin drumul unuia găsit de catalog (`__catalog`: cu id în
 // afara NU_MUTA se mută în bară, fără id rămâne în fereastră și în bară stă un proxy): „Fluturaș” rămâne în #ss-butoane (oracolul X07, e.1: 13 copii direcți; e2e_pilot_luna îl apasă acolo).
-function _exportTabel(corp, titlu, bara, liber) {
-  if (!EXPORT_PDF.test(titlu || "")) {
-    const eligibil = _eligibilPrincipal(bara, liber, true);
-    const proprii = [...corp.querySelectorAll("button.buton-primar")].filter((b) => eligibil(b) && _normalizeaza(b.textContent) !== "Descarcă PDF");
-    if (proprii.length === 1) { proprii[0].__slab = true; proprii[0].__catalog = true; return proprii[0]; }   // slab, ca PDF-ul: o acțiune găsită ulterior în catalog îl înlocuiește (un buton trecător din timpul încărcării nu ține locul)
-  }
+function _exportTabel(corp, bara, liber) {
+  const eligibil = _eligibilPrincipal(bara, liber, true);
+  const proprii = [...corp.querySelectorAll("button.buton-primar")].filter((b) => eligibil(b) && _normalizeaza(b.textContent) !== "Descarcă PDF");
+  if (proprii.length === 1) { proprii[0].__slab = true; proprii[0].__catalog = true; return proprii[0]; }   // slab, ca PDF-ul: o acțiune găsită ulterior în catalog îl înlocuiește (un buton trecător din timpul încărcării nu ține locul)
   const tabel = [...corp.querySelectorAll("table")].find((x) => _vizibil(x) && !x.closest("template, details"));
-  if (!tabel && !EXPORT_PDF.test(titlu || "")) return null;
+  if (!tabel) return null;
+  const b = _exportPdf(corp);
+  b.__slab = true;   // acțiune de rezervă: o acțiune găsită ulterior în catalog o înlocuiește
+  return b;
+}
+
+// „Descarcă PDF” de rezervă al ferestrei: tipărirea tabelului, fără cerere la server; același nod la fiecare sincronizare
+function _exportPdf(corp) {
   if (!corp.__exportPdf) {
     const b = document.createElement("button");
     b.type = "button"; b.className = "buton-primar"; b.textContent = "Descarcă PDF";
     b.dataset.faraActiune = "export al tabelului din fereastră (tipărire), fără cerere la server";
-    b.__slab = true;   // acțiune de rezervă: o acțiune găsită ulterior în catalog o înlocuiește
     b.addEventListener("click", () => tiparesteTabel(corp));
     corp.__exportPdf = b;
   }
   return corp.__exportPdf;
+}
+
+// [17.5-D, 819] fereastra din EXPORT_PDF: butonul ei „Descarcă PDF”, dacă îl are (trece prin drumul unuia găsit de catalog: `__catalog`), altfel cel de rezervă; nu e „slab”
+function _pdfulFerestrei(corp, bara, liber) {
+  const eligibil = _eligibilPrincipal(bara, liber, true);
+  const propriu = [...corp.querySelectorAll("button")].find((b) => eligibil(b) && _vizibil(b) && /^Descarcă PDF(?=\s|$)/.test(_normalizeaza(b.textContent)));
+  if (propriu) { propriu.__catalog = true; return propriu; }
+  return _exportPdf(corp);
 }
 
 // o urmă (comentariu) lăsată în locul din care butonul trece în bară: dispare odată cu zona pe care ecranul o redesenează

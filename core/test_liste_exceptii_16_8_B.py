@@ -79,7 +79,7 @@ def test_refuza_ecranele_cu_actiune():
 
 
 def test_refuza_forma_nerecunoscuta_si_valoare_straina():
-    expr = "/^(Sinteza zilei|Capacitate|Operațiuni speciale|Facturi|Firme)$|· CUI /;"
+    expr = "/^(Sinteza zilei|Capacitate|Operațiuni speciale|Facturi|Firme|Import date)$|· CUI /;"
     assert _are(_refuza(_inlocuieste(TC, expr, 'new Set(["Capacitate"]);'), TV), "nu e recunoscută")
     assert _are(_refuza(TC, _inlocuieste(TV, '"Capacitate": "stare"', '"Capacitate": "altceva"')), "altceva")
 

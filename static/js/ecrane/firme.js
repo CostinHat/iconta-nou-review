@@ -48,7 +48,7 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=a78d0fe5b3";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=25e3b9a5e9";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=44bda2cb62";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=cea4f49410";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2b4b10dbf6";  // [produse_firma_v1]
@@ -5027,7 +5027,8 @@ async function ecranBanca(corp, nav, t) {
   corp.innerHTML = `
     <div class="rezumat-fix" id="bk-rezumat">
     <h2 class="pf-titlu">Bancă ${semnAjutor("F011")}</h2>
-    <p><input type="file" id="bk-fisier" aria-label="Fișier extras bancar" accept=".xls,.xlsx,.csv,.sta,.940,.txt,.mt940">
+    <p><button type="button" class="buton-secundar" id="bk-alege" data-actiune-principala data-fara-actiune="deschide alegerea fișierului; importul îl face câmpul de fișier">Importă extras</button>
+      <input type="file" id="bk-fisier" aria-label="Fișier extras bancar" accept=".xls,.xlsx,.csv,.sta,.940,.txt,.mt940" hidden>
       <span id="bk-cautare-loc" style="margin-left:12px"></span></p>
     <div id="bk-carduri"></div>
     <div id="bk-mesaj"></div>
@@ -5232,6 +5233,7 @@ async function ecranBanca(corp, nav, t) {
       incarca();
     } catch (e) { arataMesaj(zonaMesaj, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
   };
+  corp.querySelector("#bk-alege").addEventListener("click", () => corp.querySelector("#bk-fisier").click());
   corp.querySelector("#bk-fisier").addEventListener("change", async (ev) => {
     const f = ev.target.files[0];
     if (!f) return;

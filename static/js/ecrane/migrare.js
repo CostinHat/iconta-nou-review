@@ -469,6 +469,7 @@ function pasInput(corp, nav) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-valideaza" data-actiune="POST /migrare/valideaza|POST /migrare/incarca">Validează la ANAF</button>
   `;
+  _butonAlegeFisier(corp);
 
   const fileInput = corp.querySelector("#mig-file");
   const dropTitlu = corp.querySelector("#mig-drop-titlu");
@@ -1038,6 +1039,19 @@ function _descarcaModelCSV(spec) {
   URL.revokeObjectURL(url);
 }
 
+// [17.5-D, 819] alegerea fișierului unui import e un buton „Încarcă …” marcat ca acțiune principală a ferestrei (bara de jos îl ia); apasă același câmp de fișier,
+// care rămâne în pagină (ascuns); tragerea fișierului peste zona de import rămâne. Textul butonului = titlul zonei.
+function _butonAlegeFisier(corp) {
+  const zona = corp.querySelector("#mig-drop"), camp = corp.querySelector("#mig-file"), titlu = corp.querySelector("#mig-drop-titlu");
+  if (!zona || !camp || !titlu) return;
+  const b = document.createElement("button");
+  b.type = "button"; b.className = "buton-secundar"; b.id = "mig-alege"; b.textContent = titlu.textContent.trim();
+  b.setAttribute("data-actiune-principala", "");
+  b.dataset.faraActiune = "deschide alegerea fișierului; încărcarea o face câmpul de fișier";
+  b.addEventListener("click", () => camp.click());
+  zona.before(b);
+}
+
 function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = aplicația aleasă în Migrare cabinet
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi.</p>
@@ -1052,6 +1066,7 @@ function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = a
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "solduri");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", descarcaModelSolduri);
@@ -1313,6 +1328,7 @@ function importParteneriFirma(corp, nav, firma, app = null) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "solduri_parteneri");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.parteneri));
@@ -1668,6 +1684,7 @@ function importSalariatiFirma(corp, nav, firma, app = null) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "salariati");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.salariati));
@@ -1881,6 +1898,7 @@ function importAsociatiFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "asociati");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.asociati));
@@ -2028,6 +2046,7 @@ function importMijloaceFirma(corp, nav, firma, app = null) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "mijloace_fixe");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.mijloace));
@@ -2197,6 +2216,7 @@ function importIstoricFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "istoric_declaratii");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.istoric));
@@ -2444,7 +2464,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=6e15678cf8"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=d396e2df3f"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat
@@ -2503,6 +2523,7 @@ function importReteteFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "retete");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.retete));
@@ -2600,6 +2621,7 @@ function importArticoleFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "articole");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.articole));
@@ -2694,6 +2716,7 @@ function importRipFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
+  _butonAlegeFisier(corp);
   _existaPas(corp, firma, "rip");   // [lotul 13, 580 / 584] ce s-a adus deja și ce face importul cu ce există
   const fileInput = corp.querySelector("#mig-file");
   corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.rip));
