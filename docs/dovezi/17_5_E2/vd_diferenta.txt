@@ -1,0 +1,6 @@
+vd_diferenta 17.5-E2: ferestrele catalogului a căror literă a–h se schimbă (înainte = vd_inainte preluat din E, baza 6de2940a; după = P fdd0871c, identic cu acadf8a9); coloanele sunt 1920x1080 / 1366x768. Diferența = `diff vd_inainte.txt vd_dupa.txt` (3 rânduri).
+Butonul principal: vd_inainte.txt și vd_dupa.txt nu arată nicio altă diferență; nicio fereastră nu-și schimbă butonul principal.
+Compensări F1:               ........ / ........   ->   ..c..... / ..c.....   (c: tabel care nu e tabelul DS, fd-tabel; înainte ecranul rămânea la „Alege partenerul”, fără tabel; acum ajunge la tabelul perechilor, tabel vechi. Efect direct al lotului, cunoscut din E; tabelul nu intră în lot, nu se repară)
+Balanță de verificare F1:    .bc..... / .bc.....   ->   ..c..... / ..c.....   (numai litere dispărute la 1366x768; neatinsă de lot; diferență de stare)
+Declarație D301 F3 pasul 2:  ...de..h / .b......   ->   ...d.... / ...d....   (neatinsă de lot, fără listă cu o singură variantă; litera d apare nou la 1366x768 în locul lui b; diferență de stare a bazei/ceasului, ca în E; de verificat de arhitect)
+Restul ferestrelor: neschimbate.

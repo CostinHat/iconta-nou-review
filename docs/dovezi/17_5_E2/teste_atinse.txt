@@ -1,0 +1,4 @@
+teste_atinse 17.5-E2 (P fdd0871c; grep -lE "alegereText|alegere-text|_listeDerulante|catalog_ecrane|cz-alege|cz-partener")
+core (4): test_liste_exceptii_16_8_B, test_lot15_e5_grupuri, test_lot15_e4, test_verificator_design_16_7 -> 32 passed, 3 skipped (lot/16.7 specifice), durata 7s
+e2e (2): e2e_alegere_unica_17_5_E (în plasă; alegere_dupa.txt: 1 passed, 7s); e2e_lot10_compensari (nu e în plasă) -> 4 passed, 15s, pe server curat pid 3172714
+Roșii: niciunul; restanțe de bază: niciuna.
