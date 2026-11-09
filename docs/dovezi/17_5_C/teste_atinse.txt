@@ -43,3 +43,12 @@ e2e_lot12_cx5.py: bază 1 picat (test_def_c155_luna_cu_prestarea_ic_e_d390_dator
 
 ## limită declarată: roșii numai pe P, nereparate
 Cele trei (e2e_bloc_a::test_def_24, e2e_bloc_e::test_def_160, ::test_def_168) deschid Registrul jurnal sau Închiderea de lună fără lună și așteaptă luna de azi (11/2026): citit în cod, 160 caută „luna 11/2026 nu s-a încheiat” în controalele Închiderii; 168 caută nota chitanței în Registrul jurnal al lunii curente. Cauza e comportamentul cerut de decizia Costin 08.11.2026 (luna de lucru = luna trecută), nu o greșeală a piesei; fișierele nu sunt în fisiere_permise, aserțiunile nu s-au atins. Nu sunt în plasa fixă, deci poarta nu le rulează. Aducerea lor la luna afișată (`_la_luna`) rămâne comandă de unelte. Cauza nu s-a confirmat printr-o rulare separată a fiecărui test cu mesajul (rulat numai fișierul întreg, cu ieșirea FAILED fără mesaj).
+
+## RUNDA A DOUA (09.11.2026) — P2 = bbd7e3c4 (static neschimbat față de fea3c373; se schimbă numai testele și parcursurile)
+e2e_luna_lucru_17_5_C.py pe P2: VERDE (1 trecut, 36 s).
+Cele trei teste ale plasei, aduse la «luna afișată» (plasa_modificabile), rulate pe P2 prin scripts/e2e_poarta.py --doar, în ordinea f017 → f054 → f087:
+- e2e_pilot_f017.py: VERDE (120 s). Cauza reală a lui a.3: Casa se deschidea pe 10/2026 (11 rânduri), parcursul aștepta 1 rând din 11/2026; a.1, a.2, i.1, i.6 treceau. Adaptare în docs/dovezi/16_2_B/parcurs_16_2_B.py: `_la_luna` (din luna afișată, „← luna”/„luna →” până la 11/2026) în `_casa` și `_pas_i`.
+- e2e_pilot_f054.py: VERDE (117 s). docs/dovezi/16_6/parcurs_16_6.py (`_jurnal` prin `_la_luna`) și parcurs_16_6_angajat.py (`_la_luna` la 11/2026 înainte de „Notă nouă”).
+- e2e_pozitii_validate.py: 16 verzi, 1 roșu = test_pozitie_f081 (restanță numerotată, roșie și pe bază); test_pozitie_f087 VERDE: `_stat_pe_luna_trecuta` (Statul pornește pe luna de lucru; se ajunge la LUNA_TRECUTA cu „← luna”/„luna →”, cu aserțiune pe luna din antet), folosit și de F028, F080, F183 (4 locuri).
+e2e_bloc_e.py: 35 verzi (test_def_160 și test_def_168 aduse la luna afișată cu `_la_luna`). e2e_bloc_a.py: 39 verzi, 5 roșii = restanțele de bază (def_4, def_8, def_29, def_193, def_203); test_def_24 adus la luna afișată (`_mergi_la_luna`), verde.
+core/test_lot13_firme2_ecrane.py: 9 verzi (test_def_673_676: ieșirea din fereastră prin „←” din antet în loc de #c-renunta, scos în 17.3; restanță de bază reparată).
