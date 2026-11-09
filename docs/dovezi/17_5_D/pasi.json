@@ -1,0 +1,53 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "12",
+   "cheie": "dom:.cab-grila button.cab-card|numar"
+  },
+  {
+   "id": "a.1",
+   "pas": "banca",
+   "operator": "egal",
+   "valoare": "Importă extras",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "a.2",
+   "pas": "miscari",
+   "operator": "egal",
+   "valoare": "Descarcă PDF",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "a.3",
+   "pas": "rapoarte",
+   "operator": "egal",
+   "valoare": "Descarcă PDF",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "a.4",
+   "pas": "import",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "f.2",
+   "pas": "import",
+   "operator": "text_contine",
+   "valoare": "Audit de preluare",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #mig-pasi|text"
+  },
+  {
+   "id": "a.5",
+   "pas": "solduri",
+   "operator": "egal",
+   "valoare": "Încarcă balanța",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  }
+ ]
+}

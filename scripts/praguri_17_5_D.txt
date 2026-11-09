@@ -1,0 +1,32 @@
+produs
+lot: 17.5-D
+max hook 124
+max poarta_verificator 107
+max poarta_pytest 724
+max poarta_plasa 1500
+runde_verificator_max: 2
+sursa pragurilor 17.5-D: generate de scripts/praguri_automate.py la 2026-11-09T14:20:54+02:00 din .lot_jurnal.log; loturi folosite: 17.5-B2, 17.5-C0, 17.5-C2 (3)
+  hook: maxim 103 s (lotul 17.5-C2, rularea 1898414-1794224009805) din 9 rulari complete, 0 rulari «intrerupt» ignorate, prag 124 s
+  poarta_verificator: maxim 89 s (lotul 17.5-B2, rularea 974525-1794179585474) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 107 s
+  poarta_pytest: maxim 603 s (lotul 17.5-B2, rularea 974525-1794179674038) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 724 s
+  poarta_plasa: maxim 1250 s (lotul 17.5-C2, rularea 1822252-1794222445196) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 1500 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_D.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_actiune_principala_17_5_D.py)
+  scripts/verificator_design.py (numai EXCEPTII_B)
+  static/js/cadru.js
+  static/js/ecrane/firme.js
+  static/js/ecrane/migrare.js
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  frontend_test/e2e/e2e_actiune_principala_17_5_D.py (nou)
+  frontend_test/e2e/e2e_bloc_a.py (numai așteptarea lui #bk-fisier)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_D/
+  core/test_liste_exceptii_16_8_B.py
+  core/test_randuri_17_5.py
