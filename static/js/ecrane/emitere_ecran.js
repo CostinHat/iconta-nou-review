@@ -995,12 +995,23 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     scadentaScrisa = !!ciorna.scadentaScrisa;
     pleacaMarfaCurent = ciorna.pleacaMarfa == null ? null : ciorna.pleacaMarfa;
     semnMarfa = ciorna.semnMarfa || null;
+    // [818, decizia Costin 08.11.2026] o ciornă dintr-o zi trecută se redeschide cu data de azi, iar cardul spune data veche
+    const dataCiorna = (ciorna.campuri || {})["em-data"];
+    const aziIso = dataIso();
+    let notaData = "";
+    if (dataCiorna && dataCiorna < aziIso) {
+      corp.querySelector("#em-data").value = aziIso;
+      notaData = `Data facturii din ciornă era ${dataRo(dataCiorna)}; am pus data de azi.`;   // la început: cardul DS taie textul la 90 de caractere
+      if (scadentaScrisa && inScad.value && inScad.value < aziIso) { scadentaScrisa = false; notaData += " Scadența a fost propusă din nou."; }
+      propuneScadenta();   // ce depinde de dată se recitește ca la o schimbare de dată făcută de om: scadența, regimul TVA și cotele, cursul BNR
+      reincarcaPregatirea();
+      recalc();
+    }
     const zc = corp.querySelector("#em-ciorna");
     const cand = ciorna.salvat_la ? new Date(ciorna.salvat_la) : null;
-    zc.innerHTML = cardCiorna(`Factura începută${cand ? " (ultima modificare: " + dataRo(ciorna.salvat_la.slice(0, 10)) + ", " + String(cand.getHours()).padStart(2, "0") + ":" + String(cand.getMinutes()).padStart(2, "0") + ")" : ""} a fost păstrată, așa cum ai lăsat-o. Rămâne până o emiți sau apeși „Renunță la factură”.`);
+    zc.innerHTML = cardCiorna(`${notaData ? notaData + " " : ""}Factura începută${cand ? " (ultima modificare: " + dataRo(ciorna.salvat_la.slice(0, 10)) + ", " + String(cand.getHours()).padStart(2, "0") + ":" + String(cand.getMinutes()).padStart(2, "0") + ")" : ""} a fost păstrată, așa cum ai lăsat-o. Rămâne până o emiți sau apeși „Renunță la factură”.`);
     // [lotul 11, 428] data restaurată din ciornă (alta decât azi): ce depinde de dată — regimul TVA la încasare, cotele — se recitește la ea
-    const dataCiorna = (ciorna.campuri || {})["em-data"];
-    if (dataCiorna && dataCiorna !== dataIso()) reincarcaPregatirea();
+    if (dataCiorna && dataCiorna > aziIso) reincarcaPregatirea();
   } else {
     linii.push(linieNoua());  // prima linie
   }

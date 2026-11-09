@@ -293,6 +293,11 @@ def test_def_602_563_610_registrul_jurnal(browser):
     try:
         pg.click("#fa-jurnal")
         pg.wait_for_selector("#jn-tabel")
+        # [817] registrul se deschide pe luna de lucru (luna trecută); notele de probă sunt ale lunii de azi, la care se ajunge cu „luna →”
+        luna_azi = "%02d/%d" % (AZI.month, AZI.year)
+        pg.click("#j-next")
+        pg.wait_for_function("(l) => document.body.innerText.includes('Luna ' + l)", arg=luna_azi)
+        pg.wait_for_selector("#jn-tabel")
         # [610 / 675] „Validează” inactiv, cu pasul notei la trecerea cu mouse-ul; „nederivat” nu apare nicăieri (602)
         v = _butoane(pg, "[data-val='1002']")[0]
         assert v[1] and v[2].startswith("Notă fără document justificativ. Scrie referința"), v

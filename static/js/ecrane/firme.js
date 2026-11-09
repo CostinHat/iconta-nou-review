@@ -32,6 +32,7 @@ function cnpValid(c) {
   let ctrl = sm % 11; if (ctrl === 10) ctrl = 1;
   return ctrl === (+c[12]);
 }
+import { lunaDeLucru, uitaLunaDeLucru } from "../luna_lucru.js?v=04c41c46c1";   // [17.5-C, 817] luna propusă la deschidere
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
@@ -40,7 +41,7 @@ import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma sc
 import { MESAJ_NUMAR_RO } from "../api.js?v=0b48920b43";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
 import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=98d7beb362";   // [lotul 13, 543] seria chitanțelor pe loc
-import { cautaInLista } from "./emitere_ecran.js?v=0cbbc9ae46";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+import { cautaInLista } from "./emitere_ecran.js?v=d0a3cb9a62";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=b9fdb13bcc";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=50cade9fc8";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
@@ -925,9 +926,8 @@ function randEchilibru(e) {
 }
 
 async function ecranVerificari(corp, nav, t) {
-  const azi = new Date();
-  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
-  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()); if (l0) ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii
+  let an, luna;
+  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()) || await lunaDeLucru(t.id); ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii; [817] altfel luna de lucru
   const cerereNoua = ultimaCerere();   // [C103] luna schimbată în șir (← / →): numai verificările lunii afișate ajung pe ecran
   const deseneaza = async () => {
     if (nav.seteazaLuna) nav.seteazaLuna(an, luna);   // [717, 14.3] luna aceasta o moștenește fereastra care se deschide de aici
@@ -1308,9 +1308,7 @@ async function ecranControlFirma(corp, nav, t) {
 // Luna aleasă a statului se ține pe firmă (`LUNA_STAT`): închiderea ferestrei salariatului redesenează statul pe aceeași lună.
 const LUNA_STAT = {};
 function _lunaStat(t) {
-  const azi = new Date();
-  if (!LUNA_STAT[t.id]) LUNA_STAT[t.id] = { an: azi.getFullYear(), luna: azi.getMonth() + 1 };
-  return LUNA_STAT[t.id];
+  return LUNA_STAT[t.id];   // inițializată o singură dată pe firmă, în `ecranSalariati`, cu luna de lucru (817)
 }
 const _lunaTxt = (an, luna) => dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric");
 // confirmarea unui act făcut într-o fereastră a salariatului, arătată în fereastra salariatului când se redesenează (DS cap.27)
@@ -1543,6 +1541,7 @@ function dinCeSeCalculeaza(s) {
 }
 
 export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în browser (ca ecranStocuri)
+  if (!LUNA_STAT[t.id]) LUNA_STAT[t.id] = await lunaDeLucru(t.id);   // [817] luna de lucru, o singură dată pe firmă; „← luna / luna →” o schimbă
   const L = _lunaStat(t);
   const cerereNoua = ultimaCerere();   // [C103] luna schimbată în șir (← / →): numai statul lunii afișate ajunge pe ecran
   let filtru = "";
@@ -3944,9 +3943,8 @@ async function ecranBilant(corp, nav, t) {
 }
 
 export async function ecranStocuri(corp, nav, t) {
-  const azi = new Date();
-  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
-  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()); if (l0) ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii
+  let an, luna;
+  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()) || await lunaDeLucru(t.id); ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii; [817] altfel luna de lucru
   const cheie = "stocuri:" + t.id;
   // [lotul 13, 673] întors din fereastra NIR-ului (sau a unei acțiuni): luna lui și confirmarea (cea a salvării traversează redesenarea —
   // fosta `mesajNir`, R162 / C12c)
@@ -4448,9 +4446,8 @@ function motiveCasa(o) {
 
 async function ecranCasa(corp, nav, t) {
   const cheie = "casa:" + t.id;
-  const azi = new Date();
-  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
-  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()); if (l0) ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii
+  let an, luna;
+  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()) || await lunaDeLucru(t.id); ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii; [817] altfel luna de lucru
   // [R162] mesajul de reusita TRAVERSEAZA re-randarea — v. antetul reparatiei; [673] și închiderea ferestrei unei acțiuni (luna ei)
   let mesajSucces = "";
   const preia = () => {
@@ -5872,6 +5869,7 @@ async function legaBlocareLuna(bLock, zonaMesaj, t, an, luna, dupa) {
     if (lunaBlocata) { cereMotivDeblocare(bLock, zonaMesaj, t, an, luna, dupa); return; }
     try {
       await api.post(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`, {});
+      uitaLunaDeLucru(t.id);   // [817] lunile blocate s-au schimbat: următorul ecran lunar recitește luna de lucru
       await dupa();
       // [688.1, comanda 14.3] blocarea se confirmă, ca deblocarea
       const z = zonaMesaj && zonaMesaj.id ? document.getElementById(zonaMesaj.id) : null;
@@ -5936,6 +5934,7 @@ function cereMotivDeblocare(bLock, zonaMesaj, t, an, luna, dupa) {
     b.disabled = true;
     try {
       await api.del(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}&motiv=${encodeURIComponent(motiv)}`);
+      uitaLunaDeLucru(t.id);   // [817]
       f.remove();
       const gata = await dupa();
       const z = zonaMesaj && zonaMesaj.id ? document.getElementById(zonaMesaj.id) : null;
@@ -5975,10 +5974,9 @@ export async function deschideSalariati(nav, tenantId) {
 }
 
 async function ecranInchidereLuna(corp, nav, t, opt = {}) {
-  const azi = new Date();
-  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  let an, luna;
   if (opt.an && opt.luna) { an = opt.an; luna = opt.luna; }   // [694.1 b] luna cerută de apelant
-  else { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()); if (l0) ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii
+  else { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()) || await lunaDeLucru(t.id); ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii; [817] altfel luna de lucru
   const dubla = t.regim_contabil === "dubla";   // DS cap.18: cardul e „ambele”, blocarea jurnalului e de partidă dublă
   const cerereNoua = ultimaCerere();   // [C103] luna schimbată în șir (← / →): numai starea lunii afișate ajunge pe ecran
   const deseneaza = async () => {
@@ -6157,7 +6155,7 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
           const intrebare = `Închizi luna deși ${esc(confirmabile.map((b) => b.mesaj.split(" — ")[0]).join("; "))}? Amortizarea lipsă schimbă profitul (D100/D101). Confirmarea rămâne în istoricul închiderii, cu numele tău.`;
           // textul întrebării stă în afara handlerului: legarea apelului de buton (scan_drepturi_ui) citește acoladele handlerului
           bC.addEventListener("click", () => confirmaCaseta(bC, intrebare, async () => {
-            try { await api.post(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}&confirma_amortizare=true`, {}); deseneaza(); }
+            try { await api.post(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}&confirma_amortizare=true`, {}); uitaLunaDeLucru(t.id); deseneaza(); }   // [817]
             catch (e) { arataMesaj(zm, (e && e.mesaj) || "Luna nu s-a putut închide.", "eroare"); }
           }, { textOk: "Închid luna" }));
         }
@@ -6169,9 +6167,9 @@ async function ecranInchidereLuna(corp, nav, t, opt = {}) {
 
 export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda în browser + „nota #…” din detaliul facturii
   const cheie = "jurnal:" + t.id;
-  const azi = new Date();
+  const azi = new Date();   // [817] „azi” rămâne pentru „Notă nouă”; luna de pornire vine din `lunaDeLucru`
   let an = opt.an || azi.getFullYear(), luna = opt.luna || azi.getMonth() + 1;
-  if (!opt.an) { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()); if (l0) ({ an, luna } = l0); }   // [717, 14.3] fereastra deschisă dintr-o altă fereastră păstrează luna din care vii   // din factură: luna notei ei
+  if (!opt.an) { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()) || await lunaDeLucru(t.id); ({ an, luna } = l0); }   // [817] altfel luna de lucru   // [717, 14.3] fereastra deschisă dintr-o altă fereastră păstrează luna din care vii   // din factură: luna notei ei
   let poateValida = permis("POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza");   // [lotul 07.10 pct.16]
   // [lotul 13, 673 / 563] nota nouă și editarea se scriu în fereastra lor; la întoarcere registrul se deschide pe luna notei salvate, cu
   // rândul ei evidențiat, adus în vedere, și confirmarea în rezumatul lipit sus (nu „sare la început”, fără mesaj — 563 / 529)
@@ -7234,9 +7232,8 @@ async function ecranBonuri(corp, nav, t) {
 // `/tenants/{id}/balanta`, iar totalurile si inchiderea sunt calculate pe SERVER, in aceeasi sursa
 // din care se tipareste PDF-ul (`documente_api.totaluri_balanta`): ecranul nu aduna nimic.
 async function ecranBalanta(corp, nav, t) {
-  const azi = new Date();
-  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
-  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()); if (l0) ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii
+  let an, luna;
+  { const l0 = (nav.lunaCurenta && nav.lunaCurenta()) || (nav.lunaParinte && nav.lunaParinte()) || await lunaDeLucru(t.id); ({ an, luna } = l0); }   // [717, 14.3] luna ferestrei din care vii; [817] altfel luna de lucru
 
   // [08.10.2026, decizia Costin W1] cinci egalități (OMFP 2634/2015, cod 14-6-30/a): rulajele CURENTE sunt notele lunii —
   // aceleași pe care le arată Registrul jurnal pe luna asta —, iar notele lunilor anterioare stau în „sume precedente”.
