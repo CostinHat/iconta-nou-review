@@ -1,0 +1,81 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________________________ test_luna_de_lucru_17_5_C ___________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_luna_de_lucru_17_5_C(browser):
+        from core import ceas_proba
+        parcurs = _incarca_parcurs_17_1()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        tid = None
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            tid = _tenant(pg)
+            bl = [(p["an"], p["luna"]) for p in (pg.evaluate(JS_API, ["get", "/tenants/%d/perioade-blocate" % tid, None]).get("blocate") or [])]
+            assert (2026, 10) not in bl and (2026, 11) not in bl, "premisa: 10/2026 și 11/2026 neblocate pe F1 (blocate: %s)" % bl
+            # (1) luna propusă la deschidere
+            for sel, nume in ECRANE:
+                luna = _luna_ecranului(pg, parcurs, sel)
+                if luna != LUNA_LUCRU:
+                    rele.append("(1) %s: pornește pe %s, nu pe %s" % (nume, luna, LUNA_LUCRU))
+            # (2) luna trecută blocată -> luna curentă (răspunsul serverului interceptat; nimic scris în bază)
+            def _blocata_10(route):
+                route.fulfill(status=200, content_type="application/json",
+                              body='{"blocate": [{"an": 2026, "luna": 10}]}')
+            tipar = re.compile(r".*/tenants/%d/perioade-blocate(\?.*)?$" % tid)
+            pg.route(tipar, _blocata_10)
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            luna = _luna_ecranului(pg, parcurs, "#fa-balanta")
+            if luna != "11/2026":
+                rele.append("(2) Balanță cu 10/2026 blocată: pornește pe %s, nu pe 11/2026" % luna)
+            pg.unroute(tipar)
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            # (3) funcția pură
+            try:
+                pura = pg.evaluate(JS_PURA)
+            except Exception as e:   # noqa: BLE001 — modulul lipsește pe bază
+                pura = "eroare: %s" % str(e)[:120]
+            if pura != ["2026/10", "2026/11", "2026/12", "2027/1"]:
+                rele.append("(3) lunaDeLucruDin: %s, așteptat ['2026/10', '2026/11', '2026/12', '2027/1']" % pura)
+            # (4) ciorna de factură cu dată veche
+            ciorna = {"v": 1, "salvat_la": "2025-07-01T10:00:00.000Z", "linii": [{"descriere": "Proba 17.5-C", "cantitate": 1, "pret_unitar": 10}], "moneda": "RON", "scadentaScrisa": False,
+                      "pleacaMarfa": None, "semnMarfa": None, "campuri": {"em-data": "2025-06-15", "em-scadenta": "2025-07-15"}, "stareCui": None}
+            pg.evaluate(JS_API, ["put", "/tenants/%d/ciorne-formular/factura" % tid, {"continut": ciorna}])
+            parcurs.firma(pg, F1)
+            pg.click(TOP + "#fa-facturi", timeout=10000)
+            pg.click("#fac-emite", timeout=10000)
+            pg.wait_for_selector("#em-cui", timeout=25000)
+            pg.wait_for_timeout(1500)
+            data = pg.input_value("#em-data")
+            scad = pg.input_value("#em-scadenta")
+            card = pg.inner_text("#em-ciorna") if pg.locator("#em-ciorna").count() else ""
+            if data != "2026-11-03":
+                rele.append("(4) data facturii din ciorna veche: %s, nu 2026-11-03" % data)
+            if not scad or scad < "2026-11-03":
+                rele.append("(4) scadența din ciorna veche: %s (înainte de data facturii)" % scad)
+            if "Data facturii din ciornă era 15.06.2025" not in card:
+                rele.append("(4) cardul ciornei nu spune „Data facturii din ciornă era 15.06.2025”: %s" % re.sub(r"\s+", " ", card)[:160])
+        finally:
+            try:
+                if tid is not None:
+                    pg.evaluate(JS_API, ["del", "/tenants/%d/ciorne-formular/factura" % tid, None])
+            except Exception:   # noqa: BLE001 — curățenia nu ascunde verdictul; baza se restaurează înaintea plasei
+                pass
+            b.close()
+>       assert not rele, "luna de lucru 17.5-C: %s" % "; ".join(rele)
+E       AssertionError: luna de lucru 17.5-C: (1) Casă: pornește pe 11/2026, nu pe 10/2026; (1) Registru jurnal: pornește pe 11/2026, nu pe 10/2026; (1) Balanță de verificare: pornește pe 11/2026, nu pe 10/2026; (1) Stocuri: pornește pe 11/2026, nu pe 10/2026; (1) Salariați (Stat de plată): pornește pe 11/2026, nu pe 10/2026; (1) Închidere lună: pornește pe 11/2026, nu pe 10/2026; (1) Verificări: pornește pe 11/2026, nu pe 10/2026; (3) lunaDeLucruDin: eroare: Page.evaluate: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:8019/static/js/luna_lucru.js, așteptat ['2026/10', '2026/11', '2026/12', '2027/1']; (4) data facturii din ciorna veche: 2025-06-15, nu 2026-11-03; (4) scadența din ciorna veche: 2025-07-15 (înainte de data facturii); (4) cardul ciornei nu spune „Data facturii din ciornă era 15.06.2025”: Factura începută (ultima modificare: 01.07.2025, 13:00) a fost păstrată, așa cum ai lăsat… Renunță la factură
+E       assert not ['(1) Casă: pornește pe 11/2026, nu pe 10/2026', '(1) Registru jurnal: pornește pe 11/2026, nu pe 10/2026', '(1) Balan...ți (Stat de plată): pornește pe 11/2026, nu pe 10/2026', '(1) Închidere lună: pornește pe 11/2026, nu pe 10/2026', ...]
+
+frontend_test/e2e/e2e_luna_lucru_17_5_C.py:137: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_luna_lucru_17_5_C.py::test_luna_de_lucru_17_5_C
+1 failed in 34.77s
+
+real	0m35.084s
+user	0m3.701s
+sys	0m1.580s

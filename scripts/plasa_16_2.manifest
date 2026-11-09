@@ -9,3 +9,4 @@ frontend_test/e2e/e2e_pilot_f054.py	affc7c95b8b8f7ff036364f76e96a2ea8252cd4fa79b
 frontend_test/e2e/e2e_pilot_x05.py	6a328da7c56f60694bf085412bb9c28bc7899939b0e8267fb6d65d2e0296b2f6	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x05.py
 frontend_test/e2e/e2e_pilot_x06.py	f87b2ddfb4e2c0cb8b206d2d6a305993c2251faa746170e698a72f36e58bc966	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x06.py
 frontend_test/e2e/e2e_pilot_x07.py	aac36b293578912a6cbacd2f5f07538717f8725782a9af87a1d1d2bacec39f00	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x07.py
+frontend_test/e2e/e2e_luna_lucru_17_5_C.py	6554d43464e57050568e4c8c00b3c5edca0730a2f1eada4a78f2a634eca5e7ae	1	python -m pytest -q frontend_test/e2e/e2e_luna_lucru_17_5_C.py

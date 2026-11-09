@@ -1,0 +1,9 @@
+{
+ "asertiuni": [
+  {"id": "f.1", "pas": "implicit", "operator": "nr_randuri", "valoare": "12", "cheie": "dom:.cab-grila button.cab-card|numar"},
+  {"id": "a.1", "pas": "balanta", "operator": "text_contine", "valoare": "Luna 10/2026", "cheie": "dom:.fereastra-overlay:not(.fundal) #b-intro|text"},
+  {"id": "a.2", "pas": "stat", "operator": "text_contine", "valoare": "Luna 10/2026", "cheie": "dom:.fereastra-overlay:not(.fundal) .pf-intro|text"},
+  {"id": "a.3", "pas": "emitere", "operator": "egal", "valoare": "2026-11-03", "cheie": "dom:#em-data|valoare"},
+  {"id": "a.4", "pas": "emitere", "operator": "text_contine", "valoare": "Data facturii din ciornă era 15.06.2025", "cheie": "dom:#em-ciorna|text"}
+ ]
+}
