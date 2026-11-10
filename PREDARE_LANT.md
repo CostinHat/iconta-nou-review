@@ -1290,3 +1290,6 @@ nu o etapă încheiată.*
 
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
+
+## LOTUL 17.5-G3 (produs, 10.11.2026) — continuare a lui 17.5-G2 pe același cod P, ramura `lucru/lot17-5g3` (worktree `~/iconta_lot17_5g3`)
+- Același cod ca P (9d2319a5, lotul 17.5-G); diferă numai scripts/praguri_17_5_G3.txt și docs/dovezi/17_5_G3/. G2 s-a oprit nepublicat la 10.11.2026 18:56 pe praguri de fază (arhitectul rula o scanare pe același server) și pe lipsa secțiunii «Rulări „intrerupt” pe fază». Poarta completă pe C și verificarea independentă (haiku_1, dupa) s-au refăcut sub 17.5-G3. Ramura `lucru/lot17-5g` și `~/iconta_lot17_5g` neatinse.
