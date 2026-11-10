@@ -13,3 +13,4 @@ frontend_test/e2e/e2e_luna_lucru_17_5_C.py	6554d43464e57050568e4c8c00b3c5edca073
 frontend_test/e2e/e2e_actiune_principala_17_5_D.py	bef4f7aebfc875b58bb04ef6b276f6df28562d9e209b580bb211802909e3545b	1	python -m pytest -q frontend_test/e2e/e2e_actiune_principala_17_5_D.py
 frontend_test/e2e/e2e_alegere_unica_17_5_E.py	6db1d160a8224d7fb566d646a7d270e0c49487f769db6205f534cfe14f0aaf6e	1	python -m pytest -q frontend_test/e2e/e2e_alegere_unica_17_5_E.py
 frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py	f7f06d651a60b9a16a77d5d663fea3d768ed936bde08057d5c01004b194108c4	1	python -m pytest -q frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py
+frontend_test/e2e/e2e_de_validat_17_5_G.py	c8a460a3ee239c58b350bb58b23dd579309e94c1a19379bb7b617629f7db9971	1	python -m pytest -q frontend_test/e2e/e2e_de_validat_17_5_G.py
