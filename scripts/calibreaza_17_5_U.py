@@ -116,11 +116,14 @@ def u1_ab():
     r = sh(["sh", "scripts/porneste_8019.sh"], cwd=RAD)
     pornit = VD.port_ocupat(8019)
     stare = VD.STARE
-    sters = os.path.exists(stare) and not os.remove(stare)
+    sters = False
+    if os.path.exists(stare):
+        os.remove(stare)
+        sters = not os.path.exists(stare)
     proprietar = VD.proprietari_port(8019)[0] if pornit else {}
     r2 = sh([os.path.join(RAD, "venv", "bin", "python"), "scripts/verificator_design.py", "opreste"], cwd=RAD)
     caz("U.1 c: porneste_8019.sh (server real %s), stare.json ștearsă, verificator_design.py opreste îl oprește" % (("pid %s" % proprietar.get("pid")) if proprietar else "nepornit"),
-        r.returncode == 0 and pornit and sters is not True and r2.returncode == 0 and port_liber(), (r.stdout + r.stderr)[-200:] + " | " + r2.stdout.strip()[-200:])
+        r.returncode == 0 and pornit and sters is True and r2.returncode == 0 and port_liber(), "pornit=%s stare.json ștearsă=%s; opreste: ieșire %d: %s" % (pornit, sters, r2.returncode, r2.stdout.strip()[-160:]))
     restaureaza()
     # d. server fals pe 8019 + porneste_8019.sh = ieșire 1 cu numele procesului
     p = server_fals(ALT)
@@ -186,7 +189,7 @@ def u2_e(p_commit):
     stare = json.load(open(os.path.join(comun, "lot_stare_17_5_U.json"))) if os.path.exists(os.path.join(comun, "lot_stare_17_5_U.json")) else {}
     infra = [ln for ln in verdicte if ln.startswith("INFRA ")]
     sha_dep = git(DEP, "rev-parse", "HEAD")
-    sumar = [ln for ln in r.stdout.splitlines() if ln.startswith("[poarta] INFRA ")]
+    sumar = [ln for ln in r.stdout.splitlines() if re.match(r"\[poarta\] INFRA [0-9a-f]{40} ", ln)]
     zero = all(re.search(r"%s 0\b" % k, sumar[-1]) for k in ("baza_mutata", "nou_regresie", "invalid", "asertiuni_scazute")) if sumar else False
     regresii_ok = all(re.search(r"\(a dispărut din rulare\)$", ln.strip()) for ln in r.stdout.splitlines() if ln.strip().startswith("regresie:"))
     caz("U.2 e: trei linii INFRA <sha> și nicio linie VERDE / ROSU în poarta_verdicte.log al clonei", len(infra) == 3 and len(verdicte) == 3 and all(ln.split()[1] == sha_dep for ln in infra), "%d linii, %d INFRA" % (len(verdicte), len(infra)))
