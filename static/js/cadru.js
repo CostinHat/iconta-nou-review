@@ -151,7 +151,6 @@ const NU_MUTA = new Set([
   "df-cui-confirma",          // static/js/ecrane/date_firma.js:957 (zona.querySelector)
   "an-trimite",               // static/js/ecrane/admin.js:206 (c.querySelector)
   "coada-confirma",           // static/js/ecrane/coada_trimite.js:80 (zona.querySelector)
-  "r-adauga",                 // static/js/ecrane/rip_ecran.js: [17.5-F, 822] butonul formularului (în #r-zona) e acțiunea ferestrei cât formularul e deschis; proxy-ul pleacă odată cu zona
   "coada-deja-inlocuieste",   // static/js/ecrane/coada_trimite.js:99 (b.querySelector)
 ]);
 const _nuSeMuta = (b) => !b.id || NU_MUTA.has(b.id);
