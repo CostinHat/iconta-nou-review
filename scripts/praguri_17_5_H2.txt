@@ -1,0 +1,46 @@
+produs
+lot: 17.5-H2
+max hook 132
+max poarta_verificator 128
+max poarta_pytest 742
+max poarta_plasa 2253
+ajustare poarta_plasa +630 s: pragul automat 1623 s (maximul observat x 1,2) e masurat pe plasa de dinaintea lotului; lotul adauga in plasa teste care dureaza pe baza 525 s (dovada_baza_17_5_H2.log 122 s, dovada_baza_17_5_H2_bara.log 403 s); 1623 + ceil(1,2 x 525) = 2253 (regula: ajustare_plasa.py, numai cand testele noi trec de jumatatea marjei de 271 s)
+runde_verificator_max: 2
+sursa pragurilor 17.5-H2: generate de scripts/praguri_automate.py la 2026-11-10T22:09:32+02:00 din .lot_jurnal.log; loturi folosite: 17.5-U, 17.5-F, 17.5-G3 (3)
+  hook: maxim 110 s (lotul 17.5-F, rularea 678194-1794306324798) din 13 rulari complete, 0 rulari «intrerupt» ignorate, prag 132 s
+  poarta_verificator: maxim 106 s (lotul 17.5-U, rularea 3928074-1794290932490) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 128 s
+  poarta_pytest: maxim 618 s (lotul 17.5-F, rularea 713903-1794307023305) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 742 s
+  poarta_plasa: maxim 1352 s (lotul 17.5-G3, rularea 1910649-1794331963287) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 1623 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_H2.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândurile noi ale lui e2e_piese_17_5_H2.py și e2e_bara_jos.py)
+  scripts/verificator_design.py (numai textul literelor b și c, dacă regulile noi cer; EXCEPTII_B nu se atinge, pct.7 al comenzii)
+  scripts/verificator_design_masuri.js (numai regula nouă a literei b: fj-principal care începe cu «Completează», și excluderea de la litera c a elementelor din `data-fara-piesa`, pct.2(b))
+  static/js/cadru.js
+  static/js/ds_piese.js
+  static/js/navigator.js
+  static/stil.css
+  static/js/ecrane/firme.js (numai: eticheta butoanelor #c-adauga și #je-salveaza — textContent nu mai primește motivul —, marcajele «*» (CUI, Tip firmă) și renunțarea la starea proprie a butonului la Firmă nouă (#fn-salveaza), Ore suplimentare (#el-adauga), Pontaj (#pj-confirma ca acțiune principală marcată))
+  static/js/ecrane/flux_concediu.js (numai marcajele «*» și starea butonului #cm-calc)
+  static/js/ecrane/declaratii.js (numai marcajele «*» la D104 pasul 2 și clasa butonului #d301-regen)
+  static/js/ecrane/facturi_ecran.js (numai marcajul «*» al alegerii #fd-storno-retur, starea butonului #fd-storno-ok și starea cu motiv a butonului #fp-verifica la firma conectată fără drept, 823.1, pct.5.1(b))
+  static/js/ecrane/migrare.js (numai marcajul data-fara-piesa al meniului #mig-pasi)
+  static/js/ecrane/portal.js (numai: listele din «Cifrele firmei» marcate cu data-fara-piesa și butonul «Trimite la contabil» (#bon-trimite) ca acțiune principală)
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  frontend_test/e2e/e2e_piese_17_5_H2.py (nou)
+  frontend_test/e2e/e2e_bara_jos.py (nou)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_H2/
+  docs/dovezi/17_5_H/harta_bara_jos.txt (nou; harta rămâne la calea citită de e2e_bara_jos.py și numită de loturile următoare)
+  core/test_lot10b_jurnal_nota_noua.py (numai actualizarea la comportamentul nou: eticheta «Salvează» + motivul, pct.8.5 al comenzii)
+  core/test_lot13_firme2_ecrane.py (numai actualizarea la comportamentul nou al etichetei #c-adauga, pct.8.5)
+  core/test_randuri_17_5.py (numai dacă blocul _exportTabel citit de test se schimbă, pct.8.5)
+  frontend_test/e2e/e2e_lot92.py (numai clicul fără alegere pe #fd-storno-ok devine force=True, pct.5(b))
+  docs/dovezi/16_6/pasi.json (numai cheia rândurilor cu textul «Completează», pct.5(a))
+  docs/dovezi/16_2_B/pasi.json (numai cheia rândului cu textul «Completează», pct.5(a))

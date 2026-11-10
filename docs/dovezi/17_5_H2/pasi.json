@@ -1,0 +1,151 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text"
+  },
+  {
+   "id": "a.1",
+   "pas": "istoric",
+   "operator": "lipseste",
+   "valoare": "Înregistrare",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-corp|text"
+  },
+  {
+   "id": "a.2",
+   "pas": "istoric",
+   "operator": "lipseste",
+   "valoare": "1 rând",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-corp|text"
+  },
+  {
+   "id": "a.3",
+   "pas": "istoric",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "h.1",
+   "pas": "istoric",
+   "operator": "text_contine",
+   "valoare": "Nicio factură în luna aceasta.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.4",
+   "pas": "contracte",
+   "operator": "lipseste",
+   "valoare": "Înregistrare",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-corp|text"
+  },
+  {
+   "id": "f.2",
+   "pas": "contracte",
+   "operator": "egal",
+   "valoare": "+ Șablon nou",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "a.5",
+   "pas": "import",
+   "operator": "lipseste",
+   "valoare": "rânduri",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .ds-tabel-subsol|text"
+  },
+  {
+   "id": "a.6",
+   "pas": "import",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar"
+  },
+  {
+   "id": "f.4",
+   "pas": "import",
+   "operator": "text_contine",
+   "valoare": "Audit de preluare",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "h.2",
+   "pas": "detaliu",
+   "operator": "text_contine",
+   "valoare": "Marfa A",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "h.3",
+   "pas": "fisa",
+   "operator": "text_contine",
+   "valoare": "Compoziția netului",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.7",
+   "pas": "elemente",
+   "operator": "text_contine",
+   "valoare": "Completează:",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-motiv|text"
+  },
+  {
+   "id": "f.3",
+   "pas": "elemente",
+   "operator": "egal",
+   "valoare": "Adaugă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "a.8",
+   "pas": "casa",
+   "operator": "egal",
+   "valoare": "Adaugă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "a.9",
+   "pas": "casa",
+   "operator": "text_contine",
+   "valoare": "Completează:",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-motiv|text"
+  },
+  {
+   "id": "a.10",
+   "pas": "nota",
+   "operator": "egal",
+   "valoare": "Salvează",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "a.11",
+   "pas": "nota",
+   "operator": "text_contine",
+   "valoare": "Completează:",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-motiv|text"
+  },
+  {
+   "id": "a.12",
+   "pas": "casa603",
+   "operator": "egal",
+   "valoare": "Adaugă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|text"
+  },
+  {
+   "id": "h.4",
+   "pas": "casa603",
+   "operator": "text_contine",
+   "valoare": "Dispoziție nouă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "h.5",
+   "pas": "fisa603",
+   "operator": "text_contine",
+   "valoare": "Compoziția netului",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  }
+ ]
+}

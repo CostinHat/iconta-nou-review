@@ -1,0 +1,43 @@
+HARTA BARA DE JOS — butonul principal pe fereastră (referință pentru e2e_bara_jos.py; o ține arhitectul, Code nu o schimbă)
+Scrisă 10.11.2026 14:42 (ora serverului) din parcurgerea pe producție a celor 37 de carduri ale ferestrei F1 (1366x768, după 17.5-F), plus Capacitate și Suport. Format: fereastră | buton principal din bara de jos | stare
+Bonuri și chitanțe | Adaugă document (pozează / încarcă) | activ
+Raport Z | Generează notă | activ
+Casă | + Dispoziție nouă | activ
+Bancă | Importă extras | activ
+Compensări | Generează compensarea | activ
+e-Transport | Trimite UIT în SPV | activ
+Magazin online | Sincronizează acum | activ
+Solicitări client | Trimite | activ
+Registratură | Înregistrează | activ
+Acces client | Invită client nou | activ
+Bilanț anual | Validează (ANAF) | inactiv
+Capacitate | Adaugă asistenți | activ
+Suport | Trimite sesizarea | activ
+Produse | + Adaugă produs | activ   [măsurat pe main 463aaca7 la 10.11.2026: butonul e în bara de jos, 847 nu se mai reproduce; fereastra rămâne păzită de test]
+Registru încasări/plăți (F4, formular deschis) | Adaugă (ciornă) | activ
+Prime, sporuri, ore suplimentare (F5) | Adaugă | activ
+Facturi primite (SPV) | Verifică acum în SPV | inactiv cu motiv scris   [ȚINTĂ — 823.1: la firma conectată la SPV fără drept (starea din producție a firmelor F1–F8, pe care testul o dă firmei F1 prin răspunsul rutei /spv/stare) butonul e activ pe main 463aaca7; fereastra se deschide din Facturi, nu e card]
+Salariați | Contabilizează statul | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Stocuri | + NIR nou | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Mijloace fixe | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Registru jurnal | + Notă nouă | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Cartea mare | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Balanță de verificare | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Plan de conturi | Adaugă | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Centre de cost | Adaugă | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Verificări | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Registrul de evidență fiscală | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Registrul-inventar | Înscrie în registru | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Jurnal regim marjă | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Registre art. 321 | Înscrie în registru | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Declarații | Continuă → | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Control fiscal | Rerulează auditul | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Închidere lună | Blochează luna | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Clienți | + Client nou | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Furnizori | + Furnizor nou | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Parteneri | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Contracte | + Șablon nou | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Date firmă | Salvează | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+Rapoarte comerciale | Descarcă PDF | activ   [măsurat pe main 463aaca7 de Code la 17.5-H, F1 și F5; harta de la 14:42 era dinainte de G și G2]
+FĂRĂ buton principal (ferestre-meniu sau liste; bara rămâne goală): Facturi, Operațiuni speciale, Import date
+Notă: «fără buton principal» e starea măsurată azi, nu o decizie de DS pentru fiecare; o fereastră din această listă care primește un buton principal într-un lot schimbă harta printr-un rând cerut în comanda lotului, de către arhitect.
