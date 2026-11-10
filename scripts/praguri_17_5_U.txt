@@ -1,0 +1,27 @@
+unelte
+lot: 17.5-U
+fara praguri numerice pe durate in aceasta schema (lot de unelte; niciun rand `max <faza> <secunde>`: scripts/publica_lot.py compara numai randurile `max`); referintele de mai jos sunt cerinte de raport, cu cifra si cu sursa ei
+  hook ≤ 124 s (= 103 × 1,2; sursa: lotul 17.5-E2, rularea 3019918-1794258282657, 11 rulari complete)
+  poarta_verificator ≤ 105 s (= 87 × 1,2; sursa: lotul 17.5-E2, rularea 3186460-1794263079572, 3 rulari complete)
+  poarta_pytest ≤ 701 s (= 584 × 1,2; sursa: lotul 17.5-C2, rularea 1822252-1794221861808, 3 rulari complete)
+  poarta_plasa ≤ 1530 s (= 1275 × 1,2; sursa: lotul 17.5-E2, rularea 3186460-1794263714322, 3 rulari complete)
+runde_verificator_max: 0
+sursa pragurilor 17.5-U: generate de scripts/praguri_automate.py la 2026-11-10T02:10:58+02:00 din .lot_jurnal.log; loturi folosite: 17.5-C2, 17.5-D, 17.5-E2 (3)
+  hook: maxim 103 s (lotul 17.5-E2, rularea 3019918-1794258282657) din 11 rulari complete, 0 rulari «intrerupt» ignorate, prag 124 s
+  poarta_verificator: maxim 87 s (lotul 17.5-E2, rularea 3186460-1794263079572) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 105 s
+  poarta_pytest: maxim 584 s (lotul 17.5-C2, rularea 1822252-1794221861808) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 701 s
+  poarta_plasa: maxim 1275 s (lotul 17.5-E2, rularea 3186460-1794263714322) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 1530 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise (informativ; perimetrul real la un lot unelte = unelte_refuzuri, publica_lot.py:254-267; fisierele din core/ si frontend_test numite aici sunt permise)
+  core/ceas_proba.py
+  frontend_test/e2e/e2e_pozitii_validate.py
+  frontend_test/e2e/e2e_bloc_e.py
+  frontend_test/e2e/e2e_bloc_a.py
+  scripts/praguri_17_5_U.txt (nou)
+  scripts/calibreaza_17_5_U.py (nou)
+  core/test_unelte_17_5_U.py (nou)
+  CLAUDE.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_U/
