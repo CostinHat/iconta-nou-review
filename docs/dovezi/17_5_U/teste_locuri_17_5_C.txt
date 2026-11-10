@@ -1,0 +1,662 @@
+locuri schimbate: 24, în 17 fișiere din static/ și core/ (9bbc57ff..fea3c373)
+  frontend_test/e2e/e2e_luna_lucru_17_5_C.py                   în plasă         7 locuri, cel mai lung: 'lunaDeLucruDin' (din static/js/luna_lucru.js)
+  frontend_test/e2e/e2e_bloc_c.py                              în afara plasei  6 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_pilot_luna.py                          în plasă         6 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  core/test_contare_automata.py                                în afara plasei  5 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_reguli_fond_2.py                                   în afara plasei  5 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_bloc_b.py                              în afara plasei  5 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot12_firme1.py                        în afara plasei  5 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_pozitii_validate.py                    în plasă         5 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_lot12_firme1_nir.py                                în afara plasei  4 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_reguli_fond.py                                     în afara plasei  4 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_bloc_a.py                              în afara plasei  4 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_bloc_e.py                              în afara plasei  4 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot10_valuta.py                        în afara plasei  4 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot10b_facturi.py                      în afara plasei  4 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot14_3.py                             în afara plasei  4 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot15_1.py                             în afara plasei  4 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot6.py                                în afara plasei  4 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_agenda.py                                          în afara plasei  3 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_cale_a_doua.py                                     în afara plasei  3 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_d394.py                                            în afara plasei  3 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_drepturi_rol.py                                    în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_drepturi_ui.py                                     în afara plasei  3 locuri, cel mai lung: './api.js' (din static/js/luna_lucru.js)
+  core/test_emitere_factura_f1.py                              în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_firma_rezumat.py                                   în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_inchidere_luna.py                                  în afara plasei  3 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_lot0710_p2.py                                      în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_s_c75_borderou_tip_vechi.py                  în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_datefirma_chitanta.py                        în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_firme2_articole.py                           în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_ui2_ecrane.py                                în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_p2_contract.py                                     în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_poarta_inchidere.py                                în afara plasei  3 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_r42_criteriu.py                                    în afara plasei  3 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_retest_0810_s6.py                                  în afara plasei  3 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_reverificare.py                                    în afara plasei  3 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_bloc_d.py                              în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_a460.py                          în afara plasei  3 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot11_c88.py                           în afara plasei  3 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot11_t.py                             în afara plasei  3 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot12_cx5.py                           în afara plasei  3 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot12_fisc3.py                         în afara plasei  3 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot13_portal_p1.py                     în afara plasei  3 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot14_2.py                             în afara plasei  3 locuri, cel mai lung: '#em-data' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot72_contab.py                        în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot91.py                               în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot92.py                               în afara plasei  3 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_a1_lei_pur.py                                      în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_a3_a4_lant.py                                      în afara plasei  2 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_aritmetica_in_prezentare.py                        în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_c61_adresa_client_ro.py                            în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_cai_creare_factura.py                              în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_cashflow.py                                        în afara plasei  2 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_conformitate.py                                    în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_control_fiscal.py                                  în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_curatenie.py                                       în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_d390.py                                            în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_decizii_0710.py                                    în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_e2e_fara_date_fabricate.py                         în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_fara_functii_noi.py                                în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_flux_factura_f1_c.py                               în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_frecventa_document_care_raspunde.py                în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_inlocuire_afirmata.py                              în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_limita_text_anaf.py                                în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot10_compensari.py                                în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot10_reevaluare_manuala.py                        în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot10b_deschidere_aleasa.py                        în afara plasei  2 locuri, cel mai lung: 'ecranSalariati' (din static/js/ecrane/firme.js)
+  core/test_lot11_a460_curs.py                                 în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_at_afirmatii.py                              în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_b_449_produse_categorie.py                   în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_g_436_langa_note.py                          în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_p_parteneri.py                               în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_s2_451_factura_emisa.py                      în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_s_451_ciorne_depasite.py                     în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_s_jurnal_sursa.py                            în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_u0_intoarcere.py                             în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_v_reevaluare.py                              în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_w1_443_serie_nr.py                           în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_c154_c155_d390_art317.py                     în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_fe3_ecrane.py                                în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_fe3_recurente.py                             în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_firme2_salarii.py                            în afara plasei  2 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  core/test_lot12_p252_documente_preluate.py                   în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_sal2_629_deducere_cm.py                      în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_lot12_scad_primita.py                              în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_stoc2_409_1_dubluri.py                       în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_texte_perioada.py                            în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_zsterge_c139.py                              în afara plasei  2 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  core/test_lot13_fact_primite.py                              în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot13_firme2_ecrane.py                             în afara plasei  2 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_migrari_registru.py                                în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_neplatitor_tva_emitere.py                          în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_nir_408.py                                         în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_p2_infrastructura.py                               în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_p7_uc.py                                           în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_p7_v2_scrieri.py                                   în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_patru_ochi_efectiv.py                              în afara plasei  2 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  core/test_pereche_act_articol.py                             în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_plasa_modificabile_17_5_C0.py                      în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_poarta_scurta.py                                   în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_prag_mijloc_fix_unic.py                            în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_refuzuri.py                                        în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_retest_0810.py                                     în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_ruta_fara_apelant.py                               în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_rute_stoc_pana_in_declaratie.py                    în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_scrieri_pana_in_declaratie.py                      în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_search_console_404.py                              în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_status_factura_un_loc.py                           în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_supervizor.py                                      în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_text_afisat_limbaj.py                              în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_tichete_pontaj.py                                  în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_vigoare_articole_registru.py                       în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_bloc_f.py                              în afara plasei  2 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_s.py                             în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_v.py                             în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_cx2.py                           în afara plasei  2 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_cx7.py                           în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_decl3.py                         în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_diverse.py                       în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_fx3.py                           în afara plasei  2 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_verif.py                         în plasă         2 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_zsterge.py                       în afara plasei  2 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  frontend_test/e2e/e2e_lot13_comp.py                          în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_decl.py                          în afara plasei  2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  frontend_test/e2e/e2e_lot72_facturi.py                       în plasă         2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot93a.py                              în afara plasei  2 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_pilot_f054.py                          în plasă         2 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_274b_categorii_tva.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_291_bulina_suport.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_297_298_surse_declaratie.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_306_factura_client_ue.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_309_310_banca_casa.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_314_poveste_depasita.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_319_320_inceput.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_330_confirmari.py                                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_332_data_propusa.py                                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_359_amortizare_preluata.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_380_381_d406_surse.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_398_400_nir.py                                     în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_401_403_borderou.py                                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_405_plata_nir_avans.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_406_casa_negativa.py                               în afara plasei  1 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  core/test_417_storno_trimitere.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_a11y_contrast_tokens.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_a1_valuta_pana_in_declaratie.py                    în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_a2_tvai_ic.py                                      în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_a8_profit_cumulat.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_achizitii_factura.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_acoperire_vizuala.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_activare_firma_inactiva.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_afirmatii_tipate.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_agenda_urmator.py                                  în afara plasei  1 locuri, cel mai lung: 'blocate' (din static/js/luna_lucru.js)
+  core/test_ajutor_periodicitate_tva.py                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_amprente_declaratii.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_ancore_in_cod.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_ancore_rute.py                                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_atribuire_scrieri.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_b1_apartenenta_coada.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_balanta_jurnal.py                                  în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_base_nula_generatoare.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_baza_cm.py                                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_bilant_denumiri.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_blocante_clasificate.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_brevo_pe_fir_propriu.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_buton_blocat_structura.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_c1_pontaj_neconfirmat_gri.py                       în afara plasei  1 locuri, cel mai lung: 'blocate' (din static/js/luna_lucru.js)
+  core/test_c5_extras_idempotent.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_c63_proforma_transformata.py                       în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_capital_social.py                                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_cartea_mare.py                                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_casa_facturi_avans.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_cerere_veche.py                                    în afara plasei  1 locuri, cel mai lung: './api.js' (din static/js/luna_lucru.js)
+  core/test_cifre_referinta_poarta.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_ciorne_proprii.py                                  în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_citate_verbatim.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_clichete_generate.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_coada_gata_de_depus.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_coada_texte_drepturi.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_cod_boala_nomenclator.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_cod_partener.py                                    în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_coduri_validator.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_coerenta_salarii.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_comportament_chei_suspendare.py                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_constante_nesursate.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_cont_din_corp_normalizat.py                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_cont_venit_linie.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_contract_ecran_ruta.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_control_incrucisat_wiring.py                       în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_control_preluare.py                                în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_control_reconciliere_vizibila.py                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_corpus_amprenta.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_corpus_surse.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_cronometru_inert.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d100_fapt.py                                       în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d100_pozitia_116.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d100_profit_baza.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d100_scadenta_trimiv.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d101.py                                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d112.py                                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d112_avantaje.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d112_cadou.py                                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d205_cesiune.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d205_cnp_checksum.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d205_imp_manual.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d212_an_verificat.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d212_cass_minim.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d212_reper.py                                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d300_reconciliere.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d301_coercitie_tacita.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d390_dubla_si_primita_fara_cui.py                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_d390_ziua15.py                                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d394_codpr_cereale.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_d394_i2.py                                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_d406.py                                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d406_active_duk.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d406_fereastra.py                                  în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_d406_jurnal_origine.py                             în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_d710_suma_ded.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_declaratii_50.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_declaratii_componente.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_deconturi.py                                       în afara plasei  1 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  core/test_deficiente.py                                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_deficiente_lot15.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_dependente_ramuri.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_detector_taiat_17_2_B.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_dezabonare.py                                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_duk_instalat.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_duk_sursa_unica.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_e1_contare_primita_mixt.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_e2a_univers.py                                     în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_echilibru_legat.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_email_html_doua_cai.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_email_html_dupa_commit.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_emitere_randuri_dinamice.py                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_eticheta_conturi_ecran.py                          în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_etransport_send.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_eu_parola.py                                       în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_expirare_cote_de_baza.py                           în afara plasei  1 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  core/test_export_din_bon.py                                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_export_winmentor.py                                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_factura_bon_fiscal.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_fapte_date_firma.py                                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_faptul_bate_vectorul.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_fara_probe_imagine.py                              în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_fara_secrete_in_git.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_fiscalos_s2.py                                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_flux_factura_f1_d.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_formulare_operatiuni_campuri.py                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_four_way_cardinalitate.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_front_e_editare_identitate.py                      în afara plasei  1 locuri, cel mai lung: 'ecranSalariati' (din static/js/ecrane/firme.js)
+  core/test_graf_importuri.py                                  în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_granite_cota.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_harta_casete.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_id_intern_afisat.py                                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_identitate_acte.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_incape_ecran.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_infra_vizuala.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_jurnal_fara_document.py                            în afara plasei  1 locuri, cel mai lung: 'blocate' (din static/js/luna_lucru.js)
+  core/test_jurnal_regim_tva.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_limite_verificarii.py                              în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lista3.py                                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot0610_p1.py                                      în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot0710_ui.py                                      în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot0710b_coada_document.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot0710b_nir.py                                    în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot0710b_note_derivate.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10_afiliat.py                                   în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10_asociati.py                                  în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_lot10_c61_localitate_partiala.py                   în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10_c69_d394_judp.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10_c69_d406_parteneri.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10_c73_chei_unice.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10_dividende.py                                 în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10_import_balanta.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot10_reevaluare.py                                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10_regim_tva_incasare.py                        în afara plasei  1 locuri, cel mai lung: 'blocate' (din static/js/luna_lucru.js)
+  core/test_lot10_rezumat_fix.py                               în afara plasei  1 locuri, cel mai lung: 'ecranSalariati' (din static/js/ecrane/firme.js)
+  core/test_lot10_tva_incasare.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10b_401_borderou_nota.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10b_435_nomenclator_stoc.py                     în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10b_facturi.py                                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot10b_jurnal_nota_noua.py                         în afara plasei  1 locuri, cel mai lung: 'blocate' (din static/js/luna_lucru.js)
+  core/test_lot11_a453_salariat_nou.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_a455_chitanta_incasare.py                    în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_a455_sold_casa.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_a458_erori_echipa.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_a459_cui.py                                  în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_b_450_borderou.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_c88_curs_precizie.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_cf_cui_forma_unica.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_d_d205.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_j_contoare.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_k_cui_cautare.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_m_balanta_saga.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_n_443_existente.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_p2_fisa_furnizor_rute.py                     în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_p2_import_nume_anaf.py                       în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_p_capital.py                                 în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_q_c86.py                                     în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_r_rectificativa.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_s9_deducere_plafon.py                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_sql_fara_schema.py                           în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_lot11_t.py                                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_t2_inlocuiri.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_t_proba_428.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_t_tva_unica.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_w1_440_nota_toate_erorile.py                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_w2_coada_refuz_ecran.py                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_w3b_formulare.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_w3b_produse.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_w5_d212.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot11_x_c78_vanzare_ic.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_y2_import_fidel.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_y_tva_primita.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot11_z_valoare_neta.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_bilant_c143.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_c110_vanzare_ic.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_c115_um_borderou.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_c144_c145_tip_document.py                    în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_c160_c162_tara_axa.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_coada_valideaza_documentul.py                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_ctrl_463.py                                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_ctrl_484.py                                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_d112b_somaj_brut_cm.py                       în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_datefirma_preluare.py                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_decl3_c19.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_decl_486_d406.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_decl_d394.py                                 în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_diverse_c128_c129.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_duk_zilnic.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_emit_ciorna.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_emit_recurente.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_fact2_443_serie.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_fact2_c73_dublura.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_firme1_banca.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_firme1_casa.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_fisc3_c156_c157_art317.py                    în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_fisc3_c163_d301_servicii.py                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_fisc3_c84_dovada_transport.py                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_form2_date_firma.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_form2_inregistrare.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_fx3_c84_c157_transforma.py                   în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_inapoi_sageata.py                            în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_int1_date_anaf.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_int1_serie_raspuns.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_int3_c194_d112_depasita.py                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_int3_c197_recurenta_lic.py                   în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_int3_c198_luna_in_curs.py                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_migr3_tva_incasare.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_migr_efactura_alta_firma.py                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_migr_firma_fisier.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_notif_c120_xml_alta_firma.py                 în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_p252_garda_cititori.py                       în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_sal2_c102_zile_cm.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_scad_garzi.py                                în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_scad_incasare.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_texte_dovezi.py                              în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_texte_supervizor_reguli.py                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot12_triaj_pilot_nir.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot12_verif_dovezi.py                              în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot13_admin_importuri.py                           în afara plasei  1 locuri, cel mai lung: './api.js' (din static/js/luna_lucru.js)
+  core/test_lot13_comp_536.py                                  în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot13_comp_finale.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_decl_logica.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_fact_numerotare.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_fact_parteneri.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_fact_recurente.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_fact_um.py                                   în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_fact_um_recurente.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_fact_vies.py                                 în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_firme2_preluate.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_migr_importuri.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_migr_tva_preluat.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_ops_formular.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_ops_mf.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot13_ops_mf_factura.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_ops_sold.py                                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_portal_p1_cifre.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_lot13_portal_p3_ecrane.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot13_portal_p3_tva_incasare.py                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_lot14_2_712_tara_cod_fiscal.py                     în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_mandat_cam.py                                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_metoda_vie.py                                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_mijloace_fixe_import_categorie.py                  în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_nir_legare_inversa.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_niveluri_feedback.py                               în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_note_explicative_micro.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_nume_anaf.py                                       în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_nume_firma_unic.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_p3_val_b.py                                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_p4_fault_injection.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_p7_clasificare.py                                  în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_p7_straturi.py                                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_p7_v1_citiri.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_pagina_principala.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_perechi_citesc_generatorul.py                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_perimetru.py                                       în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_perimetru_firma_declarat.py                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_perioada.py                                        în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_perioada_indisponibila.py                          în afara plasei  1 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  core/test_pfa_note_interne_fundal.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_plan_functiune.py                                  în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_plata_izolare.py                                   în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_plata_salarii.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_plural_dupa_numar.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_poarta_citire_istorica.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_poarta_fara_slabire.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_portal_bon.py                                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_prag_per_articol.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_predare_cifre.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_premisa_restanta.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_pret_ales.py                                       în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_provenienta.py                                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_publicare_restart_neconditionat.py                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_pull_declaratii.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_r193_model_fara_conexiune.py                       în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_r36_evidenta.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_ramas.py                                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_raport_z_unic.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_reaprindere.py                                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_reconciliere_d100_wiring.py                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_reconciliere_factura_stoc.py                       în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_reevaluare_registru.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_reges_poll_raspuns.py                              în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_registru_jurnal_14_1_1.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_reguli_ecran.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_reluari_decizie.py                                 în afara plasei  1 locuri, cel mai lung: 'blocate' (din static/js/luna_lucru.js)
+  core/test_ritm_partajat.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_rol_pe_efect.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_rosu_termen_depasit.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_rute_fiscale_lot3b.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_rute_probate.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_s2_salariu_de_la.py                                în afara plasei  1 locuri, cel mai lung: 'ecranSalariati' (din static/js/ecrane/firme.js)
+  core/test_salariu_in_timp.py                                 în afara plasei  1 locuri, cel mai lung: 'blocate' (din static/js/luna_lucru.js)
+  core/test_salariu_proratare.py                               în afara plasei  1 locuri, cel mai lung: 'blocate' (din static/js/luna_lucru.js)
+  core/test_scan_js_texte.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_sesiune_fara_pierdere.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_spv_lot6.py                                        în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_stare_proces.py                                    în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_stat_plata_emis.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_supervizor_cache.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_temei_structurat.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_temei_termene.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_tenant_stergere.py                                 în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_text_ecran.py                                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_tranzactii_clasificate.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_trasee.py                                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_tva_incasare_291_5.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_val3_contracte.py                                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_verde_derivat.py                                   în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_verdict_persistat.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_verificator_design_16_7.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  core/test_versionare_assets.py                               în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  core/test_versionare_formule.py                              în afara plasei  1 locuri, cel mai lung: 'trecuta' (din static/js/luna_lucru.js)
+  core/test_vigoare_punct.py                                   în afara plasei  1 locuri, cel mai lung: 'modificare' (din static/js/ecrane/emitere_ecran.js)
+  core/test_wave1_stare_partajata.py                           în afara plasei  1 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  core/test_wave3_lider_mort.py                                în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_ciorne_proprii.py                      în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot10_c69.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot10_compensari.py                    în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot10_inlocuire.py                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot10_migrare.py                       în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot10_tva_incasare.py                  în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot10b_declaratii.py                   în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot10b_stoc.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_448.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_a453.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_a455.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_a458.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_a459.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_c85_c100.py                      în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_d3.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_g.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_k.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_m.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_p.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_q.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_u0.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_w2.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_w3b.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_x.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_y.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_y2.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot11_z.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_bilant.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_c151.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_coada.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_ctrl.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_cx1.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_cx3.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_cx6.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_decl.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_emit.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_fact2.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_fe3.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_form2.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_int3.py                          în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_migr3.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_notif.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_p252.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_reev2.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_scad.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_stoc2.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_texte.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot12_ui2.py                           în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_admin.py                         în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_admin2.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_fact.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_firme2.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_infra.py                         în afara plasei  1 locuri, cel mai lung: 'blocata' (din static/js/luna_lucru.js)
+  frontend_test/e2e/e2e_lot13_migr.py                          în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_ops.py                           în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_portal.py                        în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot13_portal_p3.py                     în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot14.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot15_e3.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot15_e5.py                            în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot5_id.py                             în afara plasei  1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot5_plural.py                         în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot72_declaratii.py                    în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot81.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot82.py                               în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_lot93b.py                              în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_magazin.py                             în afara plasei  1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_pilot_x05.py                           în plasă         1 locuri, cel mai lung: 'factură' (din static/js/ecrane/firme.js)
+  frontend_test/e2e/e2e_pilot_x09.py                           în plasă         1 locuri, cel mai lung: 'schimbat' (din static/js/ecrane/firme.js)
+teste care citesc locurile schimbate: 525 fișiere (în plasă: 8, în afara plasei: 517)
+teste care citesc data de azi sau luna curentă fără ceasul înghețat din core/ceas_proba.py (diff-ul atinge fișiere care afișează date sau luni: da): 134
+  core/test_282_inregistrari_neconfirmate.py                   în afara plasei
+  core/test_3i_storno_cota.py                                  în afara plasei
+  core/test_419_storno_retur.py                                în afara plasei
+  core/test_a3_a4_lant.py                                      în afara plasei
+  core/test_a6_d205_cota_distribuire.py                        în afara plasei
+  core/test_agenda.py                                          în afara plasei
+  core/test_alerta_whatsapp_17_2_A.py                          în afara plasei
+  core/test_alerte_sanatate_296.py                             în afara plasei
+  core/test_aritmetica_in_prezentare.py                        în afara plasei
+  core/test_bilant_an_precedent.py                             în afara plasei
+  core/test_compara_ce_s_a_depus.py                            în afara plasei
+  core/test_conformitate.py                                    în afara plasei
+  core/test_control_incrucisat.py                              în afara plasei
+  core/test_d390.py                                            în afara plasei
+  core/test_decizii_0810_uvw.py                                în afara plasei
+  core/test_dependente_ramuri.py                               în afara plasei
+  core/test_duk_instalat.py                                    în afara plasei
+  core/test_e2e_azi_acum.py                                    în afara plasei
+  core/test_firma_rezumat.py                                   în afara plasei
+  core/test_frecventa_document_care_raspunde.py                în afara plasei
+  core/test_inchidere_an.py                                    în afara plasei
+  core/test_inchidere_luna.py                                  în afara plasei
+  core/test_inregistrare_libera.py                             în afara plasei
+  core/test_invitatii.py                                       în afara plasei
+  core/test_limita_text_anaf.py                                în afara plasei
+  core/test_lot0710_p2.py                                      în afara plasei
+  core/test_lot10_d205_preluat.py                              în afara plasei
+  core/test_lot10b_jurnal_nota_noua.py                         în afara plasei
+  core/test_lot11_q_c86.py                                     în afara plasei
+  core/test_lot11_s2_451_factura_emisa.py                      în afara plasei
+  core/test_lot11_s_451_ciorne_depasite.py                     în afara plasei
+  core/test_lot11_s_jurnal_sursa.py                            în afara plasei
+  core/test_lot12_duk_zilnic.py                                în afara plasei
+  core/test_lot12_int3_c198_luna_in_curs.py                    în afara plasei
+  core/test_mijloace_fixe_import_rezidual.py                   în afara plasei
+  core/test_p2_contract.py                                     în afara plasei
+  core/test_p2_infrastructura.py                               în afara plasei
+  core/test_p4_fault_injection.py                              în afara plasei
+  core/test_pfa_note_interne.py                                în afara plasei
+  core/test_prag_per_articol.py                                în afara plasei
+  core/test_retest_0810_s6.py                                  în afara plasei
+  core/test_salarizare.py                                      în afara plasei
+  core/test_scrieri_pana_in_declaratie.py                      în afara plasei
+  core/test_secrete_jwt.py                                     în afara plasei
+  core/test_spv_lot6.py                                        în afara plasei
+  core/test_spv_poll.py                                        în afara plasei
+  core/test_teste_ziua_fixata.py                               în afara plasei
+  core/test_tichet_cresa.py                                    în afara plasei
+  core/test_valori_fiscale_js.py                               în afara plasei
+  core/test_vigoare_articole_registru.py                       în afara plasei
+  frontend_test/e2e/e2e_bloc_a.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_b.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_c.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_d.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_e.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_f.py                              în afara plasei
+  frontend_test/e2e/e2e_casa.py                                în afara plasei
+  frontend_test/e2e/e2e_ciorne_proprii.py                      în afara plasei
+  frontend_test/e2e/e2e_comanda_1010.py                        în afara plasei
+  frontend_test/e2e/e2e_comanda_1410.py                        în afara plasei
+  frontend_test/e2e/e2e_d406_perioada.py                       în afara plasei
+  frontend_test/e2e/e2e_inregistrare_libera.py                 în afara plasei
+  frontend_test/e2e/e2e_lot10_ferestre.py                      în afara plasei
+  frontend_test/e2e/e2e_lot10_principal.py                     în afara plasei
+  frontend_test/e2e/e2e_lot10_valuta.py                        în afara plasei
+  frontend_test/e2e/e2e_lot10b_declaratii.py                   în afara plasei
+  frontend_test/e2e/e2e_lot10b_salarii_jurnal.py               în afara plasei
+  frontend_test/e2e/e2e_lot10b_stoc.py                         în afara plasei
+  frontend_test/e2e/e2e_lot11_a460.py                          în afara plasei
+  frontend_test/e2e/e2e_lot11_b.py                             în afara plasei
+  frontend_test/e2e/e2e_lot11_c85_c100.py                      în afara plasei
+  frontend_test/e2e/e2e_lot11_c88.py                           în afara plasei
+  frontend_test/e2e/e2e_lot11_j2.py                            în afara plasei
+  frontend_test/e2e/e2e_lot11_q.py                             în afara plasei
+  frontend_test/e2e/e2e_lot11_s.py                             în afara plasei
+  frontend_test/e2e/e2e_lot11_w2.py                            în afara plasei
+  frontend_test/e2e/e2e_lot11_w3a.py                           în afara plasei
+  frontend_test/e2e/e2e_lot11_w4.py                            în afara plasei
+  frontend_test/e2e/e2e_lot11_x.py                             în afara plasei
+  frontend_test/e2e/e2e_lot11_z.py                             în afara plasei
+  frontend_test/e2e/e2e_lot12_bilant.py                        în afara plasei
+  frontend_test/e2e/e2e_lot12_coada.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_ctrl.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_cx2.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_cx3.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_cx6.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_datefirma.py                     în afara plasei
+  frontend_test/e2e/e2e_lot12_diverse.py                       în afara plasei
+  frontend_test/e2e/e2e_lot12_fe3.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_firme1.py                        în afara plasei
+  frontend_test/e2e/e2e_lot12_firme2.py                        în afara plasei
+  frontend_test/e2e/e2e_lot12_fx3.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_int3.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_migr.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_migr3.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_notif.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_p252.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_prod.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_reev3.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_scad.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_stoc2.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_ui2.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_verif.py                         în plasă
+  frontend_test/e2e/e2e_lot13_admin.py                         în afara plasei
+  frontend_test/e2e/e2e_lot13_decl.py                          în afara plasei
+  frontend_test/e2e/e2e_lot13_ds.py                            în afara plasei
+  frontend_test/e2e/e2e_lot13_firme2.py                        în afara plasei
+  frontend_test/e2e/e2e_lot13_migr.py                          în afara plasei
+  frontend_test/e2e/e2e_lot13_ops.py                           în afara plasei
+  frontend_test/e2e/e2e_lot13_portal.py                        în afara plasei
+  frontend_test/e2e/e2e_lot13_portal_p1.py                     în afara plasei
+  frontend_test/e2e/e2e_lot13_portal_p2.py                     în afara plasei
+  frontend_test/e2e/e2e_lot13_portal_p3.py                     în afara plasei
+  frontend_test/e2e/e2e_lot14.py                               în afara plasei
+  frontend_test/e2e/e2e_lot14_2.py                             în afara plasei
+  frontend_test/e2e/e2e_lot14_3.py                             în afara plasei
+  frontend_test/e2e/e2e_lot14_luna_dupa_inapoi.py              în afara plasei
+  frontend_test/e2e/e2e_lot15_1.py                             în afara plasei
+  frontend_test/e2e/e2e_lot5_c3.py                             în afara plasei
+  frontend_test/e2e/e2e_lot5_id.py                             în afara plasei
+  frontend_test/e2e/e2e_lot5_plural.py                         în afara plasei
+  frontend_test/e2e/e2e_lot6.py                                în afara plasei
+  frontend_test/e2e/e2e_lot72_contab.py                        în afara plasei
+  frontend_test/e2e/e2e_lot72_declaratii.py                    în afara plasei
+  frontend_test/e2e/e2e_lot81.py                               în afara plasei
+  frontend_test/e2e/e2e_lot82.py                               în afara plasei
+  frontend_test/e2e/e2e_lot91.py                               în afara plasei
+  frontend_test/e2e/e2e_lot92.py                               în afara plasei
+  frontend_test/e2e/e2e_lot93a.py                              în afara plasei
+  frontend_test/e2e/e2e_lot93b.py                              în afara plasei
+  frontend_test/e2e/e2e_lot93d.py                              în afara plasei
+  frontend_test/e2e/e2e_magazin.py                             în afara plasei
+  frontend_test/e2e/e2e_pilot_luna.py                          în plasă
+  frontend_test/e2e/e2e_pozitii_validate.py                    în plasă

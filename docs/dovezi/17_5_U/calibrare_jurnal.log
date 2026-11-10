@@ -1,0 +1,34 @@
+17.5-U	poarta_plasa	inceput	2026-11-10T07:11:09+02:00	3be3c1c053e1	-	3795883-1794287469885	3795883	
+17.5-U	poarta_plasa	sfarsit	2026-11-10T07:11:09+02:00	3be3c1c053e1	infra	3795883-1794287469885	3795883	
+17.5-U	poarta_plasa	inceput	2026-11-10T07:11:10+02:00	3be3c1c053e1	-	3795883-1794287470029	3795883	
+17.5-U	elibereaza_8019	inceput	2026-11-10T07:11:10+02:00	3be3c1c053e1	-	3795883-1794287470072	3795883	pid 3795917, comanda /home/costin/iconta_lot17_5u/venv/bin/python /tmp/calibrare_17_5_U_script/uvicorn_fals.py 8019, directorul /tmp/verificator_design, pornit 2026-11-10T07:11:09
+17.5-U	elibereaza_8019	sfarsit	2026-11-10T07:11:10+02:00	3be3c1c053e1	ok	3795883-1794287470072	3795883	
+17.5-U	poarta_plasa	sfarsit	2026-11-10T07:11:10+02:00	3be3c1c053e1	verde	3795883-1794287470029	3795883	
+17.5-U	elibereaza_8019	inceput	2026-11-10T07:11:25+02:00	3be3c1c053e1	-	3796948-1794287485263	3796948	pid 3796850, comanda /home/costin/iconta_lot17_5u/venv/bin/python -m uvicorn main:app --port 8019, directorul /tmp/verificator_design/iconta_nou, pornit 2026-11-10T07:11:20
+17.5-U	elibereaza_8019	sfarsit	2026-11-10T07:11:25+02:00	3be3c1c053e1	ok	3796948-1794287485263	3796948	
+17.5-U	pytest	inceput	2026-11-10T07:27:45+02:00	3be3c1c053e1	-	3831399-1794288465341	3831399	argumente=--collect-only -q frontend_test/e2e/e2e_lot12_verif.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:45+02:00	3be3c1c053e1	verde	3831399-1794288465341	3831399	
+17.5-U	pytest	inceput	2026-11-10T07:27:45+02:00	3be3c1c053e1	-	3831402-1794288465781	3831402	argumente=--collect-only -q frontend_test/e2e/e2e_lot72_facturi.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:45+02:00	3be3c1c053e1	verde	3831402-1794288465781	3831402	
+17.5-U	pytest	inceput	2026-11-10T07:27:46+02:00	3be3c1c053e1	-	3831405-1794288466188	3831405	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_luna.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:46+02:00	3be3c1c053e1	verde	3831405-1794288466188	3831405	
+17.5-U	pytest	inceput	2026-11-10T07:27:46+02:00	3be3c1c053e1	-	3831409-1794288466680	3831409	argumente=--collect-only -q frontend_test/e2e/e2e_pozitii_validate.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:46+02:00	3be3c1c053e1	verde	3831409-1794288466680	3831409	
+17.5-U	pytest	inceput	2026-11-10T07:27:47+02:00	3be3c1c053e1	-	3831414-1794288467126	3831414	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_x09.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:47+02:00	3be3c1c053e1	verde	3831414-1794288467126	3831414	
+17.5-U	pytest	inceput	2026-11-10T07:27:47+02:00	3be3c1c053e1	-	3831422-1794288467553	3831422	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_f017.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:47+02:00	3be3c1c053e1	verde	3831422-1794288467553	3831422	
+17.5-U	pytest	inceput	2026-11-10T07:27:47+02:00	3be3c1c053e1	-	3831425-1794288467985	3831425	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_f054.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:48+02:00	3be3c1c053e1	verde	3831425-1794288467985	3831425	
+17.5-U	pytest	inceput	2026-11-10T07:27:48+02:00	3be3c1c053e1	-	3831430-1794288468431	3831430	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_x05.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:48+02:00	3be3c1c053e1	verde	3831430-1794288468431	3831430	
+17.5-U	pytest	inceput	2026-11-10T07:27:48+02:00	3be3c1c053e1	-	3831433-1794288468927	3831433	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_x06.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:49+02:00	3be3c1c053e1	verde	3831433-1794288468927	3831433	
+17.5-U	pytest	inceput	2026-11-10T07:27:49+02:00	3be3c1c053e1	-	3831440-1794288469392	3831440	argumente=--collect-only -q frontend_test/e2e/e2e_pilot_x07.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:49+02:00	3be3c1c053e1	verde	3831440-1794288469392	3831440	
+17.5-U	pytest	inceput	2026-11-10T07:27:49+02:00	3be3c1c053e1	-	3831443-1794288469823	3831443	argumente=--collect-only -q frontend_test/e2e/e2e_luna_lucru_17_5_C.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:49+02:00	3be3c1c053e1	verde	3831443-1794288469823	3831443	
+17.5-U	pytest	inceput	2026-11-10T07:27:50+02:00	3be3c1c053e1	-	3831448-1794288470259	3831448	argumente=--collect-only -q frontend_test/e2e/e2e_actiune_principala_17_5_D.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:50+02:00	3be3c1c053e1	verde	3831448-1794288470259	3831448	
+17.5-U	pytest	inceput	2026-11-10T07:27:50+02:00	3be3c1c053e1	-	3831451-1794288470691	3831451	argumente=--collect-only -q frontend_test/e2e/e2e_alegere_unica_17_5_E.py
+17.5-U	pytest	sfarsit	2026-11-10T07:27:50+02:00	3be3c1c053e1	verde	3831451-1794288470691	3831451	

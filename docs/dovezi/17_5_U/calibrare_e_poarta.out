@@ -1,0 +1,75 @@
+[poarta] infrastructură (reluare unică): plasa_e2e::sesiune
+[poarta] INFRA 3558076573e714d1d11b1e155072e0035970e1a6 (lucru/calibrare-17-5-u) · 4 teste · regresie 1887 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 0 · infra 1 · asertiuni_scazute 0 · reparat 0 · noi_verzi 0 · verificator 0s · pytest 5s · plasa_e2e 0s · total 257s
+    regresie: core/test_d394.py::test_partener_ro_valid_e_tip_1 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_fara_cui_e_tip_2 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ue_e_tip_3_nu_se_exclude (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_non_ue_e_tip_4 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_partener_clasificare_pct216 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_lantul_R27_R42_se_calculeaza_complet (a dispărut din rulare)
+    regresie: core/test_d300.py::test_formula_R27_respecta_structura_oficiala (a dispărut din rulare)
+    regresie: core/test_d300.py::test_achizitie_mai_mare_decat_livrarea_da_sold_negativ (a dispărut din rulare)
+    regresie: core/test_d300.py::test_fara_operatiuni_nu_scrie_randuri_goale (a dispărut din rulare)
+    regresie: core/test_d300.py::test_d300_manual_cheie_necunoscuta_ridica (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_respecta_compatibilitatea_cu_partenerul (a dispărut din rulare)
+    regresie: core/test_d394.py::test_toate_tipurile_generate_sunt_in_lista_oficiala (a dispărut din rulare)
+    regresie: core/test_d394.py::test_TIPURI_e_setul_validatorului_curent (a dispărut din rulare)
+    regresie: core/test_d394.py::test_asi_ramane_scos_gard_invers (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_brut_6000_fara_dependenti_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_4325_are_facilitate_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_peste_plafon_deducere_zero (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_2000_suprataxa_pe_angajator (a dispărut din rulare)
+    regresie: core/test_d300.py::test_cote_tva_maparea_pe_randuri_d300 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_9pct_deductibil_nu_emite_rand_invalid_si_avertizeaza (a dispărut din rulare)
+    infra: plasa_e2e::sesiune
+[poarta] INFRA (încercarea 1, nu consumă o rulare): plasa_e2e::sesiune: cod 3 fără raport junit
+[poarta] relansare după încercarea infra 1, pe aceeași sha, în același mod
+[poarta] infrastructură (reluare unică): plasa_e2e::sesiune
+[poarta] INFRA 3558076573e714d1d11b1e155072e0035970e1a6 (lucru/calibrare-17-5-u) · 4 teste · regresie 1887 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 0 · infra 1 · asertiuni_scazute 0 · reparat 0 · noi_verzi 0 · verificator 0s · pytest 4s · plasa_e2e 0s · total 262s
+    regresie: core/test_d394.py::test_partener_ro_valid_e_tip_1 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_fara_cui_e_tip_2 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ue_e_tip_3_nu_se_exclude (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_non_ue_e_tip_4 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_partener_clasificare_pct216 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_lantul_R27_R42_se_calculeaza_complet (a dispărut din rulare)
+    regresie: core/test_d300.py::test_formula_R27_respecta_structura_oficiala (a dispărut din rulare)
+    regresie: core/test_d300.py::test_achizitie_mai_mare_decat_livrarea_da_sold_negativ (a dispărut din rulare)
+    regresie: core/test_d300.py::test_fara_operatiuni_nu_scrie_randuri_goale (a dispărut din rulare)
+    regresie: core/test_d300.py::test_d300_manual_cheie_necunoscuta_ridica (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_respecta_compatibilitatea_cu_partenerul (a dispărut din rulare)
+    regresie: core/test_d394.py::test_toate_tipurile_generate_sunt_in_lista_oficiala (a dispărut din rulare)
+    regresie: core/test_d394.py::test_TIPURI_e_setul_validatorului_curent (a dispărut din rulare)
+    regresie: core/test_d394.py::test_asi_ramane_scos_gard_invers (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_brut_6000_fara_dependenti_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_4325_are_facilitate_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_peste_plafon_deducere_zero (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_2000_suprataxa_pe_angajator (a dispărut din rulare)
+    regresie: core/test_d300.py::test_cote_tva_maparea_pe_randuri_d300 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_9pct_deductibil_nu_emite_rand_invalid_si_avertizeaza (a dispărut din rulare)
+    infra: plasa_e2e::sesiune
+[poarta] INFRA (încercarea 2, nu consumă o rulare): plasa_e2e::sesiune: cod 3 fără raport junit
+[poarta] relansare după încercarea infra 2, pe aceeași sha, în același mod
+[poarta] infrastructură (reluare unică): plasa_e2e::sesiune
+[poarta] INFRA 3558076573e714d1d11b1e155072e0035970e1a6 (lucru/calibrare-17-5-u) · 4 teste · regresie 1887 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 0 · infra 1 · asertiuni_scazute 0 · reparat 0 · noi_verzi 0 · verificator 0s · pytest 4s · plasa_e2e 0s · total 261s
+    regresie: core/test_d394.py::test_partener_ro_valid_e_tip_1 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_fara_cui_e_tip_2 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ue_e_tip_3_nu_se_exclude (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_non_ue_e_tip_4 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_partener_clasificare_pct216 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_lantul_R27_R42_se_calculeaza_complet (a dispărut din rulare)
+    regresie: core/test_d300.py::test_formula_R27_respecta_structura_oficiala (a dispărut din rulare)
+    regresie: core/test_d300.py::test_achizitie_mai_mare_decat_livrarea_da_sold_negativ (a dispărut din rulare)
+    regresie: core/test_d300.py::test_fara_operatiuni_nu_scrie_randuri_goale (a dispărut din rulare)
+    regresie: core/test_d300.py::test_d300_manual_cheie_necunoscuta_ridica (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_respecta_compatibilitatea_cu_partenerul (a dispărut din rulare)
+    regresie: core/test_d394.py::test_toate_tipurile_generate_sunt_in_lista_oficiala (a dispărut din rulare)
+    regresie: core/test_d394.py::test_TIPURI_e_setul_validatorului_curent (a dispărut din rulare)
+    regresie: core/test_d394.py::test_asi_ramane_scos_gard_invers (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_brut_6000_fara_dependenti_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_4325_are_facilitate_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_peste_plafon_deducere_zero (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_2000_suprataxa_pe_angajator (a dispărut din rulare)
+    regresie: core/test_d300.py::test_cote_tva_maparea_pe_randuri_d300 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_9pct_deductibil_nu_emite_rand_invalid_si_avertizeaza (a dispărut din rulare)
+    infra: plasa_e2e::sesiune
+[poarta] INFRA (încercarea 3, nu consumă o rulare): plasa_e2e::sesiune: cod 3 fără raport junit
+[poarta] OPRIT: infra ×3: plasa_e2e::sesiune: cod 3 fără raport junit

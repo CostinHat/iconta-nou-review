@@ -1,0 +1,220 @@
+locuri schimbate: 4, în 63 fișiere din static/ și core/ (6de2940a..f62e1d26)
+  frontend_test/e2e/e2e_lot13_migr.py                          în afara plasei  3 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  core/test_lot13_ds_sume_ro.py                                în afara plasei  2 locuri, cel mai lung: 'bubbles' (din static/js/api.js)
+  frontend_test/e2e/e2e_alegere_unica_17_5_E.py                în plasă         2 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  frontend_test/e2e/e2e_bloc_e.py                              în afara plasei  2 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  frontend_test/e2e/e2e_pilot_luna.py                          în plasă         2 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  frontend_test/e2e/e2e_pozitii_validate.py                    în plasă         2 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  core/test_buton_blocat_structura.py                          în afara plasei  1 locuri, cel mai lung: 'bubbles' (din static/js/api.js)
+  core/test_cerere_veche.py                                    în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_drepturi_ui.py                                     în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_harta_ecrane.py                                    în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_import_saga.py                                     în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_lot0710_ui.py                                      în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot10_c72_clasa_dubla.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot10_import_balanta.py                            în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_lot10_rulaje_preluate.py                           în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_lot10b_facturi.py                                  în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot11_a460_curs.py                                 în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_lot11_m_balanta_saga.py                            în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_lot11_u0_data.py                                   în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot12_decl_rerandare_camp.py                       în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot12_fact2_c73_dublura.py                         în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_lot12_fe3_ecrane.py                                în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot13_ds_ferestre.py                               în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot13_ds_mesaje.py                                 în afara plasei  1 locuri, cel mai lung: 'bubbles' (din static/js/api.js)
+  core/test_lot13_firme2_ecrane.py                             în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot13_migr_importuri.py                            în afara plasei  1 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  core/test_lot13_migr_stare_pasi.py                           în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_lot13_portal_p1_link.py                            în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_lot14_2_527_1_rezultat_reportat.py                 în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  core/test_lot15_e3.py                                        în afara plasei  1 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  core/test_lot15_e4.py                                        în afara plasei  1 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  core/test_notificari_canal.py                                în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_perimetru_calculat.py                              în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_search_console_404.py                              în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_selecturi_ecrane.py                                în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  core/test_wave3_lider_mort.py                                în afara plasei  1 locuri, cel mai lung: 'Preluare' (din core/catalog_ecrane.json)
+  frontend_test/e2e/e2e_bloc_a.py                              în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_bloc_b.py                              în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_bloc_c.py                              în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_comanda_1010.py                        în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_comanda_1210.py                        în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_inregistrare_libera.py                 în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot10_tva_incasare.py                  în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot10_valuta.py                        în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot10b_facturi.py                      în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_a455.py                          în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_a460.py                          în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_c88.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_g.py                             în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_j.py                             în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_t.py                             în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_v.py                             în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_w3a.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_w4.py                            în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_w5.py                            în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot11_z.py                             în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_c151.py                          în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_cx1.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_cx2.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_cx6.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_cx7.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_decl.py                          în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_diverse.py                       în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_emit.py                          în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_fact2.py                         în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_fe3.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_firme1.py                        în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_fisc3.py                         în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_notif.py                         în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot12_scad.py                          în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot13_decl.py                          în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot13_fact.py                          în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot13_ops.py                           în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot14.py                               în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot14_2.py                             în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot15_1.py                             în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot15_e4.py                            în afara plasei  1 locuri, cel mai lung: 'Audit de preluare' (din core/catalog_ecrane.json)
+  frontend_test/e2e/e2e_lot5_roluri.py                         în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot72_facturi.py                       în plasă         1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot91.py                               în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot92.py                               în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot93b.py                              în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+  frontend_test/e2e/e2e_lot93d.py                              în afara plasei  1 locuri, cel mai lung: 'change' (din static/js/api.js)
+teste care citesc locurile schimbate: 83 fișiere (în plasă: 4, în afara plasei: 79)
+teste care citesc data de azi sau luna curentă fără ceasul înghețat din core/ceas_proba.py (diff-ul atinge fișiere care afișează date sau luni: da): 134
+  core/test_282_inregistrari_neconfirmate.py                   în afara plasei
+  core/test_3i_storno_cota.py                                  în afara plasei
+  core/test_419_storno_retur.py                                în afara plasei
+  core/test_a3_a4_lant.py                                      în afara plasei
+  core/test_a6_d205_cota_distribuire.py                        în afara plasei
+  core/test_agenda.py                                          în afara plasei
+  core/test_alerta_whatsapp_17_2_A.py                          în afara plasei
+  core/test_alerte_sanatate_296.py                             în afara plasei
+  core/test_aritmetica_in_prezentare.py                        în afara plasei
+  core/test_bilant_an_precedent.py                             în afara plasei
+  core/test_compara_ce_s_a_depus.py                            în afara plasei
+  core/test_conformitate.py                                    în afara plasei
+  core/test_control_incrucisat.py                              în afara plasei
+  core/test_d390.py                                            în afara plasei
+  core/test_decizii_0810_uvw.py                                în afara plasei
+  core/test_dependente_ramuri.py                               în afara plasei
+  core/test_duk_instalat.py                                    în afara plasei
+  core/test_e2e_azi_acum.py                                    în afara plasei
+  core/test_firma_rezumat.py                                   în afara plasei
+  core/test_frecventa_document_care_raspunde.py                în afara plasei
+  core/test_inchidere_an.py                                    în afara plasei
+  core/test_inchidere_luna.py                                  în afara plasei
+  core/test_inregistrare_libera.py                             în afara plasei
+  core/test_invitatii.py                                       în afara plasei
+  core/test_limita_text_anaf.py                                în afara plasei
+  core/test_lot0710_p2.py                                      în afara plasei
+  core/test_lot10_d205_preluat.py                              în afara plasei
+  core/test_lot10b_jurnal_nota_noua.py                         în afara plasei
+  core/test_lot11_q_c86.py                                     în afara plasei
+  core/test_lot11_s2_451_factura_emisa.py                      în afara plasei
+  core/test_lot11_s_451_ciorne_depasite.py                     în afara plasei
+  core/test_lot11_s_jurnal_sursa.py                            în afara plasei
+  core/test_lot12_duk_zilnic.py                                în afara plasei
+  core/test_lot12_int3_c198_luna_in_curs.py                    în afara plasei
+  core/test_mijloace_fixe_import_rezidual.py                   în afara plasei
+  core/test_p2_contract.py                                     în afara plasei
+  core/test_p2_infrastructura.py                               în afara plasei
+  core/test_p4_fault_injection.py                              în afara plasei
+  core/test_pfa_note_interne.py                                în afara plasei
+  core/test_prag_per_articol.py                                în afara plasei
+  core/test_retest_0810_s6.py                                  în afara plasei
+  core/test_salarizare.py                                      în afara plasei
+  core/test_scrieri_pana_in_declaratie.py                      în afara plasei
+  core/test_secrete_jwt.py                                     în afara plasei
+  core/test_spv_lot6.py                                        în afara plasei
+  core/test_spv_poll.py                                        în afara plasei
+  core/test_teste_ziua_fixata.py                               în afara plasei
+  core/test_tichet_cresa.py                                    în afara plasei
+  core/test_valori_fiscale_js.py                               în afara plasei
+  core/test_vigoare_articole_registru.py                       în afara plasei
+  frontend_test/e2e/e2e_bloc_a.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_b.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_c.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_d.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_e.py                              în afara plasei
+  frontend_test/e2e/e2e_bloc_f.py                              în afara plasei
+  frontend_test/e2e/e2e_casa.py                                în afara plasei
+  frontend_test/e2e/e2e_ciorne_proprii.py                      în afara plasei
+  frontend_test/e2e/e2e_comanda_1010.py                        în afara plasei
+  frontend_test/e2e/e2e_comanda_1410.py                        în afara plasei
+  frontend_test/e2e/e2e_d406_perioada.py                       în afara plasei
+  frontend_test/e2e/e2e_inregistrare_libera.py                 în afara plasei
+  frontend_test/e2e/e2e_lot10_ferestre.py                      în afara plasei
+  frontend_test/e2e/e2e_lot10_principal.py                     în afara plasei
+  frontend_test/e2e/e2e_lot10_valuta.py                        în afara plasei
+  frontend_test/e2e/e2e_lot10b_declaratii.py                   în afara plasei
+  frontend_test/e2e/e2e_lot10b_salarii_jurnal.py               în afara plasei
+  frontend_test/e2e/e2e_lot10b_stoc.py                         în afara plasei
+  frontend_test/e2e/e2e_lot11_a460.py                          în afara plasei
+  frontend_test/e2e/e2e_lot11_b.py                             în afara plasei
+  frontend_test/e2e/e2e_lot11_c85_c100.py                      în afara plasei
+  frontend_test/e2e/e2e_lot11_c88.py                           în afara plasei
+  frontend_test/e2e/e2e_lot11_j2.py                            în afara plasei
+  frontend_test/e2e/e2e_lot11_q.py                             în afara plasei
+  frontend_test/e2e/e2e_lot11_s.py                             în afara plasei
+  frontend_test/e2e/e2e_lot11_w2.py                            în afara plasei
+  frontend_test/e2e/e2e_lot11_w3a.py                           în afara plasei
+  frontend_test/e2e/e2e_lot11_w4.py                            în afara plasei
+  frontend_test/e2e/e2e_lot11_x.py                             în afara plasei
+  frontend_test/e2e/e2e_lot11_z.py                             în afara plasei
+  frontend_test/e2e/e2e_lot12_bilant.py                        în afara plasei
+  frontend_test/e2e/e2e_lot12_coada.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_ctrl.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_cx2.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_cx3.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_cx6.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_datefirma.py                     în afara plasei
+  frontend_test/e2e/e2e_lot12_diverse.py                       în afara plasei
+  frontend_test/e2e/e2e_lot12_fe3.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_firme1.py                        în afara plasei
+  frontend_test/e2e/e2e_lot12_firme2.py                        în afara plasei
+  frontend_test/e2e/e2e_lot12_fx3.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_int3.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_migr.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_migr3.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_notif.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_p252.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_prod.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_reev3.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_scad.py                          în afara plasei
+  frontend_test/e2e/e2e_lot12_stoc2.py                         în afara plasei
+  frontend_test/e2e/e2e_lot12_ui2.py                           în afara plasei
+  frontend_test/e2e/e2e_lot12_verif.py                         în plasă
+  frontend_test/e2e/e2e_lot13_admin.py                         în afara plasei
+  frontend_test/e2e/e2e_lot13_decl.py                          în afara plasei
+  frontend_test/e2e/e2e_lot13_ds.py                            în afara plasei
+  frontend_test/e2e/e2e_lot13_firme2.py                        în afara plasei
+  frontend_test/e2e/e2e_lot13_migr.py                          în afara plasei
+  frontend_test/e2e/e2e_lot13_ops.py                           în afara plasei
+  frontend_test/e2e/e2e_lot13_portal.py                        în afara plasei
+  frontend_test/e2e/e2e_lot13_portal_p1.py                     în afara plasei
+  frontend_test/e2e/e2e_lot13_portal_p2.py                     în afara plasei
+  frontend_test/e2e/e2e_lot13_portal_p3.py                     în afara plasei
+  frontend_test/e2e/e2e_lot14.py                               în afara plasei
+  frontend_test/e2e/e2e_lot14_2.py                             în afara plasei
+  frontend_test/e2e/e2e_lot14_3.py                             în afara plasei
+  frontend_test/e2e/e2e_lot14_luna_dupa_inapoi.py              în afara plasei
+  frontend_test/e2e/e2e_lot15_1.py                             în afara plasei
+  frontend_test/e2e/e2e_lot5_c3.py                             în afara plasei
+  frontend_test/e2e/e2e_lot5_id.py                             în afara plasei
+  frontend_test/e2e/e2e_lot5_plural.py                         în afara plasei
+  frontend_test/e2e/e2e_lot6.py                                în afara plasei
+  frontend_test/e2e/e2e_lot72_contab.py                        în afara plasei
+  frontend_test/e2e/e2e_lot72_declaratii.py                    în afara plasei
+  frontend_test/e2e/e2e_lot81.py                               în afara plasei
+  frontend_test/e2e/e2e_lot82.py                               în afara plasei
+  frontend_test/e2e/e2e_lot91.py                               în afara plasei
+  frontend_test/e2e/e2e_lot92.py                               în afara plasei
+  frontend_test/e2e/e2e_lot93a.py                              în afara plasei
+  frontend_test/e2e/e2e_lot93b.py                              în afara plasei
+  frontend_test/e2e/e2e_lot93d.py                              în afara plasei
+  frontend_test/e2e/e2e_magazin.py                             în afara plasei
+  frontend_test/e2e/e2e_pilot_luna.py                          în plasă
+  frontend_test/e2e/e2e_pozitii_validate.py                    în plasă

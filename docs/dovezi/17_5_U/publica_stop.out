@@ -1,0 +1,12 @@
+[publica_lot] lucru 17.5-U: 8 rânduri noi
+[publica_lot] raport de timp: /home/costin/lot_17_5_U_timp.md
+[publica_lot] STOP: starea lotului nu arată o rulare completă curată (oprit=None)
+[publica_lot] STOP: lipsește raportul /home/costin/lot_17_5_U_raport.md
+[publica_lot] STOP: lipsește verdictul VERDE al rulării complete finale pe 6344c89e
+[publica_lot] STOP: lipsește clasificarea porții
+[publica_lot] STOP: faza „poarta_verificator” lipsește din jurnal
+[publica_lot] STOP: faza „poarta_pytest” lipsește din jurnal
+[publica_lot] STOP: faza „poarta_plasa” lipsește din jurnal
+[publica_lot] STOP: faza „publicare” nu are început
+[publica_lot] STOP: lipsește backup-ul ~/backup_17_5_U/ (scripts/ și CLAUDE.md)
+OPRIT — gata: 17.5-U nepublicat, starea lotului nu arată o rulare completă curată (oprit=None)

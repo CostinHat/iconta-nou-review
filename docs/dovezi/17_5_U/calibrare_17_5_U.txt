@@ -1,0 +1,29 @@
+calibrare 17.5-U pe P=3be3c1c053e1469cce1b33cbb2f9c87d95d0af00, lot anterior L=17.5-E2
+OK      U.1 a: server fals din /tmp/calibrare_17_5_U_alt pe 8019 + ruleaza_trepte = refuz cu numele procesului, fișierul-martor absent, serverul viu — 8019 ocupat de pid 3795907 (/home/costin/iconta_lot17_5u/venv/bin/python /tmp/calibrare_17_5_U_script/uvicorn_fals.py 8019)
+OK      U.1 b: același server din /tmp/verificator_design = oprit, logat (faza elibereaza_8019, patru valori), fișierul-martor apare, portul liber — 17.5-U	elibereaza_8019	inceput	2026-11-10T07:11:10+02:00	3be3c1c053e1	-	3795883-1794287470072	3795883	pid 3795917, comanda /home/costin/iconta_lot17_5u/venv/bin/python /tmp/calibrare_17_5_U_script/uvicorn_fals.py 8019, directorul /tmp/verificator_design, pornit 2026-11-10T07:11:09
+OK      U.1 c: porneste_8019.sh (server real pid 3796850), stare.json ștearsă, verificator_design.py opreste îl oprește — pornit=True stare.json ștearsă=True; opreste: ieșire 0: uvicorn main:app --port 8019, directorul /tmp/verificator_design/iconta_nou, pornit 2026-11-10T07:11:20; îl opresc
+[verificator design] oprit; portul 8019 liber
+OK      U.1 d: server fals pe 8019 + porneste_8019.sh = ieșire 1 cu numele procesului — [verificator design] REFUZ: portul 8019 e ocupat de: pid 3798194, comanda /home/costin/iconta_lot17_5u/venv/bin/python /tmp/calibrare_17_5_U_script/uvicorn_fals.py 8019, directorul /tmp/calibrare_17_5_U_alt, pornit 2026-11-10T07:12:44
+OK      U.1: 8019 liber după cazurile a–d
+OK      U.2 e: arborele clonei e curat înainte de poartă
+OK      U.2 e: trei linii INFRA <sha> și nicio linie VERDE / ROSU în poarta_verdicte.log al clonei — 3 linii, 3 INFRA
+OK      U.2 e: stare[infra] cu 3 intrări (aceeași sha), stare[complete] și stare[regresii] goale, stare[oprit] = «infra ×3: …» — {"complete": 0, "reluari": 0, "regresii": 0, "oprit": "infra ×3: plasa_e2e::sesiune: cod 3 fără raport junit", "infra": 3}
+OK      U.2 e: lot_picate_17_5_U.json absent, scripts/poarta_ultima.txt absent în clonă, ieșirea 3 — ieșire 3
+OK      U.2 e: nu e cazul mixt (infra numai ::sesiune, regresii numai «a dispărut din rulare», celelalte clase 0) — [poarta] INFRA 3558076573e714d1d11b1e155072e0035970e1a6 (lucru/calibrare-17-5-u) · 4 teste · regresie 1887 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 0 · infra 1 · asertiuni_scazute 0 · reparat 0 · noi_verzi 0 · verificator 0s · pytest 4s · plasa_e2e 0s · total 261s
+OK      U.2 e: poarta_verdicte.log și lot_stare_17_5_U.json din depozitul principal neatinse (sha256 înainte = după; absent = absent) — 5d7065b840cd1b49afc709abda171ba85bc4a1ecfaf08ec7634838ce311e4b01 | absent
+OK      U.3: scripts/asteapta_poarta.sh 17.5-D iese cu 0 pe starea reală — ieșire 0: poarta 17.5-D: verde a3a0dc15637dac228b4bc2feb7f3bb18e3dcdcc5
+OK      U.3: scripts/asteapta_poarta.sh 17.5-E iese cu 3 pe starea reală — ieșire 3: poarta 17.5-E: oprit 2458968b7718fd5d7052fcc818e9aac0f7bedfc8
+OK      U.3: scripts/asteapta_poarta.sh 17.5-E2 iese cu 0 pe starea reală — ieșire 0: poarta 17.5-E2: verde f62e1d26899effea386ea5aa39c65c1527cfecec
+OK      U.4: genereaza_manifest_plasa.py --help = ieșire 0, sha256 c91dc8db0a2c… — ieșire 0, sha256 după c91dc8db0a2c…
+OK      U.4: genereaza_manifest_plasa.py -h = ieșire 0, sha256 c91dc8db0a2c… — ieșire 0, sha256 după c91dc8db0a2c…
+OK      U.4: genereaza_manifest_plasa.py (fără argument) = ieșire 2, sha256 c91dc8db0a2c… — ieșire 2, sha256 după c91dc8db0a2c…
+OK      U.4: genereaza_manifest_plasa.py <copie> = ieșire 2, sha256 c91dc8db0a2c… — ieșire 2, sha256 după c91dc8db0a2c…
+OK      U.4: genereaza_manifest_plasa.py --x = ieșire 2, sha256 c91dc8db0a2c… — ieșire 2, sha256 după c91dc8db0a2c…
+OK      U.4: genereaza_manifest_plasa.py --scrie --verifica <copie> = ieșire 2, sha256 c91dc8db0a2c… — ieșire 2, sha256 după c91dc8db0a2c…
+OK      U.4: genereaza_manifest_plasa.py --verifica <copie> = ieșire 0, sha256 c91dc8db0a2c… — ieșire 0, sha256 după c91dc8db0a2c…
+OK      U.4: --scrie pe o copie cu un rând inventat = ieșire 1 cu rândul numit, copia neschimbată — ieșire 1
+OK      U.7: pe teste_atinse_baza.txt scrie exact 32 de rânduri (ieșire 0) — 32 rânduri
+OK      U.7 (a): test_def_602_563 și test_def_618 au cauza «data de azi» sau «luna curentă» — {"ceasul paginii": 24, "data de azi": 3, "altă cauză": 2, "luna curentă": 3}
+OK      U.7 (b): zero «necunoscută» pe cele 32
+OK      U.7 (c): linia citată la «ceas înghețat» / «luna curentă» / «data de azi» conține un token de ceas
+OK      8019 liber la sfârșit (ss -ltn | grep :8019 gol)

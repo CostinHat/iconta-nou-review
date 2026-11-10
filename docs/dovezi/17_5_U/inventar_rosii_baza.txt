@@ -1,0 +1,32 @@
+frontend_test/e2e/e2e_bloc_a.py | test_def_4_bun_venit_se_inchide_din_x_si_cu_esc | ceasul paginii | static/js/navigator.js:530
+frontend_test/e2e/e2e_bloc_a.py | test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica | data de azi | frontend_test/e2e/e2e_bloc_a.py:20
+frontend_test/e2e/e2e_bloc_a.py | test_def_193_cardurile_cozii_au_latimea_ferestrei | altă cauză | frontend_test/e2e/e2e_bloc_a.py:874
+frontend_test/e2e/e2e_bloc_a.py | test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre | ceasul paginii | static/js/ecrane/cabinet.js:105
+frontend_test/e2e/e2e_bloc_a.py | test_def_29_fereastra_firmei_grupata_sub_titluri | altă cauză | frontend_test/e2e/e2e_bloc_a.py:1449
+frontend_test/e2e/e2e_lot11_m.py | test_def_424_importul_are_rezumatul_sus_actiunea_jos_si_deruleaza_numai_tabelul | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot12_cx1.py | test_def_c135_nota_de_casa_a_facturii_arata_seria_separat | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot12_cx1.py | test_def_c144_banca_si_casa_nu_ofera_proforma | ceasul paginii | static/js/ecrane/emitere_ecran.js:613
+frontend_test/e2e/e2e_lot12_cx1.py | test_def_c152_d394_chitanta_fara_cota_numeste_data_zz_ll_aaaa | ceasul paginii | static/js/ecrane/declaratii.js:43
+frontend_test/e2e/e2e_lot12_cx1.py | test_def_c152_d394_incasarea_fara_chitanta_numeste_felul_in_cuvinte | ceasul paginii | static/js/ecrane/declaratii.js:43
+frontend_test/e2e/e2e_lot12_firme1.py | test_def_481_numerarul_din_z_intra_in_registrul_de_casa | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot12_firme1.py | test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot12_firme1.py | test_def_476_tva_transportului_facturat_e_pe_4426 | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot13_firme2.py | test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare | luna curentă | frontend_test/e2e/conftest.py:23
+frontend_test/e2e/e2e_lot13_firme2.py | test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul | data de azi | frontend_test/e2e/e2e_lot13_firme2.py:33
+frontend_test/e2e/e2e_lot13_firme2.py | test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton | data de azi | frontend_test/e2e/e2e_lot13_firme2.py:33
+frontend_test/e2e/e2e_lot13_firme2.py | test_def_618_explicatia_notei_z_are_data_romaneasca | luna curentă | frontend_test/e2e/e2e_lot13_firme2.py:33
+frontend_test/e2e/e2e_lot15_e2.py | test_cadrul_ferestrei_de_firma[1920-1080] | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot15_e2.py | test_cadrul_ferestrei_de_firma[1366-768] | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot6.py | test_def_277_extrasul_nou_se_importa_iar_duplicatul_e_miscarea | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot6.py | test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot6.py | test_def_292_fereastra_cozii_poarta_titlul_cardului | ceasul paginii | static/js/ecrane/declaratii.js:43
+frontend_test/e2e/e2e_lot72_contab.py | test_def_302_numarul_notei_validate_nu_se_schimba | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot72_contab.py | test_def_c48_avansul_pentru_servicii_se_inregistreaza_pe_4092 | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot72_contab.py | test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta | ceasul paginii | static/js/ecrane/emitere_ecran.js:613
+frontend_test/e2e/e2e_lot72_contab.py | test_def_312_dupa_generare_de_validat_iar_401_debitor_spre_4091_4092 | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot81.py | test_def_323_depasita_are_grupul_ei_si_fereastra_o_numeste | ceasul paginii | static/js/ecrane/validat.js:124
+frontend_test/e2e/e2e_lot81.py | test_def_329_avertismentul_vechi_dispare_dupa_validare_si_nota_o_singura_data | ceasul paginii | static/js/ecrane/validat.js:124
+frontend_test/e2e/e2e_lot81.py | test_def_333_amortizarea_lunii_in_curs_nu_e_ceruta_si_nu_e_oferita | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot81.py | test_def_c51_previzualizarea_programata_nu_citeste_casa_cat_se_reincarca | ceasul paginii | static/js/ecrane/firme.js:21
+frontend_test/e2e/e2e_lot91.py | test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare | luna curentă | frontend_test/e2e/e2e_lot91.py:15
+frontend_test/e2e/e2e_lot91.py | test_def_394_jurnalul_e_lat_si_motivul_amortizarii_nu_rupe_butoanele | ceasul paginii | static/js/ecrane/firme.js:21
