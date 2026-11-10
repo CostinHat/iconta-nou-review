@@ -194,7 +194,7 @@
    "pas": "h",
    "operator": "egal",
    "valoare": "Completează: contul debit, contul credit, suma",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "h.6",
@@ -250,7 +250,7 @@
    "pas": "j",
    "operator": "egal",
    "valoare": "Completează: data, contul debit, contul credit, suma",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "j.6",
@@ -271,7 +271,7 @@
    "pas": "k",
    "operator": "egal",
    "valoare": "Completează: data; linia 1: contul debit, contul credit, suma; linia 2: contul debit, contul credit, suma",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "k.3",
@@ -292,7 +292,7 @@
    "pas": "l",
    "operator": "egal",
    "valoare": "Completează: data, contul debit, contul credit, suma",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "m.1",
@@ -306,7 +306,7 @@
    "pas": "m",
    "operator": "egal",
    "valoare": "Completează: contul debit, contul credit, suma",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "m.3",
@@ -320,7 +320,7 @@
    "pas": "n",
    "operator": "egal",
    "valoare": "Completează: partenerul",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "n.2",
@@ -369,14 +369,14 @@
    "pas": "p",
    "operator": "egal",
    "valoare": "Completează: linia 2: contul debit, contul credit, suma",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "q.1",
    "pas": "q",
    "operator": "egal",
    "valoare": "Completează: linia 2: partenerul",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "r.1",
@@ -411,7 +411,7 @@
    "pas": "s",
    "operator": "egal",
    "valoare": "Completează: data",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "t.1",
@@ -474,7 +474,7 @@
    "pas": "u",
    "operator": "egal",
    "valoare": "Completează: contul debit, contul credit, suma",
-   "cheie": "dom:#je-salveaza|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "v.1",

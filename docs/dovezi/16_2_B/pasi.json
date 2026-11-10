@@ -89,7 +89,7 @@
    "pas": "b",
    "operator": "contine",
    "valoare": "Completează:",
-   "cheie": "dom:#c-adauga|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fj-motiv|text"
   },
   {
    "id": "c.1",

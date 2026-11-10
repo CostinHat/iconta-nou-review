@@ -43,14 +43,14 @@ RANDURI = {
          "pe FIECARE fereastră de lucru și pe cele mici; „←” nu se judecă: apare numai unde există un pas înapoi real (fereastră deschisă din alta "
          "sau cu pas intern), altfel fereastra are numai „✕”",
     "b": "fereastra de lucru pe tot ecranul la 1920 × 1080 și 1366 × 768, un singur loc de derulare (tabelul lung), bara de jos fixă 72 px "
-         "cu un singur buton principal L (cu data-actiune-principala); bara nu are „Renunță”, în afara ferestrelor din PASTREAZA_RENUNTA (fără „←” activ "
+         "cu un singur buton principal L (cu data-actiune-principala), a cărui etichetă e verbul acțiunii (un buton principal cu textul „Completează …” pică: motivul inactivității stă în bară); bara nu are „Renunță”, în afara ferestrelor din PASTREAZA_RENUNTA (fără „←” activ "
          "în starea formularului sau cu „Renunță” cu efect propriu; revenirea e „←” din antet, „✕” închide); „Închide” și „Renunță” nu sunt "
          "acțiune principală, oricum ar fi colorate; butonul principal inactiv cu motiv cât timp acțiunea nu e posibilă; acțiunea principală a ferestrei "
          "apare o singură dată pe ecran: niciun buton vizibil din conținut (în afara tabelelor, template și details) nu are același text ca butonul "
          "principal din bara de jos; excepție (stare sau meniu "
          "de butoane, pe nume, lista din raport): bara fără buton principal și fără „Renunță”",
     "c": "orice listă de înregistrări e tabelul DS: cap ≥ 40 px, rând ≥ 44 px (cu rândul care se rupe, înălțimea crește), zebra, starea doar în coloana „Stare”, cel mult 2 acțiuni XS pe "
-         "rând, subsol 44 px (rândul de totaluri fix, bara-fixa, nu e o listă de înregistrări); nicio celulă cu dată sau sumă tăiată",
+         "rând, subsol 44 px (rândul de totaluri fix, bara-fixa, nu e o listă de înregistrări; nici starea goală, nici meniul sau panoul de cifre marcat `data-fara-piesa`); nicio celulă cu dată sau sumă tăiată",
     "d": "orice avertisment sau explicație secundară e card-rezumat ≥ 44 px (cu textul rupt, înălțimea crește) cu detaliile pliate; orice semnal e un rând de 36 px (cel mult două rânduri, textul întreg, fără „…”) cu „ce e de "
          "făcut” pliat; niciun paragraf explicativ mai lung de un rând nepliat; un card-rezumat gri (neutru, informativ) e valid; cardurile de eroare "
          "rămân la vedere și nu se numără, din celelalte cel mult 2 la vedere (restul sub „Semnale (n)”); un semnal sau card al cărui text spune "

@@ -802,6 +802,9 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
    `hidden`: colțurile rotunjite rămân tăiate, dar tabelul nu devine el însuși cutie de derulare (lipirea antetului s-ar raporta la el) */
 .fereastra.fer-tabel .fereastra-corp .fd-tabel { overflow-x: clip; overflow-y: visible; }   /* [17.3] numai pe orizontală: pe verticală `clip` tăia 4–29 px din tabelul îngust */
 .fereastra.fer-tabel .fereastra-corp .fd-tabel thead th { position: sticky; top: calc(var(--rezumat-h, 0px) - 24px); z-index: 1; }
+/* [17.5-H2] capul se lipește numai la tabelul care este zona de derulare (regula `.zona-derulare` de mai jos) sau stă direct în corpul ferestrei; tabelul dintr-o cutie `.ds-tabel-cutie` (overflow-x: hidden = propriul
+   lui container de lipire, `top` l-ar coborî peste rânduri) are capul static, la începutul tabelului */
+.fereastra.fer-tabel .fereastra-corp .ds-tabel-cutie:not(.zona-derulare *) .fd-tabel thead th { position: static; }
 /* [lotul 10, 421 / 424 — DS cap.9 v2.97 pct.3 și 5] lista-tabel (`.mig-sold-tabel`, Activitate cabinet) nu mai derulează ea însăși în
    fereastra cu tabel: cu `max-height: 280px; overflow-y: auto` corpul nu avea ce derula, deci rezumatul lipit sus n-avea ce ține în vedere,
    iar jurnalul se citea printr-o cutie de 280 px într-o fereastră de tot ecranul. Antetul ei (`.ac-cap`) se lipește sub rezumat, ca

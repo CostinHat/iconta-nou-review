@@ -2,7 +2,7 @@
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=df64dc48ed";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
+import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=cc67bbdaea";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -574,7 +574,7 @@ async function ecranBon(corp, nav) {
         </div>
       </div>
       <div style="margin-top:16px">
-        <button class="buton-verde" id="bon-trimite">Trimite la contabil</button>
+        <button class="buton-primar" id="bon-trimite" data-actiune-principala>Trimite la contabil</button>
         <button class="buton-secundar" id="bon-refa" style="margin-left:10px">Refă poza</button>
       </div>
       <p class="ecran-nota" id="bon-msg" style="margin:10px 0 0"></p>`;
@@ -645,7 +645,7 @@ async function ecranCifre(corp, nav) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Cifrele firmei</h2>
     <p class="pf-intro" id="cf-perioada">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2,"0")}`, "luna_an")}, din înregistrările verificate de contabil.${provizorie}</p>
-    <div class="pf-lista">
+    <div class="pf-lista" data-fara-piesa>
       ${rand("Venituri", lei(k.venituri))}
       ${rand("Cheltuieli (fără impozitul pe profit sau pe venit)", lei(k.cheltuieli))}
       ${rand(felRezultat(k.tip), lei(Math.abs(k.profit || 0)), k.tip === "pierdere" ? "var(--rosu)" : (k.tip === "profit" ? "var(--verde)" : null), "", "cf-rezultat")}
@@ -655,7 +655,7 @@ async function ecranCifre(corp, nav) {
     </div>
     <h2 class="pf-titlu" style="margin-top:20px">Previziune bani (8 s\u0103pt\u0103m\u00e2ni) ${semnAjutor("F016")}</h2>
     <p class="pf-intro" id="cf-intro">Estimare pe scaden\u021bele facturilor \u2014 orientativ.</p>
-    <div class="pf-lista" id="cf-zona"><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p></div>`;
+    <div class="pf-lista" id="cf-zona" data-fara-piesa><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p></div>`;
   incarcaForecast(corp, rand, lei);  // portal_cashflow_fe_v1
 }
 

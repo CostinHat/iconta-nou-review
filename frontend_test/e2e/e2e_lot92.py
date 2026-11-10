@@ -212,7 +212,7 @@ def test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa(patron, firma_cv):
     pg.wait_for_selector(".fereastra:last-of-type #fd-storno-retur", state="attached", timeout=10000)
     assert "se întoarce în stoc?" in pg.inner_text(".fereastra:last-of-type .fd-storno-box")   # fereastra confirmării, nu detaliul
     assert not pg.query_selector(".fereastra:last-of-type #fd-pdf"), "întrebarea returului nu e în fereastra ei (673)"
-    pg.click("#fd-storno-ok")
+    pg.click("#fd-storno-ok", force=True)   # [17.5-H2] cu alegerea goală butonul e inactiv (aria-disabled)
     pg.wait_for_selector(".refuz-salvare", timeout=10000)
     pg.select_option("#fd-storno-retur", "true")
     pg.click("#fd-storno-ok")

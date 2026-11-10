@@ -15,8 +15,8 @@
 // Starea o dă piesa: câmpurile obligatorii ale ecranului sunt etichetele cu „*”; cât un câmp vizibil de acest fel e gol, butonul principal e
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
-import { alegereButoane, alegereComutator, alegereText, esteAlege, MAX_BUTOANE } from "./api.js?v=7396e03327";
-import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel } from "./ds_piese.js?v=fb823092ed";
+import { alegereButoane, alegereComutator, alegereText, esteAlege, inactiv, activ, MAX_BUTOANE } from "./api.js?v=7396e03327";
+import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_piese.js?v=e115d72f0f";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);
@@ -30,15 +30,17 @@ function _controlEtichetei(et) {
   return parinte && parinte.querySelector("input:not([type=hidden]), select, textarea");
 }
 
-// câmpurile obligatorii (etichete cu „*”) goale și vizibile, în ordinea din ecran
-function _lipsuri(corp) {
-  const out = [];
+// câmpurile obligatorii (etichete cu „*”) goale și vizibile, în ordinea din ecran; fiecare control se numește o singură dată (`label.camp > span.camp-eticheta` are „*” și
+// pe etichetă, și pe text). [17.5-H2] `fereastra`: fereastra n-are container de formular, deci se judecă câmpurile ei, în afara tabelelor, șabloanelor, antetului și barei
+function _lipsuri(corp, { fereastra = false } = {}) {
+  const out = [], numite = new Set();
   for (const et of corp.querySelectorAll("label, .camp-eticheta")) {
     if (!/\*/.test(et.textContent) || !_vizibil(et)) continue;
+    if (fereastra && et.closest("table, template, .fereastra-antet, .fereastra-jos")) continue;
     const c = _controlEtichetei(et);
-    if (!c || c.disabled || c.readOnly || !_vizibil(c)) continue;
+    if (!c || numite.has(c) || c.disabled || c.readOnly || !_vizibil(c)) continue;
     if (c.type === "checkbox" || c.type === "radio") continue;
-    if (String(c.value || "").trim() === "") out.push(_normalizeaza(et.textContent.replace(c.textContent || "", "")) || "câmp obligatoriu");
+    if (String(c.value || "").trim() === "") { numite.add(c); out.push(_normalizeaza(et.textContent.replace(c.textContent || "", "")) || "câmp obligatoriu"); }
   }
   return out;
 }
@@ -202,6 +204,13 @@ function _alege(corp, bara, areDeja, titlu) {
 const _eligibilPrincipal = (bara, liber, cuRezumat = false) => (b) => b.tagName === "BUTTON" && !bara.contains(b) && liber(b)
   && !b.closest(cuRezumat ? "table, template, details, .tn-actiuni" : "table, template, details, .tn-actiuni, .rezumat-fix");
 
+// [17.5-H2] înregistrare = rând de `tbody` care nu e starea goală a tabelului; lista de înregistrări goală = `.stare-goala` într-o listă din LISTE_ASTEA
+const _randGol = (r) => r.classList.contains("fd-rand-gol") || !!r.querySelector(".stare-goala");
+const _tabele = (corp) => [...corp.querySelectorAll("table")].filter((x) => _vizibil(x) && !x.closest("template, details"));
+const _tabelCuInregistrari = (corp) => _tabele(corp).some((t) => [...t.querySelectorAll("tbody > tr")].some((r) => !_randGol(r)));
+const _listaGoala = (corp) => [...corp.querySelectorAll(LISTE_ASTEA)].some((l) => _vizibil(l) && !l.closest("template, details:not([open])") && !!l.querySelector(":scope > .stare-goala"));
+const MOTIV_FARA_INREGISTRARI = "Nu există înregistrări de exportat.";
+
 // [15.1-E5, pct.1] fereastra doar de citit, cu tabel și fără export: „Descarcă PDF” se adaugă ca export al tabelului (tipărirea tabelului, „Salvează ca PDF”)
 // [17.5, 791 / 793] când fereastra are un singur buton principal al ei (eligibil, `buton-primar`, altul decât „Descarcă PDF”), acela e acțiunea ferestrei: PDF-ul de
 // rezervă nu mai e ales. Aici rezumatul lipit sus (`.rezumat-fix`) nu exclude butonul: „Fluturaș” al fișei salariatului stă în `#ss-butoane`, în rezumat. Mai multe sau
@@ -211,8 +220,8 @@ function _exportTabel(corp, bara, liber) {
   const eligibil = _eligibilPrincipal(bara, liber, true);
   const proprii = [...corp.querySelectorAll("button.buton-primar")].filter((b) => eligibil(b) && _normalizeaza(b.textContent) !== "Descarcă PDF");
   if (proprii.length === 1) { proprii[0].__slab = true; proprii[0].__catalog = true; return proprii[0]; }   // slab, ca PDF-ul: o acțiune găsită ulterior în catalog îl înlocuiește (un buton trecător din timpul încărcării nu ține locul)
-  const tabel = [...corp.querySelectorAll("table")].find((x) => _vizibil(x) && !x.closest("template, details"));
-  if (!tabel) return null;
+  // [17.5-H2] PDF-ul de rezervă numai pe fereastra cu tabel sau cu o listă de înregistrări (goală: PDF-ul rămâne, inactiv, cu motivul în bară); fără listă și fără tabel, nimic
+  if (!_tabele(corp).length && !_listaGoala(corp)) return null;
   const b = _exportPdf(corp);
   b.__slab = true;   // acțiune de rezervă: o acțiune găsită ulterior în catalog o înlocuiește
   return b;
@@ -284,6 +293,8 @@ export function baraDeJos(fer, corp, { renunta }) {
       else principal.remove();
       principal = null;
     }
+    // [17.5-H2] PDF-ul de rezervă rămas pe o fereastră fără tabel și fără listă de înregistrări pleacă (portalul „Cifrele firmei” n-are acțiune principală)
+    if (principal && principal === corp.__exportPdf && !EXPORT_PDF.test(titlu) && !_tabele(corp).length && !_listaGoala(corp)) { principal.remove(); principal = null; }
     let candidat = faraPrincipal ? null : _alege(corp, bara, principal && principal.__slab ? undefined : !!principal, titlu);
     if (candidat && candidat.__catalog) {
       // [16.8, 760] acțiune găsită de catalog: același nod (id, ascultători) se mută în bară, ca butonul marcat; un singur element vizibil pe ecran. Numai id-urile din
@@ -340,18 +351,34 @@ export function baraDeJos(fer, corp, { renunta }) {
     }
     // motivul: al ecranului (`.ds-motiv-inactiv` existent, mutat în bară) dacă îl are, altfel al piesei
     for (const m of corp.querySelectorAll(".ds-motiv-inactiv")) if (!bara.contains(m) && !m.classList.contains("fj-text")) motiv.appendChild(m);
-    const lipsa = !principal || !principal.__formular || !principal.__formular.isConnected ? [] : _lipsuri(principal.__formular);
+    // [17.5-H2] motivul butonului principal inactiv: UN SINGUR text, cu o singură prioritate — (1) al ecranului: `.ds-motiv-inactiv` / `data-motiv-generat` mutat în bară, ori cel
+    // dat de `inactiv()` pe buton (`data-motiv-inactiv`); (2) al piesei: „Completează: …” din câmpurile cu „*” (ale formularului butonului; fără formular, ale ferestrei);
+    // (3) exportul de rezervă fără înregistrări; (4) `title` la `disabled`, altfel textul general. Eticheta butonului rămâne verbul acțiunii.
+    const exportRezerva = !!principal && principal === corp.__exportPdf && !EXPORT_PDF.test(titlu);
+    if (exportRezerva) {
+      if (!_tabelCuInregistrari(corp)) inactiv(principal, MOTIV_FARA_INREGISTRARI);
+      else if (principal.getAttribute("data-motiv-inactiv") === MOTIV_FARA_INREGISTRARI) activ(principal);
+    }
+    let lipsa = [];
+    if (principal && !exportRezerva && !/^Descarcă PDF(\s|$)/.test(_normalizeaza(principal.textContent))) {
+      if (!principal.__formular) lipsa = _lipsuri(corp, { fereastra: true });
+      else if (principal.__formular.isConnected) lipsa = _lipsuri(principal.__formular);
+    }
+    const sursaB = principal && (principal.__sursa || principal);
+    const motivDat = sursaB && sursaB.getAttribute("aria-disabled") === "true" ? (sursaB.getAttribute("data-motiv-inactiv") || sursaB.title || "").trim() : "";
     if (principal) {
       // inactiv = cenușiu, cu motivul în bară (`data-cadru-inactiv`), nu `disabled`: apăsat, butonul arată refuzul întreg al ecranului, cu lista
       // câmpurilor lipsă (scenariile 535, 520, 611 — „trimiterea cu formularul gol arată toate câmpurile lipsă”)
-      if (lipsa.length) { principal.dataset.cadruInactiv = "1"; principal.setAttribute("aria-describedby", "fj-motiv-text"); }
+      if (lipsa.length || (motivDat && principal.__sursa)) { principal.dataset.cadruInactiv = "1"; if (!principal.__sursa) principal.setAttribute("aria-describedby", "fj-motiv-text"); }
       else if (principal.dataset.cadruInactiv) { delete principal.dataset.cadruInactiv; principal.removeAttribute("aria-describedby"); }
     }
     for (const m of motiv.querySelectorAll(".ds-motiv-inactiv")) m.classList.toggle("bara-motiv", !!m.textContent.trim());
-    const alEcranului = [...motiv.querySelectorAll(".ds-motiv-inactiv:not(.fj-text)")].some((m) => m.textContent.trim());
+    const alEcranului = [...motiv.querySelectorAll(".ds-motiv-inactiv:not(.fj-text), [data-motiv-generat]")].some((m) => m.textContent.trim());
     let text = "";
-    if (lipsa.length) text = "Completează: " + lipsa.join(", ");
-    else if (principal && principal.disabled && !alEcranului) {
+    if (alEcranului) text = "";
+    else if (motivDat) text = motivDat;
+    else if (lipsa.length) text = "Completează: " + lipsa.join(", ");
+    else if (principal && principal.disabled) {
       // motivul pus de ecran pe buton (`title`), dacă nu e deja scris în fereastră (același mesaj o singură dată pe ecran); altfel cel general
       const dinEcran = principal.title || principal.getAttribute("aria-description") || "";
       const scrisDeja = dinEcran && [...corp.children].some((x) => x !== bara && !x.contains(principal) && (x.innerText || "").includes(dinEcran));
@@ -362,7 +389,7 @@ export function baraDeJos(fer, corp, { renunta }) {
       if (!sp) { sp = document.createElement("span"); sp.className = "fj-text ds-motiv-inactiv bara-motiv"; sp.id = "fj-motiv-text"; motiv.prepend(sp); }
       if (sp.textContent !== text) sp.textContent = text;
     } else if (sp) sp.remove();
-    bara.classList.toggle("fj-inactiv", !!principal && (!!principal.disabled || !!principal.dataset.cadruInactiv));
+    bara.classList.toggle("fj-inactiv", !!principal && (!!principal.disabled || !!principal.dataset.cadruInactiv || principal.getAttribute("aria-disabled") === "true"));
     corp.classList.toggle("fj-are-principal", !!principal);   // [15.1-E3] fereastra are acțiunea principală în bară: restul butoanelor principale din conținut arată ca secundare (CSS)
   }
 
@@ -371,7 +398,7 @@ export function baraDeJos(fer, corp, { renunta }) {
   corp.addEventListener("input", programeaza, true);
   corp.addEventListener("change", programeaza, true);
   new MutationObserver((muts) => { if (muts.some((m) => !bara.contains(m.target) || m.target === bara || m.target === loc)) programeaza(); })
-    .observe(corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "class", "style", "open"] });
+    .observe(corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "class", "style", "open", "aria-disabled", "data-motiv-inactiv"] });
   sincronizeaza();
   return { sincronizeaza, bara };
 }

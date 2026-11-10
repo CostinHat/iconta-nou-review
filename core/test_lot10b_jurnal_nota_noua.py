@@ -127,7 +127,7 @@ def test_7h_suma_goala_e_ceruta_langa_camp_nu_trimisa_drept_zero(pagina):
     n0 = len(cereri)
     # [16.6, 729.2] suma necompletată nu pleacă drept 0: „Salvează” e inactiv și numește lipsa (nu mai ajunge nici la refuzul de lângă câmp)
     atr = pg.eval_on_selector("#je-salveaza", "e => [e.getAttribute('aria-disabled'), e.dataset.motivInactiv, e.textContent.trim()]")
-    assert atr == ["true", "Completează: suma", "Completează: suma"], atr
+    assert atr == ["true", "Completează: suma", "Salvează"], atr   # [17.5-H2] eticheta rămâne verbul acțiunii; motivul stă în bara de jos
     pg.click("#je-salveaza", force=True)
     pg.wait_for_timeout(300)
     # clicul pe butonul inactiv nu trimite nimic și nu scrie niciun mesaj

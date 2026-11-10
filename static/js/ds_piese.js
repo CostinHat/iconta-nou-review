@@ -595,8 +595,9 @@ export function carduriDSAplica(corp) {
 // Listele făcute din rânduri (cu buton, cu text pe două linii) sunt înlocuite de aceeași piesă ca tabelele: `table.ds-tabel` cu cap de 40 px, rânduri de
 // 44 px, zebra, subsol cu contorul de rânduri; peste 20 de rânduri, căutare de 44 px deasupra. Rândul vechi (elementul însuși, cu clasa, id-ul, clicul și
 // butoanele lui) trece ca CONȚINUT al celulei, deci clicul pe rând, editarea în celulă și testele ecranului merg ca înainte. Derularea o dă navigatorul
-// (zona de derulare din jurul tabelului). Idempotent: rândurile adăugate după aceea intră în același tabel.
-const LISTE_ASTEA = ".pf-lista, .mig-lista, .jn-lista, .pr-lista, .firme-lista, .sa-asist-lista, .rap-col-lista, .term-grup, .zebra-lista";
+// (zona de derulare din jurul tabelului). Idempotent: rândurile adăugate după aceea intră în același tabel. [17.5-H2] Starea goală (`.stare-goala`) nu e înregistrare:
+// o listă fără rânduri reale nu primește cutie, cap sau contor, iar contorul numără numai înregistrări; meniurile și panourile de cifre se marchează `data-fara-piesa`.
+export const LISTE_ASTEA = ".pf-lista, .mig-lista, .jn-lista, .pr-lista, .firme-lista, .sa-asist-lista, .rap-col-lista, .term-grup, .zebra-lista";
 const _NU_LISTA = /(card|categorie|tab\b|-tab|pastila|optiune|nav-|op-|cab-|buton|alegere|camp|rap-|ds-|bara-fixa|fj-)/i;
 
 function _titluColoana(lista, sub) {
@@ -626,7 +627,7 @@ export function listeDSAplica(corp) {
     if (lista.querySelector("input, select, textarea") || [...lista.children].some((r) => r.querySelectorAll("button").length > 2)) continue;
     if (lista.querySelector(":scope > .ds-tabel-cutie:not(.ds-tabel-lista), :scope > table")) continue;   // ecranul și-a desenat deja tabelul DS în listă
     let cutie = lista.querySelector(":scope > .ds-tabel-cutie.ds-tabel-lista");
-    const straine = [...lista.children].filter((k) => k !== cutie && !k.matches(".ds-tabel-cauta-rand, .ds-tabel-cutie, table, .ecran-nota, .ds-rezumat, .ds-rezumat-detalii, .ds-semnale-sub, .ds-grup-titlu, h2, h3, h4, .ds-sectiune-titlu, script, style, template") && !k.hidden && k.tagName !== "P");
+    const straine = [...lista.children].filter((k) => k !== cutie && !k.matches(".ds-tabel-cauta-rand, .ds-tabel-cutie, table, .ecran-nota, .ds-rezumat, .ds-rezumat-detalii, .ds-semnale-sub, .ds-grup-titlu, .stare-goala, h2, h3, h4, .ds-sectiune-titlu, script, style, template") && !k.hidden && k.tagName !== "P");
     if (!straine.length && !cutie) continue;
     if (!cutie) {
       if (!_vizibilDS(lista)) continue;

@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=fb823092ed";   // [15.1, 722] lista cu căutare
+import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=e115d72f0f";   // [15.1, 722] lista cu căutare
 import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=7396e03327";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";   // [lotul 10, 431] refuzul care trimite la ce lipsește
@@ -782,7 +782,7 @@ async function randeazaOperatiuniD301(corp, nav) {
     <p class="ecran-nota" style="margin-top:2px">Furnizorul UE (țară + cod TVA) e opțional pentru D301, dar dacă îl completezi, achiziția apare automat în D390 (bunuri tip 1/3 → cod A; servicii tip 5 → cod S). Fără țară, operațiunea nu intră în D390.</p>
     <div class="camp-ajutor" id="d301-preview" style="margin-top:4px"></div>
     <div id="d301-msg"></div>
-    <p style="margin-top:8px"><button class="buton-primar" id="d301-regen">Regenerează D301</button>
+    <p style="margin-top:8px"><button class="buton-secundar" id="d301-regen">Regenerează D301</button>
       <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
   </details>`;
   const gv = (id) => zona.querySelector(id);

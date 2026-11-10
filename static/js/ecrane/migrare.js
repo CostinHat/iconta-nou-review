@@ -2464,7 +2464,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=f9faf1adae"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=c1c3d54045"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat
@@ -2478,7 +2478,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     <p class="mig-intro">Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.${stare && stare.incepe_preluarea
       ? " Firma nu are încă nimic adus: începe cu vectorul fiscal și soldurile inițiale (balanța de deschidere)." : ""}</p>
     ${urm.length ? `<p class="mig-intro mig-op-sub-alert" id="mig-urmatori">De făcut: ${esc(urm.map(_titluStrat).join(", "))}.</p>` : ""}
-    <div class="mig-lista" id="mig-pasi"></div>
+    <div class="mig-lista" id="mig-pasi" data-fara-piesa></div>
   `;
   const lista = corp.querySelector("#mig-pasi");
   pasiVizibili.forEach((p) => {

@@ -4,7 +4,7 @@
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { memoreazaFereastra, uitaFereastra } from "../restaurare.js?v=2e679a8748";   // [15.1, 725.1]
-import { noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=7396e03327";  /* esc_nc27 */
+import { inactiv, activ, noteGenerate, liniiNotaHtml, api, ultimaCerere, cate, cursValutar, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, dataIso, cantitate, selectDaNu, daNu, cereAlegerile, focusFaraSalt, refuzPeRand, stareNota, numarCuSerie, arataRefuzul, cereCompletate, ALEGE, pastreazaCampulActiv, atributeInactiv } from "../api.js?v=7396e03327";  /* esc_nc27 */
 import { centreActive, htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul de cost al liniei
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -208,10 +208,12 @@ export async function primiteSPV(corp, nav, tenantId, opt, mesaj = null) {
   if (!actuala()) return;
   const automat = !!(st && st.conectat && st.are_drept !== false);
   // [17.5-F, 823] fără conexiune SPV (aceeași stare pe care o arată #fp-spv: „neconectat”) citirea nu are ce face: butonul rămâne, inactiv, cu motivul la vedere
-  if (st && (st.acoperire || (st.conectat ? "neverificat" : "neconectat")) === "neconectat") {
+  // [17.5-H2, 823.1] la fel când cabinetul e conectat, dar certificatul nu are drept pe CUI-ul firmei („neacoperit”: «SPV: fără drept pentru această firmă»)
+  const motivSpv = { neconectat: "Firma nu e conectată la SPV", neacoperit: "Firma nu are drept în SPV: certificatul cabinetului nu acoperă CUI-ul ei" }[st && (st.acoperire || (st.conectat ? "neverificat" : "neconectat"))];
+  if (st && motivSpv) {
     const bV = corp.querySelector("#fp-verifica");
     bV.disabled = true;
-    bV.insertAdjacentHTML("afterend", ` <span class="ds-motiv-inactiv" id="fp-verifica-motiv">Firma nu e conectată la SPV</span>`);
+    bV.insertAdjacentHTML("afterend", ` <span class="ds-motiv-inactiv" id="fp-verifica-motiv">${motivSpv}</span>`);
   }
   zLista.innerHTML = !lista.length
     ? `<div class="stare-goala">Nicio factură primită de validat.${automat ? " Facturile de la furnizori apar aici automat din SPV; le validezi înainte să intre în cheltuieli." : " Până la conectarea SPV, le încarci cu „Importă XML UBL”."}</div>`
@@ -323,7 +325,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=f9faf1adae");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=c1c3d54045");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -1423,7 +1425,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=f9faf1adae");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=c1c3d54045");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });
@@ -1484,7 +1486,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       // [deficiența 419] factura care a descărcat stocul: întrebarea „marfa se întoarce?” — alegere explicită, fără răspuns implicit
       const iesiri = f.iesiri_stoc || [];
       const intrebareRetur = iesiri.length ? `
-          <label class="camp" style="margin-top:10px;display:block"><span class="camp-eticheta">Marfa ieșită cu factura (${esc(iesiri.map((x) => x.articol + " × " + x.cantitate_text).join("; "))}) se întoarce în stoc?</span>
+          <label class="camp" style="margin-top:10px;display:block"><span class="camp-eticheta">Marfa ieșită cu factura (${esc(iesiri.map((x) => x.articol + " × " + x.cantitate_text).join("; "))}) se întoarce în stoc?<span class="oblig">*</span></span>
             ${selectDaNu('id="fd-storno-retur"', null, "Marfa se întoarce în stoc")}
             <span class="camp-ajutor">Da = retur: marfa revine în magazie, iar costul ieșirii se stornează. Nu = marfa rămâne la client (numai corecția valorii): stocul nu se schimbă.</span></label>` : "";
       nav.deschide("Stornează factura", (c2) => {
@@ -1499,6 +1501,19 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
           </div>
           <div class="em-rezultat" id="fd-storno-rez"></div>`;
         c2.querySelector("#fd-storno-nu").addEventListener("click", () => nav.inapoi());
+        // [17.5-H2] fereastra mică n-are bara de jos (piesa nu există aici): butonul stă inactiv, cu motivul scris lângă el, cât alegerea „se întoarce în stoc?” e goală
+        const retur0 = c2.querySelector("#fd-storno-retur");
+        if (retur0) {
+          const ok0 = c2.querySelector("#fd-storno-ok"), motiv0 = document.createElement("span");
+          motiv0.className = "ds-motiv-inactiv";
+          ok0.after(motiv0);
+          const stare0 = () => {
+            if (retur0.value === "") { const m = "Completează: dacă marfa se întoarce în stoc"; inactiv(ok0, m); motiv0.textContent = m; }
+            else { activ(ok0); motiv0.textContent = ""; }
+          };
+          retur0.addEventListener("change", stare0);
+          stare0();
+        }
         c2.querySelector("#fd-storno-ok").addEventListener("click", async () => {
           const rez = c2.querySelector("#fd-storno-rez");
           const ok = c2.querySelector("#fd-storno-ok");

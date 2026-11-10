@@ -103,6 +103,9 @@
     b.butoane_principale = principale.length;
     b.actiune_principala = principale.length ? norm(principale[0].innerText) : null;
     b.cu_atribut = [...F.querySelectorAll("[data-actiune-principala]")].filter(vizibil).map((x) => norm(x.innerText));
+    // [17.5-H2] eticheta butonului principal e verbul acțiunii; motivul inactivității stă în bară (fj-motiv), nu pe buton
+    const eticheteMotiv = principale.filter((x) => /^Completează/.test(norm(x.innerText))).map((x) => norm(x.innerText));
+    if (eticheteMotiv.length) pica.b.push("eticheta butonului principal e motivul, nu verbul acțiunii: „" + eticheteMotiv[0] + "” (motivul stă în bară)");
     if (inchideColorat.length) pica.b.push("„" + inchideColorat[0] + "” colorat ca acțiune principală (nu e: fereastra se închide din „←”)");
     if (exceptie) {
       if (principale.length) pica.b.push("ecran din lista de excepții (" + exceptie + ") cu buton principal în bară: „" + b.actiune_principala + "”");
@@ -129,7 +132,7 @@
       for (const t of new Set(dubluri.map((x) => norm(x.innerText)))) pica.b.push("acțiunea principală „" + t + "” apare și în conținut (" + (dubluri.filter((x) => norm(x.innerText) === t).length + 1) + " ori pe ecran)");
     }
     if (butoane.some((x) => norm(x.innerText) === "✕")) pica.b.push("„✕” în bara de jos");
-    const dez = principale.filter((x) => x.disabled || x.dataset.cadruInactiv);
+    const dez = principale.filter((x) => x.disabled || x.dataset.cadruInactiv || x.getAttribute("aria-disabled") === "true");
     b.principal_inactiv_fara_motiv = dez.filter((x) => !(x.title || x.getAttribute("aria-describedby") || bj.querySelector(".bara-motiv"))).length;
     if (b.principal_inactiv_fara_motiv) pica.b.push("butonul principal inactiv fără motiv");
   }
@@ -165,18 +168,18 @@
   // liste de rânduri-buton (aceeași clasă repetată, ≥3, în afara tabelelor)
   const grupe = new Map();
   for (const bt of F.querySelectorAll("button")) {
-    if (!vizibil(bt) || bt.closest("table") || bt.closest(".fereastra-antet")) continue;
+    if (!vizibil(bt) || bt.closest("table") || bt.closest(".fereastra-antet") || bt.closest("[data-fara-piesa]")) continue;   // [17.5-H2] meniul și panoul de cifre marcate de ecran nu sunt liste de înregistrări
     const cl = String(bt.className).split(" ")[0];
     if (!/(rand|item|lista|frand|nota|fisa)/i.test(cl)) continue;
     grupe.set(cl, (grupe.get(cl) || 0) + 1);
   }
   for (const [cl, n] of grupe) if (n >= 3) { c.liste_rand_buton.push(cl + " ×" + n); }
-  c.liste_vechi = [...F.querySelectorAll("[class]")].filter((x) => vizibil(x) && !x.matches(".bara-fixa") && [...x.children].some((k) => k.tagName !== "P" && !/stare-goala|ecran-nota|ds-/.test(String(k.className))) && !(x.querySelector(":scope > .ds-tabel-cutie") && ![...x.children].some((k) => !k.matches(".ds-tabel-cutie, .ds-tabel-cauta-rand") && vizibil(k) && k.querySelector("button"))) && !x.closest("table, .cautare-rez, .ds-tabel-cutie")   // [15.1-E4, pct.2] bara-fixa e rândul de totaluri fix, nu o listă de înregistrări
+  c.liste_vechi = [...F.querySelectorAll("[class]")].filter((x) => vizibil(x) && !x.closest("[data-fara-piesa]") && !x.matches(".bara-fixa") && [...x.children].some((k) => k.tagName !== "P" && !/stare-goala|ecran-nota|ds-/.test(String(k.className))) && !(x.querySelector(":scope > .ds-tabel-cutie") && ![...x.children].some((k) => !k.matches(".ds-tabel-cutie, .ds-tabel-cauta-rand") && vizibil(k) && k.querySelector("button"))) && !x.closest("table, .cautare-rez, .ds-tabel-cutie")   // [15.1-E4, pct.2] bara-fixa e rândul de totaluri fix, nu o listă de înregistrări
     && [...x.classList].some((k) => /(^|-)lista$|^zebra-lista$|^pf-lista$/.test(k) && !/^(ds-|cautare|firma-lista-fisiere)/.test(k))).map((x) => String(x.className).split(" ")[0]);
   c.liste_vechi = [...new Set(c.liste_vechi)];
   // rânduri repetate (≥3 frați cu aceeași etichetă și clasă, fiecare cu text și cu cel puțin o acțiune) în afara tabelului DS = listă de înregistrări
   for (const p of F.querySelectorAll("*")) {
-    if (!vizibil(p) || p.closest("table, .cautare-rez, select, .ds-tabel-cutie, .ds-semnale, .ds-datorate, .ds-rezumat-detalii")) continue;
+    if (!vizibil(p) || p.closest("table, .cautare-rez, select, .ds-tabel-cutie, .ds-semnale, .ds-datorate, .ds-rezumat-detalii, [data-fara-piesa]")) continue;
     const grupe2 = new Map();
     for (const k of p.children) { const cl = k.tagName + "." + String(k.className).split(" ")[0]; if (vizibil(k)) grupe2.set(cl, [...(grupe2.get(cl) || []), k]); }
     for (const [cl, ks] of grupe2) {

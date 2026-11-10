@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=fb823092ed";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
+import { semnaleDS, cardRezumat, meniuActiuni } from "../ds_piese.js?v=e115d72f0f";   // [15.1, 687.1] semnalele ferestrei, pe piesa DS
 import { api, textScurt, dataRo, arataMesaj, aduInVedere, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob, dataIso, numarCuSerie, cantitate, pretUnitar, ALEGE, alegeDacaLipseste, selectDaNu, daNu, cereAlegerile, focusFaraSalt, cate, dupaNumar, refuzPeRand, stareNota, pasNota, refuzuriInterne, TEXT_NOTA_INTERNA, atributeInactiv } from "../api.js?v=7396e03327";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { htmlCentru, valoareCentru } from "./centre_cost_linie.js?v=d776200e2b";   // [lotul 13, 536] centrul pe salariați și pe mijloace fixe
 import { dupaGenerare, butonGenerat, butonDeGenerat, noteGenerate } from "../api.js?v=7396e03327";  /* [8c] după generarea unei note — DS cap.6 v2.98 */
@@ -40,7 +40,7 @@ import { fluxConcediu } from "./flux_concediu.js?v=fc0dc15c22";  /* cm_flux_v1 *
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=df64dc48ed";   // [lotul 13, 543] seria chitanțelor pe loc
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=cc67bbdaea";   // [lotul 13, 543] seria chitanțelor pe loc
 import { cautaInLista } from "./emitere_ecran.js?v=d0a3cb9a62";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=50cade9fc8";  /* [C11, 07.10.2026] bilanțul prin coadă */
@@ -48,8 +48,8 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=25e3b9a5e9";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=44bda2cb62";  // [decl_firma_v1]
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=57d2586d73";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=610141de2a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=cea4f49410";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2b4b10dbf6";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
@@ -81,7 +81,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
     nav.deschide("Adaugă firmă", (corp) => {  /* firma_noua_v1 */
       corp.innerHTML = `
         <div class="camp" style="margin-bottom:14px">
-          <label for="fn-cui" class="camp-eticheta">CUI</label>
+          <label for="fn-cui" class="camp-eticheta">CUI<span class="oblig">*</span></label>
           <input class="camp-input" id="fn-cui" placeholder="RO12345678 sau 12345678" autocomplete="off">
           <p class="ecran-nota" id="fn-cui-info" style="margin:6px 0 0"></p>
         </div>
@@ -101,7 +101,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
           <label for="fn-email" class="camp-eticheta">Email client (primește automat acces la portal)</label>
           <input class="camp-input" id="fn-email" type="email" placeholder="Opțional: emailul patronului — primește acces în portal" autocomplete="off" data-bwignore="true">
         </div>
-        <button class="buton-primar" id="fn-salveaza" data-actiune="POST /tenants|POST /tenants/{tenant_id}/client-acces" disabled>Adaugă firma</button>
+        <button class="buton-primar" id="fn-salveaza" data-actiune="POST /tenants|POST /tenants/{tenant_id}/client-acces">Adaugă firma</button>
         <p id="fn-msg" role="alert" style="margin:8px 0 0"></p>
       `;
       const cui = corp.querySelector("#fn-cui"), nume = corp.querySelector("#fn-nume");
@@ -112,7 +112,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       const cuiScris = () => cui.value.trim();
       cui.addEventListener("input", () => {
         const actuala = cerereCui();   // orice tastare scoate din joc răspunsul cererii de dinainte (și când CUI-ul scade sub 6 cifre)
-        clearTimeout(t); btn.disabled = true; info.textContent = ""; cuiGresit = false;
+        clearTimeout(t); activ(btn); info.textContent = ""; cuiGresit = false;
         curataEroriCamp(cui.closest(".camp"));
         const v = cui.value.replace(/\D/g, "");
         if (v.length < 6) return;
@@ -126,21 +126,19 @@ export function randeazaListaFirme(container, nav, inapoi) {
               // firma” rămâne inactiv până la un CUI valabil (serverul îl refuză oricum, pe același motiv)
               info.textContent = ""; cuiGresit = true;
               eroareCamp(corp, "fn-cui", r.motiv);
+              inactiv(btn, r.motiv || "CUI-ul nu e valid: corectează-l ca să poți adăuga firma.");
             } else if (r && r.gasit) {
               // [F188] SUGEREAZA, nu suprascrie orb: completeaza doar daca campul e gol sau neatins de user
               // de la ultima pre-completare ANAF (userul poate corecta datele stale ANAF fara sa i se piarda).
               anaf.pune([r.denumire]);   // [459.1] fără „— verifică.”: rândul spune ce a dat ANAF și ce se preia la creare
               info.textContent = "Din ANAF: " + r.denumire + ". La creare se preiau și adresa, localitatea, județul, codul CAEN, numărul de la Registrul Comerțului și înregistrarea în scopuri de TVA.";
-              btn.disabled = false;
-            } else { info.textContent = "CUI negăsit la ANAF. Poți completa denumirea manual."; btn.disabled = false; }
+            } else { info.textContent = "CUI negăsit la ANAF. Poți completa denumirea manual."; }
           } catch (e) {
             if (!actuala()) return;
             info.textContent = "Nu s-a putut verifica la ANAF acum. Completează denumirea manual.";
-            btn.disabled = false;
           }
         }, 500);
       });
-      nume.addEventListener("input", () => { if (!cuiGresit && nume.value.trim().length > 2 && cui.value.replace(/\D/g,"").length >= 6) btn.disabled = false; });
       btn.addEventListener("click", async () => {
         const emailCl = corp.querySelector("#fn-email").value.trim();  /* firma_email_optional_v1 */
         // [comanda Costin 04.10.2026 pct.1] Refuzul se vede LÂNGĂ buton (#fn-msg, stil de eroare) și pe câmpul vinovat.
@@ -1358,7 +1356,7 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
         <p class="pf-intro"><button class="buton-secundar" id="pj-prev">← luna</button>
           <button class="buton-secundar" id="pj-next">luna →</button>
           ${pc.confirmat ? `<span class="cf-pastila" style="margin-left:12px"><span style="color:var(--verde)">●</span> confirmat${dataConf ? " la " + dataConf : ""}</span>`
-            : `<button class="buton-verde" id="pj-confirma" style="margin-left:12px" data-actiune="POST /tenants/{tenant_id}/pontaj/confirma">Confirmă pontajul lunii</button>`}</p>
+            : `<button class="buton-primar" id="pj-confirma" data-actiune-principala data-actiune="POST /tenants/{tenant_id}/pontaj/confirma">Confirmă pontajul lunii</button>`}</p>
         <div class="cf-sumar">
           <span class="cf-pastila">${cate(rez.prezent || 0, "zi de prezență", "zile de prezență")}</span>
           <span class="cf-pastila">${cate(rez.concediu_medical || 0, "zi de concediu medical", "zile de concediu medical")}</span>
@@ -4763,7 +4761,7 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
   };
   // [16.2-A, 729.1] „Adaugă” e activ numai când data, tipul, partenerul și suma > 0 sunt completate și, la încasare / plată, e bifată o poziție sau „Avans, fără factură”;
   // altfel e inactiv și numește ce lipsește: „Completează: …”
-  const bAdauga = corp.querySelector("#c-adauga"), textAdauga = bAdauga.textContent;
+  const bAdauga = corp.querySelector("#c-adauga");   // [17.5-H2] eticheta rămâne verbul („Adaugă”); motivul inactivității stă în bara de jos (cadru.js)
   const actualizeazaAdauga = () => {
     const cat = corp.querySelector("#c-cat").value;
     const lipsa = [];
@@ -4773,8 +4771,8 @@ function ecranDispozitieNoua(corp, nav, t, cheie) {
     else if (cuFacturi() && !(corp.querySelector("#c-cui").value.trim() || corp.querySelector("#c-part").value.trim())) lipsa.push("partenerul");   // numai încasarea și plata au partener; depunerea / ridicarea de la bancă nu
     if (cat && !(parseFloat(corp.querySelector("#c-suma").value) > 0)) lipsa.push("suma");
     if (cuFacturi() && !alese.size && !aleseNir.size && !avansFaraFactura) lipsa.push("poziția din listă sau „Avans, fără factură”");
-    if (lipsa.length) { bAdauga.textContent = `Completează: ${lipsa.join(", ")}`; inactiv(bAdauga, `Completează: ${lipsa.join(", ")}`); }
-    else { bAdauga.textContent = textAdauga; activ(bAdauga); }
+    if (lipsa.length) inactiv(bAdauga, `Completează: ${lipsa.join(", ")}`);
+    else activ(bAdauga);
   };
   let htmlFact = "";
   const deseneazaFacturi = () => {
@@ -6572,9 +6570,8 @@ function ecranEditorNota(corp, nav, t, n, centre, cheie) {
     zona.appendChild(d); leaga();
   });
   // [16.6, 729.2] „Salvează” e inactiv cât formularul e incomplet și numește ce lipsește („Completează: data; linia 1: contul debit, suma”);
-  // se recalculează la deschidere, la orice modificare și la adăugarea / ștergerea unei linii. Textul lung se vede întreg, pe mai multe rânduri.
-  const bSalveaza = corp.querySelector("#je-salveaza"), textSalveaza = bSalveaza.textContent;
-  const STIL_MOTIV = [["white-space", "normal"], ["max-width", "640px"], ["height", "auto"], ["min-height", "52px"], ["line-height", "1.25"]];
+  // se recalculează la deschidere, la orice modificare și la adăugarea / ștergerea unei linii. Textul lung se vede întreg, în bară.
+  const bSalveaza = corp.querySelector("#je-salveaza");   // [17.5-H2] eticheta rămâne verbul („Salvează”); motivul stă în bara de jos, pe mai multe rânduri la nevoie (cadru.js)
   const actualizeazaSalveaza = () => {
     const segmente = [];
     if (!_jeData.value.trim()) segmente.push("data");
@@ -6594,11 +6591,9 @@ function ecranEditorNota(corp, nav, t, n, centre, cheie) {
     const dupaData = linii.length > 1 ? segmente : segmente.concat(lipsuriLinie[0]);
     if (dupaData.length) {
       const motiv = `Completează: ${dupaData.join(linii.length > 1 ? "; " : ", ")}`;
-      bSalveaza.textContent = motiv; inactiv(bSalveaza, motiv);
-      STIL_MOTIV.forEach(([k, v]) => bSalveaza.style.setProperty(k, v, "important"));
+      inactiv(bSalveaza, motiv);
     } else {
-      bSalveaza.textContent = textSalveaza; activ(bSalveaza);
-      STIL_MOTIV.forEach(([k]) => bSalveaza.style.removeProperty(k));
+      activ(bSalveaza);
     }
   };
   [_jeData, zona].forEach((x) => ["input", "change"].forEach((ev) => x.addEventListener(ev, actualizeazaSalveaza)));
