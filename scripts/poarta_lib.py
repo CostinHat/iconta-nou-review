@@ -217,9 +217,13 @@ def faza(lot, nume, detalii=""):
 def rezultat_treapta(rc, teste, inv=None):
     """Eticheta jurnalului pentru o treaptă (16.1-C3, pct.5): `verde` (cod 0); `verde_cu_restante` când toate picăturile treptei sunt restanțe numerotate (clasele a/b/c din inventar,
     nicio infrastructură); altfel `rosu_<cod>`. O treaptă `verde_cu_restante` rămâne o rulare completă la contorul de rulări (contorul numără rulările, nu etichetele); rândurile
-    vechi ale jurnalului nu se rescriu."""
+    vechi ale jurnalului nu se rescriu.
+    [17.5-U, U.2a] Cod nenul și niciun raport junit proaspăt (lista de teste goală) = `infra`, nu `rosu_<cod>`: treapta n-a rulat nicio probă. O picătură de infrastructură CU raport
+    rămâne `rosu_1`."""
     if rc == 0:
         return "verde"
+    if not teste:
+        return "infra"
     import poarta_clasifica as C
     inv = C._inventar() if inv is None else inv
     pica = [t for t in teste if t["rezultat"] == "pica"]
@@ -238,6 +242,9 @@ def _opreste_8019():
     VD.opreste()
 
 
+_SONDA_IMPLICITA, _OPRESTE_IMPLICIT = _sonda_8019, _opreste_8019
+
+
 def _sterge(cale):
     try:
         os.remove(cale)
@@ -248,10 +255,9 @@ def _sterge(cale):
 def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="3", detalii="", verificator=True, sonda_8019=None, opreste_8019=None):
     """-> (durate pe treaptă, teste). `pytest_ids`/`e2e_fisiere` None = tot (nucleul / manifestul); listă = numai acelea (reluarea). Baza de test se restaurează înainte de
     pytest și înainte de plasa e2e (niciodată per test). Toate treptele rulează, și după una roșie.
-    [16.7] Xml-ul unei trepte se șterge înainte de ea, iar un cod nenul fără raport junit proaspăt e ROȘU (o picătură de infrastructură); plasa nu pornește cât 8019
-    răspunde (`sonda_8019`, implicit sonda reală): o oprește (`opreste_8019`) și continuă."""
-    sonda_8019 = sonda_8019 or _sonda_8019
-    opreste_8019 = opreste_8019 or _opreste_8019
+    [16.7] Xml-ul unei trepte se șterge înainte de ea, iar un cod nenul fără raport junit proaspăt e o picătură de infrastructură (`<treapta>::sesiune`; [17.5-U] treapta e `infra`, nu `rosu_<cod>`).
+    [17.5-U, U.1] Înaintea plasei 8019 se eliberează prin `verificator_design.elibereaza_port` (un server al uneltelor se oprește, orice alt proces se refuză cu numele lui: treapta iese `infra` cu
+    motivul «8019 ocupat de pid <N> (<comandă>)», plasa nu pornește); `sonda_8019` / `opreste_8019` date, sau `_sonda_8019` / `_opreste_8019` suprascrise (citite la apel), păstrează blocul vechi."""
     py = "./venv/bin/python"
     env = dict(os.environ, POARTA_SARE="1", PATH=os.path.join(wt, "scripts", "bin") + ":" + os.environ.get("PATH", ""))
     trepte, teste = {}, []
@@ -283,14 +289,19 @@ def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="
             _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_e2e.log"))
             jx = os.path.join(J, "poarta_e2e.xml")
             _sterge(jx)
-            if sonda_8019():
-                opreste_8019()
-            rc, d = _rulare([py, "scripts/e2e_poarta.py"] + ["--doar=" + x for x in fis] + [os.path.join(J, "e2e_poarta_capturi")],
-                            wt, dict(env, PYTEST_ADDOPTS="--junitxml=" + jx), os.path.join(J, "poarta_e2e.log"))
-            r = citeste_junit(jx, wt)
+            import verificator_design as VD
+            sonda, oprire = sonda_8019 or _sonda_8019, opreste_8019 or _opreste_8019   # citite la apel, nu legate la import
+            ok_port, motiv_port = VD.elibereaza_port(8019, sonda=None if sonda is _SONDA_IMPLICITA else sonda, opreste_fn=None if oprire is _OPRESTE_IMPLICIT else oprire, lot=lot)
+            if ok_port:
+                rc, d = _rulare([py, "scripts/e2e_poarta.py"] + ["--doar=" + x for x in fis] + [os.path.join(J, "e2e_poarta_capturi")],
+                                wt, dict(env, PYTEST_ADDOPTS="--junitxml=" + jx), os.path.join(J, "poarta_e2e.log"))
+                r = citeste_junit(jx, wt)
+                motiv_sesiune = "cod %d fără raport junit" % rc
+            else:
+                rc, d, r, motiv_sesiune = 3, 0.0, [], motiv_port
             f["rezultat"] = rezultat_treapta(rc, r)
         trepte["plasa_e2e"] = d
         teste += [dict(t, treapta="plasa_e2e") for t in r]
         if rc != 0 and not r:   # fără raport junit proaspăt (3 = aplicația n-a pornit
-            teste.append({"nume": "plasa_e2e::sesiune", "treapta": "plasa_e2e", "rezultat": "pica", "infra": True, "durata": d, "mesaj": "cod %d fără raport junit" % rc})
+            teste.append({"nume": "plasa_e2e::sesiune", "treapta": "plasa_e2e", "rezultat": "pica", "infra": True, "durata": d, "mesaj": motiv_sesiune})
     return trepte, teste

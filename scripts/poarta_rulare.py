@@ -6,10 +6,16 @@
   --reia           reluarea după roșu: numai numele picate + testele fișierelor schimbate de la commitul roșu; cel mult două pe lot; nu e rulare completă și nu scrie VERDE.
 Refuzuri (ieșire 1, cu numele): fără POARTA_PLASA_FIX=scripts/plasa_16_2.manifest, manifest nepotrivit, lipsa baza.json, baza care nu e merge-base cu main sau cu alt hash de
 manifest, arbore murdar, SHA deja judecat, lot oprit, a treia rulare completă / a treia reluare, la reluare un fișier în afara celor permise (git diff --name-only <roșu>..HEAD).
-Ieșire: 0 = curat, 1 = refuz sau roșu, 3 = oprire (baza s-a mișcat / a doua regresie nouă / infrastructură)."""
+Ieșire: 0 = curat, 1 = refuz sau roșu, 3 = oprire (baza s-a mișcat / a doua regresie nouă / infrastructură / a treia încercare infra consecutivă), 4 = încercare infra [17.5-U].
+Încercare infra (U.2): după reluarea unică, clasa infra are numai nume `<treapta>::sesiune` (nicio probă n-a rulat), iar celelalte clase sunt goale în afară de regresiile «(a dispărut din rulare)».
+Ea nu consumă o rulare: nu intră în stare[complete] / stare[reluari] / stare[regresii], nu scrie lot_picate_<lot>.json, nu setează stare[oprit] și nu scrie VERDE / ROSU, ci rândul
+`INFRA <sha> <ramura> <data> lot=<lot> <motiv>` în poarta_verdicte.log și o intrare în stare[infra]. Blocul `__main__` o reia singur, în același proces și sub același lacăt, pe aceeași sha,
+în același mod, după `elibereaza_port`, de cel mult 3 ori; a treia încercare consecutivă pune stare[oprit] = «infra ×3: <motiv>» și iese cu 3. Decizia e în `decide` (funcție pură)."""
+import copy
 import datetime
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -65,6 +71,69 @@ def motiv_refuz_reluare(rad, baza, rosu, picate, ex, bt):
         if L.asertiuni(rad, fis).get(k, 0) < next((t.get("asertiuni", 0) for t in bt if L.cheie_asertiuni(t["nume"]) == (fis, k)), 0):
             return "numărul de aserțiuni din %s a scăzut față de bază." % n
     return None
+
+
+def e_rulare_infra(rez):
+    """«Rulare infra» (U.2): clasa infra nu e goală și are numai nume terminate în `::sesiune`, iar nicio altă clasă din `poarta_clasifica.CURAT` nu are intrări, în afară de regresiile cu sufixul
+    «(a dispărut din rulare)» (consecința unei trepte fără raport). Cazul mixt (o picătură reală, o regresie fără sufix, o picătură infra cu raport) NU e rulare infra."""
+    if not rez["infra"] or not all(n.endswith("::sesiune") for n in rez["infra"]):
+        return False
+    for k in C.CURAT:
+        if k == "infra":
+            continue
+        if k == "regresie":
+            if any(not n.endswith("(a dispărut din rulare)") for n in rez[k]):
+                return False
+        elif rez[k]:
+            return False
+    return True
+
+
+def decide(stare, rez, reia, noi, sha, acum, motiv_infra="", rosu=None):
+    """Funcția pură a deciziei de după o rulare (U.2d): ce se numără, ce se scrie, ce cod iese. Nu scrie nimic; `main` scrie numai ce cere ea.
+    -> {infra, curat, oprit (valoarea finală a lui stare[oprit]), stare (copia nouă), scrie_picate, verdict (VERDE|ROSU|REIA_CURAT|REIA_ROSU|INFRA), linie (rândul din poarta_verdicte.log sau None),
+    ultima (scrie|sterge|None pentru scripts/poarta_ultima.txt), cod}. `noi` = picăturile noi la o reluare, `rosu` = commitul roșu al reluării."""
+    st = copy.deepcopy(stare)
+    st.setdefault("infra", [])
+    if e_rulare_infra(rez):
+        st["infra"].append({"sha": sha, "data": acum, "motiv": motiv_infra})
+        trei = len(st["infra"]) >= 3
+        if trei:
+            st["oprit"] = "infra ×3: " + motiv_infra
+        return {"infra": True, "curat": False, "oprit": st.get("oprit"), "stare": st, "scrie_picate": False, "verdict": "INFRA", "linie": "INFRA", "ultima": None, "cod": 3 if trei else 4}
+    oprire = None
+    if rez["infra"]:
+        oprire = "eroare de infrastructură rămasă după o reluare: " + ", ".join(rez["infra"][:5])
+    elif rez["baza_mutata"]:
+        oprire = "test roșu și pe bază, nenumerotat în inventar (baza s-a mișcat): " + ", ".join(rez["baza_mutata"][:5])
+    elif noi:
+        oprire = "picături noi la reluare: " + ", ".join(noi[:5])
+    elif st["regresii"] and set(rez["regresie"] + rez["nou_regresie"]) - set(st["regresii"]):
+        oprire = "a doua regresie de lot nouă: " + ", ".join(sorted(set(rez["regresie"] + rez["nou_regresie"]) - set(st["regresii"]))[:5])
+    st["regresii"] = sorted(set(st["regresii"]) | set(rez["regresie"]) | set(rez["nou_regresie"]))
+    curat = C.este_curat(rez)
+    if reia:
+        st["reluari"].append({"din": rosu, "la": sha, "data": acum, "curat": curat})
+    else:
+        st["complete"].append({"sha": sha, "data": acum, "curat": curat})
+    st["oprit"] = oprire or st["oprit"]
+    st["infra"] = []                         # o rulare care nu e infra golește încercările consecutive
+    v = ("VERDE" if curat else "ROSU") if not reia else ("REIA_CURAT" if curat else "REIA_ROSU")
+    ultima = "sterge" if curat and not reia else ("scrie" if not curat else None)
+    return {"infra": False, "curat": curat, "oprit": oprire, "stare": st, "scrie_picate": True, "verdict": v, "linie": None if reia else v, "ultima": ultima,
+            "cod": 3 if oprire else (0 if curat else 1)}
+
+
+def scrie_stare(d, f_stare, f_picate, sha, picate_acum, rez):
+    """Scrie fișierele de stare cerute de `decide`: lot_stare_<lot>.json întotdeauna, lot_picate_<lot>.json numai când `scrie_picate` (o încercare infra nu îl scrie)."""
+    json.dump(d["stare"], open(f_stare, "w"), indent=1)
+    if d["scrie_picate"]:
+        json.dump({"sha": sha, "picate": picate_acum, "clase": rez}, open(f_picate, "w"), indent=1, ensure_ascii=False)
+
+
+def _o_linie(text, lungime=300):
+    """Text pe o singură linie, fără tab și fără caractere de control (rândul INFRA din poarta_verdicte.log)."""
+    return re.sub(r"[\x00-\x1f\x7f]", " ", text).strip()[:lungime]
 
 
 def main(argv):
@@ -172,33 +241,23 @@ def main(argv):
         rez = C.clasifica(cand, bt, fisiere_lot, RAD, complet)
     picate_acum = sorted(t["nume"] for t in cand if t["rezultat"] == "pica")
     noi = [n for n in picate_acum if reia and n not in picate and not any(n in r for r in rez["restanta"])]
-    oprire = None
-    if rez["infra"]:
-        oprire = "eroare de infrastructură rămasă după o reluare: " + ", ".join(rez["infra"][:5])
-    elif rez["baza_mutata"]:
-        oprire = "test roșu și pe bază, nenumerotat în inventar (baza s-a mișcat): " + ", ".join(rez["baza_mutata"][:5])
-    elif noi:
-        oprire = "picături noi la reluare: " + ", ".join(noi[:5])
-    elif stare["regresii"] and set(rez["regresie"] + rez["nou_regresie"]) - set(stare["regresii"]):
-        oprire = "a doua regresie de lot nouă: " + ", ".join(sorted(set(rez["regresie"] + rez["nou_regresie"]) - set(stare["regresii"]))[:5])
-    stare["regresii"] = sorted(set(stare["regresii"]) | set(rez["regresie"]) | set(rez["nou_regresie"]))
-    curat = C.este_curat(rez)
-    if reia:
-        stare["reluari"].append({"din": rosu, "la": sha, "data": datetime.datetime.now().isoformat(timespec="seconds"), "curat": curat})
-    else:
-        stare["complete"].append({"sha": sha, "data": datetime.datetime.now().isoformat(timespec="seconds"), "curat": curat})
-    stare["oprit"] = oprire or stare["oprit"]
-    json.dump(stare, open(f_stare, "w"), indent=1)
-    json.dump({"sha": sha, "picate": picate_acum, "clase": rez}, open(f_picate, "w"), indent=1, ensure_ascii=False)
-    v = ("VERDE" if curat else "ROSU") if not reia else ("REIA_CURAT" if curat else "REIA_ROSU")
+    acum = datetime.datetime.now().isoformat(timespec="seconds")
+    motiv_infra = _o_linie("; ".join("%s: %s" % (t["nume"], t.get("mesaj", "")) for t in cand if t["nume"] in rez["infra"]))
+    d = decide(stare, rez, reia, noi, sha, acum, motiv_infra, rosu if reia else None)
+    stare = d["stare"]
+    curat, v, oprire = d["curat"], d["verdict"], d["oprit"] if not d["infra"] else None
+    scrie_stare(d, f_stare, f_picate, sha, picate_acum, rez)
     dur = " · ".join("%s %ss" % (k, round(x)) for k, x in trepte.items()) + " · total %ds" % (time.time() - T0)
     mh = L.hash_fisier(os.path.join(RAD, L.MANIFEST))
-    if not reia:
-        open(jv, "a", encoding="utf-8").write("%s %s %s %s manifest=%s completa lot=%s\n" % (v, sha, ram, datetime.datetime.now().astimezone().isoformat(timespec="seconds"), mh, lot))
+    data_v = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+    if d["linie"] == "INFRA":
+        open(jv, "a", encoding="utf-8").write("INFRA %s %s %s lot=%s %s\n" % (sha, ram, data_v, lot, motiv_infra))
+    elif d["linie"]:
+        open(jv, "a", encoding="utf-8").write("%s %s %s %s manifest=%s completa lot=%s\n" % (v, sha, ram, data_v, mh, lot))
     up = os.path.join(RAD, "scripts", "poarta_ultima.txt")
-    if curat and not reia:
+    if d["ultima"] == "sterge":
         os.path.exists(up) and os.remove(up)
-    elif not curat:
+    elif d["ultima"] == "scrie":
         open(up, "w").write(sha + "\n")
     open(os.path.join(RAD, ".poarta_jurnal.log"), "a", encoding="utf-8").write("    DURATE: %s %s · poarta %s · teste %d · %s · %s\n" % (
         datetime.datetime.now().astimezone().isoformat(timespec="seconds"), v, "reluare" if reia else "completă", len(cand), C.rezumat(rez), dur))
@@ -206,11 +265,27 @@ def main(argv):
     for k in C.CURAT:
         for n in rez[k][:20]:
             print("    %s: %s" % (k, n))
+    if d["infra"]:
+        print("[poarta] INFRA (încercarea %d, nu consumă o rulare): %s" % (len(stare["infra"]), motiv_infra))
+        if d["cod"] == 3:
+            print("[poarta] OPRIT: " + stare["oprit"])
+        return d["cod"]
     if oprire:
         print("[poarta] OPRIT: " + oprire)
-        return 3
-    return 0 if curat else 1
+    return d["cod"]
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    incercari = 0
+    while True:
+        rc = main(sys.argv[1:])
+        incercari += 1
+        if rc != 4:
+            break
+        if incercari >= 3:      # a treia încercare infra consecutivă iese cu 3 din `decide`; plasa de siguranță
+            rc = 3
+            break
+        import verificator_design as VD
+        VD.elibereaza_port(8019, lot=JL.lot_curent())      # între încercări (U.1)
+        print("[poarta] relansare după încercarea infra %d, pe aceeași sha, în același mod" % incercari)
+    sys.exit(rc)

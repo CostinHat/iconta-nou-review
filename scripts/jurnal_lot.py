@@ -221,7 +221,7 @@ def durate(lot, cale=None):
 
 
 # --- 17.5-A: citirea pură a jurnalului și fazele timpului de lucru al lui Code (derivate, nu măsurate de hook) ---
-FAZE_LUCRU = ("lucru_pana_la_commit", "lucru_pana_la_poarta", "asteptare_poarta", "reparatie_dupa_rosu", "dupa_verde", "pana_la_publicare", "pytest_intre_commituri")
+FAZE_LUCRU = ("lucru_pana_la_commit", "lucru_pana_la_poarta", "asteptare_poarta", "reparatie_dupa_rosu", "dupa_verde", "dupa_infra", "pana_la_publicare", "pytest_intre_commituri")
 _FAZE_POARTA = ("poarta_verificator", "poarta_pytest", "poarta_plasa")
 
 
@@ -258,8 +258,13 @@ def rulari(rows, lot):
 
 
 def _rez_run(rezultate):
-    """«verde» dacă toate rezultatele finale sunt verde / verde_cu_restante, altfel «rosu» (rosu_N, intrerupt, stop și orice altceva)."""
-    return "verde" if rezultate and all(x == "verde" or x.startswith("verde_") for x in rezultate) else "rosu"
+    """Ordinea rosu > infra > verde: «verde» dacă toate rezultatele finale sunt verde / verde_cu_restante; «infra» [17.5-U] numai dacă toate sunt verde, verde_* sau «infra» și cel puțin unul e «infra»
+    (o rulare fără nicio probă rulată într-o treaptă); altfel «rosu» (rosu_N, intrerupt, stop, lista goală și orice altceva, inclusiv un amestec verde / infra / rosu_1)."""
+    if rezultate and all(x == "verde" or x.startswith("verde_") for x in rezultate):
+        return "verde"
+    if rezultate and all(x == "verde" or x.startswith("verde_") or x == "infra" for x in rezultate):
+        return "infra"
+    return "rosu"
 
 
 def _utc(ora):
@@ -285,7 +290,7 @@ def sesiuni_pytest(rows, lot):
 
 def runde_poarta(rows, lot):
     """Rulările de poartă ale lotului: începe la fiecare «inceput» al lui poarta_verificator și ține până la ultimul «sfarsit» poarta_* dinaintea următorului (în ordinea rândurilor din fișier).
-    -> [{inceput, sfarsit (verdictul), rezultat (verde|rosu)}]; reluarea de infrastructură (poarta_pytest / poarta_plasa a doua oară) rămâne în aceeași rulare."""
+    -> [{inceput, sfarsit (verdictul), rezultat (verde|infra|rosu)}]; reluarea de infrastructură (poarta_pytest / poarta_plasa a doua oară) rămâne în aceeași rulare."""
     rl = [r for r in rows if len(r) > 6 and r[0] == lot]
     starturi = [i for i, r in enumerate(rl) if r[1] == "poarta_verificator" and r[2] == "inceput"]
     iesire = []
@@ -335,7 +340,7 @@ def deriva_lucru(rows, lot):
     for k, run in enumerate(runde):
         adauga("asteptare_poarta", run["inceput"], run["sfarsit"], run["rezultat"])
         if k + 1 < len(runde):
-            adauga("reparatie_dupa_rosu" if run["rezultat"] == "rosu" else "dupa_verde", run["sfarsit"], runde[k + 1]["inceput"])
+            adauga({"rosu": "reparatie_dupa_rosu", "infra": "dupa_infra"}.get(run["rezultat"], "dupa_verde"), run["sfarsit"], runde[k + 1]["inceput"])
     if runde:
         pub, _ = _publicare_dupa(rows, lot, runde[-1]["sfarsit"])
         if pub:

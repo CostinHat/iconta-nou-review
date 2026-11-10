@@ -8,7 +8,7 @@ e scris o singură dată, în `RANDURI` de mai jos (promptul îl repetă cuvânt
 identice). Un singur rând PICĂ = ecranul e nemigrat.
 
   python scripts/verificator_design.py porneste            serverul de lucru pe 8019, din commitul curent (arbore curat), pe baza de TEST
-  python scripts/verificator_design.py opreste
+  python scripts/verificator_design.py opreste             oprește serverul din stare.json și orice server al uneltelor care mai ține portul (elibereaza_port); iese cu 1 dacă portul rămâne ocupat
   python scripts/verificator_design.py prompt <director> <ecran>...   promptul fix, cu lista de ecrane și directorul capturilor
   python scripts/verificator_design.py lista               ecranele din registru (core/catalog_ecrane.json)
   python scripts/verificator_design.py ecran "<nume>" <LATxINALT> <director> [<director_png>]
@@ -76,18 +76,157 @@ EXCEPTII_B = {"Sinteza zilei": "stare", "Capacitate": "stare", "Supervizor": "st
 
 
 # ── serverul de lucru ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-def _raspunde():
+def _raspunde(port=None):
     import urllib.request
     try:
-        return urllib.request.urlopen("http://127.0.0.1:%d/" % PORT, timeout=3).status == 200
+        return urllib.request.urlopen("http://127.0.0.1:%d/" % (port or PORT), timeout=3).status == 200
     except Exception:  # noqa: BLE001
         return False
 
 
+# [17.5-U, U.1] 8019 eliberat sau refuzat cu numele procesului. „Ocupat” = portul apare în LISTEN în `ss -ltn` (nu răspunsul HTTP): un server care nu răspunde încă ține portul la fel.
+def port_ocupat(port=None):
+    r = subprocess.run(["ss", "-ltn", "( sport = :%d )" % (port or PORT)], capture_output=True, text=True)
+    return any(ln.split()[:1] == ["LISTEN"] for ln in r.stdout.splitlines())
+
+
+def _pornit(pid):
+    """Ora pornirii procesului (ISO, din /proc: câmpul 22 din stat + btime) sau „?”."""
+    import datetime
+    import lacat_test
+    tacte = lacat_test.ora_start(pid)
+    if tacte is None:
+        return "?"
+    btime = next(int(ln.split()[1]) for ln in open("/proc/stat", encoding="utf-8") if ln.startswith("btime "))
+    return datetime.datetime.fromtimestamp(btime + int(tacte) / os.sysconf("SC_CLK_TCK")).isoformat(timespec="seconds")
+
+
+def proprietari_port(port=None):
+    """Proprietarii portului după `ss -ltnp`: [{pid, comanda, director (realpath din /proc/<pid>/cwd, None dacă nu se poate citi), pornit}]; un port ocupat al cărui pid nu se vede
+    întoarce [{pid: None, …}] (străin)."""
+    r = subprocess.run(["ss", "-ltnp", "( sport = :%d )" % (port or PORT)], capture_output=True, text=True)
+    pids = sorted({int(x) for x in re.findall(r"pid=(\d+)", r.stdout)})
+    if not pids:
+        return [{"pid": None, "comanda": "", "director": None, "pornit": "?"}]
+    iesire = []
+    for pid in pids:
+        try:
+            comanda = open("/proc/%d/cmdline" % pid, "rb").read().replace(b"\0", b" ").decode("utf-8", "replace").strip()
+        except OSError:
+            comanda = ""
+        try:
+            director = os.path.realpath(os.readlink("/proc/%d/cwd" % pid))
+        except OSError:
+            director = None
+        iesire.append({"pid": pid, "comanda": comanda, "director": director, "pornit": _pornit(pid)})
+    return iesire
+
+
+def _sub(cale, radacina):
+    radacina = os.path.realpath(radacina)
+    return cale == radacina or cale.startswith(radacina.rstrip(os.sep) + os.sep)
+
+
+def radacini_unelte():
+    """Arborii în care trăiesc serverele uneltelor: worktree-urile de lot (~/iconta_lot*) și directoarele temporare ale verificatorului și ale plasei (TEMP, E2E_TEMP)."""
+    import glob
+    return sorted(glob.glob(os.path.expanduser("~/iconta_lot*"))) + [TEMP, os.environ.get("E2E_TEMP", "/tmp/e2e_poarta"), "/tmp/e2e_poarta"]
+
+
+def radacini_productie():
+    return [os.path.expanduser("~/iconta_nou")]
+
+
+def _descrie(p):
+    return "pid %s, comanda %s, directorul %s, pornit %s" % (p["pid"], (p["comanda"] or "?")[:200], p["director"] or "?", p["pornit"])
+
+
+def _motiv_refuz(p, unelte, productie):
+    """Motivul pentru care procesul e „străin” (nu se oprește) sau None când e server al uneltelor. Producția nu se oprește niciodată: orice cwd sub ~/iconta_nou e străin chiar cu «uvicorn» în
+    linia de comandă; un pid invizibil sau un cwd ilizibil e străin, cu refuz."""
+    if p["pid"] is None:
+        return "pid-ul procesului nu se vede"
+    if p["director"] is None:
+        return "directorul de lucru nu se poate citi"
+    if any(_sub(p["director"], r) for r in productie):
+        return "directorul de lucru e sub arborele producției"
+    if "uvicorn" not in p["comanda"]:
+        return "linia de comandă nu conține «uvicorn»"
+    if not any(_sub(p["director"], r) for r in unelte):
+        return "directorul de lucru nu e într-un arbore al uneltelor"
+    try:
+        pg = os.getpgid(p["pid"])
+    except ProcessLookupError:
+        return None
+    if pg in (os.getpgrp(), os.getpgid(os.getppid())):
+        return "grupul de procese e al procesului curent sau al părintelui"
+    return None
+
+
+def _jurnal(lot, detalii, rezultat):
+    try:
+        import jurnal_lot as JL
+        lot = lot or JL.lot_curent()
+        if lot == "?":
+            return
+        JL.sfarsit(lot, "elibereaza_8019", JL.inceput(lot, "elibereaza_8019", detalii), rezultat)
+    except Exception as e:  # noqa: BLE001  — jurnalul nu oprește eliberarea
+        print("[verificator design] jurnalul n-a putut scrie faza elibereaza_8019: %s: %s" % (type(e).__name__, e), file=sys.stderr)
+
+
+def elibereaza_port(port=None, sonda=None, opreste_fn=None, lot=None, unelte=None, productie=None, proprietari=None):
+    """Singura cale prin care se eliberează portul serverului de lucru (U.1). -> (ok, motiv).
+    Port liber: nimic de oprit. Server al uneltelor (linia de comandă conține «uvicorn», directorul de lucru sub un arbore de lot, TEMP sau E2E_TEMP, nu sub producție): tipărește pid-ul,
+    comanda, directorul și ora pornirii, îl oprește (SIGTERM pe grupul de procese, SIGKILL după 20 s), așteaptă până la 30 s ca portul să fie liber și scrie în jurnalul lotului faza
+    «elibereaza_8019», rezultat «ok», cele patru valori în detalii; portul rămas ocupat = refuz. Orice alt proces: nu se oprește nimic, refuz cu aceleași patru valori.
+    `sonda` / `opreste_fn` date (injectate sau suprascrise în teste): blocul vechi, sonda apoi oprirea chemată o singură dată dacă sonda întoarce True, fără proprietar, așteptare sau jurnal."""
+    port = port or PORT
+    if sonda is not None or opreste_fn is not None:
+        if (sonda or _raspunde)():
+            (opreste_fn or opreste)()
+        return True, ""
+    if not port_ocupat(port):
+        return True, ""
+    unelte = radacini_unelte() if unelte is None else unelte
+    productie = radacini_productie() if productie is None else productie
+    props = (proprietari or proprietari_port)(port)
+    for p in props:
+        m = _motiv_refuz(p, unelte, productie)
+        if m:
+            print("[verificator design] REFUZ: portul %d e ocupat de un proces străin (%s): %s" % (port, m, _descrie(p)), file=sys.stderr)
+            return False, "%d ocupat de pid %s (%s)" % (port, p["pid"] if p["pid"] is not None else "invizibil", (p["comanda"] or "necunoscută")[:120])
+    for p in props:
+        print("[verificator design] portul %d e ținut de un server al uneltelor: %s; îl opresc" % (port, _descrie(p)))
+        try:
+            pg = os.getpgid(p["pid"])
+        except ProcessLookupError:
+            continue
+        for sem, asteapta in ((signal.SIGTERM, 20), (signal.SIGKILL, 30)):
+            try:
+                os.killpg(pg, sem)
+            except ProcessLookupError:
+                break
+            for _ in range(asteapta * 2):
+                if not port_ocupat(port):
+                    break
+                time.sleep(0.5)
+            if not port_ocupat(port):
+                break
+    for _ in range(60):                         # până la 30 s ca portul să fie liber
+        if not port_ocupat(port):
+            break
+        time.sleep(0.5)
+    p = props[0]
+    if port_ocupat(port):
+        return False, "%d încă ocupat după oprirea lui pid %s (%s)" % (port, p["pid"], (p["comanda"] or "?")[:120])
+    _jurnal(lot, "; ".join(_descrie(x) for x in props), "ok")
+    return True, ""
+
+
 def porneste():
-    if _raspunde():
-        print("[verificator design] portul %d răspunde deja" % PORT)
-        return 0
+    if port_ocupat(PORT):
+        print("[verificator design] REFUZ: portul %d e ocupat de: %s" % (PORT, "; ".join(_descrie(p) for p in proprietari_port(PORT))), file=sys.stderr)
+        return 1
     if not os.path.exists(os.path.join(STARE_COPIE, "stare.json")):
         print("[verificator design] copia firmelor de test nu există: rulează întâi scripts/dovada_firme_test.py --cloneaza", file=sys.stderr)
         return 2
@@ -122,6 +261,8 @@ def porneste():
 
 
 def opreste():
+    """Oprește serverul din stare.json și apoi orice server al uneltelor care mai ține portul (elibereaza_port): un server pornit altfel sau cu stare.json ștearsă nu rămâne pe port.
+    Ieșire 1 dacă portul rămâne ocupat de un proces străin sau neoprit."""
     if os.path.exists(STARE):
         pid = json.load(open(STARE))["pid"]
         for sem, asteapta in ((signal.SIGTERM, 20), (signal.SIGKILL, 10)):
@@ -135,10 +276,11 @@ def opreste():
                     os.kill(pid, 0)
                 except ProcessLookupError:
                     break
+    ok, motiv = elibereaza_port(PORT)
     import shutil
     shutil.rmtree(TEMP, ignore_errors=True)
-    print("[verificator design] oprit; portul %d %s" % (PORT, "răspunde încă!" if _raspunde() else "liber"))
-    return 0
+    print("[verificator design] oprit; portul %d %s" % (PORT, "liber" if ok else "ocupat: " + motiv))
+    return 0 if ok else 1
 
 
 # ── ecranele ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

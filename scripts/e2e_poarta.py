@@ -210,8 +210,9 @@ def _main(argv):
     if r.returncode != 0:
         print("[e2e] publicarea staticului exportului a eșuat: %s" % (r.stdout + r.stderr).strip()[-400:])
         return 3
-    if _raspunde(PORT):
-        print("[e2e] portul %d răspunde deja (alt proces): refuz — un rezultat de la el n-ar fi al codului probat" % PORT)
+    import verificator_design as VD     # [17.5-U, U.1] „ocupat” = LISTEN în ss, nu răspunsul HTTP: un server care nu răspunde încă ține portul la fel (uvicorn: address already in use)
+    if VD.port_ocupat(PORT):
+        print("[e2e] portul %d e ocupat (alt proces): refuz — un rezultat de la el n-ar fi al codului probat; ținut de: %s" % (PORT, "; ".join(VD._descrie(p) for p in VD.proprietari_port(PORT))))
         return 3
     log = open(os.path.join(iesire, "uvicorn.log"), "w")
     app = subprocess.Popen([py, "-m", "uvicorn", "main:app", "--port", str(PORT)], cwd=arb, env=env, stdout=log,
