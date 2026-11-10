@@ -121,7 +121,7 @@ export const EXPORT_PDF = /^(Cartea mare|Balanță de verificare|Rapoarte comerc
 
 // Ferestrele fără acțiune principală: ecran de stare fără nicio acțiune sau meniu de butoane care doar deschide alte ferestre. Bara rămâne, fără buton principal și
 // fără „Renunță”; închiderea e „←”. Lista pe nume (verificatorul o are la rândul b): `scripts/verificator_design.py::EXCEPTII_B`.
-export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Capacitate|Operațiuni speciale|Facturi|Firme|Import date)$|· CUI /;   // „· CUI ” = fereastra firmei (titlul ei: nume · CUI cod)
+export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Operațiuni speciale|Facturi|Firme|Import date)$|· CUI /;   // „· CUI ” = fereastra firmei (titlul ei: nume · CUI cod)
 
 // [17.3, decizia arhitectului] Bara de jos a ferestrei cu formular nu are „Renunță”: revenirea este „←” din antet, iar „✕” închide fereastra. Păstrează „Renunță” numai
 // fereastra al cărei formular deschis nu are „←” activ (altfel n-ar rămâne cu cale înapoi) și cea cu o „Renunță” cu efect propriu (golește ciorna de pe server). Lista pe nume
@@ -151,6 +151,7 @@ const NU_MUTA = new Set([
   "df-cui-confirma",          // static/js/ecrane/date_firma.js:957 (zona.querySelector)
   "an-trimite",               // static/js/ecrane/admin.js:206 (c.querySelector)
   "coada-confirma",           // static/js/ecrane/coada_trimite.js:80 (zona.querySelector)
+  "r-adauga",                 // static/js/ecrane/rip_ecran.js: [17.5-F, 822] butonul formularului (în #r-zona) e acțiunea ferestrei cât formularul e deschis; proxy-ul pleacă odată cu zona
   "coada-deja-inlocuieste",   // static/js/ecrane/coada_trimite.js:99 (b.querySelector)
 ]);
 const _nuSeMuta = (b) => !b.id || NU_MUTA.has(b.id);
@@ -277,6 +278,13 @@ export function baraDeJos(fer, corp, { renunta }) {
     if (principal && !principal.isConnected) principal = null;
     // acțiunea de bară care are un original în ecran (găsit de catalog): dacă originalul a dispărut sau nu se mai vede, și butonul din bară pleacă odată cu el
     if (principal && principal.__sursa && (!principal.__sursa.isConnected || !_vizibil(principal.__sursa))) { principal.remove(); principal = null; }
+    // [17.5-F, 822] acțiunea mutată din ecran pe care ecranul a ascuns-o (`hidden`) se întoarce la locul ei și bara rămâne liberă pentru acțiunea următoare a ferestrei
+    if (principal && !principal.__sursa && principal.hidden) {
+      const urma = principal.__origine;
+      if (urma && urma.isConnected) { principal.classList.remove("fj-principal"); principal.removeAttribute("data-actiune-principala"); principal.__retras = true; urma.after(principal); }
+      else principal.remove();
+      principal = null;
+    }
     let candidat = faraPrincipal ? null : _alege(corp, bara, principal && principal.__slab ? undefined : !!principal, titlu);
     if (candidat && candidat.__catalog) {
       // [16.8, 760] acțiune găsită de catalog: același nod (id, ascultători) se mută în bară, ca butonul marcat; un singur element vizibil pe ecran. Numai id-urile din

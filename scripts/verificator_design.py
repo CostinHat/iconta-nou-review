@@ -70,7 +70,7 @@ PASTREAZA_RENUNTA = ["Încasări/plăți", "Invitații cabinete", "Notificări",
 
 #: Ecranele fără acțiune principală (stare sau meniu de butoane), pe nume — comanda 15.1-E5 pct.1; lista intră în raport. Aceleași ferestre ca
 #: `static/js/cadru.js::FARA_ACTIUNE_PRINCIPALA`.
-EXCEPTII_B = {"Sinteza zilei": "stare", "Capacitate": "stare", "Supervizor": "stare", "Declarații lucrate": "stare",
+EXCEPTII_B = {"Sinteza zilei": "stare", "Supervizor": "stare", "Declarații lucrate": "stare",
               "Firme": "meniu", "Import date F1": "meniu", "Facturi F1": "meniu", "Operațiuni speciale F1": "meniu", "Activitate": "meniu", "Setări cont": "meniu",
               "Migrare cabinet": "meniu", "Ghiduri": "meniu", "Panou Admin — Anunțuri": "meniu"}
 

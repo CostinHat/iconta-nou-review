@@ -31,6 +31,10 @@ export async function randeazaCapacitate(corp, nav) {
   const asistenti = d.asistenti || [];
   const timp = d.timp || { pe_tip: [], total_mostre: 0 };
 
+  // [17.5-F, 822] „Adaugă asistenți” e acțiunea ferestrei (bara de jos), la orice număr de asistenți
+  const butonAsistenti = `<button type="button" class="buton-secundar" id="cap-adauga-asistenti" data-actiune="POST /asistenti">Adaugă asistenți</button>`;
+  const deschideAsistenti = () => nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
+
   // --- PRAG ECHILIBRU: sub 5 actori care poarta munca (patron inclus),
   // semnalul e gol pe echipa mica -> nu afisam cifrele, ci empty state + indrumare.
   const PRAG_ECHILIBRU = 5;
@@ -41,11 +45,10 @@ export async function randeazaCapacitate(corp, nav) {
           <p>Într-o echipă care crește, munca nu se împarte singură în mod egal.</p>
           <p>Unii duc trei firme, alții șapte — și afli abia când cineva cedează în perioada de declarații. Capacitate îți arată cine cât duce, unde e presiune și unde e loc, ca s-o echilibrezi din vreme, nu în criză.</p>
           <p>Semnalul are sens de la 5 persoane care lucrează declarații în sus. Momentan sunt ${asistenti.length}, inclusiv administratorul dacă are competențe — până atunci, îi vezi pe toți dintr-o privire.</p>
-          <p><button type="button" class="buton-secundar" id="cap-adauga-asistenti" data-actiune="POST /asistenti">Adaugă asistenți</button></p>
+          <p>${butonAsistenti}</p>
         </div>
       </div>`;
-    corp.querySelector("#cap-adauga-asistenti").addEventListener("click",
-      () => nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" }));
+    corp.querySelector("#cap-adauga-asistenti").addEventListener("click", deschideAsistenti);
     return;
   }
 
@@ -124,5 +127,6 @@ export async function randeazaCapacitate(corp, nav) {
     <p class="cap-nota">Durata = de la deschiderea ecranului până la generare. Pe ${cate(timp.total_mostre, "declarație", "declarații")}; devine mai precisă în timp.</p>
   `;
 
-  corp.innerHTML = `<div class="cap-ecran">${sectCabinet}${sectAsist}${sectTimp}</div>`;
+  corp.innerHTML = `<div class="cap-ecran">${sectCabinet}${sectAsist}${sectTimp}<p>${butonAsistenti}</p></div>`;
+  corp.querySelector("#cap-adauga-asistenti").addEventListener("click", deschideAsistenti);
 }

@@ -49,8 +49,8 @@ def _are(motive, *cuvinte):
     return bool(motive) and all(any(c in m for m in motive) for c in cuvinte)
 
 
-def test_refuza_capacitate_scos_din_cadru():
-    assert _are(_refuza(_inlocuieste(TC, "|Capacitate|", "|"), TV), "Capacitate")
+def test_refuza_operatiuni_speciale_scos_din_cadru():
+    assert _are(_refuza(_inlocuieste(TC, "|Operațiuni speciale|", "|"), TV), "Operațiuni speciale")
 
 
 def test_refuza_titlu_adaugat_in_cadru():
@@ -79,9 +79,9 @@ def test_refuza_ecranele_cu_actiune():
 
 
 def test_refuza_forma_nerecunoscuta_si_valoare_straina():
-    expr = "/^(Sinteza zilei|Capacitate|Operațiuni speciale|Facturi|Firme|Import date)$|· CUI /;"
-    assert _are(_refuza(_inlocuieste(TC, expr, 'new Set(["Capacitate"]);'), TV), "nu e recunoscută")
-    assert _are(_refuza(TC, _inlocuieste(TV, '"Capacitate": "stare"', '"Capacitate": "altceva"')), "altceva")
+    expr = "/^(Sinteza zilei|Operațiuni speciale|Facturi|Firme|Import date)$|· CUI /;"
+    assert _are(_refuza(_inlocuieste(TC, expr, 'new Set(["Operațiuni speciale"]);'), TV), "nu e recunoscută")
+    assert _are(_refuza(TC, _inlocuieste(TV, '"Sinteza zilei": "stare"', '"Sinteza zilei": "altceva"')), "altceva")
 
 
 def test_cli_cu_copii_in_director_temporar(tmp_path):
@@ -90,9 +90,9 @@ def test_cli_cu_copii_in_director_temporar(tmp_path):
     v.write_text(TV, encoding="utf-8")
     ok = subprocess.run([sys.executable, SCRIPT, "--cadru", str(c), "--verificator", str(v)], capture_output=True, text=True)
     assert ok.returncode == 0 and ok.stdout.startswith("[liste exceptii] VERDE: ")
-    c.write_text(_inlocuieste(TC, "|Capacitate|", "|"), encoding="utf-8")
+    c.write_text(_inlocuieste(TC, "|Operațiuni speciale|", "|"), encoding="utf-8")
     rosu = subprocess.run([sys.executable, SCRIPT, "--cadru", str(c), "--verificator", str(v)], capture_output=True, text=True)
-    assert rosu.returncode == 1 and rosu.stdout.startswith("[liste exceptii] REFUZ:") and "Capacitate" in rosu.stdout
+    assert rosu.returncode == 1 and rosu.stdout.startswith("[liste exceptii] REFUZ:") and "Operațiuni speciale" in rosu.stdout
 
 
 def test_hook_apeleaza_scriptul_inaintea_sintaxei():

@@ -40,9 +40,9 @@ import { fluxConcediu } from "./flux_concediu.js?v=fc0dc15c22";  /* cm_flux_v1 *
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=98d7beb362";   // [lotul 13, 543] seria chitanțelor pe loc
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=df64dc48ed";   // [lotul 13, 543] seria chitanțelor pe loc
 import { cautaInLista } from "./emitere_ecran.js?v=d0a3cb9a62";   /* [lotul 12, 488] căutarea în listele lungi de articole */
-import { ecranRip } from "./rip_ecran.js?v=b9fdb13bcc";
+import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=50cade9fc8";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
@@ -2110,7 +2110,6 @@ async function ecranElemente(corp, nav, t, sid, nume, an, luna) {
       <label class="camp" id="el-spor-camp" hidden><span class="camp-eticheta">Sporul din contract (%)<span class="oblig">*</span></span><input type="text" inputmode="decimal" class="camp-input" id="el-spor"></label>
       <label class="camp" id="el-suma-camp" hidden><span class="camp-eticheta">Suma brută (lei)<span class="oblig">*</span></span><input type="text" inputmode="decimal" class="camp-input" id="el-suma"></label>
       <div class="camp"><button class="buton-primar" id="el-adauga" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/elemente">Adaugă</button></div>
-      <div class="camp"><button class="buton-secundar" id="el-renunta">Închide</button></div>
     </div>
     <div class="tip-micut" id="el-explicatie">${s0.tarif_orar ? `La orele suplimentare suma se calculează: ore × ${bani(s0.tarif_orar)} lei/oră (salariul de bază ${bani(s0.salariu_baza)} lei / orele normei lunii) × (100% + spor). Sporul e cel puțin 75% (Codul muncii art.123 alin.(2)).` : "Elementul intră în brut, în CAS, CASS și impozit și apare distinct pe fluturaș."}</div>
     <div id="el-msg"></div></div>`;
@@ -2121,7 +2120,6 @@ async function ecranElemente(corp, nav, t, sid, nume, an, luna) {
   };
   corp.querySelector("#el-tip").addEventListener("change", arata);
   arata();
-  corp.querySelector("#el-renunta").addEventListener("click", () => nav.inapoi());
   corp.querySelectorAll(".el-sterge").forEach((x) => x.addEventListener("click", () => {
     confirmaCaseta(x.parentElement || x, "Ștergi elementul de salariu? Statul se recalculează.", async () => {
       try { await api.del(`/tenants/${t.id}/salariati/${sid}/elemente/${x.dataset.id}`); ecranElemente(corp, nav, t, sid, nume, an, luna); }

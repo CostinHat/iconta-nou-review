@@ -83,6 +83,7 @@ export async function ecranRip(corp, nav, t) {
       });
     };
     _tg("#r-toggle", "#r-zona");
+    corp.querySelector("#r-toggle").addEventListener("click", () => { corp.querySelector("#r-toggle").hidden = !corp.querySelector("#r-zona").hidden; });   // [17.5-F, 822] cu formularul deschis acțiunea din bară e „Adaugă (ciornă)”
     const selTip = corp.querySelector("#r-tip"), selCat = corp.querySelector("#r-cat"), selDed = corp.querySelector("#r-ded");
     const umpleCat = () => {
       // [FAPT_FISCAL_NECERUT] fără tip ales nu se arată categoriile niciunuia; categoria se alege și ea

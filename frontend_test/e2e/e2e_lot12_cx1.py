@@ -405,14 +405,17 @@ def test_def_c124_verifica_acum_in_spv_nu_pune_motivul_aplicatiei_pe_seama_anaf(
     pregateste_firma(patron, firma_e2e)
     _primite(patron, firma_e2e)
     pg = patron.pg
-    with pg.expect_response(lambda r: "/spv/verifica-acum" in r.url, timeout=60000) as rr:
-        pg.click("#fp-verifica")
-    pg.wait_for_function("() => { const m = document.querySelector('#fp-mesaj'); return m && m.innerText && !m.innerText.includes('Se citește'); }",
-                         timeout=30000)
+    # [17.5-F, 823] pe o firmă neconectată „Verifică acum în SPV” e inactiv, cu motivul la vedere: clicul nu mai pornește cererea. Răspunsul serverului
+    # (motivul aplicației, nu al ANAF) se cere din pagina deschisă, cu sesiunea ei, pe același drum al ecranului.
+    assert pg.is_disabled("#fp-verifica")
     patron.captura("motivul_aplicatiei")
-    c = rr.value.json()["citire"]
+    assert " ".join(pg.inner_text("#fp-verifica-motiv").split()) == "Firma nu e conectată la SPV"
+    c = pg.evaluate("""async (t) => {
+      const u = performance.getEntriesByType("resource").map((e) => e.name).find((n) => /\\/static\\/js\\/api\\.js/.test(n));
+      const m = await import(u);
+      return (await m.api.post("/tenants/" + t + "/spv/verifica-acum", {})).citire;
+    }""", firma_e2e["tenant_id"])
     assert (c["eroare"], c["de_la_anaf"]) == (sc.MESAJ_CITIRE_NECONECTAT, False), c
-    assert " ".join(pg.inner_text("#fp-mesaj").split()) == sc.MESAJ_CITIRE_NECONECTAT
 
 
 # ── C125 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
