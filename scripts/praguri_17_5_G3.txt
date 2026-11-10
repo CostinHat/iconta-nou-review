@@ -1,0 +1,36 @@
+produs
+lot: 17.5-G3
+max hook 132
+max poarta_verificator 128
+max poarta_pytest 742
+max poarta_plasa 1610
+runde_verificator_max: 2
+sursa pragurilor 17.5-G3: generate de scripts/praguri_automate.py la 2026-11-10T13:31:06+02:00 din .lot_jurnal.log; loturi folosite: 17.5-E2, 17.5-U, 17.5-F (3)
+  hook: maxim 110 s (lotul 17.5-F, rularea 678194-1794306324798) din 15 rulari complete, 0 rulari «intrerupt» ignorate, prag 132 s
+  poarta_verificator: maxim 106 s (lotul 17.5-U, rularea 3928074-1794290932490) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 128 s
+  poarta_pytest: maxim 618 s (lotul 17.5-F, rularea 713903-1794307023305) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 742 s
+  poarta_plasa: maxim 1341 s (lotul 17.5-F, rularea 713903-1794307641258) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 1610 s
+limite aplicate de scripts/poarta_rulare.py (:185-186 si :215-219): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_G3.txt (nou)
+  scripts/praguri_17_5_G.txt (adus de 17.5-G)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_de_validat_17_5_G.py, adus de 17.5-G)
+  core/coada_api.py
+  core/uc_eu.py
+  core/uc_control_fiscal.py
+  core/test_lot0710b_coada_document.py (numai funcția de test nouă «conturi» a pct.3 G1; testele existente din fișier nu se schimbă)
+  static/js/ecrane/tabel_note.js
+  static/js/ecrane/validat.js
+  static/js/ecrane/firme.js (numai marginile din jurul căutării la Casă și Registru jurnal, pct.3 G3)
+  static/stil.css (numai dacă G3 o cere)
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  frontend_test/e2e/e2e_de_validat_17_5_G.py (adus de 17.5-G, din ramura)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_G3/
+  docs/dovezi/17_5_G/ (adus de 17.5-G)
+continuare: 17.5-G3 continua 17.5-G2 pe acelasi cod (commitul 9d2319a53fbb08f683cf17ae348ce0b79d941f43), dupa «OPRIT — gata: 17.5-G2 nepublicat» din 10.11.2026 18:56 (poarta verde; hook 169 s fata de 132 si poarta_verificator 151 s fata de 128 din cauza unei scanari rulate de arhitect pe acelasi server; raportul fara sectiunea «Rulări „intrerupt” pe fază»): nicio modificare de produs, praguri neschimbate.

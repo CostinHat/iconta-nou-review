@@ -1,0 +1,46 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "nr_randuri",
+   "valoare": "12",
+   "cheie": "dom:.cab-grila button.cab-card|numar"
+  },
+  {
+   "id": "f.2",
+   "pas": "validat",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #val-titlu|numar"
+  },
+  {
+   "id": "a.1",
+   "pas": "validat",
+   "operator": "contine",
+   "valoare": "=",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #val-ciorne tbody.tn-nota tr.tn-rand td:nth-child(5)|text"
+  },
+  {
+   "id": "f.3",
+   "pas": "control",
+   "operator": "contine",
+   "valoare": "F1 Comert Stoc",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-lista tbody tr|text"
+  },
+  {
+   "id": "a.2",
+   "pas": "control",
+   "operator": "contine",
+   "valoare": "Diferențe stocuri — nu se poate verifica",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-lista tbody tr|text"
+  },
+  {
+   "id": "a.3",
+   "pas": "control",
+   "operator": "lipseste",
+   "valoare": "nu se poate verifica:",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-lista tbody tr|text"
+  }
+ ]
+}
