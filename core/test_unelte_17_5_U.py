@@ -646,7 +646,7 @@ def test_u1_server_din_alt_director_e_refuzat_cu_pid_si_director_iar_serverul_ra
     servere.append(srv)
     ok, motiv = _vd().elibereaza_port(port, lot=LOT, unelte=[str(tmp_path / "unelte")], productie=[])
     err = capsys.readouterr().err
-    assert not ok and ("pid %d" % srv.p.pid) in motiv and "uvicorn" in motiv
+    assert not ok and motiv.startswith("%d ocupat de pid %d (" % (port, srv.p.pid))   # comanda din motiv se taie la 120 de caractere: calea temporară sub xdist poate ascunde numele scriptului
     assert ("pid %d" % srv.p.pid) in err and srv.director in err and srv.viu()
 
 
@@ -838,7 +838,7 @@ def test_u2_ii_8019_ocupat_de_un_proces_strain_plasa_nu_porneste_si_treapta_e_in
     monkeypatch.setattr(VD, "elibereaza_port", lambda p=None, **kw: orig(port, unelte=[str(tmp_path / "unelte")], productie=[], **kw))
     _, teste = L.ruleaza_trepte(wt, j, LOT, pytest_ids=[], e2e_fisiere=["e2e_x.py"], verificator=False)
     sesiune = [t for t in teste if t["nume"] == "plasa_e2e::sesiune"]
-    assert len(sesiune) == 1 and sesiune[0]["infra"] and ("%d ocupat de pid %d" % (port, srv.p.pid)) in sesiune[0]["mesaj"] and "uvicorn" in sesiune[0]["mesaj"]
+    assert len(sesiune) == 1 and sesiune[0]["infra"] and sesiune[0]["mesaj"].startswith("%d ocupat de pid %d (" % (port, srv.p.pid))
     assert not martor.exists() and srv.viu() and _rezultate_plasa(str(tmp_path / "j.log")) == ["infra"]
 
 
