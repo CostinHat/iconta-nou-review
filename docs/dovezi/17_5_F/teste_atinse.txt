@@ -1,0 +1,45 @@
+# 4.5 — teste care citesc locurile schimbate (grep din comandă): 3 fișiere
+core/test_liste_exceptii_16_8_B.py
+frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py
+frontend_test/e2e/e2e_lot12_cx1.py
+# în plus (citesc textul «Operațiune nouă», nu sunt în grep-ul comenzii):
+core/test_lot10_fereastra_tabel.py
+core/test_lot10_rezumat_fix.py
+
+## core pe P
+..........s............................................................. [ 97%]
+..                                                                       [100%]
+=========================== short test summary info ============================
+SKIPPED [1] core/test_liste_exceptii_16_8_B.py:109: numai în lotul 16.8-B
+73 passed, 1 skipped in 93.17s (0:01:33)
+## e2e_lot12_cx1.py pe P
+E                 - waiting 100ms
+E               58 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c114_chitanta_pozata_nu_ofera_factura_platita_prin_banca
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c120_xml_intre_alte_doua_firme_ajuns_in_lista_nu_se_valideaza
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c135_nota_de_casa_a_facturii_arata_seria_separat
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c144_banca_si_casa_nu_ofera_proforma
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_chitanta_fara_cota_numeste_data_zz_ll_aaaa
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_incasarea_fara_chitanta_numeste_felul_in_cuvinte
+6 failed, 8 passed in 215.36s (0:03:35)
+
+real	3m35.689s
+user	0m13.258s
+sys	0m4.473s
+## e2e_lot12_cx1.py pe bază (~/iconta_nou, 276a3ccf)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c114_chitanta_pozata_nu_ofera_factura_platita_prin_banca
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c120_xml_intre_alte_doua_firme_ajuns_in_lista_nu_se_valideaza
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c135_nota_de_casa_a_facturii_arata_seria_separat
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c144_banca_si_casa_nu_ofera_proforma
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_chitanta_fara_cota_numeste_data_zz_ll_aaaa
+FAILED frontend_test/e2e/e2e_lot12_cx1.py::test_def_c152_d394_incasarea_fara_chitanta_numeste_felul_in_cuvinte
+6 failed, 8 passed in 223.21s (0:03:43)
+## 4.6: 8019 liber, baza restaurată

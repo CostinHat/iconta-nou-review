@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.114 · 9 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.115 · 10 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -117,6 +117,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   (`selectDaNu` — Da/Nu —, registrul Operațiunilor, e-Transport) pun `data-butoane` o dată, pentru toate. O listă ale cărei opțiuni vin din
   date (firme, conturi, țări, salariați, articole) rămâne listă. Gard: verificator `LISTA_SCURTA` + `core/test_lot13_ds_ferestre.py`.
   [v2.114, lotul 17.5-E2, deficiența 820] O listă cu o singură variantă se arată ca text (`alegereText`) și, dacă nu avea valoare, îi pune singură valoarea și anunță ecranul ca la o alegere a omului: evenimentul `change` (care urcă), trimis după ce ecranul și-a legat ascultătorii, o singură dată; lista care avea deja valoarea nu trimite nimic. Ecranul nu are cod propriu pentru acest caz.
+  [v2.115, lotul 17.5-F, deficiențele 822 și 823] Un buton care nu se aplică din lipsa unei conexiuni (ex. „Verifică acum în SPV” pe o firmă fără conexiune SPV) rămâne în bară, `disabled`, cu motivul la vedere lângă el (`.ds-motiv-inactiv`, „Firma nu e conectată la SPV”), nu activ și nu ascuns. Cât formularul unei operațiuni e deschis, acțiunea lui („Adaugă (ciornă)” la Încasări/plăți) este butonul principal din bara de jos, iar butonul care deschide formularul nu se mai vede. O fereastră cu o acțiune proprie („Adaugă asistenți” la Capacitate) nu intră în `FARA_ACTIUNE_PRINCIPALA`. Fără „Închide” în corpul unei ferestre: închiderea e „✕”, revenirea „←”.
 - **Pagina principală are aceeași structură la ambele roluri (v2.88, 12.10.2026, comanda Costin, deficiențele 225 + 231: „«Recomandă» și
   «Suport» sunt două benzi înguste, una lângă alta, deasupra cardurilor, la ambele roluri, ca la Cabinet.” · „la Ana, scoate meniul din
   stânga care repetă cardurile. Pagina principală are aceeași structură la ambele roluri.”).** La contabilul-șef și la asistent: banda de

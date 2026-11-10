@@ -1,0 +1,9 @@
+Ferestrele catalogului (verificatorul de design, 1920x1080 și 1366x768) a căror literă a–h sau al căror buton principal se schimbă, înainte → după (pe 276a3ccf → b9125fa4):
+- Balanță de verificare F1 1920x1080: litere bc → c; buton principal «Descarcă PDF» → «Descarcă PDF»
+- Capacitate 1366x768: litere - → -; buton principal «None» → «Adaugă asistenți»
+- Capacitate 1920x1080: litere - → -; buton principal «None» → «Adaugă asistenți»
+- Declarație D301 F3 pasul 2 1366x768: litere deh → d; buton principal «Pune în „De depus” →» → «Pune în „De depus” →»
+- Registru încasări/plăți F4 + Operațiune nouă 1366x768: litere - → -; buton principal «+ Operațiune nouă» → «Adaugă (ciornă)»
+- Registru încasări/plăți F4 + Operațiune nouă 1920x1080: litere - → -; buton principal «+ Operațiune nouă» → «Adaugă (ciornă)»
+- Registru jurnal F1 1920x1080: litere cg → b; buton principal «+ Notă nouă» → «None»
+total ferestre-rezoluții schimbate: 7
