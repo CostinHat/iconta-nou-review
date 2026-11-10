@@ -1,0 +1,9 @@
+comanda: python docs/dovezi/17_5_G/masuri_17_5_G.py 1366 masuri_1366_inainte.txt
+viewport: 1366×768, ceas 2026-11-03 10:00:00
+De validat, coloana «Conturi» goală: 59 din 59 rânduri
+bara de jos cu nimic bifat (două note fictive): «Completează datele cerute în fereastră, ca să poți continua.»
+Casă: text de îndrumare 318 px, câmp 194 px, TĂIAT; «Caută: partener, document, sumă, factură»
+Bancă: text de îndrumare 273 px, câmp 194 px, TĂIAT; «Caută: sumă, CUI, descriere, factură»
+Registru jurnal: text de îndrumare 356 px, câmp 194 px, TĂIAT; «Caută: cont, document, partener, sumă, nr. crt.»
+De validat: text de îndrumare 430 px, câmp 194 px, TĂIAT; «Caută: firmă, cont, document, partener, sumă, declarație»
+Control fiscal, rândul F1: «F1 Comert Stoc SRL în recalculare — rezumatul nu e încă la zi (date schimbate sau o versiune nouă a aplicației) · TVA nedeclarat · Salarii nedeclarate · Facturi netransmise în SPV după termen · SPV fără drept pe firmă nu se poate verifica Deschide»

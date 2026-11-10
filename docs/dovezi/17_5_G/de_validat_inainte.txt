@@ -1,0 +1,147 @@
+comanda: ./venv/bin/python -m pytest -q -p no:cacheprovider frontend_test/e2e/e2e_de_validat_17_5_G.py (ieșire 1, durata 36s)
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________________________ test_de_validat_17_5_G ____________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_de_validat_17_5_G(browser):
+        from core import ceas_proba
+        parcurs = _incarca_parcurs_17_1()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            tenant_id = None
+            # (1) G1 — răspunsurile reale
+            try:
+                with pg.expect_response(lambda r: URL_CIORNE.match(r.url) is not None and r.request.method == "GET", timeout=30000) as rc:
+                    deschis = _de_validat(pg)
+                try:
+                    fr = (rc.value.json() or {}).get("firme") or []
+                    tenant_id = fr[0]["tenant_id"] if fr else None
+                except Exception:   # noqa: BLE001
+                    tenant_id = None
+            except Exception:   # noqa: BLE001
+                deschis = _de_validat(pg)
+            if not deschis:
+                rele.append("(1) fereastra De validat nu s-a deschis")
+            else:
+                randuri = pg.evaluate(JS_CONTURI)
+                if not randuri:
+                    rele.append("(1) De validat nu are niciun rând în tabelele de note")
+                deschise = [r for r in randuri if r["detaliu_deschis"]]
+                if deschise:
+                    rele.append("(1) %d rânduri au detaliul deschis (proba cere rândurile închise)" % len(deschise))
+                goale = [r for r in randuri if not r["text"]]
+                if goale:
+                    rele.append("(1) coloana Conturi e goală pe %d din %d rânduri (prima: tabelul %s, rândul %d)" % (
+                        len(goale), len(randuri), goale[0]["tabel"], goale[0]["rand"]))
+            # (2) G2 — două note fictive în coadă (page.route), nimic bifat
+            p2 = b.new_page()
+            p2.route(URL_COADA, _json_route(_note_fictive(tenant_id if tenant_id is not None else 0)))
+            try:
+                if not _de_validat(p2):
+                    rele.append("(2) fereastra De validat nu s-a deschis")
+                elif not p2.locator(TOP + "#val-aproba-selectate").count():
+                    rele.append("(2) bara „Validează selectate” lipsește (cu două note de validat)")
+                else:
+                    bifate = p2.locator(TOP + ".val-sel:checked").count()
+                    if bifate:
+                        rele.append("(2) %d note bifate la deschidere" % bifate)
+                    m = p2.locator(TOP + ".fj-motiv")
+                    txt = _norm(m.first.inner_text()) if m.count() else ""
+                    if TEXT_G2 not in txt:
+                        rele.append("(2) bara de jos arată «%s», nu «%s»" % (txt, TEXT_G2))
+            finally:
+                p2.close()
+            # (3) G3 — textul de îndrumare al căutării, întreg, la 1366
+            masuri = []
+            if _card(pg, parcurs, F1, "#fa-casa"):
+                try:
+                    pg.wait_for_selector(TOP + "#c-cauta", timeout=10000)
+                except Exception:   # noqa: BLE001 — luna ceasului (noiembrie) n-are operațiuni de casă pe F1: luna dinainte (octombrie)
+                    try:
+                        pg.click(TOP + "#c-prev", timeout=10000)
+                        pg.wait_for_selector(TOP + "#c-cauta", timeout=20000)
+                    except Exception:   # noqa: BLE001
+                        pass
+                pg.wait_for_timeout(1000)
+                masuri.append(("Casă", pg.evaluate(JS_CAUTARE, "#c-cauta")))
+            else:
+                masuri.append(("Casă", None))
+            if _card(pg, parcurs, F1, "#fa-banca"):
+                try:
+                    pg.wait_for_selector(TOP + "#bk-cauta", timeout=30000)
+                except Exception:   # noqa: BLE001
+                    pass
+                pg.wait_for_timeout(1000)
+                masuri.append(("Bancă", pg.evaluate(JS_CAUTARE, "#bk-cauta")))
+            else:
+                masuri.append(("Bancă", None))
+            if _card(pg, parcurs, F1, "#fa-jurnal"):
+                try:
+                    pg.wait_for_selector(TOP + "#jn-cauta", timeout=20000)
+                except Exception:   # noqa: BLE001
+                    try:
+                        pg.click(TOP + "#j-prev", timeout=10000)
+                        pg.wait_for_selector(TOP + "#jn-cauta", timeout=20000)
+                    except Exception:   # noqa: BLE001
+                        pass
+                pg.wait_for_timeout(1000)
+                masuri.append(("Registru jurnal", pg.evaluate(JS_CAUTARE, "#jn-cauta")))
+            else:
+                masuri.append(("Registru jurnal", None))
+            masuri.append(("De validat", pg.evaluate(JS_CAUTARE, "#val-cauta") if _de_validat(pg) else None))
+            for nume, m in masuri:
+                if not m or not m["vizibil"]:
+                    rele.append("(3) %s: câmpul de căutare lipsește sau nu se vede" % nume)
+                elif not m["placeholder"].strip():
+                    rele.append("(3) %s: câmpul de căutare n-are text de îndrumare" % nume)
+                elif m["text"] > m["camp"]:
+                    rele.append("(3) %s: textul de îndrumare «%s» are %d px, câmpul %.0f px" % (nume, m["placeholder"], m["text"], m["camp"]))
+            # (4) G4 — stările goale (page.route: coadă goală, nicio ciornă)
+            p4 = b.new_page()
+            p4.route(URL_COADA, _json_route({"coada": []}))
+            p4.route(URL_CIORNE, _json_route({"total": 0, "firme": []}))
+            try:
+                if not _de_validat(p4):
+                    rele.append("(4) fereastra De validat nu s-a deschis")
+                else:
+                    for zona, asteptat in (("#val-note", GOL_NOTE), ("#val-ciorne", GOL_CIORNE)):
+                        g = p4.locator(TOP + zona + " .stare-goala:visible")
+                        txt = _norm(g.first.inner_text()) if g.count() else ""
+                        if txt != asteptat:
+                            rele.append("(4) %s: starea goală e «%s», nu «%s»" % (zona, txt, asteptat))
+            finally:
+                p4.close()
+            # (5) G5 — rândul F1 din Control fiscal
+            try:
+                _acasa(pg)
+                pg.click("button.cab-card:has([data-cheie='control'])", timeout=10000)
+                pg.wait_for_selector(TOP + "#cf-lista tbody tr", timeout=60000)
+                pg.wait_for_timeout(1500)
+                r = pg.locator(TOP + "#cf-lista tbody tr", has_text=F1)
+                if not r.count():
+                    rele.append("(5) rândul %s lipsește din Control fiscal" % F1)
+                else:
+                    t = _norm(r.first.inner_text())
+                    if "Diferențe stocuri — nu se poate verifica" not in t:
+                        rele.append("(5) rândul F1 nu conține «Diferențe stocuri — nu se poate verifica»: «%s»" % t[:200])
+                    if "nu se poate verifica:" in t:
+                        rele.append("(5) rândul F1 conține încă «nu se poate verifica:»: «%s»" % t[:200])
+            except Exception as e:   # noqa: BLE001
+                rele.append("(5) Control fiscal nu s-a deschis: %s" % str(e)[:100])
+        finally:
+            b.close()
+>       assert not rele, "De validat și Control fiscal 17.5-G: %s" % "; ".join(rele)
+E       AssertionError: De validat și Control fiscal 17.5-G: (1) coloana Conturi e goală pe 59 din 59 rânduri (prima: tabelul val-c-tabel, rândul 0); (2) bara de jos arată «Completează datele cerute în fereastră, ca să poți continua.», nu «Bifează notele pe care le validezi împreună.»; (3) Casă: textul de îndrumare «Caută: partener, document, sumă, factură» are 318 px, câmpul 194 px; (3) Bancă: textul de îndrumare «Caută: sumă, CUI, descriere, factură» are 273 px, câmpul 194 px; (3) Registru jurnal: textul de îndrumare «Caută: cont, document, partener, sumă, nr. crt.» are 356 px, câmpul 194 px; (3) De validat: textul de îndrumare «Caută: firmă, cont, document, partener, sumă, declarație» are 430 px, câmpul 194 px; (4) #val-note: starea goală e «Nicio notă nu așteaptă validarea.», nu «Nicio notă nu așteaptă validarea. Aici ajung notele trimise la validare de colegi și de tine; ciornele tale sunt mai jos.»; (4) #val-ciorne: starea goală e «Nicio notă de-a ta în ciornă.», nu «Nicio notă de-a ta în ciornă. Notele noi le faci din fereastra firmei, în Registru jurnal.»; (5) rândul F1 nu conține «Diferențe stocuri — nu se poate verifica»: «F1 Comert Stoc SRL în recalculare — rezumatul nu e încă la zi (date schimbate sau o versiune nouă a aplicației) · TVA nedeclarat · Salarii nedeclarate · Facturi netransmise în SPV după termen · SPV fă»
+E       assert not ['(1) coloana Conturi e goală pe 59 din 59 rânduri (prima: tabelul val-c-tabel, rândul 0)', '(2) bara de jos arată «Co...alidat: textul de îndrumare «Caută: firmă, cont, document, partener, sumă, declarație» are 430 px, câmpul 194 px', ...]
+
+frontend_test/e2e/e2e_de_validat_17_5_G.py:276: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_de_validat_17_5_G.py::test_de_validat_17_5_G - A...
+1 failed in 35.37s

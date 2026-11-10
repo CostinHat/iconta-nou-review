@@ -1,0 +1,9 @@
+comanda: python docs/dovezi/17_5_G/masuri_17_5_G.py 1366 masuri_1366_dupa.txt
+viewport: 1366×768, ceas 2026-11-03 10:00:00
+De validat, coloana «Conturi» goală: 0 din 59 rânduri
+bara de jos cu nimic bifat (două note fictive): «Bifează notele pe care le validezi împreună.»
+Casă: text de îndrumare 255 px, câmp 294 px, ÎNTREG; «Caută: partener, document, sumă»
+Bancă: text de îndrumare 210 px, câmp 294 px, ÎNTREG; «Caută: sumă, CUI, descriere»
+Registru jurnal: text de îndrumare 247 px, câmp 294 px, ÎNTREG; «Caută: cont, document, partener»
+De validat: text de îndrumare 210 px, câmp 294 px, ÎNTREG; «Caută: firmă, cont, partener»
+Control fiscal, rândul F1: «F1 Comert Stoc SRL 9 restanțe · 5 de urmărit · 2 declarații nu se pot verifica · Diferențe stocuri — nu se poate verifica · TVA nedeclarat · Salarii nedeclarate · Facturi netransmise în SPV după termen · SPV fără drept pe firmă restanță Deschide»

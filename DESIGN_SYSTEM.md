@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.115 · 10 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.116 · 10 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -118,6 +118,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   date (firme, conturi, țări, salariați, articole) rămâne listă. Gard: verificator `LISTA_SCURTA` + `core/test_lot13_ds_ferestre.py`.
   [v2.114, lotul 17.5-E2, deficiența 820] O listă cu o singură variantă se arată ca text (`alegereText`) și, dacă nu avea valoare, îi pune singură valoarea și anunță ecranul ca la o alegere a omului: evenimentul `change` (care urcă), trimis după ce ecranul și-a legat ascultătorii, o singură dată; lista care avea deja valoarea nu trimite nimic. Ecranul nu are cod propriu pentru acest caz.
   [v2.115, lotul 17.5-F, deficiențele 822 și 823] Un buton care nu se aplică din lipsa unei conexiuni (ex. „Verifică acum în SPV” pe o firmă fără conexiune SPV) rămâne în bară, `disabled`, cu motivul la vedere lângă el (`.ds-motiv-inactiv`, „Firma nu e conectată la SPV”), nu activ și nu ascuns. Cât formularul unei operațiuni e deschis, acțiunea lui („Adaugă (ciornă)” la Încasări/plăți) este butonul principal din bara de jos, iar butonul care deschide formularul nu se mai vede. O fereastră cu o acțiune proprie („Adaugă asistenți” la Capacitate) nu intră în `FARA_ACTIUNE_PRINCIPALA`. Fără „Închide” în corpul unei ferestre: închiderea e „✕”, revenirea „←”.
+  [v2.116, lotul 17.5-G, deficiențele 824–828] Textul de îndrumare al câmpului de căutare (`htmlCautare`) se vede întreg: în câmp stă un text scurt (`scurt`), iar lista completă a ce se caută rămâne în `aria-label`; lățimea câmpului o dă `.tn-cautare > input.camp-input` (320 px). Stările goale din De validat spun golul, cauza și ieșirea («Nicio notă nu așteaptă validarea. Aici ajung notele trimise la validare de colegi și de tine; ciornele tale sunt mai jos.»; «Nicio notă de-a ta în ciornă. Notele noi le faci din fereastra firmei, în Registru jurnal.»). Un buton inactiv își poartă motivul propriu în `title` («Bifează notele pe care le validezi împreună.» la «Validează selectate»), iar bara de jos îl arată în locul mesajului general. Coloana „Conturi” din tabelul de note se scrie din `r.conturi` (venit de la server) cât timp liniile nu sunt încărcate. Pe rândul firmei din Control fiscal, fiecare verificare gri se citește «<eticheta> — nu se poate verifica».
 - **Pagina principală are aceeași structură la ambele roluri (v2.88, 12.10.2026, comanda Costin, deficiențele 225 + 231: „«Recomandă» și
   «Suport» sunt două benzi înguste, una lângă alta, deasupra cardurilor, la ambele roluri, ca la Cabinet.” · „la Ana, scoate meniul din
   stânga care repetă cardurile. Pagina principală are aceeași structură la ambele roluri.”).** La contabilul-șef și la asistent: banda de

@@ -1,0 +1,3 @@
+comanda: ./venv/bin/python -m pytest -q -p no:cacheprovider frontend_test/e2e/e2e_de_validat_17_5_G.py (ieșire 0, durata 35s)
+.                                                                        [100%]
+1 passed in 34.62s

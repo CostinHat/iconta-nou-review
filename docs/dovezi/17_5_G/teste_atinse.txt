@@ -1,0 +1,20 @@
+Teste care citesc locurile schimbate (CLAUDE.md pct.4.5), pe P = 8b31f164.
+Comanda de selecție: grep -lE "nu se poate verifica:|motiv_neverificabil|Nicio notă nu așteaptă validarea|Nicio notă de-a ta în ciornă|val-aproba-selectate|Validează selectate|lista_coada|eu_ciorne|/eu/ciorne|ciorne_proprii|conturiScurt|htmlCautare|#(val|jn|bk|c)-cauta|Completează datele cerute" pe core/test_*.py și frontend_test/e2e/e2e_*.py
+Număr: 29 fișiere (21 core, 8 e2e, între care testul arhitectului e2e_de_validat_17_5_G.py), plus core/test_get_fara_scriere.py = 22 core.
+
+CORE (22 fișiere, o rulare pe P, 125 s): 508 trecute, 1 picat: core/test_lot10_search_path_pool.py::test_niciun_test_nou_nu_lasa_search_path_in_pool — testul nou al lotului folosea `SET search_path` de sesiune; trecut pe `SET LOCAL search_path` (aceeași schimbare a căii, numai în tranzacția fixture-ului), apoi core/test_lot0710b_coada_document.py + core/test_lot10_search_path_pool.py: 7 trecute. Nicio altă picătură; niciun test existent actualizat.
+  Funcția nouă core/test_lot0710b_coada_document.py::test_coada_da_conturile_documentului_in_ordinea_notelor: TRECUTĂ (nu sărită).
+  core/test_absenta_nu_e_neaplicabil.py (textul D205 din core/control_fiscal_api.py, neatins): trecut.
+
+E2E din plasă (le rulează poarta): e2e_de_validat_17_5_G.py (rulat și la 4.2/4.4: înainte pică la (1)(2)(3)(4)(5), după trece), e2e_pilot_x09.py.
+
+E2E atinse, în afara plasei, câte unul pe P (8019 din arborele P, baza restaurată), apoi pe bază (din ~/iconta_nou, 9a1c31f5, baza restaurată) numai ce a picat pe P:
+  e2e_bloc_e.py            P: 1 picat, 34 trecute (288 s)      bază: același 1 picat (test_def_167_pdf_balanta_cu_cui_si_data_in_antet) -> restanță de bază
+  e2e_lot10_principal.py   P: 2 trecute (12 s)
+  e2e_lot13_firme2.py      P: 5 picate, 7 trecute, 1 eroare (120 s) bază: aceleași 5 picate (602_563, 605, 607_624, 610, 618) -> restanțe de bază; eroarea = garda de final de sesiune „suita a lăsat rânduri care trimit la o firmă inexistentă: firma_rezumat”, aceeași pe bază
+  e2e_lot12_ui2.py         P: 1 picat, 3 trecute (23 s)        bază: același 1 picat (test_def_459_1) -> restanță de bază
+  e2e_lot5_c3.py           P: 3 picate, 2 trecute (74 s)       bază: aceleași 3 picate (259, 260, c39) -> restanțe de bază
+  e2e_lot5_id.py           P: 1 picat (34 s)                   bază: același (test_def_258) -> restanță de bază
+  e2e_lot93d.py            P: 7 trecute, 1 eroare (41 s)       bază: aceeași eroare de sesiune (firma_rezumat) -> restanță de bază
+Rezultat pe bază (o rulare, 221 s): 11 picate, 2 trecute, 1 eroare — fiecare test picat pe P e picat și pe bază. Nimic nu s-a reparat, nimic numai-pe-P.
+Ieșirile complete: ~/iconta_lot17_5g nu le păstrează în depozit (jurnale /tmp); sumarul de mai sus e copia lor.

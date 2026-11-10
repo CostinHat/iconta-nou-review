@@ -1,0 +1,9 @@
+Verificatorul de design, înainte (vd_inainte/) → după (vd_dupa/), 210 rulări (105 ferestre × 2 rezoluții), ferestrele catalogului a căror literă a–h sau al căror buton principal se schimbă (nume: înainte → după):
+- Balanță de verificare F1 1920x1080: litere pică «c» → «bc»; buton principal «Descarcă PDF» → «Descarcă PDF»
+- Declarație D301 F3 pasul 2 1366x768: litere pică «d» → «d»; buton principal «Trimite în coadă →» → «Pune în „De depus” →»
+- Declarație D301 F3 pasul 2 1920x1080: litere pică «d» → «d»; buton principal «Trimite în coadă →» → «Pune în „De depus” →»
+
+Nota (ferestre neatinse de lot): «Balanță de verificare F1» a dat «b» (Descarcă PDF de două ori) la 1920×1080 în vd_dupa, iar o reluare izolată după restaurarea bazei l-a dat la 1366×768 și nu la 1920×1080: apare alternativ, pe una din rezoluții, într-o fereastră pe care lotul nu o atinge (balanță, neschimbată în diff). Nu e efectul lotului; rămâne declarată ca neconstantă a verificatorului.
+
+Ferestre cu cel puțin o literă „pică” (la cel puțin una din cele două rezoluții): înainte 30 → după 30 (din ieșirile verificatorului, vd_inainte_ieșire.txt și vd_dupa_ieșire.txt).
+Nota 2 (neatinsă de lot): la «Declarație D301 F3 pasul 2» butonul principal e «Trimite în coadă →» înainte și «Pune în „De depus” →» după, cu aceeași literă d; textul vine din codul pașilor declarației, pe care lotul nu-l atinge (diff-ul nu are fișiere de declarații), deci diferența nu vine din lot; cauza probabilă e starea bazei la momentul rulării (nemăsurată aici).

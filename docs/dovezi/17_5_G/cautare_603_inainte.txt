@@ -1,0 +1,6 @@
+comanda: python docs/dovezi/17_5_G/masuri_17_5_G.py 603 cautare_603_inainte.txt
+viewport: 603×590, ceas 2026-11-03 10:00:00
+Casă: text de îndrumare 318 px, câmp 314 px, TĂIAT; «Caută: partener, document, sumă, factură»
+Bancă: text de îndrumare 273 px, câmp 314 px, ÎNTREG; «Caută: sumă, CUI, descriere, factură»
+Registru jurnal: text de îndrumare 356 px, câmp 314 px, TĂIAT; «Caută: cont, document, partener, sumă, nr. crt.»
+De validat: text de îndrumare 430 px, câmp 314 px, TĂIAT; «Caută: firmă, cont, document, partener, sumă, declarație»
