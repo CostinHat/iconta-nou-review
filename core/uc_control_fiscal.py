@@ -66,8 +66,9 @@ def motiv_neverificabil(f):
     if (f.get("neclar") or 0) > 0:
         parti.append(_cate(f["neclar"], "declarație nu se poate verifica", "declarații nu se pot verifica"))
     gri = [(c or {}).get("eticheta") for c in (f.get("contabil") or []) if (c or {}).get("stare") == "gri"]
-    if gri:
-        parti.append("nu se poate verifica: " + ", ".join(str(x) for x in gri if x))
+    # [17.5-G, 828] fiecare verificare gri își spune singură că nu se poate verifica (o listă după «nu se poate verifica:» se citea
+    # ca și cum și constatările de după ea n-ar fi verificate)
+    parti += ["%s — nu se poate verifica" % x for x in gri if x]
     return " · ".join(parti) or None
 
 

@@ -58,3 +58,24 @@ def test_migrarea_leaga_elementele_vechi_de_document(tx):
     el = [x for x in c.lista_coada(conn, cab, "la_senior") if x["tenant_id"] == tid]
     assert sorted(len(x["membri_ids"]) for x in el) == [2, 4]
     assert m.aplica(conn, tid) == []                                         # idempotentă
+
+
+def test_coada_da_conturile_documentului_in_ordinea_notelor(tx):
+    """[17.5-G, 824] GET /coada întoarce pe elementul-document lista perechilor distincte «debit = credit», în ordinea notelor, citită din
+    schema fiecărei firme (conexiunea rutei nu e pe schema firmei: `search_path` = public). MUTAȚIE: citirea liniilor fără numele
+    calificat al schemei -> relația nu există -> pică; reuniunea în altă ordine -> pică."""
+    from core import coada_api as c
+    conn, cur, tid, cab, asist, valid = tx
+    _ca(cur, asist)
+    nid, ids = _nir_cu_patru_note(conn, cur)
+    cur.execute("UPDATE inregistrari_linii SET cont_debit='371', cont_credit='401' WHERE inregistrare_id=%s", (ids[1],))
+    cur.execute("UPDATE inregistrari_linii SET cont_debit='4426', cont_credit='401' WHERE inregistrare_id=%s", (ids[3],))
+    assert len(c.pune_notele_in_coada(conn, cab, tid, asist)) == 1
+    cur.execute("SET LOCAL search_path TO public")           # așa rulează conexiunea rutei GET /coada (core/uc_coada.py)
+    try:
+        el = [x for x in c.lista_coada(conn, cab, "la_senior") if x["tenant_id"] == tid]
+    finally:
+        cur.execute('SET LOCAL search_path TO "%s", public' % SCH)
+    assert len(el) == 1 and len(el[0]["membri_ids"]) == 4
+    assert el[0]["conturi"] == ["4111 = 707", "371 = 401", "4426 = 401"]
+    assert "_sch" not in el[0]

@@ -847,7 +847,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
           else if (typeof n.link === "string" && (n.link === "validat" || n.link.startsWith("validat:")) && window._navGlobal) {
             const id = parseInt(n.link.split(":")[1], 10);
             try {
-              const { randeazaValidat } = await import("./ecrane/validat.js?v=0bce9c8abc");
+              const { randeazaValidat } = await import("./ecrane/validat.js?v=0cf7590b9c");
               window._navGlobal.acasa();
               window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, Number.isFinite(id) ? { evidentiaza: id } : {}), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu s-a putut deschide De validat:", e); }
@@ -857,7 +857,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=7396e03327");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=d0f2defa36");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=f9faf1adae");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

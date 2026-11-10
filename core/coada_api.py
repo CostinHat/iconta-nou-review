@@ -570,6 +570,25 @@ def ciorne_dintre(cur, ids):
     return [r["id"] if isinstance(r, dict) else r[0] for r in cur.fetchall()]
 
 
+def conturi_note(cur, ids, schema=None):
+    """[17.5-G, 824] Conturile notelor `ids` ale unei firme: {id notă: perechile distincte «debit = credit», în ordinea liniilor}.
+    Coloana „Conturi” din De validat se scrie din ele, fără deschiderea rândului. `schema` = firma pe care se citesc liniile când
+    conexiunea nu e pe schema ei (GET /coada rulează fără schema firmei): tabelul se numește calificat."""
+    out = {}
+    if not ids:
+        return out
+    from psycopg2 import sql as _sql
+    tabel = _sql.SQL("{}.inregistrari_linii").format(_sql.Identifier(schema)) if schema else _sql.SQL("inregistrari_linii")
+    cur.execute(_sql.SQL("SELECT inregistrare_id, cont_debit, cont_credit FROM {} WHERE inregistrare_id = ANY(%s) ORDER BY inregistrare_id, id")
+                .format(tabel), (list(ids),))
+    for r in cur.fetchall():
+        rand = r["inregistrare_id"], "%s = %s" % (r["cont_debit"], r["cont_credit"])
+        perechi = out.setdefault(rand[0], [])
+        if rand[1] not in perechi:
+            perechi.append(rand[1])
+    return out
+
+
 def ciorne_proprii(conn, tenant_id, uid):
     """[Retest 2 pct.12, comanda Costin 09.10.2026] „Ciornele proprii ale contabilului trebuie să fie vizibile undeva fără
     căutare.” Notele CIORNĂ scrise de `uid` pe firmă, cu starea lor în coadă (`la_senior` = trimisă la validare, `respinsa` +
@@ -582,13 +601,14 @@ def ciorne_proprii(conn, tenant_id, uid):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(_SELECT_NOTE + "WHERE i.status = 'ciorna' AND i.creat_de_id = %s ORDER BY i.data, i.id", (uid,))
         note = [dict(n) for n in cur.fetchall()]
+        conturi = conturi_note(cur, [n["id"] for n in note])
     st = stari_note(conn, tenant_id, [n["id"] for n in note])
     for n in note:
         c = st.get(n["id"]) or {}
         n["in_coada"], n["motiv_respingere"] = c.get("stare_coada"), c.get("motiv_respingere")
     return [{"id": n["id"], "data": n["data"].isoformat(), "descriere": n["descriere"], "document_ref": n["document_ref"],
              "rulaj": float(n["rulaj"] or 0), "rulaj_storno": float(n["rulaj_storno"] or 0),
-             "in_coada": n["in_coada"], "motiv_respingere": n["motiv_respingere"]} for n in note]
+             "in_coada": n["in_coada"], "motiv_respingere": n["motiv_respingere"], "conturi": conturi.get(n["id"], [])} for n in note]
 
 
 def pune_notele_in_coada(conn, cabinet_id, tenant_id, uid):
@@ -788,6 +808,7 @@ def lista_coada(conn, cabinet_id, stare=None):
                 d.pop("verdict_amprenta", None), d.pop("verdict_la", None),
                 d.pop("verdict_versiune", None), xml, d.pop("_conf", None))
             _surse, _schema, _are_cerere = d.pop("_surse", None), d.pop("_schema", None), d.pop("_are_cerere", None)
+            d["_sch"] = _schema   # numai până la `conturi` (mai jos); nu iese în răspuns
             if d["fel"] != "nota":
                 # [297 + 298] declarația activă: depășită dacă documentele perioadei s-au schimbat după generare; sursele nevalidate numite
                 activa = d["stare"] in STARI_ACTIVE and _schema
@@ -816,6 +837,16 @@ def lista_coada(conn, cabinet_id, stare=None):
             d["termen"], d["termen_depasit"] = _termen_cozii(d, activa=d["stare"] in STARI_ACTIVE)
             d["gata_de_depus"] = gata_de_depus(d["verdict_stare"]) and not d.get("depasita") and not d["blocaj_depunere"]
             out.append(d)
+        # [17.5-G, 824] conturile fiecărei note, o interogare pe firmă (tabelul calificat: conexiunea nu e pe schema firmei)
+        _pe_firma = {}
+        for d in out:
+            if d["fel"] == "nota" and d["_sch"] and (d.get("nota") or {}).get("inregistrare_id") is not None:
+                _pe_firma.setdefault(d["_sch"], []).append(d["nota"]["inregistrare_id"])
+        _conturi = {sch: conturi_note(cur, ids, sch) for sch, ids in _pe_firma.items()}
+        for d in out:
+            _sch = d.pop("_sch")
+            if d["fel"] == "nota":
+                d["conturi"] = _conturi.get(_sch, {}).get((d.get("nota") or {}).get("inregistrare_id"), [])
         # [lotul 07.10 pct.9-10] notele aceluiași document, în aceeași stare, sunt UN element (o validare, o cifră)
         grupate, vazute = [], {}
         for d in out:
@@ -836,6 +867,8 @@ def lista_coada(conn, cabinet_id, stare=None):
             # (aceeași clasă: și id-urile membrilor — capul e el însuși membru, iar `d["id"] = …` îi schimba id-ul în listă)
             note_membri = [(m["id"], m["nota"]) for m in sorted(membri, key=lambda m: m["id"])] if membri and len(membri) > 1 else None
             if note_membri:
+                _cm = {m["id"]: m.get("conturi") or [] for m in membri}
+                d["conturi"] = list(dict.fromkeys(c for i, _n in note_membri for c in _cm[i]))   # reuniunea, în ordinea notelor
                 d["nota"] = _payload_grup(note_membri)
                 d["id"] = note_membri[0][0]
                 d["membri_ids"] = [i for i, _n in note_membri]

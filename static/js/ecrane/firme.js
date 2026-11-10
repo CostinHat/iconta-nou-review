@@ -60,7 +60,7 @@ import { ecranCompensari } from "./compensari_ecran.js?v=ed3e73a2f0";  // [lotul
 import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=89ded88a66";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
-import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=4fde44bc3c";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
+import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=e3ad67e841";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -4541,7 +4541,7 @@ async function ecranCasa(corp, nav, t) {
         <button class="buton-secundar" id="c-next">luna →</button></p>
       <p><button class="buton-secundar" id="c-toggle" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni">+ Dispoziție nouă</button>
         ${butonRand("buton-secundar", `id="c-chit-toggle" data-actiune="POST /tenants/{tenant_id}/chitante"`, "+ Chitanță fără factură", motivChit)}
-        ${ops.length ? `<span style="margin-left:12px">${htmlCautare("c", { stari: STARI_CASA, valoare: filtru.text, stare: filtru.stare, eticheta: "Caută: partener, document, sumă, factură" })}</span>` : ""}</p>
+        ${ops.length ? `<span style="margin-left:12px">${htmlCautare("c", { stari: STARI_CASA, valoare: filtru.text, stare: filtru.stare, eticheta: "Caută: partener, document, sumă, factură", scurt: "Caută: partener, document, sumă" })}</span>` : ""}</p>
       <div id="c-rand-mesaj"></div>
       </div>
       ${tabel}`;
@@ -5138,7 +5138,7 @@ async function ecranBanca(corp, nav, t) {
     const chei = Object.keys(EXPLICATII_BK).filter((k) => nr[k]);
     const expl = (k) => `<div class="${EXPLICATII_BK[k].atentie ? "ca-mesaj" : "ci-mesaj"} tn-explicatie" id="bk-expl-${k}"><b>${esc(EXPLICATII_BK[k].titlu)} (${nr[k]}):</b> ${esc(EXPLICATII_BK[k].text)}</div>`;
     const at = chei.filter((k) => EXPLICATII_BK[k].atentie), inf = chei.filter((k) => !EXPLICATII_BK[k].atentie);
-    loc.innerHTML = htmlCautare("bk", { stari: STARI_BK, valoare: filtru.text, stare: filtru.stare, eticheta: "Caută: sumă, CUI, descriere, factură" });
+    loc.innerHTML = htmlCautare("bk", { stari: STARI_BK, valoare: filtru.text, stare: filtru.stare, eticheta: "Caută: sumă, CUI, descriere, factură", scurt: "Caută: sumă, CUI, descriere" });
     // [lotul 14, 687] explicațiile semnelor stau în cardul lor („10 fără potrivire · 2 operațiuni ale băncii”), nu deasupra tabelului
     const explicatiiHtml = chei.length ? `<div class="tn-explicatii" id="bk-explicatii">${at.length ? `<div class="caseta-atentie">${at.map(expl).join("")}</div>` : ""}${inf.length ? `<div class="caseta-info">${inf.map(expl).join("")}</div>` : ""}</div>` : "";
     siraCarduri(corp.querySelector("#bk-carduri"), [cardFormate, chei.length ? { id: "explicatii", ton: at.length ? "atentie" : "info",

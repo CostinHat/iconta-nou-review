@@ -29,11 +29,11 @@
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
-import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=4fde44bc3c";  // [lotul 12, 622] tabelul comun de note
+import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=e3ad67e841";  // [lotul 12, 622] tabelul comun de note
 import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";
 import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=fb823092ed";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=d0f2defa36";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=f9faf1adae";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -158,6 +158,7 @@ export function titluCoada({ note = 0, deValidat = 0, deDepus = 0, poateDepune =
 // de note, apoi de declarații. Unde dreptul lipsește, spune cine face pasul, nu „tu”.
 const CINE_VALIDEAZA = "un coleg care are dreptul «Poate valida»";
 const CINE_DEPUNE = "un coleg care are dreptul «Poate depune»";
+const MOTIV_VALIDEAZA_SELECTATE = "Bifează notele pe care le validezi împreună.";   // [17.5-G, 825] motivul butonului inactiv: bara de jos îl arată în locul mesajului general
 export function introCoada({ poateValida = false, poateDepune = false, admin = false, patruOchi = false, politica = false, note = 0 }) {
   // [deficiența 323, retestul 19.10.2026: „In De depus, textul de sus vorbește tot de «notele pe care asistenții le trimit la validare»”]
   // fără note de validat, textul nu vorbește deloc de note: spune numai ce e pe ecran — declarațiile
@@ -286,7 +287,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
   corp.innerHTML = `
     <div class="rezumat-fix" id="val-rezumat">
       <h2 class="pf-titlu" id="val-titlu">${esc(titlu)}</h2>
-      <p class="pf-intro" id="val-cautare">${htmlCautare("val", { valoare: corp._val.text, eticheta: "Caută: firmă, cont, document, partener, sumă, declarație" })}</p>
+      <p class="pf-intro" id="val-cautare">${htmlCautare("val", { valoare: corp._val.text, eticheta: "Caută: firmă, cont, document, partener, sumă, declarație", scurt: "Caută: firmă, cont, partener" })}</p>
       <div id="val-carduri"></div>
       <div id="val-confirmare"></div>
       <div class="mig-eroare" id="val-eroare"></div>
@@ -295,7 +296,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     <section id="val-note">
       <div class="cf-grup-titlu cf-galben" id="val-note-titlu">Note de validat (${noteDeValidatInCoada(noteDeValidat)})</div>
       ${noteDeValidat.length ? htmlTabelNote({ pre: "val-n", randuri: randuriCoada, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })
-        : `<div class="stare-goala" id="val-note-gol">Nicio notă nu așteaptă validarea.</div>`}
+        : `<div class="stare-goala" id="val-note-gol">Nicio notă nu așteaptă validarea. Aici ajung notele trimise la validare de colegi și de tine; ciornele tale sunt mai jos.</div>`}
     </section>
     <section id="val-declaratii">
       <div class="cf-grup-titlu" id="val-decl-titlu">Declarații (${nDecl})</div>
@@ -309,7 +310,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
       ${ciorne == null ? `<div class="msg-eroare" id="val-ciorne-eroare">Nu s-au putut încărca notele tale în ciornă${eroareCiorne ? " (" + esc(eroareCiorne) + ")" : ""}.</div>`
         : ciorneMele.length ? `<p class="mig-intro">Notele scrise de tine care nu sunt încă în evidență și nici în „Note de validat”. ${valideaza ? "Le validezi de aici" : "Le trimiți la validare de aici"} sau din Registrul jurnal al firmei; acolo se și șterg.</p>
           ${htmlTabelNote({ pre: "val-c", randuri: randuriCiorne, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })}`
-        : `<div class="stare-goala" id="val-ciorne-gol">Nicio notă de-a ta în ciornă.</div>`}
+        : `<div class="stare-goala" id="val-ciorne-gol">Nicio notă de-a ta în ciornă. Notele noi le faci din fereastra firmei, în Registru jurnal.</div>`}
     </section>
     </div>
   `;
@@ -442,7 +443,7 @@ function randNotaCoada(c, firme, perm) {
   return {
     cheie: c.id, atribute: { "coada-ids": (c.membri_ids || [c.id]).join(",") },   // [lotul 07.10 pct.8-9] documentul, cu toate notele lui
     data: n.data, firma: numeFirma(firme, c.tenant_id), explicatie: descr || c.eticheta, document: n.document_ref || "",
-    partener: n.partener || "", rulaj: Number(n.rulaj != null ? n.rulaj : n.total) || 0, storno: Number(n.rulaj_storno || 0), linii: null,
+    partener: n.partener || "", rulaj: Number(n.rulaj != null ? n.rulaj : n.total) || 0, storno: Number(n.rulaj_storno || 0), linii: null, conturi: c.conturi,
     stare: c.retrimisa ? { fel: "la_validare", text: "Retrimisă după respingere", culoare: "var(--galben-text)" }
       : { fel: "la_validare", text: "De validat", culoare: "var(--galben-text)" },
     semne: [!n.document_ref && { fel: "fara_doc", text: "fără document" }, nrNote > 1 && { fel: "document", text: cate(nrNote, "notă", "note") + " ale documentului" }].filter(Boolean),
@@ -465,7 +466,7 @@ function randCiornaMea(f, n, valideaza) {
     b.push(`<button class="buton-secundar val-ciorna-trimite" data-trimite-ciorna="${n.id}" data-tenant="${f.tenant_id}" data-actiune="POST /tenants/{tenant_id}/jurnal/{nota_id}/retrimite">${respinsa ? "Trimite din nou la validare" : "Trimite la validare"}</button>`);
   return {
     cheie: `c${f.tenant_id}-${n.id}`, atribute: { ciorna: n.id, tenant: f.tenant_id }, tenant: f.tenant_id, notaId: n.id,
-    data: n.data, firma: f.firma, explicatie: n.descriere, document: n.document_ref || "", rulaj: n.rulaj, storno: n.rulaj_storno, linii: null,
+    data: n.data, firma: f.firma, explicatie: n.descriere, document: n.document_ref || "", rulaj: n.rulaj, storno: n.rulaj_storno, linii: null, conturi: n.conturi,
     stare: n.in_coada === "la_senior" ? { fel: "la_validare", text: "Trimisă la validare", culoare: "var(--galben-text)" }
       : respinsa ? { fel: "respinsa", text: "Respinsă la validare", culoare: "var(--rosu)" }
       : { fel: "ciorna", text: "Nevalidată, netrimisă", culoare: "var(--galben-text)" },
@@ -577,7 +578,7 @@ function barMaiMulte(zN, corp, nav) {
   const bara = document.createElement("div");
   bara.className = "dec-bara";
   bara.innerHTML = `<label class="set-bifa"><input type="checkbox" id="val-sel-toate"> <span>Selectează toate (${bife.length})</span></label>
-    <button class="buton-primar" id="val-aproba-selectate" data-actiune="POST /coada/aproba-mai-multe" disabled>Validează selectate</button>
+    <button class="buton-primar" id="val-aproba-selectate" data-actiune="POST /coada/aproba-mai-multe" title="${MOTIV_VALIDEAZA_SELECTATE}" disabled>Validează selectate</button>
     <div id="val-mai-multe-msg"></div>`;
   const ref = zN.querySelector(".tn-explicatii") || zN.querySelector(".tn-tabel");
   zN.insertBefore(bara, ref);
@@ -585,7 +586,7 @@ function barMaiMulte(zN, corp, nav) {
   // „Selectează toate” = cele care se văd (căutarea poate ascunde rânduri)
   const vazute = () => bife.filter((b) => !b.closest("tbody").hidden);
   const alese = () => bife.filter((b) => b.checked && !b.closest("tbody").hidden).map((b) => Number(b.dataset.nota));
-  const actualizeaza = () => { const n = alese().length; btn.disabled = !n; btn.textContent = n ? `Validează selectate (${n})` : "Validează selectate"; };
+  const actualizeaza = () => { const n = alese().length; btn.disabled = !n; btn.title = n ? "" : MOTIV_VALIDEAZA_SELECTATE; btn.textContent = n ? `Validează selectate (${n})` : "Validează selectate"; };
   bife.forEach((b) => b.addEventListener("change", actualizeaza));
   toate.addEventListener("change", () => { vazute().forEach((b) => { b.checked = toate.checked; }); actualizeaza(); });
   btn.addEventListener("click", async () => {

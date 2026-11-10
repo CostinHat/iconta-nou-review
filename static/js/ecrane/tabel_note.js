@@ -65,10 +65,16 @@ export function inStare(r, stare) {
 }
 
 // conturile notei, pe scurt: perechile distincte „debit = credit”, primele două, apoi „+ n”
+function perechiScurt(perechi) {
+  return perechi.slice(0, 2).join(", ") + (perechi.length > 2 ? ` + ${perechi.length - 2}` : "");
+}
 function conturiScurt(linii) {
   if (!linii) return "";
-  const perechi = [...new Set(linii.map((l) => `${l.debit || "?"} = ${l.credit || "?"}`))];
-  return perechi.slice(0, 2).join(", ") + (perechi.length > 2 ? ` + ${perechi.length - 2}` : "");
+  return perechiScurt([...new Set(linii.map((l) => `${l.debit || "?"} = ${l.credit || "?"}`))]);
+}
+// [17.5-G, 824] înainte de deschiderea rândului, conturile vin de la server (`r.conturi`: perechile «debit = credit» gata făcute)
+function conturiRand(r) {
+  return r.linii ? conturiScurt(r.linii) : perechiScurt(r.conturi || []);
 }
 
 /** Rulajul unui set de linii: partea înregistrată (sume pozitive) și stornarea (sumele cu minus, în valoare absolută). */
@@ -130,7 +136,7 @@ export function htmlTabelNote(opt) {
         ${firma ? `<td>${esc(r.firma || "")}</td>` : ""}
         <td>${esc(r.explicatie || "fără explicație")}</td>
         <td>${r.document ? esc(r.document) : `<span class="tip-desc">fără document</span>`}</td>
-        <td>${esc(conturiScurt(r.linii))}</td>
+        <td>${esc(conturiRand(r))}</td>
         <td class="fd-td-num">${celulaSuma(r)}</td>
         <td><span style="color:${stare.culoare || "var(--ardezie)"};font-weight:600">● ${esc(stare.text || "")}</span>${semne}</td>
         <td class="tn-actiuni">${r.actiuni || ""}</td>
@@ -231,9 +237,10 @@ export function locInDetaliu(buton) {
 }
 
 /** Câmpul de căutare și filtrul de stare (în rezumatul lipit sus). `stari` = [[cheie, eticheta]] (fără filtru: căutarea singură). */
-export function htmlCautare(pre, { stari = null, valoare = "", stare = "", eticheta = "Caută: cont, document, partener, sumă, nr. crt." } = {}) {
+export function htmlCautare(pre, { stari = null, valoare = "", stare = "", eticheta = "Caută: cont, document, partener, sumă, nr. crt.", scurt = "Caută: cont, document, partener" } = {}) {
+  // [17.5-G, 826] în câmp stă textul scurt, care încape întreg; lista completă a ce se caută rămâne în `aria-label` (și o citește cititorul de ecran)
   return `<span class="tn-cautare">
-    <input type="search" id="${pre}-cauta" class="camp-input" placeholder="${esc(eticheta)}" aria-label="${esc(eticheta)}" autocomplete="off" value="${esc(valoare)}">
+    <input type="search" id="${pre}-cauta" class="camp-input" placeholder="${esc(scurt)}" aria-label="${esc(eticheta)}" autocomplete="off" value="${esc(valoare)}">
     ${stari ? `<select id="${pre}-stare" class="camp-input" aria-label="Starea notelor arătate">${stari.map(([k, e]) => `<option value="${esc(k)}"${k === stare ? " selected" : ""}>${esc(e)}</option>`).join("")}</select>` : ""}
     <span class="tip-desc" id="${pre}-numar" aria-live="polite"></span></span>`;
 }
