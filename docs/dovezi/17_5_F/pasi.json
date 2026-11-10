@@ -1,0 +1,32 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text"
+  },
+  {
+   "id": "f.2",
+   "pas": "primite",
+   "operator": "nr_randuri",
+   "valoare": "1",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #fp-verifica|numar"
+  },
+  {
+   "id": "h.1",
+   "pas": "primite",
+   "operator": "text_contine",
+   "valoare": "Verifică acum în SPV",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.1",
+   "pas": "primite",
+   "operator": "activ",
+   "valoare": "false",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #fp-verifica|activ"
+  }
+ ]
+}

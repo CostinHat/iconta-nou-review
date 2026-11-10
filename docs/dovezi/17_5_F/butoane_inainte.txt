@@ -1,0 +1,87 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__________________________ test_butoane_la_loc_17_5_F __________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_butoane_la_loc_17_5_F(browser):
+        from core import ceas_proba
+        parcurs = _incarca_parcurs_17_1()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            # (2)
+            if _card(pg, parcurs, "F1 Comert Stoc", "#fa-facturi"):
+                try:
+                    pg.click(TOP + "#fac-primite", timeout=10000)
+                    pg.wait_for_selector(TOP + "#fp-actiuni", state="attached", timeout=20000)
+                    pg.wait_for_timeout(2500)
+                except Exception:   # noqa: BLE001
+                    pass
+            if not pg.locator(TOP + "#fp-actiuni").count():
+                rele.append("(2) fereastra Facturi primite nu s-a deschis")
+            v = pg.locator(TOP + "#fp-verifica, " + TOP + ".fj-butoane button:has-text('Verifică acum în SPV')")
+            activ = [i for i in range(v.count()) if v.nth(i).is_enabled()]
+            if activ:
+                rele.append("(2) „Verifică acum în SPV” e activ pe o firmă neconectată la SPV")
+            pr = pg.locator(TOP + ".fereastra .fj-butoane .fj-principal")
+            if pr.count() != 1 or "Verifică acum în SPV" not in pr.first.inner_text():
+                rele.append("(2) butonul principal al ferestrei nu e singurul „Verifică acum în SPV” (inactiv): %d butoane principale" % pr.count())
+            # (3)
+            if _card(pg, parcurs, "F5 SRL Salariati", "#fa-salariati"):
+                try:
+                    pg.locator(TOP + "button, " + TOP + "tr, " + TOP + "td", has_text="Ionescu Vasile").first.click(timeout=10000)
+                    pg.wait_for_timeout(2000)
+                    pg.locator(TOP + "button", has_text="Prime, sporuri").first.click(timeout=10000)
+                    pg.wait_for_selector(TOP + "#el-formular", state="attached", timeout=20000)
+                    pg.wait_for_timeout(1500)
+                    if pg.locator(TOP + "#el-renunta").count():
+                        rele.append("(3) Prime, sporuri are încă „Închide” în corp (#el-renunta)")
+                except Exception as e:   # noqa: BLE001
+                    rele.append("(3) fereastra Prime, sporuri nu s-a deschis: %s" % str(e)[:100])
+            # (4)
+            PR = TOP + ".fereastra .fj-butoane .fj-principal"
+            try:
+                pg.evaluate("sessionStorage.removeItem('iconta_fereastra_deschisa')")
+                pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+                pg.wait_for_selector(".cab-grila button.cab-card", timeout=30000)
+                if pg.get_attribute("#fg-sef button.firme-grup-btn", "aria-expanded") != "true":   # Capacitate stă în „Pentru șeful de cabinet”, pliată la încărcare
+                    pg.click("#fg-sef button.firme-grup-btn", timeout=10000)
+                    pg.wait_for_timeout(500)
+                pg.click("button.cab-card:has([data-cheie='capacitate'])", timeout=10000)
+                pg.wait_for_timeout(3000)
+                t = pg.locator(PR).first.inner_text() if pg.locator(PR).count() else ""
+                if "Adaugă asistenți" not in t:
+                    rele.append("(4) Capacitate: butonul principal e «%s», nu „Adaugă asistenți”" % " ".join(t.split()))
+            except Exception as e:   # noqa: BLE001
+                rele.append("(4) Capacitate nu s-a deschis: %s" % str(e)[:100])
+            # (5)
+            if _card(pg, parcurs, "F4 PFA Sistem Real", "#fa-rip"):
+                try:
+                    pg.click(TOP + "#r-toggle", timeout=10000)
+                    pg.wait_for_timeout(2000)
+                    t = pg.locator(PR).first.inner_text() if pg.locator(PR).count() else ""
+                    if "Adaugă (ciornă)" not in t:
+                        rele.append("(5) Încasări/plăți cu formularul deschis: butonul principal e «%s»" % " ".join(t.split()))
+                except Exception as e:   # noqa: BLE001
+                    rele.append("(5) formularul Încasări/plăți nu s-a deschis: %s" % str(e)[:100])
+            else:
+                rele.append("(5) cardul Încasări/plăți lipsește pe F4")
+        finally:
+            b.close()
+>       assert not rele, "butoane la loc 17.5-F: %s" % "; ".join(rele)
+E       AssertionError: butoane la loc 17.5-F: (2) „Verifică acum în SPV” e activ pe o firmă neconectată la SPV; (3) Prime, sporuri are încă „Închide” în corp (#el-renunta); (4) Capacitate: butonul principal e «», nu „Adaugă asistenți”; (5) Încasări/plăți cu formularul deschis: butonul principal e «+ Operațiune nouă»
+E       assert not ['(2) „Verifică acum în SPV” e activ pe o firmă neconectată la SPV', '(3) Prime, sporuri are încă „Închide” în corp (#...ipal e «», nu „Adaugă asistenți”', '(5) Încasări/plăți cu formularul deschis: butonul principal e «+ Operațiune nouă»']
+
+frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py:119: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py::test_butoane_la_loc_17_5_F
+1 failed in 29.09s
+
+real	0m29.500s
+user	0m2.322s
+sys	0m0.743s
