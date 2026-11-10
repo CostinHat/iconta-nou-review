@@ -36,7 +36,7 @@ import { lunaDeLucru, uitaLunaDeLucru } from "../luna_lucru.js?v=04c41c46c1";   
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=fc0dc15c22";  /* cm_flux_v1 */
+import { fluxConcediu } from "./flux_concediu.js?v=bcbc8c1e9b";  /* cm_flux_v1 */
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
@@ -49,7 +49,7 @@ import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] �
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
 import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=57d2586d73";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=610141de2a";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=bb694a36e2";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=cea4f49410";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2b4b10dbf6";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
@@ -80,6 +80,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
   container.querySelector("#firme-adauga").addEventListener("click", () => {
     nav.deschide("Adaugă firmă", (corp) => {  /* firma_noua_v1 */
       corp.innerHTML = `
+        <div data-formular>
         <div class="camp" style="margin-bottom:14px">
           <label for="fn-cui" class="camp-eticheta">CUI<span class="oblig">*</span></label>
           <input class="camp-input" id="fn-cui" placeholder="RO12345678 sau 12345678" autocomplete="off">
@@ -103,6 +104,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
         </div>
         <button class="buton-primar" id="fn-salveaza" data-actiune="POST /tenants|POST /tenants/{tenant_id}/client-acces">Adaugă firma</button>
         <p id="fn-msg" role="alert" style="margin:8px 0 0"></p>
+        </div>
       `;
       const cui = corp.querySelector("#fn-cui"), nume = corp.querySelector("#fn-nume");
       const info = corp.querySelector("#fn-cui-info"), btn = corp.querySelector("#fn-salveaza");
@@ -2100,7 +2102,7 @@ async function ecranElemente(corp, nav, t, sid, nume, an, luna) {
       ${el.map((e) => `<tr><td>${esc(e.eticheta_tip)}</td><td>${esc(e.denumire)}</td><td>${e.tip === "ore_suplimentare" ? calculOre(e) : "—"}</td><td class="fd-td-num">${bani(e.suma)} lei</td>
         <td><button class="buton-sters buton-mic el-sterge" data-id="${e.id}" data-actiune="DELETE /tenants/{tenant_id}/salariati/{salariat_id}/elemente/{element_id}">Șterge</button></td></tr>`).join("")}</tbody></table>`
       : `<div class="stare-goala">Niciun element variabil în luna asta.</div>`}
-    <div id="el-formular">
+    <div id="el-formular" data-formular>
     <div class="grila-campuri" style="max-width:none">
       <div class="camp"><span class="camp-eticheta">Tipul<span class="oblig">*</span></span>${selectScurt("el-tip", TIPURI_ELEMENT, "", "Tipul elementului de salariu")}</div>
       <label class="camp"><span class="camp-eticheta">Denumirea, cum apare pe fluturaș<span class="oblig">*</span></span><input type="text" class="camp-input" id="el-denumire"></label>

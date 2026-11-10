@@ -706,6 +706,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
    (sterse) si utilizarile de stare-goala ale .mig-gol. --inline = linie in panou (alta anatomie). */
 .stare-goala { padding: 24px 16px; text-align: center; font-size: var(--text-mic); color: var(--gri); }
 .stare-goala--inline { padding: 4px 0; text-align: left; font-size: var(--text-mic); color: var(--gri); }
+/* [17.5-H2] starea goală a unei liste (nu mai e rând de tabel) ia mai puțin loc: fereastra cu formular înalt și listă goală (Borderou de achiziție, 1366×768) încape fără derulare */
+.pf-lista > .stare-goala { padding-top: 12px; padding-bottom: 12px; }
 
 .mig-sold-rezumat {
   font-size: var(--text-mic); color: var(--ardezie); background: #f5f7fa;

@@ -30,17 +30,17 @@ function _controlEtichetei(et) {
   return parinte && parinte.querySelector("input:not([type=hidden]), select, textarea");
 }
 
-// câmpurile obligatorii (etichete cu „*”) goale și vizibile, în ordinea din ecran; fiecare control se numește o singură dată (`label.camp > span.camp-eticheta` are „*” și
-// pe etichetă, și pe text). [17.5-H2] `fereastra`: fereastra n-are container de formular, deci se judecă câmpurile ei, în afara tabelelor, șabloanelor, antetului și barei
-function _lipsuri(corp, { fereastra = false } = {}) {
+// câmpurile obligatorii (etichete cu „*”) goale și vizibile, în ordinea din ecran; [17.5-H2] fiecare control se numește o singură dată (`label.camp > span.camp-eticheta` are „*”
+// și pe etichetă, și pe text) și cu numele din `.camp-eticheta` (nu cu tot textul etichetei: ajutorul și lista cu căutare din ea nu intră în nume)
+function _lipsuri(corp) {
   const out = [], numite = new Set();
   for (const et of corp.querySelectorAll("label, .camp-eticheta")) {
     if (!/\*/.test(et.textContent) || !_vizibil(et)) continue;
-    if (fereastra && et.closest("table, template, .fereastra-antet, .fereastra-jos")) continue;
     const c = _controlEtichetei(et);
     if (!c || numite.has(c) || c.disabled || c.readOnly || !_vizibil(c)) continue;
     if (c.type === "checkbox" || c.type === "radio") continue;
-    if (String(c.value || "").trim() === "") { numite.add(c); out.push(_normalizeaza(et.textContent.replace(c.textContent || "", "")) || "câmp obligatoriu"); }
+    if (String(c.value || "").trim() === "") { numite.add(c); const nume = (et.matches("label") && et.querySelector(".camp-eticheta")) || et;
+      out.push(_normalizeaza(nume.textContent.replace(c.textContent || "", "")) || "câmp obligatoriu"); }
   }
   return out;
 }
@@ -250,8 +250,9 @@ function _pdfulFerestrei(corp, bara, liber) {
 // o urmă (comentariu) lăsată în locul din care butonul trece în bară: dispare odată cu zona pe care ecranul o redesenează
 function _urma(b) { const u = document.createComment("fj"); b.before(u); return u; }
 
-// containerul de formular din care vine butonul: numai câmpurile lui hotărăsc dacă butonul e inactiv (nu etichetele altor părți ale ferestrei)
-const _formularul = (b) => b.closest("form, .ds-formular, .pf-frand:has(> .ds-formular)");
+// containerul de formular din care vine butonul: numai câmpurile lui hotărăsc dacă butonul e inactiv (nu etichetele altor părți ale ferestrei). [17.5-H2] Ecranul al cărui
+// formular nu e `form` / `.ds-formular` îl numește cu `data-formular` (Ore suplimentare, Certificat nou, Firmă nouă, D104 pasul 2): fereastra care nu-l numește nu devine inactivă
+const _formularul = (b) => b.closest("form, .ds-formular, .pf-frand:has(> .ds-formular), [data-formular]");
 
 /** Pune bara de jos pe fereastra `fer`; întoarce `{ sincronizeaza, bara }`. `renunta` = ce face „Renunță” (un pas înapoi / închide) pe ferestrele din PASTREAZA_RENUNTA. */
 export function baraDeJos(fer, corp, { renunta }) {
@@ -352,18 +353,14 @@ export function baraDeJos(fer, corp, { renunta }) {
     // motivul: al ecranului (`.ds-motiv-inactiv` existent, mutat în bară) dacă îl are, altfel al piesei
     for (const m of corp.querySelectorAll(".ds-motiv-inactiv")) if (!bara.contains(m) && !m.classList.contains("fj-text")) motiv.appendChild(m);
     // [17.5-H2] motivul butonului principal inactiv: UN SINGUR text, cu o singură prioritate — (1) al ecranului: `.ds-motiv-inactiv` / `data-motiv-generat` mutat în bară, ori cel
-    // dat de `inactiv()` pe buton (`data-motiv-inactiv`); (2) al piesei: „Completează: …” din câmpurile cu „*” (ale formularului butonului; fără formular, ale ferestrei);
+    // dat de `inactiv()` pe buton (`data-motiv-inactiv`); (2) al piesei: „Completează: …” din câmpurile cu „*” ale formularului butonului;
     // (3) exportul de rezervă fără înregistrări; (4) `title` la `disabled`, altfel textul general. Eticheta butonului rămâne verbul acțiunii.
     const exportRezerva = !!principal && principal === corp.__exportPdf && !EXPORT_PDF.test(titlu);
     if (exportRezerva) {
       if (!_tabelCuInregistrari(corp)) inactiv(principal, MOTIV_FARA_INREGISTRARI);
       else if (principal.getAttribute("data-motiv-inactiv") === MOTIV_FARA_INREGISTRARI) activ(principal);
     }
-    let lipsa = [];
-    if (principal && !exportRezerva && !/^Descarcă PDF(\s|$)/.test(_normalizeaza(principal.textContent))) {
-      if (!principal.__formular) lipsa = _lipsuri(corp, { fereastra: true });
-      else if (principal.__formular.isConnected) lipsa = _lipsuri(principal.__formular);
-    }
+    const lipsa = !principal || !principal.__formular || !principal.__formular.isConnected ? [] : _lipsuri(principal.__formular);
     const sursaB = principal && (principal.__sursa || principal);
     const motivDat = sursaB && sursaB.getAttribute("aria-disabled") === "true" ? (sursaB.getAttribute("data-motiv-inactiv") || sursaB.title || "").trim() : "";
     if (principal) {

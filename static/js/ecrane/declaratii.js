@@ -1999,7 +1999,7 @@ function randeazaFormularD104(corp, nav) {
         " · cotă " + esc(String(s.cota || 0)) + "% · venit " + bani(Math.round(_n(s.venit) || 0)) + " · impozit " + bani(Math.round(_n(s.imp_datorat) || 0)) + " lei</span>" +
         '<button class="btn-link dec-d104-del" data-idx="' + i + '">șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Niciun asociat. Adaugă fiecare asociat cu cota și sumele de distribuit.</div>';
-  zona.innerHTML = '<details class="dec-xml" open><summary>Distribuire venituri/cheltuieli pe asociați (' + cate(aso.length, "asociat", "asociați") + " · " + (defin ? "definitivare an" : "trimestrial cumulat") + ")</summary>" +
+  zona.innerHTML = '<details class="dec-xml" open data-formular><summary>Distribuire venituri/cheltuieli pe asociați (' + cate(aso.length, "asociat", "asociați") + " · " + (defin ? "definitivare an" : "trimestrial cumulat") + ")</summary>" +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Declarantul (reprezentantul asocierii)</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d104-dnume" type="text" class="camp-input" value="' + esc(d.declarant_nume || "") + '"></label>' +
