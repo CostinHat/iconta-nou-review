@@ -1304,3 +1304,5 @@ a ce e adevărat **acum**.
 
 ## LOTUL 17.5-G3 (produs, 10.11.2026) — continuare a lui 17.5-G2 pe același cod P, ramura `lucru/lot17-5g3` (worktree `~/iconta_lot17_5g3`)
 - Același cod ca P (9d2319a5, lotul 17.5-G); diferă numai scripts/praguri_17_5_G3.txt și docs/dovezi/17_5_G3/. G2 s-a oprit nepublicat la 10.11.2026 18:56 pe praguri de fază (arhitectul rula o scanare pe același server) și pe lipsa secțiunii «Rulări „intrerupt” pe fază». Poarta completă pe C și verificarea independentă (haiku_1, dupa) s-au refăcut sub 17.5-G3. Ramura `lucru/lot17-5g` și `~/iconta_lot17_5g` neatinse.
+
+**17.5-O, 11.11.2026 14:00:** corecția 2 aplicată; C = faf4b14a, poarta a doua rulare completă VERDE (regresie 0, restanță 2); haiku_1 (11 corespunde, 4 nejudecabile a.5–a.8, 0 „nu corespunde”) și «dupa» (15 trece) pe C; urmează publicarea.

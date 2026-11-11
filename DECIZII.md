@@ -24690,3 +24690,6 @@ Decizia arhitectului (decizii_17_5_O.txt): opt constatări de audit mutate în O
 - AC080: opțiunile `#cv-art` spun stocul validat și CMP-ul validat, plus «cu ciornele» când diferă; AC081: consum cu `cantitate()`, ABC cu `pct()` (valoarea rotunjită la zecimă half-up înainte de `pct()`, fiindcă `pct()` taie 88,35 la 88,3).
 - AC183: exportul de rezervă «Descarcă PDF» nu mai primește «urmă» de origine nelegată de pagină (curățarea îl scotea la fiecare cadru) și butonul propriu al ferestrei, ajuns în bară, rămâne acțiunea.
 - Nu intră: AC153 și AC154 (17.5-P, migrare); AC108/AC143 în alte ferestre; AC180 în ferestrele deschise din refuz și în cardurile altor ecrane; AC080 în `optArts` (Inventar, Transfer, Reclasificare) și în alte ecrane.
+
+## 17.5-O, corecția 2 (arhitect, 11.11.2026 13:00)
+- Poarta pe ed80de34: singurul roșu, e2e_lot13_sal_ajutor.py „invalid” (ajutor fără teste în diff). Decizia arhitectului: ajutorul revine exact la forma de pe main; cele patru apeluri `buton(..., "flut")` (e2e_pozitii_validate.py, e2e_bloc_a.py, e2e_bloc_b.py, e2e_lot11_a453.py) devin clic direct pe `[data-flut]` din bara de jos; praguri din ~/ghid_incoming; sha256 nou al lui e2e_pozitii_validate.py în manifest. A doua și ultima rulare completă: VERDE pe C = faf4b14a (1900 teste, regresie 0, restanță 2, invalid 0).
