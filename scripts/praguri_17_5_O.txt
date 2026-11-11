@@ -4,6 +4,7 @@ max hook 132
 max poarta_verificator 117
 max poarta_pytest 742
 max poarta_plasa 2213
+plasa_modificabile frontend_test/e2e/e2e_pilot_luna.py frontend_test/e2e/e2e_pilot_x07.py
 runde_verificator_max: 2
 sursa pragurilor 17.5-O: generate de scripts/praguri_automate.py la 2026-11-11T05:29:58+02:00 din .lot_jurnal.log; loturi folosite: 17.5-F, 17.5-G3, 17.5-H2 (3)
   hook: maxim 110 s (lotul 17.5-F, rularea 678194-1794306324798) din 14 rulari complete, 0 rulari «intrerupt» ignorate, prag 132 s
