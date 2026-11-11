@@ -124,9 +124,11 @@ def _verifica_pasul_2(rele, pg, tip, prima, cu_note):
     blocaj = _norm(pg.inner_text(TOP + "#dec-blocaj")) if pg.locator(TOP + "#dec-blocaj").count() else ""
     if T_BLOCAJ not in blocaj:
         rele.append("AC184 / e.%d: lângă buton, pe %s, nu e motivul inactivității (așteptat «%s»); găsit: %r" % (prima + 4, nume, T_BLOCAJ, blocaj[:300]))
+    # [corecția 1, 11.11.2026] butonul principal stă în bara de jos a ferestrei (cadru.js îl mută acolo), motivul rămâne în fereastră: legătura e aria-describedby, iar motivul se vede
     elif not pg.evaluate("() => { const b = document.querySelector('.fereastra-overlay:not(.fundal) #dec-trimite'), m = document.querySelector('.fereastra-overlay:not(.fundal) #dec-blocaj');"
-                         " return !!(b && m && b.closest('.bara-fixa') && b.closest('.bara-fixa').contains(m)); }"):
-        rele.append("AC184 / e.%d: motivul inactivității de pe %s nu stă în aceeași bară fixă cu butonul" % (prima + 4, nume))
+                         " if (!b || !m) return false; const r = m.getBoundingClientRect();"
+                         " return (b.getAttribute('aria-describedby') || '').split(/\\s+/).includes('dec-blocaj') && r.width > 0 && r.height > 0 && getComputedStyle(m).visibility !== 'hidden'; }"):
+        rele.append("AC184 / e.%d: pe %s butonul inactiv nu e legat de motiv (aria-describedby=\"dec-blocaj\") sau motivul nu se vede în fereastră" % (prima + 4, nume))
     if cu_note:
         butoane = [_norm(t) for t in pg.eval_on_selector_all(TOP + "#dec-blocaj button", "els => els.map(e => e.innerText)")]
         if butoane != T_BUTOANE_NOTE:

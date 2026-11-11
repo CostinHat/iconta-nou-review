@@ -17,4 +17,4 @@ frontend_test/e2e/e2e_de_validat_17_5_G.py	c8a460a3ee239c58b350bb58b23dd579309e9
 frontend_test/e2e/e2e_piese_17_5_H2.py	10f326f2fb8d19f113ea4d7ec200702b5cb3e46edda1065c5ba5f8128ac5bbcc	1	python -m pytest -q frontend_test/e2e/e2e_piese_17_5_H2.py
 frontend_test/e2e/e2e_bara_jos.py	9392af805c2208265588f130506f1e1732d56a3ecfd6e3bca7772257bdf4de88	1	python -m pytest -q frontend_test/e2e/e2e_bara_jos.py
 frontend_test/e2e/e2e_ferestre_17_5_O.py	7628092c067f81315dcda9af1362d93e0565eeb08595576417e2bf02e4403d8f	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_O.py
-frontend_test/e2e/e2e_d300_ciorne_17_5_W.py	2852c510f5e2bb7d4eee858e77edc3539f823d12e0f1c93627df75d65ccb5d62	1	python -m pytest -q frontend_test/e2e/e2e_d300_ciorne_17_5_W.py
+frontend_test/e2e/e2e_d300_ciorne_17_5_W.py	5ae84d6a1e4b3b72b33a772e23eb1c8c671216824745204a836948195463e2b4	1	python -m pytest -q frontend_test/e2e/e2e_d300_ciorne_17_5_W.py
