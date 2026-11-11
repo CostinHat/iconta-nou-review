@@ -1,35 +1,3 @@
-F                                                                        [100%]
-=================================== FAILURES ===================================
-__________________________ test_decont_ciorne_17_5_W ___________________________
-
-browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
-
-    def test_decont_ciorne_17_5_W(browser):
-        from core import ceas_proba
-        parcurs = _incarca_parcurs_17_1()
-        rele = []
-        b = browser.new_context(viewport={"width": 1366, "height": 768}, accept_downloads=True)
-        try:
-            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
-            b.add_init_script(sesiune(ADMIN))
-            pg = b.new_page()
-            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
-            _sectiune(rele, "D300 pasul 2 (AC184)", _d300, pg, parcurs)
-            _sectiune(rele, "D394 pasul 2 (AC184)", _d394, pg, parcurs)
-            _sectiune(rele, "Calculul și coada (AC184)", _coada_si_calcul, pg)
-            _sectiune(rele, "Control fiscal (AC185)", _control, pg, parcurs)
-            _sectiune(rele, "Martorii lămuririi (AC186)", _martori_ac186, pg)
-        finally:
-            b.close()
->       assert not rele, "decontul 17.5-W: " + "; ".join(rele)
-E       AssertionError: decontul 17.5-W: AC184 / e.5: motivul inactivității de pe D300 nu stă în aceeași bară fixă cu butonul; AC184 / e.11: motivul inactivității de pe D394 nu stă în aceeași bară fixă cu butonul
-E       assert not ['AC184 / e.5: motivul inactivității de pe D300 nu stă în aceeași bară fixă cu butonul', 'AC184 / e.11: motivul inactivității de pe D394 nu stă în aceeași bară fixă cu butonul']
-
-frontend_test/e2e/e2e_d300_ciorne_17_5_W.py:228: AssertionError
-=========================== short test summary info ============================
-FAILED frontend_test/e2e/e2e_d300_ciorne_17_5_W.py::test_decont_ciorne_17_5_W
-1 failed in 28.94s
-
-real	0m29.341s
-user	0m2.382s
-sys	0m0.787s
+.                                                                        [100%]
+1 passed in 29.28s
+durata: 47 s (e2e_poarta.py --doar, commit 98478f4a)
