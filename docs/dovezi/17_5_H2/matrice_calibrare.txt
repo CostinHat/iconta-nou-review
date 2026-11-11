@@ -1,0 +1,22 @@
+[lacat_test] lacăt preluat de la pid 2921448 (mort sau refolosit)
+[verificator design] oprit; portul 8019 liber
+[verificator design] serverul de lucru pe 8019, commit 802de657
+pozitiv | De validat | 603x590 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | De validat | 603x590 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+pozitiv | De validat | 1366x768 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | De validat | 1366x768 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+pozitiv | De validat | 2133x1111 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | De validat | 2133x1111 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+pozitiv | Declarații lucrate | 603x590 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | Declarații lucrate | 603x590 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+pozitiv | Declarații lucrate | 1366x768 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | Declarații lucrate | 1366x768 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+pozitiv | Declarații lucrate | 2133x1111 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | Declarații lucrate | 2133x1111 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+pozitiv | Declarații F1 pasul 1 | 603x590 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | Declarații F1 pasul 1 | 603x590 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+pozitiv | Declarații F1 pasul 1 | 1366x768 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | Declarații F1 pasul 1 | 1366x768 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+pozitiv | Declarații F1 pasul 1 | 2133x1111 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
+negativ | Declarații F1 pasul 1 | 2133x1111 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
+[verificator design] oprit; portul 8019 liber

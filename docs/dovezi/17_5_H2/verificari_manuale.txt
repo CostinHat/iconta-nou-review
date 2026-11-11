@@ -1,0 +1,51 @@
+Verificări reale, o singură dată, pe 8019 cu baza de test (F1 pentru Leasing, contul clientului F1 pentru portal); baza restaurată după.
+
+== Leasing: Operațiuni speciale › Leasing › Primire bun › «Generează nota (ciornă)» (nota rămâne ciornă) — bara după succes (captura: leasing_dupa_succes.png) ==
+{
+ "leasing_inainte_de_generare": {
+  "motiv": "",
+  "principale": [
+   "Generează nota (ciornă)"
+  ],
+  "motive_in_bara": [
+   "ds-motiv-inactiv: "
+  ]
+ },
+ "leasing_dupa_succes": {
+  "motiv": "Nota e generată — o vezi în Registru jurnal.",
+  "principale": [
+   "Generează nota (ciornă)"
+  ],
+  "motive_in_bara": [
+   "ds-motiv-inactiv: ",
+   "tip-micut motiv-generat: Nota e generată — o vezi în Registru jurnal."
+  ]
+ }
+}
+
+== Portal «Pozează bon» pasul 2 ==
+Încercare 1 (poză reală trimisă la server): serverul de test nu poate citi documentul (fără serviciul de citire în mediul de test) și răspunde «nu s-a putut citi bonul; încearcă o poză mai clară»; pasul 2 nu se deschide (captura din această încercare a fost înlocuită de cea de mai jos).
+Încercare 2 (LIMITĂ DECLARATĂ: răspunsul POST /portal/bon și DELETE /portal/bon/{id} simulate în browser; interfața pasului 2 e cea reală, serverul nu a citit nicio poză): captura portal_bon_pas2.png
+{
+ "bon_pas2": {
+  "principale": [
+   {
+    "text": "Trimite la contabil",
+    "in_bara": true
+   }
+  ],
+  "verzi_in_continut": [],
+  "refa": [
+   {
+    "clase": "buton-secundar",
+    "in_bara": false
+   }
+  ],
+  "motiv_bara": ""
+ },
+ "chemari_simulate": [
+  "POST /portal/bon",
+  "DELETE /portal/bon/987654"
+ ]
+}
+

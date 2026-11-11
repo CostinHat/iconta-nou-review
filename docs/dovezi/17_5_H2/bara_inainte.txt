@@ -1,0 +1,124 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________________________ test_bara_jos_17_5_H _____________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_bara_jos_17_5_H(browser):
+        from core import ceas_proba
+        cu, fara = _harta()
+        parcurs = _parcurs()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            vazute = set()
+            for firma in ("F1 Comert Stoc", "F5 SRL Salariati"):
+                parcurs.firma(pg, firma)
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                carduri = pg.evaluate(JS_CARDURI)
+                for sel, eticheta0 in carduri:
+                    eticheta = _cheie(eticheta0)
+                    if not eticheta:
+                        continue
+                    try:
+                        parcurs.firma(pg, firma)
+                        if pg.evaluate(JS_DESCHIDE_CARD, "#" + sel) != "ok":
+                            continue
+                        pg.click(TOP + "#" + sel, timeout=10000)
+                        pg.wait_for_timeout(2500)
+                        m = pg.evaluate(JS_BARA) or {}
+                    except Exception as e:   # noqa: BLE001
+                        rele.append("BB1 %s %s: fereastra nu s-a deschis (%s)" % (firma[:2], eticheta, str(e)[:60]))
+                        continue
+                    if firma.startswith("F1"):
+                        vazute.add(eticheta)
+                    princ, inactiv = m.get("principal", ""), m.get("inactiv", False)
+                    if eticheta in cu:
+                        text_h, stare_h = cu[eticheta]
+                        if princ != text_h and (princ or firma.startswith("F1")):
+                            rele.append("BB2 %s %s: butonul principal din bara de jos e %r, în hartă %r" % (firma[:2], eticheta, princ, text_h))
+                        elif stare_h != "orice" and firma.startswith("F1") and stare_h.startswith("inactiv") != inactiv:   # starea activ/inactiv depinde de date: se compara numai pe F1, firma cu date
+                            rele.append("BB3 %s %s: butonul %r e %s, în hartă %s" % (firma[:2], eticheta, princ, "inactiv" if inactiv else "activ", stare_h))
+                    elif eticheta in fara:
+                        if princ:
+                            rele.append("BB4 %s %s: e în lista «fără buton principal», dar are %r în bara de jos; se declară în hartă" % (firma[:2], eticheta, princ))
+                    elif firma.startswith("F1"):
+                        rele.append("BB6 %s: fereastră nouă sau redenumită, absentă din harta_bara_jos.txt; arhitectul o adaugă" % eticheta)
+                    if m.get("inchide"):
+                        rele.append("BB5 %s %s: «Închide» în corpul ferestrei (%d)" % (firma[:2], eticheta, m["inchide"]))
+            # Facturi primite (SPV) nu e card: se deschide din fereastra Facturi (butonul #fac-primite), pe F1
+            try:
+                # 823.1: defectul apare la firma CONECTATĂ la SPV, dar FĂRĂ DREPT (starea din producție a firmelor F1–F8); în baza de test F1 e neconectată,
+                # deci testul îi dă el această stare, schimbând numai trei câmpuri din răspunsul real al rutei /spv/stare
+                def _fara_drept(ruta):
+                    rasp = ruta.fetch()
+                    d = rasp.json()
+                    d.update({"conectat": True, "are_drept": False, "acoperire": "neacoperit"})
+                    ruta.fulfill(response=rasp, json=d)
+                pg.route("**/tenants/*/spv/stare", _fara_drept)
+                parcurs.firma(pg, "F1 Comert Stoc")
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                sel = [s_ for s_, e_ in pg.evaluate(JS_CARDURI) if _cheie(e_) == "Facturi"]
+                if not sel:
+                    rele.append("BB9 Facturi primite: cardul Facturi nu s-a găsit pe F1")
+                else:
+                    pg.evaluate(JS_DESCHIDE_CARD, "#" + sel[0])
+                    pg.click(TOP + "#" + sel[0], timeout=10000)
+                    pg.wait_for_timeout(2500)
+                    pg.click(TOP + "#fac-primite", timeout=10000)
+                    pg.wait_for_timeout(2500)
+                    m = pg.evaluate(JS_BARA) or {}
+                    vazute.add("Facturi primite")
+                    if "Facturi primite" in cu:
+                        text_h, stare_h = cu["Facturi primite"]
+                        princ, inactiv = m.get("principal", ""), m.get("inactiv", False)
+                        if princ != text_h:
+                            rele.append("BB2 F1 Facturi primite: butonul principal din bara de jos e %r, în hartă %r" % (princ, text_h))
+                        elif stare_h != "orice" and stare_h.startswith("inactiv") != inactiv:
+                            rele.append("BB3 F1 Facturi primite (firmă conectată la SPV, fără drept): butonul %r e %s, în hartă %s" % (princ, "inactiv" if inactiv else "activ", stare_h))
+                        elif stare_h.startswith("inactiv") and "motiv" in stare_h:
+                            motiv = pg.evaluate("() => { const F = [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .fereastra')].pop(); return F ? [...F.querySelectorAll('.ds-motiv-inactiv')].map(m => (m.textContent || '').trim()).filter(Boolean).join(' | ') : ''; }")
+                            if not motiv:
+                                rele.append("BB3 F1 Facturi primite (firmă conectată la SPV, fără drept): butonul %r e inactiv, dar fără motiv scris la vedere" % princ)
+            except Exception as e:   # noqa: BLE001
+                rele.append("BB9 Facturi primite: fereastra nu s-a deschis (%s)" % str(e)[:60])
+            finally:
+                try:
+                    pg.unroute("**/tenants/*/spv/stare")
+                except Exception:   # noqa: BLE001
+                    pass
+            for e in sorted(set(cu) - vazute):
+                if e not in ("Prime, sporuri, ore suplimentare", "Registru încasări/plăți", "Capacitate", "Suport"):
+                    rele.append("BB8 %s: fereastra din hartă nu s-a găsit între cardurile F1" % e)
+            # F4 Încasări/plăți cu formularul deschis și F5 Prime, sporuri: verificate pe ecran
+            try:
+                parcurs.firma(pg, "F4 PFA Sistem Real")
+                pg.evaluate(JS_DESCHIDE_GRUPURI)
+                pg.click(TOP + "button:has-text('Încasări/plăți')", timeout=10000)
+                pg.wait_for_timeout(2500)
+                pg.click(TOP + "button:has-text('+ Operațiune nouă')", timeout=10000)
+                pg.wait_for_timeout(1500)
+                m = pg.evaluate(JS_BARA) or {}
+                if m.get("principal") != "Adaugă (ciornă)":
+                    rele.append("BB7 Încasări/plăți F4, formular deschis: butonul principal e %r, în hartă «Adaugă (ciornă)»" % m.get("principal"))
+            except Exception as e:   # noqa: BLE001
+                rele.append("BB7 Încasări/plăți F4: nu s-a putut deschide formularul (%s)" % str(e)[:80])
+        finally:
+            b.close()
+>       assert not rele, "păzirea barei de jos: %d abateri:\n  " % len(rele) + "\n  ".join(rele)
+E       AssertionError: păzirea barei de jos: 1 abateri:
+E           BB3 F1 Facturi primite (firmă conectată la SPV, fără drept): butonul 'Verifică acum în SPV' e activ, în hartă inactiv cu motiv scris
+E       assert not ["BB3 F1 Facturi primite (firmă conectată la SPV, fără drept): butonul 'Verifică acum în SPV' e activ, în hartă inactiv cu motiv scris"]
+
+frontend_test/e2e/e2e_bara_jos.py:174: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_bara_jos.py::test_bara_jos_17_5_H - AssertionErr...
+1 failed in 395.52s (0:06:35)
+
+real	6m35.805s
+user	0m19.361s
+sys	0m8.701s

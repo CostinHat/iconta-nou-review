@@ -1,0 +1,314 @@
+bringing up nodes...
+bringing up nodes...
+
+..................................................xx.x...xxx.....x..x.xx [ 10%]
+xx.xx................................................................... [ 21%]
+........................................................................ [ 32%]
+........................................................................ [ 43%]
+........................................................................ [ 54%]
+.........F.............................................................. [ 65%]
+........................................................................ [ 76%]
+............................................................F........... [ 87%]
+.............................F..............................F........... [ 97%]
+..............                                                           [100%]
+=================================== FAILURES ===================================
+___________________ test_NICIUN_APEL_nu_s_a_pierdut_pe_drum ____________________
+[gw0] linux -- Python 3.12.3 /home/costin/iconta_lot17_5h2/venv/bin/python
+
+    def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
+        """Conservarea apelurilor: ce chema ruta înainte, cheamă și acum — învelișul plus use-case-ul.
+    
+        **De ce e nevoie de proba asta pe lângă cea de mai sus.** Perechile `(cod, mesaj)` spun ce se
+        întâmplă când operațiunea REFUZĂ; nu spun nimic despre o instrucțiune care a dispărut tăcut.
+        Instanța care a cerut-o: mutatorul a lăsat pe dinafară `_rate_limit_reset(request)` și
+        `_rate_limit_email(_magic_rate, request)` — două gărzi anti-spam —, iar contractul de refuz a
+        rămas identic, suita verde, ruff verde. *Un apel care nu se mai face nu strigă; se vede numai
+        numărându-l.*
+        """
+        harta = _harta_cod()
+        uc = _module_uc()
+        nou_src = io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()
+        av, an = ast.parse(_sursa_veche()), ast.parse(nou_src)
+        vechi = {n.name: n for n in av.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        nou = {n.name: n for n in an.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        dif, confruntate = [], 0
+        for nume, vfn in sorted(vechi.items()):
+            nfn = nou.get(nume)
+            if nfn is None:
+                continue
+            tinta = _tinta_invelisului(nfn)
+            if tinta is None:
+                continue                      # n-a plecat: se compară cu el însuși, n-are ce spune
+            corp = uc.get(tinta)
+            if corp is None:
+                dif.append("%s: învelișul trimite la %s, care nu există" % (nume, tinta))
+                continue
+            confruntate += 1
+            inainte = _apeluri(vfn, harta)
+            acum = _apeluri(nfn, harta)
+            for k, v in _apeluri(corp, harta).items():
+                acum[k] = acum.get(k, 0) + v
+            acum.pop("_http_din", None)
+            acum[tinta[1]] = acum.get(tinta[1], 0) - 1          # delegarea, adăugată de val
+            if acum.get(tinta[1]) == 0:
+                acum.pop(tinta[1])
+            # [R187] INLOCUIRILE declarate se contabilizeaza pe numele VECHI: apelul nu s-a pierdut, i
+            # s-a schimbat numele. Tabelul e pazit de `test_INLOCUIRILE_declarate_chiar_exista`.
+            for (_fn, _vechi), (_nou, _m) in APELURI_INLOCUITE.items():
+                if _fn == nume and acum.get(_nou):
+                    acum[_vechi] = acum.get(_vechi, 0) + acum[_nou]
+            # [08.10.2026] corpul EXTRAS într-un ajutor: creditul = apelurile pe care ajutorul chiar le face (vezi tabelul de sus)
+            if nume in APELURI_EXTRASE_IN_AJUTOR and acum.get(APELURI_EXTRASE_IN_AJUTOR[nume][0][1]):
+                # creditul se dă PE APEL efectiv al ajutorului (ca la BIFA_INLOCUIRI): `portal_bon` cheamă `dir_bonuri` de două ori, cum
+                # chema înainte `expanduser` (deficiența 9)
+                _n_apel = acum[APELURI_EXTRASE_IN_AJUTOR[nume][0][1]]
+                for k, v in _apeluri_ajutor(*APELURI_EXTRASE_IN_AJUTOR[nume][0]).items():
+                    acum[k] = acum.get(k, 0) + v * _n_apel
+            # [15.10.2026, lotul 4] corpul extras în mai multe ajutoare, creditate în ordine (vezi APELURI_EXTRASE_IN_AJUTOARE)
+            for _cale_a, _ajutor in (APELURI_EXTRASE_IN_AJUTOARE.get(nume, ((), ""))[0]):
+                _n_apel = acum.get(_ajutor, 0)
+                # un ajutor din stratul use-case se numără ca ruta (refuzurile `_erori.*` = HTTPException, prin aceeași hartă); unul
+                # din afara lui, ca în tabelul cu un singur ajutor
+                _cheie_uc = (os.path.basename(_cale_a)[:-3], _ajutor)
+                _ale = (_apeluri(uc[_cheie_uc], harta) if _cheie_uc in uc else _apeluri_ajutor(_cale_a, _ajutor))
+                for k, v in _ale.items():
+                    acum[k] = acum.get(k, 0) + v * _n_apel
+            for (_fn, _apel), _m in APELURI_SCOASE.items():
+                if _fn == nume:
+                    inainte.pop(_apel, None)
+            for (_fn, _apel), (_n, _m) in APELURI_REDUSE.items():
+                if _fn == nume:
+                    inainte[_apel] = inainte.get(_apel, 0) - _n
+            # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la
+            # taxarea inversa, `str(corp.get(x)).strip().lower()`): creditul se da PE APEL efectiv, iar `extra` numeste
+            # apelurile scoase deliberat. Anti-vacuu: `test_BIFA_INLOCUIRI_chiar_cheama_bifa`.
+            if nume in BIFA_INLOCUIRI:
+                _per_apel, _extra, _m = BIFA_INLOCUIRI[nume]
+                for k, v in _per_apel.items():
+                    acum[k] = acum.get(k, 0) + v * acum.get("bifa", 0)
+                for k, v in _extra.items():
+                    acum[k] = acum.get(k, 0) + v
+            lipsa = {k: inainte[k] - acum.get(k, 0) for k in inainte if inainte[k] > acum.get(k, 0)}
+            if lipsa:
+                dif.append("%s: apeluri pierdute %s" % (nume, lipsa))
+        assert confruntate >= 300, "doar %d funcții confruntate — universul s-a golit" % confruntate
+>       assert not dif, ("apeluri care nu se mai fac, în %d funcții:\n    %s"
+                         % (len(dif), "\n    ".join(dif[:10])))
+E       AssertionError: apeluri care nu se mai fac, în 1 funcții:
+E             _verificari_contabile: apeluri pierdute {'_date': 1, 'balanta': 1, 'select_inregistrari_linii': 1, 'select_solduri_initiale': 1}
+E       assert not ["_verificari_contabile: apeluri pierdute {'_date': 1, 'balanta': 1, 'select_inregistrari_linii': 1, 'select_solduri_initiale': 1}"]
+
+core/test_p7_uc.py:1704: AssertionError
+___________ test_clicurile_programatice_sunt_numai_cele_alese_de_om ____________
+[gw2] linux -- Python 3.12.3 /home/costin/iconta_lot17_5h2/venv/bin/python
+
+    def test_clicurile_programatice_sunt_numai_cele_alese_de_om():
+        numarate = {}
+        for nume, txt in _fisiere():
+            n = len(re.findall(r"\.click\(\)", txt))
+            if n:
+                numarate[nume] = n
+        asteptat = {k: v[0] for k, v in CLICURI_PROGRAMATICE.items()}
+        # „Nimic nu se deschide fără să fie ales.” — un `.click()` nou, dat de cod, intră în listă numai cu motivul alegerii omului
+>       assert numarate == asteptat, "clicuri programatice schimbate: găsite %s, în listă %s" % (numarate, asteptat)
+E       AssertionError: clicuri programatice schimbate: găsite {'static/js/api.js': 1, 'static/js/cadru.js': 1, 'static/js/cautare.js': 4, 'static/js/ds_piese.js': 1, 'static/js/ecrane/declaratii.js': 1, 'static/js/ecrane/etransport_ecran.js': 1, 'static/js/ecrane/firme.js': 3, 'static/js/ecrane/inceput.js': 2, 'static/js/ecrane/login.js': 1, 'static/js/ecrane/migrare.js': 2, 'static/js/ecrane/portal.js': 2, 'static/js/ecrane/raporteaza.js': 2, 'static/js/ecrane/validat.js': 1, 'static/js/navigator.js': 1, 'static/js/restaurare.js': 6}, în listă {'static/js/api.js': 1, 'static/js/navigator.js': 1, 'static/js/ecrane/inceput.js': 2, 'static/js/ecrane/login.js': 1, 'static/js/restaurare.js': 6, 'static/js/ecrane/portal.js': 2, 'static/js/ecrane/raporteaza.js': 2, 'static/js/ecrane/migrare.js': 1, 'static/js/ecrane/etransport_ecran.js': 1, 'static/js/ecrane/firme.js': 2, 'static/js/cadru.js': 1, 'static/js/ds_piese.js': 1, 'static/js/cautare.js': 4, 'static/js/ecrane/validat.js': 1, 'static/js/ecrane/declaratii.js': 1}
+E       assert {'static/js/a...e.js': 1, ...} == {'static/js/a...n.js': 1, ...}
+E         
+E         Omitting 13 identical items, use -vv to show
+E         Differing items:
+E         {'static/js/ecrane/firme.js': 3} != {'static/js/ecrane/firme.js': 2}
+E         {'static/js/ecrane/migrare.js': 2} != {'static/js/ecrane/migrare.js': 1}
+E         Use -v to get more diff
+
+core/test_lot10b_deschidere_aleasa.py:165: AssertionError
+_________ test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor __________
+[gw2] linux -- Python 3.12.3 /home/costin/iconta_lot17_5h2/venv/bin/python
+
+pagina = <Page url='http://127.0.0.1:43343/static/'>
+
+    def test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor(pagina):
+        pg = pagina
+>       _montat(pg)
+
+core/test_lot10b_deschidere_aleasa.py:224: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+core/test_lot10b_deschidere_aleasa.py:219: in _montat
+    pg.wait_for_selector(".fer-proba [data-adev]", timeout=15000)
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7d9da323f620>
+cb = <function Channel.send.<locals>.<lambda> at 0x7d9da3345940>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 15000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fer-proba [data-adev]") to be visible
+E               34 × locator resolved to hidden <button data-adev="7" class="buton-secundar" data-nume="IONESCU VASILE">Adeverință</button>
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+---------------------------- Captured stderr setup -----------------------------
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/ HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/stil.css?v=4c7ea05607 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/app.js?v=3f69c48ae1 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/sesiune.js?v=898215e0ee HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/api.js?v=7396e03327 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/login.js?v=1046446310 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/navigator.js?v=bd1a5189a3 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/cabinet.js?v=4a6112a625 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/asistent.js?v=4d62696ccb HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/portal.js?v=471e27812e HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/admin.js?v=6b8ca6e696 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/restaurare.js?v=2e679a8748 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/drepturi.js?v=34d0fb0afd HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/reautentificare.js?v=6d1ca7e110 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/plural.js?v=6353d42450 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/preturi.js?v=0e00a65657 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ciorna_formular.js?v=461bec469f HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/date_anaf.js?v=503d474ed1 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/admin_analytics.js?v=e2cdc3d028 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/semafor.js?v=60f4db5322 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/coaja.js?v=2776271008 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/firme.js?v=c1c3d54045 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/migrare.js?v=57d2586d73 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/control.js?v=c027ce0ad1 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/activitate_cabinet.js?v=80b751d073 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/setari.js?v=37902f6231 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/raporteaza.js?v=766651826e HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/salut.js?v=f5a3ed7133 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/pachete.js?v=9228e3b2d1 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/termene.js?v=c7e152f4e6 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/validat.js?v=0cf7590b9c HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/supervizor.js?v=b70acba4cb HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/asistenti.js?v=cb40ff883b HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/capacitate.js?v=02f68826b4 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/tipare.js?v=a3648839d3 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/ansamblu.js?v=ce01321ac1 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/cadru.js?v=e169054e69 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/cautare.js?v=40db9aeffa HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/versiune.js?v=9a0ee2174b HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/declaratii.js?v=610141de2a HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/facturi_ecran.js?v=cc67bbdaea HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/admin_raportari.js?v=75ecec94e0 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/admin_activitate.js?v=b52bf936b9 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/admin_sanatate.js?v=165b0a348c HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/carduri.js?v=98c15a1738 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ds_piese.js?v=e115d72f0f HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/verdict.js?v=fb322c8d48 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/control_verdict.js?v=cea4f49410 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/intocmitor_bilant.js?v=5d705395fe HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/recomanda.js?v=e5354ffd52 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/tabel_note.js?v=e3ad67e841 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/centre_cost_linie.js?v=d776200e2b HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/luna_lucru.js?v=04c41c46c1 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/flux_concediu.js?v=fc0dc15c22 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/sal_sume.js?v=cd0be29c82 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/spv_stare.js?v=85bc22c9ed HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/emitere_ecran.js?v=d0a3cb9a62 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/rip_ecran.js?v=99f1b10562 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/coada_trimite.js?v=50cade9fc8 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/operatiuni_ecran.js?v=4980b3a17f HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/borderou_ecran.js?v=6c00f2b8cf HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/etransport_ecran.js?v=9a69d8bf56 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/produse_ecran.js?v=2b4b10dbf6 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/woo_ecran.js?v=bc2611f4e7 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/date_firma.js?v=fb35651dd9 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/mijloace_ecran.js?v=891835ddea HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/reevaluare_ecran.js?v=bf9065cbb3 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/compensari_ecran.js?v=ed3e73a2f0 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/clienti_ecran.js?v=89ded88a66 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/nume_anaf.js?v=d59cd56b02 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/nir_legare.js?v=b34abfe2ec HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/tari_partener.js?v=47a26608a6 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/mf_din_factura.js?v=de15131629 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/ecran_destinatie.js?v=c781636333 HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] code 404, message File not found
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/.publicat.json HTTP/1.1" 404 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/logo_simbol.png HTTP/1.1" 200 -
+127.0.0.1 - - [11/Nov/2026 00:27:52] code 501, message Unsupported method ('POST')
+127.0.0.1 - - [11/Nov/2026 00:27:52] "POST /api/eveniment-public HTTP/1.1" 501 -
+----------------------------- Captured stderr call -----------------------------
+127.0.0.1 - - [11/Nov/2026 00:27:52] "GET /static/js/ecrane/firme.js HTTP/1.1" 200 -
+_____________ test_formularul_cor_ales_vine_cu_codul_salariatului ______________
+[gw2] linux -- Python 3.12.3 /home/costin/iconta_lot17_5h2/venv/bin/python
+
+pagina = <Page url='http://127.0.0.1:43343/static/'>
+
+    def test_formularul_cor_ales_vine_cu_codul_salariatului(pagina):
+        pg = pagina
+>       _montat(pg)
+
+core/test_lot10b_deschidere_aleasa.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+core/test_lot10b_deschidere_aleasa.py:219: in _montat
+    pg.wait_for_selector(".fer-proba [data-adev]", timeout=15000)
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7d9da323f620>
+cb = <function Channel.send.<locals>.<lambda> at 0x7d9da33f67a0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 15000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fer-proba [data-adev]") to be visible
+E               32 × locator resolved to hidden <button data-adev="7" class="buton-secundar" data-nume="IONESCU VASILE">Adeverință</button>
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum - Assertio...
+FAILED core/test_lot10b_deschidere_aleasa.py::test_clicurile_programatice_sunt_numai_cele_alese_de_om
+FAILED core/test_lot10b_deschidere_aleasa.py::test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor
+FAILED core/test_lot10b_deschidere_aleasa.py::test_formularul_cor_ales_vine_cu_codul_salariatului
+4 failed, 644 passed, 14 xfailed in 281.97s (0:04:41)
+done

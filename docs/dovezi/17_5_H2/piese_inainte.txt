@@ -1,0 +1,287 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________________________ test_piese_17_5_H2 ______________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_piese_17_5_H2(browser):
+        from core import ceas_proba
+        parcurs = _incarca_parcurs_17_1()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+    
+            # 1 + 4. Istoric facturi F1, luna ceasului (11/2026): fără facturi -> fără tabel, fără contor, fără PDF de rezervă
+            _card(pg, parcurs, F1, "#fa-facturi")
+            _apasa(pg, "#fac-istoric", "#fac-prev", 2500)
+            st = _bara(pg)
+            if "Nicio factură în luna aceasta." not in st["text"]:
+                rele.append("Istoric facturi 11/2026: mesajul listei goale lipsește (luna nu e goală sau fereastra nu s-a deschis)")
+            _fara_tabel_gol(rele, "Istoric facturi 11/2026", st)
+            n, text = _principal(pg)
+            if n != 1 or "Descarcă PDF" not in text:
+                rele.append("Istoric facturi 11/2026: așteptat un singur buton principal «Descarcă PDF», am găsit %d: «%s»" % (n, text))
+            elif _inactiv(pg, ".fj-butoane .fj-principal") is not True:
+                rele.append("Istoric facturi 11/2026: «Descarcă PDF» fără tabel cu înregistrări trebuie să fie inactiv")
+            if st["marcate"] != 1:
+                rele.append("Istoric facturi 11/2026: %d buton(e) cu data-actiune-principala, așteptat exact 1" % st["marcate"])
+    
+            # 3. Detaliu factură F1A19 (Istoric › «← luna» › rândul F1A19): primul rând al tabelului liniilor nu e acoperit de cap
+            _apasa(pg, "#fac-prev", "button.fac-frand-btn", 1500)
+            _apasa(pg, "button.fac-frand-btn[data-doc='F1A19']", ".fd-tabel", 2500)
+            st = _bara(pg)
+            if "Marfa A" not in st["text"]:
+                rele.append("Detaliu factură F1A19: rândul «Marfa A» lipsește din fereastră (factura nu s-a deschis)")
+            peste = pg.evaluate(JS_PRIMUL_RAND)
+            if not peste.startswith("TD"):
+                rele.append("Detaliu factură F1A19: în centrul primului rând stă %s, așteptat celula rândului (TD/tbody)" % peste)
+            capete = pg.evaluate(JS_CAPETE)
+            if any(c is None or abs(c) > 1 for c in capete):
+                rele.append("Detaliu factură F1A19: capul tabelului din cutie e deplasat față de tabel cu %s px, așteptat 0" % capete)
+            _o_singura_principala(rele, "Detaliu factură F1A19", st)
+    
+            # 6. confirmarea storno (fereastră mică): «Confirm stornarea» inactiv cât alegerea Da/Nu e goală; nu se apasă
+            _apasa(pg, "#fd-storno", "#fd-storno-ok", 1500)
+            if pg.locator(TOP + "#fd-storno-retur").count():
+                if pg.locator(TOP + "#fd-storno-retur").first.input_value() == "":
+                    if _inactiv(pg, "#fd-storno-ok") is not True:
+                        rele.append("confirmare storno F1A19: «Confirm stornarea» activ cu alegerea «se întoarce în stoc?» goală")
+                else:
+                    rele.append("confirmare storno F1A19: alegerea Da/Nu are deja o valoare (așteptat goală la deschidere)")
+            else:
+                rele.append("confirmare storno F1A19: întrebarea «se întoarce în stoc?» (#fd-storno-retur) lipsește")
+    
+            # 1 + 4. Contracte F1 (fără șabloane): fără tabel, fără contor; principalul rămâne «+ Șablon nou»
+            _card(pg, parcurs, F1, "#fa-contracte")
+            st = _bara(pg)
+            _fara_tabel_gol(rele, "Contracte F1", st)
+            n, text = _principal(pg)
+            if (n, text) != (1, "+ Șablon nou"):
+                rele.append("Contracte F1: %d buton(e) principal(e) «%s», așteptat «+ Șablon nou»" % (n, text))
+            _o_singura_principala(rele, "Contracte F1", st)
+    
+            # 2 + 4. Import date F1 (meniul straturilor): fără contor de rânduri, fără buton principal
+            _card(pg, parcurs, F1, "#fa-import")
+            try:
+                pg.wait_for_selector(TOP + "#mig-pasi", timeout=20000)
+                pg.wait_for_timeout(1000)
+            except Exception:   # noqa: BLE001
+                pass
+            st = _bara(pg)
+            contoare = [s for s in st["subsoluri"] if "rând" in s]
+            if contoare:
+                rele.append("Import date F1 (meniul): contor de tabel sub meniu: %s" % ", ".join(contoare))
+            n, text = _principal(pg)
+            if n != 0:
+                rele.append("Import date F1 (meniul): buton principal «%s», așteptat niciunul" % text)
+    
+            # 5. Casă — dispoziție nouă F1: eticheta «Adaugă», motivul în fj-motiv
+            _card(pg, parcurs, F1, "#fa-casa")
+            _apasa(pg, "#c-toggle", "#c-adauga", 1500)
+            n, text = _principal(pg)
+            if (n, text) != (1, "Adaugă"):
+                rele.append("Casă — dispoziție nouă: %d buton(e) principal(e) «%s», așteptat «Adaugă»" % (n, text))
+            if not _motiv(pg).startswith("Completează:"):
+                rele.append("Casă — dispoziție nouă: motivul «Completează: …» lipsește din fj-motiv (găsit «%s»)" % _motiv(pg))
+            _o_singura_principala(rele, "Casă — dispoziție nouă", _bara(pg))
+    
+            # 5. Registru jurnal — notă nouă F1: eticheta «Salvează», motivul în fj-motiv; 3. Registru jurnal: capul rămâne lipit la derulare (invariantă)
+            _card(pg, parcurs, F1, "#fa-jurnal")
+            try:
+                pg.wait_for_selector(TOP + "#j-nota-noua", timeout=20000)
+                pg.wait_for_timeout(1500)
+            except Exception:   # noqa: BLE001
+                pass
+            lipit = pg.evaluate(JS_JURNAL_LIPIT)
+            if lipit not in ("zona fara derulare",) and not (lipit.lstrip("-").isdigit() and abs(int(lipit)) <= 1):
+                rele.append("Registru jurnal F1: după derularea zonei cu 300 px capul tabelului e la %s px de marginea zonei, așteptat lipit (0)" % lipit)
+            _apasa(pg, "#j-nota-noua", "#je-salveaza", 1500)
+            n, text = _principal(pg)
+            if (n, text) != (1, "Salvează"):
+                rele.append("Registru jurnal — notă nouă: %d buton(e) principal(e) «%s», așteptat «Salvează»" % (n, text))
+            if not _motiv(pg).startswith("Completează:"):
+                rele.append("Registru jurnal — notă nouă: motivul «Completează: …» lipsește din fj-motiv (găsit «%s»)" % _motiv(pg))
+    
+            # 6. D104 F1 pasul 2: «Generează D104» inactiv cu motiv, câmpurile «*» goale
+            _card(pg, parcurs, F1, "#fa-declaratii")
+            try:
+                pg.locator(TOP + "li.ds-lista-rand", has_text="D104").first.click(timeout=10000)
+                pg.wait_for_selector(TOP + "#dec-continua", timeout=20000)
+                pg.wait_for_timeout(800)
+                pg.click(TOP + "#dec-continua", timeout=10000)
+                pg.wait_for_selector(TOP + "#d104-dnume", state="attached", timeout=20000)
+            except Exception:   # noqa: BLE001
+                pass
+            pg.wait_for_timeout(1500)
+            n, text = _principal(pg)
+            if (n, text) != (1, "Generează D104"):
+                rele.append("D104 pasul 2: %d buton(e) principal(e) «%s», așteptat «Generează D104»" % (n, text))
+            if pg.locator(TOP + "#d104-dnume").count() and pg.locator(TOP + "#d104-dnume").first.input_value() == "" and not _motiv(pg).startswith("Completează:"):
+                rele.append("D104 pasul 2: «Generează D104» fără motivul «Completează: …» cu câmpurile «*» goale (fj-motiv: «%s»)" % _motiv(pg))
+    
+            # 6. Firmă nouă (cabinet): CUI cu «*», «Adaugă firma» inactiv cu motiv
+            try:
+                parcurs._la_meniul_firme(pg)   # cabinet › Firme (docs/dovezi/17_1/parcurs_17_1.py)
+                pg.click("#opt-existente")
+                pg.wait_for_selector("#firme-adauga", timeout=20000)
+                pg.click(TOP + "#firme-adauga", timeout=10000)   # «+ Adaugă firmă» (static/js/ecrane/firme.js:75) deschide fereastra «Adaugă firmă»
+                pg.wait_for_selector(TOP + "#fn-cui", timeout=20000)
+            except Exception:   # noqa: BLE001
+                pass
+            pg.wait_for_timeout(1500)
+            if "*" not in _eticheta(pg, "fn-cui"):
+                rele.append("Firmă nouă: eticheta CUI nu poartă «*» (găsit «%s»)" % _eticheta(pg, "fn-cui"))
+            if "*" not in _eticheta(pg, "fn-tip"):
+                rele.append("Firmă nouă: eticheta Tip firmă nu poartă «*» (găsit «%s»)" % _eticheta(pg, "fn-tip"))
+            n, text = _principal(pg)
+            if (n, text) != (1, "Adaugă firma"):
+                rele.append("Firmă nouă: %d buton(e) principal(e) «%s», așteptat «Adaugă firma»" % (n, text))
+            if not _motiv(pg).startswith("Completează:"):
+                rele.append("Firmă nouă: motivul «Completează: …» lipsește din fj-motiv (găsit «%s»)" % _motiv(pg))
+            # AC128: CUI completat (DANTE INTERNATIONAL SA, 14399840, clientul F1 din snapshot), Tip firmă rămâne «— alege —» -> principalul inactiv, motivul numește «Tip firmă»
+            try:
+                pg.fill(TOP + "#fn-cui", "14399840")
+                pg.wait_for_timeout(2500)   # răspunsul ANAF / completarea denumirii (dacă vine); se judecă starea, nu denumirea
+            except Exception:   # noqa: BLE001
+                pass
+            if pg.locator(TOP + "#fn-tip").count() and pg.locator(TOP + "#fn-tip").first.input_value() == "":
+                if _inactiv(pg, ".fj-butoane .fj-principal") is not True:
+                    rele.append("Firmă nouă: cu CUI completat și Tip firmă «— alege —», «Adaugă firma» e activ (așteptat inactiv, cu motiv)")
+                if "Tip firmă" not in _motiv(pg):
+                    rele.append("Firmă nouă: cu CUI completat motivul nu numește «Tip firmă» (fj-motiv: «%s»)" % _motiv(pg))
+            else:
+                rele.append("Firmă nouă: #fn-tip lipsește sau are deja o valoare la deschidere")
+    
+            # 3. Fișa salariatului F5: capetele tabelelor din cutii la începutul tabelelor
+            if _fisa(pg, parcurs):
+                st = _bara(pg)
+                if "Compoziția netului" not in st["text"]:
+                    rele.append("Fișa salariatului F5: «Compoziția netului» lipsește")
+                capete = pg.evaluate(JS_CAPETE)
+                # la 1366x768 Fisa nu are tabele in cutie (vd_dupa 17.5-E2: tabele_ds=0): se masoara numai unde exista cutii
+                if any(c is None or abs(c) > 1 for c in capete):
+                    rele.append("Fișa salariatului F5: capete deplasate față de tabelele lor cu %s px, așteptat 0" % capete)
+                # 3b. la 1920x1080 Fisa are tabele in cutie (vd_dupa 17.5-E2: tabele_ds=3): aici se dovedeste lipirea capului
+                pg.set_viewport_size({"width": 1920, "height": 1080})
+                if _fisa(pg, parcurs):
+                    capete = pg.evaluate(JS_CAPETE)
+                    if not capete:
+                        rele.append("Fișa salariatului F5 la 1920×1080: niciun tabel cu cap în cutie")
+                    elif any(c is None or abs(c) > 1 for c in capete):
+                        rele.append("Fișa salariatului F5 la 1920×1080: capete deplasate față de tabelele lor cu %s px, așteptat 0" % capete)
+                else:
+                    rele.append("Fișa salariatului F5 nu s-a deschis la 1920×1080")
+                pg.set_viewport_size({"width": 1366, "height": 768})
+                _fisa(pg, parcurs)
+                # 6. Ore suplimentare: «Adaugă» inactiv cu motiv cât «Tipul*» și «Denumirea*» sunt goale
+                try:
+                    pg.locator(TOP + "#ss-butoane button", has_text="Prime, sporuri").first.click(timeout=10000)
+                    pg.wait_for_selector(TOP + "#el-adauga", state="attached", timeout=20000)
+                except Exception:   # noqa: BLE001
+                    pass
+                pg.wait_for_timeout(1500)
+                n, text = _principal(pg)
+                if (n, text) != (1, "Adaugă"):
+                    rele.append("Ore suplimentare F5: %d buton(e) principal(e) «%s», așteptat «Adaugă»" % (n, text))
+                if not _motiv(pg).startswith("Completează:"):
+                    rele.append("Ore suplimentare F5: motivul «Completează: …» lipsește din fj-motiv (găsit «%s»)" % _motiv(pg))
+                # 6. Certificat nou (CM): «Calculează și salvează» inactiv cu motiv
+                if _fisa(pg, parcurs):
+                    try:
+                        pg.locator(TOP + "#ss-butoane button", has_text="Concediu medical").first.click(timeout=10000)
+                        pg.wait_for_selector(TOP + "#cm-nou", timeout=20000)
+                        pg.click(TOP + "#cm-nou", timeout=10000)
+                        pg.wait_for_selector(TOP + "#cm-calc", state="attached", timeout=20000)
+                    except Exception:   # noqa: BLE001
+                        pass
+                    pg.wait_for_timeout(1500)
+                    n, text = _principal(pg)
+                    if (n, text) != (1, "Calculează și salvează"):
+                        rele.append("Certificat nou F5: %d buton(e) principal(e) «%s», așteptat «Calculează și salvează»" % (n, text))
+                    if not _motiv(pg).startswith("Completează:"):
+                        rele.append("Certificat nou F5: motivul «Completează: …» lipsește din fj-motiv (găsit «%s»)" % _motiv(pg))
+                else:
+                    rele.append("Fișa salariatului F5 nu s-a deschis a doua oară (Certificat nou nevizitat)")
+                # 7. Pontaj F5 (din fișă, butonul «Pontaj», firme.js:1498): un singur buton cu aspect de principală (fără .buton-verde în conținut)
+                if _fisa(pg, parcurs):
+                    try:
+                        pg.locator(TOP + "#ss-butoane button", has_text="Pontaj").first.click(timeout=10000)
+                        pg.wait_for_selector(TOP + "#pj-calendar", state="attached", timeout=20000)
+                    except Exception:   # noqa: BLE001
+                        pass
+                    pg.wait_for_timeout(1500)
+                    st = _bara(pg)
+                    if "pontaj" not in st["text"].lower():
+                        rele.append("Pontaj F5: fereastra nu s-a deschis")
+                    _o_singura_principala(rele, "Pontaj F5", st)
+                else:
+                    rele.append("Fișa salariatului F5 nu s-a deschis a treia oară (Pontaj nevizitat)")
+            else:
+                rele.append("Fișa salariatului F5 nu s-a deschis (Fișa, Ore suplimentare, Certificat nou nevizitate)")
+    
+            # 7. D301 F3 pasul 2: «Regenerează D301» e buton secundar, o singură acțiune principală
+            _card(pg, parcurs, "F3 Intracomunitar", "#fa-declaratii")
+            try:
+                pg.locator(TOP + "li.ds-lista-rand", has_text="D301").first.click(timeout=10000)
+                pg.wait_for_selector(TOP + "#dec-continua", timeout=20000)
+                pg.wait_for_timeout(800)
+                pg.click(TOP + "#dec-continua", timeout=10000)
+                pg.wait_for_selector(TOP + "#d301-regen", state="attached", timeout=20000)
+            except Exception:   # noqa: BLE001
+                pass
+            pg.wait_for_timeout(1500)
+            if pg.locator(TOP + "#d301-regen").count():
+                clase = pg.locator(TOP + "#d301-regen").first.get_attribute("class") or ""
+                if "buton-primar" in clase.split() or "buton-secundar" not in clase.split():
+                    rele.append("D301 pasul 2: «Regenerează D301» are clasele «%s», așteptat buton secundar" % clase)
+            else:
+                rele.append("D301 pasul 2: #d301-regen lipsește (pasul 2 nu s-a deschis)")
+            _o_singura_principala(rele, "D301 F3 pasul 2", _bara(pg))
+        finally:
+            b.close()
+    
+        # portalul clientului F1: «Cifrele firmei» fără tabel/contor/PDF de rezervă
+        c = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            c.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            c.add_init_script(sesiune(CLIENT))
+            pc = c.new_page()
+            pc.goto(BAZA + "/", wait_until="load", timeout=30000)
+            try:
+                pc.wait_for_selector("button.cab-card", timeout=30000)
+                pc.wait_for_timeout(1000)
+                pc.locator("button.cab-card", has_text="Cifrele firmei").first.click(timeout=10000)
+                pc.wait_for_selector(TOP + ".fereastra-corp", timeout=20000)
+                pc.wait_for_function("() => { const f = document.querySelector('.fereastra-overlay:not(.fundal) .fereastra-corp'); return f && !f.innerText.includes('Se încarcă'); }", timeout=20000)
+            except Exception:   # noqa: BLE001
+                pass
+            pc.wait_for_timeout(2000)
+            st = pc.evaluate(JS_BARA) or {"marcate": -1, "in_bara": -1, "verzi": [], "text": "", "subsoluri": []}
+            if "Cifrele firmei" not in st["text"]:
+                rele.append("portal Cifrele firmei: fereastra nu s-a deschis")
+            if "Înregistrare" in st["text"]:
+                rele.append("portal Cifrele firmei: capul «Înregistrare» pe panoul de cifre")
+            contoare = [s for s in st["subsoluri"] if "rând" in s]
+            if contoare:
+                rele.append("portal Cifrele firmei: contor de tabel pe panoul de cifre: %s" % ", ".join(contoare))
+            loc = pc.locator(PRINCIPAL)
+            if loc.count():
+                rele.append("portal Cifrele firmei: buton principal «%s», așteptat niciunul (fără tabel de exportat)" % " ".join(loc.first.inner_text().split()))
+        finally:
+            c.close()
+>       assert not rele, "piesele cadrului 17.5-H2: %s" % "; ".join(rele)
+E       AssertionError: piesele cadrului 17.5-H2: Istoric facturi 11/2026: capul «Înregistrare» pe listă fără înregistrări; Istoric facturi 11/2026: contorul «1 rând» pe listă fără înregistrări; Istoric facturi 11/2026: subsol cu contor pe listă fără înregistrări: 1 rând; Istoric facturi 11/2026: «Descarcă PDF» fără tabel cu înregistrări trebuie să fie inactiv; Detaliu factură F1A19: în centrul primului rând stă TH/thead, așteptat celula rândului (TD/tbody); Detaliu factură F1A19: capul tabelului din cutie e deplasat față de tabel cu [45] px, așteptat 0; confirmare storno F1A19: «Confirm stornarea» activ cu alegerea «se întoarce în stoc?» goală; Contracte F1: capul «Înregistrare» pe listă fără înregistrări; Contracte F1: contorul «1 rând» pe listă fără înregistrări; Contracte F1: subsol cu contor pe listă fără înregistrări: 1 rând; Import date F1 (meniul): contor de tabel sub meniu: 10 rânduri; Casă — dispoziție nouă: 1 buton(e) principal(e) «Completează: tipul», așteptat «Adaugă»; Casă — dispoziție nouă: motivul «Completează: …» lipsește din fj-motiv (găsit «»); Registru jurnal — notă nouă: 1 buton(e) principal(e) «Completează: data, contul debit, contul credit, suma», așteptat «Salvează»; Registru jurnal — notă nouă: motivul «Completează: …» lipsește din fj-motiv (găsit «»); D104 pasul 2: «Generează D104» fără motivul «Completează: …» cu câmpurile «*» goale (fj-motiv: «»); Firmă nouă: eticheta CUI nu poartă «*» (găsit «CUI»); Firmă nouă: motivul «Completează: …» lipsește din fj-motiv (găsit «Completează datele cerute în fereastră, ca să poți continua.»); Firmă nouă: cu CUI completat și Tip firmă «— alege —», «Adaugă firma» e activ (așteptat inactiv, cu motiv); Firmă nouă: cu CUI completat motivul nu numește «Tip firmă» (fj-motiv: «»); Ore suplimentare F5: motivul «Completează: …» lipsește din fj-motiv (găsit «»); Certificat nou F5: motivul «Completează: …» lipsește din fj-motiv (găsit «»); Pontaj F5: buton-verde în conținut, cu aspect de principală: «Confirmă pontajul lunii»; D301 pasul 2: «Regenerează D301» are clasele «buton-primar buton-s», așteptat buton secundar; portal Cifrele firmei: capul «Înregistrare» pe panoul de cifre; portal Cifrele firmei: contor de tabel pe panoul de cifre: 8 rânduri, 6 rânduri; portal Cifrele firmei: buton principal «Descarcă PDF», așteptat niciunul (fără tabel de exportat)
+E       assert not ['Istoric facturi 11/2026: capul «Înregistrare» pe listă fără înregistrări', 'Istoric facturi 11/2026: contorul «1 rân...i (TD/tbody)', 'Detaliu factură F1A19: capul tabelului din cutie e deplasat față de tabel cu [45] px, așteptat 0', ...]
+
+frontend_test/e2e/e2e_piese_17_5_H2.py:446: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_piese_17_5_H2.py::test_piese_17_5_H2 - Assertion...
+1 failed in 119.96s (0:01:59)
+
+real	2m0.269s
+user	0m5.085s
+sys	0m2.245s

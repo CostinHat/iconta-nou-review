@@ -1,0 +1,125 @@
+Testele care citesc locurile schimbate (grep -lE "stare-goala|LISTE_ASTEA|listeDSAplica|_exportTabel|_lipsuri|_formularul|rezumat-h|fer-tabel|c-adauga|je-salveaza|fn-salveaza|fn-tip|el-adauga|cm-calc|fd-storno-ok|pj-confirma|d301-regen|mig-pasi"), pe P = 802de657.
+
+== core/test_*.py: 49 fișiere, rulate o dată pe P (pytest -n 3 --dist loadfile): 644 trecute, 14 xfailed, 4 picate ==
+core/test_395_ordine_formular.py
+core/test_412_cim_salariat.py
+core/test_bilant_an_precedent.py
+core/test_bilant_denumiri.py
+core/test_bilant_formular.py
+core/test_bilant_s1003_f20.py
+core/test_c61_adresa_client_ro.py
+core/test_cartea_mare.py
+core/test_catch_vizibil.py
+core/test_control_fiscal.py
+core/test_d212_categorii.py
+core/test_d300_rand_formular.py
+core/test_datorie.py
+core/test_decizii_0810_uvw.py
+core/test_declarant_oblig.py
+core/test_emitere_factura_f1.py
+core/test_fisa_cont.py
+core/test_garzi_tacere_ui.py
+core/test_lot10b_deschidere_aleasa.py
+core/test_lot10b_facturi.py
+core/test_lot10b_jurnal_nota_noua.py
+core/test_lot10_c69_bilant.py
+core/test_lot10_c69_d406_parteneri.py
+core/test_lot10_c71_lipsuri_forma.py
+core/test_lot10_fereastra_tabel.py
+core/test_lot10_reevaluare_manuala.py
+core/test_lot10_rezumat_fix.py
+core/test_lot11_a459_cui.py
+core/test_lot11_e2f_profil_complet.py
+core/test_lot11_g2_pre_line.py
+core/test_lot11_j_dupa_generare.py
+core/test_lot11_u0_intoarcere.py
+core/test_lot11_w3a_erori.py
+core/test_lot11_w4_ecrane.py
+core/test_lot12_bilant_c143.py
+core/test_lot12_form2_inregistrare.py
+core/test_lot12_scad_primita.py
+core/test_lot12_triaj3_nir_formular.py
+core/test_lot12_ui2_ecrane.py
+core/test_lot13_decl_logica.py
+core/test_lot13_firme2_ecrane.py
+core/test_lot13_oss_date_firma.py
+core/test_nomenclator_obligatii.py
+core/test_p7_uc.py
+core/test_plan_form_fieldmark.py
+core/test_randuri_17_5.py
+core/test_raport_z_unic.py
+core/test_registru_inventar.py
+core/test_selecturi_ecrane.py
+
+Picate (4), toate roșii și pe baza 463aaca7 (rulate pe indexul bazei, cu modificările puse deoparte, o singură dată): restanțe ale bazei, nereparate în lot:
+FAILED core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum - Assertio...
+FAILED core/test_lot10b_deschidere_aleasa.py::test_clicurile_programatice_sunt_numai_cele_alese_de_om
+FAILED core/test_lot10b_deschidere_aleasa.py::test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor
+FAILED core/test_lot10b_deschidere_aleasa.py::test_formularul_cor_ales_vine_cu_codul_salariatului
+  - test_clicurile_programatice_sunt_numai_cele_alese_de_om: firme.js are 3 apeluri .click() și pe main (lista cere 2), migrare.js 2 (lista cere 1); lotul nu adaugă niciunul.
+  - test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor, test_formularul_cor_ales_vine_cu_codul_salariatului: butonul «Adeverință» nu e vizibil (meniul «Acțiuni» din 17.5), și pe bază.
+  - core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum: apeluri pierdute în _verificari_contabile (cod python neatins de lot), și pe bază.
+Actualizat la comportamentul nou (numit în fisiere_permise): core/test_lot10b_jurnal_nota_noua.py (eticheta «Salvează» + motivul rămâne în data-motiv-inactiv). core/test_lot13_firme2_ecrane.py și core/test_randuri_17_5.py au trecut neschimbate.
+
+== frontend_test/e2e/e2e_*.py: 57 fișiere; 5 în plasa fixă (le rulează poarta), 52 NU se rulează pe P (limită declarată: volum, peste pragul de 8 fișiere) ==
+-- în plasă:
+  frontend_test/e2e/e2e_actiune_principala_17_5_D.py
+  frontend_test/e2e/e2e_de_validat_17_5_G.py
+  frontend_test/e2e/e2e_piese_17_5_H2.py
+  frontend_test/e2e/e2e_pilot_luna.py
+  frontend_test/e2e/e2e_pozitii_validate.py
+-- nerulate:
+  frontend_test/e2e/e2e_bloc_a.py
+  frontend_test/e2e/e2e_bloc_b.py
+  frontend_test/e2e/e2e_bloc_c.py
+  frontend_test/e2e/e2e_bloc_d.py
+  frontend_test/e2e/e2e_bloc_e.py
+  frontend_test/e2e/e2e_comanda_1210.py
+  frontend_test/e2e/e2e_inregistrare_libera.py
+  frontend_test/e2e/e2e_invitatii.py
+  frontend_test/e2e/e2e_lot10b_facturi.py
+  frontend_test/e2e/e2e_lot10b_salarii_jurnal.py
+  frontend_test/e2e/e2e_lot10_ferestre.py
+  frontend_test/e2e/e2e_lot10_tva_incasare.py
+  frontend_test/e2e/e2e_lot11_a455.py
+  frontend_test/e2e/e2e_lot11_a459.py
+  frontend_test/e2e/e2e_lot11_q.py
+  frontend_test/e2e/e2e_lot11_s9.py
+  frontend_test/e2e/e2e_lot11_t.py
+  frontend_test/e2e/e2e_lot11_w1.py
+  frontend_test/e2e/e2e_lot11_w2.py
+  frontend_test/e2e/e2e_lot11_w3a.py
+  frontend_test/e2e/e2e_lot11_w4.py
+  frontend_test/e2e/e2e_lot11_z.py
+  frontend_test/e2e/e2e_lot12_c151.py
+  frontend_test/e2e/e2e_lot12_ctrl_d112.py
+  frontend_test/e2e/e2e_lot12_cx1.py
+  frontend_test/e2e/e2e_lot12_cx7.py
+  frontend_test/e2e/e2e_lot12_diverse.py
+  frontend_test/e2e/e2e_lot12_fact2.py
+  frontend_test/e2e/e2e_lot12_firme1.py
+  frontend_test/e2e/e2e_lot12_form2.py
+  frontend_test/e2e/e2e_lot12_notif.py
+  frontend_test/e2e/e2e_lot12_sal2.py
+  frontend_test/e2e/e2e_lot12_start.py
+  frontend_test/e2e/e2e_lot12_stoc2.py
+  frontend_test/e2e/e2e_lot12_ui2.py
+  frontend_test/e2e/e2e_lot13_decl.py
+  frontend_test/e2e/e2e_lot13_ds.py
+  frontend_test/e2e/e2e_lot13_fact.py
+  frontend_test/e2e/e2e_lot13_firme2.py
+  frontend_test/e2e/e2e_lot13_migr.py
+  frontend_test/e2e/e2e_lot13_portal_p1.py
+  frontend_test/e2e/e2e_lot13_sal.py
+  frontend_test/e2e/e2e_lot13_val6.py
+  frontend_test/e2e/e2e_lot14_2.py
+  frontend_test/e2e/e2e_lot5_c3.py
+  frontend_test/e2e/e2e_lot6.py
+  frontend_test/e2e/e2e_lot81.py
+  frontend_test/e2e/e2e_lot82.py
+  frontend_test/e2e/e2e_lot91.py
+  frontend_test/e2e/e2e_lot92.py
+  frontend_test/e2e/e2e_lot93b.py
+  frontend_test/e2e/e2e_lot93d.py
+
+Un e2e nerulat modificat: frontend_test/e2e/e2e_lot92.py — clicul #fd-storno-ok cu alegerea goală devine force=True (pct.5(b)). test_def_419 din el e roșu înaintea clicului, la linia 214 (assert not pg.query_selector(".fereastra:last-of-type #fd-pdf")), cu codul lotului; nu l-am putut rula pe bază, deci nu știu dacă e și acolo roșu. Clicul cu force=True pe un buton cu aria-disabled este oprit de ascultătorul document din api.js, deci după el .refuz-salvare nu mai apare: testul nu poate fi verde cu butonul inactiv — limită declarată.

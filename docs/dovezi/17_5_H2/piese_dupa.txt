@@ -1,0 +1,4 @@
+.                                                                        [100%]
+1 passed in 101.98s (0:01:41)
+5.38user 2.16system 1:42.45elapsed 7%CPU (0avgtext+0avgdata 158064maxresident)k
+0inputs+67352outputs (1366major+96411minor)pagefaults 0swaps

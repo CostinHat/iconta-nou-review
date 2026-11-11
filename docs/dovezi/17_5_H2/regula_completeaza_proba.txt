@@ -1,0 +1,5 @@
+Regula nouă a literei b (fj-principal cu textul «Completează …» pică), aplicată pe b.actiune_principala din docs/dovezi/17_5_E2/vd_dupa (210 JSON-uri):
+  trage: casa_dispozitie_noua_f1_1366x768.json «Completează: tipul»
+  trage: casa_dispozitie_noua_f1_1920x1080.json «Completează: tipul»
+  trage: registru_jurnal_nota_noua_f1_1366x768.json «Completează: data, contul debit, contul credit, suma»
+  trage: registru_jurnal_nota_noua_f1_1920x1080.json «Completează: data, contul debit, contul credit, suma»

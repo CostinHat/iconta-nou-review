@@ -1,0 +1,43 @@
+Verificatorul de design, înainte (vd_inainte/, 463aaca7) → după (vd_dupa/, 802de657), 210 rulări; ferestrele catalogului a căror literă a–h, al căror buton principal, număr de butoane principale, număr de tabele DS (tabele_ds / tabele vechi / liste vechi) sau a căror stare fj-inactiv se schimbă, pe nume:
+- Borderou de achiziție F1 1366x768: tabele DS «1» → «0»
+- Borderou de achiziție F1 1920x1080: tabele DS «1» → «0»
+- Casă — dispoziție nouă F1 1366x768: buton principal «Completează: tipul» → «Adaugă»; fj-inactiv «False» → «True»
+- Casă — dispoziție nouă F1 1920x1080: buton principal «Completează: tipul» → «Adaugă»; fj-inactiv «False» → «True»
+- Centre de cost F1 1366x768: tabele DS «1» → «0»
+- Centre de cost F1 1920x1080: tabele DS «1» → «0»
+- Contracte F1 1366x768: tabele DS «1» → «0»
+- Contracte F1 1920x1080: tabele DS «1» → «0»
+- Declarație D104 F1 pasul 2 1366x768: fj-inactiv «False» → «True»
+- Declarație D104 F1 pasul 2 1920x1080: fj-inactiv «False» → «True»
+- Declarație D301 F3 pasul 2 1366x768: litere pică «b» → «d»; buton principal «None» → «Pune în „De depus” →»; nr butoane principale «0» → «1»
+- Facturi recurente F1 1366x768: tabele DS «1» → «0»
+- Facturi recurente F1 1920x1080: tabele DS «1» → «0»
+- Import date F1 1366x768: tabele DS «1» → «0»
+- Import date F1 1920x1080: tabele DS «1» → «0»
+- Istoric facturi F1 1366x768: tabele DS «1» → «0»; fj-inactiv «False» → «True»
+- Istoric facturi F1 1920x1080: tabele DS «1» → «0»; fj-inactiv «False» → «True»
+- Magazin online F1 1366x768: fj-inactiv «False» → «True»
+- Magazin online F1 1920x1080: fj-inactiv «False» → «True»
+- Ore suplimentare F5 1366x768: fj-inactiv «False» → «True»
+- Ore suplimentare F5 1920x1080: fj-inactiv «False» → «True»
+- Panou Admin — Sănătate server 1366x768: tabele DS «1» → «0»
+- Panou Admin — Sănătate server 1920x1080: tabele DS «1» → «0»
+- Registratură F1 1366x768: tabele DS «1» → «0»
+- Registratură F1 1920x1080: tabele DS «1» → «0»
+- Registru încasări/plăți F4 1366x768: tabele DS «1» → «0»
+- Registru încasări/plăți F4 1920x1080: tabele DS «1» → «0»
+- Registru încasări/plăți F4 + Operațiune nouă 1366x768: tabele DS «1» → «0»
+- Registru încasări/plăți F4 + Operațiune nouă 1920x1080: tabele DS «1» → «0»
+- Registru jurnal — notă nouă F1 1366x768: buton principal «Completează: data, contul debit, contul credit, suma» → «Salvează»; fj-inactiv «False» → «True»
+- Registru jurnal — notă nouă F1 1920x1080: buton principal «Completează: data, contul debit, contul credit, suma» → «Salvează»; fj-inactiv «False» → «True»
+- Tipare de erori 1366x768: fj-inactiv «False» → «True»
+- Tipare de erori 1920x1080: fj-inactiv «False» → «True»
+
+Ferestre-rulări cu cel puțin o literă «pică»: înainte 59 → după 59 (din JSON-urile din vd_inainte/ și vd_dupa/).
+
+Fără ferestre care să piardă litera b sau c (înainte → după): 0; câștigă litera b: «Declarație D301 F3 pasul 2» la 1366×768 (principalul din bară devine «Pune în „De depus” →», înainte bara avea 0 butoane principale).
+Ferestrele din afara listei care au devenit inactive: niciuna. Citirea celorlalte rânduri:
+- fj-inactiv «False» → «True», dorit de comandă: Casă — dispoziție nouă, Registru jurnal — notă nouă (eticheta rămâne verbul, motivul în bară), Declarație D104 pasul 2, Ore suplimentare F5 (câmpurile «*» goale); Istoric facturi F1 (luna ceasului, fără facturi: «Descarcă PDF» principal inactiv, motiv «Nu există înregistrări de exportat.»).
+- fj-inactiv «False» → «True» fără schimbare de aspect a butonului: Magazin online F1 («Sincronizează acum») și Tipare de erori («Generează analiză AI») erau deja cenușii (aria-disabled dat de ecran); acum marcajul barei se pune și pe aria-disabled, iar motivul dat de ecran apare în bară (înainte bara era fără text: vd_inainte/magazin_online_f1_1366x768.png → vd_dupa/magazin_online_f1_1366x768.png).
+- tabele DS «1» → «0»: ferestre a căror listă era goală (rândul de stare goală era numărat ca înregistrare): Borderou de achiziție, Centre de cost, Contracte, Facturi recurente, Import date (meniul), Istoric facturi, Registratură, Registru încasări/plăți F4 (și cu Operațiune nouă), Panou Admin — Sănătate server («Nicio eroare în ultimele 24h»). Nicio listă cu înregistrări nu a pierdut tabelul.
+- Casă — dispoziție nouă și Registru jurnal — notă nouă: «buton principal» «Completează: …» → verbul acțiunii.

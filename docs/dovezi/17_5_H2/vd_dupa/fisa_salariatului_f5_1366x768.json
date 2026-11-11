@@ -1,0 +1,163 @@
+{
+ "fapte": {
+  "viewport": [
+   1366,
+   768
+  ],
+  "ferestre_deschise": 1,
+  "fereastra": {
+   "clase": "fereastra fer-tabel",
+   "lat": 1334,
+   "inalt": 736,
+   "stanga": 16,
+   "sus": 16
+  },
+  "titlul_ferestrei": "Fișa salariatului · 10/2026",
+  "a": {
+   "inaltime": 56,
+   "traseu": 0,
+   "sageata": true,
+   "sageata_dim": [
+    40,
+    40
+   ],
+   "x": 1,
+   "x_dim": [
+    40,
+    40
+   ],
+   "firma_sau_cabinet": "F5 SRL Salariati SRL · CUI 40510009 › Ionescu Vasile",
+   "numele_ferestrei": "Ionescu Vasile",
+   "cautare": true
+  },
+  "b": {
+   "pe_tot_ecranul": true,
+   "derulari": [
+    {
+     "loc": "div.zona-derulare",
+     "fel": "vertical",
+     "ascuns": 406,
+     "tabel": true
+    }
+   ],
+   "bara_jos": {
+    "clase": "fereastra-jos",
+    "inaltime": 72
+   },
+   "exceptie": null,
+   "butoane_principale": 1,
+   "actiune_principala": "Fluturaș",
+   "cu_atribut": [
+    "Fluturaș"
+   ],
+   "renunta": false,
+   "din_formular": false,
+   "pastreaza_renunta": false,
+   "actiune_dubla": 1,
+   "principal_inactiv_fara_motiv": 0
+  },
+  "c": {
+   "tabele_ds": 0,
+   "tabele_vechi": [
+    "fd-tabel",
+    "fd-tabel",
+    "fd-tabel",
+    "fd-tabel"
+   ],
+   "liste_rand_buton": [],
+   "celule_taiate": [],
+   "liste_vechi": []
+  },
+  "d": {
+   "rezumat_ds": 0,
+   "semnale_ds": 0,
+   "carduri_vechi": 0,
+   "paragrafe_lungi": [],
+   "rezumate_la_vedere": 0,
+   "fara_buton": []
+  },
+  "e": {
+   "in_text": [],
+   "casete_cu_actiuni": []
+  },
+  "f": {
+   "titluri_cu_majuscule": [],
+   "fara_diacritice": [],
+   "plural": [],
+   "mesaje_duble": []
+  },
+  "g": {
+   "date_iso": [],
+   "sume_neformatate": [],
+   "perioade_ciudate": [],
+   "valori_goale": [],
+   "azi_acum": []
+  },
+  "h": {
+   "liste_sub_7": [],
+   "alege": [],
+   "cota_tva_ca_lista": [],
+   "grupuri_butoane": 0,
+   "liste_cu_cautare": 0,
+   "liste_inlocuite": 0
+  }
+ },
+ "pica": {
+  "a": [],
+  "b": [
+   "acțiunea principală „Fluturaș” apare și în conținut (2 ori pe ecran)"
+  ],
+  "c": [
+   "4 tabel(e) care nu sunt tabelul DS: fd-tabel"
+  ],
+  "d": [],
+  "e": [],
+  "f": [],
+  "g": [],
+  "h": []
+ },
+ "ecran": "Fișa salariatului F5",
+ "rezolutie": "1366x768",
+ "firma": "F5",
+ "nivel": "firma",
+ "eroare_deschidere": null,
+ "erori_js": [],
+ "verdict_mecanic": {
+  "a": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "b": {
+   "verdict": "PICĂ",
+   "motive": [
+    "acțiunea principală „Fluturaș” apare și în conținut (2 ori pe ecran)"
+   ]
+  },
+  "c": {
+   "verdict": "PICĂ",
+   "motive": [
+    "4 tabel(e) care nu sunt tabelul DS: fd-tabel"
+   ]
+  },
+  "d": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "e": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "f": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "g": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "h": {
+   "verdict": "TRECE",
+   "motive": []
+  }
+ }
+}
