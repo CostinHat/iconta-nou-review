@@ -1306,3 +1306,7 @@ a ce e adevărat **acum**.
 - Același cod ca P (9d2319a5, lotul 17.5-G); diferă numai scripts/praguri_17_5_G3.txt și docs/dovezi/17_5_G3/. G2 s-a oprit nepublicat la 10.11.2026 18:56 pe praguri de fază (arhitectul rula o scanare pe același server) și pe lipsa secțiunii «Rulări „intrerupt” pe fază». Poarta completă pe C și verificarea independentă (haiku_1, dupa) s-au refăcut sub 17.5-G3. Ramura `lucru/lot17-5g` și `~/iconta_lot17_5g` neatinse.
 
 **17.5-O, 11.11.2026 14:00:** corecția 2 aplicată; C = faf4b14a, poarta a doua rulare completă VERDE (regresie 0, restanță 2); haiku_1 (11 corespunde, 4 nejudecabile a.5–a.8, 0 „nu corespunde”) și «dupa» (15 trece) pe C; urmează publicarea.
+
+## LOTUL 17.5-O3 (produs, 11.11.2026) — continuă 17.5-O pe același cod V (faf4b14a), ramura `lucru/lot17-5o3` (worktree `~/iconta_lot17_5o3`), bază main 5d79070a
+- Același cod ca 17.5-O (nicio modificare în static/, core/, frontend_test/, scripts/ în afara pragurilor); cauza: pragurile s-au schimbat după pornirea lui 17.5-O (refuz scripts/publica_lot.py:361). Ramura `lucru/lot17-5o` și `~/iconta_lot17_5o` rămân neatinse.
+- Poarta completă pe C = 1e68a31c: VERDE (1900 teste, regresie 0, 2 restanțe de bază, infra 0). Verificarea: «inainte» f.1–f.6 trec, a.1–a.9 pică; haiku_1 și «dupa»: 15 «trece»; Haiku: 11 corespunde, 4 nejudecabil (a.5–a.8).

@@ -24693,3 +24693,8 @@ Decizia arhitectului (decizii_17_5_O.txt): opt constatări de audit mutate în O
 
 ## 17.5-O, corecția 2 (arhitect, 11.11.2026 13:00)
 - Poarta pe ed80de34: singurul roșu, e2e_lot13_sal_ajutor.py „invalid” (ajutor fără teste în diff). Decizia arhitectului: ajutorul revine exact la forma de pe main; cele patru apeluri `buton(..., "flut")` (e2e_pozitii_validate.py, e2e_bloc_a.py, e2e_bloc_b.py, e2e_lot11_a453.py) devin clic direct pe `[data-flut]` din bara de jos; praguri din ~/ghid_incoming; sha256 nou al lui e2e_pozitii_validate.py în manifest. A doua și ultima rulare completă: VERDE pe C = faf4b14a (1900 teste, regresie 0, restanță 2, invalid 0).
+
+## 17.5-O3 (arhitect, 11.11.2026) — continuarea lui 17.5-O pe același cod V (faf4b14a)
+- 17.5-O3 continuă 17.5-O (și 17.5-O2, oprit la verificatorul independent pe descrierea lui f.1) pe același cod V; produsul nu se schimbă.
+- Cauza lanțului: pragurile din ~/ghid_incoming s-au schimbat după pornirea lui 17.5-O prin corecțiile 1 și 2 ale arhitectului (linia plasa_modificabile, fișierele permise pentru cele patru apeluri „flut”); publicarea a refuzat la scripts/publica_lot.py:361 („pragurile s-au modificat după pornire”). La 17.5-O2, descrierea lui f.1 (scrisă de arhitect) numea cardurile vecine; în 17.5-O3 nu le mai numește.
+- Decizia arhitectului: lot de continuare, jurnalul neatins (un singur rând „pornire” nou, cu pragurile curente); ramura `lucru/lot17-5o` și worktree-ul `~/iconta_lot17_5o` rămân neatinse.
