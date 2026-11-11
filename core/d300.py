@@ -1459,18 +1459,18 @@ def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
     if _blocante:
         raise ValueError("D300 nu se poate genera: " + " ".join(_blocante))
     res.avertismente.extend(_avertismente_marja(res))
-    # [17.5-W, AC184] rapoartele Z cu nota în ciornă NU intră în decont (regula de calcul rămâne: numai Z validat); decontul spune ce îi lipsește,
-    # ca PRIM avertisment (textul și fereastra: `coada_api`, aceleași ca la refuzul depunerii)
-    from core import coada_api as _coada
-    _av_z = _coada.avertisment_rapoarte_z_decont(conn, schema, perioada)
-    if _av_z:
-        res.avertismente.insert(0, _av_z)
     # POARTA A DOUA CALE (gard de continut, 05.08.2026): reconciliere pe totaluri dintr-un
     # recalcul INDEPENDENT al liniilor brute. Divergenta = eroare vizibila care numeste ambele
     # valori; NU repara tacit. Vezi core/d300_reconciliere.py + GARZI cat.4 (limita declarata).
     # [Task4 CR-5/T8] OGLINDA rd.12<->rd.25 (DUK V19/V20, neimpusa de validatorul instalat; reconcilierea
     # a-doua-cale sare randurile manuale) - poarta pe totaluri inainte de reconciliere si build_xml.
     _oglinda_r12_r25(res)
+    # [17.5-W, AC184] rapoartele Z cu nota în ciornă NU intră în decont (regula de calcul rămâne: numai Z validat); decontul spune ce îi lipsește,
+    # ca PRIM avertisment (textul și fereastra: `coada_api`, aceleași ca la refuzul depunerii)
+    from core import coada_api as _coada
+    _av_z = _coada.avertisment_rapoarte_z_decont(conn, schema, perioada)
+    if _av_z:
+        res.avertismente.insert(0, _av_z)
     from core.d300_reconciliere import verifica_reconciliere
     verifica_reconciliere(conn, perioada, res, manual)
     _xml = build_xml(res)
