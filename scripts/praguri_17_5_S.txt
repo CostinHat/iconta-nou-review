@@ -1,0 +1,56 @@
+produs
+lot: 17.5-S
+max hook 124
+max poarta_verificator 111
+max poarta_pytest 720
+max poarta_plasa 2324
+runde_verificator_max: 2
+sursa pragurilor 17.5-S: generate de scripts/praguri_automate.py la 2026-11-11T23:55:11+02:00 din .lot_jurnal.log; loturi folosite: 17.5-H2, 17.5-O3, 17.5-W (3)
+  hook: maxim 103 s (lotul 17.5-W, rularea 1330990-1794418747616) din 23 rulari complete, 0 rulari «intrerupt» ignorate, prag 124 s
+  poarta_verificator: maxim 92 s (lotul 17.5-O3, rularea 888445-1794407112574) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 111 s
+  poarta_pytest: maxim 600 s (lotul 17.5-O3, rularea 888445-1794407205000) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 720 s
+  poarta_plasa: maxim 1936 s (lotul 17.5-W, rularea 1757513-1794430073386) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 2324 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+plasa_modificabile frontend_test/e2e/e2e_actiune_principala_17_5_D.py
+fisiere_permise:
+  scripts/praguri_17_5_S.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_pilot_17_5_S.py și sha256 nou al lui e2e_actiune_principala_17_5_D.py)
+  frontend_test/e2e/e2e_pilot_17_5_S.py (nou)
+  core/test_pozitii_pilot_17_5_S.py (nou)
+  frontend_test/e2e/e2e_actiune_principala_17_5_D.py (numai aserțiunea ferestrei «Mișcări…» fără tabel: niciun principal, S02)
+  static/js/ecrane/validat.js (numai coloana «Pregătit de» a notelor de validat, S01)
+  static/js/ecrane/tabel_note.js (numai coloana «Pregătit de», S01)
+  static/js/cadru.js (numai FARA_ACTIUNE_PRINCIPALA și ramura EXPORT_PDF pentru fereastra fără tabel, S02)
+  scripts/verificator_design.py (numai EXCEPTII_B: titlul ferestrei «Mișcări…», S02 — singura schimbare de unealtă)
+  static/js/ecrane/firme.js (numai S02 fișa de magazie, S06 coloana statului, S10 afișarea «sold inițial (import)», S12 nota de sub tabelul Băncii)
+  static/js/ecrane/clienti_ecran.js (numai caseta unică a fișei partenerului, S03)
+  static/js/navigator.js (numai insigna și rândul «N note de validat» din panoul clopoțelului, S04)
+  static/js/ecrane/facturi_ecran.js (numai pastila «N fără scadență» a Scadențarului, S05)
+  static/js/ecrane/control_verdict.js (numai eticheta semnalului fără prefix dublat, S09)
+  core/control_fiscal_api.py (numai dacă dublarea se repară la sursa motivului, S09)
+  core/jurnal_api.py (numai afișarea explicației notelor de raport Z cu data ISO, pe mecanismul note_fara_serie_lipita, S11)
+  core/fisa_cont.py (numai același mecanism de afișare, S11)
+  core/facturi_api.py (numai pregatire_emitere și mesajul refuzului de la emitere: lista completă a lipsurilor, fără condiție nouă de emitere, S13)
+  static/js/ecrane/emitere_ecran.js (numai cardul «Înainte de a emite» S13 și câmpurile liniei S14)
+  static/js/ecrane/date_firma.js (numai marcarea de la deschidere a câmpurilor obligatorii necompletate, S13)
+  static/stil.css (numai grupul de cote, câmpul de căutare a articolului și câmpul UM ale liniei facturii, S14)
+  frontend_test/e2e/e2e_bloc_a.py (numai aserțiunile care citesc locurile schimbate de S; restanțele de bază numite în comandă nu se repară)
+  core/uc_tenants.py (numai titlul notei la achiziția necorporală «Achiziție necorporală …», pct.8(b))
+  core/capital_social.py (numai textul lui mesaj_refuz / mesaj_la_deschidere: lista completă a lipsurilor, S13)
+  core/test_capital_social.py (numai așteptarea textului lui mesaj_refuz schimbat de S13, aserțiunea păstrată)
+  core/test_randuri_17_5.py (numai aserțiunile pe _alege / EXPORT_PDF atinse de S02, aserțiunile păstrate)
+  frontend_test/e2e/e2e_bloc_c.py (numai aserțiunile care citesc locurile schimbate de S; restanțele de bază numite în comandă nu se repară)
+  frontend_test/e2e/e2e_lot11_j.py (numai aserțiunile care citesc locurile schimbate de S; restanțele de bază numite în comandă nu se repară)
+  frontend_test/e2e/e2e_lot11_p2.py (numai aserțiunile care citesc locurile schimbate de S; restanțele de bază numite în comandă nu se repară)
+  frontend_test/e2e/e2e_lot12_scad.py (numai aserțiunile care citesc locurile schimbate de S; restanțele de bază numite în comandă nu se repară)
+  frontend_test/e2e/e2e_lot13_firme2.py (numai aserțiunile care citesc locurile schimbate de S; restanțele de bază numite în comandă nu se repară)
+  frontend_test/e2e/e2e_lot13_sal.py (numai aserțiunile care citesc locurile schimbate de S; restanțele de bază numite în comandă nu se repară)
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  DEFICIENTE.md (numai intrările constatărilor lotului, cu numerele lor)
+  docs/dovezi/17_5_S/ (nou)

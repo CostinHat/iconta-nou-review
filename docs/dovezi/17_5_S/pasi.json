@@ -1,0 +1,194 @@
+{
+ "asertiuni": [
+  {
+   "ac": null,
+   "cheie": "dom:main|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/cabinet.js:44 (neschimbat de lot); aceeași aserțiune ca f.1 din 17.5-H…O",
+   "id": "f.1",
+   "martor": "cabinetul administratorului dovada.71507",
+   "operator": "text_contine",
+   "pas": "implicit",
+   "valoare": "Control fiscal"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #val-note|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/tabel_note.js:149 (antetul fix, neschimbat)",
+   "id": "f.2",
+   "martor": "F1 (tenant_9049), coada de validare",
+   "operator": "text_contine",
+   "pas": "validat",
+   "valoare": "Explicație"
+  },
+  {
+   "ac": "S01",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #val-note|text",
+   "de_ce": "static/js/ecrane/validat.js:298 și :427; static/js/ecrane/tabel_note.js:118–179; core/coada_api.py:787 (creat_de_nume); X04 din retest_pilot_17_5_G3.tsv; S01",
+   "id": "a.1",
+   "martor": "F1 (tenant_9049), coada de validare",
+   "operator": "text_contine",
+   "pas": "validat",
+   "valoare": "Pregătit de"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #pt-rezumat|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/clienti_ecran.js:338",
+   "id": "f.3",
+   "martor": "F1 (tenant_9049)",
+   "operator": "text_contine",
+   "pas": "parteneri",
+   "valoare": "Parteneri"
+  },
+  {
+   "ac": "S03",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "static/js/ecrane/clienti_ecran.js:371–382 (ecranFisaPartener, fisaText); S03",
+   "id": "a.2",
+   "martor": "F1 (tenant_9049): clienti.id 1 = furnizori.id 1, CUI 14399840",
+   "operator": "text_contine",
+   "pas": "fisa",
+   "valoare": "Fișa de client și de furnizor: DANTE INTERNATIONAL SA"
+  },
+  {
+   "ac": "S03",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "static/js/ecrane/clienti_ecran.js:382 (fisaText); S03",
+   "id": "a.3",
+   "martor": "F1 (tenant_9049): DANTE INTERNATIONAL SA",
+   "operator": "lipseste",
+   "pas": "fisa",
+   "valoare": "Fișa de furnizor: DANTE INTERNATIONAL SA"
+  },
+  {
+   "ac": "S04",
+   "cheie": "dom:#nav-clopot-panou|text",
+   "de_ce": "static/js/navigator.js:807–818; static/js/ecrane/validat.js (noteDeValidatInCoada); S04",
+   "id": "a.4",
+   "martor": "cabinetul administratorului: coada de validare nu e goală",
+   "operator": "text_contine",
+   "pas": "clopot",
+   "valoare": "deschide fereastra „De validat”"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #sc-lista|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/facturi_ecran.js:791",
+   "id": "f.4",
+   "martor": "F1 (tenant_9049): facturi id 66 și 71",
+   "operator": "text_contine",
+   "pas": "scadentar",
+   "valoare": "fără scadență în sistem"
+  },
+  {
+   "ac": "S05",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .cf-sumar|text",
+   "de_ce": "static/js/ecrane/facturi_ecran.js:884; core/scadentar.py (rezumat.fara_scadenta); S05",
+   "id": "a.5",
+   "martor": "F1 (tenant_9049)",
+   "operator": "text_contine",
+   "pas": "scadentar",
+   "valoare": "fără scadență"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #sp-tabel|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:1591",
+   "id": "f.5",
+   "martor": "F5 (tenant_9053): Ionescu Vasile, 10/2026",
+   "operator": "text_contine",
+   "pas": "stat",
+   "valoare": "Ionescu"
+  },
+  {
+   "ac": "S06",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #sp-tabel|text",
+   "de_ce": "static/js/ecrane/firme.js:1591–1592; core/stat_plata_api.py:230 (exces_diurna); S06",
+   "id": "a.6",
+   "martor": "F5 (tenant_9053): diurna_excedent 885,00",
+   "operator": "text_contine",
+   "pas": "stat",
+   "valoare": "Diurnă peste plafon"
+  },
+  {
+   "ac": "S06",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #sp-tabel|text",
+   "de_ce": "comanda_15_1_E6.txt (rândul lui 752); static/js/ecrane/firme.js:1567; S06",
+   "id": "a.7",
+   "martor": "F5 (tenant_9053)",
+   "operator": "text_contine",
+   "pas": "stat",
+   "valoare": "4.815,34"
+  },
+  {
+   "ac": "S02",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane|text",
+   "de_ce": "static/js/cadru.js:122, :213, :362 (EXPORT_PDF scutește Mișcările); decizia arhitectului 11.11.2026: butonul nu apare în bara unei ferestre de export fără tabel; S02",
+   "id": "a.8",
+   "martor": "F1 (tenant_9049), Stocuri",
+   "operator": "lipseste",
+   "pas": "miscari",
+   "valoare": "Descarcă PDF"
+  },
+  {
+   "ac": "S02",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-butoane .fj-principal|numar",
+   "de_ce": "static/js/cadru.js:126 (FARA_ACTIUNE_PRINCIPALA) și scripts/verificator_design.py:73 (EXCEPTII_B); decizia arhitectului 11.11.2026: fereastra fără tabel nu are buton principal; S02",
+   "id": "a.12",
+   "martor": "F1 (tenant_9049), Stocuri › Mișcări",
+   "operator": "nr_randuri",
+   "pas": "miscari",
+   "valoare": "0"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/control_verdict.js:182",
+   "id": "f.6",
+   "martor": "F2 (tenant_9050)",
+   "operator": "text_contine",
+   "pas": "control",
+   "valoare": "Control fiscal"
+  },
+  {
+   "ac": "S09",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "static/js/ecrane/control_verdict.js:193; core/control_fiscal_api.py:789 și :796; S09",
+   "id": "a.9",
+   "martor": "F2 (tenant_9050)",
+   "operator": "lipseste",
+   "pas": "control",
+   "valoare": "D205 — D205 — nu se poate verifica"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/emitere_ecran.js:556",
+   "id": "f.7",
+   "martor": "FISCALOS ICONTA (tenant_9054): capital NULL",
+   "operator": "text_contine",
+   "pas": "emitere",
+   "valoare": "Înainte de a emite"
+  },
+  {
+   "ac": "S13",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "core/facturi_api.py:1230; static/js/ecrane/emitere_ecran.js:556; static/js/ecrane/date_firma.js:801–805; S13",
+   "id": "a.10",
+   "martor": "FISCALOS ICONTA (tenant_9054): regim NULL, operatiuni_ic NULL",
+   "operator": "text_contine",
+   "pas": "emitere",
+   "valoare": "La salvarea în Date firmă se cer și: regimul fiscal (micro sau profit), operațiunile intracomunitare (Da sau Nu)."
+  },
+  {
+   "ac": "S13",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "static/js/ecrane/date_firma.js:801 (vecOblig, mesajele cerute azi numai la salvare); static/js/ecrane/emitere_ecran.js:556 (drumul «Deschide Date firmă»); decizia arhitectului 11.11.2026 pct.9(b); S13",
+   "id": "a.11",
+   "martor": "FISCALOS ICONTA (tenant_9054): regim NULL",
+   "operator": "text_contine",
+   "pas": "datefirma",
+   "valoare": "Alege regimul fiscal (micro sau profit) — decide D100/D101."
+  }
+ ]
+}
