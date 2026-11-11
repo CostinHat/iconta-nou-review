@@ -1,0 +1,215 @@
+.F.FFFF.....                                                             [100%]
+=================================== FAILURES ===================================
+_________ test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte __________
+
+patron = <conftest.Ecran object at 0x7ab886365b50>
+firma = {'tenant_id': 370976, 'schema': 'tenant_9744', 'nume': 'E2E Probă 2066140 SRL', 'cabinet_id': 1968}
+
+    def test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte(patron, firma):
+        """607: „La comisionul bancar apare și «Alege facturile».” 624: „bancă la forma din 617/622; observații la clic; respinsele grupate”.
+        Pașii: Bancă -> extrasul cu un comision (−12,50) și o plată de chirie (−300,00) -> rândul comisionului: „Contează 627=5121” activ,
+        „Alege facturile” inactiv, cu motivul „operațiune a băncii” la trecerea cu mouse-ul -> explicația „Operațiune a băncii (1)” o dată,
+        deasupra tabelului -> clic pe rândul chiriei: detaliul (descrierea, „Ignoră”) -> „Ignoră”: linia trece în „Linii puse deoparte (1)”.
+        MUTAȚIA: motivul 607 scos din butoanele liniei -> „Alege facturile” activ pe comision -> ROȘU."""
+        f = firma
+        patron.firma(f["nume"])
+        _card(patron, "banca", "#bk-fisier")
+        pg = patron.pg
+        t = _tag()
+        com, chirie = "Comision administrare cont E2E 607 %d" % t, "Plata chirie E2E 624 %d" % t
+        zi = AZI.strftime("%d.%m.%Y")
+        _incarca_extras(pg, "Data;Detalii;Suma\n%s;%s;-12,50\n%s;%s;-300,00\n" % (zi, com, zi, chirie), "607")
+        rc = pg.locator("#bk-lista tbody.tn-nota", has_text=com).first
+        rc.wait_for(timeout=20000)
+        b = _butoane(pg, "#bk-lista tbody.tn-nota[data-linie-id='%s'] .tn-actiuni button" % rc.get_attribute("data-linie-id"))
+        patron.captura("comisionul")
+        assert b[0][:2] == ["Contează 627=5121", False], b
+        assert b[1][:2] == ["Alege facturile", True] and "operațiune a băncii" in b[1][2], b
+>       expl = _text_din_card(pg, "explicatii", "#bk-explicatii")   # [lotul 14, 687] explicațiile semnelor stau în cardul lor
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_lot13_firme2.py:146: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_lot13_firme2.py:84: in _text_din_card
+    pg.wait_for_selector("#bk-fisier", timeout=20000)
+frontend_test/e2e/file_ui.py:43: in mai
+    return __orig(sel, *a, **{**k, "timeout": 500})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7ab888635a00>
+cb = <function Channel.send.<locals>.<lambda> at 0x7ab885bc6480>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 500ms exceeded.
+E           Call log:
+E             - waiting for locator("#bk-fisier") to be visible
+E               7 × locator resolved to hidden <input hidden="" type="file" id="bk-fisier" aria-label="Fișier extras bancar" accept=".xls,.xlsx,.csv,.sta,.940,.txt,.mt940"/>
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____ test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare _____
+
+patron = <conftest.Ecran object at 0x7ab884b33950>
+firma = {'tenant_id': 370976, 'schema': 'tenant_9744', 'nume': 'E2E Probă 2066140 SRL', 'cabinet_id': 1968}
+
+    def test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare(patron, firma):
+        """602: „data notei noi vine 01.10, nu data zilei”; 563: „după salvare niciun mesaj, lista sare la început”. Pașii: Registru jurnal
+        (luna curentă) -> „+ Notă nouă”: fereastra notei, „Data notei” = azi -> descrierea, documentul, 612 = 401 · 50 lei, partenerul ->
+        „Salvează”: fereastra se închide; registrul arată confirmarea „Ai salvat nota din <azi> („…”)” sus și rândul notei evidențiat; nicăieri
+        „nederivat”.
+        MUTAȚIA: data notei noi înapoi pe 1 ale lunii -> ROȘU."""
+        f = firma
+        patron.firma(f["nume"])
+        _card(patron, "jurnal", "#j-nota-noua")
+        pg = patron.pg
+        desc = "E2E 602 consumabile %d" % _tag()
+        pg.click("#j-nota-noua")
+        pg.wait_for_selector(_F + "#je-data", timeout=20000)
+        # data notei noi o pune aplicația ACUM (ziua în care scrie contabilul), deci se compară cu ziua de la import SAU cea de acum
+>       assert pg.input_value(_F + "#je-data") in [d.isoformat() for d in zile_de_acum(AZI)], pg.input_value(_F + "#je-data")
+E       AssertionError: 
+E       assert '' in ['2026-11-11']
+E        +  where '' = <function _cu_filele_aratate.<locals>.mai at 0x7ab884b4b380>(('.fereastra:last-of-type ' + '#je-data'))
+E        +    where <function _cu_filele_aratate.<locals>.mai at 0x7ab884b4b380> = <Page url='http://127.0.0.1:8019/'>.input_value
+
+frontend_test/e2e/e2e_lot13_firme2.py:211: AssertionError
+_______ test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul ________
+
+patron = <conftest.Ecran object at 0x7ab87fa54f20>
+firma = {'tenant_id': 370976, 'schema': 'tenant_9744', 'nume': 'E2E Probă 2066140 SRL', 'cabinet_id': 1968}
+
+    def test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul(patron, firma):
+        """610: „La «Validează» pe o notă fără document, refuzul cu motiv apare de două ori”. Pașii: o notă fără document (date de pornire:
+        ruta „Notă nouă”, fără referință) -> Registru jurnal: „Validează” e inactiv, cu pasul notei la trecerea cu mouse-ul -> clic pe el:
+        niciun refuz pe ecran (nici unul, nici două) și nota rămâne ciornă; regula stă o dată, deasupra tabelului.
+        MUTAȚIA: „Validează” activ pe nota fără document -> refuzul serverului apare -> ROȘU."""
+        f = firma
+        desc = "E2E 610 fără document %d" % _tag()
+        nid = _ok(_api(patron, "POST", "/tenants/%d/jurnal" % f["tenant_id"], {"descriere": desc, "data": AZI.isoformat(), "document_ref": "",
+                                                                               "linii": [linie_nota("612", "401", "40.00")]}), "nota")["id"]
+        patron.firma(f["nume"])
+        _card(patron, "jurnal", "#j-nota-noua")
+        pg = patron.pg
+>       b = _butoane(pg, "[data-val='%d']" % nid)[0]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+frontend_test/e2e/e2e_lot13_firme2.py:241: IndexError
+______ test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton ______
+
+patron = <conftest.Ecran object at 0x7ab884f4bf20>
+firma = {'tenant_id': 370976, 'schema': 'tenant_9744', 'nume': 'E2E Probă 2066140 SRL', 'cabinet_id': 1968}
+
+    def test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton(patron, firma):
+        """605: „Textul «raportul Z Raport Z nr»; [...] mesajul de confirmare sus, departe de buton (clasa 45).” Pașii: un raport Z nou ->
+        „Generează notă”: confirmarea stă SUB buton (`#z-rezultat`); lista Z-urilor lunii numește rândul „Raport Z nr <nr> · casa 8000000605”, nu
+        cheia „Z-8000000605-<nr>”, și nicăieri „raportul Z Raport Z”.
+        MUTAȚIA: numele rândului înapoi pe cheia notei (`numeZ`) -> ROȘU."""
+        f = firma
+        nr = _z_generat(patron, f, "8000000605")
+        pg = patron.pg
+        patron.captura("nota_generata")
+>       assert pg.evaluate("() => !!(document.querySelector('#z-salveaza').compareDocumentPosition(document.querySelector('#z-rezultat'))"
+                           " & Node.DOCUMENT_POSITION_FOLLOWING)"), "confirmarea notei nu stă sub buton"
+E       AssertionError: confirmarea notei nu stă sub buton
+E       assert False
+E        +  where False = evaluate("() => !!(document.querySelector('#z-salveaza').compareDocumentPosition(document.querySelector('#z-rezultat')) & Node.DOCUMENT_POSITION_FOLLOWING)")
+E        +    where evaluate = <Page url='http://127.0.0.1:8019/'>.evaluate
+
+frontend_test/e2e/e2e_lot13_firme2.py:276: AssertionError
+_____________ test_def_618_explicatia_notei_z_are_data_romaneasca ______________
+
+patron = <conftest.Ecran object at 0x7ab887be7ef0>
+firma = {'tenant_id': 370976, 'schema': 'tenant_9744', 'nume': 'E2E Probă 2066140 SRL', 'cabinet_id': 1968}
+
+    def test_def_618_explicatia_notei_z_are_data_romaneasca(patron, firma):
+        """618: „Raport Z | Titlul notei cu data ISO («Raport Z 2026-10-20»)”. Pașii: un raport Z nou -> „Generează notă” -> Registru jurnal,
+        căutarea „raportul Z nr <nr>”: explicația notei e „Vânzări din raportul Z nr <nr> din <azi>, casa 8000000618” (data românească), iar
+        în baza de date nota n-are nicio dată ISO în explicație. (Datele existente: `core/migrare_explicatie_raport_z.py`, dovada `618_f1_vechi_…`.)
+        MUTAȚIA: explicația notei înapoi cu data ISO (`jurnal_api.explicatie_raport_z`) -> ROȘU."""
+        f = firma
+        nr = _z_generat(patron, f, "8000000618")
+        pg = patron.pg
+        (desc,) = [r[0] for r in sql('SELECT descriere FROM "%s".inregistrari WHERE numar = %%s' % f["schema"], ("Z-8000000618-%s" % nr,))]
+        asteptat = "Vânzări din raportul Z nr %s din %s, casa 8000000618" % (nr, AZI.strftime("%d.%m.%Y"))
+        assert desc == asteptat, desc
+        assert not re.search(r"\d{4}-\d{2}-\d{2}", desc), desc
+        patron.firma(f["nume"])
+        _card(patron, "jurnal", "#j-nota-noua")
+>       pg.fill("#jn-cauta", "raportul Z nr %s" % nr)
+
+frontend_test/e2e/e2e_lot13_firme2.py:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11295: in fill
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:928: in fill
+    return await self._main_frame.fill(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:636: in fill
+    await self._fill(**locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:648: in _fill
+    await self._channel.send("fill", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7ab888635a00>
+cb = <function Channel.send.<locals>.<lambda> at 0x7ab87fe0d760>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.fill: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("#jn-cauta")
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_618_explicatia_notei_z_are_data_romaneasca
+5 failed, 7 passed in 121.13s (0:02:01)

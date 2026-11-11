@@ -1,0 +1,82 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_________ test_def_412_adeverinta_precompleteaza_tipul_si_cim_din_fisa _________
+
+patron = <conftest.Ecran object at 0x74780bbc3560>
+firma_cv = {'tenant_id': 371010, 'schema': 'tenant_9778', 'nume': 'E2E Probă 3152692 SRL', 'cabinet_id': 1968}
+
+    def test_def_412_adeverinta_precompleteaza_tipul_si_cim_din_fisa(patron, firma_cv):
+        """412. Pașii: Salariați -> „Corectează datele” la IONESCU VASILE -> Tip contract „determinată”, Nr. CIM „12/2023”, Dată CIM
+        20.12.2023 -> „Salvează” -> fișa le păstrează (redeschisă, le arată) -> „Adeverință”: Tip contract, Nr. CIM și Dată CIM vin
+        precompletate din fișă, iar câmpul rămâne modificabil."""
+        s = firma_cv["schema"]
+        sid = _salariat_cu_cm(firma_cv)
+        sql('UPDATE "%s".salariati SET tip_contract = NULL, nr_cim = NULL, data_cim = NULL WHERE id = %%s' % s, (sid,))  # rulare repetată
+        pg = _stat(patron, firma_cv)
+        # [lotul 13, 677 / 676] fereastra salariatului -> „Corectează datele” (fereastra ei); tipul contractului = butoane alăturate
+        from e2e_lot13_sal_ajutor import alege, buton, deschide_salariat
+        deschide_salariat(patron, _RAND)
+        with _fisa_citita(pg):
+            buton(patron, "date")
+        alege(patron, "ed-tipcim", "determinata")
+        pg.fill("#ed-nrcim", "12/2023")
+        pg.fill("#ed-datacim", "2023-12-20")
+        pg.click("#ed-save")
+        pg.wait_for_function("() => !document.querySelector('#ed-save')", timeout=20000)
+        assert sql('SELECT tip_contract, nr_cim, data_cim::text FROM "%s".salariati WHERE id = %%s' % s, (sid,)) == \
+            [("determinata", "12/2023", "2023-12-20")]
+        # fișa redeschisă arată CIM-ul salvat
+        with _fisa_citita(pg):
+            buton(patron, "date")
+        pg.wait_for_function("() => (document.querySelector('#ed-nrcim') || {}).value === '12/2023'", timeout=20000)
+        assert (pg.input_value("#ed-tipcim"), pg.input_value("#ed-datacim")) == ("determinata", "2023-12-20")
+        assert pg.get_attribute(".alegere-butoane:has(+ #ed-tipcim) button[data-valoare='determinata']", "aria-checked") == "true"
+>       pg.click(".fereastra:last-of-type [data-renunta]")
+
+frontend_test/e2e/e2e_lot93c.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+frontend_test/e2e/conftest.py:146: in clic
+    return clic_original(self, selector, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x74780b85f920>
+cb = <function Channel.send.<locals>.<lambda> at 0x747809fa2a20>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type [data-renunta]")
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot93c.py::test_def_412_adeverinta_precompleteaza_tipul_si_cim_din_fisa
+1 failed in 36.25s

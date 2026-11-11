@@ -1,0 +1,258 @@
+FFF...FF..F....F...                                                      [100%]
+=================================== FAILURES ===================================
+______ test_def_545_a_doua_factura_ti_1_de_la_acelasi_furnizor_e_refuzata ______
+
+patron = <conftest.Ecran object at 0x7a4ffa8e3da0>
+firma_fact = {'tenant_id': 370981, 'schema': 'tenant_9749', 'nume': 'E2E Probă 2484615 SRL', 'cabinet_id': 1968}
+
+    def test_def_545_a_doua_factura_ti_1_de_la_acelasi_furnizor_e_refuzata(patron, firma_fact):
+        """545. Pașii: Operațiuni -> Taxare inversă internă: TI-1 de la DANTE, 30.000 -> nota generată; aceeași factură a doua oară -> refuzul
+        „Factura TI-1 de la DANTE INTERNATIONAL SA e deja înregistrată…”, iar în bază rămâne o singură factură TI-1 și o singură notă."""
+        s = firma_fact["schema"]
+        _ti_operatiuni(patron, firma_fact)
+        txt = _ti_operatiuni(patron, firma_fact)
+        patron.captura("a_doua_oara")
+>       assert "TI-1" in txt and "e deja înregistrată" in txt, txt
+E       AssertionError: Nota nu s-a generat: CUI-ul 14399840 nu e găsit la ANAF: taxarea inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică CUI-ul de pe factură.
+E       assert ('TI-1' in 'Nota nu s-a generat: CUI-ul 14399840 nu e găsit la ANAF: taxarea inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică CUI-ul de pe factură.')
+
+frontend_test/e2e/e2e_lot13_fact.py:116: AssertionError
+____ test_def_546_factura_cu_taxare_inversa_arata_totalul_de_plata_fara_tva ____
+
+patron = <conftest.Ecran object at 0x7a4ff91f5790>
+firma_fact = {'tenant_id': 370981, 'schema': 'tenant_9749', 'nume': 'E2E Probă 2484615 SRL', 'cabinet_id': 1968}
+
+    def test_def_546_factura_cu_taxare_inversa_arata_totalul_de_plata_fara_tva(patron, firma_fact):
+        """546. Pașii: factura primită cu taxare inversă (30.000, cota 21) -> Istoric facturi -> detaliul: „TVA taxare inversă … nu se plătește
+        furnizorului” 6.300,00 separat, „Total de plată” 30.000,00 (nu 36.300); starea de plată pe 30.000."""
+>       fid = _ti_api(patron, firma_fact, "TI-546")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_lot13_fact.py:125: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_lot13_fact.py:102: in _ti_api
+    r = _ok(_api(patron, "POST", "/tenants/%d/achizitie-taxare-inversa" % firma["tenant_id"], {
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+r = {'status': 422, 'json': {'detail': {'mesaj': 'CUI-ul 14399840 nu e găsit la ANAF: taxarea inversă cere un furnizor înr...area inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică CUI-ul de pe factură.'}]}}}
+ce = 'taxare inversă'
+
+    def _ok(r, ce):
+>       assert r["status"] == 200, "%s: %s %s" % (ce, r["status"], r["json"])
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: taxare inversă: 422 {'detail': {'mesaj': 'CUI-ul 14399840 nu e găsit la ANAF: taxarea inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică CUI-ul de pe factură.', 'erori_campuri': [{'camp': 'op-furnizor_cui', 'mesaj': 'CUI-ul 14399840 nu e găsit la ANAF: taxarea inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică CUI-ul de pe factură.'}]}}
+
+frontend_test/e2e/e2e_bloc_a.py:125: AssertionError
+____________ test_def_547_factura_primita_cu_nota_ciorna_se_sterge _____________
+
+patron = <conftest.Ecran object at 0x7a4ff89afa10>
+firma_fact = {'tenant_id': 370981, 'schema': 'tenant_9749', 'nume': 'E2E Probă 2484615 SRL', 'cabinet_id': 1968}
+
+    def test_def_547_factura_primita_cu_nota_ciorna_se_sterge(patron, firma_fact):
+        """547. Pașii: factura primită TI-547 (nota ei e încă ciornă) -> detaliul: fără „Trimite pe email”, cu „Șterge factura” -> confirmare
+        -> „… și notele ei ciornă au fost șterse”; în bază nici factura, nici nota ei."""
+        s = firma_fact["schema"]
+>       fid = _ti_api(patron, firma_fact, "TI-547")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_lot13_fact.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_lot13_fact.py:102: in _ti_api
+    r = _ok(_api(patron, "POST", "/tenants/%d/achizitie-taxare-inversa" % firma["tenant_id"], {
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+r = {'status': 422, 'json': {'detail': {'mesaj': 'CUI-ul 14399840 nu e găsit la ANAF: taxarea inversă cere un furnizor înr...area inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică CUI-ul de pe factură.'}]}}}
+ce = 'taxare inversă'
+
+    def _ok(r, ce):
+>       assert r["status"] == 200, "%s: %s %s" % (ce, r["status"], r["json"])
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: taxare inversă: 422 {'detail': {'mesaj': 'CUI-ul 14399840 nu e găsit la ANAF: taxarea inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică CUI-ul de pe factură.', 'erori_campuri': [{'camp': 'op-furnizor_cui', 'mesaj': 'CUI-ul 14399840 nu e găsit la ANAF: taxarea inversă cere un furnizor înregistrat în scopuri de TVA (CF art.331 alin.(1)). Verifică CUI-ul de pe factură.'}]}}
+
+frontend_test/e2e/e2e_bloc_a.py:125: AssertionError
+______________ test_def_c199_cod_invalid_in_vies_refuza_scutirea _______________
+
+patron = <conftest.Ecran object at 0x7a4ff894ffb0>
+firma_fact = {'tenant_id': 370981, 'schema': 'tenant_9749', 'nume': 'E2E Probă 2484615 SRL', 'cabinet_id': 1968}
+
+    def test_def_c199_cod_invalid_in_vies_refuza_scutirea(patron, firma_fact):
+        """C199. Pașii: Emite factură -> client DE999999990 (VIES: invalid) -> linia 0%, „livrare intracomunitară” -> Emite: refuzul lângă CUI
+        („e invalid în VIES … Factura se emite cu TVA românesc”), nicio factură scrisă."""
+        s = firma_fact["schema"]
+>       _vies(COD_INVALID, {"valid": False, "stare": "invalid", "nume": "", "adresa": "", "eroare": "INVALID"})
+
+frontend_test/e2e/e2e_lot13_fact.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cod = 'DE999999990'
+raspuns = {'valid': False, 'stare': 'invalid', 'nume': '', 'adresa': '', ...}
+
+    def _vies(cod, raspuns):
+        """Răspunsul VIES de pe server (plasa: `<ICONTA_ANAF_SIMULAT>/vies.json`) pentru `cod`."""
+        d = os.environ.get("ICONTA_ANAF_SIMULAT")
+>       assert d, "plasa rulează cu VIES simulat (ICONTA_ANAF_SIMULAT)"
+E       AssertionError: plasa rulează cu VIES simulat (ICONTA_ANAF_SIMULAT)
+E       assert None
+
+frontend_test/e2e/e2e_lot13_fact.py:62: AssertionError
+_____ test_def_c199_vies_indisponibil_emite_cu_avertisment_si_reincercare ______
+
+patron = <conftest.Ecran object at 0x7a4ff730a4e0>
+firma_fact = {'tenant_id': 370981, 'schema': 'tenant_9749', 'nume': 'E2E Probă 2484615 SRL', 'cabinet_id': 1968}
+
+    def test_def_c199_vies_indisponibil_emite_cu_avertisment_si_reincercare(patron, firma_fact):
+        """C199 / 550. Pașii: client IE6388047V, VIES: „serviciu indisponibil” -> factura se emite (scutită), cu avertismentul „VIES nu a
+        răspuns acum…” și butonul „Reîncearcă verificarea în VIES”; VIES revine valid -> „Codul … e valid în VIES … scutirea se păstrează”."""
+>       _vies(COD_INDISPONIBIL, {"valid": False, "stare": "indisponibil", "nume": "", "adresa": "", "eroare": "MS_UNAVAILABLE"})
+
+frontend_test/e2e/e2e_lot13_fact.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+cod = 'IE6388047V'
+raspuns = {'valid': False, 'stare': 'indisponibil', 'nume': '', 'adresa': '', ...}
+
+    def _vies(cod, raspuns):
+        """Răspunsul VIES de pe server (plasa: `<ICONTA_ANAF_SIMULAT>/vies.json`) pentru `cod`."""
+        d = os.environ.get("ICONTA_ANAF_SIMULAT")
+>       assert d, "plasa rulează cu VIES simulat (ICONTA_ANAF_SIMULAT)"
+E       AssertionError: plasa rulează cu VIES simulat (ICONTA_ANAF_SIMULAT)
+E       assert None
+
+frontend_test/e2e/e2e_lot13_fact.py:62: AssertionError
+___________ test_def_640_partenerul_se_adauga_se_cauta_si_se_sterge ____________
+
+patron = <conftest.Ecran object at 0x7a4ff95e81d0>
+firma_fact = {'tenant_id': 370981, 'schema': 'tenant_9749', 'nume': 'E2E Probă 2484615 SRL', 'cabinet_id': 1968}
+
+    def test_def_640_partenerul_se_adauga_se_cauta_si_se_sterge(patron, firma_fact):
+        """640. Pașii: Furnizori -> „+ Furnizor nou” (fereastră nouă) -> CUI 14399840 -> „Verifică la ANAF”: denumirea și localitatea aduse ->
+        „Salvează fișa” -> lista îl are; căutarea „dante” lasă numai rândul lui; un furnizor fără documente („Furnizor de sters E2E”) -> „Șterge”
+        -> dispare; Clienți: DANTE (fișă de client) are localitatea scrisă la furnizor (aceeași firmă); o persoană fizică fără localitate e
+        semnalată („D394 o cere”)."""
+        s = firma_fact["schema"]
+        _fisa(patron, firma_fact, "furnizori", {"nume": "Furnizor de sters E2E"})
+        _fisa(patron, firma_fact, "clienti", {"nume": "DANTE INTERNATIONAL SA", "cui": CUI_DANTE, "afiliat": False})
+        _fisa(patron, firma_fact, "clienti", {"nume": "Vasile Test E2E", "afiliat": False})
+        patron.firma(firma_fact["nume"])
+        pg = patron.pg
+        _card(patron, "furnizori", "#fz-nou")
+        pg.click("#fz-nou")
+        pg.wait_for_selector("#fzn-cui", timeout=10000)
+        pg.fill("#fzn-cui", CUI_DANTE)
+        pg.click("#fzn-anaf")
+>       pg.wait_for_function("() => document.querySelector('#fzn-nume').value.trim() !== ''", timeout=20000)
+
+frontend_test/e2e/e2e_lot13_fact.py:393: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7a4ffad85a90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7a4ff8d23060>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 20000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+_____ test_def_603_nota_borderoului_are_titlul_cu_diacritice_si_sursa_lui ______
+
+patron = <conftest.Ecran object at 0x7a4ff7309fd0>
+firma_fact = {'tenant_id': 370981, 'schema': 'tenant_9749', 'nume': 'E2E Probă 2484615 SRL', 'cabinet_id': 1968}
+
+    def test_def_603_nota_borderoului_are_titlul_cu_diacritice_si_sursa_lui(patron, firma_fact):
+        """603. Pașii: Stocuri -> Borderou de achiziție (Ion Vanzator E2E, 120 lei, pe cheltuială) -> Registru jurnal: nota se numește
+        „Achiziție de la neînregistrat - Ion Vanzator E2E” (cu diacritice), în bază și în Registrul jurnal."""
+        s = firma_fact["schema"]
+        patron.firma(firma_fact["nume"])
+        pg = patron.pg
+        _card(patron, "stocuri", "#s-borderou")
+        pg.click("#s-borderou")
+        pg.wait_for_selector("#op-furnizor_nume", timeout=20000)
+        pg.fill("#op-data", AZI.isoformat())
+        pg.fill("#op-furnizor_nume", "Ion Vanzator E2E")
+        pg.fill("#op-furnizor_adresa", "Str. Livezii 3, Buzău")
+        pg.fill("#op-furnizor_act", "BZ 123456")
+        pg.fill("#op-valoare", "120")
+        pg.fill("#op-cont_cheltuiala", "628")
+        pg.select_option("#op-categorie", "alte_bunuri")
+        pg.click("#op-trimite")
+        pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=30000)
+        titlu = sql('SELECT i.descriere FROM "%s".inregistrari i JOIN "%s".facturi f ON f.id = i.factura_id WHERE f.tip = %%s '
+                    "ORDER BY i.id DESC LIMIT 1" % (s, s), ("borderou",))[0][0]
+        assert titlu == "Achiziție de la neînregistrat - Ion Vanzator E2E", titlu
+        patron.firma(firma_fact["nume"])
+        _card(patron, "jurnal", "#j-nota-noua")
+        pg.wait_for_timeout(800)
+>       t = pg.locator("[data-nota-id]", has_text="Ion Vanzator E2E").first.inner_text()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_lot13_fact.py:553: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:19446: in inner_text
+    self._sync(self._impl_obj.inner_text(timeout=to_milliseconds(timeout)))
+venv/lib/python3.12/site-packages/playwright/_impl/_locator.py:498: in inner_text
+    return await self._frame.inner_text(
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:743: in inner_text
+    return await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7a4ffad85a90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7a4ff72454e0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.inner_text: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-nota-id]").filter(has_text="Ion Vanzator E2E").first
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot13_fact.py::test_def_545_a_doua_factura_ti_1_de_la_acelasi_furnizor_e_refuzata
+FAILED frontend_test/e2e/e2e_lot13_fact.py::test_def_546_factura_cu_taxare_inversa_arata_totalul_de_plata_fara_tva
+FAILED frontend_test/e2e/e2e_lot13_fact.py::test_def_547_factura_primita_cu_nota_ciorna_se_sterge
+FAILED frontend_test/e2e/e2e_lot13_fact.py::test_def_c199_cod_invalid_in_vies_refuza_scutirea
+FAILED frontend_test/e2e/e2e_lot13_fact.py::test_def_c199_vies_indisponibil_emite_cu_avertisment_si_reincercare
+FAILED frontend_test/e2e/e2e_lot13_fact.py::test_def_640_partenerul_se_adauga_se_cauta_si_se_sterge
+FAILED frontend_test/e2e/e2e_lot13_fact.py::test_def_603_nota_borderoului_are_titlul_cu_diacritice_si_sursa_lui
+7 failed, 12 passed in 148.25s (0:02:28)

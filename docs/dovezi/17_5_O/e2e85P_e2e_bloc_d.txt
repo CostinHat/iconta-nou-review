@@ -1,0 +1,12 @@
+[e2e] aplicația din index pornită pe 8019 în 20s
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_100_nir_respins_are_stare_motiv_si_se_reface
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_112_refa_nir_precompleteaza_articolul_fara_zecimale_in_exces
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_113_nir_respins_si_refacut_o_linie_langa_cel_valabil
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_103_salariu_de_la_e_prima_zi_a_lunii_lucrate
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_121_restantele_se_numara_de_la_luna_preluarii
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_141_inchiderea_lunii_semnaleaza_581_cu_sold
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_126_inchiderea_lunii_are_card_in_zilnic
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_138_balanta_lunii_are_numai_notele_lunii
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_104_retrimiterea_notei_neschimbate_cere_confirmare
+[e2e] 10 failed, 31 passed in 336.25s (0:05:36) (356s; capturi în /tmp/e2e_cap_e2e_bloc_d)

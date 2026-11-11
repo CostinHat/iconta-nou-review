@@ -1,0 +1,7 @@
+[e2e] aplicația din index pornită pe 8019 în 15s
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_4_bun_venit_se_inchide_din_x_si_cu_esc
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_193_cardurile_cozii_au_latimea_ferestrei
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_29_fereastra_firmei_grupata_sub_titluri
+[e2e] 5 failed, 39 passed in 214.95s (0:03:34) (231s; capturi în /tmp/e2e_capB_e2e_bloc_a)

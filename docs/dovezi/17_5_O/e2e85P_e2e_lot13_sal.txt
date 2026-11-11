@@ -1,0 +1,6 @@
+[e2e] aplicația din index pornită pe 8019 în 19s
+FAILED frontend_test/e2e/e2e_lot13_sal.py::test_def_671_pontajul_arata_concediul_medical_din_certificat
+FAILED frontend_test/e2e/e2e_lot13_sal.py::test_def_678_pontajul_e_calendar_si_se_apasa_doar_zilele_altfel
+FAILED frontend_test/e2e/e2e_lot13_sal.py::test_def_677_statul_compact_si_compozitia_pe_trei_coloane
+FAILED frontend_test/e2e/e2e_lot13_sal.py::test_def_670_b_excedentul_de_diurna_e_venit_salarial
+[e2e] 4 failed, 5 passed in 76.51s (0:01:16) (96s; capturi în /tmp/e2e_cap_e2e_lot13_sal)

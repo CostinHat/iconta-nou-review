@@ -1,0 +1,6 @@
+[e2e] aplicația din index pornită pe 8019 în 15s
+FAILED frontend_test/e2e/e2e_lot10b_salarii_jurnal.py::test_def_433_dupa_contabilizarea_statului_nu_se_deschide_formularul_cor
+FAILED frontend_test/e2e/e2e_lot10b_salarii_jurnal.py::test_def_sumagoala_nota_noua_are_suma_goala_si_o_cere
+FAILED frontend_test/e2e/e2e_lot10b_salarii_jurnal.py::test_def_394_nota_noua_nu_deruleaza_cu_note_in_luna
+FAILED frontend_test/e2e/e2e_lot10b_salarii_jurnal.py::test_def_386_nota_fara_document_are_un_singur_mesaj
+[e2e] 4 failed in 78.14s (0:01:18) (94s; capturi în /tmp/e2e_cap_e2e_lot10b_salarii_jurnal)

@@ -1,0 +1,36 @@
+teste 8.5(ii) pe P 2fe37d4c, 2026-11-11T08:55:24+02:00
+core (8 fișiere): exit 0 in 62 s: 83 passed in 61.99s (0:01:01)
+scripts/scan_selecturi_ecrane.py: exit 0 in 1 s: Counter({'FISCAL_REPARAT': 44, 'NEFISCAL': 13, 'PRESELECTAT_PERMIS': 10, 'ARE_GOL_IN_BUILDER': 5, 'VALOARE_EXISTENTA': 3, 'CERUT_LA_PRIMA_FOLOSIRE': 1
+scripts/verifica_liste_exceptii.py: exit 0 in 0 s: [liste exceptii] VERDE: 5 titluri în cadru.js, 12 intrări în EXCEPTII_B, 7 numai în EXCEPTII_B (DOAR_PY)
+e2e_pilot_x05: exit 0 in 172 s: 1 passed in 171.22s (0:02:51)
+e2e_pilot_x06: exit 0 in 131 s: 1 passed in 131.04s (0:02:11)
+e2e_lot11_w2: exit 1 in 62 s: 1 failed, 4 passed, 1 error in 61.32s (0:01:01)
+e2e_lot10b_stoc: exit 1 in 54 s: 1 failed, 5 passed in 54.21s
+e2e_bloc_a: exit 1 in 212 s: 10 failed, 34 passed in 211.26s (0:03:31)
+e2e_bloc_b: exit 1 in 432 s: 11 failed, 20 passed in 431.11s (0:07:11)
+e2e_bloc_c: exit 1 in 302 s: 3 failed, 35 passed in 302.31s (0:05:02)
+e2e_bloc_d: exit 1 in 332 s: 10 failed, 31 passed in 331.72s (0:05:31)
+e2e_lot13_firme2: exit 1 in 122 s: 5 failed, 7 passed in 121.13s (0:02:01)
+e2e_lot92: exit 1 in 264 s: 10 failed, 17 passed in 263.96s (0:04:23)
+e2e_lot10b_facturi: exit 0 in 38 s: 6 passed in 37.33s
+e2e_lot13_fact: exit 1 in 148 s: 7 failed, 12 passed in 148.25s (0:02:28)
+e2e_lot14_2: exit 0 in 243 s: 10 passed in 242.73s (0:04:02)
+e2e_lot11_a453: exit 0 in 15 s: 2 passed in 14.31s
+e2e_pozitii_validate: exit 1 in 100 s: 3 failed, 14 passed in 99.91s (0:01:39)
+e2e_lot12_sal3: exit 0 in 8 s: 1 passed in 7.50s
+e2e_lot11_s9: exit 1 in 73 s: 2 failed, 7 passed in 72.50s (0:01:12)
+e2e_lot10b_salarii_jurnal: exit 1 in 81 s: 4 failed in 80.99s (0:01:20)
+e2e_lot93c: exit 1 in 37 s: 1 failed in 36.25s
+e2e_pilot_luna: exit 1 in 4 s: 1 passed, 39 errors in 3.87s
+e2e_pilot_x07: exit 0 in 119 s: 1 passed in 118.76s (0:01:58)
+e2e_lot13_sal_ajutor: exit 5 in 1 s: no tests ran in 0.17s
+e2e_lot13_sal: exit 1 in 75 s: 4 failed, 5 passed in 75.19s (0:01:15)
+FINAL
+
+== Rezumat 8.5(ii) (după reluarea prin scripts/e2e_poarta.py, mediul porții; prima rulare, direct pe 8019 cu mediul meu, a avut mediu incomplet — de ex. ICONTA_ANAF_SIMULAT lipsă — și nu se ia în seamă pentru clasificare) ==
+core (8 fișiere): 83 passed. scripts/scan_selecturi_ecrane.py și scripts/verifica_liste_exceptii.py: exit 0.
+e2e verzi pe P: e2e_pilot_x05, e2e_pilot_x06, e2e_lot10b_facturi, e2e_lot14_2, e2e_lot11_a453, e2e_lot12_sal3, e2e_pilot_x07, e2e_pilot_luna (40 passed prin e2e_poarta). e2e_lot13_sal_ajutor: modul ajutor, fără teste (exit 5 — normal; îl exercită e2e_lot13_sal).
+Roșii pe P în 14 fișiere (teste_atinse_reluare_P.txt, e2e85P_*.txt): 58 de teste; ACELEAȘI 58 și pe bază main 5d79070a (teste_atinse_pe_baza.txt, e2e85B_*.txt): restanțe de bază, nu se repară (clasificare_teste_atinse.txt: doar pe P = 0). Niciunul din aceste fișiere nu e în plasa fixă (manifest). test_def_675 din e2e_lot13_sal (linia modificată, seturi[0][5:10]) trece pe P.
+frontend_test/proba_drepturi_confirmari.py: nerulată — scriptul cere un asistent cu drepturi puse de un lanț și firme (Panificatie, Coafor) care nu sunt în snapshot; `[data-flut]` fără prefix din liniile 70 și 74 e judecat din cod (grep), nu schimbat de lot.
+
+== pct.11(iv): core/test_fara_secrete_in_git.py, test_deficiente, test_temeiuri, test_poarta_lot, test_garda_main, test_agenda (+ test_predare_cifre, adăugat de Code) pe P+registre: 18 failed, 60 passed (teste_core_11iv.txt). Roșii: test_fara_secrete_in_git (1: scripts/baza_test.sh [PGPASSWORD], ca pe main), test_poarta_lot (16, la fel 16 pe main), test_predare_cifre (1: «firme în portofoliu» 20 în loc de 28 — la fel pe main; fișier neinclus în lista comenzii). Nicio altă picătură; loturile publicate între timp nu au adus teste core noi (main = 5d79070a).

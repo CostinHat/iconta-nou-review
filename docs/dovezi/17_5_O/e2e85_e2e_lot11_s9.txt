@@ -1,0 +1,126 @@
+..F.....F                                                                [100%]
+=================================== FAILURES ===================================
+_______________ test_def_c89_indemnizatia_cm_rotunjita_la_sursa ________________
+
+patron = <conftest.Ecran object at 0x71dda2ec8170>
+firma_c89 = {'tenant_id': 371001, 'schema': 'tenant_9769', 'nume': 'E2E Probă S9C 3015605 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_c89_indemnizatia_cm_rotunjita_la_sursa(patron, firma_c89):
+        """C89. Pașii: Salariați -> statul lunii trecute -> „Concediu” -> „+ Certificat nou”: cod 10 (reducerea timpului de muncă cu 1/4),
+        1–14 ale lunii trecute, numărul avizului medicului expert, media 240,00 lei/zi (30.000 lei / 125 de zile), venitul realizat = baza −
+        499,59 -> „Calculează și salvează”: indemnizația 499,59, rotunjită la 500 -> lista certificatelor: „indemnizație brută 500,00 lei” ->
+        lista: „indemnizație brută 500,00 lei · net 292,00 lei” -> statul lunii trecute, „Compoziția netului”: „Indemnizație CM (netă)” =
+        500 − reținerile declarate pe indemnizație (D112: CAS + CASS + impozit ale salariatului − cele din salariu) -> Declarații -> D112: „fără
+        erori”, iar D_20 + D_21 = 500. Înainte: 499,59 stocat și pe ecran (net 292,59), 500 în D112.
+        Temeiul: Normele OUG 158/2005 (Ordinul MS 15/2018 / CNAS 1.311/2017) art.63 Exemplul nr.1 — „Ci = 2.499,59 lei - 1.875 lei = 624,59
+        lei, rotunjit la 625 lei conform legii”."""
+        pg = patron.pg
+        _formular_cod10(patron, firma_c89)
+        pg.fill(_F + "#cm-urgenta", "4321")
+        lista = _salveaza_certificat(patron)
+        # rândul certificatului: „… · indemnizație brută 500,00 lei · net 292,00 lei” (500 − 125 CAS − 50 CASS − 33 impozit)
+        cert = re.findall(r"indemnizație brută ([\d.]+,\d\d) lei · net ([\d.]+,\d\d) lei", lista)
+        assert [(_bani(b), _bani(n)) for b, n in cert] == [(_bani("500,00"), _bani("292,00"))], lista
+        _stat_luna(patron, firma_c89, luni_inapoi=1)
+        # compoziția se citește O DATĂ, cât fereastra salariatului e în față (după D112 ecranul e cel al declarației)
+        coloane = _compozitie(patron)
+        comp = _randuri_compozitie(coloane)
+        patron.captura("compozitia_netului")
+        a = _singurul(_d112_xml(patron, firma_c89))
+        d, b4, e3 = _un(a, "asiguratD"), _un(a, "asiguratB4"), _un(a, "asiguratE3")
+        assert (d["D_9"], int(d["D_20"]) + int(d["D_21"])) == ("10", 500), d
+        # Statul arată indemnizația cu reținerile DECLARATE (`stat_plata_api.stat_final`, comanda Costin 06.10.2026 pct.2: „421 se soldează la
+        # ban și în lunile cu concediu medical”): reținerile CM = totalul declarat al salariatului (B4_8 CAS + B4_6 CASS + E3_15 impozit) −
+        # reținerile din salariu (rândurile CAS / CASS / impozit ale compoziției); netul CM = indemnizația declarată (D_20 + D_21) − ele.
+        # [lotul 13, 677] reținerile stau în coloana „Rețineri” (pozitive); indemnizația o dată, cu brutul și netul pe același rând
+        ret_sal = comp["CAS (25%)"] + comp["CASS (10%)"] + comp["Impozit pe venit"]
+        ret_cm = int(b4["B4_8"]) + int(b4["B4_6"]) + int(e3["E3_15"]) - ret_sal
+>       assert _bani_net(patron, "Indemnizație concediu medical", coloane) == 500 - ret_cm, (comp, b4, e3)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_lot11_s9.py:298: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+patron = <conftest.Ecran object at 0x71dda2ec8170>
+eticheta = 'Indemnizație concediu medical'
+coloane = {'Salariu pe zile lucrate': [5000, None], 'Venituri în bani': [5000, None], 'CAS (25%)': [1250, None], 'CASS (10%)': [500, None], ...}
+
+    def _bani_net(patron, eticheta, coloane=None):
+        """Netul de pe rândul `eticheta` al compoziției (rândul indemnizației CM: brut și net pe același rând). `coloane` = compoziția citită
+        deja (`_compozitie`), când fereastra salariatului nu mai e în față (după D112); altfel se citește din fereastra salariatului."""
+        from decimal import Decimal
+>       return Decimal(str((coloane if coloane is not None else _compozitie(patron))[eticheta][1]))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'Indemnizație concediu medical'
+
+frontend_test/e2e/e2e_lot11_s9.py:148: KeyError
+____ test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112 _____
+
+patron = <conftest.Ecran object at 0x71dd9ee1d9d0>
+firma_c99 = {'tenant_id': 371007, 'schema': 'tenant_9775', 'nume': 'E2E Probă S9M 3058362 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112(patron, firma_c99):
+        """C99. Pașii: salariat cu normă parțială (4 ore, 2.000 lei) -> statul lunii trecute -> „Concediu” -> „+ Certificat nou”: cod 01, 1–10
+        ale lunii trecute -> „Calculează și salvează” -> statul lunii trecute, „Compoziția netului”: rândul „Suprataxă part-time …” ->
+        „Fluturaș”: aceeași sumă -> Declarații -> D112 pe luna trecută: „fără erori”, suma limită B4_7P = ROUND((salariul minim − suma
+        netaxabilă) × zilele lucrate fără CM (B4_1) / zilele lucrătoare ale lunii) și diferența suportată de angajator B4_8D + B4_6D = suprataxa
+        de pe stat și de pe fluturaș. Înainte: statul socotea podeaua și pe zilele de concediu medical (suprataxă mai mare decât în D112).
+        Temeiul: CF art.146 alin.(5^6) — „corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ”; Legea 53/2003
+        art.50 lit.b) — contractul „se suspendă de drept” pe durata concediului pentru incapacitate temporară de muncă."""
+        import calendar
+        from core.common import cota, salariu_minim_luna
+        pg = patron.pg
+        di, ds = LUNA_TRECUTA, LUNA_TRECUTA.replace(day=10)
+        st, r = _api(PATRON, "GET", "/util/zile-lucratoare?start=%s&end=%s" % (di.isoformat(), ds.isoformat()))
+        assert st == 200, (st, r)
+        zile_cm = int(r["zile"])
+        ultima = LUNA_TRECUTA.replace(day=calendar.monthrange(LUNA_TRECUTA.year, LUNA_TRECUTA.month)[1])
+        st, r = _api(PATRON, "GET", "/util/zile-lucratoare?start=%s&end=%s" % (LUNA_TRECUTA.isoformat(), ultima.isoformat()))
+        assert st == 200, (st, r)
+        nzl = int(r["zile"])
+        _stat_luna(patron, firma_c99, luni_inapoi=1)
+        _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
+        pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
+        pg.click(_F + "#cm-nou")
+        pg.wait_for_selector(_F + "#cm-calc", timeout=20000)
+        pg.fill(_F + "#cm-serie", "AB")
+        pg.fill(_F + "#cm-numar", "9902")
+        pg.select_option(_F + "#cm-cod", "01")
+        pg.fill(_F + "#cm-acord", di.isoformat())
+        pg.fill(_F + "#cm-inceput", di.isoformat())
+        pg.fill(_F + "#cm-sfarsit", ds.isoformat())
+        _propunerea_zilelor(pg, zile_cm)
+        pg.fill(_F + "#cm-zile", str(zile_cm))
+        for sel in ("#cm-continuare", "#cm-spital", "#cm-program-national"):
+            alege(patron, sel.lstrip("#"), "false")   # [lotul 13, 676] Da / Nu = butoane
+        pg.fill(_F + "#cm-ven6", "12000")
+        pg.fill(_F + "#cm-zile6", "125")
+        _salveaza_certificat(patron)
+        _stat_luna(patron, firma_c99, luni_inapoi=1)
+        comp = _randuri_compozitie(_compozitie(patron))
+        patron.captura("compozitia_netului")
+        supra = comp.get(_ETICHETA_SUPRATAXA)
+        assert supra is not None and supra > 0, comp
+        text = _pdf_fluturas(patron)
+        patron.captura("fluturas")
+        m = re.findall(r"podeaua\s+salariului\s+minim\),\s+plătită\s+de\s+angajator:\s+([\d.]+,\d\d)", text)
+        assert [_bani(x) for x in m] == [supra], text[:2000]
+        b4 = _un(_singurul(_d112_xml(patron, firma_c99)), "asiguratB4")
+        sm = int(salariu_minim_luna(LUNA_TRECUTA)[0])
+        fac = int(cota("facilitate_salariu_minim", LUNA_TRECUTA)[0])
+        zile_activ = nzl - zile_cm                     # zilele lucrătoare în care contractul a fost activ (fără CM)
+        assert int(b4["B4_1"]) == zile_activ, b4
+        from decimal import ROUND_HALF_UP, Decimal
+        podea = int((Decimal(sm - fac) * zile_activ / nzl).quantize(Decimal("1"), rounding=ROUND_HALF_UP))   # structura: ROUND(sm*zile_PT/NZL)
+        assert int(b4["B4_7P"]) == podea, (b4, podea)
+>       assert int(b4["B4_8D"]) + int(b4["B4_6D"]) == supra, (b4, supra)
+E       AssertionError: ({'B4_1': '15', 'B4_3': '1628', 'B4_5': '1681', 'B4_6': '168', ...}, Decimal('744'))
+E       assert (362 + 145) == Decimal('744')
+E        +  where 362 = int('362')
+E        +  and   145 = int('145')
+
+frontend_test/e2e/e2e_lot11_s9.py:515: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot11_s9.py::test_def_c89_indemnizatia_cm_rotunjita_la_sursa
+FAILED frontend_test/e2e/e2e_lot11_s9.py::test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112
+2 failed, 7 passed in 72.50s (0:01:12)

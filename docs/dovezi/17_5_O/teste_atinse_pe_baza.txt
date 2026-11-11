@@ -1,0 +1,16 @@
+rulare pe bază main 5d79070a, prin scripts/e2e_poarta.py --doar
+e2e_bloc_a: exit 1 in 232 s: [e2e] 5 failed, 39 passed in 214.95s (0:03:34) (231s; capturi în /tmp/e2e_capB_e2e_bloc_a)
+e2e_bloc_b: exit 1 in 452 s: [e2e] 11 failed, 20 passed in 431.75s (0:07:11) (450s; capturi în /tmp/e2e_capB_e2e_bloc_b)
+e2e_bloc_c: exit 1 in 324 s: [e2e] 3 failed, 35 passed in 307.40s (0:05:07) (323s; capturi în /tmp/e2e_capB_e2e_bloc_c)
+e2e_bloc_d: exit 1 in 358 s: [e2e] 10 failed, 31 passed in 340.61s (0:05:40) (356s; capturi în /tmp/e2e_capB_e2e_bloc_d)
+e2e_lot10b_salarii_jurnal: exit 1 in 95 s: [e2e] 4 failed in 78.53s (0:01:18) (94s; capturi în /tmp/e2e_capB_e2e_lot10b_salarii_jurnal)
+e2e_lot10b_stoc: exit 1 in 72 s: [e2e] 1 failed, 5 passed in 55.16s (70s; capturi în /tmp/e2e_capB_e2e_lot10b_stoc)
+e2e_lot11_s9: exit 1 in 93 s: [e2e] 2 failed, 7 passed in 75.71s (0:01:15) (91s; capturi în /tmp/e2e_capB_e2e_lot11_s9)
+e2e_lot11_w2: exit 1 in 78 s: [e2e] 1 failed, 4 passed in 57.61s (76s; capturi în /tmp/e2e_capB_e2e_lot11_w2)
+e2e_lot13_fact: exit 1 in 176 s: [e2e] 1 failed, 18 passed in 154.27s (0:02:34) (174s; capturi în /tmp/e2e_capB_e2e_lot13_fact)
+e2e_lot13_firme2: exit 1 in 136 s: [e2e] 5 failed, 7 passed in 119.00s (0:01:58) (134s; capturi în /tmp/e2e_capB_e2e_lot13_firme2)
+e2e_lot13_sal: exit 1 in 95 s: [e2e] 4 failed, 5 passed in 77.39s (0:01:17) (93s; capturi în /tmp/e2e_capB_e2e_lot13_sal)
+e2e_lot92: exit 1 in 289 s: [e2e] 9 failed, 18 passed in 272.35s (0:04:32) (288s; capturi în /tmp/e2e_capB_e2e_lot92)
+e2e_lot93c: exit 1 in 53 s: [e2e] 1 failed in 36.61s (52s; capturi în /tmp/e2e_capB_e2e_lot93c)
+e2e_pozitii_validate: exit 1 in 136 s: [e2e] 1 failed, 16 passed in 118.53s (0:01:58) (134s; capturi în /tmp/e2e_capB_e2e_pozitii_validate)
+FINAL

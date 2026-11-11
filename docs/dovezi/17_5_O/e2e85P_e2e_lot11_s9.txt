@@ -1,0 +1,4 @@
+[e2e] aplicația din index pornită pe 8019 în 16s
+FAILED frontend_test/e2e/e2e_lot11_s9.py::test_def_c89_indemnizatia_cm_rotunjita_la_sursa
+FAILED frontend_test/e2e/e2e_lot11_s9.py::test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112
+[e2e] 2 failed, 7 passed in 73.18s (0:01:13) (90s; capturi în /tmp/e2e_cap_e2e_lot11_s9)

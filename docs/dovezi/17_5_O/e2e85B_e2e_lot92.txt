@@ -1,0 +1,11 @@
+[e2e] aplicația din index pornită pe 8019 în 15s
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_buc
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_407_avansul_platit_furnizorului_cere_destinatia_si_e_409x
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_414_luna_in_curs_nu_ofera_butonul_care_scrie_nota
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei
+[e2e] 9 failed, 18 passed in 272.35s (0:04:32) (288s; capturi în /tmp/e2e_capB_e2e_lot92)

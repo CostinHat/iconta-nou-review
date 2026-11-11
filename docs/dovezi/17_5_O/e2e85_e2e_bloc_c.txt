@@ -1,0 +1,157 @@
+...........................F..FF......                                   [100%]
+=================================== FAILURES ===================================
+____________ test_def_96_raportul_z_nu_se_valideaza_fara_descarcare ____________
+
+patron = <conftest.Ecran object at 0x7120592e34d0>
+firma_cv = {'tenant_id': 370968, 'schema': 'tenant_9736', 'nume': 'E2E Probă 1437408 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_96_raportul_z_nu_se_valideaza_fara_descarcare(patron, firma_cv):
+        """96. Raport Z: la cantitativ-valoric nu se validează fără descărcarea pe articol.
+        Pașii: firma cantitativ-valorică -> Raport Z: 121,00 lei la 21%, numerar, 3 bonuri -> Generează notă: nota e CIORNĂ, iar
+        secțiunea de descărcare arată Z-ul „Nedescărcat”. Registru jurnal -> „Validează” pe nota Z: refuz „nu se validează fără
+        descărcarea mărfii vândute”, nota rămâne ciornă."""
+        pg = patron.pg
+        _deschide(patron, firma_cv["nume"], "raportz", "#z-salveaza")
+        pg.fill("#z-data", AZI.isoformat())
+        pg.fill("#z-nui", "8000000096")
+        pg.fill("#z-nr", "0096")
+        pg.fill("#z-21", "121")
+        pg.fill("#z-num", "121")
+        pg.fill("#z-bonuri", "3")
+        ultima = _ultima_nota(firma_cv)
+        pg.click("#z-salveaza")
+        pg.wait_for_function("() => (document.querySelector('#z-rezultat') || {innerText: ''}).innerText.includes('Nota e ciornă')", timeout=15000)
+        nid = _nota_noua(firma_cv, ultima)
+        assert "#" not in pg.inner_text("#z-rezultat")      # [258] numărul intern nu se afișează
+        pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('Nedescărcat')", timeout=15000)
+        patron.captura("z")
+        _deschide(patron, firma_cv["nume"], "jurnal", "#j-nota-noua")
+>       pg.click("[data-val='%d']" % nid)
+
+frontend_test/e2e/e2e_bloc_c.py:1021: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+frontend_test/e2e/conftest.py:146: in clic
+    return clic_original(self, selector, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x712065986090>
+cb = <function Channel.send.<locals>.<lambda> at 0x712058f7da80>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-val='11']")
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+_____________ test_def_90_confirmarea_notei_la_validare_e_vizibila _____________
+
+asistent = <conftest.Ecran object at 0x712057803e60>
+firma_gv = {'tenant_id': 370969, 'schema': 'tenant_9737', 'nume': 'E2E Probă GV 483339 SRL', 'cabinet_id': 1968}
+salariat_gv = {'ok': True, 'salariat_id': 1}, asistent_pregatitor = 6248
+
+    def test_def_90_confirmarea_notei_la_validare_e_vizibila(asistent, firma_gv, salariat_gv, asistent_pregatitor):
+        """90. Coadă: confirmarea „Nota nr. crt. 3 din … e la validare” mică și gri.
+        Pașii: asistentul -> firma -> Salariați -> „Contabilizează statul” -> „Scrie nota ciornă”. Confirmarea „Nota nr. crt. N din … e la validare
+        în cabinet.” apare într-o casetă informativă (DS cap.5), nu ca text mic gri."""
+        pg = asistent.pg
+>       _contabilizeaza_statul(asistent, firma_gv)
+
+frontend_test/e2e/e2e_bloc_c.py:1138: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_c.py:1124: in _contabilizeaza_statul
+    _salarii_luna_incheiata(ecran, firma)
+frontend_test/e2e/e2e_bloc_c.py:1118: in _salarii_luna_incheiata
+    pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x712065986090>
+cb = <function Channel.send.<locals>.<lambda> at 0x712058906160>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+___________ test_def_81_nota_de_salarii_respinsa_se_reface_din_stat ____________
+
+asistent = <conftest.Ecran object at 0x712057567830>
+patron = <conftest.Ecran object at 0x712065bfa510>
+firma_gv = {'tenant_id': 370969, 'schema': 'tenant_9737', 'nume': 'E2E Probă GV 483339 SRL', 'cabinet_id': 1968}
+salariat_gv = {'ok': True, 'salariat_id': 1}, asistent_pregatitor = 6248
+
+    def test_def_81_nota_de_salarii_respinsa_se_reface_din_stat(asistent, patron, firma_gv, salariat_gv, asistent_pregatitor):
+        """81. Salarii: nota respinsă o trimitea pe Ana în Registrul jurnal; recontabilizarea n-o refăcea.
+        Pașii: cabinetul respinge nota de salarii („lipsește pontajul”) -> asistentul deschide Salariați: statul spune că nota se
+        corectează din statul de plată, nu din Registrul-jurnal -> „Contabilizează statul” › „Recontabilizează statul” (confirmă
+        „Retrimite fără schimbări”) -> „Nota respinsă a fost înlocuită cu nota nr. crt. N din … și trimisă la validare” (258: fără id-ul intern); noua notă e la validare."""
+        from core import coada_api, db
+        s = firma_gv["schema"]
+        if not sql("SELECT 1 FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' AND stare = 'la_senior'",
+                   (firma_gv["tenant_id"],)):
+            _contabilizeaza_statul(asistent, firma_gv)
+            asistent.pg.click("#sp-contare-scrie")
+            asistent.pg.wait_for_function("() => (document.querySelector('#sp-contare-zona') || {innerText: ''}).innerText.includes('e la validare')",
+                                          timeout=30000)
+>       nota = sql('SELECT id FROM "%s".inregistrari WHERE sursa = \'salarii\' AND status = \'ciorna\' ORDER BY id DESC LIMIT 1' % s)[0][0]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+frontend_test/e2e/e2e_bloc_c.py:1161: IndexError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_bloc_c.py::test_def_96_raportul_z_nu_se_valideaza_fara_descarcare
+FAILED frontend_test/e2e/e2e_bloc_c.py::test_def_90_confirmarea_notei_la_validare_e_vizibila
+FAILED frontend_test/e2e/e2e_bloc_c.py::test_def_81_nota_de_salarii_respinsa_se_reface_din_stat
+3 failed, 35 passed in 302.31s (0:05:02)

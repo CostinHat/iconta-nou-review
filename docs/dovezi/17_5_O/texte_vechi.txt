@@ -1,0 +1,23 @@
+fragment vechi: potriviri pe C(HEAD) | pe bază
+0 | baza=1 | class="buton-primar" id="r-var-salveaza"
+0 | baza=1 | #ss-butoane [data-flut]
+0 | baza=1 | cumulat ${x.pondere_cumulata}%
+0 | baza=1 | ieșiri ultimele 30 zile ${x.iesiri_30z} 
+simboluri noi (HEAD | bază)
+2 | baza=0 | ss-fluturas
+4 | baza=0 | sageataSimpla
+siraCarduri( fără al patrulea parametru:
+HEAD: 18  bază: 19
+rap-trimite:
+frontend_test/e2e/e2e_lot5_migrare.py:226:    pg.click("#rap-trimite")
+frontend_test/e2e/e2e_ferestre_17_5_O.py:287:    elif butoane[0]["id"] != "rap-trimite":
+frontend_test/e2e/e2e_ferestre_17_5_O.py:288:        rele.append("AC182: butonul vizibil rămas nu mai poartă id-ul rap
+frontend_test/e2e/e2e_pozitii_validate.py:654:    pg.click("#rap-trimite")
+frontend_test/e2e/e2e_pozitii_validate.py:675:        sp.click("#rap-fir #rap-trimite")
+frontend_test/e2e/e2e_lot6.py:760:        pg.click("#rap-trimite")
+frontend_test/e2e/e2e_lot13_admin2.py:179:    pg.click("#rap-trimite")
+frontend_test/e2e/e2e_lot13_admin2.py:280:            sa.pg.click("#rap-trimite")
+frontend_test/dovada/dovezi_lot13_admin.json:791:    "click": "#rap-trimite"
+frontend_test/dovada/dovezi_lot13_admin.json:876:    "click": "#rap-trimite"
+frontend_test/dovada/dovezi_lot13_admin.json:918:    "click": "#rap-trimite"
+\u00b7 stoc ${esc(cantitate(a.stoc, a.um))}${a.cmp (verificat cu python, secvența \u00b7 literală; shell-ul o converteam în «·»): HEAD=0 | baza=1

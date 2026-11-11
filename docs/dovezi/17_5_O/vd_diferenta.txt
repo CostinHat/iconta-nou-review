@@ -1,0 +1,14 @@
+Verificatorul de design, înainte (vd_inainte/, 5d79070a) → după (vd_dupa/, P 2fe37d4c), 210 rulări; ferestrele catalogului a căror literă a–h, buton principal, număr de butoane principale sau număr de tabele DS se schimbă:
+- Balanță de verificare F1 1920x1080: litere pică «bc» → «c»
+- Declarație D301 F3 pasul 2 1366x768: buton principal «Pune în „De depus” →» → «Trimite în coadă →»
+- Declarație D301 F3 pasul 2 1920x1080: litere pică «b» → «d»; buton principal «None» → «Trimite în coadă →»; nr butoane principale «0» → «1»
+- Fișa salariatului F5 1366x768: litere pică «bc» → «c»
+- Fișa salariatului F5 1920x1080: litere pică «bc» → «c»
+- Panou Admin — Sănătate server 1920x1080: litere pică «b» → «-»; buton principal «None» → «Trimite alertă de test»; nr butoane principale «0» → «1»
+TOTAL ferestre schimbate: 6
+
+Judecata (lotul 17.5-O, comanda pct.8.4):
+- Fișa salariatului F5 (1366×768 și 1920×1080): litera b «bc» → «c» = îmbunătățirea așteptată de la AC108 (un singur «Fluturaș», în bară); c neschimbat.
+- Balanță de verificare F1 1920×1080: b «bc» → «c» = trecerea admisă a literei b la ferestrele de export (AC183, bara stabilă).
+- Declarație D301 F3 pasul 2 și Panou Admin — Sănătate server: ferestre neatinse de lot (nu sunt între cele șase și nu sunt de export); diferența NU e a lotului: două rulări repetate pe același P (vd_reluare.txt, directoarele vd_reluare_1 și vd_reluare_2) dau rezultate diferite între ele (D301 1366×768: «b» într-o rulare, «d» în alta; Sănătate 1920×1080: «b» într-o rulare, nimic în alta), deci măsurătoarea acestor două ferestre e instabilă; aceleași două apar în vd_diferenta.txt din 17.5-B, 17.5-D, 17.5-F și 17.5-H2.
+- Nicio schimbare la litera c pe vreo fereastră a lotului; nicio altă fereastră schimbată.

@@ -1,0 +1,548 @@
+FFFFF....F..F..FF.....F....                                              [100%]
+=================================== FAILURES ===================================
+_____ test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile ______
+
+patron = <conftest.Ecran object at 0x796c2717b470>
+firma_srl = {'tenant_id': 370978, 'schema': 'tenant_9746', 'nume': 'E2E Probă 2182191 SRL', 'cabinet_id': 1968}
+
+    def test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile(patron, firma_srl):
+        """410 (PRIORITAR). Date firmă: „Salvează” refuzat fără mesaj vizibil. Pașii: fereastra firmei -> Date firmă -> golește denumirea
+        firmei, scrie o serie de chitanțe invalidă („CH-410!”) și o adresă nouă -> Salvează: lângă buton „NU s-a salvat.” și câmpurile
+        refuzate (denumirea — din ecran; seria — de la server), fiecare cu trimitere; adresa scrisă rămâne; clic pe „Seria chitanțelor” ->
+        câmpul primește focus; corectat -> iese din listă.
+        [lotul 10, deficiența 427] Până la 427 refuzul se proba golind Telefon și Banca; acum un câmp obligatoriu gol NU mai refuză
+        salvarea („Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet»”), deci refuzul se probează pe valori invalide."""
+        from e2e_bloc_a import _card
+        pg = patron.pg
+        patron.firma(firma_srl["nume"])
+        _card(patron, "datefirma", "#df-salveaza")
+        nume = pg.input_value("#df-nume-portofoliu")
+        pg.fill("#df-nume-portofoliu", "")
+        pg.fill("#df-serie_chitanta", "CH-410!")
+        pg.fill("#df-adresa", "Str. Refuzului 410")
+        pg.click("#df-salveaza")
+        pg.wait_for_selector(".refuz-salvare", timeout=10000)
+        pg.wait_for_function("() => [...document.querySelectorAll('.refuz-salvare-lista > li')].some(li => li.textContent.includes('Seria'))",
+                             timeout=20000)
+        patron.captura()
+        box = pg.eval_on_selector(".refuz-salvare", "b => ({ text: b.querySelector('b').textContent, langa: b.previousElementSibling "
+                                                    "&& b.previousElementSibling.contains(document.querySelector('#df-salveaza')), "
+                                                    "vizibil: b.getBoundingClientRect().bottom <= innerHeight && b.getBoundingClientRect().top >= 0 })")
+>       assert box == {"text": "NU s-a salvat.", "langa": True, "vizibil": True}, box
+E       AssertionError: {'text': 'NU s-a salvat.', 'langa': False, 'vizibil': True}
+E       assert {'text': 'NU ...izibil': True} == {'text': 'NU ...izibil': True}
+E         
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'langa': False} != {'langa': True}
+E         Use -v to get more diff
+
+frontend_test/e2e/e2e_lot92.py:49: AssertionError
+_________ test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare __________
+
+patron = <conftest.Ecran object at 0x796c2614f890>
+firma_srl = {'tenant_id': 370978, 'schema': 'tenant_9746', 'nume': 'E2E Probă 2182191 SRL', 'cabinet_id': 1968}
+
+    def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_srl):
+        """406 (PRIORITAR). Casă: plată 200 cu sold 142 acceptată, registrul −58. Pașii: fereastra firmei -> Casă -> „+ Dispoziție nouă” ->
+        ridicare de la bancă 142 lei -> Adaugă; apoi plată furnizor 200 lei: previzualizarea spune refuzul, „Adaugă” -> „NU s-a salvat.”
+        lângă buton, cu textul refuzului pe câmpul „Suma” (lotul 11, 440: eroarea serverului e a sumei, `c-suma`, deci stă lângă câmp și în
+        casetă cu textul ei, nu „motivul e mai jos”), nimic scris, soldul final rămâne 142,00 lei."""
+        from e2e_bloc_a import _card
+        pg = patron.pg
+        patron.firma(firma_srl["nume"])
+        _card(patron, "casa", "#c-toggle")
+    
+        def _dispozitie(cat, suma, doc, avans_dest=None):
+            if not pg.locator("#c-campuri").count():   # [lotul 13, 673] dispoziția nouă e o fereastră
+                pg.click("#c-toggle")
+            pg.select_option("#c-cat", cat)
+            pg.fill("#c-suma", str(suma))
+            pg.fill("#c-part", "DANTE INTERNATIONAL SA")
+            pg.fill("#c-cui", "14399840")
+            if avans_dest:
+                # [lotul 11, 440, comanda 11.1 pct.16: „toate erorile apar deodată”] plata fără facturi deschise ale furnizorului e avans acordat
+                # (407, 409x = 5311): contabilul alege pentru ce e avansul, deci singurul refuz rămâne al soldului. Cu destinația lăsată goală,
+                # serverul le spune pe amândouă — `e2e_lot11_w3a.py::test_def_440_casa_dispozitia_suma_si_destinatia_avansului_deodata`.
+                pg.wait_for_selector("#c-avans-dest", timeout=20000)
+                pg.select_option("#c-avans-dest", avans_dest)
+            pg.fill("#c-doc", doc)
+            pg.wait_for_timeout(600)   # previzualizarea (250 ms după tastare)
+        _dispozitie("ridicare_banca", 142, "DI406")
+        pg.click("#c-adauga")
+        pg.wait_for_function("() => (document.querySelector('#c-sold-final') || {}).textContent === '142,00 lei'", timeout=20000)
+        _dispozitie("plata_furnizor", 200, "DP406", avans_dest="servicii")
+        asteptat = ("Plată către furnizor de 200,00 lei nu încape în casă (contul 5311): soldul casei pe %s, în registru, e 142,00 lei, iar "
+                    "după ea casa ar ajunge la -58,00 lei pe %s. Numerarul din casă nu poate fi negativ. Înregistrează întâi încasarea sau "
+                    "ridicarea de numerar din care s-a plătit.")
+        zi = pg.eval_on_selector("#c-data", "e => e.value.split('-').reverse().join('.')")
+        # refuzul previzualizării, cu textul întreg (așteptat pe text, nu pe element: tastarea golește zona refuzului până la răspuns — 290)
+        pg.wait_for_function("(t) => (document.querySelector('#c-previz-refuz') || {}).textContent === t", arg=asteptat % (zi, zi),
+                             timeout=10000)
+        assert pg.input_value("#c-avans-dest") == "servicii"
+>       pg.click("#c-adauga")
+
+frontend_test/e2e/e2e_lot92.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+frontend_test/e2e/conftest.py:146: in clic
+    return clic_original(self, selector, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x796c2712fa10>
+cb = <function Channel.send.<locals>.<lambda> at 0x796c25dad260>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("#c-adauga")
+E               - locator resolved to <button id="c-adauga" aria-disabled="true" data-actiune-principala="" class="buton-primar fj-principal" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni" title="Completează: poziția din listă sau „Avans, fără factură”" data-motiv-inactiv="Completează: poziția din listă sau „Avans, fără factură”">Adaugă</button>
+E             - attempting click action
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E               - waiting 20ms
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E                 - waiting 100ms
+E               58 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____ test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia ____
+
+patron = <conftest.Ecran object at 0x796c25576780>
+firma_cv = {'tenant_id': 370979, 'schema': 'tenant_9747', 'nume': 'E2E Probă 2221344 SRL', 'cabinet_id': 1968}
+
+    def test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia(patron, firma_cv):
+        """411 (PRIORITAR). Stat cu CM: netul arăta numai salariul. Pașii: salariat cu salariul 4.050 lei și CM cod 01 pe 3 zile în luna
+        curentă -> Salariați: rândul arată „net <salariu + CM> (salariu … + indemnizație CM …)”, costul cuprinde indemnizația angajatorului,
+        compoziția netului se termină cu „Net de plată (salariu + indemnizație CM)”, iar deducerea stă sub impozit, nu printre rețineri."""
+        from e2e_bloc_a import _api, _card, _ok
+        sid = _salariat_cu_cm(firma_cv)
+        st = _ok(_api(patron, "GET", "/tenants/%d/stat-plata?an=%d&luna=%d" % (firma_cv["tenant_id"], AZI.year, AZI.month)), "stat")["stat"]
+        r = next(x for x in st if x["id"] == sid)
+        assert r["cm_net"] > 0 and abs(r["net_de_plata"] - (r["net"] + r["cm_net"])) < 0.005, r
+        patron.firma(firma_cv["nume"])
+        _card(patron, "salariati", "#sp-contare")
+        pg = patron.pg
+        # [lotul 13, 677] rândul statului: coloanele „Net de plată” și „Cost angajator”; compoziția în fereastra salariatului
+        celule = [" ".join(x.split()) for x in pg.locator("#sp-tabel tbody tr.sp-rand", has_text="IONESCU VASILE").first.locator("td").all_inner_texts()]
+        patron.captura()
+>       assert celule[3] == _lei(r["net_de_plata"]) and celule[4] == _lei(r["cost_total"]), (celule, r)
+E       AssertionError: (['IONESCU VASILE', '22 din 22', '4.050,00', '2.455,00', '4.167,00', ''], {'id': 1, 'nume': 'IONESCU VASILE', 'nume_ed': 'IONESCU', 'prenume_ed': 'VASILE', ...})
+E       assert ('2.455,00' == '2.253,50'
+E         
+E         - 2.253,50
+E         + 2.455,00)
+
+frontend_test/e2e/e2e_lot92.py:185: AssertionError
+__________ test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa ___________
+
+patron = <conftest.Ecran object at 0x796c255bb2c0>
+firma_cv = {'tenant_id': 370979, 'schema': 'tenant_9747', 'nume': 'E2E Probă 2221344 SRL', 'cabinet_id': 1968}
+
+    def test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa(patron, firma_cv):
+        """419 (PRIORITAR, 9.3). Pașii: factură cu un articol din stoc, emisă cu „Pleacă marfa acum: Da” -> detaliul -> „Stornează”: întrebarea
+        „Marfa … se întoarce în stoc?”; fără răspuns: „NU s-a salvat.”; „Da” -> „Confirm stornarea”: confirmarea spune că marfa a revenit în
+        stoc, iar stocul articolului e iar cel dinainte. 416: factura stornată apare „stornată” în Istoric facturi.
+        [lotul 13, 673 — DS cap.2a v2.104] confirmarea stornării, cu întrebarea returului, e fereastra mică deschisă peste detaliu; după
+        „Confirm stornarea” detaliul refăcut arată confirmarea în zona lui de stornare."""
+        from e2e_bloc_a import ARTICOL, _api, _card, _ok, articol_in_stoc, emite_api
+        tid = firma_cv["tenant_id"]
+        aid = articol_in_stoc(patron, firma_cv, cantitate=22, pret=10)
+        stoc0 = next(a for a in _ok(_api(patron, "GET", "/tenants/%d/stocuri/articole" % tid), "art")["articole"] if a["id"] == aid)["stoc"]
+        f = emite_api(patron, firma_cv, linii=[{"descriere": ARTICOL, "cantitate": 1, "um": "buc", "pret_unitar": 20.0, "cota_tva": 21,
+                                                 "cota_propusa": 21, "articol_id": aid}], pleaca_marfa=True)
+        from e2e_bloc_a import _deschide_factura
+        _deschide_factura(patron, firma_cv, f["factura_id"])
+        pg = patron.pg
+        pg.wait_for_selector("#fd-storno", timeout=20000)
+        pg.click("#fd-storno")
+        pg.wait_for_selector(".fereastra:last-of-type #fd-storno-retur", state="attached", timeout=10000)
+        assert "se întoarce în stoc?" in pg.inner_text(".fereastra:last-of-type .fd-storno-box")   # fereastra confirmării, nu detaliul
+>       assert not pg.query_selector(".fereastra:last-of-type #fd-pdf"), "întrebarea returului nu e în fereastra ei (673)"
+E       AssertionError: întrebarea returului nu e în fereastra ei (673)
+E       assert not <JSHandle preview=JSHandle@node>
+E        +  where <JSHandle preview=JSHandle@node> = query_selector('.fereastra:last-of-type #fd-pdf')
+E        +    where query_selector = <Page url='http://127.0.0.1:8019/'>.query_selector
+
+frontend_test/e2e/e2e_lot92.py:214: AssertionError
+_ test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_buc _
+
+patron = <conftest.Ecran object at 0x796c228fb2f0>
+firma_cv = {'tenant_id': 370979, 'schema': 'tenant_9747', 'nume': 'E2E Probă 2221344 SRL', 'cabinet_id': 1968}
+
+    def test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_buc(patron, firma_cv):
+        """409. Registrul jurnal: nota de descărcare a stocului la emiterea unei facturi era „nederivat — fără referință” (fără document) și
+        scria „x2.000” (citit 2.000 buc). Pașii: articol în stoc -> factură cu 2 buc din el, „Pleacă marfa acum: Da” -> Registru jurnal:
+        nota de descărcare (607 = 371) are documentul „Factură <număr> din <dată>” și descrierea „× 2 buc”. (Nota veche a cabinetului:
+        stornată și refăcută pe date la publicarea lotului 9, cu aprobarea lui Costin — DECIZII „Închiderea lotului 9”.)
+        MUTAȚIA: în core/stocuri_cv_api.py, descărcarea la factură, `"document": document}` -> `"document": None}` -> ROȘU."""
+        from e2e_bloc_a import ARTICOL, articol_in_stoc, emite_api
+        from e2e_bloc_d import _asteapta_text, _deschide
+        from core import pdf_util
+        s = firma_cv["schema"]
+        aid = articol_in_stoc(patron, firma_cv, cantitate=7, pret=10)
+        f = emite_api(patron, firma_cv, linii=[{"descriere": ARTICOL, "cantitate": 2, "um": "buc", "pret_unitar": 20.0, "cota_tva": 21,
+                                                 "cota_propusa": 21, "articol_id": aid}], pleaca_marfa=True)
+        nid, serie, numar, data = sql('SELECT m.inregistrare_id, f.serie, f.numar, f.data_emitere FROM "%s".miscari_stoc m JOIN "%s".facturi f '
+                                      "ON f.id = m.factura_id WHERE m.factura_id = %%s" % (s, s), (f["factura_id"],))[0]
+        if serie and numar.startswith(serie):   # [lotul 11, 443] seria și numărul separat: „F1A nr. 1”, nu „F1A1”
+            numar = "%s nr. %s" % (serie, numar[len(serie):])
+        patron.firma(firma_cv["nume"])
+        _deschide(patron, "#fa-jurnal", "Registru")
+        pg = patron.pg
+        rand = pg.locator(".fereastra:last-of-type [data-nota-id='%s']" % nid).first
+>       rand.wait_for(timeout=30000)
+
+frontend_test/e2e/e2e_lot92.py:254: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:20539: in wait_for
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_locator.py:748: in wait_for
+    await self._frame.wait_for_selector(
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x796c2712fa10>
+cb = <function Channel.send.<locals>.<lambda> at 0x796c24d623e0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type [data-nota-id='4']").first to be visible
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+______ test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota _______
+
+patron = <conftest.Ecran object at 0x796c2492e360>
+firma_cv = {'tenant_id': 370979, 'schema': 'tenant_9747', 'nume': 'E2E Probă 2221344 SRL', 'cabinet_id': 1968}
+
+    def test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota(patron, firma_cv):
+        """401, 402. Pașii: Stocuri -> „Borderou de achiziție” (lotul 11, pct.23: lângă NIR) -> fără domiciliu și act de identitate: lângă
+        câmpuri (și „NU s-a salvat.”); completat, cont 371 cu articolul nou (cerut explicit, 450) și cantitatea -> confirmarea cu nota
+        „371 = 401 · 200,00 lei”; în Registrul jurnal documentul e „Borderou de achiziție BA-1 din …”, nu „Factură”."""
+        from e2e_bloc_a import _card
+        from e2e_lot10b_stoc import alege_articolul
+        patron.firma(firma_cv["nume"])
+        _card(patron, "stocuri", "#s-borderou")
+        pg = patron.pg
+        pg.click("#s-borderou")
+        pg.wait_for_selector("#op-furnizor_nume", timeout=20000)
+        pg.fill("#op-data", AZI.isoformat())
+        pg.fill("#op-furnizor_nume", "Ion Popescu")
+        pg.fill("#op-valoare", "200")
+        pg.fill("#op-cont_cheltuiala", "371")
+        pg.click("#op-trimite")
+        pg.wait_for_selector(".refuz-salvare", timeout=10000)
+        assert {x[0] for x in _refuz(pg)} >= {"Domiciliul vânzătorului", "Actul de identitate (seria și numărul)"}, _refuz(pg)
+        pg.fill("#op-furnizor_adresa", "Str. Florilor 1, Ploiești")
+        pg.fill("#op-furnizor_act", "PH 123456")
+        alege_articolul(pg, "Mere E2E")
+        pg.fill("#op-cantitate", "100")
+        pg.select_option("#op-categorie", "alte_bunuri")
+        pg.click("#op-trimite")
+        pg.wait_for_selector("#op-mesaj .caseta-ok", timeout=30000)
+        t = pg.inner_text("#op-mesaj")
+        patron.captura()
+        assert "371 = 401 · 200,00 lei" in t, t
+        patron.firma(firma_cv["nume"])
+        _card(patron, "jurnal", "#j-nota-noua")
+>       pg.wait_for_function("() => document.body.innerText.includes('Borderou de achiziție BA-1 din')", timeout=20000)
+
+frontend_test/e2e/e2e_lot92.py:375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x796c2712fa10>
+cb = <function Channel.send.<locals>.<lambda> at 0x796c230ed6c0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 20000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+______ test_def_407_avansul_platit_furnizorului_cere_destinatia_si_e_409x ______
+
+patron = <conftest.Ecran object at 0x796c2356eab0>
+firma_cv = {'tenant_id': 370979, 'schema': 'tenant_9747', 'nume': 'E2E Probă 2221344 SRL', 'cabinet_id': 1968}
+
+    def test_def_407_avansul_platit_furnizorului_cere_destinatia_si_e_409x(patron, firma_cv):
+        """407. Pașii: numerar în casă -> Casă -> plată furnizor 300 lei fără facturi deschise: previzualizarea spune avansul acordat
+        (nota 409x = 5311, factura o emite furnizorul) și cere „Avansul e pentru”; „bunuri (4091)” -> Adaugă -> nota 4091=5311."""
+        from e2e_bloc_a import _card
+        _numerar(patron, firma_cv)
+        patron.firma(firma_cv["nume"])
+        _card(patron, "casa", "#c-toggle")
+        pg = patron.pg
+        pg.click("#c-toggle")
+        pg.select_option("#c-cat", "plata_furnizor")
+        pg.fill("#c-suma", "300")
+        pg.fill("#c-part", "DANTE INTERNATIONAL SA")
+        pg.fill("#c-cui", "14399840")
+        pg.fill("#c-doc", "DP407")
+        pg.wait_for_selector("#c-avans-dest", timeout=10000)
+        t = pg.inner_text("#c-previz")
+        assert "avans acordat furnizorului, cu nota 409x = 5311" in t and "Emite factura" not in t, t
+        pg.select_option("#c-avans-dest", "stocuri")
+>       pg.click("#c-adauga")
+
+frontend_test/e2e/e2e_lot92.py:456: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+frontend_test/e2e/conftest.py:146: in clic
+    return clic_original(self, selector, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x796c2712fa10>
+cb = <function Channel.send.<locals>.<lambda> at 0x796c27173600>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("#c-adauga")
+E               - locator resolved to <button id="c-adauga" aria-disabled="true" data-actiune-principala="" class="buton-primar fj-principal" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni" title="Completează: poziția din listă sau „Avans, fără factură”" data-motiv-inactiv="Completează: poziția din listă sau „Avans, fără factură”">Adaugă</button>
+E             - attempting click action
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E               - waiting 20ms
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E                 - waiting 100ms
+E               58 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+__________ test_def_414_luna_in_curs_nu_ofera_butonul_care_scrie_nota __________
+
+patron = <conftest.Ecran object at 0x796c25de4f80>
+firma_cv = {'tenant_id': 370979, 'schema': 'tenant_9747', 'nume': 'E2E Probă 2221344 SRL', 'cabinet_id': 1968}
+
+    def test_def_414_luna_in_curs_nu_ofera_butonul_care_scrie_nota(patron, firma_cv):
+        """414. Pașii: Salariați -> „Contabilizează statul” în luna în curs: „Nota salariilor se scrie după ce luna se încheie”, niciun buton
+        care scrie nota (nici înlocuirea ciornei, nici recontabilizarea)."""
+        pg = _stat(patron, firma_cv)
+        pg.click("#sp-contare")
+>       pg.wait_for_selector("#sp-contare-neincheiata", timeout=30000)
+
+frontend_test/e2e/e2e_lot92.py:507: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:43: in mai
+    return __orig(sel, *a, **{**k, "timeout": 500})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x796c2712fa10>
+cb = <function Channel.send.<locals>.<lambda> at 0x796c22966840>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 500ms exceeded.
+E           Call log:
+E             - waiting for locator("#sp-contare-neincheiata") to be visible
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+_ test_def_418_statutul_furnizorului_aflat_contul_pe_linie_si_confirmarea_ramane _
+
+patron = <conftest.Ecran object at 0x796c24d2f110>
+firma_cv = {'tenant_id': 370979, 'schema': 'tenant_9747', 'nume': 'E2E Probă 2221344 SRL', 'cabinet_id': 1968}
+
+    def test_def_418_statutul_furnizorului_aflat_contul_pe_linie_si_confirmarea_ramane(patron, firma_cv):
+        """418 a, b, c (9.3). Pașii: Facturi primite -> importă XML-ul (furnizorul cu cod de TVA RO în PartyTaxScheme/VAT) -> detaliul:
+        „Furnizorul e înregistrat în scopuri de TVA” și „TVA la încasare” AFLATE (ANAF / XML), fără alegere; marfa pe contul facturii (371),
+        cartea pe contul ei (6028) -> Validează: confirmarea rămâne, cu „← Înapoi” (nu sare singură); în bază: 371 și 6028 pe linii, în stoc
+        numai marfa."""
+        import time as _t
+        from e2e_bloc_a import _card
+        tag = "E2E418-%d" % _t.time()
+        s = firma_cv["schema"]
+        patron.firma(firma_cv["nume"])
+        pg = patron.pg
+        _card(patron, "facturi", "#fac-primite")
+        pg.click("#fac-primite")
+        cifre = "".join(c for c in sql('SELECT cui FROM "%s".firma_profil WHERE id = 1' % s)[0][0] if c.isdigit())
+        pg.set_input_files("#fp-xml", {"name": "%s.xml" % tag, "mimeType": "text/xml", "buffer": UBL_418.format(
+            numar=tag, data=AZI.isoformat(), client=firma_cv["nume"], cui=cifre).encode("utf-8")})
+        pg.wait_for_function("() => (document.querySelector('#fp-mesaj') || {innerText: ''}).innerText.includes('importat')", timeout=40000)
+        pg.locator(".fac-primita-btn", has_text=tag).click()
+        pg.wait_for_selector("#pr-cont", timeout=20000)
+        patron.captura("detaliu")
+>       assert pg.query_selector("#pr-platitor") is None and pg.query_selector("#pr-furnizor-incasare") is None, "statutul se cere de mână"
+E       AssertionError: statutul se cere de mână
+E       assert (None is None and <JSHandle preview=JSHandle@<select required="" tabindex="-1" data-butoane="" aria-hidden="true" id="pr-furnizor-incasare" class="camp-input alegere-sursa" aria-label="Furnizor cu TVA la încasare">…</select>> is None)
+E        +  where None = query_selector('#pr-platitor')
+E        +    where query_selector = <Page url='http://127.0.0.1:8019/'>.query_selector
+E        +  and   <JSHandle preview=JSHandle@<select required="" tabindex="-1" data-butoane="" aria-hidden="true" id="pr-furnizor-incasare" class="camp-input alegere-sursa" aria-label="Furnizor cu TVA la încasare">…</select>> = query_selector('#pr-furnizor-incasare')
+E        +    where query_selector = <Page url='http://127.0.0.1:8019/'>.query_selector
+
+frontend_test/e2e/e2e_lot92.py:556: AssertionError
+__________ test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei __________
+
+patron = <conftest.Ecran object at 0x796c21f571d0>
+firma_cv = {'tenant_id': 370979, 'schema': 'tenant_9747', 'nume': 'E2E Probă 2221344 SRL', 'cabinet_id': 1968}
+
+    def test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei(patron, firma_cv):
+        """C60 (găsită de Code la 406). Registrul de casă pornea de la zero în fiecare lună: o ridicare de numerar din luna trecută nu era în
+        soldul lunii. Pașii: notă 5311 = 581 de 1.000 lei în luna trecută, validată -> Casă, luna curentă: „sold la început 1.000,00 lei”
+        (și soldurile de pe rânduri pornesc de acolo)."""
+        from e2e_bloc_a import _card
+        from e2e_bloc_e import _nota
+        luna_trecuta = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=10)
+        _nota(firma_cv, luna_trecuta.isoformat(), [{"debit": "5311", "credit": "581", "suma": 1000}], "Ridicare C60", valideaza=True,
+              document_ref="Cec C60")
+        patron.firma(firma_cv["nume"])
+        _card(patron, "casa", "#c-toggle")
+        pg = patron.pg
+        pg.wait_for_selector("#c-sold-inceput", timeout=20000)
+        patron.captura()
+>       assert pg.inner_text("#c-sold-inceput") == "1.000,00 lei"
+E       AssertionError: assert '0,00 lei' == '1.000,00 lei'
+E         
+E         - 1.000,00 lei
+E         ? ----
+E         + 0,00 lei
+
+frontend_test/e2e/e2e_lot92.py:702: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_buc
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_407_avansul_platit_furnizorului_cere_destinatia_si_e_409x
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_414_luna_in_curs_nu_ofera_butonul_care_scrie_nota
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_418_statutul_furnizorului_aflat_contul_pe_linie_si_confirmarea_ramane
+FAILED frontend_test/e2e/e2e_lot92.py::test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei
+10 failed, 17 passed in 263.96s (0:04:23)

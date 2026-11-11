@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.117 · 11 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.118 · 11 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -85,6 +85,9 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 ## 2a. Deschiderea cardurilor: MEREU fereastra (modal), niciodata inline
 - Orice card din grila cabinetului (`.cab-card`) se deschide EXCLUSIV prin `nav.deschide(titlu, corp, opt)` — fereastra overlay cu X.
+- **(v2.118, lotul 17.5-O, AC180)** Ferestrele deschise din cardurile-rezumat ale unui ecran (`siraCarduri(..., { sageataSimpla: true })`; azi ecranul Stocuri) au săgeata fără text, «←»; destinația («Înapoi la <ecranul de dedesubt>») stă în `aria-label` și `title`. Butonul «← Înapoi la …» cu text rămâne numai la ferestrele deschise dintr-un refuz (`dinRefuz`).
+- **(v2.118, lotul 17.5-O, AC143)** Fereastra mică de confirmare (`lat: "mic"`) nu are «←»: renunțarea e «✕» sau «Renunță» (aceeași ieșire din decizie, o singură dată).
+- **(v2.118, lotul 17.5-O, AC108, AC181, AC182)** O acțiune apare o singură dată pe fereastră: fie în rând, fie în bara de jos. «Fluturaș» al fișei salariatului (`#ss-fluturas`) stă numai în bara de jos; în Rapoarte comerciale «Descarcă PDF» e singurul buton principal («Salvează varianta curentă» e secundar); în Suport «Trimite sesizarea» (`#rap-trimite` din `#rap-zona-sesizare`) e mutat în bară, nu dublat. Bara de jos a unei ferestre de export nu se modifică singură după așezare (AC183).
 - INTERZIS ca un card sa se deschida inline in corpul panoului (sa suprascrie `.cab-grila`/`continut`). Un card = o fereastra.
 - Meniurile cu sub-optiuni (ex. Firme, Activitate) sunt tot ferestre: sub-optiunile devin `.meniu-card` in corpul ferestrei, NU un al doilea nivel inline cu breadcrumb.
 - Consecinta: in corpul panoului nu apare breadcrumb ("Panou > X") si nici al doilea rand de sageti. Inchiderea se face din X-ul ferestrei.

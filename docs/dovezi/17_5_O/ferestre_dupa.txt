@@ -1,0 +1,6 @@
+.                                                                        [100%]
+1 passed in 74.92s (0:01:14)
+
+real	1m15.226s
+user	0m4.995s
+sys	0m1.852s

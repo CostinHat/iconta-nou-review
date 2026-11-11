@@ -1155,3 +1155,14 @@ număr → răspuns → captură e în `dovezi/lot12/RETEST_NUMERE_VECHI.md` (30
 | 791 | (auditul pe ecran 06.11.2026, iconta.eu) „Descarcă PDF” este acțiune principală la 8 ferestre. | nerezolvată |  | nefăcută intenționat în 17.1; se repară în 17.2/17.3 |  |
 | 792 | (auditul pe ecran 06.11.2026, iconta.eu) Emite factură: câmpul „Data scadenței” este tăiat și apar două butoane „Renunță”. | nerezolvată |  | nefăcută intenționat în 17.1; se repară în 17.2/17.3 |  |
 | 793 | (auditul pe ecran 06.11.2026, iconta.eu) Acțiunea principală a fișei salariatului este „Descarcă PDF”. | nerezolvată |  | nefăcută intenționat în 17.1; se repară în 17.2 (reparația ei) |  |
+
+## Constatările de audit ale lotului 17.5-O (11.11.2026; numerele din auditul complet, nu din tabelul de mai sus; netul îl stabilește retestul arhitectului)
+- AC080 — lista de articole din Mișcări spunea stocul cu ciornele, Stocuri pe cel validat: acum stocul validat, ciornele separat. Lot 17.5-O.
+- AC081 — Analitică stoc: consum cu «.000 buc» și ABC cu «79.11%»: acum cantitate() și pct(). Lot 17.5-O.
+- AC108 — fișa salariatului avea «Fluturaș» de două ori: acum o singură dată, în bară. Lot 17.5-O.
+- AC143 — fereastra mică de storno avea «←», «✕» și «Renunță»: acum «✕» și «Renunță». Lot 17.5-O.
+- AC180 — săgeata cardului NIR avea text: acum «←» (aria-label și title cu destinația). Lot 17.5-O.
+- AC181 — Rapoarte comerciale avea două butoane principale: acum numai «Descarcă PDF». Lot 17.5-O.
+- AC182 — Suport avea «Trimite sesizarea» de două ori: acum o singură dată, în bară. Lot 17.5-O.
+- AC183 — bara de jos pâlpâia în ferestrele de export: acum stabilă (0 modificări în 1,5 s). Lot 17.5-O.
+

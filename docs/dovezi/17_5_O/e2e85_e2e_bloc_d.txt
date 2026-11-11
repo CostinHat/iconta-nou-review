@@ -1,0 +1,544 @@
+.FFF.........F...F......FFF...FF.........                                [100%]
+=================================== FAILURES ===================================
+____________ test_def_100_nir_respins_are_stare_motiv_si_se_reface _____________
+
+patron = <conftest.Ecran object at 0x75d9114ccbf0>
+firma_cv = {'tenant_id': 370970, 'schema': 'tenant_9738', 'nume': 'E2E Probă 1728661 SRL', 'cabinet_id': 1968}
+
+    def test_def_100_nir_respins_are_stare_motiv_si_se_reface(patron, firma_cv):
+        """100. NIR: NIR-ul respins fără stare și motiv în „NIR-urile lunii”; nu putea fi refăcut.
+        Pașii contabilului: NIR-ul salvat de asistent e respins în coadă cu motiv -> Stocuri -> „NIR-urile lunii”: rândul NIR-ului
+        spune „Respins la validare: <motiv>” și are „Refă NIR-ul”; apăsat, formularul NIR se deschide cu NIR-ul respins de refăcut."""
+        _nir_respins(firma_cv, "D100", "Marfa D100", "lipsește avizul D100")
+        pg = patron.pg
+        _stocuri(patron, firma_cv)
+>       _nirurile_lunii(patron)
+
+frontend_test/e2e/e2e_bloc_d.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_d.py:184: in _nirurile_lunii
+    pg.click(".fereastra:last-of-type [data-card='nir']")
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+frontend_test/e2e/conftest.py:146: in clic
+    return clic_original(self, selector, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x75d91146e930>
+cb = <function Channel.send.<locals>.<lambda> at 0x75d90c93ab60>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type [data-card='nir']")
+E               - locator resolved to <button type="button" data-card="nir" aria-disabled="true" class="card-rezumat card-info" title="Nu e niciun NIR în luna aleasă.">…</button>
+E             - attempting click action
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E               - waiting 20ms
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E                 - waiting 100ms
+E               58 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____ test_def_112_refa_nir_precompleteaza_articolul_fara_zecimale_in_exces _____
+
+patron = <conftest.Ecran object at 0x75d90c92cb30>
+firma_cv = {'tenant_id': 370970, 'schema': 'tenant_9738', 'nume': 'E2E Probă 1728661 SRL', 'cabinet_id': 1968}
+
+    def test_def_112_refa_nir_precompleteaza_articolul_fara_zecimale_in_exces(patron, firma_cv):
+        """112. NIR: la „Refă NIR-ul”, articol neprecompletat; zecimale în exces.
+        Pașii contabilului: NIR respins (Marfa D112, 10 buc × 55 lei) -> Stocuri -> „Refă NIR-ul”: rândul formularului are articolul
+        ales (Marfa D112), cantitatea „10” și prețul „55.00” (nu „10.000” / „55.0000”)."""
+        _nir_respins(firma_cv, "D112", "Marfa D112", "preț greșit D112")
+        pg = patron.pg
+        _stocuri(patron, firma_cv)
+>       _nirurile_lunii(patron)
+
+frontend_test/e2e/e2e_bloc_d.py:266: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_d.py:184: in _nirurile_lunii
+    pg.click(".fereastra:last-of-type [data-card='nir']")
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+frontend_test/e2e/conftest.py:146: in clic
+    return clic_original(self, selector, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x75d91146e930>
+cb = <function Channel.send.<locals>.<lambda> at 0x75d90c938180>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type [data-card='nir']")
+E               - locator resolved to <button type="button" data-card="nir" aria-disabled="true" class="card-rezumat card-info" title="Nu e niciun NIR în luna aleasă.">…</button>
+E             - attempting click action
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E               - waiting 20ms
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E                 - waiting 100ms
+E               58 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+________ test_def_113_nir_respins_si_refacut_o_linie_langa_cel_valabil _________
+
+patron = <conftest.Ecran object at 0x75d90c889df0>
+firma_cv = {'tenant_id': 370970, 'schema': 'tenant_9738', 'nume': 'E2E Probă 1728661 SRL', 'cabinet_id': 1968}
+
+    def test_def_113_nir_respins_si_refacut_o_linie_langa_cel_valabil(patron, firma_cv):
+        """113. NIR: respins și refăcut cu același număr; cel respins primul, card complet.
+        Pașii contabilului: NIR D113 respins -> „Refă NIR-ul” (12 buc) -> salvează -> „NIR-urile lunii”: un singur card „NIR D113”
+        (cel valabil), iar sub el o linie „NIR D113 din … · Respins · înlocuit de NIR nr D113 din …”."""
+        _nir_respins(firma_cv, "D113", "Marfa D113", "cantitate greșită D113")
+>       _refa_din_ecran(patron, firma_cv, "D113", 12)
+
+frontend_test/e2e/e2e_bloc_d.py:301: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_d.py:281: in _refa_din_ecran
+    _nirurile_lunii(ecran)
+frontend_test/e2e/e2e_bloc_d.py:184: in _nirurile_lunii
+    pg.click(".fereastra:last-of-type [data-card='nir']")
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+frontend_test/e2e/conftest.py:146: in clic
+    return clic_original(self, selector, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x75d91146e930>
+cb = <function Channel.send.<locals>.<lambda> at 0x75d910ed3600>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type [data-card='nir']")
+E               - locator resolved to <button type="button" data-card="nir" aria-disabled="true" class="card-rezumat card-info" title="Nu e niciun NIR în luna aleasă.">…</button>
+E             - attempting click action
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E               - waiting 20ms
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E                 - waiting 100ms
+E               58 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____________ test_def_103_salariu_de_la_e_prima_zi_a_lunii_lucrate _____________
+
+patron = <conftest.Ecran object at 0x75d90caf88f0>
+firma_sal = {'tenant_id': 370972, 'schema': 'tenant_9740', 'nume': 'E2E Probă SAL 1863332 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_103_salariu_de_la_e_prima_zi_a_lunii_lucrate(patron, firma_sal):
+        """103. Salarii: „de la” venea cu data de azi.
+        Pașii contabilului: Stat de plată -> „← luna” (luna trecută) -> „Salariu” pe salariat: „de la” e 01 al lunii afișate, nu azi."""
+        _stat(patron, firma_sal, luni_inapoi=1)
+        pg = patron.pg
+        from e2e_lot13_sal_ajutor import buton, deschide_salariat
+        deschide_salariat(patron)
+        buton(patron, "salariu")
+        pg.wait_for_selector(".fereastra:last-of-type #salariu-data", timeout=20000)
+        luna_trecuta = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)
+        val = pg.input_value(".fereastra:last-of-type #salariu-data")
+        patron.captura()
+>       assert val == luna_trecuta.isoformat(), (val, luna_trecuta)
+E       AssertionError: ('2026-09-01', datetime.date(2026, 10, 1))
+E       assert '2026-09-01' == '2026-10-01'
+E         
+E         - 2026-10-01
+E         ?      -
+E         + 2026-09-01
+E         ?       +
+
+frontend_test/e2e/e2e_bloc_d.py:636: AssertionError
+____________ test_def_121_restantele_se_numara_de_la_luna_preluarii ____________
+
+patron = <conftest.Ecran object at 0x75d90caab7d0>
+firma_sal = {'tenant_id': 370972, 'schema': 'tenant_9740', 'nume': 'E2E Probă SAL 1863332 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_121_restantele_se_numara_de_la_luna_preluarii(patron, firma_sal):
+        """121. Control fiscal: restanțe numărate din ianuarie.
+        Pașii contabilului: firma cu salariat din 01/2026, preluată în iConta în luna trecută (Date firmă) -> Control fiscal -> firma:
+        D112 pe lunile dinaintea preluării NU sunt „Restanțe”; stau în grupul „Înainte de preluare în iConta.eu — până la LL/AAAA” (luna
+        dinaintea preluării — deficiența 232)."""
+        _control_firma(patron, firma_sal)
+        g = _grupuri_control(patron)
+        patron.captura()
+        restante = [r for k, v in g.items() if k.startswith("Restanțe") for r in v]
+        inainte = next((v for k, v in g.items() if k.startswith("Înainte de preluare în iConta.eu — până la %s"
+                        % (LUNA_TRECUTA - _dt.timedelta(days=1)).strftime("%m/%Y"))),
+                       None)
+>       assert inainte and any(r.startswith("D112 01/2026") for r in inainte), g
+E       AssertionError: {'Restanțe (1)': ['D112 09/2026 termen 26.10.2026 restanță Marchează depusă în afara iConta.eu'], 'De urmărit (1)': ['... afara iConta.eu', 'D112 05/2026 termen 25.06.2026 înainte de preluare Marchează depusă în afara iConta.eu', ...], ...}
+E       assert (None)
+
+frontend_test/e2e/e2e_bloc_d.py:744: AssertionError
+_____________ test_def_141_inchiderea_lunii_semnaleaza_581_cu_sold _____________
+
+patron = <conftest.Ecran object at 0x75d90c1366c0>
+firma_mf = {'tenant_id': 370973, 'schema': 'tenant_9741', 'nume': 'E2E Probă MF 1892442 SRL', 'cabinet_id': 1968}
+
+    def test_def_141_inchiderea_lunii_semnaleaza_581_cu_sold(patron, firma_mf):
+        """141. Închidere lună: 581 cu sold nenul nesemnalat.
+        Pașii contabilului: Închidere lună -> „← luna” (luna trecută, cu depunerea de 300 lei la bancă înregistrată doar pe partea
+        casei) -> „Semnale”: „contul 581 (viramente interne) are sold 300,00 lei la sfârșitul lunii”."""
+        pg = patron.pg
+        patron.firma(firma_mf["nume"])
+        _deschide(patron, "#fa-inchidere", "Închidere lună")
+        pg.wait_for_selector(".fereastra:last-of-type #il-controale .ds-semnal-text", timeout=30000)
+        pg.click(".fereastra:last-of-type #il-prev")
+>       _asteapta_text(patron, "Luna %s" % LUNA_TRECUTA.strftime("%m/%Y"))
+
+frontend_test/e2e/e2e_bloc_d.py:975: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_d.py:82: in _asteapta_text
+    ecran.pg.wait_for_function("(t) => { const f = [...document.querySelectorAll('.fereastra')].pop(); "
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x75d91146e930>
+cb = <function Channel.send.<locals>.<lambda> at 0x75d90c4b4180>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 20000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+_______________ test_def_126_inchiderea_lunii_are_card_in_zilnic _______________
+
+patron = <conftest.Ecran object at 0x75d906e9f1d0>
+firma_mf = {'tenant_id': 370973, 'schema': 'tenant_9741', 'nume': 'E2E Probă MF 1892442 SRL', 'cabinet_id': 1968}
+
+    def test_def_126_inchiderea_lunii_are_card_in_zilnic(patron, firma_mf):
+        """126. Închidere lună: fără intrare vizibilă; card nou.
+        Pașii contabilului: deschide firma: în grupul „Zilnic” există cardul „Închidere lună”; apăsat, deschide ecranul cu perioada
+        contabilă (controalele, blocarea) și evidența facturilor."""
+        pg = patron.pg
+        patron.firma(firma_mf["nume"])
+        grup = pg.evaluate("() => { const b = document.querySelector('#fa-inchidere'); const s = b && b.closest('section.firme-grup');"
+                           " return s ? s.querySelector('h3').innerText.trim() : null; }")
+>       assert grup.lower() == "zilnic", grup   # [15.1-E5, 733.1] titlul de grup e cu majuscule (CSS)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: TERMENE
+E       assert 'termene' == 'zilnic'
+E         
+E         - zilnic
+E         + termene
+
+frontend_test/e2e/e2e_bloc_d.py:990: AssertionError
+______________ test_def_138_balanta_lunii_are_numai_notele_lunii _______________
+
+asistent = <conftest.Ecran object at 0x75d907c20800>
+firma_mf = {'tenant_id': 370973, 'schema': 'tenant_9741', 'nume': 'E2E Probă MF 1892442 SRL', 'cabinet_id': 1968}
+
+    def test_def_138_balanta_lunii_are_numai_notele_lunii(asistent, firma_mf):
+        """138. Registru jurnal: F2 ca Ana „0 note”, balanța cu rulaje 7.750.
+        Pașii contabilului (asistentul): luna curentă n-are note -> Registru jurnal pe luna curentă: nicio notă -> Balanță de verificare pe
+        luna curentă: rulajul lunii 0,00 (aceleași note ca jurnalul), iar notele lunilor anterioare (800,00 = 200 + 300 aportul + 300
+        depunerea) stau la „Sume precedente”."""
+        pg = asistent.pg
+        asistent.firma(firma_mf["nume"])
+        _deschide(asistent, "#fa-jurnal", "Registru")
+        pg.wait_for_timeout(1500)
+        jurnal = asistent.fereastra()
+>       assert "Amortizare 02/2026 D" not in jurnal and "Depunere numerar D141" not in jurnal, jurnal[:800]
+E       AssertionError: ←
+E         E2E Probă MF 1892442 SRL · CUI 868924489
+E         ›
+E         Registru jurnal
+E         ✕
+E         Registru jurnal ?
+E         
+E         Luna 10/2026 · 1 notă ← luna luna → Generează amortizarea Blochează luna? 
+E         Toate stările
+E         Ciorne (nevalidate)
+E         Validate
+E         La validare în cabinet
+E         Respinse, de corectat
+E         Fără document justificativ
+E         Toate stările
+E         Ciorne (nevalidate)
+E         Validate
+E         La validare în cabinet
+E         Respinse, de corectat
+E         Fără document justificativ
+E         
+E         Nr. crt.	Data	Explicație	Document	Conturi	Sumă (lei)	Stare	Acțiune
+E         3	20.10.2026	Depunere numerar D141	Doc Depunere numerar D141	581 = 5311	300,00	● Validată	Validează Trimite la validare
+E         Note validate în lună
+E         1
+E         Total sume debitoare (note validate)
+E         300,00 lei
+E         Total sume creditoare (note validate)
+E         300,00 lei
+E         + Notă nouă
+E       assert ('Amortizare 02/2026 D' not in '←\nE2E Prob...n+ Notă nouă'
+E         
+E         'Amortizare 02/2026 D' is contained here:
+E           + Notă nouă and 'Depunere numerar D141' not in '←\nE2E Prob...n+ Notă nouă'
+E         
+E         'Depunere numerar D141' is contained here:
+E         ?          	-----
+E           0.10.2026	Depunere numerar D141	Doc Depunere numerar D141	581 = 5311	300,00	● Validată	Validează Trimite la validare
+E         ?          	                     	++++++++++++++++++++++++++
+E           Note validate în lună
+E           1...
+E         
+E         ...Full output truncated (5 lines hidden), use '-vv' to show)
+
+frontend_test/e2e/e2e_bloc_d.py:1008: AssertionError
+____________ test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza _____________
+
+patron = <conftest.Ecran object at 0x75d90caaa8d0>
+firma_gv = {'tenant_id': 370971, 'schema': 'tenant_9739', 'nume': 'E2E Probă GV 1842139 SRL', 'cabinet_id': 1968}
+
+    def test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza(patron, firma_gv):
+        """192. Registru jurnal: notele care vin din NIR și din raportul Z arată „Editează” și „Șterge”, deși serverul le refuză.
+        Pașii: contabilul-șef salvează NIR-ul D192 (fără factură, 2 × 50 lei) -> Registru jurnal: notele NIR-ului (ciorne) n-au
+        „Editează” și n-au „Șterge” (NIR-ul le indică din alt tabel) și spun unde se corectează („în Stoc › NIR-urile lunii”); o notă
+        manuală ciornă are în continuare amândouă -> cererea directă de ștergere a notei NIR e refuzată (serverul, neschimbat)."""
+        tid = firma_gv["tenant_id"]
+        st, r = _api(PATRON, "POST", "/tenants/%d/stocuri/nir" % tid,
+                     {"factura_sosita": False, "numar": "D192", "data": AZI.isoformat(), "furnizor": "Furnizor D192 SRL", "factura_id": None,
+                      "linii": [{"denumire": "Marfa D192", "cantitate": 2, "pret_achizitie": 50, "pret_vanzare": 80, "cota_tva": 21}]})
+        assert st == 200 and r.get("inregistrari"), (st, r)
+        nir_ids = r["inregistrari"]
+        st, m = _api(PATRON, "POST", "/tenants/%d/jurnal" % tid, {"data": AZI.isoformat(), "descriere": "Manuala D192", "document_ref": "D192",
+                                                                "linii": [{"debit": "5311", "credit": "4111", "suma": 10, "partener_nume": "PARTENER PROBA SRL"}]})
+        assert st == 200 and m.get("id"), (st, m)
+        pg = patron.pg
+>       _jurnal(patron, firma_gv)
+
+frontend_test/e2e/e2e_bloc_d.py:1162: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_d.py:1144: in _jurnal
+    ecran.pg.wait_for_selector(".fereastra:last-of-type [data-nota-id]", timeout=30000)
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x75d91146e930>
+cb = <function Channel.send.<locals>.<lambda> at 0x75d90c208040>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type [data-nota-id]") to be visible
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+_________ test_def_104_retrimiterea_notei_neschimbate_cere_confirmare __________
+
+asistent = <conftest.Ecran object at 0x75d906eb3e00>
+firma_gv = {'tenant_id': 370971, 'schema': 'tenant_9739', 'nume': 'E2E Probă GV 1842139 SRL', 'cabinet_id': 1968}
+
+    def test_def_104_retrimiterea_notei_neschimbate_cere_confirmare(asistent, firma_gv):
+        """104. Coadă: retrimiterea unei note identice cu cea respinsă fără avertisment.
+        Pașii contabilului: nota asistentului e respinsă („lipsește contractul D104”) -> asistentul, în Registru jurnal, pe notă
+        „Trimite din nou la validare” fără s-o schimbe -> apare avertismentul „nimic nu s-a schimbat de la respingere”, cu motivul
+        alături, și „Retrimite fără schimbări” -> confirmat, nota e din nou la validare."""
+        nid, _cid = _nota_asistent_respinsa(firma_gv, "Chirie D104", "lipsește contractul D104")
+        pg = asistent.pg
+>       _jurnal(asistent, firma_gv)
+
+frontend_test/e2e/e2e_bloc_d.py:1185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_d.py:1144: in _jurnal
+    ecran.pg.wait_for_selector(".fereastra:last-of-type [data-nota-id]", timeout=30000)
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x75d91146e930>
+cb = <function Channel.send.<locals>.<lambda> at 0x75d90c8b56c0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fereastra:last-of-type [data-nota-id]") to be visible
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_100_nir_respins_are_stare_motiv_si_se_reface
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_112_refa_nir_precompleteaza_articolul_fara_zecimale_in_exces
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_113_nir_respins_si_refacut_o_linie_langa_cel_valabil
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_103_salariu_de_la_e_prima_zi_a_lunii_lucrate
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_121_restantele_se_numara_de_la_luna_preluarii
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_141_inchiderea_lunii_semnaleaza_581_cu_sold
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_126_inchiderea_lunii_are_card_in_zilnic
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_138_balanta_lunii_are_numai_notele_lunii
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_104_retrimiterea_notei_neschimbate_cere_confirmare
+10 failed, 31 passed in 331.72s (0:05:31)

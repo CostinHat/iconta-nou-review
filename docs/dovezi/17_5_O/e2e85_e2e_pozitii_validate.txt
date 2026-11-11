@@ -1,0 +1,112 @@
+F......F....F....                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_pozitie_f004_adauga_firma_cu_datele_de_la_anaf ______________
+
+patron = <conftest.Ecran object at 0x7cf8236ef530>
+
+    def test_pozitie_f004_adauga_firma_cu_datele_de_la_anaf(patron):
+        """F004. Pașii: Firme -> „+ Adaugă firmă” -> CUI-ul firmei: sub câmp „Din ANAF: <denumirea> — verifică…”, iar „Denumire firmă” se
+        completează singură din răspunsul ANAF -> tipul SRL -> „Adaugă firma”: „Firma … a fost creată și apare în listă.”; în profilul firmei
+        noi stau datele aduse de ANAF (CAEN, adresa, nr. registrul comerțului, plătitor de TVA și data înregistrării în scopuri de TVA), iar
+        denumirea ANAF e păstrată lângă cea aleasă. Răspunsul ANAF e al plasei (serviciu extern; `ICONTA_ANAF_SIMULAT`), verificarea rulează
+        pe server, prin `/public/verifica-cui` și prin crearea firmei (`tenant_provisioning.date_din_anaf`)."""
+        pg = patron.pg
+        cui = cui_cu_control(97000000 + int(time.time()) % 999999)
+        den = "%s F004 %s SRL" % (PREFIX_FIRMA, cui)
+>       _anaf_pune(cui, {"denumire": den, "platitor_tva": True, "tva_data_inceput": "2020-02-01", "cod_caen": "6920",
+                         "adresa": "Str. Probei nr. 4, București", "nr_reg_com": "J40/4004/2020", "data_inregistrare": "2020-01-15",
+                         "inactiv": False, "tva_la_incasare": False})
+
+frontend_test/e2e/e2e_pozitii_validate.py:133: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_pozitii_validate.py:58: in _anaf_pune
+    d = os.environ["ICONTA_ANAF_SIMULAT"]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'LESSOPEN': '| /usr/bin/lesspipe %s', 'TMUX': '/tmp/tmux-1000/default,2120,0', 'AI_AGENT': 'claude-code_2-1-3...URRENT_TEST': 'frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f004_adauga_firma_cu_datele_de_la_anaf (call)'})
+key = 'ICONTA_ANAF_SIMULAT'
+
+>   ???
+E   KeyError: 'ICONTA_ANAF_SIMULAT'
+
+<frozen os>:685: KeyError
+__ test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare ___
+
+patron = <conftest.Ecran object at 0x7cf81dc1f290>
+firma_sal = {'tenant_id': 370992, 'schema': 'tenant_9760', 'nume': 'E2E Probă SAL 2919682 SRL', 'cabinet_id': 1968, ...}
+
+    def test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare(patron, firma_sal):
+        """F081. Pașii: Control fiscal -> firma cu salariat din ianuarie 2026: fiecare D112 lunar are pe rând „termen ZZ.LL.AAAA” = ziua de 25
+        a lunii următoare; când ea cade sâmbăta sau duminica, termenul e prima zi lucrătoare de după (cel puțin un rând de felul ăsta:
+        25.04, 25.07 și 25.10.2026 cad în weekend); obligațiile lui noiembrie (25 decembrie) au termenul cel târziu pe 21 decembrie."""
+        _control_firma(patron, firma_sal)
+        pg = patron.pg
+        randuri = pg.eval_on_selector_all(_F + ".cf-decl-item[data-cheie^='d112-']",
+                                          "els => els.map((e) => [e.dataset.cheie, (e.querySelector('.cf-termen') || {textContent: ''})"
+                                          ".textContent.trim()])")
+        patron.captura()
+        assert randuri, patron.fereastra()[:2000]
+        mutate = 0   # termene nominale căzute în weekend, deci mutate: fără niciunul, regula mutării n-ar fi fost probată
+        for cheie, termen in randuri:
+            _tip, an, luna = cheie.split("-")
+            if not luna:
+                continue
+            an, luna = int(an), int(luna)
+            m = re.search(r"termen (\d\d)\.(\d\d)\.(\d{4})", termen)
+            assert m, (cheie, termen)
+            t = _dt.date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+            # CF art.147 alin.(1): angajatorii „sunt obligate să depună lunar, până la data de 25 inclusiv a lunii următoare celei pentru care
+            # se datorează” (anaf_surse/cod_fiscal_227_2015_consolidat.txt)
+            nominala = _dt.date(an + (luna == 12), luna % 12 + 1, 25)
+            if (nominala.month, nominala.day) == (12, 25):
+                # CPF art.155 alin.(2): „termenul de declarare se împlinesc la 25 decembrie, sunt scadente și/sau se declară până la data de
+                # 21 decembrie” (anaf_surse/legea_207_2015_consolidat.txt)
+                assert t <= _dt.date(nominala.year, 12, 21) and t.weekday() < 5, (cheie, t)
+            elif nominala.weekday() >= 5:
+                # CPF art.75 (termenele se calculează potrivit Codului de procedură civilă) + Legea 134/2010 art.181 alin.(2): „Când ultima
+                # zi a unui termen cade într-o zi nelucrătoare, termenul se prelungește până în prima zi lucrătoare care urmează.”
+                assert nominala < t <= nominala + _dt.timedelta(days=4) and t.weekday() < 5, (cheie, nominala, t)
+                mutate += 1
+            elif nominala.month in (4, 5, 6):
+                assert nominala <= t <= nominala + _dt.timedelta(days=4) and t.weekday() < 5, (cheie, nominala, t)   # Paștele / Rusaliile mobile
+            else:
+                assert t == nominala, (cheie, nominala, t)
+>       assert mutate, "niciun D112 cu ziua de 25 în weekend pe ecran (03, 06, 09/2026 o au): %s" % randuri
+E       AssertionError: niciun D112 cu ziua de 25 în weekend pe ecran (03, 06, 09/2026 o au): [['d112-2026-10', 'termen 25.11.2026']]
+E       assert 0
+
+frontend_test/e2e/e2e_pozitii_validate.py:457: AssertionError
+______ test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei _______
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+request = <FixtureRequest for <Function test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei>>
+patron = <conftest.Ecran object at 0x7cf81d177cb0>, fire_curate = None
+
+    def test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei(browser, request, patron, fire_curate):
+        """F072. Pașii: contabilul-șef -> Suport (banda „Raportează”) -> textul sesizării + o captură -> „Trimite”: „Sesizare trimisă.” ->
+        echipa iConta (superadminul) -> Raportări: sesizarea, cu textul -> răspunsul scris -> „Trimite”: răspunsul e în fir -> contabilul-șef
+        redeschide Suport: firul lui spune „răspuns primit”; deschis, arată răspunsul semnat „iConta.eu”, iar răspunsul devine citit.
+        Triajul AI al sesizării e simulat de plasă (escaladează la echipă — `ICONTA_AI_SIMULAT`): sesizarea stă la Raportări, în fila
+        escaladatelor."""
+>       ai_pregateste('{"decizie": "escaladez", "motiv": "proba F072"}')
+
+frontend_test/e2e/e2e_pozitii_validate.py:645: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/conftest.py:276: in ai_pregateste
+    d = os.environ["ICONTA_AI_SIMULAT"]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'LESSOPEN': '| /usr/bin/lesspipe %s', 'TMUX': '/tmp/tmux-1000/default,2120,0', 'AI_AGENT': 'claude-code_2-1-3...'frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei (call)'})
+key = 'ICONTA_AI_SIMULAT'
+
+>   ???
+E   KeyError: 'ICONTA_AI_SIMULAT'
+
+<frozen os>:685: KeyError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f004_adauga_firma_cu_datele_de_la_anaf
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f072_sesizarea_cu_captura_primeste_raspunsul_echipei
+3 failed, 14 passed in 99.91s (0:01:39)

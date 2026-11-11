@@ -1,0 +1,3 @@
+[e2e] aplicația din index pornită pe 8019 în 15s
+FAILED frontend_test/e2e/e2e_lot10b_stoc.py::test_def_401_sub_nota_borderoului_scrie_borderoul_nu_factura
+[e2e] 1 failed, 5 passed in 55.36s (71s; capturi în /tmp/e2e_cap_e2e_lot10b_stoc)

@@ -1,0 +1,589 @@
+........F...........FFFFFFFFFF.                                          [100%]
+=================================== FAILURES ===================================
+___________ test_def_35_iesirea_fara_document_primeste_bon_de_consum ___________
+
+patron = <conftest.Ecran object at 0x7359e966f080>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_35_iesirea_fara_document_primeste_bon_de_consum(patron, firma_e2e):
+        """35. Note automate: notele fără document extern primesc un document intern generat.
+        Pașii contabilului: Stocuri -> „Mișcări, fișe de magazie…” -> articolul -> cantitate 2, fără document -> „Ieșire la CMP”.
+        Nota 607=371 din Registrul jurnal are documentul justificativ „Bon de consum nr N din <azi>” (Legea 82/1991 art.6 alin.(1)),
+        nu „nederivat”."""
+        aid = _articol_cu_stoc(firma_e2e)
+        pg = patron.pg
+        _deschide_firma(patron, firma_e2e["nume"])
+        pg.click("#fa-stocuri")
+        pg.wait_for_selector("#cv-toggle", timeout=20000)
+        pg.click("#cv-toggle")
+        pg.wait_for_selector("#cv-iesire", state="visible", timeout=20000)
+        pg.select_option("#cv-art", str(aid))
+        pg.fill("#cv-data", AZI.isoformat())
+        pg.fill("#cv-cant", "2")
+        pg.fill("#cv-doc", "")
+        pg.click("#cv-iesire")
+        pg.wait_for_function("() => document.body.innerText.includes('Ieșire la CMP')", timeout=20000)
+        n = sql('SELECT id, document_ref FROM "%s".inregistrari WHERE sursa = \'stocuri\' ORDER BY id DESC LIMIT 1' % firma_e2e["schema"])[0]
+        _fereastra_firmei(patron)
+        pg.click("#fa-jurnal")
+        pg.wait_for_selector("#j-nota-noua", timeout=20000)
+>       rand = _deschide_rand(patron, _nota_jn(patron, n[0]))               # [617] liniile și documentul justificativ: în detaliul rândului
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_bloc_b.py:606: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:297: in _deschide_rand
+    tb.wait_for(timeout=20000)
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:20539: in wait_for
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_locator.py:748: in wait_for
+    await self._frame.wait_for_selector(
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e9cd8cc0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 20000ms exceeded.
+E           Call log:
+E             - waiting for locator("tbody.tn-nota[data-nota-id='3']") to be visible
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+______________ test_def_38_fluturasul_nota_si_d112_aceleasi_sume _______________
+
+patron = <conftest.Ecran object at 0x7359e8c87f50>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_38_fluturasul_nota_si_d112_aceleasi_sume(patron, firma_e2e):
+        """38. Salarii: netul de pe fluturaș ≠ nota și D112; 421 nesoldat cu 0,79 lei.
+        Pașii contabilului: salariata cu brut 4.050 lei -> Salariați (statul lunii) -> „Contabilizează statul”. CAS, CASS și impozitul
+        de pe rândul salariatei sunt în lei întregi (rotunjite o dată, aritmetic — cum le declară D112) și sunt EXACT sumele din notă;
+        netul = brut − ele; contul 421 se soldează la ban cu netul fluturașului."""
+        _salariat(firma_e2e)
+        pg = patron.pg
+>       _stat(patron, firma_e2e)
+
+frontend_test/e2e/e2e_bloc_b.py:961: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359ea9e2c00>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____________ test_def_216_nota_salariilor_lunii_in_curs_nu_se_scrie ____________
+
+patron = <conftest.Ecran object at 0x7359eb727230>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_216_nota_salariilor_lunii_in_curs_nu_se_scrie(patron, firma_e2e):
+        """216. Note de salarii contate pe luni neîncheiate (F5 10/2026 ciornă, 11/2026 validată).
+        Pașii: Salariați -> statul lunii CURENTE (neîncheiată) -> „Contabilizează statul”: propunerea se vede, dar în locul lui „Scrie nota
+        ciornă” ecranul spune „Nota salariilor se scrie după ce luna se încheie …”; cererea directă e refuzată; pe luna trecută (încheiată)
+        butonul e acolo."""
+        _salariat(firma_e2e)
+        pg = patron.pg
+        _deschide_firma(patron, firma_e2e["nume"])
+        pg.click("#fa-salariati")
+        pg.wait_for_selector("#sp-contare", timeout=30000)
+        _propunere(patron)
+        zona = pg.inner_text("#sp-contare-zona")
+        patron.captura("luna_curenta")
+>       assert pg.query_selector("#sp-contare-scrie") is None and "Nota salariilor se scrie după ce luna se încheie" in zona, zona[-600:]
+E       AssertionError: SAL 10/2026 — 5 linii, total 6.614,00 lei
+E         Contul 421 se soldează exact cu netul fluturașilor (2.791,00 lei). CAS, CASS, impozitul și CAM sunt cele declarate în D112.
+E         Debit	Credit	Sumă
+E         421	4315	1.163,00
+E         421	4316	465,00
+E         421	444	231,00
+E         641	421	4.650,00
+E         646	436	105,00
+E         5 rânduri
+E         
+E         Ciornă, nu validată: validării îi rămâne al doilea om.
+E       assert (<JSHandle preview=JSHandle@node> is None)
+E        +  where <JSHandle preview=JSHandle@node> = query_selector('#sp-contare-scrie')
+E        +    where query_selector = <Page url='http://127.0.0.1:8019/'>.query_selector
+
+frontend_test/e2e/e2e_bloc_b.py:1020: AssertionError
+_______________ test_def_204_titlul_fluturasului_are_diacritice ________________
+
+patron = <conftest.Ecran object at 0x7359ee39e300>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_204_titlul_fluturasului_are_diacritice(patron, firma_e2e):
+        """204. Fluturașul: titlul „Fluturas” fără diacritice.
+        Pașii: Salariați -> „Fluturaș”: PDF-ul are titlul „Fluturaș de salariu — LL/AAAA”."""
+>       text = _text_fluturas(patron, firma_e2e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_bloc_b.py:1033: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:993: in _text_fluturas
+    _stat(patron, firma)
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e95b4cc0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+________________ test_def_206_facilitatea_numai_cand_se_aplica _________________
+
+patron = <conftest.Ecran object at 0x7359e9f47ef0>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_206_facilitatea_numai_cand_se_aplica(patron, firma_e2e):
+        """206. Fluturașul: rândul „Facilitate salariu minim … 0,00” apare și când nu se aplică.
+        Pașii: salariata cu brut 4.650 lei (peste plafonul facilității) -> Salariați -> „Fluturaș”: PDF-ul NU are rândul „Facilitate
+        salariu minim”; CAS și salariul net sunt pe el."""
+>       text = _text_fluturas(patron, firma_e2e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_bloc_b.py:1041: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:993: in _text_fluturas
+    _stat(patron, firma)
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e95b4e00>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+___________ test_def_39_mesajul_spune_ce_a_verificat_fara_toleranta ____________
+
+patron = <conftest.Ecran object at 0x7359e95eb680>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_39_mesajul_spune_ce_a_verificat_fara_toleranta(patron, firma_e2e):
+        """39. Salarii: mesajul „coincide în limita de toleranță” acoperea fals diferența.
+        Pașii contabilului: „Contabilizează statul” pe o lună care se soldează: mesajul spune ce s-a verificat („Contul 421 se soldează
+        exact cu netul fluturașilor (X lei)”, X = netul de pe rândul salariatei), fără „toleranță”."""
+        _salariat(firma_e2e)
+        pg = patron.pg
+>       _stat(patron, firma_e2e)
+
+frontend_test/e2e/e2e_bloc_b.py:1052: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e9be2020>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+_______________ test_def_49_nota_de_salarii_pe_ultima_zi_a_lunii _______________
+
+ana = <conftest.Ecran object at 0x7359e9b5f410>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_49_nota_de_salarii_pe_ultima_zi_a_lunii(ana, firma_e2e):
+        """49. Salarii: nota datată în ziua 28; trebuie ultima zi a lunii.
+        Pașii: Ana -> Salariați -> „Contabilizează statul” -> „Scrie nota ciornă”. În Registrul jurnal nota „Salariile lunii LL/AAAA”
+        are data ultimei zile a lunii (31.10.2026 pentru octombrie)."""
+        import calendar
+        _salariat(firma_e2e)
+        pg = ana.pg
+>       _stat(ana, firma_e2e)
+
+frontend_test/e2e/e2e_bloc_b.py:1070: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e929b2e0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+______________ test_def_55_titlul_notei_de_salarii_fara_repetitie ______________
+
+ana = <conftest.Ecran object at 0x7359e921f170>
+patron = <conftest.Ecran object at 0x7359e920f080>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_55_titlul_notei_de_salarii_fara_repetitie(ana, patron, firma_e2e):
+        """55. Salarii: titlul notei se repeta („Stat de plata · Stat de plată”).
+        Pașii: nota de salarii scrisă de Ana (49) -> contabilul-șef deschide „De validat”: titlul ei e „Notă · Salariile lunii LL/AAAA
+        · Stat de plată nr … din …” — statul de plată apare o singură dată."""
+        _salariat(firma_e2e)
+        if not sql('SELECT 1 FROM "%s".inregistrari WHERE sursa = \'salarii\'' % firma_e2e["schema"]):
+            pg = ana.pg
+>           _stat(ana, firma_e2e)
+
+frontend_test/e2e/e2e_bloc_b.py:1097: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e959e840>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+___________ test_def_40_ciorna_de_salarii_a_anei_ajunge_la_validare ____________
+
+ana = <conftest.Ecran object at 0x7359e900e060>
+patron = <conftest.Ecran object at 0x7359e920fb00>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_40_ciorna_de_salarii_a_anei_ajunge_la_validare(ana, patron, firma_e2e):
+        """40. Salarii: ciorna Anei invizibilă (contor 0, fără notificare, fără buton de validare).
+        Pașii: Ana scrie nota de salarii din stat -> statul îi spune „e la validare în cabinet”. Contabilul-șef: cardul numără „note de
+        validat”, clopoțelul are „Notă pregătită, de validat: … Salariile lunii …”, iar „De validat” arată nota cu „Validează” și
+        „Respinge”."""
+        _salariat(firma_e2e)
+        pg = ana.pg
+>       _stat(ana, firma_e2e)
+
+frontend_test/e2e/e2e_bloc_b.py:1119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e91bca40>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____________ test_def_63_fraza_despre_diferente_numai_cu_diferente _____________
+
+patron = <conftest.Ecran object at 0x7359e8a3a540>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_63_fraza_despre_diferente_numai_cu_diferente(patron, firma_e2e):
+        """63. Salarii: textul „Semnalul… cât timp cifrele diferă” apărea și când nu difereau.
+        Pașii contabilului: nota de salarii a lunii există -> „Contabilizează statul”: nota și declarația au aceleași cifre, deci nu
+        apare nicio frază despre diferențe care „rămân afișate”."""
+        _salariat(firma_e2e)
+        if not sql('SELECT 1 FROM "%s".inregistrari WHERE sursa = \'salarii\'' % firma_e2e["schema"]):
+            pg = patron.pg
+>           _stat(patron, firma_e2e)
+
+frontend_test/e2e/e2e_bloc_b.py:1156: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e978d120>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____________ test_def_57_respingerea_se_vede_pe_stat_la_deschidere _____________
+
+ana = <conftest.Ecran object at 0x7359e9aeca40>
+patron = <conftest.Ecran object at 0x7359ea0d3500>
+firma_e2e = {'tenant_id': 370967, 'schema': 'tenant_9735', 'nume': 'E2E Probă 994464 SRL', 'cabinet_id': 1968, ...}
+
+    def test_def_57_respingerea_se_vede_pe_stat_la_deschidere(ana, patron, firma_e2e):
+        """57. Salarii: respingerea apărea pe stat abia după „Contabilizează statul”.
+        Pașii: nota de salarii a Anei la validare -> contabilul-șef o respinge cu motiv -> Ana deschide Salariați: statul arată, fără
+        niciun clic, „Nota de salarii nr. crt. N din ZZ.LL.AAAA a fost respinsă la validare: <motiv>”."""
+        _salariat(firma_e2e)
+        nid = sql('SELECT id FROM "%s".inregistrari WHERE sursa = \'salarii\' ORDER BY id DESC LIMIT 1' % firma_e2e["schema"])
+        if not nid or (_coada_nota(firma_e2e, nid[0][0]) or (None, None))[1] != "la_senior":
+            pg = ana.pg
+>           _stat(ana, firma_e2e)
+
+frontend_test/e2e/e2e_bloc_b.py:1177: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/e2e_bloc_b.py:932: in _stat
+    e.pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:12761: in wait_for_function
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:1151: in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:940: in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x7359eea6ce90>
+cb = <function Channel.send.<locals>.<lambda> at 0x7359e97bad40>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 30000ms exceeded.
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_35_iesirea_fara_document_primeste_bon_de_consum
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_38_fluturasul_nota_si_d112_aceleasi_sume
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_216_nota_salariilor_lunii_in_curs_nu_se_scrie
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_204_titlul_fluturasului_are_diacritice
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_206_facilitatea_numai_cand_se_aplica
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_39_mesajul_spune_ce_a_verificat_fara_toleranta
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_49_nota_de_salarii_pe_ultima_zi_a_lunii
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_55_titlul_notei_de_salarii_fara_repetitie
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_40_ciorna_de_salarii_a_anei_ajunge_la_validare
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_63_fraza_despre_diferente_numai_cu_diferente
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_57_respingerea_se_vede_pe_stat_la_deschidere
+11 failed, 20 passed in 431.11s (0:07:11)

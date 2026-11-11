@@ -1,0 +1,5 @@
+[e2e] aplicația din index pornită pe 8019 în 15s
+FAILED frontend_test/e2e/e2e_bloc_c.py::test_def_96_raportul_z_nu_se_valideaza_fara_descarcare
+FAILED frontend_test/e2e/e2e_bloc_c.py::test_def_90_confirmarea_notei_la_validare_e_vizibila
+FAILED frontend_test/e2e/e2e_bloc_c.py::test_def_81_nota_de_salarii_respinsa_se_reface_din_stat
+[e2e] 3 failed, 35 passed in 302.83s (0:05:02) (318s; capturi în /tmp/e2e_cap_e2e_bloc_c)

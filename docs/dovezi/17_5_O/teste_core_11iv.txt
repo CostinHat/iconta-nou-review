@@ -1,0 +1,458 @@
+.F...................FFFFFFFFFFFFFFFF..................................F [ 92%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+_______________ test_tiparele_de_secrete_dau_exact_lista_inchisa _______________
+
+    def test_tiparele_de_secrete_dau_exact_lista_inchisa():
+        """Treapta 2. Pe codul de dinainte: `f1_helper.py` și `proba_f1_etape12.py` (`PAROLA = "…"`) și cele trei seed-uri
+        (`CAB_PAROLA = "…"`) ar fi apărut aici ca intrări nedeclarate."""
+        tipare = {n: re.compile(t) for n, t, _d in ss.TIPARE if n in _TIPARE}
+        assert set(tipare) == set(_TIPARE), "scannerul nu mai are tiparele: %s" % (set(_TIPARE) - set(tipare))
+        gasit = Counter()
+        for f in _urmarite():
+            t = _text(f)
+            if t is None:
+                continue
+            for n, rx in tipare.items():
+                k = len(rx.findall(t))
+                if k:
+                    gasit[(f, n)] = k
+        declarat = {k: v[0] for k, v in _PERMISE.items()}
+        noi = sorted("%s [%s] x%d" % (f, n, k) for (f, n), k in gasit.items() if declarat.get((f, n)) != k)
+        disparute = sorted("%s [%s] (declarat %d, găsit %d)" % (f, n, v, gasit.get((f, n), 0))
+                           for (f, n), v in declarat.items() if gasit.get((f, n), 0) != v)
+>       assert not noi and not disparute, (
+            "secrete posibile în fișiere urmărite, nedeclarate:\n  %s\nintrări din lista închisă care nu mai corespund:\n  %s\n"
+            "O parolă de probă se citește din ~/.iconta (vezi frontend_test/cont_test.py), nu se scrie în cod."
+            % ("\n  ".join(noi) or "—", "\n  ".join(disparute) or "—"))
+E       AssertionError: secrete posibile în fișiere urmărite, nedeclarate:
+E           scripts/baza_test.sh [PGPASSWORD] x1
+E           scripts/calibreaza_16_1_C3.py [PGPASSWORD] x1
+E           scripts/porneste_8019.sh [PGPASSWORD] x1
+E         intrări din lista închisă care nu mai corespund:
+E           —
+E         O parolă de probă se citește din ~/.iconta (vezi frontend_test/cont_test.py), nu se scrie în cod.
+E       assert (not ['scripts/baza_test.sh [PGPASSWORD] x1', 'scripts/calibreaza_16_1_C3.py [PGPASSWORD] x1', 'scripts/porneste_8019.sh [PGPASSWORD] x1'])
+
+core/test_fara_secrete_in_git.py:153: AssertionError
+____________________ test_verde_scrie_verdictul_commitului _____________________
+
+depozit = PosixPath('/tmp/pytest-of-costin/pytest-2508/test_verde_scrie_verdictul_com0/r')
+
+    def test_verde_scrie_verdictul_commitului(depozit):
+        d = depozit
+        sha = _git(d, "rev-parse", "HEAD")
+        cod, iesire = _lanseaza(d, 0)
+>       assert (cod, iesire.count("[proba] poarta-suita")) == (0, 1), iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_verde_scrie_verdictul_com0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2, 0) == (0, 1)
+E         
+E         At index 0 diff: 2 != 0
+E         Use -v to get more diff
+
+core/test_poarta_lot.py:67: AssertionError
+___________________ test_acelasi_sha_verde_nu_se_mai_ruleaza ___________________
+
+depozit = PosixPath('/tmp/pytest-of-costin/pytest-2508/test_acelasi_sha_verde_nu_se_m0/r')
+
+    def test_acelasi_sha_verde_nu_se_mai_ruleaza(depozit):
+        d = depozit
+>       assert _lanseaza(d, 0)[0] == 0
+E       assert 2 == 0
+
+core/test_poarta_lot.py:73: AssertionError
+_____________________ test_rularile_continua_pana_la_verde _____________________
+
+depozit = PosixPath('/tmp/pytest-of-costin/pytest-2508/test_rularile_continua_pana_la0/r')
+
+    def test_rularile_continua_pana_la_verde(depozit):
+        """Regula 3d (comanda Costin 11.2, 22.10.2026; supersedează „maximum două rulări pe lot”, 15.10.2026): roșu -> reparație -> roșu ->
+        reparație -> verde; fiecare commit nou pornește poarta, fără limită de rulări."""
+        d = depozit
+>       assert _lanseaza(d, 1)[0] == 1
+E       assert 2 == 1
+
+core/test_poarta_lot.py:83: AssertionError
+_______________________ test_acelasi_sha_rosu_nu_se_reia _______________________
+
+depozit = PosixPath('/tmp/pytest-of-costin/pytest-2508/test_acelasi_sha_rosu_nu_se_re0/r')
+
+    def test_acelasi_sha_rosu_nu_se_reia(depozit):
+        """Regula 3d: pe roșu se repară CODUL; aceeași rulare pe același commit nu repară nimic (și ar trece un test instabil pe noroc)."""
+        d = depozit
+>       assert _lanseaza(d, 1)[0] == 1
+E       assert 2 == 1
+
+core/test_poarta_lot.py:95: AssertionError
+________________________ test_arborele_murdar_e_refuzat ________________________
+
+depozit = PosixPath('/tmp/pytest-of-costin/pytest-2508/test_arborele_murdar_e_refuzat0/r')
+
+    def test_arborele_murdar_e_refuzat(depozit):
+        d = depozit
+        (d / "nou.py").write_text("x = 1\n")
+        cod, iesire = _lanseaza(d, 0)
+>       assert cod == 1 and iesire.count("[proba] poarta-suita") == 0 and iesire.count("    ?? nou.py") == 1, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_arborele_murdar_e_refuzat0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:105: AssertionError
+____________________________ test_pe_main_e_refuzat ____________________________
+
+depozit = PosixPath('/tmp/pytest-of-costin/pytest-2508/test_pe_main_e_refuzat0/r')
+
+    def test_pe_main_e_refuzat(depozit):
+        d = depozit
+        _git(d, "checkout", "-q", "main")
+        cod, iesire = _lanseaza(d, 0)
+>       assert cod == 1 and iesire.count("[proba] poarta-suita") == 0, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_pe_main_e_refuzat0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:113: AssertionError
+____ test_compus_verde_reruleaza_cazutele_lui_x_plus_perimetrul_reparatiei _____
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab9e2120>
+
+    def test_compus_verde_reruleaza_cazutele_lui_x_plus_perimetrul_reparatiei(depozit_poarta):
+        """Rularea completă a lui X cade pe `core/test_c.py::test_trei` și pe `e2e_x.py::test_e`; reparația atinge `core/a.py`. Compusul
+        rulează EXACT: pytest pe perimetrul reparației (`core/test_a.py`) + nodul căzut, plasa pe nodul căzut (din index, fără `--arbore`),
+        prospețimea, verificatorul, cifrele — și scrie `VERDE <H> <ramura> <data> compus:<X>` + înregistrarea lui H.
+        MUTAȚIE: căzutele lui X scoase din selecție (`pytest_sel = list(teste)`) -> pică; sufixul `compus:` scos din `poarta_lot.sh` -> pică."""
+        dp = depozit_poarta
+>       x = _rosu_complet(dp)
+            ^^^^^^^^^^^^^^^^^
+
+core/test_poarta_lot.py:246: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dp = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab9e2120>
+proba = {'pytest': 'core/test_c.py::test_trei', 'plasa': 'e2e_x.py::test_e'}
+
+    def _rosu_complet(dp, **proba):
+        """O rulare COMPLETĂ roșie pe HEAD (X): `pytest` și plasa cad pe câte un nod, dacă nu se spune altfel."""
+        proba = proba or {"pytest": "core/test_c.py::test_trei", "plasa": "e2e_x.py::test_e"}
+        x = dp.git("rev-parse", "HEAD")
+        cod, iesire = dp.lanseaza(**proba)
+>       assert cod == 1 and dp.verdicte()[-1][:3] == ["ROSU", x, "lucru/lot9"] and len(dp.verdicte()[-1]) == 4, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_verde_reruleaza_ca0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:236: AssertionError
+______________________ test_compus_rosu_scrie_rosu_compus ______________________
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab73d550>
+
+    def test_compus_rosu_scrie_rosu_compus(depozit_poarta):
+        """Rerularea țintită pică (nodul lui X tot cade) -> `ROSU <H> <ramura> <data> compus:<X>`, exit nenul. MUTAȚIE: exit-ul compusului
+        ignorat în `poarta_lot.sh` (`RC=0` după `poarta_scurta.py --compus`) -> pică."""
+        dp = depozit_poarta
+>       x = _rosu_complet(dp)
+            ^^^^^^^^^^^^^^^^^
+
+core/test_poarta_lot.py:269: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dp = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab73d550>
+proba = {'pytest': 'core/test_c.py::test_trei', 'plasa': 'e2e_x.py::test_e'}
+
+    def _rosu_complet(dp, **proba):
+        """O rulare COMPLETĂ roșie pe HEAD (X): `pytest` și plasa cad pe câte un nod, dacă nu se spune altfel."""
+        proba = proba or {"pytest": "core/test_c.py::test_trei", "plasa": "e2e_x.py::test_e"}
+        x = dp.git("rev-parse", "HEAD")
+        cod, iesire = dp.lanseaza(**proba)
+>       assert cod == 1 and dp.verdicte()[-1][:3] == ["ROSU", x, "lucru/lot9"] and len(dp.verdicte()[-1]) == 4, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_rosu_scrie_rosu_co0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:236: AssertionError
+_________ test_compus_fara_rulare_completa_rosie_e_refuzat[verdicte0] __________
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab73cb30>
+verdicte = []
+
+    @pytest.mark.parametrize("verdicte", [[], ["VERDE"]])
+    def test_compus_fara_rulare_completa_rosie_e_refuzat(depozit_poarta, verdicte):
+        """Fără o rulare COMPLETĂ ROȘIE pe ramură (nicio rulare / numai una verde) nu are din ce se compune: refuz, niciun verdict nou,
+        nicio unealtă pornită. MUTAȚIE: refuzul `[ -z "$X" ]` scos din `poarta_lot.sh` -> pică."""
+        dp = depozit_poarta
+        if verdicte:
+            assert dp.lanseaza()[0] == 0
+            dp.comite("core/a.py", "X = 2\n")
+        inainte = dp.verdicte()
+        cod, iesire = dp.lanseaza("--compus")
+>       assert cod == 1 and iesire.count("cere o rulare COMPLETA ROSIE anterioara") == 1, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_fara_rulare_comple0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:288: AssertionError
+_________ test_compus_fara_rulare_completa_rosie_e_refuzat[verdicte1] __________
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab73e8d0>
+verdicte = ['VERDE']
+
+    @pytest.mark.parametrize("verdicte", [[], ["VERDE"]])
+    def test_compus_fara_rulare_completa_rosie_e_refuzat(depozit_poarta, verdicte):
+        """Fără o rulare COMPLETĂ ROȘIE pe ramură (nicio rulare / numai una verde) nu are din ce se compune: refuz, niciun verdict nou,
+        nicio unealtă pornită. MUTAȚIE: refuzul `[ -z "$X" ]` scos din `poarta_lot.sh` -> pică."""
+        dp = depozit_poarta
+        if verdicte:
+>           assert dp.lanseaza()[0] == 0
+E           assert 2 == 0
+
+core/test_poarta_lot.py:284: AssertionError
+_ test_compus_refuzat_pe_perimetru_nesigur[main.py-# atins\n-main.py \u2014 rutele sunt citite de scanere] _
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab9e2d50>
+atins = 'main.py', cont = '# atins\n'
+motiv = 'main.py — rutele sunt citite de scanere'
+
+    @pytest.mark.parametrize("atins,cont,motiv", [
+        ("main.py", "# atins\n", "main.py — rutele sunt citite de scanere"),
+        ("scripts/e2e_poarta.py", "# atins\n", "plasa atinsă integral"),
+        ("core/nou.py", "Z = 1\n", "core/nou.py — fisier Python adaugat"),
+        ("NOTE.txt", "x\n", "NOTE.txt — niciun test nu-l numește"),
+    ])
+    def test_compus_refuzat_pe_perimetru_nesigur(depozit_poarta, atins, cont, motiv):
+        """Perimetrul reparației nu se poate închide (`main.py`, plasa atinsă integral, un `.py` nou, un fișier pe care nu-l numește niciun
+        test) -> REFUZ cu motivul, exit 2, niciun verdict pentru H, niciun test rulat: se rulează poarta completă.
+        MUTAȚIE: `motive += incerte` scos din `plan_compus` -> pică (cazurile `main.py`, `core/nou.py`)."""
+        dp = depozit_poarta
+>       _rosu_complet(dp)
+
+core/test_poarta_lot.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dp = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab9e2d50>
+proba = {'pytest': 'core/test_c.py::test_trei', 'plasa': 'e2e_x.py::test_e'}
+
+    def _rosu_complet(dp, **proba):
+        """O rulare COMPLETĂ roșie pe HEAD (X): `pytest` și plasa cad pe câte un nod, dacă nu se spune altfel."""
+        proba = proba or {"pytest": "core/test_c.py::test_trei", "plasa": "e2e_x.py::test_e"}
+        x = dp.git("rev-parse", "HEAD")
+        cod, iesire = dp.lanseaza(**proba)
+>       assert cod == 1 and dp.verdicte()[-1][:3] == ["ROSU", x, "lucru/lot9"] and len(dp.verdicte()[-1]) == 4, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_refuzat_pe_perimet0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:236: AssertionError
+_ test_compus_refuzat_pe_perimetru_nesigur[scripts/e2e_poarta.py-# atins\n-plasa atins\u0103 integral] _
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab731580>
+atins = 'scripts/e2e_poarta.py', cont = '# atins\n'
+motiv = 'plasa atinsă integral'
+
+    @pytest.mark.parametrize("atins,cont,motiv", [
+        ("main.py", "# atins\n", "main.py — rutele sunt citite de scanere"),
+        ("scripts/e2e_poarta.py", "# atins\n", "plasa atinsă integral"),
+        ("core/nou.py", "Z = 1\n", "core/nou.py — fisier Python adaugat"),
+        ("NOTE.txt", "x\n", "NOTE.txt — niciun test nu-l numește"),
+    ])
+    def test_compus_refuzat_pe_perimetru_nesigur(depozit_poarta, atins, cont, motiv):
+        """Perimetrul reparației nu se poate închide (`main.py`, plasa atinsă integral, un `.py` nou, un fișier pe care nu-l numește niciun
+        test) -> REFUZ cu motivul, exit 2, niciun verdict pentru H, niciun test rulat: se rulează poarta completă.
+        MUTAȚIE: `motive += incerte` scos din `plan_compus` -> pică (cazurile `main.py`, `core/nou.py`)."""
+        dp = depozit_poarta
+>       _rosu_complet(dp)
+
+core/test_poarta_lot.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dp = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab731580>
+proba = {'pytest': 'core/test_c.py::test_trei', 'plasa': 'e2e_x.py::test_e'}
+
+    def _rosu_complet(dp, **proba):
+        """O rulare COMPLETĂ roșie pe HEAD (X): `pytest` și plasa cad pe câte un nod, dacă nu se spune altfel."""
+        proba = proba or {"pytest": "core/test_c.py::test_trei", "plasa": "e2e_x.py::test_e"}
+        x = dp.git("rev-parse", "HEAD")
+        cod, iesire = dp.lanseaza(**proba)
+>       assert cod == 1 and dp.verdicte()[-1][:3] == ["ROSU", x, "lucru/lot9"] and len(dp.verdicte()[-1]) == 4, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_refuzat_pe_perimet1/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:236: AssertionError
+_ test_compus_refuzat_pe_perimetru_nesigur[core/nou.py-Z = 1\n-core/nou.py \u2014 fisier Python adaugat] _
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab7314c0>
+atins = 'core/nou.py', cont = 'Z = 1\n'
+motiv = 'core/nou.py — fisier Python adaugat'
+
+    @pytest.mark.parametrize("atins,cont,motiv", [
+        ("main.py", "# atins\n", "main.py — rutele sunt citite de scanere"),
+        ("scripts/e2e_poarta.py", "# atins\n", "plasa atinsă integral"),
+        ("core/nou.py", "Z = 1\n", "core/nou.py — fisier Python adaugat"),
+        ("NOTE.txt", "x\n", "NOTE.txt — niciun test nu-l numește"),
+    ])
+    def test_compus_refuzat_pe_perimetru_nesigur(depozit_poarta, atins, cont, motiv):
+        """Perimetrul reparației nu se poate închide (`main.py`, plasa atinsă integral, un `.py` nou, un fișier pe care nu-l numește niciun
+        test) -> REFUZ cu motivul, exit 2, niciun verdict pentru H, niciun test rulat: se rulează poarta completă.
+        MUTAȚIE: `motive += incerte` scos din `plan_compus` -> pică (cazurile `main.py`, `core/nou.py`)."""
+        dp = depozit_poarta
+>       _rosu_complet(dp)
+
+core/test_poarta_lot.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dp = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab7314c0>
+proba = {'pytest': 'core/test_c.py::test_trei', 'plasa': 'e2e_x.py::test_e'}
+
+    def _rosu_complet(dp, **proba):
+        """O rulare COMPLETĂ roșie pe HEAD (X): `pytest` și plasa cad pe câte un nod, dacă nu se spune altfel."""
+        proba = proba or {"pytest": "core/test_c.py::test_trei", "plasa": "e2e_x.py::test_e"}
+        x = dp.git("rev-parse", "HEAD")
+        cod, iesire = dp.lanseaza(**proba)
+>       assert cod == 1 and dp.verdicte()[-1][:3] == ["ROSU", x, "lucru/lot9"] and len(dp.verdicte()[-1]) == 4, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_refuzat_pe_perimet2/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:236: AssertionError
+_ test_compus_refuzat_pe_perimetru_nesigur[NOTE.txt-x\n-NOTE.txt \u2014 niciun test nu-l nume\u0219te] _
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab9e7800>
+atins = 'NOTE.txt', cont = 'x\n', motiv = 'NOTE.txt — niciun test nu-l numește'
+
+    @pytest.mark.parametrize("atins,cont,motiv", [
+        ("main.py", "# atins\n", "main.py — rutele sunt citite de scanere"),
+        ("scripts/e2e_poarta.py", "# atins\n", "plasa atinsă integral"),
+        ("core/nou.py", "Z = 1\n", "core/nou.py — fisier Python adaugat"),
+        ("NOTE.txt", "x\n", "NOTE.txt — niciun test nu-l numește"),
+    ])
+    def test_compus_refuzat_pe_perimetru_nesigur(depozit_poarta, atins, cont, motiv):
+        """Perimetrul reparației nu se poate închide (`main.py`, plasa atinsă integral, un `.py` nou, un fișier pe care nu-l numește niciun
+        test) -> REFUZ cu motivul, exit 2, niciun verdict pentru H, niciun test rulat: se rulează poarta completă.
+        MUTAȚIE: `motive += incerte` scos din `plan_compus` -> pică (cazurile `main.py`, `core/nou.py`)."""
+        dp = depozit_poarta
+>       _rosu_complet(dp)
+
+core/test_poarta_lot.py:303: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dp = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab9e7800>
+proba = {'pytest': 'core/test_c.py::test_trei', 'plasa': 'e2e_x.py::test_e'}
+
+    def _rosu_complet(dp, **proba):
+        """O rulare COMPLETĂ roșie pe HEAD (X): `pytest` și plasa cad pe câte un nod, dacă nu se spune altfel."""
+        proba = proba or {"pytest": "core/test_c.py::test_trei", "plasa": "e2e_x.py::test_e"}
+        x = dp.git("rev-parse", "HEAD")
+        cod, iesire = dp.lanseaza(**proba)
+>       assert cod == 1 and dp.verdicte()[-1][:3] == ["ROSU", x, "lucru/lot9"] and len(dp.verdicte()[-1]) == 4, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_refuzat_pe_perimet3/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:236: AssertionError
+__________________ test_compus_refuzat_pe_x_care_nu_e_stramos __________________
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab73d220>
+
+    def test_compus_refuzat_pe_x_care_nu_e_stramos(depozit_poarta):
+        """Ultima rulare completă roșie e pe un X scos din istoria ramurii (reset) -> reparația nu pornește din ea: REFUZ, niciun verdict.
+        MUTAȚIE: verificarea `merge-base --is-ancestor` scoasă din `plan_compus` -> pică."""
+        dp = depozit_poarta
+        baza = dp.git("rev-parse", "HEAD")
+        dp.comite("core/b.py", "Y = 2\n", "x")
+>       x = _rosu_complet(dp)
+            ^^^^^^^^^^^^^^^^^
+
+core/test_poarta_lot.py:317: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dp = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab73d220>
+proba = {'pytest': 'core/test_c.py::test_trei', 'plasa': 'e2e_x.py::test_e'}
+
+    def _rosu_complet(dp, **proba):
+        """O rulare COMPLETĂ roșie pe HEAD (X): `pytest` și plasa cad pe câte un nod, dacă nu se spune altfel."""
+        proba = proba or {"pytest": "core/test_c.py::test_trei", "plasa": "e2e_x.py::test_e"}
+        x = dp.git("rev-parse", "HEAD")
+        cod, iesire = dp.lanseaza(**proba)
+>       assert cod == 1 and dp.verdicte()[-1][:3] == ["ROSU", x, "lucru/lot9"] and len(dp.verdicte()[-1]) == 4, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_refuzat_pe_x_care_0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:236: AssertionError
+___________ test_compus_refuzat_cand_cazutele_lui_x_nu_se_pot_numara ___________
+
+depozit_poarta = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab73df70>
+
+    def test_compus_refuzat_cand_cazutele_lui_x_nu_se_pot_numara(depozit_poarta):
+        """Plasa a căzut în X fără listă (aplicația n-a pornit: nimic de rerulat pe nume) -> nu se știe ce a căzut: REFUZ.
+        MUTAȚIE: verificarea `cazute_complete` scoasă din `plan_compus` -> compusul trece -> pică."""
+        dp = depozit_poarta
+>       x = _rosu_complet(dp, plasa_fara_rezumat="1")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+core/test_poarta_lot.py:329: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dp = <core.test_poarta_lot.DepozitPoarta object at 0x7c6cab73df70>
+proba = {'plasa_fara_rezumat': '1'}
+
+    def _rosu_complet(dp, **proba):
+        """O rulare COMPLETĂ roșie pe HEAD (X): `pytest` și plasa cad pe câte un nod, dacă nu se spune altfel."""
+        proba = proba or {"pytest": "core/test_c.py::test_trei", "plasa": "e2e_x.py::test_e"}
+        x = dp.git("rev-parse", "HEAD")
+        cod, iesire = dp.lanseaza(**proba)
+>       assert cod == 1 and dp.verdicte()[-1][:3] == ["ROSU", x, "lucru/lot9"] and len(dp.verdicte()[-1]) == 4, iesire
+E       AssertionError: scripts/poarta_lot.sh: 25: .: cannot open /tmp/pytest-of-costin/pytest-2508/test_compus_refuzat_cand_cazut0/r/scripts/lacat_test.sh: No such file
+E         
+E       assert (2 == 1)
+
+core/test_poarta_lot.py:236: AssertionError
+____________ test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM _____________
+
+    def test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM():
+        """doc↔cod, caracter cu caracter. Regenerare:
+        `./venv/bin/python scripts/scan_predare_cifre.py --md`, rescris între marcaje."""
+        doc = io.open(_DOC, encoding="utf-8").read()
+        assert sc.MARCA_START in doc and sc.MARCA_STOP in doc, (
+            "PREDARE_LANT.md n-are blocul de cifre generate — a fost șters? Fără el, cifrele despre "
+            "date se scriu iar din memorie, iar asta a greșit de două ori în două zile.")
+        a = doc.index(sc.MARCA_START)
+        b = doc.index(sc.MARCA_STOP) + len(sc.MARCA_STOP)
+        din_doc, generat = doc[a:b], sc.redare_md(_cifre())
+        if din_doc != generat:
+            ld, lg = din_doc.split(chr(10)), generat.split(chr(10))
+            prima = next((i for i in range(max(len(ld), len(lg)))
+                          if (ld[i] if i < len(ld) else None) != (lg[i] if i < len(lg) else None)), 0)
+>           raise AssertionError(
+                "blocul de cifre din PREDARE_LANT.md nu mai descrie baza, prima diferență la linia "
+                "%d:%s  doc:     %r%s  acum:    %r%s"
+                "Regenerează: ./venv/bin/python scripts/scan_predare_cifre.py --md"
+                % (prima + 1, chr(10), ld[prima] if prima < len(ld) else "(lipsește)", chr(10),
+                   lg[prima] if prima < len(lg) else "(lipsește)", chr(10)))
+E           AssertionError: blocul de cifre din PREDARE_LANT.md nu mai descrie baza, prima diferență la linia 9:
+E             doc:     '| **20** | firme în portofoliu |'
+E             acum:    '| **28** | firme în portofoliu |'
+E           Regenerează: ./venv/bin/python scripts/scan_predare_cifre.py --md
+
+core/test_predare_cifre.py:66: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_fara_secrete_in_git.py::test_tiparele_de_secrete_dau_exact_lista_inchisa
+FAILED core/test_poarta_lot.py::test_verde_scrie_verdictul_commitului - Asser...
+FAILED core/test_poarta_lot.py::test_acelasi_sha_verde_nu_se_mai_ruleaza - as...
+FAILED core/test_poarta_lot.py::test_rularile_continua_pana_la_verde - assert...
+FAILED core/test_poarta_lot.py::test_acelasi_sha_rosu_nu_se_reia - assert 2 == 1
+FAILED core/test_poarta_lot.py::test_arborele_murdar_e_refuzat - AssertionErr...
+FAILED core/test_poarta_lot.py::test_pe_main_e_refuzat - AssertionError: scri...
+FAILED core/test_poarta_lot.py::test_compus_verde_reruleaza_cazutele_lui_x_plus_perimetrul_reparatiei
+FAILED core/test_poarta_lot.py::test_compus_rosu_scrie_rosu_compus - Assertio...
+FAILED core/test_poarta_lot.py::test_compus_fara_rulare_completa_rosie_e_refuzat[verdicte0]
+FAILED core/test_poarta_lot.py::test_compus_fara_rulare_completa_rosie_e_refuzat[verdicte1]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[main.py-# atins\n-main.py \u2014 rutele sunt citite de scanere]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[scripts/e2e_poarta.py-# atins\n-plasa atins\u0103 integral]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[core/nou.py-Z = 1\n-core/nou.py \u2014 fisier Python adaugat]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[NOTE.txt-x\n-NOTE.txt \u2014 niciun test nu-l nume\u0219te]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_x_care_nu_e_stramos - ...
+FAILED core/test_poarta_lot.py::test_compus_refuzat_cand_cazutele_lui_x_nu_se_pot_numara
+FAILED core/test_predare_cifre.py::test_blocul_de_cifre_e_identic_cu_interogarea_de_ACUM
+18 failed, 60 passed in 246.41s (0:04:06)

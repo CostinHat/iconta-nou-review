@@ -1,0 +1,7 @@
+[e2e] aplicația din index pornită pe 8019 în 15s
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton
+FAILED frontend_test/e2e/e2e_lot13_firme2.py::test_def_618_explicatia_notei_z_are_data_romaneasca
+[e2e] 5 failed, 7 passed in 119.00s (0:01:58) (134s; capturi în /tmp/e2e_capB_e2e_lot13_firme2)

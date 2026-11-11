@@ -1,0 +1,50 @@
+== pct.3: diff-ul de comportament (baza..P), rânduri cu addEventListener/fetch/api./SQL ==
++    b.addEventListener("click", () => { if (nav.dinRefuz) nav.dinRefuz(); nav.deschide(c.titlu || c.text, (corp) => c.deschide(corp, nav), { lat: "lucru", ...(opt && opt.sageataSimpla ? { sageataSimpla: true } : {}) }); });   // dinRefuz: fereastra de dedesubt se păstrează (luna aleasă, filtrele), „înapoi” o regăsește
+== pct.5(ii): id/class noi ==
+ugrep: error: error at position 5
+(?m)^+++
+     \___invalid syntax
+
+
+== pct.5(ii): id/class noi (linii + din diff, numai id și class) ==
+class="buton-primar"
+class="buton-secundar"
+class="nav-sageata nav-inapoi"
+class="pf-frand-sub"
+id="r-var-salveaza"
+id="ss-fluturas"
+== pct.5(i): elemente măsurate de oracolele C–N ==
+43
+pasi_17_5_C2.json pasi_17_5_C.json pasi_17_5_D.json pasi_17_5_E2.json pasi_17_5_E.json pasi_17_5_F.json pasi_17_5_G2.json pasi_17_5_G3.json pasi_17_5_G.json pasi_17_5_H2.json pasi_17_5_H.json pasi_17_5_I.json pasi_17_5_J.json pasi_17_5_K.json pasi_17_5_L.json pasi_17_5_M.json pasi_17_5_N.json 
+== pct.5(i): 43 elemente comparate (rânduri cu x în static+core, bază vs P); diferite: ==
+  .fereastra bază=1443 P=1446
+  .fj-butoane bază=8 P=9
+  .fj-principal bază=11 P=12
+
+== pct.5(iii): linii «-» cu șiruri ale oracolelor C–N (304 șiruri) ==
+-import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=bd1a5189a3";
+-  const { deschideFirma } = await import("./ecrane/firme.js?v=da8050724c");
+-import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația despre date anonime e card, nu text pe ecran
+-import { siraCarduri } from "../carduri.js?v=98c15a1738";
+-import { randeazaListaFirme } from "./firme.js?v=da8050724c";
+-    const { ecranJurnal } = await import("./firme.js?v=da8050724c");
+-import { randeazaListaFirme } from "./firme.js?v=da8050724c";
+-    const { ecranJurnal } = await import("./firme.js?v=da8050724c");
+-    const { deschideInchidereLuna } = await import("./firme.js?v=da8050724c");
+-import { siraCarduri } from "../carduri.js?v=98c15a1738";
+-    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=da8050724c"); await deschideSalariati(nav, tenantId); },
+-import { siraCarduri } from "../carduri.js?v=98c15a1738";
+-            const { ecranJurnal } = await import("./firme.js?v=da8050724c");   // dinamic, ca „nota …” din detaliul facturii
+-        const { ecranJurnal } = await import("./firme.js?v=da8050724c");   // dinamic: firme.js importă deja ecranul facturilor
+-import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
+-        <button class="buton-primar" id="r-var-salveaza" data-actiune="POST /tenants/{tenant_id}/rapoarte-salvate" style="margin-left:6px">Salvează varianta curentă</button>
+-    const { randeazaListaFirme } = await import("./firme.js?v=da8050724c");
+-import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687]
+-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=da8050724c"); await deschideControlFirma(nav, firma.tenant_id); } },
+-import { siraCarduri } from "../carduri.js?v=98c15a1738";
+-      const { ecranJurnal } = await import("./firme.js?v=da8050724c");
+-import { deschideFirma } from "./firme.js?v=da8050724c";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+-import { deschideFirma, ecranJurnal } from "./firme.js?v=da8050724c";
+-import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
+-import { baraDeJos } from "./cadru.js?v=e2a7e8cced";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+-              const { ecranJurnal } = await import("./ecrane/firme.js?v=da8050724c");

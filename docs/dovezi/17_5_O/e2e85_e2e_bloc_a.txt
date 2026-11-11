@@ -1,0 +1,417 @@
+...F...FF..........FF..F....F..FF..........F                             [100%]
+=================================== FAILURES ===================================
+_______________ test_def_4_bun_venit_se_inchide_din_x_si_cu_esc ________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+request = <FixtureRequest for <Function test_def_4_bun_venit_se_inchide_din_x_si_cu_esc>>
+
+    def test_def_4_bun_venit_se_inchide_din_x_si_cu_esc(browser, request):
+        """4. Bun venit: fereastra se închide doar de la butonul de jos; lipsesc X și Esc.
+        [lotul 13, 562] Prezentarea nu se mai deschide singură la prima logare („nimic nu se deschide singur”; decizia 320: „ghidul de
+        început rămâne în butonul de ajutor (?)”). Pașii: la prima intrare pagina principală, FĂRĂ fereastră de bun venit; din semnul „?”
+        al barei se deschide „Prezentarea aplicației”, cu X în antet; Esc o închide; deschisă din nou, X o închide. Prima deschidere o
+        marchează văzută."""
+        with cont_asistent(firme=(T_COMERT,), bun_venit_vazut=False) as a:
+            with ecran_cont(browser, request, a["email"]) as e:
+                pg = e.pg
+                pg.goto(e_baza(), wait_until="domcontentloaded")
+                pg.wait_for_selector(".cab-grila", timeout=30000)
+                pg.wait_for_timeout(1500)
+                assert pg.query_selector(".bun-venit-overlay, .fereastra .ans-continut") is None, "prezentarea s-a deschis singură"
+                e.captura("fara_fereastra")
+                pg.click("#nav-ghid")
+                pg.wait_for_selector(".fereastra .ans-continut", timeout=20000)
+>               assert pg.is_visible(".fereastra .fereastra-antet button.nav-inapoi") and not pg.query_selector(".fereastra .fereastra-antet .nav-x"), "„←” în antet, fără X"   # [15.1-E5]
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AssertionError: „←” în antet, fără X
+E               assert (False)
+E                +  where False = is_visible('.fereastra .fereastra-antet button.nav-inapoi')
+E                +    where is_visible = <Page url='http://127.0.0.1:8019/'>.is_visible
+
+frontend_test/e2e/e2e_bloc_a.py:353: AssertionError
+__________ test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica ___________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+request = <FixtureRequest for <Function test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica>>
+patron = <conftest.Ecran object at 0x763c02997e30>
+firma_e2e = {'tenant_id': 370966, 'schema': 'tenant_9734', 'nume': 'E2E Probă 800947 SRL', 'cabinet_id': 1968}
+
+    def test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica(browser, request, patron, firma_e2e):
+        """8. Drepturi: asistentul era refuzat de server la circa 50 de operații zilnice.
+        Pașii contabilului: asistentul cu „Poate pregăti” (firma alocată) face munca curentă: o dispoziție în Casă și o notă contabilă
+        nouă în Registrul jurnal — ambele trec (ciorne), fără refuz. Lista acțiunilor pe care serverul i le refuză nu cuprinde nicio
+        operație curentă (factură, chitanță, casă, notă, import extras, stoc, NIR, pontaj, export SAGA, e-Transport)."""
+        pregateste_firma(patron, firma_e2e)
+        with cont_asistent(firme=(firma_e2e["tenant_id"],)) as a, ecran_cont(browser, request, a["email"]) as e:
+            pg = e.pg
+            e.acasa()
+            refuzate = set(_ok(_api(e, "GET", "/eu/drepturi"), "drepturi")["interzise"])
+            zilnice = {"POST /tenants/{tenant_id}/facturi/emite", "POST /tenants/{tenant_id}/chitante",
+                       "POST /tenants/{tenant_id}/casa/operatiuni", "POST /tenants/{tenant_id}/jurnal",
+                       "POST /tenants/{tenant_id}/banca/reconciliere/import", "POST /tenants/{tenant_id}/stocuri/intrare",
+                       "POST /tenants/{tenant_id}/stocuri/nir", "POST /tenants/{tenant_id}/pontaj/confirma",
+                       "POST /tenants/{tenant_id}/facturi/export-saga"}
+            assert not (zilnice & refuzate), sorted(zilnice & refuzate)
+            e.firma(firma_e2e["nume"])
+            _card(e, "casa", "#c-toggle")
+            pg.click("#c-toggle")
+            pg.fill("#c-data", AZI.isoformat())
+            pg.select_option("#c-cat", "incasare_client")
+            pg.fill("#c-suma", "321.00")
+            pg.fill("#c-part", "Client Asistent E2E SRL")
+            pg.fill("#c-doc", "DI E2E 8")
+>           pg.click("#c-adauga")
+
+frontend_test/e2e/e2e_bloc_a.py:470: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/file_ui.py:50: in mai
+    return __orig(sel, *a, **k)
+           ^^^^^^^^^^^^^^^^^^^^
+frontend_test/e2e/conftest.py:146: in clic
+    return clic_original(self, selector, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:11065: in click
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:887: in click
+    return await self._main_frame._click(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:593: in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x763c04457a10>
+cb = <function Channel.send.<locals>.<lambda> at 0x763c0199e520>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("#c-adauga")
+E               - locator resolved to <button id="c-adauga" aria-disabled="true" data-actiune-principala="" class="buton-primar fj-principal" data-actiune="POST /tenants/{tenant_id}/casa/operatiuni" title="Completează: poziția din listă sau „Avans, fără factură”" data-motiv-inactiv="Completează: poziția din listă sau „Avans, fără factură”">Adaugă</button>
+E             - attempting click action
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not stable
+E               - retrying click action
+E               - waiting 20ms
+E               2 × waiting for element to be visible, enabled and stable
+E                 - element is not enabled
+E               - retrying click action
+E                 - waiting 100ms
+E               58 × waiting for element to be visible, enabled and stable
+E                  - element is not enabled
+E                - retrying click action
+E                  - waiting 500ms
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+____________ test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul _____________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+request = <FixtureRequest for <Function test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul>>
+patron = <conftest.Ecran object at 0x763c0290d100>
+firma_e2e = {'tenant_id': 370966, 'schema': 'tenant_9734', 'nume': 'E2E Probă 800947 SRL', 'cabinet_id': 1968}
+
+    def test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul(browser, request, patron, firma_e2e):
+        """9. Drepturi: asistentul putea emite chitanțe și certifica bonuri, dar nu vedea PDF-ul chitanței, poza bonului și fluturașul.
+        Pașii contabilului: asistentul cu „Poate pregăti” deschide o factură emisă -> „Emite chitanță” -> „PDF chitanță”: PDF-ul se
+        deschide; în Salariați (firmă cu salariați alocată) apasă „Fluturaș”: PDF-ul vine; fotografia unui bon al firmei (din directorul de
+        bonuri al plasei, separat de producție — `ICONTA_BON_DIR`, comanda 09.10 pct.7) vine și ea, ca imagine."""
+        pregateste_firma(patron, firma_e2e)
+        f = emite_api(patron, firma_e2e)
+        with cont_asistent(firme=(firma_e2e["tenant_id"], T_PANIFICATIE)) as a, ecran_cont(browser, request, a["email"]) as e:
+            pg = e.pg
+            _deschide_factura(e, firma_e2e, f["factura_id"])
+            pg.click("#fd-chitanta")
+            pg.wait_for_selector("#fd-chit-ok", timeout=10000)
+            pg.click("#fd-chit-ok")
+            pg.wait_for_selector("[data-chpdf]", timeout=20000)
+            with pg.expect_response(lambda r: "/chitante/" in r.url and r.url.endswith("/pdf"), timeout=30000) as rr:
+                pg.click("[data-chpdf]")
+            _pdf_ok(e, rr)
+            e.captura("chitanta")
+            e.firma("Panificatie Salarii Speciale")
+            _card(e, "salariati", "#sp-tabel")
+            from e2e_lot13_sal_ajutor import buton, deschide_salariat
+            deschide_salariat(e)   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
+            with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
+                buton(e, "flut")
+            _pdf_ok(e, rr)
+            e.captura("fluturas")
+            # [retestul 09.10, pct.7: directorul separat al bonurilor] fotografia bonului, pe drumul ecranului (`pozaUrl`: cererea imaginii)
+            import os as _os
+            bid = sql('INSERT INTO "%s".bonuri (comerciant, data, total, nr_imagini, tip) VALUES (\'Magazin Probă E2E\', CURRENT_DATE, 12.10, 1, '
+                      "'bon') RETURNING id" % firma_e2e["schema"])[0][0]
+>           d = _os.path.join(_os.environ["ICONTA_BON_DIR"], firma_e2e["schema"], str(bid))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+frontend_test/e2e/e2e_bloc_a.py:522: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'LESSOPEN': '| /usr/bin/lesspipe %s', 'TMUX': '/tmp/tmux-1000/default,2120,0', 'AI_AGENT': 'claude-code_2-1-3...PYTEST_CURRENT_TEST': 'frontend_test/e2e/e2e_bloc_a.py::test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul (call)'})
+key = 'ICONTA_BON_DIR'
+
+>   ???
+E   KeyError: 'ICONTA_BON_DIR'
+
+<frozen os>:685: KeyError
+________ test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email _________
+
+patron = <conftest.Ecran object at 0x763c044c3ce0>
+firma_e2e = {'tenant_id': 370966, 'schema': 'tenant_9734', 'nume': 'E2E Probă 800947 SRL', 'cabinet_id': 1968}
+
+    def test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email(patron, firma_e2e):
+        """32. Povestea lunii: rezultatul înainte de impozit numit „profit”, cu laudă nesusținută.
+        Pașii contabilului: într-o lună cu venituri 1.000 lei (4111=704) și nota impozitului 160 lei (691=441), pachetul arată
+        „Rezultat înainte de impozit 1.000,00 lei (profit)”, cheltuielile 0,00 (impozitul nu e cheltuială a rezultatului dinainte de
+        impozit), iar emailul folosește aceeași etichetă.
+        [retestul Costin 09.10, cuvânt cu cuvânt] „povestea lunii păstrează laude nesusținute de cifre.” Pașii: modelul (simulat în
+        plasă) scrie de ambele dăți „o lună excelentă, cu o creștere remarcabilă” -> „Generează cu AI”: în editor ajunge numai
+        propoziția cu cifrele; ecranul spune ce a scos; promptul nu mai cere „ton cald” și interzice calificarea.
+        [testul vechi trecea pe defect: nu genera povestea deloc — verifica numai eticheta rezultatului]"""
+        luna = _luna_32(patron, firma_e2e)
+        _pachet(patron, firma_e2e, luna.year, luna.month)
+        pg = patron.pg
+        rez = pg.eval_on_selector_all(".pac-rezumat .pac-rez-rand", "els => els.map(e => e.innerText.replace(/\\s+/g, ' ').trim())")
+        patron.captura("pachet")
+        assert "Venituri 1.000,00 lei" in rez and "Cheltuieli 0,00 lei" in rez, rez
+        assert "Rezultat înainte de impozit 1.000,00 lei (profit)" in rez, rez
+        _deschide_povestea(patron)
+        lauda = "Iulie a fost o lună excelentă pentru firmă, cu o creștere remarcabilă a activității."
+>       ai_pregateste(lauda + " " + FAPT_32, "Felicitări pentru rezultat! " + FAPT_32)
+
+frontend_test/e2e/e2e_bloc_a.py:783: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/conftest.py:276: in ai_pregateste
+    d = os.environ["ICONTA_AI_SIMULAT"]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'LESSOPEN': '| /usr/bin/lesspipe %s', 'TMUX': '/tmp/tmux-1000/default,2120,0', 'AI_AGENT': 'claude-code_2-1-3...URRENT_TEST': 'frontend_test/e2e/e2e_bloc_a.py::test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email (call)'})
+key = 'ICONTA_AI_SIMULAT'
+
+>   ???
+E   KeyError: 'ICONTA_AI_SIMULAT'
+
+<frozen os>:685: KeyError
+_____________ test_def_12_parafraza_de_incasare_e_prinsa_si_numita _____________
+
+patron = <conftest.Ecran object at 0x763c0435b0e0>
+firma_e2e = {'tenant_id': 370966, 'schema': 'tenant_9734', 'nume': 'E2E Probă 800947 SRL', 'cabinet_id': 1968}
+
+    def test_def_12_parafraza_de_incasare_e_prinsa_si_numita(patron, firma_e2e):
+        """12. Povestea lunii: AI confundă venituri, încasări și câștig.
+        [partea rămasă, registrul: „Parafraza «tot ce a intrat ca venit s-a transformat în rezultat» … trece nevăzută — framing de
+        încasare, neprins de abateri. În plus nu există test e2e determinist”] Pașii: modelul (simulat în plasă) scrie de ambele dăți
+        „Tot ce a intrat ca venit s-a transformat în rezultat.” -> „Generează cu AI”: a doua cerere către model numește abaterea, iar
+        editorul o arată („termen: a intrat”) înainte de aprobare."""
+        luna = _luna_32(patron, firma_e2e)
+        _pachet(patron, firma_e2e, luna.year, luna.month)
+        _deschide_povestea(patron)
+        parafraza = "Tot ce a intrat ca venit s-a transformat în rezultat."
+>       ai_pregateste(FAPT_32 + " " + parafraza, FAPT_32 + " " + parafraza)
+
+frontend_test/e2e/e2e_bloc_a.py:808: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/conftest.py:276: in ai_pregateste
+    d = os.environ["ICONTA_AI_SIMULAT"]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'LESSOPEN': '| /usr/bin/lesspipe %s', 'TMUX': '/tmp/tmux-1000/default,2120,0', 'AI_AGENT': 'claude-code_2-1-3...'PYTEST_CURRENT_TEST': 'frontend_test/e2e/e2e_bloc_a.py::test_def_12_parafraza_de_incasare_e_prinsa_si_numita (call)'})
+key = 'ICONTA_AI_SIMULAT'
+
+>   ???
+E   KeyError: 'ICONTA_AI_SIMULAT'
+
+<frozen os>:685: KeyError
+______________ test_def_193_cardurile_cozii_au_latimea_ferestrei _______________
+
+patron = <conftest.Ecran object at 0x763c035b9eb0>
+
+    def test_def_193_cardurile_cozii_au_latimea_ferestrei(patron):
+        """193. Coadă: cardurile „De depus” (D300) sunt înghesuite pe o coloană îngustă.
+        Pașii: ecran de 1700 × 1000 -> cardul „De depus” / „De validat” -> în fiecare card de declarație textul (declarația, firma,
+        termenul, „Vezi declarația…”) are cel puțin 300 px — nu e strivit de butoane într-o coloană îngustă —, iar butoanele stau în
+        card (niciunul nu iese peste marginea lui); la fel pe telefon (390 px)."""
+        pg = patron.pg
+        masoara = """() => { const f = [...document.querySelectorAll('.fereastra')].pop();
+          return [...f.querySelectorAll('.val-card')].map(v => { const r = v.getBoundingClientRect(); const t = v.firstElementChild.getBoundingClientRect();
+            const iese = [...v.querySelectorAll('button')].filter(b => { const x = b.getBoundingClientRect(); return x.right > r.right + 1 || x.left < r.left - 1; }).length;
+            return {card: Math.round(r.width), text: Math.round(t.width), iese, t: v.innerText.slice(0, 40)}; }); }"""
+        for lat, inalt in ((1700, 1000), (390, 844)):
+            pg.set_viewport_size({"width": lat, "height": inalt})
+            _coada(patron)
+            m = pg.evaluate(masoara)
+            patron.captura("coada_%d" % lat)
+>           assert m, "anti-vacuu: nicio declarație în coadă"
+E           AssertionError: anti-vacuu: nicio declarație în coadă
+E           assert []
+
+frontend_test/e2e/e2e_bloc_a.py:889: AssertionError
+________ test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre _________
+
+patron = <conftest.Ecran object at 0x763c00116a20>
+
+    def test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre(patron):
+        """203. Pagina principală: la cabinet lipsește cardul „Raportează”; cardurile trebuie ordonate după lucrul zilnic, iar cifrele lor =
+        ecranele din spate.
+        Pașii: contabilul-șef -> pagina principală: există cardul „Raportează”; cardurile sunt în ordinea lucrului zilnic (de validat,
+        control fiscal, termene, firme …, la urmă Suport) -> cifra cardului Firme = firmele active din ecranul Firme; „N note de validat”
+        = „Note de validat (N)” din fereastra cozii (cifrele cardului Control fiscal: `e2e_comanda_1010.py::test_def_224_…`)."""
+        import re as _r
+        pg = patron.pg
+        patron.acasa()
+        pg.wait_for_function("() => !document.querySelector('.cab-grila').innerText.includes('se încarcă')", timeout=60000)
+        pg.wait_for_timeout(1500)
+        card = pg.evaluate("""() => [...document.querySelectorAll('.cab-grila button.cab-card')].map(b => ({
+            cheie: (b.querySelector('[data-cheie]') || {}).dataset ? b.querySelector('[data-cheie]').dataset.cheie : null,
+            titlu: (b.querySelector('.cab-card-titlu') || {}).innerText, sinteza: (b.querySelector('.cab-card-sinteza') || {}).innerText}))""")
+        patron.captura("desktop")
+        chei = [c["cheie"] for c in card]
+        assert [k for k in chei if k in ORDINE_CABINET] == [k for k in ORDINE_CABINET if k in chei], chei
+        assert "raport" not in chei and pg.inner_text("[data-banda='raport']").strip().startswith("Suport"), chei   # [225, 12.10.2026] banda
+        sint = {c["cheie"]: c["sinteza"] for c in card}
+        firme_card = int(_r.search(r"(\d+) firm", sint["firme"]).group(1))
+        pg.click("button.cab-card:has([data-cheie='firme'])")
+        pg.wait_for_timeout(600)
+        if pg.query_selector("#opt-existente"):
+            pg.click("#opt-existente")
+        pg.wait_for_selector("#firme-lista .firme-rand-linie", timeout=30000)
+        pg.wait_for_timeout(800)
+        firme_ecran = pg.locator("#firme-lista .firme-rand-linie").count()
+        assert firme_card == firme_ecran, (sint["firme"], firme_ecran)
+        # [deficiența 224] cifrele cardului Control fiscal (patru lumini = firmele în fiecare stare) față de lista din spate: test_def_224
+        patron.acasa()
+        pg.wait_for_function("() => /\\d/.test(document.querySelector('[data-cheie=validat]').innerText)", timeout=60000)
+        val_card = pg.inner_text("[data-cheie=validat]")
+        pg.click("button.cab-card:has([data-cheie='validat'])")
+        pg.wait_for_selector(".fereastra:last-of-type .cf-grup-titlu", timeout=60000)
+        pg.wait_for_timeout(800)
+        titluri = pg.eval_on_selector_all(".fereastra:last-of-type .cf-grup-titlu", "els => els.map(e => e.textContent.trim())")
+        patron.captura("coada")
+        for eticheta_card, grup in ((r"(\d+) note? de validat", "Note de validat"), (r"(\d+) declarații? de validat", "De validat"),
+                                    (r"(\d+) declarații? de depus", "De depus")):
+            m = _r.search(eticheta_card, val_card)
+            if m:
+                g = [t for t in titluri if t.startswith(grup + " (")]
+>               assert g and g[0] == "%s (%s)" % (grup, m.group(1)), (val_card, titluri)
+E               AssertionError: ('1 notă de validat · 0 declarații de depus · 1 notă a ta în ciornă', ['Note de validat (1)', 'Declarații (0)', 'Notele tale în ciornă (1)'])
+E               assert ([])
+
+frontend_test/e2e/e2e_bloc_a.py:1028: AssertionError
+_____________ test_def_209_povestea_nu_vorbeste_despre_declaratii ______________
+
+patron = <conftest.Ecran object at 0x763c029c2a20>
+firma_e2e = {'tenant_id': 370966, 'schema': 'tenant_9734', 'nume': 'E2E Probă 800947 SRL', 'cabinet_id': 1968}
+
+    def test_def_209_povestea_nu_vorbeste_despre_declaratii(patron, firma_e2e):
+        """209. Povestea lunii: spune doar ce reiese din cifre și nimic despre declarații.
+        Pașii: luna are o declarație depusă (D300, marcată depusă) -> modelul (simulat în plasă) scrie de ambele dăți „Firma a depus
+        decontul de TVA (D300) la termen.” -> „Generează cu AI”: în editor ajunge numai propoziția cu cifrele; promptul nu primește
+        declarațiile depuse; tabelul pachetului le arată în continuare."""
+        luna = _luna_32(patron, firma_e2e)
+        sql("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, sursa) VALUES (%s, %s, %s, 'd300', 'iconta') "
+            "ON CONFLICT DO NOTHING", (firma_e2e["tenant_id"], luna.year, luna.month))
+        try:
+            _pachet(patron, firma_e2e, luna.year, luna.month)
+            rez = patron.pg.eval_on_selector_all(".pac-rezumat .pac-rez-rand", "els => els.map(e => e.innerText.replace(/\\s+/g, ' ').trim())")
+            _deschide_povestea(patron)
+            despre = "Firma a depus decontul de TVA (D300) la termen."
+>           ai_pregateste(FAPT_32 + " " + despre, despre + " " + FAPT_32)
+
+frontend_test/e2e/e2e_bloc_a.py:1096: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/conftest.py:276: in ai_pregateste
+    d = os.environ["ICONTA_AI_SIMULAT"]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'LESSOPEN': '| /usr/bin/lesspipe %s', 'TMUX': '/tmp/tmux-1000/default,2120,0', 'AI_AGENT': 'claude-code_2-1-3... 'PYTEST_CURRENT_TEST': 'frontend_test/e2e/e2e_bloc_a.py::test_def_209_povestea_nu_vorbeste_despre_declaratii (call)'})
+key = 'ICONTA_AI_SIMULAT'
+
+>   ???
+E   KeyError: 'ICONTA_AI_SIMULAT'
+
+<frozen os>:685: KeyError
+________________ test_def_33_povestea_nu_afirma_ce_era_de_depus ________________
+
+patron = <conftest.Ecran object at 0x763c0062cb60>
+firma_e2e = {'tenant_id': 370966, 'schema': 'tenant_9734', 'nume': 'E2E Probă 800947 SRL', 'cabinet_id': 1968}
+
+    def test_def_33_povestea_nu_afirma_ce_era_de_depus(patron, firma_e2e):
+        """33. Povestea lunii: clientului i se comunicau restanțele (decizia A: rămân alertă la cabinet).
+        [retestul Costin 09.10, cuvânt cu cuvânt] „povestea scrie fals «în septembrie nu a fost nicio declarație de depus».” Cauza:
+        promptul spunea „Declarații depuse la ANAF: nicio declarație”, iar modelul o citea „nimic de depus”. Pașii: luna fără nicio
+        declarație depusă -> modelul (simulat) scrie de ambele dăți „în iulie nu a fost nicio declarație de depus” -> „Generează cu AI”:
+        propoziția nu ajunge în editor, iar promptul nu mai poartă rândul „nicio declarație”."""
+        luna = _luna_32(patron, firma_e2e)
+        _pachet(patron, firma_e2e, luna.year, luna.month)
+        _deschide_povestea(patron)
+        fals = "În iulie nu a fost nicio declarație de depus."
+>       ai_pregateste(FAPT_32 + "\n\n" + fals, fals + " " + FAPT_32)
+
+frontend_test/e2e/e2e_bloc_a.py:1118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+frontend_test/e2e/conftest.py:276: in ai_pregateste
+    d = os.environ["ICONTA_AI_SIMULAT"]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = environ({'LESSOPEN': '| /usr/bin/lesspipe %s', 'TMUX': '/tmp/tmux-1000/default,2120,0', 'AI_AGENT': 'claude-code_2-1-3...pus', 'PYTEST_CURRENT_TEST': 'frontend_test/e2e/e2e_bloc_a.py::test_def_33_povestea_nu_afirma_ce_era_de_depus (call)'})
+key = 'ICONTA_AI_SIMULAT'
+
+>   ???
+E   KeyError: 'ICONTA_AI_SIMULAT'
+
+<frozen os>:685: KeyError
+_______________ test_def_29_fereastra_firmei_grupata_sub_titluri _______________
+
+patron = <conftest.Ecran object at 0x763c006a1280>
+
+    def test_def_29_fereastra_firmei_grupata_sub_titluri(patron):
+        """29. Fereastra firmei: peste 20 de carduri amestecate; grupare sub titluri.
+        Pașii contabilului: deschide o firmă: cardurile stau sub titluri, în ordinea Zilnic · Registre · Raportări și declarații ·
+        Operațiuni speciale · Firma; „Facturi” e la Zilnic, „Registru jurnal” la Registre, „Declarații” la Raportări."""
+        patron.firma("Comert Micro TVA")
+        pg = patron.pg
+        grupuri = pg.eval_on_selector_all(".fereastra-overlay:not(.fundal) section.firme-grup", """els => els.map(s => [s.querySelector('h3').textContent.trim(),
+            [...s.querySelectorAll('.firme-optiune-titlu')].map(t => t.textContent.trim())])""")
+        patron.captura(intreaga=True)
+        titluri = [g[0] for g in grupuri]
+>       assert titluri == ["Zilnic", "Registre", "Raportări și declarații", "Operațiuni speciale", "Firma"], titluri
+E       AssertionError: ['Zi de zi', 'Personal și stocuri', 'Contabilitate', 'Registre', 'Termene', 'Parteneri', ...]
+E       assert ['Zi de zi', ...rteneri', ...] == ['Zilnic', 'R...ale', 'Firma']
+E         
+E         At index 0 diff: 'Zi de zi' != 'Zilnic'
+E         Left contains 2 more items, first extra item: 'Parteneri'
+E         Use -v to get more diff
+
+frontend_test/e2e/e2e_bloc_a.py:1459: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_4_bun_venit_se_inchide_din_x_si_cu_esc
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_32_rezultat_inainte_de_impozit_pe_pachet_si_in_email
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_12_parafraza_de_incasare_e_prinsa_si_numita
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_193_cardurile_cozii_au_latimea_ferestrei
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_209_povestea_nu_vorbeste_despre_declaratii
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_33_povestea_nu_afirma_ce_era_de_depus
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_29_fereastra_firmei_grupata_sub_titluri
+10 failed, 34 passed in 211.26s (0:03:31)
