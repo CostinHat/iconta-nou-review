@@ -1,14 +1,14 @@
 # plasa_16_2.manifest — plasa fixă a măsurătorii 16.0 (completarea 2, pct.H). Câmpuri separate prin TAB: cale, sha256, teste descoperite, comanda.
 frontend_test/e2e/e2e_lot12_verif.py	ea5dd13306e84f7a0065746a12387339deb9e6b85efcc8a773aa31f97050c353	4	python -m pytest -q frontend_test/e2e/e2e_lot12_verif.py
 frontend_test/e2e/e2e_lot72_facturi.py	bf1fabf1158c77bbbc36f76357da834a44c8dbebaa4787fd5b8176308d7dfea2	7	python -m pytest -q frontend_test/e2e/e2e_lot72_facturi.py
-frontend_test/e2e/e2e_pilot_luna.py	818be5ac8c7c06428fda2c64ae90852def01c4594fd516396f7f33ab3b80e447	40	python -m pytest -q frontend_test/e2e/e2e_pilot_luna.py
+frontend_test/e2e/e2e_pilot_luna.py	fe523ce9131d602a57366f83463153d715100e83fb51e44c468b207570dc6dd6	40	python -m pytest -q frontend_test/e2e/e2e_pilot_luna.py
 frontend_test/e2e/e2e_pozitii_validate.py	a938060938623f541900b17e36f7802acd0c14ad4ec15c24a2ff14f6b3ba3e67	17	python -m pytest -q frontend_test/e2e/e2e_pozitii_validate.py
 frontend_test/e2e/e2e_pilot_x09.py	11bfa9c059b5362a82506dbe807a759ca6e4b8875be734df50cf7d376c491fc3	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x09.py
 frontend_test/e2e/e2e_pilot_f017.py	2c9b4fab2bfb3d9f833ea5afc6f5ed45b3e7a08b097a6c5dcd4a2fd061c4315e	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f017.py
 frontend_test/e2e/e2e_pilot_f054.py	affc7c95b8b8f7ff036364f76e96a2ea8252cd4fa79b3e8cba15ea823e259c50	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f054.py
 frontend_test/e2e/e2e_pilot_x05.py	6a328da7c56f60694bf085412bb9c28bc7899939b0e8267fb6d65d2e0296b2f6	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x05.py
 frontend_test/e2e/e2e_pilot_x06.py	f87b2ddfb4e2c0cb8b206d2d6a305993c2251faa746170e698a72f36e58bc966	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x06.py
-frontend_test/e2e/e2e_pilot_x07.py	aac36b293578912a6cbacd2f5f07538717f8725782a9af87a1d1d2bacec39f00	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x07.py
+frontend_test/e2e/e2e_pilot_x07.py	f885c83339f9ccfbed0f0b398e3871064dcf7154e6706e2e60ba8fa022b68915	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x07.py
 frontend_test/e2e/e2e_luna_lucru_17_5_C.py	6554d43464e57050568e4c8c00b3c5edca0730a2f1eada4a78f2a634eca5e7ae	1	python -m pytest -q frontend_test/e2e/e2e_luna_lucru_17_5_C.py
 frontend_test/e2e/e2e_actiune_principala_17_5_D.py	bef4f7aebfc875b58bb04ef6b276f6df28562d9e209b580bb211802909e3545b	1	python -m pytest -q frontend_test/e2e/e2e_actiune_principala_17_5_D.py
 frontend_test/e2e/e2e_alegere_unica_17_5_E.py	6db1d160a8224d7fb566d646a7d270e0c49487f769db6205f534cfe14f0aaf6e	1	python -m pytest -q frontend_test/e2e/e2e_alegere_unica_17_5_E.py
