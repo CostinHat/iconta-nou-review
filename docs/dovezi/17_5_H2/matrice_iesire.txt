@@ -1,6 +1,6 @@
-[lacat_test] lacăt preluat de la pid 2987398 (mort sau refolosit)
+[lacat_test] lacăt preluat de la pid 3273780 (mort sau refolosit)
 [verificator design] oprit; portul 8019 liber
-[verificator design] serverul de lucru pe 8019, commit 802de657
+[verificator design] serverul de lucru pe 8019, commit b713a6c4 (arbore murdar: se verifică indexul)
 [matrice_text_taiat] 1/315 De validat 603x590: ok, tăieturi=0
 [matrice_text_taiat] 2/315 De validat 1366x768: ok, tăieturi=0
 [matrice_text_taiat] 3/315 De validat 2133x1111: ok, tăieturi=0

@@ -1,4 +1,4 @@
 .                                                                        [100%]
-1 passed in 101.98s (0:01:41)
-5.38user 2.16system 1:42.45elapsed 7%CPU (0avgtext+0avgdata 158064maxresident)k
-0inputs+67352outputs (1366major+96411minor)pagefaults 0swaps
+1 passed in 102.57s (0:01:42)
+5.28user 2.06system 1:43.14elapsed 7%CPU (0avgtext+0avgdata 157812maxresident)k
+0inputs+66328outputs (1350major+96522minor)pagefaults 0swaps

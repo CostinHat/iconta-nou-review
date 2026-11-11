@@ -32,14 +32,7 @@
   },
   "b": {
    "pe_tot_ecranul": true,
-   "derulari": [
-    {
-     "loc": "div.mig-lista",
-     "fel": "vertical",
-     "ascuns": 129,
-     "tabel": true
-    }
-   ],
+   "derulari": [],
    "bara_jos": {
     "clase": "fereastra-jos fj-fara-principal",
     "inaltime": 72

@@ -1,0 +1,46 @@
+[lacat_test] lacăt preluat de la pid 3196422 (mort sau refolosit)
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul istoric: trece [('a.1', 'trece', ''), ('a.2', 'trece', ''), ('a.3', 'trece', ''), ('h.1', 'trece', '')]
+[parcurs] pasul contracte: trece [('a.4', 'trece', ''), ('f.2', 'trece', '')]
+[parcurs] pasul import: trece [('a.5', 'trece', ''), ('a.6', 'trece', ''), ('f.4', 'trece', '')]
+[parcurs] pasul detaliu: trece [('h.2', 'trece', '')]
+[parcurs] pasul fisa: trece [('h.3', 'trece', '')]
+[parcurs] pasul elemente: trece [('a.7', 'trece', ''), ('f.3', 'trece', '')]
+[parcurs] pasul casa: trece [('a.8', 'trece', ''), ('a.9', 'trece', '')]
+[parcurs] pasul nota: trece [('a.10', 'trece', ''), ('a.11', 'trece', '')]
+[parcurs] pasul casa603: trece [('a.12', 'trece', ''), ('h.4', 'trece', '')]
+[parcurs] pasul fisa603: trece [('h.5', 'trece', '')]
+[haiku, instanța 1] cod 0
+Am verificat cele 21 capturi față de descrierile lor. Două aserțiuni nu se potrivesc: f.4 (titlul «Audit de preluare» lipsește din listă) și h.5 (captura arată doar tabelul «Venituri», nu și «Rețineri» și «Rezultat»). Nu am modificat nimic.
+
+```json
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Pagina principală arată cardul «Control fiscal» cu bulinele colorate, alături de «De depus» și «Termene»."},
+{"id": "a.1", "raspuns": "corespunde", "motiv": "Corpul ferestrei Istoric facturi nu conține capul «Înregistrare»; apare doar mesajul «Nicio factură în luna aceasta.»."},
+{"id": "a.2", "raspuns": "corespunde", "motiv": "Nu apare contorul «1 rând» în corpul ferestrei; subsolul spune doar «Nu există înregistrări de exportat»."},
+{"id": "a.3", "raspuns": "corespunde", "motiv": "În bara de jos există un singur buton, «Descarcă PDF», estompat, cu motivul «Nu există înregistrări de exportat.» în stânga."},
+{"id": "h.1", "raspuns": "corespunde", "motiv": "Se văd titlul, rândul «Luna 11/2026» cu butoanele cerute și mesajul «Nicio factură în luna aceasta.» scris direct în fereastră, fără cap de tabel sau contor."},
+{"id": "a.4", "raspuns": "corespunde", "motiv": "Mesajul «Niciun șablon de contract încă…» stă în fereastră fără cutie de tabel și fără capul «Înregistrare»."},
+{"id": "f.2", "raspuns": "corespunde", "motiv": "Butonul principal din bara de jos este «+ Șablon nou»."},
+{"id": "a.5", "raspuns": "corespunde", "motiv": "Meniul Import date nu are niciun subsol de tabel cu contor; lista se termină fără «N rânduri»."},
+{"id": "a.6", "raspuns": "corespunde", "motiv": "Meniul Import date nu are bară de jos și deci niciun buton principal."},
+{"id": "f.4", "raspuns": "nu corespunde", "motiv": "Lista din captură conține Vector fiscal, Solduri inițiale, Solduri parteneri, Salariați, Asociați, Mijloace fixe, Istoric declarații, Plan de conturi; nu apare «Audit de preluare»."},
+{"id": "h.2", "raspuns": "corespunde", "motiv": "Tabelul liniilor are capul Denumire/Cant/UM/Preț/Cotă/Valoare deasupra rândului «Marfa A» cu valorile cerute."},
+{"id": "h.3", "raspuns": "corespunde", "motiv": "Sub «Compoziția netului» se văd cele trei tabele Venituri, Rețineri, Rezultat, fiecare cu capul deasupra primului rând, fără rânduri acoperite."},
+{"id": "a.7", "raspuns": "corespunde", "motiv": "În stânga barei de jos stă «Completează: Tipul, Denumirea, cum apare pe fluturaș», iar câmpurile marcate cu * sunt goale."},
+{"id": "f.3", "raspuns": "corespunde", "motiv": "Butonul principal din dreapta barei de jos este «Adaugă»."},
+{"id": "a.8", "raspuns": "corespunde", "motiv": "Butonul principal al barei de jos este «Adaugă», iar motivul «Completează: tipul» e separat în stânga."},
+{"id": "a.9", "raspuns": "corespunde", "motiv": "În stânga barei de jos apare «Completează: tipul»."},
+{"id": "a.10", "raspuns": "corespunde", "motiv": "Butonul principal al barei de jos este «Salvează»."},
+{"id": "a.11", "raspuns": "corespunde", "motiv": "În stânga barei de jos apare «Completează: data, contul debit, contul credit, suma»."},
+{"id": "a.12", "raspuns": "corespunde", "motiv": "La 603×590 butonul principal din dreapta barei de jos este «Adaugă»."},
+{"id": "h.4", "raspuns": "corespunde", "motiv": "Se văd titlul «Dispoziție nouă», câmpurile formularului, «Adaugă» în dreapta și «Completează: tipul» în stânga."},
+{"id": "h.5", "raspuns": "nejudecabil", "motiv": "Captura arată doar tabelul «Venituri» (și e tăiat jos); «Rețineri» și «Rezultat» nu apar, deci nu se poate judeca ce cere descrierea."}]
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+[haiku, instanța 2 pe f.4] ('nu corespunde', 'Fereastra Import date este deschisă, dar textul ei nu conține titlul «Audit de preluare»; lista afișată are opțiunile Vector fiscal, Solduri inițiale, Solduri parteneri, Salariați, Asociați, Mijloace fixe, Istoric declarații și Plan de conturi.')
+STOP dezacord oracol–verificator: f.4
+răspunsuri: f.1=corespunde; a.1=corespunde; a.2=corespunde; a.3=corespunde; h.1=corespunde; a.4=corespunde; f.2=corespunde; a.5=corespunde; a.6=corespunde; f.4=nu corespunde; h.2=corespunde; h.3=corespunde; a.7=corespunde; f.3=corespunde; a.8=corespunde; a.9=corespunde; a.10=corespunde; a.11=corespunde; a.12=corespunde; h.4=corespunde; h.5=nejudecabil | nejudecabile: 1 din 21
+
+real	2m15.946s
+user	0m7.735s
+sys	0m2.570s

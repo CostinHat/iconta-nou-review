@@ -1,6 +1,6 @@
-[lacat_test] lacăt preluat de la pid 2921448 (mort sau refolosit)
+[lacat_test] lacăt preluat de la pid 3207837 (mort sau refolosit)
 [verificator design] oprit; portul 8019 liber
-[verificator design] serverul de lucru pe 8019, commit 802de657
+[verificator design] serverul de lucru pe 8019, commit b713a6c4 (arbore murdar: se verifică indexul)
 pozitiv | De validat | 603x590 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
 negativ | De validat | 603x590 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
 pozitiv | De validat | 1366x768 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)

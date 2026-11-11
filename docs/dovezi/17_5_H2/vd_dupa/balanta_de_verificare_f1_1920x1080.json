@@ -36,7 +36,7 @@
     {
      "loc": "div.zona-derulare",
      "fel": "vertical",
-     "ascuns": 416,
+     "ascuns": 469,
      "tabel": true
     }
    ],
@@ -53,7 +53,7 @@
    "renunta": false,
    "din_formular": false,
    "pastreaza_renunta": false,
-   "actiune_dubla": 0,
+   "actiune_dubla": 1,
    "principal_inactiv_fara_motiv": 0
   },
   "c": {
@@ -101,7 +101,9 @@
  },
  "pica": {
   "a": [],
-  "b": [],
+  "b": [
+   "acțiunea principală „Descarcă PDF” apare și în conținut (2 ori pe ecran)"
+  ],
   "c": [
    "1 tabel(e) care nu sunt tabelul DS: fd-tabel"
   ],
@@ -123,8 +125,10 @@
    "motive": []
   },
   "b": {
-   "verdict": "TRECE",
-   "motive": []
+   "verdict": "PICĂ",
+   "motive": [
+    "acțiunea principală „Descarcă PDF” apare și în conținut (2 ori pe ecran)"
+   ]
   },
   "c": {
    "verdict": "PICĂ",

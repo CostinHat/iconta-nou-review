@@ -1,4 +1,4 @@
-Testele care citesc locurile schimbate (grep -lE "stare-goala|LISTE_ASTEA|listeDSAplica|_exportTabel|_lipsuri|_formularul|rezumat-h|fer-tabel|c-adauga|je-salveaza|fn-salveaza|fn-tip|el-adauga|cm-calc|fd-storno-ok|pj-confirma|d301-regen|mig-pasi"), pe P = 802de657.
+Testele care citesc locurile schimbate (grep -lE "stare-goala|LISTE_ASTEA|listeDSAplica|_exportTabel|_lipsuri|_formularul|rezumat-h|fer-tabel|c-adauga|je-salveaza|fn-salveaza|fn-tip|el-adauga|cm-calc|fd-storno-ok|pj-confirma|d301-regen|mig-pasi"), pe P = 802de657 (core: rulat o dată pe 802de657; după P3 = b713a6c4, care schimbă numai padding-ul `.mig-frand`, rulate din nou core/test_lot11_m_ferestre_import.py și core/test_p3_val_b.py, singurele care citesc `.mig-frand`: 63 trecute).
 
 == core/test_*.py: 49 fișiere, rulate o dată pe P (pytest -n 3 --dist loadfile): 644 trecute, 14 xfailed, 4 picate ==
 core/test_395_ordine_formular.py

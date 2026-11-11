@@ -1,4 +1,5 @@
-Verificatorul de design, înainte (vd_inainte/, 463aaca7) → după (vd_dupa/, 802de657), 210 rulări; ferestrele catalogului a căror literă a–h, al căror buton principal, număr de butoane principale, număr de tabele DS (tabele_ds / tabele vechi / liste vechi) sau a căror stare fj-inactiv se schimbă, pe nume:
+Verificatorul de design, înainte (vd_inainte/, 463aaca7) → după (vd_dupa/, b713a6c4), 210 rulări; ferestrele catalogului a căror literă a–h, al căror buton principal, număr de butoane principale, număr de tabele DS (tabele_ds / tabele vechi / liste vechi) sau a căror stare fj-inactiv se schimbă, pe nume:
+- Balanță de verificare F1 1920x1080: litere pică «c» → «bc»
 - Borderou de achiziție F1 1366x768: tabele DS «1» → «0»
 - Borderou de achiziție F1 1920x1080: tabele DS «1» → «0»
 - Casă — dispoziție nouă F1 1366x768: buton principal «Completează: tipul» → «Adaugă»; fj-inactiv «False» → «True»
@@ -35,7 +36,7 @@ Verificatorul de design, înainte (vd_inainte/, 463aaca7) → după (vd_dupa/, 8
 
 Ferestre-rulări cu cel puțin o literă «pică»: înainte 59 → după 59 (din JSON-urile din vd_inainte/ și vd_dupa/).
 
-Fără ferestre care să piardă litera b sau c (înainte → după): 0; câștigă litera b: «Declarație D301 F3 pasul 2» la 1366×768 (principalul din bară devine «Pune în „De depus” →», înainte bara avea 0 butoane principale).
+Pierd litera b sau c (înainte → după): «Balanță de verificare F1» 1920×1080, litera b — fereastră neatinsă de lot, constatare intermitentă (docs/dovezi/17_5_H2/vd_balanta_intermitenta.txt: 6 reluări izolate și rularea pe P2 o dau când da, când nu), aceeași ca în nota lotului 17.5-G; nicio altă fereastră; câștigă litera b: «Declarație D301 F3 pasul 2» la 1366×768 (principalul din bară devine «Pune în „De depus” →», înainte bara avea 0 butoane principale).
 Ferestrele din afara listei care au devenit inactive: niciuna. Citirea celorlalte rânduri:
 - fj-inactiv «False» → «True», dorit de comandă: Casă — dispoziție nouă, Registru jurnal — notă nouă (eticheta rămâne verbul, motivul în bară), Declarație D104 pasul 2, Ore suplimentare F5 (câmpurile «*» goale); Istoric facturi F1 (luna ceasului, fără facturi: «Descarcă PDF» principal inactiv, motiv «Nu există înregistrări de exportat.»).
 - fj-inactiv «False» → «True» fără schimbare de aspect a butonului: Magazin online F1 («Sincronizează acum») și Tipare de erori («Generează analiză AI») erau deja cenușii (aria-disabled dat de ecran); acum marcajul barei se pune și pe aria-disabled, iar motivul dat de ecran apare în bară (înainte bara era fără text: vd_inainte/magazin_online_f1_1366x768.png → vd_dupa/magazin_online_f1_1366x768.png).
