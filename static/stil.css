@@ -686,7 +686,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .mig-frand {
   display: flex; align-items: center; gap: 11px; width: 100%; text-align: left;
   background: var(--alb); border: none; border-bottom: 0.5px solid var(--linie);
-  padding: 13px 15px; font-family: inherit; cursor: pointer; transition: background 0.12s;
+  padding: 6px 15px; font-family: inherit; cursor: pointer; transition: background 0.12s;   /* [17.5-H2] 50 px pe rând: cele 10 pași ai meniului Import date încap în zona ferestrei la 1366×768 (cu 13 px erau 64 px, iar ultimii doi rămâneau sub derulare) */
 }
 .mig-frand:last-child { border-bottom: none; }
 .mig-frand:hover { background: #f3f6fa; }
