@@ -45,7 +45,7 @@ import { cautaInLista } from "./emitere_ecran.js?v=d0a3cb9a62";   /* [lotul 12, 
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=50cade9fc8";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
-import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
+import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
 import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=57d2586d73";  // [p96_import_firma] + [Q4] import in masa
@@ -1494,7 +1494,7 @@ function butoaneSalariat(s, regesOk) {
   const meniu = (id, titlu, butoane) => meniuActiuni(butoane, { id, titlu });
   const dv = (s.de_verificat || []).length;
   return [
-    `<button class="buton-primar" data-flut="${s.id}" data-nume="${esc(nume)}" data-actiune="GET /tenants/{tenant_id}/fluturas/{salariat_id}">Fluturaș</button>`,
+    `<button class="buton-primar" id="ss-fluturas" data-flut="${s.id}" data-nume="${esc(nume)}" data-actiune="GET /tenants/{tenant_id}/fluturas/{salariat_id}">Fluturaș</button>`,
     b("pontaj", "Pontaj", ""),   // deschide pontajul (citire); scrierea e pe zilele lui
     b("cm", "Concediu medical", ""),   // deschide lista certificatelor; „+ Certificat nou” poartă scrierea
     b("susp", (s.suspendari || []).length ? `Suspendare / CFP (${s.suspendari.length})` : "Suspendare / CFP", "PUT /tenants/{tenant_id}/salariati/{salariat_id}"),
@@ -1673,7 +1673,7 @@ async function ecranSalariat(corp, nav, t, sid) {
   const fer = (titlu, fn) => nav.deschide(titlu, fn, { lat: "tabel" });
   const nume = s.nume;
   const on = (cheie, fn) => { const b = corp.querySelector(`#ss-butoane [data-${cheie}]`); if (b) b.addEventListener("click", () => fn(b)); };
-  const bFlut = corp.querySelector("#ss-butoane [data-flut]");
+  const bFlut = corp.querySelector("[data-flut]");
   bFlut.addEventListener("click", async () => {
     try { await descarca(`/tenants/${t.id}/fluturas/${sid}?an=${an}&luna=${luna}`, `fluturas_${an}_${String(luna).padStart(2, "0")}.pdf`); }
     catch (e) { refuzPeRand(bFlut, (e && (e.mesaj || e.message)) || "eroare"); }   // [R131]
@@ -2467,7 +2467,7 @@ function carduriStocuri(corp, nav, r, nirs, deschideNirii) {
   }
   carduri.push({ id: "nir", ton: "info", text: nirs.length ? `${cate(nirs.length, "NIR în luna aleasă", "NIR-uri în luna aleasă")}` : "Niciun NIR în luna aleasă", titlu: "NIR-urile lunii",
     deschide: nirs.length ? deschideNirii : null, motiv: nirs.length ? "" : "Nu e niciun NIR în luna aleasă." });
-  siraCarduri(zona, carduri, nav);
+  siraCarduri(zona, carduri, nav, { sageataSimpla: true });
 }
 
 // [lotul 13, deficiențele 612 și 673, comanda Costin 13.1, verbatim: „612: Inventar (F1) | Rândul cu lipsă e înghesuit (rămas de la 404)”]
@@ -2551,6 +2551,14 @@ async function incarcaSituatiaStocului(corp, t) {
   return r;
 }
 
+// [AC080] opțiunea listei de articole spune stocul VALIDAT, ca ecranul Stocuri; ciornele se spun separat, numai când schimbă cifra
+function textArticolCV(a) {
+  const validat = a.stoc_validat !== null && a.stoc_validat !== undefined && a.stoc_validat !== "";
+  const stoc = validat ? a.stoc_validat : a.stoc;
+  const cmp = validat ? a.cmp_validat : a.cmp;
+  const ciorne = validat && Number(a.miscari_ciorna) > 0 && Number(a.stoc) !== Number(a.stoc_validat);
+  return `${a.denumire} \u00b7 stoc ${cantitate(stoc, a.um)}${cmp ? " \u00b7 CMP " + pretUnitar(cmp) + " lei" : ""}${ciorne ? " \u00b7 cu ciornele " + cantitate(a.stoc, a.um) : ""}`;
+}
 export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 673] `nav`: ferestrele acțiunilor
   const zona = corp.querySelector("#cv-zona");
   // [05.10.2026, pct.10] situația se reîmprospătează odată cu formularele
@@ -2570,7 +2578,7 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
         <input type="text" id="cv-art-cauta" class="camp-input" placeholder="Caută articolul în stoc…" aria-label="Caută articolul" autocomplete="off" style="min-width:180px">
         <select id="cv-art" aria-label="Articol" class="camp-input" style="min-width:200px">
           <option value="">\u2014 articol nou \u2014</option>
-          ${arts.map((a) => `<option value="${a.id}">${esc(a.denumire)} \u00b7 stoc ${esc(cantitate(a.stoc, a.um))}${a.cmp ? " \u00b7 CMP " + pretUnitar(a.cmp) + " lei" : ""}${a.barcode ? " \u00b7 cod " + esc(a.barcode) : ""}</option>`).join("")}
+          ${arts.map((a) => `<option value="${a.id}">${esc(textArticolCV(a))}${a.barcode ? " \u00b7 cod " + esc(a.barcode) : ""}</option>`).join("")}
         </select>
         <input type="text" id="cv-den" class="camp-input" placeholder="denumire (articol nou)" aria-label="Denumire articol nou" style="flex:1;min-width:160px">
         <input type="date" id="cv-data" aria-label="Data document" class="camp-input" value="${dataIso()}">
@@ -2924,12 +2932,12 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
       const abc = (r.abc || []).map((x) => `
         <div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(x.denumire)} · clasa ${esc(x.clasa)}</div>
-          <div class="pf-frand-sub">valoare stoc ${bani(x.valoare)} lei · cumulat ${x.pondere_cumulata}%</div>
+          <div class="pf-frand-sub">valoare stoc ${bani(x.valoare)} lei · cumulat ${pct(Math.round(Number(x.pondere_cumulata) * 10) / 10)}</div>
         </div></div>`);
       const consum = (r.consum || []).map((x) => `
         <div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(x.denumire)}</div>
-          <div class="pf-frand-sub">ieșiri ultimele 30 zile ${x.iesiri_30z} ${esc(x.um)} · 30 zile anterioare ${x.iesiri_30z_anterior} ${esc(x.um)}</div>
+          <div class="pf-frand-sub">ieșiri ultimele 30 zile ${esc(cantitate(x.iesiri_30z, x.um))} · 30 zile anterioare ${esc(cantitate(x.iesiri_30z_anterior, x.um))}</div>
         </div></div>`);
       locZona.innerHTML = `
         <div class="pf-card" data-zona-derulare>
@@ -7493,7 +7501,7 @@ async function ecranRapoarte(corp, nav, t) {
       </section>
       <p class="bara-fixa">   <!-- [lotul 10, 421/424] salvarea variantei și mesajul ei, lipite jos -->
         <input class="camp-input" id="r-var-nume" aria-label="Nume variantă" placeholder="Nume variantă (ex. Anul curent, client X)" style="max-width:320px" maxlength="80" autocomplete="off">
-        <button class="buton-primar" id="r-var-salveaza" data-actiune="POST /tenants/{tenant_id}/rapoarte-salvate" style="margin-left:6px">Salvează varianta curentă</button>
+        <button class="buton-secundar" id="r-var-salveaza" data-actiune="POST /tenants/{tenant_id}/rapoarte-salvate" style="margin-left:6px">Salvează varianta curentă</button>
         <span class="msg-eroare" id="r-var-msg" style="margin-left:8px"></span>
       </p>
       <div id="r-var-zona"></div>`;

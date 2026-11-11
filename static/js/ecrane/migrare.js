@@ -140,7 +140,7 @@ function _inlocuire409(e, inlocuieste, zona, textOk, salveaza) {
   return true;
 }
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687]
+import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687]
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] meniul de import fără niciun pas permis spune de ce */
 
 // [drepturi_rol 04.10.2026] `actiune` = ruta care FACE pasul (METODĂ /cale, ca în main.py). Ghidul de bun venit
@@ -2464,7 +2464,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=da8050724c"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=26a8694365"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat

@@ -53,7 +53,7 @@ export const ECRANE = {
   // [15.1-E3, 728.1 / 735] „Contabilizează statul de plată” (constatarea de control fiscal) deschide Salariați, unde se face contarea statului
   salarii: {
     titlu: "Salariați",
-    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=da8050724c"); await deschideSalariati(nav, tenantId); },
+    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=26a8694365"); await deschideSalariati(nav, tenantId); },
   },
   conectare_spv: {
     titlu: "Conectare SPV",

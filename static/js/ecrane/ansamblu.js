@@ -16,7 +16,7 @@ import { api, esc, semnAjutor, inchidereDialog, cate } from "../api.js?v=7396e03
 import { STRATURI } from "./migrare.js?v=57d2586d73";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { siraCarduri } from "../carduri.js?v=98c15a1738";
+import { siraCarduri } from "../carduri.js?v=83757ff6e9";
 
 // [deficiența 230, comanda Costin 12.10.2026] numărul pasului e poziția lui în firul AFIȘAT, nu `nr` din STRATURI: pentru asistent
 // pasul „Firme” e al administratorului și lipsește, iar firul începea de la „2”.

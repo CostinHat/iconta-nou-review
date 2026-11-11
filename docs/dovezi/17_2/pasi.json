@@ -221,7 +221,7 @@
    "id": "e.1",
    "pas": "salariat",
    "operator": "nr_randuri",
-   "valoare": "13",
+   "valoare": "12",
    "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > *|numar"
   },
   {
@@ -236,14 +236,14 @@
    "pas": "salariat",
    "operator": "egal",
    "valoare": "+ Beneficiu",
-   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > details#ss-benef:nth-child(7) > summary|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > details#ss-benef:nth-child(6) > summary|text"
   },
   {
    "id": "e.4",
    "pas": "salariat",
    "operator": "egal",
    "valoare": "Mai multe",
-   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > details#ss-mai-multe:nth-child(13) > summary|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > details#ss-mai-multe:nth-child(12) > summary|text"
   },
   {
    "id": "e.5",
@@ -285,14 +285,14 @@
    "pas": "salariat",
    "operator": "egal",
    "valoare": "Date de calcul",
-   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(8)|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(7)|text"
   },
   {
    "id": "e.11",
    "pas": "salariat",
    "operator": "egal",
    "valoare": "Corectează datele",
-   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(9)|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(8)|text"
   },
   {
    "id": "e.12",
@@ -312,7 +312,7 @@
    "id": "e.14",
    "pas": "inapoi",
    "operator": "nr_randuri",
-   "valoare": "13",
+   "valoare": "12",
    "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > *|numar"
   },
   {
@@ -389,7 +389,7 @@
    "id": "f.11",
    "pas": "salariat",
    "operator": "nr_randuri",
-   "valoare": "19",
+   "valoare": "18",
    "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane button|numar"
   },
   {
@@ -397,7 +397,7 @@
    "pas": "salariat",
    "operator": "nr_randuri",
    "valoare": "1",
-   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > [data-flut]|numar"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos [data-flut]|numar"
   },
   {
    "id": "f.13",
@@ -425,14 +425,14 @@
    "pas": "salariat",
    "operator": "egal",
    "valoare": "Fluturaș",
-   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(1)|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-jos [data-flut]|text"
   },
   {
    "id": "f.17",
    "pas": "salariat",
    "operator": "egal",
    "valoare": "Salariu",
-   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(6)|text"
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane > button:nth-child(5)|text"
   },
   {
    "id": "f.18",

@@ -155,7 +155,8 @@ const NU_MUTA = new Set([
   "coada-confirma",           // static/js/ecrane/coada_trimite.js:80 (zona.querySelector)
   "coada-deja-inlocuieste",   // static/js/ecrane/coada_trimite.js:99 (b.querySelector)
 ]);
-const _nuSeMuta = (b) => !b.id || NU_MUTA.has(b.id);
+// [AC182] „Trimite sesizarea” din fereastra Suport (#rap-zona-sesizare) se mută în bară ca orice acțiune găsită de catalog; „Trimite” din Panou Admin › Raportări (același id) rămâne în fereastră
+const _nuSeMuta = (b) => !b.id || (NU_MUTA.has(b.id) && !b.closest("#rap-zona-sesizare"));
 
 // un buton dintr-un `<details>` închis nu se vede, dar există și poate fi acțiunea ferestrei: se judecă după `<details>`-ul lui, nu după el
 const _vizibilSauInDetails = (b) => {
@@ -215,7 +216,7 @@ const MOTIV_FARA_INREGISTRARI = "Nu există înregistrări de exportat.";
 // [17.5, 791 / 793] când fereastra are un singur buton principal al ei (eligibil, `buton-primar`, altul decât „Descarcă PDF”), acela e acțiunea ferestrei: PDF-ul de
 // rezervă nu mai e ales. Aici rezumatul lipit sus (`.rezumat-fix`) nu exclude butonul: „Fluturaș” al fișei salariatului stă în `#ss-butoane`, în rezumat. Mai multe sau
 // niciunul: rezerva rămâne. Ferestrele din EXPORT_PDF rămân cu PDF-ul (la ele chiar el e acțiunea). Butonul ales trece prin drumul unuia găsit de catalog (`__catalog`: cu id în
-// afara NU_MUTA se mută în bară, fără id rămâne în fereastră și în bară stă un proxy): „Fluturaș” rămâne în #ss-butoane (oracolul X07, e.1: 13 copii direcți; e2e_pilot_luna îl apasă acolo).
+// afara NU_MUTA se mută în bară, fără id rămâne în fereastră și în bară stă un proxy): „Fluturaș” (id ss-fluturas) se mută în bară, ca singura copie (AC108; oracolul X07, e.1: 12 copii direcți).
 function _exportTabel(corp, bara, liber) {
   const eligibil = _eligibilPrincipal(bara, liber, true);
   const proprii = [...corp.querySelectorAll("button.buton-primar")].filter((b) => eligibil(b) && _normalizeaza(b.textContent) !== "Descarcă PDF");
@@ -244,6 +245,9 @@ function _pdfulFerestrei(corp, bara, liber) {
   const eligibil = _eligibilPrincipal(bara, liber, true);
   const propriu = [...corp.querySelectorAll("button")].find((b) => eligibil(b) && _vizibil(b) && /^Descarcă PDF(?=\s|$)/.test(_normalizeaza(b.textContent)));
   if (propriu) { propriu.__catalog = true; return propriu; }
+  // [AC183] butonul propriu al ferestrei, ajuns în bară, rămâne acțiunea (nu e înlocuit de exportul de rezervă, altfel cele două s-ar schimba la fiecare cadru)
+  const dinBara = [...bara.querySelectorAll(".fj-butoane .fj-principal")].find((b) => b.isConnected && !b.__sursa && b !== corp.__exportPdf && /^Descarcă PDF(?=\s|$)/.test(_normalizeaza(b.textContent)));
+  if (dinBara) return dinBara;
   return _exportPdf(corp);
 }
 
@@ -288,7 +292,7 @@ export function baraDeJos(fer, corp, { renunta }) {
     // acțiunea de bară care are un original în ecran (găsit de catalog): dacă originalul a dispărut sau nu se mai vede, și butonul din bară pleacă odată cu el
     if (principal && principal.__sursa && (!principal.__sursa.isConnected || !_vizibil(principal.__sursa))) { principal.remove(); principal = null; }
     // [17.5-F, 822] acțiunea mutată din ecran pe care ecranul a ascuns-o (`hidden`) se întoarce la locul ei și bara rămâne liberă pentru acțiunea următoare a ferestrei
-    if (principal && !principal.__sursa && principal.hidden) {
+    if (principal && !principal.__sursa && (principal.hidden || (principal.__origine && principal.__origine.parentElement && principal.__origine.parentElement.closest("[hidden]")))) {   // [AC182] și când panoul de unde a venit (tabul) s-a ascuns
       const urma = principal.__origine;
       if (urma && urma.isConnected) { principal.classList.remove("fj-principal"); principal.removeAttribute("data-actiune-principala"); principal.__retras = true; urma.after(principal); }
       else principal.remove();
@@ -312,7 +316,7 @@ export function baraDeJos(fer, corp, { renunta }) {
       }
       principal = candidat;
       principal.__formular = _formularul(principal.__sursa || candidat);   // înainte de mutare
-      if (!principal.__sursa) principal.__origine = _urma(candidat);   // locul lui din ecran; dacă ecranul îl redesenează, urma dispare și acțiunea e veche
+      if (!principal.__sursa && principal !== corp.__exportPdf) principal.__origine = _urma(candidat);   // [AC183] exportul de rezervă n-are loc de origine în pagină: o urmă pusă lângă un nod detașat n-ar fi niciodată legată, iar curățarea de mai sus l-ar scoate la fiecare cadru;   // locul lui din ecran; dacă ecranul îl redesenează, urma dispare și acțiunea e veche
       principal.classList.add("fj-principal", "buton-primar");   // butonul principal L: clasa piesei, oricum a fost desenat în ecran
       principal.classList.remove("buton-secundar", "buton-s", "buton-xs", "buton-mic");
       principal.setAttribute("data-actiune-principala", "");   // [15.1-E5] pe orice fereastră: exact un buton cu atributul

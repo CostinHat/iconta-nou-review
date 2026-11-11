@@ -1241,7 +1241,7 @@ def test_pilot_22_contabilizarea_statului_si_fluturasul(patron, firma_pilot):
     pg = _stat_09(patron, f)
     _salariat(pg, SAL1["nume"])   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
     with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-        pg.click(_F + "#ss-butoane [data-flut]")
+        pg.click(_F + "[data-flut]")
     assert rr.value.status == 200, rr.value.status
     b64 = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
       const x = await fetch(u, {headers: {'Authorization': 'Bearer ' + t}}); const b = new Uint8Array(await x.arrayBuffer());

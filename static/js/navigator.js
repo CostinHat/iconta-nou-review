@@ -12,7 +12,7 @@ import { uitaFereastra, memoreazaFereastra, memoreazaCampul } from "./restaurare
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=7396e03327";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
-import { baraDeJos } from "./cadru.js?v=e2a7e8cced";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+import { baraDeJos } from "./cadru.js?v=32ba121b6a";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
 import { puneCautarea } from "./cautare.js?v=40db9aeffa";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
@@ -58,9 +58,12 @@ function contextBara(u) {
 // Gard: verificator INTOARCERE_DIN_REFUZ + `core/test_lot11_u0_intoarcere.py` (în browser) + e2e `test_def_445_*`.
 let _dinRefuz = 0;
 function _butonInapoi(sus, areInapoi) {
+  const optiuni = sus.optiuni || {};
+  if (optiuni.lat === "mic") return "";   // [AC143] fereastra mică de confirmare n-are „←”: renunțarea e „✕” sau „Renunță”
   const ascuns = areInapoi ? "" : ' style="display:none"';
   if (sus.intoarcere && sus.intoarcere.titlu && !(sus.pasi && sus.pasi.length)) {
     const t = esc("Înapoi la " + sus.intoarcere.titlu);
+    if (optiuni.sageataSimpla) return `<button class="nav-sageata nav-inapoi" title="${t}" aria-label="${t}"${ascuns}><span aria-hidden="true">←</span></button>`;   // [AC180] fereastra unui card: numai săgeata, destinația stă în aria-label și title
     return `<button class="nav-sageata nav-inapoi nav-inapoi-la" title="${t}" aria-label="${t}"${ascuns}><span aria-hidden="true">←</span><span>${t}</span></button>`;
   }
   return `<button class="nav-sageata nav-inapoi" title="Înapoi" aria-label="Înapoi"${ascuns}><span aria-hidden="true">←</span></button>`;
@@ -857,7 +860,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=7396e03327");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=da8050724c");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=26a8694365");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();

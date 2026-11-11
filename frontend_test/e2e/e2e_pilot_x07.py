@@ -70,7 +70,7 @@ JS_FISA = """() => {
   const F = document.querySelector('.fereastra-overlay:not(.fundal)'); const bt = F && F.querySelector('#ss-butoane'); if (!bt) return {fisa: false};
   const det = (id) => { const d = bt.querySelector('#' + id); return d ? {tag: d.tagName, deschis: d.hasAttribute('open'), butoane: d.querySelectorAll('button').length, summary: ((d.querySelector('summary') || {}).textContent || '').trim()} : null; };
   return {fisa: true, copii: bt.children.length, butoane: bt.querySelectorAll('button').length, benef: det('ss-benef'), maiMulte: det('ss-mai-multe'),
-          directe: ['flut', 'cm', 'iban', 'date'].map((k) => !!bt.querySelector(':scope > [data-' + k + ']'))};
+          directe: ['cm', 'iban', 'date'].map((k) => !!bt.querySelector(':scope > [data-' + k + ']'))};
 }"""
 
 
@@ -236,8 +236,8 @@ def test_pilot_X07(browser, monkeypatch):
     if not m["asi_edit"]:
         rele.append("Asistenți: „Editează” nu a deschis fereastra „Editează — <nume>”")
     f = m["fisa"]
-    if not f.get("fisa") or f["copii"] != 13 or f["butoane"] != 19 or not all(f["directe"]):
-        rele.append("fișa: %s (așteptat 13 copii, 19 butoane, flut/cm/iban/date direct)" % f)
+    if not f.get("fisa") or f["copii"] != 12 or f["butoane"] != 18 or not all(f["directe"]):
+        rele.append("fișa: %s (așteptat 12 copii, 18 butoane, cm/iban/date direct; „Fluturaș” e în bara de jos)" % f)
     else:
         for cheie, n in (("benef", 5), ("maiMulte", 3)):
             d = f[cheie]

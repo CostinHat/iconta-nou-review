@@ -9,7 +9,7 @@
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
 import { cardRezumat, rezumatHtml } from "../ds_piese.js?v=e115d72f0f";   // [15.1, F-A.1] caseta SPV de după emitere
 import { api, ultimaCerere, pastreazaCampulActiv, arataMesaj, cate, bani, cursValutar, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor, dataIso, cantitate, confirmaCaseta, focusFaraSalt, aduInVedere, numarCuSerie, arataRefuzul, cereCompletate } from "../api.js?v=7396e03327";
-import { siraCarduri } from "../carduri.js?v=98c15a1738";
+import { siraCarduri } from "../carduri.js?v=83757ff6e9";
 import { textStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { optiuniTara as _optiuniTara, taraDinCui, nepotrivireTara } from "./tari_partener.js?v=47a26608a6";   // [lotul 12, C160] sursa unică

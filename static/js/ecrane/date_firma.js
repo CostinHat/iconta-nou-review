@@ -7,7 +7,7 @@
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
 import { api, arataMesaj, esc, eroareCamp, curataEroriCamp, dataRo, alegeDacaLipseste, focusFaraSalt, cate, confirmaCaseta, refuzPeRand, bani, arataRefuzul, numarCuSerie, atributeInactiv, numarRo } from "../api.js?v=7396e03327";
-import { siraCarduri } from "../carduri.js?v=98c15a1738";
+import { siraCarduri } from "../carduri.js?v=83757ff6e9";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.

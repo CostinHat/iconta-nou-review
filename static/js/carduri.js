@@ -16,9 +16,10 @@ import { esc } from "./api.js?v=7396e03327";
  *   titlu    — titlul ferestrei deschise (implicit `text`);
  *   deschide — desenează conținutul ferestrei cardului; fără el cardul e inactiv (rămâne la locul lui, `motiv` la trecerea cu mouse-ul);
  *   motiv    — de ce un card e inactiv sau ce spune pe scurt (atributul `title`).
+ * opt (opțional): `{ sageataSimpla: true }` — ferestrele cardurilor au săgeata fără text (regula X05), destinația stă în aria-label și title.
  * Întoarce elementul șirului. `zona` = elementul în care se desenează (înlocuiește conținutul).
  */
-export function siraCarduri(zona, carduri, nav) {
+export function siraCarduri(zona, carduri, nav, opt) {
   if (!zona) return null;
   const lista = (carduri || []).filter(Boolean);
   zona.className = ((zona.className || "").replace(/\bsir-carduri\b/g, "").trim() + " sir-carduri").trim();
@@ -27,7 +28,7 @@ export function siraCarduri(zona, carduri, nav) {
   lista.forEach((c) => {
     const b = zona.querySelector(`[data-card="${CSS.escape(c.id || "")}"]`);
     if (!b || !c.deschide) return;
-    b.addEventListener("click", () => { if (nav.dinRefuz) nav.dinRefuz(); nav.deschide(c.titlu || c.text, (corp) => c.deschide(corp, nav), { lat: "lucru" }); });   // dinRefuz: fereastra de dedesubt se păstrează (luna aleasă, filtrele), „înapoi” o regăsește
+    b.addEventListener("click", () => { if (nav.dinRefuz) nav.dinRefuz(); nav.deschide(c.titlu || c.text, (corp) => c.deschide(corp, nav), { lat: "lucru", ...(opt && opt.sageataSimpla ? { sageataSimpla: true } : {}) }); });   // dinRefuz: fereastra de dedesubt se păstrează (luna aleasă, filtrele), „înapoi” o regăsește
   });
   return zona;
 }

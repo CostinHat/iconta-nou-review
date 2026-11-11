@@ -33,9 +33,9 @@ import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu }
 import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";
 import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=e115d72f0f";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=da8050724c";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=26a8694365";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
-import { siraCarduri } from "../carduri.js?v=98c15a1738";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
+import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
 // [Retest 2, pct.7] „«total 0,00 lei» la notele de stornare + reînregistrare. Se afișează rulajul notei.” Partea în roșu și partea
 // înregistrată, fiecare cu suma ei; o notă fără stornare are un singur rulaj. (Payload-urile vechi, fără `rulaj`, arată totalul.)
