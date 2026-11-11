@@ -27,8 +27,7 @@ def deschide_salariat_id(ecran, sid):
 
 def buton(ecran, cheie):
     """Un buton al fereastra salariatului (`data-<cheie>`), apăsat: fiecare deschide o fereastră nouă (673)."""
-    # „Fluturaș” (flut) e singurul din bara de jos (AC108): fără prefixul #ss-butoane
-    ecran.pg.click(_F + ("[data-flut]" if cheie == "flut" else "#ss-butoane [data-%s]" % cheie))
+    ecran.pg.click(_F + "#ss-butoane [data-%s]" % cheie)
 
 
 def alege(ecran, camp, valoare):

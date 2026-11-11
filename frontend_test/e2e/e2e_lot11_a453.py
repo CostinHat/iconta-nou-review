@@ -28,7 +28,7 @@ def _pdf_fluturas(patron):
     if not pg.locator(_F + "#ss-butoane").count():   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
         deschide_salariat(patron)
     with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-        buton(patron, "flut")
+        patron.pg.click(".fereastra:last-of-type [data-flut]")
     assert rr.value.status == 200, rr.value.status
     b64 = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
       const x = await fetch(u, {headers: {'Authorization': 'Bearer ' + t}}); const b = new Uint8Array(await x.arrayBuffer());

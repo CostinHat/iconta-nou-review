@@ -512,7 +512,7 @@ def test_def_9_asistentul_vede_pdf_chitanta_si_fluturasul(browser, request, patr
         from e2e_lot13_sal_ajutor import buton, deschide_salariat
         deschide_salariat(e)   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
         with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-            buton(e, "flut")
+            e.pg.click(".fereastra:last-of-type [data-flut]")
         _pdf_ok(e, rr)
         e.captura("fluturas")
         # [retestul 09.10, pct.7: directorul separat al bonurilor] fotografia bonului, pe drumul ecranului (`pozaUrl`: cererea imaginii)

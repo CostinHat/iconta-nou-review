@@ -763,7 +763,7 @@ def test_pozitie_f087_fluturasul_si_nota_statului_au_netul_statului(patron, firm
     from e2e_lot13_sal_ajutor import buton, deschide_salariat, inchide
     deschide_salariat(patron)   # [lotul 13, 677] „Fluturaș” e butonul ferestrei salariatului
     with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-        buton(patron, "flut")
+        patron.pg.click(".fereastra:last-of-type [data-flut]")
     text, _titlu = _pdf_text(_pdf_ok(patron, rr))
     inchide(patron)
     patron.captura("fluturas")

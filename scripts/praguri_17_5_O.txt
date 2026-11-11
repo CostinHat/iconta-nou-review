@@ -4,7 +4,7 @@ max hook 132
 max poarta_verificator 117
 max poarta_pytest 742
 max poarta_plasa 2213
-plasa_modificabile frontend_test/e2e/e2e_pilot_luna.py frontend_test/e2e/e2e_pilot_x07.py
+plasa_modificabile frontend_test/e2e/e2e_pilot_luna.py frontend_test/e2e/e2e_pilot_x07.py frontend_test/e2e/e2e_pozitii_validate.py
 runde_verificator_max: 2
 sursa pragurilor 17.5-O: generate de scripts/praguri_automate.py la 2026-11-11T05:29:58+02:00 din .lot_jurnal.log; loturi folosite: 17.5-F, 17.5-G3, 17.5-H2 (3)
   hook: maxim 110 s (lotul 17.5-F, rularea 678194-1794306324798) din 14 rulari complete, 0 rulari «intrerupt» ignorate, prag 132 s
@@ -24,7 +24,10 @@ fisiere_permise:
   frontend_test/e2e/e2e_pilot_luna.py (numai selectorul butonului «Fluturaș» de la :1244, AC108, pct.8.5; în plasa_modificabile)
   frontend_test/e2e/e2e_pilot_x07.py (numai așteptările rândului de butoane al fișei salariatului, :239 și JS_FISA: 12 copii, 18 butoane, «flut» nu mai e copil direct, AC108, pct.8.5; în plasa_modificabile)
   docs/dovezi/17_2/pasi.json (numai cheia și valoarea celor zece aserțiuni de pe #ss-butoane: e.1, e.3, e.4, e.10, e.11, e.14, f.11, f.12, f.16, f.17, AC108, pct.5(b))
-  frontend_test/e2e/e2e_lot13_sal_ajutor.py (numai helperul buton, :28–30: selector fără #ss-butoane pentru cheia flut, AC108, pct.8.5; nu e în manifestul plasei fixe)
+  frontend_test/e2e/e2e_pozitii_validate.py (numai apelul buton(..., "flut") de la :766, înlocuit cu clicul direct pe [data-flut], AC108, corecția 2; în plasa_modificabile)
+  frontend_test/e2e/e2e_bloc_a.py (numai apelul buton(e, "flut") de la :515, înlocuit cu clicul direct pe [data-flut], AC108, corecția 2)
+  frontend_test/e2e/e2e_bloc_b.py (numai apelul buton(patron, "flut") de la :997, înlocuit cu clicul direct pe [data-flut], AC108, corecția 2)
+  frontend_test/e2e/e2e_lot11_a453.py (numai apelul buton(patron, "flut") de la :31, înlocuit cu clicul direct pe [data-flut], AC108, corecția 2)
   frontend_test/e2e/e2e_lot13_sal.py (numai poziția de la :206: seturi[0][5:10] în loc de [6:11], AC108, pct.8.5; nu e în manifestul plasei fixe)
   static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
   static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)

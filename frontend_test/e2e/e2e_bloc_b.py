@@ -994,7 +994,7 @@ def _text_fluturas(patron, firma):
     from e2e_lot13_sal_ajutor import buton, deschide_salariat
     deschide_salariat(patron)   # [lotul 13, 677] „Fluturaș” e butonul fereastra salariatului
     with pg.expect_response(lambda r: "/fluturas/" in r.url, timeout=30000) as rr:
-        buton(patron, "flut")
+        patron.pg.click(".fereastra:last-of-type [data-flut]")
     r = rr.value
     assert r.status == 200, r.status
     b64 = pg.evaluate("""async (u) => { const t = sessionStorage.getItem('iconta_token');
