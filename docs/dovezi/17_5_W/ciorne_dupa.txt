@@ -1,3 +1,3 @@
 .                                                                        [100%]
-1 passed in 29.28s
-durata: 47 s (e2e_poarta.py --doar, commit 98478f4a)
+1 passed in 28.07s
+durata: 46 s (e2e_poarta.py --doar, commit d4bd1276)

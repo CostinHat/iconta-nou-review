@@ -39,9 +39,9 @@
    },
    "exceptie": null,
    "butoane_principale": 1,
-   "actiune_principala": "Pune în „De depus” →",
+   "actiune_principala": "Trimite în coadă →",
    "cu_atribut": [
-    "Pune în „De depus” →"
+    "Trimite în coadă →"
    ],
    "renunta": false,
    "din_formular": false,
@@ -59,17 +59,13 @@
   "d": {
    "rezumat_ds": 1,
    "semnale_ds": 0,
-   "carduri_vechi": 3,
-   "paragrafe_lungi": [
-    "după modificări, regenerează pentru a revalida.…"
-   ],
+   "carduri_vechi": 2,
+   "paragrafe_lungi": [],
    "rezumate_la_vedere": 1,
    "fara_buton": []
   },
   "e": {
-   "in_text": [
-    "Regenerează D301"
-   ],
+   "in_text": [],
    "casete_cu_actiuni": []
   },
   "f": {
@@ -86,18 +82,9 @@
    "azi_acum": []
   },
   "h": {
-   "liste_sub_7": [
-    "d301-tip (6)",
-    "d301-cota (4)"
-   ],
-   "alege": [
-    "d301-tip",
-    "d301-valuta",
-    "d301-cota"
-   ],
-   "cota_tva_ca_lista": [
-    "d301-cota"
-   ],
+   "liste_sub_7": [],
+   "alege": [],
+   "cota_tva_ca_lista": [],
    "grupuri_butoane": 0,
    "liste_cu_cautare": 0,
    "liste_inlocuite": 0
@@ -108,19 +95,12 @@
   "b": [],
   "c": [],
   "d": [
-   "3 avertismente/semnale care nu sunt piese DS (ecran-nota, caseta-info, dec-avert-cap)",
-   "1 paragraf(e) explicativ(e) de peste un rând, nepliate: „după modificări, regenerează pentru a revalida.…”"
+   "2 avertismente/semnale care nu sunt piese DS (caseta-info, dec-avert-cap)"
   ],
-  "e": [
-   "acțiune în mijlocul unui text: Regenerează D301"
-  ],
+  "e": [],
   "f": [],
   "g": [],
-  "h": [
-   "listă derulantă cu sub 7 variante: d301-tip (6), d301-cota (4)",
-   "„— alege —” / opțiune goală în: d301-tip, d301-valuta, d301-cota",
-   "cota TVA e listă derulantă, nu grup de alegere: d301-cota"
-  ]
+  "h": []
  },
  "ecran": "Declarație D301 F3 pasul 2",
  "rezolutie": "1920x1080",
@@ -144,15 +124,12 @@
   "d": {
    "verdict": "PICĂ",
    "motive": [
-    "3 avertismente/semnale care nu sunt piese DS (ecran-nota, caseta-info, dec-avert-cap)",
-    "1 paragraf(e) explicativ(e) de peste un rând, nepliate: „după modificări, regenerează pentru a revalida.…”"
+    "2 avertismente/semnale care nu sunt piese DS (caseta-info, dec-avert-cap)"
    ]
   },
   "e": {
-   "verdict": "PICĂ",
-   "motive": [
-    "acțiune în mijlocul unui text: Regenerează D301"
-   ]
+   "verdict": "TRECE",
+   "motive": []
   },
   "f": {
    "verdict": "TRECE",
@@ -163,12 +140,8 @@
    "motive": []
   },
   "h": {
-   "verdict": "PICĂ",
-   "motive": [
-    "listă derulantă cu sub 7 variante: d301-tip (6), d301-cota (4)",
-    "„— alege —” / opțiune goală în: d301-tip, d301-valuta, d301-cota",
-    "cota TVA e listă derulantă, nu grup de alegere: d301-cota"
-   ]
+   "verdict": "TRECE",
+   "motive": []
   }
  }
 }

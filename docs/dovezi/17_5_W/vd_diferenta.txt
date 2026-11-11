@@ -5,5 +5,4 @@
 105c105
 < Declarație D301 F3 pasul 2                           ...d....   ...de..h 
 ---
-> Declarație D301 F3 pasul 2                           ...de..h   ...de..h 
-# Notă: diferențele sunt pe ferestrele «Panou Admin — Sănătate server» și «Declarație D301 F3 pasul 2», neatinse de lot și instabile în verificatorul de design și pe main (PREDARE_LANT, lotul 17.5-O). Cele două ferestre ale lotului («Control fiscal (firmă) F1», «Coada de declarații F1») nu diferă.
+> Declarație D301 F3 pasul 2                           ...d....   ...d.... 
