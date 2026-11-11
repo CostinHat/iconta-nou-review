@@ -1,0 +1,6 @@
+[lacat_test] lacăt preluat de la pid 1097804 (mort sau refolosit)
+[baza] 1900 teste, 2 picate; trepte {'verificator': 93.3, 'pytest': 484.7, 'plasa_e2e': 1833.3}; scris docs/dovezi/17_5_W/baza.json
+
+real	43m7.162s
+user	15m35.845s
+sys	2m14.292s
