@@ -1,0 +1,38 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________________________ test_ferestre_17_5_O _____________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_ferestre_17_5_O(browser):
+        from core import ceas_proba
+        parcurs = _incarca_parcurs_17_1()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768}, accept_downloads=True)
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+            _sectiune(rele, "NIR-urile lunii (AC180)", _nir, pg, parcurs)
+            _sectiune(rele, "Rapoarte comerciale F1 (AC181)", _rapoarte, pg, parcurs)
+            _sectiune(rele, "Fișa salariatului F5 (AC108)", _salariat, pg, parcurs)
+            _sectiune(rele, "Fereastra mică Stornează factura (AC143)", _storno, pg, parcurs)
+            _sectiune(rele, "Mișcări și fișe de magazie F1 (AC080)", _miscari, pg, parcurs)
+            _sectiune(rele, "Analitică stoc F1 (AC081)", _analitica, pg, parcurs)
+            _sectiune(rele, "Suport (AC182)", _suport, pg, parcurs)
+            _sectiune(rele, "Stabilitatea barei de jos (AC183)", _stabilitate, pg, parcurs)
+        finally:
+            b.close()
+>       assert not rele, "ferestrele 17.5-O: " + "; ".join(rele)
+E       AssertionError: ferestrele 17.5-O: AC180 / e.1: săgeata ferestrei de card are textul '←Înapoi la Stocuri' (așteptat numai «←»; textul «Înapoi la Stocuri» e în aria-label și title); AC181 / e.2: Rapoarte comerciale F1 are 2 butoane principale vizibile (așteptat 1: «Descarcă PDF»): [{'id': 'r-var-salveaza', 'text': 'Salvează varianta curentă'}, {'id': '', 'text': 'Descarcă PDF'}]; AC181 / e.2: «Salvează varianta curentă» are clasa 'buton-primar' (așteptat buton-secundar, fără buton-primar); AC108 / e.3: Fișa salariatului F5 are 2 butoane «Fluturaș» vizibile (așteptat 1, în bara de jos): [{'clasa': 'buton-secundar', 'in_bara': False}, {'clasa': 'fj-principal buton-primar', 'in_bara': True}]; AC108 / e.3: rândul de butoane #ss-butoane mai conține «Fluturaș»; AC143 / e.4: fereastra mică «Stornează factura» are 1 săgeți «←» vizibile (așteptat 0: «✕» și «Renunță» rămân); AC080 / e.5: opțiunea articolului Cafea boabe e 'Cafea boabe · stoc 2,5 buc · CMP 36,00 lei', așteptat să înceapă cu 'Cafea boabe · stoc 0 buc' (stocul VALIDAT, ca în Stocuri); AC080 / e.5: opțiunea articolului Carte tehnica e 'Carte tehnica · stoc 7 buc · CMP 29,2857 lei', așteptat să înceapă cu 'Carte tehnica · stoc 0 buc' (stocul VALIDAT, ca în Stocuri); AC080 / e.5: opțiunea articolului grau e 'grau · stoc 210 kg · CMP 1,00 lei', așteptat să înceapă cu 'grau · stoc 0 kg' (stocul VALIDAT, ca în Stocuri); AC080 / e.5: opțiunea articolului Marfa A e 'Marfa A · stoc 145 buc · CMP 51,9606 lei', așteptat să înceapă cu 'Marfa A · stoc 122 buc' (stocul VALIDAT, ca în Stocuri); AC080 / e.5: opțiunea articolului Marfa B e 'Marfa B · stoc 22 buc · CMP 27,50 lei', așteptat să înceapă cu 'Marfa B · stoc 1 buc' (stocul VALIDAT, ca în Stocuri); AC080 / e.5: opțiunea articolului Marfa C e 'Marfa C · stoc 18 buc · CMP 48,8889 lei', așteptat să înceapă cu 'Marfa C · stoc 0 buc' (stocul VALIDAT, ca în Stocuri); AC081 / e.6: consumul articolului Carte tehnica nu e scris cu cantitate(): lipsește 'ieșiri ultimele 30 zile 1 buc · 30 zile anterioare 0 buc'; AC081 / e.6: consumul articolului Marfa A nu e scris cu cantitate(): lipsește 'ieșiri ultimele 30 zile 11 buc · 30 zile anterioare 14 buc'; AC081 / e.6: consumul articolului Marfa B nu e scris cu cantitate(): lipsește 'ieșiri ultimele 30 zile 1 buc · 30 zile anterioare 0 buc'; AC081 / e.6: consumul articolului Marfa C nu e scris cu cantitate(): lipsește 'ieșiri ultimele 30 zile 2 buc · 30 zile anterioare 0 buc'; AC081 / e.6: ABC al articolului Marfa A nu e scris cu pct(): lipsește 'cumulat 79,1%'; AC081 / e.6: ABC al articolului Marfa C nu e scris cu pct(): lipsește 'cumulat 88,4%'; AC081 / e.6: ABC al articolului Marfa B nu e scris cu pct(): lipsește 'cumulat 94,7%'; AC081 / e.6: ABC al articolului grau nu e scris cu pct(): lipsește 'cumulat 96,9%'; AC081 / e.6: ABC al articolului Carte tehnica nu e scris cu pct(): lipsește 'cumulat 99,1%'; AC081 / e.6: ABC al articolului Cafea boabe nu e scris cu pct(): lipsește 'cumulat 100%'; AC081: în Analitică stoc au rămas procente cu punct zecimal: ['79.11%', '88.35%', '94.70%']; AC182 / e.12: fereastra Suport are 2 butoane «Trimite sesizarea» vizibile (așteptat 1, în bara de jos): [{'bara': False, 'id': 'rap-trimite', 'clasa': 'buton-secundar'}, {'bara': True, 'id': '', 'clasa': 'fj-principal buton-primar'}]; AC183 / e.13: în fereastra «Balanță de verificare» bara de jos se modifică singură: 752 modificări în .fereastra-jos și .bara-fixa în 1,5 secunde fără nicio acțiune (așteptat 0); AC183 / e.13: în fereastra «Cartea mare» bara de jos se modifică singură: 564 modificări în .fereastra-jos și .bara-fixa în 1,5 secunde fără nicio acțiune (așteptat 0); AC183 / e.13: în fereastra «Rapoarte comerciale» bara de jos se modifică singură: 564 modificări în .fereastra-jos și .bara-fixa în 1,5 secunde fără nicio acțiune (așteptat 0); AC183 / e.13: în fereastra «Registrul de evidență fiscală» bara de jos se modifică singură: 552 modificări în .fereastra-jos și .bara-fixa în 1,5 secunde fără nicio acțiune (așteptat 0); AC183 / e.13: în fereastra «Jurnal regim marjă» bara de jos se modifică singură: 564 modificări în .fereastra-jos și .bara-fixa în 1,5 secunde fără nicio acțiune (așteptat 0)
+E       assert not ["AC180 / e.1: săgeata ferestrei de card are textul '←Înapoi la Stocuri' (așteptat numai «←»; textul «Înapoi la Stocur... 'AC143 / e.4: fereastra mică «Stornează factura» are 1 săgeți «←» vizibile (așteptat 0: «✕» și «Renunță» rămân)', ...]
+
+frontend_test/e2e/e2e_ferestre_17_5_O.py:311: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_ferestre_17_5_O.py::test_ferestre_17_5_O - Asser...
+1 failed in 78.91s (0:01:18)
+
+real	1m19.189s
+user	0m5.032s
+sys	0m2.051s

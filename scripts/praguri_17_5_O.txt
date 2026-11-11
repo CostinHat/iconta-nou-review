@@ -1,0 +1,36 @@
+produs
+lot: 17.5-O
+max hook 132
+max poarta_verificator 117
+max poarta_pytest 742
+max poarta_plasa 2213
+runde_verificator_max: 2
+sursa pragurilor 17.5-O: generate de scripts/praguri_automate.py la 2026-11-11T05:29:58+02:00 din .lot_jurnal.log; loturi folosite: 17.5-F, 17.5-G3, 17.5-H2 (3)
+  hook: maxim 110 s (lotul 17.5-F, rularea 678194-1794306324798) din 14 rulari complete, 0 rulari «intrerupt» ignorate, prag 132 s
+  poarta_verificator: maxim 97 s (lotul 17.5-G3, rularea 1910649-1794331279214) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 117 s
+  poarta_pytest: maxim 618 s (lotul 17.5-F, rularea 713903-1794307023305) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 742 s
+  poarta_plasa: maxim 1844 s (lotul 17.5-H2, rularea 3110018-1794357289733) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 2213 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_O.txt (nou)
+  scripts/plasa_16_2.manifest (rândul nou al lui e2e_ferestre_17_5_O.py și rândurile modificate ale lui e2e_pilot_luna.py și e2e_pilot_x07.py, din plasa_modificabile)
+  static/js/carduri.js (numai siraCarduri: parametrul opțional nou sageataSimpla dat mai departe lui nav.deschide, AC180)
+  static/js/navigator.js (numai _butonInapoi, _arataSageata și desenarea săgeții în bara ferestrei: săgeata fără text la ferestrele deschise cu sageataSimpla și fără «←» la fereastra mică, AC180, AC143)
+  static/js/cadru.js (numai comentariul de la _exportTabel despre «Fluturaș», AC108; locurile legate de «rap-trimite»: NU_MUTA și proxy-ul din bară, AC182; și alegerea acțiunii în ferestrele de export, _alege și _pdfulFerestrei, AC183)
+  static/js/ecrane/raporteaza.js (numai butonul «Trimite sesizarea» #rap-trimite și locul lui din #rap-zona-sesizare, AC182)
+  static/js/ecrane/firme.js (numai: #r-var-salveaza, AC181; butoaneSalariat și legarea butonului Fluturaș din ecranSalariat, AC108; opțiunile #cv-art din sectiuneaCV, AC080; rândurile Consum și Clasificare ABC din Analitică stoc, AC081; apelul siraCarduri din ecranul Stocuri, AC180)
+  frontend_test/e2e/e2e_ferestre_17_5_O.py (nou)
+  frontend_test/e2e/e2e_pilot_luna.py (numai selectorul butonului «Fluturaș» de la :1244, AC108, pct.8.5; în plasa_modificabile)
+  frontend_test/e2e/e2e_pilot_x07.py (numai așteptările rândului de butoane al fișei salariatului, :239 și JS_FISA: 12 copii, 18 butoane, «flut» nu mai e copil direct, AC108, pct.8.5; în plasa_modificabile)
+  docs/dovezi/17_2/pasi.json (numai cheia și valoarea celor zece aserțiuni de pe #ss-butoane: e.1, e.3, e.4, e.10, e.11, e.14, f.11, f.12, f.16, f.17, AC108, pct.5(b))
+  frontend_test/e2e/e2e_lot13_sal_ajutor.py (numai helperul buton, :28–30: selector fără #ss-butoane pentru cheia flut, AC108, pct.8.5; nu e în manifestul plasei fixe)
+  frontend_test/e2e/e2e_lot13_sal.py (numai poziția de la :206: seturi[0][5:10] în loc de [6:11], AC108, pct.8.5; nu e în manifestul plasei fixe)
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  DEFICIENTE.md (numai intrările celor 8 constatări, cu numerele lor)
+  docs/dovezi/17_5_O/

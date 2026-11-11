@@ -1,0 +1,154 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text",
+   "ac": null,
+   "martor": "cabinetul administratorului dovada.71507",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/cabinet.js:44 (cardul «Control fiscal», neschimbat de lot); aceeași aserțiune ca f.1 din 17.5-H…N"
+  },
+  {
+   "id": "a.1",
+   "pas": "nir",
+   "operator": "lipseste",
+   "valoare": "Înapoi la Stocuri",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .nav-inapoi|text",
+   "ac": "AC180",
+   "martor": "F1 (tenant_9049), Stocuri › NIR-urile lunii",
+   "de_ce": "static/js/carduri.js:30 (nav.dinRefuz) și static/js/navigator.js: _butonInapoi (:60–66); regula X05 (← fără text); AC180; deficiența 843"
+  },
+  {
+   "id": "f.2",
+   "pas": "nir",
+   "operator": "text_contine",
+   "valoare": "NIR-urile lunii",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": null,
+   "martor": "F1 (tenant_9049), Stocuri › NIR-urile lunii",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:4075 (titlul «NIR-urile lunii»); neschimbat de lot"
+  },
+  {
+   "id": "a.2",
+   "pas": "rapoarte",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #r-var-salveaza.buton-primar|numar",
+   "ac": "AC181",
+   "martor": "F1, Rapoarte comerciale",
+   "de_ce": "static/js/ecrane/firme.js: #r-var-salveaza (:7501, buton-primar azi) și static/js/cadru.js:120,191 (EXPORT_PDF: «Descarcă PDF» e acțiunea principală); AC181; deficiența 844"
+  },
+  {
+   "id": "f.3",
+   "pas": "rapoarte",
+   "operator": "text_contine",
+   "valoare": "Descarcă PDF",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": null,
+   "martor": "F1, Rapoarte comerciale",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/cadru.js: EXPORT_PDF și _pdfulFerestrei; neschimbat de lot"
+  },
+  {
+   "id": "a.3",
+   "pas": "salariat",
+   "operator": "lipseste",
+   "valoare": "Fluturaș",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #ss-butoane|text",
+   "ac": "AC108",
+   "martor": "F5 (tenant_9053), salariatul Ionescu Vasile",
+   "de_ce": "static/js/ecrane/firme.js: butoaneSalariat (:1497, buton fără id → rămâne în fereastră și lasă un proxy în bară, cadru.js _nuSeMuta :156); AC108"
+  },
+  {
+   "id": "f.4",
+   "pas": "salariat",
+   "operator": "text_contine",
+   "valoare": "Fluturaș",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": null,
+   "martor": "salariatul Ionescu Vasile al F5",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js: butoaneSalariat (acțiunea nu se scoate din fereastră)"
+  },
+  {
+   "id": "a.4",
+   "pas": "storno",
+   "operator": "nr_randuri",
+   "valoare": "0",
+   "cheie": "dom:.fereastra.fer-mic .nav-inapoi|numar",
+   "ac": "AC143",
+   "martor": "F1, o factură din istoric › Stornează",
+   "de_ce": "static/js/navigator.js: _butonInapoi (:60–66), _arataSageata (:226–230), bara ferestrei (:288); static/js/ecrane/facturi_ecran.js:1484 (nav.deschide(\"Stornează factura\") cu lat «mic»); AC143"
+  },
+  {
+   "id": "f.5",
+   "pas": "storno",
+   "operator": "text_contine",
+   "valoare": "Renunță",
+   "cheie": "dom:.fereastra.fer-mic|text",
+   "ac": null,
+   "martor": "F1, aceeași fereastră mică",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/facturi_ecran.js: #fd-storno-nu (neschimbat de lot)"
+  },
+  {
+   "id": "a.5",
+   "pas": "miscari",
+   "operator": "text_contine",
+   "valoare": "Marfa A · stoc 122 buc",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cv-art|text",
+   "ac": "AC080",
+   "martor": "F1, Marfa A (stoc validat 122, cu ciornele 145)",
+   "de_ce": "static/js/ecrane/firme.js: sectiuneaCV (:2575, azi stoc = toate mișcările, cu ciornele) și core/stocuri_cv_api.py:20 articole (stoc_validat, cmp_validat deja în răspuns); AC080; dump iconta_test: Marfa A 122 buc validat, 145 cu ciornele"
+  },
+  {
+   "id": "a.6",
+   "pas": "miscari",
+   "operator": "lipseste",
+   "valoare": "Marfa A · stoc 145 buc",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cv-art|text",
+   "ac": "AC080",
+   "martor": "F1, Marfa A (145 = cu ciornele)",
+   "de_ce": "static/js/ecrane/firme.js: sectiuneaCV (:2575); AC080"
+  },
+  {
+   "id": "a.7",
+   "pas": "analitica",
+   "operator": "text_contine",
+   "valoare": "cumulat 100%",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC081",
+   "martor": "F1, ultimul articol din ABC = 100%",
+   "de_ce": "static/js/ecrane/firme.js: rândul ABC (:2929, azi `cumulat ${x.pondere_cumulata}%`); static/js/api.js: pct (:1745); core/stocuri_cv_api.py:857 (pondere_cumulata cu două zecimale, ultimul 100.00); AC081"
+  },
+  {
+   "id": "a.8",
+   "pas": "analitica",
+   "operator": "lipseste",
+   "valoare": ".000 buc",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC081",
+   "martor": "F1, consumul articolelor (11 și 14 buc la audit)",
+   "de_ce": "static/js/ecrane/firme.js: rândul Consum (:2934, azi `${x.iesiri_30z} ${esc(x.um)}`, șir brut); static/js/api.js: cantitate (:1729); core/stocuri_cv_api.py:842; AC081"
+  },
+  {
+   "ac": "AC182",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #rap-zona-sesizare #rap-trimite:not([hidden])|numar",
+   "de_ce": "static/js/cadru.js: NU_MUTA («rap-trimite», :142: în bară stă un proxy, originalul rămâne în conținut) și static/js/ecrane/raporteaza.js:71; AC182; retest Pilot F072",
+   "id": "a.9",
+   "martor": "cabinetul administratorului dovada.71507, Suport",
+   "operator": "nr_randuri",
+   "pas": "suport",
+   "valoare": "0"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/raporteaza.js:71 («Trimite sesizarea», neschimbat ca text)",
+   "id": "f.6",
+   "martor": "cabinetul administratorului dovada.71507, Suport",
+   "operator": "text_contine",
+   "pas": "suport",
+   "valoare": "Trimite sesizarea"
+  }
+ ]
+}
