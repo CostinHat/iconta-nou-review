@@ -1155,6 +1155,9 @@ număr → răspuns → captură e în `dovezi/lot12/RETEST_NUMERE_VECHI.md` (30
 | 791 | (auditul pe ecran 06.11.2026, iconta.eu) „Descarcă PDF” este acțiune principală la 8 ferestre. | nerezolvată |  | nefăcută intenționat în 17.1; se repară în 17.2/17.3 |  |
 | 792 | (auditul pe ecran 06.11.2026, iconta.eu) Emite factură: câmpul „Data scadenței” este tăiat și apar două butoane „Renunță”. | nerezolvată |  | nefăcută intenționat în 17.1; se repară în 17.2/17.3 |  |
 | 793 | (auditul pe ecran 06.11.2026, iconta.eu) Acțiunea principală a fișei salariatului este „Descarcă PDF”. | nerezolvată |  | nefăcută intenționat în 17.1; se repară în 17.2 (reparația ei) |  |
+| 794 | (AC184, analiza poziției «F031», Costin 11.11.2026 07:53) Pasul 2 din Declarații (D300 și D394) nu spune că din decont lipsește TVA din rapoartele Z cu nota în ciornă, iar «Pune în „De depus” →» rămâne activ. | nerezolvată |  | cod pe lucru/lot17-5w, nepublicat: retestul arhitectului (testul e2e_d300_ciorne_17_5_W.py pică numai la e.5/e.11 — vezi PREDARE_LANT) | `core/test_ciorne_decont_17_5_W.py` |
+| 795 | (AC185, analiza poziției «F031», Costin 11.11.2026 07:53) Control fiscal › «Declarație vs contabilitate» nu spune câte note în ciornă ating contul comparat (4427, 4426, 4423, 4424) și suma lor. | nerezolvată |  | cod pe lucru/lot17-5w, nepublicat: retestul arhitectului | `core/test_ciorne_decont_17_5_W.py` |
+| 796 | (AC186, analiza poziției «F031», Costin 11.11.2026 07:53) Lămurirea a două cifre: R10 = 99 (10,90 la cota redusă) și factura F1A13 fără notă. | nu se aplică | | lămurită, nu e eroare de cod: comportament prin decizia A din 02.10.2026 (F1A13 e emisă pe baza bonului fiscal 0002: nu intră în D300 și nu primește notă); ieșirea probei: docs/dovezi/17_5_W/lamurire_ac186.txt | |
 
 ## Constatările de audit ale lotului 17.5-O (11.11.2026; numerele din auditul complet, nu din tabelul de mai sus; netul îl stabilește retestul arhitectului)
 - AC080 — lista de articole din Mișcări spunea stocul cu ciornele, Stocuri pe cel validat: acum stocul validat, ciornele separat. Lot 17.5-O.
@@ -1165,4 +1168,9 @@ număr → răspuns → captură e în `dovezi/lot12/RETEST_NUMERE_VECHI.md` (30
 - AC181 — Rapoarte comerciale avea două butoane principale: acum numai «Descarcă PDF». Lot 17.5-O.
 - AC182 — Suport avea «Trimite sesizarea» de două ori: acum o singură dată, în bară. Lot 17.5-O.
 - AC183 — bara de jos pâlpâia în ferestrele de export: acum stabilă (0 modificări în 1,5 s). Lot 17.5-O.
+
+## Constatările de audit ale lotului 17.5-W (11.11.2026; numerele din auditul complet; netul îl stabilește retestul arhitectului)
+- AC184 (= 794) — decontul D300 / D394 numește rapoartele Z cu nota în ciornă pe care nu le cuprinde (avertisment primul) și refuză depunerea (RAPOARTE_Z_NEVALIDATE). Lot 17.5-W, nepublicat.
+- AC185 (= 795) — Control fiscal spune pe fiecare cont comparat câte note în ciornă îl ating și suma lor (`explicatie_ciorne`). Lot 17.5-W, nepublicat.
+- AC186 (= 796) — lămurit: comportament prin decizia A, nu eroare. Lot 17.5-W.
 

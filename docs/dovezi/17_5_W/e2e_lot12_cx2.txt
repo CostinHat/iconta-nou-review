@@ -1,0 +1,8 @@
+[e2e] aplicația din index pornită pe 8019 în 15s
+FAILED frontend_test/e2e/e2e_lot12_cx2.py::test_def_c148_perioada_indisponibila_spune_data_ca_zz_ll_aaaa
+FAILED frontend_test/e2e/e2e_lot12_cx2.py::test_def_c159_statul_din_10_2025_se_calculeaza_fara_tichete_si_se_opreste_motivat_cu_tichete
+FAILED frontend_test/e2e/e2e_lot12_cx2.py::test_def_c146_refuzul_stergerii_notei_z_trimite_la_raport_z
+FAILED frontend_test/e2e/e2e_lot12_cx2.py::test_def_c126_tva_transportului_facturat_nu_ramane_pe_4428_dupa_legarea_facturii
+FAILED frontend_test/e2e/e2e_lot12_cx2.py::test_def_c126_vechi_nir_cu_tva_transportului_pe_4428_trece_pe_4426
+FAILED frontend_test/e2e/e2e_lot12_cx2.py::test_def_153_nir_fara_factura_in_forma_veche_se_reface_pe_408_si_4428
+[e2e] 6 failed, 13 passed in 349.42s (0:05:49) (365s; capturi în /tmp/claude-1000/capt_e2e_lot12_cx2.py)

@@ -1,0 +1,29 @@
+            if nume in BIFA_INLOCUIRI:
+                _per_apel, _extra, _m = BIFA_INLOCUIRI[nume]
+                for k, v in _per_apel.items():
+                    acum[k] = acum.get(k, 0) + v * acum.get("bifa", 0)
+                for k, v in _extra.items():
+                    acum[k] = acum.get(k, 0) + v
+            lipsa = {k: inainte[k] - acum.get(k, 0) for k in inainte if inainte[k] > acum.get(k, 0)}
+            if lipsa:
+                dif.append("%s: apeluri pierdute %s" % (nume, lipsa))
+        assert confruntate >= 300, "doar %d funcții confruntate — universul s-a golit" % confruntate
+>       assert not dif, ("apeluri care nu se mai fac, în %d funcții:\n    %s"
+                         % (len(dif), "\n    ".join(dif[:10])))
+E       AssertionError: apeluri care nu se mai fac, în 1 funcții:
+E             _verificari_contabile: apeluri pierdute {'_date': 1, 'balanta': 1, 'select_inregistrari_linii': 1, 'select_solduri_initiale': 1}
+E       assert not ["_verificari_contabile: apeluri pierdute {'_date': 1, 'balanta': 1, 'select_inregistrari_linii': 1, 'select_solduri_initiale': 1}"]
+
+core/test_p7_uc.py:1704: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_p7_uc.py::test_perechile_cod_mesaj_sunt_NESCHIMBATE - Assert...
+FAILED core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum - Assertio...
+SKIPPED [1] core/test_harta_casete.py:170: firma nu e pe verde în starea scanată
+SKIPPED [1] core/test_harta_casete.py:189: una din cele două secțiuni nu s-a randat în starea asta
+SKIPPED [1] core/test_harta_casete.py:241: firma scanată n-are nicio obligație stinsă — constrângerea n-ar discrimina nimic
+SKIPPED [1] core/test_harta_casete.py:292: firma scanată n-are nicio obligație stinsă și nicio depunere — constrângerea ar trece 0==0 fără să discrimineze (vezi harta_casete.LIMITE)
+2 failed, 383 passed, 4 skipped in 210.86s (0:03:30)
+
+real	3m31.488s
+user	2m31.272s
+sys	0m7.196s

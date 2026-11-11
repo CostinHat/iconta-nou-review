@@ -1,0 +1,25 @@
+== pct.3 ==
+(rânduri tipărite mai sus; gol = niciunul)
+== pct.5(i) ==
+#cf-incrucisat baza=1 P=1 egal
+#cf-perioade baza=1 P=1 egal
+#dec-blocaj baza=8 P=10 DIFERA
+#dec-rezultat baza=2 P=2 egal
+#dec-trimite baza=6 P=6 egal
+.fereastra baza=1446 P=1459 DIFERA
+.fereastra-overlay baza=24 P=24 egal
+.fundal baza=243 P=243 egal
+elemente comparate: 8
+== pct.5(ii) id/class noi ==
+(niciun id/class nou)
+== pct.5(iii) texte «-» măsurate de alte loturi ==
+- -    rosii = [c for c in constatari if c.get("stare") == "rosu" and c.get("cont") in _SENS_CIORNA]   <= stat
+- -import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=cea4f49410";  // renderer unic al verdictului (DS cap.20)   <= import
+- -import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=50cade9fc8";   <= import
+- -import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=50cade9fc8";  /* [C11, 07.10.2026] bilanțul prin coadă */   <= import
+- -import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=cea4f49410";  // renderer unic verdict control fiscal (DS cap.20)   <= import
+- -import { actiuniRefuz, scoateActiuniRefuz } from "./coada_trimite.js?v=50cade9fc8";   // rândul de butoane de lângă caseta „NU s-a salvat”   <= import
+- -import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";   <= stat
+- -import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";   <= stat
+- -  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=50cade9fc8").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));   <= import
+rânduri «-» cu text măsurat de oracole: 9

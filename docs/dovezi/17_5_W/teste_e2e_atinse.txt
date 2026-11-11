@@ -1,0 +1,5 @@
+e2e_lot72_declaratii.py exit=0 durata=82s
+e2e_lot12_cx2.py exit=1 durata=367s
+e2e_lot12_ctrl.py exit=0 durata=26s
+e2e_lot10b_declaratii.py exit=1 durata=32s
+GATA

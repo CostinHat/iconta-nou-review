@@ -1,0 +1,29 @@
+== AC186 — lămurire (numai citire, tranzacție READ ONLY, tenant_9049, fereastra 2026-10-01 … 2026-11-01) ==
+
+(a) D300 10/2026 (core/d300.py, genereaza): R10_1 = 899, R10_2 = 99
+  facturi emise care INTRĂ în decont (select_facturi_4, `_nu_din_bon("f")`), linii cu cota 11%:
+    id 48, nr. 2: baza 800.00000, TVA 11% 88.00
+  rapoarte Z VALIDATE cu cota 11% care intră în decont (select_rapoarte_z):
+    Z-8000000001-0050 din 2026-10-22: baza 99.10, TVA 11% 10.90
+  F1A13 (id 64) intră în D300: NU (clauza `_nu_din_bon`: bon_fiscal_nr IS NULL; are bon_fiscal_nr = '0002')
+  suma TVA 11% din decont (facturi + Z validate) = 98.90; baza facturilor la 11% = 800.00000
+  Z-8000000001-0050 intră în decont: DA; Z-8000000001-0042 (în ciornă) intră: NU
+  toate rapoartele Z din octombrie 2026 (număr, data, starea notei, TVA 11%):
+    Z-8000000001-0042  2026-10-20  ciorna  10.90
+    Z-8000000001-0043  2026-10-21  ciorna  None
+    Z-8000000001-0050  2026-10-22  validata  10.90
+
+(b) F1A13 (id 64): număr F1A13, tip factura, status de_preluat, emisă la 2026-10-22, total 110.00, TVA 10.90, directie emisa, bon_fiscal_nr = '0002'
+  note cu factura_id = 64: 0
+  core.facturi.e_din_bon_fiscal(F1A13) = True
+  motivul refuzului de contare (core/contare_facturi.py, RefuzContare EMISA_DIN_BON): factura e emisă pe baza bonului fiscal conform bon fiscal nr. 0002/ — vânzarea e deja înregistrată din raportul Z, deci nu primește o a doua notă de vânzare
+  facturi emise FĂRĂ bon_fiscal_nr și FĂRĂ notă, cu data_emitere în octombrie 2026: 0 (0 așteptat)
+  în tot schema (orice dată): 1: id 71 nr. 'Sold la 31.08.2026' tip preluata status importata din 2026-08-31 (un sold preluat, status importata, e așteptat și nu e eroare)
+
+Verificări mecanice:
+  [1] R10_2 = 99; TVA 11% din facturile care intră + TVA 11% din Z validate = 88.00 + 10.90 = 98.90, rotunjit la leu = 99
+  [2] F1A13 intră și în D300 (dublă numărare cu un raport Z): NU
+  [3] factură emisă fără bon și fără notă în octombrie 2026: 0
+  [4] limita: schema nu leagă un bon fiscal de un raport Z (nu există coloană): de care raport Z ține bonul 0002 nu se poate stabili din date.
+
+Concluzie: lămurit: comportament prin decizia A, nu eroare
