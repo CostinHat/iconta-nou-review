@@ -329,10 +329,10 @@ def coada_adauga(date, ctx):
     if date.tip in coada_api.TIPURI_RAPOARTE_Z:
         with db.get_conn(schema) as _conn_z:
             with _conn_z.cursor() as _cur_z:
-                _bl_z = coada_api.blocaj_rapoarte_z(_cur_z, schema, date.tip, date.an, date.luna, date.trim)
+                _bl_note = coada_api.blocaj_rapoarte_z(_cur_z, schema, date.tip, date.an, date.luna, date.trim)
             _conn_z.rollback()
-        if _bl_z:
-            raise _erori.DateInvalide(_bl_z)
+        if _bl_note:
+            raise _erori.DateInvalide(_bl_note)
     if date.tip in DECLARATII_TVA or date.tip == "d406":
         _ancora = date.luna or (int(date.trim) * 3 if date.trim else None)
         _ciorne = _surse["note"]
