@@ -1,0 +1,39 @@
+produs
+lot: 17.5-W
+max hook 128
+max poarta_verificator 117
+max poarta_pytest 720
+max poarta_plasa 2319
+runde_verificator_max: 2
+sursa pragurilor 17.5-W: generate de scripts/praguri_automate.py la 2026-11-11T17:47:21+02:00 din .lot_jurnal.log; loturi folosite: 17.5-G3, 17.5-H2, 17.5-O3 (3)
+  hook: maxim 106 s (lotul 17.5-G3, rularea 1897097-1794331147462) din 11 rulari complete, 0 rulari «intrerupt» ignorate, prag 128 s
+  poarta_verificator: maxim 97 s (lotul 17.5-G3, rularea 1910649-1794331279214) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 117 s
+  poarta_pytest: maxim 600 s (lotul 17.5-O3, rularea 888445-1794407205000) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 720 s
+  poarta_plasa: maxim 1932 s (lotul 17.5-O3, rularea 888445-1794407805210) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 2319 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_W.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_d300_ciorne_17_5_W.py)
+  core/repo_d300.py (numai citirea rapoartelor Z în ciornă din fereastra declarației, lângă select_rapoarte_z, AC184)
+  core/repo_d394.py (numai dacă citirea de mai sus nu se poate împărți cu D394: aceeași definiție, AC184)
+  core/d300.py (numai avertismentul din genereaza: primul din lista de avertismente, cu import leneș din coada_api, AC184)
+  core/d394.py (numai avertismentul din genereaza: primul din lista de avertismente, cu import leneș din coada_api, AC184)
+  core/coada_api.py (numai funcțiile de text și de refuz pe rapoartele Z în ciornă, casa lor, importate leneș în d300.py și d394.py, și locurile lor de folosire: blocaj_declaratie, refuz_note_nevalidate, lista_coada la «blocaj_depunere» și marcheaza_depusa, AC184; DECLARATII_DIN_EVIDENTA nu se atinge)
+  core/uc_coada.py (numai coada_adauga: refuzul pe rapoartele Z în ciornă, înaintea porții TVA–balanță, AC184)
+  core/uc_declaratii.py (numai blocaj_depunere, dacă refuzul nu ajunge la pasul 2 prin coada_api, AC184)
+  core/control_incrucisat.py (numai compara_tva și ciorne_care_explica: cheia nouă a explicației ciornelor pe conturile 4427, 4426, 4423, 4424, AC185)
+  core/repo_control_incrucisat.py (numai ciorne_pe_conturi_tva: sumele pe 4423 și 4424, AC185)
+  static/js/ecrane/control_verdict.js (numai semnalConstatare: explicația ciornelor pe rândul constatării, AC185)
+  static/js/ecrane/coada_trimite.js (numai etichetaTrimitere: eticheta și pe butonul inactiv al pasului 2, AC184)
+  static/js/ecrane/declaratii.js (numai dacă eticheta butonului inactiv o cere: apelul etichetaTrimitere din pasul 2, AC184)
+  core/test_ciorne_decont_17_5_W.py (nou)
+  frontend_test/e2e/e2e_d300_ciorne_17_5_W.py (nou)
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  DEFICIENTE.md (numai intrările celor 3 constatări, cu numerele lor, și a erorii găsite la AC186, dacă există)
+  docs/dovezi/17_5_W/ (nou)
