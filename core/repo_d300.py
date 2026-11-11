@@ -69,6 +69,20 @@ def select_rapoarte_z(cur, surse, inceput, sfarsit):
     return cur.fetchall()
 
 
+def select_rapoarte_z_ciorna(cur, surse, inceput, sfarsit, schema=None):
+    """[17.5-W, AC184] Rapoartele Z din fereastră a căror notă NU e validată (ciornă) — cele pe care decontul nu le cuprinde (`select_rapoarte_z`
+    ia numai notele validate) —, cu defalcarea lor pe cote (TVA pe cotă). LEFT JOIN: un raport fără defalcare iese cu cota NULL, apelantul îl
+    numește. `eticheta_nota` = cum îl numește Registrul jurnal. `schema` = numele schemei firmei când conexiunea nu e pe ea (coada), altfel None.
+    Aceeași citire pentru D300 și D394 și pentru refuzul depunerii. Rânduri pe nume: id, numar, data, eticheta_nota, cota, tva."""
+    q = '"%s".' % str(schema).strip('"') if schema else ""
+    cur.execute("SELECT i.id AS id, i.numar AS numar, i.data AS data, " + q + "eticheta_nota(i.id) AS eticheta_nota, z.cota AS cota, z.tva AS tva "
+                "FROM " + q + "inregistrari i LEFT JOIN " + q + "rapoarte_z_cote z ON z.inregistrare_id = i.id "
+                "WHERE i.status <> 'validata' AND i.sursa = ANY(%s) AND i.data >= %s AND i.data < %s "
+                "ORDER BY i.data, i.numar, i.id, z.cota", (list(surse), inceput, sfarsit))
+    cols = [d[0] for d in cur.description]
+    return [r if isinstance(r, dict) else dict(zip(cols, r)) for r in cur.fetchall()]
+
+
 def select_chitante_cu_cota(cur, inceput, sfarsit):
     """[D394 Î2] Chitanțele de VÂNZARE fără factură (cu cotă), neanulate, din fereastră — livrări taxabile pe cotă."""
     cur.execute("SELECT id, serie, numar, data, suma, cota_tva FROM chitante "

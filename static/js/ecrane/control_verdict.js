@@ -85,7 +85,10 @@ function semnalConstatare(c) {
   const deFacut = cod && ACTIUNI_REMEDIU[cod].deFacut ? ACTIUNI_REMEDIU[cod].deFacut : (r && r.actiune) || "";
   const detalii = (c.temei ? `<p class="cf-incr-temei">${esc(c.temei)}</p>` : "")
     + (r ? `<p class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b>${deFacut ? `<br>Ce e de făcut: ${esc(deFacut)}` : ""}</p>` : "");
-  return semnalHtml({ ton: TON_STARE[st] || "avertisment", text: c.mesaj || "", detaliiHtml: detalii, actiuneHtml: cod ? butonActiune(cod, r) : "" });
+  const semnal = semnalHtml({ ton: TON_STARE[st] || "avertisment", text: c.mesaj || "", detaliiHtml: detalii, actiuneHtml: cod ? butonActiune(cod, r) : "" });
+  // [17.5-W, AC185] câte note în ciornă ating contul comparat (`explicatie_ciorne`, textul îl face serverul): rând informativ imediat sub constatare, ca să nu
+  // schimbe numărul rândurilor non-info; prima propoziție (cifrele) se vede fără deschiderea detaliilor
+  return semnal + (c.explicatie_ciorne ? semnalHtml({ ton: "info", text: c.explicatie_ciorne }) : "");
 }
 
 // constatările aceleiași acțiuni repetate (statul de plată necontabilizat, câte una pe contribuție) devin UN SINGUR card-rezumat cu butonul lui;

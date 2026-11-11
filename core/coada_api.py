@@ -831,6 +831,9 @@ def lista_coada(conn, cabinet_id, stare=None):
             # [lotul 10, deficiența 436] declarația care ȘTIE că cifra ei nu cuprinde note nevalidate nu se depune până la validarea lor;
             # motivul stă pe rând, în locul butonului (o declarație intrată în coadă înainte de regulă, sau o notă trecută înapoi în ciornă)
             _bl = blocaj_note_nevalidate(d["tip"], d.get("surse_note")) if d["fel"] != "nota" else None
+            # [17.5-W, AC184] D300 / D394: rapoartele Z cu nota în ciornă pe care decontul nu le cuprinde, citite ACUM, numai pe rândurile active
+            if d["fel"] != "nota" and activa:
+                _bl = blocaj_rapoarte_z(cur, _schema, d["tip"], d.get("p_an"), d.get("p_luna"), d.get("p_trim")) or _bl
             d["blocaj_depunere"] = d["perioada_neincheiata"] or (_bl or {}).get("mesaj")
             # [716, comanda 14.3] termenul legal al declarației și dacă a trecut: „depășită” se spune numai după termen, nu pentru o perioadă
             # neîncheiată (documentele ei se mai schimbă) — ecranul citește `termen_depasit`, nu `depasita` (care e „documente schimbate”)
@@ -1644,12 +1647,139 @@ def blocaj_note_nevalidate(tip, note):
             "note": [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in note]}
 
 
+#: [17.5-W, AC184] declarațiile al căror decont nu cuprinde rapoartele Z cu nota în ciornă (D300 și D394 citesc numai rapoartele Z VALIDATE);
+#: NU intră în `DECLARATII_DIN_EVIDENTA` (poarta lor rămâne balanța, decizia R36, `uc_coada.decizie_poarta`): refuzul Z e separat și mai îngust
+TIPURI_RAPOARTE_Z = ("d300", "d394")
+COD_RAPOARTE_Z = "RAPOARTE_Z_NEVALIDATE"
+
+
+def fereastra_decontului(cur, schema, an, luna, trim):
+    """[17.5-W, AC184] Fereastra decontului TVA al firmei (`common.fereastra_tva` pe `perioada_tva_tip`, ca în d300.pull și d394.pull) pentru
+    perioada declarației: ancora e luna sau, la trimestru, trimestrul × 3. NU `fereastra_perioadei` (urmează fereastra D406: semestrul și anul cad
+    pe trimestru). Șiruri ISO; None când firma n-are tip_decont (nu se știe fereastra decontului: nici refuz, nici excepție)."""
+    from core import common as _c
+    ancora = luna or (int(trim) * 3 if trim else None)
+    if not an or not ancora:
+        return None
+    cur.execute("SELECT tip_decont FROM " + (_q(schema) if schema else "") + "firma_profil LIMIT 1")
+    r = cur.fetchone()
+    r = (list(r.values()) if isinstance(r, dict) else r) if r else None
+    try:
+        tip_t = _c.perioada_tva_tip({"tip_decont": r[0] if r else None})
+    except ValueError:
+        return None
+    di, ds = _c.fereastra_tva(_c.Perioada(an=int(an), luna=int(ancora)), tip_t)
+    return di.isoformat(), ds.isoformat()
+
+
+def rapoarte_z_in_ciorna(cur, schema, de_la, pana_la):
+    """[17.5-W, AC184] Rapoartele Z cu nota în ciornă din [de_la, pana_la), în ordinea datei apoi a numărului: [{nota_id, data (ISO), data_ro,
+    numar, cote: [(cota, tva)] în ordinea crescătoare a cotei, tva (suma pe cote | None fără defalcare), eticheta («nota …», începe cu «nota»,
+    ca la 436: `eticheta_nota`)}]. Schema = a firmei (conexiunea cozii nu e pe ea), sau None pe conexiunea firmei (generatoarele)."""
+    from decimal import Decimal as _D
+    from core import repo_d300 as _repo
+    from core.pdf_util import bani as _bani, data_ro as _data_ro
+    from core.raport_z import SURSE as _SURSE_Z
+    out = {}
+    for r in _repo.select_rapoarte_z_ciorna(cur, _SURSE_Z, de_la, pana_la, schema=schema):
+        z = out.setdefault(r["id"], {"nota_id": r["id"], "data": r["data"].isoformat(), "data_ro": _data_ro(r["data"]),
+                                     "numar": r["numar"] or "fără număr", "cote": [], "_eticheta_nota": r["eticheta_nota"]})
+        if r["cota"] is not None:
+            z["cote"].append((_D(str(r["cota"])), _D(str(r["tva"] or 0))))
+    lista = list(out.values())
+    for z in lista:
+        z["tva"] = sum((t for _c, t in z["cote"]), _D(0)) if z["cote"] else None
+        z["eticheta"] = "nota %s — %s%s" % (z.pop("_eticheta_nota"), z["numar"], ", TVA %s lei" % _bani(z["tva"]) if z["cote"] else "")
+    return lista
+
+
+def _cota_text(cota):
+    return "%s%%" % (int(cota) if cota == cota.to_integral_value() else str(cota.normalize()).replace(".", ","))
+
+
+def _tva_pe_cote(rapoarte):
+    """[(cota, TVA total)] în ordinea crescătoare a cotei, pe rapoartele cu defalcare; (total, cote)."""
+    pe_cota = {}
+    for z in rapoarte:
+        for cota, tva in z["cote"]:
+            pe_cota[cota] = pe_cota.get(cota, 0) + tva
+    return sorted(pe_cota.items())
+
+
+def _total_lipsa(rapoarte):
+    """TVA colectată lipsă din decont (suma pe rapoartele cu defalcare) ca Decimal; 0 când niciun raport n-are defalcare."""
+    from decimal import Decimal as _D
+    return sum((t for _c, t in _tva_pe_cote(rapoarte)), _D(0))
+
+
+def avertisment_rapoarte_z(rapoarte):
+    """[17.5-W, AC184] Primul avertisment din pasul 2 al lui D300 / D394 (și din rezultatul generării): numește rapoartele Z cu nota în ciornă pe care
+    decontul nu le cuprinde, cu TVA-ul fiecăruia pe cote, și TVA colectată lipsă; None când nu există niciunul. Formele (singular, fără defalcare,
+    total 0,00 lei) le impune comanda 17.5-W."""
+    if not rapoarte:
+        return None
+    from core.common import cate as _cate
+    from core.pdf_util import bani as _bani
+    n = len(rapoarte)
+    de_ce = []
+    for z in rapoarte:
+        if z["cote"]:
+            de_ce.append("%s din %s (%s)" % (z["numar"], z["data_ro"], "; ".join("TVA %s: %s" % (_cota_text(c), _bani(t, "lei")) for c, t in z["cote"])))
+        else:
+            de_ce.append("%s din %s (fără defalcare pe cote: TVA-ul lui nu se cunoaște)" % (z["numar"], z["data_ro"]))
+    total = _total_lipsa(rapoarte)
+    lipsa = (" TVA colectată lipsă din decont: %s (%s)." % (_bani(total, "lei"), "; ".join("%s: %s" % (_cota_text(c), _bani(t, "lei")) for c, t in _tva_pe_cote(rapoarte)))
+             if total else "")
+    return "Din decont lipsește TVA din rapoarte Z în ciornă: %s nu intră în calcul până la validare — %s.%s Validează-%s în Registrul jurnal, apoi generează din nou." % (
+        _cate(n, "raport Z nevalidat", "rapoarte Z nevalidate"), "; ".join(de_ce), lipsa, "l" if n == 1 else "le")
+
+
+def mesaj_refuz_rapoarte_z(rapoarte, cu_lista=True):
+    """[17.5-W, AC184] Refuzul depunerii. `cu_lista`: rapoartele numite în text (locurile fără butoane: «De depus», API); fără ea, textul de lângă
+    butoanele «Deschide nota …», care le numesc deja. «, în total … lei» numai când se cunoaște TVA-ul lipsă (cel puțin un raport cu defalcare)."""
+    from core.common import cate as _cate
+    from core.pdf_util import bani as _bani
+    n = len(rapoarte)
+    total = _total_lipsa(rapoarte)
+    lista = " (%s)" % "; ".join("%s din %s" % (z["numar"], z["data_ro"]) for z in rapoarte) if cu_lista else ""
+    return "Declarația nu se depune până la validarea %s: din decont lipsește TVA din %s în ciornă%s%s. Validează-%s în Registrul jurnal, apoi generează din nou." % (
+        "raportului Z" if n == 1 else "rapoartelor Z", _cate(n, "raport Z", "rapoarte Z"), lista,
+        ", în total %s" % _bani(total, "lei") if total else "", "l" if n == 1 else "le")
+
+
+def blocaj_rapoarte_z_din(rapoarte):
+    """[17.5-W, AC184] Refuzul (dict cu `cod`, `mesaj`, `mesaj_langa_note`, `note` [{nota_id, data, eticheta}], ca la 436) | None fără rapoarte.
+    PURĂ: o singură frază pentru pasul 2, intrarea în coadă, rândul din «De depus» și marcarea ca depusă."""
+    if not rapoarte:
+        return None
+    return {"ok": False, "cod": COD_RAPOARTE_Z, "mesaj": mesaj_refuz_rapoarte_z(rapoarte), "mesaj_langa_note": mesaj_refuz_rapoarte_z(rapoarte, cu_lista=False),
+            "note": [{"nota_id": z["nota_id"], "data": z["data"], "eticheta": z["eticheta"]} for z in rapoarte]}
+
+
+def avertisment_rapoarte_z_decont(conn, schema, perioada):
+    """[17.5-W, AC184] Avertismentul rapoartelor Z în ciornă pentru generatoarele D300 și D394 (conexiunea e pe schema firmei; `perioada.luna` e ancora
+    decontului): același text și aceeași fereastră ca refuzul. None fără rapoarte în ciornă (sau fără tip_decont)."""
+    with conn.cursor() as cur:
+        fer = fereastra_decontului(cur, schema, perioada.an, perioada.luna, None)
+        return avertisment_rapoarte_z(rapoarte_z_in_ciorna(cur, None, *fer)) if fer else None
+
+
+def blocaj_rapoarte_z(cur, schema, tip, an, luna, trim):
+    """[17.5-W, AC184] `blocaj_rapoarte_z_din` pentru D300 / D394 pe perioada declarației, ACUM din baza de date (nu din ce s-a înghețat la
+    intrarea în coadă, ca la 329), pe fereastra decontului (`fereastra_decontului`). Alt tip, sau firmă fără tip_decont -> None."""
+    if (tip or "").lower() not in TIPURI_RAPOARTE_Z:
+        return None
+    fer = fereastra_decontului(cur, schema, an, luna, trim)
+    return blocaj_rapoarte_z_din(rapoarte_z_in_ciorna(cur, schema, *fer)) if fer else None
+
+
 def blocaj_declaratie(cur, schema, tip, an, luna, trim, surse=None):
     """[lotul 10, 436] `blocaj_note_nevalidate` pentru declarația `tip` pe perioada ei, ACUM: fereastra din `surse` (`_surse` al elementului
     din coadă) sau din perioadă (`fereastra_perioadei`, aceeași definiție), notele din `nevalidate_acum`. Tipurile care nu sunt calculate
     din evidență -> None fără citire. Pasul 2 din Declarații (`uc_declaratii`) și depunerea (`refuz_note_nevalidate`) o cheamă."""
-    if tip not in DECLARATII_DIN_EVIDENTA:
-        return None
+    refuz_z = blocaj_rapoarte_z(cur, schema, tip, an, luna, trim)   # [17.5-W, AC184] înaintea ieșirii timpurii: D300 / D394 nu sunt «din evidență»
+    if refuz_z or tip not in DECLARATII_DIN_EVIDENTA:
+        return refuz_z
     s = surse or {}
     de_la, pana_la = (s["de_la"], s["pana_la"]) if s.get("de_la") else fereastra_perioadei(cur, schema, tip, an, luna, trim)
     note, _f, _nev = nevalidate_acum(cur, schema, tip, de_la, pana_la)
@@ -1658,7 +1788,7 @@ def blocaj_declaratie(cur, schema, tip, an, luna, trim, surse=None):
 
 def refuz_note_nevalidate(cur, tenant_id, tip, payload):
     """[lotul 10, 436] `blocaj_declaratie` pentru un element din coadă (firma lui, perioada și fereastra din payload)."""
-    if tip not in DECLARATII_DIN_EVIDENTA:
+    if tip not in DECLARATII_DIN_EVIDENTA and (tip or "").lower() not in TIPURI_RAPOARTE_Z:   # [17.5-W] D300 / D394: refuzul rapoartelor Z
         return None
     schema = schema_firmei(cur, tenant_id)
     p = payload or {}

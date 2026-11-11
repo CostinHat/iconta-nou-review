@@ -30,7 +30,7 @@
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=e3ad67e841";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=cea4f49410";
+import { randA as randConstatare } from "./control_verdict.js?v=ae50f67bb1";
 import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=e115d72f0f";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { deschideFirma, ecranJurnal } from "./firme.js?v=26a8694365";
@@ -848,7 +848,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav, corp));
   // [298 + 313] notele nevalidate pe care se sprijină declarația, fiecare cu butonul ei spre Registrul jurnal
   const zSurse = div.querySelector(".val-surse-note");
-  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=50cade9fc8").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
+  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=6c37b5b2e7").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
   return div;
 }
 

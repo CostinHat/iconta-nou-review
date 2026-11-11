@@ -31,7 +31,9 @@ export async function etichetaTrimitere(btn) {
     const e = (po && po.efectiv) ? ETICHETE_TRIMITERE.validare : (perm && perm.poate_depune) ? ETICHETE_TRIMITERE.depunere
       : ETICHETE_TRIMITERE.altcineva;
     btn.dataset.eticheta = e;
-    if (!btn.disabled) btn.textContent = e;
+    // [17.5-W, AC184] butonul inactiv al refuzului (`aria-describedby="dec-blocaj"`) poartă eticheta pasului real; cel inactiv pentru că trimiterea e în curs
+    // („Se trimite…”) nu: `pas3` o repune din `data-eticheta`
+    if (!btn.disabled || btn.getAttribute("aria-describedby") === "dec-blocaj") btn.textContent = e;
   } catch { /* eticheta veche rămâne: trimiterea funcționează la fel */ }
 }
 

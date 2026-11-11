@@ -323,6 +323,16 @@ def coada_adauga(date, ctx):
     payload["_surse"]["note"] = [{"nota_id": n["nota_id"], "data": n["data"], "eticheta": n["eticheta"]} for n in _surse["note"]]
     payload["_cerere"] = {k: v for k, v in body.items() if k != "motiv_trecere"}
     payload["_cerere"].update(tenant_id=date.tenant_id, tip=date.tip)
+    # [17.5-W, AC184] rapoartele Z cu nota în ciornă pe care decontul nu le cuprinde: refuz NUMIT, înaintea porții TVA–balanță și peste ea — ele sunt
+    # cauza diferenței dintre decont și balanță, iar fără ordinea asta poarta de balanță ar refuza cu textul ei. Citit ACUM din baza de date;
+    # se ridică ca refuzul 436 (`DateInvalide(dict)`), fără așteptare automată a validării. Poarta de balanță (R36) nu se schimbă.
+    if date.tip in coada_api.TIPURI_RAPOARTE_Z:
+        with db.get_conn(schema) as _conn_z:
+            with _conn_z.cursor() as _cur_z:
+                _bl_z = coada_api.blocaj_rapoarte_z(_cur_z, schema, date.tip, date.an, date.luna, date.trim)
+            _conn_z.rollback()
+        if _bl_z:
+            raise _erori.DateInvalide(_bl_z)
     if date.tip in DECLARATII_TVA or date.tip == "d406":
         _ancora = date.luna or (int(date.trim) * 3 if date.trim else None)
         _ciorne = _surse["note"]

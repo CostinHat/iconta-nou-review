@@ -57,6 +57,22 @@ def ciorne_pe_conturi_tva(cur, schema, data_de, data_pana):
 
 
 
+def ciorne_pe_cont(cur, schema, data_de, data_pana, cont, sens):
+    """[17.5-W, AC185] (numărul notelor, suma liniilor lor) — notele NEvalidate din [data_de, data_pana) care au cel puțin o linie pe contul EXACT `cont`
+    în sensul `sens` (`credit` | `debit`: sensul rulajului comparat), fiecare nota o singură dată; suma = a liniilor lor pe acel cont în acel sens.
+    Aceeași fereastră ca rulajul și aceeași definiție de ciornă ca `ciorne_pe_conturi_tva` (`status <> 'validata'`)."""
+    col = {"credit": "cont_credit", "debit": "cont_debit"}[sens]
+    cur.execute(f"""
+                SELECT COUNT(DISTINCT i.id), COALESCE(SUM(l.suma), 0)
+                FROM {schema}.inregistrari i
+                JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                WHERE i.data >= %s AND i.data < %s AND i.status <> 'validata' AND l.{col} = %s
+            """, (data_de, data_pana, cont))
+    r = cur.fetchone()
+    r = list(r.values()) if isinstance(r, dict) else r
+    return int(r[0]), r[1]
+
+
 def select_inregistrari(cur, schema, de, pana):
     cur.execute(f"""SELECT 1 FROM {schema}.inregistrari
                 WHERE data >= %s AND data < %s AND status='validata' LIMIT 1""", (de, pana))

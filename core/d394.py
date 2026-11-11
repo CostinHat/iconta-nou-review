@@ -1614,6 +1614,12 @@ def genereaza(conn, schema, perioada, manual=None):
     if _er_camp:
         raise ValueError("D394 nu se poate genera: " + " ".join(_er_camp))
     res.modul, res.reguli = MODUL, REGULI
+    # [17.5-W, AC184] rapoartele Z cu nota în ciornă NU intră în decont (numai Z validat); decontul spune ce îi lipsește, ca PRIM avertisment
+    # (textul și fereastra: `coada_api`, aceleași ca la D300 și la refuzul depunerii)
+    from core import coada_api as _coada
+    _av_z = _coada.avertisment_rapoarte_z_decont(conn, schema, perioada)
+    if _av_z:
+        res.avertismente.insert(0, _av_z)
     _xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d394", _xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res

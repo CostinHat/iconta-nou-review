@@ -8,7 +8,7 @@ import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";   // [15.1,
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 13, 506 / 633] datele aduse de la ANAF țin de CUI-ul lor
 import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";   // [lotul 13, 551 / 548] refuzul care trimite în Date firmă are butonul lui
-import { actiuniRefuz, scoateActiuniRefuz } from "./coada_trimite.js?v=50cade9fc8";   // rândul de butoane de lângă caseta „NU s-a salvat”
+import { actiuniRefuz, scoateActiuniRefuz } from "./coada_trimite.js?v=6c37b5b2e7";   // rândul de butoane de lângă caseta „NU s-a salvat”
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
   credit:"F024", chirie:"F020", decont:"F040", contract_special:"F021", reevaluare:"F074",

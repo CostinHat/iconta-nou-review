@@ -113,13 +113,33 @@ def rulaje_interval(conn, schema, data_de, data_pana, conturi):
 _SENS_CIORNA = {"4427": "credit_4427", "4426": "debit_4426"}
 
 
+#: [17.5-W, AC185] conturile comparate cu decontul și sensul rulajului comparat (`compara_tva`): 4427 credit, 4426 debit, rezultatul — 4423 credit, 4424 debit
+_SENS_COMPARAT = {"4427": "credit", "4426": "debit", "4423": "credit", "4424": "debit"}
+
+
+def _explicatie_ciorne(nr, suma, cont):
+    """[17.5-W, AC185] Textul din rândul informativ de sub constatare: prima propoziție (cifrele) se vede fără deschiderea detaliilor
+    (`ds_piese.textSemnal`), a doua explică; fără note în ciornă pe cont, spune că diferența nu vine din ele."""
+    if not nr:
+        return "Note în ciornă pe contul %s în perioadă: niciuna. Diferența nu vine din note nevalidate." % cont
+    return ("Note în ciornă pe contul %s în perioadă: %d, cu suma de %s. Balanța cuprinde numai note validate, deci diferența poate veni din %s; "
+            "validează-%s și reia verificarea." % (cont, nr, _lei(suma), "ea" if nr == 1 else "ele", "o" if nr == 1 else "le"))
+
+
 def ciorne_care_explica(conn, schema, data_de, data_pana, constatari):
     """[deficiența 284, comanda Costin 16.10.2026, completarea 1 la lotul 6, verbatim în DECIZII] „refuzul [...] numește nota sau notele
     care explică diferența (aici nr. crt. 21, factura F1A4, 42 lei), cu link spre ele, nu doar «4 note nevalidate».”
     Pe fiecare constatare ROȘIE pe 4427 / 4426 pune `ciorne`: notele nevalidate din fereastră care mișcă acel cont, în sensul rulajului
     ({nota_id, nr_curent, data, document, descriere, suma}), și `ciorne_explica`: suma lor acoperă diferența (toleranța 1 leu) — adică,
     validate, ar închide constatarea. Notele se citesc din aceeași fereastră ca rulajul; ciorna nu intră în rulaj (Regula EVIDENTA)."""
-    rosii = [c for c in constatari if c.get("stare") == "rosu" and c.get("cont") in _SENS_CIORNA]
+    rosii_toate = [c for c in constatari if c.get("stare") == "rosu" and c.get("cont") in _SENS_COMPARAT]
+    if not rosii_toate:
+        return constatari
+    # [17.5-W, AC185] pe fiecare constatare roșie a conturilor 4427 / 4426 / 4423 / 4424: câte note în ciornă ating contul (în sensul comparat) și suma lor
+    with conn.cursor() as _cur:
+        for c in rosii_toate:
+            c["explicatie_ciorne"] = _explicatie_ciorne(*_repo.ciorne_pe_cont(_cur, schema, data_de, data_pana, c["cont"], _SENS_COMPARAT[c["cont"]]), c["cont"])
+    rosii = [c for c in rosii_toate if c["cont"] in _SENS_CIORNA]
     if not rosii:
         return constatari
     from core import jurnal_api as _j
@@ -446,7 +466,7 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
         temei = (f"D300 {_rand_formular(rand)} ({_de_unde}; rezultatul decontului, sold la sfârșitul perioadei fiscale) față de "
                  f"rulaj {sens} cont {cont}, numai note validate. Reconciliază rezultatul, nu doar "
                  f"totalurile colectată/deductibilă.")
-        baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
+        baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil, "cont": cont,   # [17.5-W, AC185] contul, ca la totalurile de mai sus
                 "diferenta": dif, "temei": temei, "sursa_declarat": sursa_declarat}
         if abs(dif) <= TOLERANTA:
             rez.append(dict(baza, stare="verde",
