@@ -120,7 +120,7 @@ if proba:
     mod = open(os.path.join(D, "mod")).read().strip()
     n = int(open(os.path.join(D, "n")).read()) if os.path.exists(os.path.join(D, "n")) else 0
     open(os.path.join(D, "n"), "w").write(str(n + 1))
-    if mod == "cade" or (mod == "o_data" and n == 0):
+    if mod == "cade" or (mod == "o_data" and n < 2):
         sys.exit(3)
     sys.exit(0)
 open(os.path.join(D, "martor"), "w").write("rulat")
@@ -179,10 +179,10 @@ def t6_clona(p_commit):
         "%d linii, %d INFRA, ieșire %d" % (len(verd), len(infra), r.returncode))
     caz("T.6 ii (a): stare[complete] gol, stare[oprit] = «infra ×3: proba de mediu …», trei intrări în stare[infra]",
         stare.get("complete") == [] and str(stare.get("oprit", "")).startswith("infra ×3: proba de mediu ") and len(stare.get("infra", [])) == 3, json.dumps({k: (len(v) if isinstance(v, list) else v) for k, v in stare.items()}, ensure_ascii=False)[:300])
-    caz("T.6 ii (a): a doua și a treia încercare pornesc din mediu refăcut: proba a rulat de trei ori (contorul probei = 3)", open(os.path.join(director, "n")).read() == "3")
+    caz("T.6 ii (a): fiecare dintre cele trei încercări pornește din mediu refăcut și rulează proba de două ori (prima rulare + reluarea unică din 17.5-U): contorul probei = 6", open(os.path.join(director, "n")).read() == "6")
     r, verd, stare = ruleaza("o_data", "b_proba_o_data")
     infra = [ln for ln in verd if ln.startswith("INFRA ")]
-    caz("T.6 ii (b): proba căzută o dată și verde la a doua încercare = o linie INFRA, apoi rularea continuă (plasa a pornit: fișier-martor prezent)", len(infra) == 1 and os.path.exists(os.path.join(director, "martor")),
+    caz("T.6 ii (b): proba căzută la prima încercare (cu reluarea ei unică) și verde la a doua = o linie INFRA, apoi rularea continuă (plasa a pornit: fișier-martor prezent)", len(infra) == 1 and os.path.exists(os.path.join(director, "martor")),
         "%d linii INFRA, martor %s, ieșire %d" % (len(infra), os.path.exists(os.path.join(director, "martor")), r.returncode))
     caz("T.6 ii (b): stare[infra] gol după rularea reală, stare[complete] cu o rulare", stare.get("infra") == [] and len(stare.get("complete", [])) == 1, json.dumps({k: (len(v) if isinstance(v, list) else v) for k, v in stare.items()}, ensure_ascii=False)[:300])
     caz("T.6 ii: poarta_verdicte.log și lot_stare_17_5_T.json din depozitul principal neatinse (sha256 înainte = după; absent = absent)", (sha256(f_verdicte), sha256(f_stare)) == inainte, "%s | %s" % inainte)

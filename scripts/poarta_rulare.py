@@ -307,7 +307,7 @@ def _main(argv):
     picate_acum = sorted(t["nume"] for t in cand if t["rezultat"] == "pica")
     noi = [n for n in picate_acum if reia and n not in picate and not any(n in r for r in rez["restanta"])]
     acum = datetime.datetime.now().isoformat(timespec="seconds")
-    motiv_infra = _o_linie("; ".join("%s: %s" % (t["nume"], t.get("mesaj", "")) for t in cand if t["nume"] in rez["infra"]))
+    motiv_infra = _o_linie("; ".join((t["mesaj"] if t.get("tip") else "%s: %s" % (t["nume"], t.get("mesaj", ""))) for t in cand if t["nume"] in rez["infra"]))   # proba de mediu: motivul ei, fără numele treptei
     tip_infra = next((t["tip"] for t in cand if t["nume"] in rez["infra"] and t.get("tip")), "")
     d = decide(stare, rez, reia, noi, sha, acum, motiv_infra, rosu if reia else None, tip_infra)
     stare = d["stare"]
