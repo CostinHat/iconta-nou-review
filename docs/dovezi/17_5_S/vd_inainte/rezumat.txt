@@ -1,0 +1,18 @@
+banca_f1_1366x768 eroare=None js=0 {"c": ["2 tabel(e) care nu sunt tabelul DS: fd-tabel tn-tabel"]}
+banca_f1_1920x1080 eroare=None js=0 {"c": ["2 tabel(e) care nu sunt tabelul DS: fd-tabel tn-tabel"]}
+control_fiscal_firma_f1_1366x768 eroare=None js=0 {}
+control_fiscal_firma_f1_1920x1080 eroare=None js=0 {}
+date_firma_f1_1366x768 eroare=None js=0 {}
+date_firma_f1_1920x1080 eroare=None js=0 {}
+de_validat_1366x768 eroare=None js=0 {"c": ["2 tabel(e) care nu sunt tabelul DS: fd-tabel tn-tabel"]}
+de_validat_1920x1080 eroare=None js=0 {"c": ["2 tabel(e) care nu sunt tabelul DS: fd-tabel tn-tabel"]}
+emite_factura_f1_1366x768 eroare=None js=0 {}
+emite_factura_f1_1920x1080 eroare=None js=0 {}
+miscari_si_fise_de_magazie_f1_1366x768 eroare=None js=0 {}
+miscari_si_fise_de_magazie_f1_1920x1080 eroare=None js=0 {}
+parteneri_f1_1366x768 eroare=None js=0 {"c": ["1 tabel(e) care nu sunt tabelul DS: fd-tabel"]}
+parteneri_f1_1920x1080 eroare=None js=0 {"c": ["1 tabel(e) care nu sunt tabelul DS: fd-tabel"]}
+scadentar_f1_1366x768 eroare=None js=0 {}
+scadentar_f1_1920x1080 eroare=None js=0 {}
+stat_de_plata_f5_1366x768 eroare=None js=0 {"c": ["1 tabel(e) care nu sunt tabelul DS: fd-tabel"]}
+stat_de_plata_f5_1920x1080 eroare=None js=0 {"c": ["1 tabel(e) care nu sunt tabelul DS: fd-tabel"]}
