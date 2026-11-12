@@ -1,0 +1,319 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text"
+  },
+  {
+   "id": "a.1",
+   "pas": "brief",
+   "operator": "text_contine",
+   "valoare": "1 sesizare nouă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.2",
+   "pas": "brief",
+   "operator": "lipseste",
+   "valoare": "1 sesizări noi",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.3",
+   "pas": "termene",
+   "operator": "text_contine",
+   "valoare": "Restanțele (termen depășit, nedepuse) și scadențele din următoarele 60 de zile, pe dată.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "f.2",
+   "pas": "termene",
+   "operator": "text_contine",
+   "valoare": "60 de zile",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.4",
+   "pas": "consolidare",
+   "operator": "text_contine",
+   "valoare": "inclusiv (luna în curs",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.5",
+   "pas": "asistenti",
+   "operator": "text_contine",
+   "valoare": "Nu poate valida",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.6",
+   "pas": "asistenti",
+   "operator": "lipseste",
+   "valoare": "· Poate valida",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "f.3",
+   "pas": "asistenti",
+   "operator": "text_contine",
+   "valoare": "✓ Poate pregăti",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.7",
+   "pas": "capacitate",
+   "operator": "text_contine",
+   "valoare": "Deschide Asistenți",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.8",
+   "pas": "capacitate",
+   "operator": "lipseste",
+   "valoare": "Adaugă asistenți",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "f.4",
+   "pas": "activitate",
+   "operator": "text_contine",
+   "valoare": "Tipare de erori",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.9",
+   "pas": "jurnal",
+   "operator": "egal",
+   "valoare": "Activitatea echipei",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .fir-acum|text"
+  },
+  {
+   "id": "a.10",
+   "pas": "tipare",
+   "operator": "egal",
+   "valoare": "Tipare de erori",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .fir-acum|text"
+  },
+  {
+   "id": "a.11",
+   "pas": "solicitari",
+   "operator": "text_contine",
+   "valoare": "Solicitări client",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-corp|text"
+  },
+  {
+   "id": "f.5",
+   "pas": "solicitari",
+   "operator": "text_contine",
+   "valoare": "Niciun mesaj încă.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.12",
+   "pas": "etransport",
+   "operator": "lipseste",
+   "valoare": "AIC - achiziție",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.13",
+   "pas": "etransport",
+   "operator": "text_contine",
+   "valoare": "AIC — achiziție intracomunitară",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.14",
+   "pas": "reginventar",
+   "operator": "text_contine",
+   "valoare": "Toate rândurile înscrise în registru",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.15",
+   "pas": "reginventar",
+   "operator": "lipseste",
+   "valoare": "un registru gol nu înseamnă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "f.6",
+   "pas": "reginventar",
+   "operator": "text_contine",
+   "valoare": "Niciun rând înscris.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.16",
+   "pas": "rapoarte",
+   "operator": "lipseste",
+   "valoare": "nu apar aici",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.17",
+   "pas": "rapoarte",
+   "operator": "text_contine",
+   "valoare": "Ce nu apare în aceste rapoarte",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.18",
+   "pas": "produse",
+   "operator": "text_contine",
+   "valoare": "Temeiul cotei:",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "f.7",
+   "pas": "produse",
+   "operator": "text_contine",
+   "valoare": "cota de pe NIR nr 4 din 20.10.2026",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.19",
+   "pas": "istoric",
+   "operator": "text_contine",
+   "valoare": "Arată încă 10 facturi ale lunii",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.20",
+   "pas": "istoric",
+   "operator": "lipseste",
+   "valoare": "Vezi și facturile mai vechi",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.21",
+   "pas": "model",
+   "operator": "text_contine",
+   "valoare": "previzualizare în timp real",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.22",
+   "pas": "model",
+   "operator": "lipseste",
+   "valoare": "preview live",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.23",
+   "pas": "nir",
+   "operator": "lipseste",
+   "valoare": "landed cost",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.24",
+   "pas": "nir",
+   "operator": "text_contine",
+   "valoare": "Cost accesoriu — se repartizează",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.25",
+   "pas": "nir",
+   "operator": "text_contine",
+   "valoare": "TVA transport 0%: fără TVA pe factura transportatorului",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.26",
+   "pas": "import",
+   "operator": "text_contine",
+   "valoare": "balanța de deschidere (fără data de referință): 6 conturi",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.27",
+   "pas": "import",
+   "operator": "lipseste",
+   "valoare": "balanța la —",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.28",
+   "pas": "solduri",
+   "operator": "lipseste",
+   "valoare": "SRLÎncarcă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.29",
+   "pas": "solduri",
+   "operator": "text_contine",
+   "valoare": "F1 Comert Stoc SRL · Încarcă balanța de deschidere",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.30",
+   "pas": "bilant",
+   "operator": "egal",
+   "valoare": "Bilanț anual",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-antet .fir-acum|text"
+  },
+  {
+   "id": "a.31",
+   "pas": "declaratii",
+   "operator": "text_contine",
+   "valoare": "Completează: Tip declarație",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-motiv|text"
+  },
+  {
+   "id": "a.32",
+   "pas": "leasing",
+   "operator": "text_contine",
+   "valoare": "și încă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fj-motiv|text"
+  },
+  {
+   "id": "a.33",
+   "pas": "leasing_catalog",
+   "operator": "lipseste",
+   "valoare": "în afară de ·",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.34",
+   "pas": "leasing_catalog",
+   "operator": "text_contine",
+   "valoare": "în afară de excepțiile înscrise sub acest cod în catalog · durata între 48 și 72 de luni",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text"
+  },
+  {
+   "id": "a.35",
+   "pas": "salariati",
+   "operator": "text_contine",
+   "valoare": "Salariați",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-corp h2.pf-titlu|text"
+  },
+  {
+   "id": "a.36",
+   "pas": "salariati",
+   "operator": "lipseste",
+   "valoare": "Stat de plată",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-corp h2.pf-titlu|text"
+  },
+  {
+   "id": "a.37",
+   "pas": "certificat",
+   "operator": "text_contine",
+   "valoare": "Datele certificatului",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-corp|text"
+  },
+  {
+   "id": "a.38",
+   "pas": "certificat",
+   "operator": "lipseste",
+   "valoare": "Certificat nou",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-corp|text"
+  }
+ ]
+}

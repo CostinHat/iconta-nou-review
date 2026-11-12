@@ -1,0 +1,53 @@
+produs
+lot: 17.5-I
+max hook 132
+max poarta_verificator 101
+max poarta_pytest 737
+max poarta_plasa 2463
+runde_verificator_max: 2
+sursa pragurilor 17.5-I: generate de scripts/praguri_automate.py la 2026-11-12T15:42:03+02:00 din .lot_jurnal.log; loturi folosite: 17.5-W, 17.5-S, 17.5-T (3)
+  hook: maxim 110 s (lotul 17.5-T, rularea 2897588-1794460720118) din 32 rulari complete, 0 rulari «intrerupt» ignorate, prag 132 s
+  poarta_verificator: maxim 84 s (lotul 17.5-T, rularea 4141758-1794486724650) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 101 s
+  poarta_pytest: maxim 614 s (lotul 17.5-T, rularea 4141758-1794486808798) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 737 s
+  poarta_plasa: maxim 2052 s (lotul 17.5-T, rularea 4141758-1794487422872) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 2463 s
+limite aplicate de scripts/poarta_rulare.py (:250, :280): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+plasa_modificabile frontend_test/e2e/e2e_pozitii_validate.py frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py
+fisiere_permise:
+  scripts/praguri_17_5_I.txt (nou)
+  scripts/plasa_16_2.manifest (rândul nou al lui e2e_texte_17_5_I.py și rândurile modificate ale e2e_pozitii_validate.py și e2e_butoane_la_loc_17_5_F.py: numai sha256 nou, comanda și numărul de teste neschimbate)
+  static/js/ecrane/termene.js (numai introducerea, AC013)
+  static/js/ecrane/cabinet.js (numai: etichetele cifrelor din Sinteza zilei (AC018), titlurile ferestrelor «Activitatea echipei» și «Tipare de erori» (AC032, AC033), introducerea Consolidare (AC026))
+  static/js/ecrane/portal.js (numai introducerea «Cifrele firmei», AC026)
+  core/control_incrucisat.py (numai cele două mesaje «Niciun D101 depus prin aplicație …», AC023)
+  static/js/ecrane/asistenti.js (numai textele pastilelor de drepturi, AC029)
+  static/js/ecrane/capacitate.js (numai eticheta butonului din starea goală, AC030)
+  docs/dovezi/17_5_H/harta_bara_jos.txt (numai rândul Capacitate, AC030: «Capacitate | Deschide Asistenți | activ» în locul celui vechi)
+  core/audit_preluare.py (numai textul `exista` al pasului «solduri» fără data de referință, AC031)
+  core/catalog_ecrane.json (numai `catalog.titlu` al intrării cu nume «Declarații lucrate», AC032; `nume` rămâne)
+  static/js/ecrane/firme.js (numai: h2 «Salariați» (AC038), formele de plural ale semnelor Bancă și textul cardului lor (AC044), h2, placeholderul și aria-label-ul Solicitări client (AC048), numele ferestrei «Bilanț anual» și mesajul categoriei nedeterminate (AC056), textul cardului Rapoarte comerciale (AC064), eticheta costului accesoriu, cu explicația cotei 0% (AC079))
+  static/js/ecrane/etransport_ecran.js (numai opțiunea «AIC — achiziție intracomunitară», AC042)
+  core/registru_inventar.py (numai temei_completitudine, AC054)
+  core/registre_art321.py (numai temei_completitudine, AC054)
+  static/js/ecrane/produse_ecran.js (numai rândul justificării «Temeiul cotei: …», AC066)
+  core/cote_tva.py (numai cerința de diacritice și propoziție din promptul justificării, AC066)
+  static/js/ecrane/facturi_ecran.js (numai: butonul «Arată încă N facturi ale lunii» și valoarea parametrului limit din cererea istoricFacturi (AC075), introducerea Model factură și aria-label-urile culorilor de accent (AC078))
+  static/js/ecrane/migrare.js (numai cele trei introduceri «<firmă> · Încarcă …», AC089)
+  core/mf_registru.py (numai completarea denumirii care se termină cu «în afară de» sau «în afară de clădirile din», AC100)
+  static/js/cadru.js (numai compunerea textului «Completează: …» cu «și încă N câmpuri» și adăugarea lui `cate` la importul din ./api.js, AC101)
+  static/js/ecrane/declaratii.js (numai: title-ul butonului #dec-continua (AC105) și formatul sumei «Total TVA datorat» (AC138, partea de format))
+  static/js/ecrane/flux_concediu.js (numai titlul secțiunii «Datele certificatului», AC112)
+  static/js/ecrane/coada_trimite.js (numai numele ferestrei deschise cu «Deschide», AC123)
+  core/coada_api.py (numai eticheta_element pentru declarații: perioada declarată din payload, și apelul lui de la :878, AC021)
+  core/asistenti_api.py (numai: coloanele p_an/p_luna/p_trim ale SELECT-ului jurnalului și apelurile eticheta_element :194 și :645, AC021)
+  static/js/ (numai fisierele numite in comanda si cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  frontend_test/e2e/e2e_texte_17_5_I.py (nou)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_I/
+  frontend_test/e2e/e2e_lot12_texte.py (numai aserțiunea de la :58 pe textul nou al celor două rânduri D101, AC023, pct.8.5 al comenzii)
+  frontend_test/e2e/e2e_pozitii_validate.py (numai aserțiunea de la :189 pe pastilele drepturilor («Nu poate valida» / «Nu poate depune» în loc de «· Poate valida» / «· Poate depune»), AC029, pct.8.5)
+  frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py (numai aserțiunea de la :101–102 pe «Deschide Asistenți» în loc de «Adaugă asistenți», AC030, pct.8.5; numai dacă 17.5-F e publicat)
