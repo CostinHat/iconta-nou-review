@@ -339,7 +339,8 @@ def test_def_4_bun_venit_se_inchide_din_x_si_cu_esc(browser, request):
     [lotul 13, 562] Prezentarea nu se mai deschide singură la prima logare („nimic nu se deschide singur”; decizia 320: „ghidul de
     început rămâne în butonul de ajutor (?)”). Pașii: la prima intrare pagina principală, FĂRĂ fereastră de bun venit; din semnul „?”
     al barei se deschide „Prezentarea aplicației”, cu X în antet; Esc o închide; deschisă din nou, X o închide. Prima deschidere o
-    marchează văzută."""
+    marchează văzută.
+    [17.5-T] actualizat la 16.8, deficiența 759 (static/js/navigator.js:294): „✕” pe orice fereastră, „←” numai unde există pas înapoi real."""
     with cont_asistent(firme=(T_COMERT,), bun_venit_vazut=False) as a:
         with ecran_cont(browser, request, a["email"]) as e:
             pg = e.pg
@@ -350,14 +351,14 @@ def test_def_4_bun_venit_se_inchide_din_x_si_cu_esc(browser, request):
             e.captura("fara_fereastra")
             pg.click("#nav-ghid")
             pg.wait_for_selector(".fereastra .ans-continut", timeout=20000)
-            assert pg.is_visible(".fereastra .fereastra-antet button.nav-inapoi") and not pg.query_selector(".fereastra .fereastra-antet .nav-x"), "„←” în antet, fără X"   # [15.1-E5]
+            assert pg.is_visible(".fereastra .fereastra-antet .nav-x") and not pg.is_visible(".fereastra .fereastra-antet .nav-inapoi"), "„✕” în antet, fără „←”"   # [17.5-T] 16.8, 759
             e.captura("prezentarea_deschisa")
             pg.keyboard.press("Escape")
             pg.wait_for_selector(".fereastra .ans-continut", state="detached", timeout=10000)
             e.captura("prezentarea_dupa_esc")
             pg.click("#nav-ghid")
             pg.wait_for_selector(".fereastra .ans-continut", timeout=20000)
-            pg.click(".fereastra .fereastra-antet .nav-inapoi")
+            pg.click(".fereastra .fereastra-antet .nav-x")   # [17.5-T] 16.8, 759: „✕” pe orice fereastră, „←” numai unde există pas înapoi
             pg.wait_for_selector(".fereastra .ans-continut", state="detached", timeout=10000)
             e.captura("dupa_x")
         _asteapta(lambda: sql("SELECT bun_venit_vazut_la IS NOT NULL FROM public.users WHERE id = %s", (a["id"],)) == [(True,)])
@@ -447,7 +448,8 @@ def test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica(browser, request, 
     """8. Drepturi: asistentul era refuzat de server la circa 50 de operații zilnice.
     Pașii contabilului: asistentul cu „Poate pregăti” (firma alocată) face munca curentă: o dispoziție în Casă și o notă contabilă
     nouă în Registrul jurnal — ambele trec (ciorne), fără refuz. Lista acțiunilor pe care serverul i le refuză nu cuprinde nicio
-    operație curentă (factură, chitanță, casă, notă, import extras, stoc, NIR, pontaj, export SAGA, e-Transport)."""
+    operație curentă (factură, chitanță, casă, notă, import extras, stoc, NIR, pontaj, export SAGA, e-Transport).
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781, „[16.2-A, 729.1]”): „Adaugă” din Casă cere o poziție din listă sau „Avans, fără factură”."""
     pregateste_firma(patron, firma_e2e)
     with cont_asistent(firme=(firma_e2e["tenant_id"],)) as a, ecran_cont(browser, request, a["email"]) as e:
         pg = e.pg
@@ -467,6 +469,7 @@ def test_def_8_asistentul_cu_poate_pregati_face_munca_zilnica(browser, request, 
         pg.fill("#c-suma", "321.00")
         pg.fill("#c-part", "Client Asistent E2E SRL")
         pg.fill("#c-doc", "DI E2E 8")
+        pg.check("#c-avans")                       # [17.5-T] 729.1: la încasare „Adaugă” cere o poziție din listă sau „Avans, fără factură”
         pg.click("#c-adauga")
         pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('321,00')", timeout=20000)
         e.captura("casa")
@@ -1449,13 +1452,15 @@ def test_def_28_stocuri_arata_situatia_si_fara_retete_la_comert(patron, firma_e2
 def test_def_29_fereastra_firmei_grupata_sub_titluri(patron):
     """29. Fereastra firmei: peste 20 de carduri amestecate; grupare sub titluri.
     Pașii contabilului: deschide o firmă: cardurile stau sub titluri, în ordinea Zilnic · Registre · Raportări și declarații ·
-    Operațiuni speciale · Firma; „Facturi” e la Zilnic, „Registru jurnal” la Registre, „Declarații” la Raportări."""
+    Operațiuni speciale · Firma; „Facturi” e la Zilnic, „Registru jurnal” la Registre, „Declarații” la Raportări.
+    [17.5-T] actualizat la lot 17.1 (DESIGN_SYSTEM.md:820; static/js/ecrane/firme.js:461, GRUPURI_FIRMA): fereastra firmei are 7 grupuri pliabile."""
     patron.firma("Comert Micro TVA")
     pg = patron.pg
     grupuri = pg.eval_on_selector_all(".fereastra-overlay:not(.fundal) section.firme-grup", """els => els.map(s => [s.querySelector('h3').textContent.trim(),
         [...s.querySelectorAll('.firme-optiune-titlu')].map(t => t.textContent.trim())])""")
     patron.captura(intreaga=True)
     titluri = [g[0] for g in grupuri]
-    assert titluri == ["Zilnic", "Registre", "Raportări și declarații", "Operațiuni speciale", "Firma"], titluri
+    # [17.5-T] lot 17.1: fereastra firmei are 7 grupuri (GRUPURI_FIRMA, static/js/ecrane/firme.js:461), implicit deschis numai „Zi de zi”
+    assert titluri == ["Zi de zi", "Personal și stocuri", "Contabilitate", "Registre", "Termene", "Parteneri", "Configurare"], titluri
     pe = dict(grupuri)
-    assert "Facturi" in pe["Zilnic"] and "Registru jurnal" in pe["Registre"] and "Declarații" in pe["Raportări și declarații"], pe
+    assert "Facturi" in pe["Zi de zi"] and "Registru jurnal" in pe["Contabilitate"] and "Declarații" in pe["Termene"], pe

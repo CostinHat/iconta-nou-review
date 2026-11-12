@@ -37,6 +37,7 @@ def _masuri(pg):
 
 @pytest.mark.parametrize("lat,inalt", REZOLUTII)
 def test_cadrul_ferestrei_de_firma(patron, firma_cadru, lat, inalt):
+    """[17.5-T] actualizat la 17.5-D / 17.5-H2 (static/js/cadru.js:11-12 și :126): „Închide” nu mai e acțiune principală, bara de jos nu mai are butoane principale pe fereastra Operațiuni speciale."""
     pg = patron.pg
     pg.set_viewport_size({"width": lat, "height": inalt})
     patron.firma(firma_cadru["nume"])
@@ -46,7 +47,7 @@ def test_cadrul_ferestrei_de_firma(patron, firma_cadru, lat, inalt):
     assert m["antet"][1] == 56 and m["sageata"] == [40, 40] and m["cautare"] == [320, 40], m
     assert m["verigi"] == 0 and m["separatori"] == 1 and "· CUI " in m["fir"] and m["fir"].endswith("Operațiuni speciale"), m
     assert m["jos"][1] == 72 and m["jos_ultimul"] and m["jos_jos"] == 0, m
-    assert m["principale"] == [["Închide", 52, False]] and m["renunta"] is None, m   # [17.3] bara nu mai are „Renunță”: revenirea e „←”
+    assert m["principale"] == [] and m["renunta"] is None, m   # [17.3] bara nu mai are „Renunță”: revenirea e „←”; [17.5-T] „Închide” nu mai e acțiune principală (static/js/cadru.js:11-12)
 
 
 def test_cabinetul_in_bara_de_sus(patron):

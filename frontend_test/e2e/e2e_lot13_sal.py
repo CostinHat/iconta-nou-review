@@ -17,6 +17,7 @@ import pytest
 from conftest import _scoate_firmele_e2e, sql
 from e2e_bloc_d import LUNA_TRECUTA, PATRON, _api
 from e2e_bloc_d import _stat as _stat_luna
+from e2e_bloc_d import _stat_la_luna
 from e2e_lot11_s9 import _d112_xml, _firma_cu_salariat, _singurul, _un
 from e2e_lot13_sal_ajutor import _F, alege, buton, coloane, deschide_salariat, inchide, text_compozitie
 
@@ -70,13 +71,14 @@ def test_def_671_pontajul_arata_concediul_medical_din_certificat(patron, firma_s
     """671. Pașii: certificat cod 01, marți–joi din luna trecută -> statul lunii trecute: rândul salariatului „N−3 din N” zile lucrate și
     semnul „CM” -> fereastra salariatului -> „Pontaj”: cele trei zile sunt „concediu medical”, inactive, cu motivul (certificatul CCMAM
     1234567); restul „prezent”; regula „ce schimbă pontajul” e aceeași frază ca în statul de plată (`pontaj.REGULA_PONTAJ`). Înainte:
-    zilele certificatului apăreau „prezent” (22 prezență, 0 concediu), iar textele se contraziceau."""
+    zilele certificatului apăreau „prezent” (22 prezență, 0 concediu), iar textele se contraziceau.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from core import pontaj
     zile = _marti_miercuri_joi()
     _certificat(firma_sal, zile[0], zile[-1], 3)
     nzl = _zile_lucratoare(LUNA_TRECUTA.replace(day=1), _ultima_zi(LUNA_TRECUTA))
     pg = patron.pg
-    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    _stat_la_luna(patron, firma_sal, LUNA_TRECUTA.year, LUNA_TRECUTA.month)   # [817] statul se deschide pe luna de lucru: luna trecută se cere explicit
     rand = pg.locator(_F + "#sp-tabel tbody tr.sp-rand").first
     txt = " ".join(rand.inner_text().split())
     assert ("%d din %d" % (nzl - 3, nzl)) in txt and "CM" in txt, txt
@@ -100,9 +102,10 @@ def test_def_671_pontajul_arata_concediul_medical_din_certificat(patron, firma_s
 def test_def_678_pontajul_e_calendar_si_se_apasa_doar_zilele_altfel(patron, firma_sal):
     """678. Pașii: fereastra salariatului -> „Pontaj”: un calendar luni–vineri pe săptămâni, fără liste derulante; implicit „prezent”;
     „Marchează ca: concediu de odihnă” -> apăs o zi -> ziua devine „concediu de odihnă” (rândul în pontaj) -> o apăs din nou -> „prezent”.
-    Înainte: 22 de liste derulante, cu derulare."""
+    Înainte: 22 de liste derulante, cu derulare.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     pg = patron.pg
-    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    _stat_la_luna(patron, firma_sal, LUNA_TRECUTA.year, LUNA_TRECUTA.month)   # [817] statul se deschide pe luna de lucru: luna trecută se cere explicit
     deschide_salariat(patron)
     buton(patron, "pontaj")
     pg.wait_for_selector(_F + "#pj-calendar", timeout=20000)
@@ -150,12 +153,13 @@ def test_def_677_statul_compact_si_compozitia_pe_trei_coloane(patron, firma_sal)
     """677. Pașii: certificat cod 01 (3 zile) -> statul lunii trecute: tabelul (Salariat, Zile lucrate, Brut, Net de plată, Cost angajator,
     Semnele lunii), rândul de total, căutarea deasupra -> rândul -> fereastra salariatului: Venituri / Rețineri / Rezultat; indemnizația CM
     o singură dată, cu brut și net; fără „Zile de concediu medical: 3”; veniturile în bani − reținerile = netul de plată, aceleași cifre ca
-    statul (ruta). Înainte: carduri unul sub altul, compoziția pliată sub „▸ Compoziția netului”."""
+    statul (ruta). Înainte: carduri unul sub altul, compoziția pliată sub „▸ Compoziția netului”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     zile = _marti_miercuri_joi()
     _certificat(firma_sal, zile[0], zile[-1], 3)
     s = _stat_api(firma_sal)[firma_sal["salariat_id"]]
     pg = patron.pg
-    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    _stat_la_luna(patron, firma_sal, LUNA_TRECUTA.year, LUNA_TRECUTA.month)   # [817] statul se deschide pe luna de lucru: luna trecută se cere explicit
     capete = [" ".join(x.split()) for x in pg.locator(_F + "#sp-tabel thead th").all_inner_texts()]
     assert capete == ["Salariat", "Zile lucrate", "Brut", "Net de plată", "Cost angajator", "Semnele lunii"], capete
     total = " ".join(pg.inner_text(_F + "#sp-tabel tfoot").split())
@@ -248,16 +252,17 @@ def test_def_679_suma_orelor_suplimentare_se_calculeaza(patron, firma_sal):
 def test_def_670_b_excedentul_de_diurna_e_venit_salarial(patron, firma_sal):
     """670 (b). Pașii: decontul final lasă 300 lei excedent de diurnă pe luna trecută (`diurna_salariat.adauga_excedent`, apelat de
     decont) -> statul: brut 5.300, fereastra salariatului: „Excedent de diurnă · plătit prin decont, impozabil” -> Declarații -> D112:
-    „fără erori”, E3_8 = 5.300, E3_59 = E3_52 = 300 (OPANAF 605/2026 anexa 2, E.3 rândul 8.2.1), B4_7 = 5.300 (CF art.139 alin.(1) lit.j)."""
+    „fără erori”, E3_8 = 5.300, E3_59 = E3_52 = 300 (OPANAF 605/2026 anexa 2, E.3 rândul 8.2.1), B4_7 = 5.300 (CF art.139 alin.(1) lit.j).
+    [17.5-T] actualizat la 752 (static/js/ecrane/firme.js:1567)"""
     from conftest import _db
     from core import diurna_salariat as ds
     with _db().get_conn() as conn, conn.cursor() as cur:
         ds.adauga_excedent(cur, firma_sal["schema"], firma_sal["salariat_id"], LUNA_TRECUTA.year, LUNA_TRECUTA.month, Decimal("300"),
                            "e2e:decont:1", "decont final, deplasare internă")
     pg = patron.pg
-    _stat_luna(patron, firma_sal, luni_inapoi=1)
+    _stat_la_luna(patron, firma_sal, LUNA_TRECUTA.year, LUNA_TRECUTA.month)   # [817] statul se deschide pe luna de lucru: luna trecută se cere explicit
     rand = " ".join(pg.locator(_F + "#sp-tabel tbody tr.sp-rand").first.inner_text().split())
-    assert "5.300,00" in rand, rand
+    assert "5.000,00 300,00" in rand, rand   # [752] brutul salarial 5.000 și coloana „Diurnă peste plafon” 300 (împreună brutul 5.300)
     deschide_salariat(patron)
     assert coloane(patron)["Excedent de diurnă"][0] == 300
     assert "plătit prin decont, impozabil" in text_compozitie(patron)

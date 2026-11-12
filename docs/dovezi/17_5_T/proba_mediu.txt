@@ -1,0 +1,2 @@
+e2e_pilot_luna.py::test_pilot_00_primii_pasi
+durate: 5.24 5.40 5.03

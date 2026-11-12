@@ -15,7 +15,7 @@ import pytest
 from conftest import _scoate_firmele_e2e, sql
 from e2e_bloc_b import _cnp
 from e2e_bloc_d import LUNA_TRECUTA, PATRON, _api, _firma_noua, _genereaza
-from e2e_bloc_d import _stat as _stat_luna
+from e2e_bloc_d import _stat_la_luna
 from e2e_lot11_a453 import _pdf_fluturas
 from e2e_lot13_sal_ajutor import alege
 
@@ -182,8 +182,9 @@ def test_def_c91_deducerea_plafonata_la_venitul_net(patron, firma_c91):
     minim, calculat întreg) -> „Fluturaș”: aceeași deducere, 650,00 -> Declarații -> D112 pe luna trecută: „fără erori” la DUKIntegrator,
     iar XML-ul declară deducerea acordată 650 (E3_12 / E3_121 / E1_4 / E1_41), baza 0 și impozitul 0 (E3_14 / E3_15). Înainte: 1.946 pe
     ecran, pe fluturaș și în D112, cu baza tot 0.
-    Temeiul: CF art.77 alin.(2) — „se acordă în limita venitului impozabil lunar realizat”; OPANAF 605/2026 anexa 1.2, D112 E.1 rândul 4."""
-    _stat_luna(patron, firma_c91, luni_inapoi=1)
+    Temeiul: CF art.77 alin.(2) — „se acordă în limita venitului impozabil lunar realizat”; OPANAF 605/2026 anexa 1.2, D112 E.1 rândul 4.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601): statul lunii trecute se cere explicit prin _stat_la_luna"""
+    _stat_la_luna(patron, firma_c91, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     comp = _compozitie(patron)
     patron.captura("compozitia_netului")
     # [deficiența 411] rândul deducerii stă sub impozit: „în calculul impozitului, scade baza (nu se reține): deducere personală”
@@ -204,9 +205,10 @@ def test_def_c90_fara_functie_de_baza_declarat_cu_e3_3_doi(patron, firma_c90):
     pe luna trecută: „fără erori” la DUKIntegrator, iar XML-ul declară venitul în afara funcției de bază: E3_3 = 2, secțiunea E2 (E2_1
     5.000, E2_2 1.750, E2_3 3.250, E2_4 325), fără secțiunea E1, cu persoanele și deducerea 0 (E3_11 / E3_12). Înainte: E3_3 = 1 și E1
     pentru orice salariat.
-    Temeiul: structura D112, E3_3 — „=1, pentru functia de baza / =2, pentru venit in afara functiei de baza”; E2 = Σ E3 „pentru E3_3=2”."""
+    Temeiul: structura D112, E3_3 — „=1, pentru functia de baza / =2, pentru venit in afara functiei de baza”; E2 = Σ E3 „pentru E3_3=2”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601): statul lunii trecute se cere explicit prin _stat_la_luna"""
     pg = patron.pg
-    _stat_luna(patron, firma_c90, luni_inapoi=1)
+    _stat_la_luna(patron, firma_c90, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     comp = _randuri_compozitie(_compozitie(patron))   # [lotul 13, 677] fereastra salariatului
     patron.captura("stat")
     assert comp["Impozit pe venit"] == _bani("325,00"), comp
@@ -236,7 +238,7 @@ def _formular_cod10(patron, firma):
     assert st == 200, (st, r)
     zile = int(r["zile"])
     assert zile >= 9, zile          # Bmax = 25% × 240 × zile >= 540 > 499,59: indemnizația nu e plafonată
-    _stat_luna(patron, firma, luni_inapoi=1)
+    _stat_la_luna(patron, firma, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
@@ -273,7 +275,8 @@ def test_def_c89_indemnizatia_cm_rotunjita_la_sursa(patron, firma_c89):
     500 − reținerile declarate pe indemnizație (D112: CAS + CASS + impozit ale salariatului − cele din salariu) -> Declarații -> D112: „fără
     erori”, iar D_20 + D_21 = 500. Înainte: 499,59 stocat și pe ecran (net 292,59), 500 în D112.
     Temeiul: Normele OUG 158/2005 (Ordinul MS 15/2018 / CNAS 1.311/2017) art.63 Exemplul nr.1 — „Ci = 2.499,59 lei - 1.875 lei = 624,59
-    lei, rotunjit la 625 lei conform legii”."""
+    lei, rotunjit la 625 lei conform legii”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601): statul lunii trecute se cere explicit prin _stat_la_luna"""
     pg = patron.pg
     _formular_cod10(patron, firma_c89)
     pg.fill(_F + "#cm-urgenta", "4321")
@@ -281,7 +284,7 @@ def test_def_c89_indemnizatia_cm_rotunjita_la_sursa(patron, firma_c89):
     # rândul certificatului: „… · indemnizație brută 500,00 lei · net 292,00 lei” (500 − 125 CAS − 50 CASS − 33 impozit)
     cert = re.findall(r"indemnizație brută ([\d.]+,\d\d) lei · net ([\d.]+,\d\d) lei", lista)
     assert [(_bani(b), _bani(n)) for b, n in cert] == [(_bani("500,00"), _bani("292,00"))], lista
-    _stat_luna(patron, firma_c89, luni_inapoi=1)
+    _stat_la_luna(patron, firma_c89, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     # compoziția se citește O DATĂ, cât fereastra salariatului e în față (după D112 ecranul e cel al declarației)
     coloane = _compozitie(patron)
     comp = _randuri_compozitie(coloane)
@@ -333,7 +336,8 @@ def test_def_c102_propunerea_zilelor_nu_inlocuieste_ce_a_scris_contabilul(patron
     „Început” 1, „Sfârșit” 7, apoi „Sfârșit” 14: ecranul cere de două ori zilele lucrătoare; răspunsul pentru 1–7 sosește DUPĂ cel pentru
     1–14 -> „Zile lucrătoare CM” rămâne cifra pentru 1–14. Apoi „Sfârșit” 10 și contabilul scrie 3 zile înainte de răspuns -> câmpul rămâne
     3. Înainte: orice răspuns sosit după `await` scria peste câmp (cifra veche, sau peste ce tastase contabilul; în poartă: „1010 zile”).
-    Răspunsurile se țin pe loc (`page.route`) și se eliberează în ordinea care producea defectul."""
+    Răspunsurile se țin pe loc (`page.route`) și se eliberează în ordinea care producea defectul.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601): statul lunii trecute se cere explicit prin _stat_la_luna"""
     pg = patron.pg
     di = LUNA_TRECUTA
     zile = {}
@@ -342,7 +346,7 @@ def test_def_c102_propunerea_zilelor_nu_inlocuieste_ce_a_scris_contabilul(patron
         assert st == 200, (st, r)
         zile[zi] = str(r["zile"])
     assert zile[7] != zile[14] and zile[10] != "3", zile
-    _stat_luna(patron, firma_c89, luni_inapoi=1)
+    _stat_la_luna(patron, firma_c89, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
@@ -465,7 +469,8 @@ def test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112(patron
     netaxabilă) × zilele lucrate fără CM (B4_1) / zilele lucrătoare ale lunii) și diferența suportată de angajator B4_8D + B4_6D = suprataxa
     de pe stat și de pe fluturaș. Înainte: statul socotea podeaua și pe zilele de concediu medical (suprataxă mai mare decât în D112).
     Temeiul: CF art.146 alin.(5^6) — „corespunzător numărului zilelor lucrătoare din lună în care contractul a fost activ”; Legea 53/2003
-    art.50 lit.b) — contractul „se suspendă de drept” pe durata concediului pentru incapacitate temporară de muncă."""
+    art.50 lit.b) — contractul „se suspendă de drept” pe durata concediului pentru incapacitate temporară de muncă.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601): statul lunii trecute se cere explicit prin _stat_la_luna"""
     import calendar
     from core.common import cota, salariu_minim_luna
     pg = patron.pg
@@ -477,7 +482,7 @@ def test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112(patron
     st, r = _api(PATRON, "GET", "/util/zile-lucratoare?start=%s&end=%s" % (LUNA_TRECUTA.isoformat(), ultima.isoformat()))
     assert st == 200, (st, r)
     nzl = int(r["zile"])
-    _stat_luna(patron, firma_c99, luni_inapoi=1)
+    _stat_la_luna(patron, firma_c99, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
@@ -495,7 +500,7 @@ def test_def_c99_suprataxa_in_luna_cu_cm_aceeasi_pe_stat_fluturas_si_d112(patron
     pg.fill(_F + "#cm-ven6", "12000")
     pg.fill(_F + "#cm-zile6", "125")
     _salveaza_certificat(patron)
-    _stat_luna(patron, firma_c99, luni_inapoi=1)
+    _stat_la_luna(patron, firma_c99, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     comp = _randuri_compozitie(_compozitie(patron))
     patron.captura("compozitia_netului")
     supra = comp.get(_ETICHETA_SUPRATAXA)

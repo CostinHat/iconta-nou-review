@@ -220,6 +220,25 @@ def durate(lot, cale=None):
     return iesire
 
 
+def marcheaza_infra_g2(lot, id_, motiv, durata):
+    """[17.5-T, T.5] Marchează prima măsurare a unei faze poarta_pytest / poarta_plasa depășite sub încărcare străină susținută: un al doilea rând «sfarsit» cu același id și rezultatul «infra_g2»
+    (`durate` ia ultimul «sfarsit» al id-ului, deci durata marcată iese alta și nu mai contează); motivul și durata reală a primei măsurări stau în detalii."""
+    cale = cale_jurnal()
+    pid = next((r[7] for r in _citeste(cale) if len(r) > 7 and r[6] == id_ and r[2] == "inceput"), os.getpid())
+    faza = next((r[1] for r in _citeste(cale) if len(r) > 7 and r[6] == id_ and r[2] == "inceput"), "?")
+    _scrie(cale, [lot, faza, "sfarsit", _acum(), _sha(), "infra_g2", id_, pid, "%s; durata_prima=%s" % (motiv, durata)])
+
+
+def marcaje_g2(lot, cale=None):
+    """{id: (motiv, durata primei măsurări în secunde)} pentru rândurile «sfarsit» cu rezultatul «infra_g2» ale lotului (pentru mesajul depășirii și pentru raport)."""
+    iesire = {}
+    for r in _citeste(cale or cale_jurnal()):
+        if len(r) > 8 and r[0] == lot and r[2] == "sfarsit" and r[5] == "infra_g2":
+            motiv, _, dur = r[8].rpartition("; durata_prima=")
+            iesire[r[6]] = (motiv, dur)
+    return iesire
+
+
 # --- 17.5-A: citirea pură a jurnalului și fazele timpului de lucru al lui Code (derivate, nu măsurate de hook) ---
 FAZE_LUCRU = ("lucru_pana_la_commit", "lucru_pana_la_poarta", "asteptare_poarta", "reparatie_dupa_rosu", "dupa_verde", "dupa_infra", "pana_la_publicare", "pytest_intre_commituri")
 _FAZE_POARTA = ("poarta_verificator", "poarta_pytest", "poarta_plasa")
@@ -258,11 +277,11 @@ def rulari(rows, lot):
 
 
 def _rez_run(rezultate):
-    """Ordinea rosu > infra > verde: «verde» dacă toate rezultatele finale sunt verde / verde_cu_restante; «infra» [17.5-U] numai dacă toate sunt verde, verde_* sau «infra» și cel puțin unul e «infra»
+    """Ordinea rosu > infra > verde: «verde» dacă toate rezultatele finale sunt verde / verde_cu_restante; «infra» [17.5-U] numai dacă toate sunt verde, verde_*, «infra» sau «infra_g2» [17.5-T] și cel puțin unul e «infra»
     (o rulare fără nicio probă rulată într-o treaptă); altfel «rosu» (rosu_N, intrerupt, stop, lista goală și orice altceva, inclusiv un amestec verde / infra / rosu_1)."""
     if rezultate and all(x == "verde" or x.startswith("verde_") for x in rezultate):
         return "verde"
-    if rezultate and all(x == "verde" or x.startswith("verde_") or x == "infra" for x in rezultate):
+    if rezultate and all(x == "verde" or x.startswith("verde_") or x in ("infra", "infra_g2") for x in rezultate):   # [17.5-T, T.5] «infra_g2» = prima măsurare marcată de G2: nici verde, nici roșu
         return "infra"
     return "rosu"
 

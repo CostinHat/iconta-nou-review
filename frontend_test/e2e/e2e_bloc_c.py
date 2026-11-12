@@ -14,7 +14,7 @@ import os
 
 import pytest
 
-from conftest import BAZA, CAPTURI, INALT, LAT, PREFIX_FIRMA, Ecran, _db, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, sql, zile_de_acum
+from conftest import BAZA, CAPTURI, INALT, LAT, PREFIX_FIRMA, Ecran, _db, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, la_luna_ceruta, sql, zile_de_acum
 
 AZI = _dt.date.today()
 
@@ -1001,7 +1001,8 @@ def test_def_96_raportul_z_nu_se_valideaza_fara_descarcare(patron, firma_cv):
     """96. Raport Z: la cantitativ-valoric nu se validează fără descărcarea pe articol.
     Pașii: firma cantitativ-valorică -> Raport Z: 121,00 lei la 21%, numerar, 3 bonuri -> Generează notă: nota e CIORNĂ, iar
     secțiunea de descărcare arată Z-ul „Nedescărcat”. Registru jurnal -> „Validează” pe nota Z: refuz „nu se validează fără
-    descărcarea mărfii vândute”, nota rămâne ciornă."""
+    descărcarea mărfii vândute”, nota rămâne ciornă.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     pg = patron.pg
     _deschide(patron, firma_cv["nume"], "raportz", "#z-salveaza")
     pg.fill("#z-data", AZI.isoformat())
@@ -1018,6 +1019,7 @@ def test_def_96_raportul_z_nu_se_valideaza_fara_descarcare(patron, firma_cv):
     pg.wait_for_function("() => (document.querySelector('#z-descarcare') || {innerText: ''}).innerText.includes('Nedescărcat')", timeout=15000)
     patron.captura("z")
     _deschide(patron, firma_cv["nume"], "jurnal", "#j-nota-noua")
+    la_luna_ceruta(patron, "#j-prev", AZI.year, AZI.month)      # [17.5-T] nota Z e datată azi; jurnalul se deschide pe luna de lucru
     pg.click("[data-val='%d']" % nid)
     pg.wait_for_function("() => (document.querySelector('#j-mesaj') || {innerText: ''}).innerText.includes('nu se validează fără descărcarea')",
                          timeout=15000)
@@ -1109,14 +1111,13 @@ def salariat_gv(firma_gv):
 
 
 def _salarii_luna_incheiata(ecran, firma):
-    """Salariați pe ultima lună încheiată — [deficiența 216] nota salariilor se scrie după ce luna s-a încheiat, iar ecranul se
-    deschide pe luna curentă: o lună înapoi."""
+    """Salariați pe ultima lună încheiată — [deficiența 216] nota salariilor se scrie după ce luna s-a încheiat. [17.5-T, 817] ecranul se deschide pe luna
+    de lucru, nu pe luna curentă: luna încheiată se cere explicit, din luna afișată."""
     pg = ecran.pg
     _deschide(ecran, firma["nume"], "salariati", "#sp-contare")
     trecuta = AZI.replace(day=1) - _dt.timedelta(days=1)
-    pg.click("#sp-prev")
-    pg.wait_for_function("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.includes(t) && document.querySelector('#sp-contare')",
-                         arg="Luna %02d/%d" % (trecuta.month, trecuta.year), timeout=30000)
+    la_luna_ceruta(ecran, "#sp-prev", trecuta.year, trecuta.month)
+    pg.wait_for_selector("#sp-contare", timeout=30000)
 
 
 def _contabilizeaza_statul(ecran, firma):
@@ -1133,7 +1134,8 @@ def _contabilizeaza_statul(ecran, firma):
 def test_def_90_confirmarea_notei_la_validare_e_vizibila(asistent, firma_gv, salariat_gv, asistent_pregatitor):
     """90. Coadă: confirmarea „Nota nr. crt. 3 din … e la validare” mică și gri.
     Pașii: asistentul -> firma -> Salariați -> „Contabilizează statul” -> „Scrie nota ciornă”. Confirmarea „Nota nr. crt. N din … e la validare
-    în cabinet.” apare într-o casetă informativă (DS cap.5), nu ca text mic gri."""
+    în cabinet.” apare într-o casetă informativă (DS cap.5), nu ca text mic gri.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     pg = asistent.pg
     _contabilizeaza_statul(asistent, firma_gv)
     pg.click("#sp-contare-scrie")
@@ -1149,7 +1151,8 @@ def test_def_81_nota_de_salarii_respinsa_se_reface_din_stat(asistent, patron, fi
     """81. Salarii: nota respinsă o trimitea pe Ana în Registrul jurnal; recontabilizarea n-o refăcea.
     Pașii: cabinetul respinge nota de salarii („lipsește pontajul”) -> asistentul deschide Salariați: statul spune că nota se
     corectează din statul de plată, nu din Registrul-jurnal -> „Contabilizează statul” › „Recontabilizează statul” (confirmă
-    „Retrimite fără schimbări”) -> „Nota respinsă a fost înlocuită cu nota nr. crt. N din … și trimisă la validare” (258: fără id-ul intern); noua notă e la validare."""
+    „Retrimite fără schimbări”) -> „Nota respinsă a fost înlocuită cu nota nr. crt. N din … și trimisă la validare” (258: fără id-ul intern); noua notă e la validare.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     from core import coada_api, db
     s = firma_gv["schema"]
     if not sql("SELECT 1 FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota' AND stare = 'la_senior'",

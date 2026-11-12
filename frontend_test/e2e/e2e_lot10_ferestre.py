@@ -16,7 +16,7 @@ import datetime as _dt
 
 import pytest
 
-from conftest import firma_noua
+from conftest import firma_noua, la_luna_ceruta
 
 AZI = _dt.date.today()
 LAPTOP = {"width": 1366, "height": 768}
@@ -94,7 +94,8 @@ def test_def_421_ferestrele_cu_tabele_iau_ecranul_rezumatul_sus_actiunea_jos(pat
     """421 (clasă, toată aplicația). Pașii, la 1366×768: fereastra firmei -> „Balanță de verificare” (luna curentă, 14 conturi) ->
     „Registrul-inventar” -> „Adu soldurile din balanță” (tabelul soldurilor) -> „Salariați” (statul de plată). Pe fiecare: fereastra are cel
     puțin 90% din lățimea ecranului (înainte: ~jumătate), nimic nu derulează lateral și nimic nu e tăiat în dreapta, acțiunea principală
-    se vede fără derulare, iar rezumatul (luna, cifrele) se vede și cu tabelul derulat la capăt."""
+    se vede fără derulare, iar rezumatul (luna, cifrele) se vede și cu tabelul derulat la capăt.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     from e2e_bloc_a import _card
     pg = patron.pg
     vp = pg.viewport_size
@@ -103,6 +104,7 @@ def test_def_421_ferestrele_cu_tabele_iau_ecranul_rezumatul_sus_actiunea_jos(pat
     try:
         patron.firma(firma_421["nume"])
         _card(patron, "balanta", "#b-pdf")
+        la_luna_ceruta(patron, "#b-prev", AZI.year, AZI.month)   # [17.5-T] nota probei e din luna curentă; balanța se deschide pe luna de lucru
         r, o = _verifica(patron, "Balanța", "#b-pdf")
         rele += r
         patron.captura("balanta")

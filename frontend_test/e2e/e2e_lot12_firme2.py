@@ -22,7 +22,7 @@ import re
 
 import pytest
 
-from conftest import firma_noua, linie_nota, sql
+from conftest import firma_noua, la_luna_ceruta, linie_nota, sql
 
 AZI = _dt.date.today()
 LUNA = "%02d/%d" % (AZI.month, AZI.year)
@@ -145,13 +145,15 @@ def test_def_498_antetul_balantei_spune_luna_si_cifrele_iar_sursa_lor_e_pliata(p
     """498. Pașii: firma cu două note validate în luna curentă -> „Balanță de verificare”: antetul „Luna LL/AAAA · N conturi · 2 note
     validate în luna asta”, fără explicația lungă (înainte: „… rulajele lunii vin din 2 note validate — aceleași pe care le arată Registrul
     jurnal pe luna asta, în afară de ciorne; notele lunilor anterioare și, în anul preluării, rulajele aduse din balanța de deschidere stau
-    în «sume precedente»”); „De unde vin cifrele” închis -> clic -> explicația întreagă (ciornele nu intră; „Sume precedente”)."""
+    în «sume precedente»”); „De unde vin cifrele” închis -> clic -> explicația întreagă (ciornele nu intră; „Sume precedente”).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from e2e_bloc_a import _card
     _note_mari(patron, firma_f2)
     patron.firma(firma_f2["nume"])
     _card(patron, "balanta", "#b-intro")
     pg = patron.pg
-    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #b-intro') || {innerText: ''}).innerText.includes('validat')",
+    la_luna_ceruta(patron, "#b-prev", AZI.year, AZI.month)   # [817] balanța se deschide pe luna de lucru; notele probei sunt datate azi
+    pg.wait_for_function("() => (document.querySelector('.fereastra:last-of-type #b-intro') || {innerText: ''}).innerText.includes('2 note validate')",
                          timeout=30000)
     intro = " ".join(pg.inner_text(".fereastra:last-of-type #b-intro").replace("← luna", "").replace("luna →", "").split())
     assert intro.startswith("Luna %s · " % LUNA) and intro.endswith("· 2 note validate în luna asta"), intro

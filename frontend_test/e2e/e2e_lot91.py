@@ -7,6 +7,7 @@ import datetime as _dt
 import pytest
 
 from conftest import firma_noua, sql
+from e2e_bloc_b import _mergi_la_luna
 from e2e_import_saga import _incarca, _pas
 from e2e_lot82 import _celule, _randul, _text, cnp_cu_control
 
@@ -326,7 +327,8 @@ def test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare(patron, firma
     butonul care o promitea era greșit. Pașii: o notă 6581 = 5311 de 100 lei, fără document -> Registru jurnal -> pe rând, o dată:
     „… nu se validează fără documentul din care provine … Scrie referința cu «Editează», apoi validează.”, „Validează” inactiv (lotul 10,
     10.2 pct.7k: mesajul nu se mai repetă în dreapta) -> „Editează” -> editorul notei ->
-    documentul „Proces-verbal ITM nr. 12 din <azi>” -> „Salvează” -> „Validează” -> nota e validată."""
+    documentul „Proces-verbal ITM nr. 12 din <azi>” -> „Salvează” -> „Validează” -> nota e validată.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from e2e_bloc_a import _api, _ok
     from e2e_bloc_b import _deschide_rand, _nota_jn
     from e2e_bloc_e import _nota
@@ -339,6 +341,8 @@ def test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare(patron, firma
     patron.firma(firma_srl["nume"])
     pg = patron.pg
     pg.click("#fa-jurnal")
+    pg.wait_for_selector("#j-nota-noua", timeout=30000)
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] nota e datată azi; jurnalul se deschide pe luna de lucru
     pg.wait_for_selector("[data-nota-id='%s'] [data-val]" % nid, timeout=30000)
     # [lotul 10, 10.2 pct.7k] un singur mesaj; „Validează” inactiv, legat de el (nu mai e și caseta de confirmare din dreapta)
     # [lotul 12, 617] tabelul de note: de ce nu se validează stă O DATĂ, deasupra tabelului (`#jn-expl-fara_doc`); pasul notei („Scrie
@@ -468,17 +472,21 @@ def test_def_394_jurnalul_e_lat_si_motivul_amortizarii_nu_rupe_butoanele(patron,
     încheie” era rupt de butoane. Pașii, pe un ecran de laptop (1366×768), pe o firmă fără note: Registru jurnal (luna curentă) -> motivul
     e sub rândul de butoane, nu între ele -> „+ Notă nouă” -> fereastra e lată (ca Mijloace fixe), rândul de butoane încape pe un rând și
     fereastra nu derulează (de la titlu la „Salvează”). Cu note multe în lună, lista lor (sub formular) derulează; formularul întreg pe un
-    ecran mai mic cere rearanjarea lui (decizie, raportul 9.1 §6)."""
+    ecran mai mic cere rearanjarea lui (decizie, raportul 9.1 §6).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)
+    [17.5-T] actualizat la 17.5-D (static/js/cadru.js:11)"""
     pg = patron.pg
     pg.set_viewport_size({"width": 1366, "height": 768})
     try:
         patron.firma(firma_goala["nume"])
         pg.click("#fa-jurnal")
         pg.wait_for_selector("#j-nota-noua", timeout=30000)
+        _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] jurnalul se deschide pe luna de lucru; proba cere luna curentă (motivul amortizării există numai acolo)
         poz = pg.evaluate("""() => { const m = document.querySelector('#j-amort-motiv'); if (!m) return null;
-          const b = [...document.querySelectorAll('#j-prev, #j-next, #j-amort, #j-nota-noua, #j-lock')].map((x) => x.getBoundingClientRect().bottom);
-          return {sus: m.getBoundingClientRect().top, jos_butoane: Math.max(...b)}; }""")
-        assert poz and poz["sus"] >= poz["jos_butoane"] - 1, poz   # sub toate butoanele (luna curentă: motivul există)
+          const b = [...document.querySelectorAll('#j-prev, #j-next, #j-amort, #j-lock')].map((x) => x.getBoundingClientRect().bottom);
+          return {sus: m.getBoundingClientRect().top, jos_butoane: Math.max(...b), nota_in_bara: !!document.querySelector('#j-nota-noua').closest('.fereastra-jos')}; }""")
+        # [17.5-D] „+ Notă nouă” (acțiunea principală) a trecut în bara de jos a ferestrei: rândul de butoane rămas e luna, amortizarea și blocarea
+        assert poz and poz["nota_in_bara"] and poz["sus"] >= poz["jos_butoane"] - 1, poz   # sub toate butoanele (luna curentă: motivul există)
         pg.click("#j-nota-noua")
         pg.wait_for_selector("#je-salveaza", timeout=10000)
         pg.wait_for_timeout(400)

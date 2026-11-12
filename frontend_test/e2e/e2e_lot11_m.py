@@ -44,10 +44,11 @@ def fisier_fara_norma():
 
 #: locul tabelului între rezumatul lipit sus și bara lipită jos, la 1280×720 (rândul de tabel ≈ 37 px)
 MASOARA = """() => { const c = [...document.querySelectorAll('.fereastra-corp')].pop(); const f = c.closest('.fereastra');
-  const rez = c.querySelector('.rezumat-fix'), bara = c.querySelector('.bara-fixa'); c.scrollTop = 1e7;
+  const rez = c.querySelector('.rezumat-fix'), bara = c.querySelector('.bara-fixa'), jos = f.querySelector('.fereastra-jos'); c.scrollTop = 1e7;
   const r = (e) => e.getBoundingClientRect();
-  return {loc: Math.round(r(f).bottom - r(c).top - rez.offsetHeight - bara.offsetHeight), rez_sus: Math.round(r(rez).top - r(c).top),
-          bara_jos: Math.round(r(c).bottom - r(bara).bottom),
+  /* [17.5-T] bara de jos fixă a ferestrei (72 px, `.fereastra-jos`) e sub corp: locul tabelului nu o mai cuprinde, iar lipirea ei de marginea de jos se măsoară față de fereastră */
+  return {loc: Math.round(r(f).bottom - r(c).top - rez.offsetHeight - bara.offsetHeight - jos.offsetHeight), rez_sus: Math.round(r(rez).top - r(c).top),
+          bara_jos: Math.round(r(f).bottom - r(jos).bottom),
           derulante: [...f.querySelectorAll('*')].filter((e) => ['auto', 'scroll'].includes(getComputedStyle(e).overflowY)
                                                              && e.scrollHeight > e.clientHeight + 1).map((e) => e.className)}; }"""
 
@@ -166,7 +167,8 @@ def test_def_424_importul_are_rezumatul_sus_actiunea_jos_si_deruleaza_numai_tabe
     """424. Pașii, la 1280×720: Import date -> Solduri inițiale -> balanța SAGA (21 de conturi) -> derulez tabelul la capăt: rezumatul
     (21 de conturi, debit / credit) rămâne sus, „Salvează soldurile” cu data și metoda rămân jos, între ele tabelul are cel puțin 240 px;
     un singur element derulează. Apoi Articole și stoc inițial (zona de încărcare nu mai stă deasupra rezumatului). ROȘU înainte:
-    rezumatul lipit avea 611 px din 661 (nota „ce s-a citit”), deci nu mai stătea lipit și derula toată fereastra."""
+    rezumatul lipit avea 611 px din 661 (nota „ce s-a citit”), deci nu mai stătea lipit și derula toată fereastra.
+    [17.5-T] actualizat la 15.1-E2 pct.3 / 17.5-D (static/js/cadru.js:1-8; R007): bara de jos fixă e ultimul copil al ferestrei; poziția ei se măsoară față de fereastră (ajutorul MASOARA)."""
     pg = patron.pg
     vp = pg.viewport_size
     pg.set_viewport_size(LAPTOP)

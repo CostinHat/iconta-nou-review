@@ -6,7 +6,7 @@ import datetime as _dt
 
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import firma_noua, la_luna_ceruta, luna_de_lucru_azi, sql
 from e2e_lot92 import _stat, firma_cv, firma_cv_noua  # noqa: F401 — fixturile modulului
 
 AZI = _dt.date.today()
@@ -25,10 +25,13 @@ def test_def_433_dupa_contabilizarea_statului_nu_se_deschide_formularul_cor(patr
     COR. Nimic nu se deschide fără să fie ales.” Cauza: butonul „Adeverință” purta și atributul care deschide formularul COR, deci un clic
     pe „Adeverință” îl deschidea și pe acela, gol; statul în care s-a scris ceva se păstrează la întoarcere, cu formularul deschis.
     Pașii: Salariați -> „+ vacanță” la IONESCU VASILE -> 100 -> „Renunță” -> „Adeverință” -> „←” -> „Contabilizează statul”: sub stat
-    apare propunerea notei, iar formularul „Ocupație COR” NU e deschis -> „COR ✓”: formularul se deschide cu ocupația lui (241107)."""
+    apare propunerea notei, iar formularul „Ocupație COR” NU e deschis -> „COR ✓”: formularul se deschide cu ocupația lui (241107).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     # [lotul 13, 673 / 677] fiecare acțiune a salariatului are fereastra ei, deschisă din fereastra salariatului
     from e2e_lot13_sal_ajutor import buton, contare_deschisa, deschide_salariat, inchide
     pg = _stat(patron, firma_cv)
+    la_luna_ceruta(patron, "#sp-prev", AZI.year, AZI.month)   # [17.5-T, 817] statul lunii curente (cea a probei) se cere explicit: ecranul se deschide pe luna de lucru
+    pg.wait_for_selector("#sp-tabel tbody tr.sp-rand", timeout=30000)
     deschide_salariat(patron, _RAND)
     buton(patron, "vac")
     pg.fill("#ben-input", "100")          # fereastra a primit o tastare
@@ -58,14 +61,30 @@ def test_def_sumagoala_nota_noua_are_suma_goala_si_o_cere(patron, firma_jurnal):
     """10.2 pct.7h. „Notă nouă în Registru jurnal: câmpul Sumă vine precompletat cu «0,00»; câmpurile de sumă sunt goale.” Pașii:
     Registru jurnal -> „+ Notă nouă”: Sumă goală -> „+ linie”: și a doua sumă goală -> „−” pe a doua linie -> documentul „Chitanță nr. 7
     din <azi>”, 6022 = 5311, suma lăsată goală -> „Salvează”: lângă câmp „Scrie suma liniei.”, nota nu se scrie -> suma 45 -> „Salvează”
-    -> nota de 45,00 e în registru."""
+    -> nota de 45,00 e în registru.
+    [17.5-T] actualizat la 817 (decizia arhitectului 11.11.2026; static/js/ecrane/firme.js, formularul „Notă nouă”)"""
     from e2e_bloc_a import _card
     s = firma_jurnal["schema"]
     patron.firma(firma_jurnal["nume"])
     pg = patron.pg
     _card(patron, "jurnal", "#j-nota-noua")
+    # [17.5-T, 817 + decizia arhitectului 11.11.2026] pe o lună de lucru DIFERITĂ de luna curentă nota nouă nu se pune singură pe o dată din altă lună:
+    # data rămâne goală și se cere, ca suma („Completează: data, suma”); pe luna curentă data propusă e azi
+    la_luna_ceruta(patron, "#j-prev", *luna_de_lucru_azi())
     pg.click("#j-nota-noua")
     pg.wait_for_selector("#je-salveaza", timeout=10000)
+    assert pg.input_value("#je-data") == ""
+    pg.fill("#je-linii .je-deb", "6022")
+    pg.fill("#je-linii .je-cre", "5311")
+    assert pg.get_attribute("#je-salveaza", "aria-disabled") == "true"
+    assert pg.get_attribute("#je-salveaza", "data-motiv-inactiv") == "Completează: data, suma"
+    patron.captura("alta_luna")
+    pg.click(".fereastra:last-of-type .nav-inapoi")
+    pg.wait_for_selector("#j-nota-noua", timeout=20000)
+    la_luna_ceruta(patron, "#j-prev", AZI.year, AZI.month)
+    pg.click("#j-nota-noua")
+    pg.wait_for_selector("#je-salveaza", timeout=10000)
+    assert pg.input_value("#je-data") == AZI.isoformat()   # luna curentă: data propusă e azi
     assert pg.input_value("#je-linii .je-sum") == ""
     pg.click("#je-plus")
     assert pg.eval_on_selector_all("#je-linii .je-sum", "e => e.map((x) => x.value)") == ["", ""]
@@ -126,7 +145,8 @@ def test_def_394_nota_noua_nu_deruleaza_cu_note_in_luna(patron, firma_jurnal):
 def test_def_386_nota_fara_document_are_un_singur_mesaj(patron, firma_jurnal):
     """386. „în Registru jurnal, la nota fără document, același mesaj apare de două ori (stânga și dreapta).” Pașii: o notă 6581 = 5311 de
     100 lei, fără document -> Registru jurnal: pe rândul ei, o singură dată, „… nu se validează fără documentul din care provine … Scrie
-    referința cu «Editează», apoi validează.”; „Validează” e inactiv; un clic pe el nu deschide a doua casetă (în dreapta)."""
+    referința cu «Editează», apoi validează.”; „Validează” e inactiv; un clic pe el nu deschide a doua casetă (în dreapta).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     from e2e_bloc_a import _api, _ok, _card
     from e2e_bloc_e import _nota
     tid = firma_jurnal["tenant_id"]
@@ -137,6 +157,7 @@ def test_def_386_nota_fara_document_are_un_singur_mesaj(patron, firma_jurnal):
     patron.firma(firma_jurnal["nume"])
     pg = patron.pg
     _card(patron, "jurnal", "#j-nota-noua")
+    la_luna_ceruta(patron, "#j-prev", AZI.year, AZI.month)   # [17.5-T] nota e datată azi; jurnalul se deschide pe luna de lucru
     sel = "[data-nota-id='%s']" % nid
     pg.wait_for_selector(sel + " [data-val]", timeout=30000)
     assert pg.is_disabled(sel + " [data-val]")

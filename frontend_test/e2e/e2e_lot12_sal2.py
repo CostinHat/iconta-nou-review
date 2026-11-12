@@ -14,6 +14,7 @@ import pytest
 from conftest import _scoate_firmele_e2e, sql
 from e2e_bloc_d import LUNA_TRECUTA, PATRON, _api
 from e2e_bloc_d import _stat as _stat_luna
+from e2e_bloc_d import _stat_la_luna
 from e2e_lot13_sal_ajutor import alege
 from e2e_lot11_s9 import (_F, _concedii, _compozitie, _d112_xml, _firma_cu_salariat, _propunerea_zilelor, _randuri_compozitie, _singurul,
                           _un)
@@ -141,12 +142,13 @@ def test_def_629_treapta_deducerii_cu_indemnizatia_cm(patron, firma_629):
     indemnizația CM brută” -> Declarații -> D112: „fără erori”, E3_121 = aceeași deducere, „Total venit brut” (E3_8) = salariul realizat +
     indemnizația (B4_7). Înainte (Costin, F5 Ionescu 10/2026): treapta pe salariul lucrat (4.815,34) fără indemnizația de 262 lei.
     Temeiul: CF art.76 alin.(1) („inclusiv indemnizațiile pentru incapacitate temporară de muncă”), CF art.77 alin.(3)-(4) („venituri
-    brute lunare din salarii”), HG 1/2016 Titlul IV pct.13 alin.(1); OPANAF 605/2026 anexa 2, E.3 rândul 8 „Total venit brut”."""
+    brute lunare din salarii”), HG 1/2016 Titlul IV pct.13 alin.(1); OPANAF 605/2026 anexa 2, E.3 rândul 8 „Total venit brut”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from decimal import Decimal
     from core import salarizare
     from e2e_lot12_ctrl_d112 import _certificat_01
     _certificat_01(patron, firma_629, 10, "6291")
-    _stat_luna(patron, firma_629, luni_inapoi=1)
+    _stat_la_luna(patron, firma_629, LUNA_TRECUTA.year, LUNA_TRECUTA.month)   # [817] statul se deschide pe luna de lucru: luna trecută se cere explicit
     comp = _randuri_compozitie(_compozitie(patron))
     patron.captura("compozitia_netului")
     brut, cm = comp["Salariu pe zile lucrate"], comp["Indemnizație concediu medical"]   # [lotul 13, 677] coloana „Venituri”
@@ -174,7 +176,8 @@ def firma_c165():
 def test_def_c165_nota_validata_direct_nu_e_aratata_ciorna(patron, firma_c165):
     """C165. Pașii: statul lunii trecute -> nota de salarii scrisă și validată (patronul are drept de validare: nota nu trece prin coadă)
     -> Salariați -> statul lunii trecute -> „Contabilizează statul”: „Nota … e validată.”, fără „ciornă”. Înainte (F1, nota 6, 09/2026):
-    „Nota există deja în jurnal (…, ciornă).” — starea venea numai din coada de validare."""
+    „Nota există deja în jurnal (…, ciornă).” — starea venea numai din coada de validare.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     tid = firma_c165["tenant_id"]
     q = "?an=%d&luna=%d" % (LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     st, r = _api(PATRON, "POST", "/tenants/%d/salarii-contare%s" % (tid, q), {})
@@ -185,7 +188,7 @@ def test_def_c165_nota_validata_direct_nu_e_aratata_ciorna(patron, firma_c165):
     assert sql('SELECT status FROM "%s".inregistrari WHERE id = %%s' % firma_c165["schema"], (nota,)) == [("validata",)]
     assert sql("SELECT count(*) FROM public.declaratii_coada WHERE tenant_id = %s AND fel = 'nota'", (tid,)) == [(0,)]   # premisa
     pg = patron.pg
-    _stat_luna(patron, firma_c165, luni_inapoi=1)
+    _stat_la_luna(patron, firma_c165, LUNA_TRECUTA.year, LUNA_TRECUTA.month)   # [817] statul se deschide pe luna de lucru: luna trecută se cere explicit
     pg.click(_F + "#sp-contare")
     from e2e_lot13_sal_ajutor import contare_deschisa
     contare_deschisa(patron)   # [lotul 13] fereastra contabilizării (statul are și el `#sp-contare-zona`: starea notei)

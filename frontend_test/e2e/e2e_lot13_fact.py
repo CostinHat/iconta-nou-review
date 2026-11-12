@@ -32,6 +32,7 @@ from decimal import Decimal
 import pytest
 
 from conftest import firma_noua, sql
+from e2e_bloc_b import _mergi_la_luna
 from e2e_bloc_a import AZI, ARTICOL, CLIENT, PRODUS, _api, _card, _deschide_emiterea, _deschide_factura, _ok, articol_in_stoc, emite_api, \
     pregateste_firma
 
@@ -528,7 +529,8 @@ def test_def_604_borderoul_sta_langa_nir_nu_in_tva_regimuri_speciale(patron, fir
 
 def test_def_603_nota_borderoului_are_titlul_cu_diacritice_si_sursa_lui(patron, firma_fact):
     """603. Pașii: Stocuri -> Borderou de achiziție (Ion Vanzator E2E, 120 lei, pe cheltuială) -> Registru jurnal: nota se numește
-    „Achiziție de la neînregistrat - Ion Vanzator E2E” (cu diacritice), în bază și în Registrul jurnal."""
+    „Achiziție de la neînregistrat - Ion Vanzator E2E” (cu diacritice), în bază și în Registrul jurnal.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     s = firma_fact["schema"]
     patron.firma(firma_fact["nume"])
     pg = patron.pg
@@ -549,6 +551,7 @@ def test_def_603_nota_borderoului_are_titlul_cu_diacritice_si_sursa_lui(patron, 
     assert titlu == "Achiziție de la neînregistrat - Ion Vanzator E2E", titlu
     patron.firma(firma_fact["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] nota e datată azi; jurnalul se deschide pe luna de lucru
     pg.wait_for_timeout(800)
     t = pg.locator("[data-nota-id]", has_text="Ion Vanzator E2E").first.inner_text()
     patron.captura()

@@ -584,10 +584,15 @@ def test_def_251_auditul_numeste_textele_stricate_de_un_import_vechi(patron, fir
     în loc de literă și nu se pot reface din bază. Pașii: soldurile pe parteneri cu denumirea „Br\\ufffdt\\ufffdria Ștefan SRL” (cum o
     scria importul vechi) -> auditul de preluare: „Texte cu litere pierdute la import: soldurile pe parteneri: „Br�t�ria Ștefan SRL”.” cu
     „Încarcă din nou fișierul pasului …”.
-    MUTAȚIA: verificarea textelor importate scoasă din audit -> ROȘU."""
+    MUTAȚIA: verificarea textelor importate scoasă din audit -> ROȘU.
+    [17.5-T] actualizat la DESIGN_SYSTEM.md (cardul-rezumat cu detaliile pliate sub «▾ detalii»; static/js/ds_piese.js:56; R013): contabilul deschide detaliile auditului, testul la fel."""
     _balanta_api(patron, firma, (("4111", 500, 0), ("1012", 0, 500)))
     _parteneri_api(patron, firma, (("4111", ALFA[0], "Br�t�ria Ștefan SRL", 500, 0),))   # date de pornire: textul vechi, stricat
     t = _audit(patron, firma)
+    # [17.5-T] DS: cardul-rezumat al auditului ține detaliile pliate sub „▾ detalii” (static/js/ds_piese.js:56); nimic nu se deschide singur, deci contabilul le deschide, iar testul la fel
+    for plie in patron.pg.locator(_F + "#cf-audit-istoric .ds-rezumat-plie, " + _F + "#cf-audit-istoric .ds-semnal-plie").all():
+        plie.click()
+    t = " ".join(patron.pg.inner_text(_F + "#cf-audit-istoric").split())
     patron.captura("texte_stricate")
     assert "Texte cu litere pierdute la import: soldurile pe parteneri: „Br�t�ria Ștefan SRL”" in t, t[:3000]
     assert "Încarcă din nou fișierul pasului (Import date): acum se citește întreg, cu diacritice." in t

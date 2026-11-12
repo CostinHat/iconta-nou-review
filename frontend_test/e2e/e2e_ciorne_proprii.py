@@ -41,7 +41,8 @@ def _nota(email, tid, descriere):
 def test_def_246_ciorna_altui_utilizator_se_vede_dar_nu_se_schimba(asistent, firma_246):
     """246. Registru jurnal (F2), ca Ana Asistent: nota-ciornă scrisă de contabilul-șef se vede, fără „Editează”, „Șterge”, „Trimite la
     validare”, cu motivul scris pe rând (în detaliul lui, lotul 12, 617); nota ei proprie nu poartă motivul. Cererile directe (editare, ștergere, trimitere la validare)
-    sunt refuzate de server cu același text, iar nota rămâne neatinsă."""
+    sunt refuzate de server cu același text, iar nota rămâne neatinsă.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601; ajutorul _jurnal din e2e_bloc_d cere luna curentă)"""
     tid = firma_246["tenant_id"]
     a_patronului = _nota(PATRON, tid, "Ciorna contabilului-șef D246")
     a_ei = _nota(ASISTENT, tid, "Ciorna Anei D246")

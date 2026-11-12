@@ -16,7 +16,7 @@ import urllib.parse
 
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import firma_noua, la_luna_ceruta, sql
 from e2e_bloc_a import AZI, CLIENT, PRODUS, _api, _ok
 
 ZI = _dt.date(2026, 8, 26)
@@ -65,8 +65,7 @@ def _reevaluare_august(patron, f):
     patron.firma(f["nume"])
     pg.click("#fa-inchidere")
     pg.wait_for_selector(".fereastra:last-of-type #il-prev", timeout=30000)
-    for _ in range((AZI.year * 12 + AZI.month) - (2026 * 12 + 8)):
-        pg.click(".fereastra:last-of-type #il-prev")
+    la_luna_ceruta(patron, "#il-prev", 2026, 8)   # [17.5-T, 817] 08/2026 se atinge din luna afișată (ecranul se deschide pe luna de lucru)
     pg.wait_for_function("() => document.querySelector('.fereastra:last-of-type .pf-intro').innerText.includes('08/2026')", timeout=60000)
     pg.wait_for_selector(".fereastra:last-of-type #il-reevaluare", timeout=60000)
     pg.click(".fereastra:last-of-type #il-reevaluare")
@@ -76,7 +75,8 @@ def _reevaluare_august(patron, f):
 
 def test_def_429_un_singur_formular_operatiunile_nu_il_mai_au_iar_inchiderea_il_deschide_mereu(patron, firma_v):
     """Pașii: Operațiuni speciale -> nu mai există „Reevaluare lunară solduri valută” (formularul manual fără propunere și fără curs) ->
-    Închidere lună, luna în curs (fără blocaj de reevaluare) -> butonul „Reevaluare valută” e acolo -> ecranul spune că luna e în curs."""
+    Închidere lună, luna în curs (fără blocaj de reevaluare) -> butonul „Reevaluare valută” e acolo -> ecranul spune că luna e în curs.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     f = firma_v
     pg = patron.pg
     patron.firma(f["nume"])
@@ -88,6 +88,8 @@ def test_def_429_un_singur_formular_operatiunile_nu_il_mai_au_iar_inchiderea_il_
     patron.firma(f["nume"])
     pg.click("#fa-inchidere")
     pg.wait_for_selector(".fereastra:last-of-type #il-reevaluare", timeout=60000)
+    la_luna_ceruta(patron, "#il-prev", AZI.year, AZI.month)   # [17.5-T, 817] „luna în curs” se cere explicit: ecranul se deschide pe luna de lucru
+    pg.wait_for_selector(".fereastra:last-of-type #il-reevaluare", timeout=60000)
     assert "buton-secundar" in pg.get_attribute(".fereastra:last-of-type #il-reevaluare", "class")   # fără blocaj: secundar, dar acolo
     pg.click(".fereastra:last-of-type #il-reevaluare")
     pg.wait_for_selector(".fereastra:last-of-type #rv-luna-in-curs", timeout=60000)
@@ -98,7 +100,8 @@ def test_def_429_un_singur_formular_operatiunile_nu_il_mai_au_iar_inchiderea_il_
 def test_def_429_plata_nelegata_scade_soldul_partenerului(patron, firma_v):
     """Decizia 10.3. Pașii: factura EUR 363,00 (1.906,98 lei) contată -> încasare din extras NEALOCATĂ facturii, 500,00 lei, cu
     partenerul pe rând (5124 = 4111) -> Închidere lună 08/2026 -> „Reevaluare valută”: rândul partenerului scade plata nelegată —
-    267,82 EUR, 1.406,98 lei, „estimat din plățile în lei”, plata arătată sub sold —, cursul BNR 5,2586 din 31.08.2026, diferența 1,38 pe 765."""
+    267,82 EUR, 1.406,98 lei, „estimat din plățile în lei”, plata arătată sub sold —, cursul BNR 5,2586 din 31.08.2026, diferența 1,38 pe 765.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     f = firma_v
     _factura_eur(patron, f)
     if not sql('SELECT 1 FROM "%s".inregistrari WHERE document_ref = \'Extras EUR 429\'' % f["schema"]):
@@ -124,7 +127,8 @@ def test_def_429_plata_nelegata_scade_soldul_partenerului(patron, firma_v):
 def test_def_429_ajustarea_manuala_e_in_acelasi_formular_marcata(patron, firma_v):
     """Pașii: credit bancar în EUR (5121 = 1621, 4.970,00 lei; contul nu e propus: n-are factură, nu e disponibilitate) -> „Reevaluare
     valută” -> „Adaugă un cont” -> 1621, EUR, 1.000 -> rândul apare în tabel „adăugat de tine”, cu soldul în lei din evidență (4.970,00),
-    cursul BNR 5,2586 și diferența 288,60 pe 665; un cont de avansuri (409) e refuzat lângă câmp, cu temeiul."""
+    cursul BNR 5,2586 și diferența 288,60 pe 665; un cont de avansuri (409) e refuzat lângă câmp, cu temeiul.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     f = firma_v
     if not sql('SELECT 1 FROM "%s".inregistrari WHERE document_ref = \'Contract credit 429\'' % f["schema"]):
         _nota(patron, f, "2026-08-03", {"debit": "5121", "credit": "1621", "suma": 4970}, "Contract credit 429")
@@ -163,7 +167,8 @@ def test_def_c103_raspunsul_vechi_nu_acopera_ajustarea_scrisa(patron, firma_v):
     soldul sosește PRIMUL, apoi cele vechi (numai contul; contul și moneda) -> rândul rămâne cu diferența 288,60 pe 665 și fără eroare
     lângă câmpurile completate. Înainte: răspunsul vechi, sosit ultimul, se punea pe ecran peste cel nou (propunerea fără sold, sau
     refuzul „lipsește moneda” lângă o monedă scrisă). Răspunsurile se țin pe loc (`page.route`) și se eliberează în ordinea care producea
-    defectul."""
+    defectul.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     f = firma_v
     if not sql('SELECT 1 FROM "%s".inregistrari WHERE document_ref = \'Contract credit 429\'' % f["schema"]):
         _nota(patron, f, "2026-08-03", {"debit": "5121", "credit": "1621", "suma": 4970}, "Contract credit 429")
@@ -229,7 +234,8 @@ def test_def_c103_campul_in_care_scrie_omul_ramane_cand_soseste_raspunsul(patron
     """C103, a doua fațetă. Pașii: „Reevaluare valută” -> „Adaugă un cont” -> 1621 (ecranul recalculează; răspunsul întârzie) -> contabilul
     trece la „Sold în valută” și scrie 1000 -> sosește răspunsul pentru cont: formularul se re-desenează, iar soldul rămâne 1000, cu focusul
     în el. Înainte: re-desenarea punea câmpul la loc gol — ce tastase și nu confirmase încă dispărea (testul ajustării manuale a picat așa).
-    [lotul 13, 631] Moneda se alege acum din listă (alegerea e confirmată pe loc), deci câmpul în care se scrie e soldul."""
+    [lotul 13, 631] Moneda se alege acum din listă (alegerea e confirmată pe loc), deci câmpul în care se scrie e soldul.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     f = firma_v
     if not sql('SELECT 1 FROM "%s".inregistrari WHERE document_ref = \'Contract credit 429\'' % f["schema"]):
         _nota(patron, f, "2026-08-03", {"debit": "5121", "credit": "1621", "suma": 4970}, "Contract credit 429")

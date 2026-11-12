@@ -50,6 +50,20 @@ def perioada_incheiata(periodicitate="lunar", azi=None):
     return Perioada(sf.year, sf.month, None, sf.replace(day=1), sf)
 
 
+def luna_de_lucru_azi(azi=None):
+    """[17.5-T, decizia 817] Luna la care se deschide un ecran lunar al unei firme fără luni blocate: luna dinaintea lunii de azi (în ianuarie, decembrie al anului trecut), aceeași regulă ca
+    `static/js/luna_lucru.js::lunaDeLucruDin`. -> (an, luna). Un test cere luna pe care o probează cu `la_luna_ceruta`; nu presupune luna curentă."""
+    a = azi or _dt.date.today()
+    return (a.year - 1, 12) if a.month == 1 else (a.year, a.month - 1)
+
+
+def la_luna_ceruta(ecran, buton_inapoi, an, luna):
+    """[17.5-T, decizia 817] Duce ecranul lunar din față la `luna/an` pornind de la luna AFIȘATĂ (nu de la luna curentă), înapoi cu `<buton_inapoi>` și înainte cu perechea lui `-next`; nu apasă nimic
+    când ecranul e deja pe luna cerută. Folosește ajutorul `_la_luna` din e2e_bloc_e.py (importat și de plasa fixă, deci neschimbat), importat aici la apel ca să nu existe un import circular."""
+    from e2e_bloc_e import _la_luna
+    _la_luna(ecran, buton_inapoi, an, luna)
+
+
 def _db():
     from core import db
     try:

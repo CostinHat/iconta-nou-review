@@ -71,7 +71,8 @@ def test_def_436_d100_cu_note_nevalidate_nu_se_pune_in_de_depus(patron, firma_am
     Pașii: Declarații -> D100 T3/2026 -> pasul 2: avertismentele spun amortizarea 01–07 nevalidată ȘI 08–09 neînregistrată; „Trimite în
     coadă” e vizibil, dar inactiv, iar imediat sub el: „Declarația nu se depune până la validarea notelor: cifra ei nu cuprinde 7 note
     nevalidate din perioada ei — …”, cu câte un buton „Deschide nota …”. Cererea directă de intrare în coadă e refuzată la fel. După
-    validarea celor 7 note, aceeași generare oferă din nou butonul, activ."""
+    validarea celor 7 note, aceeași generare oferă din nou butonul, activ.
+    [17.5-T] actualizat la 15.1-E2 pct.3 / 17.5-D (static/js/cadru.js:1-8; R003): butonul principal stă în bara de jos a ferestrei (.fereastra-jos), mesajul de refuz rămâne în .bara-fixa, deasupra ei."""
     from e2e_bloc_a import _api
     from e2e_lot82 import _d100_t3
     pg = patron.pg
@@ -91,8 +92,9 @@ def test_def_436_d100_cu_note_nevalidate_nu_se_pune_in_de_depus(patron, firma_am
     for luna in range(1, 8):
         eticheta = "nota din 28.%02d.2026 — Amortizare %02d/2026, 200,00 lei" % (luna, luna)
         assert motiv.count(eticheta) == 1, (eticheta, motiv)   # numai pe buton, nu și în paragraf
-    # motivul stă lângă buton: în aceeași bară fixă, imediat după rândul butonului
-    assert pg.evaluate("() => document.querySelector('#dec-trimite').closest('.bara-fixa').contains(document.querySelector('#dec-blocaj'))")
+    # motivul stă lângă buton: [17.5-T] butonul principal e în bara de jos a ferestrei (cadru.js: «.fereastra-jos»), iar mesajul de refuz rămâne în «.bara-fixa», deasupra ei, în același corp
+    assert pg.evaluate("() => { const jos = document.querySelector('#dec-trimite').closest('.fereastra-jos'); const bara = document.querySelector('#dec-blocaj').closest('.bara-fixa'); "
+                       "return !!jos && !!bara && !!(bara.compareDocumentPosition(jos) & Node.DOCUMENT_POSITION_FOLLOWING); }")
     r = _api(patron, "POST", "/coada", {"tenant_id": firma_amortizare["tenant_id"], "tip": "d100", "an": 2026, "trim": 3})
     assert r["status"] == 422 and "cifra ei nu cuprinde 7 note nevalidate" in str(r["json"]), r
     # după validare: butonul revine activ (calibrarea gărzii)

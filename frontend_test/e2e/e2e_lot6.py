@@ -39,7 +39,7 @@ def _text_din_card(pg, card, sel):
     pg.wait_for_selector(".fereastra:last-of-type " + sel, timeout=20000)
     text = pg.inner_text(".fereastra:last-of-type " + sel)
     pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
-    pg.wait_for_selector("#bk-fisier", timeout=20000)
+    pg.wait_for_selector("#bk-fisier", state="attached", timeout=20000)    # [17.5-T] 17.5-D 2c: câmpul de fișier e ascuns, vizibil e butonul „Importă extras”; rămâne atașat
     return text
 
 
@@ -77,7 +77,8 @@ def test_def_276_banca_spune_formatele_si_compara_soldurile(patron, firma_e2e):
     """276. Bancă: formatele pe bănci, soldurile extrasului față de 5121, ajutorul fără termeni de programator.
     Pașii contabilului: deschide Bancă — vede formatele (MT940, ING, altă bancă), iar fereastra de alegere primește și .sta; deschide
     ajutorul „?” — fără „magic bytes” / „motor”; încarcă un extras MT940 — soldul inițial și final, cu 5121 și diferența; linia fără
-    factură e „Fără potrivire”, nu „Fără match”."""
+    factură e „Fără potrivire”, nu „Fără match”.
+    [17.5-T] actualizat la 17.5-D punctul 2c (DECIZII.md:24618; static/js/ecrane/firme.js:5045): în Bancă butonul vizibil e „Importă extras”, #bk-fisier rămâne atașat și ascuns; ajutorul _text_din_card așteaptă starea «attached»."""
     tag = "E2E276-%d" % time.time()
     pregateste_firma(patron, firma_e2e)
     # extrasul e din octombrie: luna de preluare a firmei de test (luna creării ei) nu poate fi după el, altfel soldul contabil e „necunoscut”
@@ -94,7 +95,7 @@ def test_def_276_banca_spune_formatele_si_compara_soldurile(patron, firma_e2e):
     patron.captura("ajutor")
     assert "recunoaște singură formatul" in ajutor and "magic bytes" not in ajutor and "motor" not in ajutor.lower(), ajutor
     pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
-    pg.wait_for_selector("#bk-fisier", timeout=20000)
+    pg.wait_for_selector("#bk-fisier", state="attached", timeout=20000)    # [17.5-T] 17.5-D 2c: câmpul de fișier rămâne atașat, ascuns
     m = _incarca(patron, "extras_%s.sta" % tag, MT940.format(tag=tag), "importate")
     patron.captura("solduri")
     assert "Sold inițial la 15.10.2026: 10.000,00 RON în extras, 0,00 în 5121 (din notele validate) — diferență 10.000,00." in m, m
@@ -156,7 +157,8 @@ def test_def_278_dispozitia_leaga_factura_si_semnaleaza_avansul_si_plafonul(patr
 def test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand(asistent, firma_e2e):
     """279. Casă / validare: „creată ca ciornă”, dar nota plecase la validare; apoi „Șterge” oferit și refuzat.
     Pașii asistentului (fără „Poate valida”): dispoziție de 150 lei, avans -> mesajul spune „trimisă la validare în cabinet”; rândul
-    spune „notă la validare în cabinet” și nu oferă „Șterge”."""
+    spune „notă la validare în cabinet” și nu oferă „Șterge”.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781, „[16.2-A, 729.1]”): „Adaugă” din Casă e inactiv până se completează partenerul (la încasare), deci testul îl completează."""
     uid = sql("SELECT id FROM public.users WHERE email = 'asistent@prisma-cont.test'")[0][0]
     era = sql("SELECT poate_valida FROM public.users WHERE id = %s", (uid,))[0][0]
     sql("UPDATE public.users SET poate_valida = false WHERE id = %s", (uid,))
@@ -166,6 +168,7 @@ def test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand(asistent, firma_e2e)
         pg = asistent.pg
         _card(asistent, "casa", "#c-toggle")
         _dispozitie(asistent, 150, "")
+        pg.fill("#c-part", "Client E2E 279")        # [17.5-T] 729.1: la încasare „Adaugă” cere și partenerul
         pg.fill("#c-doc", "DI-E2E-279")
         pg.wait_for_selector("#c-avans", timeout=20000)
         pg.check("#c-avans")
@@ -790,7 +793,8 @@ def test_def_292_fereastra_cozii_poarta_titlul_cardului(asistent, patron):
     """292. Cardul „De validat” deschidea fereastra intitulată „Declarații de depus”, cu secțiunea „DE DEPUS” (rest din 266, clasa 127).
     Pașii: Ana (asistentă, „Poate valida”) -> cardul „De validat” -> titlul ferestrei e „De validat”, oricare ar fi conținutul (o
     declarație gata de depus pusă în coadă de administrator, cu validarea în doi oprită); la fel după o redesenare a ferestrei. Pe
-    pagina cabinetului, fereastra poartă titlul cardului de acolo."""
+    pagina cabinetului, fereastra poartă titlul cardului de acolo.
+    [17.5-T] actualizat la 313 (static/js/ecrane/validat.js:146, titluCardCoada): fereastra cozii poartă titlul cardului; titlul cardului urmează conținutul cozii („De validat” cu validare în doi sau cu note la validare, altfel „De depus”), iar fereastra deschisă din card poartă titlul lui."""
     from e2e_bloc_c import _curata_coada, _declaratie_pas1, _trimite_si_asteapta
     tid = 4838
     peste = sql("SELECT COALESCE(max(id), 0) FROM public.declaratii_coada")[0][0]
@@ -806,13 +810,15 @@ def test_def_292_fereastra_cozii_poarta_titlul_cardului(asistent, patron):
         _trimite_si_asteapta(patron)
         asistent.acasa()
         pg = asistent.pg
+        # [17.5-T] 313: titlul cardului urmează conținutul cozii („De validat” cu validare în doi sau cu note la validare, altfel „De depus”), iar fereastra poartă titlul cardului
+        card_ana = pg.inner_text("button.cab-card:has([data-cheie='validat']) .cab-card-titlu").strip()
         pg.click("button.cab-card:has([data-cheie='validat'])")
         pg.wait_for_selector(".fereastra:last-of-type #val-titlu", timeout=30000)
-        assert pg.inner_text(".fereastra:last-of-type #val-titlu").strip() == "De validat"
+        assert pg.inner_text(".fereastra:last-of-type #val-titlu").strip() == card_ana, card_ana
         asistent.captura("asistent")
         pg.evaluate("() => window.dispatchEvent(new Event('iconta:drepturi'))")   # redesenarea la drepturi păstrează titlul
         pg.wait_for_timeout(1500)
-        assert pg.inner_text(".fereastra:last-of-type #val-titlu").strip() == "De validat"
+        assert pg.inner_text(".fereastra:last-of-type #val-titlu").strip() == card_ana, card_ana
         patron.acasa()
         card = patron.pg.inner_text("button.cab-card:has([data-cheie='validat']) .cab-card-titlu").strip()
         patron.pg.click("button.cab-card:has([data-cheie='validat'])")

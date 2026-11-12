@@ -39,10 +39,10 @@ from decimal import Decimal
 
 import pytest
 
-from conftest import (GARDA_DESCHIDERI, INALT, LAT, Ecran, _db, _ecran, _scoate_firmele_e2e, firma_noua, perioada_incheiata, sesiune,
+from conftest import (GARDA_DESCHIDERI, INALT, LAT, Ecran, _db, _ecran, _scoate_firmele_e2e, firma_noua, la_luna_ceruta, luna_de_lucru_azi, perioada_incheiata, sesiune,
                       sql)
 from e2e_bloc_a import AZI, _api, _card, _ok, cont_asistent, pregateste_firma
-from e2e_bloc_b import _cnp, _deschide_rand, _nota_jn
+from e2e_bloc_b import _cnp, _deschide_rand, _mergi_la_luna, _nota_jn
 from e2e_bloc_d import PATRON, _firma_noua
 from e2e_bloc_d import _api as _api_cont
 from e2e_comanda_1010 import _lista_control
@@ -205,14 +205,14 @@ def test_def_c148_perioada_indisponibila_spune_data_ca_zz_ll_aaaa(patron, firma_
     nu se poate face: valoarea „…” nu e definită înainte de 01.01.2025 …” — datele ca ZZ.LL.AAAA, nicio dată ISO, refuz de perioadă (423),
     nu eroare de server. Mesajul e chiar textul pentru om al refuzului din cod (`common.cota` -> `PerioadaIndisponibila` fără gol ->
     `perioada.text_exceptie`). Înainte: „2024-12-01 nu poate fi calculată … (decizie de dezvoltator)”. (Golul plafonului tichetului de masă,
-    10/2025, nu e pe drumul ăsta: salariatul fără tichete nu cere plafonul — C159.) N/A temei fiscal (forma datei pentru om, DS cap.4)."""
+    10/2025, nu e pe drumul ăsta: salariatul fără tichete nu cere plafonul — C159.) N/A temei fiscal (forma datei pentru om, DS cap.4).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from core import common, perioada
     from core.pdf_util import data_ro
     pg = patron.pg
     prima = _a_prima_luna_salariu_minim()
     tinta = (prima.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)   # luna dinaintea primei valori a salariului minim
-    azi = _dt.date.today()
-    luna = azi.replace(day=1)
+    luna = _dt.date(*luna_de_lucru_azi(), 1)   # [817] ecranul se deschide pe luna de lucru: de aici pornește „← luna”
     patron.firma(firma_cx2a_c148["nume"])
     pg.click("#fa-salariati")
     pg.wait_for_selector(_F + "#sp-tabel tbody tr.sp-rand", timeout=30000)
@@ -275,7 +275,7 @@ def _a_stat_pana_la(patron, firma, tinta):
     patron.firma(firma["nume"])
     pg.click("#fa-salariati")
     pg.wait_for_selector(_F + "#sp-tabel tbody tr.sp-rand", timeout=30000)
-    luna, stare = _dt.date.today().replace(day=1), None
+    luna, stare = _dt.date(*luna_de_lucru_azi(), 1), None   # [817] ecranul se deschide pe luna de lucru: de aici pornește „← luna”
     while luna > tinta:
         prev = pg.inner_text(_F + ".pf-intro")
         luna = (luna - _dt.timedelta(days=1)).replace(day=1)
@@ -308,7 +308,8 @@ def test_def_c159_statul_din_10_2025_se_calculeaza_fara_tichete_si_se_opreste_mo
     `perioada.text_exceptie`): numele valorii pentru om (`ETICHETE_COTE`), datele ZZ.LL.AAAA, fără cheia tehnică, fără eticheta
     `PERIOADA_BLOCATA`, fără dată ISO. Statul se calculează pe FIRMĂ: salariatul cu tichete oprește tot statul lunii (și rândul celui fără
     tichete). Înainte: 500 pentru orice firmă cu salariați, cu „tichet_masa_plafon: … Completează valoarea valabilă în registru.”
-    N/A temei fiscal (golul e al registrului; plafonul și temeiul lui: `COTE["tichet_masa_plafon"]`)."""
+    N/A temei fiscal (golul e al registrului; plafonul și temeiul lui: `COTE["tichet_masa_plafon"]`).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from core import common, perioada
     from core.pdf_util import data_ro
     f = firma_cx2a_c159
@@ -625,7 +626,8 @@ def test_def_c146_refuzul_stergerii_notei_z_trimite_la_raport_z(patron, firma_cx
     """C146. Pașii: „Raport Z” -> „Import fișier AMEF” (Z nr. 1461, 231,00 lei): rândul Z-ului are „Șterge raportul Z” -> Registru jurnal ->
     nota Z-ului (ciornă): fără „Șterge” și fără „Editează”, iar sub ea motivul trimite la cardul care chiar există, „Raport Z”, și la butonul
     lui, «Șterge raportul Z»; ștergerea cerută din jurnal (aceeași rută ca butonul) e refuzată cu același text, iar nota rămâne. Înainte:
-    „… — în Casa de marcat: raportul Z.” (nu există niciun ecran „Casa de marcat”)."""
+    „… — în Casa de marcat: raportul Z.” (nu există niciun ecran „Casa de marcat”).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     f = firma_cx2b_z
     pregateste_firma(patron, f)
     patron.firma(f["nume"])
@@ -640,7 +642,8 @@ def test_def_c146_refuzul_stergerii_notei_z_trimite_la_raport_z(patron, firma_cx
     assert buton and titlu_card, (buton, titlu_card)
     patron.firma(f["nume"])
     # [lotul 12, 617] rândul notei în tabelul de note; motivul notei derivate și „Editează” / „Șterge” stau în detaliul rândului, deschis
-    _card(patron, "jurnal", "tbody.tn-nota[data-nota-id='%d']" % zid)
+    _card(patron, "jurnal", "#j-nota-noua")
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] Z-ul e datat azi; jurnalul se deschide pe luna de lucru
     rand = _deschide_rand(patron, _nota_jn(patron, zid))
     motiv = " ".join(rand.locator(".jn-derivata").inner_text().split())
     patron.captura("motivul_din_jurnal")
@@ -826,6 +829,8 @@ def _c_note_nir_pe_ecran(patron, f, nir_id):
     patron.firma(f["nume"])
     pg = patron.pg
     _card(patron, "stocuri", "[data-card='nir']")
+    la_luna_ceruta(patron, "#s-prev", AZI.year, AZI.month)   # [817] ecranul se deschide pe luna de lucru; NIR-urile probelor sunt datate azi
+    patron.pg.wait_for_selector(".fereastra:last-of-type [data-card='nir']", timeout=20000)
     # [lotul 14, 687] NIR-urile lunii stau în cardul „NIR-urile lunii”: contabilul îl deschide, apoi apasă „Deschide NIR-ul”
     pg.click("[data-card='nir']")
     pg.wait_for_selector(".fereastra:last-of-type .nir-deschide", timeout=25000)
@@ -887,7 +892,8 @@ def test_def_c126_tva_transportului_facturat_nu_ramane_pe_4428_dupa_legarea_fact
     transport 21% -> Stocuri -> NIR-ul: TVA-ul transportului e 4426 = 401 · 21,00 -> vine factura mărfii (XML: 10 × 50, TVA 105) ->
     „Validează” pe 371: NIR-ul propus -> „Leagă”: pe notele NIR-ului (citite pe ecran) și ale facturii, 4428.01 se închide (sold 0), iar 4426 are tot TVA-ul
     deductibil, 105 + 21 = 126,00. Înainte: transportul ieșea 4428.01 = 401, iar legarea muta numai 4428.01 = 408 — rămâneau 21,00 pe
-    4428.01."""
+    4428.01.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     f = firma_cx2c
     nr = "C126-%d" % (time.time() % 100000)
     nir_id, _note = _c_nir(patron, f, nr, 10, 50, transport=100, cont_transport="401")
@@ -909,7 +915,8 @@ def test_def_c126_tva_transportului_facturat_nu_ramane_pe_4428_dupa_legarea_fact
 def test_def_c126_vechi_nir_cu_tva_transportului_pe_4428_trece_pe_4426(patron, firma_cx2c):
     """C126, NIR-ul de dinainte de reparație: TVA-ul transportului facturat scris 4428.01 = 401 pe nota CIORNĂ a NIR-ului (cum îl scria
     codul de dinainte de 476). Pașii: migrarea publicării (`migrare_nir_tva_transport.aplica`) -> Stocuri -> NIR-ul: rândul e 4426 = 401 ·
-    21,00, niciun 4428.01 = 401 -> factura mărfii -> „Leagă”: 4428.01 se închide (sold 0)."""
+    21,00, niciun 4428.01 = 401 -> factura mărfii -> „Leagă”: 4428.01 se închide (sold 0).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from core import migrare_nir_tva_transport as mig
     f, s = firma_cx2c, firma_cx2c["schema"]
     nr = "C126V-%d" % (time.time() % 100000)
@@ -958,7 +965,8 @@ def test_def_153_nir_fara_factura_in_forma_veche_se_reface_pe_408_si_4428(patron
     """153 (F1, NIR 1 și 2 rămase pe 401/4426). Pașii: NIR fără factură de la DANTE, 10 × 50 lei: azi notele lui sunt 371 = 408 · 500,00 și
     4428.01 = 408 · 105,00 (forma nouă) -> același NIR cu notele în forma de DINAINTE de 08.10 (371 = 401, 4426 = 401) -> migrarea
     publicării (`migrare_retest_0810.refa_nir_forma_veche`) -> Stocuri -> NIR-ul: nota de refacere stornează în roșu 401 / 4426 și scrie
-    forma nouă, deci pe NIR rămân 371 = 408 · 500,00 și 4428.01 = 408 · 105,00, iar 401 și 4426 se anulează (sold 0)."""
+    forma nouă, deci pe NIR rămân 371 = 408 · 500,00 și 4428.01 = 408 · 105,00, iar 401 și 4426 se anulează (sold 0).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from core import migrare_retest_0810 as mig
     f, s = firma_cx2c, firma_cx2c["schema"]
     nr = "N153-%d" % (time.time() % 100000)

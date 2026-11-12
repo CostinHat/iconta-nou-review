@@ -25,7 +25,7 @@ import time
 
 import pytest
 
-from conftest import sql
+from conftest import la_luna_ceruta, sql
 from e2e_bloc_a import AZI, _api, _card, _ok, articol_in_stoc, emite_api, pregateste_firma
 
 _AT = "ATU13585627"
@@ -77,13 +77,14 @@ def _text_din_card(pg, card, sel):
     pg.wait_for_selector(".fereastra:last-of-type " + sel, timeout=20000)
     text = pg.inner_text(".fereastra:last-of-type " + sel)
     pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
-    pg.wait_for_selector("#bk-fisier", timeout=20000)
+    pg.wait_for_selector("#bk-fisier", state="attached", timeout=20000)   # [17.5-D, 2c] #bk-fisier rămâne atașat, dar ascuns: butonul vizibil e „Importă extras”
     return text
 
 
 def test_def_489_ecranul_banca_spune_ca_accepta_mt940(patron, firma_e2e):
     """489. Pașii: firma -> „Bancă”: ecranul spune, pe bănci, formatele acceptate — MT940 (.sta, .940, .txt), ING, alt tabel — iar fereastra
-    de alegere a fișierului primește și fișierele MT940."""
+    de alegere a fișierului primește și fișierele MT940.
+    [17.5-T] actualizat la 17.5-D punctul 2c (DECIZII.md:24618)"""
     pregateste_firma(patron, firma_e2e)
     _banca(patron, firma_e2e)
     pg = patron.pg
@@ -185,7 +186,8 @@ def test_def_480_incasarea_cu_cod_tva_strain_si_numarul_facturii_se_potriveste(p
 def test_def_481_numerarul_din_z_intra_in_registrul_de_casa(patron, firma_e2e):
     """481. Pașii: „Raport Z” -> data de azi, casa 8000000481, Z nr. 0481, total 21% 181,00, numerar 150,00, card 31,00, 4 bonuri ->
     „Generează notă” -> înapoi -> „Casă”: registrul lunii are rândul raportului Z, +150,00 lei (numai numerarul), iar soldul final îl
-    cuprinde."""
+    cuprinde.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     pregateste_firma(patron, firma_e2e)
     patron.firma(firma_e2e["nume"])
     pg = patron.pg
@@ -197,6 +199,7 @@ def test_def_481_numerarul_din_z_intra_in_registrul_de_casa(patron, firma_e2e):
     pg.wait_for_function("() => document.querySelector('#z-rezultat').innerText.includes('5311')", timeout=30000)
     pg.click(".nav-sageata.nav-inapoi")
     _card(patron, "casa", "#c-sold-final")
+    la_luna_ceruta(patron, "#c-prev", AZI.year, AZI.month)   # [817] registrul se deschide pe luna de lucru; Z-ul e datat azi
     pg.wait_for_timeout(500)
     rand = pg.locator(".fereastra:last-of-type tbody.tn-nota", has_text="0481")
     t = rand.first.inner_text()
@@ -210,7 +213,8 @@ def test_def_481_numerarul_din_z_intra_in_registrul_de_casa(patron, firma_e2e):
 # ── 456 (a) ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta(patron, firma_e2e):
     """456 (a). Pașii: „Casă” -> „+ Dispoziție nouă”: încasare de la client, 456,00 lei, CUI-ul clientului, fără factură -> „Adaugă”.
-    Mesajul spune „Chitanța E2ECH nr. … a fost emisă”; rândul are documentul chitanței și „PDF chitanță”, fără „fără chitanță”."""
+    Mesajul spune „Chitanța E2ECH nr. … a fost emisă”; rândul are documentul chitanței și „PDF chitanță”, fără „fără chitanță”.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781)"""
     pregateste_firma(patron, firma_e2e)
     s = firma_e2e["schema"]
     patron.firma(firma_e2e["nume"])
@@ -222,6 +226,8 @@ def test_def_456_avansul_de_la_client_in_numerar_primeste_chitanta(patron, firma
     pg.fill("#c-suma", "456")
     pg.fill("#c-cui", "14399840")
     pg.dispatch_event("#c-campuri", "change")
+    pg.wait_for_selector("#c-avans", timeout=20000)
+    pg.check("#c-avans")   # [729.1] „Adaugă” cere poziția din listă sau „Avans, fără factură”
     pg.wait_for_timeout(800)
     pg.click("#c-adauga")
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('a fost emisă')", timeout=30000)
@@ -331,7 +337,8 @@ def test_def_474_z_descarcat_partial_cere_confirmarea_cu_cifrele(patron, firma_e
 def test_def_476_tva_transportului_facturat_e_pe_4426(patron, firma_e2e):
     """476. Pașii: NIR fără factura mărfii (factura furnizorului nesosită), 10 × 50 lei, transport 100 lei cu factura transportatorului
     (cont 401), TVA transport 21% — pe ruta formularului „Salvează NIR” (date de pornire) -> „Stocuri” -> „Deschide NIR-ul”: notele
-    NIR-ului au 4426 = 401 · 21,00 (TVA-ul transportului facturat), marfa 4428.01 = 408 · 105,00; niciun 4428.01 = 401."""
+    NIR-ului au 4426 = 401 · 21,00 (TVA-ul transportului facturat), marfa 4428.01 = 408 · 105,00; niciun 4428.01 = 401.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     pregateste_firma(patron, firma_e2e)
     tid = firma_e2e["tenant_id"]
     r = _ok(_api(patron, "POST", "/tenants/%d/stocuri/nir" % tid, {
@@ -342,6 +349,8 @@ def test_def_476_tva_transportului_facturat_e_pe_4426(patron, firma_e2e):
     patron.firma(firma_e2e["nume"])
     pg = patron.pg
     _card(patron, "stocuri", "[data-card='nir']")
+    la_luna_ceruta(patron, "#s-prev", AZI.year, AZI.month)   # [817] ecranul se deschide pe luna de lucru; NIR-ul e datat azi
+    pg.wait_for_selector(".fereastra:last-of-type [data-card='nir']", timeout=20000)
     # [lotul 14, 687] NIR-urile lunii stau în cardul „NIR-urile lunii”: contabilul îl deschide, apoi apasă „Deschide NIR-ul”
     pg.click("[data-card='nir']")
     pg.wait_for_selector(".fereastra:last-of-type .nir-deschide", timeout=25000)

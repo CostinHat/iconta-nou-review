@@ -13,7 +13,7 @@ import urllib.request
 
 import pytest
 
-from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, linie_nota, nr_crt, sql
+from conftest import BAZA, PREFIX_FIRMA, _db, _scoate_firmele_e2e, alege_perioada, alege_tipul, cui_cu_control, la_luna_ceruta, linie_nota, nr_crt, sql
 
 AZI = _dt.date.today()
 LUNA_TRECUTA = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=1)
@@ -168,6 +168,8 @@ def _stocuri(ecran, firma):
     ecran.pg.wait_for_selector(".fereastra:last-of-type #s-situatie-tabel, .fereastra:last-of-type #s-situatie .stare-goala",
                                timeout=20000)
     ecran.pg.wait_for_selector(".fereastra:last-of-type [data-card='nir']", timeout=20000)   # [lotul 14, 687] cardurile ecranului
+    la_luna_ceruta(ecran, "#s-prev", AZI.year, AZI.month)   # [17.5-T, 817] ecranul se deschide pe luna de lucru; NIR-urile probelor sunt datate azi
+    ecran.pg.wait_for_selector(".fereastra:last-of-type [data-card='nir']", timeout=20000)
 
 
 def _nirurile_lunii(ecran):
@@ -242,7 +244,8 @@ def _nir_lista(ecran):
 def test_def_100_nir_respins_are_stare_motiv_si_se_reface(patron, firma_cv):
     """100. NIR: NIR-ul respins fără stare și motiv în „NIR-urile lunii”; nu putea fi refăcut.
     Pașii contabilului: NIR-ul salvat de asistent e respins în coadă cu motiv -> Stocuri -> „NIR-urile lunii”: rândul NIR-ului
-    spune „Respins la validare: <motiv>” și are „Refă NIR-ul”; apăsat, formularul NIR se deschide cu NIR-ul respins de refăcut."""
+    spune „Respins la validare: <motiv>” și are „Refă NIR-ul”; apăsat, formularul NIR se deschide cu NIR-ul respins de refăcut.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     _nir_respins(firma_cv, "D100", "Marfa D100", "lipsește avizul D100")
     pg = patron.pg
     _stocuri(patron, firma_cv)
@@ -259,7 +262,8 @@ def test_def_100_nir_respins_are_stare_motiv_si_se_reface(patron, firma_cv):
 def test_def_112_refa_nir_precompleteaza_articolul_fara_zecimale_in_exces(patron, firma_cv):
     """112. NIR: la „Refă NIR-ul”, articol neprecompletat; zecimale în exces.
     Pașii contabilului: NIR respins (Marfa D112, 10 buc × 55 lei) -> Stocuri -> „Refă NIR-ul”: rândul formularului are articolul
-    ales (Marfa D112), cantitatea „10” și prețul „55.00” (nu „10.000” / „55.0000”)."""
+    ales (Marfa D112), cantitatea „10” și prețul „55.00” (nu „10.000” / „55.0000”).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     _nir_respins(firma_cv, "D112", "Marfa D112", "preț greșit D112")
     pg = patron.pg
     _stocuri(patron, firma_cv)
@@ -296,7 +300,8 @@ def _refa_din_ecran(ecran, firma, numar, cantitate=None):
 def test_def_113_nir_respins_si_refacut_o_linie_langa_cel_valabil(patron, firma_cv):
     """113. NIR: respins și refăcut cu același număr; cel respins primul, card complet.
     Pașii contabilului: NIR D113 respins -> „Refă NIR-ul” (12 buc) -> salvează -> „NIR-urile lunii”: un singur card „NIR D113”
-    (cel valabil), iar sub el o linie „NIR D113 din … · Respins · înlocuit de NIR nr D113 din …”."""
+    (cel valabil), iar sub el o linie „NIR D113 din … · Respins · înlocuit de NIR nr D113 din …”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     _nir_respins(firma_cv, "D113", "Marfa D113", "cantitate greșită D113")
     _refa_din_ecran(patron, firma_cv, "D113", 12)
     pg = patron.pg
@@ -594,6 +599,16 @@ def _stat(ecran, firma, luni_inapoi=0):
                              " return i && i.innerText !== p && f.querySelector('#sp-tabel tbody tr.sp-rand'); }", arg=prev, timeout=30000)
 
 
+def _stat_la_luna(ecran, firma, an, luna):
+    """[17.5-T, 817] Ajutor nou (`_stat` rămâne neschimbat, e importat de plasa fixă): statul de plată al lunii `luna/an`, cerută explicit din luna afișată
+    (ecranul se deschide pe luna de lucru, nu pe luna curentă)."""
+    ecran.firma(firma["nume"])
+    _deschide(ecran, "#fa-salariati", "Stat de plat")
+    ecran.pg.wait_for_selector(".fereastra:last-of-type #sp-tabel tbody tr.sp-rand", timeout=30000)
+    la_luna_ceruta(ecran, "#sp-prev", an, luna)
+    ecran.pg.wait_for_selector(".fereastra:last-of-type #sp-tabel tbody tr.sp-rand", timeout=30000)
+
+
 def _rand_salariat(ecran):
     """Rândul salariatului din statul de plată (677: tabel), ca text „brut X · net Y · cost Z · zile Z1 · semne”."""
     return ecran.pg.eval_on_selector(".fereastra:last-of-type #sp-tabel tbody tr.sp-rand",
@@ -623,8 +638,9 @@ def _adauga_prima(ecran, denumire, suma):
 
 def test_def_103_salariu_de_la_e_prima_zi_a_lunii_lucrate(patron, firma_sal):
     """103. Salarii: „de la” venea cu data de azi.
-    Pașii contabilului: Stat de plată -> „← luna” (luna trecută) -> „Salariu” pe salariat: „de la” e 01 al lunii afișate, nu azi."""
-    _stat(patron, firma_sal, luni_inapoi=1)
+    Pașii contabilului: Stat de plată -> „← luna” (luna trecută) -> „Salariu” pe salariat: „de la” e 01 al lunii afișate, nu azi.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
+    _stat_la_luna(patron, firma_sal, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     pg = patron.pg
     from e2e_lot13_sal_ajutor import buton, deschide_salariat
     deschide_salariat(patron)
@@ -966,12 +982,13 @@ def test_def_140_registrul_mf_are_durata_catalogul_si_planul_lunar(patron, firma
 def test_def_141_inchiderea_lunii_semnaleaza_581_cu_sold(patron, firma_mf):
     """141. Închidere lună: 581 cu sold nenul nesemnalat.
     Pașii contabilului: Închidere lună -> „← luna” (luna trecută, cu depunerea de 300 lei la bancă înregistrată doar pe partea
-    casei) -> „Semnale”: „contul 581 (viramente interne) are sold 300,00 lei la sfârșitul lunii”."""
+    casei) -> „Semnale”: „contul 581 (viramente interne) are sold 300,00 lei la sfârșitul lunii”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     pg = patron.pg
     patron.firma(firma_mf["nume"])
     _deschide(patron, "#fa-inchidere", "Închidere lună")
     pg.wait_for_selector(".fereastra:last-of-type #il-controale .ds-semnal-text", timeout=30000)
-    pg.click(".fereastra:last-of-type #il-prev")
+    la_luna_ceruta(patron, "#il-prev", LUNA_TRECUTA.year, LUNA_TRECUTA.month)   # [17.5-T] luna trecută se cere explicit, din luna afișată
     _asteapta_text(patron, "Luna %s" % LUNA_TRECUTA.strftime("%m/%Y"))
     pg.wait_for_selector(".fereastra:last-of-type #il-controale .ds-semnal-text", timeout=30000)
     text = pg.eval_on_selector(".fereastra:last-of-type #il-controale", "e => e.textContent")   # [15.1, 687.2] semnalele: rândul + detaliile pliate
@@ -982,12 +999,13 @@ def test_def_141_inchiderea_lunii_semnaleaza_581_cu_sold(patron, firma_mf):
 def test_def_126_inchiderea_lunii_are_card_in_zilnic(patron, firma_mf):
     """126. Închidere lună: fără intrare vizibilă; card nou.
     Pașii contabilului: deschide firma: în grupul „Zilnic” există cardul „Închidere lună”; apăsat, deschide ecranul cu perioada
-    contabilă (controalele, blocarea) și evidența facturilor."""
+    contabilă (controalele, blocarea) și evidența facturilor.
+    [17.5-T] actualizat la lot 17.1 (static/js/ecrane/firme.js:582, cardul Închidere lună în grupul „Termene”; DECIZII.md:24514)"""
     pg = patron.pg
     patron.firma(firma_mf["nume"])
     grup = pg.evaluate("() => { const b = document.querySelector('#fa-inchidere'); const s = b && b.closest('section.firme-grup');"
                        " return s ? s.querySelector('h3').innerText.trim() : null; }")
-    assert grup.lower() == "zilnic", grup   # [15.1-E5, 733.1] titlul de grup e cu majuscule (CSS)
+    assert grup.lower() == "termene", grup   # [15.1-E5, 733.1] titlul de grup e cu majuscule (CSS); [17.5-T, 17.1] cardul stă în grupul „Termene”
     patron.captura("card")
     _deschide(patron, "#fa-inchidere", "Evidența facturilor")
     text = patron.fereastra()
@@ -999,16 +1017,19 @@ def test_def_138_balanta_lunii_are_numai_notele_lunii(asistent, firma_mf):
     """138. Registru jurnal: F2 ca Ana „0 note”, balanța cu rulaje 7.750.
     Pașii contabilului (asistentul): luna curentă n-are note -> Registru jurnal pe luna curentă: nicio notă -> Balanță de verificare pe
     luna curentă: rulajul lunii 0,00 (aceleași note ca jurnalul), iar notele lunilor anterioare (800,00 = 200 + 300 aportul + 300
-    depunerea) stau la „Sume precedente”."""
+    depunerea) stau la „Sume precedente”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     pg = asistent.pg
     asistent.firma(firma_mf["nume"])
     _deschide(asistent, "#fa-jurnal", "Registru")
+    la_luna_ceruta(asistent, "#j-prev", AZI.year, AZI.month)   # [17.5-T, 817] „luna curentă” se cere explicit: ecranul se deschide pe luna de lucru
     pg.wait_for_timeout(1500)
     jurnal = asistent.fereastra()
     assert "Amortizare 02/2026 D" not in jurnal and "Depunere numerar D141" not in jurnal, jurnal[:800]
     asistent.captura("jurnal")
     asistent.firma(firma_mf["nume"])
     _deschide(asistent, "#fa-balanta", "Balanță de verificare")
+    la_luna_ceruta(asistent, "#b-prev", AZI.year, AZI.month)   # [17.5-T, 817] idem pentru balanță
     # [lotul 12, 621] verdictul închiderii („se închide pe toate cinci”) e o notă pliată (`details#b-inchidere`), cu tabelul perechilor în
     # ea: primul `.fd-tabel` din fereastră nu se mai vede. Rândurile pe care le vede contabilul sunt cele ale balanței.
     pg.wait_for_selector(".fereastra:last-of-type .fd-tabel tbody tr >> visible=true", timeout=30000)
@@ -1141,6 +1162,7 @@ def _nota_asistent_respinsa(firma, descriere, motiv, suma=100):
 def _jurnal(ecran, firma):
     ecran.firma(firma["nume"])
     _deschide(ecran, "#fa-jurnal", "Registru")
+    la_luna_ceruta(ecran, "#j-prev", AZI.year, AZI.month)   # [17.5-T, 817] jurnalul se deschide pe luna de lucru; notele probelor sunt datate azi
     ecran.pg.wait_for_selector(".fereastra:last-of-type [data-nota-id]", timeout=30000)
 
 
@@ -1148,7 +1170,8 @@ def test_def_192_nota_din_nir_nu_ofera_ce_serverul_refuza(patron, firma_gv):
     """192. Registru jurnal: notele care vin din NIR și din raportul Z arată „Editează” și „Șterge”, deși serverul le refuză.
     Pașii: contabilul-șef salvează NIR-ul D192 (fără factură, 2 × 50 lei) -> Registru jurnal: notele NIR-ului (ciorne) n-au
     „Editează” și n-au „Șterge” (NIR-ul le indică din alt tabel) și spun unde se corectează („în Stoc › NIR-urile lunii”); o notă
-    manuală ciornă are în continuare amândouă -> cererea directă de ștergere a notei NIR e refuzată (serverul, neschimbat)."""
+    manuală ciornă are în continuare amândouă -> cererea directă de ștergere a notei NIR e refuzată (serverul, neschimbat).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     tid = firma_gv["tenant_id"]
     st, r = _api(PATRON, "POST", "/tenants/%d/stocuri/nir" % tid,
                  {"factura_sosita": False, "numar": "D192", "data": AZI.isoformat(), "furnizor": "Furnizor D192 SRL", "factura_id": None,
@@ -1179,7 +1202,8 @@ def test_def_104_retrimiterea_notei_neschimbate_cere_confirmare(asistent, firma_
     """104. Coadă: retrimiterea unei note identice cu cea respinsă fără avertisment.
     Pașii contabilului: nota asistentului e respinsă („lipsește contractul D104”) -> asistentul, în Registru jurnal, pe notă
     „Trimite din nou la validare” fără s-o schimbe -> apare avertismentul „nimic nu s-a schimbat de la respingere”, cu motivul
-    alături, și „Retrimite fără schimbări” -> confirmat, nota e din nou la validare."""
+    alături, și „Retrimite fără schimbări” -> confirmat, nota e din nou la validare.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     nid, _cid = _nota_asistent_respinsa(firma_gv, "Chirie D104", "lipsește contractul D104")
     pg = asistent.pg
     _jurnal(asistent, firma_gv)

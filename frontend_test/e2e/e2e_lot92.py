@@ -3,7 +3,8 @@
 din index, pe baza de TEST, pe firme NOI de test (`firma_noua`). CUI-urile au cifra de control verificată (algoritmul din CLAUDE.md)."""
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import firma_noua, la_luna_ceruta, sql
+from e2e_bloc_b import _mergi_la_luna
 from core.pdf_util import serie_nr as _serie_nr   # [lotul 12, 443.1] numărul facturii, ca pe ecran
 
 
@@ -29,7 +30,9 @@ def test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile(patron, 
     refuzate (denumirea — din ecran; seria — de la server), fiecare cu trimitere; adresa scrisă rămâne; clic pe „Seria chitanțelor” ->
     câmpul primește focus; corectat -> iese din listă.
     [lotul 10, deficiența 427] Până la 427 refuzul se proba golind Telefon și Banca; acum un câmp obligatoriu gol NU mai refuză
-    salvarea („Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet»”), deci refuzul se probează pe valori invalide."""
+    salvarea („Ce s-a completat se salvează; lipsurile rămân în «Profil incomplet»”), deci refuzul se probează pe valori invalide.
+    [17.5-T] actualizat la 17.5-D / 17.5-H2 (static/js/cadru.js:6)"""
+    # [17.5-D / 17.5-H2] „Salvează” stă în bara de jos a ferestrei; refuzul stă în zona de mesaje de DEASUPRA barei, imediat lângă ea (cadru.js, începutul fișierului și linia ~353)
     from e2e_bloc_a import _card
     pg = patron.pg
     patron.firma(firma_srl["nume"])
@@ -43,8 +46,8 @@ def test_def_410_date_firma_refuzul_se_vede_langa_salveaza_cu_campurile(patron, 
     pg.wait_for_function("() => [...document.querySelectorAll('.refuz-salvare-lista > li')].some(li => li.textContent.includes('Seria'))",
                          timeout=20000)
     patron.captura()
-    box = pg.eval_on_selector(".refuz-salvare", "b => ({ text: b.querySelector('b').textContent, langa: b.previousElementSibling "
-                                                "&& b.previousElementSibling.contains(document.querySelector('#df-salveaza')), "
+    box = pg.eval_on_selector(".refuz-salvare", "b => ({ text: b.querySelector('b').textContent, langa: !!b.closest('.bara-fixa') && !!b.closest('.bara-fixa').nextElementSibling "
+                                                "&& b.closest('.bara-fixa').nextElementSibling.contains(document.querySelector('#df-salveaza')), "
                                                 "vizibil: b.getBoundingClientRect().bottom <= innerHeight && b.getBoundingClientRect().top >= 0 })")
     assert box == {"text": "NU s-a salvat.", "langa": True, "vizibil": True}, box
     invalide = pg.eval_on_selector_all(".camp-invalid", "els => els.map(e => e.id)")
@@ -67,7 +70,9 @@ def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_sr
     """406 (PRIORITAR). Casă: plată 200 cu sold 142 acceptată, registrul −58. Pașii: fereastra firmei -> Casă -> „+ Dispoziție nouă” ->
     ridicare de la bancă 142 lei -> Adaugă; apoi plată furnizor 200 lei: previzualizarea spune refuzul, „Adaugă” -> „NU s-a salvat.”
     lângă buton, cu textul refuzului pe câmpul „Suma” (lotul 11, 440: eroarea serverului e a sumei, `c-suma`, deci stă lângă câmp și în
-    casetă cu textul ei, nu „motivul e mai jos”), nimic scris, soldul final rămâne 142,00 lei."""
+    casetă cu textul ei, nu „motivul e mai jos”), nimic scris, soldul final rămâne 142,00 lei.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781)
+    [17.5-T] actualizat la 17.3 (static/js/cadru.js:128)"""
     from e2e_bloc_a import _card
     pg = patron.pg
     patron.firma(firma_srl["nume"])
@@ -81,6 +86,8 @@ def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_sr
         pg.fill("#c-part", "DANTE INTERNATIONAL SA")
         pg.fill("#c-cui", "14399840")
         if avans_dest:
+            pg.wait_for_selector("#c-avans", timeout=20000)
+            pg.check("#c-avans")   # [729.1] „Adaugă” cere poziția din listă sau „Avans, fără factură”
             # [lotul 11, 440, comanda 11.1 pct.16: „toate erorile apar deodată”] plata fără facturi deschise ale furnizorului e avans acordat
             # (407, 409x = 5311): contabilul alege pentru ce e avansul, deci singurul refuz rămâne al soldului. Cu destinația lăsată goală,
             # serverul le spune pe amândouă — `e2e_lot11_w3a.py::test_def_440_casa_dispozitia_suma_si_destinatia_avansului_deodata`.
@@ -108,7 +115,7 @@ def test_def_406_plata_peste_soldul_casei_e_refuzata_la_salvare(patron, firma_sr
     # [lotul 13, 673 / 504] câmpul se numește „Suma (lei)” în fereastra dispoziției (unitatea în etichetă, fără „0,00” precompletat)
     assert _refuz(pg) == [["Suma (lei)", "— " + asteptat % (zi, zi)]], _refuz(pg)
     # [lotul 13, 673] registrul stă sub fereastra dispoziției (cu o singură fereastră în pagină): „Renunță” o închide, iar soldul n-a mișcat
-    pg.click("#c-renunta")
+    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")   # [17.3] bara de jos a formularului nu mai are „Renunță”: revenirea e „←”
     pg.wait_for_selector("#c-sold-final", timeout=20000)
     assert pg.inner_text("#c-sold-final") == "142,00 lei"
 
@@ -170,7 +177,8 @@ def _salariat_cu_cm(firma):
 def test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia(patron, firma_cv):
     """411 (PRIORITAR). Stat cu CM: netul arăta numai salariul. Pașii: salariat cu salariul 4.050 lei și CM cod 01 pe 3 zile în luna
     curentă -> Salariați: rândul arată „net <salariu + CM> (salariu … + indemnizație CM …)”, costul cuprinde indemnizația angajatorului,
-    compoziția netului se termină cu „Net de plată (salariu + indemnizație CM)”, iar deducerea stă sub impozit, nu printre rețineri."""
+    compoziția netului se termină cu „Net de plată (salariu + indemnizație CM)”, iar deducerea stă sub impozit, nu printre rețineri.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from e2e_bloc_a import _api, _card, _ok
     sid = _salariat_cu_cm(firma_cv)
     st = _ok(_api(patron, "GET", "/tenants/%d/stat-plata?an=%d&luna=%d" % (firma_cv["tenant_id"], AZI.year, AZI.month)), "stat")["stat"]
@@ -179,6 +187,8 @@ def test_def_411_stat_cu_cm_arata_netul_de_plata_si_costul_cu_indemnizatia(patro
     patron.firma(firma_cv["nume"])
     _card(patron, "salariati", "#sp-contare")
     pg = patron.pg
+    la_luna_ceruta(patron, "#sp-prev", AZI.year, AZI.month)   # [817] statul se deschide pe luna de lucru; CM-ul probei e în luna curentă
+    pg.wait_for_selector("#sp-tabel tbody tr.sp-rand", timeout=30000)
     # [lotul 13, 677] rândul statului: coloanele „Net de plată” și „Cost angajator”; compoziția în fereastra salariatului
     celule = [" ".join(x.split()) for x in pg.locator("#sp-tabel tbody tr.sp-rand", has_text="IONESCU VASILE").first.locator("td").all_inner_texts()]
     patron.captura()
@@ -197,7 +207,9 @@ def test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa(patron, firma_cv):
     „Marfa … se întoarce în stoc?”; fără răspuns: „NU s-a salvat.”; „Da” -> „Confirm stornarea”: confirmarea spune că marfa a revenit în
     stoc, iar stocul articolului e iar cel dinainte. 416: factura stornată apare „stornată” în Istoric facturi.
     [lotul 13, 673 — DS cap.2a v2.104] confirmarea stornării, cu întrebarea returului, e fereastra mică deschisă peste detaliu; după
-    „Confirm stornarea” detaliul refăcut arată confirmarea în zona lui de stornare."""
+    „Confirm stornarea” detaliul refăcut arată confirmarea în zona lui de stornare.
+    [17.5-T] actualizat la 673.2 (static/js/navigator.js:246)
+    [17.5-T] actualizat la 17.5-H2 (static/js/ecrane/facturi_ecran.js:1507)"""
     from e2e_bloc_a import ARTICOL, _api, _card, _ok, articol_in_stoc, emite_api
     tid = firma_cv["tenant_id"]
     aid = articol_in_stoc(patron, firma_cv, cantitate=22, pret=10)
@@ -211,9 +223,11 @@ def test_def_419_stornarea_intreaba_de_retur_si_readuce_marfa(patron, firma_cv):
     pg.click("#fd-storno")
     pg.wait_for_selector(".fereastra:last-of-type #fd-storno-retur", state="attached", timeout=10000)
     assert "se întoarce în stoc?" in pg.inner_text(".fereastra:last-of-type .fd-storno-box")   # fereastra confirmării, nu detaliul
-    assert not pg.query_selector(".fereastra:last-of-type #fd-pdf"), "întrebarea returului nu e în fereastra ei (673)"
-    pg.click("#fd-storno-ok", force=True)   # [17.5-H2] cu alegerea goală butonul e inactiv (aria-disabled)
-    pg.wait_for_selector(".refuz-salvare", timeout=10000)
+    assert not pg.query_selector(".fereastra-overlay:not(.fundal) #fd-pdf"), "întrebarea returului nu e în fereastra ei (673)"   # [673.2] fereastra de dedesubt rămâne în pagină, ca `.fundal`, inertă
+    # [17.5-H2] cu alegerea goală butonul e inactiv (aria-disabled), cu motivul scris lângă el, iar apăsarea lui nu stornează nimic (înainte: „NU s-a salvat.”)
+    pg.click("#fd-storno-ok", force=True)
+    assert pg.get_attribute("#fd-storno-ok", "aria-disabled") == "true" and "Completează: dacă marfa se întoarce în stoc" in pg.inner_text(".fereastra-overlay:not(.fundal) .ds-motiv-inactiv")
+    assert sql('SELECT count(*) FROM "%s".facturi WHERE storno_din_id = %%s' % firma_cv["schema"], (f["factura_id"],)) == [(0,)]
     pg.select_option("#fd-storno-retur", "true")
     pg.click("#fd-storno-ok")
     pg.wait_for_function("() => (document.querySelector('#fd-storno-rez') || {}).textContent && "
@@ -235,7 +249,8 @@ def test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_bu
     scria „x2.000” (citit 2.000 buc). Pașii: articol în stoc -> factură cu 2 buc din el, „Pleacă marfa acum: Da” -> Registru jurnal:
     nota de descărcare (607 = 371) are documentul „Factură <număr> din <dată>” și descrierea „× 2 buc”. (Nota veche a cabinetului:
     stornată și refăcută pe date la publicarea lotului 9, cu aprobarea lui Costin — DECIZII „Închiderea lotului 9”.)
-    MUTAȚIA: în core/stocuri_cv_api.py, descărcarea la factură, `"document": document}` -> `"document": None}` -> ROȘU."""
+    MUTAȚIA: în core/stocuri_cv_api.py, descărcarea la factură, `"document": document}` -> `"document": None}` -> ROȘU.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from e2e_bloc_a import ARTICOL, articol_in_stoc, emite_api
     from e2e_bloc_d import _asteapta_text, _deschide
     from core import pdf_util
@@ -250,6 +265,7 @@ def test_def_409_descarcarea_de_stoc_are_documentul_facturii_si_cantitatea_in_bu
     patron.firma(firma_cv["nume"])
     _deschide(patron, "#fa-jurnal", "Registru")
     pg = patron.pg
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] nota e datată azi; jurnalul se deschide pe luna de lucru
     rand = pg.locator(".fereastra:last-of-type [data-nota-id='%s']" % nid).first
     rand.wait_for(timeout=30000)
     # [lotul 12, 617] tabelul de note: documentul justificativ („Document justificativ: …”) și liniile stau în detaliul notei — deschis cum îl
@@ -345,7 +361,8 @@ def test_def_400_detaliul_nir_arata_transportul_repartizat_si_costul_unitar(patr
 def test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota(patron, firma_cv):
     """401, 402. Pașii: Stocuri -> „Borderou de achiziție” (lotul 11, pct.23: lângă NIR) -> fără domiciliu și act de identitate: lângă
     câmpuri (și „NU s-a salvat.”); completat, cont 371 cu articolul nou (cerut explicit, 450) și cantitatea -> confirmarea cu nota
-    „371 = 401 · 200,00 lei”; în Registrul jurnal documentul e „Borderou de achiziție BA-1 din …”, nu „Factură”."""
+    „371 = 401 · 200,00 lei”; în Registrul jurnal documentul e „Borderou de achiziție BA-1 din …”, nu „Factură”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from e2e_bloc_a import _card
     from e2e_lot10b_stoc import alege_articolul
     patron.firma(firma_cv["nume"])
@@ -372,6 +389,7 @@ def test_def_401_borderoul_de_achizitie_cere_vanzatorul_si_arata_nota(patron, fi
     assert "371 = 401 · 200,00 lei" in t, t
     patron.firma(firma_cv["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] nota e datată azi; jurnalul se deschide pe luna de lucru
     pg.wait_for_function("() => document.body.innerText.includes('Borderou de achiziție BA-1 din')", timeout=20000)
     patron.captura("jurnal")
 
@@ -437,7 +455,8 @@ def test_def_404_lipsa_la_inventar_se_incadreaza(patron, firma_cv):
 # ── 407 — avansul acordat furnizorului ─────────────────────────────────────────────────────────────────────────────────
 def test_def_407_avansul_platit_furnizorului_cere_destinatia_si_e_409x(patron, firma_cv):
     """407. Pașii: numerar în casă -> Casă -> plată furnizor 300 lei fără facturi deschise: previzualizarea spune avansul acordat
-    (nota 409x = 5311, factura o emite furnizorul) și cere „Avansul e pentru”; „bunuri (4091)” -> Adaugă -> nota 4091=5311."""
+    (nota 409x = 5311, factura o emite furnizorul) și cere „Avansul e pentru”; „bunuri (4091)” -> Adaugă -> nota 4091=5311.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781)"""
     from e2e_bloc_a import _card
     _numerar(patron, firma_cv)
     patron.firma(firma_cv["nume"])
@@ -452,6 +471,7 @@ def test_def_407_avansul_platit_furnizorului_cere_destinatia_si_e_409x(patron, f
     pg.wait_for_selector("#c-avans-dest", timeout=10000)
     t = pg.inner_text("#c-previz")
     assert "avans acordat furnizorului, cu nota 409x = 5311" in t and "Emite factura" not in t, t
+    pg.check("#c-avans")   # [729.1] „Adaugă” cere poziția din listă sau „Avans, fără factură”
     pg.select_option("#c-avans-dest", "stocuri")
     pg.click("#c-adauga")
     pg.wait_for_function("() => document.body.innerText.includes('Dispoziția a fost salvată')", timeout=20000)
@@ -501,8 +521,11 @@ def test_def_413_orele_suplimentare_propun_suma_si_semnaleaza_sporul_sub_75(patr
 
 def test_def_414_luna_in_curs_nu_ofera_butonul_care_scrie_nota(patron, firma_cv):
     """414. Pașii: Salariați -> „Contabilizează statul” în luna în curs: „Nota salariilor se scrie după ce luna se încheie”, niciun buton
-    care scrie nota (nici înlocuirea ciornei, nici recontabilizarea)."""
+    care scrie nota (nici înlocuirea ciornei, nici recontabilizarea).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     pg = _stat(patron, firma_cv)
+    la_luna_ceruta(patron, "#sp-prev", AZI.year, AZI.month)   # [817] statul se deschide pe luna de lucru; proba cere luna în curs
+    pg.wait_for_selector("#sp-tabel tbody tr.sp-rand", timeout=30000)
     pg.click("#sp-contare")
     pg.wait_for_selector("#sp-contare-neincheiata", timeout=30000)
     patron.captura()
@@ -688,7 +711,8 @@ def test_def_c58_primul_clic_pe_adauga_dupa_tastare_pleaca(patron, firma_cv):
 def test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei(patron, firma_cv):
     """C60 (găsită de Code la 406). Registrul de casă pornea de la zero în fiecare lună: o ridicare de numerar din luna trecută nu era în
     soldul lunii. Pașii: notă 5311 = 581 de 1.000 lei în luna trecută, validată -> Casă, luna curentă: „sold la început 1.000,00 lei”
-    (și soldurile de pe rânduri pornesc de acolo)."""
+    (și soldurile de pe rânduri pornesc de acolo).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from e2e_bloc_a import _card
     from e2e_bloc_e import _nota
     luna_trecuta = (AZI.replace(day=1) - _dt.timedelta(days=1)).replace(day=10)
@@ -697,6 +721,7 @@ def test_def_c60_registrul_de_casa_porneste_de_la_soldul_casei(patron, firma_cv)
     patron.firma(firma_cv["nume"])
     _card(patron, "casa", "#c-toggle")
     pg = patron.pg
+    la_luna_ceruta(patron, "#c-prev", AZI.year, AZI.month)   # [817] registrul se deschide pe luna de lucru; proba cere luna curentă
     pg.wait_for_selector("#c-sold-inceput", timeout=20000)
     patron.captura()
     assert pg.inner_text("#c-sold-inceput") == "1.000,00 lei"

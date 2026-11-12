@@ -7,7 +7,7 @@ import datetime as _dt
 
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import firma_noua, la_luna_ceruta, sql
 
 AZI = _dt.date.today()
 
@@ -148,11 +148,13 @@ def test_def_401_sub_nota_borderoului_scrie_borderoul_nu_factura(patron, firma_c
     """401 (comanda 10.2 pct.7a). Pașii: un borderou (ciornă) -> Registru jurnal: sub nota lui, textul numește „borderoul de achiziție
     BA-n din …” și trimite la ecranul borderoului (Stocuri › „Borderou de achiziție”, unde se stornează — decizia 10.3), nu „factura
     de achiziție” și nu „în Facturi”.
-    MUTAȚIA: core/note_derivate.py, `return d("borderou" if borderou else "factura")` -> `return d("factura")` -> ROȘU."""
+    MUTAȚIA: core/note_derivate.py, `return d("borderou" if borderou else "factura")` -> `return d("factura")` -> ROȘU.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     from e2e_bloc_a import _card
     r = _borderou_api(patron, firma_cv, furnizor_nume="Ion Popescu", articol="Grâu E2E 401", cantitate=50)
     patron.firma(firma_cv["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
+    la_luna_ceruta(patron, "#j-prev", AZI.year, AZI.month)   # [17.5-T] borderoul e datat azi; jurnalul se deschide pe luna de lucru
     pg = patron.pg
     # [lotul 12, comanda 12.2 pct.9, deficiența 617] textul de sub notă (unde se corectează) stă în detaliul rândului ei din tabelul de
     # note: rândul se deschide întâi, ca omul (clic pe butonul din prima celulă)

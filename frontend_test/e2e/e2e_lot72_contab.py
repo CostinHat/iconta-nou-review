@@ -7,6 +7,7 @@ import time
 
 from conftest import linie_nota, sql
 from e2e_bloc_a import AZI, CLIENT, _api, _card, _ok, emite_api, pregateste_firma
+from e2e_bloc_b import _mergi_la_luna
 
 
 def _nota(e, firma, data, descriere, doc, deb, cre, suma):
@@ -27,7 +28,8 @@ def test_def_302_numarul_notei_validate_nu_se_schimba(patron, firma_e2e):
     """302. „Nr. crt.” se dădea pe an, în ordinea datelor, la fiecare citire: o notă nouă cu o dată mai veche muta numărul notelor validate
     („nr. crt. 25” a apărut la două note).
     Pașii: o notă de azi, validată -> are numărul N în Registrul jurnal; o notă cu data de ieri, ciornă -> în Registrul jurnal n-are
-    număr, iar nota de azi păstrează N; nota de ieri se validează -> primește N+1; nota de azi rămâne N."""
+    număr, iar nota de azi păstrează N; nota de ieri se validează -> primește N+1; nota de azi rămâne N.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     pregateste_firma(patron, firma_e2e)
     ieri = (AZI - _dt.timedelta(days=1)) if AZI.day > 1 else AZI
     a = _nota(patron, firma_e2e, AZI.isoformat(), "Încasare A 302", "CH-A302", "5311", "4111", 10)
@@ -39,6 +41,7 @@ def test_def_302_numarul_notei_validate_nu_se_schimba(patron, firma_e2e):
     patron.firma(firma_e2e["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
     pg = patron.pg
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] notele sunt datate azi / ieri; jurnalul se deschide pe luna de lucru
     pg.wait_for_selector("[data-nota-id='%d']" % b, timeout=20000)
     # [lotul 12, comanda 12.2 pct.9, deficiența 617] „Nr. crt. N · …” din antetul rândului -> prima celulă a rândului din tabelul de note
     # (coloana „Nr. crt.”, butonul care deschide detaliul); ciorna fără număr arată „—”
@@ -49,6 +52,7 @@ def test_def_302_numarul_notei_validate_nu_se_schimba(patron, firma_e2e):
     assert (_nr(firma_e2e, a), _nr(firma_e2e, b)) == (n, n + 1)
     patron.firma(firma_e2e["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] jurnalul se deschide pe luna de lucru
     pg.wait_for_selector("[data-nota-id='%d']" % b, timeout=20000)
     assert _nr_crt_pe_rand(pg, b) == str(n + 1), _nr_crt_pe_rand(pg, b)
     assert _nr_crt_pe_rand(pg, a) == str(n), _nr_crt_pe_rand(pg, a)
@@ -63,7 +67,8 @@ def _nr_crt_pe_rand(pg, nid):
 def test_def_c48_avansul_pentru_servicii_se_inregistreaza_pe_4092(patron, firma_e2e):
     """C48. Planul firmelor noi n-avea 4092 / 4093 / 4094, deși aplicația le propune singură (avansul pentru servicii, 312): nota pe 4092
     era refuzată „cont inexistent”.
-    Pașii: firmă nouă -> notă „avans furnizor servicii” 4092 = 5311, validată -> Registrul jurnal: nota, cu 4092 pe linie."""
+    Pașii: firmă nouă -> notă „avans furnizor servicii” 4092 = 5311, validată -> Registrul jurnal: nota, cu 4092 pe linie.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     pregateste_firma(patron, firma_e2e)
     # numerarul din care se plătește avansul (406: casa nu ajunge sub zero la validare)
     _valideaza(patron, firma_e2e, _nota(patron, firma_e2e, AZI.isoformat(), "Ridicare numerar C48", "CEC-C48", "5311", "581", 100))
@@ -72,6 +77,7 @@ def test_def_c48_avansul_pentru_servicii_se_inregistreaza_pe_4092(patron, firma_
     patron.firma(firma_e2e["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
     pg = patron.pg
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] nota e datată azi; jurnalul se deschide pe luna de lucru
     pg.wait_for_selector("[data-nota-id='%d']" % nid, timeout=20000)
     from e2e_bloc_b import _deschide_rand, _nota_jn   # [lotul 12, 617] linia notei stă în detaliul rândului; e2e_bloc_b nu importă de aici
     rand = _deschide_rand(patron, _nota_jn(patron, nid)).inner_text()
@@ -128,7 +134,9 @@ def test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta(patron, firma_
     nouă” n-avea Renunță.
     Pașii: o factură încasată printr-o notă bancară ciornă (5121 = 4111, legată de factură) -> Casă -> Dispoziție nouă, încasare de la
     client, CUI-ul clientului: factura nu e în listă și rândul spune de ce („… nu e în listă: e încasată printr-o notă care așteaptă
-    validarea (din …) …”); „Renunță” închide formularul."""
+    validarea (din …) …”); „Renunță” închide formularul.
+    [17.5-T] actualizat la 17.3 (static/js/cadru.js:128)
+    [17.5-T] actualizat la 15.1-E5 (static/js/ds_piese.js:556)"""
     pregateste_firma(patron, firma_e2e)
     f = emite_api(patron, firma_e2e, linii=[{"descriere": "Servicii E2E 310", "cantitate": 1, "um": "buc", "pret_unitar": 200.0, "cota_tva": 21,
                                              "cota_propusa": 21, "articol_id": None}])
@@ -150,12 +158,16 @@ def test_def_310_casa_spune_de_ce_lipseste_factura_si_are_renunta(patron, firma_
     assert f["numar"].startswith(SERIE), f
     nr = "%s nr. %s" % (SERIE, f["numar"][len(SERIE):])
     rand = pg.locator(".c-fact-asteptare", has_text=nr + " din ")
+    rand.first.wait_for(state="attached", timeout=20000)
+    sub = pg.locator(".fereastra-overlay:not(.fundal) .ds-semnale-sub[aria-expanded='false']")   # [15.1-E5] cel mult 2 semnale la vedere, restul sub „Semnale (n)”: contabilul îl deschide
+    if sub.count():
+        sub.click()
     rand.first.wait_for(timeout=20000)
     t = rand.first.inner_text()
     patron.captura("factura_in_asteptare")
     assert t.startswith(nr + " din ") and "e încasată printr-o notă care așteaptă validarea" in t and "(din " in t, t
     assert pg.locator("[data-cf='%s']" % f["factura_id"]).count() == 0
-    pg.click("#c-renunta")
+    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")   # [17.3] bara de jos a formularului nu mai are „Renunță”: revenirea e „←”
     pg.wait_for_selector("#c-campuri", state="detached", timeout=10000)   # [lotul 13, 673] fereastra dispoziției se închide
     assert pg.locator("#c-campuri").count() == 0   # fereastra dispoziției s-a închis (era `#c-zona` ascunsă înainte de 673)
     # înapoi în Casă: ecranul se redesenează (își recitește registrul lunii), apoi „+ Dispoziție nouă” e din nou pe ecran
@@ -193,12 +205,20 @@ def test_def_311_asistentul_cu_poate_pregati_genereaza_amortizarea(browser, requ
         sql('DELETE FROM "%s".mijloace_fixe WHERE id = %%s' % f["schema"], (mid,))
 
 
+def _desface_detaliile(pg):
+    """[17.5-T] Ajutor nou: semnalele și cardurile „Ce oprește închiderea” arată un text scurt (peste 90 de caractere se pliază sub „▾ detalii”, textul întreg e în detaliu);
+    contabilul apasă „▾ detalii”, deci testul le deschide pe cele închise (idempotent) înainte să citească textul."""
+    pg.evaluate("() => [...document.querySelectorAll('.fereastra:last-of-type #il-controale .ds-semnal-plie, .fereastra:last-of-type #il-controale .ds-rezumat-plie')]"
+                ".filter((b) => b.getAttribute('aria-expanded') !== 'true').forEach((b) => b.click())")
+
+
 def test_def_312_dupa_generare_de_validat_iar_401_debitor_spre_4091_4092(patron, firma_e2e):
     """312. După „Generează amortizarea restantă” motivul rămânea „neînregistrată”, butonul activ, iar a doua apăsare spunea iar „8 note
     generate”; la 401 debitor se propunea 409.
     Pașii: Închidere lună -> luna trecută (mijloc fix fără amortizare) -> „Generează amortizarea restantă” -> „N note de amortizare
     generate, de validat”; după redesenare motivele spun „generată …, de validat”, iar butonul nu mai e; o plată către furnizor fără
-    factură (401 debitor) -> semnalul propune 4091 / 4092, nu 409."""
+    factură (401 debitor) -> semnalul propune 4091 / 4092, nu 409.
+    [17.5-T] actualizat la 15.1-E3 (static/js/ds_piese.js:178)"""
     from e2e_bloc_e import _card as _card_e, _la_luna, _mf
     f = firma_e2e
     trecuta = AZI.replace(day=1) - _dt.timedelta(days=1)
@@ -211,6 +231,7 @@ def test_def_312_dupa_generare_de_validat_iar_401_debitor_spre_4091_4092(patron,
         _card_e(patron, f, "inchidere", "#il-prev")
         _la_luna(patron, "#il-prev", trecuta.year, trecuta.month)
         pg.wait_for_selector(".fereastra:last-of-type #il-amort-restanta", timeout=60000)
+        _desface_detaliile(pg)
         zona = pg.inner_text(".fereastra:last-of-type #il-controale")
         assert "4091 pentru bunuri de natura stocurilor, 4092 pentru servicii" in zona and "(409)" not in zona, zona
         pg.click(".fereastra:last-of-type #il-amort-restanta")
@@ -219,6 +240,7 @@ def test_def_312_dupa_generare_de_validat_iar_401_debitor_spre_4091_4092(patron,
         mesaj = pg.inner_text(".fereastra:last-of-type #il-mesaj")
         assert "note de amortizare generate, de validat" in mesaj, mesaj
         pg.wait_for_function("() => !document.querySelector('.fereastra:last-of-type #il-amort-restanta')", timeout=30000)
+        _desface_detaliile(pg)
         zona = pg.inner_text(".fereastra:last-of-type #il-controale")
         patron.captura("de_validat")
         assert "e generată pe contul 2813" in zona and "de validat" in zona and "nu e înregistrată" not in zona, zona

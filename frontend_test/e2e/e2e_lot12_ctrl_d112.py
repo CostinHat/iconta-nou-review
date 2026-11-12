@@ -17,7 +17,7 @@ import pytest
 from conftest import _scoate_firmele_e2e
 from e2e_bloc_b import _cnp
 from e2e_bloc_d import LUNA_TRECUTA, PATRON, _api
-from e2e_bloc_d import _stat as _stat_luna
+from e2e_bloc_d import _stat_la_luna
 from e2e_lot13_sal_ajutor import alege
 from e2e_lot11_s9 import (_F, _bani_net, _concedii, _compozitie, _d112_xml, _firma_cu_salariat, _int, _propunerea_zilelor, _randuri_compozitie,
                           _salveaza_certificat, _singurul, _un)
@@ -44,7 +44,7 @@ def _certificat_01(patron, firma, zi_sfarsit, numar):
     pg = patron.pg
     di, ds = LUNA_TRECUTA, LUNA_TRECUTA.replace(day=zi_sfarsit)
     zile = _zile_lucratoare(di, ds)
-    _stat_luna(patron, firma, luni_inapoi=1)
+    _stat_la_luna(patron, firma, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     _concedii(patron)   # [lotul 13] fereastra salariatului -> „Concediu medical”
     pg.wait_for_selector(_F + "#cm-nou", timeout=20000)
     pg.click(_F + "#cm-nou")
@@ -142,10 +142,11 @@ def test_def_43_proratare_pe_zilele_certificatului_initial_cu_zi_de_diminuare(pa
     certificatului (ziua de diminuare e zi de concediu, nu zi lucrată), salariul realizat B2_5 = 6.000 × B1_15 / zilele lunii (la leu),
     iar zilele plătite (D_14 + D_15) = zilele certificatului − 1. „Compoziția netului” arată aceleași zile de concediu medical. Înainte:
     salariul se prorata pe zilele PLĂTITE, deci ziua de diminuare apărea lucrată. Temeiul: OUG 91/2025 art.II alin.(1) (indemnizația se
-    calculează „prin diminuarea cu o zi”); structura D112 D_14/D_15 („se va scădea 1 zi (prima zi)”)."""
+    calculează „prin diminuarea cu o zi”); structura D112 D_14/D_15 („se va scădea 1 zi (prima zi)”).
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601): statul lunii trecute se cere explicit prin _stat_la_luna"""
     zile = _certificat_01(patron, firma_43, 7, "4301")
     nzl = _nzl()
-    _stat_luna(patron, firma_43, luni_inapoi=1)
+    _stat_la_luna(patron, firma_43, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     comp = _compozitie(patron)
     patron.captura("compozitia_netului")
     # [lotul 13, 677] fără rândul „Zile de concediu medical: N” fără sumă: zilele stau pe rândul indemnizației, cu brutul și netul ei
@@ -199,9 +200,10 @@ def test_def_482_cam_si_retinerile_din_indemnizatie(patron, firma_482):
     erori”, baza CAM a salariatului (B1_5 = B4_14 = C4_baza) = salariul realizat (B2_5) + indemnizația suportată de angajator (Σ D_20),
     iar C4_ct = ROUND(C4_baza × 2,25%). Înainte: compoziția arăta numai netul indemnizației, iar baza CAM lăsa afară partea angajatorului.
     Temeiul: CF art.220^4 alin.(1) + art.76 alin.(1) („inclusiv indemnizațiile pentru incapacitate temporară de muncă”), art.220^5 (se
-    exceptează numai partea FNUASS), OUG 158/2005 art.12 lit.A; OPANAF 605/2026 anexa 2, secțiunea B rândul 4."""
+    exceptează numai partea FNUASS), OUG 158/2005 art.12 lit.A; OPANAF 605/2026 anexa 2, secțiunea B rândul 4.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601): statul lunii trecute se cere explicit prin _stat_la_luna"""
     _certificat_01(patron, firma_482, 9, "4821")
-    _stat_luna(patron, firma_482, luni_inapoi=1)
+    _stat_la_luna(patron, firma_482, LUNA_TRECUTA.year, LUNA_TRECUTA.month)
     comp = _randuri_compozitie(_compozitie(patron))
     patron.captura("compozitia_netului")
     # [lotul 13, 677] indemnizația o dată: brutul în valoarea rândului, netul pe același rând; reținerile ei în coloana „Rețineri”

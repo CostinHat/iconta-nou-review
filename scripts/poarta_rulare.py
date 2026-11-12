@@ -21,9 +21,11 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import infra_g2 as IG  # noqa: E402
 import jurnal_lot as JL  # noqa: E402
 import poarta_clasifica as C  # noqa: E402
 import poarta_lib as L  # noqa: E402
+import publica_lot as PL  # noqa: E402
 
 RAD = L.RAD
 J = os.environ.get("POARTA_JURNALE", "/tmp")
@@ -73,6 +75,46 @@ def motiv_refuz_reluare(rad, baza, rosu, picate, ex, bt):
     return None
 
 
+def prag_faza(rad, lotf, faza):
+    """Rândul `max <faza> <secunde>` din scripts/praguri_<lot>.txt al lotului curent (T.5): secundele sau None (un lot fără rând `max`, cum e 17.5-T, nu are ce depăși)."""
+    try:
+        for ln in open(os.path.join(rad, "scripts", "praguri_%s.txt" % lotf), encoding="utf-8"):
+            m = re.match(r"max\s+(\S+)\s+(\d+)", ln)
+            if m and m.group(1) == faza:
+                return int(m.group(2))
+    except OSError:
+        pass
+    return None
+
+
+def log_incarcare(lotf):
+    """Textul fișierului ~/ghid_incoming/incarcare_poarta_<lot>.log al veghei arhitectului (POARTA_LOG_INCARCARE îl mută numai în probe) sau None când lipsește."""
+    cale = os.environ.get("POARTA_LOG_INCARCARE") or os.path.expanduser("~/ghid_incoming/incarcare_poarta_%s.log" % lotf)
+    try:
+        return open(cale, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return None
+
+
+def remasoara_g2(lot, lotf, rad, faza, f):
+    """[17.5-T, T.5] Chemată de `poarta_lib.ruleaza_trepte` la sfârșitul treptelor poarta_pytest / poarta_plasa (`f["id"]` = rularea din jurnal). Dacă durata depășește rândul `max <faza>` al lotului și
+    `infra_g2.decide` spune «infra» (încărcare străină susținută în fereastră, dovedită în log), prima măsurare se marchează în jurnal (rând «sfarsit» «infra_g2», motiv și durata ei) și se întoarce
+    True = poarta re-măsoară numai acea treaptă, o singură dată (nimic în stare[complete] / stare[reluari], nimic în poarta_verdicte.log sau poarta_ultima.txt). Altfel False: depășirea rămâne STOP la publicare."""
+    prag = prag_faza(rad, lotf, faza)
+    if prag is None:
+        return False
+    rl = next((x for x in JL.rulari(JL._citeste(JL.cale_jurnal()), lot) if x["id"] == f.get("id")), None)
+    if not rl or rl["secunde"] is None:
+        return False
+    dec = IG.decide(faza, rl["secunde"], prag, rl["inceput"], rl["sfarsit"], log_incarcare(lotf))
+    if dec["decizie"] != "infra":
+        return False
+    JL.marcheaza_infra_g2(lot, f["id"], dec["motiv"], rl["secunde"])
+    print("[poarta] %s: %ss > %ss, %s (ora %s, cpu %d%% pe interval): prima măsurare marcată «infra_g2», re-măsurare" % (
+        faza, rl["secunde"], prag, dec["motiv"], dec["dovada"]["ora"], dec["dovada"]["cpu"]))
+    return True
+
+
 def e_rulare_infra(rez):
     """«Rulare infra» (U.2): clasa infra nu e goală și are numai nume terminate în `::sesiune`, iar nicio altă clasă din `poarta_clasifica.CURAT` nu are intrări, în afară de regresiile cu sufixul
     «(a dispărut din rulare)» (consecința unei trepte fără raport). Cazul mixt (o picătură reală, o regresie fără sufix, o picătură infra cu raport) NU e rulare infra."""
@@ -89,17 +131,22 @@ def e_rulare_infra(rez):
     return True
 
 
-def decide(stare, rez, reia, noi, sha, acum, motiv_infra="", rosu=None):
+def decide(stare, rez, reia, noi, sha, acum, motiv_infra="", rosu=None, tip_infra=""):
     """Funcția pură a deciziei de după o rulare (U.2d): ce se numără, ce se scrie, ce cod iese. Nu scrie nimic; `main` scrie numai ce cere ea.
     -> {infra, curat, oprit (valoarea finală a lui stare[oprit]), stare (copia nouă), scrie_picate, verdict (VERDE|ROSU|REIA_CURAT|REIA_ROSU|INFRA), linie (rândul din poarta_verdicte.log sau None),
     ultima (scrie|sterge|None pentru scripts/poarta_ultima.txt), cod}. `noi` = picăturile noi la o reluare, `rosu` = commitul roșu al reluării."""
     st = copy.deepcopy(stare)
     st.setdefault("infra", [])
     if e_rulare_infra(rez):
-        st["infra"].append({"sha": sha, "data": acum, "motiv": motiv_infra})
+        st["infra"].append({"sha": sha, "data": acum, "motiv": motiv_infra, "tip": tip_infra})
         trei = len(st["infra"]) >= 3
         if trei:
-            st["oprit"] = "infra ×3: " + motiv_infra
+            # [17.5-T, T.6f] trei căderi ale probei de mediu cu <failure> și același prim rând de mesaj = regresie probabilă, nu mediu
+            ultimele = st["infra"][-3:]
+            if all(x.get("tip") == "aserțiune" and x["motiv"] == ultimele[0]["motiv"] for x in ultimele):
+                st["oprit"] = "infra ×3: aserțiune repetată, regresie probabilă: " + motiv_infra
+            else:
+                st["oprit"] = "infra ×3: " + motiv_infra
         return {"infra": True, "curat": False, "oprit": st.get("oprit"), "stare": st, "scrie_picate": False, "verdict": "INFRA", "linie": "INFRA", "ultima": None, "cod": 3 if trei else 4}
     oprire = None
     if rez["infra"]:
@@ -137,6 +184,20 @@ def _o_linie(text, lungime=300):
 
 
 def main(argv):
+    """`_main` plus oprirea cerută de o treaptă (`poarta_lib.OprirePoarta`, ex. proba de mediu căzută în re-măsurarea G2): stare[oprit] = motivul, ieșire 3, fără VERDE / ROSU / INFRA."""
+    try:
+        return _main(argv)
+    except L.OprirePoarta as e:
+        lotf = L.lot_fisier(JL.lot_curent())
+        f_stare = os.path.join(git("rev-parse", "--path-format=absolute", "--git-common-dir"), "lot_stare_%s.json" % lotf)
+        stare = json.load(open(f_stare)) if os.path.exists(f_stare) else {"complete": [], "reluari": [], "regresii": [], "oprit": None}
+        stare["oprit"] = str(e)
+        json.dump(stare, open(f_stare, "w"), indent=1)
+        print("[poarta] OPRIT: " + str(e))
+        return 3
+
+
+def _main(argv):
     reia = "--reia" in argv
     lot = JL.lot_curent()
     lotf = L.lot_fisier(lot)
@@ -172,6 +233,9 @@ def main(argv):
             return refuz("manifestul curent diferă de cel din baza.json altfel decât prin fișiere noi: " + "; ".join(ref))
     if git("status", "--porcelain", "--untracked-files=normal"):
         return refuz("arborele nu e curat — poarta judecă commitul lotului.")
+    ref_contract = PL.proba_contract(RAD, lot)   # [17.5-T, T.8] contractul dovezilor la începutul oricărei rulări, pe HEAD: roșu = refuz înainte de prima treaptă și de T0, fără INFRA și fără scriere în lot_stare
+    if ref_contract:
+        return refuz("proba_contract: " + "; ".join(ref_contract))
     if stare["oprit"]:
         return refuz("lotul e OPRIT: %s." % stare["oprit"])
     jv = os.path.join(comun, "poarta_verdicte.log")
@@ -181,6 +245,7 @@ def main(argv):
     detalii = "scripturi_poarta: " + JL.hash_scripturi(RAD)
     T0 = time.time()
     bt = baza["teste"]
+    cb_g2 = lambda faza, f: remasoara_g2(lot, lotf, RAD, faza, f)   # noqa: E731
     if reia:
         if len(stare["reluari"]) >= 2:
             return refuz("a treia reluare pe lot (cel mult două).")
@@ -209,7 +274,7 @@ def main(argv):
         man = {os.path.basename(x) for x in L.fisiere_manifest(RAD)}
         ids = sorted({n for n in picate if not n.startswith(("verificator", "pytest::")) and "e2e_" not in n} | {t for t in derivate if t in comparabile})
         e2e = sorted({os.path.basename(L.cheie_asertiuni(n)[0]) for n in picate if "e2e_" in n} | {os.path.basename(x) for x in fisiere_lot if os.path.basename(x) in man})
-        trepte, cand = L.ruleaza_trepte(RAD, J, lot, ids, e2e, detalii=detalii)
+        trepte, cand = L.ruleaza_trepte(RAD, J, lot, ids, e2e, detalii=detalii, dupa_treapta=cb_g2)
         complet = False
     else:
         if len(stare["complete"]) >= 2:
@@ -223,7 +288,7 @@ def main(argv):
                 f["rezultat"] = "ok"
         nucleu = L.fisiere_nucleu(RAD)
         atinse = sorted(x for x in fisiere_lot if x.endswith(".py") and os.path.basename(x).startswith("test_") and x not in nucleu and os.path.exists(os.path.join(RAD, x)))
-        trepte, cand = L.ruleaza_trepte(RAD, J, lot, nucleu + atinse, None, detalii=detalii)
+        trepte, cand = L.ruleaza_trepte(RAD, J, lot, nucleu + atinse, None, detalii=detalii, dupa_treapta=cb_g2)
         complet = True
     # infrastructură: o singură reluare a testelor afectate
     rez = C.clasifica(cand, bt, fisiere_lot, RAD, complet)
@@ -235,7 +300,7 @@ def main(argv):
             ids = L.fisiere_nucleu(RAD)
         if any(n == "plasa_e2e::sesiune" for n in rez["infra"]):
             e2e = [os.path.basename(x) for x in L.fisiere_manifest(RAD)]
-        _, din_nou = L.ruleaza_trepte(RAD, J, lot, ids, e2e, detalii=detalii, verificator=False)
+        _, din_nou = L.ruleaza_trepte(RAD, J, lot, ids, e2e, detalii=detalii, verificator=False, dupa_treapta=cb_g2)
         nume_noi = {t["nume"] for t in din_nou}
         cand = [t for t in cand if t["nume"] not in nume_noi and not t["nume"].endswith("::sesiune")] + din_nou
         rez = C.clasifica(cand, bt, fisiere_lot, RAD, complet)
@@ -243,7 +308,8 @@ def main(argv):
     noi = [n for n in picate_acum if reia and n not in picate and not any(n in r for r in rez["restanta"])]
     acum = datetime.datetime.now().isoformat(timespec="seconds")
     motiv_infra = _o_linie("; ".join("%s: %s" % (t["nume"], t.get("mesaj", "")) for t in cand if t["nume"] in rez["infra"]))
-    d = decide(stare, rez, reia, noi, sha, acum, motiv_infra, rosu if reia else None)
+    tip_infra = next((t["tip"] for t in cand if t["nume"] in rez["infra"] and t.get("tip")), "")
+    d = decide(stare, rez, reia, noi, sha, acum, motiv_infra, rosu if reia else None, tip_infra)
     stare = d["stare"]
     curat, v, oprire = d["curat"], d["verdict"], d["oprit"] if not d["infra"] else None
     scrie_stare(d, f_stare, f_picate, sha, picate_acum, rez)

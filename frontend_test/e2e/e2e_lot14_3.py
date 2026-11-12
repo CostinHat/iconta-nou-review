@@ -19,7 +19,7 @@ import re
 
 import pytest
 
-from conftest import _ecran, firma_noua, sql
+from conftest import _ecran, firma_noua, la_luna_ceruta, sql
 from e2e_bloc_a import _card
 from e2e_bloc_d import PATRON, _api, _date_firma, _deschide, _nota_validata
 from e2e_lot12_ctrl import _factura_validata
@@ -104,12 +104,13 @@ def test_def_719_restanta_apare_in_datorate_prima(patron, firma_cu_restante):
 # ── 717 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_717_registrul_jurnal_deschis_din_inchidere_luna_vine_pe_luna_ei(patron, firma_l14_3):
     """717. Pașii: Închidere lună, luna trecută (← luna) -> „Caută o funcție” din fereastră: „Registru jurnal” -> se deschide pe luna din care ai venit
-    (luna trecută), nu pe cea curentă. Înainte: vine pe luna curentă. MUTAȚIA: `lunaParinte` golit în navigator -> ROȘU."""
+    (luna trecută), nu pe cea curentă. Înainte: vine pe luna curentă. MUTAȚIA: `lunaParinte` golit în navigator -> ROȘU.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     f = firma_l14_3
     pg = patron.pg
     patron.firma(f["nume"])
     _deschide(patron, "#fa-inchidere", "Închidere lună")
-    pg.click(_F + "#il-prev")
+    la_luna_ceruta(patron, "#il-prev", LUNA_TRECUTA.year, LUNA_TRECUTA.month)   # [817] ecranul se deschide pe luna de lucru: luna trecută se cere explicit din luna afișată
     luna_et = "%02d/%d" % (LUNA_TRECUTA.month, LUNA_TRECUTA.year)
     pg.wait_for_function("(t) => (document.querySelector('.fereastra:last-of-type .pf-intro') || {innerText: ''}).innerText.includes(t)", arg=luna_et, timeout=30000)
     pg.fill(_F + "#cautare-fereastra", "Registru jurnal")

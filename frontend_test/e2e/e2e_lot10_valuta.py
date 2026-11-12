@@ -23,7 +23,7 @@ import datetime as _dt
 
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import firma_noua, la_luna_ceruta, sql
 from e2e_bloc_a import AZI, CLIENT, PRODUS, _api, _deschide_emiterea, _ok
 
 ZI = _dt.date(2026, 8, 26)
@@ -66,13 +66,12 @@ def _emite_eur_din_ecran(patron, f):
 
 
 def _inchidere(patron, f, an, luna, asteapta):
-    """Închidere lună, de la luna curentă înapoi până la `luna/an`, până apare `asteapta` în controalele lunii."""
+    """Închidere lună, din luna afișată până la `luna/an`, până apare `asteapta` în controalele lunii."""
     pg = patron.pg
     patron.firma(f["nume"])
     pg.click("#fa-inchidere")
     pg.wait_for_selector(".fereastra:last-of-type #il-prev", timeout=30000)
-    for _ in range((AZI.year * 12 + AZI.month) - (an * 12 + luna)):
-        pg.click(".fereastra:last-of-type #il-prev")
+    la_luna_ceruta(patron, "#il-prev", an, luna)   # [17.5-T, 817] luna cerută se atinge din luna afișată (ecranul se deschide pe luna de lucru), în ambele direcții
     pg.wait_for_function("(l) => document.querySelector('.fereastra:last-of-type .pf-intro').innerText.includes(l)",
                          arg="%02d/%d" % (luna, an), timeout=60000)
     pg.wait_for_function("(t) => (document.querySelector('.fereastra:last-of-type #il-controale') || {innerText: ''}).innerText.includes(t)",
@@ -87,6 +86,7 @@ def _reevaluare(pg):
 
 
 def test_def_429_inchiderea_propune_reevaluarea_si_genereaza_nota(patron, firma_val):
+    # [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601): închiderea lunii se deschide pe luna de lucru, luna cerută se atinge din luna afișată
     f = firma_val
     s = f["schema"]
     fid = _emite_eur_din_ecran(patron, f)

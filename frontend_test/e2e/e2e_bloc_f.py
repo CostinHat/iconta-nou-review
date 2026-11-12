@@ -7,7 +7,7 @@ import io
 import re
 from decimal import Decimal
 
-from conftest import linie_nota, sql
+from conftest import la_luna_ceruta, linie_nota, sql
 
 FIRMA_TVA = "Comert Micro TVA SRL"              # tenant_003, plătitoare de TVA
 FIRMA_NEPLATITOARE = "Coafor Micro Neplatitor SRL"   # tenant_002
@@ -172,7 +172,8 @@ def test_def_175_amortizarea_calculata_merge_pana_la_ultima_luna_incheiata(patro
 def test_def_176_totalul_registrului_jurnal_fara_ciorne(patron, firma_e2e):
     """176. Registru jurnal: „Total sume” include ciornele.
     Pașii contabilului: firma -> Registru jurnal (luna curentă) cu o notă validată (100 lei) și o ciornă (50 lei) -> „Total sume
-    debitoare / creditoare (note validate)” = numai notele validate; ciornele stau separat, pe rândul lor."""
+    debitoare / creditoare (note validate)” = numai notele validate; ciornele stau separat, pe rândul lor.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     tid, s = firma_e2e["tenant_id"], firma_e2e["schema"]
     patron.acasa()
     v = _nota(patron, tid, "Depunere numerar probă E2E 176", "100.00", document="Chitanța E2E-176/1")
@@ -190,6 +191,8 @@ def test_def_176_totalul_registrului_jurnal_fara_ciorne(patron, firma_e2e):
     pg = patron.pg
     patron.firma(firma_e2e["nume"])
     pg.click("#fa-jurnal")
+    pg.wait_for_selector("#j-nota-noua", timeout=30000)
+    la_luna_ceruta(patron, "#j-prev", azi.year, azi.month)   # [17.5-T] notele probei sunt din luna curentă; jurnalul se deschide pe luna de lucru
     pg.wait_for_selector(_fata(pg) + " .fd-totaluri", timeout=30000)
     patron.captura()
     randuri = {e.split("\n")[0].strip(): e for e in pg.eval_on_selector_all(_fata(pg) + " .fd-totaluri .fd-tot-rand",
@@ -349,11 +352,13 @@ def test_def_196_d390_dinaintea_preluarii_isi_pastreaza_faptul(patron):
 def test_def_197_blocheaza_luna_inactiv_cat_timp_ceva_opreste_inchiderea(patron):
     """197. Închidere lună: „Blochează luna” e activ deși „Ce oprește închiderea” are un blocaj (22 de ciorne pe Comert Micro TVA).
     Pașii: „Comert Micro TVA SRL” -> Închidere lună -> pe luna curentă și pe cele două dinainte: oriunde „Ce oprește închiderea” are
-    ceva, „Blochează luna” e inactiv și spune de ce — și rămâne inactiv după ce ecranul s-a terminat de desenat."""
+    ceva, „Blochează luna” e inactiv și spune de ce — și rămâne inactiv după ce ecranul s-a terminat de desenat.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     pg = patron.pg
     patron.firma(FIRMA_TVA)
     pg.click("#fa-inchidere")
     pg.wait_for_selector(_fata(pg) + " #il-prev", timeout=30000)
+    la_luna_ceruta(patron, "#il-prev", _azi().year, _azi().month)   # [17.5-T] „luna curentă și cele două dinainte”: luna curentă se cere explicit
     gata = ("() => { const f = [...document.querySelectorAll('.fereastra')].pop(); const z = f.querySelector('#il-controale');"
             " return z && z.querySelector('.caseta-info, .caseta-atentie, .ds-semnale, .ds-rezumat-cutie'); }")
     vazute = []
@@ -377,6 +382,7 @@ def test_def_197_blocheaza_luna_inactiv_cat_timp_ceva_opreste_inchiderea(patron)
     patron.firma(FIRMA_TVA)
     pg.click("#fa-jurnal")
     pg.wait_for_selector(_fata(pg) + " #j-lock", timeout=30000)
+    la_luna_ceruta(patron, "#j-prev", azi.year, azi.month)   # [17.5-T] „pe luna curentă”: jurnalul se deschide pe luna de lucru, deci luna curentă se cere explicit
     pg.wait_for_timeout(1500)
     j = pg.evaluate("() => { const b = [...document.querySelectorAll('.fereastra')].pop().querySelector('#j-lock'); return b ? {text: b.innerText, dez: b.disabled} : null; }")
     patron.captura("jurnal")
@@ -420,7 +426,8 @@ def test_def_181_inchiderea_lunii_avertizeaza_declaratiile_lunii_nedepuse(patron
     (D300 / D394 / D406 pe T3/2026) au termenul în luna URMĂTOARE, deci regula „termen în lună” nu le vedea — nimic nu avertiza la
     închidere. Pașii: firma cu acest profil -> Închidere lună -> luna trecută -> sub „Semnale” apare fiecare declarație nedepusă a
     perioadei care se încheie cu luna, cu perioada și termenul ei; nu e printre ce oprește închiderea.
-    [testul vechi trecea pe defect: căuta numai o declarație cu termen în lună, pe o firmă care avea una]"""
+    [testul vechi trecea pe defect: căuta numai o declarație cu termen în lună, pe o firmă care avea una]
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     tid, pg = firma_e2e["tenant_id"], patron.pg
     luna_inch = _azi().replace(day=1) - _dt.timedelta(days=1)
     patron.acasa()
@@ -440,9 +447,7 @@ def test_def_181_inchiderea_lunii_avertizeaza_declaratiile_lunii_nedepuse(patron
     pg.wait_for_selector(_fata(pg) + " #il-prev", timeout=30000)
     gata = ("(l) => { const f = [...document.querySelectorAll('.fereastra')].pop(); const z = f.querySelector('#il-controale');"
             " return f.querySelector('.pf-intro').innerText.includes('Luna ' + l) && z && z.querySelector('.caseta-info, .caseta-atentie, .ds-semnale, .ds-rezumat-cutie'); }")
-    azi = _dt.date.today()
-    pg.wait_for_function(gata, arg="%02d/%d" % (azi.month, azi.year), timeout=90000)
-    pg.click(_fata(pg) + " #il-prev")
+    la_luna_ceruta(patron, "#il-prev", luna_inch.year, luna_inch.month)   # [17.5-T] luna trecută se cere explicit, din luna afișată (817)
     pg.wait_for_function(gata, arg=luna_inch.strftime("%m/%Y"), timeout=90000)
     patron.captura()
     zona = pg.inner_text(_fata(pg) + " #il-controale")

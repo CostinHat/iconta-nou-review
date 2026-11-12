@@ -207,7 +207,7 @@ def faza(lot, nume, detalii=""):
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import jurnal_lot as J
     id_ = J.inceput(lot, nume, detalii, pid=os.getpid())
-    rez = {"rezultat": "intrerupt"}
+    rez = {"rezultat": "intrerupt", "id": id_}
     try:
         yield rez
     finally:
@@ -252,12 +252,63 @@ def _sterge(cale):
         pass
 
 
-def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="3", detalii="", verificator=True, sonda_8019=None, opreste_8019=None):
+class OprirePoarta(Exception):
+    """[17.5-T] Oprirea (STOP) cerută de o treaptă: nu e roșu, nici infra; scripts/poarta_rulare.py o scrie în stare[oprit] și iese cu 3."""
+
+
+#: calea FIXĂ (din depozit) a probei de mediu a plasei [17.5-T, T.6]: `fișier::test` pe prima linie utilă, durata celor trei rulări pe a doua; unealta citește numele de aici, nu îl alege la rulare
+PROBA_MEDIU = os.path.join("docs", "dovezi", "17_5_T", "proba_mediu.txt")
+
+
+def proba_mediu_nume(wt):
+    """-> (`fișier::test`, None) sau (None, motivul) când fișierul probei lipsă sau gol sau când fișierul de test numit nu mai există în arbore."""
+    cale = os.path.join(wt, PROBA_MEDIU)
+    try:
+        linii = [ln.strip() for ln in open(cale, encoding="utf-8") if ln.strip() and not ln.startswith("#")]
+    except OSError:
+        return None, "fișierul probei de mediu lipsește (%s)" % PROBA_MEDIU
+    if not linii or "::" not in linii[0]:
+        return None, "fișierul probei de mediu nu numește un test (%s)" % PROBA_MEDIU
+    nume = linii[0].split()[0]
+    fis, _, test = nume.partition("::")
+    sursa = os.path.join(wt, "frontend_test", "e2e", fis)
+    if not os.path.exists(sursa) or ("def " + test.split("[")[0]) not in open(sursa, encoding="utf-8").read():
+        return None, "testul probei de mediu nu mai există: %s" % nume
+    return nume, None
+
+
+def ruleaza_proba_mediu(wt, J, env, py="./venv/bin/python"):
+    """Proba de mediu [17.5-T, T.6]: un singur test e2e scurt din plasa fixă, rulat cu scripts/e2e_poarta.py --doar=<fișier>::<test>. -> (ok, tip, mesaj, durata, nume):
+    `tip` = «aserțiune» (raport junit cu <failure> pentru testul ei) sau «conexiune» (cod nenul fără raport junit sau ieșirea 3) sau «lipsă» (fișierul probei sau testul lipsesc)."""
+    nume, motiv = proba_mediu_nume(wt)
+    if nume is None:
+        return False, "lipsă", motiv, 0.0, "?"
+    jx = os.path.join(J, "poarta_proba_mediu.xml")
+    _sterge(jx)
+    rc, d = _rulare([py, "scripts/e2e_poarta.py", "--doar=" + nume, os.path.join(J, "e2e_proba_mediu_capturi")], wt, dict(env, PYTEST_ADDOPTS="--junitxml=" + jx), os.path.join(J, "poarta_proba_mediu.log"))
+    if rc == 0:
+        return True, "", "", d, nume
+    pica = [t for t in citeste_junit(jx, wt) if t["rezultat"] == "pica"]
+    if pica and rc != 3:
+        mesaj = (pica[0]["mesaj"].splitlines() or [""])[0].strip()
+        return False, "aserțiune", mesaj, d, nume
+    try:
+        ultima = [ln for ln in open(os.path.join(J, "poarta_proba_mediu.log"), errors="replace").read().splitlines() if ln.strip()][-1].strip()
+    except (OSError, IndexError):
+        ultima = "cod %d fără ieșire" % rc
+    return False, "conexiune", ultima, d, nume
+
+
+def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="3", detalii="", verificator=True, sonda_8019=None, opreste_8019=None, dupa_treapta=None):
     """-> (durate pe treaptă, teste). `pytest_ids`/`e2e_fisiere` None = tot (nucleul / manifestul); listă = numai acelea (reluarea). Baza de test se restaurează înainte de
     pytest și înainte de plasa e2e (niciodată per test). Toate treptele rulează, și după una roșie.
     [16.7] Xml-ul unei trepte se șterge înainte de ea, iar un cod nenul fără raport junit proaspăt e o picătură de infrastructură (`<treapta>::sesiune`; [17.5-U] treapta e `infra`, nu `rosu_<cod>`).
     [17.5-U, U.1] Înaintea plasei 8019 se eliberează prin `verificator_design.elibereaza_port` (un server al uneltelor se oprește, orice alt proces se refuză cu numele lui: treapta iese `infra` cu
-    motivul «8019 ocupat de pid <N> (<comandă>)», plasa nu pornește); `sonda_8019` / `opreste_8019` date, sau `_sonda_8019` / `_opreste_8019` suprascrise (citite la apel), păstrează blocul vechi."""
+    motivul «8019 ocupat de pid <N> (<comandă>)», plasa nu pornește); `sonda_8019` / `opreste_8019` date, sau `_sonda_8019` / `_opreste_8019` suprascrise (citite la apel), păstrează blocul vechi.
+    [17.5-T, T.6] În faza poarta_plasa, după eliberarea portului și înaintea plasei, rulează proba de mediu (`ruleaza_proba_mediu`); proba căzută = treapta `infra` cu motivul «proba de mediu <fișier::test>:
+    <primul rând al mesajului>» (aceeași cale ca eliberarea refuzată a portului), plasa nu pornește. Durata probei intră în durate sub cheia `proba_mediu`.
+    [17.5-T, T.5] `dupa_treapta(faza, f)` e chemată după fiecare treaptă poarta_pytest / poarta_plasa (`f` = {id, rezultat, remasurare}); întoarce True = re-măsurează numai acea treaptă, o singură dată,
+    cu rândurile ei obișnuite de jurnal, iar rezultatele re-măsurării le înlocuiesc pe ale primei; o probă de mediu căzută în re-măsurarea plasei = OprirePoarta."""
     py = "./venv/bin/python"
     env = dict(os.environ, POARTA_SARE="1", PATH=os.path.join(wt, "scripts", "bin") + ":" + os.environ.get("PATH", ""))
     trepte, teste = {}, []
@@ -272,36 +323,59 @@ def ruleaza_trepte(wt, J, lot=None, pytest_ids=None, e2e_fisiere=None, procese="
                       "mesaj": "" if trece else (tot[-1].strip() if tot else "fără TOTAL")})
     ids = fisiere_nucleu(wt) if pytest_ids is None else pytest_ids
     if ids:
-        with faza(lot, "poarta_pytest", detalii) as f:
-            _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_pytest.log"))
-            jx = os.path.join(J, "poarta_pytest.xml")
-            _sterge(jx)
-            rc, d = _rulare([py, "-m", "pytest", "-q", "-n", procese, "--dist", "loadfile", "--junitxml=" + jx] + ids, wt, env, os.path.join(J, "poarta_pytest.log"))
-            r = citeste_junit(jx, wt)
-            f["rezultat"] = rezultat_treapta(rc, r)
+        for remasurare in (False, True):
+            with faza(lot, "poarta_pytest", detalii) as f:
+                _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_pytest.log"))
+                jx = os.path.join(J, "poarta_pytest.xml")
+                _sterge(jx)
+                rc, d = _rulare([py, "-m", "pytest", "-q", "-n", procese, "--dist", "loadfile", "--junitxml=" + jx] + ids, wt, env, os.path.join(J, "poarta_pytest.log"))
+                r = citeste_junit(jx, wt)
+                f["rezultat"] = rezultat_treapta(rc, r)
+            if not remasurare and dupa_treapta and dupa_treapta("poarta_pytest", f):
+                continue
+            break
         trepte["pytest"] = d
         teste += [dict(t, treapta="pytest") for t in r]
         if rc != 0 and not r:   # fără raport junit proaspăt (pytest n-a ajuns să ruleze nimic (interpretare, import, interrupt): infrastructură, nu test
             teste.append({"nume": "pytest::sesiune", "treapta": "pytest", "rezultat": "pica", "infra": True, "durata": d, "mesaj": "cod %d fără raport junit" % rc})
     fis = [os.path.basename(x) for x in fisiere_manifest(wt)] if e2e_fisiere is None else e2e_fisiere
     if fis:
-        with faza(lot, "poarta_plasa", detalii) as f:
-            _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_e2e.log"))
-            jx = os.path.join(J, "poarta_e2e.xml")
-            _sterge(jx)
-            import verificator_design as VD
-            sonda, oprire = sonda_8019 or _sonda_8019, opreste_8019 or _opreste_8019   # citite la apel, nu legate la import
-            ok_port, motiv_port = VD.elibereaza_port(8019, sonda=None if sonda is _SONDA_IMPLICITA else sonda, opreste_fn=None if oprire is _OPRESTE_IMPLICIT else oprire, lot=lot)
-            if ok_port:
-                rc, d = _rulare([py, "scripts/e2e_poarta.py"] + ["--doar=" + x for x in fis] + [os.path.join(J, "e2e_poarta_capturi")],
-                                wt, dict(env, PYTEST_ADDOPTS="--junitxml=" + jx), os.path.join(J, "poarta_e2e.log"))
-                r = citeste_junit(jx, wt)
-                motiv_sesiune = "cod %d fără raport junit" % rc
-            else:
-                rc, d, r, motiv_sesiune = 3, 0.0, [], motiv_port
-            f["rezultat"] = rezultat_treapta(rc, r)
+        import verificator_design as VD
+        for remasurare in (False, True):
+            with faza(lot, "poarta_plasa", detalii) as f:
+                _rulare(["sh", "scripts/baza_test.sh", "restaureaza"], wt, env, os.path.join(J, "poarta_restaurare_e2e.log"))
+                jx = os.path.join(J, "poarta_e2e.xml")
+                _sterge(jx)
+                sonda, oprire = sonda_8019 or _sonda_8019, opreste_8019 or _opreste_8019   # citite la apel, nu legate la import
+                ok_port, motiv_port = VD.elibereaza_port(8019, sonda=None if sonda is _SONDA_IMPLICITA else sonda, opreste_fn=None if oprire is _OPRESTE_IMPLICIT else oprire, lot=lot)
+                tip_sesiune, dp = "", 0.0
+                if ok_port:
+                    ok_proba, tip_sesiune, mesaj_proba, dp, nume_proba = ruleaza_proba_mediu(wt, J, env, py)
+                    trepte["proba_mediu"] = dp
+                    if not ok_proba and remasurare:
+                        f["rezultat"] = "stop"
+                        raise OprirePoarta("proba de mediu căzută în re-măsurare: %s: %s" % (nume_proba, mesaj_proba))
+                    if not ok_proba and tip_sesiune == "lipsă":   # fișierul probei lipsește sau numește un test care nu mai există: faza e roșie, cu motiv (nu infra: relansarea n-ar ajuta)
+                        rc, d = 1, dp
+                        r = [{"nume": "plasa_e2e::proba_mediu", "rezultat": "pica", "infra": False, "durata": dp, "mesaj": mesaj_proba}]
+                        motiv_sesiune = ""
+                    elif not ok_proba:
+                        rc, d, r, motiv_sesiune = 3, dp, [], "proba de mediu %s: %s" % (nume_proba, mesaj_proba)
+                    else:
+                        rc, d = _rulare([py, "scripts/e2e_poarta.py"] + ["--doar=" + x for x in fis] + [os.path.join(J, "e2e_poarta_capturi")],
+                                        wt, dict(env, PYTEST_ADDOPTS="--junitxml=" + jx), os.path.join(J, "poarta_e2e.log"))
+                        d = round(d + dp, 1)
+                        r = citeste_junit(jx, wt)
+                        motiv_sesiune = "cod %d fără raport junit" % rc
+                        tip_sesiune = ""
+                else:
+                    rc, d, r, motiv_sesiune = 3, 0.0, [], motiv_port
+                f["rezultat"] = rezultat_treapta(rc, r)
+            if not remasurare and dupa_treapta and dupa_treapta("poarta_plasa", f):
+                continue
+            break
         trepte["plasa_e2e"] = d
         teste += [dict(t, treapta="plasa_e2e") for t in r]
         if rc != 0 and not r:   # fără raport junit proaspăt (3 = aplicația n-a pornit
-            teste.append({"nume": "plasa_e2e::sesiune", "treapta": "plasa_e2e", "rezultat": "pica", "infra": True, "durata": d, "mesaj": motiv_sesiune})
+            teste.append({"nume": "plasa_e2e::sesiune", "treapta": "plasa_e2e", "rezultat": "pica", "infra": True, "durata": d, "mesaj": motiv_sesiune, "tip": tip_sesiune})
     return trepte, teste

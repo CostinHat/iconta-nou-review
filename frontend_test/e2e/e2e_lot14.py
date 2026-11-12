@@ -16,7 +16,7 @@ import datetime as _dt
 
 import pytest
 
-from conftest import firma_noua, sql
+from conftest import firma_noua, la_luna_ceruta, sql
 from e2e_bloc_c import _declaratie_pas1
 from e2e_bloc_d import PATRON, _api, _date_firma, _deschide, _nota_validata
 
@@ -48,12 +48,14 @@ def _incape(pg):
 def test_def_c206_inchiderea_lunii_cere_regularizarea_tva_si_o_propune(patron, firma_tva):
     """688. Pașii: firma cu 4426 D 210 și 4427 C 210 la sfârșitul lunii trecute -> Închidere lună, luna trecută: „Ce oprește închiderea” spune că TVA-ul
     nu e regularizat (cu 210,00 lei), „Blochează luna” e inactiv -> „Propune regularizarea TVA”: nota 4427 = 4426 (ciornă) -> o validez în Registrul
-    jurnal -> blocajul dispare și luna se poate bloca. MUTAȚIA: blocajul `TVA_NEREGULARIZAT` scos din `uc_comun.controale_inchidere` -> ROȘU."""
+    jurnal -> blocajul dispare și luna se poate bloca. MUTAȚIA: blocajul `TVA_NEREGULARIZAT` scos din `uc_comun.controale_inchidere` -> ROȘU.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     f = firma_tva
     pg = patron.pg
     patron.firma(f["nume"])
     _deschide(patron, "#fa-inchidere", "Închidere lună")
-    pg.click(_F + " #il-prev")
+    trecuta = AZI.replace(day=1) - _dt.timedelta(days=1)
+    la_luna_ceruta(patron, "#il-prev", trecuta.year, trecuta.month)   # [817] ecranul se deschide pe luna de lucru: luna trecută se cere explicit din luna afișată
     pg.wait_for_function("(t) => (document.querySelector('.fereastra:last-of-type #il-controale') || {innerText: ''}).innerText.includes(t)",
                          arg="TVA-ul perioadei nu e regularizat", timeout=30000)
     txt = " ".join(pg.inner_text(_F + " #il-controale").split())

@@ -13,6 +13,7 @@ import pytest
 from conftest import BAZA, _ecran, ai_pregateste, sql, zile_de_acum
 from e2e_bloc_a import AZI, CLIENT, PRODUS, _api, _card, _deschide_emiterea, _deschide_factura, _ok, cont_asistent, emite_api, \
     pregateste_firma
+from e2e_bloc_b import _mergi_la_luna
 from e2e_lot72_cont import cabinet_nou, deschide_setari_panou  # noqa: F401 — fixture (321, 322)
 from e2e_lot72_declaratii import LUNA, ZI, _curata, _deschide_coada, _in_coada, _nota_facturii, _peste, _valideaza_notele
 
@@ -382,14 +383,16 @@ def test_def_332_dispozitia_noua_porneste_cu_data_de_azi(patron, firma_e2e):
 def test_def_333_amortizarea_lunii_in_curs_nu_e_ceruta_si_nu_e_oferita(patron, firma_e2e):
     """333. Pentru luna în curs, „Ce oprește închiderea” cerea generarea amortizării, iar butonul o refuza (și la Ana în Registru jurnal).
     Pașii: un mijloc fix pus în funcțiune acum trei luni -> Închidere lună, luna curentă: motivul e „luna nu s-a încheiat”, fără
-    „amortizarea lunii nu e înregistrată”; Registru jurnal, luna curentă: „Generează amortizarea” inactiv, cu motivul."""
-    from e2e_bloc_e import _card as _card_e, _mf
+    „amortizarea lunii nu e înregistrată”; Registru jurnal, luna curentă: „Generează amortizarea” inactiv, cu motivul.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
+    from e2e_bloc_e import _card as _card_e, _la_luna, _mf
     f = firma_e2e
     m = AZI.year * 12 + AZI.month - 1 - 3
     mid = _mf(f, "MF333", "3000", 30, _dt.date(m // 12, m % 12 + 1, 10).isoformat())
     pg = patron.pg
     try:
         _card_e(patron, f, "inchidere", "#il-prev")
+        _la_luna(patron, "#il-prev", AZI.year, AZI.month)   # [817] ecranul se deschide pe luna de lucru; proba cere luna în curs
         pg.wait_for_selector(".fereastra:last-of-type #il-controale", timeout=60000)
         pg.wait_for_function("() => document.querySelector('.fereastra:last-of-type #il-controale').innerText.includes('nu s-a încheiat')",
                              timeout=60000)
@@ -397,6 +400,7 @@ def test_def_333_amortizarea_lunii_in_curs_nu_e_ceruta_si_nu_e_oferita(patron, f
         patron.captura("inchidere")
         assert "amortizarea lunii nu e înregistrată" not in zona and "nu s-a încheiat" in zona, zona
         _card_e(patron, f, "jurnal", "#j-amort")
+        _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] jurnalul se deschide pe luna de lucru; proba cere luna în curs
         patron.captura("jurnal")
         assert pg.is_disabled("#j-amort") and "după ce luna se încheie" in pg.inner_text("#j-amort-motiv")
     finally:
@@ -597,7 +601,8 @@ def test_def_c51_previzualizarea_programata_nu_citeste_casa_cat_se_reincarca(pat
     inexistent — „Cannot read properties of null (reading 'value')”, prins intermitent de plasă în `e2e_bloc_a::test_def_8` (stiva:
     `opPropusa` <- cronometrul). Pașii, cu ceasul paginii oprit (cronometrele nu pornesc singure): dispoziția de încasare completată ->
     „Adaugă”, cu registrul lunii ținut pe loc (Casa rămâne la „Se încarcă...”) -> ceasul merge mai departe și cronometrul pornește ->
-    registrul se întoarce: dispoziția apare, nicio eroare JavaScript."""
+    registrul se întoarce: dispoziția apare, nicio eroare JavaScript.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781)"""
     pregateste_firma(patron, firma_e2e)
     pg = patron.pg
 
@@ -617,6 +622,9 @@ def test_def_c51_previzualizarea_programata_nu_citeste_casa_cat_se_reincarca(pat
     pg.fill("#c-suma", "517.00")
     pg.fill("#c-part", "Client C51 E2E SRL")
     pg.fill("#c-doc", "DI E2E C51")
+    pg.clock.run_for(400)   # [729.1] cronometrul previzualizării pornește o dată: apare lista pozițiilor, cu „Avans, fără factură”
+    pg.wait_for_selector("#c-avans", timeout=20000)
+    pg.check("#c-avans")   # [729.1] „Adaugă” cere poziția sau avansul; bifarea reprogramează previzualizarea (cronometrul rămâne în așteptare până la „Adaugă”)
     tinute = []
     e_registrul = lambda url: "/casa/registru" in url   # noqa: E731 — aceeași potrivire la route și la unroute
     pg.route(e_registrul, lambda route: tinute.append(route))

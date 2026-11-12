@@ -28,6 +28,7 @@ import time
 import pytest
 
 from conftest import cui_cu_control, firma_noua, linie_nota, sql, zile_de_acum
+from e2e_bloc_b import _mergi_la_luna
 from e2e_bloc_a import _api, _card, _ok, pregateste_firma
 
 AZI = _dt.date.today()
@@ -81,7 +82,7 @@ def _text_din_card(pg, card, sel):
     pg.wait_for_selector(".fereastra:last-of-type " + sel, timeout=20000)
     text = pg.inner_text(".fereastra:last-of-type " + sel)
     pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")
-    pg.wait_for_selector("#bk-fisier", timeout=20000)
+    pg.wait_for_selector("#bk-fisier", state="attached", timeout=20000)   # [17.5-D, 2c] #bk-fisier rămâne atașat, dar ascuns: butonul vizibil e „Importă extras”
     return text
 
 
@@ -128,7 +129,8 @@ def test_def_607_624_comisionul_bancii_si_liniile_puse_deoparte(patron, firma):
     Pașii: Bancă -> extrasul cu un comision (−12,50) și o plată de chirie (−300,00) -> rândul comisionului: „Contează 627=5121” activ,
     „Alege facturile” inactiv, cu motivul „operațiune a băncii” la trecerea cu mouse-ul -> explicația „Operațiune a băncii (1)” o dată,
     deasupra tabelului -> clic pe rândul chiriei: detaliul (descrierea, „Ignoră”) -> „Ignoră”: linia trece în „Linii puse deoparte (1)”.
-    MUTAȚIA: motivul 607 scos din butoanele liniei -> „Alege facturile” activ pe comision -> ROȘU."""
+    MUTAȚIA: motivul 607 scos din butoanele liniei -> „Alege facturile” activ pe comision -> ROȘU.
+    [17.5-T] actualizat la 17.5-D punctul 2c (DECIZII.md:24618)"""
     f = firma
     patron.firma(f["nume"])
     _card(patron, "banca", "#bk-fisier")
@@ -199,11 +201,13 @@ def test_def_602_563_nota_noua_cu_data_de_azi_si_ramai_pe_ea_dupa_salvare(patron
     (luna curentă) -> „+ Notă nouă”: fereastra notei, „Data notei” = azi -> descrierea, documentul, 612 = 401 · 50 lei, partenerul ->
     „Salvează”: fereastra se închide; registrul arată confirmarea „Ai salvat nota din <azi> („…”)” sus și rândul notei evidențiat; nicăieri
     „nederivat”.
-    MUTAȚIA: data notei noi înapoi pe 1 ale lunii -> ROȘU."""
+    MUTAȚIA: data notei noi înapoi pe 1 ale lunii -> ROȘU.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     f = firma
     patron.firma(f["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
     pg = patron.pg
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] jurnalul se deschide pe luna de lucru; nota nouă a zilei se scrie pe luna curentă
     desc = "E2E 602 consumabile %d" % _tag()
     pg.click("#j-nota-noua")
     pg.wait_for_selector(_F + "#je-data", timeout=20000)
@@ -230,7 +234,8 @@ def test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul(patron, firm
     """610: „La «Validează» pe o notă fără document, refuzul cu motiv apare de două ori”. Pașii: o notă fără document (date de pornire:
     ruta „Notă nouă”, fără referință) -> Registru jurnal: „Validează” e inactiv, cu pasul notei la trecerea cu mouse-ul -> clic pe el:
     niciun refuz pe ecran (nici unul, nici două) și nota rămâne ciornă; regula stă o dată, deasupra tabelului.
-    MUTAȚIA: „Validează” activ pe nota fără document -> refuzul serverului apare -> ROȘU."""
+    MUTAȚIA: „Validează” activ pe nota fără document -> refuzul serverului apare -> ROȘU.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     f = firma
     desc = "E2E 610 fără document %d" % _tag()
     nid = _ok(_api(patron, "POST", "/tenants/%d/jurnal" % f["tenant_id"], {"descriere": desc, "data": AZI.isoformat(), "document_ref": "",
@@ -238,6 +243,7 @@ def test_def_610_valideaza_pe_nota_fara_document_inactiv_cu_motivul(patron, firm
     patron.firma(f["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
     pg = patron.pg
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] nota e datată azi; jurnalul se deschide pe luna de lucru
     b = _butoane(pg, "[data-val='%d']" % nid)[0]
     assert b[1] and b[2].startswith("Notă fără document justificativ. Scrie referința"), b
     pg.click("[data-val='%d']" % nid, force=True)
@@ -268,13 +274,16 @@ def test_def_605_raport_z_numele_documentului_si_confirmarea_sub_buton(patron, f
     """605: „Textul «raportul Z Raport Z nr»; [...] mesajul de confirmare sus, departe de buton (clasa 45).” Pașii: un raport Z nou ->
     „Generează notă”: confirmarea stă SUB buton (`#z-rezultat`); lista Z-urilor lunii numește rândul „Raport Z nr <nr> · casa 8000000605”, nu
     cheia „Z-8000000605-<nr>”, și nicăieri „raportul Z Raport Z”.
-    MUTAȚIA: numele rândului înapoi pe cheia notei (`numeZ`) -> ROȘU."""
+    MUTAȚIA: numele rândului înapoi pe cheia notei (`numeZ`) -> ROȘU.
+    [17.5-T] actualizat la 17.5-D / 17.5-H2 (static/js/cadru.js:6)"""
     f = firma
     nr = _z_generat(patron, f, "8000000605")
     pg = patron.pg
     patron.captura("nota_generata")
-    assert pg.evaluate("() => !!(document.querySelector('#z-salveaza').compareDocumentPosition(document.querySelector('#z-rezultat'))"
-                       " & Node.DOCUMENT_POSITION_FOLLOWING)"), "confirmarea notei nu stă sub buton"
+    # [17.5-D / 17.5-H2] butonul „Generează notă” stă în bara de jos a ferestrei; confirmarea rămâne DEASUPRA barei, imediat deasupra lui (cadru.js, începutul fișierului)
+    assert pg.evaluate("() => { const b = document.querySelector('#z-salveaza'), r = document.querySelector('#z-rezultat'); "
+                       "return !!b.closest('.fereastra-jos') && !r.closest('.fereastra-jos') && "
+                       "!!(r.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING); }"), "confirmarea notei nu stă deasupra barei cu butonul"
     pg.wait_for_selector("#z-descarcare .pf-frand", timeout=20000)
     lista = _txt(pg, "#z-descarcare")
     assert "Raport Z nr %s · casa 8000000605" % nr in lista and "Z-8000000605" not in lista, lista
@@ -285,7 +294,8 @@ def test_def_618_explicatia_notei_z_are_data_romaneasca(patron, firma):
     """618: „Raport Z | Titlul notei cu data ISO («Raport Z 2026-10-20»)”. Pașii: un raport Z nou -> „Generează notă” -> Registru jurnal,
     căutarea „raportul Z nr <nr>”: explicația notei e „Vânzări din raportul Z nr <nr> din <azi>, casa 8000000618” (data românească), iar
     în baza de date nota n-are nicio dată ISO în explicație. (Datele existente: `core/migrare_explicatie_raport_z.py`, dovada `618_f1_vechi_…`.)
-    MUTAȚIA: explicația notei înapoi cu data ISO (`jurnal_api.explicatie_raport_z`) -> ROȘU."""
+    MUTAȚIA: explicația notei înapoi cu data ISO (`jurnal_api.explicatie_raport_z`) -> ROȘU.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     f = firma
     nr = _z_generat(patron, f, "8000000618")
     pg = patron.pg
@@ -295,6 +305,7 @@ def test_def_618_explicatia_notei_z_are_data_romaneasca(patron, firma):
     assert not re.search(r"\d{4}-\d{2}-\d{2}", desc), desc
     patron.firma(f["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # [817] nota Z e datată azi; jurnalul se deschide pe luna de lucru
     pg.fill("#jn-cauta", "raportul Z nr %s" % nr)
     pg.wait_for_timeout(500)
     patron.captura("explicatia_notei_z")

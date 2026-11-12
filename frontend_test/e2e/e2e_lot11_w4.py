@@ -10,7 +10,7 @@ import datetime as _dt
 
 import pytest
 
-from conftest import INALT, LAT, firma_noua
+from conftest import INALT, LAT, firma_noua, la_luna_ceruta
 from e2e_lot82 import firma_profit  # noqa: F401 — fixtura (firmă nouă pe impozit pe profit)
 
 AZI = _dt.date.today()
@@ -38,7 +38,8 @@ _CORP = "[...document.querySelectorAll('.fereastra-corp')].pop()"
 # ── 394 la 1280×720 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
 def test_def_394_nota_noua_incape_la_1280x720(ecran_mic, firma_w4):
     """394 (10.3: „394 la 1280×720 […] fără derulare”). Pașii: 8 note în luna curentă -> Registru jurnal -> „+ Notă nouă”: fereastra nu
-    derulează, „Salvează” se vede; data, descrierea și documentul stau pe un rând -> „Renunță”: notele revin."""
+    derulează, „Salvează” se vede; data, descrierea și documentul stau pe un rând -> „Renunță”: notele revin.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     from e2e_bloc_a import _card
     from e2e_bloc_e import _nota
     for i in range(8):
@@ -47,6 +48,7 @@ def test_def_394_nota_noua_incape_la_1280x720(ecran_mic, firma_w4):
     pg = ecran_mic.pg
     ecran_mic.firma(firma_w4["nume"])
     _card(ecran_mic, "jurnal", "#j-nota-noua")
+    la_luna_ceruta(ecran_mic, "#j-prev", AZI.year, AZI.month)   # [17.5-T] notele sunt din luna curentă; jurnalul se deschide pe luna de lucru
     pg.click("#j-nota-noua")
     pg.wait_for_selector("#je-salveaza", timeout=10000)
     pg.wait_for_timeout(400)
@@ -90,7 +92,8 @@ def test_def_421_totalurile_registrului_jurnal_raman_in_vedere(ecran_mic, firma_
     derulare (înainte: la capătul celor 30 de note, sub marginea ferestrei) și după derularea la mijlocul listei.
     Cele 30 de note sunt plăți din casă (6022 = 5311, 1 + 2 + … + 30 = 465 lei): întâi numerarul din care se plătesc, ridicarea de la bancă
     (5311 = 581, 500 lei, validată) — casa nu poate ajunge sub zero (deficiența 406, `casa_sold.refuz_iesire` la validare; lotul 11, 455:
-    aceeași cifră ca registrul de casă). Fără ea, prima notă de 1,00 lei se refuză la validare: „nu încape în casă”."""
+    aceeași cifră ca registrul de casă). Fără ea, prima notă de 1,00 lei se refuză la validare: „nu încape în casă”.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1-11; DECIZII.md:24601)"""
     from e2e_bloc_a import _card
     from e2e_bloc_e import _nota
     _nota(firma_w4, AZI.replace(day=1).isoformat(), [{"debit": "5311", "credit": "581", "suma": 500}], "Ridicare numerar E2E W4",
@@ -101,6 +104,7 @@ def test_def_421_totalurile_registrului_jurnal_raman_in_vedere(ecran_mic, firma_
     pg = ecran_mic.pg
     ecran_mic.firma(firma_w4["nume"])
     _card(ecran_mic, "jurnal", "#j-nota-noua")
+    la_luna_ceruta(ecran_mic, "#j-prev", AZI.year, AZI.month)   # [17.5-T] notele sunt din luna curentă; jurnalul se deschide pe luna de lucru
     pg.wait_for_function("() => document.body.innerText.includes('Consum E2E W4 total 29')", timeout=20000)
     # [lotul 14, 687] corpul ferestrei nu mai derulează: lista notelor derulează în zona ei (`.zona-derulare`, pusă de navigator), iar rezumatul
     # și totalurile rămân în corp; se derulează zona, se măsoară totalurile față de corp

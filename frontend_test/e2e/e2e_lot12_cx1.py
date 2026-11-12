@@ -44,7 +44,7 @@ import pytest
 
 from conftest import BAZA, _ecran, ai_pregateste, alege_perioada, alege_tipul, firma_noua, sql
 from e2e_bloc_a import AZI, CLIENT, _api, _card, _ok, _profil as _profil_bloc_a, emite_api, pregateste_firma
-from e2e_bloc_b import _deschide_rand, _nota_jn
+from e2e_bloc_b import _deschide_rand, _mergi_la_luna, _nota_jn
 
 ecran_cont = contextlib.contextmanager(_ecran)
 PROBA_XML = "/home/costin/ghid_incoming/lot12_fisiere_proba/F1_efactura_DANTE_DNT-RT-1020.xml"
@@ -440,7 +440,8 @@ def test_def_c135_nota_de_casa_a_facturii_arata_seria_separat(patron, firma_e2e)
     """C135. Pașii: factura emisă (363,00 lei) -> Casă -> „+ Dispoziție nouă”: încasare de la client, 363,00, DANTE, factura bifată ->
     „Adaugă”. Nota ei poartă descrierea scrisă cum o scria Casa înainte de 443 („… factura E2EA<n> din … — DANTE …”, numărul lipit: date
     de pornire) -> Registru jurnal: rândul notei spune „factura E2EA nr. <n> din …” (aceeași formă ca la scriere, `pdf_util.serie_nr`).
-    MUTAȚIA: `jurnal_api.SCRISE_DE_APLICATIE` fără notele de casă -> rândul rămâne cu numărul lipit -> ROȘU."""
+    MUTAȚIA: `jurnal_api.SCRISE_DE_APLICATIE` fără notele de casă -> rândul rămâne cu numărul lipit -> ROȘU.
+    [17.5-T] actualizat la 817 (static/js/luna_lucru.js:1)"""
     from core import casa_api, jurnal_api
     from core.pdf_util import data_ro
     pregateste_firma(patron, firma_e2e)
@@ -473,6 +474,7 @@ def test_def_c135_nota_de_casa_a_facturii_arata_seria_separat(patron, firma_e2e)
     sql('UPDATE "%s".inregistrari SET descriere = %%s WHERE id = %%s' % s, (vechi, nid))
     patron.firma(firma_e2e["nume"])
     _card(patron, "jurnal", "#j-nota-noua")
+    _mergi_la_luna(patron, AZI.year, AZI.month)   # nota e datată azi; jurnalul se deschide pe luna de lucru (817)
     # [lotul 12, 617] rândul notei în tabelul de note: descrierea pe rând (celula „Explicație”), liniile și documentul în detaliu —
     # deschis, ca textul citit să cuprindă tot ce cuprindea rândul vechi (antetul și liniile notei)
     rand = _deschide_rand(patron, _nota_jn(patron, nid))
@@ -488,7 +490,8 @@ def test_def_c144_banca_si_casa_nu_ofera_proforma(patron, firma_e2e):
     """C144. Pașii: către DANTE, o factură (2 × 100 + TVA = 242,00) și o proformă (121,00) -> Bancă: încasarea de 121,00 lei -> „Alege
     facturile”: e oferită factura, nu și proforma -> Casă -> „+ Dispoziție nouă”: încasare de la client, DANTE: „Factura încasată” oferă
     factura, nu și proforma (proforma nu se încasează — se încasează factura).
-    MUTAȚIA: `reconciliere_api.facturi_deschise` fără filtrul documentelor cu încasare -> proforma e oferită -> ROȘU."""
+    MUTAȚIA: `reconciliere_api.facturi_deschise` fără filtrul documentelor cu încasare -> proforma e oferită -> ROȘU.
+    [17.5-T] actualizat la 17.5-D / 17.5-H2 (static/js/cadru.js:6)"""
     pregateste_firma(patron, firma_e2e)
     t = _tag()
     fact = _emite(patron, firma_e2e, 100, cantitate=2, descriere="Servicii E2E C144 factura")["factura_id"]
@@ -499,7 +502,7 @@ def test_def_c144_banca_si_casa_nu_ofera_proforma(patron, firma_e2e):
     _alege_facturile(pg, "Incasare E2E C144 %d" % t)
     banca = _fid_oferite(pg, ".fereastra:last-of-type #bk-pk-tabel", "data-fid")
     patron.captura("banca_fara_proforma")
-    pg.click(".fereastra:last-of-type #bk-pk-nu")
+    pg.click(".fereastra:last-of-type .nav-sageata.nav-inapoi")   # [17.5-D] „Închide” nu mai e în fereastră: se iese cu „←”
     assert fact in banca and prof not in banca, (fact, prof, banca)
     patron.firma(firma_e2e["nume"])
     _card(patron, "casa", "#c-toggle")
@@ -587,6 +590,8 @@ def _avans_in_casa(patron, firma, zi, suma):
     pg.fill("#c-suma", str(suma))
     pg.fill("#c-cui", DANTE)
     pg.dispatch_event("#c-campuri", "change")
+    pg.wait_for_selector("#c-avans", timeout=20000)
+    pg.check("#c-avans")   # [729.1] „Adaugă” cere poziția din listă sau „Avans, fără factură”
     pg.wait_for_timeout(800)
     pg.click("#c-adauga")
     pg.wait_for_function("() => [...document.querySelectorAll('.fereastra')].pop().innerText.includes('a fost emisă')", timeout=30000)
@@ -612,7 +617,8 @@ def test_def_c152_d394_factura_din_bon_fara_z_numeste_data_zz_ll_aaaa(patron, fi
 def test_def_c152_d394_chitanta_fara_cota_numeste_data_zz_ll_aaaa(patron, firma_d394):
     """C152 (Î2 neclasificat). Pașii: firma exceptată de la casa de marcat -> Casă: avansul de 152,00 lei de la DANTE (chitanța emisă
     automat, fără cotă) pe 10.06.2026 -> Declarații -> D394, 06/2026 -> Continuă: refuzul numește chitanța „<număr> din 10.06.2026”.
-    MUTAȚIA: `d394.genereaza` scrie data chitanței cum e în bază -> „din 2026-06-10” -> ROȘU."""
+    MUTAȚIA: `d394.genereaza` scrie data chitanței cum e în bază -> „din 2026-06-10” -> ROȘU.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781)"""
     from core.pdf_util import data_ro
     _profil_d394(patron, firma_d394, exceptata=True)
     _cid, numar, data = _avans_in_casa(patron, firma_d394, _dt.date(2026, 6, 10), Decimal("152.00"))
@@ -628,7 +634,8 @@ def test_def_c152_d394_incasarea_fara_chitanta_numeste_felul_in_cuvinte(patron, 
     anulată (starea încasării fără chitanță — date de pornire) -> Declarații -> D394, 07/2026 -> Continuă: avertismentul spune „Încasare din
     registrul de casă fără chitanță și fără factură: 10.07.2026, 153.00 lei …” și felul operațiunii în cuvinte („încasare de la client”),
     nu codul intern („incasare_client”).
-    MUTAȚIA: `d394.calcul_d394` scrie categoria cum e în bază -> „(incasare_client)” -> ROȘU."""
+    MUTAȚIA: `d394.calcul_d394` scrie categoria cum e în bază -> „(incasare_client)” -> ROȘU.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781)"""
     from core import casa_api
     from core.pdf_util import data_ro
     _profil_d394(patron, firma_d394, exceptata=True)

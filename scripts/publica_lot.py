@@ -191,13 +191,21 @@ def proba_refuzuri(rad, lot, main="main"):
     return ["rândul pasului a) (%s) pe baza %s: %s" % (pas, baza[:12], "; ".join("verdict „%s”" % r["verdict"] if r["verdict"] != "trece" else "captura %s lipsește" % r["captura"] for r in pe_baza))]
 
 
+def proba_contract(rad, lot, main="main"):
+    """Rulează contractul și scrie faza „proba_contract” (verde sau rosu) în jurnal; -> refuzurile ([] = verde). O cheamă `--proba` și poarta, la începutul oricărei rulări [17.5-T, T.8]."""
+    ref = proba_refuzuri(rad, lot, main)
+    fara = proba_fara_oracol(rad, lot)
+    g = lambda *a: subprocess.run(["git", *a], cwd=rad, capture_output=True, text=True).stdout.strip()   # noqa: E731
+    id_ = JL.inceput(lot, "proba_contract", "baza=%s" % g("merge-base", "HEAD", main)[:12], pid=os.getpid())
+    JL.sfarsit(lot, "proba_contract", id_, "rosu" if ref else "verde", "; ".join(ref) or ("unelte, fără oracol" if fara else ""))
+    return ref
+
+
 def main_proba(lot=None):
     """`--proba [lot]`: rulează contractul la început și scrie faza „proba_contract” (verde sau rosu). Ieșire 0 = verde."""
     lot = lot or JL.lot_curent()
-    ref = proba_refuzuri(RAD, lot)
+    ref = proba_contract(RAD, lot)
     fara = proba_fara_oracol(RAD, lot)
-    id_ = JL.inceput(lot, "proba_contract", "baza=%s" % git("merge-base", "HEAD", "main")[:12], pid=os.getpid())
-    JL.sfarsit(lot, "proba_contract", id_, "rosu" if ref else "verde", "; ".join(ref) or ("unelte, fără oracol" if fara else ""))
     for m in ref:
         print("[publica_lot --proba] REFUZ: " + m)
     if not ref:
@@ -454,31 +462,49 @@ def verifica(lot, sha, comun, sirul_zip):
             stop.append("lista fișierelor din ZIP diferă de diff-ul față de main")
     # praguri numerice: `max <faza> <secunde>`; în lotul de unelte nu sunt
     infra = {}
-    depasiri, intrerupte = depasiri_praguri(JL.durate(lot), open(praguri, encoding="utf-8").read().splitlines(), infra)
+    g2 = {}
+    depasiri, intrerupte = depasiri_praguri(JL.durate(lot), open(praguri, encoding="utf-8").read().splitlines(), infra, g2, JL.marcaje_g2(lot))
     if infra:
         print("[publica_lot] rulări „infra” pe fază (nu se numără la praguri): %s" % ", ".join("%s=%d" % kv for kv in sorted(infra.items())))
+    if g2:
+        print("[publica_lot] prime măsurări marcate „infra_g2” pe fază (re-măsurate de poartă, nu se numără la praguri): %s" % ", ".join("%s=%d" % kv for kv in sorted(g2.items())))
     stop += depasiri
     if os.path.exists(raport) and "Rulări „intrerupt” pe fază" not in open(raport, encoding="utf-8").read():
         stop.append("raportul nu dă numărul rulărilor „intrerupt” pe fază (%s)" % (", ".join("%s=%d" % kv for kv in sorted(intrerupte.items())) or "niciuna"))
     return stop
 
 
-def depasiri_praguri(durate, linii_praguri, infra=None):
+def depasiri_praguri(durate, linii_praguri, infra=None, g2=None, marcaje=None):
     """-> (STOP-uri, {faza: număr de rulări „intrerupt”}). Comparația `max <faza> <secunde>` ignoră rulările cu rezultatul „intrerupt” (x[4]) [16.7]: o rulare
     întreruptă nu e o rulare terminată peste prag; numărul lor pe fază intră în raport. [17.5-U] Rulările „infra” (treaptă fără nicio probă rulată) se ignoră la fel și se numără
-    separat în dicționarul `infra` dacă e dat (ieșire a scriptului, nu cerință a raportului)."""
+    separat în dicționarul `infra` dacă e dat (ieșire a scriptului, nu cerință a raportului).
+    [17.5-T, T.5] Prima măsurare marcată de poartă „infra_g2” (depășire cu încărcare străină susținută, scripts/infra_g2.py) se ignoră la fel și se numără în `g2`; o fază cu o măsurare marcată și
+    fără nicio măsurătoare nemarcată după ea dă STOP „faza <fază>: marcată infra fără re-măsurare”; la depășire după re-măsurare mesajul „pragul … depășit” numește și prima măsurare
+    (`marcaje` = {id: (motiv, durata primei măsurări)} din scripts/jurnal_lot.py::marcaje_g2). Textul și codul de ieșire ale depășirii simple rămân cele de azi."""
     stop, intrerupte = [], {}
+    marcaje = marcaje or {}
     for x in durate:
         if x[4] == "intrerupt":
             intrerupte[x[0]] = intrerupte.get(x[0], 0) + 1
         elif x[4] == "infra" and infra is not None:
             infra[x[0]] = infra.get(x[0], 0) + 1
+        elif x[4] == "infra_g2" and g2 is not None:
+            g2[x[0]] = g2.get(x[0], 0) + 1
+    for faza in dict.fromkeys(x[0] for x in durate):
+        ale = [x for x in durate if x[0] == faza]
+        ultim_marcat = max((i for i, x in enumerate(ale) if x[4] == "infra_g2"), default=None)
+        if ultim_marcat is not None and not any(x[5] != "" and x[4] not in ("intrerupt", "infra", "infra_g2") for x in ale[ultim_marcat + 1:]):
+            stop.append("faza %s: marcată infra fără re-măsurare" % faza)
     for ln in linii_praguri:
         m = re.match(r"max\s+(\S+)\s+(\d+)", ln)
         if m:
-            d = [x[5] for x in durate if x[0] == m.group(1) and x[5] != "" and x[4] not in ("intrerupt", "infra")]
+            d = [x[5] for x in durate if x[0] == m.group(1) and x[5] != "" and x[4] not in ("intrerupt", "infra", "infra_g2")]
             if d and max(d) > int(m.group(2)):
-                stop.append("pragul „%s” depășit: %ss > %ss" % (m.group(1), max(d), m.group(2)))
+                prime = [marcaje[x[1]] for x in durate if x[0] == m.group(1) and x[4] == "infra_g2" and x[1] in marcaje]
+                mesaj = "pragul „%s” depășit: %ss > %ss" % (m.group(1), max(d), m.group(2))
+                if prime:
+                    mesaj += " (re-măsurare după «infra_g2»; prima măsurare: %s)" % "; ".join("%ss, %s" % (p[1], p[0]) for p in prime)
+                stop.append(mesaj)
     return stop, intrerupte
 
 

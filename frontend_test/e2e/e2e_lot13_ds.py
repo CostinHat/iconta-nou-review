@@ -53,17 +53,17 @@ def test_def_655_suma_cu_punct_de_mii_in_casa(patron, firma_e2e):
 def test_def_655_textul_care_nu_e_numar_nu_se_salveaza(patron, firma_e2e):
     """655. Pașii: Casă -> „+ Dispoziție nouă” -> Ridicare de la bancă -> Suma „1.5o0” (o literă în loc de cifră) -> „Adaugă”: lângă câmp
     „Scrie numărul ca în contabilitate: 1.234,56 …”, caseta „NU s-a salvat.” lângă buton, nicio operațiune scrisă. Înainte: textul
-    greșit devenea o sumă ghicită sau goală."""
+    greșit devenea o sumă ghicită sau goală.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781, „[16.2-A, 729.1]”): „Adaugă” e inactiv cât suma nu e un număr > 0, deci refuzul din clic nu mai poate fi provocat; se probează butonul inactiv cu motivul și că nu se scrie nimic."""
     pg = _casa_dispozitie_noua(patron, firma_e2e)
     pg.select_option(_F + "#c-cat", "ridicare_banca")
     pg.fill(_F + "#c-suma", "1.5o0")
     pg.fill(_F + "#c-doc", "RB 655 rau")
-    pg.click(_F + "#c-adauga")
-    pg.wait_for_selector(_F + '.msg-eroare[data-camp="c-suma"]', timeout=10000)
+    # [17.5-T] 729.1: un text care nu e număr nu face suma „> 0”, deci „Adaugă” rămâne inactiv cu „Completează: suma”; clicul nu mai poate fi dat, nu apare nici refuzul de lângă câmp, nici caseta
     patron.captura("casa_refuz_format")
-    assert pg.inner_text(_F + '.msg-eroare[data-camp="c-suma"]').strip() == MESAJ_NUMAR_RO, pg.inner_text(_F + '.msg-eroare[data-camp="c-suma"]')
-    assert MESAJ_NUMAR_RO in patron.fereastra()
-    assert pg.locator(_F + ".refuz-salvare").count() == 1
+    assert pg.get_attribute(_F + "#c-adauga", "aria-disabled") == "true", "Adaugă e activ cu o sumă care nu e număr"
+    assert pg.get_attribute(_F + "#c-adauga", "data-motiv-inactiv") == "Completează: suma", pg.get_attribute(_F + "#c-adauga", "data-motiv-inactiv")
+    assert pg.locator(_F + ".refuz-salvare").count() == 0
     assert sql('SELECT count(*) FROM "%s".casa_operatiuni WHERE document = %%s' % firma_e2e["schema"], ("RB 655 rau",)) == [(0,)]
 
 
@@ -165,14 +165,16 @@ def test_def_625_654_refuzul_casei_o_data_si_pleaca_dupa_reusita(patron, firma_e
     """625. Pașii: Casă -> „+ Dispoziție nouă” -> „Adaugă” fără sumă și fără tip: „Suma trebuie să fie un număr mai mare ca 0.” stă de
     DOUĂ ori pe ecran — lângă câmp și în caseta „NU s-a salvat.” —, nu de trei ori. 654. Apoi tipul „Ridicare de la bancă”, suma „250”,
     „Adaugă”: caseta „NU s-a salvat.” și refuzurile de dinainte nu mai sunt pe ecran. MUTAȚIE: `refuzuriVechi(_butonScriere)` scos din
-    api.js -> caseta veche rămâne -> ROȘU."""
+    api.js -> caseta veche rămâne -> ROȘU.
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781, „[16.2-A, 729.1]”): „Adaugă” e inactiv până se completează câmpurile obligatorii, deci refuzul din prima parte nu mai poate fi provocat din ecran;
+    ce se probează acum: butonul inactiv cu motivul lui, textul refuzului de 0 ori pe ecran, apoi după o adăugare reușită nicio casetă „NU s-a salvat.”."""
     pg = _casa_dispozitie_noua(patron, firma_e2e)
-    pg.click(_F + "#c-adauga")
-    pg.wait_for_selector(_F + ".refuz-salvare", timeout=10000)
+    # [17.5-T] 729.1: „Adaugă” e inactiv cât tipul lipsește și îl numește (suma se cere numai după alegerea tipului); un clic pe el nu face nimic, deci textul refuzului nu apare nicăieri (înainte: de două ori)
+    assert pg.get_attribute(_F + "#c-adauga", "aria-disabled") == "true" and pg.get_attribute(_F + "#c-adauga", "data-motiv-inactiv") == "Completează: tipul"
     t = "Suma trebuie să fie un număr mai mare ca 0."
     n = pg.evaluate("(t) => [...document.querySelectorAll('.fereastra')].pop().innerText.split(t).length - 1", t)
     patron.captura("casa_refuz_o_data")
-    assert n == 2, n
+    assert n == 0, n
     pg.select_option(_F + "#c-cat", "ridicare_banca")
     pg.fill(_F + "#c-suma", "250")
     pg.fill(_F + "#c-doc", "RB 654")

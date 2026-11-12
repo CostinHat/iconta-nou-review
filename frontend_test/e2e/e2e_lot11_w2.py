@@ -31,7 +31,8 @@ def _langa(pg, camp):
 def test_def_440_casa_data_tipul_si_suma_lipsa_toate_deodata(patron, firma_e2e):
     """440. Pașii: fereastra firmei -> Casă -> „+ Dispoziție nouă” -> golește data, nu alege tipul, nu scrie suma -> „Adaugă”: cele TREI
     câmpuri marcate deodată (aria-invalid), fiecare cu textul lui lângă el, iar caseta „NU s-a salvat.” le are pe toate trei, cu textul
-    lor. Înainte: data și suma, apoi abia la a doua apăsare tipul (`return` înainte de `cereAlegerile`)."""
+    lor. Înainte: data și suma, apoi abia la a doua apăsare tipul (`return` înainte de `cereAlegerile`).
+    [17.5-T] actualizat la 729.1 (static/js/ecrane/firme.js:4781, „[16.2-A, 729.1]”): „Adaugă” e inactiv până se completează câmpurile obligatorii și numește tot ce lipsește deodată; refuzul din clic nu mai poate fi provocat din ecran."""
     pregateste_firma(patron, firma_e2e)
     pg = patron.pg
     patron.firma(firma_e2e["nume"])
@@ -40,17 +41,16 @@ def test_def_440_casa_data_tipul_si_suma_lipsa_toate_deodata(patron, firma_e2e):
         pg.click("#c-toggle")
     pg.fill("#c-data", "")
     pg.fill("#c-suma", "")
-    pg.click("#c-adauga")
-    pg.wait_for_selector(".refuz-salvare", timeout=10000)
+    # [17.5-T] 729.1: „Adaugă” e inactiv și numește deodată tot ce lipsește (data și tipul; suma se cere numai după alegerea tipului); clicul nu mai poate fi dat, deci nici câmpurile marcate, nici caseta
     patron.captura()
-    assert _invalide(pg, ["c-data", "c-cat", "c-suma"]) == {"c-data": "true", "c-cat": "true", "c-suma": "true"}, _invalide(pg, ["c-data", "c-cat", "c-suma"])
-    assert _langa(pg, "c-data") == "Completează data dispoziției."
-    assert _langa(pg, "c-suma") == "Suma trebuie să fie un număr mai mare ca 0."
-    caseta = _caseta(pg)
-    assert len(caseta) == 3, caseta
-    assert any(t.endswith("— Completează data dispoziției.") for t in caseta), caseta
-    assert any(t.endswith("— Suma trebuie să fie un număr mai mare ca 0.") for t in caseta), caseta
-    assert any(t.endswith("— Alege o valoare — aplicația nu alege în locul tău.") for t in caseta), caseta
+    motiv = pg.get_attribute("#c-adauga", "data-motiv-inactiv")
+    assert pg.get_attribute("#c-adauga", "aria-disabled") == "true"
+    assert motiv == "Completează: data, tipul", motiv
+    assert "data" in motiv and "tipul" in motiv                       # toate lipsurile deodată, nu pe rând
+    assert _invalide(pg, ["c-data", "c-cat", "c-suma"]) == {"c-data": None, "c-cat": None, "c-suma": None}, _invalide(pg, ["c-data", "c-cat", "c-suma"])
+    assert pg.locator('.msg-eroare[data-camp]').count() == 0
+    assert _caseta(pg) == [], _caseta(pg)
+    assert pg.locator(".refuz-salvare").count() == 0
     assert "motivul e" not in patron.fereastra()   # 440: „Fără «motivul e mai sus»”
 
 
