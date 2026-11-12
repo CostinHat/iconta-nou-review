@@ -796,7 +796,12 @@ def _wt_infra(tmp_path, cod, xml=None):
     (wt / "scripts" / "bin").mkdir(parents=True, exist_ok=True)
     j.mkdir(exist_ok=True)
     (wt / "scripts" / "baza_test.sh").write_text("#!/bin/sh\nexit 0\n")
-    fals = "import os, sys\n"
+    # [17.5-T, T.6] proba de mediu a plasei: fișierul ei și testul numit există în arbore, iar e2e-ul fals iese cu 0 când e chemat pentru ea (`--doar=<fișier>::<test>`)
+    (wt / "docs" / "dovezi" / "17_5_T").mkdir(parents=True, exist_ok=True)
+    (wt / "frontend_test" / "e2e").mkdir(parents=True, exist_ok=True)
+    (wt / "docs" / "dovezi" / "17_5_T" / "proba_mediu.txt").write_text("e2e_p.py::test_p\n")
+    (wt / "frontend_test" / "e2e" / "e2e_p.py").write_text("def test_p():\n    pass\n")
+    fals = "import os, sys\nif any('::' in a for a in sys.argv):\n    sys.exit(0)\n"
     if xml:
         fals += "x = [a for a in os.environ['PYTEST_ADDOPTS'].split() if a.startswith('--junitxml=')][0].split('=', 1)[1]\nopen(x, 'w').write(%r)\n" % xml
     fals += "sys.exit(%d)\n" % cod
