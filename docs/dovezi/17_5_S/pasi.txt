@@ -1,21 +1,19 @@
-PASI 17.5-S — așteptările mecanice pe pas (comanda 17.5-S), cont administrator (dovada.71507), 1366x768, ceas înghețat (data zilei = ceas_proba.MOMENT_REF, 03.11.2026), fără a salva, a depune sau a adăuga nimic: pagina principală, «De validat», Parteneri și fișa partenerului, clopoțelul, Scadențar (F1), stat de plată (F5), «Mișcări, fișe de magazie» (F1), Control fiscal (F2), Emite factură (FISCALOS ICONTA). Prefixul a. = ce se schimbă în lot (textul nou există sau cel vechi lipsește); f. = ce nu se schimbă (f.1 primul id, aserțiunea probei contractului). Aserțiunile se judecă pe text vizibil. Operatori: text_contine (textul elementului conține valoarea, literal) și lipseste (textul elementului nu conține valoarea). Constatările S07 (619), S08 (609), S10, S11, S12 și S14 nu au aserțiuni aici: S07 și S08 sunt stări din date, S10, S11 și S12 se probează în testul arhitectului și în testele din core, S14 se măsoară în pixeli (testul arhitectului la 643×590). Cifrele sunt ale snapshotului (~/backups_test/iconta_test.dump); vezi cifre_snapshot_17_5_S.txt. Selectoarele sunt citite din cod pe main 5adcf61f (reancorat 12.11.2026 după 17.5-W), nerulate (limită declarată în decizii_17_5_S.txt).
-Format: aserțiune | pas | ecran | operator | valoare | descriere | sursa valorii
-f.1 | implicit | Pagina principală a cabinetului, tocmai deschisă la 1366×768 | text_contine | Control fiscal | pe pagina principală se vede cardul «Control fiscal» | static/js/ecrane/cabinet.js:44 (neschimbat de lot); aceeași aserțiune ca f.1 din 17.5-H…O
-f.2 | validat | Fereastra «De validat», tabelul notelor | text_contine | Explicație | tabelul din secțiunea «Note de validat» are antetul «Explicație» (coloana nu se schimbă) | static/js/ecrane/tabel_note.js:149 (antetul fix, neschimbat)
-a.1 | validat | Fereastra «De validat», tabelul notelor | text_contine | Pregătit de | tabelul are coloana «Pregătit de» (X04) | static/js/ecrane/validat.js:298 și :427; static/js/ecrane/tabel_note.js:118–179; core/coada_api.py:787 (creat_de_nume); X04 din retest_pilot_17_5_G3.tsv
-f.3 | parteneri | Fereastra «Parteneri» a firmei F1 | text_contine | Parteneri | fereastra Parteneri s-a deschis: titlul «Parteneri» și tabelul cu cei 8 parteneri (Partener, Cod fiscal, Rol, Documente, Are fișă, Acțiune) | static/js/ecrane/clienti_ecran.js:338
-a.2 | fisa | Fișa partenerului DANTE INTERNATIONAL SA | text_contine | Fișa de client și de furnizor: DANTE INTERNATIONAL SA | o singură casetă pentru client și furnizor (640.1) | static/js/ecrane/clienti_ecran.js:371–382 (ecranFisaPartener, fisaText)
-a.3 | fisa | Fișa partenerului DANTE INTERNATIONAL SA | lipseste | Fișa de furnizor: DANTE INTERNATIONAL SA | caseta separată «Fișa de furnizor: …» nu mai apare | static/js/ecrane/clienti_ecran.js:382 (fisaText)
-a.4 | clopot | Panoul clopoțelului, pagina principală | text_contine | deschide fereastra „De validat” | panoul spune câte note așteaptă validarea și trimite la fereastră (563) | static/js/navigator.js:807–818; static/js/ecrane/validat.js (noteDeValidatInCoada)
-f.4 | scadentar | Scadențarul firmei F1 | text_contine | fără scadență în sistem | rândurile fără scadență rămân în listă cu textul de azi: rândul «F1A nr. 15 · GOOGLE IRELAND LIMITED» cu «fără scadență în sistem» și rândul «Sold la 31.08.2026 · Client Test SRL» cu «fără scadență în sistem · preluată din programul vechi» | static/js/ecrane/facturi_ecran.js:791
-a.5 | scadentar | Scadențarul firmei F1, sumarul de deasupra listei | text_contine | fără scadență | a patra pastilă «N fără scadență» (738) | static/js/ecrane/facturi_ecran.js:884; core/scadentar.py (rezumat.fara_scadenta)
-f.5 | stat | Stat de plată, firma F5, luna cu excedentul de diurnă | text_contine | Ionescu | statul s-a deschis cu salariatul Ionescu | static/js/ecrane/firme.js:1591
-a.6 | stat | Stat de plată, F5 | text_contine | Diurnă peste plafon | coloană separată pentru excedentul de diurnă, afișată numai când există excedent (752) | static/js/ecrane/firme.js:1591–1592; core/stat_plata_api.py:230 (exces_diurna)
-a.7 | stat | Stat de plată, F5 | text_contine | 4.815,34 | brutul salarial al lui Ionescu fără diurnă: 5.700,34 − 885,00 = 4.815,34 (752) | comanda_15_1_E6.txt (rândul lui 752); static/js/ecrane/firme.js:1567
-a.8 | miscari | Fereastra «Mișcări, fișe de magazie…», bara de jos | lipseste | Descarcă PDF | bara ferestrei fără tabel nu are butonul «Descarcă PDF» (nu inactiv: decizia arhitectului 11.11.2026) | static/js/cadru.js:122, :213, :362
-a.12 | miscari | Fereastra «Mișcări, fișe de magazie…», bara de jos | nr_randuri | 0 | în bara ferestrei fără tabel nu există niciun element cu clasa butonului principal (nici «Descarcă PDF», nici alt buton promovat de _alege) | static/js/cadru.js:126 și scripts/verificator_design.py:73
-f.6 | control | Control fiscal, firma F2 | text_contine | Control fiscal | fereastra Control fiscal s-a deschis pe F2 | static/js/ecrane/control_verdict.js:182
-a.9 | control | Control fiscal, firma F2, semnalele | lipseste | D205 — D205 — nu se poate verifica | eticheta declarației nu mai e dublată (749) | static/js/ecrane/control_verdict.js:193; core/control_fiscal_api.py:789 și :796
-f.7 | emitere | Emite factură pe FISCALOS ICONTA | text_contine | Înainte de a emite | cardul de pregătire apare și azi | static/js/ecrane/emitere_ecran.js:556
-a.10 | emitere | Emite factură pe FISCALOS ICONTA | text_contine | La salvarea în Date firmă se cer și: regimul fiscal (micro sau profit), operațiunile intracomunitare (Da sau Nu). | cardul spune de la început tot ce lipsește (S13) | core/facturi_api.py:1230; static/js/ecrane/emitere_ecran.js:556; static/js/ecrane/date_firma.js:801–805
-a.11 | datefirma | «Date firmă» deschisă din «Deschide Date firmă» (FISCALOS ICONTA) | text_contine | Alege regimul fiscal (micro sau profit) — decide D100/D101. | câmpurile obligatorii necompletate sunt marcate de la deschidere, cu mesajele de la salvare (S13, pct.9b) | static/js/ecrane/date_firma.js:801
+f.1
+f.2
+a.1
+f.3
+a.2
+a.3
+a.4
+f.4
+a.5
+f.5
+a.6
+a.7
+a.8
+a.12
+f.6
+a.9
+f.7
+a.10
+a.11
