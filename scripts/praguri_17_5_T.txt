@@ -1,0 +1,74 @@
+unelte
+lot: 17.5-T
+fara praguri numerice pe durate in aceasta schema (lot de unelte; niciun rand `max <faza> <secunde>`: scripts/publica_lot.py compara numai randurile `max`); referintele de mai jos sunt cerinte de raport, cu cifra si cu sursa ei
+  hook ≤ 124 s (= 103 × 1,2; sursa: lotul 17.5-S, rularea 2527085-1794451158569, 28 rulari complete)
+  poarta_verificator ≤ 111 s (= 92 × 1,2; sursa: lotul 17.5-O3, rularea 888445-1794407112574, 5 rulari complete)
+  poarta_pytest ≤ 720 s (= 600 × 1,2; sursa: lotul 17.5-O3, rularea 888445-1794407205000, 5 rulari complete)
+  poarta_plasa ≤ 2409 s (= 2007 × 1,2; sursa: lotul 17.5-S, rularea 2290642-1794445703637, 5 rulari complete)
+runde_verificator_max: 0
+sursa pragurilor 17.5-T: generate de scripts/praguri_automate.py la 2026-11-12T05:58:20+02:00 din .lot_jurnal.log; loturi folosite: 17.5-O3, 17.5-W, 17.5-S (3)
+  hook: maxim 103 s (lotul 17.5-S, rularea 2527085-1794451158569) din 28 rulari complete, 0 rulari «intrerupt» ignorate, prag 124 s
+  poarta_verificator: maxim 92 s (lotul 17.5-O3, rularea 888445-1794407112574) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 111 s
+  poarta_pytest: maxim 600 s (lotul 17.5-O3, rularea 888445-1794407205000) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 720 s
+  poarta_plasa: maxim 2007 s (lotul 17.5-S, rularea 2290642-1794445703637) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 2409 s
+limite aplicate de scripts/poarta_rulare.py (:185, :215): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise (informativ; perimetrul real la un lot unelte = unelte_refuzuri, scripts/publica_lot.py:254-267; fisierele din frontend_test/ numite aici sunt permise; cele nu numite sunt refuzate)
+  frontend_test/e2e/e2e_bloc_a.py
+  frontend_test/e2e/e2e_bloc_b.py
+  frontend_test/e2e/e2e_bloc_c.py
+  frontend_test/e2e/e2e_bloc_d.py
+  frontend_test/e2e/e2e_bloc_e.py
+  frontend_test/e2e/e2e_bloc_f.py
+  frontend_test/e2e/e2e_ciorne_proprii.py
+  frontend_test/e2e/e2e_comanda_1010.py
+  frontend_test/e2e/e2e_lot10_ferestre.py
+  frontend_test/e2e/e2e_lot10_valuta.py
+  frontend_test/e2e/e2e_lot10b_declaratii.py
+  frontend_test/e2e/e2e_lot10b_salarii_jurnal.py
+  frontend_test/e2e/e2e_lot10b_stoc.py
+  frontend_test/e2e/e2e_lot11_m.py
+  frontend_test/e2e/e2e_lot11_s9.py
+  frontend_test/e2e/e2e_lot11_v.py
+  frontend_test/e2e/e2e_lot11_w2.py
+  frontend_test/e2e/e2e_lot11_w4.py
+  frontend_test/e2e/e2e_lot11_z.py
+  frontend_test/e2e/e2e_lot12_ctrl_d112.py
+  frontend_test/e2e/e2e_lot12_cx1.py
+  frontend_test/e2e/e2e_lot12_cx2.py
+  frontend_test/e2e/e2e_lot12_firme1.py
+  frontend_test/e2e/e2e_lot12_firme2.py
+  frontend_test/e2e/e2e_lot12_sal2.py
+  frontend_test/e2e/e2e_lot12_texte.py
+  frontend_test/e2e/e2e_lot13_ds.py
+  frontend_test/e2e/e2e_lot13_fact.py
+  frontend_test/e2e/e2e_lot13_firme2.py
+  frontend_test/e2e/e2e_lot13_migr.py
+  frontend_test/e2e/e2e_lot13_ops.py (numai pentru reclasificarea de la T.3)
+  frontend_test/e2e/e2e_lot13_portal_p1.py
+  frontend_test/e2e/e2e_lot13_sal.py
+  frontend_test/e2e/e2e_lot14.py
+  frontend_test/e2e/e2e_lot14_3.py
+  frontend_test/e2e/e2e_lot15_1.py (numai pentru reclasificarea de la T.3)
+  frontend_test/e2e/e2e_lot15_e2.py
+  frontend_test/e2e/e2e_lot6.py
+  frontend_test/e2e/e2e_lot72_contab.py
+  frontend_test/e2e/e2e_lot72_declaratii.py
+  frontend_test/e2e/e2e_lot81.py
+  frontend_test/e2e/e2e_lot91.py
+  frontend_test/e2e/e2e_lot92.py
+  frontend_test/e2e/conftest.py
+  core/test_unelte_17_5_T.py (nou)
+  scripts/praguri_17_5_T.txt (nou)
+  scripts/calibreaza_17_5_T.py (nou)
+  scripts/poarta_lib.py
+  scripts/jurnal_lot.py (numai _rez_run și marcajul infra_g2)
+  scripts/poarta_rulare.py
+  scripts/publica_lot.py
+  scripts/verificator_design.py
+  scripts/poarta_e2e_restante.txt
+  scripts/ (fisierele noi de la T.5, T.6 si T.8, numele alese de Code)
+  CLAUDE.md
+  DEFICIENTE.md
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_T/ (nou)
