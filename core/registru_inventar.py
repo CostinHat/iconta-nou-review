@@ -224,10 +224,9 @@ def registru(conn, schema, exercitiu, momentul="sfarsit_exercitiu"):
         "fapt", tip="registru_inventar",
         motiv="Registrul-inventar (cod 14-1-2), ținut potrivit art. 20 din Legea 82/1991",
         temei_completitudine=(
-            "toate rândurile înscrise în registru pentru exercițiul %d, inventarierea %s, în "
-            "ordinea numărului curent. Cuprinde ce s-a inventariat și s-a înscris — coloana 4 "
-            "(valoarea de inventar) vine din numărarea faptică, nu din balanță, deci un registru "
-            "gol nu înseamnă «nicio diferență», înseamnă «nicio inventariere înscrisă»"
+            "Toate rândurile înscrise în registru pentru exercițiul %d, inventarierea %s, în "
+            "ordinea numărului curent. Coloana 4 (valoarea de inventar) vine din numărarea "
+            "faptică, nu din balanță."
             % (exercitiu, ETICHETE_MOMENT.get(momentul, momentul))),
         an=exercitiu, luna=None, unde=Unde("registru", "inventar"),
         **{

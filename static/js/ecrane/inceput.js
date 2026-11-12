@@ -10,7 +10,7 @@ import { api, esc, arataMesaj } from "../api.js?v=7396e03327";
 // [320] butoanele cardurilor: fiecare deschide ecranul REAL (aceleași funcții ca meniul aplicației)
 async function deschide(cheie, nav, laSchimbare) {
   if (cheie === "migrare") {
-    const { randeazaMigrare } = await import("./migrare.js?v=57d2586d73");
+    const { randeazaMigrare } = await import("./migrare.js?v=6dccb53624");
     nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" });
   } else if (cheie === "suport_import") {
     // banda „Suport” de pe pagina principală, apoi fila „Cerere import din altă aplicație”
@@ -23,10 +23,10 @@ async function deschide(cheie, nav, laSchimbare) {
     const { panouNotificari } = await import("./setari.js?v=37902f6231");
     nav.deschide("Notificări", (c) => panouNotificari(c, { dupaSalvare: laSchimbare }));
   } else if (cheie === "asistenti") {
-    const { randeazaAsistenti } = await import("./asistenti.js?v=cb40ff883b");
+    const { randeazaAsistenti } = await import("./asistenti.js?v=55670c24d1");
     nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
   } else if (cheie === "firme") {
-    const { randeazaListaFirme } = await import("./firme.js?v=9829375543");
+    const { randeazaListaFirme } = await import("./firme.js?v=78ff3eec42");
     nav.deschide("Firmele tale alocate", (c) => randeazaListaFirme(c, nav, null), { nivel: "cabinet" });
   }
 }

@@ -54,8 +54,11 @@ def test_def_172_supervizorul_fara_d101_depus_vorbeste_limba_contabilului(patron
     randuri = _supervizor(patron, firma_e2e)
     patron.captura("supervizor_fara_d101")
     assert len(randuri) == 2, randuri
+    # [17.5-T] actualizat la AC023 (comanda_17_5_I.txt, pct.4): fiecare rând D101 își numește confruntarea
+    assert sum("nu se poate confrunta nimic cu D100 (plățile anticipate)." in r for r in randuri) == 1, randuri
+    assert sum("nu se poate confrunta nimic cu contul 691." in r for r in randuri) == 1, randuri
     for r in randuri:
-        assert "Niciun D101 depus prin aplicație — nu se poate confrunta nimic." in r, r
+        assert "Niciun D101 depus prin aplicație — nu se poate confrunta nimic cu " in r, r
         assert "deci nu e semnalată cu roșu" in r and "->" not in r and "GRI" not in r, r
         assert not _defecte(r), (_defecte(r), r)
 

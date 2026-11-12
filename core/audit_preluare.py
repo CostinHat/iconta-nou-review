@@ -848,7 +848,8 @@ def stare_pasi(conn, schema, tenant_id, straturi):
                       else _pas("gata", desc + ".", desc, s))
         elif s == "solduri":
             if rows:
-                ex = "balanța la %s: %s" % (data_ro(data_bal) if data_bal else "—", _cate(len(rows), "cont", "conturi"))
+                ex = ("balanța la %s: %s" % (data_ro(data_bal), _cate(len(rows), "cont", "conturi")) if data_bal else
+                      "balanța de deschidere (fără data de referință): %s" % _cate(len(rows), "cont", "conturi"))
                 out[s] = _pas("gata", ex + ".", ex, s)
             else:
                 out[s] = _pas("obligatoriu", "Balanța de deschidere nu e încărcată.", None, s)

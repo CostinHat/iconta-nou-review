@@ -33,7 +33,7 @@ import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu }
 import { randA as randConstatare } from "./control_verdict.js?v=48c9d30c65";
 import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=e115d72f0f";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=9829375543";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=78ff3eec42";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -849,7 +849,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav, corp));
   // [298 + 313] notele nevalidate pe care se sprijină declarația, fiecare cu butonul ei spre Registrul jurnal
   const zSurse = div.querySelector(".val-surse-note");
-  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=6c37b5b2e7").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
+  if (zSurse && (c.surse_note || []).length) import("./coada_trimite.js?v=b26ef32cac").then((m) => m.legaturiNote(zSurse, c.tenant_id, c.surse_note));
   return div;
 }
 
@@ -859,7 +859,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   const perDecl = fmtPerioadaDecl(c);
   if (act === "din_declaratii") {
     // [324] declarația veche n-are cererea păstrată: Declarații, cu firma, tipul și perioada ei; „Înlocuiește” scoate elementul vechi
-    const { randeazaDeclaratii } = await import("./declaratii.js?v=bb694a36e2");
+    const { randeazaDeclaratii } = await import("./declaratii.js?v=4d1b97efb6");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: c.tenant_id, tip: c.tip, an: c.p_an, luna: c.p_luna, trim: c.p_trim }),
                  { lat: "tabel" });
     return;

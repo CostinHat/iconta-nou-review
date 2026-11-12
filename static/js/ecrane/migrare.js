@@ -1054,7 +1054,7 @@ function _butonAlegeFisier(corp) {
 
 function importSolduriFirma(corp, nav, firma, app = null) {   // [270] `app` = aplicația aleasă în Migrare cabinet
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi.</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din programul vechi.</p>
     <details class="dec-xml" id="mig-cum-balanta"><summary>Ce se citește din balanță</summary><p class="ecran-nota">Din ea se iau soldurile finale și, dacă le are, soldurile de la 1 ianuarie și rulajele anului (sold inițial și sume precedente, cu toate conturile care au rulaj); fără ele, ecranul spune ce lipsește. Debitul total trebuie să fie egal cu creditul total. Analiticele din balanță (de exemplu 4111.01, 401.00012) se adaugă în planul de conturi, sub sinteticul lor; un cont care nu există în planul de conturi al normei firmei e respins, cu motivul. Un sold pe partea opusă funcțiunii contului (de exemplu 5121 creditor) se semnalează pe rând.</p></details>
     ${_exportHTML(app, "solduri") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
     <label class="mig-drop" id="mig-drop">
@@ -1314,7 +1314,7 @@ async function wizardParteneri(corp, nav) {
 
 function importParteneriFirma(corp, nav, firma, app = null) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor) sau situația clienților / furnizorilor exportată din programul vechi (denumire · cod fiscal · neachitat final), pe parteneri sau pe facturi (nr. factură · data · scadență · sumă neachitată · TVA la încasare, opțional).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor) sau situația clienților / furnizorilor exportată din programul vechi (denumire · cod fiscal · neachitat final), pe parteneri sau pe facturi (nr. factură · data · scadență · sumă neachitată · TVA la încasare, opțional).</p>
     <label class="camp" style="max-width:420px;margin:10px 0"><span class="camp-eticheta">Contul partenerilor din fișier</span>
       <select id="mig-cont-part" class="camp-input" data-butoane="">${ALEGE}<option value="4111">4111 — Clienți</option><option value="401">401 — Furnizori</option></select>
       <span class="camp-ajutor">Numai dacă fișierul n-are coloana „Cont” — situația clienților (4111) sau a furnizorilor (401). Cu coloana „Cont”, contul se ia din fișier.</span></label>
@@ -1673,7 +1673,7 @@ async function wizardSalariati(corp, nav) {
 
 function importSalariatiFirma(corp, nav, firma, app = null) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă exportul de salariați (nume · CNP · salariu · date contract).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · Încarcă exportul de salariați (nume · CNP · salariu · date contract).</p>
     ${_exportHTML(app, "salariati") || `<button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>`}
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" data-actiune="POST /tenants/{tenant_id}/salariati-import/incarca" accept=".csv,.txt,.tsv,.xlsx,.xls" hidden>
@@ -2464,7 +2464,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=9829375543"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=78ff3eec42"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat

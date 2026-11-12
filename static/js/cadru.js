@@ -15,7 +15,7 @@
 // Starea o dă piesa: câmpurile obligatorii ale ecranului sunt etichetele cu „*”; cât un câmp vizibil de acest fel e gol, butonul principal e
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
-import { alegereButoane, alegereComutator, alegereText, esteAlege, inactiv, activ, MAX_BUTOANE } from "./api.js?v=7396e03327";
+import { alegereButoane, alegereComutator, alegereText, esteAlege, inactiv, activ, MAX_BUTOANE, cate } from "./api.js?v=7396e03327";
 import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_piese.js?v=e115d72f0f";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
@@ -378,7 +378,7 @@ export function baraDeJos(fer, corp, { renunta }) {
     let text = "";
     if (alEcranului) text = "";
     else if (motivDat) text = motivDat;
-    else if (lipsa.length) text = "Completează: " + lipsa.join(", ");
+    else if (lipsa.length) text = "Completează: " + (lipsa.length > 4 ? `${lipsa.slice(0, 3).join(", ")} și încă ${cate(lipsa.length - 3, "câmp", "câmpuri")}` : lipsa.join(", "));
     else if (principal && principal.disabled) {
       // motivul pus de ecran pe buton (`title`), dacă nu e deja scris în fereastră (același mesaj o singură dată pe ecran); altfel cel general
       const dinEcran = principal.title || principal.getAttribute("aria-description") || "";

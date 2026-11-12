@@ -3,7 +3,7 @@
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
 import { api, esc, cate } from "../api.js?v=7396e03327";
-import { randeazaAsistenti } from "./asistenti.js?v=cb40ff883b";
+import { randeazaAsistenti } from "./asistenti.js?v=55670c24d1";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 function celulaCifra(valoare, eticheta, accent) {
@@ -32,7 +32,7 @@ export async function randeazaCapacitate(corp, nav) {
   const timp = d.timp || { pe_tip: [], total_mostre: 0 };
 
   // [17.5-F, 822] „Adaugă asistenți” e acțiunea ferestrei (bara de jos), la orice număr de asistenți
-  const butonAsistenti = `<button type="button" class="buton-secundar" id="cap-adauga-asistenti" data-actiune="POST /asistenti">Adaugă asistenți</button>`;
+  const butonAsistenti = `<button type="button" class="buton-secundar" id="cap-adauga-asistenti" data-actiune="POST /asistenti">Deschide Asistenți</button>`;
   const deschideAsistenti = () => nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
 
   // --- PRAG ECHILIBRU: sub 5 actori care poarta munca (patron inclus),

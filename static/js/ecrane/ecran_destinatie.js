@@ -11,10 +11,10 @@
 // astfel de refuz trece prin `butonSpreEcran`).
 import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";
 import { panouConectareSPV } from "./setari.js?v=37902f6231";
-import { randeazaProduse } from "./produse_ecran.js?v=2b4b10dbf6";
+import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";
 import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=90325032fc";   // [lotul 11, decizia 10.3] fișa partenerului
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
-import { meniuMigrarePerFirma } from "./migrare.js?v=57d2586d73";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
+import { meniuMigrarePerFirma } from "./migrare.js?v=6dccb53624";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 
 export const ECRANE = {
@@ -53,7 +53,7 @@ export const ECRANE = {
   // [15.1-E3, 728.1 / 735] „Contabilizează statul de plată” (constatarea de control fiscal) deschide Salariați, unde se face contarea statului
   salarii: {
     titlu: "Salariați",
-    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=9829375543"); await deschideSalariati(nav, tenantId); },
+    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=78ff3eec42"); await deschideSalariati(nav, tenantId); },
   },
   conectare_spv: {
     titlu: "Conectare SPV",

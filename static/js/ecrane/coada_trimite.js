@@ -141,7 +141,7 @@ export async function deschideInCoada(coadaId, dinRefuz = false) {
   const { randeazaValidat } = await import("./validat.js?v=a2db2ca802");
   // [lotul 11, 445] deschisă dintr-un refuz („Deschide declarația existentă”): declarația de dedesubt se păstrează, X / „← Înapoi” întorc la ea
   if (dinRefuz && window._navGlobal.dinRefuz) window._navGlobal.dinRefuz();
-  window._navGlobal.deschide("Coada de validare și depunere", (corp, nn) => randeazaValidat(corp, nn, { evidentiaza: coadaId }), { nivel: "cabinet" });
+  window._navGlobal.deschide("De validat", (corp, nn) => randeazaValidat(corp, nn, { evidentiaza: coadaId }), { nivel: "cabinet" });
 }
 
 export function legaturiNote(zona, tenantId, note) {
@@ -164,7 +164,7 @@ export function legaturiNote(zona, tenantId, note) {
   lista.querySelectorAll("[data-nota]").forEach((b) => b.addEventListener("click", async () => {
     const n = note[parseInt(b.dataset.nota, 10)];
     const [an, luna] = n.data.split("-").map((x) => parseInt(x, 10));
-    const { ecranJurnal } = await import("./firme.js?v=9829375543");
+    const { ecranJurnal } = await import("./firme.js?v=78ff3eec42");
     const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
     if (!t || !window._navGlobal) return;
     // [lotul 11, 445] nota se deschide dintr-un refuz: formularul / declarația de dedesubt se păstrează, săgeata și X întorc acolo

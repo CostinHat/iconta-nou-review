@@ -149,7 +149,7 @@ export async function ecranEtransport(corp, nav, t) {
           `<button type="button" class="${cls}" role="tab" aria-selected="${i === 0}" data-fila="${k}" data-fara-actiune="alegerea secțiunii — nu scrie nimic">${e}<span class="rap-tab-nr"></span></button>`).join("")}</div>
         <div class="et-fila" id="et-fila-bunuri" data-fila="bunuri" role="tabpanel">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
-          ${sel("et-tip", "Tip operațiune *", [["10","AIC - achiziție intracomunitară"],["20","LIC — livrare intracomunitară"],["30","Transport național"],["40","Import"],["50","Export"],["60","Tranzacție intracom. — intrare"],["70","Tranzacție intracom. — ieșire"]])}
+          ${sel("et-tip", "Tip operațiune *", [["10","AIC — achiziție intracomunitară"],["20","LIC — livrare intracomunitară"],["30","Transport național"],["40","Import"],["50","Export"],["60","Tranzacție intracom. — intrare"],["70","Tranzacție intracom. — ieșire"]])}
           ${inp("et-ref", "Referința internă")}
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Bunuri transportate</div>

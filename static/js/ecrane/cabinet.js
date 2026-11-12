@@ -6,19 +6,19 @@ import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arat
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=9829375543";
-import { randeazaMigrare } from "./migrare.js?v=57d2586d73";
+import { randeazaListaFirme } from "./firme.js?v=78ff3eec42";
+import { randeazaMigrare } from "./migrare.js?v=6dccb53624";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=80b751d073"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js?v=37902f6231"; // [p28_setari]
 import { randeazaRaporteaza } from "./raporteaza.js?v=766651826e"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
-import { randeazaTermene } from "./termene.js?v=c7e152f4e6";
+import { randeazaTermene } from "./termene.js?v=fbf97d1454";
 import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=a2db2ca802";
 import { randeazaSupervizor } from "./supervizor.js?v=b70acba4cb"; // [supervizor] rulare LA CERERE
-import { randeazaAsistenti } from "./asistenti.js?v=cb40ff883b";
-import { randeazaCapacitate } from "./capacitate.js?v=02f68826b4"; // [p71_capacitate]
+import { randeazaAsistenti } from "./asistenti.js?v=55670c24d1";
+import { randeazaCapacitate } from "./capacitate.js?v=e1ba37a9f7"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=a3648839d3"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
@@ -77,9 +77,9 @@ let _coadaTitlu = "De validat";
 function deschideEcran(cheie, nav, continut) {
   if (cheie === "validat") return nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav, { titlu: _coadaTitlu }), { nivel: "cabinet" });
   if (cheie === "supervizor") return nav.deschide("Supervizor", (corp) => randeazaSupervizor(corp, nav), { nivel: "cabinet" });
-  if (cheie === "activitate") return nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" });
+  if (cheie === "activitate") return nav.deschide("Activitatea echipei", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" });
   if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" });
-  if (cheie === "tipare") return nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" });
+  if (cheie === "tipare") return nav.deschide("Tipare de erori", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" });
   if (cheie === "raport") return nav.deschide("Suport", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" });
 }
 
@@ -114,12 +114,12 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
       <span class="sa-desc">${eticheta}</span></${eticheta_}>`;
   }
   const cifre = [
-    cifra(t.create || 0, "preg\u0103tite", "activitate"),
-    cifra(t.aprobate || 0, "validate", "activitate", (t.aprobate ? "var(--verde)" : null)),
-    cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "var(--rosu)" : null)),
-    cifra(t.depuse || 0, "depuse", "activitate", (t.depuse ? "var(--verde)" : null)),
+    cifra(t.create || 0, dupaNumar(t.create || 0, "preg\u0103tit\u0103", "preg\u0103tite"), "activitate"),
+    cifra(t.aprobate || 0, dupaNumar(t.aprobate || 0, "validat\u0103", "validate"), "activitate", (t.aprobate ? "var(--verde)" : null)),
+    cifra(t.respinse || 0, dupaNumar(t.respinse || 0, "respins\u0103", "respinse"), "tipare", (t.respinse ? "var(--rosu)" : null)),
+    cifra(t.depuse || 0, dupaNumar(t.depuse || 0, "depus\u0103", "depuse"), "activitate", (t.depuse ? "var(--verde)" : null)),
     cifra(deValidat || 0, "de validat", "validat", (deValidat ? "var(--galben-text)" : null)),
-    cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "var(--rosu)" : null)),
+    cifra(rap.necitite || 0, dupaNumar(rap.necitite || 0, "sesizare nou\u0103", "sesiz\u0103ri noi"), "raport", (rap.necitite ? "var(--rosu)" : null)),
   ].join("");
 
   let asist = "";
@@ -303,9 +303,9 @@ function randeazaMeniuActivitate(corp, nav) {
     </div>
   `;
   corp.querySelector("#opt-jurnal").addEventListener("click", () =>
-    nav.deschide("Activitate cabinet", (c) => randeazaActivitateCabinet(c, nav), { nivel: "cabinet" }));
+    nav.deschide("Activitatea echipei", (c) => randeazaActivitateCabinet(c, nav), { nivel: "cabinet" }));
   corp.querySelector("#opt-tipare").addEventListener("click", () =>
-    nav.deschide("Tipare", (c) => randeazaTipare(c, nav), { nivel: "cabinet" }));
+    nav.deschide("Tipare de erori", (c) => randeazaTipare(c, nav), { nivel: "cabinet" }));
 }
 
 function randeazaMeniuFirme(corp, nav) {
@@ -603,7 +603,7 @@ async function randeazaConsolidare(corp, nav) {
     </div>`;
   corp.innerHTML = `
     <h2 class="pf-titlu">Consolidare portofoliu</h2>
-    <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}`, "luna_an")}. Valori \u00een lei.</p>
+    <p class="pf-intro">Cumulat de la \u00eenceputul anului p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}`, "luna_an")} inclusiv (luna \u00een curs cuprinde \u00eenregistr\u0103rile de p\u00e2n\u0103 azi). Valori \u00een lei.</p>
     <div class="pf-lista zebra-lista">
       ${cap}
       ${(d.firme || []).map((f) => rand(f.nume, f.kpi)).join("")}

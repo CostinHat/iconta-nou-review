@@ -2,7 +2,7 @@
 frontend_test/e2e/e2e_lot12_verif.py	ea5dd13306e84f7a0065746a12387339deb9e6b85efcc8a773aa31f97050c353	4	python -m pytest -q frontend_test/e2e/e2e_lot12_verif.py
 frontend_test/e2e/e2e_lot72_facturi.py	bf1fabf1158c77bbbc36f76357da834a44c8dbebaa4787fd5b8176308d7dfea2	7	python -m pytest -q frontend_test/e2e/e2e_lot72_facturi.py
 frontend_test/e2e/e2e_pilot_luna.py	fe523ce9131d602a57366f83463153d715100e83fb51e44c468b207570dc6dd6	40	python -m pytest -q frontend_test/e2e/e2e_pilot_luna.py
-frontend_test/e2e/e2e_pozitii_validate.py	b6175d933d726885a37cc67ad7bffaa066781ff168cea28d0a6cb7463fa44a6b	17	python -m pytest -q frontend_test/e2e/e2e_pozitii_validate.py
+frontend_test/e2e/e2e_pozitii_validate.py	b70755efb08aa4d474f595dac68e3671ca556d490fc78746aa779c91c173d087	17	python -m pytest -q frontend_test/e2e/e2e_pozitii_validate.py
 frontend_test/e2e/e2e_pilot_x09.py	11bfa9c059b5362a82506dbe807a759ca6e4b8875be734df50cf7d376c491fc3	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x09.py
 frontend_test/e2e/e2e_pilot_f017.py	2c9b4fab2bfb3d9f833ea5afc6f5ed45b3e7a08b097a6c5dcd4a2fd061c4315e	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f017.py
 frontend_test/e2e/e2e_pilot_f054.py	affc7c95b8b8f7ff036364f76e96a2ea8252cd4fa79b3e8cba15ea823e259c50	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f054.py
@@ -12,7 +12,7 @@ frontend_test/e2e/e2e_pilot_x07.py	f885c83339f9ccfbed0f0b398e3871064dcf7154e6706
 frontend_test/e2e/e2e_luna_lucru_17_5_C.py	6554d43464e57050568e4c8c00b3c5edca0730a2f1eada4a78f2a634eca5e7ae	1	python -m pytest -q frontend_test/e2e/e2e_luna_lucru_17_5_C.py
 frontend_test/e2e/e2e_actiune_principala_17_5_D.py	de86176d7d5825ec38b22972fc0dfdb5be5149f84843d9737b06d8d371f0efce	1	python -m pytest -q frontend_test/e2e/e2e_actiune_principala_17_5_D.py
 frontend_test/e2e/e2e_alegere_unica_17_5_E.py	6db1d160a8224d7fb566d646a7d270e0c49487f769db6205f534cfe14f0aaf6e	1	python -m pytest -q frontend_test/e2e/e2e_alegere_unica_17_5_E.py
-frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py	f7f06d651a60b9a16a77d5d663fea3d768ed936bde08057d5c01004b194108c4	1	python -m pytest -q frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py
+frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py	7e0c260ab9b03f7f015a1ac2db83e4110d90dfb19c93003829571b2ce165df9d	1	python -m pytest -q frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py
 frontend_test/e2e/e2e_de_validat_17_5_G.py	c8a460a3ee239c58b350bb58b23dd579309e94c1a19379bb7b617629f7db9971	1	python -m pytest -q frontend_test/e2e/e2e_de_validat_17_5_G.py
 frontend_test/e2e/e2e_piese_17_5_H2.py	10f326f2fb8d19f113ea4d7ec200702b5cb3e46edda1065c5ba5f8128ac5bbcc	1	python -m pytest -q frontend_test/e2e/e2e_piese_17_5_H2.py
 frontend_test/e2e/e2e_bara_jos.py	9392af805c2208265588f130506f1e1732d56a3ecfd6e3bca7772257bdf4de88	1	python -m pytest -q frontend_test/e2e/e2e_bara_jos.py

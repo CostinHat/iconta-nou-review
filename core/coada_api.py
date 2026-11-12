@@ -230,7 +230,8 @@ def grup_nota(nota_id, grup_doc=None):
 
 def eticheta_element(fel, tip, perioada, payload):
     """PURĂ. Cum se numește un element din coadă oriunde apare (listă, notificare, Activitate cabinet) — o singură formă.
-    Declarația: „D300 · <scadența>”. Nota: „Notă · <descriere> · <document>”."""
+    Declarația: „D300 · <perioada declarată>” (ll/aaaa, Tn/aaaa sau aaaa; scadența numai când payload-ul n-are an).
+    Nota: „Notă · <descriere> · <document>”."""
     if fel == "nota":
         p = payload or {}
         descr = [str(d or "").strip() or "fără descriere" for d in (p.get("descrieri") or [p.get("descriere")])]
@@ -246,6 +247,14 @@ def eticheta_element(fel, tip, perioada, payload):
         if doc and _fara_diacritice(doc) not in _fara_diacritice(descr[0]) and _fara_diacritice(descr[0]) not in _fara_diacritice(doc):
             parti.append(doc)
         return " · ".join(parti)
+    p = payload or {}
+    if p.get("_an"):
+        if p.get("_luna"):
+            perioada = "%02d/%d" % (int(p["_luna"]), int(p["_an"]))
+        elif p.get("_trim"):
+            perioada = "T%d/%d" % (int(p["_trim"]), int(p["_an"]))
+        else:
+            perioada = str(int(p["_an"]))
     return "%s · %s" % ((tip or "").upper(), perioada or "")
 
 
@@ -875,7 +884,9 @@ def lista_coada(conn, cabinet_id, stare=None):
                 d["nota"] = _payload_grup(note_membri)
                 d["id"] = note_membri[0][0]
                 d["membri_ids"] = [i for i, _n in note_membri]
-            d["eticheta"] = eticheta_element(d["fel"], d["tip"], d["perioada"], d.get("nota"))
+            d["eticheta"] = eticheta_element(d["fel"], d["tip"], d["perioada"],
+                                             d.get("nota") if d["fel"] == "nota" else
+                                             {"_an": d.get("p_an"), "_luna": d.get("p_luna"), "_trim": d.get("p_trim")})
             if d["fel"] == "nota" and d["stare"] == "la_senior":
                 # [S3] „cardul unei note retrimise arată «retrimisă după respingere», motivul respingerii anterioare și dacă
                 # nota s-a schimbat față de cea respinsă”

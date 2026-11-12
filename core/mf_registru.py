@@ -36,7 +36,12 @@ def _citeste_catalogul():
             break
         m = _RAND.match(linie.strip())
         if m:
-            out[m.group(1)] = {"denumire": m.group(2).strip(" -"), "ani_min": int(m.group(3)), "ani_max": int(m.group(4))}
+            den = m.group(2).strip(" -")
+            if den.endswith("în afară de clădirile din"):
+                den += " categoriile înscrise sub acest cod în catalog"
+            elif den.endswith("în afară de"):
+                den += " excepțiile înscrise sub acest cod în catalog"
+            out[m.group(1)] = {"denumire": den, "ani_min": int(m.group(3)), "ani_max": int(m.group(4))}
     return types.MappingProxyType(out)
 
 

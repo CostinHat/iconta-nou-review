@@ -325,7 +325,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt, categorii331 = []) {
           const bn = document.createElement("button");
           bn.type = "button"; bn.className = "buton-secundar"; bn.id = "pr-vezi-nota"; bn.textContent = "Vezi nota în Registrul jurnal";
           bn.addEventListener("click", async () => {
-            const { ecranJurnal } = await import("./firme.js?v=9829375543");   // dinamic, ca „nota …” din detaliul facturii
+            const { ecranJurnal } = await import("./firme.js?v=78ff3eec42");   // dinamic, ca „nota …” din detaliul facturii
             const [an, luna] = String(p.data || dataIso()).slice(0, 10).split("-").map(Number);
             nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, { id: tenantId }, { an, luna, evidentiaza: ct.inregistrare_id }), { lat: "tabel" });
           });
@@ -655,7 +655,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
     let lista = [];
     try {
-      const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 1}`);
+      const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 11}`);
       if (!actuala()) return;
       lista = (r && r.facturi) || [];
     } catch { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile emise.</p>`; return; }
@@ -668,6 +668,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       catch { if (!actuala()) return; per = null; }
     }
     const maiSunt = lista.length > afisate;
+    const ramase = Math.min(10, Math.max(0, lista.length - afisate));
     if (maiSunt) lista = lista.slice(0, afisate);
     let corpuri = !lista.length
       ? `<div class="stare-goala">Nicio factur\u0103 \u00een luna aceasta.</div>`
@@ -702,7 +703,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         <button class="buton-secundar" id="fac-next">luna \u2192</button>
         <button class="buton-secundar" id="fac-saga-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-saga" style="margin-left:12px">Export SAGA lun\u0103</button>
         <button class="buton-secundar" id="fac-winmentor-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-winmentor">Export WinMentor lun\u0103</button>
-        <button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px"${maiSunt ? "" : atributeInactiv("Toate facturile lunii sunt afișate.")}>Vezi \u0219i facturile mai vechi din aceast\u0103 lun\u0103</button></p>
+        <button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px"${maiSunt ? "" : atributeInactiv("Toate facturile lunii sunt afișate.")}>Arată încă ${cate(ramase, "factură a lunii", "facturi ale lunii")}</button></p>
       ${blocInchidere}
       <div id="fac-saga-zona"></div>
       <div class="pf-lista zebra-lista">${corpuri}</div>`;
@@ -1426,7 +1427,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div id="fd-nota-linii" class="fd-nota-linii">${nota && nota.linii.length ? liniiNotaHtml(nota.linii) : "Nota n-are rânduri de afișat."}</div>
         <p style="margin-top:12px"><button type="button" class="buton-secundar" id="fd-nota-jurnal" data-fara-actiune="navigare la Registrul jurnal; validarea de acolo poartă acțiunea">Deschide în Registrul jurnal</button></p>`;
       c2.querySelector("#fd-nota-jurnal").addEventListener("click", async () => {
-        const { ecranJurnal } = await import("./firme.js?v=9829375543");   // dinamic: firme.js importă deja ecranul facturilor
+        const { ecranJurnal } = await import("./firme.js?v=78ff3eec42");   // dinamic: firme.js importă deja ecranul facturilor
         const [an, luna] = String(nc.data).split("-").map(Number);
         nav.deschide("Registru jurnal", (c3) => ecranJurnal(c3, nav, { id: tenantId }, { an, luna, evidentiaza: nc.id }), { lat: "tabel" });   // [394] [470] pe nota facturii
       });
@@ -1559,6 +1560,7 @@ const MF_FONTURI = {
   mono: '"Courier New", monospace',
 };
 const MF_CULORI = ["#5b8dd9", "#4a9d97", "#4a9d6f", "#c15a70", "#8b6fc9", "#c17d3f", "#4b5563"];
+const MF_NUME_CULORI = ["albastru", "turcoaz", "verde", "roz", "violet", "portocaliu", "gri"];   // în ordinea lui MF_CULORI
 
 async function modelFactura(corp, nav, tenantId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
@@ -1580,7 +1582,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
 
   corp.innerHTML = `
     <h2 class="pf-titlu">Model factur\u0103</h2>
-    <p class="pf-intro">Logo, font \u0219i culoare \u2014 preview live.</p>
+    <p class="pf-intro">Logo, font \u0219i culoare \u2014 previzualizare \u00een timp real.</p>
     <div class="mf-layout">
       <div class="mf-controale">
         <div class="mf-grup">
@@ -1607,7 +1609,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
         <div class="mf-grup">
           <label class="mf-eticheta">Culoare accent</label>
           <div class="mf-culori">
-            ${MF_CULORI.map((c) => `<button class="mf-culoare-opt" data-culoare="${c}" style="background:${c}" title="${c}"></button>`).join("")}
+            ${MF_CULORI.map((c, i) => `<button class="mf-culoare-opt" data-culoare="${c}" style="background:${c}" title="${c}" aria-label="Culoare de accent: ${MF_NUME_CULORI[i]}"></button>`).join("")}
           </div>
         </div>
         <button class="buton-primar mf-salveaza" id="mf-salveaza" data-actiune="POST /tenants/{tenant_id}/firma-profil/model">Salveaz\u0103</button>

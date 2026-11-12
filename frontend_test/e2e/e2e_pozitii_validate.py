@@ -186,7 +186,8 @@ def test_pozitie_f006_asistentul_invitat_cu_drepturile_si_firmele_lui(patron, fi
         card = pg.locator("#asi-lista .val-card", has_text=nume).first
         assert "asistent · 1 firmă" in card.locator(".asi-rol").inner_text(), card.inner_text()
         perms = card.locator(".asi-perms").inner_text()
-        assert "✓ Poate pregăti" in perms and "· Poate valida" in perms and "· Poate depune" in perms, perms
+        # [17.5-T] actualizat la AC029 (comanda_17_5_I.txt, pct.6): dreptul lipsă se spune în cuvinte
+        assert "✓ Poate pregăti" in perms and "Nu poate valida" in perms and "Nu poate depune" in perms, perms
         patron.captura("invitat")
         card.locator("[data-act='edit']").click()
         pg.wait_for_selector("[data-perm='poate_valida']", timeout=20000)

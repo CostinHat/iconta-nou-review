@@ -291,7 +291,7 @@ def potriveste_cota(denumire, platitor_tva=True):
         # `%` numai pe bucata lui: lipit implicit de f-string-ul de sus, ar formata și denumirea produsului (un „%” în ea ar strica promptul)
         + ('{"cota": %d sau %d, "categorie": "cheia categoriei sau standard", ' % (red, std)) +
         '"tip": "marfa sau produse sau servicii", '
-        '"justificare": "o fraza scurta cu temeiul legal", '
+        '"justificare": "o propozitie scurta, in limba romana cu diacritice, cu temeiul legal (incepe cu majuscula, se incheie cu punct)", '
         '"incredere": "mare/medie/mica"}\n'
         "Daca denumirea e ambigua (ex. poate fi si aliment si supliment), pune "
         "incredere 'mica' si alege varianta cea mai probabila."

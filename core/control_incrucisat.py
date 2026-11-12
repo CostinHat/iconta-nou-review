@@ -1950,7 +1950,9 @@ def _orizontal_d101(conn, schema, _an_curent):
                 ("Confruntarea declarației cu o sursă independentă, pe an. Niciun D101 nu e depus prin "
                  "aplicație, pe niciun an: comparația devine posibilă după prima depunere. Absența unei "
                  "depuneri nu e o divergență, deci nu e semnalată cu roșu."),
-                "Niciun D101 depus prin aplicație — nu se poate confrunta nimic.",
+                ("Niciun D101 depus prin aplicație — nu se poate confrunta nimic cu D100 (plățile anticipate)."
+                 if tip == TIP_D101_VS_D100 else
+                 "Niciun D101 depus prin aplicație — nu se poate confrunta nimic cu contul 691."),
                 "declarațiile D101 depuse prin aplicație")], tip)
         return rez
     d101 = _depuneri(conn, schema, "d101", an)
@@ -1964,7 +1966,9 @@ def _orizontal_d101(conn, schema, _an_curent):
                 ("Confruntarea declarației cu o sursă independentă, pe anul %d. Niciun D101 nu e depus prin "
                  "aplicație pe anul ăsta, deci nu există ce confrunta. Lipsa unei depuneri nu e o diferență — de "
                  "aceea nu e semnalată cu roșu." % an),
-                "Niciun D101 depus prin aplicație pe %d — nu se poate confrunta nimic." % an,
+                ("Niciun D101 depus prin aplicație pe %d — nu se poate confrunta nimic cu D100 (plățile anticipate)."
+                 if tip == TIP_D101_VS_D100 else
+                 "Niciun D101 depus prin aplicație pe %d — nu se poate confrunta nimic cu contul 691.") % an,
                 "declarațiile D101 depuse prin aplicație, pe anul %d" % an)], tip)
         return rez
     if not cu_randuri:

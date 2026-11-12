@@ -144,7 +144,7 @@ export async function randeazaAsistenti(corp, nav) {
 
 function pastilaPerm(activ, text) {
   const cls = activ ? "asi-perm-on" : "asi-perm-off";
-  return `<span class="asi-perm ${cls}">${activ ? "✓" : "·"} ${text}</span>`;
+  return `<span class="asi-perm ${cls}">${activ ? "✓ " + text : "Nu " + text.charAt(0).toLowerCase() + text.slice(1)}</span>`;
 }
 
 function randActor(a, corp, nav) {

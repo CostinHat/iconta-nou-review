@@ -36,22 +36,22 @@ import { lunaDeLucru, uitaLunaDeLucru } from "../luna_lucru.js?v=04c41c46c1";   
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=bcbc8c1e9b";  /* cm_flux_v1 */
+import { fluxConcediu } from "./flux_concediu.js?v=52bdc08b94";  /* cm_flux_v1 */
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=c6fb363088";   // [lotul 13, 543] seria chitanțelor pe loc
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=0262ddde21";   // [lotul 13, 543] seria chitanțelor pe loc
 import { cautaInLista } from "./emitere_ecran.js?v=7847deeeb4";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
-import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=6c37b5b2e7";  /* [C11, 07.10.2026] bilanțul prin coadă */
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=b26ef32cac";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
-import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=57d2586d73";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=bb694a36e2";  // [decl_firma_v1]
+import { ecranEtransport } from "./etransport_ecran.js?v=11326ec78a";
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=6dccb53624";  // [p96_import_firma] + [Q4] import in masa
+import { declaratiiPerFirma } from "./declaratii.js?v=4d1b97efb6";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=48c9d30c65";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=2b4b10dbf6";  // [produse_firma_v1]
+import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=891835ddea";  // [ecran_mf_v1]
@@ -752,7 +752,7 @@ function meniuFirma(corp, nav, t) {
   }
   const bBilant = corp.querySelector("#fa-bilant");
   if (bBilant) {
-    bBilant.addEventListener("click", () => { nav.deschide("Bilanț", (c2) => ecranBilant(c2, nav, t)); });
+    bBilant.addEventListener("click", () => { nav.deschide("Bilanț anual", (c2) => ecranBilant(c2, nav, t)); });
   }
   const bInchidere = corp.querySelector("#fa-inchidere");   // [08.10, U3]
   if (bInchidere) bInchidere.addEventListener("click", () => { nav.deschide("Închidere lună", (c2) => ecranInchidereLuna(c2, nav, t)); });
@@ -848,11 +848,11 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     }).join("");
   }
   corp.innerHTML = `
-    <h2 class="pf-titlu">Solicitări</h2>
+    <h2 class="pf-titlu">Solicitări client</h2>
     <p class="pf-intro">Mesaje de la firma-client.</p>
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
-      <textarea aria-label="Răspunsul tău" id="sol-input" placeholder="Scrie un răspuns..." rows="3"></textarea>
+      <textarea aria-label="Mesaj către client" id="sol-input" placeholder="Scrie un mesaj către client…" rows="3"></textarea>
       <button class="buton-primar" id="sol-trimite-btn" data-actiune="POST /tenants/{tenant_id}/solicitari">Trimite</button>
     </div>
   `;
@@ -1580,7 +1580,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
     // [lotul 13, 673] fiecare acțiune a statului se deschide într-o fereastră nouă
     corp.innerHTML = `
       <div class="rezumat-fix">
-      <h2 class="pf-titlu">Stat de plată ${semnAjutor("F080")}</h2>
+      <h2 class="pf-titlu">Salariați ${semnAjutor("F080")}</h2>
       <p class="pf-intro">Luna ${_lunaTxt(an, luna)}
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">← luna</button>
         <button class="buton-secundar" id="sp-next">luna →</button>
@@ -3721,7 +3721,7 @@ async function ecranBilant(corp, nav, t) {
         if (!actuala()) return;   // un an schimbat între timp își aduce propria casetă
         zonaCat.innerHTML = _casetaCategorie(c);
         if (c && c.categorie === "nedeterminata") {
-          zonaCat.prepend(cardRezumat({ text: "Categoria de mărime nu se poate determina: alege tipul mai jos pe răspunderea ta",
+          zonaCat.prepend(cardRezumat({ text: "Categoria de mărime nu se poate determina: alege tipul în câmpul «Tip» de sus, pe răspunderea ta",
             detalii: `${c.motiv || ""}. Aplicația nu poate ști care situație financiară e datorată; alege tipul pe răspunderea ta sau completează evidența exercițiului precedent.` }));
         }
       } catch (e) {
@@ -4188,7 +4188,7 @@ function ecranNirNou(corp, nav, t, ctx) {
           <span class="camp-ajutor">Nu = factură nesosită: datoria intră pe 408, iar TVA-ul stă neexigibil până la factură. ${laCost ? "Da = factura aduce ea marfa în stoc (Facturi primite), fără NIR." : "Da = alege factura, ca NIR-ul să se lege de ea."}</span></label>`}
         <div class="camp-eticheta">${laCost ? "Articole: articolul (din listă sau nou) \u00b7 cantitate \u00b7 pre\u021b achizi\u021bie \u00b7 cot\u0103 TVA — marfa intră la cost (stoc cantitativ-valoric, CMP)" : "Articole: denumire \u00b7 cantitate \u00b7 pre\u021b achizi\u021bie \u00b7 pre\u021b raft (cu TVA) \u00b7 cot\u0103 TVA — marfa intră la preț de vânzare (global-valoric)"}</div>
         <div id="sn-linii">${liniiNir.map((_, i) => randLinieNir(i)).join("")}</div>
-        <div class="camp-eticheta">Cost accesoriu (landed cost) — se repartizează proporțional în costul de achiziție (OMFP 1802/2014). Contul de credit se confirmă de contabil.</div>
+        <div class="camp-eticheta">Cost accesoriu — se repartizează proporțional în costul de achiziție. Contul de credit se confirmă de contabil. TVA transport 0%: fără TVA pe factura transportatorului.</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <input type="number" step="0.01" id="sn-transport" class="camp-input" placeholder="transport" aria-label="Transport" style="width:110px">
           <select id="sn-transport-cota" class="camp-input" data-butoane aria-label="Cota TVA a transportului" style="width:130px">${ALEGE}${[21, 11, 0].map((c) => `<option value="${c}">TVA transport ${c}%</option>`).join("")}</select>
@@ -5025,12 +5025,12 @@ function randuriSolduri(sd) {
 const EXPLICATII_BK = {
   fara_potrivire: { atentie: true, titlu: "Fără potrivire",
     text: "linia nu s-a potrivit pe nicio factură după CUI: alege factura cu „Alege facturile” (lista are și soldurile preluate la migrare, „Sold la …”) sau pune linia deoparte cu „Ignoră”, din detaliul ei." },
-  de_verificat: { atentie: true, titlu: "Potrivire de verificat",
+  de_verificat: { atentie: true, titlu: "Potrivire de verificat", sg: "potrivire de verificat", pl: "potriviri de verificat",
     text: "potrivirea făcută după descriere nu e sigură: deschide rândul și verifică factura înainte de „Contează”." },
-  partial: { atentie: false, titlu: "Potrivire parțială", text: "suma liniei nu acoperă exact facturile găsite: în detaliu e ce se stinge." },
-  nota_propusa: { atentie: false, titlu: "Operațiune a băncii",
+  partial: { atentie: false, titlu: "Potrivire parțială", sg: "potrivire parțială", pl: "potriviri parțiale", text: "suma liniei nu acoperă exact facturile găsite: în detaliu e ce se stinge." },
+  nota_propusa: { atentie: false, titlu: "Operațiune a băncii", sg: "operațiune a băncii", pl: "operațiuni ale băncii",
     text: "linia e recunoscută din descriere (comision, dobândă, TVA …): se contează pe nota propusă, fără factură." },
-  nevalidata: { atentie: false, titlu: "Contată, notă nevalidată", text: "nota liniei intră în evidență după validare (Registru jurnal)." },
+  nevalidata: { atentie: false, titlu: "Contată, notă nevalidată", sg: "contată, notă nevalidată", pl: "contate, note nevalidate", text: "nota liniei intră în evidență după validare (Registru jurnal)." },
 };
 const STARI_BK = [["", "Toate liniile"], ["de_lucru", "De contat"], ["contat", "Contate"], ["ignorat", "Puse deoparte"]];
 
@@ -5161,7 +5161,7 @@ async function ecranBanca(corp, nav, t) {
     // [lotul 14, 687] explicațiile semnelor stau în cardul lor („10 fără potrivire · 2 operațiuni ale băncii”), nu deasupra tabelului
     const explicatiiHtml = chei.length ? `<div class="tn-explicatii" id="bk-explicatii">${at.length ? `<div class="caseta-atentie">${at.map(expl).join("")}</div>` : ""}${inf.length ? `<div class="caseta-info">${inf.map(expl).join("")}</div>` : ""}</div>` : "";
     siraCarduri(corp.querySelector("#bk-carduri"), [cardFormate, chei.length ? { id: "explicatii", ton: at.length ? "atentie" : "info",
-      text: chei.map((k) => `${nr[k]} ${EXPLICATII_BK[k].titlu.toLowerCase()}`).join(" · "), titlu: "Ce înseamnă semnele liniilor",
+      text: chei.map((k) => (k === "fara_potrivire" ? `${nr[k]} fără potrivire` : cate(nr[k], EXPLICATII_BK[k].sg, EXPLICATII_BK[k].pl))).join(" · "), titlu: "Ce înseamnă semnele liniilor",
       deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Ce înseamnă semnele liniilor</h2>${explicatiiHtml}`; } } : null], nav);
     zonaLista.innerHTML = `<div id="bk-lucru">${lucru.length ? tabelLinii("bk", lucru) : `<div class="stare-goala" id="bk-gol">Nicio linie de contat: toate sunt contate sau puse deoparte.</div>`}</div>
       ${deoparte.length ? `<div id="bk-deoparte"><h3 class="pf-subtitlu" id="bk-deoparte-titlu">Linii puse deoparte (${deoparte.length})</h3>
@@ -7523,7 +7523,7 @@ async function ecranRapoarte(corp, nav, t) {
       corp.querySelectorAll("[data-vedere-r]").forEach((x) => { const act = x.dataset.vedereR === vedere; x.className = act ? "buton-activ" : "buton-secundar"; x.setAttribute("aria-pressed", String(act)); });
       corp.querySelectorAll(".rc-vedere").forEach((s) => { s.hidden = s.dataset.vedere !== vedere; });
     }));
-    siraCarduri(corp.querySelector("#r-carduri"), [{ id: "lipsa", ton: "info", text: "Profit pe articol și vânzări pe agent nu apar aici", titlu: "Ce nu apare în aceste rapoarte",
+    siraCarduri(corp.querySelector("#r-carduri"), [{ id: "lipsa", ton: "info", text: "Ce nu apare în aceste rapoarte", titlu: "Ce nu apare în aceste rapoarte",
       deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Ce nu apare în aceste rapoarte</h2><div class="caseta-info"><span class="ci-mesaj">Profit pe produs și vânzări pe articol/agent nu apar aici: vânzarea și descărcarea gestiunii sunt documente separate, iar liniile de factură nu sunt legate de catalogul de produse.</span></div>`; } }], nav);
     const sel = corp.querySelector("#r-fisa-sel");
     sel.addEventListener("change", () => { fisaCui = sel.value; randeazaFisa(); });

@@ -8,7 +8,7 @@
 
 import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=e115d72f0f";   // [15.1, 722] lista cu căutare
 import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=7396e03327";
-import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=6c37b5b2e7";
+import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=b26ef32cac";
 import { butonSpreEcran } from "./ecran_destinatie.js?v=7c3b897c2b";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
 const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
@@ -202,7 +202,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
     </div>
     <div id="dec-existente"></div>
     <div class="dec-bara">
-      <button class="buton-primar" id="dec-continua" data-actiune-principala data-actiune="POST /declaratii/{tip}/valideaza" disabled>Continuă →</button>
+      <button class="buton-primar" id="dec-continua" data-actiune-principala data-actiune="POST /declaratii/{tip}/valideaza" title="Completează: Tip declarație" disabled>Continuă →</button>
     </div>
   `;
 
@@ -245,6 +245,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
     zonaP.innerHTML = randPerioada(p);
     legPerioada(zonaP);
     cont.disabled = !(S.tenant_id && S.tip);
+    cont.title = cont.disabled ? "Completează: Tip declarație" : "";
     const _za = corp.querySelector("#dec-ajutor");  // [ajutor] "?" urmareste tipul ales
     if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? semnAjutor(_DECL_AJUTOR[S.tip]) : "";
   }
@@ -2321,7 +2322,7 @@ function randeazaFormularD398(corp, nav) {
       '<button class="buton-secundar" id="d398-add" data-fara-actiune="rând în formularul declarației (în memorie); generarea și trimiterea poartă acțiunea">+ livrare</button>' +
     "</div>" +
     '<div id="d398-msg"></div>' +
-    '<p class="camp-ajutor" style="margin-top:8px">Total TVA datorat: <b>' + gt.toFixed(2) + "</b> " + esc(d.currency || "EUR") + ". Livrarea din sediul fix din alt stat membru există numai în regimul UE; regimul non-UE are numai servicii, iar regimul de import numai bunuri.</p>" +
+    '<p class="camp-ajutor" style="margin-top:8px">Total TVA datorat: <b>' + bani(gt) + "</b> " + esc(d.currency || "EUR") + ". Livrarea din sediul fix din alt stat membru există numai în regimul UE; regimul non-UE are numai servicii, iar regimul de import numai bunuri.</p>" +
     '<p style="margin-top:8px"><button class="buton-primar" id="d398-regen">' + _etRegen() + '</button>' +
       '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
   "</details>";

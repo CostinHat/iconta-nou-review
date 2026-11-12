@@ -98,8 +98,9 @@ def test_butoane_la_loc_17_5_F(browser):
             pg.click("button.cab-card:has([data-cheie='capacitate'])", timeout=10000)
             pg.wait_for_timeout(3000)
             t = pg.locator(PR).first.inner_text() if pg.locator(PR).count() else ""
-            if "Adaugă asistenți" not in t:
-                rele.append("(4) Capacitate: butonul principal e «%s», nu „Adaugă asistenți”" % " ".join(t.split()))
+            # [17.5-T] actualizat la AC030 (comanda_17_5_I.txt, pct.7)
+            if "Deschide Asistenți" not in t:
+                rele.append("(4) Capacitate: butonul principal e «%s», nu „Deschide Asistenți”" % " ".join(t.split()))
         except Exception as e:   # noqa: BLE001
             rele.append("(4) Capacitate nu s-a deschis: %s" % str(e)[:100])
         # (5)

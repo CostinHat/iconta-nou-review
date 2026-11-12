@@ -11,7 +11,7 @@ Solicitări client | Trimite | activ
 Registratură | Înregistrează | activ
 Acces client | Invită client nou | activ
 Bilanț anual | Validează (ANAF) | inactiv
-Capacitate | Adaugă asistenți | activ
+Capacitate | Deschide Asistenți | activ
 Suport | Trimite sesizarea | activ
 Produse | + Adaugă produs | activ   [măsurat pe main 463aaca7 la 10.11.2026: butonul e în bara de jos, 847 nu se mai reproduce; fereastra rămâne păzită de test]
 Registru încasări/plăți (F4, formular deschis) | Adaugă (ciornă) | activ

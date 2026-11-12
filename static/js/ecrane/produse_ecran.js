@@ -127,7 +127,8 @@ function randeazaLista(corp, tenantId, lista, reincarca, reincarcaCu, cat) {
     <div class="pr-rand" data-id="${p.id}" id="pr-rand-${cheieRand(p)}"${p.din_stoc ? ' style="flex-wrap:wrap"' : ""}>
       <div class="pr-rand-text">
         <div class="pr-rand-nume">${esc(p.denumire)}</div>
-        <div class="pr-rand-sub">${p.din_stoc ? `în stoc, ${esc(p.um || "buc")} \u00b7 alege cota de TVA a vânzării, ca factura să o ia de aici` : (p.pret_unitar ? bani(p.pret_unitar) + " lei / " + (p.um || "buc") : (p.um || "buc")) + (p.justificare ? " \u00b7 " + esc(p.justificare) : "")}</div>
+        <div class="pr-rand-sub">${p.din_stoc ? `în stoc, ${esc(p.um || "buc")} \u00b7 alege cota de TVA a vânzării, ca factura să o ia de aici` : (p.pret_unitar ? bani(p.pret_unitar) + " lei / " + (p.um || "buc") : (p.um || "buc"))}</div>
+        ${p.justificare ? `<div class="pr-rand-sub">Temeiul cotei: ${esc(p.justificare)}</div>` : ""}
         ${p.din_stoc ? `<div class="pr-rand-sub pr-propunere" id="pr-propunere-${cheieRand(p)}">${p.propunere
           ? textPropunere(`Cota propusă: ${etCota(p.propunere.cota_tva, null, cat)}, de pe rândul din ${p.propunere.document}`,
             valCota(cat, p.propunere.cota_tva, null), cheieRand(p))
