@@ -1,0 +1,26 @@
+[haiku, instanța 1] cod 0
+Am judecat fiecare aserțiune după descriere și captură. Singura nejudecabilă este a.12: captura arată că bara de jos e goală, dar nu arată clasa butoanelor.
+
+```json
+[{"id": "f.1", "raspuns": "corespunde", "motiv": "Pe pagina principală se vede cardul «Control fiscal»."},
+{"id": "f.2", "raspuns": "corespunde", "motiv": "Tabelul «Note de validat» are antetul «Explicație»."},
+{"id": "a.1", "raspuns": "corespunde", "motiv": "Tabelul are coloana «Pregătit de» (antetul apare pe două rânduri, «Pregătit / de»)."},
+{"id": "f.3", "raspuns": "corespunde", "motiv": "Fereastra are titlul «Parteneri» și tabelul cu cei 8 parteneri și coloanele cerute."},
+{"id": "a.2", "raspuns": "corespunde", "motiv": "Fișa are o singură casetă «Fișa de client și de furnizor: DANTE INTERNATIONAL SA»."},
+{"id": "a.3", "raspuns": "corespunde", "motiv": "Nu apare nicio casetă «Fișa de furnizor: …»; există doar caseta combinată."},
+{"id": "a.4", "raspuns": "corespunde", "motiv": "Panoul spune «9 note de validat» și trimite la fereastra „De validat”."},
+{"id": "f.4", "raspuns": "corespunde", "motiv": "Rândurile «F1A nr. 15 · GOOGLE IRELAND LIMITED» (fără scadență în sistem) și «Sold la 31.08.2026 · Client Test SRL» (fără scadență în sistem · preluată din programul vechi) rămân în listă."},
+{"id": "a.5", "raspuns": "corespunde", "motiv": "A patra pastilă este «2 fără scadență»."},
+{"id": "f.5", "raspuns": "corespunde", "motiv": "Statul de plată F5 e deschis și apare salariatul «Ionescu Vasile»."},
+{"id": "a.6", "raspuns": "corespunde", "motiv": "Există coloana «Diurnă peste plafon», cu 885,00 pentru Ionescu."},
+{"id": "a.7", "raspuns": "corespunde", "motiv": "Brutul salarial al lui Ionescu este 4.815,34, iar diurna de 885,00 e în coloana separată. Cifra 5.700,34 din formulă nu apare pe captură, deci se verifică doar 4.815,34."},
+{"id": "a.8", "raspuns": "corespunde", "motiv": "Fereastra «Mișcări, fișe de magazie» nu are niciun buton «Descarcă PDF» în bara de jos, care este goală."},
+{"id": "a.12", "raspuns": "nejudecabil", "motiv": "Bara de jos e goală, dar clasa butoanelor nu se vede pe captură; butoanele albastre «Intrare» și «Ieșire la CMP» sunt în corpul ferestrei, nu în bară."},
+{"id": "f.6", "raspuns": "corespunde", "motiv": "Fereastra «Control fiscal» e deschisă pe firma «F2 Profit Amortizare SRL»."},
+{"id": "a.9", "raspuns": "corespunde", "motiv": "Eticheta D205 apare o singură dată: «D205 — nu se poate verifica: …»."},
+{"id": "f.7", "raspuns": "corespunde", "motiv": "Cardul «Înainte de a emite lipsește din Date firmă…» apare pe ecranul de emitere."},
+{"id": "a.10", "raspuns": "corespunde", "motiv": "Cardul spune de la început că lipsește capitalul social și apoi enumeră regimul fiscal și operațiunile intracomunitare. Finalul «(Da sau Nu).» este tăiat de marginea ecranului."},
+{"id": "a.11", "raspuns": "corespunde", "motiv": "«Date firmă» are deja marcate câmpurile obligatorii necompletate, inclusiv «Alege regimul fiscal (micro sau profit) — decide D100/D101.»"}]
+```
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+răspunsuri: f.1=corespunde; f.2=corespunde; a.1=corespunde; f.3=corespunde; a.2=corespunde; a.3=corespunde; a.4=corespunde; f.4=corespunde; a.5=corespunde; f.5=corespunde; a.6=corespunde; a.7=corespunde; a.8=corespunde; a.12=nejudecabil; f.6=corespunde; a.9=corespunde; f.7=corespunde; a.10=corespunde; a.11=corespunde | nejudecabile: 1 din 19
