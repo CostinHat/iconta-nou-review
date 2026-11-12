@@ -2,7 +2,7 @@
 """ACȚIUNEA PRINCIPALĂ — lotul 17.5-D (rândurile A09, A19, A20, A22, A32 din auditul de ecrane). Scris de arhitect; Code nu îl modifică.
 
 Pe F1 Comert Stoc, la 1366×768, ceas înghețat 03.11.2026, butonul principal din bara de jos a ferestrei (`.fj-butoane .fj-principal`) este:
-Bancă -> „Importă extras”; Mișcări, fișe de magazie (din Stocuri) -> „Descarcă PDF”; Rapoarte comerciale -> „Descarcă PDF”;
+Bancă -> „Importă extras”; Mișcări, fișe de magazie (din Stocuri) -> niciun buton principal (17.5-S: fără tabel, fără „Descarcă PDF”); Rapoarte comerciale -> „Descarcă PDF”;
 Import date › Solduri inițiale -> „Încarcă balanța”; Import date (meniul straturilor) -> niciun buton principal.
 Nu salvează nimic; nu alege niciun fișier. Un singur test."""
 import importlib.util
@@ -74,7 +74,7 @@ def test_actiune_principala_17_5_D(browser):
                 pg.wait_for_timeout(2000)
             except Exception:   # noqa: BLE001
                 pass
-        asteptat.append(("Mișcări, fișe de magazie", _principal(pg), (1, "Descarcă PDF")))
+        asteptat.append(("Mișcări, fișe de magazie", _principal(pg), (0, "")))
         # Rapoarte comerciale
         _card(pg, parcurs, "#fa-rapoarte")
         asteptat.append(("Rapoarte comerciale", _principal(pg), (1, "Descarcă PDF")))

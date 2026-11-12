@@ -136,6 +136,11 @@ def _note_pe_card(pg):
     return int(m.group(1)) if m else 0
 
 
+def _insigna(n):
+    """[17.5-S, 563] insigna clopoțelului = notificările necitite + notele de validat (aceeași N ca cifra cardului); «9+» de la 10, goală la 0."""
+    return "" if n <= 0 else ("9+" if n > 9 else str(n))
+
+
 def test_def_422_contorul_de_validat_si_clopotelul_urmeaza_actiunile(ana, patron, firma_e2e):
     """422. Pașii: contabilul-șef are pagina principală deschisă și notificările văzute (clopoțelul fără cifră). Ana (asistentă) scrie o
     notă -> pleacă la validare. Fără reîncărcare, la întoarcerea în filă: clopoțelul arată 1, iar cardul „De validat” numără o notă în
@@ -149,20 +154,20 @@ def test_def_422_contorul_de_validat_si_clopotelul_urmeaza_actiunile(ana, patron
     pg.wait_for_selector(".clopot-item, .clopot-gol", timeout=20000)
     pg.wait_for_timeout(800)
     pg.click("#nav-clopot")
-    pg.wait_for_function("() => (document.querySelector('#nav-clopot-badge') || {}).textContent === ''", timeout=15000)
-    pg.wait_for_timeout(1500)
     n0 = _note_pe_card(pg)
+    pg.wait_for_function("(t) => (document.querySelector('#nav-clopot-badge') || {}).textContent === t", arg=_insigna(n0), timeout=15000)   # necitite 0 + notele de validat
+    pg.wait_for_timeout(1500)
     desc = "E2E 422 chirie %d" % (int(_t.time()) % 100000)
     nid = _nota_prin_ecran(ana, firma_e2e, desc, "2026-10-06", luna=(2026, 10))
     cid = _coada_nota(firma_e2e, nid)[0]
     pg.evaluate("() => document.dispatchEvent(new Event('visibilitychange'))")   # șeful se întoarce în filă
-    pg.wait_for_function("() => (document.querySelector('#nav-clopot-badge') || {}).textContent === '1'", timeout=20000)
+    pg.wait_for_function("(t) => (document.querySelector('#nav-clopot-badge') || {}).textContent === t", arg=_insigna(n0 + 2), timeout=20000)   # 1 necitită + n0 + 1 note
     pg.wait_for_function("(n) => { const t = document.querySelector(\".cab-card-sinteza[data-cheie='validat']\").innerText;"
                          " const m = t.match(/(\\d+)\\s+(?:de\\s+)?not[ăe] de validat/); return (m ? +m[1] : 0) === n; }",
                          arg=n0 + 1, timeout=20000)
     patron.captura("dupa_trimitere")
     pg.evaluate("async (cid) => { const m = await import('/static/js/api.js'); await m.api.post(`/coada/${cid}/aproba`, {}); }", cid)
-    pg.wait_for_function("() => (document.querySelector('#nav-clopot-badge') || {}).textContent === ''", timeout=20000)
+    pg.wait_for_function("(t) => (document.querySelector('#nav-clopot-badge') || {}).textContent === t", arg=_insigna(n0), timeout=20000)
     pg.wait_for_function("(n) => { const t = document.querySelector(\".cab-card-sinteza[data-cheie='validat']\").innerText;"
                          " const m = t.match(/(\\d+)\\s+(?:de\\s+)?not[ăe] de validat/); return (m ? +m[1] : 0) === n; }",
                          arg=n0, timeout=20000)

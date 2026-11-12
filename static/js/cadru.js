@@ -118,12 +118,12 @@ export const CATALOG_ACTIUNE_PRINCIPALA = [
   /^Descarcă PDF(?=\s|$)/,
 ];
 
-// Ferestrele „doar de citit cu export” (Cartea mare, Balanță, Rapoarte, Mișcări de stoc, Analitică stoc): „Descarcă PDF” e acțiunea lor, chiar când tabelul lipsește încă
-export const EXPORT_PDF = /^(Cartea mare|Balanță de verificare|Rapoarte comerciale|Registrul de evidență fiscală|Jurnal regim marjă|Activitate cabinete|Mișcări, fișe de magazie.*)$/;
+// Ferestrele „doar de citit cu export” (Cartea mare, Balanță, Rapoarte, Analitică stoc): „Descarcă PDF” e acțiunea lor, chiar când tabelul lipsește încă
+export const EXPORT_PDF = /^(Cartea mare|Balanță de verificare|Rapoarte comerciale|Registrul de evidență fiscală|Jurnal regim marjă|Activitate cabinete)$/;
 
 // Ferestrele fără acțiune principală: ecran de stare fără nicio acțiune sau meniu de butoane care doar deschide alte ferestre. Bara rămâne, fără buton principal și
 // fără „Renunță”; închiderea e „←”. Lista pe nume (verificatorul o are la rândul b): `scripts/verificator_design.py::EXCEPTII_B`.
-export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Operațiuni speciale|Facturi|Firme|Import date)$|· CUI /;   // „· CUI ” = fereastra firmei (titlul ei: nume · CUI cod)
+export const FARA_ACTIUNE_PRINCIPALA = /^(Sinteza zilei|Operațiuni speciale|Facturi|Firme|Import date|Mișcări, fișe de magazie, coduri, nivel minim|Mișcări și fișe de magazie)$|· CUI /;   // „· CUI ” = fereastra firmei (titlul ei: nume · CUI cod)
 
 // [17.3, decizia arhitectului] Bara de jos a ferestrei cu formular nu are „Renunță”: revenirea este „←” din antet, iar „✕” închide fereastra. Păstrează „Renunță” numai
 // fereastra al cărei formular deschis nu are „←” activ (altfel n-ar rămâne cu cale înapoi) și cea cu o „Renunță” cu efect propriu (golește ciorna de pe server). Lista pe nume

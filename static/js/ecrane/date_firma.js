@@ -71,6 +71,10 @@ const CAMPURI = [
 
 // [lotul 11, deficiența 442] câmpurile capitalului (blocul „Capital social”), cu numele lor în „Profil incomplet” — „blochează emiterea
 // facturilor” (Legea 31/1990 art. 74 alin. (3); aceeași regulă care refuză emiterea, `capital_social.lipsa`)
+// [17.5-S, 11b] mesajele câmpurilor de capital marcate la deschiderea din emitere (regimul și TVA au mesajele salvării, `_vectorDinFormular`)
+const MESAJE_CAPITAL = { "df-forma_juridica": "Alege forma juridică a firmei (SRL, SA etc.) — de ea depinde capitalul social de pe factură.",
+  "df-capital_subscris": "Scrie capitalul social, în lei — se trece pe factură (Legea 31/1990 art. 74 alin. (3)).",
+  "df-capital_varsat": "Scrie capitalul social vărsat, în lei — se trece pe factură (Legea 31/1990 art. 74 alin. (3))." };
 const ETICHETE_CAPITAL = { forma_juridica: "Forma juridică", capital_subscris: "Capital social subscris", capital_varsat: "Capital social vărsat" };
 
 // [D394 Î2] Activitatea exceptată de la casa de marcat — OUG 28/1999 art. 2. Cu ea, chitanțele fără factură (cu cota
@@ -629,6 +633,12 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   const _lpIn = corp.querySelector("#df-luna_preluare");
   _lpIn.addEventListener("blur", () => { if (!_lpIn.value && _lpIn.dataset.propunere) _lpIn.value = _lpIn.dataset.propunere; });
   _pozitioneaza(corp, opt);
+  // [17.5-S, 11b] deschisă din emiterea blocată de date lipsă (`opt.marcheaza` = câmpurile de capital care lipsesc): câmpurile obligatorii necompletate sunt marcate
+  // de la deschidere, cu mesajele pe care le dă salvarea, nu pe rând, la salvare
+  if (opt.marcheaza) {
+    opt.marcheaza.forEach((id) => eroareCamp(corp, id, MESAJE_CAPITAL[id] || "Completează acest câmp."));
+    _vectorDinFormular(corp, v).vecOblig.forEach(([id, m]) => eroareCamp(corp, id, m));
+  }
 
   // [BLOC R, 28.08.2026] Legarea celor două casete de denumire a fost scoasă odată cu a doua
   // casetă. Era reparația corectă cât timp duplicatul exista; nu mai are ce lega.
@@ -763,7 +773,7 @@ function _pozitioneaza(corp, opt) {
 // sară la câmpul refuzului de la deschidere — derularea rămâne cea din clipa acțiunii.
 function _redeseneazaPeLoc(corp, nav, tenantId, opt) {
   const cadru = corp.closest(".fereastra-corp") || corp;
-  return randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null, peLoc: true, sus: cadru.scrollTop, fila: _filaActiva(corp) });
+  return randeazaDateFirma(corp, nav, tenantId, { ...opt, camp: null, marcheaza: null, peLoc: true, sus: cadru.scrollTop, fila: _filaActiva(corp) });
 }
 
 // [427 / 428] Mesajul de după salvare: lipsurile profilului cu declarațiile pe care le blochează, avertismentele regimului TVA la încasare

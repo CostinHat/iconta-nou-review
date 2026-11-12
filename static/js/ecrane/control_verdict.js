@@ -9,7 +9,7 @@ import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul 
 import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
 import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=e115d72f0f";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
-import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=c781636333";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
+import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=7c3b897c2b";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
@@ -179,6 +179,12 @@ function domeniuAfirmatie(x) {
   return "";
 }
 
+// [17.5-S, 749] eticheta declarației stă o singură dată: motivul care o repetă la început («D205 — nu se poate verifica: …») pierde prefixul «<tip> — »; domeniul rămâne în șablon
+export function motivFaraEticheta(x) {
+  const motiv = String(x.motiv || ""), prefix = `${(x.tip || "").toUpperCase()} — `;
+  return prefix.trim() !== "—" && motiv.toUpperCase().startsWith(prefix) ? motiv.slice(prefix.length) : motiv;
+}
+
 function randMotiv(arr, semnale = [], felCls = "") {
   const folosite = new Set();
   const potrivite = (x) => semnale.filter((s, i) => {
@@ -190,7 +196,7 @@ function randMotiv(arr, semnale = [], felCls = "") {
   const randSemnal = (s) => semnalHtml({ ton: "avertisment", text: s.mesaj || "" });
   // [15.1-E3, 731] fiecare declarație „de lămurit” / „nu se datorează” = un semnal pe rând (informativ); motivul întreg și temeiul stau pliate
   const corp = arr.map((x) => semnalHtml({ ton: "info",
-    text: `${(x.tip || "").toUpperCase()}${domeniuAfirmatie(x) ? " " + domeniuAfirmatie(x) : ""} — ${x.motiv || ""}`,
+    text: `${(x.tip || "").toUpperCase()}${domeniuAfirmatie(x) ? " " + domeniuAfirmatie(x) : ""} — ${motivFaraEticheta(x)}`,
     detaliiHtml: (x.surse_consultate ? `<p class="cf-incr-temei">Căutat în: ${esc(x.surse_consultate)}</p>` : "")
       + (x.temei_completitudine ? `<p class="cf-incr-temei">Pe ce se sprijină: ${esc(x.temei_completitudine)}</p>` : ""),
     actiuneHtml: trimiteLaEcran(x) }) + potrivite(x).map(randSemnal).join("")).join("");
@@ -421,7 +427,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=26a8694365");
+    const { deschideInchidereLuna } = await import("./firme.js?v=9829375543");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

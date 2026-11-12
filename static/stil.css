@@ -1658,7 +1658,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 /* [lotul 07.10 B, C12f] cifra stă în colțul butonului, în AFARA glifului, cu un inel în culoarea barei: așezată peste
    colțul clopoțelului (top/right 0) acoperea gliful — utilizatorul cu notificări necitite vedea doar „1” */
 .nav-clopot-badge {
-  position: absolute; top: -4px; right: -6px; box-shadow: 0 0 0 2px var(--albastru);
+  position: absolute; top: -4px; left: calc(100% - 10px); box-shadow: 0 0 0 2px var(--albastru);   /* [17.5-S, 563] ancorat la stânga: «9+» crește spre dreapta, nu peste glif */
   min-width: 16px; height: 16px; padding: 0 4px;
   background: var(--rosu-semafor); color: #fff; border-radius: 9px;
   font-size: var(--text-mic); font-weight: 700;
@@ -2105,6 +2105,8 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .tn-tabel .tn-semn { margin-top: 2px; }
 .tn-tabel .tn-actiuni { white-space: nowrap; }
 .tn-tabel .tn-actiuni .buton-primar, .tn-tabel .tn-actiuni .buton-secundar, .tn-tabel .tn-actiuni .buton-sters { margin: 2px 0; }
+/* [17.5-S, 607.1] motivul unui buton inactiv, scris în celula lui, se rupe pe rânduri (celula în sine rămâne pe un rând pentru butoane) */
+.tn-tabel .tn-actiuni .tip-desc { white-space: normal; max-width: 28ch; }
 /* [17.5-B, 815 — clasă, meniul „Acțiuni” al oricărui rând de tabel] meniul pliat nu are casete în pagină (butoanele lui nu mai ies din fereastră la dreapta, în celula fără rupere de rând), iar deschis își așază butoanele unul sub altul, în coloana lui */
 table details.dec-xml:not([open]) > :not(summary) { display: none; }
 table details.dec-xml[open] > button, table details.dec-xml[open] > a.buton-secundar { display: block; width: 100%; box-sizing: border-box; margin: 4px 0 0; }
@@ -3392,8 +3394,9 @@ select.alegere-sursa { position: absolute !important; width: 1px !important; hei
 textarea.em-adresa { field-sizing: content; min-height: 44px; height: auto; padding-top: 10px; padding-bottom: 10px; resize: none; width: 100%; box-sizing: border-box; }
 .em-linie, .em-linie-antet { grid-template-columns: minmax(120px, 1fr) 60px 52px 84px 138px 36px; gap: 6px; }
 .em-linie .alegere-butoane { gap: 3px; min-height: 0; flex-wrap: nowrap; }
-.em-linie .alegere-butoane > button { height: 40px; padding: 0 4px; min-width: 0; flex: 1 1 0; font-size: 14px; }
+.em-linie .alegere-butoane > button { height: 40px; padding: 0 4px; min-width: 0; flex: 1 1 auto; font-size: 14px; }   /* [17.5-S, 12] butonul ia cât textul lui, apoi împarte restul: «Fără TVA» nu iese din buton */
 .em-linie .camp-input { min-width: 0; }
+.fereastra-corp .em-linie input.em-l-um.camp-input { padding: 0 4px; text-align: center; }   /* [17.5-S, 12] unitatea de măsură încape cu margine în câmpul ei */
 .ds-detalii-linie { display: inline; font-weight: 400; }
 .ds-detalii-linie > summary { display: inline; cursor: pointer; color: var(--albastru); font-size: 14px; }
 .ds-detalii-linie[open] > summary { display: block; }
@@ -3723,8 +3726,8 @@ fieldset { min-width: 0; }
   .mf-preview-wrap { max-width: 100%; }
   .fereastra .ds-rezumat { flex-wrap: wrap; }   /* textul și acțiunile cardului nu ies din fereastră: acțiunea coboară pe linia următoare */
   .ds-grup .camp-eticheta { white-space: normal; overflow-wrap: anywhere; }   /* eticheta se rupe pe linia următoare, nu lărgește câmpul peste fereastră */
-  /* liniile facturii încap în 505 px: coloana cotei de 138 px, nu 188 px */
-  .em-linie, .em-linie-antet { grid-template-columns: minmax(80px, 1fr) 56px 48px 72px 138px 36px; }
+  /* liniile facturii încap în 505 px: coloana cotei de 156 px, nu 188 px */
+  .em-linie, .em-linie-antet { grid-template-columns: minmax(80px, 1fr) 56px 56px 72px 156px 36px; }   /* [17.5-S, 12] cele trei cote pe un singur rând (156 px), «buc» cu loc în câmpul UM */
   /* tabelul DS sub 700 px: coloanele își împart lățimea ferestrei (lățimile în ch / px puse de ecrane nu mai ies din cutie) */
   .ds-tabel { table-layout: auto; }
   .ds-tabel :is(th, td) { width: auto !important; }

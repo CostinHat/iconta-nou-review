@@ -29,11 +29,11 @@
 // CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
-import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=e3ad67e841";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=ae50f67bb1";
+import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=74b676ef63";  // [lotul 12, 622] tabelul comun de note
+import { randA as randConstatare } from "./control_verdict.js?v=48c9d30c65";
 import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=e115d72f0f";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { deschideFirma, ecranJurnal } from "./firme.js?v=26a8694365";
+import { deschideFirma, ecranJurnal } from "./firme.js?v=9829375543";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] explicația „cine validează și depune” e card, nu text pe ecran
 
@@ -295,7 +295,7 @@ export async function randeazaValidat(corp, nav, opt = {}) {   // [lotul 07.10 p
     <div id="val-zona" data-zona-derulare>
     <section id="val-note">
       <div class="cf-grup-titlu cf-galben" id="val-note-titlu">Note de validat (${noteDeValidatInCoada(noteDeValidat)})</div>
-      ${noteDeValidat.length ? htmlTabelNote({ pre: "val-n", randuri: randuriCoada, firma: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })
+      ${noteDeValidat.length ? htmlTabelNote({ pre: "val-n", randuri: randuriCoada, firma: true, pregatitDe: true, explicatii: EXPLICATII_COADA, deschise: corp._val.deschise })
         : `<div class="stare-goala" id="val-note-gol">Nicio notă nu așteaptă validarea. Aici ajung notele trimise la validare de colegi și de tine; ciornele tale sunt mai jos.</div>`}
     </section>
     <section id="val-declaratii">
@@ -447,6 +447,7 @@ function randNotaCoada(c, firme, perm) {
     stare: c.retrimisa ? { fel: "la_validare", text: "Retrimisă după respingere", culoare: "var(--galben-text)" }
       : { fel: "la_validare", text: "De validat", culoare: "var(--galben-text)" },
     semne: [!n.document_ref && { fel: "fara_doc", text: "fără document" }, nrNote > 1 && { fel: "document", text: cate(nrNote, "notă", "note") + " ale documentului" }].filter(Boolean),
+    pregatitDe: c.creat_de_nume || "",
     cautaInPlus: `${c.eticheta || ""} ${c.creat_de_nume || ""} ${n.stinge || ""}`,
     inainte: selectabila ? `<input type="checkbox" class="val-sel" data-nota="${c.id}" aria-label="Selectează ${esc(c.eticheta || "nota")}" data-actiune="POST /coada/aproba-mai-multe"> ` : "",
     actiuni,

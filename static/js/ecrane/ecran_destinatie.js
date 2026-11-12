@@ -9,10 +9,10 @@
 // navigator; iar după salvare, ecranul de destinație oferă singur „Înapoi la <formular>” (`inapoiLa`).
 // Gard: `core/test_refuz_spre_ecran.py` (fiecare `ecran` emis de server are intrare aici, și fiecare ecran care afișează un
 // astfel de refuz trece prin `butonSpreEcran`).
-import { randeazaDateFirma } from "./date_firma.js?v=fb35651dd9";
+import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";
 import { panouConectareSPV } from "./setari.js?v=37902f6231";
 import { randeazaProduse } from "./produse_ecran.js?v=2b4b10dbf6";
-import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=89ded88a66";   // [lotul 11, decizia 10.3] fișa partenerului
+import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=90325032fc";   // [lotul 11, decizia 10.3] fișa partenerului
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
 import { meniuMigrarePerFirma } from "./migrare.js?v=57d2586d73";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
@@ -20,7 +20,7 @@ import { sesiune } from "../sesiune.js?v=898215e0ee";
 export const ECRANE = {
   date_firma: {
     titlu: "Date firmă",
-    deschide: (nav, tenantId, inapoiLa, camp) => nav.deschide("Date firmă", (c2) => randeazaDateFirma(c2, nav, tenantId, { inapoiLa, camp })),
+    deschide: (nav, tenantId, inapoiLa, camp, marcheaza) => nav.deschide("Date firmă", (c2) => randeazaDateFirma(c2, nav, tenantId, { inapoiLa, camp, marcheaza })),
   },
   // [deficiența 289b] starea SPV a firmei și refuzul „Trimite în SPV” trimit aici (Setări cont → Conectare SPV)
   // [deficiența 274a] articolul fără cotă TVA în nomenclator trimite aici (emiterea facturii)
@@ -53,7 +53,7 @@ export const ECRANE = {
   // [15.1-E3, 728.1 / 735] „Contabilizează statul de plată” (constatarea de control fiscal) deschide Salariați, unde se face contarea statului
   salarii: {
     titlu: "Salariați",
-    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=26a8694365"); await deschideSalariati(nav, tenantId); },
+    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=9829375543"); await deschideSalariati(nav, tenantId); },
   },
   conectare_spv: {
     titlu: "Conectare SPV",
@@ -92,7 +92,7 @@ export function butonSpreEcran(zona, ecran, nav, tenantId, opt = {}) {
   b.addEventListener("click", () => {
     const inapoiLa = opt.inapoiLa || (typeof nav.titluCurent === "function" && nav.titluCurent()) || null;
     if (typeof nav.dinRefuz === "function") nav.dinRefuz();
-    e.deschide(nav, tenantId, inapoiLa, opt.camp || null);
+    e.deschide(nav, tenantId, inapoiLa, opt.camp || null, opt.marcheaza || null);   // [17.5-S, 11b] `marcheaza`: câmpurile necompletate de marcat la deschidere (numai Date firmă)
   });
   zona.appendChild(b);
   return b;

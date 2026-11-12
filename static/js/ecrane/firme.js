@@ -40,8 +40,8 @@ import { fluxConcediu } from "./flux_concediu.js?v=bcbc8c1e9b";  /* cm_flux_v1 *
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=cc67bbdaea";   // [lotul 13, 543] seria chitanțelor pe loc
-import { cautaInLista } from "./emitere_ecran.js?v=d0a3cb9a62";   /* [lotul 12, 488] căutarea în listele lungi de articole */
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=c6fb363088";   // [lotul 13, 543] seria chitanțelor pe loc
+import { cautaInLista } from "./emitere_ecran.js?v=7847deeeb4";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=6c37b5b2e7";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
@@ -50,17 +50,17 @@ import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11
 import { ecranEtransport } from "./etransport_ecran.js?v=9a69d8bf56";
 import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=57d2586d73";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=bb694a36e2";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ae50f67bb1";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=48c9d30c65";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2b4b10dbf6";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=fb35651dd9";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=891835ddea";  // [ecran_mf_v1]
 import { ecranReevaluareValuta } from "./reevaluare_ecran.js?v=bf9065cbb3";  // [lotul 10, 429]
 import { ecranCompensari } from "./compensari_ecran.js?v=ed3e73a2f0";  // [lotul 10, 428 — decizia Costin „Construiesc acum”]
-import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=89ded88a66";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
+import { ecranClienti, ecranFurnizori, ecranParteneriFirmei } from "./clienti_ecran.js?v=90325032fc";  // [lotul 10, 428 — decizia Costin „Bifă pe client”]; [lotul 11] furnizorii
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";  // [lotul 12, 459.1] datele aduse de la ANAF țin de CUI-ul lor
-import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=e3ad67e841";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
+import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locInDetaliu } from "./tabel_note.js?v=74b676ef63";  // [lotul 12, 617 / 622] tabelul comun de note  // [lotul 11, 444] numele de la ANAF față de fișa partenerului (NIR, casă)
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -1316,6 +1316,10 @@ const CONFIRMARI_SALARIAT = {};
 // suma în lei pentru totaluri: în bani întregi, ca adunarea să nu aducă zgomot de virgulă mobilă (valorile vin cu cel mult 2 zecimale)
 const _bani100 = (v) => Math.round(Number(v || 0) * 100);
 
+// [17.5-S, 603] documentul unei mișcări de stoc se arată cu diacritice; cheia din bază (citită literal de audit_preluare) rămâne fără
+const SOLD_INITIAL_IMPORT = "sold inițial (import)";
+export const documentMiscare = (d) => (/^sold initial \(import\)$/.test(d) ? SOLD_INITIAL_IMPORT : String(d));
+
 // F135 + [lotul 13, 671 / 678]: pontajul lunii = un calendar compact pe un ecran (rânduri pe săptămâni, coloane luni–vineri), implicit
 // „prezent”; contabilul alege ce marchează și apasă doar zilele care sunt altfel. Concediul medical vine din certificate, suspendările din
 // „Suspendare / CFP”: zilele lor apar marcate și nu se schimbă de aici (serverul le refuză, `pontaj.seteaza`). Regula (ce schimbă pontajul,
@@ -1560,11 +1564,15 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
     const notaSalarii = (r && r.nota_salarii) || null;  // [lotul 07.10 pct.15] nota lunii și starea ei în coada de validare
     const pontajNeconf = stat.some((s) => s.pontaj_neconfirmat);  // [#1/#3] statul se afiseaza; tichete blocate
     const total = (k) => stat.reduce((a, s) => a + _bani100(s[k]), 0) / 100;
+    // [17.5-S, 752] excedentul de diurnă (în brut, plătit prin decont) are coloana lui când există la cel puțin un salariat; fără el, statul rămâne cu «Brut»
+    const cuDiurna = stat.some((s) => _bani100(s.exces_diurna) > 0);
+    const brutSalarial = (s) => (cuDiurna ? (_bani100(s.brut) - _bani100(s.exces_diurna)) / 100 : s.brut);
     const semne = (s) => (s.semne || []).map((x) => `<span class="cf-pastila" title="${esc(x.titlu || "")}"${x.cod === "verifica" ? ' style="color:var(--rosu);font-weight:600"' : ""}>${esc(x.text)}</span>`).join(" ");
     const randuri = stat.map((s) => `<tr class="sp-rand" data-sid="${s.id}" data-nume="${esc(s.nume)}">
         <td><button class="btn-link sp-deschide" data-sal="${s.id}" data-fara-actiune="deschide fereastra salariatului">${esc(s.nume)}</button></td>
         <td class="fd-td-num">${s.zile_lucrate != null ? `${s.zile_lucrate} din ${s.zile_lucratoare_luna}` : ""}</td>
-        <td class="fd-td-num">${bani(s.brut)}</td>
+        <td class="fd-td-num">${bani(brutSalarial(s))}</td>${cuDiurna ? `
+        <td class="fd-td-num">${bani(_bani100(s.exces_diurna) / 100)}</td>` : ""}
         <td class="fd-td-num"><b>${bani(s.net_de_plata != null ? s.net_de_plata : s.net)}</b></td>
         <td class="fd-td-num">${bani(s.cost_total != null ? s.cost_total : s.cost)}</td>
         <td>${semne(s)}</td></tr>`).join("");
@@ -1588,9 +1596,10 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
       <div id="sp-carduri"></div>
       ${!stat.length ? `<div class="stare-goala">Niciun salariat activ încă.</div>` : `
       <table class="fd-tabel" id="sp-tabel">
-        <thead><tr><th>Salariat</th><th class="fd-td-num">Zile lucrate</th><th class="fd-td-num">Brut</th><th class="fd-td-num">Net de plată</th><th class="fd-td-num">Cost angajator</th><th>Semnele lunii</th></tr></thead>
+        <thead><tr><th>Salariat</th><th class="fd-td-num">Zile lucrate</th><th class="fd-td-num">${cuDiurna ? "Brut salarial" : "Brut"}</th>${cuDiurna ? `<th class="fd-td-num">Diurnă peste plafon</th>` : ""}<th class="fd-td-num">Net de plată</th><th class="fd-td-num">Cost angajator</th><th>Semnele lunii</th></tr></thead>
         <tbody>${randuri}</tbody>
-        <tfoot><tr><td><b>Total</b> · ${cate(stat.length, "salariat", "salariați")}</td><td></td><td class="fd-td-num"><b>${bani(total("brut"))}</b></td>
+        <tfoot><tr><td><b>Total</b> · ${cate(stat.length, "salariat", "salariați")}</td><td></td><td class="fd-td-num"><b>${bani(stat.reduce((a, s) => a + _bani100(brutSalarial(s)), 0) / 100)}</b></td>${cuDiurna ? `
+          <td class="fd-td-num"><b>${bani(total("exces_diurna"))}</b></td>` : ""}
           <td class="fd-td-num"><b>${bani(stat.reduce((a, s) => a + _bani100(s.net_de_plata != null ? s.net_de_plata : s.net), 0) / 100)}</b></td>
           <td class="fd-td-num"><b>${bani(stat.reduce((a, s) => a + _bani100(s.cost_total != null ? s.cost_total : s.cost), 0) / 100)}</b></td><td></td></tr></tfoot>
       </table>`}`;
@@ -2957,7 +2966,7 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
         <div class="pf-lista">${r.linii.map((l) => `
           <div class="pf-frand"><div class="pf-frand-text">
             <div class="pf-frand-nume">${dataRo(l.data)} \u00b7 ${l.tip === "ajustare" ? `diferen\u021b\u0103 de pre\u021b ${bani(l.valoare)} lei` : miscareFisa(l)}${l.pret_unitar ? " \u00b7 pre\u021b " + pretUnitar(l.pret_unitar) + " lei" : ""}</div>
-            <div class="pf-frand-sub">sold ${cantitate(l.sold_cantitate)} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + pretUnitar(l.cmp) + " lei" : ""}${l.document ? " \u00b7 " + esc(l.document) : ""}</div>
+            <div class="pf-frand-sub">sold ${cantitate(l.sold_cantitate)} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + pretUnitar(l.cmp) + " lei" : ""}${l.document ? " \u00b7 " + esc(documentMiscare(l.document)) : ""}</div>
           </div></div>`).join("") || '<div class="stare-goala">Fără mișcări în fișă.</div>'}</div>`;
     } catch { arataMesaj(zona.querySelector("#cv-fisa-zona"), "Nu s-a putut încărca fișa.", "eroare"); }
   });
@@ -5096,7 +5105,9 @@ async function ecranBanca(corp, nav, t) {
       ? butonRand("buton-secundar bk-undo", `data-id="${l.id}" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza"`, "Readu", null)
       : butonRand("buton-secundar", `data-ign="${l.id}" data-actiune="POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora"`, "Ignoră",
         l.status === "contat" ? "Linia e contată: nu se mai pune deoparte." : null);
-    return { peRand: `${bCont} ${bAlege}`, inDetaliu: bIgn };
+    // [17.5-S, 607.1] motivul fiecărui buton inactiv de pe rând se scrie și pe ecran, în celula lui (o dată pe celulă când cele două butoane au același motiv); title-ul rămâne
+    const motive = [...new Set([motivCont, motivAlege].filter(Boolean))].map((m) => `<div class="tip-desc">${esc(m)}</div>`).join("");
+    return { peRand: `${bCont} ${bAlege}${motive}`, inDetaliu: bIgn };
   }
   function randLinie(l) {
     const st = stareLinie(l), b = butoaneLinie(l), k = String(l.id);

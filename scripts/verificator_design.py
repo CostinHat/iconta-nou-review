@@ -72,7 +72,8 @@ PASTREAZA_RENUNTA = ["Încasări/plăți", "Invitații cabinete", "Notificări",
 #: `static/js/cadru.js::FARA_ACTIUNE_PRINCIPALA`.
 EXCEPTII_B = {"Sinteza zilei": "stare", "Supervizor": "stare", "Declarații lucrate": "stare",
               "Firme": "meniu", "Import date F1": "meniu", "Facturi F1": "meniu", "Operațiuni speciale F1": "meniu", "Activitate": "meniu", "Setări cont": "meniu",
-              "Migrare cabinet": "meniu", "Ghiduri": "meniu", "Panou Admin — Anunțuri": "meniu"}
+              "Migrare cabinet": "meniu", "Ghiduri": "meniu", "Panou Admin — Anunțuri": "meniu",
+              "Mișcări și fișe de magazie F1": "stare", "Mișcări, fișe de magazie, coduri, nivel minim": "stare"}
 
 
 # ── serverul de lucru ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

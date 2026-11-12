@@ -298,7 +298,7 @@ function _butonSpreEcran(eroare, cale) {
     // (`coada_trimite._actiuniRefuz`): un buton spre ecran pus acolo e „butonul de lângă refuz”, nu se mai adaugă al doilea, ascuns
     const dupa = el.nextElementSibling;
     if (cadru.querySelector("[data-ecran-destinatie]") || (dupa && dupa.querySelector("[data-ecran-destinatie]"))) return true;
-    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=c781636333");
+    const { butonSpreEcran } = await import("./ecrane/ecran_destinatie.js?v=7c3b897c2b");
     const z = document.createElement("span");
     z.className = "ecran-destinatie";
     el.appendChild(z);

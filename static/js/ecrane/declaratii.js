@@ -9,7 +9,7 @@
 import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=e115d72f0f";   // [15.1, 722] lista cu căutare
 import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=7396e03327";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=6c37b5b2e7";
-import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";   // [lotul 10, 431] refuzul care trimite la ce lipsește
+import { butonSpreEcran } from "./ecran_destinatie.js?v=7c3b897c2b";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
 const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic

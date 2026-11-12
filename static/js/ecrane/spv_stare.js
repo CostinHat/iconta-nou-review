@@ -4,7 +4,7 @@
 // (`ecran_destinatie.butonSpreEcran`). O singură sursă a textului — nu câte o frază pe ecran.
 import { api, arataMesaj, cate, dataRo } from "../api.js?v=7396e03327";
 import { cardRezumat } from "../ds_piese.js?v=e115d72f0f";   // [15.1, 687.1-SPV]
-import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";
+import { butonSpreEcran } from "./ecran_destinatie.js?v=7c3b897c2b";
 
 const _ora = (iso) => { const d = new Date(iso); return `${dataRo(iso)}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
 

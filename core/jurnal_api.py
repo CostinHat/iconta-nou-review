@@ -5,6 +5,7 @@ AI propune (ciorna), contabilul validează."""
 # [E2b, 15.09.2026] Tranzactia e a APELANTULUI: `db.get_conn` comite la iesirea din bloc, iar un
 # `commit` aici ar taia tranzactia lui in doua (P4). Depozitul primeste conexiunea si scrie; nu
 # deschide, nu comite.
+import re
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 
@@ -726,6 +727,16 @@ def note_cu_serie_lipita(cur, schema, nota_ids=None):
     return out
 
 
+_RAPORT_Z_ISO = re.compile(r"^Raport Z (\d{4}-\d{2}-\d{2}) casa (\S+) nr (\S+)$")
+
+
+def raport_z_iso_afisat(descriere):
+    """Titlul de azi al unei note Z scrise înainte de 618 («Raport Z 2026-10-22 casa 8000000001 nr 0050» -> «Vânzări din raportul Z nr 0050 din
+    22.10.2026, casa 8000000001»), sau None când textul n-are forma veche (ancorată pe tot textul: forma AMEF, cu sufix, nu intră)."""
+    m = _RAPORT_Z_ISO.match(descriere or "")
+    return explicatie_raport_z(m.group(1), m.group(2), m.group(3)) if m else None
+
+
 def note_fara_serie_lipita(cur, schema, nota_ids):
     """{nota_id: {"descriere" | "document": text cu seria separat}} — ce arată Registrul jurnal în locul textului salvat cu seria lipită
     (`note_cu_serie_lipita`): nota validată rămâne în bază cum a fost scrisă, iar rândul ei spune „Contare factura F6 nr. 1” / „Factură F6
@@ -744,4 +755,13 @@ def note_fara_serie_lipita(cur, schema, nota_ids):
             nid, descr = (r["id"], r["descriere"]) if isinstance(r, dict) else (r[0], r[1])
             baza = out.get(nid, {}).get("descriere", descr)
             out.setdefault(nid, {})["descriere"] = baza.replace(_M, "")
+    # [17.5-S, 618.1] nota Z VALIDATĂ scrisă înainte de 618 păstrează în bază «Raport Z <aaaa-ll-zz> casa <casa> nr <nr>» (OMFP 1802/2014 pct.69: nu se modifică); ecranul o
+    # arată cu titlul de azi, cu data românească (`explicatie_raport_z`, sursa unică); forma AMEF (cu sufix) nu intră: potrivirea e ancorată pe tot textul
+    if ids:
+        cur.execute(f"SELECT id, descriere FROM {p}inregistrari WHERE id = ANY(%s) AND status = 'validata' AND descriere LIKE 'Raport Z %%'", (ids,))
+        for r in cur.fetchall():
+            nid, descr = (r["id"], r["descriere"]) if isinstance(r, dict) else (r[0], r[1])
+            nou = raport_z_iso_afisat(descr)
+            if nou:
+                out.setdefault(nid, {})["descriere"] = nou
     return out

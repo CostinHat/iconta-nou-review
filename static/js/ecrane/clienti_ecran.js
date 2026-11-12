@@ -368,6 +368,14 @@ export async function ecranParteneriFirmei(corp, nav, t) {
   }));
 }
 
+/** [17.5-S, 640.1] Fișele partenerului de afișat, ca perechi [fișă, comună]: clientul și furnizorul cu aceleași date (nume, adresă, oraș, județ, email, telefon) sunt o singură
+ *  casetă (a clientului, cu bifa de afiliere); la date diferite rămân cele două, ca înainte. */
+export function fiseDeAfisat(fise) {
+  const cl = fise.find((x) => x.fel === "clienti"), fz = fise.find((x) => x.fel === "furnizori");
+  const laFel = cl && fz && ["nume", "adresa", "oras", "judet", "email", "telefon"].every((k) => (cl[k] || "") === (fz[k] || ""));
+  return laFel ? [[cl, true], ...fise.filter((x) => x !== cl && x !== fz).map((x) => [x, false])] : fise.map((x) => [x, false]);
+}
+
 export async function ecranFisaPartener(corp, nav, t, cheie) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let f;
@@ -379,10 +387,10 @@ export async function ecranFisaPartener(corp, nav, t, cheie) {
     return;
   }
   const s = f.sold || { conturi: [] };
-  const fisaText = (x) => {
+  const fisaText = (x, comun) => {
     const parti = [x.adresa, x.oras, x.judet].filter(Boolean).map(esc).join(", ");
-    return `<div class="pf-frand" id="pp-fisa-${esc(x.fel)}-${x.id}"><div class="pf-frand-text">
-      <div class="pf-frand-nume">Fișa de ${x.fel === "clienti" ? "client" : "furnizor"}: ${esc(x.nume || "")}</div>
+    return `<div class="pf-frand" id="pp-fisa-${esc(comun ? "clienti-furnizori" : x.fel)}-${x.id}"><div class="pf-frand-text">
+      <div class="pf-frand-nume">Fișa de ${comun ? "client și de furnizor" : x.fel === "clienti" ? "client" : "furnizor"}: ${esc(x.nume || "")}</div>
       <div class="pf-frand-sub">${parti || "adresa necompletată"}${x.email ? " · " + esc(x.email) : ""}${x.telefon ? " · " + esc(x.telefon) : ""}${
         x.fel === "clienti" ? " · persoană afiliată (Cod fiscal art.7 pct.26): " + (x.afiliat ? "da" : "nu") : ""}</div></div></div>`;
   };
@@ -401,7 +409,7 @@ export async function ecranFisaPartener(corp, nav, t, cheie) {
       <div id="pp-mesaj"></div>
     </div>
     <h3 class="pf-subtitlu">Datele partenerului</h3>
-    ${(f.fise || []).length ? `<div class="pf-lista">${f.fise.map(fisaText).join("")}</div>`
+    ${(f.fise || []).length ? `<div class="pf-lista">${fiseDeAfisat(f.fise).map(([x, comun]) => fisaText(x, comun)).join("")}</div>`
       : `<p class="pf-intro" id="pp-fara-fisa">Partenerul n-are fișă: datele lui vin din documente. Fișa se face din Clienți sau Furnizori.</p>`}
     ${t.regim_contabil === "simpla" ? `<p class="pf-intro" id="pp-sold-simpla">Firma ține contabilitatea în partidă simplă: nu are conturi de
       clienți și furnizori, deci nici sold pe partener.</p>` : `

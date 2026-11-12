@@ -111,15 +111,15 @@ function htmlExplicatii(pre, randuri, explicatii) {
   return `<div class="tn-explicatii" id="${pre}-explicatii">${at.length ? `<div class="caseta-atentie">${at.map(rand).join("")}</div>` : ""}${inf.length ? `<div class="caseta-info">${inf.map(rand).join("")}</div>` : ""}</div>`;
 }
 
-/** HTML-ul tabelului. `opt`: {pre, randuri, nrCrt (coloana Nr. crt.), firma (coloana Firma), explicatii, gol, deschise (Set de chei)}.
+/** HTML-ul tabelului. `opt`: {pre, randuri, nrCrt (coloana Nr. crt.), firma (coloana Firma), pregatitDe (coloana «Pregătit de», din `r.pregatitDe`), explicatii, gol, deschise (Set de chei)}.
  *  Rândul: {cheie, atribute (obiect -> data-* pe <tbody>), nrCrt, data, firma, explicatie, document, partener, linii, rulaj, storno,
  *  stare: {fel, text, culoare}, stari, semne: [{fel, text}], inainte (HTML în prima celulă, ex. bifa), actiuni (HTML, pe rând),
  *  detaliu (HTML: mesajele și acțiunile de sub linii), editor (HTML: înlocuiește detaliul, deschis), clasa (pe <tbody>)}. */
 export function htmlTabelNote(opt) {
-  const { pre, randuri = [], nrCrt = false, firma = false, explicatii = {}, gol = "Nicio notă." } = opt;
+  const { pre, randuri = [], nrCrt = false, firma = false, pregatitDe = false, explicatii = {}, gol = "Nicio notă." } = opt;
   const deschise = opt.deschise || new Set();
   if (!randuri.length) return `<div class="stare-goala" id="${pre}-gol">${esc(gol)}</div>`;
-  const nCol = 7 + (nrCrt ? 1 : 0) + (firma ? 1 : 0);
+  const nCol = 7 + (nrCrt ? 1 : 0) + (firma ? 1 : 0) + (pregatitDe ? 1 : 0);
   const corp = randuri.map((r) => {
     const k = esc(String(r.cheie));
     const deschis = !!r.editor || deschise.has(String(r.cheie));
@@ -138,6 +138,7 @@ export function htmlTabelNote(opt) {
         <td>${r.document ? esc(r.document) : `<span class="tip-desc">fără document</span>`}</td>
         <td>${esc(conturiRand(r))}</td>
         <td class="fd-td-num">${celulaSuma(r)}</td>
+        ${pregatitDe ? `<td>${esc(r.pregatitDe || "—")}</td>` : ""}
         <td><span style="color:${stare.culoare || "var(--ardezie)"};font-weight:600">● ${esc(stare.text || "")}</span>${semne}</td>
         <td class="tn-actiuni">${r.actiuni || ""}</td>
       </tr>
@@ -146,7 +147,7 @@ export function htmlTabelNote(opt) {
   }).join("");
   return `${htmlExplicatii(pre, randuri, explicatii)}
     <table class="fd-tabel tn-tabel" id="${pre}-tabel">
-      <thead><tr><th>${nrCrt ? "Nr. crt." : "Data"}</th>${nrCrt ? "<th>Data</th>" : ""}${firma ? "<th>Firma</th>" : ""}<th>Explicație</th><th>Document</th><th>Conturi</th><th class="fd-td-num">Sumă (lei)</th><th>Stare</th><th>Acțiune</th></tr></thead>
+      <thead><tr><th>${nrCrt ? "Nr. crt." : "Data"}</th>${nrCrt ? "<th>Data</th>" : ""}${firma ? "<th>Firma</th>" : ""}<th>Explicație</th><th>Document</th><th>Conturi</th><th class="fd-td-num">Sumă (lei)</th>${pregatitDe ? "<th>Pregătit de</th>" : ""}<th>Stare</th><th>Acțiune</th></tr></thead>
       ${corp}
     </table>
     <div class="stare-goala" id="${pre}-nimic" hidden>Nicio notă nu se potrivește căutării. Schimbă textul căutat sau starea aleasă.</div>`;

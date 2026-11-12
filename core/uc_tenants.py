@@ -5707,7 +5707,7 @@ def achizitie_necorporala(tenant_id, corp, ctx):
             except ValueError as e:
                 raise _erori.DateInvalide(str(e))
             fid = fres["factura_id"]
-            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, f"Achizitie necorporala {tip}: {corp['denumire']}"
+            iid = repo_contabilitate.nota_facturi_cu_factura(cur, schema, corp["data"], fid, f"Achiziție necorporală {tip}: {corp['denumire']}"
                                        f" (amortizare {_common.cate(dnf, 'lună', 'luni')}, art. 28(9) CF)"[:200])[0]
             # [lotul 10, deficiența 428] firma în sistemul TVA la încasare la data facturii: deducerea e amânată până la plată (CF art.297
             # alin.(3)) -> TVA pe 4428, mutat pe 4426 la plată (`tva_incasare.linii_la_incasare`); altfel 4426, ca până acum

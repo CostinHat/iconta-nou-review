@@ -13,7 +13,7 @@ import { siraCarduri } from "../carduri.js?v=83757ff6e9";
 import { textStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6, 275c] */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { optiuniTara as _optiuniTara, taraDinCui, nepotrivireTara } from "./tari_partener.js?v=47a26608a6";   // [lotul 12, C160] sursa unică
-import { butonSpreEcran } from "./ecran_destinatie.js?v=c781636333";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
+import { butonSpreEcran } from "./ecran_destinatie.js?v=7c3b897c2b";  // [lotul 07.10 pct.2] refuzul care trimite în alt ecran are buton spre el
 import { propuneNumeAnaf } from "./nume_anaf.js?v=d59cd56b02";   // [lotul 11, 444] numele ANAF vs fișa clientului
 import { ciornaPeServer } from "../ciorna_formular.js?v=461bec469f";   // [495] ciorna facturii pe server (transportul comun al ciornelor)
 import { legaDateAnaf } from "./date_anaf.js?v=503d474ed1";   // [lotul 12, 459.1] datele aduse de la ANAF / VIES țin de CUI-ul lor
@@ -559,12 +559,12 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     // [lotul 14, 687] lipsurile din Date firmă = un card de un rând (textul întreg în fereastra lui), cu butonul „Deschide Date firmă” alături
     zonaPreg.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center"><div id="em-pregatire-card"></div><div class="ca-actiuni" id="em-pregatire-actiuni"></div></div>`;
     siraCarduri(zonaPreg.querySelector("#em-pregatire-card"), [{ id: "lipsuri", ton: "eroare", titlu: "Înainte de a emite",
-      text: `Înainte de a emite lipsește din Date firmă: ${lipsuri.join(", ")}`,
+      text: `Înainte de a emite lipsește din Date firmă: ${lipsuri.join(", ")}.${n.mesaj_la_salvare ? " " + n.mesaj_la_salvare : ""}`,   // [17.5-S, 11] și ce va cere salvarea: tot ce lipsește, într-un singur loc
       deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Înainte de a emite</h2><div class="caseta-atentie"><div class="ca-mesaj pe-randuri">${esc(n.mesaj_lipsuri || "")}</div></div>`; } }], nav);
     btnEmite.disabled = true;
     btnEmite.title = "Completează întâi în Date firmă: " + lipsuri.join(", ");
     butonSpreEcran(zonaPreg.querySelector("#em-pregatire-actiuni"), "date_firma", nav, tenantId,
-      { id: "em-date-firma-sus", clasa: "buton-secundar", inapoiLa: "factură", camp: n.camp_ecran || null });
+      { id: "em-date-firma-sus", clasa: "buton-secundar", inapoiLa: "factură", camp: n.camp_ecran || null, marcheaza: n.campuri_lipsa || [] });
   }
   function aratăNumarul(n) {
     const sn = corp.querySelector("#em-serie-nr"), nr = corp.querySelector("#em-numar");
@@ -658,7 +658,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     if (articole.length) {
       // [deficiența 488, lotul 12] deasupra listei, căutarea după denumire sau cod de bare (`cautaInLista`); alegerea rămâne a omului
       const selArticol = `
-        <input type="text" class="camp-input em-l-cauta-articol" id="em-l${i}-cauta-articol" aria-label="Caută articolul în stoc" placeholder="Caută articolul în stoc (denumire sau cod de bare)…" autocomplete="off" style="margin-bottom:4px">
+        <input type="text" class="camp-input em-l-cauta-articol" id="em-l${i}-cauta-articol" aria-label="Caută articolul în stoc" placeholder="Caută articolul în stoc…" autocomplete="off" style="margin-bottom:4px">
         <select class="camp-input em-l-articol" id="em-l${i}-articol" aria-label="Articol de stoc" style="margin-bottom:6px">
           <option value="">— fără articol (serviciu) —</option>
           ${articole.map((a) => `<option value="${a.id}"${String(a.id) === String(l.articol_id) ? " selected" : ""} data-den="${esc(a.denumire)}" data-um="${esc(a.um || "")}" data-cauta="${esc(a.barcode || "")}">${esc(a.denumire)} · stoc ${esc(cantitate(a.stoc, a.um))}</option>`).join("")}

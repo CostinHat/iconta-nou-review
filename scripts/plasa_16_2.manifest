@@ -10,7 +10,7 @@ frontend_test/e2e/e2e_pilot_x05.py	6a328da7c56f60694bf085412bb9c28bc7899939b0e82
 frontend_test/e2e/e2e_pilot_x06.py	f87b2ddfb4e2c0cb8b206d2d6a305993c2251faa746170e698a72f36e58bc966	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x06.py
 frontend_test/e2e/e2e_pilot_x07.py	f885c83339f9ccfbed0f0b398e3871064dcf7154e6706e2e60ba8fa022b68915	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x07.py
 frontend_test/e2e/e2e_luna_lucru_17_5_C.py	6554d43464e57050568e4c8c00b3c5edca0730a2f1eada4a78f2a634eca5e7ae	1	python -m pytest -q frontend_test/e2e/e2e_luna_lucru_17_5_C.py
-frontend_test/e2e/e2e_actiune_principala_17_5_D.py	bef4f7aebfc875b58bb04ef6b276f6df28562d9e209b580bb211802909e3545b	1	python -m pytest -q frontend_test/e2e/e2e_actiune_principala_17_5_D.py
+frontend_test/e2e/e2e_actiune_principala_17_5_D.py	de86176d7d5825ec38b22972fc0dfdb5be5149f84843d9737b06d8d371f0efce	1	python -m pytest -q frontend_test/e2e/e2e_actiune_principala_17_5_D.py
 frontend_test/e2e/e2e_alegere_unica_17_5_E.py	6db1d160a8224d7fb566d646a7d270e0c49487f769db6205f534cfe14f0aaf6e	1	python -m pytest -q frontend_test/e2e/e2e_alegere_unica_17_5_E.py
 frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py	f7f06d651a60b9a16a77d5d663fea3d768ed936bde08057d5c01004b194108c4	1	python -m pytest -q frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py
 frontend_test/e2e/e2e_de_validat_17_5_G.py	c8a460a3ee239c58b350bb58b23dd579309e94c1a19379bb7b617629f7db9971	1	python -m pytest -q frontend_test/e2e/e2e_de_validat_17_5_G.py
@@ -18,3 +18,4 @@ frontend_test/e2e/e2e_piese_17_5_H2.py	10f326f2fb8d19f113ea4d7ec200702b5cb3e46ed
 frontend_test/e2e/e2e_bara_jos.py	9392af805c2208265588f130506f1e1732d56a3ecfd6e3bca7772257bdf4de88	1	python -m pytest -q frontend_test/e2e/e2e_bara_jos.py
 frontend_test/e2e/e2e_ferestre_17_5_O.py	7628092c067f81315dcda9af1362d93e0565eeb08595576417e2bf02e4403d8f	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_O.py
 frontend_test/e2e/e2e_d300_ciorne_17_5_W.py	5ae84d6a1e4b3b72b33a772e23eb1c8c671216824745204a836948195463e2b4	1	python -m pytest -q frontend_test/e2e/e2e_d300_ciorne_17_5_W.py
+frontend_test/e2e/e2e_pilot_17_5_S.py	bb8262d109cf85a80f9987620f25e90f3e8eeebc5031209f76693d58e033f777	1	python -m pytest -q frontend_test/e2e/e2e_pilot_17_5_S.py

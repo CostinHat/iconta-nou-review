@@ -490,13 +490,15 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
         # proforma transformată, bonul). Decizia lui Costin: refuz, cu ce lipsește și trimitere la Date firmă.
         from core import capital_social as _cs
         with conn.cursor() as _cur:
-            _cur.execute("SELECT tip_firma, forma_juridica, capital_subscris, capital_varsat FROM firma_profil WHERE id = 1")
+            _cur.execute("SELECT tip_firma, forma_juridica, capital_subscris, capital_varsat, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic "
+                         "FROM firma_profil WHERE id = 1")
             _r = _cur.fetchone()
         if _r is not None:
-            _lips = _cs.lipsa({"tip_firma": _r[0], "forma_juridica": _r[1], "capital_subscris": _r[2],
-                               "capital_varsat": _r[3]})
+            _profil = dict(zip(("tip_firma", "forma_juridica", "capital_subscris", "capital_varsat", "regim_fiscal", "platitor_tva",
+                                "tip_decont", "operatiuni_ic"), _r))
+            _lips = _cs.lipsa(_profil)
             if _lips:
-                raise _cs.refuz(_lips)
+                raise _cs.refuz(_lips, _cs.lipsuri_la_salvare(_profil))   # [17.5-S, 11] un singur mesaj cu tot ce cere Date firmă
     if directie == "emisa" and numar:
         with conn.cursor() as _cur:
             _refuz = _refuz_numar_dublat(_cur, numar, directie, tip, data_emitere)
@@ -1235,10 +1237,13 @@ def pregatire_emitere(conn, tenant_id, la_data):
     validă și falsă (interdicția 3, `core/test_data_curenta.py`)."""
     from core import capital_social as _cs
     with conn.cursor() as cur:
-        cur.execute("SELECT tip_firma, forma_juridica, capital_subscris, capital_varsat FROM firma_profil WHERE id = 1")
+        cur.execute("SELECT tip_firma, forma_juridica, capital_subscris, capital_varsat, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic "
+                    "FROM firma_profil WHERE id = 1")
         r = cur.fetchone()
-    profil = dict(zip(("tip_firma", "forma_juridica", "capital_subscris", "capital_varsat"), r)) if r else {}
+    profil = dict(zip(("tip_firma", "forma_juridica", "capital_subscris", "capital_varsat", "regim_fiscal", "platitor_tva", "tip_decont",
+                       "operatiuni_ic"), r)) if r else {}
     lipsuri = _cs.lipsa(profil) if profil else []
+    la_salvare = _cs.lipsuri_la_salvare(profil) if lipsuri else []   # [17.5-S, 11] ce mai cere salvarea, numai când emiterea e blocată
     forma, sursa = (None, None)
     if lipsuri and not profil.get("forma_juridica"):
         forma, sursa = forma_propusa_firma(conn, tenant_id)
@@ -1249,7 +1254,9 @@ def pregatire_emitere(conn, tenant_id, la_data):
             "serie_lipsa": not serie_facturi(conn),   # [06.10.2026 §6.1] nu blochează: refuzul o cere și o setează pe loc
             # [lotul 07.10 pct.18] scadența PROPUSĂ pe formular (editabilă): zilele și temeiul vin de aici, nu din ecran
             "scadenta_zile": SCADENTA_PROPUSA[0], "scadenta_temei": str(SCADENTA_PROPUSA[1]),
-            "mesaj_lipsuri": _cs.mesaj_la_deschidere(lipsuri, forma, sursa),
+            "mesaj_lipsuri": _cs.mesaj_la_deschidere(lipsuri, forma, sursa, la_salvare),
+            "lipsuri_la_salvare": la_salvare, "mesaj_la_salvare": _cs.propozitie_la_salvare(la_salvare),   # [17.5-S, 11] cardul de emitere le spune pe ecran
+            "campuri_lipsa": [_csl.CAMP_LIPSA[x] for x in lipsuri if x in _csl.CAMP_LIPSA],   # [17.5-S, 11b] câmpurile marcate la deschiderea Date firmă
             "cote_permise": sorted({int(c) if int(c) == c else float(c) for c in permise}, reverse=True) if permise else None,
             # [274b] categoriile de TVA ale unei linii cu 0% (core/categorii_tva; goală la neplătitor: „O” e automat) și, pentru
             # taxarea inversă, categoriile produsului (codurile D394, aceeași listă ca la facturile primite, 273c)

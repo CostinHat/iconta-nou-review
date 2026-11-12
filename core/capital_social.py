@@ -115,7 +115,29 @@ def lipsa(profil):
     return []
 
 
-def mesaj_la_deschidere(lipsuri, forma_propusa=None, sursa=None):
+def lipsuri_la_salvare(profil):
+    """[17.5-S, 11] Ce mai cere SALVAREA din Date firmă (aceeași listă, în aceeași ordine, ca `date_firma.js::_vectorDinFormular`), numit în termenii
+    contabilului, pentru ce lipsește efectiv din profil. Nu blochează emiterea: e numai informare — emiterea o blochează `lipsa`. Partida simplă nu are regim fiscal."""
+    out = []
+    if regim_contabil(profil.get("tip_firma")) != "simpla" and not profil.get("regim_fiscal"):
+        out.append("regimul fiscal (micro sau profit)")
+    if profil.get("platitor_tva") is None:
+        out.append("dacă firma e înregistrată în scopuri de TVA (Da sau Nu)")
+    if profil.get("operatiuni_ic") is None:
+        out.append("operațiunile intracomunitare (Da sau Nu)")
+    if profil.get("platitor_tva") is True and not profil.get("tip_decont"):
+        out.append("periodicitatea decontului TVA (lunar sau trimestrial)")
+    return out
+
+
+def propozitie_la_salvare(la_salvare):
+    """Propoziția care se adaugă imediat după mesajul lipsurilor: ce le va cere și salvarea (emiterea rămâne blocată numai de `lipsa`); '' când nu lipsește nimic."""
+    if not la_salvare:
+        return ""
+    return "La salvarea în Date firmă %s și: %s." % ("se cere" if len(la_salvare) == 1 else "se cer", ", ".join(la_salvare))
+
+
+def mesaj_la_deschidere(lipsuri, forma_propusa=None, sursa=None, la_salvare=()):
     """[comanda Costin 05.10.2026 pct.2] Ce se spune la DESCHIDEREA emiterii, înainte ca omul să completeze ceva: ce lipsește din
     Date firmă și de ce blochează emiterea; cu forma propusă, dacă se poate propune neechivoc."""
     if not lipsuri:
@@ -125,25 +147,27 @@ def mesaj_la_deschidere(lipsuri, forma_propusa=None, sursa=None):
     prop = ""
     if forma_propusa:
         prop = " Forma propusă: %s (din %s) — confirm-o în Date firmă." % (forma_propusa, "ANAF" if sursa == "ANAF" else "denumirea firmei")
-    return ("Înainte de a emite: în Date firmă lipsește %s, iar fără ea factura nu se poate emite (%s).%s "
-            "Poți completa factura acum — ce scrii rămâne pe ecran cât completezi Date firmă." % (ce, temei, prop))
+    return ("Înainte de a emite: în Date firmă lipsește %s, iar fără ea factura nu se poate emite (%s).%s%s "
+            "Poți completa factura acum — ce scrii rămâne pe ecran cât completezi Date firmă."
+            % (ce, temei, (" " + propozitie_la_salvare(la_salvare)) if la_salvare else "", prop))
 
 
-def mesaj_refuz(lipsuri):
+def mesaj_refuz(lipsuri, la_salvare=()):
+    plus = (" " + propozitie_la_salvare(la_salvare)) if la_salvare else ""
     if lipsuri and lipsuri[0].startswith("forma juridică"):
         return ("Factura nu s-a emis: în Date firmă lipsește forma juridică a firmei — de ea depinde ce capital social "
                 "trebuie trecut pe factură (Legea 31/1990 art. 74 alin. (3): la SRL capitalul social, la SA și SCA "
-                "capitalul subscris și cel vărsat). Completează forma și capitalul în Date firmă și apasă din nou "
-                "«Emite» — factura rămâne așa cum ai scris-o.")
+                "capitalul subscris și cel vărsat).%s Completează forma și capitalul în Date firmă și apasă din nou "
+                "«Emite» — factura rămâne așa cum ai scris-o." % plus)
     return ("Factura nu s-a emis: în Date firmă lipsește %s, pe care legea cere să-l treci pe factură (Legea 31/1990 "
-            "art. 74 alin. (3)). Completează-l în Date firmă și apasă din nou «Emite» — factura rămâne așa cum ai "
-            "scris-o." % " și ".join(lipsuri))
+            "art. 74 alin. (3)).%s Completează-l în Date firmă și apasă din nou «Emite» — factura rămâne așa cum ai "
+            "scris-o." % (" și ".join(lipsuri), plus))
 
 
-def refuz(lipsuri):
+def refuz(lipsuri, la_salvare=()):
     """Excepția refuzului de emitere, cu motivul ca DATĂ (cod + temei + ce lipsește) — construită AICI, ca modulul de
     facturare să n-aibă nevoie de numele temeiului (R151: un nume TEMEI mută tot modulul în datoria refuzurilor)."""
-    e = ValueError(mesaj_refuz(lipsuri))
+    e = ValueError(mesaj_refuz(lipsuri, la_salvare))
     e.cod, e.temei, e.lipsa = COD_REFUZ, TEMEI[0], list(lipsuri)
     return e
 
