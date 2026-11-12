@@ -1,0 +1,27 @@
+calibrare 17.5-T pe P=3ddd67bc42cd7193bb288fb581e931648404fd3d
+OK      T.5 ii: 17.5-O2 poarta_plasa 15:04:11–15:36:25 (1934s > prag artificial 1933s), log incarcare_poarta_17_5_O2.log = STOP (nu infra) — decizia stop (fără încărcare străină susținută în fereastră); depasiri_praguri: pragul „poarta_plasa” depășit: 1934s > 1933s
+OK      T.5 ii: 17.5-O3 poarta_plasa 16:36:45–17:08:57 (1932s > prag artificial 1931s), log incarcare_poarta_17_5_O3.log = STOP (nu infra) — decizia stop (fără încărcare străină susținută în fereastră); depasiri_praguri: pragul „poarta_plasa” depășit: 1932s > 1931s
+OK      T.5 ii: 17.5-O poarta_plasa 12:19:40–12:51:54 (1934s > prag artificial 1933s), log incarcare_poarta_17_5_O.log = STOP (nu infra) — decizia stop (fără încărcare străină susținută în fereastră); depasiri_praguri: pragul „poarta_plasa” depășit: 1934s > 1933s
+OK      T.5 ii: 17.5-O poarta_plasa 13:14:39–13:46:58 (1939s > prag artificial 1938s), log incarcare_poarta_17_5_O.log = STOP (nu infra) — decizia stop (fără încărcare străină susținută în fereastră); depasiri_praguri: pragul „poarta_plasa” depășit: 1939s > 1938s
+OK      T.5 ii: ~/ghid_incoming/veghe_incarcare.sh conține formatul citit de parser (ps cu cputimes, stamp «date '+%F %H:%M:%S'», rândul «strain: pid %s cputimes %s»)
+OK      T.5 iii: incarcare_poarta_17_5_O.log în formatul vechi: 3 din 3 stamp-uri și 15 din 15 rânduri «strain» (fără dată în stamp / fără cputimes); stamp-uri în formatul cerut: 0
+OK      T.5 iii: incarcare_poarta_17_5_O2.log în formatul vechi: 9 din 9 stamp-uri și 45 din 45 rânduri «strain» (fără dată în stamp / fără cputimes); stamp-uri în formatul cerut: 0
+OK      T.5 iii: incarcare_poarta_17_5_O3.log în formatul vechi: 8 din 8 stamp-uri și 40 din 40 rânduri «strain» (fără dată în stamp / fără cputimes); stamp-uri în formatul cerut: 0
+OK      T.6 ii: arborele clonei e curat înainte de poartă
+OK      T.6 ii (a): proba căzută de trei ori = trei linii INFRA <sha>, nicio linie VERDE / ROSU, plasa nu a pornit (fișier-martor absent), ieșirea 3 — 3 linii, 3 INFRA, ieșire 3
+OK      T.6 ii (a): stare[complete] gol, stare[oprit] = «infra ×3: proba de mediu …», trei intrări în stare[infra] — {"complete": 0, "reluari": 0, "regresii": 0, "oprit": "infra ×3: proba de mediu e2e_pilot_luna.py::test_pilot_00_primii_pasi: cod 3 fără ieșire", "infra": 3}
+OK      T.6 ii (a): fiecare dintre cele trei încercări pornește din mediu refăcut și rulează proba de două ori (prima rulare + reluarea unică din 17.5-U): contorul probei = 6
+OK      T.6 ii (b): proba căzută la prima încercare (cu reluarea ei unică) și verde la a doua = o linie INFRA, apoi rularea continuă (plasa a pornit: fișier-martor prezent) — 1 linii INFRA, martor True, ieșire 1
+OK      T.6 ii (b): stare[infra] gol după rularea reală, stare[complete] cu o rulare — {"complete": 1, "reluari": 0, "regresii": 1894, "oprit": null, "infra": 0}
+OK      T.6 ii: poarta_verdicte.log și lot_stare_17_5_T.json din depozitul principal neatinse (sha256 înainte = după; absent = absent) — 2928422cae5444f5946f42f60e0517f8c96846350d6bf0cfb8ca9746e2a30047 | absent
+OK      T.8 c: pasi.txt cu textul oracolului în loc de id-uri = REFUZ: proba_contract, ieșirea 1, martorul absent, fără stare — [poarta] REFUZ: proba_contract: nu există rândul pasului a) (a.1 | 1 | ecran | dom:#x | egal | 5 | descriere) în jurnal_verificare.csv
+OK      T.8 c: rândul pasului a) pe alt commit decât baza = REFUZ: proba_contract, ieșirea 1, martorul absent, fără stare — [poarta] REFUZ: proba_contract: rândul pasului a) (a.1) e pe 000000000000, nu pe commitul de bază 3ddd67bc42cd (se produce înainte de primul commit, pe baza lotului)
+OK      T.8 c: captura rândului lipsește = REFUZ: proba_contract, ieșirea 1, martorul absent, fără stare — [poarta] REFUZ: proba_contract: rândul pasului a) (a.1) pe baza 3ddd67bc42cd: captura docs/dovezi/99_9_Z/capturi/a.png lipsește
+OK      T.8 c: dovezi corecte = poarta pornește (fără REFUZ, martorul prezent) — [poarta] ROSU 18d1e792e6f9a25a8ac9082f4169afb70dde9aca (lucru/calibrare-17-5-t) · 1 teste · regresie 0 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 1 · infra 0 · asertiuni_scazute 0 · repar
+OK      T.8 c: lot «unelte» fără pasi.txt = poarta pornește (fără REFUZ, martorul prezent) — [poarta] ROSU 9f4328eb895c24444f5fd99b1c5a030fd2023587 (lucru/calibrare-17-5-t) · 1 teste · regresie 0 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 1 · infra 0 · asertiuni_scazute 0 · repar
+OK      T.8 c: poarta_verdicte.log și lot_stare_17_5_T.json din depozitul principal neatinse (sha256 înainte = după) — 2928422cae5444f5946f42f60e0517f8c96846350d6bf0cfb8ca9746e2a30047 | absent
+OK      T.6 iii: docs/dovezi/17_5_T/proba_mediu.txt există și numește un test din plasa fixă — e2e_pilot_luna.py::test_pilot_00_primii_pasi
+OK      T.6 iii: trei rulări singure ale testului, fiecare ≥ 1 s, scrise în fișier — durate [5.24, 5.4, 5.03]
+OK      T.6 iii: proba e2e_pilot_luna.py::test_pilot_00_primii_pasi rulează verde pe mediul real, durata 22.7 s (niciun proces străin nu se oprește) —  
+OK      T.6 iii: durata probei adaugă 22.7 s la poarta_plasa (maximul de referință din scripts/praguri_17_5_T.txt: 2409 s)
+OK      8019 liber la sfârșit (ss -ltn | grep :8019 gol)

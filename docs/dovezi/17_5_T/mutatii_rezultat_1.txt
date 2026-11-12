@@ -1,0 +1,23 @@
+[e2e] MUTAȚIE aplicată pe copie: core/stat_plata_api.py
+[e2e] MUTAȚIE aplicată pe copie: core/uc_tenants.py
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/firme.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/firme.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/cadru.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/firme.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/firme.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/navigator.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/cabinet.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ds_piese.js
+[e2e] aplicația din index pornită pe 8019 în 16s
+FAILED frontend_test/e2e/e2e_bloc_b.py::test_def_204_titlul_fluturasului_are_diacritice
+FAILED frontend_test/e2e/e2e_lot13_fact.py::test_def_603_nota_borderoului_are_titlul_cu_diacritice_si_sursa_lui
+FAILED frontend_test/e2e/e2e_lot91.py::test_def_386_nota_fara_document_spune_de_ce_si_duce_la_editare
+FAILED frontend_test/e2e/e2e_lot13_ds.py::test_def_655_textul_care_nu_e_numar_nu_se_salveaza
+FAILED frontend_test/e2e/e2e_lot10b_declaratii.py::test_def_436_d100_cu_note_nevalidate_nu_se_pune_in_de_depus
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_276_banca_spune_formatele_si_compara_soldurile
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_29_fereastra_firmei_grupata_sub_titluri
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_4_bun_venit_se_inchide_din_x_si_cu_esc
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_292_fereastra_cozii_poarta_titlul_cardului
+ERROR frontend_test/e2e/e2e_lot6.py::test_def_276_banca_spune_formatele_si_compara_soldurile
+[e2e] 9 failed, 1 passed, 1 error in 74.15s (0:01:14) (91s; capturi în /tmp/mut_iesire)
+gata

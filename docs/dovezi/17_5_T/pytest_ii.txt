@@ -1,0 +1,41 @@
+# pytest (punctul 10 ii): baza (main 62925554, ~/iconta_nou) față de P (ultimul commit de cod)
+## bază
+18 failed, 150 passed, 2 skipped in 107.16s (0:01:47)
+FAILED core/test_fara_secrete_in_git.py::test_tiparele_de_secrete_dau_exact_lista_inchisa
+FAILED core/test_poarta_fara_slabire.py::test_niciun_test_slabit_ocolit_sau_sters_fata_de_intrarea_lotului
+FAILED core/test_poarta_lot.py::test_acelasi_sha_rosu_nu_se_reia
+FAILED core/test_poarta_lot.py::test_acelasi_sha_verde_nu_se_mai_ruleaza
+FAILED core/test_poarta_lot.py::test_arborele_murdar_e_refuzat
+FAILED core/test_poarta_lot.py::test_compus_fara_rulare_completa_rosie_e_refuzat[verdicte0]
+FAILED core/test_poarta_lot.py::test_compus_fara_rulare_completa_rosie_e_refuzat[verdicte1]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_cand_cazutele_lui_x_nu_se_pot_numara
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[core/nou.py-Z = 1\n-core/nou.py \u2014 fisier Python adaugat]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[main.py-# atins\n-main.py \u2014 rutele sunt citite de scanere]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[NOTE.txt-x\n-NOTE.txt \u2014 niciun test nu-l nume\u0219te]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[scripts/e2e_poarta.py-# atins\n-plasa atins\u0103 integral]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_x_care_nu_e_stramos
+FAILED core/test_poarta_lot.py::test_compus_rosu_scrie_rosu_compus
+FAILED core/test_poarta_lot.py::test_compus_verde_reruleaza_cazutele_lui_x_plus_perimetrul_reparatiei
+FAILED core/test_poarta_lot.py::test_pe_main_e_refuzat
+FAILED core/test_poarta_lot.py::test_rularile_continua_pana_la_verde
+FAILED core/test_poarta_lot.py::test_verde_scrie_verdictul_commitului
+## P
+18 failed, 197 passed, 2 skipped in 178.39s (0:02:58)
+FAILED core/test_fara_secrete_in_git.py::test_tiparele_de_secrete_dau_exact_lista_inchisa
+FAILED core/test_poarta_fara_slabire.py::test_niciun_test_slabit_ocolit_sau_sters_fata_de_intrarea_lotului
+FAILED core/test_poarta_lot.py::test_acelasi_sha_rosu_nu_se_reia
+FAILED core/test_poarta_lot.py::test_acelasi_sha_verde_nu_se_mai_ruleaza
+FAILED core/test_poarta_lot.py::test_arborele_murdar_e_refuzat
+FAILED core/test_poarta_lot.py::test_compus_fara_rulare_completa_rosie_e_refuzat[verdicte0]
+FAILED core/test_poarta_lot.py::test_compus_fara_rulare_completa_rosie_e_refuzat[verdicte1]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_cand_cazutele_lui_x_nu_se_pot_numara
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[core/nou.py-Z = 1\n-core/nou.py \u2014 fisier Python adaugat]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[main.py-# atins\n-main.py \u2014 rutele sunt citite de scanere]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[NOTE.txt-x\n-NOTE.txt \u2014 niciun test nu-l nume\u0219te]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_perimetru_nesigur[scripts/e2e_poarta.py-# atins\n-plasa atins\u0103 integral]
+FAILED core/test_poarta_lot.py::test_compus_refuzat_pe_x_care_nu_e_stramos
+FAILED core/test_poarta_lot.py::test_compus_rosu_scrie_rosu_compus
+FAILED core/test_poarta_lot.py::test_compus_verde_reruleaza_cazutele_lui_x_plus_perimetrul_reparatiei
+FAILED core/test_poarta_lot.py::test_pe_main_e_refuzat
+FAILED core/test_poarta_lot.py::test_rularile_continua_pana_la_verde
+FAILED core/test_poarta_lot.py::test_verde_scrie_verdictul_commitului

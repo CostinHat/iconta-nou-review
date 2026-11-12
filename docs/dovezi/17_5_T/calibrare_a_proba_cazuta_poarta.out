@@ -1,0 +1,75 @@
+[poarta] infrastructură (reluare unică): plasa_e2e::sesiune
+[poarta] INFRA 593be5b6af93107132ad3d7c9fb266185fd87fbf (lucru/calibrare-17-5-t) · 4 teste · regresie 1894 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 0 · infra 1 · asertiuni_scazute 0 · reparat 0 · noi_verzi 0 · verificator 0s · pytest 4s · proba_mediu 0s · plasa_e2e 0s · total 4s
+    regresie: core/test_salarizare.py::test_brut_6000_fara_dependenti_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_4325_are_facilitate_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_peste_plafon_deducere_zero (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_2000_suprataxa_pe_angajator (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_exceptat_fara_suprataxa (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_difera_pe_semestru (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_degresiva_pe_trepte (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_copil_scoala (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_zero_fara_functie_baza (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_cass_doar_pe_01_07_10 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ro_valid_e_tip_1 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_fara_cui_e_tip_2 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ue_e_tip_3_nu_se_exclude (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_non_ue_e_tip_4 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_lantul_R27_R42_se_calculeaza_complet (a dispărut din rulare)
+    regresie: core/test_d300.py::test_formula_R27_respecta_structura_oficiala (a dispărut din rulare)
+    regresie: core/test_d300.py::test_achizitie_mai_mare_decat_livrarea_da_sold_negativ (a dispărut din rulare)
+    regresie: core/test_d300.py::test_fara_operatiuni_nu_scrie_randuri_goale (a dispărut din rulare)
+    regresie: core/test_d300.py::test_d300_manual_cheie_necunoscuta_ridica (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_partener_clasificare_pct216 (a dispărut din rulare)
+    infra: plasa_e2e::sesiune
+[poarta] INFRA (încercarea 1, nu consumă o rulare): proba de mediu e2e_pilot_luna.py::test_pilot_00_primii_pasi: cod 3 fără ieșire
+[poarta] relansare după încercarea infra 1, pe aceeași sha, în același mod
+[poarta] infrastructură (reluare unică): plasa_e2e::sesiune
+[poarta] INFRA 593be5b6af93107132ad3d7c9fb266185fd87fbf (lucru/calibrare-17-5-t) · 4 teste · regresie 1894 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 0 · infra 1 · asertiuni_scazute 0 · reparat 0 · noi_verzi 0 · verificator 0s · pytest 2s · proba_mediu 0s · plasa_e2e 0s · total 2s
+    regresie: core/test_salarizare.py::test_brut_6000_fara_dependenti_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_4325_are_facilitate_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_peste_plafon_deducere_zero (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_2000_suprataxa_pe_angajator (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_exceptat_fara_suprataxa (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_difera_pe_semestru (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_degresiva_pe_trepte (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_copil_scoala (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_zero_fara_functie_baza (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_cass_doar_pe_01_07_10 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ro_valid_e_tip_1 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_fara_cui_e_tip_2 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ue_e_tip_3_nu_se_exclude (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_non_ue_e_tip_4 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_lantul_R27_R42_se_calculeaza_complet (a dispărut din rulare)
+    regresie: core/test_d300.py::test_formula_R27_respecta_structura_oficiala (a dispărut din rulare)
+    regresie: core/test_d300.py::test_achizitie_mai_mare_decat_livrarea_da_sold_negativ (a dispărut din rulare)
+    regresie: core/test_d300.py::test_fara_operatiuni_nu_scrie_randuri_goale (a dispărut din rulare)
+    regresie: core/test_d300.py::test_d300_manual_cheie_necunoscuta_ridica (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_partener_clasificare_pct216 (a dispărut din rulare)
+    infra: plasa_e2e::sesiune
+[poarta] INFRA (încercarea 2, nu consumă o rulare): proba de mediu e2e_pilot_luna.py::test_pilot_00_primii_pasi: cod 3 fără ieșire
+[poarta] relansare după încercarea infra 2, pe aceeași sha, în același mod
+[poarta] infrastructură (reluare unică): plasa_e2e::sesiune
+[poarta] INFRA 593be5b6af93107132ad3d7c9fb266185fd87fbf (lucru/calibrare-17-5-t) · 4 teste · regresie 1894 · restanta 0 · baza_mutata 0 · nou_regresie 0 · invalid 0 · infra 1 · asertiuni_scazute 0 · reparat 0 · noi_verzi 0 · verificator 0s · pytest 3s · proba_mediu 0s · plasa_e2e 0s · total 2s
+    regresie: core/test_salarizare.py::test_brut_6000_fara_dependenti_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_4325_are_facilitate_sem2 (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_peste_plafon_deducere_zero (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_2000_suprataxa_pe_angajator (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_part_time_exceptat_fara_suprataxa (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_minim_difera_pe_semestru (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_degresiva_pe_trepte (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_copil_scoala (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_deducere_zero_fara_functie_baza (a dispărut din rulare)
+    regresie: core/test_salarizare.py::test_cass_doar_pe_01_07_10 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ro_valid_e_tip_1 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_fara_cui_e_tip_2 (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_ue_e_tip_3_nu_se_exclude (a dispărut din rulare)
+    regresie: core/test_d394.py::test_partener_non_ue_e_tip_4 (a dispărut din rulare)
+    regresie: core/test_d300.py::test_lantul_R27_R42_se_calculeaza_complet (a dispărut din rulare)
+    regresie: core/test_d300.py::test_formula_R27_respecta_structura_oficiala (a dispărut din rulare)
+    regresie: core/test_d300.py::test_achizitie_mai_mare_decat_livrarea_da_sold_negativ (a dispărut din rulare)
+    regresie: core/test_d300.py::test_fara_operatiuni_nu_scrie_randuri_goale (a dispărut din rulare)
+    regresie: core/test_d300.py::test_d300_manual_cheie_necunoscuta_ridica (a dispărut din rulare)
+    regresie: core/test_d394.py::test_tip_partener_clasificare_pct216 (a dispărut din rulare)
+    infra: plasa_e2e::sesiune
+[poarta] INFRA (încercarea 3, nu consumă o rulare): proba de mediu e2e_pilot_luna.py::test_pilot_00_primii_pasi: cod 3 fără ieșire
+[poarta] OPRIT: infra ×3: proba de mediu e2e_pilot_luna.py::test_pilot_00_primii_pasi: cod 3 fără ieșire

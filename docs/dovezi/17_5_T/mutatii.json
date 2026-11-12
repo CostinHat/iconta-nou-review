@@ -1,0 +1,52 @@
+[
+ {
+  "fisier": "core/stat_plata_api.py",
+  "ancora": "Paragraph(f\"Fluturaș de salariu",
+  "inlocuire": "Paragraph(f\"Fluturas de salariu"
+ },
+ {
+  "fisier": "core/uc_tenants.py",
+  "ancora": "+ \" - \" + furnizor_nume",
+  "inlocuire": "+ \" / \" + furnizor_nume"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "o notă nu se validează fără documentul",
+  "inlocuire": "o notă se validează fără documentul"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "if (cat && !(parseFloat(corp.querySelector(\"#c-suma\").value) > 0)) lipsa.push(\"suma\");",
+  "inlocuire": "if (false) lipsa.push(\"suma\");"
+ },
+ {
+  "fisier": "static/js/cadru.js",
+  "ancora": "bara.className = \"fereastra-jos\";",
+  "inlocuire": "bara.className = \"fereastra-jos-x\";"
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "id=\"bk-fisier\"",
+  "inlocuire": "id=\"bk-fisierx\""
+ },
+ {
+  "fisier": "static/js/ecrane/firme.js",
+  "ancora": "[\"termene\", \"Termene\"],",
+  "inlocuire": "[\"termene\", \"Termene2\"],"
+ },
+ {
+  "fisier": "static/js/navigator.js",
+  "ancora": "<button class=\"nav-x\" title=\"Închide\"",
+  "inlocuire": "<button class=\"nav-x2\" title=\"Închide\""
+ },
+ {
+  "fisier": "static/js/ecrane/cabinet.js",
+  "ancora": "_coadaTitlu = titluCardCoada({ patruOchi, note: noteDeValidat });",
+  "inlocuire": "_coadaTitlu = \"Altceva\";"
+ },
+ {
+  "fisier": "core/audit_preluare.py",
+  "ancora": "acum se citește întreg, cu diacritice.",
+  "inlocuire": "acum se citește parțial, cu diacritice."
+ }
+]

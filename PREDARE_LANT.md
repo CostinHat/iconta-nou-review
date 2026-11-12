@@ -2,6 +2,11 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-T (unelte, 12.11.2026) — baza e2e curățată (120 → 18 roșii pe cele 49 de fișiere), G2, proba de mediu, proba de contract la începutul porții; ramura `lucru/lot17-5t` (worktree `~/iconta_lot17_5t`), nicio schimbare de produs
+- Unelte noi: `scripts/infra_g2.py` (decizia pură G2), `scripts/verifica_lista_17_5_T.py` (garda aserțiunilor), `scripts/calibreaza_17_5_T.py`; `poarta_lib.ruleaza_trepte` (proba de mediu, `dupa_treapta`, `OprirePoarta`), `poarta_rulare.py` (`remasoara_g2`, proba de contract, infra ×3 cu aserțiune repetată), `publica_lot.py` (`proba_contract`, `depasiri_praguri` cu `infra_g2`), `jurnal_lot.py` (`infra_g2`, `marcaje_g2`). Teste: `core/test_unelte_17_5_T.py`.
+- Ajutoare de test: `frontend_test/e2e/conftest.py::la_luna_ceruta`, `luna_de_lucru_azi`. Dovezi: `docs/dovezi/17_5_T/` (lista_reconfirmata.tsv, baza_e2e*, dupa_e2e*, instabile/, t3/, proba_mediu*, asertiuni.txt, calibrare_17_5_T.txt).
+- Defecte găsite numai în citire: C232 (titlul cozii), C233 (bilanț, An precedent), C234 (#sp-cauta ascuns), C235 (Închidere lună la 1366×768).
+
 ## LOTUL 17.5-S (produs, 12.11.2026) — pozițiile Pilot deschise pe ecran (X04, Mișcări, 640.1, 563.1, 738, 752, 749, 603.1, 618.1, 607.1, emiterea pe firmă nouă, F023), ramura `lucru/lot17-5s` (worktree `~/iconta_lot17_5s`), bază main 5adcf61f
 - Corecția 1 (12.11.2026): C nou = `75552185` (același cod ca `6468434b` + dovezile corecte), poarta VERDE (rularea 2 din 2, decizia arhitectului), parcurgerile «dupa» și haiku_1 pe el, commit E `656371d2`; starea publicării: vezi `~/lot_17_5_S_raport.md`.
 - Stare: cod și teste gata pe ramură; poarta, parcurgerile haiku_1 și «dupa» și publicarea după; vezi raportul `~/lot_17_5_S_raport.md` pentru starea finală.

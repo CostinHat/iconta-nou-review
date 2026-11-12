@@ -1,0 +1,9 @@
+== 2026-11-12T10:10:00 restaurare
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 79s
+== start e2e: e2e_pilot_luna.py::test_pilot_00_primii_pasi
+[e2e] aplicația din index pornită pe 8019 în 16s
+
+[e2e] 1 passed in 5.40s (22s; capturi în /tmp/proba1_2)
+== durata 102 s; exit
+gata

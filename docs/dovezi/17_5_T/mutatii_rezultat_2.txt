@@ -1,0 +1,14 @@
+[e2e] MUTAȚIE aplicată pe copie: core/stat_plata_api.py
+[e2e] MUTAȚIE aplicată pe copie: core/uc_tenants.py
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/firme.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/firme.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/cadru.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/firme.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/firme.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/navigator.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ecrane/cabinet.js
+[e2e] MUTAȚIE aplicată pe copie: static/js/ds_piese.js
+[e2e] aplicația din index pornită pe 8019 în 16s
+
+[e2e] 1 passed in 8.00s (24s; capturi în /tmp/mut_iesire2)
+gata

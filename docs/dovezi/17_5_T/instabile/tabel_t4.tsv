@@ -1,0 +1,25 @@
+test	T.1 (prima rulare)	rulare 2	rulare 3	instabil?
+frontend_test/e2e/e2e_bloc_c.py::test_def_190_eroarea_primei_generari_nu_ramane_dupa_trimitere	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_72_bilantul_intra_in_coada	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_74_declaratia_cu_formular_manual_intra_in_coada	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_76_datele_citite_de_server_sunt_cerute_de_formular	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_76_fiecare_cheie_citita_de_server_are_campul_pe_ecran	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_79_da_nu_din_schema_cerute_la_prima_folosire	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_80_nir_un_singur_element_in_coada	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_83_pretul_de_raft_gol_se_cere_langa_camp	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_84_furnizorul_nir_din_anaf	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_91_respingerea_e_confirmata_pe_ecran	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_92_butonul_respinge_din_dialog_e_rosu_plin	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_93_cifra_clopotelului_nu_acopera_gliful	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_95_nir_legat_de_factura_scrie_doar_adaosul_si_tva_neexigibila	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_97_api_cere_norma_functia_de_baza_si_scutirea	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_97_importul_cere_norma_functia_de_baza_si_scutirea	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_c.py::test_def_98_seria_chitantei_nu_vine_ch_din_oficiu	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_bloc_d.py::test_def_119_tva_din_nir_fara_factura_nu_e_pe_4426_deci_d300_se_potriveste	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_lot12_cx2.py::test_def_c134_d112_fondul_de_salarii_brute_cuprinde_indemnizatia_cm_a_angajatorului	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_lot12_cx2.py::test_def_c141_d407_in_coada_fara_termen_ghicit	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_lot12_cx2.py::test_def_c142_d406_clientul_facturii_lipsa_din_nomenclator_apare_in_masterfiles	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_lot72_declaratii.py::test_def_297_declaratia_depasita_nu_se_depune_si_se_genereaza_din_nou	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_lot72_declaratii.py::test_def_298_declaratia_numeste_factura_fara_nota_validata_si_cu_tva_0	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_lot72_declaratii.py::test_def_299_refuzul_spune_perioada_deschide_si_inlocuieste	verde	verde	verde	nu s-a repetat roșu
+frontend_test/e2e/e2e_lot72_declaratii.py::test_def_313_coada_titlul_urmeaza_cardul_renuntarea_fara_motiv_si_notele_numite	verde	verde	verde	nu s-a repetat roșu

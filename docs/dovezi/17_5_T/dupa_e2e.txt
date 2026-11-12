@@ -1,0 +1,26 @@
+== 2026-11-12T12:21:12 restaurare
+[baza_test] verifica: precondiții căzute: 0
+[baza_test] restaurat în 78s
+== start e2e: e2e_bloc_a.py e2e_bloc_b.py e2e_bloc_c.py e2e_bloc_d.py e2e_bloc_e.py e2e_bloc_f.py e2e_ciorne_proprii.py e2e_comanda_1010.py e2e_d300_ciorne_17_5_W.py e2e_lot10_ferestre.py e2e_lot10_migrare.py e2e_lot10_valuta.py e2e_lot10b_declaratii.py e2e_lot10b_salarii_jurnal.py e2e_lot10b_stoc.py e2e_lot11_m.py e2e_lot11_s9.py e2e_lot11_v.py e2e_lot11_w2.py e2e_lot11_w4.py e2e_lot11_z.py e2e_lot12_ctrl_d112.py e2e_lot12_cx1.py e2e_lot12_cx2.py e2e_lot12_firme1.py e2e_lot12_firme2.py e2e_lot12_reev2.py e2e_lot12_sal2.py e2e_lot12_scad.py e2e_lot12_texte.py e2e_lot13_ds.py e2e_lot13_fact.py e2e_lot13_firme2.py e2e_lot13_migr.py e2e_lot13_ops.py e2e_lot13_portal_p1.py e2e_lot13_sal.py e2e_lot14.py e2e_lot14_3.py e2e_lot15_1.py e2e_lot15_e2.py e2e_lot6.py e2e_lot72_contab.py e2e_lot72_declaratii.py e2e_lot81.py e2e_lot91.py e2e_lot92.py e2e_pilot_17_5_S.py e2e_pozitii_validate.py
+[e2e] aplicația din index pornită pe 8019 în 16s
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_193_cardurile_cozii_au_latimea_ferestrei
+FAILED frontend_test/e2e/e2e_bloc_a.py::test_def_203_cardurile_cabinetului_ordine_raporteaza_si_cifre
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_114_clopotelul_ramane_vizibil_si_apasabil
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_121_restantele_se_numara_de_la_luna_preluarii
+FAILED frontend_test/e2e/e2e_comanda_1010.py::test_def_221_an_precedent_e_soldul_anului_precedent
+FAILED frontend_test/e2e/e2e_lot10_migrare.py::test_def_425_numai_soldurile_finale_spune_ce_lipseste_si_ce_afecteaza
+FAILED frontend_test/e2e/e2e_lot10b_salarii_jurnal.py::test_def_394_nota_noua_nu_deruleaza_cu_note_in_luna
+FAILED frontend_test/e2e/e2e_lot12_reev2.py::test_def_630_reevaluarea_lunii_in_curs_arata_diferenta_provizorie_stornarea_si_soldul_din_4111
+FAILED frontend_test/e2e/e2e_lot12_texte.py::test_def_172_supervizorul_fara_d101_depus_vorbeste_limba_contabilului
+FAILED frontend_test/e2e/e2e_lot12_texte.py::test_def_c132_supervizorul_spune_axa_d101_in_limba_contabilului
+FAILED frontend_test/e2e/e2e_lot13_migr.py::test_def_623_auditul_spune_temeiul_o_singura_data_pe_verificare
+FAILED frontend_test/e2e/e2e_lot13_portal_p1.py::test_def_553_cifrele_spun_pierderea_si_previziunea_isi_explica_saptamana
+FAILED frontend_test/e2e/e2e_lot13_sal.py::test_def_677_statul_compact_si_compozitia_pe_trei_coloane
+FAILED frontend_test/e2e/e2e_lot14.py::test_def_c203_ferestrele_incap_pe_un_ecran_stocuri_inchidere_balanta[1366-768]
+FAILED frontend_test/e2e/e2e_lot6.py::test_def_279_starea_reala_a_notei_la_salvare_si_pe_rand
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_323_depasita_are_grupul_ei_si_fereastra_o_numeste
+FAILED frontend_test/e2e/e2e_lot81.py::test_def_329_avertismentul_vechi_dispare_dupa_validare_si_nota_o_singura_data
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare
+[e2e] 18 failed, 656 passed, 1 skipped in 4450.19s (1:14:10) (4467s; capturi în /tmp/t7_iesire)
+== durata 4549 s; exit
+gata
