@@ -1,0 +1,34 @@
+# pe C(=HEAD) | bază | fragment
+0	1	Scadențele care urmează în următoarele 60 de zile
+0	1	Scadențele care urmează în următoarele
+0	0	"sesizări noi", "raport"
+0	1	Niciun D101 depus prin aplicație — nu se poate confrunta nimic.
+0	1	pe %d — nu se poate confrunta nimic.
+0	0	anului, până la
+0	0	anului, până la
+1	2	Adaugă asistenți
+0	1	if data_bal else "—"
+0	2	nav.deschide("Activitate cabinet"
+0	2	nav.deschide("Tipare"
+0	1	"titlu": "Declarații lucrate"
+0	1	<h2 class="pf-titlu">Stat de plată
+0	1	<h2 class="pf-titlu">Solicitări</h2>
+0	1	AIC - achiziție
+0	1	titlu.toLowerCase()
+0	1	Scrie un răspuns...
+0	2	toate rândurile înscrise în registru
+0	1	alege tipul mai jos
+0	1	Profit pe articol și vânzări pe agent nu apar aici
+0	1	nav.deschide("Bilanț"
+0	1	facturile mai vechi
+0	1	gt.toFixed(2)
+0	1	deschide("Coada de validare și depunere"
+0	1	landed cost
+0	1	</b><br>Încarcă balanța de deschidere
+0	1	</b><br>Încarcă partenerii
+0	1	</b><br>Încarcă exportul de salariați
+preview live (fără comentarii): C=0 bază=3
+</b><br> în migrare.js: C=7
+Completează datele cerute în fereastră: C=1
+0	1	'"sesiz\\u0103ri noi", "raport"' (cu escape literal)
+0	2	'anului, p\\u00e2n\\u0103 la' (cu escape literal)
