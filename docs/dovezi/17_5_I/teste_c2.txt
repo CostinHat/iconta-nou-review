@@ -1,0 +1,20 @@
+=== e2e_pozitii_validate.py (08:54:04)
+[e2e] aplicația din index pornită pe 8019 în 16s
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare
+[e2e] 1 failed, 16 passed in 107.96s (0:01:47) (125s; capturi în /tmp/e2e_cap_17_5_I)
+rc=1
+=== e2e_lot12_texte.py (08:57:30)
+[e2e] aplicația din index pornită pe 8019 în 16s
+FAILED frontend_test/e2e/e2e_lot12_texte.py::test_def_172_supervizorul_fara_d101_depus_vorbeste_limba_contabilului
+FAILED frontend_test/e2e/e2e_lot12_texte.py::test_def_c132_supervizorul_spune_axa_d101_in_limba_contabilului
+[e2e] 2 failed, 5 passed in 25.24s (42s; capturi în /tmp/e2e_cap_17_5_I)
+rc=1
+=== e2e_lot12_verif.py (08:59:31)
+[e2e] aplicația din index pornită pe 8019 în 16s
+[e2e] 4 passed in 34.09s (51s; capturi în /tmp/e2e_cap_17_5_I)
+rc=0
+=== e2e_texte_17_5_I.py (09:01:41)
+[e2e] aplicația din index pornită pe 8019 în 16s
+[e2e] 1 passed in 123.38s (0:02:03) (140s; capturi în /tmp/e2e_cap_17_5_I)
+rc=0
+FIN
