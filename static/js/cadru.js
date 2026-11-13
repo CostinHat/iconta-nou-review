@@ -113,7 +113,7 @@ export const CATALOG_ACTIUNE_PRINCIPALA = [
   /^(Validează toate|Validează selectate|Aprobă|Răspunde)(?=\s|$)/,
   /^(Salvează|Emite|Contabilizează|Închide luna|Înregistrează|Înscrie|Trimite|Importă|Aplică|Sincronizează|Validează \(ANAF\)|Rulează|Verifică|Schimbă parola)(?=\s|$)/,
   /^Continuă(?=\s|$)/,
-  /^(\+ )?(Operațiune nouă|Import extras|Adaugă|Invită|Descarcă model)(?=\s|$)|^(\+ )?[\p{L} ]{2,30} (nou|nouă)$/u,
+  /^(\+ )?(Operațiune nouă|Import extras|Adaugă|Deschide Asistenți|Invită|Descarcă model)(?=\s|$)|^(\+ )?[\p{L} ]{2,30} (nou|nouă)$/u,
   /^(Generează|Regenerează)(?=\s|$)/,
   /^Descarcă PDF(?=\s|$)/,
 ];

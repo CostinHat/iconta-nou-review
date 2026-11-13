@@ -1,0 +1,14 @@
+# pct.3
++      const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 11}`);
++    bBilant.addEventListener("click", () => { nav.deschide("Bilanț anual", (c2) => ecranBilant(c2, nav, t)); });
+# pct.4(i)
+comparate=23
+# pct.4(ii)
+class="pf-frand-nume"
+pr-rand-sub baza: 3 P: 4
+# pct.4(iii)
+-        temei_completitudine=("toate rândurile înscrise în registru%s, în "
+-            "toate rândurile înscrise în registru pentru exercițiul %d, inventarierea %s, în "
+-    else if (lipsa.length) text = "Completează: " + lipsa.join(", ");
+-  const butonAsistenti = `<button type="button" class="buton-secundar" id="cap-adauga-asistenti" data-actiune="POST /asistenti">Adaugă asistenți</button>`;
+# nota pct.4(ii): singura diferență, class="pf-frand-nume", e antetul de secțiune scos prin excepția numită de corecția 1 pct.2 (flux_concediu.js, AC112); class="pf-titlu" există deja în ambele mulțimi.

@@ -1,0 +1,4 @@
+Verificatorul de design, înainte (vd_inainte/, cod de bază) → după (vd_dupa/, P2); 210 perechi; ferestrele a căror literă a–h, bară de jos sau număr de tabele DS se schimbă, pe nume:
+- Capacitate 1366x768: litere pică «» → «b»; bara de jos «"fereastra-jos"» → «"fereastra-jos fj-fara-principal"»
+- Capacitate 1920x1080: litere pică «» → «b»; bara de jos «"fereastra-jos"» → «"fereastra-jos fj-fara-principal"»
+- Panou Admin — Sănătate server 1920x1080: litere pică «b» → «»; bara de jos «"fereastra-jos fj-fara-principal"» → «"fereastra-jos"»
