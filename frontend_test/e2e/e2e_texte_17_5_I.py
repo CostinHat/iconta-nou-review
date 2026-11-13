@@ -70,8 +70,18 @@ def _acasa(pg):
     pg.wait_for_timeout(800)
 
 
+def _deschide_sef(pg):
+    """Cardurile Consolidare, Asistenți, Capacitate, Activitate stau în secțiunea «Pentru șeful de cabinet», pliată implicit (17.2); ca în parcurs_17_5_I.comuta_sef, idempotent."""
+    try:
+        pg.evaluate("() => { const b = document.querySelector('.cab-grila > section.firme-grup .firme-grup-btn[aria-expanded=\"false\"]'); if (b) b.click(); }")
+        pg.wait_for_selector("#fgc-sef:not([hidden])", state="attached", timeout=3000)
+    except Exception:   # noqa: BLE001
+        pass
+
+
 def _card_cabinet(pg, cheie, asteapta=None):
     _acasa(pg)
+    _deschide_sef(pg)
     try:
         pg.click("button.cab-card:has([data-cheie='%s'])" % cheie, timeout=10000)
         pg.wait_for_selector(TOP + ".fereastra-corp", timeout=20000)
@@ -335,7 +345,12 @@ def test_texte_17_5_I(browser):
         if _fisa(pg, parcurs):
             _apasa_text(pg, "Concediu medical", "#cm-nou", 2000)
             _apasa(pg, "#cm-nou", "#cm-calc", 2500)
-            _cere(rele, "Certificat nou", _text(pg), contine=["Datele certificatului"], lipseste=["Certificat nou"])
+            # corpul ferestrei nu repetă numele ferestrei: titlul «Certificat nou · <salariat>» stă numai în bara de sus, iar formularul are titlu propriu «Datele certificatului»
+            tc = _text(pg)
+            if "Datele certificatului" not in tc:
+                rele.append("Certificat nou: lipsește «Datele certificatului» (text: «%s»)" % tc[:200])
+            if "Certificat nou" in tc:
+                rele.append("Certificat nou: corpul ferestrei repetă numele ferestrei (text: «%s»)" % tc[:200])
         else:
             rele.append("Fișa salariatului F5 nu s-a deschis (Certificat nou nevizitat)")
     finally:

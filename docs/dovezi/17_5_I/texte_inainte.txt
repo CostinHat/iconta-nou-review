@@ -1,0 +1,206 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______________________________ test_texte_17_5_I _______________________________
+
+browser = <Browser type=<BrowserType name=chromium executable_path=/home/costin/.cache/ms-playwright/chromium-1234/chrome-linux64/chrome> version=151.0.7922.34>
+
+    def test_texte_17_5_I(browser):
+        from core import ceas_proba
+        parcurs = _incarca_parcurs_17_1()
+        rele = []
+        b = browser.new_context(viewport={"width": 1366, "height": 768})
+        try:
+            b.clock.set_fixed_time(ceas_proba.MOMENT_REF)
+            b.add_init_script(sesiune(ADMIN))
+            pg = b.new_page()
+            pg.goto(BAZA + "/", wait_until="load", timeout=30000)
+    
+            # 1. Sinteza zilei: acordul numeralului la fiecare cifră (snapshot: 1 sesizare necitită -> «1 sesizare nouă»)
+            _card_cabinet(pg, "brief", ".sa-cifra")
+            cifre = pg.locator(TOP + ".sa-cifra")
+            if not cifre.count():
+                rele.append("Sinteza zilei: rândul cifrelor (.sa-cifra) lipsește")
+            for i in range(cifre.count()):
+                t = _norm(cifre.nth(i).inner_text())
+                if re.match(r"^1 (sesizări noi|pregătite|validate|respinse|depuse)$", t):
+                    rele.append("Sinteza zilei: acord greșit la singular: «%s»" % t)
+            _cere(rele, "Sinteza zilei", _text(pg), contine=["1 sesizare nouă"], lipseste=["1 sesizări noi", "de de validat"])
+    
+            # 2. Termene: introducerea numește restanțele
+            _card_cabinet(pg, "termene", ".mig-intro")
+            _cere(rele, "Termene", _text(pg), contine=["Restanțele (termen depășit, nedepuse) și scadențele din următoarele 60 de zile, pe dată."],
+                  lipseste=["Scadențele care urmează"])
+    
+            # 2. Consolidare: luna în curs e cuprinsă
+            _card_cabinet(pg, "consolidare", ".pf-intro")
+            _cere(rele, "Consolidare", _text(pg), contine=["inclusiv (luna în curs"], lipseste=["anului, până la"])
+    
+            # 5. Asistenți: drepturile în cuvinte
+            _card_cabinet(pg, "asistenti", ".asi-perm")
+            pastile = pg.evaluate("() => [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .asi-perm')].map((e) => [e.className, e.textContent.trim()])")
+            if not pastile:
+                rele.append("Asistenți: nicio pastilă de drept (.asi-perm)")
+            for cls, t in pastile:
+                if "asi-perm-off" in cls and not t.startswith("Nu poate "):
+                    rele.append("Asistenți: dreptul lipsă nu e spus în cuvinte: «%s»" % t)
+                if "asi-perm-on" in cls and not t.startswith("✓ Poate "):
+                    rele.append("Asistenți: dreptul prezent nu mai e «✓ Poate …»: «%s»" % t)
+            _cere(rele, "Asistenți", _text(pg), contine=["Nu poate valida", "✓ Poate pregăti", "Adaugă asistent"], lipseste=["· Poate valida", "· Poate depune"])
+    
+            # 5. Capacitate: butonul poartă numele ferestrei pe care o deschide
+            _card_cabinet(pg, "capacitate", ".stare-goala")
+            _cere(rele, "Capacitate", _text(pg), contine=["Deschide Asistenți"], lipseste=["Adaugă asistenți"])
+    
+            # 4. Activitate › Activitatea echipei și Tipare de erori: numele ferestrei = numele butonului
+            _card_cabinet(pg, "activitate", "#opt-tipare")
+            _cere(rele, "meniul Activitate", _text(pg), contine=["Activitatea echipei", "Tipare de erori"])
+            _apasa(pg, "#opt-jurnal", ".fereastra-corp", 2500)
+            if _text(pg, NUME) != "Activitatea echipei":
+                rele.append("Activitatea echipei: numele ferestrei e «%s», așteptat «Activitatea echipei»" % _text(pg, NUME))
+            _card_cabinet(pg, "activitate", "#opt-tipare")
+            _apasa(pg, "#opt-tipare", ".fereastra-corp", 2500)
+            if _text(pg, NUME) != "Tipare de erori":
+                rele.append("Tipare de erori: numele ferestrei e «%s», așteptat «Tipare de erori»" % _text(pg, NUME))
+    
+            # 4 + 3. Solicitări client F1: h2 = numele cardului; placeholderul cu «…» și fără «răspuns» la nimic
+            _card(pg, parcurs, F1, "#fa-solicitari", "#sol-input")
+            _cere(rele, "Solicitări client", _text(pg), contine=["Solicitări client", "Niciun mesaj încă."])
+            ph = pg.locator(TOP + "#sol-input").first.get_attribute("placeholder") if pg.locator(TOP + "#sol-input").count() else None
+            if ph != "Scrie un mesaj către client…":
+                rele.append("Solicitări client: placeholderul e «%s», așteptat «Scrie un mesaj către client…»" % ph)
+            al = pg.locator(TOP + "#sol-input").first.get_attribute("aria-label") if pg.locator(TOP + "#sol-input").count() else None
+            if al != "Mesaj către client":
+                rele.append("Solicitări client: aria-label-ul câmpului e «%s», așteptat «Mesaj către client»" % al)
+    
+            # 3. e-Transport F1: linia de pauză la toate opțiunile de tip
+            _card(pg, parcurs, F1, "#fa-etransport", "#et-tip")
+            optiuni = pg.evaluate("() => [...document.querySelectorAll('.fereastra-overlay:not(.fundal) #et-tip option')].map((o) => o.textContent.trim())")
+            if not optiuni:
+                rele.append("e-Transport: lista «Tip operațiune» (#et-tip) lipsește")
+            for o in optiuni:
+                if " - " in o:
+                    rele.append("e-Transport: cratimă cu spații în opțiunea «%s»" % o)
+            if "AIC — achiziție intracomunitară" not in optiuni:
+                rele.append("e-Transport: opțiunea «AIC — achiziție intracomunitară» lipsește (%s)" % optiuni)
+    
+            # 2. Registrul-inventar F1 (gol): majusculă, fără repetarea mesajului registrului gol
+            _card(pg, parcurs, F1, "#fa-reginventar", "#ri-adauga")
+            _cere(rele, "Registrul-inventar", _text(pg), contine=["Toate rândurile înscrise în registru", "Niciun rând înscris."],
+                  lipseste=["toate rândurile înscrise în registru", "un registru gol nu înseamnă"])
+    
+            # 2. Rapoarte comerciale F1: cardul poartă numele ferestrei
+            _card(pg, parcurs, F1, "#fa-rapoarte", "#r-carduri")
+            _cere(rele, "Rapoarte comerciale", _text(pg), contine=["Ce nu apare în aceste rapoarte"], lipseste=["nu apar aici"])
+    
+            # 2. Produse F1: justificarea pe rândul ei, introdusă
+            _card(pg, parcurs, F1, "#fa-produse", ".pr-rand")
+            _cere(rele, "Produse", _text(pg), contine=["Temeiul cotei:", "cota de pe NIR nr 4 din 20.10.2026"])
+            if "· cota de pe NIR" in _text(pg):
+                rele.append("Produse: justificarea e încă lipită după « · » pe rândul prețului")
+    
+            # 2. Istoric facturi F1 (luna 10/2026, după «← luna»): butonul spune câte facturi aduce
+            _card(pg, parcurs, F1, "#fa-facturi")
+            _apasa(pg, "#fac-istoric", "#fac-prev", 2500)
+            _apasa(pg, "#fac-prev", ".fac-frand-btn", 2500)   # 11/2026 n-are facturi; 10/2026 are 25: butonul spune «Arată încă 10 facturi ale lunii»
+            _cere(rele, "Istoric facturi", _text(pg), contine=["Arată încă 10 facturi ale lunii"], lipseste=["Vezi și facturile mai vechi"])
+    
+            # 3. Model factură F1: previzualizare, culorile cu nume
+            _card(pg, parcurs, F1, "#fa-facturi")
+            _apasa(pg, "#fac-model", "#mf-preview", 2500)
+            _cere(rele, "Model factură", _text(pg), contine=["previzualizare în timp real"], lipseste=["preview live"])
+            culori = pg.evaluate("() => [...document.querySelectorAll('.fereastra-overlay:not(.fundal) .mf-culoare-opt')].map((b) => (b.getAttribute('aria-label') || '').trim())")
+            if len(culori) != 7:
+                rele.append("Model factură: %d butoane de culoare, așteptat 7" % len(culori))
+            for c in culori:
+                if not c.startswith("Culoare de accent: ") or len(c) <= len("Culoare de accent: "):
+                    rele.append("Model factură: buton de culoare fără nume (aria-label «%s», așteptat «Culoare de accent: <nume>»)" % c)
+    
+            # 3. NIR nou F1: cost accesoriu fără englezism, TVA transport 0% explicat
+            _card(pg, parcurs, F1, "#fa-stocuri", "#sn-toggle")
+            _apasa(pg, "#sn-toggle", "#sn-transport-cota", 2500)
+            _cere(rele, "NIR nou", _text_brut(pg), contine=["Cost accesoriu — se repartizează", "TVA transport 0%: fără TVA pe factura transportatorului"],
+                  lipseste=["landed cost"])
+    
+            # 2 + 7. Import date F1: rândul «Solduri inițiale» al meniului; pasul Solduri inițiale: numele firmei pe un rând cu textul
+            _card(pg, parcurs, F1, "#fa-import", "#mig-pasi")
+            _cere(rele, "Import date (meniul)", _text(pg), contine=["balanța de deschidere (fără data de referință): 6 conturi"], lipseste=["balanța la —"])
+            _apasa(pg, "#mig-pasi button.mig-frand[data-strat='solduri']", ".mig-intro", 2500)
+            brut = _text_brut(pg)
+            _cere(rele, "Import date › Solduri inițiale", brut, contine=["F1 Comert Stoc SRL · Încarcă balanța de deschidere"], lipseste=["SRLÎncarcă", "balanța la —"])
+    
+            # 4. Bilanț anual F1: numele ferestrei = numele cardului
+            _card(pg, parcurs, F1, "#fa-bilant", "#bl-tip")
+            if _text(pg, NUME) != "Bilanț anual":
+                rele.append("Bilanț anual: numele ferestrei e «%s», așteptat «Bilanț anual»" % _text(pg, NUME))
+            t = _text(pg)
+            if "alege tipul mai jos" in t:
+                rele.append("Bilanț anual: mesajul spune «alege tipul mai jos», dar tipul se alege deasupra")
+            if "Categoria de mărime nu se poate determina" in t and "alege tipul în câmpul «Tip» de sus" not in t:
+                rele.append("Bilanț anual: mesajul categoriei nedeterminate nu trimite la câmpul «Tip» de sus")
+    
+            # 6. Declarații F1 pasul 1: motivul numește câmpul
+            _card(pg, parcurs, F1, "#fa-declaratii", "#dec-continua")
+            if not _motiv(pg).startswith("Completează: Tip declarație"):
+                rele.append("Declarații pasul 1: motivul e «%s», așteptat «Completează: Tip declarație»" % _motiv(pg))
+    
+            # 6. Leasing F1: «Primire bun (financiar)» -> primele trei câmpuri și restul numărate; codul 2.3.2.1.1 din catalog
+            _card(pg, parcurs, F1, "#fa-operatiuni", "button[data-op='leasing']")
+            _apasa(pg, "button[data-op='leasing']", "#op-tip", 2000)
+            _apasa_text(pg, "Primire bun (financiar)", "#op-cod_catalog", 2000)
+            m = _motiv(pg)
+            if not re.match(r"^Completează: [^,]+, [^,]+, [^,]+ și încă \d+( de)? câmpuri$", m):
+                rele.append("Leasing «Primire bun»: motivul e «%s», așteptat «Completează: <3 câmpuri> și încă N câmpuri»" % m)
+            try:
+                pg.fill(TOP + "#op-cod_catalog", "2.3.2.1.1", timeout=10000)
+                pg.dispatch_event(TOP + "#op-cod_catalog", "change")
+                pg.wait_for_function("() => { const s = document.querySelector('.fereastra-overlay:not(.fundal) #op-cod_catalog-stare'); return s && s.textContent.trim().length > 0; }", timeout=20000)
+            except Exception:   # noqa: BLE001
+                pass
+            pg.wait_for_timeout(1000)
+            st = _text(pg, TOP + "#op-cod_catalog-stare")
+            _cere(rele, "Leasing «Cod din catalog» 2.3.2.1.1", st, contine=["în afară de excepțiile înscrise sub acest cod în catalog · durata între 48 și 72 de luni"],
+                  lipseste=["în afară de ·"])
+    
+            # 1. Bancă F1: acordul la plural pe cardul semnelor («N contate, note nevalidate»)
+            _card(pg, parcurs, F1, "#fa-banca", "#bk-carduri")
+            t = _text(pg)
+            # formele exacte (singular la 1; plural; «de» de la 20 în sus și la ...00, ca dupaNumar(); «fără potrivire» e invariabil, fără «de»)
+            for sg, pl, invar in (("fără potrivire", "fără potrivire", True), ("potrivire de verificat", "potriviri de verificat", False),
+                                  ("potrivire parțială", "potriviri parțiale", False), ("operațiune a băncii", "operațiuni ale băncii", False),
+                                  ("contată, notă nevalidată", "contate, note nevalidate", False)):
+                for mt in re.finditer(r"\b(\d+) ((?:de )?(?:%s|%s))(?![\w])" % (re.escape(pl), re.escape(sg)), t):
+                    n = int(mt.group(1))
+                    r = n % 100
+                    asteptat = sg if n == 1 else (("de " if (not invar and n and (r == 0 or r >= 20)) else "") + pl)
+                    if mt.group(2) != asteptat:
+                        rele.append("Bancă: acord greșit pe cardul semnelor: «%s», așteptat «%d %s»" % (mt.group(0), n, asteptat))
+    
+            # 4. Salariați F5: h2 = numele cardului
+            _card(pg, parcurs, F5, "#fa-salariati", "#sp-contare")
+            h2 = _text(pg, TOP + ".fereastra .fereastra-corp h2.pf-titlu")
+            if "Salariați" not in h2 or "Stat de plată" in h2:
+                rele.append("Salariați F5: titlul din corp e «%s», așteptat «Salariați»" % h2)
+    
+            # 4. Certificat nou F5: secțiunea nu repetă numele ferestrei
+            if _fisa(pg, parcurs):
+                _apasa_text(pg, "Concediu medical", "#cm-nou", 2000)
+                _apasa(pg, "#cm-nou", "#cm-calc", 2500)
+                # corpul ferestrei nu repetă numele ferestrei: titlul «Certificat nou · <salariat>» stă numai în bara de sus, iar formularul are titlu propriu «Datele certificatului»
+                tc = _text(pg)
+                if "Datele certificatului" not in tc:
+                    rele.append("Certificat nou: lipsește «Datele certificatului» (text: «%s»)" % tc[:200])
+                if "Certificat nou" in tc:
+                    rele.append("Certificat nou: corpul ferestrei repetă numele ferestrei (text: «%s»)" % tc[:200])
+            else:
+                rele.append("Fișa salariatului F5 nu s-a deschis (Certificat nou nevizitat)")
+        finally:
+            b.close()
+>       assert not rele, "textele 17.5-I: %s" % "; ".join(rele)
+E       AssertionError: textele 17.5-I: Sinteza zilei: acord greșit la singular: «1 sesizări noi»; Sinteza zilei: lipsește «1 sesizare nouă» (text: «Sinteza zilei 3 noiembrie 2026 Astăzi în cabinet 0 pregătite 0 validate 0 respinse 0 depuse 0 de validat 1 sesizări noi Producția echipei Niciun asistent n-a pr…»); Sinteza zilei: încă apare «1 sesizări noi»; Termene: lipsește «Restanțele (termen depășit, nedepuse) și scadențele din următoarele 60 de zile, pe dată.» (text: «Termene Scadențele care urmează în următoarele 60 de zile, pe dată. Termen Declarație Firme Stare 27.04.2026 D300 1 firmă restanță de 200 de zile Deschide 30.04…»); Termene: încă apare «Scadențele care urmează»; Consolidare: lipsește «inclusiv (luna în curs» (text: «Consolidare portofoliu Cumulat de la începutul anului, până la noiembrie 2026. Valori în lei. Înregistrare Firma Venituri Cheltuieli Profit Cash F1 Comert Stoc …»); Consolidare: încă apare «anului, până la»; Asistenți: dreptul lipsă nu e spus în cuvinte: «· Poate valida»; Asistenți: dreptul lipsă nu e spus în cuvinte: «· Poate depune»; Asistenți: dreptul lipsă nu e spus în cuvinte: «· Poate valida»; Asistenți: dreptul lipsă nu e spus în cuvinte: «· Poate depune»; Asistenți: lipsește «Nu poate valida» (text: «Asistenți Asistenții cabinetului: roluri, permisiuni și firmele pe care le lucrează. Tu decizi cine poate pregăti, valida și depune declarații. 1 administrator …»); Asistenți: încă apare «· Poate valida»; Asistenți: încă apare «· Poate depune»; Capacitate: lipsește «Deschide Asistenți» (text: «Capacitate Într-o echipă care crește, munca nu se împarte singură în mod egal. Unii duc trei firme, alții șapte — și afli abia când cineva cedează în perioada d…»); Capacitate: încă apare «Adaugă asistenți»; Activitatea echipei: numele ferestrei e «Activitate cabinet», așteptat «Activitatea echipei»; Tipare de erori: numele ferestrei e «Tipare», așteptat «Tipare de erori»; Solicitări client: lipsește «Solicitări client» (text: «Solicitări Mesaje de la firma-client. Niciun mesaj încă. Trimite…»); Solicitări client: placeholderul e «Scrie un răspuns...», așteptat «Scrie un mesaj către client…»; Solicitări client: aria-label-ul câmpului e «Răspunsul tău», așteptat «Mesaj către client»; e-Transport: cratimă cu spații în opțiunea «AIC - achiziție intracomunitară»; e-Transport: opțiunea «AIC — achiziție intracomunitară» lipsește (['— alege —', 'AIC - achiziție intracomunitară', 'LIC — livrare intracomunitară', 'Transport național', 'Import', 'Export', 'Tranzacție intracom. — intrare', 'Tranzacție intracom. — ieșire']); Registrul-inventar: lipsește «Toate rândurile înscrise în registru» (text: «Registrul-inventar Registru obligatoriu (Legea 82/1991, art. 20), cod 14-1-2. Se întocmește fără ștersături și fără spații libere, pe baza listelor de inventari…»); Registrul-inventar: încă apare «toate rândurile înscrise în registru»; Registrul-inventar: încă apare «un registru gol nu înseamnă»; Rapoarte comerciale: lipsește «Ce nu apare în aceste rapoarte» (text: «Rapoarte comerciale ? Anul 2026 ← an an → Vânzări pe partener Durata de încasare Profit pe produs Fișă client / furnizor Variantele firmei Profit pe articol și …»); Rapoarte comerciale: încă apare «nu apar aici»; Produse: lipsește «Temeiul cotei:» (text: «Produse și servicii Scrii denumirea, iar sistemul potrivește automat cota de TVA corectă din legislație. O poți corecta oricând. Cafea boabe buc · cota de pe Fa…»); Produse: justificarea e încă lipită după « · » pe rândul prețului; Istoric facturi: lipsește «Arată încă 10 facturi ale lunii» (text: «Istoric facturi Luna 10/2026 ← luna luna → Export SAGA lună Export WinMentor lună Vezi și facturile mai vechi din această lună ● Evidența facturilor e deschisă …»); Istoric facturi: încă apare «Vezi și facturile mai vechi»; Model factură: lipsește «previzualizare în timp real» (text: «Model factură Logo, font și culoare — preview live. LOGO Încarcă imagine PNG, JPG sau SVG · max 500 KB · ideal ~400px lățime FONT Sans Serif Mono CULOARE ACCENT…»); Model factură: încă apare «preview live»; Model factură: buton de culoare fără nume (aria-label «», așteptat «Culoare de accent: <nume>»); Model factură: buton de culoare fără nume (aria-label «», așteptat «Culoare de accent: <nume>»); Model factură: buton de culoare fără nume (aria-label «», așteptat «Culoare de accent: <nume>»); Model factură: buton de culoare fără nume (aria-label «», așteptat «Culoare de accent: <nume>»); Model factură: buton de culoare fără nume (aria-label «», așteptat «Culoare de accent: <nume>»); Model factură: buton de culoare fără nume (aria-label «», așteptat «Culoare de accent: <nume>»); Model factură: buton de culoare fără nume (aria-label «», așteptat «Culoare de accent: <nume>»); NIR nou: lipsește «Cost accesoriu — se repartizează» (text: «NIR nou NIR: număr · dată · furnizor · CUI × Verifică Factura furnizorului a sosit?* DaNu— alege —DaNu Nu = factură nesosită: datoria intră pe 408, iar TVA-ul s…»); NIR nou: lipsește «TVA transport 0%: fără TVA pe factura transportatorului» (text: «NIR nou NIR: număr · dată · furnizor · CUI × Verifică Factura furnizorului a sosit?* DaNu— alege —DaNu Nu = factură nesosită: datoria intră pe 408, iar TVA-ul s…»); NIR nou: încă apare «landed cost»; Import date (meniul): lipsește «balanța de deschidere (fără data de referință): 6 conturi» (text: «Import date Alege ce vrei să aduci pentru această firmă. Vector fiscal micro, TVA lunar gata Solduri inițiale balanța la —: 6 conturi gata Solduri parteneri 2 p…»); Import date (meniul): încă apare «balanța la —»; Import date › Solduri inițiale: lipsește «F1 Comert Stoc SRL · Încarcă balanța de deschidere» (text: «Solduri inițiale F1 Comert Stoc SRLÎncarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor) sau balanța de verificare exportată din progra…»); Import date › Solduri inițiale: încă apare «SRLÎncarcă»; Import date › Solduri inițiale: încă apare «balanța la —»; Bilanț anual: numele ferestrei e «Bilanț», așteptat «Bilanț anual»; Bilanț anual: mesajul spune «alege tipul mai jos», dar tipul se alege deasupra; Bilanț anual: mesajul categoriei nedeterminate nu trimite la câmpul «Tip» de sus; Declarații pasul 1: motivul e «Completează datele cerute în fereastră, ca să poți continua.», așteptat «Completează: Tip declarație»; Leasing «Primire bun»: motivul e «Completează: Data, Bunul primit (denumire), Cont imobilizare, Cod din catalog (HG 2139/2004), Data punerii în funcțiune, Metoda de amortizare, CUI locator (societatea de leasing), Denumirea locatorului, Valoare capital, Dobândă totală (din contract), Durata normală (luni, în plaja catalogului)», așteptat «Completează: <3 câmpuri> și încă N câmpuri»; Leasing «Cod din catalog» 2.3.2.1.1: lipsește «în afară de excepțiile înscrise sub acest cod în catalog · durata între 48 și 72 de luni» (text: «autoturisme, în afară de · durata între 48 și 72 de luni (4–6 ani)…»); Leasing «Cod din catalog» 2.3.2.1.1: încă apare «în afară de ·»; Bancă: acord greșit pe cardul semnelor: «4 contată, notă nevalidată», așteptat «4 contate, note nevalidate»; Salariați F5: titlul din corp e «Stat de plată ?», așteptat «Salariați»; Certificat nou: lipsește «Datele certificatului» (text: «Certificat nou · Ionescu Vasile Certificat nou Serie Număr Cod indemnizație* — alege — 01 — Boală obișnuită (55/65/75%) 02 — Accident în timpul deplasării la/de la locul de muncă – neconfirmat de casa»); Certificat nou: corpul ferestrei repetă numele ferestrei (text: «Certificat nou · Ionescu Vasile Certificat nou Serie Număr Cod indemnizație* — alege — 01 — Boală obișnuită (55/65/75%) 02 — Accident în timpul deplasării la/de la locul de muncă – neconfirmat de casa»)
+E       assert not ['Sinteza zilei: acord greșit la singular: «1 sesizări noi»', 'Sinteza zilei: lipsește «1 sesizare nouă» (text: «Sinte...ui, până la noiembrie 2026. Valori în lei. Înregistrare Firma Venituri Cheltuieli Profit Cash F1 Comert Stoc …»)', ...]
+
+frontend_test/e2e/e2e_texte_17_5_I.py:358: AssertionError
+=========================== short test summary info ============================
+FAILED frontend_test/e2e/e2e_texte_17_5_I.py::test_texte_17_5_I - AssertionEr...
+1 failed in 123.10s (0:02:03)
+rc=1 dur=123s

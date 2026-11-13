@@ -87,12 +87,11 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
   }
 
   async function deschideFormular(corp) {
-    corp.innerHTML = `<div id="cm-form-zona"></div>`;
+    corp.innerHTML = `<h2 class="pf-titlu">Datele certificatului</h2><div id="cm-form-zona"></div>`;
     const zona = corp.querySelector("#cm-form-zona");
     const optCod = optiuniCM(await coduriCM(t.id, null));
     zona.innerHTML = `
       <div class="cm-form" data-formular style="display:block;margin:12px 0;max-width:720px">
-        <div class="pf-frand-nume" style="margin-bottom:10px">Datele certificatului</div>
         <div class="grila-campuri" style="max-width:none">
           <label class="camp"><span class="camp-eticheta">Serie</span><input type="text" id="cm-serie" class="camp-input" placeholder="ex. AB"></label>
           <label class="camp"><span class="camp-eticheta">Num\u0103r</span><input type="text" id="cm-numar" class="camp-input" placeholder="ex. 1234567"></label>
