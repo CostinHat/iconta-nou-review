@@ -1581,7 +1581,7 @@ export async function ecranSalariati(corp, nav, t) {   // exportat: garda S2 în
     corp.innerHTML = `
       <div class="rezumat-fix">
       <h2 class="pf-titlu">Salariați ${semnAjutor("F080")}</h2>
-      <p class="pf-intro">Luna ${_lunaTxt(an, luna)}
+      <p class="pf-intro">Stat de plată · Luna ${_lunaTxt(an, luna)}
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">← luna</button>
         <button class="buton-secundar" id="sp-next">luna →</button>
         <button class="buton-primar" id="sp-salariat-nou" data-actiune="POST /tenants/{tenant_id}/salariati" style="margin-left:12px">+ Salariat nou</button>
