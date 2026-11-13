@@ -24728,3 +24728,47 @@ Decizia arhitectului (decizii_17_5_O.txt): opt constatări de audit mutate în O
 - T.8: proba de contract a dovezilor la începutul oricărei rulări a porții (roșu = REFUZ înainte de prima treaptă).
 - Ce rămâne roșu pe P și de ce: vezi raportul (defecte C232–C235, neclare 121 / 553 / 323 / 329 / 394 / 114, „în afara lui T”).
 
+## Lotul 17.5-I (produs, texte, 13.11.2026)
+
+DECIZII 17.5-I — texte — un singur limbaj pe toate ecranele (arhitect, 09.11 01:13)
+Sursa: constatari_audit_complet.tsv, coloana lot = 17.5-I (31 constatări la redactare, toate cu dovadă DOM/cod; după reclasificările de la sfârșit rămân 27 plus AC138 numai pentru formatul sumei). Reverificarea pe producție a fiecărei constatări se face la scrierea comenzii (coloana «stare» a registrului); ce pică la reverificare devine «falsă».
+Obiect: lot de produs numai pe texte (etichete, mesaje, acorduri, diacritice, «…» vs «...», mesajele serverului ca propoziții, un verb pentru o acțiune, numele ferestrei = numele cardului); fără schimbări de comportament, cu excepțiile numite în comanda pct.3 (AC075, AC101, AC066, AC021); dovada: oracol text_contine/lipseste pe martori + grep pe sursele mesajelor; perimetrul: fișierele js/py care conțin textele numite (listă din grep la scrierea comenzii).
+
+Constatările (cod | ecran | unghi | esență):
+AC013 | Termene | texte | introducerea spune «Scadențele care urmează în următoarele 60 de zile», dar lista începe cu restanțe din 27.04.2026 (195 de zile în urmă) — 19 din 28 de rânduri sunt restanțe
+AC018 | Sinteza zilei | texte | «1 sesizări noi» — acord greșit la singular (trebuie «1 sesizare nouă»)
+AC021 | Activitate cabinet | texte | o declarație apare în jurnal ca «D300 · 26.10.2026» (termenul), nu cu perioada declarată (09/2026), cum o numesc De validat și Control fiscal («D300 · 09/2026»)
+AC023 | Supervizor | texte | «Niciun D101 depus prin aplicație — nu se poate confrunta nimic.» apare de două ori la fiecare firmă
+AC026 | Consolidare | texte | «Cumulat de la începutul anului, până la noiembrie 2026» nu spune dacă noiembrie (luna în curs) e cuprinsă
+AC029 | Asistenți | texte | dreptul lipsă e marcat numai cu un punct («· Poate valida»), iar cel prezent cu «✓ Poate valida»; diferența se citește greu (DS: starea se spune în cuvinte, nu doar prin semn)
+AC030 | Asistenți / Capacitate | texte | aceeași acțiune are două etichete: «Adaugă asistent» (Asistenți) și «Adaugă asistenți» (Capacitate)
+AC031 | Migrare cabinet | texte | pasul 3 arată «balanța la —: 6 conturi» — data balanței de preluare lipsește și apare liniuța în locul ei, deși pasul e «gata»
+AC032 | Activitate › Activitatea echipei | texte | aceeași fereastră are trei nume: butonul «Activitatea echipei», titlul ferestrei «Activitate cabinet», intrarea din căutare/catalog «Declarații lucrate» (core/catalog_ecrane.json:272–284)
+AC033 | Tipare de erori | texte | butonul se numește «Tipare de erori», fereastra «Tipare»
+AC038 | Stat de plată F5 | texte | cardul și antetul (breadcrumb) spun «Salariați», titlul ferestrei «Stat de plată» — aceeași fereastră cu două nume
+AC042 | e-Transport F1 | texte | lista «Tip operațiune» amestecă cratima și linia de pauză: «AIC - achiziție intracomunitară» față de «LIC — livrare intracomunitară»
+AC044 | Bancă F1 | texte | «4 contată, notă nevalidată» — acord greșit la plural («4 contate»)
+AC048 | Solicitări client F1 | texte | fără niciun mesaj, câmpul spune «Scrie un răspuns...» (răspuns la nimic; și trei puncte în loc de «…»), iar titlul ferestrei e «Solicitări», cardul «Solicitări client»
+AC054 | Registrul-inventar F1 | texte | descrierea listei începe cu literă mică («toate rândurile înscrise în registru…») și repetă aproape cuvânt cu cuvânt mesajul de registru gol de sub ea
+AC056 | Bilanț anual F2 | texte | mesajul spune «alege tipul mai jos», dar alegerea tipului (S1005 / S1003) e deasupra lui; antetul spune «Bilanț», titlul «Bilanț anual»
+AC064 | Rapoarte comerciale F1 | texte | o filă se numește «Profit pe articol și vânzări pe agent nu apar aici» — un buton care spune ce nu există
+AC066 | Produse F1 | texte | explicația AI a cotei e afișată fără diacritice și ca text brut («Painea alba este aliment pentru consum uman, incadrandu-se la art. 291 (2) b) Cod fiscal, fara zahar adaugat >= 10g/100g…»)
+AC075 | Istoric facturi F1 | texte | butonul «Vezi și facturile mai vechi din această lună» nu se înțelege (mai vechi decât ce, în aceeași lună?)
+AC078 | Model factură F1 | texte | introducerea spune «preview live» (în engleză) în loc de «previzualizare»; cele 7 culori de accent sunt butoane fără text, iar «Salvează» stă în corp, nu în bară
+AC079 | NIR nou F1 | texte | explicația costului accesoriu folosește termenul englezesc «(landed cost)»; opțiunea «TVA transport», cu valoarea zero, nu spune de ce ar fi zero (scutit / taxare inversă / fără TVA); nu se afirmă aici nicio regulă legală
+AC089 | Import date — Solduri inițiale F1 | texte | numele firmei e lipit de text: «F1 Comert Stoc SRLÎncarcă balanța de deschidere…» (br-ul din mig-intro nu rupe rândul în stilul rezumatului)
+AC100 | Mijloace fixe — Leasing F1 | texte | ajutorul de sub «Cod din catalog» pentru 2.3.2.1.1 afișează eticheta-părinte din catalog tăiată la două puncte: «autoturisme, în afară de · durata între 48 și 72 de luni (4–6 ani)» — contabilul citește «în afară de» fără continuare
+AC101 | Mijloace fixe — Leasing F1 | texte | după alegerea tipului «Primire bun», bara de jos enumeră toate cele 11 câmpuri lipsă într-o singură linie («Completează: Data, Bunul primit (denumire), Cont imobilizare, Cod din catalog (HG 2139/2004), …») — peste 200 de caractere, nelizibil; aici însă eticheta butonului principal rămâne corectă («Generează nota (ciornă)»), deci tiparul AC085/AC086 nu e piesa comună a tuturor formularelor
+AC105 | Declarații F1 pasul 1 | texte | butonul principal «Continuă →» inactiv are motivul generic «Completează datele cerute în fereastră, ca să poți continua.» în loc de «Completează: Tip declarație», cum spun celelalte formulare (Leasing: «Completează: Data, Tip operațiune»)
+AC112 | Certificat CM F5 | texte | titlul apare de două ori, unul sub altul: «Certificat nou · Ionescu Vasile» (h2) și «Certificat nou» (titlul secțiunii)
+AC123 | Coada de declarații F1 | texte | fereastra «Coada de validare și depunere» (deschisă cu «Deschide» din coadă) are în bara de jos motivul «Completează datele cerute în fereastră, ca să poți continua.» lângă «Validează selectate» inactiv — text de formular pe un ecran de listă (nu e nimic de completat; butonul e inactiv pentru că nu e nimic selectat); titlul ferestrei diferă de h2 («Coada de validare și depunere» vs «Note de validat · Declarații de depus») — motivul din bara de jos: închis de 17.5-G (G2)
+AC138 | Declarație D398 F1 pasul 2 | texte | «Total TVA datorat: 0.00 EUR» — zecimale cu punct, față de formatul unic al aplicației (0,00); «Denumire *» și «Cod de TVA *» ale firmei goale (clasa AC134)
+
+RECLASIFICATE 10.11 (ies din I): AC058 → 17.5-N; AC133, AC104 și AC138 (numai formatul sumei rămâne în I, pct.28) → lotul de texte ale declarațiilor (17.5-Q, atât în comanda I cât și în constatari_audit_complet.tsv).
+
+Ordinea comenzilor: după 17.5-H (piese) — H schimbă cadrul pe care se măsoară aceste ferestre; comanda se scrie când orchestratorul o cere, cu pragurile din ultimul lot publicat.
+
+- Reclasificări: AC058 → 17.5-N; AC088, AC091, AC133, AC138 (câmpurile firmei goale), AC104 → 17.5-Q; la AC138 rămâne numai formatul sumei.
+- Limite declarate (nu se închid aici): AC021 (public.declaratii_coada goală în snapshot), AC023 (Supervizor păstrează rezultatul calculat), AC044 (numărul notelor nevalidate necunoscut), AC123 (coada goală; «De depus» vs «De validat» fără patru ochi), AC138 formatul (D398 «de lămurit»), AC066 justificările păstrate (date), AC038 numele funcției din căutare și mesajele «în Stat de plată», AC054 core/registru_evidenta_fiscala.py:384–385 și :463 (în afara perimetrului), AC089 celelalte șapte «</b><br>» din migrare.js, AC064 conținutul ferestrei păstrează «nu apar aici:».
+- Corecția 1 (13.11.2026): testul arhitectului corectat (sha ac917ca6…); AC112 — formularul certificatului primește `<h2 class="pf-titlu">Datele certificatului</h2>` ca prim copil al corpului, antetul `pf-frand-nume` scos (flux_concediu.js).
+- Abatere (decizie pe varianta sigură): regexul catalogului acțiunii principale din cadru.js primește «Deschide Asistenți», altfel Capacitate pierdea butonul principal după AC030 (litera b a verificatorului de design) și harta barei de jos cerea «Deschide Asistenți | activ».

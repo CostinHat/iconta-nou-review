@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.119 · 11 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.120 · 13 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -12,6 +12,7 @@
 - Când se descoperă o inconsistență: STOP, se corectează, apoi se continuă. Zero datorie tehnică vizuală.
 - La orice decizie de schimbare de comportament se verifică TOATE locurile unde comportamentul vechi există, nu doar cel discutat.
 - Textele afișate folosesc diacritice românești complete; codul/comentariile/markerii — fără diacritice.
+- **Un singur limbaj pe toate ecranele (v2.120, lotul 17.5-I):** numele ferestrei = numele cardului sau al butonului care o deschide; dreptul lipsă se spune în cuvinte («Nu poate valida»), fără semn; „…” se scrie ca U+2026, nu trei puncte; fără englezisme afișate («previzualizare în timp real», «cost accesoriu»); motivul „Completează: …” numește cel mult trei câmpuri și numără restul («și încă 8 câmpuri», cu `cate()`); acordul cu numărul trece prin `dupaNumar()` / `cate()`.
 - **Numeralul se acordă cu substantivul (Lotul 5, 15.10.2026, deficiențele 261 / 263):** un număr afișat trece prin `cate(n, singular, plural)` (`static/js/plural.js`; în Python `core/common.cate`) — „1 notă”, „2 note”, „20 de note”, „101 note”; niciodată o formă scrisă fix după număr („1 note”, „1 facturi”, „5 absent”). Gard: `NUMERAL_NEACORDAT` în verificator + `core/test_plural_dupa_numar.py` (JS și Python), excepțiile numite acolo cu motivul.
 - **Textul afișat e limba contabilului (v2.84, comanda Costin „Retest 08.10” pct.14):** fără identificatori de cod (`common.COTE`, `R3_1_1`,
   `d100_fapt`, `False`/`None`, nume de coloană) și fără majuscule de accent („ATENTIE”, „NU”, „LIPSĂ”); un rând de cod D300 se spune

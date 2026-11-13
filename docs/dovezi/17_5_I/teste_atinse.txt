@@ -1,0 +1,37 @@
+=== core_8_teste (07:39:07)
+E       AssertionError: plurale date lui cate, necunoscute scanului de ecran (adaugă-le în limba_ecran.PLURALE): ['contribuții', 'sesizări', 'validate']
+core/test_plural_dupa_numar.py:366: AssertionError
+E       AssertionError: /^(Sinteza zilei|Operațiuni speciale|Facturi|Firme|Import date)$|· CUI /;
+core/test_liste_exceptii_16_8_B.py:29: AssertionError
+FAILED core/test_plural_dupa_numar.py::test_py_niciun_numar_cu_forma_scrisa_fix
+FAILED core/test_plural_dupa_numar.py::test_scanul_ecranului_cunoaste_toate_pluralele_din_cod
+FAILED core/test_liste_exceptii_16_8_B.py::test_refuza_forma_nerecunoscuta_si_valoare_straina
+3 failed, 70 passed, 1 skipped in 50.32s
+rc=1 dur=50s
+=== e2e_lot12_texte.py (07:41:14)
+FAILED frontend_test/e2e/e2e_lot12_texte.py::test_def_172_supervizorul_fara_d101_depus_vorbeste_limba_contabilului
+FAILED frontend_test/e2e/e2e_lot12_texte.py::test_def_c132_supervizorul_spune_axa_d101_in_limba_contabilului
+FAILED frontend_test/e2e/e2e_lot12_texte.py::test_def_45_mesajul_cheii_api_vine_in_vedere
+FAILED frontend_test/e2e/e2e_lot12_texte.py::test_def_184_refuzul_pontajului_scrie_luna_ca_LL_AAAA
+[e2e] 4 failed, 3 passed in 70.22s (0:01:10) (87s; capturi în /tmp/e2e_cap_17_5_I)
+rc=1 dur=88s
+=== e2e_pozitii_validate.py (07:42:42)
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f028_d112_din_statul_de_plata_e_valida_la_duk_cu_sumele_statului
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f080_statul_calculeaza_contributiile_si_netul_din_brut
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f134_fisierul_de_plata_pe_card_are_netul_si_iban_ul_salariatului
+FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f087_fluturasul_si_nota_statului_au_netul_statului
+[e2e] 5 failed, 12 passed in 173.66s (0:02:53) (190s; capturi în /tmp/e2e_cap_17_5_I)
+rc=1 dur=192s
+=== e2e_butoane_la_loc_17_5_F.py (07:45:54)
+[e2e] 1 passed in 26.82s (43s; capturi în /tmp/e2e_cap_17_5_I)
+rc=0 dur=45s
+=== e2e_bara_jos.py (07:46:39)
+[e2e] 1 passed in 396.63s (0:06:36) (413s; capturi în /tmp/e2e_cap_17_5_I)
+rc=0 dur=415s
+FIN
+
+# Rezumat 13.11.2026 (după corecția 1)
+Roșii numai pe P (pe bază verzi): e2e_pozitii_validate.py::test_pozitie_f028, f080, f134, f087 — cauza: frontend_test/e2e/e2e_bloc_d.py:592 și :606 (_stat, ajutor al plasei) așteaptă textul «Stat de plat» în fereastra Salariați, iar AC038 (comanda, pct.11) schimbă h2 în «Salariați»; e2e_lot12_texte.py::test_def_184 (același ajutor, fereastra Salariați).
+Roșii și pe bază (restanțe): e2e_pozitii_validate f081; e2e_lot12_texte def_172 și def_c132; core/test_plural_dupa_numar.py (2) și core/test_liste_exceptii_16_8_B.py (1) (pe P scanul de plurale mai numește «sesizări», «validate», din cate()/dupaNumar() cerute de AC018).
+Fișier necesar, absent din fisiere_permise: frontend_test/e2e/e2e_bloc_d.py (e2e_pozitii_validate.py e în plasă și rămâne roșu pe 4 teste).
