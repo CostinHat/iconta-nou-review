@@ -36,7 +36,7 @@
     {
      "loc": "div.zona-derulare",
      "fel": "vertical",
-     "ascuns": 1158,
+     "ascuns": 41,
      "tabel": true
     }
    ],
@@ -57,7 +57,7 @@
    "principal_inactiv_fara_motiv": 0
   },
   "c": {
-   "tabele_ds": 2,
+   "tabele_ds": 1,
    "tabele_vechi": [],
    "liste_rand_buton": [],
    "celule_taiate": [],

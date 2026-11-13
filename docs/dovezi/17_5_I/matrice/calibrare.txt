@@ -1,4 +1,4 @@
-calibrare detector text tăiat, 3 ecrane × 3 rezoluții, sha=3df4692de47e5e78a339e7b480c47c2080cadb29
+calibrare detector text tăiat, 3 ecrane × 3 rezoluții, sha=54d4c69a7e8a3bd211825cdfbc6dce05d8219d33
 pozitiv | De validat | 603x590 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
 negativ | De validat | 603x590 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
 pozitiv | De validat | 1366x768 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
@@ -17,4 +17,4 @@ pozitiv | Declarații F1 pasul 1 | 1366x768 | ATINS | proba=true: iesit(Buton de
 negativ | Declarații F1 pasul 1 | 1366x768 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
 pozitiv | Declarații F1 pasul 1 | 2133x1111 | ATINS | proba=true: iesit(Buton de probă), lat(Text de probă foarte lung pent), inalt(Text de probă pe două rânduri)
 negativ | Declarații F1 pasul 1 | 2133x1111 | ATINS | proba=true: 0, fără probă: 0 (fără injecție: 0)
-abateri: 0 sha=3df4692de47e5e78a339e7b480c47c2080cadb29
+abateri: 0 sha=54d4c69a7e8a3bd211825cdfbc6dce05d8219d33

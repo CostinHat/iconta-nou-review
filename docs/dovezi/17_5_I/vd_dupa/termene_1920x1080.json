@@ -32,14 +32,7 @@
   },
   "b": {
    "pe_tot_ecranul": true,
-   "derulari": [
-    {
-     "loc": "div.zona-derulare",
-     "fel": "vertical",
-     "ascuns": 846,
-     "tabel": true
-    }
-   ],
+   "derulari": [],
    "bara_jos": {
     "clase": "fereastra-jos",
     "inaltime": 72
@@ -57,7 +50,7 @@
    "principal_inactiv_fara_motiv": 0
   },
   "c": {
-   "tabele_ds": 2,
+   "tabele_ds": 1,
    "tabele_vechi": [],
    "liste_rand_buton": [],
    "celule_taiate": [],

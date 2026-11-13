@@ -1,3 +1,7 @@
-Verificatorul de design, înainte (vd_inainte/, cod de bază) → după (vd_dupa/, P3); 210 perechi; ferestre cu literă a–h, bară de jos sau tabele DS schimbate:
-- Panou Admin — Sănătate server 1920x1080: litere pică «b» → «»; bara de jos «"fereastra-jos fj-fara-principal"» → «"fereastra-jos"»
+Verificatorul de design, înainte (vd_inainte/, cod de bază) → după (vd_dupa/, P4); 210 perechi; ferestre cu literă a–h, bară de jos, buton principal sau tabele DS schimbate:
+- Capacitate 1366x768: litere pică «» → «»; bara de jos «fereastra-jos» → «fereastra-jos»; acțiune principală «Adaugă asistenți» → «Deschide Asistenți»; tabele DS 0 → 0
+- Capacitate 1920x1080: litere pică «» → «»; bara de jos «fereastra-jos» → «fereastra-jos»; acțiune principală «Adaugă asistenți» → «Deschide Asistenți»; tabele DS 0 → 0
+- Declarații 1366x768: litere pică «d» → «deh»; bara de jos «fereastra-jos» → «fereastra-jos»; acțiune principală «Pune în „De depus” →» → «Pune în „De depus” →»; tabele DS 0 → 0
+- Sănătate server 1920x1080: litere pică «b» → «»; bara de jos «fereastra-jos fj-fara-principal» → «fereastra-jos»; acțiune principală «None» → «Trimite alertă de test»; tabele DS 0 → 0
 Ferestre cu litera f / g «pică»: {"inainte": {"f": 0, "g": 4}, "dupa": {"f": 0, "g": 4}}
+Notă (P4): «Declarații 1366x768» = «Declarație D301 F3 pasul 2» e instabilă de la o rulare la alta pe același cod, fără legătură cu textele lotului: rulată de două ori separat pe P4 a dat «b» (2) și «d» (1); pe P3 «d» (2), pe bază «d» (2), în rularea completă P4 «deh». Litera b/c a ferestrelor schimbate de text (Capacitate: numai eticheta butonului principal, intenționat; Salariați: neschimbată) nu s-a mișcat.
