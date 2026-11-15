@@ -51,6 +51,19 @@ def luna_confruntata(an, luna):
     return (an - 1, 12) if luna == 1 else (an, luna - 1)
 
 
+def _luni_comparabile(conn_schema, schema, comparata, implicita):
+    """[17.5-X, 484] `luna_comparata` (luna aleasă) și `luni_comparabile` (opțiunile selectorului «Luna comparată»): de la luna celei mai vechi note a firmei până la ultima lună
+    încheiată (`implicita`), cele noi întâi; fără nicio notă, numai luna implicită. {luna_comparata: {an, luna, eticheta «LL/AAAA»}, luni_comparabile: [{…}]}."""
+    from core import control_incrucisat as _ci
+    prima = _ci.luna_primei_note(conn_schema, schema)
+    eticheta = lambda a, l: {"an": a, "luna": l, "eticheta": "%02d/%d" % (l, a)}  # noqa: E731
+    out, (a, l) = [], implicita
+    while prima and (a, l) >= prima:
+        out.append(eticheta(a, l))
+        a, l = (a - 1, 12) if l == 1 else (a, l - 1)
+    return {"luna_comparata": eticheta(*comparata), "luni_comparabile": out or [eticheta(*implicita)]}
+
+
 def perioada_canonica(an, luna, fel):
     """Perioada unei declarații, în forma ecranelor (DS cap.4 v2.85): luna „LL/AAAA”, trimestrul „T3/2026”, anul „2026”.
     [Retest 2, pct.14] „perioade în trei formate («iun», «T3», «03.2026», «04/2026»)” — una, produsă aici."""
@@ -1243,7 +1256,9 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
         # pastila firmei; gri-ul (nu pot verifica) NU o urca. Vezi DECIZII 23.07 + common.pastila_firma.
         stare = pastila_firma(stare, [regim_tva_anaf] + list(reconciliere.get("constatari") or []))
 
-    return {"stare": stare, "datorate": len(datorate), "depuse": len(depuse),
+    # [17.5-X, 484] selectorul «Luna comparată» (numai cererea cu luna aleasă sau implicită a Control fiscal; portofoliul nu o cere): luna comparată și opțiunile ei
+    comparare = _luni_comparabile(conn_schema, schema, luna_comparata, luna_confruntata(azi.year, azi.month)) if luna_comparata else {}
+    return {**comparare, "stare": stare, "datorate": len(datorate), "depuse": len(depuse),
             "depuneri_fara_obligatie": depuneri_contra,
             # [P4 21.08.2026] Ce nu poate spune verificarea asta — PERMANENT, nu doar cand exista o
             # constatare. Daca ar aparea doar cateodata, prezenta ei ar deveni semnal si absenta ar minti.

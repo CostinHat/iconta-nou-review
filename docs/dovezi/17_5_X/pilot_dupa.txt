@@ -1,0 +1,4 @@
+[e2e] aplicația din arbore pornită pe 8019 în 26s
+
+[e2e] 1 passed in 106.31s (0:01:46) (133s; capturi în /tmp/e2e_17_5_X_dupa)
+exit=0 durata=134s

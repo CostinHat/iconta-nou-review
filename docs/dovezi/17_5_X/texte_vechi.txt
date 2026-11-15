@@ -1,0 +1,5 @@
+Diferența nu vine din note nevalidate | bază=1 | C=0
+Profilul firmei declară fără operațiuni intracomunitare, dar există | bază=1 | C=0
+Diferențele pot veni din note ciornă nevalidate | bază=1 | C=0
+antetul Verificărilor «cate(r.note, "notă contabilă", "note contabile")» (firme.js) | bază=1 | C=0
+if (!motiv) { eroareCamp(f, "bl-motiv" | bază=1 | C=0

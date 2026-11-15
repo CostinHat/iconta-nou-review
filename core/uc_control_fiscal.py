@@ -20,7 +20,6 @@ from core import repo_tenants
 from core import uc_comun as _uc_comun
 from core.common import azi_ro, pastila_firma, cate as _cate
 from core import db, auth_api, control_fiscal_api
-from core import control_incrucisat
 
 
 def control_fiscal_portofoliu(ctx):
@@ -134,18 +133,6 @@ def _luna_comparata(an, luna, azi):
     return (an, luna)
 
 
-def _luni_comparabile(cs, schema, implicita):
-    """[17.5-X, 484] Opțiunile selectorului «Luna comparată», de la luna celei mai vechi note până la ultima lună încheiată, cele noi întâi: [{an, luna, eticheta «LL/AAAA»}]."""
-    prima = control_incrucisat.luna_primei_note(cs, schema)
-    if not prima or prima > implicita:
-        return [{"an": implicita[0], "luna": implicita[1], "eticheta": "%02d/%d" % (implicita[1], implicita[0])}]
-    out, (a, l) = [], implicita
-    while (a, l) >= prima:
-        out.append({"an": a, "luna": l, "eticheta": "%02d/%d" % (l, a)})
-        a, l = (a - 1, 12) if l == 1 else (a, l - 1)
-    return out
-
-
 def control_fiscal_detaliu(tenant_id, ctx, an=None, luna=None):
     """[P7 · use-case] Corpul rutei `/control-fiscal/{tenant_id}`; docstringul ei a ramas in stratul HTTP.
     [17.5-X, 484] `an` + `luna`: luna comparată aleasă în selector (implicit, ultima lună încheiată); răspunsul poartă `luna_comparata` și `luni_comparabile`."""
@@ -154,8 +141,6 @@ def control_fiscal_detaliu(tenant_id, ctx, an=None, luna=None):
     comparata = _luna_comparata(an, luna, azi)
     with db.get_conn(schema) as cs:   # [C201] o singură conexiune pe cerere (`evalueaza_firma`: conn_public = conn_schema)
         r = control_fiscal_api.evalueaza_firma(cs, cs, tenant_id, schema, azi, luna_comparata=comparata)
-        r["luna_comparata"] = {"an": comparata[0], "luna": comparata[1], "eticheta": "%02d/%d" % (comparata[1], comparata[0])}
-        r["luni_comparabile"] = _luni_comparabile(cs, schema, control_fiscal_api.luna_confruntata(azi.year, azi.month))
     # [deficiența 463] e-Factura: facturile emise de la luna preluării care trebuie transmise în SPV și nu sunt, cu termenul fiecăreia —
     # secțiunea «e-Factura — transmiterea în SPV» (starea dreptului SPV o citește ecranul din aceeași rută ca fereastra firmei)
     try:

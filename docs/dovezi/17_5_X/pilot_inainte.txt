@@ -1,0 +1,4 @@
+[e2e] aplicația din arbore pornită pe 8019 în 27s
+FAILED frontend_test/e2e/e2e_pilot_17_5_X.py::test_pilot_17_5_X - AssertionEr...
+[e2e] 1 failed in 102.49s (0:01:42) (130s; capturi în /tmp/e2e_17_5_X_inainte)
+exit=1 durata=132s

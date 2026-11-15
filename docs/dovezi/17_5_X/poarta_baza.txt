@@ -1,0 +1,2 @@
+[lacat_test] lacăt preluat de la pid 1642936 (mort sau refolosit)
+[baza] 1903 teste, 2 picate; trepte {'verificator': 83.1, 'pytest': 466.8, 'proba_mediu': 23.0, 'plasa_e2e': 2054.3}; scris docs/dovezi/17_5_X/baza.json

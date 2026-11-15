@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.120 · 13 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.121 · 15 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -91,6 +91,9 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **(v2.118, lotul 17.5-O, AC108, AC181, AC182)** O acțiune apare o singură dată pe fereastră: fie în rând, fie în bara de jos. «Fluturaș» al fișei salariatului (`#ss-fluturas`) stă numai în bara de jos; în Rapoarte comerciale «Descarcă PDF» e singurul buton principal («Salvează varianta curentă» e secundar); în Suport «Trimite sesizarea» (`#rap-trimite` din `#rap-zona-sesizare`) e mutat în bară, nu dublat. Bara de jos a unei ferestre de export nu se modifică singură după așezare (AC183).
 - **(v2.119, lotul 17.5-W, AC184)** Butonul inactiv al pasului 2 (`#dec-trimite` cu `aria-describedby="dec-blocaj"`) poartă eticheta pasului real («Pune în „De depus” →»), nu «Trimite în coadă →»; motivul stă lângă el, în `#dec-blocaj`, cu butoanele «Deschide nota …» ale rapoartelor Z în ciornă.
 - **(v2.119, lotul 17.5-W, AC185)** Explicația cifrei dintr-o constatare Control fiscal stă într-un rând informativ (ton «info») imediat sub ea: cheia `explicatie_ciorne` a constatării, desenată de `semnalConstatare`; prima propoziție (cifrele) se vede fără deschiderea detaliilor.
+- **(v2.121, lotul 17.5-X, 729.1)** Un buton care nu se aplică încă își spune motivul scris în bara de jos: confirmarea «Deblochează luna» a formularului de motiv e inactivă cât motivul e gol (`inactiv(buton, motiv)` / `activ(buton)` din `api.js`, `aria-disabled` și `data-motiv-inactiv`) și se activează la primul caracter scris; bara de jos se reface la orice schimbare a stării butonului principal care stă el însuși în bară (`baraDeJos` din `cadru.js`: `disabled`, `aria-disabled`, `data-motiv-inactiv`), deci un motiv vechi («Se citesc controalele lunii…») nu mai rămâne după încărcare. Gard mecanic: aserțiunea a.6 din oracol; în verificator_conformitate.py nu există o regulă verificabilă mecanic pentru „motivul se schimbă după încărcare”.
+- **(v2.121, lotul 17.5-X, 727.2)** În lista cu căutare (`listaCuCautare` din `ds_piese.js`) rândul apăsat e cel ales, și când mai multe rânduri au aceeași valoare (`r.o.selected = true`, nu `sel.value`): lista marchează rândul apăsat, iar câmpul dependent (Lună) arată luna lui.
+- **(v2.121, lotul 17.5-X, F015)** Rândul din registrul de casă cu sold negativ poartă semnalul scris «Casa rămâne pe minus (−X lei)» (`data-semn="sold_negativ"`, pe aceeași linie cu celelalte semne ale rândului, `.tn-semn`); suma e în formatul aplicației (`bani`), semnul «−» e cel tipografic.
 - INTERZIS ca un card sa se deschida inline in corpul panoului (sa suprascrie `.cab-grila`/`continut`). Un card = o fereastra.
 - Meniurile cu sub-optiuni (ex. Firme, Activitate) sunt tot ferestre: sub-optiunile devin `.meniu-card` in corpul ferestrei, NU un al doilea nivel inline cu breadcrumb.
 - Consecinta: in corpul panoului nu apare breadcrumb ("Panou > X") si nici al doilea rand de sageti. Inchiderea se face din X-ul ferestrei.

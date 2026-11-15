@@ -170,14 +170,16 @@ def test_selectorul_lunii_comparate_incepe_la_cea_mai_veche_luna_cu_note_si_pune
         with c.cursor() as cur:
             _nota(cur, "2026-03-05", "ciorna")
             _nota(cur, "2026-09-30")
-        luni = uc_control_fiscal._luni_comparabile(c, _SCHEMA, (2026, 10))
-    assert [x["eticheta"] for x in luni] == ["10/2026", "09/2026", "08/2026", "07/2026", "06/2026", "05/2026", "04/2026", "03/2026"]
-    assert luni[0] == {"an": 2026, "luna": 10, "eticheta": "10/2026"}
+        r = cf._luni_comparabile(c, _SCHEMA, (2026, 9), (2026, 10))
+    assert [x["eticheta"] for x in r["luni_comparabile"]] == ["10/2026", "09/2026", "08/2026", "07/2026", "06/2026", "05/2026", "04/2026", "03/2026"]
+    assert r["luni_comparabile"][0] == {"an": 2026, "luna": 10, "eticheta": "10/2026"}
+    assert r["luna_comparata"] == {"an": 2026, "luna": 9, "eticheta": "09/2026"}
 
 
 def test_selectorul_fara_nicio_nota_are_numai_luna_implicita():
     with _firma() as c:
-        assert [x["eticheta"] for x in uc_control_fiscal._luni_comparabile(c, _SCHEMA, (2026, 10))] == ["10/2026"]
+        r = cf._luni_comparabile(c, _SCHEMA, (2026, 10), (2026, 10))
+    assert [x["eticheta"] for x in r["luni_comparabile"]] == ["10/2026"]
 
 
 # ── P5 (F089): validat contra validat, ciornele separat ────────────────────────────────────────────────────────────────────────────
