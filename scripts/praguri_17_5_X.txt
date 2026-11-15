@@ -1,0 +1,46 @@
+produs
+lot: 17.5-X
+max hook 144
+max poarta_verificator 101
+max poarta_pytest 737
+max poarta_plasa 2631
+runde_verificator_max: 2
+sursa pragurilor 17.5-X: generate de scripts/praguri_automate.py la 2026-11-13T14:15:44+02:00 din .lot_jurnal.log; loturi folosite: 17.5-S, 17.5-T, 17.5-I (3)
+  hook: maxim 120 s (lotul 17.5-I, rularea 1275518-1794538214361) din 28 rulari complete, 0 rulari «intrerupt» ignorate, prag 144 s
+  poarta_verificator: maxim 84 s (lotul 17.5-I, rularea 1851307-1794558150064) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 101 s
+  poarta_pytest: maxim 614 s (lotul 17.5-T, rularea 4141758-1794486808798) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 737 s
+  poarta_plasa: maxim 2192 s (lotul 17.5-I, rularea 1851307-1794558793086) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 2631 s
+limite aplicate de scripts/poarta_rulare.py (:250, :280): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+plasa_modificabile frontend_test/e2e/e2e_pilot_luna.py frontend_test/e2e/e2e_d300_ciorne_17_5_W.py
+fisiere_permise:
+  scripts/praguri_17_5_X.txt (nou)
+  scripts/plasa_16_2.manifest (rândul nou al lui e2e_pilot_17_5_X.py și rândurile modificate ale celor două fișiere din plasa_modificabile)
+  static/js/ds_piese.js (numai lista cu căutare a pasului 1: rândul ales, pct.1)
+  static/js/cadru.js (numai dacă textul «Se citesc controalele lunii…» din bara de jos o cere, pct.2)
+  static/js/ecrane/declaratii.js (pct.1)
+  static/js/ecrane/firme.js (pct.2, 3, 5, 8, 9: Închidere lună, NIR nou, Verificări și Stocuri, Registru jurnal, Casă)
+  static/js/ecrane/control_verdict.js (pct.4)
+  core/control_fiscal_api.py (pct.4)
+  core/control_incrucisat.py (pct.4)
+  main.py (numai ruta existentă GET /control-fiscal/{tenant_id}: parametrul de lună, pct.4)
+  core/uc_control_fiscal.py (numai dacă parametrul de lună o cere, pct.4)
+  core/repo_control_incrucisat.py (numai dacă pct.4 o cere)
+  core/uc_tenants.py (pct.5, 3)
+  core/uc_comun.py (pct.5, 8)
+  core/jurnal_api.py (pct.8; numai dacă există: verifică cu grep, Q15)
+  core/test_pilot_17_5_X.py (nou)
+  core/test_ciorne_decont_17_5_W.py (numai textul explicativ de la 4423 și 4424, pct.4)
+  core/test_control_fiscal.py (numai test_semafor_d390_contradictie_flag_false_dar_facturi_ic, pct.4)
+  frontend_test/e2e/e2e_lot12_firme1.py (numai test_def_483: confirmarea cu motiv gol, pct.2; în afara plasei fixe)
+  frontend_test/e2e/e2e_pilot_luna.py (numai confirmarea cu motiv gol, pct.2; fișier din plasa fixă)
+  frontend_test/e2e/e2e_d300_ciorne_17_5_W.py (numai textul explicativ de la 4423, pct.4; fișier din plasa fixă)
+  frontend_test/e2e/e2e_pilot_17_5_X.py (nou, testul arhitectului)
+  static/js/ (numai cascada ?v= din versioneaza_assets.py --scrie; păzit de ~/ghid_incoming/verifica_cascada_v.py, pct.3)
+  static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  DEFICIENTE.md (numai intrările celor șapte puncte, cu numerele lor)
+  docs/dovezi/17_5_X/ (nou)
