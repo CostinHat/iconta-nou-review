@@ -178,6 +178,10 @@ _T_CONTROL_FISCAL = (
     "rapoarte_z_amef",
     # [retest 07.10 seara, S1] statul de plata si D112 citesc elementele variabile ale salariului (prime, sporuri, ore supl.)
     "elemente_salariale",
+    # [17.5-X2, pct.3 (vii)] verdictul de Control fiscal citește, din 17.5-X: `centre_cost` și `registru_jurnal_numere` prin `repo_contabilitate.jurnal_pe_an`
+    # (apelat de `uc_comun._numar_note_luna`, P8: numărătoarea notelor lunii, ca Registrul jurnal) și `nir` prin `stocuri_anulare.IN_EVIDENTA`, în
+    # `repo_stocuri.clasa_miscarilor`, apelat de `stocuri_cv_api.reconciliere` (P5: verificarea stocurilor, validat contra validat)
+    "centre_cost", "nir", "registru_jurnal_numere",
     # [376–378, comanda Costin 8.2] D100 pe impozitul pe profit citește ajustările fiscale ale rezultatului (poarta de fapt a semaforului)
     "ajustari_fiscale",
     # [382, lotul 9] D100 / D101 spun amortizarea nevalidată a ferestrei: registrul mijloacelor fixe se citește cu reevaluările lui

@@ -285,7 +285,9 @@ def test_semafor_d390_contradictie_flag_false_dar_facturi_ic():
     rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: True)
     assert not any(n["tip"] == "d390" for n in rez["neclar"])   # nimic la «Nu se poate verifica»: rândul vechi „declară fără” a dispărut
     motive = [d["fapt"] for d in rez["datorate"] if d["tip"] == "d390"]
-    assert motive and all("; profilul firmei spune fără operațiuni intracomunitare — corectează în Date firmă" in m for m in motive)   # un singur motiv, cu nepotrivirea
+    nepotrivire = "; profilul firmei spune fără operațiuni intracomunitare — corectează în Date firmă"
+    assert len(motive) >= 1                                                       # anti-vacuu: există rânduri D390
+    assert [m.count(nepotrivire) for m in motive] == [1] * len(motive)            # fiecare rând D390 are exact UN motiv, care conține și nepotrivirea cu profilul
 
 def test_semafor_d390_flag_false_fapt_false_nimic():
     v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False, "regim_fiscal": "profit"}

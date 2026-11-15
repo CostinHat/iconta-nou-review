@@ -126,10 +126,8 @@ def _luna_comparata(an, luna, azi):
     implicita = control_fiscal_api.luna_confruntata(azi.year, azi.month)
     if an is None and luna is None:
         return implicita
-    if an is None or luna is None or not (2000 <= an <= 2100 and 1 <= luna <= 12):
-        raise _erori.DateInvalide("Alege luna comparată: an și lună valide.")
-    if (an, luna) > implicita:
-        raise _erori.DateInvalide("Luna comparată trebuie să fie o lună încheiată: alege %02d/%d sau una mai veche." % (implicita[1], implicita[0]))
+    if an is None or luna is None or not (2000 <= an <= 2100 and 1 <= luna <= 12) or (an, luna) > implicita:
+        raise _erori.DateInvalide("Luna comparată trebuie să fie o lună încheiată, cu an și lună: alege %02d/%d sau una mai veche." % (implicita[1], implicita[0]))
     return (an, luna)
 
 

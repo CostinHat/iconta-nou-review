@@ -38,7 +38,7 @@ def _firma():
     with c.cursor() as cur:
         cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA)
         cur.execute(_tp.parametrizeaza_template(open(os.path.join(RAD, "tenant_template.sql"), encoding="utf-8").read(), _SCHEMA))
-        cur.execute("SET search_path TO %s, public" % _SCHEMA)
+        cur.execute("SET LOCAL search_path TO %s, public" % _SCHEMA)   # [17.5-X2, viii.a] SET LOCAL: nu rămâne search_path de sesiune în pool
     try:
         yield c
     finally:

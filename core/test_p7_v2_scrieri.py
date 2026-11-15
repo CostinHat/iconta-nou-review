@@ -449,7 +449,14 @@ def test_numarul_de_instructiuni_se_conserva():
     #   Date firmă decide dacă D398 e gri la pasul 1; aceeași citire ca la generare, `declaratii_api._d398`).
     # [14.3] +2 (461 -> 463): + repo_admin.seteaza_de_test în `uc_admin.admin_cabinet_de_test` (715.1, marcajul „cabinet de test”) și
     # + repo_stocuri.miscari_pentru_diferenta în `stocuri_cv_api.reconciliere` (696.1, mișcările care produc diferența stocului față de balanță).
-    assert _apeluri_catre_repository() == 463
+    # [17.5-X2] −3 (463 -> 460), cinci apeluri numite (toate sunt citiri, nicio scriere):
+    #   − repo_stocuri.articole_cu_cont, − repo_stocuri.miscari_ale_articolului, − repo_contabilitate.sold_initial_pe_cont,
+    #     − repo_contabilitate.rulaj_pe_cont_stoc din `uc_tenants.verificare_stocuri` (P5, F089: verificarea compară validat cu validat prin
+    #     `stocuri_cv_api.reconciliere`, aceeași citire ca cardul Stocurilor; aceleași rezultate le păzește core/test_pilot_17_5_X.py,
+    #     cazul „verificarea stocurilor compară validat cu validat”);
+    #   + repo_contabilitate.jurnal_pe_an în `uc_comun._numar_note_luna` (P8, 602.1 / 781: numărătoarea notelor lunii în Verificări, aceeași
+    #     citire ca Registrul jurnal).
+    assert _apeluri_catre_repository() == 460
 
 
 def test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni():

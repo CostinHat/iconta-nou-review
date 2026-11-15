@@ -44,6 +44,7 @@ from conftest import (GARDA_DESCHIDERI, INALT, LAT, Ecran, _db, _ecran, _scoate_
 from e2e_bloc_a import AZI, _api, _card, _ok, cont_asistent, pregateste_firma
 from e2e_bloc_b import _cnp, _deschide_rand, _mergi_la_luna, _nota_jn
 from e2e_bloc_d import PATRON, _firma_noua
+from e2e_bloc_d import _nota_validata as _nota_validata_c131
 from e2e_bloc_d import _api as _api_cont
 from e2e_comanda_1010 import _lista_control
 from e2e_lot11_s9 import _F, _d112_xml, _firma_cu_salariat, _singurul, _un
@@ -588,30 +589,63 @@ def _b_cu_nume(c):
     return m if not c.get("eticheta") or m.startswith(c["eticheta"]) else "%s: %s" % (c["eticheta"], m)
 
 
-def test_def_c131_fiecare_declaratie_datorata_are_randul_reconcilierii_cu_numele_ei(patron, firma_cx2b_sv):
-    """C131. Pașii: firmă plătitoare de TVA lunar, cu o factură emisă și contată în luna trecută și un salariat (deci D300 și D112
-    datorate pe luna trecută) -> fereastra firmei -> Control fiscal -> «Declarație vs contabilitate»: sub „Declarațiile recalculate din
-    documente” stă câte un rând pentru FIECARE declarație reconciliată de server, în ordinea lui, fiecare începând cu numele declarației
-    („D300 (decont TVA): …”, „D112 …: …”). Înainte: reconcilierea (D300 / D394 / D390 / D301 / D112 / D406 / D100 / D101 / D205) se
-    calcula și nu se arăta deloc."""
-    f = firma_cx2b_sv
-    pregateste_firma(patron, f, platitor=True, regim_fiscal="micro")
-    _b_salariat(f)
-    _factura_validata(f, "E2EC131-1", _b_luna_inapoi(1).replace(day=10))
+def _b_c131_pe_ecran(patron, f):
+    """[17.5-X2] Firma C131 cu fereastra Control fiscal deschisă: (reconcilierea serverului, constatările confruntării TVA care nu sunt verzi,
+    textele rândurilor ferestrei, în ordinea lor)."""
     d = _b_detaliu(patron, f)
     recon = (d.get("reconciliere_surse") or {}).get("constatari") or []
     etichete = [c.get("eticheta") or "" for c in recon]
     assert len(recon) >= 2 and len(set(etichete)) == len(etichete), etichete            # anti-vacuu: mai multe declarații, distincte
     assert {e.split()[0] for e in etichete} >= {"D300", "D112"}, etichete
+    difera = [c for c in ((d.get("verificari_contabile") or {}).get("tva_incrucisat") or {}).get("constatari") or [] if c.get("stare") != "verde"]
     _b_control(patron, f)
     pg = patron.pg
     pg.wait_for_selector(_B_F + "#cf-incrucisat", timeout=60000)
     pg.locator(_B_F + "#cf-incrucisat").scroll_into_view_if_needed()
-    patron.captura("reconcilierea_pe_declaratii")
-    # rândurile reconcilierii sunt ultimele rânduri ale secțiunii (`reconBloc`, după constatările confruntării)
     # [15.1-E3] fiecare rând e un semnal pe rând (36 px): textul întreg al mesajului e în `title`-ul rândului, restul de peste 90 de caractere se pliază
     capete = pg.eval_on_selector_all(_B_F + "#cf-incrucisat .ds-semnal:not(.ds-semnal-info) .ds-semnal-text",
                                      "es => es.map(e => e.title.replace(/\\s+/g, ' ').trim())")
+    return recon, difera, capete
+
+
+def test_def_c131_fiecare_declaratie_datorata_are_randul_reconcilierii_cu_numele_ei(patron, firma_cx2b_sv):
+    """C131. Pașii: firmă plătitoare de TVA lunar, cu o factură emisă și contată în luna trecută și un salariat (deci D300 și D112
+    datorate pe luna trecută) -> fereastra firmei -> Control fiscal -> «Declarație vs contabilitate»: sub „Declarațiile recalculate din
+    documente” stă câte un rând pentru FIECARE declarație reconciliată de server, în ordinea lui, fiecare începând cu numele declarației
+    („D300 (decont TVA): …”, „D112 …: …”). Înainte: reconcilierea (D300 / D394 / D390 / D301 / D112 / D406 / D100 / D101 / D205) se
+    calcula și nu se arăta deloc.
+    [17.5-T] actualizat la 484 / P4, 17.5-X2 (static/js/ecrane/control_verdict.js:288): cât confruntarea TVA are o diferență, rândul verde al D300
+    din reconciliere nu se mai arată (ar contrazice diferența); celelalte rânduri rămân în ordinea serverului, iar diferența e pe ecran.
+    Ramura fără diferență: test_def_c131_fara_diferenta_la_confruntarea_tva_toate_randurile_reconcilierii_sunt_pe_ecran."""
+    f = firma_cx2b_sv
+    pregateste_firma(patron, f, platitor=True, regim_fiscal="micro")
+    _b_salariat(f)
+    _factura_validata(f, "E2EC131-1", _b_luna_inapoi(1).replace(day=10))
+    recon, difera, capete = _b_c131_pe_ecran(patron, f)
+    patron.captura("reconcilierea_pe_declaratii")
+    assert difera, "firma testului trebuie să aibă o diferență la confruntarea TVA (factură contată, fără regularizare)"
+    # ramura cu diferență: lipsește numai rândul verde al D300, celelalte rânduri sunt pe ecran în ordinea serverului
+    de_aratat = [c for c in recon if not (c.get("declaratie") == "d300" and c.get("stare") == "verde")]
+    assert len(de_aratat) < len(recon) and len(de_aratat) >= 1, recon                  # anti-vacuu: rândul verde al D300 chiar exista
+    assert capete[-len(de_aratat):] == [" ".join(_b_cu_nume(c).split()) for c in de_aratat], (capete, de_aratat)
+    # negativ: o diferență nu se poate ascunde odată cu rândul: constatarea care o spune e pe ecran
+    for c in difera:
+        assert " ".join(str(c["mesaj"]).split()) in capete, (c["mesaj"], capete)
+
+
+def test_def_c131_fara_diferenta_la_confruntarea_tva_toate_randurile_reconcilierii_sunt_pe_ecran(patron, firma_cx2b_sv):
+    """C131, ramura fără diferență [17.5-X2, 484 / P4]: aceeași firmă, dar cu nota de regularizare a TVA-ului lunii trecute (4427 = 4423, 210 lei)
+    validată: confruntarea TVA nu mai are nicio diferență, deci TOATE rândurile reconcilierii sunt pe ecran, în ordinea serverului, cu rândul verde
+    al D300."""
+    f = firma_cx2b_sv
+    pregateste_firma(patron, f, platitor=True, regim_fiscal="micro")
+    _b_salariat(f)
+    _factura_validata(f, "E2EC131-2", _b_luna_inapoi(1).replace(day=10))
+    _nota_validata_c131(f, _b_luna_inapoi(1).replace(day=25).isoformat(), "4427", "4423", 210, "Regularizare TVA C131")
+    recon, difera, capete = _b_c131_pe_ecran(patron, f)
+    patron.captura("reconcilierea_fara_diferenta")
+    assert not difera, difera
+    assert any(c.get("declaratie") == "d300" and c.get("stare") == "verde" for c in recon), recon   # anti-vacuu: rândul verde al D300 există
     assert capete[-len(recon):] == [" ".join(_b_cu_nume(c).split()) for c in recon], (capete, recon)
 
 

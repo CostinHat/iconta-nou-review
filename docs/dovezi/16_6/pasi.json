@@ -439,7 +439,7 @@
    "pas": "t",
    "operator": "nr_randuri",
    "valoare": "1",
-   "cheie": "dom:tbody.tn-nota[data-nota-id=\"203\"] [data-val][aria-disabled=\"true\"][data-motiv-inactiv=\"Nota e validată: a intrat în evidență.\"]|numar"
+   "cheie": "dom:tbody.tn-nota[data-nota-id=\"203\"] [data-val][aria-disabled=\"true\"][data-motiv-inactiv=\"Nota e deja validată: nu se mai validează.\"]|numar"
   },
   {
    "id": "t.5",

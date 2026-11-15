@@ -227,3 +227,19 @@ def test_cardul_nu_asteapta_tura_de_5_minute(monkeypatch):
     mw = next(n for n in ast.walk(arb) if isinstance(n, ast.AsyncFunctionDef) and n.name == "_autor_si_note_in_coada")
     chemate = {x.func.attr for x in ast.walk(mw) if isinstance(x, ast.Call) and isinstance(x.func, ast.Attribute)}
     assert {"recalculeaza_in_fundal"} <= chemate
+
+
+def test_motivul_neverificabil_are_forma_etichetei_urmate_de_nu_se_poate_verifica():
+    """[17.5-X2, pct.3 (iv)] Forma «<etichetă> — nu se poate verifica» (17.5-G, 828), păzită pe funcția care o scrie, fără bază de date: o etichetă gri
+    dă exact «<etichetă> — nu se poate verifica», două se despart prin « · », și niciodată «nu se poate verifica:». (Martorul de ecran al formei,
+    «Diferențe stocuri — nu se poate verifica» la F1, a dispărut o dată cu alarma falsă de stocuri, P5.)"""
+    from core import uc_control_fiscal as ucf
+
+    def firma(*gri):
+        return {"prospetime": {"stare": "curent"}, "neclar": 0,
+                "contabil": [{"eticheta": e, "stare": "gri"} for e in gri] + [{"eticheta": "Echilibru", "stare": "verde"}]}
+    assert ucf.motiv_neverificabil(firma("Diferențe stocuri")) == "Diferențe stocuri — nu se poate verifica"
+    doua = ucf.motiv_neverificabil(firma("Diferențe stocuri", "TVA declarat"))
+    assert doua == "Diferențe stocuri — nu se poate verifica · TVA declarat — nu se poate verifica"
+    assert "nu se poate verifica:" not in doua
+    assert ucf.motiv_neverificabil(firma()) is None                       # negativ: nicio etichetă gri, niciun motiv (o etichetă verde nu apare)

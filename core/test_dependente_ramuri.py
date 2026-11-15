@@ -258,7 +258,7 @@ def _tot(acoperire, ramura=None):
 # ============================================================================
 @pytest.mark.parametrize("pas", [p for p in RAMURI if p["asteapta"]],
                          ids=lambda p: p["nume"])
-def test_ramura_deschide_sursele_ei(acoperire, pas):
+def test_ramura_deschide_sursele_ei(acoperire, firma, pas):
     """Delta față de pasul anterior trebuie să conțină chiar sursele pe care ramura le declară.
 
     Dacă fixtura n-ar activa ramura, delta ar fi goală — iar o probă care „trece" pe o ramură
@@ -273,9 +273,20 @@ def test_ramura_deschide_sursele_ei(acoperire, pas):
     lipsa = [t for t in pas["asteapta"] if t not in acum]
     assert not lipsa, ("ramura %r n-a deschis %s — fixtura n-o exercită, deci nu dovedește nimic"
                        % (pas["nume"], lipsa))
-    assert set(pas["asteapta"]) <= noi, (
+    # [17.5-X2, pct.3 (vii)] De la 17.5-X, verdictul de bază citește la ORICE firmă și sursele unor ramuri (P5: `stocuri_cv_api.reconciliere` deschide
+    # `miscari_stoc`, ca și `articole`, chiar fără stoc): delta ramurii nu mai poate conține sursa ei. Ramura își dovedește atunci sursa altfel: fixtura ei a
+    # scris chiar în ea (tabela nu mai e goală), iar sursa e măsurată ca deschisă mai sus.
+    deja = [t for t in pas["asteapta"] if t in inainte]
+    nou_asteptat = [t for t in pas["asteapta"] if t not in deja]
+    assert set(nou_asteptat) <= noi, (
         "ramura %r n-a adus nimic NOU din %s (delta: %s) — sursele erau deja deschise de un pas "
-        "anterior, deci proba ei e goală" % (pas["nume"], pas["asteapta"], sorted(noi)))
+        "anterior, deci proba ei e goală" % (pas["nume"], nou_asteptat, sorted(noi)))
+    _tid, schema = firma
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            goale = [t for t in deja if _gol(cur, schema, t)]
+    assert not goale, ("ramura %r: sursele %s erau deja deschise de verdictul de bază, iar fixtura ei n-a scris nimic în ele — nu dovedește nimic"
+                       % (pas["nume"], goale))
 
 
 def test_ramurile_acopera_tot_ce_declara_registrul(acoperire):

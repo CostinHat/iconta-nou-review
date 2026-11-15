@@ -14,7 +14,9 @@ fereastră trebuie întâi să existe, altfel secțiunea pică (nimic nu trece �
     (clientWidth minus padding stânga și dreapta).
 (4) G4 De validat, cu GET /coada și GET /eu/ciorne înlocuite prin page.route de liste goale (nimic nu se scrie în bază): stările goale
     arată exact textele din decizii.
-(5) G5 Control fiscal: rândul F1 Comert Stoc conține «Diferențe stocuri — nu se poate verifica» și nu conține «nu se poate verifica:».
+(5) G5 Control fiscal: rândul F1 Comert Stoc NU conține «Diferențe stocuri» (alarma falsă de stocuri nu revine; [17.5-T] actualizat la P5 / F089,
+    core/uc_comun.py, verificarea «stocuri contabil vs fise CV») și nu conține «nu se poate verifica:» (forma «<etichetă> — nu se poate verifica» se păzește
+    în core/test_control_preluare.py::test_motivul_neverificabil_are_forma_etichetei_urmate_de_nu_se_poate_verifica).
 Un singur test; lista „rele” numește fiecare secțiune care pică."""
 import importlib.util
 import json
@@ -265,8 +267,9 @@ def test_de_validat_17_5_G(browser):
                 rele.append("(5) rândul %s lipsește din Control fiscal" % F1)
             else:
                 t = _norm(r.first.inner_text())
-                if "Diferențe stocuri — nu se poate verifica" not in t:
-                    rele.append("(5) rândul F1 nu conține «Diferențe stocuri — nu se poate verifica»: «%s»" % t[:200])
+                # [17.5-T] actualizat la P5 / F089 (core/uc_tenants.py::verificare_stocuri): validat contra validat, alarma falsă de stocuri dispare
+                if "Diferențe stocuri" in t:
+                    rele.append("(5) rândul F1 conține «Diferențe stocuri» (alarma falsă de stocuri a revenit): «%s»" % t[:200])
                 if "nu se poate verifica:" in t:
                     rele.append("(5) rândul F1 conține încă «nu se poate verifica:»: «%s»" % t[:200])
         except Exception as e:   # noqa: BLE001

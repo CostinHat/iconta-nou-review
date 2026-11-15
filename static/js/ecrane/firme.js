@@ -50,7 +50,7 @@ import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11
 import { ecranEtransport } from "./etransport_ecran.js?v=11326ec78a";
 import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=6dccb53624";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=4d1b97efb6";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=a84ee1d02e";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=845d567390";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";  // [date_firma_v1]
@@ -6585,7 +6585,7 @@ function ecranEditorNota(corp, nav, t, n, centre, cheie) {
     <h2 class="pf-titlu" id="je-titlu">${nou ? "Notă nouă" : "Editare notă" + (n.nr_curent != null ? " nr. crt. " + n.nr_curent : "")}<span id="je-titlu-data">${n.data ? " · " + dataRo(n.data) : ""}</span></h2>
     ${n.factura_id ? `<div class="caseta-atentie" style="margin-bottom:8px"><div class="ca-mesaj">Atenție: nota e legată de ${n.document ? esc(n.document) : "o factură"} — modificarea sumei schimbă soldul facturii.</div></div>` : ""}
     <div class="grila-campuri" id="je-antet">   <!-- [lotul 11, 394 la 1280×720 — decizia Costin 10.3: „totul încape într-un ecran, fără derulare”] data, descrierea și documentul pe un rând (se rup pe telefon) -->
-    <label class="camp"><span class="camp-eticheta">Data notei<span class="oblig">*</span></span><input type="date" id="je-data" class="camp-input" value="${esc(String(n.data || "").slice(0, 10))}">${n.mesajData ? `<span class="camp-ajutor" id="je-data-motiv">${esc(n.mesajData)}</span>` : ""}</label>
+    <label class="camp"><span class="camp-eticheta">Data notei<span class="oblig">*</span></span><input type="date" id="je-data" class="camp-input" value="${esc(String(n.data || "").slice(0, 10))}">${n.mesajData ? `<span class="camp-ajutor pe-randuri" id="je-data-motiv">${esc(n.mesajData)}</span>` : ""}</label>
     <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${esc(n.descriere || "")}"></label>
     <label class="camp"><span class="camp-eticheta">Document justificativ (fel, număr, dată)</span><input type="text" id="je-doc" class="camp-input" style="width:100%" placeholder="ex: Factură CH-9 din 01.10.2026" value="${esc(n.document_ref || "")}"></label>
     </div>

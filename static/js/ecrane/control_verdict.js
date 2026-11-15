@@ -6,7 +6,7 @@
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
-import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
+import { api, ultimaCerere, pastreazaCampulActiv, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
 import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=7c3b897c2b";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
@@ -425,17 +425,20 @@ function perioadaButonului(b) {
 export function legaVerdict(corp, nav, firma) {
   legaSemnale(corp);   // [15.1-E3] pliarea semnalelor și a card-rezumatelor din corp
   // [17.5-X, 484] «Luna comparată»: se cere verdictul pe luna aleasă (`GET /control-fiscal/{id}?an=&luna=`) și se redesenează corpul lui; același renderer, aceleași legări
+  // [17.5-X2, C103] cereri în zbor: numai răspunsul ultimei luni alese ajunge pe ecran (`ultimaCerere`, api.js), iar la redesenare câmpul activ își păstrează valoarea
+  const cerereNoua = ultimaCerere(corp.closest(".fereastra") || corp);
   corp.querySelectorAll("select.cf-luna-comparata").forEach((sel) => sel.addEventListener("change", async () => {
     if (!sel.value) return;   // nu se alege niciodată «— alege luna —» (ascuns): luna rămâne cea de dinainte
     const [a, l] = sel.value.split("-").map(Number);
+    const actuala = cerereNoua();
     let d;
-    try { d = await api.get(`/control-fiscal/${firma.tenant_id}?an=${a}&luna=${l}`); } catch (e) { arataMesaj(sel.closest(".cf-luna-comp"), (e && e.mesaj) || "Luna aleasă nu s-a putut încărca.", "eroare"); return; }
+    try { d = await api.get(`/control-fiscal/${firma.tenant_id}?an=${a}&luna=${l}`); } catch (e) { if (!actuala()) return; arataMesaj(sel.closest(".cf-luna-comp"), (e && e.mesaj) || "Luna aleasă nu s-a putut încărca.", "eroare"); return; }
+    if (!actuala()) return;
     const vechi = sel.closest(".cf-corp");
     if (!vechi) return;
     const gol = document.createElement("div");
-    gol.innerHTML = randeazaCorpVerdict(d);
-    const nou = gol.firstElementChild;
-    vechi.replaceWith(nou);
+    let nou = null;
+    pastreazaCampulActiv(vechi.parentElement || vechi, () => { gol.innerHTML = randeazaCorpVerdict(d); nou = gol.firstElementChild; vechi.replaceWith(nou); });
     legaVerdict(nou, nav, firma);
   }));
   // [lotul 13, 674 — DS cap.2a „Orice acțiune e un buton”; comanda Costin 13.1 supersedează forma „pliat implicit” din 158 (DECIZII)] grupul
@@ -448,7 +451,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=213a1033e5");
+    const { deschideInchidereLuna } = await import("./firme.js?v=78d0fc4b63");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {
@@ -582,11 +585,14 @@ export function legaVerdict(corp, nav, firma) {
       ${a.limita ? semnalHtml({ ton: "info", text: a.limita }) : ""}`;
   };
   // primul audit (dovada a ce s-a primit de la contabilul anterior) stă lângă ultimul; o rulare nouă nu-l înlocuiește
+  const cerereIstoric = ultimaCerere(corp);   // [17.5-X2, C103] numai ultimul răspuns al istoricului ajunge pe ecran
   async function arataIstoricAudit() {
     const zona = corp.querySelector("#cf-audit-istoric");
     if (!zona) return;
+    const actuala = cerereIstoric();
     let ist;
-    try { ist = await api.get(`/control-fiscal/${firma.tenant_id}/audit-preluare/istoric`); } catch { return; }
+    try { ist = await api.get(`/control-fiscal/${firma.tenant_id}/audit-preluare/istoric`); } catch { if (!actuala()) return; zona.innerHTML = ""; return; }   // o eroare întârziată nu acoperă răspunsul mai nou
+    if (!actuala()) return;
     if (!ist || !ist.primul || !ist.primul.audit) { zona.innerHTML = ""; return; }
     const cine = (x) => x.rulat_de ? ` de ${esc(x.rulat_de)}` : "";
     const titluPrimul = `<b>Primul audit după preluare</b>${cine(ist.primul)} — păstrat: ce s-a primit de la contabilul anterior`;
