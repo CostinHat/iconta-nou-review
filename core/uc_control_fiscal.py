@@ -20,6 +20,7 @@ from core import repo_tenants
 from core import uc_comun as _uc_comun
 from core.common import azi_ro, pastila_firma, cate as _cate
 from core import db, auth_api, control_fiscal_api
+from core import control_incrucisat
 
 
 def control_fiscal_portofoliu(ctx):
@@ -120,12 +121,41 @@ def control_fiscal_audit_preluare_istoric(tenant_id, ctx):
     return {"primul": _desc(primul), "ultimul": _desc(ultimul), "rulari": n}
 
 
-def control_fiscal_detaliu(tenant_id, ctx):
-    """[P7 · use-case] Corpul rutei `/control-fiscal/{tenant_id}`; docstringul ei a ramas in stratul HTTP."""
+def _luna_comparata(an, luna, azi):
+    """[17.5-X, 484] Luna comparată cerută (an, luna) sau, fără cerere, ultima lună încheiată (`luna_confruntata`). Cererea trebuie să fie întreagă (an ȘI lună),
+    o lună reală și încheiată: o lună în curs sau viitoare n-are ce compara."""
+    implicita = control_fiscal_api.luna_confruntata(azi.year, azi.month)
+    if an is None and luna is None:
+        return implicita
+    if an is None or luna is None or not (2000 <= an <= 2100 and 1 <= luna <= 12):
+        raise _erori.DateInvalide("Alege luna comparată: an și lună valide.")
+    if (an, luna) > implicita:
+        raise _erori.DateInvalide("Luna comparată trebuie să fie o lună încheiată: alege %02d/%d sau una mai veche." % (implicita[1], implicita[0]))
+    return (an, luna)
+
+
+def _luni_comparabile(cs, schema, implicita):
+    """[17.5-X, 484] Opțiunile selectorului «Luna comparată», de la luna celei mai vechi note până la ultima lună încheiată, cele noi întâi: [{an, luna, eticheta «LL/AAAA»}]."""
+    prima = control_incrucisat.luna_primei_note(cs, schema)
+    if not prima or prima > implicita:
+        return [{"an": implicita[0], "luna": implicita[1], "eticheta": "%02d/%d" % (implicita[1], implicita[0])}]
+    out, (a, l) = [], implicita
+    while (a, l) >= prima:
+        out.append({"an": a, "luna": l, "eticheta": "%02d/%d" % (l, a)})
+        a, l = (a - 1, 12) if l == 1 else (a, l - 1)
+    return out
+
+
+def control_fiscal_detaliu(tenant_id, ctx, an=None, luna=None):
+    """[P7 · use-case] Corpul rutei `/control-fiscal/{tenant_id}`; docstringul ei a ramas in stratul HTTP.
+    [17.5-X, 484] `an` + `luna`: luna comparată aleasă în selector (implicit, ultima lună încheiată); răspunsul poartă `luna_comparata` și `luni_comparabile`."""
     azi = azi_ro()   # [fus] verdict de zi = zi RO (acelasi ca portofoliul)
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    comparata = _luna_comparata(an, luna, azi)
     with db.get_conn(schema) as cs:   # [C201] o singură conexiune pe cerere (`evalueaza_firma`: conn_public = conn_schema)
-        r = control_fiscal_api.evalueaza_firma(cs, cs, tenant_id, schema, azi)
+        r = control_fiscal_api.evalueaza_firma(cs, cs, tenant_id, schema, azi, luna_comparata=comparata)
+        r["luna_comparata"] = {"an": comparata[0], "luna": comparata[1], "eticheta": "%02d/%d" % (comparata[1], comparata[0])}
+        r["luni_comparabile"] = _luni_comparabile(cs, schema, control_fiscal_api.luna_confruntata(azi.year, azi.month))
     # [deficiența 463] e-Factura: facturile emise de la luna preluării care trebuie transmise în SPV și nu sunt, cu termenul fiecăreia —
     # secțiunea «e-Factura — transmiterea în SPV» (starea dreptului SPV o citește ecranul din aceeași rută ca fereastra firmei)
     try:
@@ -134,7 +164,9 @@ def control_fiscal_detaliu(tenant_id, ctx):
     except Exception as e:  # noqa: BLE001 — se spune pe ecran, nu se tace
         r["efactura_spv"] = {"facturi": [], "de_la": None, "eroare": "Lista facturilor de transmis în SPV nu s-a putut calcula (%s)." % e}
     try:  # cf_verificari_v1 — ACEEASI functie partajata ca lista: severitatea (pastila_firma) e identica.
-        contabil, vc = _uc_comun._construieste_contabil(schema, tenant_id, ctx, azi.year, azi.month, r.get("regim_tva_anaf"))
+        # punțile declarație–contabilitate confruntă `luna_confruntata(an, luna)`: pentru luna comparată aleasă se dă luna de DUPĂ ea (ca la „azi” în luna următoare)
+        _an_c, _luna_c = (comparata[0] + 1, 1) if comparata[1] == 12 else (comparata[0], comparata[1] + 1)
+        contabil, vc = _uc_comun._construieste_contabil(schema, tenant_id, ctx, _an_c, _luna_c, r.get("regim_tva_anaf"))
         r["verificari_contabile"] = vc
         r["contabil"] = contabil
         # [P4 21.08.2026] Fiecare verificator isi declara SINGUR limita; sectiunea o aduna, n-o

@@ -79,6 +79,13 @@ def select_inregistrari(cur, schema, de, pana):
     return cur.fetchone()
 
 
+def prima_data_nota(cur, schema):
+    """[17.5-X, 484] Data celei mai vechi note a firmei (în orice stare) sau None: de la luna ei începe selectorul «Luna comparată» din Control fiscal."""
+    cur.execute(f"SELECT MIN(data) FROM {schema}.inregistrari")
+    r = cur.fetchone()
+    return r[0] if r else None
+
+
 def select(cur, schema):
     cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
     return cur.fetchone()

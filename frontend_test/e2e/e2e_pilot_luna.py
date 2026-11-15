@@ -1766,9 +1766,9 @@ def test_pilot_39_deblocarea_lunii_cu_motiv(patron, firma_pilot):
     pg.wait_for_function(stare + ".startsWith('Luna e blocată')", timeout=30000)
     pg.click(_F + "#il-lock")
     pg.wait_for_selector(_F + "#bl-motiv", timeout=20000)
-    pg.click(_F + "#bl-deblocheaza")                                   # fără motiv: refuzul stă lângă câmp, luna rămâne blocată
-    pg.wait_for_function("() => (document.querySelector('#bl-deblocare') || {innerText: ''}).innerText.includes('Scrie motivul deblocării')",
-                         timeout=20000)
+    # [17.5-T] actualizat la 729.1 (decizia 17.5-X, P2: confirmarea cere motiv și e inactivă cât motivul e gol; frontend_test/e2e/e2e_pilot_luna.py:1769)
+    pg.wait_for_function("() => (document.querySelector('#bl-deblocheaza') || {getAttribute: () => ''}).getAttribute('aria-disabled') === 'true'", timeout=20000)
+    assert "Scrie motivul deblocării" in pg.get_attribute(_F + "#bl-deblocheaza", "data-motiv-inactiv")   # motivul inactivității e scris pe buton
     patron.captura("fara_motiv")
     assert sql('SELECT count(*) FROM "%s".perioade_blocate WHERE an = %%s AND luna = %%s' % f["schema"], (AN, LUNA)) == [(1,)]
     pg.fill(_F + "#bl-motiv", "scenariul pilot: corectare")

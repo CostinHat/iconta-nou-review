@@ -2810,10 +2810,11 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
 
 
 @app.get("/control-fiscal/{tenant_id}")
-def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
-    """Detaliu conformare pentru o firma: lista lipsa + de urmarit + constatari contabile."""
+def control_fiscal_detaliu(tenant_id: int, an: int | None = None, luna: int | None = None, ctx=Depends(cere_cabinet)):
+    """Detaliu conformare pentru o firma: lista lipsa + de urmarit + constatari contabile. [17.5-X, 484] `an` + `luna` (ambele sau niciuna) aleg luna
+    comparată declarații–contabilitate; implicit, ultima lună încheiată."""
     try:
-        return _uc_control_fiscal.control_fiscal_detaliu(tenant_id, ctx)
+        return _uc_control_fiscal.control_fiscal_detaliu(tenant_id, ctx, an, luna)
     except _erori.EroareDeDomeniu as e:
         raise _http_din(e)
 

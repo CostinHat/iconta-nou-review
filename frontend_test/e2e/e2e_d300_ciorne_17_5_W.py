@@ -193,8 +193,10 @@ def _control(rele, pg, parcurs):
             continue   # contul nu are comparație în diferență pe luna aceasta (coincide sau nu se compară): nimic de explicat
         n, suma = sql("SELECT count(DISTINCT i.id), COALESCE(sum(l.suma), 0) FROM %s.inregistrari_linii l JOIN %s.inregistrari i ON i.id = l.inregistrare_id "
                       "WHERE i.status <> 'validata' AND i.data >= %%s AND i.data < %%s AND l.%s = %%s" % (SCHEMA, SCHEMA, coloana), (de, pana, cont))[0]
+        # [17.5-T] actualizat la 484 (decizia 17.5-X, P4: fără note în ciornă, prima propoziție e «Diferență neexplicată: X lei.»; frontend_test/e2e/e2e_d300_ciorne_17_5_W.py:196)
+        dif = re.search(r"diferență ([\d.]+,\d{2}) lei", rand[0])   # diferența din rândul comparației, în formatul aplicației
         asteptat = ("Note în ciornă pe contul %s în perioadă: %d, cu suma de %s lei." % (cont, n, ro_bani(suma))) if n else (
-            "Note în ciornă pe contul %s în perioadă: niciuna." % cont)
+            "Diferență neexplicată: %s lei." % (dif.group(1) if dif else "?"))
         if asteptat not in vizibile:
             rele.append("AC185 / e.%d: sub rândul comparației cu contul %s (luna %02d/%d) nu e rândul vizibil care explică diferența prin notele în ciornă (așteptat «%s»); rândul comparației: %r"
                         % (i, cont, luna, an, asteptat, rand[0][:300]))

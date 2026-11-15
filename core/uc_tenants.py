@@ -3276,7 +3276,29 @@ def stocuri_lista(tenant_id, an, luna, ctx):
         from core import coada_api as _coada
         toate = [i for n in nirs for i in _s.note_nir(n)]
         stari = _coada.stari_note(conn, tenant_id, toate)
-        return {"nir": _s.stare_validare_nir(nirs, stari, _s.refaceri_nir(conn, schema, [n["id"] for n in nirs]))}
+        return {"nir": _s.stare_validare_nir(nirs, stari, _s.refaceri_nir(conn, schema, [n["id"] for n in nirs])),
+                "numar_propus": _numar_nir_propus(conn, schema, an)}
+
+
+#: [17.5-X, 739] primul an din care se caută numerele NIR existente (anul minim al aplicației, ca la declarații)
+AN_MINIM_NIR = 2020
+
+
+def _numar_nir_propus(conn, schema, an):
+    """[17.5-X, 739] Numărul propus la «NIR nou»: cel mai mare număr întreg al NIR-urilor firmei + 1 (comparate ca NUMERE, nu ca text: «10» > «9»), ca la
+    facturi (`facturi_api.urmatorul_in_serie`); fără niciun NIR numeric, 1. Câmpul rămâne editabil, iar dublura în același an rămâne refuzată
+    (`_nir_cu_numarul`). Citire pură: nimic nu se scrie. NIR-urile se citesc cu `stocuri_api.lista_nir` (singura citire existentă a NIR-urilor, pe luni,
+    de la `AN_MINIM_NIR` până la cel mai nou dintre anul ferestrei și anul curent): SQL-ul nu stă în use-case (`core/straturi.py`)."""
+    from core import stocuri_api as _s
+    from core.common import azi_ro
+    maxim = 0
+    for a in range(AN_MINIM_NIR, max(int(an), azi_ro().year) + 1):
+        for luna in range(1, 13):
+            for n in _s.lista_nir(conn, schema, a, luna):
+                nr = str(n.get("numar") or "").strip()
+                if nr.isdigit():
+                    maxim = max(maxim, int(nr))
+    return maxim + 1
 
 
 def stocuri_adauga(tenant_id, corp, ctx):
@@ -3917,33 +3939,22 @@ def retete_descarca(tenant_id, corp, ctx):
 
 
 def verificare_stocuri(tenant_id, ctx):
-    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/verificare-stocuri`; docstringul ei a ramas in stratul HTTP."""
+    """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/verificare-stocuri`; docstringul ei a ramas in stratul HTTP.
+    [17.5-X, F089] VALIDAT contra VALIDAT: soldul contului din balanță (soldul preluat + rulajul notelor validate) față de fișele de magazie ale mișcărilor
+    cu notă validată (`stocuri_cv_api.reconciliere`, aceeași citire ca cardul Stocurilor); ciornele de stoc nu produc „diferență”, ci se arată separat, cu suma lor
+    (`ciorne`, pe fiecare cont `valoare_ciorna`)."""
     from decimal import Decimal
-    from core import stocuri_cv as _m
+    from core import stocuri_cv_api as _cv
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            arts = [dict(r) for r in repo_stocuri.articole_cu_cont(cur, schema)]
-            val_cv = {}
-            for a in arts:
-                fisa = _m.fisa_magazie([dict(r) for r in repo_stocuri.miscari_ale_articolului(cur, schema, a["id"])])
-                if fisa:
-                    u = fisa[-1]
-                    v = Decimal(str(u["sold_cantitate"] or 0)) * Decimal(str(u["cmp"] or 0))
-                    val_cv[a["cont_stoc"]] = val_cv.get(a["cont_stoc"], Decimal("0")) + v
-            rez = []
-            for cont, vcv in sorted(val_cv.items()):
-                sold = Decimal(str(repo_contabilitate.sold_initial_pe_cont(cur, schema, cont)["si"]))
-                r = repo_contabilitate.rulaj_pe_cont_stoc(cur, schema, cont, cont)
-                sold += Decimal(str(r["d"])) - Decimal(str(r["c"]))
-                dif = (sold - vcv).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-                rez.append({"cont": cont, "sold_contabil": str(sold.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)),
-                            "valoare_fise_cv": str(vcv.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)),
-                            "diferenta": str(dif), "ok": abs(dif) <= Decimal("0.01")})
-    return {"conturi": rez, "ok": all(x["ok"] for x in rez),
-            "nota": "Diferențele pot veni din note ciornă nevalidate sau din operațiuni în afara fișelor de magazie."}
+        recon = _cv.reconciliere(conn, schema)
+    rez = [{"cont": r["cont"], "sold_contabil": r["sold_contabil"], "valoare_fise_cv": r["valoare_validata"],
+            "valoare_ciorna": r["valoare_ciorna"], "diferenta": r["diferenta"], "ok": r["ok"]} for r in recon]
+    ciorne = sum((Decimal(r["valoare_ciorna"]) for r in rez), Decimal("0")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    return {"conturi": rez, "ok": all(x["ok"] for x in rez), "ciorne": str(ciorne),
+            "nota": "Diferențele pot veni dintr-o mișcare fără notă validată sau dintr-o notă validată cu altă valoare decât mișcarea."}
 
 
 def etransport_xml(tenant_id, corp, ctx):

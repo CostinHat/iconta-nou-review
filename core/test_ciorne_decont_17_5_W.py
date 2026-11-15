@@ -206,8 +206,9 @@ def test_explicatia_ciornelor_numara_notele_o_singura_data_in_sensul_comparat_si
     assert ex["4427"] == ("Note în ciornă pe contul 4427 în perioadă: 2, cu suma de 142,50 lei. Balanța cuprinde numai note validate, deci diferența "
                           "poate veni din ele; validează-le și reia verificarea.")
     assert ex["4426"].startswith("Note în ciornă pe contul 4426 în perioadă: 1, cu suma de 70,00 lei. ") and "validează-o" in ex["4426"]
-    assert ex["4423"] == "Note în ciornă pe contul 4423 în perioadă: niciuna. Diferența nu vine din note nevalidate."
-    assert ex["4424"] == "Note în ciornă pe contul 4424 în perioadă: niciuna. Diferența nu vine din note nevalidate."
+    # [17.5-T] actualizat la 484 (decizia 17.5-X, P4: fără note în ciornă, prima propoziție e «Diferență neexplicată: X lei.»; core/test_ciorne_decont_17_5_W.py:209)
+    assert ex["4423"] == "Diferență neexplicată: 1,00 lei. Nicio notă în ciornă nu atinge contul 4423 în perioadă."
+    assert ex["4424"] == "Diferență neexplicată: 1,00 lei. Nicio notă în ciornă nu atinge contul 4424 în perioadă."
     assert "explicatie_ciorne" not in out[4]   # constatarea verde nu primește explicație
     assert "ciorne" in out[0] and "ciorne" not in out[2]   # cheia veche rămâne numai la 4427 / 4426
 

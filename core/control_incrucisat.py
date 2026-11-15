@@ -117,11 +117,12 @@ _SENS_CIORNA = {"4427": "credit_4427", "4426": "debit_4426"}
 _SENS_COMPARAT = {"4427": "credit", "4426": "debit", "4423": "credit", "4424": "debit"}
 
 
-def _explicatie_ciorne(nr, suma, cont):
+def _explicatie_ciorne(nr, suma, cont, diferenta):
     """[17.5-W, AC185] Textul din rândul informativ de sub constatare: prima propoziție (cifrele) se vede fără deschiderea detaliilor
-    (`ds_piese.textSemnal`), a doua explică; fără note în ciornă pe cont, spune că diferența nu vine din ele."""
+    (`ds_piese.textSemnal`), a doua explică. [17.5-X, 484] Fără note în ciornă pe cont, diferența nu se explică din note: UN singur mesaj,
+    «Diferență neexplicată: X lei.» (X = diferența constatării, formatul aplicației), fără alt rând care să spună altceva despre aceeași diferență."""
     if not nr:
-        return "Note în ciornă pe contul %s în perioadă: niciuna. Diferența nu vine din note nevalidate." % cont
+        return "Diferență neexplicată: %s. Nicio notă în ciornă nu atinge contul %s în perioadă." % (_lei(abs(_d(diferenta))), cont)
     return ("Note în ciornă pe contul %s în perioadă: %d, cu suma de %s. Balanța cuprinde numai note validate, deci diferența poate veni din %s; "
             "validează-%s și reia verificarea." % (cont, nr, _lei(suma), "ea" if nr == 1 else "ele", "o" if nr == 1 else "le"))
 
@@ -138,7 +139,7 @@ def ciorne_care_explica(conn, schema, data_de, data_pana, constatari):
     # [17.5-W, AC185] pe fiecare constatare roșie a conturilor 4427 / 4426 / 4423 / 4424: câte note în ciornă ating contul (în sensul comparat) și suma lor
     with conn.cursor() as _cur:
         for c in rosii_toate:
-            c["explicatie_ciorne"] = _explicatie_ciorne(*_repo.ciorne_pe_cont(_cur, schema, data_de, data_pana, c["cont"], _SENS_COMPARAT[c["cont"]]), c["cont"])
+            c["explicatie_ciorne"] = _explicatie_ciorne(*_repo.ciorne_pe_cont(_cur, schema, data_de, data_pana, c["cont"], _SENS_COMPARAT[c["cont"]]), c["cont"], c.get("diferenta"))
     rosii = [c for c in rosii_toate if c["cont"] in _SENS_CIORNA]
     if not rosii:
         return constatari
@@ -159,6 +160,13 @@ def ciorne_care_explica(conn, schema, data_de, data_pana, constatari):
         c["ciorne"] = note
         c["ciorne_explica"] = bool(note) and abs(sum(_d(n["suma"]) for n in note) - _d(c["diferenta"])) <= TOLERANTA
     return constatari
+
+
+def luna_primei_note(conn, schema):
+    """[17.5-X, 484] (an, luna) a celei mai vechi note a firmei sau None — începutul selectorului «Luna comparată» din Control fiscal."""
+    with conn.cursor() as cur:
+        d = _repo.prima_data_nota(cur, schema)
+    return (d.year, d.month) if d else None
 
 
 def rulaje_luna(conn, schema, an, luna, conturi):

@@ -1209,6 +1209,15 @@ def _balanta_lunii(schema, an, luna):
     return _vf.balanta(note, si), note
 
 
+def _numar_note_luna(schema, an, luna):
+    """[17.5-X, 602.1 / 781] Numărul notelor lunii (an, luna), în toate stările: ACEEAȘI citire ca Registrul jurnal (`repo_contabilitate.jurnal_pe_an`, o notă o dată,
+    oricâte linii ar avea), deci antetul Verificărilor și al Registrului spun același număr («Luna LL/AAAA · N de note»). Înainte: `len(note)` = liniile de notă
+    cumulate până la sfârșitul lunii (134 pe snapshot, față de 84 note)."""
+    from core import repo_contabilitate
+    with db.get_conn() as conn, conn.cursor() as cur:
+        return len({r[0] for r in repo_contabilitate.jurnal_pe_an(cur, schema, "%04d-01-01" % an, "%04d-%02d-01" % (an, luna))})
+
+
 def _verificari_contabile(schema, an, luna, confruntare=None):
     """Verificările contabile ale lunii (an, luna). `confruntare` = (an, luna) pe care rulează punțile declarație–contabilitate
     (D300 / D112 / D390 / cota TVA); implicit aceeași lună. [deficiența 484] Control fiscal o dă pe cea din
@@ -1286,7 +1295,7 @@ def _verificari_contabile(schema, an, luna, confruntare=None):
                                            "%04d-%02d" % (an, luna)),
         "trezorerie": _vf.verifica_trezorerie(bal),
         "tva": _tva_bal,
-        "note": len(note),
+        "note": _numar_note_luna(schema, an, luna),
     }
     try:  # verif_doc_pozate_v1
         rezultat["documente_pozate"] = _verifica_documente_pozate(schema)

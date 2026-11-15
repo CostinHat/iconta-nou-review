@@ -16,7 +16,7 @@
 // inactiv, cu motivul „Completează: …” în bară. Ecranul spune doar ce e obligatoriu; el nu-și mai ține butonul activ / inactiv.
 
 import { alegereButoane, alegereComutator, alegereText, esteAlege, inactiv, activ, MAX_BUTOANE, cate } from "./api.js?v=7396e03327";
-import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_piese.js?v=e115d72f0f";
+import { listaCuCautare, tabeleDSAplica, carduriDSAplica, listeDSAplica, coloaneDateSumeAplica, tiparesteTabel, LISTE_ASTEA } from "./ds_piese.js?v=ab8a4ad1c3";
 
 const _normalizeaza = (t) => String(t || "").replace(/\*/g, "").replace(/\s+/g, " ").trim();
 const _vizibil = (el) => !!(el.offsetParent || el.getClientRects().length);
@@ -398,8 +398,12 @@ export function baraDeJos(fer, corp, { renunta }) {
   const programeaza = () => { if (!plan) plan = requestAnimationFrame(() => { plan = 0; sincronizeaza(); }); };
   corp.addEventListener("input", programeaza, true);
   corp.addEventListener("change", programeaza, true);
-  new MutationObserver((muts) => { if (muts.some((m) => !bara.contains(m.target) || m.target === bara || m.target === loc)) programeaza(); })
-    .observe(corp, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "class", "style", "open", "aria-disabled", "data-motiv-inactiv"] });
+  // [17.5-X, 763] schimbarea STĂRII butonului principal care stă el însuși în bară (fără proxy: `disabled`, `aria-disabled`, motivul) reface bara; schimbările din bară scrise de
+  // `sincronizeaza` cu aceeași valoare nu o reprogramează (`oldValue` diferit de cel de acum): textul «Se citesc controalele lunii…» nu mai rămâne după încărcare
+  const STARE_PRINCIPAL = ["disabled", "aria-disabled", "data-motiv-inactiv"];
+  new MutationObserver((muts) => { if (muts.some((m) => !bara.contains(m.target) || m.target === bara || m.target === loc
+      || (m.type === "attributes" && m.target === principal && STARE_PRINCIPAL.includes(m.attributeName) && m.oldValue !== m.target.getAttribute(m.attributeName)))) programeaza(); })
+    .observe(corp, { childList: true, subtree: true, attributes: true, attributeOldValue: true, attributeFilter: ["disabled", "hidden", "class", "style", "open", "aria-disabled", "data-motiv-inactiv"] });
   sincronizeaza();
   return { sincronizeaza, bara };
 }

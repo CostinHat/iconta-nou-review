@@ -259,9 +259,9 @@ def test_def_483_deblocarea_lunii_cere_motivul_si_se_face(patron, firma_e2e):
     pg.wait_for_function("() => (document.querySelector('#il-lock') || {}).textContent === 'Deblochează luna'", timeout=25000)
     pg.click("#il-lock")
     pg.wait_for_selector("#bl-motiv", timeout=10000)
-    pg.click("#bl-deblocheaza")
-    pg.wait_for_selector('.msg-eroare[data-camp="bl-motiv"]', timeout=10000)
-    assert "Scrie motivul deblocării" in pg.inner_text('.msg-eroare[data-camp="bl-motiv"]')
+    # [17.5-T] actualizat la 729.1 (decizia 17.5-X, P2: confirmarea cere motiv și e inactivă cât motivul e gol; frontend_test/e2e/e2e_lot12_firme1.py:262)
+    pg.wait_for_function("() => (document.querySelector('#bl-deblocheaza') || {getAttribute: () => ''}).getAttribute('aria-disabled') === 'true'", timeout=10000)
+    assert "Scrie motivul deblocării" in pg.get_attribute("#bl-deblocheaza", "data-motiv-inactiv")
     assert sql('SELECT count(*) FROM "%s".perioade_blocate WHERE an = %%s AND luna = %%s' % s, (an, luna)) == [(1,)]
     patron.captura("motivul_cerut")
     motiv = "corectez factura E2E483, înregistrată cu altă dată"

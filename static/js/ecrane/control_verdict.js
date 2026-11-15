@@ -7,7 +7,7 @@
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
 import { VERDICT_POZITIV } from "./verdict.js?v=fb322c8d48";  // [P13c] punctul unic de verdict
 import { api, cate, esc, dataRo, confirmaCaseta, arataMesaj, bani, focusFaraSalt, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";
-import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=e115d72f0f";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
+import { semnalHtml, rezumatHtml, tabelDSHtml, legaSemnale } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] semnale pe rând, card-rezumat, tabel DS
 import { cuLegareaNir, interogareLegare } from "./nir_legare.js?v=b34abfe2ec";
 import { ECRANE as ECRANE_DESTINATIE } from "./ecran_destinatie.js?v=7c3b897c2b";   // [D2, 14.3] butonul „de lămurit” spre Date firmă
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [deficiența 463] starea SPV a firmei, aceeași ca în fereastra firmei */
@@ -282,11 +282,18 @@ export function randeazaCorpVerdict(d, opt = {}) {
     const cuFinding = verificatori.filter((v) => (v.constatari || []).length);
     // [Retest 2, pct.9] ce nu se aplică firmei (D390 față de D300 la un neplătitor) se spune explicit, nu se tace
     const neaplic = verificatori.flatMap((v) => v.nu_se_aplica || []);
-    const reconRand = (recon && recon.constatari) || [];
-    if (!cuFinding.length && !neaplic.length && !reconRand.length) return "";
+    // [17.5-X, 484] cât D300 diferă de contabilitate, rândul «Recalculul din documentele perioadei confirmă cifrele declarației generate» al D300 nu se mai spune
+    // (confirmarea ar contrazice diferența de deasupra): un singur mesaj despre aceeași diferență
+    const difera = ((vc.tva_incrucisat || {}).constatari || []).some((c) => c.stare && c.stare !== "verde");
+    const reconRand = ((recon && recon.constatari) || []).filter((c) => !(difera && c.declaratie === "d300" && c.stare === "verde"));
+    // [17.5-X, 484] selectorul lunii comparate: eticheta «Luna comparată», opțiunile «LL/AAAA» (de la cea mai veche lună cu note până la ultima lună încheiată)
+    const luniComp = d.luni_comparabile || [], aleasa = d.luna_comparata || {};
+    const selectorLuna = luniComp.length ? `<div class="camp camp-mic cf-luna-comp"><label class="camp-eticheta" for="cf-luna-comparata">Luna comparată</label>
+      <select id="cf-luna-comparata" class="camp-input cf-luna-comparata"><option value="" data-alege disabled hidden>— alege luna —</option>${luniComp.map((x) => `<option value="${x.an}-${x.luna}"${x.an === aleasa.an && x.luna === aleasa.luna ? " selected" : ""}>${esc(x.eticheta)}</option>`).join("")}</select></div>` : "";
+    if (!selectorLuna && !cuFinding.length && !neaplic.length && !reconRand.length) return "";
     // [lotul 14, 694] fiecare comparație își arată perioada (D300 / D390 pe perioada fiscală completă, D112 pe lună), nu „luna în curs”
     const perioade = [["D300", vc.tva_incrucisat], ["D112", vc.d112_incrucisat], ["D390", vc.d390_incrucisat]].filter(([, v]) => v && v.perioada);
-    const antet = perioade.length ? `<div id="cf-perioade">${info(`Perioada comparată: ${perioade.map(([n, v]) => `${n} ${v.perioada}`).join(" · ")}`, `<p class="cf-incr-temei">Ultima perioadă încheiată, a cărei declarație se depune.</p>`)}</div>` : "";
+    const antet = selectorLuna + (perioade.length ? `<div id="cf-perioade">${info(`Perioada comparată: ${perioade.map(([n, v]) => `${n} ${v.perioada}`).join(" · ")}`, `<p class="cf-incr-temei">Ultima perioadă încheiată, a cărei declarație se depune.</p>`)}</div>` : "");
     // fiecare rând al reconcilierii poartă numele declarației: „D300 (decont TVA): Recalculul … confirmă cifrele declarației.”
     const cuNume = (c) => (c.eticheta && !String(c.mesaj || "").startsWith(c.eticheta)
       ? Object.assign({}, c, { mesaj: `${c.eticheta}: ${c.mesaj || ""}` }) : c);
@@ -417,6 +424,20 @@ function perioadaButonului(b) {
 
 export function legaVerdict(corp, nav, firma) {
   legaSemnale(corp);   // [15.1-E3] pliarea semnalelor și a card-rezumatelor din corp
+  // [17.5-X, 484] «Luna comparată»: se cere verdictul pe luna aleasă (`GET /control-fiscal/{id}?an=&luna=`) și se redesenează corpul lui; același renderer, aceleași legări
+  corp.querySelectorAll("select.cf-luna-comparata").forEach((sel) => sel.addEventListener("change", async () => {
+    if (!sel.value) return;   // nu se alege niciodată «— alege luna —» (ascuns): luna rămâne cea de dinainte
+    const [a, l] = sel.value.split("-").map(Number);
+    let d;
+    try { d = await api.get(`/control-fiscal/${firma.tenant_id}?an=${a}&luna=${l}`); } catch (e) { arataMesaj(sel.closest(".cf-luna-comp"), (e && e.mesaj) || "Luna aleasă nu s-a putut încărca.", "eroare"); return; }
+    const vechi = sel.closest(".cf-corp");
+    if (!vechi) return;
+    const gol = document.createElement("div");
+    gol.innerHTML = randeazaCorpVerdict(d);
+    const nou = gol.firstElementChild;
+    vechi.replaceWith(nou);
+    legaVerdict(nou, nav, firma);
+  }));
   // [lotul 13, 674 — DS cap.2a „Orice acțiune e un buton”; comanda Costin 13.1 supersedează forma „pliat implicit” din 158 (DECIZII)] grupul
   // „Înainte de preluare” nu mai e un grup pliat pe care se dă clic: butonul lui deschide o fereastră nouă (673) cu declarațiile, marcările
   // pe rând și „Marchează toate”. Ce cerea 158 rămâne: grupul nu stă desfăcut din oficiu. Fereastra se desenează din șablonul randat al
@@ -427,7 +448,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=2293f64c7c");
+    const { deschideInchidereLuna } = await import("./firme.js?v=213a1033e5");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

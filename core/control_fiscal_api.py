@@ -420,11 +420,6 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         neclar.append(_af.afirmatie("necunoastere", tip.lower(), cauza,
                                     domeniu_de="%04d-01" % a, domeniu_pana="%04d-12" % a))
 
-    def gri_contradictie(tip, motiv, sursele):
-        """Doua afirmatii care nu pot fi amandoua adevarate. NU e necunoastere: aici stim doua
-        lucruri incompatibile, si `sursele` le numeste pe amandoua ca sa se poata arbitra."""
-        neclar.append(_af.afirmatie("contradictie", tip.lower(), motiv, sursele=sursele))
-
     def neaplic_statut(tip, motiv, statut, statut_din=None):
         """Obligatia nu exista cat tine un STATUT (forma juridica, regim TVA). Relatie, nu interval:
         capatul de sus e deschis prin natura afirmatiei."""
@@ -624,17 +619,17 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                             "completați-o dacă firma e înregistrată.")
         # operatiuni_ic False -> nimic (istoric)
     elif platitor_tva:                          # art. 316: FAPTUL primeaza; bifa decide doar pe luna deschisa
-        contradictie = []
         for a, m in per_luni:
             term = _termen(a, m, tip="d390")
             if not _in_fereastra(term):
                 continue                        # in afara ferestrei -> nici nu intrebam faptul (economie interogari)
             fapt = d390_fapt(a, m)
             if fapt is True:
+                # [17.5-X, 484] profil „fără IC” vs facturi IC reale: firma apare O SINGURĂ DATĂ, la «De urmărit», cu UN motiv care spune și nepotrivirea
+                # cu profilul (înainte: și un rând la «Nu se poate verifica», care contrazicea «De urmărit»)
                 adauga("D390", a, m, _LUNI_NUME[m], "d390",     # datorat, INDIFERENT de bifa
-                       fapt=f"operațiuni intracomunitare înregistrate în {perioada_canonica(a, m, 'luna')}")
-                if operatiuni_ic is False:
-                    contradictie.append((a, m))                 # profil "fara IC" vs facturi IC reale -> semnal
+                       fapt=f"operațiuni intracomunitare înregistrate în {perioada_canonica(a, m, 'luna')}"
+                            + ("; profilul firmei spune fără operațiuni intracomunitare — corectează în Date firmă" if operatiuni_ic is False else ""))
             elif fapt is False:
                 # luna INCHISA fara operatiuni -> nu se datoreaza (cost asimetric: restanta falsa = acuzatie).
                 # Semafor confirma cu temei doar pe ULTIMA luna inchisa; termene skip tacit.
@@ -667,13 +662,6 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                     if jos is None:
                         gri_fereastra("D390", "Operațiuni intracomunitare necompletat — nu se poate ști dacă datorezi D390.")
                 # operatiuni_ic False + luna deschisa -> profil declara fara IC -> nu emitem
-        if contradictie:                        # [contradictie] operatiuni_ic=False vs facturi IC reale -> semnal, nu blocare (ca F185)
-            luni_txt = ", ".join(perioada_canonica(a, m, "luna") for (a, m) in contradictie)
-            gri_contradictie("D390", "Profilul firmei declară fără operațiuni intracomunitare, dar există facturi "
-                        "intracomunitare în perioada %s. Verificați Vectorul fiscal (operațiuni intracomunitare) — "
-                        "D390 se datorează pentru lunile cu astfel de operațiuni." % luni_txt,
-                             sursele="Vectorul fiscal (operațiuni intracomunitare) vs facturile "
-                                     "intracomunitare din evidență")
     else:                                        # NEplatitor: D390 e neaplicabil PRIN FORMA pe fapt.
         # POARTA: faptul D390 (d390_fapt -> DB per luna) se consulta DOAR la platitori (art. 316). Un neplatitor nu are
         # D390 pe fapt - obligatia depinde de inregistrarea art. 317, pe care n-o urmarim (facturile IC nu o dovedesc).
@@ -1024,7 +1012,7 @@ def limite_verificarii(azi, jos=None, sus_zile=PRAG_URMARIT_ZILE, vc=None, inchi
     return out
 
 
-def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu_reconciliere=True):
+def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu_reconciliere=True, luna_comparata=None):
     """
     Intoarce {stare, datorate, depuse, lipsa, urmarit, confirmate, neclar, neaplicabile}.
     stare: 'verde' / 'galben' / 'gri' / 'rosu'. Fiecare linie poarta `motiv` (pe orice culoare).
@@ -1229,7 +1217,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     # tacit -> constatare ROSIE zgomotoasa (nu gri). cu_reconciliere=False dezactiveaza (consumatori usori).
     reconciliere = None
     if cu_reconciliere:
-        an_r, luna_r = luna_confruntata(azi.year, azi.month)
+        an_r, luna_r = luna_comparata or luna_confruntata(azi.year, azi.month)   # [17.5-X, 484] luna aleasă în «Luna comparată»; implicit, ultima lună încheiată
         from core import control_incrucisat as _ci_rec
         try:
             reconciliere = _ci_rec.reconciliaza_declaratii(conn_schema, schema, an_r, luna_r)

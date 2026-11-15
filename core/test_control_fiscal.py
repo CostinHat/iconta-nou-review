@@ -279,10 +279,13 @@ def test_semafor_d390_fapt_primeaza_peste_flag_false():
     assert any(d["tip"] == "d390" for d in rez["datorate"])
 
 def test_semafor_d390_contradictie_flag_false_dar_facturi_ic():
-    # operatiuni_ic=False dar facturi IC (fapt True) -> semnal gri cu temei (nu blocare)
+    # operatiuni_ic=False dar facturi IC (fapt True) -> semnal, nu blocare
+    # [17.5-T] actualizat la 484 (decizia 17.5-X, P4: D390 apare o singură dată, la «De urmărit», cu UN motiv care conține și nepotrivirea cu profilul; core/test_control_fiscal.py:281)
     v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False, "regim_fiscal": "profit"}
     rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: True)
-    assert sum(1 for n in rez["neclar"] if n["tip"] == "d390" and "declară fără" in n["motiv"]) == 1
+    assert not any(n["tip"] == "d390" for n in rez["neclar"])   # nimic la «Nu se poate verifica»: rândul vechi „declară fără” a dispărut
+    motive = [d["fapt"] for d in rez["datorate"] if d["tip"] == "d390"]
+    assert motive and all("; profilul firmei spune fără operațiuni intracomunitare — corectează în Date firmă" in m for m in motive)   # un singur motiv, cu nepotrivirea
 
 def test_semafor_d390_flag_false_fapt_false_nimic():
     v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False, "regim_fiscal": "profit"}

@@ -147,7 +147,7 @@ export function listaCuCautare(sel, { gol = "Alege din listă", cautare = "Caut�
       const r = potrivite[Number(li.dataset.i)];
       const det = cutie.querySelector(`.ds-lista-detalii[data-pentru="${li.dataset.i}"]`);
       if (r.o.disabled) { if (det) det.hidden = !det.hidden; return; }   // opțiunea care nu se poate alege își spune motivul întreg
-      sel.value = r.o.value;
+      r.o.selected = true;   // [17.5-X, 727.2] opțiunea ÎNSĂȘI: rândurile cu aceeași valoare («D300 · 08/2026», «D300 · 09/2026») nu mai aleg prima cu `sel.value`
       deschisa = permanenta; filtru = permanenta ? filtru : "";
       sel.dispatchEvent(new Event("input", { bubbles: true }));
       sel.dispatchEvent(new Event("change", { bubbles: true }));

@@ -1,7 +1,7 @@
 # plasa_16_2.manifest — plasa fixă a măsurătorii 16.0 (completarea 2, pct.H). Câmpuri separate prin TAB: cale, sha256, teste descoperite, comanda.
 frontend_test/e2e/e2e_lot12_verif.py	ea5dd13306e84f7a0065746a12387339deb9e6b85efcc8a773aa31f97050c353	4	python -m pytest -q frontend_test/e2e/e2e_lot12_verif.py
 frontend_test/e2e/e2e_lot72_facturi.py	bf1fabf1158c77bbbc36f76357da834a44c8dbebaa4787fd5b8176308d7dfea2	7	python -m pytest -q frontend_test/e2e/e2e_lot72_facturi.py
-frontend_test/e2e/e2e_pilot_luna.py	fe523ce9131d602a57366f83463153d715100e83fb51e44c468b207570dc6dd6	40	python -m pytest -q frontend_test/e2e/e2e_pilot_luna.py
+frontend_test/e2e/e2e_pilot_luna.py	6da296d150c336d2c367b3481afe05b34387cea5da69eaa6e923edc7b31d2c59	40	python -m pytest -q frontend_test/e2e/e2e_pilot_luna.py
 frontend_test/e2e/e2e_pozitii_validate.py	b70755efb08aa4d474f595dac68e3671ca556d490fc78746aa779c91c173d087	17	python -m pytest -q frontend_test/e2e/e2e_pozitii_validate.py
 frontend_test/e2e/e2e_pilot_x09.py	11bfa9c059b5362a82506dbe807a759ca6e4b8875be734df50cf7d376c491fc3	1	python -m pytest -q frontend_test/e2e/e2e_pilot_x09.py
 frontend_test/e2e/e2e_pilot_f017.py	2c9b4fab2bfb3d9f833ea5afc6f5ed45b3e7a08b097a6c5dcd4a2fd061c4315e	1	python -m pytest -q frontend_test/e2e/e2e_pilot_f017.py
@@ -17,6 +17,7 @@ frontend_test/e2e/e2e_de_validat_17_5_G.py	c8a460a3ee239c58b350bb58b23dd579309e9
 frontend_test/e2e/e2e_piese_17_5_H2.py	10f326f2fb8d19f113ea4d7ec200702b5cb3e46edda1065c5ba5f8128ac5bbcc	1	python -m pytest -q frontend_test/e2e/e2e_piese_17_5_H2.py
 frontend_test/e2e/e2e_bara_jos.py	9392af805c2208265588f130506f1e1732d56a3ecfd6e3bca7772257bdf4de88	1	python -m pytest -q frontend_test/e2e/e2e_bara_jos.py
 frontend_test/e2e/e2e_ferestre_17_5_O.py	7628092c067f81315dcda9af1362d93e0565eeb08595576417e2bf02e4403d8f	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_O.py
-frontend_test/e2e/e2e_d300_ciorne_17_5_W.py	5ae84d6a1e4b3b72b33a772e23eb1c8c671216824745204a836948195463e2b4	1	python -m pytest -q frontend_test/e2e/e2e_d300_ciorne_17_5_W.py
+frontend_test/e2e/e2e_d300_ciorne_17_5_W.py	f9fb8aa0077ce71da3e424f3b532264a1359784549aff3802f7982cb43c08c0f	1	python -m pytest -q frontend_test/e2e/e2e_d300_ciorne_17_5_W.py
 frontend_test/e2e/e2e_pilot_17_5_S.py	bb8262d109cf85a80f9987620f25e90f3e8eeebc5031209f76693d58e033f777	1	python -m pytest -q frontend_test/e2e/e2e_pilot_17_5_S.py
 frontend_test/e2e/e2e_texte_17_5_I.py	ac917ca6907e3778b267b9609a16deb5fe6c77ade1e946f4f9d532c16df3d089	1	python -m pytest -q frontend_test/e2e/e2e_texte_17_5_I.py
+frontend_test/e2e/e2e_pilot_17_5_X.py	f0b4fdcfc4f3efce715afcc97008ff1750221888f5fafe83c340696b97874ff0	1	python -m pytest -q frontend_test/e2e/e2e_pilot_17_5_X.py
