@@ -44,7 +44,9 @@ MASURI = ("text", "numar", "activ", "inaltime_px", "distanta_px", "diferenta_lat
 CHEIE_FARA_VALOARE = "__fara_valoare__"
 
 
-OPERATORI = ("egal", "contine", "nr_randuri", "lipseste", "interval_px", "activ", "text_contine")
+OPERATORI = ("egal", "contine", "nr_randuri", "lipseste", "interval_px", "activ", "text_contine", "text_vizibil", "rand_propriu")
+#: 17.5-X7: operatorii noi (numai a.10, a.15, a.17). text_contine citește `textContent` și rămâne neschimbat.
+OPERATORI_NOI_17_5_X7 = ("text_vizibil", "rand_propriu")
 
 
 def _text(x):
@@ -53,6 +55,22 @@ def _text(x):
     if isinstance(x, (list, tuple)):
         return ",".join(_text(i) for i in x)
     return "" if x is None else str(x)
+
+
+def compara_rand_propriu(valoare, observat):
+    """17.5-X7, rand_propriu: valoarea e «A && B»; trece numai dacă UN SINGUR rând vizibil (din lista textelor vizibile ale rândurilor) ÎNCEPE cu A și conține B. -> (verdict, motiv)."""
+    a, _, b = str(valoare).partition(" && ")
+    a, b = a.strip(), b.strip()
+    if not a or not b:
+        return "pica", "valoarea rand_propriu cere «A && B»: %r" % (valoare,)
+    if not isinstance(observat, (list, tuple)):
+        return "pica", "nu e o listă de rânduri: %r" % (observat,)
+    potrivite = [r for r in observat if str(r).startswith(a) and b in str(r)]
+    if len(potrivite) == 1:
+        return "trece", ""
+    if not potrivite:
+        return "pica", "niciun rând vizibil nu începe cu %r și conține %r (%d rânduri vizibile: %r)" % (a, b, len(observat), [str(r)[:60] for r in observat][:8])
+    return "pica", "%d rânduri încep cu %r și conțin %r; trebuie unul singur" % (len(potrivite), a, b)
 
 
 def compara_asertiune(operator, valoare, observat):
@@ -70,6 +88,10 @@ def compara_asertiune(operator, valoare, observat):
         return ("trece", "") if o == val else ("pica", "găsit %r, așteptat %r" % (o, val))
     if operator == "contine" or operator == "text_contine":
         return ("trece", "") if val in _text(observat) else ("pica", "%r nu apare în %r" % (val, _text(observat)[:200]))
+    if operator == "text_vizibil":   # observat = textul nodurilor vizibile, în fereastra de 1366×768, fără derulare (_JS_TEXT_VIZIBIL)
+        return ("trece", "") if val in _text(observat) else ("pica", "%r nu apare în textul vizibil din fereastră: %r" % (val, _text(observat)[:200]))
+    if operator == "rand_propriu":
+        return compara_rand_propriu(val, observat)
     if operator == "lipseste":
         return ("trece", "") if val not in _text(observat) else ("pica", "%r apare în %r" % (val, _text(observat)[:200]))
     if operator == "nr_randuri":
@@ -275,6 +297,35 @@ def refuzuri_csv(csv_, rad=None, exceptat=False):
     return ref
 
 
+#: 17.5-X7 — ajutoare comune: un nod e vizibil numai dacă niciun strămoș nu e hidden / display:none / visibility:hidden / aria-hidden;
+#: «în fereastră» = caseta stă în viewport (1366×768) și în caseta fiecărui strămoș care taie conținutul (overflow ≠ visible).
+_JS_VIZ_AJUTOARE = """
+  const vizibilEl = e => { let prev = null; for (let x = e; x && x.nodeType === 1; prev = x, x = x.parentElement) {
+      if (x.hidden || x.getAttribute('aria-hidden') === 'true') return false;
+      if (x.tagName === 'DETAILS' && !x.open && !(prev && prev.tagName === 'SUMMARY')) return false;
+      const c = getComputedStyle(x); if (c.display === 'none' || c.visibility === 'hidden') return false; } return true; };
+  const incape = (r, e) => { if (r.width <= 0 || r.height <= 0) return false;
+      if (r.top < -1 || r.left < -1 || r.bottom > innerHeight + 1 || r.right > innerWidth + 1) return false;
+      for (let x = e; x && x.nodeType === 1; x = x.parentElement) { const c = getComputedStyle(x);
+        if (c.overflow !== 'visible' || c.overflowX !== 'visible' || c.overflowY !== 'visible') { const q = x.getBoundingClientRect();
+          if (r.top < q.top - 1 || r.bottom > q.bottom + 1 || r.left < q.left - 1 || r.right > q.right + 1) return false; } } return true; };
+  const textVizibil = (radacina, infereastra) => { const w = document.createTreeWalker(radacina, NodeFilter.SHOW_TEXT); const out = [];
+      for (let n = w.nextNode(); n; n = w.nextNode()) { const t = (n.nodeValue || '').replace(/\\s+/g, ' ').trim(); if (!t) continue;
+        const p = n.parentElement; if (!p || !vizibilEl(p)) continue;
+        if (infereastra) { const g = document.createRange(); g.selectNodeContents(n); const rr = Array.from(g.getClientRects()); if (!rr.length || !rr.every(r => incape(r, p))) continue; }
+        out.push(t); } return out.join(' ').replace(/\\s+/g, ' ').trim(); };
+"""
+
+_JS_TEXT_VIZIBIL = """([sel]) => {""" + _JS_VIZ_AJUTOARE + """
+  return Array.from(document.querySelectorAll(sel)).filter(vizibilEl).map(e => textVizibil(e, true)).join(' ');
+}"""
+
+_JS_RANDURI = """([sel, selRand]) => {""" + _JS_VIZ_AJUTOARE + """
+  const out = []; Array.from(document.querySelectorAll(sel)).filter(vizibilEl).forEach(c => Array.from(c.querySelectorAll(selRand)).forEach(r => {
+    if (!vizibilEl(r)) return; const q = r.getBoundingClientRect(); if (q.width <= 0 || q.height <= 0) return; out.push(textVizibil(r, false)); }));
+  return out;
+}"""
+
 _JS_MASURA = """([sel, masura]) => {
   const el = Array.from(document.querySelectorAll(sel));
   const cut = e => e.getBoundingClientRect();
@@ -318,10 +369,14 @@ def text_pdf(octeti):
     return "\n".join((p.extract_text() or "") for p in PdfReader(io.BytesIO(octeti)).pages)
 
 
-def observa_pagina(pagina, cheie, director):
+def observa_pagina(pagina, cheie, director, operator=None):
     """Ce citește oracolul din pagina vie prin cheia aserțiunii (formatele din antet). -> (găsit, observat)."""
     if cheie.startswith("dom:"):
         sel, _, masura = cheie[4:].rpartition("|")
+        if sel and masura.startswith("randuri:") and masura[8:]:   # 17.5-X7: textele vizibile ale rândurilor containerului (pentru rand_propriu)
+            return True, pagina.evaluate(_JS_RANDURI, [sel, masura[8:]])
+        if sel and masura == "text" and operator == "text_vizibil":   # 17.5-X7: numai pentru operatorul nou; «text» al celorlalți operatori rămâne textContent
+            return True, pagina.evaluate(_JS_TEXT_VIZIBIL, [sel])
         if not sel or masura not in MASURI:
             raise ValueError("cheie dom: fără măsură cunoscută (%s): %r" % (", ".join(MASURI), cheie))
         return True, pagina.evaluate(_JS_MASURA, [sel, masura])
@@ -368,7 +423,7 @@ def verifica_pagina(pagina, lot, pas, parcurgere, verificator, pasi_json, csv):
             if os.path.exists(cap):
                 raise ValueError("captura %s există deja pentru cheia (%s, %s, %s, %s, %s); nu se suprascrie" % (cap, lot, parcurgere, a["id"], sha[:8], verificator))
             pagina.wait_for_timeout(SETTLE_MS)   # ecranul se așază (tranzițiile aplicației) înainte de citire și de captură: prima rulare Haiku a primit o captură la jumătatea unei tranziții (cabinetul peste fereastră)
-            gasit, obs = observa_pagina(pagina, a["cheie"], directorul)
+            gasit, obs = observa_pagina(pagina, a["cheie"], directorul, a["operator"])
             verdict, motiv = compara(a, obs) if gasit else ("pica", "cheia %s lipsește din pagină" % a["cheie"])
             os.makedirs(os.path.dirname(cap), exist_ok=True)
             pagina.screenshot(path=cap)
