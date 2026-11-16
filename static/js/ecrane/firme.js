@@ -972,7 +972,7 @@ async function ecranVerificari(corp, nav, t) {
           <div class="pf-frand-sub">${vs.ok ? "în regulă" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${bani(c.sold_contabil)} vs fi\u0219e ${bani(c.valoare_fise_cv)} (diferență ${bani(c.diferenta)})`).join(" \u00b7 ")}</div>
         </div><span class="cab-pct ${vs.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
         ${vs && Number(vs.ciorne) ? `<div class="pf-frand"><div class="pf-frand-text">
-          <div class="pf-frand-nume">Ciorne de stoc</div>
+          <div class="pf-frand-nume">Ciorne de stoc:</div>
           <div class="pf-frand-sub" id="vf-ciorne-stoc">${bani(vs.ciorne)} lei</div>
         </div><span class="cab-pct pct-info"></span></div>` : ""}   <!-- [17.5-X7, a.15; F089] ciornele nu produc „diferență”: rând pf-frand al lor, ca toate rândurile listei (situații identice, soluții identice, CLAUDE.md §9), nu un al doilea pf-frand-sub în rândul Stocurilor -->
         ${intra ? `<div class="pf-frand"><div class="pf-frand-text">
