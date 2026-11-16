@@ -450,6 +450,9 @@ RAMURI_ACOPERIRE = (
     {"nume": "vector_trimestrial_art317_tva_incasare", "aspecte": ("termene", "control_fiscal"),
      "conditie": "SRL · profit · TVA trimestrial · IC · art. 317 · TVA la incasare",
      "deschide": ()},
+    {"nume": "profit_d100_ajustari_reevaluari", "aspecte": ("control_fiscal",),
+     "conditie": "SRL · profit · venituri 70x in luna reconciliata (15.08.2026 → iulie, T3) · un mijloc fix · o ajustare fiscala si o reevaluare scrise",
+     "deschide": ("ajustari_fiscale", "reevaluari")},
 )
 
 #: CONTABILITATEA PROPRIE a modelului — scrisă de recalculare, nu citită ca sursă. Dacă ar rămâne

@@ -27,6 +27,7 @@ lui ar pica.
   2. **nicio măsurătoare nu scoate o sursă NEDECLARATĂ.** A doua e cea care apără: un tabel citit și
      nedeclarat înseamnă o scriere care nu invalidează nimic, adică o valoare veche arătată `curent`.
 """
+import datetime as _dt
 import os
 import sys
 
@@ -135,6 +136,40 @@ def _vector_trimestrial_art317(cur, schema):
                 ("srl", "profit", True, True, "T", True, True))
 
 
+#: [17.5-X5] Ziua în care se măsoară ramura `profit_d100_ajustari_reevaluari`: 15.08.2026. Control fiscal confruntă ULTIMA LUNĂ ÎNCHEIATĂ
+#: (`control_fiscal_api.luna_confruntata`: pe 15.08 = iulie 2026, T3), iar D100 pe impozitul pe profit se sare pe T4 (`control_incrucisat._thunk_d100`):
+#: măsurată la `azi_ro()`, ramura n-ar mai deschide sursele din noiembrie până în ianuarie, deci proba ar depinde de ziua rulării.
+DATA_RAMURA_PROFIT = _dt.date(2026, 8, 15)
+
+
+def _profit_ajustari_reevaluari(cur, schema):
+    """Firma pe impozit pe profit, cu venituri în conturile 70x în iulie 2026 (luna reconciliată la 15.08.2026), un mijloc fix, o ajustare fiscală
+    scrisă și o reevaluare consemnată. `ajustari_fiscale` se citește numai prin D100 pe profit (`d100._impozit_cumulat` → `ajustari_fiscale.cumulat`),
+    iar `reevaluari` prin fișa mijlocului fix (`repo_mijloace_fixe._REEV`), amândouă numai când D100 are obligație de depus (venituri 70x > 0).
+    Mijlocul fix are `data_pif` NULL (încă nepus în funcțiune): cu dată de PIF, control_fiscal ar citi și `mf_linii` (`mf_note.pe_activ`), sursă care
+    nu e declarată în registru, iar `test_nicio_sursa_observata_nu_lipseste_din_registru` ar pica; `reevaluari` se citește oricum, în lista coloanelor fișei.
+    Cerută de proba rezultată din `test_ramura_deschide_sursele_ei`: sursele sunt deja deschise de verdictul de bază, deci fixtura trebuie să le scrie."""
+    if not _gol(cur, schema, "ajustari_fiscale"):
+        return
+    cur.execute('UPDATE "%s".firma_profil SET tip_firma=%%s, regim_fiscal=%%s, platitor_tva=%%s, operatiuni_ic=%%s, tip_decont=%%s, '
+                "  inreg_art317=%%s, tva_la_incasare=%%s WHERE id=1" % schema, ("srl", "profit", True, False, "L", False, False))
+    cur.execute('INSERT INTO "%s".inregistrari (data, numar, descriere, status) VALUES (%%s, %%s, %%s, %%s) RETURNING id' % schema,
+                (_dt.date(2026, 7, 10), "PR-VEN", "PROBA venituri iulie", "validata"))
+    nota = cur.fetchone()[0]
+    cur.execute('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%%s, %%s, %%s, %%s)' % schema,
+                (nota, "4111", "707", 10000))
+    cur.execute('INSERT INTO "%s".mijloace_fixe (cod, denumire, valoare, dnf_luni, data_pif) VALUES (%%s, %%s, %%s, %%s, NULL) RETURNING id' % schema,
+                ("PR-MF", "PROBA MIJLOC FIX", 12000, 60))
+    mid = cur.fetchone()[0]
+    cur.execute('INSERT INTO "%s".inregistrari (data, numar, descriere, status) VALUES (%%s, %%s, %%s, %%s) RETURNING id' % schema,
+                (_dt.date(2026, 7, 20), "PR-REEV", "PROBA reevaluare", "validata"))
+    nota_r = cur.fetchone()[0]
+    cur.execute('INSERT INTO "%s".reevaluari (inregistrare_id, mijloc_fix_id, data, valoare_bruta_veche, amortizare_eliminata, valoare_justa, '
+                "  aplicata_la) VALUES (%%s, %%s, %%s, 12000, 1000, 15000, now())" % schema, (nota_r, mid, _dt.date(2026, 7, 20)))
+    cur.execute('INSERT INTO "%s".ajustari_fiscale (an, trim, rand, suma, descriere) VALUES (2026, 3, %%s, %%s, %%s)' % schema,
+                ("P33", 500, "PROBA cheltuieli nedeductibile"))
+
+
 #: ORDINEA E PARTE DIN PROBĂ. Fiecare rând declară ce TREBUIE să se deschidă la pasul lui.
 RAMURI = (
     {"nume": "baza_vector_complet", "setup": _nimic, "asteapta": ()},
@@ -144,6 +179,8 @@ RAMURI = (
     {"nume": "vector_pfa_profit_neplatitor", "setup": _vector_pfa_profit, "asteapta": ()},
     {"nume": "vector_trimestrial_art317_tva_incasare", "setup": _vector_trimestrial_art317,
      "asteapta": ()},
+    {"nume": "profit_d100_ajustari_reevaluari", "setup": _profit_ajustari_reevaluari,
+     "asteapta": ("ajustari_fiscale", "reevaluari"), "data": DATA_RAMURA_PROFIT},
 )
 
 #: TOATE aspectele registrului, DERIVATE — nu o listă scrisă alături de el.
@@ -221,9 +258,9 @@ def firma():
     sterge()
 
 
-def _masoara(tid, schema, aspect):
-    """Sursele din schema firmei atinse de `aspect`, măsurate cu instrumentul de dependențe."""
-    r = SD._masoara_aspect(aspect, tid, schema, azi_ro(), [schema, "public"], False)
+def _masoara(tid, schema, aspect, data=None):
+    """Sursele din schema firmei atinse de `aspect`, măsurate cu instrumentul de dependențe, la `data` (implicit azi_ro(); o ramură își poate fixa ziua)."""
+    r = SD._masoara_aspect(aspect, tid, schema, data or azi_ro(), [schema, "public"], False)
     assert r["instructiuni"] > 0, "aspectul %s n-a executat nimic — măsurătoarea e goală" % aspect
     return ({t[1] for t in r["plan"] if t[0] == schema},
             {t[1] for t in r["plan"] if t[0] == "public"}, r)
@@ -239,7 +276,7 @@ def acoperire(firma):
             with c.cursor() as cur:
                 pas["setup"](cur, schema)
             c.commit()
-        out[pas["nume"]] = {a: _masoara(tid, schema, a)[:2] for a in ASPECTE_MASURATE}
+        out[pas["nume"]] = {a: _masoara(tid, schema, a, pas.get("data"))[:2] for a in ASPECTE_MASURATE}
     return out
 
 

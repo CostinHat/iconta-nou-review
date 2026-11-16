@@ -142,6 +142,7 @@ de ea, ci fiindcă datele **acelei** firme nu intrau pe ramura de stocuri. Matri
 | `termene`, `control_fiscal` | `facturi_emise` | o factura emisa in luna | — (nicio sursă nouă) |
 | `termene`, `control_fiscal` | `vector_pfa_profit_neplatitor` | PFA · partida simpla · regim de profit · neplatitor TVA · fara IC | — (nicio sursă nouă) |
 | `termene`, `control_fiscal` | `vector_trimestrial_art317_tva_incasare` | SRL · profit · TVA trimestrial · IC · art. 317 · TVA la incasare | — (nicio sursă nouă) |
+| `control_fiscal` | `profit_d100_ajustari_reevaluari` | SRL · profit · venituri 70x in luna reconciliata (15.08.2026 → iulie, T3) · un mijloc fix · o ajustare fiscala si o reevaluare scrise | `ajustari_fiscale`, `reevaluari` |
 
 <!-- MATRICE:SFARSIT -->
 
