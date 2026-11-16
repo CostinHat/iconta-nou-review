@@ -1,0 +1,6 @@
+5.1 pytest -q -p no:cacheprovider core/test_rosu_termen_depasit.py core/test_p2_infrastructura.py core/test_notificari_canal.py pe P c4eb4c7bc49e8c56e75139bfd92774f71d20b569
+start 07:45:09, sfarsit 07:45:43, durata 34 s, cod de iesire 0
+...............................................                          [100%]
+47 passed in 32.24s
+
+pct.4: git diff --quiet 612285ae... HEAD (fara test_rosu_termen_depasit, test_p2_infrastructura, docs/dovezi, praguri_17_5_X3, DECIZII, PREDARE_LANT) -> cod 0 pe P
