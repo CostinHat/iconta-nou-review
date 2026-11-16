@@ -1,0 +1,354 @@
+{
+ "asertiuni": [
+  {
+   "ac": null,
+   "cheie": "dom:main|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/cabinet.js:44 (cardul «Control fiscal», neschimbat de lot); aceeași aserțiune ca f.1 din 17.5-W",
+   "id": "f.1",
+   "martor": "cabinetul administratorului dovada.71507",
+   "operator": "text_contine",
+   "pas": "implicit",
+   "valoare": "Control fiscal"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/declaratii.js:188 (antetul «Pasul 1 din 3 —»); neschimbat de lot",
+   "id": "f.2",
+   "martor": "F1 (tenant_9049), Fereastra Declarații F1, pasul 1, după clic pe rândul «D300 · 09/2026»",
+   "operator": "text_contine",
+   "pas": "decl_lista",
+   "valoare": "Pasul 1 din 3"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .ds-lista-ales-rand|text",
+   "de_ce": "static/js/ds_piese.js:150 (clicul pune sel.value = valoarea rândului; rândurile D300 au aceeași valoare «d300») și static/js/ecrane/declaratii.js:168; 727.2",
+   "id": "a.1",
+   "martor": "F1 (tenant_9049), Pasul 1, lista declarațiilor, după clic pe «D300 · 09/2026»",
+   "operator": "text_contine",
+   "pas": "decl_lista",
+   "valoare": "D300 · 09/2026"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-luna option:checked|text",
+   "de_ce": "static/js/ecrane/declaratii.js (#dec-luna); 727.2",
+   "id": "a.2",
+   "martor": "F1 (tenant_9049), Pasul 1, câmpul Lună, după clic pe «D300 · 09/2026»",
+   "operator": "text_contine",
+   "pas": "decl_lista",
+   "valoare": "septembrie"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "static/js/ecrane/declaratii.js:572 (antetul pasului 2 cu etPerioada()); 727.2",
+   "id": "a.3",
+   "martor": "F1 (tenant_9049), Pasul 2 al lui D300, după «Continuă» pe rândul «D300 · 09/2026»",
+   "operator": "text_contine",
+   "pas": "decl_pas2",
+   "valoare": "Pasul 2 din 3 — verifică D300 · septembrie 2026"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .ds-lista-ales-rand|text",
+   "de_ce": "static/js/ds_piese.js:150; static/js/ecrane/declaratii.js:168; 727.2",
+   "id": "a.4",
+   "martor": "F1 (tenant_9049), Pasul 1, fereastră proaspătă, după clic pe «D394 · 09/2026»",
+   "operator": "text_contine",
+   "pas": "decl_d394",
+   "valoare": "D394 · 09/2026"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #dec-luna option:checked|text",
+   "de_ce": "static/js/ecrane/declaratii.js (#dec-luna); 727.2",
+   "id": "a.5",
+   "martor": "F1 (tenant_9049), Pasul 1, câmpul Lună, după clic pe «D394 · 09/2026»",
+   "operator": "text_contine",
+   "pas": "decl_d394",
+   "valoare": "septembrie"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:5925 (cereMotivDeblocare); neschimbat de lot",
+   "id": "f.3",
+   "martor": "F1 (tenant_9049), Fereastra Închidere lună F1 pe 09/2026 (blocată), după clic pe «Deblochează luna»",
+   "operator": "text_contine",
+   "pas": "inchidere",
+   "valoare": "Motivul deblocării lunii 09/2026"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #bl-deblocheaza|activ",
+   "de_ce": "static/js/ecrane/firme.js:5940 (#bl-deblocheaza); 729.1",
+   "id": "a.6",
+   "martor": "F1 (tenant_9049), Formularul de deblocare cu motivul gol",
+   "operator": "activ",
+   "pas": "inchidere",
+   "valoare": "false"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js (ecranInchidereLuna, #il-stare-perioada); neschimbat de lot",
+   "id": "f.4",
+   "martor": "F1 (tenant_9049), Fereastra Închidere lună F1 pe 10/2026, după încărcarea controalelor",
+   "operator": "text_contine",
+   "pas": "inchidere_10",
+   "valoare": "Luna 10/2026"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal)|text",
+   "de_ce": "static/js/ecrane/firme.js:5906 (titlul butonului principal) și static/js/cadru.js:357–390 (#fj-motiv-text); 763",
+   "id": "a.7",
+   "martor": "F1 (tenant_9049), Închidere lună 10/2026, tot ecranul, inclusiv bara de jos",
+   "operator": "lipseste",
+   "pas": "inchidere_10",
+   "valoare": "Se citesc controalele lunii…"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:2439; scenariul F089; confirmat pe snapshot",
+   "id": "f.5",
+   "martor": "F1 (tenant_9049), Fereastra Stocuri F1",
+   "operator": "text_contine",
+   "pas": "stocuri",
+   "valoare": "Stoc validat 6.272,38 lei = balanța 371"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:4141 (ecranNirNou); neschimbat de lot",
+   "id": "f.6",
+   "martor": "F1 (tenant_9049), Fereastra «NIR nou» F1",
+   "operator": "text_contine",
+   "pas": "nir",
+   "valoare": "NIR nou"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #sn-numar|valoare",
+   "de_ce": "static/js/ecrane/firme.js:4173 (#sn-numar, gol); numerele NIR din iconta_test.tenant_9049.nir: 1, 2, 1, 3, 4, 5, 7; core/facturi_api.py:1372 (urmatorul_in_serie); 739; confirmat pe snapshot",
+   "id": "a.8",
+   "martor": "F1 (tenant_9049), NIR nou, câmpul număr",
+   "operator": "egal",
+   "pas": "nir",
+   "valoare": "8"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): core/control_fiscal_api.py (motivul D390 din De urmărit); neschimbat de lot; confirmat pe snapshot",
+   "id": "f.7",
+   "martor": "F1 (tenant_9049), Control fiscal F1, grupul «De urmărit»",
+   "operator": "text_contine",
+   "pas": "control_decl",
+   "valoare": "operațiuni intracomunitare înregistrate în 10/2026"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "core/control_fiscal_api.py:672 (gri_contradictie D390); decizii pct.5(d); 484",
+   "id": "a.9",
+   "martor": "F1 (tenant_9049), Control fiscal F1, tot ecranul",
+   "operator": "lipseste",
+   "pas": "control_decl2",
+   "valoare": "Profilul firmei declară fără operațiuni intracomunitare, dar există facturi intracomunitare"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-perioade|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/control_verdict.js:289 (#cf-perioade); neschimbat de lot",
+   "id": "f.8",
+   "martor": "F1 (tenant_9049), Control fiscal F1, «Declarație vs contabilitate»",
+   "operator": "text_contine",
+   "pas": "control_incr",
+   "valoare": "Perioada comparată: D300"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-incrucisat|randuri:.ds-semnal-cutie",
+   "de_ce": "core/control_incrucisat.py:120 (_explicatie_ciorne) și :1598; cifra 1.341,00 = D300 din evidență pe snapshot, 4423 fără note (producție: 1.551,00, numai context); confirmat pe snapshot; 484; 17.5-X7: operator nou (antet)",
+   "id": "a.10",
+   "martor": "F1 (tenant_9049), Declarație vs contabilitate, rândul contului 4423",
+   "operator": "rand_propriu",
+   "pas": "control_4423",
+   "valoare": "TVA de plată (rezultat decont) && Diferență neexplicată: 1.341,00 lei"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-incrucisat|text",
+   "de_ce": "core/control_incrucisat.py:1598; 484",
+   "id": "a.11",
+   "martor": "F1 (tenant_9049), Declarație vs contabilitate, tot blocul",
+   "operator": "lipseste",
+   "pas": "control_4423",
+   "valoare": "D300 (decont TVA): Recalculul din documentele perioadei confirmă cifrele declarației generate."
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "core/control_fiscal_api.py:42 (luna_confruntata); static/js/ecrane/control_verdict.js:289; 484",
+   "id": "a.12",
+   "martor": "F1 (tenant_9049), Control fiscal F1, antetul secțiunii",
+   "operator": "text_contine",
+   "pas": "control_incr",
+   "valoare": "Luna comparată"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-perioade|text",
+   "de_ce": "static/js/ecrane/control_verdict.js:289 (#cf-perioade); 484; selectorul nu există pe bază: pasul se sare pe bază",
+   "id": "a.13",
+   "martor": "F1 (tenant_9049), Control fiscal F1 după alegerea lunii 09/2026 din selector",
+   "operator": "text_contine",
+   "pas": "control_09",
+   "valoare": "Perioada comparată: D300 09/2026"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:971; neschimbat de lot",
+   "id": "f.9",
+   "martor": "F1 (tenant_9049), Fereastra Verificări F1",
+   "operator": "text_contine",
+   "pas": "verificari",
+   "valoare": "Stocuri (contabil vs fișe CV)"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .vf-lista|text",
+   "de_ce": "static/js/ecrane/firme.js:971; core/uc_tenants.py:3919 (verificare_stocuri); cifra de pe snapshot 9.524,29 (producție: 10.269,75, numai context); F089",
+   "id": "a.14",
+   "martor": "F1 (tenant_9049), Verificări F1, lista verificărilor",
+   "operator": "lipseste",
+   "pas": "verificari",
+   "valoare": "contabil 6.272,38 vs fișe 9.524,29"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .vf-lista|randuri:.pf-frand",
+   "de_ce": "core/uc_tenants.py:3919; suma ciornelor de stoc pe snapshot 3.251,90 (producție: 3.997,37, numai context); F089; 17.5-X7: operator nou (antet)",
+   "id": "a.15",
+   "martor": "F1 (tenant_9049), Verificări F1, lista verificărilor",
+   "operator": "rand_propriu",
+   "pas": "verificari",
+   "valoare": "Ciorne de stoc && 3.251,90 lei"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .pf-intro|text",
+   "de_ce": "static/js/ecrane/firme.js:959 (antetul «Luna LL/AAAA · N note contabile» prin cate()) și :6381; static/js/plural.js::cate; 602.1",
+   "id": "a.16",
+   "martor": "F1 (tenant_9049), Verificări F1, antetul",
+   "operator": "lipseste",
+   "pas": "verificari",
+   "valoare": "note contabile"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/clienti_ecran.js:31 (FEL.clienti.nou) și :118 (#cl-nou); 640.1; neschimbat de lot (aceeași aserțiune trece pe bază și pe C)",
+   "id": "f.10",
+   "martor": "F1 (tenant_9049), Fereastra Clienți F1",
+   "operator": "text_contine",
+   "pas": "clienti",
+   "valoare": "+ Client nou"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/clienti_ecran.js:269 (#cln-anaf, fisaNoua); 640.1; neschimbat de lot",
+   "id": "f.11",
+   "martor": "F1 (tenant_9049), Clienți F1, formularul deschis cu «+ Client nou»",
+   "operator": "text_contine",
+   "pas": "clienti_nou",
+   "valoare": "Verifică la ANAF"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/clienti_ecran.js:42 (FEL.furnizori.nou) și :118 (#fz-nou); 633.1; neschimbat de lot",
+   "id": "f.12",
+   "martor": "F1 (tenant_9049), Fereastra Furnizori F1",
+   "operator": "text_contine",
+   "pas": "furnizori",
+   "valoare": "+ Furnizor nou"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:6381 (cate(note.length, \"notă\", \"note\")); 84 = 52 în ciornă + 32 validate (snapshot); neschimbat de lot",
+   "id": "f.13",
+   "martor": "F1 (tenant_9049), Registru jurnal F1, luna 10/2026",
+   "operator": "text_contine",
+   "pas": "jurnal",
+   "valoare": "Luna 10/2026 · 84 de note"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "static/js/ecrane/firme.js:6187 (ecranJurnal); text impus; 602.1; 17.5-X7: operator nou (antet)",
+   "id": "a.17",
+   "martor": "F1 (tenant_9049), Registru jurnal 10/2026, nota validată deschisă",
+   "operator": "text_vizibil",
+   "pas": "jurnal",
+   "valoare": "Nota e deja validată: nu se mai validează."
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:6547 (ecranEditorNota); neschimbat de lot",
+   "id": "f.14",
+   "martor": "F1 (tenant_9049), Registru jurnal — notă nouă F1, pe luna blocată 09/2026",
+   "operator": "text_contine",
+   "pas": "jurnal_nota",
+   "valoare": "Notă nouă"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #je-data|valoare",
+   "de_ce": "static/js/ecrane/firme.js:6434 (data propusă) și :6564 (#je-data); perioade_blocate F1: numai 09/2026; 781; confirmat pe snapshot",
+   "id": "a.18",
+   "martor": "F1 (tenant_9049), Notă nouă, câmpul Data",
+   "operator": "egal",
+   "pas": "jurnal_nota",
+   "valoare": "2026-10-31"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "text impus; 781",
+   "id": "a.19",
+   "martor": "F1 (tenant_9049), Notă nouă, lângă câmpul Data",
+   "operator": "text_contine",
+   "pas": "jurnal_nota",
+   "valoare": "Luna 09/2026 e blocată: s-a propus 31.10.2026, ultima zi a ultimei luni deschise."
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): static/js/ecrane/firme.js:4462 (ecranCasa, intro :4556); neschimbat de lot",
+   "id": "f.15",
+   "martor": "F1 (tenant_9049), Fereastra Casă F1, luna 10/2026",
+   "operator": "text_contine",
+   "pas": "casa",
+   "valoare": "Luna 10/2026"
+  },
+  {
+   "ac": null,
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #c-tabel|text",
+   "de_ce": "static/js/ecrane/firme.js:4547 (#c-tabel); −58,00 lei la 19.10.2026: scenariul F015, confirmat pe snapshot; text impus",
+   "id": "a.20",
+   "martor": "F1 (tenant_9049), Casă F1, tabelul registrului",
+   "operator": "text_contine",
+   "pas": "casa",
+   "valoare": "Casa rămâne pe minus (−58,00 lei)"
+  }
+ ]
+}
