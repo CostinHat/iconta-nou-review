@@ -30,7 +30,7 @@
 // alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
 import { api, cate, dataRo, esc, eroareCamp, arataMesaj, bani, confirmaCaseta, focusFaraSalt, refuzPeRand, ultimaCerere } from "../api.js?v=7396e03327";
 import { htmlTabelNote, legaTabelNote, htmlCautare, normalizeaza, locInDetaliu } from "./tabel_note.js?v=74b676ef63";  // [lotul 12, 622] tabelul comun de note
-import { randA as randConstatare } from "./control_verdict.js?v=244bef5dcf";
+import { randA as randConstatare } from "./control_verdict.js?v=c6b58b070d";
 import { legaSemnale, meniuActiuni } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] pliarea semnalelor constatărilor
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { deschideFirma, ecranJurnal } from "./firme.js?v=b5a9e20b6c";

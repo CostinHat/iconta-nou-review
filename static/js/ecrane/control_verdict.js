@@ -86,8 +86,8 @@ function semnalConstatare(c) {
   const detalii = (c.temei ? `<p class="cf-incr-temei">${esc(c.temei)}</p>` : "")
     + (r ? `<p class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b>${deFacut ? `<br>Ce e de făcut: ${esc(deFacut)}` : ""}</p>` : "");
   // [17.5-X7, a.10] fără note în ciornă pe cont (câmpul `diferenta_neexplicata` dat de server, nu textul afișat) diferența stă în ACELAȘI rând al constatării, în partea vizibilă
-  // (textul scurt al semnalului); nu mai există un al doilea rând pentru aceeași diferență
-  const semnal = semnalHtml({ ton: TON_STARE[st] || "avertisment", text: c.diferenta_neexplicata ? `${c.mesaj || ""} · ${c.diferenta_neexplicata}.` : (c.mesaj || ""), detaliiHtml: detalii, actiuneHtml: cod ? butonActiune(cod, r) : "" });
+  // (textul scurt al semnalului = prima propoziție, deci punctul final al mesajului se mută după diferență); nu mai există un al doilea rând pentru aceeași diferență
+  const semnal = semnalHtml({ ton: TON_STARE[st] || "avertisment", text: c.diferenta_neexplicata ? `${String(c.mesaj || "").replace(/\.\s*$/, "")} · ${c.diferenta_neexplicata}.` : (c.mesaj || ""), detaliiHtml: detalii, actiuneHtml: cod ? butonActiune(cod, r) : "" });
   // [17.5-W, AC185] câte note în ciornă ating contul comparat (`explicatie_ciorne`, textul îl face serverul): rând informativ imediat sub constatare, ca să nu
   // schimbe numărul rândurilor non-info; prima propoziție (cifrele) se vede fără deschiderea detaliilor. Cu note în ciornă rândul rămâne separat, neschimbat.
   return semnal + (c.explicatie_ciorne && !c.diferenta_neexplicata ? semnalHtml({ ton: "info", text: c.explicatie_ciorne }) : "");
