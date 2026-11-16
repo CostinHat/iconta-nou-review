@@ -1,0 +1,5 @@
+P_X3 = c4eb4c7bc49e8c56e75139bfd92774f71d20b569
+BANC VERDE c4eb4c7bc49e8c56e75139bfd92774f71d20b569
+git diff --name-only P_X3 HEAD: numai docs/dovezi/17_5_X3/, docs/dovezi/17_5_X4/, scripts/praguri_17_5_X4.txt (verificat; zero cai de produs/test/registre)
+cai non-dovezi: 0
+selectie 5.1: 47 passed; garda 5.4: 17 roșii = aceleași nodeid-uri și tip failure ca pe P_X3 în JUnit-ul bancului
