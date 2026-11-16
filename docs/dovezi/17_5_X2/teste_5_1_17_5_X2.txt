@@ -1,0 +1,249 @@
+# teste_5_1_17_5_X2.txt — arhitect 15.11.2026 21:40. Lista exactă a pre-porții de impact (comanda 17.5-X2, pct.5.1), cu rezultatul pe bancul arhitectului.
+# S = 901930360aa0 (bancul: copie a arborelui S, bază de test proprie, port 8029); bază = 846960cb. «—» = nerulat pe bază (verde pe S). Judecata: judecata_rosii_17_5_X2.txt.
+# Format: id | pe S | pe bază | așteptat pe P
+# Regulă: un rezultat pe P diferit de «așteptat pe P» se scrie în teste_atinse.txt și se judecă cu regula de la pct.5.1 (roșu pe P și verde pe bază, din cauza lotului = regresie; un test din listă «skipped» = roșu).
+
+## A. Teste core (din afara nucleului, cu excepția celor marcate), rulate cu ./venv/bin/python -m pytest -q -p no:cacheprovider <fișier>, mediul de test încărcat
+core/test_p7_v2_scrieri.py::test_ANTI_VACUUM_detectorul_inca_vede_rutele_si_repository_urile | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_D1_e_zero_pe_toate_clasele_si_UNKNOWN_ramane_zero | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_DYNAMIC_UPDATE_pastreaza_compunerea_in_apelant | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_TRANSACTION_CONTROL_IN_HTTP_ROUTE_e_zero | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_WRITE_SQL_IN_HTTP_ROUTE_e_zero | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_modulele_V2_sunt_declarate_in_registru | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_mutant_CTE_care_SCRIE_in_ruta | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_mutant_DELETE_in_ruta | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_mutant_INSERT_in_ruta | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_mutant_SAVEPOINT_in_ruta | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_mutant_SET_LOCAL_search_path_in_ruta | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_mutant_UPDATE_in_ruta | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_numarul_de_instructiuni_se_conserva | roșu | verde | verde (pct.3)
+core/test_p7_v2_scrieri.py::test_repository_urile_V2_nu_comit_si_nu_deschid_conexiuni | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_scrierea_in_REPOSITORY_e_permisa | verde | verde | verde
+core/test_p7_v2_scrieri.py::test_textul_UPDATE_pe_un_obiect_care_nu_e_cursor_nu_e_fals_pozitiv | verde | verde | verde
+core/test_cerere_veche.py::test_campul_in_care_scrie_omul_nu_se_pierde_la_redesenare | roșu | verde | verde (pct.3)
+core/test_cerere_veche.py::test_clasificarile_nu_raman_in_urma | verde | verde | verde
+core/test_cerere_veche.py::test_detectorul_are_dinti | verde | verde | verde
+core/test_cerere_veche.py::test_formele_vechi_sunt_prinse | roșu* | roșu* | verde (*pe banc roșu numai fiindcă bancul nu are istoricul git: «invalid object name 22c71846»)
+core/test_cerere_veche.py::test_mecanismul_lasa_numai_ultima_cerere | verde | verde | verde
+core/test_cerere_veche.py::test_nicio_cerere_din_editare_nu_scrie_un_raspuns_vechi | roșu | verde | verde (pct.3)
+core/test_cerere_veche.py::test_scrierile_din_editare_sunt_clasificate | verde | verde | verde
+core/test_lot11_g2_pre_line.py::test_anti_vacuu_gardul_chiar_gaseste_casetele | verde | verde | verde
+core/test_lot11_g2_pre_line.py::test_calibrare_detectorul_vede_ambele_forme | verde | verde | verde
+core/test_lot11_g2_pre_line.py::test_clasele_de_proza_NU_primesc_pre_line_pe_clasa | verde | verde | verde
+core/test_lot11_g2_pre_line.py::test_fiecare_caseta_a_textului_serverului_pastreaza_randurile | roșu | verde | verde (pct.3)
+core/test_lot11_g2_pre_line.py::test_proba_chromium_refuzul_vine_rand_cu_rand | verde | verde | verde
+core/test_lot11_w3_ratchet.py::test_cifra_clasei_nu_creste | roșu | verde | verde (pct.3)
+core/test_lot11_w3_ratchet.py::test_numaratoarea_prinde_clasa_si_iarta_colectorul | verde | verde | verde
+core/test_dependente_ramuri.py::test_3ABC_sursa_ceruta_de_audit_e_exercitata[articole] | verde | verde | verde
+core/test_dependente_ramuri.py::test_3ABC_sursa_ceruta_de_audit_e_exercitata[miscari_stoc] | verde | verde | verde
+core/test_dependente_ramuri.py::test_3ABC_sursa_ceruta_de_audit_e_exercitata[salariati] | verde | verde | verde
+core/test_dependente_ramuri.py::test_3D_sursa_publica_e_exercitata[declaratii_depuse] | verde | verde | verde
+core/test_dependente_ramuri.py::test_3E_o_ramura_noua_ar_aduce_sursa_ei | verde | verde | verde
+core/test_dependente_ramuri.py::test_3F_garda_pica_daca_o_sursa_iese_din_registru | roșu | verde | verde (pct.3)
+core/test_dependente_ramuri.py::test_nicio_sursa_observata_nu_lipseste_din_registru | roșu | verde | verde (pct.3)
+core/test_dependente_ramuri.py::test_ramura_deschide_sursele_ei[salarii] | verde | verde | verde
+core/test_dependente_ramuri.py::test_ramura_deschide_sursele_ei[stoc] | roșu | verde | verde (pct.3)
+core/test_dependente_ramuri.py::test_ramurile_acopera_tot_ce_declara_registrul | roșu | roșu | restanță de bază: roșu, același mesaj ca pe bază
+core/test_dependente_ramuri.py::test_registrul_de_ramuri_e_acelasi_in_proba_si_in_document | verde | verde | verde
+core/test_dependente_ramuri.py::test_sursele_publice_observate_sunt_clasificate | verde | verde | verde
+core/test_lot10_search_path_pool.py::test_baza_nu_tine_fisiere_reparate | verde | verde | verde
+core/test_lot10_search_path_pool.py::test_niciun_test_nou_nu_lasa_search_path_in_pool | roșu (3 fișiere) | roșu (2 fișiere) | roșu numai cu cele 2 fișiere de pe bază, fără core/test_pilot_17_5_X.py (pct.3(viii.a))
+core/test_lot10_search_path_pool.py::test_tiparul_vede_forma_veche | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_NEGATIVA_apartenenta_adevarata_NU_e_acuzata | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_POZITIVA_randare | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_POZITIVA_reprezentare | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_POZITIVA_sursa | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_o_aserțiune_directa_NU_e_vacua | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_operatorul_de_multime_iese_complet_din_domeniu | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_un_identificator_NU_e_semn_de_rau | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_un_mesaj_de_eroare_e_recunoscut | verde | verde | verde
+core/test_garzi_pe_text.py::test_CALIBRARE_vacuu_pe_lista_goala_e_prins | verde | verde | verde
+core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc | roșu | roșu | restanță de bază: roșu, același mesaj ca pe bază
+core/test_garzi_pe_text.py::test_anti_vacuu_domeniul_chiar_se_vede | verde | verde | verde
+core/test_garzi_pe_text.py::test_ce_nu_se_vede_e_NUMARAT_nu_aruncat | verde | verde | verde
+core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat | roșu | roșu | restanță de bază: roșu, același mesaj ca pe bază
+core/test_garzi_pe_text.py::test_clichetul_nu_ramane_umflat | verde | verde | verde
+core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste | roșu | roșu | restanță de bază: roșu, același mesaj ca pe bază
+core/test_garzi_pe_text.py::test_proportia_confirma_proprietatea | verde | verde | verde
+core/test_garzi_pe_text.py::test_reprezentarea_e_masurata_separat_fiindca_e_cea_insidioasa | verde | verde | verde
+core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste | roșu | roșu | roșu cu cifra de pe bază (244), nu 245
+core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero | roșu | roșu | restanță de bază: roșu, același mesaj ca pe bază
+core/test_p7_straturi.py::test_ANTI_VACUUM_registrul_si_straturile_nu_sunt_goale | verde | verde | verde
+core/test_p7_straturi.py::test_D2_SE_APRINDE_pe_un_univers_sintetic | verde | verde | verde
+core/test_p7_straturi.py::test_D2_vede_FISCAL_ENGINE_cu_db_si_NU_vede_celelalte_straturi | verde | verde | verde
+core/test_p7_straturi.py::test_D2_vede_TOATE_cele_patru_forme_de_import | verde | verde | verde
+core/test_p7_straturi.py::test_D4_SE_APRINDE_pe_un_registru_sintetic | verde | verde | verde
+core/test_p7_straturi.py::test_NICIUN_modul_nu_mai_face_doua_straturi_deodata | verde | verde | verde
+core/test_p7_straturi.py::test_cele_37_de_module_separate_chiar_nu_mai_au_SQL | verde | verde | verde
+core/test_p7_straturi.py::test_cele_sapte_foste_EVIDENCE_LIMITATION_au_fiecare_un_strat | verde | verde | verde
+core/test_p7_straturi.py::test_cifra_din_motiv_nu_imbatraneste_tacut | roșu | roșu | roșu numai pe core/repo_d300.py (8 → 9), ca pe bază
+core/test_p7_straturi.py::test_contabilitatea_P7_se_inchide_dupa_V3 | verde | verde | verde
+core/test_p7_straturi.py::test_depozitele_D4_nu_deschid_conexiuni_si_nu_comit | verde | verde | verde
+core/test_p7_straturi.py::test_fiecare_modul_din_univers_are_un_strat_declarat | verde | verde | verde
+core/test_p7_straturi.py::test_fiecare_modul_e_intr_UN_SINGUR_strat | verde | verde | verde
+core/test_p7_straturi.py::test_motorul_fiscal_efactura_send_NU_mai_atinge_baza | verde | verde | verde
+core/test_p7_straturi.py::test_niciunul_dintre_cele_sapte_nu_e_EVIDENCE_LIMITATION | verde | verde | verde
+core/test_p7_straturi.py::test_o_cale_declarata_de_DOUA_ORI_pica | verde | verde | verde
+core/test_p7_straturi.py::test_o_declaratie_FARA_motiv_sau_FARA_regula_pica | verde | verde | verde
+core/test_p7_straturi.py::test_registrul_nu_declara_module_INEXISTENTE | verde | verde | verde
+core/test_p7_straturi.py::test_registrul_real_nu_are_nicio_declaratie_invalida | verde | verde | verde
+core/test_p7_straturi.py::test_un_modul_NOU_in_univers_FARA_declaratie_pica | verde | verde | verde
+core/test_p7_straturi.py::test_un_motor_fiscal_FARA_db_nu_e_item | verde | verde | verde
+core/test_p7_straturi.py::test_un_strat_INVALID_pica | verde | verde | verde
+core/test_p7_straturi.py::test_use_case_ul_trimiterii_detine_aceleasi_TREI_tranzactii | verde | verde | verde
+core/test_pilot_17_5_X.py::test_cu_note_in_ciorna_textul_notelor_ramane | verde | — | verde
+core/test_pilot_17_5_X.py::test_d390_cu_profil_corect_ramane_cu_motivul_simplu | verde | — | verde
+core/test_pilot_17_5_X.py::test_d390_profil_fara_ic_dar_facturi_ic_apare_o_singura_data_cu_un_singur_motiv | verde | — | verde
+core/test_pilot_17_5_X.py::test_dublura_unui_numar_nir_ramane_refuzata_in_acelasi_an_si_numarul_propus_nu_e_dublura | verde | — | verde
+core/test_pilot_17_5_X.py::test_fara_note_in_ciorna_mesajul_e_diferenta_neexplicata_si_nimic_altceva_despre_ea | verde | — | verde
+core/test_pilot_17_5_X.py::test_luna_comparata_implicit_ultima_incheiata_si_cererea_se_valideaza | verde | — | verde
+core/test_pilot_17_5_X.py::test_nota_noua_cu_doua_luni_blocate_propune_ultima_zi_a_celei_mai_recente_luni_incheiate_neblocate | verde | — | verde
+core/test_pilot_17_5_X.py::test_nota_noua_fara_nicio_luna_incheiata_neblocata_propune_ziua_ceasului | verde | — | verde
+core/test_pilot_17_5_X.py::test_nota_noua_pe_luna_blocata_propune_ultima_zi_a_ultimei_luni_deschise | verde | — | verde
+core/test_pilot_17_5_X.py::test_nota_noua_pe_luna_deschisa_ramane_ca_pana_acum | verde | — | verde
+core/test_pilot_17_5_X.py::test_numarul_nir_propus_e_maximul_comparat_ca_numar_plus_unu | verde | — | verde
+core/test_pilot_17_5_X.py::test_numarul_nir_propus_fara_niciun_nir_e_unu | verde | — | verde
+core/test_pilot_17_5_X.py::test_numarul_nir_propus_nu_scrie_nimic_la_citire | verde | — | verde
+core/test_pilot_17_5_X.py::test_selectorul_fara_nicio_nota_are_numai_luna_implicita | verde | — | verde
+core/test_pilot_17_5_X.py::test_selectorul_lunii_comparate_incepe_la_cea_mai_veche_luna_cu_note_si_pune_cele_noi_intai | verde | — | verde
+core/test_pilot_17_5_X.py::test_verificarea_stocurilor_compara_validat_cu_validat_si_arata_ciornele_separat | verde | — | verde
+core/test_pilot_17_5_X.py::test_verificarea_stocurilor_pastreaza_diferenta_reala_dintre_validate | verde | — | verde
+core/test_pilot_17_5_X.py::test_verificarile_numara_notele_lunii_ca_registrul_jurnal_o_nota_o_data_in_toate_starile | verde | — | verde
+core/test_control_fiscal.py::test_clasifica_depusa_confirmata_cu_motiv | verde | — | verde
+core/test_control_fiscal.py::test_clasifica_depusa_dupa_termen_iese_din_la_zi | verde | — | verde
+core/test_control_fiscal.py::test_clasifica_restanta_temei_structurat_nu_prose | verde | — | verde
+core/test_control_fiscal.py::test_constatare_regim_tva_coincid_verde | verde | — | verde
+core/test_control_fiscal.py::test_constatare_regim_tva_divergenta_rosu_cu_remediu | verde | — | verde
+core/test_control_fiscal.py::test_constatare_regim_tva_fara_snapshot_gri | verde | — | verde
+core/test_control_fiscal.py::test_d112_fapt_firma_fara_salariati_niciun_d112 | verde | — | verde
+core/test_control_fiscal.py::test_d112_fapt_none_pastreaza_comportamentul_vechi | verde | — | verde
+core/test_control_fiscal.py::test_d112_per_luna_doar_din_luna_angajarii | verde | — | verde
+core/test_control_fiscal.py::test_d394_neplatitor_absent | verde | — | verde
+core/test_control_fiscal.py::test_d394_platitor_None_gri | verde | — | verde
+core/test_control_fiscal.py::test_d394_platitor_lunar_datorat | verde | — | verde
+core/test_control_fiscal.py::test_d406_neplatitor_trimestrial_datorat | verde | — | verde
+core/test_control_fiscal.py::test_d406_platitor_None_gri | verde | — | verde
+core/test_control_fiscal.py::test_d406_platitor_lunar_datorat | verde | — | verde
+core/test_control_fiscal.py::test_d406_platitor_semestrial_sau_anual_trimestrial_datorat | verde | — | verde
+core/test_control_fiscal.py::test_d406_platitor_tip_decont_None_gri | verde | — | verde
+core/test_control_fiscal.py::test_decembrie_an_precedent_vizibil | verde | — | verde
+core/test_control_fiscal.py::test_neaplicabile_forma_pfa_vs_juridic | verde | — | verde
+core/test_control_fiscal.py::test_operatiuni_ic_null_da_gri_d390 | verde | — | verde
+core/test_control_fiscal.py::test_pfa_d100_d101_d406_neaplicabile_nu_restante | verde | — | verde
+core/test_control_fiscal.py::test_platitor_tva_null_da_gri_d300 | verde | — | verde
+core/test_control_fiscal.py::test_regim_efectiv_pfa_e_None_neconditionat | verde | — | verde
+core/test_control_fiscal.py::test_regim_efectiv_srl_intoarce_regimul_sau_None | verde | — | verde
+core/test_control_fiscal.py::test_regim_efectiv_strict_keyerror_pe_cheie_absenta | verde | — | verde
+core/test_control_fiscal.py::test_regim_fiscal_null_da_gri_pe_d100_si_d101 | verde | — | verde
+core/test_control_fiscal.py::test_semafor_d390_contradictie_flag_false_dar_facturi_ic | verde | — | verde
+core/test_control_fiscal.py::test_semafor_d390_fapt_primeaza_peste_flag_false | verde | — | verde
+core/test_control_fiscal.py::test_semafor_d390_fara_fapt_pastreaza_comportamentul_pe_bifa | verde | — | verde
+core/test_control_fiscal.py::test_semafor_d390_flag_false_fapt_false_nimic | verde | — | verde
+core/test_control_fiscal.py::test_semafor_d390_luna_cu_operatiuni_ramane_datorata | verde | — | verde
+core/test_control_fiscal.py::test_semafor_d390_luna_inchisa_fara_operatiuni_nu_e_restanta | verde | — | verde
+core/test_control_fiscal.py::test_semafor_d390_neplatitor_flag_false_nu_consulta_faptul | verde | — | verde
+core/test_control_fiscal.py::test_srl_neschimbat_d406_datorat_d100_d101_gri | verde | — | verde
+core/test_control_fiscal.py::test_stare_prioritate | verde | — | verde
+core/test_control_fiscal.py::test_t4_an_precedent_vizibil_trimestrial | verde | — | verde
+core/test_control_fiscal.py::test_termen_sarbatoare_decembrie | verde | — | verde
+core/test_control_fiscal.py::test_tip_decont_null_da_gri_nu_12_luni | verde | — | verde
+core/test_control_fiscal.py::test_trimestre_pana_la_sters | verde | — | verde
+core/test_control_fiscal.py::test_vector_complet_fara_neclar | verde | — | verde
+core/test_control_fiscal.py::test_vector_gol_nu_ridica_si_poarta_afirmatie | verde | — | verde
+core/test_plural_dupa_numar.py::test_CALIBRARE_P5_prinde_eticheta_din_variabila | verde | verde | verde
+core/test_plural_dupa_numar.py::test_api_reexporta_helperul_si_nu_mai_exista_selectoare_locale | verde | verde | verde
+core/test_plural_dupa_numar.py::test_cate_python_si_js_pe_aceeasi_tabela | verde | verde | verde
+core/test_plural_dupa_numar.py::test_def_263_scoate_firma_numara_evidenta_acordat | verde | verde | verde
+core/test_plural_dupa_numar.py::test_exceptiile_inca_exista | verde | verde | verde
+core/test_plural_dupa_numar.py::test_js_niciun_numar_cu_forma_scrisa_fix | verde | verde | verde
+core/test_plural_dupa_numar.py::test_py_niciun_numar_cu_forma_scrisa_fix | roșu | roșu | restanță de bază: roșu, același mesaj ca pe bază
+core/test_plural_dupa_numar.py::test_scanul_ecranului_cunoaste_toate_pluralele_din_cod | roșu | roșu | restanță de bază: roșu, același mesaj ca pe bază
+core/test_plural_dupa_numar.py::test_scanul_ecranului_prinde_acordul_gresit | verde | verde | verde
+core/test_p7_uc.py::test_ADAUGARILE_declarate_chiar_exista | verde | — | verde
+core/test_p7_uc.py::test_ANTIVACUU_chiar_confrunta_ceva | skip* | — | verde (*pe banc skip numai fiindcă bancul nu are istoricul git, core/test_p7_uc.py:1190; în worktree un skip = roșu)
+core/test_p7_uc.py::test_BIFA_INLOCUIRI_chiar_cheama_bifa | verde | — | verde
+core/test_p7_uc.py::test_CE_CERE_ALTCINEVA_de_la_main_exista | verde | — | verde
+core/test_p7_uc.py::test_CODURILE_adaugate_chiar_sunt_in_cod | verde | — | verde
+core/test_p7_uc.py::test_DECORATORII_rutelor_sunt_NEATINSI | skip* | — | verde (*pe banc skip numai fiindcă bancul nu are istoricul git, core/test_p7_uc.py:1190; în worktree un skip = roșu)
+core/test_p7_uc.py::test_EXTRAGERILE_declarate_chiar_cheama_ajutorul | verde | — | verde
+core/test_p7_uc.py::test_INLOCUIRILE_declarate_chiar_exista | verde | — | verde
+core/test_p7_uc.py::test_MUTARILE_in_ajutor_chiar_cheama_ajutorul | verde | — | verde
+core/test_p7_uc.py::test_MUTATIE_identitatea_nu_da_fals_pozitiv | verde | — | verde
+core/test_p7_uc.py::test_MUTATIE_o_garda_pierduta_la_mutare_e_prinsa | verde | — | verde
+core/test_p7_uc.py::test_MUTATIE_un_cod_schimbat_e_prins | verde | — | verde
+core/test_p7_uc.py::test_MUTATIE_un_mesaj_schimbat_e_prins | verde | — | verde
+core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum | skip* | restanță numită de 17.5-X | se rulează și pe bază (pct.5.1): roșu pe ambele cu același motiv = restanță de bază; verde pe bază și roșu pe P = regresie (*bancul nu are istoricul git)
+core/test_p7_uc.py::test_REDUCERILE_declarate_chiar_sunt_in_cod | skip* | — | verde (*pe banc skip numai fiindcă bancul nu are istoricul git, core/test_p7_uc.py:1190; în worktree un skip = roșu)
+core/test_p7_uc.py::test_SCOASELE_declarate_chiar_lipsesc | verde | — | verde
+core/test_p7_uc.py::test_SCOASELE_perechi_chiar_lipsesc | verde | — | verde
+core/test_p7_uc.py::test_harta_acopera_tot_vocabularul | verde | — | verde
+core/test_p7_uc.py::test_niciun_HTTPException_in_stratul_use_case | verde | — | verde
+core/test_p7_uc.py::test_perechile_cod_mesaj_sunt_NESCHIMBATE | skip* | — | verde (*pe banc skip numai fiindcă bancul nu are istoricul git, core/test_p7_uc.py:1190; în worktree un skip = roșu)
+core/test_retest_0810.py::test_ciorna_cu_alte_sume_se_inlocuieste_cu_nota_statului_de_acum | verde | verde | verde
+core/test_retest_0810.py::test_coada_cere_poarta_pentru_toate_declaratiile_de_tva | roșu | roșu | restanță de bază: roșu, același mesaj ca pe bază
+core/test_retest_0810.py::test_documentul_refacut_isi_gaseste_respingerea_dinaintea_lui_s3 | verde | verde | verde
+core/test_retest_0810.py::test_poarta_tva_refuza_diferenta_pe_4427_4426_si_numai_acolo | verde | verde | verde
+core/test_retest_0810.py::test_starea_de_incasare_din_chitante_plati_si_marcajul_integral | verde | verde | verde
+core/test_clichete_generate.py::test_ANTI_VACUU_instrumentul_produce_cele_patru_clichete_cu_cifre | verde | verde | verde
+core/test_clichete_generate.py::test_CALIBRARE_blocul_NU_poarta_ora_sau_data | verde | verde | verde
+core/test_clichete_generate.py::test_CALIBRARE_marcajele_STERSE_sunt_prinse | verde | verde | verde
+core/test_clichete_generate.py::test_CALIBRARE_o_cifra_in_afara_scutirii_e_tot_prinsa | verde | verde | verde
+core/test_clichete_generate.py::test_CALIBRARE_o_cifra_mutata_cu_MANA_e_prinsa | verde | verde | verde
+core/test_clichete_generate.py::test_CALIBRARE_un_rand_STERS_e_prins | verde | verde | verde
+core/test_clichete_generate.py::test_SCUTIREA_e_una_singura_si_chiar_exista | verde | verde | verde
+core/test_clichete_generate.py::test_blocul_de_clichete_EXISTA_in_predare | verde | verde | verde
+core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter | roșu (77u 1411) | roșu (77u 1409) | restanță de bază: roșu; 77u cel mult 1411 pe P, cifra scrisă în raport cu refuzurile noi ale lui S (pct.3(viii))
+core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM | roșu (50: 1483; 77u: 1411) | roșu (50: 1483; 77u: 1409) | restanță de bază: roșu; 50 = 1483 ca pe bază, 77u cel mult 1411, scris în raport
+core/test_clichete_generate.py::test_niciun_clichet_MASURAT_nu_lipseste_din_tabel_si_niciunul_INVENTAT | verde | verde | verde
+core/test_clichete_generate.py::test_umbra_NU_are_cifra_scrisa_de_mana_in_proza_predarii | verde | verde | verde
+core/test_get_fara_scriere.py::test_exceptia_de_jurnal_e_chiar_folosita | verde | — | verde
+core/test_get_fara_scriere.py::test_gardul_chiar_vede_rutele_get | verde | — | verde
+core/test_get_fara_scriere.py::test_nicio_ruta_get_nu_scrie_stare_de_business | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_avertismentul_cu_doua_rapoarte_e_textul_impus_si_rapoartele_stau_in_ordinea_datei | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_avertismentul_din_generator_e_primul_si_calculul_nu_se_schimba | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_cand_niciun_raport_nu_are_defalcare_totalul_lipsa_se_omite | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_constatarile_rezultatului_decontului_poarta_contul | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_cu_un_singur_raport_textele_sunt_la_singular | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_decont_semestrial_numeste_raportul_din_alt_trimestru_al_semestrului | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_decont_trimestral_ia_trimestrul_declaratiei_si_alt_tip_de_declaratie_nu_e_refuzat | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_explicatia_ciornelor_numara_notele_o_singura_data_in_sensul_comparat_si_spune_niciuna | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_fara_rapoarte_in_ciorna_nu_e_nici_avertisment_nici_refuz_iar_raportul_validat_nu_conteaza | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_firma_fara_tip_decont_nu_primeste_refuz_si_nici_exceptie | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_intrarea_in_coada_refuza_rapoartele_z_inaintea_portii_de_balanta[d300] | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_intrarea_in_coada_refuza_rapoartele_z_inaintea_portii_de_balanta[d394] | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_pasul_2_da_refuzul_prin_blocaj_depunere_si_celelalte_tipuri_raman_ca_inainte | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_rand_din_de_depus_are_refuzul_numai_cand_e_activ_iar_depunerea_il_refuza | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_raport_fara_defalcare_se_numeste_intra_in_numar_dar_nu_in_total | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_refuzul_cu_doua_rapoarte_are_textul_cu_lista_si_textul_de_langa_butoane | verde | — | verde
+core/test_ciorne_decont_17_5_W.py::test_sumele_pe_cote_sunt_in_ordinea_crescatoare_a_cotei_inclusiv_0_la_suta | verde | — | verde
+core/test_lot14_stocuri_validat.py::test_696_1_diferenta_numeste_miscarea_fara_nota | verde | — | verde
+core/test_lot14_stocuri_validat.py::test_diferenta_fata_de_balanta_se_vede_cand_nu_e_ciorna | verde | — | verde
+core/test_lot14_stocuri_validat.py::test_observatii_dubluri_fractii_si_denumiri | verde | — | verde
+core/test_lot14_stocuri_validat.py::test_stocul_validat_separa_ciorna_si_se_potriveste_cu_371 | verde | — | verde
+core/test_lot14_stocuri_validat.py::test_validarea_notei_muta_ciorna_in_validat | verde | — | verde
+core/test_lot12_ctrl_484.py::test_alertele_zilnice_confrunta_luna_incheiata | verde | — | verde
+core/test_lot12_ctrl_484.py::test_declaratie_vs_contabilitate_confrunta_luna_incheiata | verde | — | verde
+core/test_lot12_ctrl_484.py::test_detaliul_nu_inghite_eroarea_verificarilor | verde | — | verde
+core/test_lot12_ctrl_484.py::test_luna_confruntata_e_ultima_luna_incheiata | verde | — | verde
+core/test_lot12_ctrl_484.py::test_supervizorul_calculeaza_si_citeste_luna_incheiata | verde | — | verde
+core/test_lot12_ctrl_484.py::test_textele_reconcilierii_sunt_in_limba_contabilului | verde | — | verde
+
+core/test_versionare_assets.py (toate cele 6 teste) | verde | — | verde (paznicul tokenilor ?v= după versioneaza_assets.py --scrie; auditul intern r1, Q09)
+core/test_firma_rezumat.py (toate cele 31 de teste) | verde | — | verde (registrul _T_CONTROL_FISCAL schimbat la pct.3(vii))
+core/test_dependente_masurate.py (toate cele 7 teste) | verde | — | verde (blocul generat din DEPENDENTE_P2.md rescris la pct.3(vii))
+## B. Teste din nucleul porții, numite de pct.3 (rulate pe banc în nucleu: 1811 verzi, 3 roșii numai în core/test_deficiente.py, restanțe)
+core/test_control_preluare.py (cazul nou al pct.3(iv): «passed», nu «skipped») | verde | — | verde
+core/test_acoperire_vizuala.py | verde | — | verde
+core/test_pagina_principala.py | verde | — | verde
+core/test_declaratii_50.py | verde | — | verde
+
+## C. e2e, numai cu ./venv/bin/python scripts/e2e_poarta.py --arbore --doar=<fișier> <ieșire> (rezultatele bancului: rezultate_X2_e2e.txt, rezultate_X2_f054.txt)
+frontend_test/e2e/e2e_lot12_cx2.py | 1 roșu (test_def_c131), 18 verzi | — (verde pe baza lui X) | verde, ambele ramuri (pct.3(ii))
+frontend_test/e2e/e2e_de_validat_17_5_G.py | roșu, secțiunea (5) | verde | verde (pct.3(iv))
+frontend_test/e2e/e2e_pilot_f054.py | roșu, t.4 | verde | verde (pct.3(iii))
+frontend_test/e2e/e2e_comanda_1010.py | 1 roșu (test_def_221), 5 verzi | restanță numită de 17.5-X | test_def_221 restanță de bază (se rulează și pe bază, pct.5.1); restul verde
+frontend_test/e2e/e2e_lot12_firme1.py | 13 verzi | — | verde
+frontend_test/e2e/e2e_cursa_luna_17_5_X2.py | roșu pe S la (1) și (4), verde cu reparația de calibrare (dovada_cursa_17_5_X2.txt) | — | verde (pct.3(vi.a); intră și în plasa fixă, rând nou în manifest)
+frontend_test/e2e/e2e_pilot_17_5_X.py | verde | roșu (docs/dovezi/17_5_X/pilot_inainte.txt) | verde (testul arhitectului; rulat și la 5.2)
+
+# Limită declarată: fișierele e2e din afara plasei fixe, altele decât cele de mai sus, nu au rulat pe banc; un roșu din cauza lotului acolo apare numai în poartă, dacă sunt în ea.

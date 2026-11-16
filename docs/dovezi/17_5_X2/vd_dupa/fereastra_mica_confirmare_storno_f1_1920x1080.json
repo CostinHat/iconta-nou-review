@@ -1,0 +1,139 @@
+{
+ "fapte": {
+  "viewport": [
+   1920,
+   1080
+  ],
+  "ferestre_deschise": 2,
+  "fereastra": {
+   "clase": "fereastra fer-mic",
+   "lat": 480,
+   "inalt": 453,
+   "stanga": 720,
+   "sus": 314
+  },
+  "titlul_ferestrei": "Stornează factura",
+  "a": {
+   "inaltime": 56,
+   "traseu": 0,
+   "sageata": false,
+   "x": 1,
+   "x_dim": [
+    40,
+    40
+   ],
+   "firma_sau_cabinet": "Stornează factura",
+   "numele_ferestrei": "Stornează factura",
+   "cautare": false
+  },
+  "b": {
+   "pe_tot_ecranul": false,
+   "derulari": [],
+   "bara_jos": null
+  },
+  "c": {
+   "tabele_ds": 0,
+   "tabele_vechi": [],
+   "liste_rand_buton": [],
+   "celule_taiate": [],
+   "liste_vechi": []
+  },
+  "d": {
+   "rezumat_ds": 0,
+   "semnale_ds": 0,
+   "carduri_vechi": 0,
+   "paragrafe_lungi": [],
+   "rezumate_la_vedere": 0,
+   "fara_buton": []
+  },
+  "e": {
+   "in_text": [],
+   "casete_cu_actiuni": []
+  },
+  "f": {
+   "titluri_cu_majuscule": [],
+   "fara_diacritice": [],
+   "plural": [],
+   "mesaje_duble": []
+  },
+  "g": {
+   "date_iso": [],
+   "sume_neformatate": [],
+   "perioade_ciudate": [],
+   "valori_goale": [],
+   "azi_acum": []
+  },
+  "h": {
+   "liste_sub_7": [],
+   "alege": [],
+   "cota_tva_ca_lista": [],
+   "grupuri_butoane": 1,
+   "liste_cu_cautare": 0,
+   "liste_inlocuite": 1
+  }
+ },
+ "pica": {
+  "a": [
+   "firma sau cabinetul în lucru nu apare cu CUI în bara de sus",
+   "în bara de sus numele ferestrei e doar firma/cabinetul",
+   "lipsește căutarea în bara de sus"
+  ],
+  "b": [
+   "fereastra nu e fereastră de lucru pe tot ecranul (480×453 din 1920×1080, fereastra fer-mic)",
+   "nu există bara de jos fixă de 72 px"
+  ],
+  "c": [],
+  "d": [],
+  "e": [],
+  "f": [],
+  "g": [],
+  "h": []
+ },
+ "ecran": "Fereastră mică — confirmare storno F1",
+ "rezolutie": "1920x1080",
+ "firma": "F1",
+ "nivel": "firma",
+ "eroare_deschidere": null,
+ "erori_js": [],
+ "verdict_mecanic": {
+  "a": {
+   "verdict": "PICĂ",
+   "motive": [
+    "firma sau cabinetul în lucru nu apare cu CUI în bara de sus",
+    "în bara de sus numele ferestrei e doar firma/cabinetul",
+    "lipsește căutarea în bara de sus"
+   ]
+  },
+  "b": {
+   "verdict": "PICĂ",
+   "motive": [
+    "fereastra nu e fereastră de lucru pe tot ecranul (480×453 din 1920×1080, fereastra fer-mic)",
+    "nu există bara de jos fixă de 72 px"
+   ]
+  },
+  "c": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "d": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "e": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "f": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "g": {
+   "verdict": "TRECE",
+   "motive": []
+  },
+  "h": {
+   "verdict": "TRECE",
+   "motive": []
+  }
+ }
+}

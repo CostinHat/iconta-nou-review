@@ -1,0 +1,3 @@
+77u pe baza 846960cb: 1409; pe P: 1410 (cel mult 1411)
+refuz nou fata de baza (scripts/scan_refuzuri.umbra): core/uc_control_fiscal.py::_luna_comparata (raise) — cerut de P4 (484, selectorul «Luna comparata»), refuzul unic al lunii comparate invalide, pct.3 (vi.c)
+disparute: niciunul

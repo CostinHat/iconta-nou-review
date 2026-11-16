@@ -1,0 +1,86 @@
+== core/test_cerere_veche.py | cod 0 | 12 s | 7 passed in 11.88s
+== core/test_ciorne_decont_17_5_W.py | cod 0 | 10 s | 17 passed in 9.53s
+== core/test_clichete_generate.py | cod 1 | 1033 s | 2 failed, 10 passed in 1031.33s (0:17:11)
+FAILED core/test_clichete_generate.py::test_fiecare_CIFRA_din_bloc_e_cea_de_ACUM
+FAILED core/test_clichete_generate.py::test_blocul_e_IDENTIC_caracter_cu_caracter
+== core/test_control_fiscal.py | cod 0 | 2 s | 41 passed in 1.25s
+== core/test_dependente_ramuri.py | cod 1 | 7 s | 1 failed, 11 passed in 6.40s
+FAILED core/test_dependente_ramuri.py::test_ramurile_acopera_tot_ce_declara_registrul
+== core/test_garzi_pe_text.py | cod 1 | 35 s | 5 failed, 14 passed in 34.24s
+FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+== core/test_get_fara_scriere.py | cod 0 | 5 s | 3 passed in 4.54s
+== core/test_lot10_search_path_pool.py | cod 1 | 2 s | 1 failed, 2 passed in 1.59s
+FAILED core/test_lot10_search_path_pool.py::test_niciun_test_nou_nu_lasa_search_path_in_pool
+== core/test_lot11_g2_pre_line.py | cod 0 | 5 s | 5 passed in 3.94s
+== core/test_lot11_w3_ratchet.py | cod 0 | 2 s | 2 passed in 1.48s
+== core/test_lot12_ctrl_484.py | cod 0 | 3 s | 6 passed in 2.23s
+== core/test_lot14_stocuri_validat.py | cod 0 | 6 s | 5 passed in 4.65s
+== core/test_p7_straturi.py | cod 1 | 501 s | 1 failed, 22 passed in 500.15s (0:08:20)
+FAILED core/test_p7_straturi.py::test_cifra_din_motiv_nu_imbatraneste_tacut
+== core/test_p7_uc.py | cod 1 | 71 s | 1 failed, 19 passed in 70.84s (0:01:10)
+FAILED core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum - Assertio...
+== core/test_p7_v2_scrieri.py | cod 0 | 14 s | 16 passed in 13.37s
+== core/test_pilot_17_5_X.py | cod 0 | 16 s | 18 passed in 14.94s
+== core/test_plural_dupa_numar.py | cod 1 | 13 s | 2 failed, 7 passed in 12.01s
+FAILED core/test_plural_dupa_numar.py::test_py_niciun_numar_cu_forma_scrisa_fix
+FAILED core/test_plural_dupa_numar.py::test_scanul_ecranului_cunoaste_toate_pluralele_din_cod
+== core/test_retest_0810.py | cod 1 | 4 s | 1 failed, 4 passed in 3.16s
+FAILED core/test_retest_0810.py::test_coada_cere_poarta_pentru_toate_declaratiile_de_tva
+== core/test_versionare_assets.py | cod 0 | 2 s | 6 passed in 1.97s
+== core/test_firma_rezumat.py | cod 0 | 6 s | 31 passed in 5.35s
+== core/test_dependente_masurate.py | cod 0 | 3 s | 7 passed in 1.65s
+== core/test_control_preluare.py | cod 0 | 3 s | 11 passed in 2.77s
+== core/test_acoperire_vizuala.py | cod 0 | 2 s | 3 passed, 1 deselected in 1.09s
+== core/test_pagina_principala.py | cod 0 | 2 s | 8 passed, 1 deselected in 1.30s
+== core/test_declaratii_50.py | cod 0 | 2 s | 7 passed, 1 deselected in 1.29s
+GATA
+
+## e2e pe P (ieșirile integrale: /tmp/x2/*.out, capturile /tmp/e2e_x2_*)
+== frontend_test/e2e/e2e_lot12_cx2.py | cod 0 | 287 s | [e2e] 20 passed in 249.35s (0:04:09) (285s; capturi în /tmp/e2e_x2_e2e_lot12_cx2)
+== frontend_test/e2e/e2e_de_validat_17_5_G.py | cod 0 | 77 s | [e2e] 1 passed in 39.97s (75s; capturi în /tmp/e2e_x2_e2e_de_validat_17_5_G)
+== frontend_test/e2e/e2e_pilot_f054.py | cod 0 | 167 s | [e2e] 1 passed in 129.67s (0:02:09) (166s; capturi în /tmp/e2e_x2_e2e_pilot_f054)
+== frontend_test/e2e/e2e_comanda_1010.py | cod 1 | 135 s | [e2e] 1 failed, 5 passed in 97.42s (0:01:37) (133s; capturi în /tmp/e2e_x2_e2e_comanda_1010)
+FAILED frontend_test/e2e/e2e_comanda_1010.py::test_def_221_an_precedent_e_soldul_anului_precedent
+== frontend_test/e2e/e2e_lot12_firme1.py | cod 0 | 136 s | [e2e] 13 passed in 99.55s (0:01:39) (134s; capturi în /tmp/e2e_x2_e2e_lot12_firme1)
+== frontend_test/e2e/e2e_lot72_declaratii.py | cod 0 | 114 s | [e2e] 6 passed in 90.53s (0:01:30) (112s; capturi în /tmp/e2e_x2_e2e_lot72_declaratii)
+== frontend_test/e2e/e2e_lot10b_declaratii.py | cod 0 | 66 s | [e2e] 2 passed in 31.23s (62s; capturi în /tmp/e2e_x2_e2e_lot10b_declaratii)
+== frontend_test/e2e/e2e_bara_jos.py | cod 0 | 476 s | [e2e] 1 passed in 448.32s (0:07:28) (475s; capturi în /tmp/e2e_x2_e2e_bara_jos)
+GATA
+
+## pe bază 846960cb (restanțe numite)
+baza 846960cb96374b0f70a57c757071b74bf52b436e
+== core/test_dependente_ramuri.py::test_ramurile_acopera_tot_ce_declara_registrul | cod 1 | 9 s | 1 failed in 7.46s
+FAILED core/test_dependente_ramuri.py::test_ramurile_acopera_tot_ce_declara_registrul
+E       assert not ['ajustari_fiscale', 'reevaluari']
+== core/test_garzi_pe_text.py | cod 1 | 40 s | 5 failed, 14 passed in 39.00s
+FAILED core/test_garzi_pe_text.py::test_niciun_fisier_nu_creste - AssertionEr...
+FAILED core/test_garzi_pe_text.py::test_un_fisier_NOU_porneste_de_la_zero - A...
+FAILED core/test_garzi_pe_text.py::test_cele_trei_categorii_se_numara_separat
+FAILED core/test_garzi_pe_text.py::test_suprapunerea_cu_19_nu_creste - Assert...
+FAILED core/test_garzi_pe_text.py::test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc
+E       assert not ['  core/test_alerta_whatsapp_17_2_A.py                        0 -> 5', '  core/test_lot15_e4.py                      ...y                                  0 -> 6', '  core/test_taiat_17_3.py                                    0 -> 3', ...]
+E       assert not ['  core/test_alerta_whatsapp_17_2_A.py                        5 aserțiuni', '  core/test_lot15_e4.py                 ...                         6 aserțiuni', '  core/test_taiat_17_3.py                                    3 aserțiuni', ...]
+E           assert 120 <= 106
+== core/test_lot10_search_path_pool.py::test_niciun_test_nou_nu_lasa_search_path_in_pool | cod 1 | 2 s | 1 failed in 1.44s
+FAILED core/test_lot10_search_path_pool.py::test_niciun_test_nou_nu_lasa_search_path_in_pool
+E       assert not ['core/test_ciorne_decont_17_5_W.py', 'core/test_pozitii_pilot_17_5_S.py']
+== core/test_p7_straturi.py::test_cifra_din_motiv_nu_imbatraneste_tacut | cod 1 | 6 s | 1 failed in 4.54s
+FAILED core/test_p7_straturi.py::test_cifra_din_motiv_nu_imbatraneste_tacut
+E       assert [('core/repo_...i SQL', 8, 9)] == []
+== core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum | cod 1 | 9 s | 1 failed in 6.86s
+FAILED core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum - Assertio...
+E       assert not ["_verificari_contabile: apeluri pierdute {'_date': 1, 'balanta': 1, 'select_inregistrari_linii': 1, 'select_solduri_initiale': 1}"]
+== core/test_plural_dupa_numar.py | cod 1 | 12 s | 2 failed, 7 passed in 11.35s
+FAILED core/test_plural_dupa_numar.py::test_py_niciun_numar_cu_forma_scrisa_fix
+FAILED core/test_plural_dupa_numar.py::test_scanul_ecranului_cunoaste_toate_pluralele_din_cod
+E       assert not [('core/capital_social.py', 137, 'P4', "'se cere' if … == 1 else 'se cer'"), ('core/coada_api.py', 1745, 'P4', "'l' if...pi.py', 1758, 'P4', "'l' if … == 1 else 'le'"), ('core/control_incrucisat.py', 126, 'P4', "'ea' if … == 1 else 'ele'")]
+E       assert not ['contribuții', 'sesizări', 'validate']
+== core/test_retest_0810.py::test_coada_cere_poarta_pentru_toate_declaratiile_de_tva | cod 1 | 2 s | 1 failed in 1.35s
+FAILED core/test_retest_0810.py::test_coada_cere_poarta_pentru_toate_declaratiile_de_tva
+GATA
+== frontend_test/e2e/e2e_comanda_1010.py::test_def_221 pe bază: roșu (TimeoutError Page.wait_for_function 60000 ms), identic cu P
+== core/test_p7_uc.py::test_NICIUN_APEL pe P: pe lângă _verificari_contabile (ca pe bază), mesajul are și «verificare_stocuri: apeluri pierdute» (P5, cele patru apeluri din pct.3(i)); pe bază doar primul

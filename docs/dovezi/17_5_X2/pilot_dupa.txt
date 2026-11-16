@@ -1,0 +1,4 @@
+# 5.2 testul arhitectului pe P (612285ae6c5e), e2e_poarta.py --arbore --doar=e2e_pilot_17_5_X.py; durată 120 s, ieșire 0
+[e2e] aplicația din arbore pornită pe 8019 în 14s
+
+[e2e] 1 passed in 103.83s (0:01:43) (118s; capturi în /tmp/e2e_17_5_X2_dupa)
