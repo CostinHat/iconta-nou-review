@@ -1,0 +1,68 @@
+produs
+lot: 17.5-X4
+max hook 144
+max poarta_verificator 101
+max poarta_pytest 737
+max poarta_plasa 2631
+runde_verificator_max: 2
+sursa pragurilor 17.5-X4: generate de scripts/praguri_automate.py la 2026-11-16T11:02:12+02:00 din .lot_jurnal.log; loturi folosite: 17.5-S, 17.5-T, 17.5-I (3)
+  hook: maxim 120 s (lotul 17.5-I, rularea 1275518-1794538214361) din 28 rulari complete, 0 rulari «intrerupt» ignorate, prag 144 s
+  poarta_verificator: maxim 84 s (lotul 17.5-I, rularea 1851307-1794558150064) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 101 s
+  poarta_pytest: maxim 614 s (lotul 17.5-T, rularea 4141758-1794486808798) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 737 s
+  poarta_plasa: maxim 2192 s (lotul 17.5-I, rularea 1851307-1794558793086) din 4 rulari complete, 0 rulari «intrerupt» ignorate, prag 2631 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+plasa_modificabile frontend_test/e2e/e2e_pilot_luna.py frontend_test/e2e/e2e_d300_ciorne_17_5_W.py frontend_test/e2e/e2e_de_validat_17_5_G.py
+fisiere_permise:
+  scripts/praguri_17_5_X4.txt (nou)
+  scripts/praguri_17_5_X3.txt (adus de 17.5-X3)
+  scripts/praguri_17_5_X2.txt (adus de 17.5-X2)
+  scripts/praguri_17_5_X.txt (adus de 17.5-X)
+  scripts/plasa_16_2.manifest (rândul nou al lui e2e_pilot_17_5_X.py și rândurile modificate ale fișierelor din plasa_modificabile; în 17.5-X2 numai rândul lui e2e_de_validat_17_5_G.py și rândul nou al lui e2e_cursa_luna_17_5_X2.py)
+  frontend_test/e2e/e2e_cursa_luna_17_5_X2.py (nou, testul arhitectului pentru pct.3(vi.a), copiat neschimbat din ~/ghid_incoming)
+  static/js/ds_piese.js (numai lista cu căutare a pasului 1: rândul ales, pct.1)
+  static/js/cadru.js (numai dacă textul «Se citesc controalele lunii…» din bara de jos o cere, pct.2)
+  static/js/ecrane/declaratii.js (pct.1)
+  static/js/ecrane/firme.js (pct.2, 3, 5, 8, 9: Închidere lună, NIR nou, Verificări și Stocuri, Registru jurnal, Casă; în 17.5-X2 numai clasa `pe-randuri` a casetei `je-data-motiv`, pct.3(vi.b))
+  static/js/ecrane/control_verdict.js (pct.4; în 17.5-X2 numai `ultimaCerere()` și `pastreazaCampulActiv` pe selectorul «Luna comparată» și pe istoricul auditului, pct.3(vi.a))
+  core/control_fiscal_api.py (pct.4)
+  core/control_incrucisat.py (pct.4)
+  main.py (numai ruta existentă GET /control-fiscal/{tenant_id}: parametrul de lună, pct.4)
+  core/uc_control_fiscal.py (numai dacă parametrul de lună o cere, pct.4; în 17.5-X2 numai refuzul unic din `_luna_comparata`, pct.3(vi.c))
+  core/repo_control_incrucisat.py (numai dacă pct.4 o cere)
+  core/uc_tenants.py (pct.5, 3)
+  core/uc_comun.py (pct.5, 8)
+  core/jurnal_api.py (pct.8; numai dacă există: verifică cu grep, Q15)
+  core/test_pilot_17_5_X.py (adus de 17.5-X; în 17.5-X2 numai search_path fără sesiune, pct.3(viii.a))
+  core/firma_rezumat.py (numai `_T_CONTROL_FISCAL`: centre_cost, nir, registru_jurnal_numere, pct.3(vii))
+  DEPENDENTE_P2.md (numai blocul generat de scripts.scan_dependente --doc, pct.3(vii))
+  core/test_dependente_ramuri.py (numai ramura «stoc», dacă pică și după declarare, pct.3(vii))
+  core/straturi.py (numai motivul cu numărul instrucțiunilor SQL ale lui core/control_incrucisat.py, pct.3(viii.c))
+  frontend_test/vizual/acoperire_vizuala.json (numai dacă garda amprentei UI o cere după versioneaza_assets.py --scrie, pct.3(v))
+  frontend_test/proba_pagina_principala.json (idem)
+  frontend_test/proba_decl50.json (idem)
+  core/test_control_preluare.py (numai cazul nou, fără bază de date, pentru forma «<etichetă> — nu se poate verifica» a lui motiv_neverificabil, pct.3(iv))
+  core/test_ciorne_decont_17_5_W.py (numai textul explicativ de la 4423 și 4424, pct.4)
+  core/test_control_fiscal.py (numai test_semafor_d390_contradictie_flag_false_dar_facturi_ic, pct.4; în 17.5-X2 exact un motiv D390, fără trecere pe listă goală, pct.3(viii.b))
+  frontend_test/e2e/e2e_lot12_firme1.py (numai test_def_483: confirmarea cu motiv gol, pct.2; în afara plasei fixe)
+  frontend_test/e2e/e2e_pilot_luna.py (numai confirmarea cu motiv gol, pct.2; fișier din plasa fixă)
+  frontend_test/e2e/e2e_d300_ciorne_17_5_W.py (numai textul explicativ de la 4423, pct.4; fișier din plasa fixă)
+  frontend_test/e2e/e2e_pilot_17_5_X.py (nou, testul arhitectului)
+  static/js/ (numai cascada ?v= din versioneaza_assets.py --scrie; păzit de ~/ghid_incoming/verifica_cascada_v.py, pct.3)
+  static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (adus de 17.5-X; în 17.5-X2 NU se schimbă: --lista iese așteptat 0, ieșirea 1 = OPRIT, comanda, derogarea R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md (adus de 17.5-X3; în 17.5-X4 NU se schimbă)
+  PREDARE_LANT.md (adus de 17.5-X3; în 17.5-X4 NU se schimbă)
+  DEFICIENTE.md (numai intrările celor șapte puncte, cu numerele lor)
+  docs/dovezi/17_5_X/ (adus de 17.5-X)
+  docs/dovezi/17_5_X2/ (adus de 17.5-X2)
+  docs/dovezi/17_5_X3/ (adus de 17.5-X3)
+  core/test_rosu_termen_depasit.py (adus de 17.5-X3; în 17.5-X4 NU se schimbă)
+  core/test_p2_infrastructura.py (adus de 17.5-X3; în 17.5-X4 NU se schimbă)
+  core/test_p7_v2_scrieri.py (numai clichetul din test_numarul_de_instructiuni_se_conserva, 463 -> 460, cu apelurile numite, pct.3(i))
+  frontend_test/e2e/e2e_lot12_cx2.py (numai test_def_c131 și cazul nou alăturat lui pentru ramura lipsă: suprimarea condiționată a rândului verde al D300, pct.3(ii); în afara plasei fixe)
+  docs/dovezi/16_6/pasi.json (numai valoarea lui data-motiv-inactiv din cheia aserțiunii t.4, pct.3(iii))
+  frontend_test/e2e/e2e_de_validat_17_5_G.py (numai secțiunea (5), rândul F1 din Control fiscal, pct.3(iv); fișier din plasa fixă)
+  docs/dovezi/17_5_X4/ (nou)
+continuare: 17.5-X4 continuă 17.5-X3 pe codul din c4eb4c7bc49e8c56e75139bfd92774f71d20b569 (P al lui 17.5-X3, ramura lucru/lot17-5x3, C_X3 37664d34), după «OPRIT — gata: 17.5-X3 nepublicat» din 16.11.2026 09:44: BANC ROȘU produs de comparatorul bancului v2.2 (eroarea arhitectului), cod de produs neschimbat; în 17.5-X4 nu se schimbă cod de produs, teste sau registre — numai praguri_17_5_X4.txt și docs/dovezi/17_5_X4/.
