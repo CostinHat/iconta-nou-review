@@ -139,7 +139,10 @@ def ciorne_care_explica(conn, schema, data_de, data_pana, constatari):
     # [17.5-W, AC185] pe fiecare constatare roșie a conturilor 4427 / 4426 / 4423 / 4424: câte note în ciornă ating contul (în sensul comparat) și suma lor
     with conn.cursor() as _cur:
         for c in rosii_toate:
-            c["explicatie_ciorne"] = _explicatie_ciorne(*_repo.ciorne_pe_cont(_cur, schema, data_de, data_pana, c["cont"], _SENS_COMPARAT[c["cont"]]), c["cont"], c.get("diferenta"))
+            nr_ciorne, suma_ciorne = _repo.ciorne_pe_cont(_cur, schema, data_de, data_pana, c["cont"], _SENS_COMPARAT[c["cont"]])
+            c["explicatie_ciorne"] = _explicatie_ciorne(nr_ciorne, suma_ciorne, c["cont"], c.get("diferenta"))
+            if not nr_ciorne:   # [17.5-X7, a.10] câmpul de date după care ecranul alege forma (nu textul afișat): fără note în ciornă diferența intră în rândul constatării
+                c["diferenta_neexplicata"] = "Diferență neexplicată: %s" % _lei(abs(_d(c.get("diferenta"))))
     rosii = [c for c in rosii_toate if c["cont"] in _SENS_CIORNA]
     if not rosii:
         return constatari

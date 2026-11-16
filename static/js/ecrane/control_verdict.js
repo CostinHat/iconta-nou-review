@@ -85,10 +85,12 @@ function semnalConstatare(c) {
   const deFacut = cod && ACTIUNI_REMEDIU[cod].deFacut ? ACTIUNI_REMEDIU[cod].deFacut : (r && r.actiune) || "";
   const detalii = (c.temei ? `<p class="cf-incr-temei">${esc(c.temei)}</p>` : "")
     + (r ? `<p class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b>${deFacut ? `<br>Ce e de făcut: ${esc(deFacut)}` : ""}</p>` : "");
-  const semnal = semnalHtml({ ton: TON_STARE[st] || "avertisment", text: c.mesaj || "", detaliiHtml: detalii, actiuneHtml: cod ? butonActiune(cod, r) : "" });
+  // [17.5-X7, a.10] fără note în ciornă pe cont (câmpul `diferenta_neexplicata` dat de server, nu textul afișat) diferența stă în ACELAȘI rând al constatării, în partea vizibilă
+  // (textul scurt al semnalului); nu mai există un al doilea rând pentru aceeași diferență
+  const semnal = semnalHtml({ ton: TON_STARE[st] || "avertisment", text: c.diferenta_neexplicata ? `${c.mesaj || ""} · ${c.diferenta_neexplicata}.` : (c.mesaj || ""), detaliiHtml: detalii, actiuneHtml: cod ? butonActiune(cod, r) : "" });
   // [17.5-W, AC185] câte note în ciornă ating contul comparat (`explicatie_ciorne`, textul îl face serverul): rând informativ imediat sub constatare, ca să nu
-  // schimbe numărul rândurilor non-info; prima propoziție (cifrele) se vede fără deschiderea detaliilor
-  return semnal + (c.explicatie_ciorne ? semnalHtml({ ton: "info", text: c.explicatie_ciorne }) : "");
+  // schimbe numărul rândurilor non-info; prima propoziție (cifrele) se vede fără deschiderea detaliilor. Cu note în ciornă rândul rămâne separat, neschimbat.
+  return semnal + (c.explicatie_ciorne && !c.diferenta_neexplicata ? semnalHtml({ ton: "info", text: c.explicatie_ciorne }) : "");
 }
 
 // constatările aceleiași acțiuni repetate (statul de plată necontabilizat, câte una pe contribuție) devin UN SINGUR card-rezumat cu butonul lui;
@@ -451,7 +453,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=78d0fc4b63");
+    const { deschideInchidereLuna } = await import("./firme.js?v=b5a9e20b6c");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

@@ -121,6 +121,8 @@ def test_fara_note_in_ciorna_mesajul_e_diferenta_neexplicata_si_nimic_altceva_de
     for x in out:
         assert x["explicatie_ciorne"].startswith("Diferență neexplicată: %s." % ci._lei(Decimal("1341.00"))), x["explicatie_ciorne"]
         assert "poate veni din" not in x["explicatie_ciorne"] and "nu vine din" not in x["explicatie_ciorne"]   # un singur mesaj, fără al doilea care îl contrazice
+        # [17.5-X7, a.10] câmpul de date după care ecranul pune diferența în rândul constatării (nu textul afișat)
+        assert x["diferenta_neexplicata"] == "Diferență neexplicată: %s" % ci._lei(Decimal("1341.00")), x
 
 
 def test_cu_note_in_ciorna_textul_notelor_ramane():
@@ -131,6 +133,7 @@ def test_cu_note_in_ciorna_textul_notelor_ramane():
         out = ci.ciorne_care_explica(c, _SCHEMA, "2099-10-01", "2099-11-01", cs)
     assert out[0]["explicatie_ciorne"].startswith("Note în ciornă pe contul 4427 în perioadă: 1, cu suma de %s." % ci._lei(Decimal("100")))
     assert out[0]["ciorne_explica"] is True
+    assert "diferenta_neexplicata" not in out[0]   # [17.5-X7, a.10] cu note în ciornă rândul informativ AC185 rămâne separat: nu există câmpul diferenței integrate
 
 
 def test_d390_profil_fara_ic_dar_facturi_ic_apare_o_singura_data_cu_un_singur_motiv():

@@ -50,7 +50,7 @@ import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11
 import { ecranEtransport } from "./etransport_ecran.js?v=11326ec78a";
 import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=6dccb53624";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=4d1b97efb6";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=845d567390";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=244bef5dcf";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";  // [date_firma_v1]
@@ -970,8 +970,11 @@ async function ecranVerificari(corp, nav, t) {
         ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
           <div class="pf-frand-sub">${vs.ok ? "în regulă" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${bani(c.sold_contabil)} vs fi\u0219e ${bani(c.valoare_fise_cv)} (diferență ${bani(c.diferenta)})`).join(" \u00b7 ")}</div>
-          ${Number(vs.ciorne) ? `<div class="pf-frand-sub" id="vf-ciorne-stoc">Ciorne de stoc: ${bani(vs.ciorne)} lei.</div>` : ""}   <!-- [17.5-X, F089] ciornele nu produc „diferență”: linie separată, cu suma lor -->
         </div><span class="cab-pct ${vs.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
+        ${vs && Number(vs.ciorne) ? `<div class="pf-frand"><div class="pf-frand-text">
+          <div class="pf-frand-nume">Ciorne de stoc</div>
+          <div class="pf-frand-sub" id="vf-ciorne-stoc">${bani(vs.ciorne)} lei</div>
+        </div><span class="cab-pct pct-info"></span></div>` : ""}   <!-- [17.5-X7, a.15; F089] ciornele nu produc „diferență”: rând pf-frand al lor, ca toate rândurile listei (situații identice, soluții identice, CLAUDE.md §9), nu un al doilea pf-frand-sub în rândul Stocurilor -->
         ${intra ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Intrastat (prag 1.000.000 lei/flux, an ${an})</div>
           <div class="pf-frand-sub">Introduceri: ${intra.introduceri ? intra.introduceri.cumulat + " lei (" + intra.introduceri.procent + "%)" + (intra.introduceri.status !== "sub_prag" ? " \u00b7 depășit din luna " + intra.introduceri.luna_depasirii : "") : "-"} \u00b7 Expedieri: ${intra.expedieri ? intra.expedieri.cumulat + " lei (" + intra.expedieri.procent + "%)" + (intra.expedieri.status !== "sub_prag" ? " \u00b7 depășit din luna " + intra.expedieri.luna_depasirii : "") : "-"}</div>
@@ -6400,6 +6403,9 @@ export async function ecranJurnal(corp, nav, t, opt = {}) {   // exportat: garda
     const zonaMesaj = corp.querySelector("#j-mesaj");
     // [617] căutarea (cont, document, partener, sumă, nr. crt.) și starea, în pagină: registrul se citește pe lună, iar notele lunii sunt
     // deja aici — filtrarea nu mai cere serverul. Numărul de lângă câmp spune câte note se văd din câte are luna.
+    // [17.5-X7, a.17] în detaliul notei deja validate rândul `jn-validata` (motivul lui „Validează”, aria-describedby neschimbat) stă PRIMUL, deasupra tabelului debit/credit, ca să se vadă
+    // fără derulare la deschiderea detaliului; tabelul liniilor îl desenează `tabel_note.js` înaintea `detaliu`, deci rândul se mută aici, o singură dată, la desenare
+    corp.querySelectorAll(".tn-detaliu > td > .jn-validata").forEach((m) => m.parentElement.insertBefore(m, m.parentElement.firstChild));
     const tn = randuriJn.length ? legaTabelNote(corp, { pre: "jn", randuri: randuriJn, nrCrt: true, deschise }) : null;
     const aplicaFiltru = () => {
       if (!tn) return;
