@@ -2,6 +2,9 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-X3 (produs, 16.11.2026) — continuă 17.5-X2 pe codul din S (`00f1de33`); punctele P1–P5, P8, P9; ramura `lucru/lot17-5x3` (worktree `~/iconta_lot17_5x3`), bază main 846960cb
+- Cod = S + două teste adaptate (`core/test_rosu_termen_depasit.py`, `core/test_p2_infrastructura.py`), nicio schimbare de produs. Cauza opririi lui 17.5-X2: limita de 150 de minute a bancului (a arhitectului). Starea publicării: `~/lot_17_5_X3_raport.md`.
+
 ## LOTUL 17.5-X2 (produs, 16.11.2026) — continuă 17.5-X (oprit nepublicat: două teste în afara listei permise) pe codul din S; punctele P1–P5, P8, P9; ramura `lucru/lot17-5x2` (worktree `~/iconta_lot17_5x2`), bază main 846960cb
 - Cod = S (`901930360aa0`) + P (`612285ae`): testele adaptate (p7_v2_scrieri 460, c131 pe două ramuri, pasi.json t.4, de_validat_G (5), core/test_control_preluare.py cazul nou), `static/js/ecrane/control_verdict.js` (`ultimaCerere`, `pastreazaCampulActiv`), `firme.js` (`pe-randuri`), `core/uc_control_fiscal.py` (un refuz), `core/firma_rezumat.py` + `DEPENDENTE_P2.md` (trei tabele), `core/straturi.py` (48), `e2e_cursa_luna_17_5_X2.py` (plasa fixă, rând nou) și cascada `?v=`.
 - Ramura `lucru/lot17-5x` și worktree-ul `~/iconta_lot17_5x` rămân neatinse. Starea publicării: `~/lot_17_5_X2_raport.md`.

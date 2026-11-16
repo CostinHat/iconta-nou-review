@@ -203,6 +203,9 @@ def test_p2_trigger_migration_is_idempotent(firma_proba):
                     " WHERE n.nspname = %s AND NOT t.tgisinternal", (schema,))
                 return sorted(cur.fetchall())
 
+    with _db.get_conn() as c:      # ca la pornire (main.py): registrul aspectelor se proiectează din cod înaintea migrării
+        FR.aplica_ddl(c)
+        c.commit()
     inainte = _numara()
     assert inainte, "proba n-are obiect: firma de probă n-are niciun trigger"
     with _db.get_conn() as c:

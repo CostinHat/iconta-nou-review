@@ -24788,3 +24788,8 @@ Sursa: «auditul Pilot din 13.11.2026, 45 de poziții, pe versiunea 17.5-I»; de
 - Decizie pe varianta sigură: `test_ramura_deschide_sursele_ei[stoc]` — verdictul de bază citește acum `miscari_stoc` la orice firmă (P5), deci ramura nu mai poate aduce sursa ca delta; ea își dovedește sursa prin faptul că fixtura a scris în tabelă (aserțiunea pe delta rămâne pentru sursele care nu erau deja deschise).
 - DEFICIENTE.md rămâne cum e în S (numerele punctelor «nerezolvată» până la retestul arhitectului).
 
+
+## Lotul 17.5-X3 (produs, 16.11.2026) — continuarea sub nume nou a lui 17.5-X2, pe codul din S (`00f1de33`), ramura `lucru/lot17-5x3` (worktree `~/iconta_lot17_5x3`)
+- Cauza opririi lui 17.5-X2: limita fixă de 150 de minute a bancului arhitectului (bancul a durat 172 de minute); greșeala a fost a arhitectului. Bancul a terminat ROȘU pe trei teste vechi: două de adaptat (`core/test_rosu_termen_depasit.py`, `core/test_p2_infrastructura.py`) și unul instabil (`core/test_notificari_canal.py`, roșu numai sub xdist).
+- Decizia arhitectului: lot de continuare pe codul din S, patch de teste (`adaptari_17_5_X3.patch`: stub-ul lui `../api.js` primește `ultimaCerere` și `pastreazaCampulActiv`; `FR.aplica_ddl(c)` înaintea primei migrări în `test_p2_trigger_migration_is_idempotent`), instabilul numit în `instabile_17_5_X3.txt`, bancul cu puls.
+- Nicio schimbare de produs, nicio migrare, nicio rută nouă. `core/test_p7_uc.py` rămâne restanță de bază, neatins. Ramurile `lucru/lot17-5x` și `lucru/lot17-5x2` și worktree-urile lor rămân neatinse.
