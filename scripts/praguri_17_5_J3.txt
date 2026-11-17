@@ -1,0 +1,47 @@
+produs
+lot: 17.5-J3
+max hook 144
+max poarta_verificator 107
+max poarta_pytest 737
+max poarta_plasa 2823
+runde_verificator_max: 2
+sursa pragurilor 17.5-J3: generate de scripts/praguri_automate.py la 2026-11-17T17:44:07+02:00 din .lot_jurnal.log; loturi folosite: 17.5-T, 17.5-I, 17.5-X8 (3)
+  hook: maxim 120 s (lotul 17.5-I, rularea 1275518-1794538214361) din 19 rulari complete, 0 rulari «intrerupt» ignorate, prag 144 s
+  poarta_verificator: maxim 89 s (lotul 17.5-X8, rularea 377831-1794857659252) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 107 s
+  poarta_pytest: maxim 614 s (lotul 17.5-T, rularea 4141758-1794486808798) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 737 s
+  poarta_plasa: maxim 2352 s (lotul 17.5-X8, rularea 377831-1794858324115) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 2823 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_J3.txt (nou)
+  docs/dovezi/17_5_J3/ (nou: oracolul copiat din J2, baza.json copie din J2, pasi.txt copie din J2 pe C_J2, jurnalul și capturile parcurgerilor J3)
+  scripts/praguri_17_5_J2.txt (moștenit din J2, neschimbat în J3)
+  docs/dovezi/17_5_J2/ (moștenit din J2, neschimbat în J3)
+  core/test_p7_uc.py (J2-R1: numai intrările din tabelele de apeluri — APELURI_EXTRASE_IN_AJUTOR/AJUTOARE, APELURI_REDUSE/SCOASE — pentru _verificari_contabile și verificare_stocuri, cu motiv și sursă; moștenit din J: intrarea PERECHI_ADAUGATE AC052/053)
+  static/js/ecrane/ecran_destinatie.js (moștenit din J2, neschimbat în J3: J2-R2, FUNCȚIONAL: ECRANE.import_solduri cu firma întreagă, inclusiv tip_firma; plus cascada ?v=)
+  static/js/ecrane/firme.js (J2-R2: eliminarea învelișului navImport; moștenit din J: ecranRegistruFiscal, AC052/AC053)
+  scripts/praguri_17_5_J.txt (moștenit din J, neschimbat în J2)
+  docs/dovezi/17_5_J/ (moștenit din J, neschimbat în J2)
+  scripts/plasa_16_2.manifest (moștenit din J: rândul e2e_declaratii_17_5_J.py)
+  core/uc_tenants.py (moștenit din J: AC052, AC053, AC109)
+  core/test_selecturi_ecrane.py (moștenit din J: AC141)
+  static/js/ecrane/declaratii.js (moștenit din J: AC129, AC130, AC134, AC137, AC141)
+  core/control_fiscal_api.py (moștenit din J: AC135)
+  core/d301.py (moștenit din J: AC139)
+  core/repo_d301.py (moștenit din J: AC139)
+  core/d301_operatiuni_api.py (moștenit din J: AC141)
+  static/js/ecrane/flux_concediu.js (moștenit din J: AC109)
+  core/salariati_api.py (moștenit din J: AC109)
+  main.py (moștenit din J: ruta AC109)
+  frontend_test/e2e/e2e_declaratii_17_5_J.py (moștenit din J)
+  core/test_17_5_J.py (moștenit din J)
+  core/test_fara_functii_noi.py (moștenit din J: EXCEPTII ruta AC109)
+  scripts/scan_selecturi_ecrane.py (moștenit din J: AC141)
+  DEFICIENTE.md (moștenit din J: AC109)
+  static/js/ (numai cascada ?v= rescrisă de ./venv/bin/python versioneaza_assets.py --scrie, verificată de ~/ghid_incoming/verifica_cascada_v.py)
+  static/index.html
+  static/spv_callback.html (numai linia ?v=)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+continuare: 17.5-J3 = lot nou FĂRĂ COD NOU din codul J2 nepublicat (C_J2 be809eb7a00a616ca8964e4a29f6531df3895715, lucru/lot17-5j2), bază main aabc1f31289cb84285a5a80c44b5cc2451671c3e (17.5-X8 publicat); tiparul X8 (P_J3, C_J3, E_J3 numai dovezi); oracolul J2 copiat neschimbat (14 aserțiuni: f.1–f.3, a.1–a.11); comanda_17_5_J3.txt P9 SHA256 55395bab10431aba58f455f34e39f261be7b7febb4adf4852b232b5798ae8479.
