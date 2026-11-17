@@ -1,0 +1,14 @@
+unelte
+lot: 17.5-Z
+fara praguri numerice pe durate in aceasta schema (lot de unelte; niciun rand `max <faza> <secunde>`: scripts/publica_lot.py compara numai randurile `max`); referintele de mai jos sunt cerinte de raport, cu cifra si cu sursa ei
+  hook ≤ 144 s (= 120 × 1,2; sursa: lotul 17.5-I, rularea 1275518-1794538214361, 16 rulari complete)
+  poarta_verificator ≤ 107 s (= 89 × 1,2; sursa: lotul 17.5-X8, rularea 377831-1794857659252, 3 rulari complete)
+  poarta_pytest ≤ 707 s (= 589 × 1,2; sursa: lotul 17.5-J3, rularea 3408016-1794943645179, 3 rulari complete)
+  poarta_plasa ≤ 2883 s (= 2402 × 1,2; sursa: lotul 17.5-J3, rularea 3408016-1794944234363, 3 rulari complete)
+runde_verificator_max: 0
+sursa pragurilor 17.5-Z: generate de scripts/praguri_automate.py la 2026-11-17T23:02:54+02:00 din .lot_jurnal.log; loturi folosite: 17.5-I, 17.5-X8, 17.5-J3 (3)
+  hook: maxim 120 s (lotul 17.5-I, rularea 1275518-1794538214361) din 16 rulari complete, 0 rulari «intrerupt» ignorate, prag 144 s
+  poarta_verificator: maxim 89 s (lotul 17.5-X8, rularea 377831-1794857659252) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 107 s
+  poarta_pytest: maxim 589 s (lotul 17.5-J3, rularea 3408016-1794943645179) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 707 s
+  poarta_plasa: maxim 2402 s (lotul 17.5-J3, rularea 3408016-1794944234363) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 2883 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
