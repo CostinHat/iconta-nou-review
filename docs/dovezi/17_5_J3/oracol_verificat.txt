@@ -1,0 +1,1 @@
+oracol: pasi.json, pasi_17_5_J3.txt, parcurs_17_5_J3.py identice cu ~/ghid_incoming (cmp); pasi.txt identic cu J2 pe C_J2; baza.json identic cu J2
