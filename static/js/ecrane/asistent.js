@@ -12,10 +12,10 @@ import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaTermene } from "./termene.js?v=fbf97d1454";
 import { randeazaValidat } from "./validat.js?v=a2db2ca802";
-import { randeazaListaFirme } from "./firme.js?v=a3aad416ed";
+import { randeazaListaFirme } from "./firme.js?v=b651b4c4fe";
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=a4f1c01394"; // [p44_declaratii]
+import { randeazaDeclaratii } from "./declaratii.js?v=93956357f7"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=37902f6231"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {

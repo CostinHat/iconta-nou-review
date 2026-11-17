@@ -114,12 +114,15 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         <div class="grila-campuri" style="max-width:none">
           <label class="camp"><span class="camp-eticheta">Venituri brute 6 luni<span class="oblig">*</span></span><input type="text" inputmode="decimal" id="cm-ven6" class="camp-input" placeholder="suma total\u0103"><span class="camp-ajutor">Suma veniturilor brute din ultimele 6 luni lucrate (din statele de plat\u0103). Baza = aceast\u0103 sum\u0103 \u00eemp\u0103r\u021bit\u0103 la zilele lucr\u0103toare.</span></label>
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare 6 luni<span class="oblig">*</span></span><input type="number" id="cm-zile6" class="camp-input" min="1" placeholder="ex. 126"><span class="camp-ajutor">Total zile lucr\u0103toare din acelea\u0219i 6 luni (ex. ~126 pentru 6 luni pline).</span></label>
+        </div>
+        <!-- [17.5-J2, J2-R4] propunerea bazei stă imediat sub Venituri / Zile, înainte de Diagnostic, Spitalizare și Pacient: sub ele cădea sub bara fixă -->
+        <p class="camp-ajutor" id="cm-baza-propusa" role="status"></p>   <!-- [17.5-J, AC109] propunerea bazei din statele de plată -->
+        <div class="grila-campuri" style="max-width:none">
           <label class="camp"><span class="camp-eticheta">Diagnostic (op\u021bional)</span><input type="text" id="cm-diag" class="camp-input"></label>
           <!-- [lotul 07.10 B, DS cap.17] DA/NU situaționale: alese de om, nu căsuțe nebifate („Nu” ales de ecran) -->
           <div class="camp"><span class="camp-eticheta">Spitalizare (prima zi se plătește)<span class="oblig">*</span></span>${selectDaNu('id="cm-spital"', null, "Spitalizare")}</div>
           <div class="camp"><span class="camp-eticheta">Pacient în program național de sănătate (D112 D_9a)<span class="oblig">*</span></span>${selectDaNu('id="cm-program-national"', null, "Pacient în program național de sănătate")}</div>
         </div>
-        <p class="camp-ajutor" id="cm-baza-propusa" role="status"></p>   <!-- [17.5-J, AC109] propunerea bazei din statele de plată -->
         <div class="bara-fixa"><p style="margin-top:14px">
           <button class="buton-primar" id="cm-calc" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii">Calculeaz\u0103 \u0219i salveaz\u0103</button>
           <button class="buton-secundar" id="cm-renunta" style="margin-left:10px">Renun\u021b\u0103</button>

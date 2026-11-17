@@ -639,6 +639,10 @@ _MOTIV_642_PRECOMPLETARE = ("Lotul 12, deficiența 642 (clasa): precompletarea A
                             "căderea consemnată; fără el, o eroare de bază strica tranzacția creării, iar `commit`-ul o anula tăcut. Gardul: "
                             "core/test_lot12_form2_register.py")
 APELURI_INLOCUITE = {
+    # [17.5-J2, J2-R1] primul `dict(r)` al vechiului corp (pe rândurile `articole_cu_cont`) e înlocuit de `reconciliere`: articolele vin dintr-un cursor `RealDictCursor`, deja dicționare
+    ("verificare_stocuri", "dict"): ("reconciliere", "[17.5-J2, J2-R1; 17.5-X, F089] vechiul `dict(r)` pe rândurile articolelor cu cont de stoc (`repo_stocuri.articole_cu_cont`) a plecat odată cu "
+                                     "acea citire: `stocuri_cv_api.reconciliere` ia articolele prin `articole`, cu `RealDictCursor`, deci rândurile sunt deja dicționare; al doilea `dict(r)`, "
+                                     "pe mișcări, e în `stocuri_cv_api._miscari`, creditat prin ajutor."),
     # [lotul 13, reparațiile finale înaintea porții]
     ("coada_aproba", "_are_permisiune"): ("_are_permisiune_pe", _MOTIV_L13_C201 + " Permisiunea se întreabă pe conexiunea ținută."),
     ("portal_cashflow", "aloca_sold"): ("din_facturi", 'Lotul 13, deficiențele 553 + 559 (zona portal): previziunea clientului se face din facturile deschise VALIDATE, fiecare la scadența ei (`cashflow.din_facturi`, `repo_portal.facturi_deschise_validate`), nu din soldul balanței împărțit „de la cele mai noi” (`cashflow.aloca_sold`, scos).'),
@@ -858,6 +862,18 @@ _MOTIV_LOTUL_4 = ('Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „L
                   'contul nou (`_dupa_cont_nou`, `_anunta_cabinet_nou`) sunt ajutoare comune cu confirmarea (`confirma_inregistrarea`). '
                   'Trimiterea emailului: `observare.trimite_email_html_sau_semnaleaza` (C34).')
 APELURI_EXTRASE_IN_AJUTOARE = {
+    # [17.5-J2, J2-R1] `_verificari_contabile` are deja un ajutor în APELURI_EXTRASE_IN_AJUTOR (`_tva_balanta_sau_nu_se_aplica`, dicționar cu un singur ajutor pe funcție);
+    # aici, în tabelul cu mai multe ajutoare, sunt celelalte două: citirea balanței lunii și numărătoarea notelor lunii.
+    # [17.5-J2, J2-R1] `verificare_stocuri`: corpul (articolele, fișele de magazie, rulajul, soldul inițial, diferențele) a plecat în `stocuri_cv_api.reconciliere`,
+    # care citește articolele prin `articole`, iar `articole` fiecare fișă prin `_miscari` (`repo_stocuri.miscari_ale_articolului`, `dict(r)`).
+    "verificare_stocuri": ((("core/stocuri_cv_api.py", "reconciliere"), ("core/stocuri_cv_api.py", "_miscari")), (
+        "[17.5-J2, J2-R1; roșu pe main X8 `aabc1f31`; 17.5-X, F089] reconcilierea validat-contra-validat a stocurilor (`fisa_magazie`, `rulaj_pe_cont_stoc`, "
+        "`sold_initial_pe_cont`, Decimal, str, abs, append, get) e în `stocuri_cv_api.reconciliere`, aceeași citire ca cardul Stocurilor; citirea mișcărilor fiecărui "
+        "articol (`miscari_ale_articolului`) e în `stocuri_cv_api._miscari`, chemat de `articole`, chemat de `reconciliere`. Gardul: `core/test_pilot_17_5_X.py`.")),
+    "_verificari_contabile": ((("core/uc_comun.py", "_balanta_lunii"), ("core/uc_comun.py", "_numar_note_luna")), (
+        "[17.5-J2, J2-R1; roșu pe main X8 `aabc1f31`] citirea balanței lunii (`_date`, `select_inregistrari_linii`, `select_solduri_initiale`, `balanta`) e în "
+        "`uc_comun._balanta_lunii`, chemată din `_verificari_contabile`; numărătoarea notelor lunii (`len`, 17.5-X, 602.1 / 781: aceeași citire ca Registrul jurnal) e în "
+        "`uc_comun._numar_note_luna`, chemată tot de ea. Fiecare apel de mai sus îl face acum ajutorul, nu s-a pierdut.")),
     # [lotul 13, C201] permisiunea fără bază (superadmin, contextul) și citirea ei pe conexiunea dată au plecat în două ajutoare
     "_are_permisiune": ((("core/uc_comun.py", "_permisiune_fara_baza"), ("core/uc_comun.py", "_are_permisiune_pe")),
                         _MOTIV_L13_C201 + " `_are_permisiune` citește pe conexiunea ei numai când nu e chemată dintr-o tranzacție; "
@@ -896,6 +912,11 @@ _MOTIV_CF_CUI = ("Lotul 11, decizia Costin 10.3 pct.4 (CUI-ul fără „RO” ș
 _MOTIV_C84 = ("C84 (b), decizia Costin 23.10.2026: livrarea intracomunitară de bunuri trece pe „Emite factură”; Operațiuni rămân "
               "pentru servicii, deci verificarea dovezii transportului și contul bunurilor ies din `vanzare_ic`.")
 APELURI_REDUSE = {
+    # [17.5-J2, J2-R1] cele trei `.quantize(...)` ale vechiului corp (soldul, valoarea fișelor, diferența) sunt acum unul singur, lambda `q` din `reconciliere`,
+    # aplicat de trei ori; mai rămâne `.quantize` pe totalul ciornelor din `verificare_stocuri`. Contabilizarea (3 → 1 în funcție) + creditul ajutorului (1) = 2.
+    ('verificare_stocuri', 'quantize'): (2, "[17.5-J2, J2-R1; 17.5-X, F089] rotunjirea la 2 zecimale a soldului, a valorii fișelor și a diferenței se face printr-o singură "
+                                          "funcție locală `q` (ROUND_HALF_UP) în `stocuri_cv_api.reconciliere`, aplicată de trei ori; în `verificare_stocuri` rămâne numai "
+                                          "rotunjirea totalului ciornelor. Gardul de cifre: `core/test_pilot_17_5_X.py`."),
     # [lotul 13, reparațiile finale înaintea porții] C201: a doua conexiune a cererii s-a unit cu prima
     ('control_fiscal_audit_preluare', 'get_conn'): (1, _MOTIV_L13_C201),
     ('control_fiscal_detaliu', 'get_conn'): (1, _MOTIV_L13_C201),
@@ -942,6 +963,10 @@ APELURI_REDUSE = {
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    # [17.5-J2, J2-R1] vechile apelul `repo_stocuri.articole_cu_cont`: articolele vin acum din `stocuri_cv_api.articole` (SELECT * FROM articole), prin `reconciliere`.
+    ('verificare_stocuri', 'articole_cu_cont'): ("[17.5-J2, J2-R1; 17.5-X, F089] lista articolelor cu cont de stoc (`repo_stocuri.articole_cu_cont`) nu se mai citește în "
+                                                 "`verificare_stocuri`: `stocuri_cv_api.reconciliere` ia articolele prin `articole` (aceeași citire ca ecranul Stocuri), "
+                                                 "cu `cont_stoc` din tabelul `articole`."),
     ('portal_cashflow', 'str'): ("Lotul 13, deficiențele 553 + 559 (zona portal): conversiile soldurilor balanței pentru `cashflow.aloca_sold` "
                                  "au ieșit odată cu el (previziunea citește `rest_lei` al facturilor validate)."),
     ('portal_cashflow', 'float'): ("Lotul 13, deficiențele 553 + 559 (zona portal): conversia `float(...)` a soldului balanței împărțit de "

@@ -16,6 +16,7 @@ import { ecranClienti, ecranFurnizori } from "./clienti_ecran.js?v=90325032fc"; 
 import { panouIntocmitor } from "./intocmitor_bilant.js?v=5d705395fe";            // [lotul 11, decizia 10.3] întocmitorul bilanțului
 import { meniuMigrarePerFirma } from "./migrare.js?v=6dccb53624";   // [lotul 14, 683 / 695] importul balanței cu rulajele anului
 import { sesiune } from "../sesiune.js?v=898215e0ee";
+import { api } from "../api.js?v=7396e03327";
 
 export const ECRANE = {
   date_firma: {
@@ -48,12 +49,17 @@ export const ECRANE = {
   // [lotul 14, 683 / 695] bilanțul și declarațiile care încep înainte de preluare cer rulajele anului: „Import date › Solduri inițiale”
   import_solduri: {
     titlu: "Import date",
-    deschide: (nav, tenantId) => nav.deschide("Import date", (c2) => meniuMigrarePerFirma(c2, nav, { tenant_id: tenantId })),
+    // [17.5-J2, J2-R2] meniul cere firma întreagă (`tip_firma` hotărăște straturile aplicabile): o citește din lista firmelor, ca celelalte ferestre ale firmei, pentru orice intrare care dă numai id-ul
+    deschide: (nav, tenantId) => nav.deschide("Import date", async (c2) => {
+      const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tenantId);
+      if (!t) { c2.innerHTML = `<p class="ecran-nota">Firma nu a fost găsită sau nu mai ai acces la ea.</p>`; return; }
+      return meniuMigrarePerFirma(c2, nav, { tenant_id: t.id, nume: t.nume, tip_firma: t.tip_firma });
+    }),
   },
   // [15.1-E3, 728.1 / 735] „Contabilizează statul de plată” (constatarea de control fiscal) deschide Salariați, unde se face contarea statului
   salarii: {
     titlu: "Salariați",
-    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=a3aad416ed"); await deschideSalariati(nav, tenantId); },
+    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=b651b4c4fe"); await deschideSalariati(nav, tenantId); },
   },
   conectare_spv: {
     titlu: "Conectare SPV",

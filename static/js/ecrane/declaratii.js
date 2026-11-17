@@ -9,7 +9,7 @@
 import { listaCuCautare, cardRezumat, tabelDS } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1, 722] lista cu căutare
 import { api, ultimaCerere, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor, ALEGE, alegeDacaLipseste, cereAlegerile, selectDaNu, daNu, cate, focusFaraSalt, arataRefuzul } from "../api.js?v=7396e03327";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, deschideInCoada, legaturiNote } from "./coada_trimite.js?v=b26ef32cac";
-import { butonSpreEcran } from "./ecran_destinatie.js?v=7c3b897c2b";   // [lotul 10, 431] refuzul care trimite la ce lipsește
+import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [lotul 10, 431] refuzul care trimite la ce lipsește
 // [lotul 11, 440] numele câmpurilor din refuzul serverului -> id-ul de pe ecran (`pre` + nume), pentru `arataRefuzul` (toate erorile deodată)
 const _campuriCu = (e, pre) => Object.fromEntries(((e && e.erori_campuri) || []).map((c) => [c.camp, pre + c.camp]));
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
@@ -204,7 +204,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
         <span class="camp-eticheta">Tip declarație <span class="oblig">*</span> <span id="dec-ajutor"></span></span>
         <select id="dec-tip" class="camp-input">${optiuniTip()}</select>
       </label>
-      <div id="dec-de-lamurit"></div>   <!-- [17.5-J, AC137] motivul „de lămurit” al tipului ales, cu ieșirea spre Date firmă -->
+      <div id="dec-de-lamurit" role="status"></div>   <!-- [17.5-J, AC137] motivul „de lămurit” al tipului ales, cu ieșirea spre Date firmă; [17.5-J2, J2-R3] zonă de mesaj (role status): _noteInZona din navigator.js nu o mută în lista Tip declarație, unde butonul rămânea sub derulare -->
       <div id="dec-perioada">${randPerioada(per)}</div>
     </div>
     <div id="dec-existente"></div>
@@ -259,7 +259,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       _zl.innerHTML = "";
       const motiv = S.tip && S.deLamurit ? S.deLamurit[S.tip] : "";
       if (motiv) {
-        const pm = document.createElement("p"); pm.className = "ecran-nota"; pm.textContent = motiv; _zl.appendChild(pm);
+        const pm = document.createElement("div"); pm.className = "ecran-nota"; pm.textContent = motiv;   /* [17.5-J2, J2-R3] nu `p.ecran-nota`: nota aceea o mută `_noteInZona` în zona de derulare */ _zl.appendChild(pm);
         butonSpreEcran(_zl, "date_firma", nav, S.tenant_id, { clasa: "buton-secundar", inapoiLa: "Declarații" });
       }
     }
