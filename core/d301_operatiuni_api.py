@@ -138,7 +138,7 @@ def lista(conn, schema, an, luna):
         "operatiuni": ops,
         "tipuri": [{"val": t, "eticheta": TIPURI_ETICHETE[t]} for t in TIPURI_OP],
         "temeiuri_307": [{"val": k, "eticheta": v["eticheta"]} for k, v in TEMEI_307.items()],
-        "valute": sorted(VALUTE),
+        "valute": ["EUR", "RON"] + sorted(VALUTE - {"EUR", "RON"}),   # [17.5-J, AC141] EUR primul (preselectat), apoi RON, restul alfabetic; nomenclatorul rămâne VALUTE
         "cote": cote_perioada(an, luna),
     }
 

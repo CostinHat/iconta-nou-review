@@ -43,6 +43,8 @@ EXCEPTII = {
     "GET /tenants/{tenant_id}/parteneri-firma": "461",
     "GET /tenants/{tenant_id}/parteneri-firma/fisa": "461",
     "POST /tenants/{tenant_id}/facturi-primite/manual": "477",
+    # [17.5-J, AC109 = 803] baza de calcul a certificatului CM propusă din statele de plată (citire; tranzacția o deține use-case-ul)
+    "GET /tenants/{tenant_id}/salariati/{salariat_id}/baza-cm": "803",
     "GET /tenants/{tenant_id}/ciorne-formular/{formular}": "495",
     "PUT /tenants/{tenant_id}/ciorne-formular/{formular}": "495",
     "DELETE /tenants/{tenant_id}/ciorne-formular/{formular}": "495",

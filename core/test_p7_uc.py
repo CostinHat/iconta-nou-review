@@ -353,9 +353,11 @@ PERECHI_ADAUGATE = {
         "Deficiența 293 (lotul 6, completarea Costin 16.10.2026, verbatim în DECIZII): „Pe o declarație a altcuiva, fără dreptul de "
         "depunere, nu se oferă nicio acțiune în afară de vizualizare; serverul refuză la fel.” Fără validarea în doi, renunțarea (403) e a "
         "celui care a pregătit-o sau a celui care o depune. Gardul: `core/test_293_renunta_altui.py`."),
-    ("registru_fiscal_citeste", "str(e)"): (
+    ("registru_fiscal_citeste", "e.detaliu() if isinstance(e, RefuzGenerare) else str(e)"): (
         "C41 (lotul 6, găsit de garda 285): registrul pe profit trece prin `d101.genereaza` pe conexiunea firmei; refuzul motivat al "
-        "generatorului (date de firmă lipsă, `ValueError`) e 422, ca la S1005 — nu cădere. Gardul: `core/test_registru_fiscal_conexiune.py`."),
+        "generatorului (date de firmă lipsă, `ValueError`) e 422, ca la S1005 — nu cădere. Gardul: `core/test_registru_fiscal_conexiune.py`. "
+        "[17.5-J, AC052] refuzul cu trimitere (`RefuzGenerare`: «Deschide Import date») ajunge la ecran ca obiect, nu doar ca text, după tiparul "
+        "declarațiilor; AC053: același 422 / 409 poartă și `regim_efectiv` în detaliu."),
     ("factura_primita_valideaza", "REFUZ_TERT_PLATITOR_MANUALA if f.get('manuala') else _uct.REFUZ_TERT_PLATITOR"): (
         "Deficiența 273c (lotul 6, comanda Costin 16.10.2026): „Câmpurile pe care importul nu le preia (terț plătitor, categorie) se "
         "semnalează pe factură ca «de completat»; terțul plătitor intră în D394.” Validarea cere tipul furnizorului (422 numit). "

@@ -36,7 +36,7 @@ import { lunaDeLucru, uitaLunaDeLucru } from "../luna_lucru.js?v=04c41c46c1";   
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import { permis } from "../drepturi.js?v=34d0fb0afd";
 import { ciornaFormular } from "../ciorna_formular.js?v=461bec469f";  /* [267, clasa] ciorna formularelor lungi de creare */  /* [drepturi_rol 04.10.2026] acțiunile a căror rută depinde de stare */
-import { fluxConcediu } from "./flux_concediu.js?v=0fbebfde1f";  /* cm_flux_v1 */
+import { fluxConcediu } from "./flux_concediu.js?v=804350aed0";  /* cm_flux_v1 */
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
@@ -49,7 +49,8 @@ import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] �
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
 import { ecranEtransport } from "./etransport_ecran.js?v=11326ec78a";
 import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=6dccb53624";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=4d1b97efb6";  // [decl_firma_v1]
+import { butonSpreEcran } from "./ecran_destinatie.js?v=7c3b897c2b";   // [17.5-J, AC052] refuzul care trimite la ce lipsește
+import { declaratiiPerFirma } from "./declaratii.js?v=65e58d6411";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=c6b58b070d";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
@@ -3166,12 +3167,22 @@ async function ecranRegistruFiscal(corp, nav, t) {
         <label class="camp"><span class="camp-eticheta">Anul</span><input type="number" id="rf-an" class="camp-input" value="${an}" style="max-width:120px"></label>
       </div>`;
 
+    // [17.5-J, AC053] firma micro: registrul calculează pe profit (varianta inițială rămâne); nota, înaintea tabelului sau a cardului de refuz
+    const regimEfectiv = eroare ? (eroare.detaliu && eroare.detaliu.regim_efectiv) : (d && d.regim_efectiv);
+    const notaMicro = (varianta === "profit" && regimEfectiv === "micro")
+      ? `<p class="ecran-nota" id="rf-nota-micro">Firma e pe impozitul pe veniturile microîntreprinderilor (Regimul fiscal din Date firmă); registrul de mai jos calculează rezultatul fiscal pentru impozitul pe profit.</p>` : "";
+
     if (eroare) {
-      corp.innerHTML = `<h2 class="pf-titlu">Registrul de eviden\u021b\u0103 fiscal\u0103</h2>${selector}
+      corp.innerHTML = `<h2 class="pf-titlu">Registrul de eviden\u021b\u0103 fiscal\u0103</h2>${selector}${notaMicro}
         <div id="rf-carduri" role="alert"></div>${varianta === "profit" ? '<div id="rf-ajustari"></div>' : ""}`;
       // [lotul 14, 687] refuzul (cu textul întreg: ce lipsește și unde se repară) e un card de eroare, deschis la clic; nu împinge ajustările în jos
       siraCarduri(corp.querySelector("#rf-carduri"), [{ id: "eroare", ton: "eroare", text: `Nu s-a putut întocmi registrul pe ${an}`, titlu: "Registrul nu s-a putut întocmi",
-        deschide: (c) => { c.innerHTML = `<h2 class="pf-titlu">Nu s-a putut întocmi registrul pe ${esc(String(an))}</h2><div class="dec-avert" role="alert"><p>${esc((eroare && (eroare.mesaj || eroare.message)) || "")}</p></div>`; } }], nav);
+        deschide: (c) => {
+          // [17.5-J, AC052] cauza serverului (RefuzGenerare / DateInvalide) și, când refuzul trimite la Import date, ieșirea spre el
+          const det = (eroare && eroare.detaliu && typeof eroare.detaliu === "object") ? eroare.detaliu : {};
+          c.innerHTML = `<h2 class="pf-titlu">Nu s-a putut întocmi registrul pe ${esc(String(an))}</h2><div class="dec-avert" role="alert"><p>${esc(det.mesaj || (eroare && (eroare.mesaj || eroare.message)) || "")}</p><div id="rf-refuz-iesire"></div></div>`;
+          if (det.ecran === "import_solduri") butonSpreEcran(c.querySelector("#rf-refuz-iesire"), det.ecran, nav, t.id, { clasa: "buton-secundar", inapoiLa: "Registrul de evidență fiscală" });
+        } }], nav);
       legaSelector();
       if (varianta === "profit") ajustari(corp.querySelector("#rf-ajustari"));
       return;
@@ -3210,7 +3221,7 @@ async function ecranRegistruFiscal(corp, nav, t) {
 
     corp.innerHTML = `
       <h2 class="pf-titlu">Registrul de eviden\u021b\u0103 fiscal\u0103</h2>
-      ${selector}
+      ${selector}${notaMicro}
       <div id="rf-carduri"></div>
       ${d.model_elidat ? (() => { const c = d.model_elidat; return `<p class="pf-intro"><small><b>Ce nu s-a putut cita:</b> din <b>${esc(c.act)}</b>, ${esc(c.unde)} — ${esc(c.ce_lipseste)} (${esc(c.cum_apare)}), căutată în ${esc(cate((c.fisiere_verificate || []).length, "fișier", "fișiere"))}, ${esc(cate(c.aparitii_in_fisier, "apariție", "apariții"))}. Conținutul de mai jos vine din ${esc(c.de_unde_vine_continutul)}.</small></p>`; })() : ""}
       ${corpHtml}`;

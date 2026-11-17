@@ -48,7 +48,7 @@ def test_clasificarea_acopera_cele_82_si_fiecare_are_motiv():
     # FISCAL; `pj-sel` EXISTENTA; `rg-mediu` NEFISCAL) — acum `selectScurt` / `selectDaNu` cu „— alege —” (mecanismul comun `data-butoane`),
     # cerute la salvare (`core/test_lot13_sal_alegeri.py`)
     # [lotul 13, 660] − 6 fapte fiscale ale formularelor D200 / D221 / D223, scoase (formulare înlocuite de Declarația unică)
-    assert clase[S.FISCAL] == 44 and clase[S.PRESELECTAT] == 10 and sum(clase.values()) == 76   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL)
+    assert clase[S.FISCAL] == 43 and clase[S.PRESELECTAT] == 11 and sum(clase.values()) == 76   # [17.10.2026, lotul 7] + `setari.js:not-canal` (NEFISCAL); [17.5-J, AC141] `declaratii.js:d301-valuta` FISCAL -> PRESELECTAT (43 / 11 / 76)
     assert all(len(m) > 40 for _c, m in S.CLASIFICARE.values())
     assert set(S.HELPERE) <= set(S.CLASIFICARE)
 
@@ -85,7 +85,7 @@ def test_CALIBRARE_select_fiscal_necerut_de_handler_e_prins():
 def test_preselectiile_permise_isi_scriu_criteriile():
     """DS cap.17 corectat: o preselecție e permisă numai cu (a) uzual/dedus, (b) vizibil, (c) schimbabil — scrise în motiv."""
     pres = {k: m for k, (c, m) in S.CLASIFICARE.items() if c == S.PRESELECTAT}
-    assert sorted(pres) == ["date_firma.js:vf-tva_incasare", "declaratii.js:d318-drec", "emitere_ecran.js:em-moneda", "emitere_ecran.js:em-tara", "emitere_ecran.js:em-tip",
+    assert sorted(pres) == ["date_firma.js:vf-tva_incasare", "declaratii.js:d301-valuta", "declaratii.js:d318-drec", "emitere_ecran.js:em-moneda", "emitere_ecran.js:em-tara", "emitere_ecran.js:em-tip",
                             "emitere_ecran.js:em-tipop", "facturi_ecran.js:fr-moneda", "facturi_ecran.js:fr-tara", "facturi_ecran.js:pm-moneda",
                             "facturi_ecran.js:pr-dest"]
     assert [k for k, m in pres.items() if not all(x in m for x in ("(a)", "(b)", "(c)"))] == []

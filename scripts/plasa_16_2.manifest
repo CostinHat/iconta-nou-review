@@ -22,3 +22,4 @@ frontend_test/e2e/e2e_pilot_17_5_S.py	bb8262d109cf85a80f9987620f25e90f3e8eeebc50
 frontend_test/e2e/e2e_texte_17_5_I.py	ac917ca6907e3778b267b9609a16deb5fe6c77ade1e946f4f9d532c16df3d089	1	python -m pytest -q frontend_test/e2e/e2e_texte_17_5_I.py
 frontend_test/e2e/e2e_pilot_17_5_X.py	f0b4fdcfc4f3efce715afcc97008ff1750221888f5fafe83c340696b97874ff0	1	python -m pytest -q frontend_test/e2e/e2e_pilot_17_5_X.py
 frontend_test/e2e/e2e_cursa_luna_17_5_X2.py	9828104468af9ba1369da4f4111f2b26e93d68a07782ad811c872e59be5d0a9f	1	python -m pytest -q frontend_test/e2e/e2e_cursa_luna_17_5_X2.py
+frontend_test/e2e/e2e_declaratii_17_5_J.py	dba22536fa8d84d17eab6e360c8ef99fdc3b450c9c6ae5fd20e7ae10217bcd05	1	python -m pytest -q frontend_test/e2e/e2e_declaratii_17_5_J.py

@@ -1,0 +1,1 @@
+teste atinse rulate local (pytest țintit): core/test_17_5_J.py (10), core/test_selecturi_ecrane.py, core/test_ancore_rute.py, core/test_fara_functii_noi.py, core/test_control_fiscal.py, core/test_300_301_datorate.py, core/test_p7_uc.py (restanța de bază NICIUN_APEL rămâne), core/test_registru_evidenta_fiscala.py, core/test_registru_fiscal_conexiune.py, core/test_deficiente.py

@@ -23,3 +23,9 @@ def select_d301_operatiuni(cur, an, luna):
     cur.execute("SELECT tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva "
                 "FROM d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
     return cur.fetchall()
+
+
+def select_facturi_legate(cur):
+    """[17.5-J, AC139] Facturile care au deja o operațiune D301 legată (`d301_operatiuni.factura_id`): achiziția lor e în declarație."""
+    cur.execute("SELECT DISTINCT factura_id FROM d301_operatiuni WHERE factura_id IS NOT NULL")
+    return cur.fetchall()

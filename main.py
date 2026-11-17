@@ -3641,6 +3641,14 @@ def cm_lista(tenant_id: int, salariat_id: int, an: int = None, ctx=Depends(cere_
         raise _http_din(e)
 
 
+@app.get("/tenants/{tenant_id}/salariati/{salariat_id}/baza-cm")  # [17.5-J, AC109] baza de calcul propusă din statele de plată
+def cm_baza_propusa(tenant_id: int, salariat_id: int, data_inceput: str = "", ctx=Depends(cere_cabinet)):
+    try:
+        return _uc_tenants.cm_baza_propusa(tenant_id, salariat_id, data_inceput, ctx)
+    except _erori.EroareDeDomeniu as e:
+        raise _http_din(e)
+
+
 @app.post("/tenants/{tenant_id}/salariati/{salariat_id}/concedii")  # cm_salveaza_v1
 def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),                 ctx=Depends(cere_drept(_drepturi.PREGATI))):
     try:

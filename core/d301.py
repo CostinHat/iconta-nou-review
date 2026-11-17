@@ -400,6 +400,12 @@ def genereaza(conn, schema, perioada, manual=None):
         # [lotul 12, C163] și serviciile primite din UE (CF art.307 alin.(2), art.324 alin.(1) lit.d) — aceeași sursă ca calendarul D301
         # (`control_incrucisat.d301_luni_facturi_ic`): o lună datorată în calendar nu se mai poate genera „pe zero” fără să le numească
         _ic_prim = _fic(conn, schema, _prima, _urm, cu_servicii=True).get("primita", [])
+        # [17.5-J, AC139] numai facturile FĂRĂ operațiune D301 legată (`d301_operatiuni.factura_id` = id factură): cele legate sunt deja în declarație,
+        # deci nu cer „asigură-te că sunt reflectate”; avertismentul se păstrează (cu N corect) numai pentru cele nelegate
+        import psycopg2.extras as _E2
+        with conn.cursor(cursor_factory=_E2.RealDictCursor) as _cur:
+            _legate = {int(r["factura_id"]) for r in _repo.select_facturi_legate(_cur)}
+        _ic_prim = [f for f in _ic_prim if f.get("id") not in _legate]
     except Exception:
         _ic_prim = []
     if not ops:

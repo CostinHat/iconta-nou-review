@@ -113,6 +113,12 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa, preset = null) {
       S.presetPerioada = true;
     }
     if (S.tenant_id) await incarcaTipuri(S.tenant_id);   // [G1] firma fixa -> tipurile+neaplicabile ale ei
+    // [17.5-J, AC129] tip dat FĂRĂ perioadă (căutarea globală, cardul firmei): perioada implicită e cea mai apropiată scadentă și nedepusă, altfel
+    // ultima încheiată (aceeași `perioadaImplicita` ca la alegerea tipului din listă); un preset cu perioadă (din „De depus”) rămâne cum e
+    if (preset && S.presetPerioada && S.tip && !preset.an && !preset.luna && !preset.trim) {
+      const pi = perioadaImplicita(S.tip);
+      S.an = pi.an; S.luna = pi.luna; S.trim = Math.ceil(pi.luna / 3);
+    }
     // [324] tipul dat e ales în listă: în grupa „Datorate” dacă perioada lui e acolo, altfel între celelalte
     if (S.presetPerioada) S.lunaDatorata = (S.datorate || []).some((d) => d.tip === S.tip && d.an === S.an && d.luna === S.luna) ? S.luna : null;
   } catch {
@@ -198,6 +204,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
         <span class="camp-eticheta">Tip declarație <span class="oblig">*</span> <span id="dec-ajutor"></span></span>
         <select id="dec-tip" class="camp-input">${optiuniTip()}</select>
       </label>
+      <div id="dec-de-lamurit"></div>   <!-- [17.5-J, AC137] motivul „de lămurit” al tipului ales, cu ieșirea spre Date firmă -->
       <div id="dec-perioada">${randPerioada(per)}</div>
     </div>
     <div id="dec-existente"></div>
@@ -246,6 +253,16 @@ ${S.firmaFixa ? "" : `      <label class="camp">
     legPerioada(zonaP);
     cont.disabled = !(S.tenant_id && S.tip);
     cont.title = cont.disabled ? "Completează: Tip declarație" : "";
+    // [17.5-J, AC137] tip „de lămurit” (D398 fără răspuns OSS): motivul și, lângă el, butonul secundar spre Date firmă; „Continuă →” rămâne activ
+    const _zl = corp.querySelector("#dec-de-lamurit");
+    if (_zl) {
+      _zl.innerHTML = "";
+      const motiv = S.tip && S.deLamurit ? S.deLamurit[S.tip] : "";
+      if (motiv) {
+        const pm = document.createElement("p"); pm.className = "ecran-nota"; pm.textContent = motiv; _zl.appendChild(pm);
+        butonSpreEcran(_zl, "date_firma", nav, S.tenant_id, { clasa: "buton-secundar", inapoiLa: "Declarații" });
+      }
+    }
     const _za = corp.querySelector("#dec-ajutor");  // [ajutor] "?" urmareste tipul ales
     if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? semnAjutor(_DECL_AJUTOR[S.tip]) : "";
   }
@@ -769,8 +786,8 @@ async function randeazaOperatiuniD301(corp, nav) {
         <select id="d301-temei307" class="camp-input"><option value="">— alege alineatul —</option>${(d.temeiuri_307 || []).map((tm) => `<option value="${tm.val}">${esc(tm.eticheta)}</option>`).join("")}</select></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Nr. document <span class="oblig">*</span></span><input id="d301-nrdoc" class="camp-input"></label>
       <label class="camp" style="width:130px"><span class="camp-eticheta">Data document <span class="oblig">*</span></span><input id="d301-datadoc" class="camp-input" placeholder="ZZ.LL.AAAA"></label>
-      <label class="camp" style="width:90px"><span class="camp-eticheta">Valută <span class="oblig">*</span></span>
-        <select id="d301-valuta" class="camp-input">${ALEGE}${valute.map((v) => `<option value="${v}">${v}</option>`).join("")}</select></label>
+      <label class="camp" style="width:130px"><span class="camp-eticheta">Valută <span class="oblig">*</span></span>
+        <select id="d301-valuta" class="camp-input">${valute.map((v, i) => `<option value="${v}"${i === 0 ? " selected" : ""}>${v}</option>`).join("")}</select></label>   <!-- [17.5-J, AC141] EUR preselectat (uzual, vizibil, editabil) -->
       <label class="camp" style="width:110px"><span class="camp-eticheta">Val. valută <span class="oblig">*</span></span><input id="d301-val" type="number" step="0.01" class="camp-input"></label>
       <label class="camp" style="width:100px"><span class="camp-eticheta">Curs <span class="oblig">*</span></span><input id="d301-curs" type="number" step="0.0001" class="camp-input"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Cotă TVA <span class="oblig">*</span></span>
@@ -813,7 +830,7 @@ async function randeazaOperatiuniD301(corp, nav) {
       partener_den: gv("#d301-partener_den").value.trim(),
       temei_307: (gv("#d301-tip").value === "4" && gv("#d301-temei307")) ? gv("#d301-temei307").value : "" };
     curataEroriCamp(zona);  // [G10] eroare langa camp
-    if (cereAlegerile(zona, ["#d301-tip", "#d301-valuta", "#d301-cota"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
+    if (cereAlegerile(zona, ["#d301-tip", "#d301-cota"])) return;   // [FAPT_FISCAL_NECERUT] fără alegere nu se trimite
     try { const _r = await api.post(`/tenants/${S.tenant_id}/d301-operatiuni`, b); _panouModificat(corp); await randeazaOperatiuniD301(corp, nav); if (_r && _r.avertisment) arataMesaj(gv("#d301-msg"), _r.avertisment, "atentionare"); }
     catch (e) {
       curataEroriCamp(zona);
@@ -2001,6 +2018,8 @@ function randeazaFormularD104(corp, nav) {
         '<button class="btn-link dec-d104-del" data-idx="' + i + '">șterge</button></div>').join("")
     : '<div class="stare-goala stare-goala--inline">Niciun asociat. Adaugă fiecare asociat cu cota și sumele de distribuit.</div>';
   zona.innerHTML = '<details class="dec-xml" open data-formular><summary>Distribuire venituri/cheltuieli pe asociați (' + cate(aso.length, "asociat", "asociați") + " · " + (defin ? "definitivare an" : "trimestrial cumulat") + ")</summary>" +
+    // [17.5-J, AC130] cine depune D104; numai o notă (D104 nu se marchează neaplicabilă la SRL, iar identitatea nu se precompletează)
+    '<p class="ecran-nota" id="d104-nota-asociere">D104 se depune de asociatul desemnat al unei asocieri fără personalitate juridică, în numele asocierii. Completează numai dacă firma are această calitate.</p>' +
     '<div class="camp-eticheta" style="margin:2px 0 4px">Declarantul (reprezentantul asocierii)</div>' +
     '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:8px">' +
       '<label class="camp" style="flex:1 1 150px"><span class="camp-eticheta">Nume <span class="oblig">*</span></span><input id="d104-dnume" type="text" class="camp-input" value="' + esc(d.declarant_nume || "") + '"></label>' +
@@ -2087,6 +2106,12 @@ function randeazaFormularD114(corp, nav) {
   const zona = corp.querySelector("#dec-d114-form");
   if (!zona) return;
   const d = S.d114;
+  // [17.5-J, AC134] declarantul (CIF, denumire, adresă) vine din Date firmă, numai în câmpurile GOALE: o valoare salvată sau tastată nu se suprascrie
+  const _fd = S.firmaDate || {};
+  const _pune114 = (k, v) => { if (!String(d[k] == null ? "" : d[k]).trim() && v) d[k] = v; };
+  _pune114("cif_declarant", String(_fd.cui || "").replace(/\s+/g, ""));
+  _pune114("den_declarant", _fd.nume);
+  _pune114("adresa_declarant", [_fd.adresa, _fd.oras, _fd.judet].filter(Boolean).join(", "));
   const ct = d.contracte || [];
   let tVen = 0, tCam = 0;
   ct.forEach((c) => { const v = Math.round(_n(c.venit_lucrator) || 0); tVen += v; tCam += Math.round(v / 100); });

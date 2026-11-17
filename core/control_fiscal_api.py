@@ -292,6 +292,11 @@ def neaplicabile_selector(vector, *, ic_fapt=None):
                                 "veniturile microîntreprinderilor, iar D101 e declarația impozitului pe "
                                 "profit. Dacă firma a ieșit din regimul micro, corectează Regimul fiscal "
                                 "la Date firmă.")
+        # [17.5-J, AC135] D177 e redirecționarea impozitului pe PROFIT: aceeași sursă de aplicabilitate, lângă D101
+        neap.setdefault("d177", "D177 nu se datorează — Regimul fiscal declară firma pe micro, iar D177 e "
+                                "redirecționarea impozitului pe profit (redirecționarea de la micro e abrogată "
+                                "din 2024, art. 56 alin. (2^5)). Dacă firma a ieșit din regimul micro, corectează "
+                                "Regimul fiscal la Date firmă.")
     if platitor is False:
         neap.setdefault("d300", "D300 nu se datorează — firma nu e înregistrată în scopuri de TVA (art. 316).")
         neap.setdefault("d394", "D394 nu se datorează — firma nu e plătitoare de TVA.")

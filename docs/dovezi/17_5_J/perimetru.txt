@@ -1,0 +1,42 @@
+ DECIZII.md                                 |   4 +
+ DEFICIENTE.md                              |   1 +
+ PREDARE_LANT.md                            |   3 +
+ core/control_fiscal_api.py                 |   5 +
+ core/d301.py                               |   6 +
+ core/d301_operatiuni_api.py                |   2 +-
+ core/repo_d301.py                          |   6 +
+ core/salariati_api.py                      |  24 ++
+ core/test_17_5_J.py                        | 172 +++++++++++
+ core/test_fara_functii_noi.py              |   2 +
+ core/test_p7_uc.py                         |   6 +-
+ core/test_selecturi_ecrane.py              |   4 +-
+ core/uc_tenants.py                         |  65 +++-
+ frontend_test/e2e/e2e_declaratii_17_5_J.py | 479 +++++++++++++++++++++++++++++
+ main.py                                    |   8 +
+ scripts/plasa_16_2.manifest                |   1 +
+ scripts/praguri_17_5_J.txt                 |  45 +++
+ scripts/scan_selecturi_ecrane.py           |   3 +-
+ static/js/cautare.js                       |   4 +-
+ static/js/ecrane/asistent.js               |   4 +-
+ static/js/ecrane/borderou_ecran.js         |   2 +-
+ static/js/ecrane/cabinet.js                |   2 +-
+ static/js/ecrane/coada_trimite.js          |   2 +-
+ static/js/ecrane/control_verdict.js        |   2 +-
+ static/js/ecrane/declaratii.js             |  31 +-
+ static/js/ecrane/ecran_destinatie.js       |   2 +-
+ static/js/ecrane/facturi_ecran.js          |   4 +-
+ static/js/ecrane/firme.js                  |  21 +-
+ static/js/ecrane/flux_concediu.js          |  37 +++
+ static/js/ecrane/inceput.js                |   2 +-
+ static/js/ecrane/migrare.js                |   2 +-
+ static/js/ecrane/operatiuni_ecran.js       |   2 +-
+ static/js/ecrane/termene.js                |   2 +-
+ static/js/ecrane/validat.js                |   4 +-
+ static/js/navigator.js                     |   2 +-
+ 35 files changed, 920 insertions(+), 41 deletions(-)
++    cur.execute("SELECT DISTINCT factura_id FROM d301_operatiuni WHERE factura_id IS NOT NULL")
++        cur.execute("SELECT tip_firma, regim_fiscal FROM firma_profil LIMIT 1")
++@app.get("/tenants/{tenant_id}/salariati/{salariat_id}/baza-cm")  # [17.5-J, AC109] baza de calcul propusă din statele de plată
++        butonSpreEcran(_zl, "date_firma", nav, S.tenant_id, { clasa: "buton-secundar", inapoiLa: "Declarații" });
++          if (det.ecran === "import_solduri") butonSpreEcran(c.querySelector("#rf-refuz-iesire"), det.ecran, nav, t.id, { clasa: "buton-secundar", inapoiLa: "Registrul de evidență fiscală" });
++      try { r = await api.get(`/tenants/${t.id}/salariati/${sal.id}/baza-cm?data_inceput=${di}`); } catch { return; }

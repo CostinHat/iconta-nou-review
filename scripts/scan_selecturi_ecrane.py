@@ -50,7 +50,8 @@ CLASIFICARE = {
     "declaratii.js:dec-recl": (EXISTENTA, "arată clasificarea CURENTĂ a operațiunii D390 (calculată din date); schimbarea se salvează pe loc, nu e un implicit"),
     "declaratii.js:man-tip": (FISCAL, "tipul rândului manual D390 (A/P/S/T/R) — " + _D),
     "declaratii.js:d301-tip": (FISCAL, "tipul operațiunii D301 — " + _D),
-    "declaratii.js:d301-valuta": (FISCAL, "valuta operațiunii D301 (venea „EUR”) — " + _D),
+    "declaratii.js:d301-valuta": (PRESELECTAT, "(a) uzual: în operațiunile D301 valuta curentă e EUR (primul în listă, apoi RON); (b) vizibil în rândul „Adaugă operațiune”, pe un singur rând; "
+                                               "(c) editabil — valuta se schimbă din listă, iar baza și TVA se recalculează pe ea"),
     "declaratii.js:d301-cota": (FISCAL, "cota TVA a operațiunii D301 — baza și TVA declarate"),
     "declaratii.js:d710-cod": (FISCAL, "codul obligației rectificate D710 — " + _D),
     "declaratii.js:d307-tip": (FISCAL, "tipul operațiunii D307 — " + _D),

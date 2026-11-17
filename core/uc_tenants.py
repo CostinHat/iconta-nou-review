@@ -1438,6 +1438,24 @@ def cm_lista(tenant_id, salariat_id, an, ctx):
         return {"concedii": salariati_api.lista_concedii(conn, salariat_id, an)}
 
 
+def cm_baza_propusa(tenant_id, salariat_id, data_inceput, ctx):
+    """[17.5-J, AC109 · use-case] Corpul rutei `GET /tenants/{tenant_id}/salariati/{salariat_id}/baza-cm`: baza de calcul propusă la data de început
+    (`salariati_api.baza_cm_propusa`). Conexiunea o deține use-case-ul; fără state de plată pe cele 6 luni, `{"propus": false}`."""
+    import datetime as _dt
+    schema = _uc_comun._schema_sau_404(ctx, tenant_id)
+    try:
+        di = _dt.date.fromisoformat(str(data_inceput or "")[:10])
+    except ValueError:
+        raise _erori.DateInvalide("Data de început trebuie să fie o dată valabilă (AAAA-LL-ZZ).")
+    _uc_comun._cere_perioada(di.year, di.month)
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            if not repo_salariati.salariatul_exista_2(cur, salariat_id):
+                raise _erori.Inexistent("salariat inexistent")
+        r = salariati_api.baza_cm_propusa(conn, schema, salariat_id, di)
+    return {"propus": False} if r is None else dict(r, propus=True)
+
+
 def cm_salveaza(tenant_id, salariat_id, corp, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/salariati/{salariat_id}/concedii`; docstringul ei a ramas in stratul HTTP."""
     schema = _uc_comun._schema_sau_404(ctx, tenant_id)
@@ -2449,6 +2467,7 @@ def registru_fiscal_citeste(tenant_id, an, varianta, totalizare, ctx):
     """[P7 · use-case] Corpul rutei `/tenants/{tenant_id}/registru-evidenta-fiscala`; docstringul ei a ramas in stratul HTTP."""
     _uc_comun._cere_perioada(an=an)
     from core import registru_evidenta_fiscala as _ref
+    from core.erori import RefuzGenerare
     if varianta not in _ref.VARIANTE:
         raise _erori.Inexistent("variantă necunoscută: %r" % varianta)
     with db.get_conn() as conn:
@@ -2461,16 +2480,44 @@ def registru_fiscal_citeste(tenant_id, an, varianta, totalizare, ctx):
     # `d101.genereaza`, care citește tabelele firmei fără schemă în nume: cere conexiunea FIRMEI (`get_conn(schema)`), nu pe cea publică
     # (care își resetează `search_path`). Refuzul generatorului (date de firmă lipsă) e al datelor, nu o cădere: 422, ca la S1005.
     with db.get_conn(schema) as conn:
+        # [17.5-J, AC053] regimul efectiv al firmei (citire suplimentară a profilului, în conexiunea firmei): ecranul spune pe ce impozit e firma
+        # când registrul calculează pe profit; se transmite și pe ramurile de refuz, ca nota să stea înaintea cardului de eroare
+        regim = _regim_efectiv_firma(conn)
         try:
-            return _ref.registru_profit(conn, schema, an, totalizare)
-        except _ref.RegistruNeconstruibil:   # întâi: e și ea un ValueError
-            # 409, nu 400: cererea e legitimă, iar refuzul nu e al ei — e al nostru, și poartă de ce.
-            # Corpul e o AFIRMAȚIE tipată, nu un dicționar de proză (decizia din 21.08): e o
-            # afirmație despre datele firmei, iar `verificare_rupta` o ține să nu fie citită ca un
-            # verdict gri permanent — „nu se poate pe trimestru", nu „nu există pe trimestru".
-            raise _erori.Conflict(_ref.refuz_totalizare(an, totalizare))
-        except ValueError as e:
-            raise _erori.DateInvalide(str(e))
+            try:
+                rez = _ref.registru_profit(conn, schema, an, totalizare)
+            except _ref.RegistruNeconstruibil:   # întâi: e și ea un ValueError
+                # 409, nu 400: cererea e legitimă, iar refuzul nu e al ei — e al nostru, și poartă de ce.
+                # Corpul e o AFIRMAȚIE tipată, nu un dicționar de proză (decizia din 21.08): e o
+                # afirmație despre datele firmei, iar `verificare_rupta` o ține să nu fie citită ca un
+                # verdict gri permanent — „nu se poate pe trimestru", nu „nu există pe trimestru".
+                raise _erori.Conflict(_ref.refuz_totalizare(an, totalizare))
+            except ValueError as e:   # [17.5-J, AC052] refuzul cu trimitere (`RefuzGenerare`) ajunge la ecran ca obiect, celelalte ca text (tiparul din declarații)
+                raise _erori.DateInvalide(e.detaliu() if isinstance(e, RefuzGenerare) else str(e))
+        except _erori.EroareDeDomeniu as e:
+            e.detaliu = _cu_regim(e.detaliu, regim)   # [17.5-J, AC053] regimul efectiv pleacă și cu refuzul (detaliul rămâne, un text devine {mesaj})
+            raise
+    if isinstance(rez, dict):
+        rez = dict(rez, regim_efectiv=regim)
+    return rez
+
+
+def _regim_efectiv_firma(conn):
+    """[17.5-J, AC053] `migrare_api.regim_efectiv` pe profilul firmei: 'micro' | 'profit' | None (necompletat / partidă simplă)."""
+    from core import migrare_api as _mig
+    with conn.cursor() as cur:
+        cur.execute("SELECT tip_firma, regim_fiscal FROM firma_profil LIMIT 1")
+        r = cur.fetchone()
+    if not r:
+        return None
+    return _mig.regim_efectiv({"tip_firma": r[0], "regim_fiscal": r[1]})
+
+
+def _cu_regim(detaliu, regim):
+    """[17.5-J, AC053] Detaliul refuzului păstrat ca atare, cu `regim_efectiv` adăugat; un text devine {mesaj} (ecranul citește `detaliu.mesaj`)."""
+    d = dict(detaliu) if isinstance(detaliu, dict) else {"mesaj": detaliu}
+    d["regim_efectiv"] = regim
+    return d
 
 
 def _schema_firmei(conn, tenant_id, ctx):

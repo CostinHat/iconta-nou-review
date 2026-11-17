@@ -119,6 +119,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <div class="camp"><span class="camp-eticheta">Spitalizare (prima zi se plătește)<span class="oblig">*</span></span>${selectDaNu('id="cm-spital"', null, "Spitalizare")}</div>
           <div class="camp"><span class="camp-eticheta">Pacient în program național de sănătate (D112 D_9a)<span class="oblig">*</span></span>${selectDaNu('id="cm-program-national"', null, "Pacient în program național de sănătate")}</div>
         </div>
+        <p class="camp-ajutor" id="cm-baza-propusa" role="status"></p>   <!-- [17.5-J, AC109] propunerea bazei din statele de plată -->
         <div class="bara-fixa"><p style="margin-top:14px">
           <button class="buton-primar" id="cm-calc" data-actiune="POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii">Calculeaz\u0103 \u0219i salveaz\u0103</button>
           <button class="buton-secundar" id="cm-renunta" style="margin-left:10px">Renun\u021b\u0103</button>
@@ -209,6 +210,40 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     if (ciorna.refacuta) recalcZile();
     ciorna.gata.then((deLaServer) => { if (deLaServer && zona.isConnected) recalcZile(); });
 
+    // [17.5-J, AC109] baza de calcul PROPUSĂ din statele de plată ale celor 6 luni încheiate dinaintea datei de început (serverul, `core/baza_cm.py`).
+    // Se scrie numai în câmpurile încă goale sau cu propunerea ecranului (nu peste cifra omului); defalcarea lunară se trimite la salvare numai
+    // cât timp AMBELE câmpuri au încă valorile propuse (altfel calea veche: venit și zile pe sumă). Raspunsul depășit nu se scrie (mecanismul unic).
+    const cerereBaza = ultimaCerere();
+    const inpVen6 = zona.querySelector("#cm-ven6");
+    const inpZile6 = zona.querySelector("#cm-zile6");
+    const mesajBaza = zona.querySelector("#cm-baza-propusa");
+    let bazaPropusa = null;   // {txtVen, txtZile, venituri_lunare} cât timp propunerea e în câmpuri
+    let venPropus = null, zilePropuse = null;   // textele scrise de ecran
+    const lunaRo = (iso) => dataRo(iso, "luna_an");
+    const interval = (a, b) => (a.slice(0, 4) === b.slice(0, 4) ? `${lunaRo(a).split(" ")[0]}\u2013${lunaRo(b)}` : `${lunaRo(a)}\u2013${lunaRo(b)}`);
+    const nemodificat = (inp, propus) => { const v = (inp.value || "").trim(); return v === "" || v === propus; };
+    const propuneBaza = async () => {
+      const di = zona.querySelector("#cm-inceput").value;
+      const actuala = cerereBaza();
+      if (!di) return;
+      let r;
+      try { r = await api.get(`/tenants/${t.id}/salariati/${sal.id}/baza-cm?data_inceput=${di}`); } catch { return; }
+      if (!actuala() || !r) return;
+      if (!nemodificat(inpVen6, venPropus) || !nemodificat(inpZile6, zilePropuse)) { bazaPropusa = null; return; }   // valoarea omului rămâne
+      if (!r.propus) {
+        inpVen6.value = ""; inpZile6.value = ""; venPropus = zilePropuse = null; bazaPropusa = null;
+        arataMesaj(mesajBaza, "Nu există state de plată pentru cele 6 luni; introdu baza de mână.", "avert");
+        return;
+      }
+      venPropus = bani(r.venit); zilePropuse = String(r.zile);
+      inpVen6.value = venPropus; inpZile6.value = zilePropuse;
+      bazaPropusa = { venituri_lunare: r.venituri_lunare };
+      arataMesaj(mesajBaza, `Propus din statele de plată: ${bani(r.venit)} lei brut, ${cate(r.zile, "zi lucrătoare", "zile lucrătoare")} (${interval(r.prima_luna, r.ultima_luna)}). Poți modifica.`, "info");
+    };
+    zona.querySelector("#cm-inceput").addEventListener("change", propuneBaza);
+    if (ciorna.refacuta) propuneBaza();
+    ciorna.gata.then((deLaServer) => { if (deLaServer && zona.isConnected) propuneBaza(); });
+
     zona.querySelector("#cm-calc").addEventListener("click", async () => {
       const rez = zona.querySelector("#cm-rezultat");
       rez.innerHTML = "";
@@ -270,6 +305,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         an: inc.getFullYear(),
         luna: inc.getMonth() + 1,
       };
+      // [17.5-J, AC109] valorile propuse, neatinse: defalcarea lunară (plafonul lunar se aplică pe ea); orice câmp modificat sau șters = calea veche
+      if (bazaPropusa && (inpVen6.value || "").trim() === venPropus && (inpZile6.value || "").trim() === zilePropuse) payload.venituri_lunare = bazaPropusa.venituri_lunare;
       const btn = corp.querySelector("#cm-calc");
       // [C102.1] zilele peste cele lucrătoare ale intervalului: serverul nu salvează, întreabă (`cod` CONFIRMA_ZILE_PESTE_INTERVAL);
       // întrebarea stă lângă buton, iar „Salvează cu N zile” retrimite certificatul cu confirmarea

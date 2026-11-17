@@ -2,6 +2,9 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-J (produs, 17.11.2026) — zece corecții din auditul pe ecran (AC052, AC053, AC109, AC129, AC130, AC134, AC135, AC137, AC139, AC141); ramura `lucru/lot17-5j` (worktree `~/iconta_lot17_5j`), bază main aabc1f31 (17.5-X8)
+- P_J (5b522df4): baza.json, oracolul J (14 aserțiuni), praguri, parcurgerea «inainte» (f.* trec, a.* pică din motivul AC). C_J: codul zece corecții + `core/test_17_5_J.py` + `frontend_test/e2e/e2e_declaratii_17_5_J.py` (în plasa fixă) + ruta GET `.../salariati/{id}/baza-cm` (AC109 = 803). Starea publicării: `~/lot_17_5_J_raport.md`.
+
 ## LOTUL 17.5-X3 (produs, 16.11.2026) — continuă 17.5-X2 pe codul din S (`00f1de33`); punctele P1–P5, P8, P9; ramura `lucru/lot17-5x3` (worktree `~/iconta_lot17_5x3`), bază main 846960cb
 - Cod = S + două teste adaptate (`core/test_rosu_termen_depasit.py`, `core/test_p2_infrastructura.py`), nicio schimbare de produs. Cauza opririi lui 17.5-X2: limita de 150 de minute a bancului (a arhitectului). Starea publicării: `~/lot_17_5_X3_raport.md`.
 

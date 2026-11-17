@@ -679,6 +679,30 @@ def sterge_salariat(conn, salariat_id):
 # ============================================================
 #  CONCEDII MEDICALE — calcul (calcul_cm + taxe_cm) + salvare
 # ============================================================
+def baza_cm_propusa(conn, schema, salariat_id, data_inceput):
+    """[17.5-J, AC109] Baza de calcul PROPUSĂ pentru un certificat nou: cele 6 luni calendaristice ÎNCHEIATE dinaintea lunii datei de început,
+    prin logica unică din `core/baza_cm.py` (`luni_anterioare` -> `culege`, statele EMISE întâi, recalcul pentru lunile neemise -> `aduna`).
+    Citire pură, fără logică paralelă. Întoarce {venit, zile, luni (prima, ultima), venituri_lunare: [[venit, zile, "AAAA-LL-01"], ...],
+    surse: [{luna, sursa: "emisa" | "recalculata"}], temei} sau None când nicio lună nu are date (nici emisă, nici recalculată)."""
+    from decimal import Decimal
+    from core import baza_cm as _bcm
+    from core import scadente as _scad
+    luni = _bcm.luni_anterioare(data_inceput.year, data_inceput.month)
+    emise, recalc = _bcm.culege(conn, schema, salariat_id, luni)
+    total = _bcm.aduna(luni, emise, recalc, _scad.zile_lucratoare_luna)   # totalurile canonice
+    if not total["nr_luni"]:
+        return None
+    lunar, surse = [], []
+    for luna in luni:
+        un = _bcm.aduna([luna], emise, recalc, _scad.zile_lucratoare_luna)   # aceeași funcție, pe o singură lună: defalcarea însumează la total
+        if not un["nr_luni"]:
+            continue
+        lunar.append([str(Decimal(str(un["venituri"])).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)), int(un["zile"]), "%04d-%02d-01" % luna])
+        surse.append({"luna": "%04d-%02d" % luna, "sursa": "emisa" if un["luni_emise"] else "recalculata"})
+    return {"venit": str(Decimal(str(total["venituri"])).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)), "zile": int(total["zile"]),
+            "prima_luna": lunar[0][2], "ultima_luna": lunar[-1][2], "venituri_lunare": lunar, "surse": surse, "temei": total["temei"]}
+
+
 def lista_concedii(conn, salariat_id, an=None):
     """Concediile medicale ale unui salariat, optional filtrate pe an. Desc dupa data inceput."""
     with conn.cursor() as cur:
