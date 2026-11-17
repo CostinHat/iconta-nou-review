@@ -237,3 +237,4 @@ core/test_stergere_salariat_completa.py
 core/test_tva_incasare.py
 core/test_tva_incasare_291_5.py
 core/test_vector_platitor_tva_oblig.py
+core/test_verificator_design_17_5_Z.py

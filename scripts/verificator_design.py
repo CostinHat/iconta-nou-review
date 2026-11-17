@@ -15,12 +15,18 @@ identice). Un singur rând PICĂ = ecranul e nemigrat.
                                                            deschide ecranul ca un contabil, scrie `<director>/<slug>_<LAT>x<INALT>.png` și `.json`
                                                            (măsurătorile și verdictul mecanic pe rândurile a–h) și le tipărește
 """
+import contextlib
+import fcntl
 import json
 import os
 import re
+import select
+import shutil
 import signal
+import stat
 import subprocess
 import sys
+import threading
 import time
 import unicodedata
 
@@ -77,6 +83,44 @@ EXCEPTII_B = {"Sinteza zilei": "stare", "Supervizor": "stare", "Declarații lucr
 
 
 # ── serverul de lucru ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+#: [17.5-Z] Lacătul serverului de lucru: UN singur fișier pentru toate worktree-urile, ținut (flock) pe toată durata `porneste` / `opreste` / `elibereaza_port`; reentrant în același proces.
+LACAT_VD = os.path.expanduser("~/.iconta/lacat_verificator_design")
+LACAT_ASTEAPTA = 60                      # secunde de așteptare a lacătului ținut de altă operație, apoi refuz
+MARCAJ_TEMP = ".proprietar_verificator_design"
+_LACAT_FIR = threading.RLock()
+_LACAT_STARE = {"adancime": 0, "fd": None}
+
+
+class Refuz(Exception):
+    """Un refuz al uneltei: rc nenul, ZERO semnale și ZERO ștergeri dincolo de ce s-a făcut deja."""
+
+
+@contextlib.contextmanager
+def _lacat():
+    with _LACAT_FIR:
+        if _LACAT_STARE["adancime"] == 0:
+            os.makedirs(os.path.dirname(LACAT_VD), exist_ok=True)
+            fd = os.open(LACAT_VD, os.O_RDWR | os.O_CREAT, 0o600)
+            for incercare in range(int(LACAT_ASTEAPTA * 2) + 1):
+                try:
+                    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    break
+                except OSError:
+                    if incercare >= int(LACAT_ASTEAPTA * 2):
+                        os.close(fd)
+                        raise Refuz("lacătul serverului de lucru e ținut de altă operație (%s)" % LACAT_VD)
+                    time.sleep(0.5)
+            _LACAT_STARE["fd"] = fd
+        _LACAT_STARE["adancime"] += 1
+        try:
+            yield
+        finally:
+            _LACAT_STARE["adancime"] -= 1
+            if _LACAT_STARE["adancime"] == 0:
+                fd, _LACAT_STARE["fd"] = _LACAT_STARE["fd"], None
+                os.close(fd)                 # închiderea eliberează flock
+
+
 def _raspunde(port=None):
     import urllib.request
     try:
@@ -85,10 +129,48 @@ def _raspunde(port=None):
         return False
 
 
-# [17.5-U, U.1] 8019 eliberat sau refuzat cu numele procesului. „Ocupat” = portul apare în LISTEN în `ss -ltn` (nu răspunsul HTTP): un server care nu răspunde încă ține portul la fel.
+# [17.5-Z, §2.2] Sonda portului e FAIL-CLOSED: „liber” numai dintr-un `ss` reușit, cu ieșire întreagă și interpretabilă; orice altceva e „necunoscut”.
+def _rul_ss(port, cu_procese):
+    """-> (rc, stdout, stderr) al lui `ss`; (None, "", motiv) dacă nu se poate rula."""
+    try:
+        r = subprocess.run(["ss", "-ltnp" if cu_procese else "-ltn", "( sport = :%d )" % port], capture_output=True, text=True, timeout=20)
+    except (OSError, subprocess.SubprocessError) as e:
+        return None, "", "%s: %s" % (type(e).__name__, e)
+    return r.returncode, r.stdout, r.stderr
+
+
+def _parseaza_ss(port, rc, out, err):
+    """-> (stare, pids, motiv): stare «liber» | «ocupat» | «necunoscut»; `pids` = lista pid-urilor vizibile (None pentru un proprietar invizibil)."""
+    if rc is None:
+        return "necunoscut", [], "ss n-a putut rula (%s)" % err.strip()[:150]
+    if rc != 0:
+        return "necunoscut", [], "ss a ieșit cu codul %s (%s)" % (rc, err.strip()[:150])
+    if err.strip():
+        return "necunoscut", [], "ss a scris pe stderr: %s" % err.strip()[:150]
+    linii = [ln for ln in out.splitlines() if ln.strip()]
+    if not linii or linii[0].split()[:1] != ["State"] or "Local" not in linii[0] or "Peer" not in linii[0]:
+        return "necunoscut", [], "ieșirea lui ss e invalidă sau trunchiată"
+    pids = []
+    for ln in linii[1:]:
+        c = ln.split()
+        if len(c) < 5 or c[0] != "LISTEN" or not c[3].endswith(":%d" % port):
+            return "necunoscut", [], "rând ss neinterpretabil: %s" % ln[:120]
+        if "users:(" in ln and ln.count("(") != ln.count(")"):
+            return "necunoscut", [], "rând ss trunchiat: %s" % ln[:120]
+        gasite = re.findall(r"pid=(\d+)", ln)
+        pids.extend(int(x) for x in gasite) if gasite else pids.append(None)
+    return ("ocupat" if pids else "liber"), pids, ""
+
+
+def stare_port(port=None, cu_procese=False):
+    """-> (stare, pids, motiv) pentru portul `port` (implicit 8019). Singura sondă de port a uneltei."""
+    port = port or PORT
+    return _parseaza_ss(port, *_rul_ss(port, cu_procese))
+
+
+# [17.5-U, U.1] „Ocupat” = portul apare în LISTEN în `ss` (nu răspunsul HTTP). [17.5-Z] O sondă eșuată NU e „liber”: întoarce True (nu putem afirma că e liber).
 def port_ocupat(port=None):
-    r = subprocess.run(["ss", "-ltn", "( sport = :%d )" % (port or PORT)], capture_output=True, text=True)
-    return any(ln.split()[:1] == ["LISTEN"] for ln in r.stdout.splitlines())
+    return stare_port(port)[0] != "liber"
 
 
 def _pornit(pid):
@@ -102,24 +184,41 @@ def _pornit(pid):
     return datetime.datetime.fromtimestamp(btime + int(tacte) / os.sysconf("SC_CLK_TCK")).isoformat(timespec="seconds")
 
 
+def identitate(pid):
+    """Identitatea unui proces din /proc: {pid, start (câmpul 22, brut), pgid, sid, cwd (realpath sau None), cmd (sau None), boot_id (sau None)}; None dacă nu se poate citi stat."""
+    try:
+        s = open("/proc/%d/stat" % pid, encoding="utf-8", errors="replace").read()
+        camp = s[s.rindex(")") + 2:].split()
+        start, pgid, sid = camp[19], int(camp[2]), int(camp[3])
+    except (OSError, ValueError, IndexError):
+        return None
+    try:
+        cmd = open("/proc/%d/cmdline" % pid, "rb").read().replace(b"\0", b" ").decode("utf-8", "replace").strip()
+    except OSError:
+        cmd = None
+    try:
+        cwd = os.path.realpath(os.readlink("/proc/%d/cwd" % pid))
+    except OSError:
+        cwd = None
+    try:
+        boot = open("/proc/sys/kernel/random/boot_id", encoding="utf-8").read().strip()
+    except OSError:
+        boot = None
+    return {"pid": pid, "start": start, "pgid": pgid, "sid": sid, "cwd": cwd, "cmd": cmd, "boot_id": boot}
+
+
 def proprietari_port(port=None):
-    """Proprietarii portului după `ss -ltnp`: [{pid, comanda, director (realpath din /proc/<pid>/cwd, None dacă nu se poate citi), pornit}]; un port ocupat al cărui pid nu se vede
-    întoarce [{pid: None, …}] (străin)."""
-    r = subprocess.run(["ss", "-ltnp", "( sport = :%d )" % (port or PORT)], capture_output=True, text=True)
-    pids = sorted({int(x) for x in re.findall(r"pid=(\d+)", r.stdout)})
-    if not pids:
-        return [{"pid": None, "comanda": "", "director": None, "pornit": "?"}]
+    """Proprietarii portului după `ss -ltnp`: [{pid, comanda, director (realpath din /proc/<pid>/cwd, None dacă nu se poate citi), pornit, start, pgid, sid}]; un port ocupat al cărui pid nu se
+    vede, ca și o sondă `ss` eșuată sau neinterpretabilă, întoarce [{pid: None, …}] (străin / necunoscut)."""
+    port = port or PORT
+    stare, pids, motiv = stare_port(port, cu_procese=True)
+    if stare != "ocupat" or None in pids:
+        return [{"pid": None, "comanda": "", "director": None, "pornit": "?", "start": None, "pgid": None, "sid": None, "motiv_ss": motiv or "pid invizibil"}]
     iesire = []
-    for pid in pids:
-        try:
-            comanda = open("/proc/%d/cmdline" % pid, "rb").read().replace(b"\0", b" ").decode("utf-8", "replace").strip()
-        except OSError:
-            comanda = ""
-        try:
-            director = os.path.realpath(os.readlink("/proc/%d/cwd" % pid))
-        except OSError:
-            director = None
-        iesire.append({"pid": pid, "comanda": comanda, "director": director, "pornit": _pornit(pid)})
+    for pid in sorted(set(pids)):
+        i = identitate(pid) or {}
+        iesire.append({"pid": pid, "comanda": i.get("cmd") or "", "director": i.get("cwd"), "pornit": _pornit(pid),
+                       "start": i.get("start"), "pgid": i.get("pgid"), "sid": i.get("sid")})
     return iesire
 
 
@@ -143,10 +242,10 @@ def _descrie(p):
 
 
 def _motiv_refuz(p, unelte, productie):
-    """Motivul pentru care procesul e „străin” (nu se oprește) sau None când e server al uneltelor. Producția nu se oprește niciodată: orice cwd sub ~/iconta_nou e străin chiar cu «uvicorn» în
-    linia de comandă; un pid invizibil sau un cwd ilizibil e străin, cu refuz."""
+    """Motivul pentru care procesul e „străin” (nu se oprește) sau None când e server al uneltelor, DEMONSTRAT: pid vizibil, cwd citit sub un arbore al uneltelor și nu sub producție, «uvicorn» în linia
+    de comandă, starttime citit, PID = PGID = SID (liderul propriei sesiuni), diferit de procesul curent și de părinte și de grupul lor. Producția nu se oprește niciodată; orice martor lipsă = străin."""
     if p["pid"] is None:
-        return "pid-ul procesului nu se vede"
+        return "pid-ul procesului nu se vede" + (" (%s)" % p["motiv_ss"] if p.get("motiv_ss") and p["motiv_ss"] != "pid invizibil" else "")
     if p["director"] is None:
         return "directorul de lucru nu se poate citi"
     if any(_sub(p["director"], r) for r in productie):
@@ -155,12 +254,12 @@ def _motiv_refuz(p, unelte, productie):
         return "linia de comandă nu conține «uvicorn»"
     if not any(_sub(p["director"], r) for r in unelte):
         return "directorul de lucru nu e într-un arbore al uneltelor"
-    try:
-        pg = os.getpgid(p["pid"])
-    except ProcessLookupError:
-        return None
-    if pg in (os.getpgrp(), os.getpgid(os.getppid())):
-        return "grupul de procese e al procesului curent sau al părintelui"
+    if not p.get("start"):
+        return "ora de start din /proc nu se poate citi"
+    if p.get("pgid") != p["pid"] or p.get("sid") != p["pid"]:
+        return "procesul nu e liderul propriei sesiuni (PID, PGID și SID diferă)"
+    if p["pid"] in (os.getpid(), os.getppid()) or p["pgid"] in (os.getpgrp(), os.getpgid(os.getppid())):
+        return "procesul sau grupul lui e al procesului curent sau al părintelui"
     return None
 
 
@@ -175,19 +274,85 @@ def _jurnal(lot, detalii, rezultat):
         print("[verificator design] jurnalul n-a putut scrie faza elibereaza_8019: %s: %s" % (type(e).__name__, e), file=sys.stderr)
 
 
+# [17.5-Z, §2.7] Semnale numai prin pidfd (referință stabilă a procesului), niciodată `killpg` / `kill` pe un număr de PID.
+def _asteapta_iesire(fd, secunde):
+    """True dacă procesul din pidfd a ieșit în `secunde` (pidfd devine citibil la ieșire)."""
+    return bool(select.select([fd], [], [], secunde)[0])
+
+
+def _inchide_fd(fd):
+    try:
+        os.close(fd)
+    except OSError:
+        pass
+
+
+def _opreste_prin_pidfd(fd, port, asteapta_term=20, asteapta_kill=30):
+    """SIGTERM prin `fd`, apoi SIGKILL prin ACELAȘI `fd` numai dacă procesul trăiește după timeout. -> (ok, motiv): ok = procesul a ieșit și `ss` (rc 0) arată portul liber."""
+    for sem, asteapta in ((signal.SIGTERM, asteapta_term), (signal.SIGKILL, asteapta_kill)):
+        try:
+            signal.pidfd_send_signal(fd, sem, None, 0)
+        except ProcessLookupError:
+            break
+        except OSError as e:
+            return False, "semnalul %s prin pidfd a eșuat: %s" % (sem.name, e)
+        if _asteapta_iesire(fd, asteapta):
+            break
+    else:
+        return False, "procesul n-a ieșit nici după SIGKILL"
+    for _ in range(60):                         # până la 30 s ca portul să fie liber, cu o sondă reușită
+        if stare_port(port)[0] == "liber":
+            return True, ""
+        time.sleep(0.5)
+    return False, "portul %d nu e liber (sau starea lui nu se poate afla) după oprire" % port
+
+
+def _opreste_redescoperit(p, port):
+    """Oprește un proces REDESCOPERIT (din `ss` sau din stare): pidfd_open, apoi revalidarea completă a identității și a proprietății portului CU pidfd deschis. -> (ok, motiv)."""
+    martor = {k: p.get(k) for k in ("start", "pgid", "sid")}
+    try:
+        fd = os.pidfd_open(p["pid"])
+    except OSError as e:
+        return False, "pidfd_open(%s) a eșuat: %s" % (p["pid"], e)
+    try:
+        i = identitate(p["pid"])
+        if i is None or {k: i[k] for k in martor} != martor or (p.get("director") and i["cwd"] != p["director"]) or (p.get("comanda") and i["cmd"] != p["comanda"].strip()):
+            return False, "identitatea pid %s s-a schimbat între identificare și pidfd_open" % p["pid"]
+        stare, pids, _m = stare_port(port, cu_procese=True)
+        if stare != "ocupat" or pids != [p["pid"]]:
+            return False, "proprietatea portului %d s-a schimbat sau nu se poate confirma" % port
+        return _opreste_prin_pidfd(fd, port)
+    finally:
+        _inchide_fd(fd)
+
+
 def elibereaza_port(port=None, sonda=None, opreste_fn=None, lot=None, unelte=None, productie=None, proprietari=None):
     """Singura cale prin care se eliberează portul serverului de lucru (U.1). -> (ok, motiv).
-    Port liber: nimic de oprit. Server al uneltelor (linia de comandă conține «uvicorn», directorul de lucru sub un arbore de lot, TEMP sau E2E_TEMP, nu sub producție): tipărește pid-ul,
-    comanda, directorul și ora pornirii, îl oprește (SIGTERM pe grupul de procese, SIGKILL după 20 s), așteaptă până la 30 s ca portul să fie liber și scrie în jurnalul lotului faza
-    «elibereaza_8019», rezultat «ok», cele patru valori în detalii; portul rămas ocupat = refuz. Orice alt proces: nu se oprește nimic, refuz cu aceleași patru valori.
+    Port liber (`ss` reușit): nimic de oprit; sondă eșuată = refuz, nu „liber”. Server al uneltelor DEMONSTRAT (linia de comandă conține «uvicorn», directorul de lucru sub un arbore de lot, TEMP sau
+    E2E_TEMP, nu sub producție, PID = PGID = SID): tipărește pid-ul, comanda, directorul și ora pornirii, îl oprește numai prin pidfd (SIGTERM, SIGKILL pe același pidfd după 20 s), așteaptă până
+    la 30 s ca portul să fie liber și scrie în jurnalul lotului faza «elibereaza_8019», rezultat «ok», cele patru valori în detalii; portul rămas ocupat = refuz. Orice alt proces: nu se oprește
+    nimic, refuz cu aceleași patru valori.
     `sonda` / `opreste_fn` date (injectate sau suprascrise în teste): blocul vechi, sonda apoi oprirea chemată o singură dată dacă sonda întoarce True, fără proprietar, așteptare sau jurnal."""
     port = port or PORT
     if sonda is not None or opreste_fn is not None:
         if (sonda or _raspunde)():
             (opreste_fn or opreste)()
         return True, ""
-    if not port_ocupat(port):
+    try:
+        with _lacat():
+            return _elibereaza_sub_lacat(port, lot, unelte, productie, proprietari)
+    except Refuz as e:
+        print("[verificator design] REFUZ: %s" % e, file=sys.stderr)
+        return False, str(e)
+
+
+def _elibereaza_sub_lacat(port, lot, unelte, productie, proprietari):
+    stare, _pids, motiv = stare_port(port)
+    if stare == "liber":
         return True, ""
+    if stare == "necunoscut":
+        print("[verificator design] REFUZ: starea portului %d nu se poate afla: %s" % (port, motiv), file=sys.stderr)
+        return False, "starea portului %d necunoscută: %s" % (port, motiv)
     unelte = radacini_unelte() if unelte is None else unelte
     productie = radacini_productie() if productie is None else productie
     props = (proprietari or proprietari_port)(port)
@@ -198,46 +363,189 @@ def elibereaza_port(port=None, sonda=None, opreste_fn=None, lot=None, unelte=Non
             return False, "%d ocupat de pid %s (%s)" % (port, p["pid"] if p["pid"] is not None else "invizibil", (p["comanda"] or "necunoscută")[:120])
     for p in props:
         print("[verificator design] portul %d e ținut de un server al uneltelor: %s; îl opresc" % (port, _descrie(p)))
-        try:
-            pg = os.getpgid(p["pid"])
-        except ProcessLookupError:
-            continue
-        for sem, asteapta in ((signal.SIGTERM, 20), (signal.SIGKILL, 30)):
-            try:
-                os.killpg(pg, sem)
-            except ProcessLookupError:
-                break
-            for _ in range(asteapta * 2):
-                if not port_ocupat(port):
-                    break
-                time.sleep(0.5)
-            if not port_ocupat(port):
-                break
-    for _ in range(60):                         # până la 30 s ca portul să fie liber
-        if not port_ocupat(port):
-            break
-        time.sleep(0.5)
-    p = props[0]
-    if port_ocupat(port):
-        return False, "%d încă ocupat după oprirea lui pid %s (%s)" % (port, p["pid"], (p["comanda"] or "?")[:120])
+        ok, motiv = _opreste_redescoperit(p, port)
+        if not ok:
+            return False, "%d încă ocupat după încercarea de oprire a lui pid %s (%s): %s" % (port, p["pid"], (p["comanda"] or "?")[:120], motiv)
+    if stare_port(port)[0] != "liber":
+        return False, "%d încă ocupat (sau starea lui necunoscută) după oprirea lui pid %s" % (port, props[0]["pid"])
     _jurnal(lot, "; ".join(_descrie(x) for x in props), "ok")
     return True, ""
 
 
+# ── TEMP: proprietate și curățare sigură ─────────────────────────────────────────────────────────────────────────────────────────────────
+def _stare_cale():
+    return os.path.join(TEMP, "stare.json")
+
+
+def _temp_proprietar():
+    """-> (stare, motiv): «absent» | «propriu» (director real, al executantului, fără drept de scriere pentru alții, cu marcajul uneltei SAU cu stare.json în formatul uneltei) | «nesigur»."""
+    for cale in (os.path.dirname(TEMP), TEMP):
+        try:
+            st = os.lstat(cale)
+        except FileNotFoundError:
+            if cale == TEMP:
+                return "absent", ""
+            return "nesigur", "%s lipsește" % cale
+        except OSError as e:
+            return "nesigur", "lstat %s: %s" % (cale, e)
+        if stat.S_ISLNK(st.st_mode) or not stat.S_ISDIR(st.st_mode):
+            return "nesigur", "%s nu e un director real (legătură simbolică sau alt tip)" % cale
+        if cale == TEMP:
+            if st.st_uid != os.getuid():
+                return "nesigur", "%s nu aparține executantului" % cale
+            if st.st_mode & 0o002:
+                return "nesigur", "%s are drept de scriere pentru alții" % cale
+    try:
+        if os.path.lexists(os.path.join(TEMP, MARCAJ_TEMP)) and not os.path.islink(os.path.join(TEMP, MARCAJ_TEMP)):
+            return "propriu", ""
+        st_json = json.load(open(_stare_cale(), encoding="utf-8")) if os.path.isfile(_stare_cale()) and not os.path.islink(_stare_cale()) else None
+        if isinstance(st_json, dict) and "pid" in st_json and "sha" in st_json:
+            return "propriu", ""
+    except (OSError, ValueError):
+        pass
+    return "nesigur", "%s nu poartă marcajul uneltei (dovezi sau date străine; arhivează-l sau decide explicit)" % TEMP
+
+
+def _citeste_stare():
+    """stare.json al uneltei sau Refuz: JSON invalid, câmpuri lipsă."""
+    try:
+        s = json.load(open(_stare_cale(), encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise Refuz("stare.json invalid sau ilizibil: %s" % e)
+    cheie = ("pid", "start", "pgid", "sid", "cwd", "cmd", "sha")
+    if not isinstance(s, dict) or any(k not in s for k in cheie) or not isinstance(s["pid"], int) or isinstance(s["pid"], bool) or s["pid"] <= 1:
+        raise Refuz("stare.json incompletă: lipsesc câmpuri sau pid-ul e invalid")
+    return s
+
+
+def _scrie_stare(stare):
+    """Atomic: fișier temporar în același director, fsync, apoi os.replace."""
+    tmp = _stare_cale() + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(stare, f)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp, _stare_cale())
+
+
+def _sterge_temp():
+    """Șterge TEMP numai cu proprietatea dovedită; -> None sau Refuz."""
+    st, motiv = _temp_proprietar()
+    if st == "absent":
+        return
+    if st != "propriu":
+        raise Refuz("TEMP păstrat: %s" % motiv)
+    shutil.rmtree(TEMP)
+
+
+def _identitate_server_stare(s):
+    """Identitatea din stare.json față de /proc: refuz la orice diferență (PID reutilizat, mort, alt grup, alt director, altă comandă, producție, proces propriu)."""
+    i = identitate(s["pid"])
+    if i is None:
+        raise Refuz("pid %s din stare.json nu mai există (stare veche); verifică manual și șterge stare.json" % s["pid"])
+    for k in ("start", "pgid", "sid", "cwd", "cmd"):
+        if i[k] != s[k]:
+            raise Refuz("pid %s: %s diferă față de stare.json (PID reutilizat sau proces străin)" % (s["pid"], k))
+    if s.get("boot_id") and i["boot_id"] != s["boot_id"]:
+        raise Refuz("boot_id diferă față de stare.json")
+    p = {"pid": s["pid"], "comanda": i["cmd"] or "", "director": i["cwd"], "pornit": _pornit(s["pid"]), "start": i["start"], "pgid": i["pgid"], "sid": i["sid"]}
+    m = _motiv_refuz(p, radacini_unelte(), radacini_productie())
+    if m:
+        raise Refuz("pid %s din stare.json e refuzat: %s" % (s["pid"], m))
+    return p
+
+
+def _curata_copil(app, fd, martor, port):
+    """[§2.6] Oprește copilul DIRECT al lui `porneste()` prin pidfd-ul capturat în aceeași invocare (fără cerința de prezență în ss). -> (ok, motiv)."""
+    if app.poll() is not None:
+        app.wait()
+        return (stare_port(port)[0] == "liber"), "copilul ieșise; portul " + ("e liber" if stare_port(port)[0] == "liber" else "nu e liber sau starea lui nu se poate afla")
+    if fd is None or martor is None:
+        return False, "pidfd sau identitatea copilului nu s-au putut stabili: nu trimit niciun semnal; copilul pid %s rămâne pornit" % app.pid
+    i = identitate(app.pid)
+    if i is None or {k: i[k] for k in ("start", "pgid", "sid", "cwd", "cmd")} != {k: martor[k] for k in ("start", "pgid", "sid", "cwd", "cmd")}:
+        return False, "identitatea copilului pid %s s-a schimbat: nu trimit niciun semnal" % app.pid
+    try:
+        signal.pidfd_send_signal(fd, signal.SIGTERM, None, 0)
+    except ProcessLookupError:
+        pass
+    except OSError as e:
+        return False, "SIGTERM prin pidfd a eșuat: %s" % e
+    if not _asteapta_iesire(fd, 20):
+        try:
+            signal.pidfd_send_signal(fd, signal.SIGKILL, None, 0)
+        except ProcessLookupError:
+            pass
+        except OSError as e:
+            return False, "SIGKILL prin pidfd a eșuat: %s" % e
+        if not _asteapta_iesire(fd, 30):
+            return False, "copilul pid %s n-a ieșit nici după SIGKILL" % app.pid
+    try:
+        app.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        return False, "copilul pid %s nu a fost recoltat" % app.pid
+    liber = stare_port(port)[0] == "liber"
+    return liber, "copilul oprit; portul " + ("e liber" if liber else "nu e liber sau starea lui nu se poate afla")
+
+
 def porneste():
-    if port_ocupat(PORT):
+    try:
+        with _lacat():
+            return _porneste_sub_lacat()
+    except Refuz as e:
+        print("[verificator design] REFUZ: %s" % e, file=sys.stderr)
+        return 1
+
+
+def _porneste_sub_lacat():
+    stare, _p, motiv = stare_port(PORT)
+    if stare == "necunoscut":
+        print("[verificator design] REFUZ: starea portului %d nu se poate afla (%s); nu pornesc" % (PORT, motiv), file=sys.stderr)
+        return 1
+    if stare == "ocupat":
         print("[verificator design] REFUZ: portul %d e ocupat de: %s" % (PORT, "; ".join(_descrie(p) for p in proprietari_port(PORT))), file=sys.stderr)
         return 1
     if not os.path.exists(os.path.join(STARE_COPIE, "stare.json")):
         print("[verificator design] copia firmelor de test nu există: rulează întâi scripts/dovada_firme_test.py --cloneaza", file=sys.stderr)
         return 2
+    st_temp, motiv = _temp_proprietar()
+    if st_temp == "nesigur":
+        print("[verificator design] REFUZ: %s; nu șterg nimic" % motiv, file=sys.stderr)
+        return 4
+    if st_temp == "propriu" and os.path.isfile(_stare_cale()):
+        try:
+            s_veche = json.load(open(_stare_cale(), encoding="utf-8"))
+            if isinstance(s_veche, dict) and isinstance(s_veche.get("pid"), int) and identitate(s_veche["pid"]) is not None \
+                    and identitate(s_veche["pid"])["start"] == s_veche.get("start", identitate(s_veche["pid"])["start"]):
+                print("[verificator design] REFUZ: TEMP e folosit de un proces viu (pid %s din stare.json)" % s_veche["pid"], file=sys.stderr)
+                return 4
+        except (OSError, ValueError):
+            pass
     os.environ["E2E_TEMP"] = TEMP           # înaintea importului: `e2e_poarta.TEMP` se citește la import
     import e2e_poarta
+    if e2e_poarta.TEMP != TEMP:
+        print("[verificator design] REFUZ: e2e_poarta.TEMP (%s) diferă de TEMP (%s): _exporta ar șterge alt director" % (e2e_poarta.TEMP, TEMP), file=sys.stderr)
+        return 4
     from dovada_firme_test import tinta_de_test
     env = e2e_poarta._env_test()
     tinta_de_test(env)                      # refuză dacă mediul nu e dovedit de test
     git = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no"], cwd=RAD, capture_output=True, text=True).stdout.strip()
-    arb = e2e_poarta._exporta(False)        # indexul = ce se comite (arborele de lucru murdar nu se verifică)
+    stare, _p, motiv = stare_port(PORT)     # revalidare sub lacăt, chiar înainte de `_exporta` (care șterge TEMP fără condiții)
+    st_temp, motiv_t = _temp_proprietar()
+    if stare != "liber" or st_temp == "nesigur":
+        print("[verificator design] REFUZ înainte de export: port %s (%s), TEMP %s (%s); nu șterg nimic" % (stare, motiv, st_temp, motiv_t), file=sys.stderr)
+        return 4
+    try:
+        arb = e2e_poarta._exporta(False)    # indexul = ce se comite (arborele de lucru murdar nu se verifică)
+        if os.path.islink(TEMP) or not os.path.isdir(TEMP) or not os.path.isdir(arb):
+            raise OSError("TEMP după export nu e un director real")
+        open(os.path.join(TEMP, MARCAJ_TEMP), "w").write("%d\n" % os.getuid())
+        st_temp, motiv_t = _temp_proprietar()
+        if st_temp != "propriu":
+            raise OSError("TEMP după export nu e un director real propriu: %s" % motiv_t)
+    except (OSError, subprocess.SubprocessError) as e:
+        print("[verificator design] exportul a eșuat: %s: %s" % (type(e).__name__, e), file=sys.stderr)
+        return 3
     py = os.path.join(RAD, "venv", "bin", "python")
     r = subprocess.run([py, "scripts/publica_static.py", "--din-arbore"], cwd=arb, env=env, capture_output=True, text=True)
     if r.returncode != 0:
@@ -248,40 +556,94 @@ def porneste():
     log = open(os.path.join(TEMP, "uvicorn.log"), "w")
     app = subprocess.Popen([py, "-m", "uvicorn", "main:app", "--port", str(PORT)], cwd=arb, env=env, stdout=log, stderr=subprocess.STDOUT,
                            start_new_session=True)
-    for _ in range(120):
-        if _raspunde():
-            break
-        time.sleep(2)
-    else:
-        print("[verificator design] aplicația n-a răspuns pe %d (vezi %s/uvicorn.log)" % (PORT, TEMP), file=sys.stderr)
+    fd, martor, eroare = None, None, None
+    try:
+        fd = os.pidfd_open(app.pid)
+        martor = identitate(app.pid)
+        if martor is None and app.poll() is None:
+            eroare = "identitatea copilului pid %s nu se poate citi" % app.pid
+        elif martor is not None and not (martor["pid"] == martor["pgid"] == martor["sid"]) or martor["pid"] in (os.getpid(), os.getppid()) \
+                or martor["pgid"] in (os.getpgrp(), os.getpgid(os.getppid())) or "uvicorn" not in (martor["cmd"] or "") \
+                or not martor["cwd"] or any(_sub(martor["cwd"], r) for r in radacini_productie()):
+            eroare = "identitatea copilului pid %s nu e a unui server al uneltelor (PID/PGID/SID, cmdline sau cwd)" % app.pid
+    except OSError as e:
+        if app.poll() is None:
+            eroare = "pidfd_open pe copilul pid %s a eșuat: %s" % (app.pid, e)
+    if eroare:
+        print("[verificator design] REFUZ: %s; STOP, nu trimit semnale; dovezile rămân în %s" % (eroare, TEMP), file=sys.stderr)
+        if fd is not None:
+            _inchide_fd(fd)
         return 3
-    sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
-    json.dump({"pid": app.pid, "sha": sha, "arbore_murdar": bool(git)}, open(STARE, "w"))
-    print("[verificator design] serverul de lucru pe %d, commit %s%s" % (PORT, sha[:8], " (arbore murdar: se verifică indexul)" if git else ""))
-    return 0
+    try:
+        pornit = False
+        for _ in range(120):
+            if app.poll() is not None:
+                eroare = "serverul a ieșit în timpul pornirii (cod %s; vezi %s/uvicorn.log)" % (app.returncode, TEMP)
+                break
+            if _raspunde():
+                pornit = True
+                break
+            time.sleep(2)
+        else:
+            eroare = "aplicația n-a răspuns pe %d (vezi %s/uvicorn.log)" % (PORT, TEMP)
+        if pornit:
+            stare, pids, _m = stare_port(PORT, cu_procese=True)
+            if stare != "ocupat" or pids != [app.pid]:
+                eroare = "portul %d nu e ținut exclusiv de serverul pornit (ss: %s %s)" % (PORT, stare, pids)
+        if not eroare:
+            sha = subprocess.run(["git", "rev-parse", "HEAD"], cwd=RAD, capture_output=True, text=True).stdout.strip()
+            _scrie_stare({"pid": app.pid, "start": martor["start"], "pgid": martor["pgid"], "sid": martor["sid"], "cwd": martor["cwd"], "cmd": martor["cmd"],
+                          "boot_id": martor["boot_id"], "sha": sha, "arbore_murdar": bool(git)})
+            print("[verificator design] serverul de lucru pe %d, commit %s%s" % (PORT, sha[:8], " (arbore murdar: se verifică indexul)" if git else ""))
+            return 0
+    except OSError as e:
+        eroare = "scrierea stării a eșuat: %s: %s" % (type(e).__name__, e)
+    finally:
+        log.close()
+    ok, detaliu = _curata_copil(app, fd, martor, PORT)
+    _inchide_fd(fd)
+    print("[verificator design] %s; copilul: %s" % (eroare, detaliu), file=sys.stderr)
+    return 3
 
 
 def opreste():
-    """Oprește serverul din stare.json și apoi orice server al uneltelor care mai ține portul (elibereaza_port): un server pornit altfel sau cu stare.json ștearsă nu rămâne pe port.
-    Ieșire 1 dacă portul rămâne ocupat de un proces străin sau neoprit."""
-    if os.path.exists(STARE):
-        pid = json.load(open(STARE))["pid"]
-        for sem, asteapta in ((signal.SIGTERM, 20), (signal.SIGKILL, 10)):
-            try:
-                os.killpg(pid, sem)
-            except ProcessLookupError:
-                break
-            for _ in range(asteapta):
-                time.sleep(1)
-                try:
-                    os.kill(pid, 0)
-                except ProcessLookupError:
-                    break
-    ok, motiv = elibereaza_port(PORT)
-    import shutil
-    shutil.rmtree(TEMP, ignore_errors=True)
-    print("[verificator design] oprit; portul %d %s" % (PORT, "liber" if ok else "ocupat: " + motiv))
-    return 0 if ok else 1
+    """Oprește serverul din stare.json (identitate verificată, pidfd) sau, fără stare.json, orice server al uneltelor care ține portul (elibereaza_port, ruta U.1); apoi curăță TEMP numai cu
+    proprietatea dovedită. Ieșire 1 la orice ambiguitate (stare invalidă, proces străin, port necunoscut sau ocupat, TEMP nepropriu): zero semnale, zero ștergeri."""
+    try:
+        with _lacat():
+            return _opreste_sub_lacat()
+    except Refuz as e:
+        print("[verificator design] REFUZ: %s; nu s-a trimis niciun semnal și nu s-a șters nimic nou" % e, file=sys.stderr)
+        return 1
+
+
+def _opreste_sub_lacat():
+    if os.path.lexists(_stare_cale()):
+        s = _citeste_stare()
+        p = _identitate_server_stare(s)
+        stare, pids, motiv = stare_port(PORT, cu_procese=True)
+        if stare == "necunoscut":
+            raise Refuz("starea portului %d nu se poate afla: %s" % (PORT, motiv))
+        if stare == "ocupat" and pids != [s["pid"]]:
+            raise Refuz("portul %d e ținut de alt proprietar decât pid %s din stare.json" % (PORT, s["pid"]))
+        if stare == "liber" and p is not None:
+            raise Refuz("pid %s din stare.json trăiește, dar nu ține portul %d; nu îl opresc automat" % (s["pid"], PORT))
+        if stare == "ocupat":
+            ok, motiv = _opreste_redescoperit(p, PORT)
+            if not ok:
+                print("[verificator design] oprit; portul %d ocupat: %s" % (PORT, motiv))
+                return 1
+    else:
+        ok, motiv = elibereaza_port(PORT)
+        if not ok:
+            print("[verificator design] oprit; portul %d ocupat: %s" % (PORT, motiv))
+            return 1
+    if stare_port(PORT)[0] != "liber":
+        print("[verificator design] oprit; starea portului %d nu e «liber» confirmat" % PORT)
+        return 1
+    _sterge_temp()
+    print("[verificator design] oprit; portul %d liber" % PORT)
+    return 0
 
 
 # ── ecranele ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
