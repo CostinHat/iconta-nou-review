@@ -787,7 +787,7 @@ async function randeazaOperatiuniD301(corp, nav) {
       <label class="camp" style="width:150px"><span class="camp-eticheta">Nr. document <span class="oblig">*</span></span><input id="d301-nrdoc" class="camp-input"></label>
       <label class="camp" style="width:130px"><span class="camp-eticheta">Data document <span class="oblig">*</span></span><input id="d301-datadoc" class="camp-input" placeholder="ZZ.LL.AAAA"></label>
       <label class="camp" style="width:130px"><span class="camp-eticheta">Valută <span class="oblig">*</span></span>
-        <select id="d301-valuta" class="camp-input">${valute.map((v, i) => `<option value="${v}"${i === 0 ? " selected" : ""}>${v}</option>`).join("")}</select></label>   <!-- [17.5-J, AC141] EUR preselectat (uzual, vizibil, editabil) -->
+        <select id="d301-valuta" class="camp-input" data-fara-piesa>${valute.map((v, i) => `<option value="${v}"${i === 0 ? " selected" : ""}>${v}</option>`).join("")}</select></label>   <!-- [17.5-J, AC141] EUR preselectat (uzual, vizibil, editabil) -->
       <label class="camp" style="width:110px"><span class="camp-eticheta">Val. valută <span class="oblig">*</span></span><input id="d301-val" type="number" step="0.01" class="camp-input"></label>
       <label class="camp" style="width:100px"><span class="camp-eticheta">Curs <span class="oblig">*</span></span><input id="d301-curs" type="number" step="0.0001" class="camp-input"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Cotă TVA <span class="oblig">*</span></span>

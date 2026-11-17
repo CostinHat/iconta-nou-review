@@ -52,7 +52,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=b651b4c4fe");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=a3aad416ed");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
@@ -109,7 +109,7 @@ export async function deschideRezultatul(x, nav) {
   }
   if (x.fel === "declaratie") {
     await _fereastraFirmei(nav, t);
-    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=65e58d6411");
+    const { randeazaDeclaratii } = await import("./ecrane/declaratii.js?v=a4f1c01394");
     nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, { tenant_id: t.id, nume: t.nume }, { tenant_id: t.id, tip: x.tip }),
       { lat: "tabel" });
     return;
