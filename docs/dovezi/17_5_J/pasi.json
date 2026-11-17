@@ -1,0 +1,144 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text",
+   "ac": null,
+   "martor": "cabinetul administratorului dovada.71507",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): cardul «Control fiscal» al paginii cabinetului, static/js/ecrane/cabinet.js:44, neschimbat de lot; trece pe bază (proba contractului, pct.1 al comenzii)."
+  },
+  {
+   "id": "a.1",
+   "pas": "registru_import",
+   "operator": "text_contine",
+   "valoare": "Deschide Import date",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC052",
+   "martor": "F6 (tenant_9055), registrul pe 2025",
+   "de_ce": "(1) AC052 — static/js/ecrane/firme.js, ecranRegistruFiscal (:3126), cardul de eroare (:3155–3156, textul «Nu s-a putut întocmi registrul pe»): azi spune numai că nu s-a putut, fără cauză și fără ieșire. După: cardul de eroare spune CAUZA refuzului, propoziția pe care serverul o are deja (core/rulaje_preluate.py:223, RefuzGenerare, core/erori.py:171 și :186) și, când refuzul numește un ecran (import_solduri), pune butonul «Deschide Import date» cu aceeași piesă ca restul aplicației (butonSpreEcran, static/js/ecrane/ecran_destinatie.js:68). Selectorul anului rămâne la locul lui, iar anul curent poate fi ales din el. Martor pe snapshot: F6 (tenant_9055, regim profit, 4 înregistrări), registrul pe 2025 (a.1)."
+  },
+  {
+   "id": "a.2",
+   "pas": "registru_micro",
+   "operator": "text_contine",
+   "valoare": "Firma e pe impozitul pe veniturile microîntreprinderilor (Regimul fiscal din Date firmă); registrul de mai jos calculează rezultatul fiscal pentru impozitul pe profit.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC053",
+   "martor": "F1 (tenant_9049, micro)",
+   "de_ce": "(2) AC053 — firma F1 e pe micro (tenant_9049.firma_profil.regim_fiscal = «micro»), dar ecranRegistruFiscal (varianta aleasă la :3130) pornește pe «Impozit pe profit · art. 19 alin. (7)» fără să spună că regimul firmei e altul. NU se ascunde registrul și nu se schimbă varianta pornită (testele e2e_lot12_cx7.py:62, e2e_lot91.py, e2e_lot93b.py, e2e_lot6.py:679 cer selectorul, ajustările și răspunsul rutei pe firme micro). După: la o firmă al cărei regim efectiv (core/migrare_api.py:55, regim_efectiv) e micro, deasupra registrului apare nota: «Firma e pe impozitul pe veniturile microîntreprinderilor (Regimul fiscal din Date firmă); registrul de mai jos calculează rezultatul fiscal pentru impozitul pe profit.» La profit sau la regim necompletat nota nu apare. Regimul efectiv ajunge la ecran din răspunsul rutei existente (core/uc_tenants.py, registru_fiscal_citeste :2448), ca câmp în plus; răspunsul de azi nu se scoate din ruta (C41 din e2e_lot6.py:679 cere răspuns sub 500). Martor: F1 (a.2)."
+  },
+  {
+   "id": "a.3",
+   "pas": "lista_tip",
+   "operator": "text_contine",
+   "valoare": "D177 nu se datorează — Regimul fiscal declară firma pe micro, iar D177 e redirecționarea impozitului pe profit (redirecționarea de la micro e abrogată din 2024, art. 56 alin. (2^5)). Dacă firma a ieșit din regimul micro, corectează Regimul fiscal la Date firmă.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC135",
+   "martor": "F1 (micro), lista «Tip declarație»",
+   "de_ce": "(8) AC135 — core/d177.py:5: «Redirecționarea micro e ABROGATĂ din 2024, art.56(2^5) — modulul acopera cazul PROFIT»; core/control_fiscal_api.py, neaplicabile_selector, ramura micro (:277–281) pune azi numai d101. După: ramura micro pune și d177, cu textul «D177 nu se datorează — Regimul fiscal declară firma pe micro, iar D177 e redirecționarea impozitului pe profit (redirecționarea de la micro e abrogată din 2024, art. 56 alin. (2^5)). Dacă firma a ieșit din regimul micro, corectează Regimul fiscal la Date firmă.» Regula e în sursa unică a aplicabilității (core/test_aplicabilitate_o_singura_sursa.py rămâne verde), deci o consumă și selectorul (core/uc_declaratii.py:50–51) și generarea; la regim necompletat nu se blochează nimic (ca la d101). Testele care aleg D177 (e2e_lot12_decl.py:158, e2e_lot12_cx2.py:354) rulează pe firme pe profit și rămân neschimbate. Martor: F1 (micro), lista «Tip declarație»: rândul D177 poartă textul de mai sus și nu se poate alege (a.3)."
+  },
+  {
+   "id": "f.2",
+   "pas": "lista_tip",
+   "operator": "text_contine",
+   "valoare": "Continuă →",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #dec-continua|text",
+   "ac": null,
+   "martor": "butonul #dec-continua",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): butonul «Continuă →» (#dec-continua) din fereastra Declarații, pasul 1, nemodificat de lot (pct.1 al comenzii)."
+  },
+  {
+   "id": "f.3",
+   "pas": "perioada_d300",
+   "operator": "egal",
+   "valoare": "octombrie",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #dec-luna option:checked|text",
+   "ac": "AC103",
+   "martor": "F1, rândul «D300 · 10/2026»",
+   "de_ce": "static/js/ds_piese.js:150 (listaCuCautare: «r.o.selected = true», adus de 17.5-X, 727.2); invariant publicat de 17.5-X8"
+  },
+  {
+   "id": "a.4",
+   "pas": "cautare_d104",
+   "operator": "egal",
+   "valoare": "T3 (iul-sep)",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #dec-trim option:checked|text",
+   "ac": "AC129",
+   "martor": "F1, căutare «D104»",
+   "de_ce": "(5) AC129 — static/js/ecrane/declaratii.js, refresh (:219–240): perioada implicită (perioadaImplicita :300, regula 294) se aplică numai când `S.tip !== tipAnterior`; la intrarea prin căutarea globală (static/js/cautare.js:113, preset {tenant_id, tip}) tipul e deja setat la prima desenare, deci perioada rămâne cea a trimestrului în curs (T4/2026 la 09.11.2026 pentru D104). După: la intrarea cu tip dat (căutare globală, cardul din fereastra firmei) perioada se propune ca la alegerea din listă: cea mai apropiată perioadă scadentă și nedepusă, altfel ultima perioadă încheiată (T3/2026 la D104 pe 09.11.2026). Calea listei nu se schimbă (e corectă în cod); perioada deja aleasă de contabil nu se suprascrie la întoarcerea din pasul 2. Martor: F1, căutare «D104» → Declarații, `#dec-trim` arată «T3 (iul-sep)» (a.5)."
+  },
+  {
+   "id": "a.5",
+   "pas": "d114",
+   "operator": "egal",
+   "valoare": "401002001",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #d114-cif|valoare",
+   "ac": "AC134",
+   "martor": "F1, CUI 401002001",
+   "de_ce": "(7) AC134 — static/js/ecrane/declaratii.js, D114 (formularul :2085; câmpurile #d114-cif, #d114-den, #d114-adr :2101–2103) goale la deschidere, deși datele firmei sunt deschise (S.firmaDate, :141; modelul de precompletare existent: D398 la :2299 și D318 la :2423, `_pune`). După: la deschiderea D114, câmpurile «CIF declarant», «Denumire» și «Adresă» se precompletează din S.firmaDate (CUI, denumire, adresă) NUMAI când sunt goale (o valoare tastată sau salvată în S.d114 nu se suprascrie); rămân editabile. Martor: F1, CUI 401002001: #d114-cif = «401002001», #d114-den și #d114-adr nenule (a.6)."
+  },
+  {
+   "id": "a.6",
+   "pas": "d398",
+   "operator": "text_contine",
+   "valoare": "Deschide Date firmă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC137",
+   "martor": "F1, D398 «de lămurit»",
+   "de_ce": "(9) AC137 — static/js/ecrane/declaratii.js: D398 e marcată «de lămurit» (S.deLamurit :138; eticheta :177; opțiunea :181), iar lămurirea nu oferă drumul spre ecranul unde se răspunde. După: la alegerea unei declarații «de lămurit», sub listă, lângă textul lămuririi, apare butonul «Deschide Date firmă» (aceeași piesă butonSpreEcran, ecran_destinatie.js:68, ECRANE.date_firma :20). «Continuă →» NU se blochează (testele e2e_lot13_oss.py, e2e_lot14_2.py, e2e_lot14_3.py aleg D398 «de lămurit» și merg în pasul 2). Martor: F1 (micro, «Înregistrată în regimul special OSS» necompletat), D398 aleasă → butonul «Deschide Date firmă» (a.7)."
+  },
+  {
+   "id": "a.7",
+   "pas": "d104",
+   "operator": "text_contine",
+   "valoare": "D104 se depune de asociatul desemnat al unei asocieri fără personalitate juridică, în numele asocierii. Completează numai dacă firma are această calitate.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC130",
+   "martor": "F1, pasul 2 D104",
+   "de_ce": "(6) AC130 — core/d104.py:3: D104 se depune de «asociatul desemnat al unei ASOCIERI FĂRĂ PERSONALITATE JURIDICĂ, în numele asocierii»; asociatul desemnat poate fi și un SRL, deci NU se declară «nu se datorează» (core/control_fiscal_api.py:196 și :214 nu conțin d104; testele e2e_lot15_1.py:168–173 și e2e_pilot_x05.py:113–114 aleg D104 pe SRL și rămân neschimbate). Câmpurile declarantului (#d104-dnume, #d104-dpren, #d104-dfunc) sunt ale persoanei semnatare, iar cele ale asocierii (#d104-aden, #d104-acui, #d104-aadr) ale asocierii, deci nu se precompletează din Date firmă. După: în pasul 2 al D104, deasupra formularului declarantului, apare nota: «D104 se depune de asociatul desemnat al unei asocieri fără personalitate juridică, în numele asocierii. Completează numai dacă firma are această calitate.» Nimic altceva nu se schimbă la D104. Martor: F1, pasul 2 D104 (a.8)."
+  },
+  {
+   "id": "a.8",
+   "pas": "d301_avert",
+   "operator": "lipseste",
+   "valoare": "nu automat din facturi",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC139",
+   "martor": "F3 (tenant_9051), D301 06/2026",
+   "de_ce": "(10) AC139 — core/d301.py, avertismentul de la `_ic_prim` (:402, :430–434): spune «Verifică: există N achiziții IC înregistrate ca facturi în perioadă … declarația se construiește din operațiunile introduse în ecranul D301, nu automat din facturi» pentru TOATE facturile IC ale perioadei, deși operațiunea D301 se creează singură la înregistrarea achiziției și poartă factura (core/uc_tenants.py:4879 `factura_id`; core/migrare_d301_op_factura.py:8). Pe snapshot, F3: operațiunile D301 ale lunii 06/2026 (id 1 și 2) sunt legate de facturile 1 și 2, iar cea din 09/2026 (id 3) de factura 5. După: avertismentul numără și numește numai facturile IC ale perioadei FĂRĂ operațiune D301 legată (`d301_operatiuni.factura_id` = id-ul facturii); dacă nu există niciuna, avertismentul nu apare; textul rămâne cel de azi, cu numărul și lista celor nelegate. Blocajul «D301 pe zero» (:406–415) nu se schimbă. «Preia din facturi» NU intră în lot. Martor: F3, pasul 2 D301 06/2026 — textul «nu automat din facturi» lipsește când toate facturile IC ale lunii sunt legate (a.9)."
+  },
+  {
+   "id": "a.9",
+   "pas": "d301_valuta",
+   "operator": "egal",
+   "valoare": "EUR",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #d301-valuta|valoare",
+   "ac": "AC141",
+   "martor": "F3, rândul «Adaugă operațiune»",
+   "de_ce": "(11) AC141 — static/js/ecrane/declaratii.js, randeazaOperatiuniD301 (:734), câmpul Valută (:772; select #d301-valuta, lățime 90 px, «Alege din listă» se rupe pe trei rânduri); lista vine din core/d301_operatiuni_api.py:141 (`sorted(VALUTE)`: EUR la mijloc, RON pe poziția 16). După (dimensiuni impuse de arhitect): câmpul Valută are lățime 130 px (în loc de 90 px), textul pe un singur rând (fără rupere), înălțimea celorlalte câmpuri din rând; lista pornește cu EUR, urmat de RON, apoi restul valutelor în ordine alfabetică; EUR e valoarea preselectată la o operațiune nouă (cazul tipic al achiziției IC); validarea de la :172 (`tip_valuta not in VALUTE`) și lista valutelor admise nu se schimbă. Martor: F3, rândul «Adaugă operațiune»: câmpul Valută arată «EUR» (a.10)."
+  },
+  {
+   "id": "a.10",
+   "pas": "cm",
+   "operator": "text_contine",
+   "valoare": "Propus din statele de plată: 30.000,00 lei brut, 127 de zile lucrătoare (aprilie–septembrie 2026). Poți modifica.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC109",
+   "martor": "F5 (tenant_9053), Ionescu, 19.10.2026",
+   "de_ce": "(4) AC109 — static/js/ecrane/flux_concediu.js, deschideFormular (:89), câmpurile #cm-ven6 (:116) și #cm-zile6 (:117) goale, tastate de mână; ecranul nu trimite defalcarea pe luni (payload :252), deci backendul ia calea veche, suma simplă fără plafonul de 12 salarii minime pe lună (core/salariati_api.py salveaza_concediu :711 și venituri_lunare :731–740; plafonul e în core/salarizare.py :741–747; temei: OUG 158/2005 art.10 alin.(1), corpusul anaf_surse/oug_158_2005_consolidat.txt:412). După: când sunt alese salariatul și Data început, câmpurile #cm-ven6 și #cm-zile6 se precompletează cu BAZA PROPUSĂ din statele de plată ale salariatului pe «cele 6 luni» (ultimele 6 luni calendaristice încheiate înaintea lunii în care începe concediul), cu zilele lucrătoare după calendarul serverului (main.py:3070 /util/zile-lucratoare), iar sub câmpuri apare, o singură dată, propoziția «Propus din statele de plată: <venit> lei brut, <zile> zile lucrătoare (<luna întâi>–<luna a șasea> <an>). Poți modifica.» (suma cu separator de mii și virgulă, ca în aplicație: «30.000,00»). Valorile rămân editabile; ce modifică contabilul ajunge la server. Plafonul pe lună se aplică la calcul: ecranul trimite defalcarea lunară (venituri_lunare) pe care backendul o acceptă deja (core/salariati_api.py:728–740), pentru propunere ca și pentru valorile modificate la mână când defalcarea e cunoscută; la valori modificate fără defalcare rămâne calea de azi. Dacă salariatul n-avea contract în niciuna din cele 6 luni (statul de plată al lunii se calculează din istoricul salariului, core/stat_plata_api.py:85–99; tabelul state_plata ține numai exemplarele emise și e gol pe snapshot), câmpurile rămân goale și propoziția devine «Nu există state de plată pentru cele 6 luni; introdu baza de mână.» Pe tot ce nu e baza (zilele CM din calendar, :181–200) nu se schimbă nimic. Calculul propunerii stă pe server, într-o funcție în core/salariati_api.py și o rută în main.py, nu în ecran. Martor: F5 (tenant_9053), salariatul Ionescu (angajat 05.01.2026, brut 5.000, fără concediu medical în aprilie–septembrie 2026), Data început 19.10.2026 → «Propus din statele de plată: 30.000,00 lei brut, 127 de zile lucrătoare (aprilie–septembrie 2026). Poți modifica.» (a.11, a.12; 127 = zilele lucrătoare aprilie–septembrie 2026, 131 zile de luni până vineri minus 4 sărbători legale; calculul exact e al calendarului serverului)."
+  },
+  {
+   "id": "a.11",
+   "pas": "cm",
+   "operator": "egal",
+   "valoare": "127",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #cm-zile6|valoare",
+   "ac": "AC109",
+   "martor": "F5, Ionescu, 19.10.2026",
+   "de_ce": "(4) AC109 — static/js/ecrane/flux_concediu.js, deschideFormular (:89), câmpurile #cm-ven6 (:116) și #cm-zile6 (:117) goale, tastate de mână; ecranul nu trimite defalcarea pe luni (payload :252), deci backendul ia calea veche, suma simplă fără plafonul de 12 salarii minime pe lună (core/salariati_api.py salveaza_concediu :711 și venituri_lunare :731–740; plafonul e în core/salarizare.py :741–747; temei: OUG 158/2005 art.10 alin.(1), corpusul anaf_surse/oug_158_2005_consolidat.txt:412). După: când sunt alese salariatul și Data început, câmpurile #cm-ven6 și #cm-zile6 se precompletează cu BAZA PROPUSĂ din statele de plată ale salariatului pe «cele 6 luni» (ultimele 6 luni calendaristice încheiate înaintea lunii în care începe concediul), cu zilele lucrătoare după calendarul serverului (main.py:3070 /util/zile-lucratoare), iar sub câmpuri apare, o singură dată, propoziția «Propus din statele de plată: <venit> lei brut, <zile> zile lucrătoare (<luna întâi>–<luna a șasea> <an>). Poți modifica.» (suma cu separator de mii și virgulă, ca în aplicație: «30.000,00»). Valorile rămân editabile; ce modifică contabilul ajunge la server. Plafonul pe lună se aplică la calcul: ecranul trimite defalcarea lunară (venituri_lunare) pe care backendul o acceptă deja (core/salariati_api.py:728–740), pentru propunere ca și pentru valorile modificate la mână când defalcarea e cunoscută; la valori modificate fără defalcare rămâne calea de azi. Dacă salariatul n-avea contract în niciuna din cele 6 luni (statul de plată al lunii se calculează din istoricul salariului, core/stat_plata_api.py:85–99; tabelul state_plata ține numai exemplarele emise și e gol pe snapshot), câmpurile rămân goale și propoziția devine «Nu există state de plată pentru cele 6 luni; introdu baza de mână.» Pe tot ce nu e baza (zilele CM din calendar, :181–200) nu se schimbă nimic. Calculul propunerii stă pe server, într-o funcție în core/salariati_api.py și o rută în main.py, nu în ecran. Martor: F5 (tenant_9053), salariatul Ionescu (angajat 05.01.2026, brut 5.000, fără concediu medical în aprilie–septembrie 2026), Data început 19.10.2026 → «Propus din statele de plată: 30.000,00 lei brut, 127 de zile lucrătoare (aprilie–septembrie 2026). Poți modifica.» (a.11, a.12; 127 = zilele lucrătoare aprilie–septembrie 2026, 131 zile de luni până vineri minus 4 sărbători legale; calculul exact e al calendarului serverului)."
+  }
+ ]
+}
