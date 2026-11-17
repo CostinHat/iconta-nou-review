@@ -24805,3 +24805,8 @@ Sursa: «auditul Pilot din 13.11.2026, 45 de poziții, pe versiunea 17.5-I»; de
 - J2-R3: cauza reală a butonului «Deschide Date firmă» nevăzut (D398): `navigator.js::_noteInZona` muta nota `p.ecran-nota` și apoi zona `#dec-de-lamurit` în lista derulabilă «Tip declarație». Zona are acum `role="status"`, iar nota e un `div.ecran-nota` (navigator.js neatins). J2-R4: mesajul «Propus din statele de plată…» stă imediat sub Venituri/Zile (două grile), nu sub Spitalizare/Pacient, unde cădea sub bara fixă.
 - `core/test_refuz_spre_ecran.py::test_ecranul_tinta_aduce_campul_in_vedere_si_ii_da_focus` e roșu și pe X8 (cere `{ inapoiLa, camp }`, codul are `marcheaza` din 17.5-S); fișierul nu e în lista permisă și nu s-a atins.
 
+
+## Lotul 17.5-J3 (produs, 17.11.2026) — fără cod nou
+- J3 publică remedierile J/J2 din C_J2 (`be809eb7`) pe tiparul X8: P_J3 `bbb7de49` (praguri + martori «inainte»), C_J3 `e76d7824` (dovezi), E_J3 (jurnal și capturi haiku_1 + «dupa»). Diff față de C_J2: numai `scripts/praguri_17_5_J3.txt` și `docs/dovezi/17_5_J3/`.
+- Poarta pe C_J3: VERDE, 1957 teste, regresie 0, restanțe 2 (R021, R027), infra 0; hook 95/97 s, verificator 84 s, pytest 589 s, plasă 2402 s — toate sub pragurile înghețate. Haiku haiku_1 14/14 «corespunde»; «dupa» 14/14 «trece». Marcajul de proces străin n-a apărut.
+- Decizie: riscul «cronul corectat nu are recepție reală confirmată» acceptat explicit de Costin la pornire (P0-J3-08, calea B).
