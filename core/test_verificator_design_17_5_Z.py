@@ -459,8 +459,11 @@ def test_pornire_in_timpul_unei_opriri_e_refuzata_de_lacat(S, monkeypatch):
 def test_lacatul_e_reentrant_in_acelasi_proces_si_se_elibereaza_la_sfarsit(S):
     with S.vd._lacat():
         with S.vd._lacat():
-            pass
+            assert S.vd._LACAT_STARE["adancime"] == 2
+        assert S.vd._LACAT_STARE["adancime"] == 1 and S.vd._LACAT_STARE["fd"] is not None
+    assert S.vd._LACAT_STARE["adancime"] == 0 and S.vd._LACAT_STARE["fd"] is None
     fd = _tine_lacatul(S)                              # liber din nou: a putut fi luat de altcineva
+    assert fd is not None
     os.close(fd)
 
 
