@@ -1,0 +1,7 @@
+[e2e] aplicația din index pornită pe 8019 în 17s
+FAILED frontend_test/e2e/e2e_ferestre_17_5_K.py::test_ferestre_17_5_K - Asser...
+[e2e] 1 failed in 215.44s (0:03:35) (233s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/250fa798-d3bf-43e8-960e-a3b68219440e/scratchpad/k2_inainte2)
+
+real	3m54.294s
+user	0m29.834s
+sys	0m9.917s

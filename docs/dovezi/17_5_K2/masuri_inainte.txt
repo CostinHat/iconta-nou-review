@@ -1,0 +1,20 @@
+MASURA control_fiscal_D406_01_2026 603x590 grup=in fereastra Control fiscal randuri=[2, 2] inaltimi=[46, 46] iesite=[]
+MASURA Rapoarte comerciale F1 603x590 zona=274 corp=502 derulante=1 loc=274
+MASURA Rapoarte comerciale F1 1366x603 zona=287 corp=515 derulante=1 loc=287
+MASURA Rapoarte comerciale F1 1366x768 zona=276 corp=680 derulante=0 loc=680
+MASURA Plan de conturi F1 603x590 zona=71841 corp=502 derulante=1 loc=502
+MASURA Plan de conturi F1 1366x603 zona=265 corp=515 derulante=1 loc=265
+MASURA Plan de conturi F1 1366x768 zona=344 corp=680 derulante=1 loc=344
+MASURA Analitică stoc F1 603x590 zona=88 corp=502 derulante=2 loc=88
+MASURA Analitică stoc F1 1366x603 zona=258 corp=515 derulante=1 loc=258
+MASURA Analitică stoc F1 1366x768 zona=361 corp=680 derulante=1 loc=361
+MASURA Import date — Solduri inițiale F1 603x590 zona=213 corp=502 derulante=1 loc=213
+MASURA Import date — Solduri inițiale F1 1366x603 zona=226 corp=515 derulante=1 loc=226
+MASURA Import date — Solduri inițiale F1 1366x768 zona=153 corp=680 derulante=0 loc=680
+MASURA renunta Mijloace fixe — Leasing F1 1366x603 vizibil=True in_corp=True inaltime=44 latime=108.8 padding_stanga=20px
+MASURA acoperit Mijloace fixe — Leasing F1 1366x603 campuri=19 acoperite=0 bara_sus=382
+MASURA renunta Certificat CM F5 — Certificat nou 1366x768 vizibil=True in_corp=True inaltime=38 latime=100.6 padding_stanga=18px
+MASURA acoperit Certificat CM F5 — Certificat nou 1366x768 campuri=16 acoperite=0 bara_sus=527
+MASURA renunta Chirii / comodat / refacturări F2 1366x603 vizibil=True in_corp=True inaltime=44 latime=108.8 padding_stanga=20px
+MASURA acoperit Chirii / comodat / refacturări F2 1366x603 campuri=6 acoperite=0 bara_sus=259
+MASURA placeholder #cautare-fereastra initial(1366x768)='Caută o funcție: D300, stat de plată, NIR…' ingust(603x590)='Caută o funcție: D300, stat de plată, NIR…' readus(1366x768)='Caută o funcție: D300, stat de plată, NIR…'

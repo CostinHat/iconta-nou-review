@@ -1,0 +1,44 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text",
+   "ac": null,
+   "martor": "cabinetul administratorului dovada.71507",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): cardul «Control fiscal» al paginii cabinetului, static/js/ecrane/cabinet.js (lista DEF, cheia «control»), neschimbat de lot; trece pe bază (proba contractului, pct.1 al comenzii)."
+  },
+  {
+   "id": "a.2",
+   "pas": "etransport",
+   "operator": "interval_px",
+   "valoare": "24-40",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .rap-tabs .rap-tab|inaltime_px",
+   "ac": "AC043",
+   "martor": "e-Transport F1, 603×590",
+   "de_ce": "(3) AC043 — e-Transport: static/js/ecrane/etransport_ecran.js:148 (`<div class=\"rap-tabs\" role=\"tablist\" aria-label=\"Părțile notificării\">`, patru file: «Operațiune și bunuri», «Partener și transport», «Locuri de pornire și sosire», «UIT-uri trimise»); piesa comună static/stil.css:1425–1429 (`.rap-tabs`, flex, gap 6 px) și :1431–1442 (`.rap-tab`, fără `white-space`). Azi, la 603×590, cele patru file nu încap pe un rând și etichetele se rup pe două rânduri (trei din patru, AC043). După: eticheta unei file nu se rupe (`white-space: nowrap` pe `.rap-tab`), iar rândul de file trece pe rânduri când nu încape (`flex-wrap: wrap` pe `.rap-tabs`: coboară fila întreagă, nu textul ei); fila are un rând unic și înălțimea ≤ 40 px; marginea de jos a rândului de file (12 px), gap-ul (6 px), culorile și fila activă nu se schimbă. Regula e a piesei comune, deci o iau toate ferestrele care o folosesc (admin_raportari.js:62, emitere_ecran.js:430, etransport_ecran.js:148, operatiuni_ecran.js:518, date_firma.js:577, raporteaza.js:59: șase ecrane, sub pragul de 10 ecrane al regulii pieselor comune); ele nu au a.N proprii, le păzește verificatorul de design pe toate ferestrele (8.3–8.4). Martor: e-Transport F1, 603×590 (a.2: în oracol, înălțimea fiecărei file `.rap-tab` între 24 și 40 px, măsura inaltime_px cu interval_px; în e2e, în plus, rândurile de text ale celor patru file = 1,1,1,1)."
+  },
+  {
+   "id": "a.3",
+   "pas": "control_firma",
+   "operator": "interval_px",
+   "valoare": "20-30",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) tr:has(.cf-extern-anuleaza) :is(.cf-extern-btn, .cf-extern-anuleaza)|inaltime_px",
+   "ac": "AC057",
+   "martor": "Control fiscal (firmă) F1, rândul D406 01/2026, 603×590",
+   "de_ce": "(4) AC057 — Control fiscal (firmă): static/js/ecrane/control_verdict.js:131 (randDecl) și :136–137 (butoanele «Modifică marcarea» / «Anulează marcarea», clasa `buton-xs`, în celula de acțiuni a tabelului DS); static/stil.css:3467 (`.ds-tabel .ds-tabel-actiuni .buton-xs { white-space: normal; height: auto; … }` — [17.3]: eticheta lungă a butonului se rupe) și :3727 (sub 700 px celula de acțiuni își rupe conținutul, lățimea ei e `auto !important`). Azi, la 603×590, cele două etichete scurte (17 caractere) se rup pe două rânduri (AC057). După: cele două butoane scurte nu-și rup eticheta: randDecl le pune clasa `buton-fara-rupere` (nou), cu regula CSS `white-space: nowrap` scrisă cu selectorul `.ds-tabel .ds-tabel-actiuni .buton-xs.buton-fara-rupere` (specificitate 0,4,0, peste 0,3,0 a regulii din 17.3 de la stil.css:3467, pe care o bate fără s-o editeze), numai pe ele; când nu încap pe același rând, se așază unul sub altul (ruperea e între butoane, nu în etichetă); «Marchează depusă în afara iConta.eu» rămâne cu ruperea din 17.3 (nu se atinge). Dacă rândul nu încape în fereastră, cedează motivul rândului (`.ds-tabel-motiv`, stil.css:3639, text liber, se rupe pe rânduri în coloana Stare), nu etichetele butoanelor și nu pastila de stare; niciun element cu text nu iese la dreapta ferestrei. Martor: F1, din fereastra firmei Control fiscal, rândul D406 01/2026 (dump din 04.11: public.declaratii_depuse tenant_id 105779, d406, 2026, luna 1, sursa «extern», singurul rând extern al lui F1; rândul apare în listă numai dacă serverul îl pune în confirmate / cu_intarziere / inainte_de_preluare, core/control_fiscal_api.py:1179–1195; comentariul de la control_verdict.js:415 nu e dovadă, iar grupul în care stă efectiv se citește la rulare și se scrie în raport) (a.3: în oracol, înălțimea fiecărui buton între 20 și 30 px, măsura inaltime_px cu interval_px: un rând = 28 px, două rânduri = 46 px (36 + 8 + 2 din CSS), stil.css:3467; în e2e, în plus, rândurile de text = 1,1 și lista `iesite` a ferestrei goală, ca în e2e_pilot_x09.py:27)."
+  },
+  {
+   "id": "f.2",
+   "pas": "plan_conturi",
+   "operator": "text_contine",
+   "valoare": "Adaugă analitic",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra-corp|text",
+   "ac": null,
+   "martor": "Plan de conturi F1 (tenant_9049)",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): eticheta «Adaugă analitic» din ecranPlanConturi (static/js/ecrane/firme.js), pe care lotul nu o schimbă; măsura e `text` pe corpul ferestrei, nu un buton anume (șirul apare ca etichetă și ca buton pe rând); trece pe bază."
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+produs
+lot: 17.5-K2
+max hook 119
+max poarta_verificator 108
+max poarta_pytest 707
+max poarta_plasa 2883
+runde_verificator_max: 2
+sursa pragurilor 17.5-K2: generate de scripts/praguri_automate.py la 2026-11-18T21:32:36+02:00 din .lot_jurnal.log; loturi folosite: 17.5-X8, 17.5-J3, 17.5-Z (3)
+  hook: maxim 99 s (lotul 17.5-J3, rularea 3518244-1794947384478) din 10 rulari complete, 0 rulari «intrerupt» ignorate, prag 119 s
+  poarta_verificator: maxim 90 s (lotul 17.5-Z, rularea 3817501-1794957888182) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 108 s
+  poarta_pytest: maxim 589 s (lotul 17.5-J3, rularea 3408016-1794943645179) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 707 s
+  poarta_plasa: maxim 2402 s (lotul 17.5-J3, rularea 3408016-1794944234363) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 2883 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  scripts/praguri_17_5_K2.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_ferestre_17_5_K.py)
+  frontend_test/e2e/e2e_ferestre_17_5_K.py (nou; testul arhitectului, sha256 334b76e4…)
+  frontend_test/e2e/e2e_bloc_d.py (numai test_def_122)
+  static/index.html (din diff-ul bf81b4e4..fbddf964)
+  static/js/app.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/cadru.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/cautare.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/asistent.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/borderou_ecran.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/cabinet.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/coada_trimite.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/control.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/control_verdict.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/ecran_destinatie.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/facturi_ecran.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/firme.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/inceput.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/migrare.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/operatiuni_ecran.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/supervizor.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/termene.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/ecrane/validat.js (din diff-ul bf81b4e4..fbddf964)
+  static/js/navigator.js (din diff-ul bf81b4e4..fbddf964)
+  static/spv_callback.html (din diff-ul bf81b4e4..fbddf964)
+  static/stil.css (din diff-ul bf81b4e4..fbddf964)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md
+  DECIZII.md
+  PREDARE_LANT.md
+  DEFICIENTE.md
+  docs/dovezi/17_5_K2/

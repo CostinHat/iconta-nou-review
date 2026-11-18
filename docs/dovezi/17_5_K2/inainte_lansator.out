@@ -1,0 +1,6 @@
+[lacat_test] lacăt preluat de la pid 2317907 (mort sau refolosit)
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul etransport: pica [('a.2', 'pica', 'în afara 24-40: [72, 72, 72, 72]')]
+[parcurs] pasul control_firma: pica [('a.3', 'pica', 'în afara 20-30: [46, 46]')]
+[parcurs] pasul plan_conturi: trece [('f.2', 'trece', '')]
+
