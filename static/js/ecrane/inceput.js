@@ -26,7 +26,7 @@ async function deschide(cheie, nav, laSchimbare) {
     const { randeazaAsistenti } = await import("./asistenti.js?v=55670c24d1");
     nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" });
   } else if (cheie === "firme") {
-    const { randeazaListaFirme } = await import("./firme.js?v=b651b4c4fe");
+    const { randeazaListaFirme } = await import("./firme.js?v=24e83ae124");
     nav.deschide("Firmele tale alocate", (c) => randeazaListaFirme(c, nav, null), { nivel: "cabinet" });
   }
 }

@@ -780,7 +780,13 @@ def test_def_122_declaratia_se_marcheaza_depusa_in_afara_iconta(patron, firma_sa
                          ".querySelector(\".cf-decl-item[data-cheie='d112-2026-1']\"); return i && i.querySelector('.cf-extern-anuleaza'); }",
                          timeout=30000)
     patron.captura()
-    assert "Modifică marcarea" in item.inner_text(), item.inner_text()
+    # [17.5-T] actualizat la comanda 17.5-K2 pct.4 / Corecția 2 din 17.5-K (butonul scurt «Modifică», denumirea completă în aria-label și title)
+    # (static/js/ecrane/control_verdict.js:randDecl)
+    modifica = item.locator(".cf-extern-btn")
+    assert modifica.is_visible(), item.inner_text()
+    assert " ".join(modifica.inner_text().split()) == "Modifică", modifica.inner_text()
+    assert modifica.get_attribute("aria-label") == "Modifică marcarea", modifica.get_attribute("aria-label")
+    assert modifica.get_attribute("title") == "Modifică marcarea", modifica.get_attribute("title")
     assert sql("SELECT sursa, recipisa FROM public.declaratii_depuse WHERE tenant_id = %s AND tip = 'd112' AND an = 2026 AND luna = 1",
                (firma_sal["tenant_id"],)) == [("extern", "REC-D122")]
 

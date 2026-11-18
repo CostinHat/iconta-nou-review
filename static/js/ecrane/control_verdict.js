@@ -138,8 +138,8 @@ function randDecl(arr, stare, marcabil = false) {
   // [retest 08.10 pct.10] o MARCARE („în afara iConta.eu” / „de contabilul anterior”) se poate modifica sau anula
   const atr = (x) => `data-tip="${esc(x.tip)}" data-an="${x.an}" data-luna="${x.luna}" data-perioada="${esc(x.perioada || "")}"`;
   const marcare = (x) => x.extern ? `
-      <button type="button" class="buton-secundar buton-xs cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern" ${atr(x)}>Modifică marcarea</button>
-      <button type="button" class="buton-secundar buton-xs cf-extern-anuleaza" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern/anuleaza" ${atr(x)}>Anulează marcarea</button>`
+      <button type="button" class="buton-secundar buton-xs buton-fara-rupere cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern" aria-label="Modifică marcarea" title="Modifică marcarea" ${atr(x)}>Modifică</button>
+      <button type="button" class="buton-secundar buton-xs buton-fara-rupere cf-extern-anuleaza" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern/anuleaza" aria-label="Anulează marcarea" title="Anulează marcarea" ${atr(x)}>Anulează</button>`
     : (!marcabil || !x.luna) ? "" : `
       <button type="button" class="buton-secundar buton-xs cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern" ${atr(x)}>Marchează depusă în afara iConta.eu</button>`;
   return tabelDSHtml({
@@ -453,7 +453,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=b651b4c4fe");
+    const { deschideInchidereLuna } = await import("./firme.js?v=24e83ae124");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

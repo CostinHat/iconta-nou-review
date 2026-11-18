@@ -18,7 +18,7 @@
 // fiindcă exact aici se naște cifra validă și falsă.
 
 import { api, esc, dupaNumar, dataRo } from "../api.js?v=7396e03327";
-import { randA as randConstatare } from "./control_verdict.js?v=c6b58b070d";
+import { randA as randConstatare } from "./control_verdict.js?v=38460ddd83";
 import { semnalHtml, legaSemnale } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] semnale pe rând
 
 function perioada(r) {

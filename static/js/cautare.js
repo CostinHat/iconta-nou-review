@@ -52,7 +52,7 @@ async function _firmaInLucru(nav) {
 async function _fereastraFirmei(nav, t) {
   const sus = _fereastraSus();
   if (sus && sus.querySelector('[id^="fa-"]') && String(sus.getAttribute("aria-label") || "").startsWith(String(t.nume || ""))) return;
-  const { deschideFirma } = await import("./ecrane/firme.js?v=b651b4c4fe");
+  const { deschideFirma } = await import("./ecrane/firme.js?v=24e83ae124");
   deschideFirma(t, nav);
   await _asteapta('[id^="fa-"]');
 }
@@ -121,15 +121,23 @@ export async function deschideRezultatul(x, nav) {
 // paginii `cautare-globala`, fereastra `cautare-fereastra`).
 export function puneCautarea(bara, nav, opt = {}) {
   const id = opt.id || "cautare-globala";
+  const ingust = matchMedia("(max-width: 700px)");   // [17.5-K, AC020] aceeași interogare ca CSS-ul căsuței (stil.css, media 700 px)
+  const TEXT_LUNG = "Caută o funcție: D300, stat de plată, NIR…";
   const idRez = opt.id ? opt.id + "-rez" : "cautare-rez";   // lista antetului paginii își păstrează id-ul de la început (`#cautare-rez`)
   const loc = document.createElement("div");
   loc.className = "cautare-globala" + (opt.inainte ? " cautare-in-fereastra" : "");
   loc.innerHTML = `<input type="search" id="${id}" class="cautare-camp" autocomplete="off" spellcheck="false"
-      placeholder="${innerWidth < 700 ? "Caută" : "Caută o funcție: D300, stat de plată, NIR…"}" aria-label="Caută o funcție a aplicației (Ctrl+K)" title="Ctrl+K"
+      placeholder="${ingust.matches ? "Caută" : TEXT_LUNG}" aria-label="Caută o funcție a aplicației (Ctrl+K)" title="Ctrl+K"
       role="combobox" aria-expanded="false" aria-controls="${idRez}" aria-autocomplete="list">
     <div class="cautare-rez" id="${idRez}" role="listbox" aria-label="Rezultatele căutării" hidden></div>`;
   bara.insertBefore(loc, opt.inainte || bara.querySelector(".bara-spatiu"));
   const inp = loc.querySelector("#" + id);
+  // textul de îndemn urmează lățimea în orice moment; ascultătorul se scoate la primul eveniment la care căsuța nu mai e în pagină
+  const urmeazaLatimea = () => {
+    if (!inp.isConnected) { ingust.removeEventListener("change", urmeazaLatimea); return; }
+    inp.placeholder = ingust.matches ? "Caută" : TEXT_LUNG;
+  };
+  ingust.addEventListener("change", urmeazaLatimea);
   const lista = loc.querySelector("#" + idRez);
   let ceas = null, rezultate = [], activ = -1;
   const cerereNoua = ultimaCerere();   // [C103] numai răspunsul ultimei căutări ajunge în listă

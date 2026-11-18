@@ -51,7 +51,7 @@ import { ecranEtransport } from "./etransport_ecran.js?v=11326ec78a";
 import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=6dccb53624";  // [p96_import_firma] + [Q4] import in masa
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [17.5-J, AC052] refuzul care trimite la ce lipsește
 import { declaratiiPerFirma } from "./declaratii.js?v=93956357f7";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=c6b58b070d";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=38460ddd83";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";  // [date_firma_v1]
@@ -2798,7 +2798,16 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
   // [comanda Costin 06.10.2026 pct.1c, clasa] transferul și reclasificarea porneau pe PRIMUL articol (fără opțiune goală): un articol pe
   // care nu l-a ales nimeni. Acum lista începe gol, iar butonul refuză până se alege.
   const locZona = zona.querySelector("#cv-loc-zona");
+  // [17.5-K, AC082] analitica deschisă poate cere zona eliberabilă (navigator `_noteInZona`: sub 40% din corp, fereastra derulează corpul, nu zona);
+  // marca se pune la deschiderea analiticei și se scoate (împreună cu `data-zona-eliberata`) de oricine altcineva scrie în `#cv-loc-zona`
+  const marcaZona = (pune) => {
+    const corp = zona.closest(".fereastra-corp");
+    if (!corp) return;
+    corp.removeAttribute("data-zona-eliberata");
+    if (pune) corp.setAttribute("data-zona-eliberabila", ""); else corp.removeAttribute("data-zona-eliberabila");
+  };
   zona.querySelector("#cv-loc-vezi").addEventListener("click", async () => {
+    marcaZona(false);
     try {
       const r = await api.get(`/tenants/${t.id}/stocuri/locatii`);
       const l = r.locatii || [];
@@ -2927,6 +2936,7 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
   }));
   // [F140] Analitica de stoc: critic / inert / ABC / consum perioade comparabile
   zona.querySelector("#cv-ana").addEventListener("click", async () => {
+    marcaZona(false);
     try {
       const r = await api.get(`/tenants/${t.id}/stocuri/analitica`);
       const lista = (titlu, randuri, gol) => `
@@ -2960,6 +2970,7 @@ export async function sectiuneaCV(corp, t, zonaM, nav = null) {   // [lotul 13, 
           ${lista(`Clasificare ABC (Pareto pe valoarea stocului)`, abc, "Niciun stoc de clasificat.")}
           ${lista(`Consum — perioade comparabile`, consum, "Nicio ieșire în ultimele 60 de zile.")}
         </div>`;
+      marcaZona(true);
     } catch (e) { arataMesaj(locZona, e.mesaj || "eroare", "eroare"); }
   });
   zona.querySelector("#cv-fisa").addEventListener("click", async () => {

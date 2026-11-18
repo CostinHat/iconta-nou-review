@@ -354,6 +354,14 @@ export function baraDeJos(fer, corp, { renunta }) {
         zona.appendChild(x);
       }
     }
+    // [17.5-K, AC102 / AC111] bara fixă a cărei singură componentă vizibilă, după ce cadrul a mutat acțiunea principală și motivul, e butonul „Renunță” nu mai
+    // plutește peste câmpuri (`fj-doar-renunta`: în flux, după formular); cu mesaj de refuz sau rezultat în ea rămâne lipită. Se pune și se scoate la fiecare sincronizare.
+    for (const z of corp.querySelectorAll(".bara-fixa")) {
+      const butoane = [...z.querySelectorAll("button")].filter(_vizibil);
+      const altele = [...z.querySelectorAll("input:not([type=hidden]), select, textarea, table, img")].some(_vizibil);
+      const text = [z, ...z.querySelectorAll("*")].some((e) => !e.closest("button") && _vizibil(e) && [...e.childNodes].some((n) => n.nodeType === 3 && n.nodeValue.trim()));
+      z.classList.toggle("fj-doar-renunta", butoane.length === 1 && _normalizeaza(butoane[0].textContent) === "Renunță" && !altele && !text);
+    }
     // motivul: al ecranului (`.ds-motiv-inactiv` existent, mutat în bară) dacă îl are, altfel al piesei
     for (const m of corp.querySelectorAll(".ds-motiv-inactiv")) if (!bara.contains(m) && !m.classList.contains("fj-text")) motiv.appendChild(m);
     // [17.5-H2] motivul butonului principal inactiv: UN SINGUR text, cu o singură prioritate — (1) al ecranului: `.ds-motiv-inactiv` / `data-motiv-generat` mutat în bară, ori cel

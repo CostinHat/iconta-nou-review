@@ -12,8 +12,8 @@ import { uitaFereastra, memoreazaFereastra, memoreazaCampul } from "./restaurare
 import { sesiune } from "./sesiune.js?v=898215e0ee";
 import { esc, inchidereDialog, cate, ultimaCerere, dataRo } from "./api.js?v=7396e03327";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=ce01321ac1";  // [bun_venit_v1] "?" general (ansamblu)
-import { baraDeJos } from "./cadru.js?v=fb156bae61";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
-import { puneCautarea } from "./cautare.js?v=40db9aeffa";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
+import { baraDeJos } from "./cadru.js?v=fcb704c248";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+import { puneCautarea } from "./cautare.js?v=3001002077";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
 import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
 import * as _versiune from "./versiune.js?v=9a0ee2174b";      // [R129] anunta o publicare noua, fara sa intrerupa
 import { numeDeSalut } from "./ecrane/salut.js?v=f5a3ed7133";   // [269] numele din salut, același loc ca pagina principală
@@ -394,6 +394,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       const f = _corp.closest(".fereastra") || fer;
       if (f.classList.contains("fer-mic")) return;
       const lucru = f.classList.contains("fer-tabel") || f.classList.contains("fer-lucru");
+      if (_corp.hasAttribute("data-zona-eliberata")) return;   // [17.5-K] zona eliberată: corpul derulează, zona nu se pune la loc cât corpul poartă marca
       // o fereastră care nu e „de lucru” (prima fereastră, lățime implicită) primește zona numai când corpul ei chiar derulează
       if (!lucru && !_corp.querySelector(".zona-derulare") && _corp.scrollHeight <= _corp.clientHeight + 1) return;
       // zona o poate declara ecranul însuși (`data-zona-derulare`: o listă care nu e tabel — „Ce oprește închiderea”)
@@ -503,6 +504,16 @@ export function creeazaNavigator(radacina, desktopRandator) {
         zona.style.setProperty("--zona-min", Math.ceil(prag) + "px");
         _marcheazaLantul(zona);
         if (deruleaza()) { zona.style.removeProperty("--zona-min"); _marcheazaLantul(zona); }
+      }
+      // [17.5-K, AC082, DS cap.9] fereastra marcată `data-zona-eliberabila` (ecranul o pune numai când zona ei nu are loc): zona încă sub 40% din corp și tăiată
+      // renunță la derularea proprie, iar corpul derulează (un singur loc de derulare, ca la Facturi); decizia se ia o singură dată, până la închiderea ferestrei
+      if (_corp.hasAttribute("data-zona-eliberabila") && zona.clientHeight < 0.4 * _corp.clientHeight && taiata()) {
+        zona.classList.remove("zona-derulare");
+        zona.removeAttribute("tabindex");
+        zona.style.removeProperty("--zona-min");
+        for (let p = zona.parentElement; p && p !== _corp; p = p.parentElement) { p.classList.remove("lant-zona"); p.style.minHeight = ""; }
+        _corp.classList.remove("cu-zona");
+        _corp.setAttribute("data-zona-eliberata", "");
       }
     };
     const _lateste = () => {
@@ -888,7 +899,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             if (!Number.isFinite(tid)) { console.warn("[clopot] link jurnal malformat:", n.link); return; }
             try {
               const { api } = await import("./api.js?v=7396e03327");
-              const { ecranJurnal } = await import("./ecrane/firme.js?v=b651b4c4fe");
+              const { ecranJurnal } = await import("./ecrane/firme.js?v=24e83ae124");
               const t = ((await api.get("/tenants")).tenants || []).find((x) => x.id === tid);
               if (!t) { console.warn("[clopot] firma notificării nu e în lista ta:", tid); return; }
               window._navGlobal.acasa();
