@@ -1,0 +1,12 @@
+DERULARE Rapoarte comerciale F1 603x590 element=zonă scrollTop_inainte=0 scrollTop_dupa=173 ultimul_vizibil=da depaseste=da
+DERULARE Rapoarte comerciale F1 1366x603 element=zonă scrollTop_inainte=0 scrollTop_dupa=114 ultimul_vizibil=da depaseste=da
+DERULARE Rapoarte comerciale F1 1366x768 element=corp scrollTop_inainte=0 scrollTop_dupa=0 ultimul_vizibil=da depaseste=nu
+DERULARE Plan de conturi F1 603x590 element=corp scrollTop_inainte=0 scrollTop_dupa=71623 ultimul_vizibil=da depaseste=da
+DERULARE Plan de conturi F1 1366x603 element=zonă scrollTop_inainte=0 scrollTop_dupa=33713 ultimul_vizibil=da depaseste=da
+DERULARE Plan de conturi F1 1366x768 element=zonă scrollTop_inainte=0 scrollTop_dupa=33550 ultimul_vizibil=da depaseste=da
+DERULARE Analitică stoc F1 603x590 element=corp scrollTop_inainte=27 scrollTop_dupa=1416 ultimul_vizibil=da depaseste=da
+DERULARE Analitică stoc F1 1366x603 element=zonă scrollTop_inainte=0 scrollTop_dupa=823 ultimul_vizibil=da depaseste=da
+DERULARE Analitică stoc F1 1366x768 element=zonă scrollTop_inainte=0 scrollTop_dupa=693 ultimul_vizibil=da depaseste=da
+DERULARE Import date — Solduri inițiale F1 603x590 element=zonă scrollTop_inainte=0 scrollTop_dupa=235 ultimul_vizibil=da depaseste=da
+DERULARE Import date — Solduri inițiale F1 1366x603 element=zonă scrollTop_inainte=0 scrollTop_dupa=51 ultimul_vizibil=da depaseste=da
+DERULARE Import date — Solduri inițiale F1 1366x768 element=corp scrollTop_inainte=0 scrollTop_dupa=0 ultimul_vizibil=da depaseste=nu
