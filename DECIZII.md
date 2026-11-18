@@ -24810,3 +24810,9 @@ Sursa: «auditul Pilot din 13.11.2026, 45 de poziții, pe versiunea 17.5-I»; de
 - J3 publică remedierile J/J2 din C_J2 (`be809eb7`) pe tiparul X8: P_J3 `bbb7de49` (praguri + martori «inainte»), C_J3 `e76d7824` (dovezi), E_J3 (jurnal și capturi haiku_1 + «dupa»). Diff față de C_J2: numai `scripts/praguri_17_5_J3.txt` și `docs/dovezi/17_5_J3/`.
 - Poarta pe C_J3: VERDE, 1957 teste, regresie 0, restanțe 2 (R021, R027), infra 0; hook 95/97 s, verificator 84 s, pytest 589 s, plasă 2402 s — toate sub pragurile înghețate. Haiku haiku_1 14/14 «corespunde»; «dupa» 14/14 «trece». Marcajul de proces străin n-a apărut.
 - Decizie: riscul «cronul corectat nu are recepție reală confirmată» acceptat explicit de Costin la pornire (P0-J3-08, calea B).
+
+
+## Lotul 17.5-Z (unelte, 18.11.2026) — oprire sigură și gardă permanentă pentru `scripts/verificator_design.py`
+- Motiv: `opreste()` trimitea `killpg` pe un PID din `stare.json` și `elibereaza_port` pe un grup redescoperit (PID refolosit / proces străin posibil), `ss` eșuat se citea „port liber”, iar `/tmp/verificator_design` se ștergea fără proprietate.
+- Decizie: semnale numai prin pidfd, după identitate completă (starttime, PGID, SID, cwd, cmdline, boot_id) și proprietatea portului; port fail-closed (liber numai dintr-un `ss` reușit și întreg); lacăt propriu `~/.iconta/lacat_verificator_design` pe toată operația; TEMP șters numai cu proprietate dovedită (lstat, uid, mod, marcaj) și niciodată înainte ca `_exporta` să fi fost precedat de verificări; `stare.json` în format vechi = refuz.
+- Garda: `core/test_verificator_design_17_5_Z.py` (75 de cazuri) în `scripts/poarta_nucleu.txt`. C = `6ec19b13`; poarta finală VERDE.
