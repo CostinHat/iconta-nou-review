@@ -1,0 +1,6 @@
+[lacat_test] lacăt preluat de la pid 3346362 (mort sau refolosit)
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul etransport: trece [('a.2', 'trece', '')]
+[parcurs] pasul control_firma: trece [('a.3', 'trece', '')]
+[parcurs] pasul plan_conturi: trece [('f.2', 'trece', '')]
+
