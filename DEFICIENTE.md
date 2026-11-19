@@ -1196,3 +1196,26 @@ număr → răspuns → captură e în `dovezi/lot12/RETEST_NUMERE_VECHI.md` (30
 - AC185 (= 795) — Control fiscal spune pe fiecare cont comparat câte note în ciornă îl ating și suma lor (`explicatie_ciorne`). Lot 17.5-W, nepublicat.
 - AC186 (= 796) — lămurit: comportament prin decizia A, nu eroare. Lot 17.5-W.
 - AC019, AC020, AC043, AC057, AC065, AC074, AC082, AC092, AC102, AC111 — etichete nerupte, text de îndemn după lățime, zonă eliberabilă (AC082), «Renunță» în flux. Lot 17.5-K2, nepublicat până la raport; netul îl stabilește retestul arhitectului.
+
+## Constatările de audit ale lotului 17.5-L (portalul clientului; 19.11.2026; netul îl stabilește retestul arhitectului)
+- AC145 — o singură citire a bonului la un moment dat: intrările și butoanele de selecție sunt inactive cât durează cererea, a doua selecție nu produce o a doua cerere POST /portal/bon. Lot 17.5-L, nepublicat până la raport.
+- AC146 — cel mult patru fotografii pentru un document: intro-ul o spune, a cincea selecție nu trimite cererea («Poți trimite cel mult 4 fotografii odată. Alege din nou.»), iar serverul refuză explicit peste patru (nu mai taie lista). Lot 17.5-L.
+- AC147 — textele citite de AI (comerciant, număr, CUI, mențiuni, avertismente) se afișează ca text (esc), nu ca HTML. Lot 17.5-L.
+- AC148 — total / orientare / TVA invalide din răspunsul AI: refuz controlat «Nu s-a putut citi bonul. Încearcă o poză mai clară.», fără 500 și fără bon parțial. Lot 17.5-L.
+- AC149 — previzualizarea portalului: intrările și butoanele bonului inactive dinainte de gest, cu motivul «Previzualizare: doar vizualizare.». Lot 17.5-L.
+- AC151 — «Fotografiază documentul» și «Încarcă din galerie» alăturate, secundare, în #bon-butoane. Lot 17.5-L.
+- AC152 — TVA-ul bonului pe cotele valabile la data de pe bon (tva_21 = cota standard a datei, tva_11 = cota redusă a datei, 0 înainte de 01.08.2025), fiecare cotă tratată separat, cu avertisment când una e indisponibilă. Lot 17.5-L.
+- AC155, AC175, AC177 — denumiri consecvente: «Fotografiază bon sau chitanță», «Mesaje către contabil», «Documente» (card, navigare, titlu de fereastră). Lot 17.5-L.
+- AC156, AC158 — refuzurile din portal_bon / confirma / sterge scrise pentru client (majusculă, punct, «tu»). Lot 17.5-L.
+- AC157 — descrierea previzualizării numai în română (casetă și răspunsul serverului). Lot 17.5-L.
+- AC159 — textele de așteptare ale portalului cu «…». Lot 17.5-L.
+- AC161, AC162, AC166 — Istoric facturi la client: «←» păstrează luna, «luna →» inactivă în luna curentă, deschiderea nouă pe ultima lună cu facturi cu explicația. Lot 17.5-L.
+- AC164 — clientul nu mai vede exporturile SAGA / WinMentor și nicio stare a notei contabile (cabinetul le păstrează). Lot 17.5-L.
+- AC167 — «Previziune bani (8 săptămâni)»: corpul ferestrei e singurul loc de derulare (`data-fara-zona`), nu o zonă de 88 px. Lot 17.5-L.
+- AC169 — sub «De plătit către furnizori»: facturile primite încă neînregistrate de contabil, pe monede, disjunct de suma validată. Lot 17.5-L.
+- AC170, AC171 — toate sumele din «Cifrele firmei» și prognoză prin bani(v), două zecimale. Lot 17.5-L.
+- AC172 — mesajul clientului: tăiat la capete, gol / numai spații și peste 4.000 de caractere refuzate pe server (modelul comun SolicitareIn neschimbat). Lot 17.5-L.
+- AC173 — fiecare mesaj cu data și ora; «Trimis» / «Răspuns primit»; «Mesajul a fost trimis contabilului.». Lot 17.5-L.
+- AC176 — «Declarații depuse»: «✓» cu nume accesibil «Depusă», fără «depusă» de două ori. Lot 17.5-L.
+- AC178 — «Povestea lunii» în cuvinte: «cu X lei mai mult / mai puțin decât luna anterioară (rezultat înainte de impozit)» sau «la fel ca luna anterioară». Lot 17.5-L.
+- AC153, AC154, AC163, AC165, AC179 — în afara perimetrului lotului 17.5-L (AC153/AC154 → lotul P; AC163 = date istorice de test; AC165 păzit de teste; AC179 deja rezolvată).

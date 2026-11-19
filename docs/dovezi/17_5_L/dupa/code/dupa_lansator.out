@@ -1,0 +1,4 @@
+[lacat_test] lacăt preluat de la pid 4065803 (mort sau refolosit)
+[parcurs] pasul start_portal: trece [('f.1', 'trece', ''), ('a.3', 'trece', ''), ('a.4', 'trece', ''), ('f.2', 'trece', '')]
+[parcurs] pasul istoric_portal: trece [('a.5', 'trece', ''), ('a.6', 'trece', '')]
+
