@@ -99,16 +99,15 @@ intră în raport, cu numărul ei, cu ce a găsit și ce a făcut; nu rămâne d
 Procesul pe fiecare deficiență primită (regulă permanentă, 30.10.2026; motiv: deficiențe raportate „rezolvat” au picat la retestul
 lui Costin, pentru că testele lui Code îi confirmau propria interpretare — dovada nu mai vine de la Code):
 1. Înainte de orice modificare, Code scrie într-o frază cum a înțeles deficiența și ce rezultat urmărește. Fraza intră în raport, neschimbată.
-2. Scenariul deficienței (textul din comandă) se dă unui verificator independent: un subagent nou (Sonnet 5.5) al cărui prompt este
-   exact textul scenariului plus instrucțiunea fixă, nimic altceva — nu vede modificările, notele sau testele lui Code. Instrucțiunea fixă:
-   „Rulează scenariul de mai jos în aplicație, pe mediul de test, exact cum e scris, cu uneltele de capăt la capăt existente. Nu modifici
-   cod. Răspunzi doar cu: TRECE sau NU TRECE, pașii făcuți, ce ai văzut la fiecare pas, capturile de ecran, și orice abatere de la
-   scenariu.” Rulează înainte de reparație (trebuie NU TRECE; altfel deficiența e „nereprodusă” și nu se repară nimic în locul ei) și
-   după reparație, cu un subagent nou de fiecare dată. Răspunsul lui intră în raport cuvânt cu cuvânt.
+2. Scenariul deficienței (textul din comandă) se judecă de verificatorul independent oficial al porții (16.3: Haiku, prin
+   scripts/lanseaza_verificator.py, pe pașii din parcursul lotului), nu de un subagent. Code nu lansează subagenți sau agenți
+   de niciun fel, fără excepții (plan iConta v22, 18.11.2026, pct.8). Pasul deficienței se judecă înainte de reparație (trebuie
+   să pice; altfel deficiența e „nereprodusă” și nu se repară nimic în locul ei) și după reparație. Verdictul intră în raport
+   cuvânt cu cuvânt.
 3. Se repară cauza oriunde se aplică aceeași regulă, nu doar în cazul din scenariu, iar locurile atinse se listează.
-4. Cel mult două runde pe o deficiență. Dacă după a doua tot NU TRECE, modificările ei se anulează și deficiența se raportează
+4. Cel mult două runde pe o deficiență. Dacă după a doua tot pică, modificările ei se anulează și deficiența se raportează
    nerezolvată, cu motivul. Nu blochează publicarea celorlalte.
-5. „Rezolvat” înseamnă doar TRECE de la verificator. Testele lui Code nu sunt dovadă. Scenariul deficienței rămâne test permanent.
+5. „Rezolvat” înseamnă doar verdictul „corespunde” de la verificatorul independent. Testele lui Code nu sunt dovadă. Scenariul deficienței rămâne test permanent.
 
 Scutirea 278.1 din regula 11.2 (16.4 pct.1; decizia arhitectului 05.11, regula Costin 04.11): `core/test_deficiente.py::DOVADA_PRIN_E2E` (mulțime închisă: 642, 278.1) și `DOVADA_PRIN_PILOT` (278.1). Un rând 278.1 `rezolvată` fără capturi pe firmele de test are `lipsuri_dovada_pilot`: numai teste `test_pilot_…` în plasa e2e și în plasa de publicare, „ce lipsește” exact `dovada e2e: docs/dovezi/16_2_C/jurnal_verificare.csv; pasi: c.1, …, d.1` și, pentru fiecare pas, un rând code / dupa / trece și un rând haiku / haiku_1 / trece cu „corespunde”, pe același commit, cu captura în index. Orice alt număr < 712 rămâne pe regula capturilor.
 
