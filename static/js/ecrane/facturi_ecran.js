@@ -660,27 +660,24 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
   const deseneaza = async () => {
     const actuala = cerereNoua();
     corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
-    if (opt.client && !memorat && !_luniIstoric.has(tenantId)) {
-      // [AC166] deschidere nouă: dacă luna curentă nu are facturi, se arată ultima lună cu facturi (după datele serverului, cea mai recentă factură)
-      try {
+    let lista = [];
+    try {
+      if (opt.client && !memorat && !_luniIstoric.has(tenantId)) {
+        // [AC166] deschidere nouă: dacă luna curentă nu are facturi, se arată ultima lună cu facturi (după datele serverului: cea mai recentă factură dinaintea lunii curente)
         const cur = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=1`);
         if (!actuala()) return;
         if (!((cur && cur.facturi) || []).length) {
           const ultima = await api.get(`/tenants/${tenantId}/facturi?limit=1`);
           if (!actuala()) return;
-          const d = String((((ultima && ultima.facturi) || [])[0] || {}).data_emitere || "").slice(0, 7);
-          const [a, l] = d.split("-").map(Number);
+          const [a, l] = String((((ultima && ultima.facturi) || [])[0] || {}).data_emitere || "").slice(0, 7).split("-").map(Number);
           if (a && l && (a < anCurent || (a === anCurent && l < lunaCurenta))) { an = a; luna = l; explicatie = true; }
         }
-      } catch { if (!actuala()) return; }
-    }
-    if (opt.client) _luniIstoric.set(tenantId, { an, luna, explicatie });
-    let lista = [];
-    try {
+      }
       const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 11}`);
       if (!actuala()) return;
       lista = (r && r.facturi) || [];
     } catch { if (!actuala()) return; corp.innerHTML = `<p class="ecran-nota">Nu s-au putut încărca facturile emise.</p>`; return; }
+    if (opt.client) _luniIstoric.set(tenantId, { an, luna, explicatie });   // [AC161] luna răsfoită, pentru revenirea din detaliu
     // [cap.23, 21.08.2026] ACTUL DE ÎNCHIDERE a lunii pe facturi. Cât timp luna nu e închisă, evidența
     // ei e informativă — iar semaforul nu se poate sprijini pe ea când spune că o declarație nu se
     // datorează. Nu se afișează în portalul clientului (închiderea e act de contabil).
