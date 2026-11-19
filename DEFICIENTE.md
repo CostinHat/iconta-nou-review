@@ -1195,4 +1195,4 @@ număr → răspuns → captură e în `dovezi/lot12/RETEST_NUMERE_VECHI.md` (30
 - AC184 (= 794) — decontul D300 / D394 numește rapoartele Z cu nota în ciornă pe care nu le cuprinde (avertisment primul) și refuză depunerea (RAPOARTE_Z_NEVALIDATE). Lot 17.5-W, nepublicat.
 - AC185 (= 795) — Control fiscal spune pe fiecare cont comparat câte note în ciornă îl ating și suma lor (`explicatie_ciorne`). Lot 17.5-W, nepublicat.
 - AC186 (= 796) — lămurit: comportament prin decizia A, nu eroare. Lot 17.5-W.
-
+- AC019, AC020, AC043, AC057, AC065, AC074, AC082, AC092, AC102, AC111 — etichete nerupte, text de îndemn după lățime, zonă eliberabilă (AC082), «Renunță» în flux. Lot 17.5-K2, nepublicat până la raport; netul îl stabilește retestul arhitectului.

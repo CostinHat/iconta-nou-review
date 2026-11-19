@@ -1,0 +1,4 @@
+[e2e] aplicația din index pornită pe 8019 în 17s
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_114_clopotelul_ramane_vizibil_si_apasabil
+FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_121_restantele_se_numara_de_la_luna_preluarii
+[e2e] 2 failed, 39 passed in 204.09s (0:03:24) (222s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/250fa798-d3bf-43e8-960e-a3b68219440e/scratchpad/e85_e2e_bloc_d)

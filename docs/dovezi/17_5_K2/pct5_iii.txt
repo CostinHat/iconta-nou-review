@@ -1,0 +1,29 @@
+static/index.html | 0 | -  <link rel="stylesheet" href="/static/stil.css?v=c20a89b834">
+static/js/app.js | 0 | -import { creeazaNavigator, deschideDinAdresa } from "./navigator.js?v=ed9a316013";
+static/js/cautare.js | = | -  const { deschideFirma } = await import("./ecrane/firme.js?v=b651b4c4fe");
+static/js/cautare.js | 0 | -      placeholder="${innerWidth < 700 ? "Caută" : "Caută o funcție: D300, stat de plată, NIR…"}" aria-label="Caută o funcție a aplicației (Ctrl+K)" title="Ctrl+K"
+static/js/ecrane/asistent.js | = | -import { randeazaListaFirme } from "./firme.js?v=b651b4c4fe";
+static/js/ecrane/borderou_ecran.js | = | -    const { ecranJurnal } = await import("./firme.js?v=b651b4c4fe");
+static/js/ecrane/cabinet.js | = | -import { randeazaListaFirme } from "./firme.js?v=b651b4c4fe";
+static/js/ecrane/coada_trimite.js | = | -    const { ecranJurnal } = await import("./firme.js?v=b651b4c4fe");
+static/js/ecrane/control.js | 0 | -import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=c6b58b070d";  // renderer unic al verdictului (DS cap.20)
+static/js/ecrane/control_verdict.js | = | -      <button type="button" class="buton-secundar buton-xs cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern" ${atr(x)}>Modifică marcarea</button>
+static/js/ecrane/control_verdict.js | = | -      <button type="button" class="buton-secundar buton-xs cf-extern-anuleaza" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern/anuleaza" ${atr(x)}>Anulează marcarea</button>`
+static/js/ecrane/control_verdict.js | = | -    const { deschideInchidereLuna } = await import("./firme.js?v=b651b4c4fe");
+static/js/ecrane/ecran_destinatie.js | = | -    deschide: async (nav, tenantId) => { const { deschideSalariati } = await import("./firme.js?v=b651b4c4fe"); await deschideSalariati(nav, tenantId); },
+static/js/ecrane/facturi_ecran.js | = | -            const { ecranJurnal } = await import("./firme.js?v=b651b4c4fe");   // dinamic, ca „nota …” din detaliul facturii
+static/js/ecrane/facturi_ecran.js | = | -        const { ecranJurnal } = await import("./firme.js?v=b651b4c4fe");   // dinamic: firme.js importă deja ecranul facturilor
+static/js/ecrane/firme.js | 0 | -import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=c6b58b070d";  // renderer unic verdict control fiscal (DS cap.20)
+static/js/ecrane/inceput.js | = | -    const { randeazaListaFirme } = await import("./firme.js?v=b651b4c4fe");
+static/js/ecrane/migrare.js | = | -    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=b651b4c4fe"); a
+static/js/ecrane/operatiuni_ecran.js | = | -      const { ecranJurnal } = await import("./firme.js?v=b651b4c4fe");
+static/js/ecrane/supervizor.js | 0 | -import { randA as randConstatare } from "./control_verdict.js?v=c6b58b070d";
+static/js/ecrane/termene.js | = | -import { deschideFirma } from "./firme.js?v=b651b4c4fe";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+static/js/ecrane/validat.js | 0 | -import { randA as randConstatare } from "./control_verdict.js?v=c6b58b070d";
+static/js/ecrane/validat.js | = | -import { deschideFirma, ecranJurnal } from "./firme.js?v=b651b4c4fe";
+static/js/navigator.js | = | -import { baraDeJos } from "./cadru.js?v=fb156bae61";   // [15.1-E2, pct.3] bara de jos a ferestrei de lucru
+static/js/navigator.js | 0 | -import { puneCautarea } from "./cautare.js?v=40db9aeffa";   // [lotul 13, 681] căutarea globală din antet (versiunea o pune `versioneaza_assets.py --scrie`)
+static/js/navigator.js | = | -              const { ecranJurnal } = await import("./ecrane/firme.js?v=b651b4c4fe");
+static/spv_callback.html | 0 | -  <link rel="stylesheet" href="/static/stil.css?v=c20a89b834">
+rânduri „-” cu texte de oracol: 27
+Notă: potrivirile cu valorile «0» și «=» sunt zgomot de subșir pe liniile ?v= (cascada versioneaza_assets.py); rândurile de la locurile numite la «De ce»: cautare.js (placeholder, AC020) și control_verdict.js (butoanele randDecl, AC057). Niciun text de oracol pierdut din alt loc.

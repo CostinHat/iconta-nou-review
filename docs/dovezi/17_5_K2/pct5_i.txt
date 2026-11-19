@@ -1,0 +1,25 @@
+loturi publicate cu pasi.json: 22
+  docs/dovezi/16_1_C3/pasi.json
+  docs/dovezi/16_2_C/pasi.json
+  docs/dovezi/16_3/pasi.json
+  docs/dovezi/16_6_C2/pasi.json
+  docs/dovezi/16_8_C1/pasi.json
+  docs/dovezi/17_1/pasi.json
+  docs/dovezi/17_2/pasi.json
+  docs/dovezi/17_3_B/pasi.json
+  docs/dovezi/17_5/pasi.json
+  docs/dovezi/17_5_B2/pasi.json
+  docs/dovezi/17_5_C2/pasi.json
+  docs/dovezi/17_5_D/pasi.json
+  docs/dovezi/17_5_E2/pasi.json
+  docs/dovezi/17_5_F/pasi.json
+  docs/dovezi/17_5_G3/pasi.json
+  docs/dovezi/17_5_H2/pasi.json
+  docs/dovezi/17_5_I/pasi.json
+  docs/dovezi/17_5_J3/pasi.json
+  docs/dovezi/17_5_O3/pasi.json
+  docs/dovezi/17_5_S/pasi.json
+  docs/dovezi/17_5_W/pasi.json
+  docs/dovezi/17_5_X8/pasi.json
+elemente comparate: 170 scăderi: 0
+valori text oracole: 206

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.121 · 15 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.122 · 19 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -88,6 +88,9 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Orice card din grila cabinetului (`.cab-card`) se deschide EXCLUSIV prin `nav.deschide(titlu, corp, opt)` — fereastra overlay cu X.
 - **(v2.118, lotul 17.5-O, AC180)** Ferestrele deschise din cardurile-rezumat ale unui ecran (`siraCarduri(..., { sageataSimpla: true })`; azi ecranul Stocuri) au săgeata fără text, «←»; destinația («Înapoi la <ecranul de dedesubt>») stă în `aria-label` și `title`. Butonul «← Înapoi la …» cu text rămâne numai la ferestrele deschise dintr-un refuz (`dinRefuz`).
 - **(v2.118, lotul 17.5-O, AC143)** Fereastra mică de confirmare (`lat: "mic"`) nu are «←»: renunțarea e «✕» sau «Renunță» (aceeași ieșire din decizie, o singură dată).
+- **(v2.122, lotul 17.5-K2, AC019, AC043, AC057)** Eticheta unui buton sau a unei file nu se rupe (rând unic): rândul se rupe între butoane/file, nu în etichetă (`.rap-tabs` cu `flex-wrap: wrap` și `.rap-tab` cu `white-space: nowrap`; `.sa-cap-rand` cu butonul «Vezi tot» nerupt; `buton-fara-rupere` pe butoanele scurte din celula de acțiuni a tabelului DS).
+- **(v2.122, lotul 17.5-K2, AC102, AC111)** Bara fixă a cărei singură componentă vizibilă e butonul «Renunță» nu plutește peste câmpuri: rămâne în flux, după formular (`fj-doar-renunta`, pus de `static/js/cadru.js` la fiecare sincronizare); cu mesaj sau rezultat în ea rămâne lipită.
+- **(v2.122, lotul 17.5-K2, AC082)** Zona eliberabilă: o fereastră care pune pe `.fereastra-corp` marca `data-zona-eliberabila` (acum numai Analitică stoc) și a cărei zonă de derulare e sub 40% din corp și tăiată derulează corpul, nu zona (`data-zona-eliberata`; un singur loc de derulare).
 - **(v2.118, lotul 17.5-O, AC108, AC181, AC182)** O acțiune apare o singură dată pe fereastră: fie în rând, fie în bara de jos. «Fluturaș» al fișei salariatului (`#ss-fluturas`) stă numai în bara de jos; în Rapoarte comerciale «Descarcă PDF» e singurul buton principal («Salvează varianta curentă» e secundar); în Suport «Trimite sesizarea» (`#rap-trimite` din `#rap-zona-sesizare`) e mutat în bară, nu dublat. Bara de jos a unei ferestre de export nu se modifică singură după așezare (AC183).
 - **(v2.119, lotul 17.5-W, AC184)** Butonul inactiv al pasului 2 (`#dec-trimite` cu `aria-describedby="dec-blocaj"`) poartă eticheta pasului real («Pune în „De depus” →»), nu «Trimite în coadă →»; motivul stă lângă el, în `#dec-blocaj`, cu butoanele «Deschide nota …» ale rapoartelor Z în ciornă.
 - **(v2.119, lotul 17.5-W, AC185)** Explicația cifrei dintr-o constatare Control fiscal stă într-un rând informativ (ton «info») imediat sub ea: cheia `explicatie_ciorne` a constatării, desenată de `semnalConstatare`; prima propoziție (cifrele) se vede fără deschiderea detaliilor.

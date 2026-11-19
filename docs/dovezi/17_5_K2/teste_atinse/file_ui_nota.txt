@@ -1,0 +1,1 @@
+file_ui.py: rc=5 = niciun test colectat (modul-ajutor, nu fișier de teste); citit de lot prin rap-tab, neatins.

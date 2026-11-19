@@ -1,0 +1,2 @@
++  const ingust = matchMedia("(max-width: 700px)");   // [17.5-K, AC020] aceeași interogare ca CSS-ul căsuței (stil.css, media 700 px)
++  ingust.addEventListener("change", urmeazaLatimea);

@@ -1,0 +1,5 @@
+Verificatorul de design, inainte (vd_inainte/, cod de bază bf81b4e4) -> dupa (vd_dupa/, P e97c830a, server pornit); 210 perechi; ferestre cu litera a-h, bara de jos, buton principal sau tabele DS schimbate:
+- Declarație D301 F3 pasul 2 1920x1080: litere pica «deh» -> «d»; bara «fereastra-jos» -> «fereastra-jos»; actiune principala «Pune în „De depus” →» -> «Trimite în coadă →»; tabele DS 0 -> 0; deschidere «None» -> «None»
+Numar ferestre schimbate: 1 ; lipsa dintr-o parte: []
+Nedeschise dupa: ['declaratie_d177_f1_pasul_2_1366x768.json', 'declaratie_d177_f1_pasul_2_1920x1080.json']
+Notă: singura diferență (Declarație D301 F3 pasul 2, 1920x1080: litere deh -> d, butonul principal «Pune în „De depus” →» -> «Trimite în coadă →») e instabilitate de stare, nu efect al lotului: fereastra nu e atinsă de K2; în lotul K (vd_diferenta, 18.11.2026) aceeași fereastră a fost verificată pe bază și a arătat aceeași variație între rulări. Ferestrele așteptate (Sinteza zilei, e-Transport, Control fiscal, Leasing, Certificat CM, ferestrele cu .rap-tab, Analitică stoc) nu și-au schimbat litera/bara/butonul/tabelele. D177 F1 pasul 2: nedeschis și pe bază (preexistent).

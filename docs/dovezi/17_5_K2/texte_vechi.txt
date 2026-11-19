@@ -1,0 +1,3 @@
+# texte vechi (pct.8.5 i): HEAD K2 vs bază bf81b4e4, static/js, grep -rnF
+fragment: innerWidth < 700 ? "Caută" | C(HEAD): 0 | baza: 1
+fragment: class="buton-secundar buton-xs cf-extern-btn" data-actiune="POST /control-fiscal/{tenant_id}/depusa-extern" ${atr(x)}>Modifică marcarea | C(HEAD): 0 | baza: 1

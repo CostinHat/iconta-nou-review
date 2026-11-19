@@ -1,0 +1,5 @@
+sursa: docs/dovezi/17_5_K/baza.json (commit 87d8525b), poarta --baza a lui K, commit_baza bf81b4e4323f02aee428879e1ec002904fd2a98d 2026-11-18T14:56:44
+frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare | pica | plasa_e2e 
+ AssertionError: niciun D112 cu ziua de 25 în weekend pe ecran (03, 06, 09/2026 o au): [['d112-2026-10', 'termen 25.11.2026']]
+assert 0 patron = <conftest.Ecran object at 0x73be994316d0>
+firma_sal = {'tenant_id': 370972, 'schema': 'tenant_9740', 'nume': 'E2E Probă SAL 4653235 SRL', 'cabinet_id': 1968

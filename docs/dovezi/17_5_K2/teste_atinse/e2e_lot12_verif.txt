@@ -1,0 +1,3 @@
+[e2e] aplicația din index pornită pe 8019 în 22s
+
+[e2e] 4 passed in 36.71s (59s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/250fa798-d3bf-43e8-960e-a3b68219440e/scratchpad/e85_e2e_lot12_verif)

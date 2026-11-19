@@ -1,0 +1,42 @@
+e2e_lot15_1 rc=0 dur=231s 
+e2e_lot11_s9 rc=0 dur=101s 
+e2e_lot12_sal2 rc=0 dur=52s 
+e2e_lot14_3 rc=0 dur=59s 
+e2e_lot15_e2 rc=0 dur=37s 
+e2e_lot13_ds rc=0 dur=67s 
+e2e_bloc_c rc=0 dur=271s 
+e2e_bloc_d rc=1 dur=223s FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_114_clopotelul_ramane_vizibil_si_apasabil FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_121_restantele_se_numara_de_la_luna_preluarii 
+e2e_bloc_e rc=0 dur=277s 
+e2e_bloc_f rc=0 dur=118s 
+e2e_lot12_cx2 rc=1 dur=181s FAILED frontend_test/e2e/e2e_lot12_cx2.py::test_def_c131_fiecare_declaratie_datorata_are_randul_reconcilierii_cu_numele_ei 
+e2e_lot5_migrare rc=0 dur=34s 
+e2e_lot6 rc=0 dur=353s 
+e2e_lot13_admin2 rc=0 dur=53s 
+e2e_lot13_portal_p3 rc=0 dur=50s 
+e2e_pozitii_validate rc=1 dur=125s FAILED frontend_test/e2e/e2e_pozitii_validate.py::test_pozitie_f081_termenul_d112_e_25_ale_lunii_urmatoare_pe_zi_lucratoare 
+e2e_lot11_m rc=0 dur=53s 
+e2e_lot11_w4 rc=0 dur=39s 
+e2e_lot12_cx7 rc=0 dur=93s 
+e2e_lot12_emit rc=0 dur=83s 
+e2e_lot15_e3 rc=0 dur=39s 
+e2e_lot15_e4 rc=0 dur=43s 
+e2e_pilot_x06 rc=0 dur=152s 
+e2e_pilot_x09 rc=0 dur=79s 
+e2e_lot14 rc=1 dur=69s FAILED frontend_test/e2e/e2e_lot14.py::test_def_c203_ferestrele_incap_pe_un_ecran_stocuri_inchidere_balanta[1366-768] 
+e2e_lot13_firme2 rc=0 dur=92s 
+e2e_lot12_verif rc=0 dur=61s 
+e2e_lot12_fe3 rc=0 dur=72s 
+e2e_lot12_form2 rc=0 dur=52s 
+e2e_lot10b_declaratii rc=0 dur=39s 
+e2e_lot13_migr rc=1 dur=144s FAILED frontend_test/e2e/e2e_lot13_migr.py::test_def_623_auditul_spune_temeiul_o_singura_data_pe_verificare 
+e2e_lot82 rc=0 dur=181s 
+e2e_lot91 rc=0 dur=145s 
+e2e_lot13_ops rc=0 dur=303s 
+e2e_lot13_sal rc=1 dur=103s FAILED frontend_test/e2e/e2e_lot13_sal.py::test_def_677_statul_compact_si_compozitia_pe_trei_coloane 
+e2e_lot12_ctrl_d112 rc=0 dur=59s 
+e2e_lot12_d112b rc=0 dur=38s 
+e2e_lot13_portal_p2 rc=0 dur=59s 
+e2e_lot10_ferestre rc=0 dur=42s 
+file_ui rc=5 dur=20s 
+e2e_pilot_x05 rc=0 dur=190s 
+GATA

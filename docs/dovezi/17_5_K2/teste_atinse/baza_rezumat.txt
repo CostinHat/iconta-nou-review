@@ -1,0 +1,4 @@
+e2e_bloc_d rc=1 FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_114_clopotelul_ramane_vizibil_si_apasabil FAILED frontend_test/e2e/e2e_bloc_d.py::test_def_121_restantele_se_numara_de_la_luna_preluarii 
+e2e_lot12_cx2 rc=1 FAILED frontend_test/e2e/e2e_lot12_cx2.py::test_def_c131_fiecare_declaratie_datorata_are_randul_reconcilierii_cu_numele_ei 
+e2e_lot14 rc=1 FAILED frontend_test/e2e/e2e_lot14.py::test_def_c203_ferestrele_incap_pe_un_ecran_stocuri_inchidere_balanta[1366-768] 
+e2e_lot13_migr rc=1 FAILED frontend_test/e2e/e2e_lot13_migr.py::test_def_623_auditul_spune_temeiul_o_singura_data_pe_verificare 

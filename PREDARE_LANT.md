@@ -2,6 +2,9 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-K2 (produs, 19.11.2026) — continuarea lui 17.5-K (zece constatări AC); ramura `lucru/lot17-5k2` (worktree `~/iconta_lot17_5k2`), bază main bf81b4e4 (17.5-Z)
+- P0 `d7c7d1bb` (praguri, baza, oracol, testul arhitectului, «inainte»), P `e97c830a` (codul K preluat din fbddf964 + test_def_122 actualizat), apoi C, haiku_1/«dupa», E. Raportul: `~/lot_17_5_K2_raport.md`. Detalii: DECIZII.md «Lotul 17.5-K2». Lotul 17.5-K (`lucru/lot17-5k`) rămâne nepublicat, ca istoric.
+
 ## LOTUL 17.5-Z (unelte, 18.11.2026) — oprire sigură a serverului de lucru; ramura `lucru/lot17-5z` (worktree `~/iconta_lot17_5z`), bază main 254b3ec1 (17.5-J3)
 - P_Z `f66d0a52` (praguri + baza), C `6ec19b13` (cod, gardă, nucleu; poarta VERDE), apoi E_Z (registre). Raportul: `~/lot_17_5_Z_raport.md`. Detalii: DECIZII.md «Lotul 17.5-Z». Următorul: 17.5-K (ținut până la publicarea Z).
 

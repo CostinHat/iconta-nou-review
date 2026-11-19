@@ -1,0 +1,3 @@
+[e2e] aplicația din index pornită pe 8019 în 17s
+FAILED frontend_test/e2e/e2e_lot13_sal.py::test_def_677_statul_compact_si_compozitia_pe_trei_coloane
+[e2e] 1 failed, 8 passed in 84.42s (0:01:24) (102s; capturi în /tmp/claude-1000/-home-costin-iconta-nou/250fa798-d3bf-43e8-960e-a3b68219440e/scratchpad/e85_e2e_lot13_sal)

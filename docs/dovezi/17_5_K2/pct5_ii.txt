@@ -1,0 +1,2 @@
+class="buton-secundar buton-xs buton-fara-rupere cf-extern-anuleaza"
+class="buton-secundar buton-xs buton-fara-rupere cf-extern-btn"
