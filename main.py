@@ -730,7 +730,7 @@ async def _preview_readonly_guard(request: Request, call_next):
             if ctx and ctx.get("ok") and ctx.get("preview"):
                 from fastapi.responses import JSONResponse
                 return JSONResponse(status_code=403, content={
-                    "detail": "Previzualizare — doar vizualizare. Acțiunile sunt dezactivate în modul preview."})
+                    "detail": "Previzualizare: doar vizualizare. Acțiunile sunt dezactivate în modul de previzualizare."})
     return await call_next(request)
 
 

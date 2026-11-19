@@ -135,7 +135,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
         <div class="firme-optiune-desc">\u0218abloane emise automat lunar</div>
       </button>` : ""}
     </div>`;
-  corp.querySelector("#fac-istoric").addEventListener("click", () => nav.mergi("Istoric facturi", (c) => istoricFacturi(c, nav, tenantId, opt)));  // faza_b_traseu_v1
+  corp.querySelector("#fac-istoric").addEventListener("click", () => { _luniIstoric.delete(tenantId); nav.mergi("Istoric facturi", (c) => istoricFacturi(c, nav, tenantId, opt)); });  // faza_b_traseu_v1; [17.5-L, AC161] o deschidere NOUĂ din meniu uită luna răsfoită
   corp.querySelector("#fac-scadentar").addEventListener("click", () => nav.mergi("Scadențar", (c) => scadentarEcran(c, nav, tenantId, opt)));  // f131_scadentar_v1
   corp.querySelector("#fac-emite").addEventListener("click", () => nav.mergi("Emite factur\u0103", (c) => emiteFactura(c, nav, tenantId, opt)));
   corp.querySelector("#fac-model").addEventListener("click", () => nav.mergi("Model factur\u0103", (c) => modelFactura(c, nav, tenantId, opt)));
@@ -643,16 +643,38 @@ export function etichetaSpv(f) {
 }
 
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
+/* [17.5-L, AC161 + AC166] numai portalul clientului: luna răsfoită în Istoric facturi, pe firmă (`tenantId`), cât ține vizita. «←» din detaliul unei facturi
+   reia istoricul (funcția se cheamă din nou) și îl găsește aici; o deschidere nouă din meniu o șterge (meniuFacturi) și recalculează luna inițială. */
+const _luniIstoric = new Map();
+const _fraza_luna_goala = "Luna curentă nu are facturi; se arată ultima lună cu facturi.";
 async function istoricFacturi(corp, nav, tenantId, opt) {
   memoreazaFereastra({ nume: (() => { try { return (JSON.parse(sessionStorage.getItem("iconta_firma_in_lucru") || "null") || {}).nume || ""; } catch { return ""; } })(), drum: ["#fa-facturi", "#fac-istoric"] });   // [15.1, 725.1] F5 readuce Istoric facturi
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   const azi = new Date();
-  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  const anCurent = azi.getFullYear(), lunaCurenta = azi.getMonth() + 1;
+  const memorat = opt.client ? _luniIstoric.get(tenantId) : null;
+  let an = memorat ? memorat.an : anCurent, luna = memorat ? memorat.luna : lunaCurenta;
+  let explicatie = !!(memorat && memorat.explicatie);   // [AC166] luna arătată e ultima cu facturi, nu cea curentă
   let afisate = 10;
   const cerereNoua = ultimaCerere();   // [C103] luna / „mai multe” apăsate în șir: numai lista lunii cerute ultima ajunge pe ecran
   const deseneaza = async () => {
     const actuala = cerereNoua();
     corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
+    if (opt.client && !memorat && !_luniIstoric.has(tenantId)) {
+      // [AC166] deschidere nouă: dacă luna curentă nu are facturi, se arată ultima lună cu facturi (după datele serverului, cea mai recentă factură)
+      try {
+        const cur = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=1`);
+        if (!actuala()) return;
+        if (!((cur && cur.facturi) || []).length) {
+          const ultima = await api.get(`/tenants/${tenantId}/facturi?limit=1`);
+          if (!actuala()) return;
+          const d = String((((ultima && ultima.facturi) || [])[0] || {}).data_emitere || "").slice(0, 7);
+          const [a, l] = d.split("-").map(Number);
+          if (a && l && (a < anCurent || (a === anCurent && l < lunaCurenta))) { an = a; luna = l; explicatie = true; }
+        }
+      } catch { if (!actuala()) return; }
+    }
+    if (opt.client) _luniIstoric.set(tenantId, { an, luna, explicatie });
     let lista = [];
     try {
       const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 11}`);
@@ -700,16 +722,20 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       <h2 class="pf-titlu">Istoric facturi</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="buton-secundar" id="fac-next">luna \u2192</button>
-        <button class="buton-secundar" id="fac-saga-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-saga" style="margin-left:12px">Export SAGA lun\u0103</button>
-        <button class="buton-secundar" id="fac-winmentor-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-winmentor">Export WinMentor lun\u0103</button>
+        <button class="buton-secundar" id="fac-next"${opt.client && (an > anCurent || (an === anCurent && luna >= lunaCurenta)) ? atributeInactiv("Aceasta e luna curentă.") : ""}>luna \u2192</button>
+        ${opt.client ? "" : `<button class="buton-secundar" id="fac-saga-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-saga" style="margin-left:12px">Export SAGA lun\u0103</button>
+        <button class="buton-secundar" id="fac-winmentor-luna" data-actiune="POST /tenants/{tenant_id}/facturi/export-winmentor">Export WinMentor lun\u0103</button>`}
         <button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px"${maiSunt ? "" : atributeInactiv("Toate facturile lunii sunt afișate.")}>Arată încă ${cate(ramase, "factură a lunii", "facturi ale lunii")}</button></p>
+      ${explicatie ? `<p class="ecran-nota" id="fac-luna-explicatie">${_fraza_luna_goala}</p>` : ""}
       ${blocInchidere}
-      <div id="fac-saga-zona"></div>
+      ${opt.client ? "" : `<div id="fac-saga-zona"></div>`}
       <div class="pf-lista zebra-lista">${corpuri}</div>`;
     corp.querySelector("#fac-mai-multe")?.addEventListener("click", () => { afisate += 10; deseneaza(); });
-    corp.querySelector("#fac-prev").addEventListener("click", () => { afisate = 10; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
-    corp.querySelector("#fac-next").addEventListener("click", () => { afisate = 10; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#fac-prev").addEventListener("click", () => { afisate = 10; explicatie = false; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#fac-next").addEventListener("click", () => {
+      if (opt.client && (an > anCurent || (an === anCurent && luna >= lunaCurenta))) return;   // [AC162] din portal nu se merge în luni viitoare
+      afisate = 10; explicatie = false; luna++; if (luna > 12) { luna = 1; an++; } deseneaza();
+    });
     corp.querySelector("#fac-saga-luna")?.addEventListener("click", async () => {  // [export_saga_v1] F171
       const zona = corp.querySelector("#fac-saga-zona");
       try {
@@ -1097,8 +1123,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   // [05.10.2026, comanda Costin pct.7] starea spune adevărul: „contabilizată” abia cu nota de contare VALIDATĂ; cât e ciornă,
   // „notă propusă, de validat”. Din factură se ajunge la nota ei (Registrul jurnal, luna notei).
   const nc = f.nota_contare;
-  const statusTxt = f.storno_din_id ? "storno" : (f.contabilizata ? "contabilizat\u0103"
-    : (nc ? "not\u0103 propus\u0103, de validat" : (STATUS_ETICHETA[f.status] || f.status || "")));
+  // [17.5-L, AC164] clientul nu vede nimic din nota contabilă („contabilizată”, „notă propusă, de validat”): numai starea de business a facturii
+  const statusTxt = f.storno_din_id ? "storno" : (opt.client ? (STATUS_ETICHETA[f.status] || "")
+    : (f.contabilizata ? "contabilizat\u0103" : (nc ? "not\u0103 propus\u0103, de validat" : (STATUS_ETICHETA[f.status] || f.status || ""))));
   // [lotul 10, 10.2 pct.7f, 419] factura stornat\u0103 integral (aceea\u0219i defini\u021bie ca starea \u201estornat\u0103\u201d, 416): nu mai e nimic de stornat \u0219i
   // nimic de \u00eencasat \u2014 \u201eStorneaz\u0103\u201d \u0219i \u201eEmite chitan\u021b\u0103\u201d nu se mai ofer\u0103 (serverul refuz\u0103 \u0219i el a doua stornare, `facturi_api.storneaza`)
   const stornata = !!(f.stare_incasare && f.stare_incasare.stare === "stornata");
@@ -1154,7 +1181,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
              «platita prin SIMULARE» de mai sus RAMANE: nicio factura n-o poarta azi, dar daca
              vreuna ar purta-o vreodata, nu are voie sa treaca drept incasare obisnuita. -->
         ${doarEmisa(`<button class="buton-secundar em-buton-sec" id="fd-chitanta" data-actiune="POST /tenants/{tenant_id}/chitante"${inactivDaca(motiv.chitanta)}>Emite chitan\u021b\u0103</button>`)}
-        ${doarEmisa(`<button class="buton-secundar em-buton-sec" id="fd-saga"${inactivDaca(motiv.saga)}>Export SAGA</button>`)}
+        ${opt.client ? "" : doarEmisa(`<button class="buton-secundar em-buton-sec" id="fd-saga"${inactivDaca(motiv.saga)}>Export SAGA</button>`)}
         <!-- [C62] și stornarea pleacă în SPV: OUG 120/2021 art.4 alin.(10) — „Factura electronică corectată se transmite în cadrul
              aceluiași sistem național privind factura electronică RO e-Factura”; XML-ul ei trimite la factura stornată (BG-3, 417) -->
         <!-- [lotul 11, C86] factura emisă venită din XML-ul e-Factura e deja transmisă de cine a emis-o: fără „Trimite în SPV” (serverul
@@ -1167,7 +1194,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       </div>
       <div class="fd-storno-zona" id="fd-storno-zona"></div>
       <div id="fd-chitanta-zona"></div>
-      <div id="fd-saga-zona"></div>
+      ${opt.client ? "" : `<div id="fd-saga-zona"></div>`}
       <div id="fd-spv-zona"></div>
       <div id="fd-act-rez"></div>
       <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${dataRo(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + dataRo(f.data_scadenta) : ""}</div>

@@ -151,6 +151,9 @@ def portal_kpi(an, luna, tenant_id, ctx):
         with conn.cursor() as cur:
             k["facturi_de_incasat"] = _pe_moneda(repo_portal.facturi_deschise_validate(cur, "emisa"), k["de_incasat"])
             k["facturi_de_platit"] = _pe_moneda(repo_portal.facturi_deschise_validate(cur, "primita"), k["de_platit"])
+            # [17.5-L, AC169] facturile primite încă neînregistrate de contabil (nota nevalidată): mulțimea disjunctă de cele din „De plătit”,
+            # numai ca informație sub sumă (ele nu se adună în totalul validat)
+            k["facturi_neinregistrate_de_platit"] = _pe_moneda(repo_portal.facturi_deschise_nevalidate(cur, "primita"), 0)
     return {"an": an, "luna": luna, "kpi": k, "luna_definitiva": stare["definitiva"], "neverificate": stare["neverificate"]}
 
 
@@ -266,18 +269,29 @@ def portal_solicitari_lista(tenant_id, ctx):
     return {"solicitari": rows}
 
 
+#: [17.5-L, AC172] lungimea maximă a unui mesaj al clientului către contabil, după tăierea spațiilor
+MAX_MESAJ_CLIENT = 4000
+
+
 def portal_solicitari_trimite(date, tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/portal/solicitari`; docstringul ei a ramas in stratul HTTP."""
     t = _uc_comun._tenant_client(ctx, tenant_id)
+    # [17.5-L, AC172] numai mesajul clientului: spațiile de la capete se taie, gol / numai spații și peste limită se refuză, iar mesajul salvat și
+    # notificat e cel tăiat. Modelul comun `SolicitareIn` (și răspunsul cabinetului) rămân neschimbate.
+    mesaj = (date.mesaj or "").strip()
+    if not mesaj:
+        raise _erori.CerereGresita("Scrie solicitarea înainte de a o trimite.")
+    if len(mesaj) > MAX_MESAJ_CLIENT:
+        raise _erori.CerereGresita("Mesajul are peste 4.000 de caractere. Scurtează-l.")
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            repo_portal.adauga_solicitare(cur, t["id"], date.mesaj, ctx["uid"])
+            repo_portal.adauga_solicitare(cur, t["id"], mesaj, ctx["uid"])
         with conn.cursor() as cur:
             r = repo_tenants.cabinetul_si_numele(cur, t["id"])
         if r and r[0]:
             with conn.cursor() as cur:
                 ids = [x[0] for x in repo_utilizatori.conturi_active_ale_cabinetului(cur, r[0])]
-            txt = "Mesaj nou de la %s: %s" % (r[1] or "firma", date.mesaj[:80])
+            txt = "Mesaj nou de la %s: %s" % (r[1] or "firma", mesaj[:80])
             _notif.adauga_multi(conn, ids, "solicitare_client", txt, link="solicitari:%s" % t["id"])
     return {"ok": True}
 
@@ -451,7 +465,7 @@ def portal_bon_confirma(bon_id, tenant_id, ctx):
     t = _uc_comun._tenant_pentru_documente(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
         if not repo_casa.trece_bonul_la_de_verificat(cur, t['schema_name'], bon_id):
-            raise _erori.Inexistent("bon inexistent sau deja trimis")
+            raise _erori.Inexistent("Bonul nu există sau a fost deja trimis.")
     return {"ok": True}
 
 
@@ -462,7 +476,7 @@ def portal_bon_sterge(bon_id, tenant_id, ctx):
     t = _uc_comun._tenant_pentru_documente(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
         if not repo_casa.sterge_bonul_extras(cur, t['schema_name'], bon_id):
-            raise _erori.Inexistent("bon inexistent sau deja trimis")
+            raise _erori.Inexistent("Bonul nu există sau a fost deja trimis.")
     dir_bon = _os.path.join(_common.dir_bonuri(), t["schema_name"], str(bon_id))
     if _os.path.isdir(dir_bon):
         _shutil.rmtree(dir_bon, ignore_errors=True)
@@ -523,18 +537,66 @@ def portal_recomanda(date, tenant_id, ctx):
     return {"ok": True, "rezultate": rezultate}
 
 
+#: [17.5-L, AC146] cel mult atâtea fotografii pentru același document; interfața (`portal.js::MAX_POZE`) anunță aceeași limită
+MAX_POZE_BON = 4
+#: [17.5-L, AC148 + AC156] ce spune clientul când răspunsul AI nu se poate folosi
+MESAJ_BON_ILIZIBIL = "Nu s-a putut citi bonul. Încearcă o poză mai clară."
+#: [17.5-L, AC152] avertismentul de pe bon când data lui nu are una dintre cotele TVA cunoscute
+AVERT_COTE_TVA_INDISPONIBILE = ("Data bonului e în afara perioadei pentru care iConta.eu știe cotele de TVA; "
+                                "contabilul completează defalcarea.")
+
+
+def _data_bonului(text):
+    """[17.5-L, AC152] data înscrisă pe bon (ISO AAAA-LL-ZZ) sau None când lipsește / nu e validă (atunci se păstrează ziua de azi)."""
+    from datetime import date as _d
+    try:
+        return _d.fromisoformat(str(text).strip()[:10]) if text else None
+    except ValueError:
+        return None
+
+
+def _defalcare_tva(tva_lista, la_data):
+    """[17.5-L, AC152] (tva_11, tva_21, avertisment): TVA-ul bonului pe cota REDUSĂ și pe cea STANDARD valabile la data bonului (nu la data
+    rulării). Coloanele istorice își păstrează numele: `tva_21` = suma pe cota standard a datei (19% în iunie 2025), `tva_11` = suma pe cota
+    redusă a datei (0 înainte de 01.08.2025, când ea nu există); cotele istorice 9% / 5% rămân numai în JSON-ul `tva`. Fiecare cotă se
+    cere separat: dacă una n-are valoare la data bonului, cealaltă se calculează oricum, iar bonul poartă avertismentul. Sume în Decimal,
+    ROUND_HALF_UP."""
+    from decimal import Decimal, ROUND_HALF_UP
+    def _cota(nume):
+        try:
+            return int(Decimal(str(_common.cota(nume, la_data=la_data, strict=False)[0])) * 100), False
+        except _common.PerioadaIndisponibila:
+            return None, True
+    def _suma(procent):
+        if procent is None:
+            return 0.0
+        s = Decimal(0)
+        for x in tva_lista:
+            try:
+                if Decimal(str(x.get("cota"))) == procent:
+                    s += Decimal(str(x.get("valoare") or 0))
+            except Exception:   # o cotă sau o valoare ilizibilă nu se adună la nimicuri
+                raise ValueError("tva")
+        return float(s.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+    r_std, lipsa_std = _cota("tva_standard")
+    r_red, lipsa_red = _cota("tva_redusa")
+    return _suma(r_red), _suma(r_std), (AVERT_COTE_TVA_INDISPONIBILE if (lipsa_std or lipsa_red) else None)
+
+
 def portal_bon(fisiere, tenant_id, ctx):
     """[P7 · use-case] Corpul rutei `/portal/bon`; docstringul ei a ramas in stratul HTTP."""
     from core import ai_client
     import json as _json, os as _os
     t = _uc_comun._tenant_pentru_documente(ctx, tenant_id)
+    if len(fisiere) > MAX_POZE_BON:   # [17.5-L, AC146] refuz explicit, nu lista tăiată în tăcere
+        raise _erori.CerereGresita("Poți trimite cel mult %d fotografii pentru același document." % MAX_POZE_BON)
     if not ai_client.disponibil():
-        raise _erori.ServiciuIndisponibil("serviciul AI indisponibil")
+        raise _erori.ServiciuIndisponibil("Serviciul AI nu e disponibil acum. Încearcă din nou peste puțin timp.")   # [17.5-L, AC156]
     imagini = []
-    for continut, nume_fisier in fisiere[:4]:
+    for continut, nume_fisier in fisiere:
         b = continut
         if len(b) > 8_000_000:
-            raise _erori.CerereGresita("imagine prea mare (max 8MB)")
+            raise _erori.CerereGresita("Imaginea e prea mare. Dimensiunea maximă este 8 MB.")   # [17.5-L, AC156]
         # [R155, 05.09.2026] Tipul se citeste din octeti, nu din ce spune browserul: un fisier
         # text numit `.png` soseste cu `content_type: image/png`. Refuzul cade INAINTE de apelul
         # la furnizorul de AI — deci si o cerere platita mai putin pentru un fisier care oricum
@@ -569,17 +631,27 @@ def portal_bon(fisiere, tenant_id, ctx):
         text = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
         date = _json.loads(text)
     except Exception:
-        raise _erori.DateInvalide("nu s-a putut citi bonul; încearcă o poză mai clară")
+        raise _erori.DateInvalide(MESAJ_BON_ILIZIBIL)
+    if not isinstance(date, dict):   # [17.5-L, AC148] răspunsul AI care nu e un obiect nu se poate citi ca bon
+        raise _erori.DateInvalide(MESAJ_BON_ILIZIBIL)
     avertismente = []
     if date.get("bon_complet") is False:
         avertismente.append("Documentul pare incomplet sau greu lizibil \u00een poz\u0103. Fotografiaz\u0103-l \u00eentreg, cu lumin\u0103 bun\u0103 \u0219i totalul vizibil.")  # bon_flux_e3b_v1
-    total = float(date.get("total") or 0)  # avertismentul aritmetic se arata doar contabilului (bon_flux_e3b_v1)
-    tva_lista = date.get("tva") or []
-    # cotele TVA period-aware din common.COTE (Legea 141/2025), nu literali cuplati la anul curent
-    _r_std = int(_common.cota("tva_standard", strict=False)[0] * 100)
-    _r_red = int(_common.cota("tva_redusa", strict=False)[0] * 100)
-    tva_11 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_red), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
-    tva_21 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_std), 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
+    # [17.5-L, AC148] conversiile răspunsului AI (total, orientare, valorile TVA) sunt tratate explicit: o valoare care nu e număr = refuz controlat,
+    # nu 500, și nu se salvează niciun bon parțial (nimic nu s-a scris încă)
+    import math as _math
+    try:
+        total = float(date.get("total") or 0)  # avertismentul aritmetic se arata doar contabilului (bon_flux_e3b_v1)
+        orientare = int(date.get("orientare") or 0) % 360
+        tva_lista = date.get("tva") or []
+        if not _math.isfinite(total) or not isinstance(tva_lista, list) or not all(isinstance(x, dict) for x in tva_lista):
+            raise ValueError("bon")
+        # [AC152] TVA-ul pe cotele valabile la data de pe bon (data rulării numai când bonul n-are o dată validă)
+        tva_11, tva_21, avert_tva = _defalcare_tva(tva_lista, _data_bonului(date.get("data")))
+    except (TypeError, ValueError, OverflowError):
+        raise _erori.DateInvalide(MESAJ_BON_ILIZIBIL)
+    if avert_tva:
+        avertismente.append(avert_tva)
     schema = t["schema_name"]
     with db.get_conn() as conn:  # verif_doc_pozate_v1: drafturi abandonate >24h se curata (rand + poze)
         with conn.cursor() as cur:
@@ -592,7 +664,7 @@ def portal_bon(fisiere, tenant_id, ctx):
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1
-            bon_id = repo_casa.adauga_bon(cur, schema, date.get("comerciant"), date.get("cui"), date.get("data"), total, tva_11, tva_21, _json.dumps(date.get("articole") or []), _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False, tip_doc, date.get("numar_document"), date.get("mentiuni"), int(date.get("orientare") or 0) % 360)[0]
+            bon_id = repo_casa.adauga_bon(cur, schema, date.get("comerciant"), date.get("cui"), date.get("data"), total, tva_11, tva_21, _json.dumps(date.get("articole") or []), _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False, tip_doc, date.get("numar_document"), date.get("mentiuni"), orientare)[0]
     dir_bon = _os.path.join(_common.dir_bonuri(), schema, str(bon_id))
     _os.makedirs(dir_bon, exist_ok=True)
     _EXT = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}

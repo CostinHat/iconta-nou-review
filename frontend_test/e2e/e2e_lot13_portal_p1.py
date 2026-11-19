@@ -131,7 +131,7 @@ def test_def_553_cifrele_spun_pierderea_si_previziunea_isi_explica_saptamana(pat
             assert "Pierdere înainte de impozit" in rez, rez
             assert _bani(rez) == [Decimal("400")] and "−" not in rez and "-400" not in rez, rez
             intro = cp.inner_text("#cf-intro")
-            assert "inclusiv salariile" in intro and "~500 lei" in intro and "media pe luna" in intro, intro
+            assert "inclusiv salariile" in intro and "~500,00 lei" in intro and "media pe luna" in intro, intro
             prima = " ".join(cp.locator("#cf-zona .pf-frand").first.inner_text().split())
             assert "Plăți: salarii nete 500" in prima, prima
             c.captura("cifre_pierdere_si_previziune")

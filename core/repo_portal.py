@@ -63,6 +63,17 @@ CONDITIE_NOTA_VALIDATA = (" AND (f.tip = 'preluata' OR EXISTS (SELECT 1 FROM inr
                           " AND i.status = 'validata'))")   # 'preluata' = `nomenclator_status_factura.TIP_SOLD_PRELUAT` (gard în test_lot13)
 
 
+#: [17.5-L, AC169] complementul exact al lui `CONDITIE_NOTA_VALIDATA`: facturile deschise a căror notă nu e (încă) validată de contabil
+CONDITIE_NOTA_NEVALIDATA = " AND NOT (" + CONDITIE_NOTA_VALIDATA[len(" AND "):] + ")"
+
+
+def facturi_deschise_nevalidate(cur, directie):
+    """Facturile `directie` care mai au ceva de încasat / de plătit și NU sunt în `CONDITIE_NOTA_VALIDATA` (nota în ciornă sau lipsă): cu
+    `facturi_deschise_validate` alcătuiesc, disjunct, toate facturile deschise relevante. Cursorul e pe schema firmei."""
+    from core import repo_facturi as _rf
+    return _rf.de_incasat(cur, directie, CONDITIE_NOTA_NEVALIDATA)
+
+
 def facturi_deschise_validate(cur, directie):
     """Facturile `directie` (emisa / primita) care mai au ceva de încasat / de plătit (`repo_facturi.de_incasat`, starea de încasare
     unică), numai cele din `CONDITIE_NOTA_VALIDATA`. Cursorul e pe schema firmei."""

@@ -1,8 +1,8 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, CULORI_CARD, semnAjutor, descarca, cate, refuzPeRand, atributeInactiv } from "../api.js?v=7396e03327";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=898215e0ee";
-import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=0262ddde21";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
+import { randeazaFacturi, monedaScrisa } from "./facturi_ecran.js?v=90c8aa01ad";  // [p116_facturi_modul]; [lotul 13, 559] moneda scrisă ca în Scadențar
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -24,8 +24,8 @@ export function desktopPortal(continut, nav) {
       sinteza: "Vizualizează facturile emise și primite." },
     { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", ...CULORI_CARD.verde,
       sinteza: "Rezultat, bani disponibili, de încasat și de plătit" },
-    { cheie: "solicitari", titlu: "Solicitări", icon: "solicitari", ...CULORI_CARD.piersica,
-      sinteza: "Trimite o solicitare contabilului." },
+    { cheie: "solicitari", titlu: "Mesaje către contabil", icon: "solicitari", ...CULORI_CARD.piersica,
+      sinteza: "Scrie un mesaj contabilului." },
     { cheie: "declaratii", titlu: "Declarații depuse", icon: "declaratii", ...CULORI_CARD.teal,
       sinteza: "Ce s-a depus la ANAF, cu data și recipisa" },
     /* [lotul 13, 555] cardul promitea „Recipise, balanțe, bilanț”, dar avea numai balanțele și, a doua oară, declarațiile */
@@ -36,12 +36,12 @@ export function desktopPortal(continut, nav) {
     { cheie: "acces-cont", titlu: "Acces cont", icon: "solicitari", ...CULORI_CARD.ardezie,
       sinteza: "Email și acces suplimentar la portal" },
   ];
-  const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", ...CULORI_CARD.piersica,
+  const CARD_BON = { cheie: "bon", titlu: "Fotografiază bon sau chitanță", icon: "facturi", ...CULORI_CARD.piersica,
       sinteza: "Fotografiază documentul, iConta.eu îl citește" };  /* portal_layout_v2 */
   const carduriVizibile = CARDURI;
 
   continut.innerHTML = `
-    ${sesiune.estePreview() ? '<div class="caseta-atentie" style="margin-bottom:12px"><span class="ca-mesaj"><b>Previzualizare — doar vizualizare.</b> Vezi portalul exact ca acest client. Acțiunile (trimitere solicitări, pozare bon, orice input) sunt dezactivate în acest mod.</span></div>' : ""}
+    ${sesiune.estePreview() ? '<div class="caseta-atentie" style="margin-bottom:12px"><span class="ca-mesaj"><b>Previzualizare: doar vizualizare.</b> Vezi portalul exact ca acest client. Acțiunile (trimitere mesaje, fotografiere bon, orice input) sunt dezactivate în acest mod.</span></div>' : ""}
     <div class="cab-salut portal-sus" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
       <div>
         <div class="cab-salut-nume">${esc(firma)}</div>
@@ -53,7 +53,7 @@ export function desktopPortal(continut, nav) {
     </div>
     <div class="inceput" id="inceput-carduri" hidden></div>
     <div class="cab-grila">
-      <div class="pa-status" id="pa-status" style="grid-column: span 2; margin:0"><p class="ecran-nota">Se verifică situația la ANAF...</p></div>
+      <div class="pa-status" id="pa-status" style="grid-column: span 2; margin:0"><p class="ecran-nota">Se verifică situația la ANAF…</p></div>
       <div id="pa-bon-slot" style="display:flex"></div>
     </div>
   `;
@@ -91,15 +91,15 @@ function deschideCard(cheie, nav) {
   if (cheie === "facturi") nav.deschide("Facturi", (corp) => deschideFacturi(corp, nav)); /* portal: latime normala 680px, lista nu are nevoie de larg */  // [p116_facturi_modul]
   else if (cheie === "declaratii") nav.deschide("Declarații depuse", (corp) => ecranDeclaratii(corp, nav));
   else if (cheie === "povestea") nav.deschide("Povestea lunii", (corp) => ecranPovestea(corp, nav));
-  else if (cheie === "solicitari") nav.deschide("Solicitări", (corp) => ecranSolicitari(corp, nav));  // ICRD_SOLICITARI_FRONT_V1
+  else if (cheie === "solicitari") nav.deschide("Mesaje către contabil", (corp) => ecranSolicitari(corp, nav));  // ICRD_SOLICITARI_FRONT_V1
   else if (cheie === "recomanda") nav.deschide("Recomandă", (corp) => ecranRecomanda(corp, nav));
-  else if (cheie === "bon") nav.deschide("Pozează bon sau chitanță", (corp) => ecranBon(corp, nav));
+  else if (cheie === "bon") nav.deschide("Fotografiază bon sau chitanță", (corp) => ecranBon(corp, nav));
   else if (cheie === "documente") nav.deschide("Documente", (corp) => ecranDocumente(corp, nav));
   else if (cheie === "cifre") nav.deschide("Cifrele firmei", (corp) => ecranCifre(corp, nav));  // portal_kpi_fe_v1
   else if (cheie === "acces-cont") nav.deschide("Acces cont", (corp) => ecranAccesCont(corp, nav));
 }
 async function ecranAccesCont(corp, nav) {
-  corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
+  corp.innerHTML = '<p class="ecran-nota">Se încarcă…</p>';
   let d;
   try { d = await api.get("/portal/acces-cont"); }
   catch (e) { corp.innerHTML = "<p></p>"; arataMesaj(corp.firstElementChild, e.mesaj || "Eroare la încărcare.", "eroare"); return; }
@@ -157,7 +157,7 @@ async function ecranAccesCont(corp, nav) {
       const b = ev.currentTarget;
       const msg = corp.querySelector("#ac-email-msg");
       const val = corp.querySelector("#ac-email-nou-val").value.trim();
-      b.disabled = true; b.textContent = "Se salvează...";
+      b.disabled = true; b.textContent = "Se salvează…";
       try {
         // [R62] Adresa NU se schimba aici: pleaca un link de confirmare pe adresa noua.
         const rasp = await api.put("/portal/acces-cont/email", { email: val });
@@ -186,7 +186,7 @@ async function ecranAccesCont(corp, nav) {
       const msg = corp.querySelector("#ac-adauga-msg");
       const email = corp.querySelector("#ac-email-nou").value.trim();
       if (!email.includes("@")) { arataMesaj(msg, "Email invalid.", "eroare"); return; }
-      b.disabled = true; b.textContent = "Se trimite...";
+      b.disabled = true; b.textContent = "Se trimite…";
       try {
         await api.post("/portal/acces-cont/acces", { email });
         d = await api.get("/portal/acces-cont");
@@ -269,12 +269,12 @@ function randDeclaratie(d) {
           <div class="pf-frand-nume">${esc(d.cod || "")} \u00b7 ${esc(d.perioada || "")}</div>
           <div class="pf-frand-sub">${d.denumire ? esc(d.denumire) + " \u00b7 " : ""}depusă pe ${d.data ? dataRo(d.data) : "o dată necunoscută"}${d.recipisa ? " \u00b7 recipisa " + esc(d.recipisa) : ""}</div>
         </div>
-        <span class="pf-frand-ok">\u2713 depusă</span>
+        <span class="pf-frand-ok" aria-label="depusă" title="Depusă">\u2713</span>
       </div>`;
 }
 async function ecranDeclaratii(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
-  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let lista = [], err = null;
   try {
     const r = await api.get("/portal/declaratii");
@@ -295,11 +295,11 @@ async function ecranDeclaratii(corp, nav) {
 
 async function ecranSolicitari(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
-  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   await randeazaSolicitari(corp, nav);
 }
 
-async function randeazaSolicitari(corp, nav) {
+async function randeazaSolicitari(corp, nav, confirmare = "") {
   let lista = [], err = null;
   try {
     const r = await api.get("/portal/solicitari");
@@ -309,21 +309,24 @@ async function randeazaSolicitari(corp, nav) {
     ? '<p class="msg-eroare">' + esc(err.mesaj || "Nu s-au putut încărca mesajele.") + '</p>'
     : '<div class="stare-goala">Niciun mesaj încă.</div>';
   if (lista.length) {
-    firHtml = lista.map((s) => {
-      const cine = s.autor_rol === "cabinet" ? "Contabil" : "Tu";
-      return `<div class="sol-rand sol-${s.autor_rol}">
+    // [17.5-L, AC173] fiecare mesaj poartă data și ora; mesajul clientului spune „Trimis” sau, când cabinetul a răspuns după el (cronologia primită), „Răspuns primit”
+    firHtml = lista.map((s, i) => {
+      const cabinet = s.autor_rol === "cabinet";
+      const stare = cabinet ? "" : (lista.slice(i + 1).some((x) => x.autor_rol === "cabinet") ? " · Răspuns primit" : " · Trimis");
+      return `<div class="sol-rand sol-${esc(s.autor_rol)}">
         <div class="sol-mesaj">${esc(s.mesaj)}</div>
-        <div class="sol-meta">${cine} · ${dataRo(s.creat_la)}</div>
+        <div class="sol-meta">${cabinet ? "Contabil" : "Tu"} · ${dataRo(s.creat_la, "cu_ora")}${stare}</div>
       </div>`;
     }).join("");
   }
   corp.innerHTML = `
-    <h2 class="pf-titlu">Solicitări</h2>
-    <p class="pf-intro">Cere ceva contabilului tău.</p>
+    <h2 class="pf-titlu">Mesaje către contabil</h2>
+    <p class="pf-intro">Scrie contabilului tău ce ai nevoie.</p>
+    ${confirmare ? `<p class="msg-ok" id="sol-confirmare">${esc(confirmare)}</p>` : ""}
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
-      <textarea aria-label="Mesajul tău" id="sol-input" placeholder="Scrie un mesaj..." rows="3"></textarea>
-      <button class="buton-primar" id="sol-trimite-btn">Trimite</button>
+      <textarea aria-label="Mesajul tău" id="sol-input" placeholder="Scrie un mesaj…" rows="3"></textarea>
+      <button class="buton-primar" id="sol-trimite-btn">Trimite mesajul</button>
       <div class="msg-eroare" id="sol-msg"></div>
     </div>
   `;
@@ -334,12 +337,12 @@ async function randeazaSolicitari(corp, nav) {
     const inp = corp.querySelector("#sol-input");
     const txt = ((inp && inp.value) || "").trim();
     if (!txt) { arataMesaj(corp.querySelector("#sol-msg"), "Scrie solicitarea înainte de a o trimite.", "eroare"); return; }
-    btn.disabled = true; btn.textContent = "Se trimite...";
+    btn.disabled = true; btn.textContent = "Se trimite…";
     try {
       await api.post("/portal/solicitari", { mesaj: txt });
-      await randeazaSolicitari(corp, nav);
+      await randeazaSolicitari(corp, nav, "Mesajul a fost trimis contabilului.");
     } catch (e) {
-      btn.disabled = false; btn.textContent = "Trimite";
+      btn.disabled = false; btn.textContent = "Trimite mesajul";
       refuzPeRand(btn, e.mesaj || "Nu s-a putut trimite mesajul.");
     }
   });
@@ -348,7 +351,7 @@ async function randeazaSolicitari(corp, nav) {
 // ---------- POVESTEA LUNII ----------
 async function ecranPovestea(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
-  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let lista = [], err = null;
   try {
     const r = await api.get("/portal/povesti");
@@ -370,9 +373,10 @@ async function ecranPovestea(corp, nav) {
     : (p.text || "");
   const fmtDif = (p) => {
     if (typeof p.diferenta !== "number") return "";
-    const semn = p.diferenta > 0 ? "+" : "";
     const culoare = p.diferenta > 0 ? "var(--verde)" : (p.diferenta < 0 ? "var(--rosu)" : "var(--gri)");
-    return `<span style="color:${culoare};font-weight:600">${semn}${bani(p.diferenta)} lei la rezultatul înainte de impozit, față de luna anterioară</span>`;
+    const comparatie = p.diferenta > 0 ? `cu ${bani(p.diferenta)} lei mai mult decât luna anterioară`
+      : (p.diferenta < 0 ? `cu ${bani(Math.abs(p.diferenta))} lei mai puțin decât luna anterioară` : "la fel ca luna anterioară");
+    return `<span style="color:${culoare};font-weight:600">${comparatie} (rezultat înainte de impozit)</span>`;
   };
   const corpuri = lista.map((p) => `
     <div class="pf-frand">
@@ -404,7 +408,7 @@ async function ecranPovestea(corp, nav) {
 // ---------- RECOMANDA ----------
 async function ecranRecomanda(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
-  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let previewHtml = "";
   try {
     const p = await api.get("/portal/recomanda/preview");
@@ -437,7 +441,7 @@ async function ecranRecomanda(corp, nav) {
       return;
     }
     const bTr = corp.querySelector("#rec-trimite-btn");
-    bTr.disabled = true; bTr.textContent = "Se trimite...";
+    bTr.disabled = true; bTr.textContent = "Se trimite…";
     zona.innerHTML = "";
     try {
       const r = await api.post("/portal/recomanda", { emails });
@@ -459,10 +463,10 @@ async function ecranRecomanda(corp, nav) {
    lucrează la ea, cu câte înregistrări neverificate are): pe 22.10 clientul vedea octombrie, cu 42 de ciorne, ca definitivă. */
 async function ecranDocumente(corp, nav) {
   nav.setInapoi(undefined);
-  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let luni = [], err = null;
   try { const r = await api.get("/portal/documente/luni"); luni = (r && r.luni) || []; } catch (e) { err = e; }
-  if (err) { corp.innerHTML = `<h2 class="pf-titlu">Balanțe lunare</h2><p class="msg-eroare">${esc(err.mesaj || "Nu s-a putut încărca lista.")}</p>`; return; }
+  if (err) { corp.innerHTML = `<h2 class="pf-titlu">Documente</h2><p class="msg-eroare">${esc(err.mesaj || "Nu s-a putut încărca lista.")}</p>`; return; }
   const stare = (l) => l.definitiva ? "definitivă — luna e închisă de contabil"
     : "provizorie — contabilul încă lucrează la ea" + (l.neverificate ? ` (${cate(l.neverificate, "înregistrare neverificată", "înregistrări neverificate")})` : "");
   const corpuri = !luni.length
@@ -479,8 +483,8 @@ async function ecranDocumente(corp, nav) {
         </div>`;
     }).join("");
   corp.innerHTML = `
-    <h2 class="pf-titlu">Balanțe lunare</h2>
-    <p class="pf-intro">Generate din contabilitate. O lună provizorie se poate schimba până o închide contabilul.</p>
+    <h2 class="pf-titlu">Documente</h2>
+    <p class="pf-intro">Balanțele lunare, generate din contabilitate. O lună provizorie se poate schimba până o închide contabilul.</p>
     <div class="pf-lista zebra-lista">${corpuri}</div>`;
   corp.querySelectorAll("[data-bal]").forEach((b) => {
     b.addEventListener("click", async () => {
@@ -495,6 +499,7 @@ async function ecranDocumente(corp, nav) {
 }
 // [bon] Pozeaza bon - OCR cu AI + confirmare client  // bon_flux_e2_v1
 let _pozareMesaj = "";  // faza_b_traseu_v1
+const MAX_POZE = 4;   // [17.5-L, AC146] oglinda limitei serverului (`uc_portal.portal_bon`)
 async function ecranBon(corp, nav) {
   let mesajSucces = "";
   let draft = null;  // { bon_id, bon, avertismente, urls: [obiect URL-uri poze] }
@@ -506,25 +511,39 @@ async function ecranBon(corp, nav) {
   function randeazaPozare() {
     nav.setInapoi(undefined);
     curataUrls(); draft = null;
+    // [17.5-L, AC149] în previzualizare, intrările și butoanele sunt inactive dinainte de orice gest, cu motivul; serverul rămâne protecția de rezervă
+    const previzualizare = sesiune.estePreview();
+    const inactivPreview = previzualizare ? atributeInactiv("Previzualizare: doar vizualizare.") + " disabled" : "";
     corp.innerHTML = `
-      <h2 class="pf-titlu">Pozează bon sau chitanță</h2>
-      <p class="pf-intro">Fotografiază sau încarcă bonul fiscal ori chitanța. iConta.eu citește documentul automat, apoi tu îl trimiți contabilului.</p>
+      <h2 class="pf-titlu">Fotografiază bon sau chitanță</h2>
+      <p class="pf-intro">Fotografiază sau încarcă bonul fiscal ori chitanța. iConta.eu citește documentul automat, apoi tu îl trimiți contabilului. Poți trimite până la ${cate(MAX_POZE, "fotografie", "fotografii")} pentru același document.</p>
       ${(mesajSucces || _pozareMesaj) ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + (mesajSucces || _pozareMesaj) + '</p>' : ""}
-      <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple hidden>
-      <input type="file" id="bon-fisier-galerie" accept="image/*" multiple hidden>
+      <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple hidden${inactivPreview}>
+      <input type="file" id="bon-fisier-galerie" accept="image/*" multiple hidden${inactivPreview}>
       <div id="bon-butoane" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
-        <button class="buton-primar" id="bon-fotografiaza">Fotografiază documentul</button>
-        <button class="buton-secundar" id="bon-incarca">Încarcă din galerie</button>
+        <button class="buton-secundar" id="bon-fotografiaza"${previzualizare ? atributeInactiv("Previzualizare: doar vizualizare.") : ""}>Fotografiază documentul</button>
+        <button class="buton-secundar" id="bon-incarca"${previzualizare ? atributeInactiv("Previzualizare: doar vizualizare.") : ""}>Încarcă din galerie</button>
       </div>
-      <div id="bon-rezultat"></div>`;
+      <div id="bon-rezultat">${previzualizare ? '<p class="ecran-nota">Previzualizare: doar vizualizare.</p>' : ""}</div>`;
     mesajSucces = ""; _pozareMesaj = "";
+    const comenzi = () => corp.querySelectorAll("#bon-butoane button, #bon-fisier, #bon-fisier-galerie");
     corp.querySelector("#bon-fotografiaza").addEventListener("click", () => corp.querySelector("#bon-fisier").click());  // ux_login_camera_v1
     corp.querySelector("#bon-incarca").addEventListener("click", () => corp.querySelector("#bon-fisier-galerie").click());
+    // [17.5-L, AC145 + AC146] o singură citire la un moment dat, pentru ambele intrări: garda stă în închiderea pasului (nu pe un eveniment) și se
+    // eliberează la succes ori eroare; ordinea: listă goală → citire în curs → peste limită → început de citire
+    let citeste = false;
     const laSelectie = async (ev) => {
       const fs = Array.from(ev.target.files);
       if (!fs.length) return;
-      corp.querySelectorAll("#bon-butoane button").forEach((b) => { b.disabled = true; });
+      if (previzualizare || citeste) { ev.target.value = ""; return; }
       const zona = corp.querySelector("#bon-rezultat");
+      if (fs.length > MAX_POZE) {
+        ev.target.value = "";
+        zona.innerHTML = `<p class="msg-eroare">Poți trimite cel mult ${cate(MAX_POZE, "fotografie", "fotografii")} odată. Alege din nou.</p>`;
+        return;
+      }
+      citeste = true;
+      comenzi().forEach((b) => { b.disabled = true; });
       zona.innerHTML = `<p class="ecran-nota">Se citește documentul…</p>`;
       const fd = new FormData();
       fs.forEach((f) => fd.append("fisiere", f));
@@ -539,9 +558,13 @@ async function ecranBon(corp, nav) {
         });
         const urls = await Promise.all(fs.map(citesteDataUrl));
         draft = { bon_id: r.bon_id, bon: r.bon || {}, avertismente: r.avertismente || [], urls };
+        citeste = false;
+        comenzi().forEach((b) => { b.disabled = false; });
+        ev.target.value = "";
         nav.mergi("Verific\u0103 documentul", (c) => { corp = c; randeazaConfirmare(); });  // faza_b_traseu_v1
       } catch (e) {
-        corp.querySelectorAll("#bon-butoane button").forEach((b) => { b.disabled = false; });
+        citeste = false;
+        comenzi().forEach((b) => { b.disabled = false; });
         ev.target.value = "";
         zona.innerHTML = `<p class="msg-eroare">${esc(e.mesaj || "Nu s-a putut citi documentul. Încearcă o poză mai clară.")}</p>`;
       }
@@ -554,9 +577,9 @@ async function ecranBon(corp, nav) {
     nav.setInapoi(refaPoza);
     const b = draft.bon;
     const tvaTxt = (b.tva || []).filter((x) => x && x.valoare)
-      .map((x) => "TVA " + x.cota + "%: " + bani(x.valoare) + " lei").join(" \u00b7 ");
+      .map((x) => "TVA " + esc(x.cota) + "%: " + esc(bani(x.valoare)) + " lei").join(" \u00b7 ");   // [17.5-L, AC147] tot ce vine din AI e text, nu HTML
     const avert = (draft.avertismente || []).map((a) =>
-      `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">${a}</div></div>`).join("");
+      `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">${esc(a)}</div></div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Verifică documentul</h2>
       <p class="pf-intro">Compară cu documentul din mână: poza e întreagă și datele se potrivesc?</p>
@@ -567,10 +590,10 @@ async function ecranBon(corp, nav) {
       <div class="pf-lista">
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"} \u00b7 ${b.comerciant || "Comerciant necitit"}</div>
-            <div class="pf-frand-sub">${b.numar_document ? "nr. " + b.numar_document + " \u00b7 " : ""}${b.data ? dataRo(b.data) : "dată necitită"}${b.cui ? " \u00b7 CUI " + b.cui : ""}${tvaTxt ? " \u00b7 " + tvaTxt : ""}${b.mentiuni ? " \u00b7 " + b.mentiuni : ""}</div>
+            <div class="pf-frand-nume">${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"} \u00b7 ${esc(b.comerciant || "Comerciant necitit")}</div>
+            <div class="pf-frand-sub">${b.numar_document ? "nr. " + esc(b.numar_document) + " \u00b7 " : ""}${b.data ? esc(dataRo(b.data)) : "dată necitită"}${b.cui ? " \u00b7 CUI " + esc(b.cui) : ""}${tvaTxt ? " \u00b7 " + tvaTxt : ""}${b.mentiuni ? " \u00b7 " + esc(b.mentiuni) : ""}</div>
           </div>
-          <span class="pf-frand-suma">${b.total != null ? bani(b.total) + " lei" : "total necitit"}</span>
+          <span class="pf-frand-suma">${b.total != null ? esc(bani(b.total)) + " lei" : "total necitit"}</span>
         </div>
       </div>
       <div style="margin-top:16px">
@@ -580,7 +603,7 @@ async function ecranBon(corp, nav) {
       <p class="ecran-nota" id="bon-msg" style="margin:10px 0 0"></p>`;
     corp.querySelector("#bon-trimite").addEventListener("click", async (ev) => {
       const bt = ev.currentTarget, br = corp.querySelector("#bon-refa");
-      bt.disabled = true; br.disabled = true; bt.textContent = "Se trimite...";
+      bt.disabled = true; br.disabled = true; bt.textContent = "Se trimite…";
       try {
         await api.post("/portal/bon/" + draft.bon_id + "/confirma", {});
         _pozareMesaj = "Documentul a plecat la contabil pentru verificare. După ce îl înregistrează, efectul lui se va vedea în «Cifrele firmei».";
@@ -622,6 +645,10 @@ function subFacturi(f) {
   // diferenței față de contabilitate (sold preluat, avans) sunt ale contabilului, nu ale clientului.
   return (f.nr || 0) > 0 ? `${cate(f.nr, "factură deschisă", "facturi deschise")}: ${sumePeMoneda(f)}` : "";
 }
+function subNeinregistrate(f) {
+  // [17.5-L, AC169] facturile primite pe care contabilul nu le-a înregistrat încă: nu intră în suma de mai sus (note validate), se spun separat, pe monedă
+  return (f.nr || 0) > 0 ? `Neînregistrate încă de contabil și neincluse în sumă: ${cate(f.nr, "factură primită", "facturi primite")}, ${sumePeMoneda(f)}.` : "";
+}
 async function ecranCifre(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
@@ -633,10 +660,10 @@ async function ecranCifre(corp, nav) {
     return;
   }
   const k = d.kpi || {};
-  const lei = (v) => baniRotund(v) + " lei";
+  const lei = (v) => bani(v) + " lei";   // [17.5-L, AC170 + AC171] toate sumele din „Cifrele firmei” la două zecimale, prin funcția monetară unică
   const rand = (eticheta, valoare, culoare, sub, id) => `
     <div class="pf-frand"${id ? ` id="${id}"` : ""}>
-      <div class="pf-frand-text"><div class="pf-frand-nume">${eticheta}</div>${sub ? `<div class="pf-frand-sub">${sub}</div>` : ""}</div>
+      <div class="pf-frand-text"><div class="pf-frand-nume">${eticheta}</div>${[].concat(sub || []).filter(Boolean).map((s) => `<div class="pf-frand-sub">${s}</div>`).join("")}</div>
       <span class="pf-frand-suma" style="${culoare ? "color:" + culoare : ""}">${valoare}</span>
     </div>`;
   const provizorie = d.luna_definitiva === false
@@ -651,11 +678,11 @@ async function ecranCifre(corp, nav) {
       ${rand(felRezultat(k.tip), lei(Math.abs(k.profit || 0)), k.tip === "pierdere" ? "var(--rosu)" : (k.tip === "profit" ? "var(--verde)" : null), "", "cf-rezultat")}
       ${rand("Bani disponibili (cas\u0103 + banc\u0103)", lei(k.cash))}
       ${rand("De \u00eencasat de la clien\u021bi", bani(k.de_incasat) + " lei", null, subFacturi(k.facturi_de_incasat || {}), "cf-de-incasat")}
-      ${rand("De pl\u0103tit c\u0103tre furnizori", bani(k.de_platit) + " lei", null, subFacturi(k.facturi_de_platit || {}), "cf-de-platit")}
+      ${rand("De pl\u0103tit c\u0103tre furnizori", bani(k.de_platit) + " lei", null, [subFacturi(k.facturi_de_platit || {}), subNeinregistrate(k.facturi_neinregistrate_de_platit || {})], "cf-de-platit")}
     </div>
     <h2 class="pf-titlu" style="margin-top:20px">Previziune bani (8 s\u0103pt\u0103m\u00e2ni) ${semnAjutor("F016")}</h2>
     <p class="pf-intro" id="cf-intro">Estimare pe scaden\u021bele facturilor \u2014 orientativ.</p>
-    <div class="pf-lista" id="cf-zona" data-fara-piesa><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p></div>`;
+    <div class="pf-lista" id="cf-zona" data-fara-piesa data-fara-zona><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p></div>`;
   incarcaForecast(corp, rand, lei);  // portal_cashflow_fe_v1
 }
 
@@ -682,7 +709,7 @@ async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
       (w.incasari && w.plati ? " / " : "") + (w.plati ? "\u2212" + lei(w.plati) : "");
     const parte = (sens, titlu) => {
       const c = (w.componente || []).filter((x) => x.sens === sens);
-      return c.length ? titlu + ": " + c.map((x) => `${esc(x.ce)} ${baniRotund(x.suma)}`).join(", ") : "";
+      return c.length ? titlu + ": " + c.map((x) => `${esc(x.ce)} ${bani(x.suma)}`).join(", ") : "";
     };
     const din = [parte("+", "Încasări"), parte("-", "Plăți")].filter(Boolean).join(" · ");
     return rand("din " + dataRo(w.de_la, "zi_luna") + (detaliu ? " \u00b7 " + detaliu : ""),
