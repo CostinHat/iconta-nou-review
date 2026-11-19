@@ -1,0 +1,4 @@
+[e2e] aplicația din index pornită pe 8019 în 17s
+
+[e2e] 1 passed in 91.33s (0:01:31) (109s; capturi în /tmp/e2e_poarta_capturi)
+rc=0

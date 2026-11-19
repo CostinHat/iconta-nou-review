@@ -1,0 +1,56 @@
+MASURA f.1 text_contine:prezent text_contine:prezent trece
+VERDICT f.1 trece
+MASURA a.3 text_contine:prezent text_contine:prezent trece
+VERDICT a.3 trece
+MASURA a.4 text_contine:prezent text_contine:prezent trece
+VERDICT a.4 trece
+MASURA f.2 text_contine:prezent text_contine:prezent trece
+VERDICT f.2 trece
+TEXT AC157-caseta noua=da,veche=nu noua=da,veche=nu trece
+TEXT AC157-server 403:Previzualizare:_doar_vizualizare._Acțiunile_sunt_dezactivate_în_modul_de_previzualizare. 403:Previzualizare:_doar_vizualizare._Acțiunile_sunt_dezactivate_în_modul_de_previzualizare. trece
+MASURA e.1 corp=680,zona=680,derulante=1,scroll=0->680,saptamani=[1,_2,_3,_4,_5,_6,_7,_8] derulante<=1,raport>=40%_daca_zona_deruleaza,saptamani=1..8 trece
+VERDICT e.1 trece
+MASURA e.9 linia=da,facturi=3 linia_prezenta,facturi>=3 trece
+VERDICT e.9 trece
+MASURA e.10 formate_gresite=0,identitate_sold=ok,randuri_sus=6,randuri_zona=8 formate_gresite=0,identitate_sold=ok,randuri_sus=6,randuri_zona=8 trece
+VERDICT e.10 trece
+MASURA a.5 lipseste:da lipseste:da trece
+VERDICT a.5 trece
+MASURA a.6 lipseste:da lipseste:da trece
+VERDICT a.6 trece
+MASURA e.4 luna=10/2026,fraza=da luna=10/2026,fraza=da trece
+VERDICT e.4 trece
+MASURA e.3 10/2026:activ=True;11/2026:activ=False 10/2026:activ=True;11/2026:activ=False trece
+VERDICT e.3 trece
+MASURA e.2 inainte=10/2026,dupa_inapoi=10/2026 10/2026,aceeasi trece
+VERDICT e.2 trece
+MASURA e.11 foto=inactiv,galerie=inactiv,input_foto=inactiv,input_galerie=inactiv,motiv=da,cereri=0 toate=inactiv,motiv=da,cereri=0 trece
+VERDICT e.11 trece
+MASURA e.5 previzualizare:saga_luna=0,wm_luna=0,saga_zona=0,fd_saga=0,notă_propusă=0,stare_cu_notă=0,facturi_vizitate=12;cabinet:saga_luna=1,wm_luna=1;martor=('10/2026',_'75');marto acelasi_martor:stare_doar_in_cabinet;previzualizare:toate=0,facturi_vizitate>=1;cabinet:saga_luna=1,wm_luna=1 trece
+VERDICT e.5 trece
+TEXT AC155-card Fotografiază_bon_sau_chitanță Fotografiază_bon_sau_chitanță trece
+TEXT AC155-fereastra Fotografiază_bon_sau_chitanță Fotografiază_bon_sau_chitanță trece
+TEXT AC146-intro Fotografiază_sau_încarcă_bonul_fiscal_ori_chitanța._iConta.eu_citește_documentul_automat,_apoi_tu_îl_trimiți_contabilului._Poți_trimite_până_la_4_fotografii_pentru_acelaș contine:Poți_trimite_până_la_4_fotografii_pentru_același_document. trece
+MASURA e.12 foto=in,jos=False,top=180;galerie=in,jos=False,top=180;ordine=bon-fotografiaza,bon-incarca ambele_in_#bon-butoane,secundare,top±2,niciunul_jos trece
+VERDICT e.12 trece
+MASURA e.7 respinse=0;dupa_selectie_valida=1;mesaj=Poți_trimite_cel_mult_4_fotografii_odată._Alege_din_nou. respinse=0;dupa_selectie_valida=1;mesaj=Poți_trimite_cel_mult_4_fotografii_odată._Alege_din_nou. trece
+VERDICT e.7 trece
+MASURA e.6 cereri=1;dezactivate={'foto':_True,_'galerie':_True,_'input_foto':_True,_'input_galerie':_True} cereri=1;toate_disabled=True trece
+VERDICT e.6 trece
+MASURA e.8 xss=undefined,undefined,undefined;text_literal=da xss=undefined,undefined,undefined;text_literal=da trece
+VERDICT e.8 trece
+TEXT AC159-trimite Se_trimite… Se_trimite… trece
+TEXT AC176 rand=D406_·_01/2099_Fișierul_Standard_de_Control_Fiscal_(SAF-T)_pentru_România_·_depusă_pe_02.03.2099_·_recipisa_E2E-L176_✓;eticheta=✓;aria=depusă;title=Depusă contine:depusă_pe_02.03.2099;eticheta=✓;aria-label=depusă;title=Depusă;fara:✓_depusă trece
+TEXT AC177 h2=Documente;intro=Balanțele_lunare,_generate_din_contabilitate._O_lună_provizorie_se_poate_schimba_până_o_închide_contabilul. h2=Documente;intro=Balanțele_lunare,_generate_din_contabilitate._O_lună_provizorie_se_poate_schimba_până_o_închide_contabilul. trece
+TEXT AC175-card titlu=Mesaje_către_contabil;sinteza=Scrie_un_mesaj_contabilului. titlu=Mesaje_către_contabil;sinteza=Scrie_un_mesaj_contabilului. trece
+TEXT AC175-fereastra h2=Mesaje_către_contabil;intro=Scrie_contabilului_tău_ce_ai_nevoie.;buton=Trimite_mesajul;placeholder=Scrie_un_mesaj…;gol=Niciun_mesaj_încă. h2=Mesaje_către_contabil;intro=Scrie_contabilului_tău_ce_ai_nevoie.;buton=Trimite_mesajul;placeholder=Scrie_un_mesaj…;gol=Niciun_mesaj_încă. trece
+TEXT AC172-gol 400:Scrie_solicitarea_înainte_de_a_o_trimite. 400/422:Scrie_solicitarea_înainte_de_a_o_trimite. trece
+TEXT AC172-spatii 400:Scrie_solicitarea_înainte_de_a_o_trimite. 400/422:Scrie_solicitarea_înainte_de_a_o_trimite. trece
+TEXT AC172-4001 400:Mesajul_are_peste_4.000_de_caractere._Scurtează-l. 400/422:Mesajul_are_peste_4.000_de_caractere._Scurtează-l. trece
+TEXT AC172-taiat status=200;scris='Mesaj_tăiat_L172' status=200;scris='Mesaj_tăiat_L172' trece
+TEXT AC159-mesaje Se_trimite… Se_trimite… trece
+TEXT AC173-trimis linia=da;meta=Tu_·_19.11.2026_08:44_·_Trimis linia=da;meta=Tu_·_zz.ll.aaaa_hh:mm_·_Trimis trece
+TEXT AC173-raspuns client=Tu_·_19.11.2026_08:44_·_Răspuns_primit;cabinet=Contabil_·_19.11.2026_08:45 client=Tu_·_data_ora_·_Răspuns_primit;cabinet=Contabil_·_data_ora trece
+TEXT AC178 2026_Text_de_probă_luna_10...._cu_13.713,00_lei_mai_puțin_decât_luna_anterioară_(rezultat_înainte_de_impozit)_||_mbrie_2026_Text_de_probă_luna_9...._cu_500,00_lei_mai_mul cu_13.713,00_lei_mai_puțin_decât_luna_anterioară_(rezultat_înainte_de_impozit)_||_cu_500,00_lei_mai_mult_decât_luna_anterioară_(rezultat_înainte_de_impozit)_||_la_fel_ca_ trece
+TEXT AC159-sursa ramase=0: ramase=0 trece
+SUMAR 37 rânduri, 0 pică

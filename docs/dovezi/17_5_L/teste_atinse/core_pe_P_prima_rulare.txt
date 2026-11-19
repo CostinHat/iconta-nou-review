@@ -1,0 +1,792 @@
+...........................F..........F.............................FF.. [  7%]
+....F................................................................... [ 14%]
+........................................................................ [ 21%]
+.................FFF.................................................... [ 28%]
+........................................................................ [ 35%]
+........................................................................ [ 42%]
+........................................................................ [ 49%]
+........................................................................ [ 56%]
+........................................................................ [ 63%]
+........................................................................ [ 70%]
+.........FF....................F........................................ [ 77%]
+....................F.F......................................F.......... [ 84%]
+........................................................................ [ 91%]
+........................................................................ [ 98%]
+...................                                                      [100%]
+=================================== FAILURES ===================================
+____________________ test_nicio_formula_noua_pe_nume_neutre ____________________
+
+    def test_nicio_formula_noua_pe_nume_neutre():
+        """CLICHET. Masurat 24.08.2026: 2, ambele calendaristice. Zero fiscale."""
+        g = _aritmetica_pe_nume_neutre()
+>       assert len(g) <= NUME_NEUTRE_CLICHET, (
+            "aritmetica noua cu cota literala pe nume neutre — daca e fiscala, scanul de "
+            "formule NU o vede:\n" + "\n".join("  %s:%d  %s" % x for x in g))
+E       AssertionError: aritmetica noua cu cota literala pe nume neutre — daca e fiscala, scanul de formule NU o vede:
+E           ecrane/firme.js:2959  <div class="pf-frand-sub">valoare stoc ${bani(x.valoare)} lei · cumulat ${pct(Math.round(Number(x.pondere_cumulata) * 10) / 10)}</div>
+E           ecrane/tari_partener.js:39  return ((s * 10) % 11) % 10 === Number(c.slice(-1));
+E       assert 2 <= 1
+E        +  where 2 = len([('ecrane/firme.js', 2959, '<div class="pf-frand-sub">valoare stoc ${bani(x.valoare)} lei · cumulat ${pct(Math.round(N...umulata) * 10) / 10)}</div>'), ('ecrane/tari_partener.js', 39, 'return ((s * 10) % 11) % 10 === Number(c.slice(-1));')])
+
+core/test_aritmetica_in_prezentare.py:242: AssertionError
+___________ test_nicio_cerere_din_editare_nu_scrie_un_raspuns_vechi ____________
+
+    def test_nicio_cerere_din_editare_nu_scrie_un_raspuns_vechi():
+        """Măsurat pe 23.10.2026: 39 de funcții cu cereri GET atinse din editare sau dintr-un clic care schimbă starea, pe 20 de fișiere —
+        toate trecute pe `ultimaCerere()`. MUTAȚIE: verificarea scoasă din `deseneaza` (reevaluare) -> pică."""
+        rele = [g for g in _scan() if g["metoda"] == "get" and not (g["aparat"] and g["catch_aparat"]) and _cheie(g) not in EXCEPTII]
+>       assert not rele, "Cereri din editare al căror răspuns vechi poate acoperi ecranul nou (mecanismul: `ultimaCerere()` din api.js):\n" + \
+            "\n".join("  %(fisier)s:%(linie)s %(functie)s (din %(eveniment)s, linia %(handler)s) — după cerere: %(aparat)s, catch: %(catch_aparat)s"
+                      % g for g in rele)
+E       AssertionError: Cereri din editare al căror răspuns vechi poate acoperi ecranul nou (mecanismul: `ultimaCerere()` din api.js):
+E           static/js/ecrane/flux_concediu.js:235 propuneBaza (din change, linia 248) — după cerere: True, catch: False
+E       assert not [{'fisier': 'static/js/ecrane/flux_concediu.js', 'eveniment': 'change', 'handler': 248, 'functie': 'propuneBaza', ...}]
+
+core/test_cerere_veche.py:66: AssertionError
+_________________________ test_niciun_fisier_nu_creste _________________________
+
+acum = Counter({'scripts/infra_g2.py': 5, 'scripts/poarta_lib.py': 5, 'scripts/calibreaza_16_5.py': 4, 'core/raportari_ai.py'...1, 'core/tipare_api.py': 1, 'core/uc_portal.py': 1, 'scripts/matrice_text_taiat.py': 1, 'scripts/poarta_rulare.py': 1})
+
+    def test_niciun_fisier_nu_creste(acum):
+        """Miezul clichetului."""
+        rele = ["  %-42s %d > %d" % (f, n, BASELINE[f]) for f, n in sorted(acum.items())
+                if f in BASELINE and n > BASELINE[f]]
+>       assert not rele, (
+            "afirmații netipate ÎN CREȘTERE (scrie-le ca obiecte, nu ridica baseline-ul):\n"
+            + "\n".join(rele))
+E       AssertionError: afirmații netipate ÎN CREȘTERE (scrie-le ca obiecte, nu ridica baseline-ul):
+E           core/uc_tenants.py                         3 > 2
+E       assert not ['  core/uc_tenants.py                         3 > 2']
+
+core/test_afirmatii_tipate.py:75: AssertionError
+____________________________ test_niciun_fisier_nou ____________________________
+
+acum = Counter({'scripts/infra_g2.py': 5, 'scripts/poarta_lib.py': 5, 'scripts/calibreaza_16_5.py': 4, 'core/raportari_ai.py'...1, 'core/tipare_api.py': 1, 'core/uc_portal.py': 1, 'scripts/matrice_text_taiat.py': 1, 'scripts/poarta_rulare.py': 1})
+
+    def test_niciun_fisier_nou(acum):
+        """Un fișier care începe azi să producă afirmații netipate n-are voie să intre tăcut."""
+        noi = ["  %-42s %d" % (f, n) for f, n in sorted(acum.items()) if f not in BASELINE]
+>       assert not noi, (
+            "fișiere NOI cu afirmații netipate — decizia din 21.08 cere obiecte cu `fel`, nu proză în "
+            "dicționar. Folosește `core/afirmatii.afirmatie()`:\n" + "\n".join(noi))
+E       AssertionError: fișiere NOI cu afirmații netipate — decizia din 21.08 cere obiecte cu `fel`, nu proză în dicționar. Folosește `core/afirmatii.afirmatie()`:
+E           scripts/calibreaza_16_5.py                 4
+E           scripts/infra_g2.py                        5
+E           scripts/matrice_text_taiat.py              1
+E           scripts/poarta_lib.py                      5
+E           scripts/poarta_rulare.py                   1
+E       assert not ['  scripts/calibreaza_16_5.py                 4', '  scripts/infra_g2.py                        5', '  scripts/matric...py              1', '  scripts/poarta_lib.py                      5', '  scripts/poarta_rulare.py                   1']
+
+core/test_afirmatii_tipate.py:83: AssertionError
+____________________ test_campul_mort_explicatie_nu_reapare ____________________
+
+    def test_campul_mort_explicatie_nu_reapare():
+        """`explicatie` de pe containerul de modul a fost SCOASĂ (21.08): nu o citea nimeni — nici
+        `control_verdict.js` (randează `limita`), nici `firme.js` (o declară IGNORAT), nici vreun modul
+        Python; nu ieșea prin `/api/v1`, nu se persista, nu ajungea în PDF. Șapte din douăsprezece erau
+        șirul gol; cinci calculau o frază pe care n-o vedea nimeni.
+    
+        Gardul e pe REAPARIȚIE, nu pe absență: un câmp mort care se întoarce arată ca o funcționalitate.
+        Dacă vreodată containerul chiar are ce explica, se construiește atunci — cu un consumator real,
+        care apare în aserțiunea de mai jos."""
+        import io
+        import os
+        sursa = io.open(os.path.join(s.RAD, "core", "control_incrucisat.py"), encoding="utf-8").read()
+        linii = [ln for ln in sursa.split("\n")
+                 if '"explicatie"' in ln and not ln.lstrip().startswith("#")]
+        assert not linii, (
+            "`explicatie` a reapărut în containerele de modul:\n  " + "\n  ".join(linii[:4])
+            + "\n\nDacă are acum un consumator real, numește-l aici și scoate gardul.")
+        js = io.open(os.path.join(s.RAD, "static", "js", "ecrane", "control_verdict.js"),
+                     encoding="utf-8").read()
+>       assert ".explicatie" not in js, "randorul a început să citească `explicatie` — actualizează gardul"
+E       AssertionError: randorul a început să citească `explicatie` — actualizează gardul
+E       assert '.explicatie' not in '// control_...Audit);\n}\n'
+E         
+E         '.explicatie' is contained here:
+E           emnal + (c.explicatie_ciorne && !c.diferenta_neexplicata ? semnalHtml({ ton: "info", text: c.explicatie_ciorne }) : "");
+E         ?           +++++++++++
+E           }
+E           
+E           // constatările aceleiași acțiuni repetate (statul de plată necontabilizat, câte una pe contribuție) devin UN SINGUR card-rezumat cu butonul lui;...
+E         
+E         ...Full output truncated (531 lines hidden), use '-vv' to show
+
+core/test_afirmatii_tipate.py:220: AssertionError
+___________ test_clicurile_programatice_sunt_numai_cele_alese_de_om ____________
+
+    def test_clicurile_programatice_sunt_numai_cele_alese_de_om():
+        numarate = {}
+        for nume, txt in _fisiere():
+            n = len(re.findall(r"\.click\(\)", txt))
+            if n:
+                numarate[nume] = n
+        asteptat = {k: v[0] for k, v in CLICURI_PROGRAMATICE.items()}
+        # „Nimic nu se deschide fără să fie ales.” — un `.click()` nou, dat de cod, intră în listă numai cu motivul alegerii omului
+>       assert numarate == asteptat, "clicuri programatice schimbate: găsite %s, în listă %s" % (numarate, asteptat)
+E       AssertionError: clicuri programatice schimbate: găsite {'static/js/api.js': 1, 'static/js/cadru.js': 1, 'static/js/cautare.js': 4, 'static/js/ds_piese.js': 1, 'static/js/ecrane/declaratii.js': 1, 'static/js/ecrane/etransport_ecran.js': 1, 'static/js/ecrane/firme.js': 3, 'static/js/ecrane/inceput.js': 2, 'static/js/ecrane/login.js': 1, 'static/js/ecrane/migrare.js': 2, 'static/js/ecrane/portal.js': 2, 'static/js/ecrane/raporteaza.js': 2, 'static/js/ecrane/validat.js': 1, 'static/js/navigator.js': 1, 'static/js/restaurare.js': 6}, în listă {'static/js/api.js': 1, 'static/js/navigator.js': 1, 'static/js/ecrane/inceput.js': 2, 'static/js/ecrane/login.js': 1, 'static/js/restaurare.js': 6, 'static/js/ecrane/portal.js': 2, 'static/js/ecrane/raporteaza.js': 2, 'static/js/ecrane/migrare.js': 1, 'static/js/ecrane/etransport_ecran.js': 1, 'static/js/ecrane/firme.js': 2, 'static/js/cadru.js': 1, 'static/js/ds_piese.js': 1, 'static/js/cautare.js': 4, 'static/js/ecrane/validat.js': 1, 'static/js/ecrane/declaratii.js': 1}
+E       assert {'static/js/a...e.js': 1, ...} == {'static/js/a...n.js': 1, ...}
+E         
+E         Omitting 13 identical items, use -vv to show
+E         Differing items:
+E         {'static/js/ecrane/migrare.js': 2} != {'static/js/ecrane/migrare.js': 1}
+E         {'static/js/ecrane/firme.js': 3} != {'static/js/ecrane/firme.js': 2}
+E         Use -v to get more diff
+
+core/test_lot10b_deschidere_aleasa.py:165: AssertionError
+_________ test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor __________
+
+pagina = <Page url='http://127.0.0.1:47185/static/'>
+
+    def test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor(pagina):
+        pg = pagina
+>       _montat(pg)
+
+core/test_lot10b_deschidere_aleasa.py:224: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+core/test_lot10b_deschidere_aleasa.py:219: in _montat
+    pg.wait_for_selector(".fer-proba [data-adev]", timeout=15000)
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x752c1fc2ec00>
+cb = <function Channel.send.<locals>.<lambda> at 0x752c24e4ede0>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 15000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fer-proba [data-adev]") to be visible
+E               33 × locator resolved to hidden <button data-adev="7" class="buton-secundar" data-nume="IONESCU VASILE">Adeverință</button>
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+---------------------------- Captured stderr setup -----------------------------
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/ HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/stil.css?v=66754554ef HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/app.js?v=3f69c48ae1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/sesiune.js?v=898215e0ee HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/api.js?v=7396e03327 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/login.js?v=1046446310 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/navigator.js?v=c5d6a39876 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/cabinet.js?v=b5bbffff54 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/asistent.js?v=4d62696ccb HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/portal.js?v=28528732e1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/admin.js?v=6b8ca6e696 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/restaurare.js?v=2e679a8748 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/drepturi.js?v=34d0fb0afd HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/sw.js HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/reautentificare.js?v=6d1ca7e110 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/plural.js?v=6353d42450 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/preturi.js?v=0e00a65657 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ciorna_formular.js?v=461bec469f HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/date_anaf.js?v=503d474ed1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/admin_analytics.js?v=e2cdc3d028 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/semafor.js?v=60f4db5322 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/coaja.js?v=2776271008 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/firme.js?v=24e83ae124 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/migrare.js?v=6dccb53624 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/control.js?v=c027ce0ad1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/activitate_cabinet.js?v=80b751d073 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/setari.js?v=37902f6231 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/raporteaza.js?v=766651826e HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/salut.js?v=f5a3ed7133 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/pachete.js?v=9228e3b2d1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/termene.js?v=fbf97d1454 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/validat.js?v=a2db2ca802 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/supervizor.js?v=b70acba4cb HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/asistenti.js?v=55670c24d1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/capacitate.js?v=e1ba37a9f7 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/tipare.js?v=a3648839d3 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/ansamblu.js?v=ce01321ac1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/cadru.js?v=fcb704c248 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/cautare.js?v=3001002077 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/versiune.js?v=9a0ee2174b HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/admin_raportari.js?v=75ecec94e0 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/admin_activitate.js?v=b52bf936b9 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/admin_sanatate.js?v=165b0a348c HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/declaratii.js?v=93956357f7 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/facturi_ecran.js?v=90c8aa01ad HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/carduri.js?v=83757ff6e9 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ds_piese.js?v=ab8a4ad1c3 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/verdict.js?v=fb322c8d48 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/control_verdict.js?v=38460ddd83 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/recomanda.js?v=e5354ffd52 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/intocmitor_bilant.js?v=5d705395fe HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/tabel_note.js?v=74b676ef63 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/centre_cost_linie.js?v=d776200e2b HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/luna_lucru.js?v=04c41c46c1 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/flux_concediu.js?v=a5c3501ac4 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/sal_sume.js?v=cd0be29c82 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/spv_stare.js?v=85bc22c9ed HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/emitere_ecran.js?v=7847deeeb4 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/rip_ecran.js?v=99f1b10562 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/coada_trimite.js?v=b26ef32cac HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/operatiuni_ecran.js?v=4980b3a17f HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/borderou_ecran.js?v=6c00f2b8cf HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/etransport_ecran.js?v=11326ec78a HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/ecran_destinatie.js?v=aab0f8253f HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/produse_ecran.js?v=a342d38589 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/woo_ecran.js?v=bc2611f4e7 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/date_firma.js?v=b3bd524d96 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/mijloace_ecran.js?v=891835ddea HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/reevaluare_ecran.js?v=bf9065cbb3 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/compensari_ecran.js?v=ed3e73a2f0 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/clienti_ecran.js?v=90325032fc HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/nume_anaf.js?v=d59cd56b02 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/nir_legare.js?v=b34abfe2ec HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/tari_partener.js?v=47a26608a6 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/mf_din_factura.js?v=de15131629 HTTP/1.1" 200 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] code 404, message File not found
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/.publicat.json HTTP/1.1" 404 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] code 501, message Unsupported method ('POST')
+127.0.0.1 - - [19/Nov/2026 08:16:08] "POST /api/eveniment-public HTTP/1.1" 501 -
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/logo_simbol.png HTTP/1.1" 200 -
+----------------------------- Captured stderr call -----------------------------
+127.0.0.1 - - [19/Nov/2026 08:16:08] "GET /static/js/ecrane/firme.js HTTP/1.1" 200 -
+_____________ test_formularul_cor_ales_vine_cu_codul_salariatului ______________
+
+pagina = <Page url='http://127.0.0.1:47185/static/'>
+
+    def test_formularul_cor_ales_vine_cu_codul_salariatului(pagina):
+        pg = pagina
+>       _montat(pg)
+
+core/test_lot10b_deschidere_aleasa.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+core/test_lot10b_deschidere_aleasa.py:219: in _montat
+    pg.wait_for_selector(".fer-proba [data-adev]", timeout=15000)
+venv/lib/python3.12/site-packages/playwright/sync_api/_generated.py:9033: in wait_for_selector
+    self._sync(
+venv/lib/python3.12/site-packages/playwright/_impl/_page.py:427: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/playwright/_impl/_frame.py:394: in wait_for_selector
+    await self._channel.send(
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:76: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl._connection.Connection object at 0x752c1fc2ec00>
+cb = <function Channel.send.<locals>.<lambda> at 0x752c248d2340>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        parsed_st = _attach_api_call_information(
+            getattr(task, "__pw_stack__", None) or _capture_stack_trace(),
+            is_internal,
+            title,
+        )
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 15000ms exceeded.
+E           Call log:
+E             - waiting for locator(".fer-proba [data-adev]") to be visible
+E               33 × locator resolved to hidden <button data-adev="7" class="buton-secundar" data-nume="IONESCU VASILE">Adeverință</button>
+
+venv/lib/python3.12/site-packages/playwright/_impl/_connection.py:632: TimeoutError
+__________________ test_perechile_cod_mesaj_sunt_NESCHIMBATE ___________________
+
+    def test_perechile_cod_mesaj_sunt_NESCHIMBATE():
+        """Afirmatia care tine tot valul, confruntata functie cu functie cu starea de dinainte."""
+        nou = io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()
+        dif, confruntate, perechi = confrunta(_sursa_veche(), nou, _module_uc(), _harta_cod())
+>       assert not dif, ("contractul HTTP s-a schimbat in %d locuri:\n    %s"
+                         % (len(dif), "\n    ".join(dif[:8])))
+E       AssertionError: contractul HTTP s-a schimbat in 4 locuri:
+E             portal_bon:
+E               inainte, fara pereche: [(frozenset({503}), "Constant(value='serviciul AI indisponibil')"), (frozenset({400}), "Constant(value='imagine prea mare (max 8MB)')"), (frozenset({422}), "Constant(value='nu am putut citi bonul; încearcă o poză mai clară')")]
+E               acum, fara pereche:     [(frozenset({400}), "BinOp(left=Constant(value='Poți trimite cel mult %d fotografii pentru același document.'), op=Mod(), right=Name(id='MAX_POZE_BON', ctx=Load()))"), (frozenset({503}), "Constant(value='Serviciul AI nu e disponibil acum. Încearcă din nou peste puțin timp.')"), (frozenset({422}), "Name(id='MESAJ_BON_ILIZIBIL', ctx=Load())")]
+E             portal_bon_confirma:
+E               inainte, fara pereche: [(frozenset({404}), "Constant(value='bon inexistent sau deja trimis')")]
+E               acum, fara pereche:     [(frozenset({404}), "Constant(value='Bonul nu există sau a fost deja trimis.')")]
+E             portal_bon_sterge:
+E               inainte, fara pereche: [(frozenset({404}), "Constant(value='bon inexistent sau deja trimis')")]
+E               acum, fara pereche:     [(frozenset({404}), "Constant(value='Bonul nu există sau a fost deja trimis.')")]
+E             portal_solicitari_trimite:
+E               inainte, fara pereche: []
+E               acum, fara pereche:     [(frozenset({400}), "Constant(value='Scrie solicitarea înainte de a o trimite.')"), (frozenset({400}), "Constant(value='Mesajul are peste 4.000 de caractere. Scurtează-l.')")]
+E       assert not ['portal_bon:\n      inainte, fara pereche: [(frozenset({503}), "Constant(value=\'serviciul AI indisponibil\')"), (fro...e de a o trimite.\')"), (frozenset({400}), "Constant(value=\'Mesajul are peste 4.000 de caractere. Scurtează-l.\')")]']
+
+core/test_p7_uc.py:1623: AssertionError
+___________________ test_NICIUN_APEL_nu_s_a_pierdut_pe_drum ____________________
+
+    def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
+        """Conservarea apelurilor: ce chema ruta înainte, cheamă și acum — învelișul plus use-case-ul.
+    
+        **De ce e nevoie de proba asta pe lângă cea de mai sus.** Perechile `(cod, mesaj)` spun ce se
+        întâmplă când operațiunea REFUZĂ; nu spun nimic despre o instrucțiune care a dispărut tăcut.
+        Instanța care a cerut-o: mutatorul a lăsat pe dinafară `_rate_limit_reset(request)` și
+        `_rate_limit_email(_magic_rate, request)` — două gărzi anti-spam —, iar contractul de refuz a
+        rămas identic, suita verde, ruff verde. *Un apel care nu se mai face nu strigă; se vede numai
+        numărându-l.*
+        """
+        harta = _harta_cod()
+        uc = _module_uc()
+        nou_src = io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()
+        av, an = ast.parse(_sursa_veche()), ast.parse(nou_src)
+        vechi = {n.name: n for n in av.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        nou = {n.name: n for n in an.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+        dif, confruntate = [], 0
+        for nume, vfn in sorted(vechi.items()):
+            nfn = nou.get(nume)
+            if nfn is None:
+                continue
+            tinta = _tinta_invelisului(nfn)
+            if tinta is None:
+                continue                      # n-a plecat: se compară cu el însuși, n-are ce spune
+            corp = uc.get(tinta)
+            if corp is None:
+                dif.append("%s: învelișul trimite la %s, care nu există" % (nume, tinta))
+                continue
+            confruntate += 1
+            inainte = _apeluri(vfn, harta)
+            acum = _apeluri(nfn, harta)
+            for k, v in _apeluri(corp, harta).items():
+                acum[k] = acum.get(k, 0) + v
+            acum.pop("_http_din", None)
+            acum[tinta[1]] = acum.get(tinta[1], 0) - 1          # delegarea, adăugată de val
+            if acum.get(tinta[1]) == 0:
+                acum.pop(tinta[1])
+            # [R187] INLOCUIRILE declarate se contabilizeaza pe numele VECHI: apelul nu s-a pierdut, i
+            # s-a schimbat numele. Tabelul e pazit de `test_INLOCUIRILE_declarate_chiar_exista`.
+            for (_fn, _vechi), (_nou, _m) in APELURI_INLOCUITE.items():
+                if _fn == nume and acum.get(_nou):
+                    acum[_vechi] = acum.get(_vechi, 0) + acum[_nou]
+            # [08.10.2026] corpul EXTRAS într-un ajutor: creditul = apelurile pe care ajutorul chiar le face (vezi tabelul de sus)
+            if nume in APELURI_EXTRASE_IN_AJUTOR and acum.get(APELURI_EXTRASE_IN_AJUTOR[nume][0][1]):
+                # creditul se dă PE APEL efectiv al ajutorului (ca la BIFA_INLOCUIRI): `portal_bon` cheamă `dir_bonuri` de două ori, cum
+                # chema înainte `expanduser` (deficiența 9)
+                _n_apel = acum[APELURI_EXTRASE_IN_AJUTOR[nume][0][1]]
+                for k, v in _apeluri_ajutor(*APELURI_EXTRASE_IN_AJUTOR[nume][0]).items():
+                    acum[k] = acum.get(k, 0) + v * _n_apel
+            # [15.10.2026, lotul 4] corpul extras în mai multe ajutoare, creditate în ordine (vezi APELURI_EXTRASE_IN_AJUTOARE)
+            for _cale_a, _ajutor in (APELURI_EXTRASE_IN_AJUTOARE.get(nume, ((), ""))[0]):
+                _n_apel = acum.get(_ajutor, 0)
+                # un ajutor din stratul use-case se numără ca ruta (refuzurile `_erori.*` = HTTPException, prin aceeași hartă); unul
+                # din afara lui, ca în tabelul cu un singur ajutor
+                _cheie_uc = (os.path.basename(_cale_a)[:-3], _ajutor)
+                _ale = (_apeluri(uc[_cheie_uc], harta) if _cheie_uc in uc else _apeluri_ajutor(_cale_a, _ajutor))
+                for k, v in _ale.items():
+                    acum[k] = acum.get(k, 0) + v * _n_apel
+            for (_fn, _apel), _m in APELURI_SCOASE.items():
+                if _fn == nume:
+                    inainte.pop(_apel, None)
+            for (_fn, _apel), (_n, _m) in APELURI_REDUSE.items():
+                if _fn == nume:
+                    inainte[_apel] = inainte.get(_apel, 0) - _n
+            # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la
+            # taxarea inversa, `str(corp.get(x)).strip().lower()`): creditul se da PE APEL efectiv, iar `extra` numeste
+            # apelurile scoase deliberat. Anti-vacuu: `test_BIFA_INLOCUIRI_chiar_cheama_bifa`.
+            if nume in BIFA_INLOCUIRI:
+                _per_apel, _extra, _m = BIFA_INLOCUIRI[nume]
+                for k, v in _per_apel.items():
+                    acum[k] = acum.get(k, 0) + v * acum.get("bifa", 0)
+                for k, v in _extra.items():
+                    acum[k] = acum.get(k, 0) + v
+            lipsa = {k: inainte[k] - acum.get(k, 0) for k in inainte if inainte[k] > acum.get(k, 0)}
+            if lipsa:
+                dif.append("%s: apeluri pierdute %s" % (nume, lipsa))
+        assert confruntate >= 300, "doar %d funcții confruntate — universul s-a golit" % confruntate
+>       assert not dif, ("apeluri care nu se mai fac, în %d funcții:\n    %s"
+                         % (len(dif), "\n    ".join(dif[:10])))
+E       AssertionError: apeluri care nu se mai fac, în 1 funcții:
+E             portal_bon: apeluri pierdute {'float': 2, 'int': 2, 'round': 2, 'get': 1, 'sum': 2, 'cota': 2}
+E       assert not ["portal_bon: apeluri pierdute {'float': 2, 'int': 2, 'round': 2, 'get': 1, 'sum': 2, 'cota': 2}"]
+
+core/test_p7_uc.py:1731: AssertionError
+___________________ test_numarul_de_instructiuni_se_conserva ___________________
+
+    def test_numarul_de_instructiuni_se_conserva():
+        """257 de instrucțiuni SQL stăteau în rute înainte de V1 (107 citiri + 150 scrieri/control).
+        Acum sunt **262** de APELURI către straturile de sub HTTP — niciuna pierdută, niciuna dublată,
+        plus cinci ADĂUGATE deliberat (R187: `vanzare_ic` fixează schema, fiindcă emite o factură;
+        R59: cele patru apeluri prin care reevaluarea ajunge pe registru, la validarea notei).
+    
+        *Instrucțiunile din repository sunt mai puține decât apelurile (192), fiindcă 140 de poziții de
+        scriere au doar 78 de texte SQL distincte: una singură apare de douăzeci și cinci de ori.*
+        """
+        # [R187, 16.09.2026] 257 -> 258, cu motivul: `vanzare_ic` a capatat un
+        # `tranzactie.fixeaza_schema(cur, schema)`, cerut fiindca `emite_factura` foloseste INSERT
+        # NECALIFICAT — aceeasi linie exista deja in `achizitie_ic`, din acelasi motiv. Nu e o
+        # instructiune noua de SQL: e un apel de CONTROL, spre `tranzactie.py`, pe care numaratoarea il
+        # include. *Clichetul urca fiindca aplicatia face un pas in plus, nu fiindca s-a pierdut ceva.*
+        #
+        # [R59, 16.09.2026] 258 -> 262, cu cele PATRU apeluri numite, ca sa nu fie o cifra fara continut:
+        #   repo_reevaluari.consemneaza             — reevaluarea, consemnata langa ciorna
+        #   repo_reevaluari.neaplicata_pentru_nota  — randul neaplicat al notei, la validare
+        #   repo_mijloace_fixe.urca_valoarea        — coloana din registru urca (criteriul 1 al lui R59)
+        #   repo_reevaluari.marcheaza_aplicata      — faptul devine aplicat, cu momentul lui
+        # Niciuna nu muta SQL din alta parte: registrul chiar nu se atingea deloc pana acum, si tocmai
+        # asta era restanta. *Clichetul urca fiindca aplicatia face patru pasi in plus, nu fiindca s-a
+        # pierdut ceva — conservarea se probeaza de celelalte doua probe ale fisierului.*
+        #
+        # [B1, 17.09.2026, audit A1] 262 -> 263, cu apelul numit:
+        #   repo_declaratii.cabinet_din_coada — poarta de APARTENENTA a lui `coada_depune` intreaba prin
+        #   repository cine detine elementul de coada (cabinet_id), inainte sa atinga firma altui cabinet.
+        # Nu muta SQL din alta parte: e o citire NOUA, ceruta ca use-case-ul sa nu execute el SELECT (P7).
+        # *Clichetul urca fiindca aplicatia verifica un pas in plus (apartenenta), nu fiindca s-a pierdut ceva.*
+        # [C2, 17.09.2026, audit C2] 263 -> 266, cu apelurile numite:
+        #   tranzactie.savepoint_firma / elibereaza_firma / intoarce_la_firma — SAVEPOINT per firmă la
+        #   importul în masă, ca o eroare la una (denumire prea lungă) să nu abortze tranzacția pentru
+        #   celelalte și să nu lase commitul final să facă ROLLBACK tăcut peste tot. SQL-ul stă în modulul
+        #   de tranzacție (nume literal, ca restul savepoint-urilor), nu în use-case.
+        # [A12b, 19.09.2026, restanta R2] 266 -> 267, cu apelul numit:
+        #   repo_facturi.actualizeaza_destinatii_linii — la validarea unei facturi primite din SPV,
+        #   contabilul clasifica destinatia TVA per linie (taxabil/scutit/mixt); use-case-ul o persista
+        #   prin repository, nu executand el UPDATE-ul (P7). SQL-ul (UPDATE factura_linii) sta in
+        #   repo_facturi, nu in use-case. *Clichetul urca fiindca aplicatia face un pas in plus
+        #   (clasificarea liniilor), nu fiindca s-a pierdut ceva.*
+        # [DECIZII 65, 22.09.2026] 267 -> 268, cu apelul numit:
+        #   repo_firma_profil.platitor_tva in achizitie_ic — contabilizarea IC (taxare inversa) devine
+        #   constienta de platitor (neplatitor art.317 -> TVA in costul achizitiei, nu 4426=4427). Use-case-ul
+        #   citeste statutul prin repository, nu executand el SELECT-ul (P7). *Clichetul urca fiindca aplicatia
+        #   verifica un pas in plus (statutul de platitor), nu fiindca s-a pierdut ceva.*
+        # [lot 19, 02.10.2026] 268 -> 271, cu apelurile numite:
+        #   repo_contabilitate.adauga_z_cota ×2 (horeca_import_amef, horeca_raport_z) — defalcarea raportului Z pe cote,
+        #   scrisă în aceeași tranzacție cu nota, ca D300 rd.9/10 s-o poată citi (nota 707/4427 n-o poartă);
+        #   repo_salariati.suspendari_salariat (salariat_actualizeaza) — setul vechi de suspendări, ca poarta de
+        #   perioadă să se aplice lunilor ATINSE de schimbare. Nu mută SQL din altă parte: pași NOI ai aplicației.
+        # [D394 op2 Î1, decizia B, 02.10.2026] 271 -> 273, cu apelurile numite:
+        #   repo_contabilitate.adauga_z_amef ×2 (horeca_import_amef, horeca_raport_z) — casa și numărul de bonuri ale
+        #   raportului Z, în același rând pe ambele rute, ca D394 op2 Î1 să citească o singură sursă. Pași NOI.
+        # [lot 19 defectul 11, 03.10.2026] 273 -> 274, cu apelul numit:
+        #   repo_mijloace_fixe.seteaza_destinatie_cd (mijloc_fix_destinatie_cd) — bifa „C&D” din registru (CF art.20 alin.(1)
+        #   lit.b)), ruta nouă PUT /mijloace-fixe/{id}/destinatie-cd. Pas NOU al aplicației, nu SQL mutat.
+        # [D394 Î2, deciziile Costin 03.10.2026] 274 -> 278, cu apelurile numite:
+        #   repo_firma_profil.amef_si_cont_venit ×2 (chitanta_emite, chitanta_cota) — bifa de exceptare AMEF + contul de venit;
+        #   repo_casa.chitanta_de_clasificat + repo_casa.clasifica_vanzare (chitanta_cota) — ruta nouă PUT
+        #   /chitante/{id}/cota: chitanța fără cotă devine vânzare (nota ciornă pe venit + 4427). Pași NOI, nu SQL mutat.
+        # [testarea ca asistent, comanda Costin 04.10.2026 pct.3] 278 -> 279, cu apelul numit:
+        #   repo_utilizatori.contul_dupa_email (tenant_creeaza) — emailul clientului se judecă ÎNAINTE de crearea firmei
+        #   (o adresă cu alt rol se refuză pe câmp, firma nu se mai creează pe jumătate). Pas NOU, citire, nu SQL mutat.
+        #   (În `asistent_creeaza`, `id_si_activ_dupa_email` -> `contul_dupa_email` și `creeaza_cont_de_client` ->
+        #   `creeaza_cont_asistent` sunt ÎNLOCUIRI unu-la-unu, nu apeluri în plus.)
+        # [fluxul de factură F1, comanda Costin 05.10.2026 pct.1a] 279 -> 280, cu apelul numit:
+        #   repo_main.select_u (uc_auth.reinnoieste) — reînnoirea sesiunii verifică `sesiuni_valide_de` ca garda de cabinet
+        #   (o sesiune invalidată de schimbarea parolei nu primește token nou). Pas NOU, citire, nu SQL mutat.
+        # [fluxul de factură F1, comanda Costin 05.10.2026 pct.2–5] 280 -> 282, cu apelurile numite:
+        #   repo_facturi.jurnalizeaza_cota_aleasa (facturi_emite) — cota schimbată de contabil față de cea propusă se consemnează
+        #   (propus -> ales, cine, când) în aceeași tranzacție cu factura; repo_firma_profil.regim_tva_pentru_schimbare
+        #   (firma_profil_regim_tva) — poarta de perioadă închisă se pune numai la o SCHIMBARE reală a statutului. Pași NOI.
+        # [lotul 06.10.2026, comanda Costin §6.4] 282 -> 283, cu apelul numit:
+        #   repo_firma_profil.jurnal_firma (firma_profil_date) — jurnalul Date firmă, vizibil cabinetului. Pas NOU, citire.
+        # [validarea notelor, comanda Costin 06.10.2026 pct.1] 283 -> 286, cu apelurile numite (toate în `uc_coada`, citiri):
+        #   repo_declaratii.element_coada (fel + firma elementului, pentru aprobare / conținut), repo_declaratii.
+        #   schema_firmei_cabinetului (intrarea notelor în coadă, numai pe firmele cabinetului), repo_declaratii.nota_cu_linii
+        #   (conținutul notei pentru validator). Pași NOI.
+        # [validarea notelor, poarta de închidere 06.10.2026] 286 -> 287, cu apelul numit: repo_declaratii.nota_cu_linii
+        #   (jurnal_retrimite) — retrimiterea citește nota ca să-i verifice existența și luna (R42) înainte de a o pune în coadă.
+        #   Pas NOU, citire.
+        # [lotul 07.10 pct.15, 06.10.2026] 287 -> 288, cu apelul numit: repo_contabilitate.id_nota_dupa_numar (tenant_stat_plata) —
+        #   statul de plată arată la deschidere starea notei lunii în coada de validare (respingerea fără clic). Pas NOU, citire.
+        # [lotul „Deciziile 07.10”, 08.10.2026] 288 -> 289, cu apelul numit: repo_contabilitate.nota_horeca_z_ciorna (horeca_raport_z) —
+        #     raportul Z scris de mână e CIORNĂ la firma cantitativ-valorică (decizia pct.3), VALIDAT în rest: două apeluri explicite.
+        # [lotul „Deciziile 08.10”, 08.10.2026] 289 -> 298, cu cele NOUĂ apeluri numite:
+        #   repo_mijloace_fixe.seteaza_cod_catalog (mijloc_fix_cod_catalog) — W2, codul din Catalogul HG 2139/2004, scriere NOUĂ;
+        #   repo_contabilitate.liniile_si_data (salarii_contare_propunere) — retest pct.1, ecranul spune „ciorna are alte sume”, citire;
+        #   repo_contabilitate.punct_de_revenire + revino_la (salarii_contare_scrie) — retest pct.1, înlocuirea ciornei se retrage
+        #     când noua notă are aceeași amprentă (SAVEPOINT; era SQL direct în use-case, mutat aici);
+        #   repo_control_fiscal_api.select_depusa_curenta + insert_depusa_extern (control_fiscal_depusa_extern) — U2, „depusă în
+        #     afara iConta”: verificarea depunerii existente și scrierea;
+        #   repo_contabilitate.search_path_firma (controale_inchidere) — W2, registrul MF citit pe schema firmei (era SQL direct);
+        #   repo_contabilitate.profil_tva + note_nevalidate_in_interval (poarta_d406_balanta) — V1, poarta D406 = rulajele balanței
+        #     (fereastra D406 și câte ciorne explică diferența), două citiri NOI.
+        # [lotul „Deciziile 08.10 §6”, 08.10.2026] 298 -> 301, cu apelurile numite:
+        #   repo_contabilitate.documentul_notei (×2), punct_de_revenire, revino_la (tenant_amortizare) — §6 pct.6, clasa T1 (retest 08.10 pct.1): ciorna
+        #     nevalidată a amortizării se înlocuiește (SAVEPOINT retras la aceeași amprentă), iar nota nouă preia tabloul ei;
+        #   −1: repo_contabilitate.nota_horeca_z_validata (horeca_raport_z) scos — §6 pct.7 (R36), Z-ul tastat e ciornă la ambele metode;
+        #   repo_contabilitate.profil_tva + note_nevalidate_in_interval (ciorne_in_perioada, din coada_adauga) — §6 pct.7, porțile
+        #     D300/D394/D390/D406 dau avertisment, nu blocaj, când perioada fiscală are ciorne: două citiri NOI. Total 298 -> 303.
+        # [lotul „Retest 08.10”, 08.10.2026] 303 -> 307, cu apelurile numite:
+        #   repo_control_fiscal_api.select_depusa_curenta + insert_depusa_extern(sursa="contabil_anterior") (control_fiscal_depuse_anterior)
+        #     — pct.9, „Marchează toate ca depuse de contabilul anterior”: o perioadă deja depusă nu se marchează peste;
+        #   repo_control_fiscal_api.select_depusa_curenta + delete_marcari (control_fiscal_anuleaza_marcare) — pct.10, marcarea se poate
+        #     anula (numai marcările; o depunere din iConta.eu rămâne). Total 303 -> 307.
+        # [lotul „Retest 2”, 09.10.2026] 307 -> 312, cu apelurile numite (toate în ecranul planului de conturi, pct.13, decizia Costin O12):
+        #   repo_contabilitate.conturi_folosite (tenant_plan_conturi_lista) — lista spune care cont e folosit în note;
+        #   repo_contabilitate.denumirea_contului + conturi_folosite + toate_conturile + sterge_cont_din_plan
+        #     (tenant_plan_conturi_sterge) — ștergerea: contul există, nu e folosit în note, nu are analitice; abia apoi se șterge.
+        #   (citirea tenantului din `declaratii_nedepuse_cu_termen_in_luna`, pct.11, trece prin `repo_tenants` dintr-un ajutor, nu dintr-o rută.)
+        # [lotul „Retestul plasei”, 09.10.2026] 312 -> 313, cu apelul numit: repo_contabilitate.profil_tva (uc_comun.
+        #   _tva_balanta_sau_nu_se_aplica) — deficiența 211, coerența TVA față de balanță se spune „nu se aplică” la neplătitor: întâi se
+        #   citește dacă firma e plătitoare de TVA. Pas NOU, citire.
+        # [același lot] 313 -> 316, cu apelurile numite (planul de conturi, deficiențele 218 și 219):
+        #   repo_contabilitate.conturi_cu_sold_initial (tenant_plan_conturi_lista + tenant_plan_conturi_sterge) — „niciun cont cu sold nu se
+        #     șterge”: lista nu oferă „Șterge”, serverul refuză; repo_contabilitate.conturi_dupa_inceputul_simbolului (tenant_plan_conturi_lista)
+        #     — „căutarea după simbol potrivește începutul”. Citiri NOI. (Lista citea planul de două ori fără căutare: o citire, refolosită.)
+        # [lotul 2, 15.10.2026] 316 -> 317, cu apelul numit: repo_utilizatori.contul_dupa_email (uc_auth.invitatie_creeaza) — invitația nu
+        #   se creează pentru un email care are deja cont (Conflict). Citire NOUĂ (comanda Costin 14.10.2026 pct.3).
+        # [lotul 3, 15.10.2026] 317 -> 318, cu apelul numit: repo_contabilitate.ciorne_altui (uc_tenants.tenant_jurnal) — jurnalul îi
+        #   arată asistentului care ciorne sunt ale altuia, cu aceeași funcție din bază ca refuzul (deficiența 246).
+        # [lotul 4, 15.10.2026] 318 -> 322, cu apelurile numite (înregistrarea liberă cu confirmarea emailului, DECIZII „Lotul 4”):
+        #   repo_utilizatori.contul_dupa_email x2 (uc_auth._register_liber, uc_auth.confirma_inregistrarea) — nicio cerere / niciun cont
+        #   pentru un email care are deja cont (Conflict), citiri NOI; repo_utilizatori.scrie_acordul_termenilor (confirma_inregistrarea) —
+        #   dovada acordului, în aceeași tranzacție cu contul creat la confirmare, scriere NOUĂ; repo_main.select_public_2
+        #   (uc_auth._anunta_cabinet_nou) — emailul superadminului pentru anunțul de cabinet nou, citire NOUĂ.
+        # [lotul 6, 16.10.2026] 322 -> 332, cu apelurile numite (DECIZII „Lotul 6”):
+        #   repo_declaratii.inchide_asteptarea_deschisa + insereaza_asteptare (uc_coada.asteapta_notele) — 284, declarația care așteaptă
+        #     validarea notelor numite se ține minte (o singură așteptare deschisă pe firmă / tip / perioadă), scrieri NOI;
+        #   repo_declaratii.asteptari_deschise + revendica_asteptarea + scrie_rezultatul_asteptarii, repo_contabilitate.cate_nevalidate_dintre
+        #     (uc_coada.reia_declaratiile_in_asteptare) — 284, după validarea notelor declarația se generează din nou și intră singură în
+        #     coadă: citirea așteptărilor, revendicarea (o singură reluare), rezultatul; notele încă nevalidate. Pași NOI;
+        #   repo_declaratii.autorul_elementului (uc_coada.coada_respinge) — 293, „Renunță” e al celui care a pregătit-o sau al celui care
+        #     depune; citire NOUĂ;
+        #   repo_facturi.actualizeaza_clasificarea (uc_tenants.factura_primita_valideaza) — 273c, tipul furnizorului și categoria art.331,
+        #     cerute la validare, se scriu pe factură (D394); scriere NOUĂ;
+        #   repo_firma_profil.cui_firma (uc_tenants.spv_stare_firma) — 273a, starea SPV a firmei se citește pe CUI-ul ei; citire NOUĂ;
+        #   repo_contabilitate.search_path_firma (uc_tenants.tenant_amortizare_restanta) — 281, amortizarea lunilor rămase în urmă se
+        #     generează pe schema firmei; apel de CONTROL NOU.
+        # [lotul 7, 17.10.2026] 332 -> 334, cu apelurile numite (DECIZII „Comanda 7.2”):
+        #   repo_declaratii.numele_utilizatorului (uc_coada._cine) — 297 / 299, elementul înlocuit („Înlocuiește”, „Generează din nou”)
+        #     poartă motivul „Înlocuită de declarația generată din nou (<numele celui care a generat-o>)”; citire NOUĂ;
+        #   repo_declaratii.autorul_elementului (uc_coada.coada_depune) — 320, cine a pregătit declarația află că a depus-o altcineva
+        #     (notificarea „declarație depusă”); citire NOUĂ, după depunere, în afara tranzacției ei.
+        # [lotul 9, 19.10.2026] 334 -> 339, cu apelurile numite (DECIZII „Comanda 9.1”):
+        #   repo_firma_profil.profil_fiscal (uc_tenants.istoric_cu_perioada) — 389, perioada „T1/2026” din istoricul declarațiilor se scrie după
+        #     profilul firmei (decontul, regimul); citire NOUĂ;
+        #   repo_contabilitate.search_path_firma + repo_firma_profil.profil_fiscal (uc_tenants._z_in_rip) — 368, raportul Z la PFA intră în
+        #     registrul de încasări și plăți: regimul firmei se citește pe schema ei; apel de CONTROL NOU + citire NOUĂ;
+        #   repo_contabilitate.search_path_firma (uc_tenants.ajustari_fiscale_lista) — 378, rândurile luate din conturi (6581 -> rd.25) se
+        #     citesc pe schema firmei; apel de CONTROL NOU;
+        #   repo_d101.select_inregistrari_linii (uc_tenants.ajustari_fiscale_lista) — 378, rulajul 6581 al anului, arătat pe ecranul
+        #     ajustărilor înainte de D100 / D101; citire NOUĂ (aceeași interogare ca generatorul D101, nu una paralelă).
+        # [lotul 9, comenzile 9.2 / 9.3, 19.10.2026] 339 -> 342 (DECIZII „Comanda 9.2”, „Comanda 9.3”):
+        #   repo_efactura.primita_pentru_validare (uc_tenants.factura_primita_valideaza) — 418a, citirea scurtă a facturii primite, ÎNAINTE
+        #     de apelul ANAF (statutul furnizorului din XML și ANAF, cu conexiunea închisă); citire NOUĂ;
+        #   repo_facturi.actualizeaza_conturi_linii (uc_tenants.factura_primita_valideaza) — 418b, contul fiecărei linii; scriere NOUĂ;
+        #   repo_facturi.seteaza_act_identitate (uc_tenants.achizitie_neinregistrat) — 402, actul de identitate al vânzătorului PF pe
+        #     borderou; scriere NOUĂ.
+        # [lotul 10, comanda 10.1, 20.10.2026] 342 -> 349 (DECIZII „Comanda 10.1”):
+        #   repo_contabilitate.documentul_notei (uc_reevaluare.reevaluare_valuta_genereaza) — 429, documentul ciornei înlocuite a lunii
+        #     trece pe nota nouă; citire NOUĂ;
+        #   repo_contabilitate.search_path_firma (uc_reevaluare.reevaluare_valuta_genereaza) — 429 / 430d, nota care păstrează documentul
+        #     ciornei înlocuite se scrie pe schema firmei; apel de CONTROL NOU;
+        #   repo_contabilitate.nota_cu_sursa_si_status (uc_reevaluare.reevaluare_valuta_genereaza) — 429 / 430d, nota de reevaluare cu
+        #     documentul vechi; scriere NOUĂ;
+        #   repo_contabilitate.nota_operatiune_ciorna (uc_reevaluare.reevaluare_valuta_genereaza) — 429 / 430d, nota de reevaluare propusă
+        #     de aplicație, fără document vechi; scriere NOUĂ;
+        #   repo_contabilitate.adauga_linie (uc_reevaluare.reevaluare_valuta_genereaza) — 429, rândurile notei (câte unul pe element în
+        #     valută cu diferență); scriere NOUĂ;
+        #   repo_contabilitate.adauga_linie_partener (uc_tenants.nota_asociati) — 430b, câte un rând de dividend pe fiecare asociat, cu
+        #     asociatul ca partener; scriere NOUĂ;
+        #   repo_contabilitate.dividende_nevalidate_din (uc_tenants._sursa_profitului) — 430a, dividendele încă nevalidate din contul de
+        #     profit, rezervate din profitul disponibil; citire NOUĂ;
+        #   repo_tenants.nume_si_cui_spatiat (uc_regim_tva_incasare._rtvai_firma) — 428, CUI-ul firmei pentru registrul ANAF al TVA la
+        #     încasare; citire NOUĂ;
+        #   MINUS repo_d101.select_inregistrari_linii (uc_tenants.ajustari_fiscale_lista) — 425, înlocuit cu `d101.rulaje_fereastra`
+        #     (notele + rulajele preluate, aceeași bază ca generatorul D101), care nu e repository: −1.
+        #   Neutre (aceeași numărătoare): `nota_facturi_ciorna` / `nota_facturi_ciorna_2` / `nota_banca_ciorna` / `nota_casa_ciorna` /
+        #   `nota_salarii_ciorna` -> `nota_operatiune_ciorna` în 29 de use-case-uri (430d, sursa notei); `cate_nevalidate_dintre` mutat din
+        #   `uc_coada.reia_declaratiile_in_asteptare` în funcția ei internă `_ramase` (firma ștearsă între timp). Nenumărat de instrument:
+        #   `uc_declaratii.aduce_localitati_parteneri` -> `_repo_d406.parteneri_si_localitati` (C69), fiindcă e chemat printr-un alias
+        #   (`_repo_d406`), nu prin numele modulului.
+        # [lotul 10, prins de e2e 430, 20.10.2026] 349 -> 350:
+        #   repo_contabilitate.search_path_firma (uc_tenants._dividend_propus) — 430, `dividende_impartire` / `nota_asociati` țin conexiunea pe
+        #     `public`, iar SQL-ul asociaților e necalificat (500 „relation asociati does not exist” pe ecran); apel de CONTROL NOU.
+        # [lotul 10, deficiența C73, 21.10.2026] 350 -> 352: două citiri NOI, ambele `repo_mijloace_fixe.cod_liber` — codul de inventar
+        #   implicit, primul liber („NEC-LIC”, „NEC-LIC-2”, …; „MF-PLUS”, „MF-PLUS-2”, …), în `uc_tenants.achizitie_necorporala` și
+        #   `uc_tenants.nota_inventariere` (plus_mf). Ecranele n-au câmp de cod, iar codul fix făcea ca a doua operațiune să cadă cu 500 pe
+        #   `mijloace_fixe_cod_uniq`.
+        # [lotul 11, comanda 11.1, 21.10.2026] 352 -> 353, cu apelurile numite (diferența față de HEAD, apel cu apel):
+        #   + repo_contabilitate.nota_facturi_cu_factura, + repo_contabilitate.adauga_linie (uc_tenants.borderou_storneaza) — decizia 10.3
+        #     „Borderoul se corectează prin stornare, ca factura”: nota inversă a borderoului stornat și rândurile ei; scrieri NOI;
+        #   + repo_facturi.seteaza_act_identitate (uc_tenants.borderou_storneaza) — borderoul de stornare (BA-n nou) poartă actul de identitate
+        #     al vânzătorului PF, ca borderoul inițial (402); scriere NOUĂ;
+        #   + tranzactie.fixeaza_schema (uc_tenants.borderou_storneaza) — stornarea emite o factură cu INSERT necalificat (ca `vanzare_ic`,
+        #     R187); apel de CONTROL NOU;
+        #   − repo_contabilitate.nota_operatiune_ciorna, − repo_contabilitate.adauga_linie (uc_tenants.reevaluare_valuta) — 429, formularul
+        #     manual al reevaluării și use-case-ul lui au plecat (un singur formular, cu propunerea): −2;
+        #   − repo_mijloace_fixe.de_amortizat (uc_tenants.tenant_amortizare) — 451, rândurile amortizării vin din sursa unică
+        #     `amortizare_lunii.linii` (aceeași cu regenerarea pe uscat a ciornei depășite), care nu e repository: −1;
+        #   neutru: repo_contabilitate.adauga_linie -> adauga_linie_partener (uc_reevaluare.reevaluare_valuta_genereaza) — decizia 10.3, rândul
+        #     de reevaluare al unui partener poartă partenerul.
+        # [lotul 11, subagentul x] 353 -> 375, cu apelurile numite:
+        #   − repo_contabilitate.nota_facturi_cu_factura, − repo_contabilitate.adauga_linie_client (uc_tenants.vanzare_ic) — C78, nota proprie
+        #     a livrării intracomunitare dubla contarea de la emitere; nota e acum `fres["contare"]["inregistrare_id"]`: −2;
+        #   + 24 de apeluri NOI, niciunul SQL nou: regula straturilor (`core/straturi.py`, e2a D4b) — SQL-ul scris în lotul 11 direct în
+        #     use-case a trecut în repository, instrucțiune cu instrucțiune, aceeași ordine:
+        #     uc_tenants.stocuri_adauga: repo_stocuri.blocheaza_nir_urile / savepoint_nir_numar_repetat / inapoi_la_nir_numar_repetat (3);
+        #     uc_tenants._nir_cu_numarul: repo_stocuri.nir_cu_numarul (1);
+        #     uc_tenants.achizitie_neinregistrat: repo_stocuri.articolul_ales, repo_borderou.blocheaza_borderourile (2);
+        #     uc_tenants._borderou_identic: repo_borderou.vii_cu_data_si_valoarea / descriere_si_cantitate (2);
+        #     uc_tenants.borderouri_lista: repo_borderou.ale_lunii / prima_linie / nota_si_valoarea (3);
+        #     uc_tenants.borderou_storneaza: repo_borderou.blocheaza_borderourile / de_stornat / stornarea_lui / linii_de_stornat /
+        #       liniile_notei / intrari_vii / savepoint_stornare / inapoi_la_stornare / leaga_stornarea / storneaza_intrarea,
+        #       repo_stocuri.denumirea_articolului (11);
+        #     uc_cabinet.citeste_intocmitor_conn / salveaza_intocmitor_conn: repo_cabinet.intocmitorul / scrie_intocmitorul (2).
+        # [lotul 11] 375 -> 377, cu apelurile numite:
+        #   + repo_efactura.salveaza_tva_cote (uc_tenants._factura_importata) — C79: importul e-Factura păstrează TVA-ul pe cote al facturii
+        #     (BG-23, BT-116..119) în `factura_tva_cote`; scriere NOUĂ;
+        #   + repo_efactura.moneda_si_data (uc_tenants.factura_contabilizeaza) — C83: factura din XML în valută rămasă fără curs; moneda și
+        #     data se citesc înaintea tranzacției, ca cursul BNR să fie adus (`_preincalzeste_cursul`); citire NOUĂ.
+        # [lotul 11, deficiența 456] 377 -> 381, cu apelurile numite: încasarea facturii din Casă emite automat chitanța
+        #   (`uc_tenants.chitante_pe_incasare`): + repo_casa.urmatorul_numar_chitanta, + repo_facturi.factura_pentru_chitanta (citiri NOI),
+        #   + repo_casa.data_si_documentul_operatiunii (citire NOUĂ), + repo_casa.documentul_chitantei (scriere NOUĂ: documentul operațiunii
+        #   și al notei = numărul chitanței). Neutre: repo_firma_profil.seria_chitantei, repo_casa.adauga_chitanta,
+        #   repo_facturi.marcheaza_platita mutate din `chitanta_emite` în ajutoarele comune `chitanta_serie_sau_refuz` / `chitanta_scrie`.
+        # [lotul 12, comanda 12.1] 381 -> 386, cu apelurile numite (diferența față de d850db00, apel cu apel):
+        #   + repo_facturi.cursul_fixat (uc_factura_primita._anunt_curs) — decizia Costin „cursul vechi la validare (a)”: factura primită în
+        #     valută validată cu un curs mai vechi decât cel al zilei primește anunțul, ca la emitere; citire NOUĂ;
+        #   + repo_tenants.nume_si_cui_spatiat (uc_migrare.firma_fisier) — 599, firma din antetul fișierului de migrare, față de firma
+        #     aleasă; citire NOUĂ;
+        #   + repo_firma_profil.caen (uc_tenants.cv_articole) — 473, etichetele „alimentație publică” ale ecranului Stocuri numai la CAEN-ul
+        #     HoReCa; citire NOUĂ;
+        #   + repo_reevaluari.rezerva_si_pierderea (uc_tenants.reevaluare_imobilizare) — C116, rezerva 105 și descreșterea trecută pe 655 ale
+        #     activului, din reevaluările lui aplicate (OMFP 1802/2014 pct.111 alin.(1)-(2)), când cererea nu le dă; citire NOUĂ;
+        #   + repo_firma_profil.cui_firma_3 (uc_tenants.factura_primita_valideaza) — C120, factura primită între alte două firme refuzată și
+        #     la validare (CUI-ul din Date firmă, ca la import); citire NOUĂ;
+        #   neutre: repo_efactura.marcheaza_primita_validata, repo_facturi.actualizeaza_clasificarea ×2 / actualizeaza_destinatii_linii /
+        #     actualizeaza_conturi_linii mutate din `uc_tenants.factura_primita_valideaza` în `uc_factura_primita.valideaza` (477, drumul
+        #     comun cu factura primită introdusă de mână).
+        # [lotul 13, zona admin] 386 -> 397, cu apelurile numite (toate în `uc_admin`, diferența față de a632ffa2, apel cu apel):
+        #   645 suspendarea cu motiv și jurnal: + repo_admin.numele_cabinetului ×2 (suspendare, reactivare), + suspendarea_deschisa ×2 (o
+        #     suspendare deschisă; textul de la logare), + deschide_suspendarea, + adminii_cabinetului (emailul), + scrie_emailurile_suspendarii,
+        #     + inchide_suspendarea (reactivarea), + jurnalul_suspendarilor (fișa) — citiri / scrieri NOI;
+        #   646 anunțurile pe trimiteri: + anunturi_trimise, + destinatarii_trimiterii, + retrage_trimiterea, + leaga_trimiterea — NOI;
+        #     − repo_admin.adauga_anunt ×2: cele trei ramuri (cabinete alese / cabinetul unic / „nimic = toate”) au devenit una (destinatarii
+        #     expliciți), deci un singur apel.
+        # [lotul 13, comanda 13.1, zona portal] +6 (la integrare: 397 -> 403), cu apelurile numite (diferența față de a632ffa2, apel cu apel):
+        #   + repo_portal.facturi_deschise_validate ×5 (uc_portal.portal_kpi ×2, portal_cashflow ×2, scadentar_client) — 559: „De încasat” /
+        #     „De plătit”, previziunea și Scadențarul clientului pornesc din aceeași bază (facturile cu nota validată, pe monedă); citire NOUĂ;
+        #   + repo_firma_profil.fapte_preluare (uc_portal._preluare) — 553 / 558: luna de început a evidenței (prima lună nu se compară cu una
+        #     dinaintea evidenței); citire NOUĂ;
+        #   + repo_utilizatori.stare_token_activare (uc_public) — 560: linkul de activare deja folosit spune „Contul e deja activat — intră cu
+        #     emailul și parola”; citire NOUĂ;
+        #   − repo_facturi.pentru_cashflow (uc_portal.portal_cashflow) — înlocuit de `repo_portal.facturi_deschise_validate` (559, C113).
+        # Apelurile noi ale altor zone ale lotului se adaugă la integrare, fiecare numit.
+        # [lotul 13, comanda 13.1, zona decl] +2 (la integrare: 403 -> 405), citiri NOI în `uc_declaratii.declaratii_tipuri`:
+        #   + repo_declaratii.antet_firma (636 / 594: formularele manuale precompletate din Date firmă);
+        #   + repo_declaratii.monede_bnr (636: moneda D318 aleasă din lista BNR, nu scrisă de mână).
+        # [lotul 13, comanda 13.1, zona ops] +25 (la integrare: 405 -> 430), toate în `uc_tenants` (diferența față de a632ffa2, apel cu apel):
+        #   + repo_contabilitate.adauga_linie_partener ×12 (506 / 633: partenerul pe liniile notelor operațiunilor speciale — 401 / 4111 / 461 /
+        #     542 cu furnizorul, clientul, chiriașul, salariatul); + nota_operatiune_ciorna ×4 și search_path_firma ×4 (notele operațiunilor
+        #     scrise în aceeași tranzacție cu verificarea soldului, 524); + adauga_linie ×2 (−adauga_linie_2, −adauga_linie_cheltuiala_amortizare,
+        #     −adauga_linie_venit_marfa: forme unificate); + nota_amortizare_ciorna, nota_de_amortizare (517: lunile lipsă, ca ciorne);
+        #   + repo_mijloace_fixe.adauga_cu_reevaluare, seteaza_cod_catalog_schema ×2, toate ×2 (519 / 521 / 522 / 523: activul există în registru
+        #     numai după validarea notei, codul din catalog, amortizarea pe activ); −cod_liber, −scoate_din_evidenta;
+        #   + tranzactie.fixeaza_schema (670: decontul scrie și excedentul de diurnă al salariatului, în schema firmei).
+        # [lotul 13, zona ops, după integrare] +27 (430 -> 457): SQL-ul scris direct în `uc_tenants` în lotul 13 (28 de `execute`) mutat în
+        # depozite, fără schimbare de comportament (PLAN_HARDENING.md:842; registrul `straturi` declară `uc_tenants` cu 0 instrucțiuni SQL):
+        #   + repo_operatiuni (depozit NOU) ×20: vanzare_din_stoc_scrie, vanzari_marja_luna (548); scadente_facturi ×2 (511);
+        #     factura_primita_dupa_furnizor_si_numar (506 / 530); leaga_nota_de_factura (524); contul_stocului, leaga_miscarea_de_nota,
+        #     rulaje_productie_an (510); obiect_inventar, obiecte_inventar, obiect_inventar_scrie, obiect_dat_in_folosinta,
+        #     obiect_scos_din_folosinta (505–508); dividende_117_nevalidate (527); venituri_70x (532); subventii_pe_activ, nota_dupa_numar,
+        #     sterge_nota (528); salariat (670);
+        #   + repo_mijloace_fixe ×6: in_asteptarea_validarii ×3 (519: plus de inventar, necorporală, leasing), e_activ, valoarea (528),
+        #     coduri (521);
+        #   + repo_contabilitate.documentul_notei ×1 (510: documentul notei de obținere).
+        # [lotul 13, zona firme2, peticul firme2_1/2] +1 (la integrare: 457 -> 458): + repo_contabilitate.toate_conturile în `uc_tenants`
+        #   (589: planul întreg pentru verificarea analiticului adăugat de mână — numai sub sintetic legal).
+        # [lotul 13, reparațiile finale, peticul garzi_4] +1 (458 -> 459): + repo_efactura.moneda_si_data în `uc_tenants.decontare_valuta`
+        #   (C201 / P5: moneda facturii citită pe o conexiune SCURTĂ, ca cursul BNR să se aducă înaintea tranzacției — ca `factura_contabilizeaza`).
+        # [lotul 13, zona comp, 536] +1 (459 -> 460, la unire): + repo_facturi.actualizeaza_centre_linii în `uc_factura_primita.valideaza` (centrul de cost
+        #   al fiecărei linii a facturii primite, scris înaintea notei, ca `actualizeaza_conturi_linii`).
+        # [lotul 13, la integrarea zonelor comp (+1: repo_facturi.actualizeaza_centre_linii, 536) și ops (+1: conturi_cu_prefix, 524)]
+        #   suma măsurată pe arborele unit: 461 (fiecare apel numit mai sus).
+        # [lotul 13, 683] −1 (461 -> 460): − repo_operatiuni.salariat (uc_tenants._salariat_decont) — mutat în `core/salariat_decont.alege`, comun cu
+        #   Casa (verificarea salariatului stă într-un singur loc).
+        # [14.2, 595.1] +1 (460 -> 461): + repo_declaratii.inregistrat_oss în `uc_declaratii.declaratii_tipuri` (răspunsul „Înregistrată în OSS” din
+        #   Date firmă decide dacă D398 e gri la pasul 1; aceeași citire ca la generare, `declaratii_api._d398`).
+        # [14.3] +2 (461 -> 463): + repo_admin.seteaza_de_test în `uc_admin.admin_cabinet_de_test` (715.1, marcajul „cabinet de test”) și
+        # + repo_stocuri.miscari_pentru_diferenta în `stocuri_cv_api.reconciliere` (696.1, mișcările care produc diferența stocului față de balanță).
+        # [17.5-X2] −3 (463 -> 460), cinci apeluri numite (toate sunt citiri, nicio scriere):
+        #   − repo_stocuri.articole_cu_cont, − repo_stocuri.miscari_ale_articolului, − repo_contabilitate.sold_initial_pe_cont,
+        #     − repo_contabilitate.rulaj_pe_cont_stoc din `uc_tenants.verificare_stocuri` (P5, F089: verificarea compară validat cu validat prin
+        #     `stocuri_cv_api.reconciliere`, aceeași citire ca cardul Stocurilor; aceleași rezultate le păzește core/test_pilot_17_5_X.py,
+        #     cazul „verificarea stocurilor compară validat cu validat”);
+        #   + repo_contabilitate.jurnal_pe_an în `uc_comun._numar_note_luna` (P8, 602.1 / 781: numărătoarea notelor lunii în Verificări, aceeași
+        #     citire ca Registrul jurnal).
+>       assert _apeluri_catre_repository() == 460
+E       assert 462 == 460
+E        +  where 462 = _apeluri_catre_repository()
+
+core/test_p7_v2_scrieri.py:459: AssertionError
+___________________ test_py_niciun_numar_cu_forma_scrisa_fix ___________________
+
+    def test_py_niciun_numar_cu_forma_scrisa_fix():
+        """Clichet la ZERO în `core/*.py` și `main.py` (P1–P4), în afara excepțiilor numite. MUTAȚIE: în `clienti_api.py` mesajul înapoi
+        la „clientul are %d facturi” -> pică."""
+        rele = [g for g in gaseste_py() if not _exceptat(g)]
+>       assert not rele, "număr urmat de o formă scrisă fix (folosește `common.cate`):\n  " + "\n  ".join("%s:%d [%s] %s" % g for g in rele)
+E       AssertionError: număr urmat de o formă scrisă fix (folosește `common.cate`):
+E           core/capital_social.py:137 [P4] 'se cere' if … == 1 else 'se cer'
+E           core/coada_api.py:1745 [P4] 'l' if … == 1 else 'le'
+E           core/coada_api.py:1757 [P4] 'raportului Z' if … == 1 else 'rapoartelor Z'
+E           core/coada_api.py:1758 [P4] 'l' if … == 1 else 'le'
+E           core/control_incrucisat.py:127 [P4] 'ea' if … == 1 else 'ele'
+E           core/uc_portal.py:592 [P2] %d fotografii
+E       assert not [('core/capital_social.py', 137, 'P4', "'se cere' if … == 1 else 'se cer'"), ('core/coada_api.py', 1745, 'P4', "'l' if...ore/control_incrucisat.py', 127, 'P4', "'ea' if … == 1 else 'ele'"), ('core/uc_portal.py', 592, 'P2', '%d fotografii')]
+
+core/test_plural_dupa_numar.py:337: AssertionError
+____________ test_scanul_ecranului_cunoaste_toate_pluralele_din_cod ____________
+
+    def test_scanul_ecranului_cunoaste_toate_pluralele_din_cod():
+        """`core/limba_ecran.py::PLURALE` (din care se face `_ACORD`, judecata textului AFIȘAT) cuprinde substantivul fiecărui plural dat
+        lui `cate` în cod — lista ecranului e derivată din cod, nu una mică scrisă o dată. MUTAȚIE: „angajați” scos din PLURALE -> pică."""
+        from core.limba_ecran import PLURALE
+        lipsa = sorted({p.split()[0] for p in _forme_date_lui_cate()} - set(PLURALE))
+>       assert not lipsa, "plurale date lui cate, necunoscute scanului de ecran (adaugă-le în limba_ecran.PLURALE): %s" % lipsa
+E       AssertionError: plurale date lui cate, necunoscute scanului de ecran (adaugă-le în limba_ecran.PLURALE): ['contribuții', 'fotografii', 'sesizări', 'validate']
+E       assert not ['contribuții', 'fotografii', 'sesizări', 'validate']
+
+core/test_plural_dupa_numar.py:366: AssertionError
+_________________ test_citirile_mute_raman_declarate_nu_uitate _________________
+
+    def test_citirile_mute_raman_declarate_nu_uitate():
+        """Cele 70 nu sunt un defect, sunt o alegere. Dar dacă se dublează, alegerea nu mai e alegere."""
+        n = len(scan.masoara()["citiri_mute"])
+>       assert n <= _CITIRI_MUTE + 5, (
+            "citirile tăcute au crescut de la %d la %d — dacă e deliberat, urcă pragul cu motivul"
+            % (_CITIRI_MUTE, n))
+E       AssertionError: citirile tăcute au crescut de la 95 la 101 — dacă e deliberat, urcă pragul cu motivul
+E       assert 101 <= (95 + 5)
+
+core/test_refuz_tacut.py:104: AssertionError
+=========================== short test summary info ============================
+FAILED core/test_aritmetica_in_prezentare.py::test_nicio_formula_noua_pe_nume_neutre
+FAILED core/test_cerere_veche.py::test_nicio_cerere_din_editare_nu_scrie_un_raspuns_vechi
+FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nu_creste - Assertio...
+FAILED core/test_afirmatii_tipate.py::test_niciun_fisier_nou - AssertionError...
+FAILED core/test_afirmatii_tipate.py::test_campul_mort_explicatie_nu_reapare
+FAILED core/test_lot10b_deschidere_aleasa.py::test_clicurile_programatice_sunt_numai_cele_alese_de_om
+FAILED core/test_lot10b_deschidere_aleasa.py::test_adeverinta_si_contabilizarea_nu_deschid_formularul_cor
+FAILED core/test_lot10b_deschidere_aleasa.py::test_formularul_cor_ales_vine_cu_codul_salariatului
+FAILED core/test_p7_uc.py::test_perechile_cod_mesaj_sunt_NESCHIMBATE - Assert...
+FAILED core/test_p7_uc.py::test_NICIUN_APEL_nu_s_a_pierdut_pe_drum - Assertio...
+FAILED core/test_p7_v2_scrieri.py::test_numarul_de_instructiuni_se_conserva
+FAILED core/test_plural_dupa_numar.py::test_py_niciun_numar_cu_forma_scrisa_fix
+FAILED core/test_plural_dupa_numar.py::test_scanul_ecranului_cunoaste_toate_pluralele_din_cod
+FAILED core/test_refuz_tacut.py::test_citirile_mute_raman_declarate_nu_uitate
+14 failed, 1013 passed in 913.55s (0:15:13)
