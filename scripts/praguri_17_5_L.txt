@@ -1,0 +1,34 @@
+produs
+lot: 17.5-L
+max hook 131
+max poarta_verificator 108
+max poarta_pytest 707
+max poarta_plasa 3159
+runde_verificator_max: 2
+sursa pragurilor 17.5-L: generate de scripts/praguri_automate.py la 2026-11-19T06:10:59+02:00 din .lot_jurnal.log; loturi folosite: 17.5-J3, 17.5-Z, 17.5-K2 (3)
+  hook: maxim 109 s (lotul 17.5-K2, rularea 2330738-1795036151795) din 12 rulari complete, 0 rulari «intrerupt» ignorate, prag 131 s
+  poarta_verificator: maxim 90 s (lotul 17.5-Z, rularea 3817501-1794957888182) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 108 s
+  poarta_pytest: maxim 589 s (lotul 17.5-J3, rularea 3408016-1794943645179) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 707 s
+  poarta_plasa: maxim 2632 s (lotul 17.5-K2, rularea 3176691-1795051933495) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 3159 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  CLAUDE.md (numai înainte de C; commit separat după P0, regula v22 prin claude_md_v22.py)
+  scripts/praguri_17_5_L.txt (nou)
+  scripts/plasa_16_2.manifest (numai rândul nou al lui e2e_portal_17_5_L.py)
+  static/js/ecrane/portal.js
+  static/js/ecrane/facturi_ecran.js (numai ramura opt.client: AC161, AC162, AC164, AC166)
+  core/uc_portal.py
+  core/repo_portal.py
+  main.py (numai mesajul modului de previzualizare)
+  core/test_lot17_5_l_portal.py (nou)
+  frontend_test/e2e/e2e_portal_17_5_L.py (nou; testul arhitectului, sha256 8baa3f5c…)
+  frontend_test/e2e/e2e_lot13_portal_p1.py (numai «~500 lei» → «~500,00 lei», AC170)
+  static/js/ (numai fișierele numite în comandă și cele atinse de cascada ?v= din versioneaza_assets.py --scrie)
+  static/index.html (numai liniile ?v= rescrise de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/poarta_harta.txt (numai dacă R11 arată lipsă de acoperire)
+  DESIGN_SYSTEM.md (numai regula sumelor prin bani(v) și versiunea)
+  DECIZII.md
+  DEFICIENTE.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_L/

@@ -1,0 +1,64 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "start_portal",
+   "operator": "text_contine",
+   "valoare": "Acces cont",
+   "cheie": "dom:body|text",
+   "ac": null,
+   "martor": "firma F1 (tenant 105779, schema tenant_9049), previzualizarea portalului",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): cardul «Acces cont» al ecranului de start al portalului (static/js/ecrane/portal.js, desktopPortal, CARDURI), neschimbat de lot; trece pe bază (proba contractului, pct.1 al comenzii)."
+  },
+  {
+   "id": "a.3",
+   "pas": "start_portal",
+   "operator": "text_contine",
+   "valoare": "Fotografiază bon sau chitanță",
+   "cheie": "dom:body|text",
+   "ac": "AC155",
+   "martor": "firma F1 (tenant 105779), previzualizarea portalului, ecranul de start",
+   "de_ce": "AC155: acum același gest are două verbe: titlul și cardul spun «Pozează» (portal.js:39, :510), intro-ul și butonul «Fotografiază». După: «Fotografiază» peste tot: `CARD_BON.titlu` și `<h2 class=\"pf-titlu\">` = «Fotografiază bon sau chitanță»; butoanele rămân «Fotografiază documentul» și «Încarcă din galerie». Oracol: cardul de pe ecranul de start al portalului (previzualizarea firmei F1) se numește «Fotografiază bon sau chitanță»; pe bază se numește «Pozează bon sau chitanță»."
+  },
+  {
+   "id": "a.4",
+   "pas": "start_portal",
+   "operator": "text_contine",
+   "valoare": "Mesaje către contabil",
+   "cheie": "dom:body|text",
+   "ac": "AC175",
+   "martor": "firma F1 (tenant 105779), previzualizarea portalului, ecranul de start",
+   "de_ce": "AC175: acum titlul și intro-ul spun «solicitări» («Cere ceva contabilului tău.», cardul «Solicitări» / «Trimite o solicitare contabilului.», :27–28, :94, :321–322), iar restul ecranului «mesaje» («Niciun mesaj încă.», «Scrie un mesaj...», «Nu s-a putut trimite mesajul.»). După: «mesaje» peste tot în portal, exact: cardul `titlu` «Mesaje către contabil», `sinteza` «Scrie un mesaj contabilului.»; `nav.deschide(\"Mesaje către contabil\", …)`; h2 «Mesaje către contabil»; intro «Scrie contabilului tău ce ai nevoie.»; butonul «Trimite mesajul»; placeholder «Scrie un mesaj…»; «Niciun mesaj încă.» și «Nu s-a putut trimite mesajul.» neschimbate. Cheia cardului (`cheie: \"solicitari\"`) și rutele rămân."
+  },
+  {
+   "id": "f.2",
+   "pas": "start_portal",
+   "operator": "text_contine",
+   "valoare": "Declarații depuse",
+   "cheie": "dom:body|text",
+   "ac": null,
+   "martor": "firma F1 (tenant 105779), previzualizarea portalului",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): cardul «Declarații depuse» al ecranului de start al portalului (static/js/ecrane/portal.js, CARDURI), neschimbat de lot (AC176 schimbă numai eticheta rândului din fereastra lui)."
+  },
+  {
+   "id": "a.5",
+   "pas": "istoric_portal",
+   "operator": "lipseste",
+   "valoare": "Export SAGA lună",
+   "cheie": "dom:body|text",
+   "ac": "AC164",
+   "martor": "firma F1 (tenant 105779), previzualizarea portalului, Istoric facturi",
+   "de_ce": "AC164: acum clientul primește comenzile și stările contabilului: în istoricFacturi «Export SAGA lună» (`#fac-saga-luna`) și «Export WinMentor lună» (`#fac-winmentor-luna`, :695–696) și zona `#fac-saga-zona`; în detaliiFactura «Export SAGA» pe factură (`#fd-saga`, ~:1147, cu ascultătorul `if (bSaga)` ~:1197) și starea notei contabile în `statusTxt` (~:1090, între ele «notă propusă, de validat»). După: pentru `opt.client` nu se randează niciuna dintre cele trei butoane/zone, iar `statusTxt` nu conține niciun fragment despre nota contabilă (orice fragment care conține «notă» sau «de validat»): rămâne starea facturii (emisă, plătită, anulată etc., ca azi). Rămân neschimbate pentru client: PDF factură, Trimite pe email, Trimite în SPV, Emite chitanță, Transformă în factură (decizia arhitectului, decizii_17_5_L.txt pct.1)."
+  },
+  {
+   "id": "a.6",
+   "pas": "istoric_portal",
+   "operator": "lipseste",
+   "valoare": "Export WinMentor lună",
+   "cheie": "dom:body|text",
+   "ac": "AC164",
+   "martor": "firma F1 (tenant 105779), previzualizarea portalului, Istoric facturi",
+   "de_ce": "AC164 (aceeași constatare ca a.5): pentru `opt.client` nu se randează «Export SAGA lună» (`#fac-saga-luna`), «Export WinMentor lună» (`#fac-winmentor-luna`, :695–696) și zona `#fac-saga-zona`; cabinetul (`opt.client` fals) păstrează butoanele."
+  }
+ ]
+}
