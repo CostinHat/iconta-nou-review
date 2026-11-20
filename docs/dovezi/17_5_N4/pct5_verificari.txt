@@ -1,0 +1,14 @@
+pct.5 (i): 40 de elemente din oracolele C–M comparate (număr de rânduri în static și core, bază vs P).
+  .fereastra bază=409 P=413
+  .fereastra-corp bază=193 P=197
+  .fj-butoane bază=8 P=11
+  .fj-motiv bază=5 P=7
+  .fj-principal bază=9 P=10
+judecată: niciun element pierdut; cele 5 diferențe sunt creșteri (P > bază) din regula DS a barei adaptive (stil.css, cadru.js: patch-ul arhitectului bara_adaptiva_17_5_N4.patch), nu dispariții.
+
+pct.5 (ii): id/class noi în rândurile + (static, core):
+class="cf-dot"
+class="cf-pastila"
+class="pf-frand-sub"
+class="pf-intro"
+judecată: clase existente refolosite (cf-dot, cf-pastila: Scadențar; pf-frand-sub, pf-intro: rândurile Verificări rescrise); id-ul nou #et-motiv-spv se creează din JS (etransport_ecran.js), nu ca atribut literal id="…".

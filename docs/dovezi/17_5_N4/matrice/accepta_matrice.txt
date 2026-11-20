@@ -1,0 +1,2 @@
+315 perechi; tăieturi zero pe 312 deschideri măsurate; excepții istorice: [('Declarație D177 F1 pasul 2', '603x590'), ('Declarație D177 F1 pasul 2', '1366x768'), ('Declarație D177 F1 pasul 2', '2133x1111')]
+rc=0

@@ -1,0 +1,8 @@
+fragment	loc	bază	P
+intra.expedieri.cumulat + " lei ("	static/js core	1	0
+"B", "251401"	static/js core	1	0
+"CJ", "522101"	static/js core	1	0
+et-motiv-spv	etransport_ecran.js	0	1
+/spv/stare	etransport_ecran.js	0	1
+inactiv(	etransport_ecran.js	0	1
+Codul de produs al lui C = P (C adaugă numai dovezi și registre).

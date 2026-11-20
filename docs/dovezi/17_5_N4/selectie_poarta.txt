@@ -1,0 +1,57 @@
+# selecția porții pe C: POARTA_PLASA_FIX=scripts/plasa_16_2.manifest (plasa fixă = manifest_plasa_17_5_N4.txt), 28 de fișiere; complementul țintit (25) rulează separat, prin complement_17_5_N4.sh, nu în plasa fixă
+frontend_test/e2e/e2e_lot12_verif.py	4 teste
+frontend_test/e2e/e2e_lot72_facturi.py	7 teste
+frontend_test/e2e/e2e_pilot_luna.py	40 teste
+frontend_test/e2e/e2e_pozitii_validate.py	17 teste
+frontend_test/e2e/e2e_pilot_x09.py	1 teste
+frontend_test/e2e/e2e_pilot_f017.py	1 teste
+frontend_test/e2e/e2e_pilot_f054.py	1 teste
+frontend_test/e2e/e2e_pilot_x05.py	1 teste
+frontend_test/e2e/e2e_pilot_x06.py	1 teste
+frontend_test/e2e/e2e_pilot_x07.py	1 teste
+frontend_test/e2e/e2e_luna_lucru_17_5_C.py	1 teste
+frontend_test/e2e/e2e_actiune_principala_17_5_D.py	1 teste
+frontend_test/e2e/e2e_alegere_unica_17_5_E.py	1 teste
+frontend_test/e2e/e2e_butoane_la_loc_17_5_F.py	1 teste
+frontend_test/e2e/e2e_de_validat_17_5_G.py	1 teste
+frontend_test/e2e/e2e_piese_17_5_H2.py	1 teste
+frontend_test/e2e/e2e_bara_jos.py	1 teste
+frontend_test/e2e/e2e_ferestre_17_5_O.py	1 teste
+frontend_test/e2e/e2e_d300_ciorne_17_5_W.py	1 teste
+frontend_test/e2e/e2e_pilot_17_5_S.py	1 teste
+frontend_test/e2e/e2e_texte_17_5_I.py	1 teste
+frontend_test/e2e/e2e_pilot_17_5_X.py	1 teste
+frontend_test/e2e/e2e_cursa_luna_17_5_X2.py	1 teste
+frontend_test/e2e/e2e_declaratii_17_5_J.py	1 teste
+frontend_test/e2e/e2e_ferestre_17_5_K.py	1 teste
+frontend_test/e2e/e2e_portal_17_5_L.py	1 teste
+frontend_test/e2e/e2e_cabinet_17_5_M.py	1 teste
+frontend_test/e2e/e2e_ferestre_firma_17_5_N.py	1 teste
+
+# include e2e_bara_jos.py: 1; include e2e_ferestre_firma_17_5_N.py: 1
+# complementul (selectie_e2e_N4.tsv, complement_tintit):
+--doar=e2e_bloc_c.py
+--doar=e2e_bloc_d.py
+--doar=e2e_bloc_f.py
+--doar=e2e_casa.py
+--doar=e2e_comanda_1210.py
+--doar=e2e_import_saga.py
+--doar=e2e_lot10b_stoc.py
+--doar=e2e_lot10_ferestre.py
+--doar=e2e_lot10_migrare.py
+--doar=e2e_lot11_b.py
+--doar=e2e_lot11_m.py
+--doar=e2e_lot11_x.py
+--doar=e2e_lot12_ctrl.py
+--doar=e2e_lot12_cx1.py
+--doar=e2e_lot12_cx2.py
+--doar=e2e_lot12_migr.py
+--doar=e2e_lot12_p252.py
+--doar=e2e_lot12_scad.py
+--doar=e2e_lot13_fact.py
+--doar=e2e_lot13_firme2.py
+--doar=e2e_lot13_migr.py
+--doar=e2e_lot13_sal.py
+--doar=e2e_lot91.py
+--doar=e2e_lot92.py
+--doar=e2e_lot93a.py

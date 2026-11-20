@@ -1,0 +1,20 @@
+# 8.5 (ii) testele core din listă (34 de fișiere), rulate o dată pe P 7d1eabb11ecafc6d4f2823f467afaa9a1b1b4ea4: ./venv/bin/python -m pytest -q -p no:cacheprovider <fișierele>, 00:03:30–00:17:30; ieșirea completă: teste_core_P_log.txt
+6 failed, 423 passed in 837.58s (0:13:57)
+FAILED core/test_lot13_portal_p3_ecrane.py::test_def_525_deschide_date_firma_din_refuz_duce_la_asociati — restanță de bază, același mesaj
+FAILED core/test_lot13_portal_p3_ecrane.py::test_def_525_dupa_salveaza_fereastra_ramane_unde_lucrai — restanță de bază, același mesaj
+FAILED core/test_plural_dupa_numar.py::test_py_niciun_numar_cu_forma_scrisa_fix — restanță de bază, aceleași locuri
+FAILED core/test_plural_dupa_numar.py::test_scanul_ecranului_cunoaste_toate_pluralele_din_cod — restanță de bază, aceeași listă
+FAILED core/test_p7_straturi.py::test_cifra_din_motiv_nu_imbatraneste_tacut — restanță de bază (repo_d300 8/9, repo_d301 2/3, uc_tenants 0/1, main.py); repo_main.py 40/41 nu mai apare (straturi.py 41)
+FAILED core/test_p7_v2_scrieri.py::test_numarul_de_instructiuni_se_conserva — restanță de bază (462 == 460 și pe bază)
+
+# baza: refolosită rularea pe bază a lui N2 (~/iconta_nou, main 6ddc059e, aceeași bază, aceleași 6 teste): teste_core_rosii_baza_N2.txt.
+# Comparația liniilor «E» bază vs P: diff gol (26 = 26 de rânduri, mesaje identice). Niciun roșu nou.
+
+# teste actualizate (preluate octet cu octet din P_N3 = P al lui N, marcaj [17.5-T])
+frontend_test/e2e/e2e_lot12_cx1.py::test_def_c145 — regexul Intrastat pe forma «1.000,00» (AC061); rulat în complementul țintit pe C (pct.9 N4)
+frontend_test/e2e/e2e_lot13_fact.py::test_def_535 — pg.click("#et-genereaza") în loc de #et-trimite (AC041); rulat în complementul țintit pe C (pct.9 N4)
+frontend_test/e2e/e2e_pilot_17_5_X.py::_p8 (e.20) — antetul Registrului = numărarea independentă a tuturor notelor lunii (84), contorul Verificărilor = numărarea independentă a notelor validate (32) (AC058); în plasa fixă (R14), sha256 0a75f5a5…
+
+# scripts/scan_selecturi_ecrane.py pe P: rc=0 (scan_selecturi_log.txt)
+# frontend_test/proba_verificare_functionalitati.py: NU s-a rulat — trimite cereri la 127.0.0.1:8010 (producția); interdicție explicită în comanda N4 pct.10
+# e2e-urile din listă: plasa fixă (28) în poartă + complementul țintit (25) pe C, nu separat

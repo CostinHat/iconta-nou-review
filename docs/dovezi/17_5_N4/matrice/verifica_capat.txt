@@ -1,0 +1,2 @@
++ Bun [336, 374], mesaje [[390, 450]], bara [473, 574], margine de referință 574 px
+rc=0

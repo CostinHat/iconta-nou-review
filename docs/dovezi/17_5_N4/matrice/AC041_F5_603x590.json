@@ -1,0 +1,85 @@
+{
+  "firma": "F5 SRL Salariati SRL",
+  "tenant_id": 105783,
+  "sha": "7d1eabb11ecafc6d4f2823f467afaa9a1b1b4ea4",
+  "acoperire": "neconectat",
+  "http": 200,
+  "observat": {
+    "trimite": {
+      "aria": "true",
+      "title": "Firma nu are drept SPV, deci UIT-ul nu poate fi trimis de aici. Generează XML-ul și încarcă-l manual în SPV.",
+      "clasa": "buton-secundar",
+      "text": "Trimite UIT în SPV"
+    },
+    "genereaza": {
+      "aria": null,
+      "title": "",
+      "clasa": "buton-primar fj-principal",
+      "text": "Doar generează XML (manual)"
+    },
+    "principale": [
+      "et-genereaza"
+    ],
+    "n_motiv": 1,
+    "motiv": {
+      "text": "Firma nu are drept SPV, deci UIT-ul nu poate fi trimis de aici. Generează XML-ul și încarcă-l manual în SPV.",
+      "clasa": "ds-motiv-inactiv bara-motiv",
+      "vizibil": true,
+      "in_bara": true
+    },
+    "bara": {
+      "aceeasi": true,
+      "trimite_vizibil": true,
+      "motiv_vizibil": true,
+      "xml_vizibil": true,
+      "vecin": true,
+      "separat": true,
+      "xml_activ": true,
+      "pozitii": {
+        "trimite": {
+          "left": 66.953125,
+          "top": 516,
+          "right": 237.515625,
+          "bottom": 554
+        },
+        "motiv": {
+          "left": 32,
+          "top": 481,
+          "right": 560.75,
+          "bottom": 512
+        },
+        "xml": {
+          "left": 249.515625,
+          "top": 516,
+          "right": 571,
+          "bottom": 568
+        },
+        "bara": {
+          "left": 16,
+          "top": 473,
+          "right": 587,
+          "bottom": 574
+        }
+      }
+    }
+  },
+  "doua_randuri": true,
+  "ultimul_control": {
+    "control": [
+      336,
+      374
+    ],
+    "bara": [
+      473,
+      574
+    ],
+    "mesaje": [
+      [
+        390,
+        450
+      ]
+    ],
+    "vizibil": true
+  },
+  "erori": []
+}

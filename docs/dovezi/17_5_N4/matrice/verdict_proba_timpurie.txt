@@ -1,0 +1,12 @@
+Proba timpurie AC041 (pct.7) pe P 7d1eabb11ecafc6d4f2823f467afaa9a1b1b4ea4, o singură pornire oficială pe 8019 (calibrare_cu_F5_17_5_N4.py), rc=0.
+Martor: HTTP 200 pe /tenants/<id>/spv/stare, acoperire «neconectat» (F1 și F5).
+AC041_F1_603x590.png  trece — două rânduri DS: motivul complet sus; «Trimite UIT în SPV» inactiv, apoi «Doar generează XML (manual)» activ; bara 473–574 px, nu acoperă formularul.
+AC041_F5_603x590.png  trece — idem F1 (aceleași poziții).
+AC041_F1_1366x768.png trece — un rând de 72 px: motiv, secundar inactiv lângă el, principal.
+AC041_F5_1366x768.png trece — idem (captură citită: motivul și butonul inactiv se citesc împreună; bara 680–752 nu acoperă «+ Bun»).
+AC041_F1_2133x1111.png trece — un rând de 72 px.
+AC041_F5_2133x1111.png trece — un rând de 72 px.
+ultimul_control (#et-plus-bun) F1/603: control [336,374] < mesaje [[390,450]] < bara [473,574]; marginea inferioară 574 = reperul inițial (abatere 0 px, toleranța 2 px).
+verifica_capat_17_5_N4.py: rc=0, «+ Bun [336, 374], mesaje [[390, 450]], bara [473, 574], margine de referință 574 px» (identic cu PRE-P0 pe proiecția r3 7f5341d0).
+Calibrarea oficială: 18 verdicte ATINS, «abateri: 0 sha=7d1eabb1…».
+Erori: [] la toate cele șase. Nicio buton în corp, duplicat, manual inactiv, text greșit, decupare sau suprapunere.

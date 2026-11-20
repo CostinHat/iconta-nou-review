@@ -2,6 +2,9 @@ Citește CLAUDE.md (versiunea din 29.10.2026 — singura sursă a regulilor de l
 
 # PREDARE LANȚ — **27.10.2026: loturile 12 + 13 (comenzile 12.1–12.3 și 13.1) comise pe ramura `lucru/lot12-2026-10-23` (worktree `/home/costin/iconta_lot12`), TOT PÂNĂ LA POARTA LOTULUI FĂCUT, NEPUBLICAT; `~/iconta_nou` = versiunea publicată (`d850db00`, lotul 11); poarta o singură dată pe loturile 12 + 13 (DECIZII „Comanda 13.1 în coadă”); publicarea cere confirmarea lui Costin (regimul pilot)**
 
+## LOTUL 17.5-N4 (produs, 20.11.2026) — continuarea lui 17.5-N3 (AC041 cu bara de jos adaptivă, AC050, AC058, AC060, AC061, AC077, AC117, AC118); ramura `lucru/lot17-5n4` (worktree `~/iconta_lot17_5n4`), bază main 6ddc059e (17.5-M4)
+- P0 `2b0403de`, P `7d1eabb1` (cele 28 de căi din P_N3 1a5eb318 + cadru.js, patch-ul barei adaptive, versionarea, straturi.py 41, harta e-Transport, SHA pilot X, CLAUDE.md 8019 N4), apoi C (registre, dovezi), complementul de 25 de e2e și poarta pe C, haiku_1 și «dupa», E. Raportul: `~/lot_17_5_N4_raport.md`. Detalii: DECIZII.md «Lotul 17.5-N4». Ramurile N, N2, N3 rămân neatinse.
+
 ## LOTUL 17.5-L (produs, 19.11.2026) — portalul clientului, 26 de constatări AC; ramura `lucru/lot17-5l` (worktree `~/iconta_lot17_5l`), bază main a6833622 (17.5-K2)
 - P0 `559e4efc`, CLAUDE.md `0b508d9e` (regula v22), P `5838f947` + `e85c6692`, C `043a113ff260ac65b7021b50205196c72eb24a5e` (poarta VERDE), apoi E (haiku_1, «dupa», registre). Raportul: `~/lot_17_5_L_raport.md`. Detalii: DECIZII.md «Lotul 17.5-L». Rămân de făcut de arhitect: `core/test_p7_uc.py` (2 teste) în lista permisă a unui lot următor.
 

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.124 · 19 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.125 · 20 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -1616,6 +1616,10 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 .ajutor-btn - buton mic circular (20px) cu "?", plasat langa titlul unei functionalitati DOAR unde exista ceva de spus dincolo de eticheta (reguli fiscale, preconditii, consecinte). Deschide un modal cu textul de folosire din coloana ajutor (FUNCTIONALITATI.csv), via api.js semnAjutor(fid) + handler global. NU se pune peste tot (Salveaza/Cauta/Inapoi/camp Denumire = zgomot).
 
 **(v2.124, lotul 17.5-M, AC017 + AC034 + AC035)** Trei reguli ale ecranelor cabinetului: (1) o fereastră care promite priorități le arată — «Sinteza zilei» are prima secțiune «Priorități», cu restanțele și cele mai apropiate scadențe, din aceleași surse ca cardul Termene (`/termene`); (2) un total își numește populația — în «Tipare de erori» apar toate tipurile, nu numai cele cu respingeri, iar rândurile «Total (toate pregătirile)» și «Total (firmele cu respingeri)» spun ce numără; (3) cardul numără ce numără fereastra — cardul «Activitate» numără persoane («asistent necesită atenție»), nu tipare, iar fereastra «Tipare de erori» arată care sunt.
+
+**(v2.125, lotul 17.5-N4, continuarea lui 17.5-N, AC077)** Contoarele unui ecran însumează toate rândurile listei: pastila fără scadență din Scadențar («<n> fără scadență în sistem», afișată mereu, și cu 0) intră în rândul de pastile alături de restante, scadențe apropiate și în termen, ca cele patru să numere fiecare factură din listă.
+
+**(v2.125, lotul 17.5-N4, continuarea lui 17.5-N, AC041)** Acțiune inactivă prin lipsa dreptului SPV: când se știe că firma n-are drept SPV (acoperire «neconectat» / «neacoperit»), butonul care trimite în SPV stă în bara de jos ca acțiune secundară marcată (`data-in-bara`), inactiv prin `inactiv(buton, motiv)`, lângă motivul vizibil (`.ds-motiv-inactiv`), iar alternativa manuală devine butonul principal (e-Transport: «Doar generează XML (manual)»; harta barei de jos: docs/dovezi/17_5_H/harta_bara_jos.txt). La lățime insuficientă se aplică regula de mai jos (bara pe două rânduri).
 
 ### Bara de jos cu motiv și acțiune secundară în bară (AC041)
 

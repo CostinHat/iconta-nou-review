@@ -1,0 +1,9 @@
+# vd_diferenta 17.5-N4: «inainte» = docs/dovezi/17_5_N/vd_inainte (lotul N, pe baza 6ddc059e, aceeași bază ca N4; 210 măsurători, refolosit prin citare, pct.10) → «dupa» = docs/dovezi/17_5_N4/vd_dupa (P N4 7d1eabb1, 210 măsurători)
+# litere = literele a–h cu verdict PICĂ ('.' = TRECE); principal = fapte.b.actiune_principala; tabele_ds = fapte.c.tabele_ds
+# chei numai într-o parte: []
+# ferestre schimbate: 2 — Declarație D301 F3 pasul 2, e-Transport F1
+Declarație D301 F3 pasul 2 1366x768: litere: '...d....' → '.b......'; principal: 'Pune în „De depus” →' → None
+e-Transport F1 1366x768: principal: 'Trimite UIT în SPV' → 'Doar generează XML (manual)'
+e-Transport F1 1920x1080: principal: 'Trimite UIT în SPV' → 'Doar generează XML (manual)'
+# Declarație D301 F3 pasul 2 1366x768: captura «dupa» e luată în starea de încărcare «Se generează declarația…» (pasul 2 neîncărcat; instabilitate de timp cunoscută, PREDARE_LANT 17.5-O). Re-măsurată o singură dată pe același server și P (docs/dovezi/17_5_N4/vd_dupa_remasurare/): litere '...d....', principal 'Pune în „De depus” →' — identic cu «inainte». Nu e schimbare a lotului.
+# ferestre schimbate după re-măsurare: 1 — e-Transport F1 (schimbarea principalului impusă la AC041, (6)); literele b și c neschimbate la toate ferestrele.

@@ -1,0 +1,3 @@
+Primul apel autentificat prin verificatorul de design, pe P 7d1eabb1, după restaurare (rc=0), clonare (9 s) și pornire din arborele fazei:
+./venv/bin/python scripts/verificator_design.py ecran "Verificări F1" 1366x768 docs/dovezi/17_5_N4/autentificare
+rc=0; ecran deschis; verdictul verificatorului: TRECE (motive: []). Fără 401/429.

@@ -1,0 +1,5 @@
+pct.3 (anexa): git diff 6ddc059e87bf6fd3753b54822d9aab1f8110c29b 7d1eabb11ecafc6d4f2823f467afaa9a1b1b4ea4 -- static core main.py | grep apeluri/SQL noi
++        cur.execute(f"SELECT simbol, denumire FROM {schema}.plan_conturi WHERE simbol = ANY(%s)", (simboluri,))
++    cur.execute(f"""SELECT count(*) FROM {schema}.inregistrari
++    try { st = await api.get(`/tenants/${t.id}/spv/stare`); } catch { return; }
+judecată: exact cele trei rânduri așteptate — (a) api.get spre /spv/stare (etransport_ecran.js), (b) SELECT count(*) din core/repo_main.py (note validate ale lunii), (c) SELECT simbol, denumire din core/fisa_cont.py.
