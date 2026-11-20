@@ -1,0 +1,10 @@
+martori (c) pe iconta_test restaurată, 20.11.2026 22:58, sha bază 6ddc059e
+note validate 10/2026: 32
+note validate 11/2026: 0
+note totale 10/2026: 84
+facturi 66,71 fără scadență: 2
+Intrastat 51,52,53,66: 3000.00
+plan_conturi 371: Mărfuri
+linii validate 371 în 2026: 17
+spv_token activ: 0
+cor: 331302|contabil; 513102|ospătar (chelner)

@@ -1,0 +1,94 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text",
+   "ac": null,
+   "martor": "Invariantă f.1. Titlul a fost citit în captura de pe 6ddc059e.",
+   "de_ce": "Se vede cardul cu titlul «Control fiscal»."
+  },
+  {
+   "id": "a.1",
+   "pas": "scadentar",
+   "operator": "text_contine",
+   "valoare": "fără scadență în sistem",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .cf-sumar:not(#sc-fisa-sold)|text",
+   "ac": "AC077",
+   "martor": "AC077. Pe bază există deja a patra pastilă. Textul observat a fost «2 fără scadență».",
+   "de_ce": "A patra pastilă afișează numărul și eticheta «fără scadență în sistem»."
+  },
+  {
+   "id": "f.2",
+   "pas": "scadentar",
+   "operator": "text_contine",
+   "valoare": "în termen",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .cf-sumar:not(#sc-fisa-sold)|text",
+   "ac": null,
+   "martor": "Invariantă f.2. Contorul provine din baza sesiunii.",
+   "de_ce": "O pastilă din rând conține eticheta «în termen»."
+  },
+  {
+   "id": "a.2",
+   "pas": "verificari",
+   "operator": "text_contine",
+   "valoare": "validate în lună",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC058",
+   "martor": "F1 (tenant_9049), 10/2026 = 32 note validate (11/2026 = 0 și ciorne)",
+   "de_ce": "Pe baza publicată M4 s-a observat «Luna 10/2026 · 84 de note». Pentru octombrie, cele 32 de note validate din baza de test trebuie să producă antetul «Luna 10/2026 · 32 de note validate în lună»."
+  },
+  {
+   "id": "a.3",
+   "pas": "verificari",
+   "operator": "lipseste",
+   "valoare": "Luna 10/2026 · 84 de note",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC058",
+   "martor": "F1 (tenant_9049), rândul de sus al ferestrei Verificări",
+   "de_ce": "Pe baza publicată M4 s-a observat «Luna 10/2026 · 84 de note». Pentru octombrie, cele 32 de note validate din baza de test trebuie să producă antetul «Luna 10/2026 · 32 de note validate în lună»."
+  },
+  {
+   "id": "a.4",
+   "pas": "intrastat_simulat",
+   "operator": "text_contine",
+   "valoare": "Expedieri: 12.345,67 lei (1,2%)",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC061",
+   "martor": "Date controlate numai pentru expedieri în acest pas: cumulat 12345.67 lei, procent 1.2, stare sub_prag. Celelalte câmpuri provin din răspunsul de test. E2E verifică separat sumele și procentele snapshotului restaurat. Valorile copiei de navigare pot fi diferite.",
+   "de_ce": "În rândul Intrastat se vede exact «Expedieri: 12.345,67 lei (1,2%)»."
+  },
+  {
+   "id": "a.5",
+   "pas": "stocuri_simulate",
+   "operator": "text_contine",
+   "valoare": "cont 301: contabil 20,00 lei · fișe de magazie 1.520,25 lei",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra|text",
+   "ac": "AC060",
+   "martor": "Răspuns simulat în browser. Contul 371 are solduri egale, contul 301 are diferența −1.500,25 lei.",
+   "de_ce": "Pe F1 soldurile reale sunt egale. Pasul separat folosește două conturi pentru a măsura atribuirea diferenței și etichetele sumelor."
+  },
+  {
+   "id": "a.6",
+   "pas": "cartea_mare",
+   "operator": "egal",
+   "valoare": "371 · Mărfuri",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra #fc-cont option:checked|text",
+   "ac": "AC050",
+   "martor": "F1, contul 371 = Mărfuri (tenant_9049.plan_conturi), cu mișcare validată în 2026",
+   "de_ce": "(5) AC050 — static/js/ecrane/firme.js, ecranFisaCont (:2981), optCont (:3001): lista conturilor din Cartea mare are numai simbolurile («117», «1171», «371», «401», «408» …), fără denumire — contabilul alege dintr-o listă de conturi fără să știe ce e fiecare. După: fiecare opțiune are forma «<simbol> · <denumire>» («371 · Mărfuri», «401 · Furnizori»), cu denumirea din planul de conturi al firmei (plan_conturi.simbol, plan_conturi.denumire); un cont fără denumire în plan rămâne cu simbolul singur; prima opțiune «— alege contul —» și valoarea (value) a fiecărei opțiuni, adică simbolul, rămân. Răspunsul rutei existente /tenants/{tenant_id}/fisa-cont (core/uc_tenants.py, cabinet_fisa_cont :4352) primește un câmp în plus, `denumiri` ({simbol: denumire}, numai pentru conturile din `conturi`), calculat de o funcție nouă în core/fisa_cont.py (citește plan_conturi, nu scrie nimic); `conturi`, `fisa` și `formular` rămân neschimbate (core/test_cartea_mare.py:71 cere cel puțin aceste chei). Martor: F1, contul 371 (plan_conturi: Mărfuri; are mișcare validată în 2026) (a.6)."
+  },
+  {
+   "id": "a.7",
+   "pas": "etransport",
+   "operator": "text_contine",
+   "valoare": "Firma nu are drept SPV, deci UIT-ul nu poate fi trimis de aici. Generează XML-ul și încarcă-l manual în SPV.",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .fereastra .fereastra-jos:has(#et-trimite.buton-secundar[aria-disabled='true']):has(.fj-butoane #et-genereaza.fj-principal[data-actiune-principala]:not(:disabled):not([aria-disabled='true'])) .fj-motiv #et-motiv-spv.ds-motiv-inactiv:not([hidden])|text",
+   "ac": "AC041",
+   "martor": "F1 (acoperire «neconectat»: public.spv_token fără niciun rând activ)",
+   "de_ce": "În aceeași bară de jos se văd butonul secundar inactiv «Trimite UIT în SPV», motivul complet lângă acesta și un singur principal activ «Doar generează XML (manual)». Captura se judecă pe toate trei. E2E verifică identitatea, vizibilitatea, unicitatea, starea și pozițiile."
+  }
+ ]
+}

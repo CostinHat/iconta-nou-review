@@ -1,0 +1,9 @@
+[lacat_test] lacăt preluat de la pid 1710298 (mort sau refolosit)
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul scadentar: pica [('a.1', 'pica', "'fără scadență în sistem' nu apare în '2 restante 2 scadențe apropiate 3 în termen 2 fără scadență'"), ('f.2', 'trece', '')]
+[parcurs] pasul verificari: pica [('a.2', 'pica', "'validate în lună' nu apare în '← F1 Comert Stoc SRL · CUI 401002001›Verificări ✕ Verificări Luna 10/2026 · 84 de note ← lunaluna → Înregistrare Echilibru în regulă Trezorerie (fără solduri creditoare) în regulă Documente pozate de '"), ('a.3', 'pica', "'Luna 10/2026 · 84 de note' apare în '← F1 Comert Stoc SRL · CUI 401002001›Verificări ✕ Verificări Luna 10/2026 · 84 de note ← lunaluna → Înregistrare Echilibru în regulă Trezorerie (fără solduri creditoare) în regulă Documente pozate de '")]
+[parcurs] pasul intrastat_simulat: pica [('a.4', 'pica', "'Expedieri: 12.345,67 lei (1,2%)' nu apare în '← F1 Comert Stoc SRL · CUI 401002001›Verificări ✕ Verificări Luna 10/2026 · 84 de note ← lunaluna → Înregistrare Echilibru în regulă Trezorerie (fără solduri creditoare) în regulă Documente pozate de '")]
+[parcurs] pasul stocuri_simulate: pica [('a.5', 'pica', "'cont 301: contabil 20,00 lei · fișe de magazie 1.520,25 lei' nu apare în '← F1 Comert Stoc SRL · CUI 401002001›Verificări ✕ Verificări Luna 10/2026 · 84 de note ← lunaluna → Înregistrare Echilibru în regulă Trezorerie (fără solduri creditoare) în regulă Documente pozate de '")]
+[parcurs] pasul cartea_mare: pica [('a.6', 'pica', "găsit '371', așteptat '371 · Mărfuri'")]
+[parcurs] pasul etransport: pica [('a.7', 'pica', "'Firma nu are drept SPV, deci UIT-ul nu poate fi trimis de aici. Generează XML-ul și încarcă-l manual în SPV.' nu apare în ''")]
+

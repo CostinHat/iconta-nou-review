@@ -1,0 +1,62 @@
+produs
+lot: 17.5-N4
+max hook 131
+max poarta_verificator 102
+max poarta_pytest 730
+max poarta_plasa 3315
+runde_verificator_max: 2
+sursa pragurilor 17.5-N4: generate de scripts/praguri_automate.py la 2026-11-20T21:22:09+02:00 din .lot_jurnal.log; loturi folosite: 17.5-K2, 17.5-L, 17.5-M4 (3)
+  hook: maxim 109 s (lotul 17.5-M4, rularea 3023689-1795139049504) din 20 rulari complete, 0 rulari «intrerupt» ignorate, prag 131 s
+  poarta_verificator: maxim 85 s (lotul 17.5-M4, rularea 3035521-1795139179833) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 102 s
+  poarta_pytest: maxim 608 s (lotul 17.5-M4, rularea 3035521-1795139264128) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 730 s
+  poarta_plasa: maxim 2762 s (lotul 17.5-M4, rularea 3035521-1795139873000) din 3 rulari complete, 0 rulari «intrerupt» ignorate, prag 3315 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+plasa_modificabile frontend_test/e2e/e2e_pilot_17_5_X.py
+fisiere_permise:
+  core/fisa_cont.py (numai preluarea din P al lui N: funcția nouă care dă denumirile conturilor din plan, AC050)
+  core/repo_main.py (numai preluarea din P al lui N: funcția nouă care numără notele validate ale lunii, AC058)
+  core/uc_comun.py (numai preluarea din P al lui N: _verificari_contabile, cheia nouă note_luna, AC058)
+  core/uc_tenants.py (numai preluarea din P al lui N: cabinet_fisa_cont, AC050)
+  frontend_test/e2e/e2e_lot12_cx1.py (numai preluarea din P al lui N: regexul Intrastat din test_def_c145; rulat în complementul țintit, pct.8)
+  frontend_test/e2e/e2e_lot13_fact.py (numai preluarea din P al lui N: test_def_535, butonul #et-genereaza; rulat în complementul țintit, pct.8)
+  frontend_test/e2e/e2e_pilot_17_5_X.py (numai preluarea octet cu octet din P al lui N, sha256 0a75f5a53893488cac249ac29a9c4806409cf39d5b76ed376adf62fb0b0db8bb: e.19/e.20 din _p5/_p8; în plasa_modificabile, pct.5)
+  main.py (numai preluarea din P al lui N: intrarea note_luna din VC_FARA_SEVERITATE, AC058)
+  static/js/cautare.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/ansamblu.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/asistent.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/borderou_ecran.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/cabinet.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/coada_trimite.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/control.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/control_verdict.js (numai preluarea din P al lui N: intrarea note_luna din VC_RANDATE, AC058, și linia ?v= din cascadă, inclusiv recalcularea pentru AC041)
+  static/js/ecrane/ecran_destinatie.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/etransport_ecran.js (preluarea exactă P_N3 cu marcajul data-in-bara)
+  static/js/ecrane/facturi_ecran.js (numai preluarea din P al lui N: Scadențar, a patra pastilă din .cf-sumar, AC077)
+  static/js/ecrane/firme.js (numai preluarea din P al lui N: ecranVerificari, rândurile Note, Stocuri și Intrastat, AC058, AC060, AC061; ecranFisaCont, AC050; în plus, numai tokenul ?v= al importului etransport_ecran.js, recalculat de versioneaza_assets.py --scrie)
+  static/js/ecrane/inceput.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/migrare.js (numai preluarea din P al lui N: MODELE.salariati și coloanele previzualizării salariaților, AC117, AC118)
+  static/js/ecrane/operatiuni_ecran.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/portal.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/supervizor.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/termene.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/ecrane/validat.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/navigator.js (numai linia ?v= din cascada versioneaza_assets.py --scrie, preluată din N2 și recalculată de unealta oficială pentru AC041)
+  static/js/cadru.js (P_N3 și piesa comună de bară adaptivă din patch)
+  static/stil.css (exclusiv regula DS din patch)
+  scripts/verificator_design_masuri.js (recunoașterea geometrică a celor două rânduri, după pct.6)
+  verificator_conformitate.py (garda CSS din rădăcina proiectului, conform pct.6)
+  static/index.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  static/spv_callback.html (numai linia ?v= rescrisă de versioneaza_assets.py --scrie)
+  scripts/calibreaza_16_7.py (numai patch-ul matrice_17_5_N4.patch, pct.4/9)
+  scripts/matrice_text_taiat.py (numai patch-ul matrice_17_5_N4.patch, pct.4/9)
+  core/straturi.py (numai înregistrarea repo_main.py: «40 instructiuni SQL» → «41 instructiuni SQL», pct.7)
+  docs/dovezi/17_5_H/harta_bara_jos.txt (numai rândul e-Transport: «Doar generează XML (manual) | activ» în locul lui «Trimite UIT în SPV | activ», pct.6)
+  scripts/plasa_16_2.manifest (numai (a) rândul nou al lui e2e_ferestre_firma_17_5_N.py la P0 și (b) SHA-256 din rândul lui e2e_pilot_17_5_X.py după preluare; forma finală = manifest_plasa_17_5_N4.txt, pct.5)
+  frontend_test/e2e/e2e_ferestre_firma_17_5_N.py (nou)
+  scripts/praguri_17_5_N4.txt (nou)
+  CLAUDE.md (numai paragraful autorizării pornirii 8019 din «Lacătul (16.1-C3)», preluat din C al lui N, cu identitatea și cele două unelte N4)
+  scripts/poarta_harta.txt (numai dacă poarta_lot.sh --lista iese cu 1, CLAUDE.md R11)
+  DESIGN_SYSTEM.md (regula DS și registrul prevăzut în anexă)
+  DECIZII.md
+  PREDARE_LANT.md
+  docs/dovezi/17_5_N4/ (nou)
