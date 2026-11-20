@@ -1362,3 +1362,6 @@ a ce e adevărat **acum**.
 
 ## LOTUL 17.5-J3 (produs, 17.11.2026) — fără cod nou, ramura `lucru/lot17-5j3` (worktree `~/iconta_lot17_5j3`), bază C_J2 `be809eb7`, predecesor X8 `aabc1f31`
 - P `bbb7de49`, C `e76d7824` (poarta verde), E = vârful ramurii (numai dovezi). Starea publicării: `~/lot_17_5_J3_raport.md`.
+
+## LOTUL 17.5-M4 (produs, 20.11.2026) — cabinetul: 11 constatări AC, continuă 17.5-M3; ramura `lucru/lot17-5m4` (worktree `~/iconta_lot17_5m4`), bază main 2ab9ae5d (17.5-L)
+- P0 `1097f781`, P `3ba214d2` (preluare de pe C M3 + zona de derulare a Sintezei zilei), apoi dovezi, C, poarta, haiku_1, «dupa», E. Raportul: `~/lot_17_5_M4_raport.md`. Detalii: DECIZII.md «Lotul 17.5-M4».

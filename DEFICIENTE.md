@@ -1219,3 +1219,6 @@ număr → răspuns → captură e în `dovezi/lot12/RETEST_NUMERE_VECHI.md` (30
 - AC176 — «Declarații depuse»: «✓» cu nume accesibil «Depusă», fără «depusă» de două ori. Lot 17.5-L.
 - AC178 — «Povestea lunii» în cuvinte: «cu X lei mai mult / mai puțin decât luna anterioară (rezultat înainte de impozit)» sau «la fel ca luna anterioară». Lot 17.5-L.
 - AC153, AC154, AC163, AC165, AC179 — în afara perimetrului lotului 17.5-L (AC153/AC154 → lotul P; AC163 = date istorice de test; AC165 păzit de teste; AC179 deja rezolvată).
+
+## Constatările de audit ale lotului 17.5-M4 (cabinetul; 20.11.2026; netul îl stabilește retestul arhitectului)
+- AC014, AC015, AC017, AC022, AC024, AC025, AC027, AC028, AC034, AC035, AC036 — aceleași ca la M3, continuate în M4; AC017: Sinteza zilei are un singur înveliș de derulare, iar «Priorități» nu mai are zonă verticală proprie (litera b, C-nou de la M3).
