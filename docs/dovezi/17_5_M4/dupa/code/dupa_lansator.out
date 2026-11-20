@@ -1,0 +1,11 @@
+[lacat_test] lacăt preluat de la pid 3035521 (mort sau refolosit)
+[parcurs] SEED firme=8 ids=105779,105780,105781,105782,105783,105784,105785,105787 perioada_supervizor=10/2026 azi=2026-11-20
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul firme_existente: trece [('f.2', 'trece', '')]
+[parcurs] pasul termene_detaliu: trece [('a.1', 'trece', '')]
+[parcurs] pasul sinteza_zilei: trece [('a.2', 'trece', '')]
+[parcurs] pasul supervizor: trece [('a.3', 'trece', ''), ('a.4', 'trece', '')]
+[parcurs] pasul capacitate: trece [('a.5', 'trece', '')]
+[parcurs] pasul consolidare: trece [('a.6', 'trece', '')]
+[parcurs] pasul detaliu_f2: trece [('a.7', 'trece', '')]
+
