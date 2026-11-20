@@ -1,0 +1,11 @@
+[lacat_test] lacăt preluat de la pid 2971317 (mort sau refolosit)
+[parcurs] SEED firme=8 ids=105779,105780,105781,105782,105783,105784,105785,105787 perioada_supervizor=10/2026 azi=2026-11-20
+[parcurs] pasul implicit: trece [('f.1', 'trece', '')]
+[parcurs] pasul firme_existente: trece [('f.2', 'trece', '')]
+[parcurs] pasul termene_detaliu: pica [('a.1', 'pica', "'restanță de' nu apare în 'perioada 08/2026'")]
+[parcurs] pasul sinteza_zilei: pica [('a.2', 'pica', "'Priorități' nu apare în '← Cabinet Test Sesiunea B SRL — copie de dovadă · CUI 12345674›Sinteza zilei ✕ Sinteza zilei 3 noiembrie 2026 Astăzi în cabinet 0 pregătite 0 validate 0 respinse 0 depuse 6 de validat 1 sesizare nouă '")]
+[parcurs] pasul supervizor: pica [('a.3', 'pica', "'de lămurit' nu apare în '0 constatări pe 0 firme 0 fără subiect 0 neverificate din 0 firme Perioada evaluată: 10/2026.▾ detaliiDomeniu: firmele la care ai acces (8), nu tot portofoliul cabinetului; supervizorul rulează zilnic'"), ('a.4', 'pica', "'0 constatări pe 0 firme' apare în '0 constatări pe 0 firme 0 fără subiect 0 neverificate din 0 firme Perioada evaluată: 10/2026.▾ detaliiDomeniu: firmele la care ai acces (8), nu tot portofoliul cabinetului; supervizorul rulează zilnic'")]
+[parcurs] pasul capacitate: pica [('a.5', 'pica', "'Ana Asistent' nu apare în '← Cabinet Test Sesiunea B SRL — copie de dovadă · CUI 12345674›Capacitate ✕ Capacitate Într-o echipă care crește, munca nu se împarte singură în mod egal. Unii duc trei firme, alții șapte — și afli ab'")]
+[parcurs] pasul consolidare: pica [('a.6', 'pica', "',00' nu apare în 'Înregistrare Firma Venituri Cheltuieli Profit Cash F1 Comert Stoc SRL 9.799 15.149 -5.350 17.759 F2 Profit Amortizare SRL 6.000 1.900 4.100 6.005 F3 Intracomunitar SRL 0 3.025 -3.025 5.000 F4 PFA Sist'")]
+[parcurs] pasul detaliu_f2: pica [('a.7', 'pica', "'D390 10/2026' nu apare în 'Perioada comparată: D300 T3/2026 · D112 10/2026 · D390 T3/2026▾ detaliiUltima perioadă încheiată, a cărei declarație se depune.'")]
+

@@ -1,0 +1,53 @@
+produs
+lot: 17.5-M4
+max hook 131
+max poarta_verificator 108
+max poarta_pytest 696
+max poarta_plasa 3273
+runde_verificator_max: 2
+sursa pragurilor 17.5-M4: generate de scripts/praguri_automate.py la 2026-11-20T01:42:05+02:00 din .lot_jurnal.log; loturi folosite: 17.5-Z, 17.5-K2, 17.5-L (3)
+  hook: maxim 109 s (lotul 17.5-K2, rularea 2330738-1795036151795) din 18 rulari complete, 0 rulari «intrerupt» ignorate, prag 131 s
+  poarta_verificator: maxim 90 s (lotul 17.5-Z, rularea 3817501-1794957888182) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 108 s
+  poarta_pytest: maxim 580 s (lotul 17.5-K2, rularea 3176691-1795051353884) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 696 s
+  poarta_plasa: maxim 2727 s (lotul 17.5-L, rularea 4065803-1795072020574) din 5 rulari complete, 0 rulari «intrerupt» ignorate, prag 3273 s
+limite aplicate de scripts/poarta_rulare.py (:116, :146): cel mult 2 rulari complete si 2 reluari; nu se scriu aici.
+fisiere_permise:
+  core/control_incrucisat.py
+  core/kpi_client.py
+  core/supervizor.py
+  core/termene_api.py
+  core/test_lot14_perioada_comparata.py (numai aserțiunea D390, AC036)
+  core/test_lot17_5_m_calcule.py (nou)
+  core/test_p7_uc.py (remedierea P7: randurile declarate, fara aserțiuni slabite)
+  core/uc_supervizor.py
+  DESIGN_SYSTEM.md
+  frontend_test/e2e/e2e_cabinet_17_5_M.py (nou; testul arhitectului, sha256 1c0a3b5461e3c5719ccd63a0b60e8615d37907a5d1bf2f1c56fff3346cc8ece7)
+  scripts/plasa_16_2.manifest (numai randul lui e2e_cabinet_17_5_M.py)
+  static/js/app.js (numai parametrul ?v= din importul cabinet.js, pct.4 M4; restul liniilor ca pe C M3)
+  static/js/cautare.js
+  static/js/ecrane/asistent.js
+  static/js/ecrane/borderou_ecran.js
+  static/js/ecrane/cabinet.js (preluat de pe C M3; în M4 învelișul data-zona-derulare și marcajul data-prioritati-fara-derulare, pct.5)
+  static/js/ecrane/capacitate.js (marcajul cap-tabel-echipa-mica, pct.4)
+  static/js/ecrane/coada_trimite.js
+  static/js/ecrane/control_verdict.js
+  static/js/ecrane/ecran_destinatie.js
+  static/js/ecrane/facturi_ecran.js
+  static/js/ecrane/firme.js
+  static/js/ecrane/inceput.js
+  static/js/ecrane/migrare.js
+  static/js/ecrane/operatiuni_ecran.js
+  static/js/ecrane/supervizor.js
+  static/js/ecrane/termene.js
+  static/js/ecrane/tipare.js
+  static/js/ecrane/validat.js
+  static/js/navigator.js
+  static/stil.css (regula .cap-tabel.cap-tabel-echipa-mica th preluată din M3 și exclusiv regula .sa-asist-lista[data-prioritati-fara-derulare] > .ds-tabel-cutie.ds-tabel-lista de la pct.5 M4)
+  static/index.html (numai parametrul ?v= al referinței stil.css; referința app.js rămâne ca pe C M3)
+  static/spv_callback.html (numai parametrul ?v= al referinței stil.css)
+  scripts/praguri_17_5_M4.txt (nou)
+  docs/dovezi/17_5_M4/ (nou)
+  scripts/poarta_harta.txt
+  DECIZII.md
+  DEFICIENTE.md
+  PREDARE_LANT.md

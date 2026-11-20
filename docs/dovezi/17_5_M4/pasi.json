@@ -1,0 +1,94 @@
+{
+ "asertiuni": [
+  {
+   "id": "f.1",
+   "pas": "implicit",
+   "operator": "text_contine",
+   "valoare": "Control fiscal",
+   "cheie": "dom:main|text",
+   "ac": null,
+   "martor": "cabinetul administratorului dovada.71507",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): cardul «Control fiscal» al paginii cabinetului, static/js/ecrane/cabinet.js (DEF, cheia «control»), nemodificat de lot; trece pe bază (proba contractului, pct.1 al comenzii)."
+  },
+  {
+   "id": "f.2",
+   "pas": "firme_existente",
+   "operator": "text_contine",
+   "valoare": "Adaugă firmă",
+   "cheie": "dom:.fereastra-overlay:not(.fundal)|text",
+   "ac": null,
+   "martor": "butonul «+ Adaugă firmă» (#firme-adauga)",
+   "de_ce": "Invariantă față de lot (nu e din «De ce»): butonul «+ Adaugă firmă» (#firme-adauga) din randeazaListaFirme, static/js/ecrane/firme.js; lotul mută numai paragraful «Butonul Scoate» (AC015) și lasă butonul în fereastră (comanda, (2) AC015, b)."
+  },
+  {
+   "id": "a.1",
+   "pas": "termene_detaliu",
+   "operator": "text_contine",
+   "valoare": "restanță de",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .mig-frand-sub|text",
+   "ac": "AC014",
+   "martor": "Termene, rândul D112 (restanță), Detaliu termen",
+   "de_ce": "(1) AC014 — Termene › Detaliu termen: static/js/ecrane/termene.js:84–106 (detaliuTermen: pentru fiecare firmă un `.mig-frand` cu `.mig-frand-nume` și `.mig-frand-sub` = «perioada <perioadă>» și, la perioadele dinaintea preluării, « · înainte de preluare în iConta.eu»; clicul pe rând deschide fișa firmei, deschideFirma); core/termene_api.py:90–93 (elementul firmei din portofoliu: tenant_id, nume, cui, tip_firma, regim_contabil, perioada, inainte_de_preluare, fără luna). Azi detaliul unui termen e o fundătură: numele firmelor și perioada, fără starea fiecăreia și fără drum spre declarația firmei. După: (a) `.mig-frand-sub` al fiecărei firme spune și starea față de termenul grupului, cu funcția etichetaZile din același fișier (aceeași ca pastila din lista Termene): «perioada <perioadă> · restanță de N zile» pentru un termen trecut, «perioada <perioadă> · în N zile» / «azi» / «mâine» altfel; la perioadele dinaintea preluării rămâne și « · înainte de preluare în iConta.eu», după stare; (b) pe fiecare rând un buton «Deschide declarația» (clasa `buton-secundar buton-xs`, în dreapta rândului, `data-actiune` ca butoanele de navigare ale ferestrei, fără apel nou de rețea), care oprește propagarea clicului (rândul își păstrează clicul spre fișa firmei) și deschide fereastra Declarații cu firma rândului, tipul declarației grupului și perioada rândului: `nav.deschide(\"Declarații\", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: f.tenant_id, tip: item.tip, an: item.an, luna: f.luna }), { lat: \"tabel\" })`, cu `randeazaDeclaratii` importat STATIC în capul lui termene.js (`import { randeazaDeclaratii } from \"./declaratii.js?v=…\"`, ca în static/js/ecrane/asistent.js:18; validat.js îl importă dinamic, dar declaratii.js nu importă termene.js, cabinet.js sau firme.js, deci nu apare ciclu; hash-ul ?v= îl scrie versioneaza_assets.py; presetul e al lui randeazaDeclaratii, static/js/ecrane/declaratii.js, fără schimbare acolo); (c) core/termene_api.py: elementul firmei primește câmpul `luna` = `t.get(\"luna\")` al termenului evaluat (core/control_fiscal_api.py:393–395 îl pune deja pe fiecare termen, iar core/firma_rezumat.py:1134 îl citește la fel; la perioadele trimestriale e luna de ancoră a trimestrului, cum o înțelege presetul); nimic altceva în payload. Martor: Termene, rândul cu declarația D112 (restanță), butonul «Deschide», fereastra «Detaliu termen» (nu e intrare de catalog; se deschide din «Termene») (a.1 în oracol: textul `.mig-frand-sub` conține «restanță de»; a.8 numai e2e: butonul «Deschide declarația» deschide Declarații cu firma și tipul rândului). Partea din registru «coloana se numește «Înregistrare»» NU e în detaliuTermen (grep `Înregistrare` în termene.js: 0): nu se caută."
+  },
+  {
+   "id": "a.2",
+   "pas": "sinteza_zilei",
+   "operator": "text_contine",
+   "valoare": "Priorități",
+   "cheie": "dom:.fereastra-overlay:not(.fundal)|text",
+   "ac": "AC017",
+   "martor": "Sinteza zilei, cabinetul 48765",
+   "de_ce": "(3) AC017 — Sinteza zilei: static/js/ecrane/cabinet.js:51–52 (cardul «Sinteza zilei» cu sinteza «Vezi prioritățile zilei», nemodificat) și randeazaSintezaAzi :87–180 (fereastra: «Astăzi în cabinet» cu cele șase cifre, «Producția echipei», «Ultimele evenimente»). Azi cardul promite prioritățile, iar fereastra arată numai contoarele zilei; restanțele și scadențele apropiate lipsesc. După: prima secțiune a ferestrei, deasupra lui «Astăzi în cabinet», e «Priorități» (`.sa-sectiune` cu `.sa-cap` cu textul exact «Priorități»), cu datele din `api.get(\"/termene\")` (aceeași rută ca cardul Termene; câmpurile `restante` și `grupuri[].{termen, zile, items[].{tip, nr_firme}}`, fără rută nouă): (a) dacă `restante` > 0, un rând-buton «<b>N</b> declarații restante» (formă: «N declarație restantă» / «N declarații restante» cu `dupaNumar`), care deschide fereastra Termene (deschideEcran primește ramura «termene» cu linia `return nav.deschide(\"Termene\", (corp) => randeazaTermene(corp, nav), { nivel: \"cabinet\" });`, copia exactă a cardului din cabinet.js:226, cu randeazaTermene deja importat la :17; apoi ca celelalte butoane ale ferestrei); (b) cel mult trei rânduri-buton pentru primele trei grupuri cu `zile` ≥ 0, în ordinea datei: «<TIPURI> · <dată> · <etichetă zile> · <N firme>» cu TIPURI = tipurile grupului (majuscule) separate prin «, », data cu `dataRo`, eticheta zilei cu aceeași funcție ca în termene.js (azi / mâine / în N zile; `etichetaZile` se EXPORTĂ din termene.js și se importă în cabinet.js lângă `randeazaTermene`, nu se rescrie) și N firme = suma `nr_firme` a grupului, fiecare rând deschide Termene prin aceeași ramură; (c) dacă `restante` = 0 și nu e nicio scadență: «Nicio restanță și nicio scadență în următoarele 60 de zile.» (`.stare-goala--inline`); (d) dacă cererea /termene pică, în locul rândurilor: «Scadențele nu s-au putut încărca.» (`.ecran-nota`); restul ferestrei, inclusiv eroarea generală `_eroareAzi`, rămâne ca azi. Rândurile reutilizează clasele existente `.sa-cifra`/`.sa-clic` și `.sa-cifre` (nicio clasă nouă, static/stil.css nu se atinge). Martor: Sinteza zilei (a.2 în oracol: textul ferestrei conține «Priorități»; a.10 numai e2e: rândul de restanțe deschide Termene și cifra lui = `restante` din /termene)."
+  },
+  {
+   "id": "a.3",
+   "pas": "supervizor",
+   "operator": "text_contine",
+   "valoare": "de lămurit",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .sv-antet|text",
+   "ac": "AC022",
+   "martor": "Supervizor, cont administrator",
+   "de_ce": "(4) AC022 — Supervizor, rezumat: core/uc_supervizor.py:94 (`supervizor.rezumat_din_randuri(randuri) if hasattr(supervizor, \"rezumat_din_randuri\") else {\"firme\": len(randuri)}`: funcția NU există în core/supervizor.py, deci ramura `else` se execută mereu și rezumatul întors are numai `firme`) și core/supervizor.py:440–488 (ruleaza_portofoliu(), unde rezumatul se derivă din rânduri la :484–488: o cheie pe fiecare rezultat din REZULTATE, `firme_in_domeniu`, `de_confirmat`, `constatari_total`). Azi static/js/ecrane/supervizor.js:28–40 (antet) citește câmpurile lipsă și afișează «0 constatări pe 0 firme · 0 fără subiect · 0 neverificate din 0 firme» deasupra rândurilor reale. După: (a) core/supervizor.py primește funcția `rezumat_din_randuri(randuri)` cu derivarea de la :484–488 MUTATĂ (nu copiată: ruleaza_portofoliu() o apelează, un singur loc), cu aceleași chei; (b) uc_supervizor.py o apelează direct, fără `hasattr` și fără ramura `else` (dispar); (c) antetul din supervizor.js se rescrie în două cifre noi în fața celor păstrate, cu cifrele calculate în JS din `firme[].constatari[].stare` (diferență = stare «rosu» sau «galben»; fără diferență = orice altă stare, adică «gri» «nu s-a putut confrunta» și «verde» «concordă»): «<b>D</b> diferență de lămurit» / «<b>D</b> diferențe de lămurit» (`dupaNumar`), «<b>C</b> confruntare fără diferență sau care nu s-a putut face» / «<b>C</b> confruntări fără diferență sau care nu s-au putut face», apoi neschimbate «<b>F</b> fără subiect», «<b>N</b> neverificată/neverificate» și «din <b>T</b> firmă/firme»; formula «N constatări pe M firme» dispare; semnalul «Perioada evaluată» și detaliile lui rămân. Martor: Supervizor, cont administrator (a.3 în oracol: `.sv-antet` conține «de lămurit»; a.4 în oracol: `.sv-antet` nu mai conține «0 constatări pe 0 firme»; a.12 numai e2e: D + C din antet = `rezumat.constatari_total` din /supervizor și `rezumat.firme_in_domeniu` = T)."
+  },
+  {
+   "id": "a.4",
+   "pas": "supervizor",
+   "operator": "lipseste",
+   "valoare": "0 constatări pe 0 firme",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .sv-antet|text",
+   "ac": "AC022",
+   "martor": "Supervizor, cont administrator",
+   "de_ce": "(4) AC022 — Supervizor, rezumat: core/uc_supervizor.py:94 (`supervizor.rezumat_din_randuri(randuri) if hasattr(supervizor, \"rezumat_din_randuri\") else {\"firme\": len(randuri)}`: funcția NU există în core/supervizor.py, deci ramura `else` se execută mereu și rezumatul întors are numai `firme`) și core/supervizor.py:440–488 (ruleaza_portofoliu(), unde rezumatul se derivă din rânduri la :484–488: o cheie pe fiecare rezultat din REZULTATE, `firme_in_domeniu`, `de_confirmat`, `constatari_total`). Azi static/js/ecrane/supervizor.js:28–40 (antet) citește câmpurile lipsă și afișează «0 constatări pe 0 firme · 0 fără subiect · 0 neverificate din 0 firme» deasupra rândurilor reale. După: (a) core/supervizor.py primește funcția `rezumat_din_randuri(randuri)` cu derivarea de la :484–488 MUTATĂ (nu copiată: ruleaza_portofoliu() o apelează, un singur loc), cu aceleași chei; (b) uc_supervizor.py o apelează direct, fără `hasattr` și fără ramura `else` (dispar); (c) antetul din supervizor.js se rescrie în două cifre noi în fața celor păstrate, cu cifrele calculate în JS din `firme[].constatari[].stare` (diferență = stare «rosu» sau «galben»; fără diferență = orice altă stare, adică «gri» «nu s-a putut confrunta» și «verde» «concordă»): «<b>D</b> diferență de lămurit» / «<b>D</b> diferențe de lămurit» (`dupaNumar`), «<b>C</b> confruntare fără diferență sau care nu s-a putut face» / «<b>C</b> confruntări fără diferență sau care nu s-au putut face», apoi neschimbate «<b>F</b> fără subiect», «<b>N</b> neverificată/neverificate» și «din <b>T</b> firmă/firme»; formula «N constatări pe M firme» dispare; semnalul «Perioada evaluată» și detaliile lui rămân. Martor: Supervizor, cont administrator (a.3 în oracol: `.sv-antet` conține «de lămurit»; a.4 în oracol: `.sv-antet` nu mai conține «0 constatări pe 0 firme»; a.12 numai e2e: D + C din antet = `rezumat.constatari_total` din /supervizor și `rezumat.firme_in_domeniu` = T)."
+  },
+  {
+   "id": "a.5",
+   "pas": "capacitate",
+   "operator": "text_contine",
+   "valoare": "Ana Asistent",
+   "cheie": "dom:.fereastra-overlay:not(.fundal)|text",
+   "ac": "AC025",
+   "martor": "Capacitate, cont administrator (3 persoane cu competențe)",
+   "de_ce": "(6) AC025 — Capacitate, echipă sub 5 persoane: static/js/ecrane/capacitate.js:34–50 (starea `asistenti.length < PRAG_ECHILIBRU`: patru paragrafe, ultimul spune «până atunci, îi vezi pe toți dintr-o privire», apoi butonul `#cap-adauga-asistenti`) cu lista `asistenti` deja în răspuns (core/capacitate_api.py:capacitate, câmpurile nume, poate_valida, firme_atribuite, in_lucru). Azi nu se vede nicio persoană. După: sub paragrafele existente și deasupra butonului, dacă `asistenti.length` > 0, un tabel `.cap-tabel` (în `.cap-tabel-wrap`, aceeași piesă ca «Pe asistent» mai jos în fișier) cu antetul «Persoană», «Firme», «În lucru» și un rând pe persoană: numele cu eticheta `.cap-rol` («senior» dacă `poate_valida`, altfel «junior», ca în tabelul «Pe asistent»), `firme_atribuite`, `in_lucru`; fără coloane noi în API, fără schimbarea textelor paragrafelor, a butonului sau a pragului 5; la 0 persoane nu apare tabelul. Martor: Capacitate, cont administrator (a.5 în oracol: textul ferestrei conține «Ana Asistent»; a.16 numai e2e: tabelul are 3 rânduri, în ordinea din API, și butonul «Deschide Asistenți» rămâne)."
+  },
+  {
+   "id": "a.6",
+   "pas": "consolidare",
+   "operator": "text_contine",
+   "valoare": ",00",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) .pf-lista|text",
+   "ac": "AC027",
+   "martor": "Consolidare, cont administrator",
+   "de_ce": "(7) AC027 — Consolidare, zecimale: static/js/ecrane/cabinet.js:582–608 (randeazaConsolidare: `const lei = (v) => baniRotund(v)` pentru toate celulele și pentru `#cons-total`; importul din :5 are baniRotund, nu bani). Azi sumele sunt fără zecimale («9.799», «110.034»), iar în restul aplicației sumele în lei au două zecimale. După: `lei` folosește `bani` din static/js/api.js (formatorul canonic, 1.234,56; cap.4 din DESIGN_SYSTEM.md), importat în cabinet.js lângă ceilalți; toate cele patru coloane (Venituri, Cheltuieli, Profit, Cash) și rândul Total, cu două zecimale; introducerea ferestrei și «Valori în lei.» neschimbate; `baniRotund` rămâne importat numai dacă îl mai folosește un alt loc din fișier (altfel se scoate din import). Martor: Consolidare (a.6 în oracol: `.pf-lista` conține «,00»; a.15 numai e2e, vezi (8))."
+  },
+  {
+   "id": "a.7",
+   "pas": "detaliu_f2",
+   "operator": "text_contine",
+   "valoare": "D390 10/2026",
+   "cheie": "dom:.fereastra-overlay:not(.fundal) #cf-perioade|text",
+   "ac": "AC036",
+   "martor": "F2 Profit Amortizare SRL (tenant_9050, decont trimestrial)",
+   "de_ce": "(11) AC036 — Control fiscal, Declarație vs contabilitate: core/control_incrucisat.py:1179 (verifica_d390: `an, luna, _perioada_txt = perioada_comparata(tip_dec, an, luna)` apoi `_fereastra_tva(tip_dec, an, luna)` — fereastra TVA, trimestrul pentru firma trimestrială) cu `_fereastra_tva` :844 și `perioada_comparata` :870; apelantul core/uc_comun.py:1277 (perioada confruntată); afișarea static/js/ecrane/control_verdict.js:280 («Perioada comparată: D300 … · D112 … · D390 …», elementul `#cf-perioade`). Azi la F2 (decont trimestrial) ecranul spune «D390 T3/2026», deși D390 se depune lunar, pe luna calendaristică (art. 325 alin. (2) Cod fiscal: declarația recapitulativă se întocmește pentru fiecare lună calendaristică în care ia naștere exigibilitatea taxei; termenul și modelul se stabilesc prin ordin ANAF), indiferent de perioada TVA; aceeași fereastră arată corect «D390 10/2026» la De urmărit. După: verifica_d390 compară D390 pe luna calendaristică confruntată, pentru orice periodicitate TVA: fereastra = luna `luna` a lui `an` (luni = [luna], etichetă «MM/AAAA» ca la firma lunară), fără pasul înapoi al lui perioada_comparata (care rămâne pentru D300 / TVA, `verifica_tva`, neschimbat); câmpurile `an`, `luna` și `perioada` întoarse de verifica_d390 sunt cele ale lunii; comparația D390 față de D300 depus (`_orizontal_d390_vs_d300`) își alege singură perioada D300 și compară ca azi, dar primește `an`, `luna` ca perioadă de RAPORTARE a constatării (core/control_incrucisat.py:1237), deci pentru firma trimestrială acestea devin luna confruntată (10) în loc de ultima lună a trimestrului încheiat (9): schimbare acceptată, fără alt efect asupra comparației; ceilalți apelanți (core/supervizor.py:_culege_firma, core/uc_comun.py:1277) nu se schimbă. Testul existent core/test_lot14_perioada_comparata.py (:73, aserțiunea `(d[\"an\"], d[\"luna\"], d[\"perioada\"]) == (2099, 9, \"T3/2099\")`) fixa comportamentul vechi: se schimbă numai ea, în `(2099, 10, \"10/2099\")`, cu docstring-ul ajustat («D390 pe luna calendaristică, :71 pentru TVA neschimbat»); aserțiunea de la :71 (TVA, T3/2099) nu se atinge. Martor: Detaliu firmă F2 (firma trimestrială: `SELECT tip_decont FROM tenant_9050.firma_profil WHERE id = 1` = trimestrial), secțiunea Declarație vs contabilitate (a.7 în oracol: `#cf-perioade` conține «D390 10/2026»; pe bază conține «D390 T3/2026»)."
+  }
+ ]
+}

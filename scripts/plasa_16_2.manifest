@@ -25,3 +25,4 @@ frontend_test/e2e/e2e_cursa_luna_17_5_X2.py	9828104468af9ba1369da4f4111f2b26e93d
 frontend_test/e2e/e2e_declaratii_17_5_J.py	dba22536fa8d84d17eab6e360c8ef99fdc3b450c9c6ae5fd20e7ae10217bcd05	1	python -m pytest -q frontend_test/e2e/e2e_declaratii_17_5_J.py
 frontend_test/e2e/e2e_ferestre_17_5_K.py	334b76e4281c8552622368e0ce172693337bdedc7e3123579d0652861d49382e	1	python -m pytest -q frontend_test/e2e/e2e_ferestre_17_5_K.py
 frontend_test/e2e/e2e_portal_17_5_L.py	8d2c967fb2c6c467a17d8ddc7aec2df2d5bef9617c68afc3211825e529aa795d	1	python -m pytest -q frontend_test/e2e/e2e_portal_17_5_L.py
+frontend_test/e2e/e2e_cabinet_17_5_M.py	1c0a3b5461e3c5719ccd63a0b60e8615d37907a5d1bf2f1c56fff3346cc8ece7	1	python -m pytest -q frontend_test/e2e/e2e_cabinet_17_5_M.py
