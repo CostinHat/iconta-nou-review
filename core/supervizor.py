@@ -432,6 +432,15 @@ def _domeniu_efectiv(firme, domeniu):
     return domeniu
 
 
+def rezumat_din_randuri(randuri):
+    """Rezumatul portofoliului, derivat din rânduri (o cheie pe fiecare rezultat din REZULTATE, firme_in_domeniu, de_confirmat, constatari_total)."""
+    rezumat = {k: sum(1 for r in randuri if r["rezultat"] == k) for k in REZULTATE}
+    rezumat["firme_in_domeniu"] = len(randuri)
+    rezumat["de_confirmat"] = sum(r["de_confirmat"] for r in randuri)
+    rezumat["constatari_total"] = sum(len(r["constatari"]) for r in randuri)
+    return rezumat
+
+
 def ruleaza_portofoliu(an, luna, firme=None, deschide=None, domeniu=None):
     """Supervizorul peste un domeniu de firme, pe o perioadă.
 
@@ -481,11 +490,7 @@ def ruleaza_portofoliu(an, luna, firme=None, deschide=None, domeniu=None):
 
     # REZUMATUL E DERIVAT din randuri, nu acumulat pe drum: un contor incrementat intr-o ramura
     # poate rata o firma in tacere, o numaratoare peste lista nu poate.
-    rezumat = {k: sum(1 for r in randuri if r["rezultat"] == k) for k in REZULTATE}
-    rezumat["firme_in_domeniu"] = len(randuri)
-    rezumat["de_confirmat"] = sum(r["de_confirmat"] for r in randuri)
-    rezumat["constatari_total"] = sum(len(r["constatari"]) for r in randuri)
-    return {"an": an, "luna": luna, "domeniu": domeniu, "firme": randuri, "rezumat": rezumat,
+    return {"an": an, "luna": luna, "domeniu": domeniu, "firme": randuri, "rezumat": rezumat_din_randuri(randuri),
             "tipuri_neatribuite": tipuri_neatribuite()}
 
 

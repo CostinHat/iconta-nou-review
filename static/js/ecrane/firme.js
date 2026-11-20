@@ -66,7 +66,7 @@ import { htmlTabelNote, legaTabelNote, htmlCautare, textNumar, rulajLinii, locIn
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
   container.innerHTML = `
-    <p class="ecran-nota" data-actiune="POST /tenants/{tenant_id}/activare|DELETE /tenants/{tenant_id}" style="margin:0 0 10px">Butonul <strong>Scoate</strong> de pe fiecare rând
+    <p class="ecran-nota" data-actiune="POST /tenants/{tenant_id}/activare|DELETE /tenants/{tenant_id}" style="margin:10px 0 0">Butonul <strong>Scoate</strong> de pe fiecare rând
        deschide o previzualizare, nu șterge. Acolo se vede care act e care:
        <strong>dezactivarea</strong> e reversibilă (firma iese din listă, datele rămân),
        <strong>ștergerea</strong> nu e — și se poate doar dacă firma n-a produs niciun document.</p>
@@ -184,11 +184,11 @@ export function randeazaListaFirme(container, nav, inapoi) {
   });
 
   const lista = container.querySelector("#firme-lista");
-  // [17.3-B] sub 700 px nota de sus intră în zona de derulare, ca prim element al ei: textul rămâne întreg și lista are loc; `innerHTML` al zonei o scoate la fiecare desen, deci se pune la loc după fiecare
-  const nota = container.querySelector("p.ecran-nota"), ingust = window.matchMedia("(max-width: 700px)");
-  const asezaNota = () => { if (ingust.matches) lista.prepend(nota); else if (nota.parentNode !== container) container.prepend(nota); };
-  ingust.addEventListener("change", asezaNota);
-  asezaNota();
+  // [17.5-M, AC015] explicația actului rar (Scoate) vine după lucrul zilnic: nota stă ULTIMA în zona listei, la orice lățime. `innerHTML` al zonei o scoate la fiecare desen,
+  // iar piesa DS a listei își adaugă tabelul (`lista.appendChild(cutie)`) după ea: observatorul o pune la loc de fiecare dată (un singur loc, fără interogări de lățime)
+  const nota = container.querySelector("p.ecran-nota");
+  new MutationObserver(() => { if (lista.lastElementChild !== nota) lista.appendChild(nota); }).observe(lista, { childList: true });
+  lista.appendChild(nota);
   const cautare = container.querySelector("#firme-q");
   const zonaDez = container.querySelector("#firme-dezactivate");
   let toate = [], dezactivate = [], scoase = [];
@@ -200,16 +200,13 @@ export function randeazaListaFirme(container, nav, inapoi) {
     );
     if (toate.length === 0) {
       lista.innerHTML = `<div class="firme-gol">Nicio firmă încă. Adaugă prima firmă din portofoliu.</div>`;
-      asezaNota();
       return;
     }
     if (vizibile.length === 0) {
       lista.innerHTML = `<div class="firme-gol">Nicio firmă nu se potrivește cu „${filtru}".</div>`;
-      asezaNota();
       return;
     }
     lista.innerHTML = "";
-    asezaNota();
     vizibile.forEach((t) => {
       // [R78, 27.08.2026] Decizia de a scoate o firmă se ia UNDE VEZI PORTOFOLIUL, nu după ce
       // intri în firmă și derulezi 26 de carduri de lucru. Măsurat înainte: butonul de dinainte
@@ -259,7 +256,6 @@ export function randeazaListaFirme(container, nav, inapoi) {
       dezactivate = lst.filter((t) => t.activ === false);
     } catch {
       lista.innerHTML = `<div class="firme-gol">Firmele nu au putut fi încărcate.</div>`;
-      asezaNota();
       return;
     }
     // [drepturi_rol] istoricul scoaterilor e al întregului cabinet -> doar administratorul (nu se mai cere, ca să fie refuzat)

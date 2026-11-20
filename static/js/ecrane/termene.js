@@ -3,12 +3,13 @@
 
 import { api, cate, dupaNumar, dataRo, esc } from "../api.js?v=7396e03327";
 import { tabelDS } from "../ds_piese.js?v=ab8a4ad1c3";   // [15.1-E3] lista scadențelor pe tabelul DS
-import { deschideFirma } from "./firme.js?v=24e83ae124";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
+import { deschideFirma } from "./firme.js?v=33bc90b92b";
+import { randeazaDeclaratii } from "./declaratii.js?v=93956357f7";   // [17.5-M, AC014] „Deschide declarația” din Detaliu termen; declaratii.js nu importă termene.js (fără ciclu)   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).
 const ANUL_CURENT = new Date().getFullYear();
 
-function etichetaZile(z) {
+export function etichetaZile(z) {
   if (z < 0) return `restanță de ${cate(-z, "zi", "zile")}`;   // [719, 14.3] termenul a trecut și declarația nu e depusă: apare, prima
   if (z === 0) return "azi";
   if (z === 1) return "mâine";
@@ -95,9 +96,15 @@ function detaliuTermen(corp, nav, grup, item) {
     rand.innerHTML = `
       <div class="mig-frand-text">
         <div class="mig-frand-nume">${esc(f.nume)}</div>
-        <div class="mig-frand-sub">perioada ${etichetaPerioada(f.perioada, item.an)}${f.inainte_de_preluare ? " · înainte de preluare în iConta.eu" : ""}</div>
+        <div class="mig-frand-sub">perioada ${etichetaPerioada(f.perioada, item.an)} · ${etichetaZile(grup.zile)}${f.inainte_de_preluare ? " · înainte de preluare în iConta.eu" : ""}</div>
       </div>
+      <button type="button" class="buton-secundar buton-xs" data-fara-actiune="navigare: deschide declarația firmei">Deschide declarația</button>
     `;
+    // [17.5-M, AC014] drum spre declarația firmei: firma rândului, tipul grupului, perioada rândului; rândul își păstrează clicul spre fișa firmei
+    rand.querySelector("button").addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      nav.deschide("Declarații", (c2) => randeazaDeclaratii(c2, nav, null, { tenant_id: f.tenant_id, tip: item.tip, an: item.an, luna: f.luna }), { lat: "tabel" });
+    });
     // [P2] tenant_id -> id; deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} (contract strict, meniuFirma:241).
     // tip_firma lipsea din payload -> t.tip_firma.toLowerCase() crapa la randarea fisei. Adaugat in /termene.
     rand.addEventListener("click", () => deschideFirma({ id: f.tenant_id, nume: f.nume, cui: f.cui, tip_firma: f.tip_firma, regim_contabil: f.regim_contabil }, nav));

@@ -1208,15 +1208,17 @@ def _orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna):
 
 
 def verifica_d390(conn, schema, an, luna):
-    """F163: D390 (bunuri IC) vs evidența contabilă validată a facturilor IC. Fereastra = periodicitatea
-    TVA (tip_decont): lunar 1 lună, trimestrial 3 luni. Gri dacă D390 nu se poate genera. Vezi capul
+    """F163: D390 (bunuri IC) vs evidența contabilă validată a facturilor IC. Fereastra = luna calendaristică
+    confruntată, pentru orice periodicitate TVA (D390 se depune lunar). Gri dacă D390 nu se poate genera. Vezi capul
     secțiunii F163 pentru filozofie (NU e D-vs-D)."""
     from core import d390 as _d390
     with conn.cursor() as cur:
         row = _repo.select_firma_profil_2(cur, schema)
     tip_dec = row[0] if row else None
-    an, luna, _perioada_txt = perioada_comparata(tip_dec, an, luna)   # [lotul 14, 694] perioada fiscală completă, nu cea în curs
-    luni, data_de, data_pana, fereastra = _fereastra_tva(tip_dec, an, luna)
+    # [17.5-M, AC036] D390 se depune lunar, pe luna calendaristică (art. 325 alin. (2) Cod fiscal), indiferent de periodicitatea TVA:
+    # fereastra e luna confruntată însăși, fără pasul înapoi al lui perioada_comparata (acela rămâne pentru D300 / TVA).
+    luni, data_de, data_pana, fereastra = _fereastra_tva("lunar", an, luna)
+    _perioada_txt = fereastra
     # [Retest 2, pct.9] „unde D300 nu se aplică, afișează «nu se aplică».” Neplătitorul (art.317) nu depune D300: confruntarea nu rulează.
     # [deficiența 195, proba blocului F: „pe o firmă fără declarant, rândul «D390 față de D300: nu se aplică» lipsește; în locul lui apare
     # «D390 nu se poate genera: lipsă declarant»”] neaplicarea nu depinde de generarea D390 — se stabilește înaintea ei și se spune

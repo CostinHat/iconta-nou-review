@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.123 · 19 noiembrie 2026 (editabil prin SSH)*
+*Document normativ · v2.124 · 19 noiembrie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -1614,3 +1614,5 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 
 ## Componenta: semnul "?" de ajutor contextual (v_ajutor, 11.08.2026)
 .ajutor-btn - buton mic circular (20px) cu "?", plasat langa titlul unei functionalitati DOAR unde exista ceva de spus dincolo de eticheta (reguli fiscale, preconditii, consecinte). Deschide un modal cu textul de folosire din coloana ajutor (FUNCTIONALITATI.csv), via api.js semnAjutor(fid) + handler global. NU se pune peste tot (Salveaza/Cauta/Inapoi/camp Denumire = zgomot).
+
+**(v2.124, lotul 17.5-M, AC017 + AC034 + AC035)** Trei reguli ale ecranelor cabinetului: (1) o fereastră care promite priorități le arată — «Sinteza zilei» are prima secțiune «Priorități», cu restanțele și cele mai apropiate scadențe, din aceleași surse ca cardul Termene (`/termene`); (2) un total își numește populația — în «Tipare de erori» apar toate tipurile, nu numai cele cu respingeri, iar rândurile «Total (toate pregătirile)» și «Total (firmele cu respingeri)» spun ce numără; (3) cardul numără ce numără fereastra — cardul «Activitate» numără persoane («asistent necesită atenție»), nu tipare, iar fereastra «Tipare de erori» arată care sunt.

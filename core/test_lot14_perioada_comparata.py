@@ -70,4 +70,4 @@ def test_octombrie_compara_t3_nu_t4_in_curs(firma):
         conn.rollback()
     assert (r["an"], r["luna"], r["perioada"]) == (2099, 9, "T3/2099"), r
     assert [c for c in r["constatari"] if c["contabil"] or c["declarat"]] == [], r["constatari"]      # T3 coincide (0 cu 0): nicio diferență; mișcările din T4 în curs nu intră în comparație
-    assert (d["an"], d["luna"], d["perioada"]) == (2099, 9, "T3/2099"), d
+    assert (d["an"], d["luna"], d["perioada"]) == (2099, 10, "10/2099"), d   # [17.5-M, AC036] D390 pe luna calendaristică (:71 pentru TVA neschimbat)

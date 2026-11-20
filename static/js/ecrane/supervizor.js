@@ -25,11 +25,19 @@ function perioada(r) {
   return dataRo(new Date(r.an, r.luna - 1, 1), "luna_an_numeric");   // DS cap.4: „10/2026”, din formatorul unic
 }
 
+// [17.5-M, AC022] «diferență» = constatare cu stare «rosu» sau «galben» (cere acțiune); «fără diferență» = orice altă stare («gri»: nu s-a putut
+// confrunta; «verde»: concordă). Cifrele se numără din constatările primite, nu din rezumatul serverului.
+const eDiferenta = (c) => c.stare === "rosu" || c.stare === "galben";
+
 function antet(r) {
   const z = r.rezumat || {};
+  const toate = (r.firme || []).flatMap((f) => f.constatari || []);
+  const D = toate.filter(eDiferenta).length;
+  const C = toate.length - D;
   return `<div class="sv-antet">
     <div class="sv-cifre">
-      <span class="sv-cifra"><b>${z.constatari_total || 0}</b> ${dupaNumar(z.constatari_total || 0, "constatare", "constatări")} pe <b>${z.CONSTATARI || 0}</b> ${dupaNumar(z.CONSTATARI || 0, "firmă", "firme")}</span>
+      <span class="sv-cifra"><b>${D}</b> ${dupaNumar(D, "diferență de lămurit", "diferențe de lămurit")}</span>
+      <span class="sv-cifra sv-cifra--sec"><b>${C}</b> ${dupaNumar(C, "confruntare fără diferență sau care nu s-a putut face", "confruntări fără diferență sau care nu s-au putut face")}</span>
       <span class="sv-cifra sv-cifra--sec"><b>${z.FARA_SUBIECT || 0}</b> fără subiect</span>
       <span class="sv-cifra sv-cifra--rau"><b>${z.NEVERIFICAT || 0}</b> ${dupaNumar(z.NEVERIFICAT || 0, "neverificată", "neverificate")}</span>
       <span class="sv-cifra sv-cifra--sec">din <b>${z.firme_in_domeniu || 0}</b> ${dupaNumar(z.firme_in_domeniu || 0, "firmă", "firme")}</span>
@@ -48,8 +56,11 @@ function etichetaVechi(f) {
     detaliiHtml: `<p class="cf-incr-temei">Rezultatul a fost calculat înaintea ultimei schimbări a datelor firmei sau a regulilor de verificare: se recalculează în câteva minute.</p>` })}</div>`;
 }
 
-function blocFirma(f) {
-  const cs = (f.constatari || []).map(randConstatare).join("");
+function blocFirma(f, diferentelePrimele) {
+  let lista = f.constatari || [];
+  // [17.5-M, AC024] constatările cu diferență (roșu / galben) întâi, apoi restul, în ordinea primită (sortare stabilă)
+  if (diferentelePrimele) lista = [...lista.filter(eDiferenta), ...lista.filter((c) => !eDiferenta(c))];
+  const cs = lista.map(randConstatare).join("");
   return `<section class="sv-firma">
     <h3 class="sv-firma-nume">${esc(f.nume || "Firmă")}</h3>
     ${etichetaVechi(f)}
@@ -104,7 +115,15 @@ export async function randeazaSupervizor(corp, nav) {
   const firme = r.firme || [];
   const cuConstatari = firme.filter((f) => (f.constatari || []).length);
   const neverificate = firme.filter((f) => f.rezultat === "NEVERIFICAT");
-  const corpuri = cuConstatari.map(blocFirma).join("");
+  // [17.5-M, AC024] întâi firmele cu diferențe de lămurit, apoi cele fără diferențe; o firmă apare într-un singur bloc, cu toate constatările ei
+  const cuDiferente = cuConstatari.filter((f) => f.constatari.some(eDiferenta));
+  const faraDiferente = cuConstatari.filter((f) => !f.constatari.some(eDiferenta));
+  const titlu = (t) => `<h3 class="pf-subtitlu ds-grup-titlu">${t}</h3>`;
+  const corpuri = cuConstatari.length
+    ? titlu("Firme cu diferențe de lămurit")
+      + (cuDiferente.length ? cuDiferente.map((f) => blocFirma(f, true)).join("") : `<p class="stare-goala--inline">Nicio diferență de lămurit.</p>`)
+      + (faraDiferente.length ? titlu("Firme fără diferențe") + faraDiferente.map((f) => blocFirma(f, false)).join("") : "")
+    : "";
   corp.innerHTML = antet(r) + `<div id="sv-zona" data-zona-derulare>${corpuri || blocGol(r)}${blocNeverificate(neverificate)}</div>`;   // [15.1-E3] lista derulează în zona ei, antetul rămâne
   legaSemnale(corp);
 }

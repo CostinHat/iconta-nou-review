@@ -22,7 +22,7 @@ def kpi_din_balanta(randuri):
     """randuri: iesirea din documente_api.balanta(). Cumulat de la inceputul anului."""
     venituri = _suma(randuri, ("7",), "cum_c", GRUPE_IMPOZIT) - _suma(randuri, ("7",), "cum_d", GRUPE_IMPOZIT)
     cheltuieli = _suma(randuri, ("6",), "cum_d", GRUPE_IMPOZIT) - _suma(randuri, ("6",), "cum_c", GRUPE_IMPOZIT)
-    cash = _suma(randuri, ("531", "512"), "sf_d")
+    cash = round(_suma(randuri, ("531", "512"), "sf_d") - _suma(randuri, ("531", "512"), "sf_c"), 2)  # round-ok: diferență de sume care au deja bani: curăță zgomotul float, nu întâlnește ,xx5
     de_incasat = _suma(randuri, ("411",), "sf_d")
     de_platit = _suma(randuri, ("401",), "sf_c")
     profit = round(venituri - cheltuieli, 2)  # round-ok: sumă / diferență de valori care au deja bani: curăță zgomotul float, nu întâlnește ,xx5

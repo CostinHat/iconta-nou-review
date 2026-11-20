@@ -54,6 +54,10 @@ _MOTIV_L13_C201 = ("Lotul 13, C201 (zona infra): o cerere lucrează pe O SINGUR�
                    "unit cu prima (`db.get_conn(schema)` caută „schema firmei, public”); garda: `core/test_lot13_infra_o_conexiune.py`.")
 #: abaterile acceptate de la „mesaj neschimbat", fiecare cu motivul ei. Orice alta abatere pica.
 ABATERI = {
+    ('portal_bon', "'serviciul AI indisponibil'"): '17.5-L AC156: păstrează HTTP 503 și formulează indisponibilitatea AI cu îndemnul explicit de a reveni.',
+    ('portal_bon', "'imagine prea mare (max 8MB)'"): '17.5-L AC156: păstrează HTTP 400 și limita existentă de 8 MB; mesajul explică limita cu o propoziție completă.',
+    ('portal_bon_confirma', "'bon inexistent sau deja trimis'"): '17.5-L AC156: păstrează HTTP 404 pentru bonul absent sau deja trimis și reformulează mesajul pentru client.',
+    ('portal_bon_sterge', "'bon inexistent sau deja trimis'"): '17.5-L AC156: păstrează HTTP 404 pentru bonul absent sau deja trimis și reformulează mesajul pentru client.',
     # [lotul 13, reparațiile finale înaintea porții] același cod HTTP, mesajul rescris (608 / 645 / 646 / 560)
     ("cere_api_key", "'lipsă X-Api-Key'"): _MOTIV_L13_608,
     ("cere_api_key", "'cheie invalidă sau revocată'"): _MOTIV_L13_608,
@@ -198,6 +202,10 @@ _MOTIV_L13_OPS = ("Lotul 13, pachetul ops (comanda Costin 13.1): operațiile spe
                   "(ANAF strict la taxarea inversă), 548 (marja / aurul din stoc), 670 (plafonul diurnei în decont). Raportul: "
                   "`l13_raport/ops.md`.")
 PERECHI_ADAUGATE = {
+    ('portal_bon', "'Poți trimite cel mult %d fotografii pentru același document.' % MAX_POZE_BON"): '17.5-L AC146: HTTP 400 refuză explicit depășirea limitei de fotografii în loc să trunchieze în tăcere lista încărcată.',
+    ('portal_solicitari_trimite', "'Scrie solicitarea înainte de a o trimite.'"): '17.5-L AC172: HTTP 400 respinge solicitarea goală după eliminarea spațiilor, înainte de salvare sau notificare.',
+    ('portal_solicitari_trimite', "'Mesajul are peste 4.000 de caractere. Scurtează-l.'"): '17.5-L AC172: HTTP 400 respinge solicitarea care depășește 4.000 de caractere, înainte de salvare sau notificare.',
+    ('portal_bon', 'MESAJ_BON_ILIZIBIL'): '17.5-L AC156: HTTP 422 folosește mesajul comun de bon ilizibil la răspuns lipsă, structură invalidă și conversie de date eșuată.',
     # [lotul 13, reparațiile finale înaintea porții] refuzurile noi ale zonelor admin și fact
     ("admin_cabinet_reactiveaza", "'Nu există niciun cabinet cu numărul %d.' % firm_id"): _MOTIV_L13_645 + " Cabinetul inexistent (404).",
     ("admin_cabinet_suspenda", "'Nu există niciun cabinet cu numărul %d.' % firm_id"): _MOTIV_L13_645 + " Cabinetul inexistent (404).",
@@ -565,6 +573,7 @@ PERECHI_MUTATE_IN_AJUTOR = {
 #: Perechi (cod, mesaj) SCOASE deliberat din funcție — refuzul nu mai are ce refuza acolo (operația lui a plecat în altă rută). Anti-vacuu:
 #: `test_SCOASELE_perechi_chiar_lipsesc`.
 PERECHI_SCOASE = {
+    ('portal_bon', "'nu am putut citi bonul; încearcă o poză mai clară'"): '17.5-L AC156: expresia literală veche dispare; cele trei ramuri de bon ilizibil sau cu date invalide ridică HTTP 422 cu MESAJ_BON_ILIZIBIL.',
     ("admin_anunt_creeaza", "'mesaj gol'"): (_MOTIV_L13_646 + " Mesajul gol („Scrie mesajul anunțului.”) și destinatarii lipsă se adună "
                                              "în colector (`ErorileFormularului`, clasa 440), fiecare lângă câmpul lui; același 422."),
     ("factura_primita_valideaza", "'XML neparsabil: %s' % str(e)[:200]"): (
@@ -862,6 +871,7 @@ _MOTIV_LOTUL_4 = ('Lotul 4 (comanda Costin 15.10.2026, verbatim în DECIZII „L
                   'contul nou (`_dupa_cont_nou`, `_anunta_cabinet_nou`) sunt ajutoare comune cu confirmarea (`confirma_inregistrarea`). '
                   'Trimiterea emailului: `observare.trimite_email_html_sau_semnaleaza` (C34).')
 APELURI_EXTRASE_IN_AJUTOARE = {
+    'portal_bon': ((('core/uc_portal.py', '_defalcare_tva'),), '17.5-L AC152: calculul celor două cote TVA la data bonului este extras în _defalcare_tva, cu acumulare Decimal și rotunjire la cent.'),
     # [17.5-J2, J2-R1] `_verificari_contabile` are deja un ajutor în APELURI_EXTRASE_IN_AJUTOR (`_tva_balanta_sau_nu_se_aplica`, dicționar cu un singur ajutor pe funcție);
     # aici, în tabelul cu mai multe ajutoare, sunt celelalte două: citirea balanței lunii și numărătoarea notelor lunii.
     # [17.5-J2, J2-R1] `verificare_stocuri`: corpul (articolele, fișele de magazie, rulajul, soldul inițial, diferențele) a plecat în `stocuri_cv_api.reconciliere`,
@@ -912,6 +922,8 @@ _MOTIV_CF_CUI = ("Lotul 11, decizia Costin 10.3 pct.4 (CUI-ul fără „RO” ș
 _MOTIV_C84 = ("C84 (b), decizia Costin 23.10.2026: livrarea intracomunitară de bunuri trece pe „Emite factură”; Operațiuni rămân "
               "pentru servicii, deci verificarea dovezii transportului și contul bunurilor ies din `vanzare_ic`.")
 APELURI_REDUSE = {
+    # [17.5-M2, AC022] ramura moartă `hasattr(supervizor, "rezumat_din_randuri") ... else {"firme": len(randuri)}` a dispărut: rezumatul vine numai din `rezumat_din_randuri`.
+    ('supervizor_la_cerere', 'len'): (1, '17.5-M AC022: ramura de rezervă {"firme": len(randuri)} dispare; `supervizor.rezumat_din_randuri` este singura sursă a rezumatului, deci un apel len mai puțin.'),
     # [17.5-J2, J2-R1] cele trei `.quantize(...)` ale vechiului corp (soldul, valoarea fișelor, diferența) sunt acum unul singur, lambda `q` din `reconciliere`,
     # aplicat de trei ori; mai rămâne `.quantize` pe totalul ciornelor din `verificare_stocuri`. Contabilizarea (3 → 1 în funcție) + creditul ajutorului (1) = 2.
     ('verificare_stocuri', 'quantize'): (2, "[17.5-J2, J2-R1; 17.5-X, F089] rotunjirea la 2 zecimale a soldului, a valorii fișelor și a diferenței se face printr-o singură "
@@ -963,6 +975,9 @@ APELURI_REDUSE = {
 
 #: [15.10.2026, lotul 4] Apeluri SCOASE deliberat, cu motivul. Anti-vacuu: `test_SCOASELE_declarate_chiar_lipsesc`.
 APELURI_SCOASE = {
+    ('supervizor_la_cerere', 'hasattr'): '17.5-M AC022: verificarea hasattr(supervizor, "rezumat_din_randuri") era o ramură moartă (funcția există); rezumatul se cere direct din `supervizor.rezumat_din_randuri`.',
+    ('portal_bon', 'round'): '17.5-L AC152: cele două apeluri round pe float sunt înlocuite de quantize la 0,01 cu ROUND_HALF_UP în _suma, pentru ambele cote.',
+    ('portal_bon', 'sum'): '17.5-L AC152: cele două apeluri sum pe float sunt înlocuite de acumularea în Decimal din _suma, executată pentru ambele cote.',
     # [17.5-J2, J2-R1] vechile apelul `repo_stocuri.articole_cu_cont`: articolele vin acum din `stocuri_cv_api.articole` (SELECT * FROM articole), prin `reconciliere`.
     ('verificare_stocuri', 'articole_cu_cont'): ("[17.5-J2, J2-R1; 17.5-X, F089] lista articolelor cu cont de stoc (`repo_stocuri.articole_cu_cont`) nu se mai citește în "
                                                  "`verificare_stocuri`: `stocuri_cv_api.reconciliere` ia articolele prin `articole` (aceeași citire ca ecranul Stocuri), "
@@ -1135,6 +1150,13 @@ def test_SCOASELE_declarate_chiar_lipsesc():
         assert apel not in toate, "%s: apelul declarat scos (%s) e tot acolo" % (fn_nume, apel)
 
 
+APELURI_REDUSE_DUPA_EXTRAGERE = {
+    ('portal_bon', 'float'): (1, '17.5-L AC152: cele două conversii float din acumularea separată devin o conversie în _suma, apelată pentru fiecare dintre cele două cote.'),
+    ('portal_bon', 'int'): (1, '17.5-L AC152: conversia procentului se scrie o singură dată în _cota, apelată pentru cota standard și pentru cota redusă.'),
+    ('portal_bon', 'cota'): (1, '17.5-L AC152: citirea cotei se scrie o singură dată în _cota, apelată separat pentru cota standard și redusă la data bonului.'),
+}
+
+
 def test_REDUCERILE_declarate_chiar_sunt_in_cod():
     """Anti-vacuu pe APELURI_REDUSE: apelul e făcut acum EXACT cu `n` mai puțin decât în BAZA (nici scos de tot — atunci e o scoatere —,
     nici înapoi la numărul vechi — atunci declarația ar scuza o pierdere viitoare)."""
@@ -1147,6 +1169,25 @@ def test_REDUCERILE_declarate_chiar_sunt_in_cod():
         inainte = _apeluri(vechi[fn], harta).get(apel, 0)
         acum = _apeluri(uc[_tinta_invelisului(nou[fn])], harta).get(apel, 0)
         assert acum >= 1 and acum == inainte - n, (fn, apel, inainte, acum, n)
+
+
+def test_REDUCERILE_dupa_extragere_chiar_sunt_in_cod():
+    """Verifică numărul exact după creditarea ajutoarelor apelate efectiv."""
+    harta, uc = _harta_cod(), _module_uc()
+    vechi = {n.name: n for n in ast.parse(_sursa_veche()).body if isinstance(n, ast.FunctionDef)}
+    nou = {n.name: n for n in ast.parse(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()).body
+           if isinstance(n, ast.FunctionDef)}
+    for (fn, apel), (n, motiv) in APELURI_REDUSE_DUPA_EXTRAGERE.items():
+        assert len(motiv) > 80 and n > 0
+        assert (fn, apel) not in APELURI_REDUSE and (fn, apel) not in APELURI_SCOASE
+        corp = _apeluri(uc[_tinta_invelisului(nou[fn])], harta)
+        inainte = _apeluri(vechi[fn], harta).get(apel, 0)
+        acum = corp.get(apel, 0)
+        credit = 0
+        for cale, ajutor in APELURI_EXTRASE_IN_AJUTOARE[fn][0]:
+            nod = uc[(os.path.basename(cale)[:-3], ajutor)]
+            credit += corp.get(ajutor, 0) * _apeluri(nod, harta).get(apel, 0)
+        assert credit > 0 and acum + credit == inainte - n, (fn, apel, inainte, acum, credit, n)
 
 
 def test_INLOCUIRILE_declarate_chiar_exista():
@@ -1712,7 +1753,7 @@ def test_NICIUN_APEL_nu_s_a_pierdut_pe_drum():
         for (_fn, _apel), _m in APELURI_SCOASE.items():
             if _fn == nume:
                 inainte.pop(_apel, None)
-        for (_fn, _apel), (_n, _m) in APELURI_REDUSE.items():
+        for (_fn, _apel), (_n, _m) in {**APELURI_REDUSE, **APELURI_REDUSE_DUPA_EXTRAGERE}.items():
             if _fn == nume:
                 inainte[_apel] = inainte.get(_apel, 0) - _n
         # [lot 19, 03.10.2026] fiecare `_uc_comun.bifa(corp, x)` inlocuieste o pereche `bool(corp.get(x))` (sau, la

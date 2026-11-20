@@ -2,11 +2,11 @@
 // Banda de salut cu „Recomandă” și „Suport” (salut.js, aceeași la asistent) + cardurile pastel, fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=7396e03327";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, bani, ICOANE, CULORI_CARD, arataMesaj, dataIso, cate, dupaNumar } from "../api.js?v=7396e03327";  /* esc_nc27 */
 import { semaforCard as _semaforCard, semaforCardControl } from "./semafor.js?v=60f4db5322";  // [p87_asistent] [224]
 import { sesiune } from "../sesiune.js?v=898215e0ee";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=24e83ae124";
+import { randeazaListaFirme } from "./firme.js?v=33bc90b92b";
 import { randeazaMigrare } from "./migrare.js?v=6dccb53624";
 import { randeazaControl } from "./control.js?v=c027ce0ad1";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=80b751d073"; // [p17_activitate]
@@ -14,12 +14,12 @@ import { randeazaSetari } from "./setari.js?v=37902f6231"; // [p28_setari]
 import { randeazaRaporteaza } from "./raporteaza.js?v=766651826e"; // [p34_raporteaza] din Sinteza zilei („sesizări noi”)
 import { paginaPrincipala, legaBenzile } from "./salut.js?v=f5a3ed7133"; // [225 + 231] banda de sus, aceeași la ambele roluri
 import { randeazaPachete } from "./pachete.js?v=9228e3b2d1"; // [p63_pachete]
-import { randeazaTermene } from "./termene.js?v=fbf97d1454";
+import { randeazaTermene, etichetaZile } from "./termene.js?v=713a2df54e";
 import { randeazaValidat, titluCardCoada, noteDeValidatInCoada } from "./validat.js?v=a2db2ca802";
-import { randeazaSupervizor } from "./supervizor.js?v=b70acba4cb"; // [supervizor] rulare LA CERERE
+import { randeazaSupervizor } from "./supervizor.js?v=900f592ab2"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=55670c24d1";
-import { randeazaCapacitate } from "./capacitate.js?v=e1ba37a9f7"; // [p71_capacitate]
-import { randeazaTipare } from "./tipare.js?v=a3648839d3"; // [p72_tipare]
+import { randeazaCapacitate } from "./capacitate.js?v=ce4c970fad"; // [p71_capacitate]
+import { randeazaTipare } from "./tipare.js?v=ea428d54cd"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
 function svg(nume, culoare) {
@@ -81,6 +81,13 @@ function deschideEcran(cheie, nav, continut) {
   if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" });
   if (cheie === "tipare") return nav.deschide("Tipare de erori", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" });
   if (cheie === "raport") return nav.deschide("Suport", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" });
+  if (cheie === "termene") return nav.deschide("Termene", (corp) => randeazaTermene(corp, nav), { nivel: "cabinet" });   // [17.5-M, AC017] rândurile din «Priorități»
+}
+
+// [17.5-M] elementul unei cifre / al unui rând din Sinteza zilei: buton numai când are încotro duce (o cifră zero nu e acțiune), altfel text; un singur loc
+function elementCifra(eButon, cheie, interior) {
+  const eticheta_ = eButon ? "button" : "span";
+  return `<${eticheta_} class="sa-cifra${eButon ? " sa-clic" : ""}" data-ecran="${cheie || ""}">${interior}</${eticheta_}>`;
 }
 
 // [p73_sinteza_azi] panou de intampinare: sinteza zilei, totul clickabil spre ecranele de detaliu
@@ -100,6 +107,27 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   let deValidat = null;
   try { const c = await api.get("/asistenti/echipa/centralizator"); deValidat = ((c || {}).totaluri || {}).in_asteptare || 0; } catch { _eroareAzi = true; }
   if (_eroareAzi) { corp.innerHTML = `<p class="ecran-nota">Nu s-a putut încărca activitatea de azi (eroare de server).</p>`; return; }
+  // [17.5-M, AC017] «Priorități»: restanțele și cele mai apropiate scadențe, din aceeași sursă ca cardul Termene (/termene)
+  let prioritati = "";
+  try {
+    const tr = await api.get("/termene");
+    const restante = tr.restante || 0;
+    const apropiate = (tr.grupuri || []).filter((g) => g.zile >= 0).sort((a, b) => String(a.termen).localeCompare(String(b.termen))).slice(0, 3);
+    // [17.5-M2] rândul din «Priorități» e un rând al listei (`.sa-asist`), nu o cifră (`.sa-cifra`): cifrele zilei rămân cele 6 numărate de e2e_pilot_x07 (f.5)
+    const rd = (continut) => `<button type="button" class="sa-asist sa-clic" data-ecran="termene"><span class="sa-asist-nume">${continut}</span></button>`;
+    const randuriP = [];
+    if (restante > 0) randuriP.push(rd(`<b>${restante}</b> ${dupaNumar(restante, "declarație restantă", "declarații restante")}`));
+    apropiate.forEach((g) => {
+      const nrFirme = (g.items || []).reduce((sumaF, it) => sumaF + (it.nr_firme || 0), 0);
+      const tipuri = (g.items || []).map((it) => String(it.tip || "").toUpperCase()).join(", ");
+      randuriP.push(rd(`${esc(tipuri)} · ${dataRo(g.termen)} · ${etichetaZile(g.zile)} · ${cate(nrFirme, "firmă", "firme")}`));
+    });
+    prioritati = randuriP.length
+      ? `<div class="sa-asist-lista" data-prioritati-fara-derulare>${randuriP.join("")}</div>`
+      : `<p class="stare-goala--inline">Nicio restanță și nicio scadență în următoarele 60 de zile.</p>`;
+  } catch {
+    prioritati = `<p class="ecran-nota">Scadențele nu s-au putut încărca.</p>`;
+  }
 
   const t = cen.totaluri || {};
   const aziLung = dataRo(new Date(), "lung");
@@ -107,11 +135,9 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   function cifra(val, eticheta, cheie, accent) {
     const cc = accent || "#1a1d21";
     // [lotul 17.2] o cifră zero nu e acțiune: se desenează ca text; butonul apare numai la cifră > 0
-    const eButon = Boolean(cheie) && val > 0;
-    const eticheta_ = eButon ? "button" : "span";
-    return `<${eticheta_} class="sa-cifra${eButon ? " sa-clic" : ""}" data-ecran="${cheie || ""}">
+    return elementCifra(Boolean(cheie) && val > 0, cheie, `
       <span class="sa-num" style="color:${cc}">${val}</span>
-      <span class="sa-desc">${eticheta}</span></${eticheta_}>`;
+      <span class="sa-desc">${eticheta}</span>`);
   }
   const cifre = [
     cifra(t.create || 0, dupaNumar(t.create || 0, "preg\u0103tit\u0103", "preg\u0103tite"), "activitate"),
@@ -153,6 +179,11 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
 
   corp.innerHTML = `
     <p class="ecran-nota">${aziLung}</p>
+    <div data-zona-derulare>
+    <div class="sa-sectiune">
+          <div class="sa-cap">Priorități</div>
+          ${prioritati}
+        </div>
     <div class="sa-sectiune">
           <div class="sa-cap">Ast\u0103zi \u00een cabinet</div>
           <div class="sa-cifre">${cifre}</div>
@@ -169,7 +200,8 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
             </div>
             <ul class="sa-jurnal">${jurnal}</ul>
           </div>
-        </div>`;
+        </div>
+    </div>`;   // [17.5-M4, AC017] un singur înveliș de derulare sub nota cu data; Priorități rămâne tabel DS, fără zonă proprie
   corp.querySelectorAll("button[data-ecran]").forEach((el) => {
     const cheie = el.getAttribute("data-ecran");
     if (!cheie) return;
@@ -280,7 +312,7 @@ async function actualizeazaActivitate(grila) {
     const r = await api.get("/asistenti/echipa/semafor");
     const n = (r.counts?.rosu || 0) + (r.counts?.galben || 0);
     window._activAlerta = n;
-    zona.innerHTML = n === 0 ? "Activitate recentă" : `<b>${n}</b> ${dupaNumar(n, "tipar necesită atenție", "tipare necesită atenție")}`;
+    zona.innerHTML = n === 0 ? "Activitate recentă" : `<b>${n}</b> ${dupaNumar(n, "asistent necesită atenție", "asistenți necesită atenție")}`;
   } catch {}
 }
 function randeazaMeniuActivitate(corp, nav) {
@@ -584,7 +616,7 @@ async function randeazaConsolidare(corp, nav) {
   let d = null;
   try { d = await api.get("/cabinet/consolidare"); }
   catch (e) { arataMesaj(corp, e.mesaj || e.message || "eroare", "eroare"); return; }
-  const lei = (v) => baniRotund(v);
+  const lei = (v) => bani(v);
   const cap = `
     <div class="pf-frand" style="font-weight:600">
       <div class="pf-frand-text" style="flex:2">Firma</div>

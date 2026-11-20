@@ -1,0 +1,137 @@
+{
+ "1920x1080": {
+  "masura": {
+   "corp": {
+    "sel": "DIV.fereastra-corp.cu-zona",
+    "sh": 992,
+    "ch": 992,
+    "sw": 1888,
+    "cw": 1888,
+    "ov": "auto"
+   },
+   "declarate": 1,
+   "marcate": 1,
+   "zona": {
+    "sel": "DIV.zona-derulare",
+    "sh": 603,
+    "ch": 603,
+    "sw": 1856,
+    "cw": 1856,
+    "ov": "auto"
+   },
+   "zonaMarcata": true,
+   "prioritatiInZona": true,
+   "cutie": {
+    "sel": "DIV.ds-tabel-cutie.ds-tabel-lista",
+    "sh": 265,
+    "ch": 265,
+    "sw": 1816,
+    "cw": 1816,
+    "ov": "visible"
+   },
+   "cutieOverflow": "visible",
+   "tabelCutieMarcataZona": false,
+   "verticaleCuDepasire": [],
+   "cuOverflow": [
+    {
+     "sel": "DIV.zona-derulare",
+     "sh": 603,
+     "ch": 603,
+     "sw": 1856,
+     "cw": 1856,
+     "ov": "auto"
+    }
+   ],
+   "capitole": [
+    "Priorități",
+    "Astăzi în cabinet",
+    "Producția echipei",
+    "Ultimele evenimente"
+   ],
+   "cifre": 6,
+   "randuriPrioritati": 8,
+   "notaDeasupra": true,
+   "corpOrizontal": false,
+   "zonaOrizontal": false,
+   "productia": true
+  },
+  "derulare": {
+   "derulat": false,
+   "scrollTop": 0,
+   "ultimulElementVizibil": true,
+   "ultimRandPrioritatiInZonaVizibila": true
+  }
+ },
+ "1366x768": {
+  "masura": {
+   "corp": {
+    "sel": "DIV.fereastra-corp.cu-zona",
+    "sh": 680,
+    "ch": 680,
+    "sw": 1334,
+    "cw": 1334,
+    "ov": "auto"
+   },
+   "declarate": 1,
+   "marcate": 1,
+   "zona": {
+    "sel": "DIV.zona-derulare",
+    "sh": 603,
+    "ch": 508,
+    "sw": 1302,
+    "cw": 1302,
+    "ov": "auto"
+   },
+   "zonaMarcata": true,
+   "prioritatiInZona": true,
+   "cutie": {
+    "sel": "DIV.ds-tabel-cutie.ds-tabel-lista",
+    "sh": 265,
+    "ch": 265,
+    "sw": 1262,
+    "cw": 1262,
+    "ov": "visible"
+   },
+   "cutieOverflow": "visible",
+   "tabelCutieMarcataZona": false,
+   "verticaleCuDepasire": [
+    {
+     "sel": "DIV.zona-derulare",
+     "sh": 603,
+     "ch": 508,
+     "sw": 1302,
+     "cw": 1302,
+     "ov": "auto"
+    }
+   ],
+   "cuOverflow": [
+    {
+     "sel": "DIV.zona-derulare",
+     "sh": 603,
+     "ch": 508,
+     "sw": 1302,
+     "cw": 1302,
+     "ov": "auto"
+    }
+   ],
+   "capitole": [
+    "Priorități",
+    "Astăzi în cabinet",
+    "Producția echipei",
+    "Ultimele evenimente"
+   ],
+   "cifre": 6,
+   "randuriPrioritati": 8,
+   "notaDeasupra": true,
+   "corpOrizontal": false,
+   "zonaOrizontal": false,
+   "productia": true
+  },
+  "derulare": {
+   "derulat": true,
+   "scrollTop": 95,
+   "ultimulElementVizibil": true,
+   "ultimRandPrioritatiInZonaVizibila": true
+  }
+ }
+}

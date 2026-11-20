@@ -72,17 +72,25 @@ export async function randeazaTipare(corp, nav) {
   // antet, „Acțiune”, deasupra barei, iar antetele numerice stăteau la stânga peste cifre aliniate la dreapta); bara stă în celula ratei.
   // [574] rândurile cuprind și notele contabile respinse de om („Note contabile”)
   let randTipuri = "";
-  const tipuriCuResp = tipuri.filter((t) => t.respinse > 0);
-  if (!tipuriCuResp.length) {
+  // [17.5-M, AC034] toate tipurile primite (cele fără respingeri apar «0 din N»), urmate de totalul pregătirilor lor
+  if (!tipuri.length) {
     randTipuri = `<tr><td colspan="3" class="stare-goala">Nicio declarație sau notă respinsă la validare încă — rata pe tip apare după primele respingeri.</td></tr>`;
   } else {
-    tipuriCuResp.forEach((t) => {
+    tipuri.forEach((t) => {
       randTipuri += `<tr>
         <td>${esc(etichetaTip(t.tip))}</td>
         <td class="cap-num">${t.respinse} din ${t.total}</td>
         <td class="cap-num tip-rata">${t.pct}%${bara(t.pct)}</td>
       </tr>`;
     });
+    const sumaResp = tipuri.reduce((a, t) => a + (t.respinse || 0), 0);
+    const sumaTot = tipuri.reduce((a, t) => a + (t.total || 0), 0);
+    const pctTot = sumaTot ? Math.round((sumaResp * 100) / sumaTot) : 0;
+    randTipuri += `<tr class="cap-total">
+        <td><b>Total (toate pregătirile)</b></td>
+        <td class="cap-num"><b>${sumaResp} din ${sumaTot}</b></td>
+        <td class="cap-num tip-rata"><b>${pctTot}%</b>${bara(pctTot)}</td>
+      </tr>`;
   }
   const sectTipuri = `
     <h3 class="tip-titlu">Declarații și note: rata de respingere</h3>
@@ -109,6 +117,12 @@ export async function randeazaTipare(corp, nav) {
         <td class="cap-num">${f.total}</td>
       </tr>`;
     });
+    // [17.5-M, AC034] totalul firmelor cu respingeri; populația lui e numită în nota de sub tabel
+    randFirme += `<tr class="cap-total">
+        <td><b>Total (firmele cu respingeri)</b></td>
+        <td class="cap-num"><b>${firme.reduce((a, f) => a + (f.respinse || 0), 0)}</b></td>
+        <td class="cap-num"><b>${firme.reduce((a, f) => a + (f.total || 0), 0)}</b></td>
+      </tr>`;
   }
   const sectFirme = `
     <h3 class="tip-titlu">Firme cu cele mai multe respingeri</h3>
@@ -120,7 +134,32 @@ export async function randeazaTipare(corp, nav) {
         <tbody>${randFirme}</tbody>
       </table>
     </div>
+    <p class="cap-nota">Numai firmele cu respingeri, cel mult 15; „Total” numără pregătirile acestor firme, nu pe toate ale cabinetului.</p>
   `;
+
+  // [17.5-M, AC035] asistenții marcați de semafor (roșu = tipar sistematic, galben = tipar nou); fără niciunul secțiunea nu apare
+  let sectAtentie = "";
+  try {
+    const sem = await api.get("/asistenti/echipa/semafor");
+    const marcati = (sem.asistenti || []).filter((a) => a.culoare === "rosu" || a.culoare === "galben");
+    if (marcati.length) {
+      sectAtentie = `
+    <h3 class="tip-titlu">Asistenți care necesită atenție</h3>
+    <div class="cap-tabel-wrap">
+      <table class="cap-tabel">
+        <thead><tr><th>Asistent</th><th>Tipar</th><th class="cap-num">Respinse</th><th class="cap-num">Rată</th></tr></thead>
+        <tbody>${marcati.map((a) => `<tr>
+          <td>${esc(a.nume)}</td>
+          <td>${a.culoare === "rosu" ? "tipar sistematic" : "tipar nou"}</td>
+          <td class="cap-num">${a.respinse}</td>
+          <td class="cap-num">${a.rata}%</td>
+        </tr>`).join("")}</tbody>
+      </table>
+    </div>`;
+    }
+  } catch {
+    sectAtentie = `<p class="ecran-nota">Asistenții care necesită atenție nu s-au putut încărca.</p>`;
+  }
 
   // [lotul 11, decizia Costin 10.3, verbatim în DECIZII „Comanda 10.3” pct.4: „Totalurile și rezumatul fix, mesajele lângă buton […]:
   // da, reorganizezi ecranele”] „Generează analiză AI” stătea sub cele trei tabele, iar rezultatul lui la capătul lor: acum butonul e în
@@ -131,7 +170,7 @@ export async function randeazaTipare(corp, nav) {
         <button class="buton-primar" id="tip-ai" data-actiune="GET /tipare/ai" style="margin-left:8px">Generează analiză AI</button></p>
     </div>
     <div id="tip-ai-rez"></div>
-    ${sectMotive}${sectTipuri}${sectFirme}</div>`;
+    ${sectAtentie}${sectMotive}${sectTipuri}${sectFirme}</div>`;
   corp.querySelector("#tip-ai").addEventListener("click", async () => {
     const btn = corp.querySelector("#tip-ai");
     const rez = corp.querySelector("#tip-ai-rez");

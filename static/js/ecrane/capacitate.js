@@ -4,6 +4,7 @@
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
 import { api, esc, cate } from "../api.js?v=7396e03327";
 import { randeazaAsistenti } from "./asistenti.js?v=55670c24d1";
+import { tabelDSHtml } from "../ds_piese.js?v=ab8a4ad1c3";
 import { permis } from "../drepturi.js?v=34d0fb0afd";  /* [drepturi_rol 04.10.2026] */
 
 function celulaCifra(valoare, eticheta, accent) {
@@ -39,12 +40,20 @@ export async function randeazaCapacitate(corp, nav) {
   // semnalul e gol pe echipa mica -> nu afisam cifrele, ci empty state + indrumare.
   const PRAG_ECHILIBRU = 5;
   if (asistenti.length < PRAG_ECHILIBRU) {
+    // [17.5-M2, AC025] persoanele echipei mici, în tabelul DS (piesa tabelDSHtml): numele cu rolul, firmele atribuite, în lucru; `cap-tabel` rămâne ancora ecranului
+    const tabelPersoane = asistenti.length ? tabelDSHtml({
+      coloane: [{ titlu: "Persoană", tip: "text" }, { titlu: "Firme", tip: "num" }, { titlu: "În lucru", tip: "num" }],
+      randuri: asistenti.map((a) => ({ celule: [
+        { html: `${esc(a.nume || "—")} <span class="cap-rol">${a.poate_valida ? "senior" : "junior"}</span>`, text: a.nume || "—" },
+        String(a.firme_atribuite ?? 0), String(a.in_lucru ?? 0)] })),
+      subsol: cate(asistenti.length, "persoană", "persoane"),
+    }).replace('<table class="ds-tabel">', '<table class="ds-tabel cap-tabel cap-tabel-echipa-mica">') : "";
     corp.innerHTML = `
       <div class="cap-ecran">
         <div class="stare-goala">
           <p>Într-o echipă care crește, munca nu se împarte singură în mod egal.</p>
           <p>Unii duc trei firme, alții șapte — și afli abia când cineva cedează în perioada de declarații. Capacitate îți arată cine cât duce, unde e presiune și unde e loc, ca s-o echilibrezi din vreme, nu în criză.</p>
-          <p>Semnalul are sens de la 5 persoane care lucrează declarații în sus. Momentan sunt ${asistenti.length}, inclusiv administratorul dacă are competențe — până atunci, îi vezi pe toți dintr-o privire.</p>
+          <p>Semnalul are sens de la 5 persoane care lucrează declarații în sus. Momentan sunt ${asistenti.length}, inclusiv administratorul dacă are competențe — până atunci, îi vezi pe toți dintr-o privire.</p>${tabelPersoane}
           <p>${butonAsistenti}</p>
         </div>
       </div>`;

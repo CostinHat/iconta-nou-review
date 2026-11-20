@@ -91,8 +91,7 @@ def supervizor_la_cerere(ctx):
         "domeniu": ("firmele la care ai acces (%d), nu tot portofoliul cabinetului; "
                     "supervizorul rulează zilnic pe portofoliu, ecranul arată partea ta" % len(firme)),
         "firme": randuri,
-        "rezumat": supervizor.rezumat_din_randuri(randuri) if hasattr(supervizor, "rezumat_din_randuri")
-                   else {"firme": len(randuri)},
+        "rezumat": supervizor.rezumat_din_randuri(randuri),
         # Contor, nu afirmație: afirmația despre o firmă e `neverificat`, și e tipată. Firmele cu
         # `invalidat`/`lipseste` își poartă starea fiecare, în `prospetime.stare` — aici e doar
         # câte sunt.

@@ -1835,6 +1835,7 @@ body:has(.fereastra-overlay) .desktop > .bara-antet { position: relative; z-inde
 .cap-tabel th { text-align: left; background: #fafafa; color: #555;
   font-weight: 600; font-size: var(--text-mic); text-transform: uppercase; letter-spacing: .03em;
   padding: 8px 12px; border-bottom: 1px solid #eee; }
+.cap-tabel.cap-tabel-echipa-mica th { text-transform: none; letter-spacing: normal; }
 .cap-tabel td { padding: 9px 12px; border-bottom: 1px solid #f3f3f3; color: #1a1d21; }
 .cap-tabel tr:last-child td { border-bottom: none; }
 .cap-num { text-align: right; }
@@ -3740,3 +3741,4 @@ fieldset { min-width: 0; }
   .ds-tabel thead th, .ds-tabel tbody td { padding-left: 6px; padding-right: 6px; }
   .ds-tabel :is(th, td).ds-tabel-actiuni, .ds-tabel td.cf-perioada, .ds-tabel td.cf-termen { white-space: normal; }   /* acțiunile și perioada se rup sub 700 px: tabelul încape în fereastră */
 }
+.sa-asist-lista[data-prioritati-fara-derulare] > .ds-tabel-cutie.ds-tabel-lista { overflow: visible; }
