@@ -260,3 +260,20 @@ def conturi_cu_miscare(conn, schema, an, luna=None):
         # [lotul 10, 425] „cu toate conturile care au rulaj”: și cele cu rulaj numai în balanța de deschidere a anului
         conturi |= {k for k, (d, c) in _rp.rulaje(cur, schema, _date.fromisoformat(di), _date.fromisoformat(ds)).items() if d or c}
         return sorted(conturi)
+
+
+def denumiri_conturi(conn, schema, simboluri):
+    """[17.5-N, AC050] {simbol: denumire} din planul de conturi al firmei, numai pentru `simboluri` (lista conturilor din Cartea mare), ca
+    lista să spună ce e fiecare cont («371 · Mărfuri»). Un cont fără denumire în plan lipsește din dicționar (ecranul arată simbolul singur).
+    Citește, nu scrie."""
+    simboluri = list(simboluri or [])
+    if not simboluri:
+        return {}
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT simbol, denumire FROM {schema}.plan_conturi WHERE simbol = ANY(%s)", (simboluri,))
+        rez = {}
+        for r in cur.fetchall():
+            simbol, denumire = (r["simbol"], r["denumire"]) if isinstance(r, dict) else (r[0], r[1])
+            if denumire and str(denumire).strip():
+                rez[simbol] = denumire
+        return rez

@@ -4416,6 +4416,7 @@ def cabinet_fisa_cont(tenant_id, an, cont, luna, ctx):
             raise _erori.Inexistent("Firma nu există sau nu ai acces la ea.")
     with db.get_conn(schema) as conn:
         conturi = _fc.conturi_cu_miscare(conn, schema, an, luna)
+        denumiri = _fc.denumiri_conturi(conn, schema, conturi)   # [17.5-N, AC050] denumirea din plan a fiecărui cont din listă
         fisa = None
         if cont:
             try:
@@ -4434,7 +4435,7 @@ def cabinet_fisa_cont(tenant_id, an, cont, luna, ctx):
             except ValueError as e:
                 raise _erori.DateInvalide(str(e))
     return {"an": an, "luna": luna, "formular": _fc.COD_FORMULAR,
-            "conturi": conturi, "fisa": fisa}
+            "conturi": conturi, "fisa": fisa, "denumiri": denumiri}
 
 
 def jurnal_marja(tenant_id, tip, luna, ctx):

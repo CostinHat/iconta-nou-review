@@ -443,11 +443,13 @@ def test_def_534_notificarea_se_completeaza_din_factura(patron, firma_fact):
 
 def test_def_535_trimiterea_cu_formularul_gol_arata_toate_campurile_lipsa(patron, firma_fact):
     """535. Pașii: e-Transport, formularul gol -> „Trimite UIT în SPV”: listele (tipul, scopul, județele) ȘI câmpurile text (denumirea,
-    cantitatea, vehiculul, transportatorul, localitățile) sunt marcate deodată; nimic trimis."""
+    cantitatea, vehiculul, transportatorul, localitățile) sunt marcate deodată; nimic trimis.
+    [17.5-T] actualizat la AC041 (static/js/ecrane/etransport_ecran.js:157): pe o firmă fără drept SPV «Trimite UIT în SPV» e inactiv, deci
+    formularul gol se încearcă cu «Doar generează XML (manual)» (#et-genereaza), care marchează la fel câmpurile lipsă."""
     patron.firma(firma_fact["nume"])
     pg = patron.pg
     _card(patron, "etransport", "#et-trimite")
-    pg.click("#et-trimite")
+    pg.click("#et-genereaza")
     pg.wait_for_selector("#b0-denumire[aria-invalid='true']", timeout=20000)
     patron.captura()
     for camp in ("et-tip", "b0-cod_scop", "b0-denumire", "b0-cantitate", "t-nr_vehicul", "t-cod_org", "s-localitate", "f-strada"):

@@ -2777,6 +2777,7 @@ VC_FARA_SEVERITATE = {
     "documente_pozate": "verificare de flux operational (bonuri/note de casa confirmate de client, necontate); informativa, nu ridica inca severitatea firmei — vezi comentariul din _verificari_contabile",
     "tva": "coerenta bruta 4427/4426 pe balanta; severitatea TVA vine din tva_incrucisat (D300 vs contabilitate), nu din soldurile brute",
     "note": "contor de note contabile pe perioada, nu o constatare",
+    "note_luna": "contor de note validate ale lunii, nu o constatare",
 }
 
 

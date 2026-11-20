@@ -1616,3 +1616,9 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 .ajutor-btn - buton mic circular (20px) cu "?", plasat langa titlul unei functionalitati DOAR unde exista ceva de spus dincolo de eticheta (reguli fiscale, preconditii, consecinte). Deschide un modal cu textul de folosire din coloana ajutor (FUNCTIONALITATI.csv), via api.js semnAjutor(fid) + handler global. NU se pune peste tot (Salveaza/Cauta/Inapoi/camp Denumire = zgomot).
 
 **(v2.124, lotul 17.5-M, AC017 + AC034 + AC035)** Trei reguli ale ecranelor cabinetului: (1) o fereastră care promite priorități le arată — «Sinteza zilei» are prima secțiune «Priorități», cu restanțele și cele mai apropiate scadențe, din aceleași surse ca cardul Termene (`/termene`); (2) un total își numește populația — în «Tipare de erori» apar toate tipurile, nu numai cele cu respingeri, iar rândurile «Total (toate pregătirile)» și «Total (firmele cu respingeri)» spun ce numără; (3) cardul numără ce numără fereastra — cardul «Activitate» numără persoane («asistent necesită atenție»), nu tipare, iar fereastra «Tipare de erori» arată care sunt.
+
+### Bara de jos cu motiv și acțiune secundară în bară (AC041)
+
+Bara obișnuită are 72 px. Când motivul vizibil și grupul cu o acțiune secundară marcată nu încap împreună pe lățimea efectivă a barei, motivul ocupă rândul de sus. Acțiunile se așază dedesubt, cu secundara înaintea principalei. Înălțimea urmează conținutul, cu minimum 72 px. Bara de mesaje sau totaluri rămâne imediat deasupra în timpul derulării. Când lățimea permite, cele trei elemente revin pe un singur rând.
+
+La capătul derulării corpului, bara pe două rânduri rămâne la marginea inferioară a ferestrei. Dacă formularul cuprinde o zonă derulabilă și mesaje, înălțimea lui în flux cuprinde ultimul control și mesajele. Ambele se văd integral deasupra barei, iar ultimul control poate fi apăsat.

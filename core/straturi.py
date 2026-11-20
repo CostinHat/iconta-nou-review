@@ -597,7 +597,7 @@ REGISTRU = (
       "P7 · valul D4: SQL-ul lui `core/d406_reconciliere.py` — 2 instructiuni SQL, zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_main.py", REPOSITORY, None,
-      "P7 · valul D4: SQL-ul lui `main.py` — 40 instructiuni SQL (lotul 5, 15.10.2026: + istoricul alertei de load, `metrici_recente` — load, RAM și conexiuni, 6b + 296; lotul 10, C73 / U2: + factura emisă care poartă deja numărul, `factura_emisa_cu_numarul`), zero `get_conn`, zero commit",
+      "P7 · valul D4: SQL-ul lui `main.py` — 41 instructiuni SQL (lotul 5, 15.10.2026: + istoricul alertei de load, `metrici_recente` — load, RAM și conexiuni, 6b + 296; lotul 10, C73 / U2: + factura emisă care poartă deja numărul, `factura_emisa_cu_numarul`), zero `get_conn`, zero commit",
       "PLAN_HARDENING.md:842 — repository-ul e singurul care stie SQL si scheme"),
     D("core/repo_monitor_fiscal.py", REPOSITORY, None,
       "P7 · valul D4: SQL-ul lui `core/monitor_fiscal.py` — 9 instructiuni SQL (lotul 7, 17.10.2026: + `select_marcaj`, actele portalului legislativ deja văzute; lotul 10, C73 / U3: verificarea pragului și scrierea lui la urmă -> `revendica_pragul`, o singură instrucțiune), zero `get_conn`, zero commit",

@@ -1286,6 +1286,9 @@ def _verificari_contabile(schema, an, luna, confruntare=None):
     d390_incr = _incrucisat(_ci.verifica_d390, "operatiuni intracomunitare (D390)")
     # [F184] conformitate cota TVA facturi emise vs cota standard pe perioada (value-aware, NU decl-vs-contab)
     cota_tva_incr = _incrucisat(_ci.verifica_cota_tva, "cotă TVA facturi emise")
+    # [17.5-N, AC058] contorul antetului Verificărilor: NOTELE validate ale lunii (fără ciorne), nu toate notele (`note`, rămasă în răspuns)
+    with db.get_conn() as _cn, _cn.cursor() as _cu:
+        _note_luna = _repo.numara_note_validate_luna(_cu, schema, an, luna)
     rezultat = {
         "tva_incrucisat": tva_incr,
         "d112_incrucisat": d112_incr,
@@ -1296,6 +1299,7 @@ def _verificari_contabile(schema, an, luna, confruntare=None):
         "trezorerie": _vf.verifica_trezorerie(bal),
         "tva": _tva_bal,
         "note": _numar_note_luna(schema, an, luna),
+        "note_luna": _note_luna,
     }
     try:  # verif_doc_pozate_v1
         rezultat["documente_pozate"] = _verifica_documente_pozate(schema)

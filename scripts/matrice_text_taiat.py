@@ -248,17 +248,23 @@ def main(argv):
     ap.add_argument("director", nargs="?")
     ap.add_argument("--iesire", default=DOVEZI)
     ap.add_argument("--eticheta", default="baza")
+    ap.add_argument("--sincronizeaza-copia", action="store_true",
+                    help="recreează copia de dovadă după restaurarea internă, sub lacăt")
     a = ap.parse_args(argv)
     if a.mod == "un-ecran":
+        if a.sincronizeaza_copia:
+            ap.error("--sincronizeaza-copia se aplică numai calibrării și matricei")
         return un_ecran(a.ecran, a.rez, a.director)
     import calibreaza_16_7 as C
     if a.mod == "calibreaza":
-        return C.ruleaza_pe_server("matrice_text_taiat.py", lambda: calibrare(a.iesire))
+        return C.ruleaza_pe_server("matrice_text_taiat.py", lambda: calibrare(a.iesire),
+                                   sincronizeaza_copia=a.sincronizeaza_copia)
     motiv = calibrare_la_zi(a.iesire)
     if motiv:
         print("[matrice_text_taiat] REFUZ: calibrarea nu e la zi: %s" % motiv, file=sys.stderr)
         return 1
-    return C.ruleaza_pe_server("matrice_text_taiat.py", lambda: matrice(a.iesire, a.eticheta))
+    return C.ruleaza_pe_server("matrice_text_taiat.py", lambda: matrice(a.iesire, a.eticheta),
+                               sincronizeaza_copia=a.sincronizeaza_copia)
 
 
 if __name__ == "__main__":

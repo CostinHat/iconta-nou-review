@@ -44,11 +44,11 @@ def linie_sha():
     return "sha=%s " % git("rev-parse", "HEAD").strip() + " ".join("%s=%s" % (f, sha256(f)) for f in FISIERE_VERIFICATOR)
 
 
-def restaureaza():
-    subprocess.run(["sh", "scripts/baza_test.sh", "restaureaza"], cwd=RAD, capture_output=True, text=True)
+def restaureaza(strict=False):
+    subprocess.run(["sh", "scripts/baza_test.sh", "restaureaza"], cwd=RAD, capture_output=True, text=True, check=strict)
 
 
-def ruleaza_pe_server(nume, corp, scrie_sha=None):
+def ruleaza_pe_server(nume, corp, scrie_sha=None, *, sincronizeaza_copia=False):
     """Regulile comune ale calibrării și ale matricei; -> codul de ieșire."""
     murdar = subprocess.run(["git", "status", "--porcelain", "--untracked-files=no", "--", "scripts", "core"], cwd=RAD, capture_output=True, text=True).stdout.strip()
     if murdar:
@@ -65,9 +65,15 @@ def ruleaza_pe_server(nume, corp, scrie_sha=None):
         raise SystemExit(128 + semnal)
     for s in (signal.SIGTERM, signal.SIGHUP):
         signal.signal(s, iesire)
+    curata_la_final = False
     try:
-        VD.opreste()
-        restaureaza()
+        if VD.opreste() and sincronizeaza_copia:
+            return 1
+        curata_la_final = True
+        restaureaza(strict=sincronizeaza_copia)
+        if sincronizeaza_copia:
+            subprocess.run([sys.executable, "scripts/dovada_firme_test.py", "--cloneaza"],
+                           cwd=RAD, check=True, stdout=subprocess.DEVNULL)
         if VD.porneste() != 0:
             print("[%s] 8019 n-a pornit" % nume, file=sys.stderr)
             return 1
@@ -80,8 +86,11 @@ def ruleaza_pe_server(nume, corp, scrie_sha=None):
             open(scrie_sha, "w", encoding="utf-8").write(linie_sha() + "\n")
         return corp()
     finally:
-        VD.opreste()
-        restaureaza()
+        if curata_la_final:
+            oprire = VD.opreste()
+            if sincronizeaza_copia and oprire:
+                raise RuntimeError("oprirea serverului de test a fost refuzată la încheiere")
+            restaureaza(strict=sincronizeaza_copia)
 
 
 # ── harta ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

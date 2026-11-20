@@ -34,6 +34,7 @@ export const VC_RANDATE = {
   echilibru:             "via d.contabil — Verificări contabile",
   trezorerie:            "via d.contabil — Verificări contabile",
   note:                  "__contor__ (numar de note, nu constatare)",
+  note_luna:             "__contor__ (numar de note validate ale lunii, nu constatare)",
 };
 
 // [deficiența 226, comanda Costin 12.10.2026, verbatim în DECIZII] „în fereastra Control fiscal, eticheta din dreapta fiecărei firme e una
@@ -453,7 +454,7 @@ export function legaVerdict(corp, nav, firma) {
   // [D2, 14.3] o necunoaștere cu `ecran` (D398 „de lămurit”) are buton direct spre ecranul unde se lămurește (aceeași tabelă ca refuzurile)
   // [694.1 b, 14.3] „Regularizează TVA-ul perioadei”: Închidere lună, pe luna de sfârșit a perioadei fiscale
   corp.querySelectorAll("button.cf-regulariza-tva").forEach((b) => b.addEventListener("click", async () => {
-    const { deschideInchidereLuna } = await import("./firme.js?v=33bc90b92b");
+    const { deschideInchidereLuna } = await import("./firme.js?v=d4107e9de6");
     deschideInchidereLuna(nav, firma.tenant_id, Number(b.dataset.an), Number(b.dataset.luna));
   }));
   corp.querySelectorAll("button[data-ecran-destinatie]").forEach((b) => b.addEventListener("click", () => {

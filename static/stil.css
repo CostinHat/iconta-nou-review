@@ -3742,3 +3742,32 @@ fieldset { min-width: 0; }
   .ds-tabel :is(th, td).ds-tabel-actiuni, .ds-tabel td.cf-perioada, .ds-tabel td.cf-termen { white-space: normal; }   /* acțiunile și perioada se rup sub 700 px: tabelul încape în fereastră */
 }
 .sa-asist-lista[data-prioritati-fara-derulare] > .ds-tabel-cutie.ds-tabel-lista { overflow: visible; }
+
+/* Regula DS de referință. Se activează pe piesa comună cu motiv și secundar marcate. */
+.fereastra-corp > .fereastra-jos.fj-cu-secundar {
+  min-height: 72px;
+  height: auto;
+  flex-wrap: wrap;
+  align-content: center;
+  row-gap: 4px;
+  padding-block: 6px;
+}
+.fj-cu-secundar > .fj-motiv {
+  flex: 1 1 max-content;
+  max-width: 100%;
+}
+.fj-cu-secundar > .fj-butoane {
+  margin-inline-start: auto;
+}
+.fj-cu-secundar.fj-doua-randuri > .fj-butoane {
+  align-items: flex-start;
+}
+.fereastra .fereastra-corp:has(> .fereastra-jos.fj-cu-secundar) .bara-fixa {
+  bottom: calc(var(--fj-inaltime, 72px) - 16px);
+}
+/* Când bara ocupă două rânduri, formularul cu zonă și mesaje își păstrează
+   înălțimea în flux. Corpul poate derula până după ultimul său control. */
+.fereastra-corp.cu-zona:has(> .fereastra-jos.fj-cu-secundar.fj-doua-randuri) > .lant-zona:has(> .bara-fixa),
+.fereastra-corp.cu-zona:has(> .fereastra-jos.fj-cu-secundar.fj-doua-randuri) > .lant-zona:has(> .bara-fixa) .lant-zona {
+  flex-shrink: 0;
+}

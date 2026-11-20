@@ -87,10 +87,56 @@
   if (vert.some((d) => !d.tabel)) pica.b.push("derulează conținutul ferestrei, nu tabelul: " + vert.filter((d) => !d.tabel).map((d) => d.loc).join(", "));
   // bara de jos fixă: un rând de butoane lipit de marginea de jos a ferestrei, de 72 px
   const bjCadru = F.querySelector(".fereastra-jos");   // [15.1-E5] bara de jos a cadrului există și fără butoane (ferestre de stare / meniu)
-  const bj = (bjCadru && vizibil(bjCadru) && Math.abs(h(bjCadru) - 72) <= 1 && bjCadru.getBoundingClientRect().bottom >= rF.bottom - 2) ? bjCadru : [...F.querySelectorAll("*")].filter((el) => vizibil(el) && el.querySelector("button") && el.getBoundingClientRect().bottom >= rF.bottom - 2
-    && Math.abs(h(el) - 72) <= 1 && el.getBoundingClientRect().width >= rF.width - 40).pop() || null;
+  const douaRanduriCorecte = (bara => {
+  if (!bara || !bara.matches(".fereastra-corp > .fereastra-jos")) return false;
+  const vizibil = e => e.checkVisibility({checkOpacity:true, checkVisibilityCSS:true});
+  const motiv = bara.querySelector(":scope > .fj-motiv");
+  const grup = bara.querySelector(":scope > .fj-butoane");
+  if (!motiv || !grup || !motiv.innerText.trim() || !vizibil(motiv)) return false;
+  const sec = [...grup.querySelectorAll(":scope > button[data-in-bara]:not(.fj-principal)")].filter(vizibil);
+  const pr = [...grup.querySelectorAll(":scope > button.fj-principal")].filter(vizibil);
+  if (!sec.length || pr.length !== 1) return false;
+  const rect = e => e.getBoundingClientRect();
+  const b = rect(bara), m = rect(motiv), g = rect(grup), f = rect(bara.closest(".fereastra"));
+  const css = getComputedStyle(bara);
+  const contine = (a,r) => r.width > 0 && r.height > 0 && r.left >= a.left-1 &&
+    r.right <= a.right+1 && r.top >= a.top-1 && r.bottom <= a.bottom+1;
+  if (b.height < 72 || Math.abs(b.bottom-f.bottom)>2 || !contine(f,b) || !contine(b,m) ||
+      !contine(b,g) || m.bottom > g.top+1 || Math.abs(m.left - b.left - parseFloat(css.paddingLeft))>1 ||
+      Math.abs(m.right - b.right + parseFloat(css.paddingRight))>1) return false;
+  const range = document.createRange();
+  range.selectNodeContents(motiv);
+  const fragments = [...range.getClientRects()].filter(r => r.width && r.height);
+  if (!fragments.length || fragments.some(r => !contine(m,r)) || motiv.scrollWidth > motiv.clientWidth+1 ||
+      motiv.scrollHeight > motiv.clientHeight+1) return false;
+  // Dacă textul nemutilat și butoanele încap deja pe aceeași linie, stivuirea ar fi o abatere.
+  const walker = document.createTreeWalker(motiv, NodeFilter.SHOW_TEXT);
+  let textLat = 0;
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    range.selectNodeContents(node);
+    textLat += [...range.getClientRects()].reduce((sum,r) => sum+r.width,0);
+  }
+  const interior = b.width - parseFloat(css.paddingLeft) - parseFloat(css.paddingRight);
+  if (textLat + g.width + parseFloat(css.columnGap) <= interior + 1) return false;
+  const p = rect(pr[0]);
+  const butoane = [...grup.querySelectorAll("button")].filter(vizibil).map(rect);
+  if (butoane.some(r => !contine(g,r) || r.bottom<=p.top || r.top>=p.bottom) ||
+      sec.some(e => rect(e).right > p.left+1)) return false;
+  const ordine = [...butoane].sort((a,c) => a.left-c.left);
+  if (ordine.some((r,i) => i>0 && r.left<ordine[i-1].right-1)) return false;
+  const h = m.height + g.height + parseFloat(css.rowGap) + parseFloat(css.paddingTop) +
+    parseFloat(css.paddingBottom) + parseFloat(css.borderTopWidth) + parseFloat(css.borderBottomWidth);
+  return Number.isFinite(h) && Math.abs(b.height-Math.max(72,h))<=2;
+});
+  const josLaMargine = el => Math.abs(el.getBoundingClientRect().bottom-rF.bottom)<=2;
+  const unRand = el => vizibil(el) && josLaMargine(el) && Math.abs(h(el)-72)<=1;
+  const baraCadruluiValida = bjCadru && vizibil(bjCadru) && josLaMargine(bjCadru) &&
+    (unRand(bjCadru) || douaRanduriCorecte(bjCadru));
+  const bj = bjCadru ? (baraCadruluiValida ? bjCadru : null) :
+    [...F.querySelectorAll("*")].filter(el => unRand(el) && el.querySelector("button") &&
+      el.getBoundingClientRect().width >= rF.width-40).pop() || null;
   b.bara_jos = bj ? { clase: String(bj.className), inaltime: h(bj) } : null;
-  if (!bj) pica.b.push("nu există bara de jos fixă de 72 px");
+  if (!bj) pica.b.push("bara de jos lipsește sau nu respectă geometria DS");
   else {
     const butoane = [...bj.querySelectorAll("button")].filter(vizibil);
     // [15.1-E5, pct.1] „Închide” și „Renunță” nu sunt acțiune principală, oricum ar fi colorate

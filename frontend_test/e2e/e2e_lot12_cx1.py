@@ -528,7 +528,9 @@ def firma_ue():
 def test_def_c145_pragul_intrastat_numara_numai_facturile(patron, firma_ue):
     """C145. Pașii: firma emite azi către un client din Germania (DE136695976) o factură de 1.000,00 lei + TVA și o proformă de 7.000,00
     lei + TVA -> Verificări: rândul Intrastat spune „Expedieri: 1000… lei” (numai factura; înainte: 8.000 — proforma număra la prag).
-    MUTAȚIA: `repo_facturi.emise_pe_luni_pentru_intrastat` fără filtrul documentelor fiscale -> 8.000 -> ROȘU."""
+    MUTAȚIA: `repo_facturi.emise_pe_luni_pentru_intrastat` fără filtrul documentelor fiscale -> 8.000 -> ROȘU.
+    [17.5-T] actualizat la AC061 (static/js/ecrane/firme.js:978): suma Intrastat are formatul aplicației («1.000,00»): se citește cu separatorul de mii
+    scos și virgula zecimală înlocuită, iar valoarea comparată rămâne 1000."""
     pregateste_firma(patron, firma_ue)
     de = {"tert_nume": "KUNDE HANDELS GMBH", "tert_cui": DE_CLIENT, "tert_adresa": "Hauptstrasse 1", "tert_tara": "DE", "tert_oras": "Berlin"}
     _emite(patron, firma_ue, 1000, tert=de, descriere="Servicii E2E C145 factura")
@@ -543,8 +545,8 @@ def test_def_c145_pragul_intrastat_numara_numai_facturile(patron, firma_ue):
     patron.captura("intrastat")
     exped = rr.value.json()["expedieri"]
     assert Decimal(exped["cumulat"]) == Decimal("1000"), exped
-    (pe_ecran,) = re.findall(r"Expedieri: ([\d.]+) lei", sub)
-    assert Decimal(pe_ecran) == Decimal("1000"), sub
+    (pe_ecran,) = re.findall(r"Expedieri: ([\d.]+,\d{2}) lei", sub)
+    assert Decimal(pe_ecran.replace(".", "").replace(",", ".")) == Decimal("1000"), sub
 
 
 # ── C152 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

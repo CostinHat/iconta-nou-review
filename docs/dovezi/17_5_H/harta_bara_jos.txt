@@ -5,7 +5,7 @@ Raport Z | Generează notă | activ
 Casă | + Dispoziție nouă | activ
 Bancă | Importă extras | activ
 Compensări | Generează compensarea | activ
-e-Transport | Trimite UIT în SPV | activ
+e-Transport | Doar generează XML (manual) | activ
 Magazin online | Sincronizează acum | activ
 Solicitări client | Trimite | activ
 Registratură | Înregistrează | activ

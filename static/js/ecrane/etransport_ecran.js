@@ -1,7 +1,8 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
 // [cap.24 batch 3a] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand +
 // validarea per-camp o face BACKENDUL (autoritatea); frontendul consuma 422.campuri si plaseaza prin eroareCamp.
-import { api, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile, arataRefuzul } from "../api.js?v=7396e03327";
+import { api, cate, esc, arataMesaj, confirmaCaseta, dataRo, eroareCamp, curataEroriCamp, dataIso, alegeDacaLipseste, cereAlegerile, arataRefuzul, inactiv } from "../api.js?v=7396e03327";
+import { textStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [17.5-N, AC041] acoperirea SPV a firmei, cu regula implicită a textului de stare */
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
 
 // Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
@@ -29,6 +30,10 @@ function _fereastraUit(dataTransport, intracom) {
 // fereastra de dedesubt dacă omul n-a tastat nimic în ea (`navigator._dePastrat`), deci completarea nu se poate face pe elementul vechi —
 // se ține aici, pe firmă, și o aplică formularul desenat la întoarcere (sau cel păstrat, dacă navigatorul l-a pus la loc)
 const _deCompletat = {};
+
+// [17.5-N, AC041] firma fără drept SPV (acoperire «neconectat» / «neacoperit»): «Trimite UIT în SPV» stă inactiv cu motivul de mai jos, iar
+// «Doar generează XML (manual)» devine acțiunea principală (DESIGN_SYSTEM.md: acțiune inactivă prin lipsa dreptului SPV)
+const MOTIV_FARA_SPV = "Firma nu are drept SPV, deci UIT-ul nu poate fi trimis de aici. Generează XML-ul și încarcă-l manual în SPV.";
 
 export async function ecranEtransport(corp, nav, t) {
   const ziAzi = dataIso();
@@ -136,6 +141,27 @@ export async function ecranEtransport(corp, nav, t) {
     else arataMesaj(zona, "", "info");
   };
 
+  // [17.5-N, AC041] starea SPV a firmei, citită la deschidere din ruta existentă (aceeași ca `randeazaStareSpv`): numai când se știe că firma n-are drept
+  // («neconectat» / «neacoperit», `textStareSpv(...).spreConectare`) trimiterea devine inactivă; la «acoperit», «neverificat», «neconfirmat» sau
+  // starea necitită nimic nu se schimbă
+  let faraDreptSpv = false;
+  const aplicaStareaSpv = async () => {
+    let st = null;
+    try { st = await api.get(`/tenants/${t.id}/spv/stare`); } catch { return; }
+    if (!st || !textStareSpv(st).spreConectare) return;
+    const trimite = corp.querySelector("#et-trimite"), genereaza = corp.querySelector("#et-genereaza");
+    if (!trimite || !genereaza) return;
+    faraDreptSpv = true;
+    trimite.classList.remove("buton-primar"); trimite.classList.add("buton-secundar");
+    genereaza.classList.remove("buton-secundar"); genereaza.classList.add("buton-primar");
+    inactiv(trimite, MOTIV_FARA_SPV);
+    // [17.5-N3, AC041] butonul real de trimitere stă în bara de jos, ca secundar inactiv, lângă motiv (cadru.js îl mută și îl ține acolo: `data-in-bara`)
+    trimite.setAttribute("data-in-bara", "");
+    const motiv = document.createElement("span");
+    motiv.className = "ds-motiv-inactiv"; motiv.id = "et-motiv-spv"; motiv.textContent = MOTIV_FARA_SPV;
+    genereaza.closest(".bara-fixa").appendChild(motiv);
+  };
+
   const deseneaza = () => {
     corp.innerHTML = `
       <h2 class="pf-titlu">e-Transport</h2>
@@ -228,11 +254,12 @@ export async function ecranEtransport(corp, nav, t) {
       const cul = { verde: "var(--verde)", galben: "var(--galben-text)", rosu: "var(--rosu)", gri: "var(--gri)" }[f.semafor];
       zf.innerHTML = `<span class="fd-stare" style="color:${cul}">Fereastră UIT: ${esc(f.mesaj)}</span>`;
       btn.disabled = !f.ok;
-      btn.title = f.ok ? "" : f.mesaj;
+      if (!faraDreptSpv) btn.title = f.ok ? "" : f.mesaj;   // [17.5-N, AC041] cât timp motivul SPV e pus, el rămâne în title (mesajul ferestrei rămâne în #et-fereastra)
     };
     corp.querySelector("#et-tip").addEventListener("change", updateFereastra);
     corp.querySelector("#t-data").addEventListener("change", updateFereastra);
     updateFereastra();
+    aplicaStareaSpv();
 
     corp.querySelector("#et-genereaza").addEventListener("click", async () => {
       const zona = corp.querySelector("#et-mesaj");

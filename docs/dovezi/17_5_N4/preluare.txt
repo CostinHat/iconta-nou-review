@@ -1,0 +1,33 @@
+core/fisa_cont.py	baza=520a06d00194	dupa=f5e4db102a9e	P_N3=f5e4db102a9e	ok
+core/repo_main.py	baza=29629dca3bf0	dupa=7db20f92e25f	P_N3=7db20f92e25f	ok
+core/uc_comun.py	baza=8ea44561b5a1	dupa=f6a60cf6b002	P_N3=f6a60cf6b002	ok
+core/uc_tenants.py	baza=f2e68eb2db9d	dupa=9a2f34c50b9c	P_N3=9a2f34c50b9c	ok
+frontend_test/e2e/e2e_lot12_cx1.py	baza=fa56e18402d1	dupa=272532ea3c93	P_N3=272532ea3c93	ok
+frontend_test/e2e/e2e_lot13_fact.py	baza=cdc399d32fbb	dupa=9e37ea5cbe2d	P_N3=9e37ea5cbe2d	ok
+frontend_test/e2e/e2e_pilot_17_5_X.py	baza=0f535eda624a	dupa=8ce272318922	P_N3=8ce272318922	ok
+main.py	baza=cd3b4e764621	dupa=a3c2fa99e6aa	P_N3=a3c2fa99e6aa	ok
+static/js/cautare.js	baza=c4abfda2a7e6	dupa=03fc83fe8889	P_N3=03fc83fe8889	ok
+static/js/ecrane/ansamblu.js	baza=bce0d88d3f85	dupa=1b05dad6edfa	P_N3=1b05dad6edfa	ok
+static/js/ecrane/asistent.js	baza=5c02f2987f11	dupa=2bb273ec4457	P_N3=2bb273ec4457	ok
+static/js/ecrane/borderou_ecran.js	baza=77f6999582b3	dupa=31d2d9cfa5fa	P_N3=31d2d9cfa5fa	ok
+static/js/ecrane/cabinet.js	baza=3229ee33dcbd	dupa=b2938eb3dc7e	P_N3=b2938eb3dc7e	ok
+static/js/ecrane/coada_trimite.js	baza=afc23c858158	dupa=55b5de0dba42	P_N3=55b5de0dba42	ok
+static/js/ecrane/control.js	baza=2da80657e0b6	dupa=05e5a077a518	P_N3=05e5a077a518	ok
+static/js/ecrane/control_verdict.js	baza=a85e1567a9fe	dupa=4de4d58cec59	P_N3=4de4d58cec59	ok
+static/js/ecrane/ecran_destinatie.js	baza=bdded7a4e95a	dupa=f9bcdfa3ede9	P_N3=f9bcdfa3ede9	ok
+static/js/ecrane/etransport_ecran.js	baza=258ab976f529	dupa=28ce2e37b9cc	P_N3=28ce2e37b9cc	ok
+static/js/ecrane/facturi_ecran.js	baza=932f19b9c964	dupa=ac19fc40b2b8	P_N3=ac19fc40b2b8	ok
+static/js/ecrane/firme.js	baza=446e32d38c57	dupa=da571b4dba3b	P_N3=da571b4dba3b	ok
+static/js/ecrane/inceput.js	baza=1c3f0f4f3b0e	dupa=f65be3b29e49	P_N3=f65be3b29e49	ok
+static/js/ecrane/migrare.js	baza=8e394ac141be	dupa=b88f96d81079	P_N3=b88f96d81079	ok
+static/js/ecrane/operatiuni_ecran.js	baza=9cfbc7d4d2dc	dupa=1b67cd776817	P_N3=1b67cd776817	ok
+static/js/ecrane/portal.js	baza=1608112c3ab9	dupa=1fa943ff5649	P_N3=1fa943ff5649	ok
+static/js/ecrane/supervizor.js	baza=c552f08ee856	dupa=b032bfd99cba	P_N3=b032bfd99cba	ok
+static/js/ecrane/termene.js	baza=10110196a922	dupa=582f825d5591	P_N3=582f825d5591	ok
+static/js/ecrane/validat.js	baza=859b449c7661	dupa=299d29b03ee3	P_N3=299d29b03ee3	ok
+static/js/navigator.js	baza=9c69e5a15d55	dupa=e510f0109af6	P_N3=e510f0109af6	ok
+static/js/cadru.js	P_N3=2ad9dcadc813	dupa=2ad9dcadc813
+scripts/calibreaza_16_7.py	P_N3=b1aa8675feca	dupa=b1aa8675feca
+scripts/matrice_text_taiat.py	P_N3=2dcadc31d13d	dupa=2dcadc31d13d
+docs/dovezi/17_5_H/harta_bara_jos.txt	P_N3=d71407a912c7	dupa=d71407a912c7
+core/straturi.py	P_N3=fa9ef370d099	dupa=fa9ef370d099

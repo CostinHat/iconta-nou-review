@@ -176,6 +176,17 @@ def select_inregistrari_2(cur, schema, sfarsit, _d, an, luna):
     return cur.fetchone()
 
 
+def numara_note_validate_luna(cur, schema, an, luna):
+    """[17.5-N, AC058] Numărul NOTELOR (rânduri din `inregistrari`, nu linii) validate în luna (an, luna): de la prima zi a lunii până înaintea
+    primei zile a lunii următoare. Ciornele nu se numără. Citește, nu scrie."""
+    inceput = "%04d-%02d-01" % (an, luna)
+    urmatoarea = "%04d-%02d-01" % ((an + 1, 1) if luna == 12 else (an, luna + 1))
+    cur.execute(f"""SELECT count(*) FROM {schema}.inregistrari
+                WHERE status = 'validata' AND data >= %s AND data < %s""", (inceput, urmatoarea))
+    r = cur.fetchone()
+    return int(list(r.values())[0] if isinstance(r, dict) else r[0])
+
+
 def select_2(cur, schema, numar, _SURSE_Z):
     cur.execute("SELECT id, data, sursa FROM %s.inregistrari "
                 "WHERE sursa = ANY(%%s) AND numar = %%s LIMIT 1" % schema, (list(_SURSE_Z), numar))

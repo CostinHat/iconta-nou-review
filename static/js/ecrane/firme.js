@@ -40,18 +40,18 @@ import { fluxConcediu } from "./flux_concediu.js?v=a5c3501ac4";  /* cm_flux_v1 *
 import { sumaRo } from "./sal_sume.js?v=cd0be29c82";  /* [lotul 13, 655] suma scrisă de om, prin `numarRo` */
 import { MESAJ_NUMAR_RO } from "../api.js?v=7396e03327";  /* [lotul 13, 655] (`atributeInactiv`, 675, vine din importul de sus) */
 import { randeazaStareSpv } from "./spv_stare.js?v=85bc22c9ed";  /* [lotul 6: 273, 275, 289] */
-import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=b295a718ab";   // [lotul 13, 543] seria chitanțelor pe loc
+import { randeazaFacturi, cereSeriaChitanteiPeLoc } from "./facturi_ecran.js?v=1a9f5f6e59";   // [lotul 13, 543] seria chitanțelor pe loc
 import { cautaInLista } from "./emitere_ecran.js?v=7847deeeb4";   /* [lotul 12, 488] căutarea în listele lungi de articole */
 import { ecranRip } from "./rip_ecran.js?v=99f1b10562";
 import { trimiteInCoada, casetaTrimisa, etichetaTrimitere, motivInFraza } from "./coada_trimite.js?v=b26ef32cac";  /* [C11, 07.10.2026] bilanțul prin coadă */
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=4980b3a17f";
 import { siraCarduri } from "../carduri.js?v=83757ff6e9";   // [lotul 14, 687] șirul de carduri-rezumat de sub titlu
 import { ecranBorderou } from "./borderou_ecran.js?v=6c00f2b8cf";   /* [lotul 11, 450 / pct.23] borderoul de achiziție, lângă NIR */
-import { ecranEtransport } from "./etransport_ecran.js?v=11326ec78a";
-import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=6dccb53624";  // [p96_import_firma] + [Q4] import in masa
+import { ecranEtransport } from "./etransport_ecran.js?v=67fef9d46d";
+import { meniuMigrarePerFirma, randeazaPreluareFirma } from "./migrare.js?v=99c0553ca3";  // [p96_import_firma] + [Q4] import in masa
 import { butonSpreEcran } from "./ecran_destinatie.js?v=aab0f8253f";   // [17.5-J, AC052] refuzul care trimite la ce lipsește
 import { declaratiiPerFirma } from "./declaratii.js?v=93956357f7";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=38460ddd83";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=9db6cd666e";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=a342d38589";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=bc2611f4e7";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=b3bd524d96";  // [date_firma_v1]
@@ -882,6 +882,7 @@ const VC_VERIFICARI = {
   documente_pozate:      "randat — Documente pozate de clienți",
   tva:                   "randat — TVA (rezultat + sold)",
   note:                  "randat — contor de note contabile în antet",
+  note_luna:             "randat — contor de note validate ale lunii în antet",
   tva_incrucisat:        "IGNORAT — acest ecran arată doar coerența brută lunară; cross-check-urile declarație-vs-contabilitate aparțin exclusiv verdictului din Control fiscal (control_verdict.js)",
   d112_incrucisat:       "IGNORAT — idem (salarii D112 vs contabilitate)",
   d390_incrucisat:       "IGNORAT — idem (operațiuni intracomunitare D390 vs evidență)",
@@ -953,7 +954,7 @@ async function ecranVerificari(corp, nav, t) {
     };
     corp.innerHTML = `
       <h2 class="pf-titlu">Verific\u0103ri</h2>
-      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${cate(r ? r.note : 0, "not\u0103", "note")}
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}${r && r.note_luna != null ? " \u00b7 " + cate(r.note_luna, "not\u0103 validat\u0103 \u00een lun\u0103", "note validate \u00een lun\u0103") : ""}
         <button class="buton-secundar" id="vf-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="vf-next">luna \u2192</button></p>
       <div class="pf-lista vf-lista">
@@ -966,7 +967,7 @@ async function ecranVerificari(corp, nav, t) {
         ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${bani(r.tva.suma)} lei (cont ${r.tva.cont})</div></div><span class="cab-pct pct-info"></span></div>` : ""}
         ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
-          <div class="pf-frand-sub">${vs.ok ? "în regulă" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${bani(c.sold_contabil)} vs fi\u0219e ${bani(c.valoare_fise_cv)} (diferență ${bani(c.diferenta)})`).join(" \u00b7 ")}</div>
+          <div class="pf-frand-sub">${!(vs.conturi || []).length ? "în regulă" : [...vs.conturi.map((c) => `cont ${esc(c.cod || c.cont)}: contabil ${bani(c.sold_contabil)} lei \u00b7 fi\u0219e de magazie ${bani(c.valoare_fise_cv)} lei${c.ok ? "" : ` (diferență ${bani(c.diferenta)} lei)`}`), ...(vs.ok || !vs.nota ? [] : [esc(vs.nota)])].join(" \u00b7 ")}</div>
         </div><span class="cab-pct ${vs.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
         ${vs && Number(vs.ciorne) ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Ciorne de stoc:</div>
@@ -974,7 +975,7 @@ async function ecranVerificari(corp, nav, t) {
         </div><span class="cab-pct pct-info"></span></div>` : ""}   <!-- [17.5-X7, a.15; F089] ciornele nu produc „diferență”: rând pf-frand al lor, ca toate rândurile listei (situații identice, soluții identice, CLAUDE.md §9), nu un al doilea pf-frand-sub în rândul Stocurilor -->
         ${intra ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Intrastat (prag 1.000.000 lei/flux, an ${an})</div>
-          <div class="pf-frand-sub">Introduceri: ${intra.introduceri ? intra.introduceri.cumulat + " lei (" + intra.introduceri.procent + "%)" + (intra.introduceri.status !== "sub_prag" ? " \u00b7 depășit din luna " + intra.introduceri.luna_depasirii : "") : "-"} \u00b7 Expedieri: ${intra.expedieri ? intra.expedieri.cumulat + " lei (" + intra.expedieri.procent + "%)" + (intra.expedieri.status !== "sub_prag" ? " \u00b7 depășit din luna " + intra.expedieri.luna_depasirii : "") : "-"}</div>
+          <div class="pf-frand-sub">Introduceri: ${intra.introduceri ? bani(intra.introduceri.cumulat) + " lei (" + pct(intra.introduceri.procent) + ")" + (intra.introduceri.status !== "sub_prag" ? " \u00b7 depășit din luna " + intra.introduceri.luna_depasirii : "") : "-"} \u00b7 Expedieri: ${intra.expedieri ? bani(intra.expedieri.cumulat) + " lei (" + pct(intra.expedieri.procent) + ")" + (intra.expedieri.status !== "sub_prag" ? " \u00b7 depășit din luna " + intra.expedieri.luna_depasirii : "") : "-"}</div>
         </div><span class="cab-pct ${(intra.introduceri && intra.introduceri.status !== 'sub_prag') || (intra.expedieri && intra.expedieri.status !== 'sub_prag') ? 'pct-rosu' : 'pct-verde'}"></span></div>` : ""}
         ${!r ? '<div class="ecran-nota">Nu s-au putut rula verific\u0103rile.</div>' : ""}
       </div>`;
@@ -3024,9 +3025,10 @@ async function ecranFisaCont(corp, nav, t) {
       return;
     }
     const conturi = (d && d.conturi) || [];
+    const den = (d && d.denumiri) || {};   // [17.5-N, AC050] fără `denumiri` în răspuns: numai simbolurile
     const f = d && d.fisa;
     const optCont = `<option value="">\u2014 alege contul \u2014</option>` +
-      conturi.map((c) => `<option value="${esc(c)}"${c === cont ? " selected" : ""}>${esc(c)}</option>`).join("");
+      conturi.map((c) => `<option value="${esc(c)}"${c === cont ? " selected" : ""}>${esc(den[c] ? `${c} \u00b7 ${den[c]}` : c)}</option>`).join("");   // [17.5-N, AC050] «<simbol> · <denumire>» din planul de conturi
     const optLuna = `<option value="0"${luna === 0 ? " selected" : ""}>tot anul</option>` +
       Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}"${luna === i + 1 ? " selected" : ""}>${dataRo(`${an}-${String(i + 1).padStart(2, "0")}-01`, "luna_an_numeric")}</option>`).join("");
 

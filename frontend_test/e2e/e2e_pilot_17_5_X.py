@@ -20,7 +20,7 @@ import os
 import re
 import sys
 
-from conftest import BAZA, sesiune
+from conftest import BAZA, sesiune, sql
 
 RAD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.join(RAD, "scripts"))
@@ -237,8 +237,16 @@ def _p8(rele, pg, parcurs, memo):
         rele.append("pct.8 / 602.1 / e.20: antetul Registrului jurnal nu spune «Luna 10/2026 · N de note» (găsit: %r)" % _text(pg)[:120])
     else:
         memo["jurnal"] = m.group(1)
-        if memo.get("verificari") and memo["verificari"] != m.group(1):
-            rele.append("pct.8 / 602.1 / e.20: Verificările numără %s note, iar antetul Registrului jurnal %s (așteptat: același număr; numărul corect îl stabilește Code din tabela de note)" % (memo["verificari"], m.group(1)))
+        # [17.5-T] actualizat la AC058 (core/uc_comun.py:1302): antetul Verificărilor numără NOTELE VALIDATE ale lunii («32 de note validate în lună»),
+        # Registrul jurnal toate notele lunii (84 = 32 validate + 52 ciorne pe snapshot); fiecare citire se compară cu numărarea ei independentă din
+        # tabela de note, pe aceeași firmă (F1, tenant_9049) și lună (10/2026), în locul egalității vechi dintre cele două antete
+        luna_note = ("2026-10-01", "2026-11-01")
+        total = sql('SELECT count(*) FROM tenant_9049.inregistrari WHERE data >= %s AND data < %s', luna_note)[0][0]
+        validate = sql("SELECT count(*) FROM tenant_9049.inregistrari WHERE status = 'validata' AND data >= %s AND data < %s", luna_note)[0][0]
+        if int(m.group(1)) != total:
+            rele.append("pct.8 / 602.1 / e.20: antetul Registrului jurnal numără %s note, iar tabela de note are %s înregistrări în 10/2026 (așteptat: același număr)" % (m.group(1), total))
+        if memo.get("verificari") and int(memo["verificari"]) != validate:
+            rele.append("pct.8 / 602.1 / e.20: Verificările numără %s note validate, iar tabela de note are %s înregistrări validate în 10/2026 (așteptat: același număr)" % (memo["verificari"], validate))
     for sel in (".jn-lista :text('Stornare')", ".jn-lista :text('validată')"):   # rândurile se desfac (dacă au detalii)
         try:
             if pg.locator(TOP + sel).count():

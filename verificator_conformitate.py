@@ -2027,6 +2027,22 @@ for _cl in ("bara", "subbara", "bara3", "subbara--admin"):
 #     oricare din cele cinci scoasă -> TOTAL > 0. LIMITĂ: vede regulile și apelurile, nu așezarea pe ecran (aia o măsoară e2e 285 / 272).
 rap["fereastra_lot6"] = []
 _css_l6 = _surse_css["stil.css"]
+# AC041. Verificarea statică leagă regula de piesa cadrului; geometria se măsoară în browser.
+def _reguli_bara_adaptiva(css):
+    reguli = (
+        (".fereastra-corp > .fereastra-jos.fj-cu-secundar", ("height: auto", "min-height: 72px", "flex-wrap: wrap")),
+        (".fj-cu-secundar > .fj-motiv", ("flex: 1 1 max-content",)),
+        (".fereastra .fereastra-corp:has(> .fereastra-jos.fj-cu-secundar) .bara-fixa", ("bottom: calc(var(--fj-inaltime, 72px) - 16px)",)),
+    )
+    for selector, declaratii in reguli:
+        bloc = re.search(r"(?m)^" + re.escape(selector) + r"\s*\{([^}]*)\}", css)
+        gasite = set() if not bloc else {" ".join(d.split()) for d in bloc[1].split(";")}
+        if not set(declaratii) <= gasite:
+            yield selector
+
+for _selector_n4 in _reguli_bara_adaptiva(_css_l6):
+    rap["fereastra_lot6"].append(("stil.css", 0, "BARA_ADAPTIVA", "lipsește regula DS: " + _selector_n4))
+
 for _sel, _decl, _cod in ((r"\.camp-input\[readonly\]", r"background\s*:", "READONLY_GLOBAL"),
                           (r"\.fereastra-corp \.bara-fixa", r"position\s*:\s*sticky", "BARA_FIXA"),
                           (r"\.fereastra-corp \.bara-fixa:not\(:last-child\)", r"margin-bottom\s*:\s*0", "BARA_NU_ACOPERA"),

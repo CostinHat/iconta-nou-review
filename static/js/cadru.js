@@ -258,6 +258,25 @@ function _urma(b) { const u = document.createComment("fj"); b.before(u); return 
 // formular nu e `form` / `.ds-formular` îl numește cu `data-formular` (Ore suplimentare, Certificat nou, Firmă nouă, D104 pasul 2): fereastra care nu-l numește nu devine inactivă
 const _formularul = (b) => b.closest("form, .ds-formular, .pf-frand:has(> .ds-formular), [data-formular]");
 
+// AC041. Măsoară piesa comună inclusiv la redimensionare; starea este locală ferestrei.
+function sincronizeazaBaraAdaptiva(corp, bara) {
+  const motiv = bara.querySelector(".fj-motiv");
+  const butoane = bara.querySelector(".fj-butoane");
+  const vizibil = el => el.checkVisibility({checkOpacity:true, checkVisibilityCSS:true});
+  const secundar = [...butoane.querySelectorAll("button[data-in-bara]:not(.fj-principal)")].some(vizibil);
+  const activa = Boolean(secundar && vizibil(motiv) && motiv.innerText.trim());
+  bara.classList.toggle("fj-cu-secundar", activa);
+  const doua = activa && motiv.getBoundingClientRect().bottom <= butoane.getBoundingClientRect().top + 1;
+  bara.classList.toggle("fj-doua-randuri", doua);
+  const cheie = "--fj-inaltime";
+  if (activa) {
+    const valoare = bara.getBoundingClientRect().height + "px";
+    if (corp.style.getPropertyValue(cheie) !== valoare) corp.style.setProperty(cheie, valoare);
+  } else if (corp.style.getPropertyValue(cheie)) {
+    corp.style.removeProperty(cheie);
+  }
+}
+
 /** Pune bara de jos pe fereastra `fer`; întoarce `{ sincronizeaza, bara }`. `renunta` = ce face „Renunță” (un pas înapoi / închide) pe ferestrele din PASTREAZA_RENUNTA. */
 export function baraDeJos(fer, corp, { renunta }) {
   const bara = document.createElement("div");
@@ -322,6 +341,9 @@ export function baraDeJos(fer, corp, { renunta }) {
       principal.setAttribute("data-actiune-principala", "");   // [15.1-E5] pe orice fereastră: exact un buton cu atributul
       loc.appendChild(principal);
     }
+    // [17.5-N3, AC041] acțiunea secundară pe care ecranul o cere explicit în bara de jos (`data-in-bara`; azi numai «Trimite UIT în SPV» din e-Transport, inactivă cu motivul
+    // ei): același nod (id, ascultători) stă în bară, lângă motiv, înaintea acțiunii principale; urma lui o scoate din bară când ecranul își redesenează zona
+    for (const b of corp.querySelectorAll("button[data-in-bara]")) if (b !== principal && !bara.contains(b)) { b.__origine = _urma(b); loc.prepend(b); }
     bara.classList.toggle("fj-fara-principal", !principal);
     // fereastra cu formular: acțiunea principală vine dintr-un formular sau fereastra are câmpuri de completat (în afara tabelelor, listelor și căutării)
     const cuFormular = !!principal && (!!principal.__formular || /^Continuă(\s|$)/.test(_normalizeaza(principal.textContent)) || [...corp.querySelectorAll("input:not([type=hidden]):not([type=search]):not([type=checkbox]):not([type=radio]), textarea, select")]
@@ -346,7 +368,7 @@ export function baraDeJos(fer, corp, { renunta }) {
     // ce a pus ecranul lângă butonul principal (motivul butonului inactiv, mesajul unui refuz): nimic altceva în bară — motivul trece în stânga,
     // mesajul deasupra barei, în zona de mesaje
     for (const x of [...loc.children]) {
-      if (x === principal || x.classList.contains("fj-renunta")) continue;
+      if (x === principal || x.classList.contains("fj-renunta") || x.hasAttribute("data-in-bara")) continue;
       if (/motiv/.test(x.className) || x.hasAttribute("data-motiv-generat")) motiv.appendChild(x);
       else {
         let zona = bara.previousElementSibling;
@@ -399,6 +421,7 @@ export function baraDeJos(fer, corp, { renunta }) {
       if (sp.textContent !== text) sp.textContent = text;
     } else if (sp) sp.remove();
     bara.classList.toggle("fj-inactiv", !!principal && (!!principal.disabled || !!principal.dataset.cadruInactiv || principal.getAttribute("aria-disabled") === "true"));
+    sincronizeazaBaraAdaptiva(corp, bara);
     corp.classList.toggle("fj-are-principal", !!principal);   // [15.1-E3] fereastra are acțiunea principală în bară: restul butoanelor principale din conținut arată ca secundare (CSS)
   }
 
@@ -412,6 +435,11 @@ export function baraDeJos(fer, corp, { renunta }) {
   new MutationObserver((muts) => { if (muts.some((m) => !bara.contains(m.target) || m.target === bara || m.target === loc
       || (m.type === "attributes" && m.target === principal && STARE_PRINCIPAL.includes(m.attributeName) && m.oldValue !== m.target.getAttribute(m.attributeName)))) programeaza(); })
     .observe(corp, { childList: true, subtree: true, attributes: true, attributeOldValue: true, attributeFilter: ["disabled", "hidden", "class", "style", "open", "aria-disabled", "data-motiv-inactiv"] });
+  const geometrie = new ResizeObserver(() => {
+    if (!corp.isConnected) { geometrie.disconnect(); return; }
+    sincronizeazaBaraAdaptiva(corp, bara);
+  });
+  geometrie.observe(bara);
   sincronizeaza();
   return { sincronizeaza, bara };
 }

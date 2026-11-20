@@ -993,8 +993,8 @@ const MODELE = {
     // (`="…"`, `textExcel`), altfel Excel îl face 2,9E+12 la deschiderea CSV-ului
     coloane: ["nume", "prenume", "cnp", "data angajare", "functie", "norma", "ore", "functie de baza", "scutit contributie minima",
               "persoane in intretinere", "brut", "judet", "cor", "iban"],
-    randuri: [["Popescu", "Ana", textExcel("2900215410011"), "2020-01-15", "Contabil", "intreaga", "8", "da", "nu", "0", "5000", "B", "251401", "RO49AAAA1B31007593840000"],
-              ["Ionescu", "Radu", textExcel("1850715410012"), "2021-03-01", "Ospătar", "partiala", "4", "da", "nu", "1", "6000", "CJ", "522101", ""]] },
+    randuri: [["Popescu", "Ana", textExcel("2900215410011"), "2020-01-15", "Contabil", "intreaga", "8", "da", "nu", "0", "5000", "B", "331302", "RO49AAAA1B31007593840000"],
+              ["Ionescu", "Radu", textExcel("1850715410012"), "2021-03-01", "Ospătar", "partiala", "4", "da", "nu", "1", "6000", "CJ", "513102", ""]] },
   asociati: { fisier: "model_asociati.csv", coloane: ["nume", "cnp/cui", "cota %"],
     randuri: [["Popescu Ana", textExcel("2900215410011"), "60"], ["Ionescu Radu", textExcel("1850715410012"), "40"]] },
   mijloace: { fisier: "model_mijloace_fixe.csv",
@@ -1766,6 +1766,10 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     // [lotul 11, 420] valoarea care intră (propunerea „Nu” / 0, sau cea din fișa existentă), nu un text fix
     { titlu: "Scutit minim", celula: (r) => (dv(r).includes("scutit_contrib_minim") ? deVerificat(dn(!!r.scutit_contrib_minim)) : dn(r.scutit_contrib_minim)) },
     { titlu: "Persoane în întreținere", num: true, celula: (r) => (dv(r).includes("persoane_intretinere") ? deVerificat(esc(String(r.persoane_intretinere || 0))) : esc(String(r.persoane_intretinere || 0))) },
+    // [17.5-N, AC118] județul și IBAN-ul din fișier (se salvează), ca să se verifice înainte de import; IBAN-ul în grupe de patru caractere (forma de
+    // tipărire), numai la afișare: valoarea trimisă la salvare rămâne cea din fișier
+    { titlu: "Județ", celula: (r) => esc(r.judet_casa || "—") },
+    { titlu: "IBAN", celula: (r) => esc(String(r.iban || "").replace(/\s+/g, "").replace(/(.{4})(?=.)/g, "$1 ") || "—") },
   ];
 
   corp.innerHTML = _cadruPrev(`
@@ -2464,7 +2468,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", strat: "articole", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", strat: "retete", fn: (c, n) => importReteteFirma(c, n, firma) },
     // [15.1-E4] „Audit de preluare” (coerența internă a pachetului preluat) stă în Control fiscal al firmei; catalogul căutării îl pune în Import date, deci și aici există intrarea
-    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=33bc90b92b"); await deschideControlFirma(nav, firma.tenant_id); } },
+    { titlu: "Audit de preluare", desc: "Coerența internă a pachetului preluat", strat: "audit_preluare", fn: async () => { const { deschideControlFirma } = await import("./firme.js?v=d4107e9de6"); await deschideControlFirma(nav, firma.tenant_id); } },
   ];
   // [368 / 371] fiecare pas are stratul lui; aplicabilitatea pe regim vine NUMAI din `/migrare/straturi` (`migrare_api.STRATURI_META`)
   // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat
